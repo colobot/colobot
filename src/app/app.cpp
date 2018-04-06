@@ -699,6 +699,29 @@ bool CApplication::Create()
     return true;
 }
 
+void CApplication::Reload()
+{
+    m_sound->Create();
+
+    m_engine->ReloadAllTextures();
+
+    CThread musicLoadThread([this]()
+    {
+        SystemTimeStamp* musicLoadStart = m_systemUtils->CreateTimeStamp();
+        m_systemUtils->GetCurrentTimeStamp(musicLoadStart);
+
+        m_sound->CacheAll();
+
+        SystemTimeStamp* musicLoadEnd = m_systemUtils->CreateTimeStamp();
+        m_systemUtils->GetCurrentTimeStamp(musicLoadEnd);
+        float musicLoadTime = m_systemUtils->TimeStampDiff(musicLoadStart, musicLoadEnd, STU_MSEC);
+        GetLogger()->Debug("Sound loading took %.2f ms\n", musicLoadTime);
+    },
+    "Sound loading thread");
+    musicLoadThread.Start();
+    m_controller->GetRobotMain()->UpdateCustomLevelList();
+}
+
 bool CApplication::CreateVideoSurface()
 {
     Uint32 videoFlags = SDL_WINDOW_OPENGL;

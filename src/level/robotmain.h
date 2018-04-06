@@ -56,12 +56,10 @@ enum Phase
     PHASE_MAIN_MENU,
     PHASE_LEVEL_LIST,
     PHASE_SIMUL,
-    PHASE_SETUPd,
     PHASE_SETUPg,
     PHASE_SETUPp,
     PHASE_SETUPc,
     PHASE_SETUPs,
-    PHASE_SETUPds,
     PHASE_SETUPgs,
     PHASE_SETUPps,
     PHASE_SETUPcs,
@@ -73,6 +71,7 @@ enum Phase
     PHASE_LOST,
     PHASE_QUIT_SCREEN,
     PHASE_SATCOM,
+    PHASE_MOD_MANAGER,
 };
 std::string PhaseToString(Phase phase);
 bool IsInSimulationConfigPhase(Phase phase);

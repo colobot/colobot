@@ -35,12 +35,15 @@
 #include "ui/controls/enumslider.h"
 #include "ui/controls/interface.h"
 #include "ui/controls/label.h"
+#include "ui/controls/list.h"
 #include "ui/controls/window.h"
 
 namespace Ui
 {
 
 CScreenSetupGraphics::CScreenSetupGraphics()
+    : m_setupSelMode{0},
+      m_setupFull{false}
 {
 }
 
@@ -54,6 +57,7 @@ void CScreenSetupGraphics::CreateInterface()
     CWindow*        pw;
     CEditValue*     pv;
     CLabel*         pl;
+    CList*          pli;
     CCheck*         pc;
     CEnumSlider*    pes;
     CButton*        pb;
@@ -64,9 +68,45 @@ void CScreenSetupGraphics::CreateInterface()
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == nullptr )  return;
 
+    std::vector<Math::IntPoint> modes;
+    m_app->GetVideoResolutionList(modes);
+    for (auto it = modes.begin(); it != modes.end(); ++it)
+    {
+        if (it->x == m_app->GetVideoConfig().size.x && it->y == m_app->GetVideoConfig().size.y)
+        {
+            m_setupSelMode = it - modes.begin();
+            break;
+        }
+    }
+    m_setupFull = m_app->GetVideoConfig().fullScreen;
 
     pos.x = ox+sx*3;
-    pos.y = 0.65f;
+    pos.y = oy+sy*9;
+    ddim.x = dim.x*5;
+    ddim.y = dim.y*1;
+    GetResource(RES_TEXT, RT_SETUP_MODE, name);
+    pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL2, name);
+    pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
+
+    m_setupFull = m_app->GetVideoConfig().fullScreen;
+    pos.x = ox+sx*3;
+    pos.y = oy+sy*6.7f;
+    ddim.x = dim.x*5;
+    ddim.y = dim.y*3.0f;
+    pli = pw->CreateList(pos, ddim, 0, EVENT_LIST2);
+    pli->SetState(STATE_SHADOW);
+    UpdateDisplayMode();
+
+    ddim.x = dim.x*4;
+    ddim.y = dim.y*0.5f;
+    pos.x = ox+sx*3;
+    pos.y = 0.42f;
+    pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_FULL);
+    pc->SetState(STATE_SHADOW);
+    pc->SetState(STATE_CHECK, m_setupFull);
+
+    pos.x = ox+sx*3;
+    pos.y = 0.36f;
     ddim.x = dim.x*2.2f;
     ddim.y = 18.0f/480.0f;
     pv = pw->CreateEditValue(pos, ddim, 0, EVENT_INTERFACE_PARTI);
@@ -81,7 +121,7 @@ void CScreenSetupGraphics::CreateInterface()
     pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
 
     pos.x = ox+sx*3;
-    pos.y = 0.59f;
+    pos.y = 0.30f;
     ddim.x = dim.x*2.2f;
     ddim.y = 18.0f/480.0f;
     pv = pw->CreateEditValue(pos, ddim, 0, EVENT_INTERFACE_CLIP);
@@ -94,27 +134,6 @@ void CScreenSetupGraphics::CreateInterface()
     GetResource(RES_EVENT, EVENT_INTERFACE_CLIP, name);
     pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL11, name);
     pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
-
-    ddim.x = dim.x*6;
-    ddim.y = dim.y*0.5f;
-    pos.x = ox+sx*3;
-    pos.y = 0.53f;
-    pos.y -= 0.048f*0.5f;
-    pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_DIRTY);
-    pc->SetState(STATE_SHADOW);
-    pos.y -= 0.048f;
-    pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_FOG);
-    pc->SetState(STATE_SHADOW);
-    pos.y -= 0.048f;
-    pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_LIGHT);
-    pc->SetState(STATE_SHADOW);
-    if ( m_simulationSetup )
-    {
-        pc->SetState(STATE_DEAD);
-    }
-    pos.y -= 0.048f;
-    pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_PAUSE_BLUR);
-    pc->SetState(STATE_SHADOW);
 
     pos.x = ox+sx*8.5f;
     pos.y = 0.65f;
@@ -154,6 +173,26 @@ void CScreenSetupGraphics::CreateInterface()
     GetResource(RES_EVENT, EVENT_INTERFACE_SHADOW_MAPPING_BUFFER, name);
     pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL12, name);
     pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
+
+    ddim.x = dim.x*3;
+    ddim.y = dim.y*0.5f;
+    pos.x = ox+sx*8.5f;
+    pos.y = 0.42f;
+    pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_DIRTY);
+    pc->SetState(STATE_SHADOW);
+    pos.y -= 0.048f;
+    pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_FOG);
+    pc->SetState(STATE_SHADOW);
+    pos.y -= 0.048f;
+    pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_LIGHT);
+    pc->SetState(STATE_SHADOW);
+    if ( m_simulationSetup )
+    {
+        pc->SetState(STATE_DEAD);
+    }
+    pos.y -= 0.048f;
+    pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_PAUSE_BLUR);
+    pc->SetState(STATE_SHADOW);
 
 
     pos.x = ox+sx*12.5f;
@@ -232,24 +271,131 @@ void CScreenSetupGraphics::CreateInterface()
     pos.x = ox+sx*10;
     pos.y = oy+sy*2;
 
-    pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_MIN);
+/*  pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_MIN);
     pb->SetState(STATE_SHADOW);
     pos.x += ddim.x;
     pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_NORM);
     pb->SetState(STATE_SHADOW);
     pos.x += ddim.x;
     pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_MAX);
+    pb->SetState(STATE_SHADOW);*/
+    
+    ddim.x = dim.x*6;
+    ddim.y = dim.y*1;
+    pos.x = ox+sx*10;
+    pos.y = oy+sy*2;
+    pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_APPLY);
     pb->SetState(STATE_SHADOW);
 
     UpdateSetupButtons();
+    UpdateApply();
+}
+
+// Updates the list of modes.
+
+int GCD(int a, int b)
+{
+    return (b == 0) ? a : GCD(b, a%b);
+}
+
+Math::IntPoint AspectRatio(Math::IntPoint resolution)
+{
+    int gcd = GCD(resolution.x, resolution.y);
+    return Math::IntPoint(static_cast<float>(resolution.x) / gcd, static_cast<float>(resolution.y) / gcd);
+}
+
+void CScreenSetupGraphics::UpdateDisplayMode()
+{
+    CWindow*    pw;
+    CList*      pl;
+
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
+    if ( pw == nullptr )  return;
+    pl = static_cast<CList*>(pw->SearchControl(EVENT_LIST2));
+    if ( pl == nullptr )  return;
+    pl->Flush();
+
+    std::vector<Math::IntPoint> modes;
+    m_app->GetVideoResolutionList(modes);
+    int i = 0;
+    std::stringstream mode_text;
+    for (Math::IntPoint mode : modes)
+    {
+        mode_text.str("");
+        Math::IntPoint aspect = AspectRatio(mode);
+        mode_text << mode.x << "x" << mode.y << " [" << aspect.x << ":" << aspect.y << "]";
+        pl->SetItemName(i++, mode_text.str());
+    }
+
+    pl->SetSelect(m_setupSelMode);
+    pl->ShowSelect(false);
+}
+
+// Change the graphics mode.
+
+void CScreenSetupGraphics::ChangeDisplay()
+{
+    CWindow*    pw;
+    CList*      pl;
+    CCheck*     pc;
+    bool        bFull;
+
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
+    if ( pw == nullptr )  return;
+
+    pl = static_cast<CList*>(pw->SearchControl(EVENT_LIST2));
+    if ( pl == nullptr )  return;
+    m_setupSelMode = pl->GetSelect();
+
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_FULL));
+    if ( pc == nullptr )  return;
+    bFull = pc->TestState(STATE_CHECK);
+    m_setupFull = bFull;
+
+    std::vector<Math::IntPoint> modes;
+    m_app->GetVideoResolutionList(modes);
+
+    Gfx::DeviceConfig config = m_app->GetVideoConfig();
+    config.size = modes[m_setupSelMode];
+    config.fullScreen = bFull;
+
+    m_settings->SaveResolutionSettings(config);
+
+    m_app->ChangeVideoConfig(config);
 }
 
 bool CScreenSetupGraphics::EventProcess(const Event &event)
 {
     if (!CScreenSetup::EventProcess(event)) return false;
 
+    CWindow* pw;
+    CCheck* pc;
+    CButton* pb;
+
     switch( event.type )
     {
+        case EVENT_LIST2:
+            UpdateApply();
+            break;
+
+        case EVENT_INTERFACE_FULL:
+            pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
+            if ( pw == nullptr )  break;
+            pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_FULL));
+            if ( pc == nullptr )  break;
+
+            if ( pc->TestState(STATE_CHECK) )
+            {
+                pc->ClearState(STATE_CHECK);
+            }
+            else
+            {
+                pc->SetState(STATE_CHECK);
+            }
+          
+            UpdateApply();
+            break;
+
         case EVENT_INTERFACE_PARTI:
             ChangeSetupButtons();
             break;
@@ -257,6 +403,24 @@ bool CScreenSetupGraphics::EventProcess(const Event &event)
         case EVENT_INTERFACE_CLIP:
             ChangeSetupButtons();
             m_engine->ApplyChange();
+            break;
+
+        case EVENT_INTERFACE_SHADOW_SPOTS:
+            m_engine->SetShadowMapping(false);
+            m_engine->SetShadowMappingQuality(false);
+            UpdateSetupButtons();
+            break;
+
+        case EVENT_INTERFACE_SHADOW_MAPPING:
+            m_engine->SetShadowMapping(true);
+            m_engine->SetShadowMappingQuality(false);
+            UpdateSetupButtons();
+            break;
+
+        case EVENT_INTERFACE_SHADOW_MAPPING_QUALITY:
+            m_engine->SetShadowMapping(true);
+            m_engine->SetShadowMappingQuality(true);
+            UpdateSetupButtons();
             break;
 
         case EVENT_INTERFACE_DIRTY:
@@ -280,24 +444,6 @@ bool CScreenSetupGraphics::EventProcess(const Event &event)
             UpdateSetupButtons();
             break;
 
-        case EVENT_INTERFACE_SHADOW_SPOTS:
-            m_engine->SetShadowMapping(false);
-            m_engine->SetShadowMappingQuality(false);
-            UpdateSetupButtons();
-            break;
-
-        case EVENT_INTERFACE_SHADOW_MAPPING:
-            m_engine->SetShadowMapping(true);
-            m_engine->SetShadowMappingQuality(false);
-            UpdateSetupButtons();
-            break;
-
-        case EVENT_INTERFACE_SHADOW_MAPPING_QUALITY:
-            m_engine->SetShadowMapping(true);
-            m_engine->SetShadowMappingQuality(true);
-            UpdateSetupButtons();
-            break;
-
         case EVENT_INTERFACE_SHADOW_MAPPING_BUFFER:
         case EVENT_INTERFACE_TEXTURE_FILTER:
         case EVENT_INTERFACE_TEXTURE_MIPMAP:
@@ -307,7 +453,7 @@ bool CScreenSetupGraphics::EventProcess(const Event &event)
             UpdateSetupButtons();
             break;
 
-        case EVENT_INTERFACE_MIN:
+/*        case EVENT_INTERFACE_MIN:
             ChangeSetupQuality(-1);
             UpdateSetupButtons();
             break;
@@ -318,7 +464,18 @@ bool CScreenSetupGraphics::EventProcess(const Event &event)
         case EVENT_INTERFACE_MAX:
             ChangeSetupQuality(1);
             UpdateSetupButtons();
-            break;
+            break;*/
+
+            case EVENT_INTERFACE_APPLY:
+                pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
+                if ( pw == nullptr )  break;
+                pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_APPLY));
+                if ( pb == nullptr )  break;
+                pb->ClearState(STATE_PRESS);
+                pb->ClearState(STATE_HILIGHT);
+                ChangeDisplay();
+                UpdateApply();
+                break;
 
         default:
             return true;
@@ -353,30 +510,6 @@ void CScreenSetupGraphics::UpdateSetupButtons()
         pv->SetValue(value);
     }
 
-    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_DIRTY));
-    if ( pc != nullptr )
-    {
-        pc->SetState(STATE_CHECK, m_engine->GetDirty());
-    }
-
-    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_FOG));
-    if ( pc != nullptr )
-    {
-        pc->SetState(STATE_CHECK, m_engine->GetFog());
-    }
-
-    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_LIGHT));
-    if ( pc != nullptr )
-    {
-        pc->SetState(STATE_CHECK, m_engine->GetLightMode());
-    }
-
-    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_PAUSE_BLUR));
-    if ( pc != nullptr )
-    {
-        pc->SetState(STATE_CHECK, m_engine->GetPauseBlurEnabled());
-    }
-
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SHADOW_SPOTS));
     if ( pc != nullptr )
     {
@@ -409,6 +542,30 @@ void CScreenSetupGraphics::UpdateSetupButtons()
         {
             pes->SetVisibleValue(m_engine->GetShadowMappingOffscreenResolution());
         }
+    }
+
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_DIRTY));
+    if ( pc != nullptr )
+    {
+        pc->SetState(STATE_CHECK, m_engine->GetDirty());
+    }
+
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_FOG));
+    if ( pc != nullptr )
+    {
+        pc->SetState(STATE_CHECK, m_engine->GetFog());
+    }
+
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_LIGHT));
+    if ( pc != nullptr )
+    {
+        pc->SetState(STATE_CHECK, m_engine->GetLightMode());
+    }
+
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_PAUSE_BLUR));
+    if ( pc != nullptr )
+    {
+        pc->SetState(STATE_CHECK, m_engine->GetPauseBlurEnabled());
     }
 
     pes = static_cast<CEnumSlider*>(pw->SearchControl(EVENT_INTERFACE_TEXTURE_FILTER));
@@ -550,6 +707,40 @@ void CScreenSetupGraphics::ChangeSetupQuality(int quality)
 
     // TODO: first execute adapt?
     //m_engine->FirstExecuteAdapt(false);
+}
+
+// Updates the "apply" button.
+
+void CScreenSetupGraphics::UpdateApply()
+{
+    CWindow*    pw;
+    CButton*    pb;
+    CList*      pl;
+    CCheck*     pc;
+    int         sel2;
+    bool        bFull;
+
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
+    if ( pw == nullptr )  return;
+
+    pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_APPLY));
+
+    pl = static_cast<CList*>(pw->SearchControl(EVENT_LIST2));
+    if ( pl == nullptr )  return;
+    sel2 = pl->GetSelect();
+
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_FULL));
+    bFull = pc->TestState(STATE_CHECK);
+
+    if ( sel2 == m_setupSelMode   &&
+         bFull == m_setupFull     )
+    {
+        pb->ClearState(STATE_ENABLE);
+    }
+    else
+    {
+        pb->SetState(STATE_ENABLE);
+    }
 }
 
 } // namespace Ui

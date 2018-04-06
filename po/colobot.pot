@@ -330,9 +330,6 @@ msgstr ""
 msgid "Play\\Start mission!"
 msgstr ""
 
-msgid "Device\\Driver and resolution settings"
-msgstr ""
-
 msgid "Graphics\\Graphics settings"
 msgstr ""
 

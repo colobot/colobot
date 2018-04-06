@@ -19,28 +19,33 @@
 
 #pragma once
 
-#include "ui/screen/screen_setup.h"
+#include "ui/screen/screen.h"
+
+#include <vector>
+
+class CPathManager;
 
 namespace Ui
 {
 
-class CScreenSetupDisplay : public CScreenSetup
+class CScreenModManager : public CScreen
 {
 public:
-    CScreenSetupDisplay();
-    void SetActive() override;
+    CScreenModManager();
 
     void CreateInterface() override;
     bool EventProcess(const Event &event) override;
 
-protected:
-    void UpdateDisplayMode();
-    void ChangeDisplay();
-    void UpdateApply();
+    void UpdateUnloadedModList();
+    void UpdateLoadedModList();
 
 protected:
-    int m_setupSelMode;
-    bool m_setupFull;
+    CPathManager* m_pathManager;
+
+    bool m_global = false;
+
+    std::vector<std::string> m_unloadedModList;
+    std::vector<std::string> m_loadedModList;
 };
 
 } // namespace Ui

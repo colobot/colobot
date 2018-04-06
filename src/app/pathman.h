@@ -44,6 +44,7 @@ public:
     void SetLangPath(std::string langPath);
     void SetSavePath(std::string savePath);
     void AddMod(std::string modPath);
+    void RemoveMod(std::string modPath);
 
     const std::string& GetDataPath();
     const std::string& GetLangPath();

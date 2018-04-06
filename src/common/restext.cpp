@@ -74,6 +74,7 @@ void InitializeRestext()
     stringsText[RT_TITLE_PERSO]      = TR("Customize your appearance");
     stringsText[RT_TITLE_WRITE]      = TR("Save the current mission");
     stringsText[RT_TITLE_READ]       = TR("Load a saved mission");
+    stringsText[RT_TITLE_MOD_MANAGER]= TR("Mods");
 
     stringsText[RT_PLAY_CHAP_CHAPTERS]   = TR("Chapters:");
     stringsText[RT_PLAY_CHAP_PLANETS]    = TR("Planets:");
@@ -84,6 +85,9 @@ void InitializeRestext()
     stringsText[RT_PLAY_LIST_MISSIONS]   = TR("Missions on this planet:");
     stringsText[RT_PLAY_LIST_FREEGAME]   = TR("Free game on this planet:");
     stringsText[RT_PLAY_RESUME]          = TR("Summary:");
+
+    stringsText[RT_MODLIST_UNLOADED]     = TR("Unloaded Mods:");
+    stringsText[RT_MODLIST_LOADED]       = TR("Loaded Mods:");
 
     stringsText[RT_SETUP_MODE]       = TR("Resolution:");
     stringsText[RT_SETUP_KEY1]       = TR("1) First click on the key you want to redefine.");
@@ -105,6 +109,8 @@ void InitializeRestext()
     stringsText[RT_DIALOG_OK]        = TR("OK");
     stringsText[RT_DIALOG_NOUSRLVL_TITLE] = TR("No userlevels installed!");
     stringsText[RT_DIALOG_NOUSRLVL_TEXT]  = TR("This menu is for userlevels from mods, but you didn't install any");
+    stringsText[RT_DIALOG_MODSCHANGE_TITLE] = TR("Mods Load List Change");
+    stringsText[RT_DIALOG_MODSCHANGE_TEXT]  = TR("If you changed Mods Load List, You must restart the Game to apply changes");
 
     stringsText[RT_STUDIO_LISTTT]    = TR("Keyword help(\\key cbot;)");
     stringsText[RT_STUDIO_COMPOK]    = TR("Compilation ok (0 errors)");
@@ -166,6 +172,7 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_CODE_BATTLES] = TR("Code battles\\Program your robot to be the best of them all!");
     stringsEvent[EVENT_INTERFACE_USER]      = TR("Custom levels\\Levels from mods created by the users");
     stringsEvent[EVENT_INTERFACE_SATCOM]    = TR("SatCom");
+    stringsEvent[EVENT_INTERFACE_MOD_MANAGER] = TR("Mods\\Manage Mods");
     stringsEvent[EVENT_INTERFACE_NAME]      = TR("Change player\\Change player");
     stringsEvent[EVENT_INTERFACE_SETUP]     = TR("Options\\Preferences");
     stringsEvent[EVENT_INTERFACE_AGAIN]     = TR("Restart\\Restart the mission from the beginning");
@@ -175,7 +182,12 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_QUIT]      = TR("Quit\\Quit Colobot: Gold Edition");
     stringsEvent[EVENT_INTERFACE_BACK]      = TR("<<  Back  \\Back to the previous screen");
     stringsEvent[EVENT_INTERFACE_PLAY]      = TR("Play\\Start mission!");
-    stringsEvent[EVENT_INTERFACE_SETUPd]    = TR("Device\\Driver and resolution settings");
+    stringsEvent[EVENT_INTERFACE_MODLIST_LOCAL] = TR("Local\\Local Mods");
+    stringsEvent[EVENT_INTERFACE_MODLIST_GLOBAL] = TR("Global\\Global Mods");
+    stringsEvent[EVENT_INTERFACE_WORKSHOP]  = TR("Workshop\\Open Workshop to Search Mods");
+    stringsEvent[EVENT_INTERFACE_MODS_DIR]  = TR("Open Directory\\Open Mods Directory");
+    stringsEvent[EVENT_INTERFACE_LOAD]      = TR("Load\\Load Mod");
+    stringsEvent[EVENT_INTERFACE_UNLOAD]    = TR("Unload\\Unload Mod");
     stringsEvent[EVENT_INTERFACE_SETUPg]    = TR("Graphics\\Graphics settings");
     stringsEvent[EVENT_INTERFACE_SETUPp]    = TR("Game\\Game settings");
     stringsEvent[EVENT_INTERFACE_SETUPc]    = TR("Controls\\Keyboard, joystick and mouse settings");

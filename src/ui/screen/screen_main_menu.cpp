@@ -164,10 +164,18 @@ void CScreenMainMenu::CreateInterface()
 
     // SatCom button
     pos.x = ox+sx*4.3f;
-    pos.y = oy+sy*4.3f;
+    pos.y = oy+sy*9.2f;
     ddim.x = dim.x*1.2f;
     ddim.y = dim.y*1.2f;
     pb = pw->CreateButton(pos, ddim, 128+60, EVENT_INTERFACE_SATCOM);
+    pb->SetState(STATE_SHADOW);
+
+    // Mod Manager button
+    pos.x = ox+sx*13.07f;
+    pos.y = oy+sy*9.3f;
+    ddim.x = dim.x*1.7f;
+    ddim.y = dim.y*1;
+    pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_MOD_MANAGER);
     pb->SetState(STATE_SHADOW);
 
     SetBackground("textures/interface/interface.png");
@@ -233,6 +241,10 @@ bool CScreenMainMenu::EventProcess(const Event &event)
 
         case EVENT_INTERFACE_SATCOM:
             m_main->ChangePhase(PHASE_SATCOM);
+            break;
+
+        case EVENT_INTERFACE_MOD_MANAGER:
+            m_main->ChangePhase(PHASE_MOD_MANAGER);
             break;
 
         default:

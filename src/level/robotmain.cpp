@@ -314,12 +314,10 @@ std::string PhaseToString(Phase phase)
     if (phase == PHASE_MAIN_MENU) return "PHASE_MAIN_MENU";
     if (phase == PHASE_LEVEL_LIST) return "PHASE_LEVEL_LIST";
     if (phase == PHASE_SIMUL) return "PHASE_SIMUL";
-    if (phase == PHASE_SETUPd) return "PHASE_SETUPd";
     if (phase == PHASE_SETUPg) return "PHASE_SETUPg";
     if (phase == PHASE_SETUPp) return "PHASE_SETUPp";
     if (phase == PHASE_SETUPc) return "PHASE_SETUPc";
     if (phase == PHASE_SETUPs) return "PHASE_SETUPs";
-    if (phase == PHASE_SETUPds) return "PHASE_SETUPds";
     if (phase == PHASE_SETUPgs) return "PHASE_SETUPgs";
     if (phase == PHASE_SETUPps) return "PHASE_SETUPps";
     if (phase == PHASE_SETUPcs) return "PHASE_SETUPcs";
@@ -331,12 +329,13 @@ std::string PhaseToString(Phase phase)
     if (phase == PHASE_LOST) return "PHASE_LOST";
     if (phase == PHASE_QUIT_SCREEN) return "PHASE_QUIT_SCREEN";
     if (phase == PHASE_SATCOM) return "PHASE_SATCOM";
+    if (phase == PHASE_MOD_MANAGER) return "PHASE_MOD_MANAGER";
     return "(unknown)";
 }
 
 bool IsInSimulationConfigPhase(Phase phase)
 {
-    return (phase >= PHASE_SETUPds && phase <= PHASE_SETUPss) || phase == PHASE_READs || phase == PHASE_WRITEs;
+    return (phase >= PHASE_SETUPgs && phase <= PHASE_SETUPss) || phase == PHASE_READs || phase == PHASE_WRITEs;
 }
 
 bool IsPhaseWithWorld(Phase phase)
@@ -3804,7 +3803,6 @@ int CRobotMain::CreateSpot(Math::Vector pos, Gfx::Color color)
 void CRobotMain::ChangeColor()
 {
     if (m_phase != PHASE_SIMUL    &&
-        m_phase != PHASE_SETUPds  &&
         m_phase != PHASE_SETUPgs  &&
         m_phase != PHASE_SETUPps  &&
         m_phase != PHASE_SETUPcs  &&
@@ -5564,13 +5562,13 @@ void CRobotMain::Autosave()
 void CRobotMain::QuickSave()
 {
     GetLogger()->Info("Quicksave!\n");
-    
+
     char infostr[100];
     time_t now = time(nullptr);
     strftime(infostr, 99, "%y.%m.%d %H:%M", localtime(&now));
     std::string info = std::string("[QUICKSAVE]") + infostr;
     std::string dir = m_playerProfile->GetSaveFile(std::string("quicksave"));
-    
+
     m_playerProfile->SaveScene(dir, info);
 }
 
