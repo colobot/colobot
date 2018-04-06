@@ -170,7 +170,7 @@ public:
      * \brief Returns the name of the variable
      * \return The name of the variable, empty string if unknown
      */
-    std::string GetName();
+    const std::string& GetName();
 
     /**
      * \brief SetName Changes the name of the variable

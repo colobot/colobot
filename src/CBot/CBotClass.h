@@ -173,7 +173,7 @@ public:
      * \brief GetName Gives the name of the class.
      * \return
      */
-    std::string GetName();
+    const std::string& GetName();
 
     /*!
      * \brief GetParent Gives the parent class (or nullptr).

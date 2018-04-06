@@ -378,7 +378,7 @@ void CBotVar::SetInit(CBotVar::InitType initType)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string CBotVar::GetName()
+const std::string& CBotVar::GetName()
 {
     return    m_token->GetString();
 }
