@@ -42,7 +42,7 @@ struct Score
     float time = 0; //! Time when points were scored 
 };
 
-enum SortType
+enum class SortType
 {
     SORT_ID, //Sort by team ID
     SORT_POINTS, //Sort by points
@@ -142,5 +142,5 @@ private:
     std::vector<std::unique_ptr<CScoreboardEndTakeRule>> m_rulesEndTake = {};
     std::map<int, Score> m_score;
     int m_finishCounter = 0;
-    SortType m_sorttype = SORT_ID;
+    SortType m_sorttype = SortType::SORT_ID;
 };

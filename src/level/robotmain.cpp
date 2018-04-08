@@ -5919,7 +5919,7 @@ void CRobotMain::UpdateCodeBattleInterface()
     assert(pw != nullptr);
     std::set<int> teams = GetAllTeams();
     std::vector<int> sortedTeams(teams.begin(), teams.end());
-    if(m_scoreboard->GetSortType() == SORT_POINTS)
+    if(m_scoreboard->GetSortType() == SortType::SORT_POINTS)
     {
         std::sort(sortedTeams.begin(), sortedTeams.end(), [this](int teamA, int teamB)
         {

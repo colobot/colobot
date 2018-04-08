@@ -917,21 +917,21 @@ int CLevelParserParam::AsResearchFlag(int def)
     return AsResearchFlag();
 }
 
-int CLevelParserParam::ToSortType(std::string value)
+SortType CLevelParserParam::ToSortType(std::string value)
 {
-    if (value == "Points" ) return SORT_POINTS;
-    if (value == "Name"  ) return SORT_ID;
-    return Cast<int>(value, "sorttype");
+    if (value == "Points" ) return SortType::SORT_POINTS;
+    if (value == "Name"  ) return SortType::SORT_ID;
+	return SortType::SORT_ID;
 }
 
-int CLevelParserParam::AsSortType()
+SortType CLevelParserParam::AsSortType()
 {
     if (m_empty)
         throw CLevelParserExceptionMissingParam(this);
     return ToSortType(m_value);
 }
 
-int CLevelParserParam::AsSortType(int def)
+SortType CLevelParserParam::AsSortType(SortType def)
 {
     if (m_empty)
         return def;
