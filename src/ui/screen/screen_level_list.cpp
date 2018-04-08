@@ -312,6 +312,11 @@ bool CScreenLevelList::EventProcess(const Event &event)
         case KEY(F2):
             m_main->ChangePhase(PHASE_SATCOM);
             return false;
+        case KEY(q):
+            //m_sound->Play(SOUND_TZOING);
+            //FIXME    ↑:  error: member access into incomplete type 'CSoundInterface'
+            m_main->ChangePhase(PHASE_QUIT_SCREEN);
+            return false;
         }
         break;
 
