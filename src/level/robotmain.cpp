@@ -748,7 +748,9 @@ bool CRobotMain::ProcessEvent(Event &event)
 
     if (event.type >= EVENT_VIEWPOINT0 && event.type <= EVENT_VIEWPOINT9)
     {
-        m_camera->SetScriptCamera(m_viewpoints[event.type - EVENT_VIEWPOINT0].eye, m_viewpoints[event.type - EVENT_VIEWPOINT0].look);
+        m_camera->SetType(Gfx::CAM_TYPE_SCRIPT);
+        m_camera->SetSmooth(Gfx::CAM_SMOOTH_HARD);
+        m_camera->SetScriptCameraAnimate(m_viewpoints[event.type - EVENT_VIEWPOINT0].eye, m_viewpoints[event.type - EVENT_VIEWPOINT0].look);
     }
 
     // Management of the console.
