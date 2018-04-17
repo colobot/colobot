@@ -1771,7 +1771,7 @@ void CApplication::SetLanguage(Language language)
             {
                 m_language = LANGUAGE_RUSSIAN;
             }
-            else if (strncmp(envLang,"pt_BR",2) == 0)
+            else if (strncmp(envLang,"br",2) == 0)
             {
                 m_language = LANGUAGE_PORTUGUESE_BRAZILIAN;
             }
