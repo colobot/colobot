@@ -32,8 +32,6 @@
 
 #include "common/system/system.h"
 
-#include "common/thread/resource_owning_thread.h"
-
 #include "graphics/core/device.h"
 #include "graphics/core/framebuffer.h"
 
@@ -63,6 +61,7 @@
 #include <iomanip>
 #include <SDL_surface.h>
 #include <SDL_thread.h>
+#include <thread>
 
 // Graphics module namespace
 namespace Gfx
@@ -500,8 +499,7 @@ void CEngine::WriteScreenShot(const std::string& fileName)
 
     data->fileName = fileName;
 
-    CResourceOwningThread<WriteScreenShotData> thread(CEngine::WriteScreenShotThread, std::move(data), "WriteScreenShot thread");
-    thread.Start();
+    std::thread{&CEngine::WriteScreenShotThread, std::move(data)}.detach();
 }
 
 void CEngine::WriteScreenShotThread(std::unique_ptr<WriteScreenShotData> data)

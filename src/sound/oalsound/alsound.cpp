@@ -32,8 +32,7 @@ CALSound::CALSound()
       m_musicVolume(1.0f),
       m_channelsLimit(2048),
       m_device{},
-      m_context{},
-      m_thread("Music loading thread")
+      m_context{}
 {
 }
 

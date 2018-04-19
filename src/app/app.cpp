@@ -36,8 +36,6 @@
 
 #include "common/system/system.h"
 
-#include "common/thread/thread.h"
-
 #include "graphics/core/nulldevice.h"
 
 #include "graphics/opengl/glutil.h"
@@ -60,6 +58,7 @@
 #include <libintl.h>
 #include <getopt.h>
 #include <localename.h>
+#include <thread>
 
 char CApplication::m_languageLocale[] = { 0 };
 
@@ -671,8 +670,7 @@ bool CApplication::Create()
     // Create the robot application.
     m_controller = MakeUnique<CController>();
 
-    CThread musicLoadThread([this]()
-    {
+    std::thread{[this]() {
         GetLogger()->Debug("Cache sounds...\n");
         SystemTimeStamp* musicLoadStart = m_systemUtils->CreateTimeStamp();
         m_systemUtils->GetCurrentTimeStamp(musicLoadStart);
@@ -683,9 +681,7 @@ bool CApplication::Create()
         m_systemUtils->GetCurrentTimeStamp(musicLoadEnd);
         float musicLoadTime = m_systemUtils->TimeStampDiff(musicLoadStart, musicLoadEnd, STU_MSEC);
         GetLogger()->Debug("Sound loading took %.2f ms\n", musicLoadTime);
-    },
-    "Sound loading thread");
-    musicLoadThread.Start();
+    }}.detach();
 
     if (m_runSceneCategory == LevelCategory::Max)
         m_controller->StartApp();

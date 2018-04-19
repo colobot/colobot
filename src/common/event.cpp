@@ -563,8 +563,7 @@ std::string ParseEventType(EventType eventType)
 
 
 CEventQueue::CEventQueue()
-    : m_mutex{},
-      m_fifo(),
+    : m_fifo(),
       m_head{0},
       m_tail{0},
       m_total{0}
@@ -582,15 +581,13 @@ bool CEventQueue::IsEmpty()
     Else, adds the event to the queue and returns \c true. */
 bool CEventQueue::AddEvent(Event&& event)
 {
-    bool result{};
-
-    SDL_LockMutex(*m_mutex);
+    std::lock_guard<std::mutex> lock{m_mutex};
 
     if (m_total >= MAX_EVENT_QUEUE)
     {
         GetLogger()->Warn("Event queue flood!\n");
 
-        result = false;
+        return false;
     }
     else
     {
@@ -601,19 +598,15 @@ bool CEventQueue::AddEvent(Event&& event)
 
         m_total++;
 
-        result = true;
+        return true;
     }
-
-    SDL_UnlockMutex(*m_mutex);
-
-    return result;
 }
 
 Event CEventQueue::GetEvent()
 {
     Event event;
 
-    SDL_LockMutex(*m_mutex);
+    std::lock_guard<std::mutex> lock{m_mutex};
 
     if (m_head == m_tail)
     {
@@ -629,8 +622,6 @@ Event CEventQueue::GetEvent()
         m_total--;
 
     }
-
-    SDL_UnlockMutex(*m_mutex);
 
     return event;
 }

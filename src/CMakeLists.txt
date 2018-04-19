@@ -150,10 +150,6 @@ set(BASE_SOURCES
     common/singleton.h
     common/stringutils.cpp
     common/stringutils.h
-    common/thread/resource_owning_thread.h
-    common/thread/sdl_cond_wrapper.h
-    common/thread/sdl_mutex_wrapper.h
-    common/thread/thread.h
     common/thread/worker_thread.h
     graphics/core/color.cpp
     graphics/core/color.h

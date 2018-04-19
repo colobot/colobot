@@ -27,12 +27,11 @@
 #include "common/key.h"
 #include "common/make_unique.h"
 
-#include "common/thread/sdl_mutex_wrapper.h"
-
 #include "math/point.h"
 #include "math/vector.h"
 
 #include <memory>
+#include <mutex>
 
 /**
   \enum EventType
@@ -888,7 +887,7 @@ public:
     Event GetEvent();
 
 protected:
-    CSDLMutexWrapper m_mutex;
+    std::mutex   m_mutex;
     Event        m_fifo[MAX_EVENT_QUEUE];
     int          m_head;
     int          m_tail;
