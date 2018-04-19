@@ -96,7 +96,8 @@ pipeline {
                 sh 'chmod +x colobot-lint/Tools/count_errors.py' // TODO: ???
                 sh 'mkdir -p build/lint'
                 dir('build/lint') {
-                    sh 'cmake -DCOLOBOT_LINT_BUILD=1 -DTESTS=1 -DTOOLS=1 -DCMAKE_EXPORT_COMPILE_COMMANDS=1 $WORKSPACE'
+                    // The cd is required here because /var/lib/jenkins is a symlink and colobot-lint breaks otherwise...
+                    sh 'cd $WORKSPACE/build/lint; cmake -DCOLOBOT_LINT_BUILD=1 -DTESTS=1 -DTOOLS=1 -DCMAKE_EXPORT_COMPILE_COMMANDS=1 $WORKSPACE'
                     sh '''#!/bin/bash
 set -e +x
 
