@@ -85,7 +85,7 @@ protected:
  * \class CSceneEndCondition
  * \brief Scene end condition
  */
-class CSceneEndCondition : public CSceneCondition
+class CSceneEndCondition final : public CSceneCondition
 {
 public:
     int winTeam = 0;
@@ -109,7 +109,7 @@ public:
  * \class CAudioChangeCondition
  * \brief Audio change condition
  */
-class CAudioChangeCondition : public CSceneCondition
+class CAudioChangeCondition final : public CSceneCondition
 {
 public:
     std::string music = "";

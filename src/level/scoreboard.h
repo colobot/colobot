@@ -78,7 +78,7 @@ public:
      * \brief Scoreboard rule for destroying other objects
      * \see CScoreboard::AddKillRule()
      */
-    class CScoreboardKillRule : public CScoreboardRule, public CObjectCondition
+    class CScoreboardKillRule final : public CScoreboardRule, public CObjectCondition
     {
     public:
         //! Read from line in scene file
@@ -90,7 +90,7 @@ public:
      * \brief Scoreboard rule for EndMissionTake rewards
      * \see CScoreboard::AddEndTakeRule()
      */
-    class CScoreboardEndTakeRule : public CScoreboardRule
+    class CScoreboardEndTakeRule final : public CScoreboardRule
     {
     public:
         int team = 0;
