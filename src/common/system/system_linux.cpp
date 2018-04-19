@@ -83,17 +83,6 @@ SystemDialogResult CSystemUtilsLinux::SystemDialog(SystemDialogType type, const 
     return result;
 }
 
-void CSystemUtilsLinux::GetCurrentTimeStamp(SystemTimeStamp *stamp)
-{
-    clock_gettime(CLOCK_MONOTONIC_RAW, &stamp->clockTime);
-}
-
-long long CSystemUtilsLinux::TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after)
-{
-    return (after->clockTime.tv_nsec - before->clockTime.tv_nsec) +
-           (after->clockTime.tv_sec  - before->clockTime.tv_sec) * 1000000000ll;
-}
-
 std::string CSystemUtilsLinux::GetSaveDir()
 {
     std::string savegameDir;
@@ -119,9 +108,4 @@ std::string CSystemUtilsLinux::GetSaveDir()
     GetLogger()->Trace("Saved game files are going to %s\n", savegameDir.c_str());
 
     return savegameDir;
-}
-
-void CSystemUtilsLinux::Usleep(int usec)
-{
-    usleep(usec);
 }

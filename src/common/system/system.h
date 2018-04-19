@@ -24,6 +24,7 @@
 
 #pragma once
 
+#include <chrono>
 #include <memory>
 #include <string>
 #include <vector>
@@ -74,12 +75,7 @@ enum SystemTimeUnit
     STU_USEC
 };
 
-/*
- * Forward declaration of time stamp struct
- * SystemTimeStamp should only be used in a pointer context.
- * The implementation details are hidden because of platform dependence.
- */
-struct SystemTimeStamp;
+using SystemTimeStamp = std::chrono::time_point<std::chrono::high_resolution_clock>;
 
 /**
  * \class CSystemUtils
@@ -115,7 +111,7 @@ public:
     TEST_VIRTUAL void CopyTimeStamp(SystemTimeStamp *dst, SystemTimeStamp *src);
 
     //! Returns a time stamp associated with current time
-    virtual void GetCurrentTimeStamp(SystemTimeStamp *stamp) = 0;
+    TEST_VIRTUAL void GetCurrentTimeStamp(SystemTimeStamp *stamp);
 
     //! Returns a difference between two timestamps in given time unit
     /** The difference is \a after - \a before. */
@@ -123,7 +119,7 @@ public:
 
     //! Returns the exact (in nanosecond units) difference between two timestamps
     /** The difference is \a after - \a before. */
-    virtual long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after) = 0;
+    virtual long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after);
 
     //! Returns the data path (containing textures, levels, helpfiles, etc)
     virtual std::string GetDataPath();
@@ -135,7 +131,7 @@ public:
     virtual std::string GetSaveDir();
 
     //! Sleep for given amount of microseconds
-    virtual void Usleep(int usecs) = 0;
+    virtual void Usleep(int usecs);
 
 private:
     std::vector<std::unique_ptr<SystemTimeStamp>> m_timeStamps;

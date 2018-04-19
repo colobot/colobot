@@ -36,8 +36,6 @@ public:
     std::string GetLangPath() override;
     std::string GetSaveDir() override;
 
-    void Usleep(int usec) override;
-
 private:
     std::string m_ASPath;
     std::string m_dataPath;

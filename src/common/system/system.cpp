@@ -37,6 +37,7 @@
 #include <cassert>
 #include <iostream>
 #include <algorithm>
+#include <thread>
 
 
 std::unique_ptr<CSystemUtils> CSystemUtils::Create()
@@ -161,6 +162,16 @@ void CSystemUtils::CopyTimeStamp(SystemTimeStamp *dst, SystemTimeStamp *src)
     *dst = *src;
 }
 
+void CSystemUtils::GetCurrentTimeStamp(SystemTimeStamp *stamp)
+{
+    *stamp = std::chrono::high_resolution_clock::now();
+}
+
+long long CSystemUtils::TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after)
+{
+    return std::chrono::duration_cast<std::chrono::nanoseconds>(*after - *before).count();
+}
+
 float CSystemUtils::TimeStampDiff(SystemTimeStamp *before, SystemTimeStamp *after, SystemTimeUnit unit)
 {
     long long exact = TimeStampExactDiff(before, after);
@@ -191,4 +202,9 @@ std::string CSystemUtils::GetLangPath()
 std::string CSystemUtils::GetSaveDir()
 {
     return std::string("saves");
+}
+
+void CSystemUtils::Usleep(int usecs)
+{
+    std::this_thread::sleep_for(std::chrono::microseconds{usecs});
 }

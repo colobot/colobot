@@ -107,8 +107,3 @@ std::string CSystemUtilsMacOSX::GetSaveDir()
 
     return savegameDir;
 }
-
-void CSystemUtilsMacOSX::Usleep(int usec)
-{
-    usleep(usec);
-}

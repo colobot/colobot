@@ -28,18 +28,3 @@ SystemDialogResult CSystemUtilsOther::SystemDialog(SystemDialogType type, const 
 {
     return ConsoleSystemDialog(type, title, message);
 }
-
-void CSystemUtilsOther::GetCurrentTimeStamp(SystemTimeStamp* stamp)
-{
-    stamp->sdlTicks = SDL_GetTicks();
-}
-
-long long int CSystemUtilsOther::TimeStampExactDiff(SystemTimeStamp* before, SystemTimeStamp* after)
-{
-    return (after->sdlTicks - before->sdlTicks) * 1000000ll;
-}
-
-void CSystemUtilsOther::Usleep(int usec)
-{
-    SDL_Delay(usec / 1000); // close enough
-}
