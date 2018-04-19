@@ -3106,7 +3106,7 @@ public:
         }
     }
 
-    ~CBotFileColobot()
+    ~CBotFileColobot() override
     {
         if (Opened())
         {

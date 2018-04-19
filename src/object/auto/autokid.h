@@ -27,13 +27,10 @@ class CAutoKid : public CAuto
 {
 public:
     CAutoKid(COldObject* object);
-    ~CAutoKid();
+    ~CAutoKid() override;
 
-    void        DeleteObject(bool all = false);
-
-    void        Init();
-    bool        EventProcess(const Event &event);
-    Error       GetError();
+    void        Init() override;
+    bool        EventProcess(const Event &event) override;
 
 protected:
     float       m_speed = 0.0f;

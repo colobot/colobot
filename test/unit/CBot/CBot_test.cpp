@@ -27,14 +27,14 @@ using namespace CBot;
 class CBotUT : public testing::Test
 {
 public:
-    void SetUp()
+    CBotUT()
     {
         CBotProgram::Init();
         CBotProgram::AddFunction("FAIL", rFail, cFail);
         CBotProgram::AddFunction("ASSERT", rAssert, cAssert);
     }
 
-    void TearDown()
+    ~CBotUT()
     {
         CBotProgram::Free();
     }

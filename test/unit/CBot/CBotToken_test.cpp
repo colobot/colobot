@@ -27,12 +27,12 @@ using namespace CBot;
 class CBotTokenUT : public testing::Test
 {
 public:
-    void SetUp()
+    CBotTokenUT()
     {
         CBotProgram::Init();
     }
 
-    void TearDown()
+    ~CBotTokenUT()
     {
         CBotProgram::Free();
     }

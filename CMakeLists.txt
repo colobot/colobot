@@ -134,6 +134,11 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 
     set(NORMAL_CXX_FLAGS "-std=gnu++11 -Wall -Werror -Wold-style-cast -pedantic-errors")
     set(NORMAL_CXX_FLAGS "${NORMAL_CXX_FLAGS} -Wno-error=deprecated-declarations") # updated version of physfs is not available on some platforms so we keep using deprecated functions, see #958
+
+    if(NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5.0)
+        set(NORMAL_CXX_FLAGS "${NORMAL_CXX_FLAGS} -Wsuggest-override")
+    endif()
+
     set(RELEASE_CXX_FLAGS "-O2")
     set(DEBUG_CXX_FLAGS "-g -O0")
     set(TEST_CXX_FLAGS "-pthread")
