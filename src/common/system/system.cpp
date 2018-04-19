@@ -144,35 +144,17 @@ SystemDialogResult CSystemUtils::ConsoleSystemDialog(SystemDialogType type, cons
     return result;
 }
 
-SystemTimeStamp* CSystemUtils::CreateTimeStamp()
+SystemTimeStamp CSystemUtils::GetCurrentTimeStamp()
 {
-    auto timeStamp = MakeUnique<SystemTimeStamp>();
-    SystemTimeStamp* timeStampPtr = timeStamp.get();
-    m_timeStamps.push_back(std::move(timeStamp));
-    return timeStampPtr;
+    return std::chrono::high_resolution_clock::now();
 }
 
-void CSystemUtils::DestroyTimeStamp(SystemTimeStamp *stamp)
+long long CSystemUtils::TimeStampExactDiff(SystemTimeStamp before, SystemTimeStamp after)
 {
-    m_timeStamps.erase(std::remove_if(m_timeStamps.begin(), m_timeStamps.end(), [&](const std::unique_ptr<SystemTimeStamp>& timeStamp) { return timeStamp.get() == stamp; }));
+    return std::chrono::duration_cast<std::chrono::nanoseconds>(after - before).count();
 }
 
-void CSystemUtils::CopyTimeStamp(SystemTimeStamp *dst, SystemTimeStamp *src)
-{
-    *dst = *src;
-}
-
-void CSystemUtils::GetCurrentTimeStamp(SystemTimeStamp *stamp)
-{
-    *stamp = std::chrono::high_resolution_clock::now();
-}
-
-long long CSystemUtils::TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after)
-{
-    return std::chrono::duration_cast<std::chrono::nanoseconds>(*after - *before).count();
-}
-
-float CSystemUtils::TimeStampDiff(SystemTimeStamp *before, SystemTimeStamp *after, SystemTimeUnit unit)
+float CSystemUtils::TimeStampDiff(SystemTimeStamp before, SystemTimeStamp after, SystemTimeUnit unit)
 {
     long long exact = TimeStampExactDiff(before, after);
 

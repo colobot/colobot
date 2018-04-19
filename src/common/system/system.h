@@ -101,25 +101,16 @@ public:
     //! Displays a fallback system dialog using console
     TEST_VIRTUAL SystemDialogResult ConsoleSystemDialog(SystemDialogType type, const std::string& title, const std::string& message);
 
-    //! Creates a new time stamp object
-    TEST_VIRTUAL SystemTimeStamp* CreateTimeStamp();
-
-    //! Destroys a time stamp object
-    TEST_VIRTUAL void DestroyTimeStamp(SystemTimeStamp *stamp);
-
-    //! Copies the time stamp from \a src to \a dst
-    TEST_VIRTUAL void CopyTimeStamp(SystemTimeStamp *dst, SystemTimeStamp *src);
-
     //! Returns a time stamp associated with current time
-    TEST_VIRTUAL void GetCurrentTimeStamp(SystemTimeStamp *stamp);
+    TEST_VIRTUAL SystemTimeStamp GetCurrentTimeStamp();
 
     //! Returns a difference between two timestamps in given time unit
     /** The difference is \a after - \a before. */
-    TEST_VIRTUAL float TimeStampDiff(SystemTimeStamp *before, SystemTimeStamp *after, SystemTimeUnit unit = STU_SEC);
+    float TimeStampDiff(SystemTimeStamp before, SystemTimeStamp after, SystemTimeUnit unit = STU_SEC);
 
     //! Returns the exact (in nanosecond units) difference between two timestamps
     /** The difference is \a after - \a before. */
-    virtual long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after);
+    long long TimeStampExactDiff(SystemTimeStamp before, SystemTimeStamp after);
 
     //! Returns the data path (containing textures, levels, helpfiles, etc)
     virtual std::string GetDataPath();
@@ -131,8 +122,5 @@ public:
     virtual std::string GetSaveDir();
 
     //! Sleep for given amount of microseconds
-    virtual void Usleep(int usecs);
-
-private:
-    std::vector<std::unique_ptr<SystemTimeStamp>> m_timeStamps;
+    void Usleep(int usecs);
 };

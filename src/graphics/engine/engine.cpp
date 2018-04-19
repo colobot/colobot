@@ -216,8 +216,6 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
     m_mouseType    = ENG_MOUSE_NORM;
 
     m_fpsCounter = 0;
-    m_lastFrameTime = m_systemUtils->CreateTimeStamp();
-    m_currentFrameTime = m_systemUtils->CreateTimeStamp();
 
     m_shadowColor = 0.5f;
 
@@ -241,10 +239,6 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
 
 CEngine::~CEngine()
 {
-    m_systemUtils->DestroyTimeStamp(m_lastFrameTime);
-    m_lastFrameTime = nullptr;
-    m_systemUtils->DestroyTimeStamp(m_currentFrameTime);
-    m_currentFrameTime = nullptr;
 }
 
 void CEngine::SetDevice(CDevice *device)
@@ -361,8 +355,8 @@ bool CEngine::Create()
     params.mipmap = false;
     m_miceTexture = LoadTexture("textures/interface/mouse.png", params);
 
-    m_systemUtils->GetCurrentTimeStamp(m_currentFrameTime);
-    m_systemUtils->GetCurrentTimeStamp(m_lastFrameTime);
+    m_currentFrameTime = m_systemUtils->GetCurrentTimeStamp();
+    m_lastFrameTime = m_systemUtils->GetCurrentTimeStamp();
 
     return true;
 }
@@ -3176,11 +3170,11 @@ void CEngine::Render()
 {
     m_fpsCounter++;
 
-    m_systemUtils->GetCurrentTimeStamp(m_currentFrameTime);
+    m_currentFrameTime = m_systemUtils->GetCurrentTimeStamp();
     float diff = m_systemUtils->TimeStampDiff(m_lastFrameTime, m_currentFrameTime, STU_SEC);
     if (diff > 1.0f)
     {
-        m_systemUtils->CopyTimeStamp(m_lastFrameTime, m_currentFrameTime);
+        m_lastFrameTime = m_currentFrameTime;
 
         m_fps = m_fpsCounter / diff;
         m_fpsCounter = 0;

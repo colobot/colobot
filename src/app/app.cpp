@@ -135,14 +135,6 @@ CApplication::CApplication(CSystemUtils* systemUtils)
     m_absTime = 0.0f;
     m_relTime = 0.0f;
 
-    m_baseTimeStamp = m_systemUtils->CreateTimeStamp();
-    m_curTimeStamp = m_systemUtils->CreateTimeStamp();
-    m_lastTimeStamp = m_systemUtils->CreateTimeStamp();
-
-    m_manualFrameLast = m_systemUtils->CreateTimeStamp();
-    m_manualFrameTime = m_systemUtils->CreateTimeStamp();
-
-
     m_joystickEnabled = false;
 
     m_mouseMode = MOUSE_SYSTEM;
@@ -159,13 +151,6 @@ CApplication::CApplication(CSystemUtils* systemUtils)
 
 CApplication::~CApplication()
 {
-    m_systemUtils->DestroyTimeStamp(m_baseTimeStamp);
-    m_systemUtils->DestroyTimeStamp(m_curTimeStamp);
-    m_systemUtils->DestroyTimeStamp(m_lastTimeStamp);
-
-    m_systemUtils->DestroyTimeStamp(m_manualFrameLast);
-    m_systemUtils->DestroyTimeStamp(m_manualFrameTime);
-
     m_joystickEnabled = false;
 
     m_controller.reset();
@@ -672,13 +657,11 @@ bool CApplication::Create()
 
     std::thread{[this]() {
         GetLogger()->Debug("Cache sounds...\n");
-        SystemTimeStamp* musicLoadStart = m_systemUtils->CreateTimeStamp();
-        m_systemUtils->GetCurrentTimeStamp(musicLoadStart);
+        SystemTimeStamp musicLoadStart = m_systemUtils->GetCurrentTimeStamp();
 
         m_sound->CacheAll();
 
-        SystemTimeStamp* musicLoadEnd = m_systemUtils->CreateTimeStamp();
-        m_systemUtils->GetCurrentTimeStamp(musicLoadEnd);
+        SystemTimeStamp musicLoadEnd = m_systemUtils->GetCurrentTimeStamp();
         float musicLoadTime = m_systemUtils->TimeStampDiff(musicLoadStart, musicLoadEnd, STU_MSEC);
         GetLogger()->Debug("Sound loading took %.2f ms\n", musicLoadTime);
     }}.detach();
@@ -984,9 +967,9 @@ int CApplication::Run()
 {
     m_active = true;
 
-    m_systemUtils->GetCurrentTimeStamp(m_baseTimeStamp);
-    m_systemUtils->GetCurrentTimeStamp(m_lastTimeStamp);
-    m_systemUtils->GetCurrentTimeStamp(m_curTimeStamp);
+    m_baseTimeStamp = m_systemUtils->GetCurrentTimeStamp();
+    m_lastTimeStamp = m_systemUtils->GetCurrentTimeStamp();
+    m_curTimeStamp = m_systemUtils->GetCurrentTimeStamp();
 
     MoveMouse(Math::Point(0.5f, 0.5f)); // center mouse on start
 
@@ -1410,13 +1393,13 @@ void CApplication::Render()
 
 void CApplication::RenderIfNeeded(int updateRate)
 {
-    m_systemUtils->GetCurrentTimeStamp(m_manualFrameTime);
+    m_manualFrameTime = m_systemUtils->GetCurrentTimeStamp();
     long long diff = m_systemUtils->TimeStampExactDiff(m_manualFrameLast, m_manualFrameTime);
     if (diff < 1e9f / updateRate)
     {
         return;
     }
-    m_systemUtils->CopyTimeStamp(m_manualFrameLast, m_manualFrameTime);
+    m_manualFrameLast = m_manualFrameTime;
 
     Render();
 }
@@ -1444,8 +1427,8 @@ void CApplication::ResetTimeAfterLoading()
 
 void CApplication::InternalResumeSimulation()
 {
-    m_systemUtils->GetCurrentTimeStamp(m_baseTimeStamp);
-    m_systemUtils->CopyTimeStamp(m_curTimeStamp, m_baseTimeStamp);
+    m_baseTimeStamp = m_systemUtils->GetCurrentTimeStamp();
+    m_curTimeStamp = m_baseTimeStamp;
     m_realAbsTimeBase = m_realAbsTime;
     m_absTimeBase = m_exactAbsTime;
 }
@@ -1459,7 +1442,7 @@ void CApplication::SetSimulationSpeed(float speed)
 {
     m_simulationSpeed = speed;
 
-    m_systemUtils->GetCurrentTimeStamp(m_baseTimeStamp);
+    m_baseTimeStamp = m_systemUtils->GetCurrentTimeStamp();
     m_realAbsTimeBase = m_realAbsTime;
     m_absTimeBase = m_exactAbsTime;
 
@@ -1471,8 +1454,8 @@ Event CApplication::CreateUpdateEvent()
     if (m_simulationSuspended)
         return Event(EVENT_NULL);
 
-    m_systemUtils->CopyTimeStamp(m_lastTimeStamp, m_curTimeStamp);
-    m_systemUtils->GetCurrentTimeStamp(m_curTimeStamp);
+    m_lastTimeStamp = m_curTimeStamp;
+    m_curTimeStamp = m_systemUtils->GetCurrentTimeStamp();
 
     long long absDiff = m_systemUtils->TimeStampExactDiff(m_baseTimeStamp, m_curTimeStamp);
     long long newRealAbsTime = m_realAbsTimeBase + absDiff;

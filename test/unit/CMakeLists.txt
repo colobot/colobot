@@ -1,10 +1,3 @@
-# Platform-dependent tests
-if(PLATFORM_WINDOWS)
-    set(PLATFORM_TESTS common/system/system_windows_test.cpp)
-elseif(PLATFORM_LINUX)
-    set(PLATFORM_TESTS common/system/system_linux_test.cpp)
-endif()
-
 # Sources
 set(UT_SOURCES
     main.cpp
@@ -12,12 +5,12 @@ set(UT_SOURCES
     CBot/CBotToken_test.cpp
     CBot/CBot_test.cpp
     common/config_file_test.cpp
+    common/system/system_test.cpp
     graphics/engine/lightman_test.cpp
     math/func_test.cpp
     math/geometry_test.cpp
     math/matrix_test.cpp
     math/vector_test.cpp
-    ${PLATFORM_TESTS}
 )
 
 # Includes
