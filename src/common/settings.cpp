@@ -44,6 +44,7 @@ CSettings::CSettings()
     m_fontSize  = 19.0f;
     m_windowPos = Math::Point(0.15f, 0.17f);
     m_windowDim = Math::Point(0.70f, 0.66f);
+    m_windowMax = false;
 
     m_IOPublic = false;
     m_IODim = Math::Point(320.0f/640.0f, (121.0f+18.0f*8)/480.0f);

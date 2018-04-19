@@ -32,6 +32,7 @@
 #include "object/object_create_params.h"
 #include "object/object_interface_type.h"
 #include "object/object_type.h"
+
 #include "object/interface/destroyable_object.h"
 
 #include <map>

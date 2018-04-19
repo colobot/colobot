@@ -22,9 +22,9 @@
 #include "common/restext.h"
 #include "common/stringutils.h"
 
-#include "level/parser/parserline.h"
-
 #include "level/robotmain.h"
+
+#include "level/parser/parserline.h"
 
 #include "object/object.h"
 

@@ -528,7 +528,7 @@ protected:
     void        UpdateDebugCrashSpheres();
 
     //! Adds element to the beginning of command history
-    void        PushToCommandHistory(std::string obj);
+    void        PushToCommandHistory(std::string cmd);
     //! Returns next/previous element from command history and updates index
     //@{
     std::string    GetNextFromCommandHistory();

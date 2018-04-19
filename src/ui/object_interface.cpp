@@ -1500,7 +1500,7 @@ void CObjectInterface::UpdateInterface(float rTime)
                 m_lastAlarmTime = 0.0f;
             }
         }
-        
+
         pg->SetLevel(shield);
         pg->SetIcon(icon);
     }

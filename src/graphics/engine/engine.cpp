@@ -146,6 +146,7 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
     m_showStats = false;
 
     m_focus = 0.75f;
+    m_hfov = 2.0f * atan((640.f/480.f) * tan(m_focus / 2.0f));
 
     m_rankView = 0;
 

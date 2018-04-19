@@ -518,7 +518,8 @@ void CPlayerProfile::LoadScene(std::string dir)
     CLevelParserLine* line = levelParser.Get("Mission");
     cat = GetLevelCategoryFromDir(line->GetParam("base")->AsString());
 
-	if (dir == "../../crashsave") LoadFinishedLevels(cat);
+    if (dir == "../../crashsave")
+        LoadFinishedLevels(cat);
 
     rank = line->GetParam("rank")->AsInt();
     if (cat == LevelCategory::CustomLevels)

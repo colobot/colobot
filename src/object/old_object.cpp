@@ -138,6 +138,7 @@ COldObject::COldObject(int id)
     m_virusTime = 0.0f;
     m_lastVirusParticle = 0.0f;
     m_damaging = false;
+    m_damageTime = 0.0f;
     m_dying = DeathType::Alive;
     m_bFlat  = false;
     m_gunGoalV = 0.0f;

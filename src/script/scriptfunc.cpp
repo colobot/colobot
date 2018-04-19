@@ -591,7 +591,7 @@ bool CScriptFunctions::rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* resu
         }
         return true;
     }
-	
+
     return true;
 }
 
@@ -1315,7 +1315,7 @@ bool CScriptFunctions::rBuild(CBotVar* var, CBotVar* result, int& exception, voi
             }
         }
     }
-	result->SetValInt(err); // indicates the error or ok
+    result->SetValInt(err); // indicates the error or ok
     if ( err != ERR_OK )
     {
         if ( script->m_errMode == ERM_STOP )
@@ -2464,7 +2464,7 @@ bool CScriptFunctions::rFire(CBotVar* var, CBotVar* result, int& exception, void
             if ( delay < 0.0f ) delay = -delay;
             err = script->m_taskExecutor->StartTaskFire(delay);
         }
-		result->SetValInt(err); // indicates the error or ok
+        result->SetValInt(err); // indicates the error or ok
         if ( err != ERR_OK )
         {
             script->m_taskExecutor->StopForegroundTask();
