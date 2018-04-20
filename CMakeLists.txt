@@ -132,7 +132,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 
     message(STATUS "Detected GCC version 4.7+")
 
-    set(NORMAL_CXX_FLAGS "-std=gnu++11 -Wall -Werror -Wold-style-cast -pedantic-errors")
+    set(NORMAL_CXX_FLAGS "-std=gnu++11 -Wall -Werror -Wold-style-cast -pedantic-errors -Wmissing-declarations")
     set(NORMAL_CXX_FLAGS "${NORMAL_CXX_FLAGS} -Wno-error=deprecated-declarations") # updated version of physfs is not available on some platforms so we keep using deprecated functions, see #958
     set(RELEASE_CXX_FLAGS "-O2")
     set(DEBUG_CXX_FLAGS "-g -O0")
@@ -145,7 +145,7 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 
     message(STATUS "Detected Clang version 3.1+")
 
-    set(NORMAL_CXX_FLAGS "-std=c++11 -Wall -Werror -Wold-style-cast -pedantic-errors")
+    set(NORMAL_CXX_FLAGS "-std=c++11 -Wall -Werror -Wold-style-cast -pedantic-errors -Wmissing-prototypes")
     set(NORMAL_CXX_FLAGS "${NORMAL_CXX_FLAGS} -Wno-error=deprecated-declarations") # updated version of physfs is not available on some platforms so we keep using deprecated functions, see #958
     set(RELEASE_CXX_FLAGS "-O2")
     set(DEBUG_CXX_FLAGS "-g -O0")

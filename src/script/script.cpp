@@ -479,7 +479,7 @@ bool CScript::GetCursor(int &cursor1, int &cursor2)
 
 // Put of the variables in a list.
 
-void PutList(const std::string& baseName, bool bArray, CBot::CBotVar *var, Ui::CList *list, int &rankList, std::set<CBot::CBotVar*>& previous)
+static void PutList(const std::string& baseName, bool bArray, CBot::CBotVar *var, Ui::CList *list, int &rankList, std::set<CBot::CBotVar*>& previous)
 {
     if ( var == nullptr && !baseName.empty() )
     {
@@ -591,7 +591,7 @@ void CScript::UpdateList(Ui::CList* list)
 
 // Colorize a string literal with escape sequences also colored
 
-void HighlightString(Ui::CEdit* edit, const std::string& s, int start)
+static void HighlightString(Ui::CEdit* edit, const std::string& s, int start)
 {
     edit->SetFormat(start, start + 1, Gfx::FONT_HIGHLIGHT_STRING);
 
@@ -716,7 +716,7 @@ void CScript::ColorizeScript(Ui::CEdit* edit, int rangeStart, int rangeEnd)
 // Returns the index of the start of the token found, or -1.
 
 
-int SearchToken(char* script, const char* token)
+static int SearchToken(char* script, const char* token)
 {
     int     lScript, lToken, i, iFound;
     int     found[100];
@@ -741,7 +741,7 @@ int SearchToken(char* script, const char* token)
 
 // Removes a token in a script.
 
-void DeleteToken(char* script, int pos, int len)
+static void DeleteToken(char* script, int pos, int len)
 {
     while ( true )
     {
@@ -752,7 +752,7 @@ void DeleteToken(char* script, int pos, int len)
 
 // Inserts a token in a script.
 
-void InsertToken(char* script, int pos, const char* token)
+static void InsertToken(char* script, int pos, const char* token)
 {
     int     lScript, lToken, i;
 

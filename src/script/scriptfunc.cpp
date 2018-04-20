@@ -81,7 +81,7 @@ CBotTypResult CScriptFunctions::cClassOneFloat(CBotVar* thisclass, CBotVar* &var
 
 // Compile a parameter of type "point".
 
-CBotTypResult cPoint(CBotVar* &var, void* user)
+static CBotTypResult cPoint(CBotVar* &var, void* user)
 {
     if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
 
@@ -120,22 +120,9 @@ CBotTypResult CScriptFunctions::cOnePoint(CBotVar* &var, void* user)
     return CBotTypResult(CBotTypFloat);
 }
 
-// Seeking value in an array of integers.
-
-bool FindList(CBotVar* array, int type)
-{
-    while ( array != nullptr )
-    {
-        if ( type == array->GetValInt() )  return true;
-        array = array->GetNext();
-    }
-    return false;
-}
-
-
 // Gives a parameter of type "point".
 
-bool GetPoint(CBotVar* &var, int& exception, Math::Vector& pos)
+static bool GetPoint(CBotVar* &var, int& exception, Math::Vector& pos)
 {
     CBotVar     *pX, *pY, *pZ;
 
@@ -702,7 +689,7 @@ bool CScriptFunctions::rDelete(CBotVar* var, CBotVar* result, int& exception, vo
     return false;
 }
 
-CBotTypResult compileSearch(CBotVar* &var, void* user, CBotTypResult returnValue)
+static CBotTypResult compileSearch(CBotVar* &var, void* user, CBotTypResult returnValue)
 {
     if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() == CBotTypArrayPointer )
@@ -746,7 +733,7 @@ CBotTypResult CScriptFunctions::cSearchAll(CBotVar* &var, void* user)
     return compileSearch(var, user, CBotTypResult(CBotTypArrayPointer, CBotTypResult(CBotTypPointer, "object")));
 }
 
-bool runSearch(CBotVar* var, Math::Vector pos, int& exception, std::function<bool(std::vector<ObjectType>, Math::Vector, float, float, bool, RadarFilter)> code)
+static bool runSearch(CBotVar* var, Math::Vector pos, int& exception, std::function<bool(std::vector<ObjectType>, Math::Vector, float, float, bool, RadarFilter)> code)
 {
     CBotVar*    array;
     RadarFilter filter;
@@ -865,7 +852,7 @@ bool CScriptFunctions::rSearchAll(CBotVar* var, CBotVar* result, int& exception,
 }
 
 
-CBotTypResult compileRadar(CBotVar* &var, void* user, CBotTypResult returnValue)
+static CBotTypResult compileRadar(CBotVar* &var, void* user, CBotTypResult returnValue)
 {
     CBotVar*    array;
 
@@ -912,7 +899,7 @@ CBotTypResult CScriptFunctions::cRadar(CBotVar* &var, void* user)
     return compileRadar(var, user, CBotTypResult(CBotTypPointer, "object"));
 }
 
-bool runRadar(CBotVar* var, std::function<bool(std::vector<ObjectType>, float, float, float, float, bool, RadarFilter)> code)
+static bool runRadar(CBotVar* var, std::function<bool(std::vector<ObjectType>, float, float, float, float, bool, RadarFilter)> code)
 {
     CBotVar*    array;
     RadarFilter filter;

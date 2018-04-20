@@ -70,7 +70,6 @@
 namespace
 {
 std::string PNG_ERROR = "";
-}
 
 void PNGUserError(png_structp ctx, png_const_charp str)
 {
@@ -146,6 +145,8 @@ bool PNGSaveSurface(const char *filename, SDL_Surface *surf)
 
     return true;
 }
+
+} // namespace
 
 /* <---------------------------------------------------------------> */
 

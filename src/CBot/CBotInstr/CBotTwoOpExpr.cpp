@@ -114,7 +114,7 @@ static int  ListOp[] =
     0, // end of list
 };
 
-bool IsInList(int val, int* list, int& typeMask)
+static bool IsInList(int val, int* list, int& typeMask)
 {
     while (true)
     {
@@ -124,7 +124,7 @@ bool IsInList(int val, int* list, int& typeMask)
     }
 }
 
-bool TypeOk(int type, int test)
+static bool TypeOk(int type, int test)
 {
     while (true)
     {
@@ -304,12 +304,12 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
 }
 
 
-bool VarIsNAN(const CBotVar* var)
+static bool VarIsNAN(const CBotVar* var)
 {
     return var->GetInit() > CBotVar::InitType::DEF;
 }
 
-bool IsNan(CBotVar* left, CBotVar* right, CBotError* err = nullptr)
+static bool IsNan(CBotVar* left, CBotVar* right, CBotError* err = nullptr)
 {
     if ( VarIsNAN(left) || VarIsNAN(right) )
     {

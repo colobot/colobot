@@ -312,7 +312,7 @@ bool CStudio::EventProcess(const Event &event)
 
 // Evolves value with time elapsed.
 
-float Evolution(float final, float actual, float time)
+static float Evolution(float final, float actual, float time)
 {
     float   value;
 
@@ -425,7 +425,7 @@ bool CStudio::EventFrame(const Event &event)
 
 // Indicates whether a character is part of a word.
 
-bool IsToken(char c)
+static bool IsToken(char c)
 {
     return ( isalnum(c) || c == '_' );
 }

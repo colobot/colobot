@@ -161,12 +161,12 @@ bool CScreenSetupDisplay::EventProcess(const Event &event)
 
 // Updates the list of modes.
 
-int GCD(int a, int b)
+static int GCD(int a, int b)
 {
     return (b == 0) ? a : GCD(b, a%b);
 }
 
-Math::IntPoint AspectRatio(Math::IntPoint resolution)
+static Math::IntPoint AspectRatio(Math::IntPoint resolution)
 {
     int gcd = GCD(resolution.x, resolution.y);
     return Math::IntPoint(static_cast<float>(resolution.x) / gcd, static_cast<float>(resolution.y) / gcd);

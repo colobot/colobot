@@ -42,7 +42,7 @@ struct ActivePause
     PauseMusic music;
 };
 
-std::string GetPauseName(PauseType type)
+static std::string GetPauseName(PauseType type)
 {
     std::vector<std::string> x;
     if ((type & PAUSE_ENGINE) != 0) x.push_back("engine");

@@ -26,6 +26,8 @@
 
 namespace CBot
 {
+namespace
+{
 const float PI = 3.14159265358979323846f;
 
 // Instruction "sin(degrees)".
@@ -192,6 +194,8 @@ bool rTrunc(CBotVar* var, CBotVar* result, int& exception, void* user)
     result->SetValFloat(trunc(value));
     return true;
 }
+
+} // namespace
 
 void InitMathFunctions()
 {

@@ -416,7 +416,7 @@ void CMainUserInterface::GlintMove()
 
 // Returns the position for a sound.
 
-Math::Vector SoundPos(Math::Point pos)
+static Math::Vector SoundPos(Math::Point pos)
 {
     Math::Vector    s;
 
@@ -429,7 +429,7 @@ Math::Vector SoundPos(Math::Point pos)
 
 // Returns a random position for a sound.
 
-Math::Vector SoundRand()
+static Math::Vector SoundRand()
 {
     Math::Vector    s;
 

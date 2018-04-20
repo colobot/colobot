@@ -2383,7 +2383,7 @@ bool CEngine::LoadAllTextures()
     return ok;
 }
 
-bool IsExcludeColor(Math::Point *exclude, int x, int y)
+static bool IsExcludeColor(Math::Point *exclude, int x, int y)
 {
     int i = 0;
     while ( exclude[i+0].x != 0.0f || exclude[i+0].y != 0.0f ||

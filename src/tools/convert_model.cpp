@@ -29,15 +29,8 @@
 
 using namespace Gfx;
 
-
-bool EndsWith(std::string const &fullString, std::string const &ending)
+namespace
 {
-    if (fullString.length() >= ending.length())
-        return (0 == fullString.compare (fullString.length() - ending.length(), ending.length(), ending));
-    else
-        return false;
-}
-
 
 struct Args
 {
@@ -217,6 +210,8 @@ void DumpInfo(const CModel& model)
     std::cerr << " variable tex2: " << variableTexs2 << " / " << total << std::endl;
     std::cerr << std::endl;
 }
+
+} // namespace
 
 int main(int argc, char *argv[])
 {

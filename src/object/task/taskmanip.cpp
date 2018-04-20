@@ -263,28 +263,6 @@ void CTaskManip::InitAngle()
     }
 }
 
-
-// Tests whether an object is compatible with the operation TMA_OTHER.
-
-bool TestFriend(ObjectType oType, ObjectType fType)
-{
-    if ( oType == OBJECT_ENERGY )
-    {
-        return ( fType == OBJECT_METAL );
-    }
-    if ( oType == OBJECT_LABO )
-    {
-        return ( fType == OBJECT_BULLET );
-    }
-    if ( oType == OBJECT_NUCLEAR )
-    {
-        return ( fType == OBJECT_URANIUM );
-    }
-
-    return ( fType == OBJECT_POWER  ||
-             fType == OBJECT_ATOMIC );
-}
-
 // Assigns the goal was achieved.
 
 Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
