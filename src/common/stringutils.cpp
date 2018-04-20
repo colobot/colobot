@@ -18,14 +18,13 @@
  */
 
 
+#include "common/logger.h"
 #include "common/stringutils.h"
 
 #include <cstdarg>
 #include <cstdio>
 #include <vector>
-
 #include <cstring>          // memset used for trace
-#include "common/logger.h"
 
 unsigned int StrUtils::HexStringToInt(const std::string& str)
 {

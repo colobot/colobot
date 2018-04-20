@@ -94,6 +94,41 @@ const Math::IntPoint REFERENCE_SIZE(800, 600);
 const Math::IntPoint FONT_TEXTURE_SIZE(256, 256);
 } // anonymous namespace
 
+/**
+ * Init from a given UTF8 character iif 0<size<4 (standards UTF8)
+ *     provide a warning trace in other cases
+ * @param  text          input data
+ * @param  index         wanted character position
+ * @param  optCallOrigin optional description trace from origin
+ * @return               size of the given UTF8 character
+ */
+unsigned short UTF8Char::Init(const std::string &text,
+                              const std::size_t index,
+                              const char*optCallOrigin)
+{
+    c1='\0';
+    c2='\0';
+    c3='\0';
+    c4='\0';
+    unsigned short len = StrUtils::Utf8CharSizeAt(text, index);
+    if (0==len)   //warning & do skip all : Risk of infinite loop !!
+        GetLogger()->Warn("Risk of infinite loop %s !!\nat %d <%s>\n",
+            optCallOrigin?optCallOrigin:"",
+            index,text.c_str());
+    else if (5<=len)   // warning & do skip it
+        GetLogger()->Warn("long UTF8, len>=5, ignored !!\n");
+    else
+    {
+        c1 = text[index];
+        if (2<=len)
+            c2 = text[index+1];
+        if (3<=len)
+            c3 = text[index+2];
+        if (4<=len)
+            c4 = text[index+3];
+    }
+    return len;
+}
 
 CText::CText(CEngine* engine)
 {
@@ -367,33 +402,15 @@ float CText::GetStringWidth(const std::string &text,
             font = static_cast<FontType>(*(format + fmtIndex) & FONT_MASK_FONT);
 
         UTF8Char ch;
-
-        short len = StrUtils::Utf8CharSizeAt(text, index);
-        if (len == 0)   //warning & skip all : Risk of infinite loop !!
-        {
-            GetLogger()->Warn("Risk of infinite loop 1 -CText::GetStringWidth !!\nat %d <%s>\n",index,text.c_str());
+        unsigned short len = ch.Init(text, index,"1 -CText::GetStringWidth");
+        if(0==len)  //Risk of infinite loop !!
             break;
-        }
-        else if (len >= 5)   // warning & skip it
-        {
-            GetLogger()->Warn("long UTF8, len>=5, ignored !!\n");
-            index += len;
-            continue;
-        }
-        if (len >= 1)
-            ch.c1 = text[index];
-        if (len >= 2)
-            ch.c2 = text[index+1];
-        if (len >= 3)
-            ch.c3 = text[index+2];
-        if (len >= 4)
-            ch.c4 = text[index+3];
-        width += GetCharWidth(ch, font, size, width);
-
         index += len;
+        if(5<=len)  //Warning done, skip
+            continue;
+        width += GetCharWidth(ch, font, size, width);
         fmtIndex++;
     }
-
     return width;
 }
 
@@ -403,10 +420,8 @@ float CText::GetStringWidth(std::string text, const FontType font, const float s
 
     // Skip special chars
     for (char& c : text)
-    {
         if (c < 32 && c >= 0)
             c = ':';
-    }
 
     CachedFont* cf = GetOrOpenFont(font, size);
     assert(cf != nullptr);
@@ -516,27 +531,14 @@ int CText::Justify(const std::string &text,
             font = static_cast<FontType>(*(format + fmtIndex) & FONT_MASK_FONT);
 
         UTF8Char ch;
-
-        short len = StrUtils::Utf8CharSizeAt(text, index);
-        if (len == 0)   //warning & skip all : Risk of infinite loop !!
-        {
-            GetLogger()->Warn("Risk of infinite loop 2 -CText::Justify !!\n");
+        unsigned short len = ch.Init(text, index,"2 -CText::Justify");
+        if(0==len)  //Risk of infinite loop !!
             break;
-        }
-        else if (len >= 5)   // warning & skip it
+        if(5<=len)  //Warning done, skip
         {
-            GetLogger()->Warn("long UTF8, len>=5, ignored !!\n");
             index += len;
             continue;
         }
-        if (len >= 1)
-            ch.c1 = text[index];
-        if (len >= 2)
-            ch.c2 = text[index+1];
-        if (len >= 3)
-            ch.c3 = text[index+2];
-        if (len >= 4)
-            ch.c4 = text[index+3];
         if (font != FONT_BUTTON)
         {
             if (ch.c1 == '\n')
@@ -548,14 +550,13 @@ int CText::Justify(const std::string &text,
         pos += GetCharWidth(ch, font, size, pos);
         if (pos > width)
         {
-            if (cut == 0) return index;
-            else          return cut;
+            if (cut == 0)
+                return index;
+            return cut;
         }
-
         index += len;
         fmtIndex++;
     }
-
     return index;
 }
 
@@ -572,45 +573,28 @@ int CText::Justify(const std::string &text,
     while (index < text.length())
     {
         UTF8Char ch;
-
-        short len = StrUtils::Utf8CharSizeAt(text, index);
-        if (len == 0)   //warning & skip all : Risk of infinite loop !!
-        {
-            GetLogger()->Warn("Risk of infinite loop 3 - CText::Justify 2 !!\n");
+        unsigned short len = ch.Init(text, index,"3 -CText::Justify 2");
+        if(0==len)  //Risk of infinite loop !!
             break;
-        }
-        else if (len >= 5)   // warning & skip it
+        if(5<=len)  //Warning done, skip
         {
-            GetLogger()->Warn("long UTF8, len>=5, ignored !!\n");
             index += len;
             continue;
         }
-        if (len >= 1)
-            ch.c1 = text[index];
-        if (len >= 2)
-            ch.c2 = text[index+1];
-        if (len >= 3)
-            ch.c3 = text[index+2];
-        if (len >= 4)
-            ch.c4 = text[index+3];
-
         if (ch.c1 == '\n')
-        {
             return index+1;
-        }
-
         if (ch.c1 == ' ' )
             cut = index+1;
 
         pos += GetCharWidth(ch, font, size, pos);
         if (pos > width)
         {
-            if (cut == 0) return index;
-            else          return cut;
+            if (cut == 0)
+                return index;
+            return cut;
         }
         index += len;
     }
-
     return index;
 }
 
@@ -634,28 +618,14 @@ int CText::Detect(const std::string &text,
         //if (font == FONT_BUTTON) continue;
 
         UTF8Char ch;
-
-        short len = StrUtils::Utf8CharSizeAt(text, index);
-        if (len == 0)   //warning & skip all : Risk of infinite loop !!
-        {
-            GetLogger()->Warn("Risk of infinite loop 4 -CText::Detect !!\nat %d <%s>\n",index,text.c_str());
+        unsigned short len = ch.Init(text, index,"4 -CText::Detect");
+        if(0==len)  //Risk of infinite loop !!
             break;
-        }
-        else if (len >= 5)   //warning & skip it
+        if(5<=len)  //Warning done, skip
         {
-            GetLogger()->Warn("long UTF8, len>=5, ignored !!\n");
             index += len;
             continue;
         }
-        if (len >= 1)
-            ch.c1 = text[index];
-        if (len >= 2)
-            ch.c2 = text[index+1];
-        if (len >= 3)
-            ch.c3 = text[index+2];
-        if (len >= 4)
-            ch.c4 = text[index+3];
-
         if (ch.c1 == '\n')
             return index;
 
@@ -683,40 +653,19 @@ int CText::Detect(const std::string &text,
     while (index < text.length())
     {
         UTF8Char ch;
-
-        short len = StrUtils::Utf8CharSizeAt(text, index);
-        if (len == 0)   //warning & skip all : Risk of infinite loop !!
-        {
-            GetLogger()->Warn("Risk of infinite loop 5 -CText::Detect 2 !!\n");
+        unsigned short len = ch.Init(text, index,"5 -CText::Detect 2");
+        if(0==len)  //Risk of infinite loop !!
             break;
-        }
-        else if (len >= 5)   // warning & skip it
-        {
-            GetLogger()->Warn("long UTF8, len>=5, ignored !!\n");
-            index += len;
-            continue;
-        }
-        if (len >= 1)
-            ch.c1 = text[index];
-        if (len >= 2)
-            ch.c2 = text[index+1];
-        if (len >= 3)
-            ch.c3 = text[index+2];
-        if (len >= 4)
-            ch.c4 = text[index+3];
-
         index += len;
-
+        if(5<=len)  //Warning done, skip
+            continue;
         if (ch.c1 == '\n')
             return index;
-
         float width = GetCharWidth(ch, font, size, pos);
         if (offset <= pos + width/2.0f)
             return index;
-
         pos += width;
     }
-
     return index;
 }
 
@@ -879,30 +828,12 @@ void CText::StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &
     while (index < totalLength)
     {
         UTF8Char ch;
-
-        short len = StrUtils::Utf8CharSizeAt(text, index);
-        if (len == 0)   //warning & skip all : Risk of infinite loop !!
-        {
-            GetLogger()->Warn("Risk of infinite loop 6 -CText::StringToUTFCharList !!\n");
+        unsigned short len = ch.Init(text, index,"6 -CText::StringToUTFCharList");
+        if(0==len)  //Risk of infinite loop !!
             break;
-        }
-        else if (len >= 5)   // warning & skip it
-        {
-            GetLogger()->Warn("long UTF8, len>=5, ignored !!\n");
-            index += len;
-            continue;
-        }
-        if (len >= 1)
-            ch.c1 = text[index];
-        if (len >= 2)
-            ch.c2 = text[index+1];
-        if (len >= 3)
-            ch.c3 = text[index+2];
-        if (len >= 4)
-            ch.c4 = text[index+3];
-
         index += len;
-
+        if(5<=len)  //Warning done, skip
+            continue;
         chars.push_back(ch);
     }
 }
@@ -916,44 +847,24 @@ void CText::StringToUTFCharList(const std::string &text,
     std::size_t totalLength = text.length();
     while (index < totalLength)
     {
-        UTF8Char ch;
-
         FontType font = FONT_COLOBOT;
         if (format + index != end)
             font = static_cast<FontType>(*(format + index) & FONT_MASK_FONT);
 
-        short len;
-
+        UTF8Char ch;
+        unsigned short len;
         if(font == FONT_BUTTON)
         {
             len = 1;
+            ch=UTF8Char(text[index]);
         }
         else
-        {
-            len = StrUtils::Utf8CharSizeAt(text, index);
-        }
-        if (len == 0)   //warning & skip all : Risk of infinite loop !!
-        {
-            GetLogger()->Warn("Risk of infinite loop 7 -CText::StringToUTFCharList 2 !!\n");
+            len = ch.Init(text, index,"7 -CText::StringToUTFCharList 2");
+        if(0==len)  //Risk of infinite loop !!
             break;
-        }
-        else if (len >= 5)   // warning & skip it
-        {
-            GetLogger()->Warn("long UTF8, len>=5, ignored !!\n");
-            index += len;
-            continue;
-        }
-        if (len >= 1)
-            ch.c1 = text[index];
-        if (len >= 2)
-            ch.c2 = text[index+1];
-        if (len >= 3)
-            ch.c3 = text[index+2];
-        if (len >= 4)
-            ch.c4 = text[index+3];
-
         index += len;
-
+        if(5<=len)  //Warning done, skip
+            continue;
         chars.push_back(ch);
     }
 }

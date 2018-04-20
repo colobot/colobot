@@ -164,7 +164,20 @@ struct UTF8Char
     explicit UTF8Char(const char ch1 = '\0', const char ch2 = '\0',
         const char ch3 = '\0', const char ch4 = '\0')
         : c1(ch1), c2(ch2), c3(ch3), c4(ch4)
-    {}
+    {
+    }
+
+    explicit UTF8Char(const std::string &text,
+                      const std::size_t index,
+                      const char*optCallOrigin="")
+        //: c1('\0'), c2('\0'), c3('\0'), c4('\0')
+    {
+        Init(text, index, optCallOrigin);
+    }
+
+    unsigned short Init(const std::string &text,
+                        const std::size_t index,
+                        const char*optCallOrigin="");
 
     inline bool operator<(const UTF8Char &other) const
     {
