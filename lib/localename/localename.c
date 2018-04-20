@@ -2519,7 +2519,7 @@ static size_t
 string_hash (const void *x)
 {
   const char *s = (const char *) x;
-  std::size_t h = 0;
+  size_t h = 0;
 
   for (; *s; s++)
     h = *s + ((h << 9) | (h >> (SIZE_BITS - 9)));
@@ -2550,9 +2550,9 @@ gl_lock_define_initialized(static, struniq_lock)
 static const char *
 struniq (const char *string)
 {
-  std::size_t hashcode = string_hash (string);
-  std::size_t slot = hashcode % HASH_TABLE_SIZE;
-  std::size_t size;
+  size_t hashcode = string_hash (string);
+  size_t slot = hashcode % HASH_TABLE_SIZE;
+  size_t size;
   struct hash_node *new_node;
   struct hash_node *p;
   for (p = struniq_hash_table[slot]; p != NULL; p = p->next)

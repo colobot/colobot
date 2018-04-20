@@ -314,7 +314,7 @@ static bool GTestIsInitialized() { return g_init_gtest_count != 0; }
 static int SumOverTestCaseList(const std::vector<TestCase*>& case_list,
                                int (TestCase::*method)() const) {
   int sum = 0;
-  for (std::size_t i = 0; i < case_list.size(); i++) {
+  for (size_t i = 0; i < case_list.size(); i++) {
     sum += (case_list[i]->*method)();
   }
   return sum;
@@ -832,7 +832,7 @@ String String::ShowCStringQuoted(const char* c_str) {
 // piece of memory of size length+1.  The memory is allocated with new[].
 // A terminating null byte is written to the memory, and a pointer to it
 // is returned.  If str is NULL, NULL is returned.
-static char* CloneString(const char* str, std::size_t length) {
+static char* CloneString(const char* str, size_t length) {
   if (str == NULL) {
     return NULL;
   } else {
@@ -904,14 +904,14 @@ bool String::CStringEquals(const char * lhs, const char * rhs) {
 
 // Converts an array of wide chars to a narrow string using the UTF-8
 // encoding, and streams the result to the given Message object.
-static void StreamWideCharsToMessage(const wchar_t* wstr, std::size_t length,
+static void StreamWideCharsToMessage(const wchar_t* wstr, size_t length,
                                      Message* msg) {
   // TODO(wan): consider allowing a testing::String object to
   // contain '\0'.  This will make it behave more like std::string,
   // and will allow ToUtf8String() to return the correct encoding
   // for '\0' s.t. we can get rid of the conditional here (and in
   // several other places).
-  for (std::size_t i = 0; i != length; ) {  // NOLINT
+  for (size_t i = 0; i != length; ) {  // NOLINT
     if (wstr[i] != L'\0') {
       *msg << WideStringToUtf8(wstr + i, static_cast<int>(length - i));
       while (i != length && wstr[i] != L'\0')
@@ -1648,9 +1648,9 @@ int String::Compare(const String & rhs) const {
     return 1;
   }
 
-  const std::size_t shorter_str_len =
+  const size_t shorter_str_len =
       length() <= rhs.length() ? length() : rhs.length();
-  for (std::size_t i = 0; i != shorter_str_len; i++) {
+  for (size_t i = 0; i != shorter_str_len; i++) {
     if (lhs_c_str[i] < rhs_c_str[i]) {
       return -1;
     } else if (lhs_c_str[i] > rhs_c_str[i]) {
@@ -1668,8 +1668,8 @@ bool String::EndsWith(const char* suffix) const {
 
   if (c_str() == NULL) return false;
 
-  const std::size_t this_len = strlen(c_str());
-  const std::size_t suffix_len = strlen(suffix);
+  const size_t this_len = strlen(c_str());
+  const size_t suffix_len = strlen(suffix);
   return (this_len >= suffix_len) &&
          CStringEquals(c_str() + this_len - suffix_len, suffix);
 }
@@ -1681,8 +1681,8 @@ bool String::EndsWithCaseInsensitive(const char* suffix) const {
 
   if (c_str() == NULL) return false;
 
-  const std::size_t this_len = strlen(c_str());
-  const std::size_t suffix_len = strlen(suffix);
+  const size_t this_len = strlen(c_str());
+  const size_t suffix_len = strlen(suffix);
   return (this_len >= suffix_len) &&
          CaseInsensitiveCStringEquals(c_str() + this_len - suffix_len, suffix);
 }
@@ -2466,7 +2466,7 @@ void TestCase::ShuffleTests(internal::Random* random) {
 
 // Restores the test order to before the first shuffle.
 void TestCase::UnshuffleTests() {
-  for (std::size_t i = 0; i < test_indices_.size(); i++) {
+  for (size_t i = 0; i < test_indices_.size(); i++) {
     test_indices_[i] = static_cast<int>(i);
   }
 }
@@ -2940,7 +2940,7 @@ void TestEventRepeater::Append(TestEventListener *listener) {
 
 // TODO(vladl@google.com): Factor the search functionality into Vector::Find.
 TestEventListener* TestEventRepeater::Release(TestEventListener *listener) {
-  for (std::size_t i = 0; i < listeners_.size(); ++i) {
+  for (size_t i = 0; i < listeners_.size(); ++i) {
     if (listeners_[i] == listener) {
       listeners_.erase(listeners_.begin() + i);
       return listener;
@@ -2955,7 +2955,7 @@ TestEventListener* TestEventRepeater::Release(TestEventListener *listener) {
 #define GTEST_REPEATER_METHOD_(Name, Type) \
 void TestEventRepeater::Name(const Type& parameter) { \
   if (forwarding_enabled_) { \
-    for (std::size_t i = 0; i < listeners_.size(); i++) { \
+    for (size_t i = 0; i < listeners_.size(); i++) { \
       listeners_[i]->Name(parameter); \
     } \
   } \
@@ -2989,7 +2989,7 @@ GTEST_REVERSE_REPEATER_METHOD_(OnTestProgramEnd, UnitTest)
 void TestEventRepeater::OnTestIterationStart(const UnitTest& unit_test,
                                              int iteration) {
   if (forwarding_enabled_) {
-    for (std::size_t i = 0; i < listeners_.size(); i++) {
+    for (size_t i = 0; i < listeners_.size(); i++) {
       listeners_[i]->OnTestIterationStart(unit_test, iteration);
     }
   }
@@ -4014,7 +4014,7 @@ void UnitTestImpl::ConfigureXmlOutput() {
 void UnitTestImpl::ConfigureStreamingOutput() {
   const string& target = GTEST_FLAG(stream_result_to);
   if (!target.empty()) {
-    const std::size_t pos = target.find(':');
+    const size_t pos = target.find(':');
     if (pos != string::npos) {
       listeners()->Append(new StreamingListener(target.substr(0, pos),
                                                 target.substr(pos+1)));
@@ -4386,12 +4386,12 @@ int UnitTestImpl::FilterTests(ReactionToSharding shard_tests) {
   // this shard.
   int num_runnable_tests = 0;
   int num_selected_tests = 0;
-  for (std::size_t i = 0; i < test_cases_.size(); i++) {
+  for (size_t i = 0; i < test_cases_.size(); i++) {
     TestCase* const test_case = test_cases_[i];
     const String &test_case_name = test_case->name();
     test_case->set_should_run(false);
 
-    for (std::size_t j = 0; j < test_case->test_info_list().size(); j++) {
+    for (size_t j = 0; j < test_case->test_info_list().size(); j++) {
       TestInfo* const test_info = test_case->test_info_list()[j];
       const String test_name(test_info->name());
       // A test is disabled if test case name or test name matches
@@ -4429,11 +4429,11 @@ int UnitTestImpl::FilterTests(ReactionToSharding shard_tests) {
 
 // Prints the names of the tests matching the user-specified filter flag.
 void UnitTestImpl::ListTestsMatchingFilter() {
-  for (std::size_t i = 0; i < test_cases_.size(); i++) {
+  for (size_t i = 0; i < test_cases_.size(); i++) {
     const TestCase* const test_case = test_cases_[i];
     bool printed_test_case_name = false;
 
-    for (std::size_t j = 0; j < test_case->test_info_list().size(); j++) {
+    for (size_t j = 0; j < test_case->test_info_list().size(); j++) {
       const TestInfo* const test_info =
           test_case->test_info_list()[j];
       if (test_info->matches_filter_) {
@@ -4490,14 +4490,14 @@ void UnitTestImpl::ShuffleTests() {
                static_cast<int>(test_cases_.size()), &test_case_indices_);
 
   // Shuffles the tests inside each test case.
-  for (std::size_t i = 0; i < test_cases_.size(); i++) {
+  for (size_t i = 0; i < test_cases_.size(); i++) {
     test_cases_[i]->ShuffleTests(random());
   }
 }
 
 // Restores the test cases and tests to their order before the first shuffle.
 void UnitTestImpl::UnshuffleTests() {
-  for (std::size_t i = 0; i < test_cases_.size(); i++) {
+  for (size_t i = 0; i < test_cases_.size(); i++) {
     // Unshuffles the tests in each test case.
     test_cases_[i]->UnshuffleTests();
     // Resets the index of each test case.
@@ -4544,7 +4544,7 @@ bool AlwaysTrue() {
 // past the prefix and returns true; otherwise leaves *pstr unchanged
 // and returns false.  None of pstr, *pstr, and prefix can be NULL.
 bool SkipPrefix(const char* prefix, const char** pstr) {
-  const std::size_t prefix_len = strlen(prefix);
+  const size_t prefix_len = strlen(prefix);
   if (strncmp(*pstr, prefix, prefix_len) == 0) {
     *pstr += prefix_len;
     return true;
@@ -4565,7 +4565,7 @@ const char* ParseFlagValue(const char* str,
 
   // The flag must start with "--" followed by GTEST_FLAG_PREFIX_.
   const String flag_str = String::Format("--%s%s", GTEST_FLAG_PREFIX_, flag);
-  const std::size_t flag_len = flag_str.length();
+  const size_t flag_len = flag_str.length();
   if (strncmp(str, flag_str.c_str(), flag_len) != 0) return NULL;
 
   // Skips the flag name.

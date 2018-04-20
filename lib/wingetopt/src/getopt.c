@@ -49,10 +49,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-
-// TODO? : some int => size_t for this all file... ?
-
-
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
@@ -200,7 +196,7 @@ parse_long_options(char * const *nargv, const char *options,
     const struct option *long_options, int *idx, int short_too)
 {
     char *current_argv, *has_equal;
-    std::size_t current_argv_len;
+    size_t current_argv_len;
     int i, ambiguous, match;
 
 #define IDENTICAL_INTERPRETATION(_x, _y)                                \
