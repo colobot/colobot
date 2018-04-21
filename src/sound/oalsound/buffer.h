@@ -38,12 +38,12 @@ public:
     CBuffer();
     ~CBuffer();
 
-    bool LoadFromFile(std::string, SoundType);
-    bool IsLoaded();
+    bool LoadFromFile(const std::string&, const SoundType);
+    bool IsLoaded()const;
 
-    SoundType GetSoundType();
-    ALuint GetBuffer();
-    float GetDuration();
+    SoundType GetSoundType()const;
+    ALuint GetBuffer()const;
+    float GetDuration()const;
 
 private:
     ALuint m_buffer;

@@ -28,12 +28,15 @@
 #include <memory>
 
 
+static const bool TRACE_AUDIO_DET = false;
+
 CBuffer::CBuffer()
     : m_buffer(),
       m_sound(),
       m_loaded(false),
       m_duration(0.0f)
-{}
+{
+}
 
 CBuffer::~CBuffer()
 {
@@ -45,19 +48,21 @@ CBuffer::~CBuffer()
     }
 }
 
-bool CBuffer::LoadFromFile(std::string filename, SoundType sound)
+bool CBuffer::LoadFromFile(const std::string& filename, const SoundType sound)
 {
     m_sound = sound;
     GetLogger()->Debug("Loading audio file: %s\n", filename.c_str());
 
     auto file = CResourceManager::GetSNDFileHandler(filename);
 
-    GetLogger()->Trace("  channels %d\n", file->GetFileInfo().channels);
-    GetLogger()->Trace("  format %d\n", file->GetFileInfo().format);
-    GetLogger()->Trace("  frames %d\n", file->GetFileInfo().frames);
-    GetLogger()->Trace("  samplerate %d\n", file->GetFileInfo().samplerate);
-    GetLogger()->Trace("  sections %d\n", file->GetFileInfo().sections);
-
+    if(TRACE_AUDIO_DET)
+    {
+        GetLogger()->Trace("  channels %d\n", file->GetFileInfo().channels);
+        GetLogger()->Trace("  format %d\n", file->GetFileInfo().format);
+        GetLogger()->Trace("  frames %d\n", file->GetFileInfo().frames);
+        GetLogger()->Trace("  samplerate %d\n", file->GetFileInfo().samplerate);
+        GetLogger()->Trace("  sections %d\n", file->GetFileInfo().sections);
+    }
     if (!file->IsOpen())
     {
         GetLogger()->Warn("Could not load file %s. Reason: %s\n", filename.c_str(), file->GetLastError().c_str());
@@ -90,22 +95,22 @@ bool CBuffer::LoadFromFile(std::string filename, SoundType sound)
     return true;
 }
 
-SoundType CBuffer::GetSoundType()
+SoundType CBuffer::GetSoundType()const
 {
     return m_sound;
 }
 
-ALuint CBuffer::GetBuffer()
+ALuint CBuffer::GetBuffer()const
 {
     return m_buffer;
 }
 
-bool CBuffer::IsLoaded()
+bool CBuffer::IsLoaded()const
 {
     return m_loaded;
 }
 
-float CBuffer::GetDuration()
+float CBuffer::GetDuration()const
 {
     return m_duration;
 }
