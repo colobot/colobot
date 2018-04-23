@@ -91,6 +91,11 @@ pipeline {
         }
 
         stage('Run colobot-lint') {
+            environment {
+                CC = '/usr/lib/llvm-3.6/bin/clang'
+                CXX = '/usr/lib/llvm-3.6/bin/clang++'
+                CLANG_PREFIX = '/usr/lib/llvm-3.6'
+            }
             steps {
                 copyArtifacts filter: 'build/colobot-lint,build/html_report.tar.gz,Tools/count_errors.py', fingerprintArtifacts: true, projectName: 'colobot/colobot-lint/master', selector: lastSuccessful(), target: 'colobot-lint'
                 sh 'chmod +x colobot-lint/Tools/count_errors.py' // TODO: ???
@@ -110,7 +115,7 @@ COLOBOT_LINT_BUILD_DIR="$WORKSPACE/colobot-lint/build"
 
 COLOBOT_LINT_REPORT_FILE="$WORKSPACE/build/lint/colobot_lint_report.xml"
 
-CLANG_PREFIX="/usr/lib/llvm-3.6"
+# CLANG_PREFIX="/usr/lib/llvm-3.6" # Set in top-level environment block
 
 cd "$COLOBOT_LINT_BUILD_DIR"
 chmod +x ./colobot-lint
