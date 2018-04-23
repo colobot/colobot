@@ -5870,7 +5870,7 @@ void CRobotMain::CreateCodeBattleInterface()
         {
             //create button
             pos.x = (550.0f+40.0f*(i%2))/640.0f;
-            pos.y = (120.0f+offset)/480.0f + numTeams * textHeight - 45.0f*(i/2)/480.0f;
+            pos.y = (130.0f+offset)/480.0f + numTeams * textHeight - 45.0f*(i/2)/480.0f;
             pw->CreateButton(pos,ddim, 13, EventType(EVENT_VIEWPOINT0 + i));
         }
 
