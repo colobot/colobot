@@ -51,14 +51,6 @@ CAutoKid::~CAutoKid()
 }
 
 
-// Destroys the object.
-
-void CAutoKid::DeleteObject(bool all)
-{
-    CAuto::DeleteObject(all);
-}
-
-
 // Initialize the object.
 
 void CAutoKid::Init()
@@ -196,12 +188,4 @@ bool CAutoKid::EventProcess(const Event &event)
     }
 
     return true;
-}
-
-
-// Returns an error due the state of the automation.
-
-Error CAutoKid::GetError()
-{
-    return ERR_OK;
 }
