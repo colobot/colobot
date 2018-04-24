@@ -19,7 +19,7 @@
 
 #include "common/regex_utils.h"
 
-std::string FormatAssertRegexMatchError(const std::string& text,
+static std::string FormatAssertRegexMatchError(const std::string& text,
                                         const std::string& pattern)
 {
     return "Text \"" + text + "\" did not match regex \"" + pattern + "\"";

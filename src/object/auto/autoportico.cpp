@@ -50,7 +50,7 @@ const float PORTICO_TIME_OPEN   = 12.0f;
 // Si progress=0, return a.
 // Si progress=1, return b.
 
-float Progress(float a, float b, float progress)
+static float Progress(float a, float b, float progress)
 {
     return a+(b-a)*progress;
 }

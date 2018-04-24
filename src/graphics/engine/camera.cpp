@@ -53,7 +53,7 @@ namespace Gfx
 const float MOUSE_EDGE_MARGIN = 0.01f;
 
 //! Changes the level of transparency of an object and objects transported (battery & cargo)
-void SetTransparency(CObject* obj, float value)
+static void SetTransparency(CObject* obj, float value)
 {
     obj->SetTransparency(value);
 

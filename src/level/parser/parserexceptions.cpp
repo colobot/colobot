@@ -24,7 +24,7 @@
 #include <boost/lexical_cast.hpp>
 
 
-std::string FormatMissingParamError(CLevelParserParam* thisParam) NOEXCEPT
+static std::string FormatMissingParamError(CLevelParserParam* thisParam) NOEXCEPT
 {
     auto paramName = thisParam->GetName();
     auto lineNumber = boost::lexical_cast<std::string>(thisParam->GetLine()->GetLineNumber());
@@ -37,7 +37,7 @@ CLevelParserExceptionMissingParam::CLevelParserExceptionMissingParam(CLevelParse
 {
 }
 
-std::string FormatBadParamError(CLevelParserParam* thisParam, std::string requestedType) NOEXCEPT
+static std::string FormatBadParamError(CLevelParserParam* thisParam, std::string requestedType) NOEXCEPT
 {
     auto paramName = thisParam->GetName();
     auto paramValue = thisParam->GetValue();

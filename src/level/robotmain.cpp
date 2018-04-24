@@ -2260,7 +2260,7 @@ void CRobotMain::AbortMovie()
 }
 
 
-std::string TimeFormat(float time)
+static std::string TimeFormat(float time)
 {
     int minutes = static_cast<int>(floor(time/60));
     double time2 = fmod(time, 60);

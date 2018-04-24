@@ -26,6 +26,9 @@
 
 using namespace CBot;
 
+namespace
+{
+
 CBotTypResult cMessage(CBotVar* &var, void* user)
 {
     if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
@@ -45,6 +48,8 @@ bool rMessage(CBotVar* var, CBotVar* result, int& exception, void* user)
 
     return true;
 }
+
+} // namespace
 
 int main(int argc, char* argv[])
 {

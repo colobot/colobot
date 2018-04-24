@@ -292,7 +292,7 @@ bool CBotProgram::ClassExists(std::string name)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotTypResult cSizeOf( CBotVar* &pVar, void* pUser )
+static CBotTypResult cSizeOf( CBotVar* &pVar, void* pUser )
 {
     if ( pVar == nullptr ) return CBotTypResult( CBotErrLowParam );
     if ( pVar->GetType() != CBotTypArrayPointer )
@@ -300,7 +300,7 @@ CBotTypResult cSizeOf( CBotVar* &pVar, void* pUser )
     return CBotTypResult( CBotTypInt );
 }
 
-bool rSizeOf( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
+static bool rSizeOf( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 {
     if ( pVar == nullptr ) { ex = CBotErrLowParam; return true; }
 

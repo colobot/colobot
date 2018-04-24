@@ -168,7 +168,7 @@ void CAutoFactory::SetProgram(const std::string& program)
     m_program = program;
 }
 
-ObjectType ObjectTypeFromFactoryButton(EventType eventType)
+static ObjectType ObjectTypeFromFactoryButton(EventType eventType)
 {
     if ( eventType == EVENT_OBJECT_FACTORYwa )  return OBJECT_MOBILEwa;
     if ( eventType == EVENT_OBJECT_FACTORYta )  return OBJECT_MOBILEta;

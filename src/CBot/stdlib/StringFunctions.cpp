@@ -27,6 +27,8 @@
 
 namespace CBot
 {
+namespace
+{
 
 ////////////////////////////////////////////////////////////////////////////////
 bool rStrLen( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
@@ -282,7 +284,7 @@ bool rStrLower( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
     return true;
 }
 
-
+} // namespace
 
 ////////////////////////////////////////////////////////////////////////////////
 void InitStringFunctions()

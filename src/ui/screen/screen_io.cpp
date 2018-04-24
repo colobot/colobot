@@ -193,7 +193,7 @@ void CScreenIO::IODeleteScene()
 }
 
 // clears filename only to leave letter or numbers
-std::string clearName(std::string name)
+static std::string clearName(std::string name)
 {
     std::string ret;
     for (int i = 0; i < static_cast<int>(name.size()); i++)
