@@ -22,6 +22,7 @@
 #include <map>
 
 const std::map<Language, std::string> LANGUAGE_MAP = {
+    { LANGUAGE_CZECH,   "cs" },
     { LANGUAGE_ENGLISH, "en" },
     { LANGUAGE_GERMAN,  "de" },
     { LANGUAGE_FRENCH,  "fr" },

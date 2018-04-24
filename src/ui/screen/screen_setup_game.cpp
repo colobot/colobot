@@ -143,6 +143,7 @@ void CScreenSetupGame::CreateInterface()
     pli->SetState(STATE_SHADOW);
     // TODO: Add something like GetSupportedLanguages() and GetLanguageFriendlyName() for this
     pli->SetItemName(1+LANGUAGE_ENV, "[System default]");
+    pli->SetItemName(1+LANGUAGE_CZECH, "Czech");
     pli->SetItemName(1+LANGUAGE_ENGLISH, "English");
     pli->SetItemName(1+LANGUAGE_FRENCH, "French");
     pli->SetItemName(1+LANGUAGE_GERMAN, "German");
