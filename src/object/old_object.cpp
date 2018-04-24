@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -138,6 +138,7 @@ COldObject::COldObject(int id)
     m_virusTime = 0.0f;
     m_lastVirusParticle = 0.0f;
     m_damaging = false;
+    m_damageTime = 0.0f;
     m_dying = DeathType::Alive;
     m_bFlat  = false;
     m_gunGoalV = 0.0f;

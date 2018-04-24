@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -490,7 +490,7 @@ bool CScript::GetCursor(std::size_t &cursor1, std::size_t &cursor2)const
 
 // Put of the variables in a list.
 
-void PutList(const std::string& baseName, bool bArray, CBot::CBotVar *var, Ui::CList *list, int &rankList, std::set<CBot::CBotVar*>& previous)
+static void PutList(const std::string& baseName, bool bArray, CBot::CBotVar *var, Ui::CList *list, int &rankList, std::set<CBot::CBotVar*>& previous)
 {
     if ( var == nullptr && !baseName.empty() )
     {
@@ -604,7 +604,7 @@ void CScript::UpdateList(Ui::CList* list)
 // Colorize a string literal with escape sequences also colored
 //  Note : private func... helper for CScript::ColorizeScript
 
-void HighlightString(Ui::CEdit* edit, const std::string& s, std::size_t start)
+static void HighlightString(Ui::CEdit* edit, const std::string& s, std::size_t start)
 {
     edit->SetFormat(start, start + 1, Gfx::FONT_HIGHLIGHT_STRING);
 
@@ -735,7 +735,7 @@ void CScript::ColorizeScript(Ui::CEdit* edit, std::size_t rangeStart, std::size_
 // Returns the index of the start of the token found, or SIZE_MAX.
 //  Note : private func, only used by IntroduceVirus
 
-std::size_t SearchToken(const char* script, const char* token)
+static std::size_t SearchToken(const char* script, const char* token)
 {
     std::size_t  lScript, lToken, i;
     int     found[100],iFound;
@@ -760,7 +760,7 @@ std::size_t SearchToken(const char* script, const char* token)
 
 // Removes a token in a script.
 
-void DeleteToken(char* script, std::size_t pos, const std::size_t len)
+static void DeleteToken(char* script, std::size_t pos, const std::size_t len)
 {
     while ( true )
     {
@@ -771,7 +771,7 @@ void DeleteToken(char* script, std::size_t pos, const std::size_t len)
 
 // Inserts a token in a script.
 
-void InsertToken(char* script, const std::size_t pos, const char* token)
+static void InsertToken(char* script, const std::size_t pos, const char* token)
 {
     std::size_t     lScript, lToken, i;
 

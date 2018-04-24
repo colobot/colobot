@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ const float FOG_HINF    = 100.0f;
 
 
 //! Check if an object is a destroyable enemy
-bool IsAlien(ObjectType type)
+static bool IsAlien(ObjectType type)
 {
     return ( type == OBJECT_ANT      ||
              type == OBJECT_SPIDER   ||
@@ -138,7 +138,7 @@ void CParticle::FlushParticle(int sheet)
 
 
 //! Returns file name of the effect effectNN.png, with NN = number
-void NameParticle(std::string &name, int num)
+static void NameParticle(std::string &name, int num)
 {
          if (num == 1)  name = "effect00.png";
     else if (num == 2)  name = "effect01.png";
@@ -148,7 +148,7 @@ void NameParticle(std::string &name, int num)
 }
 
 //! Returns random letter for use as virus particle
-char RandomLetter()
+static char RandomLetter()
 {
     static std::vector<char> chars;
     if (chars.empty())
@@ -3205,7 +3205,7 @@ void CParticle::DrawParticleSphere(int i)
 }
 
 //! Returns the height depending on the progress
-float ProgressCylinder(float progress)
+static float ProgressCylinder(float progress)
 {
     if (progress < 0.5f)
         return 1.0f - (powf(1.0f-progress*2.0f, 2.0f));
