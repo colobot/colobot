@@ -40,7 +40,6 @@ class CAutoNuclearPlant : public CAuto
 {
 public:
     CAutoNuclearPlant(COldObject* object);
-    ~CAutoNuclearPlant();
 
     void        DeleteObject(bool all=false) override;
 

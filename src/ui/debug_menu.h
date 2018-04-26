@@ -50,7 +50,7 @@ public:
     CDebugMenu(CRobotMain* main, Gfx::CEngine* engine, CObjectManager* objMan, CSoundInterface* sound);
     //! Destroys the CDebugMenu instance
     //! \note Does not clean up the interface, should be called only when CRobotMain is destroyed
-    virtual ~CDebugMenu();
+    ~CDebugMenu() = default;
 
     //! Toggle the debug interface
     void ToggleInterface();

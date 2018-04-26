@@ -29,7 +29,6 @@ class CTaskExecutorObjectImpl : public CTaskExecutorObject
 {
 public:
     explicit CTaskExecutorObjectImpl(ObjectInterfaceTypes& types, CObject* object);
-    virtual ~CTaskExecutorObjectImpl();
 
     bool EventProcess(const Event& event);
 

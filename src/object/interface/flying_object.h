@@ -35,6 +35,5 @@ public:
     {
         types[static_cast<int>(ObjectInterfaceType::Flying)] = true;
     }
-    virtual ~CFlyingObject()
-    {}
+    virtual ~CFlyingObject() = default;
 };

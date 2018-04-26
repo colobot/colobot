@@ -56,10 +56,6 @@ CWater::CWater(CEngine* engine)
     m_lines.reserve(WATERLINE_PREALLOCATE_COUNT);
 }
 
-CWater::~CWater()
-{
-}
-
 bool CWater::EventProcess(const Event &event)
 {
     if (event.type == EVENT_FRAME)

@@ -44,7 +44,6 @@ class CMainShort
 {
 public:
     CMainShort();
-    ~CMainShort();
 
     void        SetMode(bool bBuilding);
     bool        CreateShortcuts();

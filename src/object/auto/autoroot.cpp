@@ -36,13 +36,6 @@ CAutoRoot::CAutoRoot(COldObject* object) : CAuto(object)
     Init();
 }
 
-// Object's destructor.
-
-CAutoRoot::~CAutoRoot()
-{
-}
-
-
 // Destroys the object.
 
 void CAutoRoot::DeleteObject(bool bAll)

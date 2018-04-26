@@ -52,13 +52,6 @@ CTaskTake::CTaskTake(COldObject* object) : CForegroundTask(object)
     assert(m_object->Implements(ObjectInterfaceType::Carrier));
 }
 
-// Object's destructor.
-
-CTaskTake::~CTaskTake()
-{
-}
-
-
 // Management of an event.
 
 bool CTaskTake::EventProcess(const Event &event)

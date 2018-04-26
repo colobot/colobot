@@ -64,13 +64,6 @@ CAutoTower::CAutoTower(COldObject* object) : CAuto(object)
     assert(m_object->Implements(ObjectInterfaceType::Powered));
 }
 
-// Object's destructor.
-
-CAutoTower::~CAutoTower()
-{
-}
-
-
 // Destroys the object.
 
 void CAutoTower::DeleteObject(bool bAll)

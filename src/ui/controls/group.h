@@ -28,7 +28,6 @@ class CGroup : public CControl
 {
 public:
     CGroup();
-    virtual ~CGroup();
 
     bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType) override;
 

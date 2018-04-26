@@ -68,8 +68,7 @@ public:
     {
         types[static_cast<int>(ObjectInterfaceType::TraceDrawing)] = true;
     }
-    virtual ~CTraceDrawingObject()
-    {}
+    virtual ~CTraceDrawingObject() = default;
 
     //! Put the drawing pencil down
     virtual void        SetTraceDown(bool down) = 0;

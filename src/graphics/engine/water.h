@@ -73,7 +73,6 @@ class CWater
 {
 public:
     CWater(CEngine* engine);
-    virtual ~CWater();
 
     bool        EventProcess(const Event &event);
     //! Removes all the water

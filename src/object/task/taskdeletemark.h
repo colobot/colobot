@@ -26,8 +26,7 @@
 class CTaskDeleteMark : public CForegroundTask
 {
 public:
-    CTaskDeleteMark(COldObject* object);
-    ~CTaskDeleteMark();
+    using CForegroundTask::CForegroundTask;
 
     bool        EventProcess(const Event &event) override;
 

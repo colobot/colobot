@@ -47,9 +47,7 @@ CGL14Device::CGL14Device(const DeviceConfig &config)
     : m_config(config)
 {}
 
-CGL14Device::~CGL14Device()
-{
-}
+CGL14Device::~CGL14Device() = default; // defined here due to incomplete unique_ptr members
 
 void CGL14Device::DebugHook()
 {

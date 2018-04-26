@@ -43,7 +43,6 @@ class CAutoLabo : public CAuto
 {
 public:
     CAutoLabo(COldObject* object);
-    ~CAutoLabo();
 
     void        DeleteObject(bool bAll=false) override;
 

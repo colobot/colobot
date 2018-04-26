@@ -38,7 +38,6 @@ class CAutoVault : public CAuto
 {
 public:
     CAutoVault(COldObject* object);
-    ~CAutoVault();
 
     void        DeleteObject(bool bAll=false) override;
 

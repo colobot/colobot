@@ -34,8 +34,7 @@ public:
     {
         types[static_cast<int>(ObjectInterfaceType::Controllable)] = true;
     }
-    virtual ~CControllableObject()
-    {}
+    virtual ~CControllableObject() = default;
 
     //! Disables remote control of an object (only programming allowed)
     virtual void SetTrainer(bool trainer) = 0;

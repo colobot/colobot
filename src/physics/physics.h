@@ -98,7 +98,6 @@ class CPhysics
 {
 public:
     CPhysics(COldObject* object);
-    ~CPhysics();
 
     void        DeleteObject(bool bAll=false);
 

@@ -28,7 +28,6 @@ class CCheck : public CControl
 {
 public:
     CCheck();
-    virtual ~CCheck();
 
     bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType) override;
 

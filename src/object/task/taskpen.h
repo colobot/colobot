@@ -38,8 +38,7 @@ enum TaskPenPhase
 class CTaskPen : public CForegroundTask
 {
 public:
-    CTaskPen(COldObject* object);
-    ~CTaskPen();
+    using CForegroundTask::CForegroundTask;
 
     bool        EventProcess(const Event &event) override;
 

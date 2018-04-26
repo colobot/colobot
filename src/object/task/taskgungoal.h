@@ -27,8 +27,7 @@
 class CTaskGunGoal : public CBackgroundTask
 {
 public:
-    CTaskGunGoal(COldObject* object);
-    ~CTaskGunGoal();
+    using CBackgroundTask::CBackgroundTask;
 
     bool        EventProcess(const Event &event) override;
 

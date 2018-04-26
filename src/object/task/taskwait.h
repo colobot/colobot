@@ -27,8 +27,7 @@
 class CTaskWait : public CForegroundTask
 {
 public:
-    CTaskWait(COldObject* object);
-    ~CTaskWait();
+    using CForegroundTask::CForegroundTask;
 
     bool    EventProcess(const Event &event) override;
 

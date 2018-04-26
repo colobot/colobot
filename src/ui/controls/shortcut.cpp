@@ -38,13 +38,6 @@ CShortcut::CShortcut() : CControl()
     m_time = 0.0f;
 }
 
-// Object's destructor.
-
-CShortcut::~CShortcut()
-{
-}
-
-
 // Creates a new button.
 
 bool CShortcut::Create(Math::Point pos, Math::Point dim, int icon, EventType eventType)

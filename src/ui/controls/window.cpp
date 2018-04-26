@@ -67,9 +67,7 @@ CWindow::CWindow() : CControl()
 
 // Object's destructor.
 
-CWindow::~CWindow()
-{
-}
+CWindow::~CWindow() = default; // defined here due to incomplete unique_ptr members
 
 
 // Purge all the controls.

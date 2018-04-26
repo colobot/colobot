@@ -34,13 +34,6 @@ CTarget::CTarget() : CControl()
 {
 }
 
-// Object's destructor.
-
-CTarget::~CTarget()
-{
-}
-
-
 // Creates a new button.
 
 bool CTarget::Create(Math::Point pos, Math::Point dim, int icon, EventType eventType)

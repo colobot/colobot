@@ -28,7 +28,6 @@ class CGauge : public CControl
 {
 public:
     CGauge();
-    virtual ~CGauge();
 
     bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType) override;
 

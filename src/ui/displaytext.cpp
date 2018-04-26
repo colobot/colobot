@@ -70,13 +70,6 @@ CDisplayText::CDisplayText()
     m_delayFactor = 1.0f;
 }
 
-// Object's destructor.
-
-CDisplayText::~CDisplayText()
-{
-}
-
-
 // Destroys the object.
 
 void CDisplayText::DeleteObject()

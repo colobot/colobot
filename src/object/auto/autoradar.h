@@ -38,7 +38,6 @@ class CAutoRadar : public CAuto
 {
 public:
     CAutoRadar(COldObject* object);
-    ~CAutoRadar();
 
     void        DeleteObject(bool bAll=false) override;
 

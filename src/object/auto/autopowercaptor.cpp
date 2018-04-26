@@ -49,13 +49,6 @@ CAutoPowerCaptor::CAutoPowerCaptor(COldObject* object) : CAuto(object)
     Init();
 }
 
-// Object's destructor.
-
-CAutoPowerCaptor::~CAutoPowerCaptor()
-{
-}
-
-
 // Destroys the object.
 
 void CAutoPowerCaptor::DeleteObject(bool bAll)

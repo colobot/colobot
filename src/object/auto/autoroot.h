@@ -28,7 +28,6 @@ class CAutoRoot : public CAuto
 {
 public:
     CAutoRoot(COldObject* object);
-    ~CAutoRoot();
 
     void        DeleteObject(bool bAll=false) override;
 

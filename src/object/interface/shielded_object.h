@@ -33,8 +33,7 @@ public:
     {
         types[static_cast<int>(ObjectInterfaceType::Shielded)] = true;
     }
-    virtual ~CShieldedObject()
-    {}
+    virtual ~CShieldedObject() = default;
 
     //! Set shield level
     virtual void SetShield(float level) = 0;

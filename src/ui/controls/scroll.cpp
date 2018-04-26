@@ -46,9 +46,7 @@ CScroll::CScroll() : CControl()
 
 // Object's destructor.
 
-CScroll::~CScroll()
-{
-}
+CScroll::~CScroll() = default; // defined here due to incomplete unique_ptr members
 
 
 // Creates a new button.

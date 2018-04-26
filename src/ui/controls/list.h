@@ -25,9 +25,6 @@
 
 #include "graphics/engine/text.h"
 
-#include "ui/controls/button.h"
-#include "ui/controls/scroll.h"
-
 #include <array>
 #include <memory>
 
@@ -36,6 +33,8 @@ namespace Ui
 
 const int LISTMAXDISPLAY = 20;  // maximum number of visible lines
 
+class CButton;
+class CScroll;
 
 
 class CList : public CControl

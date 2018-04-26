@@ -61,9 +61,6 @@ CProgrammableObjectImpl::CProgrammableObjectImpl(ObjectInterfaceTypes& types, CO
     //assert(m_object->Implements(ObjectInterfaceType::TaskExecutor));
 }
 
-CProgrammableObjectImpl::~CProgrammableObjectImpl()
-{}
-
 bool CProgrammableObjectImpl::EventProcess(const Event &event)
 {
     if (event.type == EVENT_FRAME)

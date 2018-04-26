@@ -48,13 +48,6 @@ CAutoDestroyer::CAutoDestroyer(COldObject* object) : CAuto(object)
     m_phase = ADEP_WAIT;  // paused until the first Init ()
 }
 
-// Destructive of the object.
-
-CAutoDestroyer::~CAutoDestroyer()
-{
-}
-
-
 // Destroys the object.
 
 void CAutoDestroyer::DeleteObject(bool bAll)

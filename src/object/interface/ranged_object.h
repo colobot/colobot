@@ -32,8 +32,7 @@ public:
     {
         types[static_cast<int>(ObjectInterfaceType::Ranged)] = true;
     }
-    virtual ~CRangedObject()
-    {}
+    virtual ~CRangedObject() = default;
 
     //! Return object operation radius for display after clicking UI button
     virtual float GetShowLimitRadius() = 0;

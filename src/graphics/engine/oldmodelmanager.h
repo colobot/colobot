@@ -55,7 +55,6 @@ class COldModelManager
 {
 public:
     COldModelManager(CEngine* engine);
-    ~COldModelManager();
 
     //! Loads a model from given file
     bool LoadModel(const std::string& fileName, bool mirrored, int variant = 0);

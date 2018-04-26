@@ -47,13 +47,6 @@ CMotionQueen::CMotionQueen(COldObject* object)
     m_armTimeMarch   = START_TIME;
 }
 
-// Object's destructor.
-
-CMotionQueen::~CMotionQueen()
-{
-}
-
-
 // Removes an object.
 
 void CMotionQueen::DeleteObject(bool bAll)

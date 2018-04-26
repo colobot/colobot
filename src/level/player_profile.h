@@ -60,7 +60,6 @@ class CPlayerProfile
 public:
     // Creates CPlayerProfile instance and loads player save data
     CPlayerProfile(std::string playerName);
-    ~CPlayerProfile();
     // Returns last used player name, or "Player" if none found
     static std::string GetLastName();
     // Returnslist of possible player names

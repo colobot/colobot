@@ -34,15 +34,6 @@
 
 #include "physics/physics.h"
 
-
-CBaseAlien::CBaseAlien(int id, ObjectType type)
-    : CBaseVehicle(id, type),
-      m_fixed(false)
-{}
-
-CBaseAlien::~CBaseAlien()
-{}
-
 std::unique_ptr<CBaseAlien> CBaseAlien::Create(
     const ObjectCreateParams& params,
     Gfx::COldModelManager* modelManager,

@@ -32,13 +32,6 @@ CGauge::CGauge() : CControl()
     m_level = 0.0f;
 }
 
-// Object's destructor.
-
-CGauge::~CGauge()
-{
-}
-
-
 // Creates a new button.
 
 bool CGauge::Create(Math::Point pos, Math::Point dim, int icon, EventType eventType)

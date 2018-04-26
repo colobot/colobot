@@ -34,13 +34,6 @@ CAutoFlag::CAutoFlag(COldObject* object) : CAuto(object)
     Init();
 }
 
-// Object's destructor.
-
-CAutoFlag::~CAutoFlag()
-{
-}
-
-
 // Destroys the object.
 
 void CAutoFlag::DeleteObject(bool bAll)

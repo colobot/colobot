@@ -32,23 +32,6 @@
 
 #include "physics/physics.h"
 
-
-
-
-// Object's constructor.
-
-CTaskFireAnt::CTaskFireAnt(COldObject* object) : CForegroundTask(object)
-{
-    m_phase = TFA_NULL;
-}
-
-// Object's destructor.
-
-CTaskFireAnt::~CTaskFireAnt()
-{
-}
-
-
 // Management of an event.
 
 bool CTaskFireAnt::EventProcess(const Event &event)

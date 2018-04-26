@@ -40,7 +40,6 @@ class CAutoRepair : public CAuto
 {
 public:
     CAutoRepair(COldObject* object);
-    ~CAutoRepair();
 
     void        DeleteObject(bool bAll=false) override;
 

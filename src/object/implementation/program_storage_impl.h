@@ -31,7 +31,6 @@ class CProgramStorageObjectImpl : public CProgramStorageObject
 {
 public:
     explicit CProgramStorageObjectImpl(ObjectInterfaceTypes& types, CObject* object);
-    virtual ~CProgramStorageObjectImpl();
 
     bool IntroduceVirus() override;
     void SetActiveVirus(bool bActive) override;

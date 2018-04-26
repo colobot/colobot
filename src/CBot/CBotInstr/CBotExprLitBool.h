@@ -30,9 +30,6 @@ namespace CBot
 class CBotExprLitBool : public CBotInstr
 {
 public:
-    CBotExprLitBool();
-    ~CBotExprLitBool();
-
     /*!
      * \brief Compile
      * \param p

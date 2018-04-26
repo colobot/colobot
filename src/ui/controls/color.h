@@ -30,7 +30,6 @@ class CColor : public CControl
 {
 public:
     CColor();
-    virtual   ~CColor();
 
     bool      Create(Math::Point pos, Math::Point dim, int icon, EventType eventType) override;
 

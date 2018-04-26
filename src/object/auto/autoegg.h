@@ -40,7 +40,6 @@ class CAutoEgg : public CAuto
 {
 public:
     CAutoEgg(COldObject* object);
-    ~CAutoEgg();
 
     void        DeleteObject(bool all=false) override;
 

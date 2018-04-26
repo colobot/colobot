@@ -607,8 +607,7 @@ enum EventType
  */
 struct EventData
 {
-    virtual ~EventData()
-    {}
+    virtual ~EventData() = default;
 
     virtual std::unique_ptr<EventData> Clone() const = 0;
 };
@@ -875,11 +874,6 @@ public:
     static const int MAX_EVENT_QUEUE = 100;
 
 public:
-    //! Object's constructor
-    CEventQueue();
-    //! Object's destructor
-    ~CEventQueue();
-
     //! Checks if queue is empty
     bool IsEmpty();
     //! Adds an event to the queue
@@ -890,7 +884,7 @@ public:
 protected:
     CSDLMutexWrapper m_mutex;
     Event        m_fifo[MAX_EVENT_QUEUE];
-    int          m_head;
-    int          m_tail;
-    int          m_total;
+    int          m_head{0};
+    int          m_tail{0};
+    int          m_total{0};
 };

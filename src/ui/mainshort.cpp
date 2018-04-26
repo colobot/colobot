@@ -56,14 +56,6 @@ CMainShort::CMainShort()
     m_bBuilding = false;
 }
 
-// Destructor of the application card.
-
-CMainShort::~CMainShort()
-{
-}
-
-
-
 void CMainShort::SetMode(bool bBuilding)
 {
     m_bBuilding = bBuilding;

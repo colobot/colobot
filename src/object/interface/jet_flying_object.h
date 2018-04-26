@@ -35,8 +35,7 @@ public:
     {
         types[static_cast<int>(ObjectInterfaceType::JetFlying)] = true;
     }
-    virtual ~CJetFlyingObject()
-    {}
+    virtual ~CJetFlyingObject() = default;
 
     // TODO: Refactor naming of these functions
 

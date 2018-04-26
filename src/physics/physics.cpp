@@ -125,13 +125,6 @@ CPhysics::CPhysics(COldObject* object)
     m_floorLevel = 0.0f;
 }
 
-// Object's destructor.
-
-CPhysics::~CPhysics()
-{
-}
-
-
 // Destroys the object.
 
 void CPhysics::DeleteObject(bool bAll)

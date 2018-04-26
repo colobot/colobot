@@ -49,10 +49,6 @@ CCloud::CCloud(CEngine* engine)
     m_lines.reserve(CLOUD_LINE_PREALLOCATE_COUNT);
 }
 
-CCloud::~CCloud()
-{
-}
-
 bool CCloud::EventProcess(const Event &event)
 {
     if ( event.type == EVENT_FRAME )

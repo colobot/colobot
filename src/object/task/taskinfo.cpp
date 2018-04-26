@@ -30,25 +30,6 @@
 
 #include <string.h>
 
-
-
-// Object's constructor.
-
-CTaskInfo::CTaskInfo(COldObject* object) : CForegroundTask(object)
-    , m_progress(0.0f)
-    , m_speed(0.0f)
-    , m_time(0.0f)
-    , m_error(false)
-{
-}
-
-// Object's destructor.
-
-CTaskInfo::~CTaskInfo()
-{
-}
-
-
 // Management of an event.
 
 bool CTaskInfo::EventProcess(const Event &event)

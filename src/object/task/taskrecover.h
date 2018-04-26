@@ -40,8 +40,7 @@ enum TaskRecoverPhase
 class CTaskRecover : public CForegroundTask
 {
 public:
-    CTaskRecover(COldObject* object);
-    ~CTaskRecover();
+    using CForegroundTask::CForegroundTask;
 
     bool        EventProcess(const Event &event) override;
 
@@ -63,5 +62,5 @@ protected:
     CObject*        m_ruin = nullptr;
     CObject*        m_metal = nullptr;
     Math::Vector    m_recoverPos;
-    int             m_soundChannel = 0;
+    int             m_soundChannel = -1;
 };

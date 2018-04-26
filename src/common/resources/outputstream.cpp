@@ -35,10 +35,6 @@ COutputStream::COutputStream(const std::string& filename, std::ios_base::openmod
     open(filename, mode);
 }
 
-COutputStream::~COutputStream()
-{
-}
-
 void COutputStream::open(const std::string& filename, std::ios_base::openmode mode)
 {
     m_buffer.open(filename, mode);

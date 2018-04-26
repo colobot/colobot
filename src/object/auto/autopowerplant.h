@@ -41,7 +41,6 @@ class CAutoPowerPlant : public CAuto
 {
 public:
     CAutoPowerPlant(COldObject* object);
-    ~CAutoPowerPlant();
 
     void        DeleteObject(bool all=false) override;
 

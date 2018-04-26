@@ -40,7 +40,6 @@ class CMainMap
 {
 public:
     CMainMap();
-    ~CMainMap();
 
     void        UpdateMap();
     void        CreateMap();

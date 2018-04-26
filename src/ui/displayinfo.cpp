@@ -83,13 +83,6 @@ CDisplayInfo::CDisplayInfo()
     m_index = -1;
 }
 
-// Object's destructor.
-
-CDisplayInfo::~CDisplayInfo()
-{
-}
-
-
 // Management of an event.
 
 bool CDisplayInfo::EventProcess(const Event &event)

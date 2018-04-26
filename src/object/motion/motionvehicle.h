@@ -27,7 +27,6 @@ class CMotionVehicle : public CMotion
 {
 public:
     CMotionVehicle(COldObject* object);
-    ~CMotionVehicle();
 
     void        DeleteObject(bool bAll=false) override;
     void        Create(Math::Vector pos, float angle, ObjectType type, float power, Gfx::COldModelManager* modelManager) override;

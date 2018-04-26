@@ -30,14 +30,6 @@
 namespace CBot
 {
 
-CBotLeftExprVar::CBotLeftExprVar()
-{
-}
-
-CBotLeftExprVar::~CBotLeftExprVar()
-{
-}
-
 CBotInstr* CBotLeftExprVar::Compile(CBotToken* &p, CBotCStack* pStack)
 {
     // Verifies that the token is a variable name

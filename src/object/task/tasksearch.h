@@ -44,8 +44,7 @@ enum TaskSearchPhase
 class CTaskSearch : public CForegroundTask
 {
 public:
-    CTaskSearch(COldObject* object);
-    ~CTaskSearch();
+    using CForegroundTask::CForegroundTask;
 
     bool        EventProcess(const Event &event) override;
 

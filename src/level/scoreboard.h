@@ -55,9 +55,7 @@ class CScoreboard
 public:
     //! Creates the scoreboard
     //! The scoreboard exists only if enabled in level file
-    CScoreboard() {};
-    //! Destroys the scoreboard
-    ~CScoreboard() {};
+    CScoreboard() = default;
 
 public:
     /**

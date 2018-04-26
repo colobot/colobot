@@ -30,13 +30,6 @@ CMotionLevelController::CMotionLevelController(COldObject* object) : CMotion(obj
 {
 }
 
-// Object's destructor.
-
-CMotionLevelController::~CMotionLevelController()
-{
-}
-
-
 // Removes an object.
 
 void CMotionLevelController::DeleteObject(bool bAll)

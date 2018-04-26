@@ -40,7 +40,6 @@ class CAutoConvert : public CAuto
 {
 public:
     CAutoConvert(COldObject* object);
-    ~CAutoConvert();
 
     void        DeleteObject(bool all=false) override;
 

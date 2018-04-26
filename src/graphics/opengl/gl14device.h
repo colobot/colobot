@@ -76,7 +76,7 @@ class CGL14Device : public CDevice
 {
 public:
     CGL14Device(const DeviceConfig &config);
-    virtual ~CGL14Device();
+    ~CGL14Device() override;
 
     void DebugHook() override;
     void DebugLights() override;

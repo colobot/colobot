@@ -37,7 +37,6 @@ class CBaseRobot : public CBaseVehicle
 {
 public:
     CBaseRobot(int id, ObjectType type);
-    virtual ~CBaseRobot();
 
 public:
     static std::unique_ptr<CBaseRobot> Create(

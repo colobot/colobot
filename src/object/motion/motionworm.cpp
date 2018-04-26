@@ -69,13 +69,6 @@ CMotionWorm::CMotionWorm(COldObject* object)
     m_bArmStop = false;
 }
 
-// Object's destructor.
-
-CMotionWorm::~CMotionWorm()
-{
-}
-
-
 // Removes an object.
 
 void CMotionWorm::DeleteObject(bool bAll)

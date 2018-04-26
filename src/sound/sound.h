@@ -60,8 +60,7 @@ enum SoundNext
 class CSoundInterface
 {
 public:
-    CSoundInterface();
-    virtual ~CSoundInterface();
+    virtual ~CSoundInterface() = default;
 
     /** Function to initialize sound device
      */

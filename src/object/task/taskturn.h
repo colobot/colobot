@@ -27,8 +27,7 @@
 class CTaskTurn : public CForegroundTask
 {
 public:
-    CTaskTurn(COldObject* object);
-    ~CTaskTurn();
+    using CForegroundTask::CForegroundTask;
 
     bool    EventProcess(const Event &event) override;
 

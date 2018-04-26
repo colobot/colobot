@@ -47,12 +47,6 @@ CMotionBee::CMotionBee(COldObject* object)
     m_armTimeMarch   = START_TIME;
 }
 
-// Object's destructor.
-
-CMotionBee::~CMotionBee()
-{
-}
-
 
 // Removes an object.
 

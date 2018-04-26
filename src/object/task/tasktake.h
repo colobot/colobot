@@ -47,7 +47,6 @@ class CTaskTake : public CForegroundTask
 {
 public:
     CTaskTake(COldObject* object);
-    ~CTaskTake();
 
     bool        EventProcess(const Event &event) override;
 

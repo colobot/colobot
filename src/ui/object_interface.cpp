@@ -104,9 +104,7 @@ CObjectInterface::CObjectInterface(COldObject* object)
 
 // Object's destructor.
 
-CObjectInterface::~CObjectInterface()
-{
-}
+CObjectInterface::~CObjectInterface() = default; // defined here due to incomplete unique_ptr members
 
 
 // Destroys the object.

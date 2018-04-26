@@ -48,7 +48,7 @@ class CMotion
 {
 public:
     CMotion(COldObject* object);
-    virtual ~CMotion();
+    virtual ~CMotion() = default;
 
     void    SetPhysics(CPhysics* physics);
 

@@ -39,7 +39,6 @@ class CAutoMush : public CAuto
 {
 public:
     CAutoMush(COldObject* object);
-    ~CAutoMush();
 
     void        DeleteObject(bool bAll=false) override;
 

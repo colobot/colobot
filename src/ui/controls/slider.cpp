@@ -58,9 +58,7 @@ CSlider::CSlider() : CControl()
 
 // Object's destructor.
 
-CSlider::~CSlider()
-{
-}
+CSlider::~CSlider() = default; // defined here due to incomplete unique_ptr members
 
 
 // Creates a new button.

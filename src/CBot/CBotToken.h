@@ -83,7 +83,7 @@ public:
     /**
      * \brief Default constructor
      */
-    CBotToken();
+    CBotToken() = default;
     /**
      * \brief Copy constructor
      */
@@ -100,15 +100,6 @@ public:
               const std::string& sep = "",
               int start = 0,
               int end = 0);
-
-    /**
-     * \brief Destructor
-     *
-     * Be careful! This destroys the whole linked list of tokens
-     *
-     * Never call in the middle of the sequence - always on the first token in the list
-     */
-    ~CBotToken();
 
     /**
      * \brief Return the token type or the keyword id

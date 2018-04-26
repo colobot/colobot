@@ -47,8 +47,7 @@ public:
     {
         types[static_cast<int>(ObjectInterfaceType::ProgramStorage)] = true;
     }
-    virtual ~CProgramStorageObject()
-    {}
+    virtual ~CProgramStorageObject() = default;
 
     /**
      * Infects a random program of a robot with virus

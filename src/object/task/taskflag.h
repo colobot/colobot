@@ -39,8 +39,7 @@ enum TaskFlagOrder
 class CTaskFlag : public CForegroundTask
 {
 public:
-    CTaskFlag(COldObject* object);
-    ~CTaskFlag();
+    using CForegroundTask::CForegroundTask;
 
     bool        EventProcess(const Event &event) override;
 

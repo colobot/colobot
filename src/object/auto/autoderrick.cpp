@@ -54,13 +54,6 @@ CAutoDerrick::CAutoDerrick(COldObject* object) : CAuto(object)
     m_soundChannel = -1;
 }
 
-// Object's destructor.
-
-CAutoDerrick::~CAutoDerrick()
-{
-}
-
-
 // Destroys the object.
 
 void CAutoDerrick::DeleteObject(bool all)

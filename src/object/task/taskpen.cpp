@@ -29,20 +29,6 @@
 
 #include "sound/sound.h"
 
-
-// Object's constructor.
-
-CTaskPen::CTaskPen(COldObject* object) : CForegroundTask(object)
-{
-}
-
-// Object's destructor.
-
-CTaskPen::~CTaskPen()
-{
-}
-
-
 // Management of an event.
 
 bool CTaskPen::EventProcess(const Event &event)

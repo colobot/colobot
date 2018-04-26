@@ -68,10 +68,6 @@ CTerrain::CTerrain()
     FlushMaterials();
 }
 
-CTerrain::~CTerrain()
-{
-}
-
 bool CTerrain::Generate(int mosaicCount, int brickCountPow2, float brickSize,
                         float vision, int depth, float hardness)
 {

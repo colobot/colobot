@@ -29,7 +29,7 @@ namespace CBot
 class CBotFile
 {
 public:
-    virtual ~CBotFile() {}
+    virtual ~CBotFile() = default;
 
     virtual bool Opened() = 0;
     virtual bool Errored() = 0;
@@ -42,7 +42,7 @@ public:
 class CBotFileAccessHandler
 {
 public:
-    virtual ~CBotFileAccessHandler() {}
+    virtual ~CBotFileAccessHandler() = default;
 
     enum class OpenMode : char { Read = 'r', Write = 'w', Append = 'a' };
     virtual std::unique_ptr<CBotFile> OpenFile(const std::string& filename, OpenMode mode) = 0;

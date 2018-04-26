@@ -54,11 +54,6 @@ CDebugMenu::CDebugMenu(CRobotMain* main, Gfx::CEngine* engine, CObjectManager* o
     m_sound = sound;
 }
 
-CDebugMenu::~CDebugMenu()
-{
-
-}
-
 void CDebugMenu::ToggleInterface()
 {
     if (!IsActive())

@@ -34,8 +34,7 @@ public:
     {
         types[static_cast<int>(ObjectInterfaceType::Interactive)] = true;
     }
-    virtual ~CInteractiveObject()
-    {}
+    virtual ~CInteractiveObject() = default;
 
     virtual bool EventProcess(const Event& event) = 0;
 };

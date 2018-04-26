@@ -41,23 +41,6 @@
 const float ENERGY_RECOVER  = 0.25f;        // energy consumed by recovery
 const float RECOVER_DIST    = 11.8f;
 
-
-
-// Object's constructor.
-
-CTaskRecover::CTaskRecover(COldObject* object) : CForegroundTask(object)
-{
-    m_ruin = nullptr;
-    m_soundChannel = -1;
-}
-
-// Object's constructor.
-
-CTaskRecover::~CTaskRecover()
-{
-}
-
-
 // Management of an event.
 
 bool CTaskRecover::EventProcess(const Event &event)

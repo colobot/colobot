@@ -53,8 +53,7 @@ public:
     {
         types[static_cast<int>(ObjectInterfaceType::Damageable)] = true;
     }
-    virtual ~CDamageableObject()
-    {}
+    virtual ~CDamageableObject() = default;
 
     //! Damage the object, with the given force. Returns true if the object has been fully destroyed (assuming the object is destroyable, of course). If force == infinity, destroy immediately (this is the default value)
     /** NOTE: You should never assume that after this function exits, the object is destroyed, unless it returns true. Even if you specify force = infinity, if may still sometimes decide not to destroy the object. */

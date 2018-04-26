@@ -35,7 +35,6 @@ class CTarget : public CControl
 {
 public:
     CTarget();
-    ~CTarget();
 
     bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventType) override;
 

@@ -37,9 +37,6 @@ namespace Gfx
 class CNullDevice : public CDevice
 {
 public:
-    CNullDevice();
-    virtual ~CNullDevice();
-
     void DebugHook() override;
     void DebugLights() override;
 

@@ -50,10 +50,7 @@ CGL21Device::CGL21Device(const DeviceConfig &config)
     : m_config(config)
 {}
 
-
-CGL21Device::~CGL21Device()
-{
-}
+CGL21Device::~CGL21Device() = default; // defined here due to incomplete unique_ptr members
 
 void CGL21Device::DebugHook()
 {

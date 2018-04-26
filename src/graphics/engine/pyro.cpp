@@ -58,10 +58,6 @@ CPyro::CPyro()
     m_sound       = CApplication::GetInstancePointer()->GetSound();
 }
 
-CPyro::~CPyro()
-{
-}
-
 void CPyro::DeleteObject()
 {
     if ( m_lightRank != -1 )

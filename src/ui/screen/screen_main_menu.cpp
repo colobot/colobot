@@ -39,10 +39,6 @@
 namespace Ui
 {
 
-CScreenMainMenu::CScreenMainMenu()
-{
-}
-
 void CScreenMainMenu::CreateInterface()
 {
     CWindow*        pw;

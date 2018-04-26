@@ -66,13 +66,6 @@ CAutoPortico::CAutoPortico(COldObject* object) : CAuto(object)
     m_soundChannel = -1;
 }
 
-// Object's destructor.
-
-CAutoPortico::~CAutoPortico()
-{
-}
-
-
 // Destroys the object.
 
 void CAutoPortico::DeleteObject(bool bAll)

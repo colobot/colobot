@@ -43,7 +43,6 @@ public:
      *
      */
     COutputStream(const std::string& filename, std::ios_base::openmode mode = std::ios_base::out);
-    virtual ~COutputStream();
 
     /** Open Stream for writing
      *

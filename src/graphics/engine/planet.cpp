@@ -43,10 +43,6 @@ CPlanet::CPlanet(CEngine* engine)
     m_planets.reserve(PLANET_PREALLOCATE_COUNT);
 }
 
-CPlanet::~CPlanet()
-{
-}
-
 void CPlanet::Flush()
 {
     m_planets.clear();

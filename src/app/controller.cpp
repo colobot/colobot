@@ -31,9 +31,7 @@ CController::CController()
     m_main = MakeUnique<CRobotMain>();
 }
 
-CController::~CController()
-{
-}
+CController::~CController() = default; // defined here due to incomplete unique_ptr members
 
 CRobotMain* CController::GetRobotMain()
 {

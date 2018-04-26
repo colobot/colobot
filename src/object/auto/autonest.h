@@ -37,7 +37,6 @@ class CAutoNest : public CAuto
 {
 public:
     CAutoNest(COldObject* object);
-    ~CAutoNest();
 
     void        DeleteObject(bool all=false) override;
 

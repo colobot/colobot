@@ -24,19 +24,6 @@
 
 #include "object/old_object.h"
 
-// Object's constructor.
-
-CTaskWait::CTaskWait(COldObject* object) : CForegroundTask(object)
-{
-}
-
-// Object's destructor.
-
-CTaskWait::~CTaskWait()
-{
-}
-
-
 // Management of an event.
 
 bool CTaskWait::EventProcess(const Event &event)

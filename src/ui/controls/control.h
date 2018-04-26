@@ -67,7 +67,7 @@ class CControl
 {
 public:
     CControl();
-    virtual ~CControl();
+    virtual ~CControl() = default;
 
     virtual bool          Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
 

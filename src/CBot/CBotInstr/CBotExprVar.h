@@ -36,9 +36,6 @@ namespace CBot
 class CBotExprVar : public CBotInstr
 {
 public:
-    CBotExprVar();
-    ~CBotExprVar();
-
     /*!
      * \brief Compile an expression of a variable, possibly chained with index operators and/or dot operators
      * \param p[in, out] Pointer to first token of the expression, will be updated to point to first token after the expression
@@ -94,7 +91,7 @@ protected:
     virtual std::string GetDebugData() override;
 
 private:
-    long m_nIdent;
+    long m_nIdent = 0;
     friend class CBotPostIncExpr;
     friend class CBotPreIncExpr;
 

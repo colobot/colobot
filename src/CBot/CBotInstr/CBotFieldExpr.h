@@ -30,9 +30,6 @@ namespace CBot
 class CBotFieldExpr : public CBotInstr
 {
 public:
-    CBotFieldExpr();
-    ~CBotFieldExpr();
-
     /*!
      * \brief SetUniqNum
      * \param num
@@ -85,7 +82,7 @@ protected:
 
 private:
     friend class CBotExpression;
-    int m_nIdent;
+    int m_nIdent = 0;
 };
 
 } // namespace CBot

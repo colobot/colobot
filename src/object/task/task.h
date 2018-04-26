@@ -62,7 +62,7 @@ class CTask
 {
 public:
     CTask(COldObject* object);
-    virtual ~CTask();
+    virtual ~CTask() = default;
 
     virtual bool    EventProcess(const Event &event);
     virtual Error   IsEnded();
@@ -94,7 +94,7 @@ protected:
 class CForegroundTask : public CTask
 {
 public:
-    CForegroundTask(COldObject* object) : CTask(object) {}
+    using CTask::CTask;
 
     bool IsBackground() override final { return false; }
     bool IsPilot() override { return false; }
@@ -103,7 +103,7 @@ public:
 class CBackgroundTask : public CTask
 {
 public:
-    CBackgroundTask(COldObject* object) : CTask(object) {}
+    using CTask::CTask;
 
     bool IsBackground() override final { return true; }
     bool IsPilot() override final { return true; }

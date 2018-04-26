@@ -30,9 +30,8 @@ namespace CBot
 class CBotLeftExprVar : public CBotInstr
 {
 private:
-    CBotLeftExprVar();
+    CBotLeftExprVar() = default;
 public:
-    ~CBotLeftExprVar();
 
     static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack);
 

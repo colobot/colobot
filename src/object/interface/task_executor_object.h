@@ -40,8 +40,7 @@ public:
     {
         types[static_cast<int>(ObjectInterfaceType::TaskExecutor)] = true;
     }
-    virtual ~CTaskExecutorObject()
-    {}
+    virtual ~CTaskExecutorObject() = default;
 
     //! Start a foreground task
     //@{

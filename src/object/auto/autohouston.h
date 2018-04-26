@@ -44,7 +44,6 @@ class CAutoHouston : public CAuto
 {
 public:
     CAutoHouston(COldObject* object);
-    ~CAutoHouston();
 
     void        DeleteObject(bool bAll=false) override;
 

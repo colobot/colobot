@@ -65,13 +65,6 @@ CMotionVehicle::CMotionVehicle(COldObject* object)
     m_bFlyFix = false;
 }
 
-// Object's destructor.
-
-CMotionVehicle::~CMotionVehicle()
-{
-}
-
-
 // Removes an object.
 
 void CMotionVehicle::DeleteObject(bool bAll)

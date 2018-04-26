@@ -37,7 +37,6 @@ class CAutoPowerCaptor : public CAuto
 {
 public:
     CAutoPowerCaptor(COldObject* object);
-    ~CAutoPowerCaptor();
 
     void        DeleteObject(bool bAll=false) override;
 

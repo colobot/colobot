@@ -58,10 +58,6 @@ CLightning::CLightning(CEngine* engine)
       m_segments(LIGHTNING_SEGMENTS_COUNT, LightningSegment())
 {}
 
-CLightning::~CLightning()
-{
-}
-
 void CLightning::Flush()
 {
     m_lightningExists = false;

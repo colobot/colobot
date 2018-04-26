@@ -47,13 +47,6 @@ CAutoPowerStation::CAutoPowerStation(COldObject* object) : CAuto(object)
     Init();
 }
 
-// Object's destructor.
-
-CAutoPowerStation::~CAutoPowerStation()
-{
-}
-
-
 // Destroys the object.
 
 void CAutoPowerStation::DeleteObject(bool bAll)
