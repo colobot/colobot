@@ -68,9 +68,10 @@ public:
     void SetActivity(bool activity) override;
     bool GetActivity() override;
 
-    void SetCmdLine(unsigned int rank, float value);
+    void SetCmdLine(const unsigned int rank, const float value);
     float GetCmdLine(unsigned int rank) override;
     std::vector<float>& GetCmdLine();
+    const std::vector<float>& GetCmdLine()const;
 
 private:
     //! Save current status to recording buffer

@@ -46,22 +46,22 @@ SystemDialogResult CSystemUtilsLinux::SystemDialog(SystemDialogType type, const 
     std::string options = "";
     switch (type)
     {
-        case SDT_INFO:
-        default:
-            options = "--info";
-            break;
-        case SDT_WARNING:
-            options = "--warning";
-            break;
-        case SDT_ERROR:
-            options = "--error";
-            break;
-        case SDT_YES_NO:
-            options = "--question --ok-label=\"Yes\" --cancel-label=\"No\"";
-            break;
-        case SDT_OK_CANCEL:
-            options = "--question --ok-label=\"OK\" --cancel-label=\"Cancel\"";
-            break;
+    case SDT_INFO:
+    default:
+        options = "--info";
+        break;
+    case SDT_WARNING:
+        options = "--warning";
+        break;
+    case SDT_ERROR:
+        options = "--error";
+        break;
+    case SDT_YES_NO:
+        options = "--question --ok-label=\"Yes\" --cancel-label=\"No\"";
+        break;
+    case SDT_OK_CANCEL:
+        options = "--question --ok-label=\"OK\" --cancel-label=\"Cancel\"";
+        break;
     }
 
     std::string command = "zenity " + options + " --text=\"" + message + "\" --title=\"" + title + "\"";
@@ -70,14 +70,14 @@ SystemDialogResult CSystemUtilsLinux::SystemDialog(SystemDialogType type, const 
     SystemDialogResult result = SDR_OK;
     switch (type)
     {
-        case SDT_YES_NO:
-            result = code ? SDR_NO : SDR_YES;
-            break;
-        case SDT_OK_CANCEL:
-            result = code ? SDR_CANCEL : SDR_OK;
-            break;
-        default:
-            break;
+    case SDT_YES_NO:
+        result = code ? SDR_NO : SDR_YES;
+        break;
+    case SDT_OK_CANCEL:
+        result = code ? SDR_CANCEL : SDR_OK;
+        break;
+    default:
+        break;
     }
 
     return result;
@@ -104,18 +104,12 @@ std::string CSystemUtilsLinux::GetSaveDir()
     {
         char *envHOME = getenv("HOME");
         if (envHOME == nullptr)
-        {
             savegameDir = "/tmp/colobot-save";
-        }
         else
-        {
             savegameDir = std::string(envHOME) + "/.local/share/colobot";
-        }
     }
     else
-    {
         savegameDir = std::string(envXDG_DATA_HOME) + "/colobot";
-    }
     GetLogger()->Trace("Saved game files are going to %s\n", savegameDir.c_str());
 
     return savegameDir;

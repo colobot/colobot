@@ -151,9 +151,7 @@ void CMotionWorm::Create(Math::Vector pos, float angle, ObjectType type,
 
 void CMotionWorm::CreatePhysics()
 {
-    Character*  character;
-
-    character = m_object->GetCharacter();
+    Character*  character = m_object->GetCharacter();
     character->wheelFront = 10.0f;
     character->wheelBack  = 10.0f;
     character->wheelLeft  =  2.0f;
@@ -201,8 +199,10 @@ bool CMotionWorm::SetParam(int rank, float value)
 
 float CMotionWorm::GetParam(int rank)
 {
-    if ( rank == 0 )  return m_timeDown;
-    if ( rank == 1 )  return m_timeUp;
+    if ( rank == 0 )
+        return m_timeDown;
+    if ( rank == 1 )
+        return m_timeUp;
     return 0.0f;
 }
 
@@ -215,9 +215,7 @@ bool CMotionWorm::EventProcess(const Event &event)
     CMotion::EventProcess(event);
 
     if ( event.type == EVENT_FRAME )
-    {
         return EventFrame(event);
-    }
 
     if ( event.type == EVENT_KEY_DOWN )
     {
@@ -237,12 +235,14 @@ bool CMotionWorm::EventFrame(const Event &event)
     float       floor, a, s, px, curve, phase, h, zoom, radius;
     int         i, under;
 
-    if ( m_engine->GetPause() )  return true;
+    if ( m_engine->GetPause() )
+        return true;
 
     s = m_physics->GetLinMotionX(MO_MOTSPEED)/m_physics->GetLinMotionX(MO_ADVSPEED);
     a = m_physics->GetCirMotionY(MO_MOTSPEED)/m_physics->GetCirMotionY(MO_ADVSPEED);
 
-    if ( s == 0.0f && a != 0.0f )  s = a;
+    if ( s == 0.0f && a != 0.0f )
+        s = a;
 
     m_armLinSpeed += (s-m_armLinSpeed)*event.rTime*3.0f;
     m_armCirSpeed += (a-m_armCirSpeed)*event.rTime*1.5f;
@@ -256,32 +256,25 @@ bool CMotionWorm::EventFrame(const Event &event)
     {
         phase = Math::Mod(m_armTimeMarch-START_TIME-i*0.3f, TIME_UPDOWN+m_timeDown+TIME_UPDOWN+m_timeUp);
         if ( phase < TIME_UPDOWN )  // descends?
-        {
             h = -(phase/TIME_UPDOWN)*DOWN_ALTITUDE;
-        }
         else if ( phase < TIME_UPDOWN+m_timeDown )  // advance underground?
         {
             h = -DOWN_ALTITUDE;
             under ++;  // the most of a piece entirely under ground
         }
         else if ( phase < TIME_UPDOWN+m_timeDown+TIME_UPDOWN )  // up?
-        {
             h = -(1.0f-(phase-TIME_UPDOWN-m_timeDown)/TIME_UPDOWN)*DOWN_ALTITUDE;
-        }
         else  // advance on earth?
-        {
             h = 0.0f;
-        }
         if ( dynamic_cast<CDestroyableObject*>(m_object)->IsDying() )  // is burning?
-        {
             h = 0.0f;  // remains on earth
-        }
         h += 0.3f;
         height[i] = h;
     }
     m_object->SetUnderground(under == WORM_PART+2);
 
-    if ( !m_engine->IsVisiblePoint(m_object->GetPosition()) )  return true;
+    if ( !m_engine->IsVisiblePoint(m_object->GetPosition()) )
+        return true;
 
     pos = m_object->GetPosition();
     floor = m_terrain->GetFloorLevel(pos, true);
@@ -293,7 +286,8 @@ bool CMotionWorm::EventFrame(const Event &event)
     {
         radius = 1.0f+(height[i]-0.3f)/DOWN_ALTITUDE;  // 0 = underground, 1 = surface
         radius = radius*1.3f-0.3f;
-        if ( radius < 0.0f )  radius = 0.0f;
+        if ( radius < 0.0f )
+            radius = 0.0f;
         radius *= 5.0f;
         m_engine->SetObjectShadowSpotRadius(m_object->GetObjectRank(0), radius);
 
@@ -316,9 +310,11 @@ bool CMotionWorm::EventFrame(const Event &event)
         m_object->SetPartPosition(i+1, pos);
 
         zoom = Math::Mod(m_armTimeAbs*0.5f+100.0f-i*0.1f, 2.0f);
-        if ( zoom > 1.0f )  zoom = 2.0f-zoom;
+        if ( zoom > 1.0f )
+            zoom = 2.0f-zoom;
         zoom *= 1.6f;
-        if ( zoom < 1.0f )  zoom = 1.0f;
+        if ( zoom < 1.0f )
+            zoom = 1.0f;
         m_object->SetPartScaleY(i+1, 0.2f+zoom*0.8f);
         m_object->SetPartScaleZ(i+1, zoom);
 
@@ -336,7 +332,6 @@ bool CMotionWorm::EventFrame(const Event &event)
             dim.y = dim.x;
             m_particle->CreateParticle(pos, speed, dim, Gfx::PARTICRASH, 2.0f);
         }
-
         px -= 1.0f;
     }
 
@@ -351,10 +346,7 @@ bool CMotionWorm::EventFrame(const Event &event)
         m_object->SetPartRotation(i+1, angle);
 
         if ( i == WORM_PART )
-        {
             m_object->SetPartRotation(i+2, angle);
-        }
     }
-
     return true;
 }

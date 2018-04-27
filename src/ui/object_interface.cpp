@@ -121,9 +121,7 @@ void CObjectInterface::DeleteObject(bool all)
     }
 
     if ( m_studio != nullptr )  // current edition?
-    {
         StopEditScript(true);
-    }
 }
 
 // Management of an event.
@@ -152,18 +150,12 @@ bool CObjectInterface::EventProcess(const Event &event)
         {
             pc = pw->SearchControl(m_defaultEnter);
             if ( pc != nullptr )
-            {
                 if ( pc->TestState(STATE_ENABLE) )
-                {
                     action = m_defaultEnter;
-                }
-            }
         }
     }
     else
-    {
         action = event.type;
-    }
 
     if (event.type == EVENT_KEY_DOWN && m_object->GetSelect())
     {
@@ -186,12 +178,8 @@ bool CObjectInterface::EventProcess(const Event &event)
             {
                 CButton* pb = static_cast< CButton* >(pw->SearchControl(EVENT_OBJECT_PROGRUN));
                 if(pb != nullptr)
-                {
                     if(pb->TestState(STATE_ENABLE))
-                    {
                         queue->AddEvent(Event(EVENT_OBJECT_PROGRUN));
-                    }
-                }
             }
             return false;
         }
@@ -207,8 +195,10 @@ bool CObjectInterface::EventProcess(const Event &event)
                 index = data->key-KEY(1);
             else if(data->key == KEY(0))
                 index = 9;
-            if(index < 0) index = m_programStorage->GetProgramCount()-1;
-            if(index > static_cast<int>(m_programStorage->GetProgramCount())-1) index = 0;
+            if(index < 0)
+                index = m_programStorage->GetProgramCount()-1;
+            if(index > static_cast<int>(m_programStorage->GetProgramCount())-1)
+                index = 0;
 
             if(GetSelScript() != index)
             {
@@ -220,12 +210,12 @@ bool CObjectInterface::EventProcess(const Event &event)
         }
     }
 
-    if ( action == EVENT_NULL )  return true;
+    if ( action == EVENT_NULL )
+        return true;
 
     if ( action == EVENT_UPDINTERFACE )
-    {
-        if ( m_object->GetSelect() )  CreateInterface(true);
-    }
+        if ( m_object->GetSelect() )
+            CreateInterface(true);
 
     if ( action == EVENT_FRAME )
     {
@@ -242,27 +232,19 @@ bool CObjectInterface::EventProcess(const Event &event)
             if ( !m_programmable->IsProgram() )
             {
                 if (m_selScript < m_programStorage->GetProgramCount())
-                {
                     m_programmable->RunProgram(m_programStorage->GetProgram(m_selScript));
-                }
             }
             else
-            {
                 m_programmable->StopProgram();
-            }
         }
         if ( action == EVENT_OBJECT_PROGSTART )
         {
             m_main->SaveOneScript(m_object);
             if (m_selScript < m_programStorage->GetProgramCount())
-            {
                 m_programmable->RunProgram(m_programStorage->GetProgram(m_selScript));
-            }
         }
         if ( action == EVENT_OBJECT_PROGSTOP )
-        {
             m_programmable->StopProgram();
-        }
         if ( action == EVENT_STUDIO_OK )
         {
             StopEditScript(false);
@@ -283,9 +265,7 @@ bool CObjectInterface::EventProcess(const Event &event)
             UpdateInterface();
             CWindow* pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
             if ( pw != nullptr )
-            {
                 UpdateScript(pw);
-            }
             SetSelScript(m_selScript);
 
             StartEditScript(newProgram, "");
@@ -294,35 +274,26 @@ bool CObjectInterface::EventProcess(const Event &event)
             GetResource(RES_TEXT, RT_STUDIO_CLONED, res);
             m_studio->SetInfoText(res, false);
         }
-
         return true;
     }
 
-    if ( !m_object->GetSelect() ) return true;  // robot not selected?
+    if ( !m_object->GetSelect() )
+        return true;  // robot not selected?
 
     if ( m_taskExecutor->IsBackgroundTask() )  // current task?
-    {
         if ( action == EVENT_OBJECT_ENDSHIELD )
-        {
             m_taskExecutor->StartTaskShield(TSM_DOWN, 0.0f);
-        }
-    }
     if ( m_taskExecutor->IsForegroundTask() ||  // current task?
          m_programmable->IsProgram() )
     {
         if ( action == EVENT_OBJECT_PROGRUN )
-        {
             m_programmable->StopProgram();
-        }
         if ( action == EVENT_OBJECT_PROGEDIT )
-        {
             if(m_selScript < m_programStorage->GetProgramCount())
-            {
                 StartEditScript(m_programStorage->GetProgram(m_selScript), m_main->GetScriptName());
-            }
-        }
 
-        if ( !m_taskExecutor->IsForegroundTask() || !m_taskExecutor->GetForegroundTask()->IsPilot() )  return true;
+        if ( !m_taskExecutor->IsForegroundTask() || !m_taskExecutor->GetForegroundTask()->IsPilot() )
+            return true;
     }
 
     if ( !m_programmable->IsProgram() )
@@ -336,9 +307,7 @@ bool CObjectInterface::EventProcess(const Event &event)
             UpdateInterface();
             CWindow* pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
             if ( pw != nullptr )
-            {
                 UpdateScript(pw);
-            }
             SetSelScript(m_selScript);
         }
 
@@ -347,9 +316,7 @@ bool CObjectInterface::EventProcess(const Event &event)
             if(m_selScript < m_programStorage->GetProgramCount())
             {
                 if(m_programmable->GetCurrentProgram() == m_programStorage->GetProgram(m_selScript))
-                {
                     m_programmable->StopProgram();
-                }
                 m_programStorage->RemoveProgram(m_programStorage->GetProgram(m_selScript));
                 if(m_selScript >= m_programStorage->GetProgramCount())
                     m_selScript = m_programStorage->GetProgramCount()-1;
@@ -358,9 +325,7 @@ bool CObjectInterface::EventProcess(const Event &event)
                 UpdateInterface();
                 CWindow* pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
                 if ( pw != nullptr )
-                {
                     UpdateScript(pw);
-                }
                 SetSelScript(m_selScript);
             }
         }
@@ -376,9 +341,7 @@ bool CObjectInterface::EventProcess(const Event &event)
                 UpdateInterface();
                 CWindow* pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
                 if ( pw != nullptr )
-                {
                     UpdateScript(pw);
-                }
                 SetSelScript(m_selScript);
             }
         }
@@ -393,9 +356,7 @@ bool CObjectInterface::EventProcess(const Event &event)
             UpdateInterface();
             CWindow* pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
             if ( pw != nullptr )
-            {
                 UpdateScript(pw);
-            }
             SetSelScript(m_selScript);
         }
 
@@ -408,9 +369,7 @@ bool CObjectInterface::EventProcess(const Event &event)
             UpdateInterface();
             CWindow* pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
             if ( pw != nullptr )
-            {
                 UpdateScript(pw);
-            }
             SetSelScript(m_selScript);
         }
     }
@@ -422,12 +381,8 @@ bool CObjectInterface::EventProcess(const Event &event)
     }
 
     if ( action == EVENT_OBJECT_PROGEDIT )
-    {
         if(m_selScript < m_programStorage->GetProgramCount())
-        {
             StartEditScript(m_programStorage->GetProgram(m_selScript), m_main->GetScriptName());
-        }
-    }
 
     if ( action == EVENT_OBJECT_PROGRUN )
     {
@@ -444,9 +399,7 @@ bool CObjectInterface::EventProcess(const Event &event)
     if ( !m_programmable->IsProgram() && m_main->CanPlayerInteract() )
     {
         if ( action == EVENT_OBJECT_HTAKE )
-        {
             err = m_taskExecutor->StartTaskTake();
-        }
 
         if ( action == EVENT_OBJECT_MFRONT ||
              action == EVENT_OBJECT_MBACK  ||
@@ -459,9 +412,7 @@ bool CObjectInterface::EventProcess(const Event &event)
         if ( action == EVENT_OBJECT_MTAKE )
         {
             if ( m_manipStyle == EVENT_OBJECT_MFRONT )
-            {
                 err = m_taskExecutor->StartTaskManip(TMO_AUTO, TMA_FFRONT);
-            }
             if ( m_manipStyle == EVENT_OBJECT_MBACK )
             {
                 err = m_taskExecutor->StartTaskManip(TMO_AUTO, TMA_FBACK);
@@ -483,108 +434,57 @@ bool CObjectInterface::EventProcess(const Event &event)
         }
 
         if ( action == EVENT_OBJECT_BDERRICK )
-        {
             err = m_taskExecutor->StartTaskBuild(OBJECT_DERRICK);
-        }
         if ( action == EVENT_OBJECT_BSTATION )
-        {
             err = m_taskExecutor->StartTaskBuild(OBJECT_STATION);
-        }
         if ( action == EVENT_OBJECT_BFACTORY )
-        {
             err = m_taskExecutor->StartTaskBuild(OBJECT_FACTORY);
-        }
         if ( action == EVENT_OBJECT_BREPAIR )
-        {
             err = m_taskExecutor->StartTaskBuild(OBJECT_REPAIR);
-        }
         if ( action == EVENT_OBJECT_BCONVERT )
-        {
             err = m_taskExecutor->StartTaskBuild(OBJECT_CONVERT);
-        }
         if ( action == EVENT_OBJECT_BTOWER )
-        {
             err = m_taskExecutor->StartTaskBuild(OBJECT_TOWER);
-        }
         if ( action == EVENT_OBJECT_BRESEARCH )
-        {
             err = m_taskExecutor->StartTaskBuild(OBJECT_RESEARCH);
-        }
         if ( action == EVENT_OBJECT_BRADAR )
-        {
             err = m_taskExecutor->StartTaskBuild(OBJECT_RADAR);
-        }
         if ( action == EVENT_OBJECT_BENERGY )
-        {
             err = m_taskExecutor->StartTaskBuild(OBJECT_ENERGY);
-        }
         if ( action == EVENT_OBJECT_BLABO )
-        {
             err = m_taskExecutor->StartTaskBuild(OBJECT_LABO);
-        }
         if ( action == EVENT_OBJECT_BNUCLEAR )
-        {
             err = m_taskExecutor->StartTaskBuild(OBJECT_NUCLEAR);
-        }
         if ( action == EVENT_OBJECT_BPARA )
-        {
             err = m_taskExecutor->StartTaskBuild(OBJECT_PARA);
-        }
         if ( action == EVENT_OBJECT_BINFO )
-        {
             err = m_taskExecutor->StartTaskBuild(OBJECT_INFO);
-        }
         if ( action == EVENT_OBJECT_BDESTROYER )
-        {
             err = m_taskExecutor->StartTaskBuild(OBJECT_DESTROYER);
-        }
 
         if ( action == EVENT_OBJECT_GFLAT )
-        {
             GroundFlat();
-        }
         if ( action == EVENT_OBJECT_FCREATE )
-        {
             err = m_taskExecutor->StartTaskFlag(TFL_CREATE, m_flagColor);
-        }
         if ( action == EVENT_OBJECT_FDELETE )
-        {
             err = m_taskExecutor->StartTaskFlag(TFL_DELETE, m_flagColor);
-        }
         if ( action == EVENT_OBJECT_FCOLORb ||
              action == EVENT_OBJECT_FCOLORr ||
              action == EVENT_OBJECT_FCOLORg ||
              action == EVENT_OBJECT_FCOLORy ||
              action == EVENT_OBJECT_FCOLORv )
-        {
             ColorFlag(action - EVENT_OBJECT_FCOLORb);
-        }
 
         if ( action == EVENT_OBJECT_SEARCH )
-        {
             err = m_taskExecutor->StartTaskSearch();
-        }
-
         if ( action == EVENT_OBJECT_DELSEARCH )
-        {
             err = m_taskExecutor->StartTaskDeleteMark();
-        }
-
         if ( action == EVENT_OBJECT_TERRAFORM )
-        {
             err = m_taskExecutor->StartTaskTerraform();
-        }
-
         if ( action == EVENT_OBJECT_RECOVER )
-        {
             err = m_taskExecutor->StartTaskRecover();
-        }
-
         if ( action == EVENT_OBJECT_BEGSHIELD )
-        {
             err = m_taskExecutor->StartTaskShield(TSM_UP);
-        }
-
         if ( action == EVENT_OBJECT_DIMSHIELD )
         {
             pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
@@ -592,24 +492,18 @@ bool CObjectInterface::EventProcess(const Event &event)
             {
                 ps = static_cast< CSlider* >(pw->SearchControl(EVENT_OBJECT_DIMSHIELD));
                 if ( ps != nullptr )
-                {
                     dynamic_cast<CShielder*>(m_object)->SetShieldRadius((ps->GetVisibleValue()-(RADIUS_SHIELD_MIN/g_unit))/((RADIUS_SHIELD_MAX-RADIUS_SHIELD_MIN)/g_unit));
-                }
             }
         }
 
         if ( action == EVENT_OBJECT_FIRE && !m_taskExecutor->IsForegroundTask() && !m_object->GetTrainer() )
         {
             if ( m_camera->GetType() != Gfx::CAM_TYPE_ONBOARD )
-            {
                 m_camera->SetType(Gfx::CAM_TYPE_ONBOARD);
-            }
             err = m_taskExecutor->StartTaskFire(0.0f);
         }
         if ( action == EVENT_OBJECT_TARGET && !m_object->GetTrainer() )
-        {
             err = m_taskExecutor->StartTaskGunGoal((event.mousePos.y-0.50f)*1.3f, (event.mousePos.x-0.50f)*2.0f);
-        }
 
         if ( action == EVENT_OBJECT_FIREANT )
         {
@@ -617,76 +511,46 @@ bool CObjectInterface::EventProcess(const Event &event)
         }
 
         if ( action == EVENT_OBJECT_SPIDEREXPLO && !m_taskExecutor->IsForegroundTask() )
-        {
             err = m_taskExecutor->StartTaskSpiderExplo();
-        }
 
         if ( action == EVENT_OBJECT_PEN0 )  // up
-        {
             err = m_taskExecutor->StartTaskPen(false);
-        }
         if ( action == EVENT_OBJECT_PEN1 )  // black
-        {
             err = m_taskExecutor->StartTaskPen(true, TraceColor::Black);
-        }
         if ( action == EVENT_OBJECT_PEN2 )  // yellow
-        {
             err = m_taskExecutor->StartTaskPen(true, TraceColor::Yellow);
-        }
         if ( action == EVENT_OBJECT_PEN3 )  // orange
-        {
             err = m_taskExecutor->StartTaskPen(true, TraceColor::Orange);
-        }
         if ( action == EVENT_OBJECT_PEN4 )  // red
-        {
             err = m_taskExecutor->StartTaskPen(true, TraceColor::Red);
-        }
         if ( action == EVENT_OBJECT_PEN5 )  // violet
-        {
             err = m_taskExecutor->StartTaskPen(true, TraceColor::Purple);
-        }
         if ( action == EVENT_OBJECT_PEN6 )  // blue
-        {
             err = m_taskExecutor->StartTaskPen(true, TraceColor::Blue);
-        }
         if ( action == EVENT_OBJECT_PEN7 )  // green
-        {
             err = m_taskExecutor->StartTaskPen(true, TraceColor::Green);
-        }
         if ( action == EVENT_OBJECT_PEN8 )  // brown
-        {
             err = m_taskExecutor->StartTaskPen(true, TraceColor::Brown);
-        }
 
         if ( action == EVENT_OBJECT_REC )  // registered?
         {
             if ( m_programmable->IsTraceRecord() )
-            {
                 m_programmable->TraceRecordStop();
-            }
             else
-            {
                 m_programmable->TraceRecordStart();
-            }
             UpdateInterface();
             pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
             if ( pw != nullptr )
-            {
                 UpdateScript(pw);
-            }
         }
         if ( action == EVENT_OBJECT_STOP )  // stops?
         {
             if ( m_programmable->IsTraceRecord() )
-            {
                 m_programmable->TraceRecordStop();
-            }
             UpdateInterface();
             pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
             if ( pw != nullptr )
-            {
                 UpdateScript(pw);
-            }
         }
 
         if ( action == EVENT_OBJECT_RESET )
@@ -697,10 +561,7 @@ bool CObjectInterface::EventProcess(const Event &event)
     }
 
     if ( err != ERR_OK )
-    {
         m_main->DisplayError(err, m_object);
-    }
-
     return true;
 }
 
@@ -712,14 +573,10 @@ bool CObjectInterface::EventFrame(const Event &event)
     m_time += event.rTime;
 
     if ( m_soundChannelAlarm != -1 )
-    {
         m_sound->Position(m_soundChannelAlarm, m_object->GetPosition());
-    }
 
     if ( m_studio != nullptr )  // current edition?
-    {
         m_studio->EventProcess(event);
-    }
 
     UpdateInterface(event.rTime);
 
@@ -740,10 +597,12 @@ void CObjectInterface::StartEditScript(Program* program, std::string name)
 
 void CObjectInterface::StopEditScript(bool closeWithErrors)
 {
-    if ( !m_studio->StopEditScript(closeWithErrors) )  return;
+    if ( !m_studio->StopEditScript(closeWithErrors) )
+        return;
     m_studio.reset();
 
-    if ( !closeWithErrors )  m_programStorage->SetActiveVirus(false);
+    if ( !closeWithErrors )
+        m_programStorage->SetActiveVirus(false);
 
     CreateInterface(true);  // puts the control buttons
 }
@@ -762,7 +621,8 @@ void CObjectInterface::GroundFlat()
     {
         err = ERR_FLAG_FLY;
         pos = m_object->GetPosition();
-        if ( pos.y < m_water->GetLevel() )  err = ERR_FLAG_WATER;
+        if ( pos.y < m_water->GetLevel() )
+            err = ERR_FLAG_WATER;
         m_main->DisplayError(err, m_object);
         return;
     }
@@ -772,7 +632,8 @@ void CObjectInterface::GroundFlat()
     m_sound->Play(SOUND_GFLAT, pos);
 
     level = m_terrain->GetFloorLevel(pos)+2.0f;
-    if ( pos.y < level )  pos.y = level;  // not below the soil
+    if ( pos.y < level )
+        pos.y = level;  // not below the soil
     speed = Math::Vector(0.0f, 0.0f, 0.0f);
     dim.x = 40.0f;
     dim.y = dim.x;
@@ -810,21 +671,25 @@ bool CObjectInterface::CreateInterface(bool bSelect)
     }
     m_defaultEnter = EVENT_NULL;
 
-    if ( !bSelect )  return true;
+    if ( !bSelect )
+        return true;
 
     pos.x = 0.0f;
     pos.y = 0.0f;
     dim.x = 540.0f/640.0f;
-    if ( !m_main->GetShowMap() )  dim.x = 640.0f/640.0f;
+    if ( !m_main->GetShowMap() )
+        dim.x = 640.0f/640.0f;
     dim.y =  86.0f/480.0f;
     m_interface->CreateWindows(pos, dim, 3, EVENT_WINDOW0);
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-    if ( pw == nullptr )  return false;
+    if ( pw == nullptr )
+        return false;
 
     pos.x = 0.0f;
     pos.y = 64.0f/480.0f;
     ddim.x = 540.0f/640.0f;
-    if ( !m_main->GetShowMap() )  ddim.x = 640.0f/640.0f;
+    if ( !m_main->GetShowMap() )
+        ddim.x = 640.0f/640.0f;
     ddim.y = 16.0f/480.0f;
     pw->CreateLabel(pos, ddim, 0, EVENT_LABEL0, m_object->GetTooltipText());
 
@@ -1327,13 +1192,9 @@ bool CObjectInterface::CreateInterface(bool bSelect)
     pos.x = ox+sx*13.4f;
     pos.y = oy+sy*0;
     if ( m_object->GetTrainer() )  // Training?
-    {
         pw->CreateButton(pos, dim, 9, EVENT_OBJECT_RESET);
-    }
     else
-    {
         pw->CreateButton(pos, dim, 10, EVENT_OBJECT_DESELECT);
-    }
 
     if ( m_object->Implements(ObjectInterfaceType::Powered) )  // vehicle?
     {
@@ -1428,7 +1289,8 @@ void CObjectInterface::UpdateInterface(float rTime)
     bool        bOnBoard;
 
     m_lastAlarmTime += rTime;
-    if ( m_time < m_lastUpdateTime+0.1f )  return;
+    if ( m_time < m_lastUpdateTime+0.1f )
+        return;
     m_lastUpdateTime = m_time;
 
     if ( !m_object->GetSelect() )
@@ -1443,7 +1305,8 @@ void CObjectInterface::UpdateInterface(float rTime)
     }
 
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-    if ( pw == nullptr )  return;
+    if ( pw == nullptr )
+        return;
 
     CGauge* pg = static_cast< CGauge* >(pw->SearchControl(EVENT_OBJECT_GENERGY));
     if (pg != nullptr)
@@ -1500,7 +1363,7 @@ void CObjectInterface::UpdateInterface(float rTime)
                 m_lastAlarmTime = 0.0f;
             }
         }
-        
+
         pg->SetLevel(shield);
         pg->SetIcon(icon);
     }
@@ -1544,13 +1407,9 @@ void CObjectInterface::UpdateInterface(float rTime)
     if ( pb != nullptr )
     {
         if ( m_programmable->IsTraceRecord() && Math::Mod(m_time, 0.4f) >= 0.2f )
-        {
             pb->SetState(STATE_CHECK);
-        }
         else
-        {
             pb->ClearState(STATE_CHECK);
-        }
     }
 
     bOnBoard = m_camera->GetType() == Gfx::CAM_TYPE_ONBOARD;
@@ -1568,47 +1427,33 @@ void CObjectInterface::UpdateInterface(float rTime)
             pgr->SetState(STATE_VISIBLE, !m_main->GetFriendAim());
         }
         else
-        {
             pgr->ClearState(STATE_VISIBLE);
-        }
     }
 
     ptg = static_cast< CTarget* >(pw->SearchControl(EVENT_OBJECT_TARGET));
     if ( ptg != nullptr )
     {
         if ( bOnBoard )
-        {
             ptg->SetState(STATE_VISIBLE);
-        }
         else
-        {
             ptg->ClearState(STATE_VISIBLE);
-        }
     }
 
     pgr = static_cast< CGroup* >(pw->SearchControl(EVENT_OBJECT_CORNERul));
     if ( pgr != nullptr )
-    {
         pgr->SetState(STATE_VISIBLE, bOnBoard);
-    }
 
     pgr = static_cast< CGroup* >(pw->SearchControl(EVENT_OBJECT_CORNERur));
     if ( pgr != nullptr )
-    {
         pgr->SetState(STATE_VISIBLE, bOnBoard);
-    }
 
     pgr = static_cast< CGroup* >(pw->SearchControl(EVENT_OBJECT_CORNERdl));
     if ( pgr != nullptr )
-    {
         pgr->SetState(STATE_VISIBLE, bOnBoard);
-    }
 
     pgr = static_cast< CGroup* >(pw->SearchControl(EVENT_OBJECT_CORNERdr));
     if ( pgr != nullptr )
-    {
         pgr->SetState(STATE_VISIBLE, bOnBoard);
-    }
 }
 
 // Updates the status of all interface buttons.
@@ -1622,10 +1467,12 @@ void CObjectInterface::UpdateInterface()
     CColor*     pc;
     bool        bFly, bRun;
 
-    if ( !m_object->GetSelect() )  return;
+    if ( !m_object->GetSelect() )
+        return;
 
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-    if ( pw == nullptr )  return;
+    if ( pw == nullptr )
+        return;
 
     // This is needed because currently started program is loaded by CProgrammableObject
     // TODO: Isn't there a better way to do it?
@@ -1792,24 +1639,20 @@ void CObjectInterface::UpdateInterface()
             {
                 std::string title = m_programStorage->GetProgram(m_selScript)->script->GetTitle();
                 if ( !title.empty() )
-                {
                     bRun = true;
-                }
             }
             else
-            {
                 bRun = false;
-            }
         }
-        if ( !bEnable && !m_programmable->IsProgram() )  bRun = false;
-        if ( m_programmable->IsTraceRecord() )  bRun = false;
+        if ( !bEnable && !m_programmable->IsProgram() )
+            bRun = false;
+        if ( m_programmable->IsTraceRecord() )
+            bRun = false;
         EnableInterface(pw, EVENT_OBJECT_PROGRUN, bRun && m_main->CanPlayerInteract());
 
         pb = static_cast< CButton* >(pw->SearchControl(EVENT_OBJECT_PROGRUN));
         if ( pb != nullptr )
-        {
             pb->SetIcon(!m_programmable->IsProgram() ? 21 : 8);  // run/stop
-        }
 
 //?     pb = (CButton*)pw->SearchControl(EVENT_OBJECT_PROGEDIT);
 //?     if ( pb != 0 )
@@ -1837,100 +1680,64 @@ void CObjectInterface::UpdateInterface()
     {
         pb = static_cast< CButton* >(pw->SearchControl(EVENT_OBJECT_PEN0));
         if ( pb != nullptr )
-        {
             pb->ClearState(STATE_CHECK);
-        }
 
         TraceColor color = traceDrawing->GetTraceColor();
         pc = static_cast< CColor* >(pw->SearchControl(EVENT_OBJECT_PEN1));
         if ( pc != nullptr )
-        {
             pc->SetState(STATE_CHECK, color == TraceColor::Black);
-        }
         pc = static_cast< CColor* >(pw->SearchControl(EVENT_OBJECT_PEN2));
         if ( pc != nullptr )
-        {
             pc->SetState(STATE_CHECK, color == TraceColor::Yellow);
-        }
         pc = static_cast< CColor* >(pw->SearchControl(EVENT_OBJECT_PEN3));
         if ( pc != nullptr )
-        {
             pc->SetState(STATE_CHECK, color == TraceColor::Orange);
-        }
         pc = static_cast< CColor* >(pw->SearchControl(EVENT_OBJECT_PEN4));
         if ( pc != nullptr )
-        {
             pc->SetState(STATE_CHECK, color == TraceColor::Red);
-        }
         pc = static_cast< CColor* >(pw->SearchControl(EVENT_OBJECT_PEN5));
         if ( pc != nullptr )
-        {
             pc->SetState(STATE_CHECK, color == TraceColor::Purple);
-        }
         pc = static_cast< CColor* >(pw->SearchControl(EVENT_OBJECT_PEN6));
         if ( pc != nullptr )
-        {
             pc->SetState(STATE_CHECK, color == TraceColor::Blue);
-        }
         pc = static_cast< CColor* >(pw->SearchControl(EVENT_OBJECT_PEN7));
         if ( pc != nullptr )
-        {
             pc->SetState(STATE_CHECK, color == TraceColor::Green);
-        }
         pc = static_cast< CColor* >(pw->SearchControl(EVENT_OBJECT_PEN8));
         if ( pc != nullptr )
-        {
             pc->SetState(STATE_CHECK, color == TraceColor::Brown);
-        }
     }
     else
     {
         pb = static_cast< CButton* >(pw->SearchControl(EVENT_OBJECT_PEN0));
         if ( pb != nullptr )
-        {
             pb->SetState(STATE_CHECK);
-        }
 
         pc = static_cast< CColor* >(pw->SearchControl(EVENT_OBJECT_PEN1));
         if ( pc != nullptr )
-        {
             pc->ClearState(STATE_CHECK);
-        }
         pc = static_cast< CColor* >(pw->SearchControl(EVENT_OBJECT_PEN2));
         if ( pc != nullptr )
-        {
             pc->ClearState(STATE_CHECK);
-        }
         pc = static_cast< CColor* >(pw->SearchControl(EVENT_OBJECT_PEN3));
         if ( pc != nullptr )
-        {
             pc->ClearState(STATE_CHECK);
-        }
         pc = static_cast< CColor* >(pw->SearchControl(EVENT_OBJECT_PEN4));
         if ( pc != nullptr )
-        {
             pc->ClearState(STATE_CHECK);
-        }
         pc = static_cast< CColor* >(pw->SearchControl(EVENT_OBJECT_PEN5));
         if ( pc != nullptr )
-        {
             pc->ClearState(STATE_CHECK);
-        }
         pc = static_cast< CColor* >(pw->SearchControl(EVENT_OBJECT_PEN6));
         if ( pc != nullptr )
-        {
             pc->ClearState(STATE_CHECK);
-        }
         pc = static_cast< CColor* >(pw->SearchControl(EVENT_OBJECT_PEN7));
         if ( pc != nullptr )
-        {
             pc->ClearState(STATE_CHECK);
-        }
         pc = static_cast< CColor* >(pw->SearchControl(EVENT_OBJECT_PEN8));
         if ( pc != nullptr )
-        {
             pc->ClearState(STATE_CHECK);
-        }
     }
 }
 
@@ -1942,7 +1749,8 @@ void CObjectInterface::UpdateScript(CWindow *pw)
     char        name[100];
 
     pl = static_cast< CList* >(pw->SearchControl(EVENT_OBJECT_PROGLIST));
-    if ( pl == nullptr )  return;
+    if ( pl == nullptr )
+        return;
 
     pl->Flush();
     for ( int i = 0 ; i < m_programStorage->GetProgramCount() ; i++ )
@@ -1953,18 +1761,12 @@ void CObjectInterface::UpdateScript(CWindow *pw)
         if ( !title.empty() )
         {
             if(!m_programStorage->GetProgram(i)->readOnly)
-            {
                 sprintf(name, "%d: %s", i+1, title.c_str());
-            }
             else
-            {
                 sprintf(name, "*%d: %s", i+1, title.c_str());
-            }
         }
-
         pl->SetItemName(i, name);
     }
-
     pl->SetSelect(m_selScript);
     pl->ShowSelect(true);
 }
@@ -1977,10 +1779,12 @@ int CObjectInterface::GetSelScript()
     CList*      pl;
 
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-    if ( pw == nullptr )  return -1;
+    if ( pw == nullptr )
+        return -1;
 
     pl = static_cast< CList* >(pw->SearchControl(EVENT_OBJECT_PROGLIST));
-    if ( pl == nullptr )  return -1;
+    if ( pl == nullptr )
+        return -1;
 
     return pl->GetSelect();
 }
@@ -1993,10 +1797,12 @@ void CObjectInterface::SetSelScript(int index)
     CList*      pl;
 
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-    if ( pw == nullptr )  return;
+    if ( pw == nullptr )
+        return;
 
     pl = static_cast< CList* >(pw->SearchControl(EVENT_OBJECT_PROGLIST));
-    if ( pl == nullptr )  return;
+    if ( pl == nullptr )
+        return;
 
     pl->SetSelect(index);
     pl->ShowSelect(true);
@@ -2009,13 +1815,16 @@ void CObjectInterface::BlinkScript(bool bEnable)
     CWindow*    pw;
     CList*      pl;
 
-    if ( !m_object->GetSelect() )  return;  // robot not selected?
+    if ( !m_object->GetSelect() )
+        return;  // robot not selected?
 
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-    if ( pw == nullptr )  return;
+    if ( pw == nullptr )
+        return;
 
     pl = static_cast< CList* >(pw->SearchControl(EVENT_OBJECT_PROGLIST));
-    if ( pl == nullptr )  return;
+    if ( pl == nullptr )
+        return;
 
     pl->SetBlink(bEnable);
 }
@@ -2024,10 +1833,9 @@ void CObjectInterface::BlinkScript(bool bEnable)
 
 void CObjectInterface::CheckInterface(CWindow *pw, EventType event, bool bState)
 {
-    CControl*   control;
-
-    control = pw->SearchControl(event);
-    if ( control == nullptr )  return;
+    CControl*   control = pw->SearchControl(event);
+    if ( control == nullptr )
+        return;
 
     control->SetState(STATE_CHECK, bState);
 }
@@ -2036,10 +1844,9 @@ void CObjectInterface::CheckInterface(CWindow *pw, EventType event, bool bState)
 
 void CObjectInterface::EnableInterface(CWindow *pw, EventType event, bool bState)
 {
-    CControl*   control;
-
-    control = pw->SearchControl(event);
-    if ( control == nullptr )  return;
+    CControl*   control = pw->SearchControl(event);
+    if ( control == nullptr )
+        return;
 
     control->SetState(STATE_ENABLE, bState);
 }
@@ -2048,10 +1855,9 @@ void CObjectInterface::EnableInterface(CWindow *pw, EventType event, bool bState
 
 void CObjectInterface::DeadInterface(CWindow *pw, EventType event, bool bState)
 {
-    CControl*   control;
-
-    control = pw->SearchControl(event);
-    if ( control == nullptr )  return;
+    CControl*   control = pw->SearchControl(event);
+    if ( control == nullptr )
+        return;
 
     control->SetState(STATE_DEAD, !bState);
 }
@@ -2060,10 +1866,9 @@ void CObjectInterface::DeadInterface(CWindow *pw, EventType event, bool bState)
 
 void CObjectInterface::DefaultEnter(CWindow *pw, EventType event, bool bState)
 {
-    CControl*   control;
-
-    control = pw->SearchControl(event);
-    if ( control == nullptr )  return;
+    CControl*   control = pw->SearchControl(event);
+    if ( control == nullptr )
+        return;
 
     if ( bState )
     {
@@ -2071,9 +1876,7 @@ void CObjectInterface::DefaultEnter(CWindow *pw, EventType event, bool bState)
         m_defaultEnter = event;
     }
     else
-    {
         control->ClearState(STATE_DEFAULT);
-    }
 }
 
 } // namespace Ui

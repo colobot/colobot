@@ -42,10 +42,6 @@
 #include <stdio.h>
 #include <string.h>
 
-
-
-
-
 // Object's constructor.
 
 CMotionVehicle::CMotionVehicle(COldObject* object)
@@ -104,76 +100,48 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         type == OBJECT_MOBILEfc ||
         type == OBJECT_MOBILEfi ||
         type == OBJECT_MOBILEfs)
-    {
         modelManager->AddModelReference("lem1f.mod", false, rank, m_object->GetTeam());
-    }
     else if (type == OBJECT_MOBILEta ||
              type == OBJECT_MOBILEtc ||
              type == OBJECT_MOBILEti ||
              type == OBJECT_MOBILEts)
-    {
         modelManager->AddModelReference("lem1t.mod", false, rank, m_object->GetTeam());
-    }
     else if (type == OBJECT_MOBILEwa ||
              type == OBJECT_MOBILEwc ||
              type == OBJECT_MOBILEwi ||
              type == OBJECT_MOBILEws)
     {
         if (m_object->GetTrainer())
-        {
             modelManager->AddModelReference("lem1wt.mod", false, rank, m_object->GetTeam());
-        }
         else
-        {
             modelManager->AddModelReference("lem1w.mod", false, rank, m_object->GetTeam());
-        }
     }
     else if (type == OBJECT_MOBILEia ||
              type == OBJECT_MOBILEic ||
              type == OBJECT_MOBILEii ||
              type == OBJECT_MOBILEis)
-    {
         modelManager->AddModelReference("lem1i.mod", false, rank, m_object->GetTeam());
-    }
     else if (type == OBJECT_MOBILErt ||
              type == OBJECT_MOBILErc ||
              type == OBJECT_MOBILErr ||
              type == OBJECT_MOBILErs)
-    {
         modelManager->AddModelReference("roller1.mod", false, rank, m_object->GetTeam());
-    }
     else if (type == OBJECT_MOBILEsa)
-    {
         modelManager->AddModelReference("subm1.mod", false, rank, m_object->GetTeam());
-    }
     else if (type == OBJECT_MOBILEtg)
-    {
         modelManager->AddModelReference("target.mod", false, rank, m_object->GetTeam());
-    }
     else if (type == OBJECT_MOBILEwt)
-    {
         modelManager->AddModelReference("trainerw.mod", false, rank, m_object->GetTeam());
-    }
     else if (type == OBJECT_MOBILEft)
-    {
         modelManager->AddModelReference("trainerf.mod", false, rank, m_object->GetTeam());
-    }
     else if (type == OBJECT_MOBILEtt)
-    {
         modelManager->AddModelReference("trainert.mod", false, rank, m_object->GetTeam());
-    }
     else if (type == OBJECT_MOBILEit)
-    {
         modelManager->AddModelReference("traineri.mod", false, rank, m_object->GetTeam());
-    }
     else if (type == OBJECT_MOBILEdr)
-    {
         modelManager->AddModelReference("drawer1.mod", false, rank, m_object->GetTeam());
-    }
     else if (type == OBJECT_APOLLO2)
-    {
         modelManager->AddModelReference("apolloj1.mod", false, rank, m_object->GetTeam());
-    }
 
     m_object->SetPosition(pos);
     m_object->SetRotationY(angle);
@@ -199,9 +167,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 3.0f, 0.0f), 7.0f));
     }
     else if (type == OBJECT_APOLLO2)
-    {
         m_object->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 8.0f, SOUND_BOUMm, 0.45f));
-    }
     else
     {
         m_object->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 3.0f, 0.0f), 4.5f, SOUND_BOUMm, 0.45f));
@@ -556,8 +522,10 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
                 rank = m_engine->CreateObject();
                 m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
                 m_object->SetObjectRank(6+i*3+j, rank);
-                if ( j == 0 )  parent = 0;
-                else           parent = 6+i*3+j-1;
+                if ( j == 0 )
+                    parent = 0;
+                else
+                    parent = 6+i*3+j-1;
                 m_object->SetObjectParent(6+i*3+j, parent);
                 modelManager->AddModelReference(name, false, rank, m_object->GetTeam());
                 pos.x = table[i*9+j*3+0];
@@ -569,8 +537,10 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
                 rank = m_engine->CreateObject();
                 m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
                 m_object->SetObjectRank(15+i*3+j, rank);
-                if ( j == 0 )  parent = 0;
-                else           parent = 15+i*3+j-1;
+                if ( j == 0 )
+                    parent = 0;
+                else
+                    parent = 15+i*3+j-1;
                 m_object->SetObjectParent(15+i*3+j, parent);
                 modelManager->AddModelReference(name, true, rank, m_object->GetTeam());
                 pos.x =  table[i*9+j*3+0];
@@ -765,7 +735,6 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
     }
 
     if (type == OBJECT_MOBILEwt)
-    {
         // Creates the key.
         if ( m_object->GetToy() )
         {
@@ -778,7 +747,6 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
             m_object->SetPartPosition(2, m_posKey);
             m_object->SetPartRotationY(2, 90.0f*Math::PI/180.0f);
         }
-    }
 
     if (type == OBJECT_APOLLO2)
     {
@@ -863,29 +831,19 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         type == OBJECT_MOBILErc ||
         type == OBJECT_MOBILErr ||
         type == OBJECT_MOBILErs)
-    {
         m_object->CreateShadowCircle(6.0f, 1.0f);
-    }
     else if (type == OBJECT_MOBILEta ||
              type == OBJECT_MOBILEtc ||
              type == OBJECT_MOBILEti ||
              type == OBJECT_MOBILEts ||
              type == OBJECT_MOBILEsa)
-    {
         m_object->CreateShadowCircle(5.0f, 1.0f);
-    }
     else if (type == OBJECT_MOBILEdr)
-    {
         m_object->CreateShadowCircle(4.5f, 1.0f);
-    }
     else if (type == OBJECT_APOLLO2)
-    {
         m_object->CreateShadowCircle(7.0f, 0.8f);
-    }
     else
-    {
         m_object->CreateShadowCircle(4.0f, 1.0f);
-    }
 
     if (type == OBJECT_MOBILEfa ||
         type == OBJECT_MOBILEfc ||
@@ -917,13 +875,11 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         Math::Vector powerCellPos = m_object->GetPowerPosition();
         float powerCellAngle = 0.0f;
         if (power <= 1.0f)
-        {
-            powerCell = CObjectManager::GetInstancePointer()->CreateObject(powerCellPos, powerCellAngle, OBJECT_POWER, power);
-        }
+            powerCell = CObjectManager::GetInstancePointer()
+                ->CreateObject(powerCellPos, powerCellAngle, OBJECT_POWER, power);
         else
-        {
-            powerCell = CObjectManager::GetInstancePointer()->CreateObject(powerCellPos, powerCellAngle, OBJECT_ATOMIC, power / 100.0f);
-        }
+            powerCell = CObjectManager::GetInstancePointer()
+                ->CreateObject(powerCellPos, powerCellAngle, OBJECT_ATOMIC, power / 100.0f);
         assert(powerCell->Implements(ObjectInterfaceType::Transportable));
 
         powerCell->SetPosition(powerCellPos);
@@ -943,9 +899,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
 
 void CMotionVehicle::CreatePhysics(ObjectType type)
 {
-    Character*  character;
-
-    character = m_object->GetCharacter();
+    Character*  character = m_object->GetCharacter();
 
     if ( type == OBJECT_MOBILEwa ||
          type == OBJECT_MOBILEwc ||
@@ -1212,14 +1166,11 @@ bool CMotionVehicle::EventProcess(const Event &event)
     CMotion::EventProcess(event);
 
     if ( event.type == EVENT_FRAME )
-    {
         return EventFrame(event);
-    }
 
     if ( event.type == EVENT_KEY_DOWN )
     {
     }
-
     return true;
 }
 
@@ -1234,8 +1185,10 @@ bool CMotionVehicle::EventFrame(const Event &event)
     float       s, a, speedBL, speedBR, speedFL, speedFR, h, a1, a2;
     float       back, front, dist, radius, limit[2];
 
-    if ( m_engine->GetPause() )  return true;
-    if ( !m_engine->IsVisiblePoint(m_object->GetPosition()) )  return true;
+    if ( m_engine->GetPause() )
+        return true;
+    if ( !m_engine->IsVisiblePoint(m_object->GetPosition()) )
+        return true;
 
     type = m_object->GetType();
 
@@ -1250,7 +1203,8 @@ bool CMotionVehicle::EventFrame(const Event &event)
         s = m_physics->GetLinMotionX(MO_MOTSPEED)*1.0f;
         a = m_physics->GetCirMotionY(MO_MOTSPEED)*3.0f;
 
-        if ( type == OBJECT_APOLLO2 )  s *= 0.5f;
+        if ( type == OBJECT_APOLLO2 )
+            s *= 0.5f;
 
         speedBR = -s+a;
         speedBL =  s+a;
@@ -1340,52 +1294,64 @@ bool CMotionVehicle::EventFrame(const Event &event)
                 pos.y =  0.0f;
                 pos = Math::Transform(*mat, pos);
                 h = m_terrain->GetHeightToFloor(pos);
-                if ( h >  0.5f )  h =  0.5f;
-                if ( h < -0.5f )  h = -0.5f;
+                if ( h >  0.5f )
+                    h =  0.5f;
+                if ( h < -0.5f )
+                    h = -0.5f;
                 pos.x =  back;
                 pos.y =  radius-h;
                 pos.z = -dist;
                 m_object->SetPartPosition(6, pos);
-                if ( type == OBJECT_APOLLO2 )  m_object->SetPartPosition(10, pos);
+                if ( type == OBJECT_APOLLO2 )
+                    m_object->SetPartPosition(10, pos);
 
                 pos.x = -character->wheelBack;  // left back wheel
                 pos.z =  character->wheelLeft;
                 pos.y =  0.0f;
                 pos = Math::Transform(*mat, pos);
                 h = m_terrain->GetHeightToFloor(pos);
-                if ( h >  0.5f )  h =  0.5f;
-                if ( h < -0.5f )  h = -0.5f;
+                if ( h >  0.5f )
+                    h =  0.5f;
+                if ( h < -0.5f )
+                    h = -0.5f;
                 pos.x =  back;
                 pos.y =  radius-h;
                 pos.z =  dist;
                 m_object->SetPartPosition(7, pos);
-                if ( type == OBJECT_APOLLO2 )  m_object->SetPartPosition(11, pos);
+                if ( type == OBJECT_APOLLO2 )
+                    m_object->SetPartPosition(11, pos);
 
                 pos.x =  character->wheelFront;  // right front wheel
                 pos.z = -character->wheelRight;
                 pos.y =  0.0f;
                 pos = Math::Transform(*mat, pos);
                 h = m_terrain->GetHeightToFloor(pos);
-                if ( h >  0.5f )  h =  0.5f;
-                if ( h < -0.5f )  h = -0.5f;
+                if ( h >  0.5f )
+                    h =  0.5f;
+                if ( h < -0.5f )
+                    h = -0.5f;
                 pos.x =  front;
                 pos.y =  radius-h;
                 pos.z = -dist;
                 m_object->SetPartPosition(8, pos);
-                if ( type == OBJECT_APOLLO2 )  m_object->SetPartPosition(12, pos);
+                if ( type == OBJECT_APOLLO2 )
+                    m_object->SetPartPosition(12, pos);
 
                 pos.x =  character->wheelFront;  // left front wheel
                 pos.z =  character->wheelLeft;
                 pos.y =  0.0f;
                 pos = Math::Transform(*mat, pos);
                 h = m_terrain->GetHeightToFloor(pos);
-                if ( h >  0.5f )  h =  0.5f;
-                if ( h < -0.5f )  h = -0.5f;
+                if ( h >  0.5f )
+                    h =  0.5f;
+                if ( h < -0.5f )
+                    h = -0.5f;
                 pos.x =  front;
                 pos.y =  radius-h;
                 pos.z =  dist;
                 m_object->SetPartPosition(9, pos);
-                if ( type == OBJECT_APOLLO2 )  m_object->SetPartPosition(13, pos);
+                if ( type == OBJECT_APOLLO2 )
+                    m_object->SetPartPosition(13, pos);
             }
             else
             {
@@ -1478,8 +1444,10 @@ bool CMotionVehicle::EventFrame(const Event &event)
                 a2 = atanf(m_terrain->GetHeightToFloor(pos)/character->wheelBack);
 
                 a = (a2-a1)/2.0f;
-                if ( a > limit[0] )  a = limit[0];
-                if ( a < limit[1] )  a = limit[1];
+                if ( a > limit[0] )
+                    a = limit[0];
+                if ( a < limit[1] )
+                    a = limit[1];
                 m_object->SetPartRotationZ(6, a);
 
                 pos.x =  character->wheelFront;  // left front wheel
@@ -1495,8 +1463,10 @@ bool CMotionVehicle::EventFrame(const Event &event)
                 a2 = atanf(m_terrain->GetHeightToFloor(pos)/character->wheelBack);
 
                 a = (a2-a1)/2.0f;
-                if ( a > limit[0] )  a = limit[0];
-                if ( a < limit[1] )  a = limit[1];
+                if ( a > limit[0] )
+                    a = limit[0];
+                if ( a < limit[1] )
+                    a = limit[1];
                 m_object->SetPartRotationZ(7, a);
             }
             else
@@ -1568,7 +1538,8 @@ bool CMotionVehicle::EventFrameFly(const Event &event)
          pos.z   == m_wheelLastPos.z   &&
          angle.x == m_wheelLastAngle.x &&
          angle.y == m_wheelLastAngle.y &&
-         angle.z == m_wheelLastAngle.z )  return true;
+         angle.z == m_wheelLastAngle.z )
+        return true;
 
     m_wheelLastPos = pos;
     m_wheelLastAngle = angle;
@@ -1584,8 +1555,10 @@ bool CMotionVehicle::EventFrameFly(const Event &event)
         {
             h = m_terrain->GetHeightToFloor(paw[i]);
             a = -atanf(h*0.5f);
-            if ( a >  Math::PI*0.2f )  a =  Math::PI*0.2f;
-            if ( a < -Math::PI*0.2f )  a = -Math::PI*0.2f;
+            if ( a >  Math::PI*0.2f )
+                a =  Math::PI*0.2f;
+            if ( a < -Math::PI*0.2f )
+                a = -Math::PI*0.2f;
             hope[i] = a;
         }
     }
@@ -1650,7 +1623,8 @@ bool CMotionVehicle::EventFrameInsect(const Event &event)
     s =     m_physics->GetLinMotionX(MO_MOTSPEED)*1.5f;
     a = fabs(m_physics->GetCirMotionY(MO_MOTSPEED)*2.0f);
 
-    if ( s == 0.0f && a != 0.0f )  a *= 1.5f;
+    if ( s == 0.0f && a != 0.0f )
+        a *= 1.5f;
 
     m_armTimeAbs += event.rTime;
     m_armMember += (s+a)*event.rTime*0.15f;
@@ -1659,9 +1633,7 @@ bool CMotionVehicle::EventFrameInsect(const Event &event)
 
     action = 0;  // walking
     if ( s == 0.0f && a == 0.0f )
-    {
         action = 3;  // stop
-    }
 
     if ( bStop )
     {
@@ -1673,9 +1645,7 @@ bool CMotionVehicle::EventFrameInsect(const Event &event)
 
     assert(m_object->Implements(ObjectInterfaceType::Destroyable));
     if ( dynamic_cast<CDestroyableObject*>(m_object)->IsDying() )  // burn or explode?
-    {
         action = 3;
-    }
 
     for ( i=0 ; i<6 ; i++ )  // the six legs
     {
@@ -1687,8 +1657,10 @@ bool CMotionVehicle::EventFrameInsect(const Event &event)
         }
         else
         {
-            if ( i < 3 )  prog = Math::Mod(m_armMember+(2.0f-(i%3))*0.33f+0.0f, 1.0f);
-            else          prog = Math::Mod(m_armMember+(2.0f-(i%3))*0.33f+0.3f, 1.0f);
+            if ( i < 3 )
+                prog = Math::Mod(m_armMember+(2.0f-(i%3))*0.33f+0.0f, 1.0f);
+            else
+                prog = Math::Mod(m_armMember+(2.0f-(i%3))*0.33f+0.3f, 1.0f);
             if ( prog < 0.33f )  // t0..t1 ?
             {
                 prog = prog/0.33f;  // 0..1
@@ -1740,24 +1712,26 @@ bool CMotionVehicle::EventFrameInsect(const Event &event)
         }
     }
 
-    if ( bStop )
-    {
-    }
-    else
+    if ( !bStop )
     {
         a = Math::Mod(m_armMember, 1.0f);
-        if ( a < 0.5f )  a = -1.0f+4.0f*a;  // -1..1
-        else             a =  3.0f-4.0f*a;  // 1..-1
+        if ( a < 0.5f )
+            a = -1.0f+4.0f*a;  // -1..1
+        else
+            a =  3.0f-4.0f*a;  // 1..-1
         dir.x = sinf(a)*0.05f;
 
         s = Math::Mod(m_armMember/2.0f, 1.0f);
-        if ( s < 0.5f )  s = -1.0f+4.0f*s;  // -1..1
-        else             s =  3.0f-4.0f*s;  // 1..-1
+        if ( s < 0.5f )
+            s = -1.0f+4.0f*s;  // -1..1
+        else
+            s =  3.0f-4.0f*s;  // 1..-1
         dir.z = sinf(s)*0.1f;
 
         dir.y = 0.0f;
 
-        if ( bOnBoard )  dir *= 0.6f;
+        if ( bOnBoard )
+            dir *= 0.6f;
         SetTilt(dir);
     }
 
@@ -1777,16 +1751,17 @@ bool CMotionVehicle::EventFrameCanoni(const Event &event)
 
     if ( m_object->GetSelect() &&
          m_camera->GetType() == Gfx::CAM_TYPE_ONBOARD )
-    {
         bOnBoard = true;
-    }
 
     float energy = GetObjectEnergyLevel(m_object);
-    if (energy == 0.0f)  return true;
-    if (energy > 1.0f) energy = 1.0f; //fix issue with cheated cells, see issue #1009
+    if (energy == 0.0f)
+        return true;
+    if (energy > 1.0f)
+        energy = 1.0f; //fix issue with cheated cells, see issue #1009
 
     factor = 0.5f+energy*0.5f;
-    if ( bOnBoard )  factor *= 0.8f;
+    if ( bOnBoard )
+        factor *= 0.8f;
 
     zoom = 1.3f+
            sinf(m_canonTime*Math::PI*0.31f)*0.10f+
@@ -1823,7 +1798,8 @@ void CMotionVehicle::UpdateTrackMapping(float left, float right, ObjectType type
     int lRank = m_object->GetObjectRank(7);
 
     std::string teamStr = StrUtils::ToString<int>(m_object->GetTeam());
-    if(m_object->GetTeam() == 0) teamStr = "";
+    if(m_object->GetTeam() == 0)
+        teamStr = "";
 
     if (type == OBJECT_MOBILEdr)
     {

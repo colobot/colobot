@@ -73,14 +73,11 @@ void CAutoEgg::DeleteObject(bool all)
             {
                 alien->SetLock(false);
                 if (alien->Implements(ObjectInterfaceType::Programmable))
-                {
-                    dynamic_cast<CProgrammableObject*>(alien)->SetActivity(true);  // the insect is active
-                }
+                    // the insect is active
+                    dynamic_cast<CProgrammableObject*>(alien)->SetActivity(true);
             }
             else
-            {
                 CObjectManager::GetInstancePointer()->DeleteObject(alien);
-            }
         }
     }
 }
@@ -90,9 +87,7 @@ void CAutoEgg::DeleteObject(bool all)
 
 void CAutoEgg::Init()
 {
-    CObject*    alien;
-
-    alien = SearchAlien();
+    CObject*    alien = SearchAlien();
     if ( alien == nullptr )
     {
         m_phase    = AEP_NULL;
@@ -112,19 +107,13 @@ void CAutoEgg::Init()
     if ( m_type == OBJECT_ANT    ||
          m_type == OBJECT_SPIDER ||
          m_type == OBJECT_BEE    )
-    {
         alien->SetScale(0.2f);
-    }
     if ( m_type == OBJECT_WORM )
-    {
         alien->SetScale(0.01f);  // invisible !
-    }
     alien->SetLock(true);
 
     if (alien->Implements(ObjectInterfaceType::Programmable))
-    {
         dynamic_cast<CProgrammableObject*>(alien)->SetActivity(false);
-    }
 }
 
 
@@ -140,7 +129,8 @@ bool CAutoEgg::SetType(ObjectType type)
 
 bool CAutoEgg::SetValue(int rank, float value)
 {
-    if ( rank != 0 )  return false;
+    if ( rank != 0 )
+        return false;
     m_value = value;
     return true;
 }
@@ -156,8 +146,10 @@ bool CAutoEgg::SetString(char *string)
 
 void CAutoEgg::Start(int param)
 {
-    if ( m_type == OBJECT_NULL )  return;
-    if ( m_value == 0.0f )  return;
+    if ( m_type == OBJECT_NULL )
+        return;
+    if ( m_value == 0.0f )
+        return;
 
     m_phase    = AEP_DELAY;
     m_progress = 0.0f;
@@ -173,15 +165,19 @@ bool CAutoEgg::EventProcess(const Event &event)
 {
     CAuto::EventProcess(event);
 
-    if ( m_engine->GetPause() )  return true;
+    if ( m_engine->GetPause() )
+        return true;
 
-    if ( event.type != EVENT_FRAME )  return true;
-    if ( m_phase == AEP_NULL )  return true;
+    if ( event.type != EVENT_FRAME )
+        return true;
+    if ( m_phase == AEP_NULL )
+        return true;
 
     if ( m_phase == AEP_DELAY )
     {
         m_progress += event.rTime*m_speed;
-        if ( m_progress < 1.0f )  return true;
+        if ( m_progress < 1.0f )
+            return true;
 
         Math::Vector pos = m_object->GetPosition();
         float angle = m_object->GetRotationY();
@@ -201,11 +197,10 @@ bool CAutoEgg::EventProcess(const Event &event)
     }
 
     CObject* alien = SearchAlien();
-    if ( alien == nullptr )  return true;
+    if ( alien == nullptr )
+        return true;
     if (alien->Implements(ObjectInterfaceType::Programmable))
-    {
         dynamic_cast<CProgrammableObject*>(alien)->SetActivity(false);
-    }
 
     m_progress += event.rTime*m_speed;
 
@@ -214,9 +209,7 @@ bool CAutoEgg::EventProcess(const Event &event)
         if ( m_type == OBJECT_ANT    ||
              m_type == OBJECT_SPIDER ||
              m_type == OBJECT_BEE    )
-        {
             alien->SetScale(0.2f+m_progress*0.8f);  // Others push
-        }
     }
 
     return true;
@@ -229,16 +222,16 @@ Error CAutoEgg::IsEnded()
     CObject*    alien;
 
     if ( m_phase == AEP_DELAY )
-    {
         return ERR_CONTINUE;
-    }
 
     alien = SearchAlien();
-    if ( alien == nullptr )  return ERR_STOP;
+    if ( alien == nullptr )
+        return ERR_STOP;
 
     if ( m_phase == AEP_INCUB )
     {
-        if ( m_progress < 1.0f )  return ERR_CONTINUE;
+        if ( m_progress < 1.0f )
+            return ERR_CONTINUE;
 
         m_phase    = AEP_ZOOM;
         m_progress = 0.0f;
@@ -247,7 +240,8 @@ Error CAutoEgg::IsEnded()
 
     if ( m_phase == AEP_ZOOM )
     {
-        if ( m_progress < 1.0f )  return ERR_CONTINUE;
+        if ( m_progress < 1.0f )
+            return ERR_CONTINUE;
 
         m_engine->GetPyroManager()->Create(Gfx::PT_EGG, m_object);  // exploding egg
 
@@ -260,13 +254,13 @@ Error CAutoEgg::IsEnded()
 
     if ( m_phase == AEP_WAIT )
     {
-        if ( m_progress < 1.0f )  return ERR_CONTINUE;
+        if ( m_progress < 1.0f )
+            return ERR_CONTINUE;
 
         alien->SetLock(false);
         if(alien->Implements(ObjectInterfaceType::Programmable))
-        {
-            dynamic_cast<CProgrammableObject*>(alien)->SetActivity(true);  // the insect is active
-        }
+            // the insect is active
+            dynamic_cast<CProgrammableObject*>(alien)->SetActivity(true);
     }
 
     return ERR_STOP;
@@ -290,13 +284,15 @@ CObject* CAutoEgg::SearchAlien()
     CObject* best = nullptr;
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        if (IsObjectBeingTransported(obj))  continue;
+        if (IsObjectBeingTransported(obj))
+            continue;
 
         ObjectType type = obj->GetType();
         if ( type != OBJECT_ANT    &&
              type != OBJECT_BEE    &&
              type != OBJECT_SPIDER &&
-             type != OBJECT_WORM   )  continue;
+             type != OBJECT_WORM   )
+            continue;
 
         Math::Vector oPos = obj->GetPosition();
         float dist = Math::DistanceProjected(oPos, cPos);
@@ -314,7 +310,8 @@ CObject* CAutoEgg::SearchAlien()
 
 bool CAutoEgg::Write(CLevelParserLine* line)
 {
-    if ( m_phase == AEP_NULL )  return false;
+    if ( m_phase == AEP_NULL )
+        return false;
 
     line->AddParam("aExist", MakeUnique<CLevelParserParam>(true));
     CAuto::Write(line);
@@ -332,7 +329,8 @@ bool CAutoEgg::Write(CLevelParserLine* line)
 
 bool CAutoEgg::Read(CLevelParserLine* line)
 {
-    if ( !line->GetParam("aExist")->AsBool(false) )  return false;
+    if ( !line->GetParam("aExist")->AsBool(false) )
+        return false;
 
     CAuto::Read(line);
     m_phase = static_cast< AutoEggPhase >(line->GetParam("aPhase")->AsInt(AEP_NULL));

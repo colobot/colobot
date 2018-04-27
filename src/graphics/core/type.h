@@ -32,7 +32,7 @@ namespace Gfx
 * \enum class Type
 * \brief Value types for vertex attributes
 */
-enum class Type : unsigned char
+enum /*class*/ Type : unsigned char
 {
     //! Unsigned byte (8-bit)
     UBYTE = 0,

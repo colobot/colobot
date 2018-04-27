@@ -108,27 +108,26 @@ std::streampos CInputStreamBuffer::seekoff(std::streamoff off, std::ios_base::se
 
     switch (way)
     {
-        case std::ios_base::beg:
-            new_position = off;
-            break;
+    case std::ios_base::beg:
+        new_position = off;
+        break;
 
-        case std::ios_base::cur:
-            // tell will give cursor at begining of block so we have to add where in block we currently are
-            new_position = off + static_cast<off_type>(PHYSFS_tell(m_file)) - static_cast<off_type> (egptr() - gptr());
-            break;
+    case std::ios_base::cur:
+        // tell will give cursor at begining of block so we have to add where in block we currently are
+        new_position = off + static_cast<off_type>(PHYSFS_tell(m_file)) - static_cast<off_type> (egptr() - gptr());
+        break;
 
-        case std::ios_base::end:
-            new_position = off + static_cast<off_type>(PHYSFS_fileLength(m_file));
-            break;
+    case std::ios_base::end:
+        new_position = off + static_cast<off_type>(PHYSFS_fileLength(m_file));
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 
     if (PHYSFS_seek(m_file, new_position))
     {
         setg(m_buffer.get(), m_buffer.get(), m_buffer.get()); // reset buffer
-
         return pos_type(new_position);
     }
 

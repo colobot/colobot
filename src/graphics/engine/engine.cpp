@@ -506,13 +506,9 @@ void CEngine::WriteScreenShot(const std::string& fileName)
 void CEngine::WriteScreenShotThread(std::unique_ptr<WriteScreenShotData> data)
 {
     if ( data->img->SavePNG(data->fileName.c_str()) )
-    {
        GetLogger()->Debug("Save screenshot saved successfully\n");
-    }
     else
-    {
        GetLogger()->Error("%s!\n", data->img->GetError().c_str());
-    }
 
     CApplication::GetInstancePointer()->GetEventQueue()->AddEvent(Event(EVENT_WRITE_SCENE_FINISHED));
 }
@@ -620,10 +616,8 @@ void CEngine::SetTimerDisplay(const std::string& text)
 EngineBaseObjTexTier& CEngine::AddLevel2(EngineBaseObject& p1, const std::string& tex1Name, const std::string& tex2Name)
 {
     for (int i = 0; i < static_cast<int>( p1.next.size() ); i++)
-    {
         if (p1.next[i].tex1Name == tex1Name && p1.next[i].tex2Name == tex2Name)
             return p1.next[i];
-    }
 
     p1.next.push_back(EngineBaseObjTexTier(tex1Name, tex2Name));
     return p1.next.back();
@@ -633,10 +627,9 @@ EngineBaseObjDataTier& CEngine::AddLevel3(EngineBaseObjTexTier& p3, EngineTriang
                                           const Material& material, int state)
 {
     for (int i = 0; i < static_cast<int>( p3.next.size() ); i++)
-    {
-        if ( (p3.next[i].type == type) && (p3.next[i].material == material) && (p3.next[i].state == state) )
+        if ( (p3.next[i].type == type) && (p3.next[i].material == material)
+            && (p3.next[i].state == state) )
             return p3.next[i];
-    }
 
     p3.next.push_back(EngineBaseObjDataTier(type, material, state));
     return p3.next.back();
@@ -646,13 +639,11 @@ int CEngine::CreateBaseObject()
 {
     int baseObjRank = 0;
     for ( ; baseObjRank < static_cast<int>( m_baseObjects.size() ); baseObjRank++)
-    {
         if (! m_baseObjects[baseObjRank].used)
         {
             m_baseObjects[baseObjRank].LoadDefault();
             break;
         }
-    }
 
     if (baseObjRank == static_cast<int>( m_baseObjects.size() ))
         m_baseObjects.push_back(EngineBaseObject());
@@ -739,9 +730,12 @@ void CEngine::CopyBaseObject(int sourceBaseObjRank, int destBaseObjRank)
     }
 }
 
-void CEngine::AddBaseObjTriangles(int baseObjRank, const std::vector<VertexTex2>& vertices,
-                                  const Material& material, int state,
-                                  std::string tex1Name, std::string tex2Name)
+void CEngine::AddBaseObjTriangles(const int baseObjRank,
+                                  const std::vector<VertexTex2>& vertices,
+                                  const Material& material,
+                                  const int state,
+                                  const std::string& tex1Name,
+                                  const std::string& tex2Name)
 {
     assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
 
@@ -785,9 +779,7 @@ void CEngine::AddBaseObjQuick(int baseObjRank, const EngineBaseObjDataTier& buff
     UpdateStaticBuffer(p3);
 
     if (globalUpdate)
-    {
         m_updateGeometry = true;
-    }
     else
     {
         for (int i = 0; i < static_cast<int>( p3.vertices.size() ); i++)
@@ -799,7 +791,6 @@ void CEngine::AddBaseObjQuick(int baseObjRank, const EngineBaseObjDataTier& buff
             p1.bboxMax.y = Math::Max(p3.vertices[i].coord.y, p1.bboxMax.y);
             p1.bboxMax.z = Math::Max(p3.vertices[i].coord.z, p1.bboxMax.z);
         }
-
         p1.radius = Math::Max(p1.bboxMin.Length(), p1.bboxMax.Length());
     }
 
@@ -1180,50 +1171,32 @@ void CEngine::ChangeTextureMapping(int objRank, const Material& mat, int state,
     int nb = p4->vertices.size();
 
     if (mode == ENG_TEX_MAPPING_X)
-    {
         for (int i = 0; i < nb; i++)
         {
             p4->vertices[i].texCoord.x = p4->vertices[i].coord.z * au + bu;
             p4->vertices[i].texCoord.y = p4->vertices[i].coord.y * av + bv;
         }
-    }
     else if (mode == ENG_TEX_MAPPING_Y)
-    {
         for (int i = 0; i < nb; i++)
         {
             p4->vertices[i].texCoord.x = p4->vertices[i].coord.x * au + bu;
             p4->vertices[i].texCoord.y = p4->vertices[i].coord.z * av + bv;
         }
-    }
     else if (mode == ENG_TEX_MAPPING_Z)
-    {
         for (int i = 0; i < nb; i++)
         {
             p4->vertices[i].texCoord.x = p4->vertices[i].coord.x * au + bu;
             p4->vertices[i].texCoord.y = p4->vertices[i].coord.y * av + bv;
         }
-    }
     else if (mode == ENG_TEX_MAPPING_1X)
-    {
         for (int i = 0; i < nb; i++)
-        {
-            p4->vertices[i].texCoord.x = p4->vertices[i].coord.x * au + bu;
-        }
-    }
+             p4->vertices[i].texCoord.x = p4->vertices[i].coord.x * au + bu;
     else if (mode == ENG_TEX_MAPPING_1Y)
-    {
         for (int i = 0; i < nb; i++)
-        {
             p4->vertices[i].texCoord.y = p4->vertices[i].coord.y * au + bu;
-        }
-    }
     else if (mode == ENG_TEX_MAPPING_1Z)
-    {
         for (int i = 0; i < nb; i++)
-        {
             p4->vertices[i].texCoord.x = p4->vertices[i].coord.z * au + bu;
-        }
-    }
 
     UpdateStaticBuffer(*p4);
 }
@@ -1253,7 +1226,6 @@ void CEngine::TrackTextureMapping(int objRank, const Material& mat, int state,
     for (int i = 0; i < 6; i++)
     {
         for (int j = 0; j < 6; j++)
-        {
             if (Math::IsEqual(vs[i].coord.x, vs[j+6].coord.x) &&
                 Math::IsEqual(vs[i].coord.y, vs[j+6].coord.y))
             {
@@ -1261,7 +1233,6 @@ void CEngine::TrackTextureMapping(int objRank, const Material& mat, int state,
                 current.y = vs[i].coord.y;
                 break;
             }
-        }
     }
 
     float ps = 0.0f;  // start position on the periphery
@@ -1275,17 +1246,11 @@ void CEngine::TrackTextureMapping(int objRank, const Material& mat, int state,
         int e = 0;
 
         for (int i = 0; i < 6; i++)
-        {
             if (Math::IsEqual(vs[tBase + i].coord.x, current.x, 0.0001f) &&
                 Math::IsEqual(vs[tBase + i].coord.y, current.y, 0.0001f))
-            {
                 ie[e++] = i;
-            }
             else
-            {
                 is[s++] = i;
-            }
-        }
         if (s == 3 && e == 3)
         {
             pe = ps + Math::Point(vs[tBase + is[0]].coord.x - vs[tBase + ie[0]].coord.x,
@@ -1308,7 +1273,6 @@ void CEngine::TrackTextureMapping(int objRank, const Material& mat, int state,
             break;
 
         for (int i = 0; i < 6; i++)
-        {
             if (!Math::IsEqual(vs[tBase + i+6].coord.x, current.x, 0.0001f) ||
                 !Math::IsEqual(vs[tBase + i+6].coord.y, current.y, 0.0001f))
             {
@@ -1316,7 +1280,6 @@ void CEngine::TrackTextureMapping(int objRank, const Material& mat, int state,
                 current.y = vs[tBase + i+6].coord.y;
                 break;
             }
-        }
         ps = pe;  // following start position on the periphery
         tBase += 6;
     }
@@ -1325,7 +1288,7 @@ void CEngine::TrackTextureMapping(int objRank, const Material& mat, int state,
 }
 
 
-void CEngine::CreateShadowSpot(int objRank)
+void CEngine::CreateShadowSpot(const int objRank)
 {
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
@@ -1335,13 +1298,11 @@ void CEngine::CreateShadowSpot(int objRank)
 
     int index = 0;
     for ( ; index < static_cast<int>( m_shadowSpots.size() ); index++)
-    {
         if (! m_shadowSpots[index].used)
         {
             m_shadowSpots[index].LoadDefault();
             break;
         }
-    }
 
     if (index == static_cast<int>( m_shadowSpots.size() ))
         m_shadowSpots.push_back(EngineShadow());
@@ -1353,7 +1314,7 @@ void CEngine::CreateShadowSpot(int objRank)
     m_objects[objRank].shadowRank = index;
 }
 
-void CEngine::DeleteShadowSpot(int objRank)
+void CEngine::DeleteShadowSpot(const int objRank)
 {
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
@@ -1369,7 +1330,7 @@ void CEngine::DeleteShadowSpot(int objRank)
     m_objects[objRank].shadowRank = -1;
 }
 
-void CEngine::SetObjectShadowSpotHide(int objRank, bool hide)
+void CEngine::SetObjectShadowSpotHide(const int objRank, const bool hide)
 {
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
@@ -1382,7 +1343,7 @@ void CEngine::SetObjectShadowSpotHide(int objRank, bool hide)
     m_shadowSpots[shadowRank].hide = hide;
 }
 
-void CEngine::SetObjectShadowSpotType(int objRank, EngineShadowType type)
+void CEngine::SetObjectShadowSpotType(const int objRank, const EngineShadowType type)
 {
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
@@ -1395,7 +1356,7 @@ void CEngine::SetObjectShadowSpotType(int objRank, EngineShadowType type)
     m_shadowSpots[shadowRank].type = type;
 }
 
-void CEngine::SetObjectShadowSpotPos(int objRank, const Math::Vector& pos)
+void CEngine::SetObjectShadowSpotPos(const int objRank, const Math::Vector& pos)
 {
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
@@ -1408,7 +1369,7 @@ void CEngine::SetObjectShadowSpotPos(int objRank, const Math::Vector& pos)
     m_shadowSpots[shadowRank].pos = pos;
 }
 
-void CEngine::SetObjectShadowSpotAngle(int objRank, float angle)
+void CEngine::SetObjectShadowSpotAngle(const int objRank, const float angle)
 {
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
@@ -1421,7 +1382,7 @@ void CEngine::SetObjectShadowSpotAngle(int objRank, float angle)
     m_shadowSpots[shadowRank].angle = angle;
 }
 
-void CEngine::SetObjectShadowSpotRadius(int objRank, float radius)
+void CEngine::SetObjectShadowSpotRadius(const int objRank, const float radius)
 {
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
@@ -1434,7 +1395,7 @@ void CEngine::SetObjectShadowSpotRadius(int objRank, float radius)
     m_shadowSpots[shadowRank].radius = radius;
 }
 
-void CEngine::SetObjectShadowSpotIntensity(int objRank, float intensity)
+void CEngine::SetObjectShadowSpotIntensity(const int objRank, const float intensity)
 {
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
@@ -1447,7 +1408,7 @@ void CEngine::SetObjectShadowSpotIntensity(int objRank, float intensity)
     m_shadowSpots[shadowRank].intensity = intensity;
 }
 
-void CEngine::SetObjectShadowSpotHeight(int objRank, float height)
+void CEngine::SetObjectShadowSpotHeight(const int objRank, const float height)
 {
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
@@ -1460,7 +1421,7 @@ void CEngine::SetObjectShadowSpotHeight(int objRank, float height)
     m_shadowSpots[shadowRank].height = height;
 }
 
-bool CEngine::GetHighlight(Math::Point &p1, Math::Point &p2)
+bool CEngine::GetHighlight(Math::Point &p1, Math::Point &p2)const
 {
     p1 = m_highlightP1;
     p2 = m_highlightP2;
@@ -1477,7 +1438,7 @@ void CEngine::SetHighlightRank(int *rankList)
     m_highlightRank[i] = -1;  // terminator
 }
 
-bool CEngine::GetBBox2D(int objRank, Math::Point &min, Math::Point &max)
+bool CEngine::GetBBox2D(const int objRank, Math::Point &min, Math::Point &max)const
 {
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
@@ -1492,26 +1453,36 @@ bool CEngine::GetBBox2D(int objRank, Math::Point &min, Math::Point &max)
 
     assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
 
-    EngineBaseObject& p1 = m_baseObjects[baseObjRank];
+    const EngineBaseObject& p1 = m_baseObjects[baseObjRank];
 
     for (int i = 0; i < 8; i++)
     {
         Math::Vector p;
 
-        if ( i & (1<<0) )  p.x = p1.bboxMin.x;
-        else               p.x = p1.bboxMax.x;
-        if ( i & (1<<1) )  p.y = p1.bboxMin.y;
-        else               p.y = p1.bboxMax.y;
-        if ( i & (1<<2) )  p.z = p1.bboxMin.z;
-        else               p.z = p1.bboxMax.z;
+        if ( i & (1<<0) )
+            p.x = p1.bboxMin.x;
+        else
+            p.x = p1.bboxMax.x;
+        if ( i & (1<<1) )
+            p.y = p1.bboxMin.y;
+        else
+            p.y = p1.bboxMax.y;
+        if ( i & (1<<2) )
+            p.z = p1.bboxMin.z;
+        else
+            p.z = p1.bboxMax.z;
 
         Math::Vector pp;
         if (TransformPoint(pp, objRank, p))
         {
-            if (pp.x < min.x) min.x = pp.x;
-            if (pp.x > max.x) max.x = pp.x;
-            if (pp.y < min.y) min.y = pp.y;
-            if (pp.y > max.y) max.y = pp.y;
+            if (pp.x < min.x)
+                min.x = pp.x;
+            if (pp.x > max.x)
+                max.x = pp.x;
+            if (pp.y < min.y)
+                min.y = pp.y;
+            if (pp.y > max.y)
+                max.y = pp.y;
         }
     }
 
@@ -1546,13 +1517,11 @@ int CEngine::CreateGroundSpot()
 {
     int index = 0;
     for ( ; index < static_cast<int>( m_groundSpots.size() ); index++)
-    {
         if (! m_groundSpots[index].used)
         {
             m_groundSpots[index].LoadDefault();
             break;
         }
-    }
 
     m_groundSpots.push_back(EngineGroundSpot());
 
@@ -1562,7 +1531,7 @@ int CEngine::CreateGroundSpot()
     return index;
 }
 
-void CEngine::DeleteGroundSpot(int rank)
+void CEngine::DeleteGroundSpot(const int rank)
 {
     assert(rank >= 0 && rank < static_cast<int>( m_groundSpots.size() ));
 
@@ -1570,28 +1539,28 @@ void CEngine::DeleteGroundSpot(int rank)
     m_groundSpots[rank].pos = Math::Vector(0.0f, 0.0f, 0.0f);
 }
 
-void CEngine::SetObjectGroundSpotPos(int rank, const Math::Vector& pos)
+void CEngine::SetObjectGroundSpotPos(const int rank, const Math::Vector& pos)
 {
     assert(rank >= 0 && rank < static_cast<int>( m_groundSpots.size() ));
 
     m_groundSpots[rank].pos = pos;
 }
 
-void CEngine::SetObjectGroundSpotRadius(int rank, float radius)
+void CEngine::SetObjectGroundSpotRadius(const int rank, const float radius)
 {
     assert(rank >= 0 && rank < static_cast<int>( m_groundSpots.size() ));
 
     m_groundSpots[rank].radius = radius;
 }
 
-void CEngine::SetObjectGroundSpotColor(int rank, const Color& color)
+void CEngine::SetObjectGroundSpotColor(const int rank, const Color& color)
 {
     assert(rank >= 0 && rank < static_cast<int>( m_groundSpots.size() ));
 
     m_groundSpots[rank].color = color;
 }
 
-void CEngine::SetObjectGroundSpotMinMax(int rank, float min, float max)
+void CEngine::SetObjectGroundSpotMinMax(const int rank, const float min, const float max)
 {
     assert(rank >= 0 && rank < static_cast<int>( m_groundSpots.size() ));
 
@@ -1599,16 +1568,20 @@ void CEngine::SetObjectGroundSpotMinMax(int rank, float min, float max)
     m_groundSpots[rank].max = max;
 }
 
-void CEngine::SetObjectGroundSpotSmooth(int rank, float smooth)
+void CEngine::SetObjectGroundSpotSmooth(const int rank, const float smooth)
 {
     assert(rank >= 0 && rank < static_cast<int>( m_groundSpots.size() ));
 
     m_groundSpots[rank].smooth = smooth;
 }
 
-void CEngine::CreateGroundMark(Math::Vector pos, float radius,
-                                   float delay1, float delay2, float delay3,
-                                   int dx, int dy, char* table)
+void CEngine::CreateGroundMark(const Math::Vector pos,
+                               const float radius,
+                               const float delay1,
+                               const float delay2,
+                               const float delay3,
+                               const int dx, const int dy,
+                               char* table)
 {
     m_groundMark.LoadDefault();
 
@@ -1625,7 +1598,7 @@ void CEngine::CreateGroundMark(Math::Vector pos, float radius,
     m_groundMark.table     = table;
 }
 
-void CEngine::DeleteGroundMark(int rank)
+void CEngine::DeleteGroundMark(const int rank)  //FIXME: Param not used???
 {
     m_groundMark.LoadDefault();
 }
@@ -1739,7 +1712,7 @@ void CEngine::Update()
     UpdateStaticBuffers();
 }
 
-bool CEngine::DetectBBox(int objRank, Math::Point mouse)
+bool CEngine::DetectBBox(const int objRank, const Math::Point& mouse)
 {
     assert(objRank >= 0 && objRank < static_cast<int>(m_objects.size()));
 
@@ -1761,20 +1734,30 @@ bool CEngine::DetectBBox(int objRank, Math::Point mouse)
     {
         Math::Vector p;
 
-        if ( i & (1<<0) )  p.x = p1.bboxMin.x;
-        else               p.x = p1.bboxMax.x;
-        if ( i & (1<<1) )  p.y = p1.bboxMin.y;
-        else               p.y = p1.bboxMax.y;
-        if ( i & (1<<2) )  p.z = p1.bboxMin.z;
-        else               p.z = p1.bboxMax.z;
+        if ( i & (1<<0) )
+            p.x = p1.bboxMin.x;
+        else
+            p.x = p1.bboxMax.x;
+        if ( i & (1<<1) )
+            p.y = p1.bboxMin.y;
+        else
+            p.y = p1.bboxMax.y;
+        if ( i & (1<<2) )
+            p.z = p1.bboxMin.z;
+        else
+            p.z = p1.bboxMax.z;
 
         Math::Vector pp;
         if ( TransformPoint(pp, objRank, p) )
         {
-            if (pp.x < min.x) min.x = pp.x;
-            if (pp.x > max.x) max.x = pp.x;
-            if (pp.y < min.y) min.y = pp.y;
-            if (pp.y > max.y) max.y = pp.y;
+            if (pp.x < min.x)
+                min.x = pp.x;
+            if (pp.x > max.x)
+                max.x = pp.x;
+            if (pp.y < min.y)
+                min.y = pp.y;
+            if (pp.y > max.y)
+                max.y = pp.y;
         }
     }
 
@@ -1852,7 +1835,11 @@ int CEngine::DetectObject(Math::Point mouse, Math::Vector& targetPos, bool terra
     return nearest;
 }
 
-bool CEngine::DetectTriangle(Math::Point mouse, VertexTex2* triangle, int objRank, float& dist, Math::Vector& pos)
+bool CEngine::DetectTriangle(Math::Point mouse,
+                             VertexTex2* triangle,
+                             int objRank,
+                             float& dist,
+                             Math::Vector& pos)
 {
     assert(objRank >= 0 && objRank < static_cast<int>(m_objects.size()));
 
@@ -1914,7 +1901,7 @@ bool CEngine::DetectTriangle(Math::Point mouse, VertexTex2* triangle, int objRan
 }
 
 //! Use only after world transform already set
-bool CEngine::IsVisible(int objRank)
+bool CEngine::IsVisible(const int objRank)
 {
     assert(objRank >= 0 && objRank < static_cast<int>(m_objects.size()));
 
@@ -1936,7 +1923,9 @@ bool CEngine::IsVisible(int objRank)
     return false;
 }
 
-bool CEngine::TransformPoint(Math::Vector& p2D, int objRank, Math::Vector p3D)
+bool CEngine::TransformPoint(Math::Vector& p2D,
+                             const int objRank,
+                             Math::Vector p3D)const
 {
     assert(objRank >= 0 && objRank < static_cast<int>(m_objects.size()));
 
@@ -2382,7 +2371,7 @@ bool CEngine::LoadAllTextures()
     return ok;
 }
 
-bool IsExcludeColor(Math::Point *exclude, int x, int y)
+bool IsExcludeColor(const Math::Point *exclude, const int x, const int y)
 {
     int i = 0;
     while ( exclude[i+0].x != 0.0f || exclude[i+0].y != 0.0f ||
@@ -2403,11 +2392,17 @@ bool IsExcludeColor(Math::Point *exclude, int x, int y)
 
 bool CEngine::ChangeTextureColor(const std::string& texName,
                                  const std::string& srcName,
-                                 Color colorRef1, Color colorNew1,
-                                 Color colorRef2, Color colorNew2,
-                                 float tolerance1, float tolerance2,
-                                 Math::Point ts, Math::Point ti,
-                                 Math::Point *exclude, float shift, bool hsv)
+                                 const Color& colorRef1,
+                                 const Color& colorNew1,
+                                 const Color& colorRef2,
+                                 const Color& colorNew2,
+                                 const float tolerance1,
+                                 const float tolerance2,
+                                 const Math::Point& ts,
+                                 const Math::Point& ti,
+                                 const Math::Point *exclude,
+                                 const float shift,
+                                 const bool hsv)
 {
     CImage img;
     if (!img.Load(srcName))
@@ -2465,8 +2460,10 @@ bool CEngine::ChangeTextureColor(const std::string& texName,
                         c.h += cn1.h - cr1.h;
                         c.s += cn1.s - cr1.s;
                         c.v += cn1.v - cr1.v;
-                        if (c.h < 0.0f) c.h -= 1.0f;
-                        if (c.h > 1.0f) c.h += 1.0f;
+                        if (c.h < 0.0f)
+                            c.h -= 1.0f;
+                        if (c.h > 1.0f)
+                            c.h += 1.0f;
                         color = HSV2RGB(c);
                         color.r = Math::Norm(color.r + shift);
                         color.g = Math::Norm(color.g + shift);
@@ -2479,8 +2476,10 @@ bool CEngine::ChangeTextureColor(const std::string& texName,
                         c.h += cn2.h - cr2.h;
                         c.s += cn2.s - cr2.s;
                         c.v += cn2.v - cr2.v;
-                        if (c.h < 0.0f) c.h -= 1.0f;
-                        if (c.h > 1.0f) c.h += 1.0f;
+                        if (c.h < 0.0f)
+                            c.h -= 1.0f;
+                        if (c.h > 1.0f)
+                            c.h += 1.0f;
                         color = HSV2RGB(c);
                         color.r = Math::Norm(color.r + shift);
                         color.g = Math::Norm(color.g + shift);
@@ -2520,11 +2519,17 @@ bool CEngine::ChangeTextureColor(const std::string& texName,
 }
 
 bool CEngine::ChangeTextureColor(const std::string& texName,
-                                 Color colorRef1, Color colorNew1,
-                                 Color colorRef2, Color colorNew2,
-                                 float tolerance1, float tolerance2,
-                                 Math::Point ts, Math::Point ti,
-                                 Math::Point *exclude, float shift, bool hsv)
+                                 const Color& colorRef1,
+                                 const Color& colorNew1,
+                                 const Color& colorRef2,
+                                 const Color& colorNew2,
+                                 const float tolerance1,
+                                 const float tolerance2,
+                                 const Math::Point& ts,
+                                 const Math::Point& ti,
+                                 const Math::Point *exclude,
+                                 const float shift,
+                                 const bool hsv)
 {
     return ChangeTextureColor(texName, texName, colorRef1, colorNew1, colorRef2, colorNew2, tolerance1, tolerance2, ts, ti, exclude, shift, hsv);
 }
@@ -2564,13 +2569,9 @@ void CEngine::CreateOrUpdateTexture(const std::string& texName, CImage* img)
 {
     auto it = m_texNameMap.find(texName);
     if (it == m_texNameMap.end())
-    {
         LoadTexture(texName, img);
-    }
     else
-    {
         m_device->UpdateTexture((*it).second, Math::IntPoint(0, 0), img->GetData(), m_defaultTexParams.format);
-    }
 }
 
 void CEngine::FlushTextureCache()
@@ -2587,7 +2588,7 @@ void CEngine::FlushTextureCache()
     m_firstGroundSpot = true;
 }
 
-bool CEngine::SetTexture(const std::string& name, int stage)
+bool CEngine::SetTexture(const std::string& name, const int stage)
 {
     auto it = m_texNameMap.find(name);
     if (it != m_texNameMap.end())
@@ -2613,17 +2614,17 @@ bool CEngine::SetTexture(const std::string& name, int stage)
     return false; // should not happen normally
 }
 
-void CEngine::SetTexture(const Texture& tex, int stage)
+void CEngine::SetTexture(const Texture& tex, const int stage)
 {
     m_device->SetTexture(stage, tex);
 }
 
-void CEngine::SetTerrainVision(float vision)
+void CEngine::SetTerrainVision(const float vision)
 {
     m_terrainVision = vision;
 }
 
-void CEngine::SetFocus(float focus)
+void CEngine::SetFocus(const float focus)
 {
     m_focus = focus;
     m_size = m_app->GetVideoConfig().size;
@@ -2638,17 +2639,17 @@ void CEngine::SetFocus(float focus)
     Math::LoadProjectionMatrix(m_matProj, m_focus, aspect, 0.5f, farPlane);
 }
 
-float CEngine::GetFocus()
+float CEngine::GetFocus()const
 {
     return m_focus;
 }
 
-float CEngine::GetVFovAngle()
+float CEngine::GetVFovAngle()const
 {
     return m_focus;
 }
 
-float CEngine::GetHFovAngle()
+float CEngine::GetHFovAngle()const
 {
     return m_hfov;
 }
@@ -2673,34 +2674,35 @@ float CEngine::GetShadowRange()
     return m_shadowRange;
 }
 
-void CEngine::SetMultiSample(int value)
+void CEngine::SetMultiSample(const int value)
 {
-    if(value == m_multisample) return;
+    if(value == m_multisample)
+        return;
     m_multisample = value;
     m_device->DeleteFramebuffer("multisample");
 }
 
-int CEngine::GetMultiSample()
+int CEngine::GetMultiSample()const
 {
     return m_multisample;
 }
 
-void CEngine::SetDirty(bool mode)
+void CEngine::SetDirty(const bool mode)
 {
     m_dirty = mode;
 }
 
-bool CEngine::GetDirty()
+bool CEngine::GetDirty()const
 {
     return m_dirty;
 }
 
-void CEngine::SetFog(bool mode)
+void CEngine::SetFog(const bool mode)
 {
     m_fog = mode;
 }
 
-bool CEngine::GetFog()
+bool CEngine::GetFog()const
 {
     return m_fog;
 }
@@ -2710,7 +2712,7 @@ void CEngine::SetSecondTexture(const std::string& texNum)
     m_secondTex = texNum;
 }
 
-const std::string& CEngine::GetSecondTexture()
+const std::string& CEngine::GetSecondTexture()const
 {
     return m_secondTex;
 }
@@ -2729,27 +2731,27 @@ void CEngine::SetRankView(int rank)
     m_rankView = rank;
 }
 
-int CEngine::GetRankView()
+int CEngine::GetRankView()const
 {
     return m_rankView;
 }
 
-void CEngine::SetDrawWorld(bool draw)
+void CEngine::SetDrawWorld(const bool draw)
 {
     m_drawWorld = draw;
 }
 
-void CEngine::SetDrawFront(bool draw)
+void CEngine::SetDrawFront(const bool draw)
 {
     m_drawFront = draw;
 }
 
-void CEngine::SetAmbientColor(const Color& color, int rank)
+void CEngine::SetAmbientColor(const Color& color, const int rank)
 {
     m_ambientColor[rank] = color;
 }
 
-Color CEngine::GetAmbientColor(int rank)
+Color CEngine::GetAmbientColor(const int rank)const
 {
     return m_ambientColor[rank];
 }
@@ -2759,22 +2761,22 @@ void CEngine::SetWaterAddColor(const Color& color)
     m_waterAddColor = color;
 }
 
-Color CEngine::GetWaterAddColor()
+Color CEngine::GetWaterAddColor()const
 {
     return m_waterAddColor;
 }
 
-void CEngine::SetFogColor(const Color& color, int rank)
+void CEngine::SetFogColor(const Color& color, const int rank)
 {
     m_fogColor[rank] = color;
 }
 
-Color CEngine::GetFogColor(int rank)
+Color CEngine::GetFogColor(const int rank)const
 {
     return m_fogColor[rank];
 }
 
-void CEngine::SetDeepView(float length, int rank, bool ref)
+void CEngine::SetDeepView(float length, const int rank, const bool ref)
 {
     if (ref)
         length *= m_clippingDistance;
@@ -2782,12 +2784,12 @@ void CEngine::SetDeepView(float length, int rank, bool ref)
     m_deepView[rank] = length;
 }
 
-float CEngine::GetDeepView(int rank)
+float CEngine::GetDeepView(const int rank)const
 {
     return m_deepView[rank];
 }
 
-void CEngine::SetFogStart(float start, int rank)
+void CEngine::SetFogStart(const float start, const int rank)
 {
     if (start < 0.0f)
         m_fogStart[rank] = 0.0f;
@@ -2795,13 +2797,14 @@ void CEngine::SetFogStart(float start, int rank)
         m_fogStart[rank] = start;
 }
 
-float CEngine::GetFogStart(int rank)
+float CEngine::GetFogStart(const int rank)
 {
     return m_fogStart[rank];
 }
 
-void CEngine::SetBackground(const std::string& name, Color up, Color down,
-                            Color cloudUp, Color cloudDown, bool full, bool scale)
+void CEngine::SetBackground(const std::string& name, const Color up, const Color down,
+                            const Color cloudUp, const Color cloudDown,
+                            const bool full, const bool scale)
 {
     if (m_backgroundTex.Valid() && name != m_backgroundName)
     {
@@ -2826,7 +2829,7 @@ void CEngine::SetBackground(const std::string& name, Color up, Color down,
 }
 
 void CEngine::GetBackground(std::string& name, Color& up, Color& down,
-                            Color& cloudUp, Color& cloudDown, bool &full, bool &scale)
+                            Color& cloudUp, Color& cloudDown, bool &full, bool &scale)const
 {
     name      = m_backgroundName;
     up        = m_backgroundColorUp;
@@ -2851,12 +2854,12 @@ void CEngine::SetForegroundName(const std::string& name)
         m_foregroundTex = LoadTexture(m_foregroundName);
 }
 
-void CEngine::SetOverFront(bool front)
+void CEngine::SetOverFront(const bool front)
 {
     m_overFront = front;
 }
 
-void CEngine::SetOverColor(const Color& color, int mode)
+void CEngine::SetOverColor(const Color& color, const int mode)
 {
     m_overColor = color;
     m_overMode  = mode;
@@ -2864,17 +2867,19 @@ void CEngine::SetOverColor(const Color& color, int mode)
 
 void CEngine::SetParticleDensity(float value)
 {
-    if (value < 0.0f) value = 0.0f;
-    if (value > 2.0f) value = 2.0f;
+    if (value < 0.0f)
+        value = 0.0f;
+    if (value > 2.0f)
+        value = 2.0f;
     m_particleDensity = value;
 }
 
-float CEngine::GetParticleDensity()
+float CEngine::GetParticleDensity()const
 {
     return m_particleDensity;
 }
 
-float CEngine::ParticleAdapt(float factor)
+float CEngine::ParticleAdapt(const float factor)
 {
     if (m_particleDensity == 0.0f)
         return 1000000.0f;
@@ -2884,70 +2889,82 @@ float CEngine::ParticleAdapt(float factor)
 
 void CEngine::SetClippingDistance(float value)
 {
-    if (value < 0.5f) value = 0.5f;
-    if (value > 2.0f) value = 2.0f;
+    if (value < 0.5f)
+        value = 0.5f;
+    if (value > 2.0f)
+        value = 2.0f;
     m_clippingDistance = value;
 }
 
-float CEngine::GetClippingDistance()
+float CEngine::GetClippingDistance()const
 {
     return m_clippingDistance;
 }
 
-void CEngine::SetTextureFilterMode(TexFilter value)
+void CEngine::SetTextureFilterMode(const TexFilter value)
 {
-    if(m_defaultTexParams.filter == value && m_terrainTexParams.filter == value) return;
+    if(m_defaultTexParams.filter == value && m_terrainTexParams.filter == value)
+        return;
 
     m_defaultTexParams.filter = m_terrainTexParams.filter = value;
     m_defaultTexParams.mipmap = m_terrainTexParams.mipmap = (value == TEX_FILTER_TRILINEAR);
     ReloadAllTextures();
 }
 
-TexFilter CEngine::GetTextureFilterMode()
+TexFilter CEngine::GetTextureFilterMode()const
 {
     return m_terrainTexParams.filter;
 }
 
 void CEngine::SetTextureMipmapLevel(int value)
 {
-    if (value < 1) value = 1;
-    if (value > 16) value = 16;
-    if(m_textureMipmapLevel == value) return;
+    if (value < 1)
+        value = 1;
+    if (value > 16)
+        value = 16;
+    if(m_textureMipmapLevel == value)
+        return;
 
     m_textureMipmapLevel = value;
     ReloadAllTextures();
 }
 
-int CEngine::GetTextureMipmapLevel()
+int CEngine::GetTextureMipmapLevel()const
 {
     return m_textureMipmapLevel;
 }
 
 void CEngine::SetTextureAnisotropyLevel(int value)
 {
-    if (value < 1) value = 1;
-    if (value > 16) value = 16;
+    if (value < 1)
+        value = 1;
+    if (value > 16)
+        value = 16;
 
-    if(m_textureAnisotropy == value) return;
+    if(m_textureAnisotropy == value)
+        return;
 
     m_textureAnisotropy = value;
     ReloadAllTextures();
 }
 
-int CEngine::GetTextureAnisotropyLevel()
+int CEngine::GetTextureAnisotropyLevel()const
 {
     return m_textureAnisotropy;
 }
 
-bool CEngine::IsShadowMappingSupported()
+bool CEngine::IsShadowMappingSupported()const
 {
-    return m_device->IsShadowMappingSupported() && m_device->GetMaxTextureStageCount() >= 3;
+    return m_device->IsShadowMappingSupported()
+        && m_device->GetMaxTextureStageCount() >= 3;
 }
 
 void CEngine::SetShadowMapping(bool value)
 {
-    if(!IsShadowMappingSupported()) value = false;
-    if(value == m_shadowMapping) return;
+    if(!IsShadowMappingSupported())
+        value = false;
+    if(value == m_shadowMapping)
+        return;
     m_shadowMapping = value;
     if(!value)
     {
@@ -2957,15 +2974,17 @@ void CEngine::SetShadowMapping(bool value)
     }
 }
 
-bool CEngine::GetShadowMapping()
+bool CEngine::GetShadowMapping()const
 {
     return m_shadowMapping;
 }
 
 void CEngine::SetShadowMappingOffscreen(bool value)
 {
-    if(!m_device->IsFramebufferSupported()) value = false;
-    if(value == m_offscreenShadowRendering) return;
+    if(!m_device->IsFramebufferSupported())
+        value = false;
+    if(value == m_offscreenShadowRendering)
+        return;
     m_offscreenShadowRendering = value;
     if(value)
     {
@@ -2979,7 +2998,7 @@ void CEngine::SetShadowMappingOffscreen(bool value)
     }
 }
 
-bool CEngine::GetShadowMappingOffscreen()
+bool CEngine::GetShadowMappingOffscreen()const
 {
     return m_offscreenShadowRendering;
 }
@@ -2987,139 +3006,141 @@ bool CEngine::GetShadowMappingOffscreen()
 void CEngine::SetShadowMappingOffscreenResolution(int resolution)
 {
     resolution = Math::Min(resolution, m_device->GetMaxTextureSize());
-    if(resolution == m_offscreenShadowRenderingResolution) return;
+    if(resolution == m_offscreenShadowRenderingResolution)
+        return;
     m_offscreenShadowRenderingResolution = resolution;
     m_device->DeleteFramebuffer("shadow");
     m_shadowMap.id = 0;
 }
 
-int CEngine::GetShadowMappingOffscreenResolution()
+int CEngine::GetShadowMappingOffscreenResolution()const
 {
     return m_offscreenShadowRenderingResolution;
 }
 
-bool CEngine::IsShadowMappingQualitySupported()
+bool CEngine::IsShadowMappingQualitySupported()const
 {
     return IsShadowMappingSupported() && m_device->GetMaxTextureStageCount() >= 3;
 }
 
 void CEngine::SetShadowMappingQuality(bool value)
 {
-    if(!IsShadowMappingQualitySupported()) value = false;
+    if(!IsShadowMappingQualitySupported())
+        value = false;
     m_qualityShadows = value;
 }
 
-bool CEngine::GetShadowMappingQuality()
+bool CEngine::GetShadowMappingQuality()const
 {
     return m_qualityShadows;
 }
 
-void CEngine::SetTerrainShadows(bool value)
+void CEngine::SetTerrainShadows(const bool value)
 {
     m_terrainShadows = value;
 }
 
-bool CEngine::GetTerrainShadows()
+bool CEngine::GetTerrainShadows()const
 {
     return m_terrainShadows;
 }
 
-void CEngine::SetBackForce(bool present)
+void CEngine::SetBackForce(const bool present)
 {
     m_backForce = present;
 }
 
-bool CEngine::GetBackForce()
+bool CEngine::GetBackForce()const
 {
     return m_backForce;
 }
 
-void CEngine::SetLightMode(bool present)
+void CEngine::SetLightMode(const bool present)
 {
     m_lightMode = present;
 }
 
-bool CEngine::GetLightMode()
+bool CEngine::GetLightMode()const
 {
     return m_lightMode;
 }
 
-void CEngine::SetEditIndentMode(bool autoIndent)
+void CEngine::SetEditIndentMode(const bool autoIndent)
 {
     m_editIndentMode = autoIndent;
 }
 
-bool CEngine::GetEditIndentMode()
+bool CEngine::GetEditIndentMode()const
 {
     return m_editIndentMode;
 }
 
-void CEngine::SetEditIndentValue(int value)
+void CEngine::SetEditIndentValue(const int value)
 {
     m_editIndentValue = value;
 }
 
-int CEngine::GetEditIndentValue()
+int CEngine::GetEditIndentValue()const
 {
     return m_editIndentValue;
 }
 
-void CEngine::SetTracePrecision(float factor)
+void CEngine::SetTracePrecision(const float factor)
 {
     m_tracePrecision = factor;
 }
 
-float CEngine::GetTracePrecision()
+float CEngine::GetTracePrecision()const
 {
     return m_tracePrecision;
 }
 
-void CEngine::SetMouseType(EngineMouseType type)
+void CEngine::SetMouseType(const EngineMouseType type)
 {
     m_mouseType = type;
 }
 
-EngineMouseType CEngine::GetMouseType()
+EngineMouseType CEngine::GetMouseType()const
 {
     return m_mouseType;
 }
 
-void CEngine::SetPauseBlurEnabled(bool enable)
+void CEngine::SetPauseBlurEnabled(const bool enable)
 {
     m_pauseBlurEnabled = enable;
 }
 
-bool CEngine::GetPauseBlurEnabled()
+bool CEngine::GetPauseBlurEnabled()const
 {
     return m_pauseBlurEnabled;
 }
 
-const Math::Matrix& CEngine::GetMatView()
+const Math::Matrix& CEngine::GetMatView()const
 {
     return m_matView;
 }
 
-const Math::Matrix& CEngine::GetMatProj()
+const Math::Matrix& CEngine::GetMatProj()const
 {
     return m_matProj;
 }
 
-Math::Vector CEngine::GetEyePt()
+Math::Vector CEngine::GetEyePt()const
 {
     return m_eyePt;
 }
 
-Math::Vector CEngine::GetLookatPt()
+Math::Vector CEngine::GetLookatPt()const
 {
     return m_lookatPt;
 }
 
-float CEngine::GetEyeDirH()
+float CEngine::GetEyeDirH()const
 {
     return m_eyeDirH;
 }
 
-float CEngine::GetEyeDirV()
+float CEngine::GetEyeDirV()const
 {
     return m_eyeDirV;
 }
@@ -3156,9 +3177,7 @@ void CEngine::ClearDisplayCrashSpheres()
 void CEngine::AddDisplayCrashSpheres(const std::vector<Math::Sphere>& crashSpheres)
 {
     for (const auto& crashSphere : crashSpheres)
-    {
         m_displayCrashSpheres.push_back(crashSphere);
-    }
 
     m_debugCrashSpheres = true;
 }
@@ -3212,9 +3231,7 @@ void CEngine::Render()
 
     // use currently captured scene for world
     if (m_worldCaptured && !m_captureWorld)
-    {
         DrawCaptured3DScene();
-    }
     else
     {
         // Render shadow map
@@ -5165,7 +5182,8 @@ void CEngine::DrawTimer()
     m_text->DrawText(m_timerText, FONT_COLOBOT, 15.0f, pos, 1.0f, TEXT_ALIGN_RIGHT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
 }
 
-void CEngine::AddBaseObjTriangles(int baseObjRank, const std::vector<Gfx::ModelTriangle>& triangles)
+void CEngine::AddBaseObjTriangles(const int baseObjRank,
+                                  const std::vector<Gfx::ModelTriangle>& triangles)
 {
     std::vector<VertexTex2> vs(3, VertexTex2());
 
@@ -5196,7 +5214,7 @@ void CEngine::AddBaseObjTriangles(int baseObjRank, const std::vector<Gfx::ModelT
     }
 }
 
-int CEngine::GetEngineState(const ModelTriangle& triangle)
+int CEngine::GetEngineState(const ModelTriangle& triangle)const
 {
     int state = 0;
 
@@ -5205,38 +5223,38 @@ int CEngine::GetEngineState(const ModelTriangle& triangle)
 
     switch (triangle.transparentMode)
     {
-        case ModelTransparentMode::None:
-            break;
+    case ModelTransparentMode::None:
+        break;
 
-        case ModelTransparentMode::AlphaChannel:
-            state |= ENG_RSTATE_ALPHA;
-            break;
+    case ModelTransparentMode::AlphaChannel:
+        state |= ENG_RSTATE_ALPHA;
+        break;
 
-        case ModelTransparentMode::MapBlackToAlpha:
-            state |= ENG_RSTATE_TTEXTURE_BLACK;
-            break;
+    case ModelTransparentMode::MapBlackToAlpha:
+        state |= ENG_RSTATE_TTEXTURE_BLACK;
+        break;
 
-        case ModelTransparentMode::MapWhiteToAlpha:
-            state |= ENG_RSTATE_TTEXTURE_WHITE;
-            break;
+    case ModelTransparentMode::MapWhiteToAlpha:
+        state |= ENG_RSTATE_TTEXTURE_WHITE;
+        break;
     }
 
     switch (triangle.specialMark)
     {
-        case ModelSpecialMark::None:
-            break;
+    case ModelSpecialMark::None:
+        break;
 
-        case ModelSpecialMark::Part1:
-            state |= ENG_RSTATE_PART1;
-            break;
+    case ModelSpecialMark::Part1:
+        state |= ENG_RSTATE_PART1;
+        break;
 
-        case ModelSpecialMark::Part2:
-            state |= ENG_RSTATE_PART2;
-            break;
+    case ModelSpecialMark::Part2:
+        state |= ENG_RSTATE_PART2;
+        break;
 
-        case ModelSpecialMark::Part3:
-            state |= ENG_RSTATE_PART3;
-            break;
+    case ModelSpecialMark::Part3:
+        state |= ENG_RSTATE_PART3;
+        break;
     }
 
     if (triangle.doubleSided)

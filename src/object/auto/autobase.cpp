@@ -42,7 +42,6 @@
 #include "ui/controls/window.h"
 
 
-
 const float BASE_LAND_TIME          = 7.5f;     // hard landing
 const float BASE_TAKO_TIME          = 10.0f;    // hard landing
 const float BASE_DOOR_TIME          = 6.0f;     // time opening / closing
@@ -51,8 +50,6 @@ const float BASE_PORTICO_TIME_MOVE  = 16.0f;    // gate advance time
 const float BASE_PORTICO_TIME_DOWN  = 4.0f;     // gate length down
 const float BASE_PORTICO_TIME_OPEN  = 4.0f;     // gate opening duration
 const float BASE_TRANSIT_TIME       = 15.0f;    // transit duration
-
-
 
 
 // Object's constructor.
@@ -131,7 +128,8 @@ bool CAutoBase::EventProcess(const Event &event)
 
     CAuto::EventProcess(event);
 
-    if ( m_engine->GetPause() )  return true;
+    if ( m_engine->GetPause() )
+        return true;
 
 begin:
     iPos = m_object->GetPosition();
@@ -140,9 +138,7 @@ begin:
     {
         if ( m_param != PARAM_STOP     &&  // not placed on the ground?
              m_param != PARAM_FIXSCENE )
-        {
             FreezeCargo(true);  // freeze whole cargo
-        }
 
         if ( m_param == PARAM_STOP )  // raises the ground?
         {
@@ -163,9 +159,7 @@ begin:
             m_main->SelectObject(pObj);
             m_camera->SetControllingObject(pObj);
             if ( pObj == nullptr )
-            {
                 m_camera->SetType(Gfx::CAM_TYPE_BACK);
-            }
             else
             {
                 assert(pObj->Implements(ObjectInterfaceType::Controllable));
@@ -309,17 +303,16 @@ begin:
     }
 
     if ( event.type == EVENT_UPDINTERFACE )
-    {
-        if ( m_object->GetSelect() )  CreateInterface(true);
-    }
+        if ( m_object->GetSelect() )
+            CreateInterface(true);
 
     if ( event.type == EVENT_OBJECT_BTAKEOFF )
-    {
         return TakeOff(true);
-    }
 
-    if ( event.type != EVENT_FRAME )  return true;
-    if ( m_phase == ABP_WAIT )  return true;
+    if ( event.type != EVENT_FRAME )
+        return true;
+    if ( m_phase == ABP_WAIT )
+        return true;
 
     m_progress += event.rTime*m_speed;
 
@@ -499,9 +492,7 @@ begin:
         else
         {
             for ( i=0 ; i<8 ; i++ )
-            {
                 m_object->SetPartRotationZ(1+i, Math::PI/2.0f-124.0f*Math::PI/180.0f);
-            }
 
             // Clash the doors with the ground.
             max = static_cast<int>(20.0f*m_engine->GetParticleDensity());
@@ -588,9 +579,7 @@ begin:
                 m_main->SelectObject(pObj);
                 m_camera->SetControllingObject(pObj);
                 if ( pObj == nullptr )
-                {
                     m_camera->SetType(Gfx::CAM_TYPE_BACK);
-                }
                 else
                 {
                     assert(pObj->Implements(ObjectInterfaceType::Controllable));
@@ -649,16 +638,12 @@ begin:
         {
             angle = -(1.0f-m_progress)*124.0f*Math::PI/180.0f;
             for ( i=0 ; i<8 ; i++ )
-            {
                 m_object->SetPartRotationZ(1+i, Math::PI/2.0f+angle);
-            }
         }
         else
         {
             for ( i=0 ; i<8 ; i++ )
-            {
                 m_object->SetPartRotationZ(1+i, Math::PI/2.0f);
-            }
             m_bMotor = true;  // lights the jet engine
 
             // Shock of the closing doors.
@@ -935,21 +920,16 @@ begin:
             mat = m_object->GetWorldMatrix(0);
 
             if ( event.rTime == 0.0f )
-            {
                 vSpeed = 0.0f;
-            }
             else
             {
                 pos = m_object->GetPosition();
                 if ( m_phase == ABP_TRANSIT_MOVE )
-                {
                     vSpeed = (pos.x-iPos.x)/event.rTime;
-                }
                 else
-                {
                     vSpeed = (pos.y-iPos.y)/event.rTime;
-                }
-                if ( vSpeed < 0.0f )  vSpeed *= 1.5f;
+                if ( vSpeed < 0.0f )
+                    vSpeed *= 1.5f;
             }
 
             pos = Math::Vector(0.0f, 6.0f, 0.0f);
@@ -1118,9 +1098,7 @@ bool CAutoBase::Abort()
             m_main->SelectObject(pObj);
             m_camera->SetControllingObject(pObj);
             if ( pObj == nullptr )
-            {
                 m_camera->SetType(Gfx::CAM_TYPE_BACK);
-            }
             else
             {
                 assert(pObj->Implements(ObjectInterfaceType::Controllable));
@@ -1134,9 +1112,7 @@ bool CAutoBase::Abort()
              m_phase == ABP_CLOSE   ||
              m_phase == ABP_TOWAIT  ||
              m_phase == ABP_TAKEOFF )  // off?
-        {
             m_eventQueue->AddEvent(Event(EVENT_WIN));
-        }
     }
 
     m_object->SetRotationZ(0.0f);
@@ -1176,10 +1152,12 @@ bool CAutoBase::CreateInterface(bool bSelect)
 
     CAuto::CreateInterface(bSelect);
 
-    if ( !bSelect )  return true;
+    if ( !bSelect )
+        return true;
 
     pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW0));
-    if ( pw == nullptr )  return false;
+    if ( pw == nullptr )
+        return false;
 
     dim.x = 33.0f/640.0f;
     dim.y = 33.0f/480.0f;
@@ -1223,7 +1201,8 @@ bool CAutoBase::CreateInterface(bool bSelect)
 
 void CAutoBase::UpdateInterface()
 {
-    if ( !m_object->GetSelect() )  return;
+    if ( !m_object->GetSelect() )
+        return;
 
     CAuto::UpdateInterface();
 }
@@ -1236,8 +1215,10 @@ void CAutoBase::FreezeCargo(bool freeze)
     m_cargoObjects.clear();
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        if ( obj == m_object )  continue;  // yourself?
-        if (IsObjectBeingTransported(obj)) continue;
+        if ( obj == m_object )
+            continue;  // yourself?
+        if (IsObjectBeingTransported(obj))
+            continue;
 
         Math::Vector oPos = obj->GetPosition();
         float dist = Math::DistanceProjected(m_pos, oPos);
@@ -1279,11 +1260,14 @@ Error CAutoBase::CheckCloseDoor()
 {
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        if ( obj == m_object )  continue;  // yourself?
-        if ( !obj->GetActive() )  continue;  // inactive?
+        if ( obj == m_object )
+            continue;  // yourself?
+        if ( !obj->GetActive() )
+            continue;  // inactive?
 
         ObjectType type = obj->GetType();
-        if ( type == OBJECT_PORTICO )  continue;
+        if ( type == OBJECT_PORTICO )
+            continue;
 
         for (const auto& crashSphere : obj->GetAllCrashSpheres())
         {
@@ -1292,15 +1276,11 @@ Error CAutoBase::CheckCloseDoor()
             float dist = Math::DistanceProjected(m_pos, oPos);
             if ( dist+oRad > 32.0f &&
                  dist-oRad < 72.0f )
-            {
                 return ERR_BASE_DLOCK;
-            }
 
             if ( type == OBJECT_HUMAN &&
                  dist+oRad > 32.0f    )
-            {
                 return ERR_BASE_DHUMAN;
-            }
         }
     }
     return ERR_OK;
@@ -1312,23 +1292,17 @@ Error CAutoBase::CheckCloseDoor()
 void CAutoBase::BeginTransit()
 {
     if ( m_param == PARAM_TRANSIT2 )
-    {
         m_bgBack = "textures/back01.png";  // clouds orange / blue
-    }
     else if ( m_param == PARAM_TRANSIT3 )
-    {
         m_bgBack = "textures/back22.png";  // blueberries clouds
-    }
     else
-    {
         m_bgBack = "textures/back46.png";  // paintings
-    }
 
     m_engine->SetFogStart(0.9f);  // hardly any fog
     m_engine->SetDeepView(2000.0f);  // we see very far
     m_engine->ApplyChange();
 
-    bool full, scale;
+    bool full = false, scale = false;   //fake init to mute lint
     m_engine->GetBackground(m_bgName, m_bgUp, m_bgDown, m_bgCloudUp, m_bgCloudDown, full, scale);
 
     m_engine->SetBackground(m_bgBack, Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),

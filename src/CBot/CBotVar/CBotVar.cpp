@@ -49,20 +49,22 @@ namespace CBot
 long CBotVar::m_identcpt = 0;
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotVar::CBotVar( )
+CBotVar::CBotVar()
+    : m_token(nullptr)
+    , m_type(-1)
+    , m_binit(InitType::UNDEF)
+    , m_pMyThis(nullptr)
+    , m_pUserPtr(nullptr)
+    , m_bStatic(false)
+    , m_mPrivate(ProtectionLevel::Public)
+    , m_InitExpr(nullptr)
+    , m_LimExpr(nullptr)
+    , m_ident(0)
 {
-    m_pMyThis = nullptr;
-    m_pUserPtr = nullptr;
-    m_InitExpr = nullptr;
-    m_LimExpr = nullptr;
-    m_type  = -1;
-    m_binit = InitType::UNDEF;
-    m_ident = 0;
-    m_bStatic = false;
-    m_mPrivate = ProtectionLevel::Public;
 }
 
-CBotVar::CBotVar(const CBotToken &name) : CBotVar()
+CBotVar::CBotVar(const CBotToken &name)
+    : CBotVar()
 {
     m_token = new CBotToken(name);
 }
@@ -102,14 +104,14 @@ void CBotVar::SetIdent(long n)
 void CBotVar::SetUniqNum(long n)
 {
     m_ident = n;
-
-    if ( n == 0 ) assert(0);
+    assert(0!=n);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 long CBotVar::NextUniqNum()
 {
-    if (++m_identcpt < 10000) m_identcpt = 10000;
+    if (++m_identcpt < 10000)
+        m_identcpt = 10000;
     return m_identcpt;
 }
 
@@ -264,7 +266,6 @@ CBotVar* CBotVar::Create(const std::string& n, CBotTypResult type)
                 type = type.GetTypElem();
                 pv = (static_cast<CBotVarArray*>(pv))->GetItem(0, true);            // creates at least the element [0]
             }
-
             return array;
         }
     }

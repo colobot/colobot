@@ -42,7 +42,8 @@
 CExchangePost::CExchangePost(int id)
     : CBaseBuilding(id, OBJECT_INFO)
     , m_infoUpdate(false)
-{}
+{
+}
 
 std::unique_ptr<CExchangePost> CExchangePost::Create(
     const ObjectCreateParams& params,
@@ -115,19 +116,15 @@ int CExchangePost::GetMaximumInfoListSize()
 bool CExchangePost::SetInfo(const std::string& name, float value)
 {
     for (auto& info : m_infoList)
-    {
         if (info.name == name)
         {
             info.value = value;
             m_infoUpdate = true;
             return true;
         }
-    }
 
     if (static_cast<int>(m_infoList.size()) == GetMaximumInfoListSize())
-    {
         return false;
-    }
 
     ExchangePostInfo info;
     info.name = name;
@@ -145,38 +142,28 @@ const std::vector<ExchangePostInfo>& CExchangePost::GetInfoList()
 boost::optional<float> CExchangePost::GetInfoValue(const std::string& name)
 {
     for (auto& info : m_infoList)
-    {
         if (info.name == name)
-        {
             return info.value;
-        }
-    }
     return boost::none;
 }
 
 bool CExchangePost::HasInfo(const std::string& name)
 {
     for (auto& info : m_infoList)
-    {
         if (info.name == name)
-        {
             return true;
-        }
-    }
     return false;
 }
 
 bool CExchangePost::DeleteInfo(const std::string& name)
 {
     for (auto it = m_infoList.begin(); it != m_infoList.end(); ++it)
-    {
         if (it->name == name)
         {
             m_infoList.erase(it);
             m_infoUpdate = true;
             return true;
         }
-    }
     return false;
 }
 
@@ -256,14 +243,14 @@ enum class CAutoInfo::Phase : unsigned int
 // Object's constructor.
 
 CAutoInfo::CAutoInfo(CExchangePost* object)
-    : CAuto(object),
-      m_exchangePost(object),
-      m_phase(Phase::Wait),
-      m_progress(0.0f),
-      m_speed(0.0f),
-      m_timeVirus(0.0f),
-      m_lastParticle(0.0f),
-      m_lastVirus(false)
+    : CAuto(object)
+    , m_exchangePost(object)
+    , m_phase(Phase::Wait)
+    , m_progress(0.0f)
+    , m_speed(0.0f)
+    , m_timeVirus(0.0f)
+    , m_lastParticle(0.0f)
+    , m_lastVirus(false)
 {
     Init();
 }
@@ -338,20 +325,19 @@ void CAutoInfo::Start(int param)
         m_sound->Play(SOUND_LABO, pos, 1.0f, 2.0f);
     }
     if (m_phase == Phase::Error)
-    {
         m_sound->Play(SOUND_GGG, pos, 1.0f, 0.5f);
-    }
 }
 
 bool CAutoInfo::EventProcess(const Event &event)
 {
     CAuto::EventProcess(event);
 
-    if (m_engine->GetPause())  return true;
-    if (event.type != EVENT_FRAME)  return true;
+    if (m_engine->GetPause())
+        return true;
+    if (event.type != EVENT_FRAME)
+        return true;
 
     m_timeVirus -= event.rTime;
-
     if (m_exchangePost->GetVirusMode())  // contaminated by a virus?
     {
         if (m_timeVirus <= 0.0f)
@@ -385,23 +371,18 @@ bool CAutoInfo::EventProcess(const Event &event)
         else
         {
             if (m_exchangePost->GetInfoUpdate())
-            {
                 UpdateList();  // updates the list
-            }
         }
     }
-
     UpdateInterface(event.rTime);
 
     float rTime = event.rTime;
-
     if (m_phase == Phase::Send)  // instruction "receive" ?
     {
         if (m_progress < 0.5f &&
             m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time)
         {
             m_lastParticle = m_time;
-
             for (int i = 0; i < 4; i++)
             {
                 Math::Vector pos = m_goal;
@@ -414,8 +395,8 @@ bool CAutoInfo::EventProcess(const Event &event)
                 Math::Point dim(0.6f, 0.6f);
                 float duration = Math::Rand()*0.5f+0.5f;
                 m_particle->CreateTrack(pos, speed, dim, Gfx::PARTITRACK6,
-                                         duration, 0.0f,
-                                         duration*0.9f, 0.7f);
+                                        duration, 0.0f,
+                                        duration*0.9f, 0.7f);
             }
         }
 
@@ -447,7 +428,6 @@ bool CAutoInfo::EventProcess(const Event &event)
             m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time)
         {
             m_lastParticle = m_time;
-
             for (int i = 0; i < 4; i++)
             {
                 Math::Vector pos = m_goal;
@@ -461,8 +441,8 @@ bool CAutoInfo::EventProcess(const Event &event)
                 Math::Point dim(0.6f, 0.6f);
                 float duration = Math::Rand()*0.5f+0.5f;
                 m_particle->CreateTrack(pos, speed, dim, Gfx::PARTITRACK6,
-                                         duration, 0.0f,
-                                         duration*0.9f, 0.7f);
+                                        duration, 0.0f,
+                                        duration*0.9f, 0.7f);
             }
         }
 
@@ -511,16 +491,11 @@ bool CAutoInfo::EventProcess(const Event &event)
         {
             m_progress += rTime*m_speed;
             rTime = 0.0f;  // stops the rotation
-
             float angle = 0.0f;
             if ( m_progress < 0.5f )
-            {
                 angle = m_progress/0.5f;
-            }
             else
-            {
                 angle = 1.0f-(m_progress-0.5f)/0.5f;
-            }
             m_exchangePost->SetPartRotationX(2, angle*0.5f);
             m_exchangePost->SetPartRotationX(4, angle*0.5f);
             m_exchangePost->SetPartRotationX(6, angle*0.5f);
@@ -542,11 +517,9 @@ bool CAutoInfo::EventProcess(const Event &event)
             m_exchangePost->SetPartRotationZ(6, 0.0f);
         }
     }
-
     float angle = m_exchangePost->GetPartRotationY(1);
     angle += rTime*0.5f;
     m_exchangePost->SetPartRotationY(1, angle);
-
     m_exchangePost->SetPartRotationX(3, sinf(m_time*6.0f+Math::PI*0.0f/3.0f)*0.3f);
     m_exchangePost->SetPartRotationX(5, sinf(m_time*6.0f+Math::PI*2.0f/3.0f)*0.3f);
     m_exchangePost->SetPartRotationX(7, sinf(m_time*6.0f+Math::PI*4.0f/3.0f)*0.3f);
@@ -557,10 +530,7 @@ bool CAutoInfo::EventProcess(const Event &event)
 Error CAutoInfo::GetError()
 {
     if (m_object->GetVirusMode())
-    {
         return ERR_BAT_VIRUS;
-    }
-
     return ERR_OK;
 }
 
@@ -568,10 +538,12 @@ bool CAutoInfo::CreateInterface(bool select)
 {
     CAuto::CreateInterface(select);
 
-    if (!select)  return true;
+    if (!select)
+        return true;
 
     Ui::CWindow* pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-    if (pw == nullptr)  return false;
+    if (pw == nullptr)
+        return false;
 
     float ox = 3.0f/640.0f;
     float oy = 3.0f/480.0f;
@@ -607,24 +579,23 @@ void CAutoInfo::UpdateList()
     CExchangePost* object = static_cast<CExchangePost*>(m_object);
 
     Ui::CWindow* pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-    if (pw == nullptr)  return;
+    if (pw == nullptr)
+        return;
 
     Ui::CList* pl = static_cast< Ui::CList* >(pw->SearchControl(EVENT_OBJECT_GINFO));
-    if (pl == nullptr)  return;
+    if (pl == nullptr)
+        return;
 
     pl->Flush();
     const auto& infoList = object->GetInfoList();
     if (infoList.empty())
-    {
         pl->ClearState(Ui::STATE_ENABLE);
-    }
     else
     {
         pl->SetState(Ui::STATE_ENABLE);
-
         for (int i = 0; i < static_cast<int>(infoList.size()); i++)
         {
-            char text[100];
+            char text[100] = {0};   //fake init to mute lint
             sprintf(text, "%s = %.2f", infoList[i].name.c_str(), infoList[i].value);
             pl->SetItemName(i, text);
         }
@@ -636,28 +607,24 @@ void CAutoInfo::UpdateList()
 void CAutoInfo::UpdateListVirus()
 {
     Ui::CWindow* pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-    if (pw == nullptr)  return;
+    if (pw == nullptr)
+        return;
 
     Ui::CList* pl = static_cast< Ui::CList* >(pw->SearchControl(EVENT_OBJECT_GINFO));
-    if (pl == nullptr)  return;
+    if (pl == nullptr)
+        return;
 
     pl->SetState(Ui::STATE_ENABLE);
-
     pl->Flush();
     for (int i = 0; i < 4; ++i)
     {
-        char text[100];
-        int max = static_cast< int >(2.0f+Math::Rand()*10.0f);
-        for (int j = 0; j < max; ++j)
-        {
+        char text[100] = {0};
+        short max = static_cast<short>(2.0f+Math::Rand()*10.0f);
+        for (short j = 0; j < max; ++j)
             do
-            {
                 text[j] = ' '+static_cast<int>(Math::Rand()*94.0f);
-            }
             while (text[j] == '\\');
-        }
         text[max] = 0;
-
         pl->SetItemName(i, text);
     }
 }
@@ -669,7 +636,8 @@ bool CAutoInfo::Write(CLevelParserLine* line)
 
     line->AddParam("aExist", MakeUnique<CLevelParserParam>(true));
     CAuto::Write(line);
-    line->AddParam("aPhase", MakeUnique<CLevelParserParam>(static_cast<int>(m_phase)));
+    line->AddParam("aPhase", MakeUnique<CLevelParserParam>(
+        static_cast<int>(m_phase)));
     line->AddParam("aProgress", MakeUnique<CLevelParserParam>(m_progress));
     line->AddParam("aSpeed", MakeUnique<CLevelParserParam>(m_speed));
 
@@ -682,11 +650,10 @@ bool CAutoInfo::Read(CLevelParserLine* line)
         return false;
 
     CAuto::Read(line);
-    m_phase = static_cast<Phase>(line->GetParam("aPhase")->AsInt(static_cast<int>(Phase::Wait)));
+    m_phase = static_cast<Phase>(line->GetParam("aPhase")->AsInt(
+        static_cast<int>(Phase::Wait)));
     m_progress = line->GetParam("aProgress")->AsFloat(0.0f);
     m_speed = line->GetParam("aSpeed")->AsFloat(1.0f);
-
     m_lastParticle = 0.0f;
-
     return true;
 }

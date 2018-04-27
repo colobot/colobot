@@ -48,23 +48,23 @@ void CLogger::Log(LogLevel type, const char* str, va_list args)
     {
         switch (type)
         {
-            case LOG_TRACE:
-                fprintf(out, "[TRACE]: ");
-                break;
-            case LOG_DEBUG:
-                fprintf(out, "[DEBUG]: ");
-                break;
-            case LOG_WARN:
-                fprintf(out, "[WARN]: ");
-                break;
-            case LOG_INFO:
-                fprintf(out, "[INFO]: ");
-                break;
-            case LOG_ERROR:
-                fprintf(out, "[ERROR]: ");
-                break;
-            default:
-                break;
+        case LOG_TRACE:
+            fprintf(out, "[TRACE]: ");
+            break;
+        case LOG_DEBUG:
+            fprintf(out, "[DEBUG]: ");
+            break;
+        case LOG_WARN:
+            fprintf(out, "[WARN]: ");
+            break;
+        case LOG_INFO:
+            fprintf(out, "[INFO]: ");
+            break;
+        case LOG_ERROR:
+            fprintf(out, "[ERROR]: ");
+            break;
+        default:
+            break;
         }
 
         va_list args2;

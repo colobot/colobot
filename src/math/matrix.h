@@ -106,7 +106,7 @@ struct Matrix
      * \param col column (1 to 4)
      * \param value value
      */
-    void Set(int row, int col, float value)
+    void Set(const int row, const int col, const float value)
     {
         m[(col-1)*4+(row-1)] = value;
     }
@@ -117,7 +117,7 @@ struct Matrix
      * \param col column (1 to 4)
      * \returns value
      */
-    float Get(int row, int col)
+    float Get(int row, int col)const
     {
         return m[(col-1)*4+(row-1)];
     }

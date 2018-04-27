@@ -59,7 +59,8 @@ CBotInstr* CBotFor::Compile(CBotToken* &p, CBotCStack* pStack)
     }
 
     inst->SetToken(p);
-    if (!IsOfType(p, ID_FOR)) return nullptr;      // should never happen
+    if (!IsOfType(p, ID_FOR))
+        return nullptr;      // should never happen
 
     if ( !IsOfType(p, ID_OPENPAR))              // missing parenthesis ?
     {
@@ -112,100 +113,118 @@ CBotInstr* CBotFor::Compile(CBotToken* &p, CBotCStack* pStack)
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotFor :: Execute(CBotStack* &pj)
 {
-    CBotStack* pile = pj->AddStack(this, CBotStack::BlockVisibilityType::BLOCK);     // adds an item to the stack (variables locales)
+    // adds an item to the stack (variables locales)
+    CBotStack* pile = pj->AddStack(this, CBotStack::BlockVisibilityType::BLOCK);
                                                     // or find in case of recovery
 //  if ( pile == EOX ) return true;
 
-    if ( pile->IfStep() ) return false;
+    if ( pile->IfStep() )
+        return false;
 
-    while( true ) switch( pile->GetState() )    // executes the loop
-    {                                           // there are four possible states (depending on recovery)
-    case 0:
-        // initialize
-        if (m_init != nullptr &&
-            !m_init->Execute(pile) ) return false;     // interrupted here ?
-        if (!pile->SetState(1)) return false;           // ready for further
+    while( true )
+        switch( pile->GetState() )    // executes the loop
+        {   // there are four possible states (depending on recovery)
+        case 0:
+            // initialize
+            if (m_init != nullptr &&
+                !m_init->Execute(pile) )
+                return false;     // interrupted here ?
+            if (!pile->SetState(1))
+                return false;           // ready for further
 
-    case 1:
-        // evaluates the condition
-        if (m_test != nullptr )                           // no strings attached? -> True!
-        {
-            if (!m_test->Execute(pile) ) return false;  // interrupted here ?
-
-            // the result of the condition is on the stack
-
-            // terminates if an error or if the condition is false
-            if ( !pile->IsOk() || pile->GetVal() != true )
+        case 1:
+            // evaluates the condition
+            if (m_test != nullptr )                           // no strings attached? -> True!
             {
-                return pj->Return(pile);                // sends the results and releases the stack
+                if (!m_test->Execute(pile) )
+                    return false;  // interrupted here ?
+
+                // the result of the condition is on the stack
+
+                // terminates if an error or if the condition is false
+                if ( !pile->IsOk() || pile->GetVal() != true )
+                    // sends the results and releases the stack
+                    return pj->Return(pile);
             }
+
+            // the condition is true, do further
+            if (!pile->SetState(2))
+                return false;           // ready for further
+
+        case 2:
+            // evaluates the associated statement block
+            if (m_block != nullptr &&
+                !m_block->Execute(pile) )
+            {
+                if (pile->IfContinue(3, m_label))
+                    continue; // if continued, going on to incrementation
+                // sends the results and releases the stack
+                return pj->BreakReturn(pile, m_label);
+            }
+
+            // terminates if there is an error
+            if ( !pile->IsOk() )
+                // sends the results and releases the stack
+                return pj->Return(pile);
+
+            if (!pile->SetState(3))
+                return false;           // ready for further
+
+        case 3:
+            // evalutate the incrementation
+            if (m_incr != nullptr && !m_incr->Execute(pile) )
+                return false;      // interrupted here ?
+
+            // returns to the test again
+            if (!pile->SetState(1, 0))
+                return false;            // returns to the test
+            continue;
         }
-
-        // la condition est vrai, passe à la suite
-        if (!pile->SetState(2)) return false;           // ready for further
-
-    case 2:
-        // evaluates the associated statement block
-        if (m_block != nullptr &&
-            !m_block->Execute(pile) )
-        {
-            if (pile->IfContinue(3, m_label)) continue; // if continued, going on to incrementation
-            return pj->BreakReturn(pile, m_label);      // sends the results and releases the stack
-        }
-
-        // terminates if there is an error
-        if ( !pile->IsOk() )
-        {
-            return pj->Return(pile);                    // sends the results and releases the stack
-        }
-
-        if (!pile->SetState(3)) return false;           // ready for further
-
-    case 3:
-        // evalutate the incrementation
-        if (m_incr != nullptr &&
-            !m_incr->Execute(pile) ) return false;      // interrupted here ?
-
-        // returns to the test again
-        if (!pile->SetState(1, 0)) return false;            // returns to the test
-        continue;
-    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void CBotFor :: RestoreState(CBotStack* &pj, bool bMain)
 {
-    if ( !bMain ) return;
+    if ( !bMain )
+        return;
 
     CBotStack* pile = pj->RestoreStack(this);       // adds an item to the stack (variables locales)
-    if ( pile == nullptr ) return;
+    if ( pile == nullptr )
+        return;
 
     switch( pile->GetState() )
     {                                           // there are four possible states (depending on recovery)
     case 0:
         // initialize
-        if (m_init != nullptr ) m_init->RestoreState(pile, true);     // interrupted here !
+        if (m_init != nullptr )
+            m_init->RestoreState(pile, true);     // interrupted here !
         return;
 
     case 1:
-        if (m_init != nullptr ) m_init->RestoreState(pile, false);    // variables definitions
+        if (m_init != nullptr )
+            m_init->RestoreState(pile, false);    // variables definitions
 
         // evaluates the condition
-        if (m_test != nullptr ) m_test->RestoreState(pile, true);     // interrupted here !
+        if (m_test != nullptr )
+            m_test->RestoreState(pile, true);     // interrupted here !
         return;
 
     case 2:
-        if (m_init != nullptr ) m_init->RestoreState(pile, false);    // variable definitions
+        if (m_init != nullptr )
+            m_init->RestoreState(pile, false);    // variable definitions
 
         // evaluates the associated statement block
-        if (m_block != nullptr ) m_block->RestoreState(pile, true);
+        if (m_block != nullptr )
+            m_block->RestoreState(pile, true);
         return;
 
     case 3:
-        if (m_init != nullptr ) m_init->RestoreState(pile, false);    // variable definitions
+        if (m_init != nullptr )
+            m_init->RestoreState(pile, false);    // variable definitions
 
         // evaluate the incrementation
-        if (m_incr != nullptr ) m_incr->RestoreState(pile, true);     // interrupted here !
+        if (m_incr != nullptr )
+            m_incr->RestoreState(pile, true);     // interrupted here !
         return;
     }
 }

@@ -58,7 +58,8 @@ void CScreenSetupSound::CreateInterface()
 
     CScreenSetup::CreateInterface();
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == nullptr )  return;
+    if ( pw == nullptr )
+        return;
 
     pos.x = ox+sx*3;
     pos.y = 0.55f;
@@ -101,28 +102,29 @@ void CScreenSetupSound::CreateInterface()
 
 bool CScreenSetupSound::EventProcess(const Event &event)
 {
-    if (!CScreenSetup::EventProcess(event)) return false;
+    if (!CScreenSetup::EventProcess(event))
+        return false;
 
     switch( event.type )
     {
-        case EVENT_INTERFACE_VOLSOUND:
-        case EVENT_INTERFACE_VOLMUSIC:
-            ChangeSetupButtons();
-            break;
+    case EVENT_INTERFACE_VOLSOUND:
+    case EVENT_INTERFACE_VOLMUSIC:
+        ChangeSetupButtons();
+        break;
 
-        case EVENT_INTERFACE_SILENT:
-            m_sound->SetAudioVolume(0);
-            m_sound->SetMusicVolume(0);
-            UpdateSetupButtons();
-            break;
-        case EVENT_INTERFACE_NOISY:
-            m_sound->SetAudioVolume(MAXVOLUME);
-            m_sound->SetMusicVolume(MAXVOLUME*3/4);
-            UpdateSetupButtons();
-            break;
+    case EVENT_INTERFACE_SILENT:
+        m_sound->SetAudioVolume(0);
+        m_sound->SetMusicVolume(0);
+        UpdateSetupButtons();
+        break;
+    case EVENT_INTERFACE_NOISY:
+        m_sound->SetAudioVolume(MAXVOLUME);
+        m_sound->SetMusicVolume(MAXVOLUME*3/4);
+        UpdateSetupButtons();
+        break;
 
-        default:
-            return true;
+    default:
+        return true;
     }
     return false;
 }
@@ -136,7 +138,8 @@ void CScreenSetupSound::UpdateSetupButtons()
     float       value;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == nullptr )  return;
+    if ( pw == nullptr )
+        return;
 
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_VOLSOUND));
     if ( ps != nullptr )
@@ -162,7 +165,8 @@ void CScreenSetupSound::ChangeSetupButtons()
     float       value;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == nullptr )  return;
+    if ( pw == nullptr )
+        return;
 
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_VOLSOUND));
     if ( ps != nullptr )

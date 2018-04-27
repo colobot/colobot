@@ -67,7 +67,7 @@ struct Vector
     {}
 
     //! Creates a vector from given values
-    inline explicit Vector(float _x, float _y, float _z)
+    inline explicit Vector(const float _x, const float _y, const float _z)
      : x(_x)
      , y(_y)
      , z(_z)
@@ -232,7 +232,7 @@ struct Vector
 }; // struct Vector
 
 //! Checks if two vectors are equal within given \a tolerance
-inline bool VectorsEqual(const Math::Vector &a, const Math::Vector &b, float tolerance = TOLERANCE)
+inline bool VectorsEqual(const Math::Vector &a, const Math::Vector &b, const float tolerance = TOLERANCE)
 {
     return IsEqual(a.x, b.x, tolerance)
             && IsEqual(a.y, b.y, tolerance)

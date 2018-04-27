@@ -30,25 +30,17 @@ CSNDFileWrapper::CSNDFileWrapper(const std::string& filename)
 {
     m_snd_callbacks = { SNDLength, SNDSeek, SNDRead, SNDWrite, SNDTell };
     if (PHYSFS_isInit())
-    {
         m_file = PHYSFS_openRead(filename.c_str());
-    }
     else
-    {
         m_last_error = "Resource system not started!";
-    }
     if (m_file)
     {
         m_snd_file = sf_open_virtual(&m_snd_callbacks, SFM_READ, &m_file_info, m_file);
         if (!m_snd_file)
-        {
             m_last_error = "Could not load file";
-        }
     }
     else
-    {
         m_last_error = std::string(PHYSFS_getLastError());
-    }
 }
 
 
@@ -58,9 +50,7 @@ CSNDFileWrapper::~CSNDFileWrapper()
     {
         PHYSFS_close(m_file);
         if (m_snd_file)
-        {
             sf_close(m_snd_file);
-        }
     }
 }
 
@@ -106,15 +96,15 @@ sf_count_t CSNDFileWrapper::SNDSeek(sf_count_t offset, int whence, void *data)
     PHYSFS_File *file = static_cast<PHYSFS_File *>(data);
     switch(whence)
     {
-        case SEEK_CUR:
-            PHYSFS_seek(file, PHYSFS_tell(file) + offset);
-            break;
-        case SEEK_SET:
-            PHYSFS_seek(file, offset);
-            break;
-        case SEEK_END:
-            PHYSFS_seek(file, PHYSFS_fileLength(file) + offset);
-            break;
+    case SEEK_CUR:
+        PHYSFS_seek(file, PHYSFS_tell(file) + offset);
+        break;
+    case SEEK_SET:
+        PHYSFS_seek(file, offset);
+        break;
+    case SEEK_END:
+        PHYSFS_seek(file, PHYSFS_fileLength(file) + offset);
+        break;
     }
 
     return PHYSFS_tell(file);

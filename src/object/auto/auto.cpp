@@ -146,11 +146,8 @@ bool CAuto::EventProcess(const Event &event)
         m_time += event.rTime;
         UpdateInterface(event.rTime);
     }
-
-    if ( !m_object->GetSelect() )  // robot not selected?
-    {
-        return true;
-    }
+    // if ( !m_object->GetSelect() )  // robot not selected?
+    //     return true;
 
     return true;
 }
@@ -185,7 +182,8 @@ bool CAuto::CreateInterface(bool bSelect)
         m_interface->DeleteControl(EVENT_WINDOW0);  // destroys the window
     }
 
-    if ( !bSelect )  return true;
+    if ( !bSelect )
+        return true;
 
     pos.x = 0.0f;
     pos.y = 0.0f;
@@ -194,7 +192,8 @@ bool CAuto::CreateInterface(bool bSelect)
     dim.y = 86.0f/480.0f;
     m_interface->CreateWindows(pos, dim, 3, EVENT_WINDOW0);
     pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW0));
-    if ( pw == nullptr )  return false;
+    if ( pw == nullptr )
+        return false;
 
     pos.x = 0.0f;
     pos.y = 64.0f/480.0f;
@@ -268,10 +267,9 @@ bool CAuto::CreateInterface(bool bSelect)
 
 void CAuto::CheckInterface(Ui::CWindow *pw, EventType event, bool bState)
 {
-    Ui::CControl*   control;
-
-    control = pw->SearchControl(event);
-    if ( control == nullptr )  return;
+    Ui::CControl*   control = pw->SearchControl(event);
+    if ( control == nullptr )
+        return;
 
     control->SetState(Ui::STATE_CHECK, bState);
 }
@@ -280,10 +278,9 @@ void CAuto::CheckInterface(Ui::CWindow *pw, EventType event, bool bState)
 
 void CAuto::EnableInterface(Ui::CWindow *pw, EventType event, bool bState)
 {
-    Ui::CControl*   control;
-
-    control = pw->SearchControl(event);
-    if ( control == nullptr )  return;
+    Ui::CControl*   control = pw->SearchControl(event);
+    if ( control == nullptr )
+        return;
 
     control->SetState(Ui::STATE_ENABLE, bState);
 }
@@ -292,10 +289,9 @@ void CAuto::EnableInterface(Ui::CWindow *pw, EventType event, bool bState)
 
 void CAuto::VisibleInterface(Ui::CWindow *pw, EventType event, bool bState)
 {
-    Ui::CControl*   control;
-
-    control = pw->SearchControl(event);
-    if ( control == nullptr )  return;
+    Ui::CControl*   control = pw->SearchControl(event);
+    if ( control == nullptr )
+        return;
 
     control->SetState(Ui::STATE_VISIBLE, bState);
 }
@@ -304,10 +300,9 @@ void CAuto::VisibleInterface(Ui::CWindow *pw, EventType event, bool bState)
 
 void CAuto::DeadInterface(Ui::CWindow *pw, EventType event, bool bState)
 {
-    Ui::CControl*   control;
-
-    control = pw->SearchControl(event);
-    if ( control == nullptr )  return;
+    Ui::CControl*   control = pw->SearchControl(event);
+    if ( control == nullptr )
+        return;
 
     control->SetState(Ui::STATE_DEAD, !bState);
 }
@@ -318,10 +313,12 @@ void CAuto::UpdateInterface()
 {
     Ui::CWindow*    pw;
 
-    if ( !m_object->GetSelect() )  return;
+    if ( !m_object->GetSelect() )
+        return;
 
     pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW0));
-    if ( pw == nullptr )  return;
+    if ( pw == nullptr )
+        return;
 
     VisibleInterface(pw, EVENT_OBJECT_GPROGRESS, m_bBusy);
 }
@@ -334,13 +331,16 @@ void CAuto::UpdateInterface(float rTime)
     Ui::CWindow*    pw;
     Ui::CGauge*     pg;
 
-    if ( m_time < m_lastUpdateTime+0.1f )  return;
+    if ( m_time < m_lastUpdateTime+0.1f )
+        return;
     m_lastUpdateTime = m_time;
 
-    if ( !m_object->GetSelect() )  return;
+    if ( !m_object->GetSelect() )
+        return;
 
     pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW0));
-    if ( pw == nullptr )  return;
+    if ( pw == nullptr )
+        return;
 
     pg = static_cast<Ui::CGauge*>(pw->SearchControl(EVENT_OBJECT_GSHIELD));
     if ( pg != nullptr )
@@ -351,9 +351,7 @@ void CAuto::UpdateInterface(float rTime)
 
     pg = static_cast<Ui::CGauge*>(pw->SearchControl(EVENT_OBJECT_GPROGRESS));
     if ( pg != nullptr )
-    {
         pg->SetLevel(m_progressTime);
-    }
 }
 
 

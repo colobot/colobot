@@ -40,16 +40,20 @@ CBotVar* MakeListVars(CBotVar** ppVars, bool bSetVal)
     while( true )
     {
 //        ppVars[i];
-        if ( ppVars[i] == nullptr ) break;
+        if ( ppVars[i] == nullptr )
+            break;
 
         CBotVar*    pp = CBotVar::Create(ppVars[i]);
-        if (bSetVal) pp->Copy(ppVars[i]);
+        if (bSetVal)
+            pp->Copy(ppVars[i]);
         else
             if ( ppVars[i]->GetType() == CBotTypPointer )
                 pp->SetClass( ppVars[i]->GetClass());
 // copy the pointer according to indirections
-        if (pVar == nullptr) pVar = pp;
-        else pVar->AddNext(pp);
+        if (pVar == nullptr)
+            pVar = pp;
+        else
+            pVar->AddNext(pp);
         i++;
     }
     return pVar;
@@ -111,32 +115,25 @@ CBotTypResult ArrayType(CBotToken* &p, CBotCStack* pile, CBotTypResult type)
 ////////////////////////////////////////////////////////////////////////////////
 bool WriteWord(FILE* pf, unsigned short w)
 {
-    std::size_t  lg;
-
-    lg = fwrite(&w, sizeof( unsigned short ), 1, pf );
-
+    std::size_t  lg = fwrite(&w, sizeof( unsigned short ), 1, pf );
     return (lg == 1);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool WriteString(FILE* pf, std::string s)
 {
-    std::size_t  lg1, lg2;
+    std::size_t lg1 = s.size();
+    if (!WriteWord(pf, lg1))
+        return false;
 
-    lg1 = s.size();
-    if (!WriteWord(pf, lg1)) return false;
-
-    lg2 = fwrite(s.c_str(), 1, lg1, pf );
+    std::size_t lg2 = fwrite(s.c_str(), 1, lg1, pf );
     return (lg1 == lg2);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool WriteFloat(FILE* pf, float w)
 {
-    std::size_t  lg;
-
-    lg = fwrite(&w, sizeof( float ), 1, pf );
-
+    std::size_t  lg = fwrite(&w, sizeof( float ), 1, pf );
     return (lg == 1);
 }
 
@@ -241,9 +238,8 @@ bool CharInList(const char c, const char* list)
     int i = 0;
 
     while (list[i] != 0)
-    {
-        if (c == list[i++]) return true;
-    }
+        if (c == list[i++])
+            return true;
 
     return false;
 }
@@ -255,9 +251,7 @@ std::string CodePointToUTF8(unsigned int val)
     if (val < 0xD800 || (0xDFFF < val && val < 0x110000))
     {
         if (val < 0x80)
-        {
             s.push_back(val);
-        }
         else if (val < 0x800)
         {
             s.push_back(0xC0 + (val >> 6));

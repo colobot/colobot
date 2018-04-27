@@ -34,6 +34,7 @@ namespace CBot
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotInstrMethode::CBotInstrMethode()
+    : m_thisIdent(-1)
 {
     m_parameters = nullptr;
     m_exprRetVar = nullptr;
@@ -61,7 +62,7 @@ CBotInstr* CBotInstrMethode::Compile(CBotToken* &p, CBotCStack* pStack, CBotVar*
         inst->m_methodName = pp->GetString();
 
         // compiles the list of parameters
-        CBotVar*    ppVars[1000];
+        CBotVar* ppVars[1000] = {nullptr};  //fake init to mute lint
         inst->m_parameters = CompileParams(p, pStack, ppVars);
 
         if (pStack->IsOk())
@@ -84,12 +85,11 @@ CBotInstr* CBotInstrMethode::Compile(CBotToken* &p, CBotCStack* pStack, CBotVar*
             {
                 CBotVar*    pResult = CBotVar::Create("", inst->m_typRes);
                 if (inst->m_typRes.Eq(CBotTypClass))
-                {
                     pResult->SetClass(inst->m_typRes.GetClass());
-                }
                 pStack->SetVar(pResult);
             }
-            else pStack->SetVar(nullptr);
+            else
+                pStack->SetVar(nullptr);
 
             pp = p;
             if (nullptr != (inst->m_exprRetVar = CBotExprRetVar::Compile(p, pStack, bMethodChain)))
@@ -125,13 +125,15 @@ bool CBotInstrMethode::ExecuteVar(CBotVar* &pVar, CBotStack* &pj, CBotToken* pre
         pile3 = pile1->AddStack2();
         if (pile3->GetState() == 1)
         {
-            if (!m_exprRetVar->Execute(pile3)) return false;
+            if (!m_exprRetVar->Execute(pile3))
+                return false;
             pVar = nullptr;
             return pj->Return(pile3);
         }
     }
 
-    if (pile1->IfStep()) return false;
+    if (pile1->IfStep())
+        return false;
 
     CBotStack*    pile2 = pile1->AddStack();    // for the next parameters
 
@@ -155,18 +157,22 @@ bool CBotInstrMethode::ExecuteVar(CBotVar* &pVar, CBotStack* &pj, CBotToken* pre
     // and places the values on the stack
     // to be interrupted at any time
 
-    if (p != nullptr) while ( true)
-    {
-        if (pile2->GetState() == 0)
+    if (p != nullptr)
+        while ( true)
         {
-            if (!p->Execute(pile2)) return false;   // interrupted here?
-            if (!pile2->SetState(1)) return false;  // special mark to recognize parameters
+            if (pile2->GetState() == 0)
+            {
+                if (!p->Execute(pile2))
+                    return false;   // interrupted here?
+                if (!pile2->SetState(1))
+                    return false;  // special mark to recognize parameters
+            }
+            ppVars[i++] = pile2->GetVar();              // construct the list of pointers
+            pile2 = pile2->AddStack();                  // space on the stack for the result
+            p = p->GetNext();
+            if ( p == nullptr)
+                break;
         }
-        ppVars[i++] = pile2->GetVar();              // construct the list of pointers
-        pile2 = pile2->AddStack();                  // space on the stack for the result
-        p = p->GetNext();
-        if ( p == nullptr) break;
-    }
     ppVars[i] = nullptr;
 
     CBotVar*    pThis  = pile1->GetVar();
@@ -195,11 +201,13 @@ bool CBotInstrMethode::ExecuteVar(CBotVar* &pVar, CBotStack* &pj, CBotToken* pre
 ////////////////////////////////////////////////////////////////////////////////
 void CBotInstrMethode::RestoreStateVar(CBotStack* &pile, bool bMain)
 {
-    if (!bMain) return;
+    if (!bMain)
+        return;
 
     CBotVar*    ppVars[1000];
     CBotStack*    pile1 = pile->RestoreStack(this);     // place for the copy of This
-    if (pile1 == nullptr) return;
+    if (pile1 == nullptr)
+        return;
 
     if (m_exprRetVar != nullptr)    // .func().member
     {
@@ -212,7 +220,8 @@ void CBotInstrMethode::RestoreStateVar(CBotStack* &pile, bool bMain)
     }
 
     CBotStack*    pile2 = pile1->RestoreStack();        // and for the parameters coming
-    if (pile2 == nullptr) return;
+    if (pile2 == nullptr)
+        return;
 
     CBotVar*    pThis  = pile1->GetVar();
 
@@ -227,20 +236,23 @@ void CBotInstrMethode::RestoreStateVar(CBotStack* &pile, bool bMain)
     // and places the values on the stack
     // to be interrupted at any time
 
-    if (p != nullptr) while ( true)
-    {
-        if (pile2->GetState() == 0)
+    if (p != nullptr)
+        while ( true)
         {
-            p->RestoreState(pile2, true);   // interrupted here!
-            return;
-        }
-        ppVars[i++] = pile2->GetVar();      // construct the list of pointers
-        pile2 = pile2->RestoreStack();
-        if (pile2 == nullptr) return;
+            if (pile2->GetState() == 0)
+            {
+                p->RestoreState(pile2, true);   // interrupted here!
+                return;
+            }
+            ppVars[i++] = pile2->GetVar();      // construct the list of pointers
+            pile2 = pile2->RestoreStack();
+            if (pile2 == nullptr)
+                return;
 
-        p = p->GetNext();
-        if ( p == nullptr) break;
-    }
+            p = p->GetNext();
+            if ( p == nullptr)
+                break;
+        }
     ppVars[i] = nullptr;
 
     CBotClass*    pClass;
@@ -263,7 +275,8 @@ bool CBotInstrMethode::Execute(CBotStack* &pj)
     CBotVar*    ppVars[1000];
     CBotStack*    pile1 = pj->AddStack(this, CBotStack::BlockVisibilityType::BLOCK);        // place for the copy of This
 
-    if (pile1->IfStep()) return false;
+    if (pile1->IfStep())
+        return false;
 
     CBotStack*    pile2 = pile1->AddStack();                // and for the parameters coming
 
@@ -283,18 +296,22 @@ bool CBotInstrMethode::Execute(CBotStack* &pj)
     // evaluate the parameters
     // and places the values on the stack
     // to be interrupted at any time
-    if (p != nullptr) while ( true)
-    {
-        if (pile2->GetState() == 0)
+    if (p != nullptr)
+        while ( true)
         {
-            if (!p->Execute(pile2)) return false;   // interrupted here?
-            if (!pile2->SetState(1)) return false;  // special mark to recognize parameters
+            if (pile2->GetState() == 0)
+            {
+                if (!p->Execute(pile2))
+                    return false;   // interrupted here?
+                if (!pile2->SetState(1))
+                    return false;  // special mark to recognize parameters
+            }
+            ppVars[i++] = pile2->GetVar();              // construct the list of pointers
+            pile2 = pile2->AddStack();                  // space on the stack for the results
+            p = p->GetNext();
+            if ( p == nullptr)
+                break;
         }
-        ppVars[i++] = pile2->GetVar();              // construct the list of pointers
-        pile2 = pile2->AddStack();                  // space on the stack for the results
-        p = p->GetNext();
-        if ( p == nullptr) break;
-    }
     ppVars[i] = nullptr;
 
     CBotVar*    pThis  = pile1->GetVar();
@@ -305,7 +322,8 @@ bool CBotInstrMethode::Execute(CBotStack* &pj)
     else
         pClass = pThis->GetClass();
 
-    if ( !pClass->ExecuteMethode(m_MethodeIdent, pThis, ppVars, m_typRes, pile2, GetToken())) return false;    // interupted
+    if ( !pClass->ExecuteMethode(m_MethodeIdent, pThis, ppVars, m_typRes, pile2, GetToken()))
+        return false;    // interupted
 
     // set the new value of this in place of the old variable
     CBotVar*    old = pile1->FindVar(m_token, false);

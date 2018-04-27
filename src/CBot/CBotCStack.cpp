@@ -38,32 +38,30 @@ CBotTypResult CBotCStack::m_retTyp  = CBotTypResult(0);
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotCStack::CBotCStack(CBotCStack* ppapa)
+    : m_next(nullptr)
+    , m_prev(ppapa)
+    //,   m_start(nullptr)
+    , m_var(nullptr)
+    , m_bBlock(ppapa == nullptr)
+    , m_listVar(nullptr)
 {
-    m_next = nullptr;
-    m_prev = ppapa;
-
     if (ppapa == nullptr)
     {
         m_error = CBotNoErr;
         m_start = 0;
         m_end    = 0;
-        m_bBlock = true;
     }
     else
-    {
         m_start = ppapa->m_start;
-        m_bBlock = false;
-    }
-
-    m_listVar = nullptr;
-    m_var      = nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotCStack::~CBotCStack()
 {
-    if (m_next != nullptr) delete m_next;
-    if (m_prev != nullptr) m_prev->m_next = nullptr;        // removes chain
+    if (m_next != nullptr)
+        delete m_next;
+    if (m_prev != nullptr)
+        m_prev->m_next = nullptr;        // removes chain
 
     delete m_var;
     delete m_listVar;
@@ -72,13 +70,15 @@ CBotCStack::~CBotCStack()
 ////////////////////////////////////////////////////////////////////////////////
 CBotCStack* CBotCStack::TokenStack(CBotToken* pToken, bool bBlock)
 {
-    if (m_next != nullptr) return m_next;            // include on an existing stack
+    if (m_next != nullptr)
+        return m_next;            // include on an existing stack
 
     CBotCStack*    p = new CBotCStack(this);
     m_next = p;                                    // channel element
     p->m_bBlock = bBlock;
 
-    if (pToken != nullptr) p->SetStartError(pToken->GetStart());
+    if (pToken != nullptr)
+        p->SetStartError(pToken->GetStart());
 
     return    p;
 }
@@ -86,9 +86,11 @@ CBotCStack* CBotCStack::TokenStack(CBotToken* pToken, bool bBlock)
 ////////////////////////////////////////////////////////////////////////////////
 CBotInstr* CBotCStack::Return(CBotInstr* inst, CBotCStack* pfils)
 {
-    if ( pfils == this ) return inst;
+    if ( pfils == this )
+        return inst;
 
-    if (m_var != nullptr) delete m_var;            // value replaced?
+    if (m_var != nullptr)
+        delete m_var;            // value replaced?
     m_var = pfils->m_var;                        // result transmitted
     pfils->m_var = nullptr;                        // not to destroy the variable
 
@@ -105,7 +107,8 @@ CBotInstr* CBotCStack::Return(CBotInstr* inst, CBotCStack* pfils)
 ////////////////////////////////////////////////////////////////////////////////
 CBotFunction* CBotCStack::ReturnFunc(CBotFunction* inst, CBotCStack* pfils)
 {
-    if (m_var != nullptr) delete m_var;            // value replaced?
+    if (m_var != nullptr)
+        delete m_var;            // value replaced?
     m_var = pfils->m_var;                        // result transmitted
     pfils->m_var = nullptr;                        // not to destroy the variable
 
@@ -162,7 +165,8 @@ CBotClass* CBotCStack::GetClass()
 ////////////////////////////////////////////////////////////////////////////////
 void CBotCStack::SetType(CBotTypResult& type)
 {
-    if (m_var == nullptr) return;
+    if (m_var == nullptr)
+        return;
     m_var->SetType( type );
 }
 
@@ -178,9 +182,7 @@ CBotVar* CBotCStack::FindVar(CBotToken* &pToken)
         while ( pp != nullptr)
         {
             if (name == pp->GetName())
-            {
                 return pp;
-            }
             pp = pp->m_next;
         }
         p = p->m_prev;
@@ -200,7 +202,8 @@ CBotVar* CBotCStack::CopyVar(CBotToken& Token)
 {
     CBotVar*    pVar = FindVar( Token );
 
-    if ( pVar == nullptr) return nullptr;
+    if ( pVar == nullptr)
+        return nullptr;
 
     CBotVar*    pCopy = CBotVar::Create( "", pVar->GetType() );
     pCopy->Copy(pVar);
@@ -216,22 +219,25 @@ bool CBotCStack::IsOk()
 ////////////////////////////////////////////////////////////////////////////////
 void CBotCStack::SetStartError( const std::size_t pos )
 {
-    if ( m_error != 0) return;            // does not change existing error
+    if ( m_error != 0)
+        return;            // does not change existing error
     m_start = pos;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void CBotCStack::SetError(const CBotError n, const std::size_t pos)
 {
-    if ( n!= 0 && m_error != 0) return;    // does not change existing error
+    if ( n!= 0 && m_error != 0)
+        return;    // does not change existing error
     m_error = n;
-    m_end    = pos;
+    m_end   = pos;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void CBotCStack::SetError(const CBotError n, const CBotToken* p)
 {
-    if (m_error) return;    // does not change existing error
+    if (m_error)
+        return;    // does not change existing error
     m_error = n;
     m_start    = p->GetStart();
     m_end    = p->GetEnd();
@@ -251,7 +257,8 @@ bool CBotCStack::NextToken(CBotToken* &p)
     CBotToken*    pp = p;
 
     p = p->GetNext();
-    if (p!=nullptr) return true;
+    if (p!=nullptr)
+        return true;
 
     SetError(CBotErrNoTerminator, pp->GetEnd());
     return false;
@@ -284,16 +291,19 @@ CBotTypResult CBotCStack::GetRetType()
 ////////////////////////////////////////////////////////////////////////////////
 void CBotCStack::SetVar( CBotVar* var )
 {
-    if (m_var) delete m_var;    // replacement of a variable
+    if (m_var)
+        delete m_var;    // replacement of a variable
     m_var = var;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void CBotCStack::SetCopyVar( CBotVar* var )
 {
-    if (m_var) delete m_var;    // replacement of a variable
+    if (m_var)
+        delete m_var;    // replacement of a variable
 
-    if ( var == nullptr ) return;
+    if ( var == nullptr )
+        return;
     m_var = CBotVar::Create("", var->GetTypResult(CBotVar::GetTypeMode::CLASS_AS_INTRINSIC));
     m_var->Copy( var );
 }
@@ -310,12 +320,15 @@ void CBotCStack::AddVar(CBotVar* pVar)
     CBotCStack*    p = this;
 
     // returns to the father element
-    while (p != nullptr && p->m_bBlock == 0) p = p->m_prev;
+    while (p != nullptr && p->m_bBlock == 0)
+        p = p->m_prev;
 
-    if ( p == nullptr ) return;
+    if ( p == nullptr )
+        return;
 
     CBotVar**    pp = &p->m_listVar;
-    while ( *pp != nullptr ) pp = &(*pp)->m_next;
+    while ( *pp != nullptr )
+        pp = &(*pp)->m_next;
 
     *pp = pVar;                    // added after
 }
@@ -335,7 +348,8 @@ bool CBotCStack::CheckVarLocal(CBotToken* &pToken)
                 return true;
             pp = pp->m_next;
         }
-        if ( p->m_bBlock ) return false;
+        if ( p->m_bBlock )
+            return false;
         p = p->m_prev;
     }
     return false;
@@ -367,29 +381,22 @@ bool CBotCStack::CheckCall(CBotToken* &pToken, CBotDefParam* pParam)
 {
     std::string    name = pToken->GetString();
 
-    if ( m_prog->GetExternalCalls()->CheckCall(name) ) return true;
+    if ( m_prog->GetExternalCalls()->CheckCall(name) )
+        return true;
 
     for (CBotFunction* pp : m_prog->GetFunctions())
-    {
         if ( pToken->GetString() == pp->GetName() )
-        {
             // are parameters exactly the same?
             if ( pp->CheckParam( pParam ) )
                 return true;
-        }
-    }
 
     for (CBotFunction* pp : CBotFunction::m_publicFunctions)
-    {
         if ( pToken->GetString() == pp->GetName() )
-        {
             // are parameters exactly the same?
             if ( pp->CheckParam( pParam ) )
                 return true;
-        }
-    }
 
     return false;
 }
 
-}
+}   //namespace CBot

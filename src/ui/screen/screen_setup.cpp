@@ -146,7 +146,8 @@ bool CScreenSetup::EventProcess(const Event &event)
     if ( !m_simulationSetup )
     {
         CWindow* pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-        if ( pw == nullptr )  return false;
+        if ( pw == nullptr )
+            return false;
 
         if ( event.type == pw->GetEventTypeClose() ||
                 event.type == EVENT_INTERFACE_BACK   ||
@@ -159,34 +160,35 @@ bool CScreenSetup::EventProcess(const Event &event)
 
         switch( event.type )
         {
-            case EVENT_INTERFACE_SETUPd:
-                m_main->ChangePhase(PHASE_SETUPd);
-                return false;
+        case EVENT_INTERFACE_SETUPd:
+            m_main->ChangePhase(PHASE_SETUPd);
+            return false;
 
-            case EVENT_INTERFACE_SETUPg:
-                m_main->ChangePhase(PHASE_SETUPg);
-                return false;
+        case EVENT_INTERFACE_SETUPg:
+            m_main->ChangePhase(PHASE_SETUPg);
+            return false;
 
-            case EVENT_INTERFACE_SETUPp:
-                m_main->ChangePhase(PHASE_SETUPp);
-                return false;
+        case EVENT_INTERFACE_SETUPp:
+            m_main->ChangePhase(PHASE_SETUPp);
+            return false;
 
-            case EVENT_INTERFACE_SETUPc:
-                m_main->ChangePhase(PHASE_SETUPc);
-                return false;
+        case EVENT_INTERFACE_SETUPc:
+            m_main->ChangePhase(PHASE_SETUPc);
+            return false;
 
-            case EVENT_INTERFACE_SETUPs:
-                m_main->ChangePhase(PHASE_SETUPs);
-                return false;
+        case EVENT_INTERFACE_SETUPs:
+            m_main->ChangePhase(PHASE_SETUPs);
+            return false;
 
-            default:
-                break;
+        default:
+            break;
         }
     }
     else
     {
         CWindow* pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-        if ( pw == nullptr )  return false;
+        if ( pw == nullptr )
+            return false;
 
         if ( event.type == pw->GetEventTypeClose() ||
                 event.type == EVENT_INTERFACE_BACK   ||
@@ -201,31 +203,30 @@ bool CScreenSetup::EventProcess(const Event &event)
 
         switch( event.type )
         {
-            case EVENT_INTERFACE_SETUPd:
-                m_main->ChangePhase(PHASE_SETUPds);
-                return false;
+        case EVENT_INTERFACE_SETUPd:
+            m_main->ChangePhase(PHASE_SETUPds);
+            return false;
 
-            case EVENT_INTERFACE_SETUPg:
-                m_main->ChangePhase(PHASE_SETUPgs);
-                return false;
+        case EVENT_INTERFACE_SETUPg:
+            m_main->ChangePhase(PHASE_SETUPgs);
+            return false;
 
-            case EVENT_INTERFACE_SETUPp:
-                m_main->ChangePhase(PHASE_SETUPps);
-                return false;
+        case EVENT_INTERFACE_SETUPp:
+            m_main->ChangePhase(PHASE_SETUPps);
+            return false;
 
-            case EVENT_INTERFACE_SETUPc:
-                m_main->ChangePhase(PHASE_SETUPcs);
-                return false;
+        case EVENT_INTERFACE_SETUPc:
+            m_main->ChangePhase(PHASE_SETUPcs);
+            return false;
 
-            case EVENT_INTERFACE_SETUPs:
-                m_main->ChangePhase(PHASE_SETUPss);
-                return false;
+        case EVENT_INTERFACE_SETUPs:
+            m_main->ChangePhase(PHASE_SETUPss);
+            return false;
 
-            default:
-                break;
+        default:
+            break;
         }
     }
-
     return true;
 }
 

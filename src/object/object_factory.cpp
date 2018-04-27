@@ -68,7 +68,6 @@ CObjectFactory::CObjectFactory(Gfx::CEngine* engine,
 CObjectUPtr CObjectFactory::CreateObject(const ObjectCreateParams& params)
 {
     if (CStaticObject::IsStaticObject(params.type))
-    {
         return CStaticObject::Create(params.id,
                                      params.type,
                                      params.pos,
@@ -77,244 +76,242 @@ CObjectUPtr CObjectFactory::CreateObject(const ObjectCreateParams& params)
                                      m_engine,
                                      m_modelManager,
                                      m_engine->GetTerrain());
-    }
-
     switch (params.type)
     {
-        case OBJECT_NULL:
-            return nullptr;
+    case OBJECT_NULL:
+        return nullptr;
 
-        case OBJECT_INFO:
-            return CExchangePost::Create(params, m_oldModelManager, m_engine);
+    case OBJECT_INFO:
+        return CExchangePost::Create(params, m_oldModelManager, m_engine);
 
-        case OBJECT_PORTICO:
-        case OBJECT_BASE:
-        case OBJECT_DERRICK:
-        case OBJECT_FACTORY:
-        case OBJECT_STATION:
-        case OBJECT_CONVERT:
-        case OBJECT_REPAIR:
-        case OBJECT_DESTROYER:
-        case OBJECT_TOWER:
-        case OBJECT_NEST:
-        case OBJECT_RESEARCH:
-        case OBJECT_RADAR:
-        case OBJECT_ENERGY:
-        case OBJECT_LABO:
-        case OBJECT_NUCLEAR:
-        case OBJECT_PARA:
-        case OBJECT_SAFE:
-        case OBJECT_HUSTON:
-        case OBJECT_TARGET1:
-        case OBJECT_TARGET2:
-        case OBJECT_START:
-        case OBJECT_END:
-            return CBaseBuilding::Create(params, m_oldModelManager, m_engine);
+    case OBJECT_PORTICO:
+    case OBJECT_BASE:
+    case OBJECT_DERRICK:
+    case OBJECT_FACTORY:
+    case OBJECT_STATION:
+    case OBJECT_CONVERT:
+    case OBJECT_REPAIR:
+    case OBJECT_DESTROYER:
+    case OBJECT_TOWER:
+    case OBJECT_NEST:
+    case OBJECT_RESEARCH:
+    case OBJECT_RADAR:
+    case OBJECT_ENERGY:
+    case OBJECT_LABO:
+    case OBJECT_NUCLEAR:
+    case OBJECT_PARA:
+    case OBJECT_SAFE:
+    case OBJECT_HUSTON:
+    case OBJECT_TARGET1:
+    case OBJECT_TARGET2:
+    case OBJECT_START:
+    case OBJECT_END:
+        return CBaseBuilding::Create(params, m_oldModelManager, m_engine);
 
-        case OBJECT_STONE:
-        case OBJECT_URANIUM:
-        case OBJECT_METAL:
-        case OBJECT_POWER:
-        case OBJECT_ATOMIC:
-        case OBJECT_BULLET:
-        case OBJECT_BBOX:
-        case OBJECT_KEYa:
-        case OBJECT_KEYb:
-        case OBJECT_KEYc:
-        case OBJECT_KEYd:
-        case OBJECT_TNT:
-        case OBJECT_BOMB:
-        case OBJECT_WAYPOINT:
-        case OBJECT_SHOW:
-        case OBJECT_WINFIRE:
-        case OBJECT_BAG:
-        case OBJECT_MARKPOWER:
-        case OBJECT_MARKSTONE:
-        case OBJECT_MARKURANIUM:
-        case OBJECT_MARKKEYa:
-        case OBJECT_MARKKEYb:
-        case OBJECT_MARKKEYc:
-        case OBJECT_MARKKEYd:
-        case OBJECT_EGG:
-            return CreateResource(params);
+    case OBJECT_STONE:
+    case OBJECT_URANIUM:
+    case OBJECT_METAL:
+    case OBJECT_POWER:
+    case OBJECT_ATOMIC:
+    case OBJECT_BULLET:
+    case OBJECT_BBOX:
+    case OBJECT_KEYa:
+    case OBJECT_KEYb:
+    case OBJECT_KEYc:
+    case OBJECT_KEYd:
+    case OBJECT_TNT:
+    case OBJECT_BOMB:
+    case OBJECT_WAYPOINT:
+    case OBJECT_SHOW:
+    case OBJECT_WINFIRE:
+    case OBJECT_BAG:
+    case OBJECT_MARKPOWER:
+    case OBJECT_MARKSTONE:
+    case OBJECT_MARKURANIUM:
+    case OBJECT_MARKKEYa:
+    case OBJECT_MARKKEYb:
+    case OBJECT_MARKKEYc:
+    case OBJECT_MARKKEYd:
+    case OBJECT_EGG:
+        return CreateResource(params);
 
-        case OBJECT_FLAGb:
-        case OBJECT_FLAGr:
-        case OBJECT_FLAGg:
-        case OBJECT_FLAGy:
-        case OBJECT_FLAGv:
-            return CreateFlag(params);
+    case OBJECT_FLAGb:
+    case OBJECT_FLAGr:
+    case OBJECT_FLAGg:
+    case OBJECT_FLAGy:
+    case OBJECT_FLAGv:
+        return CreateFlag(params);
 
-        case OBJECT_BARRIER0:
-        case OBJECT_BARRIER1:
-        case OBJECT_BARRIER2:
-        case OBJECT_BARRIER3:
-        case OBJECT_BARRICADE0:
-        case OBJECT_BARRICADE1:
-            return CreateBarrier(params);
+    case OBJECT_BARRIER0:
+    case OBJECT_BARRIER1:
+    case OBJECT_BARRIER2:
+    case OBJECT_BARRIER3:
+    case OBJECT_BARRICADE0:
+    case OBJECT_BARRICADE1:
+        return CreateBarrier(params);
 
-        case OBJECT_PLANT0:
-        case OBJECT_PLANT1:
-        case OBJECT_PLANT2:
-        case OBJECT_PLANT3:
-        case OBJECT_PLANT4:
-        case OBJECT_PLANT5:
-        case OBJECT_PLANT6:
-        case OBJECT_PLANT7:
-        case OBJECT_PLANT8:
-        case OBJECT_PLANT9:
-        case OBJECT_PLANT10:
-        case OBJECT_PLANT11:
-        case OBJECT_PLANT12:
-        case OBJECT_PLANT13:
-        case OBJECT_PLANT14:
-        case OBJECT_PLANT15:
-        case OBJECT_PLANT16:
-        case OBJECT_PLANT17:
-        case OBJECT_PLANT18:
-        case OBJECT_PLANT19:
-        case OBJECT_TREE0:
-        case OBJECT_TREE1:
-        case OBJECT_TREE2:
-        case OBJECT_TREE3:
-        case OBJECT_TREE4:
-        case OBJECT_TREE5:
-            return CreatePlant(params);
+    case OBJECT_PLANT0:
+    case OBJECT_PLANT1:
+    case OBJECT_PLANT2:
+    case OBJECT_PLANT3:
+    case OBJECT_PLANT4:
+    case OBJECT_PLANT5:
+    case OBJECT_PLANT6:
+    case OBJECT_PLANT7:
+    case OBJECT_PLANT8:
+    case OBJECT_PLANT9:
+    case OBJECT_PLANT10:
+    case OBJECT_PLANT11:
+    case OBJECT_PLANT12:
+    case OBJECT_PLANT13:
+    case OBJECT_PLANT14:
+    case OBJECT_PLANT15:
+    case OBJECT_PLANT16:
+    case OBJECT_PLANT17:
+    case OBJECT_PLANT18:
+    case OBJECT_PLANT19:
+    case OBJECT_TREE0:
+    case OBJECT_TREE1:
+    case OBJECT_TREE2:
+    case OBJECT_TREE3:
+    case OBJECT_TREE4:
+    case OBJECT_TREE5:
+        return CreatePlant(params);
 
-        case OBJECT_MUSHROOM1:
-        case OBJECT_MUSHROOM2:
-            return CreateMushroom(params);
+    case OBJECT_MUSHROOM1:
+    case OBJECT_MUSHROOM2:
+        return CreateMushroom(params);
 
-        case OBJECT_TEEN0:
-        case OBJECT_TEEN1:
-        case OBJECT_TEEN2:
-        case OBJECT_TEEN3:
-        case OBJECT_TEEN4:
-        case OBJECT_TEEN5:
-        case OBJECT_TEEN6:
-        case OBJECT_TEEN7:
-        case OBJECT_TEEN8:
-        case OBJECT_TEEN9:
-        case OBJECT_TEEN10:
-        case OBJECT_TEEN11:
-        case OBJECT_TEEN12:
-        case OBJECT_TEEN13:
-        case OBJECT_TEEN14:
-        case OBJECT_TEEN15:
-        case OBJECT_TEEN16:
-        case OBJECT_TEEN17:
-        case OBJECT_TEEN18:
-        case OBJECT_TEEN19:
-        case OBJECT_TEEN20:
-        case OBJECT_TEEN21:
-        case OBJECT_TEEN22:
-        case OBJECT_TEEN23:
-        case OBJECT_TEEN24:
-        case OBJECT_TEEN25:
-        case OBJECT_TEEN26:
-        case OBJECT_TEEN27:
-        case OBJECT_TEEN28:
-        case OBJECT_TEEN29:
-        case OBJECT_TEEN30:
-        case OBJECT_TEEN31:
-        case OBJECT_TEEN32:
-        case OBJECT_TEEN33:
-        case OBJECT_TEEN34:
-        case OBJECT_TEEN35:
-        case OBJECT_TEEN36:
-        case OBJECT_TEEN37:
-        case OBJECT_TEEN38:
-        case OBJECT_TEEN39:
-        case OBJECT_TEEN40:
-        case OBJECT_TEEN41:
-        case OBJECT_TEEN42:
-        case OBJECT_TEEN43:
-        case OBJECT_TEEN44:
-            return CreateTeen(params);
+    case OBJECT_TEEN0:
+    case OBJECT_TEEN1:
+    case OBJECT_TEEN2:
+    case OBJECT_TEEN3:
+    case OBJECT_TEEN4:
+    case OBJECT_TEEN5:
+    case OBJECT_TEEN6:
+    case OBJECT_TEEN7:
+    case OBJECT_TEEN8:
+    case OBJECT_TEEN9:
+    case OBJECT_TEEN10:
+    case OBJECT_TEEN11:
+    case OBJECT_TEEN12:
+    case OBJECT_TEEN13:
+    case OBJECT_TEEN14:
+    case OBJECT_TEEN15:
+    case OBJECT_TEEN16:
+    case OBJECT_TEEN17:
+    case OBJECT_TEEN18:
+    case OBJECT_TEEN19:
+    case OBJECT_TEEN20:
+    case OBJECT_TEEN21:
+    case OBJECT_TEEN22:
+    case OBJECT_TEEN23:
+    case OBJECT_TEEN24:
+    case OBJECT_TEEN25:
+    case OBJECT_TEEN26:
+    case OBJECT_TEEN27:
+    case OBJECT_TEEN28:
+    case OBJECT_TEEN29:
+    case OBJECT_TEEN30:
+    case OBJECT_TEEN31:
+    case OBJECT_TEEN32:
+    case OBJECT_TEEN33:
+    case OBJECT_TEEN34:
+    case OBJECT_TEEN35:
+    case OBJECT_TEEN36:
+    case OBJECT_TEEN37:
+    case OBJECT_TEEN38:
+    case OBJECT_TEEN39:
+    case OBJECT_TEEN40:
+    case OBJECT_TEEN41:
+    case OBJECT_TEEN42:
+    case OBJECT_TEEN43:
+    case OBJECT_TEEN44:
+        return CreateTeen(params);
 
-        case OBJECT_QUARTZ0:
-        case OBJECT_QUARTZ1:
-        case OBJECT_QUARTZ2:
-        case OBJECT_QUARTZ3:
-            return CreateQuartz(params);
+    case OBJECT_QUARTZ0:
+    case OBJECT_QUARTZ1:
+    case OBJECT_QUARTZ2:
+    case OBJECT_QUARTZ3:
+        return CreateQuartz(params);
 
-        case OBJECT_ROOT0:
-        case OBJECT_ROOT1:
-        case OBJECT_ROOT2:
-        case OBJECT_ROOT3:
-        case OBJECT_ROOT4:
-        case OBJECT_ROOT5:
-            return CreateRoot(params);
+    case OBJECT_ROOT0:
+    case OBJECT_ROOT1:
+    case OBJECT_ROOT2:
+    case OBJECT_ROOT3:
+    case OBJECT_ROOT4:
+    case OBJECT_ROOT5:
+        return CreateRoot(params);
 
-        case OBJECT_HOME1:
-            return CreateHome(params);
+    case OBJECT_HOME1:
+        return CreateHome(params);
 
-        case OBJECT_RUINmobilew1:
-        case OBJECT_RUINmobilew2:
-        case OBJECT_RUINmobilet1:
-        case OBJECT_RUINmobilet2:
-        case OBJECT_RUINmobiler1:
-        case OBJECT_RUINmobiler2:
-        case OBJECT_RUINfactory:
-        case OBJECT_RUINdoor:
-        case OBJECT_RUINsupport:
-        case OBJECT_RUINradar:
-        case OBJECT_RUINconvert:
-        case OBJECT_RUINbase:
-        case OBJECT_RUINhead:
-            return CreateRuin(params);
+    case OBJECT_RUINmobilew1:
+    case OBJECT_RUINmobilew2:
+    case OBJECT_RUINmobilet1:
+    case OBJECT_RUINmobilet2:
+    case OBJECT_RUINmobiler1:
+    case OBJECT_RUINmobiler2:
+    case OBJECT_RUINfactory:
+    case OBJECT_RUINdoor:
+    case OBJECT_RUINsupport:
+    case OBJECT_RUINradar:
+    case OBJECT_RUINconvert:
+    case OBJECT_RUINbase:
+    case OBJECT_RUINhead:
+        return CreateRuin(params);
 
-        case OBJECT_APOLLO1:
-        case OBJECT_APOLLO3:
-        case OBJECT_APOLLO4:
-        case OBJECT_APOLLO5:
-            return CreateApollo(params);
+    case OBJECT_APOLLO1:
+    case OBJECT_APOLLO3:
+    case OBJECT_APOLLO4:
+    case OBJECT_APOLLO5:
+        return CreateApollo(params);
 
-        case OBJECT_MOTHER:
-        case OBJECT_ANT:
-        case OBJECT_SPIDER:
-        case OBJECT_BEE:
-        case OBJECT_WORM:
-            return CBaseAlien::Create(params, m_oldModelManager, m_engine);
+    case OBJECT_MOTHER:
+    case OBJECT_ANT:
+    case OBJECT_SPIDER:
+    case OBJECT_BEE:
+    case OBJECT_WORM:
+        return CBaseAlien::Create(params, m_oldModelManager, m_engine);
 
-        case OBJECT_HUMAN:
-        case OBJECT_TECH:
-        case OBJECT_TOTO:
-        case OBJECT_MOBILEfa:
-        case OBJECT_MOBILEta:
-        case OBJECT_MOBILEwa:
-        case OBJECT_MOBILEia:
-        case OBJECT_MOBILEfc:
-        case OBJECT_MOBILEtc:
-        case OBJECT_MOBILEwc:
-        case OBJECT_MOBILEic:
-        case OBJECT_MOBILEfi:
-        case OBJECT_MOBILEti:
-        case OBJECT_MOBILEwi:
-        case OBJECT_MOBILEii:
-        case OBJECT_MOBILEfs:
-        case OBJECT_MOBILEts:
-        case OBJECT_MOBILEws:
-        case OBJECT_MOBILEis:
-        case OBJECT_MOBILErt:
-        case OBJECT_MOBILErc:
-        case OBJECT_MOBILErr:
-        case OBJECT_MOBILEsa:
-        case OBJECT_MOBILEtg:
-        case OBJECT_MOBILEft:
-        case OBJECT_MOBILEtt:
-        case OBJECT_MOBILEwt:
-        case OBJECT_MOBILEit:
-        case OBJECT_MOBILEdr:
-        case OBJECT_APOLLO2:
-        case OBJECT_CONTROLLER:
-            return CBaseRobot::Create(params, m_oldModelManager, m_engine);
+    case OBJECT_HUMAN:
+    case OBJECT_TECH:
+    case OBJECT_TOTO:
+    case OBJECT_MOBILEfa:
+    case OBJECT_MOBILEta:
+    case OBJECT_MOBILEwa:
+    case OBJECT_MOBILEia:
+    case OBJECT_MOBILEfc:
+    case OBJECT_MOBILEtc:
+    case OBJECT_MOBILEwc:
+    case OBJECT_MOBILEic:
+    case OBJECT_MOBILEfi:
+    case OBJECT_MOBILEti:
+    case OBJECT_MOBILEwi:
+    case OBJECT_MOBILEii:
+    case OBJECT_MOBILEfs:
+    case OBJECT_MOBILEts:
+    case OBJECT_MOBILEws:
+    case OBJECT_MOBILEis:
+    case OBJECT_MOBILErt:
+    case OBJECT_MOBILErc:
+    case OBJECT_MOBILErr:
+    case OBJECT_MOBILEsa:
+    case OBJECT_MOBILEtg:
+    case OBJECT_MOBILEft:
+    case OBJECT_MOBILEtt:
+    case OBJECT_MOBILEwt:
+    case OBJECT_MOBILEit:
+    case OBJECT_MOBILEdr:
+    case OBJECT_APOLLO2:
+    case OBJECT_CONTROLLER:
+        return CBaseRobot::Create(params, m_oldModelManager, m_engine);
 
-        case OBJECT_MOBILErs:
-            return CShielder::Create(params, m_oldModelManager, m_engine);
+    case OBJECT_MOBILErs:
+        return CShielder::Create(params, m_oldModelManager, m_engine);
 
-        default:
-            break;
+    default:
+        break;
     }
 
     return nullptr;
@@ -340,48 +337,67 @@ CObjectUPtr CObjectFactory::CreateResource(const ObjectCreateParams& params)
     obj->SetEnergyLevel(power);
 
     std::string name;
-    if ( type == OBJECT_STONE       )  name = "stone.mod";
-    if ( type == OBJECT_URANIUM     )  name = "uranium.mod";
-    if ( type == OBJECT_METAL       )  name = "metal.mod";
-    if ( type == OBJECT_POWER       )  name = "power.mod";
-    if ( type == OBJECT_ATOMIC      )  name = "atomic.mod";
-    if ( type == OBJECT_BULLET      )  name = "bullet.mod";
-    if ( type == OBJECT_BBOX        )  name = "bbox.mod";
-    if ( type == OBJECT_KEYa        )  name = "keya.mod";
-    if ( type == OBJECT_KEYb        )  name = "keyb.mod";
-    if ( type == OBJECT_KEYc        )  name = "keyc.mod";
-    if ( type == OBJECT_KEYd        )  name = "keyd.mod";
-    if ( type == OBJECT_TNT         )  name = "tnt.mod";
-    if ( type == OBJECT_BOMB        )  name = "bomb.mod";
-    if ( type == OBJECT_WAYPOINT    )  name = "waypoint.mod";
-    if ( type == OBJECT_SHOW        )  name = "show.mod";
-    if ( type == OBJECT_WINFIRE     )  name = "winfire.mod";
-    if ( type == OBJECT_BAG         )  name = "bag.mod";
-    if ( type == OBJECT_MARKSTONE   )  name = "cross1.mod";
-    if ( type == OBJECT_MARKURANIUM )  name = "cross3.mod";
-    if ( type == OBJECT_MARKPOWER   )  name = "cross2.mod";
-    if ( type == OBJECT_MARKKEYa    )  name = "crossa.mod";
-    if ( type == OBJECT_MARKKEYb    )  name = "crossb.mod";
-    if ( type == OBJECT_MARKKEYc    )  name = "crossc.mod";
-    if ( type == OBJECT_MARKKEYd    )  name = "crossd.mod";
-    if ( type == OBJECT_EGG         )  name = "egg.mod";
+    if ( type == OBJECT_STONE)
+        name = "stone.mod";
+    if ( type == OBJECT_URANIUM)
+        name = "uranium.mod";
+    if ( type == OBJECT_METAL)
+        name = "metal.mod";
+    if ( type == OBJECT_POWER)
+        name = "power.mod";
+    if ( type == OBJECT_ATOMIC)
+        name = "atomic.mod";
+    if ( type == OBJECT_BULLET)
+        name = "bullet.mod";
+    if ( type == OBJECT_BBOX)
+        name = "bbox.mod";
+    if ( type == OBJECT_KEYa)
+        name = "keya.mod";
+    if ( type == OBJECT_KEYb)
+        name = "keyb.mod";
+    if ( type == OBJECT_KEYc)
+        name = "keyc.mod";
+    if ( type == OBJECT_KEYd)
+        name = "keyd.mod";
+    if ( type == OBJECT_TNT)
+        name = "tnt.mod";
+    if ( type == OBJECT_BOMB)
+        name = "bomb.mod";
+    if ( type == OBJECT_WAYPOINT)
+        name = "waypoint.mod";
+    if ( type == OBJECT_SHOW)
+        name = "show.mod";
+    if ( type == OBJECT_WINFIRE)
+        name = "winfire.mod";
+    if ( type == OBJECT_BAG)
+        name = "bag.mod";
+    if ( type == OBJECT_MARKSTONE)
+        name = "cross1.mod";
+    if ( type == OBJECT_MARKURANIUM)
+        name = "cross3.mod";
+    if ( type == OBJECT_MARKPOWER)
+        name = "cross2.mod";
+    if ( type == OBJECT_MARKKEYa)
+        name = "crossa.mod";
+    if ( type == OBJECT_MARKKEYb)
+        name = "crossb.mod";
+    if ( type == OBJECT_MARKKEYc)
+        name = "crossc.mod";
+    if ( type == OBJECT_MARKKEYd)
+        name = "crossd.mod";
+    if ( type == OBJECT_EGG)
+        name = "egg.mod";
 
     if (type == OBJECT_POWER || type == OBJECT_ATOMIC)
-    {
         m_oldModelManager->AddModelCopy(name, false, rank, obj->GetTeam());
-    }
     else
-    {
         m_oldModelManager->AddModelReference(name, false, rank, obj->GetTeam());
-    }
 
     obj->SetPosition(pos);
     obj->SetRotationY(angle);
 
     if ( type == OBJECT_SHOW )  // remains in the air?
-    {
         return std::move(obj);
-    }
 
     float radius = 1.5f;
     float height = 0.0f;
@@ -452,11 +468,16 @@ CObjectUPtr CObjectFactory::CreateFlag(const ObjectCreateParams& params)
     std::string name;
 
     name = "";
-    if ( type == OBJECT_FLAGb )  name = "flag1b.mod";
-    if ( type == OBJECT_FLAGr )  name = "flag1r.mod";
-    if ( type == OBJECT_FLAGg )  name = "flag1g.mod";
-    if ( type == OBJECT_FLAGy )  name = "flag1y.mod";
-    if ( type == OBJECT_FLAGv )  name = "flag1v.mod";
+    if ( type == OBJECT_FLAGb)
+        name = "flag1b.mod";
+    if ( type == OBJECT_FLAGr)
+        name = "flag1r.mod";
+    if ( type == OBJECT_FLAGg)
+        name = "flag1g.mod";
+    if ( type == OBJECT_FLAGy)
+        name = "flag1y.mod";
+    if ( type == OBJECT_FLAGv)
+        name = "flag1v.mod";
 
     int rank = m_engine->CreateObject();
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);  // it is a stationary object
@@ -466,11 +487,16 @@ CObjectUPtr CObjectFactory::CreateFlag(const ObjectCreateParams& params)
     obj->SetRotationY(angle);
 
     name = "";
-    if ( type == OBJECT_FLAGb )  name = "flag2b.mod";
-    if ( type == OBJECT_FLAGr )  name = "flag2r.mod";
-    if ( type == OBJECT_FLAGg )  name = "flag2g.mod";
-    if ( type == OBJECT_FLAGy )  name = "flag2y.mod";
-    if ( type == OBJECT_FLAGv )  name = "flag2v.mod";
+    if ( type == OBJECT_FLAGb)
+        name = "flag2b.mod";
+    if ( type == OBJECT_FLAGr)
+        name = "flag2r.mod";
+    if ( type == OBJECT_FLAGg)
+        name = "flag2g.mod";
+    if ( type == OBJECT_FLAGy)
+        name = "flag2y.mod";
+    if ( type == OBJECT_FLAGv)
+        name = "flag2v.mod";
 
     for (int i=0 ; i<4 ; i++ )
     {
@@ -479,8 +505,10 @@ CObjectUPtr CObjectFactory::CreateFlag(const ObjectCreateParams& params)
         obj->SetObjectRank(1+i, rank);
         obj->SetObjectParent(1+i, i);
         m_oldModelManager->AddModelReference(name, false, rank, obj->GetTeam());
-        if ( i == 0 )  obj->SetPartPosition(1+i, Math::Vector(0.15f, 5.0f, 0.0f));
-        else           obj->SetPartPosition(1+i, Math::Vector(0.79f, 0.0f, 0.0f));
+        if ( i == 0 )
+            obj->SetPartPosition(1+i, Math::Vector(0.15f, 5.0f, 0.0f));
+        else
+            obj->SetPartPosition(1+i, Math::Vector(0.79f, 0.0f, 0.0f));
     }
 
     obj->SetJostlingSphere(Math::Sphere(Math::Vector(0.0f, 4.0f, 0.0f), 1.0f));
@@ -660,11 +688,16 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        if ( type == OBJECT_PLANT0 )  m_oldModelManager->AddModelReference("plant0.mod", false, rank, obj->GetTeam());
-        if ( type == OBJECT_PLANT1 )  m_oldModelManager->AddModelReference("plant1.mod", false, rank, obj->GetTeam());
-        if ( type == OBJECT_PLANT2 )  m_oldModelManager->AddModelReference("plant2.mod", false, rank, obj->GetTeam());
-        if ( type == OBJECT_PLANT3 )  m_oldModelManager->AddModelReference("plant3.mod", false, rank, obj->GetTeam());
-        if ( type == OBJECT_PLANT4 )  m_oldModelManager->AddModelReference("plant4.mod", false, rank, obj->GetTeam());
+        if ( type == OBJECT_PLANT0 )
+            m_oldModelManager->AddModelReference("plant0.mod", false, rank, obj->GetTeam());
+        if ( type == OBJECT_PLANT1 )
+            m_oldModelManager->AddModelReference("plant1.mod", false, rank, obj->GetTeam());
+        if ( type == OBJECT_PLANT2 )
+            m_oldModelManager->AddModelReference("plant2.mod", false, rank, obj->GetTeam());
+        if ( type == OBJECT_PLANT3 )
+            m_oldModelManager->AddModelReference("plant3.mod", false, rank, obj->GetTeam());
+        if ( type == OBJECT_PLANT4 )
+            m_oldModelManager->AddModelReference("plant4.mod", false, rank, obj->GetTeam());
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -684,9 +717,12 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        if ( type == OBJECT_PLANT5 )  m_oldModelManager->AddModelReference("plant5.mod", false, rank, obj->GetTeam());
-        if ( type == OBJECT_PLANT6 )  m_oldModelManager->AddModelReference("plant6.mod", false, rank, obj->GetTeam());
-        if ( type == OBJECT_PLANT7 )  m_oldModelManager->AddModelReference("plant7.mod", false, rank, obj->GetTeam());
+        if ( type == OBJECT_PLANT5 )
+            m_oldModelManager->AddModelReference("plant5.mod", false, rank, obj->GetTeam());
+        if ( type == OBJECT_PLANT6 )
+            m_oldModelManager->AddModelReference("plant6.mod", false, rank, obj->GetTeam());
+        if ( type == OBJECT_PLANT7 )
+            m_oldModelManager->AddModelReference("plant7.mod", false, rank, obj->GetTeam());
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -702,8 +738,10 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        if ( type == OBJECT_PLANT8 )  m_oldModelManager->AddModelReference("plant8.mod", false, rank, obj->GetTeam());
-        if ( type == OBJECT_PLANT9 )  m_oldModelManager->AddModelReference("plant9.mod", false, rank, obj->GetTeam());
+        if ( type == OBJECT_PLANT8 )
+            m_oldModelManager->AddModelReference("plant8.mod", false, rank, obj->GetTeam());
+        if ( type == OBJECT_PLANT9 )
+            m_oldModelManager->AddModelReference("plant9.mod", false, rank, obj->GetTeam());
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -722,11 +760,16 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        if ( type == OBJECT_PLANT10 )  m_oldModelManager->AddModelReference("plant10.mod", false, rank, obj->GetTeam());
-        if ( type == OBJECT_PLANT11 )  m_oldModelManager->AddModelReference("plant11.mod", false, rank, obj->GetTeam());
-        if ( type == OBJECT_PLANT12 )  m_oldModelManager->AddModelReference("plant12.mod", false, rank, obj->GetTeam());
-        if ( type == OBJECT_PLANT13 )  m_oldModelManager->AddModelReference("plant13.mod", false, rank, obj->GetTeam());
-        if ( type == OBJECT_PLANT14 )  m_oldModelManager->AddModelReference("plant14.mod", false, rank, obj->GetTeam());
+        if ( type == OBJECT_PLANT10 )
+            m_oldModelManager->AddModelReference("plant10.mod", false, rank, obj->GetTeam());
+        if ( type == OBJECT_PLANT11 )
+            m_oldModelManager->AddModelReference("plant11.mod", false, rank, obj->GetTeam());
+        if ( type == OBJECT_PLANT12 )
+            m_oldModelManager->AddModelReference("plant12.mod", false, rank, obj->GetTeam());
+        if ( type == OBJECT_PLANT13 )
+            m_oldModelManager->AddModelReference("plant13.mod", false, rank, obj->GetTeam());
+        if ( type == OBJECT_PLANT14 )
+            m_oldModelManager->AddModelReference("plant14.mod", false, rank, obj->GetTeam());
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -746,11 +789,16 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        if ( type == OBJECT_PLANT15 )  m_oldModelManager->AddModelReference("plant15.mod", false, rank, obj->GetTeam());
-        if ( type == OBJECT_PLANT16 )  m_oldModelManager->AddModelReference("plant16.mod", false, rank, obj->GetTeam());
-        if ( type == OBJECT_PLANT17 )  m_oldModelManager->AddModelReference("plant17.mod", false, rank, obj->GetTeam());
-        if ( type == OBJECT_PLANT18 )  m_oldModelManager->AddModelReference("plant18.mod", false, rank, obj->GetTeam());
-        if ( type == OBJECT_PLANT19 )  m_oldModelManager->AddModelReference("plant19.mod", false, rank, obj->GetTeam());
+        if ( type == OBJECT_PLANT15 )
+            m_oldModelManager->AddModelReference("plant15.mod", false, rank, obj->GetTeam());
+        if ( type == OBJECT_PLANT16 )
+            m_oldModelManager->AddModelReference("plant16.mod", false, rank, obj->GetTeam());
+        if ( type == OBJECT_PLANT17 )
+            m_oldModelManager->AddModelReference("plant17.mod", false, rank, obj->GetTeam());
+        if ( type == OBJECT_PLANT18 )
+            m_oldModelManager->AddModelReference("plant18.mod", false, rank, obj->GetTeam());
+        if ( type == OBJECT_PLANT19 )
+            m_oldModelManager->AddModelReference("plant19.mod", false, rank, obj->GetTeam());
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -2060,19 +2108,32 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
     obj->SetObjectRank(0, rank);
 
     std::string name;
-    if ( type == OBJECT_RUINmobilew1 )  name = "ruin1.mod";
-    if ( type == OBJECT_RUINmobilew2 )  name = "ruin1.mod";
-    if ( type == OBJECT_RUINmobilet1 )  name = "ruin2.mod";
-    if ( type == OBJECT_RUINmobilet2 )  name = "ruin2.mod";
-    if ( type == OBJECT_RUINmobiler1 )  name = "ruin3.mod";
-    if ( type == OBJECT_RUINmobiler2 )  name = "ruin3.mod";
-    if ( type == OBJECT_RUINfactory  )  name = "ruin4.mod";
-    if ( type == OBJECT_RUINdoor     )  name = "ruin5.mod";
-    if ( type == OBJECT_RUINsupport  )  name = "ruin6.mod";
-    if ( type == OBJECT_RUINradar    )  name = "ruin7.mod";
-    if ( type == OBJECT_RUINconvert  )  name = "ruin8.mod";
-    if ( type == OBJECT_RUINbase     )  name = "ruin9.mod";
-    if ( type == OBJECT_RUINhead     )  name = "ruin10.mod";
+    if ( type == OBJECT_RUINmobilew1)
+        name = "ruin1.mod";
+    if ( type == OBJECT_RUINmobilew2)
+        name = "ruin1.mod";
+    if ( type == OBJECT_RUINmobilet1)
+        name = "ruin2.mod";
+    if ( type == OBJECT_RUINmobilet2)
+        name = "ruin2.mod";
+    if ( type == OBJECT_RUINmobiler1)
+        name = "ruin3.mod";
+    if ( type == OBJECT_RUINmobiler2)
+        name = "ruin3.mod";
+    if ( type == OBJECT_RUINfactory)
+        name = "ruin4.mod";
+    if ( type == OBJECT_RUINdoor)
+        name = "ruin5.mod";
+    if ( type == OBJECT_RUINsupport)
+        name = "ruin6.mod";
+    if ( type == OBJECT_RUINradar)
+        name = "ruin7.mod";
+    if ( type == OBJECT_RUINconvert)
+        name = "ruin8.mod";
+    if ( type == OBJECT_RUINbase)
+        name = "ruin9.mod";
+    if ( type == OBJECT_RUINhead)
+        name = "ruin10.mod";
 
     m_oldModelManager->AddModelReference(name, false, rank, obj->GetTeam());
 

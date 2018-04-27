@@ -395,7 +395,7 @@ void CInput::LoadKeyBindings()
 
         SetJoyAxisBinding(static_cast<JoyAxisSlot>(i), b);
     }
-    float deadzone;
+    float deadzone = 0.0;   //init to mute lint
     if (GetConfigFile().GetFloatProperty("Setup", "JoystickDeadzone", deadzone))
         SetJoystickDeadzone(deadzone);
 }

@@ -197,7 +197,7 @@ public:
 
 private:
     //! Updates the texture params for given texture stage
-    void UpdateTextureParams(int index);
+    void UpdateTextureParams(const int index);
     //! Updates texture state
     inline void UpdateTextureState(int index);
     //! Update light parameters

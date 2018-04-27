@@ -66,53 +66,41 @@ std::size_t fRead(void *buffer,
 ////////////////////////////////////////////////////////////////////////////////
 bool ReadWord(FILE* pf, unsigned short& w)
 {
-    std::size_t  lg;
-
-    lg = fread(&w, sizeof( unsigned short ), 1, pf );
-
+    std::size_t lg = fread(&w, sizeof( unsigned short ), 1, pf );
     return (lg == 1);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool ReadFloat(FILE* pf, float& w)
 {
-    std::size_t  lg;
-
-    lg = fread(&w, sizeof( float ), 1, pf );
-
+    std::size_t lg = fread(&w, sizeof( float ), 1, pf );
     return (lg == 1);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool WriteLong(FILE* pf, long w)
 {
-    std::size_t  lg;
-
-    lg = fwrite(&w, sizeof( long ), 1, pf );
-
+    std::size_t lg = fwrite(&w, sizeof( long ), 1, pf );
     return (lg == 1);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool ReadLong(FILE* pf, long& w)
 {
-    std::size_t  lg;
-
-    lg = fread(&w, sizeof( long ), 1, pf );
-
+    std::size_t lg = fread(&w, sizeof( long ), 1, pf );
     return (lg == 1);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool ReadString(FILE* pf, std::string& s)
 {
-    unsigned short  w;
+    unsigned short  w = 0;  //fake init to mute lint
     char    buf[1000];
-    std::size_t  lg1, lg2;
 
-    if (!ReadWord(pf, w)) return false;
-    lg1 = w;
-    lg2 = fread(buf, 1, lg1, pf );
+    if (!ReadWord(pf, w))
+        return false;
+    std::size_t lg1 = w;
+    std::size_t lg2 = fread(buf, 1, lg1, pf );
     buf[lg2] = 0;
 
     s = buf;
@@ -123,18 +111,23 @@ bool ReadString(FILE* pf, std::string& s)
 bool WriteType(FILE* pf, const CBotTypResult &type)
 {
     int typ = type.GetType();
-    if ( typ == CBotTypIntrinsic ) typ = CBotTypClass;
-    if ( !WriteWord(pf, typ) ) return false;
+    if ( typ == CBotTypIntrinsic )
+        typ = CBotTypClass;
+    if ( !WriteWord(pf, typ) )
+        return false;
     if ( typ == CBotTypClass )
     {
         CBotClass* p = type.GetClass();
-        if ( !WriteString(pf, p->GetName()) ) return false;
+        if ( !WriteString(pf, p->GetName()) )
+            return false;
     }
     if ( type.Eq( CBotTypArrayBody ) ||
          type.Eq( CBotTypArrayPointer ) )
     {
-        if ( !WriteWord(pf, type.GetLimite()) ) return false;
-        if ( !WriteType(pf, type.GetTypElem()) ) return false;
+        if ( !WriteWord(pf, type.GetLimite()) )
+            return false;
+        if ( !WriteType(pf, type.GetTypElem()) )
+            return false;
     }
     return true;
 }
@@ -143,18 +136,18 @@ bool WriteType(FILE* pf, const CBotTypResult &type)
 bool ReadType(FILE* pf, CBotTypResult &type)
 {
     unsigned short  w, ww;
-    if ( !ReadWord(pf, w) ) return false;
+    if ( !ReadWord(pf, w) )
+        return false;
     type.SetType(w);
 
     if ( type.Eq( CBotTypIntrinsic ) )
-    {
         type = CBotTypResult( w, "point" );
-    }
 
     if ( type.Eq( CBotTypClass ) )
     {
         std::string  s;
-        if ( !ReadString(pf, s) ) return false;
+        if ( !ReadString(pf, s) )
+             return false;
         type = CBotTypResult( w, s );
     }
 
@@ -162,8 +155,10 @@ bool ReadType(FILE* pf, CBotTypResult &type)
          type.Eq( CBotTypArrayBody ) )
     {
         CBotTypResult   r;
-        if ( !ReadWord(pf, ww) ) return false;
-        if ( !ReadType(pf, r) ) return false;
+        if ( !ReadWord(pf, ww) )
+            return false;
+        if ( !ReadType(pf, r) )
+            return false;
         type = CBotTypResult( w, r );
         type.SetLimite(static_cast<short>(ww));
     }

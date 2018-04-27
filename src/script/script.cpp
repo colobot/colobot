@@ -88,9 +88,7 @@ CScript::~CScript()
 void CScript::PutScript(Ui::CEdit* edit, const char* name)
 {
     if ( m_script == nullptr )
-    {
         New(edit, name);
-    }
     else
     {
         edit->SetText(m_script.get());
@@ -157,7 +155,8 @@ bool CScript::IsEmpty()const
 
 bool CScript::CheckToken()
 {
-    if ( !m_object->GetCheckToken() )  return true;
+    if ( !m_object->GetCheckToken() )
+        return true;
 
     m_error = CBot::CBotNoErr;
     m_title.clear();
@@ -237,9 +236,7 @@ bool CScript::Compile()
     }
 
     if (m_botProg == nullptr)
-    {
         m_botProg = MakeUnique<CBot::CBotProgram>(m_object->GetBotVar());
-    }
 
     if ( m_botProg->Compile(m_script.get(), functionList, this) )
     {
@@ -253,9 +250,7 @@ bool CScript::Compile()
             m_mainFunction = functionList[0];
             m_title = m_mainFunction;
             if (m_title.length() >= 20)
-            {
                 m_title = m_title.substr(0, 20)+"...";
-            }
         }
         m_bCompile = true;
         return true;
@@ -272,9 +267,7 @@ bool CScript::Compile()
             m_cursor2 = 0;
         }
         if ( m_error == 0 )
-        {
             m_cursor1 = m_cursor2 = 0;
-        }
         m_title = "<error>";
         m_mainFunction.clear();
         return false;
@@ -307,11 +300,15 @@ bool CScript::GetStepMode()const
 
 bool CScript::Run()
 {
-    if (m_botProg == nullptr)  return false;
-    if ( m_script == nullptr || m_len == 0 )  return false;
-    if ( m_mainFunction.empty() ) return false;
+    if (m_botProg == nullptr)
+        return false;
+    if ( m_script == nullptr || m_len == 0 )
+        return false;
+    if ( m_mainFunction.empty() )
+        return false;
 
-    if ( !m_botProg->Start(m_mainFunction.c_str()) )  return false;
+    if ( !m_botProg->Start(m_mainFunction.c_str()) )
+        return false;
 
     m_bRun = true;
     m_bContinue = false;
@@ -319,10 +316,7 @@ bool CScript::Run()
     m_errMode = ERM_STOP;
 
     if ( m_bStepMode )  // step by step mode?
-    {
         Step();
-    }
-
     return true;
 }
 
@@ -331,8 +325,10 @@ bool CScript::Run()
 
 bool CScript::Continue()
 {
-    if (m_botProg == nullptr)  return true;
-    if ( !m_bRun )  return true;
+    if (m_botProg == nullptr)
+        return true;
+    if ( !m_bRun )
+        return true;
 
     if ( m_bStepMode )  // step by step mode?
     {
@@ -350,9 +346,7 @@ bool CScript::Continue()
                     m_cursor2 = 0;
                 }
                 if ( m_error == 0 )
-                {
                     m_cursor1 = m_cursor2 = 0;
-                }
                 m_bRun = false;
 
                 if ( m_error != 0 && m_errMode == ERM_STOP )
@@ -380,9 +374,7 @@ bool CScript::Continue()
             m_cursor2 = 0;
         }
         if ( m_error == 0 )
-        {
             m_cursor1 = m_cursor2 = 0;
-        }
         m_bRun = false;
 
         if ( m_error != 0 && m_errMode == ERM_STOP )
@@ -402,9 +394,12 @@ bool CScript::Continue()
 
 bool CScript::Step()
 {
-    if (m_botProg == nullptr)  return true;
-    if ( !m_bRun )  return true;
-    if ( !m_bStepMode )  return false;
+    if (m_botProg == nullptr)
+        return true;
+    if ( !m_bRun )
+        return true;
+    if ( !m_bStepMode )
+        return false;
 
     if ( m_botProg->Run(this, 0) )  // step mode
     {
@@ -418,9 +413,7 @@ bool CScript::Step()
             m_cursor2 = 0;
         }
         if ( m_error == 0 )
-        {
             m_cursor1 = m_cursor2 = 0;
-        }
         m_bRun = false;
 
         if ( m_error != 0 && m_errMode == ERM_STOP )
@@ -438,14 +431,12 @@ bool CScript::Step()
 
 void CScript::Stop()
 {
-    if ( !m_bRun )  return;
+    if ( !m_bRun )
+        return;
 
     m_taskExecutor->StopForegroundTask();
-
     if (m_botProg != nullptr)
-    {
         m_botProg->Stop();
-    }
 
     m_bRun = false;
 }
@@ -472,8 +463,10 @@ bool CScript::GetCursor(std::size_t &cursor1, std::size_t &cursor2)const
     std::string funcName;
     cursor1 = cursor2 = 0;
 
-    if (m_botProg == nullptr)  return false;
-    if ( !m_bRun )  return false;
+    if (m_botProg == nullptr)
+        return false;
+    if ( !m_bRun )
+        return false;
 
     m_botProg->GetRunPos(funcName, cursor1, cursor2);
     if (//cursor1 < 0 ||
@@ -506,15 +499,11 @@ void PutList(const std::string& baseName, bool bArray, CBot::CBotVar *var, Ui::C
 
         std::string varName;
         if (baseName.empty())
-        {
             varName = StrUtils::Format("%s", pStatic->GetName().c_str());
-        }
         else
         {
             if (bArray)
-            {
                 varName = StrUtils::Format("%s[%d]", baseName.c_str(), index);
-            }
             else
             {
                 varName = StrUtils::Format("%s.%s", baseName.c_str(), pStatic->GetName().c_str());
@@ -522,21 +511,15 @@ void PutList(const std::string& baseName, bool bArray, CBot::CBotVar *var, Ui::C
         }
 
         if (previous.find(pStatic) != previous.end())
-        {
             list->SetItemName(rankList++, StrUtils::Format("%s = [circular reference]", varName.c_str()));
-        }
         else
         {
             int type = pStatic->GetType();
 
             if (type <= CBot::CBotTypBoolean)
-            {
                 list->SetItemName(rankList++, StrUtils::Format("%s = %s;", varName.c_str(), pStatic->GetValString().c_str()));
-            }
             else if (type == CBot::CBotTypString)
-            {
                 list->SetItemName(rankList++, StrUtils::Format("%s = \"%s\";", varName.c_str(), pStatic->GetValString().c_str()));
-            }
             else if (type == CBot::CBotTypArrayPointer)
             {
                 previous.insert(pStatic);
@@ -571,14 +554,16 @@ void CScript::UpdateList(Ui::CList* list)
     int         total, select, level, rank;
     std::size_t      cursor1, cursor2;
 
-    if (m_botProg == nullptr) return;
+    if (m_botProg == nullptr)
+        return;
 
     total  = list->GetTotal();
     select = list->GetSelect();
 
     list->Flush();  // empty list
     m_botProg->GetRunPos(progName, cursor1, cursor2);
-    if ( progName.empty() )  return;
+    if ( progName.empty() )
+        return;
 
     level = 0;
     rank  = 0;
@@ -586,16 +571,15 @@ void CScript::UpdateList(Ui::CList* list)
     while ( true )
     {
         var = m_botProg->GetStackVars(funcName, level--);
-        if ( funcName != progName )  break;
+        if ( funcName != progName )
+            break;
 
         PutList("", false, var, list, rank, previous);
     }
     assert(previous.empty());
 
     if ( total == list->GetTotal() )  // same total?
-    {
         list->SetSelect(select);
-    }
 
     list->SetTooltip("");
     list->SetState(Ui::STATE_ENABLE);
@@ -620,7 +604,8 @@ void HighlightString(Ui::CEdit* edit, const std::string& s, std::size_t start)
             continue;
         }
 
-        if (it == s.cend()) break;
+        if (it == s.cend())
+            break;
 
         std::size_t end = start + 2;
 
@@ -628,7 +613,8 @@ void HighlightString(Ui::CEdit* edit, const std::string& s, std::size_t start)
         {
             for (int i = 0; ++it != s.cend() && i < 2; i++, end++)
             {
-                if (!CBot::CharInList(*it, "01234567")) break;
+                if (!CBot::CharInList(*it, "01234567"))
+                    break;
             }
         }
         else if (*it == 'x' || *it == 'u' || *it == 'U') // hex or unicode escape
@@ -638,8 +624,10 @@ void HighlightString(Ui::CEdit* edit, const std::string& s, std::size_t start)
 
             for (std::size_t i = 0; ++it != s.cend(); i++, end++)
             {
-                if (!isHexCode && i >= maxlen) break;
-                if (!CBot::CharInList(*it, "0123456789ABCDEFabcdef")) break;
+                if (!isHexCode && i >= maxlen)
+                    break;
+                if (!CBot::CharInList(*it, "0123456789ABCDEFabcdef"))
+                    break;
             }
         }
         else      // n, r, t, etc.
@@ -689,33 +677,19 @@ void CScript::ColorizeScript(Ui::CEdit* edit, std::size_t rangeStart, std::size_
 
         Gfx::FontHighlight color = Gfx::FONT_HIGHLIGHT_NONE;
         if ((type == CBot::TokenTypVar || (type >= CBot::TokenKeyWord && type < CBot::TokenKeyWord+100)) && IsType(token.c_str())) // types (basic types are TokenKeyWord, classes are TokenTypVar)
-        {
             color = Gfx::FONT_HIGHLIGHT_TYPE;
-        }
         else if (type == CBot::TokenTypVar && IsFunction(token.c_str())) // functions
-        {
             color = Gfx::FONT_HIGHLIGHT_TOKEN;
-        }
         else if (type == CBot::TokenTypVar && (token == "this" || token == "super")) // this, super
-        {
             color = Gfx::FONT_HIGHLIGHT_THIS;
-        }
         else if (type >= CBot::TokenKeyWord && type < CBot::TokenKeyWord+100) // builtin keywords
-        {
             color = Gfx::FONT_HIGHLIGHT_KEYWORD;
-        }
         else if (type >= CBot::TokenKeyVal && type < CBot::TokenKeyVal+100) // true, false, null, nan
-        {
             color = Gfx::FONT_HIGHLIGHT_CONST;
-        }
         else if (type == CBot::TokenTypDef) // constants (object types etc.)
-        {
             color = Gfx::FONT_HIGHLIGHT_CONST;
-        }
         else if (type == CBot::TokenTypNum) // numbers
-        {
             color = Gfx::FONT_HIGHLIGHT_STRING;
-        }
         else if (type == CBot::TokenTypString) // string literals
         {
             HighlightString(edit, token, cursor1);
@@ -750,11 +724,13 @@ std::size_t SearchToken(const char* script, const char* token)
         if ( p != nullptr )
         {
             found[iFound++] = p-script;
-            if ( iFound >= 100 )  break;
+            if ( iFound >= 100 )
+                break;
         }
     }
 
-    if ( iFound == 0 )  return SIZE_MAX;
+    if ( iFound == 0 )
+        return SIZE_MAX;
     return found[rand()%iFound];
 }
 
@@ -765,7 +741,8 @@ void DeleteToken(char* script, std::size_t pos, const std::size_t len)
     while ( true )
     {
         script[pos] = script[pos+len];
-        if ( script[pos++] == 0 )  break;
+        if ( script[pos++] == 0 )
+            break;
     }
 }
 
@@ -778,9 +755,7 @@ void InsertToken(char* script, const std::size_t pos, const char* token)
     lScript = strlen(script);
     lToken  = strlen(token);
     for ( i=lScript ; i>=pos ; i-- )
-    {
         script[i+lToken] = script[i];
-    }
     memcpy(script+pos, token, lToken);
 }
 
@@ -816,7 +791,8 @@ bool CScript::IntroduceVirus()
             found[iFound++] = start;
         }
     }
-    if ( iFound == 0 )  return false;
+    if ( iFound == 0 )
+        return false;
 
     std::size_t i = (rand()%(iFound/2))*2;
     std::size_t start = found[i+1];
@@ -874,13 +850,9 @@ void CScript::GetError(std::string& error)const
             }
         }
         else if (m_error < 1000)
-        {
             GetResource(RES_ERR, m_error, error);
-        }
         else
-        {
             GetResource(RES_CBOT, m_error, error);
-        }
     }
 }
 
@@ -898,8 +870,10 @@ void CScript::New(Ui::CEdit* edit, const char* name)
     std::string resStr;
     GetResource(RES_TEXT, RT_SCRIPT_NEW, resStr);
     strcpy(res, resStr.c_str());
-    if ( name[0] == 0 )  strcpy(text, res);
-    else                 strcpy(text, name);
+    if ( name[0] == 0 )
+        strcpy(text, res);
+    else
+        strcpy(text, name);
 
     sprintf(script, "extern void object::%s()\n{\n\t\n\t\n\t\n}\n", text);
     edit->SetText(script, false);
@@ -937,7 +911,8 @@ void CScript::New(Ui::CEdit* edit, const char* name)
         {
             len = stream.size();
 
-            if ( len > 500-1 )  len = 500-1;
+            if ( len > 500-1 )
+                len = 500-1;
             stream.read(buffer, len);
             buffer[len] = 0;
             stream.close();
@@ -947,7 +922,8 @@ void CScript::New(Ui::CEdit* edit, const char* name)
             j = 0;
             while ( true )
             {
-                if ( buffer[i] == 0 )  break;
+                if ( buffer[i] == 0 )
+                    break;
 
                 if ( buffer[i] == '\r' )
                 {
@@ -1053,14 +1029,16 @@ bool CScript::WriteScript(const char* filename)
 
 bool CScript::ReadStack(FILE *file)
 {
-    int     nb;
+    int     nb = 0; //fake init to mute lint
 
     CBot::fRead(&nb, sizeof(int), 1, file);
     CBot::fRead(&m_ipf, sizeof(int), 1, file);
     CBot::fRead(&m_errMode, sizeof(int), 1, file);
 
-    if (m_botProg == nullptr) return false;
-    if ( !m_botProg->RestoreState(file) )  return false;
+    if (m_botProg == nullptr)
+        return false;
+    if ( !m_botProg->RestoreState(file) )
+        return false;
 
     m_bRun = true;
     m_bContinue = false;
@@ -1071,9 +1049,7 @@ bool CScript::ReadStack(FILE *file)
 
 bool CScript::WriteStack(FILE *file)
 {
-    int     nb;
-
-    nb = 2;
+    int     nb = 2;
     CBot::fWrite(&nb, sizeof(int), 1, file);
     CBot::fWrite(&m_ipf, sizeof(int), 1, file);
     CBot::fWrite(&m_errMode, sizeof(int), 1, file);
@@ -1086,7 +1062,8 @@ bool CScript::WriteStack(FILE *file)
 
 bool CScript::Compare(const CScript* other)const
 {
-    if ( m_len != other->m_len )  return false;
+    if ( m_len != other->m_len )
+        return false;
 
     return ( strcmp(m_script.get(), other->m_script.get()) == 0 );
 }

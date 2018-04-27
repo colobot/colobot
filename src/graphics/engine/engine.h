@@ -731,7 +731,8 @@ public:
     void            CopyBaseObject(int sourceBaseObjRank, int destBaseObjRank);
 
     //! Adds triangles to given object with the specified params
-    void AddBaseObjTriangles(int baseObjRank, const std::vector<Gfx::ModelTriangle>& triangles);
+    void AddBaseObjTriangles(const int baseObjRank,
+                             const std::vector<Gfx::ModelTriangle>& triangles);
 
     //! Adds a tier 4 engine object directly
     void            AddBaseObjQuick(int baseObjRank, const EngineBaseObjDataTier& buffer,
@@ -810,49 +811,51 @@ public:
     int             DetectObject(Math::Point mouse, Math::Vector& targetPos, bool terrain = false);
 
     //! Creates a shadow for the given object
-    void            CreateShadowSpot(int objRank);
+    void            CreateShadowSpot(const int objRank);
     //! Deletes the shadow for given object
-    void            DeleteShadowSpot(int objRank);
+    void            DeleteShadowSpot(const int objRank);
 
     //@{
     //! Management of different shadow params
-    void            SetObjectShadowSpotHide(int objRank, bool hide);
-    void            SetObjectShadowSpotType(int objRank, EngineShadowType type);
-    void            SetObjectShadowSpotPos(int objRank, const Math::Vector& pos);
-    void            SetObjectShadowSpotAngle(int objRank, float angle);
-    void            SetObjectShadowSpotRadius(int objRank, float radius);
-    void            SetObjectShadowSpotIntensity(int objRank, float intensity);
-    void            SetObjectShadowSpotHeight(int objRank, float height);
-    void            UpdateObjectShadowSpotNormal(int objRank);
+    void            SetObjectShadowSpotHide(const int objRank, const bool hide);
+    void            SetObjectShadowSpotType(const int objRank, const EngineShadowType type);
+    void            SetObjectShadowSpotPos(const int objRank, const Math::Vector& pos);
+    void            SetObjectShadowSpotAngle(const int objRank, const float angle);
+    void            SetObjectShadowSpotRadius(const int objRank, const float radius);
+    void            SetObjectShadowSpotIntensity(int objRank, const float intensity);
+    void            SetObjectShadowSpotHeight(const int objRank, const float height);
+    void            UpdateObjectShadowSpotNormal(const int objRank);
     //@}
 
     //! Lists the ranks of objects and subobjects selected
     void            SetHighlightRank(int* rankList);
     //! Returns the highlighted rectangle
-    bool            GetHighlight(Math::Point& p1, Math::Point& p2);
+    bool            GetHighlight(Math::Point& p1, Math::Point& p2)const;
 
     //! Deletes all ground spots
     void            DeleteAllGroundSpots();
     //! Creates a new ground spot and returns its rank
     int             CreateGroundSpot();
     //! Deletes the given ground spot
-    void            DeleteGroundSpot(int rank);
+    void            DeleteGroundSpot(const int rank);
 
     //@{
     //! Management of different ground spot params
-    void            SetObjectGroundSpotPos(int rank, const Math::Vector& pos);
-    void            SetObjectGroundSpotRadius(int rank, float radius);
-    void            SetObjectGroundSpotColor(int rank, const Color& color);
-    void            SetObjectGroundSpotMinMax(int rank, float min, float max);
-    void            SetObjectGroundSpotSmooth(int rank, float smooth);
+    void            SetObjectGroundSpotPos(const int rank, const Math::Vector& pos);
+    void            SetObjectGroundSpotRadius(const int rank, const float radius);
+    void            SetObjectGroundSpotColor(const int rank, const Color& color);
+    void            SetObjectGroundSpotMinMax(const int rank, const float min, const float max);
+    void            SetObjectGroundSpotSmooth(const int rank, const float smooth);
     //@}
 
     //! Creates the ground mark with the given params
-    void            CreateGroundMark(Math::Vector pos, float radius,
-                                     float delay1, float delay2, float delay3,
-                                     int dx, int dy, char* table);
+    void            CreateGroundMark(const Math::Vector pos, const float radius,
+                                     const float delay1, const float delay2,
+                                     const float delay3,
+                                     const int dx, const int dy,
+                                     char* table);
     //! Deletes the ground mark
-    void            DeleteGroundMark(int rank);
+    void            DeleteGroundMark(const int rank);   //FIXME: Param not used???
 
     //! Updates the state after creating objects
     void            Update();
@@ -885,26 +888,36 @@ public:
     //@{
     bool            ChangeTextureColor(const std::string& texName,
                                        const std::string& srcName,
-                                       Color colorRef1, Color colorNew1,
-                                       Color colorRef2, Color colorNew2,
-                                       float tolerance1, float tolerance2,
-                                       Math::Point ts, Math::Point ti,
-                                       Math::Point *exclude = nullptr,
-                                       float shift = 0.0f, bool hsv = false);
+                                       const Color& colorRef1,
+                                       const Color& colorNew1,
+                                       const Color& colorRef2,
+                                       const Color& colorNew2,
+                                       const float tolerance1,
+                                       const float tolerance2,
+                                       const Math::Point& ts,
+                                       const Math::Point& ti,
+                                       const Math::Point *exclude = nullptr,
+                                       const float shift = 0.0f,
+                                       const bool hsv = false);
     bool            ChangeTextureColor(const std::string& texName,
-                                       Color colorRef1, Color colorNew1,
-                                       Color colorRef2, Color colorNew2,
-                                       float tolerance1, float tolerance2,
-                                       Math::Point ts, Math::Point ti,
-                                       Math::Point *exclude = nullptr,
-                                       float shift = 0.0f, bool hsv = false);
+                                       const Color& colorRef1,
+                                       const Color& colorNew1,
+                                       const Color& colorRef2,
+                                       const Color& colorNew2,
+                                       const float tolerance1,
+                                       const float tolerance2,
+                                       const Math::Point& ts,
+                                       const Math::Point& ti,
+                                       const Math::Point *exclude = nullptr,
+                                       const float shift = 0.0f,
+                                       const bool hsv = false);
     //@}
 
     //! Sets texture for given stage; if not present in cache, the texture is loaded
     /** If loading fails, returns false. */
-    bool            SetTexture(const std::string& name, int stage = 0);
+    bool            SetTexture(const std::string& name, const int stage = 0);
     //! Sets texture for given stage
-    void            SetTexture(const Texture& tex, int stage = 0);
+    void            SetTexture(const Texture& tex, const int stage = 0);
 
     //! Deletes the given texture, unloading it and removing from cache
     void            DeleteTexture(const std::string& texName);
@@ -918,7 +931,7 @@ public:
     void            FlushTextureCache();
 
     //! Defines of the distance field of vision
-    void            SetTerrainVision(float vision);
+    void            SetTerrainVision(const float vision);
 
     //@{
     //! Management of camera vertical field-of-view angle.
@@ -926,69 +939,69 @@ public:
     Horizontal FoV is calculated based on vertical FoV and aspect ratio.
     0.75 = normal
     1.50 = wide-angle */
-    void            SetFocus(float focus);
+    void            SetFocus(const float focus);
     //! Deprecated alias for GetVFovAngle
-    float           GetFocus();
-    float           GetVFovAngle();
-    float           GetHFovAngle();
+    float           GetFocus()const;
+    float           GetVFovAngle()const;
+    float           GetHFovAngle()const;
     //@}
 
     //@{
     //! Management of the global mode of contamination
     // NOTE: This is an user configuration setting
-    void            SetDirty(bool mode);
-    bool            GetDirty();
+    void            SetDirty(const bool mode);
+    bool            GetDirty()const;
     //@}
 
     //@{
     //! Management of the global mode of horizontal fog patches
     // NOTE: This is an user configuration setting
-    void            SetFog(bool mode);
-    bool            GetFog();
+    void            SetFog(const bool mode);
+    bool            GetFog()const;
     //@}
 
     //@{
     //! Management of the global mode of secondary texturing
     void            SetSecondTexture(const std::string& texNum);
-    const std::string& GetSecondTexture();
+    const std::string& GetSecondTexture()const;
     //@}
 
     //@{
     //! Management of view mode
     void            SetRankView(int rank);
-    int             GetRankView();
+    int             GetRankView()const;
     //@}
 
     //! Whether to draw the world
-    void            SetDrawWorld(bool draw);
+    void            SetDrawWorld(const bool draw);
 
     //! Whether to draw the world on the interface
-    void            SetDrawFront(bool draw);
+    void            SetDrawFront(const bool draw);
 
     //@{
     //! Ambient color management
-    void            SetAmbientColor(const Color& color, int rank = 0);
-    Color           GetAmbientColor(int rank = 0);
+    void            SetAmbientColor(const Color& color, const int rank = 0);
+    Color           GetAmbientColor(const int rank = 0)const;
     //@}
 
     //@{
     //! Color management under water
     void            SetWaterAddColor(const Color& color);
-    Color           GetWaterAddColor();
+    Color           GetWaterAddColor()const;
     //@}
 
     //@{
     //! Management of the fog color
-    void            SetFogColor(const Color& color, int rank = 0);
-    Color           GetFogColor(int rank = 0);
+    void            SetFogColor(const Color& color, const int rank = 0);
+    Color           GetFogColor(const int rank = 0)const;
     //@}
 
     //@{
     //! Management of the depth of field.
     /** Beyond this distance, nothing is visible.
         Shortly (according SetFogStart), one enters the fog. */
-    void            SetDeepView(float length, int rank = 0, bool ref=false);
-    float           GetDeepView(int rank = 0);
+    void            SetDeepView(float length, const int rank = 0, const bool ref=false);
+    float           GetDeepView(const int rank = 0)const;
     //@}
 
 
@@ -996,80 +1009,85 @@ public:
     //! Management the start of fog.
     /** With 0.0, the fog from the point of view (fog max).
         With 1.0, the fog from the depth of field (no fog). */
-    void            SetFogStart(float start, int rank = 0);
-    float           GetFogStart(int rank = 0);
+    void            SetFogStart(const float start, const int rank = 0);
+    float           GetFogStart(const int rank = 0);
     //@}
 
     //@{
     //! Management of the background image to use
-    void            SetBackground(const std::string& name, Color up = Color(), Color down = Color(),
-                                  Color cloudUp = Color(), Color cloudDown = Color(),
-                                  bool full = false, bool scale = false);
+    void            SetBackground(const std::string& name,
+                                  const Color up = Color(),
+                                  const Color down = Color(),
+                                  const Color cloudUp = Color(),
+                                  const Color cloudDown = Color(),
+                                  const bool full = false,
+                                  const bool scale = false);
     void            GetBackground(std::string& name, Color& up, Color& down,
                                   Color& cloudUp, Color& cloudDown,
-                                  bool& full, bool& scale);
+                                  bool& full, bool& scale)const;
     //@}
 
     //! Specifies the name of foreground texture
     void            SetForegroundName(const std::string& name);
     //! Specifies whether to draw the foreground
-    void            SetOverFront(bool front);
+    void            SetOverFront(const bool front);
     //! Sets the foreground overlay color
-    void            SetOverColor(const Color& color = Color(), int mode = ENG_RSTATE_TCOLOR_BLACK);
+    void            SetOverColor(const Color& color = Color(),
+                                 const int mode = ENG_RSTATE_TCOLOR_BLACK);
 
     //@{
-    //! Management of the particle density
-    // NOTE: This is an user configuration setting
+    //! Management of the particle densitym
+    // NOTE: This is an user configuration semtting
     void            SetParticleDensity(float value);
-    float           GetParticleDensity();
+    float           GetParticleDensity()const;
     //@}
 
     //! Adapts particle factor according to particle density
-    float           ParticleAdapt(float factor);
+    float           ParticleAdapt(const float factor);
 
     //@{
     //! Management of the distance of clipping.
     // NOTE: This is an user configuration setting
     void            SetClippingDistance(float value);
-    float           GetClippingDistance();
+    float           GetClippingDistance()const;
     //@}
 
     //@{
     //! Management the texture filter mode
     // NOTE: This is an user configuration setting
-    void            SetTextureFilterMode(TexFilter value);
-    TexFilter       GetTextureFilterMode();
+    void            SetTextureFilterMode(const TexFilter value);
+    TexFilter       GetTextureFilterMode()const;
     //@}
 
     //@{
     //! Management the mipmap level for textures
     // NOTE: This is an user configuration setting
     void            SetTextureMipmapLevel(int value);
-    int             GetTextureMipmapLevel();
+    int             GetTextureMipmapLevel()const;
     //@}
 
     //@{
     //! Management the anisotropy level for textures
     // NOTE: This is an user configuration setting
     void            SetTextureAnisotropyLevel(int value);
-    int             GetTextureAnisotropyLevel();
+    int             GetTextureAnisotropyLevel()const;
     //@}
 
     //@{
     //! Management of shadow mapping
     // NOTE: These are user configuration settings
-    bool            IsShadowMappingSupported();
+    bool            IsShadowMappingSupported()const;
     void            SetShadowMapping(bool value);
-    bool            GetShadowMapping();
+    bool            GetShadowMapping()const;
     void            SetShadowMappingOffscreen(bool value);
-    bool            GetShadowMappingOffscreen();
+    bool            GetShadowMappingOffscreen()const;
     void            SetShadowMappingOffscreenResolution(int resolution);
-    int             GetShadowMappingOffscreenResolution();
-    bool            IsShadowMappingQualitySupported();
-    void            SetShadowMappingQuality(bool value);
-    bool            GetShadowMappingQuality();
-    void            SetTerrainShadows(bool value);
-    bool            GetTerrainShadows();
+    int             GetShadowMappingOffscreenResolution()const;
+    bool            IsShadowMappingQualitySupported()const;
+    void            SetShadowMappingQuality(const bool value);
+    bool            GetShadowMappingQuality()const;
+    void            SetTerrainShadows(const bool value);
+    bool            GetTerrainShadows()const;
     //@}
 
     //@{
@@ -1089,69 +1107,69 @@ public:
     //@{
     //! Management of shadow range
     // NOTE: This is an user configuration setting
-    void            SetMultiSample(int value);
-    int             GetMultiSample();
+    void            SetMultiSample(const int value);
+    int             GetMultiSample()const;
     //@}
 
     //@{
     //! Management the mode of background
-    void            SetBackForce(bool present);
-    bool            GetBackForce();
+    void            SetBackForce(const bool present);
+    bool            GetBackForce()const;
     //@}
 
     //@{
     //! Managing the mode of dynamic lights.
     // NOTE: This is an user configuration setting
-    void            SetLightMode(bool present);
-    bool            GetLightMode();
+    void            SetLightMode(const bool present);
+    bool            GetLightMode()const ;
     //@}
 
     //@{
     //! Management of the indentation mode while editing (CEdit)
     // NOTE: This is an user configuration setting
     // TODO: Move to CSettings
-    void            SetEditIndentMode(bool autoIndent);
-    bool            GetEditIndentMode();
+    void            SetEditIndentMode(const bool autoIndent);
+    bool            GetEditIndentMode()const;
     //@}
 
     //@{
     //! Management of tab indent when editing (CEdit)
     // NOTE: This is an user configuration setting
     // TODO: Move to CSettings
-    void            SetEditIndentValue(int value);
-    int             GetEditIndentValue();
+    void            SetEditIndentValue(const int value);
+    int             GetEditIndentValue()const;
     //@}
 
     //@{
     //! Management of precision of robot tracks
-    void            SetTracePrecision(float factor);
-    float           GetTracePrecision();
+    void            SetTracePrecision(const float factor);
+    float           GetTracePrecision()const;
     //@}
 
     //@{
     //! Management of mouse cursor type
-    void            SetMouseType(EngineMouseType type);
-    EngineMouseType GetMouseType();
+    void            SetMouseType(const EngineMouseType type);
+    EngineMouseType GetMouseType()const ;
     //@}
 
     //@{
     //! Management of pause blur
-    void            SetPauseBlurEnabled(bool enable);
-    bool            GetPauseBlurEnabled();
+    void            SetPauseBlurEnabled(const bool enable);
+    bool            GetPauseBlurEnabled()const;
     //@}
 
     //! Returns the view matrix
-    const Math::Matrix& GetMatView();
+    const Math::Matrix& GetMatView()const;
     //! Returns the projection matrix
-    const Math::Matrix& GetMatProj();
+    const Math::Matrix& GetMatProj()const;
     //! Returns the camera center point
-    TEST_VIRTUAL Math::Vector GetEyePt();
+    TEST_VIRTUAL Math::Vector GetEyePt()const;
     //! Returns the camera target point
-    TEST_VIRTUAL Math::Vector GetLookatPt();
+    TEST_VIRTUAL Math::Vector GetLookatPt()const;
     //! Returns the horizontal direction angle of view
-    float           GetEyeDirH();
+    float           GetEyeDirH()const;
     //! Returns the vertical direction angle of view
-    float           GetEyeDirV();
+    float           GetEyeDirV()const;
     //! Indicates whether a point is visible
     bool            IsVisiblePoint(const Math::Vector& pos);
 
@@ -1240,20 +1258,22 @@ protected:
     Texture CreateTexture(const std::string &texName, const TextureCreateParams &params, CImage* image = nullptr);
 
     //! Tests whether the given object is visible
-    bool        IsVisible(int objRank);
+    bool        IsVisible(const int objRank);
 
     //! Detects whether an object is affected by the mouse
-    bool        DetectBBox(int objRank, Math::Point mouse);
+    bool        DetectBBox(const int objRank, const Math::Point& mouse);
 
     //! Compute and return the 2D box on screen of any object
-    bool        GetBBox2D(int objRank, Math::Point& min, Math::Point& max);
+    bool        GetBBox2D(const int objRank, Math::Point& min, Math::Point& max)const;
 
     //! Detects whether the mouse is in a triangle.
     bool        DetectTriangle(Math::Point mouse, VertexTex2* triangle, int objRank, float& dist, Math::Vector& pos);
 
     //! Transforms a 3D point (x, y, z) in 2D space (x, y, -) of the window
     /** The coordinated p2D.z gives the distance. */
-    bool        TransformPoint(Math::Vector& p2D, int objRank, Math::Vector p3D);
+    bool        TransformPoint(Math::Vector& p2D,
+                               const int objRank,
+                               Math::Vector p3D)const;
 
     //! Calculates the distances between the viewpoint and the origin of different objects
     void        ComputeDistance();
@@ -1267,11 +1287,14 @@ protected:
     //! Updates static buffers of changed objects
     void        UpdateStaticBuffers();
 
-    void            AddBaseObjTriangles(int baseObjRank, const std::vector<VertexTex2>& vertices,
-                                        const Material& material, int state,
-                                        std::string tex1Name, std::string tex2Name);
+    void        AddBaseObjTriangles(const int baseObjRank,
+                                    const std::vector<VertexTex2>& vertices,
+                                    const Material& material,
+                                    const int state,
+                                    const std::string& tex1Name,
+                                    const std::string& tex2Name);
 
-    int GetEngineState(const ModelTriangle& triangle);
+    int GetEngineState(const ModelTriangle& triangle)const;
 
     struct WriteScreenShotData
     {

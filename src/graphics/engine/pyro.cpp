@@ -78,7 +78,8 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
 
     ObjectType oType = obj->GetType();
     int objRank = obj->GetObjectRank(0);
-    if (objRank == -1) return false;
+    if (objRank == -1)
+        return false;
 
     Math::Vector min, max;
     m_engine->GetObjectBBox(objRank, min, max);
@@ -87,29 +88,25 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
     DisplayError(type, obj);  // displays eventual messages
 
     for (const auto& crashSphere : obj->GetAllCrashSpheres())
-    {
         m_crashSpheres.push_back(crashSphere.sphere);
-    }
 
     // Calculates the size of the effect.
     if ( oType == OBJECT_ANT    ||
          oType == OBJECT_BEE    ||
          oType == OBJECT_WORM   ||
          oType == OBJECT_SPIDER )
-    {
         m_size = 40.0f;
-    }
     else
     {
         m_size = Math::Distance(min, max)*2.0f;
-        if ( m_size <  4.0f )  m_size =  4.0f;
-        if ( m_size > 80.0f )  m_size = 80.0f;
+        if ( m_size <  4.0f )
+            m_size =  4.0f;
+        if ( m_size > 80.0f )
+            m_size = 80.0f;
     }
     if ( oType == OBJECT_TNT  ||
          oType == OBJECT_BOMB )
-    {
         m_size *= 2.0f;
-    }
 
     m_pos = pos+(min+max)/2.0f;
     m_type = type;
@@ -121,9 +118,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
 
     if ( oType == OBJECT_TEEN28 ||
          oType == OBJECT_TEEN31 )
-    {
         m_pos.y = pos.y+1.0f;
-    }
 
     // Seeking the position of the battery.
 
@@ -132,9 +127,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
         power = dynamic_cast<CPoweredObject*>(obj)->GetPower();
 
     if (power == nullptr)
-    {
         m_power = false;
-    }
     else
     {
         m_power = true;
@@ -186,15 +179,9 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
          type == PT_EXPLOT ||
          type == PT_EXPLOW )
     {
-        SoundType sound;
+        SoundType sound = SOUND_EXPLO;
         if ( m_power )
-        {
             sound = SOUND_EXPLOp;
-        }
-        else
-        {
-            sound = SOUND_EXPLO;
-        }
         if ( oType == OBJECT_STONE   ||
              oType == OBJECT_METAL   ||
              oType == OBJECT_BULLET  ||
@@ -203,26 +190,20 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
              oType == OBJECT_KEYb    ||
              oType == OBJECT_KEYc    ||
              oType == OBJECT_KEYd    )
-        {
             sound = SOUND_EXPLOl;
-        }
-        if ( oType == OBJECT_URANIUM ||
+        else if ( oType == OBJECT_URANIUM ||
              oType == OBJECT_POWER   ||
              oType == OBJECT_ATOMIC  ||
              oType == OBJECT_TNT     ||
              oType == OBJECT_BOMB    )
-        {
             sound = SOUND_EXPLOlp;
-        }
         m_sound->Play(sound, m_pos);
     }
     if ( type == PT_FRAGO  ||
          type == PT_EXPLOO ||
          type == PT_SPIDER ||
          type == PT_SHOTM  )
-    {
         m_sound->Play(SOUND_EXPLOi, m_pos);
-    }
     if ( type == PT_BURNT ||
          type == PT_BURNO )
     {
@@ -236,25 +217,17 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
         m_sound->Play(SOUND_DEADi, m_engine->GetEyePt());
     }
     if ( type == PT_EGG )
-    {
         m_sound->Play(SOUND_EGG, m_pos);
-    }
     if ( type == PT_WPCHECK  ||
          type == PT_FLCREATE ||
          type == PT_FLDELETE )
-    {
         m_sound->Play(SOUND_WAYPOINT, m_pos);
-    }
     if ( oType == OBJECT_HUMAN )
     {
         if ( type == PT_DEADG )
-        {
             m_sound->Play(SOUND_DEADg, m_pos);
-        }
         if ( type == PT_DEADW )
-        {
             m_sound->Play(SOUND_DEADw, m_pos);
-        }
         assert(m_object->Implements(ObjectInterfaceType::Controllable));
         if ( type == PT_SHOTH && dynamic_cast<CControllableObject*>(m_object)->GetSelect() )
         {
@@ -263,15 +236,15 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
         }
     }
 
-    if ( m_type == PT_FRAGT ||
-         m_type == PT_FRAGO ||
-         m_type == PT_FRAGW )
+    switch(m_type)
     {
-        m_engine->DeleteShadowSpot(m_object->GetObjectRank(0));
-    }
 
-    if ( m_type == PT_DEADG )
-    {
+    case PT_FRAGT:
+    case PT_FRAGO:
+    case PT_FRAGW:
+        m_engine->DeleteShadowSpot(m_object->GetObjectRank(0));
+        break;
+    case PT_DEADG:
         assert(m_object->Implements(ObjectInterfaceType::Destroyable));
         dynamic_cast<CDestroyableObject*>(m_object)->SetDying(DeathType::Dead);
 
@@ -282,9 +255,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
         m_camera->StartOver(CAM_OVER_EFFECT_FADEOUT_WHITE, m_pos, 1.0f);
         m_speed = 1.0f/10.0f;
         return true;
-    }
-    if ( m_type == PT_DEADW )
-    {
+    case PT_DEADW:
         assert(m_object->Implements(ObjectInterfaceType::Destroyable));
         dynamic_cast<CDestroyableObject*>(m_object)->SetDying(DeathType::Dead);
 
@@ -295,81 +266,62 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
         m_camera->StartOver(CAM_OVER_EFFECT_FADEOUT_BLACK, m_pos, 1.0f);
         m_speed = 1.0f/10.0f;
         return true;
-    }
-
-    if ( m_type == PT_SHOTT ||
-         m_type == PT_SHOTM )
-    {
+    case PT_SHOTT:
+    case PT_SHOTM:
         m_camera->StartEffect(CAM_EFFECT_SHOT, m_pos, force);
         m_speed = 1.0f/1.0f;
         return true;
-    }
-    if ( m_type == PT_SHOTH )
-    {
+    case PT_SHOTH:
         assert(m_object->Implements(ObjectInterfaceType::Controllable));
-        if ( m_camera->GetBlood() && dynamic_cast<CControllableObject*>(m_object)->GetSelect() )
-        {
+        if ( m_camera->GetBlood()
+            && dynamic_cast<CControllableObject*>(m_object)->GetSelect() )
             m_camera->StartOver(CAM_OVER_EFFECT_BLOOD, m_pos, force);
-        }
         m_speed = 1.0f/0.2f;
         return true;
-    }
-
-    if ( m_type == PT_SHOTW )
-    {
+    case PT_SHOTW:
         m_speed = 1.0f/1.0f;
-    }
-
-    if ( m_type == PT_BURNT )
-    {
+        break;
+    case PT_BURNT:
         BurnStart();
-    }
+        break;
 
-    if ( m_type == PT_WPCHECK )
-    {
+    case PT_WPCHECK:
         m_speed = 1.0f/8.0f;
         m_object->SetLock(true);  // object more functional
-    }
-    if ( m_type == PT_FLCREATE )
-    {
+        break;
+    case PT_FLCREATE:
         m_speed = 1.0f/2.0f;
-    }
-    if ( m_type == PT_FLDELETE )
-    {
+        break;
+    case PT_FLDELETE:
         m_speed = 1.0f/2.0f;
         m_object->SetLock(true);  // object more functional
-    }
-    if ( m_type == PT_RESET )
-    {
+        break;
+    case PT_RESET:
         m_speed = 1.0f/2.0f;
         m_resetAngle = m_object->GetRotationY();
-    }
-    if ( m_type == PT_FINDING )
-    {
-        float limit = (m_size-1.0f)/4.0f;
-        if (limit > 8.0f) limit = 8.0f;
-        if (oType == OBJECT_APOLLO2) limit = 2.0f;
-        m_speed = 1.0f/limit;
-    }
-
-    if ( m_type == PT_EXPLOT ||
-         m_type == PT_EXPLOO ||
-         m_type == PT_EXPLOW )
-    {
+        break;
+    case PT_FINDING:
+        {
+            float limit = (m_size-1.0f)/4.0f;
+            if (limit > 8.0f)
+                limit = 8.0f;
+            if (oType == OBJECT_APOLLO2)
+                limit = 2.0f;
+            m_speed = 1.0f/limit;
+        }
+        break;
+    case PT_EXPLOT:
+    case PT_EXPLOO:
+    case PT_EXPLOW:
         CreateTriangle(obj, oType, 0);
         m_engine->DeleteShadowSpot(m_object->GetObjectRank(0));
         ExploStart();
-    }
-
-    if ( m_type == PT_FALL )
-    {
+        break;
+    case PT_FALL:
         FallStart();
         return true;
-    }
-
-    if ( m_type == PT_BURNT ||
-         m_type == PT_BURNO )
-    {
+    case PT_BURNT:
+    case PT_BURNO:
         m_speed = 1.0f/15.0f;
 
         LightOperAdd(0.00f, 0.0f,  2.0f,  1.0f,  0.0f);  // red-orange
@@ -378,19 +330,17 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
         LightOperAdd(1.00f, 0.0f, -0.8f, -0.8f, -0.8f);  // dark gray
         CreateLight(m_pos, 40.0f);
         return true;
-    }
-
-    if ( m_type == PT_SPIDER )
-    {
+    case PT_SPIDER:
         m_speed = 1.0f/15.0f;
 
         pos = Math::Vector(-3.0f, 2.0f, 0.0f);
-        Math::Matrix* mat = obj->GetWorldMatrix(0);
-        m_pos = Math::Transform(*mat, pos);
-
+        {
+            Math::Matrix* mat = obj->GetWorldMatrix(0);
+            m_pos = Math::Transform(*mat, pos);
+        }
         m_engine->DeleteShadowSpot(m_object->GetObjectRank(0));
+        break;
     }
-
     if ( m_type != PT_EGG  &&
          m_type != PT_WIN  &&
          m_type != PT_LOST )
@@ -454,7 +404,8 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
         }
     }
 
-    if ( m_type == PT_SHOTW )  return true;
+    if ( m_type == PT_SHOTW )
+        return true;
 
     // Generates the triangles of the explosion.
     if ( m_type == PT_FRAGT  ||
@@ -465,12 +416,8 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
         (m_type == PT_EXPLOT && oType == OBJECT_MOBILEtg) ||
         (m_type == PT_EXPLOT && oType == OBJECT_TEEN28  ) ||
         (m_type == PT_EXPLOT && oType == OBJECT_TEEN31  ) )
-    {
         for (int part = 0; part < OBJECTMAXPART; part++)
-        {
             CreateTriangle(obj, oType, part);
-        }
-    }
 
     if ( m_type == PT_FRAGT  ||
          m_type == PT_EXPLOT )
@@ -479,7 +426,8 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
         {
             int total = static_cast<int>(10.0f*m_engine->GetParticleDensity());
             if ( oType == OBJECT_TNT  ||
-                 oType == OBJECT_BOMB )  total *= 3;
+                 oType == OBJECT_BOMB )
+                total *= 3;
             for (int i = 0; i < total; i++)
             {
                 pos = m_posPower;
@@ -500,9 +448,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
         if (m_size > 10.0f)  // large enough (freight excluded)?
         {
             if (m_power)
-            {
                 pos = m_posPower;
-            }
             else
             {
                 pos = m_pos;
@@ -594,7 +540,6 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
          type == PT_FRAGW  ||
          type == PT_EXPLOT ||
          type == PT_EXPLOW )
-    {
         if (m_size > 10.0f || m_power)
         {
             pos = m_pos;
@@ -604,15 +549,15 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
             dim.y = dim.x;
             m_particle->CreateParticle(pos, speed, dim, PARTICHOC, 2.0f);
         }
-    }
-
     return true;
 }
 
 bool CPyro::EventProcess(const Event &event)
 {
-    if (event.type != EVENT_FRAME) return true;
-    if (m_engine->GetPause()) return true;
+    if (event.type != EVENT_FRAME)
+        return true;
+    if (m_engine->GetPause())
+        return true;
 
     m_time += event.rTime;
     m_progress += event.rTime*m_speed;
@@ -805,10 +750,10 @@ bool CPyro::EventProcess(const Event &event)
         speed.y = -dim.x/2.0f/4.0f;
         pos.y += dim.x/2.0f;
 
-        ParticleType type;
         int r = rand()%2;
-        if (r == 0) type = PARTISMOKE1;
-        if (r == 1) type = PARTISMOKE2;
+        ParticleType type = (r == 0)
+            ? PARTISMOKE1
+            : PARTISMOKE2;
         m_particle->CreateParticle(pos, speed, dim, type, 6.0f);
     }
 
@@ -870,10 +815,8 @@ bool CPyro::EventProcess(const Event &event)
 
     if ( m_type == PT_WPCHECK )
     {
-        float factor;
-        if (m_progress < 0.25f)
-            factor = 0.0f;
-        else
+        float factor = 0.0f;
+        if (m_progress >= 0.25f)
             factor = powf((m_progress-0.25f)/0.75f, 2.0f)*30.0f;
 
         if ( m_progress < 0.85f &&
@@ -908,9 +851,7 @@ bool CPyro::EventProcess(const Event &event)
             m_object->SetPosition(pos);
 
             if ( m_progress > 0.85f )
-            {
                 m_object->SetScale(1.0f-(m_progress-0.85f)/0.15f);
-            }
         }
     }
 
@@ -1018,15 +959,16 @@ bool CPyro::EventProcess(const Event &event)
     }
 
     if ( m_type == PT_FINDING )
-    {
         if ( m_object != nullptr &&
              m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
         {
             m_lastParticle = m_time;
 
             float factor = m_size*0.3f;
-            if (m_object->GetType() == OBJECT_SAFE) factor *= 1.3f;
-            if (factor > 40.0f) factor = 40.0f;
+            if (m_object->GetType() == OBJECT_SAFE)
+                factor *= 1.3f;
+            if (factor > 40.0f)
+                factor = 40.0f;
             Math::Vector pos = m_pos;
             m_terrain->AdjustToFloor(pos);
             pos.x += (Math::Rand()-0.5f)*factor;
@@ -1040,7 +982,6 @@ bool CPyro::EventProcess(const Event &event)
             dim.y = dim.x;
             m_particle->CreateParticle(pos, speed, dim, PARTIGLINT, 2.0f, 0.0f, 0.5f);
         }
-    }
 
     if ( (m_type == PT_BURNT || m_type == PT_BURNO) &&
          m_object != nullptr )
@@ -1171,42 +1112,27 @@ Error CPyro::IsEnded()
          m_type == PT_FRAGW  ||
          m_type == PT_SPIDER ||
          m_type == PT_EGG    )
-    {
         DeleteObject(true, true);
-    }
-
     if ( m_type == PT_FALL )  // freight which grave?
-    {
         return FallIsEnded();
-    }
-
     if ( m_type == PT_WIN  ||
          m_type == PT_LOST )
-    {
         return ERR_CONTINUE;
-    }
-
     // End of the pyrotechnic effect?
-    if ( m_progress < 1.0f )  return ERR_CONTINUE;
+    if ( m_progress < 1.0f )
+        return ERR_CONTINUE;
 
     if ( m_type == PT_EXPLOT ||
          m_type == PT_EXPLOO ||
          m_type == PT_EXPLOW )  // explosion?
-    {
         ExploTerminate();
-    }
 
     if ( m_type == PT_BURNT ||
          m_type == PT_BURNO )  // burning?
-    {
         BurnTerminate();
-    }
-
     if ( m_type == PT_WPCHECK  ||
          m_type == PT_FLDELETE )
-    {
         DeleteObject(true, true);
-    }
 
     if ( m_type == PT_FLCREATE )
     {
@@ -1250,11 +1176,16 @@ void CPyro::DisplayError(PyroType type, CObject* obj)
          type == PT_BURNO  )
     {
         Error err = ERR_OK;
-        if ( oType == OBJECT_MOTHER )  err = INFO_DELETEMOTHER;
-        if ( oType == OBJECT_ANT    )  err = INFO_DELETEANT;
-        if ( oType == OBJECT_BEE    )  err = INFO_DELETEBEE;
-        if ( oType == OBJECT_WORM   )  err = INFO_DELETEWORM;
-        if ( oType == OBJECT_SPIDER )  err = INFO_DELETESPIDER;
+        if ( oType == OBJECT_MOTHER )
+            err = INFO_DELETEMOTHER;
+        if ( oType == OBJECT_ANT    )
+            err = INFO_DELETEANT;
+        if ( oType == OBJECT_BEE    )
+            err = INFO_DELETEBEE;
+        if ( oType == OBJECT_WORM   )
+            err = INFO_DELETEWORM;
+        if ( oType == OBJECT_SPIDER )
+            err = INFO_DELETESPIDER;
 
         if ( oType == OBJECT_MOBILEwa ||
              oType == OBJECT_MOBILEta ||
@@ -1282,9 +1213,7 @@ void CPyro::DisplayError(PyroType type, CObject* obj)
              oType == OBJECT_MOBILEft ||
              oType == OBJECT_MOBILEit ||
              oType == OBJECT_MOBILEdr )
-        {
             err = ERR_DELETEMOBILE;
-        }
 
         if ( oType == OBJECT_DERRICK  ||
              oType == OBJECT_FACTORY  ||
@@ -1311,15 +1240,14 @@ void CPyro::DisplayError(PyroType type, CObject* obj)
         }
 
         if ( err != ERR_OK )
-        {
             m_main->DisplayError(err, obj);
-        }
     }
 }
 
 void CPyro::CreateLight(Math::Vector pos, float height)
 {
-    if (!m_engine->GetLightMode()) return;
+    if (!m_engine->GetLightMode())
+        return;
 
     m_lightHeight = height;
 
@@ -1345,7 +1273,8 @@ void CPyro::CreateLight(Math::Vector pos, float height)
 
 void CPyro::DeleteObject(bool primary, bool secondary)
 {
-    if (m_object == nullptr) return;
+    if (m_object == nullptr)
+        return;
 
     ObjectType type = m_object->GetType();
     if ( secondary              &&
@@ -1408,15 +1337,18 @@ void CPyro::DeleteObject(bool primary, bool secondary)
 void CPyro::CreateTriangle(CObject* obj, ObjectType oType, int part)
 {
     int objRank = obj->GetObjectRank(part);
-    if (objRank == -1) return;
-
+    if (objRank == -1)
+        return;
 
     int total = m_engine->GetObjectTotalTriangles(objRank);
 
     float percent = 0.10f;
-    if (total < 50) percent = 0.25f;
-    if (total < 20) percent = 0.50f;
-    if (m_type == PT_EGG) percent = 0.30f;
+    if (total < 50)
+        percent = 0.25f;
+    if (total < 20)
+        percent = 0.50f;
+    if (m_type == PT_EGG)
+        percent = 0.30f;
 
     if (oType == OBJECT_POWER    ||
         oType == OBJECT_ATOMIC   ||
@@ -1424,13 +1356,9 @@ void CPyro::CreateTriangle(CObject* obj, ObjectType oType, int part)
         oType == OBJECT_TNT      ||
         oType == OBJECT_BOMB     ||
         oType == OBJECT_TEEN28)
-    {
         percent = 0.75f;
-    }
     else if (oType == OBJECT_MOBILEtg)
-    {
         percent = 0.50f;
-    }
 
     std::vector<EngineTriangle> buffer;
     total = m_engine->GetPartialTriangles(objRank, percent, 100, buffer);
@@ -1528,8 +1456,10 @@ void CPyro::CreateTriangle(CObject* obj, ObjectType oType, int part)
             speed.y = Math::Rand()*30.0f;
             mass = Math::Rand()*10.0f+15.0f;
         }
-        if ( oType == OBJECT_STONE   )  speed *= 0.5f;
-        if ( oType == OBJECT_URANIUM )  speed *= 0.4f;
+        if ( oType == OBJECT_STONE   )
+            speed *= 0.5f;
+        if ( oType == OBJECT_URANIUM )
+            speed *= 0.4f;
         float duration = Math::Rand()*3.0f+3.0f;
         m_particle->CreateFrag(pos, speed, &buffer[i], PARTIFRAG,
                                duration, mass, 0.5f);
@@ -1549,7 +1479,8 @@ void CPyro::ExploStart()
     dynamic_cast<CDestroyableObject*>(m_object)->SetDying(DeathType::Exploding);  // being destroyed
     m_object->FlatParent();
 
-    if ( m_object->Implements(ObjectInterfaceType::Controllable) && dynamic_cast<CControllableObject*>(m_object)->GetSelect() )
+    if ( m_object->Implements(ObjectInterfaceType::Controllable)
+        && dynamic_cast<CControllableObject*>(m_object)->GetSelect() )
     {
         dynamic_cast<CControllableObject*>(m_object)->SetSelect(false);  // deselects the object
         m_camera->SetType(CAM_TYPE_EXPLO);
@@ -1560,7 +1491,8 @@ void CPyro::ExploStart()
     for (int i = 0; i < OBJECTMAXPART; i++)
     {
         int objRank = m_object->GetObjectRank(i);
-        if (objRank == -1) continue;
+        if (objRank == -1)
+            continue;
 
         // TODO: refactor later to material change
         int oldBaseObjRank = m_engine->GetObjectBaseRank(objRank);
@@ -1622,7 +1554,8 @@ void CPyro::BurnStart()
     m_object->Simplify();
     m_object->SetLock(true);  // ruin not usable yet
 
-    if ( m_object->Implements(ObjectInterfaceType::Controllable) && dynamic_cast<CControllableObject*>(m_object)->GetSelect() )
+    if ( m_object->Implements(ObjectInterfaceType::Controllable)
+        && dynamic_cast<CControllableObject*>(m_object)->GetSelect() )
     {
         dynamic_cast<CControllableObject*>(m_object)->SetSelect(false);  // deselects the object
         m_camera->SetType(CAM_TYPE_EXPLO);
@@ -1633,7 +1566,8 @@ void CPyro::BurnStart()
     for (int i = 0; i < OBJECTMAXPART; i++)
     {
         int objRank = m_object->GetObjectRank(i);
-        if (objRank == -1) continue;
+        if (objRank == -1)
+            continue;
 
         // TODO: refactor later to material change
         int oldBaseObjRank = m_engine->GetObjectBaseRank(objRank);
@@ -2149,9 +2083,8 @@ bool CPyro::BurnIsKeepPart(int part)
 {
     int i = 0;
     while (m_burnKeepPart[i] != -1)
-    {
-        if (part == m_burnKeepPart[i++]) return true;  // must keep
-    }
+        if (part == m_burnKeepPart[i++])
+            return true;  // must keep
     return false;  // must destroy
 }
 
@@ -2169,8 +2102,10 @@ void CPyro::BurnTerminate()
     for (int i = 1; i < OBJECTMAXPART; i++)
     {
         int objRank = m_object->GetObjectRank(i);
-        if (objRank == -1) continue;
-        if (BurnIsKeepPart(i)) continue;
+        if (objRank == -1)
+            continue;
+        if (BurnIsKeepPart(i))
+            continue;
 
         m_object->DeletePart(i);
     }
@@ -2195,13 +2130,9 @@ void CPyro::BurnTerminate()
          m_burnType == OBJECT_HUSTON   ||
          m_burnType == OBJECT_START    ||
          m_burnType == OBJECT_END      )
-    {
         m_object->SetType(OBJECT_RUINfactory); // Ruin
-    }
     else
-    {
         m_object->SetType(OBJECT_RUINmobilew1); // Wreck (recoverable by Recycler)
-    }
     m_object->SetLock(false);
 }
 
@@ -2222,11 +2153,15 @@ CObject* CPyro::FallSearchBeeExplo()
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        if (obj == m_object) continue;
-        if (obj->GetType() == OBJECT_BEE) continue;
-        if ( !obj->Implements(ObjectInterfaceType::Destroyable) )  continue;
+        if (obj == m_object)
+            continue;
+        if (obj->GetType() == OBJECT_BEE)
+            continue;
+        if ( !obj->Implements(ObjectInterfaceType::Destroyable) )
+            continue;
 
-        if (IsObjectBeingTransported(obj)) continue;
+        if (IsObjectBeingTransported(obj))
+            continue;
 
         Math::Vector oPos = obj->GetPosition();
 
@@ -2258,9 +2193,7 @@ CObject* CPyro::FallSearchBeeExplo()
         for (const auto& objCrashSphere : obj->GetAllCrashSpheres())
         {
             if (Math::DistanceBetweenSpheres(objCrashSphere.sphere, bulletCrashSphere.sphere) <= 0.0f)
-            {
                 return obj;
-            }
         }
     }
 
@@ -2339,10 +2272,12 @@ void CPyro::FallProgress(float rTime)
 
 Error CPyro::FallIsEnded()
 {
-    if (m_fallEnding || m_object == nullptr) return ERR_STOP;
+    if (m_fallEnding || m_object == nullptr)
+        return ERR_STOP;
 
     Math::Vector pos = m_object->GetPosition();
-    if (pos.y > m_fallFloor) return ERR_CONTINUE;
+    if (pos.y > m_fallFloor)
+        return ERR_CONTINUE;
 
     m_sound->Play(SOUND_BOUM, pos);
     m_object->SetLock(false);  // usable again
@@ -2388,6 +2323,5 @@ void CPyro::LightOperFrame(float rTime)
         }
     }
 }
-
 
 } // namespace Gfx

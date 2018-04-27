@@ -23,42 +23,42 @@ DriveType GetDriveFromObject(ObjectType type)
 {
     switch(type)
     {
-        case OBJECT_MOBILEwt:
-        case OBJECT_MOBILEwa:
-        case OBJECT_MOBILEwc:
-        case OBJECT_MOBILEwi:
-        case OBJECT_MOBILEws:
-            return DriveType::Wheeled;
+    case OBJECT_MOBILEwt:
+    case OBJECT_MOBILEwa:
+    case OBJECT_MOBILEwc:
+    case OBJECT_MOBILEwi:
+    case OBJECT_MOBILEws:
+        return DriveType::Wheeled;
 
-        case OBJECT_MOBILEtt:
-        case OBJECT_MOBILEta:
-        case OBJECT_MOBILEtc:
-        case OBJECT_MOBILEti:
-        case OBJECT_MOBILEts:
-            return DriveType::Tracked;
+    case OBJECT_MOBILEtt:
+    case OBJECT_MOBILEta:
+    case OBJECT_MOBILEtc:
+    case OBJECT_MOBILEti:
+    case OBJECT_MOBILEts:
+        return DriveType::Tracked;
 
-        case OBJECT_MOBILEft:
-        case OBJECT_MOBILEfa:
-        case OBJECT_MOBILEfc:
-        case OBJECT_MOBILEfi:
-        case OBJECT_MOBILEfs:
-            return DriveType::Winged;
+    case OBJECT_MOBILEft:
+    case OBJECT_MOBILEfa:
+    case OBJECT_MOBILEfc:
+    case OBJECT_MOBILEfi:
+    case OBJECT_MOBILEfs:
+        return DriveType::Winged;
 
-        case OBJECT_MOBILEit:
-        case OBJECT_MOBILEia:
-        case OBJECT_MOBILEic:
-        case OBJECT_MOBILEii:
-        case OBJECT_MOBILEis:
-            return DriveType::Legged;
+    case OBJECT_MOBILEit:
+    case OBJECT_MOBILEia:
+    case OBJECT_MOBILEic:
+    case OBJECT_MOBILEii:
+    case OBJECT_MOBILEis:
+        return DriveType::Legged;
 
-        case OBJECT_MOBILErt:
-        case OBJECT_MOBILErc:
-        case OBJECT_MOBILErr:
-        case OBJECT_MOBILErs:
-            // NOTE: Subber is not BigTracked!
-            return DriveType::BigTracked;
+    case OBJECT_MOBILErt:
+    case OBJECT_MOBILErc:
+    case OBJECT_MOBILErr:
+    case OBJECT_MOBILErs:
+        // NOTE: Subber is not BigTracked!
+        return DriveType::BigTracked;
 
-        default:
-            return DriveType::Other;
+    default:
+        return DriveType::Other;
     }
 }

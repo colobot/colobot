@@ -329,12 +329,10 @@ int CALSound::Play(SoundType sound, const Math::Vector &pos, float amplitude, fl
         return -1;
     }
 
-    int channel;
+    int channel = -1;    //init to mute lint
     bool alreadyLoaded = false;
     if (!SearchFreeBuffer(sound, channel, alreadyLoaded))
-    {
         return -1;
-    }
 
     if (!alreadyLoaded)
     {

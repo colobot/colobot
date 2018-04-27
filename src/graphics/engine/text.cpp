@@ -207,12 +207,8 @@ void CText::FlushCache()
     m_fontTextures.clear();
 
     for (auto& multisizeFont : m_fonts)
-    {
         for (auto& cachedFont : multisizeFont.second->fonts)
-        {
             cachedFont.second->cache.clear();
-        }
-    }
 
     m_lastCachedFont = nullptr;
     m_lastFontType = FONT_COLOBOT;
@@ -244,13 +240,15 @@ void CText::DrawText(const std::string &text,
     if (align == TEXT_ALIGN_CENTER)
     {
         sw = GetStringWidth(text, format, end, size);
-        if (sw > width) sw = width;
+        if (sw > width)
+            sw = width;
         pos.x -= sw / 2.0f;
     }
     else if (align == TEXT_ALIGN_RIGHT)
     {
         sw = GetStringWidth(text, format, end, size);
-        if (sw > width) sw = width;
+        if (sw > width)
+            sw = width;
         pos.x -= sw;
     }
 
@@ -458,9 +456,7 @@ float CText::GetCharWidth(UTF8Char ch, const FontType font, const float size, co
     Math::Point charSize;
     auto it = cf->cache.find(ch);
     if (it != cf->cache.end())
-    {
         charSize = m_engine->WindowToInterfaceSize((*it).second.charSize);
-    }
     else
     {
         Math::IntPoint wndSize;
@@ -500,9 +496,7 @@ int CText::GetCharWidthInt(UTF8Char ch, const FontType font, const float size, c
     Math::IntPoint charSize;
     auto it = cf->cache.find(ch);
     if (it != cf->cache.end())
-    {
         charSize = (*it).second.charSize;
-    }
     else
     {
         std::string text;
@@ -678,48 +672,48 @@ UTF8Char CText::TranslateSpecialChar(const char specialChar)const
 
     switch (specialChar)
     {
-        case CHAR_TAB:
-            ch.c1 = ':';
-            break;
+    case CHAR_TAB:
+        ch.c1 = ':';
+        break;
 
-        case CHAR_NEWLINE:
-            // Unicode: U+21B2
-            ch.c1 = static_cast<char>(0xE2);
-            ch.c2 = static_cast<char>(0x86);
-            ch.c3 = static_cast<char>(0xB2);
-            break;
+    case CHAR_NEWLINE:
+        // Unicode: U+21B2
+        ch.c1 = static_cast<char>(0xE2);
+        ch.c2 = static_cast<char>(0x86);
+        ch.c3 = static_cast<char>(0xB2);
+        break;
 
-        case CHAR_DOT:
-            // Unicode: U+23C5
-            ch.c1 = static_cast<char>(0xE2);
-            ch.c2 = static_cast<char>(0x8F);
-            ch.c3 = static_cast<char>(0x85);
-            break;
+    case CHAR_DOT:
+        // Unicode: U+23C5
+        ch.c1 = static_cast<char>(0xE2);
+        ch.c2 = static_cast<char>(0x8F);
+        ch.c3 = static_cast<char>(0x85);
+        break;
 
-        case CHAR_SQUARE:
-            // Unicode: U+25FD
-            ch.c1 = static_cast<char>(0xE2);
-            ch.c2 = static_cast<char>(0x97);
-            ch.c3 = static_cast<char>(0xBD);
-            break;
+    case CHAR_SQUARE:
+        // Unicode: U+25FD
+        ch.c1 = static_cast<char>(0xE2);
+        ch.c2 = static_cast<char>(0x97);
+        ch.c3 = static_cast<char>(0xBD);
+        break;
 
-        case CHAR_SKIP_RIGHT:
-            // Unicode: U+25B6
-            ch.c1 = static_cast<char>(0xE2);
-            ch.c2 = static_cast<char>(0x96);
-            ch.c3 = static_cast<char>(0xB6);
-            break;
+    case CHAR_SKIP_RIGHT:
+        // Unicode: U+25B6
+        ch.c1 = static_cast<char>(0xE2);
+        ch.c2 = static_cast<char>(0x96);
+        ch.c3 = static_cast<char>(0xB6);
+        break;
 
-        case CHAR_SKIP_LEFT:
-            // Unicode: U+25C0
-            ch.c1 = static_cast<char>(0xE2);
-            ch.c2 = static_cast<char>(0x97);
-            ch.c3 = static_cast<char>(0x80);
-            break;
+    case CHAR_SKIP_LEFT:
+        // Unicode: U+25C0
+        ch.c1 = static_cast<char>(0xE2);
+        ch.c2 = static_cast<char>(0x97);
+        ch.c3 = static_cast<char>(0x80);
+        break;
 
-        default:
-            ch.c1 = '?';
-            break;
+    default:
+        ch.c1 = '?';
+        break;
     }
 
     return ch;
@@ -762,33 +756,19 @@ void CText::DrawString(const std::string &text,
         Color c = color;
         FontHighlight hl = static_cast<FontHighlight>(format[fmtIndex] & FONT_MASK_HIGHLIGHT);
         if (hl == FONT_HIGHLIGHT_TOKEN)
-        {
             c = Color(0.490f, 0.380f, 0.165f, 1.0f); // #7D612A
-        }
         else if (hl == FONT_HIGHLIGHT_TYPE)
-        {
             c = Color(0.31f, 0.443f, 0.196f, 1.0f); // #4F7132
-        }
         else if (hl == FONT_HIGHLIGHT_CONST)
-        {
             c = Color(0.882f, 0.176f, 0.176f, 1.0f); // #E12D2D
-        }
         else if (hl == FONT_HIGHLIGHT_THIS)
-        {
             c = Color(0.545f, 0.329f, 0.608f, 1.0f); // #8B549B
-        }
         else if (hl == FONT_HIGHLIGHT_COMMENT)
-        {
             c = Color(0.251f, 0.271f, 0.306f, 1.0f); // #40454E
-        }
         else if (hl == FONT_HIGHLIGHT_KEYWORD)
-        {
             c = Color(0.239f, 0.431f, 0.588f, 1.0f); // #3D6E96
-        }
         else if (hl == FONT_HIGHLIGHT_STRING)
-        {
             c = Color(0.239f, 0.384f, 0.341f, 1.0f); // #3D6257
-        }
 
         // draw highlight background or link underline
         if (font != FONT_BUTTON)

@@ -190,7 +190,8 @@ void CScreenApperance::CreateInterface()
     for ( int i=0 ; i<6 ; i++ )
     {
         int ti[6] = {11, 179, 180, 181, 182, 183};
-        pb = pw->CreateButton(pos, ddim, ti[i], static_cast<EventType>(EVENT_INTERFACE_PGLASS0+i));
+        pb = pw->CreateButton(pos, ddim, ti[i],
+            static_cast<EventType>(EVENT_INTERFACE_PGLASS0+i));
         pb->SetState(STATE_SHADOW);
         pos.x += (30.0f+2.8f)/640.0f;
     }
@@ -211,7 +212,8 @@ void CScreenApperance::CreateInterface()
         pos.x  = 340.0f/640.0f;
         for ( int i=0 ; i<3 ; i++ )
         {
-            pco = pw->CreateColor(pos, ddim, -1, static_cast<EventType>(EVENT_INTERFACE_PC0a+j*3+i));
+            pco = pw->CreateColor(pos, ddim, -1,
+                static_cast<EventType>(EVENT_INTERFACE_PC0a+j*3+i));
             pco->SetState(STATE_SHADOW);
             pos.x += 20.0f/640.0f;
         }
@@ -224,7 +226,8 @@ void CScreenApperance::CreateInterface()
     ddim.y =  18.0f/480.0f;
     for ( int i=0 ; i<3 ; i++ )
     {
-        psl = pw->CreateSlider(pos, ddim, 0, static_cast<EventType>(EVENT_INTERFACE_PCRa+i));
+        psl = pw->CreateSlider(pos, ddim, 0,
+            static_cast<EventType>(EVENT_INTERFACE_PCRa+i));
         psl->SetState(STATE_SHADOW);
         psl->SetLimit(0.0f, 255.0f);
         psl->SetArrowStep(16.0f);
@@ -247,7 +250,8 @@ void CScreenApperance::CreateInterface()
         pos.x  = 340.0f/640.0f;
         for ( int i=0 ; i<3 ; i++ )
         {
-            pco = pw->CreateColor(pos, ddim, -1, static_cast<EventType>(EVENT_INTERFACE_PC0b+j*3+i));
+            pco = pw->CreateColor(pos, ddim, -1,
+                static_cast<EventType>(EVENT_INTERFACE_PC0b+j*3+i));
             pco->SetState(STATE_SHADOW);
             pos.x += 20.0f/640.0f;
         }
@@ -260,7 +264,8 @@ void CScreenApperance::CreateInterface()
     ddim.y =  18.0f/480.0f;
     for ( int i=0 ; i<3 ; i++ )
     {
-        psl = pw->CreateSlider(pos, ddim, 0, static_cast<EventType>(EVENT_INTERFACE_PCRb+i));
+        psl = pw->CreateSlider(pos, ddim, 0,
+            static_cast<EventType>(EVENT_INTERFACE_PCRb+i));
         psl->SetState(STATE_SHADOW);
         psl->SetLimit(0.0f, 255.0f);
         psl->SetArrowStep(16.0f);
@@ -318,129 +323,125 @@ bool CScreenApperance::EventProcess(const Event &event)
     PlayerApperance& apperance = m_main->GetPlayerProfile()->GetApperance();
     switch( event.type )
     {
-        case EVENT_KEY_DOWN:
+    case EVENT_KEY_DOWN:
         {
             auto data = event.GetData<KeyEventData>();
 
             if (data->key == KEY(RETURN))
-            {
                 m_main->ChangePhase(PHASE_MAIN_MENU);
-            }
             if (data->key == KEY(ESCAPE))
-            {
                 m_main->ChangePhase(PHASE_PLAYER_SELECT);
-            }
             break;
         }
 
-        case EVENT_UPDINTERFACE:
-            CameraPerso();
-            break;
+    case EVENT_UPDINTERFACE:
+        CameraPerso();
+        break;
 
-        case EVENT_INTERFACE_PHEAD:
-            m_apperanceTab = 0;
-            UpdatePerso();
-            m_main->ScenePerso();
-            CameraPerso();
-            break;
-        case EVENT_INTERFACE_PBODY:
-            m_apperanceTab = 1;
-            UpdatePerso();
-            m_main->ScenePerso();
-            CameraPerso();
-            break;
+    case EVENT_INTERFACE_PHEAD:
+        m_apperanceTab = 0;
+        UpdatePerso();
+        m_main->ScenePerso();
+        CameraPerso();
+        break;
+    case EVENT_INTERFACE_PBODY:
+        m_apperanceTab = 1;
+        UpdatePerso();
+        m_main->ScenePerso();
+        CameraPerso();
+        break;
 
-        case EVENT_INTERFACE_PFACE1:
-        case EVENT_INTERFACE_PFACE2:
-        case EVENT_INTERFACE_PFACE3:
-        case EVENT_INTERFACE_PFACE4:
-            apperance.face = event.type-EVENT_INTERFACE_PFACE1;
-            apperance.DefHairColor();
-            UpdatePerso();
-            m_main->ScenePerso();
-            break;
+    case EVENT_INTERFACE_PFACE1:
+    case EVENT_INTERFACE_PFACE2:
+    case EVENT_INTERFACE_PFACE3:
+    case EVENT_INTERFACE_PFACE4:
+        apperance.face = event.type-EVENT_INTERFACE_PFACE1;
+        apperance.DefHairColor();
+        UpdatePerso();
+        m_main->ScenePerso();
+        break;
 
-        case EVENT_INTERFACE_PGLASS0:
-        case EVENT_INTERFACE_PGLASS1:
-        case EVENT_INTERFACE_PGLASS2:
-        case EVENT_INTERFACE_PGLASS3:
-        case EVENT_INTERFACE_PGLASS4:
-        case EVENT_INTERFACE_PGLASS5:
-        case EVENT_INTERFACE_PGLASS6:
-        case EVENT_INTERFACE_PGLASS7:
-        case EVENT_INTERFACE_PGLASS8:
-        case EVENT_INTERFACE_PGLASS9:
-            apperance.glasses = event.type-EVENT_INTERFACE_PGLASS0;
-            UpdatePerso();
-            m_main->ScenePerso();
-            break;
+    case EVENT_INTERFACE_PGLASS0:
+    case EVENT_INTERFACE_PGLASS1:
+    case EVENT_INTERFACE_PGLASS2:
+    case EVENT_INTERFACE_PGLASS3:
+    case EVENT_INTERFACE_PGLASS4:
+    case EVENT_INTERFACE_PGLASS5:
+    case EVENT_INTERFACE_PGLASS6:
+    case EVENT_INTERFACE_PGLASS7:
+    case EVENT_INTERFACE_PGLASS8:
+    case EVENT_INTERFACE_PGLASS9:
+        apperance.glasses = event.type-EVENT_INTERFACE_PGLASS0;
+        UpdatePerso();
+        m_main->ScenePerso();
+        break;
 
-        case EVENT_INTERFACE_PC0a:
-        case EVENT_INTERFACE_PC1a:
-        case EVENT_INTERFACE_PC2a:
-        case EVENT_INTERFACE_PC3a:
-        case EVENT_INTERFACE_PC4a:
-        case EVENT_INTERFACE_PC5a:
-        case EVENT_INTERFACE_PC6a:
-        case EVENT_INTERFACE_PC7a:
-        case EVENT_INTERFACE_PC8a:
-        case EVENT_INTERFACE_PC9a:
-            FixPerso(event.type-EVENT_INTERFACE_PC0a, 0);
-            UpdatePerso();
-            m_main->ScenePerso();
-            break;
+    case EVENT_INTERFACE_PC0a:
+    case EVENT_INTERFACE_PC1a:
+    case EVENT_INTERFACE_PC2a:
+    case EVENT_INTERFACE_PC3a:
+    case EVENT_INTERFACE_PC4a:
+    case EVENT_INTERFACE_PC5a:
+    case EVENT_INTERFACE_PC6a:
+    case EVENT_INTERFACE_PC7a:
+    case EVENT_INTERFACE_PC8a:
+    case EVENT_INTERFACE_PC9a:
+        FixPerso(event.type-EVENT_INTERFACE_PC0a, 0);
+        UpdatePerso();
+        m_main->ScenePerso();
+        break;
 
-        case EVENT_INTERFACE_PC0b:
-        case EVENT_INTERFACE_PC1b:
-        case EVENT_INTERFACE_PC2b:
-        case EVENT_INTERFACE_PC3b:
-        case EVENT_INTERFACE_PC4b:
-        case EVENT_INTERFACE_PC5b:
-        case EVENT_INTERFACE_PC6b:
-        case EVENT_INTERFACE_PC7b:
-        case EVENT_INTERFACE_PC8b:
-        case EVENT_INTERFACE_PC9b:
-            FixPerso(event.type-EVENT_INTERFACE_PC0b, 1);
-            UpdatePerso();
-            m_main->ScenePerso();
-            break;
+    case EVENT_INTERFACE_PC0b:
+    case EVENT_INTERFACE_PC1b:
+    case EVENT_INTERFACE_PC2b:
+    case EVENT_INTERFACE_PC3b:
+    case EVENT_INTERFACE_PC4b:
+    case EVENT_INTERFACE_PC5b:
+    case EVENT_INTERFACE_PC6b:
+    case EVENT_INTERFACE_PC7b:
+    case EVENT_INTERFACE_PC8b:
+    case EVENT_INTERFACE_PC9b:
+        FixPerso(event.type-EVENT_INTERFACE_PC0b, 1);
+        UpdatePerso();
+        m_main->ScenePerso();
+        break;
 
-        case EVENT_INTERFACE_PCRa:
-        case EVENT_INTERFACE_PCGa:
-        case EVENT_INTERFACE_PCBa:
-        case EVENT_INTERFACE_PCRb:
-        case EVENT_INTERFACE_PCGb:
-        case EVENT_INTERFACE_PCBb:
-            ColorPerso();
-            UpdatePerso();
-            m_main->ScenePerso();
-            break;
+    case EVENT_INTERFACE_PCRa:
+    case EVENT_INTERFACE_PCGa:
+    case EVENT_INTERFACE_PCBa:
+    case EVENT_INTERFACE_PCRb:
+    case EVENT_INTERFACE_PCGb:
+    case EVENT_INTERFACE_PCBb:
+        ColorPerso();
+        UpdatePerso();
+        m_main->ScenePerso();
+        break;
 
-        case EVENT_INTERFACE_PDEF:
-            apperance.DefPerso();
-            UpdatePerso();
-            m_main->ScenePerso();
-            break;
+    case EVENT_INTERFACE_PDEF:
+        apperance.DefPerso();
+        UpdatePerso();
+        m_main->ScenePerso();
+        break;
 
-        case EVENT_INTERFACE_PLROT:
-            m_apperanceAngle += 0.2f;
-            break;
-        case EVENT_INTERFACE_PRROT:
-            m_apperanceAngle -= 0.2f;
-            break;
+    case EVENT_INTERFACE_PLROT:
+        m_apperanceAngle += 0.2f;
+        break;
+    case EVENT_INTERFACE_PRROT:
+        m_apperanceAngle -= 0.2f;
+        break;
 
-        case EVENT_INTERFACE_POK:
-            m_main->GetPlayerProfile()->SaveApperance();
-            m_main->ChangePhase(PHASE_MAIN_MENU);
-            break;
+    case EVENT_INTERFACE_POK:
+        m_main->GetPlayerProfile()->SaveApperance();
+        m_main->ChangePhase(PHASE_MAIN_MENU);
+        break;
 
-        case EVENT_INTERFACE_PCANCEL:
-            m_main->GetPlayerProfile()->LoadApperance(); // reload apperance from file
-            m_main->ChangePhase(PHASE_PLAYER_SELECT);
-            break;
+    case EVENT_INTERFACE_PCANCEL:
+        m_main->GetPlayerProfile()->LoadApperance(); // reload apperance from file
+        m_main->ChangePhase(PHASE_PLAYER_SELECT);
+        break;
 
-        default:
-            return true;
+    default:
+        return true;
     }
     return false;
 }
@@ -480,18 +481,15 @@ void CScreenApperance::UpdatePerso()
     PlayerApperance& apperance = m_main->GetPlayerProfile()->GetApperance();
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == nullptr )  return;
+    if ( pw == nullptr )
+        return;
 
     pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_PHEAD));
     if ( pb != nullptr )
-    {
         pb->SetState(STATE_CHECK, m_apperanceTab==0);
-    }
     pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_PBODY));
     if ( pb != nullptr )
-    {
         pb->SetState(STATE_CHECK, m_apperanceTab==1);
-    }
 
     pl = static_cast<CLabel*>(pw->SearchControl(EVENT_LABEL11));
     if ( pl != nullptr )
@@ -526,8 +524,10 @@ void CScreenApperance::UpdatePerso()
     pl = static_cast<CLabel*>(pw->SearchControl(EVENT_LABEL13));
     if ( pl != nullptr )
     {
-        if ( m_apperanceTab == 0 )  GetResource(RES_TEXT, RT_PERSO_HAIR, name);
-        else                    GetResource(RES_TEXT, RT_PERSO_BAND, name);
+        if ( m_apperanceTab == 0 )
+            GetResource(RES_TEXT, RT_PERSO_HAIR, name);
+        else
+            GetResource(RES_TEXT, RT_PERSO_BAND, name);
         pl->SetName(name);
     }
 
@@ -535,9 +535,7 @@ void CScreenApperance::UpdatePerso()
     if ( pl != nullptr )
     {
         if ( m_apperanceTab == 0 )
-        {
             pl->ClearState(STATE_VISIBLE);
-        }
         else
         {
             pl->SetState(STATE_VISIBLE);
@@ -548,28 +546,32 @@ void CScreenApperance::UpdatePerso()
 
     for ( i=0 ; i<4 ; i++ )
     {
-        pb = static_cast<CButton*>(pw->SearchControl(static_cast<EventType>(EVENT_INTERFACE_PFACE1+i)));
-        if ( pb == nullptr )  break;
+        pb = static_cast<CButton*>(pw->SearchControl(
+            static_cast<EventType>(EVENT_INTERFACE_PFACE1+i)));
+        if ( pb == nullptr )
+            break;
         pb->SetState(STATE_VISIBLE, m_apperanceTab==0);
         pb->SetState(STATE_CHECK, i==apperance.face);
     }
 
     for ( i=0 ; i<10 ; i++ )
     {
-        pb = static_cast<CButton*>(pw->SearchControl(static_cast<EventType>(EVENT_INTERFACE_PGLASS0+i)));
-        if ( pb == nullptr )  break;
+        pb = static_cast<CButton*>(pw->SearchControl(
+            static_cast<EventType>(EVENT_INTERFACE_PGLASS0+i)));
+        if ( pb == nullptr )
+            break;
         pb->SetState(STATE_VISIBLE, m_apperanceTab==0);
         pb->SetState(STATE_CHECK, i==apperance.glasses);
     }
 
     for ( i=0 ; i<3*3 ; i++ )
     {
-        pc = static_cast<CColor*>(pw->SearchControl(static_cast<EventType>(EVENT_INTERFACE_PC0a+i)));
-        if ( pc == nullptr )  break;
+        pc = static_cast<CColor*>(pw->SearchControl(
+            static_cast<EventType>(EVENT_INTERFACE_PC0a+i)));
+        if ( pc == nullptr )
+            break;
         if ( m_apperanceTab == 0 )
-        {
             pc->ClearState(STATE_VISIBLE);
-        }
         else
         {
             pc->SetState(STATE_VISIBLE);
@@ -581,8 +583,10 @@ void CScreenApperance::UpdatePerso()
             pc->SetState(STATE_CHECK, EqColor(color, apperance.colorCombi));
         }
 
-        pc = static_cast<CColor*>(pw->SearchControl(static_cast<EventType>(EVENT_INTERFACE_PC0b+i)));
-        if ( pc == nullptr )  break;
+        pc = static_cast<CColor*>(pw->SearchControl(
+            static_cast<EventType>(EVENT_INTERFACE_PC0b+i)));
+        if ( pc == nullptr )
+            break;
         color.r = PERSO_COLOR[3*10*2*m_apperanceTab+3*i+0]/255.0f;
         color.g = PERSO_COLOR[3*10*2*m_apperanceTab+3*i+1]/255.0f;
         color.b = PERSO_COLOR[3*10*2*m_apperanceTab+3*i+2]/255.0f;
@@ -593,8 +597,10 @@ void CScreenApperance::UpdatePerso()
 
     for ( i=0 ; i<3 ; i++ )
     {
-        ps = static_cast<CSlider*>(pw->SearchControl(static_cast<EventType>(EVENT_INTERFACE_PCRa+i)));
-        if ( ps == nullptr )  break;
+        ps = static_cast<CSlider*>(pw->SearchControl(
+            static_cast<EventType>(EVENT_INTERFACE_PCRa+i)));
+        if ( ps == nullptr )
+            break;
         ps->SetState(STATE_VISIBLE, m_apperanceTab==1);
     }
 
@@ -602,21 +608,29 @@ void CScreenApperance::UpdatePerso()
     {
         color = apperance.colorCombi;
         ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCRa));
-        if ( ps != nullptr )  ps->SetVisibleValue(color.r*255.0f);
+        if ( ps != nullptr )
+            ps->SetVisibleValue(color.r*255.0f);
         ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCGa));
-        if ( ps != nullptr )  ps->SetVisibleValue(color.g*255.0f);
+        if ( ps != nullptr )
+            ps->SetVisibleValue(color.g*255.0f);
         ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCBa));
-        if ( ps != nullptr )  ps->SetVisibleValue(color.b*255.0f);
+        if ( ps != nullptr )
+            ps->SetVisibleValue(color.b*255.0f);
     }
 
-    if ( m_apperanceTab == 0 )  color = apperance.colorHair;
-    else                    color = apperance.colorBand;
+    if ( m_apperanceTab == 0 )
+        color = apperance.colorHair;
+    else
+        color = apperance.colorBand;
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCRb));
-    if ( ps != nullptr )  ps->SetVisibleValue(color.r*255.0f);
+    if ( ps != nullptr )
+        ps->SetVisibleValue(color.r*255.0f);
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCGb));
-    if ( ps != nullptr )  ps->SetVisibleValue(color.g*255.0f);
+    if ( ps != nullptr )
+        ps->SetVisibleValue(color.g*255.0f);
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCBb));
-    if ( ps != nullptr )  ps->SetVisibleValue(color.b*255.0f);
+    if ( ps != nullptr )
+        ps->SetVisibleValue(color.b*255.0f);
 }
 
 // Updates the camera for the character.
@@ -624,13 +638,9 @@ void CScreenApperance::UpdatePerso()
 void CScreenApperance::CameraPerso()
 {
     if ( m_apperanceTab == 0 )
-    {
         SetCamera(0.325f, -0.15f, 5.0f);
-    }
     else
-    {
         SetCamera(0.325f, 0.3f, 18.0f);
-    }
 }
 
 // Sets a fixed color.
@@ -675,26 +685,36 @@ void CScreenApperance::ColorPerso()
     PlayerApperance& apperance = m_main->GetPlayerProfile()->GetApperance();
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == nullptr )  return;
+    if ( pw == nullptr )
+        return;
 
     color.a = 0.0f;
 
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCRa));
-    if ( ps != nullptr )  color.r = ps->GetVisibleValue()/255.0f;
+    if ( ps != nullptr )
+        color.r = ps->GetVisibleValue()/255.0f;
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCGa));
-    if ( ps != nullptr )  color.g = ps->GetVisibleValue()/255.0f;
+    if ( ps != nullptr )
+        color.g = ps->GetVisibleValue()/255.0f;
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCBa));
-    if ( ps != nullptr )  color.b = ps->GetVisibleValue()/255.0f;
-    if ( m_apperanceTab == 1 )  apperance.colorCombi = color;
+    if ( ps != nullptr )
+        color.b = ps->GetVisibleValue()/255.0f;
+    if ( m_apperanceTab == 1 )
+        apperance.colorCombi = color;
 
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCRb));
-    if ( ps != nullptr )  color.r = ps->GetVisibleValue()/255.0f;
+    if ( ps != nullptr )
+        color.r = ps->GetVisibleValue()/255.0f;
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCGb));
-    if ( ps != nullptr )  color.g = ps->GetVisibleValue()/255.0f;
+    if ( ps != nullptr )
+        color.g = ps->GetVisibleValue()/255.0f;
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCBb));
-    if ( ps != nullptr )  color.b = ps->GetVisibleValue()/255.0f;
-    if ( m_apperanceTab == 0 )  apperance.colorHair = color;
-    else                        apperance.colorBand = color;
+    if ( ps != nullptr )
+        color.b = ps->GetVisibleValue()/255.0f;
+    if ( m_apperanceTab == 0 )
+        apperance.colorHair = color;
+    else
+        apperance.colorBand = color;
 }
 
 void CScreenApperance::SetCamera(float x, float y, float cameraDistance)

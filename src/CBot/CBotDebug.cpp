@@ -38,9 +38,7 @@ void CBotDebug::DumpCompiledProgram(CBotProgram* program)
 
     std::map<long, CBotFunction*> funcIdMap;
     for (CBotFunction* func : program->GetFunctions())
-    {
         funcIdMap[func->m_nFuncIdent] = func;
-    }
 
     std::set<CBotInstr*> finished;
     std::map<void*, int> instructions;
@@ -48,17 +46,16 @@ void CBotDebug::DumpCompiledProgram(CBotProgram* program)
     auto GetPointerAsString = [&instructions, &instructionsNextId](void* ptr) -> std::string
     {
         if(instructions.count(ptr) == 0)
-        {
             instructions[ptr] = instructionsNextId++;
-        }
 
-        char buffer[20];
+        char buffer[20]={0};    //init to mute lint
         sprintf(buffer, "instr%d", instructions[ptr]);
         return std::string(buffer);
     };
     std::function<void(CBotInstr*)> DumpInstr = [&](CBotInstr* instr)
     {
-        if (finished.find(instr) != finished.end()) return;
+        if (finished.find(instr) != finished.end())
+            return;
         finished.insert(instr);
 
         std::string label = "<b>"+instr->GetDebugName()+"</b>\n";
@@ -74,41 +71,50 @@ void CBotDebug::DumpCompiledProgram(CBotProgram* program)
         {
             label = instr->GetDebugData(); // hide the title
             CBotFunction* function = static_cast<CBotFunction*>(instr);
-            if (function == program->m_entryPoint) additional += " shape=box3d";
-            else additional += " shape=box";
-            if (function->IsExtern()) additional += " color=cyan";
-            else additional += " color=blue";
+            if (function == program->m_entryPoint)
+                additional += " shape=box3d";
+            else
+                additional += " shape=box";
+            if (function->IsExtern())
+                additional += " color=cyan";
+            else
+                additional += " color=blue";
             additional += " group=func";
         }
 
-        ss << GetPointerAsString(instr) << " [label=<" << label << ">" << additional << "]" << std::endl;
+        ss << GetPointerAsString(instr) << " [label=<" << label << ">"
+            << additional << "]" << std::endl;
 
         if (instr->GetDebugName() == "CBotInstrCall")
         {
             CBotInstrCall* call = static_cast<CBotInstrCall*>(instr);
             if (funcIdMap.count(call->m_nFuncIdent) > 0)
-            {
-                ss << GetPointerAsString(instr) << " -> " << GetPointerAsString(funcIdMap[call->m_nFuncIdent]) << " [style=dotted color=gray weight=15]" << std::endl;
-            }
+                ss << GetPointerAsString(instr) << " -> "
+                    << GetPointerAsString(funcIdMap[call->m_nFuncIdent])
+                    << " [style=dotted color=gray weight=15]" << std::endl;
         }
 
         for (const auto& it : instr->GetDebugLinks())
         {
-            if (it.second == nullptr) continue;
-            if (it.second->GetDebugName() == "CBotFunction") continue;
+            if (it.second == nullptr)
+                continue;
+            if (it.second->GetDebugName() == "CBotFunction")
+                continue;
             DumpInstr(it.second);
-            ss << GetPointerAsString(instr) << " -> " << GetPointerAsString(it.second) << " [label=\"" << it.first << "\"" << (it.first == "m_next" ? " weight=1" : " weight=5") << "]" << std::endl;
-            if (it.first == "m_next" || (instr->GetDebugName() == "CBotFunction" && it.first == "m_block") || (instr->GetDebugName() == "CBotListInstr" && it.first == "m_instr"))
-            {
-                ss << "{ rank=same; " << GetPointerAsString(instr) << "; " << GetPointerAsString(it.second) << "; }" << std::endl;
-            }
+            ss << GetPointerAsString(instr) << " -> " << GetPointerAsString(it.second)
+                << " [label=\"" << it.first << "\""
+                << (it.first == "m_next" ? " weight=1" : " weight=5")
+                << "]" << std::endl;
+            if (it.first == "m_next"
+                || (instr->GetDebugName() == "CBotFunction" && it.first == "m_block")
+                || (instr->GetDebugName() == "CBotListInstr" && it.first == "m_instr"))
+                ss << "{ rank=same; " << GetPointerAsString(instr) << "; "
+                    << GetPointerAsString(it.second) << "; }" << std::endl;
         }
     };
 
     if (program->m_entryPoint != nullptr)
-    {
         DumpInstr(program->m_entryPoint);
-    }
     std::string prev = GetPointerAsString(program->m_entryPoint);
     for (CBotFunction* func : program->GetFunctions())
     {

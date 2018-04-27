@@ -77,7 +77,8 @@ CBotInstr* CBotDefClass::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* p
     bool        bIntrinsic = pClass->IsIntrinsic();
     CBotTypResult type = CBotTypResult( bIntrinsic ? CBotTypIntrinsic : CBotTypPointer, pClass );
     CBotDefClass*  inst = static_cast<CBotDefClass*>(CompileArray(p, pStack, type));
-    if ( inst != nullptr || !pStack->IsOk() ) return inst;
+    if ( inst != nullptr || !pStack->IsOk() )
+        return inst;
 
     CBotCStack* pStk = pStack->TokenStack();
 
@@ -103,15 +104,28 @@ CBotInstr* CBotDefClass::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* p
             p = vartoken;                                   // returns to the variable name
 
             // compiles declaration an array
-
             inst = static_cast<CBotDefClass*>(CBotDefArray::Compile(p, pStk, type ));
-
-            goto suite;         // no assignment, variable already created
+            //goto suite;         // no assignment, variable already created
         }
+        else    //This else permit to remove "goto suite."  (TODO:clean+indent next)
+        {   //This block:Fix compilation after correcting lint var initialisation
+            //  with "goto suite"... c
+            /*
+                ~~/src/CBot/CBotInstr/CBotDefClass.cpp:108:13: error:
+                      cannot jump from this goto statement to its label
+                            goto suite;         // no assignment, variable already created
+                            ^
+                ~~/src/CBot/CBotInstr/CBotDefClass.cpp:125:21: note:
+                      jump bypasses variable initialization
+                        CBotVar*    ppVars[1000] = {nullptr}; //fake init to mute lint
+                                    ^
+                ~~/src/CBot/CBotInstr/CBotDefClass.cpp:115:18: note:
+                      jump bypasses variable initialization
+                        CBotVar* var = CBotVar::Create(vartoken->GetString(), type); /...
+            */
+        //nota:block creating fixes issue: "goto suite" not possible...
 
-
-        CBotVar*    var;
-        var = CBotVar::Create(vartoken->GetString(), type); // creates the instance
+        CBotVar* var = CBotVar::Create(vartoken->GetString(), type); // creates the instance
 //      var->SetClass(pClass);
         var->SetUniqNum(
             (static_cast<CBotLeftExprVar*>(inst->m_var))->m_nIdent = CBotVar::NextUniqNum());
@@ -121,9 +135,10 @@ CBotInstr* CBotDefClass::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* p
         // look if there are parameters
         inst->m_hasParams = (p->GetType() == ID_OPENPAR);
 
-        CBotVar*    ppVars[1000];
+        CBotVar*    ppVars[1000] = {nullptr}; //fake init to mute lint
         inst->m_parameters = CompileParams(p, pStk, ppVars);
-        if ( !pStk->IsOk() ) goto error;
+        if ( !pStk->IsOk() )
+            goto error;
 
         // if there are parameters, is the equivalent to the stament "new"
         // CPoint A ( 0, 0 ) is equivalent to
@@ -164,7 +179,8 @@ CBotInstr* CBotDefClass::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* p
             }
             pStk->SetVar(nullptr);
 
-            if ( !pStk->IsOk() ) goto error;
+            if ( !pStk->IsOk() )
+                goto error;
         }
 
         if (IsOfType(p,  ID_ASS))                           // with a assignment?
@@ -217,20 +233,14 @@ CBotInstr* CBotDefClass::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* p
             }
             var->SetInit(CBotVar::InitType::IS_POINTER);                            // marks the pointer as init
         }
-suite:
+        }   //block fixing goto...
+//suite:
         if (pStk->IsOk() && IsOfType(p,  ID_COMMA))         // several chained definitions
-        {
             if ( nullptr != ( inst->m_next = CBotDefClass::Compile(p, pStk, pClass) ))    // compiles the following
-            {
                 return pStack->Return(inst, pStk);
-            }
-        }
 
         if (!pStk->IsOk() || IsOfType(p,  ID_SEP))          // complete instruction
-        {
             return pStack->Return(inst, pStk);
-        }
-
         pStk->SetError(CBotErrNoTerminator, p->GetStart());
     }
 
@@ -251,9 +261,11 @@ bool CBotDefClass::Execute(CBotStack* &pj)
     {
         if (pile->GetState() == 4)
         {
-            if (pile->IfStep()) return false;
+            if (pile->IfStep())
+                return false;
             CBotStack* pile3 = pile->AddStack();
-            if (!m_exprRetVar->Execute(pile3)) return false;
+            if (!m_exprRetVar->Execute(pile3))
+                return false;
             pile3->SetVar(nullptr);
             pile->Return(pile3); // release pile3 stack
             pile->SetState(5);
@@ -271,20 +283,17 @@ bool CBotDefClass::Execute(CBotStack* &pj)
     {
         std::string  name = m_var->m_token.GetString();
         if ( bIntrincic )
-        {
             pThis = CBotVar::Create(name, CBotTypResult( CBotTypIntrinsic, pClass ));
-        }
         else
-        {
             pThis = CBotVar::Create(name, CBotTypResult( CBotTypPointer, pClass ));
-        }
 
         pThis->SetUniqNum((static_cast<CBotLeftExprVar*>(m_var))->m_nIdent); // its attribute as unique number
         pile->AddVar(pThis);                                    // place on the stack
         pile->IncState();
     }
 
-    if ( pThis == nullptr ) pThis = pile->FindVar((static_cast<CBotLeftExprVar*>(m_var))->m_nIdent, false);
+    if ( pThis == nullptr )
+        pThis = pile->FindVar((static_cast<CBotLeftExprVar*>(m_var))->m_nIdent, false);
 
     if ( pile->GetState()<3)
     {
@@ -295,7 +304,8 @@ bool CBotDefClass::Execute(CBotStack* &pj)
         if ( m_expr != nullptr )
         {
             // evaluates the expression for the assignment
-            if (!m_expr->Execute(pile)) return false;
+            if (!m_expr->Execute(pile))
+                return false;
 
             CBotVar* pv = pile->GetVar();
 
@@ -311,13 +321,11 @@ bool CBotDefClass::Execute(CBotStack* &pj)
             else
             {
                 if ( !(pv == nullptr || pv->GetPointer() == nullptr) )
-                {
                     if ( !pv->GetClass()->IsChildOf(pClass))
                     {
                         pile->SetError(CBotErrBadType1, &m_token);
                         return pj->Return(pile);
                     }
-                }
 
                 CBotVarClass* pInstance;
                 pInstance = pv->GetPointer();    // value for the assignment
@@ -357,22 +365,27 @@ bool CBotDefClass::Execute(CBotStack* &pj)
             // and places the values ​​on the stack
             // to (can) be interrupted (broken) at any time
 
-            if ( p != nullptr) while ( true )
-            {
-                pile2 = pile2->AddStack();                      // place on the stack for the results
-                if ( pile2->GetState() == 0 )
+            if ( p != nullptr)
+                while ( true )
                 {
-                    if (!p->Execute(pile2)) return false;       // interrupted here?
-                    pile2->SetState(1);
+                    pile2 = pile2->AddStack();                      // place on the stack for the results
+                    if ( pile2->GetState() == 0 )
+                    {
+                        if (!p->Execute(pile2))
+                            return false;       // interrupted here?
+                        pile2->SetState(1);
+                    }
+                    ppVars[i++] = pile2->GetVar();
+                    p = p->GetNext();
+                    if ( p == nullptr)
+                        break;
                 }
-                ppVars[i++] = pile2->GetVar();
-                p = p->GetNext();
-                if ( p == nullptr) break;
-            }
             ppVars[i] = nullptr;
 
             // creates a variable for the result
-            if ( !pClass->ExecuteMethode(m_nMethodeIdent, pThis, ppVars, CBotTypResult(CBotTypVoid), pile2, GetToken())) return false; // interrupt
+            if ( !pClass->ExecuteMethode(m_nMethodeIdent, pThis, ppVars,
+                CBotTypResult(CBotTypVoid), pile2, GetToken()))
+                return false; // interrupt
 
             pThis->SetInit(CBotVar::InitType::DEF);
             pThis->ConstructorSet();        // indicates that the constructor has been called
@@ -395,10 +408,12 @@ bool CBotDefClass::Execute(CBotStack* &pj)
         return false;              // go back to the top ^^^
     }
 
-    if ( pile->IfStep() ) return false;
+    if ( pile->IfStep() )
+        return false;
 
     if ( m_next2b != nullptr &&
-        !m_next2b->Execute(pile)) return false;             // other (s) definition (s)
+        !m_next2b->Execute(pile))
+        return false;             // other (s) definition (s)
 
     return pj->Return( pile );                              // transmits below (further)
 }
@@ -409,8 +424,10 @@ void CBotDefClass::RestoreState(CBotStack* &pj, bool bMain)
     CBotVar*    pThis = nullptr;
 
     CBotStack*  pile = pj;
-    if ( bMain ) pile = pj->RestoreStack(this);
-    if ( pile == nullptr ) return;
+    if ( bMain )
+        pile = pj->RestoreStack(this);
+    if ( pile == nullptr )
+        return;
 
     // creates the variable of type pointer to the object
     {
@@ -451,9 +468,7 @@ void CBotDefClass::RestoreState(CBotStack* &pj, bool bMain)
             // evaluates the constructor of an instance
 
             if ( !bIntrincic && pile->GetState() == 1)
-            {
                 return;
-            }
 
             CBotVar*    ppVars[1000];
             CBotStack*  pile2 = pile;
@@ -465,20 +480,23 @@ void CBotDefClass::RestoreState(CBotStack* &pj, bool bMain)
             // and the values an the stack
             // so that it can be interrupted at any time
 
-            if ( p != nullptr) while ( true )
-            {
-                pile2 = pile2->RestoreStack();                      // place on the stack for the results
-                if ( pile2 == nullptr ) return;
-
-                if ( pile2->GetState() == 0 )
+            if ( p != nullptr)
+                while ( true )
                 {
-                    p->RestoreState(pile2, bMain);      // interrupted here?
-                    return;
+                    pile2 = pile2->RestoreStack();                      // place on the stack for the results
+                    if ( pile2 == nullptr )
+                        return;
+
+                    if ( pile2->GetState() == 0 )
+                    {
+                        p->RestoreState(pile2, bMain);      // interrupted here?
+                        return;
+                    }
+                    ppVars[i++] = pile2->GetVar();
+                    p = p->GetNext();
+                    if ( p == nullptr)
+                        break;
                 }
-                ppVars[i++] = pile2->GetVar();
-                p = p->GetNext();
-                if ( p == nullptr) break;
-            }
             ppVars[i] = nullptr;
 
             // creates a variable for the result

@@ -51,18 +51,20 @@ bool CTaskPen::EventProcess(const Event &event)
     Math::Point     dim;
     int         i;
 
-    if ( m_engine->GetPause() )  return true;
-    if ( event.type != EVENT_FRAME )  return true;
-    if ( m_bError )  return false;
+    if ( m_engine->GetPause() )
+        return true;
+    if ( event.type != EVENT_FRAME )
+        return true;
+    if ( m_bError )
+        return false;
 
     if ( m_delay == 0.0f )
-    {
         m_progress = 1.0f;
-    }
     else
     {
         m_progress += event.rTime*(1.0f/m_delay);  // others advance
-        if ( m_progress > 1.0f )  m_progress = 1.0f;
+        if ( m_progress > 1.0f )
+            m_progress = 1.0f;
     }
 
     m_time += event.rTime;
@@ -115,13 +117,9 @@ bool CTaskPen::EventProcess(const Event &event)
         i = AngleToRank(m_object->GetPartRotationY(1));
         pos = m_object->GetPartPosition(10+i);
         if ( m_timeDown == 0.0f )
-        {
             pos.y = 0.0f;
-        }
         else
-        {
             pos.y = -3.2f*Math::Bounce(Math::Min(m_progress*1.8f, 1.0f));
-        }
         m_object->SetPartPosition(10+i, pos);
     }
 
@@ -151,7 +149,8 @@ Error CTaskPen::Start(bool bDown, TraceColor color)
     m_bError = true;  // operation impossible
 
     type = m_object->GetType();
-    if ( type != OBJECT_MOBILEdr )  return ERR_WRONG_BOT;
+    if ( type != OBJECT_MOBILEdr )
+        return ERR_WRONG_BOT;
 
     m_bError = false;  // ok
 
@@ -162,22 +161,14 @@ Error CTaskPen::Start(bool bDown, TraceColor color)
     pos = m_object->GetPartPosition(10+i);
 
     if ( pos.y == 0.0f )  // pencil at the top?
-    {
         m_timeUp = 0.0f;
-    }
     else    // pencil on the bottom?
-    {
         m_timeUp = 1.0f;  // must rise up
-    }
 
     if ( bDown )  // must go down ?
-    {
         m_timeDown = 0.7f;
-    }
     else
-    {
         m_timeDown = 0.0f;
-    }
 
     mat = m_object->GetWorldMatrix(0);
     pos = Math::Vector(-3.0f, 7.0f, 0.0f);
@@ -190,9 +181,7 @@ Error CTaskPen::Start(bool bDown, TraceColor color)
     m_time     = 0.0f;
 
     if ( m_timeUp > 0.0f )
-    {
         SoundManip(m_timeUp, 1.0f, 0.5f);
-    }
 
     m_lastParticle = 0.0f;
 
@@ -205,10 +194,13 @@ Error CTaskPen::Start(bool bDown, TraceColor color)
 
 Error CTaskPen::IsEnded()
 {
-    if ( m_engine->GetPause() )  return ERR_CONTINUE;
-    if ( m_bError )  return ERR_STOP;
+    if ( m_engine->GetPause() )
+        return ERR_CONTINUE;
+    if ( m_bError )
+        return ERR_STOP;
 
-    if ( m_progress < 1.0f )  return ERR_CONTINUE;
+    if ( m_progress < 1.0f )
+        return ERR_CONTINUE;
     m_progress = 0.0f;
 
     if ( m_phase == TPP_UP )
@@ -219,9 +211,7 @@ Error CTaskPen::IsEnded()
         m_time     = 0.0f;
         m_lastParticle = 0.0f;
         if ( m_delay > 0.0f )
-        {
             SoundManip(m_delay, 1.0f, 1.0f);
-        }
         return ERR_CONTINUE;
     }
 
@@ -253,9 +243,8 @@ bool CTaskPen::Abort()
 
 void CTaskPen::SoundManip(float time, float amplitude, float frequency)
 {
-    int     i;
-
-    i = m_sound->Play(SOUND_MANIP, m_object->GetPosition(), 0.0f, 0.3f*frequency, true);
+    int i = m_sound->Play(SOUND_MANIP, m_object->GetPosition(), 0.0f,
+                          0.3f*frequency, true);
     m_sound->AddEnvelope(i, 0.5f*amplitude, 1.0f*frequency, 0.1f, SOPER_CONTINUE);
     m_sound->AddEnvelope(i, 0.5f*amplitude, 1.0f*frequency, time-0.1f, SOPER_CONTINUE);
     m_sound->AddEnvelope(i, 0.0f, 0.3f*frequency, 0.1f, SOPER_STOP);
@@ -283,19 +272,30 @@ float CTaskPen::ColorToAngle(TraceColor color)
 
 int CTaskPen::ColorToRank(TraceColor color)
 {
-    if ( color == TraceColor::Yellow     )  return 1;  // yellow
-    if ( color == TraceColor::Orange     )  return 2;  // orange
-    if ( color == TraceColor::Pink       )  return 2;  // pink
-    if ( color == TraceColor::Red        )  return 3;  // red
-    if ( color == TraceColor::Purple     )  return 4;  // purple
-    if ( color == TraceColor::Blue       )  return 5;  // blue
-    if ( color == TraceColor::LightBlue  )  return 5;  // light blue
-    if ( color == TraceColor::Green      )  return 6;  // green
-    if ( color == TraceColor::LightGreen )  return 6;  // light green
-    if ( color == TraceColor::Brown      )  return 7;  // brown
-    if ( color == TraceColor::Beige      )  return 7;  // beige
-
-    if ( color == TraceColor::RedArrow   )  return 3;  // red
+    if (color == TraceColor::Yellow)
+        return 1;  // yellow
+    if (color == TraceColor::Orange)
+        return 2;  // orange
+    if (color == TraceColor::Pink)
+        return 2;  // pink
+    if (color == TraceColor::Red)
+        return 3;  // red
+    if (color == TraceColor::RedArrow)
+        return 3;  // red
+    if (color == TraceColor::Purple)
+        return 4;  // purple
+    if (color == TraceColor::Blue)
+        return 5;  // blue
+    if (color == TraceColor::LightBlue)
+        return 5;  // light blue
+    if (color == TraceColor::Green)
+        return 6;  // green
+    if (color == TraceColor::LightGreen)
+        return 6;  // light green
+    if (color == TraceColor::Brown)
+        return 7;  // brown
+    if (color == TraceColor::Beige)
+        return 7;  // beige
 
     return 0;  // black
 }

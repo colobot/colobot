@@ -51,13 +51,11 @@
 
 CTaskBuild::CTaskBuild(COldObject* object) : CForegroundTask(object)
 {
-    int     i;
-
     m_type = OBJECT_DERRICK;
     m_time = 0.0f;
     m_soundChannel = -1;
 
-    for ( i=0 ; i<TBMAXLIGHT ; i++ )
+    for ( int i=0 ; i<TBMAXLIGHT ; i++ )
     {
         m_lightRank[i] = -1;
     }
@@ -67,8 +65,6 @@ CTaskBuild::CTaskBuild(COldObject* object) : CForegroundTask(object)
 
 CTaskBuild::~CTaskBuild()
 {
-    int     i;
-
     if ( m_soundChannel != -1 )
     {
         m_sound->FlushEnvelope(m_soundChannel);
@@ -76,9 +72,10 @@ CTaskBuild::~CTaskBuild()
         m_soundChannel = -1;
     }
 
-    for ( i=0 ; i<TBMAXLIGHT ; i++ )
+    for ( int i=0 ; i<TBMAXLIGHT ; i++ )
     {
-        if ( m_lightRank[i] == -1 )  continue;
+        if ( m_lightRank[i] == -1 )
+            continue;
         m_lightMan->DeleteLight(m_lightRank[i]);
     }
 }
@@ -97,21 +94,36 @@ void CTaskBuild::CreateBuilding(Math::Vector pos, float angle)
     m_building = CObjectManager::GetInstancePointer()->CreateObject(params);
     m_building->SetLock(true);  // not yet usable
 
-    if ( m_type == OBJECT_DERRICK  )  m_buildingHeight = 35.0f;
-    if ( m_type == OBJECT_FACTORY  )  m_buildingHeight = 28.0f;
-    if ( m_type == OBJECT_REPAIR   )  m_buildingHeight = 30.0f;
-    if ( m_type == OBJECT_STATION  )  m_buildingHeight = 13.0f;
-    if ( m_type == OBJECT_CONVERT  )  m_buildingHeight = 20.0f;
-    if ( m_type == OBJECT_TOWER    )  m_buildingHeight = 30.0f;
-    if ( m_type == OBJECT_RESEARCH )  m_buildingHeight = 22.0f;
-    if ( m_type == OBJECT_RADAR    )  m_buildingHeight = 19.0f;
-    if ( m_type == OBJECT_ENERGY   )  m_buildingHeight = 20.0f;
-    if ( m_type == OBJECT_LABO     )  m_buildingHeight = 16.0f;
-    if ( m_type == OBJECT_NUCLEAR  )  m_buildingHeight = 40.0f;
-    if ( m_type == OBJECT_PARA     )  m_buildingHeight = 68.0f;
-    if ( m_type == OBJECT_INFO     )  m_buildingHeight = 19.0f;
-    if ( m_type == OBJECT_DESTROYER)  m_buildingHeight = 35.0f;
-    if ( m_type == OBJECT_HUSTON   )  m_buildingHeight = 45.0f;
+    if ( m_type == OBJECT_DERRICK  )
+        m_buildingHeight = 35.0f;
+    if ( m_type == OBJECT_FACTORY  )
+        m_buildingHeight = 28.0f;
+    if ( m_type == OBJECT_REPAIR   )
+        m_buildingHeight = 30.0f;
+    if ( m_type == OBJECT_STATION  )
+        m_buildingHeight = 13.0f;
+    if ( m_type == OBJECT_CONVERT  )
+        m_buildingHeight = 20.0f;
+    if ( m_type == OBJECT_TOWER    )
+        m_buildingHeight = 30.0f;
+    if ( m_type == OBJECT_RESEARCH )
+        m_buildingHeight = 22.0f;
+    if ( m_type == OBJECT_RADAR    )
+        m_buildingHeight = 19.0f;
+    if ( m_type == OBJECT_ENERGY   )
+        m_buildingHeight = 20.0f;
+    if ( m_type == OBJECT_LABO     )
+        m_buildingHeight = 16.0f;
+    if ( m_type == OBJECT_NUCLEAR  )
+        m_buildingHeight = 40.0f;
+    if ( m_type == OBJECT_PARA     )
+        m_buildingHeight = 68.0f;
+    if ( m_type == OBJECT_INFO     )
+        m_buildingHeight = 19.0f;
+    if ( m_type == OBJECT_DESTROYER)
+        m_buildingHeight = 35.0f;
+    if ( m_type == OBJECT_HUSTON   )
+        m_buildingHeight = 45.0f;
     m_buildingHeight *= 0.25f;
 
     m_buildingPos = m_building->GetPosition();
@@ -129,7 +141,8 @@ void CTaskBuild::CreateLight()
     float        angle;
     int          i;
 
-    if ( !m_engine->GetLightMode() )  return;
+    if ( !m_engine->GetLightMode() )
+        return;
 
     center = m_metal->GetPosition();
 
@@ -137,7 +150,8 @@ void CTaskBuild::CreateLight()
     for ( i=0 ; i<TBMAXLIGHT ; i++ )
     {
         m_lightRank[i] = m_lightMan->CreateLight();
-        if ( m_lightRank[i] == -1 )  continue;
+        if ( m_lightRank[i] == -1 )
+            continue;
 
         c.x = center.x;
         c.y = center.z;
@@ -180,11 +194,10 @@ void CTaskBuild::CreateLight()
 void CTaskBuild::BlackLight()
 {
     Gfx::Color color;
-    int        i;
-
-    for ( i=0 ; i<TBMAXLIGHT ; i++ )
+    for (int i=0 ; i<TBMAXLIGHT ; i++ )
     {
-        if ( m_lightRank[i] == -1 )  continue;
+        if ( m_lightRank[i] == -1 )
+            continue;
 
         color.r = 0.0f;
         color.g = 0.0f;
@@ -206,9 +219,12 @@ bool CTaskBuild::EventProcess(const Event &event)
     Math::Point         dim;
     float           a, g, cirSpeed, dist, linSpeed;
 
-    if ( m_engine->GetPause() )  return true;
-    if ( event.type != EVENT_FRAME )  return true;
-    if ( m_bError )  return false;
+    if ( m_engine->GetPause() )
+        return true;
+    if ( event.type != EVENT_FRAME )
+        return true;
+    if ( m_bError )
+        return false;
 
     m_time += event.rTime;
 
@@ -220,23 +236,22 @@ bool CTaskBuild::EventProcess(const Event &event)
     float axeZ = event.motionInput.z;
     if ( m_object->GetType() == OBJECT_HUMAN && m_object->GetSelect() &&
          (axeX != 0.0f || axeY != 0.0f || axeZ != 0.0f) &&
-         (m_phase == TBP_TURN || m_phase == TBP_MOVE || m_phase == TBP_TAKE || m_phase == TBP_PREP) )
-    {
+         (m_phase == TBP_TURN || m_phase == TBP_MOVE || m_phase == TBP_TAKE
+          || m_phase == TBP_PREP) )
         m_phase = TBP_STOP;
-    }
 
     if ( m_phase == TBP_STOP )  // stops?
-    {
         return true;
-    }
 
     if ( m_phase == TBP_TURN )  // preliminary rotation?
     {
         a = m_object->GetRotationY();
         g = m_angleY;
         cirSpeed = Math::Direction(a, g)*1.0f;
-        if ( cirSpeed >  1.0f )  cirSpeed =  1.0f;
-        if ( cirSpeed < -1.0f )  cirSpeed = -1.0f;
+        if ( cirSpeed >  1.0f )
+            cirSpeed =  1.0f;
+        if ( cirSpeed < -1.0f )
+            cirSpeed = -1.0f;
 
         m_physics->SetMotorSpeedZ(cirSpeed);  // turns left/right
         return true;
@@ -246,8 +261,10 @@ bool CTaskBuild::EventProcess(const Event &event)
     {
         dist = Math::Distance(m_object->GetPosition(), m_metal->GetPosition());
         linSpeed = 0.0f;
-        if ( dist > 30.0f )  linSpeed =  1.0f;
-        if ( dist < 30.0f )  linSpeed = -1.0f;
+        if ( dist > 30.0f )
+            linSpeed =  1.0f;
+        if ( dist < 30.0f )
+            linSpeed = -1.0f;
         m_physics->SetMotorSpeedX(linSpeed);  // forward/backward
         return true;
     }
@@ -259,19 +276,11 @@ bool CTaskBuild::EventProcess(const Event &event)
     }
 
     if ( m_phase == TBP_TAKE )  // takes gun?
-    {
         return true;
-    }
-
     if ( m_phase == TBP_PREP )  // prepares?
-    {
         return true;
-    }
-
     if ( m_phase == TBP_TERM )  // ends?
-    {
         return true;
-    }
 
     if ( !m_bBuild )  // building to build?
     {
@@ -291,16 +300,15 @@ bool CTaskBuild::EventProcess(const Event &event)
     m_metal->SetScale(1.0f-m_progress);
 
     a = (2.0f-2.0f*m_progress);
-    if ( a > 1.0f )  a = 1.0f;
+    if ( a > 1.0f )
+        a = 1.0f;
     dir.x = (Math::Rand()-0.5f)*a*0.1f;
     dir.z = (Math::Rand()-0.5f)*a*0.1f;
     dir.y = (Math::Rand()-0.5f)*a*0.1f;
     m_building->SetCirVibration(dir);
 
     if ( !m_bBlack && m_progress >= 0.25f )
-    {
         BlackLight();
-    }
 
     if ( m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
     {
@@ -317,20 +325,20 @@ bool CTaskBuild::EventProcess(const Event &event)
         pos = Math::Vector(0.0f, 0.5f, 0.0f);
         switch(m_object->GetType())
         {
-            case OBJECT_HUMAN:
-                mat = m_object->GetWorldMatrix(14);
-                break;
+        case OBJECT_HUMAN:
+            mat = m_object->GetWorldMatrix(14);
+            break;
 
-            case OBJECT_MOBILEfa:
-            case OBJECT_MOBILEta:
-            case OBJECT_MOBILEwa:
-            case OBJECT_MOBILEia:
-                mat = m_object->GetWorldMatrix(3);
-                break;
+        case OBJECT_MOBILEfa:
+        case OBJECT_MOBILEta:
+        case OBJECT_MOBILEwa:
+        case OBJECT_MOBILEia:
+            mat = m_object->GetWorldMatrix(3);
+            break;
 
-            default:
-                mat = m_object->GetWorldMatrix(0);
-                break;
+        default:
+            mat = m_object->GetWorldMatrix(0);
+            break;
         }
         pos = Transform(*mat, pos);
         speed = m_metal->GetPosition();
@@ -342,11 +350,9 @@ bool CTaskBuild::EventProcess(const Event &event)
         m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIFIREZ);
 
         if ( Math::Rand() < 0.3f )
-        {
-            m_sound->Play(SOUND_BUILD, m_object->GetPosition(), 0.5f, 1.0f*Math::Rand()*1.5f);
-        }
+            m_sound->Play(SOUND_BUILD, m_object->GetPosition(), 0.5f,
+                1.0f*Math::Rand()*1.5f);
     }
-
     return true;
 }
 
@@ -370,27 +376,34 @@ Error CTaskBuild::Start(ObjectType type)
     m_bError = true;  // operation impossible
 
     pos = m_object->GetPosition();
-    if ( pos.y < m_water->GetLevel() )  return ERR_BUILD_WATER;
+    if ( pos.y < m_water->GetLevel() )
+        return ERR_BUILD_WATER;
 
-    if ( !m_physics->GetLand() )  return ERR_BUILD_FLY;
+    if ( !m_physics->GetLand() )
+        return ERR_BUILD_FLY;
 
     speed = m_physics->GetMotorSpeed();
     if ( speed.x != 0.0f ||
-         speed.z != 0.0f )  return ERR_BUILD_MOTOR;
+         speed.z != 0.0f )
+        return ERR_BUILD_MOTOR;
 
-    if (IsObjectCarryingCargo(m_object))  return ERR_MANIP_BUSY;
+    if (IsObjectCarryingCargo(m_object))
+        return ERR_MANIP_BUSY;
 
     m_metal = SearchMetalObject(oAngle, 2.0f, 100.0f, Math::PI*0.25f, err);
     if ( err == ERR_BUILD_METALNEAR && m_metal != nullptr )
     {
         err = FlatFloor();
-        if ( err != ERR_OK )  return err;
+        if ( err != ERR_OK )
+            return err;
         return ERR_BUILD_METALNEAR;
     }
-    if ( err != ERR_OK )  return err;
+    if ( err != ERR_OK )
+        return err;
 
     err = FlatFloor();
-    if ( err != ERR_OK )  return err;
+    if ( err != ERR_OK )
+        return err;
 
     m_metal->SetLock(true);  // not usable
     m_camera->StartCentering(m_object, Math::PI*0.15f, 99.9f, 0.0f, 1.0f);
@@ -417,8 +430,10 @@ Error CTaskBuild::IsEnded()
     CAuto*      automat;
     float       angle, dist, time;
 
-    if ( m_engine->GetPause() )  return ERR_CONTINUE;
-    if ( m_bError )  return ERR_STOP;
+    if ( m_engine->GetPause() )
+        return ERR_CONTINUE;
+    if ( m_bError )
+        return ERR_STOP;
 
     if ( m_phase == TBP_TURN )  // preliminary rotation?
     {
@@ -464,8 +479,10 @@ Error CTaskBuild::IsEnded()
             if ( m_progress > 1.0f )  // timeout?
             {
                 m_metal->SetLock(false);  // usable again
-                if ( dist < 30.0f )  return ERR_BUILD_METALNEAR;
-                else                 return ERR_BUILD_METALAWAY;
+                if ( dist < 30.0f )
+                    return ERR_BUILD_METALNEAR;
+                else
+                    return ERR_BUILD_METALAWAY;
             }
         }
         return ERR_CONTINUE;
@@ -473,7 +490,8 @@ Error CTaskBuild::IsEnded()
 
     if ( m_phase == TBP_TAKE )  // takes gun
     {
-        if ( m_progress < 1.0f )  return ERR_CONTINUE;
+        if ( m_progress < 1.0f )
+            return ERR_CONTINUE;
 
         m_motion->SetAction(MHS_FIRE);  // shooting position
         if (m_object->GetType() == OBJECT_HUMAN)
@@ -490,7 +508,8 @@ Error CTaskBuild::IsEnded()
 
     if ( m_phase == TBP_PREP )  // prepares?
     {
-        if ( m_progress < 1.0f )  return ERR_CONTINUE;
+        if ( m_progress < 1.0f )
+            return ERR_CONTINUE;
 
         m_soundChannel = m_sound->Play(SOUND_TREMBLE, m_object->GetPosition(), 0.0f, 1.0f, true);
         m_sound->AddEnvelope(m_soundChannel, 0.7f, 1.0f, 1.0f, SOPER_CONTINUE);
@@ -506,7 +525,8 @@ Error CTaskBuild::IsEnded()
 
     if ( m_phase == TBP_BUILD )  // construction?
     {
-        if ( m_progress < 1.0f )  return ERR_CONTINUE;
+        if ( m_progress < 1.0f )
+            return ERR_CONTINUE;
 
         DeleteMark(m_metal->GetPosition(), 20.0f);
 
@@ -521,9 +541,7 @@ Error CTaskBuild::IsEnded()
 
         automat = m_building->GetAuto();
         if ( automat != nullptr )
-        {
             automat->Init();
-        }
 
         m_motion->SetAction(MHS_GUN);  // hands gun
         m_phase = TBP_TERM;
@@ -533,7 +551,8 @@ Error CTaskBuild::IsEnded()
 
     if ( m_phase == TBP_TERM )  // rotation terminale ?
     {
-        if ( m_progress < 1.0f )  return ERR_CONTINUE;
+        if ( m_progress < 1.0f )
+            return ERR_CONTINUE;
 
         m_motion->SetAction(-1);
         if (m_object->GetType() == OBJECT_HUMAN)
@@ -556,14 +575,15 @@ Error CTaskBuild::IsEnded()
 
     if ( m_phase == TBP_RECEDE )  // back?
     {
-        if ( m_progress < 1.0f )  return ERR_CONTINUE;
-
+        if ( m_progress < 1.0f )
+            return ERR_CONTINUE;
         m_physics->SetMotorSpeedX(0.0f);
     }
 
     if ( m_phase == TBP_STOP ) // canceled?
     {
-        if ( m_progress < 1.0f && m_motion->GetAction() == MHS_GUN )  return ERR_CONTINUE;
+        if ( m_progress < 1.0f && m_motion->GetAction() == MHS_GUN )
+            return ERR_CONTINUE;
 
         if ( m_motion->GetAction() == MHS_FIRE )
         {
@@ -619,20 +639,34 @@ Error CTaskBuild::FlatFloor()
     bool        bLittleFlat, bBase;
 
     radius = 0.0f;
-    if ( m_type == OBJECT_DERRICK  )  radius =  5.0f;
-    if ( m_type == OBJECT_FACTORY  )  radius = 15.0f;
-    if ( m_type == OBJECT_REPAIR   )  radius = 12.0f;
-    if ( m_type == OBJECT_STATION  )  radius = 12.0f;
-    if ( m_type == OBJECT_CONVERT  )  radius = 12.0f;
-    if ( m_type == OBJECT_TOWER    )  radius =  7.0f;
-    if ( m_type == OBJECT_RESEARCH )  radius = 10.0f;
-    if ( m_type == OBJECT_RADAR    )  radius =  5.0f;
-    if ( m_type == OBJECT_ENERGY   )  radius =  8.0f;
-    if ( m_type == OBJECT_LABO     )  radius = 12.0f;
-    if ( m_type == OBJECT_NUCLEAR  )  radius = 20.0f;
-    if ( m_type == OBJECT_PARA     )  radius = 20.0f;
-    if ( m_type == OBJECT_INFO     )  radius =  5.0f;
-    if ( m_type == OBJECT_DESTROYER)  radius = 20.0f;
+    if ( m_type == OBJECT_DERRICK)
+        radius =  5.0f;
+    if ( m_type == OBJECT_FACTORY)
+        radius = 15.0f;
+    if ( m_type == OBJECT_REPAIR)
+        radius = 12.0f;
+    if ( m_type == OBJECT_STATION)
+        radius = 12.0f;
+    if ( m_type == OBJECT_CONVERT)
+        radius = 12.0f;
+    if ( m_type == OBJECT_TOWER)
+        radius =  7.0f;
+    if ( m_type == OBJECT_RESEARCH)
+        radius = 10.0f;
+    if ( m_type == OBJECT_RADAR)
+        radius =  5.0f;
+    if ( m_type == OBJECT_ENERGY)
+        radius =  8.0f;
+    if ( m_type == OBJECT_LABO)
+        radius = 12.0f;
+    if ( m_type == OBJECT_NUCLEAR)
+        radius = 20.0f;
+    if ( m_type == OBJECT_PARA)
+        radius = 20.0f;
+    if ( m_type == OBJECT_INFO)
+        radius =  5.0f;
+    if ( m_type == OBJECT_DESTROYER)
+        radius = 20.0f;
     //if ( radius == 0.0f )  return ERR_UNKNOWN;
 
     center = m_metal->GetPosition();
@@ -643,9 +677,7 @@ Error CTaskBuild::FlatFloor()
     if ( max < radius )  // area too small?
     {
         if ( bLittleFlat )
-        {
             m_main->SetShowLimit(1, Gfx::PARTILIMIT3, m_metal, center, max, 10.0f);
-        }
         return bLittleFlat?ERR_BUILD_FLATLIT:ERR_BUILD_FLAT;
     }
 
@@ -653,10 +685,14 @@ Error CTaskBuild::FlatFloor()
     bBase = false;
     for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        if ( !pObj->GetActive() )  continue;  // inactive?
-        if (IsObjectBeingTransported(pObj))  continue;
-        if ( pObj == m_metal )  continue;
-        if ( pObj == m_object )  continue;
+        if ( !pObj->GetActive() )
+            continue;  // inactive?
+        if (IsObjectBeingTransported(pObj))
+            continue;
+        if ( pObj == m_metal )
+            continue;
+        if ( pObj == m_object )
+            continue;
 
         type = pObj->GetType();
         if ( type == OBJECT_BASE )
@@ -692,7 +728,8 @@ Error CTaskBuild::FlatFloor()
     if ( max < radius )
     {
         m_main->SetShowLimit(1, Gfx::PARTILIMIT2, m_metal, center, max, 10.0f);
-        if ( bRadius < 2.0f )  bRadius = 2.0f;
+        if ( bRadius < 2.0f )
+            bRadius = 2.0f;
         m_main->SetShowLimit(2, Gfx::PARTILIMIT3, m_metal, bPos, bRadius, 10.0f);
         return bBase?ERR_BUILD_BASE:ERR_BUILD_BUSY;
     }
@@ -700,10 +737,14 @@ Error CTaskBuild::FlatFloor()
     max = 100000.0f;
     for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        if ( !pObj->GetActive() )  continue;  // inactive?
-        if (IsObjectBeingTransported(pObj))  continue;
-        if ( pObj == m_metal )  continue;
-        if ( pObj == m_object )  continue;
+        if ( !pObj->GetActive() )
+            continue;  // inactive?
+        if (IsObjectBeingTransported(pObj))
+            continue;
+        if ( pObj == m_metal )
+            continue;
+        if ( pObj == m_object )
+            continue;
 
         type = pObj->GetType();
         if ( type == OBJECT_DERRICK  ||
@@ -770,11 +811,14 @@ CObject* CTaskBuild::SearchMetalObject(float &angle, float dMin, float dMax,
     bMetal = false;
     for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        if ( !pObj->GetActive() )  continue;  // objet inactive?
-        if (IsObjectBeingTransported(pObj))  continue;
+        if ( !pObj->GetActive() )
+            continue;  // objet inactive?
+        if (IsObjectBeingTransported(pObj))
+            continue;
 
         type = pObj->GetType();
-        if ( type != OBJECT_METAL )  continue;
+        if ( type != OBJECT_METAL )
+            continue;
 
         bMetal = true;  // metal exists
 
@@ -782,8 +826,10 @@ CObject* CTaskBuild::SearchMetalObject(float &angle, float dMin, float dMax,
         distance = Math::Distance(oPos, iPos);
         a = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW!
 
-        if ( distance > dMax )  continue;
-        if ( !Math::TestAngle(a, iAngle-aLimit, iAngle+aLimit) )  continue;
+        if ( distance > dMax )
+            continue;
+        if ( !Math::TestAngle(a, iAngle-aLimit, iAngle+aLimit) )
+            continue;
 
         if ( distance < dMin )
         {
@@ -805,8 +851,10 @@ CObject* CTaskBuild::SearchMetalObject(float &angle, float dMin, float dMax,
 
     if ( pBest == nullptr )
     {
-        if ( bMetal )  err = ERR_BUILD_METALAWAY;  // too far
-        else           err = ERR_BUILD_METALINEX;  // non-existent
+        if ( bMetal )
+            err = ERR_BUILD_METALAWAY;  // too far
+        else
+            err = ERR_BUILD_METALINEX;  // non-existent
     }
     else
     {
@@ -831,18 +879,15 @@ void CTaskBuild::DeleteMark(Math::Vector pos, float radius)
              type != OBJECT_MARKKEYb    &&
              type != OBJECT_MARKKEYc    &&
              type != OBJECT_MARKKEYd    &&
-             type != OBJECT_MARKPOWER   )  continue;
+             type != OBJECT_MARKPOWER   )
+            continue;
 
         Math::Vector oPos = obj->GetPosition();
         float distance = Math::Distance(oPos, pos);
         if ( distance <= radius )
-        {
             objectsToDelete.push_back(obj);
-        }
     }
 
     for (CObject* obj : objectsToDelete)
-    {
         CObjectManager::GetInstancePointer()->DeleteObject(obj);
-    }
 }

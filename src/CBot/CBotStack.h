@@ -269,6 +269,8 @@ public:
      *
      * \param pFils Stack to copy result from
      * \return IsOk()
+     *
+     * \Note: non const function
      */
     bool            ReturnKeep(CBotStack* pFils);
 
@@ -312,7 +314,7 @@ public:
      *
      * \return Execution state set before interruption by SetState() and IncState()
      */
-    int             GetState() { return m_state; }
+    int             GetState()const { return m_state; }
     /**
      * \brief Increase the execution state by one
      * \param lim Required amount of "ticks" on the timer required to allow to continue execution. By default allows a little overflow (up to 10 ticks)
@@ -466,9 +468,9 @@ public:
      * \param[out] functionName Name of instruction being executed at this level
      * \param level 0 for current level, -1, -2, -3 etc. for next levels
      */
-    CBotVar*        GetStackVars(std::string& functionName, int level);
+    CBotVar*        GetStackVars(std::string& functionName, int level)const;
 
-    bool            IsCallFinished();
+    bool            IsCallFinished()const;
 
 private:
     CBotStack*        m_next;

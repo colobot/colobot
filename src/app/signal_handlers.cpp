@@ -49,10 +49,18 @@ void CSignalHandlers::SignalHandler(int sig)
     std::string signalStr = StrUtils::ToString(sig);
     switch(sig)
     {
-        case SIGSEGV: signalStr = "SIGSEGV, segmentation fault"; break;
-        case SIGABRT: signalStr = "SIGABRT, abort"; break;
-        case SIGFPE:  signalStr = "SIGFPE, arithmetic exception"; break;
-        case SIGILL:  signalStr = "SIGILL, illegal instruction"; break;
+    case SIGSEGV:
+        signalStr = "SIGSEGV, segmentation fault";
+        break;
+    case SIGABRT:
+        signalStr = "SIGABRT, abort";
+        break;
+    case SIGFPE:
+        signalStr = "SIGFPE, arithmetic exception";
+        break;
+    case SIGILL:
+        signalStr = "SIGILL, illegal instruction";
+        break;
     }
     ReportError(signalStr);
 }
@@ -64,7 +72,7 @@ void CSignalHandlers::SignalHandler(int sig)
 #include <cxxabi.h>
 std::string demangle(const char* name)
 {
-    int status;
+    int status = 0; //init to mute lint
     std::unique_ptr<char[], void(*)(void*)> result {
         abi::__cxa_demangle(name, nullptr, nullptr, &status),
         std::free

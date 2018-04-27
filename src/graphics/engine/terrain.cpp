@@ -133,9 +133,7 @@ bool CTerrain::InitTextures(const std::string& baseName, int* table, int dx, int
     if(pos < baseName.find_last_of('/')) pos = std::string::npos; // If last . is not a part of filename (some directory, possibly . or ..)
 
     if (pos == std::string::npos)
-    {
         m_texBaseExt = ".png";
-    }
     else
     {
         m_texBaseExt = m_texBaseName.substr(pos);
@@ -143,12 +141,8 @@ bool CTerrain::InitTextures(const std::string& baseName, int* table, int dx, int
     }
 
     for (int y = 0; y < m_mosaicCount*m_textureSubdivCount; y++)
-    {
         for (int x = 0; x < m_mosaicCount*m_textureSubdivCount; x++)
-        {
             m_textures[x+y*m_mosaicCount] = table[(x%dx)+(y%dy)*dx];
-        }
-    }
     return true;
 }
 
@@ -182,10 +176,14 @@ void CTerrain::AddMaterial(int id, const std::string& texName, const Math::Point
 
     m_materials.push_back(tm);
 
-    if (m_maxMaterialID < up+1   )  m_maxMaterialID = up+1;
-    if (m_maxMaterialID < right+1)  m_maxMaterialID = right+1;
-    if (m_maxMaterialID < down+1 )  m_maxMaterialID = down+1;
-    if (m_maxMaterialID < left+1 )  m_maxMaterialID = left+1;
+    if (m_maxMaterialID < up+1   )
+        m_maxMaterialID = up+1;
+    if (m_maxMaterialID < right+1)
+        m_maxMaterialID = right+1;
+    if (m_maxMaterialID < down+1 )
+        m_maxMaterialID = down+1;
+    if (m_maxMaterialID < left+1 )
+        m_maxMaterialID = left+1;
 
     m_useMaterials = true;
     m_textureSubdivCount = 4;
@@ -335,7 +333,8 @@ bool CTerrain::LoadRelief(const std::string &fileName, float scaleRelief,
             if (dist > limit && adjustBorder)
             {
                 dist = (dist-limit)/(1.0f-limit);  // 0..1
-                if (dist > 1.0f) dist = 1.0f;
+                if (dist > 1.0f)
+                    dist = 1.0f;
                 float border = 300.0f+Math::Rand()*20.0f;
                 level = level+dist*(border-level);
             }
@@ -378,9 +377,9 @@ bool CTerrain::RandomizeRelief()
             for(int i = 0; i < octaveCount; i++)
             {
                 int octaveSize = sqrt(static_cast<int>(pow(2, (i+1)*2)));
-                double xi, yi, a, b;
-                a = modf(x * (octaveSize-1), &xi);
-                b = modf(y * (octaveSize-1), &yi);
+                double xi = 0, yi = 0;  //fake init to mute lint
+                double a = modf(x * (octaveSize-1), &xi);
+                double b = modf(y * (octaveSize-1), &yi);
 
                 float lg = octaves[i][static_cast<int>(yi * octaveSize + xi)];
                 float pg = octaves[i][static_cast<int>(yi * octaveSize + xi + 1)];
@@ -439,9 +438,7 @@ void CTerrain::AdjustRelief()
                 float level1 = m_relief[(x+0)+(y+yy)*ii];
                 float level2 = m_relief[(x+b)+(y+yy)*ii];
                 for (xx = 1; xx < b; xx++)
-                {
                     m_relief[(x+xx)+(y+yy)*ii] = ((level2-level1)/b)*xx+level1;
-                }
             }
 
             yy = b;
@@ -450,9 +447,7 @@ void CTerrain::AdjustRelief()
                 float level1 = m_relief[(x+0)+(y+yy)*ii];
                 float level2 = m_relief[(x+b)+(y+yy)*ii];
                 for (xx = 1; xx < b; xx++)
-                {
                     m_relief[(x+xx)+(y+yy)*ii] = ((level2-level1)/b)*xx+level1;
-                }
             }
 
             xx = 0;
@@ -461,9 +456,7 @@ void CTerrain::AdjustRelief()
                 float level1 = m_relief[(x+xx)+(y+0)*ii];
                 float level2 = m_relief[(x+xx)+(y+b)*ii];
                 for (yy = 1; yy < b; yy++)
-                {
                     m_relief[(x+xx)+(y+yy)*ii] = ((level2-level1)/b)*yy+level1;
-                }
             }
 
             xx = b;
@@ -472,9 +465,7 @@ void CTerrain::AdjustRelief()
                 float level1 = m_relief[(x+xx)+(y+0)*ii];
                 float level2 = m_relief[(x+xx)+(y+b)*ii];
                 for (yy = 1; yy < b; yy++)
-                {
                     m_relief[(x+xx)+(y+yy)*ii] = ((level2-level1)/b)*yy+level1;
-                }
             }
         }
     }
@@ -489,13 +480,9 @@ Math::Vector CTerrain::GetVector(int x, int y)
     if ( !m_relief.empty()                         &&
          x >= 0 && x <= m_mosaicCount*m_brickCount &&
          y >= 0 && y <= m_mosaicCount*m_brickCount )
-    {
         p.y = m_relief[x+y*(m_mosaicCount*m_brickCount+1)];
-    }
     else
-    {
         p.y = 0.0f;
-    }
 
     return p;
 }
@@ -746,10 +733,8 @@ bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank,
 CTerrain::TerrainMaterial* CTerrain::FindMaterial(int id)
 {
     for (int i = 0; i < static_cast<int>( m_materials.size() ); i++)
-    {
         if (id == m_materials[i].id)
             return &m_materials[i];
-    }
 
     return nullptr;
 }
@@ -776,10 +761,14 @@ float CTerrain::GetHeight(int x, int y)
 {
     int size = (m_mosaicCount*m_brickCount+1);
 
-    if (x <  0   )  x = 0;
-    if (x >= size)  x = size-1;
-    if (y <  0   )  y = 0;
-    if (y >= size)  y = size-1;
+    if (x <  0   )
+        x = 0;
+    if (x >= size)
+        x = size-1;
+    if (y <  0   )
+        y = 0;
+    if (y >= size)
+        y = size-1;
 
     return m_relief[x+y*size];
 }
@@ -804,20 +793,16 @@ bool CTerrain::CheckMaterialPoint(int x, int y, float min, float max, float slop
     if (slope > 0.0f)
     {
         for (int i = 0; i < 4; i++)
-        {
             if (fabs(hc - h[i]) >= slope)
                 return false;
-        }
         return true;
     }
 
     if (slope < 0.0f)
     {
         for (int i = 0; i < 4; i++)
-        {
             if (fabs(hc - h[i]) < -slope)
                 return false;
-        }
         return true;
     }
 
@@ -831,7 +816,8 @@ int CTerrain::FindMaterialByNeighbors(char *mat)
         if ( m_materials[i].mat[0] == mat[0] &&
              m_materials[i].mat[1] == mat[1] &&
              m_materials[i].mat[2] == mat[2] &&
-             m_materials[i].mat[3] == mat[3] )  return i;
+             m_materials[i].mat[3] == mat[3] )
+            return i;
     }
 
     return -1;
@@ -840,7 +826,8 @@ int CTerrain::FindMaterialByNeighbors(char *mat)
 void CTerrain::SetMaterialPoint(int x, int y, int id, char *mat)
 {
     TerrainMaterial* tm = FindMaterial(id);
-    if (tm == nullptr)  return;
+    if (tm == nullptr)
+        return;
 
     if ( tm->mat[0] != mat[0] ||
          tm->mat[1] != mat[1] ||
@@ -848,7 +835,8 @@ void CTerrain::SetMaterialPoint(int x, int y, int id, char *mat)
          tm->mat[3] != mat[3] )  // id incompatible with mat?
     {
         int ii = FindMaterialByNeighbors(mat);
-        if (ii == -1)  return;
+        if (ii == -1)
+            return;
         id = m_materials[ii].id;  // looking for a id compatible with mat
     }
 
@@ -929,7 +917,8 @@ bool CTerrain::CondChangeMaterialPoint(int x, int y, int id, char *mat)
         test[2] = m_materialPoints[(x+0)+(y-1)*m_materialPointCount].mat[2];
         test[3] = m_materialPoints[(x+0)+(y-1)*m_materialPointCount].mat[3];
 
-        if ( FindMaterialByNeighbors(test) == -1 )  return false;
+        if ( FindMaterialByNeighbors(test) == -1 )
+            return false;
     }
 
     // Compatible with left neighbor?
@@ -941,7 +930,8 @@ bool CTerrain::CondChangeMaterialPoint(int x, int y, int id, char *mat)
         test[2] = m_materialPoints[(x-1)+(y+0)*m_materialPointCount].mat[2];
         test[3] = m_materialPoints[(x-1)+(y+0)*m_materialPointCount].mat[3];
 
-        if ( FindMaterialByNeighbors(test) == -1 )  return false;
+        if ( FindMaterialByNeighbors(test) == -1 )
+            return false;
     }
 
     // Compatible with upper neighbor?
@@ -953,7 +943,8 @@ bool CTerrain::CondChangeMaterialPoint(int x, int y, int id, char *mat)
         test[2] = mat[0];
         test[3] = m_materialPoints[(x+0)+(y+1)*m_materialPointCount].mat[3];
 
-        if ( FindMaterialByNeighbors(test) == -1 )  return false;
+        if ( FindMaterialByNeighbors(test) == -1 )
+            return false;
     }
 
     // Compatible with right neighbor?
@@ -965,7 +956,8 @@ bool CTerrain::CondChangeMaterialPoint(int x, int y, int id, char *mat)
         test[2] = m_materialPoints[(x+1)+(y+0)*m_materialPointCount].mat[2];
         test[3] = mat[1];
 
-        if ( FindMaterialByNeighbors(test) == -1 )  return false;
+        if ( FindMaterialByNeighbors(test) == -1 )
+            return false;
     }
 
     SetMaterialPoint(x, y, id, mat);  // puts the point
@@ -980,13 +972,16 @@ bool CTerrain::ChangeMaterialPoint(int x, int y, int id)
     y /= m_brickCount/m_textureSubdivCount;
 
     if ( x < 0 || x >= m_materialPointCount ||
-         y < 0 || y >= m_materialPointCount )  return false;
+         y < 0 || y >= m_materialPointCount )
+        return false;
 
     TerrainMaterial* tm = FindMaterial(id);
-    if (tm == nullptr)  return false;
+    if (tm == nullptr)
+        return false;
 
     // Tries without changing neighbors.
-    if ( CondChangeMaterialPoint(x, y, id, tm->mat) )  return true;
+    if ( CondChangeMaterialPoint(x, y, id, tm->mat) )
+        return true;
 
     // Tries changing a single neighbor (4x).
     for (int up = 0; up < m_maxMaterialID; up++)
@@ -996,7 +991,8 @@ bool CTerrain::ChangeMaterialPoint(int x, int y, int id)
         mat[2] = tm->mat[2];
         mat[3] = tm->mat[3];
 
-        if (CondChangeMaterialPoint(x, y, id, mat))  return true;
+        if (CondChangeMaterialPoint(x, y, id, mat))
+            return true;
     }
 
     for (int right = 0; right < m_maxMaterialID; right++)
@@ -1006,7 +1002,8 @@ bool CTerrain::ChangeMaterialPoint(int x, int y, int id)
         mat[2] = tm->mat[2];
         mat[3] = tm->mat[3];
 
-        if (CondChangeMaterialPoint(x, y, id, mat)) return true;
+        if (CondChangeMaterialPoint(x, y, id, mat))
+            return true;
     }
 
     for (int down = 0; down < m_maxMaterialID; down++)
@@ -1016,7 +1013,8 @@ bool CTerrain::ChangeMaterialPoint(int x, int y, int id)
         mat[2] = down;
         mat[3] = tm->mat[3];
 
-        if (CondChangeMaterialPoint(x, y, id, mat)) return true;
+        if (CondChangeMaterialPoint(x, y, id, mat))
+            return true;
     }
 
     for (int left = 0; left < m_maxMaterialID; left++)
@@ -1026,12 +1024,12 @@ bool CTerrain::ChangeMaterialPoint(int x, int y, int id)
         mat[2] = tm->mat[2];
         mat[3] = left;
 
-        if (CondChangeMaterialPoint(x, y, id, mat)) return true;
+        if (CondChangeMaterialPoint(x, y, id, mat))
+            return true;
     }
 
     // Tries changing two neighbors (6x).
     for (int up = 0; up < m_maxMaterialID; up++)
-    {
         for (int down = 0; down < m_maxMaterialID; down++)
         {
             mat[0] = up;
@@ -1039,12 +1037,11 @@ bool CTerrain::ChangeMaterialPoint(int x, int y, int id)
             mat[2] = down;
             mat[3] = tm->mat[3];
 
-            if (CondChangeMaterialPoint(x, y, id, mat)) return true;
+            if (CondChangeMaterialPoint(x, y, id, mat))
+                return true;
         }
-    }
 
     for (int right = 0; right < m_maxMaterialID; right++)
-    {
         for (int left = 0; left < m_maxMaterialID; left++)
         {
             mat[0] = tm->mat[0];
@@ -1052,12 +1049,11 @@ bool CTerrain::ChangeMaterialPoint(int x, int y, int id)
             mat[2] = tm->mat[2];
             mat[3] = left;
 
-            if (CondChangeMaterialPoint(x, y, id, mat)) return true;
+            if (CondChangeMaterialPoint(x, y, id, mat))
+                return true;
         }
-    }
 
     for (int up = 0; up < m_maxMaterialID; up++)
-    {
         for (int right = 0; right < m_maxMaterialID; right++)
         {
             mat[0] = up;
@@ -1065,12 +1061,11 @@ bool CTerrain::ChangeMaterialPoint(int x, int y, int id)
             mat[2] = tm->mat[2];
             mat[3] = tm->mat[3];
 
-            if (CondChangeMaterialPoint(x, y, id, mat)) return true;
+            if (CondChangeMaterialPoint(x, y, id, mat))
+                return true;
         }
-    }
 
     for (int right = 0; right < m_maxMaterialID; right++)
-    {
         for (int down = 0; down < m_maxMaterialID; down++)
         {
             mat[0] = tm->mat[0];
@@ -1078,12 +1073,11 @@ bool CTerrain::ChangeMaterialPoint(int x, int y, int id)
             mat[2] = down;
             mat[3] = tm->mat[3];
 
-            if (CondChangeMaterialPoint(x, y, id, mat)) return true;
+            if (CondChangeMaterialPoint(x, y, id, mat))
+                return true;
         }
-    }
 
     for (int down = 0; down < m_maxMaterialID; down++)
-    {
         for (int left = 0; left < m_maxMaterialID; left++)
         {
             mat[0] = tm->mat[0];
@@ -1091,12 +1085,11 @@ bool CTerrain::ChangeMaterialPoint(int x, int y, int id)
             mat[2] = down;
             mat[3] = left;
 
-            if (CondChangeMaterialPoint(x, y, id, mat)) return true;
+            if (CondChangeMaterialPoint(x, y, id, mat))
+                return true;
         }
-    }
 
     for (int up = 0; up < m_maxMaterialID; up++)
-    {
         for (int left = 0; left < m_maxMaterialID; left++)
         {
             mat[0] = up;
@@ -1104,17 +1097,14 @@ bool CTerrain::ChangeMaterialPoint(int x, int y, int id)
             mat[2] = tm->mat[2];
             mat[3] = left;
 
-            if (CondChangeMaterialPoint(x, y, id, mat)) return true;
+            if (CondChangeMaterialPoint(x, y, id, mat))
+                return true;
         }
-    }
 
     // Tries changing all the neighbors.
     for (int up = 0; up < m_maxMaterialID; up++)
-    {
         for (int right = 0; right < m_maxMaterialID; right++)
-        {
             for (int down = 0; down < m_maxMaterialID; down++)
-            {
                 for (int left = 0; left < m_maxMaterialID; left++)
                 {
                     mat[0] = up;
@@ -1122,11 +1112,9 @@ bool CTerrain::ChangeMaterialPoint(int x, int y, int id)
                     mat[2] = down;
                     mat[3] = left;
 
-                    if (CondChangeMaterialPoint(x, y, id, mat)) return true;
+                    if (CondChangeMaterialPoint(x, y, id, mat))
+                        return true;
                 }
-            }
-        }
-    }
 
     GetLogger()->Error("AddMaterialPoint error\n");
     return false;
@@ -1135,7 +1123,8 @@ bool CTerrain::ChangeMaterialPoint(int x, int y, int id)
 bool CTerrain::InitMaterials(int id)
 {
     TerrainMaterial* tm = FindMaterial(id);
-    if (tm == nullptr) return false;
+    if (tm == nullptr)
+        return false;
 
     for (int i = 0; i < m_materialPointCount*m_materialPointCount; i++)
     {
@@ -1195,7 +1184,6 @@ bool CTerrain::GenerateMaterials(int *id, float min, float max,
     else
     {
         for (int y = 0; y < m_materialPointCount; y++)
-        {
             for (int x = 0; x < m_materialPointCount; x++)
             {
                 if (radius != 0.0f)
@@ -1222,7 +1210,6 @@ bool CTerrain::GenerateMaterials(int *id, float min, float max,
                     ChangeMaterialPoint(xx, yy, id[ii]);
                 }
             }
-        }
     }
 
     return true;
@@ -1230,17 +1217,17 @@ bool CTerrain::GenerateMaterials(int *id, float min, float max,
 
 void CTerrain::InitMaterialPoints()
 {
-    if (! m_useMaterials) return;
-    if (! m_materialPoints.empty()) return; // already allocated
+    if (! m_useMaterials)
+        return;
+    if (! m_materialPoints.empty())
+        return; // already allocated
 
     m_materialPointCount = (m_mosaicCount*m_brickCount)/(m_brickCount/m_textureSubdivCount)+1;
     std::vector<TerrainMaterialPoint>(m_materialPointCount*m_materialPointCount).swap(m_materialPoints);
 
     for (int i = 0; i < m_materialPointCount * m_materialPointCount; i++)
-    {
         for (int j = 0; j < 4; j++)
             m_materialPoints[i].mat[j] = 0;
-    }
 }
 
 void CTerrain::FlushMaterialPoints()
@@ -1260,9 +1247,7 @@ bool CTerrain::CreateSquare(int x, int y)
     m_objRanks[x+y*m_mosaicCount] = objRank;
 
     for (int step = 0; step < m_depth; step++)
-    {
         CreateMosaic(x, y, 1 << step, objRank, mat);
-    }
 
     return true;
 }
@@ -1272,10 +1257,8 @@ bool CTerrain::CreateObjects()
     AdjustRelief();
 
     for (int y = 0; y < m_mosaicCount; y++)
-    {
         for (int x = 0; x < m_mosaicCount; x++)
             CreateSquare(x, y);
-    }
 
     return true;
 }
@@ -1311,18 +1294,15 @@ bool CTerrain::Terraform(const Math::Vector &p1, const Math::Vector &p2, float h
     float avg = 0.0f;
     int nb = 0;
     for (int y = tp1.y; y <= tp2.y; y++)
-    {
         for (int x = tp1.x; x <= tp2.x; x++)
         {
             avg += m_relief[x+y*size];
             nb ++;
         }
-    }
     avg /= static_cast<float>(nb);
 
     // Changes the description of the relief
     for (int y = tp1.y; y <= tp2.y; y++)
-    {
         for (int x = tp1.x; x <= tp2.x; x++)
         {
             m_relief[x+y*size] = avg+height;
@@ -1339,7 +1319,6 @@ bool CTerrain::Terraform(const Math::Vector &p1, const Math::Vector &p2, float h
                 m_relief[(x+1)+(y+0)*size] = avg+height;
             }
         }
-    }
     AdjustRelief();
 
     Math::IntPoint pp1, pp2;
@@ -1348,13 +1327,16 @@ bool CTerrain::Terraform(const Math::Vector &p1, const Math::Vector &p2, float h
     pp2.x = (tp2.x+1)/m_brickCount;
     pp2.y = (tp2.y+1)/m_brickCount;
 
-    if (pp1.x <  0            ) pp1.x = 0;
-    if (pp1.x >= m_mosaicCount) pp1.x = m_mosaicCount-1;
-    if (pp1.y <  0            ) pp1.y = 0;
-    if (pp1.y >= m_mosaicCount) pp1.y = m_mosaicCount-1;
+    if (pp1.x <  0)
+        pp1.x = 0;
+    if (pp1.x >= m_mosaicCount)
+        pp1.x = m_mosaicCount-1;
+    if (pp1.y <  0)
+        pp1.y = 0;
+    if (pp1.y >= m_mosaicCount)
+        pp1.y = m_mosaicCount-1;
 
     for (int y = pp1.y; y <= pp2.y; y++)
-    {
         for (int x = pp1.x; x <= pp2.x; x++)
         {
             int objRank = m_objRanks[x+y*m_mosaicCount];
@@ -1363,7 +1345,6 @@ bool CTerrain::Terraform(const Math::Vector &p1, const Math::Vector &p2, float h
             m_engine->DeleteObject(objRank);
             CreateSquare(x, y);  // recreates the square
         }
-    }
     m_engine->Update();
 
     return true;
@@ -1382,8 +1363,10 @@ Math::Vector CTerrain::GetWind()
 float CTerrain::GetFineSlope(const Math::Vector &pos)
 {
     Math::Vector n;
-    if (! GetNormal(n, pos)) return 0.0f;
-    return fabs(Math::RotateAngle(Math::Point(n.x, n.z).Length(), n.y) - Math::PI/2.0f);
+    if (! GetNormal(n, pos))
+        return 0.0f;
+    return fabs(Math::RotateAngle(Math::Point(n.x, n.z).Length(),
+        n.y) - Math::PI/2.0f);
 }
 
 float CTerrain::GetCoarseSlope(const Math::Vector &pos)
@@ -1396,7 +1379,8 @@ float CTerrain::GetCoarseSlope(const Math::Vector &pos)
     int y = static_cast<int>((pos.z+dim)/m_brickSize);
 
     if ( x < 0 || x >= m_mosaicCount*m_brickCount ||
-         y < 0 || y >= m_mosaicCount*m_brickCount ) return 0.0f;
+         y < 0 || y >= m_mosaicCount*m_brickCount )
+        return 0.0f;
 
     float level[4] =
     {
@@ -1420,7 +1404,8 @@ bool CTerrain::GetNormal(Math::Vector &n, const Math::Vector &p)
     int y = static_cast<int>((p.z+dim)/m_brickSize);
 
     if ( x < 0 || x > m_mosaicCount*m_brickCount ||
-         y < 0 || y > m_mosaicCount*m_brickCount )  return false;
+         y < 0 || y > m_mosaicCount*m_brickCount )
+        return false;
 
     Math::Vector p1 = GetVector(x+0, y+0);
     Math::Vector p2 = GetVector(x+1, y+0);
@@ -1443,7 +1428,8 @@ float CTerrain::GetFloorLevel(const Math::Vector &pos, bool brut, bool water)
     int y = static_cast<int>((pos.z+dim)/m_brickSize);
 
     if ( x < 0 || x > m_mosaicCount*m_brickCount ||
-         y < 0 || y > m_mosaicCount*m_brickCount )  return false;
+         y < 0 || y > m_mosaicCount*m_brickCount )
+        return false;
 
     Math::Vector p1 = GetVector(x+0, y+0);
     Math::Vector p2 = GetVector(x+1, y+0);
@@ -1453,19 +1439,23 @@ float CTerrain::GetFloorLevel(const Math::Vector &pos, bool brut, bool water)
     Math::Vector ps = pos;
     if ( fabs(pos.z-p2.z) < fabs(pos.x-p2.x) )
     {
-        if ( !IntersectY(p1, p2, p3, ps) )  return 0.0f;
+        if ( !IntersectY(p1, p2, p3, ps) )
+            return 0.0f;
     }
     else
     {
-        if ( !IntersectY(p2, p4, p3, ps) )  return 0.0f;
+        if ( !IntersectY(p2, p4, p3, ps) )
+            return 0.0f;
     }
 
-    if (! brut) AdjustBuildingLevel(ps);
+    if (! brut)
+        AdjustBuildingLevel(ps);
 
     if (water)  // not going underwater?
     {
         float level = m_water->GetLevel();
-        if (ps.y < level) ps.y = level;  // not under water
+        if (ps.y < level)
+            ps.y = level;  // not under water
     }
 
     return ps.y;
@@ -1479,7 +1469,8 @@ float CTerrain::GetHeightToFloor(const Math::Vector &pos, bool brut, bool water)
     int y = static_cast<int>((pos.z+dim)/m_brickSize);
 
     if ( x < 0 || x > m_mosaicCount*m_brickCount ||
-         y < 0 || y > m_mosaicCount*m_brickCount )  return false;
+         y < 0 || y > m_mosaicCount*m_brickCount )
+        return false;
 
     Math::Vector p1 = GetVector(x+0, y+0);
     Math::Vector p2 = GetVector(x+1, y+0);
@@ -1489,19 +1480,23 @@ float CTerrain::GetHeightToFloor(const Math::Vector &pos, bool brut, bool water)
     Math::Vector ps = pos;
     if ( fabs(pos.z-p2.z) < fabs(pos.x-p2.x) )
     {
-        if ( !IntersectY(p1, p2, p3, ps) )  return 0.0f;
+        if ( !IntersectY(p1, p2, p3, ps) )
+            return 0.0f;
     }
     else
     {
-        if ( !IntersectY(p2, p4, p3, ps) )  return 0.0f;
+        if ( !IntersectY(p2, p4, p3, ps) )
+            return 0.0f;
     }
 
-    if (! brut) AdjustBuildingLevel(ps);
+    if (! brut)
+        AdjustBuildingLevel(ps);
 
     if (water)  // not going underwater?
     {
         float level = m_water->GetLevel();
-        if (ps.y < level ) ps.y = level;  // not under water
+        if (ps.y < level )
+            ps.y = level;  // not under water
     }
 
     return pos.y-ps.y;
@@ -1515,7 +1510,8 @@ bool CTerrain::AdjustToFloor(Math::Vector &pos, bool brut, bool water)
     int y = static_cast<int>((pos.z + dim) / m_brickSize);
 
     if ( x < 0 || x > m_mosaicCount*m_brickCount ||
-         y < 0 || y > m_mosaicCount*m_brickCount )  return false;
+         y < 0 || y > m_mosaicCount*m_brickCount )
+        return false;
 
     Math::Vector p1 = GetVector(x+0, y+0);
     Math::Vector p2 = GetVector(x+1, y+0);
@@ -1524,19 +1520,23 @@ bool CTerrain::AdjustToFloor(Math::Vector &pos, bool brut, bool water)
 
     if (fabs(pos.z - p2.z) < fabs(pos.x - p2.x))
     {
-        if (! Math::IntersectY(p1, p2, p3, pos)) return false;
+        if (! Math::IntersectY(p1, p2, p3, pos))
+            return false;
     }
     else
     {
-        if (! Math::IntersectY(p2, p4, p3, pos)) return false;
+        if (! Math::IntersectY(p2, p4, p3, pos))
+            return false;
     }
 
-    if (! brut) AdjustBuildingLevel(pos);
+    if (! brut)
+        AdjustBuildingLevel(pos);
 
     if (water)  // not going underwater?
     {
         float level = m_water->GetLevel();
-        if (pos.y < level) pos.y = level;  // not under water
+        if (pos.y < level)
+            pos.y = level;  // not under water
     }
 
     return true;
@@ -1627,13 +1627,9 @@ bool CTerrain::AddBuildingLevel(Math::Vector center, float min, float max,
 {
     int i = 0;
     for ( ; i < static_cast<int>( m_buildingLevels.size() ); i++)
-    {
         if ( center.x == m_buildingLevels[i].center.x &&
              center.z == m_buildingLevels[i].center.z )
-        {
             break;
-        }
-    }
 
     if (i == static_cast<int>( m_buildingLevels.size() ))
         m_buildingLevels.push_back(BuildingLevel());
@@ -1655,7 +1651,6 @@ bool CTerrain::AddBuildingLevel(Math::Vector center, float min, float max,
 bool CTerrain::UpdateBuildingLevel(Math::Vector center)
 {
     for (int i = 0; i < static_cast<int>( m_buildingLevels.size() ); i++)
-    {
         if ( center.x == m_buildingLevels[i].center.x &&
              center.z == m_buildingLevels[i].center.z )
         {
@@ -1663,14 +1658,12 @@ bool CTerrain::UpdateBuildingLevel(Math::Vector center)
             m_buildingLevels[i].level  = GetFloorLevel(center, true);
             return true;
         }
-    }
     return false;
 }
 
 bool CTerrain::DeleteBuildingLevel(Math::Vector center)
 {
     for (int i = 0; i < static_cast<int>( m_buildingLevels.size() ); i++)
-    {
         if ( center.x == m_buildingLevels[i].center.x &&
              center.z == m_buildingLevels[i].center.z )
         {
@@ -1680,7 +1673,6 @@ bool CTerrain::DeleteBuildingLevel(Math::Vector center)
             m_buildingLevels.pop_back();
             return true;
         }
-    }
     return false;
 }
 
@@ -1691,7 +1683,8 @@ float CTerrain::GetBuildingFactor(const Math::Vector &pos)
         if ( pos.x < m_buildingLevels[i].bboxMinX ||
              pos.x > m_buildingLevels[i].bboxMaxX ||
              pos.z < m_buildingLevels[i].bboxMinZ ||
-             pos.z > m_buildingLevels[i].bboxMaxZ )  continue;
+             pos.z > m_buildingLevels[i].bboxMaxZ )
+            continue;
 
         float dist = Math::DistanceProjected(pos, m_buildingLevels[i].center);
 
@@ -1708,11 +1701,13 @@ void CTerrain::AdjustBuildingLevel(Math::Vector &p)
         if ( p.x < m_buildingLevels[i].bboxMinX ||
              p.x > m_buildingLevels[i].bboxMaxX ||
              p.z < m_buildingLevels[i].bboxMinZ ||
-             p.z > m_buildingLevels[i].bboxMaxZ ) continue;
+             p.z > m_buildingLevels[i].bboxMaxZ )
+            continue;
 
         float dist = Math::DistanceProjected(p, m_buildingLevels[i].center);
 
-        if (dist > m_buildingLevels[i].max) continue;
+        if (dist > m_buildingLevels[i].max)
+            continue;
 
         if (dist < m_buildingLevels[i].min)
         {
@@ -1740,9 +1735,11 @@ void CTerrain::AdjustBuildingLevel(Math::Vector &p)
 float CTerrain::GetHardness(const Math::Vector &pos)
 {
     float factor = GetBuildingFactor(pos);
-    if (factor != 1.0f) return 1.0f;  // on building level
+    if (factor != 1.0f)
+        return 1.0f;  // on building level
 
-    if (m_materialPoints.empty()) return m_defaultHardness;
+    if (m_materialPoints.empty())
+        return m_defaultHardness;
 
     float dim = (m_mosaicCount*m_brickCount*m_brickSize)/2.0f;
 
@@ -1752,17 +1749,20 @@ float CTerrain::GetHardness(const Math::Vector &pos)
     y = static_cast<int>((pos.z+dim)/m_brickSize);
 
     if ( x < 0 || x > m_mosaicCount*m_brickCount ||
-         y < 0 || y > m_mosaicCount*m_brickCount )  return m_defaultHardness;
+         y < 0 || y > m_mosaicCount*m_brickCount )
+        return m_defaultHardness;
 
     x /= m_brickCount/m_textureSubdivCount;
     y /= m_brickCount/m_textureSubdivCount;
 
     if ( x < 0 || x >= m_materialPointCount ||
-         y < 0 || y >= m_materialPointCount )  return m_defaultHardness;
+         y < 0 || y >= m_materialPointCount )
+        return m_defaultHardness;
 
     int id = m_materialPoints[x+y*m_materialPointCount].id;
     TerrainMaterial* tm = FindMaterial(id);
-    if (tm == nullptr) return m_defaultHardness;
+    if (tm == nullptr)
+        return m_defaultHardness;
 
     return tm->hardness;
 }
@@ -1824,7 +1824,8 @@ float CTerrain::GetFlatZoneRadius(Math::Vector center, float max)
             pos.x = result.x;
             pos.z = result.y;
             float h = GetFloorLevel(pos, true);
-            if ( fabs(h-ref) > 1.0f )  return radius;
+            if ( fabs(h-ref) > 1.0f )
+                return radius;
 
             angle += Math::PI*2.0f/8.0f;
         }
@@ -1886,9 +1887,7 @@ float CTerrain::GetFlyingLimit(Math::Vector pos, bool noLimit)
 
         return h + m_flyingLimits[i].maxHeight;
     }
-
     return m_flyingMaxHeight;
 }
-
 
 } // namespace Gfx

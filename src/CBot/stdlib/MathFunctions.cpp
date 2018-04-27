@@ -32,9 +32,7 @@ const float PI = 3.14159265358979323846f;
 
 bool rSin(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    float   value;
-
-    value = var->GetValFloat();
+    float   value = var->GetValFloat();
     result->SetValFloat(sinf(value*PI/180.0f));
     return true;
 }
@@ -43,9 +41,7 @@ bool rSin(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 bool rCos(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    float   value;
-
-    value = var->GetValFloat();
+    float   value = var->GetValFloat();
     result->SetValFloat(cosf(value*PI/180.0f));
     return true;
 }
@@ -54,9 +50,7 @@ bool rCos(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 bool rTan(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    float   value;
-
-    value = var->GetValFloat();
+    float   value = var->GetValFloat();
     result->SetValFloat(tanf(value*PI/180.0f));
     return true;
 }
@@ -65,9 +59,7 @@ bool rTan(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 bool raSin(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    float   value;
-
-    value = var->GetValFloat();
+    float   value = var->GetValFloat();
     result->SetValFloat(asinf(value)*180.0f/PI);
     return true;
 }
@@ -76,9 +68,7 @@ bool raSin(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 bool raCos(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    float   value;
-
-    value = var->GetValFloat();
+    float   value = var->GetValFloat();
     result->SetValFloat(acosf(value)*180.0f/PI);
     return true;
 }
@@ -87,9 +77,7 @@ bool raCos(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 bool raTan(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    float   value;
-
-    value = var->GetValFloat();
+    float   value = var->GetValFloat();
     result->SetValFloat(atanf(value)*180.0f/PI);
     return true;
 }
@@ -110,9 +98,7 @@ bool raTan2(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 bool rSqrt(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    float   value;
-
-    value = var->GetValFloat();
+    float   value = var->GetValFloat();
     result->SetValFloat(sqrtf(value));
     return true;
 }
@@ -142,9 +128,7 @@ bool rRand(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 bool rAbs(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    float   value;
-
-    value = var->GetValFloat();
+    float   value = var->GetValFloat();
     result->SetValFloat(fabs(value));
     return true;
 }
@@ -153,9 +137,7 @@ bool rAbs(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 bool rFloor(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    float   value;
-
-    value = var->GetValFloat();
+    float   value = var->GetValFloat();
     result->SetValFloat(floor(value));
     return true;
 }
@@ -164,9 +146,7 @@ bool rFloor(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 bool rCeil(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    float   value;
-
-    value = var->GetValFloat();
+    float   value = var->GetValFloat();
     result->SetValFloat(ceil(value));
     return true;
 }
@@ -175,9 +155,7 @@ bool rCeil(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 bool rRound(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    float   value;
-
-    value = var->GetValFloat();
+    float   value = var->GetValFloat();
     result->SetValFloat(round(value));
     return true;
 }
@@ -186,9 +164,7 @@ bool rRound(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 bool rTrunc(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    float   value;
-
-    value = var->GetValFloat();
+    float   value = var->GetValFloat();
     result->SetValFloat(trunc(value));
     return true;
 }

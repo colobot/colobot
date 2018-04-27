@@ -72,7 +72,7 @@ namespace ModelInput
 
     void ConvertOldTex1Name(ModelTriangle& triangle, const char* tex1Name);
     void ConvertFromOldRenderState(ModelTriangle& triangle, int state);
-    ModelLODLevel MinMaxToLodLevel(float min, float max);
+    ModelLODLevel MinMaxToLodLevel(const float min, const float max);
 }
 
 using namespace IOUtils;
@@ -87,17 +87,17 @@ CModel ModelInput::Read(std::istream &stream, ModelFormat format)
     {
         switch (format)
         {
-            case ModelFormat::Binary:
-                ReadBinaryModel(model, stream);
-                break;
+        case ModelFormat::Binary:
+            ReadBinaryModel(model, stream);
+            break;
 
-            case ModelFormat::Text:
-                ReadTextModel(model, stream);
-                break;
+        case ModelFormat::Text:
+            ReadTextModel(model, stream);
+            break;
 
-            case ModelFormat::Old:
-                ReadOldModel(model, stream);
-                break;
+        case ModelFormat::Old:
+            ReadOldModel(model, stream);
+            break;
         }
     }
     catch (const CModelIOException& e)
@@ -396,17 +396,11 @@ void ModelInput::ReadOldModel(CModel &model, std::istream &stream)
     try
     {
         if (header.revision == 1 && header.version == 0)
-        {
             triangles = ReadOldModelV1(stream, header.totalTriangles);
-        }
         else if (header.revision == 1 && header.version == 1)
-        {
             triangles = ReadOldModelV2(stream, header.totalTriangles);
-        }
         else
-        {
             triangles = ReadOldModelV3(stream, header.totalTriangles);
-        }
     }
     catch (const std::exception& e)
     {
@@ -569,7 +563,7 @@ std::vector<ModelTriangle> ModelInput::ReadOldModelV3(std::istream &stream, int 
     return triangles;
 }
 
-ModelLODLevel ModelInput::MinMaxToLodLevel(float min, float max)
+ModelLODLevel ModelInput::MinMaxToLodLevel(const float min, const float max)
 {
     if (min == 0.0f && max == 100.0f)
         return ModelLODLevel::High;

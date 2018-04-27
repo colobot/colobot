@@ -93,12 +93,8 @@ void CParticle::FlushParticle()
         m_particle[i].used = false;
 
     for (int i = 0; i < MAXPARTITYPE; i++)
-    {
         for (int j = 0; j < SH_MAX; j++)
-        {
             m_totalInterface[i][j] = 0;
-        }
-    }
 
     for (int i = 0; i < MAXTRACK; i++)
         m_track[i].used = false;
@@ -117,8 +113,10 @@ void CParticle::FlushParticle(int sheet)
 {
     for (int i = 0; i < MAXPARTICULE*MAXPARTITYPE; i++)
     {
-        if (!m_particle[i].used) continue;
-        if (m_particle[i].sheet != sheet) continue;
+        if (!m_particle[i].used)
+            continue;
+        if (m_particle[i].sheet != sheet)
+            continue;
 
         m_particle[i].used = false;
     }
@@ -140,11 +138,16 @@ void CParticle::FlushParticle(int sheet)
 //! Returns file name of the effect effectNN.png, with NN = number
 void NameParticle(std::string &name, int num)
 {
-         if (num == 1)  name = "effect00.png";
-    else if (num == 2)  name = "effect01.png";
-    else if (num == 3)  name = "effect02.png";
-    else if (num == 4)  name = "effect03.png";
-    else                name = "";
+    if (num == 1)
+        name = "effect00.png";
+    else if (num == 2)
+        name = "effect01.png";
+    else if (num == 3)
+        name = "effect02.png";
+    else if (num == 4)
+        name = "effect03.png";
+    else
+        name = "";
 }
 
 //! Returns random letter for use as virus particle
@@ -241,9 +244,7 @@ int CParticle::CreateParticle(Math::Vector pos, Math::Vector speed, Math::Point 
          type == PARTILIMIT3   ||
          type == PARTIEXPLOG1  ||
          type == PARTIEXPLOG2  )
-    {
         t = 1;  // effect00
-    }
     if ( type == PARTIGLINT   ||
          type == PARTIGLINTb  ||
          type == PARTIGLINTr  ||
@@ -259,9 +260,7 @@ int CParticle::CreateParticle(Math::Vector pos, Math::Vector speed, Math::Point 
          type == PARTIFOG5    ||
          type == PARTIFOG6    ||
          type == PARTIFOG7    )
-    {
         t = 2;  // effect01
-    }
     if ( type == PARTIGUN1    ||
          type == PARTIFLIC    ||
          type == PARTISPHERE0 ||
@@ -270,23 +269,19 @@ int CParticle::CreateParticle(Math::Vector pos, Math::Vector speed, Math::Point 
          type == PARTIFOG1    ||
          type == PARTIFOG2    ||
          type == PARTIFOG3    )
-    {
         t = 3;  // effect02
-    }
     if ( type == PARTISMOKE1  ||
          type == PARTISMOKE2  ||
          type == PARTISMOKE3  ||
          type == PARTIBLOOD   ||
          type == PARTIBLOODM  )
-    {
         t = 4;  // effect03 (ENG_RSTATE_TTEXTURE_WHITE)
-    }
     if ( type == PARTIVIRUS )
-    {
         t = 5; // text render
-    }
-    if (t >= MAXPARTITYPE) return -1;
-    if (t == -1) return -1;
+    if (t >= MAXPARTITYPE)
+        return -1;
+    if (t == -1)
+        return -1;
 
     for (int j = 0; j < MAXPARTICULE; j++)
     {
@@ -326,27 +321,19 @@ int CParticle::CreateParticle(Math::Vector pos, Math::Vector speed, Math::Point 
 
             if ( type == PARTIEXPLOT ||
                  type == PARTIEXPLOO )
-            {
                 m_particle[i].angle = Math::Rand()*Math::PI*2.0f;
-            }
 
             if ( type == PARTIGUN1 ||
                  type == PARTIGUN4 )
-            {
                 m_particle[i].testTime = 1.0f;  // impact immediately
-            }
 
             if ( type == PARTIVIRUS )
-            {
                 m_particle[i].text = RandomLetter();
-            }
 
             if ( type >= PARTIFOG0 &&
                  type <= PARTIFOG7 )
-            {
                 if (m_fogTotal < MAXPARTIFOG)
-                m_fog[m_fogTotal++] = i;
-            }
+                    m_fog[m_fogTotal++] = i;
 
             return i | ((m_particle[i].uniqueStamp&0xffff)<<16);
         }
@@ -517,11 +504,11 @@ int CParticle::CreateRay(Math::Vector pos, Math::Vector goal,
     if ( type == PARTIRAY1 ||
          type == PARTIRAY2 ||
          type == PARTIRAY3 )
-    {
         t = 3;  // effect02
-    }
-    if (t >= MAXPARTITYPE) return -1;
-    if (t == -1) return -1;
+    if (t >= MAXPARTITYPE)
+        return -1;
+    if (t == -1)
+        return -1;
 
     for (int j = 0; j < MAXPARTICULE; j++)
     {
@@ -573,7 +560,8 @@ int CParticle::CreateTrack(Math::Vector pos, Math::Vector speed, Math::Point dim
 {
     // Creates the normal particle.
     int channel = CreateParticle(pos, speed, dim, type, duration, mass, 0.0f, 0);
-    if (channel == -1) return -1;
+    if (channel == -1)
+        return -1;
 
     // Seeks a streak free.
     for (int i = 0; i < MAXTRACK; i++)
@@ -581,7 +569,8 @@ int CParticle::CreateTrack(Math::Vector pos, Math::Vector speed, Math::Point dim
         if (!m_track[i].used)  // free?
         {
             int rank = channel;
-            if (!CheckChannel(rank)) return -1;
+            if (!CheckChannel(rank))
+                return -1;
             m_particle[rank].trackRank = i;
 
             m_track[i].used = true;
@@ -605,7 +594,8 @@ void CParticle::CreateWheelTrace(const Math::Vector &p1, const Math::Vector &p2,
 {
     int max = MAXWHEELTRACE;
     int i = m_wheelTraceIndex++;
-    if (m_wheelTraceIndex > max)  m_wheelTraceIndex = 0;
+    if (m_wheelTraceIndex > max)
+        m_wheelTraceIndex = 0;
 
     m_wheelTrace[i].color = color;
     m_wheelTrace[i].pos[0] = p1;  // ul
@@ -642,8 +632,10 @@ bool CParticle::CheckChannel(int &channel)
     int uniqueStamp = (channel>>16)&0xffff;
     channel &= 0xffff;
 
-    if (channel < 0)  return false;
-    if (channel >= MAXPARTICULE*MAXPARTITYPE) return false;
+    if (channel < 0)
+        return false;
+    if (channel >= MAXPARTICULE*MAXPARTITYPE)
+        return false;
 
     if (!m_particle[channel].used)
     {
@@ -676,8 +668,10 @@ void CParticle::DeleteParticle(ParticleType type)
 {
     for (int i = 0; i < MAXPARTICULE*MAXPARTITYPE; i++)
     {
-        if (!m_particle[i].used) continue;
-        if (m_particle[i].type != type) continue;
+        if (!m_particle[i].used)
+            continue;
+        if (m_particle[i].type != type)
+            continue;
 
         DeleteRank(i);
     }
@@ -685,7 +679,8 @@ void CParticle::DeleteParticle(ParticleType type)
 
 void CParticle::DeleteParticle(int channel)
 {
-    if (!CheckChannel(channel)) return;
+    if (!CheckChannel(channel))
+        return;
 
     if (m_totalInterface[channel/MAXPARTICULE][m_particle[channel].sheet] > 0 )
         m_totalInterface[channel/MAXPARTICULE][m_particle[channel].sheet]--;
@@ -699,50 +694,58 @@ void CParticle::DeleteParticle(int channel)
 
 void CParticle::SetObjectLink(int channel, CObject *object)
 {
-    if (!CheckChannel(channel))  return;
+    if (!CheckChannel(channel))
+        return;
     m_particle[channel].objLink = object;
 }
 
 void CParticle::SetObjectFather(int channel, CObject *object)
 {
-    if (!CheckChannel(channel))  return;
+    if (!CheckChannel(channel))
+        return;
     m_particle[channel].objFather = object;
 }
 
 void CParticle::SetPosition(int channel, Math::Vector pos)
 {
-    if (!CheckChannel(channel))  return;
+    if (!CheckChannel(channel))
+        return;
     m_particle[channel].pos = pos;
 }
 
 void CParticle::SetDimension(int channel, Math::Point dim)
 {
-    if (!CheckChannel(channel))  return;
+    if (!CheckChannel(channel))
+        return;
     m_particle[channel].dim = dim;
 }
 
 void CParticle::SetZoom(int channel, float zoom)
 {
-    if (!CheckChannel(channel))  return;
+    if (!CheckChannel(channel))
+        return;
     m_particle[channel].zoom = zoom;
 }
 
 void CParticle::SetAngle(int channel, float angle)
 {
-    if (!CheckChannel(channel))  return;
+    if (!CheckChannel(channel))
+        return;
     m_particle[channel].angle = angle;
 }
 
 void CParticle::SetIntensity(int channel, float intensity)
 {
-    if (!CheckChannel(channel))  return;
+    if (!CheckChannel(channel))
+        return;
     m_particle[channel].intensity = intensity;
 }
 
 void CParticle::SetParam(int channel, Math::Vector pos, Math::Point dim, float zoom,
                           float angle, float intensity)
 {
-    if (!CheckChannel(channel))  return;
+    if (!CheckChannel(channel))
+        return;
     m_particle[channel].pos       = pos;
     m_particle[channel].dim       = dim;
     m_particle[channel].zoom      = zoom;
@@ -752,7 +755,8 @@ void CParticle::SetParam(int channel, Math::Vector pos, Math::Point dim, float z
 
 void CParticle::SetPhase(int channel, ParticlePhase phase, float duration)
 {
-    if (!CheckChannel(channel))  return;
+    if (!CheckChannel(channel))
+        return;
     m_particle[channel].phase = phase;
     m_particle[channel].duration = duration;
     m_particle[channel].phaseTime = m_particle[channel].time;
@@ -760,7 +764,8 @@ void CParticle::SetPhase(int channel, ParticlePhase phase, float duration)
 
 bool CParticle::GetPosition(int channel, Math::Vector &pos)
 {
-    if (!CheckChannel(channel))  return false;
+    if (!CheckChannel(channel))
+        return false;
     pos = m_particle[channel].pos;
     return true;
 }
@@ -797,13 +802,14 @@ void CParticle::FrameParticle(float rTime)
 
     for (int i = 0; i < MAXPARTICULE*MAXPARTITYPE; i++)
     {
-        if (!m_particle[i].used) continue;
-        if (!m_frameUpdate[m_particle[i].sheet]) continue;
+        if (!m_particle[i].used)
+            continue;
+        if (!m_frameUpdate[m_particle[i].sheet])
+            continue;
 
         if (m_particle[i].type != PARTISHOW)
-        {
-            if (pause && m_particle[i].sheet != SH_INTERFACE) continue;
-        }
+            if (pause && m_particle[i].sheet != SH_INTERFACE)
+                continue;
 
         if (m_particle[i].type != PARTIQUARTZ)
             m_particle[i].pos += m_particle[i].speed*rTime;
@@ -822,10 +828,8 @@ void CParticle::FrameParticle(float rTime)
         {
             m_particle[i].speed.y -= m_particle[i].mass*rTime;
 
-            float h;
-            if (m_particle[i].sheet == SH_INTERFACE)
-                h = 0.0f;
-            else
+            float h = 0.0f;
+            if (m_particle[i].sheet != SH_INTERFACE)
                 h = m_terrain->GetFloorLevel(m_particle[i].pos, true);
 
             h += m_particle[i].dim.y*0.75f;
@@ -837,7 +841,8 @@ void CParticle::FrameParticle(float rTime)
                 {
                     float amplitude = m_particle[i].weight*0.1f;
                     amplitude *= 1.0f-0.3f*m_particle[i].bounce;
-                    if (amplitude > 1.0f)  amplitude = 1.0f;
+                    if (amplitude > 1.0f)
+                        amplitude = 1.0f;
                     if (amplitude > 0.0f)
                     {
                         Play(SOUND_BOUM, m_particle[i].pos, amplitude);
@@ -1407,8 +1412,10 @@ void CParticle::FrameParticle(float rTime)
                 continue;
             }
 
-            if (progress < 0.5f) m_particle[i].intensity = progress/0.5f;
-            else                 m_particle[i].intensity = 2.0f-progress/0.5f;
+            if (progress < 0.5f)
+                m_particle[i].intensity = progress/0.5f;
+            else
+                m_particle[i].intensity = 2.0f-progress/0.5f;
             m_particle[i].zoom = 1.0f-progress*0.8f;
             m_particle[i].angle -= rTime*Math::PI*0.5f;
 
@@ -1625,8 +1632,10 @@ void CParticle::FrameParticle(float rTime)
             m_particle[i].zoom = 1.0f-progress/2.0f;
             m_particle[i].intensity = 1.0f-progress;
 
-            if (m_particle[i].type == PARTIEXPLOT)  ts.x = 0.750f;
-            else                                    ts.x = 0.875f;
+            if (m_particle[i].type == PARTIEXPLOT)
+                ts.x = 0.750f;
+            else
+                ts.x = 0.875f;
             ts.y = 0.750f;
             ti.x = ts.x+0.125f;
             ti.y = ts.y+0.125f;
@@ -1673,13 +1682,9 @@ void CParticle::FrameParticle(float rTime)
 
             m_particle[i].zoom = 1.0f-progress/2.0f;
             if (progress < 0.5f)
-            {
                 m_particle[i].intensity = progress/0.5f;
-            }
             else
-            {
                 m_particle[i].intensity = 2.0f-progress/0.5f;
-            }
 
             ts.x = 0.750f;
             ts.y = 0.750f;
@@ -1716,13 +1721,9 @@ void CParticle::FrameParticle(float rTime)
             }
 
             if (progress < 0.25f)
-            {
                 m_particle[i].zoom = progress/0.25f;
-            }
             else
-            {
                 m_particle[i].intensity = 1.0f-(progress-0.25f)/0.75f;
-            }
 
             ts.x = 0.500f+0.125f*(m_particle[i].type-PARTISMOKE1);
             ts.y = 0.750f;
@@ -1803,13 +1804,9 @@ void CParticle::FrameParticle(float rTime)
             }
 
             if (progress < 0.25f)
-            {
                 m_particle[i].zoom = progress/0.25f;
-            }
             else
-            {
                 m_particle[i].intensity = 1.0f-(progress-0.25f)/0.75f;
-            }
 
             ts.x = 0.000f;
             ts.y = 0.000f;
@@ -1826,13 +1823,9 @@ void CParticle::FrameParticle(float rTime)
             }
 
             if (progress < 0.25f)
-            {
                 m_particle[i].zoom = progress/0.25f;
-            }
             else
-            {
                 m_particle[i].intensity = 1.0f-(progress-0.25f)/0.75f;
-            }
 
             ts.x = 0.875f;
             ts.y = 0.000f;
@@ -2055,9 +2048,7 @@ void CParticle::FrameParticle(float rTime)
             }
 
             if (progress < 0.3f)
-            {
                 m_particle[i].zoom = progress/0.3f;
-            }
             else
             {
                 m_particle[i].zoom = 1.0f;
@@ -2460,8 +2451,10 @@ void CParticle::FrameParticle(float rTime)
 
 bool CParticle::TrackMove(int i, Math::Vector pos, float progress)
 {
-    if (i < 0 || i >= MAXTRACK)  return true;
-    if (! m_track[i].used) return true;
+    if (i < 0 || i >= MAXTRACK)
+        return true;
+    if (! m_track[i].used)
+        return true;
 
     if (progress < 1.0f)  // particle exists?
     {
@@ -2475,13 +2468,16 @@ bool CParticle::TrackMove(int i, Math::Vector pos, float progress)
             m_track[i].last = progress;
             last = m_track[i].pos[h];
             h ++;
-            if (h == MAXTRACKLEN)  h = 0;
-            if (m_track[i].posUsed < MAXTRACKLEN)  m_track[i].posUsed++;
+            if (h == MAXTRACKLEN)
+                h = 0;
+            if (m_track[i].posUsed < MAXTRACKLEN)
+                m_track[i].posUsed++;
         }
         else
         {
             int hh = h-1;
-            if (hh < 0)  hh = MAXTRACKLEN-1;
+            if (hh < 0)
+                hh = MAXTRACKLEN-1;
             last = m_track[i].pos[hh];
         }
         m_track[i].pos[h] = pos;
@@ -2492,9 +2488,7 @@ bool CParticle::TrackMove(int i, Math::Vector pos, float progress)
         m_track[i].intensity = 1.0f-progress;
     }
     else    // slow death of the track ?
-    {
         m_track[i].intensity = 0.0f;
-    }
 
     return (m_track[i].intensity <= 0.0f);
 }
@@ -2508,7 +2502,8 @@ void CParticle::TrackDraw(int i, ParticleType type)
     {
         lTotal += m_track[i].len[h];
         h--;
-        if (h < 0) h = MAXTRACKLEN-1;
+        if (h < 0)
+            h = MAXTRACKLEN-1;
     }
 
     Math::Matrix mat;
@@ -2615,10 +2610,12 @@ void CParticle::TrackDraw(int i, ParticleType type)
     for (int counter = 0; counter < m_track[i].posUsed-1; counter++)
     {
         float f2 = f1-(m_track[i].len[h]/lTotal);
-        if (f2 < 0.0f) f2 = 0.0f;
+        if (f2 < 0.0f)
+            f2 = 0.0f;
 
         h --;
-        if (h < 0) h = MAXTRACKLEN-1;
+        if (h < 0)
+            h = MAXTRACKLEN-1;
 
         Math::Vector p2 = m_track[i].pos[h];
 
@@ -2667,7 +2664,8 @@ void CParticle::TrackDraw(int i, ParticleType type)
         m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
         m_engine->AddStatisticTriangle(2);
 
-        if (f2 < 0.0f) break;
+        if (f2 < 0.0f)
+            break;
         f1 = f2;
         p1 = p2;
     }
@@ -2675,7 +2673,8 @@ void CParticle::TrackDraw(int i, ParticleType type)
 
 void CParticle::DrawParticleTriangle(int i)
 {
-    if (m_particle[i].zoom == 0.0f)  return;
+    if (m_particle[i].zoom == 0.0f)
+        return;
 
     Math::Vector eye = m_engine->GetEyePt();
     Math::Vector pos = m_particle[i].pos;
@@ -2704,8 +2703,10 @@ void CParticle::DrawParticleNorm(int i)
 {
     float zoom = m_particle[i].zoom;
 
-    if (zoom == 0.0f) return;
-    if (m_particle[i].intensity == 0.0f) return;
+    if (zoom == 0.0f)
+        return;
+    if (m_particle[i].intensity == 0.0f)
+        return;
 
 
     Math::Vector corner[4];
@@ -2800,8 +2801,10 @@ void CParticle::DrawParticleNorm(int i)
 
 void CParticle::DrawParticleFlat(int i)
 {
-    if (m_particle[i].zoom == 0.0f) return;
-    if (m_particle[i].intensity == 0.0f) return;
+    if (m_particle[i].zoom == 0.0f)
+        return;
+    if (m_particle[i].intensity == 0.0f)
+        return;
 
     Math::Vector pos = m_particle[i].pos;
 
@@ -2863,8 +2866,10 @@ void CParticle::DrawParticleFlat(int i)
 
 void CParticle::DrawParticleFog(int i)
 {
-    if (!m_engine->GetFog()) return;
-    if (m_particle[i].intensity == 0.0f) return;
+    if (!m_engine->GetFog())
+        return;
+    if (m_particle[i].intensity == 0.0f)
+        return;
 
     Math::Vector pos = m_particle[i].pos;
 
@@ -2950,8 +2955,10 @@ void CParticle::DrawParticleFog(int i)
 
 void CParticle::DrawParticleRay(int i)
 {
-    if (m_particle[i].zoom == 0.0f)  return;
-    if (m_particle[i].intensity == 0.0f)  return;
+    if (m_particle[i].zoom == 0.0f)
+        return;
+    if (m_particle[i].intensity == 0.0f)
+        return;
 
     Math::Vector eye = m_engine->GetEyePt();
     Math::Vector pos = m_particle[i].pos;
@@ -2969,7 +2976,8 @@ void CParticle::DrawParticleRay(int i)
     angle.x = -Math::RotateAngle(Math::DistanceProjected(proj, eye), proj.y-eye.y);
     angle.y = Math::RotateAngle(pos.z-goal.z, pos.x-goal.x)+Math::PI/2.0f;
     angle.z = -Math::RotateAngle(Math::DistanceProjected(pos, goal), pos.y-goal.y);
-    if (left)  angle.x = -angle.x;
+    if (left)
+        angle.x = -angle.x;
 
     Math::Matrix mat;
     Math::LoadRotationZXYMatrix(mat, angle);
@@ -2984,7 +2992,8 @@ void CParticle::DrawParticleRay(int i)
     dim.x = m_particle[i].dim.x * m_particle[i].zoom;
     dim.y = m_particle[i].dim.y * m_particle[i].zoom;
 
-    if (left) dim.y = -dim.y;
+    if (left)
+        dim.y = -dim.y;
 
     float len = Math::Distance(pos, goal);
     float adv = 0.0f;
@@ -3109,7 +3118,8 @@ void CParticle::DrawParticleSphere(int i)
 {
     float zoom = m_particle[i].zoom;
 
-    if (zoom == 0.0f) return;
+    if (zoom == 0.0f)
+        return;
 
     m_engine->SetState(ENG_RSTATE_TTEXTURE_BLACK | ENG_RSTATE_2FACE | ENG_RSTATE_WRAP,
                        IntensityToColor(m_particle[i].intensity));
@@ -3218,7 +3228,8 @@ void CParticle::DrawParticleCylinder(int i)
     float progress = m_particle[i].zoom;
     float zoom = m_particle[i].dim.x;
     float diam = m_particle[i].dim.y;
-    if (progress >= 1.0f || zoom == 0.0f)  return;
+    if (progress >= 1.0f || zoom == 0.0f)
+        return;
 
     m_engine->SetState(ENG_RSTATE_TTEXTURE_BLACK | ENG_RSTATE_2FACE | ENG_RSTATE_WRAP,
                        IntensityToColor(m_particle[i].intensity));
@@ -3302,7 +3313,8 @@ void CParticle::DrawParticleCylinder(int i)
 void CParticle::DrawParticleText(int i)
 {
     CharTexture tex = m_engine->GetText()->GetCharTexture(static_cast<UTF8Char>(m_particle[i].text), FONT_COURIER, FONT_SIZE_BIG*2.0f);
-    if (tex.id == 0) return;
+    if (tex.id == 0)
+        return;
 
     m_device->SetTexture(0, tex.id);
     m_engine->SetState(ENG_RSTATE_TTEXTURE_ALPHA, IntensityToColor(m_particle[i].intensity));
@@ -3320,9 +3332,11 @@ void CParticle::DrawParticleText(int i)
 void CParticle::DrawParticleWheel(int i)
 {
     float dist = Math::DistanceProjected(m_engine->GetEyePt(), m_wheelTrace[i].pos[0]);
-    if (dist > 300.0f)  return;
+    if (dist > 300.0f)
+        return;
 
-    if (m_wheelTrace[i].color == TraceColor::BlackArrow || m_wheelTrace[i].color == TraceColor::RedArrow)
+    if (m_wheelTrace[i].color == TraceColor::BlackArrow
+        || m_wheelTrace[i].color == TraceColor::RedArrow)
     {
         m_engine->SetTexture("textures/effect03.png");
         m_engine->SetState(ENG_RSTATE_ALPHA);
@@ -3383,9 +3397,12 @@ void CParticle::DrawParticle(int sheet)
     {
         for (int i = 0; i < MAXPARTICULE; i++)
         {
-            if (!m_particle[i].used)  continue;
-            if (m_particle[i].sheet != sheet)  continue;
-            if (m_particle[i].type == PARTIPART)  continue;
+            if (!m_particle[i].used)
+                continue;
+            if (m_particle[i].sheet != sheet)
+                continue;
+            if (m_particle[i].type == PARTIPART)
+                continue;
 
             m_engine->SetTexture(!m_triangle[i].tex1Name.empty() ? "textures/"+m_triangle[i].tex1Name : "");
             m_engine->SetMaterial(m_triangle[i].material);
@@ -3417,20 +3434,23 @@ void CParticle::DrawParticle(int sheet)
 
     for (int t = MAXPARTITYPE-1; t >= 1; t--)  // black behind!
     {
-        if (m_totalInterface[t][sheet] == 0)  continue;
+        if (m_totalInterface[t][sheet] == 0)
+            continue;
 
         bool loadTexture = false;
 
-        int state;
-        if (t == 4) state = ENG_RSTATE_TTEXTURE_WHITE;  // effect03.png
-        else        state = ENG_RSTATE_TTEXTURE_BLACK;  // effect[00..02].png
+        int state = ENG_RSTATE_TTEXTURE_BLACK;  // effect[00..02].png
+        if (t == 4)
+            state = ENG_RSTATE_TTEXTURE_WHITE;  // effect03.png
         m_engine->SetState(state);
 
         for (int j = 0; j < MAXPARTICULE; j++)
         {
             int i = MAXPARTICULE*t+j;
-            if (!m_particle[i].used)  continue;
-            if (m_particle[i].sheet != sheet)  continue;
+            if (!m_particle[i].used)
+                continue;
+            if (m_particle[i].sheet != sheet)
+                continue;
 
             if (!loadTexture && t != 5)
             {
@@ -3445,44 +3465,31 @@ void CParticle::DrawParticle(int sheet)
             {
                 m_engine->SetState(state);
                 TrackDraw(r, m_particle[i].type);  // draws the drag
-                if (!m_track[r].drawParticle)  continue;
+                if (!m_track[r].drawParticle)
+                    continue;
             }
 
             m_engine->SetState(state, IntensityToColor(m_particle[i].intensity));
 
             if (m_particle[i].ray)  // ray?
-            {
                 DrawParticleRay(i);
-            }
             else if ( m_particle[i].type == PARTIFLIC  ||  // circle in the water?
                       m_particle[i].type == PARTISHOW  ||
                       m_particle[i].type == PARTICHOC  ||
                       m_particle[i].type == PARTIGFLAT )
-            {
                 DrawParticleFlat(i);
-            }
             else if ( m_particle[i].type >= PARTIFOG0 &&
                       m_particle[i].type <= PARTIFOG7 )
-            {
                 DrawParticleFog(i);
-            }
             else if ( m_particle[i].type >= PARTISPHERE0 &&
                       m_particle[i].type <= PARTISPHERE6 )  // sphere?
-            {
                 DrawParticleSphere(i);
-            }
             else if ( m_particle[i].type == PARTIPLOUF0 )  // cylinder?
-            {
                 DrawParticleCylinder(i);
-            }
             else if ( m_particle[i].type == PARTIVIRUS )
-            {
                 DrawParticleText(i);
-            }
             else    // normal?
-            {
                 DrawParticleNorm(i);
-            }
         }
     }
 }
@@ -3493,14 +3500,19 @@ CObject* CParticle::SearchObjectGun(Math::Vector old, Math::Vector pos,
     if (m_main->GetMovieLock()) return nullptr;  // current movie?
 
     float min = 5.0f;
-    if (type == PARTIGUN2) min = 2.0f;  // shooting insect?
-    if (type == PARTIGUN3) min = 3.0f;  // suiciding spider?
+    if (type == PARTIGUN2)
+        min = 2.0f;  // shooting insect?
+    if (type == PARTIGUN3)
+        min = 3.0f;  // suiciding spider?
 
     Math::Vector box1 = old;
     Math::Vector box2 = pos;
-    if (box1.x > box2.x)  Math::Swap(box1.x, box2.x);  // box1 < box2
-    if (box1.y > box2.y)  Math::Swap(box1.y, box2.y);
-    if (box1.z > box2.z)  Math::Swap(box1.z, box2.z);
+    if (box1.x > box2.x)
+        Math::Swap(box1.x, box2.x);  // box1 < box2
+    if (box1.y > box2.y)
+        Math::Swap(box1.y, box2.y);
+    if (box1.z > box2.z)
+        Math::Swap(box1.z, box2.z);
     box1.x -= min;
     box1.y -= min;
     box1.z -= min;
@@ -3513,37 +3525,44 @@ CObject* CParticle::SearchObjectGun(Math::Vector old, Math::Vector pos,
     bool shield = false;
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        if (!obj->GetDetectable()) continue;  // inactive?
-        if (obj == father) continue;
+        if (!obj->GetDetectable())
+            continue;  // inactive?
+        if (obj == father)
+            continue;
 
         ObjectType oType = obj->GetType();
 
-        if (oType == OBJECT_TOTO)  continue;
+        if (oType == OBJECT_TOTO)
+            continue;
 
         if (type == PARTIGUN1)  // fireball shooting?
         {
-            if (oType == OBJECT_MOTHER)  continue;
+            if (oType == OBJECT_MOTHER)
+                continue;
         }
         else if (type == PARTIGUN2)  // shooting insect?
         {
-            if (IsAlien(obj->GetType()))  continue;
+            if (IsAlien(obj->GetType()))
+                continue;
         }
         else if (type == PARTIGUN3)  // suiciding spider?
         {
-            if (IsAlien(obj->GetType()))  continue;
+            if (IsAlien(obj->GetType()))
+                continue;
         }
         else if (type == PARTIGUN4)  // orgaball shooting?
         {
-            if (oType == OBJECT_MOTHER)  continue;
+            if (oType == OBJECT_MOTHER)
+                continue;
         }
         else if (type == PARTITRACK11)  // phazer shooting?
         {
         }
         else
-        {
             continue;
-        }
-        if (!obj->Implements(ObjectInterfaceType::Damageable) && !obj->IsBulletWall())  continue;
+        if (!obj->Implements(ObjectInterfaceType::Damageable)
+            && !obj->IsBulletWall())
+            continue;
 
         Math::Vector oPos = obj->GetPosition();
 
@@ -3566,7 +3585,8 @@ CObject* CParticle::SearchObjectGun(Math::Vector old, Math::Vector pos,
                 }
             }
         }
-        if (shield)  continue;
+        if (shield)
+            continue;
 
         // Test the center of the object, which is necessary for objects
         // that have no sphere in the center (station).
@@ -3585,7 +3605,8 @@ CObject* CParticle::SearchObjectGun(Math::Vector old, Math::Vector pos,
 
             if ( oPos.x+oRadius < box1.x || oPos.x-oRadius > box2.x ||  // outside the box?
                  oPos.y+oRadius < box1.y || oPos.y-oRadius > box2.y ||
-                 oPos.z+oRadius < box1.z || oPos.z-oRadius > box2.z )  continue;
+                 oPos.z+oRadius < box1.z || oPos.z-oRadius > box2.z )
+                continue;
 
             Math::Vector p = Math::Projection(old, pos, oPos);
             float ddist = Math::Distance(p, oPos)-oRadius;
@@ -3604,15 +3625,19 @@ CObject* CParticle::SearchObjectGun(Math::Vector old, Math::Vector pos,
 CObject* CParticle::SearchObjectRay(Math::Vector pos, Math::Vector goal,
                                     ParticleType type, CObject *father)
 {
-    if (m_main->GetMovieLock()) return nullptr;  // current movie?
+    if (m_main->GetMovieLock())
+        return nullptr;  // current movie?
 
     float min = 10.0f;
 
     Math::Vector box1 = pos;
     Math::Vector box2 = goal;
-    if (box1.x > box2.x)  Math::Swap(box1.x, box2.x);  // box1 < box2
-    if (box1.y > box2.y)  Math::Swap(box1.y, box2.y);
-    if (box1.z > box2.z)  Math::Swap(box1.z, box2.z);
+    if (box1.x > box2.x)
+        Math::Swap(box1.x, box2.x);  // box1 < box2
+    if (box1.y > box2.y)
+        Math::Swap(box1.y, box2.y);
+    if (box1.z > box2.z)
+        Math::Swap(box1.z, box2.z);
     box1.x -= min;
     box1.y -= min;
     box1.z -= min;
@@ -3622,12 +3647,15 @@ CObject* CParticle::SearchObjectRay(Math::Vector pos, Math::Vector goal,
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        if (!obj->GetDetectable()) continue;  // inactive?
-        if (obj == father) continue;
+        if (!obj->GetDetectable())
+            continue;  // inactive?
+        if (obj == father)
+            continue;
 
         ObjectType oType = obj->GetType();
 
-        if (oType == OBJECT_TOTO)  continue;
+        if (oType == OBJECT_TOTO)
+            continue;
 
         if ( type  == PARTIRAY1       &&
              oType != OBJECT_MOBILEtg &&
@@ -3638,17 +3666,20 @@ CObject* CParticle::SearchObjectRay(Math::Vector pos, Math::Vector goal,
              oType != OBJECT_BEE      &&
              oType != OBJECT_WORM     &&
              oType != OBJECT_MOTHER   &&
-             oType != OBJECT_NEST     )  continue;
+             oType != OBJECT_NEST     )
+            continue;
 
         Math::Vector oPos = obj->GetPosition();
 
         if ( oPos.x < box1.x || oPos.x > box2.x ||  // outside the box?
              oPos.y < box1.y || oPos.y > box2.y ||
-             oPos.z < box1.z || oPos.z > box2.z )  continue;
+             oPos.z < box1.z || oPos.z > box2.z )
+            continue;
 
         Math::Vector p = Math::Projection(pos, goal, oPos);
         float dist = Math::Distance(p, oPos);
-        if (dist < min)  return obj;
+        if (dist < min)
+            return obj;
     }
 
     return nullptr;
@@ -3674,11 +3705,14 @@ Color CParticle::GetFogColor(Math::Vector pos)
     {
         int i = m_fog[fog];  // i = rank of the particle
 
-        if (pos.y >= m_particle[i].pos.y+FOG_HSUP)  continue;
-        if (pos.y <= m_particle[i].pos.y-FOG_HINF)  continue;
+        if (pos.y >= m_particle[i].pos.y+FOG_HSUP)
+            continue;
+        if (pos.y <= m_particle[i].pos.y-FOG_HINF)
+            continue;
 
         float dist = Math::DistanceProjected(pos, m_particle[i].pos);
-        if (dist >= m_particle[i].dim.x*1.5f)  continue;
+        if (dist >= m_particle[i].dim.x*1.5f)
+            continue;
 
         // Calculates the horizontal distance.
         float factor = 1.0f-powf(dist/(m_particle[i].dim.x*1.5f), 4.0f);
@@ -3733,9 +3767,12 @@ Color CParticle::GetFogColor(Math::Vector pos)
         result.b += color.b*factor;
     }
 
-    if (result.r > 0.6f)  result.r = 0.6f;
-    if (result.g > 0.6f)  result.g = 0.6f;
-    if (result.b > 0.6f)  result.b = 0.6f;
+    if (result.r > 0.6f)
+        result.r = 0.6f;
+    if (result.g > 0.6f)
+        result.g = 0.6f;
+    if (result.b > 0.6f)
+        result.b = 0.6f;
 
     return result;
 }
@@ -3744,19 +3781,16 @@ void CParticle::CutObjectLink(CObject* obj)
 {
     for (int i = 0; i < MAXPARTICULE*MAXPARTITYPE; i++)
     {
-        if (!m_particle[i].used) continue;
+        if (!m_particle[i].used)
+            continue;
 
         if (m_particle[i].objLink == obj)
-        {
             // If the object this particle's coordinates are linked to doesn't exist anymore, remove the particle
             DeleteRank(i);
-        }
 
         if (m_particle[i].objFather == obj)
-        {
             // If the object that spawned this partcle doesn't exist anymore, remove the link
             m_particle[i].objFather = nullptr;
-        }
     }
 }
 

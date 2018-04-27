@@ -178,65 +178,65 @@ bool CScreenMainMenu::EventProcess(const Event &event)
 {
     switch (event.type)
     {
-        case EVENT_KEY_DOWN:
-            if ( event.GetData<KeyEventData>()->key == KEY(ESCAPE) )
-            {
-                m_sound->Play(SOUND_TZOING);
-                m_main->ChangePhase(PHASE_QUIT_SCREEN);
-                return false;
-            }
-            return true;
-            break;
-
-        case EVENT_INTERFACE_QUIT:
+    case EVENT_KEY_DOWN:
+        if ( event.GetData<KeyEventData>()->key == KEY(ESCAPE) )
+        {
             m_sound->Play(SOUND_TZOING);
             m_main->ChangePhase(PHASE_QUIT_SCREEN);
-            break;
+            return false;
+        }
+        return true;
+        break;
 
-        case EVENT_INTERFACE_TRAINER:
-            m_main->SetLevel(LevelCategory::Exercises, 0, 0);
-            m_main->ChangePhase(PHASE_LEVEL_LIST);
-            break;
+    case EVENT_INTERFACE_QUIT:
+        m_sound->Play(SOUND_TZOING);
+        m_main->ChangePhase(PHASE_QUIT_SCREEN);
+        break;
 
-        case EVENT_INTERFACE_DEFI:
-            m_main->SetLevel(LevelCategory::Challenges, 0, 0);
-            m_main->ChangePhase(PHASE_LEVEL_LIST);
-            break;
+    case EVENT_INTERFACE_TRAINER:
+        m_main->SetLevel(LevelCategory::Exercises, 0, 0);
+        m_main->ChangePhase(PHASE_LEVEL_LIST);
+        break;
 
-        case EVENT_INTERFACE_MISSION:
-            m_main->SetLevel(LevelCategory::Missions, 0, 0);
-            m_main->ChangePhase(PHASE_LEVEL_LIST);
-            break;
+    case EVENT_INTERFACE_DEFI:
+        m_main->SetLevel(LevelCategory::Challenges, 0, 0);
+        m_main->ChangePhase(PHASE_LEVEL_LIST);
+        break;
 
-        case EVENT_INTERFACE_FREE:
-            m_main->SetLevel(LevelCategory::FreeGame, 0, 0);
-            m_main->ChangePhase(PHASE_LEVEL_LIST);
-            break;
+    case EVENT_INTERFACE_MISSION:
+        m_main->SetLevel(LevelCategory::Missions, 0, 0);
+        m_main->ChangePhase(PHASE_LEVEL_LIST);
+        break;
 
-        case EVENT_INTERFACE_CODE_BATTLES:
-            m_main->SetLevel(LevelCategory::CodeBattles, 0, 0);
-            m_main->ChangePhase(PHASE_LEVEL_LIST);
-            break;
+    case EVENT_INTERFACE_FREE:
+        m_main->SetLevel(LevelCategory::FreeGame, 0, 0);
+        m_main->ChangePhase(PHASE_LEVEL_LIST);
+        break;
 
-        case EVENT_INTERFACE_USER:
-            m_main->SetLevel(LevelCategory::CustomLevels, 0, 0);
-            m_main->ChangePhase(PHASE_LEVEL_LIST);
-            break;
+    case EVENT_INTERFACE_CODE_BATTLES:
+        m_main->SetLevel(LevelCategory::CodeBattles, 0, 0);
+        m_main->ChangePhase(PHASE_LEVEL_LIST);
+        break;
 
-        case EVENT_INTERFACE_SETUP:
-            m_main->ChangePhase(CScreenSetup::GetTab());
-            break;
+    case EVENT_INTERFACE_USER:
+        m_main->SetLevel(LevelCategory::CustomLevels, 0, 0);
+        m_main->ChangePhase(PHASE_LEVEL_LIST);
+        break;
 
-        case EVENT_INTERFACE_NAME:
-            m_main->ChangePhase(PHASE_PLAYER_SELECT);
-            break;
+    case EVENT_INTERFACE_SETUP:
+        m_main->ChangePhase(CScreenSetup::GetTab());
+        break;
 
-        case EVENT_INTERFACE_SATCOM:
-            m_main->ChangePhase(PHASE_SATCOM);
-            break;
+    case EVENT_INTERFACE_NAME:
+        m_main->ChangePhase(PHASE_PLAYER_SELECT);
+        break;
 
-        default:
-            return true;
+    case EVENT_INTERFACE_SATCOM:
+        m_main->ChangePhase(PHASE_SATCOM);
+        break;
+
+    default:
+        return true;
     }
     return false;
 }

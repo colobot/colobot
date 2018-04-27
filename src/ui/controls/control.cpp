@@ -47,7 +47,7 @@ CControl::CControl()
     m_textAlign   = Gfx::TEXT_ALIGN_CENTER; //instead m_justify
     m_bFocus      = false;
     m_bCapture    = false;
-    m_icon = 0;
+    m_icon        = 0;
     m_fontStretch = false;
     m_bGlint        = false;
     m_glintCorner1  = Math::Point(0.0f, 0.0f);
@@ -89,10 +89,7 @@ bool CControl::Create(Math::Point pos, Math::Point dim, int icon, EventType even
             m_tooltip = text;
     }
     else
-    {
         m_tooltip = text.substr(p + 1);
-    }
-
     return true;
 }
 
@@ -133,8 +130,10 @@ Math::Point CControl::GetDim()const
 
 bool CControl::SetState(const int state, const bool bState)
 {
-    if ( bState )  m_state |= state;
-    else           m_state &= ~state;
+    if ( bState )
+        m_state |= state;
+    else
+        m_state &= ~state;
     return true;
 }
 
@@ -271,11 +270,16 @@ bool CControl::SetTooltip(const std::string& name)
 
 bool CControl::GetTooltip(Math::Point pos, std::string &name)const
 {
-    if ( m_tooltip.length() == 0 ) return false;
-    if ( (m_state & STATE_VISIBLE) == 0 ) return false;
-    if ( (m_state & STATE_ENABLE) == 0 )  return false;
-    if ( m_state & STATE_DEAD )  return false;
-    if ( !Detect(pos) )  return false;
+    if ( m_tooltip.length() == 0 )
+        return false;
+    if ( (m_state & STATE_VISIBLE) == 0 )
+        return false;
+    if ( (m_state & STATE_ENABLE) == 0 )
+        return false;
+    if ( m_state & STATE_DEAD )
+        return false;
+    if ( !Detect(pos) )
+        return false;
 
     name = m_tooltip;
     return true;
@@ -308,12 +312,11 @@ EventType CControl::GetEventType()
 
 bool CControl::EventProcess(const Event &event)
 {
-    if ( m_state & STATE_DEAD )  return true;
+    if ( m_state & STATE_DEAD )
+        return true;
 
     if ( event.type == EVENT_FRAME && m_bGlint )
-    {
         GlintFrame(event);
-    }
 
     if ( event.type == EVENT_MOUSE_MOVE || event.type == EVENT_MOUSE_BUTTON_DOWN || event.type == EVENT_MOUSE_BUTTON_UP )
     {
@@ -323,15 +326,11 @@ bool CControl::EventProcess(const Event &event)
         {
             if ( (m_state & STATE_VISIBLE) &&
                  (m_state & STATE_ENABLE ) )
-            {
                 m_engine->SetMouseType(Gfx::ENG_MOUSE_HAND);
-            }
             SetState(STATE_HILIGHT);
         }
         else
-        {
             ClearState(STATE_HILIGHT);
-        }
     }
 
     if (event.type == EVENT_MOUSE_BUTTON_DOWN &&
@@ -347,13 +346,9 @@ bool CControl::EventProcess(const Event &event)
     if ( event.type == EVENT_MOUSE_MOVE && m_bCapture )
     {
         if ( Detect(event.mousePos) )
-        {
             SetState(STATE_PRESS);
-        }
         else
-        {
             ClearState(STATE_PRESS);
-        }
     }
 
     if (event.type == EVENT_MOUSE_BUTTON_UP &&
@@ -379,10 +374,9 @@ void CControl::GlintDelete()
 
 void CControl::GlintCreate(Math::Point ref, bool bLeft, bool bUp)
 {
-    float   offset;
-
-    offset = 8.0f / 640.0f;
-    if ( offset > m_dim.x / 4.0f)  offset = m_dim.x / 4.0f;
+    float   offset = 8.0f / 640.0f;
+    if ( offset > m_dim.x / 4.0f)
+        offset = m_dim.x / 4.0f;
 
     if ( bLeft )
     {
@@ -396,7 +390,8 @@ void CControl::GlintCreate(Math::Point ref, bool bLeft, bool bUp)
     }
 
     offset = 8.0f/480.0f;
-    if ( offset > m_dim.y / 4.0f)  offset = m_dim.y / 4.0f;
+    if ( offset > m_dim.y / 4.0f)
+        offset = m_dim.y / 4.0f;
 
     if ( bUp )
     {
@@ -421,9 +416,11 @@ void CControl::GlintFrame(const Event &event)
 
     if ( (m_state & STATE_GLINT  ) == 0 ||
          (m_state & STATE_ENABLE ) == 0 ||
-         (m_state & STATE_VISIBLE) == 0 )  return;
+         (m_state & STATE_VISIBLE) == 0 )
+        return;
 
-    if ( !m_settings->GetInterfaceGlint() )  return;
+    if ( !m_settings->GetInterfaceGlint() )
+        return;
 
     m_glintProgress += event.rTime;
 
@@ -451,7 +448,8 @@ void CControl::Draw()
     float       zoomExt, zoomInt;
     int         icon;
 
-    if ( (m_state & STATE_VISIBLE) == 0 )  return;
+    if ( (m_state & STATE_VISIBLE) == 0 )
+        return;
 
     m_engine->SetTexture("textures/interface/button1.png");
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
@@ -460,15 +458,11 @@ void CControl::Draw()
     zoomInt = 0.95f;
 
     if ( m_icon >= 128 )
-    {
         zoomInt = 0.80f;
-    }
 
     icon = 2;
     if ( m_state & STATE_CARD )
-    {
         icon = 26;
-    }
     if ( m_state & STATE_DEFAULT )
     {
         DrawPart(23, 1.3f, 0.0f);
@@ -477,19 +471,13 @@ void CControl::Draw()
         zoomInt *= 1.15f;
     }
     if ( m_state & STATE_HILIGHT )
-    {
         icon = 1;
-    }
     if ( m_state & STATE_CHECK )
     {
         if ( m_state & STATE_CARD )
-        {
             icon = 27;
-        }
         else
-        {
             icon = 0;
-        }
     }
     if ( m_state & STATE_PRESS )
     {
@@ -497,13 +485,9 @@ void CControl::Draw()
         zoomInt *= 0.9f;
     }
     if ( (m_state & STATE_ENABLE) == 0 )
-    {
         icon = 7;
-    }
     if ( m_state & STATE_DEAD )
-    {
         icon = 17;
-    }
 
     if ( m_state & STATE_OKAY )
     {
@@ -516,7 +500,8 @@ void CControl::Draw()
 //?     DrawPart(icon, zoomExt, 0.0f);
         DrawPart(icon, zoomExt, 8.0f / 256.0f);
 
-        if ( m_state & STATE_DEAD )  return;
+        if ( m_state & STATE_DEAD )
+            return;
 
         icon = m_icon;
         if ( icon >= 128 )
@@ -532,19 +517,16 @@ void CControl::Draw()
             m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
         }
         else
-        {
             m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
-        }
         if ( icon != -1 )
-        {
             DrawPart(icon, zoomInt, 0.0f);
-        }
     }
     else    // button with the name?
     {
         DrawPart(icon, 1.0f, 8.0f/256.0f);
 
-        if ( m_state & STATE_DEAD )  return;
+        if ( m_state & STATE_DEAD )
+            return;
 
 //        if ( m_justif < 0 )
         if ( m_textAlign == Gfx::TEXT_ALIGN_LEFT )
@@ -586,9 +568,7 @@ void CControl::DrawPart(int icon, float zoom, float ex)
 
     if ( (m_state & STATE_CARD ) &&
          (m_state & STATE_CHECK) )
-    {
         p2.y += (2.0f / 480.0f);  // a bit above
-    }
 
     c.x = (p1.x + p2.x)/2.0f;
     c.y = (p1.y + p2.y)/2.0f;  // center
@@ -703,8 +683,10 @@ void CControl::DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math:
 
     n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
 
-    if ( corner.x > dim.x / 2.0f )  corner.x = dim.x / 2.0f;
-    if ( corner.y > dim.y / 2.0f )  corner.y = dim.y / 2.0f;
+    if ( corner.x > dim.x / 2.0f )
+        corner.x = dim.x / 2.0f;
+    if ( corner.y > dim.y / 2.0f )
+        corner.y = dim.y / 2.0f;
 
     p1.x = pos.x;
     p1.y = pos.y;
@@ -757,9 +739,7 @@ void CControl::DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math:
 void CControl::DrawWarning(Math::Point pos, Math::Point dim)
 {
     Math::Point     uv1, uv2;
-    float       dp;
-
-    dp = 0.5f / 256.0f;
+    float       dp = 0.5f / 256.0f;
 
     m_engine->SetTexture("textures/interface/button2.png");
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
@@ -801,9 +781,7 @@ void CControl::DrawWarning(Math::Point pos, Math::Point dim)
 void CControl::DrawShadow(Math::Point pos, Math::Point dim, float deep)
 {
     Math::Point     uv1, uv2, corner;
-    float       dp;
-
-    dp = 0.5f/256.0f;
+    float       dp = 0.5f/256.0f;
 
     m_engine->SetTexture("textures/interface/button2.png");
     m_engine->SetState( Gfx::ENG_RSTATE_TTEXTURE_WHITE);
@@ -846,9 +824,7 @@ std::string CControl::GetResourceName(EventType eventType)
     GetResource(RES_EVENT, eventType, name);
     auto index = name.find('\\');
     if (index != std::string::npos)
-    {
         name = name.substr(0, index);
-    }
     return name;
 }
 

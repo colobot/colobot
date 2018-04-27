@@ -54,11 +54,9 @@ CBotLeftExpr* CBotLeftExpr::Compile(CBotToken* &p, CBotCStack* pStack)
     if (p->GetType() == TokenTypVar)
     {
         CBotLeftExpr* inst = new CBotLeftExpr();    // creates the object
-
         inst->SetToken(p);
 
-        CBotVar*     var;
-
+        CBotVar* var = nullptr; //fake init to mute lint
         if (nullptr != (var = pStk->FindVar(p)))   // seek if known variable
         {
             inst->m_nIdent = var->GetUniqNum();
@@ -150,7 +148,8 @@ CBotLeftExpr* CBotLeftExpr::Compile(CBotToken* &p, CBotCStack* pStack)
             }
 
 
-            if (pStk->IsOk()) return static_cast<CBotLeftExpr*> (pStack->Return(inst, pStk));
+            if (pStk->IsOk())
+                return static_cast<CBotLeftExpr*> (pStack->Return(inst, pStk));
         }
         pStk->SetError(CBotErrUndefVar, p);
 err:
@@ -169,9 +168,11 @@ bool CBotLeftExpr::Execute(CBotStack* &pj, CBotStack* array)
     CBotVar*     var1 = nullptr;
     CBotVar*     var2 = nullptr;
     // fetch a variable (not copy)
-    if (!ExecuteVar(var1, array, nullptr, false)) return false;
+    if (!ExecuteVar(var1, array, nullptr, false))
+        return false;
 
-    if (pile->IfStep()) return false;
+    if (pile->IfStep())
+        return false;
 
     if (var1)
     {
@@ -207,10 +208,12 @@ bool CBotLeftExpr::Execute(CBotStack* &pj, CBotStack* array)
 bool CBotLeftExpr::ExecuteVar(CBotVar* &pVar, CBotCStack* &pile)
 {
     pVar = pile->FindVar(m_token);
-    if (pVar == nullptr) return false;
+    if (pVar == nullptr)
+        return false;
 
     if ( m_next3 != nullptr &&
-         !m_next3->ExecuteVar(pVar, pile) ) return false;
+         !m_next3->ExecuteVar(pVar, pile) )
+        return false;
 
     return true;
 }
@@ -228,10 +231,12 @@ bool CBotLeftExpr::ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prevT
         return false;
     }
 
-    if (bStep && m_next3 == nullptr && pile->IfStep()) return false;
+    if (bStep && m_next3 == nullptr && pile->IfStep())
+        return false;
 
     if ( m_next3 != nullptr &&
-         !m_next3->ExecuteVar(pVar, pile, &m_token, bStep, true) ) return false;
+         !m_next3->ExecuteVar(pVar, pile, &m_token, bStep, true) )
+        return false;
 
     return true;
 }
@@ -240,7 +245,8 @@ bool CBotLeftExpr::ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prevT
 void CBotLeftExpr::RestoreStateVar(CBotStack* &pile, bool bMain)
 {
     pile = pile->RestoreStack(this);
-    if (pile == nullptr) return;
+    if (pile == nullptr)
+        return;
 
     if (m_next3 != nullptr)
          m_next3->RestoreStateVar(pile, bMain);

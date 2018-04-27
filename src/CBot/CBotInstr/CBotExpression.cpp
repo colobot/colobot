@@ -146,7 +146,7 @@ CBotInstr* CBotExpression::Compile(CBotToken* &p, CBotCStack* pStack)
     }
 
     delete inst;
-    std::size_t  start, end;
+    std::size_t  start = 0, end = 0;    //fake init to mute lint
     CBotError error = pStack->GetError(start, end);
 
     p = pp;                                        // returns to the top

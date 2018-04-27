@@ -255,7 +255,6 @@ CObject* CCamera::GetControllingObject()
 void CCamera::SetType(CameraType type)
 {
     if (m_type == CAM_TYPE_BACK)
-    {
         for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
         {
             if (IsObjectBeingTransported(obj))
@@ -263,7 +262,6 @@ void CCamera::SetType(CameraType type)
 
             SetTransparency(obj, 0.0f);  // opaque object
         }
-    }
 
     if (type == CAM_TYPE_VISIT)  // *** -> visit ?
     {
@@ -317,35 +315,57 @@ void CCamera::SetType(CameraType type)
         m_addDirectionH = 0.0f;
         m_addDirectionV = -Math::PI*0.05f;
 
-        ObjectType oType;
-        if ( m_cameraObj == nullptr )  oType = OBJECT_NULL;
-        else                     oType = m_cameraObj->GetType();
+        ObjectType oType = OBJECT_NULL;
+        if ( m_cameraObj != nullptr )
+            oType = m_cameraObj->GetType();
 
         m_backDist = 30.0f;
-        if ( oType == OBJECT_BASE     )  m_backDist = 200.0f;
-        if ( oType == OBJECT_HUMAN    )  m_backDist =  20.0f;
-        if ( oType == OBJECT_TECH     )  m_backDist =  20.0f;
-        if ( oType == OBJECT_FACTORY  )  m_backDist =  50.0f;
-        if ( oType == OBJECT_RESEARCH )  m_backDist =  40.0f;
-        if ( oType == OBJECT_DERRICK  )  m_backDist =  40.0f;
-        if ( oType == OBJECT_REPAIR   )  m_backDist =  35.0f;
-        if ( oType == OBJECT_DESTROYER)  m_backDist =  35.0f;
-        if ( oType == OBJECT_TOWER    )  m_backDist =  45.0f;
-        if ( oType == OBJECT_NUCLEAR  )  m_backDist =  70.0f;
-        if ( oType == OBJECT_PARA     )  m_backDist = 180.0f;
-        if ( oType == OBJECT_SAFE     )  m_backDist =  50.0f;
-        if ( oType == OBJECT_HUSTON   )  m_backDist = 120.0f;
-        if ( oType == OBJECT_MOTHER   )  m_backDist =  55.0f;
+        if ( oType == OBJECT_BASE)
+            m_backDist = 200.0f;
+        if ( oType == OBJECT_HUMAN)
+            m_backDist =  20.0f;
+        if ( oType == OBJECT_TECH)
+            m_backDist =  20.0f;
+        if ( oType == OBJECT_FACTORY)
+            m_backDist =  50.0f;
+        if ( oType == OBJECT_RESEARCH)
+            m_backDist =  40.0f;
+        if ( oType == OBJECT_DERRICK)
+            m_backDist =  40.0f;
+        if ( oType == OBJECT_REPAIR)
+            m_backDist =  35.0f;
+        if ( oType == OBJECT_DESTROYER)
+            m_backDist =  35.0f;
+        if ( oType == OBJECT_TOWER)
+            m_backDist =  45.0f;
+        if ( oType == OBJECT_NUCLEAR)
+            m_backDist =  70.0f;
+        if ( oType == OBJECT_PARA)
+            m_backDist = 180.0f;
+        if ( oType == OBJECT_SAFE)
+            m_backDist =  50.0f;
+        if ( oType == OBJECT_HUSTON)
+            m_backDist = 120.0f;
+        if ( oType == OBJECT_MOTHER)
+            m_backDist =  55.0f;
 
         m_backMin = m_backDist/3.0f;
-        if ( oType == OBJECT_HUMAN    )  m_backMin =  10.0f;
-        if ( oType == OBJECT_TECH     )  m_backMin =  10.0f;
-        if ( oType == OBJECT_FACTORY  )  m_backMin =  30.0f;
-        if ( oType == OBJECT_RESEARCH )  m_backMin =  20.0f;
-        if ( oType == OBJECT_NUCLEAR  )  m_backMin =  32.0f;
-        if ( oType == OBJECT_PARA     )  m_backMin =  40.0f;
-        if ( oType == OBJECT_SAFE     )  m_backMin =  25.0f;
-        if ( oType == OBJECT_HUSTON   )  m_backMin =  80.0f;
+        if ( oType == OBJECT_HUMAN)
+            m_backMin =  10.0f;
+        if ( oType == OBJECT_TECH)
+            m_backMin =  10.0f;
+        if ( oType == OBJECT_FACTORY)
+            m_backMin =  30.0f;
+        if ( oType == OBJECT_RESEARCH)
+            m_backMin =  20.0f;
+        if ( oType == OBJECT_NUCLEAR)
+            m_backMin =  32.0f;
+        if ( oType == OBJECT_PARA)
+            m_backMin =  40.0f;
+        if ( oType == OBJECT_SAFE)
+            m_backMin =  25.0f;
+        if ( oType == OBJECT_HUSTON)
+            m_backMin =  80.0f;
     }
 
     //if ( type != CAM_TYPE_ONBOARD && m_cameraObj != 0 )
@@ -598,16 +618,16 @@ void CCamera::StartOver(CameraOverEffect effect, Math::Vector pos, float force)
     m_overType = effect;
     m_overTime = 0.0f;
 
-    float decay;
+    float decay = 100.0f;
     if (m_overType == CAM_OVER_EFFECT_LIGHTNING)
         decay = 400.0f;
-    else
-        decay = 100.0f;
 
     float dist = Math::Distance(m_eyePt, pos);
     dist = (dist - decay) / decay;
-    if (dist < 0.0f) dist = 0.0f;
-    if (dist > 1.0f) dist = 1.0f;
+    if (dist < 0.0f)
+        dist = 0.0f;
+    if (dist > 1.0f)
+        dist = 1.0f;
 
     m_overForce = force * (1.0f - dist);
 
@@ -767,13 +787,14 @@ void CCamera::UpdateCameraAnimation(const Math::Vector &eyePt,
     float prog = 0.0f;
     float dist = Math::Distance(m_finalEye, m_actualEye);
 
-    if (m_smooth == CAM_SMOOTH_NONE) prog = dist;
-    if (m_smooth == CAM_SMOOTH_NORM) prog = powf(dist, 1.5f) * rTime * 0.75f;
-    if (m_smooth == CAM_SMOOTH_HARD) prog = dist * rTime * 4.0f;
+    if (m_smooth == CAM_SMOOTH_NONE)
+        prog = dist;
+    if (m_smooth == CAM_SMOOTH_NORM)
+        prog = powf(dist, 1.5f) * rTime * 0.75f;
+    if (m_smooth == CAM_SMOOTH_HARD)
+        prog = dist * rTime * 4.0f;
     if (dist == 0.0f)
-    {
         m_actualEye = m_finalEye;
-    }
     else
     {
         if (prog > dist)
@@ -782,13 +803,14 @@ void CCamera::UpdateCameraAnimation(const Math::Vector &eyePt,
     }
 
     dist = Math::Distance(m_finalLookat, m_actualLookat);
-    if ( m_smooth == CAM_SMOOTH_NONE ) prog = dist;
-    if ( m_smooth == CAM_SMOOTH_NORM ) prog = powf(dist, 1.5f) * rTime * 3.0f;
-    if ( m_smooth == CAM_SMOOTH_HARD ) prog = dist * rTime * 4.0f;
+    if ( m_smooth == CAM_SMOOTH_NONE )
+        prog = dist;
+    if ( m_smooth == CAM_SMOOTH_NORM )
+        prog = powf(dist, 1.5f) * rTime * 3.0f;
+    if ( m_smooth == CAM_SMOOTH_HARD )
+        prog = dist * rTime * 4.0f;
     if ( dist == 0.0f )
-    {
         m_actualLookat = m_finalLookat;
-    }
     else
     {
         if (prog > dist)
@@ -810,17 +832,18 @@ void CCamera::UpdateCameraAnimation(const Math::Vector &eyePt,
 
 void CCamera::IsCollision(Math::Vector &eye, Math::Vector lookat)
 {
-    if (m_type == CAM_TYPE_BACK ) IsCollisionBack();
-    if (m_type == CAM_TYPE_FIX  ) IsCollisionFix (eye, lookat);
-    if (m_type == CAM_TYPE_PLANE) IsCollisionFix (eye, lookat);
+    if (m_type == CAM_TYPE_BACK )
+        IsCollisionBack();
+    if (m_type == CAM_TYPE_FIX  )
+        IsCollisionFix (eye, lookat);
+    if (m_type == CAM_TYPE_PLANE)
+        IsCollisionFix (eye, lookat);
 }
 
 void CCamera::IsCollisionBack()
 {
-    ObjectType iType;
-    if (m_cameraObj == nullptr)
-        iType = OBJECT_NULL;
-    else
+    ObjectType iType = OBJECT_NULL;
+    if (m_cameraObj != nullptr)
         iType = m_cameraObj->GetType();
 
     Math::Vector min;
@@ -840,7 +863,8 @@ void CCamera::IsCollisionBack()
 
         SetTransparency(obj, 0.0f);  // opaque object
 
-        if (obj == m_cameraObj) continue;
+        if (obj == m_cameraObj)
+            continue;
 
         if ( iType == OBJECT_BASE     ||  // building?
              iType == OBJECT_DERRICK  ||
@@ -857,7 +881,8 @@ void CCamera::IsCollisionBack()
              iType == OBJECT_NUCLEAR  ||
              iType == OBJECT_PARA     ||
              iType == OBJECT_SAFE     ||
-             iType == OBJECT_HUSTON   )  continue;
+             iType == OBJECT_HUSTON   )
+            continue;
 
         ObjectType oType = obj->GetType();
         if ( oType == OBJECT_HUMAN  ||
@@ -866,29 +891,34 @@ void CCamera::IsCollisionBack()
              oType == OBJECT_ANT    ||
              oType == OBJECT_SPIDER ||
              oType == OBJECT_BEE    ||
-             oType == OBJECT_WORM   )  continue;
+             oType == OBJECT_WORM   )
+            continue;
 
         Math::Sphere objSphere = obj->GetCameraCollisionSphere();
         Math::Vector oPos = objSphere.pos;
         float oRadius = objSphere.radius;
-        if ( oRadius <= 2.0f )  continue;  // ignores small objects
+        if ( oRadius <= 2.0f )
+        continue;  // ignores small objects
 
         if ( oPos.x+oRadius < min.x ||
              oPos.y+oRadius < min.y ||
              oPos.z+oRadius < min.z ||
              oPos.x-oRadius > max.x ||
              oPos.y-oRadius > max.y ||
-             oPos.z-oRadius > max.z )  continue;
+             oPos.z-oRadius > max.z )
+            continue;
 
         Math::Vector proj = Projection(m_actualEye, m_actualLookat, oPos);
         float dpp = Math::Distance(proj, oPos);
-        if ( dpp > oRadius )  continue;
+        if ( dpp > oRadius )
+            continue;
 
         if ( oType == OBJECT_FACTORY )
         {
             float angle = Math::RotateAngle(m_actualEye.x-oPos.x, oPos.z-m_actualEye.z);  // CW !
             angle = Math::Direction(angle, obj->GetRotationY());
-            if ( fabs(angle) < 30.0f*Math::PI/180.0f )  continue;  // in the gate?
+            if ( fabs(angle) < 30.0f*Math::PI/180.0f )
+                continue;  // in the gate?
         }
 
         float del = Math::Distance(m_actualEye, m_actualLookat);
@@ -896,7 +926,8 @@ void CCamera::IsCollisionBack()
             del += oRadius;
 
         float len = Math::Distance(m_actualEye, proj);
-        if (len > del) continue;
+        if (len > del)
+            continue;
 
         SetTransparency(obj, 1.0f);  // transparent object
     }
@@ -906,7 +937,8 @@ void CCamera::IsCollisionFix(Math::Vector &eye, Math::Vector lookat)
 {
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        if (obj == m_cameraObj) continue;
+        if (obj == m_cameraObj)
+            continue;
 
         ObjectType type = obj->GetType();
         if ( type == OBJECT_TOTO    ||
@@ -924,12 +956,14 @@ void CCamera::IsCollisionFix(Math::Vector &eye, Math::Vector lookat)
              type == OBJECT_ANT     ||
              type == OBJECT_SPIDER  ||
              type == OBJECT_BEE     ||
-             type == OBJECT_WORM )  continue;
+             type == OBJECT_WORM )
+            continue;
 
         Math::Sphere objSphere = obj->GetCameraCollisionSphere();
         Math::Vector objPos = objSphere.pos;
         float objRadius = objSphere.radius;
-        if (objRadius == 0.0f) continue;
+        if (objRadius == 0.0f)
+            continue;
 
         float dist = Math::Distance(eye, objPos);
         if (dist < objRadius)
@@ -946,14 +980,12 @@ bool CCamera::EventProcess(const Event &event)
 {
     if (event.type == EVENT_MOUSE_MOVE)
     {
-        if (m_engine->GetMouseType() == ENG_MOUSE_SCROLLR ||
-            m_engine->GetMouseType() == ENG_MOUSE_SCROLLL ||
-            m_engine->GetMouseType() == ENG_MOUSE_SCROLLU ||
-            m_engine->GetMouseType() == ENG_MOUSE_SCROLLD ||
-            m_engine->GetMouseType() == ENG_MOUSE_MOVE    )
-        {
+        if ( m_engine->GetMouseType() == ENG_MOUSE_SCROLLR ||
+             m_engine->GetMouseType() == ENG_MOUSE_SCROLLL ||
+             m_engine->GetMouseType() == ENG_MOUSE_SCROLLU ||
+             m_engine->GetMouseType() == ENG_MOUSE_SCROLLD ||
+             m_engine->GetMouseType() == ENG_MOUSE_MOVE    )
             m_engine->SetMouseType(ENG_MOUSE_NORM);
-        }
 
         if ((event.mouseButtonsState & MOUSE_BUTTON_RIGHT) != 0 || (event.mouseButtonsState & MOUSE_BUTTON_MIDDLE) != 0)
         {
@@ -1018,13 +1050,9 @@ bool CCamera::EventProcess(const Event &event)
         if (event.GetData<MouseButtonEventData>()->button == MOUSE_BUTTON_RIGHT || event.GetData<MouseButtonEventData>()->button == MOUSE_BUTTON_MIDDLE)
         {
             if ((event.mouseButtonsState & MOUSE_BUTTON_RIGHT) != 0 || (event.mouseButtonsState & MOUSE_BUTTON_MIDDLE) != 0)
-            {
                 m_engine->SetMouseType(ENG_MOUSE_MOVE);
-            }
             else
-            {
                 m_engine->SetMouseType(ENG_MOUSE_NORM);
-            }
         }
     }
 
@@ -1085,9 +1113,7 @@ bool CCamera::EventFrameFree(const Event &event, bool keysAllowed)
             m_eyePt = Math::LookatPoint(m_eyePt, m_directionH - Math::PI / 2.0f, m_directionV,  cameraMove.x * factor);
     }
     else
-    {
         m_directionH -= cameraMove.x;
-    }
 
     // Up/Down (eye or lookat point)
     if (secondary)
@@ -1178,10 +1204,14 @@ bool CCamera::EventFrameBack(const Event &event)
         ObjectType type = m_cameraObj->GetType();
 
         Math::Vector lookatPt = m_cameraObj->GetPosition();
-             if (type == OBJECT_BASE ) lookatPt.y += 40.0f;
-        else if (type == OBJECT_HUMAN) lookatPt.y +=  1.0f;
-        else if (type == OBJECT_TECH ) lookatPt.y +=  1.0f;
-        else                           lookatPt.y +=  4.0f;
+        if      (type == OBJECT_BASE )
+            lookatPt.y += 40.0f;
+        else if (type == OBJECT_HUMAN)
+            lookatPt.y +=  1.0f;
+        else if (type == OBJECT_TECH )
+            lookatPt.y +=  1.0f;
+        else
+            lookatPt.y +=  4.0f;
 
         float h = -m_cameraObj->GetRotationY();  // angle vehicle / building
 
@@ -1203,13 +1233,9 @@ bool CCamera::EventFrameBack(const Event &event)
              type == OBJECT_HUSTON   ||
              type == OBJECT_START    ||
              type == OBJECT_END      )  // building?
-        {
             h += Math::PI * 0.20f;  // nearly face
-        }
         else    // vehicle?
-        {
             h += Math::PI;  // back
-        }
         h = Math::NormAngle(h);
         float v = 0.0f;  //?
 

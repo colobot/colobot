@@ -59,7 +59,8 @@ void CScreenSetupGame::CreateInterface()
 
     CScreenSetup::CreateInterface();
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == nullptr )  return;
+    if ( pw == nullptr )
+        return;
 
     ddim.x = dim.x*6;
     ddim.y = dim.y*0.5f;
@@ -154,110 +155,107 @@ void CScreenSetupGame::CreateInterface()
 
 bool CScreenSetupGame::EventProcess(const Event &event)
 {
-    if (!CScreenSetup::EventProcess(event)) return false;
+    if (!CScreenSetup::EventProcess(event))
+        return false;
 
     switch( event.type )
     {
-        case EVENT_INTERFACE_TOOLTIP:
-            m_settings->SetTooltips(!m_settings->GetTooltips());
-            ChangeSetupButtons();
-            UpdateSetupButtons();
-            break;
+    case EVENT_INTERFACE_TOOLTIP:
+        m_settings->SetTooltips(!m_settings->GetTooltips());
+        ChangeSetupButtons();
+        UpdateSetupButtons();
+        break;
 
-        case EVENT_INTERFACE_GLINT:
-            m_settings->SetInterfaceGlint(!m_settings->GetInterfaceGlint());
-            ChangeSetupButtons();
-            UpdateSetupButtons();
-            break;
+    case EVENT_INTERFACE_GLINT:
+        m_settings->SetInterfaceGlint(!m_settings->GetInterfaceGlint());
+        ChangeSetupButtons();
+        UpdateSetupButtons();
+        break;
 
-        case EVENT_INTERFACE_RAIN:
-            m_settings->SetInterfaceRain(!m_settings->GetInterfaceRain());
-            ChangeSetupButtons();
-            UpdateSetupButtons();
-            break;
+    case EVENT_INTERFACE_RAIN:
+        m_settings->SetInterfaceRain(!m_settings->GetInterfaceRain());
+        ChangeSetupButtons();
+        UpdateSetupButtons();
+        break;
 
-        case EVENT_INTERFACE_BGPAUSE:
-            m_settings->SetFocusLostPause(!m_settings->GetFocusLostPause());
-            ChangeSetupButtons();
-            UpdateSetupButtons();
-            break;
+    case EVENT_INTERFACE_BGPAUSE:
+        m_settings->SetFocusLostPause(!m_settings->GetFocusLostPause());
+        ChangeSetupButtons();
+        UpdateSetupButtons();
+        break;
 
-        case EVENT_INTERFACE_EDITMODE:
-            m_engine->SetEditIndentMode(!m_engine->GetEditIndentMode());
-            ChangeSetupButtons();
-            UpdateSetupButtons();
-            break;
+    case EVENT_INTERFACE_EDITMODE:
+        m_engine->SetEditIndentMode(!m_engine->GetEditIndentMode());
+        ChangeSetupButtons();
+        UpdateSetupButtons();
+        break;
 
-        case EVENT_INTERFACE_EDITVALUE:
-            if ( m_engine->GetEditIndentValue() == 2 )
-            {
-                m_engine->SetEditIndentValue(4);
-            }
-            else
-            {
-                m_engine->SetEditIndentValue(2);
-            }
-            ChangeSetupButtons();
-            UpdateSetupButtons();
-            break;
+    case EVENT_INTERFACE_EDITVALUE:
+        if ( m_engine->GetEditIndentValue() == 2 )
+            m_engine->SetEditIndentValue(4);
+        else
+            m_engine->SetEditIndentValue(2);
+        ChangeSetupButtons();
+        UpdateSetupButtons();
+        break;
 
-        case EVENT_INTERFACE_SOLUCE4:
-            m_settings->SetSoluce4(!m_settings->GetSoluce4());
-            ChangeSetupButtons();
-            UpdateSetupButtons();
-            break;
+    case EVENT_INTERFACE_SOLUCE4:
+        m_settings->SetSoluce4(!m_settings->GetSoluce4());
+        ChangeSetupButtons();
+        UpdateSetupButtons();
+        break;
 
-        case EVENT_INTERFACE_MOVIES:
-            m_settings->SetMovies(!m_settings->GetMovies());
-            ChangeSetupButtons();
-            UpdateSetupButtons();
-            break;
+    case EVENT_INTERFACE_MOVIES:
+        m_settings->SetMovies(!m_settings->GetMovies());
+        ChangeSetupButtons();
+        UpdateSetupButtons();
+        break;
 
-        case EVENT_INTERFACE_SCROLL:
-            m_camera->SetOldCameraScroll(!m_camera->GetOldCameraScroll());
-            ChangeSetupButtons();
-            UpdateSetupButtons();
-            break;
+    case EVENT_INTERFACE_SCROLL:
+        m_camera->SetOldCameraScroll(!m_camera->GetOldCameraScroll());
+        ChangeSetupButtons();
+        UpdateSetupButtons();
+        break;
 
-        case EVENT_INTERFACE_INVERTX:
-            m_camera->SetCameraInvertX(!m_camera->GetCameraInvertX());
-            ChangeSetupButtons();
-            UpdateSetupButtons();
-            break;
+    case EVENT_INTERFACE_INVERTX:
+        m_camera->SetCameraInvertX(!m_camera->GetCameraInvertX());
+        ChangeSetupButtons();
+        UpdateSetupButtons();
+        break;
 
-        case EVENT_INTERFACE_INVERTY:
-            m_camera->SetCameraInvertY(!m_camera->GetCameraInvertY());
-            ChangeSetupButtons();
-            UpdateSetupButtons();
-            break;
+    case EVENT_INTERFACE_INVERTY:
+        m_camera->SetCameraInvertY(!m_camera->GetCameraInvertY());
+        ChangeSetupButtons();
+        UpdateSetupButtons();
+        break;
 
-        case EVENT_INTERFACE_EFFECT:
-            m_camera->SetEffect(!m_camera->GetEffect());
-            ChangeSetupButtons();
-            UpdateSetupButtons();
-            break;
+    case EVENT_INTERFACE_EFFECT:
+        m_camera->SetEffect(!m_camera->GetEffect());
+        ChangeSetupButtons();
+        UpdateSetupButtons();
+        break;
 
-        case EVENT_INTERFACE_BLOOD:
-            m_camera->SetBlood(!m_camera->GetBlood());
-            ChangeSetupButtons();
-            UpdateSetupButtons();
-            break;
+    case EVENT_INTERFACE_BLOOD:
+        m_camera->SetBlood(!m_camera->GetBlood());
+        ChangeSetupButtons();
+        UpdateSetupButtons();
+        break;
 
-        case EVENT_INTERFACE_AUTOSAVE_ENABLE:
-            m_main->SetAutosave(!m_main->GetAutosave());
-            ChangeSetupButtons();
-            UpdateSetupButtons();
-            break;
+    case EVENT_INTERFACE_AUTOSAVE_ENABLE:
+        m_main->SetAutosave(!m_main->GetAutosave());
+        ChangeSetupButtons();
+        UpdateSetupButtons();
+        break;
 
-        case EVENT_INTERFACE_AUTOSAVE_INTERVAL:
-        case EVENT_INTERFACE_AUTOSAVE_SLOTS:
-        case EVENT_INTERFACE_LANGUAGE:
-            ChangeSetupButtons();
-            UpdateSetupButtons();
-            break;
+    case EVENT_INTERFACE_AUTOSAVE_INTERVAL:
+    case EVENT_INTERFACE_AUTOSAVE_SLOTS:
+    case EVENT_INTERFACE_LANGUAGE:
+        ChangeSetupButtons();
+        UpdateSetupButtons();
+        break;
 
-        default:
-            return true;
+    default:
+        return true;
     }
     return false;
 }
@@ -272,98 +270,70 @@ void CScreenSetupGame::UpdateSetupButtons()
     CList*      pli;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == nullptr )  return;
+    if ( pw == nullptr )
+        return;
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_TOOLTIP));
     if ( pc != nullptr )
-    {
         pc->SetState(STATE_CHECK, m_settings->GetTooltips());
-    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_GLINT));
     if ( pc != nullptr )
-    {
         pc->SetState(STATE_CHECK, m_settings->GetInterfaceGlint());
-    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_RAIN));
     if ( pc != nullptr )
-    {
         pc->SetState(STATE_CHECK, m_settings->GetInterfaceRain());
-    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_BGPAUSE));
     if ( pc != nullptr )
-    {
         pc->SetState(STATE_CHECK, m_settings->GetFocusLostPause());
-    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_EDITMODE));
     if ( pc != nullptr )
-    {
         pc->SetState(STATE_CHECK, m_engine->GetEditIndentMode());
-    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_EDITVALUE));
     if ( pc != nullptr )
-    {
         pc->SetState(STATE_CHECK, m_engine->GetEditIndentValue()>2);
-    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SOLUCE4));
     if ( pc != nullptr )
-    {
         pc->SetState(STATE_CHECK, m_settings->GetSoluce4());
-    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_MOVIES));
     if ( pc != nullptr )
-    {
         pc->SetState(STATE_CHECK, m_settings->GetMovies());
-    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SCROLL));
     if ( pc != nullptr )
-    {
         pc->SetState(STATE_CHECK, m_camera->GetOldCameraScroll());
-    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_INVERTX));
     if ( pc != nullptr )
-    {
         pc->SetState(STATE_CHECK, m_camera->GetCameraInvertX());
-    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_INVERTY));
     if ( pc != nullptr )
-    {
         pc->SetState(STATE_CHECK, m_camera->GetCameraInvertY());
-    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_EFFECT));
     if ( pc != nullptr )
-    {
         pc->SetState(STATE_CHECK, m_camera->GetEffect());
-    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_BLOOD));
     if ( pc != nullptr )
-    {
         pc->SetState(STATE_CHECK, m_camera->GetBlood());
-    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_AUTOSAVE_ENABLE));
     if ( pc != nullptr )
-    {
         pc->SetState(STATE_CHECK, m_main->GetAutosave());
-    }
 
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_AUTOSAVE_INTERVAL));
     if ( ps != nullptr )
     {
         ps->SetState(STATE_ENABLE, m_main->GetAutosave());
         ps->SetVisibleValue(m_main->GetAutosaveInterval());
-
     }
 
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_AUTOSAVE_SLOTS));
@@ -390,7 +360,8 @@ void CScreenSetupGame::ChangeSetupButtons()
     float       value;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == nullptr )  return;
+    if ( pw == nullptr )
+        return;
 
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_AUTOSAVE_INTERVAL));
     if ( ps != nullptr )

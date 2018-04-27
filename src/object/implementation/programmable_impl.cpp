@@ -68,30 +68,22 @@ bool CProgrammableObjectImpl::EventProcess(const Event &event)
 {
     if (event.type == EVENT_FRAME)
     {
-        if ( m_object->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject*>(m_object)->IsDying() && IsProgram() )
-        {
+        if ( m_object->Implements(ObjectInterfaceType::Destroyable)
+            && dynamic_cast<CDestroyableObject*>(m_object)->IsDying() && IsProgram() )
             StopProgram();
-        }
 
         if ( GetActivity() )
         {
             CProfiler::StartPerformanceCounter(PCNT_UPDATE_CBOT);
             if ( IsProgram() )  // current program?
-            {
                 if ( m_currentProgram->script->Continue() )
-                {
                     StopProgram();
-                }
-            }
 
             if ( m_traceRecord )  // registration of the design in progress?
-            {
                 TraceRecordFrame();
-            }
             CProfiler::StopPerformanceCounter(PCNT_UPDATE_CBOT);
         }
     }
-
     return true;
 }
 
@@ -113,7 +105,8 @@ void CProgrammableObjectImpl::RunProgram(Program* program)
     {
         m_currentProgram = program;  // start new program
         m_object->UpdateInterface();
-        if (m_object->Implements(ObjectInterfaceType::Controllable) && dynamic_cast<CControllableObject*>(m_object)->GetTrainer())
+        if (m_object->Implements(ObjectInterfaceType::Controllable)
+            && dynamic_cast<CControllableObject*>(m_object)->GetTrainer())
             CRobotMain::GetInstancePointer()->StartMissionTimer();
     }
 }
@@ -121,10 +114,7 @@ void CProgrammableObjectImpl::RunProgram(Program* program)
 void CProgrammableObjectImpl::StopProgram()
 {
     if ( m_currentProgram != nullptr )
-    {
         m_currentProgram->script->Stop();
-    }
-
     m_currentProgram = nullptr;
 
     m_object->UpdateInterface();
@@ -145,7 +135,7 @@ bool CProgrammableObjectImpl::IsProgram()
 
 bool CProgrammableObjectImpl::ReadStack(FILE *file)
 {
-    short       op;
+    short       op = -1; //fake init to mute lint
 
     CBot::fRead(&op, sizeof(short), 1, file);
     if ( op == 1 )  // run ?
@@ -157,12 +147,11 @@ bool CProgrammableObjectImpl::ReadStack(FILE *file)
             {
                 assert(op < static_cast<int>(dynamic_cast<CProgramStorageObject*>(m_object)->GetProgramCount()));
                 m_currentProgram = dynamic_cast<CProgramStorageObject*>(m_object)->GetProgram(op);
-                if ( !m_currentProgram->script->ReadStack(file) )  return false;
+                if ( !m_currentProgram->script->ReadStack(file) )
+                    return false;
             }
             else
-            {
                 return false;
-            }
         }
     }
 
@@ -205,9 +194,7 @@ const int MAXTRACERECORD = 1000;
 void CProgrammableObjectImpl::TraceRecordStart()
 {
     if (m_traceRecord)
-    {
         TraceRecordStop();
-    }
 
     assert(m_object->Implements(ObjectInterfaceType::TraceDrawing));
     CTraceDrawingObject* traceDrawing = dynamic_cast<CTraceDrawingObject*>(m_object);
@@ -220,13 +207,9 @@ void CProgrammableObjectImpl::TraceRecordStart()
     m_traceAngle = m_object->GetRotationY();
 
     if ( traceDrawing->GetTraceDown() )  // pencil down?
-    {
         m_traceColor = traceDrawing->GetTraceColor();
-    }
     else    // pen up?
-    {
         m_traceColor = TraceColor::Default;
-    }
 
     m_traceRecordBuffer = MakeUniqueArray<TraceRecord>(MAXTRACERECORD);
     m_traceRecordIndex = 0;
@@ -246,17 +229,18 @@ void CProgrammableObjectImpl::TraceRecordFrame()
     CPhysics* physics = dynamic_cast<CMovableObject*>(m_object)->GetPhysics();
 
     speed = physics->GetLinMotionX(MO_REASPEED);
-    if ( speed > 0.0f )  oper = TO_ADVANCE;
-    if ( speed < 0.0f )  oper = TO_RECEDE;
+    if ( speed > 0.0f )
+        oper = TO_ADVANCE;
+    if ( speed < 0.0f )
+        oper = TO_RECEDE;
 
     speed = physics->GetCirMotionY(MO_REASPEED);
-    if ( speed != 0.0f )  oper = TO_TURN;
+    if ( speed != 0.0f )
+        oper = TO_TURN;
 
     TraceColor color = TraceColor::Default;
     if ( traceDrawing->GetTraceDown() )  // pencil down?
-    {
         color = traceDrawing->GetTraceColor();
-    }
 
     if ( oper != m_traceOper ||
          color != m_traceColor )
@@ -275,9 +259,7 @@ void CProgrammableObjectImpl::TraceRecordFrame()
         }
 
         if ( color != m_traceColor )
-        {
             TraceRecordOper(TO_PEN, static_cast<float>(color));
-        }
 
         m_traceOper = oper;
         m_tracePos = m_object->GetPosition();
@@ -308,13 +290,9 @@ void CProgrammableObjectImpl::TraceRecordStop()
         if ( curOper == lastOper )
         {
             if ( curOper == TO_PEN )
-            {
                 lastParam = curParam;
-            }
             else
-            {
                 lastParam += curParam;
-            }
         }
         else
         {
@@ -338,10 +316,9 @@ void CProgrammableObjectImpl::TraceRecordStop()
 
 bool CProgrammableObjectImpl::TraceRecordOper(TraceOper oper, float param)
 {
-    int     i;
-
-    i = m_traceRecordIndex;
-    if ( i >= MAXTRACERECORD )  return false;
+    int     i = m_traceRecordIndex;
+    if ( i >= MAXTRACERECORD )
+        return false;
 
     m_traceRecordBuffer[i].oper = oper;
     m_traceRecordBuffer[i].param = param;
@@ -390,30 +367,30 @@ bool CProgrammableObjectImpl::IsTraceRecord()
 }
 
 
-void CProgrammableObjectImpl::SetCmdLine(unsigned int rank, float value)
+void CProgrammableObjectImpl::SetCmdLine(const unsigned int rank, const float value)
 {
     if (rank == m_cmdLine.size())
-    {
         m_cmdLine.push_back(value);
-    }
     else if (rank < m_cmdLine.size())
-    {
         m_cmdLine[rank] = value;
-    }
     else
-    {
         // should never happen
         assert(false);
-    }
 }
 
 float CProgrammableObjectImpl::GetCmdLine(unsigned int rank)
 {
-    if ( rank >= m_cmdLine.size() )  return 0.0f;
+    if ( rank >= m_cmdLine.size() )
+        return 0.0f;
     return m_cmdLine[rank];
 }
 
 std::vector<float>& CProgrammableObjectImpl::GetCmdLine()
+{
+    return m_cmdLine;
+}
+
+const std::vector<float>& CProgrammableObjectImpl::GetCmdLine()const
 {
     return m_cmdLine;
 }

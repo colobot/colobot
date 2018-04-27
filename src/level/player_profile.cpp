@@ -107,7 +107,7 @@ void PlayerApperance::DefHairColor()
 }
 
 
-CPlayerProfile::CPlayerProfile(std::string playerName)
+CPlayerProfile::CPlayerProfile(const std::string& playerName)
 {
     m_playerName = playerName;
     GetConfigFile().SetStringProperty("Gamer", "LastName", m_playerName);
@@ -118,9 +118,7 @@ CPlayerProfile::CPlayerProfile(std::string playerName)
     m_freegameResearch = 0;
 
     for(int i = 0; i < static_cast<int>(LevelCategory::Max); i++)
-    {
         m_levelInfoLoaded[static_cast<LevelCategory>(i)] = false;
-    }
 
     LoadApperance();
 }
@@ -132,8 +130,8 @@ CPlayerProfile::~CPlayerProfile()
 std::string CPlayerProfile::GetLastName()
 {
     std::string name;
-
-    if(!GetConfigFile().GetStringProperty("Gamer", "LastName", name) || name.empty())
+    if(!GetConfigFile().GetStringProperty("Gamer", "LastName", name)
+        || name.empty())
         GetResource(RES_TEXT, RT_NAME_DEFAULT, name);
 
     return name;
@@ -147,9 +145,7 @@ std::vector<std::string> CPlayerProfile::GetPlayerList()
 bool CPlayerProfile::Create()
 {
     if (!CResourceManager::DirectoryExists(GetSaveDir()))
-    {
         return CResourceManager::CreateDirectory(GetSaveDir());
-    }
     return true;
 }
 
@@ -195,7 +191,9 @@ void CPlayerProfile::SetLevelPassed(LevelCategory cat, int chap, int rank, bool 
 
     if (bPassed && rank != 0)
     {
-        assert(cat == CRobotMain::GetInstancePointer()->GetLevelCategory() && chap == CRobotMain::GetInstancePointer()->GetLevelChap()); //TODO: Refactor UpdateChapterPassed
+        assert(cat == CRobotMain::GetInstancePointer()->GetLevelCategory()
+            && chap == CRobotMain::GetInstancePointer()->GetLevelChap());
+            //TODO: Refactor UpdateChapterPassed
         CRobotMain::GetInstancePointer()->UpdateChapterPassed();
     }
 }
@@ -209,15 +207,12 @@ bool CPlayerProfile::GetLevelPassed(LevelCategory cat, int chap, int rank)
 
 int CPlayerProfile::GetChapPassed(LevelCategory cat)
 {
-    if ( CRobotMain::GetInstancePointer()->GetShowAll() )  return MAXSCENE;
+    if ( CRobotMain::GetInstancePointer()->GetShowAll() )
+        return MAXSCENE;
 
     for ( int j = 1; j <= MAXSCENE; j++ )
-    {
         if ( !GetLevelPassed(cat, j, 0) )
-        {
             return j-1;
-        }
-    }
     return MAXSCENE;
 }
 
@@ -231,7 +226,8 @@ int CPlayerProfile::GetSelectedChap(LevelCategory category)
 {
     if(!m_levelInfoLoaded[category])
         LoadFinishedLevels(category);
-    if(m_selectChap[category] < 1) return 1;
+    if(m_selectChap[category] < 1)
+        return 1;
     return m_selectChap[category];
 }
 
@@ -245,7 +241,8 @@ int CPlayerProfile::GetSelectedRank(LevelCategory category)
 {
     if(!m_levelInfoLoaded[category])
         LoadFinishedLevels(category);
-    if(m_selectRank[category] < 1) return 1;
+    if(m_selectRank[category] < 1)
+        return 1;
     return m_selectRank[category];
 }
 
@@ -273,16 +270,17 @@ void CPlayerProfile::LoadFinishedLevels(LevelCategory category)
     {
         std::getline(file, line);
         if (line == "")
-        {
             break;
-        }
 
-        int chap, rank, numTry, passed;
+        int chap = -1, rank = -1,
+            numTry = -1, passed = -1; //  fake inits to mute lint
         sscanf(line.c_str(), "Chapter %d: Scene %d: numTry=%d passed=%d\n",
                 &chap, &rank, &numTry, &passed);
 
-        if ( chap < 0 || chap > MAXSCENE ) continue;
-        if ( rank < 0 || rank > MAXSCENE ) continue;
+        if ( chap < 0 || chap > MAXSCENE )
+            continue;
+        if ( rank < 0 || rank > MAXSCENE )
+            continue;
 
         m_levelInfo[category][chap][rank].numTry  = numTry;
         m_levelInfo[category][chap][rank].bPassed = passed;
@@ -310,8 +308,10 @@ void CPlayerProfile::SaveFinishedLevels(LevelCategory category)
         if (m_levelInfo[category].find(chap) == m_levelInfo[category].end()) continue;
         for(int rank = 0; rank <= MAXSCENE; rank++)
         {
-            if (m_levelInfo[category][chap].find(rank) == m_levelInfo[category][chap].end()) continue;
-            if (m_levelInfo[category][chap][rank].numTry == 0 && !m_levelInfo[category][chap][rank].bPassed)  continue;
+            if (m_levelInfo[category][chap].find(rank) == m_levelInfo[category][chap].end())
+                continue;
+            if (m_levelInfo[category][chap][rank].numTry == 0 && !m_levelInfo[category][chap][rank].bPassed)
+                continue;
 
             file << "Chapter " << chap << ": Scene " << rank << ": numTry=" << m_levelInfo[category][chap][rank].numTry << " passed=" << (m_levelInfo[category][chap][rank].bPassed ? "1" : "0") << "\n";
         }
@@ -412,9 +412,7 @@ void CPlayerProfile::LoadApperance()
     {
         CLevelParser apperanceParser(filename);
         apperanceParser.Load();
-        CLevelParserLine* line;
-
-        line = apperanceParser.Get("Head");
+        CLevelParserLine* line = apperanceParser.Get("Head");
         m_apperance.face = line->GetParam("face")->AsInt();
         m_apperance.glasses = line->GetParam("glasses")->AsInt();
         m_apperance.colorHair = line->GetParam("hair")->AsColor();
@@ -461,12 +459,8 @@ bool CPlayerProfile::HasAnySavedScene()
 {
     auto saveDirs = CResourceManager::ListDirectories(GetSaveDir());
     for (auto dir : saveDirs)
-    {
         if (CResourceManager::Exists(GetSaveFile(dir + "/data.sav")))
-        {
             return true;
-        }
-    }
     return false;
 }
 
@@ -490,18 +484,14 @@ std::vector<SavedScene> CPlayerProfile::GetSavedSceneList()
 
     std::vector<SavedScene> result;
     for (auto dir : sortedSaveDirs)
-    {
         result.push_back(dir.second);
-    }
     return result;
 }
 
 void CPlayerProfile::SaveScene(std::string dir, std::string info)
 {
     if (!CResourceManager::DirectoryExists(dir))
-    {
         CResourceManager::CreateDirectory(dir);
-    }
 
     CRobotMain::GetInstancePointer()->IOWriteScene(dir + "/data.sav", dir + "/cbot.run", dir + "/screen.png", info.c_str());
 }
@@ -518,7 +508,8 @@ void CPlayerProfile::LoadScene(std::string dir)
     CLevelParserLine* line = levelParser.Get("Mission");
     cat = GetLevelCategoryFromDir(line->GetParam("base")->AsString());
 
-	if (dir == "../../crashsave") LoadFinishedLevels(cat);
+	if (dir == "../../crashsave")
+        LoadFinishedLevels(cat);
 
     rank = line->GetParam("rank")->AsInt();
     if (cat == LevelCategory::CustomLevels)
@@ -528,21 +519,18 @@ void CPlayerProfile::LoadScene(std::string dir)
         CRobotMain::GetInstancePointer()->UpdateCustomLevelList();
         auto customLevelList = CRobotMain::GetInstancePointer()->GetCustomLevelList();
         for (unsigned int i = 0; i < customLevelList.size(); i++)
-        {
             if (customLevelList[i] == dir)
             {
                 chap = i+1;
                 break;
             }
-        }
-        if (chap == 0) return; //TODO: Exception
+        if (chap == 0)
+            return; //TODO: Exception
     }
     else
     {
         if(line->GetParam("chap")->IsDefined())
-        {
             chap = line->GetParam("chap")->AsInt();
-        }
         else
         {
             // Backwards combatibility
@@ -559,8 +547,6 @@ void CPlayerProfile::LoadScene(std::string dir)
 bool CPlayerProfile::DeleteScene(std::string dir)
 {
     if (CResourceManager::DirectoryExists(dir))
-    {
         return CResourceManager::RemoveDirectory(dir);
-    }
     return false;
 }

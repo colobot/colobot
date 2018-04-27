@@ -32,9 +32,7 @@
 CAutoHouston::CAutoHouston(COldObject* object) : CAuto(object)
 {
     for (int i = 0; i < HUSTONMAXLENS; i++)
-    {
         m_lens[i].parti = -1;
-    }
 
     m_lens[0].type = Gfx::PARTISELR;
     m_lens[1].type = Gfx::PARTISELR;
@@ -57,7 +55,7 @@ CAutoHouston::CAutoHouston(COldObject* object) : CAuto(object)
     m_lens[2].off = 0.4f;
     m_lens[3].off = 0.4f;
 
-    int i = 4;
+    short i = 4;
 
     // Part under the radar.
     m_lens[i].type = Gfx::PARTISELR;
@@ -204,15 +202,16 @@ bool CAutoHouston::EventProcess(const Event &event)
 {
     CAuto::EventProcess(event);
 
-    if ( m_engine->GetPause() )  return true;
+    if ( m_engine->GetPause() )
+        return true;
 
-    float angle;
-    angle = -m_time*1.0f;
+    float angle = -m_time*1.0f;
     m_object->SetPartRotationY(1, angle);  // rotates the radar
     angle = sinf(m_time*4.0f)*0.3f;
     m_object->SetPartRotationX(2, angle);
 
-    if ( event.type != EVENT_FRAME )  return true;
+    if ( event.type != EVENT_FRAME )
+        return true;
 
     m_progress += event.rTime*m_speed;
 
@@ -265,10 +264,12 @@ bool CAutoHouston::CreateInterface(bool bSelect)
 
     CAuto::CreateInterface(bSelect);
 
-    if ( !bSelect )  return true;
+    if ( !bSelect )
+        return true;
 
     pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-    if ( pw == nullptr )  return false;
+    if ( pw == nullptr )
+        return false;
 
     ox = 3.0f/640.0f;
     oy = 3.0f/480.0f;

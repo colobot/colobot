@@ -170,7 +170,8 @@ struct UTF8Char
     explicit UTF8Char(const std::string &text,
                       const std::size_t index,
                       const char*optCallOrigin="")
-        //: c1('\0'), c2('\0'), c3('\0'), c4('\0')
+        : c1('\0'), c2('\0'), c3('\0'), c4('\0')
+        // nota: thoses init are useless except for lint
     {
         Init(text, index, optCallOrigin);
     }

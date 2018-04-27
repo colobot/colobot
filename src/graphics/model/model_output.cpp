@@ -40,8 +40,8 @@ namespace ModelOutput
     void WriteCameraCollisionSphere(const Math::Sphere& sphere, std::ostream &stream);
     void WriteTextMesh(const CModelMesh* mesh, const std::string& meshName, std::ostream &stream);
     std::string VectorToString(const Math::Vector& vector);
-    std::string TransparentModeToString(ModelTransparentMode mode);
-    std::string SpecialMarkToString(ModelSpecialMark specialMark);
+    std::string TransparentModeToString(const ModelTransparentMode mode);
+    std::string SpecialMarkToString(const ModelSpecialMark specialMark);
 
     void WriteBinaryModel(const CModel& model, std::ostream &stream);
 
@@ -49,7 +49,7 @@ namespace ModelOutput
 
     int ConvertToOldState(const ModelTriangle& triangle);
 
-    void WriteBinaryVertexTex2(VertexTex2 vertex, std::ostream &stream);
+    void WriteBinaryVertexTex2(const VertexTex2& vertex, std::ostream &stream);
     void WriteBinaryMaterial(const Material& material, std::ostream &stream);
 
     void WriteTextVertexTex2(const VertexTex2& vertex, std::ostream &stream);
@@ -66,17 +66,17 @@ void ModelOutput::Write(const CModel& model, std::ostream &stream, ModelFormat f
     {
         switch (format)
         {
-            case ModelFormat::Text:
-                WriteTextModel(model, stream);
-                break;
+        case ModelFormat::Text:
+            WriteTextModel(model, stream);
+            break;
 
-            case ModelFormat::Binary:
-                WriteBinaryModel(model, stream);
-                break;
+        case ModelFormat::Binary:
+            WriteBinaryModel(model, stream);
+            break;
 
-            case ModelFormat::Old:
-                WriteOldModel(model, stream);
-                break;
+        case ModelFormat::Old:
+            WriteOldModel(model, stream);
+            break;
         }
     }
     catch (const CModelIOException& e)
@@ -210,50 +210,50 @@ std::string ModelOutput::VectorToString(const Math::Vector& vector)
     return str.str();
 }
 
-std::string ModelOutput::TransparentModeToString(ModelTransparentMode mode)
+std::string ModelOutput::TransparentModeToString(const ModelTransparentMode mode)
 {
     std::string str;
     switch (mode)
     {
-        case ModelTransparentMode::None:
-            str = "none";
-            break;
+    case ModelTransparentMode::None:
+        str = "none";
+        break;
 
-        case ModelTransparentMode::AlphaChannel:
-            str = "alpha";
-            break;
+    case ModelTransparentMode::AlphaChannel:
+        str = "alpha";
+        break;
 
-        case ModelTransparentMode::MapBlackToAlpha:
-            str = "map_black";
-            break;
+    case ModelTransparentMode::MapBlackToAlpha:
+        str = "map_black";
+        break;
 
-        case ModelTransparentMode::MapWhiteToAlpha:
-            str = "map_white";
-            break;
+    case ModelTransparentMode::MapWhiteToAlpha:
+        str = "map_white";
+        break;
     }
     return str;
 }
 
-std::string ModelOutput::SpecialMarkToString(ModelSpecialMark specialMark)
+std::string ModelOutput::SpecialMarkToString(const ModelSpecialMark specialMark)
 {
     std::string str;
     switch (specialMark)
     {
-        case ModelSpecialMark::None:
-            str = "none";
-            break;
+    case ModelSpecialMark::None:
+        str = "none";
+        break;
 
-        case ModelSpecialMark::Part1:
-            str = "part1";
-            break;
+    case ModelSpecialMark::Part1:
+        str = "part1";
+        break;
 
-        case ModelSpecialMark::Part2:
-            str = "part2";
-            break;
+    case ModelSpecialMark::Part2:
+        str = "part2";
+        break;
 
-        case ModelSpecialMark::Part3:
-            str = "part3";
-            break;
+    case ModelSpecialMark::Part3:
+        str = "part3";
+        break;
     }
     return str;
 }
@@ -370,38 +370,38 @@ int ModelOutput::ConvertToOldState(const ModelTriangle& triangle)
 
     switch (triangle.transparentMode)
     {
-        case ModelTransparentMode::None:
-            break;
+    case ModelTransparentMode::None:
+        break;
 
-        case ModelTransparentMode::AlphaChannel:
-            state |= static_cast<int>(ModelRenderState::Alpha);
-            break;
+    case ModelTransparentMode::AlphaChannel:
+        state |= static_cast<int>(ModelRenderState::Alpha);
+        break;
 
-        case ModelTransparentMode::MapBlackToAlpha:
-            state |= static_cast<int>(ModelRenderState::TTextureBlack);
-            break;
+    case ModelTransparentMode::MapBlackToAlpha:
+        state |= static_cast<int>(ModelRenderState::TTextureBlack);
+        break;
 
-        case ModelTransparentMode::MapWhiteToAlpha:
-            state |= static_cast<int>(ModelRenderState::TTextureWhite);
-            break;
+    case ModelTransparentMode::MapWhiteToAlpha:
+        state |= static_cast<int>(ModelRenderState::TTextureWhite);
+        break;
     }
 
     switch (triangle.specialMark)
     {
-        case ModelSpecialMark::None:
-            break;
+    case ModelSpecialMark::None:
+        break;
 
-        case ModelSpecialMark::Part1:
-            state |= static_cast<int>(ModelRenderState::Part1);
-            break;
+    case ModelSpecialMark::Part1:
+        state |= static_cast<int>(ModelRenderState::Part1);
+        break;
 
-        case ModelSpecialMark::Part2:
-            state |= static_cast<int>(ModelRenderState::Part2);
-            break;
+    case ModelSpecialMark::Part2:
+        state |= static_cast<int>(ModelRenderState::Part2);
+        break;
 
-        case ModelSpecialMark::Part3:
-            state |= static_cast<int>(ModelRenderState::Part3);
-            break;
+    case ModelSpecialMark::Part3:
+        state |= static_cast<int>(ModelRenderState::Part3);
+        break;
     }
 
     if (triangle.doubleSided)
@@ -410,7 +410,7 @@ int ModelOutput::ConvertToOldState(const ModelTriangle& triangle)
     return state;
 }
 
-void ModelOutput::WriteBinaryVertexTex2(VertexTex2 vertex, std::ostream &stream)
+void ModelOutput::WriteBinaryVertexTex2(const VertexTex2& vertex, std::ostream &stream)
 {
     WriteBinaryFloat(vertex.coord.x, stream);
     WriteBinaryFloat(vertex.coord.y, stream);

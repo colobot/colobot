@@ -41,36 +41,36 @@ SystemDialogResult CSystemUtilsWindows::SystemDialog(SystemDialogType type, cons
 
     switch (type)
     {
-        case SDT_INFO:
-        default:
-            windowsType = MB_ICONINFORMATION|MB_OK;
-            break;
-        case SDT_WARNING:
-            windowsType = MB_ICONWARNING|MB_OK;
-            break;
-        case SDT_ERROR:
-            windowsType = MB_ICONERROR|MB_OK;
-            break;
-        case SDT_YES_NO:
-            windowsType = MB_ICONQUESTION|MB_YESNO;
-            break;
-        case SDT_OK_CANCEL:
-            windowsType = MB_ICONWARNING|MB_OKCANCEL;
-            break;
+    case SDT_INFO:
+    default:
+        windowsType = MB_ICONINFORMATION|MB_OK;
+        break;
+    case SDT_WARNING:
+        windowsType = MB_ICONWARNING|MB_OK;
+        break;
+    case SDT_ERROR:
+        windowsType = MB_ICONERROR|MB_OK;
+        break;
+    case SDT_YES_NO:
+        windowsType = MB_ICONQUESTION|MB_YESNO;
+        break;
+    case SDT_OK_CANCEL:
+        windowsType = MB_ICONWARNING|MB_OKCANCEL;
+        break;
     }
 
     switch (MessageBoxW(nullptr, windowsMessage.c_str(), windowsTitle.c_str(), windowsType))
     {
-        case IDOK:
-            return SDR_OK;
-        case IDCANCEL:
-            return SDR_CANCEL;
-        case IDYES:
-            return SDR_YES;
-        case IDNO:
-            return SDR_NO;
-        default:
-            break;
+    case IDOK:
+        return SDR_OK;
+    case IDCANCEL:
+        return SDR_CANCEL;
+    case IDYES:
+        return SDR_YES;
+    case IDNO:
+        return SDR_NO;
+    default:
+        break;
     }
 
     return SDR_OK;

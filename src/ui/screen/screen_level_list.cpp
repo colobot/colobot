@@ -45,11 +45,11 @@ namespace Ui
 {
 
 CScreenLevelList::CScreenLevelList(CMainDialog* mainDialog)
-    : m_dialog(mainDialog),
-      m_category{},
-      m_sceneSoluce{false},
-      m_maxList{0},
-      m_accessChap{0}
+    : m_dialog(mainDialog)
+    , m_category{}
+    , m_sceneSoluce{false}
+    , m_maxList{0}
+    , m_accessChap{0}
 {
 }
 
@@ -71,9 +71,7 @@ void CScreenLevelList::CreateInterface()
     std::string     name;
 
     if ( m_category == LevelCategory::FreeGame )
-    {
         m_accessChap = m_main->GetPlayerProfile()->GetChapPassed(LevelCategory::Missions);
-    }
 
     pos.x = 0.10f;
     pos.y = 0.10f;
@@ -81,12 +79,18 @@ void CScreenLevelList::CreateInterface()
     ddim.y = 0.80f;
     pw = m_interface->CreateWindows(pos, ddim, 12, EVENT_WINDOW5);
     pw->SetClosable(true);
-    if ( m_category == LevelCategory::Exercises    )  res = RT_TITLE_TRAINER;
-    if ( m_category == LevelCategory::Challenges   )  res = RT_TITLE_DEFI;
-    if ( m_category == LevelCategory::Missions     )  res = RT_TITLE_MISSION;
-    if ( m_category == LevelCategory::FreeGame     )  res = RT_TITLE_FREE;
-    if ( m_category == LevelCategory::CodeBattles  )  res = RT_TITLE_CODE_BATTLES;
-    if ( m_category == LevelCategory::CustomLevels )  res = RT_TITLE_USER;
+    if ( m_category == LevelCategory::Exercises)
+        res = RT_TITLE_TRAINER;
+    if ( m_category == LevelCategory::Challenges)
+        res = RT_TITLE_DEFI;
+    if ( m_category == LevelCategory::Missions)
+        res = RT_TITLE_MISSION;
+    if ( m_category == LevelCategory::FreeGame)
+        res = RT_TITLE_FREE;
+    if ( m_category == LevelCategory::CodeBattles)
+        res = RT_TITLE_CODE_BATTLES;
+    if ( m_category == LevelCategory::CustomLevels)
+        res = RT_TITLE_USER;
     GetResource(RES_TEXT, res, name);
     pw->SetName(name);
 
@@ -107,9 +111,12 @@ void CScreenLevelList::CreateInterface()
     ddim.x = dim.x*7.5f;
     ddim.y = dim.y*0.6f;
     res = RT_PLAY_CHAP_CHAPTERS;
-    if ( m_category == LevelCategory::Missions     )  res = RT_PLAY_CHAP_PLANETS;
-    if ( m_category == LevelCategory::FreeGame     )  res = RT_PLAY_CHAP_PLANETS;
-    if ( m_category == LevelCategory::CustomLevels )  res = RT_PLAY_CHAP_USERLVL;
+    if ( m_category == LevelCategory::Missions)
+        res = RT_PLAY_CHAP_PLANETS;
+    if ( m_category == LevelCategory::FreeGame)
+        res = RT_PLAY_CHAP_PLANETS;
+    if ( m_category == LevelCategory::CustomLevels)
+        res = RT_PLAY_CHAP_USERLVL;
     GetResource(RES_TEXT, res, name);
     pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL11, name);
     pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
@@ -123,10 +130,9 @@ void CScreenLevelList::CreateInterface()
     UpdateSceneChap(m_chap[m_category]);
     if ( m_category != LevelCategory::FreeGame &&
          m_category != LevelCategory::CodeBattles &&
-         m_category != LevelCategory::CustomLevels ) // Don't show completion marks in free game, code battles and userlevels
-    {
+         m_category != LevelCategory::CustomLevels )
+        // Don't show completion marks in free game, code battles and userlevels
         pli->SetState(STATE_EXTEND);
-    }
 
     // Displays a list of missions:
     pos.x = ox+sx*9.5f;
@@ -134,10 +140,14 @@ void CScreenLevelList::CreateInterface()
     ddim.x = dim.x*7.5f;
     ddim.y = dim.y*0.6f;
     res = RT_PLAY_LIST_LEVELS;
-    if ( m_category == LevelCategory::Exercises    )  res = RT_PLAY_LIST_EXERCISES;
-    if ( m_category == LevelCategory::Challenges   )  res = RT_PLAY_LIST_CHALLENGES;
-    if ( m_category == LevelCategory::Missions     )  res = RT_PLAY_LIST_MISSIONS;
-    if ( m_category == LevelCategory::FreeGame     )  res = RT_PLAY_LIST_FREEGAME;
+    if ( m_category == LevelCategory::Exercises)
+        res = RT_PLAY_LIST_EXERCISES;
+    if ( m_category == LevelCategory::Challenges)
+        res = RT_PLAY_LIST_CHALLENGES;
+    if ( m_category == LevelCategory::Missions)
+        res = RT_PLAY_LIST_MISSIONS;
+    if ( m_category == LevelCategory::FreeGame)
+        res = RT_PLAY_LIST_FREEGAME;
     GetResource(RES_TEXT, res, name);
     pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL12, name);
     pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
@@ -151,10 +161,9 @@ void CScreenLevelList::CreateInterface()
     UpdateSceneList(m_chap[m_category], m_sel[m_category]);
     if ( m_category != LevelCategory::FreeGame &&
          m_category != LevelCategory::CodeBattles &&
-         m_category != LevelCategory::CustomLevels ) // Don't show completion marks in free game, code battles and userlevels
-    {
+         m_category != LevelCategory::CustomLevels )
+        // Don't show completion marks in free game, code battles and userlevels
         pli->SetState(STATE_EXTEND);
-    }
     pos = pli->GetPos();
     ddim = pli->GetDim();
 
@@ -204,18 +213,15 @@ void CScreenLevelList::CreateInterface()
         pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_PLAY);
         pb->SetState(STATE_SHADOW);
         if ( m_maxList == 0 )
-        {
             pb->ClearState(STATE_ENABLE);
-        }
 
         pos.x += dim.x*4.0f;
         ddim.x = dim.x*2.5f;
         pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_READ);
         pb->SetState(STATE_SHADOW);
-        if ( !m_main->GetPlayerProfile()->HasAnySavedScene() )  // no file to read?
-        {
+        if ( !m_main->GetPlayerProfile()->HasAnySavedScene() )
+            // no file to read?
             pb->ClearState(STATE_ENABLE);
-        }
     }
     else
     {
@@ -226,9 +232,7 @@ void CScreenLevelList::CreateInterface()
         pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_PLAY);
         pb->SetState(STATE_SHADOW);
         if ( m_maxList == 0 )
-        {
             pb->ClearState(STATE_ENABLE);
-        }
     }
 
     pos.x = ox+sx*3;
@@ -240,7 +244,6 @@ void CScreenLevelList::CreateInterface()
     CreateVersionDisplay();
 
     if (m_category == LevelCategory::CustomLevels)
-    {
         if(m_customLevelList.size() == 0)
         {
             m_main->ChangePhase(PHASE_MAIN_MENU);
@@ -249,7 +252,6 @@ void CScreenLevelList::CreateInterface()
             GetResource(RES_TEXT, RT_DIALOG_NOUSRLVL_TEXT, text);
             m_dialog->StartInformation(title, title, text);
         }
-    }
 }
 
 bool CScreenLevelList::EventProcess(const Event &event)
@@ -259,7 +261,8 @@ bool CScreenLevelList::EventProcess(const Event &event)
     CButton* pb;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == nullptr )  return false;
+    if ( pw == nullptr )
+        return false;
 
     if ( event.type == pw->GetEventTypeClose() ||
          event.type == EVENT_INTERFACE_BACK    ||
@@ -271,41 +274,44 @@ bool CScreenLevelList::EventProcess(const Event &event)
 
     switch( event.type )
     {
-        case EVENT_INTERFACE_CHAP:
-            pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_CHAP));
-            if ( pl == nullptr )  break;
-            m_chap[m_category] = pl->GetSelect();
-            m_main->GetPlayerProfile()->SetSelectedChap(m_category, m_chap[m_category]+1);
-            UpdateSceneList(m_chap[m_category], m_sel[m_category]);
-            UpdateSceneResume(m_chap[m_category]+1, m_sel[m_category]+1);
+    case EVENT_INTERFACE_CHAP:
+        pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_CHAP));
+        if ( pl == nullptr )
             break;
+        m_chap[m_category] = pl->GetSelect();
+        m_main->GetPlayerProfile()->SetSelectedChap(m_category, m_chap[m_category]+1);
+        UpdateSceneList(m_chap[m_category], m_sel[m_category]);
+        UpdateSceneResume(m_chap[m_category]+1, m_sel[m_category]+1);
+        break;
 
-        case EVENT_INTERFACE_LIST:
-            pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_LIST));
-            if ( pl == nullptr )  break;
-            m_sel[m_category] = pl->GetSelect();
-            m_main->GetPlayerProfile()->SetSelectedRank(m_category, m_sel[m_category]+1);
-            UpdateSceneResume(m_chap[m_category]+1, m_sel[m_category]+1);
+    case EVENT_INTERFACE_LIST:
+        pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_LIST));
+        if ( pl == nullptr )
             break;
+        m_sel[m_category] = pl->GetSelect();
+        m_main->GetPlayerProfile()->SetSelectedRank(m_category, m_sel[m_category]+1);
+        UpdateSceneResume(m_chap[m_category]+1, m_sel[m_category]+1);
+        break;
 
-        case EVENT_INTERFACE_SOLUCE:
-            pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_SOLUCE));
-            if ( pb == nullptr )  break;
-            m_sceneSoluce = !m_sceneSoluce;
-            pb->SetState(STATE_CHECK, m_sceneSoluce);
+    case EVENT_INTERFACE_SOLUCE:
+        pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_SOLUCE));
+        if ( pb == nullptr )
             break;
+        m_sceneSoluce = !m_sceneSoluce;
+        pb->SetState(STATE_CHECK, m_sceneSoluce);
+        break;
 
-        case EVENT_INTERFACE_PLAY:
-            m_main->SetLevel(m_category, m_chap[m_category]+1, m_sel[m_category]+1);
-            m_main->ChangePhase(PHASE_SIMUL);
-            break;
+    case EVENT_INTERFACE_PLAY:
+        m_main->SetLevel(m_category, m_chap[m_category]+1, m_sel[m_category]+1);
+        m_main->ChangePhase(PHASE_SIMUL);
+        break;
 
-        case EVENT_INTERFACE_READ:
-            m_main->ChangePhase(PHASE_READ);
-            break;
+    case EVENT_INTERFACE_READ:
+        m_main->ChangePhase(PHASE_READ);
+        break;
 
-        default:
-            return true;
+    default:
+        return true;
     }
     return false;
 }
@@ -343,9 +349,11 @@ void CScreenLevelList::UpdateSceneChap(int &chap)
     bool        bPassed;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == nullptr )  return;
+    if ( pw == nullptr )
+        return;
     pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_CHAP));
-    if ( pl == nullptr )  return;
+    if ( pl == nullptr )
+        return;
 
     pl->Flush();
 
@@ -353,7 +361,6 @@ void CScreenLevelList::UpdateSceneChap(int &chap)
     if ( m_category == LevelCategory::CustomLevels )
     {
         UpdateCustomLevelList();
-
         for ( j=0 ; j < static_cast<int>(m_customLevelList.size()) ; j++ )
         {
             try
@@ -406,7 +413,8 @@ void CScreenLevelList::UpdateSceneChap(int &chap)
         }
     }
 
-    if ( chap > j-1 )  chap = j-1;
+    if ( chap > j-1 )
+        chap = j-1;
 
     pl->SetSelect(chap);
     pl->ShowSelect(false);  // shows the selected columns
@@ -424,9 +432,11 @@ void CScreenLevelList::UpdateSceneList(int chap, int &sel)
     bool        bPassed;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == nullptr )  return;
+    if ( pw == nullptr )
+        return;
     pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_LIST));
-    if ( pl == nullptr )  return;
+    if ( pl == nullptr )
+        return;
 
     pl->Flush();
 
@@ -460,21 +470,16 @@ void CScreenLevelList::UpdateSceneList(int chap, int &sel)
         pl->SetEnable(j, true);
 
         if ( m_category == LevelCategory::Missions && !m_main->GetShowAll() && !bPassed )
-        {
             readAll = false;
-        }
     }
 
     if (readAll)
-    {
         m_maxList = j;
-    }
     else
-    {
         m_maxList = j+1;  // this is not the last!
-    }
 
-    if ( sel > j-1 )  sel = j-1;
+    if ( sel > j-1 )
+        sel = j-1;
 
     pl->SetSelect(sel);
     pl->ShowSelect(false);  // shows the selected columns
@@ -491,11 +496,14 @@ void CScreenLevelList::ShowSoluceUpdate()
     m_sceneSoluce = false;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == nullptr )  return;
+    if ( pw == nullptr )
+        return;
     pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_RESUME));
-    if ( pe == nullptr )  return;
+    if ( pe == nullptr )
+        return;
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SOLUCE));
-    if ( pc == nullptr )  return;
+    if ( pc == nullptr )
+        return;
 
     if ( m_main->GetShowSoluce() )
     {
@@ -523,21 +531,22 @@ void CScreenLevelList::UpdateSceneResume(int chap, int rank)
     bool        bPassed, bVisible;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == nullptr )  return;
+    if ( pw == nullptr )
+        return;
     pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_RESUME));
-    if ( pe == nullptr )  return;
+    if ( pe == nullptr )
+        return;
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SOLUCE));
 
     if ( pc == nullptr )
-    {
         m_sceneSoluce = false;
-    }
     else
     {
         numTry  = m_main->GetPlayerProfile()->GetLevelTryCount(m_category, chap, rank);
         bPassed = m_main->GetPlayerProfile()->GetLevelPassed(m_category, chap, rank);
         bVisible = ( numTry > 2 || bPassed || m_main->GetShowSoluce() );
-        if ( !CSettings::GetInstancePointer()->GetSoluce4() )  bVisible = false;
+        if ( !CSettings::GetInstancePointer()->GetSoluce4() )
+            bVisible = false;
         pc->SetState(STATE_VISIBLE, bVisible);
         if ( !bVisible )
         {
@@ -546,7 +555,8 @@ void CScreenLevelList::UpdateSceneResume(int chap, int rank)
         }
     }
 
-    if(chap == 0 || rank == 0) return;
+    if(chap == 0 || rank == 0)
+        return;
 
     try
     {
@@ -603,7 +613,8 @@ void CScreenLevelList::UpdateCustomLevelList()
 
 std::string CScreenLevelList::GetCustomLevelName(int id)
 {
-    if(id < 1 || id > static_cast<int>(m_customLevelList.size())) return "";
+    if(id < 1 || id > static_cast<int>(m_customLevelList.size()))
+        return "";
     return m_customLevelList[id-1];
 }
 

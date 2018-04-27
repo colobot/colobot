@@ -102,13 +102,9 @@ void CScreenPlayerSelect::CreateInterface()
     pe = pw->CreateEdit(pos, ddim, 0, EVENT_INTERFACE_NEDIT);
     pe->SetMaxChar(15);
     if(m_main->GetPlayerProfile() != nullptr)
-    {
         name = m_main->GetPlayerProfile()->GetName();
-    }
     else
-    {
         name = CPlayerProfile::GetLastName();
-    }
     pe->SetText(name.c_str());
     pe->SetCursor(name.length(), 0);
     m_interface->SetFocus(pe);
@@ -158,7 +154,7 @@ bool CScreenPlayerSelect::EventProcess(const Event &event)
 
     switch( event.type )
     {
-        case EVENT_KEY_DOWN:
+    case EVENT_KEY_DOWN:
         {
             auto data = event.GetData<KeyEventData>();
             if (data->key == KEY(RETURN) || data->key == KEY(ESCAPE))
@@ -168,43 +164,45 @@ bool CScreenPlayerSelect::EventProcess(const Event &event)
             break;
         }
 
-        case EVENT_INTERFACE_NEDIT:
-            UpdateNameList();
-            UpdateNameControl();
+    case EVENT_INTERFACE_NEDIT:
+        UpdateNameList();
+        UpdateNameControl();
+        break;
+
+    case EVENT_INTERFACE_NLIST:
+        UpdateNameEdit();
+        break;
+
+    case EVENT_INTERFACE_NOK:
+        NameSelect();
+        break;
+
+    case EVENT_INTERFACE_PERSO:
+        NameSelect();
+        m_main->ChangePhase(PHASE_APPERANCE);
+        break;
+
+    case EVENT_INTERFACE_NDELETE:
+        pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
+        if ( pw == nullptr )
+            break;
+        pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_NLIST));
+        if ( pl == nullptr )
             break;
 
-        case EVENT_INTERFACE_NLIST:
-            UpdateNameEdit();
-            break;
+        GetResource(RES_TEXT, RT_DIALOG_DELGAME, name);
+        gamer = pl->GetItemName(pl->GetSelect());
+        m_dialog->StartQuestion(
+            StrUtils::Format(name.c_str(), gamer.c_str()), true, false, false,
+            [&]()
+            {
+                NameDelete();
+            }
+        );
+        break;
 
-        case EVENT_INTERFACE_NOK:
-            NameSelect();
-            break;
-
-        case EVENT_INTERFACE_PERSO:
-            NameSelect();
-            m_main->ChangePhase(PHASE_APPERANCE);
-            break;
-
-        case EVENT_INTERFACE_NDELETE:
-            pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-            if ( pw == nullptr )  break;
-            pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_NLIST));
-            if ( pl == nullptr )  break;
-
-            GetResource(RES_TEXT, RT_DIALOG_DELGAME, name);
-            gamer = pl->GetItemName(pl->GetSelect());
-            m_dialog->StartQuestion(
-                StrUtils::Format(name.c_str(), gamer.c_str()), true, false, false,
-                [&]()
-                {
-                    NameDelete();
-                }
-            );
-            break;
-
-        default:
-            return true;
+    default:
+        return true;
     }
     return false;
 }
@@ -214,16 +212,16 @@ bool CScreenPlayerSelect::EventProcess(const Event &event)
 void CScreenPlayerSelect::ReadNameList()
 {
     CWindow* pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if (pw == nullptr) return;
+    if (pw == nullptr)
+        return;
     CList* pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_NLIST));
-    if (pl == nullptr) return;
+    if (pl == nullptr)
+        return;
     pl->Flush();
 
     auto players = CPlayerProfile::GetPlayerList();
     for (int i = 0; i < static_cast<int>(players.size()); ++i)
-    {
         pl->SetItemName(i, players.at(i));
-    }
 }
 
 // Updates the controls of the players.
@@ -238,11 +236,14 @@ void CScreenPlayerSelect::UpdateNameControl()
     int         total, sel;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == nullptr )  return;
+    if ( pw == nullptr )
+        return;
     pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_NLIST));
-    if ( pl == nullptr )  return;
+    if ( pl == nullptr )
+        return;
     pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_NEDIT));
-    if ( pe == nullptr )  return;
+    if ( pe == nullptr )
+        return;
 
     total = pl->GetTotal();
     sel   = pl->GetSelect();
@@ -251,21 +252,15 @@ void CScreenPlayerSelect::UpdateNameControl()
 
     pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_NDELETE));
     if ( pb != nullptr )
-    {
         pb->SetState(STATE_ENABLE, total>0 && sel!=-1);
-    }
 
     pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_NOK));
     if ( pb != nullptr )
-    {
         pb->SetState(STATE_ENABLE, !name.empty() || sel!=-1);
-    }
 
     pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_PERSO));
     if ( pb != nullptr )
-    {
         pb->SetState(STATE_ENABLE, !name.empty() || sel!=-1);
-    }
 }
 
 // Updates the list of players by name frape.
@@ -279,11 +274,14 @@ void CScreenPlayerSelect::UpdateNameList()
     int         total, i;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == nullptr )  return;
+    if ( pw == nullptr )
+        return;
     pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_NLIST));
-    if ( pl == nullptr )  return;
+    if ( pl == nullptr )
+        return;
     pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_NEDIT));
-    if ( pe == nullptr )  return;
+    if ( pe == nullptr )
+        return;
 
     name = pe->GetText(100);
     total = pl->GetTotal();
@@ -313,11 +311,14 @@ void CScreenPlayerSelect::UpdateNameEdit()
     int         sel;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == nullptr )  return;
+    if ( pw == nullptr )
+        return;
     pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_NLIST));
-    if ( pl == nullptr )  return;
+    if ( pl == nullptr )
+        return;
     pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_NEDIT));
-    if ( pe == nullptr )  return;
+    if ( pe == nullptr )
+        return;
 
     sel = pl->GetSelect();
     if ( sel == -1 )
@@ -346,23 +347,22 @@ void CScreenPlayerSelect::NameSelect()
     int         sel;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == nullptr )  return;
+    if ( pw == nullptr )
+        return;
     pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_NLIST));
-    if ( pl == nullptr )  return;
+    if ( pl == nullptr )
+        return;
     pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_NEDIT));
-    if ( pe == nullptr )  return;
+    if ( pe == nullptr )
+        return;
 
     name = pe->GetText(100);
     sel  = pl->GetSelect();
 
     if ( sel == -1 )
-    {
         NameCreate();
-    }
     else
-    {
         m_main->SelectPlayer(pl->GetItemName(sel));
-    }
 
     m_main->ChangePhase(PHASE_MAIN_MENU);
 }
@@ -376,9 +376,11 @@ bool CScreenPlayerSelect::NameCreate()
 
     GetLogger()->Info("Creating new player\n");
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == nullptr )  return false;
+    if ( pw == nullptr )
+        return false;
     pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_NEDIT));
-    if ( pe == nullptr )  return false;
+    if ( pe == nullptr )
+        return false;
 
     std::string name;
     name = pe->GetText(100);
@@ -400,9 +402,11 @@ bool CScreenPlayerSelect::NameCreate()
 void CScreenPlayerSelect::NameDelete()
 {
     CWindow* pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if (pw == nullptr) return;
+    if (pw == nullptr)
+        return;
     CList* pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_NLIST));
-    if (pl == nullptr) return;
+    if (pl == nullptr)
+        return;
 
     int sel = pl->GetSelect();
     if (sel == -1)
@@ -423,9 +427,7 @@ void CScreenPlayerSelect::NameDelete()
     pl->SetSelect(-1);
     CEdit* pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_NEDIT));
     if (pe != nullptr)
-    {
         pe->SetText("");
-    }
 
     ReadNameList();
     UpdateNameList();

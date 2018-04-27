@@ -41,7 +41,7 @@ namespace
 std::string VFormat(const char *fmt, va_list ap)
 {
     std::size_t size = 1024;
-    char stackbuf[1024];
+    char stackbuf[1024] = {0};  //fake init to mute lint
     std::vector<char> dynamicbuf;
     char *buf = &stackbuf[0];
 

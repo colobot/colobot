@@ -72,16 +72,13 @@ bool CBotLeftExprVar::Execute(CBotStack* &pj)
         }
         var1->SetVal(var2); // Set the value
     }
-
     return true;
 }
 
 void CBotLeftExprVar::RestoreState(CBotStack* &pj, bool bMain)
 {
-    CBotVar*     var1;
-
-    var1 = pj->FindVar(m_token.GetString());
-    if (var1 == nullptr) assert(false);
+    CBotVar*     var1 = pj->FindVar(m_token.GetString());
+    assert(var1 != nullptr);
 
     var1->SetUniqNum(m_nIdent); // Restore the identifier
 }

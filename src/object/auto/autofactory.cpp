@@ -128,21 +128,15 @@ Error CAutoFactory::StartAction(int param)
     if ( type != OBJECT_NULL )
     {
         if ( m_phase != AFP_WAIT )
-        {
             return ERR_OBJ_BUSY;
-        }
 
         m_type = type;
 
         cargo = SearchCargo();  // transform metal?
         if ( cargo == nullptr )
-        {
             return ERR_FACTORY_NULL;
-        }
         if ( NearestVehicle() )
-        {
             return ERR_FACTORY_NEAR;
-        }
 
         m_program = "";
         SetBusy(true);
@@ -170,27 +164,48 @@ void CAutoFactory::SetProgram(const std::string& program)
 
 ObjectType ObjectTypeFromFactoryButton(EventType eventType)
 {
-    if ( eventType == EVENT_OBJECT_FACTORYwa )  return OBJECT_MOBILEwa;
-    if ( eventType == EVENT_OBJECT_FACTORYta )  return OBJECT_MOBILEta;
-    if ( eventType == EVENT_OBJECT_FACTORYfa )  return OBJECT_MOBILEfa;
-    if ( eventType == EVENT_OBJECT_FACTORYia )  return OBJECT_MOBILEia;
-    if ( eventType == EVENT_OBJECT_FACTORYws )  return OBJECT_MOBILEws;
-    if ( eventType == EVENT_OBJECT_FACTORYts )  return OBJECT_MOBILEts;
-    if ( eventType == EVENT_OBJECT_FACTORYfs )  return OBJECT_MOBILEfs;
-    if ( eventType == EVENT_OBJECT_FACTORYis )  return OBJECT_MOBILEis;
-    if ( eventType == EVENT_OBJECT_FACTORYwc )  return OBJECT_MOBILEwc;
-    if ( eventType == EVENT_OBJECT_FACTORYtc )  return OBJECT_MOBILEtc;
-    if ( eventType == EVENT_OBJECT_FACTORYfc )  return OBJECT_MOBILEfc;
-    if ( eventType == EVENT_OBJECT_FACTORYic )  return OBJECT_MOBILEic;
-    if ( eventType == EVENT_OBJECT_FACTORYwi )  return OBJECT_MOBILEwi;
-    if ( eventType == EVENT_OBJECT_FACTORYti )  return OBJECT_MOBILEti;
-    if ( eventType == EVENT_OBJECT_FACTORYfi )  return OBJECT_MOBILEfi;
-    if ( eventType == EVENT_OBJECT_FACTORYii )  return OBJECT_MOBILEii;
-    if ( eventType == EVENT_OBJECT_FACTORYrt )  return OBJECT_MOBILErt;
-    if ( eventType == EVENT_OBJECT_FACTORYrc )  return OBJECT_MOBILErc;
-    if ( eventType == EVENT_OBJECT_FACTORYrr )  return OBJECT_MOBILErr;
-    if ( eventType == EVENT_OBJECT_FACTORYrs )  return OBJECT_MOBILErs;
-    if ( eventType == EVENT_OBJECT_FACTORYsa )  return OBJECT_MOBILEsa;
+    if ( eventType == EVENT_OBJECT_FACTORYwa )
+        return OBJECT_MOBILEwa;
+    if ( eventType == EVENT_OBJECT_FACTORYta )
+        return OBJECT_MOBILEta;
+    if ( eventType == EVENT_OBJECT_FACTORYfa )
+        return OBJECT_MOBILEfa;
+    if ( eventType == EVENT_OBJECT_FACTORYia )
+        return OBJECT_MOBILEia;
+    if ( eventType == EVENT_OBJECT_FACTORYws )
+        return OBJECT_MOBILEws;
+    if ( eventType == EVENT_OBJECT_FACTORYts )
+        return OBJECT_MOBILEts;
+    if ( eventType == EVENT_OBJECT_FACTORYfs )
+        return OBJECT_MOBILEfs;
+    if ( eventType == EVENT_OBJECT_FACTORYis )
+        return OBJECT_MOBILEis;
+    if ( eventType == EVENT_OBJECT_FACTORYwc )
+        return OBJECT_MOBILEwc;
+    if ( eventType == EVENT_OBJECT_FACTORYtc )
+        return OBJECT_MOBILEtc;
+    if ( eventType == EVENT_OBJECT_FACTORYfc )
+        return OBJECT_MOBILEfc;
+    if ( eventType == EVENT_OBJECT_FACTORYic )
+        return OBJECT_MOBILEic;
+    if ( eventType == EVENT_OBJECT_FACTORYwi )
+        return OBJECT_MOBILEwi;
+    if ( eventType == EVENT_OBJECT_FACTORYti )
+        return OBJECT_MOBILEti;
+    if ( eventType == EVENT_OBJECT_FACTORYfi )
+        return OBJECT_MOBILEfi;
+    if ( eventType == EVENT_OBJECT_FACTORYii )
+        return OBJECT_MOBILEii;
+    if ( eventType == EVENT_OBJECT_FACTORYrt )
+        return OBJECT_MOBILErt;
+    if ( eventType == EVENT_OBJECT_FACTORYrc )
+        return OBJECT_MOBILErc;
+    if ( eventType == EVENT_OBJECT_FACTORYrr )
+        return OBJECT_MOBILErr;
+    if ( eventType == EVENT_OBJECT_FACTORYrs )
+        return OBJECT_MOBILErs;
+    if ( eventType == EVENT_OBJECT_FACTORYsa )
+        return OBJECT_MOBILEsa;
 
     return OBJECT_NULL;
 }
@@ -211,14 +226,13 @@ bool CAutoFactory::EventProcess(const Event &event)
 
     CAuto::EventProcess(event);
 
-    if ( m_engine->GetPause() )  return true;
+    if ( m_engine->GetPause() )
+        return true;
 
     if ( m_object->GetSelect() )  // factory selected?
     {
         if ( event.type == EVENT_UPDINTERFACE )
-        {
             CreateInterface(true);
-        }
 
         type = ObjectTypeFromFactoryButton(event.type);
 
@@ -230,7 +244,8 @@ bool CAutoFactory::EventProcess(const Event &event)
             return false;
     }
 
-    if ( event.type != EVENT_FRAME )  return true;
+    if ( event.type != EVENT_FRAME )
+        return true;
 
     m_progress += event.rTime*m_speed;
     EventProgress(event.rTime);
@@ -252,8 +267,10 @@ bool CAutoFactory::EventProcess(const Event &event)
             for ( i=0 ; i<9 ; i++ )
             {
                 zoom = 0.30f+(m_progress-0.5f+i/16.0f)*2.0f*0.70f;
-                if ( zoom < 0.30f )  zoom = 0.30f;
-                if ( zoom > 1.00f )  zoom = 1.00f;
+                if ( zoom < 0.30f )
+                    zoom = 0.30f;
+                if ( zoom > 1.00f )
+                    zoom = 1.00f;
                 m_object->SetPartScaleZ( 1+i, zoom);
                 m_object->SetPartScaleZ(10+i, zoom);
             }
@@ -312,9 +329,7 @@ bool CAutoFactory::EventProcess(const Event &event)
             {
                 cargo = SearchCargo();  // transform metal?
                 if ( cargo != nullptr )
-                {
                     cargo->SetLock(false);  // metal usable again
-                }
 
                 if ( m_channelSound != -1 )
                 {
@@ -338,12 +353,11 @@ bool CAutoFactory::EventProcess(const Event &event)
                  m_type == OBJECT_MOBILErs )
             {
                 prog = 1.0f-m_progress*1.5f;
-                if ( prog < 0.0f )  prog = 0.0f;
+                if ( prog < 0.0f )
+                    prog = 0.0f;
             }
             else
-            {
                 prog = 1.0f-m_progress;
-            }
             angle = powf(prog*10.0f, 2.0f)+m_object->GetRotationY();
 
             vehicle = SearchVehicle();
@@ -355,9 +369,7 @@ bool CAutoFactory::EventProcess(const Event &event)
 
             cargo = SearchCargo();  // transform metal?
             if ( cargo != nullptr )
-            {
                 cargo->SetScale(1.0f-m_progress);
-            }
 
             if ( m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
             {
@@ -384,9 +396,7 @@ bool CAutoFactory::EventProcess(const Event &event)
 
             cargo = SearchCargo();  // transform metal?
             if ( cargo != nullptr )
-            {
                 CObjectManager::GetInstancePointer()->DeleteObject(cargo);
-            }
 
             vehicle = SearchVehicle();
             if ( vehicle != nullptr )
@@ -405,19 +415,17 @@ bool CAutoFactory::EventProcess(const Event &event)
                     {
                         Program* program = dynamic_cast<CProgramStorageObject*>(vehicle)->AddProgram();
 
-                        if (boost::regex_match(m_program, boost::regex("[A-Za-z0-9_]+"))) // Public function name?
+                        if (boost::regex_match(m_program, boost::regex("[A-Za-z0-9_]+")))
                         {
+                            // Public function name?
                             std::string code = "extern void object::Start_"+m_program+"()\n{\n\t\n\t//Automatically generated by object.factory()\n\t"+m_program+"();\n\t\n}\n";
                             program->script->SendScript(code.c_str());
                         }
-                        else if (boost::regex_match(m_program, boost::regex(".*\\.txt"))) // File name (with .txt extension)?
-                        {
+                        else if (boost::regex_match(m_program, boost::regex(".*\\.txt")))
+                            // File name (with .txt extension)?
                             program->script->ReadScript(m_program.c_str());
-                        }
                         else // Program code?
-                        {
                             program->script->SendScript(m_program.c_str());
-                        }
 
                         dynamic_cast<CProgrammableObject*>(vehicle)->RunProgram(program);
                     }
@@ -480,8 +488,10 @@ bool CAutoFactory::EventProcess(const Event &event)
             for ( i=0 ; i<9 ; i++ )
             {
                 zoom = 0.30f+((1.0f-m_progress)-0.5f+i/16.0f)*2.0f*0.70f;
-                if ( zoom < 0.30f )  zoom = 0.30f;
-                if ( zoom > 1.00f )  zoom = 1.00f;
+                if ( zoom < 0.30f )
+                    zoom = 0.30f;
+                if ( zoom > 1.00f )
+                    zoom = 1.00f;
                 m_object->SetPartScaleZ( 1+i, zoom);
                 m_object->SetPartScaleZ(10+i, zoom);
             }
@@ -516,7 +526,6 @@ bool CAutoFactory::EventProcess(const Event &event)
             m_speed    = 1.0f/2.0f;
         }
     }
-
     return true;
 }
 
@@ -525,7 +534,8 @@ bool CAutoFactory::EventProcess(const Event &event)
 
 bool CAutoFactory::Write(CLevelParserLine* line)
 {
-    if ( m_phase == AFP_WAIT )  return false;
+    if ( m_phase == AFP_WAIT )
+        return false;
 
     line->AddParam("aExist", MakeUnique<CLevelParserParam>(true));
     CAuto::Write(line);
@@ -540,7 +550,8 @@ bool CAutoFactory::Write(CLevelParserLine* line)
 
 bool CAutoFactory::Read(CLevelParserLine* line)
 {
-    if ( !line->GetParam("aExist")->AsBool(false) )  return false;
+    if ( !line->GetParam("aExist")->AsBool(false) )
+        return false;
 
     CAuto::Read(line);
     m_phase = static_cast< AutoFactoryPhase >(line->GetParam("aPhase")->AsInt(AFP_WAIT));
@@ -561,13 +572,16 @@ CObject* CAutoFactory::SearchCargo()
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         ObjectType type = obj->GetType();
-        if ( type != OBJECT_METAL )  continue;
-        if (IsObjectBeingTransported(obj))  continue;
+        if ( type != OBJECT_METAL )
+            continue;
+        if (IsObjectBeingTransported(obj))
+            continue;
 
         Math::Vector oPos = obj->GetPosition();
         float dist = Math::Distance(oPos, m_cargoPos);
 
-        if ( dist < 8.0f )  return obj;
+        if ( dist < 8.0f )
+            return obj;
     }
 
     return nullptr;
@@ -614,9 +628,11 @@ bool CAutoFactory::NearestVehicle()
              type != OBJECT_ANT      &&
              type != OBJECT_SPIDER   &&
              type != OBJECT_BEE      &&
-             type != OBJECT_WORM     )  continue;
+             type != OBJECT_WORM     )
+            continue;
 
-        if (obj->GetCrashSphereCount() == 0) continue;
+        if (obj->GetCrashSphereCount() == 0)
+            continue;
 
         auto crashSphere = obj->GetFirstCrashSphere();
         if (Math::DistanceToSphere(cPos, crashSphere.sphere) < 10.0f)
@@ -638,13 +654,9 @@ bool CAutoFactory::CreateVehicle()
          m_type == OBJECT_MOBILErc ||
          m_type == OBJECT_MOBILErr ||
          m_type == OBJECT_MOBILErs )
-    {
         pos = Math::Vector(2.0f, 0.0f, 0.0f);
-    }
     else
-    {
         pos = Math::Vector(4.0f, 0.0f, 0.0f);
-    }
     Math::Matrix* mat = m_object->GetWorldMatrix(0);
     pos = Transform(*mat, pos);
 
@@ -682,16 +694,20 @@ CObject* CAutoFactory::SearchVehicle()
 {
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        if ( !obj->GetLock() )  continue;
+        if ( !obj->GetLock() )
+            continue;
 
         ObjectType  type = obj->GetType();
-        if ( type != m_type )  continue;
-        if (IsObjectBeingTransported(obj))  continue;
+        if ( type != m_type )
+            continue;
+        if (IsObjectBeingTransported(obj))
+            continue;
 
         Math::Vector oPos = obj->GetPosition();
         float dist = Math::Distance(oPos, m_cargoPos);
 
-        if ( dist < 8.0f )  return obj;
+        if ( dist < 8.0f )
+            return obj;
     }
 
     return nullptr;
@@ -707,10 +723,12 @@ bool CAutoFactory::CreateInterface(bool bSelect)
 
     CAuto::CreateInterface(bSelect);
 
-    if ( !bSelect )  return true;
+    if ( !bSelect )
+        return true;
 
     pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-    if ( pw == nullptr )  return false;
+    if ( pw == nullptr )
+        return false;
 
     dim.x = 33.0f/640.0f;
     dim.y = 33.0f/480.0f;
@@ -795,7 +813,8 @@ void CAutoFactory::UpdateInterface()
 {
     Ui::CWindow*    pw;
 
-    if ( !m_object->GetSelect() )  return;
+    if ( !m_object->GetSelect() )
+        return;
 
     CAuto::UpdateInterface();
 
@@ -836,9 +855,7 @@ void CAutoFactory::UpdateButton(Ui::CWindow *pw, EventType event, bool bBusy)
 
 void CAutoFactory::SoundManip(float time, float amplitude, float frequency)
 {
-    int     i;
-
-    i = m_sound->Play(SOUND_MANIP, m_object->GetPosition(), 0.0f, 0.3f*frequency, true);
+    int i = m_sound->Play(SOUND_MANIP, m_object->GetPosition(), 0.0f, 0.3f*frequency, true);
     m_sound->AddEnvelope(i, 0.5f*amplitude, 1.0f*frequency, 0.1f, SOPER_CONTINUE);
     m_sound->AddEnvelope(i, 0.5f*amplitude, 1.0f*frequency, time-0.1f, SOPER_CONTINUE);
     m_sound->AddEnvelope(i, 0.0f, 0.3f*frequency, 0.1f, SOPER_STOP);

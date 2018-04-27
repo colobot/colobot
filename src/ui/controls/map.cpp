@@ -231,13 +231,15 @@ bool CMap::EventProcess(const Event &event)
 
 Math::Point CMap::AdjustOffset(Math::Point offset)
 {
-    float   limit;
-
-    limit = m_half - m_half / m_zoom;
-    if ( offset.x < -limit )  offset.x = -limit;
-    if ( offset.x >  limit )  offset.x =  limit;
-    if ( offset.y < -limit )  offset.y = -limit;
-    if ( offset.y >  limit )  offset.y =  limit;
+    float   limit = m_half - m_half / m_zoom;
+    if ( offset.x < -limit )
+        offset.x = -limit;
+    if ( offset.x >  limit )
+        offset.x =  limit;
+    if ( offset.y < -limit )
+        offset.y = -limit;
+    if ( offset.y >  limit )
+        offset.y =  limit;
 
     return offset;
 }
@@ -449,14 +451,17 @@ void CMap::DrawFocus(Math::Point pos, float dir, ObjectType type, MapColor color
     bool    bEnding;
     int     quart;
 
-    if (m_bToy || !m_fixImage.empty())  return;  // map with still image?
-    if ( color != MAPCOLOR_MOVE )  return;
+    if (m_bToy || !m_fixImage.empty())
+        return;  // map with still image?
+    if ( color != MAPCOLOR_MOVE )
+        return;
 
     pos.x = (pos.x-m_offset.x)*(m_zoom*0.5f)/m_half+0.5f;
     pos.y = (pos.y-m_offset.y)*(m_zoom*0.5f)/m_half+0.5f;
 
     if ( pos.x < 0.0f || pos.x > 1.0f ||
-         pos.y < 0.0f || pos.y > 1.0f )  return;
+         pos.y < 0.0f || pos.y > 1.0f )
+        return;
 
     rel.x = pos.x*2.0f-1.0f;
     rel.y = pos.y*2.0f-1.0f;  // rel [-1..1]
@@ -470,9 +475,7 @@ void CMap::DrawFocus(Math::Point pos, float dir, ObjectType type, MapColor color
     aMax = Math::NormAngle(dir+Math::PI/4.0f*focus);
 
     if ( aMin > aMax )
-    {
         aMax += Math::PI*2.0f;  // aMax always after aMin
-    }
 
     limit[0] = Math::RotateAngle( 1.0f-rel.x,  1.0f-rel.y);  // upper/right
     limit[1] = Math::RotateAngle(-1.0f-rel.x,  1.0f-rel.y);  // upper/left
@@ -482,11 +485,11 @@ void CMap::DrawFocus(Math::Point pos, float dir, ObjectType type, MapColor color
 
     a = Math::NormAngle(aMin);
     for ( quart=0 ; quart<4 ; quart++ )
-    {
         if ( a >= limit[quart+0] &&
-             a <= limit[quart+1] )  break;
-    }
-    if ( quart == 4 )  quart = -1;
+             a <= limit[quart+1] )
+            break;
+    if ( quart == 4 )
+        quart = -1;
 
     uv1.x = 113.0f/256.0f;  // degrade green
     uv1.y = 240.5f/256.0f;
@@ -533,10 +536,26 @@ void CMap::DrawObject(Math::Point pos, float dir, ObjectType type, MapColor colo
     pos.y = (pos.y-m_offset.y)*(m_zoom*0.5f)/m_half+0.5f;
 
     bOut = bUp = bDown = bLeft = bRight = false;
-    if ( pos.x < 0.06f )  { pos.x = 0.02f;  bOut = bLeft  = true; }
-    if ( pos.y < 0.06f )  { pos.y = 0.02f;  bOut = bDown  = true; }
-    if ( pos.x > 0.94f )  { pos.x = 0.98f;  bOut = bRight = true; }
-    if ( pos.y > 0.94f )  { pos.y = 0.98f;  bOut = bUp    = true; }
+    if ( pos.x < 0.06f )
+    {
+        pos.x = 0.02f;
+        bOut = bLeft  = true;
+    }
+    if ( pos.y < 0.06f )
+    {
+        pos.y = 0.02f;
+        bOut = bDown  = true;
+    }
+    if ( pos.x > 0.94f )
+    {
+        pos.x = 0.98f;
+        bOut = bRight = true;
+    }
+    if ( pos.y > 0.94f )
+    {
+        pos.y = 0.98f;
+        bOut = bUp    = true;
+    }
 
     pos.x = m_mapPos.x+m_mapDim.x*pos.x;
     pos.y = m_mapPos.y+m_mapDim.y*pos.y;
@@ -545,13 +564,13 @@ void CMap::DrawObject(Math::Point pos, float dir, ObjectType type, MapColor colo
 
     if ( bOut )  // outside the map?
     {
-        if ( color == MAPCOLOR_BBOX  && !m_bRadar )  return;
-        if ( color == MAPCOLOR_ALIEN && !m_bRadar )  return;
+        if ( color == MAPCOLOR_BBOX  && !m_bRadar )
+            return;
+        if ( color == MAPCOLOR_ALIEN && !m_bRadar )
+            return;
 
         if ( Math::Mod(m_time+(pos.x+pos.y)*4.0f, 0.6f) > 0.2f )
-        {
             return;  // flashes
-        }
 
         m_engine->SetTexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
@@ -733,12 +752,8 @@ void CMap::DrawObject(Math::Point pos, float dir, ObjectType type, MapColor colo
     }
 
     if ( color == MAPCOLOR_ALIEN )
-    {
         if ( m_bRadar )
-        {
             DrawObjectIcon(pos, dim, color, type, true);
-        }
-    }
 
     if ( color == MAPCOLOR_WAYPOINTb )
     {
@@ -831,61 +846,116 @@ void CMap::DrawObjectIcon(Math::Point pos, Math::Point dim, MapColor color,
     if ( bHilite )
     {
         icon = -1;
-        if ( type == OBJECT_FACTORY  )  icon = 32;
-        if ( type == OBJECT_DERRICK  )  icon = 33;
-        if ( type == OBJECT_CONVERT  )  icon = 34;
-        if ( type == OBJECT_RESEARCH )  icon = 35;
-        if ( type == OBJECT_STATION  )  icon = 36;
-        if ( type == OBJECT_TOWER    )  icon = 37;
-        if ( type == OBJECT_LABO     )  icon = 38;
-        if ( type == OBJECT_ENERGY   )  icon = 39;
-        if ( type == OBJECT_RADAR    )  icon = 40;
-        if ( type == OBJECT_INFO     )  icon = 44;
-        if ( type == OBJECT_REPAIR   )  icon = 41;
-        if ( type == OBJECT_DESTROYER)  icon = 41;
-        if ( type == OBJECT_NUCLEAR  )  icon = 42;
-        if ( type == OBJECT_PARA     )  icon = 46;
-        if ( type == OBJECT_SAFE     )  icon = 47;
-        if ( type == OBJECT_HUSTON   )  icon = 48;
-        if ( type == OBJECT_TARGET1  )  icon = 45;
-        if ( type == OBJECT_BASE     )  icon = 43;
-        if ( type == OBJECT_HUMAN    )  icon =  8;
-        if ( type == OBJECT_MOBILEfa )  icon = 11;
-        if ( type == OBJECT_MOBILEta )  icon = 10;
-        if ( type == OBJECT_MOBILEwa )  icon =  9;
-        if ( type == OBJECT_MOBILEia )  icon = 22;
-        if ( type == OBJECT_MOBILEfc )  icon = 17;
-        if ( type == OBJECT_MOBILEtc )  icon = 16;
-        if ( type == OBJECT_MOBILEwc )  icon = 15;
-        if ( type == OBJECT_MOBILEic )  icon = 23;
-        if ( type == OBJECT_MOBILEfi )  icon = 27;
-        if ( type == OBJECT_MOBILEti )  icon = 26;
-        if ( type == OBJECT_MOBILEwi )  icon = 25;
-        if ( type == OBJECT_MOBILEii )  icon = 28;
-        if ( type == OBJECT_MOBILEfs )  icon = 14;
-        if ( type == OBJECT_MOBILEts )  icon = 13;
-        if ( type == OBJECT_MOBILEws )  icon = 12;
-        if ( type == OBJECT_MOBILEis )  icon = 24;
-        if ( type == OBJECT_MOBILErt )  icon = 18;
-        if ( type == OBJECT_MOBILErc )  icon = 19;
-        if ( type == OBJECT_MOBILErr )  icon = 20;
-        if ( type == OBJECT_MOBILErs )  icon = 29;
-        if ( type == OBJECT_MOBILEsa )  icon = 21;
-        if ( type == OBJECT_MOBILEft )  icon = 30;
-        if ( type == OBJECT_MOBILEtt )  icon = 30;
-        if ( type == OBJECT_MOBILEwt )  icon = 30;
-        if ( type == OBJECT_MOBILEit )  icon = 30;
-        if ( type == OBJECT_MOBILEtg )  icon = 45;
-        if ( type == OBJECT_MOBILEdr )  icon = 48;
-        if ( type == OBJECT_APOLLO2  )  icon = 49;
-        if ( type == OBJECT_MOTHER   )  icon = 31;
-        if ( type == OBJECT_ANT      )  icon = 31;
-        if ( type == OBJECT_SPIDER   )  icon = 31;
-        if ( type == OBJECT_BEE      )  icon = 31;
-        if ( type == OBJECT_WORM     )  icon = 31;
-        if ( type == OBJECT_TEEN28    )  icon = 48;  // bottle
-        if ( type == OBJECT_TEEN34    )  icon = 48;  // stone
-        if ( icon == -1 )  return;
+        if ( type == OBJECT_FACTORY)
+            icon = 32;
+        if ( type == OBJECT_DERRICK)
+            icon = 33;
+        if ( type == OBJECT_CONVERT)
+            icon = 34;
+        if ( type == OBJECT_RESEARCH)
+            icon = 35;
+        if ( type == OBJECT_STATION)
+            icon = 36;
+        if ( type == OBJECT_TOWER)
+            icon = 37;
+        if ( type == OBJECT_LABO)
+            icon = 38;
+        if ( type == OBJECT_ENERGY)
+            icon = 39;
+        if ( type == OBJECT_RADAR)
+            icon = 40;
+        if ( type == OBJECT_INFO)
+            icon = 44;
+        if ( type == OBJECT_REPAIR)
+            icon = 41;
+        if ( type == OBJECT_DESTROYER)
+            icon = 41;
+        if ( type == OBJECT_NUCLEAR)
+            icon = 42;
+        if ( type == OBJECT_PARA)
+            icon = 46;
+        if ( type == OBJECT_SAFE)
+            icon = 47;
+        if ( type == OBJECT_HUSTON)
+            icon = 48;
+        if ( type == OBJECT_TARGET1)
+            icon = 45;
+        if ( type == OBJECT_BASE)
+            icon = 43;
+        if ( type == OBJECT_HUMAN)
+            icon =  8;
+        if ( type == OBJECT_MOBILEfa)
+            icon = 11;
+        if ( type == OBJECT_MOBILEta)
+            icon = 10;
+        if ( type == OBJECT_MOBILEwa)
+            icon =  9;
+        if ( type == OBJECT_MOBILEia)
+            icon = 22;
+        if ( type == OBJECT_MOBILEfc)
+            icon = 17;
+        if ( type == OBJECT_MOBILEtc)
+            icon = 16;
+        if ( type == OBJECT_MOBILEwc)
+            icon = 15;
+        if ( type == OBJECT_MOBILEic)
+            icon = 23;
+        if ( type == OBJECT_MOBILEfi)
+            icon = 27;
+        if ( type == OBJECT_MOBILEti)
+            icon = 26;
+        if ( type == OBJECT_MOBILEwi)
+            icon = 25;
+        if ( type == OBJECT_MOBILEii)
+            icon = 28;
+        if ( type == OBJECT_MOBILEfs)
+            icon = 14;
+        if ( type == OBJECT_MOBILEts)
+            icon = 13;
+        if ( type == OBJECT_MOBILEws)
+            icon = 12;
+        if ( type == OBJECT_MOBILEis)
+            icon = 24;
+        if ( type == OBJECT_MOBILErt)
+            icon = 18;
+        if ( type == OBJECT_MOBILErc)
+            icon = 19;
+        if ( type == OBJECT_MOBILErr)
+            icon = 20;
+        if ( type == OBJECT_MOBILErs)
+            icon = 29;
+        if ( type == OBJECT_MOBILEsa)
+            icon = 21;
+        if ( type == OBJECT_MOBILEft)
+            icon = 30;
+        if ( type == OBJECT_MOBILEtt)
+            icon = 30;
+        if ( type == OBJECT_MOBILEwt)
+            icon = 30;
+        if ( type == OBJECT_MOBILEit)
+            icon = 30;
+        if ( type == OBJECT_MOBILEtg)
+            icon = 45;
+        if ( type == OBJECT_MOBILEdr)
+            icon = 48;
+        if ( type == OBJECT_APOLLO2)
+            icon = 49;
+        if ( type == OBJECT_MOTHER)
+            icon = 31;
+        if ( type == OBJECT_ANT)
+            icon = 31;
+        if ( type == OBJECT_SPIDER)
+            icon = 31;
+        if ( type == OBJECT_BEE)
+            icon = 31;
+        if ( type == OBJECT_WORM)
+            icon = 31;
+        if ( type == OBJECT_TEEN28)
+            icon = 48;  // bottle
+        if ( type == OBJECT_TEEN34)
+            icon = 48;  // stone
+        if ( icon == -1 )
+            return;
 
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
         uv1.x = (32.0f/256.0f)*(icon%8);
@@ -906,7 +976,8 @@ void CMap::DrawHighlight(Math::Point pos)
 {
     Math::Point dim, uv1, uv2;
 
-    if (m_bToy || !m_fixImage.empty())  return;  // map with still image?
+    if (m_bToy || !m_fixImage.empty())
+        return;  // map with still image?
 
     pos.x = (pos.x-m_offset.x)*(m_zoom*0.5f)/m_half+0.5f;
     pos.y = (pos.y-m_offset.y)*(m_zoom*0.5f)/m_half+0.5f;
@@ -1016,7 +1087,8 @@ void CMap::DrawVertex(Math::Point uv1, Math::Point uv2, float zoom)
 
 void CMap::UpdateTerrain()
 {
-    if (! m_fixImage.empty()) return;  // still image?
+    if (! m_fixImage.empty())
+        return;  // still image?
 
     CImage img(Math::IntPoint(256, 256));
 
@@ -1039,17 +1111,15 @@ void CMap::UpdateTerrain()
 
             if ( pos.x >= -m_half && pos.x <= m_half &&
                  pos.z >= -m_half && pos.z <= m_half )
-            {
                 level = m_terrain->GetFloorLevel(pos, true) / scale;
-            }
             else
-            {
                 level = 1000.0f;
-            }
 
             float intensity = level / 256.0f;
-            if (intensity < 0.0f) intensity = 0.0f;
-            if (intensity > 1.0f) intensity = 1.0f;
+            if (intensity < 0.0f)
+                intensity = 0.0f;
+            if (intensity > 1.0f)
+                intensity = 1.0f;
 
             if (level >= water)  // on water?
             {
@@ -1063,7 +1133,6 @@ void CMap::UpdateTerrain()
                 color.g = Math::Norm(m_waterColor.g + (intensity - 0.5f));
                 color.b = Math::Norm(m_waterColor.b + (intensity - 0.5f));
             }
-
             img.SetPixel(Math::IntPoint(x, y), color);
         }
     }
@@ -1081,10 +1150,15 @@ void CMap::UpdateTerrain(int bx, int by, int ex, int ey)
     float           scale, water, level, intensity;
     int             x, y;
 
-    if (! m_fixImage.empty())  return;  // still image?
+    if (! m_fixImage.empty())
+        return;  // still image?
 
     // TODO: map texture manipulation
     return;
+
+
+    //TODO  Check DEAD CODE BELOW
+
 
     //if ( !m_engine->OpenImage("map.png") )  return;
     //m_engine->LoadImage();
@@ -1103,13 +1177,9 @@ void CMap::UpdateTerrain(int bx, int by, int ex, int ey)
 
             if ( pos.x >= -m_half && pos.x <= m_half &&
                  pos.z >= -m_half && pos.z <= m_half )
-            {
                 level = m_terrain->GetFloorLevel(pos, true)/scale;
-            }
             else
-            {
                 level = 1000.0f;
-            }
 
             intensity = level/256.0f;
             if ( intensity < 0.0f )  intensity = 0.0f;
@@ -1146,9 +1216,7 @@ void CMap::FlushObject()
     m_bRadar = m_main->GetRadar();
 
     for (int i = 0; i < MAPMAXOBJECT; i++)
-    {
         m_map[i].bUsed = false;
-    }
 }
 
 // Updates an object in the map.
@@ -1161,11 +1229,14 @@ void CMap::UpdateObject(CObject* pObj)
     Math::Point         ppos;
     float           dir;
 
-    if ( !m_bEnable )  return;
-    if ( m_totalFix >= m_totalMove )  return;  // full table?
+    if ( !m_bEnable )
+        return;
+    if ( m_totalFix >= m_totalMove )
+        return;  // full table?
 
     type = pObj->GetType();
-    if ( !pObj->GetDetectable() )  return;
+    if ( !pObj->GetDetectable() )
+        return;
     if ( type != OBJECT_MOTHER   &&
          type != OBJECT_ANT      &&
          type != OBJECT_SPIDER   &&
@@ -1173,10 +1244,14 @@ void CMap::UpdateObject(CObject* pObj)
          type != OBJECT_WORM     &&
          type != OBJECT_MOBILEtg )
     {
-        if (pObj->Implements(ObjectInterfaceType::Controllable) && !dynamic_cast<CControllableObject*>(pObj)->GetSelectable()) return;
+        if (pObj->Implements(ObjectInterfaceType::Controllable)
+            && !dynamic_cast<CControllableObject*>(pObj)->GetSelectable())
+            return;
     }
-    if ( pObj->GetProxyActivate() )  return;
-    if (IsObjectBeingTransported(pObj))  return;
+    if ( pObj->GetProxyActivate() )
+        return;
+    if (IsObjectBeingTransported(pObj))
+        return;
 
     pos  = pObj->GetPosition();
     dir  = -(pObj->GetRotationY()+Math::PI/2.0f);
@@ -1191,9 +1266,7 @@ void CMap::UpdateObject(CObject* pObj)
 
     color = MAPCOLOR_NULL;
     if ( type == OBJECT_BASE )
-    {
         color = MAPCOLOR_BASE;
-    }
     if ( type == OBJECT_DERRICK  ||
          type == OBJECT_FACTORY  ||
          type == OBJECT_STATION  ||
@@ -1215,17 +1288,13 @@ void CMap::UpdateObject(CObject* pObj)
          type == OBJECT_END      ||  // stationary object?
          type == OBJECT_TEEN28    ||  // bottle?
          type == OBJECT_TEEN34    )   // stone?
-    {
         color = MAPCOLOR_FIX;
-    }
     if ( type == OBJECT_BBOX ||
          type == OBJECT_KEYa ||
          type == OBJECT_KEYb ||
          type == OBJECT_KEYc ||
          type == OBJECT_KEYd )
-    {
         color = MAPCOLOR_BBOX;
-    }
     if ( type == OBJECT_HUMAN    ||
          type == OBJECT_MOBILEwa ||
          type == OBJECT_MOBILEta ||
@@ -1255,39 +1324,26 @@ void CMap::UpdateObject(CObject* pObj)
          type == OBJECT_MOBILEit ||
          type == OBJECT_MOBILEdr ||
          type == OBJECT_APOLLO2  )  // moving vehicle?
-    {
         color = MAPCOLOR_MOVE;
-    }
     if ( type == OBJECT_ANT      ||
          type == OBJECT_BEE      ||
          type == OBJECT_WORM     ||
          type == OBJECT_SPIDER   )  // mobile enemy?
-    {
         color = MAPCOLOR_ALIEN;
-    }
     if ( type == OBJECT_WAYPOINT ||
          type == OBJECT_FLAGb    )
-    {
         color = MAPCOLOR_WAYPOINTb;
-    }
     if ( type == OBJECT_FLAGr )
-    {
         color = MAPCOLOR_WAYPOINTr;
-    }
     if ( type == OBJECT_FLAGg )
-    {
         color = MAPCOLOR_WAYPOINTg;
-    }
     if ( type == OBJECT_FLAGy )
-    {
         color = MAPCOLOR_WAYPOINTy;
-    }
     if ( type == OBJECT_FLAGv )
-    {
         color = MAPCOLOR_WAYPOINTv;
-    }
 
-    if ( color == MAPCOLOR_NULL )  return;
+    if ( color == MAPCOLOR_NULL )
+        return;
 
     /*if (!m_fixImage.empty() && !m_bDebug)  // map with still image?
     {
@@ -1300,7 +1356,8 @@ void CMap::UpdateObject(CObject* pObj)
              color != MAPCOLOR_MOVE )  return;
     }*/
 
-    if ( pObj->Implements(ObjectInterfaceType::Controllable) && dynamic_cast<CControllableObject*>(pObj)->GetSelect() )
+    if ( pObj->Implements(ObjectInterfaceType::Controllable)
+        && dynamic_cast<CControllableObject*>(pObj)->GetSelect() )
     {
         m_map[MAPMAXOBJECT-1].type   = type;
         m_map[MAPMAXOBJECT-1].object = pObj;

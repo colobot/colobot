@@ -50,6 +50,7 @@ std::set<CBotClass*> CBotClass::m_publicClasses{};
 CBotClass::CBotClass(const std::string& name,
                      CBotClass* parent,
                      bool bIntrinsic)
+    : m_pOpenblk(nullptr)
 {
     m_parent    = parent;
     m_name      = name;
@@ -96,7 +97,8 @@ void CBotClass::Purge()
     delete      m_pVar;
     m_pVar      = nullptr;
     m_externalMethods->Clear();
-    for (CBotFunction* f : m_pMethod) delete f;
+    for (CBotFunction* f : m_pMethod)
+        delete f;
     m_pMethod.clear();
     m_IsDef     = false;
 
@@ -119,9 +121,7 @@ bool CBotClass::Lock(CBotProgram* prog)
     }
 
     if (std::find(m_lockProg.begin(), m_lockProg.end(), prog) != m_lockProg.end())
-    {
         return false; // already pending
-    }
 
     m_lockProg.push_back(prog);
 
@@ -131,7 +131,8 @@ bool CBotClass::Lock(CBotProgram* prog)
 ////////////////////////////////////////////////////////////////////////////////
 void CBotClass::Unlock()
 {
-    if (--m_lockCurrentCount > 0) return; // if called Lock() multiple times, wait for all to unlock
+    if (--m_lockCurrentCount > 0)
+        return; // if called Lock() multiple times, wait for all to unlock
 
     m_lockProg.pop_front();
 }
@@ -142,16 +143,12 @@ void CBotClass::FreeLock(CBotProgram* prog)
     for (CBotClass* pClass : m_publicClasses)
     {
         if (pClass->m_lockProg.size() > 0 && prog == pClass->m_lockProg[0])
-        {
             pClass->m_lockCurrentCount = 0;
-        }
 
         // Note: erasing an end iterator is undefined behaviour
         auto it = std::remove(pClass->m_lockProg.begin(), pClass->m_lockProg.end(), prog);
         if (it != pClass->m_lockProg.end())
-        {
             pClass->m_lockProg.erase(it);
-        }
     }
 }
 
@@ -185,8 +182,10 @@ bool CBotClass::AddItem(CBotVar* pVar)
 {
     pVar->SetUniqNum(++m_nbVar);
 
-    if ( m_pVar == nullptr ) m_pVar = pVar;
-    else m_pVar->AddNext(pVar);
+    if ( m_pVar == nullptr )
+        m_pVar = pVar;
+    else
+        m_pVar->AddNext(pVar);
 
     return true;
 }
@@ -209,7 +208,8 @@ bool  CBotClass::IsChildOf(CBotClass* pClass)
     CBotClass* p = this;
     while ( p != nullptr )
     {
-        if ( p == pClass ) return true;
+        if ( p == pClass )
+            return true;
         p = p->m_parent;
     }
     return false;
@@ -228,10 +228,12 @@ CBotVar* CBotClass::GetItem(const std::string& name)
 
     while ( p != nullptr )
     {
-        if ( p->GetName() == name ) return p;
+        if ( p->GetName() == name )
+            return p;
         p = p->GetNext();
     }
-    if (m_parent != nullptr ) return m_parent->GetItem(name);
+    if (m_parent != nullptr )
+        return m_parent->GetItem(name);
     return nullptr;
 }
 
@@ -242,10 +244,12 @@ CBotVar* CBotClass::GetItemRef(int nIdent)
 
     while ( p != nullptr )
     {
-        if ( p->GetUniqNum() == nIdent ) return p;
+        if ( p->GetUniqNum() == nIdent )
+            return p;
         p = p->GetNext();
     }
-    if (m_parent != nullptr ) return m_parent->GetItemRef(nIdent);
+    if (m_parent != nullptr )
+        return m_parent->GetItemRef(nIdent);
     return nullptr;
 }
 
@@ -256,7 +260,8 @@ bool CBotClass::CheckVar(const std::string &name)
 
     while ( p != nullptr )
     {
-        if ( p->GetName() == name ) return true;
+        if ( p->GetName() == name )
+            return true;
         p = p->GetNext();
     }
     return false;
@@ -278,9 +283,8 @@ CBotClass* CBotClass::Find(CBotToken* &pToken)
 CBotClass* CBotClass::Find(const std::string& name)
 {
     for (CBotClass* p : m_publicClasses)
-    {
-        if ( p->GetName() == name ) return p;
-    }
+        if ( p->GetName() == name )
+            return p;
 
     return nullptr;
 }
@@ -312,7 +316,8 @@ CBotTypResult CBotClass::CompileMethode(CBotToken* name,
     // find the methods declared by AddFunction
 
     CBotTypResult r = m_externalMethods->CompileCall(name, pThis, ppParams, pStack);
-    if ( r.GetType() >= 0) return r;
+    if ( r.GetType() >= 0)
+        return r;
 
     // find the methods declared by user
 
@@ -331,15 +336,15 @@ bool CBotClass::ExecuteMethode(long& nIdent,
                                CBotToken* pToken)
 {
     int ret = m_externalMethods->DoCall(pToken, pThis, ppParams, pStack, pResultType);
-    if (ret >= 0) return ret;
+    if (ret >= 0)
+        return ret;
 
     ret = CBotFunction::DoCall(m_pMethod, nIdent, pToken->GetString(), pThis, ppParams, pStack, pToken, this);
-    if (ret >= 0) return ret;
+    if (ret >= 0)
+        return ret;
 
     if (m_parent != nullptr)
-    {
         ret = m_parent->ExecuteMethode(nIdent, pThis, ppParams, pResultType, pStack, pToken);
-    }
     return ret;
 }
 
@@ -357,7 +362,8 @@ void CBotClass::RestoreMethode(long& nIdent,
     while (pClass != nullptr)
     {
         bool ok = CBotFunction::RestoreCall(pClass->m_pMethod, nIdent, name->GetString(), pThis, ppParams, pStack, pClass);
-        if (ok) return;
+        if (ok)
+            return;
         pClass = pClass->m_parent;
     }
     assert(false);
@@ -366,34 +372,44 @@ void CBotClass::RestoreMethode(long& nIdent,
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotClass::SaveStaticState(FILE* pf)
 {
-    if (!WriteWord( pf, CBOTVERSION*2)) return false;
+    if (!WriteWord( pf, CBOTVERSION*2))
+        return false;
 
     // saves the state of static variables in classes
     for (CBotClass* p : m_publicClasses)
     {
-        if (!WriteWord( pf, 1 )) return false;
+        if (!WriteWord( pf, 1 ))
+            return false;
         // save the name of the class
-        if (!WriteString( pf, p->GetName() )) return false;
+        if (!WriteString( pf, p->GetName() ))
+            return false;
 
         CBotVar*    pv = p->GetVar();
         while( pv != nullptr )
         {
             if ( pv->IsStatic() )
             {
-                if (!WriteWord( pf, 1 )) return false;
-                if (!WriteString( pf, pv->GetName() )) return false;
+                if (!WriteWord( pf, 1 ))
+                    return false;
+                if (!WriteString( pf, pv->GetName() ))
+                    return false;
 
-                if ( !pv->Save0State(pf) ) return false;             // common header
-                if ( !pv->Save1State(pf) ) return false;                // saves as the child class
-                if ( !WriteWord( pf, 0 ) ) return false;
+                if ( !pv->Save0State(pf) )
+                    return false;             // common header
+                if ( !pv->Save1State(pf) )
+                    return false;                // saves as the child class
+                if ( !WriteWord( pf, 0 ) )
+                    return false;
             }
             pv = pv->GetNext();
         }
 
-        if (!WriteWord( pf, 0 )) return false;
+        if (!WriteWord( pf, 0 ))
+            return false;
     }
 
-    if (!WriteWord( pf, 0 )) return false;
+    if (!WriteWord( pf, 0 ))
+        return false;
     return true;
 }
 
@@ -404,31 +420,40 @@ bool CBotClass::RestoreStaticState(FILE* pf)
     CBotClass*      pClass;
     unsigned short  w;
 
-    if (!ReadWord( pf, w )) return false;
-    if ( w != CBOTVERSION*2 ) return false;
+    if (!ReadWord( pf, w ))
+        return false;
+    if ( w != CBOTVERSION*2 )
+        return false;
 
     while (true)
     {
-        if (!ReadWord( pf, w )) return false;
-        if ( w == 0 ) return true;
+        if (!ReadWord( pf, w ))
+            return false;
+        if ( w == 0 )
+            return true;
 
-        if (!ReadString( pf, ClassName )) return false;
+        if (!ReadString( pf, ClassName ))
+            return false;
         pClass = Find(ClassName);
 
         while (true)
         {
-            if (!ReadWord( pf, w )) return false;
+            if (!ReadWord( pf, w ))
+                return false;
             if ( w == 0 ) break;
 
             CBotVar*    pVar = nullptr;
             CBotVar*    pv = nullptr;
 
-            if (!ReadString( pf, VarName )) return false;
+            if (!ReadString( pf, VarName ))
+                return false;
             if ( pClass != nullptr ) pVar = pClass->GetItem(VarName);
 
-            if (!CBotVar::RestoreState(pf, pv)) return false;   // the temp variable
+            if (!CBotVar::RestoreState(pf, pv))
+                return false;   // the temp variable
 
-            if ( pVar != nullptr ) pVar->Copy(pv);
+            if ( pVar != nullptr )
+                pVar->Copy(pv);
             delete pv;
         }
     }
@@ -440,7 +465,8 @@ bool CBotClass::CheckCall(CBotProgram* program, CBotDefParam* pParam, CBotToken*
 {
     std::string  name = pToken->GetString();
 
-    if ( program->GetExternalCalls()->CheckCall(name) ) return true;
+    if ( program->GetExternalCalls()->CheckCall(name) )
+        return true;
 
     for (CBotFunction* pp : m_pMethod)
     {
@@ -464,7 +490,8 @@ CBotClass* CBotClass::Compile1(CBotToken* &p, CBotCStack* pStack)
         return nullptr;
     }
 
-    if ( !IsOfType(p, ID_CLASS) ) return nullptr;
+    if ( !IsOfType(p, ID_CLASS) )
+        return nullptr;
 
     std::string name = p->GetString();
 
@@ -509,13 +536,16 @@ CBotClass* CBotClass::Compile1(CBotToken* &p, CBotCStack* pStack)
         {
             int type = p->GetType();
             p = p->GetNext();
-            if (type == ID_OPBLK) level++;
-            if (type == ID_CLBLK) level--;
+            if (type == ID_OPBLK)
+                level++;
+            if (type == ID_CLBLK)
+                level--;
         }
 
         if (level > 0) pStack->SetError(CBotErrCloseBlock, classe->m_pOpenblk);
 
-        if (pStack->IsOk()) return classe;
+        if (pStack->IsOk())
+            return classe;
     }
     else
         pStack->SetError(CBotErrNoClassName, p);
@@ -538,7 +568,8 @@ void CBotClass::DefineClasses(std::list<CBotClass*> pClassList, CBotCStack* pSta
             pClass->CompileDefItem(p, pStack, false);
         }
 
-        if (!pStack->IsOk()) return;
+        if (!pStack->IsOk())
+            return;
     }
 }
 
@@ -549,18 +580,25 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
     CBotVar::ProtectionLevel mProtect = CBotVar::ProtectionLevel::Public;
     bool    bSynchro = false;
 
-    while (IsOfType(p, ID_SEP)) ;
+    while (IsOfType(p, ID_SEP))
+        ;   //TODO:ToCheck
 
     CBotTypResult   type( -1 );
 
-    if ( IsOfType(p, ID_SYNCHO) ) bSynchro = true;
+    if ( IsOfType(p, ID_SYNCHO) )
+        bSynchro = true;
     CBotToken*      pBase = p;
 
-    if ( IsOfType(p, ID_STATIC) ) bStatic = true;
-    if ( IsOfType(p, ID_PUBLIC) ) mProtect = CBotVar::ProtectionLevel::Public;
-    if ( IsOfType(p, ID_PRIVATE) ) mProtect = CBotVar::ProtectionLevel::Private;
-    if ( IsOfType(p, ID_PROTECTED) ) mProtect = CBotVar::ProtectionLevel::Protected;
-    if ( IsOfType(p, ID_STATIC) ) bStatic = true;
+    if ( IsOfType(p, ID_STATIC) )
+        bStatic = true;
+    if ( IsOfType(p, ID_PUBLIC) )
+        mProtect = CBotVar::ProtectionLevel::Public;
+    if ( IsOfType(p, ID_PRIVATE) )
+        mProtect = CBotVar::ProtectionLevel::Private;
+    if ( IsOfType(p, ID_PROTECTED) )
+        mProtect = CBotVar::ProtectionLevel::Protected;
+    if ( IsOfType(p, ID_STATIC) )
+        bStatic = true;
 
 //  CBotClass* pClass = nullptr;
     type = TypeParam(p, pStack);        // type of the result
@@ -578,9 +616,7 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
 
         std::string pp = p->GetString();
         if ( IsOfType(p, ID_NOT) )
-        {
             pp = std::string("~") + p->GetString();
-        }
 
         if (IsOfType(p, TokenTypVar))
         {
@@ -591,7 +627,8 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                     p = pBase;
                     CBotFunction* f = CBotFunction::Compile1(p, pStack, this);
 
-                    if ( f == nullptr ) return false;
+                    if ( f == nullptr )
+                        return false;
 
                     m_pMethod.push_back(f);
                 }
@@ -692,19 +729,20 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                 {
                     i = CBotExpression::Compile( p, pStack );           // expression for the value
                     if (i == nullptr || pStack->GetType() != CBotTypInt) // must be a number
-                    {
                         pStack->SetError(CBotErrBadIndex, p->GetStart());
-                    }
                 }
                 else
                     i = new CBotEmpty();                            // special if not a formula
 
                 type2 = CBotTypResult(CBotTypArrayPointer, type2);
 
-                if (limites == nullptr) limites = i;
-                else limites->AddNext3(i);
+                if (limites == nullptr)
+                    limites = i;
+                else
+                    limites->AddNext3(i);
 
-                if (pStack->IsOk() && IsOfType(p, ID_CLBRK)) continue;
+                if (pStack->IsOk() && IsOfType(p, ID_CLBRK))
+                    continue;
                 pStack->SetError(CBotErrCloseIndex, p->GetStart());
                 delete limites;
                 return false;
@@ -746,9 +784,11 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                         return false;
                     }
                 }
-                if ( !pStack->IsOk() ) return false;
+                if ( !pStack->IsOk() )
+                    return false;
             }
-            else if ( type2.Eq(CBotTypArrayPointer) ) i = new CBotExprLitNull();
+            else if ( type2.Eq(CBotTypArrayPointer) )
+                i = new CBotExprLitNull();
 
 
             if ( !bSecond )
@@ -767,13 +807,13 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                 {
                     CBotStack* pile = CBotStack::AllocateStack();              // independent stack
                     if ( type2.Eq(CBotTypArrayPointer) )
-                    {
-                        while(pile->IsOk() && !pv->m_InitExpr->Execute(pile, pv));
-                    }
+                        while(pile->IsOk() && !pv->m_InitExpr->Execute(pile, pv))
+                            ;
                     else
                     {
-                        while(pile->IsOk() && !pv->m_InitExpr->Execute(pile)); // evaluates the expression without timer
-                        pv->SetVal( pile->GetVar() ) ;
+                        while(pile->IsOk() && !pv->m_InitExpr->Execute(pile))
+                            ; // evaluates the expression without timer
+                        pv->SetVal( pile->GetVar() );
                     }
                     pile->Delete();
                 }
@@ -784,8 +824,10 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                 delete limites;
             }
 
-            if ( IsOfType(p, ID_COMMA) ) continue;
-            if ( IsOfType(p, ID_SEP) ) break;
+            if ( IsOfType(p, ID_COMMA) )
+                continue;
+            if ( IsOfType(p, ID_SEP) )
+                break;
         }
         pStack->SetError(CBotErrNoTerminator, p);
     }
@@ -795,8 +837,10 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
 ////////////////////////////////////////////////////////////////////////////////
 CBotClass* CBotClass::Compile(CBotToken* &p, CBotCStack* pStack)
 {
-    if ( !IsOfType(p, ID_PUBLIC) ) return nullptr;
-    if ( !IsOfType(p, ID_CLASS) ) return nullptr;
+    if ( !IsOfType(p, ID_PUBLIC) )
+        return nullptr;
+    if ( !IsOfType(p, ID_CLASS) )
+        return nullptr;
 
     std::string name = p->GetString();
 
@@ -823,19 +867,16 @@ CBotClass* CBotClass::Compile(CBotToken* &p, CBotCStack* pStack)
         else
         {
             if (pOld != nullptr)
-            {
                 pOld->m_parent = nullptr;
-            }
         }
         IsOfType( p, ID_OPBLK); // necessarily
 
         while ( pStack->IsOk() && !IsOfType( p, ID_CLBLK ) )
-        {
             pOld->CompileDefItem(p, pStack, true);
-        }
 
         pOld->m_IsDef = true;           // complete definition
-        if (pStack->IsOk()) return pOld;
+        if (pStack->IsOk())
+            return pOld;
     }
     pStack->SetError(CBotErrNoTerminator, p);
     return nullptr;

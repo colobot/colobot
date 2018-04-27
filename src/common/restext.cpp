@@ -785,14 +785,13 @@ void PutKeyName(std::string& dst, const char* src)
              src[s+3] == 'y'  &&
              src[s+4] == ' '  )
         {
-            unsigned int count;
-            for(count = 0; src[s+5+count] != ';'; count++);
+            unsigned int count=0;
+            for(; src[s+5+count] != ';'; count++)
+                ;
             CInput* input = CInput::GetInstancePointer();
             InputSlot key = input->SearchKeyById(std::string(&src[s+5], count));
             if (key != INPUT_SLOT_MAX)
-            {
                 dst.append(input->GetKeysString(key));
-            }
             s = s+5+count+1;
         }
 
@@ -807,41 +806,40 @@ const char* GetResourceBase(ResType type, unsigned int num)
     const char *str = nullptr;
 
     assert(num >= 0);
-
     switch (type)
     {
-        case RES_TEXT:
-            assert(num < RT_MAX);
-            str = stringsText[num];
-            break;
+    case RES_TEXT:
+        assert(num < RT_MAX);
+        str = stringsText[num];
+        break;
 
-        case RES_EVENT:
-            if (num >= EVENT_STD_MAX)
-                return ""; // can be safely ignored (user events)
+    case RES_EVENT:
+        if (num >= EVENT_STD_MAX)
+            return ""; // can be safely ignored (user events)
 
-            str = stringsEvent[num];
-            break;
+        str = stringsEvent[num];
+        break;
 
-        case RES_OBJECT:
-            assert(num < OBJECT_MAX);
-            if (num == OBJECT_HUMAN)
-                return g_gamerName;
+    case RES_OBJECT:
+        assert(num < OBJECT_MAX);
+        if (num == OBJECT_HUMAN)
+            return g_gamerName;
 
-            str = stringsObject[num];
-            break;
+        str = stringsObject[num];
+        break;
 
-        case RES_ERR:
-            assert(num < ERR_MAX);
-            str = stringsErr[num];
-            break;
+    case RES_ERR:
+        assert(num < ERR_MAX);
+        str = stringsErr[num];
+        break;
 
-        case RES_CBOT:
-            assert(num < CBot::CBotErrMAX);
-            str = stringsCbot[num];
-            break;
+    case RES_CBOT:
+        assert(num < CBot::CBotErrMAX);
+        str = stringsCbot[num];
+        break;
 
-        default:
-            assert(false);
+    default:
+        assert(false);
     }
 
     return gettext(str);
@@ -884,9 +882,7 @@ bool GetResource(ResType type, unsigned int num, std::string& text)
             text = StrUtils::Replace(text, "%1", StrUtils::ToString<int>(1 + num - VIRTUAL_JOY(0)));
         }
         else
-        {
             text = SDL_GetKeyName(static_cast<SDL_Keycode>(num));
-        }
         return true;
     }
 }

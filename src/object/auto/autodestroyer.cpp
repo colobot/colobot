@@ -85,9 +85,7 @@ Error CAutoDestroyer::StartAction(int param)
     CObject* scrap;
 
     if ( m_object->GetVirusMode() )  // contaminated by a virus?
-    {
         return ERR_BAT_VIRUS;
-    }
 
     scrap = SearchPlastic();
     if ( scrap == nullptr )
@@ -123,7 +121,8 @@ bool CAutoDestroyer::EventProcess(const Event &event)
 
     CAuto::EventProcess(event);
 
-    if ( m_engine->GetPause() )  return true;
+    if ( m_engine->GetPause() )
+        return true;
 
     if (m_main->GetSelect() == m_object)
     {
@@ -132,12 +131,12 @@ bool CAutoDestroyer::EventProcess(const Event &event)
             Error err = StartAction(0);
             if ( err != ERR_OK )
                 m_main->DisplayError(err, m_object);
-
             return false;
         }
     }
 
-    if ( event.type != EVENT_FRAME )  return true;
+    if ( event.type != EVENT_FRAME )
+        return true;
 
     m_progress += event.rTime*m_speed;
     m_timeVirus -= event.rTime;
@@ -162,11 +161,13 @@ bool CAutoDestroyer::EventProcess(const Event &event)
             if (m_main->GetSelect() == m_object)
             {
                 scrap = SearchPlastic();
-                if ( pw != nullptr ) EnableInterface(pw, EVENT_OBJECT_BDESTROY, (scrap != nullptr));
+                if ( pw != nullptr )
+                    EnableInterface(pw, EVENT_OBJECT_BDESTROY, (scrap != nullptr));
             }
         }
     }
-    else if ( pw != nullptr ) EnableInterface(pw, EVENT_OBJECT_BDESTROY, false);
+    else if ( pw != nullptr )
+        EnableInterface(pw, EVENT_OBJECT_BDESTROY, false);
 
     if ( m_phase == ADEP_DOWN )
     {
@@ -246,10 +247,12 @@ bool CAutoDestroyer::CreateInterface(bool bSelect)
 
     CAuto::CreateInterface(bSelect);
 
-    if ( !bSelect )  return true;
+    if ( !bSelect )
+        return true;
 
     pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-    if ( pw == nullptr )  return false;
+    if ( pw == nullptr )
+        return false;
 
     ox = 3.0f/640.0f;
     oy = 3.0f/480.0f;
@@ -283,13 +286,17 @@ CObject* CAutoDestroyer::SearchPlastic()
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        if (obj == m_object) continue;
-        if (!obj->Implements(ObjectInterfaceType::Destroyable)) continue;
-        if (obj->GetType() == OBJECT_HUMAN || obj->GetType() == OBJECT_TECH) continue;
+        if (obj == m_object)
+            continue;
+        if (!obj->Implements(ObjectInterfaceType::Destroyable))
+            continue;
+        if (obj->GetType() == OBJECT_HUMAN || obj->GetType() == OBJECT_TECH)
+            continue;
 
         Math::Vector oPos = obj->GetPosition();
         float dist = Math::Distance(oPos, sPos);
-        if ( dist <= 5.0f )  return obj;
+        if ( dist <= 5.0f )
+            return obj;
     }
 
     return nullptr;
@@ -300,9 +307,7 @@ CObject* CAutoDestroyer::SearchPlastic()
 Error CAutoDestroyer::GetError()
 {
     if ( m_object->GetVirusMode() )
-    {
         return ERR_BAT_VIRUS;
-    }
 
     return ERR_OK;
 }
@@ -312,7 +317,8 @@ Error CAutoDestroyer::GetError()
 
 bool CAutoDestroyer::Write(CLevelParserLine* line)
 {
-    if ( m_phase == ADEP_WAIT )  return false;
+    if ( m_phase == ADEP_WAIT )
+        return false;
 
     line->AddParam("aExist", MakeUnique<CLevelParserParam>(true));
     CAuto::Write(line);
@@ -327,7 +333,8 @@ bool CAutoDestroyer::Write(CLevelParserLine* line)
 
 bool CAutoDestroyer::Read(CLevelParserLine* line)
 {
-    if ( !line->GetParam("aExist")->AsBool(false) )  return false;
+    if ( !line->GetParam("aExist")->AsBool(false) )
+        return false;
 
     CAuto::Read(line);
     m_phase = static_cast< AutoDestroyerPhase >(line->GetParam("aPhase")->AsInt(ADEP_WAIT));
@@ -343,10 +350,8 @@ bool CAutoDestroyer::Read(CLevelParserLine* line)
 
 void CAutoDestroyer::EnableInterface(Ui::CWindow *pw, EventType event, bool bState)
 {
-    Ui::CControl*   control;
-
-    control = pw->SearchControl(event);
-    if ( control == nullptr )  return;
-
+    Ui::CControl*   control = pw->SearchControl(event);
+    if ( control == nullptr )
+        return;
     control->SetState(Ui::STATE_ENABLE, bState);
 }

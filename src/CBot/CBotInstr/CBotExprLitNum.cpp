@@ -32,6 +32,9 @@ namespace CBot
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotExprLitNum::CBotExprLitNum()
+    : m_numtype(CBotTypVoid)
+    , m_valint(0)
+    , m_valfloat(0.0)
 {
 }
 
@@ -63,9 +66,7 @@ CBotInstr* CBotExprLitNum::Compile(CBotToken* &p, CBotCStack* pStack)
             inst->m_valfloat = GetNumFloat(s);
         }
         else
-        {
             inst->m_valint = GetNumInt(s);
-        }
     }
 
     if (pStk->NextToken(p))
@@ -84,15 +85,14 @@ bool CBotExprLitNum::Execute(CBotStack* &pj)
 {
     CBotStack*    pile = pj->AddStack(this);
 
-    if (pile->IfStep()) return false;
+    if (pile->IfStep())
+        return false;
 
     CBotVar*    var = CBotVar::Create("", m_numtype);
 
     std::string    nombre ;
     if (m_token.GetType() == TokenTypDef)
-    {
         nombre = m_token.GetString();
-    }
 
     switch (m_numtype)
     {

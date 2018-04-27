@@ -680,10 +680,9 @@ void CEdit::MouseDoubleClick(const Math::Point mouse)
 
 void CEdit::MouseClick(const Math::Point mouse)
 {
-    std::size_t i;
-
-    i = MouseDetect(mouse);
-    if ( i == SIZE_MAX )  return;
+    std::size_t i = MouseDetect(mouse);
+    if ( i == SIZE_MAX )
+        return;
 
     if ( m_bEdit || m_bHilite )
     {
@@ -3087,17 +3086,12 @@ int CEdit::IndentTabCount()const
 
 void CEdit::IndentTabAdjust(const int number)
 {
-    int     i;
-
-    for ( i=0 ; i<number ; i++ )  // add?
-    {
+    int     i=0;
+    for ( ; i<number ; i++ )  // add?
         InsertOne('\t');
-    }
 
     for ( i=0 ; i>number ; i-- )  // delete?
-    {
         DeleteOne(-1);
-    }
 }
 
 

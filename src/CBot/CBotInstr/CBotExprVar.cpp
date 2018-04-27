@@ -58,8 +58,7 @@ CBotInstr* CBotExprVar::Compile(CBotToken*& p, CBotCStack* pStack, bool bCheckRe
 
         inst->SetToken(p);
 
-        CBotVar*     var;
-
+        CBotVar* var = nullptr; // fake init to mute lint
         if (nullptr != (var = pStk->FindVar(p)))   // seek if known variable
         {
             int        ident = var->GetUniqNum();
@@ -124,10 +123,12 @@ CBotInstr* CBotExprVar::Compile(CBotToken*& p, CBotCStack* pStack, bool bCheckRe
                         {
                             if (p->GetNext()->GetType() == ID_OPENPAR)  // a method call?
                             {
-                                if (bCheckReadOnly) goto err; // don't allow increment a method call "++"
+                                if (bCheckReadOnly)
+                                    goto err; // don't allow increment a method call "++"
 
                                 CBotInstr* i = CBotInstrMethode::Compile(p, pStk, var);
-                                if (!pStk->IsOk()) goto err;
+                                if (!pStk->IsOk())
+                                    goto err;
                                 inst->AddNext3(i);  // added after
                                 return pStack->Return(inst, pStk);
                             }
@@ -167,7 +168,8 @@ CBotInstr* CBotExprVar::Compile(CBotToken*& p, CBotCStack* pStack, bool bCheckRe
             }
 
             pStk->SetCopyVar(var);  // place the copy of the variable on the stack (for type)
-            if (pStk->IsOk()) return pStack->Return(inst, pStk);
+            if (pStk->IsOk())
+                return pStack->Return(inst, pStk);
         }
         pStk->SetError(CBotErrUndefVar, p);
 err:
@@ -191,7 +193,8 @@ CBotInstr* CBotExprVar::CompileMethode(CBotToken* &p, CBotCStack* pStack)
     {
         CBotToken pthis("this");
         CBotVar*     var = pStk->FindVar(pthis);
-        if (var == nullptr) return pStack->Return(nullptr, pStk);
+        if (var == nullptr)
+            return pStack->Return(nullptr, pStk);
 
         CBotInstr* inst = new CBotExprVar();
 
@@ -236,25 +239,23 @@ bool CBotExprVar::Execute(CBotStack* &pj)
     {
         if (!ExecuteVar(pVar, pile, nullptr, true)) return false;        // Get the variable fields and indexes according
 
-        if (pVar) pile1->SetCopyVar(pVar);                            // place a copy on the stack
+        if (pVar)
+            pile1->SetCopyVar(pVar);                            // place a copy on the stack
         else
-        {
             return pj->Return(pile1);
-        }
         pile1->IncState();
     }
 
     pVar = pile1->GetVar();
 
     if (pVar == nullptr)
-    {
         return pj->Return(pile1);
-    }
 
     if (pVar->IsUndefined())
     {
         CBotToken* pt = &m_token;
-        while (pt->GetNext() != nullptr) pt = pt->GetNext();
+        while (pt->GetNext() != nullptr)
+            pt = pt->GetNext();
         pile1->SetError(CBotErrNotInit, pt);
         return pj->Return(pile1);
     }
@@ -267,7 +268,8 @@ void CBotExprVar::RestoreState(CBotStack* &pj, bool bMain)
     if (!bMain) return;
 
     CBotStack*     pile  = pj->RestoreStack(this);
-    if (pile == nullptr) return;
+    if (pile == nullptr)
+        return;
 
     CBotStack*     pile1 = pile;
 
@@ -284,7 +286,8 @@ bool CBotExprVar::ExecuteVar(CBotVar* &pVar, CBotStack* &pj, CBotToken* prevToke
     CBotStack*    pile = pj;
     pj = pj->AddStack(this);
 
-    if (bStep && m_nIdent>0 && pj->IfStep()) return false;
+    if (bStep && m_nIdent>0 && pj->IfStep())
+        return false;
 
     pVar = pj->FindVar(m_nIdent, true);     // tries with the variable update if necessary
     if (pVar == nullptr)
@@ -304,7 +307,8 @@ bool CBotExprVar::ExecuteVar(CBotVar* &pVar, CBotStack* &pj, CBotToken* prevToke
 void CBotExprVar::RestoreStateVar(CBotStack* &pj, bool bMain)
 {
     pj = pj->RestoreStack(this);
-    if (pj == nullptr) return;
+    if (pj == nullptr)
+        return;
 
     if (m_next3 != nullptr)
          m_next3->RestoreStateVar(pj, bMain);

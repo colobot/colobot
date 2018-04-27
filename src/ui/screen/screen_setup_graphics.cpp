@@ -62,8 +62,8 @@ void CScreenSetupGraphics::CreateInterface()
 
     CScreenSetup::CreateInterface();
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == nullptr )  return;
-
+    if ( pw == nullptr )
+        return;
 
     pos.x = ox+sx*3;
     pos.y = 0.65f;
@@ -109,9 +109,7 @@ void CScreenSetupGraphics::CreateInterface()
     pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_LIGHT);
     pc->SetState(STATE_SHADOW);
     if ( m_simulationSetup )
-    {
         pc->SetState(STATE_DEAD);
-    }
     pos.y -= 0.048f;
     pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_PAUSE_BLUR);
     pc->SetState(STATE_SHADOW);
@@ -145,9 +143,7 @@ void CScreenSetupGraphics::CreateInterface()
         pes->SetPossibleValues(shadowOptions);
     }
     else
-    {
         pes->ClearState(STATE_ENABLE);
-    }
     pos.y += ddim.y/2;
     pos.x += 0.005f;
     ddim.x = 0.40f;
@@ -246,82 +242,83 @@ void CScreenSetupGraphics::CreateInterface()
 
 bool CScreenSetupGraphics::EventProcess(const Event &event)
 {
-    if (!CScreenSetup::EventProcess(event)) return false;
+    if (!CScreenSetup::EventProcess(event))
+        return false;
 
     switch( event.type )
     {
-        case EVENT_INTERFACE_PARTI:
-            ChangeSetupButtons();
-            break;
+    case EVENT_INTERFACE_PARTI:
+        ChangeSetupButtons();
+        break;
 
-        case EVENT_INTERFACE_CLIP:
-            ChangeSetupButtons();
-            m_engine->ApplyChange();
-            break;
+    case EVENT_INTERFACE_CLIP:
+        ChangeSetupButtons();
+        m_engine->ApplyChange();
+        break;
 
-        case EVENT_INTERFACE_DIRTY:
-            m_engine->SetDirty(!m_engine->GetDirty());
-            UpdateSetupButtons();
-            break;
+    case EVENT_INTERFACE_DIRTY:
+        m_engine->SetDirty(!m_engine->GetDirty());
+        UpdateSetupButtons();
+        break;
 
-        case EVENT_INTERFACE_FOG:
-            m_engine->SetFog(!m_engine->GetFog());
-            m_camera->SetOverBaseColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)); // TODO: color ok?
-            UpdateSetupButtons();
-            break;
+    case EVENT_INTERFACE_FOG:
+        m_engine->SetFog(!m_engine->GetFog());
+        m_camera->SetOverBaseColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)); // TODO: color ok?
+        UpdateSetupButtons();
+        break;
 
-        case EVENT_INTERFACE_LIGHT:
-            m_engine->SetLightMode(!m_engine->GetLightMode());
-            UpdateSetupButtons();
-            break;
+    case EVENT_INTERFACE_LIGHT:
+        m_engine->SetLightMode(!m_engine->GetLightMode());
+        UpdateSetupButtons();
+        break;
 
-        case EVENT_INTERFACE_PAUSE_BLUR:
-            m_engine->SetPauseBlurEnabled(!m_engine->GetPauseBlurEnabled());
-            UpdateSetupButtons();
-            break;
+    case EVENT_INTERFACE_PAUSE_BLUR:
+        m_engine->SetPauseBlurEnabled(!m_engine->GetPauseBlurEnabled());
+        UpdateSetupButtons();
+        break;
 
-        case EVENT_INTERFACE_SHADOW_SPOTS:
-            m_engine->SetShadowMapping(false);
-            m_engine->SetShadowMappingQuality(false);
-            UpdateSetupButtons();
-            break;
+    case EVENT_INTERFACE_SHADOW_SPOTS:
+        m_engine->SetShadowMapping(false);
+        m_engine->SetShadowMappingQuality(false);
+        UpdateSetupButtons();
+        break;
 
-        case EVENT_INTERFACE_SHADOW_MAPPING:
-            m_engine->SetShadowMapping(true);
-            m_engine->SetShadowMappingQuality(false);
-            UpdateSetupButtons();
-            break;
+    case EVENT_INTERFACE_SHADOW_MAPPING:
+        m_engine->SetShadowMapping(true);
+        m_engine->SetShadowMappingQuality(false);
+        UpdateSetupButtons();
+        break;
 
-        case EVENT_INTERFACE_SHADOW_MAPPING_QUALITY:
-            m_engine->SetShadowMapping(true);
-            m_engine->SetShadowMappingQuality(true);
-            UpdateSetupButtons();
-            break;
+    case EVENT_INTERFACE_SHADOW_MAPPING_QUALITY:
+        m_engine->SetShadowMapping(true);
+        m_engine->SetShadowMappingQuality(true);
+        UpdateSetupButtons();
+        break;
 
-        case EVENT_INTERFACE_SHADOW_MAPPING_BUFFER:
-        case EVENT_INTERFACE_TEXTURE_FILTER:
-        case EVENT_INTERFACE_TEXTURE_MIPMAP:
-        case EVENT_INTERFACE_TEXTURE_ANISOTROPY:
-        case EVENT_INTERFACE_MSAA:
-            ChangeSetupButtons();
-            UpdateSetupButtons();
-            break;
+    case EVENT_INTERFACE_SHADOW_MAPPING_BUFFER:
+    case EVENT_INTERFACE_TEXTURE_FILTER:
+    case EVENT_INTERFACE_TEXTURE_MIPMAP:
+    case EVENT_INTERFACE_TEXTURE_ANISOTROPY:
+    case EVENT_INTERFACE_MSAA:
+        ChangeSetupButtons();
+        UpdateSetupButtons();
+        break;
 
-        case EVENT_INTERFACE_MIN:
-            ChangeSetupQuality(-1);
-            UpdateSetupButtons();
-            break;
-        case EVENT_INTERFACE_NORM:
-            ChangeSetupQuality(0);
-            UpdateSetupButtons();
-            break;
-        case EVENT_INTERFACE_MAX:
-            ChangeSetupQuality(1);
-            UpdateSetupButtons();
-            break;
+    case EVENT_INTERFACE_MIN:
+        ChangeSetupQuality(-1);
+        UpdateSetupButtons();
+        break;
+    case EVENT_INTERFACE_NORM:
+        ChangeSetupQuality(0);
+        UpdateSetupButtons();
+        break;
+    case EVENT_INTERFACE_MAX:
+        ChangeSetupQuality(1);
+        UpdateSetupButtons();
+        break;
 
-        default:
-            return true;
+    default:
+        return true;
     }
     return false;
 }
@@ -337,7 +334,8 @@ void CScreenSetupGraphics::UpdateSetupButtons()
     float       value;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == nullptr )  return;
+    if ( pw == nullptr )
+        return;
 
     pv = static_cast<CEditValue*>(pw->SearchControl(EVENT_INTERFACE_PARTI));
     if ( pv != nullptr )
@@ -355,33 +353,23 @@ void CScreenSetupGraphics::UpdateSetupButtons()
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_DIRTY));
     if ( pc != nullptr )
-    {
         pc->SetState(STATE_CHECK, m_engine->GetDirty());
-    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_FOG));
     if ( pc != nullptr )
-    {
         pc->SetState(STATE_CHECK, m_engine->GetFog());
-    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_LIGHT));
     if ( pc != nullptr )
-    {
         pc->SetState(STATE_CHECK, m_engine->GetLightMode());
-    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_PAUSE_BLUR));
     if ( pc != nullptr )
-    {
         pc->SetState(STATE_CHECK, m_engine->GetPauseBlurEnabled());
-    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SHADOW_SPOTS));
     if ( pc != nullptr )
-    {
         pc->SetState(STATE_CHECK, !m_engine->GetShadowMapping());
-    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SHADOW_MAPPING));
     if ( pc != nullptr )
@@ -402,20 +390,14 @@ void CScreenSetupGraphics::UpdateSetupButtons()
     {
         pes->SetState(STATE_ENABLE, m_engine->GetShadowMapping() && m_engine->GetDevice()->IsFramebufferSupported());
         if (!m_engine->GetShadowMappingOffscreen())
-        {
             pes->SetVisibleValue(0);
-        }
         else
-        {
             pes->SetVisibleValue(m_engine->GetShadowMappingOffscreenResolution());
-        }
     }
 
     pes = static_cast<CEnumSlider*>(pw->SearchControl(EVENT_INTERFACE_TEXTURE_FILTER));
     if ( pes != nullptr )
-    {
         pes->SetVisibleValue(m_engine->GetTextureFilterMode());
-    }
 
     pes = static_cast<CEnumSlider*>(pw->SearchControl(EVENT_INTERFACE_TEXTURE_MIPMAP));
     if ( pes != nullptr )
@@ -426,15 +408,11 @@ void CScreenSetupGraphics::UpdateSetupButtons()
 
     pes = static_cast<CEnumSlider*>(pw->SearchControl(EVENT_INTERFACE_TEXTURE_ANISOTROPY));
     if ( pes != nullptr )
-    {
         pes->SetVisibleValue(m_engine->GetTextureAnisotropyLevel());
-    }
 
     pes = static_cast<CEnumSlider*>(pw->SearchControl(EVENT_INTERFACE_MSAA));
     if ( pes != nullptr )
-    {
         pes->SetVisibleValue(m_engine->GetMultiSample());
-    }
 }
 
 // Updates the engine function of the buttons after the setup phase.
@@ -447,7 +425,8 @@ void CScreenSetupGraphics::ChangeSetupButtons()
     float       value;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == nullptr )  return;
+    if ( pw == nullptr )
+        return;
 
     pv = static_cast<CEditValue*>(pw->SearchControl(EVENT_INTERFACE_PARTI));
     if ( pv != nullptr )
@@ -496,9 +475,7 @@ void CScreenSetupGraphics::ChangeSetupButtons()
     {
         value = pes->GetVisibleValue();
         if(value == 0)
-        {
             m_engine->SetShadowMappingOffscreen(false);
-        }
         else
         {
             m_engine->SetShadowMappingOffscreen(true);
@@ -521,32 +498,67 @@ void CScreenSetupGraphics::ChangeSetupQuality(int quality)
     m_engine->SetLightMode(bEnable);
     m_camera->SetOverBaseColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)); // TODO: color ok?
 
-    if ( quality <  0 )  value = 0.0f;
-    if ( quality == 0 )  value = 1.0f;
-    if ( quality >  0 )  value = 2.0f;
+    if ( quality <  0 )
+        value = 0.0f;
+    if ( quality == 0 )
+        value = 1.0f;
+    if ( quality >  0 )
+        value = 2.0f;
     m_engine->SetParticleDensity(value);
 
-    if ( quality <  0 )  value = 0.5f;
-    if ( quality == 0 )  value = 1.0f;
-    if ( quality >  0 )  value = 2.0f;
+    if ( quality <  0 )
+        value = 0.5f;
+    if ( quality == 0 )
+        value = 1.0f;
+    if ( quality >  0 )
+        value = 2.0f;
     m_engine->SetClippingDistance(value);
 
-    if ( quality <  0 ) m_engine->SetMultiSample(1);
-    if ( quality == 0 ) m_engine->SetMultiSample(2);
-    if ( quality >  0 ) m_engine->SetMultiSample(4);
+    if ( quality <  0 )
+        m_engine->SetMultiSample(1);
+    if ( quality == 0 )
+        m_engine->SetMultiSample(2);
+    if ( quality >  0 )
+        m_engine->SetMultiSample(4);
 
-    if ( quality <  0 ) m_engine->SetTextureAnisotropyLevel(1);
-    if ( quality == 0 ) m_engine->SetTextureAnisotropyLevel(2);
-    if ( quality >  0 ) m_engine->SetTextureAnisotropyLevel(8);
+    if ( quality <  0 )
+        m_engine->SetTextureAnisotropyLevel(1);
+    if ( quality == 0 )
+        m_engine->SetTextureAnisotropyLevel(2);
+    if ( quality >  0 )
+        m_engine->SetTextureAnisotropyLevel(8);
 
-    if ( quality <  0 ) { m_engine->SetTextureFilterMode(Gfx::TEX_FILTER_BILINEAR); }
-    if ( quality == 0 ) { m_engine->SetTextureFilterMode(Gfx::TEX_FILTER_TRILINEAR); m_engine->SetTextureMipmapLevel(4); m_engine->SetTextureAnisotropyLevel(4); }
-    if ( quality >  0 ) { m_engine->SetTextureFilterMode(Gfx::TEX_FILTER_TRILINEAR); m_engine->SetTextureMipmapLevel(8); m_engine->SetTextureAnisotropyLevel(8); }
+    if ( quality <  0 )
+    {
+        m_engine->SetTextureFilterMode(Gfx::TEX_FILTER_BILINEAR); }
+    if ( quality == 0 )
+    {
+        m_engine->SetTextureFilterMode(Gfx::TEX_FILTER_TRILINEAR);
+        m_engine->SetTextureMipmapLevel(4);
+        m_engine->SetTextureAnisotropyLevel(4);
+    }
+    if ( quality >  0 )
+    {
+        m_engine->SetTextureFilterMode(Gfx::TEX_FILTER_TRILINEAR);
+        m_engine->SetTextureMipmapLevel(8);
+        m_engine->SetTextureAnisotropyLevel(8);
+    }
 
-    if ( quality <  0 ) { m_engine->SetShadowMapping(false); m_engine->SetShadowMappingQuality(false); }
-    else { m_engine->SetShadowMapping(true); m_engine->SetShadowMappingQuality(true); m_engine->SetShadowMappingOffscreen(true); }
-    if ( quality == 0 ) m_engine->SetShadowMappingOffscreenResolution(1024);
-    if ( quality >  0 ) m_engine->SetShadowMappingOffscreenResolution(2048);
+    if ( quality <  0 )
+    {
+        m_engine->SetShadowMapping(false);
+        m_engine->SetShadowMappingQuality(false);
+    }
+    else
+    {
+        m_engine->SetShadowMapping(true);
+        m_engine->SetShadowMappingQuality(true);
+        m_engine->SetShadowMappingOffscreen(true);
+    }
+    if ( quality == 0 )
+        m_engine->SetShadowMappingOffscreenResolution(1024);
+    if ( quality >  0 )
+        m_engine->SetShadowMappingOffscreenResolution(2048);
 
     // TODO: first execute adapt?
     //m_engine->FirstExecuteAdapt(false);

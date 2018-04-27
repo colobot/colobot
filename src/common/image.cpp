@@ -267,27 +267,27 @@ Gfx::IntColor CImage::GetPixelInt(Math::IntPoint pixel)
     Uint32 u = 0;
     switch (bpp)
     {
-        case 1:
-            u = *p;
-            break;
+    case 1:
+        u = *p;
+        break;
 
-        case 2:
-            u = *reinterpret_cast<Uint16*>(p);
-            break;
+    case 2:
+        u = *reinterpret_cast<Uint16*>(p);
+        break;
 
-        case 3:
-            if (SDL_BYTEORDER == SDL_BIG_ENDIAN)
-                u = (p[0] << 16) | (p[1] << 8) | p[2];
-            else
-                u = p[0] | (p[1] << 8) | (p[2] << 16);
-            break;
+    case 3:
+        if (SDL_BYTEORDER == SDL_BIG_ENDIAN)
+            u = (p[0] << 16) | (p[1] << 8) | p[2];
+        else
+            u = p[0] | (p[1] << 8) | (p[2] << 16);
+        break;
 
-        case 4:
-            u = *reinterpret_cast<Uint32*>(p);
-            break;
+    case 4:
+        u = *reinterpret_cast<Uint32*>(p);
+        break;
 
-        default:
-            assert(false);
+    default:
+        assert(false);
     }
 
     Uint8 r = 0, g = 0, b = 0, a = 0;
@@ -328,35 +328,35 @@ void CImage::SetPixelInt(Math::IntPoint pixel, Gfx::IntColor color)
 
     switch (bpp)
     {
-        case 1:
-            *p = u;
-            break;
+    case 1:
+        *p = u;
+        break;
 
-        case 2:
-            *reinterpret_cast<Uint16*>(p) = u;
-            break;
+    case 2:
+        *reinterpret_cast<Uint16*>(p) = u;
+        break;
 
-        case 3:
-            if (SDL_BYTEORDER == SDL_BIG_ENDIAN)
-            {
-                p[0] = (u >> 16) & 0xFF;
-                p[1] = (u >> 8) & 0xFF;
-                p[2] = u & 0xFF;
-            }
-            else
-            {
-                p[0] = u & 0xFF;
-                p[1] = (u >> 8) & 0xFF;
-                p[2] = (u >> 16) & 0xFF;
-            }
-            break;
+    case 3:
+        if (SDL_BYTEORDER == SDL_BIG_ENDIAN)
+        {
+            p[0] = (u >> 16) & 0xFF;
+            p[1] = (u >> 8) & 0xFF;
+            p[2] = u & 0xFF;
+        }
+        else
+        {
+            p[0] = u & 0xFF;
+            p[1] = (u >> 8) & 0xFF;
+            p[2] = (u >> 16) & 0xFF;
+        }
+        break;
 
-        case 4:
-            *reinterpret_cast<Uint32*>(p) = u;
-            break;
+    case 4:
+        *reinterpret_cast<Uint32*>(p) = u;
+        break;
 
-        default:
-            assert(false);
+    default:
+        assert(false);
     }
 }
 
@@ -403,9 +403,7 @@ bool CImage::Load(const std::string& fileName)
     }
 
     if (m_data->surface->format->palette != nullptr)
-    {
         ConvertToRGBA();
-    }
 
     return true;
 }

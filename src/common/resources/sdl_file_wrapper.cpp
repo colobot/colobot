@@ -122,21 +122,19 @@ Sint64 CSDLFileWrapper::SDLSeek(SDL_RWops *context, Sint64 offset, int whence)
 
         switch (whence)
         {
-            default:
-            case RW_SEEK_SET:
+        default:
+        case RW_SEEK_SET:
             {
                 auto result = PHYSFS_seek(file, offset);
                 return (result != 0) ? offset : -1;
             }
-
-            case RW_SEEK_CUR:
+        case RW_SEEK_CUR:
             {
                 int position = offset + PHYSFS_tell(file);
                 auto result = PHYSFS_seek(file, position);
                 return (result != 0) ? position : -1;
             }
-
-            case RW_SEEK_END:
+        case RW_SEEK_END:
             {
                 int position = PHYSFS_fileLength(file) - offset;
                 auto result = PHYSFS_seek(file, position);

@@ -155,15 +155,11 @@ COldObject::COldObject(int id)
     m_bCameraLock = false;
 
     for (int i=0 ; i<OBJECTMAXPART ; i++ )
-    {
         m_objectPart[i].bUsed = false;
-    }
     m_totalPart = 0;
 
     for (int i=0 ; i<4 ; i++ )
-    {
         m_partiSel[i] = -1;
-    }
 
     m_time = 0.0f;
     m_burnTime = 0.0f;
@@ -196,9 +192,7 @@ void COldObject::DeleteObject(bool bAll)
     CScriptFunctions::DestroyObjectVar(m_botVar, false);
 
     if ( m_camera->GetControllingObject() == this )
-    {
         m_camera->SetControllingObject(nullptr);
-    }
     m_main->RemoveFromSelectionHistory(this);
 
     if ( !bAll )
@@ -207,9 +201,7 @@ void COldObject::DeleteObject(bool bAll)
         m_particle->CutObjectLink(this);
 
         if ( m_bSelect )
-        {
             SetSelect(false);
-        }
 
         if ( m_type == OBJECT_BASE     ||
              m_type == OBJECT_FACTORY  ||
@@ -230,9 +222,7 @@ void COldObject::DeleteObject(bool bAll)
              m_type == OBJECT_HUSTON   ||
              m_type == OBJECT_START    ||
              m_type == OBJECT_END      )  // building?
-        {
             m_terrain->DeleteBuildingLevel(GetPosition());  // flattens the field
-        }
     }
 
     m_type = OBJECT_NULL;  // invalid object until complete destruction
@@ -244,24 +234,16 @@ void COldObject::DeleteObject(bool bAll)
     }
 
     if ( m_physics != nullptr )
-    {
         m_physics->DeleteObject(bAll);
-    }
 
     if ( m_objectInterface != nullptr )
-    {
         m_objectInterface->DeleteObject(bAll);
-    }
 
     if ( m_motion != nullptr )
-    {
         m_motion->DeleteObject(bAll);
-    }
 
     if ( m_auto != nullptr )
-    {
         m_auto->DeleteObject(bAll);
-    }
 
     for (int i=0 ; i<OBJECTMAXPART ; i++ )
     {
@@ -294,7 +276,8 @@ void COldObject::DeleteObject(bool bAll)
         }
     }
 
-    if ( !bAll )  m_main->CreateShortcuts();
+    if ( !bAll )
+        m_main->CreateShortcuts();
 }
 
 // Simplifies a object (destroys all logic classes, making it a static object)
@@ -302,9 +285,7 @@ void COldObject::DeleteObject(bool bAll)
 void COldObject::Simplify()
 {
     if ( Implements(ObjectInterfaceType::Programmable) )
-    {
         StopProgram();
-    }
     m_main->SaveOneScript(this);
 
     m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::ProgramStorage)] = false;
@@ -343,7 +324,8 @@ bool COldObject::DamageObject(DamageType type, float force, CObject* killer)
     assert(Implements(ObjectInterfaceType::Damageable));
     assert(!Implements(ObjectInterfaceType::Destroyable) || Implements(ObjectInterfaceType::Shielded) || Implements(ObjectInterfaceType::Fragile));
 
-    if ( IsDying() )  return false;
+    if ( IsDying() )
+        return false;
 
     if ( m_type == OBJECT_ANT    ||
          m_type == OBJECT_WORM   ||
@@ -356,19 +338,23 @@ bool COldObject::DamageObject(DamageType type, float force, CObject* killer)
     }
     else if ( Implements(ObjectInterfaceType::Fragile) )
     {
-        if ( m_type == OBJECT_BOMB && type != DamageType::Explosive ) return false; // Mine can't be destroyed by shooting
-        if ( m_type == OBJECT_URANIUM ) return false; // UraniumOre is not destroyable (see #777)
+        if ( m_type == OBJECT_BOMB && type != DamageType::Explosive )
+            return false; // Mine can't be destroyed by shooting
+        if ( m_type == OBJECT_URANIUM )
+            return false; // UraniumOre is not destroyable (see #777)
 
         DestroyObject(DestructionType::Explosion, killer);
-        return true;
+            return true;
     }
 
-    if ( type != DamageType::Phazer && m_type == OBJECT_MOTHER ) return false; // AlienQueen can be destroyed only by PhazerShooter
+    if ( type != DamageType::Phazer && m_type == OBJECT_MOTHER )
+        return false; // AlienQueen can be destroyed only by PhazerShooter
 
     if ( type == DamageType::Organic )
     {
         // TODO: I don't understand, why does it apply damage only once every 0.5 second?
-        if ( m_shotTime < 0.5f )  return false;
+        if ( m_shotTime < 0.5f )
+            return false;
         m_shotTime = 0.0f;
     }
 
@@ -381,7 +367,8 @@ bool COldObject::DamageObject(DamageType type, float force, CObject* killer)
         {
             // Calculate the shield lost by the explosion
             loss = force * magnifyDamage;
-            if (m_type == OBJECT_HUMAN) loss /= 2.5f; // Me is more resistant
+            if (m_type == OBJECT_HUMAN)
+                loss /= 2.5f; // Me is more resistant
             if (loss > 1.0f) loss = 1.0f;
 
             // Decreases the the shield
@@ -412,28 +399,18 @@ bool COldObject::DamageObject(DamageType type, float force, CObject* killer)
     if (dead && Implements(ObjectInterfaceType::Destroyable))
     {
         if (type == DamageType::Fire)
-        {
             DestroyObject(DestructionType::Burn, killer);
-        }
         else
-        {
             DestroyObject(DestructionType::Explosion, killer);
-        }
         return true;
     }
 
     if ( m_type == OBJECT_HUMAN )
-    {
         m_engine->GetPyroManager()->Create(Gfx::PT_SHOTH, this, loss);
-    }
     else if ( m_type == OBJECT_MOTHER )
-    {
         m_engine->GetPyroManager()->Create(Gfx::PT_SHOTM, this, loss);
-    }
     else
-    {
         m_engine->GetPyroManager()->Create(Gfx::PT_SHOTT, this, loss);
-    }
     return false;
 }
 
@@ -441,10 +418,12 @@ void COldObject::DestroyObject(DestructionType type, CObject* killer)
 {
     assert(Implements(ObjectInterfaceType::Destroyable));
 
-    if(type == DestructionType::NoEffect) assert(!!"DestructionType::NoEffect should not be passed to DestroyObject()!");
+    if(type == DestructionType::NoEffect)
+        assert(!!"DestructionType::NoEffect should not be passed to DestroyObject()!");
     assert(type != DestructionType::Drowned || m_type == OBJECT_HUMAN);
 
-    if ( IsDying() )  return;
+    if ( IsDying() )
+        return;
 
     if (Implements(ObjectInterfaceType::Shielded))
     {
@@ -459,19 +438,13 @@ void COldObject::DestroyObject(DestructionType type, CObject* killer)
              m_type == OBJECT_SPIDER ||
              m_type == OBJECT_BEE    ||
              m_type == OBJECT_WORM   )
-        {
             pyroType = Gfx::PT_EXPLOO;
-        }
         else if ( m_type == OBJECT_MOTHER ||
                   m_type == OBJECT_NEST   ||
                   m_type == OBJECT_BULLET )
-        {
             pyroType = Gfx::PT_FRAGO;
-        }
         else if ( m_type == OBJECT_HUMAN )
-        {
             pyroType = Gfx::PT_DEADG;
-        }
         else if ( m_type == OBJECT_BASE     ||
                   m_type == OBJECT_DERRICK  ||
                   m_type == OBJECT_FACTORY  ||
@@ -492,22 +465,14 @@ void COldObject::DestroyObject(DestructionType type, CObject* killer)
                   m_type == OBJECT_HUSTON   ||
                   m_type == OBJECT_START    ||
                   m_type == OBJECT_END      )  // building?
-        {
             pyroType = Gfx::PT_FRAGT;
-        }
         else if ( m_type == OBJECT_MOBILEtg )
-        {
             pyroType = Gfx::PT_FRAGT;
-        }
         else
-        {
             pyroType = Gfx::PT_EXPLOT;
-        }
     }
     else if ( type == DestructionType::ExplosionWater )
-    {
         pyroType = Gfx::PT_FRAGW;
-    }
     else if ( type == DestructionType::Burn )  // burning?
     {
         if ( m_type == OBJECT_MOTHER ||
@@ -521,9 +486,7 @@ void COldObject::DestroyObject(DestructionType type, CObject* killer)
             SetDying(DeathType::Burning);
         }
         else if ( m_type == OBJECT_HUMAN )
-        {
             pyroType = Gfx::PT_DEADG;
-        }
         else
         {
             pyroType = Gfx::PT_BURNT;
@@ -532,26 +495,18 @@ void COldObject::DestroyObject(DestructionType type, CObject* killer)
         SetVirusMode(false);
     }
     else if ( type == DestructionType::Drowned )
-    {
         pyroType = Gfx::PT_DEADW;
-    }
     else if ( type == DestructionType::Win )
-    {
         pyroType = Gfx::PT_WPCHECK;
-    }
     assert(pyroType != Gfx::PT_NULL);
     if (pyroType == Gfx::PT_FRAGT ||
         pyroType == Gfx::PT_FRAGO ||
         pyroType == Gfx::PT_FRAGW)
-    {
         SetDying(DeathType::Exploding);
-    }
     m_engine->GetPyroManager()->Create(pyroType, this);
 
     if ( Implements(ObjectInterfaceType::Programmable) )
-    {
         StopProgram();
-    }
     m_main->SaveOneScript(this);
 
     if ( GetSelect() )
@@ -569,12 +524,8 @@ void COldObject::DestroyObject(DestructionType type, CObject* killer)
     m_team = 0; // Back to neutral on destruction
 
     if ( m_botVar != nullptr )
-    {
         if ( Implements(ObjectInterfaceType::Transportable) )  // (*)
-        {
             CScriptFunctions::DestroyObjectVar(m_botVar, false);
-        }
-    }
 }
 
 // (*)  If a robot or cosmonaut dies, the subject must continue to exist,
@@ -611,7 +562,8 @@ void COldObject::InitPart(int part)
 
 void COldObject::DeletePart(int part)
 {
-    if ( !m_objectPart[part].bUsed )  return;
+    if ( !m_objectPart[part].bUsed )
+        return;
 
     if ( m_objectPart[part].masterParti != -1 )
     {
@@ -626,16 +578,10 @@ void COldObject::DeletePart(int part)
 
 void COldObject::UpdateTotalPart()
 {
-    int     i;
-
     m_totalPart = 0;
-    for ( i=0 ; i<OBJECTMAXPART ; i++ )
-    {
+    for (int i=0 ; i<OBJECTMAXPART ; i++ )
         if ( m_objectPart[i].bUsed )
-        {
             m_totalPart = i+1;
-        }
-    }
 }
 
 
@@ -655,7 +601,8 @@ void COldObject::SetObjectRank(int part, int objRank)
 
 int COldObject::GetObjectRank(int part)
 {
-    if ( !m_objectPart[part].bUsed )  return -1;
+    if ( !m_objectPart[part].bUsed )
+        return -1;
     return m_objectPart[part].object;
 }
 
@@ -732,13 +679,9 @@ void COldObject::SetType(ObjectType type)
         m_type == OBJECT_ENERGY   ||
         m_type == OBJECT_LABO     ||
         m_type == OBJECT_NUCLEAR   )
-    {
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Powered)] = true;
-    }
     else
-    {
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Powered)] = false;
-    }
 
     // TODO: Hacking some more
     if ( m_type == OBJECT_MOBILEtg ||
@@ -841,13 +784,9 @@ void COldObject::SetType(ObjectType type)
          m_type == OBJECT_KEYc    ||
          m_type == OBJECT_KEYd    ||
          m_type == OBJECT_TNT     )
-    {
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Transportable)] = true;
-    }
     else
-    {
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Transportable)] = false;
-    }
 
     // TODO: You have been hacked!
     if (m_type == OBJECT_HUMAN    ||
@@ -902,26 +841,18 @@ void COldObject::SetType(ObjectType type)
         m_type == OBJECT_BEE      ||
         m_type == OBJECT_MOTHER   ||
         m_type == OBJECT_CONTROLLER)
-    {
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Controllable)] = true;
-    }
     else
-    {
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Controllable)] = false;
-    }
 
     // TODO: Another one? :/
     if ( m_type == OBJECT_POWER   || // PowerCell
          m_type == OBJECT_ATOMIC  || // NuclearCell
          m_type == OBJECT_STATION || // PowerStation
          m_type == OBJECT_ENERGY   ) // PowerPlant
-    {
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::PowerContainer)] = true;
-    }
     else
-    {
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::PowerContainer)] = false;
-    }
 
 
     if ( m_type == OBJECT_MOBILEwc ||
@@ -933,9 +864,7 @@ void COldObject::SetType(ObjectType type)
          m_type == OBJECT_MOBILEfi ||
          m_type == OBJECT_MOBILEii ||
          m_type == OBJECT_MOBILErc )  // cannon vehicle?
-    {
         m_cameraType = Gfx::CAM_TYPE_ONBOARD;
-    }
 }
 
 const char* COldObject::GetName()
@@ -1010,9 +939,7 @@ void COldObject::Write(CLevelParserLine* line)
         line->AddParam("aimH", MakeUnique<CLevelParserParam>(GetGunGoalH()));
 
     if ( GetAnimateOnReset() )
-    {
         line->AddParam("reset", MakeUnique<CLevelParserParam>(GetAnimateOnReset()));
-    }
 
     if ( m_bVirusMode )
         line->AddParam("virusMode", MakeUnique<CLevelParserParam>(m_bVirusMode));
@@ -1025,16 +952,12 @@ void COldObject::Write(CLevelParserLine* line)
     // Sets the parameters of the command line.
     CLevelParserParamVec cmdline;
     for(float value : GetCmdLine())
-    {
         cmdline.push_back(MakeUnique<CLevelParserParam>(value));
-    }
     if (cmdline.size() > 0)
         line->AddParam("cmdline", MakeUnique<CLevelParserParam>(std::move(cmdline)));
 
     if ( m_motion != nullptr )
-    {
         m_motion->Write(line);
-    }
 
     if ( Implements(ObjectInterfaceType::Programmable) )
     {
@@ -1042,14 +965,10 @@ void COldObject::Write(CLevelParserLine* line)
     }
 
     if ( m_physics != nullptr )
-    {
         m_physics->Write(line);
-    }
 
     if ( m_auto != nullptr )
-    {
         m_auto->Write(line);
-    }
 }
 
 // Returns all parameters of the object.
@@ -1074,13 +993,9 @@ void COldObject::Read(CLevelParserLine* line)
     SetCollisions(line->GetParam("clip")->AsBool(true));
     SetAnimateOnReset(line->GetParam("reset")->AsBool(false));
     if (Implements(ObjectInterfaceType::Controllable))
-    {
         SetSelectable(line->GetParam("selectable")->AsBool(IsSelectableByDefault(m_type)));
-    }
     if (Implements(ObjectInterfaceType::JetFlying))
-    {
         SetRange(line->GetParam("range")->AsFloat(30.0f));
-    }
     if (Implements(ObjectInterfaceType::Shielded))
     {
         SetShield(line->GetParam("shield")->AsFloat(1.0f));
@@ -1094,18 +1009,14 @@ void COldObject::Read(CLevelParserLine* line)
         {
             const auto& cmdline = line->GetParam("cmdline")->AsArray();
             for (unsigned int i = 0; i < cmdline.size(); i++)
-            {
                 SetCmdLine(i, cmdline[i]->AsFloat());
-            }
         }
     }
 
     // SetManual will affect bot speed
     if (m_type == OBJECT_MOBILEdr)
-    {
         // TODO: Merge these two settings?
         SetManual(!GetTrainer());
-    }
 
     // AlienWorm time up/down
     // TODO: Refactor function names
@@ -1117,9 +1028,7 @@ void COldObject::Read(CLevelParserLine* line)
         {
             const auto& p = line->GetParam("param")->AsArray();
             for (unsigned int i = 0; i < 10 && i < p.size(); i++)
-            {
                 motion->SetParam(i, p[i]->AsFloat());
-            }
         }
     }
 
@@ -1137,7 +1046,9 @@ void COldObject::Read(CLevelParserLine* line)
         int i = line->GetParam("run")->AsInt(-1);
         if (i != -1)
         {
-            if (i != PARAM_FIXSCENE && !CSettings::GetInstancePointer()->GetMovies()) i = 0;
+            if (i != PARAM_FIXSCENE
+                && !CSettings::GetInstancePointer()->GetMovies())
+                i = 0;
             m_auto->Start(i);  // starts the film
         }
     }
@@ -1159,24 +1070,16 @@ void COldObject::Read(CLevelParserLine* line)
     m_aTime = line->GetParam("lifetime")->AsFloat(0.0f);
 
     if ( m_motion != nullptr )
-    {
         m_motion->Read(line);
-    }
 
     if (Implements(ObjectInterfaceType::Programmable))
-    {
         SetActiveVirus(line->GetParam("bVirusActive")->AsBool(false));
-    }
 
     if ( m_physics != nullptr )
-    {
         m_physics->Read(line);
-    }
 
     if ( m_auto != nullptr )
-    {
         m_auto->Read(line);
-    }
 }
 
 
@@ -1185,16 +1088,14 @@ void COldObject::Read(CLevelParserLine* line)
 
 int COldObject::SearchDescendant(int parent, int n)
 {
-    int     i;
-
-    for ( i=0 ; i<m_totalPart ; i++ )
+    for (int i=0 ; i<m_totalPart ; i++ )
     {
-        if ( !m_objectPart[i].bUsed )  continue;
+        if ( !m_objectPart[i].bUsed )
+            continue;
 
         if ( parent == m_objectPart[i].parentPart )
-        {
-            if ( n-- == 0 )  return i;
-        }
+            if ( n-- == 0 )
+                return i;
     }
     return -1;
 }
@@ -1216,11 +1117,9 @@ void COldObject::TransformCrashSphere(Math::Sphere& crashSphere)
         return;
     }
 
-    if (m_objectPart[0].bTranslate ||
-        m_objectPart[0].bRotate)
-    {
+    if (m_objectPart[0].bTranslate
+        || m_objectPart[0].bRotate)
         UpdateTransformObject();
-    }
 
     crashSphere.pos = Math::Transform(m_objectPart[0].matWorld, crashSphere.pos);
 }
@@ -1275,7 +1174,7 @@ void COldObject::FloorAdjust()
 {
     Math::Vector        pos, n;
     Math::Point         nn;
-    float           a;
+    float               a;
 
     pos = GetPosition();
     if ( m_terrain->GetNormal(n, pos) )
@@ -1360,9 +1259,7 @@ void COldObject::SetPartPosition(int part, const Math::Vector &pos)
 
         float height = 0.0f;
         if ( Implements(ObjectInterfaceType::Flying) )
-        {
             height = pos.y-shPos.y;
-        }
         m_engine->SetObjectShadowSpotHeight(rank, height);
 
         m_engine->UpdateObjectShadowSpotNormal(rank);
@@ -1389,9 +1286,7 @@ void COldObject::SetPartRotation(int part, const Math::Vector &angle)
     m_objectPart[part].bRotate = true;  // it will recalculate the matrices
 
     if ( part == 0 && !m_bFlat )  // main part?
-    {
         m_engine->SetObjectShadowSpotAngle(m_objectPart[0].object, m_objectPart[0].angle.y);
-    }
 }
 
 Math::Vector COldObject::GetPartRotation(int part) const
@@ -1407,9 +1302,7 @@ void COldObject::SetPartRotationY(int part, float angle)
     m_objectPart[part].bRotate = true;  // it will recalculate the matrices
 
     if ( part == 0 && !m_bFlat )  // main part?
-    {
         m_engine->SetObjectShadowSpotAngle(m_objectPart[0].object, m_objectPart[0].angle.y);
-    }
 }
 
 // Getes the rotation about the axis X.
@@ -1630,10 +1523,7 @@ Math::Matrix* COldObject::GetWorldMatrix(int part)
 {
     if ( m_objectPart[0].bTranslate ||
          m_objectPart[0].bRotate    )
-    {
         UpdateTransformObject();
-    }
-
     return &m_objectPart[part].matWorld;
 }
 
@@ -1642,22 +1532,17 @@ Math::Matrix* COldObject::GetWorldMatrix(int part)
 
 void COldObject::SetDrawFront(bool bDraw)
 {
-    int     i;
-
-    for ( i=0 ; i<OBJECTMAXPART ; i++ )
-    {
+    for (int i=0 ; i<OBJECTMAXPART ; i++ )
         if ( m_objectPart[i].bUsed )
-        {
             m_engine->SetObjectDrawFront(m_objectPart[i].object, bDraw);
-        }
-    }
 }
 
 // Creates shade under a vehicle as a negative light.
 
 bool COldObject::CreateShadowLight(float height, Gfx::Color color)
 {
-    if ( !m_engine->GetLightMode() )  return true;
+    if ( !m_engine->GetLightMode() )
+        return true;
 
     Math::Vector pos = GetPosition();
     m_shadowHeight = height;
@@ -1675,7 +1560,8 @@ bool COldObject::CreateShadowLight(float height, Gfx::Color color)
     light.spotAngle = 90.0f*Math::PI/180.0f;
 
     m_shadowLight = m_lightMan->CreateLight();
-    if ( m_shadowLight == -1 )  return false;
+    if ( m_shadowLight == -1 )
+        return false;
 
     m_lightMan->SetLight(m_shadowLight, light);
 
@@ -1699,7 +1585,8 @@ bool COldObject::CreateShadowCircle(float radius, float intensity,
 {
     float   zoom;
 
-    if ( intensity == 0.0f )  return true;
+    if ( intensity == 0.0f )
+        return true;
 
     zoom = GetScaleX();
 
@@ -1732,7 +1619,8 @@ bool COldObject::UpdateTransformObject(int part, bool bForceUpdate)
 
     if ( !bForceUpdate                  &&
          !m_objectPart[part].bTranslate &&
-         !m_objectPart[part].bRotate    )  return false;
+         !m_objectPart[part].bRotate    )
+        return false;
 
     position = m_objectPart[part].position;
     angle    = m_objectPart[part].angle;
@@ -1755,9 +1643,7 @@ bool COldObject::UpdateTransformObject(int part, bool bForceUpdate)
         }
 
         if ( m_objectPart[part].bRotate )
-        {
             Math::LoadRotationZXYMatrix(m_objectPart[part].matRotate, angle);
-        }
 
         if ( m_objectPart[part].bZoom )
         {
@@ -1766,14 +1652,14 @@ bool COldObject::UpdateTransformObject(int part, bool bForceUpdate)
             mz.Set(1, 1, m_objectPart[part].zoom.x);
             mz.Set(2, 2, m_objectPart[part].zoom.y);
             mz.Set(3, 3, m_objectPart[part].zoom.z);
-            m_objectPart[part].matTransform = Math::MultiplyMatrices(m_objectPart[part].matTranslate,
-                                                Math::MultiplyMatrices(m_objectPart[part].matRotate, mz));
+            m_objectPart[part].matTransform =
+                Math::MultiplyMatrices(m_objectPart[part].matTranslate,
+                Math::MultiplyMatrices(m_objectPart[part].matRotate, mz));
         }
         else
-        {
-            m_objectPart[part].matTransform = Math::MultiplyMatrices(m_objectPart[part].matTranslate,
-                                                                     m_objectPart[part].matRotate);
-        }
+            m_objectPart[part].matTransform =
+                Math::MultiplyMatrices(m_objectPart[part].matTranslate,
+                                       m_objectPart[part].matRotate);
         bModif = true;
     }
 
@@ -1788,32 +1674,25 @@ bool COldObject::UpdateTransformObject(int part, bool bForceUpdate)
             Math::Matrix*   matWorldTransporter;
             matWorldTransporter = m_transporter->GetWorldMatrix(m_transporterLink);
             m_objectPart[part].matWorld = Math::MultiplyMatrices(*matWorldTransporter,
-                                                                 m_objectPart[part].matTransform);
+                m_objectPart[part].matTransform);
         }
         else
         {
             if ( parent == -1 )  // no parent?
-            {
                 m_objectPart[part].matWorld = m_objectPart[part].matTransform;
-            }
             else
-            {
-                m_objectPart[part].matWorld = Math::MultiplyMatrices(m_objectPart[parent].matWorld,
-                                                                     m_objectPart[part].matTransform);
-            }
+                m_objectPart[part].matWorld =
+                    Math::MultiplyMatrices(m_objectPart[parent].matWorld,
+                                           m_objectPart[part].matTransform);
         }
         bModif = true;
     }
-
     if ( bModif )
-    {
         m_engine->SetObjectTransform(m_objectPart[part].object,
                                      m_objectPart[part].matWorld);
-    }
 
     m_objectPart[part].bTranslate = false;
     m_objectPart[part].bRotate    = false;
-
     return bModif;
 }
 
@@ -1828,13 +1707,12 @@ bool COldObject::UpdateTransformObject()
     int     parent1, parent2, parent3, parent4;
 
     if ( m_bFlat )
-    {
         for ( level1=0 ; level1<m_totalPart ; level1++ )
         {
-            if ( !m_objectPart[level1].bUsed )  continue;
+            if ( !m_objectPart[level1].bUsed )
+                continue;
             UpdateTransformObject(level1, false);
         }
-    }
     else
     {
         parent1 = 0;
@@ -1843,7 +1721,8 @@ bool COldObject::UpdateTransformObject()
         for ( level1=0 ; level1<m_totalPart ; level1++ )
         {
             rank = SearchDescendant(parent1, level1);
-            if ( rank == -1 )  break;
+            if ( rank == -1 )
+                break;
 
             parent2 = rank;
             bUpdate2 = UpdateTransformObject(rank, bUpdate1);
@@ -1851,7 +1730,8 @@ bool COldObject::UpdateTransformObject()
             for ( level2=0 ; level2<m_totalPart ; level2++ )
             {
                 rank = SearchDescendant(parent2, level2);
-                if ( rank == -1 )  break;
+                if ( rank == -1 )
+                    break;
 
                 parent3 = rank;
                 bUpdate3 = UpdateTransformObject(rank, bUpdate2);
@@ -1859,7 +1739,8 @@ bool COldObject::UpdateTransformObject()
                 for ( level3=0 ; level3<m_totalPart ; level3++ )
                 {
                     rank = SearchDescendant(parent3, level3);
-                    if ( rank == -1 )  break;
+                    if ( rank == -1 )
+                        break;
 
                     parent4 = rank;
                     bUpdate4 = UpdateTransformObject(rank, bUpdate3);
@@ -1867,7 +1748,8 @@ bool COldObject::UpdateTransformObject()
                     for ( level4=0 ; level4<m_totalPart ; level4++ )
                     {
                         rank = SearchDescendant(parent4, level4);
-                        if ( rank == -1 )  break;
+                        if ( rank == -1 )
+                            break;
 
                         UpdateTransformObject(rank, bUpdate4);
                     }
@@ -1875,7 +1757,6 @@ bool COldObject::UpdateTransformObject()
             }
         }
     }
-
     return true;
 }
 
@@ -1885,9 +1766,7 @@ bool COldObject::UpdateTransformObject()
 
 void COldObject::FlatParent()
 {
-    int     i;
-
-    for ( i=0 ; i<m_totalPart ; i++ )
+    for (int i=0 ; i<m_totalPart ; i++ )
     {
         m_objectPart[i].position.x = m_objectPart[i].matWorld.Get(1, 4);
         m_objectPart[i].position.y = m_objectPart[i].matWorld.Get(2, 4);
@@ -1948,7 +1827,8 @@ void COldObject::UpdateEnergyMapping()
     float bu = s-b*(s-i)/(b-a);
 
     std::string teamStr = StrUtils::ToString<int>(GetTeam());
-    if(GetTeam() == 0) teamStr = "";
+    if(GetTeam() == 0)
+        teamStr = "";
     m_engine->ChangeTextureMapping(m_objectPart[0].object,
                                    mat, Gfx::ENG_RSTATE_PART3, "objects/lemt.png"+teamStr, "",
                                    Gfx::ENG_TEX_MAPPING_1Y,
@@ -1961,10 +1841,10 @@ void COldObject::UpdateEnergyMapping()
 bool COldObject::EventProcess(const Event &event)
 {
     // NOTE: This should be called befoce CProgrammableObjectImpl::EventProcess, see the other note inside this function
-    if (!CTaskExecutorObjectImpl::EventProcess(event)) return false;
+    if (!CTaskExecutorObjectImpl::EventProcess(event))
+        return false;
 
     if ( m_physics != nullptr )
-    {
         if ( !m_physics->EventProcess(event) )  // object destroyed?
         {
             if ( GetSelect()             &&
@@ -1972,24 +1852,20 @@ bool COldObject::EventProcess(const Event &event)
                  m_type != OBJECT_SPIDER &&
                  m_type != OBJECT_BEE    )
             {
-                if ( !IsDying() )  m_camera->SetType(Gfx::CAM_TYPE_EXPLO);
+                if ( !IsDying() )
+                    m_camera->SetType(Gfx::CAM_TYPE_EXPLO);
                 m_main->DeselectAll();
             }
             return false;
         }
-    }
 
     if (Implements(ObjectInterfaceType::Movable) && m_physics != nullptr)
     {
         bool deselectedStop = !GetSelect();
         if (Implements(ObjectInterfaceType::Programmable))
-        {
             deselectedStop = deselectedStop && !IsProgram();
-        }
         if (Implements(ObjectInterfaceType::TaskExecutor))
-        {
             deselectedStop = deselectedStop && !IsForegroundTask();
-        }
 
         if ( deselectedStop )
         {
@@ -2033,9 +1909,7 @@ bool COldObject::EventProcess(const Event &event)
                 canMove = canMove && (!IsForegroundTask() || GetForegroundTask()->IsPilot());
             }
             if (Implements(ObjectInterfaceType::Programmable))
-            {
                 canMove = canMove && !IsProgram();
-            }
 
             if ( canMove )
             {
@@ -2045,13 +1919,9 @@ bool COldObject::EventProcess(const Event &event)
                      event.type == EVENT_OBJECT_DOWN    ||
                      event.type == EVENT_OBJECT_GASUP   ||
                      event.type == EVENT_OBJECT_GASDOWN )
-                {
                     m_buttonAxe = event.type;
-                }
                 if ( event.type == EVENT_MOUSE_BUTTON_UP )
-                {
                     m_buttonAxe = EVENT_NULL;
-                }
 
                 float axeX = event.motionInput.x;
                 float axeY = event.motionInput.y;
@@ -2066,27 +1936,34 @@ bool COldObject::EventProcess(const Event &event)
                     axeZ = 0.0f;  // Remote control impossible!
                 }
 
-                if ( m_buttonAxe == EVENT_OBJECT_LEFT    )  axeX = -1.0f;
-                if ( m_buttonAxe == EVENT_OBJECT_RIGHT   )  axeX =  1.0f;
-                if ( m_buttonAxe == EVENT_OBJECT_UP      )  axeY =  1.0f;
-                if ( m_buttonAxe == EVENT_OBJECT_DOWN    )  axeY = -1.0f;
-                if ( m_buttonAxe == EVENT_OBJECT_GASUP   )  axeZ =  1.0f;
-                if ( m_buttonAxe == EVENT_OBJECT_GASDOWN )  axeZ = -1.0f;
+                if ( m_buttonAxe == EVENT_OBJECT_LEFT)
+                    axeX = -1.0f;
+                if ( m_buttonAxe == EVENT_OBJECT_RIGHT)
+                    axeX =  1.0f;
+                if ( m_buttonAxe == EVENT_OBJECT_UP)
+                    axeY =  1.0f;
+                if ( m_buttonAxe == EVENT_OBJECT_DOWN)
+                    axeY = -1.0f;
+                if ( m_buttonAxe == EVENT_OBJECT_GASUP)
+                    axeZ =  1.0f;
+                if ( m_buttonAxe == EVENT_OBJECT_GASDOWN)
+                    axeZ = -1.0f;
 
                 if ( m_type == OBJECT_MOBILEdr && GetManual() )  // scribbler in manual mode?
                 {
-                    if ( axeX != 0.0f )  axeY = 0.0f;  // if running -> not moving!
+                    if ( axeX != 0.0f )
+                        axeY = 0.0f;  // if running -> not moving!
                     axeX *= 0.5f;
                     axeY *= 0.5f;
                 }
 
                 if ( !m_main->IsResearchDone(RESEARCH_FLY, GetTeam()) )
-                {
                     axeZ = -1.0f;  // tomb
-                }
 
-                if ( axeX >  1.0f )  axeX =  1.0f;
-                if ( axeX < -1.0f )  axeX = -1.0f;
+                if ( axeX >  1.0f )
+                    axeX =  1.0f;
+                if ( axeX < -1.0f )
+                    axeX = -1.0f;
 
                 m_physics->SetMotorSpeedX(axeY);  // move forward/move back
                 m_physics->SetMotorSpeedY(axeZ);  // up/down
@@ -2096,16 +1973,12 @@ bool COldObject::EventProcess(const Event &event)
     }
 
     if ( m_objectInterface != nullptr )
-    {
         m_objectInterface->EventProcess(event);
-    }
 
     if ( m_auto != nullptr )
     {
         if (!GetLock())
-        {
             m_auto->EventProcess(event);
-        }
 
         if ( event.type == EVENT_FRAME &&
              m_auto->IsEnded() != ERR_CONTINUE )
@@ -2116,16 +1989,14 @@ bool COldObject::EventProcess(const Event &event)
     }
 
     if ( m_motion != nullptr )
-    {
-        if (!m_motion->EventProcess(event)) return false;
-    }
+        if (!m_motion->EventProcess(event))
+            return false;
 
-    if (!CProgrammableObjectImpl::EventProcess(event)) return false;
+    if (!CProgrammableObjectImpl::EventProcess(event))
+        return false;
 
     if ( event.type == EVENT_FRAME )
-    {
         return EventFrame(event);
-    }
 
     return true;
 }
@@ -2143,9 +2014,11 @@ bool COldObject::EventFrame(const Event &event)
 
     m_time += event.rTime;
 
-    if ( m_engine->GetPause() && m_type != OBJECT_SHOW )  return true;
+    if ( m_engine->GetPause() && m_type != OBJECT_SHOW )
+        return true;
 
-    if ( GetDying() == DeathType::Burning )  m_burnTime += event.rTime;
+    if ( GetDying() == DeathType::Burning )
+        m_burnTime += event.rTime;
 
     m_aTime += event.rTime;
     m_shotTime += event.rTime;
@@ -2158,9 +2031,7 @@ bool COldObject::EventFrame(const Event &event)
     UpdateSelectParticle();
 
     if (Implements(ObjectInterfaceType::ShieldedAutoRegen))
-    {
         SetShield(GetShield() + event.rTime*(1.0f/GetShieldFullRegenTime()));
-    }
 
     if (m_damaging && m_time - m_damageTime > 2.0f)
     {
@@ -2176,9 +2047,7 @@ bool COldObject::EventFrame(const Event &event)
 void COldObject::UpdateMapping()
 {
     if ( Implements(ObjectInterfaceType::PowerContainer) )
-    {
         UpdateEnergyMapping();
-    }
 }
 
 
@@ -2186,13 +2055,12 @@ void COldObject::UpdateMapping()
 
 void COldObject::VirusFrame(float rTime)
 {
-    if ( !m_bVirusMode )  return;  // healthy object?
+    if ( !m_bVirusMode )
+        return;  // healthy object?
 
     m_virusTime += rTime;
     if ( m_virusTime >= VIRUS_DELAY )
-    {
         m_bVirusMode = false;  // the virus is no longer active
-    }
 
     if ( m_lastVirusParticle+m_engine->ParticleAdapt(0.2f) <= m_aTime )
     {
@@ -2222,10 +2090,12 @@ void COldObject::PartiFrame(float rTime)
 
     for ( i=0 ; i<OBJECTMAXPART ; i++ )
     {
-        if ( !m_objectPart[i].bUsed )  continue;
+        if ( !m_objectPart[i].bUsed )
+            continue;
 
         channel = m_objectPart[i].masterParti;
-        if ( channel == -1 )  continue;
+        if ( channel == -1 )
+            continue;
 
         if ( !m_particle->GetPosition(channel, pos) )
         {
@@ -2238,11 +2108,21 @@ void COldObject::PartiFrame(float rTime)
         // Each song spins differently.
         switch( i%5 )
         {
-            case 0:  factor = Math::Vector( 0.5f, 0.3f, 0.6f); break;
-            case 1:  factor = Math::Vector(-0.3f, 0.4f,-0.2f); break;
-            case 2:  factor = Math::Vector( 0.4f,-0.6f,-0.3f); break;
-            case 3:  factor = Math::Vector(-0.6f,-0.2f, 0.0f); break;
-            case 4:  factor = Math::Vector( 0.4f, 0.1f,-0.7f); break;
+        case 0:
+            factor = Math::Vector( 0.5f, 0.3f, 0.6f);
+            break;
+        case 1:
+            factor = Math::Vector(-0.3f, 0.4f,-0.2f);
+            break;
+        case 2:
+            factor = Math::Vector( 0.4f,-0.6f,-0.3f);
+            break;
+        case 3:
+            factor = Math::Vector(-0.6f,-0.2f, 0.0f);
+            break;
+        case 4:
+            factor = Math::Vector( 0.4f, 0.1f,-0.7f);
+            break;
         }
 
         angle = GetPartRotation(i);
@@ -2417,14 +2297,17 @@ bool COldObject::IsRechargeable()
 
 void COldObject::SetShield(float level)
 {
-    if (level > 1.0f) level = 1.0f;
-    if (level < 0.0f) level = 0.0f;
+    if (level > 1.0f)
+        level = 1.0f;
+    if (level < 0.0f)
+        level = 0.0f;
     m_shield = level;
 }
 
 float COldObject::GetShield()
 {
-    if (Implements(ObjectInterfaceType::Fragile))  return 0.0f;
+    if (Implements(ObjectInterfaceType::Fragile))
+        return 0.0f;
     return m_shield;
 }
 
@@ -2443,8 +2326,10 @@ float COldObject::GetRange()
 
 void COldObject::SetReactorRange(float reactorRange)
 {
-    if (reactorRange > 1.0f) reactorRange = 1.0f;
-    if (reactorRange < 0.0f) reactorRange = 0.0f;
+    if (reactorRange > 1.0f)
+        reactorRange = 1.0f;
+    if (reactorRange < 0.0f)
+        reactorRange = 0.0f;
     m_reactorRange = reactorRange;
 }
 
@@ -2458,20 +2343,15 @@ float COldObject::GetReactorRange()
 
 void COldObject::SetTransparency(float value)
 {
-    int     i;
-
-    for ( i=0 ; i<m_totalPart ; i++ )
-    {
+    for (int i=0 ; i<m_totalPart ; i++ )
         if ( m_objectPart[i].bUsed )
         {
             if ( m_type == OBJECT_BASE )
-            {
-                if ( i != 9 )  continue;  // no central pillar?
-            }
+                if ( i != 9 )
+                    continue;  // no central pillar?
 
             m_engine->SetObjectTransparency(m_objectPart[i].object, value);
         }
-    }
 }
 
 
@@ -2485,22 +2365,20 @@ bool COldObject::JostleObject(float force)
          m_type == OBJECT_FLAGy ||
          m_type == OBJECT_FLAGv )  // flag?
     {
-        if ( m_auto == nullptr )  return false;
-
+        if ( m_auto == nullptr )
+            return false;
         m_auto->Start(1);
     }
     else
     {
-        if ( m_auto != nullptr )  return false;
-
+        if ( m_auto != nullptr )
+            return false;
         auto autoJostle = MakeUnique<CAutoJostle>(this);
         autoJostle->Start(0, force);
         m_auto = std::move(autoJostle);
     }
-
     return true;
 }
-
 
 
 // Management of time from which a virus is active.
@@ -2511,12 +2389,8 @@ void COldObject::SetVirusMode(bool bEnable)
     m_virusTime = 0.0f;
 
     if ( m_bVirusMode && Implements(ObjectInterfaceType::Programmable) )
-    {
         if ( !IntroduceVirus() )  // tries to infect
-        {
             m_bVirusMode = false;  // program was not contaminated!
-        }
-    }
 }
 
 bool COldObject::GetVirusMode()
@@ -2547,8 +2421,6 @@ bool COldObject::GetCameraLock()
     return m_bCameraLock;
 }
 
-
-
 // Management of the demonstration of the object.
 
 void COldObject::SetHighlight(bool highlight)
@@ -2559,12 +2431,8 @@ void COldObject::SetHighlight(bool highlight)
 
         int j = 0;
         for (int i = 0; i < m_totalPart; i++)
-        {
             if ( m_objectPart[i].bUsed )
-            {
                 list[j++] = m_objectPart[i].object;
-            }
-        }
         list[j] = -1;  // terminate
 
         m_engine->SetHighlightRank(list);  // gives the list of selected parts
@@ -2583,16 +2451,12 @@ void COldObject::SetSelect(bool select, bool bDisplayError)
     if (Implements(ObjectInterfaceType::Programmable))
     {
         if ( m_objectInterface == nullptr )
-        {
             m_objectInterface = MakeUnique<Ui::CObjectInterface>(this);
-        }
         m_objectInterface->CreateInterface(m_bSelect);
     }
 
     if ( m_auto != nullptr )
-    {
         m_auto->CreateInterface(m_bSelect);
-    }
 
     CreateSelectParticle();  // creates / removes particles
 
@@ -2601,17 +2465,11 @@ void COldObject::SetSelect(bool select, bool bDisplayError)
 
     Error err = ERR_OK;
     if ( m_physics != nullptr )
-    {
         err = m_physics->GetError();
-    }
     if ( m_auto != nullptr )
-    {
         err = m_auto->GetError();
-    }
     if ( err != ERR_OK && bDisplayError )
-    {
         m_main->DisplayError(err, this);
-    }
 }
 
 // Indicates whether the object is selected or not.
@@ -2688,9 +2546,7 @@ void COldObject::SetDying(DeathType deathType)
     m_burnTime = 0.0f;
 
     if ( IsDying() && Implements(ObjectInterfaceType::Programmable) )
-    {
         StopProgram();  // stops the current task
-    }
 }
 
 DeathType COldObject::GetDying()
@@ -2726,8 +2582,10 @@ void COldObject::SetGunGoalV(float gunGoal)
          m_type == OBJECT_MOBILEwc ||
          m_type == OBJECT_MOBILEic )  // fireball?
     {
-        if ( gunGoal >  10.0f*Math::PI/180.0f )  gunGoal =  10.0f*Math::PI/180.0f;
-        if ( gunGoal < -20.0f*Math::PI/180.0f )  gunGoal = -20.0f*Math::PI/180.0f;
+        if (gunGoal >  10.0f*Math::PI/180.0f )
+            gunGoal =  10.0f*Math::PI/180.0f;
+        if (gunGoal < -20.0f*Math::PI/180.0f )
+            gunGoal = -20.0f*Math::PI/180.0f;
         SetPartRotationZ(1, gunGoal);
     }
     else if ( m_type == OBJECT_MOBILEfi ||
@@ -2735,21 +2593,22 @@ void COldObject::SetGunGoalV(float gunGoal)
               m_type == OBJECT_MOBILEwi ||
               m_type == OBJECT_MOBILEii )  // orgaball?
     {
-        if ( gunGoal >  20.0f*Math::PI/180.0f )  gunGoal =  20.0f*Math::PI/180.0f;
-        if ( gunGoal < -20.0f*Math::PI/180.0f )  gunGoal = -20.0f*Math::PI/180.0f;
+        if (gunGoal >  20.0f*Math::PI/180.0f )
+            gunGoal =  20.0f*Math::PI/180.0f;
+        if (gunGoal < -20.0f*Math::PI/180.0f )
+            gunGoal = -20.0f*Math::PI/180.0f;
         SetPartRotationZ(1, gunGoal);
     }
     else if ( m_type == OBJECT_MOBILErc )  // phazer?
     {
-        if ( gunGoal >  45.0f*Math::PI/180.0f )  gunGoal =  45.0f*Math::PI/180.0f;
-        if ( gunGoal < -20.0f*Math::PI/180.0f )  gunGoal = -20.0f*Math::PI/180.0f;
+        if (gunGoal >  45.0f*Math::PI/180.0f )
+            gunGoal =  45.0f*Math::PI/180.0f;
+        if (gunGoal < -20.0f*Math::PI/180.0f )
+            gunGoal = -20.0f*Math::PI/180.0f;
         SetPartRotationZ(2, gunGoal);
     }
     else
-    {
         gunGoal = 0.0f;
-    }
-
     m_gunGoalV = gunGoal;
 }
 
@@ -2760,8 +2619,10 @@ void COldObject::SetGunGoalH(float gunGoal)
          m_type == OBJECT_MOBILEwc ||
          m_type == OBJECT_MOBILEic )  // fireball?
     {
-        if ( gunGoal >  40.0f*Math::PI/180.0f )  gunGoal =  40.0f*Math::PI/180.0f;
-        if ( gunGoal < -40.0f*Math::PI/180.0f )  gunGoal = -40.0f*Math::PI/180.0f;
+        if (gunGoal >  40.0f*Math::PI/180.0f )
+            gunGoal =  40.0f*Math::PI/180.0f;
+        if (gunGoal < -40.0f*Math::PI/180.0f )
+            gunGoal = -40.0f*Math::PI/180.0f;
         SetPartRotationY(1, gunGoal);
     }
     else if ( m_type == OBJECT_MOBILEfi ||
@@ -2769,21 +2630,22 @@ void COldObject::SetGunGoalH(float gunGoal)
               m_type == OBJECT_MOBILEwi ||
               m_type == OBJECT_MOBILEii )  // orgaball?
     {
-        if ( gunGoal >  40.0f*Math::PI/180.0f )  gunGoal =  40.0f*Math::PI/180.0f;
-        if ( gunGoal < -40.0f*Math::PI/180.0f )  gunGoal = -40.0f*Math::PI/180.0f;
+        if (gunGoal >  40.0f*Math::PI/180.0f )
+            gunGoal =  40.0f*Math::PI/180.0f;
+        if (gunGoal < -40.0f*Math::PI/180.0f )
+            gunGoal = -40.0f*Math::PI/180.0f;
         SetPartRotationY(1, gunGoal);
     }
     else if ( m_type == OBJECT_MOBILErc )  // phazer?
     {
-        if ( gunGoal >  40.0f*Math::PI/180.0f )  gunGoal =  40.0f*Math::PI/180.0f;
-        if ( gunGoal < -40.0f*Math::PI/180.0f )  gunGoal = -40.0f*Math::PI/180.0f;
+        if (gunGoal >  40.0f*Math::PI/180.0f )
+            gunGoal =  40.0f*Math::PI/180.0f;
+        if (gunGoal < -40.0f*Math::PI/180.0f )
+            gunGoal = -40.0f*Math::PI/180.0f;
         SetPartRotationY(2, gunGoal);
     }
     else
-    {
         gunGoal = 0.0f;
-    }
-
     m_gunGoalH = gunGoal;
 }
 
@@ -2799,10 +2661,14 @@ float COldObject::GetGunGoalH()
 
 float COldObject::GetShowLimitRadius()
 {
-    if ( m_type == OBJECT_BASE     ) return 200.0f; // SpaceShip
-    if ( m_type == OBJECT_MOBILErt ) return 400.0f; // Thumper
-    if ( m_type == OBJECT_TOWER    ) return Gfx::LTNG_PROTECTION_RADIUS; // DefenseTower
-    if ( m_type == OBJECT_PARA     ) return Gfx::LTNG_PROTECTION_RADIUS; // PowerCaptor
+    if ( m_type == OBJECT_BASE)
+        return 200.0f; // SpaceShip
+    if ( m_type == OBJECT_MOBILErt)
+        return 400.0f; // Thumper
+    if ( m_type == OBJECT_TOWER)
+        return Gfx::LTNG_PROTECTION_RADIUS; // DefenseTower
+    if ( m_type == OBJECT_PARA)
+        return Gfx::LTNG_PROTECTION_RADIUS; // PowerCaptor
     return 0.0f;
 }
 
@@ -2813,17 +2679,14 @@ void COldObject::CreateSelectParticle()
 {
     Math::Vector    pos, speed;
     Math::Point     dim;
-    int         i;
 
     // Removes particles preceding.
-    for ( i=0 ; i<4 ; i++ )
-    {
+    for (int i=0 ; i<4 ; i++ )
         if ( m_partiSel[i] != -1 )
         {
             m_particle->DeleteParticle(m_partiSel[i]);
             m_partiSel[i] = -1;
         }
-    }
 
     if ( m_bSelect || IsProgram() || m_main->GetMissionType() == MISSION_RETRO )
     {
@@ -2879,7 +2742,8 @@ void COldObject::UpdateSelectParticle()
     float       angle;
     int         i;
 
-    if ( !m_bSelect && !IsProgram() && m_main->GetMissionType() != MISSION_RETRO )  return;
+    if ( !m_bSelect && !IsProgram() && m_main->GetMissionType() != MISSION_RETRO )
+        return;
 
     dim[0].x = 1.0f;
     dim[1].x = 1.0f;
@@ -3015,7 +2879,8 @@ void COldObject::UpdateSelectParticle()
     // Updates lens.
     for ( i=0 ; i<4 ; i++ )
     {
-        if (m_partiSel[i] == -1) continue;
+        if (m_partiSel[i] == -1)
+            continue;
         pos[i] = Math::Transform(m_objectPart[0].matWorld, pos[i]);
         dim[i].y = dim[i].x;
         m_particle->SetParam(m_partiSel[i], pos[i], dim[i], zoom[i], angle, 1.0f);
@@ -3098,9 +2963,7 @@ void COldObject::SetScale(const Math::Vector& scale)
 void COldObject::UpdateInterface()
 {
     if (m_objectInterface != nullptr && GetSelect())
-    {
         m_objectInterface->UpdateInterface();
-    }
 
     CreateSelectParticle();
     m_main->UpdateShortcuts();
@@ -3116,9 +2979,7 @@ void COldObject::StopProgram()
     m_physics->SetMotorSpeedZ(0.0f);
 
     if (m_type != OBJECT_HUMAN) // Be sure not to stop the death animation!
-    {
         m_motion->SetAction(-1);
-    }
 }
 
 // State management of the pencil drawing robot.
@@ -3155,13 +3016,15 @@ void COldObject::SetTraceWidth(float width)
 
 bool COldObject::IsRepairable()
 {
-    if (m_type == OBJECT_HUMAN) return false;
+    if (m_type == OBJECT_HUMAN)
+        return false;
     return true;
 }
 
 float COldObject::GetShieldFullRegenTime()
 {
-    if (m_type == OBJECT_HUMAN) return 120.0f;
+    if (m_type == OBJECT_HUMAN)
+        return 120.0f;
     assert(false);
     return 0.0f;
 }
@@ -3185,15 +3048,11 @@ float COldObject::GetLightningHitProbability()
          m_type == OBJECT_PARA     ||
          m_type == OBJECT_SAFE     ||
          m_type == OBJECT_HUSTON   )  // building?
-    {
         return 1.0f;
-    }
     if ( m_type == OBJECT_METAL    ||
          m_type == OBJECT_POWER    ||
          m_type == OBJECT_ATOMIC   ) // resource?
-    {
         return 0.3f;
-    }
     if ( m_type == OBJECT_MOBILEfa ||
          m_type == OBJECT_MOBILEta ||
          m_type == OBJECT_MOBILEwa ||
@@ -3220,9 +3079,7 @@ float COldObject::GetLightningHitProbability()
          m_type == OBJECT_MOBILEwt ||
          m_type == OBJECT_MOBILEit ||
          m_type == OBJECT_MOBILEdr )  // robot?
-    {
         return 0.5f;
-    }
     return 0.0f;
 }
 
@@ -3234,9 +3091,7 @@ bool COldObject::IsSelectableByDefault(ObjectType type)
          type == OBJECT_BEE      ||
          type == OBJECT_WORM     ||
          type == OBJECT_MOBILEtg )
-    {
         return false;
-    }
     return true;
 }
 
@@ -3254,8 +3109,6 @@ bool COldObject::IsBulletWallByDefault(ObjectType type)
 {
     if ( type == OBJECT_BARRICADE0 ||
          type == OBJECT_BARRICADE1 )
-    {
         return true;
-    }
     return false;
 }

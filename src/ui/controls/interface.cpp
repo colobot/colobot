@@ -68,18 +68,14 @@ CInterface::~CInterface()
 void CInterface::Flush()
 {
     for (auto& control : m_controls)
-    {
         control.reset();
-    }
 }
 
 int CInterface::GetNextFreeControl()
 {
     for (int i = 10; i < static_cast<int>(m_controls.size()) - 1; i++)
-    {
         if (m_controls[i] == nullptr)
             return i;
-    }
     return -1;
 }
 
@@ -111,18 +107,42 @@ CWindow* CInterface::CreateWindows(Math::Point pos, Math::Point dim, int icon, E
     int index = -1;
     switch (eventMsg)
     {
-        case EVENT_WINDOW0: index = 0; break;
-        case EVENT_WINDOW1: index = 1; break;
-        case EVENT_WINDOW2: index = 2; break;
-        case EVENT_WINDOW3: index = 3; break;
-        case EVENT_WINDOW4: index = 4; break;
-        case EVENT_WINDOW5: index = 5; break;
-        case EVENT_WINDOW6: index = 6; break;
-        case EVENT_WINDOW7: index = 7; break;
-        case EVENT_WINDOW8: index = 8; break;
-        case EVENT_WINDOW9: index = 9; break;
-        case EVENT_TOOLTIP: index = m_controls.size() - 1; break;
-        default: index = GetNextFreeControl(); break;
+    case EVENT_WINDOW0:
+        index = 0;
+        break;
+    case EVENT_WINDOW1:
+        index = 1;
+        break;
+    case EVENT_WINDOW2:
+        index = 2;
+        break;
+    case EVENT_WINDOW3:
+        index = 3;
+        break;
+    case EVENT_WINDOW4:
+        index = 4;
+        break;
+    case EVENT_WINDOW5:
+        index = 5;
+        break;
+    case EVENT_WINDOW6:
+        index = 6;
+        break;
+    case EVENT_WINDOW7:
+        index = 7;
+        break;
+    case EVENT_WINDOW8:
+        index = 8;
+        break;
+    case EVENT_WINDOW9:
+        index = 9;
+        break;
+    case EVENT_TOOLTIP:
+        index = m_controls.size() - 1;
+        break;
+    default:
+        index = GetNextFreeControl();
+        break;
     }
 
     if (index < 0)
@@ -299,19 +319,15 @@ CControl* CInterface::SearchControl(EventType eventMsg)
 
 bool CInterface::EventProcess(const Event &event)
 {
-    if (event.type == EVENT_MOUSE_MOVE || event.type == EVENT_MOUSE_BUTTON_DOWN || event.type == EVENT_MOUSE_BUTTON_UP)
-    {
+    if (event.type == EVENT_MOUSE_MOVE
+        || event.type == EVENT_MOUSE_BUTTON_DOWN
+        || event.type == EVENT_MOUSE_BUTTON_UP)
         m_engine->SetMouseType(Gfx::ENG_MOUSE_NORM);
-    }
 
     for (auto& control : boost::adaptors::reverse(m_controls))
-    {
         if (control != nullptr && control->TestState(STATE_ENABLE))
-        {
             if (! control->EventProcess(event))
                 return false;
-        }
-    }
 
     return true;
 }
@@ -322,13 +338,9 @@ bool CInterface::EventProcess(const Event &event)
 bool CInterface::GetTooltip(Math::Point pos, std::string &name)const
 {
     for (auto& control : boost::adaptors::reverse(m_controls))
-    {
         if (control != nullptr)
-        {
             if (control->GetTooltip(pos, name))
                 return true;
-        }
-    }
     return false;
 }
 
@@ -338,21 +350,15 @@ bool CInterface::GetTooltip(Math::Point pos, std::string &name)const
 void CInterface::Draw()
 {
     for (auto& control : m_controls)
-    {
         if (control != nullptr)
             control->Draw();
-    }
 }
 
 void CInterface::SetFocus(CControl* focusControl)
 {
     for (auto& control : m_controls)
-    {
         if (control != nullptr)
-        {
             control->SetFocus(focusControl);
-        }
-    }
 }
 
 

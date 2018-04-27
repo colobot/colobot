@@ -45,7 +45,8 @@ namespace Gfx
 
 CGL14Device::CGL14Device(const DeviceConfig &config)
     : m_config(config)
-{}
+{
+}
 
 CGL14Device::~CGL14Device()
 {
@@ -218,7 +219,7 @@ bool CGL14Device::Create()
     if (m_capabilities.anisotropySupported)
     {
         // Obtain maximum anisotropy level available
-        float level;
+        float level = .0;   //fake init to mute lint
         glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &level);
         m_capabilities.maxAnisotropy = static_cast<int>(level);
 
@@ -501,9 +502,7 @@ void CGL14Device::SetTransform(TransformType type, const Math::Matrix &matrix)
         glLoadMatrixf(m_shadowMatrix.Array());
     }
     else
-    {
         assert(false);
-    }
 }
 
 void CGL14Device::UpdateModelviewMatrix()
@@ -516,9 +515,7 @@ void CGL14Device::UpdateModelviewMatrix()
     glGetFloatv(GL_MODELVIEW_MATRIX, m_modelviewMat.Array());
 
     if (m_lighting)
-    {
         UpdateLightPositions();
-    }
 }
 
 void CGL14Device::SetMaterial(const Material &material)
@@ -557,9 +554,7 @@ void CGL14Device::SetLight(int index, const Light &light)
         glLightf(GL_LIGHT0 + index, GL_SPOT_EXPONENT, light.spotIntensity);
     }
     else
-    {
         glLightf(GL_LIGHT0 + index, GL_SPOT_CUTOFF, 180.0f);
-    }
 
     UpdateLightPosition(index);
 }
@@ -653,14 +648,11 @@ void CGL14Device::UpdateLightPositions()
     for (const Light &light : m_lights)
     {
         if (m_lightsEnabled[lightIndex])
-        {
             if (light.type == LIGHT_POINT)
             {
                 GLfloat position[4] = { light.position.x, light.position.y, light.position.z, 1.0f };
                 glLightfv(GL_LIGHT0 + lightIndex, GL_POSITION, position);
             }
-        }
-
         lightIndex++;
     }
 
@@ -1002,7 +994,8 @@ void CGL14Device::UpdateTextureParams(int index)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
     else if (params.wrapS == TEX_WRAP_REPEAT)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    else  assert(false);
+    else
+        assert(false);
 
     if      (params.wrapT == TEX_WRAP_CLAMP)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -1010,7 +1003,8 @@ void CGL14Device::UpdateTextureParams(int index)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
     else if (params.wrapT == TEX_WRAP_REPEAT)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    else  assert(false);
+    else
+        assert(false);
 
     glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, params.factor.Array());
 
@@ -1047,7 +1041,8 @@ void CGL14Device::UpdateTextureParams(int index)
         glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_ADD);
     else if (params.colorOperation == TEX_MIX_OPER_SUBTRACT)
         glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_SUBTRACT);
-    else  assert(false);
+    else
+        assert(false);
 
     // Color arg1
     if (params.colorArg1 == TEX_MIX_ARG_TEXTURE)
@@ -1066,7 +1061,8 @@ void CGL14Device::UpdateTextureParams(int index)
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_PRIMARY_COLOR);
     else if (params.colorArg1 == TEX_MIX_ARG_FACTOR)
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_CONSTANT);
-    else  assert(false);
+    else
+        assert(false);
 
     // Color arg2
     if (params.colorArg2 == TEX_MIX_ARG_TEXTURE)
@@ -1085,7 +1081,8 @@ void CGL14Device::UpdateTextureParams(int index)
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_PRIMARY_COLOR);
     else if (params.colorArg2 == TEX_MIX_ARG_FACTOR)
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_CONSTANT);
-    else  assert(false);
+    else
+        assert(false);
 
 
 after_tex_color:
@@ -1106,7 +1103,8 @@ after_tex_color:
         glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_ADD);
     else if (params.alphaOperation == TEX_MIX_OPER_SUBTRACT)
         glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_SUBTRACT);
-    else  assert(false);
+    else
+        assert(false);
 
     // Alpha arg1
     if (params.alphaArg1 == TEX_MIX_ARG_TEXTURE)
@@ -1125,7 +1123,8 @@ after_tex_color:
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_PRIMARY_COLOR);
     else if (params.alphaArg1 == TEX_MIX_ARG_FACTOR)
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_CONSTANT);
-    else  assert(false);
+    else
+        assert(false);
 
     // Alpha arg2
     if (params.alphaArg2 == TEX_MIX_ARG_TEXTURE)
@@ -1144,7 +1143,8 @@ after_tex_color:
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_PRIMARY_COLOR);
     else if (params.alphaArg2 == TEX_MIX_ARG_FACTOR)
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_CONSTANT);
-    else  assert(false);
+    else
+        assert(false);
 
 after_tex_operations: ;
 }
@@ -1152,7 +1152,8 @@ after_tex_operations: ;
 void CGL14Device::EnableShadows()
 {
     // already enabled
-    if (m_shadowMapping) return;
+    if (m_shadowMapping)
+        return;
 
     // shadow map unit
     glActiveTexture(GL_TEXTURE0 + m_remap[2]);
@@ -1184,9 +1185,7 @@ void CGL14Device::EnableShadows()
 
     // simple shadows
     if (!m_shadowQuality)
-    {
         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-    }
     // quality shadows
     else
     {
@@ -1247,7 +1246,8 @@ void CGL14Device::EnableShadows()
 void CGL14Device::DisableShadows()
 {
     // already disabled
-    if (!m_shadowMapping) return;
+    if (!m_shadowMapping)
+        return;
 
     glActiveTexture(GL_TEXTURE0 + m_remap[2]);
     glDisable(GL_TEXTURE_2D);
@@ -1288,7 +1288,8 @@ void CGL14Device::SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
     else if (wrapS == TEX_WRAP_REPEAT)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    else  assert(false);
+    else
+        assert(false);
 
     if      (wrapT == TEX_WRAP_CLAMP)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -1296,7 +1297,8 @@ void CGL14Device::SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
     else if (wrapT == TEX_WRAP_REPEAT)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    else  assert(false);
+    else
+        assert(false);
 }
 
 void CGL14Device::DrawPrimitive(PrimitiveType type, const Vertex *vertices, int vertexCount,
@@ -1431,8 +1433,10 @@ void CGL14Device::DrawPrimitive(PrimitiveType type, const void *vertices,
 
     glDisableClientState(GL_VERTEX_ARRAY);
 
-    if (format.color.enabled) glDisableClientState(GL_COLOR_ARRAY);
-    if (format.normal.enabled) glDisableClientState(GL_NORMAL_ARRAY);
+    if (format.color.enabled)
+        glDisableClientState(GL_COLOR_ARRAY);
+    if (format.normal.enabled)
+        glDisableClientState(GL_NORMAL_ARRAY);
 
     if (format.tex1.enabled)
     {
@@ -1506,19 +1510,17 @@ void CGL14Device::DrawPrimitives(PrimitiveType type, const void *vertices,
     GLenum t = TranslateGfxPrimitive(type);
 
     if (m_multiDrawArrays)
-    {
         glMultiDrawArrays(t, first, count, drawCount);
-    }
     else
-    {
         for (int i = 0; i < drawCount; i++)
             glDrawArrays(t, first[i], count[i]);
-    }
 
     glDisableClientState(GL_VERTEX_ARRAY);
 
-    if (format.color.enabled) glDisableClientState(GL_COLOR_ARRAY);
-    if (format.normal.enabled) glDisableClientState(GL_NORMAL_ARRAY);
+    if (format.color.enabled)
+        glDisableClientState(GL_COLOR_ARRAY);
+    if (format.normal.enabled)
+        glDisableClientState(GL_NORMAL_ARRAY);
 
     if (format.tex1.enabled)
     {
@@ -1553,14 +1555,10 @@ void CGL14Device::DrawPrimitives(PrimitiveType type, const Vertex *vertices,
     GLenum t = TranslateGfxPrimitive(type);
 
     if (m_multiDrawArrays)
-    {
         glMultiDrawArrays(t, first, count, drawCount);
-    }
     else
-    {
         for (int i = 0; i < drawCount; i++)
             glDrawArrays(t, first[i], count[i]);
-    }
 
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_NORMAL_ARRAY);
@@ -1591,14 +1589,10 @@ void CGL14Device::DrawPrimitives(PrimitiveType type, const VertexTex2 *vertices,
     GLenum t = TranslateGfxPrimitive(type);
 
     if (m_multiDrawArrays)
-    {
         glMultiDrawArrays(t, first, count, drawCount);
-    }
     else
-    {
         for (int i = 0; i < drawCount; i++)
             glDrawArrays(t, first[i], count[i]);
-    }
 
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_NORMAL_ARRAY);
@@ -1622,14 +1616,10 @@ void CGL14Device::DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
     GLenum t = TranslateGfxPrimitive(type);
 
     if (m_multiDrawArrays)
-    {
         glMultiDrawArrays(t, first, count, drawCount);
-    }
     else
-    {
         for (int i = 0; i < drawCount; i++)
             glDrawArrays(t, first[i], count[i]);
-    }
 
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_COLOR_ARRAY);
@@ -1892,9 +1882,7 @@ void CGL14Device::DrawStaticBuffer(unsigned int bufferId)
         m_glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
     else
-    {
         glCallList(bufferId);
-    }
 }
 
 void CGL14Device::DestroyStaticBuffer(unsigned int bufferId)
@@ -1910,9 +1898,7 @@ void CGL14Device::DestroyStaticBuffer(unsigned int bufferId)
         m_vboObjects.erase(it);
     }
     else
-    {
         glDeleteLists(bufferId, 1);
-    }
 }
 
 /* Based on libwine's implementation */
@@ -2018,9 +2004,7 @@ void CGL14Device::SetRenderState(RenderState state, bool enabled)
             glDisable(GL_LIGHTING);
 
         if (enabled)
-        {
             UpdateLightPositions();
-        }
 
         return;
     }
@@ -2038,13 +2022,26 @@ void CGL14Device::SetRenderState(RenderState state, bool enabled)
 
     switch (state)
     {
-        case RENDER_STATE_BLENDING:    flag = GL_BLEND; break;
-        case RENDER_STATE_FOG:         flag = GL_FOG; break;
-        case RENDER_STATE_DEPTH_TEST:  flag = GL_DEPTH_TEST; break;
-        case RENDER_STATE_ALPHA_TEST:  flag = GL_ALPHA_TEST; break;
-        case RENDER_STATE_CULLING:     flag = GL_CULL_FACE; break;
-        case RENDER_STATE_DEPTH_BIAS:  flag = GL_POLYGON_OFFSET_FILL; break;
-        default: assert(false); break;
+    case RENDER_STATE_BLENDING:
+        flag = GL_BLEND;
+        break;
+    case RENDER_STATE_FOG:
+        flag = GL_FOG;
+        break;
+    case RENDER_STATE_DEPTH_TEST:
+        flag = GL_DEPTH_TEST;
+        break;
+    case RENDER_STATE_ALPHA_TEST:
+        flag = GL_ALPHA_TEST;
+        break;
+    case RENDER_STATE_CULLING:
+        flag = GL_CULL_FACE;
+        break;
+    case RENDER_STATE_DEPTH_BIAS:
+        flag = GL_POLYGON_OFFSET_FILL;
+        break;
+    default:
+        assert(false);
     }
 
     if (enabled)
@@ -2090,10 +2087,14 @@ void CGL14Device::SetGlobalAmbient(const Color &color)
 
 void CGL14Device::SetFogParams(FogMode mode, const Color &color, float start, float end, float density)
 {
-    if      (mode == FOG_LINEAR) glFogi(GL_FOG_MODE, GL_LINEAR);
-    else if (mode == FOG_EXP)    glFogi(GL_FOG_MODE, GL_EXP);
-    else if (mode == FOG_EXP2)   glFogi(GL_FOG_MODE, GL_EXP2);
-    else assert(false);
+    if      (mode == FOG_LINEAR)
+        glFogi(GL_FOG_MODE, GL_LINEAR);
+    else if (mode == FOG_EXP)
+        glFogi(GL_FOG_MODE, GL_EXP);
+    else if (mode == FOG_EXP2)
+        glFogi(GL_FOG_MODE, GL_EXP2);
+    else
+        assert(false);
 
     glFogf(GL_FOG_START,   start);
     glFogf(GL_FOG_END,     end);
@@ -2105,16 +2106,22 @@ void CGL14Device::SetCullMode(CullMode mode)
 {
     // Cull clockwise back faces, so front face is the opposite
     // (assuming GL_CULL_FACE is GL_BACK)
-    if      (mode == CULL_CW ) glFrontFace(GL_CCW);
-    else if (mode == CULL_CCW) glFrontFace(GL_CW);
-    else assert(false);
+    if      (mode == CULL_CW )
+        glFrontFace(GL_CCW);
+    else if (mode == CULL_CCW)
+        glFrontFace(GL_CW);
+    else
+        assert(false);
 }
 
 void CGL14Device::SetShadeModel(ShadeModel model)
 {
-    if      (model == SHADE_FLAT)   glShadeModel(GL_FLAT);
-    else if (model == SHADE_SMOOTH) glShadeModel(GL_SMOOTH);
-    else  assert(false);
+    if      (model == SHADE_FLAT)
+        glShadeModel(GL_FLAT);
+    else if (model == SHADE_SMOOTH)
+        glShadeModel(GL_SMOOTH);
+    else
+        assert(false);
 }
 
 void CGL14Device::SetShadowColor(float value)
@@ -2124,15 +2131,20 @@ void CGL14Device::SetShadowColor(float value)
 
 void CGL14Device::SetFillMode(FillMode mode)
 {
-    if      (mode == FILL_POINT) glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
-    else if (mode == FILL_LINES) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    else if (mode == FILL_POLY)  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    else assert(false);
+    if      (mode == FILL_POINT)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+    else if (mode == FILL_LINES)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    else if (mode == FILL_POLY)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    else
+        assert(false);
 }
 
 void CGL14Device::CopyFramebufferToTexture(Texture& texture, int xOffset, int yOffset, int x, int y, int width, int height)
 {
-    if (texture.id == 0) return;
+    if (texture.id == 0)
+        return;
 
     // Use & enable 1st texture stage
     glActiveTexture(GL_TEXTURE0 + m_remap[0]);
@@ -2162,9 +2174,7 @@ CFramebuffer* CGL14Device::CreateFramebuffer(std::string name, const Framebuffer
 {
     // existing framebuffer was found
     if (m_framebuffers.find(name) != m_framebuffers.end())
-    {
         return nullptr;
-    }
 
     std::unique_ptr<CFramebuffer> framebuffer;
 
@@ -2175,7 +2185,8 @@ CFramebuffer* CGL14Device::CreateFramebuffer(std::string name, const Framebuffer
     else
         return nullptr;
 
-    if (!framebuffer->Create()) return nullptr;
+    if (!framebuffer->Create())
+        return nullptr;
 
     CFramebuffer* framebufferPtr = framebuffer.get();
     m_framebuffers[name] = std::move(framebuffer);
@@ -2185,7 +2196,8 @@ CFramebuffer* CGL14Device::CreateFramebuffer(std::string name, const Framebuffer
 void CGL14Device::DeleteFramebuffer(std::string name)
 {
     // can't delete default framebuffer
-    if (name == "default") return;
+    if (name == "default")
+        return;
 
     auto it = m_framebuffers.find(name);
     if (it != m_framebuffers.end())

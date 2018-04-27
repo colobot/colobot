@@ -44,9 +44,7 @@ CChannel::CChannel()
         m_ready = false;
     }
     else
-    {
         m_ready = true;
-    }
 }
 
 CChannel::~CChannel()
@@ -64,47 +62,40 @@ CChannel::~CChannel()
 bool CChannel::Play()
 {
     if (!m_ready || m_buffer == nullptr)
-    {
         return false;
-    }
 
     alSourcei(m_source, AL_LOOPING, static_cast<ALint>(m_loop));
     alSourcei(m_source, AL_REFERENCE_DISTANCE, 10.0f);
     alSourcei(m_source, AL_MAX_DISTANCE, 110.0f);
     alSourcePlay(m_source);
     if (CheckOpenALError())
-    {
-        GetLogger()->Debug("Could not play audio sound source. Code: %d\n", GetOpenALErrorCode());
-    }
+        GetLogger()->Debug("Could not play audio sound source. Code: %d\n",
+            GetOpenALErrorCode());
     return true;
 }
 
 bool CChannel::Pause()
 {
     if (!m_ready || !IsPlaying())
-    {
         return false;
-    }
 
     alSourcePause(m_source);
     if (CheckOpenALError())
-    {
-        GetLogger()->Debug("Could not pause audio sound source. Code: %d\n", GetOpenALErrorCode());
-    }
+        GetLogger()->Debug("Could not pause audio sound source. Code: %d\n",
+            GetOpenALErrorCode());
     return true;
 }
 
 bool CChannel::SetPosition(const Math::Vector &pos)
 {
     if (!m_ready || m_buffer == nullptr)
-    {
         return false;
-    }
 
     alSource3f(m_source, AL_POSITION, pos.x, pos.y, pos.z);
     if (CheckOpenALError())
     {
-        GetLogger()->Debug("Could not set sound position. Code: %d\n", GetOpenALErrorCode());
+        GetLogger()->Debug("Could not set sound position. Code: %d\n",
+            GetOpenALErrorCode());
         return false;
     }
     return true;
@@ -113,14 +104,13 @@ bool CChannel::SetPosition(const Math::Vector &pos)
 bool CChannel::SetFrequency(float freq)
 {
     if (!m_ready || m_buffer == nullptr)
-    {
         return false;
-    }
 
     alSourcef(m_source, AL_PITCH, freq);
     if (CheckOpenALError())
     {
-        GetLogger()->Debug("Could not set sound pitch to '%f'. Code: %d\n", freq, GetOpenALErrorCode());
+        GetLogger()->Debug("Could not set sound pitch to '%f'. Code: %d\n",
+            freq, GetOpenALErrorCode());
         return false;
     }
     return true;
@@ -130,14 +120,13 @@ float CChannel::GetFrequency()
 {
     ALfloat freq;
     if (!m_ready || m_buffer == nullptr)
-    {
         return 0;
-    }
 
     alGetSourcef(m_source, AL_PITCH, &freq);
     if (CheckOpenALError())
     {
-        GetLogger()->Debug("Could not get sound pitch. Code: %d\n", GetOpenALErrorCode());
+        GetLogger()->Debug("Could not get sound pitch. Code: %d\n",
+            GetOpenALErrorCode());
         return 0;
     }
 
@@ -147,9 +136,7 @@ float CChannel::GetFrequency()
 bool CChannel::SetVolume(float vol)
 {
     if (!m_ready || vol < 0 || m_buffer == nullptr)
-    {
         return false;
-    }
 
     alSourcef(m_source, AL_GAIN, vol);
     if (CheckOpenALError())
@@ -164,14 +151,13 @@ float CChannel::GetVolume()
 {
     ALfloat vol;
     if (!m_ready || m_buffer == nullptr)
-    {
         return 0;
-    }
 
     alGetSourcef(m_source, AL_GAIN, &vol);
     if (CheckOpenALError())
     {
-        GetLogger()->Debug("Could not get sound volume. Code: %d\n", GetOpenALErrorCode());
+        GetLogger()->Debug("Could not get sound volume. Code: %d\n",
+            GetOpenALErrorCode());
         return 0;
     }
 
@@ -246,9 +232,7 @@ void CChannel::ResetOper()
 SoundType CChannel::GetSoundType()
 {
     if (!m_ready || m_buffer == nullptr)
-    {
         return SOUND_NONE;
-    }
 
     return m_buffer->GetSoundType();
 }
@@ -269,7 +253,8 @@ bool CChannel::SetBuffer(CBuffer *buffer)
     alSourcei(m_source, AL_BUFFER, buffer->GetBuffer());
     if (CheckOpenALError())
     {
-        GetLogger()->Warn("Could not set sound buffer. Code: %d\n", GetOpenALErrorCode());
+        GetLogger()->Warn("Could not set sound buffer. Code: %d\n",
+            GetOpenALErrorCode());
         return false;
     }
     m_initFrequency = GetFrequency();
@@ -280,14 +265,13 @@ bool CChannel::IsPlaying()
 {
     ALint status;
     if (!m_ready || m_buffer == nullptr)
-    {
         return false;
-    }
 
     alGetSourcei(m_source, AL_SOURCE_STATE, &status);
     if (CheckOpenALError())
     {
-        GetLogger()->Warn("Could not get sound status. Code: %d\n", GetOpenALErrorCode());
+        GetLogger()->Warn("Could not get sound status. Code: %d\n",
+            GetOpenALErrorCode());
         return false;
     }
 
@@ -307,14 +291,13 @@ bool CChannel::IsLoaded()
 bool CChannel::Stop()
 {
     if (!m_ready || m_buffer == nullptr)
-    {
         return false;
-    }
 
     alSourceStop(m_source);
     if (CheckOpenALError())
     {
-        GetLogger()->Warn("Could not stop sound. Code: %d\n", GetOpenALErrorCode());
+        GetLogger()->Warn("Could not stop sound. Code: %d\n",
+            GetOpenALErrorCode());
         return false;
     }
     return true;
@@ -323,15 +306,14 @@ bool CChannel::Stop()
 float CChannel::GetCurrentTime()
 {
     if (!m_ready || m_buffer == nullptr)
-    {
         return 0.0f;
-    }
 
-    ALfloat current;
+    ALfloat current;    //TODO: force an init to mute lint
     alGetSourcef(m_source, AL_SEC_OFFSET, &current);
     if (CheckOpenALError())
     {
-        GetLogger()->Warn("Could not get source current play time. Code: %d\n", GetOpenALErrorCode());
+        GetLogger()->Warn("Could not get source current play time. Code: %d\n",
+            GetOpenALErrorCode());
         return 0.0f;
     }
     return current;
@@ -340,23 +322,20 @@ float CChannel::GetCurrentTime()
 void CChannel::SetCurrentTime(float current)
 {
     if (!m_ready || m_buffer == nullptr)
-    {
         return;
-    }
 
     alSourcef(m_source, AL_SEC_OFFSET, current);
     if (CheckOpenALError())
     {
-        GetLogger()->Warn("Could not get source current play time. Code: %d\n", GetOpenALErrorCode());
+        GetLogger()->Warn("Could not get source current play time. Code: %d\n",
+            GetOpenALErrorCode());
     }
 }
 
 float CChannel::GetDuration()
 {
     if (!m_ready || m_buffer == nullptr)
-    {
         return 0.0f;
-    }
 
     return m_buffer->GetDuration();
 }

@@ -314,17 +314,17 @@ bool CStudio::EventProcess(const Event &event)
 
 float Evolution(float final, float actual, float time)
 {
-    float   value;
-
-    value = actual + (final-actual)*time;
+    float   value = actual + (final-actual)*time;
 
     if ( final > actual )
     {
-        if ( value > final )  value = final;  // does not exceed
+        if ( value > final )
+            value = final;  // does not exceed
     }
     else
     {
-        if ( value < final )  value = final;  // does not exceed
+        if ( value < final )
+            value = final;  // does not exceed
     }
 
     return value;

@@ -23,31 +23,31 @@ ToolType GetToolFromObject(ObjectType type)
 {
     switch (type)
     {
-        case OBJECT_MOBILEwa:
-        case OBJECT_MOBILEta:
-        case OBJECT_MOBILEfa:
-        case OBJECT_MOBILEia:
-            return ToolType::Grabber;
+    case OBJECT_MOBILEwa:
+    case OBJECT_MOBILEta:
+    case OBJECT_MOBILEfa:
+    case OBJECT_MOBILEia:
+        return ToolType::Grabber;
 
-        case OBJECT_MOBILEws:
-        case OBJECT_MOBILEts:
-        case OBJECT_MOBILEfs:
-        case OBJECT_MOBILEis:
-            return ToolType::Sniffer;
+    case OBJECT_MOBILEws:
+    case OBJECT_MOBILEts:
+    case OBJECT_MOBILEfs:
+    case OBJECT_MOBILEis:
+        return ToolType::Sniffer;
 
-        case OBJECT_MOBILEwc:
-        case OBJECT_MOBILEtc:
-        case OBJECT_MOBILEfc:
-        case OBJECT_MOBILEic:
-            return ToolType::Shooter;
+    case OBJECT_MOBILEwc:
+    case OBJECT_MOBILEtc:
+    case OBJECT_MOBILEfc:
+    case OBJECT_MOBILEic:
+        return ToolType::Shooter;
 
-        case OBJECT_MOBILEwi:
-        case OBJECT_MOBILEti:
-        case OBJECT_MOBILEfi:
-        case OBJECT_MOBILEii:
-            return ToolType::OrganicShooter;
+    case OBJECT_MOBILEwi:
+    case OBJECT_MOBILEti:
+    case OBJECT_MOBILEfi:
+    case OBJECT_MOBILEii:
+        return ToolType::OrganicShooter;
 
-        default:
-            return ToolType::Other;
+    default:
+        return ToolType::Other;
     }
 }

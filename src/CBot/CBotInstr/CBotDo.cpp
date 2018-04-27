@@ -50,12 +50,11 @@ CBotInstr* CBotDo::Compile(CBotToken* &p, CBotCStack* pStack)
 
     if ( IsOfType( p, TokenTypVar ) &&
          IsOfType( p, ID_DOTS ) )
-    {
         inst->m_label = pp->GetString();        // register the name of label
-    }
 
     inst->SetToken(p);
-    if (!IsOfType(p, ID_DO)) return nullptr;       // should never happen
+    if (!IsOfType(p, ID_DO))
+        return nullptr;       // should never happen
 
     CBotCStack* pStk = pStack->TokenStack(pp);  // un petit bout de pile svp
 
@@ -73,9 +72,8 @@ CBotInstr* CBotDo::Compile(CBotToken* &p, CBotCStack* pStack)
             {
                 // the condition exists
                 if (IsOfType(p, ID_SEP))
-                {
-                    return pStack->Return(inst, pStk);  // return an object to the application
-                }
+                    // return an object to the application
+                    return pStack->Return(inst, pStk);
                 pStk->SetError(CBotErrNoTerminator, p->GetStart());
             }
         }
@@ -93,52 +91,58 @@ bool CBotDo :: Execute(CBotStack* &pj)
                                                 // or find in case of recovery
 //  if ( pile == EOX ) return true;
 
-    if ( pile->IfStep() ) return false;
+    if ( pile->IfStep() )
+        return false;
 
-    while( true ) switch( pile->GetState() )            // executes the loop
-    {                                                   // there are two possible states (depending on recovery)
-    case 0:
-        // evaluates the associated statement block
-        if (m_block != nullptr &&
-            !m_block->Execute(pile) )
-        {
-            if (pile->IfContinue(1, m_label)) continue; // if continued, will return to test
-            return pj->BreakReturn(pile, m_label);      // sends the results and releases the stack
+    while( true )
+        switch( pile->GetState() )            // executes the loop
+        {   // there are two possible states (depending on recovery)
+        case 0:
+            // evaluates the associated statement block
+            if (m_block != nullptr &&
+                !m_block->Execute(pile) )
+            {
+                if (pile->IfContinue(1, m_label))
+                    continue; // if continued, will return to test
+                return pj->BreakReturn(pile, m_label);      // sends the results and releases the stack
+            }
+
+            // terminates if there is an error
+            if ( !pile->IsOk() )
+                // sends the results and releases the stack
+                return pj->Return(pile);
+
+            if (!pile->SetState(1))
+                return false;           // ready for further
+
+        case 1:
+            // evaluates the condition
+            if ( !m_condition->Execute(pile) )
+                return false; // interrupted here ?
+
+            // the result of the condition is on the stack
+
+            // terminates if an error or if the condition is false
+            if ( !pile->IsOk() || pile->GetVal() != true )
+                // sends the results and releases the stack
+                return pj->Return(pile);
+
+            // returns to instruction block to start
+            if (!pile->SetState(0, 0))
+                return false;
+            continue;
         }
-
-        // terminates if there is an error
-        if ( !pile->IsOk() )
-        {
-            return pj->Return(pile);                    // sends the results and releases the stack
-        }
-
-        if (!pile->SetState(1)) return false;           // ready for further
-
-    case 1:
-        // evaluates the condition
-        if ( !m_condition->Execute(pile) ) return false; // interrupted here ?
-
-        // the result of the condition is on the stack
-
-        // terminates if an error or if the condition is false
-        if ( !pile->IsOk() || pile->GetVal() != true )
-        {
-            return pj->Return(pile);                    // sends the results and releases the stack
-        }
-
-        // returns to instruction block to start
-        if (!pile->SetState(0, 0)) return false;
-        continue;
-    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void CBotDo :: RestoreState(CBotStack* &pj, bool bMain)
 {
-    if ( !bMain ) return;
+    if ( !bMain )
+        return;
 
     CBotStack* pile = pj->RestoreStack(this);           // adds an item to the stack
-    if ( pile == nullptr ) return;
+    if ( pile == nullptr )
+        return;
 
     switch( pile->GetState() )
     {                                                   // there are two possible states (depending on recovery)

@@ -203,58 +203,43 @@ void CDebugMenu::UpdateInterface()
     CButton* pb;
 
     CWindow* pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW7));
-    if (pw == nullptr) return;
+    if (pw == nullptr)
+        return;
 
 
     pb = static_cast<CButton*>(pw->SearchControl(EVENT_DBG_LIGHTNING));
     if (pb != nullptr)
-    {
         pb->SetName(m_lightningActive ? "Disable lightning" : "Lightning");
-    }
 
     pb = static_cast<CButton*>(pw->SearchControl(EVENT_DBG_TELEPORT));
     if (pb != nullptr)
-    {
         pb->SetName(m_teleportActive ? "Abort teleport" : "Teleport");
-    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_DBG_STATS));
     if (pc != nullptr)
-    {
         pc->SetState(STATE_CHECK, m_engine->GetShowStats());
-    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_DBG_RESOURCES));
     if (pc != nullptr)
-    {
         pc->SetState(STATE_CHECK, m_engine->GetDebugResources());
-    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_DBG_GOTO));
     if (pc != nullptr)
-    {
         pc->SetState(STATE_CHECK, m_engine->GetDebugGoto());
-    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_DBG_CRASHSPHERES));
     if (pc != nullptr)
-    {
         pc->SetState(STATE_CHECK, m_main->GetDebugCrashSpheres());
-    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_DBG_LIGHTS));
     if (pc != nullptr)
-    {
         pc->SetState(STATE_CHECK, m_engine->GetDebugLights());
-    }
 
     for (const auto& it : SPAWN_TYPES)
     {
         pb = static_cast<CButton*>(pw->SearchControl(it.first));
         if (pb != nullptr)
-        {
             pb->SetState(STATE_ENABLE, it.second != m_spawningType);
-        }
     }
 }
 
@@ -268,125 +253,110 @@ bool CDebugMenu::EventProcess(const Event &event)
 {
     switch (event.type)
     {
-        case EVENT_DBG_STATS:
-            m_engine->SetShowStats(!m_engine->GetShowStats());
-            UpdateInterface();
-            break;
+    case EVENT_DBG_STATS:
+        m_engine->SetShowStats(!m_engine->GetShowStats());
+        UpdateInterface();
+        break;
 
-        case EVENT_DBG_SPAWN_OBJ:
-            DestroyInterface();
-            CreateSpawnInterface();
-            break;
+    case EVENT_DBG_SPAWN_OBJ:
+        DestroyInterface();
+        CreateSpawnInterface();
+        break;
 
-        case EVENT_DBG_TELEPORT:
-            if (!m_teleportActive)
-            {
-                if (m_main->GetSelect() != nullptr)
-                    m_teleportActive = true;
-                else
-                    m_sound->Play(SOUND_CLICK);
-            }
+    case EVENT_DBG_TELEPORT:
+        if (!m_teleportActive)
+        {
+            if (m_main->GetSelect() != nullptr)
+                m_teleportActive = true;
             else
-            {
-                m_teleportActive = false;
-            }
-            UpdateInterface();
-            break;
+                m_sound->Play(SOUND_CLICK);
+        }
+        else
+            m_teleportActive = false;
+        UpdateInterface();
+        break;
 
-        case EVENT_DBG_LIGHTNING:
-            m_lightningActive = !m_lightningActive;
-            UpdateInterface();
-            break;
+    case EVENT_DBG_LIGHTNING:
+        m_lightningActive = !m_lightningActive;
+        UpdateInterface();
+        break;
 
-        case EVENT_DBG_RESOURCES:
-            m_engine->SetDebugResources(!m_engine->GetDebugResources());
-            UpdateInterface();
-            break;
+    case EVENT_DBG_RESOURCES:
+        m_engine->SetDebugResources(!m_engine->GetDebugResources());
+        UpdateInterface();
+        break;
 
-        case EVENT_DBG_GOTO:
-            m_engine->SetDebugGoto(!m_engine->GetDebugGoto());
-            UpdateInterface();
-            break;
+    case EVENT_DBG_GOTO:
+        m_engine->SetDebugGoto(!m_engine->GetDebugGoto());
+        UpdateInterface();
+        break;
 
-        case EVENT_DBG_CRASHSPHERES:
-            m_main->SetDebugCrashSpheres(!m_main->GetDebugCrashSpheres());
-            UpdateInterface();
-            break;
+    case EVENT_DBG_CRASHSPHERES:
+        m_main->SetDebugCrashSpheres(!m_main->GetDebugCrashSpheres());
+        UpdateInterface();
+        break;
 
-        case EVENT_DBG_LIGHTS:
-            m_engine->SetDebugLights(!m_engine->GetDebugLights());
-            UpdateInterface();
-            break;
+    case EVENT_DBG_LIGHTS:
+        m_engine->SetDebugLights(!m_engine->GetDebugLights());
+        UpdateInterface();
+        break;
 
-        case EVENT_DBG_LIGHTS_DUMP:
-            m_engine->DebugDumpLights();
-            break;
+    case EVENT_DBG_LIGHTS_DUMP:
+        m_engine->DebugDumpLights();
+        break;
 
 
-        case EVENT_SPAWN_CANCEL:
-            DestroyInterface();
-            CreateInterface();
-            break;
+    case EVENT_SPAWN_CANCEL:
+        DestroyInterface();
+        CreateInterface();
+        break;
 
-        case EVENT_SPAWN_ME:
-        case EVENT_SPAWN_WHEELEDGRABBER:
-        case EVENT_SPAWN_WHEELEDSHOOTER:
-        case EVENT_SPAWN_PHAZERSHOOTER:
-        case EVENT_SPAWN_BOTFACTORY:
-        case EVENT_SPAWN_CONVERTER:
-        case EVENT_SPAWN_DERRICK:
-        case EVENT_SPAWN_POWERSTATION:
-        case EVENT_SPAWN_TITANIUM:
-        case EVENT_SPAWN_TITANIUMORE:
-        case EVENT_SPAWN_URANIUMORE:
-        case EVENT_SPAWN_POWERCELL:
-        case EVENT_SPAWN_NUCLEARCELL:
-            m_spawningType = SPAWN_TYPES.at(event.type);
-            UpdateInterface();
-            break;
+    case EVENT_SPAWN_ME:
+    case EVENT_SPAWN_WHEELEDGRABBER:
+    case EVENT_SPAWN_WHEELEDSHOOTER:
+    case EVENT_SPAWN_PHAZERSHOOTER:
+    case EVENT_SPAWN_BOTFACTORY:
+    case EVENT_SPAWN_CONVERTER:
+    case EVENT_SPAWN_DERRICK:
+    case EVENT_SPAWN_POWERSTATION:
+    case EVENT_SPAWN_TITANIUM:
+    case EVENT_SPAWN_TITANIUMORE:
+    case EVENT_SPAWN_URANIUMORE:
+    case EVENT_SPAWN_POWERCELL:
+    case EVENT_SPAWN_NUCLEARCELL:
+        m_spawningType = SPAWN_TYPES.at(event.type);
+        UpdateInterface();
+        break;
 
-        case EVENT_MOUSE_BUTTON_DOWN:
-            if (event.GetData<MouseButtonEventData>()->button == MOUSE_BUTTON_LEFT)
-            {
-                if (m_lightningActive)
-                {
-                    return !HandleLightning(event.mousePos);
-                }
+    case EVENT_MOUSE_BUTTON_DOWN:
+        if (event.GetData<MouseButtonEventData>()->button == MOUSE_BUTTON_LEFT)
+        {
+            if (m_lightningActive)
+                return !HandleLightning(event.mousePos);
+            if (m_teleportActive)
+                return !HandleTeleport(event.mousePos);
+            if (m_spawningType != OBJECT_NULL)
+                return !HandleSpawnObject(m_spawningType, event.mousePos);
+        }
+        break;
 
-                if (m_teleportActive)
-                {
-                    return !HandleTeleport(event.mousePos);
-                }
+    case EVENT_MOUSE_MOVE:
+        if (m_spawningType != OBJECT_NULL || m_teleportActive || m_lightningActive)
+            return false;
+        break;
 
-                if (m_spawningType != OBJECT_NULL)
-                {
-                    return !HandleSpawnObject(m_spawningType, event.mousePos);
-                }
-            }
-            break;
+    case EVENT_FRAME:
+        HandleFrameUpdate(event);
+        break;
 
-        case EVENT_MOUSE_MOVE:
-            if (m_spawningType != OBJECT_NULL || m_teleportActive || m_lightningActive)
-            {
-                return false;
-            }
-            break;
+    case EVENT_KEY_DOWN:
+        if (event.GetData<KeyEventData>()->key == KEY(c)
+            && (event.kmodState & KMOD_CTRL) != 0)
+            if (IsActive())
+                return !HandleCopy(event.mousePos);
 
-        case EVENT_FRAME:
-            HandleFrameUpdate(event);
-            break;
-
-        case EVENT_KEY_DOWN:
-            if (event.GetData<KeyEventData>()->key == KEY(c) && (event.kmodState & KMOD_CTRL) != 0)
-            {
-                if (IsActive())
-                {
-                    return !HandleCopy(event.mousePos);
-                }
-            }
-
-        default:
-            break;
+    default:
+        break;
     }
     return true;
 }
@@ -456,12 +426,14 @@ void CDebugMenu::HandleFrameUpdate(const Event &event)
 {
     std::string str = "-";
     Math::Vector pos;
-    int obj;
+    int obj = -1;   //fix false lint detection : Local variable uninitialized
     if ((obj = m_engine->DetectObject(event.mousePos, pos, true)) != -1)
-        str = StrUtils::Format("pos=% 3.2f; % 3.2f    height=% 3.2f    objId=% 4d", pos.x, pos.z, pos.y, obj);
+        str = StrUtils::Format("pos=% 3.2f; % 3.2f    height=% 3.2f    objId=% 4d",
+            pos.x, pos.z, pos.y, obj);
 
     CLabel* pl = static_cast<CLabel*>(m_interface->SearchControl(EVENT_LABEL19));
-    if (pl == nullptr) return;
+    if (pl == nullptr)
+        return;
     pl->SetName(str.c_str());
 }
 

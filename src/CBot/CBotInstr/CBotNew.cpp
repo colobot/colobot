@@ -51,7 +51,8 @@ CBotNew::~CBotNew()
 CBotInstr* CBotNew::Compile(CBotToken* &p, CBotCStack* pStack)
 {
     CBotToken* pp = p;
-    if (!IsOfType(p, ID_NEW)) return nullptr;
+    if (!IsOfType(p, ID_NEW))
+        return nullptr;
 
     // verifies that the token is a class name
     if (p->GetType() != TokenTypVar)
@@ -81,7 +82,7 @@ CBotInstr* CBotNew::Compile(CBotToken* &p, CBotCStack* pStack)
     CBotCStack* pStk = pStack->TokenStack();
     {
         // check if there are parameters
-        CBotVar*    ppVars[1000];
+        CBotVar*    ppVars[1000] = {nullptr}; // fake init to mute lint
         inst->m_parameters = CompileParams(p, pStk, ppVars);
         if (!pStk->IsOk()) goto error;
 
@@ -136,12 +137,14 @@ bool CBotNew::Execute(CBotStack* &pj)
         if (pile->GetState() == 2)
         {
             CBotStack* pile3 = pile->AddStack();
-            if (!m_exprRetVar->Execute(pile3)) return false;
+            if (!m_exprRetVar->Execute(pile3))
+                return false;
             return pj->Return(pile3);
         }
     }
 
-    if (pile->IfStep()) return false;
+    if (pile->IfStep())
+        return false;
 
     CBotStack*    pile1 = pj->AddStack2();  //secondary stack
 
@@ -186,21 +189,25 @@ bool CBotNew::Execute(CBotStack* &pj)
         // and places the values on the stack
         // to be interrupted at any time
 
-        if (p != nullptr) while ( true)
-        {
-            pile2 = pile2->AddStack();  // space on the stack for the result
-            if (pile2->GetState() == 0)
+        if (p != nullptr)
+            while ( true)
             {
-                if (!p->Execute(pile2)) return false;   // interrupted here?
-                pile2->SetState(1);
+                pile2 = pile2->AddStack();  // space on the stack for the result
+                if (pile2->GetState() == 0)
+                {
+                    if (!p->Execute(pile2))
+                        return false;   // interrupted here?
+                    pile2->SetState(1);
+                }
+                ppVars[i++] = pile2->GetVar();
+                p = p->GetNext();
+                if ( p == nullptr)
+                    break;
             }
-            ppVars[i++] = pile2->GetVar();
-            p = p->GetNext();
-            if ( p == nullptr) break;
-        }
         ppVars[i] = nullptr;
 
-        if ( !pClass->ExecuteMethode(m_nMethodeIdent, pThis, ppVars, CBotTypResult(CBotTypVoid), pile2, &m_vartoken)) return false;    // interrupt
+        if ( !pClass->ExecuteMethode(m_nMethodeIdent, pThis, ppVars, CBotTypResult(CBotTypVoid), pile2, &m_vartoken))
+            return false;    // interrupt
 
         pThis->ConstructorSet();    // indicates that the constructor has been called
     }
@@ -221,10 +228,12 @@ bool CBotNew::Execute(CBotStack* &pj)
 ////////////////////////////////////////////////////////////////////////////////
 void CBotNew::RestoreState(CBotStack* &pj, bool bMain)
 {
-    if (!bMain) return;
+    if (!bMain)
+        return;
 
     CBotStack*    pile = pj->RestoreStack(this);    //primary stack
-    if (pile == nullptr) return;
+    if (pile == nullptr)
+        return;
 
     if (m_exprRetVar != nullptr)    // new Class().method()
     {
@@ -244,9 +253,7 @@ void CBotNew::RestoreState(CBotStack* &pj, bool bMain)
     // create the variable "this" pointer type to the object
 
     if ( pile->GetState()==0)
-    {
         return;
-    }
 
     CBotVar* pThis = pile1->GetVar();   // find the pointer
     pThis->SetUniqNum(-2);
@@ -266,20 +273,23 @@ void CBotNew::RestoreState(CBotStack* &pj, bool bMain)
         // and places the values on the stack
         // to be interrupted at any time
 
-        if (p != nullptr) while ( true)
-        {
-            pile2 = pile2->RestoreStack();  // space on the stack for the result
-            if (pile2 == nullptr) return;
-
-            if (pile2->GetState() == 0)
+        if (p != nullptr)
+            while ( true)
             {
-                p->RestoreState(pile2, bMain);  // interrupt here!
-                return;
+                pile2 = pile2->RestoreStack();  // space on the stack for the result
+                if (pile2 == nullptr)
+                    return;
+
+                if (pile2->GetState() == 0)
+                {
+                    p->RestoreState(pile2, bMain);  // interrupt here!
+                    return;
+                }
+                ppVars[i++] = pile2->GetVar();
+                p = p->GetNext();
+                if ( p == nullptr)
+                    break;
             }
-            ppVars[i++] = pile2->GetVar();
-            p = p->GetNext();
-            if ( p == nullptr) break;
-        }
         ppVars[i] = nullptr;
 
         pClass->RestoreMethode(m_nMethodeIdent, &m_vartoken, pThis, ppVars, pile2);        // interrupt here!

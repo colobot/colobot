@@ -61,19 +61,19 @@ SystemDialogResult CSystemUtils::ConsoleSystemDialog(SystemDialogType type, cons
 {
     switch (type)
     {
-        case SDT_INFO:
-            std::cout << "INFO: ";
-            break;
-        case SDT_WARNING:
-            std::cout << "WARNING:";
-            break;
-        case SDT_ERROR:
-            std::cout << "ERROR: ";
-            break;
-        case SDT_YES_NO:
-        case SDT_OK_CANCEL:
-            std::cout << "QUESTION: ";
-            break;
+    case SDT_INFO:
+        std::cout << "INFO: ";
+        break;
+    case SDT_WARNING:
+        std::cout << "WARNING:";
+        break;
+    case SDT_ERROR:
+        std::cout << "ERROR: ";
+        break;
+    case SDT_YES_NO:
+    case SDT_OK_CANCEL:
+        std::cout << "QUESTION: ";
+        break;
     }
 
     std::cout << message << std::endl;
@@ -87,56 +87,56 @@ SystemDialogResult CSystemUtils::ConsoleSystemDialog(SystemDialogType type, cons
     {
         switch (type)
         {
-            case SDT_INFO:
-            case SDT_WARNING:
-            case SDT_ERROR:
-                std::cout << "Press ENTER to continue";
-                break;
+        case SDT_INFO:
+        case SDT_WARNING:
+        case SDT_ERROR:
+            std::cout << "Press ENTER to continue";
+            break;
 
-            case SDT_YES_NO:
-                std::cout << "Type 'Y' for Yes or 'N' for No";
-                break;
+        case SDT_YES_NO:
+            std::cout << "Type 'Y' for Yes or 'N' for No";
+            break;
 
-            case SDT_OK_CANCEL:
-                std::cout << "Type 'O' for OK or 'C' for Cancel";
-                break;
+        case SDT_OK_CANCEL:
+            std::cout << "Type 'O' for OK or 'C' for Cancel";
+            break;
         }
 
         std::getline(std::cin, line);
 
         switch (type)
         {
-            case SDT_INFO:
-            case SDT_WARNING:
-            case SDT_ERROR:
+        case SDT_INFO:
+        case SDT_WARNING:
+        case SDT_ERROR:
+            done = true;
+            break;
+
+        case SDT_YES_NO:
+            if (line == "Y" || line == "y")
+            {
+                result = SDR_YES;
                 done = true;
-                break;
+            }
+            else if (line == "N" || line == "n")
+            {
+                result = SDR_NO;
+                done = true;
+            }
+            break;
 
-            case SDT_YES_NO:
-                if (line == "Y" || line == "y")
-                {
-                    result = SDR_YES;
-                    done = true;
-                }
-                else if (line == "N" || line == "n")
-                {
-                    result = SDR_NO;
-                    done = true;
-                }
-                break;
-
-            case SDT_OK_CANCEL:
-                if (line == "O" || line == "o")
-                {
-                    done = true;
-                    result = SDR_OK;
-                }
-                else if (line == "C" || line == "c")
-                {
-                    done = true;
-                    result = SDR_CANCEL;
-                }
-                break;
+        case SDT_OK_CANCEL:
+            if (line == "O" || line == "o")
+            {
+                done = true;
+                result = SDR_OK;
+            }
+            else if (line == "C" || line == "c")
+            {
+                done = true;
+                result = SDR_CANCEL;
+            }
+            break;
         }
     }
 
