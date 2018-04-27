@@ -281,9 +281,6 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
     case PT_SHOTW:
         m_speed = 1.0f/1.0f;
         break;
-    case PT_BURNT:
-        BurnStart();
-        break;
 
     case PT_WPCHECK:
         m_speed = 1.0f/8.0f;
@@ -321,6 +318,8 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
         FallStart();
         return true;
     case PT_BURNT:
+        BurnStart();
+        // don't break!
     case PT_BURNO:
         m_speed = 1.0f/15.0f;
 
@@ -340,6 +339,8 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
         }
         m_engine->DeleteShadowSpot(m_object->GetObjectRank(0));
         break;
+    default:
+        ;   // cf: error: 4 enumeration values not handled in switch: 'PT_NULL', 'PT_EGG', 'PT_WIN'... [-Werror,-Wswitch]
     }
     if ( m_type != PT_EGG  &&
          m_type != PT_WIN  &&
