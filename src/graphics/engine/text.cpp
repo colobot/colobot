@@ -691,6 +691,7 @@ void CText::DrawString(const std::string &text, std::vector<FontMetaChar>::itera
                        float size, Math::IntPoint pos, int width, int eol, Color color)
 {
     m_engine->SetState(ENG_RSTATE_TEXT);
+    m_engine->SetWindowCoordinates();
 
     int start = pos.x;
 
@@ -776,6 +777,7 @@ void CText::DrawString(const std::string &text, std::vector<FontMetaChar>::itera
         color = Color(1.0f, 0.0f, 0.0f);
         DrawCharAndAdjustPos(ch, font, size, pos, color);
     }
+    m_engine->SetInterfaceCoordinates();
 }
 
 void CText::StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &chars)
@@ -847,10 +849,12 @@ void CText::DrawString(const std::string &text, FontType font,
 
     std::vector<UTF8Char> chars;
     StringToUTFCharList(text, chars);
+    m_engine->SetWindowCoordinates();
     for (auto it = chars.begin(); it != chars.end(); ++it)
     {
         DrawCharAndAdjustPos(*it, font, size, pos, color);
     }
+    m_engine->SetInterfaceCoordinates();
 }
 
 void CText::DrawHighlight(FontMetaChar hl, Math::IntPoint pos, Math::IntPoint size)
@@ -902,9 +906,7 @@ void CText::DrawHighlight(FontMetaChar hl, Math::IntPoint pos, Math::IntPoint si
         VertexCol(Math::Vector(p2.x, p1.y, 0.0f), grad[1])
     };
 
-    m_engine->SetWindowCoordinates();
     m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, quad, 4);
-    m_engine->SetInterfaceCoordinates();
     m_engine->AddStatisticTriangle(2);
 
     m_device->SetTextureEnabled(0, true);
@@ -963,9 +965,7 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::I
             Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(uv2.x, uv1.y))
         };
 
-        m_engine->SetWindowCoordinates();
         m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, quad, 4, color);
-        m_engine->SetInterfaceCoordinates();
         m_engine->AddStatisticTriangle(2);
 
         pos.x += width;
@@ -1008,9 +1008,7 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::I
         };
 
         m_device->SetTexture(0, tex.id);
-        m_engine->SetWindowCoordinates();
         m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, quad, 4, color);
-        m_engine->SetInterfaceCoordinates();
         m_engine->AddStatisticTriangle(2);
 
         pos.x += tex.charSize.x * width;
