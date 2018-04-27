@@ -344,6 +344,9 @@ protected:
     FontType     m_lastFontType;
     int          m_lastFontSize;
     CachedFont*  m_lastCachedFont;
+
+    class CQuadBatch;
+    std::unique_ptr<CQuadBatch> m_quadBatch;
 };
 
 
