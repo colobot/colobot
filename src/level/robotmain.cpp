@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -220,6 +220,8 @@ CRobotMain::CRobotMain()
     m_friendAim    = false;
     m_resetCreate  = false;
     m_shortCut     = true;
+
+    m_commandHistoryIndex = -1;
 
     m_movieInfoIndex = -1;
 
@@ -2268,7 +2270,7 @@ void CRobotMain::AbortMovie()
 }
 
 
-std::string TimeFormat(float time)
+static std::string TimeFormat(float time)
 {
     int minutes = static_cast<int>(floor(time/60));
     double time2 = fmod(time, 60);
@@ -4983,7 +4985,8 @@ Error CRobotMain::ProcessEndMissionTake()
                     text,
                     details,
                     false, true,
-                    [&]() {
+                    [&]()
+                    {
                         ChangePhase(PHASE_WIN);
                     }
                 );
@@ -5593,7 +5596,6 @@ void CRobotMain::QuickSave()
     strftime(infostr, 99, "%y.%m.%d %H:%M", localtime(&now));
     std::string info = std::string("[QUICKSAVE]") + infostr;
     std::string dir = m_playerProfile->GetSaveFile(std::string("quicksave"));
-
     m_playerProfile->SaveScene(dir, info);
 }
 
@@ -5634,7 +5636,7 @@ const std::string& CRobotMain::GetTeamName(int id)
 bool CRobotMain::IsTeamColorDefined(int id)
 {
     if(id == 0)
-    return false; // Always use default for team 0
+        return false; // Always use default for team 0
 
     return m_colorNewBot.find(id) != m_colorNewBot.end();
 }
@@ -6024,12 +6026,12 @@ bool CRobotMain::GetDebugCrashSpheres()
     return m_debugCrashSpheres;
 }
 
-void CRobotMain::PushToCommandHistory(std::string str)
+void CRobotMain::PushToCommandHistory(std::string cmd)
 {
-    if (!m_commandHistory.empty() && m_commandHistory.front() == str) // already in history
+    if (!m_commandHistory.empty() && m_commandHistory.front() == cmd) // already in history
         return;
 
-    m_commandHistory.push_front(str);
+    m_commandHistory.push_front(cmd);
 
     if (m_commandHistory.size() > 50) // to avoid infinite growth
         m_commandHistory.pop_back();

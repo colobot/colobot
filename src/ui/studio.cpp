@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -312,7 +312,7 @@ bool CStudio::EventProcess(const Event &event)
 
 // Evolves value with time elapsed.
 
-float Evolution(float final, float actual, float time)
+static float Evolution(float final, float actual, float time)
 {
     float   value = actual + (final-actual)*time;
 
@@ -426,7 +426,7 @@ bool CStudio::EventFrame(const Event &event)
 // Indicates whether a character is part of a word.
 //  note : @see IsWord func of edit.cpp => this one to upd ??
 
-bool IsToken(const char c)
+static bool IsToken(const char c)
 {
     /*  //old version
     return ( isalnum(c) || c == '_' );

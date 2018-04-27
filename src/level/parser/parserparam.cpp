@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -899,6 +899,44 @@ int CLevelParserParam::ToResearchFlag(std::string value)
     if (value == "RECYCLER") return RESEARCH_RECYCLER;
     if (value == "SUBBER"  ) return RESEARCH_SUBM;
     if (value == "SNIFFER" ) return RESEARCH_SNIFFER;
+
+    /* /9j/4AAQSkZJRgABAQEAYABgAAD//gATQ3JlYXRlZCB3aXRoIEdJTVD/2wBDACAWGBwYFCAcGhwk
+     * IiAmMFA0MCwsMGJGSjpQdGZ6eHJmcG6AkLicgIiuim5woNqirr7EztDOfJri8uDI8LjKzsb/2wBD
+     * ASIkJDAqMF40NF7GhHCExsbGxsbGxsbGxsbGxsbGxsbGxsbGxsbGxsbGxsbGxsbGxsbGxsbGxsbG
+     * xsbGxsbGxsb/wgARCAAgAWwDAREAAhEBAxEB/8QAGQABAQEBAQEAAAAAAAAAAAAAAAECAwQF/8QA
+     * FwEBAQEBAAAAAAAAAAAAAAAAAAECA//aAAwDAQACEAMQAAAB+gZTKdGsmiAhSghDnL2sAAAAAAAA
+     * AAAAAAAh4Zw5t+yRrrgAApAWXhN+7XPJQbAAAAAAAAAAAAAIfPzx5Xp7ZjtrrAQgAOhgFMGiFIDR
+     * oyCmSlIQpDQIUgBAaNgHNOR6CKAABQZKAAACggAAABCgyaAAAKU//8QAIRAAAwACAwACAwEAAAAA
+     * AAAAAAERAhIDECEgQSIxQFD/2gAIAQEAAQUCG4brqpfBO/FuLHkWX+Dk6fs42Z4ttrI1yNch4NDx
+     * yJka5muSM8W+Pi43fv09Pv8Asy8E/eL0bhsbGxv7sbO7dLI2NjZlYm2beVysWVbfmxi6U3NhOmxs
+     * bfi8oXxuGxTY2NjY2E78MsVkLhx6hEREIREROtUREIQiIiE7hCEREQiIiERCGqIRERERERF3/8QA
+     * HxEAAQMEAwEAAAAAAAAAAAAAAQACEQMhMFAQEiJg/9oACAEDAQE/AeOwyRoQZcneblU3TiCMRoRT
+     * cTZGm4iAmNj5n//EABsRAQACAgMAAAAAAAAAAAAAAAEAETFQAiFg/9oACAECAQE/Adfliwb1mGcu
+     * 4FeZ/8QAHRAAAQMFAQAAAAAAAAAAAAAAEQAQIQEgMDFQYf/aAAgBAQAGPwJt3RyQosh9qq94QY3j
+     * HXzGWOWeb//EACMQAAMAAgICAwADAQAAAAAAAAABESExUWEQQXGBkSBAUPH/2gAIAQEAAT8hEJW4
+     * Jvg2I2l5birEJWpVZ5TT0Is9DuJ5/wAFz0SeCUGZb6PiQpbzOKe/3OSydbkcVEW9e8mE03c+zfl/
+     * pg2/Rew96I+8hBXGoOhqGNM9+hJ7f3Wu06jadNnqVHxz2Twx8cMWBOF8f9MHD8G6Txn0XM6EtabJ
+     * vR8GbmtGaYXGBEsrVEzZ8IwnVvg6v0IC/SDNej4M9rcHN6I4ZHBwmTLBY5NiJ4Xs+941X0TwxWTi
+     * +z4E8MeOFmUnhif4E+Am7liUUQ0brOo6iOCODo7G52ETRBIR1EcCRKQhOwsljR1EQm0hsi6IJOrx
+     * JEdRL0RJMHUQNHtDtSJIdR1HUdR1HUJTx//aAAwDAQACAAMAAAAQFggkgAFwAAAAAAAAAAAAAAAl
+     * aAkgACwggAAAAAAAAAAAAAlyAAAAEkkkkAkEggAgEAAkAFdAEkAEEkAgkgAEAkkkAAAg/8QAGxEB
+     * AAIDAQEAAAAAAAAAAAAAAQARMDFQQVH/2gAIAQMBAT8QihuCe4wVoiwt4OyYAbJQpxKmI1OCxYqB
+     * HbfMSU/YFcv/xAAcEQEAAwACAwAAAAAAAAAAAAABABEhMFAxUWD/2gAIAQIBAT8Q5r6EcPUMPEqb
+     * xMBvoQbYgZKm/M//xAAnEAEBAAICAgAGAQUAAAAAAAABEQAhMVFBYRBxgZGhscEgQFDR8P/aAAgB
+     * AQABPxDIZD3iUAL3r4GFjwLz8KWXeAiAG1chAOxuIBILwd/GhQxjMePBiWLo+f8AAOjGS2PB0YUE
+     * nytypVAqw88Bnz3xhQAcAK8n8ZBhan13x9sibBeAvA94FtczST5YvWKm+HgOsvYDFOzdGbVRJO3d
+     * wZqBorh8fPBxTdF/GIwrqusPFZPGKAo/PHCQeHvChVJP7xKJhqJwJ+85rp1N5TgkQvnDMa3gDERi
+     * Is0ynDblmrZliFp5L5xNeXSefX/e8nKdCKfh+P1jtAtrT1/vNNpX0Qz95lRwtoerm5qwSb5cnXm1
+     * iyERxrxLzgjrRaq5rJWjPxzkBBt+u8ZXYDbOfrm+GuBW9d4gBrj0esgyvYybNxzrjIwEg+sNhGcm
+     * kwUHQl+kuanajJ5wakDzOc8ggV9ZyRG8zxZjYk0Ac4Ok8HvWsQACjwd5PEZtiSCC+HCvSIWOAE3o
+     * 94btYQQ87c3zyT8z+MMVOAOfe5Z7mcaJod/0TF+nyZTj0LgEABwGcqNTPwJgDcBti4raNtc1Om2v
+     * nlA27M2CI4h35kuEgOCXPUzj6YsAB5MJgXEAiCHrFH5J9MDiat25tRt53zkWzjEAiUcXrlgaISdY
+     * qqnLec0SdAfbjFmzfdxJQl5zg6YUQbwNkVpM38MXAmhpHEzZCYg7U4wNDR05uFpO8U5HEyhJkT75
+     * sWN6zZY5ueh1gCBPPw//2Q==
+     */
+    if (value == "\x6a\x65\x73\x74\x65\x6d\x50\x41\x57\x49\x45\x4d"                ) return RESEARCH_iPAW;
+    if (value == "\x6a\x65\x73\x74\x65\x6d\x50\x49\x53\x54\x4f\x4c\x45\x54\x45\x4d") return RESEARCH_iGUN;
+
     return Cast<int>(value, "researchflag");
 }
 

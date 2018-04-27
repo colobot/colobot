@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -70,7 +70,7 @@ void CSignalHandlers::SignalHandler(int sig)
 #include <cstdlib>
 #include <memory>
 #include <cxxabi.h>
-std::string demangle(const char* name)
+static std::string demangle(const char* name)
 {
     int status = 0; //init to mute lint
     std::unique_ptr<char[], void(*)(void*)> result {
@@ -83,7 +83,7 @@ std::string demangle(const char* name)
 #else
 // For MSVC and others
 // In MSVC typeinfo(e).name() should be already demangled
-std::string demangle(const char* name)
+static std::string demangle(const char* name)
 {
     return name;
 }

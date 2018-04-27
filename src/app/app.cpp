@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -463,10 +463,10 @@ bool CApplication::Create()
         m_sound = MakeUnique<CALSound>();
     else
         m_sound = MakeUnique<CSoundInterface>();
-#else
+#else   //OPENAL_SOUND
     GetLogger()->Info("No sound support.\n");
     m_sound = MakeUnique<CSoundInterface>();
-#endif
+#endif  //OPENAL_SOUND
 
     m_sound->Create();
 
@@ -1612,6 +1612,10 @@ char CApplication::GetLanguageChar() const
         langChar = 'E';
         break;
 
+    case LANGUAGE_CZECH:
+        langChar = 'C';
+        break;
+
     case LANGUAGE_GERMAN:
         langChar = 'D';
         break;
@@ -1661,6 +1665,8 @@ void CApplication::SetLanguage(Language language)
 
             if (     strncmp(envLang,"en",2) == 0)
                 m_language = LANGUAGE_ENGLISH;
+            else if (strncmp(envLang,"cs",2) == 0)
+                m_language = LANGUAGE_CZECH;
             else if (strncmp(envLang,"de",2) == 0)
                 m_language = LANGUAGE_GERMAN;
             else if (strncmp(envLang,"fr",2) == 0)
@@ -1682,6 +1688,10 @@ void CApplication::SetLanguage(Language language)
     {
     default:
         locale = "";
+        break;
+
+    case LANGUAGE_CZECH:
+        locale = "cs_CZ.utf8";
         break;
 
     case LANGUAGE_ENGLISH:
@@ -1769,12 +1779,13 @@ void CApplication::PlayForceFeedbackEffect(float strength, int length)
 
     GetLogger()->Trace("Force feedback! length = %d ms, strength = %.2f\n", length, strength);
     if (SDL_HapticRumblePlay(m_private->haptic, strength, length) != 0)
+    {
         GetLogger()->Debug("Failed to play haptic effect: %s\n", SDL_GetError());
+    }
 }
 
 void CApplication::StopForceFeedbackEffect()
 {
-    if (m_private->haptic == nullptr)
-        return;
+    if (m_private->haptic == nullptr) return;
     SDL_HapticRumbleStop(m_private->haptic);
 }

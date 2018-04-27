@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,6 +25,8 @@
 #include <cstdlib>
 
 namespace CBot
+{
+namespace
 {
 const float PI = 3.14159265358979323846f;
 
@@ -168,6 +170,8 @@ bool rTrunc(CBotVar* var, CBotVar* result, int& exception, void* user)
     result->SetValFloat(trunc(value));
     return true;
 }
+
+} // namespace
 
 void InitMathFunctions()
 {

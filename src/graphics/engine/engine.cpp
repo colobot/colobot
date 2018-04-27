@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -2371,7 +2371,7 @@ bool CEngine::LoadAllTextures()
     return ok;
 }
 
-bool IsExcludeColor(const Math::Point *exclude, const int x, const int y)
+static bool IsExcludeColor(const Math::Point *exclude, const int x, const int y)
 {
     int i = 0;
     while ( exclude[i+0].x != 0.0f || exclude[i+0].y != 0.0f ||

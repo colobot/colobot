@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -48,14 +48,6 @@ CAutoKid::~CAutoKid()
         m_sound->AddEnvelope(m_soundChannel, 0.0f, 1.0f, 1.0f, SOPER_STOP);
         m_soundChannel = -1;
     }
-}
-
-
-// Destroys the object.
-
-void CAutoKid::DeleteObject(bool all)
-{
-    CAuto::DeleteObject(all);
 }
 
 
@@ -196,12 +188,4 @@ bool CAutoKid::EventProcess(const Event &event)
     }
 
     return true;
-}
-
-
-// Returns an error due the state of the automation.
-
-Error CAutoKid::GetError()
-{
-    return ERR_OK;
 }

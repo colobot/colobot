@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -26,6 +26,9 @@
 
 using namespace CBot;
 
+namespace
+{
+
 CBotTypResult cMessage(CBotVar* &var, void* user)
 {
     if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
@@ -45,6 +48,8 @@ bool rMessage(CBotVar* var, CBotVar* result, int& exception, void* user)
 
     return true;
 }
+
+} // namespace
 
 int main(int argc, char* argv[])
 {

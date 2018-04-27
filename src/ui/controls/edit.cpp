@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -46,7 +46,8 @@
 
 namespace Ui
 {
-
+namespace
+{
 const float MARGX           = (3.75f/640.0f);
 const float MARGY           = (3.75f/480.0f);
 const float MARGYS          = (2.75f/480.0f);
@@ -104,6 +105,8 @@ bool IsSep(const char character)
     if ( IsSpace(character) )  return false;
     return !IsWord(character);
 }
+
+} // namespace
 
 //! Object's constructor.
 CEdit::CEdit()
@@ -1196,7 +1199,7 @@ void CEdit::Draw()
 
 // Draw an image part.
 
-std::string PrepareImageFilename(std::string name)
+static std::string PrepareImageFilename(std::string name)
 {
     std::string filename;
     filename = name + ".png";
@@ -1462,7 +1465,7 @@ std::size_t CEdit::GetTextLength()const
 // Returns a name in a command.
 // \x nom1 nom2 nom3;
 
-std::string GetNameParam(std::string cmd, int rank)
+static std::string GetNameParam(std::string cmd, int rank)
 {
     std::vector<std::string> results;
     boost::split(results, cmd, boost::is_any_of(" ;"));
@@ -1478,7 +1481,7 @@ std::string GetNameParam(std::string cmd, int rank)
 // Returns a number of a command.
 // \x nom n1 n2;
 
-int GetValueParam(std::string cmd, int rank)
+static int GetValueParam(std::string cmd, int rank)
 {
     std::vector<std::string> results;
     boost::split(results, cmd, boost::is_any_of(" ;"));
