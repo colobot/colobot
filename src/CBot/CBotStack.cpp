@@ -68,11 +68,10 @@ CBotStack* CBotStack::AllocateStack()
 
     CBotStack* pp = p;
     pp += MAXSTACK;
-    int i;
-    for ( i = 0 ; i< 10 ; i++ )
+    for (short i = 0 ; i< 10 ; ++i )
     {
         pp->m_bOver = true;
-        pp ++;
+        ++pp;
     }
 
     m_error = CBotNoErr;    // avoids deadlocks because m_error is static
@@ -82,8 +81,10 @@ CBotStack* CBotStack::AllocateStack()
 ////////////////////////////////////////////////////////////////////////////////
 void CBotStack::Delete()
 {
-    if (m_next != nullptr) m_next->Delete();
-    if (m_next2 != nullptr) m_next2->Delete();
+    if (m_next != nullptr)
+        m_next->Delete();
+    if (m_next2 != nullptr)
+        m_next2->Delete();
 
     if (m_prev != nullptr)
     {
@@ -787,7 +788,8 @@ bool CBotStack::RestoreState(FILE* pf, CBotStack* &pStack)
     if ( w == 0 )
         return true; // 0 - terminator
 
-    if (pStack == nullptr) pStack = AddStack();
+    if (pStack == nullptr)
+        pStack = AddStack();
 
     if ( w == 2 ) // 2 - m_next2
     {

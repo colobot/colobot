@@ -1258,14 +1258,14 @@ void CRobotMain::ExecuteCmd(const std::string& cmd)
             return;
         }
 
-        int camtype;
+        int camtype = 0; //fake init to mute lint
         if (sscanf(cmd.c_str(), "camtype %d", &camtype) > 0)
         {
             m_camera->SetType(static_cast<Gfx::CameraType>(camtype));
             return;
         }
 
-        float camspeed;
+        float camspeed = .0; //fake init to mute lint
         if (sscanf(cmd.c_str(), "camspeed %f", &camspeed) > 0)
         {
             m_camera->SetCameraSpeed(camspeed);
@@ -1426,7 +1426,7 @@ void CRobotMain::ExecuteCmd(const std::string& cmd)
         return;
     }
 
-    float speed;
+    float speed = .0; //fake init to mute lint
     if (sscanf(cmd.c_str(), "speed %f", &speed) > 0)
     {
         SetSpeed(speed);
@@ -1619,11 +1619,9 @@ void CRobotMain::StartDisplayVisit(EventType event)
 
     if (event == EVENT_NULL)  // visit by keyboard shortcut?
     {
-        int i;
+        int i = Ui::MAXDTLINE;
         if (m_visitLast != EVENT_NULL)  // already a current visit?
             i = m_visitLast-EVENT_DT_VISIT0;
-        else
-            i = Ui::MAXDTLINE;
 
         // Seeks the last.
         for (int j = 0; j < Ui::MAXDTLINE; j++)
@@ -2274,7 +2272,7 @@ static std::string TimeFormat(float time)
 {
     int minutes = static_cast<int>(floor(time/60));
     double time2 = fmod(time, 60);
-    double seconds;
+    double seconds = .0; //fake init to mute lint
     double fraction = modf(time2, &seconds)*100;
     std::ostringstream sstream;
     sstream << std::setfill('0') << std::setw(2) << minutes << ":" << std::setfill('0') << std::setw(2) << floor(seconds) << "." << std::setfill('0') << std::setw(2) << floor(fraction);
@@ -4317,13 +4315,11 @@ void CRobotMain::FrameShowLimit(float rTime)
             continue;
         }
 
-        float factor;
+        float factor = 1.0f;
         if (m_showLimit[i].time < 1.0f)
             factor = m_showLimit[i].time;
         else if (m_showLimit[i].time > m_showLimit[i].duration-1.0f)
             factor = m_showLimit[i].duration-m_showLimit[i].time;
-        else
-            factor = 1.0f;
 
         float speed = 0.4f-m_showLimit[i].radius*0.001f;
         if (speed < 0.1f)
@@ -4462,9 +4458,7 @@ void CRobotMain::IOWriteObject(CLevelParserLine* line, CObject* obj, const std::
     line->AddParam("zoom", MakeUnique<CLevelParserParam>(obj->GetScale()));
 
     if (obj->Implements(ObjectInterfaceType::Old))
-    {
         line->AddParam("option", MakeUnique<CLevelParserParam>(obj->GetOption()));
-    }
 
     if (obj->Implements(ObjectInterfaceType::Controllable))
     {
@@ -4556,7 +4550,10 @@ bool CRobotMain::IOWriteScene(std::string filename, std::string filecbot, std::s
     line->AddParam("bits", MakeUnique<CLevelParserParam>(static_cast<int>(m_researchDone[0])));
     levelParser.AddLine(std::move(line));
 
-    float sleep, delay, magnetic, progress;
+    float   sleep    = .0,  //fake init to mute lint
+            delay    = .0,  //fake init to mute lint
+            magnetic = .0,  //fake init to mute lint
+            progress = .0;  //fake init to mute lint
     if (m_lightning->GetStatus(sleep, delay, magnetic, progress))
     {
         line = MakeUnique<CLevelParserLine>("BlitzMode");
@@ -4799,7 +4796,7 @@ CObject* CRobotMain::IOReadScene(std::string filename, std::string filecbot)
     FILE* file = CBot::fOpen((CResourceManager::GetSaveLocation() + "/" + filecbot).c_str(), "rb");
     if (file != nullptr)
     {
-        long version;
+        long version = 0;  //fake init to mute lint
         CBot::fRead(&version, sizeof(long), 1, file);  // version of COLOBOT
         if (version == 1)
         {
@@ -5307,7 +5304,7 @@ void CRobotMain::UpdateSpeedLabel()
             pb->ClearState(Ui::STATE_VISIBLE);
         else
         {
-            char text[10];
+            char text[10] = {0}; //fake init to mute lint
             sprintf(text, "x%.1f", speed);
             pb->SetName(text);
             pb->SetState(Ui::STATE_VISIBLE);

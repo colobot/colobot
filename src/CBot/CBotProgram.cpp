@@ -69,7 +69,8 @@ bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& 
                          // but without destroying the object
 
     m_classes.clear();
-    for (CBotFunction* f : m_functions) delete f;
+    for (CBotFunction* f : m_functions)
+        delete f;
     m_functions.clear();
 
     externFunctions.clear();
@@ -77,7 +78,8 @@ bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& 
 
     // Step 1. Process the code into tokens
     auto tokens = CBotToken::CompileTokens(program);
-    if (tokens == nullptr) return false;
+    if (tokens == nullptr)
+        return false;
 
     auto pStack = std::unique_ptr<CBotCStack>(new CBotCStack(nullptr));
     CBotToken* p = tokens.get()->GetNext();                 // skips the first token (separator)
@@ -88,7 +90,8 @@ bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& 
     // Step 2. Find all function and class definitions
     while ( pStack->IsOk() && p != nullptr && p->GetType() != 0)
     {
-        if ( IsOfType(p, ID_SEP) ) continue;                // semicolons lurking
+        if ( IsOfType(p, ID_SEP) )
+            continue;                // semicolons lurking
 
         if ( p->GetType() == ID_CLASS ||
             ( p->GetType() == ID_PUBLIC && p->GetNext()->GetType() == ID_CLASS ))
@@ -111,7 +114,8 @@ bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& 
     if ( !pStack->IsOk() )
     {
         m_error = pStack->GetError(m_errorStart, m_errorEnd);
-        for (CBotFunction* f : m_functions) delete f;
+        for (CBotFunction* f : m_functions)
+            delete f;
         m_functions.clear();
         return false;
     }
@@ -121,7 +125,8 @@ bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& 
     p  = tokens.get()->GetNext();                             // returns to the beginning
     while ( pStack->IsOk() && p != nullptr && p->GetType() != 0 )
     {
-        if ( IsOfType(p, ID_SEP) ) continue;                // semicolons lurking
+        if ( IsOfType(p, ID_SEP) )
+            continue;                // semicolons lurking
 
         if ( p->GetType() == ID_CLASS ||
             ( p->GetType() == ID_PUBLIC && p->GetNext()->GetType() == ID_CLASS ))
@@ -131,8 +136,10 @@ bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& 
         else
         {
             CBotFunction::Compile(p, pStack.get(), *next);
-            if ((*next)->IsExtern()) externFunctions.push_back((*next)->GetName()/* + next->GetParams()*/);
-            if ((*next)->IsPublic()) CBotFunction::AddPublic(*next);
+            if ((*next)->IsExtern())
+                externFunctions.push_back((*next)->GetName()/* + next->GetParams()*/);
+            if ((*next)->IsPublic())
+                CBotFunction::AddPublic(*next);
             (*next)->m_pProg = this;                           // keeps pointers to the module
             ++next;
         }
@@ -141,7 +148,8 @@ bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& 
     if ( !pStack->IsOk() )
     {
         m_error = pStack->GetError(m_errorStart, m_errorEnd);
-        for (CBotFunction* f : m_functions) delete f;
+        for (CBotFunction* f : m_functions)
+            delete f;
         m_functions.clear();
     }
 
@@ -169,7 +177,8 @@ bool CBotProgram::Start(const std::string& name)
 bool CBotProgram::GetPosition(const std::string& name, std::size_t& start, std::size_t& stop, CBotGet modestart, CBotGet modestop)
 {
     auto it = std::find_if(m_functions.begin(), m_functions.end(), [&name](CBotFunction* x) { return x->GetName() == name; });
-    if (it == m_functions.end()) return false;
+    if (it == m_functions.end())
+        return false;
 
     (*it)->GetPosition(start, stop, modestart, modestop);
     return true;
@@ -186,7 +195,8 @@ bool CBotProgram::Run(void* pUser, int timer)
     m_error = CBotNoErr;
 
     m_stack->SetUserPtr(pUser);
-    if ( timer >= 0 ) m_stack->SetTimer(timer); // TODO: Check if changing order here fixed ipf()
+    if ( timer >= 0 )
+        m_stack->SetTimer(timer); // TODO: Check if changing order here fixed ipf()
     m_stack->Reset();                         // reset the possible previous error, and resets the timer
 
     m_stack->SetProgram(this);                     // bases for routines
@@ -194,10 +204,8 @@ bool CBotProgram::Run(void* pUser, int timer)
     // resumes execution on the top of the stack
     bool ok = m_stack->Execute();
     if (ok)
-    {
         // returns to normal execution
         ok = m_entryPoint->Execute(nullptr, m_stack, m_thisVar);
-    }
 
     // completed on a mistake?
     if (ok || !m_stack->IsOk())
@@ -229,7 +237,8 @@ bool CBotProgram::GetRunPos(std::string& functionName, std::size_t& start, std::
 {
     functionName = "";
     start = end = 0;
-    if (m_stack == nullptr) return false;
+    if (m_stack == nullptr)
+        return false;
 
     m_stack->GetRunPos(functionName, start, end);
     return true;
@@ -239,7 +248,8 @@ bool CBotProgram::GetRunPos(std::string& functionName, std::size_t& start, std::
 CBotVar* CBotProgram::GetStackVars(std::string& functionName, int level)
 {
     functionName.clear();
-    if (m_stack == nullptr) return nullptr;
+    if (m_stack == nullptr)
+        return nullptr;
 
     return m_stack->GetStackVars(functionName, level);
 }
@@ -284,9 +294,8 @@ const std::list<CBotFunction*>& CBotProgram::GetFunctions()
 bool CBotProgram::ClassExists(std::string name)
 {
     for (CBotClass* p : m_classes)
-    {
-        if ( p->GetName() == name ) return true;
-    }
+        if ( p->GetName() == name )
+            return true;
 
     return false;
 }
@@ -294,15 +303,20 @@ bool CBotProgram::ClassExists(std::string name)
 ////////////////////////////////////////////////////////////////////////////////
 static CBotTypResult cSizeOf( CBotVar* &pVar, void* pUser )
 {
-    if ( pVar == nullptr ) return CBotTypResult( CBotErrLowParam );
+    if ( pVar == nullptr )
+        return CBotTypResult( CBotErrLowParam );
     if ( pVar->GetType() != CBotTypArrayPointer )
-                        return CBotTypResult( CBotErrBadParam );
+        return CBotTypResult( CBotErrBadParam );
     return CBotTypResult( CBotTypInt );
 }
 
 static bool rSizeOf( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 {
-    if ( pVar == nullptr ) { ex = CBotErrLowParam; return true; }
+    if ( pVar == nullptr )
+    {
+        ex = CBotErrLowParam;
+        return true;
+    }
 
     int i = 0;
     pVar = pVar->GetItemList();
@@ -322,7 +336,10 @@ bool CBotProgram::AddFunction(const std::string& name,
                               bool rExec(CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser),
                               CBotTypResult rCompile(CBotVar*& pVar, void* pUser))
 {
-    return m_externalCalls->AddFunction(name, std::unique_ptr<CBotExternalCall>(new CBotExternalCallDefault(rExec, rCompile)));
+    return m_externalCalls->AddFunction(
+        name,
+        std::unique_ptr<CBotExternalCall>(
+            new CBotExternalCallDefault(rExec, rCompile)));
 }
 
 bool CBotProgram::DefineNum(const std::string& name, long val)
@@ -334,18 +351,22 @@ bool CBotProgram::DefineNum(const std::string& name, long val)
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotProgram::SaveState(FILE* pf)
 {
-    if (!WriteWord( pf, CBOTVERSION)) return false;
-
+    if (!WriteWord( pf, CBOTVERSION))
+        return false;
 
     if (m_stack != nullptr )
     {
-        if (!WriteWord( pf, 1)) return false;
-        if (!WriteString( pf, m_entryPoint->GetName() )) return false;
-        if (!m_stack->SaveState(pf)) return false;
+        if (!WriteWord( pf, 1))
+            return false;
+        if (!WriteString( pf, m_entryPoint->GetName() ))
+            return false;
+        if (!m_stack->SaveState(pf))
+            return false;
     }
     else
     {
-        if (!WriteWord( pf, 0)) return false;
+        if (!WriteWord( pf, 0))
+            return false;
     }
     return true;
 }
@@ -357,13 +378,18 @@ bool CBotProgram::RestoreState(FILE* pf)
 
     Stop();
 
-    if (!ReadWord( pf, w )) return false;
-    if ( w != CBOTVERSION ) return false;
+    if (!ReadWord( pf, w ))
+        return false;
+    if ( w != CBOTVERSION )
+        return false;
 
-    if (!ReadWord( pf, w )) return false;
-    if ( w == 0 ) return true;
+    if (!ReadWord( pf, w ))
+        return false;
+    if ( w == 0 )
+        return true;
 
-    if (!ReadString( pf, s )) return false;
+    if (!ReadString( pf, s ))
+        return false;
     Start(s);       // point de reprise
 
     if (m_stack != nullptr)
@@ -374,7 +400,8 @@ bool CBotProgram::RestoreState(FILE* pf)
 
     // retrieves the stack from the memory
     m_stack = CBotStack::AllocateStack();
-    if (!m_stack->RestoreState(pf, m_stack)) return false;
+    if (!m_stack->RestoreState(pf, m_stack))
+        return false;
     m_stack->SetProgram(this);                     // bases for routines
 
     // restored some states in the stack according to the structure

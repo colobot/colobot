@@ -54,7 +54,12 @@ public:
         FUNCTION = 2     //!< Function - variable visibility limit
     };
 
-    enum class IsFunction : unsigned short { NO = 0, YES = 1, EXTERNAL_CALL = 2 };
+    enum class IsFunction : unsigned short
+    {
+        NO = 0,
+        YES = 1,
+        EXTERNAL_CALL = 2
+    };
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //! \name Stack memory management
@@ -95,14 +100,21 @@ public:
      * \return Error number
      */
     CBotError GetError(std::size_t& start, std::size_t& end)const
-    { start = m_start; end = m_end; return m_error; }
+    {
+        start = m_start;
+        end = m_end;
+        return m_error;
+    }
 
     /**
      * \brief Get last error
      * \return Error number
      * \see GetError(std::size_t&, std::size_t&) for error position in code
      */
-    CBotError GetError()const { return m_error; }
+    CBotError GetError()const
+    {
+        return m_error;
+    }
 
     /**
      * \brief Check if there was an error
@@ -314,7 +326,10 @@ public:
      *
      * \return Execution state set before interruption by SetState() and IncState()
      */
-    int             GetState()const { return m_state; }
+    int             GetState()const
+    {
+        return m_state;
+    }
     /**
      * \brief Increase the execution state by one
      * \param lim Required amount of "ticks" on the timer required to allow to continue execution. By default allows a little overflow (up to 10 ticks)

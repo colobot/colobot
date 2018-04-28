@@ -40,7 +40,7 @@ CBotTypResult CBotCStack::m_retTyp  = CBotTypResult(0);
 CBotCStack::CBotCStack(CBotCStack* ppapa)
     : m_next(nullptr)
     , m_prev(ppapa)
-    //,   m_start(nullptr)
+    , m_start(0)
     , m_var(nullptr)
     , m_bBlock(ppapa == nullptr)
     , m_listVar(nullptr)
@@ -48,7 +48,7 @@ CBotCStack::CBotCStack(CBotCStack* ppapa)
     if (ppapa == nullptr)
     {
         m_error = CBotNoErr;
-        m_start = 0;
+        //m_start = 0;
         m_end    = 0;
     }
     else

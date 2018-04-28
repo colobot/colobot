@@ -30,7 +30,7 @@ unsigned int StrUtils::HexStringToInt(const std::string& str)
 {
     std::stringstream ss;
     ss << std::hex << str;
-    unsigned int x;
+    unsigned int x = 0; //fake init to mute lint
     ss >> x;
     return x;
 }

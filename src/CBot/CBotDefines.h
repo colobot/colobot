@@ -19,13 +19,31 @@
 
 #pragma once
 
-#define    STACKMEM    1                /// \def preserve memory for the execution stack
-#define    MAXSTACK    990              /// \def stack size reserved
+// FIXME:  with clang, converting "define" to "static const int" there
+//  cause this error :
+//  ==>
+//  ~~/src/CBot/CBotInstr/CBotDefArray.cpp:199:9: error: attempt to use a deleted function
+//         delete pile1->AddStack();                                   // need more indices
+//         ^
+// ~~/src/CBot/CBotStack.h:78:5: note: '~CBotStack' has been explicitly marked deleted here
+//     ~CBotStack() = delete;
 
-#define    MAXARRAYSIZE    9999
+//  try it,removing next slash
+//*
+#define    STACKMEM    1                /// \def preserve memory for the execution stack
+/*/static const int STACKMEM = 1;
+//  */
+
+//#define    MAXSTACK    990              /// \def stack size reserved
+static const int MAXSTACK = 990;
+
+//#define    MAXARRAYSIZE    9999
+static const int MAXARRAYSIZE = 9999;
+
 
 //! Define the current CBot version
-#define    CBOTVERSION    104
+//#define    CBOTVERSION    104
+static const int CBOTVERSION = 104;
 
 // for SetUserPtr when deleting an object
 // \TODO define own types to distinct between different states of objects

@@ -123,13 +123,14 @@ const std::map<EngineMouseType, EngineMouse> MOUSE_TYPES = {
 };
 
 CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
-    : m_app(app),
-      m_systemUtils(systemUtils),
-      m_ambientColor(),
-      m_fogColor(),
-      m_deepView(),
-      m_fogStart(),
-      m_highlightRank()
+    : m_app(app)
+    , m_systemUtils(systemUtils)
+    , m_hfov(1)
+    , m_ambientColor()
+    , m_fogColor()
+    , m_deepView()
+    , m_fogStart()
+    , m_highlightRank()
 {
     m_device = nullptr;
 
@@ -203,7 +204,6 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
     m_editIndentValue = 4;
     m_tracePrecision = 1.0f;
     m_pauseBlurEnabled = true;
-
 
     m_updateGeometry = false;
     m_updateStaticBuffers = false;
@@ -1661,11 +1661,9 @@ void CEngine::UpdateGeometry()
 
 void CEngine::UpdateStaticBuffer(EngineBaseObjDataTier& p4)
 {
-    PrimitiveType type;
+    PrimitiveType type = PRIMITIVE_TRIANGLE_STRIP;
     if (p4.type == ENG_TRIANGLE_TYPE_TRIANGLES)
         type = PRIMITIVE_TRIANGLES;
-    else
-        type = PRIMITIVE_TRIANGLE_STRIP;
 
     if (p4.staticBufferId == 0)
         p4.staticBufferId = m_device->CreateStaticBuffer(type, &p4.vertices[0], p4.vertices.size());
