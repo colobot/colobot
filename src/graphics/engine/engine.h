@@ -1161,8 +1161,8 @@ public:
     //! Updates the scene after a change of parameters
     void            ApplyChange();
 
-    void            ClearDisplayCrashSpheres();
-    void            AddDisplayCrashSpheres(const std::vector<Math::Sphere>& crashSpheres);
+    void            RenderDebugSphere(const Math::Sphere&, const Math::Matrix& transform = Math::Matrix{}, const Color& = Color{0.0f, 0.0f, 1.0f, 1.0f});
+    void            RenderDebugBox(const Math::Vector& mins, const Math::Vector& maxs, const Math::Matrix& transform = Math::Matrix{}, const Color& = Color{0.0f, 0.0f, 1.0f, 1.0f});
 
     void            SetDebugLights(bool debugLights);
     bool            GetDebugLights();
@@ -1228,7 +1228,7 @@ protected:
     void        DrawStats();
     //! Draw mission timer
     void        DrawTimer();
-    void        DrawCrashSpheres();
+    void        RenderPendingDebugDraws();
 
     //! Creates a new tier 2 object (texture)
     EngineBaseObjTexTier&  AddLevel2(EngineBaseObject& p1, const std::string& tex1Name, const std::string& tex2Name);
@@ -1406,6 +1406,13 @@ protected:
 
     Texture         m_shadowMap;
 
+    struct
+    {
+        std::vector<VertexCol> vertices;
+        std::vector<int> firsts;
+        std::vector<int> counts;
+    } m_pendingDebugDraws;
+
     //! Ranks of highlighted objects
     int             m_highlightRank[100];
     //! Highlight visible?
@@ -1479,7 +1486,6 @@ protected:
 
     std::unordered_map<std::string, int> m_staticMeshBaseObjects;
 
-    std::vector<Math::Sphere> m_displayCrashSpheres;
     std::vector<std::vector<VertexCol>> m_displayGoto;
     std::unique_ptr<CImage> m_displayGotoImage;
 

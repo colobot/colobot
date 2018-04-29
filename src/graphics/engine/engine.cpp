@@ -3147,24 +3147,6 @@ void CEngine::ApplyChange()
     }
 }
 
-void CEngine::ClearDisplayCrashSpheres()
-{
-    m_displayCrashSpheres.clear();
-
-    m_debugCrashSpheres = false;
-}
-
-void CEngine::AddDisplayCrashSpheres(const std::vector<Math::Sphere>& crashSpheres)
-{
-    for (const auto& crashSphere : crashSpheres)
-    {
-        m_displayCrashSpheres.push_back(crashSphere);
-    }
-
-    m_debugCrashSpheres = true;
-}
-
-
 /*******************************************************
                       Rendering
  *******************************************************/
@@ -3483,8 +3465,7 @@ void CEngine::Draw3DScene()
 
     m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
 
-    if (m_debugCrashSpheres)
-        DrawCrashSpheres();
+    RenderPendingDebugDraws();
 
     if (m_debugGoto)
     {
@@ -3651,74 +3632,136 @@ void CEngine::DrawCaptured3DScene()
     m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertices, 4);
 }
 
-void CEngine::DrawCrashSpheres()
+void CEngine::RenderDebugSphere(const Math::Sphere& sphere, const Math::Matrix& transform, const Gfx::Color& color)
 {
-    Math::Matrix worldMatrix;
-    worldMatrix.LoadIdentity();
-    m_device->SetTransform(TRANSFORM_WORLD, worldMatrix);
+    static constexpr int LONGITUDE_DIVISIONS = 16;
+    static constexpr int LATITUDE_DIVISIONS = 8;
+    static constexpr int NUM_LINE_STRIPS = 2 + LONGITUDE_DIVISIONS + LATITUDE_DIVISIONS;
+    static constexpr int VERTS_IN_LINE_STRIP = 32;
 
-    SetState(ENG_RSTATE_OPAQUE_COLOR);
+    static std::array<Math::Vector, NUM_LINE_STRIPS * VERTS_IN_LINE_STRIP> verticesTemplate = []{
+        std::array<Math::Vector, NUM_LINE_STRIPS * VERTS_IN_LINE_STRIP> vertices;
 
-    static const int LINE_SEGMENTS = 32;
-    static const int LONGITUDE_DIVISIONS = 16;
-    static const int LATITUDE_DIVISIONS = 8;
+        auto SpherePoint = [&](float latitude, float longitude)
+        {
+            float latitudeAngle = (latitude - 0.5f) * 2.0f * Math::PI;
+            float longitudeAngle = longitude * 2.0f * Math::PI;
+            return Math::Vector(sinf(latitudeAngle) * cosf(longitudeAngle),
+                                cosf(latitudeAngle),
+                                sinf(latitudeAngle) * sinf(longitudeAngle));
+        };
 
-    std::vector<VertexCol> lines((2 + LONGITUDE_DIVISIONS + LATITUDE_DIVISIONS) * LINE_SEGMENTS);
-    std::vector<int> firsts(2 + LONGITUDE_DIVISIONS + LATITUDE_DIVISIONS);
-    std::vector<int> counts(2 + LONGITUDE_DIVISIONS + LATITUDE_DIVISIONS);
-
-    Color color(0.0f, 0.0f, 1.0f);
-
-    auto SpherePoint = [&](float sphereRadius, float latitude, float longitude)
-    {
-        float latitudeAngle = (latitude - 0.5f) * 2.0f * Math::PI;
-        float longitudeAngle = longitude * 2.0f * Math::PI;
-        return Math::Vector(sphereRadius * sinf(latitudeAngle) * cosf(longitudeAngle),
-                            sphereRadius * cosf(latitudeAngle),
-                            sphereRadius * sinf(latitudeAngle) * sinf(longitudeAngle));
-    };
-
-    for (const auto& crashSphere : m_displayCrashSpheres)
-    {
-        int i = 0;
-        int primitive = 0;
+        auto vert = vertices.begin();
 
         for (int longitudeDivision = 0; longitudeDivision <= LONGITUDE_DIVISIONS; ++longitudeDivision)
         {
-            firsts[primitive] = i;
-            counts[primitive] = LINE_SEGMENTS;
-
-            for (int segment = 0; segment < LINE_SEGMENTS; ++segment)
+            for (int segment = 0; segment < VERTS_IN_LINE_STRIP; ++segment)
             {
-                Math::Vector pos = crashSphere.pos;
-                float latitude = static_cast<float>(segment) / LINE_SEGMENTS;
+                float latitude = static_cast<float>(segment) / VERTS_IN_LINE_STRIP;
                 float longitude = static_cast<float>(longitudeDivision) / (LONGITUDE_DIVISIONS);
-                pos += SpherePoint(crashSphere.radius, latitude, longitude);
-                lines[i++] = VertexCol(pos, color);
+                *vert++ = SpherePoint(latitude, longitude);
             }
-
-            primitive++;
         }
 
         for (int latitudeDivision = 0; latitudeDivision <= LATITUDE_DIVISIONS; ++latitudeDivision)
         {
-            firsts[primitive] = i;
-            counts[primitive] = LINE_SEGMENTS;
-
-            for (int segment = 0; segment < LINE_SEGMENTS; ++segment)
+            for (int segment = 0; segment < VERTS_IN_LINE_STRIP; ++segment)
             {
-                Math::Vector pos = crashSphere.pos;
                 float latitude = static_cast<float>(latitudeDivision + 1) / (LATITUDE_DIVISIONS + 2);
-                float longitude = static_cast<float>(segment) / LINE_SEGMENTS;
-                pos += SpherePoint(crashSphere.radius, latitude, longitude);
-                lines[i++] = VertexCol(pos, color);
+                float longitude = static_cast<float>(segment) / VERTS_IN_LINE_STRIP;
+                *vert++ = SpherePoint(latitude, longitude);
             }
-
-            primitive++;
         }
+        return vertices;
+    }();
 
-        m_device->DrawPrimitives(PRIMITIVE_LINE_STRIP, lines.data(), firsts.data(), counts.data(), primitive);
+
+    const int firstDraw = m_pendingDebugDraws.firsts.size();
+    const int firstVert = m_pendingDebugDraws.vertices.size();
+
+    m_pendingDebugDraws.firsts.resize(m_pendingDebugDraws.firsts.size() + NUM_LINE_STRIPS);
+    m_pendingDebugDraws.counts.resize(m_pendingDebugDraws.counts.size() + NUM_LINE_STRIPS);
+    m_pendingDebugDraws.vertices.resize(m_pendingDebugDraws.vertices.size() + verticesTemplate.size());
+
+    for (int i = 0; i < NUM_LINE_STRIPS; ++i)
+    {
+        m_pendingDebugDraws.firsts[i + firstDraw] = firstVert + i * VERTS_IN_LINE_STRIP;
     }
+
+    for (int i = 0; i < NUM_LINE_STRIPS; ++i)
+    {
+        m_pendingDebugDraws.counts[i + firstDraw] = VERTS_IN_LINE_STRIP;
+    }
+
+    for (std::size_t i = 0; i < verticesTemplate.size(); ++i)
+    {
+        auto pos = Math::MatrixVectorMultiply(transform, sphere.pos + verticesTemplate[i] * sphere.radius);
+        m_pendingDebugDraws.vertices[i + firstVert] = VertexCol{pos, color};
+    }
+}
+
+void CEngine::RenderDebugBox(const Math::Vector& mins, const Math::Vector& maxs, const Math::Matrix& transform, const Gfx::Color& color)
+{
+    static constexpr int NUM_LINE_STRIPS = 4;
+    static constexpr int VERTS_IN_LINE_STRIP = 4;
+
+    const int firstDraw = m_pendingDebugDraws.firsts.size();
+    const int firstVert = m_pendingDebugDraws.vertices.size();
+
+    m_pendingDebugDraws.firsts.resize(m_pendingDebugDraws.firsts.size() + NUM_LINE_STRIPS);
+    m_pendingDebugDraws.counts.resize(m_pendingDebugDraws.counts.size() + NUM_LINE_STRIPS);
+    m_pendingDebugDraws.vertices.resize(m_pendingDebugDraws.vertices.size() + NUM_LINE_STRIPS * VERTS_IN_LINE_STRIP);
+
+    for (int i = 0; i < NUM_LINE_STRIPS; ++i)
+    {
+        m_pendingDebugDraws.firsts[i + firstDraw] = firstVert + (i * VERTS_IN_LINE_STRIP);
+    }
+
+    for (int i = 0; i < NUM_LINE_STRIPS; ++i)
+    {
+        m_pendingDebugDraws.counts[i + firstDraw] = NUM_LINE_STRIPS;
+    }
+
+    auto vert = m_pendingDebugDraws.vertices.begin() + firstVert;
+
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{mins.x, mins.y, mins.z}), color};
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{maxs.x, mins.y, mins.z}), color};
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{maxs.x, maxs.y, mins.z}), color};
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{maxs.x, maxs.y, maxs.z}), color};
+
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{mins.x, mins.y, maxs.z}), color};
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{mins.x, mins.y, mins.z}), color};
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{mins.x, maxs.y, mins.z}), color};
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{maxs.x, maxs.y, mins.z}), color};
+
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{maxs.x, mins.y, maxs.z}), color};
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{mins.x, mins.y, maxs.z}), color};
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{mins.x, maxs.y, maxs.z}), color};
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{mins.x, maxs.y, mins.z}), color};
+
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{maxs.x, mins.y, mins.z}), color};
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{maxs.x, mins.y, maxs.z}), color};
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{maxs.x, maxs.y, maxs.z}), color};
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{mins.x, maxs.y, maxs.z}), color};
+}
+
+void CEngine::RenderPendingDebugDraws()
+{
+    if (m_pendingDebugDraws.firsts.empty()) return;
+
+    m_device->SetTransform(TRANSFORM_WORLD, Math::Matrix{});
+
+    SetState(ENG_RSTATE_OPAQUE_COLOR);
+
+    m_device->DrawPrimitives(PRIMITIVE_LINE_STRIP,
+                             m_pendingDebugDraws.vertices.data(),
+                             m_pendingDebugDraws.firsts.data(),
+                             m_pendingDebugDraws.counts.data(),
+                             m_pendingDebugDraws.firsts.size());
+
+    m_pendingDebugDraws.firsts.clear();
+    m_pendingDebugDraws.counts.clear();
+    m_pendingDebugDraws.vertices.clear();
 }
 
 void CEngine::RenderShadowMap()
