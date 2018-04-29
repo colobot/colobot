@@ -44,4 +44,11 @@ inline float DistanceBetweenSpheres(const Sphere& sphere1, const Sphere& sphere2
     return Math::Distance(sphere1.pos, sphere2.pos) - sphere1.radius - sphere2.radius;
 }
 
+inline Sphere BoundingSphereForBox(Vector mins, Vector maxs)
+{
+    auto centroid = (maxs + mins) / 2.0f;
+    auto halfExtent = (maxs - centroid);
+    return Sphere{centroid, halfExtent.Length()};
+}
+
 } // namespace Math

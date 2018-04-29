@@ -765,7 +765,7 @@ void CEngine::AddBaseObjTriangles(int baseObjRank, const std::vector<VertexTex2>
         p1.bboxMax.z = Math::Max(vertices[i].coord.z, p1.bboxMax.z);
     }
 
-    p1.radius = Math::Max(p1.bboxMin.Length(), p1.bboxMax.Length());
+    p1.boundingSphere = Math::BoundingSphereForBox(p1.bboxMin, p1.bboxMax);
 
     p1.totalTriangles += vertices.size() / 3;
 }
@@ -801,7 +801,7 @@ void CEngine::AddBaseObjQuick(int baseObjRank, const EngineBaseObjDataTier& buff
             p1.bboxMax.z = Math::Max(p3.vertices[i].coord.z, p1.bboxMax.z);
         }
 
-        p1.radius = Math::Max(p1.bboxMin.Length(), p1.bboxMax.Length());
+        p1.boundingSphere = Math::BoundingSphereForBox(p1.bboxMin, p1.bboxMax);
     }
 
     if (p3.type == ENG_TRIANGLE_TYPE_TRIANGLES)
@@ -856,7 +856,7 @@ void CEngine::DebugObject(int objRank)
     vecStr = p1.bboxMax.ToString();
     l->Debug("  bboxMax: %s\n", vecStr.c_str());
     l->Debug("  totalTriangles: %d\n", p1.totalTriangles);
-    l->Debug("  radius: %f\n", p1.radius);
+    l->Debug("  radius: %f\n", p1.boundingSphere.radius);
 
     for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
     {
@@ -1659,7 +1659,6 @@ void CEngine::UpdateGeometry()
 
         p1.bboxMin.LoadZero();
         p1.bboxMax.LoadZero();
-        p1.radius = 0;
 
         for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
         {
@@ -1678,10 +1677,10 @@ void CEngine::UpdateGeometry()
                         p1.bboxMax.y = Math::Max(p3.vertices[i].coord.y, p1.bboxMax.y);
                         p1.bboxMax.z = Math::Max(p3.vertices[i].coord.z, p1.bboxMax.z);
                 }
-
-                p1.radius = Math::Max(p1.bboxMin.Length(), p1.bboxMax.Length());
             }
         }
+
+        p1.boundingSphere = Math::BoundingSphereForBox(p1.bboxMin, p1.bboxMax);
     }
 
     m_updateGeometry = false;
@@ -1925,9 +1924,8 @@ bool CEngine::IsVisible(int objRank)
 
     assert(baseObjRank >= 0 && baseObjRank < static_cast<int>(m_baseObjects.size()));
 
-    float radius = m_baseObjects[baseObjRank].radius;
-    Math::Vector center(0.0f, 0.0f, 0.0f);
-    if (m_device->ComputeSphereVisibility(center, radius) == Gfx::FRUSTUM_PLANE_ALL)
+    const auto& sphere = m_baseObjects[baseObjRank].boundingSphere;
+    if (m_device->ComputeSphereVisibility(sphere.pos, sphere.radius) == Gfx::FRUSTUM_PLANE_ALL)
     {
         m_objects[objRank].visible = true;
         return true;
