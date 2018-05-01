@@ -1406,7 +1406,7 @@ protected:
 
     Texture         m_shadowMap;
 
-    struct
+    struct PendingDebugDraw
     {
         std::vector<VertexCol> vertices;
         std::vector<int> firsts;

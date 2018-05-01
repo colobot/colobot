@@ -3639,7 +3639,8 @@ void CEngine::RenderDebugSphere(const Math::Sphere& sphere, const Math::Matrix& 
     static constexpr int NUM_LINE_STRIPS = 2 + LONGITUDE_DIVISIONS + LATITUDE_DIVISIONS;
     static constexpr int VERTS_IN_LINE_STRIP = 32;
 
-    static std::array<Math::Vector, NUM_LINE_STRIPS * VERTS_IN_LINE_STRIP> verticesTemplate = []{
+    static std::array<Math::Vector, NUM_LINE_STRIPS * VERTS_IN_LINE_STRIP> verticesTemplate = []
+    {
         std::array<Math::Vector, NUM_LINE_STRIPS * VERTS_IN_LINE_STRIP> vertices;
 
         auto SpherePoint = [&](float latitude, float longitude)
