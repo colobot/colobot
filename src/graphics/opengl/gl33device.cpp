@@ -1158,50 +1158,6 @@ void CGL33Device::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, i
     glDrawArrays(TranslateGfxPrimitive(type), 0, vertexCount);
 }
 
-void CGL33Device::DrawPrimitive(PrimitiveType type, const void *vertices,
-    int size, const VertexFormat &format, int vertexCount)
-{
-    if (m_updateLights) UpdateLights();
-
-    DynamicBuffer& buffer = m_dynamicBuffer;
-
-    BindVAO(buffer.vao);
-    BindVBO(buffer.vbo);
-
-    unsigned int offset = UploadVertexData(buffer, vertices, size);
-
-    // Update vertex attribute bindings
-    UpdateVertexAttribute(0, format.vertex, offset);
-    UpdateVertexAttribute(1, format.normal, offset);
-    UpdateVertexAttribute(2, format.color, offset);
-    UpdateVertexAttribute(3, format.tex1, offset);
-    UpdateVertexAttribute(4, format.tex2, offset);
-
-    glDrawArrays(TranslateGfxPrimitive(type), 0, vertexCount);
-}
-
-void CGL33Device::DrawPrimitives(PrimitiveType type, const void *vertices,
-    int size, const VertexFormat &format, int first[], int count[], int drawCount)
-{
-    if (m_updateLights) UpdateLights();
-
-    DynamicBuffer& buffer = m_dynamicBuffer;
-
-    BindVAO(buffer.vao);
-    BindVBO(buffer.vbo);
-
-    unsigned int offset = UploadVertexData(buffer, vertices, size);
-
-    // Update vertex attribute bindings
-    UpdateVertexAttribute(0, format.vertex, offset);
-    UpdateVertexAttribute(1, format.normal, offset);
-    UpdateVertexAttribute(2, format.color, offset);
-    UpdateVertexAttribute(3, format.tex1, offset);
-    UpdateVertexAttribute(4, format.tex2, offset);
-
-    glMultiDrawArrays(TranslateGfxPrimitive(type), first, count, drawCount);
-}
-
 void CGL33Device::DrawPrimitives(PrimitiveType type, const Vertex *vertices,
     int first[], int count[], int drawCount, Color color)
 {
@@ -1922,25 +1878,6 @@ unsigned int CGL33Device::UploadVertexData(DynamicBuffer& buffer, const void* da
     buffer.offset = nextOffset;
 
     return currentOffset;
-}
-
-void CGL33Device::UpdateVertexAttribute(int index, const VertexAttribute &attribute, int offset)
-{
-    if (attribute.enabled)
-    {
-        glEnableVertexAttribArray(index);
-        glVertexAttribPointer(index,
-            attribute.size,
-            TranslateType(attribute.type),
-            attribute.normalized ? GL_TRUE : GL_FALSE,
-            attribute.stride,
-            reinterpret_cast<void*>(offset + attribute.offset));
-    }
-    else
-    {
-        glDisableVertexAttribArray(index);
-        glVertexAttrib4fv(index, attribute.values);
-    }
 }
 
 bool CGL33Device::IsAnisotropySupported()
