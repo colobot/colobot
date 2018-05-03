@@ -39,59 +39,6 @@
 namespace Gfx
 {
 
-
-/**
-* \struct VertexAttribute
-* \brief Vertex attribute
-*
-* This structure contains parameters for a vertex attribute.
-*/
-struct VertexAttribute
-{
-    //! true enables vertex attribute
-    bool enabled = false;
-    //! true means normalized value (integer types only)
-    bool normalized = false;
-    //! Number of elements in the vertex attribute.
-    //! Valid values are 1, 2, 3, and 4. Depends on specific attribute.
-    unsigned char size = 0;
-    //! Type of values in vertex attribute
-    Type type = Type::UBYTE;
-    //! Offset to the vertex attribute
-    int offset = 0;
-    //! Stride of vertex attribute
-    int stride = 0;
-    //! Default values used when attribute is disabled
-    float values[4] = {0.0f, 0.0f, 0.0f, 0.0f};
-};
-
-/**
-* \struct VertexFormat
-* \brief Vertex format
-*
-* This structure defines vertex formats for generic vertex arrays.
-*
-* It contains:
-*  - vertex coordinate specification
-*  - color specification
-*  - normal specification
-*  - texture coordinate 1 specification
-*  - texture coordinate 2 specification
-*/
-struct VertexFormat
-{
-    //! Vertex coordinate
-    VertexAttribute vertex{};
-    //! Color
-    VertexAttribute color{};
-    //! Normal
-    VertexAttribute normal{};
-    //! Texture coordinate 1
-    VertexAttribute tex1{};
-    //! Texture coordinate 2
-    VertexAttribute tex2{};
-};
-
 enum VertexType
 {
     VERTEX_TYPE_NORMAL,
