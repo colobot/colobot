@@ -92,6 +92,13 @@ struct VertexFormat
     VertexAttribute tex2{};
 };
 
+enum VertexType
+{
+    VERTEX_TYPE_NORMAL,
+    VERTEX_TYPE_TEX2,
+    VERTEX_TYPE_COL,
+};
+
 /**
  * \struct Vertex
  * \brief Vertex of a primitive
@@ -105,6 +112,8 @@ struct VertexFormat
  */
 struct Vertex
 {
+    static constexpr VertexType VERTEX_TYPE = VERTEX_TYPE_NORMAL;
+
     Math::Vector coord;
     Math::Vector normal;
     Math::Point texCoord;
@@ -137,6 +146,8 @@ struct Vertex
  */
 struct VertexCol
 {
+    static constexpr VertexType VERTEX_TYPE = VERTEX_TYPE_COL;
+
     Math::Vector coord;
     Color color;
 
@@ -166,6 +177,8 @@ struct VertexCol
  */
 struct VertexTex2
 {
+    static constexpr VertexType VERTEX_TYPE = VERTEX_TYPE_TEX2;
+
     Math::Vector coord;
     Math::Vector normal;
     Math::Point texCoord;

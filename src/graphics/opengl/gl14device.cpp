@@ -1635,7 +1635,8 @@ void CGL14Device::DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
     glDisableClientState(GL_COLOR_ARRAY);
 }
 
-unsigned int CGL14Device::CreateStaticBuffer(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount)
+template <typename Vertex>
+unsigned int CGL14Device::CreateStaticBufferImpl(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount)
 {
     unsigned int id = 0;
     if (m_vertexBufferType != VBT_DISPLAY_LIST)
@@ -1644,7 +1645,7 @@ unsigned int CGL14Device::CreateStaticBuffer(PrimitiveType primitiveType, const 
 
         VboObjectInfo info;
         info.primitiveType = primitiveType;
-        info.vertexType = VERTEX_TYPE_NORMAL;
+        info.vertexType = Vertex::VERTEX_TYPE;
         info.vertexCount = vertexCount;
         info.bufferId = 0;
 
@@ -1669,75 +1670,8 @@ unsigned int CGL14Device::CreateStaticBuffer(PrimitiveType primitiveType, const 
     return id;
 }
 
-unsigned int CGL14Device::CreateStaticBuffer(PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount)
-{
-    unsigned int id = 0;
-    if (m_vertexBufferType != VBT_DISPLAY_LIST)
-    {
-        id = ++m_lastVboId;
-
-        VboObjectInfo info;
-        info.primitiveType = primitiveType;
-        info.vertexType = VERTEX_TYPE_TEX2;
-        info.vertexCount = vertexCount;
-        info.bufferId = 0;
-
-        m_glGenBuffers(1, &info.bufferId);
-        m_glBindBuffer(GL_ARRAY_BUFFER, info.bufferId);
-        m_glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(VertexTex2), vertices, GL_STATIC_DRAW);
-        m_glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-        m_vboObjects[id] = info;
-    }
-    else
-    {
-        id = glGenLists(1);
-
-        glNewList(id, GL_COMPILE);
-
-        DrawPrimitive(primitiveType, vertices, vertexCount);
-
-        glEndList();
-    }
-
-    return id;
-}
-
-unsigned int CGL14Device::CreateStaticBuffer(PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount)
-{
-    unsigned int id = 0;
-    if (m_vertexBufferType != VBT_DISPLAY_LIST)
-    {
-        id = ++m_lastVboId;
-
-        VboObjectInfo info;
-        info.primitiveType = primitiveType;
-        info.vertexType = VERTEX_TYPE_COL;
-        info.vertexCount = vertexCount;
-        info.bufferId = 0;
-
-        m_glGenBuffers(1, &info.bufferId);
-        m_glBindBuffer(GL_ARRAY_BUFFER, info.bufferId);
-        m_glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(VertexCol), vertices, GL_STATIC_DRAW);
-        m_glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-        m_vboObjects[id] = info;
-    }
-    else
-    {
-        id = glGenLists(1);
-
-        glNewList(id, GL_COMPILE);
-
-        DrawPrimitive(primitiveType, vertices, vertexCount);
-
-        glEndList();
-    }
-
-    return id;
-}
-
-void CGL14Device::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const Vertex* vertices, int vertexCount)
+template <typename Vertex>
+void CGL14Device::UpdateStaticBufferImpl(unsigned int bufferId, PrimitiveType primitiveType, const Vertex* vertices, int vertexCount)
 {
     if (m_vertexBufferType != VBT_DISPLAY_LIST)
     {
@@ -1747,65 +1681,11 @@ void CGL14Device::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primit
 
         VboObjectInfo& info = (*it).second;
         info.primitiveType = primitiveType;
-        info.vertexType = VERTEX_TYPE_NORMAL;
+        info.vertexType = Vertex::VERTEX_TYPE;
         info.vertexCount = vertexCount;
 
         m_glBindBuffer(GL_ARRAY_BUFFER, info.bufferId);
         m_glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(Vertex), vertices, GL_STATIC_DRAW);
-        m_glBindBuffer(GL_ARRAY_BUFFER, 0);
-    }
-    else
-    {
-        glNewList(bufferId, GL_COMPILE);
-
-        DrawPrimitive(primitiveType, vertices, vertexCount);
-
-        glEndList();
-    }
-}
-
-void CGL14Device::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount)
-{
-    if (m_vertexBufferType != VBT_DISPLAY_LIST)
-    {
-        auto it = m_vboObjects.find(bufferId);
-        if (it == m_vboObjects.end())
-            return;
-
-        VboObjectInfo& info = (*it).second;
-        info.primitiveType = primitiveType;
-        info.vertexType = VERTEX_TYPE_TEX2;
-        info.vertexCount = vertexCount;
-
-        m_glBindBuffer(GL_ARRAY_BUFFER, info.bufferId);
-        m_glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(VertexTex2), vertices, GL_STATIC_DRAW);
-        m_glBindBuffer(GL_ARRAY_BUFFER, 0);
-    }
-    else
-    {
-        glNewList(bufferId, GL_COMPILE);
-
-        DrawPrimitive(primitiveType, vertices, vertexCount);
-
-        glEndList();
-    }
-}
-
-void CGL14Device::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount)
-{
-    if (m_vertexBufferType != VBT_DISPLAY_LIST)
-    {
-        auto it = m_vboObjects.find(bufferId);
-        if (it == m_vboObjects.end())
-            return;
-
-        VboObjectInfo& info = (*it).second;
-        info.primitiveType = primitiveType;
-        info.vertexType = VERTEX_TYPE_COL;
-        info.vertexCount = vertexCount;
-
-        m_glBindBuffer(GL_ARRAY_BUFFER, info.bufferId);
-        m_glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(VertexCol), vertices, GL_STATIC_DRAW);
         m_glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
     else
