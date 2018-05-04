@@ -3819,9 +3819,23 @@ void CEngine::RenderShadowMap()
 
     Math::Vector pos = m_lookatPt + 0.25f * dist * dir;
 
-    pos.x = round(pos.x);
-    pos.y = round(pos.y);
-    pos.z = round(pos.z);
+    {
+        // To prevent 'shadow shimmering', we ensure that the position only moves in texel-sized
+        // increments. To do this we transform the position to a space where the light's forward/right/up
+        // axes are aligned with the x/y/z axes (not necessarily in that order, and +/- signs don't matter).
+        Math::Matrix lightRotation;
+        Math::LoadViewMatrix(lightRotation, Math::Vector{}, lightDir, worldUp);
+        pos = Math::MatrixVectorMultiply(lightRotation, pos);
+        // ...then we round to the nearest worldUnitsPerTexel:
+        const float worldUnitsPerTexel = (dist * 2.0f) / m_shadowMap.size.x;
+        pos /= worldUnitsPerTexel;
+        pos.x = round(pos.x);
+        pos.y = round(pos.y);
+        pos.z = round(pos.z);
+        pos *= worldUnitsPerTexel;
+        // ...and convert back to world space.
+        pos = Math::MatrixVectorMultiply(lightRotation.Inverse(), pos);
+    }
 
     Math::Vector lookAt = pos - lightDir;
 
