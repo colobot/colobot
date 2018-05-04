@@ -1284,7 +1284,7 @@ void CGL21Device::UpdateStaticBufferImpl(unsigned int bufferId, PrimitiveType pr
     }
 }
 
-void CGL21Device::DrawStaticBuffer(unsigned int bufferId, int first, int count)
+void CGL21Device::BindStaticBuffer(unsigned int bufferId)
 {
     auto it = m_vboObjects.find(bufferId);
     if (it == m_vboObjects.end())
@@ -1307,8 +1307,12 @@ void CGL21Device::DrawStaticBuffer(unsigned int bufferId, int first, int count)
         SetVertexAttributes(static_cast<const VertexCol*>(nullptr));
     }
 
-    GLenum mode = TranslateGfxPrimitive((*it).second.primitiveType);
-    glDrawArrays(mode, first, count);
+    m_currentStaticBufferDrawMode = TranslateGfxPrimitive((*it).second.primitiveType);
+}
+
+void CGL21Device::DrawStaticBuffer(int first, int count)
+{
+    glDrawArrays(m_currentStaticBufferDrawMode, first, count);
 }
 
 void CGL21Device::DestroyStaticBuffer(unsigned int bufferId)

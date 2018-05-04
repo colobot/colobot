@@ -4061,7 +4061,8 @@ void CEngine::DrawObject(const EngineBaseObjDataTier& p4)
 {
     if (p4.staticBufferId != 0)
     {
-        m_device->DrawStaticBuffer(p4.staticBufferId, 0, p4.vertices.size());
+        m_device->BindStaticBuffer(p4.staticBufferId);
+        m_device->DrawStaticBuffer(0, p4.vertices.size());
 
         if (p4.type == ENG_TRIANGLE_TYPE_TRIANGLES)
             m_statisticTriangle += p4.vertices.size() / 3;

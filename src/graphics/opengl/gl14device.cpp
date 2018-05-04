@@ -1479,7 +1479,7 @@ void CGL14Device::UpdateStaticBufferImpl(unsigned int bufferId, PrimitiveType pr
     m_glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void CGL14Device::DrawStaticBuffer(unsigned int bufferId, int first, int count)
+void CGL14Device::BindStaticBuffer(unsigned int bufferId)
 {
     auto it = m_vboObjects.find(bufferId);
     if (it == m_vboObjects.end())
@@ -1500,8 +1500,12 @@ void CGL14Device::DrawStaticBuffer(unsigned int bufferId, int first, int count)
         SetVertexAttributes(static_cast<VertexCol*>(nullptr), m_remap);
     }
 
-    GLenum mode = TranslateGfxPrimitive((*it).second.primitiveType);
-    glDrawArrays(mode, first, count);
+    m_currentStaticBufferDrawMode = TranslateGfxPrimitive((*it).second.primitiveType);
+}
+
+void CGL14Device::DrawStaticBuffer(int first, int count)
+{
+    glDrawArrays(m_currentStaticBufferDrawMode, first, count);
 }
 
 void CGL14Device::DestroyStaticBuffer(unsigned int bufferId)

@@ -210,7 +210,11 @@ void CNullDevice::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primit
 {
 }
 
-void CNullDevice::DrawStaticBuffer(unsigned int bufferId, int first, int count)
+void CNullDevice::BindStaticBuffer(unsigned int bufferId)
+{
+}
+
+void CNullDevice::DrawStaticBuffer(int first, int count)
 {
 }
 

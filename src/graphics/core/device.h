@@ -455,8 +455,11 @@ public:
     //! Updates the static buffer composed of given primitives with solid color
     virtual void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount) = 0;
 
-    //! Draws a static buffer
-    virtual void DrawStaticBuffer(unsigned int bufferId, int first, int count) = 0;
+    //! Prepares a static buffer to be drawn
+    virtual void BindStaticBuffer(unsigned int bufferId) = 0;
+
+    //! Draws a range of vertices in the currently bound static buffer.
+    virtual void DrawStaticBuffer(int first, int count) = 0;
 
     //! Deletes a static buffer
     virtual void DestroyStaticBuffer(unsigned int bufferId) = 0;

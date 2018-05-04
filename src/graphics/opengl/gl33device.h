@@ -154,7 +154,8 @@ public:
     {
         UpdateStaticBufferImpl(bufferId, primitiveType, vertices, vertexCount);
     }
-    void DrawStaticBuffer(unsigned int bufferId, int first, int count) override;
+    void BindStaticBuffer(unsigned int bufferId) override;
+    void DrawStaticBuffer(int first, int count) override;
     void DestroyStaticBuffer(unsigned int bufferId) override;
 
     int ComputeSphereVisibility(const Math::Vector &center, float radius) override;
@@ -281,6 +282,8 @@ private:
         VertexType vertexType = {};
         unsigned int size = 0;
     };
+    //! The primitive mode corresponding to the currently bound static buffer
+    GLenum m_currentStaticBufferDrawMode = 0;
 
     //! Detected capabilities
     //! Map of saved VBO objects

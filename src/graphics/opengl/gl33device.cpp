@@ -1457,7 +1457,7 @@ void CGL33Device::UpdateStaticBufferImpl(unsigned int bufferId, PrimitiveType pr
     }
 }
 
-void CGL33Device::DrawStaticBuffer(unsigned int bufferId, int first, int count)
+void CGL33Device::BindStaticBuffer(unsigned int bufferId)
 {
     if (m_updateLights) UpdateLights();
 
@@ -1469,8 +1469,12 @@ void CGL33Device::DrawStaticBuffer(unsigned int bufferId, int first, int count)
 
     BindVAO(info.vao);
 
-    GLenum mode = TranslateGfxPrimitive(info.primitiveType);
-    glDrawArrays(mode, first, count);
+    m_currentStaticBufferDrawMode = TranslateGfxPrimitive(info.primitiveType);
+}
+
+void CGL33Device::DrawStaticBuffer(int first, int count)
+{
+    glDrawArrays(m_currentStaticBufferDrawMode, first, count);
 }
 
 void CGL33Device::DestroyStaticBuffer(unsigned int bufferId)
