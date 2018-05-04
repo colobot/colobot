@@ -197,8 +197,9 @@ struct EngineBaseObjDataTier
     Material                material;
     int                     state;
     std::vector<VertexTex2> vertices;
-    unsigned int            staticBufferId;
-    bool                    updateStaticBuffer;
+    //! The index of the first vertex of this object in its owning EngineBaseObject's
+    //! static buffer, or -1 if this vertex isn't in a static buffer
+    int                     firstVertex = -1;
 
     inline EngineBaseObjDataTier(EngineTriangleType type = ENG_TRIANGLE_TYPE_TRIANGLES,
                                  const Material& material = Material(),
@@ -206,8 +207,6 @@ struct EngineBaseObjDataTier
      : type(type)
      , material(material)
      , state(state)
-     , staticBufferId(0)
-     , updateStaticBuffer(false)
     {}
 };
 
@@ -250,6 +249,9 @@ struct EngineBaseObject
     Math::Sphere           boundingSphere;
     //! Next tier (Tex)
     std::vector<EngineBaseObjTexTier> next;
+
+    unsigned int            staticBufferId = 0;
+    bool                    updateStaticBuffer = false;
 
     inline void LoadDefault()
     {
@@ -1262,7 +1264,7 @@ protected:
     void        UpdateGeometry();
 
     //! Updates a given static buffer
-    void        UpdateStaticBuffer(EngineBaseObjDataTier& p4);
+    void        UpdateStaticBuffer(EngineBaseObject& baseObject);
 
     //! Updates static buffers of changed objects
     void        UpdateStaticBuffers();

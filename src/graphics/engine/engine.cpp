@@ -675,17 +675,8 @@ void CEngine::DeleteBaseObject(int baseObjRank)
     if (! p1.used)
         return;
 
-    for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
-    {
-        EngineBaseObjTexTier& p2 = p1.next[l2];
-
-        for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
-        {
-            EngineBaseObjDataTier& p3 = p2.next[l3];
-            m_device->DestroyStaticBuffer(p3.staticBufferId);
-            p3.staticBufferId = 0;
-        }
-    }
+    m_device->DestroyStaticBuffer(p1.staticBufferId);
+    p1.staticBufferId = 0;
 
     p1.next.clear();
 
@@ -700,17 +691,7 @@ void CEngine::DeleteAllBaseObjects()
         if (! p1.used)
             continue;
 
-        for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
-        {
-            EngineBaseObjTexTier& p2 = p1.next[l2];
-
-            for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
-            {
-                EngineBaseObjDataTier& p3 = p2.next[l3];
-                m_device->DestroyStaticBuffer(p3.staticBufferId);
-                p3.staticBufferId = 0;
-            }
-        }
+        m_device->DestroyStaticBuffer(p1.staticBufferId);
     }
 
     m_baseObjects.clear();
@@ -728,16 +709,7 @@ void CEngine::CopyBaseObject(int sourceBaseObjRank, int destBaseObjRank)
     if (! p1.used)
         return;
 
-    for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
-    {
-        EngineBaseObjTexTier& p2 = p1.next[l2];
-
-        for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
-        {
-            EngineBaseObjDataTier& p3 = p2.next[l3];
-            p3.staticBufferId = 0;
-        }
-    }
+    p1.staticBufferId = 0;
 }
 
 void CEngine::AddBaseObjTriangles(int baseObjRank, const std::vector<VertexTex2>& vertices,
@@ -752,7 +724,7 @@ void CEngine::AddBaseObjTriangles(int baseObjRank, const std::vector<VertexTex2>
 
     p3.vertices.insert(p3.vertices.end(), vertices.begin(), vertices.end());
 
-    p3.updateStaticBuffer = true;
+    p1.updateStaticBuffer = true;
     m_updateStaticBuffers = true;
 
     for (int i = 0; i < static_cast<int>( vertices.size() ); i++)
@@ -783,7 +755,8 @@ void CEngine::AddBaseObjQuick(int baseObjRank, const EngineBaseObjDataTier& buff
 
     EngineBaseObjDataTier& p3 = p2.next.back();
 
-    UpdateStaticBuffer(p3);
+    p1.updateStaticBuffer = true;
+    m_updateStaticBuffers = true;
 
     if (globalUpdate)
     {
@@ -857,6 +830,8 @@ void CEngine::DebugObject(int objRank)
     l->Debug("  bboxMax: %s\n", vecStr.c_str());
     l->Debug("  totalTriangles: %d\n", p1.totalTriangles);
     l->Debug("  radius: %f\n", p1.boundingSphere.radius);
+    l->Debug("    staticBufferId: %u\n", p1.staticBufferId);
+    l->Debug("    updateStaticBuffer: %s\n", p1.updateStaticBuffer ? "true" : "false");
 
     for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
     {
@@ -873,8 +848,6 @@ void CEngine::DebugObject(int objRank)
             l->Debug("   l3:\n");
             l->Debug("    type: %d\n", p3.type);
             l->Debug("    state: %d\n", p3.state);
-            l->Debug("    staticBufferId: %u\n", p3.staticBufferId);
-            l->Debug("    updateStaticBuffer: %s\n", p3.updateStaticBuffer ? "true" : "false");
         }
     }
 }
@@ -1226,7 +1199,13 @@ void CEngine::ChangeTextureMapping(int objRank, const Material& mat, int state,
         }
     }
 
-    UpdateStaticBuffer(*p4);
+    EngineObject& object = m_objects[objRank];
+    if (!object.used || object.baseObjRank == -1) return;
+    assert(0 <= object.baseObjRank && object.baseObjRank < m_baseObjects.size());
+    EngineBaseObject& baseObject = m_baseObjects[object.baseObjRank];
+    if (!baseObject.used) return;
+    baseObject.updateStaticBuffer = true;
+    m_updateStaticBuffers = true;
 }
 
 void CEngine::TrackTextureMapping(int objRank, const Material& mat, int state,
@@ -1322,7 +1301,13 @@ void CEngine::TrackTextureMapping(int objRank, const Material& mat, int state,
         tBase += 6;
     }
 
-    UpdateStaticBuffer(*p4);
+    EngineObject& object = m_objects[objRank];
+    if (!object.used || object.baseObjRank == -1) return;
+    assert(0 <= object.baseObjRank && object.baseObjRank < m_baseObjects.size());
+    EngineBaseObject& baseObject = m_baseObjects[object.baseObjRank];
+    if (!baseObject.used) return;
+    baseObject.updateStaticBuffer = true;
+    m_updateStaticBuffers = true;
 }
 
 
@@ -1686,14 +1671,25 @@ void CEngine::UpdateGeometry()
     m_updateGeometry = false;
 }
 
-void CEngine::UpdateStaticBuffer(EngineBaseObjDataTier& p4)
+void CEngine::UpdateStaticBuffer(EngineBaseObject& baseObject)
 {
-    if (p4.staticBufferId == 0)
-        p4.staticBufferId = m_device->CreateStaticBuffer(&p4.vertices[0], p4.vertices.size());
-    else
-        m_device->UpdateStaticBuffer(p4.staticBufferId, &p4.vertices[0], p4.vertices.size());
+    std::vector<VertexTex2> buffer;
 
-    p4.updateStaticBuffer = false;
+    for (auto& p2 : baseObject.next)
+    {
+        for (auto& p3 : p2.next)
+        {
+            p3.firstVertex = buffer.size();
+            buffer.insert(buffer.end(), p3.vertices.begin(), p3.vertices.end());
+        }
+    }
+
+    if (baseObject.staticBufferId == 0)
+        baseObject.staticBufferId = m_device->CreateStaticBuffer(buffer.data(), buffer.size());
+    else
+        m_device->UpdateStaticBuffer(baseObject.staticBufferId, buffer.data(), buffer.size());
+
+    baseObject.updateStaticBuffer = false;
 }
 
 void CEngine::UpdateStaticBuffers()
@@ -1708,21 +1704,8 @@ void CEngine::UpdateStaticBuffers()
         EngineBaseObject& p1 = m_baseObjects[baseObjRank];
         if (! p1.used)
             continue;
-
-        for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
-        {
-            EngineBaseObjTexTier& p2 = p1.next[l2];
-
-            for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
-            {
-                EngineBaseObjDataTier& p3 = p2.next[l3];
-
-                if (! p3.updateStaticBuffer)
-                        continue;
-
-                UpdateStaticBuffer(p3);
-            }
-        }
+        if (p1.updateStaticBuffer)
+            UpdateStaticBuffer(p1);
     }
 }
 
@@ -3291,6 +3274,9 @@ void CEngine::Draw3DScene()
         if (! p1.used)
             continue;
 
+        if (p1.staticBufferId != 0)
+            m_device->BindStaticBuffer(p1.staticBufferId);
+
         for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
         {
             EngineBaseObjTexTier& p2 = p1.next[l2];
@@ -3353,6 +3339,9 @@ void CEngine::Draw3DScene()
 
         m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
 
+        if (p1.staticBufferId != 0)
+            m_device->BindStaticBuffer(p1.staticBufferId);
+
         for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
         {
             EngineBaseObjTexTier& p2 = p1.next[l2];
@@ -3414,6 +3403,9 @@ void CEngine::Draw3DScene()
                 continue;
 
             m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
+
+            if (p1.staticBufferId != 0)
+                m_device->BindStaticBuffer(p1.staticBufferId);
 
             for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
             {
@@ -3934,6 +3926,9 @@ void CEngine::RenderShadowMap()
         if (!p1.used)
             continue;
 
+        if (p1.staticBufferId != 0)
+            m_device->BindStaticBuffer(p1.staticBufferId);
+
         for (int l2 = 0; l2 < static_cast<int>(p1.next.size()); l2++)
         {
             EngineBaseObjTexTier& p2 = p1.next[l2];
@@ -4065,10 +4060,9 @@ void CEngine::DrawObject(const EngineBaseObjDataTier& p4)
         primitiveType = PRIMITIVE_TRIANGLE_STRIP;
     }
 
-    if (p4.staticBufferId != 0)
+    if (p4.firstVertex != -1)
     {
-        m_device->BindStaticBuffer(p4.staticBufferId);
-        m_device->DrawStaticBuffer(primitiveType, 0, p4.vertices.size());
+        m_device->DrawStaticBuffer(primitiveType, p4.firstVertex, p4.vertices.size());
     }
     else
     {
@@ -4157,6 +4151,9 @@ void CEngine::DrawInterface()
                 continue;
 
             m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
+
+            if (p1.staticBufferId != 0)
+                m_device->BindStaticBuffer(p1.staticBufferId);
 
             for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
             {
