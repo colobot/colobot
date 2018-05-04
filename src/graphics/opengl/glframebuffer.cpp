@@ -55,7 +55,7 @@ bool CGLFramebuffer::Create()
     glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
 
     // create color texture
-    if (m_params.colorTexture)
+    if (m_params.colorAttachment == FramebufferParams::AttachmentType::Texture)
     {
         GLint previous;
         glGetIntegerv(GL_TEXTURE_BINDING_2D, &previous);
@@ -76,7 +76,7 @@ bool CGLFramebuffer::Create()
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_colorTexture, 0);
     }
     // create color renderbuffer
-    else
+    else if (m_params.colorAttachment == FramebufferParams::AttachmentType::Renderbuffer)
     {
         glGenRenderbuffers(1, &m_colorRenderbuffer);
         glBindRenderbuffer(GL_RENDERBUFFER, m_colorRenderbuffer);
@@ -92,6 +92,10 @@ bool CGLFramebuffer::Create()
         glFramebufferRenderbuffer(GL_FRAMEBUFFER,
                 GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, m_colorRenderbuffer);
     }
+    else
+    {
+        glDrawBuffer(GL_NONE);
+    }
 
     GLuint depthFormat = 0;
 
@@ -104,7 +108,7 @@ bool CGLFramebuffer::Create()
     }
 
     // create depth texture
-    if (m_params.depthTexture)
+    if (m_params.depthAttachment == FramebufferParams::AttachmentType::Texture)
     {
         GLint previous;
         glGetIntegerv(GL_TEXTURE_BINDING_2D, &previous);
@@ -132,7 +136,7 @@ bool CGLFramebuffer::Create()
                 GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_depthTexture, 0);
     }
     // create depth renderbuffer
-    else
+    else if (m_params.depthAttachment == FramebufferParams::AttachmentType::Renderbuffer)
     {
         glGenRenderbuffers(1, &m_depthRenderbuffer);
         glBindRenderbuffer(GL_RENDERBUFFER, m_depthRenderbuffer);
@@ -323,7 +327,7 @@ bool CGLFramebufferEXT::Create()
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_fbo);
 
     // create color texture
-    if (m_params.colorTexture)
+    if (m_params.colorAttachment == FramebufferParams::AttachmentType::Texture)
     {
         GLint previous;
         glGetIntegerv(GL_TEXTURE_BINDING_2D, &previous);
@@ -346,7 +350,7 @@ bool CGLFramebufferEXT::Create()
                 GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, m_colorTexture, 0);
     }
     // create color renderbuffer
-    else
+    else if (m_params.colorAttachment == FramebufferParams::AttachmentType::Renderbuffer)
     {
         glGenRenderbuffersEXT(1, &m_colorRenderbuffer);
         glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, m_colorRenderbuffer);
@@ -363,6 +367,10 @@ bool CGLFramebufferEXT::Create()
         glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,
                 GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, m_colorRenderbuffer);
     }
+    else
+    {
+        glDrawBuffer(GL_NONE);
+    }
 
     GLuint depthFormat = 0;
 
@@ -375,7 +383,7 @@ bool CGLFramebufferEXT::Create()
     }
 
     // create depth texture
-    if (m_params.depthTexture)
+    if (m_params.depthAttachment == FramebufferParams::AttachmentType::Texture)
     {
         GLint previous;
         glGetIntegerv(GL_TEXTURE_BINDING_2D, &previous);
@@ -403,7 +411,7 @@ bool CGLFramebufferEXT::Create()
                 GL_DEPTH_ATTACHMENT_EXT, GL_TEXTURE_2D, m_depthTexture, 0);
     }
     // create depth renderbuffer
-    else
+    else if (m_params.depthAttachment == FramebufferParams::AttachmentType::Renderbuffer)
     {
         glGenRenderbuffersEXT(1, &m_depthRenderbuffer);
         glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, m_depthRenderbuffer);
