@@ -1292,7 +1292,6 @@ unsigned int CGL21Device::CreateStaticBufferImpl(PrimitiveType primitiveType, co
     VboObjectInfo info;
     info.primitiveType = primitiveType;
     info.vertexType = Vertex::VERTEX_TYPE;
-    info.vertexCount = vertexCount;
     info.bufferId = 0;
     info.size = vertexCount * sizeof(Vertex);
 
@@ -1317,7 +1316,6 @@ void CGL21Device::UpdateStaticBufferImpl(unsigned int bufferId, PrimitiveType pr
     VboObjectInfo& info = (*it).second;
     info.primitiveType = primitiveType;
     info.vertexType = Vertex::VERTEX_TYPE;
-    info.vertexCount = vertexCount;
 
     BindVBO(info.bufferId);
 
@@ -1332,7 +1330,7 @@ void CGL21Device::UpdateStaticBufferImpl(unsigned int bufferId, PrimitiveType pr
     }
 }
 
-void CGL21Device::DrawStaticBuffer(unsigned int bufferId)
+void CGL21Device::DrawStaticBuffer(unsigned int bufferId, int first, int count)
 {
     auto it = m_vboObjects.find(bufferId);
     if (it == m_vboObjects.end())
@@ -1380,7 +1378,7 @@ void CGL21Device::DrawStaticBuffer(unsigned int bufferId)
     }
 
     GLenum mode = TranslateGfxPrimitive((*it).second.primitiveType);
-    glDrawArrays(mode, 0, (*it).second.vertexCount);
+    glDrawArrays(mode, first, count);
 
     if ((*it).second.vertexType == VERTEX_TYPE_NORMAL)
     {

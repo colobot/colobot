@@ -1398,7 +1398,6 @@ unsigned int CGL33Device::CreateStaticBufferImpl(PrimitiveType primitiveType, co
     VertexBufferInfo info;
     info.primitiveType = primitiveType;
     info.vertexType = Vertex::VERTEX_TYPE;
-    info.vertexCount = vertexCount;
     info.size = vertexCount * sizeof(Vertex);
 
     glGenVertexArrays(1, &info.vao);
@@ -1434,7 +1433,6 @@ void CGL33Device::UpdateStaticBufferImpl(unsigned int bufferId, PrimitiveType pr
 
     info.primitiveType = primitiveType;
     info.vertexType = Vertex::VERTEX_TYPE;
-    info.vertexCount = vertexCount;
 
     BindVBO(info.vbo);
 
@@ -1459,7 +1457,7 @@ void CGL33Device::UpdateStaticBufferImpl(unsigned int bufferId, PrimitiveType pr
     }
 }
 
-void CGL33Device::DrawStaticBuffer(unsigned int bufferId)
+void CGL33Device::DrawStaticBuffer(unsigned int bufferId, int first, int count)
 {
     if (m_updateLights) UpdateLights();
 
@@ -1472,7 +1470,7 @@ void CGL33Device::DrawStaticBuffer(unsigned int bufferId)
     BindVAO(info.vao);
 
     GLenum mode = TranslateGfxPrimitive(info.primitiveType);
-    glDrawArrays(mode, 0, info.vertexCount);
+    glDrawArrays(mode, first, count);
 }
 
 void CGL33Device::DestroyStaticBuffer(unsigned int bufferId)

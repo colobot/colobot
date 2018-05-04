@@ -456,7 +456,7 @@ public:
     virtual void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount) = 0;
 
     //! Draws a static buffer
-    virtual void DrawStaticBuffer(unsigned int bufferId) = 0;
+    virtual void DrawStaticBuffer(unsigned int bufferId, int first, int count) = 0;
 
     //! Deletes a static buffer
     virtual void DestroyStaticBuffer(unsigned int bufferId) = 0;

@@ -154,7 +154,7 @@ public:
     {
         UpdateStaticBufferImpl(bufferId, primitiveType, vertices, vertexCount);
     }
-    void DrawStaticBuffer(unsigned int bufferId) override;
+    void DrawStaticBuffer(unsigned int bufferId, int first, int count) override;
     void DestroyStaticBuffer(unsigned int bufferId) override;
 
     int ComputeSphereVisibility(const Math::Vector &center, float radius) override;
@@ -279,7 +279,6 @@ private:
         GLuint vbo = 0;
         GLuint vao = 0;
         VertexType vertexType = {};
-        int vertexCount = 0;
         unsigned int size = 0;
     };
 
