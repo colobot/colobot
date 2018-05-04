@@ -115,32 +115,32 @@ public:
     virtual void DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
         int first[], int count[], int drawCount) override;
 
-    unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount) override
+    unsigned int CreateStaticBuffer(const Vertex* vertices, int vertexCount) override
     {
-        return CreateStaticBufferImpl(primitiveType, vertices, vertexCount);
+        return CreateStaticBufferImpl(vertices, vertexCount);
     }
-    unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount) override
+    unsigned int CreateStaticBuffer(const VertexTex2* vertices, int vertexCount) override
     {
-        return CreateStaticBufferImpl(primitiveType, vertices, vertexCount);
+        return CreateStaticBufferImpl(vertices, vertexCount);
     }
-    unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount) override
+    unsigned int CreateStaticBuffer(const VertexCol* vertices, int vertexCount) override
     {
-        return CreateStaticBufferImpl(primitiveType, vertices, vertexCount);
+        return CreateStaticBufferImpl(vertices, vertexCount);
     }
-    void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const Vertex* vertices, int vertexCount) override
+    void UpdateStaticBuffer(unsigned int bufferId, const Vertex* vertices, int vertexCount) override
     {
-        UpdateStaticBufferImpl(bufferId, primitiveType, vertices, vertexCount);
+        UpdateStaticBufferImpl(bufferId, vertices, vertexCount);
     }
-    void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount) override
+    void UpdateStaticBuffer(unsigned int bufferId, const VertexTex2* vertices, int vertexCount) override
     {
-        UpdateStaticBufferImpl(bufferId, primitiveType, vertices, vertexCount);
+        UpdateStaticBufferImpl(bufferId, vertices, vertexCount);
     }
-    void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount) override
+    void UpdateStaticBuffer(unsigned int bufferId, const VertexCol* vertices, int vertexCount) override
     {
-        UpdateStaticBufferImpl(bufferId, primitiveType, vertices, vertexCount);
+        UpdateStaticBufferImpl(bufferId, vertices, vertexCount);
     }
     void BindStaticBuffer(unsigned int bufferId) override;
-    void DrawStaticBuffer(int first, int count) override;
+    void DrawStaticBuffer(PrimitiveType primitiveType, int first, int count) override;
     void DestroyStaticBuffer(unsigned int bufferId) override;
 
     int ComputeSphereVisibility(const Math::Vector &center, float radius) override;
@@ -207,9 +207,9 @@ private:
     inline void BindTexture(int index, GLuint texture);
 
     template <typename Vertex>
-    unsigned int CreateStaticBufferImpl(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount);
+    unsigned int CreateStaticBufferImpl(const Vertex* vertices, int vertexCount);
     template <typename Vertex>
-    void UpdateStaticBufferImpl(unsigned int bufferId, PrimitiveType primitiveType, const Vertex* vertices, int vertexCount);
+    void UpdateStaticBufferImpl(unsigned int bufferId, const Vertex* vertices, int vertexCount);
 
 private:
     //! Current config
@@ -254,13 +254,10 @@ private:
     //! Info about static VBO buffers
     struct VboObjectInfo
     {
-        PrimitiveType primitiveType = {};
         unsigned int bufferId = 0;
         VertexType vertexType = {};
         int size = 0;
     };
-    //! The primitive mode corresponding to the currently bound static buffer
-    GLenum m_currentStaticBufferDrawMode = 0;
 
     //! Detected capabilities
     //! Framebuffer support

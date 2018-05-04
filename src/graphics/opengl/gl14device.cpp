@@ -1442,12 +1442,11 @@ void CGL14Device::DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
 }
 
 template <typename Vertex>
-unsigned int CGL14Device::CreateStaticBufferImpl(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount)
+unsigned int CGL14Device::CreateStaticBufferImpl(const Vertex* vertices, int vertexCount)
 {
     unsigned int id = ++m_lastVboId;
 
     VboObjectInfo info;
-    info.primitiveType = primitiveType;
     info.vertexType = Vertex::VERTEX_TYPE;
     info.vertexCount = vertexCount;
     info.bufferId = 0;
@@ -1463,14 +1462,13 @@ unsigned int CGL14Device::CreateStaticBufferImpl(PrimitiveType primitiveType, co
 }
 
 template <typename Vertex>
-void CGL14Device::UpdateStaticBufferImpl(unsigned int bufferId, PrimitiveType primitiveType, const Vertex* vertices, int vertexCount)
+void CGL14Device::UpdateStaticBufferImpl(unsigned int bufferId, const Vertex* vertices, int vertexCount)
 {
     auto it = m_vboObjects.find(bufferId);
     if (it == m_vboObjects.end())
         return;
 
     VboObjectInfo& info = (*it).second;
-    info.primitiveType = primitiveType;
     info.vertexType = Vertex::VERTEX_TYPE;
     info.vertexCount = vertexCount;
 
@@ -1499,13 +1497,11 @@ void CGL14Device::BindStaticBuffer(unsigned int bufferId)
     {
         SetVertexAttributes(static_cast<VertexCol*>(nullptr), m_remap);
     }
-
-    m_currentStaticBufferDrawMode = TranslateGfxPrimitive((*it).second.primitiveType);
 }
 
-void CGL14Device::DrawStaticBuffer(int first, int count)
+void CGL14Device::DrawStaticBuffer(PrimitiveType primitiveType, int first, int count)
 {
-    glDrawArrays(m_currentStaticBufferDrawMode, first, count);
+    glDrawArrays(TranslateGfxPrimitive(primitiveType), first, count);
 }
 
 void CGL14Device::DestroyStaticBuffer(unsigned int bufferId)

@@ -94,14 +94,14 @@ public:
     void DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
         int first[], int count[], int drawCount) override;
 
-    unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount) override;
-    unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount) override;
-    unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount) override;
-    void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const Vertex* vertices, int vertexCount) override;
-    void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount) override;
-    void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount) override;
+    unsigned int CreateStaticBuffer(const Vertex* vertices, int vertexCount) override;
+    unsigned int CreateStaticBuffer(const VertexTex2* vertices, int vertexCount) override;
+    unsigned int CreateStaticBuffer(const VertexCol* vertices, int vertexCount) override;
+    void UpdateStaticBuffer(unsigned int bufferId, const Vertex* vertices, int vertexCount) override;
+    void UpdateStaticBuffer(unsigned int bufferId, const VertexTex2* vertices, int vertexCount) override;
+    void UpdateStaticBuffer(unsigned int bufferId, const VertexCol* vertices, int vertexCount) override;
     void BindStaticBuffer(unsigned int bufferId) override;
-    void DrawStaticBuffer(int first, int count) override;
+    void DrawStaticBuffer(PrimitiveType primitiveType, int first, int count) override;
     void DestroyStaticBuffer(unsigned int bufferId) override;
 
     int ComputeSphereVisibility(const Math::Vector &center, float radius) override;

@@ -1688,16 +1688,10 @@ void CEngine::UpdateGeometry()
 
 void CEngine::UpdateStaticBuffer(EngineBaseObjDataTier& p4)
 {
-    PrimitiveType type;
-    if (p4.type == ENG_TRIANGLE_TYPE_TRIANGLES)
-        type = PRIMITIVE_TRIANGLES;
-    else
-        type = PRIMITIVE_TRIANGLE_STRIP;
-
     if (p4.staticBufferId == 0)
-        p4.staticBufferId = m_device->CreateStaticBuffer(type, &p4.vertices[0], p4.vertices.size());
+        p4.staticBufferId = m_device->CreateStaticBuffer(&p4.vertices[0], p4.vertices.size());
     else
-        m_device->UpdateStaticBuffer(p4.staticBufferId, type, &p4.vertices[0], p4.vertices.size());
+        m_device->UpdateStaticBuffer(p4.staticBufferId, &p4.vertices[0], p4.vertices.size());
 
     p4.updateStaticBuffer = false;
 }
@@ -4059,28 +4053,26 @@ void CEngine::UseMSAA(bool enable)
 
 void CEngine::DrawObject(const EngineBaseObjDataTier& p4)
 {
-    if (p4.staticBufferId != 0)
+    PrimitiveType primitiveType;
+    if (p4.type == ENG_TRIANGLE_TYPE_TRIANGLES)
     {
-        m_device->BindStaticBuffer(p4.staticBufferId);
-        m_device->DrawStaticBuffer(0, p4.vertices.size());
-
-        if (p4.type == ENG_TRIANGLE_TYPE_TRIANGLES)
-            m_statisticTriangle += p4.vertices.size() / 3;
-        else
-            m_statisticTriangle += p4.vertices.size() - 2;
+        m_statisticTriangle += p4.vertices.size() / 3;
+        primitiveType = PRIMITIVE_TRIANGLES;
     }
     else
     {
-        if (p4.type == ENG_TRIANGLE_TYPE_TRIANGLES)
-        {
-            m_device->DrawPrimitive(PRIMITIVE_TRIANGLES, &p4.vertices[0], p4.vertices.size());
-            m_statisticTriangle += p4.vertices.size() / 3;
-        }
-        else
-        {
-            m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, &p4.vertices[0], p4.vertices.size() );
-            m_statisticTriangle += p4.vertices.size() - 2;
-        }
+        m_statisticTriangle += p4.vertices.size() - 2;
+        primitiveType = PRIMITIVE_TRIANGLE_STRIP;
+    }
+
+    if (p4.staticBufferId != 0)
+    {
+        m_device->BindStaticBuffer(p4.staticBufferId);
+        m_device->DrawStaticBuffer(primitiveType, 0, p4.vertices.size());
+    }
+    else
+    {
+        m_device->DrawPrimitive(primitiveType, &p4.vertices[0], p4.vertices.size());
     }
 }
 

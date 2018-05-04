@@ -1239,12 +1239,11 @@ void CGL21Device::DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
 
 
 template <typename Vertex>
-unsigned int CGL21Device::CreateStaticBufferImpl(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount)
+unsigned int CGL21Device::CreateStaticBufferImpl(const Vertex* vertices, int vertexCount)
 {
     unsigned int id = ++m_lastVboId;
 
     VboObjectInfo info;
-    info.primitiveType = primitiveType;
     info.vertexType = Vertex::VERTEX_TYPE;
     info.bufferId = 0;
     info.size = vertexCount * sizeof(Vertex);
@@ -1259,7 +1258,7 @@ unsigned int CGL21Device::CreateStaticBufferImpl(PrimitiveType primitiveType, co
 }
 
 template <typename Vertex>
-void CGL21Device::UpdateStaticBufferImpl(unsigned int bufferId, PrimitiveType primitiveType, const Vertex* vertices, int vertexCount)
+void CGL21Device::UpdateStaticBufferImpl(unsigned int bufferId, const Vertex* vertices, int vertexCount)
 {
     auto it = m_vboObjects.find(bufferId);
     if (it == m_vboObjects.end())
@@ -1268,7 +1267,6 @@ void CGL21Device::UpdateStaticBufferImpl(unsigned int bufferId, PrimitiveType pr
     int newSize = vertexCount * sizeof(Vertex);
 
     VboObjectInfo& info = (*it).second;
-    info.primitiveType = primitiveType;
     info.vertexType = Vertex::VERTEX_TYPE;
 
     BindVBO(info.bufferId);
@@ -1306,13 +1304,11 @@ void CGL21Device::BindStaticBuffer(unsigned int bufferId)
     {
         SetVertexAttributes(static_cast<const VertexCol*>(nullptr));
     }
-
-    m_currentStaticBufferDrawMode = TranslateGfxPrimitive((*it).second.primitiveType);
 }
 
-void CGL21Device::DrawStaticBuffer(int first, int count)
+void CGL21Device::DrawStaticBuffer(PrimitiveType primitiveType, int first, int count)
 {
-    glDrawArrays(m_currentStaticBufferDrawMode, first, count);
+    glDrawArrays(TranslateGfxPrimitive(primitiveType), first, count);
 }
 
 void CGL21Device::DestroyStaticBuffer(unsigned int bufferId)

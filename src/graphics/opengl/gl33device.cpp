@@ -1389,14 +1389,13 @@ template <> void SetVertexAttributes<VertexCol>()
 } // namespace
 
 template <typename Vertex>
-unsigned int CGL33Device::CreateStaticBufferImpl(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount)
+unsigned int CGL33Device::CreateStaticBufferImpl(const Vertex* vertices, int vertexCount)
 {
     unsigned int id = 0;
 
     id = ++m_lastVboId;
 
     VertexBufferInfo info;
-    info.primitiveType = primitiveType;
     info.vertexType = Vertex::VERTEX_TYPE;
     info.size = vertexCount * sizeof(Vertex);
 
@@ -1417,7 +1416,7 @@ unsigned int CGL33Device::CreateStaticBufferImpl(PrimitiveType primitiveType, co
 }
 
 template <typename Vertex>
-void CGL33Device::UpdateStaticBufferImpl(unsigned int bufferId, PrimitiveType primitiveType, const Vertex* vertices, int vertexCount)
+void CGL33Device::UpdateStaticBufferImpl(unsigned int bufferId, const Vertex* vertices, int vertexCount)
 {
     auto it = m_vboObjects.find(bufferId);
     if (it == m_vboObjects.end())
@@ -1431,7 +1430,6 @@ void CGL33Device::UpdateStaticBufferImpl(unsigned int bufferId, PrimitiveType pr
 
     if (info.vertexType != Vertex::VERTEX_TYPE) CLogger::GetInstance().Debug("Changing static buffer type\n");
 
-    info.primitiveType = primitiveType;
     info.vertexType = Vertex::VERTEX_TYPE;
 
     BindVBO(info.vbo);
@@ -1468,13 +1466,11 @@ void CGL33Device::BindStaticBuffer(unsigned int bufferId)
     VertexBufferInfo &info = (*it).second;
 
     BindVAO(info.vao);
-
-    m_currentStaticBufferDrawMode = TranslateGfxPrimitive(info.primitiveType);
 }
 
-void CGL33Device::DrawStaticBuffer(int first, int count)
+void CGL33Device::DrawStaticBuffer(PrimitiveType primitiveType, int first, int count)
 {
-    glDrawArrays(m_currentStaticBufferDrawMode, first, count);
+    glDrawArrays(TranslateGfxPrimitive(primitiveType), first, count);
 }
 
 void CGL33Device::DestroyStaticBuffer(unsigned int bufferId)
