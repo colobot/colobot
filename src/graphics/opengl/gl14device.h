@@ -43,17 +43,6 @@
 namespace Gfx
 {
 
-/**
- \enum VertexBufferType
- \brief Specifies type of vertex buffer to use
- */
-enum VertexBufferType
-{
-   VBT_DISPLAY_LIST,    //! use display lists
-   VBT_VBO_CORE,        //! use core OpenGL 1.5 VBOs
-   VBT_VBO_ARB          //! use ARB extension VBOs
-};
-
 enum ShadowMappingSupport
 {
     SMS_NONE,           //! No support for depth textures
@@ -295,8 +284,6 @@ private:
     bool m_multiDrawArrays = false;
     //! Framebuffer support
     FramebufferSupport m_framebufferSupport = FBS_NONE;
-    //! Which vertex buffer type to use
-    VertexBufferType m_vertexBufferType = VBT_DISPLAY_LIST;
     //! Map of saved VBO objects
     std::map<unsigned int, VboObjectInfo> m_vboObjects;
     //! Last ID of VBO object
