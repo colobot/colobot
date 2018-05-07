@@ -458,6 +458,8 @@ void CRobotMain::ChangePhase(Phase phase)
         m_movie->Flush();
         m_movieInfoIndex = -1;
         m_shortCut = true;
+
+        m_viewpoints.clear();
     }
     ClearInterface();
 
@@ -744,6 +746,13 @@ bool CRobotMain::ProcessEvent(Event &event)
     if (event.type == EVENT_CODE_BATTLE_SPECTATOR)
     {
         SetCodeBattleSpectatorMode(!m_codeBattleSpectator);
+    }
+
+    if (event.type >= EVENT_VIEWPOINT0 && event.type <= EVENT_VIEWPOINT9)
+    {
+        m_camera->SetType(Gfx::CAM_TYPE_SCRIPT);
+        m_camera->SetSmooth(Gfx::CAM_SMOOTH_HARD);
+        m_camera->SetScriptCameraAnimate(m_viewpoints[event.type - EVENT_VIEWPOINT0].eye, m_viewpoints[event.type - EVENT_VIEWPOINT0].look);
     }
 
     // Management of the console.
@@ -3530,6 +3539,24 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 continue;
             }
 
+            //! Note: This feature may be changed in next releases,
+            //! Places new viewpoint, which can be selected later in (currently only in Code Battle) UI.
+            //! Usage: View eye=x; y; z lookat=x; y; z
+
+            if (line->GetCommand() == "View")
+            {
+                if(m_viewpoints.size() == 10)
+                {
+                    GetLogger()->Warn("Reached limit of 10 viewpoints, next ones will be ommited.\n");
+                    continue;
+                }
+                Viewpoint tmp;
+                tmp.eye = line->GetParam("eye")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f))*g_unit;
+                tmp.look = line->GetParam("lookat")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f))*g_unit;
+                m_viewpoints.push_back(tmp);
+                continue;
+            }
+
             if (line->GetCommand() == "EndMissionTake" && !resetObject)
             {
                 auto endTake = MakeUnique<CSceneEndCondition>();
@@ -5824,25 +5851,40 @@ void CRobotMain::CreateCodeBattleInterface()
     if (m_phase == PHASE_SIMUL)
     {
         Math::Point pos, ddim;
+        float offset = (ceil(m_viewpoints.size() / 2.0f) * 50);
 
         int numTeams = m_scoreboard ? GetAllTeams().size() : 0;
         assert(numTeams < EVENT_SCOREBOARD_MAX-EVENT_SCOREBOARD+1);
         float textHeight = m_engine->GetText()->GetHeight(Gfx::FONT_COLOBOT, Gfx::FONT_SIZE_SMALL);
 
+        //window
         ddim.x = 100.0f/640.0f;
-        ddim.y = 100.0f/480.0f + numTeams * textHeight;
+        ddim.y = (100.0f+offset)/480.0f + numTeams * textHeight;
         pos.x = 540.0f/640.0f;
         pos.y = 100.0f/480.0f;
         Ui::CWindow* pw = m_interface->CreateWindows(pos, ddim, 3, EVENT_WINDOW6);
 
+        //label text
         ddim.x = 100.0f/640.0f;
         ddim.y = 16.0f/480.0f;
         pos.x = 540.0f/640.0f;
-        pos.y = 178.0f/480.0f + numTeams * textHeight;
+        pos.y = (178.0f+offset)/480.0f + numTeams * textHeight;
         std::string text;
         GetResource(RES_EVENT, EVENT_LABEL_CODE_BATTLE, text);
         pw->CreateLabel(pos, ddim, 0, EVENT_LABEL_CODE_BATTLE, text);
 
+        //viewpoint selection section
+        ddim.x = 40.0f/640.0f;
+        ddim.y = 50.0f/640.0f;
+        for(unsigned int i = 0; i<m_viewpoints.size(); i++)
+        {
+            //create button
+            pos.x = (550.0f+40.0f*(i%2))/640.0f;
+            pos.y = (130.0f+offset)/480.0f + numTeams * textHeight - 45.0f*(i/2)/480.0f;
+            pw->CreateButton(pos,ddim, 13, EventType(EVENT_VIEWPOINT0 + i));
+        }
+
+        //start/camera button
         float titleBarSize = (11.0f/64.0f); // this is from the texture
         ddim.x = 80.0f/640.0f;
         ddim.y = ((1-titleBarSize)*100.0f-20.0f)/480.0f;
@@ -5953,6 +5995,7 @@ void CRobotMain::UpdateCodeBattleInterface()
 
 void CRobotMain::DestroyCodeBattleInterface()
 {
+    m_viewpoints.clear();
     m_interface->DeleteControl(EVENT_WINDOW6);
 }
 
