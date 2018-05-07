@@ -1411,7 +1411,8 @@ protected:
         std::vector<VertexCol> vertices;
         std::vector<int> firsts;
         std::vector<int> counts;
-    } m_pendingDebugDraws;
+    }
+    m_pendingDebugDraws;
 
     //! Ranks of highlighted objects
     int             m_highlightRank[100];
