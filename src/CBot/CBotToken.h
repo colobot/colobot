@@ -120,7 +120,7 @@ public:
      * \brief Return the token string
      * \return The string associated with this token
      */
-    std::string GetString();
+    const std::string& GetString();
 
     /**
      * \brief Set the token string

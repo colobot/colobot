@@ -996,7 +996,7 @@ bool CBotFunction::CheckParam(CBotDefParam* pParam)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string CBotFunction::GetName()
+const std::string& CBotFunction::GetName()
 {
     return  m_token.GetString();
 }
