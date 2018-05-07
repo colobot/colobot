@@ -650,7 +650,7 @@ public:
 
 protected:
     //! The corresponding token, defines the variable name
-    CBotToken* m_token;
+    CBotToken* const m_token;
     //! Type of value.
     CBotTypResult m_type;
     //! Initialization status

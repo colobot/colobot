@@ -31,12 +31,11 @@ namespace CBot
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotVarArray::CBotVarArray(const CBotToken& name, CBotTypResult& type)
+CBotVarArray::CBotVarArray(const CBotToken& name, CBotTypResult& type) : CBotVar(name)
 {
     if ( !type.Eq(CBotTypArrayPointer) &&
          !type.Eq(CBotTypArrayBody)) assert(0);
 
-    m_token        = new CBotToken(name);
     m_next        = nullptr;
     m_pMyThis    = nullptr;
     m_pUserPtr    = nullptr;
