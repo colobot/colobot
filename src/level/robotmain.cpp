@@ -3565,6 +3565,13 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 }
                 continue;
             }
+
+            if (line->GetCommand() == "ScoreboardSortType" && !resetObject)
+            {
+                m_scoreboard->SetSortType(static_cast<SortType>(line->GetParam("sort")->AsSortType() ) );
+                continue;
+            }
+
             if (line->GetCommand() == "ScoreboardKillRule" && !resetObject)
             {
                 if (!m_scoreboard)
@@ -4965,7 +4972,7 @@ Error CRobotMain::ProcessEndMissionTake()
                 {
                     if (!details.empty())
                         details += ", ";
-                    details += StrUtils::Format(details_line.c_str(), GetTeamName(team).c_str(), m_scoreboard->GetScore(team));
+                    details += StrUtils::Format(details_line.c_str(), GetTeamName(team).c_str(), m_scoreboard->GetScore(team).points);
                 }
                 m_ui->GetDialog()->StartInformation(
                     title,
@@ -5873,7 +5880,7 @@ void CRobotMain::CreateCodeBattleInterface()
                  : static_cast<Ui::CControl*>(pw->CreateEdit( pos, ddim, 0, static_cast<EventType>(EVENT_SCOREBOARD+2*(numTeams-i-1)+1)));
             pl->SetTextAlign(Gfx::TEXT_ALIGN_RIGHT);
             pl->SetFontSize(m_codeBattleStarted ? Gfx::FONT_SIZE_SMALL : Gfx::FONT_SIZE_SMALL*0.75f);
-            m_codeBattleStarted ? pl->SetName(StrUtils::ToString<int>(m_scoreboard->GetScore(team))) : static_cast<Ui::CEdit*>(pl)->SetText(StrUtils::ToString<int>(m_scoreboard->GetScore(team)));
+            m_codeBattleStarted ? pl->SetName(StrUtils::ToString<int>(m_scoreboard->GetScore(team).points)) : static_cast<Ui::CEdit*>(pl)->SetText(StrUtils::ToString<int>(m_scoreboard->GetScore(team).points));
             pos.x -= 57.5f/640.0f;
             pos.y += ddim.y;
             i++;
@@ -5913,9 +5920,22 @@ void CRobotMain::UpdateCodeBattleInterface()
 
     Ui::CWindow* pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW6));
     assert(pw != nullptr);
+    std::set<int> teams = GetAllTeams();
+    std::vector<int> sortedTeams(teams.begin(), teams.end());
+    if(m_scoreboard->GetSortType() == SortType::SORT_POINTS)
+    {
+        std::sort(sortedTeams.begin(), sortedTeams.end(), [this](int teamA, int teamB)
+        {
+            if (m_scoreboard->GetScore(teamA).points > m_scoreboard->GetScore(teamB).points) return true; //Team A have more points than B?
+            if (m_scoreboard->GetScore(teamA).points < m_scoreboard->GetScore(teamB).points) return false; //Team A have less points than B?
+
+            if (m_scoreboard->GetScore(teamA).time < m_scoreboard->GetScore(teamB).time) return true; //Team A scored faster than B?
+            else return false; //Team A scored slower than B?
+        });
+    }
 
     int i = 0;
-    for (int team : GetAllTeams())
+    for (int team : sortedTeams)
     {
         Ui::CControl* pl;
 
@@ -5925,7 +5945,7 @@ void CRobotMain::UpdateCodeBattleInterface()
 
         pl = pw->SearchControl(static_cast<EventType>(EVENT_SCOREBOARD+2*i+1));
         assert(pl != nullptr);
-        pl->SetName(StrUtils::ToString<int>(m_scoreboard->GetScore(team)));
+        pl->SetName(StrUtils::ToString<int>(m_scoreboard->GetScore(team).points));
 
         i++;
     }
