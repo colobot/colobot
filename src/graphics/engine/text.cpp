@@ -94,6 +94,77 @@ const Math::IntPoint REFERENCE_SIZE(800, 600);
 const Math::IntPoint FONT_TEXTURE_SIZE(256, 256);
 } // anonymous namespace
 
+/// The QuadBatch is responsible for collecting as many quad (aka rectangle) draws as possible and
+/// sending them to the CDevice in one big batch. This avoids making one CDevice::DrawPrimitive call
+/// for every CText::DrawCharAndAdjustPos call, which makes text rendering much faster.
+/// Currently we only collect textured quads (ie. ones using Vertex), not untextured quads (which
+/// use VertexCol). Untextured quads are only drawn via DrawHighlight, which happens much less often
+/// than drawing textured quads.
+class CText::CQuadBatch
+{
+public:
+    explicit CQuadBatch(CEngine& engine)
+        : m_engine(engine)
+    {
+        m_quads.reserve(1024);
+    }
+
+    /// Add a quad to be rendered.
+    /// This may trigger a call to Flush() if necessary.
+    void Add(Vertex vertices[4], unsigned int texID, EngineRenderState renderState, Color color)
+    {
+        if (texID != m_texID || renderState != m_renderState || color != m_color)
+        {
+            Flush();
+            m_texID = texID;
+            m_renderState = renderState;
+            m_color = color;
+        }
+        m_quads.emplace_back(Quad{{vertices[0], vertices[1], vertices[2], vertices[3]}});
+    }
+
+    /// Draw all pending quads immediately.
+    void Flush()
+    {
+        if (m_quads.empty()) return;
+
+        m_engine.SetState(m_renderState);
+        m_engine.GetDevice()->SetTexture(0, m_texID);
+
+        assert(m_firsts.size() == m_counts.size());
+        if (m_firsts.size() < m_quads.size())
+        {
+            // m_firsts needs to look like { 0, 4, 8, 12, ... }
+            // m_counts needs to look like { 4, 4, 4,  4, ... }
+            // and both need to be the same length as m_quads
+            m_counts.resize(m_quads.size(), 4);
+            std::size_t begin = m_firsts.size();
+            m_firsts.resize(m_quads.size());
+            for (std::size_t i = begin; i < m_firsts.size(); ++i)
+            {
+                m_firsts[i] = static_cast<int>(4 * i);
+            }
+        }
+
+        const Vertex* vertices = m_quads.front().vertices;
+        m_engine.GetDevice()->DrawPrimitives(PRIMITIVE_TRIANGLE_STRIP, vertices, m_firsts.data(),
+                                             m_counts.data(), static_cast<int>(m_quads.size()), m_color);
+        m_engine.AddStatisticTriangle(static_cast<int>(m_quads.size() * 2));
+        m_quads.clear();
+    }
+private:
+    CEngine& m_engine;
+
+    struct Quad { Vertex vertices[4]; };
+    std::vector<Quad> m_quads;
+    std::vector<int> m_firsts;
+    std::vector<int> m_counts;
+
+    Color m_color;
+    unsigned int m_texID{};
+    EngineRenderState m_renderState{};
+};
+
 
 CText::CText(CEngine* engine)
 {
@@ -106,6 +177,8 @@ CText::CText(CEngine* engine)
     m_lastFontType = FONT_COLOBOT;
     m_lastFontSize = 0;
     m_lastCachedFont = nullptr;
+
+    m_quadBatch = MakeUnique<CQuadBatch>(*engine);
 }
 
 CText::~CText()
@@ -690,7 +763,7 @@ void CText::DrawString(const std::string &text, std::vector<FontMetaChar>::itera
                        std::vector<FontMetaChar>::iterator end,
                        float size, Math::IntPoint pos, int width, int eol, Color color)
 {
-    m_engine->SetState(ENG_RSTATE_TEXT);
+    m_engine->SetWindowCoordinates();
 
     int start = pos.x;
 
@@ -755,6 +828,8 @@ void CText::DrawString(const std::string &text, std::vector<FontMetaChar>::itera
             Math::IntPoint charSize;
             charSize.x = GetCharWidthInt(ch, font, size, offset);
             charSize.y = GetHeightInt(font, size);
+            // NB. for quad batching to improve highlight drawing performance, this code would have
+            // to be rearranged to draw all highlights before any characters are drawn.
             DrawHighlight(format[fmtIndex], pos, charSize);
         }
 
@@ -776,6 +851,8 @@ void CText::DrawString(const std::string &text, std::vector<FontMetaChar>::itera
         color = Color(1.0f, 0.0f, 0.0f);
         DrawCharAndAdjustPos(ch, font, size, pos, color);
     }
+    m_quadBatch->Flush();
+    m_engine->SetInterfaceCoordinates();
 }
 
 void CText::StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &chars)
@@ -843,14 +920,15 @@ void CText::DrawString(const std::string &text, FontType font,
 {
     assert(font != FONT_BUTTON);
 
-    m_engine->SetState(ENG_RSTATE_TEXT);
-
     std::vector<UTF8Char> chars;
     StringToUTFCharList(text, chars);
+    m_engine->SetWindowCoordinates();
     for (auto it = chars.begin(); it != chars.end(); ++it)
     {
         DrawCharAndAdjustPos(*it, font, size, pos, color);
     }
+    m_quadBatch->Flush();
+    m_engine->SetInterfaceCoordinates();
 }
 
 void CText::DrawHighlight(FontMetaChar hl, Math::IntPoint pos, Math::IntPoint size)
@@ -873,6 +951,8 @@ void CText::DrawHighlight(FontMetaChar hl, Math::IntPoint pos, Math::IntPoint si
     {
         return;
     }
+
+    m_quadBatch->Flush();
 
     Math::IntPoint vsize = m_engine->GetWindowSize();
     float h = 0.0f;
@@ -902,9 +982,7 @@ void CText::DrawHighlight(FontMetaChar hl, Math::IntPoint pos, Math::IntPoint si
         VertexCol(Math::Vector(p2.x, p1.y, 0.0f), grad[1])
     };
 
-    m_engine->SetWindowCoordinates();
     m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, quad, 4);
-    m_engine->SetInterfaceCoordinates();
     m_engine->AddStatisticTriangle(2);
 
     m_device->SetTextureEnabled(0, true);
@@ -925,22 +1003,22 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::I
 
         // For whatever reason ch.c1 is a SIGNED char, we need to fix that
         unsigned char icon = static_cast<unsigned char>(ch.c1);
+
+        unsigned int texID;
+
         if ( icon >= 128 )
         {
             icon -= 128;
-            m_engine->SetTexture("textures/interface/button3.png");
-            m_engine->SetState(ENG_RSTATE_TTEXTURE_WHITE);
+            texID = m_engine->LoadTexture("textures/interface/button3.png").id;
         }
         else if ( icon >= 64 )
         {
             icon -= 64;
-            m_engine->SetTexture("textures/interface/button2.png");
-            m_engine->SetState(ENG_RSTATE_TTEXTURE_WHITE);
+            texID = m_engine->LoadTexture("textures/interface/button2.png").id;
         }
         else
         {
-            m_engine->SetTexture("textures/interface/button1.png");
-            m_engine->SetState(ENG_RSTATE_TTEXTURE_WHITE);
+            texID = m_engine->LoadTexture("textures/interface/button1.png").id;
         }
 
         Math::Point uv1, uv2;
@@ -963,15 +1041,9 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::I
             Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(uv2.x, uv1.y))
         };
 
-        m_engine->SetWindowCoordinates();
-        m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, quad, 4, color);
-        m_engine->SetInterfaceCoordinates();
-        m_engine->AddStatisticTriangle(2);
+        m_quadBatch->Add(quad, texID, ENG_RSTATE_TTEXTURE_WHITE, color);
 
         pos.x += width;
-
-        // Don't forget to restore the state!
-        m_engine->SetState(ENG_RSTATE_TEXT);
     }
     else
     {
@@ -1007,11 +1079,7 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::I
             Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(texCoord2.x, texCoord1.y))
         };
 
-        m_device->SetTexture(0, tex.id);
-        m_engine->SetWindowCoordinates();
-        m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, quad, 4, color);
-        m_engine->SetInterfaceCoordinates();
-        m_engine->AddStatisticTriangle(2);
+        m_quadBatch->Add(quad, tex.id, ENG_RSTATE_TEXT, color);
 
         pos.x += tex.charSize.x * width;
     }
