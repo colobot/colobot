@@ -365,6 +365,8 @@ bool COldObject::DamageObject(DamageType type, float force, CObject* killer)
         if ( m_type == OBJECT_POWER && type == DamageType::Collision ) return false;
         if ( m_type == OBJECT_NUCLEAR && type == DamageType::Collision ) return false;
 
+        if ( m_magnifyDamage * m_main->GetGlobalMagnifyDamage() == 0 ) return false; // Don't destroy if magnifyDamage=0
+
         DestroyObject(DestructionType::Explosion, killer);
         return true;
     }
