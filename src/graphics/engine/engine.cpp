@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -146,6 +146,7 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
     m_showStats = false;
 
     m_focus = 0.75f;
+    m_hfov = 2.0f * atan((640.f/480.f) * tan(m_focus / 2.0f));
 
     m_rankView = 0;
 
@@ -2382,7 +2383,7 @@ bool CEngine::LoadAllTextures()
     return ok;
 }
 
-bool IsExcludeColor(Math::Point *exclude, int x, int y)
+static bool IsExcludeColor(Math::Point *exclude, int x, int y)
 {
     int i = 0;
     while ( exclude[i+0].x != 0.0f || exclude[i+0].y != 0.0f ||

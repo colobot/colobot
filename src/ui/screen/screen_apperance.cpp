@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -457,7 +457,7 @@ float CScreenApperance::GetPersoAngle()
 
 // Tests whether two colors are equal or nearly are.
 
-bool EqColor(const Gfx::Color &c1, const Gfx::Color &c2)
+static bool EqColor(const Gfx::Color &c1, const Gfx::Color &c2)
 {
     return (fabs(c1.r-c2.r) < 0.01f &&
             fabs(c1.g-c2.g) < 0.01f &&

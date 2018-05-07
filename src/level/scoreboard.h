@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2017, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -95,7 +95,7 @@ public:
      * \brief Scoreboard rule for destroying other objects
      * \see CScoreboard::AddKillRule()
      */
-    class CScoreboardKillRule : public CScoreboardRule, public CObjectCondition
+    class CScoreboardKillRule final : public CScoreboardRule, public CObjectCondition
     {
     public:
         //! Read from line in scene file
@@ -107,7 +107,7 @@ public:
      * \brief Scoreboard rule for EndMissionTake rewards
      * \see CScoreboard::AddEndTakeRule()
      */
-    class CScoreboardEndTakeRule : public CScoreboardRule
+    class CScoreboardEndTakeRule final : public CScoreboardRule
     {
     public:
         int team = 0;
@@ -132,7 +132,7 @@ public:
 
     void AddPoints(int team, int points);
     Score GetScore(int team);
-    void SetScore(int team, int score);
+    void SetScore(int team, int points);
 
     SortType GetSortType();
     void SetSortType(SortType type);
