@@ -246,8 +246,8 @@ struct EngineBaseObject
     Math::Vector           bboxMin;
     //! bounding box max (origin 0,0,0 always included)
     Math::Vector           bboxMax;
-    //! Radius of the sphere at the origin
-    float                  radius = 0.0f;
+    //! A bounding sphere that contains all the vertices in this EngineBaseObject
+    Math::Sphere           boundingSphere;
     //! Next tier (Tex)
     std::vector<EngineBaseObjTexTier> next;
 
