@@ -96,19 +96,15 @@ void main()
 
         if (uni_ShadowTextureEnabled)
         {
+            float value = texture(uni_ShadowTexture, data.ShadowCoord.xyz);
 #ifdef CONFIG_QUALITY_SHADOWS
-            float offset = 0.00025f;
-
-            float value = (1.0f / 5.0f) * (texture(uni_ShadowTexture, data.ShadowCoord.xyz)
-                    + texture(uni_ShadowTexture, data.ShadowCoord.xyz + vec3( offset,    0.0f, 0.0f))
-                    + texture(uni_ShadowTexture, data.ShadowCoord.xyz + vec3(-offset,    0.0f, 0.0f))
-                    + texture(uni_ShadowTexture, data.ShadowCoord.xyz + vec3(   0.0f,  offset, 0.0f))
-                    + texture(uni_ShadowTexture, data.ShadowCoord.xyz + vec3(   0.0f, -offset, 0.0f)));
-
-            shadow = mix(uni_ShadowColor, 1.0f, value);
-#else
-            shadow = mix(uni_ShadowColor, 1.0f, texture(uni_ShadowTexture, data.ShadowCoord.xyz));
+            value += textureOffset(uni_ShadowTexture, data.ShadowCoord.xyz, ivec2( 1, 0))
+                   + textureOffset(uni_ShadowTexture, data.ShadowCoord.xyz, ivec2(-1, 0))
+                   + textureOffset(uni_ShadowTexture, data.ShadowCoord.xyz, ivec2( 0, 1))
+                   + textureOffset(uni_ShadowTexture, data.ShadowCoord.xyz, ivec2( 0,-1));
+            value = value * (1.0f / 5.0f);
 #endif
+            shadow = mix(uni_ShadowColor, 1.0f, value);
         }
 
         vec4 result = uni_AmbientColor * ambient
