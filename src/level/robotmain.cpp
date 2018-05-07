@@ -6012,18 +6012,14 @@ void CRobotMain::SetCodeBattleSpectatorMode(bool mode)
 
 void CRobotMain::UpdateDebugCrashSpheres()
 {
-    m_engine->ClearDisplayCrashSpheres();
     if (m_debugCrashSpheres)
     {
         for (CObject* obj : m_objMan->GetAllObjects())
         {
-            auto crashSpheres = obj->GetAllCrashSpheres();
-            std::vector<Math::Sphere> displaySpheres;
-            for (const auto& crashSphere : crashSpheres)
+            for (const auto& crashSphere : obj->GetAllCrashSpheres())
             {
-                displaySpheres.push_back(crashSphere.sphere);
+                m_engine->RenderDebugSphere(crashSphere.sphere, Math::Matrix{}, Gfx::Color{0.0f, 0.0f, 1.0f, 1.0f});
             }
-            m_engine->AddDisplayCrashSpheres(displaySpheres);
         }
     }
 }
