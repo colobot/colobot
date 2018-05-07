@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -94,7 +94,7 @@ bool CChannel::Pause()
     return true;
 }
 
-bool CChannel::SetPosition(const Math::Vector &pos)
+bool CChannel::SetPosition(const Math::Vector &pos, bool relativeToListener)
 {
     if (!m_ready || m_buffer == nullptr)
     {
@@ -102,6 +102,7 @@ bool CChannel::SetPosition(const Math::Vector &pos)
     }
 
     alSource3f(m_source, AL_POSITION, pos.x, pos.y, pos.z);
+    alSourcei(m_source, AL_SOURCE_RELATIVE, relativeToListener);
     if (CheckOpenALError())
     {
         GetLogger()->Debug("Could not set sound position. Code: %d\n", GetOpenALErrorCode());

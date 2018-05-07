@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2017, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -22,9 +22,9 @@
 #include "common/restext.h"
 #include "common/stringutils.h"
 
-#include "level/parser/parserline.h"
-
 #include "level/robotmain.h"
+
+#include "level/parser/parserline.h"
 
 #include "object/object.h"
 
@@ -99,15 +99,26 @@ void CScoreboard::AddPoints(int team, int points)
     text = StrUtils::Format(text.c_str(), main->GetTeamName(team).c_str(), points);
     main->GetDisplayText()->DisplayText(text.c_str(), Math::Vector(0.0f,0.0f,0.0f), 15.0f, 60.0f, 10.0f, Ui::TT_WARNING);
 
-    m_score[team] += points;
+    m_score[team].points += points;
+    m_score[team].time = main->GetGameTime();
 }
 
-int CScoreboard::GetScore(int team)
+Score CScoreboard::GetScore(int team)
 {
     return m_score[team];
 }
 
 void CScoreboard::SetScore(int team, int points)
 {
-    m_score[team] = points;
+    m_score[team].points = points;
+}
+
+SortType CScoreboard::GetSortType()
+{
+    return m_sorttype;
+}
+
+void CScoreboard::SetSortType(SortType type)
+{
+    m_sorttype = type;
 }
