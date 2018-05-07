@@ -94,7 +94,7 @@ bool CChannel::Pause()
     return true;
 }
 
-bool CChannel::SetPosition(const Math::Vector &pos)
+bool CChannel::SetPosition(const Math::Vector &pos, bool relativeToListener)
 {
     if (!m_ready || m_buffer == nullptr)
     {
@@ -102,6 +102,7 @@ bool CChannel::SetPosition(const Math::Vector &pos)
     }
 
     alSource3f(m_source, AL_POSITION, pos.x, pos.y, pos.z);
+    alSourcei(m_source, AL_SOURCE_RELATIVE, relativeToListener);
     if (CheckOpenALError())
     {
         GetLogger()->Debug("Could not set sound position. Code: %d\n", GetOpenALErrorCode());

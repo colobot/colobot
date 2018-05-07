@@ -59,7 +59,7 @@ public:
     bool Pause();
     bool Stop();
 
-    bool SetPosition(const Math::Vector &pos);
+    bool SetPosition(const Math::Vector &pos, bool relativeToListener = false);
 
     bool SetFrequency(float freq);
     float GetFrequency();

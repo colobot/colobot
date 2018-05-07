@@ -116,6 +116,7 @@ public:
 
 private:
     void CleanUp();
+    int Play(SoundType sound, const Math::Vector &pos, bool relativeToListener, float amplitude, float frequency, bool loop);
     int GetPriority(SoundType);
     bool SearchFreeBuffer(SoundType sound, int &channel, bool &alreadyLoaded);
     bool CheckChannel(int &channel);
