@@ -791,8 +791,6 @@ void CEngine::AddBaseObjQuick(int baseObjRank, const EngineBaseObjDataTier& buff
             p1.bboxMax.y = Math::Max(p3.vertices[i].coord.y, p1.bboxMax.y);
             p1.bboxMax.z = Math::Max(p3.vertices[i].coord.z, p1.bboxMax.z);
         }
-//2 following lines to check (merge doubt)
-        p1.radius = Math::Max(p1.bboxMin.Length(), p1.bboxMax.Length());
         p1.boundingSphere = Math::BoundingSphereForBox(p1.bboxMin, p1.bboxMax);
     }
 
@@ -3165,26 +3163,9 @@ void CEngine::ApplyChange()
     }
 }
 
-
-void CEngine::ClearDisplayCrashSpheres()
-{   //toCheck : to rm ?
-    m_displayCrashSpheres.clear();
-    m_debugCrashSpheres = false;
-}
-
-void CEngine::AddDisplayCrashSpheres(const std   ::vector<Math::Sphere>& crashSpheres)
-{   //toCheck : to rm ?
-    for (const auto& crashSphere : crashSpheres)
-        m_displayCrashSpheres.push_back(crashSphere);
-    m_debugCrashSpheres = true;
-}
-
-
 /*******************************************************
                       Rendering
  *******************************************************/
-
-
 
 /**
   This function sets up render states, clears the
