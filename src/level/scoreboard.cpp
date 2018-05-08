@@ -94,7 +94,6 @@ void CScoreboard::UpdateObjectCount()
         assert(rule->winTeam != 0);
         int count = rule->CountObjects();
         int countDiff = count - rule->lastCount;
-        printf("%d %d\n", count, countDiff);
         if (countDiff != 0)
         {
             rule->lastCount = count;
