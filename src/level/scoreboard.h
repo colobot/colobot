@@ -39,7 +39,7 @@ class CObject;
 struct Score
 {
     int points = 0; //! Team score
-    float time = 0; //! Time when points were scored 
+    float time = 0; //! Time when points were scored
 };
 
 enum class SortType

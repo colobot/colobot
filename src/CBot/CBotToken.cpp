@@ -26,7 +26,8 @@
 namespace CBot
 {
 
-namespace {
+namespace
+{
     template <typename L, typename R>
     boost::bimap<L, R> makeBimap(std::initializer_list<typename boost::bimap<L, R>::value_type> list)
     {
@@ -449,10 +450,11 @@ std::unique_ptr<CBotToken> CBotToken::CompileTokens(const std::string& program)
 ////////////////////////////////////////////////////////////////////////////////
 int CBotToken::GetKeyWord(const std::string& w)
 {
-	auto it = KEYWORDS.right.find(w);
-	if (it != KEYWORDS.right.end()) {
-		return it->second;
-	}
+    auto it = KEYWORDS.right.find(w);
+    if (it != KEYWORDS.right.end())
+    {
+        return it->second;
+    }
 
     return -1;
 }

@@ -957,9 +957,9 @@ int CLevelParserParam::AsResearchFlag(int def)
 
 SortType CLevelParserParam::ToSortType(std::string value)
 {
-    if (value == "Points" ) return SortType::SORT_POINTS;
+    if (value == "Points") return SortType::SORT_POINTS;
     if (value == "Name"  ) return SortType::SORT_ID;
-	return SortType::SORT_ID;
+    return SortType::SORT_ID;
 }
 
 SortType CLevelParserParam::AsSortType()
