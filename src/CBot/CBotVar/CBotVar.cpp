@@ -48,7 +48,7 @@ namespace CBot
 ////////////////////////////////////////////////////////////////////////////////
 long CBotVar::m_identcpt = 0;
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////    
 CBotVar::CBotVar()
     : m_token(nullptr)
     , m_type(-1)
@@ -65,8 +65,17 @@ CBotVar::CBotVar()
 
 CBotVar::CBotVar(const CBotToken &name)
     : CBotVar()
+    , m_token(new CBotToken(name))
 {
-    m_token = new CBotToken(name);
+    m_pMyThis = nullptr;
+    m_pUserPtr = nullptr;
+    m_InitExpr = nullptr;
+    m_LimExpr = nullptr;
+    m_type  = -1;
+    m_binit = InitType::UNDEF;
+    m_ident = 0;
+    m_bStatic = false;
+    m_mPrivate = ProtectionLevel::Public;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -379,7 +388,7 @@ void CBotVar::SetInit(CBotVar::InitType initType)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string CBotVar::GetName()
+const std::string& CBotVar::GetName()
 {
     return    m_token->GetString();
 }

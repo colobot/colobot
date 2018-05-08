@@ -594,6 +594,17 @@ enum EventType
     EVENT_CODE_BATTLE_START = 2200, //!< button that starts the code battle
     EVENT_CODE_BATTLE_SPECTATOR = 2201, //!< button that controls the code battle spectator camera
 
+    //! Buttons that switch viewpoints
+    EVENT_VIEWPOINT0 = 3000,
+    EVENT_VIEWPOINT1 = 3001,
+    EVENT_VIEWPOINT2 = 3002,
+    EVENT_VIEWPOINT3 = 3003,
+    EVENT_VIEWPOINT4 = 3004,
+    EVENT_VIEWPOINT5 = 3005,
+    EVENT_VIEWPOINT6 = 3006,
+    EVENT_VIEWPOINT7 = 3007,
+    EVENT_VIEWPOINT8 = 3008,
+    EVENT_VIEWPOINT9 = 3009,
     //! Maximum value of standard events
     EVENT_STD_MAX,
 

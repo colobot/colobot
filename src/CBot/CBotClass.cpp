@@ -191,7 +191,7 @@ bool CBotClass::AddItem(CBotVar* pVar)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string  CBotClass::GetName()
+const std::string&  CBotClass::GetName()
 {
     return m_name;
 }

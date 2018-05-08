@@ -341,8 +341,19 @@ bool COldObject::DamageObject(DamageType type, float force, CObject* killer)
     {
         if ( m_type == OBJECT_BOMB && type != DamageType::Explosive )
             return false; // Mine can't be destroyed by shooting
-        if ( m_type == OBJECT_URANIUM )
-            return false; // UraniumOre is not destroyable (see #777)
+        if ( m_type == OBJECT_URANIUM && (type == DamageType::Fire || type == DamageType::Organic) )
+            return false; // UraniumOre is not destroyable by shooting or aliens (see #777)
+        if ( m_type == OBJECT_STONE && (type == DamageType::Fire || type == DamageType::Organic) )
+            return false; // TitaniumOre is not destroyable either
+        // PowerCell, NuclearCell and Titanium are destroyable by shooting, but not by collisions!
+        if ( m_type == OBJECT_METAL && type == DamageType::Collision )
+            return false;
+        if ( m_type == OBJECT_POWER && type == DamageType::Collision )
+            return false;
+        if ( m_type == OBJECT_NUCLEAR && type == DamageType::Collision )
+            return false;
+        if ( m_magnifyDamage * m_main->GetGlobalMagnifyDamage() == 0 )
+            return false; // Don't destroy if magnifyDamage=0       
 
         DestroyObject(DestructionType::Explosion, killer);
             return true;

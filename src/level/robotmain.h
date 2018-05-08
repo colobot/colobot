@@ -150,6 +150,11 @@ struct MinMax
     int max = -1;
 };
 
+struct Viewpoint
+{
+    Math::Vector    eye;
+    Math::Vector    look;
+};
 
 const int SATCOM_HUSTON     = 0;
 const int SATCOM_SAT        = 1;
@@ -717,4 +722,7 @@ protected:
     std::deque<std::string> m_commandHistory;
     //! Index of currently selected element in command history
     int             m_commandHistoryIndex;
+
+    //! Vector of available viewpoints
+    std::vector<Viewpoint> m_viewpoints;
 };

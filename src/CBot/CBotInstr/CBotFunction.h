@@ -207,7 +207,7 @@ public:
      * \brief GetName
      * \return
      */
-    std::string GetName();
+    const std::string& GetName();
 
     /*!
      * \brief GetParams
