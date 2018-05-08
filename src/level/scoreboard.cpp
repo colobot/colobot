@@ -41,6 +41,7 @@ void CScoreboard::CScoreboardKillRule::Read(CLevelParserLine* line)
 {
     CScoreboardRule::Read(line);
     CObjectCondition::Read(line);
+    this->friendlyFire = line->GetParam("friendlyFire")->AsBool(false);
 }
 
 void CScoreboard::CScoreboardObjectRule::Read(CLevelParserLine* line)
@@ -82,6 +83,8 @@ void CScoreboard::ProcessKill(CObject* target, CObject* killer)
             killer->GetTeam() != 0 &&
             rule->CheckForObject(target))
         {
+            if (killer->GetTeam() == target->GetTeam() && !rule->friendlyFire)
+                continue;
             AddPoints(killer->GetTeam(), rule->score);
         }
     }

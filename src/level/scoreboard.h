@@ -99,6 +99,8 @@ public:
     class CScoreboardKillRule final : public CScoreboardRule, public CObjectCondition
     {
     public:
+        bool friendlyFire = false;
+
         //! Read from line in scene file
         void Read(CLevelParserLine* line) override;
     };
