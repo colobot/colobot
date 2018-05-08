@@ -1089,6 +1089,10 @@ void COldObject::Read(CLevelParserLine* line)
     {
         SetRange(line->GetParam("range")->AsFloat(30.0f));
     }
+    if (Implements(ObjectInterfaceType::Fragile))
+    {
+        SetMagnifyDamage(line->GetParam("magnifyDamage")->AsFloat(1.0f)); // TODO: This is a temporary hack for now - CFragileObject doesn't have SetMagnifyDamage ~krzys_h
+    }
     if (Implements(ObjectInterfaceType::Shielded))
     {
         SetShield(line->GetParam("shield")->AsFloat(1.0f));
