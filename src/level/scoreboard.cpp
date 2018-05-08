@@ -43,6 +43,13 @@ void CScoreboard::CScoreboardKillRule::Read(CLevelParserLine* line)
     CObjectCondition::Read(line);
 }
 
+void CScoreboard::CScoreboardObjectRule::Read(CLevelParserLine* line)
+{
+    CScoreboardRule::Read(line);
+    CObjectCondition::Read(line);
+    this->winTeam = line->GetParam("winTeam")->AsInt();
+}
+
 void CScoreboard::CScoreboardEndTakeRule::Read(CLevelParserLine* line)
 {
     CScoreboardRule::Read(line);
@@ -53,6 +60,11 @@ void CScoreboard::CScoreboardEndTakeRule::Read(CLevelParserLine* line)
 void CScoreboard::AddKillRule(std::unique_ptr<CScoreboardKillRule> rule)
 {
     m_rulesKill.push_back(std::move(rule));
+}
+
+void CScoreboard::AddObjectRule(std::unique_ptr<CScoreboard::CScoreboardObjectRule> rule)
+{
+    m_rulesObject.push_back(std::move(rule));
 }
 
 void CScoreboard::AddEndTakeRule(std::unique_ptr<CScoreboardEndTakeRule> rule)
@@ -71,6 +83,22 @@ void CScoreboard::ProcessKill(CObject* target, CObject* killer)
             rule->CheckForObject(target))
         {
             AddPoints(killer->GetTeam(), rule->score);
+        }
+    }
+}
+
+void CScoreboard::UpdateObjectCount()
+{
+    for (auto& rule : m_rulesObject)
+    {
+        assert(rule->winTeam != 0);
+        int count = rule->CountObjects();
+        int countDiff = count - rule->lastCount;
+        printf("%d %d\n", count, countDiff);
+        if (countDiff != 0)
+        {
+            rule->lastCount = count;
+            AddPoints(rule->winTeam, rule->score * countDiff);
         }
     }
 }

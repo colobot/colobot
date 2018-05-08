@@ -2527,6 +2527,8 @@ bool CRobotMain::EventFrame(const Event &event)
         {
             CheckEndMission(true);
             UpdateAudio(true);
+            if (m_scoreboard)
+                m_scoreboard->UpdateObjectCount();
         }
 
         if (m_winDelay > 0.0f && !m_editLock)
@@ -3606,6 +3608,15 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 auto rule = MakeUnique<CScoreboard::CScoreboardKillRule>();
                 rule->Read(line.get());
                 m_scoreboard->AddKillRule(std::move(rule));
+                continue;
+            }
+            if (line->GetCommand() == "ScoreboardObjectRule" && !resetObject)
+            {
+                if (!m_scoreboard)
+                    throw CLevelParserException("ScoreboardObjectRule encountered but scoreboard is not enabled");
+                auto rule = MakeUnique<CScoreboard::CScoreboardObjectRule>();
+                rule->Read(line.get());
+                m_scoreboard->AddObjectRule(std::move(rule));
                 continue;
             }
             if (line->GetCommand() == "ScoreboardEndTakeRule" && !resetObject)

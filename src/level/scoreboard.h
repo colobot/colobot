@@ -64,6 +64,7 @@ enum class SortType
  * ScoreboardSortType sort=Name // sort teams alphabetically, another option is sort=Points, sorting teams in order of points
  * ScoreboardKillRule type=WheeledShooter team=1 score=500 // destruction of team 1's WheeledShooter gives 100 points to the team that destroyed it
  * ScoreboardKillRule type=TargetBot score=100 // destruction of TargetBot (any team) gives 100 points
+ * ScoreboardObjectRule pos=0.0;0.5 dist=5.0 type=Titanium winTeam=1 score=5 // each Titanium within 5 meters of 0;0 gives team 1 5 points, losing Titanium gives -5
  * ScoreboardEndTakeRule score=1000 // completion of EndMissionTake objectives for any team results in 1000 points for that team
  * \endcode
  */
@@ -103,6 +104,22 @@ public:
     };
 
     /**
+     * \class CScoreboardObjectRule
+     * \brief Scoreboard rule for counting objects
+     * \see CScoreboard::AddObjectRule()
+     */
+    class CScoreboardObjectRule final : public CScoreboardRule, public CObjectCondition
+    {
+    public:
+        int winTeam = 0;
+
+        //! Read from line in scene file
+        void Read(CLevelParserLine* line) override;
+
+        int lastCount = 0;
+    };
+
+    /**
      * \class CScoreboardEndTakeRule
      * \brief Scoreboard rule for EndMissionTake rewards
      * \see CScoreboard::AddEndTakeRule()
@@ -120,6 +137,8 @@ public:
 public:
     //! Add ScoreboardKillRule
     void AddKillRule(std::unique_ptr<CScoreboardKillRule> rule);
+    //! Add ScoreboardObjectRule
+    void AddObjectRule(std::unique_ptr<CScoreboardObjectRule> rule);
     //! Add ScoreboardEndTakeRule
     void AddEndTakeRule(std::unique_ptr<CScoreboardEndTakeRule> rule);
 
@@ -127,6 +146,8 @@ public:
     //! \param target The object that has just been destroyed
     //! \param killer The object that caused the destruction, can be null
     void ProcessKill(CObject* target, CObject* killer = nullptr);
+    //! Updates the object count rules
+    void UpdateObjectCount();
     //! Called after EndTake contition has been met, used to handle ScoreboardEndTakeRule
     void ProcessEndTake(int team);
 
@@ -139,6 +160,7 @@ public:
 
 private:
     std::vector<std::unique_ptr<CScoreboardKillRule>> m_rulesKill = {};
+    std::vector<std::unique_ptr<CScoreboardObjectRule>> m_rulesObject = {};
     std::vector<std::unique_ptr<CScoreboardEndTakeRule>> m_rulesEndTake = {};
     std::map<int, Score> m_score;
     int m_finishCounter = 0;

@@ -112,6 +112,18 @@ bool CObjectCondition::CheckForObject(CObject* obj)
     return false;
 }
 
+int CObjectCondition::CountObjects()
+{
+    int nb = 0;
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
+    {
+        if (!obj->GetActive()) continue;
+        if (!CheckForObject(obj)) continue;
+        nb ++;
+    }
+    return nb;
+}
+
 void CSceneCondition::Read(CLevelParserLine* line)
 {
     CObjectCondition::Read(line);
@@ -122,18 +134,6 @@ void CSceneCondition::Read(CLevelParserLine* line)
 
     this->min      = line->GetParam("min")->AsInt(1);
     this->max      = line->GetParam("max")->AsInt(9999);
-}
-
-int CSceneCondition::CountObjects()
-{
-    int nb = 0;
-    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
-    {
-        if (!obj->GetActive()) continue;
-        if (!CheckForObject(obj)) continue;
-        nb ++;
-    }
-    return nb;
 }
 
 bool CSceneCondition::Check()

@@ -58,6 +58,9 @@ public:
 
     //! Checks if this condition is met
     bool CheckForObject(CObject* obj);
+
+    //! Count all object matching the conditions
+    int CountObjects();
 };
 
 /**
@@ -75,10 +78,6 @@ public:
 
     //! Checks if this condition is met
     bool Check();
-
-protected:
-    //! Count all object matching the conditions
-    int CountObjects();
 };
 
 /**
