@@ -684,6 +684,8 @@ void COldObject::SetType(ObjectType type)
     m_type = type;
     m_name = GetObjectName(m_type);
 
+    SetSelectable(IsSelectableByDefault(m_type));
+
     // TODO: Temporary hack
     if ( m_type == OBJECT_MOBILEfa || // WingedGrabber
          m_type == OBJECT_MOBILEfs || // WingedSniffer
