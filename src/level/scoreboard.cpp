@@ -158,7 +158,8 @@ std::vector<std::pair<int, CScoreboard::Score>> CScoreboard::GetSortedScores()
     CRobotMain* main = CRobotMain::GetInstancePointer();
     std::set<int> teams = main->GetAllTeams();
     std::vector<std::pair<int, Score>> sortedTeams(teams.size());
-    std::transform(teams.begin(), teams.end(), sortedTeams.begin(), [&](int team) {
+    std::transform(teams.begin(), teams.end(), sortedTeams.begin(), [&](int team)
+    {
         return *m_score.find(team);
     });
     if (m_sortType == SortType::SORT_POINTS)
