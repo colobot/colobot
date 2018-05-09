@@ -3603,13 +3603,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 {
                     // Create the scoreboard
                     m_scoreboard = MakeUnique<CScoreboard>();
+                    m_scoreboard->SetSortType(line->GetParam("sort")->AsSortType(CScoreboard::SortType::SORT_ID));
                 }
-                continue;
-            }
-
-            if (line->GetCommand() == "ScoreboardSortType" && !resetObject)
-            {
-                m_scoreboard->SetSortType(line->GetParam("sort")->AsSortType());
                 continue;
             }
 
