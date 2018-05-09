@@ -33,8 +33,7 @@ public:
     {
         types[static_cast<int>(ObjectInterfaceType::Carrier)] = true;
     }
-    virtual ~CCarrierObject()
-    {}
+    virtual ~CCarrierObject() = default;
 
     //! Returns carried object
     virtual CObject* GetCargo() = 0;

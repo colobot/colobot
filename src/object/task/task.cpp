@@ -52,13 +52,6 @@ CTask::CTask(COldObject* object)
     m_motion      = m_object->GetMotion();
 }
 
-// Object's destructor.
-
-CTask::~CTask()
-{
-}
-
-
 // Management of an event.
 
 bool CTask::EventProcess(const Event &event)

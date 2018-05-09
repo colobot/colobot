@@ -30,20 +30,6 @@
 
 #include "physics/physics.h"
 
-
-// Object's constructor.
-
-CTaskTurn::CTaskTurn(COldObject* object) : CForegroundTask(object)
-{
-}
-
-// Object's destructor.
-
-CTaskTurn::~CTaskTurn()
-{
-}
-
-
 // Management of an event.
 
 bool CTaskTurn::EventProcess(const Event &event)

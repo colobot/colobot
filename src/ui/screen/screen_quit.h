@@ -27,8 +27,6 @@ namespace Ui
 class CScreenQuit : public CScreen
 {
 public:
-    CScreenQuit();
-
     void CreateInterface() override;
     bool EventProcess(const Event &event) override;
 };

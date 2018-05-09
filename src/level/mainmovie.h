@@ -50,7 +50,6 @@ class CMainMovie
 {
 public:
     CMainMovie();
-    ~CMainMovie();
 
     void            Flush();
     bool            Start(MainMovieType type, float time);

@@ -49,13 +49,6 @@ CAutoConvert::CAutoConvert(COldObject* object) : CAuto(object)
     m_soundChannel = -1;
 }
 
-// Object's destructor.
-
-CAutoConvert::~CAutoConvert()
-{
-}
-
-
 // Destroys the object.
 
 void CAutoConvert::DeleteObject(bool all)

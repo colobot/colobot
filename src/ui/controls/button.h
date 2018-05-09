@@ -30,7 +30,6 @@ class CButton : public CControl
 {
 public:
     CButton();
-    virtual ~CButton();
 
     bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType) override;
 

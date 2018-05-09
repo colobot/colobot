@@ -39,8 +39,7 @@ public:
     {
         types[static_cast<int>(ObjectInterfaceType::Movable)] = true;
     }
-    virtual ~CMovableObject()
-    {}
+    virtual ~CMovableObject() = default;
 
     //! Returns CPhysics instance associated with this object. If the object implements Movable interface, and type != OBJECT_TOTO, this can be assumed to be != nullptr
     virtual CPhysics* GetPhysics() = 0;

@@ -39,8 +39,7 @@ enum TaskFireAnt
 class CTaskFireAnt : public CForegroundTask
 {
 public:
-    CTaskFireAnt(COldObject* object);
-    ~CTaskFireAnt();
+    using CForegroundTask::CForegroundTask;
 
     bool    EventProcess(const Event &event) override;
 

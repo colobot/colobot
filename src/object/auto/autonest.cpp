@@ -38,13 +38,6 @@ CAutoNest::CAutoNest(COldObject* object) : CAuto(object)
     Init();
 }
 
-// Object's destructor.
-
-CAutoNest::~CAutoNest()
-{
-}
-
-
 // Destroys the object.
 
 void CAutoNest::DeleteObject(bool all)

@@ -52,7 +52,6 @@ class CDisplayText
 {
 public:
     CDisplayText();
-    ~CDisplayText();
 
     void        DeleteObject();
 

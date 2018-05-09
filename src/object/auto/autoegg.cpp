@@ -49,13 +49,6 @@ CAutoEgg::CAutoEgg(COldObject* object) : CAuto(object)
     Init();
 }
 
-// Object's destructor.
-
-CAutoEgg::~CAutoEgg()
-{
-}
-
-
 // Destroys the object.
 
 void CAutoEgg::DeleteObject(bool all)

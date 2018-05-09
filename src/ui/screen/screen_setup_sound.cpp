@@ -38,10 +38,6 @@
 namespace Ui
 {
 
-CScreenSetupSound::CScreenSetupSound()
-{
-}
-
 void CScreenSetupSound::SetActive()
 {
     m_tab = PHASE_SETUPs;

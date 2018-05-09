@@ -33,9 +33,6 @@ class CBotExprLitNum : public CBotInstr
 {
 
 public:
-    CBotExprLitNum();
-    ~CBotExprLitNum();
-
     /*!
      * \brief Compile
      * \param p

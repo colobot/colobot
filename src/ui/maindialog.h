@@ -47,7 +47,6 @@ class CMainDialog
 {
 public:
     CMainDialog();
-    ~CMainDialog();
 
     bool    EventProcess(const Event &event);
 

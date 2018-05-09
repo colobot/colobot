@@ -53,7 +53,6 @@ class CStudio
 {
 public:
     CStudio();
-    ~CStudio();
 
     bool        EventProcess(const Event &event);
 

@@ -56,13 +56,6 @@ CControl::CControl()
     m_glintMouse    = Math::Point(0.0f, 0.0f);
 }
 
-// Object's destructor.
-
-CControl::~CControl()
-{
-}
-
-
 // Creates a new button.
 //  pos: [0..1]
 

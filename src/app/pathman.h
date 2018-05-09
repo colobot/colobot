@@ -38,7 +38,6 @@ class CPathManager : public CSingleton<CPathManager>
 {
 public:
     CPathManager(CSystemUtils* systemUtils);
-    ~CPathManager();
 
     void SetDataPath(std::string dataPath);
     void SetLangPath(std::string langPath);

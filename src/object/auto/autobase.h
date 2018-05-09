@@ -70,7 +70,6 @@ class CAutoBase : public CAuto
 {
 public:
     CAutoBase(COldObject* object);
-    ~CAutoBase();
 
     void        DeleteObject(bool bAll=false) override;
 

@@ -38,13 +38,6 @@ CCheck::CCheck() : CControl()
 {
 }
 
-// Object's destructor.
-
-CCheck::~CCheck()
-{
-}
-
-
 // Creates a new button.
 
 bool CCheck::Create(Math::Point pos, Math::Point dim, int icon, EventType eventType)

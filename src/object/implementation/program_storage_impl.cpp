@@ -61,10 +61,6 @@ CProgramStorageObjectImpl::CProgramStorageObjectImpl(ObjectInterfaceTypes& types
 {
 }
 
-CProgramStorageObjectImpl::~CProgramStorageObjectImpl()
-{}
-
-
 bool CProgramStorageObjectImpl::IntroduceVirus()
 {
     if(m_program.size() == 0) return false;

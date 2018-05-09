@@ -49,9 +49,7 @@ CEditValue::CEditValue() : CControl ()
 
 // Object's destructor.
 
-CEditValue::~CEditValue()
-{
-}
+CEditValue::~CEditValue() = default; // defined here due to incomplete unique_ptr members
 
 
 // Creates a new button.

@@ -60,7 +60,6 @@ class CTaskManip : public CForegroundTask
 {
 public:
     CTaskManip(COldObject* object);
-    ~CTaskManip();
 
     bool        EventProcess(const Event &event) override;
 

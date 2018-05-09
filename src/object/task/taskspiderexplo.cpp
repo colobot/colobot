@@ -31,24 +31,6 @@
 
 #include "physics/physics.h"
 
-
-
-
-// Object's constructor.
-
-CTaskSpiderExplo::CTaskSpiderExplo(COldObject* object) : CForegroundTask(object)
-{
-    m_time = 0.0f;
-    m_bError = false;
-}
-
-// Object's destructor.
-
-CTaskSpiderExplo::~CTaskSpiderExplo()
-{
-}
-
-
 // Management of an event.
 
 bool CTaskSpiderExplo::EventProcess(const Event &event)

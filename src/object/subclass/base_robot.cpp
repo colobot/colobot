@@ -37,9 +37,6 @@ CBaseRobot::CBaseRobot(int id, ObjectType type)
     : CBaseVehicle(id, type)
 {}
 
-CBaseRobot::~CBaseRobot()
-{}
-
 std::unique_ptr<CBaseRobot> CBaseRobot::Create(
     const ObjectCreateParams& params,
     Gfx::COldModelManager* modelManager,

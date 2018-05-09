@@ -60,13 +60,6 @@ CMotionToto::CMotionToto(COldObject* object) : CMotion(object)
     m_mousePos = Math::Point(0.0f, 0.0f);
 }
 
-// Object's destructor.
-
-CMotionToto::~CMotionToto()
-{
-}
-
-
 // Removes an object.
 
 void CMotionToto::DeleteObject(bool bAll)

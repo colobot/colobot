@@ -49,10 +49,7 @@ CGL33Device::CGL33Device(const DeviceConfig &config)
     : m_config(config)
 {}
 
-
-CGL33Device::~CGL33Device()
-{
-}
+CGL33Device::~CGL33Device() = default; // defined here due to incomplete unique_ptr members
 
 void CGL33Device::DebugHook()
 {

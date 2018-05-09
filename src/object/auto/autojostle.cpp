@@ -30,13 +30,6 @@ CAutoJostle::CAutoJostle(COldObject* object) : CAuto(object)
     Init();
 }
 
-// Object's destructor.
-
-CAutoJostle::~CAutoJostle()
-{
-}
-
-
 // Destroys the object.
 
 void CAutoJostle::DeleteObject(bool bAll)

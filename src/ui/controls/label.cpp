@@ -32,13 +32,6 @@ CLabel::CLabel() : CControl()
 {
 }
 
-// Object's destructor.
-
-CLabel::~CLabel()
-{
-}
-
-
 // Creates a new button.
 
 bool CLabel::Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)

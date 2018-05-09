@@ -41,10 +41,6 @@ COldModelManager::COldModelManager(CEngine* engine)
     m_engine = engine;
 }
 
-COldModelManager::~COldModelManager()
-{
-}
-
 bool COldModelManager::LoadModel(const std::string& fileName, bool mirrored, int variant)
 {
     GetLogger()->Debug("Loading model '%s'\n", fileName.c_str());

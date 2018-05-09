@@ -30,9 +30,6 @@ namespace CBot
 class CBotExprLitNull : public CBotInstr
 {
 public:
-    CBotExprLitNull();
-    ~CBotExprLitNull();
-
     /*!
      * \brief Execute Executes, returns an empty pointer.
      * \param pj

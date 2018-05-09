@@ -31,9 +31,6 @@ class CBotBreak : public CBotInstr
 {
 
 public:
-    CBotBreak();
-    ~CBotBreak();
-
     /*!
      * \brief Compile
      * \param p

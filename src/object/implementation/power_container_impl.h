@@ -26,7 +26,6 @@ class CPowerContainerObjectImpl : public CPowerContainerObject
 {
 public:
     explicit CPowerContainerObjectImpl(ObjectInterfaceTypes& types);
-    virtual ~CPowerContainerObjectImpl();
 
     void SetEnergyLevel(float level) override;
     float GetEnergyLevel() override;

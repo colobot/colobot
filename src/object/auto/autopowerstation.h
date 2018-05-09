@@ -29,7 +29,6 @@ class CAutoPowerStation : public CAuto
 {
 public:
     CAutoPowerStation(COldObject* object);
-    ~CAutoPowerStation();
 
     void        DeleteObject(bool bAll=false) override;
 

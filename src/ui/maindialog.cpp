@@ -62,12 +62,6 @@ CMainDialog::CMainDialog()
     m_dialogParti = 0.0f;
 }
 
-// Destructor of robot application.
-
-CMainDialog::~CMainDialog()
-{
-}
-
 // Processing an event.
 // Returns false if the event has been processed completely.
 

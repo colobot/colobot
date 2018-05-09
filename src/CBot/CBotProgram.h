@@ -87,7 +87,7 @@ public:
     /**
      * \brief Constructor
      */
-    CBotProgram();
+    CBotProgram() = default;
 
     /**
      * \brief Constructor

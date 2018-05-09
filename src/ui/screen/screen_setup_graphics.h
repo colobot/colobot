@@ -27,7 +27,6 @@ namespace Ui
 class CScreenSetupGraphics : public CScreenSetup
 {
 public:
-    CScreenSetupGraphics();
     void SetActive() override;
 
     void CreateInterface() override;

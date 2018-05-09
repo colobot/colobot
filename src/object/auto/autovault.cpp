@@ -59,13 +59,6 @@ CAutoVault::CAutoVault(COldObject* object) : CAuto(object)
     Init();
 }
 
-// Object's destructor.
-
-CAutoVault::~CAutoVault()
-{
-}
-
-
 // Destroys the object.
 
 void CAutoVault::DeleteObject(bool bAll)

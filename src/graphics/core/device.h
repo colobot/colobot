@@ -307,7 +307,7 @@ enum RenderTarget
 class CFrameBufferPixels
 {
 public:
-    virtual ~CFrameBufferPixels() {}
+    virtual ~CFrameBufferPixels() = default;
 
     virtual void* GetPixelsData() = 0;
 };
@@ -333,7 +333,7 @@ protected:
     DeviceCapabilities m_capabilities;
 
 public:
-    virtual ~CDevice() {}
+    virtual ~CDevice() = default;
 
     //! Returns last error message or empty string
     inline std::string GetError()

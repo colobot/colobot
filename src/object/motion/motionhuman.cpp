@@ -74,13 +74,6 @@ CMotionHuman::CMotionHuman(COldObject* object)
     m_glassesRank = -1;
 }
 
-// Object's constructor.
-
-CMotionHuman::~CMotionHuman()
-{
-}
-
-
 // Removes an object.
 
 void CMotionHuman::DeleteObject(bool bAll)

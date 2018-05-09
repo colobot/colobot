@@ -40,7 +40,6 @@ class CAutoTower : public CAuto
 {
 public:
     CAutoTower(COldObject* object);
-    ~CAutoTower();
 
     void        DeleteObject(bool bAll=false) override;
 

@@ -40,10 +40,6 @@
 namespace Ui
 {
 
-CScreenSetupGraphics::CScreenSetupGraphics()
-{
-}
-
 void CScreenSetupGraphics::SetActive()
 {
     m_tab = PHASE_SETUPg;

@@ -34,8 +34,7 @@ public:
     {
         types[static_cast<int>(ObjectInterfaceType::Jostleable)] = true;
     }
-    virtual ~CJostleableObject()
-    {}
+    virtual ~CJostleableObject() = default;
 
     virtual Math::Sphere GetJostlingSphere() const = 0;
     virtual bool JostleObject(float force) = 0;

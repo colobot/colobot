@@ -24,9 +24,6 @@ CPowerContainerObjectImpl::CPowerContainerObjectImpl(ObjectInterfaceTypes& types
     , m_energyLevel(1.0f)
 {}
 
-CPowerContainerObjectImpl::~CPowerContainerObjectImpl()
-{}
-
 void CPowerContainerObjectImpl::SetEnergyLevel(float level)
 {
     m_energyLevel = level;

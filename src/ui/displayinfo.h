@@ -47,7 +47,6 @@ class CDisplayInfo
 {
 public:
     CDisplayInfo();
-    ~CDisplayInfo();
 
     bool        EventProcess(const Event &event);
 

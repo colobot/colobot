@@ -53,13 +53,6 @@ CMainMovie::CMainMovie()
     Flush();
 }
 
-// Destructor of the application card.
-
-CMainMovie::~CMainMovie()
-{
-}
-
-
 // Stops the current movie.
 
 void CMainMovie::Flush()

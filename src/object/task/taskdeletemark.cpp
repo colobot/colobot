@@ -34,16 +34,6 @@
 
 #include "physics/physics.h"
 
-
-CTaskDeleteMark::CTaskDeleteMark(COldObject* object) : CForegroundTask(object)
-{
-    m_bExecuted = false;
-}
-
-CTaskDeleteMark::~CTaskDeleteMark()
-{
-}
-
 // Management of an event.
 bool CTaskDeleteMark::EventProcess(const Event &event)
 {

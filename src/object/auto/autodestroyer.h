@@ -40,7 +40,6 @@ class CAutoDestroyer : public CAuto
 {
 public:
     CAutoDestroyer(COldObject* object);
-    ~CAutoDestroyer();
 
     void        DeleteObject(bool bAll=false) override;
 

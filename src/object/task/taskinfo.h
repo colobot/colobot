@@ -27,8 +27,7 @@ class CExchangePost;
 class CTaskInfo : public CForegroundTask
 {
 public:
-    CTaskInfo(COldObject* object);
-    ~CTaskInfo();
+    using CForegroundTask::CForegroundTask;
 
     bool        EventProcess(const Event &event) override;
 

@@ -40,8 +40,7 @@ public:
     {
         types[static_cast<int>(ObjectInterfaceType::Programmable)] = true;
     }
-    virtual ~CProgrammableObject()
-    {}
+    virtual ~CProgrammableObject() = default;
 
     //! Start a program
     virtual void RunProgram(Program* program) = 0;

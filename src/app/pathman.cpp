@@ -55,10 +55,6 @@ CPathManager::CPathManager(CSystemUtils* systemUtils)
     #endif
 }
 
-CPathManager::~CPathManager()
-{
-}
-
 void CPathManager::SetDataPath(std::string dataPath)
 {
     m_dataPath = dataPath;

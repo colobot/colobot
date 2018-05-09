@@ -59,21 +59,6 @@ struct half
 
     }
 
-    //! Copy constructor
-    half(const half& other)
-        : bits(other.bits)
-    {
-
-    }
-
-    //! Copy operator
-    half& operator=(const half& other)
-    {
-        bits = other.bits;
-
-        return *this;
-    }
-
     //! Conversion constructor from int
     explicit half(int value)
         : bits(FloatToHalf(static_cast<float>(value)))

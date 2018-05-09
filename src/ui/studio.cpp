@@ -45,6 +45,7 @@
 
 #include "sound/sound.h"
 
+#include "ui/controls/button.h"
 #include "ui/controls/check.h"
 #include "ui/controls/color.h"
 #include "ui/controls/control.h"
@@ -96,13 +97,6 @@ CStudio::CStudio()
     m_dialog = SD_NULL;
     m_editCamera = Gfx::CAM_TYPE_NULL;
 }
-
-// Object's destructor.
-
-CStudio::~CStudio()
-{
-}
-
 
 // Management of an event.
 

@@ -268,10 +268,6 @@ CAutoInfo::CAutoInfo(CExchangePost* object)
     Init();
 }
 
-CAutoInfo::~CAutoInfo()
-{
-}
-
 void CAutoInfo::DeleteObject(bool all)
 {
     CAuto::DeleteObject(all);

@@ -60,13 +60,6 @@ CAutoPowerPlant::CAutoPowerPlant(COldObject* object) : CAuto(object)
     assert(m_object->Implements(ObjectInterfaceType::Powered));
 }
 
-// Object's destructor.
-
-CAutoPowerPlant::~CAutoPowerPlant()
-{
-}
-
-
 // Destroys the object.
 
 void CAutoPowerPlant::DeleteObject(bool all)

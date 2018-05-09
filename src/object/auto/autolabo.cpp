@@ -62,13 +62,6 @@ CAutoLabo::CAutoLabo(COldObject* object) : CAuto(object)
     assert(m_object->Implements(ObjectInterfaceType::Powered));
 }
 
-// Object's destructor.
-
-CAutoLabo::~CAutoLabo()
-{
-}
-
-
 // Destroys the object.
 
 void CAutoLabo::DeleteObject(bool bAll)

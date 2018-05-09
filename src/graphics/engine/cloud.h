@@ -55,7 +55,6 @@ class CCloud
 {
 public:
     CCloud(CEngine* engine);
-    ~CCloud();
 
     bool        EventProcess(const Event& event);
     //! Removes all the clouds

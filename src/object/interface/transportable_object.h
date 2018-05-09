@@ -33,8 +33,7 @@ public:
     {
         types[static_cast<int>(ObjectInterfaceType::Transportable)] = true;
     }
-    virtual ~CTransportableObject()
-    {}
+    virtual ~CTransportableObject() = default;
 
     //! Set transporter object that transports this object
     virtual void SetTransporter(CObject* transporter) = 0;

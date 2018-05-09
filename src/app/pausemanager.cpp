@@ -59,8 +59,7 @@ CPauseManager::CPauseManager()
     m_main = CRobotMain::GetInstancePointer();
 }
 
-CPauseManager::~CPauseManager()
-{}
+CPauseManager::~CPauseManager() = default; // defined here due to incomplete unique_ptr members
 
 ActivePause* CPauseManager::ActivatePause(PauseType type, PauseMusic music)
 {

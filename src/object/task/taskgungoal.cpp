@@ -24,21 +24,6 @@
 
 #include "sound/sound.h"
 
-
-// Object's constructor.
-
-CTaskGunGoal::CTaskGunGoal(COldObject* object) : CBackgroundTask(object)
-{
-    m_aimImpossible = false;
-}
-
-// Object's destructor.
-
-CTaskGunGoal::~CTaskGunGoal()
-{
-}
-
-
 // Management of an event.
 
 bool CTaskGunGoal::EventProcess(const Event &event)

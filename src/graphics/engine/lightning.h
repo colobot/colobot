@@ -56,7 +56,6 @@ class CLightning
 {
 public:
     CLightning(CEngine* engine);
-    ~CLightning();
 
     //! Triggers lightning
     bool        Create(float sleep, float delay, float magnetic);

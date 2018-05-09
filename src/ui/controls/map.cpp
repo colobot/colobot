@@ -77,13 +77,6 @@ CMap::CMap() : CControl()
     m_bDebug = false;
 }
 
-// Object's destructor.
-
-CMap::~CMap()
-{
-}
-
-
 // Creates a new button.
 
 bool CMap::Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)

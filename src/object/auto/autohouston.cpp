@@ -165,13 +165,6 @@ CAutoHouston::CAutoHouston(COldObject* object) : CAuto(object)
     Init();
 }
 
-// Object's destructor.
-
-CAutoHouston::~CAutoHouston()
-{
-}
-
-
 // Destroys the object.
 
 void CAutoHouston::DeleteObject(bool bAll)

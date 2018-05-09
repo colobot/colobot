@@ -43,9 +43,6 @@ CTaskExecutorObjectImpl::CTaskExecutorObjectImpl(ObjectInterfaceTypes& types, CO
     , m_object(object)
 {}
 
-CTaskExecutorObjectImpl::~CTaskExecutorObjectImpl()
-{}
-
 bool CTaskExecutorObjectImpl::EventProcess(const Event &event)
 {
     // NOTE: This function CAN'T BE CALLED BETWEEN CTask::EventProcess AND CScriptFunctions::Process, otherwise weird stuff may happen to scripts (they'll be stuck executing the same task over and over again)

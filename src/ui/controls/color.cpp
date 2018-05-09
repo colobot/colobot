@@ -50,13 +50,6 @@ CColor::CColor() : CControl()
     m_color.a = 0.0f;
 }
 
-// Object's destructor.
-
-CColor::~CColor()
-{
-}
-
-
 // Creates a new button.
 
 bool CColor::Create(Math::Point pos, Math::Point dim, int icon, EventType eventType)

@@ -33,7 +33,6 @@ class CShielder : public CBaseRobot
 {
 public:
     CShielder(int id);
-    virtual ~CShielder();
 
 public:
     static std::unique_ptr<CShielder> Create(

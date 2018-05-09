@@ -224,7 +224,6 @@ class CParticle
 {
 public:
     CParticle(CEngine* engine);
-    ~CParticle();
 
     //! Sets the device to use
     void        SetDevice(CDevice* device);

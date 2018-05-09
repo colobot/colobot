@@ -50,7 +50,6 @@ class CPlanet
 {
 public:
     CPlanet(CEngine* engine);
-    ~CPlanet();
 
     //! Removes all the planets
     void        Flush();

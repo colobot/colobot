@@ -33,9 +33,6 @@ namespace CBot
 class CBotExprRetVar : public CBotInstr
 {
 public:
-    CBotExprRetVar();
-    ~CBotExprRetVar();
-
     static CBotInstr* Compile(CBotToken*& p, CBotCStack* pStack, bool bMethodsOnly = false);
 
     /*!

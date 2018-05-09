@@ -32,8 +32,7 @@ public:
     {
         types[static_cast<int>(ObjectInterfaceType::PowerContainer)] = true;
     }
-    virtual ~CPowerContainerObject()
-    {}
+    virtual ~CPowerContainerObject() = default;
 
     //! Set energy level (percentage), value in range [0..1]
     virtual void SetEnergyLevel(float level) = 0;

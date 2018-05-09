@@ -62,12 +62,6 @@ CMotion::CMotion(COldObject* object)
     m_inclinaison   = Math::Vector(0.0f, 0.0f, 0.0f);
 }
 
-// Object's destructor.
-
-CMotion::~CMotion()
-{
-}
-
 void CMotion::SetPhysics(CPhysics* physics)
 {
     m_physics = physics;

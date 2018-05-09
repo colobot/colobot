@@ -40,7 +40,6 @@ class CAutoDerrick : public CAuto
 {
 public:
     CAutoDerrick(COldObject* object);
-    ~CAutoDerrick();
 
     void        DeleteObject(bool all=false) override;
 

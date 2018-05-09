@@ -48,7 +48,7 @@ struct Character
 class COldObjectInterface
 {
 public:
-    virtual ~COldObjectInterface() {}
+    virtual ~COldObjectInterface() = default;
 
     virtual void        Simplify();
     virtual void        DeletePart(int part);

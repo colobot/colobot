@@ -40,9 +40,6 @@ CShielder::CShielder(int id)
       m_shieldRadius(1.0f)
 {}
 
-CShielder::~CShielder()
-{}
-
 std::unique_ptr<CShielder> CShielder::Create(
     const ObjectCreateParams& params,
     Gfx::COldModelManager* modelManager,

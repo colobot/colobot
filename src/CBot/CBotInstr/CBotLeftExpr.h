@@ -41,9 +41,6 @@ namespace CBot
 class CBotLeftExpr : public CBotInstr
 {
 public:
-    CBotLeftExpr();
-    ~CBotLeftExpr();
-
     /*!
      * \brief Compile Compiles an expression for a left-operand
      * (left of an assignment).
@@ -95,7 +92,7 @@ protected:
     virtual std::string GetDebugData() override;
 
 private:
-    long m_nIdent;
+    long m_nIdent = 0;
 };
 
 } // namespace CBot

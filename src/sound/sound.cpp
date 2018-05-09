@@ -28,14 +28,6 @@
 #include <sstream>
 
 
-CSoundInterface::CSoundInterface()
-{
-}
-
-CSoundInterface::~CSoundInterface()
-{
-}
-
 bool CSoundInterface::Create()
 {
     return true;

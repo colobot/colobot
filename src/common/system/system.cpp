@@ -54,8 +54,7 @@ std::unique_ptr<CSystemUtils> CSystemUtils::Create()
     return instance;
 }
 
-CSystemUtils::~CSystemUtils()
-{}
+CSystemUtils::~CSystemUtils() = default; // defined here due to incomplete unique_ptr members
 
 SystemDialogResult CSystemUtils::ConsoleSystemDialog(SystemDialogType type, const std::string& title, const std::string& message)
 {

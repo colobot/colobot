@@ -116,24 +116,10 @@ bool CBotExternalCallList::RestoreCall(CBotToken* token, CBotVar* thisVar, CBotV
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-CBotExternalCall::CBotExternalCall()
-{
-}
-
-CBotExternalCall::~CBotExternalCall()
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 CBotExternalCallDefault::CBotExternalCallDefault(RuntimeFunc rExec, CompileFunc rCompile)
 {
     m_rExec = rExec;
     m_rComp = rCompile;
-}
-
-CBotExternalCallDefault::~CBotExternalCallDefault()
-{
 }
 
 CBotTypResult CBotExternalCallDefault::Compile(CBotVar* thisVar, CBotVar* args, void* user)
@@ -174,10 +160,6 @@ CBotExternalCallClass::CBotExternalCallClass(RuntimeFunc rExec, CompileFunc rCom
 {
     m_rExec = rExec;
     m_rComp = rCompile;
-}
-
-CBotExternalCallClass::~CBotExternalCallClass()
-{
 }
 
 CBotTypResult CBotExternalCallClass::Compile(CBotVar* thisVar, CBotVar* args, void* user)

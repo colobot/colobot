@@ -29,8 +29,7 @@
 class CTaskAdvance : public CForegroundTask
 {
 public:
-    CTaskAdvance(COldObject* object);
-    ~CTaskAdvance();
+    using CForegroundTask::CForegroundTask;
 
     bool    EventProcess(const Event &event) override;
 

@@ -41,8 +41,7 @@ public:
     {
         types[static_cast<int>(ObjectInterfaceType::Powered)] = true;
     }
-    virtual ~CPoweredObject()
-    {}
+    virtual ~CPoweredObject() = default;
 
     //! Returns the power cell
     virtual CObject* GetPower() = 0;

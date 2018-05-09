@@ -35,10 +35,6 @@ CInputStream::CInputStream(const std::string& filename)
     open(filename);
 }
 
-CInputStream::~CInputStream()
-{
-}
-
 void CInputStream::open(const std::string& filename)
 {
     m_buffer.open(filename);

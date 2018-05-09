@@ -57,13 +57,6 @@ CTaskTerraform::CTaskTerraform(COldObject* object) : CForegroundTask(object)
     assert(m_object->Implements(ObjectInterfaceType::Powered));
 }
 
-// Object's destructor.
-
-CTaskTerraform::~CTaskTerraform()
-{
-}
-
-
 // Management of an event.
 
 bool CTaskTerraform::EventProcess(const Event &event)

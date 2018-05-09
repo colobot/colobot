@@ -66,13 +66,6 @@ CAutoBase::CAutoBase(COldObject* object) : CAuto(object)
     m_soundChannel = -1;
 }
 
-// Object's destructor.
-
-CAutoBase::~CAutoBase()
-{
-}
-
-
 // Destroys the object.
 
 void CAutoBase::DeleteObject(bool bAll)

@@ -78,10 +78,6 @@ CParticle::CParticle(CEngine* engine)
     std::fill_n(m_frameUpdate, SH_MAX, true);
 }
 
-CParticle::~CParticle()
-{
-}
-
 void CParticle::SetDevice(CDevice* device)
 {
     m_device = device;

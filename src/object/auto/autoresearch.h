@@ -37,7 +37,6 @@ class CAutoResearch : public CAuto
 {
 public:
     CAutoResearch(COldObject* object);
-    ~CAutoResearch();
 
     void        DeleteObject(bool bAll=false) override;
 

@@ -38,10 +38,6 @@
 namespace Ui
 {
 
-CScreenSetupGame::CScreenSetupGame()
-{
-}
-
 void CScreenSetupGame::SetActive()
 {
     m_tab = PHASE_SETUPp;

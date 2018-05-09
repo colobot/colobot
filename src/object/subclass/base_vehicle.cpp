@@ -24,6 +24,3 @@ CBaseVehicle::CBaseVehicle(int id, ObjectType type)
 {
     SetType(type);
 }
-
-CBaseVehicle::~CBaseVehicle()
-{}

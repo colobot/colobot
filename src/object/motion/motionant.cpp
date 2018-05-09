@@ -52,13 +52,6 @@ CMotionAnt::CMotionAnt(COldObject* object)
     m_lastParticle = 0.0f;
 }
 
-// Object's destructor.
-
-CMotionAnt::~CMotionAnt()
-{
-}
-
-
 // Removes an object.
 
 void CMotionAnt::DeleteObject(bool bAll)

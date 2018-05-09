@@ -27,7 +27,6 @@ namespace Ui
 class CScreenSetupSound : public CScreenSetup
 {
 public:
-    CScreenSetupSound();
     void SetActive() override;
 
     void CreateInterface() override;

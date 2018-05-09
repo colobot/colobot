@@ -39,7 +39,6 @@ class CTaskTerraform : public CForegroundTask
 {
 public:
     CTaskTerraform(COldObject* object);
-    ~CTaskTerraform();
 
     bool        EventProcess(const Event &event) override;
 

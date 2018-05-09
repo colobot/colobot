@@ -27,8 +27,6 @@ namespace Ui
 class CScreenMainMenu : public CScreen
 {
 public:
-    CScreenMainMenu();
-
     void CreateInterface() override;
     bool EventProcess(const Event &event) override;
 };

@@ -61,8 +61,7 @@ public:
     {
         types[static_cast<int>(ObjectInterfaceType::Destroyable)] = true;
     }
-    virtual ~CDestroyableObject()
-    {}
+    virtual ~CDestroyableObject() = default;
 
     //! Destroy the object immediately. Use this only if you are 100% sure this is what you want, because object with magnifyDamage=0 should be able to bypass all damage. It's recommended to use CDamageableObject::DamageObject() instead.
     /** NOTE: After this function exits, you can assume the object has been definetly destroyed */

@@ -72,7 +72,7 @@ class CGL33Device : public CDevice
 {
 public:
     CGL33Device(const DeviceConfig &config);
-    virtual ~CGL33Device();
+    ~CGL33Device() override;
 
     void DebugHook() override;
     void DebugLights() override;

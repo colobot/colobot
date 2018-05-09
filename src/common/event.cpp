@@ -571,19 +571,6 @@ std::string ParseEventType(EventType eventType)
     return Other("UNDEFINED");
 }
 
-
-
-CEventQueue::CEventQueue()
-    : m_mutex{},
-      m_fifo(),
-      m_head{0},
-      m_tail{0},
-      m_total{0}
-{}
-
-CEventQueue::~CEventQueue()
-{}
-
 bool CEventQueue::IsEmpty()
 {
     return m_head == m_tail;

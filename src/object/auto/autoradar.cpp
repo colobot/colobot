@@ -42,13 +42,6 @@ CAutoRadar::CAutoRadar(COldObject* object) : CAuto(object)
     m_totalDetect = 0;
 }
 
-// Object's destructor.
-
-CAutoRadar::~CAutoRadar()
-{
-}
-
-
 // Destroys the object.
 
 void CAutoRadar::DeleteObject(bool bAll)

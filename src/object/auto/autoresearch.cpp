@@ -60,13 +60,6 @@ CAutoResearch::CAutoResearch(COldObject* object) : CAuto(object)
     assert(m_object->Implements(ObjectInterfaceType::Powered));
 }
 
-// Object's destructor.
-
-CAutoResearch::~CAutoResearch()
-{
-}
-
-
 // Destroys the object.
 
 void CAutoResearch::DeleteObject(bool bAll)

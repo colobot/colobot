@@ -45,13 +45,6 @@ CButton::CButton() : CControl()
     m_repeat = 0.0f;
 }
 
-// Object's destructor.
-
-CButton::~CButton()
-{
-}
-
-
 // Creates a new button.
 
 bool CButton::Create(Math::Point pos, Math::Point dim, int icon, EventType eventType)

@@ -129,7 +129,6 @@ class CCamera
 {
 public:
     CCamera();
-    ~CCamera();
 
     //! Management of an event
     bool        EventProcess(const Event &event);

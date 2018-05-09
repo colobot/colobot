@@ -40,12 +40,12 @@ class CLevelParserExceptionMissingParam : public CLevelParserException
 {
 public:
     CLevelParserExceptionMissingParam(CLevelParserParam* thisParam) NOEXCEPT;
-    virtual ~CLevelParserExceptionMissingParam() NOEXCEPT {}
+    virtual ~CLevelParserExceptionMissingParam() NOEXCEPT = default;
 };
 
 class CLevelParserExceptionBadParam : public CLevelParserException
 {
 public:
     CLevelParserExceptionBadParam(CLevelParserParam* thisParam, std::string requestedType) NOEXCEPT;
-    virtual ~CLevelParserExceptionBadParam() NOEXCEPT {}
+    virtual ~CLevelParserExceptionBadParam() NOEXCEPT = default;
 };

@@ -27,11 +27,8 @@ namespace Gfx
 {
 
 
-Gfx::CPyroManager::CPyroManager()
-{}
-
-CPyroManager::~CPyroManager()
-{}
+CPyroManager::CPyroManager() = default; // defined here due to incomplete unique_ptr members
+CPyroManager::~CPyroManager() = default; // defined here due to incomplete unique_ptr members
 
 void Gfx::CPyroManager::Create(PyroType type, CObject* obj, float force)
 {

@@ -57,7 +57,7 @@ class CGL21Device : public CDevice
 {
 public:
     CGL21Device(const DeviceConfig &config);
-    virtual ~CGL21Device();
+    ~CGL21Device() override;
 
     void DebugHook() override;
     void DebugLights() override;

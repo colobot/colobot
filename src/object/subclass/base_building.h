@@ -37,7 +37,6 @@ class CBaseBuilding : public COldObject
 {
 public:
     CBaseBuilding(int id, ObjectType type);
-    virtual ~CBaseBuilding();
 
 public:
     static std::unique_ptr<CBaseBuilding> Create(

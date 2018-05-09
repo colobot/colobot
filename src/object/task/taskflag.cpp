@@ -36,21 +36,6 @@
 
 #include "sound/sound.h"
 
-
-
-// Object's constructor.
-
-CTaskFlag::CTaskFlag(COldObject* object) : CForegroundTask(object)
-{
-}
-
-// Object's destructor.
-
-CTaskFlag::~CTaskFlag()
-{
-}
-
-
 // Management of an event.
 
 bool CTaskFlag::EventProcess(const Event &event)

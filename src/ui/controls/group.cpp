@@ -38,13 +38,6 @@ CGroup::CGroup() : CControl()
 {
 }
 
-// Object's destructor.
-
-CGroup::~CGroup()
-{
-}
-
-
 // Creates a new button.
 
 bool CGroup::Create(Math::Point pos, Math::Point dim, int icon, EventType eventType)

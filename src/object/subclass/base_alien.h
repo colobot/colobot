@@ -36,8 +36,7 @@ class CEngine;
 class CBaseAlien : public CBaseVehicle
 {
 public:
-    CBaseAlien(int id, ObjectType type);
-    virtual ~CBaseAlien();
+    using CBaseVehicle::CBaseVehicle;
 
 public:
     static std::unique_ptr<CBaseAlien> Create(
@@ -56,5 +55,5 @@ public:
     void Read(CLevelParserLine* line) override;
 
 protected:
-    bool m_fixed;
+    bool m_fixed = false;
 };

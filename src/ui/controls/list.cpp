@@ -17,12 +17,12 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-
 #include "ui/controls/list.h"
 
 #include "common/make_unique.h"
-
 #include "graphics/engine/engine.h"
+#include "ui/controls/button.h"
+#include "ui/controls/scroll.h"
 
 #include <cassert>
 #include <cstring>
@@ -58,9 +58,7 @@ CList::CList()
 
 // Object's destructor.
 
-CList::~CList()
-{
-}
+CList::~CList() = default; // defined here due to incomplete unique_ptr members
 
 
 // Creates a new list.

@@ -33,8 +33,7 @@ public:
     {
         types[static_cast<int>(ObjectInterfaceType::ShieldedAutoRegen)] = true;
     }
-    virtual ~CShieldedAutoRegenObject()
-    {}
+    virtual ~CShieldedAutoRegenObject() = default;
 
     //! Return time (in seconds) required for full shield regeneration
     virtual float GetShieldFullRegenTime() = 0;

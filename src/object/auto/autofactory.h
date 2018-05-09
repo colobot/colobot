@@ -41,7 +41,6 @@ class CAutoFactory : public CAuto
 {
 public:
     CAutoFactory(COldObject* object);
-    ~CAutoFactory();
 
     void        DeleteObject(bool all=false) override;
 

@@ -61,13 +61,6 @@ CTaskManip::CTaskManip(COldObject* object) : CForegroundTask(object)
     assert(m_object->Implements(ObjectInterfaceType::Carrier));
 }
 
-// Object's destructor.
-
-CTaskManip::~CTaskManip()
-{
-}
-
-
 // Management of an event.
 
 bool CTaskManip::EventProcess(const Event &event)

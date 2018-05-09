@@ -38,7 +38,6 @@ class CInputStream : public CInputStreamBufferContainer, public std::istream
 public:
     CInputStream();
     CInputStream(const std::string& filename);
-    virtual ~CInputStream();
 
     void open(const std::string& filename);
     void close();

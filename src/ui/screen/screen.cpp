@@ -44,10 +44,6 @@ CScreen::CScreen()
     m_sound      = m_app->GetSound();
 }
 
-CScreen::~CScreen()
-{
-}
-
 void CScreen::SetBackground(const std::string& filename, bool scaled)
 {
     m_engine->SetBackground(filename,

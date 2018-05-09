@@ -99,9 +99,7 @@ CMainUserInterface::CMainUserInterface()
 
 // Destructor of robot application.
 
-CMainUserInterface::~CMainUserInterface()
-{
-}
+CMainUserInterface::~CMainUserInterface() = default; // defined here due to incomplete unique_ptr members
 
 CMainDialog* CMainUserInterface::GetDialog()
 {

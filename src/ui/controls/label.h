@@ -30,7 +30,6 @@ class CLabel : public CControl
 {
 public:
     CLabel();
-    virtual ~CLabel();
 
     bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg) override;
     bool    EventProcess(const Event &event) override;

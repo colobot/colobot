@@ -46,15 +46,9 @@ class CBotExternalCall
 {
 public:
     /**
-     * \brief Constructor
-     * \see CBotProgram::AddFunction()
-     */
-    CBotExternalCall();
-
-    /**
      * \brief Destructor
      */
-    virtual ~CBotExternalCall();
+    virtual ~CBotExternalCall() = default;
 
     /**
      * \brief Compile the function
@@ -92,11 +86,6 @@ public:
      */
     CBotExternalCallDefault(RuntimeFunc rExec, CompileFunc rCompile);
 
-    /**
-     * \brief Destructor
-     */
-    virtual ~CBotExternalCallDefault();
-
     virtual CBotTypResult Compile(CBotVar* thisVar, CBotVar* args, void* user) override;
     virtual bool Run(CBotVar* thisVar, CBotStack* pStack) override;
 
@@ -121,11 +110,6 @@ public:
      * \see CBotProgram::AddFunction()
      */
     CBotExternalCallClass(RuntimeFunc rExec, CompileFunc rCompile);
-
-    /**
-     * \brief Destructor
-     */
-    virtual ~CBotExternalCallClass();
 
     virtual CBotTypResult Compile(CBotVar* thisVar, CBotVar* args, void* user) override;
     virtual bool Run(CBotVar* thisVar, CBotStack* pStack) override;

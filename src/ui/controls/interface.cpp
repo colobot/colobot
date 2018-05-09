@@ -58,9 +58,7 @@ CInterface::CInterface()
 
 // Object's destructor.
 
-CInterface::~CInterface()
-{
-}
+CInterface::~CInterface() = default; // defined here due to incomplete unique_ptr members
 
 
 // Purge all controls.

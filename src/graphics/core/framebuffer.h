@@ -67,7 +67,7 @@ struct FramebufferParams
 class CFramebuffer
 {
 public:
-    virtual ~CFramebuffer() {}
+    virtual ~CFramebuffer() = default;
 
     //! Creates this framebuffer
     virtual bool Create() = 0;

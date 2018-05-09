@@ -45,13 +45,6 @@ CAutoRepair::CAutoRepair(COldObject* object) : CAuto(object)
     m_phase = ARP_WAIT;  // paused until the first Init ()
 }
 
-// Object's destructor.
-
-CAutoRepair::~CAutoRepair()
-{
-}
-
-
 // Destroys the object.
 
 void CAutoRepair::DeleteObject(bool bAll)

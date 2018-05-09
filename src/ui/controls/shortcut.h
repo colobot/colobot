@@ -30,7 +30,6 @@ class CShortcut : public CControl
 {
 public:
     CShortcut();
-    ~CShortcut();
 
     bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType) override;
 

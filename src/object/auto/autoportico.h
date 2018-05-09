@@ -41,7 +41,6 @@ class CAutoPortico : public CAuto
 {
 public:
     CAutoPortico(COldObject* object);
-    ~CAutoPortico();
 
     void        DeleteObject(bool bAll=false) override;
 

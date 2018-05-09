@@ -33,11 +33,6 @@
 
 namespace Ui
 {
-
-CScreenQuit::CScreenQuit()
-{
-}
-
 void CScreenQuit::CreateInterface()
 {
     CWindow*        pw;

@@ -51,13 +51,6 @@ CMotionSpider::CMotionSpider(COldObject* object)
     m_lastParticle = 0.0f;
 }
 
-// Object's destructor.
-
-CMotionSpider::~CMotionSpider()
-{
-}
-
-
 // Removes an object.
 
 void CMotionSpider::DeleteObject(bool bAll)

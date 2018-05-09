@@ -25,14 +25,6 @@
 namespace Gfx
 {
 
-CNullDevice::CNullDevice()
-{
-}
-
-CNullDevice::~CNullDevice()
-{
-}
-
 void CNullDevice::DebugHook()
 {
 }

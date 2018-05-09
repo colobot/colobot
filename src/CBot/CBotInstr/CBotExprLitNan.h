@@ -30,9 +30,6 @@ namespace CBot
 class CBotExprLitNan : public CBotInstr
 {
 public:
-    CBotExprLitNan();
-    ~CBotExprLitNan();
-
     /*!
      * \brief Execute Executes, returns null pointer.
      * \param pj

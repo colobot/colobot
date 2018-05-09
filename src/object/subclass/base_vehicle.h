@@ -29,5 +29,4 @@ class CBaseVehicle : public COldObject
 {
 public:
     CBaseVehicle(int id, ObjectType type);
-    virtual ~CBaseVehicle();
 };

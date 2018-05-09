@@ -54,9 +54,6 @@ CBaseBuilding::CBaseBuilding(int id, ObjectType type)
     SetType(type);
 }
 
-CBaseBuilding::~CBaseBuilding()
-{}
-
 std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
     const ObjectCreateParams& params,
     Gfx::COldModelManager* modelManager,

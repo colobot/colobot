@@ -37,10 +37,6 @@ namespace CBot
 
 CBotExternalCallList* CBotProgram::m_externalCalls = new CBotExternalCallList();
 
-CBotProgram::CBotProgram()
-{
-}
-
 CBotProgram::CBotProgram(CBotVar* thisVar)
 : m_thisVar(thisVar)
 {

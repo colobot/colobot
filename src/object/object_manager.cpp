@@ -52,9 +52,7 @@ CObjectManager::CObjectManager(Gfx::CEngine* engine,
 {
 }
 
-CObjectManager::~CObjectManager()
-{
-}
+CObjectManager::~CObjectManager() = default; // defined here due to incomplete unique_ptr members
 
 bool CObjectManager::DeleteObject(CObject* instance)
 {

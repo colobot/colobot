@@ -38,13 +38,6 @@ CAutoMush::CAutoMush(COldObject* object) : CAuto(object)
     Init();
 }
 
-// Object's destructor.
-
-CAutoMush::~CAutoMush()
-{
-}
-
-
 // Destroys the object.
 
 void CAutoMush::DeleteObject(bool bAll)

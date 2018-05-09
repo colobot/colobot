@@ -125,10 +125,6 @@ CPlayerProfile::CPlayerProfile(std::string playerName)
     LoadApperance();
 }
 
-CPlayerProfile::~CPlayerProfile()
-{
-}
-
 std::string CPlayerProfile::GetLastName()
 {
     std::string name;

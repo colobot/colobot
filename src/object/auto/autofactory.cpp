@@ -62,13 +62,6 @@ CAutoFactory::CAutoFactory(COldObject* object) : CAuto(object)
     m_channelSound = -1;
 }
 
-// Object's destructor.
-
-CAutoFactory::~CAutoFactory()
-{
-}
-
-
 // Destroys the object.
 
 void CAutoFactory::DeleteObject(bool all)

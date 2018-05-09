@@ -31,22 +31,6 @@
 
 #include "physics/physics.h"
 
-
-
-
-// Object's constructor.
-
-CTaskAdvance::CTaskAdvance(COldObject* object) : CForegroundTask(object)
-{
-}
-
-// Object's destructor.
-
-CTaskAdvance::~CTaskAdvance()
-{
-}
-
-
 // Management of an event.
 
 bool CTaskAdvance::EventProcess(const Event &event)

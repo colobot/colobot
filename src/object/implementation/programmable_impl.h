@@ -49,7 +49,6 @@ class CProgrammableObjectImpl : public CProgrammableObject
 {
 public:
     explicit CProgrammableObjectImpl(ObjectInterfaceTypes& types, CObject* object);
-    virtual ~CProgrammableObjectImpl();
 
     bool EventProcess(const Event& event);
 

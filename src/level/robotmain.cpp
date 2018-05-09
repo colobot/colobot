@@ -277,9 +277,7 @@ CRobotMain::CRobotMain()
 }
 
 //! Destructor of robot application
-CRobotMain::~CRobotMain()
-{
-}
+CRobotMain::~CRobotMain() = default; // defined here due to incomplete unique_ptr members
 
 Gfx::CCamera* CRobotMain::GetCamera()
 {

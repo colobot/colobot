@@ -79,7 +79,6 @@ class CAutoInfo : public CAuto
 {
 public:
     CAutoInfo(CExchangePost* object);
-    ~CAutoInfo();
 
     void        DeleteObject(bool all=false) override;
 

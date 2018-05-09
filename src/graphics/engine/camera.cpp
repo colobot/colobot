@@ -152,10 +152,6 @@ CCamera::CCamera()
     m_cameraInvertY = false;
 }
 
-CCamera::~CCamera()
-{
-}
-
 void CCamera::SetEffect(bool enable)
 {
     m_effect = enable;

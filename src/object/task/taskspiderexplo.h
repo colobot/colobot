@@ -27,8 +27,7 @@
 class CTaskSpiderExplo : public CForegroundTask
 {
 public:
-    CTaskSpiderExplo(COldObject* object);
-    ~CTaskSpiderExplo();
+    using CForegroundTask::CForegroundTask;
 
     bool        EventProcess(const Event &event) override;
 

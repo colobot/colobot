@@ -70,7 +70,6 @@ class CMap : public CControl
 {
 public:
     CMap();
-    ~CMap();
 
     bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg) override;
     bool        EventProcess(const Event &event) override;

@@ -50,13 +50,6 @@ CMainMap::CMainMap()
     m_bFixImage = false;
 }
 
-// Destructor of the application card.
-
-CMainMap::~CMainMap()
-{
-}
-
-
 // Created the mini-map and the corresponding buttons.
 
 void CMainMap::CreateMap()

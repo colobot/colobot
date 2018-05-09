@@ -34,21 +34,6 @@
 
 #include "sound/sound.h"
 
-
-// Object's constructor.
-
-CTaskSearch::CTaskSearch(COldObject* object) : CForegroundTask(object)
-{
-    m_hand = TSH_UP;
-}
-
-// Object's destructor.
-
-CTaskSearch::~CTaskSearch()
-{
-}
-
-
 // Management of an event.
 
 bool CTaskSearch::EventProcess(const Event &event)

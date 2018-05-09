@@ -71,7 +71,6 @@ protected:
 
 public:
     CPyro(); // should only be called by CPyroManager
-    ~CPyro();
 
     //! Indicates whether the pyrotechnic effect is complete
     Error       IsEnded();
