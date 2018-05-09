@@ -33,22 +33,6 @@
 class CObject;
 
 /**
- * \struct Score
- * \brief Struct containing score of individual team and additional variables to allow sorting teams through different criteria
-*/
-struct Score
-{
-    int points = 0; //! Team score
-    float time = 0; //! Time when points were scored
-};
-
-enum class SortType
-{
-    SORT_ID, //Sort by team ID
-    SORT_POINTS, //Sort by points
-};
-
-/**
  * \class CScoreboard
  * \brief Scoreboard used to score complex code battles
  *
@@ -71,6 +55,26 @@ enum class SortType
 class CScoreboard
 {
 public:
+    /**
+     * \struct Score
+     * \brief Struct containing score of individual team and additional variables to allow sorting teams through different criteria
+    */
+    struct Score
+    {
+        int points = 0; //!< Team score
+        float time = 0; //!< Time when points were scored
+    };
+
+    /**
+     * \enum SortType
+     * \brief Enum defining the scoreboard sorting criteria
+    */
+    enum class SortType
+    {
+        SORT_ID,     //!< Sort by team ID
+        SORT_POINTS, //!< Sort by points
+    };
+
     //! Creates the scoreboard
     //! The scoreboard exists only if enabled in level file
     CScoreboard() {};
@@ -160,11 +164,13 @@ public:
     SortType GetSortType();
     void SetSortType(SortType type);
 
+    std::vector<std::pair<int, Score>> GetSortedScores();
+
 private:
     std::vector<std::unique_ptr<CScoreboardKillRule>> m_rulesKill = {};
     std::vector<std::unique_ptr<CScoreboardObjectRule>> m_rulesObject = {};
     std::vector<std::unique_ptr<CScoreboardEndTakeRule>> m_rulesEndTake = {};
     std::map<int, Score> m_score;
     int m_finishCounter = 0;
-    SortType m_sorttype = SortType::SORT_ID;
+    SortType m_sortType = SortType::SORT_ID;
 };

@@ -133,7 +133,7 @@ void CScoreboard::AddPoints(int team, int points)
     m_score[team].time = main->GetGameTime();
 }
 
-Score CScoreboard::GetScore(int team)
+CScoreboard::Score CScoreboard::GetScore(int team)
 {
     return m_score[team];
 }
@@ -143,12 +143,33 @@ void CScoreboard::SetScore(int team, int points)
     m_score[team].points = points;
 }
 
-SortType CScoreboard::GetSortType()
+CScoreboard::SortType CScoreboard::GetSortType()
 {
-    return m_sorttype;
+    return m_sortType;
 }
 
 void CScoreboard::SetSortType(SortType type)
 {
-    m_sorttype = type;
+    m_sortType = type;
+}
+
+std::vector<std::pair<int, CScoreboard::Score>> CScoreboard::GetSortedScores()
+{
+    CRobotMain* main = CRobotMain::GetInstancePointer();
+    std::set<int> teams = main->GetAllTeams();
+    std::vector<std::pair<int, Score>> sortedTeams(teams.size());
+    std::transform(teams.begin(), teams.end(), sortedTeams.begin(), [&](int team) {
+        return *m_score.find(team);
+    });
+    if (m_sortType == SortType::SORT_POINTS)
+    {
+        std::sort(sortedTeams.begin(), sortedTeams.end(), [&](std::pair<int, Score> teamA, std::pair<int, Score> teamB)
+        {
+            if (teamA.second.points > teamB.second.points) return true; // Team A have more points than B?
+            if (teamA.second.points < teamB.second.points) return false; // Team A have less points than B?
+
+            return teamA.second.time < teamB.second.time; // Team A scored slower than B?
+        });
+    }
+    return sortedTeams;
 }

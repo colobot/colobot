@@ -2704,6 +2704,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_endTakeImmediat = false;
         m_endTakeResearch = 0;
         m_endTakeTimeout = -1.0f;
+        m_endTakeTeamImmediateWin = false;
         m_endTakeWinDelay = 2.0f;
         m_endTakeLostDelay = 2.0f;
         m_teamFinished.clear();
@@ -3572,6 +3573,11 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 {
                     LoadingWarning("The defaults for pos= and dist= are going to change, specify them explicitly. See issue #759 (https://git.io/vVBzH)");
                 }
+                continue;
+            }
+            if (line->GetCommand() == "EndMissionTeams" && !resetObject)
+            {
+                m_endTakeTeamImmediateWin = line->GetParam("immediateWin")->AsBool(false); // false = finishing removes the team that finished, true = finishing for one team ends the whole game
                 continue;
             }
             if (line->GetCommand() == "EndMissionDelay" && !resetObject)
@@ -5050,11 +5056,11 @@ Error CRobotMain::ProcessEndMissionTake()
                 }
                 GetResource(RES_TEXT, RT_SCOREBOARD_RESULTS_LINE, details_line);
                 std::string details = "";
-                for (int team : GetAllTeams())
+                for (std::pair<int, CScoreboard::Score> team : m_scoreboard->GetSortedScores())
                 {
                     if (!details.empty())
                         details += ", ";
-                    details += StrUtils::Format(details_line.c_str(), GetTeamName(team).c_str(), m_scoreboard->GetScore(team).points);
+                    details += StrUtils::Format(details_line.c_str(), GetTeamName(team.first).c_str(), team.second.points);
                 }
                 m_ui->GetDialog()->StartInformation(
                     title,
@@ -5125,6 +5131,18 @@ Error CRobotMain::ProcessEndMissionTake()
                         m_scoreboard->ProcessEndTake(team);
                     m_objMan->DestroyTeam(team, DestructionType::Win);
                     m_teamFinished[team] = true;
+                    if (m_endTakeTeamImmediateWin)
+                    {
+                        // All other teams fail
+                        for(int other_team : GetAllActiveTeams())
+                        {
+                            m_displayText->SetEnable(false); // To prevent "bot destroyed" messages
+                            m_objMan->DestroyTeam(other_team);
+                            m_displayText->SetEnable(true);
+
+                            m_teamFinished[other_team] = true;
+                        }
+                    }
                 }
             }
         }
@@ -6006,32 +6024,19 @@ void CRobotMain::UpdateCodeBattleInterface()
 
     Ui::CWindow* pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW6));
     assert(pw != nullptr);
-    std::set<int> teams = GetAllTeams();
-    std::vector<int> sortedTeams(teams.begin(), teams.end());
-    if(m_scoreboard->GetSortType() == SortType::SORT_POINTS)
-    {
-        std::sort(sortedTeams.begin(), sortedTeams.end(), [this](int teamA, int teamB)
-        {
-            if (m_scoreboard->GetScore(teamA).points > m_scoreboard->GetScore(teamB).points) return true; //Team A have more points than B?
-            if (m_scoreboard->GetScore(teamA).points < m_scoreboard->GetScore(teamB).points) return false; //Team A have less points than B?
-
-            if (m_scoreboard->GetScore(teamA).time < m_scoreboard->GetScore(teamB).time) return true; //Team A scored faster than B?
-            else return false; //Team A scored slower than B?
-        });
-    }
 
     int i = 0;
-    for (int team : sortedTeams)
+    for (std::pair<int, CScoreboard::Score> team : m_scoreboard->GetSortedScores())
     {
         Ui::CControl* pl;
 
         pl = pw->SearchControl(static_cast<EventType>(EVENT_SCOREBOARD+2*i+0));
         assert(pl != nullptr);
-        pl->SetName(GetTeamName(team));
+        pl->SetName(GetTeamName(team.first));
 
         pl = pw->SearchControl(static_cast<EventType>(EVENT_SCOREBOARD+2*i+1));
         assert(pl != nullptr);
-        pl->SetName(StrUtils::ToString<int>(m_scoreboard->GetScore(team).points));
+        pl->SetName(StrUtils::ToString<int>(team.second.points));
 
         i++;
     }

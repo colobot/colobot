@@ -673,6 +673,7 @@ protected:
     bool            m_endTakeImmediat = false;
     long            m_endTakeResearch = 0;
     float           m_endTakeTimeout = -1.0f;
+    bool            m_endTakeTeamImmediateWin = false;
     float           m_endTakeWinDelay = 0.0f;
     float           m_endTakeLostDelay = 0.0f;
     //! Set to true for teams that have already finished
