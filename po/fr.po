@@ -1,7 +1,6 @@
 # Didier Raboud <odyx@debian.org>, 2012, 2015, 2016.
 # Martin Quinson <mquinson@debian.org>, 2016
 # B-CE, 2018
-
 msgid ""
 msgstr ""
 "Project-Id-Version: Colobot 0.1.11\n"
@@ -174,10 +173,10 @@ msgstr "Sang\\Afficher du sang quand le cosmonaute est touché"
 
 msgid "Blue"
 msgstr "Bleue"
+
 # tocheck : for team 	     (fem):  bleue
 # tocheck : for flag/pen/bot (masc): bleu
 # + capital also to check
-
 msgid "Blue flag"
 msgstr "Drapeau bleu"
 
@@ -566,8 +565,8 @@ msgstr "Séquences cinématiques\\Films avant ou après une mission"
 
 msgid "Finish"
 msgstr "But/Objectif"
-# OBJECT_END : GoalArea
 
+# OBJECT_END : GoalArea
 msgid "Fixed mine"
 msgstr "Mine fixe"
 
@@ -857,7 +856,6 @@ msgstr "Chargement du terrain"
 # msgstr ""
 # msgid "Speed 6.0x\\Sextuple speed"
 # msgstr ""
-
 msgid "Lower speed\\Decrease speed by half"
 msgstr "Moins rapide\\Diminuer la vitesse de moitié"
 
@@ -1257,8 +1255,8 @@ msgstr "Robot recycleur"
 
 msgid "Red"
 msgstr "Rouge"
-#	toCheck : capital (for team?)
 
+# 	toCheck : capital (for team?)
 msgid "Red flag"
 msgstr "Drapeau rouge"
 
@@ -1567,6 +1565,10 @@ msgstr "Secoue (\\key action;)"
 
 msgid "Thumper"
 msgstr "Robot secoueur"
+
+#, c-format
+msgid "Time: %s"
+msgstr ""
 
 msgid "Titanium"
 msgstr "Titane"
@@ -2048,4 +2050,3 @@ msgstr "epsitec.com"
 
 #~ msgid "\\c; (none)\\n;\n"
 #~ msgstr "\\c; (aucun)\\n;\n"
-

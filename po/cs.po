@@ -1546,6 +1546,10 @@ msgstr "Úder (\\key action;)"
 msgid "Thumper"
 msgstr "Buchar"
 
+#, c-format
+msgid "Time: %s"
+msgstr ""
+
 msgid "Titanium"
 msgstr "Titan"
 

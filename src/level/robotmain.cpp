@@ -2703,6 +2703,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_endTake.clear();
         m_endTakeImmediat = false;
         m_endTakeResearch = 0;
+        m_endTakeTimeout = -1.0f;
         m_endTakeWinDelay = 2.0f;
         m_endTakeLostDelay = 2.0f;
         m_teamFinished.clear();
@@ -3584,6 +3585,11 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 m_endTakeResearch |= line->GetParam("type")->AsResearchFlag();
                 continue;
             }
+            if (line->GetCommand() == "EndMissionTimeout" && !resetObject)
+            {
+                m_endTakeTimeout = line->GetParam("time")->AsFloat();
+                continue;
+            }
 
             if (line->GetCommand() == "Scoreboard" && !resetObject)
             {
@@ -3597,7 +3603,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "ScoreboardSortType" && !resetObject)
             {
-                m_scoreboard->SetSortType(static_cast<SortType>(line->GetParam("sort")->AsSortType() ) );
+                m_scoreboard->SetSortType(line->GetParam("sort")->AsSortType());
                 continue;
             }
 
@@ -4979,6 +4985,22 @@ Error CRobotMain::ProcessEndMissionTakeForGroup(std::vector<CSceneEndCondition*>
 //! If return value is different than ERR_MISSION_NOTERM, assume the mission is finished and pass on the result
 Error CRobotMain::ProcessEndMissionTake()
 {
+    bool timeout = false;
+    if (m_missionResult != INFO_LOST && m_missionResult != INFO_LOSTq)
+    {
+        if (m_endTakeTimeout >= 0.0f)
+        {
+            // Use the mission timer if available, or global mission time otherwise
+            // Useful for exercises where the time starts when you start the program, not the mission itself
+            float currentTime = m_missionTimerEnabled ? m_missionTimer : m_gameTime;
+            if (currentTime > m_endTakeTimeout)
+            {
+                m_missionResult = INFO_LOST;
+                timeout = true;
+            }
+        }
+    }
+
     // Sort end conditions by teams
     std::map<int, std::vector<CSceneEndCondition*>> teamsEndTake;
     for (std::unique_ptr<CSceneEndCondition>& endTake : m_endTake)
@@ -4989,21 +5011,43 @@ Error CRobotMain::ProcessEndMissionTake()
 
     if (!usesTeamConditions)
     {
-        m_missionResult = ProcessEndMissionTakeForGroup(teamsEndTake[0]);
+        if (!timeout)
+            m_missionResult = ProcessEndMissionTakeForGroup(teamsEndTake[0]);
+
+        if (m_missionResult != INFO_LOST && m_missionResult != INFO_LOSTq)
+        {
+            if (m_endTakeResearch != 0)
+            {
+                if (m_endTakeResearch != (m_endTakeResearch&m_researchDone[0]))
+                {
+                    m_missionResult = ERR_MISSION_NOTERM;
+                }
+            }
+        }
     }
     else
     {
+        assert(m_endTakeResearch == 0); // TODO: Add support for per-team EndTakeResearch
+
         // Special handling for teams
         m_missionResult = ERR_MISSION_NOTERM;
 
-        if (GetAllActiveTeams().empty())
+        if (GetAllActiveTeams().empty() || timeout)
         {
             GetLogger()->Info("All teams died, mission ended\n");
             if (m_scoreboard)
             {
                 std::string title, text, details_line;
                 GetResource(RES_TEXT, RT_SCOREBOARD_RESULTS, title);
-                GetResource(RES_TEXT, RT_SCOREBOARD_RESULTS_TEXT, text);
+                if (m_missionTimerEnabled && m_missionTimerStarted)
+                {
+                    GetResource(RES_TEXT, RT_SCOREBOARD_RESULTS_TIME, text);
+                    text = StrUtils::Format(text.c_str(), TimeFormat(m_missionTimer).c_str());
+                }
+                else
+                {
+                    GetResource(RES_TEXT, RT_SCOREBOARD_RESULTS_TEXT, text);
+                }
                 GetResource(RES_TEXT, RT_SCOREBOARD_RESULTS_LINE, details_line);
                 std::string details = "";
                 for (int team : GetAllTeams())
@@ -5082,17 +5126,6 @@ Error CRobotMain::ProcessEndMissionTake()
                     m_objMan->DestroyTeam(team, DestructionType::Win);
                     m_teamFinished[team] = true;
                 }
-            }
-        }
-    }
-
-    if (m_missionResult != INFO_LOST && m_missionResult != INFO_LOSTq)
-    {
-        if (m_endTakeResearch != 0)
-        {
-            if (m_endTakeResearch != (m_endTakeResearch&m_researchDone[0]))
-            {
-                m_missionResult = ERR_MISSION_NOTERM;
             }
         }
     }

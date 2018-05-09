@@ -1545,6 +1545,10 @@ msgstr "Uderz (\\key action;)"
 msgid "Thumper"
 msgstr "Uderzacz"
 
+#, c-format
+msgid "Time: %s"
+msgstr "Czas: %s"
+
 msgid "Titanium"
 msgstr "Tytan"
 

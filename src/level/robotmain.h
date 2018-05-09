@@ -672,6 +672,7 @@ protected:
     //! If true, the mission ends immediately after completing the requirements without requiring SpaceShip takeoff
     bool            m_endTakeImmediat = false;
     long            m_endTakeResearch = 0;
+    float           m_endTakeTimeout = -1.0f;
     float           m_endTakeWinDelay = 0.0f;
     float           m_endTakeLostDelay = 0.0f;
     //! Set to true for teams that have already finished

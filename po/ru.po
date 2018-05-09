@@ -1576,6 +1576,10 @@ msgstr "Удар (\\key action;)"
 msgid "Thumper"
 msgstr "Ударник"
 
+#, c-format
+msgid "Time: %s"
+msgstr ""
+
 msgid "Titanium"
 msgstr "Титан"
 

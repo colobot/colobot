@@ -267,6 +267,10 @@ msgid "The battle has ended"
 msgstr ""
 
 #, c-format
+msgid "Time: %s"
+msgstr ""
+
+#, c-format
 msgid "%s: %d pts"
 msgstr ""
 
