@@ -100,11 +100,6 @@ public:
 
     void SetTextureStageWrap(int index, Gfx::TexWrapMode wrapS, Gfx::TexWrapMode wrapT) override;
 
-    virtual void DrawPrimitive(PrimitiveType type, const void *vertices,
-        int size, const VertexFormat &format, int vertexCount) override;
-    virtual void DrawPrimitives(PrimitiveType type, const void *vertices,
-        int size, const VertexFormat &format, int first[], int count[], int drawCount) override;
-
     virtual void DrawPrimitive(PrimitiveType type, const Vertex *vertices    , int vertexCount,
                                Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) override;
     virtual void DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, int vertexCount,
@@ -120,13 +115,32 @@ public:
     virtual void DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
         int first[], int count[], int drawCount) override;
 
-    unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount) override;
-    unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount) override;
-    unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount) override;
-    void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const Vertex* vertices, int vertexCount) override;
-    void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount) override;
-    void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount) override;
-    void DrawStaticBuffer(unsigned int bufferId) override;
+    unsigned int CreateStaticBuffer(const Vertex* vertices, int vertexCount) override
+    {
+        return CreateStaticBufferImpl(vertices, vertexCount);
+    }
+    unsigned int CreateStaticBuffer(const VertexTex2* vertices, int vertexCount) override
+    {
+        return CreateStaticBufferImpl(vertices, vertexCount);
+    }
+    unsigned int CreateStaticBuffer(const VertexCol* vertices, int vertexCount) override
+    {
+        return CreateStaticBufferImpl(vertices, vertexCount);
+    }
+    void UpdateStaticBuffer(unsigned int bufferId, const Vertex* vertices, int vertexCount) override
+    {
+        UpdateStaticBufferImpl(bufferId, vertices, vertexCount);
+    }
+    void UpdateStaticBuffer(unsigned int bufferId, const VertexTex2* vertices, int vertexCount) override
+    {
+        UpdateStaticBufferImpl(bufferId, vertices, vertexCount);
+    }
+    void UpdateStaticBuffer(unsigned int bufferId, const VertexCol* vertices, int vertexCount) override
+    {
+        UpdateStaticBufferImpl(bufferId, vertices, vertexCount);
+    }
+    void BindStaticBuffer(unsigned int bufferId) override;
+    void DrawStaticBuffer(PrimitiveType primitiveType, int first, int count) override;
     void DestroyStaticBuffer(unsigned int bufferId) override;
 
     int ComputeSphereVisibility(const Math::Vector &center, float radius) override;
@@ -192,6 +206,11 @@ private:
     //! Binds texture
     inline void BindTexture(int index, GLuint texture);
 
+    template <typename Vertex>
+    unsigned int CreateStaticBufferImpl(const Vertex* vertices, int vertexCount);
+    template <typename Vertex>
+    void UpdateStaticBufferImpl(unsigned int bufferId, const Vertex* vertices, int vertexCount);
+
 private:
     //! Current config
     DeviceConfig m_config;
@@ -232,21 +251,11 @@ private:
     //! Map of framebuffers
     std::map<std::string, std::unique_ptr<CFramebuffer>> m_framebuffers;
 
-    //! Type of vertex structure
-    enum VertexType
-    {
-        VERTEX_TYPE_NORMAL,
-        VERTEX_TYPE_TEX2,
-        VERTEX_TYPE_COL,
-    };
-
     //! Info about static VBO buffers
     struct VboObjectInfo
     {
-        PrimitiveType primitiveType = {};
         unsigned int bufferId = 0;
         VertexType vertexType = {};
-        int vertexCount = 0;
         int size = 0;
     };
 

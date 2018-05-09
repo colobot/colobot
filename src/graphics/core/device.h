@@ -416,14 +416,6 @@ public:
     //! Sets only the texture wrap modes (for faster than thru stage params)
     virtual void SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode wrapT) = 0;
 
-    //! Renders primitive composed of generic vertices
-    virtual void DrawPrimitive(PrimitiveType type, const void *vertices,
-        int size, const VertexFormat &format, int vertexCount) = 0;
-
-    //! Renders multiple primitives composed of generic vertices
-    virtual void DrawPrimitives(PrimitiveType type, const void *vertices,
-        int size, const VertexFormat &format, int first[], int count[], int drawCount) = 0;
-
     //! Renders primitive composed of vertices with single texture
     virtual void DrawPrimitive(PrimitiveType type, const Vertex *vertices    , int vertexCount,
                                Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) = 0;
@@ -446,25 +438,28 @@ public:
         int first[], int count[], int drawCount) = 0;
 
     //! Creates a static buffer composed of given primitives with single texture vertices
-    virtual unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount) = 0;
+    virtual unsigned int CreateStaticBuffer(const Vertex* vertices, int vertexCount) = 0;
 
     //! Creates a static buffer composed of given primitives with multitexturing
-    virtual unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount) = 0;
+    virtual unsigned int CreateStaticBuffer(const VertexTex2* vertices, int vertexCount) = 0;
 
     //! Creates a static buffer composed of given primitives with solid color
-    virtual unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount) = 0;
+    virtual unsigned int CreateStaticBuffer(const VertexCol* vertices, int vertexCount) = 0;
 
     //! Updates the static buffer composed of given primitives with single texture vertices
-    virtual void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const Vertex* vertices, int vertexCount) = 0;
+    virtual void UpdateStaticBuffer(unsigned int bufferId, const Vertex* vertices, int vertexCount) = 0;
 
     //! Updates the static buffer composed of given primitives with multitexturing
-    virtual void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount) = 0;
+    virtual void UpdateStaticBuffer(unsigned int bufferId, const VertexTex2* vertices, int vertexCount) = 0;
 
     //! Updates the static buffer composed of given primitives with solid color
-    virtual void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount) = 0;
+    virtual void UpdateStaticBuffer(unsigned int bufferId, const VertexCol* vertices, int vertexCount) = 0;
 
-    //! Draws a static buffer
-    virtual void DrawStaticBuffer(unsigned int bufferId) = 0;
+    //! Prepares a static buffer to be drawn
+    virtual void BindStaticBuffer(unsigned int bufferId) = 0;
+
+    //! Draws a range of vertices in the currently bound static buffer.
+    virtual void DrawStaticBuffer(PrimitiveType primitiveType, int first, int count) = 0;
 
     //! Deletes a static buffer
     virtual void DestroyStaticBuffer(unsigned int bufferId) = 0;

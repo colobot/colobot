@@ -168,16 +168,6 @@ void CNullDevice::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, i
 {
 }
 
-void CNullDevice::DrawPrimitive(PrimitiveType type, const void *vertices,
-    int size, const VertexFormat &format, int vertexCount)
-{
-}
-
-void CNullDevice::DrawPrimitives(PrimitiveType type, const void *vertices,
-    int size, const VertexFormat &format, int first[], int count[], int drawCount)
-{
-}
-
 void CNullDevice::DrawPrimitives(PrimitiveType type, const Vertex *vertices,
     int first[], int count[], int drawCount, Color color)
 {
@@ -193,34 +183,38 @@ void CNullDevice::DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
 {
 }
 
-unsigned int CNullDevice::CreateStaticBuffer(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount)
+unsigned int CNullDevice::CreateStaticBuffer(const Vertex* vertices, int vertexCount)
 {
     return 0;
 }
 
-unsigned int CNullDevice::CreateStaticBuffer(PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount)
+unsigned int CNullDevice::CreateStaticBuffer(const VertexTex2* vertices, int vertexCount)
 {
     return 0;
 }
 
-unsigned int CNullDevice::CreateStaticBuffer(PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount)
+unsigned int CNullDevice::CreateStaticBuffer(const VertexCol* vertices, int vertexCount)
 {
     return 0;
 }
 
-void CNullDevice::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const Vertex* vertices, int vertexCount)
+void CNullDevice::UpdateStaticBuffer(unsigned int bufferId, const Vertex* vertices, int vertexCount)
 {
 }
 
-void CNullDevice::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount)
+void CNullDevice::UpdateStaticBuffer(unsigned int bufferId, const VertexTex2* vertices, int vertexCount)
 {
 }
 
-void CNullDevice::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount)
+void CNullDevice::UpdateStaticBuffer(unsigned int bufferId, const VertexCol* vertices, int vertexCount)
 {
 }
 
-void CNullDevice::DrawStaticBuffer(unsigned int bufferId)
+void CNullDevice::BindStaticBuffer(unsigned int bufferId)
+{
+}
+
+void CNullDevice::DrawStaticBuffer(PrimitiveType primitiveType, int first, int count)
 {
 }
 
