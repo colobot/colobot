@@ -657,7 +657,7 @@ bool CScriptFunctions::rDelete(CBotVar* var, CBotVar* result, int& exception, vo
     }
 
     CObject* obj = CObjectManager::GetInstancePointer()->GetObjectById(rank);
-    if ( obj == nullptr )
+    if ( obj == nullptr || (obj->Implements(ObjectInterfaceType::Old) && dynamic_cast<COldObject*>(obj)->IsDying()) )
     {
         return true;
     }
