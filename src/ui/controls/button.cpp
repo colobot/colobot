@@ -25,8 +25,6 @@
 
 #include "graphics/engine/engine.h"
 
-#include <string.h>
-
 
 namespace Ui
 {

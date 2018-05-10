@@ -24,6 +24,7 @@
 
 #include "common/restext.h"
 #include "common/settings.h"
+#include "common/stringutils.h"
 
 #include "level/robotmain.h"
 
@@ -449,6 +450,7 @@ void CControl::Draw()
     Math::Point     pos;
     float       zoomExt, zoomInt;
     int         icon;
+    int         buttonFile = 1;
 
     if ( (m_state & STATE_VISIBLE) == 0 )  return;
 
@@ -517,23 +519,14 @@ void CControl::Draw()
 
         if ( m_state & STATE_DEAD )  return;
 
-        icon = m_icon;
-        if ( icon >= 128 )
+
+        icon = m_icon%64;
+        buttonFile = (m_icon/64) + 1;
+        if ( buttonFile != 1 )
         {
-            icon -= 128;
-            m_engine->SetTexture("textures/interface/button3.png");
-            m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
+            m_engine->SetTexture("textures/interface/button" + StrUtils::ToString<int>(buttonFile) + ".png");
         }
-        else if ( icon >= 64 )
-        {
-            icon -= 64;
-            m_engine->SetTexture("textures/interface/button2.png");
-            m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
-        }
-        else
-        {
-            m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
-        }
+        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
         if ( icon != -1 )
         {
             DrawPart(icon, zoomInt, 0.0f);
