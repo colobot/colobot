@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -138,6 +138,7 @@ COldObject::COldObject(int id)
     m_virusTime = 0.0f;
     m_lastVirusParticle = 0.0f;
     m_damaging = false;
+    m_damageTime = 0.0f;
     m_dying = DeathType::Alive;
     m_bFlat  = false;
     m_gunGoalV = 0.0f;
@@ -357,7 +358,14 @@ bool COldObject::DamageObject(DamageType type, float force, CObject* killer)
     else if ( Implements(ObjectInterfaceType::Fragile) )
     {
         if ( m_type == OBJECT_BOMB && type != DamageType::Explosive ) return false; // Mine can't be destroyed by shooting
-        if ( m_type == OBJECT_URANIUM ) return false; // UraniumOre is not destroyable (see #777)
+        if ( m_type == OBJECT_URANIUM && (type == DamageType::Fire || type == DamageType::Organic) ) return false; // UraniumOre is not destroyable by shooting or aliens (see #777)
+        if ( m_type == OBJECT_STONE && (type == DamageType::Fire || type == DamageType::Organic) ) return false; // TitaniumOre is not destroyable either
+        // PowerCell, NuclearCell and Titanium are destroyable by shooting, but not by collisions!
+        if ( m_type == OBJECT_METAL && type == DamageType::Collision ) return false;
+        if ( m_type == OBJECT_POWER && type == DamageType::Collision ) return false;
+        if ( m_type == OBJECT_NUCLEAR && type == DamageType::Collision ) return false;
+
+        if ( m_magnifyDamage * m_main->GetGlobalMagnifyDamage() == 0 ) return false; // Don't destroy if magnifyDamage=0
 
         DestroyObject(DestructionType::Explosion, killer);
         return true;
@@ -675,6 +683,8 @@ void COldObject::SetType(ObjectType type)
 {
     m_type = type;
     m_name = GetObjectName(m_type);
+
+    SetSelectable(IsSelectableByDefault(m_type));
 
     // TODO: Temporary hack
     if ( m_type == OBJECT_MOBILEfa || // WingedGrabber
@@ -1080,6 +1090,10 @@ void COldObject::Read(CLevelParserLine* line)
     if (Implements(ObjectInterfaceType::JetFlying))
     {
         SetRange(line->GetParam("range")->AsFloat(30.0f));
+    }
+    if (Implements(ObjectInterfaceType::Fragile))
+    {
+        SetMagnifyDamage(line->GetParam("magnifyDamage")->AsFloat(1.0f)); // TODO: This is a temporary hack for now - CFragileObject doesn't have SetMagnifyDamage ~krzys_h
     }
     if (Implements(ObjectInterfaceType::Shielded))
     {

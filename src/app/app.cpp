@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -1699,6 +1699,10 @@ char CApplication::GetLanguageChar() const
             langChar = 'E';
             break;
 
+        case LANGUAGE_CZECH:
+            langChar = 'C';
+            break;
+
         case LANGUAGE_GERMAN:
             langChar = 'D';
             break;
@@ -1750,6 +1754,10 @@ void CApplication::SetLanguage(Language language)
             {
                 m_language = LANGUAGE_ENGLISH;
             }
+            else if (strncmp(envLang,"cs",2) == 0)
+            {
+                m_language = LANGUAGE_CZECH;
+            }
             else if (strncmp(envLang,"de",2) == 0)
             {
                 m_language = LANGUAGE_GERMAN;
@@ -1779,6 +1787,10 @@ void CApplication::SetLanguage(Language language)
     {
         default:
             locale = "";
+            break;
+
+        case LANGUAGE_CZECH:
+            locale = "cs_CZ.utf8";
             break;
 
         case LANGUAGE_ENGLISH:

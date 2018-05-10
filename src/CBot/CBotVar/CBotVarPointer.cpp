@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -32,14 +32,13 @@ namespace CBot
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotVarPointer::CBotVarPointer(const CBotToken& name, CBotTypResult& type)
+CBotVarPointer::CBotVarPointer(const CBotToken& name, CBotTypResult& type) : CBotVar(name)
 {
     if ( !type.Eq(CBotTypPointer) &&
          !type.Eq(CBotTypNullPointer) &&
          !type.Eq(CBotTypClass)   &&                    // for convenience accepts Class and Intrinsic
          !type.Eq(CBotTypIntrinsic) ) assert(0);
 
-    m_token        = new CBotToken(name);
     m_next        = nullptr;
     m_pMyThis    = nullptr;
     m_pUserPtr    = nullptr;

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,6 +24,7 @@
 
 #include "common/restext.h"
 #include "common/settings.h"
+#include "common/stringutils.h"
 
 #include "level/robotmain.h"
 
@@ -517,23 +518,8 @@ void CControl::Draw()
 
         if ( m_state & STATE_DEAD )  return;
 
-        icon = m_icon;
-        if ( icon >= 128 )
-        {
-            icon -= 128;
-            m_engine->SetTexture("textures/interface/button3.png");
-            m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
-        }
-        else if ( icon >= 64 )
-        {
-            icon -= 64;
-            m_engine->SetTexture("textures/interface/button2.png");
-            m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
-        }
-        else
-        {
-            m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
-        }
+        icon = SetButtonTextureForIcon(m_icon);
+        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
         if ( icon != -1 )
         {
             DrawPart(icon, zoomInt, 0.0f);
@@ -849,6 +835,14 @@ std::string CControl::GetResourceName(EventType eventType)
         name = name.substr(0, index);
     }
     return name;
+}
+
+int CControl::SetButtonTextureForIcon(int icon)
+{
+    int iconIdx = icon%64;
+    int buttonFile = (icon/64) + 1;
+    m_engine->SetTexture("textures/interface/button" + StrUtils::ToString<int>(buttonFile) + ".png");
+    return iconIdx;
 }
 
 

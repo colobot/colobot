@@ -1563,6 +1563,10 @@ msgstr "Stampfen (\\key action;)"
 msgid "Thumper"
 msgstr "Stampfer"
 
+#, c-format
+msgid "Time: %s"
+msgstr ""
+
 msgid "Titanium"
 msgstr "Titan"
 

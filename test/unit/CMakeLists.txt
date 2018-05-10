@@ -63,3 +63,9 @@ add_test(
     COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/colobot_ut
     WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
 )
+
+# GoogleTest isn't compatible with -Wsuggest-override -Werror:
+# see https://github.com/google/googletest/issues/1063
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU" AND NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5.0)
+    target_compile_options(colobot_ut PRIVATE "-Wno-suggest-override")
+endif()

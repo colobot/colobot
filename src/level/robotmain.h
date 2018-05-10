@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -150,6 +150,12 @@ struct MinMax
     int max = -1;
 };
 
+struct Viewpoint
+{
+    Math::Vector    eye{};
+    Math::Vector    look{};
+    int             button = 13; // 13 is the camera button
+};
 
 const int SATCOM_HUSTON     = 0;
 const int SATCOM_SAT        = 1;
@@ -528,7 +534,7 @@ protected:
     void        UpdateDebugCrashSpheres();
 
     //! Adds element to the beginning of command history
-    void        PushToCommandHistory(std::string obj);
+    void        PushToCommandHistory(std::string cmd);
     //! Returns next/previous element from command history and updates index
     //@{
     std::string    GetNextFromCommandHistory();
@@ -667,6 +673,8 @@ protected:
     //! If true, the mission ends immediately after completing the requirements without requiring SpaceShip takeoff
     bool            m_endTakeImmediat = false;
     long            m_endTakeResearch = 0;
+    float           m_endTakeTimeout = -1.0f;
+    bool            m_endTakeTeamImmediateWin = false;
     float           m_endTakeWinDelay = 0.0f;
     float           m_endTakeLostDelay = 0.0f;
     //! Set to true for teams that have already finished
@@ -717,4 +725,7 @@ protected:
     std::deque<std::string> m_commandHistory;
     //! Index of currently selected element in command history
     int             m_commandHistoryIndex;
+
+    //! Vector of available viewpoints
+    std::vector<Viewpoint> m_viewpoints;
 };

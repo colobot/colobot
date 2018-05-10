@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -115,6 +115,13 @@ protected:
     virtual bool    Detect(Math::Point pos);
 
     std::string     GetResourceName(EventType eventType);
+
+    /**
+     * \brief Set texture in m_engine to correct buttonX.png for given icon
+     * \param icon Icon to draw
+     * \return Index inside the selected texture of the icon to draw
+     */
+    int             SetButtonTextureForIcon(int icon);
 
 protected:
     Gfx::CEngine*     m_engine;
