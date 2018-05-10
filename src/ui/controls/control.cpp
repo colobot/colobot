@@ -519,13 +519,7 @@ void CControl::Draw()
 
         if ( m_state & STATE_DEAD )  return;
 
-
-        icon = m_icon%64;
-        buttonFile = (m_icon/64) + 1;
-        if ( buttonFile != 1 )
-        {
-            m_engine->SetTexture("textures/interface/button" + StrUtils::ToString<int>(buttonFile) + ".png");
-        }
+        icon = SetButtonTextureForIcon(m_icon);
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
         if ( icon != -1 )
         {
@@ -842,6 +836,14 @@ std::string CControl::GetResourceName(EventType eventType)
         name = name.substr(0, index);
     }
     return name;
+}
+
+int CControl::SetButtonTextureForIcon(int icon)
+{
+    int iconIdx = icon%64;
+    int buttonFile = (icon/64) + 1;
+    m_engine->SetTexture("textures/interface/button" + StrUtils::ToString<int>(buttonFile) + ".png");
+    return iconIdx;
 }
 
 

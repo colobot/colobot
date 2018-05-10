@@ -1004,22 +1004,9 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::I
         // For whatever reason ch.c1 is a SIGNED char, we need to fix that
         unsigned char icon = static_cast<unsigned char>(ch.c1);
 
-        unsigned int texID;
-
-        if ( icon >= 128 )
-        {
-            icon -= 128;
-            texID = m_engine->LoadTexture("textures/interface/button3.png").id;
-        }
-        else if ( icon >= 64 )
-        {
-            icon -= 64;
-            texID = m_engine->LoadTexture("textures/interface/button2.png").id;
-        }
-        else
-        {
-            texID = m_engine->LoadTexture("textures/interface/button1.png").id;
-        }
+        // TODO: A bit of code duplication, see CControl::SetButtonTextureForIcon()
+        unsigned int texID = m_engine->LoadTexture("textures/interface/button" + StrUtils::ToString<int>((icon/64) + 1) + ".png").id;
+        icon = icon%64;
 
         Math::Point uv1, uv2;
         uv1.x = (32.0f / 256.0f) * (icon%8);
