@@ -77,21 +77,20 @@ for i in range(len(data)):
 	if m:
 		x = m.group(3)
 		if m.group(1) == 'MAJOR':
-			if version_override is None:
-				major = x
-			else:
-				major = version_override[0]
+			if version_override is not None:
+				x = version_override[0]
+			major = x
 		elif m.group(1) == 'MINOR':
-			if version_override is None:
-				minor = x
-			else:
-				minor = version_override[1]
+			if version_override is not None:
+				x = version_override[1]
+			minor = x
 		elif m.group(1) == 'REVISION':
-			if version_override is None:
+			if version_override is not None:
+				x = version_override[2]
+			else:
 				# Increase revision number
 				revision = str(int(x) + 1)
-			else:
-				revision = version_override[2]
+			revision = x
 		data[i] = 'set(COLOBOT_VERSION_'+m.group(1)+m.group(2)+x+')\n'
 
 	m = re.match(r'^(#?)set\(COLOBOT_VERSION_(UNRELEASED|RELEASE_CODENAME)( +)"(.+)"\)$', data[i])
