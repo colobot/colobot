@@ -450,7 +450,6 @@ void CControl::Draw()
     Math::Point     pos;
     float       zoomExt, zoomInt;
     int         icon;
-    int         buttonFile = 1;
 
     if ( (m_state & STATE_VISIBLE) == 0 )  return;
 
