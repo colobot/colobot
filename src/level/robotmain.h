@@ -152,8 +152,9 @@ struct MinMax
 
 struct Viewpoint
 {
-    Math::Vector    eye;
-    Math::Vector    look;
+    Math::Vector    eye{};
+    Math::Vector    look{};
+    int             button = 13; // 13 is the camera button
 };
 
 const int SATCOM_HUSTON     = 0;

@@ -3555,8 +3555,9 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     continue;
                 }
                 Viewpoint tmp;
-                tmp.eye = line->GetParam("eye")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f))*g_unit;
-                tmp.look = line->GetParam("lookat")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f))*g_unit;
+                tmp.eye = line->GetParam("eye")->AsPoint()*g_unit;
+                tmp.look = line->GetParam("lookat")->AsPoint()*g_unit;
+                tmp.button = line->GetParam("button")->AsInt(13); // 13 is the camera button
                 m_viewpoints.push_back(tmp);
                 continue;
             }
@@ -5933,12 +5934,12 @@ void CRobotMain::CreateCodeBattleInterface()
         //viewpoint selection section
         ddim.x = 40.0f/640.0f;
         ddim.y = 50.0f/640.0f;
-        for(unsigned int i = 0; i<m_viewpoints.size(); i++)
+        for(unsigned int i = 0; i < m_viewpoints.size(); i++)
         {
             //create button
             pos.x = (550.0f+40.0f*(i%2))/640.0f;
             pos.y = (130.0f+offset)/480.0f + numTeams * textHeight - 45.0f*(i/2)/480.0f;
-            pw->CreateButton(pos,ddim, 13, EventType(EVENT_VIEWPOINT0 + i));
+            pw->CreateButton(pos, ddim, m_viewpoints[i].button, EventType(EVENT_VIEWPOINT0 + i));
         }
 
         //start/camera button
