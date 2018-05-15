@@ -28,7 +28,7 @@ const std::map<Language, std::string> LANGUAGE_MAP = {
     { LANGUAGE_FRENCH,  "fr" },
     { LANGUAGE_POLISH,  "pl" },
     { LANGUAGE_RUSSIAN, "ru" },
-    { LANGUAGE_PORTUGUESE_BRAZILIAN, "br" }
+    { LANGUAGE_PORTUGUESE_BRAZILIAN, "pt" }
 };
 
 bool ParseLanguage(const std::string& str, Language& language)

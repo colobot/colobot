@@ -1720,7 +1720,7 @@ char CApplication::GetLanguageChar() const
             break;
 
         case LANGUAGE_PORTUGUESE_BRAZILIAN:
-            langChar = 'B';
+            langChar = 'P';
             break;
 
     }
@@ -1779,7 +1779,7 @@ void CApplication::SetLanguage(Language language)
             {
                 m_language = LANGUAGE_RUSSIAN;
             }
-            else if (strncmp(envLang,"br",2) == 0)
+            else if (strncmp(envLang,"pt",2) == 0)
             {
                 m_language = LANGUAGE_PORTUGUESE_BRAZILIAN;
             }
