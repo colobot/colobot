@@ -1718,6 +1718,11 @@ char CApplication::GetLanguageChar() const
         case LANGUAGE_RUSSIAN:
             langChar = 'R';
             break;
+
+        case LANGUAGE_PORTUGUESE_BRAZILIAN:
+            langChar = 'B';
+            break;
+
     }
     return langChar;
 }
@@ -1774,6 +1779,10 @@ void CApplication::SetLanguage(Language language)
             {
                 m_language = LANGUAGE_RUSSIAN;
             }
+            else if (strncmp(envLang,"br",2) == 0)
+            {
+                m_language = LANGUAGE_PORTUGUESE_BRAZILIAN;
+            }
             else
             {
                 GetLogger()->Warn("Enviromnent locale ('%s') is not supported, setting default language\n", envLang);
@@ -1811,6 +1820,10 @@ void CApplication::SetLanguage(Language language)
 
         case LANGUAGE_RUSSIAN:
             locale = "ru_RU.utf8";
+            break;
+
+        case LANGUAGE_PORTUGUESE_BRAZILIAN:
+            locale = "pt_BR.utf8";
             break;
     }
 
