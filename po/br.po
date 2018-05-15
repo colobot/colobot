@@ -1560,6 +1560,10 @@ msgstr "Bater (\\key action;)"
 msgid "Thumper"
 msgstr "Batedor"
 
+#, c-format
+msgid "Time: %s"
+msgstr "Tempo: %s"
+
 msgid "Titanium"
 msgstr "Titânio"
 
