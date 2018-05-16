@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -70,6 +70,9 @@ public:
 
     void        SetWindowDim(Math::Point dim);
     Math::Point GetWindowDim();
+
+    void        SetWindowMax(bool max);
+    bool        GetWindowMax();
     //@}
 
     //! Managing windows open/save
@@ -98,6 +101,7 @@ protected:
     float           m_fontSize;
     Math::Point     m_windowPos;
     Math::Point     m_windowDim;
+    bool            m_windowMax;
 
     bool            m_IOPublic;
     Math::Point     m_IOPos;

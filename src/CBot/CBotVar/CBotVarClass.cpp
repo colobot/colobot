@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ namespace CBot
 std::set<CBotVarClass*> CBotVarClass::m_instances{};
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotVarClass::CBotVarClass(const CBotToken& name, const CBotTypResult& type)
+CBotVarClass::CBotVarClass(const CBotToken& name, const CBotTypResult& type) : CBotVar(name)
 {
     if ( !type.Eq(CBotTypClass)        &&
          !type.Eq(CBotTypIntrinsic)    &&                // by convenience there accepts these types
@@ -44,7 +44,6 @@ CBotVarClass::CBotVarClass(const CBotToken& name, const CBotTypResult& type)
          !type.Eq(CBotTypArrayPointer) &&
          !type.Eq(CBotTypArrayBody)) assert(0);
 
-    m_token        = new CBotToken(name);
     m_next        = nullptr;
     m_pMyThis    = nullptr;
     m_pUserPtr    = OBJECTCREATED;//nullptr;

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -154,6 +154,7 @@ void InitializeRestext()
 
     stringsText[RT_SCOREBOARD_RESULTS]     = TR("Results");
     stringsText[RT_SCOREBOARD_RESULTS_TEXT]= TR("The battle has ended");
+    stringsText[RT_SCOREBOARD_RESULTS_TIME]= TR("Time: %s");
     stringsText[RT_SCOREBOARD_RESULTS_LINE]= TR("%s: %d pts");
 
     stringsText[RT_RECORD_GALL]            = "Circuit record (-%.2f) !";
@@ -786,6 +787,12 @@ void InitializeRestext()
     stringsCbot[CBot::CBotErrNoClassName]   = TR("Class name expected");
     stringsCbot[CBot::CBotErrNoReturn]      = TR("Non-void function needs \"return;\"");
     stringsCbot[CBot::CBotErrDefaultValue]  = TR("This parameter needs a default value");
+    stringsCbot[CBot::CBotErrEndQuote]      = TR("Missing end quote");
+    stringsCbot[CBot::CBotErrBadEscape]     = TR("Unknown escape sequence");
+    stringsCbot[CBot::CBotErrOctalRange]    = TR("Octal value out of range");
+    stringsCbot[CBot::CBotErrHexDigits]     = TR("Missing hex digits after escape sequence");
+    stringsCbot[CBot::CBotErrHexRange]      = TR("Hex value out of range");
+    stringsCbot[CBot::CBotErrUnicodeName]   = TR("Invalid universal character name");
 
     stringsCbot[CBot::CBotErrZeroDiv]       = TR("Dividing by zero");
     stringsCbot[CBot::CBotErrNotInit]       = TR("Variable not initialized");

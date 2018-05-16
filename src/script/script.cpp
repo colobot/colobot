@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -479,7 +479,7 @@ bool CScript::GetCursor(int &cursor1, int &cursor2)
 
 // Put of the variables in a list.
 
-void PutList(const std::string& baseName, bool bArray, CBot::CBotVar *var, Ui::CList *list, int &rankList, std::set<CBot::CBotVar*>& previous)
+static void PutList(const std::string& baseName, bool bArray, CBot::CBotVar *var, Ui::CList *list, int &rankList, std::set<CBot::CBotVar*>& previous)
 {
     if ( var == nullptr && !baseName.empty() )
     {
@@ -589,6 +589,56 @@ void CScript::UpdateList(Ui::CList* list)
     list->SetState(Ui::STATE_ENABLE);
 }
 
+// Colorize a string literal with escape sequences also colored
+
+static void HighlightString(Ui::CEdit* edit, const std::string& s, int start)
+{
+    edit->SetFormat(start, start + 1, Gfx::FONT_HIGHLIGHT_STRING);
+
+    auto it = s.cbegin() + 1;
+
+    ++start;
+    while (it != s.cend() && *it != '\"')
+    {
+        if (*(it++) != '\\') // not escape sequence
+        {
+            edit->SetFormat(start, start + 1, Gfx::FONT_HIGHLIGHT_STRING);
+            ++start;
+            continue;
+        }
+
+        if (it == s.cend()) break;
+
+        int end = start + 2;
+
+        if (CBot::CharInList(*it, "01234567"))           // octal escape sequence
+        {
+            for (int i = 0; ++it != s.cend() && i < 2; i++, end++)
+            {
+                if (!CBot::CharInList(*it, "01234567")) break;
+            }
+        }
+        else if (*it == 'x' || *it == 'u' || *it == 'U') // hex or unicode escape
+        {
+            bool isHexCode = (*it == 'x');
+            int maxlen = (*it == 'u') ? 4 : 8;
+
+            for (int i = 0; ++it != s.cend(); i++, end++)
+            {
+                if (!isHexCode && i >= maxlen) break;
+                if (!CBot::CharInList(*it, "0123456789ABCDEFabcdef")) break;
+            }
+        }
+        else      // n, r, t, etc.
+            ++it;
+
+        edit->SetFormat(start, end, Gfx::FONT_HIGHLIGHT_NONE);
+        start = end;
+    }
+
+    if (it != s.cend())
+        edit->SetFormat(start, start + 1, Gfx::FONT_HIGHLIGHT_STRING);
+}
 
 // Colorize the text according to syntax.
 
@@ -643,9 +693,15 @@ void CScript::ColorizeScript(Ui::CEdit* edit, int rangeStart, int rangeEnd)
         {
             color = Gfx::FONT_HIGHLIGHT_CONST;
         }
-        else if (type == CBot::TokenTypString || type == CBot::TokenTypNum) // string literals and numbers
+        else if (type == CBot::TokenTypNum) // numbers
         {
             color = Gfx::FONT_HIGHLIGHT_STRING;
+        }
+        else if (type == CBot::TokenTypString) // string literals
+        {
+            HighlightString(edit, token, cursor1);
+            bt = bt->GetNext();
+            continue;
         }
 
         assert(cursor1 < cursor2);
@@ -660,7 +716,7 @@ void CScript::ColorizeScript(Ui::CEdit* edit, int rangeStart, int rangeEnd)
 // Returns the index of the start of the token found, or -1.
 
 
-int SearchToken(char* script, const char* token)
+static int SearchToken(char* script, const char* token)
 {
     int     lScript, lToken, i, iFound;
     int     found[100];
@@ -685,7 +741,7 @@ int SearchToken(char* script, const char* token)
 
 // Removes a token in a script.
 
-void DeleteToken(char* script, int pos, int len)
+static void DeleteToken(char* script, int pos, int len)
 {
     while ( true )
     {
@@ -696,7 +752,7 @@ void DeleteToken(char* script, int pos, int len)
 
 // Inserts a token in a script.
 
-void InsertToken(char* script, int pos, const char* token)
+static void InsertToken(char* script, int pos, const char* token)
 {
     int     lScript, lToken, i;
 

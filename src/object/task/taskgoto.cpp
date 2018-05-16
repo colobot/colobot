@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -803,7 +803,8 @@ Error CTaskGoto::Start(Math::Vector goal, float altitude,
 Error CTaskGoto::IsEnded()
 {
     Math::Vector    pos;
-    float       limit, angle = 0.0f, dist, h, level;
+    float       limit, angle = 0.0f, h, level;
+    volatile float dist; //fix for issue #844
 
     if ( m_engine->GetPause() )  return ERR_CONTINUE;
     if ( m_error != ERR_OK )  return m_error;
@@ -916,7 +917,9 @@ Error CTaskGoto::IsEnded()
     if ( m_goalMode == TGG_EXPRESS )
     {
         dist = Math::DistanceProjected(m_goal, pos);
-        if ( dist < 10.0f && dist > m_lastDistance )
+        float margin = 10.0f;
+        if ( m_object->Implements(ObjectInterfaceType::Flying) ) margin = 20.0f;
+        if ( dist < margin && dist > m_lastDistance )
         {
             return ERR_STOP;
         }

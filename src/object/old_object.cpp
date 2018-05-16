@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -141,6 +141,8 @@ COldObject::COldObject(int id)
     m_bVirusMode = false;
     m_virusTime = 0.0f;
     m_lastVirusParticle = 0.0f;
+    m_damaging = false;
+    m_damageTime = 0.0f;
     m_dying = DeathType::Alive;
     m_bFlat  = false;
     m_gunGoalV = 0.0f;
@@ -363,7 +365,14 @@ bool COldObject::DamageObject(DamageType type, float force, CObject* killer, Mat
     else if ( Implements(ObjectInterfaceType::Fragile) )
     {
         if ( m_type == OBJECT_MINE && type != DamageType::Explosive ) return false; // Mine can't be destroyed by shooting
-        if ( m_type == OBJECT_URANIUM ) return false; // UraniumOre is not destroyable (see #777)
+        if ( m_type == OBJECT_URANIUM && (type == DamageType::Fire || type == DamageType::Organic) ) return false; // UraniumOre is not destroyable by shooting or aliens (see #777)
+        if ( m_type == OBJECT_STONE && (type == DamageType::Fire || type == DamageType::Organic) ) return false; // TitaniumOre is not destroyable either
+        // PowerCell, NuclearCell and Titanium are destroyable by shooting, but not by collisions!
+        if ( m_type == OBJECT_METAL && type == DamageType::Collision ) return false;
+        if ( m_type == OBJECT_POWER && type == DamageType::Collision ) return false;
+        if ( m_type == OBJECT_NUCLEAR && type == DamageType::Collision ) return false;
+
+        if ( m_magnifyDamage * m_main->GetGlobalMagnifyDamage() == 0 ) return false; // Don't destroy if magnifyDamage=0
 
         DestroyObject(DestructionType::Explosion, killer);
         return true;
@@ -385,6 +394,7 @@ bool COldObject::DamageObject(DamageType type, float force, CObject* killer, Mat
         float magnifyDamage = m_magnifyDamage * m_main->GetGlobalMagnifyDamage();
         loss = force * magnifyDamage;
         if (m_type == OBJECT_HUMAN) loss /= 2.5f; // Me is more resistant
+        if (loss > 1.0f) loss = 1.0f;
     }
 
     // Diminue la puissance du bouclier.
@@ -428,11 +438,28 @@ bool COldObject::DamageObject(DamageType type, float force, CObject* killer, Mat
     bool dead = true;
     if (Implements(ObjectInterfaceType::Shielded))
     {
-        // Decreases the the shield
-        float shield = GetShield();
-        shield -= loss;
-        if (shield < 0.0f) shield = 0.0f;
-        SetShield(shield);
+        if (force != std::numeric_limits<float>::infinity())
+        {
+            // Decreases the the shield
+            float shield = GetShield();
+            shield -= loss;
+            if (shield < 0.0f) shield = 0.0f;
+            SetShield(shield);
+
+            // Sending info about taking damage
+            if (!m_damaging)
+            {
+                SetDamaging(true);
+                m_main->UpdateShortcuts();
+            }
+            m_damageTime = m_time;
+        }
+        else
+        {
+            // Dead immediately
+            SetShield(0.0f);
+            SetDamaging(false);
+        }
 
         dead = (GetShield() <= 0.0f);
     }
@@ -462,7 +489,6 @@ bool COldObject::DamageObject(DamageType type, float force, CObject* killer, Mat
     {
         m_engine->GetPyroManager()->Create(Gfx::PT_SHOTT, this, loss);
     }
-
     return false;
 }
 
@@ -478,6 +504,7 @@ void COldObject::DestroyObject(DestructionType type, CObject* killer)
     if (Implements(ObjectInterfaceType::Shielded))
     {
         SetShield(0.0f);
+        SetDamaging(false);
     }
 
     Gfx::PyroType pyroType = Gfx::PT_NULL;
@@ -886,6 +913,8 @@ void COldObject::SetType(ObjectType type)
     m_type = type;
     m_name = GetObjectName(m_type);
 
+    SetSelectable(IsSelectableByDefault(m_type));
+
     // TODO: Temporary hack
     if ( m_type == OBJECT_MOBILEfa || // WingedGrabber
          m_type == OBJECT_MOBILEfs || // WingedSniffer
@@ -1230,6 +1259,8 @@ void COldObject::Write(CLevelParserLine* line)
     if ( m_virusTime != 0.0f )
         line->AddParam("virusTime", MakeUnique<CLevelParserParam>(m_virusTime));
 
+    line->AddParam("lifetime", MakeUnique<CLevelParserParam>(m_aTime));
+
     // Sets the parameters of the command line.
     CLevelParserParamVec cmdline;
     for(float value : GetCmdLine())
@@ -1288,6 +1319,10 @@ void COldObject::Read(CLevelParserLine* line)
     if (Implements(ObjectInterfaceType::JetFlying))
     {
         SetRange(line->GetParam("range")->AsFloat(30.0f));
+    }
+    if (Implements(ObjectInterfaceType::Fragile))
+    {
+        SetMagnifyDamage(line->GetParam("magnifyDamage")->AsFloat(1.0f)); // TODO: This is a temporary hack for now - CFragileObject doesn't have SetMagnifyDamage ~krzys_h
     }
     if (Implements(ObjectInterfaceType::Shielded))
     {
@@ -1362,6 +1397,8 @@ void COldObject::Read(CLevelParserLine* line)
         SetDying(DeathType::Burning);
     m_bVirusMode = line->GetParam("virusMode")->AsBool(false);
     m_virusTime = line->GetParam("virusTime")->AsFloat(0.0f);
+
+    m_aTime = line->GetParam("lifetime")->AsFloat(0.0f);
 
     if ( m_motion != nullptr )
     {
@@ -2410,6 +2447,12 @@ bool COldObject::EventFrame(const Event &event)
         SetShield(GetShield() + event.rTime*(1.0f/GetShieldFullRegenTime()));
     }
 
+    if (m_damaging && m_time - m_damageTime > 2.0f)
+    {
+        SetDamaging(false);
+        m_main->UpdateShortcuts();
+    }
+
     return true;
 }
 
@@ -2937,6 +2980,15 @@ float COldObject::GetMagnifyDamage()
     return m_magnifyDamage;
 }
 
+void COldObject::SetDamaging(bool damaging)
+{
+    m_damaging = damaging;
+}
+
+bool COldObject::IsDamaging()
+{
+    return m_damaging;
+}
 
 void COldObject::SetDying(DeathType deathType)
 {

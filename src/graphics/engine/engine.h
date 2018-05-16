@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -246,8 +246,8 @@ struct EngineBaseObject
     Math::Vector           bboxMin;
     //! bounding box max (origin 0,0,0 always included)
     Math::Vector           bboxMax;
-    //! Radius of the sphere at the origin
-    float                  radius = 0.0f;
+    //! A bounding sphere that contains all the vertices in this EngineBaseObject
+    Math::Sphere           boundingSphere;
     //! Next tier (Tex)
     std::vector<EngineBaseObjTexTier> next;
 
@@ -923,12 +923,16 @@ public:
     void            SetTerrainVision(float vision);
 
     //@{
-    //! Management of camera angle
-    /**
+    //! Management of camera vertical field-of-view angle.
+    /** This is specified in radians.
+    Horizontal FoV is calculated based on vertical FoV and aspect ratio.
     0.75 = normal
     1.50 = wide-angle */
     void            SetFocus(float focus);
+    //! Deprecated alias for GetVFovAngle
     float           GetFocus();
+    float           GetVFovAngle();
+    float           GetHFovAngle();
     //@}
 
     //@{
@@ -1159,8 +1163,8 @@ public:
     //! Updates the scene after a change of parameters
     void            ApplyChange();
 
-    void            ClearDisplayCrashSpheres();
-    void            AddDisplayCrashSpheres(const std::vector<Math::Sphere>& crashSpheres);
+    void            RenderDebugSphere(const Math::Sphere&, const Math::Matrix& transform = Math::Matrix{}, const Color& = Color{0.0f, 0.0f, 1.0f, 1.0f});
+    void            RenderDebugBox(const Math::Vector& mins, const Math::Vector& maxs, const Math::Matrix& transform = Math::Matrix{}, const Color& = Color{0.0f, 0.0f, 1.0f, 1.0f});
 
     void            SetDebugLights(bool debugLights);
     bool            GetDebugLights();
@@ -1226,7 +1230,7 @@ protected:
     void        DrawStats();
     //! Draw mission timer
     void        DrawTimer();
-    void        DrawCrashSpheres();
+    void        RenderPendingDebugDraws();
 
     //! Creates a new tier 2 object (texture)
     EngineBaseObjTexTier&  AddLevel2(EngineBaseObject& p1, const std::string& tex1Name, const std::string& tex2Name);
@@ -1322,8 +1326,10 @@ protected:
     Math::Matrix    m_matProj;
     //! View matrix for 3D scene
     Math::Matrix    m_matView;
-    //! Camera angle for 3D scene
+    //! Camera vertical field-of-view angle for 3D scene. A.k.a. m_vfov
     float           m_focus;
+    //! Horizontal field-of-view angle, calculated from vertical FOV and aspect ratio
+    float           m_hfov;
 
     //! Projection matrix for rendering shadow maps
     Math::Matrix    m_shadowProjMat;
@@ -1404,6 +1410,14 @@ protected:
 
     Texture         m_shadowMap;
 
+    struct PendingDebugDraw
+    {
+        std::vector<VertexCol> vertices;
+        std::vector<int> firsts;
+        std::vector<int> counts;
+    }
+    m_pendingDebugDraws;
+
     //! Ranks of highlighted objects
     int             m_highlightRank[100];
     //! Highlight visible?
@@ -1477,7 +1491,6 @@ protected:
 
     std::unordered_map<std::string, int> m_staticMeshBaseObjects;
 
-    std::vector<Math::Sphere> m_displayCrashSpheres;
     std::vector<std::vector<VertexCol>> m_displayGoto;
     std::unique_ptr<CImage> m_displayGotoImage;
 

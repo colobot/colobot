@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -376,5 +376,5 @@ bool CTaskRecover::Abort()
 
 CObject* CTaskRecover::SearchRuin()
 {
-    return CObjectManager::GetInstancePointer()->FindNearest(nullptr, m_recoverPos, {OBJECT_RUINmobilew1, OBJECT_RUINmobilew2, OBJECT_RUINmobilet1, OBJECT_RUINmobilet2, OBJECT_RUINmobiler1, OBJECT_RUINmobiler2}, 40.0f/g_unit);
+    return CObjectManager::GetInstancePointer()->FindNearest(nullptr, m_recoverPos, {OBJECT_RUINmobilew1, OBJECT_RUINmobilew2, OBJECT_RUINmobilet1, OBJECT_RUINmobilet2, OBJECT_RUINmobiler1, OBJECT_RUINmobiler2, OBJECT_RUINdoor, OBJECT_RUINsupport, OBJECT_RUINradar}, 40.0f/g_unit);
 }

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -234,6 +234,51 @@ float GetNumFloat(const std::string& str)
 
     if (bNeg) num = -num;
     return static_cast<float>(num);
+}
+
+bool CharInList(const char c, const char* list)
+{
+    int i = 0;
+
+    while (list[i] != 0)
+    {
+        if (c == list[i++]) return true;
+    }
+
+    return false;
+}
+
+std::string CodePointToUTF8(unsigned int val)
+{
+    std::string s = "";
+
+    if (val < 0xD800 || (0xDFFF < val && val < 0x110000))
+    {
+        if (val < 0x80)
+        {
+            s.push_back(val);
+        }
+        else if (val < 0x800)
+        {
+            s.push_back(0xC0 + (val >> 6));
+            s.push_back(0x80 + (val & 0x3F));
+        }
+        else if (val < 0x10000)
+        {
+            s.push_back(0xE0 + (val >> 12));
+            s.push_back(0x80 + ((val >> 6) & 0x3F));
+            s.push_back(0x80 + (val & 0x3F));
+        }
+        else
+        {
+            s.push_back(0xF0 + (val >> 18));
+            s.push_back(0x80 + ((val >> 12) & 0x3F));
+            s.push_back(0x80 + ((val >> 6) & 0x3F));
+            s.push_back(0x80 + (val & 0x3F));
+        }
+    }
+
+    return s;
 }
 
 } // namespace CBot

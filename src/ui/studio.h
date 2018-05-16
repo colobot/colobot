@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -108,6 +108,10 @@ protected:
     Math::Point     m_editActualDim;
     Math::Point     m_editFinalPos;
     Math::Point     m_editFinalDim;
+    Math::Point     m_windowPos;
+    Math::Point     m_windowDim;
+    Math::Point     m_dialogPos;
+    Math::Point     m_dialogDim;
 
     float        m_time;
     float        m_fixInfoTextTime;

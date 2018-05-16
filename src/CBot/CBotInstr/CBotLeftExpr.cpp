@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -72,6 +72,8 @@ CBotLeftExpr* CBotLeftExpr::Compile(CBotToken* &p, CBotCStack* pStack)
                 // this is an element of the current class
                 // adds the equivalent of this. before
                 CBotToken pthis("this");
+                // invisible 'this.' highlights member token on error
+                pthis.SetPos(p->GetStart(), p->GetEnd());
                 inst->SetToken(&pthis);
                 inst->m_nIdent = -2;    // indent for this
 

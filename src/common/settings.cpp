@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -44,6 +44,7 @@ CSettings::CSettings()
     m_fontSize  = 19.0f;
     m_windowPos = Math::Point(0.15f, 0.17f);
     m_windowDim = Math::Point(0.70f, 0.66f);
+    m_windowMax = false;
 
     m_IOPublic = false;
     m_IODim = Math::Point(320.0f/640.0f, (121.0f+18.0f*8)/480.0f);
@@ -121,6 +122,8 @@ void CSettings::SaveSettings()
     GetConfigFile().SetFloatProperty("Edit", "WindowPosY", m_windowPos.y);
     GetConfigFile().SetFloatProperty("Edit", "WindowDimX", m_windowDim.x);
     GetConfigFile().SetFloatProperty("Edit", "WindowDimY", m_windowDim.y);
+    GetConfigFile().SetBoolProperty ("Edit", "WindowMaximized", m_windowMax);
+
     GetConfigFile().SetBoolProperty("Edit", "IOPublic", m_IOPublic);
     GetConfigFile().SetFloatProperty("Edit", "IOPosX", m_IOPos.x);
     GetConfigFile().SetFloatProperty("Edit", "IOPosY", m_IOPos.y);
@@ -281,6 +284,7 @@ void CSettings::LoadSettings()
     GetConfigFile().GetFloatProperty("Edit", "WindowPosY",  m_windowPos.y);
     GetConfigFile().GetFloatProperty("Edit", "WindowDimX",  m_windowDim.x);
     GetConfigFile().GetFloatProperty("Edit", "WindowDimY",  m_windowDim.y);
+    GetConfigFile().GetBoolProperty ("Edit", "WindowMaximized", m_windowMax);
 
     GetConfigFile().GetBoolProperty ("Edit", "IOPublic", m_IOPublic);
     GetConfigFile().GetFloatProperty("Edit", "IOPosX",   m_IOPos.x);
@@ -391,6 +395,18 @@ void CSettings::SetWindowDim(Math::Point dim)
 Math::Point CSettings::GetWindowDim()
 {
     return m_windowDim;
+}
+
+void CSettings::SetWindowMax(bool max)
+{
+    m_windowMax = max;
+    GetConfigFile().SetBoolProperty("Edit", "WindowMaximized", m_windowMax);
+    GetConfigFile().Save();
+}
+
+bool CSettings::GetWindowMax()
+{
+    return m_windowMax;
 }
 
 void CSettings::SetIOPublic(bool mode)

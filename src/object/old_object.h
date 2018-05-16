@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -248,6 +248,9 @@ public:
     void        SetMagnifyDamage(float factor) override;
     float       GetMagnifyDamage() override;
 
+    void        SetDamaging(bool damaging) override;
+    bool        IsDamaging()  override;
+
     void        SetDying(DeathType deathType) override;
     DeathType   GetDying() override;
     bool        IsDying() override;
@@ -385,6 +388,8 @@ protected:
     bool        m_bSelectable;          // selectable object
     bool        m_bCheckToken;          // object with audited tokens
     bool        m_underground;         // object active but undetectable
+    bool        m_damaging;
+    float       m_damageTime;
     DeathType   m_dying;
     bool        m_bFlat;
     bool        m_bTrainer;         // drive vehicle (without remote)

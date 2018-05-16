@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -1783,6 +1783,7 @@ bool CMotionVehicle::EventFrameCanoni(const Event &event)
 
     float energy = GetObjectEnergyLevel(m_object);
     if (energy == 0.0f)  return true;
+    if (energy > 1.0f) energy = 1.0f; //fix issue with cheated cells, see issue #1009
 
     factor = 0.5f+energy*0.5f;
     if ( bOnBoard )  factor *= 0.8f;

@@ -13,7 +13,7 @@ project(colobot C CXX)
 set(COLOBOT_VERSION_CODENAME "Gold")
 set(COLOBOT_VERSION_MAJOR    0)
 set(COLOBOT_VERSION_MINOR    1)
-set(COLOBOT_VERSION_REVISION 10)
+set(COLOBOT_VERSION_REVISION 11.1)
 
 # Used on official releases
 #set(COLOBOT_VERSION_RELEASE_CODENAME "-alpha")
@@ -132,10 +132,14 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 
     message(STATUS "Detected GCC version 4.7+")
 
-
-    set(NORMAL_CXX_FLAGS "-std=gnu++11 -Wall -Wold-style-cast -pedantic-errors")
+    set(NORMAL_CXX_FLAGS "-std=gnu++11 -Wall -Wold-style-cast -pedantic-errors -Wmissing-declarations")
     # set(NORMAL_CXX_FLAGS "${NORMAL_CXX_FLAGS} -Werror") # TODO (krzys_h): disabled during dev-buzzingcars development
     set(NORMAL_CXX_FLAGS "${NORMAL_CXX_FLAGS} -Wno-error=deprecated-declarations") # updated version of physfs is not available on some platforms so we keep using deprecated functions, see #958
+
+    if(NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5.0)
+        set(NORMAL_CXX_FLAGS "${NORMAL_CXX_FLAGS} -Wsuggest-override")
+    endif()
+
     set(RELEASE_CXX_FLAGS "-O2")
     set(DEBUG_CXX_FLAGS "-g -O0")
     set(TEST_CXX_FLAGS "-pthread")
@@ -147,7 +151,7 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 
     message(STATUS "Detected Clang version 3.1+")
 
-    set(NORMAL_CXX_FLAGS "-std=c++11 -Wall -Wold-style-cast -pedantic-errors")
+    set(NORMAL_CXX_FLAGS "-std=c++11 -Wall -Wold-style-cast -pedantic-errors -Wmissing-prototypes")
     # set(NORMAL_CXX_FLAGS "${NORMAL_CXX_FLAGS} -Werror") # TODO (krzys_h): disabled during dev-buzzingcars development
     set(NORMAL_CXX_FLAGS "${NORMAL_CXX_FLAGS} -Wno-error=deprecated-declarations") # updated version of physfs is not available on some platforms so we keep using deprecated functions, see #958
     set(RELEASE_CXX_FLAGS "-O2")

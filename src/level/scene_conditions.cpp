@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -112,19 +112,7 @@ bool CObjectCondition::CheckForObject(CObject* obj)
     return false;
 }
 
-void CSceneCondition::Read(CLevelParserLine* line)
-{
-    CObjectCondition::Read(line);
-
-    // Scene conditions STILL use a different default value
-    // See issue #759
-    this->dist     = line->GetParam("dist")->AsFloat(8.0f)*g_unit;
-
-    this->min      = line->GetParam("min")->AsInt(1);
-    this->max      = line->GetParam("max")->AsInt(9999);
-}
-
-int CSceneCondition::CountObjects()
+int CObjectCondition::CountObjects()
 {
     int nb = 0;
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
@@ -136,6 +124,18 @@ int CSceneCondition::CountObjects()
         nb ++;
     }
     return nb;
+}
+
+void CSceneCondition::Read(CLevelParserLine* line)
+{
+    CObjectCondition::Read(line);
+
+    // Scene conditions STILL use a different default value
+    // See issue #759
+    this->dist     = line->GetParam("dist")->AsFloat(8.0f)*g_unit;
+
+    this->min      = line->GetParam("min")->AsInt(1);
+    this->max      = line->GetParam("max")->AsInt(9999);
 }
 
 bool CSceneCondition::Check()

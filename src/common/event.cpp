@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -522,6 +522,17 @@ void InitializeEventTypeTexts()
 
     EVENT_TYPE_TEXT[EVENT_CODE_BATTLE_START] = "EVENT_CODE_BATTLE_START";
     EVENT_TYPE_TEXT[EVENT_CODE_BATTLE_SPECTATOR] = "EVENT_CODE_BATTLE_SPECTATOR";
+
+    EVENT_TYPE_TEXT[EVENT_VIEWPOINT0] = "EVENT_VIEWPOINT0";
+    EVENT_TYPE_TEXT[EVENT_VIEWPOINT1] = "EVENT_VIEWPOINT1";
+    EVENT_TYPE_TEXT[EVENT_VIEWPOINT2] = "EVENT_VIEWPOINT2";
+    EVENT_TYPE_TEXT[EVENT_VIEWPOINT3] = "EVENT_VIEWPOINT3";
+    EVENT_TYPE_TEXT[EVENT_VIEWPOINT4] = "EVENT_VIEWPOINT4";
+    EVENT_TYPE_TEXT[EVENT_VIEWPOINT5] = "EVENT_VIEWPOINT5";
+    EVENT_TYPE_TEXT[EVENT_VIEWPOINT6] = "EVENT_VIEWPOINT6";
+    EVENT_TYPE_TEXT[EVENT_VIEWPOINT7] = "EVENT_VIEWPOINT7";
+    EVENT_TYPE_TEXT[EVENT_VIEWPOINT8] = "EVENT_VIEWPOINT8";
+    EVENT_TYPE_TEXT[EVENT_VIEWPOINT9] = "EVENT_VIEWPOINT9";
 }
 
 std::string ParseEventType(EventType eventType)

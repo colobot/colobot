@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -84,7 +84,7 @@ CBotTypResult CScriptFunctions::cClassOneFloat(CBotVar* thisclass, CBotVar* &var
 
 // Compile a parameter of type "point".
 
-CBotTypResult cPoint(CBotVar* &var, void* user)
+static CBotTypResult cPoint(CBotVar* &var, void* user)
 {
     if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
 
@@ -123,22 +123,9 @@ CBotTypResult CScriptFunctions::cOnePoint(CBotVar* &var, void* user)
     return CBotTypResult(CBotTypFloat);
 }
 
-// Seeking value in an array of integers.
-
-bool FindList(CBotVar* array, int type)
-{
-    while ( array != nullptr )
-    {
-        if ( type == array->GetValInt() )  return true;
-        array = array->GetNext();
-    }
-    return false;
-}
-
-
 // Gives a parameter of type "point".
 
-bool GetPoint(CBotVar* &var, int& exception, Math::Vector& pos)
+static bool GetPoint(CBotVar* &var, int& exception, Math::Vector& pos)
 {
     CBotVar     *pX, *pY, *pZ;
 
@@ -594,7 +581,7 @@ bool CScriptFunctions::rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* resu
         }
         return true;
     }
-	
+
     return true;
 }
 
@@ -673,7 +660,7 @@ bool CScriptFunctions::rDelete(CBotVar* var, CBotVar* result, int& exception, vo
     }
 
     CObject* obj = CObjectManager::GetInstancePointer()->GetObjectById(rank);
-    if ( obj == nullptr )
+    if ( obj == nullptr || (obj->Implements(ObjectInterfaceType::Old) && dynamic_cast<COldObject*>(obj)->IsDying()) )
     {
         return true;
     }
@@ -705,7 +692,7 @@ bool CScriptFunctions::rDelete(CBotVar* var, CBotVar* result, int& exception, vo
     return false;
 }
 
-CBotTypResult compileSearch(CBotVar* &var, void* user, CBotTypResult returnValue)
+static CBotTypResult compileSearch(CBotVar* &var, void* user, CBotTypResult returnValue)
 {
     if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() == CBotTypArrayPointer )
@@ -749,7 +736,7 @@ CBotTypResult CScriptFunctions::cSearchAll(CBotVar* &var, void* user)
     return compileSearch(var, user, CBotTypResult(CBotTypArrayPointer, CBotTypResult(CBotTypPointer, "object")));
 }
 
-bool runSearch(CBotVar* var, Math::Vector pos, int& exception, std::function<bool(std::vector<ObjectType>, Math::Vector, float, float, bool, RadarFilter)> code)
+static bool runSearch(CBotVar* var, Math::Vector pos, int& exception, std::function<bool(std::vector<ObjectType>, Math::Vector, float, float, bool, RadarFilter)> code)
 {
     CBotVar*    array;
     RadarFilter filter;
@@ -868,7 +855,7 @@ bool CScriptFunctions::rSearchAll(CBotVar* var, CBotVar* result, int& exception,
 }
 
 
-CBotTypResult compileRadar(CBotVar* &var, void* user, CBotTypResult returnValue)
+static CBotTypResult compileRadar(CBotVar* &var, void* user, CBotTypResult returnValue)
 {
     CBotVar*    array;
 
@@ -915,7 +902,7 @@ CBotTypResult CScriptFunctions::cRadar(CBotVar* &var, void* user)
     return compileRadar(var, user, CBotTypResult(CBotTypPointer, "object"));
 }
 
-bool runRadar(CBotVar* var, std::function<bool(std::vector<ObjectType>, float, float, float, float, bool, RadarFilter)> code)
+static bool runRadar(CBotVar* var, std::function<bool(std::vector<ObjectType>, float, float, float, float, bool, RadarFilter)> code)
 {
     CBotVar*    array;
     RadarFilter filter;
@@ -1318,7 +1305,7 @@ bool CScriptFunctions::rBuild(CBotVar* var, CBotVar* result, int& exception, voi
             }
         }
     }
-	result->SetValInt(err); // indicates the error or ok
+    result->SetValInt(err); // indicates the error or ok
     if ( err != ERR_OK )
     {
         if ( script->m_errMode == ERM_STOP )
@@ -2478,7 +2465,7 @@ bool CScriptFunctions::rFire(CBotVar* var, CBotVar* result, int& exception, void
             if ( delay < 0.0f ) delay = -delay;
             err = script->m_taskExecutor->StartTaskFire(delay);
         }
-		result->SetValInt(err); // indicates the error or ok
+        result->SetValInt(err); // indicates the error or ok
         if ( err != ERR_OK )
         {
             script->m_taskExecutor->StopForegroundTask();
@@ -3447,7 +3434,7 @@ public:
         }
     }
 
-    ~CBotFileColobot()
+    ~CBotFileColobot() override
     {
         if (Opened())
         {

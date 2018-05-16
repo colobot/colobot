@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -59,4 +59,9 @@ public:
     //! Damage the object, with the given force. Returns true if the object has been fully destroyed (assuming the object is destroyable, of course). If force == infinity, destroy immediately (this is the default value)
     /** NOTE: You should never assume that after this function exits, the object is destroyed, unless it returns true. Even if you specify force = infinity, if may still sometimes decide not to destroy the object. */
     virtual bool DamageObject(DamageType type, float force = std::numeric_limits<float>::infinity(), CObject* killer = nullptr, Math::Vector impact = Math::Vector(NAN, NAN, NAN)) = 0;
+
+    //! Set the status that means the object is currently taking damage
+    virtual void        SetDamaging(bool damaging) = 0;
+    //! Is object currently taking damage?
+    virtual bool        IsDamaging() = 0;
 };

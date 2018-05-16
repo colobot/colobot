@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -464,6 +464,7 @@ void CBotFunction::RestoreState(CBotVar** ppVars, CBotStack* &pj, CBotVar* pInst
     {
         CBotVar* pThis = pile->FindVar("this");
         pThis->SetInit(CBotVar::InitType::IS_POINTER);
+        pThis->SetPointer(pInstance);
         pThis->SetUniqNum(-2);
     }
 
@@ -672,6 +673,7 @@ int CBotFunction::DoCall(CBotProgram* program, const std::list<CBotFunction*>& l
 {
     CBotTypResult   type;
     CBotFunction*   pt = nullptr;
+    CBotProgram*    baseProg = pStack->GetProgram(true);
 
     pt = FindLocalOrPublic(localFunctionList, nIdent, name, ppVars, type);
 
@@ -695,7 +697,7 @@ int CBotFunction::DoCall(CBotProgram* program, const std::list<CBotFunction*>& l
 
             if (pStk3b->GetState() == 0 && !pt->m_MasterClass.empty())
             {
-                CBotVar* pInstance = program->m_thisVar;
+                CBotVar* pInstance = (baseProg != nullptr) ? baseProg->m_thisVar : nullptr;
                 // make "this" known
                 CBotVar* pThis ;
                 if ( pInstance == nullptr )
@@ -762,8 +764,7 @@ void CBotFunction::RestoreCall(const std::list<CBotFunction*>& localFunctionList
     CBotFunction*   pt = nullptr;
     CBotStack*      pStk1;
     CBotStack*      pStk3;
-
-    // search function to return the ok identifier
+    CBotProgram*    baseProg = pStack->GetProgram(true);
 
     pt = FindLocalOrPublic(localFunctionList, nIdent, name, ppVars, type);
 
@@ -792,10 +793,11 @@ void CBotFunction::RestoreCall(const std::list<CBotFunction*>& localFunctionList
         {
             if ( !pt->m_MasterClass.empty() )
             {
-//                CBotVar* pInstance = m_pProg->m_thisVar;
+                CBotVar* pInstance = (baseProg != nullptr) ? baseProg->m_thisVar : nullptr;
                 // make "this" known
                 CBotVar* pThis = pStk1->FindVar("this");
                 pThis->SetInit(CBotVar::InitType::IS_POINTER);
+                pThis->SetPointer(pInstance);
                 pThis->SetUniqNum(-2);
             }
         }
@@ -994,7 +996,7 @@ bool CBotFunction::CheckParam(CBotDefParam* pParam)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string CBotFunction::GetName()
+const std::string& CBotFunction::GetName()
 {
     return  m_token.GetString();
 }

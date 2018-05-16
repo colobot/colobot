@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -241,6 +241,12 @@ enum CBotError : int
     CBotErrNoClassName   = 5046, //!< class name expected
     CBotErrNoReturn      = 5047, //!< non-void function needs "return;"
     CBotErrDefaultValue  = 5048, //!< this parameter needs a default value
+    CBotErrEndQuote      = 5049, //!< missing end quote
+    CBotErrBadEscape     = 5050, //!< unknown escape sequence
+    CBotErrOctalRange    = 5051, //!< octal value out of range
+    CBotErrHexDigits     = 5052, //!< missing hex digits after escape sequence
+    CBotErrHexRange      = 5053, //!< hex value out of range
+    CBotErrUnicodeName   = 5054, //!< invalid universal character name
 
     // Runtime errors
     CBotErrZeroDiv       = 6000, //!< division by zero

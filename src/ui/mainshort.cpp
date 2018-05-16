@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -247,6 +247,7 @@ bool CMainShort::UpdateShortcuts()
             assert(m_shortcuts[i]->Implements(ObjectInterfaceType::Controllable));
             pc->SetState(STATE_CHECK, dynamic_cast<CControllableObject*>(m_shortcuts[i])->GetSelect());
             pc->SetState(STATE_RUN, m_shortcuts[i]->Implements(ObjectInterfaceType::Programmable) && dynamic_cast<CProgrammableObject*>(m_shortcuts[i])->IsProgram());
+            pc->SetState(STATE_DAMAGE, dynamic_cast<CDamageableObject*>(m_shortcuts[i])->IsDamaging());
         }
     }
     return true;

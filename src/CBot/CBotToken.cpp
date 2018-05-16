@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,13 +21,23 @@
 
 #include <cstdarg>
 #include <cassert>
+#include <boost/bimap.hpp>
 
 namespace CBot
 {
 
+namespace
+{
+    template <typename L, typename R>
+    boost::bimap<L, R> makeBimap(std::initializer_list<typename boost::bimap<L, R>::value_type> list)
+    {
+        return boost::bimap<L, R>(list.begin(), list.end());
+    }
+}
+
 //! \brief Keeps the string corresponding to keyword ID
 //! Map is filled with id-string pars that are needed for CBot language parsing
-static const std::map<TokenId, const std::string> KEYWORDS = {
+static const boost::bimap<TokenId, std::string> KEYWORDS = makeBimap<TokenId, std::string>({
     {ID_IF,         "if"},
     {ID_ELSE,       "else"},
     {ID_WHILE,      "while"},
@@ -115,7 +125,7 @@ static const std::map<TokenId, const std::string> KEYWORDS = {
     {ID_ASSMODULO,  "%="},
     {TX_UNDEF,      "undefined"},
     {TX_NAN,        "not a number"}
-};
+});
 
 namespace
 {
@@ -123,9 +133,10 @@ static const std::string emptyString = "";
 }
 const std::string& LoadString(TokenId id)
 {
-    if (KEYWORDS.find(id) != KEYWORDS.end())
+    auto it = KEYWORDS.left.find(id);
+    if (it != KEYWORDS.left.end())
     {
-        return KEYWORDS.at(id);
+        return it->second;
     }
     else
     {
@@ -210,7 +221,7 @@ long CBotToken::GetKeywordId()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string CBotToken::GetString()
+const std::string& CBotToken::GetString()
 {
     return m_text;
 }
@@ -241,23 +252,14 @@ void CBotToken::SetPos(int start, int end)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CharInList(const char c, const char* list)
-{
-    int     i = 0;
 
-    while (true)
-    {
-        if (c == list[i++]) return true;
-        if (list[i] == 0) return false;
-    }
-}
-
-static char    sep1[] = " \r\n\t,:()[]{}-+*/=;><!~^|&%.";
+// TODO: CharInList could probably be optimized to conditions like (*c >= '0' && *c <= '9') to gain some performance
+static char    sep1[] = " \r\n\t,:()[]{}-+*/=;><!~^|&%.\"\'?";
 static char    sep2[] = " \r\n\t";                           // only separators
-static char    sep3[] = ",:()[]{}-+*/=;<>!~^|&%.";           // operational separators
+static char    sep3[] = ",:()[]{}-+*/=;<>!~^|&%.?";          // operational separators
 static char    num[]  = "0123456789";                        // point (single) is tested separately
 static char    hexnum[]   = "0123456789ABCDEFabcdef";
-static char    nch[]  = "\"\r\n\t";                          // forbidden in chains
+static char    nch[]  = "\r\n\t";                            // forbidden in chains
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotToken*  CBotToken::NextToken(const char*& program, bool first)
@@ -278,14 +280,13 @@ CBotToken*  CBotToken::NextToken(const char*& program, bool first)
         // special case for strings
         if (token[0] == '\"' )
         {
-            while (c != 0 && !CharInList(c, nch))
+            while (c != 0 && c != '\"' && !CharInList(c, nch))
             {
                 if ( c == '\\' )
                 {
-                    c   = *(program++);                 // next character
-                    if ( c == 'n' ) c = '\n';
-                    if ( c == 'r' ) c = '\r';
-                    if ( c == 't' ) c = '\t';
+                    token += c;
+                    c = *(program++);
+                    if (c == 0 || CharInList(c, nch)) break;
                 }
                 token += c;
                 c = *(program++);
@@ -449,9 +450,10 @@ std::unique_ptr<CBotToken> CBotToken::CompileTokens(const std::string& program)
 ////////////////////////////////////////////////////////////////////////////////
 int CBotToken::GetKeyWord(const std::string& w)
 {
-    for (const auto& it : KEYWORDS)
+    auto it = KEYWORDS.right.find(w);
+    if (it != KEYWORDS.right.end())
     {
-        if (it.second == w) return it.first;
+        return it->second;
     }
 
     return -1;
