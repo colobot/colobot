@@ -1720,7 +1720,7 @@ char CApplication::GetLanguageChar() const
             break;
 
         case LANGUAGE_PORTUGUESE_BRAZILIAN:
-            langChar = 'P';
+            langChar = 'B';
             break;
 
     }
