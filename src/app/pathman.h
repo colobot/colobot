@@ -31,16 +31,20 @@ class CSystemUtils;
 class CPathManager
 {
 public:
-    CPathManager(CSystemUtils* systemUtils);
-    ~CPathManager();
+    CPathManager() = default;
+    ~CPathManager() = default;
+
+    void InitializeDefaultPaths(CSystemUtils* systemUtils, const std::string& gameName);
 
     void SetDataPath(const std::string &dataPath);
+    void SetGamePath(const std::string &gamePath);
     void SetLangPath(const std::string &langPath);
     void SetSavePath(const std::string &savePath);
     void AddModAutoloadDir(const std::string &modAutoloadDirPath);
     void AddMod(const std::string &modPath);
 
     const std::string& GetDataPath();
+    const std::string& GetGamePath();
     const std::string& GetLangPath();
     const std::string& GetSavePath();
 
@@ -56,6 +60,8 @@ private:
 private:
     //! Data path
     std::string m_dataPath;
+    //! Game path
+    std::string m_gamePath;
     //! Lang path
     std::string m_langPath;
     //! Save path

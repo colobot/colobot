@@ -170,7 +170,7 @@ int main(int argc, char *argv[])
     InitializeEventTypeTexts();
 
     int code = 0;
-    CApplication app(systemUtils.get()); // single instance of the application
+    CApplication app(systemUtils.get(), argv[0]); // single instance of the application
 
     ParseArgsStatus status = app.ParseArguments(argc, argv);
     if (status == PARSE_ARGS_FAIL)

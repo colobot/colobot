@@ -44,7 +44,7 @@ class CApplicationWrapper : public CApplication
 {
 public:
     CApplicationWrapper(CSystemUtils* systemUtils)
-        : CApplication(systemUtils)
+        : CApplication(systemUtils, "app_test")
     {
         SDL_Init(0);
         m_eventQueue = MakeUnique<CEventQueue>();
@@ -104,6 +104,7 @@ void CApplicationUT::SetUp()
     m_systemUtils = m_mocks.Mock<CSystemUtils>();
 
     m_mocks.OnCall(m_systemUtils, CSystemUtils::GetDataPath).Return("");
+    m_mocks.OnCall(m_systemUtils, CSystemUtils::GetGamePath).Return("");
     m_mocks.OnCall(m_systemUtils, CSystemUtils::GetLangPath).Return("");
     m_mocks.OnCall(m_systemUtils, CSystemUtils::GetSaveDir).Return("");
 

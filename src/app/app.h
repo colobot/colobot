@@ -154,7 +154,7 @@ class CApplication : public CSingleton<CApplication>
 {
 public:
     //! Constructor (can only be called once!)
-    CApplication(CSystemUtils* systemUtils);
+    CApplication(CSystemUtils* systemUtils, const std::string& binaryName);
     //! Destructor
     ~CApplication();
 
@@ -406,4 +406,6 @@ protected:
     static char m_languageLocale[50];
 
     std::map<int, bool> m_textInputEnabled;
+
+    std::string m_game;
 };
