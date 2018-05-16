@@ -110,12 +110,16 @@ std::wstring CSystemUtilsWindows::UTF8_Decode(const std::string& str)
 
 std::string CSystemUtilsWindows::GetSaveDir()
 {
+#if PORTABLE_SAVES || DEV_BUILD
+    return "./saves";
+#else
     std::string savegameDir;
 
     wchar_t* envUSERPROFILE = _wgetenv(L"USERPROFILE");
     if (envUSERPROFILE == nullptr)
     {
-        savegameDir = "./saves";
+        GetLogger()->Warn("Unable to find directory for saves - using current directory");
+        savegameDir = CSystemUtils::GetSaveDir(false);
     }
     else
     {
@@ -124,6 +128,7 @@ std::string CSystemUtilsWindows::GetSaveDir()
     GetLogger()->Trace("Saved game files are going to %s\n", savegameDir.c_str());
 
     return savegameDir;
+#endif
 }
 
 void CSystemUtilsWindows::Usleep(int usec)

@@ -201,6 +201,9 @@ option(OFFICIAL_BUILD "Official build (changes crash screen text)" OFF)
 # Portable build - load all data from current directory
 option(PORTABLE "Portable build" OFF)
 
+# Portable saves - suitable for e.g. putting the whole game on external storage and moving your saves with it
+option(PORTABLE_SAVES "Portable saves" OFF)
+
 # Building tests can be enabled/disabled
 option(TESTS "Build tests" OFF)
 
@@ -350,21 +353,19 @@ endif()
 ##
 
 # Installation paths defined before compiling sources
-if(PLATFORM_WINDOWS)
-    if(MXE)
-        # We need to use STRING because PATH doesn't accept relative paths
-        set(COLOBOT_INSTALL_BIN_DIR ./ CACHE STRING "Colobot binary directory")
-        set(COLOBOT_INSTALL_LIB_DIR ./ CACHE STRING "Colobot libraries directory")
-        set(COLOBOT_INSTALL_DATA_DIR ./data CACHE STRING "Colobot shared data directory")
-        set(COLOBOT_INSTALL_I18N_DIR ./lang CACHE STRING "Colobot translations directory")
-        set(COLOBOT_INSTALL_DOC_DIR ./doc CACHE STRING "Colobot documentation directory")
-    else()
-        set(COLOBOT_INSTALL_BIN_DIR ${CMAKE_INSTALL_PREFIX}/ CACHE PATH "Colobot binary directory")
-        set(COLOBOT_INSTALL_LIB_DIR ${CMAKE_INSTALL_PREFIX}/ CACHE PATH "Colobot libraries directory")
-        set(COLOBOT_INSTALL_DATA_DIR ${CMAKE_INSTALL_PREFIX}/data CACHE PATH "Colobot shared data directory")
-        set(COLOBOT_INSTALL_I18N_DIR ${CMAKE_INSTALL_PREFIX}/lang CACHE PATH "Colobot translations directory")
-        set(COLOBOT_INSTALL_DOC_DIR ${CMAKE_INSTALL_PREFIX}/doc CACHE PATH "Colobot documentation directory")
-    endif()
+if(PORTABLE OR (PLATFORM_WINDOWS AND MXE))
+    # We need to use STRING because PATH doesn't accept relative paths
+    set(COLOBOT_INSTALL_BIN_DIR ./ CACHE STRING "Colobot binary directory")
+    set(COLOBOT_INSTALL_LIB_DIR ./ CACHE STRING "Colobot libraries directory")
+    set(COLOBOT_INSTALL_DATA_DIR ./data CACHE STRING "Colobot shared data directory")
+    set(COLOBOT_INSTALL_I18N_DIR ./lang CACHE STRING "Colobot translations directory")
+    set(COLOBOT_INSTALL_DOC_DIR ./doc CACHE STRING "Colobot documentation directory")
+elseif(PLATFORM_WINDOWS)
+    set(COLOBOT_INSTALL_BIN_DIR ${CMAKE_INSTALL_PREFIX}/ CACHE PATH "Colobot binary directory")
+    set(COLOBOT_INSTALL_LIB_DIR ${CMAKE_INSTALL_PREFIX}/ CACHE PATH "Colobot libraries directory")
+    set(COLOBOT_INSTALL_DATA_DIR ${CMAKE_INSTALL_PREFIX}/data CACHE PATH "Colobot shared data directory")
+    set(COLOBOT_INSTALL_I18N_DIR ${CMAKE_INSTALL_PREFIX}/lang CACHE PATH "Colobot translations directory")
+    set(COLOBOT_INSTALL_DOC_DIR ${CMAKE_INSTALL_PREFIX}/doc CACHE PATH "Colobot documentation directory")
 elseif(PLATFORM_MACOSX)
     set(COLOBOT_INSTALL_BIN_DIR ../MacOS CACHE STRING "Colobot binary directory")
     set(COLOBOT_INSTALL_LIB_DIR ../MacOS CACHE STRING "Colobot libraries directory")
