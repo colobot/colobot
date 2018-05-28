@@ -196,12 +196,22 @@ void CLevelParser::Load()
         auto parserLine = MakeUnique<CLevelParserLine>(lineNumber, command);
         parserLine->SetLevel(this);
 
-        if (command.length() > 3 && command[command.length() - 3] == '.')
+        std::size_t separator = command.find('.');
+        if (command.length() > 3 && separator != std::string::npos)
         {
-            std::string baseCommand = command.substr(0, command.length() - 3);
+            std::string baseCommand = command.substr(0, separator);
             parserLine->SetCommand(baseCommand);
 
-            std::string languageTag(command,command.length()-2,2);
+            std::string languageTag = command.substr(separator+1,command.length());
+
+            //TODO: conversion from old language tags to new ones, remove when levels will be ported to new tags
+            if (languageTag == "C") languageTag = "cs";
+            else if (languageTag == "D") languageTag = "de";
+            else if (languageTag == "F") languageTag = "fr";
+            else if (languageTag == "P") languageTag = "pl";
+            else if (languageTag == "R") languageTag = "ru";
+            else languageTag = "en"; //fallback to English when in doubt
+
             if (languageTag == "en" && translatableLines.count(baseCommand) == 0)
             {
                 translatableLines.insert(baseCommand);
