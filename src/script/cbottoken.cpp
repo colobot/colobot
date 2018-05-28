@@ -217,7 +217,7 @@ std::string GetHelpFilename(ObjectType type)
     if (helpfile.empty())
         return "";
 
-    return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + "/" + helpfile + ".txt";
+    return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageTag() + "/" + helpfile + ".txt";
 }
 
 
@@ -376,7 +376,7 @@ std::string GetHelpFilename(const char *token)
     if (helpfile.empty())
         return "";
 
-    return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + "/" + helpfile + ".txt";
+    return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageTag() + "/" + helpfile + ".txt";
 }
 
 

@@ -160,7 +160,7 @@ void CLevelParser::Load()
     if (!file.is_open())
         throw CLevelParserException("Failed to open file: " + m_filename);
 
-    char lang = CApplication::GetInstancePointer()->GetLanguageChar();
+    std::string lang = CApplication::GetInstancePointer()->GetLanguageTag();
 
     std::string line;
     int lineNumber = 0;
@@ -196,17 +196,17 @@ void CLevelParser::Load()
         auto parserLine = MakeUnique<CLevelParserLine>(lineNumber, command);
         parserLine->SetLevel(this);
 
-        if (command.length() > 2 && command[command.length() - 2] == '.')
+        if (command.length() > 3 && command[command.length() - 3] == '.')
         {
-            std::string baseCommand = command.substr(0, command.length() - 2);
+            std::string baseCommand = command.substr(0, command.length() - 3);
             parserLine->SetCommand(baseCommand);
 
-            char languageChar = command[command.length() - 1];
-            if (languageChar == 'E' && translatableLines.count(baseCommand) == 0)
+            std::string languageTag(command,command.length()-2,2);
+            if (languageTag == "en" && translatableLines.count(baseCommand) == 0)
             {
                 translatableLines.insert(baseCommand);
             }
-            else if (languageChar == lang)
+            else if (languageTag == lang)
             {
                 if (translatableLines.count(baseCommand) > 0)
                 {
@@ -333,13 +333,13 @@ std::string CLevelParser::InjectLevelPaths(const std::string& path, const std::s
     }
 
     std::string langPath = newPath;
-    std::string langStr(1, CApplication::GetInstancePointer()->GetLanguageChar());
+    std::string langStr(CApplication::GetInstancePointer()->GetLanguageTag());
     boost::replace_all(langPath, "%lng%", langStr);
     if(CResourceManager::Exists(langPath))
         return langPath;
 
     // Fallback to English if file doesn't exist
-    boost::replace_all(newPath, "%lng%", "E");
+    boost::replace_all(newPath, "%lng%", "en");
     if(CResourceManager::Exists(newPath))
         return newPath;
 

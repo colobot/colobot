@@ -592,7 +592,7 @@ void CRobotMain::ChangePhase(Phase phase)
                     pe->SetFontType(Gfx::FONT_COLOBOT);
                     pe->SetEditCap(false);
                     pe->SetHighlightCap(false);
-                    pe->ReadText(std::string("help/") + m_app->GetLanguageChar() + std::string("/win.txt"));
+                    pe->ReadText(std::string("help/") + m_app->GetLanguageTag() + std::string("/win.txt"));
                 }
                 else
                 {
