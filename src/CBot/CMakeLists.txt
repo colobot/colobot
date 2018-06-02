@@ -151,7 +151,12 @@ set(LOCAL_INCLUDES
     ${CMAKE_CURRENT_SOURCE_DIR}/..
 )
 
+set(SYSTEM_INCLUDES
+    ${Boost_INCLUDE_DIRS}
+)
+
 include_directories(${LOCAL_INCLUDES})
+include_directories(SYSTEM ${SYSTEM_INCLUDES})
 
 
 if(CBOT_STATIC)

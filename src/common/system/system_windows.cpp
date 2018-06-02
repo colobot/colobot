@@ -119,7 +119,7 @@ std::string CSystemUtilsWindows::GetSaveDir()
     if (envUSERPROFILE == nullptr)
     {
         GetLogger()->Warn("Unable to find directory for saves - using current directory");
-        savegameDir = CSystemUtils::GetSaveDir(false);
+        savegameDir = CSystemUtils::GetSaveDir();
     }
     else
     {
