@@ -164,10 +164,10 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
 
     set(NORMAL_CXX_FLAGS "/wd\"4244\" /wd\"4309\" /wd\"4800\" /wd\"4996\" /wd\"4351\" /EHsc") # disable some useless warnings
     if(MSVC_STATIC)
-        set(RELEASE_CXX_FLAGS "/MT")
+        set(RELEASE_CXX_FLAGS "/MT /Ox")
         set(DEBUG_CXX_FLAGS "/MTd /ZI")
     else(MSVC_STATIC)
-        set(RELEASE_CXX_FLAGS "/MD")
+        set(RELEASE_CXX_FLAGS "/MD /Ox")
         set(DEBUG_CXX_FLAGS "/MDd /ZI")
     endif()
     set(TEST_CXX_FLAGS "")
@@ -323,6 +323,11 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
 
     set(CBOT_STATIC 1) # only this works for some reason
     set(WINGETOPT 1) # use wingetopt library
+
+    # Hide console in release builds
+    if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+        set(CMAKE_WIN32_EXECUTABLE 1)
+    endif()
 endif()
 
 ##
