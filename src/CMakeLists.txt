@@ -48,16 +48,16 @@ elseif(PLATFORM_WINDOWS)
 
         if(${MSVC_STATIC})
             if (${OPENAL_SOUND})
-            find_library(FLAC_LIBRARY NAMES flac.lib)
-            find_library(VORBIS_LIBRARY NAMES vorbis.lib)
-            find_library(VORBISENC_LIBRARY NAMES vorbisenc.lib)
-            find_library(OGG_LIBRARY NAMES ogg.lib)
-            set(OPENAL_MSVC_LIBS
-                ${FLAC_LIBRARY}
-                ${VORBIS_LIBRARY}
-                ${VORBISENC_LIBRARY}
-                ${OGG_LIBRARY}
-            )
+                find_library(FLAC_LIBRARY NAMES flac.lib)
+                find_library(VORBIS_LIBRARY NAMES vorbis.lib)
+                find_library(VORBISENC_LIBRARY NAMES vorbisenc.lib)
+                find_library(OGG_LIBRARY NAMES ogg.lib)
+                set(OPENAL_MSVC_LIBS
+                    ${FLAC_LIBRARY}
+                    ${VORBIS_LIBRARY}
+                    ${VORBISENC_LIBRARY}
+                    ${OGG_LIBRARY}
+                )
             endif()
 
             find_library(BZ2_LIBRARY NAMES bz2.lib)
