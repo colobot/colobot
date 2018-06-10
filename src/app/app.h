@@ -261,7 +261,7 @@ public:
     //! Management of language
     //@{
     Language    GetLanguage() const;
-    char        GetLanguageChar() const;
+    std::string GetLanguageTag() const;
     void        SetLanguage(Language language);
     //@}
 

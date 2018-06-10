@@ -1688,38 +1688,38 @@ Language CApplication::GetLanguage() const
     return m_language;
 }
 
-char CApplication::GetLanguageChar() const
+std::string CApplication::GetLanguageTag() const
 {
-    char langChar = 'E';
+    std::string langTag = "en";
     switch (m_language)
     {
         default:
         case LANGUAGE_ENV:
         case LANGUAGE_ENGLISH:
-            langChar = 'E';
+            langTag = "en";
             break;
 
         case LANGUAGE_CZECH:
-            langChar = 'C';
+            langTag = "cs";
             break;
 
         case LANGUAGE_GERMAN:
-            langChar = 'D';
+            langTag = "de";
             break;
 
         case LANGUAGE_FRENCH:
-            langChar = 'F';
+            langTag = "fr";
             break;
 
         case LANGUAGE_POLISH:
-            langChar = 'P';
+            langTag = "pl";
             break;
 
         case LANGUAGE_RUSSIAN:
-            langChar = 'R';
+            langTag = "ru";
             break;
     }
-    return langChar;
+    return langTag;
 }
 
 void CApplication::SetLanguage(Language language)
