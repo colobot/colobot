@@ -817,9 +817,15 @@ bool CApplication::CreateVideoSurface()
     int vsync = 0;
     if (GetConfigFile().GetIntProperty("Experimental", "VSync", vsync))
     {
-        SDL_GL_SetSwapInterval(vsync);
+        if (SDL_GL_SetSwapInterval(vsync) == -1)
+        {
+            GetLogger()->Warn("Adaptive sync not supported.\n");
+            vsync = 1;
+            SDL_GL_SetSwapInterval(vsync);
+            GetConfigFile().SetIntProperty("Experimental", "VSync", vsync);
+        }
 
-        GetLogger()->Info("Using Vsync: %s\n", (vsync ? "true" : "false"));
+        GetLogger()->Info("Using Vsync: %s\n", (vsync == -1 ? "adaptive" : (vsync ? "true" : "false")));
     }
 
     return true;
@@ -832,6 +838,12 @@ bool CApplication::ChangeVideoConfig(const Gfx::DeviceConfig &newConfig)
     // TODO: Somehow this doesn't work for maximized windows (at least on Ubuntu)
     SDL_SetWindowSize(m_private->window, m_deviceConfig.size.x, m_deviceConfig.size.y);
     SDL_SetWindowFullscreen(m_private->window, m_deviceConfig.fullScreen ? SDL_WINDOW_FULLSCREEN : 0);
+    if( SDL_GL_SetSwapInterval(m_engine->GetVSync()) == -1 )
+    {
+        GetLogger()->Warn("Adaptive sync not supported.\n");
+        m_engine->SetVSync(1);
+        SDL_GL_SetSwapInterval(1);
+    }
 
     m_device->ConfigChanged(m_deviceConfig);
 
