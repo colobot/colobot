@@ -817,13 +817,25 @@ bool CApplication::CreateVideoSurface()
     int vsync = 0;
     if (GetConfigFile().GetIntProperty("Setup", "VSync", vsync))
     {
-        if (SDL_GL_SetSwapInterval(vsync) == -1)
+        while (SDL_GL_SetSwapInterval(vsync) == -1)
         {
-            GetLogger()->Warn("Adaptive sync not supported.\n");
-            vsync = 1;
-            SDL_GL_SetSwapInterval(vsync);
-            GetConfigFile().SetIntProperty("Setup", "VSync", vsync);
+            switch(vsync)
+            {
+                case -1: //failed with adaptive sync?
+                    GetLogger()->Warn("Adaptive sync not supported.\n");
+                    vsync = 1;
+                    break;
+                case 1: //failed with VSync enabled?
+                    GetLogger()->Warn("Couldn't enable VSync.\n");
+                    vsync = 0;
+                    break;
+                case 0: //failed with VSync disabled?
+                    GetLogger()->Warn("Couldn't disable VSync.\n");
+                    vsync = 1;
+                    break;
+            }
         }
+        GetConfigFile().SetIntProperty("Setup", "VSync", vsync);
 
         GetLogger()->Info("Using Vsync: %s\n", (vsync == -1 ? "adaptive" : (vsync ? "true" : "false")));
     }
@@ -838,12 +850,27 @@ bool CApplication::ChangeVideoConfig(const Gfx::DeviceConfig &newConfig)
     // TODO: Somehow this doesn't work for maximized windows (at least on Ubuntu)
     SDL_SetWindowSize(m_private->window, m_deviceConfig.size.x, m_deviceConfig.size.y);
     SDL_SetWindowFullscreen(m_private->window, m_deviceConfig.fullScreen ? SDL_WINDOW_FULLSCREEN : 0);
-    if( SDL_GL_SetSwapInterval(m_engine->GetVSync()) == -1 )
+
+    int vsync = m_engine->GetVSync();
+    while (SDL_GL_SetSwapInterval(vsync) == -1)
     {
-        GetLogger()->Warn("Adaptive sync not supported.\n");
-        m_engine->SetVSync(1);
-        SDL_GL_SetSwapInterval(1);
+        switch(vsync)
+        {
+            case -1: //failed with adaptive sync?
+                GetLogger()->Warn("Adaptive sync not supported.\n");
+                vsync = 1;
+                break;
+            case 1: //failed with VSync enabled?
+                GetLogger()->Warn("Couldn't enable VSync.\n");
+                vsync = 0;
+                break;
+            case 0: //failed with VSync disabled?
+                GetLogger()->Warn("Couldn't disable VSync.\n");
+                vsync = 1;
+                break;
+        }
     }
+    m_engine->SetVSync(vsync);
 
     m_device->ConfigChanged(m_deviceConfig);
 
