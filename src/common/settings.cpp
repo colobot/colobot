@@ -112,7 +112,7 @@ void CSettings::SaveSettings()
 
     // Experimental settings
     GetConfigFile().SetBoolProperty("Experimental", "TerrainShadows", engine->GetTerrainShadows());
-    GetConfigFile().SetIntProperty("Experimental", "VSync", engine->GetVSync());
+    GetConfigFile().SetIntProperty("Setup", "VSync", engine->GetVSync());
 
     CInput::GetInstancePointer()->SaveKeyBindings();
 
@@ -275,7 +275,7 @@ void CSettings::LoadSettings()
 
     if (GetConfigFile().GetBoolProperty("Experimental", "TerrainShadows", bValue))
         engine->SetTerrainShadows(bValue);
-    if (GetConfigFile().GetIntProperty("Experimental", "VSync", iValue))
+    if (GetConfigFile().GetIntProperty("Setup", "VSync", iValue))
     {
         engine->SetVSync(iValue);
     }

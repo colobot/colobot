@@ -815,14 +815,14 @@ bool CApplication::CreateVideoSurface()
     m_private->glcontext = SDL_GL_CreateContext(m_private->window);
 
     int vsync = 0;
-    if (GetConfigFile().GetIntProperty("Experimental", "VSync", vsync))
+    if (GetConfigFile().GetIntProperty("Setup", "VSync", vsync))
     {
         if (SDL_GL_SetSwapInterval(vsync) == -1)
         {
             GetLogger()->Warn("Adaptive sync not supported.\n");
             vsync = 1;
             SDL_GL_SetSwapInterval(vsync);
-            GetConfigFile().SetIntProperty("Experimental", "VSync", vsync);
+            GetConfigFile().SetIntProperty("Setup", "VSync", vsync);
         }
 
         GetLogger()->Info("Using Vsync: %s\n", (vsync == -1 ? "adaptive" : (vsync ? "true" : "false")));
