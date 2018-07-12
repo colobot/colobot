@@ -360,6 +360,7 @@ bool CMotionToto::EventFrame(const Event &event)
               type == OBJECT_MOBILEtt ||
               type == OBJECT_MOBILEft ||
               type == OBJECT_MOBILEit ||
+              type == OBJECT_MOBILEtg ||
               type == OBJECT_MOBILEdr ) )  // vehicle?
         {
             m_clownTime += event.rTime;

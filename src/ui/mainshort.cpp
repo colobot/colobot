@@ -238,6 +238,7 @@ int CMainShort::GetShortcutIcon(ObjectType type)
             case OBJECT_MOBILEtt:   icon =  5; break;
             case OBJECT_MOBILEwt:   icon = 30; break;
             case OBJECT_MOBILEit:   icon =  7; break;
+            case OBJECT_MOBILEtg:   icon = 45; break;
             case OBJECT_MOBILEdr:   icon = 48; break;
             case OBJECT_APOLLO2:    icon = 49; break;
             default:                return -1;

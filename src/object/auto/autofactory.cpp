@@ -195,6 +195,7 @@ ObjectType ObjectTypeFromFactoryButton(EventType eventType)
     if ( eventType == EVENT_OBJECT_FACTORYrr )  return OBJECT_MOBILErr;
     if ( eventType == EVENT_OBJECT_FACTORYrs )  return OBJECT_MOBILErs;
     if ( eventType == EVENT_OBJECT_FACTORYsa )  return OBJECT_MOBILEsa;
+    if ( eventType == EVENT_OBJECT_FACTORYtg )  return OBJECT_MOBILEtg;
 
     return OBJECT_NULL;
 }
@@ -798,6 +799,8 @@ bool CAutoFactory::CreateInterface(bool bSelect)
         pos.x = ox+sx*0.0f;
         pos.y = oy+sy*2.7f;
         pw->CreateButton(pos, dim, 128+21, EVENT_OBJECT_FACTORYsa);
+        pos.x += dim.x;
+        pw->CreateButton(pos, dim, 128+45, EVENT_OBJECT_FACTORYtg);
     }
     
     pos.x = ox+sx*0.0f;
@@ -847,6 +850,7 @@ void CAutoFactory::UpdateInterface()
     UpdateButton(pw, EVENT_OBJECT_FACTORYrr, m_bBusy);
     UpdateButton(pw, EVENT_OBJECT_FACTORYrs, m_bBusy);
     UpdateButton(pw, EVENT_OBJECT_FACTORYsa, m_bBusy);
+    UpdateButton(pw, EVENT_OBJECT_FACTORYtg, m_bBusy);
 }
 
 // Updates the status of one interface button.

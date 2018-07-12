@@ -496,6 +496,7 @@ enum EventType
     EVENT_OBJECT_FACTORYtb  = 1102,
     EVENT_OBJECT_FACTORYfb  = 1103,
     EVENT_OBJECT_FACTORYib  = 1104,
+    EVENT_OBJECT_FACTORYtg  = 1105,
     EVENT_OBJECT_SEARCH     = 1200,
     EVENT_OBJECT_TERRAFORM  = 1201,
     EVENT_OBJECT_FIRE       = 1202,
@@ -600,6 +601,7 @@ enum EventType
     
     EVENT_OBJECT_RBUILDER       = 2300,
     EVENT_OBJECT_BUILD          = 2301,
+    EVENT_OBJECT_RTARGET        = 2302,
 
     //! Maximum value of standard events
     EVENT_STD_MAX,

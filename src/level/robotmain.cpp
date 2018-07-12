@@ -5741,6 +5741,7 @@ Error CRobotMain::CanFactoryError(ObjectType type, int team)
     if (type == OBJECT_MOBILErr          && !IsResearchDone(RESEARCH_RECYCLER, team)) return ERR_BUILD_RESEARCH;
     if (type == OBJECT_MOBILErs          && !IsResearchDone(RESEARCH_SHIELD,   team)) return ERR_BUILD_RESEARCH;
     if (type == OBJECT_MOBILEsa          && !IsResearchDone(RESEARCH_SUBM,     team)) return ERR_BUILD_DISABLED; // Can be only researched manually in Scene file
+    if (type == OBJECT_MOBILEtg          && !IsResearchDone(RESEARCH_TARGET,   team)) return ERR_BUILD_RESEARCH;
 
     return ERR_OK;
 }

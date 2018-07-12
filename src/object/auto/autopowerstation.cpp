@@ -278,6 +278,7 @@ CObject* CAutoPowerStation::SearchVehicle()
              type != OBJECT_MOBILEtt &&
              type != OBJECT_MOBILEwt &&
              type != OBJECT_MOBILEit &&
+             type != OBJECT_MOBILEtg &&
              type != OBJECT_MOBILEdr )  continue;
 
         Math::Vector oPos = obj->GetPosition();

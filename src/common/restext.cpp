@@ -366,6 +366,7 @@ void InitializeRestext()
     stringsEvent[EVENT_OBJECT_FACTORYrr]    = TR("Build a recycler");
     stringsEvent[EVENT_OBJECT_FACTORYrs]    = TR("Build a shielder");
     stringsEvent[EVENT_OBJECT_FACTORYsa]    = TR("Build a subber");
+    stringsEvent[EVENT_OBJECT_FACTORYtg]    = TR("Build a target bot");
     stringsEvent[EVENT_OBJECT_RTANK]        = TR("Run research program for tracked bots");
     stringsEvent[EVENT_OBJECT_RFLY]         = TR("Run research program for winged bots");
     stringsEvent[EVENT_OBJECT_RTHUMP]       = TR("Run research program for thumper");
@@ -377,6 +378,7 @@ void InitializeRestext()
     stringsEvent[EVENT_OBJECT_RiPAW]        = TR("Run research program for legged bots");
     stringsEvent[EVENT_OBJECT_RiGUN]        = TR("Run research program for orga shooter");
     stringsEvent[EVENT_OBJECT_RBUILDER]     = TR("Run research program for builder");
+    stringsEvent[EVENT_OBJECT_RTARGET]      = TR("Run research program for target bot");
     stringsEvent[EVENT_OBJECT_RESET]        = TR("Return to start");
     stringsEvent[EVENT_OBJECT_SEARCH]       = TR("Sniff (\\key action;)");
     stringsEvent[EVENT_OBJECT_TERRAFORM]    = TR("Thump (\\key action;)");
@@ -626,7 +628,7 @@ void InitializeRestext()
     stringsErr[ERR_BASE_DLOCK]      = TR("Doors blocked by a robot or another object");
     stringsErr[ERR_BASE_DHUMAN]     = TR("You must get on the spaceship to take off");
     stringsErr[ERR_LABO_NULL]       = TR("Nothing to analyze");
-    stringsErr[ERR_LABO_BAD]        = TR("Analyzes only organic matter");
+    stringsErr[ERR_LABO_BAD]        = TR("Inappropriate sample");
     stringsErr[ERR_LABO_ALREADY]    = TR("Analysis already performed");
     stringsErr[ERR_NUCLEAR_EMPTY]   = TR("No uranium to transform");
     stringsErr[ERR_NUCLEAR_BAD]     = TR("Transforms only uranium");

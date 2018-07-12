@@ -890,6 +890,7 @@ void COldObject::SetType(ObjectType type)
         m_type == OBJECT_MOBILEtt ||
         m_type == OBJECT_MOBILEwt ||
         m_type == OBJECT_MOBILEit ||
+        m_type == OBJECT_MOBILEtg ||
         m_type == OBJECT_MOBILEdr ||
         m_type == OBJECT_APOLLO2  ||
         m_type == OBJECT_BASE     ||
@@ -3254,6 +3255,7 @@ float COldObject::GetLightningHitProbability()
          m_type == OBJECT_MOBILEtt ||
          m_type == OBJECT_MOBILEwt ||
          m_type == OBJECT_MOBILEit ||
+         m_type == OBJECT_MOBILEtg ||
          m_type == OBJECT_MOBILEdr )  // robot?
     {
         return 0.5f;
@@ -3267,8 +3269,7 @@ bool COldObject::IsSelectableByDefault(ObjectType type)
          type == OBJECT_ANT      ||
          type == OBJECT_SPIDER   ||
          type == OBJECT_BEE      ||
-         type == OBJECT_WORM     ||
-         type == OBJECT_MOBILEtg )
+         type == OBJECT_WORM     )
     {
         return false;
     }
