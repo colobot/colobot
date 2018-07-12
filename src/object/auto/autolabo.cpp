@@ -482,14 +482,16 @@ bool CAutoLabo::CreateInterface(bool bSelect)
     oy = 3.0f/480.0f;
     sx = 33.0f/640.0f;
     sy = 33.0f/480.0f;
+    if( !m_object->GetTrainer() )
+    {
+        pos.x = ox+sx*7.0f;
+        pos.y = oy+sy*0.5f;
+        pw->CreateButton(pos, dim, 64+45, EVENT_OBJECT_RiPAW);
 
-    pos.x = ox+sx*7.0f;
-    pos.y = oy+sy*0.5f;
-    pw->CreateButton(pos, dim, 64+45, EVENT_OBJECT_RiPAW);
-
-    pos.x = ox+sx*8.0f;
-    pos.y = oy+sy*0.5f;
-    pw->CreateButton(pos, dim, 64+46, EVENT_OBJECT_RiGUN);
+        pos.x = ox+sx*8.0f;
+        pos.y = oy+sy*0.5f;
+        pw->CreateButton(pos, dim, 64+46, EVENT_OBJECT_RiGUN);
+    }
 
     pos.x = ox+sx*0.0f;
     pos.y = oy+sy*0;
