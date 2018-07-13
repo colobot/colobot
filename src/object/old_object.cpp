@@ -356,7 +356,12 @@ bool COldObject::DamageObject(DamageType type, float force, CObject* killer)
     }
     else if ( Implements(ObjectInterfaceType::Fragile) )
     {
-        if ( m_type == OBJECT_BOMB && type != DamageType::Explosive ) return false; // Mine can't be destroyed by shooting
+        if ((m_type == OBJECT_BOMB        ||
+             m_type == OBJECT_RUINfactory ||
+             m_type == OBJECT_RUINdoor    ||
+             m_type == OBJECT_RUINsupport ||
+             m_type == OBJECT_RUINradar   ||
+             m_type == OBJECT_RUINconvert  ) && type != DamageType::Explosive ) return false; // Mines and ruins can't be destroyed by shooting
         if ( m_type == OBJECT_URANIUM ) return false; // UraniumOre is not destroyable (see #777)
 
         DestroyObject(DestructionType::Explosion, killer);
@@ -491,7 +496,12 @@ void COldObject::DestroyObject(DestructionType type, CObject* killer)
                   m_type == OBJECT_SAFE     ||
                   m_type == OBJECT_HUSTON   ||
                   m_type == OBJECT_START    ||
-                  m_type == OBJECT_END      )  // building?
+                  m_type == OBJECT_END      ||
+                  m_type == OBJECT_RUINfactory ||
+                  m_type == OBJECT_RUINdoor    ||
+                  m_type == OBJECT_RUINsupport ||
+                  m_type == OBJECT_RUINradar   ||
+                  m_type == OBJECT_RUINconvert  )  // building?
         {
             pyroType = Gfx::PT_FRAGT;
         }
@@ -824,6 +834,17 @@ void COldObject::SetType(ObjectType type)
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Damageable)] = true;
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Destroyable)] = false;
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Fragile)] = false;
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Shielded)] = false;
+    }
+    else if (m_type == OBJECT_RUINfactory ||
+             m_type == OBJECT_RUINdoor    ||
+             m_type == OBJECT_RUINsupport ||
+             m_type == OBJECT_RUINradar   ||
+             m_type == OBJECT_RUINconvert  )
+    {
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Damageable)] = true;
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Destroyable)] = true;
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Fragile)] = true;
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Shielded)] = false;
     }
     else
