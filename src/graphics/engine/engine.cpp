@@ -3786,7 +3786,8 @@ void CEngine::RenderShadowMap()
             FramebufferParams params;
             params.width = params.height = width;
             params.depth = depth = 32;
-            params.depthTexture = true;
+            params.colorAttachment = FramebufferParams::AttachmentType::None;
+            params.depthAttachment = FramebufferParams::AttachmentType::Texture;
 
             CFramebuffer *framebuffer = m_device->CreateFramebuffer("shadow", params);
             if (framebuffer == nullptr)
