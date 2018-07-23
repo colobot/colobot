@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://gnu.org/licenses
  */
- 
+
  /**
  * \file common/font_config.h
  * \brief Class for loading fonts from /data/fonts/fonts.ini
  */
- 
+
 #pragma once
 
 #include "common/singleton.h"
@@ -39,14 +39,12 @@
 *
 */
 
-
-
 class CFontConfig
 {
 public:
     CFontConfig();
     virtual ~CFontConfig();
-    
+
     /** Loads fonts.ini
     * \return return true on success
     */
@@ -56,19 +54,19 @@ public:
     * \return return path to font file
     */
     std::string GetFont(Gfx::FontType type);
-    
+
     /** Const type method to read filenames of fonts from defaultFont map
     * used as a fallback if it wasn't possible to read font from fonts.ini
     * \return return filename of default path
     */
     std::string GetDefaultFont(Gfx::FontType type) const;
-    
+
     /** Const type method converting Gfx::FontType to string
     * \return return id of font used in fonts.ini file
     */
-    
+
     std::string GetFontType(Gfx::FontType type) const;
-    
+
 private:
     boost::property_tree::ptree m_propertyTree;
 };

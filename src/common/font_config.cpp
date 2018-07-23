@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://gnu.org/licenses
  */
- 
+
 #include "common/font_config.h"
 
 #include "common/logger.h"
@@ -38,7 +38,7 @@
 
 namespace bp = boost::property_tree;
 
-const std::map<Gfx::FontType, std::string> defaultFont = 
+const std::map<Gfx::FontType, std::string> DEFAULT_FONT =
 {
     { Gfx::FONT_COMMON, "dvu_sans.ttf" },
     { Gfx::FONT_COMMON_BOLD, "dvu_sans_bold.ttf" },
@@ -51,7 +51,7 @@ const std::map<Gfx::FontType, std::string> defaultFont =
     { Gfx::FONT_SATCOM_ITALIC, "dvu_sans_italic.ttf" },
 };
 
-const std::map<Gfx::FontType, std::string> fontType = 
+const std::map<Gfx::FontType, std::string> FONT_TYPE =
 {
     { Gfx::FONT_COMMON, "FontCommon" },
     { Gfx::FONT_COMMON_BOLD, "FontCommonBold" },
@@ -77,11 +77,10 @@ bool CFontConfig::Init()
     try
     {
         std::unique_ptr<std::istream> stream;
-        bool good;
         auto inputStream = MakeUnique<CInputStream>("/fonts/fonts.ini");
-        good = inputStream->is_open();
+        bool good = inputStream->is_open();
         stream = std::move(inputStream);
-        
+
         if (good)
         {
             bp::ini_parser::read_ini(*stream, m_propertyTree);
@@ -107,10 +106,10 @@ std::string CFontConfig::GetFont(Gfx::FontType type)
 
 std::string CFontConfig::GetDefaultFont(Gfx::FontType type) const
 {
-    return defaultFont.at(type);
+    return DEFAULT_FONT.at(type);
 }
 
 std::string CFontConfig::GetFontType(Gfx::FontType type) const
 {
-    return fontType.at(type);
+    return FONT_TYPE.at(type);
 }
