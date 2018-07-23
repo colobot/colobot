@@ -43,17 +43,6 @@
 namespace Gfx
 {
 
-/**
- \enum VertexBufferType
- \brief Specifies type of vertex buffer to use
- */
-enum VertexBufferType
-{
-   VBT_DISPLAY_LIST,    //! use display lists
-   VBT_VBO_CORE,        //! use core OpenGL 1.5 VBOs
-   VBT_VBO_ARB          //! use ARB extension VBOs
-};
-
 enum ShadowMappingSupport
 {
     SMS_NONE,           //! No support for depth textures
@@ -119,11 +108,6 @@ public:
 
     void SetTextureStageWrap(int index, Gfx::TexWrapMode wrapS, Gfx::TexWrapMode wrapT) override;
 
-    virtual void DrawPrimitive(PrimitiveType type, const void *vertices,
-        int size, const VertexFormat &format, int vertexCount) override;
-    virtual void DrawPrimitives(PrimitiveType type, const void *vertices,
-        int size, const VertexFormat &format, int first[], int count[], int drawCount) override;
-
     virtual void DrawPrimitive(PrimitiveType type, const Vertex *vertices    , int vertexCount,
                                Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) override;
     virtual void DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, int vertexCount,
@@ -139,12 +123,31 @@ public:
     virtual void DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
         int first[], int count[], int drawCount) override;
 
-    unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount) override;
-    unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount) override;
-    unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount) override;
-    void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const Vertex* vertices, int vertexCount) override;
-    void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount) override;
-    void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount) override;
+    unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount) override
+    {
+        return CreateStaticBufferImpl(primitiveType, vertices, vertexCount);
+    }
+    unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount) override
+    {
+        return CreateStaticBufferImpl(primitiveType, vertices, vertexCount);
+    }
+    unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount) override
+    {
+        return CreateStaticBufferImpl(primitiveType, vertices, vertexCount);
+    }
+    void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const Vertex* vertices, int vertexCount) override
+    {
+        UpdateStaticBufferImpl(bufferId, primitiveType, vertices, vertexCount);
+    }
+    void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount) override
+    {
+        UpdateStaticBufferImpl(bufferId, primitiveType, vertices, vertexCount);
+    }
+    void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount) override
+    {
+        UpdateStaticBufferImpl(bufferId, primitiveType, vertices, vertexCount);
+    }
+
     void DrawStaticBuffer(unsigned int bufferId) override;
     void DestroyStaticBuffer(unsigned int bufferId) override;
 
@@ -214,6 +217,11 @@ private:
     //! Disables shadows
     void DisableShadows();
 
+    template <typename Vertex>
+    unsigned int CreateStaticBufferImpl(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount);
+    template <typename Vertex>
+    void UpdateStaticBufferImpl(unsigned int bufferId, PrimitiveType primitiveType, const Vertex* vertices, int vertexCount);
+
 private:
     //! Current config
     DeviceConfig m_config;
@@ -260,14 +268,6 @@ private:
     //! Map of framebuffers
     std::map<std::string, std::unique_ptr<CFramebuffer>> m_framebuffers;
 
-    //! Type of vertex structure
-    enum VertexType
-    {
-        VERTEX_TYPE_NORMAL,
-        VERTEX_TYPE_TEX2,
-        VERTEX_TYPE_COL,
-    };
-
     //! Info about static VBO buffers
     struct VboObjectInfo
     {
@@ -284,8 +284,6 @@ private:
     bool m_multiDrawArrays = false;
     //! Framebuffer support
     FramebufferSupport m_framebufferSupport = FBS_NONE;
-    //! Which vertex buffer type to use
-    VertexBufferType m_vertexBufferType = VBT_DISPLAY_LIST;
     //! Map of saved VBO objects
     std::map<unsigned int, VboObjectInfo> m_vboObjects;
     //! Last ID of VBO object

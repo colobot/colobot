@@ -416,14 +416,6 @@ public:
     //! Sets only the texture wrap modes (for faster than thru stage params)
     virtual void SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode wrapT) = 0;
 
-    //! Renders primitive composed of generic vertices
-    virtual void DrawPrimitive(PrimitiveType type, const void *vertices,
-        int size, const VertexFormat &format, int vertexCount) = 0;
-
-    //! Renders multiple primitives composed of generic vertices
-    virtual void DrawPrimitives(PrimitiveType type, const void *vertices,
-        int size, const VertexFormat &format, int first[], int count[], int drawCount) = 0;
-
     //! Renders primitive composed of vertices with single texture
     virtual void DrawPrimitive(PrimitiveType type, const Vertex *vertices    , int vertexCount,
                                Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) = 0;
