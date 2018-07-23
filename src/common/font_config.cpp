@@ -45,7 +45,7 @@ const std::map<Gfx::FontType, std::string> DEFAULT_FONT =
     { Gfx::FONT_COMMON_ITALIC, "dvu_sans_italic.ttf" },
     { Gfx::FONT_STUDIO, "dvu_sans_mono.ttf" },
     { Gfx::FONT_STUDIO_BOLD, "dvu_sans_mono_bold.ttf" },
-    { Gfx::FONT_STUDIO_ITALIC, "dvu_sans_mono_italic.ttf" },
+    { Gfx::FONT_STUDIO_ITALIC, "dvu_sans_mono.ttf" }, //placeholder for future use, DejaVu Sans Mono doesn't have italic variant
     { Gfx::FONT_SATCOM, "dvu_sans.ttf" },
     { Gfx::FONT_SATCOM_BOLD, "dvu_sans_bold.ttf" },
     { Gfx::FONT_SATCOM_ITALIC, "dvu_sans_italic.ttf" },
