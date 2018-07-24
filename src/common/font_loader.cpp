@@ -17,7 +17,7 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#include "common/font_config.h"
+#include "common/font_loader.h"
 
 #include "common/logger.h"
 #include "common/make_unique.h"
@@ -64,15 +64,15 @@ const std::map<Gfx::FontType, std::string> FONT_TYPE =
     { Gfx::FONT_SATCOM_ITALIC, "FontSatComItalic" },
 };
 
-CFontConfig::CFontConfig()
+CFontLoader::CFontLoader()
 {
 }
 
-CFontConfig::~CFontConfig()
+CFontLoader::~CFontLoader()
 {
 }
 
-bool CFontConfig::Init()
+bool CFontLoader::Init()
 {
     try
     {
@@ -99,17 +99,17 @@ bool CFontConfig::Init()
     return true;
 }
 
-std::string CFontConfig::GetFont(Gfx::FontType type)
+std::string CFontLoader::GetFont(Gfx::FontType type)
 {
     return std::string("/fonts/") + m_propertyTree.get<std::string>(GetFontType(type), GetDefaultFont(type));
 }
 
-std::string CFontConfig::GetDefaultFont(Gfx::FontType type) const
+std::string CFontLoader::GetDefaultFont(Gfx::FontType type) const
 {
     return DEFAULT_FONT.at(type);
 }
 
-std::string CFontConfig::GetFontType(Gfx::FontType type) const
+std::string CFontLoader::GetFontType(Gfx::FontType type) const
 {
     return FONT_TYPE.at(type);
 }

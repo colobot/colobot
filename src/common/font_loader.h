@@ -18,7 +18,7 @@
  */
 
  /**
- * \file common/font_config.h
+ * \file common/font_loader.h
  * \brief Class for loading fonts from /data/fonts/fonts.ini
  */
 
@@ -33,17 +33,17 @@
 #include <string>
 
 /**
-* \class CFontConfig
+* \class CFontLoader
 *
 * \brief Class for loading config file
 *
 */
 
-class CFontConfig
+class CFontLoader
 {
 public:
-    CFontConfig();
-    virtual ~CFontConfig();
+    CFontLoader();
+    virtual ~CFontLoader();
 
     /** Loads fonts.ini
     * \return return true on success

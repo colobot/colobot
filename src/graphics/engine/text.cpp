@@ -22,7 +22,7 @@
 
 #include "app/app.h"
 
-#include "common/font_config.h"
+#include "common/font_loader.h"
 #include "common/image.h"
 #include "common/logger.h"
 #include "common/stringutils.h"
@@ -117,8 +117,8 @@ CText::~CText()
 
 bool CText::Create()
 {
-    CFontConfig fontConfig;
-    if (!fontConfig.Init())
+    CFontLoader fontLoader;
+    if (!fontLoader.Init())
     {
         GetLogger()->Warn("Error on parsing fonts config file: failed to open file\n");
     }
@@ -130,9 +130,9 @@ bool CText::Create()
 
     for (auto type : {FONT_COMMON, FONT_STUDIO, FONT_SATCOM})
     {
-        m_fonts[static_cast<Gfx::FontType>(type)] = MakeUnique<MultisizeFont>(fontConfig.GetFont(type));
-        m_fonts[static_cast<Gfx::FontType>(type|FONT_BOLD)] = MakeUnique<MultisizeFont>(fontConfig.GetFont(static_cast<Gfx::FontType>(type|FONT_BOLD)));
-        m_fonts[static_cast<Gfx::FontType>(type|FONT_ITALIC)] = MakeUnique<MultisizeFont>(fontConfig.GetFont(static_cast<Gfx::FontType>(type|FONT_ITALIC)));
+        m_fonts[static_cast<Gfx::FontType>(type)] = MakeUnique<MultisizeFont>(fontLoader.GetFont(type));
+        m_fonts[static_cast<Gfx::FontType>(type|FONT_BOLD)] = MakeUnique<MultisizeFont>(fontLoader.GetFont(static_cast<Gfx::FontType>(type|FONT_BOLD)));
+        m_fonts[static_cast<Gfx::FontType>(type|FONT_ITALIC)] = MakeUnique<MultisizeFont>(fontLoader.GetFont(static_cast<Gfx::FontType>(type|FONT_ITALIC)));
     }
 
     for (auto it = m_fonts.begin(); it != m_fonts.end(); ++it)
