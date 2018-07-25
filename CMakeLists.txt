@@ -204,7 +204,7 @@ option(DEV_BUILD "Enable development build (enables some debugging tools, local 
 
 # Official build - changes text on the crash screen
 # PLEASE DO NOT USE ON UNOFFICIAL BUILDS. Thanks.
-option(OFFICIAL_BUILD "Official build (changes crash screen text)" OFF)
+option(OFFICIAL_COLOBOT_BUILD "Official build (changes crash screen text)" OFF)
 
 # Portable build - load all data from current directory
 option(PORTABLE "Portable build" OFF)
