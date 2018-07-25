@@ -431,7 +431,7 @@ bool CEngine::ProcessEvent(const Event &event)
     {
         auto data = event.GetData<KeyEventData>();
 
-        if (data->key == KEY(F12))
+        if (data->key == KEY(F11))
         {
             m_showStats = !m_showStats;
             return false;
