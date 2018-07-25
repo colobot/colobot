@@ -22,6 +22,7 @@
 
 #include "app/app.h"
 
+#include "common/font_loader.h"
 #include "common/image.h"
 #include "common/logger.h"
 #include "common/stringutils.h"
@@ -174,7 +175,7 @@ CText::CText(CEngine* engine)
     m_defaultSize = 12.0f;
     m_tabSize = 4;
 
-    m_lastFontType = FONT_COLOBOT;
+    m_lastFontType = FONT_COMMON;
     m_lastFontSize = 0;
     m_lastCachedFont = nullptr;
 
@@ -189,18 +190,23 @@ CText::~CText()
 
 bool CText::Create()
 {
+    CFontLoader fontLoader;
+    if (!fontLoader.Init())
+    {
+        GetLogger()->Warn("Error on parsing fonts config file: failed to open file\n");
+    }
     if (TTF_Init() != 0)
     {
         m_error = std::string("TTF_Init error: ") + std::string(TTF_GetError());
         return false;
     }
 
-    m_fonts[FONT_COLOBOT]        = MakeUnique<MultisizeFont>("fonts/dvu_sans.ttf");
-    m_fonts[FONT_COLOBOT_BOLD]   = MakeUnique<MultisizeFont>("fonts/dvu_sans_bold.ttf");
-    m_fonts[FONT_COLOBOT_ITALIC] = MakeUnique<MultisizeFont>("fonts/dvu_sans_italic.ttf");
-
-    m_fonts[FONT_COURIER]        = MakeUnique<MultisizeFont>("fonts/dvu_sans_mono.ttf");
-    m_fonts[FONT_COURIER_BOLD]   = MakeUnique<MultisizeFont>("fonts/dvu_sans_mono_bold.ttf");
+    for (auto type : {FONT_COMMON, FONT_STUDIO, FONT_SATCOM})
+    {
+        m_fonts[static_cast<Gfx::FontType>(type)] = MakeUnique<MultisizeFont>(fontLoader.GetFont(type));
+        m_fonts[static_cast<Gfx::FontType>(type|FONT_BOLD)] = MakeUnique<MultisizeFont>(fontLoader.GetFont(static_cast<Gfx::FontType>(type|FONT_BOLD)));
+        m_fonts[static_cast<Gfx::FontType>(type|FONT_ITALIC)] = MakeUnique<MultisizeFont>(fontLoader.GetFont(static_cast<Gfx::FontType>(type|FONT_ITALIC)));
+    }
 
     for (auto it = m_fonts.begin(); it != m_fonts.end(); ++it)
     {
@@ -218,7 +224,7 @@ void CText::Destroy()
     m_fonts.clear();
 
     m_lastCachedFont = nullptr;
-    m_lastFontType = FONT_COLOBOT;
+    m_lastFontType = FONT_COMMON;
     m_lastFontSize = 0;
 
     TTF_Quit();
@@ -253,7 +259,7 @@ void CText::FlushCache()
     }
 
     m_lastCachedFont = nullptr;
-    m_lastFontType = FONT_COLOBOT;
+    m_lastFontType = FONT_COMMON;
     m_lastFontSize = 0;
 }
 
@@ -336,8 +342,8 @@ void CText::SizeText(const std::string &text, std::vector<FontMetaChar>::iterato
         end.x   -= sw;
     }
 
-    start.y -= GetDescent(FONT_COLOBOT, size);
-    end.y   += GetAscent(FONT_COLOBOT, size);
+    start.y -= GetDescent(FONT_COMMON, size);
+    end.y   += GetAscent(FONT_COMMON, size);
 }
 
 void CText::SizeText(const std::string &text, FontType font,
@@ -417,7 +423,7 @@ float CText::GetStringWidth(const std::string &text,
     unsigned int fmtIndex = 0;
     while (index < text.length())
     {
-        FontType font = FONT_COLOBOT;
+        FontType font = FONT_COMMON;
         if (format + fmtIndex != end)
             font = static_cast<FontType>(*(format + fmtIndex) & FONT_MASK_FONT);
 
@@ -464,7 +470,7 @@ float CText::GetCharWidth(UTF8Char ch, FontType font, float size, float offset)
     if (font == FONT_BUTTON)
     {
         Math::IntPoint windowSize = m_engine->GetWindowSize();
-        float height = GetHeight(FONT_COLOBOT, size);
+        float height = GetHeight(FONT_COMMON, size);
         float width = height*(static_cast<float>(windowSize.y)/windowSize.x);
         return width;
     }
@@ -506,7 +512,7 @@ int CText::GetCharWidthInt(UTF8Char ch, FontType font, float size, float offset)
     if (font == FONT_BUTTON)
     {
         Math::IntPoint windowSize = m_engine->GetWindowSize();
-        int height = GetHeightInt(FONT_COLOBOT, size);
+        int height = GetHeightInt(FONT_COMMON, size);
         int width = height*(static_cast<float>(windowSize.y)/windowSize.x);
         return width;
     }
@@ -552,7 +558,7 @@ int CText::Justify(const std::string &text, std::vector<FontMetaChar>::iterator 
     unsigned int fmtIndex = 0;
     while (index < text.length())
     {
-        FontType font = FONT_COLOBOT;
+        FontType font = FONT_COMMON;
         if (format + fmtIndex != end)
             font = static_cast<FontType>(*(format + fmtIndex) & FONT_MASK_FONT);
 
@@ -636,7 +642,7 @@ int CText::Detect(const std::string &text, std::vector<FontMetaChar>::iterator f
     unsigned int fmtIndex = 0;
     while (index < text.length())
     {
-        FontType font = FONT_COLOBOT;
+        FontType font = FONT_COMMON;
 
         if (format + fmtIndex != end)
             font = static_cast<FontType>(*(format + fmtIndex) & FONT_MASK_FONT);
@@ -773,7 +779,7 @@ void CText::DrawString(const std::string &text, std::vector<FontMetaChar>::itera
     StringToUTFCharList(text, chars, format, end);
     for (auto it = chars.begin(); it != chars.end(); ++it)
     {
-        FontType font = FONT_COLOBOT;
+        FontType font = FONT_COMMON;
         if (format + fmtIndex != end)
             font = static_cast<FontType>(*(format + fmtIndex) & FONT_MASK_FONT);
 
@@ -846,7 +852,7 @@ void CText::DrawString(const std::string &text, std::vector<FontMetaChar>::itera
 
     if (eol != 0)
     {
-        FontType font = FONT_COLOBOT;
+        FontType font = FONT_COMMON;
         UTF8Char ch = TranslateSpecialChar(eol);
         color = Color(1.0f, 0.0f, 0.0f);
         DrawCharAndAdjustPos(ch, font, size, pos, color);
@@ -887,7 +893,7 @@ void CText::StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &
     {
         UTF8Char ch;
 
-        FontType font = FONT_COLOBOT;
+        FontType font = FONT_COMMON;
         if (format + index != end)
             font = static_cast<FontType>(*(format + index) & FONT_MASK_FONT);
 
@@ -993,7 +999,7 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::I
     if (font == FONT_BUTTON)
     {
         Math::IntPoint windowSize = m_engine->GetWindowSize();
-        int height = GetHeightInt(FONT_COLOBOT, size);
+        int height = GetHeightInt(FONT_COMMON, size);
         int width = height * (static_cast<float>(windowSize.y)/windowSize.x);
 
         Math::IntPoint p1(pos.x, pos.y - height);

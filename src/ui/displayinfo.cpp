@@ -383,7 +383,7 @@ void CDisplayInfo::StartDisplayInfo(std::string filename, int index, bool bSoluc
     edit->SetState(STATE_SHADOW);
     edit->SetMultiFont(true);
     edit->SetMaxChar(10000);
-    edit->SetFontType(Gfx::FONT_COLOBOT);
+    edit->SetFontType(Gfx::FONT_SATCOM);
     edit->SetSoluceMode(bSoluce);
     edit->ReadText(filename.c_str());
     edit->HyperHome(filename.c_str());

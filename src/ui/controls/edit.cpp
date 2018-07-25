@@ -109,7 +109,7 @@ CEdit::CEdit()
 {
     m_len = 0;
 
-    m_fontType = Gfx::FONT_COURIER;
+    m_fontType = Gfx::FONT_STUDIO;
     m_bEdit         = true;
     m_bHilite       = true;
     m_bInsideScroll = true;
@@ -1326,13 +1326,13 @@ void CEdit::SetText(const std::string& text, bool bNew)
             if ( text[i+1] == 'n' )  // normal ?
             {
                 font &= ~Gfx::FONT_MASK_FONT;
-                font |= Gfx::FONT_COLOBOT;
+                font |= Gfx::FONT_COMMON;
                 i += 2;
             }
             else if ( text[i+1] == 'c' )  // cbot ?
             {
                 font &= ~Gfx::FONT_MASK_FONT;
-                font |= Gfx::FONT_COURIER;
+                font |= Gfx::FONT_STUDIO;
                 i += 2;
             }
             else if ( text[i+1] == 'b' )  // big title ?
@@ -1522,7 +1522,7 @@ bool CEdit::ReadText(std::string filename)
                 if ( m_bSoluce || !bInSoluce )
                 {
                     font &= ~Gfx::FONT_MASK_FONT;
-                    font |= Gfx::FONT_COLOBOT;
+                    font |= Gfx::FONT_COMMON;
                     inCbot = false;
                 }
                 i += 3;
@@ -1532,7 +1532,7 @@ bool CEdit::ReadText(std::string filename)
                 if ( m_bSoluce || !bInSoluce )
                 {
                     font &= ~Gfx::FONT_MASK_FONT;
-                    font |= Gfx::FONT_COURIER;
+                    font |= Gfx::FONT_STUDIO;
                     if (!inCbot)
                     {
                         if (inCbotBackground)
@@ -1636,7 +1636,7 @@ bool CEdit::ReadText(std::string filename)
 
 //?             iWidth = m_lineHeight*RetValueParam(buffer.data()+i+7, 1);
                 iWidth = static_cast<float>(GetValueParam(buffer.data()+i+7, 1));
-                iWidth *= m_engine->GetText()->GetHeight(Gfx::FONT_COLOBOT, Gfx::FONT_SIZE_SMALL);
+                iWidth *= m_engine->GetText()->GetHeight(Gfx::FONT_COMMON, Gfx::FONT_SIZE_SMALL);
                 iLines = GetValueParam(buffer.data()+i+7, 2);
 
                 // A part of image per line of text.

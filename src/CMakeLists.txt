@@ -149,6 +149,8 @@ set(BASE_SOURCES
     common/error.h
     common/event.cpp
     common/event.h
+    common/font_loader.h
+    common/font_loader.cpp
     common/global.h
     common/image.cpp
     common/image.h

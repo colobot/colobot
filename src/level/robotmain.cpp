@@ -589,7 +589,7 @@ void CRobotMain::ChangePhase(Phase phase)
                     ddim.x = dim.x*15;  ddim.y = dim.y*3.0f;
                     pe = m_interface->CreateEdit(pos, ddim, 0, EVENT_EDIT0);
                     pe->SetGenericMode(true);
-                    pe->SetFontType(Gfx::FONT_COLOBOT);
+                    pe->SetFontType(Gfx::FONT_COMMON);
                     pe->SetEditCap(false);
                     pe->SetHighlightCap(false);
                     pe->ReadText(std::string("help/") + m_app->GetLanguageChar() + std::string("/win.txt"));
@@ -2127,7 +2127,7 @@ void CRobotMain::CreateTooltip(Math::Point pos, const std::string& text)
 
     Math::Point start, end;
 
-    m_engine->GetText()->SizeText(text, Gfx::FONT_COLOBOT, Gfx::FONT_SIZE_SMALL,
+    m_engine->GetText()->SizeText(text, Gfx::FONT_COMMON, Gfx::FONT_SIZE_SMALL,
                                   corner, Gfx::TEXT_ALIGN_LEFT,
                                   start, end);
 
@@ -2162,7 +2162,7 @@ void CRobotMain::CreateTooltip(Math::Point pos, const std::string& text)
         pw->SetState(Ui::STATE_SHADOW);
         pw->SetTrashEvent(false);
 
-        pos.y -= m_engine->GetText()->GetHeight(Gfx::FONT_COLOBOT, Gfx::FONT_SIZE_SMALL) / 2.0f;
+        pos.y -= m_engine->GetText()->GetHeight(Gfx::FONT_COMMON, Gfx::FONT_SIZE_SMALL) / 2.0f;
         pw->CreateLabel(pos, dim, -1, EVENT_LABEL2, text);
     }
 }
@@ -5913,7 +5913,7 @@ void CRobotMain::CreateCodeBattleInterface()
 
         int numTeams = m_scoreboard ? GetAllTeams().size() : 0;
         assert(numTeams < EVENT_SCOREBOARD_MAX-EVENT_SCOREBOARD+1);
-        float textHeight = m_engine->GetText()->GetHeight(Gfx::FONT_COLOBOT, Gfx::FONT_SIZE_SMALL);
+        float textHeight = m_engine->GetText()->GetHeight(Gfx::FONT_COMMON, Gfx::FONT_SIZE_SMALL);
 
         //window
         ddim.x = 100.0f/640.0f;
