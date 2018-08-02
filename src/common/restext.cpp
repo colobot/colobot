@@ -89,6 +89,9 @@ void InitializeRestext()
     stringsText[RT_SETUP_KEY1]       = TR("1) First click on the key you want to redefine.");
     stringsText[RT_SETUP_KEY2]       = TR("2) Then press the key you want to use instead.");
 
+    stringsText[RT_MODS_UNLOADED]     = TR("Unloaded Mods:");
+    stringsText[RT_MODS_LOADED]       = TR("Loaded Mods:");
+
     stringsText[RT_PERSO_FACE]       = TR("Face type:");
     stringsText[RT_PERSO_GLASSES]    = TR("Eyeglasses:");
     stringsText[RT_PERSO_HAIR]       = TR("Hair color:");
@@ -176,11 +179,16 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_QUIT]      = TR("Quit\\Quit Colobot: Gold Edition");
     stringsEvent[EVENT_INTERFACE_BACK]      = TR("<<  Back  \\Back to the previous screen");
     stringsEvent[EVENT_INTERFACE_PLAY]      = TR("Play\\Start mission!");
+    stringsEvent[EVENT_INTERFACE_WORKSHOP]  = TR("Workshop\\Open Workshop to search Mods");
+    stringsEvent[EVENT_INTERFACE_MODS_DIR]  = TR("Open Directory\\Open Mods directory");
+    stringsEvent[EVENT_INTERFACE_LOAD]      = TR("Load\\Load Mod");
+    stringsEvent[EVENT_INTERFACE_UNLOAD]    = TR("Unload\\Unload Mod");
     stringsEvent[EVENT_INTERFACE_SETUPd]    = TR("Device\\Driver and resolution settings");
     stringsEvent[EVENT_INTERFACE_SETUPg]    = TR("Graphics\\Graphics settings");
     stringsEvent[EVENT_INTERFACE_SETUPp]    = TR("Game\\Game settings");
     stringsEvent[EVENT_INTERFACE_SETUPc]    = TR("Controls\\Keyboard, joystick and mouse settings");
     stringsEvent[EVENT_INTERFACE_SETUPs]    = TR("Sound\\Music and game sound volume");
+    stringsEvent[EVENT_INTERFACE_SETUPm]    = TR("Mods\\Manage installed mods");
     stringsEvent[EVENT_INTERFACE_DEVICE]    = TR("Unit");
     stringsEvent[EVENT_INTERFACE_RESOL]     = TR("Resolution");
     stringsEvent[EVENT_INTERFACE_FULL]      = TR("Full screen\\Full screen or window mode");

@@ -86,6 +86,9 @@ enum ResTextType
     RT_SETUP_KEY1           = 82,
     RT_SETUP_KEY2           = 83,
 
+    RT_MODS_UNLOADED        = 85,
+    RT_MODS_LOADED          = 86,
+
     RT_PERSO_FACE           = 90,
     RT_PERSO_GLASSES        = 91,
     RT_PERSO_HAIR           = 92,

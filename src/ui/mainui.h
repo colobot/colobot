@@ -55,6 +55,7 @@ class CScreenSetupControls;
 class CScreenSetupDisplay;
 class CScreenSetupGame;
 class CScreenSetupGraphics;
+class CScreenSetupMods;
 class CScreenSetupSound;
 class CScreenWelcome;
 
@@ -119,6 +120,7 @@ protected:
     std::unique_ptr<CScreenSetupDisplay> m_screenSetupDisplay;
     std::unique_ptr<CScreenSetupGame> m_screenSetupGame;
     std::unique_ptr<CScreenSetupGraphics> m_screenSetupGraphics;
+    std::unique_ptr<CScreenSetupMods> m_screenSetupMods;
     std::unique_ptr<CScreenSetupSound> m_screenSetupSound;
     std::unique_ptr<CScreenWelcome> m_screenWelcome;
 

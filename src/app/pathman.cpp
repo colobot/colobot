@@ -72,7 +72,28 @@ void CPathManager::AddModAutoloadDir(const std::string &modAutoloadDirPath)
 
 void CPathManager::AddMod(const std::string &modPath)
 {
-    m_mods.push_back(modPath);
+    std::string::size_type ON;
+    ON = modPath.find('~');
+    if (ON == std::string::npos)
+    {
+        GetLogger()->Info("Loading mod: '%s'\n", modPath.c_str());
+        m_mods.push_back(modPath);
+    }
+    else
+    {
+        GetLogger()->Info("Found Excluded mod: '%s'\n", modPath.c_str());
+    }
+}
+
+void CPathManager::RemoveMod(const std::string &modPath)
+{
+    std::string::size_type ON;
+    ON = modPath.find('~');
+    if (ON == std::string::npos)
+    {
+        GetLogger()->Info("Unloading mod: '%s'\n", modPath.c_str());
+        CResourceManager::RemoveLocation(modPath);
+    }
 }
 
 const std::string& CPathManager::GetDataPath()

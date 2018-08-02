@@ -321,6 +321,7 @@ std::string PhaseToString(Phase phase)
     if (phase == PHASE_SETUPp) return "PHASE_SETUPp";
     if (phase == PHASE_SETUPc) return "PHASE_SETUPc";
     if (phase == PHASE_SETUPs) return "PHASE_SETUPs";
+    if (phase == PHASE_SETUPm) return "PHASE_SETUPm";
     if (phase == PHASE_SETUPds) return "PHASE_SETUPds";
     if (phase == PHASE_SETUPgs) return "PHASE_SETUPgs";
     if (phase == PHASE_SETUPps) return "PHASE_SETUPps";

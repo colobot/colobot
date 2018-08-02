@@ -53,6 +53,7 @@
 #include "ui/screen/screen_setup_display.h"
 #include "ui/screen/screen_setup_game.h"
 #include "ui/screen/screen_setup_graphics.h"
+#include "ui/screen/screen_setup_mods.h"
 #include "ui/screen/screen_setup_sound.h"
 #include "ui/screen/screen_welcome.h"
 
@@ -82,6 +83,7 @@ CMainUserInterface::CMainUserInterface()
     m_screenSetupDisplay = MakeUnique<CScreenSetupDisplay>();
     m_screenSetupGame = MakeUnique<CScreenSetupGame>();
     m_screenSetupGraphics = MakeUnique<CScreenSetupGraphics>();
+    m_screenSetupMods = MakeUnique<CScreenSetupMods>();
     m_screenSetupSound = MakeUnique<CScreenSetupSound>();
     m_screenMainMenu = MakeUnique<CScreenMainMenu>();
     m_screenPlayerSelect = MakeUnique<CScreenPlayerSelect>(m_dialog.get());
@@ -142,6 +144,7 @@ CScreenSetup* CMainUserInterface::GetSetupScreen(Phase phase)
     if(phase == PHASE_SETUPp) return m_screenSetupGame.get();
     if(phase == PHASE_SETUPc) return m_screenSetupControls.get();
     if(phase == PHASE_SETUPs) return m_screenSetupSound.get();
+    if(phase == PHASE_SETUPm) return m_screenSetupMods.get();
     assert(false);
     return nullptr;
 }
@@ -182,7 +185,7 @@ void CMainUserInterface::ChangePhase(Phase phase)
         m_screenLevelList->SetLevelCategory(m_main->GetLevelCategory());
         m_currentScreen = m_screenLevelList.get();
     }
-    if (m_phase >= PHASE_SETUPd && m_phase <= PHASE_SETUPs)
+    if (m_phase >= PHASE_SETUPd && m_phase <= PHASE_SETUPm)
     {
         CScreenSetup* screenSetup = GetSetupScreen(m_phase);
         screenSetup->SetInSimulation(false);
@@ -345,6 +348,7 @@ void CMainUserInterface::GlintMove()
             m_phase == PHASE_SETUPp  ||
             m_phase == PHASE_SETUPc  ||
             m_phase == PHASE_SETUPs  ||
+            m_phase == PHASE_SETUPm  ||
             m_phase == PHASE_SETUPds ||
             m_phase == PHASE_SETUPgs ||
             m_phase == PHASE_SETUPps ||
@@ -534,6 +538,7 @@ void CMainUserInterface::FrameParticle(float rTime)
             m_phase == PHASE_SETUPp  ||
             m_phase == PHASE_SETUPc  ||
             m_phase == PHASE_SETUPs  ||
+            m_phase == PHASE_SETUPm  ||
             m_phase == PHASE_READ    )
     {
         pParti = partiPosBig;

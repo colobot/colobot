@@ -570,6 +570,8 @@ set(BASE_SOURCES
     ui/screen/screen_setup_game.h
     ui/screen/screen_setup_graphics.cpp
     ui/screen/screen_setup_graphics.h
+    ui/screen/screen_setup_mods.cpp
+    ui/screen/screen_setup_mods.h
     ui/screen/screen_setup_sound.cpp
     ui/screen/screen_setup_sound.h
     ui/screen/screen_welcome.cpp

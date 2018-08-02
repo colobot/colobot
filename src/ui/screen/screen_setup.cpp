@@ -83,7 +83,7 @@ void CScreenSetup::CreateInterface()
     ddim.y = 0.05f;
     pw->CreateGroup(pos, ddim, 3, EVENT_NULL);  // transparent -> gray
 
-    ddim.x = 0.78f/5-0.01f;
+    ddim.x = 0.65f/5-0.01f;
     ddim.y = 0.06f;
     pos.x = 0.115f;
     pos.y = 0.76f;
@@ -115,6 +115,12 @@ void CScreenSetup::CreateInterface()
     pb->SetState(STATE_SHADOW);
     pb->SetState(STATE_CARD);
     pb->SetState(STATE_CHECK, (m_tab == PHASE_SETUPs));
+
+    pos.x += ddim.x+0.01f;
+    pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_SETUPm);
+    pb->SetState(STATE_SHADOW);
+    pb->SetState(STATE_CARD);
+    pb->SetState(STATE_CHECK, (m_tab == PHASE_SETUPm));
 
     pos.x  = 0.10f;
     ddim.x = 0.80f;
@@ -148,6 +154,10 @@ bool CScreenSetup::EventProcess(const Event &event)
         CWindow* pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
         if ( pw == nullptr )  return false;
 
+        CButton* pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_SETUPm));
+        if ( pb == nullptr )  return false;
+        pb->SetState(STATE_ENABLE);
+
         if ( event.type == pw->GetEventTypeClose() ||
                 event.type == EVENT_INTERFACE_BACK   ||
                 (event.type == EVENT_KEY_DOWN && event.GetData<KeyEventData>()->key == KEY(ESCAPE)) )
@@ -179,6 +189,10 @@ bool CScreenSetup::EventProcess(const Event &event)
                 m_main->ChangePhase(PHASE_SETUPs);
                 return false;
 
+            case EVENT_INTERFACE_SETUPm:
+                m_main->ChangePhase(PHASE_SETUPm);
+                return false;
+
             default:
                 break;
         }
@@ -187,6 +201,10 @@ bool CScreenSetup::EventProcess(const Event &event)
     {
         CWindow* pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
         if ( pw == nullptr )  return false;
+
+        CButton* pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_SETUPm));
+        if ( pb == nullptr )  return false;
+        pb->ClearState(STATE_ENABLE);
 
         if ( event.type == pw->GetEventTypeClose() ||
                 event.type == EVENT_INTERFACE_BACK   ||
@@ -219,6 +237,10 @@ bool CScreenSetup::EventProcess(const Event &event)
 
             case EVENT_INTERFACE_SETUPs:
                 m_main->ChangePhase(PHASE_SETUPss);
+                return false;
+
+            case EVENT_INTERFACE_SETUPm:
+                m_main->ChangePhase(PHASE_SETUPm);
                 return false;
 
             default:
