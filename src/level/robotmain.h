@@ -67,6 +67,7 @@ enum Phase
     PHASE_SETUPps,
     PHASE_SETUPcs,
     PHASE_SETUPss,
+    PHASE_SETUPms,
     PHASE_WRITEs,
     PHASE_READ,
     PHASE_READs,

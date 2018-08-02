@@ -192,7 +192,7 @@ void CMainUserInterface::ChangePhase(Phase phase)
         screenSetup->SetActive();
         m_currentScreen = screenSetup;
     }
-    if (m_phase >= PHASE_SETUPds && m_phase <= PHASE_SETUPss)
+    if (m_phase >= PHASE_SETUPds && m_phase <= PHASE_SETUPms)
     {
         CScreenSetup* screenSetup = GetSetupScreen(static_cast<Phase>(m_phase - PHASE_SETUPds + PHASE_SETUPd));
         screenSetup->SetInSimulation(true);

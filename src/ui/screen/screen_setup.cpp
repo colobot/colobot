@@ -240,7 +240,6 @@ bool CScreenSetup::EventProcess(const Event &event)
                 return false;
 
             case EVENT_INTERFACE_SETUPm:
-                m_main->ChangePhase(PHASE_SETUPm);
                 return false;
 
             default:
