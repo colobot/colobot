@@ -58,7 +58,7 @@ void CScreenIO::IOReadName()
     CEdit*      pe;
     std::string resume;
     char        line[100];
-    char        name[100];
+    char        name[120];
     time_t      now;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
