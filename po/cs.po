@@ -1664,6 +1664,9 @@ msgstr "Proměnná nebyla nastavena"
 msgid "Vault"
 msgstr "Trezor"
 
+msgid "Vertical Synchronization\\Limits the number of frames per second to display frequency"
+msgstr ""
+
 msgid "Violet flag"
 msgstr "Fialová vlajka"
 

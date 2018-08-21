@@ -1694,6 +1694,9 @@ msgstr "Переменная не инициализирована"
 msgid "Vault"
 msgstr "Хранилище"
 
+msgid "Vertical Synchronization\\Limits the number of frames per second to display frequency"
+msgstr ""
+
 msgid "Violet flag"
 msgstr "Фиолетовый флаг"
 
