@@ -197,6 +197,7 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
     m_terrainShadows = false;
     m_shadowRange = 0.0f;
     m_multisample = 2;
+    m_vsync = 0;
 
     m_backForce = true;
     m_lightMode = true;
@@ -323,6 +324,7 @@ bool CEngine::Create()
     SetShadowMappingOffscreen(m_offscreenShadowRendering);
     SetShadowMappingOffscreenResolution(m_offscreenShadowRenderingResolution);
     SetMultiSample(m_multisample);
+    SetVSync(m_vsync);
 
     m_modelManager = MakeUnique<COldModelManager>(this);
     m_pyroManager = MakeUnique<CPyroManager>();
@@ -3021,6 +3023,19 @@ void CEngine::SetTerrainShadows(bool value)
 bool CEngine::GetTerrainShadows()
 {
     return m_terrainShadows;
+}
+
+void CEngine::SetVSync(int value)
+{
+    if (value < -1) value = -1;
+    if (value > 1) value = 1;
+    if(m_vsync == value) return;
+    m_vsync = value;
+}
+
+int CEngine::GetVSync()
+{
+    return m_vsync;
 }
 
 void CEngine::SetBackForce(bool present)

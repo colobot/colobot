@@ -216,6 +216,7 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_SHADOW_MAPPING]    = TR("Dynamic shadows\\Beautiful shadows!");
     stringsEvent[EVENT_INTERFACE_SHADOW_MAPPING_QUALITY]= TR("Dynamic shadows ++\\Dynamic shadows + self shadowing");
     stringsEvent[EVENT_INTERFACE_SHADOW_MAPPING_BUFFER] = TR("Shadow resolution\\Higher means better range and quality, but slower");
+    stringsEvent[EVENT_INTERFACE_VSYNC]     = TR("Vertical Synchronization\\Limits the number of frames per second to display frequency");
 
     stringsEvent[EVENT_INTERFACE_KDEF]      = TR("Standard controls\\Standard key functions");
     assert(INPUT_SLOT_MAX < EVENT_INTERFACE_KEY_END-EVENT_INTERFACE_KEY);

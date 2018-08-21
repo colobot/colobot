@@ -101,6 +101,36 @@ void CScreenSetupDisplay::CreateInterface()
     pc->SetState(STATE_SHADOW);
     pc->SetState(STATE_CHECK, m_setupFull);
 
+    pos.x = ox+sx*10;
+    pos.y = oy+sy*9;
+    ddim.x = dim.x*6;
+    ddim.y = dim.y*1;
+    GetResource(RES_EVENT, EVENT_INTERFACE_VSYNC, name);
+    pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL2, name);
+    pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
+
+    pos.x = ox+sx*10;
+    pos.y = oy+sy*7.97f;
+    ddim.x = dim.x*6;
+    ddim.y = dim.y*1.8f;
+    pli = pw->CreateList(pos, ddim, 0, EVENT_INTERFACE_VSYNC);
+    pli->SetState(STATE_SHADOW);
+    pli->SetItemName(0, "Off");
+    pli->SetItemName(1, "Adaptive");
+    pli->SetItemName(2, "On");
+    switch(m_engine->GetVSync())
+    {
+        case -1: //Adaptive?
+            pli->SetSelect(1);
+            break;
+        case 0: //Off?
+            pli->SetSelect(0);
+            break;
+        case 1: //On?
+            pli->SetSelect(2);
+            break;
+    }
+
     ddim.x = dim.x*6;
     ddim.y = dim.y*1;
     pos.x = ox+sx*10;
@@ -117,6 +147,7 @@ bool CScreenSetupDisplay::EventProcess(const Event &event)
     CWindow* pw;
     CCheck* pc;
     CButton* pb;
+    CList* pl;
 
     switch( event.type )
     {
@@ -149,6 +180,27 @@ bool CScreenSetupDisplay::EventProcess(const Event &event)
             if ( pb == nullptr )  break;
             pb->ClearState(STATE_PRESS);
             pb->ClearState(STATE_HILIGHT);
+            ChangeDisplay();
+            UpdateApply();
+            break;
+
+        case EVENT_INTERFACE_VSYNC:
+            pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
+            if ( pw == nullptr ) break;
+            pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_VSYNC));
+            if (pl == nullptr ) break;
+            switch(pl->GetSelect())
+            {
+                case 0: //Off?
+                    m_engine->SetVSync(0);
+                    break;
+                case 1: //Adaptive?
+                    m_engine->SetVSync(-1);
+                    break;
+                case 2: //On?
+                    m_engine->SetVSync(1);
+                    break;
+            }
             ChangeDisplay();
             UpdateApply();
             break;
