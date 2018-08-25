@@ -108,12 +108,12 @@ struct ApplicationPrivate
 
 
 
-CApplication::CApplication(CSystemUtils* systemUtils)
+CApplication::CApplication(CSystemUtils* systemUtils, const std::string& binaryName)
     : m_systemUtils(systemUtils),
       m_private(MakeUnique<ApplicationPrivate>()),
       m_configFile(MakeUnique<CConfigFile>()),
       m_input(MakeUnique<CInput>()),
-      m_pathManager(MakeUnique<CPathManager>(systemUtils))
+      m_pathManager(MakeUnique<CPathManager>())
 {
     m_exitCode      = 0;
     m_active        = false;
@@ -156,6 +156,24 @@ CApplication::CApplication(CSystemUtils* systemUtils)
     m_resolutionOverride = false;
 
     m_language = LANGUAGE_ENV;
+
+    if (binaryName != "")
+    {
+        std::size_t start = binaryName.find_last_of("/\\");
+        if (start != std::string::npos)
+            start = start + 1;
+        else
+            start = 0;
+        std::size_t end = binaryName.find_first_of(".", start);
+        m_game = binaryName.substr(start, end-start);
+        GetLogger()->Info("Determined game name: %s\n", m_game.c_str());
+    }
+    if (m_game.empty())
+    {
+        GetLogger()->Warn("Unable to determine game name - defaulting to colobot\n");
+        m_game = "colobot";
+    }
+    m_pathManager->InitializeDefaultPaths(m_systemUtils, m_game);
 }
 
 CApplication::~CApplication()
@@ -231,6 +249,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         OPT_LOGLEVEL,
         OPT_LANGDIR,
         OPT_DATADIR,
+        OPT_GAMEDIR,
         OPT_SAVEDIR,
         OPT_MOD,
         OPT_RESOLUTION,
@@ -249,6 +268,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         { "loglevel", required_argument, nullptr, OPT_LOGLEVEL },
         { "langdir", required_argument, nullptr, OPT_LANGDIR },
         { "datadir", required_argument, nullptr, OPT_DATADIR },
+        { "gamedir", required_argument, nullptr, OPT_GAMEDIR },
         { "savedir", required_argument, nullptr, OPT_SAVEDIR },
         { "mod", required_argument, nullptr, OPT_MOD },
         { "resolution", required_argument, nullptr, OPT_RESOLUTION },
@@ -293,7 +313,8 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 GetLogger()->Message("  -scenetest          win every mission right after it's loaded\n");
                 GetLogger()->Message("  -loglevel level     set log level to level (one of: trace, debug, info, warn, error, none)\n");
                 GetLogger()->Message("  -langdir path       set custom language directory path\n");
-                GetLogger()->Message("  -datadir path       set custom data directory path\n");
+                GetLogger()->Message("  -datadir path       set custom engine data directory path\n");
+                GetLogger()->Message("  -gamedir path       set custom game data directory path\n");
                 GetLogger()->Message("  -savedir path       set custom save directory path (must be writable)\n");
                 GetLogger()->Message("  -mod path           load datadir mod from given path\n");
                 GetLogger()->Message("  -resolution WxH     set resolution\n");
@@ -362,6 +383,12 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
             {
                 m_pathManager->SetDataPath(optarg);
                 GetLogger()->Info("Using data dir: '%s'\n", optarg);
+                break;
+            }
+            case OPT_GAMEDIR:
+            {
+                m_pathManager->SetGamePath(optarg);
+                GetLogger()->Info("Using game dir: '%s'\n", optarg);
                 break;
             }
             case OPT_LANGDIR:

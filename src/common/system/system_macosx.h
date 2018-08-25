@@ -33,6 +33,7 @@ public:
     void Init() override;
 
     std::string GetDataPath() override;
+    std::string GetGamePath(const std::string& gamename) override;
     std::string GetLangPath() override;
     std::string GetSaveDir() override;
 

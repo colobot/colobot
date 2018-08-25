@@ -37,22 +37,24 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
 
-CPathManager::CPathManager(CSystemUtils* systemUtils)
-    : m_dataPath(systemUtils->GetDataPath())
-    , m_langPath(systemUtils->GetLangPath())
-    , m_savePath(systemUtils->GetSaveDir())
-    , m_modAutoloadDir{ m_dataPath + "/mods", m_savePath + "/mods" }
-    , m_mods{}
+void CPathManager::InitializeDefaultPaths(CSystemUtils* systemUtils, const std::string &gameName)
 {
-}
-
-CPathManager::~CPathManager()
-{
+    m_dataPath = systemUtils->GetDataPath();
+    m_gamePath = systemUtils->GetGamePath(gameName);
+    m_langPath = systemUtils->GetLangPath();
+    m_savePath = systemUtils->GetSaveDir();
+    m_modAutoloadDir = { m_dataPath + "/mods", m_gamePath + "/mods", m_savePath + "/mods" };
+    m_mods = {};
 }
 
 void CPathManager::SetDataPath(const std::string &dataPath)
 {
     m_dataPath = dataPath;
+}
+
+void CPathManager::SetGamePath(const std::string &gamePath)
+{
+    m_gamePath = gamePath;
 }
 
 void CPathManager::SetLangPath(const std::string &langPath)
@@ -80,6 +82,11 @@ const std::string& CPathManager::GetDataPath()
     return m_dataPath;
 }
 
+const std::string& CPathManager::GetGamePath()
+{
+    return m_gamePath;
+}
+
 const std::string& CPathManager::GetLangPath()
 {
     return m_langPath;
@@ -99,10 +106,23 @@ std::string CPathManager::VerifyPaths()
     #endif
     if (! (boost::filesystem::exists(dataPath) && boost::filesystem::is_directory(dataPath)) )
     {
-        GetLogger()->Error("Data directory '%s' doesn't exist or is not a directory\n", m_dataPath.c_str());
-        return std::string("Could not read from data directory:\n") +
+        GetLogger()->Error("Engine data directory '%s' doesn't exist or is not a directory\n", m_dataPath.c_str());
+        return std::string("Could not read from engine data directory:\n") +
             std::string("'") + m_dataPath + std::string("'\n") +
             std::string("Please check your installation, or supply a valid data directory by -datadir option.");
+    }
+
+#if PLATFORM_WINDOWS
+    boost::filesystem::path gamePath(CSystemUtilsWindows::UTF8_Decode(m_gamePath));
+#else
+    boost::filesystem::path gamePath(m_gamePath);
+#endif
+    if (! (boost::filesystem::exists(gamePath) && boost::filesystem::is_directory(gamePath)) )
+    {
+        GetLogger()->Error("Game data directory '%s' doesn't exist or is not a directory\n", m_gamePath.c_str());
+        return std::string("Could not read from game data directory:\n") +
+               std::string("'") + m_gamePath + std::string("'\n") +
+               std::string("Please check your installation, or supply a valid data directory by -datadir option.");
     }
 
     #if PLATFORM_WINDOWS
@@ -128,7 +148,8 @@ std::string CPathManager::VerifyPaths()
 
 void CPathManager::InitPaths()
 {
-    GetLogger()->Info("Data path: %s\n", m_dataPath.c_str());
+    GetLogger()->Info("Engine data path: %s\n", m_dataPath.c_str());
+    GetLogger()->Info("Game data path: %s\n", m_gamePath.c_str());
     GetLogger()->Info("Save path: %s\n", m_savePath.c_str());
     if (!m_modAutoloadDir.empty())
     {
@@ -144,6 +165,7 @@ void CPathManager::InitPaths()
     }
 
     CResourceManager::AddLocation(m_dataPath);
+    CResourceManager::AddLocation(m_gamePath);
 
     for (const std::string& modAutoloadDir : m_modAutoloadDir)
     {

@@ -180,7 +180,15 @@ float CSystemUtils::TimeStampDiff(SystemTimeStamp *before, SystemTimeStamp *afte
 
 std::string CSystemUtils::GetDataPath()
 {
-    return COLOBOT_DEFAULT_DATADIR;
+    return COLOBOT_DEFAULT_ENGINE_DATADIR;
+}
+
+std::string CSystemUtils::GetGamePath(const std::string &gamename)
+{
+    if (!gamename.empty())
+        return COLOBOT_DEFAULT_BASE_DATADIR + std::string("/") + gamename;
+    else
+        return COLOBOT_DEFAULT_BASE_DATADIR;
 }
 
 std::string CSystemUtils::GetLangPath()

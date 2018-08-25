@@ -95,6 +95,11 @@ std::string CSystemUtilsMacOSX::GetDataPath()
     return m_dataPath;
 }
 
+std::string CSystemUtilsMacOSX::GetGamePath(const std::string& gamename)
+{
+    return ""; // TODO
+}
+
 std::string CSystemUtilsMacOSX::GetLangPath()
 {
     return m_dataPath + "/i18n";

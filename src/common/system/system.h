@@ -125,8 +125,11 @@ public:
     /** The difference is \a after - \a before. */
     virtual long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after) = 0;
 
-    //! Returns the data path (containing textures, levels, helpfiles, etc)
+    //! Returns the engine data path (containing textures, models, etc)
     virtual std::string GetDataPath();
+
+    //! Returns the game data path (containing levels, helpfiles, etc)
+    virtual std::string GetGamePath(const std::string& gamename);
 
     //! Returns the translations path
     virtual std::string GetLangPath();
