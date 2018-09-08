@@ -779,7 +779,7 @@ bool CRobotMain::ProcessEvent(Event &event)
 
         if (IsPhaseWithWorld(m_phase))
         {
-            if (data->key == KEY(F11))
+            if (data->key == KEY(F10))
             {
                 m_debugMenu->ToggleInterface();
                 return false;

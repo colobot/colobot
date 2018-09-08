@@ -1871,7 +1871,12 @@ void CApplication::SetLanguage(Language language)
     // Update C++ locale
     try
     {
+#if defined(_MSC_VER) && defined(_DEBUG)
+        // Avoids failed assertion in VS debugger
+        throw -1;
+#else
         std::locale::global(std::locale(systemLocale.c_str()));
+#endif
     }
     catch (...)
     {
