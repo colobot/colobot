@@ -2540,6 +2540,8 @@ bool CEdit::Paste()
 {
     char    c;
     char*   text;
+    int     iTabToInsert=0;
+    int     iTmp; //temp for tab space equivalant insertion
 
     if ( !m_bEdit )
     {
@@ -2554,20 +2556,36 @@ bool CEdit::Paste()
     }
 
     UndoMemorize(OPERUNDO_SPEC);
-    for ( unsigned int i = 0; i < strlen(text); i++ )
+    for (unsigned int i = 0; i<strlen(text); ++i)
     {
         c = text[i];
-        if ( c == '\r' )
+        switch(c)
         {
+        case '\r':
             continue;
+        case '\t':
+            if (m_bAutoIndent)
+            {
+                if (0<m_cursor1 && m_cursor1<=m_len && '\n'!=m_text[m_cursor1-1])
+                    iTabToInsert++;
+                continue;
+            }
+            break;
+        case '\n':
+            iTabToInsert=0;
         }
-        if ( c == '\t' && m_bAutoIndent )
+        if (0<iTabToInsert && m_bAutoIndent)
         {
-            continue;
+            for (iTmp=m_engine->GetEditIndentValue()*iTabToInsert; iTmp>0; --iTmp)
+                InsertOne(' ');
+            iTabToInsert=0;
         }
         InsertOne(c);
     }
-
+    if (0<iTabToInsert && m_bAutoIndent && 0<m_cursor1
+        && (m_cursor1>=m_len || '\n'!=m_text[m_cursor1]))
+        for (iTmp=m_engine->GetEditIndentValue() ; iTmp>0; --iTmp)
+            InsertOne(' ');
     SDL_free(text);
     Justif();
     ColumnFix();
@@ -2872,7 +2890,7 @@ int CEdit::IndentTabCount()
     return nb;
 }
 
-// Adds or removes qq tabs.
+// Adds or removes some tabs.
 
 void CEdit::IndentTabAdjust(int number)
 {
