@@ -72,7 +72,7 @@ if(PLATFORM_GNU)
 
     # Install appdata
     install(
-        FILES ${CMAKE_CURRENT_BINARY_DIR}/info.colobot.Colobot.appdata.xml
+        FILES info.colobot.Colobot.appdata.xml
             DESTINATION ${CMAKE_INSTALL_PREFIX}/share/metainfo/
         )
 
