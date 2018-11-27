@@ -60,6 +60,7 @@
 #include "level/parser/parser.h"
 
 #include "math/const.h"
+#include "math/func.h"
 #include "math/geometry.h"
 
 #include "object/object.h"
@@ -5362,18 +5363,10 @@ void CRobotMain::UpdateChapterPassed()
     return m_ui->UpdateChapterPassed();
 }
 
-
 //! Changes game speed
 void CRobotMain::SetSpeed(float speed)
 {
-    if(speed < MIN_SPEED) 
-    {
-        speed = MIN_SPEED;
-    }
-    else if(speed > MAX_SPEED)
-    {
-        speed = MAX_SPEED;
-    }
+    speed = Math::Clamp(speed, MIN_SPEED, MAX_SPEED);
 
     m_app->SetSimulationSpeed(speed);
     UpdateSpeedLabel();
