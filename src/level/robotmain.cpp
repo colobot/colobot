@@ -60,6 +60,7 @@
 #include "level/parser/parser.h"
 
 #include "math/const.h"
+#include "math/func.h"
 #include "math/geometry.h"
 
 #include "object/object.h"
@@ -118,6 +119,10 @@
 
 const float UNIT = 4.0f;    // default for g_unit
 float   g_unit;             // conversion factor
+
+// Min/max values for the game speed.
+const float MIN_SPEED = 1/8.0f;
+const float MAX_SPEED = 256.0f;
 
 // Reference colors used when recoloring textures, see ChangeColor()
 const Gfx::Color COLOR_REF_BOT   = Gfx::Color( 10.0f/256.0f, 166.0f/256.0f, 254.0f/256.0f);  // blue
@@ -5358,10 +5363,11 @@ void CRobotMain::UpdateChapterPassed()
     return m_ui->UpdateChapterPassed();
 }
 
-
 //! Changes game speed
 void CRobotMain::SetSpeed(float speed)
 {
+    speed = Math::Clamp(speed, MIN_SPEED, MAX_SPEED);
+
     m_app->SetSimulationSpeed(speed);
     UpdateSpeedLabel();
 }
