@@ -102,7 +102,7 @@ std::string CSystemUtilsLinux::GetSaveDir()
     std::string savegameDir;
 
     // Determine savegame dir according to XDG Base Directory Specification
-    char *envXDG_DATA_HOME = getenv("XDG_CONFIG_DATA");
+    char *envXDG_DATA_HOME = getenv("XDG_DATA_HOME");
     if (envXDG_DATA_HOME == nullptr)
     {
         char *envHOME = getenv("HOME");
