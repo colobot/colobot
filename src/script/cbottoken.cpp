@@ -86,6 +86,8 @@ const char* GetObjectName(ObjectType type)
     if ( type == OBJECT_MOBILEtt    )  return "TrackedTrainer";
     if ( type == OBJECT_MOBILEft    )  return "WingedTrainer";
     if ( type == OBJECT_MOBILEit    )  return "LeggedTrainer";
+    if ( type == OBJECT_MOBILErp    )  return "HeavyTrainer";
+    if ( type == OBJECT_MOBILEst    )  return "AmphibiousTrainer";
     if ( type == OBJECT_MOBILEwa    )  return "WheeledGrabber";
     if ( type == OBJECT_MOBILEta    )  return "TrackedGrabber";
     if ( type == OBJECT_MOBILEfa    )  return "WingedGrabber";
@@ -217,6 +219,8 @@ std::string GetHelpFilename(ObjectType type)
     if ( type == OBJECT_MOBILEtt    )  helpfile = "object/bottr";
     if ( type == OBJECT_MOBILEft    )  helpfile = "object/bottr";
     if ( type == OBJECT_MOBILEit    )  helpfile = "object/bottr";
+    if ( type == OBJECT_MOBILErp    )  helpfile = "object/bottr";
+    if ( type == OBJECT_MOBILEst    )  helpfile = "object/bottr";
     if ( type == OBJECT_MOBILEtg    )  helpfile = "object/bottarg";
     if ( type == OBJECT_MOBILEdr    )  helpfile = "object/botdraw";
     if ( type == OBJECT_MOBILEpr    )  helpfile = "object/bottr";

@@ -262,6 +262,8 @@ bool CAutoMush::SearchTarget()
              type != OBJECT_MOBILEtt &&
              type != OBJECT_MOBILEwt &&
              type != OBJECT_MOBILEit &&
+             type != OBJECT_MOBILErp &&
+             type != OBJECT_MOBILEst &&
              type != OBJECT_MOBILEdr &&
              type != OBJECT_DERRICK  &&
              type != OBJECT_STATION  &&

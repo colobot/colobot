@@ -815,6 +815,8 @@ bool runSearch(CBotVar* var, Math::Vector pos, int& exception, std::function<boo
                 type_v.push_back(OBJECT_MOBILEtt);
                 type_v.push_back(OBJECT_MOBILEft);
                 type_v.push_back(OBJECT_MOBILEit);
+                type_v.push_back(OBJECT_MOBILErp);
+                type_v.push_back(OBJECT_MOBILEst);
             }
             type_v.push_back(static_cast<ObjectType>(array->GetValInt()));
             array = array->GetNext();
@@ -832,6 +834,8 @@ bool runSearch(CBotVar* var, Math::Vector pos, int& exception, std::function<boo
            type_v.push_back(OBJECT_MOBILEtt);
            type_v.push_back(OBJECT_MOBILEft);
            type_v.push_back(OBJECT_MOBILEit);
+           type_v.push_back(OBJECT_MOBILErp);
+           type_v.push_back(OBJECT_MOBILEst);
         }
     }
 
@@ -1004,6 +1008,8 @@ bool runRadar(CBotVar* var, std::function<bool(std::vector<ObjectType>, float, f
                 type_v.push_back(OBJECT_MOBILEtt);
                 type_v.push_back(OBJECT_MOBILEft);
                 type_v.push_back(OBJECT_MOBILEit);
+                type_v.push_back(OBJECT_MOBILErp);
+                type_v.push_back(OBJECT_MOBILEst);
             }
             type_v.push_back(static_cast<ObjectType>(array->GetValInt()));
             array = array->GetNext();
@@ -1021,6 +1027,8 @@ bool runRadar(CBotVar* var, std::function<bool(std::vector<ObjectType>, float, f
            type_v.push_back(OBJECT_MOBILEtt);
            type_v.push_back(OBJECT_MOBILEft);
            type_v.push_back(OBJECT_MOBILEit);
+           type_v.push_back(OBJECT_MOBILErp);
+           type_v.push_back(OBJECT_MOBILEst);
         }
     }
 
@@ -1189,6 +1197,8 @@ bool CScriptFunctions::rDetect(CBotVar* var, CBotVar* result, int& exception, vo
                     type_v.push_back(OBJECT_MOBILEtt);
                     type_v.push_back(OBJECT_MOBILEft);
                     type_v.push_back(OBJECT_MOBILEit);
+                    type_v.push_back(OBJECT_MOBILErp);
+                    type_v.push_back(OBJECT_MOBILEst);
                 }
                 type_v.push_back(static_cast<ObjectType>(array->GetValInt()));
                 array = array->GetNext();
@@ -1206,6 +1216,8 @@ bool CScriptFunctions::rDetect(CBotVar* var, CBotVar* result, int& exception, vo
                 type_v.push_back(OBJECT_MOBILEtt);
                 type_v.push_back(OBJECT_MOBILEft);
                 type_v.push_back(OBJECT_MOBILEit);
+                type_v.push_back(OBJECT_MOBILErp);
+                type_v.push_back(OBJECT_MOBILEst);
             }
         }
 

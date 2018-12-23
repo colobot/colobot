@@ -105,6 +105,8 @@ enum ObjectType
     OBJECT_MOBILEtt         = 101,  //!< TrackedTrainer
     OBJECT_MOBILEft         = 102,  //!< WingedTrainer
     OBJECT_MOBILEit         = 103,  //!< LeggedTrainer
+    OBJECT_MOBILErp         = 104,  //!< HeavyTrainer
+    OBJECT_MOBILEst         = 105,  //!< AmphibiousTrainer
     OBJECT_MOBILEwa         = 110,  //!< WheeledGrabber
     OBJECT_MOBILEta         = 111,  //!< TrackedGrabber
     OBJECT_MOBILEfa         = 112,  //!< WingedGrabber

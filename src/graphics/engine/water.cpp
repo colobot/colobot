@@ -592,6 +592,8 @@ float CWater::GetLevel(CObject* object)
          type == OBJECT_MOBILEtt ||
          type == OBJECT_MOBILEwt ||
          type == OBJECT_MOBILEit ||
+         type == OBJECT_MOBILErp ||
+         type == OBJECT_MOBILEst ||
          type == OBJECT_MOBILEdr )
     {
         return m_level-2.0f;

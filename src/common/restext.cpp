@@ -521,6 +521,8 @@ void InitializeRestext()
     stringsObject[OBJECT_MOBILEtt]     = TR("Practice bot");
     stringsObject[OBJECT_MOBILEwt]     = TR("Practice bot");
     stringsObject[OBJECT_MOBILEit]     = TR("Practice bot");
+    stringsObject[OBJECT_MOBILErp]     = TR("Practice bot");
+    stringsObject[OBJECT_MOBILEst]     = TR("Practice bot");
     stringsObject[OBJECT_MOBILEfa]     = TR("Winged grabber");
     stringsObject[OBJECT_MOBILEta]     = TR("Tracked grabber");
     stringsObject[OBJECT_MOBILEwa]     = TR("Wheeled grabber");

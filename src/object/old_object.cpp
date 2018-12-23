@@ -742,6 +742,8 @@ void COldObject::SetType(ObjectType type)
         m_type == OBJECT_MOBILEtt ||
         m_type == OBJECT_MOBILEwt ||
         m_type == OBJECT_MOBILEit ||
+        m_type == OBJECT_MOBILErp ||
+        m_type == OBJECT_MOBILEst ||
         m_type == OBJECT_TOWER    ||
         m_type == OBJECT_RESEARCH ||
         m_type == OBJECT_ENERGY   ||
@@ -807,6 +809,8 @@ void COldObject::SetType(ObjectType type)
          m_type == OBJECT_MOBILEtt ||
          m_type == OBJECT_MOBILEwt ||
          m_type == OBJECT_MOBILEit ||
+         m_type == OBJECT_MOBILErp ||
+         m_type == OBJECT_MOBILEst ||
          m_type == OBJECT_FACTORY  ||
          m_type == OBJECT_REPAIR   ||
          m_type == OBJECT_DESTROYER||
@@ -911,6 +915,8 @@ void COldObject::SetType(ObjectType type)
         m_type == OBJECT_MOBILEtt ||
         m_type == OBJECT_MOBILEwt ||
         m_type == OBJECT_MOBILEit ||
+        m_type == OBJECT_MOBILErp ||
+        m_type == OBJECT_MOBILEst ||
         m_type == OBJECT_MOBILEtg ||
         m_type == OBJECT_MOBILEdr ||
         m_type == OBJECT_APOLLO2  ||
@@ -2312,7 +2318,8 @@ void COldObject::AdjustCamera(Math::Vector &eye, float &dirH, float &dirV,
     }
     else if ( m_type == OBJECT_MOBILErt ||
               m_type == OBJECT_MOBILErr ||
-              m_type == OBJECT_MOBILErs )
+              m_type == OBJECT_MOBILErs ||
+              m_type == OBJECT_MOBILErp )
     {
         eye.x = -1.1f;  // on the cap
         eye.y =  7.9f;
@@ -2354,7 +2361,8 @@ void COldObject::AdjustCamera(Math::Vector &eye, float &dirH, float &dirV,
         eye.y = 11.0f;
         eye.z =  0.0f;
     }
-    else if ( m_type == OBJECT_MOBILEsa )
+    else if ( m_type == OBJECT_MOBILEsa ||
+              m_type == OBJECT_MOBILEst )
     {
         eye.x =  3.0f;
         eye.y =  4.5f;
@@ -2901,6 +2909,8 @@ void COldObject::CreateSelectParticle()
              m_type == OBJECT_MOBILEtt ||
              m_type == OBJECT_MOBILEwt ||
              m_type == OBJECT_MOBILEit ||
+             m_type == OBJECT_MOBILErp ||
+             m_type == OBJECT_MOBILEst ||
              m_type == OBJECT_MOBILEdr )  // vehicle?
         {
             pos = Math::Vector(0.0f, 0.0f, 0.0f);
@@ -2937,14 +2947,16 @@ void COldObject::UpdateSelectParticle()
     if ( m_type == OBJECT_MOBILErt ||
          m_type == OBJECT_MOBILErc ||
          m_type == OBJECT_MOBILErr ||
-         m_type == OBJECT_MOBILErs )  // large caterpillars?
+         m_type == OBJECT_MOBILErs ||
+         m_type == OBJECT_MOBILErp )  // large caterpillars?
     {
         pos[0] = Math::Vector(4.2f, 2.8f,  1.5f);
         pos[1] = Math::Vector(4.2f, 2.8f, -1.5f);
         dim[0].x = 1.5f;
         dim[1].x = 1.5f;
     }
-    else if ( m_type == OBJECT_MOBILEsa )  // submarine?
+    else if ( m_type == OBJECT_MOBILEsa ||
+              m_type == OBJECT_MOBILEst )  // submarine?
     {
         pos[0] = Math::Vector(3.6f, 4.0f,  2.0f);
         pos[1] = Math::Vector(3.6f, 4.0f, -2.0f);
@@ -3027,12 +3039,14 @@ void COldObject::UpdateSelectParticle()
     if ( m_type == OBJECT_MOBILErt ||
          m_type == OBJECT_MOBILErc ||
          m_type == OBJECT_MOBILErr ||
-         m_type == OBJECT_MOBILErs )  // large caterpillars?
+         m_type == OBJECT_MOBILErs ||
+         m_type == OBJECT_MOBILErp )  // large caterpillars?
     {
         pos[2] = Math::Vector(-5.0f, 5.2f,  2.5f);
         pos[3] = Math::Vector(-5.0f, 5.2f, -2.5f);
     }
-    if ( m_type == OBJECT_MOBILEsa )  // submarine?
+    if ( m_type == OBJECT_MOBILEsa ||
+         m_type == OBJECT_MOBILEst )  // submarine?
     {
         pos[2] = Math::Vector(-3.6f, 4.0f,  2.0f);
         pos[3] = Math::Vector(-3.6f, 4.0f, -2.0f);
@@ -3276,6 +3290,8 @@ float COldObject::GetLightningHitProbability()
          m_type == OBJECT_MOBILEtt ||
          m_type == OBJECT_MOBILEwt ||
          m_type == OBJECT_MOBILEit ||
+         m_type == OBJECT_MOBILErp ||
+         m_type == OBJECT_MOBILEst ||
          m_type == OBJECT_MOBILEtg ||
          m_type == OBJECT_MOBILEdr )  // robot?
     {

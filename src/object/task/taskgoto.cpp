@@ -582,6 +582,8 @@ CObject* CTaskGoto::WormSearch(Math::Vector &impact)
              oType != OBJECT_MOBILEtt &&
              oType != OBJECT_MOBILEwt &&
              oType != OBJECT_MOBILEit &&
+             oType != OBJECT_MOBILErp &&
+             oType != OBJECT_MOBILEst &&
              oType != OBJECT_MOBILEdr &&
              oType != OBJECT_DERRICK  &&
              oType != OBJECT_STATION  &&
@@ -725,7 +727,8 @@ Error CTaskGoto::Start(Math::Vector goal, float altitude,
          type == OBJECT_MOBILErt ||
          type == OBJECT_MOBILErc ||
          type == OBJECT_MOBILErr ||
-         type == OBJECT_MOBILErs )
+         type == OBJECT_MOBILErs ||
+         type == OBJECT_MOBILErp )
     {
         m_bApprox = true;
     }
@@ -1194,6 +1197,8 @@ bool CTaskGoto::AdjustTarget(CObject* pObj, Math::Vector &pos, float &distance)
          type == OBJECT_MOBILEtt ||
          type == OBJECT_MOBILEwt ||
          type == OBJECT_MOBILEit ||
+         type == OBJECT_MOBILErp ||
+         type == OBJECT_MOBILEst ||
          type == OBJECT_MOBILEdr )
     {
         assert(pObj->Implements(ObjectInterfaceType::Powered));
@@ -1996,12 +2001,14 @@ void CTaskGoto::BitmapTerrain(int minx, int miny, int maxx, int maxy)
     if ( type == OBJECT_MOBILErt ||
          type == OBJECT_MOBILErc ||
          type == OBJECT_MOBILErr ||
-         type == OBJECT_MOBILErs )  // large caterpillars?
+         type == OBJECT_MOBILErs ||
+         type == OBJECT_MOBILErp )  // large caterpillars?
     {
         aLimit = 35.0f*Math::PI/180.0f;
     }
 
-    if ( type == OBJECT_MOBILEsa )  // submarine caterpillars?
+    if ( type == OBJECT_MOBILEsa ||
+         type == OBJECT_MOBILEst )  // submarine caterpillars?
     {
         aLimit = 35.0f*Math::PI/180.0f;
         bAcceptWater = true;

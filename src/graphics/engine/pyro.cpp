@@ -1285,6 +1285,8 @@ void CPyro::DisplayError(PyroType type, CObject* obj)
              oType == OBJECT_MOBILEtt ||
              oType == OBJECT_MOBILEft ||
              oType == OBJECT_MOBILEit ||
+             oType == OBJECT_MOBILErp ||
+             oType == OBJECT_MOBILEst ||
              oType == OBJECT_MOBILEdr )
         {
             err = ERR_DELETEMOBILE;
@@ -2053,11 +2055,14 @@ void CPyro::BurnStart()
          m_burnType == OBJECT_MOBILEtc ||
          m_burnType == OBJECT_MOBILEti ||
          m_burnType == OBJECT_MOBILEts ||
+         m_burnType == OBJECT_MOBILEtt ||
          m_burnType == OBJECT_MOBILErt ||
          m_burnType == OBJECT_MOBILErc ||
          m_burnType == OBJECT_MOBILErr ||
          m_burnType == OBJECT_MOBILErs ||
+         m_burnType == OBJECT_MOBILErp ||
          m_burnType == OBJECT_MOBILEsa ||
+         m_burnType == OBJECT_MOBILEst ||
          m_burnType == OBJECT_MOBILEdr )  // caterpillars?
     {
         pos.x =   0.0f;
@@ -2102,7 +2107,8 @@ void CPyro::BurnStart()
          m_burnType == OBJECT_MOBILEib ||
          m_burnType == OBJECT_MOBILEic ||
          m_burnType == OBJECT_MOBILEii ||
-         m_burnType == OBJECT_MOBILEis )  // legs?
+         m_burnType == OBJECT_MOBILEis ||
+         m_burnType == OBJECT_MOBILEit )  // legs?
     {
         for (int i = 0; i < 6; i++)
         {

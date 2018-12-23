@@ -618,6 +618,8 @@ bool CAutoFactory::NearestVehicle()
              type != OBJECT_MOBILEtt &&
              type != OBJECT_MOBILEwt &&
              type != OBJECT_MOBILEit &&
+             type != OBJECT_MOBILErp &&
+             type != OBJECT_MOBILEst &&
              type != OBJECT_MOBILEdr &&
              type != OBJECT_MOTHER   &&
              type != OBJECT_ANT      &&

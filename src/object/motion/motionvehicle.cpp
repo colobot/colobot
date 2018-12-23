@@ -100,11 +100,23 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICLE);  // this is a moving object
     m_object->SetObjectRank(0, rank);
 
-    if (m_object->GetTrainer()  ||
-        type == OBJECT_MOBILEwt ||
-        type == OBJECT_MOBILEtt ||
-        type == OBJECT_MOBILEft ||
-        type == OBJECT_MOBILEit)
+    if ((m_object->GetTrainer() && type == OBJECT_MOBILEsa) || type == OBJECT_MOBILEst)
+    {
+        modelManager->AddModelReference("trainers.mod", false, rank, m_object->GetTeam());
+    }
+    else if ((m_object->GetTrainer() &&
+            ( type == OBJECT_MOBILErt ||
+              type == OBJECT_MOBILErc ||
+              type == OBJECT_MOBILErr ||
+              type == OBJECT_MOBILErs)) || type == OBJECT_MOBILErp)
+    {
+        modelManager->AddModelReference("trainerr.mod", false, rank, m_object->GetTeam());
+    }
+    else if (m_object->GetTrainer()  ||
+             type == OBJECT_MOBILEwt ||
+             type == OBJECT_MOBILEtt ||
+             type == OBJECT_MOBILEft ||
+             type == OBJECT_MOBILEit)
     {
         modelManager->AddModelReference("trainer.mod", false, rank, m_object->GetTeam());
     }
@@ -201,14 +213,15 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
             modelManager->AddModelReference("trainera.mod", false, rank, m_object->GetTeam());
         }
     }
-    else if (type == OBJECT_MOBILErt ||
+    else if (!m_object->GetTrainer() && 
+            (type == OBJECT_MOBILErt ||
              type == OBJECT_MOBILErc ||
              type == OBJECT_MOBILErr ||
-             type == OBJECT_MOBILErs)
+             type == OBJECT_MOBILErs))
     {
         modelManager->AddModelReference("roller1.mod", false, rank, m_object->GetTeam());
     }
-    else if (type == OBJECT_MOBILEsa)
+    else if (type == OBJECT_MOBILEsa && !m_object->GetTrainer())
     {
         modelManager->AddModelReference("subm1.mod", false, rank, m_object->GetTeam());
     }
@@ -265,12 +278,14 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
     if (type == OBJECT_MOBILErt ||
         type == OBJECT_MOBILErc ||
         type == OBJECT_MOBILErr ||
-        type == OBJECT_MOBILErs)
+        type == OBJECT_MOBILErs ||
+        type == OBJECT_MOBILErp)
     {
         m_object->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 4.0f, 0.0f), 6.5f, SOUND_BOUMm, 0.45f));
         m_object->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 3.0f, 0.0f), 7.0f));
     }
-    else if (type == OBJECT_MOBILEsa)
+    else if (type == OBJECT_MOBILEsa ||
+             type == OBJECT_MOBILEst)
     {
         m_object->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 3.0f, 0.0f), 4.5f, SOUND_BOUMm, 0.45f));
         m_object->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 3.0f, 0.0f), 6.0f));
@@ -548,7 +563,8 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
     if (type == OBJECT_MOBILErt ||
         type == OBJECT_MOBILErc ||
         type == OBJECT_MOBILErr ||
-        type == OBJECT_MOBILErs)  // large caterpillars?
+        type == OBJECT_MOBILErs ||
+        type == OBJECT_MOBILErp)  // large caterpillars?
     {
         // Creates the right caterpillar.
         rank = m_engine->CreateObject();
@@ -567,7 +583,8 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetPartPosition(7, Math::Vector(0.0f, 2.0f, 3.0f));
     }
 
-    if (type == OBJECT_MOBILEsa)  // underwater caterpillars?
+    if (type == OBJECT_MOBILEsa ||
+        type == OBJECT_MOBILEst)  // underwater caterpillars?
     {
         // Creates the right caterpillar.
         rank = m_engine->CreateObject();
@@ -978,7 +995,8 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
     if (type == OBJECT_MOBILErt ||
         type == OBJECT_MOBILErc ||
         type == OBJECT_MOBILErr ||
-        type == OBJECT_MOBILErs)
+        type == OBJECT_MOBILErs ||
+        type == OBJECT_MOBILErp)
     {
         m_object->CreateShadowCircle(6.0f, 1.0f);
     }
@@ -988,7 +1006,8 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
              type == OBJECT_MOBILEti ||
              type == OBJECT_MOBILEts ||
              type == OBJECT_MOBILEtt ||
-             type == OBJECT_MOBILEsa)
+             type == OBJECT_MOBILEsa ||
+             type == OBJECT_MOBILEst)
     {
         m_object->CreateShadowCircle(5.0f, 1.0f);
     }
@@ -1225,7 +1244,8 @@ void CMotionVehicle::CreatePhysics(ObjectType type)
     if ( type == OBJECT_MOBILErt ||
          type == OBJECT_MOBILErc ||
          type == OBJECT_MOBILErr ||
-         type == OBJECT_MOBILErs )  // large caterpillars?
+         type == OBJECT_MOBILErs ||
+         type == OBJECT_MOBILErp)  // large caterpillars?
     {
         character->wheelFront = 5.0f;
         character->wheelBack  = 5.0f;
@@ -1251,7 +1271,8 @@ void CMotionVehicle::CreatePhysics(ObjectType type)
         m_physics->SetCirMotionY(MO_STOACCEL,  4.0f);
     }
 
-    if ( type == OBJECT_MOBILEsa )
+    if ( type == OBJECT_MOBILEsa ||
+         type == OBJECT_MOBILEst )
     {
         character->wheelFront = 4.0f;
         character->wheelBack  = 4.0f;
@@ -1541,7 +1562,9 @@ bool CMotionVehicle::EventFrame(const Event &event)
          type == OBJECT_MOBILErc ||
          type == OBJECT_MOBILErr ||
          type == OBJECT_MOBILErs ||
+         type == OBJECT_MOBILErp ||
          type == OBJECT_MOBILEsa ||
+         type == OBJECT_MOBILEst ||
          type == OBJECT_MOBILEdr )  // caterpillars?
     {
         s = m_physics->GetLinMotionX(MO_MOTSPEED)*0.7f;
@@ -1573,7 +1596,8 @@ bool CMotionVehicle::EventFrame(const Event &event)
                 limit[0] =   8.0f*Math::PI/180.0f;
                 limit[1] = -12.0f*Math::PI/180.0f;
             }
-            else if ( type == OBJECT_MOBILEsa )
+            else if ( type == OBJECT_MOBILEsa ||
+                      type == OBJECT_MOBILEst )
             {
                 limit[0] =  15.0f*Math::PI/180.0f;
                 limit[1] = -15.0f*Math::PI/180.0f;

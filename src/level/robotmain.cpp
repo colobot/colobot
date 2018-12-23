@@ -1839,6 +1839,8 @@ void CRobotMain::SelectOneObject(CObject* obj, bool displayError)
          type == OBJECT_MOBILEtt ||
          type == OBJECT_MOBILEwt ||
          type == OBJECT_MOBILEit ||
+         type == OBJECT_MOBILErp ||
+         type == OBJECT_MOBILEst ||
          type == OBJECT_MOBILEdr ||
          type == OBJECT_APOLLO2  )
     {
@@ -2225,6 +2227,8 @@ void CRobotMain::ChangeCamera()
          oType != OBJECT_MOBILEtt &&
          oType != OBJECT_MOBILEwt &&
          oType != OBJECT_MOBILEit &&
+         oType != OBJECT_MOBILErp &&
+         oType != OBJECT_MOBILEst &&
          oType != OBJECT_MOBILEdr &&
          oType != OBJECT_APOLLO2  )  return;
 
@@ -5734,13 +5738,14 @@ Error CRobotMain::CanFactoryError(ObjectType type, int team)
     if (drive == DriveType::Tracked      && !IsResearchDone(RESEARCH_TANK,     team)) return ERR_BUILD_RESEARCH;
     if (drive == DriveType::Winged       && !IsResearchDone(RESEARCH_FLY,      team)) return ERR_BUILD_RESEARCH;
     if (drive == DriveType::Legged       && !IsResearchDone(RESEARCH_iPAW,     team)) return ERR_BUILD_RESEARCH;
-    if (drive == DriveType::BigTracked   && !IsResearchDone(RESEARCH_TANK,     team)) return ERR_BUILD_RESEARCH; // NOTE: Subber is not BigTracked! It currently counts as Other
+    if (drive == DriveType::Heavy        && !IsResearchDone(RESEARCH_TANK,     team)) return ERR_BUILD_RESEARCH;
 
     if (type == OBJECT_MOBILErt          && !IsResearchDone(RESEARCH_THUMP,    team)) return ERR_BUILD_RESEARCH;
     if (type == OBJECT_MOBILErc          && !IsResearchDone(RESEARCH_PHAZER,   team)) return ERR_BUILD_RESEARCH;
     if (type == OBJECT_MOBILErr          && !IsResearchDone(RESEARCH_RECYCLER, team)) return ERR_BUILD_RESEARCH;
     if (type == OBJECT_MOBILErs          && !IsResearchDone(RESEARCH_SHIELD,   team)) return ERR_BUILD_RESEARCH;
     if (type == OBJECT_MOBILEsa          && !IsResearchDone(RESEARCH_SUBM,     team)) return ERR_BUILD_DISABLED; // Can be only researched manually in Scene file
+    if (type == OBJECT_MOBILEst          && !IsResearchDone(RESEARCH_SUBM,     team)) return ERR_BUILD_DISABLED;
     if (type == OBJECT_MOBILEtg          && !IsResearchDone(RESEARCH_TARGET,   team)) return ERR_BUILD_RESEARCH;
 
     return ERR_OK;
