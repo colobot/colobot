@@ -1,846 +1,841 @@
-# Didier Raboud <odyx@debian.org>, 2012, 2015, 2016.
-# Martin Quinson <mquinson@debian.org>, 2016
-# B-CE, 2018
+# José Robson Mariano Alves <jose.alves@ifto.edu.br>, 2018.
 msgid ""
 msgstr ""
-"Project-Id-Version: Colobot 0.1.11\n"
+"Project-Id-Version: Colobot Alpha\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: DATE\n"
-"PO-Revision-Date: 2018-02-28 20:00+0100\n"
-"Last-Translator: B-CE\n"
-"Language: fr\n"
+"PO-Revision-Date: 2018-04-17 10:39-0300\n"
+"Last-Translator: José Robson Mariano Alves <jose.alves@ifto.edu.br>\n"
+"Language-Team: Portuguese <kde-i18n-pt_BR@kde.org>\n"
+"Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Lokalize 2.0\n"
-"X-Language: fr_FR\n"
+"X-Language: pt_BR\n"
 "X-Source-Language: en_US\n"
 
 msgid " or "
 msgstr " ou "
 
 msgid "\" [ \" expected"
-msgstr "\" [ \" attendu"
+msgstr "\" [ \" esperado"
 
 msgid "\" ] \" missing"
-msgstr "\" ] \" manquant"
+msgstr "\" ] \" faltando"
 
 #, c-format
 msgid "%s: %d pts"
-msgstr "%s: %d points"
+msgstr ""
 
 msgid "..behind"
-msgstr "..derrière"
+msgstr "..atrás"
 
 msgid "..in front"
-msgstr "..devant"
+msgstr "..em frente"
 
 msgid "..power cell"
-msgstr "..pile"
+msgstr "..célula de energia"
 
 msgid "1) First click on the key you want to redefine."
-msgstr "1) Cliquez d'abord sur la touche à redéfinir."
+msgstr "1) Primeiro clique na chave que você quer redefinir."
 
 msgid "2) Then press the key you want to use instead."
-msgstr "2) Appuyez ensuite sur la nouvelle touche souhaitée."
+msgstr "2) Então pressione a chave que você quer usar no lugar."
 
 msgid "<<  Back  \\Back to the previous screen"
-msgstr "<<  Retour  \\Retour au niveau précédent"
+msgstr "<<  Voltar  \\Voltar para a tela anterior"
 
 msgid "<<< Sorry; mission failed >>>"
-msgstr "<<< Désolé; mission échouée >>>"
+msgstr "<<< Desculpe; missão fracassada >>>"
 
 #, c-format
 msgid "<<< Team %s finished! >>>"
-msgstr "<<< L'équipe %s a terminé! >>>"
+msgstr "<<< Time %s terminou! >>>"
 
 #, c-format
 msgid "<<< Team %s lost! >>>"
-msgstr "<<< L'équipe %s a perdu! >>>"
+msgstr "<<< Time %s perdeu! >>>"
 
 #, c-format
 msgid "<<< Team %s recieved %d points >>>"
-msgstr "<<< L'équipe %s a reçu %d points >>>"
+msgstr "<<< Time %s recebeu %d pontos >>>"
 
 msgid "<<< Well done; mission accomplished >>>"
-msgstr "<<< Bravo; mission terminée >>>"
+msgstr "<<< Bem feito; missão cumprida >>>"
 
 msgid "A label must be followed by \"for\"; \"while\"; \"do\" or \"switch\""
-msgstr "Un label ne peut se placer que devant un \"for\"; un \"while\"; un \"do\" ou un \"switch\""
+msgstr "Um rótulo deve ser precedido por um \"for\"; \"while\"; \"do\" ou um \"switch\""
 
 msgid "A variable can not be declared twice"
-msgstr "Redéfinition d'une variable"
+msgstr "Uma variável não pode ser declarada duas vezes"
 
 msgid "Abort\\Abort the current mission"
-msgstr "Abandonner\\Abandonner la mission en cours"
+msgstr "Abortar\\Abortar a missão atual"
 
 msgid "Access beyond array limit"
-msgstr "Accès hors du tableau"
+msgstr "Acesso além dos limites da matriz"
 
 msgid "Access to solution\\Shows the solution (detailed instructions for missions)"
-msgstr "Accès à la solution\\Donne la solution (instructions détaillées pour la mission)"
+msgstr "Acesso a solução\\Exibe a solução (instruções detalhadas para missões)"
 
 msgid "Access to solutions\\Show program \"4: Solution\" in the exercises"
-msgstr "Accès aux solutions\\Programme \"4: Solution\" dans les exercices"
+msgstr "Acesso as soluções\\Exibir programa \"4: Solução\" nos exercícios"
 
 msgid "Add new program"
-msgstr "Ajouter un nouveau programme"
+msgstr "Adicionar novo programa"
 
 msgid "Alien Queen"
-msgstr "Pondeuse"
+msgstr "Rainha Alienígena"
 
 msgid "Alien Queen killed"
-msgstr "Pondeuse mortellement touchée"
+msgstr "Rainha Alienígena morta"
 
 msgid "Already carrying something"
-msgstr "Porte déjà quelque chose"
+msgstr "Já está carregando algo"
 
 msgid "Alternative camera mode\\Move sideways instead of rotating (in free camera)"
-msgstr "Mode caméra alternatif\\Déplacements latéraux au lieu des rotations (pour une caméra libre)"
+msgstr "Modo de câmera alternativo\\Move de lado em vez de rotacionar (em câmera livre)"
 
 msgid "Ambiguous call to overloaded function"
-msgstr "Appel ambigu à une fonction surchargée"
+msgstr "Chamada ambígua a uma função sobrecarregada"
 
 msgid "Analysis already performed"
-msgstr "Analyse déjà effectuée"
+msgstr "Análise já realizada"
 
 msgid "Analysis performed"
-msgstr "Analyse terminée"
+msgstr "Análise realizada"
 
 msgid "Analyzes only organic matter"
-msgstr "N'analyse que la matière organique"
+msgstr "Analisa apenas matéria orgânica"
 
 msgid "Anisotropy level\\Anisotropy level"
-msgstr "Niveau d'anisotropie\\Niveau d'anisotropie"
+msgstr "Nível de anisotropia\\Nível de anisotropia"
 
 msgid "Ant"
-msgstr "Fourmi"
+msgstr "Formiga"
 
 msgid "Ant fatally wounded"
-msgstr "Fourmi mortellement touchée"
+msgstr "Formiga gravemente ferida"
 
 msgid "Appearance\\Choose your appearance"
-msgstr "Aspect\\Choisir votre aspect"
+msgstr "Aparência\\Escolha sua aparência"
 
 msgid "Apply changes\\Activates the changed settings"
-msgstr "Appliquer les changements\\Active les changements effectués"
+msgstr "Aplicar mudanças\\Ativa as configurações alteradas"
 
 msgid "Appropriate constructor missing"
-msgstr "Constructeur approprié manquant"
+msgstr "Construtor apropriado faltando"
 
 msgid "Assignment impossible"
-msgstr "Assignation impossible"
+msgstr "Tarefa impossível"
 
 msgid "Autolab"
-msgstr "Laboratoire d'analyse de matières organiques"
+msgstr "Laboratório de matérias orgânicas"
 
 msgid "Automatic indent\\When program editing"
-msgstr "Indentation automatique\\Pendant l'édition d'un programme"
+msgstr "Indentação automática\\Enquanto editando programa"
 
 msgid "Autosave interval\\How often your game will autosave"
-msgstr "Interval d'auto-sauvegarde\\À quels intervals les parties vont-t-elles êtres sauvegardées automatiquement"
+msgstr "Intervalo de salvamento automático\\Com que frequência seu jogo irá auto-salvar"
 
 msgid "Autosave slots\\How many autosave slots you'll have"
-msgstr "Nombre d'auto-sauvegardes\\Combien d'auto-sauvegarde seront conservées"
+msgstr "Slots de salvamento automático\\Quantos slots de salvamento automático você terá"
 
 msgid "Autosave\\Enables autosave"
-msgstr "Auto-sauvegarde\\Activer l'auto-sauvegarde"
+msgstr "Salvamento automático\\Ativa o salvamento automático"
 
 msgid "Back"
-msgstr "Page précédente"
+msgstr "Voltar"
 
 msgid "Background sound:\\Volume of audio tracks"
-msgstr "Fond sonore :\\Volume des pistes audio"
+msgstr "Som de fundo:\\Volume das trilhas de áudio"
 
 msgid "Backward (\\key down;)"
-msgstr "Recule (\\key down;)"
+msgstr "Retroceder (\\key down;)"
 
 msgid "Backward\\Moves backward"
-msgstr "Reculer\\Se déplacer en arrière"
+msgstr "Retroceder\\Move para trás"
 
 msgid "Bad argument for \"new\""
-msgstr "Mauvais argument pour \"new\""
+msgstr "Argumento inválido para \"new\""
 
 msgid "Big indent\\Indent 2 or 4 spaces per level defined by braces"
-msgstr "Grande indentation\\Indente avec 2 ou 4 espaces par niveau"
+msgstr "Grande indentação\\Indente 2 ou 4 espaços por nível definido por colchetes"
 
 msgid "Black box"
-msgstr "Boîte noire"
+msgstr "Caixa preta"
 
 msgid "Blood\\Display blood when the astronaut is hit"
-msgstr "Sang\\Afficher du sang quand le cosmonaute est touché"
+msgstr "Sangue\\Exibe sangue quando o astronauta é atingido"
 
 msgid "Blue"
-msgstr "Bleue"
+msgstr "Azul"
 
-# tocheck : for team 	     (fem):  bleue
-# tocheck : for flag/pen/bot (masc): bleu
-# + capital also to check
 msgid "Blue flag"
-msgstr "Drapeau bleu"
+msgstr "Bandeira azul"
 
 msgid "Bot destroyed"
-msgstr "Robot détruit"
+msgstr "Robo destruido"
 
 msgid "Bot factory"
-msgstr "Fabrique de robots"
+msgstr "Fábrica de robos"
 
 msgid "Build a bot factory"
-msgstr "Construire une fabrique de robots"
+msgstr "Construir uma fábrica de robos"
 
 msgid "Build a converter"
-msgstr "Construire un convertisseur"
+msgstr "Construir um conversor"
 
 msgid "Build a defense tower"
-msgstr "Construire une tour"
+msgstr "Construir uma torre de defesa"
 
 msgid "Build a derrick"
-msgstr "Construire un derrick"
+msgstr "Construir um extrator"
 
 msgid "Build a destroyer"
-msgstr "Construire un destructeur"
+msgstr "Construir um destruidor"
 
 msgid "Build a exchange post"
-msgstr "Construire une borne d'information"
+msgstr "Construir um posto de troca"
 
 msgid "Build a legged grabber"
-msgstr "Fabriquer un déménageur à pattes"
+msgstr "Construir um agarrador com pernas"
 
 msgid "Build a legged orga shooter"
-msgstr "Fabriquer un tireur organique à pattes"
+msgstr "Construir um atirador orgânico com pernas"
 
 msgid "Build a legged shooter"
-msgstr "Fabriquer un tireur à pattes"
+msgstr "Construir um atirador com pernas"
 
 msgid "Build a legged sniffer"
-msgstr "Fabriquer un renifleur à pattes"
+msgstr "Construir um farejador com pernas"
 
 msgid "Build a lightning conductor"
-msgstr "Construire un paratonnerre"
+msgstr "Construir um condutor elétrico"
 
 msgid "Build a nuclear power plant"
-msgstr "Construire une centrale nucléaire"
+msgstr "Construir uma planta de energia nuclear"
 
 msgid "Build a phazer shooter"
-msgstr "Fabriquer un robot canon à phases"
+msgstr "Construir um atirador phazer"
 
 msgid "Build a power cell factory"
-msgstr "Construire une fabrique de piles"
+msgstr "Construir uma fábrica de células de energia"
 
 msgid "Build a power station"
-msgstr "Construire une station de recharge"
+msgstr "Construir uma estação de energia"
 
 msgid "Build a radar station"
-msgstr "Construire un radar"
+msgstr "Construir uma estação de radar"
 
 msgid "Build a recycler"
-msgstr "Fabriquer un robot recycleur"
+msgstr "Construir um reciclador"
 
 msgid "Build a repair center"
-msgstr "Construire un centre de réparation"
+msgstr "Construir um centro de reparação"
 
 msgid "Build a research center"
-msgstr "Construire un centre de recherches"
+msgstr "Construir um centro de pesquisa"
 
 msgid "Build a shielder"
-msgstr "Fabriquer un robot bouclier"
+msgstr "Construir um defensor"
 
 msgid "Build a subber"
-msgstr "Fabriquer un robot sous-marin"
+msgstr "Construir um mergulhador"
 
 msgid "Build a thumper"
-msgstr "Fabriquer un robot secoueur"
+msgstr "Construir um batedor"
 
 msgid "Build a tracked grabber"
-msgstr "Fabriquer un déménageur à chenilles"
+msgstr "Construir um agarrador com esteiras"
 
 msgid "Build a tracked orga shooter"
-msgstr "Fabriquer un tireur organique à chenilles"
+msgstr "Construir um atirador orgânico com esteiras"
 
 msgid "Build a tracked shooter"
-msgstr "Fabriquer un tireur à chenilles"
+msgstr "Construir um atirador com esteiras"
 
 msgid "Build a tracked sniffer"
-msgstr "Fabriquer un renifleur à chenilles"
+msgstr "Construir um farejador com esteiras"
 
 msgid "Build a wheeled grabber"
-msgstr "Fabriquer un déménageur à roues"
+msgstr "Construir um agarrador com rodas"
 
 msgid "Build a wheeled orga shooter"
-msgstr "Fabriquer un tireur organique à roues"
+msgstr "Construir um atirador orgânico com rodas"
 
 msgid "Build a wheeled shooter"
-msgstr "Fabriquer un tireur à roues"
+msgstr "Construir um atirador com rodas"
 
 msgid "Build a wheeled sniffer"
-msgstr "Fabriquer un renifleur à roues"
+msgstr "Construir um farejador com rodas"
 
 msgid "Build a winged grabber"
-msgstr "Fabriquer un déménageur volant"
+msgstr "Construir um agarrador alado"
 
 msgid "Build a winged orga shooter"
-msgstr "Fabriquer un tireur organique volant"
+msgstr "Construir um atirador orgânico alado"
 
 msgid "Build a winged shooter"
-msgstr "Fabriquer un tireur volant"
+msgstr "Construir um atirador alado"
 
 msgid "Build a winged sniffer"
-msgstr "Fabriquer un renifleur volant"
+msgstr "Construir um farejador alado"
 
 msgid "Build an autolab"
-msgstr "Construire un laboratoire d'analyse de matières organiques"
+msgstr "Construir um laboratório"
 
 msgid "Building completed"
-msgstr "Bâtiment terminé"
+msgstr "Construção completada"
 
 msgid "Building destroyed"
-msgstr "Bâtiment détruit"
+msgstr "Construção destruida"
 
 msgid "Button %1"
-msgstr "Bouton %1"
+msgstr "Botão %1"
 
 msgid "Calling an unknown function"
-msgstr "Appel d'une fonction inexistante"
+msgstr "Chamando uma função desconhecida"
 
 msgid "Camera (\\key camera;)"
-msgstr "Caméra (\\key camera;)"
+msgstr "Câmera (\\key camera;)"
 
 msgid "Camera back\\Moves the camera backward"
-msgstr "Caméra plus loin\\Recule la caméra"
+msgstr "Voltar câmera\\Move a câmera para trás"
 
 msgid "Camera border scrolling\\Scrolling when the mouse touches right or left border"
-msgstr "Défilement dans les bords\\Défilement lorsque la souris touche les bords gauche ou droite"
+msgstr "Rolagem de borda da câmera\\Rola quando o mouse toca a borda esquerda ou direita"
 
 msgid "Camera closer\\Moves the camera forward"
-msgstr "Caméra plus proche\\Avance la caméra"
+msgstr "Câmera mais perto\\Move a câmera para frente"
 
 msgid "Camera down\\Turns the camera down"
-msgstr "Baisser caméra\\Baisse la caméra"
+msgstr "Baixar câmera\\Vira a câmera para baixo"
 
 msgid "Camera left\\Turns the camera left"
-msgstr "Caméra à gauche\\Tourne la caméra vers la gauche"
+msgstr "Câmera a esquerda\\Gira a câmera para a esquerda"
 
 msgid "Camera right\\Turns the camera right"
-msgstr "Caméra à droite\\Tourne la caméra vers la droite"
+msgstr "Câmera a direita\\Gira a câmera para a direita"
 
 msgid "Camera up\\Turns the camera up"
-msgstr "Lever caméra\\Monte la caméra"
+msgstr "Subir câmera\\Gira a câmera para cima"
 
 msgid "Can not produce not researched object"
-msgstr "Impossible de créer un objet n'ayant pas été recherché"
+msgstr "Impossível produzir objetos não pesquisados"
 
 msgid "Can not produce this object in this mission"
-msgstr "Impossible de créer cet objet dans cette mission"
+msgstr "Impossível produzir este objeto nesta missão"
 
 msgid "Can't open file"
-msgstr "Ouverture du fichier impossible"
+msgstr "Não é possível abrir o arquivo"
 
 msgid "Cancel"
-msgstr "Annuler"
+msgstr "Cancelar"
 
 msgid "Cancel\\Cancel all changes"
-msgstr "Annuler\\Annuler toutes les modifications"
+msgstr "Cancelar\\Cancela todas as mudanças"
 
 msgid "Challenges"
-msgstr "Défis"
+msgstr "Desafios"
 
 msgid "Challenges in the chapter:"
-msgstr "Liste des défis du chapitre :"
+msgstr "Desafios no capítulo:"
 
 msgid "Challenges\\Programming challenges"
-msgstr "Défis\\Défis de programmation"
+msgstr "Desafios\\Desafios de programação"
 
 msgid "Change camera\\Switches between onboard camera and following camera"
-msgstr "Changement de caméra\\Autre de point de vue"
+msgstr "Mudar câmera\\Alterna entre câmera incorporada e câmera seguidora"
 
 msgid "Change player\\Change player"
-msgstr "Autre joueur\\Choix du nom du joueur"
+msgstr "Mudar jogador\\Mudar jogador"
 
 msgid "Chapters:"
-msgstr "Liste des chapitres :"
+msgstr "Capítulos:"
 
 msgid "Cheat console\\Show cheat console"
-msgstr "Console de triche\\Montre la console de triche"
+msgstr "Console de cheats\\Mostrar console de cheats"
 
 msgid "Checkpoint"
-msgstr "Indicateur"
+msgstr "Ponto de verificação"
 
 msgid "Class name expected"
-msgstr "Nom de classe attendu"
+msgstr "Nome de classe experado"
 
 msgid "Climb\\Increases the power of the jet"
-msgstr "Monter\\Augmenter la puissance du réacteur"
+msgstr "Subir\\Aumenta o poder do jato"
 
 msgid "Clone program"
-msgstr "Dupliquer le programme"
+msgstr "Clonar programa"
 
 msgid "Clone selected program"
-msgstr "Dupliquer le programme sélectionné"
+msgstr "Clonar o programa selecionado"
 
 msgid "Close"
-msgstr "Fermer"
+msgstr "Fechar"
 
 msgid "Closing bracket missing"
-msgstr "Il manque une parenthèse fermante"
+msgstr "Colchete de fechamento ausente"
 
 #, fuzzy
 msgid "Code battle"
-msgstr "Batailles de code"
+msgstr "Batalha de código"
 
 msgid "Code battles"
-msgstr "Batailles de code"
+msgstr "Batalhas de código"
 
 msgid "Code battles\\Program your robot to be the best of them all!"
-msgstr "Batailles de code\\Programmez votre robot pour être le meilleur entre tous!"
+msgstr "Batalhas de código\\Programe seu robô para ser o melhor de todos!"
 
 msgid "Colobot rules!"
-msgstr "Colobot est super!"
+msgstr "Regras Colobot!"
 
 msgid "Colobot: Gold Edition"
-msgstr "Colobot: Édition Gold"
+msgstr "Colobot: Edição de ouro"
 
 msgid "Command line"
-msgstr "Console de commande"
+msgstr "Linha de comando"
 
 msgid "Compilation ok (0 errors)"
-msgstr "Compilation ok (0 erreur)"
+msgstr "Compilação ok (0 erros)"
 
 msgid "Compile"
-msgstr "Compiler"
+msgstr "Compilar"
 
 msgid "Continue"
-msgstr "Continuer"
+msgstr "Continuar"
 
 msgid "Continue\\Continue the current mission"
-msgstr "Continuer\\Continuer la mission en cours"
+msgstr "Continuar\\Continua a missão atual"
 
 msgid "Controls\\Keyboard, joystick and mouse settings"
-msgstr "Commandes\\Touches du clavier"
+msgstr "Controles\\Configurações de teclado, mouse  e controles"
 
 msgid "Converts ore to titanium"
-msgstr "Conversion de minerai en titane"
+msgstr "Converter minério para titânio"
 
 msgid "Copy"
-msgstr "Copier"
+msgstr "Copiar"
 
 msgid "Copy (Ctrl+C)"
-msgstr "Copier (Ctrl+C)"
+msgstr "Copiar (Ctrl+C)"
 
 msgid "Current mission saved"
-msgstr "Enregistrement effectué"
+msgstr "Missão atual salva"
 
 msgid "Custom levels:"
-msgstr "Niveaux spéciaux :"
+msgstr "Níveis personalizados:"
 
 msgid "Custom levels\\Levels from mods created by the users"
-msgstr "Niveaux spéciaux\\Niveaux importés ou personnalisés"
+msgstr "Níveis personalizados\\Níveis criados pelos usuários"
 
 msgid "Customize your appearance"
-msgstr "Personnalisation de votre apparence"
+msgstr "Personalize sua aparência"
 
 msgid "Cut (Ctrl+X)"
-msgstr "Couper (Ctrl+X)"
+msgstr "Recortar (Ctrl+X)"
 
 msgid "Defense tower"
-msgstr "Tour de défense"
+msgstr "Torre de defesa"
 
 msgid "Delete mark"
-msgstr "Supprimer la marque"
+msgstr "Excluir marca"
 
 msgid "Delete player\\Deletes the player from the list"
-msgstr "Supprimer le joueur\\Supprimer le joueur de la liste"
+msgstr "Excluir jogador\\Exclui o jogador da lista"
 
 msgid "Delete\\Deletes the selected file"
-msgstr "Supprimer\\Supprime l'enregistrement sélectionné"
+msgstr "Excluir\\Exclui o arquivo selecionado"
 
 msgid "Derrick"
-msgstr "Derrick"
+msgstr "Extrator"
 
 msgid "Descend\\Reduces the power of the jet"
-msgstr "Descendre\\Diminuer la puissance du réacteur"
+msgstr "Descer\\Diminui o poder do jato"
 
 msgid "Destroy"
-msgstr "Détruire"
+msgstr "Destruir"
 
 msgid "Destroy the building"
-msgstr "Démolit le bâtiment"
+msgstr "Destroi a construção"
 
 msgid "Destroyer"
-msgstr "Destructeur"
+msgstr "Destruidor"
 
 msgid "Device\\Driver and resolution settings"
-msgstr "Affichage\\Pilote et résolution d'affichage"
+msgstr "Dispositivo\\Configurações de driver e resolução"
 
 msgid "Dividing by zero"
-msgstr "Division par zéro"
+msgstr "Dividindo por zero"
 
 msgid "Do you really want to destroy the selected building?"
-msgstr "Voulez-vous vraiment détruire le bâtiment sélectionné ?"
+msgstr "Você realmente deseja destruir o prédio selecionado?"
 
 #, c-format
 msgid "Do you want to delete %s's saved games?"
-msgstr "Voulez-vous détruire les sauvegardes de %s ?"
+msgstr "Você quer deletar os %'s jogos salvos?"
 
 msgid "Doors blocked by a robot or another object"
-msgstr "Portes bloquées par un robot ou un objet"
+msgstr "Portas bloqueadas por um robô ou outro objeto"
 
 msgid "Down (\\key gdown;)"
-msgstr "Descend (\\key gdown;)"
+msgstr "Baixo (\\key gdown;)"
 
 msgid "Drawer bot"
-msgstr "Robot dessinateur"
+msgstr "Robô cartoonista"
 
 msgid "Dust\\Dust and dirt on bots and buildings"
-msgstr "Salissures\\Salissures des robots et bâtiments"
+msgstr "Poeira\\Poeira e sujeira nos robôs e prédios"
 
 msgid "Dynamic lighting\\Mobile light sources"
-msgstr "Lumières dynamiques\\Éclairages mobiles"
+msgstr "Iluminação dinâmica\\Fontes móveis de luz"
 
 msgid "Dynamic shadows ++\\Dynamic shadows + self shadowing"
-msgstr "Ombres dynamiques ++\\Active les ombres dynamiques et l'auto-ombrage"
+msgstr "Sombras dinâmicas ++\\Sombras dinâmicas + auto-sombreamento"
 
 msgid "Dynamic shadows\\Beautiful shadows!"
-msgstr "Ombres dynamiques\\Magnifiques ombres !"
+msgstr "Sombras dinâmicas\\Sombras magníficas!"
 
 msgid "Edit the selected program"
-msgstr "Éditer le programme sélectionné"
+msgstr "Alterar o programa selecionado"
 
 msgid "Egg"
-msgstr "Oeuf"
+msgstr "Ovo"
 
 msgid "End of block missing"
-msgstr "Il manque la fin du bloc"
+msgstr "Fim do bloco ausente"
 
 msgid "Energy deposit (site for power station)"
-msgstr "Emplacement pour une station de recharge ou une fabrique de pile"
+msgstr "Depósito de energia (local para estação de energia)"
 
 msgid "Energy level"
-msgstr "Niveau d'énergie"
+msgstr "Nível de energia"
 
 msgid "Engineer"
-msgstr "Technicien"
+msgstr "Engenheiro"
 
 msgid "Error in instruction move"
-msgstr "Déplacement impossible"
+msgstr "Deslocamento impossível"
 
 msgid "Execute the selected program"
-msgstr "Exécute le programme sélectionné"
+msgstr "Execute o programa selecionado"
 
 msgid "Execute/stop"
-msgstr "Démarrer/stopper"
+msgstr "Executar/Parar"
 
 msgid "Exercises in the chapter:"
-msgstr "Liste des exercices du chapitre :"
+msgstr "Lista de exercícios do capítulo:"
 
 msgid "Exercises\\Programming exercises"
-msgstr "Programmation\\Exercices de programmation"
+msgstr "Exercícios\\Exercícios de programação"
 
 msgid "Explode (\\key action;)"
-msgstr "Détruire (\\key action;)"
+msgstr "Explodir (\\key action;)"
 
 msgid "Explosive"
-msgstr "Explosif"
+msgstr "Explosivo"
 
 msgid "Expression expected after ="
-msgstr "Expression attendue après ="
+msgstr "Expressão experada após ="
 
 msgid "Extend shield (\\key action;)"
-msgstr "Déploie le bouclier (\\key action;)"
+msgstr "Estender escudo (\\key action;)"
 
 msgid "Eyeglasses:"
-msgstr "Lunettes :"
+msgstr "Óculos:"
 
 msgid "Face type:"
-msgstr "Type de visage :"
+msgstr "Tipo de face:"
 
 msgid "File not open"
-msgstr "Le fichier n'est pas ouvert"
+msgstr "Arquivo não aberto"
 
 msgid "Filename:"
-msgstr "Nom du fichier :"
+msgstr "Nome do arquivo:"
 
 msgid "Film sequences\\Films before and after the missions"
-msgstr "Séquences cinématiques\\Films avant ou après une mission"
+msgstr "Filmes de sequência\\Filmes antes de depois das missões"
 
 msgid "Finish"
-msgstr "But/Objectif"
+msgstr "Finalizar"
 
-# OBJECT_END : GoalArea
 msgid "Fixed mine"
-msgstr "Mine fixe"
+msgstr "Mina fixa"
 
 msgid "Flat ground not large enough"
-msgstr "Sol plat pas assez grand"
+msgstr "Terra plana não larga o suficiente"
 
 msgid "Fog\\Fog"
-msgstr "Brouillard\\Nappes de brouillard"
+msgstr "Neblina\\Neblina"
 
 msgid "Folder:"
-msgstr "Dossier:"
+msgstr "Pasta:"
 
 #, c-format
 msgid "Folder: %s"
-msgstr "Dossier: %s"
+msgstr "Pasta: %s"
 
 msgid "Font size"
-msgstr "Taille des caractères"
+msgstr "Tamanho da fonte"
 
 msgid "Forward"
-msgstr "Page suivante"
+msgstr "Avançar"
 
 msgid "Forward (\\key up;)"
-msgstr "Avance (\\key up;)"
+msgstr "Avançar (\\key up;)"
 
 msgid "Forward\\Moves forward"
-msgstr "Avancer\\Se déplacer en avant"
+msgstr "Avançar\\Move para frente"
 
 msgid "Found a site for a derrick"
-msgstr "Emplacement pour un derrick trouvé"
+msgstr "Encontrou um local para o extrator"
 
 msgid "Found a site for power station"
-msgstr "Emplacement pour station de recharge ou fabrique de pile trouvé"
+msgstr "Encontrou um local para um estação de energia"
 
 msgid "Found key A (site for derrick)"
-msgstr "Emplacement pour un derrick (clé A)"
+msgstr "Encontrou uma chave A (local para extrator)"
 
 msgid "Found key B (site for derrick)"
-msgstr "Emplacement pour un derrick (clé B)"
+msgstr "Encontrou uma chave B (local para extrator)"
 
 msgid "Found key C (site for derrick)"
-msgstr "Emplacement pour un derrick (clé C)"
+msgstr "Encontrou uma chave C (local para extrator)"
 
 msgid "Found key D (site for derrick)"
-msgstr "Emplacement pour un derrick (clé D)"
+msgstr "Encontrou uma chave D (local para extrator)"
 
 msgid "Free game"
-msgstr "Jeu libre"
+msgstr "Jogo livre"
 
 msgid "Free game on this planet:"
-msgstr "Liste des jeux libres du chapitre :"
+msgstr "Logo livre neste planeta:"
 
 msgid "Free game\\Free game without a specific goal"
-msgstr "Jeu libre\\Jeu libre sans but précis"
+msgstr "Jogo livre\\Jogo livre sem um objetivo específico"
 
 msgid "Full screen\\Full screen or window mode"
-msgstr "Plein écran\\Plein écran ou fenêtré"
+msgstr "Tela cheia\\Tela cheia ou modo janela"
 
 msgid "Function already exists"
-msgstr "Cette fonction existe déjà"
+msgstr "Função já existe"
 
 msgid "Function name missing"
-msgstr "Nom de la fonction attendu"
+msgstr "Falta o nome da função"
 
 msgid "Function needs return type \"void\""
-msgstr "La fonction a besoin de \"void\" en type de retour"
+msgstr "Função precisa de um tipo de retorno \"void\""
 
 msgid "Game speed"
-msgstr "Vitesse du jeu"
+msgstr "Velocidade do jogo"
 
 msgid "Game\\Game settings"
-msgstr "Jeu\\Options de jouabilité"
+msgstr "Jogo\\Opções de jogabilidade"
 
 msgid "Gantry crane"
-msgstr "Portique"
+msgstr "Guindaste pórtico"
 
 msgid "Generating"
-msgstr "Génération"
+msgstr "Gerando"
 
 msgid "Gold Edition development by:"
-msgstr "Édition Gold développée par :"
+msgstr "Versão de ouro desenvolvida por:"
 
 msgid "Goto: destination occupied"
-msgstr "Goto: destination occupée"
+msgstr "Vá para: destino ocupado"
 
 msgid "Goto: inaccessible destination"
-msgstr "Goto: chemin introuvable"
+msgstr "Vá para: destino inacessível"
 
 msgid "Grab or drop (\\key action;)"
-msgstr "Prend ou dépose  (\\key action;)"
+msgstr "Pegar ou soltar (\\key action;)"
 
 msgid "Graphics\\Graphics settings"
-msgstr "Graphique\\Options graphiques"
+msgstr "Gráficos\\Opções gráficas"
 
 msgid "Green"
-msgstr "Vert"
+msgstr "Verde"
 
 msgid "Green flag"
-msgstr "Drapeau vert"
+msgstr "Bandeira verde"
 
 msgid "Ground not flat enough"
-msgstr "Sol pas assez plat"
+msgstr "Chão não plano o suficiente"
 
 msgid "Hair color:"
-msgstr "Couleur des cheveux :"
+msgstr "Cor do cabelo:"
 
 msgid "Head\\Face and hair"
-msgstr "Tête\\Visage et cheveux"
+msgstr "Cabeça\\Face e cabelo"
 
 msgid "Help about selected object"
-msgstr "Instructions sur la sélection"
+msgstr "Ajuda sobre o objeto selecionado"
 
 msgid "Help balloons\\Explain the function of the buttons"
-msgstr "Bulles d'aide\\Bulles explicatives"
+msgstr "Balões de ajuda\\Explica a função dos botões"
 
 msgid "Hex value out of range"
-msgstr "Valeur hexadécimale impossible"
+msgstr "Valor hexadecimal fora de alcance"
 
 #, fuzzy
 msgid "Higher speed\\Doubles speed"
-msgstr "Vitesse 2.0x\\Deux fois plus rapide"
+msgstr "Alta velocidade\\Dobra a velocidade"
 
 msgid "Highest\\Highest graphic quality (lowest frame rate)"
-msgstr "Maxi\\Haute qualité (+ lent)"
+msgstr "Elevado\\Alta qualidade gráfica (baixa taxa de quadros)"
 
 msgid "Home"
-msgstr "Page initiale"
+msgstr "Início"
 
 msgid "Houston Mission Control"
-msgstr "Centre de contrôle de Houston"
+msgstr "Centro de controle de missões Houston"
 
 msgid "Illegal object"
-msgstr "Objet inaccessible"
+msgstr "Objeto inacessível"
 
 msgid "Impossible under water"
-msgstr "Impossible sous l'eau"
+msgstr "Impossível debaixo d'água"
 
 msgid "Impossible when carrying an object"
-msgstr "Impossible en portant un objet"
+msgstr "Impossível enquanto carregando um objeto"
 
 msgid "Impossible when flying"
-msgstr "Impossible en vol"
+msgstr "Impossível enquanto voando"
 
 msgid "Impossible when moving"
-msgstr "Impossible en mouvement"
+msgstr "Impossível enquanto movendo"
 
 msgid "Impossible when swimming"
-msgstr "Impossible en nageant"
+msgstr "Impossível enquanto nadando"
 
 msgid "Inappropriate bot"
-msgstr "Robot inadapté"
+msgstr "Robô inapropriado"
 
 msgid "Inappropriate cell type"
-msgstr "Pas le bon type de pile"
+msgstr "Tipo de célula inapropriada"
 
 msgid "Inappropriate object"
-msgstr "Pas le bon objet"
+msgstr "Objeto inapropiado"
 
 msgid "Incorrect index type"
-msgstr "Mauvais type d'index"
+msgstr "Tipo de índice inválido"
 
 msgid "Infected by a virus; temporarily out of order"
-msgstr "Infecté par un virus; ne fonctionne plus temporairement"
+msgstr "Infectado por vírus; temporariamento fora de serviço"
 
 msgid "Information exchange post"
-msgstr "Borne d'information"
+msgstr "Posto de troca de informação"
 
 msgid "Instruction \"break\" outside a loop"
-msgstr "Instruction \"break\" en dehors d'une boucle"
+msgstr "Intrução \"break\" fora de um laço"
 
 msgid "Instruction \"case\" missing"
-msgstr "Il manque l'instruction \"case\""
+msgstr "Instrução \"case\" faltando"
 
 msgid "Instruction \"case\" outside a block \"switch\""
-msgstr "Instruction \"case\" en dehors d'un bloc \"switch\""
+msgstr "Instrução \"case\" fora de um bloco \"switch\""
 
 msgid "Instruction \"else\" without corresponding \"if\""
-msgstr "Instruction \"else\" sans \"if\" correspondant"
+msgstr "Instrução \"else\" sem o \"if\" correspondente"
 
 msgid "Instructions (\\key help;)"
-msgstr "Instructions (\\key help;)"
+msgstr "Instruções (\\key help;)"
 
 msgid "Instructions after the final closing brace"
-msgstr "Instructions après la dernière accolade fermante"
+msgstr "Instruções depois do último colchete de fechamento"
 
 msgid "Instructions for the mission (\\key help;)"
-msgstr "Instructions sur la mission (\\key help;)"
+msgstr "Instruções para a missão (\\key help;)"
 
 msgid "Instructions from Houston"
-msgstr "Instructions de Houston"
+msgstr "Instruções de Houston"
 
 msgid "Instructions\\Shows the instructions for the current mission"
-msgstr "Instructions mission\\Marche à suivre"
+msgstr "Instruções\\Mostra as instruções para a missão atual"
 
 msgid "Internal error - tell the developers"
-msgstr "Erreur interne - contacter les développeurs"
+msgstr "Erro interno - contacte os desenvolvedores"
 
 msgid "Invalid universal character name"
-msgstr "Conversion invalide d'un caractère unicode en caractère UTF8"
+msgstr "Nome de carácter universal inválido"
 
 msgid "Invert\\Invert values on this axis"
-msgstr "Inversion\\Inverse les valeurs sur cet axe"
+msgstr "Inverter\\Inverte os valores neste eixo"
 
 msgid "Jet temperature"
-msgstr "Température du réacteur"
+msgstr "Temperatura do jato"
 
 msgid "Key A"
-msgstr "Clé A"
+msgstr "Tecla A"
 
 msgid "Key B"
-msgstr "Clé B"
+msgstr "Tecla B"
 
 msgid "Key C"
-msgstr "Clé C"
+msgstr "Tecla C"
 
 msgid "Key D"
-msgstr "Clé D"
+msgstr "Tecla D"
 
 msgid "Keyword \"while\" missing"
-msgstr "Le mot-clé \"while\" est attendu"
+msgstr "Palavra-chave \"while\" faltando"
 
 msgid "Keyword help(\\key cbot;)"
-msgstr "Aide sur le mot-clé (\\key cbot;)"
+msgstr "Palavra-chave ajuda (\\key cbot;)"
 
 msgid "LOADING"
-msgstr "CHARGEMENT"
+msgstr "CARREGANDO"
 
 msgid "Legged grabber"
-msgstr "Robot déménageur à pattes"
+msgstr "Agarrador com pernas"
 
 msgid "Legged orga shooter"
-msgstr "Robot tireur organique à pattes"
+msgstr "Atirador orgânico com pernas"
 
 msgid "Legged shooter"
-msgstr "Robot tireur à pattes"
+msgstr "Atirador com pernas"
 
 msgid "Legged sniffer"
-msgstr "Robot renifleur à pattes"
+msgstr "Farejador com pernas"
 
 msgid "Levels in this chapter:"
-msgstr "Liste des niveaux du chapitre :"
+msgstr "Níveis neste capítulo:"
 
 msgid "Lightning conductor"
-msgstr "Paratonnerre"
+msgstr "Condutor elétrico"
 
 msgid "List of objects"
-msgstr "Liste des objets"
+msgstr "Lista dos objetos"
 
 msgid "List of saved missions"
-msgstr "Liste des missions enregistrées"
+msgstr "Lista das missões salvas"
 
 msgid "Load a saved mission"
-msgstr "Chargement d'une mission enregistrée"
+msgstr "Carregar uma missão salva"
 
 msgid "Load\\Load a saved mission"
-msgstr "Charger\\Charger une mission enregistrée"
+msgstr "Carregar\\Carregar uma missão salva"
 
 msgid "Load\\Loads the selected mission"
-msgstr "Charger\\Charger la mission sélectionnée"
+msgstr "Carregar\\Carrega a missão selecionada"
 
 msgid "Loading basic level settings"
-msgstr "Chargement des configurations de base du niveau"
+msgstr "Carregando configurações de nível básico"
 
 msgid "Loading finished!"
-msgstr "Chargement terminé !"
+msgstr "Carregamento finalizado!"
 
 msgid "Loading music"
-msgstr "Chargement de la musique"
+msgstr "Carregando música"
 
 msgid "Loading objects"
-msgstr "Chargement des objets"
+msgstr "Carregando objetos"
 
 msgid "Loading terrain"
-msgstr "Chargement du terrain"
+msgstr "Carregando terreno"
 
 # msgid "Speed 0.5x\\Half speed"
 # msgstr ""
@@ -857,1025 +852,1021 @@ msgstr "Chargement du terrain"
 # msgid "Speed 6.0x\\Sextuple speed"
 # msgstr ""
 msgid "Lower speed\\Decrease speed by half"
-msgstr "Moins rapide\\Diminuer la vitesse de moitié"
+msgstr "Velocidade baixa\\Diminuir velocidade pela metade"
 
 msgid "Lowest\\Minimum graphic quality (highest frame rate)"
-msgstr "Mini\\Qualité minimale (+ rapide)"
+msgstr "Mínimo\\Qualidade gráfica mínima (alta taxa de quadros)"
 
 msgid "Lunar Roving Vehicle"
-msgstr "Véhicule d'exploration lunaire"
+msgstr "Veículo rotativo Lunar"
 
 msgid "MSAA\\Multisample anti-aliasing"
-msgstr "ACME\\Anticrénelage multiéchantillon"
+msgstr "MSAA\\Antisserrilhamento multiamostragem"
 
 msgid "Maximize"
-msgstr "Taille maximale"
+msgstr "Maximizar"
 
 msgid "Minimize"
-msgstr "Taille réduite"
+msgstr "Minimizar"
 
 msgid "Mipmap level\\Mipmap level"
-msgstr "Niveau de MIP mapping\\Niveau de MIP mapping"
+msgstr "Nível do mini-mapa\\Nível do mini-mapa"
 
 msgid "Missing end quote"
-msgstr "La quote de fin est manquante"
+msgstr "Aspas de fechamento ausentes"
 
 msgid "Missing hex digits after escape sequence"
-msgstr "Valeur hexadécimale manquante après la séquence d'échappement"
+msgstr "Digitos hexademais ausentes após sequência de escape"
 
 msgid "Mission name"
-msgstr "Nom de la mission"
+msgstr "Nome da missão"
 
 msgid "Missions"
-msgstr "Missions"
+msgstr "Missões"
 
 msgid "Missions on this planet:"
-msgstr "Liste des missions du chapitre :"
+msgstr "Lista de missões neste planeta:"
 
 msgid "Missions\\Select mission"
-msgstr "Missions\\La grande aventure"
+msgstr "Missões\\Selecione uma missão"
 
 msgid "Mouse inversion X\\Inversion of the scrolling direction on the X axis"
-msgstr "Inversion souris X\\Inversion de la rotation lorsque la souris touche un bord"
+msgstr "Inversão de mouse X\\Inverte a direção da rolagem no eixo X"
 
 msgid "Mouse inversion Y\\Inversion of the scrolling direction on the Y axis"
-msgstr "Inversion souris Y\\Inversion de la rotation lorsque la souris touche un bord"
+msgstr "Inversão de mouse Y\\Inverte a direção da rolagem no eixo Y"
 
 msgid "Move selected program down"
-msgstr "Déplace le programme sélectionné vers le bas"
+msgstr "Move o programa selecionado para baixo"
 
 msgid "Move selected program up"
-msgstr "Déplace le programme sélectionné vers le haut"
+msgstr "Move o programa selecionado para cima"
 
 msgid "Mute\\No sound"
-msgstr "Silencieux\\Totalement silencieux"
+msgstr "Mudo\\Sem som"
 
 msgid "Name:"
-msgstr "Nom:"
+msgstr "Nome:"
 
 msgid "Negative value rejected by \"throw\""
-msgstr "Valeur négative refusée pour \"throw\""
+msgstr "Valor negativo rejeitado por \"throw\""
 
 msgid "Nest"
-msgstr "Nid"
+msgstr "Ninho"
 
 msgid "New"
-msgstr "Nouveau"
+msgstr "Novo"
 
 msgid "New ..."
-msgstr "Nouveau ..."
+msgstr "Novo ..."
 
 msgid "New bot available"
-msgstr "Nouveau robot disponible"
+msgstr "Novo robô disponível"
 
 msgid "Next"
-msgstr "Suivant"
+msgstr "Próximo"
 
 msgid "Next object\\Selects the next object"
-msgstr "Sélectionner l'objet suivant\\Sélectionner l'objet suivant"
+msgstr "Próximo objeto\\Selecionar o próximo objeto"
 
 msgid "No"
-msgstr "Non"
+msgstr "Não"
 
 msgid "No energy in the subsoil"
-msgstr "Pas d'énergie en sous-sol"
+msgstr "Nenhuma energia no subsolo"
 
 msgid "No flag nearby"
-msgstr "Aucun drapeau à proximité"
+msgstr "Nenhuma bandeira próxima"
 
 msgid "No function running"
-msgstr "Pas de fonction en exécution"
+msgstr "Nenhuma função executando"
 
 msgid "No function with this name accepts this kind of parameter"
-msgstr "Aucune fonction de ce nom n'accepte ce(s) type(s) de paramètre(s)"
+msgstr "Nenhuma função com este nome aceita este tipo de parâmetro"
 
 msgid "No function with this name accepts this number of parameters"
-msgstr "Aucune fonction de ce nom n'accepte ce nombre de paramètres"
+msgstr "Nenhuma função com este nome aceita este número de parâmetros"
 
 msgid "No information exchange post within range"
-msgstr "Pas de borne d'information accessible"
+msgstr "Nenhum posto de troca de informação ao alcance"
 
 msgid "No more energy"
-msgstr "Plus d'énergie"
+msgstr "Não há mais energia"
 
 msgid "No ore in the subsoil"
-msgstr "Pas de minerai en sous-sol"
+msgstr "Nenhum mineral no subsolo"
 
 msgid "No power cell"
-msgstr "Pas de pile"
+msgstr "Sem célula de energia"
 
 msgid "No titanium"
-msgstr "Pas de titane"
+msgstr "Sem titânio"
 
 msgid "No titanium around"
-msgstr "Pas de titane accessible"
+msgstr "Nenhum titânio ao redor"
 
 msgid "No titanium ore to convert"
-msgstr "Pas de minerai de titane à convertir"
+msgstr "Sem minério de titânio para converter"
 
 msgid "No titanium to transform"
-msgstr "Pas de titane à transformer"
+msgstr "Nenhum titânio para transformar"
 
 msgid "No uranium to transform"
-msgstr "Pas de minerai d'uranium à transformer"
+msgstr "Nenhum urânio para transformar"
 
 msgid "No userlevels installed!"
-msgstr "Pas de niveaux spéciaux installés !"
+msgstr "Nenhum nível de usuário instalado!"
 
 msgid "Non-void function needs \"return;\""
-msgstr "Les fonctions avec retour autre que void doivent comporter l'instruction \"return;\""
+msgstr "Funções não void precisam de \"return;\""
 
 msgid "Normal size"
-msgstr "Taille normale"
+msgstr "Tamanho normal"
 
 msgid "Normal\\Normal graphic quality"
-msgstr "Normal\\Qualité standard"
+msgstr "Normal\\Qualidade gráfica normal"
 
 msgid "Normal\\Normal sound volume"
-msgstr "Normal\\Niveaux normaux"
+msgstr "Normal\\Volume de som normal"
 
 msgid "Not enough energy"
-msgstr "Pas assez d'énergie"
+msgstr "Sem energia suficiente"
 
 msgid "Not enough energy yet"
-msgstr "Pas encore assez d'énergie"
+msgstr "Ainda sem energia suficiente"
 
 msgid "Not found anything to destroy"
-msgstr "Rien trouvé à détruire"
+msgstr "Não encontrou nada para destruir"
 
 msgid "Nothing to analyze"
-msgstr "Rien à analyser"
+msgstr "Nada para analisar"
 
 msgid "Nothing to drop"
-msgstr "Rien à déposer"
+msgstr "Nada para largar"
 
 msgid "Nothing to grab"
-msgstr "Rien à prendre"
+msgstr "Nada para pegar"
 
 msgid "Nothing to recycle"
-msgstr "Rien à recycler"
+msgstr "Nada para reciclar"
 
 msgid "Nuclear power cell"
-msgstr "Pile nucléaire"
+msgstr "Célula de energia núclear"
 
 msgid "Nuclear power cell available"
-msgstr "Pile nucléaire disponible"
+msgstr "Célula de energia núclear disponível"
 
 msgid "Nuclear power station"
-msgstr "Centrale nucléaire"
+msgstr "Estação de energia núclear"
 
 msgid "Number missing"
-msgstr "Un nombre est attendu"
+msgstr "Número ausente"
 
 msgid "Number of insects detected"
-msgstr "Nombre d'insectes détectés"
+msgstr "Número de insetos detectados"
 
 msgid "Number of particles\\Explosions, dust, reflections, etc."
-msgstr "Quantité de particules\\Explosions, poussières, reflets, etc."
+msgstr "Quantidade de particulas\\Explosões, poeira, reflexões, etc."
 
 msgid "OK"
-msgstr "D'accord"
+msgstr "OK"
 
 msgid "OK\\Choose the selected player"
-msgstr "D'accord\\Choisir le joueur"
+msgstr "OK\\Escolher o jogador selecionado"
 
 msgid "OK\\Close program editor and return to game"
-msgstr "D'accord\\Compiler le programme"
+msgstr "OK\\Fechar o editor e retornar ao jogo"
 
 msgid "Object too close"
-msgstr "Objet trop proche"
+msgstr "Objeto muito próximo"
 
 msgid "Octal value out of range"
-msgstr "Valeur octale impossible"
+msgstr "Valor octal fora do limite"
 
 msgid "One step"
-msgstr "Un pas"
+msgstr "Um passo"
 
 msgid "Open"
-msgstr "Ouvrir"
+msgstr "Abrir"
 
 msgid "Open (Ctrl+O)"
-msgstr "Ouvrir (Ctrl+O)"
+msgstr "Abrir (Ctrl+O)"
 
 msgid "Opening brace missing"
-msgstr "Début d'un bloc attendu"
+msgstr "Chave de abertura ausente"
 
 msgid "Opening bracket missing"
-msgstr "Une parenthèse ouvrante est attendue"
+msgstr "Colchete de abertura ausente"
 
 msgid "Operation impossible with value \"nan\""
-msgstr "Opération sur un \"nan\""
+msgstr "Operação impossível com o valor \"nan\""
 
 msgid "Options"
-msgstr "Options"
+msgstr "Opções"
 
 msgid "Options\\Preferences"
-msgstr "Options\\Réglages"
+msgstr "Opções\\Preferências"
 
 msgid "Organic matter"
-msgstr "Matière organique"
+msgstr "Matéria orgânica"
 
 msgid "Origin of last message\\Shows where the last message was sent from"
-msgstr "Montrer le lieu d'un message\\Montrer le lieu du dernier message"
+msgstr "Origem da última mensagem\\Mostra de onde a última mensagem foi enviada"
 
 msgid "Original game developed by:"
-msgstr "Jeu original développé par :"
+msgstr "Jogo original desenvolvido por:"
 
 msgid "Parameters missing"
-msgstr "Pas assez de paramètres"
+msgstr "Parâmetros ausentes"
 
 msgid "Particles in the interface\\Steam clouds and sparks in the interface"
-msgstr "Particules dans l'interface\\Pluie de particules"
+msgstr "Partículas na interface\\Núvens de vapor e faíscas na interface"
 
 msgid "Paste (Ctrl+V)"
-msgstr "Coller (Ctrl+V)"
+msgstr "Colar (Ctrl+V)"
 
 msgid "Pause blur\\Blur the background on the pause screen"
-msgstr "Flouter les pauses\\Floute le fond de l'écran de pause"
+msgstr "Borrão de pausa\\Borra o fundo na tela de pausa"
 
 msgid "Pause in background\\Pause the game when the window is unfocused"
-msgstr "Pause en arrière-plan\\Met le jeu en pause quand la fenêtre n'a plus le focus"
+msgstr "Pausar quando em background\\Pausa o jogo quando a janela está sem foco"
 
 msgid "Pause/continue"
-msgstr "Pause/continuer"
+msgstr "Pausar/Continuar"
 
 msgid "Pause\\Pause the game without opening menu"
-msgstr "Pause\\Mettre le jeu en pause sans ouvrir le menu"
+msgstr "Pausar\\Pausa o jogo sem abrir o menu"
 
 msgid "Phazer shooter"
-msgstr "Robot canon à phases"
+msgstr "Atirador phazer"
 
 msgid "Photography"
-msgstr "Vue de la mission"
+msgstr "Fotografia"
 
 msgid "Place occupied"
-msgstr "Emplacement occupé"
+msgstr "Local ocupado"
 
 msgid "Planets:"
-msgstr "Liste des planètes :"
+msgstr "Planetas:"
 
 msgid "Plans for defense tower available"
-msgstr "Construction d'une tour de défense possible"
+msgstr "Planos para a torre de defesa disponíveis"
 
 msgid "Plans for nuclear power plant available"
-msgstr "Construction d'une centrale nucléaire possible"
+msgstr "Planos para a planta nuclear disponíveis"
 
 msgid "Plans for phazer shooter available"
-msgstr "Fabrication des robots canon à phases possible"
+msgstr "Planos para o atirador phazer disponíveis"
 
 msgid "Plans for shielder available"
-msgstr "Fabrication d'un robot bouclier possible"
+msgstr "Planos para o defensor disponíveis"
 
 msgid "Plans for shooter available"
-msgstr "Fabrication des robots tireurs possible"
+msgstr "Planos para o atirador disponíveis"
 
 msgid "Plans for thumper available"
-msgstr "Fabrication d'un robot secoueur possible"
+msgstr "Planos para o batedor disponíveis"
 
 msgid "Plans for tracked robots available"
-msgstr "Fabrication des robots à chenilles possible"
+msgstr "Planos para robôs com esteiras disponíveis"
 
 msgid "Plant a flag"
-msgstr "Pose un drapeau de couleur"
+msgstr "Colocar uma bandeira"
 
 msgid "Play\\Start mission!"
-msgstr "Jouer ...\\Démarrer l'action!"
+msgstr "Jogar\\Iniciar missão!"
 
 msgid "Player"
-msgstr "Joueur"
+msgstr "Jogador"
 
 msgid "Player name"
-msgstr "Nom du joueur"
+msgstr "Nome do jogador"
 
 msgid "Player's name"
-msgstr "Nom du joueur"
+msgstr "Nome dos jogadores"
 
 msgid "Power cell"
-msgstr "Pile normale"
+msgstr "Célula de energia"
 
 msgid "Power cell available"
-msgstr "Pile disponible"
+msgstr "Célula de energia disponível"
 
 msgid "Power cell factory"
-msgstr "Fabrique de piles"
+msgstr "Fábrica de células de energia"
 
 msgid "Power station"
-msgstr "Station de recharge"
+msgstr "Estação de energia"
 
 msgid "Practice bot"
-msgstr "Robot d'entraînement"
+msgstr "Robô de prática"
 
 msgid "Press \\key help; to read instructions on your SatCom"
-msgstr "Consultez votre SatCom en appuyant sur \\key help;"
+msgstr "Pressione \\key help; para ler as intruções no seu SatCom"
 
 msgid "Previous"
-msgstr "Précédent"
+msgstr "Anterior"
 
 msgid "Previous object\\Selects the previous object"
-msgstr "Sélection précédente\\Sélectionne l'objet précédent"
+msgstr "Objeto anterior\\Seleciona o objeto anterior"
 
 msgid "Previous selection (\\key desel;)"
-msgstr "Sélection précédente (\\key desel;)"
+msgstr "Seleção anterior (\\key desel;)"
 
 msgid "Private element"
-msgstr "Elément protégé (privé)"
+msgstr "Elemento privado"
 
 msgid "Private\\Private folder"
-msgstr "Privé\\Dossier privé"
+msgstr "Privado\\Pasta privada"
 
 msgid "Processing level file"
-msgstr "Analyse du fichier de niveau"
+msgstr "Processando o arquivo de nível"
 
 msgid "Program cloned"
-msgstr "Programme dupliqué"
+msgstr "Programa clonado"
 
 msgid "Program editor"
-msgstr "Édition du programme"
+msgstr "Editor"
 
 msgid "Program finished"
-msgstr "Programme terminé"
+msgstr "Programa finalizado"
 
 msgid "Program infected by a virus"
-msgstr "Un programme est infecté par un virus"
+msgstr "Programa infectado por vírus"
 
 msgid "Programming exercises"
-msgstr "Programmation"
+msgstr "Exercícios de programação"
 
 msgid "Programming help"
-msgstr "Aide à la programmation"
+msgstr "Ajuda de programação"
 
 msgid "Programming help (\\key prog;)"
-msgstr "Aide à la programmation (\\key prog;)"
+msgstr "Ajuda de programação (\\key prog;)"
 
 msgid "Programming help\\Gives more detailed help with programming"
-msgstr "Instructions programmation\\Explication sur la programmation"
+msgstr "Ajuda de programação\\Fornece uma ajuda mais detalhada sobre programação"
 
 msgid "Programs dispatched by Houston"
-msgstr "Programmes envoyés par Houston"
+msgstr "Programas enviados por Houston"
 
 msgid "Public required"
-msgstr "Public requis"
+msgstr "Necessário público"
 
 msgid "Public\\Common folder"
-msgstr "Public\\Dossier commun à tous les joueurs"
+msgstr "Público\\Pasta comum"
 
 msgid "Quake at explosions\\The screen shakes at explosions"
-msgstr "Secousses lors d'explosions\\L'écran vibre lors d'une explosion"
+msgstr "Tremer em explosões\\A tela sacode em explosões"
 
 msgid "Quick load\\Immediately load game"
-msgstr "Chargement rapide\\Chargement direct d'une sauvegarde"
+msgstr "Carregando rápido\\Imediatamente carrega o jogo"
 
 msgid "Quick save\\Immediately save game"
-msgstr "Sauvegarde rapide\\Sauvegarde direct"
+msgstr "Salvamento rápido\\Imediatamente salva o jogo"
 
 #, fuzzy
 msgid "Quicksave slot not found"
-msgstr "Objet n'existe pas"
+msgstr "Slot para salvamento rápido não encontrado"
 
 msgid "Quit\\Quit Colobot: Gold Edition"
-msgstr "Quitter\\Quitter Colobot : Édition Gold"
+msgstr "Sair\\Fecha Colobot: ediçao de ouro"
 
 msgid "Quit\\Quit the current mission or exercise"
-msgstr "Quitter la mission en cours\\Terminer un exercice ou une mssion"
+msgstr "Sair\\Termina a missão atual ou exercício"
 
 msgid "Radar station"
-msgstr "Radar"
+msgstr "Estação de radar"
 
 msgid "Read error"
-msgstr "Erreur à la lecture"
+msgstr "Erro de leitura"
 
 msgid "Recorder"
-msgstr "Enregistreur"
+msgstr "Gravador"
 
 msgid "Recycle (\\key action;)"
-msgstr "Recycle (\\key action;)"
+msgstr "Reciclar (\\key action;)"
 
 msgid "Recycler"
-msgstr "Robot recycleur"
+msgstr "Reciclador"
 
 msgid "Red"
-msgstr "Rouge"
+msgstr "Vermelho"
 
-# 	toCheck : capital (for team?)
 msgid "Red flag"
-msgstr "Drapeau rouge"
+msgstr "Bandeira vermelha"
 
 msgid "Reflections on the buttons \\Shiny buttons"
-msgstr "Reflets sur les boutons\\Boutons brillants"
+msgstr "Reflexões nos botões\\Botões brilhantes"
 
 msgid "Remains of Apollo mission"
-msgstr "Vestige d'une mission Apollo"
+msgstr "Restos da missão Apollo"
 
 msgid "Remove a flag"
-msgstr "Enlève un drapeau"
+msgstr "Remover a bandeira"
 
 msgid "Remove selected program"
-msgstr "Supprimer le programme sélectionné"
+msgstr "Remover o programa selecionado"
 
 msgid "Render distance\\Maximum visibility"
-msgstr "Profondeur de champ\\Distance de vue maximale "
+msgstr "Distância de renderização\\Visibilidade máxima"
 
 msgid "Repair center"
-msgstr "Centre de réparation"
+msgstr "Centro de reparos"
 
 msgid "Research center"
-msgstr "Centre de recherches"
+msgstr "Centro de pesquisa"
 
 msgid "Research program already performed"
-msgstr "Recherche déjà effectuée"
+msgstr "Programa de pesquisa já realizado"
 
 msgid "Research program completed"
-msgstr "Recherche terminée"
+msgstr "Programa de pesquisa completado"
 
 msgid "Reserved keyword of CBOT language"
-msgstr "Ce mot-clé est réservé au langage CBOT"
+msgstr "Palavra-chave reservada para a linguagem CBOT"
 
 msgid "Resolution"
-msgstr "Résolution"
+msgstr "Resolução"
 
 msgid "Resolution:"
-msgstr "Résolutions :"
+msgstr "Resolução:"
 
 msgid "Resources"
-msgstr "Ressources"
+msgstr "Recursos"
 
 msgid "Restart\\Restart the mission from the beginning"
-msgstr "Recommencer\\Recommencer la mission au début"
+msgstr "Reiniciar\\Reinicia a missão do começo"
 
 msgid "Restoring CBot execution state"
-msgstr "Restaurer l'état d'exécution CBOT"
+msgstr "Restaura o estado de execução do CBot"
 
 msgid "Restoring saved objects"
-msgstr "Restaurer des objets sauvés"
+msgstr "Restaurando objetos salvos"
 
 msgid "Results"
-msgstr "Résultats"
+msgstr "Resultados"
 
 msgid "Return to start"
-msgstr "Remet au départ"
+msgstr "Retornar para o início"
 
 msgid "Robbie"
 msgstr "Robbie"
 
 msgid "Ruin"
-msgstr "Bâtiment en ruine"
+msgstr "Ruína"
 
 msgid "Run research program for defense tower"
-msgstr "Recherche la tour de défense"
+msgstr "Executar programa de pesquisa para torre de defesa"
 
 msgid "Run research program for legged bots"
-msgstr "Recherche du fonctionnement des pattes"
+msgstr "Executar programa de pesquisa para robôs com pernas"
 
 msgid "Run research program for nuclear power"
-msgstr "Recherche du programme nucléaire"
+msgstr "Executar programa de pesquisa para energia nuclear"
 
 msgid "Run research program for orga shooter"
-msgstr "Recherche le canon organique"
+msgstr "Executar programa de pesquisa para atirador orgânico"
 
 msgid "Run research program for phazer shooter"
-msgstr "Recherche le canon à phases"
+msgstr "Executar programa de pesquisa para atirador phazer"
 
 msgid "Run research program for shielder"
-msgstr "Recherche le bouclier"
+msgstr "Executar programa de pesquisa para defensor"
 
 msgid "Run research program for shooter"
-msgstr "Recherche le canon de tir"
+msgstr "Executar programa de pesquisa para atirador"
 
 msgid "Run research program for thumper"
-msgstr "Recherche le secoueur"
+msgstr "Executar programa de pesquisa para batedor"
 
 msgid "Run research program for tracked bots"
-msgstr "Recherche du fonctionnement des chenilles"
+msgstr "Executar programa de pesquisa para robôs com esteira"
 
 msgid "Run research program for winged bots"
-msgstr "Recherche du fonctionnement du jet"
+msgstr "Executar programa de pesquisa para robôs alados"
 
 msgid "SatCom"
 msgstr "SatCom"
 
 msgid "Satellite report"
-msgstr "Rapport du satellite"
+msgstr "Relatório do satélite"
 
 msgid "Save"
-msgstr "Enregistrer"
+msgstr "Salvar"
 
 msgid "Save (Ctrl+S)"
-msgstr "Enregistrer (Ctrl+S)"
+msgstr "Salvar (Ctrl+S)"
 
 msgid "Save the current mission"
-msgstr "Enregistrement de la mission en cours"
+msgstr "Salve a missão atual"
 
 msgid "Save\\Save the current mission"
-msgstr "Enregistrer\\Enregistrer la mission en cours"
+msgstr "Salvar\\Salve a missão atual"
 
 msgid "Save\\Saves the current mission"
-msgstr "Enregistrer\\Enregistrer la mission en cours"
+msgstr "Salvar\\Salva a missão atual"
 
 msgid "Select the astronaut\\Selects the astronaut"
-msgstr "Sélectionner le cosmonaute\\Sélectionner le cosmonaute"
+msgstr "Selecione o astronauta\\Seleciona o astronauta"
 
 msgid "Semicolon terminator missing"
-msgstr "Terminateur point-virgule non trouvé"
+msgstr "Falta o terminador ponto e vírgula"
 
 msgid "Shadow resolution\\Higher means better range and quality, but slower"
-msgstr "Résolution des ombres\\Plus grand implique une meilleure qualité et amplitude, mais plus lent"
+msgstr "Resolução das sombras\\Valores altos significam alcance e qualidade melhores, porém mais devagar"
 
 msgid "Shield level"
-msgstr "Niveau du bouclier"
+msgstr "Nível de escudo"
 
 msgid "Shield radius"
-msgstr "Rayon du bouclier"
+msgstr "Raio do escudo"
 
 msgid "Shielder"
-msgstr "Robot bouclier"
+msgstr "Defensor"
 
 msgid "Shoot (\\key action;)"
-msgstr "Tir (\\key action;)"
+msgstr "Atirar (\\key action;)"
 
 msgid "Show if the ground is flat"
-msgstr "Montre si le sol est plat"
+msgstr "Mostre se o solo é plano"
 
 msgid "Show the place"
-msgstr "Montre l'endroit"
+msgstr "Mostre o local"
 
 msgid "Show the range"
-msgstr "Montre le rayon d'action"
+msgstr "Mostre o alcance"
 
 msgid "Show the solution"
-msgstr "Donne la solution"
+msgstr "Mostre a solução"
 
 msgid "Sign \" : \" missing"
-msgstr "Séparateur \" : \" attendu"
+msgstr "Sinal \" : \" ausente"
 
 msgid "Simple shadows\\Shadows spots on the ground"
-msgstr "Ombres simples\\Ombres projetées au sol"
+msgstr "Sombras simples\\Pontos de sombra no chão"
 
 msgid "Size 1"
-msgstr "Taille 1"
+msgstr "Tamanho 1"
 
 msgid "Size 2"
-msgstr "Taille 2"
+msgstr "Tamanho 2"
 
 msgid "Size 3"
-msgstr "Taille 3"
+msgstr "Tamanho 3"
 
 msgid "Size 4"
-msgstr "Taille 4"
+msgstr "Tamanho 4"
 
 msgid "Size 5"
-msgstr "Taille 5"
+msgstr "Tamanho 5"
 
 msgid "Sniff (\\key action;)"
-msgstr "Cherche (\\key action;)"
+msgstr "Farejar (\\key action;)"
 
 msgid "Solution"
-msgstr "Solution"
+msgstr "Solução"
 
 msgid "Sound effects:\\Volume of engines, voice, shooting, etc."
-msgstr "Sons :\\Volume des moteurs, voix, etc."
+msgstr "Efeitos sonoros:\\Volume dos motores, voz, tiros, etc."
 
 msgid "Sound\\Music and game sound volume"
-msgstr "Son\\Volumes des sons & musiques"
+msgstr "Som\\Volume do som das músicas e do jogo"
 
 msgid "Spaceship"
-msgstr "Vaisseau spatial"
+msgstr "Nave espacial"
 
 msgid "Spaceship ruin"
-msgstr "Epave de vaisseau spatial"
+msgstr "Ruína de nave espacial"
 
 msgid "Spider"
-msgstr "Araignée"
+msgstr "Aranha"
 
 msgid "Spider fatally wounded"
-msgstr "Araignée mortellement touchée"
+msgstr "Aranha fatalmente ferida"
 
 msgid "Stack overflow"
-msgstr "Débordement de la pile"
+msgstr "Estouro de pilha"
 
 msgid "Standard action\\Standard action of the bot (take/grab, shoot, sniff, etc)"
-msgstr "Action standard\\Action du bouton avec le cadre rouge"
+msgstr "Ação padrão\\Ação padrão do robô (pegar/agarrar, atirar, farejar, etc)"
 
 msgid "Standard controls\\Standard key functions"
-msgstr "Tout réinitialiser\\Remet toutes les touches standards"
+msgstr "Controles padrões\\Funções padrões das teclas"
 
 msgid "Standard speed\\Reset speed to normal"
-msgstr "Vitesse standard\\Réinitialiser la vitesse à la normale"
+msgstr "Velocidade padrão\\Reiniciar a velocidade para o normal"
 
 msgid "Standard\\Standard appearance settings"
-msgstr "Standard\\Remet les couleurs standards"
+msgstr "Padrão\\Configurações de aparência padrão"
 
 msgid "Start"
-msgstr "Départ"
+msgstr "Iniciar"
 
 msgid "Starting..."
-msgstr "Lancement..."
+msgstr "Iniciando..."
 
 msgid "Still working ..."
-msgstr "Travail en cours ..."
+msgstr "Ainda trabalhando ..."
 
 msgid "String missing"
-msgstr "Une chaîne de caractère est attendue"
+msgstr "Carácteres ausentes"
 
 msgid "Strip color:"
-msgstr "Couleur des bandes :"
+msgstr "Cor da tira:"
 
 msgid "Subber"
-msgstr "Robot sous-marin"
+msgstr "Mergulhador"
 
 msgid "Suit color:"
-msgstr "Couleur de la combinaison :"
+msgstr "Cor do traje:"
 
 msgid "Suit\\Astronaut suit"
-msgstr "Corps\\Combinaison"
+msgstr "Traje\\Traje de astronauta"
 
 msgid "Summary:"
-msgstr "Résumé :"
+msgstr "Sumário:"
 
 msgid "Survival kit"
-msgstr "Sac de survie"
+msgstr "Kit de sobrevivência"
 
 msgid "Switch bots <-> buildings"
-msgstr "Permute robots <-> bâtiments"
+msgstr "Trocar robôs <-> prédios"
 
 msgid "Take off to finish the mission"
-msgstr "Décolle pour terminer la mission"
+msgstr "Decole para finalizar a missão"
 
 msgid "Target"
-msgstr "Cible"
+msgstr "Alvo"
 
 msgid "Target bot"
-msgstr "Cible d'entraînement"
+msgstr "Robô alvo"
 
 msgid "Terrain relief"
-msgstr "Relief du terrain"
+msgstr "Relevo do terreno"
 
 msgid "Texture filtering\\Texture filtering"
-msgstr "Filtrage de textures\\Filtrage de textures"
+msgstr "Filtragem de textura\\Filtragem de textura"
 
 msgid "Textures"
-msgstr "Textures"
+msgstr "Texturas"
 
 msgid "The battle has ended"
-msgstr "La bataille est terminée"
+msgstr "A batalha acabou"
 
 msgid "The expression must return a boolean value"
-msgstr "L'expression doit être un boolean"
+msgstr "A expressão deve retornar um valor booleano"
 
 msgid "The function returned no value"
-msgstr "La fonction n'a pas retourné de résultat"
+msgstr "A função não retornou nenhum valor"
 
 msgid "The mission is not accomplished yet (press \\key help; for more details)"
-msgstr "La mission n'est pas terminée (appuyez sur \\key help; pour plus de détails)"
+msgstr "A missão não foi completada ainda (pressione \\key help; para mais detalhes)"
 
 msgid "The types of the two operands are incompatible"
-msgstr "Les deux opérandes ne sont pas de types compatibles"
+msgstr "Os tipos dos dois operandos são incompativeis"
 
 msgid "This class already exists"
-msgstr "Cette classe existe déjà"
+msgstr "Esta classe já existe"
 
 msgid "This class does not exist"
-msgstr "Cette classe n'existe pas"
+msgstr "Esta classe não existe"
 
 msgid "This is example code that cannot be run directly"
-msgstr "Ce code d'exemple ne peut pas être lancé directement"
+msgstr "Este é um código de exemplo que não pode ser executado diretamente"
 
 msgid "This is not a member of this class"
-msgstr "Cet élément n'existe pas dans cette classe"
+msgstr "Este não é um membro desta classe"
 
 msgid "This label does not exist"
-msgstr "Cette étiquette n'existe pas"
+msgstr "Este rótulo não existe"
 
 msgid "This menu is for userlevels from mods, but you didn't install any"
-msgstr "Ce menu donne accès aux niveaux spéciaux (importés ou personnalisés), mais aucun n'est installé."
+msgstr "Este menu é para níveis de usuários, mas você não instalou nenhum."
 
 msgid "This object is currently busy"
-msgstr "Cet élément est actuellement occupé"
+msgstr "Este objeto está ocupado atualmente"
 
 msgid "This object is not a member of a class"
-msgstr "L'objet n'est pas une instance d'une classe"
+msgstr "Este objeto não é um membro de uma classe"
 
 msgid "This parameter needs a default value"
-msgstr "Ce paramètre nécessite une valeur par défaut"
+msgstr "Este parâmetro necessita de um valor padrão"
 
 msgid "This program is read-only, clone it to edit"
-msgstr "Ce programme est en lecture-seule, le dupliquer pour pouvoir le modifier"
+msgstr "Este programa é somente-leitura, clone-o para edita-lo"
 
 msgid "Thump (\\key action;)"
-msgstr "Secoue (\\key action;)"
+msgstr "Bater (\\key action;)"
 
 msgid "Thumper"
-msgstr "Robot secoueur"
+msgstr "Batedor"
 
 #, c-format
 msgid "Time: %s"
-msgstr ""
+msgstr "Tempo: %s"
 
 msgid "Titanium"
-msgstr "Titane"
+msgstr "Titânio"
 
 msgid "Titanium available"
-msgstr "Titane disponible"
+msgstr "Titânio disponível"
 
 msgid "Titanium deposit (site for derrick)"
-msgstr "Emplacement pour un derrick (minerai de titane)"
+msgstr "Depósito de titânio (local para extrator)"
 
 msgid "Titanium ore"
-msgstr "Minerai de titane"
+msgstr "Mineral de titânio"
 
 msgid "Titanium too close"
-msgstr "Titane trop proche"
+msgstr "Titânio muito perto"
 
 msgid "Titanium too far away"
-msgstr "Titane trop loin"
+msgstr "Titânio muito longe"
 
 msgid "Too close to a building"
-msgstr "Trop proche d'un bâtiment"
+msgstr "Muito perto de um prédio"
 
 msgid "Too close to an existing flag"
-msgstr "Trop proche d'un drapeau existant"
+msgstr "Muito perto de uma bandeira"
 
 msgid "Too close to space ship"
-msgstr "Trop proche du vaisseau spatial"
+msgstr "Muito perto da nave espacial"
 
 msgid "Too many flags of this color (maximum 5)"
-msgstr "Trop de drapeaux de cette couleur (maximum 5)"
+msgstr "Muitas bandeiras dessa cor (máximo 5)"
 
 msgid "Too many parameters"
-msgstr "Trop de paramètres"
+msgstr "Muitos parâmetros"
 
 msgid "Tracked grabber"
-msgstr "Robot déménageur à chenilles"
+msgstr "Pegador com esteiras"
 
 msgid "Tracked orga shooter"
-msgstr "Robot tireur organique à chenilles"
+msgstr "Atirador orgânico com esteiras"
 
 msgid "Tracked shooter"
-msgstr "Robot tireur à chenilles"
+msgstr "Atirador com esteiras"
 
 msgid "Tracked sniffer"
-msgstr "Robot renifleur à chenilles"
+msgstr "Farejador com esteiras"
 
 msgid "Transforms only titanium"
-msgstr "Ne transforme que le titane"
+msgstr "Transformar somente titânio"
 
 msgid "Transforms only uranium"
-msgstr "Ne transforme que le minerai d'uranium"
+msgstr "Transformar somente urânio"
 
 msgid "Transmitted information"
-msgstr "Informations diffusées"
+msgstr "Informação transmitida"
 
 msgid "Turn left (\\key left;)"
-msgstr "Tourne à gauche (\\key left;)"
+msgstr "Vire a esquerda (\\key left;)"
 
 msgid "Turn left\\turns the bot to the left"
-msgstr "Tourner à gauche\\Moteur à gauche"
+msgstr "Vire a esquerda\\vira o robô para a esquerda"
 
 msgid "Turn right (\\key right;)"
-msgstr "Tourne à droite (\\key right;)"
+msgstr "Vire a direita (\\key right;)"
 
 msgid "Turn right\\turns the bot to the right"
-msgstr "Tourner à droite\\Moteur à droite"
+msgstr "Vire a direita\\vira o robô para a direita"
 
 msgid "Type declaration missing"
-msgstr "Déclaration de type attendu"
+msgstr "Declaração de tipo ausente"
 
 msgid "Unable to control enemy objects"
-msgstr "Impossible de contrôler les objets ennemis"
+msgstr "Impossível controlar objetos inimigos"
 
 msgid "Undo (Ctrl+Z)"
-msgstr "Annuler (Ctrl+Z)"
+msgstr "Desfazer (Ctrl+Z)"
 
 msgid "Unit"
-msgstr "Unité"
+msgstr "Unidade"
 
 msgid "Unknown Object"
-msgstr "Objet inconnu"
+msgstr "Objeto desconhecido"
 
 msgid "Unknown command"
-msgstr "Commande inconnue"
+msgstr "Comando desconhecido"
 
 msgid "Unknown escape sequence"
-msgstr ""
+msgstr "Sequência de escape desconhecidade"
 
 msgid "Unknown function"
-msgstr "Routine inconnue"
+msgstr "Função desconhecida"
 
 msgid "Up (\\key gup;)"
-msgstr "Monte (\\key gup;)"
+msgstr "Cima (\\key gup;)"
 
 msgid "Uranium deposit (site for derrick)"
-msgstr "Emplacement pour un derrick (minerai d'uranium)"
+msgstr "Depósito de urânio (local para extrator)"
 
 msgid "Uranium ore"
-msgstr "Minerai d'uranium"
+msgstr "Mineral de urânio"
 
 msgid "User levels"
-msgstr "Niveaux supplémentaires"
+msgstr "Níveis de usuário"
 
 msgid "Variable name missing"
-msgstr "Nom d'une variable attendu"
+msgstr "Nome de variável ausente"
 
 msgid "Variable not declared"
-msgstr "Variable non déclarée"
+msgstr "Variável não declarada"
 
 msgid "Variable not initialized"
-msgstr "Variable non initialisée"
+msgstr "Variável não inicializada"
 
 msgid "Vault"
-msgstr "Coffre-fort"
-
-msgid "Vertical Synchronization\\Limits the number of frames per second to display frequency"
-msgstr ""
+msgstr "Cofre"
 
 msgid "Violet flag"
-msgstr "Drapeau violet"
+msgstr "Bandeira violeta"
 
 msgid "Void parameter"
-msgstr "Paramètre void"
+msgstr "Parâmetro vazio"
 
 msgid "Wasp"
-msgstr "Guêpe"
+msgstr "Vespa"
 
 msgid "Wasp fatally wounded"
-msgstr "Guêpe mortellement touchée"
+msgstr "Vespa fatalmente ferida"
 
 msgid "Waste"
-msgstr "Déchet"
+msgstr "Desperdício"
 
 msgid "Wheeled grabber"
-msgstr "Robot déménageur à roues"
+msgstr "Agarrador com rodas"
 
 msgid "Wheeled orga shooter"
-msgstr "Robot tireur organique à roues"
+msgstr "Atirador orgânico com rodas"
 
 msgid "Wheeled shooter"
-msgstr "Robot tireur à roues"
+msgstr "Atirador com rodas"
 
 msgid "Wheeled sniffer"
-msgstr "Robot renifleur à roues"
+msgstr "Farejador com rodas"
 
 msgid "Winged grabber"
-msgstr "Robot déménageur volant"
+msgstr "Agarrador alado"
 
 msgid "Winged orga shooter"
-msgstr "Robot tireur organique volant"
+msgstr "Atirador orgânico alado"
 
 msgid "Winged shooter"
-msgstr "Robot tireur volant"
+msgstr "Atirador alado"
 
 msgid "Winged sniffer"
-msgstr "Robot renifleur volant"
+msgstr "Farejador alado"
 
 msgid "Withdraw shield (\\key action;)"
-msgstr "Refermer le bouclier (\\key action;)"
+msgstr "Retirar escudo (\\key action;)"
 
 msgid "Worm"
-msgstr "Ver"
+msgstr "Verme"
 
 msgid "Worm fatally wounded"
-msgstr "Ver mortellement touché"
+msgstr "Verme fatalmente ferido"
 
 msgid "Wreckage"
-msgstr "Epave de robot"
+msgstr "Destroços"
 
 msgid "Write error"
-msgstr "Erreur lors de l'écriture"
+msgstr "Erro de escrita"
 
 msgid "Wrong type for the assignment"
-msgstr "Mauvais type de résultat pour l'assignation"
+msgstr "Tipo errado para a tarefa"
 
 msgid "Yellow flag"
-msgstr "Drapeau jaune"
+msgstr "Bandeira amarela"
 
 msgid "Yes"
-msgstr "Oui"
+msgstr "Sim"
 
 msgid "You can fly with the keys (\\key gup;) and (\\key gdown;)"
-msgstr "Il est possible de voler avec les touches (\\key gup;) et (\\key gdown;)"
+msgstr "Você pode voar com as teclas (\\key gup;) e (\\key gdown;)"
 
 msgid "You can not carry a radioactive object"
-msgstr "Vous ne pouvez pas transporter un objet radioactif"
+msgstr "Você não pode carregar um objeto radioativo"
 
 msgid "You can not carry an object under water"
-msgstr "Vous ne pouvez pas transporter un objet sous l'eau"
+msgstr "Você não pode carregar um objeto debaixo d'água"
 
 #, c-format
 msgid "You cannot use \"%s\" in this exercise (used: %d)"
-msgstr "Vous ne pouvez pas utiliser «%s» dans cet exercice (utilisé : %d)"
+msgstr "Você não pode usar \"%s\" neste exercício (usado: %d)"
 
 msgid "You found a usable object"
-msgstr "Vous avez trouvé un objet utilisable"
+msgstr "Você encontrou um objeto utilizável"
 
 #, c-format
 msgid "You have to use \"%1$s\" at least once in this exercise (used: %2$d)"
 msgid_plural "You have to use \"%1$s\" at least %3$d times in this exercise (used: %2$d)"
-msgstr[0] "Vous devez utiliser «%1$s» au moins une fois dans cet exercice (utilisé %2$d fois)"
-msgstr[1] "Vous devez utiliser «%1$s» au moins %3$d fois dans cet exercice (utilisé %2$d fois)"
+msgstr[0] "Você deve usar \"%1$s\" pelo menos uma vez neste exercício (usado: %2$d)"
+msgstr[1] "Você deve usar \"%1$s\" pelo menos %3$d vezes neste exercício (usado: %2$d)"
 
 #, c-format
 msgid "You have to use \"%1$s\" at most once in this exercise (used: %2$d)"
 msgid_plural "You have to use \"%1$s\" at most %3$d times in this exercise (used: %2$d)"
-msgstr[0] "Vous devez utiliser «%1$s» au plus une fois dans cet exercice (utilisé %2$d fois)"
-msgstr[1] "Vous devez utiliser «%1$s» au plus %3$d fois dans cet exercice (utilisé %2$d fois)"
+msgstr[0] "Você deve usar \"%1$s\" pelo menos uma vez neste exercício (usado: %2$d)"
+msgstr[1] "Você deve usar \"%1$s\" pelo menos %3$d vezes neste exercício (usado: %2$d)"
 
 msgid "You must get on the spaceship to take off"
-msgstr "Vous devez embarquer pour pouvoir décoller"
+msgstr "Você deve estar na nave espacial para decolar"
 
 msgid "Zoom mini-map"
-msgstr "Zoom mini-carte"
+msgstr "Zoom no mini-mapa"
 
 msgid "\\Blue flags"
-msgstr "\\Drapeaux bleus"
+msgstr "\\Bandeiras azuis"
 
 msgid "\\Eyeglasses 1"
-msgstr "\\Lunettes 1"
+msgstr "\\Óculos 1"
 
 msgid "\\Eyeglasses 2"
-msgstr "\\Lunettes 2"
+msgstr "\\Óculos 2"
 
 msgid "\\Eyeglasses 3"
-msgstr "\\Lunettes 3"
+msgstr "\\Óculos 3"
 
 msgid "\\Eyeglasses 4"
-msgstr "\\Lunettes 4"
+msgstr "\\Óculos 4"
 
 msgid "\\Eyeglasses 5"
-msgstr "\\Lunettes 5"
+msgstr "\\Óculos 5"
 
 msgid "\\Face 1"
-msgstr "\\Visage 1"
+msgstr "\\Face 1"
 
 msgid "\\Face 2"
-msgstr "\\Visage 2"
+msgstr "\\Face 2"
 
 msgid "\\Face 3"
-msgstr "\\Visage 3"
+msgstr "\\Face 3"
 
 msgid "\\Face 4"
-msgstr "\\Visage 4"
+msgstr "\\Face 4"
 
 msgid "\\Green flags"
-msgstr "\\Drapeaux verts"
+msgstr "\\Bandeiras verdes"
 
 msgid "\\New player name"
-msgstr "\\Nom du joueur à créer"
+msgstr "\\Nome do novo jogador"
 
 msgid "\\No eyeglasses"
-msgstr "\\Pas de lunettes"
+msgstr "\\Sem óculos"
 
 msgid "\\Raise the pencil"
-msgstr "\\Relève le crayon"
+msgstr "\\Levante o lápis"
 
 msgid "\\Red flags"
-msgstr "\\Drapeaux rouges"
+msgstr "\\Bandeiras vermelhas"
 
 msgid "\\Return to Colobot: Gold Edition"
-msgstr "\\Revenir à Colobot : Édition Gold"
+msgstr "\\Voltar a Colobot: edição de ouro"
 
 msgid "\\SatCom on standby"
-msgstr "\\Mettre le SatCom en veille"
+msgstr "\\SatCom em espera"
 
 msgid "\\Start recording"
-msgstr "\\Démarre l'enregistrement"
+msgstr "\\Iniciar gravação"
 
 msgid "\\Stop recording"
-msgstr "\\Stoppe l'enregistrement"
+msgstr "\\Parar gravação"
 
 msgid "\\Turn left"
-msgstr "\\Rotation à gauche"
+msgstr "\\Virar a esquerda"
 
 msgid "\\Turn right"
-msgstr "\\Rotation à droite"
+msgstr "\\Virar a direita"
 
 msgid "\\Use the black pencil"
-msgstr "\\Abaisse le crayon noir"
+msgstr "\\Use o lápis preto"
 
 msgid "\\Use the blue pencil"
-msgstr "\\Abaisse le crayon bleu"
+msgstr "\\Use o lápis azul"
 
 msgid "\\Use the brown pencil"
-msgstr "\\Abaisse le crayon brun"
+msgstr "\\Use o lápis marrom"
 
 msgid "\\Use the green pencil"
-msgstr "\\Abaisse le crayon vert"
+msgstr "\\Use o lápis verde"
 
 msgid "\\Use the orange pencil"
-msgstr "\\Abaisse le crayon orange"
+msgstr "\\Use o lápis laranja"
 
 msgid "\\Use the purple pencil"
-msgstr "\\Abaisse le crayon violet"
+msgstr "\\Use o lápis roxo"
 
 msgid "\\Use the red pencil"
-msgstr "\\Abaisse le crayon rouge"
+msgstr "\\Use o lápis vermelho"
 
 msgid "\\Use the yellow pencil"
-msgstr "\\Abaisse le crayon jaune"
+msgstr "\\Use o lápis amarelo"
 
 msgid "\\Violet flags"
-msgstr "\\Drapeaux violets"
+msgstr "\\Bandeiras violetas"
 
 msgid "\\Yellow flags"
-msgstr "\\Drapeaux jaunes"
+msgstr "\\Bandeiras amarelas"
 
 msgid "colobot.info"
 msgstr "colobot.info"

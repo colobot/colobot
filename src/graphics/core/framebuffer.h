@@ -41,10 +41,15 @@ struct FramebufferParams
     int depth = 16;
     //! Requested number of samples for multisampling
     int samples = 1;
-    //! true requests color texture
-    bool colorTexture = false;
-    //! true requests depth texture
-    bool depthTexture = false;
+
+    enum class AttachmentType
+    {
+        Texture,
+        Renderbuffer,
+        None,
+    };
+    AttachmentType colorAttachment = AttachmentType::Renderbuffer;
+    AttachmentType depthAttachment = AttachmentType::Renderbuffer;
 
     //! Loads default values
     void LoadDefault()

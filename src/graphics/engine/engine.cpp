@@ -197,6 +197,7 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
     m_terrainShadows = false;
     m_shadowRange = 0.0f;
     m_multisample = 2;
+    m_vsync = 0;
 
     m_backForce = true;
     m_lightMode = true;
@@ -323,6 +324,7 @@ bool CEngine::Create()
     SetShadowMappingOffscreen(m_offscreenShadowRendering);
     SetShadowMappingOffscreenResolution(m_offscreenShadowRenderingResolution);
     SetMultiSample(m_multisample);
+    SetVSync(m_vsync);
 
     m_modelManager = MakeUnique<COldModelManager>(this);
     m_pyroManager = MakeUnique<CPyroManager>();
@@ -431,7 +433,7 @@ bool CEngine::ProcessEvent(const Event &event)
     {
         auto data = event.GetData<KeyEventData>();
 
-        if (data->key == KEY(F12))
+        if (data->key == KEY(F11) || data->key == KEY(F12))
         {
             m_showStats = !m_showStats;
             return false;
@@ -3023,6 +3025,19 @@ bool CEngine::GetTerrainShadows()
     return m_terrainShadows;
 }
 
+void CEngine::SetVSync(int value)
+{
+    if (value < -1) value = -1;
+    if (value > 1) value = 1;
+    if(m_vsync == value) return;
+    m_vsync = value;
+}
+
+int CEngine::GetVSync()
+{
+    return m_vsync;
+}
+
 void CEngine::SetBackForce(bool present)
 {
     m_backForce = present;
@@ -3786,7 +3801,8 @@ void CEngine::RenderShadowMap()
             FramebufferParams params;
             params.width = params.height = width;
             params.depth = depth = 32;
-            params.depthTexture = true;
+            params.colorAttachment = FramebufferParams::AttachmentType::None;
+            params.depthAttachment = FramebufferParams::AttachmentType::Texture;
 
             CFramebuffer *framebuffer = m_device->CreateFramebuffer("shadow", params);
             if (framebuffer == nullptr)
@@ -5117,7 +5133,7 @@ void CEngine::DrawStats()
     if (!m_showStats)
         return;
 
-    float height = m_text->GetAscent(FONT_COLOBOT, 13.0f);
+    float height = m_text->GetAscent(FONT_COMMON, 13.0f);
     float width = 0.4f;
     const int TOTAL_LINES = 22;
 
@@ -5144,13 +5160,13 @@ void CEngine::DrawStats()
     auto drawStatsLine = [&](const std::string& name, const std::string& value, const std::string& value2)
     {
         if (!name.empty())
-            m_text->DrawText(name+":", FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
+            m_text->DrawText(name+":", FONT_COMMON, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
         pos.x += 0.25f;
         if (!value.empty())
-            m_text->DrawText(value, FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
+            m_text->DrawText(value, FONT_COMMON, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
         pos.x += 0.15f;
         if (!value2.empty())
-            m_text->DrawText(value2, FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_RIGHT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
+            m_text->DrawText(value2, FONT_COMMON, 12.0f, pos, 1.0f, TEXT_ALIGN_RIGHT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
         pos.x -= 0.4f;
         pos.y -= height;
     };
@@ -5218,8 +5234,8 @@ void CEngine::DrawTimer()
 {
     SetState(ENG_RSTATE_TEXT);
 
-    Math::Point pos(0.98f, 0.98f-m_text->GetAscent(FONT_COLOBOT, 15.0f));
-    m_text->DrawText(m_timerText, FONT_COLOBOT, 15.0f, pos, 1.0f, TEXT_ALIGN_RIGHT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
+    Math::Point pos(0.98f, 0.98f-m_text->GetAscent(FONT_COMMON, 15.0f));
+    m_text->DrawText(m_timerText, FONT_COMMON, 15.0f, pos, 1.0f, TEXT_ALIGN_RIGHT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
 }
 
 void CEngine::AddBaseObjTriangles(int baseObjRank, const std::vector<Gfx::ModelTriangle>& triangles)

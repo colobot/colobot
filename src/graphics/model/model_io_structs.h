@@ -188,7 +188,7 @@ struct OldModelTriangleV1
     Vertex p2;
     Vertex p3;
     Material material;
-    char texName[20] = {};
+    char texName[21] = {'\0'};
     float min = 0;
     float max = 0;
 };
@@ -207,7 +207,7 @@ struct OldModelTriangleV2
     Vertex p2;
     Vertex p3;
     Material material;
-    char texName[20] = {};
+    char texName[21] = {'\0'};
     float min = 0.0f;
     float max = 0.0f;
     long state = 0;
@@ -231,7 +231,7 @@ struct OldModelTriangleV3
     VertexTex2 p2;
     VertexTex2 p3;
     Material   material;
-    char texName[20] = {};
+    char texName[21] = {'\0'};
     float min = 0.0f;
     float max = 0.0f;
     long state = 0;

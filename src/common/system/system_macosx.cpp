@@ -102,10 +102,15 @@ std::string CSystemUtilsMacOSX::GetLangPath()
 
 std::string CSystemUtilsMacOSX::GetSaveDir()
 {
+#if PORTABLE_SAVES || DEV_BUILD
+    // TODO: I have no idea if this actually works on Mac OS
+    return "./saves";
+#else
     std::string savegameDir = m_ASPath;
     GetLogger()->Trace("Saved game files are going to %s\n", savegameDir.c_str());
 
     return savegameDir;
+#endif
 }
 
 void CSystemUtilsMacOSX::Usleep(int usec)

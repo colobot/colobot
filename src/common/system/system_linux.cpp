@@ -96,16 +96,20 @@ long long CSystemUtilsLinux::TimeStampExactDiff(SystemTimeStamp *before, SystemT
 
 std::string CSystemUtilsLinux::GetSaveDir()
 {
+#if PORTABLE_SAVES || DEV_BUILD
+    return CSystemUtils::GetSaveDir();
+#else
     std::string savegameDir;
 
     // Determine savegame dir according to XDG Base Directory Specification
-    char *envXDG_DATA_HOME = getenv("XDG_CONFIG_DATA");
+    char *envXDG_DATA_HOME = getenv("XDG_DATA_HOME");
     if (envXDG_DATA_HOME == nullptr)
     {
         char *envHOME = getenv("HOME");
         if (envHOME == nullptr)
         {
-            savegameDir = "/tmp/colobot-save";
+            GetLogger()->Warn("Unable to find directory for saves - using current directory");
+            savegameDir = "./saves";
         }
         else
         {
@@ -119,6 +123,7 @@ std::string CSystemUtilsLinux::GetSaveDir()
     GetLogger()->Trace("Saved game files are going to %s\n", savegameDir.c_str());
 
     return savegameDir;
+#endif
 }
 
 void CSystemUtilsLinux::Usleep(int usec)

@@ -44,8 +44,51 @@ if(MXE) # MXE requires special treatment
 elseif(PLATFORM_WINDOWS)
     # because it isn't included in standard linking libraries
     if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-        find_library(LIBINTL_LIBRARY NAMES intl.lib)
-        set(PLATFORM_LIBS ${LIBINTL_LIBRARY})
+        find_library(LIBINTL_LIBRARY NAMES intl.lib libintl)
+
+        if(${MSVC_STATIC})
+            if (${OPENAL_SOUND})
+                find_library(FLAC_LIBRARY NAMES flac.lib)
+                find_library(VORBIS_LIBRARY NAMES vorbis.lib)
+                find_library(VORBISENC_LIBRARY NAMES vorbisenc.lib)
+                find_library(OGG_LIBRARY NAMES ogg.lib)
+                set(OPENAL_MSVC_LIBS
+                    ${FLAC_LIBRARY}
+                    ${VORBIS_LIBRARY}
+                    ${VORBISENC_LIBRARY}
+                    ${OGG_LIBRARY}
+                )
+            endif()
+
+            find_library(BZ2_LIBRARY NAMES bz2.lib)
+            find_library(JPEG_LIBRARY NAMES jpeg.lib)
+            find_library(TIFF_LIBRARY NAMES tiff.lib)
+            find_library(WEBP_LIBRARY NAMES webp.lib)
+            find_library(LZMA_LIBRARY NAMES lzma.lib)
+            find_library(FREETYPE_LIBRARY NAMES freetype.lib)
+            set(MSVC_LIBS
+                ${LIBINTL_LIBRARY}
+                ${OPENAL_MSVC_LIBS}
+                ${JPEG_LIBRARY}
+                ${TIFF_LIBRARY}
+                ${BZ2_LIBRARY}
+                ${WEBP_LIBRARY}
+                ${LZMA_LIBRARY}
+                ${FREETYPE_LIBRARY}
+                winmm.lib
+                dxguid.lib
+                imm32.lib
+                ole32.lib
+                oleaut32.lib
+                version.lib
+                wsock32.lib
+                ws2_32.lib
+            )
+        else(${MSVC_STATIC})
+            set(MSVC_LIBS ${LIBINTL_LIBRARY})
+        endif()
+
+        set(PLATFORM_LIBS ${MSVC_LIBS})
     else()
         set(PLATFORM_LIBS "-lintl")
     endif()
@@ -106,6 +149,8 @@ set(BASE_SOURCES
     common/error.h
     common/event.cpp
     common/event.h
+    common/font_loader.h
+    common/font_loader.cpp
     common/global.h
     common/image.cpp
     common/image.h

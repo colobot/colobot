@@ -58,7 +58,7 @@ void CScreenIO::IOReadName()
     CEdit*      pe;
     std::string resume;
     char        line[100];
-    char        name[100];
+    std::string name;
     time_t      now;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
@@ -81,10 +81,10 @@ void CScreenIO::IOReadName()
 
     time(&now);
     strftime(line, 99, "%y.%m.%d %H:%M", localtime(&now));
-    sprintf(name, "%s - %s %d", line, resume.c_str(), m_main->GetLevelRank());
+    name = StrUtils::Format("%s - %s %d", line, resume.c_str(), m_main->GetLevelRank());
 
     pe->SetText(name);
-    pe->SetCursor(strlen(name), 0);
+    pe->SetCursor(name.length(), 0);
     m_interface->SetFocus(pe);
 }
 
