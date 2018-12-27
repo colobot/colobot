@@ -3400,6 +3400,7 @@ void CScriptFunctions::Init()
     bc->AddItem("load",        CBotTypResult(CBotTypPointer, "object"), CBotVar::ProtectionLevel::ReadOnly);
     bc->AddItem("id",          CBotTypResult(CBotTypInt), CBotVar::ProtectionLevel::ReadOnly);
     bc->AddItem("team",        CBotTypResult(CBotTypInt), CBotVar::ProtectionLevel::ReadOnly);
+    bc->AddItem("dead",        CBotTypResult(CBotTypBoolean), CBotVar::ProtectionLevel::ReadOnly);
     bc->AddItem("velocity",    CBotTypResult(CBotTypClass, "point"), CBotVar::ProtectionLevel::ReadOnly);
 
     CBotProgram::AddFunction("endmission",rEndMission,cEndMission);
@@ -3596,6 +3597,10 @@ void CScriptFunctions::uObject(CBotVar* botThis, void* user)
 
     pVar = pVar->GetNext();  // "team"
     value = object->GetTeam();
+    pVar->SetValInt(value);
+
+    pVar = pVar->GetNext();  // "dead"
+    value = object->IsDying();
     pVar->SetValInt(value);
 
     // Updates the velocity of the object.
