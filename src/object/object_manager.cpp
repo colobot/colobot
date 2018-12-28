@@ -142,6 +142,11 @@ CObject* CObjectManager::CreateObject(ObjectCreateParams params)
         }
     }
 
+    if (params.power < 0 || params.power > 1) //prevent creation of overcharged or negatively charged power cells
+    {
+        params.power = 1.0f;
+    }
+    
     assert(m_objects.find(params.id) == m_objects.end());
 
     auto objectUPtr = m_objectFactory->CreateObject(params);
@@ -162,7 +167,15 @@ CObject* CObjectManager::CreateObject(Math::Vector pos, float angle, ObjectType 
     params.pos = pos;
     params.angle = angle;
     params.type = type;
-    params.power = power;
+
+    if (power >= 0 && power <= 1) //prevent creation of overcharged or negatively charged power cells
+    {
+        params.power = power;
+    }
+    else
+    {
+        params.power = 1.0f;
+    }
 
     return CreateObject(params);
 }
