@@ -1443,7 +1443,21 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
         {
             power = 1.0f;
         }
-        object = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, type, power);
+        int objectEnumArray[] = { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 
+        21, 22, 23, 24, 31, 32, 33, 34, 35, 36, 37, 38, 50, 51, 52, 53, 54, 55, 56, 60, 61, 62, 63, 70, 71, 
+        72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 100, 
+        101, 102, 103, 110, 111, 112, 113, 120, 121, 122, 123, 130, 131, 132, 133, 140, 141, 142, 143, 200, 
+        201, 202, 203, 210, 211, 212, 213, 250, 260, 261, 262, 263, 264, 270, 271, 272, 273, 300, 301, 302, 
+        400, 401, 402, 403, 410, 411, 500, 501, 502, 503, 504, 505, 600, 601, 602, 603, 604, 605, 606, 607, 
+        608, 609, 610, 611, 612, 620, 621, 622, 623, 624, 625, 626, 627, 628, 629, 630, 631, 632, 633, 634, 
+        635, 636, 637, 638, 639, 640, 641, 642, 643, 644, 645, 646, 647, 648, 649, 650, 651, 652, 653, 654, 
+        655, 656, 657, 658, 659, 660, 661, 662, 663, 664, 700, 701, 702, 703, 710, 711, 712, 713, 714, 715, 
+        731, 732, 900, 901, 902, 903, 904, 910 }; //All object types in object_type.h
+        bool exists = std::find(std::begin(objectEnumArray), std::end(objectEnumArray), type) != std::end(objectEnumArray); //The object type exists in object_type.h
+        if (exists)
+        {
+           object = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, type, power);     
+        }  
         if (object == nullptr)
         {
             result->SetValInt(1);  // error
