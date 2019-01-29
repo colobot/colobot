@@ -4048,7 +4048,9 @@ void CEngine::UseMSAA(bool enable)
                 }
             }
 
-            framebuffer->Bind();
+            if (framebuffer != nullptr) {
+                framebuffer->Bind();
+            }
 
             m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, true);
             m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, true);
