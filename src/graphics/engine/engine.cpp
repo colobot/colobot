@@ -4048,7 +4048,8 @@ void CEngine::UseMSAA(bool enable)
                 }
             }
 
-            if (framebuffer != nullptr) {
+            if (framebuffer != nullptr)
+            {
                 framebuffer->Bind();
             }
 
