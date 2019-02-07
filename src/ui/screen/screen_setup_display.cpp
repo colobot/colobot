@@ -102,7 +102,7 @@ void CScreenSetupDisplay::CreateInterface()
     pc->SetState(STATE_CHECK, m_setupFull);
 
     pos.x = ox+sx*10;
-    pos.y = oy+sy*9;
+    pos.y = oy+sy*6.75f;
     ddim.x = dim.x*6;
     ddim.y = dim.y*1;
     GetResource(RES_EVENT, EVENT_INTERFACE_VSYNC, name);
@@ -110,9 +110,9 @@ void CScreenSetupDisplay::CreateInterface()
     pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
 
     pos.x = ox+sx*10;
-    pos.y = oy+sy*7.97f;
+    pos.y = oy+sy*5.2f;
     ddim.x = dim.x*6;
-    ddim.y = dim.y*1.8f;
+    ddim.y = dim.y*2;
     pli = pw->CreateList(pos, ddim, 0, EVENT_INTERFACE_VSYNC);
     pli->SetState(STATE_SHADOW);
     pli->SetItemName(0, "Off");
