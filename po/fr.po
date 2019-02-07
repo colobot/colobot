@@ -1,21 +1,23 @@
 # Didier Raboud <odyx@debian.org>, 2012, 2015, 2016.
 # Martin Quinson <mquinson@debian.org>, 2016
 # B-CE, 2018
+# Pascal Audoux <pascal.audoux@gmail.com>, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: Colobot 0.1.11\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: DATE\n"
-"PO-Revision-Date: 2018-02-28 20:00+0100\n"
+"PO-Revision-Date: 2019-01-09 23:07+0100\n"
 "Last-Translator: B-CE\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 2.0\n"
+"X-Generator: Poedit 2.0.6\n"
 "X-Language: fr_FR\n"
 "X-Source-Language: en_US\n"
+"Language-Team: \n"
 
 msgid " or "
 msgstr " ou "
@@ -384,9 +386,8 @@ msgstr "Fermer"
 msgid "Closing bracket missing"
 msgstr "Il manque une parenthèse fermante"
 
-#, fuzzy
 msgid "Code battle"
-msgstr "Batailles de code"
+msgstr "Bataille de code"
 
 msgid "Code battles"
 msgstr "Batailles de code"
@@ -501,7 +502,7 @@ msgid "Dynamic shadows ++\\Dynamic shadows + self shadowing"
 msgstr "Ombres dynamiques ++\\Active les ombres dynamiques et l'auto-ombrage"
 
 msgid "Dynamic shadows\\Beautiful shadows!"
-msgstr "Ombres dynamiques\\Magnifiques ombres !"
+msgstr "Ombres dynamiques\\Magnifiques ombres !"
 
 msgid "Edit the selected program"
 msgstr "Éditer le programme sélectionné"
@@ -647,7 +648,7 @@ msgid "Generating"
 msgstr "Génération"
 
 msgid "Gold Edition development by:"
-msgstr "Édition Gold développée par :"
+msgstr "Édition Gold développée par :"
 
 msgid "Goto: destination occupied"
 msgstr "Goto: destination occupée"
@@ -685,9 +686,8 @@ msgstr "Bulles d'aide\\Bulles explicatives"
 msgid "Hex value out of range"
 msgstr "Valeur hexadécimale impossible"
 
-#, fuzzy
 msgid "Higher speed\\Doubles speed"
-msgstr "Vitesse 2.0x\\Deux fois plus rapide"
+msgstr "Vitesse augmentée\\Deux fois plus rapide"
 
 msgid "Highest\\Highest graphic quality (lowest frame rate)"
 msgstr "Maxi\\Haute qualité (+ lent)"
@@ -831,7 +831,7 @@ msgid "Loading basic level settings"
 msgstr "Chargement des configurations de base du niveau"
 
 msgid "Loading finished!"
-msgstr "Chargement terminé !"
+msgstr "Chargement terminé !"
 
 msgid "Loading music"
 msgstr "Chargement de la musique"
@@ -980,7 +980,7 @@ msgid "No uranium to transform"
 msgstr "Pas de minerai d'uranium à transformer"
 
 msgid "No userlevels installed!"
-msgstr "Pas de niveaux spéciaux installés !"
+msgstr "Pas de niveaux spéciaux installés !"
 
 msgid "Non-void function needs \"return;\""
 msgstr "Les fonctions avec retour autre que void doivent comporter l'instruction \"return;\""
@@ -1228,12 +1228,11 @@ msgstr "Chargement rapide\\Chargement direct d'une sauvegarde"
 msgid "Quick save\\Immediately save game"
 msgstr "Sauvegarde rapide\\Sauvegarde direct"
 
-#, fuzzy
 msgid "Quicksave slot not found"
-msgstr "Objet n'existe pas"
+msgstr "Emplacement de sauvegarde rapide non trouvé"
 
 msgid "Quit\\Quit Colobot: Gold Edition"
-msgstr "Quitter\\Quitter Colobot : Édition Gold"
+msgstr "Quitter\\Quitter Colobot : Édition Gold"
 
 msgid "Quit\\Quit the current mission or exercise"
 msgstr "Quitter la mission en cours\\Terminer un exercice ou une mssion"
@@ -1568,7 +1567,7 @@ msgstr "Robot secoueur"
 
 #, c-format
 msgid "Time: %s"
-msgstr ""
+msgstr "Temps : %s"
 
 msgid "Titanium"
 msgstr "Titane"
@@ -1655,7 +1654,7 @@ msgid "Unknown command"
 msgstr "Commande inconnue"
 
 msgid "Unknown escape sequence"
-msgstr ""
+msgstr "Séquence d'échappement inconnue"
 
 msgid "Unknown function"
 msgstr "Routine inconnue"
@@ -1830,7 +1829,7 @@ msgid "\\Red flags"
 msgstr "\\Drapeaux rouges"
 
 msgid "\\Return to Colobot: Gold Edition"
-msgstr "\\Revenir à Colobot : Édition Gold"
+msgstr "\\Revenir à Colobot : Édition Gold"
 
 msgid "\\SatCom on standby"
 msgstr "\\Mettre le SatCom en veille"
