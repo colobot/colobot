@@ -60,7 +60,6 @@ pipeline {
                     post {
                         success {
                             sh 'rm -f linux-debug.zip'
-                            # Create appimage
                             sh 'mkdir -p build/linux/appimage && mkdir -p build/linux/appimage/output'
                             dir('build/linux') {
                                 sh 'wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage && chmod +x linuxdeploy-x86_64.AppImage'
