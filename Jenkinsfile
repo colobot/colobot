@@ -64,8 +64,8 @@ pipeline {
                     }
                     post {
                         success {
-                            sh 'rm -f linux-debug.zip'
-                            sh 'mkdir -p build/linux/appimage && mkdir -p build/linux/appimage/output'
+                            sh 'rm -f linux-debug.zip; rm -rf build/linux/appimage'
+                            sh 'mkdir -p build/linux/appimage; mkdir -p build/linux/appimage/output'
                             dir('build/linux') {
                                 sh 'wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage && chmod +x linuxdeploy-x86_64.AppImage'
                                 sh './linuxdeploy-x86_64.AppImage -e install/colobot --output appimage/output/colobot --appdir appimage/colobot.AppDir -d install/desktop/colobot.desktop -i install/desktop/colobot.svg'
