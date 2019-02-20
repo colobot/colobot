@@ -49,7 +49,7 @@ pipeline {
                                 cmake \
                                     -DCMAKE_INSTALL_PREFIX=/install -DCOLOBOT_INSTALL_BIN_DIR=/install -DCOLOBOT_INSTALL_LIB_DIR=/install -DCOLOBOT_INSTALL_DATA_DIR=/install/data -DCOLOBOT_INSTALL_I18N_DIR=/install/lang  -DCMAKE_SKIP_INSTALL_RPATH=ON \
                                     -DBOOST_STATIC=ON -DGLEW_STATIC=ON -DGLEW_LIBRARY=/usr/lib64/libGLEW.a \
-                                    -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDEV_BUILD=1 -DPORTABLE=1 -DTOOLS=1 -DTESTS=1 -DDESKTOP=0 ../..
+                                    -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDEV_BUILD=1 -DPORTABLE=1 -DTOOLS=1 -DTESTS=1 -DDESKTOP=1 ../..
                                 make
                                 rm -rf install
                                 DESTDIR=. make install
@@ -60,7 +60,13 @@ pipeline {
                     post {
                         success {
                             sh 'rm -f linux-debug.zip'
-                            zip zipFile: 'linux-debug.zip', archive: true, dir: 'build/linux/install'
+                            # Create appimage
+                            sh 'mkdir -p build/linux/appimage && mkdir -p build/linux/appimage/output'
+                            dir('build/linux') {
+                                sh 'wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage && chmod +x linuxdeploy-x86_64.AppImage'
+                                sh './linuxdeploy-x86_64.AppImage -e install/colobot --output appimage/output/colobot --appdir appimage/colobot.AppDir -d install/desktop/colobot.desktop -i install/desktop/colobot.svg'
+                            }
+                            zip zipFile: 'linux-debug.zip', archive: true, dir: 'build/linux/appimage/output'
                         }
                     }
                 }
