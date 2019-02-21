@@ -72,9 +72,9 @@ pipeline {
                             '''
                             dir('build/linux') {
                                 sh '''
-                                    wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+                                    wget -N https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
                                     chmod +x linuxdeploy-x86_64.AppImage
-                                    ./linuxdeploy-x86_64.AppImage --extract-appimage
+                                    ./linuxdeploy-x86_64.AppImage --appimage-extract
                                     ./squashfs-root/AppRun -e install/colobot --output appimage/output/colobot --appdir appimage/colobot.AppDir -d install/share/applications/colobot.desktop -i install/share/icons/hicolor/scalable/apps/colobot.svg
                                     chmod +x appimage/output/colobot
                                     cp -rp install/data appimage/output/data
