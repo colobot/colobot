@@ -54,32 +54,39 @@ pipeline {
                         dir('build/linux') {
                             sh '''
                                 cmake \
-                                    -DCMAKE_INSTALL_PREFIX=/install -DCOLOBOT_INSTALL_BIN_DIR=/install -DCOLOBOT_INSTALL_LIB_DIR=/install -DCOLOBOT_INSTALL_DATA_DIR=/install/data -DCOLOBOT_INSTALL_I18N_DIR=/install/lang  -DCMAKE_SKIP_INSTALL_RPATH=ON \
-                                    -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDEV_BUILD=1 -DPORTABLE=1 -DTOOLS=1 -DTESTS=1 -DDESKTOP=1 ../..
+                                    -DCMAKE_INSTALL_PREFIX=install -DCMAKE_SKIP_INSTALL_RPATH=ON \
+                                    -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDEV_BUILD=1 -DPORTABLE=1 -DTOOLS=1 -DTESTS=1 -DDESKTOP=0 ../..
                                 make
                                 rm -rf install
                                 DESTDIR=. make install
+                                patchelf --set-rpath '.' install/colobot
                             '''
                         }
                     }
                     post {
                         success {
                             sh 'rm -f linux-debug.zip'
-                            dir('build/linux/install') {
+                            dir('build/linux') {
                                 sh '''
+                                    # Clean up
+                                    rm -rf squashfs-root
+                                    rm -rf colobot.AppDir
+                                    rm -rf appimage
+                                    rm -f Colobot-x86_64.AppImage
+                                
                                     # Download app image tool
-                                    wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+                                    wget -N https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
                                     chmod +x linuxdeploy-x86_64.AppImage
                                     ./linuxdeploy-x86_64.AppImage --appimage-extract
                                     
                                     # Create AppImage
-                                    ./squashfs-root/AppRun -e colobot -l libCBot.so --output appimage --appdir colobot.AppDir -d share/applications/colobot.desktop -i share/icons/hicolor/scalable/apps/colobot.svg
+                                    ./squashfs-root/AppRun -e colobot --output appimage --appdir colobot.AppDir -d desktop/colobot.desktop -i ../../desktop/colobot.svg
+                                    chmod +x Colobot-x86_64.AppImage
                                     
                                     # Prepare folder for zip
-                                    chmod +x Colobot-x86_64.AppImage
                                     mkdir -p appimage
-                                    cp -rp data appimage/data
-                                    cp -rp lang appimage/lang
+                                    cp -rp install/data appimage/data
+                                    cp -rp install/lang appimage/lang
                                     cp -p Colobot-x86_64.AppImage appimage/colobot
                                 '''
                             }
