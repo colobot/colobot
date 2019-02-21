@@ -78,6 +78,7 @@ pipeline {
                                     
                                     # Prepare folder for zip
                                     chmod +x Colobot-x86_64.AppImage
+                                    mkdir -p appimage
                                     cp -rp data appimage/data
                                     cp -rp lang appimage/lang
                                     cp -p Colobot-x86_64.AppImage appimage/colobot
