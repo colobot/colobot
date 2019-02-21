@@ -59,6 +59,7 @@ pipeline {
                                 make
                                 rm -rf install
                                 DESTDIR=. make install
+                                patchelf --set-rpath '.' install/colobot
                             '''
                         }
                     }
@@ -76,7 +77,7 @@ pipeline {
                                     wget -N https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
                                     chmod +x linuxdeploy-x86_64.AppImage
                                     ./linuxdeploy-x86_64.AppImage --appimage-extract
-                                    ./squashfs-root/AppRun -e colobot --output appimage --appdir colobot.AppDir -d desktop/colobot.desktop -i ../../desktop/colobot.svg
+                                    ./squashfs-root/AppRun -e install/colobot --output appimage --appdir colobot.AppDir -d install/share/applications/colobot.desktop -i install/share/icons/hicolor/scalable/apps/colobot.svg
                                     chmod +x Colobot-x86_64.AppImage
                                     cp -rp install/data appimage/data
                                     cp -rp install/lang appimage/lang
