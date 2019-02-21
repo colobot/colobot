@@ -64,11 +64,21 @@ pipeline {
                     }
                     post {
                         success {
-                            sh 'rm -f linux-debug.zip; rm -rf build/linux/appimage'
-                            sh 'mkdir -p build/linux/appimage; mkdir -p build/linux/appimage/output'
+                            sh '''
+                                rm -f linux-debug.zip
+                                rm -rf build/linux/appimage
+                                mkdir -p build/linux/appimage
+                                mkdir -p build/linux/appimage/output
+                                cp desktop/colobot.svg build/linux/install/desktop/colobot.svg
+                            '''
                             dir('build/linux') {
-                                sh 'wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage && chmod +x linuxdeploy-x86_64.AppImage'
-                                sh './linuxdeploy-x86_64.AppImage -e install/colobot --output appimage/output/colobot --appdir appimage/colobot.AppDir -d install/desktop/colobot.desktop -i install/desktop/colobot.svg'
+                                sh '''
+                                    wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+                                    chmod +x linuxdeploy-x86_64.AppImage
+                                    ./linuxdeploy-x86_64.AppImage --extract-appimage
+                                    ./squashfs-root/AppRun -e install/colobot --output appimage/output/colobot --appdir appimage/colobot.AppDir -d install/desktop/colobot.desktop -i install/desktop/colobot.svg
+                                    chmod +x appimage/output/colobot
+                                '''
                             }
                             zip zipFile: 'linux-debug.zip', archive: true, dir: 'build/linux/appimage/output'
                         }
