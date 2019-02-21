@@ -59,7 +59,6 @@ pipeline {
                                 make
                                 rm -rf install
                                 DESTDIR=. make install
-                                patchelf --set-rpath '.' install/colobot
                             '''
                         }
                     }
