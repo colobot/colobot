@@ -80,7 +80,7 @@ pipeline {
                                     ./linuxdeploy-x86_64.AppImage --appimage-extract
                                     
                                     # Create AppImage
-                                    ./squashfs-root/AppRun -e colobot --output appimage --appdir colobot.AppDir -d desktop/colobot.desktop -i ../../desktop/colobot.svg
+                                    NO_STRIP=1 ./squashfs-root/AppRun -e colobot --output appimage --appdir colobot.AppDir -d desktop/colobot.desktop -i ../../desktop/colobot.svg
                                     chmod +x Colobot-x86_64.AppImage
                                     
                                     # Prepare folder for zip
