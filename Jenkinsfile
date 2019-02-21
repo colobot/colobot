@@ -65,26 +65,32 @@ pipeline {
                     }
                     post {
                         success {
-                            sh '''
-                                rm -f linux-debug.zip
-                                rm -rf build/linux/appimage
-                                mkdir -p build/linux/appimage
-                                rm -rf colobot.AppDir
-                                rm -f colobot.AppImage
-                            '''
-                            dir('build/linux') {
+                            sh 'rm -f linux-debug.zip'
+                            dir('build/linux/install') {
                                 sh '''
+                                    # Clean up
+                                    rm -rf appimage
+                                    mkdir -p appimage
+                                    rm -rf colobot.AppDir
+                                    rm -rf squashfs-root
+                                    rm -f Colobot-x86_64.AppImage
+                                    
+                                    # Download app image tool
                                     wget -N https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
                                     chmod +x linuxdeploy-x86_64.AppImage
                                     ./linuxdeploy-x86_64.AppImage --appimage-extract
-                                    ./squashfs-root/AppRun -e install/colobot --output appimage --appdir colobot.AppDir -d install/share/applications/colobot.desktop -i install/share/icons/hicolor/scalable/apps/colobot.svg
+                                    
+                                    # Create AppImage
+                                    ./squashfs-root/AppRun -e colobot --output appimage --appdir colobot.AppDir -d share/applications/colobot.desktop -i share/icons/hicolor/scalable/apps/colobot.svg
+                                    
+                                    # Prepare folder for zip
                                     chmod +x Colobot-x86_64.AppImage
-                                    cp -rp install/data appimage/data
-                                    cp -rp install/lang appimage/lang
+                                    cp -rp data appimage/data
+                                    cp -rp lang appimage/lang
                                     cp -p Colobot-x86_64.AppImage appimage/colobot
                                 '''
                             }
-                            zip zipFile: 'linux-debug.zip', archive: true, dir: 'build/linux/appimage'
+                            zip zipFile: 'linux-debug.zip', archive: true, dir: 'build/linux/install/appimage'
                         }
                     }
                 }
