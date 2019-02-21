@@ -59,7 +59,6 @@ pipeline {
                                 make
                                 rm -rf install
                                 DESTDIR=. make install
-                                patchelf --set-rpath '.' install/colobot
                             '''
                         }
                     }
@@ -68,15 +67,8 @@ pipeline {
                             sh 'rm -f linux-debug.zip'
                             dir('build/linux/install') {
                                 sh '''
-                                    # Clean up
-                                    rm -rf appimage
-                                    mkdir -p appimage
-                                    rm -rf colobot.AppDir
-                                    rm -rf squashfs-root
-                                    rm -f Colobot-x86_64.AppImage
-                                    
                                     # Download app image tool
-                                    wget -N https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+                                    wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
                                     chmod +x linuxdeploy-x86_64.AppImage
                                     ./linuxdeploy-x86_64.AppImage --appimage-extract
                                     
