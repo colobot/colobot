@@ -76,11 +76,11 @@ pipeline {
                                     wget -N https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
                                     chmod +x linuxdeploy-x86_64.AppImage
                                     ./linuxdeploy-x86_64.AppImage --appimage-extract
-                                    ./squashfs-root/AppRun -e colobot --output colobot.AppImage --appdir colobot.AppDir -d desktop/colobot.desktop -i ../../desktop/colobot.svg
-                                    chmod +x colobot.AppImage
+                                    ./squashfs-root/AppRun -e colobot --output appimage --appdir colobot.AppDir -d desktop/colobot.desktop -i ../../desktop/colobot.svg
+                                    chmod +x Colobot-x86_64.AppImage
                                     cp -rp install/data appimage/data
                                     cp -rp install/lang appimage/lang
-                                    cp -p colobot.AppImage appimage/colobot
+                                    cp -p Colobot-x86_64.AppImage appimage/colobot
                                 '''
                             }
                             zip zipFile: 'linux-debug.zip', archive: true, dir: 'build/linux/appimage'
