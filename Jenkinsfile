@@ -68,20 +68,22 @@ pipeline {
                                 rm -f linux-debug.zip
                                 rm -rf build/linux/appimage
                                 mkdir -p build/linux/appimage
-                                mkdir -p build/linux/appimage/output
+                                rm -rf colobot.AppDir
+                                rm -f colobot.AppImage
                             '''
                             dir('build/linux') {
                                 sh '''
                                     wget -N https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
                                     chmod +x linuxdeploy-x86_64.AppImage
                                     ./linuxdeploy-x86_64.AppImage --appimage-extract
-                                    ./squashfs-root/AppRun -e install/colobot --output appimage/output/colobot --appdir appimage/colobot.AppDir -d install/share/applications/colobot.desktop -i install/share/icons/hicolor/scalable/apps/colobot.svg
-                                    chmod +x appimage/output/colobot
-                                    cp -rp install/data appimage/output/data
-                                    cp -rp install/lang appimage/output/lang
+                                    ./squashfs-root/AppRun -e colobot --output colobot.AppImage --appdir colobot.AppDir -d desktop/colobot.desktop -i ../../desktop/colobot.svg
+                                    chmod +x colobot.AppImage
+                                    cp -rp install/data appimage/data
+                                    cp -rp install/lang appimage/lang
+                                    cp -p colobot.AppImage appimage/colobot
                                 '''
                             }
-                            zip zipFile: 'linux-debug.zip', archive: true, dir: 'build/linux/appimage/output'
+                            zip zipFile: 'linux-debug.zip', archive: true, dir: 'build/linux/appimage'
                         }
                     }
                 }
