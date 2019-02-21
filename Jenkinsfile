@@ -90,7 +90,7 @@ pipeline {
                                     cp -p Colobot-x86_64.AppImage appimage/colobot
                                 '''
                             }
-                            zip zipFile: 'linux-debug.zip', archive: true, dir: 'build/linux/install/appimage'
+                            zip zipFile: 'linux-debug.zip', archive: true, dir: 'build/linux/appimage'
                         }
                     }
                 }
