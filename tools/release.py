@@ -73,7 +73,7 @@ codename = None
 data = open('CMakeLists.txt', 'r').readlines()
 
 for i in range(len(data)):
-	m = re.match(r'^set\(COLOBOT_VERSION_(MAJOR|MINOR|REVISION)( +)([0-9]+)\)$', data[i])
+	m = re.match(r'^set\(COLOBOT_VERSION_(MAJOR|MINOR|REVISION)( +)([0-9]+(\.[0-9]+)?)\)$', data[i])
 	if m:
 		x = m.group(3)
 		if m.group(1) == 'MAJOR':
