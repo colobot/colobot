@@ -44,7 +44,7 @@ CControl::CControl()
     m_eventType   = EVENT_NULL;
     m_state       = STATE_ENABLE|STATE_VISIBLE|STATE_GLINT;
     m_fontSize    = Gfx::FONT_SIZE_SMALL;
-    m_fontType    = Gfx::FONT_COLOBOT;
+    m_fontType    = Gfx::FONT_COMMON;
     m_textAlign   = Gfx::TEXT_ALIGN_CENTER; //instead m_justify
     m_bFocus      = false;
     m_bCapture    = false;

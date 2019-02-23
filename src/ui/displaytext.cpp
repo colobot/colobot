@@ -197,7 +197,7 @@ void CDisplayText::DisplayText(const char *text, Math::Vector goal, float height
     }
 
     hBox = 0.045f;
-    hLine = m_engine->GetText()->GetHeight(Gfx::FONT_COLOBOT, FONTSIZE);
+    hLine = m_engine->GetText()->GetHeight(Gfx::FONT_COMMON, FONTSIZE);
 
     nLine = 0;
     for ( i=0 ; i<MAXDTLINE ; i++ )

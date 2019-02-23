@@ -1073,6 +1073,13 @@ public:
     //@}
 
     //@{
+    //! Management of vertical synchronization
+    // NOTE: This is an user configuration setting
+    void            SetVSync(int value);
+    int             GetVSync();
+    //@}
+
+    //@{
     //! Management of shadow color
     // NOTE: This is a setting configurable only in INI file
     void            SetShadowColor(float value);
@@ -1335,6 +1342,9 @@ protected:
     Math::Matrix    m_shadowTextureMat;
     //! Texture bias for sampling shadow maps
     Math::Matrix    m_shadowBias;
+
+    //! Vertical synchronization controll
+    int m_vsync;
 
     //! World matrix for 2D interface
     Math::Matrix    m_matWorldInterface;

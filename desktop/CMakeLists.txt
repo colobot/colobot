@@ -70,6 +70,12 @@ if(PLATFORM_GNU)
             DESTINATION ${CMAKE_INSTALL_PREFIX}/share/applications/
         )
 
+    # Install appdata
+    install(
+        FILES info.colobot.Colobot.appdata.xml
+            DESTINATION ${CMAKE_INSTALL_PREFIX}/share/metainfo/
+        )
+
     # Install Icon
     install(
         FILES ${COLOBOT_ICON_FILE}

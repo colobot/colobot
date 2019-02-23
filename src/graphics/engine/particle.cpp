@@ -3301,7 +3301,7 @@ void CParticle::DrawParticleCylinder(int i)
 
 void CParticle::DrawParticleText(int i)
 {
-    CharTexture tex = m_engine->GetText()->GetCharTexture(static_cast<UTF8Char>(m_particle[i].text), FONT_COURIER, FONT_SIZE_BIG*2.0f);
+    CharTexture tex = m_engine->GetText()->GetCharTexture(static_cast<UTF8Char>(m_particle[i].text), FONT_STUDIO, FONT_SIZE_BIG*2.0f);
     if (tex.id == 0) return;
 
     m_device->SetTexture(0, tex.id);

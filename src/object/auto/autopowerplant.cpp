@@ -82,12 +82,14 @@ void CAutoPowerPlant::DeleteObject(bool all)
         CObject* cargo = SearchMetal();
         if ( cargo != nullptr )
         {
+            m_object->SetPower(nullptr);
             CObjectManager::GetInstancePointer()->DeleteObject(cargo);
         }
 
         cargo = SearchPower();
         if ( cargo != nullptr )
         {
+            m_object->SetPower(nullptr);
             CObjectManager::GetInstancePointer()->DeleteObject(cargo);
         }
     }

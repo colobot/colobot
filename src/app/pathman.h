@@ -17,16 +17,10 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-/**
- *  \file app/pathman.h
- *  \brief Class for managing data/lang/save paths
- */
-
 #pragma once
 
-#include "common/singleton.h"
-
 #include <string>
+#include <vector>
 
 class CSystemUtils;
 
@@ -34,16 +28,17 @@ class CSystemUtils;
  *  \class CPathManager
  *  \brief Class for managing data/lang/save paths
  */
-class CPathManager : public CSingleton<CPathManager>
+class CPathManager
 {
 public:
     CPathManager(CSystemUtils* systemUtils);
     ~CPathManager();
 
-    void SetDataPath(std::string dataPath);
-    void SetLangPath(std::string langPath);
-    void SetSavePath(std::string savePath);
-    void AddMod(std::string modPath);
+    void SetDataPath(const std::string &dataPath);
+    void SetLangPath(const std::string &langPath);
+    void SetSavePath(const std::string &savePath);
+    void AddModAutoloadDir(const std::string &modAutoloadDirPath);
+    void AddMod(const std::string &modPath);
 
     const std::string& GetDataPath();
     const std::string& GetLangPath();
@@ -56,14 +51,17 @@ public:
 
 private:
     //! Loads all mods from given directory
-    void LoadModsFromDir(const std::string &dir);
+    std::vector<std::string> FindModsInDir(const std::string &dir);
 
 private:
-    CSystemUtils* m_systemUtils;
     //! Data path
     std::string m_dataPath;
     //! Lang path
     std::string m_langPath;
     //! Save path
     std::string m_savePath;
+    //! Mod autoload paths
+    std::vector<std::string> m_modAutoloadDir;
+    //! Mod paths
+    std::vector<std::string> m_mods;
 };

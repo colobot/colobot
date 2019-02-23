@@ -1681,6 +1681,9 @@ msgstr "Der Wert dieser Variable wurde nicht definiert"
 msgid "Vault"
 msgstr "Bunker"
 
+msgid "Vertical Synchronization\\Limits the number of frames per second to display frequency"
+msgstr ""
+
 msgid "Violet flag"
 msgstr "Violette Fahne"
 

@@ -133,7 +133,7 @@ void CSignalHandlers::ReportError(const std::string& errorMessage)
     msg << "including information on what you were doing before this happened and all the information below." << std::endl;
     msg << "==============================" << std::endl;
     #if BUILD_NUMBER == 0
-        #ifdef OFFICIAL_BUILD
+        #ifdef OFFICIAL_COLOBOT_BUILD
             msg << "You are running official " << COLOBOT_VERSION_DISPLAY << " build." << std::endl;
         #else
             // COLOBOT_VERSION_DISPLAY doesn't update if you don't run CMake after "git pull"

@@ -38,3 +38,7 @@ CMakeLists.txt.user.*
 
 # Ignore Visual Studio Code files
 /.vscode
+
+# Ignore Visual Studio files
+/CMakeSettings.json
+/.vs

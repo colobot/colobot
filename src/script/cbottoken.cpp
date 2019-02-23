@@ -372,6 +372,9 @@ std::string GetHelpFilename(const char *token)
     if ( strcmp(token, "synchronized"  ) == 0 )  helpfile = "cbot/synchro";
     if ( strcmp(token, "new"           ) == 0 )  helpfile = "cbot/new";
     if ( strcmp(token, "this"          ) == 0 )  helpfile = "cbot/this";
+    if ( strcmp(token, "switch"        ) == 0 ||
+         strcmp(token, "case"          ) == 0 ||
+         strcmp(token, "default"       ) == 0 )  helpfile = "cbot/switch";
 
     if (helpfile.empty())
         return "";
@@ -491,11 +494,14 @@ bool IsFunction(const char *token)
 
 const char* GetHelpText(const char *token)
 {
-    if ( strcmp(token, "if"        ) == 0 )  return "if ( condition ) { bloc }";
-    if ( strcmp(token, "else"      ) == 0 )  return "else { bloc }";
+    if ( strcmp(token, "if"        ) == 0 )  return "if ( condition ) { code }";
+    if ( strcmp(token, "else"      ) == 0 )  return "else { code }";
     if ( strcmp(token, "for"       ) == 0 )  return "for ( before ; condition ; end )";
-    if ( strcmp(token, "while"     ) == 0 )  return "while ( condition ) { bloc }";
-    if ( strcmp(token, "do"        ) == 0 )  return "do { bloc } while ( condition );";
+    if ( strcmp(token, "while"     ) == 0 )  return "while ( condition ) { code }";
+    if ( strcmp(token, "do"        ) == 0 )  return "do { code } while ( condition );";
+    if ( strcmp(token, "switch"    ) == 0 )  return "switch ( value ) { code }";
+    if ( strcmp(token, "case"      ) == 0 )  return "case label: { code }";
+    if ( strcmp(token, "default"   ) == 0 )  return "default: { code } ";
     if ( strcmp(token, "break"     ) == 0 )  return "break;";
     if ( strcmp(token, "continue"  ) == 0 )  return "continue;";
     if ( strcmp(token, "return"    ) == 0 )  return "return;";

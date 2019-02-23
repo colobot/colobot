@@ -451,6 +451,9 @@ msgstr ""
 msgid "Shadow resolution\\Higher means better range and quality, but slower"
 msgstr ""
 
+msgid "Vertical Synchronization\\Limits the number of frames per second to display frequency"
+msgstr ""
+
 msgid "Standard controls\\Standard key functions"
 msgstr ""
 
