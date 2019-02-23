@@ -1678,6 +1678,9 @@ msgstr "Variável não inicializada"
 msgid "Vault"
 msgstr "Cofre"
 
+msgid "Vertical Synchronization\\Limits the number of frames per second to display frequency"
+msgstr ""
+
 msgid "Violet flag"
 msgstr "Bandeira violeta"
 
