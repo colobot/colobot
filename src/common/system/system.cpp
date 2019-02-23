@@ -20,8 +20,6 @@
 
 #include "common/system/system.h"
 
-#include "common/config.h"
-
 #include "common/make_unique.h"
 
 #if defined(PLATFORM_WINDOWS)
