@@ -179,12 +179,20 @@ float CSystemUtils::TimeStampDiff(SystemTimeStamp *before, SystemTimeStamp *afte
 
 std::string CSystemUtils::GetDataPath()
 {
+#if DEV_BUILD
+    return std::string{"./"} + COLOBOT_DEFAULT_DATADIR;
+#else
     return std::string{PHYSFS_getBaseDir()} + COLOBOT_DEFAULT_DATADIR;
+#endif
 }
 
 std::string CSystemUtils::GetLangPath()
 {
+#if DEV_BUILD
+    return std::string{"./"} + COLOBOT_I18N_DIR;
+#else
     return std::string{PHYSFS_getBaseDir()} + COLOBOT_I18N_DIR;
+#endif
 }
 
 std::string CSystemUtils::GetSaveDir()
