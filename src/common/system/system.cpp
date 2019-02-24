@@ -36,6 +36,7 @@
 #include <iostream>
 #include <algorithm>
 
+#include <physfs.h>
 
 std::unique_ptr<CSystemUtils> CSystemUtils::Create()
 {
@@ -178,12 +179,12 @@ float CSystemUtils::TimeStampDiff(SystemTimeStamp *before, SystemTimeStamp *afte
 
 std::string CSystemUtils::GetDataPath()
 {
-    return COLOBOT_DEFAULT_DATADIR;
+    return std::string{PHYSFS_getBaseDir()} + COLOBOT_DEFAULT_DATADIR;
 }
 
 std::string CSystemUtils::GetLangPath()
 {
-    return COLOBOT_I18N_DIR;
+    return std::string{PHYSFS_getBaseDir()} + COLOBOT_I18N_DIR;
 }
 
 std::string CSystemUtils::GetSaveDir()
