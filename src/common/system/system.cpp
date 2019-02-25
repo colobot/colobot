@@ -180,7 +180,11 @@ float CSystemUtils::TimeStampDiff(SystemTimeStamp *before, SystemTimeStamp *afte
 std::string CSystemUtils::GetBasePath()
 {
     if (m_basePath.empty())
-        m_basePath = SDL_GetBasePath();
+    {
+        auto* path = SDL_GetBasePath();
+        m_basePath = path;
+        SDL_free(path);
+    }
     return m_basePath;
 }
 
