@@ -37,8 +37,8 @@ msgstr "Colonise avec des roBots"
 #. type: Keywords=
 #: colobot.ini:4
 #, no-wrap
-msgid "robots;3d;space;astronaut;java;c++"
-msgstr "robots;3d;espace;astronaute;cosmonaute;java;c++"
+msgid "robots;3d;space;astronaut;java;c++;"
+msgstr "robots;3d;espace;astronaute;cosmonaute;java;c++;"
 
 #. type: =head1
 #: colobot.pod:3
