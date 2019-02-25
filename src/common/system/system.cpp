@@ -36,7 +36,7 @@
 #include <iostream>
 #include <algorithm>
 
-#include <physfs.h>
+#include <SDL2/SDL.h>
 
 std::unique_ptr<CSystemUtils> CSystemUtils::Create()
 {
@@ -177,12 +177,19 @@ float CSystemUtils::TimeStampDiff(SystemTimeStamp *before, SystemTimeStamp *afte
     return result;
 }
 
+std::string CSystemUtils::GetBasePath()
+{
+    if (m_basePath.empty())
+        m_basePath = SDL_GetBasePath();
+    return m_basePath;
+}
+
 std::string CSystemUtils::GetDataPath()
 {
 #if DEV_BUILD
     return std::string{"./"} + COLOBOT_DEFAULT_DATADIR;
 #else
-    return std::string{PHYSFS_getBaseDir()} + COLOBOT_DEFAULT_DATADIR;
+    return GetBasePath() + COLOBOT_DEFAULT_DATADIR;
 #endif
 }
 
@@ -191,7 +198,7 @@ std::string CSystemUtils::GetLangPath()
 #if DEV_BUILD
     return std::string{"./"} + COLOBOT_I18N_DIR;
 #else
-    return std::string{PHYSFS_getBaseDir()} + COLOBOT_I18N_DIR;
+    return GetBasePath() + COLOBOT_I18N_DIR;
 #endif
 }
 
