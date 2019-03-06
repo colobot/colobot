@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -197,7 +197,7 @@ void CDisplayText::DisplayText(const char *text, Math::Vector goal, float height
     }
 
     hBox = 0.045f;
-    hLine = m_engine->GetText()->GetHeight(Gfx::FONT_COLOBOT, FONTSIZE);
+    hLine = m_engine->GetText()->GetHeight(Gfx::FONT_COMMON, FONTSIZE);
 
     nLine = 0;
     for ( i=0 ; i<MAXDTLINE ; i++ )

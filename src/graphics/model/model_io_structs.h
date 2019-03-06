@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -188,7 +188,7 @@ struct OldModelTriangleV1
     Vertex p2;
     Vertex p3;
     Material material;
-    char texName[20] = {};
+    char texName[21] = {'\0'};
     float min = 0;
     float max = 0;
 };
@@ -207,7 +207,7 @@ struct OldModelTriangleV2
     Vertex p2;
     Vertex p3;
     Material material;
-    char texName[20] = {};
+    char texName[21] = {'\0'};
     float min = 0.0f;
     float max = 0.0f;
     long state = 0;
@@ -231,7 +231,7 @@ struct OldModelTriangleV3
     VertexTex2 p2;
     VertexTex2 p3;
     Material   material;
-    char texName[20] = {};
+    char texName[21] = {'\0'};
     float min = 0.0f;
     float max = 0.0f;
     long state = 0;

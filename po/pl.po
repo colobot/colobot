@@ -1549,6 +1549,10 @@ msgstr "Uderz (\\key action;)"
 msgid "Thumper"
 msgstr "Uderzacz"
 
+#, c-format
+msgid "Time: %s"
+msgstr "Czas: %s"
+
 msgid "Titanium"
 msgstr "Tytan"
 
@@ -1662,6 +1666,9 @@ msgstr "Zmienna nie została zainicjalizowana"
 
 msgid "Vault"
 msgstr "Skrytka"
+
+msgid "Vertical Synchronization\\Limits the number of frames per second to display frequency"
+msgstr "Synchronizacja pionowa\\Ogranicza ilość klatek na sekundę do wartości odświeżania ekranu"
 
 msgid "Violet flag"
 msgstr "Fioletowa flaga"

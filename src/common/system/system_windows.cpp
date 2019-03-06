@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -110,11 +110,15 @@ std::wstring CSystemUtilsWindows::UTF8_Decode(const std::string& str)
 
 std::string CSystemUtilsWindows::GetSaveDir()
 {
+#if PORTABLE_SAVES || DEV_BUILD
+    return CSystemUtils::GetSaveDir();
+#else
     std::string savegameDir;
 
     wchar_t* envUSERPROFILE = _wgetenv(L"USERPROFILE");
     if (envUSERPROFILE == nullptr)
     {
+        GetLogger()->Warn("Unable to find directory for saves - using current directory");
         savegameDir = "./saves";
     }
     else
@@ -124,6 +128,7 @@ std::string CSystemUtilsWindows::GetSaveDir()
     GetLogger()->Trace("Saved game files are going to %s\n", savegameDir.c_str());
 
     return savegameDir;
+#endif
 }
 
 void CSystemUtilsWindows::Usleep(int usec)

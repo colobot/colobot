@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -114,7 +114,7 @@ static int  ListOp[] =
     0, // end of list
 };
 
-bool IsInList(int val, int* list, int& typeMask)
+static bool IsInList(int val, int* list, int& typeMask)
 {
     while (true)
     {
@@ -124,7 +124,7 @@ bool IsInList(int val, int* list, int& typeMask)
     }
 }
 
-bool TypeOk(int type, int test)
+static bool TypeOk(int type, int test)
 {
     while (true)
     {
@@ -304,12 +304,12 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
 }
 
 
-bool VarIsNAN(const CBotVar* var)
+static bool VarIsNAN(const CBotVar* var)
 {
     return var->GetInit() > CBotVar::InitType::DEF;
 }
 
-bool IsNan(CBotVar* left, CBotVar* right, CBotError* err = nullptr)
+static bool IsNan(CBotVar* left, CBotVar* right, CBotError* err = nullptr)
 {
     if ( VarIsNAN(left) || VarIsNAN(right) )
     {

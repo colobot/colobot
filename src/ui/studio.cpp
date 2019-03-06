@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -312,7 +312,7 @@ bool CStudio::EventProcess(const Event &event)
 
 // Evolves value with time elapsed.
 
-float Evolution(float final, float actual, float time)
+static float Evolution(float final, float actual, float time)
 {
     float   value;
 
@@ -425,7 +425,7 @@ bool CStudio::EventFrame(const Event &event)
 
 // Indicates whether a character is part of a word.
 
-bool IsToken(char c)
+static bool IsToken(char c)
 {
     return ( isalnum(c) || c == '_' );
 }
@@ -627,7 +627,7 @@ void CStudio::StartEditScript(CScript *script, std::string name, Program* progra
     edit->SetState(STATE_SHADOW);
     edit->SetInsideScroll(false);
 //? if ( m_bRunning )  edit->SetEdit(false);
-    edit->SetFontType(Gfx::FONT_COURIER);
+    edit->SetFontType(Gfx::FONT_STUDIO);
     edit->SetFontStretch(1.0f);
     edit->SetDisplaySpec(true);
     edit->SetAutoIndent(m_engine->GetEditIndentMode());
@@ -639,7 +639,7 @@ void CStudio::StartEditScript(CScript *script, std::string name, Program* progra
 
     list = pw->CreateList(pos, dim, 1, EVENT_STUDIO_LIST, 1.2f);
     list->SetState(STATE_SHADOW);
-    list->SetFontType(Gfx::FONT_COURIER);
+    list->SetFontType(Gfx::FONT_STUDIO);
     list->SetSelectCap(false);
     list->SetFontSize(Gfx::FONT_SIZE_SMALL*0.85f);
 //? list->SetFontStretch(1.0f);

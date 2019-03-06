@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ struct ActivePause
     PauseMusic music;
 };
 
-std::string GetPauseName(PauseType type)
+static std::string GetPauseName(PauseType type)
 {
     std::vector<std::string> x;
     if ((type & PAUSE_ENGINE) != 0) x.push_back("engine");

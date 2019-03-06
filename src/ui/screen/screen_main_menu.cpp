@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -169,7 +169,7 @@ void CScreenMainMenu::CreateInterface()
     pg->SetState(STATE_SHADOW);
     pos.y -=  5.0f/480.0f;
     pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL1, "TerranovaTeam");
-    pl->SetFontType(Gfx::FONT_COURIER);
+    pl->SetFontType(Gfx::FONT_STUDIO);
     pl->SetFontSize(Gfx::FONT_SIZE_SMALL);
 
     // SatCom button

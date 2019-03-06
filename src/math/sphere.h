@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -42,6 +42,13 @@ inline float DistanceToSphere(const Vector& point, const Sphere& sphere)
 inline float DistanceBetweenSpheres(const Sphere& sphere1, const Sphere& sphere2)
 {
     return Math::Distance(sphere1.pos, sphere2.pos) - sphere1.radius - sphere2.radius;
+}
+
+inline Sphere BoundingSphereForBox(Vector mins, Vector maxs)
+{
+    auto centroid = (maxs + mins) / 2.0f;
+    auto halfExtent = (maxs - centroid);
+    return Sphere{centroid, halfExtent.Length()};
 }
 
 } // namespace Math

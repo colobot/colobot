@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -268,6 +268,7 @@ enum EventType
     EVENT_INTERFACE_SHADOW_MAPPING_QUALITY = 788,
     EVENT_INTERFACE_SHADOW_MAPPING_BUFFER = 789,
     EVENT_INTERFACE_LANGUAGE = 790,
+    EVENT_INTERFACE_VSYNC = 791,
 
     EVENT_INTERFACE_KINFO1  = 500,
     EVENT_INTERFACE_KINFO2  = 501,
@@ -594,6 +595,17 @@ enum EventType
     EVENT_CODE_BATTLE_START = 2200, //!< button that starts the code battle
     EVENT_CODE_BATTLE_SPECTATOR = 2201, //!< button that controls the code battle spectator camera
 
+    //! Buttons that switch viewpoints
+    EVENT_VIEWPOINT0 = 3000,
+    EVENT_VIEWPOINT1 = 3001,
+    EVENT_VIEWPOINT2 = 3002,
+    EVENT_VIEWPOINT3 = 3003,
+    EVENT_VIEWPOINT4 = 3004,
+    EVENT_VIEWPOINT5 = 3005,
+    EVENT_VIEWPOINT6 = 3006,
+    EVENT_VIEWPOINT7 = 3007,
+    EVENT_VIEWPOINT8 = 3008,
+    EVENT_VIEWPOINT9 = 3009,
     //! Maximum value of standard events
     EVENT_STD_MAX,
 

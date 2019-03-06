@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
 #include <boost/lexical_cast.hpp>
 
 
-std::string FormatMissingParamError(CLevelParserParam* thisParam) NOEXCEPT
+static std::string FormatMissingParamError(CLevelParserParam* thisParam) NOEXCEPT
 {
     auto paramName = thisParam->GetName();
     auto lineNumber = boost::lexical_cast<std::string>(thisParam->GetLine()->GetLineNumber());
@@ -37,7 +37,7 @@ CLevelParserExceptionMissingParam::CLevelParserExceptionMissingParam(CLevelParse
 {
 }
 
-std::string FormatBadParamError(CLevelParserParam* thisParam, std::string requestedType) NOEXCEPT
+static std::string FormatBadParamError(CLevelParserParam* thisParam, std::string requestedType) NOEXCEPT
 {
     auto paramName = thisParam->GetName();
     auto paramValue = thisParam->GetValue();

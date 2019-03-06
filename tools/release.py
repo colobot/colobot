@@ -25,6 +25,16 @@ import sys
 import subprocess
 import io
 
+version_override = None
+if len(sys.argv) > 1:
+	m = re.match(r'^(.*?)\.(.*?)\.(.*)$', sys.argv[1])
+	if m is None:
+		print('\033[1;31m[!] Unable to parse version override argument\033[0m')
+		sys.exit(1)
+	version_override = (m.group(1), m.group(2), m.group(3))
+	print('\033[1;34m[*] Version override: '+('%s.%s.%s' % version_override)+'\033[0m')
+
+
 try:
 	git_root = subprocess.check_output(['git', 'rev-parse', '--show-toplevel']).strip()
 except subprocess.CalledProcessError:
@@ -63,18 +73,25 @@ codename = None
 data = open('CMakeLists.txt', 'r').readlines()
 
 for i in range(len(data)):
-	m = re.match(r'^set\(COLOBOT_VERSION_(MAJOR|MINOR|REVISION)( +)([0-9]+)\)$', data[i])
+	m = re.match(r'^set\(COLOBOT_VERSION_(MAJOR|MINOR|REVISION)( +)([0-9]+(\.[0-9]+)?)\)$', data[i])
 	if m:
-		x = int(m.group(3))
+		x = m.group(3)
 		if m.group(1) == 'MAJOR':
+			if version_override is not None:
+				x = version_override[0]
 			major = x
 		elif m.group(1) == 'MINOR':
+			if version_override is not None:
+				x = version_override[1]
 			minor = x
 		elif m.group(1) == 'REVISION':
-			# Increase revision number
-			x += 1
+			if version_override is not None:
+				x = version_override[2]
+			else:
+				# Increase revision number
+				revision = str(int(x) + 1)
 			revision = x
-		data[i] = 'set(COLOBOT_VERSION_'+m.group(1)+m.group(2)+str(x)+')\n'
+		data[i] = 'set(COLOBOT_VERSION_'+m.group(1)+m.group(2)+x+')\n'
 
 	m = re.match(r'^(#?)set\(COLOBOT_VERSION_(UNRELEASED|RELEASE_CODENAME)( +)"(.+)"\)$', data[i])
 	if m:
@@ -84,8 +101,8 @@ for i in range(len(data)):
 		data[i] = ('#' if comment else '')+'set(COLOBOT_VERSION_'+m.group(2)+m.group(3)+'"'+m.group(4)+'")\n'
 
 subprocess.check_call(['git', 'checkout', 'master'])
-version = '%d.%d.%d%s' % (major, minor, revision, codename)
-version_human = '%s %d.%d.%d' % (codename.strip('-'), major, minor, revision)
+version = '%s.%s.%s%s' % (major, minor, revision, codename)
+version_human = '%s %s.%s.%s' % (codename.strip('-'), major, minor, revision)
 print('\033[1;32m[+] Building version '+version+'\033[0m')
 
 print('\033[1;34m[*] Merge data...\033[0m')

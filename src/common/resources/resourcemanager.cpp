@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -83,6 +83,16 @@ bool CResourceManager::RemoveLocation(const std::string &location)
     }
 
     return true;
+}
+
+std::vector<std::string> CResourceManager::GetLocations()
+{
+    std::vector<std::string> ret;
+    char **list = PHYSFS_getSearchPath();
+    for (char **it = list; *it != nullptr; ++it)
+        ret.push_back(*it);
+    PHYSFS_freeList(list);
+    return ret;
 }
 
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -96,7 +96,7 @@ class CForegroundTask : public CTask
 public:
     CForegroundTask(COldObject* object) : CTask(object) {}
 
-    bool IsBackground() final { return false; }
+    bool IsBackground() override final { return false; }
     bool IsPilot() override { return false; }
 };
 
@@ -105,6 +105,6 @@ class CBackgroundTask : public CTask
 public:
     CBackgroundTask(COldObject* object) : CTask(object) {}
 
-    bool IsBackground() final { return true; }
-    bool IsPilot() final { return true; }
+    bool IsBackground() override final { return true; }
+    bool IsPilot() override final { return true; }
 };

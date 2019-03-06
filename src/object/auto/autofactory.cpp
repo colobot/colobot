@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -168,7 +168,7 @@ void CAutoFactory::SetProgram(const std::string& program)
     m_program = program;
 }
 
-ObjectType ObjectTypeFromFactoryButton(EventType eventType)
+static ObjectType ObjectTypeFromFactoryButton(EventType eventType)
 {
     if ( eventType == EVENT_OBJECT_FACTORYwa )  return OBJECT_MOBILEwa;
     if ( eventType == EVENT_OBJECT_FACTORYta )  return OBJECT_MOBILEta;
@@ -667,7 +667,7 @@ bool CAutoFactory::CreateVehicle()
         for (const std::string& name : m_main->GetNewScriptNames(m_type))
         {
             Program* prog = programStorage->AddProgram();
-            programStorage->ReadProgram(prog, InjectLevelPathsForCurrentLevel(name));
+            programStorage->ReadProgram(prog, InjectLevelPathsForCurrentLevel(name, "ai"));
             prog->readOnly = true;
             prog->filename = name;
         }

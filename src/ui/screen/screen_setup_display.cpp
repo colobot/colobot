@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -115,6 +115,36 @@ void CScreenSetupDisplay::CreateInterface()
     pc->SetState(STATE_SHADOW);
     pc->SetState(STATE_CHECK, m_setupFull);
 
+    pos.x = ox+sx*10;
+    pos.y = oy+sy*6.75f;
+    ddim.x = dim.x*6;
+    ddim.y = dim.y*1;
+    GetResource(RES_EVENT, EVENT_INTERFACE_VSYNC, name);
+    pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL2, name);
+    pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
+
+    pos.x = ox+sx*10;
+    pos.y = oy+sy*5.2f;
+    ddim.x = dim.x*6;
+    ddim.y = dim.y*2;
+    pli = pw->CreateList(pos, ddim, 0, EVENT_INTERFACE_VSYNC);
+    pli->SetState(STATE_SHADOW);
+    pli->SetItemName(0, "Off");
+    pli->SetItemName(1, "Adaptive");
+    pli->SetItemName(2, "On");
+    switch(m_engine->GetVSync())
+    {
+        case -1: //Adaptive?
+            pli->SetSelect(1);
+            break;
+        case 0: //Off?
+            pli->SetSelect(0);
+            break;
+        case 1: //On?
+            pli->SetSelect(2);
+            break;
+    }
+
     ddim.x = dim.x*6;
     ddim.y = dim.y*1;
     pos.x = ox+sx*10;
@@ -131,6 +161,7 @@ bool CScreenSetupDisplay::EventProcess(const Event &event)
     CWindow* pw;
     CCheck* pc;
     CButton* pb;
+    CList* pl;
 
     switch( event.type )
     {
@@ -167,6 +198,27 @@ bool CScreenSetupDisplay::EventProcess(const Event &event)
             UpdateApply();
             break;
 
+        case EVENT_INTERFACE_VSYNC:
+            pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
+            if ( pw == nullptr ) break;
+            pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_VSYNC));
+            if (pl == nullptr ) break;
+            switch(pl->GetSelect())
+            {
+                case 0: //Off?
+                    m_engine->SetVSync(0);
+                    break;
+                case 1: //Adaptive?
+                    m_engine->SetVSync(-1);
+                    break;
+                case 2: //On?
+                    m_engine->SetVSync(1);
+                    break;
+            }
+            ChangeDisplay();
+            UpdateApply();
+            break;
+
         default:
             return true;
     }
@@ -175,12 +227,12 @@ bool CScreenSetupDisplay::EventProcess(const Event &event)
 
 // Updates the list of modes.
 
-int GCD(int a, int b)
+static int GCD(int a, int b)
 {
     return (b == 0) ? a : GCD(b, a%b);
 }
 
-Math::IntPoint AspectRatio(Math::IntPoint resolution)
+static Math::IntPoint AspectRatio(Math::IntPoint resolution)
 {
     int gcd = GCD(resolution.x, resolution.y);
     return Math::IntPoint(static_cast<float>(resolution.x) / gcd, static_cast<float>(resolution.y) / gcd);

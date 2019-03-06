@@ -1,0 +1,1866 @@
+# This file is part of the Colobot: Gold Edition source code
+# Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+# This file is distributed under the same license as the Colobot package.
+# next_ghost <next_ghost@quick.cz>, 2018.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.1.11\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: DATE\n"
+"PO-Revision-Date: 2018-08-20 22:48+02\n"
+"Last-Translator: next_ghost <next_ghost@quick.cz>\n"
+"Language-Team: Czech <next_ghost@quick.cz>\n"
+"Language: Czech\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=((n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2);\n"
+"X-Language: cs_CZ\n"
+"X-Source-Language: en_US\n"
+
+msgid " or "
+msgstr " nebo "
+
+msgid "\" [ \" expected"
+msgstr "Očekáváno \"[\""
+
+msgid "\" ] \" missing"
+msgstr "Chybí \"]\""
+
+#, c-format
+msgid "%s: %d pts"
+msgstr "%s: %d bodů"
+
+msgid "..behind"
+msgstr "...za sebou"
+
+msgid "..in front"
+msgstr "...před sebou"
+
+msgid "..power cell"
+msgstr "...baterii"
+
+msgid "1) First click on the key you want to redefine."
+msgstr "1) Nejprve klikněte na klávesu, kterou chcete změnit."
+
+msgid "2) Then press the key you want to use instead."
+msgstr "2) Pak stiskněte klávesu, kterou chcete používat."
+
+msgid "<<  Back  \\Back to the previous screen"
+msgstr "<<  Zpět  \\Zpět na předchozí obrazovku"
+
+msgid "<<< Sorry; mission failed >>>"
+msgstr "<<< Bohužel; mise byla neúspěšná >>>"
+
+#, c-format
+msgid "<<< Team %s finished! >>>"
+msgstr "<<< Tým %s dokončil hru! >>>"
+
+#, c-format
+msgid "<<< Team %s lost! >>>"
+msgstr "<<< Tým %s prohrál! >>>"
+
+#, c-format
+msgid "<<< Team %s recieved %d points >>>"
+msgstr "<<< Tým %s získal %d bodů >>>"
+
+msgid "<<< Well done; mission accomplished >>>"
+msgstr "<<< Gratulujeme; mise úspěšně splněna >>>"
+
+msgid "A label must be followed by \"for\"; \"while\"; \"do\" or \"switch\""
+msgstr "Za návěstím musí následovat \"for\", \"while\", \"do\" nebo \"switch\""
+
+msgid "A variable can not be declared twice"
+msgstr "Proměnnou nelze deklarovat dvakrát"
+
+msgid "Abort\\Abort the current mission"
+msgstr "Ukončit\\Ukončit současnou misi"
+
+msgid "Access beyond array limit"
+msgstr "Index mimo rozsah pole"
+
+msgid "Access to solution\\Shows the solution (detailed instructions for missions)"
+msgstr "Zpřístupnit řešení\\Ukázat řešení (podrobné instrukce pro splnění mise)"
+
+msgid "Access to solutions\\Show program \"4: Solution\" in the exercises"
+msgstr "Zpřístupnit řešení\\Ve cvičných úlohách zobrazit program \"4: Řešení\""
+
+msgid "Add new program"
+msgstr "Přidat nový program"
+
+msgid "Alien Queen"
+msgstr "Královna vetřelců"
+
+msgid "Alien Queen killed"
+msgstr "Královna vetřelců zabita"
+
+msgid "Already carrying something"
+msgstr "Rameno už něco drží"
+
+msgid "Alternative camera mode\\Move sideways instead of rotating (in free camera)"
+msgstr "Přepnout režim kamery\\Posun do stran místo otáčení (volná kamera)"
+
+msgid "Ambiguous call to overloaded function"
+msgstr "Nejednoznačné volání přetížené funkce"
+
+msgid "Analysis already performed"
+msgstr "Analýza již byla dokončena"
+
+msgid "Analysis performed"
+msgstr "Analýza dokončena"
+
+msgid "Analyzes only organic matter"
+msgstr "Analyzuje pouze organickou hmotu"
+
+msgid "Anisotropy level\\Anisotropy level"
+msgstr "Úroveň anizotropie\\Úroveň anizotropie"
+
+msgid "Ant"
+msgstr "Mravenec"
+
+msgid "Ant fatally wounded"
+msgstr "Mravenec byl smrtelně raněn"
+
+msgid "Appearance\\Choose your appearance"
+msgstr "Vzhled\\Upravte svůj vzhled"
+
+msgid "Apply changes\\Activates the changed settings"
+msgstr "Uložit změny\\Aktivovat změny nastavení"
+
+msgid "Appropriate constructor missing"
+msgstr "Chybí vhodný konstruktor"
+
+msgid "Assignment impossible"
+msgstr "Přiřazení není povoleno"
+
+msgid "Autolab"
+msgstr "Laboratoř"
+
+msgid "Automatic indent\\When program editing"
+msgstr "Automatické odsazování\\Odsazování v editoru programu"
+
+msgid "Autosave interval\\How often your game will autosave"
+msgstr "Interval ukládání\\Jak často bude hra automaticky uložena"
+
+msgid "Autosave slots\\How many autosave slots you'll have"
+msgstr "Počet pozic\\Kolik automaticky uložených pozic bude hra udržovat"
+
+msgid "Autosave\\Enables autosave"
+msgstr "Automatické ukládání\\Povolit automatické ukládání"
+
+msgid "Back"
+msgstr "Zpět"
+
+msgid "Background sound:\\Volume of audio tracks"
+msgstr "Zvuk na pozadí:\\Hlasitost hudebního doprovodu"
+
+msgid "Backward (\\key down;)"
+msgstr "Dozadu (\\key down;)"
+
+msgid "Backward\\Moves backward"
+msgstr "Dozadu\\Pohyb dozadu"
+
+msgid "Bad argument for \"new\""
+msgstr "Špatný argument pro příkaz \"new\""
+
+msgid "Big indent\\Indent 2 or 4 spaces per level defined by braces"
+msgstr "Velké odsazování\\Každý blok kódu odsazovat o 2 nebo 4 mezery"
+
+msgid "Black box"
+msgstr "Černá skříňka"
+
+msgid "Blood\\Display blood when the astronaut is hit"
+msgstr "Krev\\Při zranění kosmonauta zobrazit krev"
+
+msgid "Blue"
+msgstr "Modrá"
+
+msgid "Blue flag"
+msgstr "Modrá vlajka"
+
+msgid "Bot destroyed"
+msgstr "Robot zničen"
+
+msgid "Bot factory"
+msgstr "Továrna na roboty"
+
+msgid "Build a bot factory"
+msgstr "Postavit továrnu na roboty"
+
+msgid "Build a converter"
+msgstr "Postavit konvertor titanu"
+
+msgid "Build a defense tower"
+msgstr "Postavit obrannou věž"
+
+msgid "Build a derrick"
+msgstr "Postavit vrtnou věž"
+
+msgid "Build a destroyer"
+msgstr "Postavit drtič"
+
+msgid "Build a exchange post"
+msgstr "Postavit komunikační stanici"
+
+msgid "Build a legged grabber"
+msgstr "Vyrobit chodící rameno"
+
+msgid "Build a legged orga shooter"
+msgstr "Vyrobit chodící biokanón"
+
+msgid "Build a legged shooter"
+msgstr "Vyrobit chodící kanón"
+
+msgid "Build a legged sniffer"
+msgstr "Vyrobit chodící detektor"
+
+msgid "Build a lightning conductor"
+msgstr "Postavit hromosvod"
+
+msgid "Build a nuclear power plant"
+msgstr "Postavit jadernou elektrárnu"
+
+msgid "Build a phazer shooter"
+msgstr "Vyrobit fázové dělo"
+
+msgid "Build a power cell factory"
+msgstr "Postavit továrnu na baterie"
+
+msgid "Build a power station"
+msgstr "Postavit nabíječku"
+
+msgid "Build a radar station"
+msgstr "Postavit radar"
+
+msgid "Build a recycler"
+msgstr "Vyrobit recyklátor"
+
+msgid "Build a repair center"
+msgstr "Postavit opravnu"
+
+msgid "Build a research center"
+msgstr "Postavit výzkumnou stanici"
+
+msgid "Build a shielder"
+msgstr "Vyrobit mobilní štít"
+
+msgid "Build a subber"
+msgstr "Vyrobit ponorku"
+
+msgid "Build a thumper"
+msgstr "Vyrobit buchar"
+
+msgid "Build a tracked grabber"
+msgstr "Vyrobit pásové rameno"
+
+msgid "Build a tracked orga shooter"
+msgstr "Vyrobit pásový biokanón"
+
+msgid "Build a tracked shooter"
+msgstr "Vyrobit pásový kanón"
+
+msgid "Build a tracked sniffer"
+msgstr "Vyrobit pásový detektor"
+
+msgid "Build a wheeled grabber"
+msgstr "Vyrobit pojízdné rameno"
+
+msgid "Build a wheeled orga shooter"
+msgstr "Vyrobit pojízdný biokanón"
+
+msgid "Build a wheeled shooter"
+msgstr "Vyrobit pojízdný kanón"
+
+msgid "Build a wheeled sniffer"
+msgstr "Vyrobit pojízdný detektor"
+
+msgid "Build a winged grabber"
+msgstr "Vyrobit létající rameno"
+
+msgid "Build a winged orga shooter"
+msgstr "Vyrobit létající biokanón"
+
+msgid "Build a winged shooter"
+msgstr "Vyrobit létající kanón"
+
+msgid "Build a winged sniffer"
+msgstr "Vyrobit létající detektor"
+
+msgid "Build an autolab"
+msgstr "Postavit laboratoř"
+
+msgid "Building completed"
+msgstr "Budova dokončena"
+
+msgid "Building destroyed"
+msgstr "Budova zničena"
+
+msgid "Button %1"
+msgstr "Tlačítko %1"
+
+msgid "Calling an unknown function"
+msgstr "Volání neznámé funkce"
+
+msgid "Camera (\\key camera;)"
+msgstr "Kamera (\\key camera;)"
+
+msgid "Camera back\\Moves the camera backward"
+msgstr "Oddálit kameru\\Posune kameru dozadu"
+
+msgid "Camera border scrolling\\Scrolling when the mouse touches right or left border"
+msgstr "Posouvání na kraji obrazovky\\Posouvání kamery, když myší najedete na levý nebo pravý okraj obrazovky"
+
+msgid "Camera closer\\Moves the camera forward"
+msgstr "Přiblížit kameru\\Posune kameru vpřed"
+
+msgid "Camera down\\Turns the camera down"
+msgstr "Kameru dolů\\Otočí kameru dolů"
+
+msgid "Camera left\\Turns the camera left"
+msgstr "Kameru doleva\\Otočí kameru doleva"
+
+msgid "Camera right\\Turns the camera right"
+msgstr "Kameru doprava\\Otočí kameru doprava"
+
+msgid "Camera up\\Turns the camera up"
+msgstr "Kameru nahoru\\Otočí kameru nahoru"
+
+msgid "Can not produce not researched object"
+msgstr "Nejprve je třeba objekt vyzkoumat"
+
+msgid "Can not produce this object in this mission"
+msgstr "V této misi nelze daný objekt vyrobit"
+
+msgid "Can't open file"
+msgstr "Nelze otevřít soubor"
+
+msgid "Cancel"
+msgstr "Zrušit"
+
+msgid "Cancel\\Cancel all changes"
+msgstr "Zrušit\\Zrušit všechny změny"
+
+msgid "Challenges"
+msgstr "Hlavolamy"
+
+msgid "Challenges in the chapter:"
+msgstr "Hlavolamy v této kapitole:"
+
+msgid "Challenges\\Programming challenges"
+msgstr "Hlavolamy\\Programátorské hlavolamy"
+
+msgid "Change camera\\Switches between onboard camera and following camera"
+msgstr "Změnit kameru\\Přepíná mezi kamerou na robotu a za robotem"
+
+msgid "Change player\\Change player"
+msgstr "Změnit hráče\\Změnit hráče"
+
+msgid "Chapters:"
+msgstr "Kapitoly:"
+
+msgid "Cheat console\\Show cheat console"
+msgstr "Systémová konzole\\Otevře příkazovou řádku pro zadávání cheatů"
+
+msgid "Checkpoint"
+msgstr "Kontrolní bod"
+
+msgid "Class name expected"
+msgstr "Očekáván název třídy"
+
+msgid "Climb\\Increases the power of the jet"
+msgstr "Stoupat\\Zvýšit tah tryskového motoru"
+
+msgid "Clone program"
+msgstr "Zkopírovat program"
+
+msgid "Clone selected program"
+msgstr "Zkopírovat vybraný program"
+
+msgid "Close"
+msgstr "Zavřít"
+
+msgid "Closing bracket missing"
+msgstr "Chybí pravá závorka"
+
+msgid "Code battle"
+msgstr "Souboj programátorů"
+
+msgid "Code battles"
+msgstr "Souboj programátorů"
+
+msgid "Code battles\\Program your robot to be the best of them all!"
+msgstr "Souboj programátorů\\Naprogramujte svého robota, aby byl ze všech nejlepší!"
+
+msgid "Colobot rules!"
+msgstr "Colobot je pecka!"
+
+msgid "Colobot: Gold Edition"
+msgstr "Colobot: Zlatá edice"
+
+msgid "Command line"
+msgstr "Příkazová řádka"
+
+msgid "Compilation ok (0 errors)"
+msgstr "Kompilace úspěšná (0 chyb)"
+
+msgid "Compile"
+msgstr "Zkompilovat"
+
+msgid "Continue"
+msgstr "Pokračovat"
+
+msgid "Continue\\Continue the current mission"
+msgstr "Pokračovat\\Pokračovat v současné misi"
+
+msgid "Controls\\Keyboard, joystick and mouse settings"
+msgstr "Ovládání\\Nastavení klávesnice, joysticku a myši"
+
+msgid "Converts ore to titanium"
+msgstr "Vyrábí titan z rudy"
+
+msgid "Copy"
+msgstr "Kopírovat"
+
+msgid "Copy (Ctrl+C)"
+msgstr "Kopírovat (Ctrl+C)"
+
+msgid "Current mission saved"
+msgstr "Současná mise uložena"
+
+msgid "Custom levels:"
+msgstr "Uživatelské mapy:"
+
+msgid "Custom levels\\Levels from mods created by the users"
+msgstr "Uživatelské mapy\\Mapy z modů vytvořených jinými hráči"
+
+msgid "Customize your appearance"
+msgstr "Upravit vzhled"
+
+msgid "Cut (Ctrl+X)"
+msgstr "Vyjmout (Ctrl+X)"
+
+msgid "Defense tower"
+msgstr "Obranná věž"
+
+msgid "Delete mark"
+msgstr "Smazat značku"
+
+msgid "Delete player\\Deletes the player from the list"
+msgstr "Smazat hráče\\Smaže hráče ze seznamu"
+
+msgid "Delete\\Deletes the selected file"
+msgstr "Smazat\\Smaže vybraný soubor"
+
+msgid "Derrick"
+msgstr "Vrtná věž"
+
+msgid "Descend\\Reduces the power of the jet"
+msgstr "Klesat\\Snížit tah tryskového motoru"
+
+msgid "Destroy"
+msgstr "Zbourat"
+
+msgid "Destroy the building"
+msgstr "Zbourat budovu"
+
+msgid "Destroyer"
+msgstr "Drtič"
+
+msgid "Device\\Driver and resolution settings"
+msgstr "Obrazovka\\Nastavení grafické karty a rozlišení"
+
+msgid "Dividing by zero"
+msgstr "Dělení nulou"
+
+msgid "Do you really want to destroy the selected building?"
+msgstr "Opravdu chcete zbourat vybranou budovu?"
+
+#, c-format
+msgid "Do you want to delete %s's saved games?"
+msgstr "Chcete smazat uložené hry hráče %s?"
+
+msgid "Doors blocked by a robot or another object"
+msgstr "Dveře blokuje robot nebo jiný objekt"
+
+msgid "Down (\\key gdown;)"
+msgstr "Dolů (\\key gdown;)"
+
+msgid "Drawer bot"
+msgstr "Tužkobot"
+
+msgid "Dust\\Dust and dirt on bots and buildings"
+msgstr "Prach\\Prach a špína na robotech a budovách"
+
+msgid "Dynamic lighting\\Mobile light sources"
+msgstr "Dynamická světla\\Pohyblivé zdroje světla"
+
+msgid "Dynamic shadows ++\\Dynamic shadows + self shadowing"
+msgstr "Dynamické stíny ++\\Objekty budou vrhat dynamické stíny na zem i na sebe"
+
+msgid "Dynamic shadows\\Beautiful shadows!"
+msgstr "Dynamické stíny\\Hezčí stíny!"
+
+msgid "Edit the selected program"
+msgstr "Upravit vybraný program"
+
+msgid "Egg"
+msgstr "Vejce"
+
+msgid "End of block missing"
+msgstr "Chybí konec bloku"
+
+msgid "Energy deposit (site for power station)"
+msgstr "Zdroj energie (místo pro nabíječku)"
+
+msgid "Energy level"
+msgstr "Stav baterie"
+
+msgid "Engineer"
+msgstr "Inženýr"
+
+msgid "Error in instruction move"
+msgstr "Chyba během příkazu move"
+
+msgid "Execute the selected program"
+msgstr "Spustit vybraný program"
+
+msgid "Execute/stop"
+msgstr "Spustit/zastavit"
+
+msgid "Exercises in the chapter:"
+msgstr "Cvičení v této kapitole:"
+
+msgid "Exercises\\Programming exercises"
+msgstr "Cvičné úlohy\\Programátorská cvičení"
+
+msgid "Explode (\\key action;)"
+msgstr "Odpálit se (\\key action;)"
+
+msgid "Explosive"
+msgstr "Výbušniny"
+
+msgid "Expression expected after ="
+msgstr "Za znakem \"=\" očekáván výraz"
+
+msgid "Extend shield (\\key action;)"
+msgstr "Zapnout štít (\\key action;)"
+
+msgid "Eyeglasses:"
+msgstr "Brýle:"
+
+msgid "Face type:"
+msgstr "Typ obličeje:"
+
+msgid "File not open"
+msgstr "Soubor není otevřen"
+
+msgid "Filename:"
+msgstr "Název souboru:"
+
+msgid "Film sequences\\Films before and after the missions"
+msgstr "Filmové scény\\Animace na začátku a na konci mise"
+
+msgid "Finish"
+msgstr "Cíl"
+
+msgid "Fixed mine"
+msgstr "Nášlapná mina"
+
+msgid "Flat ground not large enough"
+msgstr "Rovný terén není dost velký"
+
+msgid "Fog\\Fog"
+msgstr "Mlha\\Mlha"
+
+msgid "Folder:"
+msgstr "Adresář:"
+
+#, c-format
+msgid "Folder: %s"
+msgstr "Adresář: %s"
+
+msgid "Font size"
+msgstr "Velikost písma"
+
+msgid "Forward"
+msgstr "Vpřed"
+
+msgid "Forward (\\key up;)"
+msgstr "Vpřed (\\key up;)"
+
+msgid "Forward\\Moves forward"
+msgstr "Vpřed\\Pohyb vpřed"
+
+msgid "Found a site for a derrick"
+msgstr "Objeveno místo pro vrtnou věž"
+
+msgid "Found a site for power station"
+msgstr "Objeveno místo pro nabíječku"
+
+msgid "Found key A (site for derrick)"
+msgstr "Nalezen klíč A (místo pro vrtnou věž)"
+
+msgid "Found key B (site for derrick)"
+msgstr "Nalezen klíč B (místo pro vrtnou věž)"
+
+msgid "Found key C (site for derrick)"
+msgstr "Nalezen klíč C (místo pro vrtnou věž)"
+
+msgid "Found key D (site for derrick)"
+msgstr "Nalezen klíč D (místo pro vrtnou věž)"
+
+msgid "Free game"
+msgstr "Volná hra"
+
+msgid "Free game on this planet:"
+msgstr "Volná hra na této planetě:"
+
+msgid "Free game\\Free game without a specific goal"
+msgstr "Volná hra\\Volná hra bez konkrétního cíle"
+
+msgid "Full screen\\Full screen or window mode"
+msgstr "Celá obrazovka\\Zobrazit v okně nebo na celé obrazovce"
+
+msgid "Function already exists"
+msgstr "Funkce již existuje"
+
+msgid "Function name missing"
+msgstr "Chybí název funkce"
+
+msgid "Function needs return type \"void\""
+msgstr "Tato funkce musí mít návratový typ \"void\""
+
+msgid "Game speed"
+msgstr "Rychlost hry"
+
+msgid "Game\\Game settings"
+msgstr "Hra\\Herní nastavení"
+
+msgid "Gantry crane"
+msgstr "Jeřáb"
+
+msgid "Generating"
+msgstr "Generuji"
+
+msgid "Gold Edition development by:"
+msgstr "Vývojáři Zlaté edice:"
+
+msgid "Goto: destination occupied"
+msgstr "Goto: cílové místo je obsazeno"
+
+msgid "Goto: inaccessible destination"
+msgstr "Goto: neexistuje cesta k cíli"
+
+msgid "Grab or drop (\\key action;)"
+msgstr "Vzít nebo položit (\\key action;)"
+
+msgid "Graphics\\Graphics settings"
+msgstr "Grafika\\Nastavení grafiky"
+
+msgid "Green"
+msgstr "Zelená"
+
+msgid "Green flag"
+msgstr "Zelená vlajka"
+
+msgid "Ground not flat enough"
+msgstr "Terén není dost rovný"
+
+msgid "Hair color:"
+msgstr "Barva vlasů:"
+
+msgid "Head\\Face and hair"
+msgstr "Hlava\\Obličej a vlasy"
+
+msgid "Help about selected object"
+msgstr "Nápověda k vybranému objektu"
+
+msgid "Help balloons\\Explain the function of the buttons"
+msgstr "Kontextová nápověda\\Popisky vysvětlující funkci tlačítek"
+
+msgid "Hex value out of range"
+msgstr "Hexadecimální hodnota mimo rozsah"
+
+msgid "Higher speed\\Doubles speed"
+msgstr "Dvojnásobná rychlost\\Zrychlí hru na dvojnásobek"
+
+msgid "Highest\\Highest graphic quality (lowest frame rate)"
+msgstr "Nejvyšší\\Nejvyšší grafická kvalita (nejpomalejší vykreslování)"
+
+msgid "Home"
+msgstr "Domů"
+
+msgid "Houston Mission Control"
+msgstr "Řídící středisko Houston"
+
+msgid "Illegal object"
+msgstr "Neplatný objekt"
+
+msgid "Impossible under water"
+msgstr "Nelze provést pod vodou"
+
+msgid "Impossible when carrying an object"
+msgstr "Na tuto akci potřebujete volné ruce"
+
+msgid "Impossible when flying"
+msgstr "Nelze provést za letu"
+
+msgid "Impossible when moving"
+msgstr "Nelze provést v pohybu"
+
+msgid "Impossible when swimming"
+msgstr "Nelze provést během plavání"
+
+msgid "Inappropriate bot"
+msgstr "Nevhodný robot"
+
+msgid "Inappropriate cell type"
+msgstr "Nevhodný typ baterie"
+
+msgid "Inappropriate object"
+msgstr "Nevhodný objekt"
+
+msgid "Incorrect index type"
+msgstr "Špatný datový typ indexu"
+
+msgid "Infected by a virus; temporarily out of order"
+msgstr "Infikováno virem; dočasně mimo provoz"
+
+msgid "Information exchange post"
+msgstr "Komunikační stanice"
+
+msgid "Instruction \"break\" outside a loop"
+msgstr "Příkaz \"break\" mimo cyklus"
+
+msgid "Instruction \"case\" missing"
+msgstr "Chybí příkaz \"case\""
+
+msgid "Instruction \"case\" outside a block \"switch\""
+msgstr "Příkaz \"case\" mimo blok \"switch\""
+
+msgid "Instruction \"else\" without corresponding \"if\""
+msgstr "Příkaz \"else\" musí následovat po \"if\""
+
+msgid "Instructions (\\key help;)"
+msgstr "Instrukce (\\key help;)"
+
+msgid "Instructions after the final closing brace"
+msgstr "Příkazy za koncem posledního bloku"
+
+msgid "Instructions for the mission (\\key help;)"
+msgstr "Instrukce k misi (\\key help;)"
+
+msgid "Instructions from Houston"
+msgstr "Instrukce z Houstonu"
+
+msgid "Instructions\\Shows the instructions for the current mission"
+msgstr "Instrukce\\Zobrazí instrukce pro aktuální misi"
+
+msgid "Internal error - tell the developers"
+msgstr "Vnitřní chyba - oznamte ji vývojářům"
+
+msgid "Invalid universal character name"
+msgstr "Neplatný kód znaku"
+
+msgid "Invert\\Invert values on this axis"
+msgstr "Obrátit\\Obrátit hodnoty na této ose"
+
+msgid "Jet temperature"
+msgstr "Teplota tryskového motoru"
+
+msgid "Key A"
+msgstr "Klíč A"
+
+msgid "Key B"
+msgstr "Klíč B"
+
+msgid "Key C"
+msgstr "Klíč C"
+
+msgid "Key D"
+msgstr "Klíč D"
+
+msgid "Keyword \"while\" missing"
+msgstr "Chybí klíčové slovo \"while\""
+
+msgid "Keyword help(\\key cbot;)"
+msgstr "Nápověda ke klíčovému slovu (\\key cbot;)"
+
+msgid "LOADING"
+msgstr "NAČÍTÁNÍ"
+
+msgid "Legged grabber"
+msgstr "Chodící rameno"
+
+msgid "Legged orga shooter"
+msgstr "Chodící biokanón"
+
+msgid "Legged shooter"
+msgstr "Chodící kanón"
+
+msgid "Legged sniffer"
+msgstr "Chodící detektor"
+
+msgid "Levels in this chapter:"
+msgstr "Mapy v této kapitole:"
+
+msgid "Lightning conductor"
+msgstr "Hromosvod"
+
+msgid "List of objects"
+msgstr "Seznam objektů"
+
+msgid "List of saved missions"
+msgstr "Seznam uložených misí"
+
+msgid "Load a saved mission"
+msgstr "Nahrát uloženou misi"
+
+msgid "Load\\Load a saved mission"
+msgstr "Nahrát\\Nahrát uloženou misi"
+
+msgid "Load\\Loads the selected mission"
+msgstr "Nahrát\\Nahraje vybranou misi"
+
+msgid "Loading basic level settings"
+msgstr "Načítám základní nastavení mapy"
+
+msgid "Loading finished!"
+msgstr "Nahrávání dokončeno!"
+
+msgid "Loading music"
+msgstr "Načítám hudbu"
+
+msgid "Loading objects"
+msgstr "Načítám objekty"
+
+msgid "Loading terrain"
+msgstr "Načítám terén"
+
+msgid "Lower speed\\Decrease speed by half"
+msgstr "Poloviční rychlost\\Sníží rychlost hry na polovinu"
+
+msgid "Lowest\\Minimum graphic quality (highest frame rate)"
+msgstr "Nejnižší\\Nejnižší grafická kvalita (nejrychlejší vykreslování)"
+
+msgid "Lunar Roving Vehicle"
+msgstr "Lunar Roving Vehicle"
+
+msgid "MSAA\\Multisample anti-aliasing"
+msgstr "MSAA\\Vícevzorkové vyhlazování hran"
+
+msgid "Maximize"
+msgstr "Maximalizovat"
+
+msgid "Minimize"
+msgstr "Minimalizovat"
+
+msgid "Mipmap level\\Mipmap level"
+msgstr "Úroveň mipmap\\Úroveň mipmap"
+
+msgid "Missing end quote"
+msgstr "Chybí koncová uvozovka"
+
+msgid "Missing hex digits after escape sequence"
+msgstr "Za zástupnou sekvencí chybí hexadecimální číslice"
+
+msgid "Mission name"
+msgstr "Název mise"
+
+msgid "Missions"
+msgstr "Mise"
+
+msgid "Missions on this planet:"
+msgstr "Mise na této planetě:"
+
+msgid "Missions\\Select mission"
+msgstr "Mise\\Vyberte misi"
+
+msgid "Mouse inversion X\\Inversion of the scrolling direction on the X axis"
+msgstr "Vodorovné převrácení posunu\\Při vodorovném posunu kamery myší pousouvat opačným směrem"
+
+msgid "Mouse inversion Y\\Inversion of the scrolling direction on the Y axis"
+msgstr "Svislé převrácení posunu\\Při svislém posunu kamery myší pousouvat opačným směrem"
+
+msgid "Move selected program down"
+msgstr "Posunout vybraný program níže"
+
+msgid "Move selected program up"
+msgstr "Posunout vybraný program výše"
+
+msgid "Mute\\No sound"
+msgstr "Ticho\\Bez zvuku"
+
+msgid "Name:"
+msgstr "Jméno:"
+
+msgid "Negative value rejected by \"throw\""
+msgstr "\"throw\" nepřijímá záporné hodnoty"
+
+msgid "Nest"
+msgstr "Hnízdo"
+
+msgid "New"
+msgstr "Nový"
+
+msgid "New ..."
+msgstr "Nový..."
+
+msgid "New bot available"
+msgstr "Robot vyroben"
+
+msgid "Next"
+msgstr "Další"
+
+msgid "Next object\\Selects the next object"
+msgstr "Další objekt\\Vybere následující objekt"
+
+msgid "No"
+msgstr "Ne"
+
+msgid "No energy in the subsoil"
+msgstr "Pod povrchem není zdroj energie"
+
+msgid "No flag nearby"
+msgstr "Poblíž není žádná vlajka"
+
+msgid "No function running"
+msgstr "Neběží žádná funkce"
+
+msgid "No function with this name accepts this kind of parameter"
+msgstr "Žádná funkce s tímto názvem nepřijímá parametry těchto typů"
+
+msgid "No function with this name accepts this number of parameters"
+msgstr "Žádná funkce s tímto názvem nepřijímá tento počet parametrů"
+
+msgid "No information exchange post within range"
+msgstr "Žádná komunikační stanice v dosahu"
+
+msgid "No more energy"
+msgstr "Došla baterie"
+
+msgid "No ore in the subsoil"
+msgstr "Pod porvchem není žádná ruda"
+
+msgid "No power cell"
+msgstr "Chybí baterie"
+
+msgid "No titanium"
+msgstr "Žádný titan"
+
+msgid "No titanium around"
+msgstr "Není tu žádný titan"
+
+msgid "No titanium ore to convert"
+msgstr "Žádná titanová ruda ke zpracování"
+
+msgid "No titanium to transform"
+msgstr "Žádný titan ke zpracování"
+
+msgid "No uranium to transform"
+msgstr "Žádný uran ke zpracování"
+
+msgid "No userlevels installed!"
+msgstr "Žádné uživatelské mapy nejsou nainstalovány!"
+
+msgid "Non-void function needs \"return;\""
+msgstr "Pokud funkce nemá návratový typ \"void\", musí končit příkazem \"return;\""
+
+msgid "Normal size"
+msgstr "Normální velikost"
+
+msgid "Normal\\Normal graphic quality"
+msgstr "Normální\\Normální grafická kvalita"
+
+msgid "Normal\\Normal sound volume"
+msgstr "Normální\\Normální hlasitost zvuku"
+
+msgid "Not enough energy"
+msgstr "Málo energie"
+
+msgid "Not enough energy yet"
+msgstr "Je třeba načerpat více energie"
+
+msgid "Not found anything to destroy"
+msgstr "Není co zničit"
+
+msgid "Nothing to analyze"
+msgstr "Není co analyzovat"
+
+msgid "Nothing to drop"
+msgstr "Není co položit"
+
+msgid "Nothing to grab"
+msgstr "Není co zvednout"
+
+msgid "Nothing to recycle"
+msgstr "Není co recyklovat"
+
+msgid "Nuclear power cell"
+msgstr "Jaderná baterie"
+
+msgid "Nuclear power cell available"
+msgstr "Jaderná baterie vyrobena"
+
+msgid "Nuclear power station"
+msgstr "Jaderná elektrárna"
+
+msgid "Number missing"
+msgstr "Chybí číslo"
+
+msgid "Number of insects detected"
+msgstr "Počet nalezených brouků"
+
+msgid "Number of particles\\Explosions, dust, reflections, etc."
+msgstr "Počet částic\\Výbuchy, prach, odlesky, atd."
+
+msgid "OK"
+msgstr "OK"
+
+msgid "OK\\Choose the selected player"
+msgstr "OK\\Vybrat tohoto hráče"
+
+msgid "OK\\Close program editor and return to game"
+msgstr "OK\\Zavřít editor programu a pokračovat ve hře"
+
+msgid "Object too close"
+msgstr "Objekt je příliš blízko"
+
+msgid "Octal value out of range"
+msgstr "Oktalová hodnota mimo rozsah"
+
+msgid "One step"
+msgstr "Jeden krok"
+
+msgid "Open"
+msgstr "Otevřít"
+
+msgid "Open (Ctrl+O)"
+msgstr "Otevřít (Ctrl+O)"
+
+msgid "Opening brace missing"
+msgstr "Chybí levá složená závorka"
+
+msgid "Opening bracket missing"
+msgstr "Chybí levá závorka"
+
+msgid "Operation impossible with value \"nan\""
+msgstr "Tuto operaci nelze provést s hodnotou \"nan\""
+
+msgid "Options"
+msgstr "Nastavení"
+
+msgid "Options\\Preferences"
+msgstr "Nastavení\\Volby"
+
+msgid "Organic matter"
+msgstr "Organická hmota"
+
+msgid "Origin of last message\\Shows where the last message was sent from"
+msgstr "Zdroj poslední zprávy\\Zobrazí objekt, který poslal poslední zprávu"
+
+msgid "Original game developed by:"
+msgstr "Vývojáři původní hry:"
+
+msgid "Parameters missing"
+msgstr "Některé parametry nejsou vyplněné"
+
+msgid "Particles in the interface\\Steam clouds and sparks in the interface"
+msgstr "Částice v uživatelském rozhraní\\Obláčky páry a jiskry v uživatelském rozhraní"
+
+msgid "Paste (Ctrl+V)"
+msgstr "Vložit (Ctrl+V)"
+
+msgid "Pause blur\\Blur the background on the pause screen"
+msgstr "Rozmazání při pauze\\Rozmazat pozadí při pozastavení hry"
+
+msgid "Pause in background\\Pause the game when the window is unfocused"
+msgstr "Pauza na pozadí\\Pozastavit hru, když přepnete do jiného okna"
+
+msgid "Pause/continue"
+msgstr "Pozastavit/pokračovat"
+
+msgid "Pause\\Pause the game without opening menu"
+msgstr "Pauza\\Pozastaví hru bez otevření menu"
+
+msgid "Phazer shooter"
+msgstr "Fázové dělo"
+
+msgid "Photography"
+msgstr "Fotografie"
+
+msgid "Place occupied"
+msgstr "Místo je obsazeno"
+
+msgid "Planets:"
+msgstr "Planety:"
+
+msgid "Plans for defense tower available"
+msgstr "Plány pro obrannou věž jsou k dispozici"
+
+msgid "Plans for nuclear power plant available"
+msgstr "Plány pro jadernou elektrárnu jsou k dispozici"
+
+msgid "Plans for phazer shooter available"
+msgstr "Plány pro fázové dělo jsou k dispozici"
+
+msgid "Plans for shielder available"
+msgstr "Plány pro mobilní štít jsou k dispozici"
+
+msgid "Plans for shooter available"
+msgstr "Plány pro kanón jsou k dispozici"
+
+msgid "Plans for thumper available"
+msgstr "Plány pro buchar jsou k dispozici"
+
+msgid "Plans for tracked robots available"
+msgstr "Plány pro pásové roboty jsou k dispozici"
+
+msgid "Plant a flag"
+msgstr "Umístit vlajku"
+
+msgid "Play\\Start mission!"
+msgstr "Spustit\\Zahájit misi!"
+
+msgid "Player"
+msgstr "Hráč"
+
+msgid "Player name"
+msgstr "Jméno hráče"
+
+msgid "Player's name"
+msgstr "Jméno hráče"
+
+msgid "Power cell"
+msgstr "Baterie"
+
+msgid "Power cell available"
+msgstr "Baterie vyrobena"
+
+msgid "Power cell factory"
+msgstr "Továrna na baterie"
+
+msgid "Power station"
+msgstr "Nabíječka"
+
+msgid "Practice bot"
+msgstr "Cvičný robot"
+
+msgid "Press \\key help; to read instructions on your SatCom"
+msgstr "Pro přečtení instrukcí přes SatKom stiskněte \\key help;"
+
+msgid "Previous"
+msgstr "Předchozí"
+
+msgid "Previous object\\Selects the previous object"
+msgstr "Předchozí objekt\\Vybere předchozí objekt"
+
+msgid "Previous selection (\\key desel;)"
+msgstr "Předchozí výběr (\\key desel;)"
+
+msgid "Private element"
+msgstr "Soukromý prvek"
+
+msgid "Private\\Private folder"
+msgstr "Soukromý\\Soukromý adresář"
+
+msgid "Processing level file"
+msgstr "Zpracovávám soubor mise"
+
+msgid "Program cloned"
+msgstr "Program byl zkopírován"
+
+msgid "Program editor"
+msgstr "Editor kódu"
+
+msgid "Program finished"
+msgstr "Program doběhl"
+
+msgid "Program infected by a virus"
+msgstr "Program byl infikován virem"
+
+msgid "Programming exercises"
+msgstr "Cvičné úlohy"
+
+msgid "Programming help"
+msgstr "Nápověda"
+
+msgid "Programming help (\\key prog;)"
+msgstr "Nápověda (\\key prog;)"
+
+msgid "Programming help\\Gives more detailed help with programming"
+msgstr "Nápověda\\Zobrazí nápovědu pro psaní programů"
+
+msgid "Programs dispatched by Houston"
+msgstr "Programy poslané z Houstonu"
+
+msgid "Public required"
+msgstr "Tato definice musí být veřejná (public)"
+
+msgid "Public\\Common folder"
+msgstr "Veřejný\\Sdílený adresář"
+
+msgid "Quake at explosions\\The screen shakes at explosions"
+msgstr "Otřesy při výbuchu\\Při výbuchu zatřást obrazovkou"
+
+msgid "Quick load\\Immediately load game"
+msgstr "Rychlé načtení\\Okamžitě načte poslední uloženou hru"
+
+msgid "Quick save\\Immediately save game"
+msgstr "Rychlé uložení\\Okamžitě uloží hru"
+
+msgid "Quicksave slot not found"
+msgstr "Nebyla nalezena žádná rychle uložená hra"
+
+msgid "Quit\\Quit Colobot: Gold Edition"
+msgstr "Ukončit\\Ukončit Colobot: Zlatou edici"
+
+msgid "Quit\\Quit the current mission or exercise"
+msgstr "Konec\\Ukončí misi nebo cvičnou úlohu"
+
+msgid "Radar station"
+msgstr "Radar"
+
+msgid "Read error"
+msgstr "Chyba při čtení"
+
+msgid "Recorder"
+msgstr "Záznamník"
+
+msgid "Recycle (\\key action;)"
+msgstr "Recyklovat (\\key action;)"
+
+msgid "Recycler"
+msgstr "Recyklátor"
+
+msgid "Red"
+msgstr "Červená"
+
+msgid "Red flag"
+msgstr "Červená vlajka"
+
+msgid "Reflections on the buttons \\Shiny buttons"
+msgstr "Odlesky na tlačítkách\\Blyštivá tlačítka"
+
+msgid "Remains of Apollo mission"
+msgstr "Pozůstatky mise Apollo"
+
+msgid "Remove a flag"
+msgstr "Odstranit vlajku"
+
+msgid "Remove selected program"
+msgstr "Smazat vybraný program"
+
+msgid "Render distance\\Maximum visibility"
+msgstr "Vzdálenost horizontu\\Maximální viditelná vzdálenost"
+
+msgid "Repair center"
+msgstr "Opravna"
+
+msgid "Research center"
+msgstr "Výzkumná stanice"
+
+msgid "Research program already performed"
+msgstr "Výzkum již byl dokončen"
+
+msgid "Research program completed"
+msgstr "Výzkum dokončen"
+
+msgid "Reserved keyword of CBOT language"
+msgstr "Vyhrazené klíčové slovo jazyka CBOT"
+
+msgid "Resolution"
+msgstr "Rozlišení"
+
+msgid "Resolution:"
+msgstr "Rozlišení:"
+
+msgid "Resources"
+msgstr "Zdroje"
+
+msgid "Restart\\Restart the mission from the beginning"
+msgstr "Restartovat\\Restartovat misi od začátku"
+
+msgid "Restoring CBot execution state"
+msgstr "Obnovuji stav spuštěných programů"
+
+msgid "Restoring saved objects"
+msgstr "Obnovuji uložené objekty"
+
+msgid "Results"
+msgstr "Výsledky"
+
+msgid "Return to start"
+msgstr "Zpět na začátek"
+
+msgid "Robbie"
+msgstr "Robbie"
+
+msgid "Ruin"
+msgstr "Trosky"
+
+msgid "Run research program for defense tower"
+msgstr "Spustit výzkum obranných věží"
+
+msgid "Run research program for legged bots"
+msgstr "Spustit výzkum chodících robotů"
+
+msgid "Run research program for nuclear power"
+msgstr "Spustit výzkum jaderné energie"
+
+msgid "Run research program for orga shooter"
+msgstr "Spustit výzkum biokanónů"
+
+msgid "Run research program for phazer shooter"
+msgstr "Spustit výzkum fázového děla"
+
+msgid "Run research program for shielder"
+msgstr "Spustit výzkum mobilního štítu"
+
+msgid "Run research program for shooter"
+msgstr "Spustit výzkum kanónů"
+
+msgid "Run research program for thumper"
+msgstr "Spustit výzkum bucharu"
+
+msgid "Run research program for tracked bots"
+msgstr "Spustit výzkum pásových robotů"
+
+msgid "Run research program for winged bots"
+msgstr "Spustit výzkum létajících robotů"
+
+msgid "SatCom"
+msgstr "SatKom"
+
+msgid "Satellite report"
+msgstr "Informace ze satelitu"
+
+msgid "Save"
+msgstr "Uložit"
+
+msgid "Save (Ctrl+S)"
+msgstr "Uložit (Ctrl+S)"
+
+msgid "Save the current mission"
+msgstr "Uložit současnou misi"
+
+msgid "Save\\Save the current mission"
+msgstr "Uložit\\Uložit současnou misi"
+
+msgid "Save\\Saves the current mission"
+msgstr "Uložit\\Uloží současnou misi"
+
+msgid "Select the astronaut\\Selects the astronaut"
+msgstr "Vybrat kosmonauta\\Vybere kosmonauta"
+
+msgid "Semicolon terminator missing"
+msgstr "Chybí středník"
+
+msgid "Shadow resolution\\Higher means better range and quality, but slower"
+msgstr "Rozlišení stínů\\Více znamená lepší kvalitu, ale pomalejší vykreslování"
+
+msgid "Shield level"
+msgstr "Stav štítu"
+
+msgid "Shield radius"
+msgstr "Dosah štítu"
+
+msgid "Shielder"
+msgstr "Mobilní štít"
+
+msgid "Shoot (\\key action;)"
+msgstr "Vystřelit (\\key action;)"
+
+msgid "Show if the ground is flat"
+msgstr "Ukázat rovnost terénu"
+
+msgid "Show the place"
+msgstr "Ukázat místo"
+
+msgid "Show the range"
+msgstr "Zobrazit dosah"
+
+msgid "Show the solution"
+msgstr "Ukázat řešení"
+
+msgid "Sign \" : \" missing"
+msgstr "Chybí znak \":\""
+
+msgid "Simple shadows\\Shadows spots on the ground"
+msgstr "Jednoduché stíny\\Kruhové stíny na zemi"
+
+msgid "Size 1"
+msgstr "Velikost 1"
+
+msgid "Size 2"
+msgstr "Velikost 2"
+
+msgid "Size 3"
+msgstr "Velikost 3"
+
+msgid "Size 4"
+msgstr "Velikost 4"
+
+msgid "Size 5"
+msgstr "Velikost 5"
+
+msgid "Sniff (\\key action;)"
+msgstr "Hledat podzemní zdroje (\\key action;)"
+
+msgid "Solution"
+msgstr "Řešení"
+
+msgid "Sound effects:\\Volume of engines, voice, shooting, etc."
+msgstr "Zvukové efekty:\\Hlasitost motorů, hlasů, střelby, atd."
+
+msgid "Sound\\Music and game sound volume"
+msgstr "Zvuk\\Hlasitost hudby a zvukových efektů"
+
+msgid "Spaceship"
+msgstr "Raketa"
+
+msgid "Spaceship ruin"
+msgstr "Trosky rakety"
+
+msgid "Spider"
+msgstr "Pavouk"
+
+msgid "Spider fatally wounded"
+msgstr "Pavouk byl smrtelně raněn"
+
+msgid "Stack overflow"
+msgstr "Přetečení zásobníku"
+
+msgid "Standard action\\Standard action of the bot (take/grab, shoot, sniff, etc)"
+msgstr "Použít nástroj\\Provede akci s hlavním nástrojem robota (zvedákem, kanónem, detektorem, atd.)"
+
+msgid "Standard controls\\Standard key functions"
+msgstr "Výchozí mapování klávesnice\\Výchozí nastavení kláves"
+
+msgid "Standard speed\\Reset speed to normal"
+msgstr "Normální rychlost\\Vrátí rychlost hry do normálu"
+
+msgid "Standard\\Standard appearance settings"
+msgstr "Výchozí\\Výchozí nastavení vzhledu"
+
+msgid "Start"
+msgstr "Start"
+
+msgid "Starting..."
+msgstr "Startuji..."
+
+msgid "Still working ..."
+msgstr "Zpracovávám..."
+
+msgid "String missing"
+msgstr "Chybí textový řetězec"
+
+msgid "Strip color:"
+msgstr "Barva proužků:"
+
+msgid "Subber"
+msgstr "Ponorka"
+
+msgid "Suit color:"
+msgstr "Barva skafandru:"
+
+msgid "Suit\\Astronaut suit"
+msgstr "Skafandr\\Kosmonautův skafandr"
+
+msgid "Summary:"
+msgstr "Popis:"
+
+msgid "Survival kit"
+msgstr "Vybavení pro přežití"
+
+msgid "Switch bots <-> buildings"
+msgstr "Přepnout roboti <-> budovy"
+
+msgid "Take off to finish the mission"
+msgstr "Dokončit misi a odletět"
+
+msgid "Target"
+msgstr "Cíl"
+
+msgid "Target bot"
+msgstr "Cvičný cíl"
+
+msgid "Terrain relief"
+msgstr "Výšková mapa"
+
+msgid "Texture filtering\\Texture filtering"
+msgstr "Filtrování textur\\Filtrování textur"
+
+msgid "Textures"
+msgstr "Textury"
+
+msgid "The battle has ended"
+msgstr "Souboj skončil"
+
+msgid "The expression must return a boolean value"
+msgstr "Výraz musí vracet booleovskou hodnotu"
+
+msgid "The function returned no value"
+msgstr "Funkce nevrátila žádnou hodnotu"
+
+msgid "The mission is not accomplished yet (press \\key help; for more details)"
+msgstr "Mise ještě nebyla splněna (pro podrobnosti stiskněte \\key help;)"
+
+msgid "The types of the two operands are incompatible"
+msgstr "Operaci nelze provést s operandy těchto dvou typů"
+
+msgid "This class already exists"
+msgstr "Tato třída již existuje"
+
+msgid "This class does not exist"
+msgstr "Taková třída neexistuje"
+
+msgid "This is example code that cannot be run directly"
+msgstr "Toto je vzorový kód, který nelze přímo spustit"
+
+msgid "This is not a member of this class"
+msgstr "Tato třída nemá žádný takový prvek"
+
+msgid "This label does not exist"
+msgstr "Toto návěstí neexistuje"
+
+msgid "This menu is for userlevels from mods, but you didn't install any"
+msgstr "Toto menu je pro uživatelské mapy z modů, ale žádný nemáte nainstalovaný"
+
+msgid "This object is currently busy"
+msgstr "Tento objekt je zaneprázdněn"
+
+msgid "This object is not a member of a class"
+msgstr "Tento objekt není prvkem žádné třídy"
+
+msgid "This parameter needs a default value"
+msgstr "Tento parametr musí mít přednastavenou hodnotu"
+
+msgid "This program is read-only, clone it to edit"
+msgstr "Tento program je pouze pro čtení, klikněte do něj pro editaci"
+
+msgid "Thump (\\key action;)"
+msgstr "Úder (\\key action;)"
+
+msgid "Thumper"
+msgstr "Buchar"
+
+#, c-format
+msgid "Time: %s"
+msgstr "Čas: %s"
+
+msgid "Titanium"
+msgstr "Titan"
+
+msgid "Titanium available"
+msgstr "Titan je k dispozici"
+
+msgid "Titanium deposit (site for derrick)"
+msgstr "Titanové ložisko (místo pro vrtnou věž)"
+
+msgid "Titanium ore"
+msgstr "Titanová ruda"
+
+msgid "Titanium too close"
+msgstr "Titan je moc blízko"
+
+msgid "Titanium too far away"
+msgstr "Titan je moc daleko"
+
+msgid "Too close to a building"
+msgstr "Příliš blízko k budově"
+
+msgid "Too close to an existing flag"
+msgstr "Příliš blízko k jiné vlajce"
+
+msgid "Too close to space ship"
+msgstr "Příliš blízko k raketě"
+
+msgid "Too many flags of this color (maximum 5)"
+msgstr "Příliš mnoho vlajek této barvy (maximálně 5)"
+
+msgid "Too many parameters"
+msgstr "Příliš mnoho parametrů"
+
+msgid "Tracked grabber"
+msgstr "Pásové rameno"
+
+msgid "Tracked orga shooter"
+msgstr "Pásový biokanón"
+
+msgid "Tracked shooter"
+msgstr "Pásový kanón"
+
+msgid "Tracked sniffer"
+msgstr "Pásový detektor"
+
+msgid "Transforms only titanium"
+msgstr "Zpracovává pouze titan"
+
+msgid "Transforms only uranium"
+msgstr "Zpracovává pouze uran"
+
+msgid "Transmitted information"
+msgstr "Odeslané informace"
+
+msgid "Turn left (\\key left;)"
+msgstr "Otočit vlevo (\\key left;)"
+
+msgid "Turn left\\turns the bot to the left"
+msgstr "Otočit vlevo\\Otočí robota doleva"
+
+msgid "Turn right (\\key right;)"
+msgstr "Otočit vpravo (\\key right;)"
+
+msgid "Turn right\\turns the bot to the right"
+msgstr "Otočit vpravo\\Otočí robota doprava"
+
+msgid "Type declaration missing"
+msgstr "Chybí deklarace typu"
+
+msgid "Unable to control enemy objects"
+msgstr "Nemůžete ovládat nepřátelské objekty"
+
+msgid "Undo (Ctrl+Z)"
+msgstr "Zpět (Ctrl+Z)"
+
+msgid "Unit"
+msgstr "Jednotka"
+
+msgid "Unknown Object"
+msgstr "Neznámý objekt"
+
+msgid "Unknown command"
+msgstr "Neznámý příkaz"
+
+msgid "Unknown escape sequence"
+msgstr "Neznámá zástupná sekvence"
+
+msgid "Unknown function"
+msgstr "Neznámá funkce"
+
+msgid "Up (\\key gup;)"
+msgstr "Vzhůru (\\key gup;)"
+
+msgid "Uranium deposit (site for derrick)"
+msgstr "Uranové ložisko (místo pro vrtnou věž)"
+
+msgid "Uranium ore"
+msgstr "Uranová ruda"
+
+msgid "User levels"
+msgstr "Uživatelské mapy"
+
+msgid "Variable name missing"
+msgstr "Chybí název proměnné"
+
+msgid "Variable not declared"
+msgstr "Proměnná nebyla deklarována"
+
+msgid "Variable not initialized"
+msgstr "Proměnná nebyla nastavena"
+
+msgid "Vault"
+msgstr "Trezor"
+
+msgid "Vertical Synchronization\\Limits the number of frames per second to display frequency"
+msgstr ""
+
+msgid "Violet flag"
+msgstr "Fialová vlajka"
+
+msgid "Void parameter"
+msgstr "Prázdný parametr"
+
+msgid "Wasp"
+msgstr "Vosa"
+
+msgid "Wasp fatally wounded"
+msgstr "Vosa byla smrtelně raněna"
+
+msgid "Waste"
+msgstr "Odpad"
+
+msgid "Wheeled grabber"
+msgstr "Pojízdné rameno"
+
+msgid "Wheeled orga shooter"
+msgstr "Pojízdný biokanón"
+
+msgid "Wheeled shooter"
+msgstr "Pojízdný kanón"
+
+msgid "Wheeled sniffer"
+msgstr "Pojízdný detektor"
+
+msgid "Winged grabber"
+msgstr "Létající rameno"
+
+msgid "Winged orga shooter"
+msgstr "Létající biokanón"
+
+msgid "Winged shooter"
+msgstr "Létající kanón"
+
+msgid "Winged sniffer"
+msgstr "Létající detektor"
+
+msgid "Withdraw shield (\\key action;)"
+msgstr "Vypnout štít (\\key action;)"
+
+msgid "Worm"
+msgstr "Červ"
+
+msgid "Worm fatally wounded"
+msgstr "Červ byl smrtelně raněn"
+
+msgid "Wreckage"
+msgstr "Vrak"
+
+msgid "Write error"
+msgstr "Chyba při zápisu"
+
+msgid "Wrong type for the assignment"
+msgstr "Špatný datový typ pro přiřazení"
+
+msgid "Yellow flag"
+msgstr "Žlutá vlajka"
+
+msgid "Yes"
+msgstr "Ano"
+
+msgid "You can fly with the keys (\\key gup;) and (\\key gdown;)"
+msgstr "Můžete létat pomocí kláves (\\key gup;) a (\\key gdown;)"
+
+msgid "You can not carry a radioactive object"
+msgstr "Nemůžete nosit radioaktivní předměty"
+
+msgid "You can not carry an object under water"
+msgstr "Pod vodou nemůžete nosit předměty"
+
+#, c-format
+msgid "You cannot use \"%s\" in this exercise (used: %d)"
+msgstr "V tomto cvičení nesmíte použít \"%s\" (použito: %dx)"
+
+msgid "You found a usable object"
+msgstr "Našli jste použitelný objekt"
+
+#, c-format
+msgid "You have to use \"%1$s\" at least once in this exercise (used: %2$d)"
+msgid_plural "You have to use \"%1$s\" at least %3$d times in this exercise (used: %2$d)"
+msgstr[0] "V tomto cvičení musíte \"%1$s\" použít alespoň jednou (použito: %2$dx)"
+msgstr[1] "V tomto cvičení musíte \"%1$s\" použít alespoň %3$dx (použito: %2$dx)"
+msgstr[2] "V tomto cvičení musíte \"%1$s\" použít alespoň %3$dx (použito: %2$dx)"
+
+#, c-format
+msgid "You have to use \"%1$s\" at most once in this exercise (used: %2$d)"
+msgid_plural "You have to use \"%1$s\" at most %3$d times in this exercise (used: %2$d)"
+msgstr[0] "V tomto cvičení musíte \"%1$s\" použít nejvýše jednou (použito: %2$dx)"
+msgstr[1] "V tomto cvičení musíte \"%1$s\" použít nejvýše %3$dx (použito: %2$dx)"
+msgstr[2] "V tomto cvičení musíte \"%1$s\" použít nejvýše %3$dx (použito: %2$dx)"
+
+msgid "You must get on the spaceship to take off"
+msgstr "Před odletem musíte nastoupit do rakety"
+
+msgid "Zoom mini-map"
+msgstr "Přiblížit minimapu"
+
+msgid "\\Blue flags"
+msgstr "\\Modré vlajky"
+
+msgid "\\Eyeglasses 1"
+msgstr "\\Brýle 1"
+
+msgid "\\Eyeglasses 2"
+msgstr "\\Brýle 2"
+
+msgid "\\Eyeglasses 3"
+msgstr "\\Brýle 3"
+
+msgid "\\Eyeglasses 4"
+msgstr "\\Brýle 4"
+
+msgid "\\Eyeglasses 5"
+msgstr "\\Brýle 5"
+
+msgid "\\Face 1"
+msgstr "\\Tvář 1"
+
+msgid "\\Face 2"
+msgstr "\\Tvář 2"
+
+msgid "\\Face 3"
+msgstr "\\Tvář 3"
+
+msgid "\\Face 4"
+msgstr "\\Tvář 4"
+
+msgid "\\Green flags"
+msgstr "\\Zelené vlajky"
+
+msgid "\\New player name"
+msgstr "\\Jméno nového hráče"
+
+msgid "\\No eyeglasses"
+msgstr "\\Bez brýlí"
+
+msgid "\\Raise the pencil"
+msgstr "\\Zvednout tužku"
+
+msgid "\\Red flags"
+msgstr "\\Červené vlajky"
+
+msgid "\\Return to Colobot: Gold Edition"
+msgstr "\\Návrat do Colobotu: Zlaté edice"
+
+msgid "\\SatCom on standby"
+msgstr "\\Zavřít SatKom"
+
+msgid "\\Start recording"
+msgstr "\\Zapnout nahrávání"
+
+msgid "\\Stop recording"
+msgstr "\\Vypnout nahrávání"
+
+msgid "\\Turn left"
+msgstr "\\Otočit vlevo"
+
+msgid "\\Turn right"
+msgstr "\\Otočit vpravo"
+
+msgid "\\Use the black pencil"
+msgstr "\\Vybrat černou tužku"
+
+msgid "\\Use the blue pencil"
+msgstr "\\Vybrat modrou tužku"
+
+msgid "\\Use the brown pencil"
+msgstr "\\Vybrat hnědou tužku"
+
+msgid "\\Use the green pencil"
+msgstr "\\Vybrat zelenou tužku"
+
+msgid "\\Use the orange pencil"
+msgstr "\\Vybrat oranžovou tužku"
+
+msgid "\\Use the purple pencil"
+msgstr "\\Vybrat fialovou tužku"
+
+msgid "\\Use the red pencil"
+msgstr "\\Vybrat červenou tužku"
+
+msgid "\\Use the yellow pencil"
+msgstr "\\Vybrat žlutou tužku"
+
+msgid "\\Violet flags"
+msgstr "\\Fialové vlajky"
+
+msgid "\\Yellow flags"
+msgstr "\\Žluté vlajky"
+
+msgid "colobot.info"
+msgstr "colobot.info"
+
+msgid "epsitec.com"
+msgstr "epsitec.com"

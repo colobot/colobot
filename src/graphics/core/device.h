@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -415,14 +415,6 @@ public:
 
     //! Sets only the texture wrap modes (for faster than thru stage params)
     virtual void SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode wrapT) = 0;
-
-    //! Renders primitive composed of generic vertices
-    virtual void DrawPrimitive(PrimitiveType type, const void *vertices,
-        int size, const VertexFormat &format, int vertexCount) = 0;
-
-    //! Renders multiple primitives composed of generic vertices
-    virtual void DrawPrimitives(PrimitiveType type, const void *vertices,
-        int size, const VertexFormat &format, int first[], int count[], int drawCount) = 0;
 
     //! Renders primitive composed of vertices with single texture
     virtual void DrawPrimitive(PrimitiveType type, const Vertex *vertices    , int vertexCount,

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -33,8 +33,6 @@ namespace
 std::unique_ptr<CBotFileAccessHandler> g_fileHandler;
 std::unordered_map<int, std::unique_ptr<CBotFile>> g_files;
 int g_nextFileId = 1;
-}
-
 
 bool FileClassOpenFile(CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
 {
@@ -358,6 +356,7 @@ bool rDeleteFile(CBotVar* var, CBotVar* result, int& exception, void* user)
     return g_fileHandler->DeleteFile(filename);
 }
 
+} // namespace
 
 void InitFileFunctions()
 {

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -383,7 +383,7 @@ void CDisplayInfo::StartDisplayInfo(std::string filename, int index, bool bSoluc
     edit->SetState(STATE_SHADOW);
     edit->SetMultiFont(true);
     edit->SetMaxChar(10000);
-    edit->SetFontType(Gfx::FONT_COLOBOT);
+    edit->SetFontType(Gfx::FONT_SATCOM);
     edit->SetSoluceMode(bSoluce);
     edit->ReadText(filename.c_str());
     edit->HyperHome(filename.c_str());

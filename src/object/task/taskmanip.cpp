@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -261,28 +261,6 @@ void CTaskManip::InitAngle()
     {
         m_speed *= 0.7f;  // slower if more energy!
     }
-}
-
-
-// Tests whether an object is compatible with the operation TMA_OTHER.
-
-bool TestFriend(ObjectType oType, ObjectType fType)
-{
-    if ( oType == OBJECT_ENERGY )
-    {
-        return ( fType == OBJECT_METAL );
-    }
-    if ( oType == OBJECT_LABO )
-    {
-        return ( fType == OBJECT_BULLET );
-    }
-    if ( oType == OBJECT_NUCLEAR )
-    {
-        return ( fType == OBJECT_URANIUM );
-    }
-
-    return ( fType == OBJECT_POWER  ||
-             fType == OBJECT_ATOMIC );
 }
 
 // Assigns the goal was achieved.
