@@ -74,10 +74,10 @@ enum Phase
     PHASE_QUIT_SCREEN,
     PHASE_SATCOM,
 };
-const std::string PhaseToString(const Phase phase);
-bool IsInSimulationConfigPhase(const Phase phase);
-bool IsPhaseWithWorld(const Phase phase);
-bool IsMainMenuPhase(const Phase phase);
+std::string PhaseToString(Phase phase);
+bool IsInSimulationConfigPhase(Phase phase);
+bool IsPhaseWithWorld(Phase phase);
+bool IsMainMenuPhase(Phase phase);
 
 
 class CEventQueue;
@@ -109,13 +109,13 @@ class CModelManager;
 namespace Ui
 {
 class CMainUserInterface;
+class CMainDialog;
 class CMainShort;
 class CMainMap;
 class CInterface;
 class CDisplayText;
 class CDisplayInfo;
 class CDebugMenu;
-class CMainDialog;
 }
 
 struct NewScriptName
@@ -182,16 +182,16 @@ public:
     Ui::CInterface* GetInterface();
     Ui::CDisplayText* GetDisplayText();
     CPauseManager* GetPauseManager();
-
+ 
     Ui::CMainDialog* GetDialog();
 
     /**
      * \name Phase management
      */
     //@{
-    void        ChangePhase(const Phase phase);
+    void        ChangePhase(Phase phase);
     bool        ProcessEvent(Event &event);
-    Phase       GetPhase()const;
+    Phase       GetPhase();
     //@}
 
     //! Load the scene for apperance customization
@@ -315,7 +315,7 @@ public:
     //! Note: this may return nullptr if the scoreboard is not enabled!
     CScoreboard* GetScoreboard();
 
-    bool        SelectPlayer(std::string playerName);
+    void        SelectPlayer(std::string playerName);
     CPlayerProfile* GetPlayerProfile();
 
     /**
@@ -486,7 +486,7 @@ protected:
     void        CreateScene(bool soluce, bool fixScene, bool resetObject);
     void        ResetCreate();
 
-    void        LevelLoadingError(const std::string& error, const std::runtime_error& exception, const Phase exitPhase = PHASE_LEVEL_LIST);
+    void        LevelLoadingError(const std::string& error, const std::runtime_error& exception, Phase exitPhase = PHASE_LEVEL_LIST);
 
     int         CreateLight(Math::Vector direction, Gfx::Color color);
     void        HiliteClear();

@@ -119,8 +119,8 @@ void CScreenSetupSound::CreateInterface()
 
 bool CScreenSetupSound::EventProcess(const Event &event)
 {
-    if (!CScreenSetup::EventProcess(event))
-        return false;
+    if (!CScreenSetup::EventProcess(event)) return false;
+
     switch( event.type )
     {
         case EVENT_INTERFACE_VOLSOUND:

@@ -71,7 +71,7 @@ public:
     CScreenLoading* GetLoadingScreen();
 
     bool    EventProcess(const Event &event);
-    void    ChangePhase(const Phase phase);
+    void    ChangePhase(Phase phase);
 
     bool    GetSceneSoluce();
 
@@ -93,7 +93,7 @@ protected:
     void    FrameParticle(float rTime);
     void    NiceParticle(Math::Point mouse, bool bPress);
 
-    CScreenSetup* GetSetupScreen(const Phase phase);
+    CScreenSetup* GetSetupScreen(Phase phase);
 
 protected:
     CApplication*     m_app;

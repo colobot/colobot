@@ -90,8 +90,7 @@ void CScreenMainMenu::CreateInterface()
     pg->SetState(STATE_SHADOW);
     ddim.y = dim.y*2.95f;
     pos.y = oy+sy*6.7f;
-    pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // exercises
-                                                        //+ challenges + battle
+    pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // exercises + challenges
     pg->SetState(STATE_SHADOW);
     ddim.y = dim.y*1.6f;
     pos.y = oy+sy*3.4f;

@@ -66,7 +66,7 @@ CMainDialog::CMainDialog()
     m_settings   = CSettings::GetInstancePointer();
 
     m_dialogOpen = false;
-    m_dialogType = {};  // ?? enum: Question / PauseMenu
+    m_dialogType = {};
     m_dialogFireParticles = false;
     m_dialogTime = 0.0f;
     m_dialogParti = 0.0f;
@@ -239,6 +239,7 @@ bool CMainDialog::EventProcess(const Event &event)
                     m_callbackYes();
                 }
             }
+
             if ( pressedButton == EVENT_DIALOG_CANCEL )
             {
                 StopDialog();
@@ -248,6 +249,7 @@ bool CMainDialog::EventProcess(const Event &event)
                 }
             }
         }
+
         return false;
     }
 
@@ -433,7 +435,9 @@ void CMainDialog::StartInformation(const std::string& title, const std::string& 
     GetResource(RES_TEXT, RT_DIALOG_OK, name);
     pb->SetName(name);
     if (warning)
+    {
         pb->SetState(STATE_WARNING);
+    }
 }
 
 // Beginning of displaying a dialog.
@@ -578,8 +582,8 @@ void CMainDialog::FrameDialog(float rTime)
         dim.x = 0.01f+Math::Rand()*0.01f;
         dim.y = dim.x/0.75f;
         m_particle->CreateParticle(pos, speed, dim,
-            static_cast<Gfx::ParticleType>(Gfx::PARTILENS1+rand()%3),
-            1.0f, 0.0f, 0.0f, Gfx::SH_INTERFACE);
+                                     static_cast<Gfx::ParticleType>(Gfx::PARTILENS1+rand()%3),
+                                     1.0f, 0.0f, 0.0f, Gfx::SH_INTERFACE);
 
         // Right.
         pos.y = dpos.y + ddim.y*Math::Rand();
@@ -589,8 +593,8 @@ void CMainDialog::FrameDialog(float rTime)
         dim.x = 0.01f+Math::Rand()*0.01f;
         dim.y = dim.x/0.75f;
         m_particle->CreateParticle(pos, speed, dim,
-            static_cast<Gfx::ParticleType>(Gfx::PARTILENS1+rand()%3),
-            1.0f, 0.0f, 0.0f, Gfx::SH_INTERFACE);
+                                     static_cast<Gfx::ParticleType>(Gfx::PARTILENS1+rand()%3),
+                                     1.0f, 0.0f, 0.0f, Gfx::SH_INTERFACE);
     }
 }
 

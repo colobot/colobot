@@ -129,11 +129,6 @@ public:
 
     void        SetMaxChar(int max);
     int         GetMaxChar();
-        //  TODO : CHOICE between 2 options
-        //      1/ max size
-        //          (simpliest & take care not adding sub of UTF8)
-        //      2/ nb max printable char (UTF8 char)
-        //          (+ logic: used to limit occupation into UI)
 
     void        SetEditCap(bool bMode);
     bool        GetEditCap();
@@ -240,12 +235,11 @@ protected:
     std::vector<Gfx::FontMetaChar> m_format;           // format characters
     int     m_len;              // length used in m_text
     int     m_cursor1;          // offset cursor
-    int     m_cursor2;          // offset cursor (for selection)
+    int     m_cursor2;          // offset cursor
 
     bool        m_bMulti;           // true -> multi-line
     bool        m_bEdit;            // true -> editable
     bool        m_bHilite;          // true -> hilitable
-                                    // (ie display carret & display selection)
     bool        m_bInsideScroll;        // true -> lift as part
     bool        m_bDisplaySpec;         // true -> displays the special characters
     bool        m_bMultiFont;           // true -> more fonts possible
@@ -282,5 +276,6 @@ protected:
 
     friend class CEditValue;    //calls SetFocus()
 };
+
 
 }

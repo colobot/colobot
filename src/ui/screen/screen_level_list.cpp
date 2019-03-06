@@ -75,7 +75,6 @@ void CScreenLevelList::CreateInterface()
     int             res;
     std::string     name;
 
-    assert(nullptr!=m_main->GetPlayerProfile());
     if ( m_category == LevelCategory::FreeGame )
     {
         m_accessChap = m_main->GetPlayerProfile()->GetChapPassed(LevelCategory::Missions);
@@ -113,12 +112,9 @@ void CScreenLevelList::CreateInterface()
     ddim.x = dim.x*7.5f;
     ddim.y = dim.y*0.6f;
     res = RT_PLAY_CHAP_CHAPTERS;
-    if ( m_category == LevelCategory::Missions     )
-        res = RT_PLAY_CHAP_PLANETS;
-    if ( m_category == LevelCategory::FreeGame     )
-        res = RT_PLAY_CHAP_PLANETS;
-    if ( m_category == LevelCategory::CustomLevels )
-        res = RT_PLAY_CHAP_USERLVL;
+    if ( m_category == LevelCategory::Missions     )  res = RT_PLAY_CHAP_PLANETS;
+    if ( m_category == LevelCategory::FreeGame     )  res = RT_PLAY_CHAP_PLANETS;
+    if ( m_category == LevelCategory::CustomLevels )  res = RT_PLAY_CHAP_USERLVL;
     GetResource(RES_TEXT, res, name);
     pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL11, name);
     pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
@@ -144,14 +140,10 @@ void CScreenLevelList::CreateInterface()
     ddim.x = dim.x*7.5f;
     ddim.y = dim.y*0.6f;
     res = RT_PLAY_LIST_LEVELS;
-    if ( m_category == LevelCategory::Exercises    )
-        res = RT_PLAY_LIST_EXERCISES;
-    if ( m_category == LevelCategory::Challenges   )
-        res = RT_PLAY_LIST_CHALLENGES;
-    if ( m_category == LevelCategory::Missions     )
-        res = RT_PLAY_LIST_MISSIONS;
-    if ( m_category == LevelCategory::FreeGame     )
-        res = RT_PLAY_LIST_FREEGAME;
+    if ( m_category == LevelCategory::Exercises    )  res = RT_PLAY_LIST_EXERCISES;
+    if ( m_category == LevelCategory::Challenges   )  res = RT_PLAY_LIST_CHALLENGES;
+    if ( m_category == LevelCategory::Missions     )  res = RT_PLAY_LIST_MISSIONS;
+    if ( m_category == LevelCategory::FreeGame     )  res = RT_PLAY_LIST_FREEGAME;
     GetResource(RES_TEXT, res, name);
     pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL12, name);
     pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
@@ -615,7 +607,6 @@ void CScreenLevelList::UpdateSceneResume(int chap, int rank)
 void CScreenLevelList::UpdateChapterPassed()
 {
     // TODO: CScreenLevelList is a bad place for this function
-    assert(nullptr!=m_main->GetPlayerProfile());
     bool bAll = true;
     for ( int i=0 ; i<m_maxList ; i++ )
     {
@@ -642,7 +633,6 @@ void CScreenLevelList::NextMission()
         m_sel[m_category] = 0;  // first mission
     }
 
-    assert(nullptr!=m_main->GetPlayerProfile());
     m_main->GetPlayerProfile()->SetSelectedChap(m_category, m_chap[m_category]+1);
     m_main->GetPlayerProfile()->SetSelectedRank(m_category, m_sel[m_category]+1);
 }

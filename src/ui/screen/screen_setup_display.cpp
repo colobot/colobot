@@ -126,8 +126,7 @@ void CScreenSetupDisplay::CreateInterface()
 
 bool CScreenSetupDisplay::EventProcess(const Event &event)
 {
-    if (!CScreenSetup::EventProcess(event))
-        return false;
+    if (!CScreenSetup::EventProcess(event)) return false;
 
     CWindow* pw;
     CCheck* pc;

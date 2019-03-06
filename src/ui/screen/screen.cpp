@@ -73,8 +73,7 @@ void CScreen::SetBackground(const std::string& filename, bool scaled)
 
 void CScreen::CreateVersionDisplay()
 {
-    CWindow* pw = static_cast<CWindow*>(
-        m_interface->SearchControl(m_windowOwnerEvt));
+    CWindow* pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if (pw != nullptr)
     {
         Math::Point pos, ddim;

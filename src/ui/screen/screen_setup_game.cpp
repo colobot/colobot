@@ -183,8 +183,8 @@ void CScreenSetupGame::CreateInterface()
 
 bool CScreenSetupGame::EventProcess(const Event &event)
 {
-    if (!CScreenSetup::EventProcess(event))
-        return false;
+    if (!CScreenSetup::EventProcess(event)) return false;
+
     switch( event.type )
     {
         case EVENT_INTERFACE_TOOLTIP:
@@ -219,9 +219,13 @@ bool CScreenSetupGame::EventProcess(const Event &event)
 
         case EVENT_INTERFACE_EDITVALUE:
             if ( m_engine->GetEditIndentValue() == 2 )
+            {
                 m_engine->SetEditIndentValue(4);
+            }
             else
+            {
                 m_engine->SetEditIndentValue(2);
+            }
             ChangeSetupButtons();
             UpdateSetupButtons();
             break;
@@ -297,64 +301,91 @@ void CScreenSetupGame::UpdateSetupButtons()
     CList*      pli;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == nullptr )
-        return;
+    if ( pw == nullptr )  return;
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_TOOLTIP));
     if ( pc != nullptr )
+    {
         pc->SetState(STATE_CHECK, m_settings->GetTooltips());
+    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_GLINT));
     if ( pc != nullptr )
+    {
         pc->SetState(STATE_CHECK, m_settings->GetInterfaceGlint());
+    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_RAIN));
     if ( pc != nullptr )
+    {
         pc->SetState(STATE_CHECK, m_settings->GetInterfaceRain());
+    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_BGPAUSE));
     if ( pc != nullptr )
+    {
         pc->SetState(STATE_CHECK, m_settings->GetFocusLostPause());
+    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_EDITMODE));
     if ( pc != nullptr )
+    {
         pc->SetState(STATE_CHECK, m_engine->GetEditIndentMode());
+    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_EDITVALUE));
     if ( pc != nullptr )
+    {
         pc->SetState(STATE_CHECK, m_engine->GetEditIndentValue()>2);
+    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SOLUCE4));
     if ( pc != nullptr )
+    {
         pc->SetState(STATE_CHECK, m_settings->GetSoluce4());
+    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_MOVIES));
     if ( pc != nullptr )
+    {
         pc->SetState(STATE_CHECK, m_settings->GetMovies());
+    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SCROLL));
     if ( pc != nullptr )
+    {
         pc->SetState(STATE_CHECK, m_camera->GetOldCameraScroll());
+    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_INVERTX));
     if ( pc != nullptr )
+    {
         pc->SetState(STATE_CHECK, m_camera->GetCameraInvertX());
+    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_INVERTY));
     if ( pc != nullptr )
+    {
         pc->SetState(STATE_CHECK, m_camera->GetCameraInvertY());
+    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_EFFECT));
     if ( pc != nullptr )
+    {
         pc->SetState(STATE_CHECK, m_camera->GetEffect());
+    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_BLOOD));
     if ( pc != nullptr )
+    {
         pc->SetState(STATE_CHECK, m_camera->GetBlood());
+    }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_AUTOSAVE_ENABLE));
     if ( pc != nullptr )
+    {
         pc->SetState(STATE_CHECK, m_main->GetAutosave());
+    }
 
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_AUTOSAVE_INTERVAL));
     if ( ps != nullptr )

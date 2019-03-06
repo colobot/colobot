@@ -760,15 +760,11 @@ void InitializeRestext()
 
 namespace
 {
-char g_gamerName[16];
-    //nota cf current hmi 15 char limit:
-    //  if choice 15 utf8 visible char
-    //      change here 16 => 61 (15*4+1)
+char g_gamerName[100];
 } // anonymous namespace
 
 void SetGlobalGamerName(const std::string& name)
 {
-    assert(name.length()<16);   //To upgrade also to 61 cf upper
     strcpy(g_gamerName, name.c_str());
 }
 

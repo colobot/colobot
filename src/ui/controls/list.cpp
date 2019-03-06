@@ -114,7 +114,7 @@ bool CList::MoveAdjust()
 
     //If m_expand is less then zero, then try to apply it's absolute value
     h = m_engine->GetText()->GetHeight(m_fontType, m_fontSize) * ((m_expand < 0) ? -m_expand : m_expand);
-    m_displayLine = static_cast<short>(idim.y / h);
+    m_displayLine = static_cast<int>(idim.y / h);
 
     if (m_displayLine == 0)
         return false;
@@ -165,7 +165,7 @@ bool CList::MoveAdjust()
 
 // Returns the message of a button.
 
-EventType CList::GetEventMsgButton(const short i)const
+EventType CList::GetEventMsgButton(int i)
 {
     if (i < 0 || i >= m_displayLine)
         return EVENT_NULL;
@@ -176,7 +176,7 @@ EventType CList::GetEventMsgButton(const short i)const
 
 // Returns the message from the elevator.
 
-EventType CList::GetEventMsgScroll()const
+EventType CList::GetEventMsgScroll()
 {
     if (m_scroll == nullptr)
         return EVENT_NULL;
@@ -202,7 +202,7 @@ bool CList::SetState(int state, bool bState)
 {
     if (state & STATE_ENABLE)
     {
-        for (short i = 0; i < m_displayLine; i++)
+        for (int i = 0; i < m_displayLine; i++)
         {
             if (m_buttons[i] != nullptr)
                 m_buttons[i]->SetState(state, bState);
@@ -219,7 +219,7 @@ bool CList::SetState(int state)
 {
     if (state & STATE_ENABLE)
     {
-        for (short i = 0; i < m_displayLine; i++)
+        for (int i = 0; i < m_displayLine; i++)
         {
             if (m_buttons[i] != nullptr)
                 m_buttons[i]->SetState(state);
@@ -236,7 +236,7 @@ bool CList::ClearState(int state)
 {
     if (state & STATE_ENABLE)
     {
-        for (short i = 0; i < m_displayLine; i++)
+        for (int i = 0; i < m_displayLine; i++)
         {
             if (m_buttons[i] != nullptr)
                 m_buttons[i]->ClearState(state);
@@ -255,12 +255,9 @@ bool CList::EventProcess(const Event &event)
 {
     if (m_bBlink && event.type == EVENT_FRAME)
     {
-        short i = m_selectLine-m_firstLine;
+        int i = m_selectLine-m_firstLine;
 
         if (i >= 0 && i < 4  && m_buttons[i] != nullptr)
-            //TODO FIXME : 4 : magic nb instead of m_displayLine ??
-            // is there a good reason for??
-            //  + cond m_totalLine
         {
             m_blinkTime += event.rTime;
             if (Math::Mod(m_blinkTime, 0.7f) < 0.3f)
@@ -350,7 +347,7 @@ bool CList::EventProcess(const Event &event)
         if (Detect(event.mousePos))
         {
             m_engine->SetMouseType(Gfx::ENG_MOUSE_NORM);
-            for (short i = 0; i < m_displayLine; i++)
+            for (int i = 0; i < m_displayLine; i++)
             {
                 if (i + m_firstLine >= m_totalLine)
                     break;
@@ -362,7 +359,7 @@ bool CList::EventProcess(const Event &event)
 
     if (m_bSelectCap)
     {
-        for (short i = 0; i < m_displayLine; i++)
+        for (int i = 0; i < m_displayLine; i++)
         {
             if (i + m_firstLine >= m_totalLine)
                 break;
@@ -375,6 +372,7 @@ bool CList::EventProcess(const Event &event)
                 if (event.type == m_buttons[i]->GetEventType())
                 {
                     SetSelect(m_firstLine + i);
+
                     m_event->AddEvent(Event(m_eventType));  // selected line changes
                 }
             }
@@ -392,6 +390,7 @@ bool CList::EventProcess(const Event &event)
             UpdateButton();
         }
     }
+
     return true;
 }
 
@@ -402,7 +401,7 @@ void CList::Draw()
 {
     Math::Point uv1, uv2, corner, pos, dim, ppos, ddim;
     float   dp;
-    short     i;
+    int     i;
     char    text[100];
     const char    *pb, *pe;
 
@@ -509,7 +508,7 @@ void CList::Draw()
                 ppos.y = pos.y + dim.y * 0.5f;
                 ppos.y -= m_engine->GetText()->GetHeight(m_fontType, m_fontSize) / 2.0f;
                 pb = m_items[i + m_firstLine].text.c_str();
-                for (short j = 0; j < 10; j++)
+                for (int j = 0; j < 10; j++)
                 {
                     pe = strchr(pb, '\t');
                     if ( pe == nullptr )
@@ -622,23 +621,22 @@ void CList::Flush()
 
 // Specifies the total number of lines.
 
-void CList::SetTotal(const short i)
+void CList::SetTotal(int i)
 {
     m_totalLine = i;
 }
 
 // Returns the total number of lines.
 
-short CList::GetTotal()const
+int CList::GetTotal()
 {
     return m_totalLine;
 }
 
 
 // Selects a line.
-//  note : do send m_eventType to prapagate selected line changes
 
-void CList::SetSelect(const short i)
+void CList::SetSelect(int i)
 {
     if ( m_bSelectCap )
         m_selectLine = i;
@@ -653,7 +651,7 @@ void CList::SetSelect(const short i)
 
 // Returns the selected line.
 
-short CList::GetSelect()const
+int CList::GetSelect()
 {
     if ( m_bSelectCap )
         return m_selectLine;
@@ -664,12 +662,12 @@ short CList::GetSelect()const
 
 // Management of capability has a select box.
 
-void CList::SetSelectCap(const bool bEnable)
+void CList::SetSelectCap(bool bEnable)
 {
     m_bSelectCap = bEnable;
 }
 
-bool CList::GetSelectCap()const
+bool CList::GetSelectCap()
 {
     return m_bSelectCap;
 }
@@ -677,17 +675,14 @@ bool CList::GetSelectCap()const
 
 // Blink a line.
 
-void CList::SetBlink(const bool bEnable)
+void CList::SetBlink(bool bEnable)
 {
     m_bBlink = bEnable;
     m_blinkTime = 0.0f;
 
-    short i = m_selectLine - m_firstLine;
+    int i = m_selectLine - m_firstLine;
 
     if (i >= 0 && i < 4 && m_buttons[i] != nullptr)
-        //TODO FIXME : 4 : magic nb instead of m_displayLine ??
-        // is there a good reason for??
-        //  + cond m_totalLine
     {
         if ( !bEnable )
         {
@@ -697,7 +692,7 @@ void CList::SetBlink(const bool bEnable)
     }
 }
 
-bool CList::GetBlink()const
+bool CList::GetBlink()
 {
     return m_bBlink;
 }
@@ -705,7 +700,7 @@ bool CList::GetBlink()const
 
 // Specifies the text of a line.
 
-void CList::SetItemName(const short i, const std::string& name)
+void CList::SetItemName(int i, const std::string& name)
 {
     if ( i < 0 )
         return;
@@ -725,7 +720,7 @@ void CList::SetItemName(const short i, const std::string& name)
 
 // Returns the text of a line.
 
-const std::string& CList::GetItemName(const short i)const
+const std::string& CList::GetItemName(int i)
 {
     if ( i < 0 || i >= m_totalLine )
         assert(false);
@@ -736,7 +731,7 @@ const std::string& CList::GetItemName(const short i)const
 
 // Specifies the bit "check" for a box.
 
-void CList::SetCheck(const short i, const bool bMode)
+void CList::SetCheck(int i, bool bMode)
 {
     if ( i < 0 || i >= m_totalLine )
         return;
@@ -746,7 +741,7 @@ void CList::SetCheck(const short i, const bool bMode)
 
 // Returns the bit "check" for a box.
 
-bool CList::GetCheck(const short i)const
+bool CList::GetCheck(int i)
 {
     if ( i < 0 || i >= m_totalLine )
         return false;
@@ -757,7 +752,7 @@ bool CList::GetCheck(const short i)const
 
 // Specifies the bit "enable" for a box.
 
-void CList::SetEnable(const short i, const bool enable)
+void CList::SetEnable(int i, bool enable)
 {
     if ( i < 0 || i >= m_totalLine )
         return;
@@ -767,7 +762,7 @@ void CList::SetEnable(const short i, const bool enable)
 
 // Returns the bit "enable" for a box.
 
-bool CList::GetEnable(const short i)const
+bool CList::GetEnable(int i)
 {
     if ( i < 0 || i >= m_totalLine )
         return false;
@@ -778,7 +773,7 @@ bool CList::GetEnable(const short i)const
 
 // Management of the position of the tabs.
 
-void CList::SetTabs(const short i, const float pos, const Gfx::TextAlign justif)
+void CList::SetTabs(int i, float pos, Gfx::TextAlign justif)
 {
     if ( i < 0 || i >= 10 )
         return;
@@ -786,7 +781,7 @@ void CList::SetTabs(const short i, const float pos, const Gfx::TextAlign justif)
     m_justifs[i] = justif;
 }
 
-float  CList::GetTabs(const short i)const
+float  CList::GetTabs(int i)
 {
     if ( i < 0 || i >= 10 )
         return 0.0f;
@@ -796,9 +791,9 @@ float  CList::GetTabs(const short i)const
 
 // Moves the lift to see the list of the selected line.
 
-void CList::ShowSelect(const bool bFixed)
+void CList::ShowSelect(bool bFixed)
 {
-    short     sel;
+    int     sel;
 
     if ( bFixed && m_selectLine >= m_firstLine && m_selectLine <  m_firstLine+m_displayLine )
         return;  // all good
@@ -826,8 +821,7 @@ void CList::ShowSelect(const bool bFixed)
 
 void CList::UpdateButton()
 {
-    int state;
-    short i, j;
+    int state, i, j;
 
     state = CControl::GetState();
 
@@ -843,8 +837,6 @@ void CList::UpdateButton()
         {
 //?         m_buttons[i]->SetName(m_text[j]);
             m_buttons[i]->SetName(" ");  // blank button
-            // Nota : that text (if setted) is aligned on the right
-            //  & outside of the button area if too long!!
             m_buttons[i]->SetState(STATE_ENABLE, (state & STATE_ENABLE));
         }
         else
@@ -899,10 +891,10 @@ void CList::MoveScroll()
     if (m_scroll == nullptr)
         return;
 
-    short n = m_totalLine - m_displayLine;
+    int n = m_totalLine - m_displayLine;
     float pos = m_scroll->GetVisibleValue();
     pos += m_scroll->GetArrowStep() / 2.0f;  // it's magic!
-    m_firstLine = static_cast<short>(pos * n);
+    m_firstLine = static_cast<int>(pos * n);
     if ( m_firstLine < 0 )
         m_firstLine = 0;
     if ( m_firstLine > n )

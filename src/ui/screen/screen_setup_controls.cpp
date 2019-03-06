@@ -87,7 +87,7 @@ void CScreenSetupControls::CreateInterface()
     CButton*        pb;
     CGroup*         pg;
     CList*          pli;
-    CEditValue*     pev;
+    CEditValue* pev;
     Math::Point     pos, ddim;
     std::string     name;
 
@@ -193,9 +193,7 @@ void CScreenSetupControls::CreateInterface()
 
 bool CScreenSetupControls::EventProcess(const Event &event)
 {
-    if (!CScreenSetup::EventProcess(event))
-        return false;
-    // TODO : check if keyboard navigation there don't break anything
+    if (!CScreenSetup::EventProcess(event)) return false;
 
     switch( event.type )
     {

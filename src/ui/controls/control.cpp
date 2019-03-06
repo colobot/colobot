@@ -551,10 +551,7 @@ void CControl::Draw()
             pos.x = m_pos.x + m_dim.x - m_dim.y * 0.5f;
             pos.y = m_pos.y + m_dim.y * 0.5f;
             pos.y -= m_engine->GetText()->GetHeight(m_fontType, m_fontSize)/2.0f;
-            m_engine->GetText()->DrawText(m_name, m_fontType, m_fontSize, pos, m_dim.x, m_textAlign, 0,
-                GetFocus()
-                    ? Gfx::Color(0.218f, 0.211f, 0.415, 1.0f)
-                    : Gfx::Color(0.f,0.f,0.f,1.f));
+            m_engine->GetText()->DrawText(m_name, m_fontType, m_fontSize, pos, m_dim.x, m_textAlign, 0);
         }
         else if ( m_textAlign == Gfx::TEXT_ALIGN_RIGHT )
 //        else if ( m_justif > 0 )
@@ -562,21 +559,14 @@ void CControl::Draw()
             pos.x = m_pos.x + m_dim.y * 0.5f;
             pos.y = m_pos.y + m_dim.y * 0.5f;
             pos.y -= m_engine->GetText()->GetHeight(m_fontType, m_fontSize)/2.0f;
-            m_engine->GetText()->DrawText(m_name, m_fontType, m_fontSize, pos, m_dim.x, m_textAlign, 0,
-                GetFocus()
-                    ? Gfx::Color(0.218f, 0.211f, 0.415, 1.0f)
-                    : Gfx::Color(0.f,0.f,0.f,1.f));
-
+            m_engine->GetText()->DrawText(m_name, m_fontType, m_fontSize, pos, m_dim.x, m_textAlign, 0);
         }
         else
         {
             pos.x = m_pos.x + m_dim.x * 0.5f;
             pos.y = m_pos.y + m_dim.y * 0.5f;
             pos.y -= m_engine->GetText()->GetHeight( m_fontType, m_fontSize)/2.0f;
-            m_engine->GetText()->DrawText(m_name, m_fontType, m_fontSize, pos, m_dim.x, m_textAlign, 0,
-                GetFocus()
-                    ? Gfx::Color(0.218f, 0.211f, 0.415, 1.0f)
-                    : Gfx::Color(0.f,0.f,0.f,1.f));
+            m_engine->GetText()->DrawText(m_name, m_fontType, m_fontSize, pos, m_dim.x, m_textAlign, 0);
         }
     }
 }
@@ -843,7 +833,7 @@ void CControl::DrawShadow(Math::Point pos, Math::Point dim, float deep)
 
 bool CControl::Detect(Math::Point pos)
 {
-    return (  pos.x >= m_pos.x           &&
+    return ( pos.x >= m_pos.x           &&
               pos.x <= m_pos.x + m_dim.x &&
               pos.y >= m_pos.y           &&
               pos.y <= m_pos.y + m_dim.y );
@@ -855,8 +845,11 @@ std::string CControl::GetResourceName(EventType eventType)
     GetResource(RES_EVENT, eventType, name);
     auto index = name.find('\\');
     if (index != std::string::npos)
+    {
         name = name.substr(0, index);
+    }
     return name;
 }
+
 
 }

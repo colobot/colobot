@@ -274,8 +274,7 @@ void CScreenSetupGraphics::CreateInterface()
 
 bool CScreenSetupGraphics::EventProcess(const Event &event)
 {
-    if (!CScreenSetup::EventProcess(event))
-        return false;
+    if (!CScreenSetup::EventProcess(event)) return false;
 
     switch( event.type )
     {

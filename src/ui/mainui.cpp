@@ -135,7 +135,7 @@ CScreenLoading* CMainUserInterface::GetLoadingScreen()
 
 // Changes phase.
 
-CScreenSetup* CMainUserInterface::GetSetupScreen(const Phase phase)
+CScreenSetup* CMainUserInterface::GetSetupScreen(Phase phase)
 {
     if(phase == PHASE_SETUPd) return m_screenSetupDisplay.get();
     if(phase == PHASE_SETUPg) return m_screenSetupGraphics.get();
@@ -146,7 +146,7 @@ CScreenSetup* CMainUserInterface::GetSetupScreen(const Phase phase)
     return nullptr;
 }
 
-void CMainUserInterface::ChangePhase(const Phase phase)
+void CMainUserInterface::ChangePhase(Phase phase)
 {
     m_main->GetCamera()->SetType(Gfx::CAM_TYPE_NULL);
     m_engine->SetOverFront(false);
@@ -157,24 +157,32 @@ void CMainUserInterface::ChangePhase(const Phase phase)
     m_currentScreen = nullptr;
 
     if (m_phase == PHASE_QUIT_SCREEN)
+    {
         m_currentScreen = m_screenQuit.get();
-    else if (m_phase >= PHASE_WELCOME1 && m_phase <= PHASE_WELCOME3)
+    }
+    if (m_phase >= PHASE_WELCOME1 && m_phase <= PHASE_WELCOME3)
     {
         m_screenWelcome->SetImageIndex(m_phase - PHASE_WELCOME1);
         m_currentScreen = m_screenWelcome.get();
     }
-    else if (m_phase == PHASE_PLAYER_SELECT)
+    if (m_phase == PHASE_PLAYER_SELECT)
+    {
         m_currentScreen = m_screenPlayerSelect.get();
-    else if (m_phase == PHASE_APPERANCE)
+    }
+    if (m_phase == PHASE_APPERANCE)
+    {
         m_currentScreen = m_screenAppearance.get();
-    else if (m_phase == PHASE_MAIN_MENU)
+    }
+    if (m_phase == PHASE_MAIN_MENU)
+    {
         m_currentScreen = m_screenMainMenu.get();
-    else if (m_phase == PHASE_LEVEL_LIST)
+    }
+    if (m_phase == PHASE_LEVEL_LIST)
     {
         m_screenLevelList->SetLevelCategory(m_main->GetLevelCategory());
         m_currentScreen = m_screenLevelList.get();
     }
-    else if (m_phase >= PHASE_SETUPd && m_phase <= PHASE_SETUPs)
+    if (m_phase >= PHASE_SETUPd && m_phase <= PHASE_SETUPs)
     {
         CScreenSetup* screenSetup = GetSetupScreen(m_phase);
         screenSetup->SetInSimulation(false);
@@ -188,8 +196,10 @@ void CMainUserInterface::ChangePhase(const Phase phase)
         screenSetup->SetActive();
         m_currentScreen = screenSetup;
     }
-    else if (m_phase == PHASE_WRITEs)
+    if (m_phase == PHASE_WRITEs)
+    {
         m_currentScreen = m_screenIOWrite.get();
+    }
     if (m_phase == PHASE_READ || m_phase == PHASE_READs)
     {
         m_currentScreen = m_screenIORead.get();
@@ -197,13 +207,19 @@ void CMainUserInterface::ChangePhase(const Phase phase)
     }
 
     if (m_currentScreen != nullptr)
+    {
         m_currentScreen->CreateInterface();
+    }
+
     if ( IsMainMenuPhase(m_phase) )
+    {
         if (!m_sound->IsPlayingMusic())
         {
             m_sound->PlayMusic("music/Intro1.ogg", false);
             m_sound->CacheMusic("music/Intro2.ogg");
         }
+    }
+
     m_engine->LoadAllTextures();
 }
 
@@ -214,16 +230,20 @@ void CMainUserInterface::ChangePhase(const Phase phase)
 bool CMainUserInterface::EventProcess(const Event &event)
 {
     if ( !m_interface->EventProcess(event) )
+    {
         return false;
-    if (m_currentScreen != nullptr && !m_currentScreen->EventProcess(event))
-        return false;
+    }
+
+    if (m_currentScreen != nullptr && !m_currentScreen->EventProcess(event)) return false;
 
     if ( event.type == EVENT_FRAME )
     {
         if ( IsMainMenuPhase(m_phase) )
         {
             if (!m_sound->IsPlayingMusic() && m_sound->IsCachedMusic("music/Intro2.ogg"))
+            {
                 m_sound->PlayMusic("music/Intro2.ogg", true);
+            }
         }
 
         m_glintTime += event.rTime;
@@ -238,8 +258,7 @@ bool CMainUserInterface::EventProcess(const Event &event)
         NiceParticle(event.mousePos, event.mouseButtonsState & MOUSE_BUTTON_LEFT);
     }
 
-    if (!m_dialog->EventProcess(event)) //TODO  UPPER !?!
-        return false;
+    if (!m_dialog->EventProcess(event)) return false;
 
     return true;
 }
@@ -521,7 +540,9 @@ void CMainUserInterface::FrameParticle(float rTime)
         pGlint = glintPosBig;
     }
     else
+    {
         return;
+    }
 
     nParti = static_cast<int>(*pParti++);
     nGlint = static_cast<int>(*pGlint++);
@@ -773,6 +794,7 @@ bool CMainUserInterface::GetGamerOnlyHead()
 {
     if (m_phase == PHASE_APPERANCE)
         return m_screenAppearance->GetGamerOnlyHead();
+
     return false;
 }
 
@@ -780,6 +802,7 @@ float CMainUserInterface::GetPersoAngle()
 {
     if (m_phase == PHASE_APPERANCE)
         return m_screenAppearance->GetPersoAngle();
+
     return 0.0f;
 }
 
@@ -807,5 +830,6 @@ const std::vector<std::string>& CMainUserInterface::GetCustomLevelList()
 {
     return m_screenLevelList->GetCustomLevelList();
 }
+
 
 } // namespace Ui

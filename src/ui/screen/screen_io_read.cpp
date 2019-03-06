@@ -147,6 +147,7 @@ bool CScreenIORead::EventProcess(const Event &event)
             return false;
         }
     }
+
     if ( event.type == EVENT_INTERFACE_IOLIST )
     {
         IOUpdateList(false);
@@ -172,6 +173,7 @@ bool CScreenIORead::EventProcess(const Event &event)
         }
         return false;
     }
+
     return true;
 }
 

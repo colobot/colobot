@@ -107,9 +107,13 @@ void CScreenPlayerSelect::CreateInterface()
     pe = pw->CreateEdit(pos, ddim, 0, EVENT_INTERFACE_NEDIT);
     pe->SetMaxChar(15);
     if(m_main->GetPlayerProfile() != nullptr)
+    {
         name = m_main->GetPlayerProfile()->GetName();
+    }
     else
+    {
         name = CPlayerProfile::GetLastName();
+    }
     pe->SetText(name.c_str());
     pe->SetCursor(name.length(), 0);
     m_interface->SetFocus(pe);
@@ -264,13 +268,6 @@ void CScreenPlayerSelect::UpdateNameControl()
     sel   = pl->GetSelect();
     name = pe->GetText(100);
     boost::trim(name);
-    if(strcmp(name.c_str(),pe->GetText().c_str()))
-        pe->SetText(name);
-    int c1,c2;  //TODO upd : std::size_t
-    pe->GetCursor(c1,c2);
-    if(c1!=c2)
-        pe->SetCursor(c2,c2);
-    // TODO clean name: removing special chars...1
 
     pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_NDELETE));
     if ( pb != nullptr )
@@ -309,8 +306,6 @@ void CScreenPlayerSelect::UpdateNameList()
     if ( pe == nullptr )  return;
 
     name = pe->GetText(100);
-    boost::trim(name);
-    // TODO clean name: removing special chars...2
     total = pl->GetTotal();
 
     for ( i=0 ; i<total ; i++ )
@@ -323,6 +318,7 @@ void CScreenPlayerSelect::UpdateNameList()
             return;
         }
     }
+
     pl->SetSelect(-1);
 }
 
@@ -365,23 +361,30 @@ void CScreenPlayerSelect::NameSelect()
 {
     CWindow*    pw;
     CList*      pl;
+    CEdit*      pe;
+    std::string name;
     int         sel;
-    bool        bOk;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == nullptr )  return;
     pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_NLIST));
     if ( pl == nullptr )  return;
+    pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_NEDIT));
+    if ( pe == nullptr )  return;
 
+    name = pe->GetText(100);
     sel  = pl->GetSelect();
 
     if ( sel == -1 )
-        bOk = NameCreate();
+    {
+        NameCreate();
+    }
     else
-        bOk = m_main->SelectPlayer(pl->GetItemName(sel));
+    {
+        m_main->SelectPlayer(pl->GetItemName(sel));
+    }
 
-    if(bOk)
-        m_main->ChangePhase(PHASE_MAIN_MENU);
+    m_main->ChangePhase(PHASE_MAIN_MENU);
 }
 
 // Creates a new player.
@@ -400,16 +403,16 @@ bool CScreenPlayerSelect::NameCreate()
     std::string name;
     name = pe->GetText(100);
     boost::trim(name);
-    // TODO clean name: removing special chars...3 + see @CRobotMain::SelectPlayer
     if ( name.empty() )
     {
         m_sound->Play(SOUND_TZOING);
         return false;
     }
 
-    if(!m_main->SelectPlayer(name))
-        return false;
-    return m_main->GetPlayerProfile()->Create();
+    m_main->SelectPlayer(name);
+    m_main->GetPlayerProfile()->Create();
+
+    return true;
 }
 
 // Removes a player.

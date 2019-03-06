@@ -99,7 +99,7 @@ void CScreenIO::IOReadName()
 
 // Updates the list of games recorded on disk.
 
-void CScreenIO::IOReadList(const bool isWrite)
+void CScreenIO::IOReadList(bool isWrite)
 {
     CWindow* pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if (pw == nullptr) return;
@@ -108,7 +108,6 @@ void CScreenIO::IOReadList(const bool isWrite)
 
     pl->Flush();
 
-    assert(nullptr!=m_main->GetPlayerProfile());
     m_saveList.clear();
     for(const SavedScene& save : m_main->GetPlayerProfile()->GetSavedSceneList())
     {
@@ -135,7 +134,7 @@ void CScreenIO::IOReadList(const bool isWrite)
 
 // Updates the buttons according to the selected part in the list.
 
-void CScreenIO::IOUpdateList(const bool isWrite)
+void CScreenIO::IOUpdateList(bool isWrite)
 {
     CWindow*    pw;
     CList*      pl;
@@ -195,7 +194,6 @@ void CScreenIO::IODeleteScene()
     int sel = pl->GetSelect();
     if (sel < 0 || sel >= static_cast<int>(m_saveList.size())) return;
 
-    assert(nullptr!=m_main->GetPlayerProfile());
     if (!m_main->GetPlayerProfile()->DeleteScene(m_saveList.at(sel)))
     {
         m_sound->Play(SOUND_TZOING);
@@ -204,12 +202,16 @@ void CScreenIO::IODeleteScene()
 }
 
 // clears filename only to leave letter or numbers
-std::string clearName(const std::string& name)
+std::string clearName(std::string name)
 {
     std::string ret;
-    for (size_t i = 0; i < name.size(); i++)
+    for (int i = 0; i < static_cast<int>(name.size()); i++)
+    {
         if (isalnum(name[i]))
+        {
             ret += name[i];
+        }
+    }
     return ret;
 }
 
@@ -236,12 +238,15 @@ void CScreenIO::IOWriteScene()
 
     m_interface->DeleteControl(EVENT_WINDOW5);
 
-    assert(nullptr!=m_main->GetPlayerProfile());
     std::string dir;
     if (static_cast<unsigned int>(sel) >= m_saveList.size())
+    {
         dir = m_main->GetPlayerProfile()->GetSaveFile("save"+clearName(info));
+    }
     else
+    {
         dir = m_saveList.at(sel);
+    }
 
     m_main->GetPlayerProfile()->SaveScene(dir, info);
 }
@@ -260,7 +265,7 @@ void CScreenIO::IOReadScene()
 
     int sel = pl->GetSelect();
     if (sel < 0 || sel >= static_cast<int>(m_saveList.size())) return;
-    assert(nullptr!=m_main->GetPlayerProfile());
+
     m_main->GetPlayerProfile()->LoadScene(m_saveList.at(sel));
 
     m_screenLevelList->SetSelection(m_main->GetLevelCategory(), m_main->GetLevelChap()-1, m_main->GetLevelRank()-1);

@@ -277,10 +277,13 @@ bool CObjectInterface::EventProcess(const Event &event)
             }
         }
     }
-    if ( action == EVENT_NULL )
-        return true;
-    if ( action == EVENT_UPDINTERFACE && m_object->GetSelect() )
-        CreateInterface(true);
+
+    if ( action == EVENT_NULL )  return true;
+
+    if ( action == EVENT_UPDINTERFACE )
+    {
+        if ( m_object->GetSelect() )  CreateInterface(true);
+    }
 
     if ( action == EVENT_FRAME )
     {
@@ -353,8 +356,7 @@ bool CObjectInterface::EventProcess(const Event &event)
         return true;
     }
 
-    if ( !m_object->GetSelect() )
-        return true;  // robot not selected?
+    if ( !m_object->GetSelect() ) return true;  // robot not selected?
 
     if ( m_taskExecutor->IsBackgroundTask() )  // current task?
     {
@@ -378,9 +380,7 @@ bool CObjectInterface::EventProcess(const Event &event)
             }
         }
 
-        if ( !m_taskExecutor->IsForegroundTask()
-            || !m_taskExecutor->GetForegroundTask()->IsPilot() )
-            return true;
+        if ( !m_taskExecutor->IsForegroundTask() || !m_taskExecutor->GetForegroundTask()->IsPilot() )  return true;
     }
 
     if ( !m_programmable->IsProgram() )
@@ -807,8 +807,7 @@ void CObjectInterface::StopEditScript(bool closeWithErrors)
     if ( !m_studio->StopEditScript(closeWithErrors) )  return;
     m_studio.reset();
 
-    if ( !closeWithErrors )
-        m_programStorage->SetActiveVirus(false);
+    if ( !closeWithErrors )  m_programStorage->SetActiveVirus(false);
 
     CreateInterface(true);  // puts the control buttons
 }
@@ -827,8 +826,7 @@ void CObjectInterface::GroundFlat()
     {
         err = ERR_FLAG_FLY;
         pos = m_object->GetPosition();
-        if ( pos.y < m_water->GetLevel() )
-            err = ERR_FLAG_WATER;
+        if ( pos.y < m_water->GetLevel() )  err = ERR_FLAG_WATER;
         m_main->DisplayError(err, m_object);
         return;
     }
@@ -1566,7 +1564,7 @@ void CObjectInterface::UpdateInterface(float rTime)
                 m_lastAlarmTime = 0.0f;
             }
         }
-
+        
         pg->SetLevel(shield);
         pg->SetIcon(icon);
     }
