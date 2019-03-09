@@ -60,6 +60,7 @@ if("${CMAKE_SYSTEM_NAME}" MATCHES "Windows")
     set(PLATFORM_GNU     0)
     set(PLATFORM_LINUX   0)
     set(PLATFORM_MACOSX  0)
+    set(PLATFORM_FREEBSD 0)
     set(PLATFORM_OTHER   0)
 
     # Platform-dependent implementation of system.h
@@ -71,6 +72,7 @@ elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
     set(PLATFORM_LINUX   1)
     set(PLATFORM_GNU     1)
     set(PLATFORM_MACOSX  0)
+    set(PLATFORM_FREEBSD 0)
     set(PLATFORM_OTHER   0)
 
     # Platform-dependent implementation of system.h
@@ -82,6 +84,7 @@ elseif("${CMAKE_SYSTEM_NAME}" MATCHES "kFreeBSD" OR "${CMAKE_SYSTEM_NAME}" STREQ
     set(PLATFORM_LINUX   0)
     set(PLATFORM_GNU     1)
     set(PLATFORM_MACOSX  0)
+    set(PLATFORM_FREEBSD 0)
     set(PLATFORM_OTHER   0)
 
     # Platform-dependent implementation of system.h
@@ -94,10 +97,26 @@ elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
     set(PLATFORM_GNU     0)
     set(PLATFORM_MACOSX  1)
     set(PLATFORM_OTHER   0)
+    set(PLATFORM_FREEBSD 0)
 
     # Platform-dependent implementation of system.h
     set(SYSTEM_CPP_MODULE "system_macosx.cpp")
     set(SYSTEM_H_MODULE "system_macosx.h")
+    # To avoid CMake warning
+    set(CMAKE_MACOSX_RPATH 1)
+elseif("${CMAKE_SYSTEM_NAME}" MATCHES "FreeBSD")
+    message(STATUS "Build for FreeBSD system")
+    set(PLATFORM_WINDOWS 0)
+    set(PLATFORM_LINUX   0)
+    set(PLATFORM_GNU     0)
+    set(PLATFORM_MACOSX  0)
+    set(PLATFORM_FREEBSD 1)
+    set(PLATFORM_OTHER   0)
+
+    # Platform-dependent implementation of system.h
+    # On FreeBSD we can use *_other
+    set(SYSTEM_CPP_MODULE "system_other.cpp")
+    set(SYSTEM_H_MODULE "system_other.h")
     # To avoid CMake warning
     set(CMAKE_MACOSX_RPATH 1)
 else()
@@ -106,6 +125,7 @@ else()
     set(PLATFORM_LINUX   0)
     set(PLATFORM_GNU     0)
     set(PLATFORM_MACOSX  0)
+    set(PLATFORM_FREEBSD 0)
     set(PLATFORM_OTHER   1)
 
     # Platform-dependent implementation of system.h
@@ -152,6 +172,10 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     endif()
 
     message(STATUS "Detected Clang version 3.1+")
+
+    if (${PLATFORM_FREEBSD})
+	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=bfd")
+    endif()
 
     set(NORMAL_CXX_FLAGS "-std=c++11 -Wall -Werror -Wold-style-cast -pedantic-errors -Wmissing-prototypes")
     set(NORMAL_CXX_FLAGS "${NORMAL_CXX_FLAGS} -Wno-error=deprecated-declarations") # updated version of physfs is not available on some platforms so we keep using deprecated functions, see #958

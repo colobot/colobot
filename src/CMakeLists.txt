@@ -101,6 +101,10 @@ elseif(PLATFORM_MACOSX)
     find_library(LIBINTL_LIBRARY NAMES intl libintl)
     find_path(LIBINTL_INCLUDE_PATH NAMES libintl.h)
     set(PLATFORM_LIBS ${LIBINTL_LIBRARY})
+elseif(PLATFORM_FREEBSD)
+    find_library(LIBINTL_LIBRARY NAMES intl libintl)
+    find_path(LIBINTL_INCLUDE_PATH NAMES libintl.h)
+    set(PLATFORM_LIBS ${LIBINTL_LIBRARY})
 endif()
 
 
