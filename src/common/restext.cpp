@@ -742,6 +742,7 @@ void InitializeRestext()
     stringsCbot[CBot::CBotErrHexDigits]     = TR("Missing hex digits after escape sequence");
     stringsCbot[CBot::CBotErrHexRange]      = TR("Hex value out of range");
     stringsCbot[CBot::CBotErrUnicodeName]   = TR("Invalid universal character name");
+    stringsCbot[CBot::CBotErrCharEmpty]     = TR("Empty character constant");
 
     stringsCbot[CBot::CBotErrZeroDiv]       = TR("Dividing by zero");
     stringsCbot[CBot::CBotErrNotInit]       = TR("Variable not initialized");

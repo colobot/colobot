@@ -182,7 +182,8 @@ enum TokenType
     TokenTypNum = 2,     //!< number
     TokenTypString = 3,  //!< string
     TokenTypVar = 4,     //!< a variable name
-    TokenTypDef = 5      //!< value according DefineNum
+    TokenTypDef = 5,     //!< value according DefineNum
+    TokenTypChar = 6,    //!< character literal
 };
 
 /**
@@ -252,6 +253,7 @@ enum CBotError : int
     CBotErrHexDigits     = 5052, //!< missing hex digits after escape sequence
     CBotErrHexRange      = 5053, //!< hex value out of range
     CBotErrUnicodeName   = 5054, //!< invalid universal character name
+    CBotErrCharEmpty     = 5055, //!< empty character constant
 
     // Runtime errors
     CBotErrZeroDiv       = 6000, //!< division by zero

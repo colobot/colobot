@@ -21,6 +21,7 @@
 
 #include "CBot/CBotInstr/CBotExpression.h"
 #include "CBot/CBotInstr/CBotExprLitBool.h"
+#include "CBot/CBotInstr/CBotExprLitChar.h"
 #include "CBot/CBotInstr/CBotExprLitNan.h"
 #include "CBot/CBotInstr/CBotExprLitNull.h"
 #include "CBot/CBotInstr/CBotExprLitNum.h"
@@ -166,6 +167,13 @@ CBotInstr* CBotParExpr::CompileLitExpr(CBotToken* &p, CBotCStack* pStack)
     inst = CBot::CompileSizeOf(p, pStk);
     if (inst != nullptr || !pStk->IsOk())
     {
+        return pStack->Return(inst, pStk);
+    }
+
+    // is this a character?
+    if (p->GetType() == TokenTypChar)
+    {
+        CBotInstr* inst = CBotExprLitChar::Compile(p, pStk);
         return pStack->Return(inst, pStk);
     }
 

@@ -155,6 +155,18 @@ long GetNumInt(const std::string& str)
             break;
         }
     }
+    else if (*p == 'b')
+    {
+        while (*++p != 0)
+        {
+            if (*p == '0' || *p == '1')
+            {
+                num = (num << 1) + *p - '0';
+                continue;
+            }
+            break;
+        }
+    }
     return num;
 }
 

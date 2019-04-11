@@ -514,6 +514,9 @@ msgstr "Изменить выбранную программу"
 msgid "Egg"
 msgstr "Яйцо"
 
+msgid "Empty character constant"
+msgstr ""
+
 msgid "End of block missing"
 msgstr "Отсутствует конец блока"
 

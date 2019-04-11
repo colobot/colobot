@@ -304,18 +304,65 @@ CBotToken*  CBotToken::NextToken(const char*& program, bool first)
             stop = true;
         }
 
+        // special case for characters
+        if (token[0] == '\'')
+        {
+            if (c == '\\')       // escape sequence
+            {
+                token += c;
+                c = *(program++);
+
+                if (c == 'u' || c == 'U') // unicode escape
+                {
+                    int maxlen = (c == 'u') ? 4 : 8;
+                    token += c;
+                    c = *(program++);
+                    for (int i = 0; i < maxlen; i++)
+                    {
+                        if (c == 0 || !CharInList(c, hexnum)) break;
+                        token += c;
+                        c = *(program++);
+                    }
+                }
+                else if (c != 0 && !CharInList(c, nch)) // other escape char
+                {
+                    token += c;
+                    c = *(program++);
+                }
+            }
+            else if (c != 0 && c != '\'' && !CharInList(c, nch)) // single character
+            {
+                token += c;
+                c = *(program++);
+            }
+
+            if (c == '\'') // close quote
+            {
+                token += c;
+                c = *(program++);
+            }
+            stop = true;
+        }
+
         // special case for numbers
         if ( CharInList(token[0], num ))
         {
             bool    bdot = false;   // found a point?
             bool    bexp = false;   // found an exponent?
 
+            char    bin[] = "01";
             char*   liste = num;
             if (token[0] == '0' && c == 'x')          // hexadecimal value?
             {
                 token += c;
                 c   = *(program++);                 // next character
                 liste = hexnum;
+            }
+            else if (token[0] == '0' && c == 'b')   // binary literal
+            {
+                liste = bin;
+                token += c;
+                c = *(program++);
             }
 cw:
             while (c != 0 && CharInList(c, liste))
@@ -399,6 +446,7 @@ bis:
 
             if (CharInList(token[0], num )) t->m_type = TokenTypNum;
             if (token[0] == '\"') t->m_type = TokenTypString;
+            if (token[0] == '\'') t->m_type = TokenTypChar;
             if (first) t->m_type = TokenTypNone;
 
             t->m_keywordId = GetKeyWord(token);

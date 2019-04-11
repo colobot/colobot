@@ -44,6 +44,8 @@ set(SOURCES
     CBotInstr/CBotEmpty.h
     CBotInstr/CBotExprLitBool.cpp
     CBotInstr/CBotExprLitBool.h
+    CBotInstr/CBotExprLitChar.cpp
+    CBotInstr/CBotExprLitChar.h
     CBotInstr/CBotExprLitNan.cpp
     CBotInstr/CBotExprLitNan.h
     CBotInstr/CBotExprLitNull.cpp

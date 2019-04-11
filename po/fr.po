@@ -510,6 +510,9 @@ msgstr "Éditer le programme sélectionné"
 msgid "Egg"
 msgstr "Oeuf"
 
+msgid "Empty character constant"
+msgstr ""
+
 msgid "End of block missing"
 msgstr "Il manque la fin du bloc"
 

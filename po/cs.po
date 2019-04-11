@@ -507,6 +507,9 @@ msgstr "Upravit vybraný program"
 msgid "Egg"
 msgstr "Vejce"
 
+msgid "Empty character constant"
+msgstr ""
+
 msgid "End of block missing"
 msgstr "Chybí konec bloku"
 

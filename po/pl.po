@@ -506,6 +506,9 @@ msgstr "Edytuj zaznaczony program"
 msgid "Egg"
 msgstr "Jajo"
 
+msgid "Empty character constant"
+msgstr ""
+
 msgid "End of block missing"
 msgstr "Brak końca bloku"
 

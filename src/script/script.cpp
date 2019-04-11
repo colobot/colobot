@@ -589,16 +589,17 @@ void CScript::UpdateList(Ui::CList* list)
     list->SetState(Ui::STATE_ENABLE);
 }
 
-// Colorize a string literal with escape sequences also colored
+// Colorize a string or character literal with escape sequences also colored
 
 static void HighlightString(Ui::CEdit* edit, const std::string& s, int start)
 {
     edit->SetFormat(start, start + 1, Gfx::FONT_HIGHLIGHT_STRING);
 
-    auto it = s.cbegin() + 1;
+    auto it = s.cbegin();
+    char endQuote = *(it++);
 
     ++start;
-    while (it != s.cend() && *it != '\"')
+    while (it != s.cend() && *it != endQuote)
     {
         if (*(it++) != '\\') // not escape sequence
         {
@@ -697,7 +698,7 @@ void CScript::ColorizeScript(Ui::CEdit* edit, int rangeStart, int rangeEnd)
         {
             color = Gfx::FONT_HIGHLIGHT_STRING;
         }
-        else if (type == CBot::TokenTypString) // string literals
+        else if (type == CBot::TokenTypString || type == CBot::TokenTypChar) // string literals and character literals
         {
             HighlightString(edit, token, cursor1);
             bt = bt->GetNext();

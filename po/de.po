@@ -508,6 +508,9 @@ msgstr "Gewähltes Programm bearbeiten"
 msgid "Egg"
 msgstr "Ei"
 
+msgid "Empty character constant"
+msgstr ""
+
 msgid "End of block missing"
 msgstr "Es fehlt eine geschlossene geschweifte Klammer \"}\" (Ende des Blocks)"
 

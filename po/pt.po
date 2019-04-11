@@ -505,6 +505,9 @@ msgstr "Alterar o programa selecionado"
 msgid "Egg"
 msgstr "Ovo"
 
+msgid "Empty character constant"
+msgstr ""
+
 msgid "End of block missing"
 msgstr "Fim do bloco ausente"
 
