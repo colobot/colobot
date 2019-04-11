@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include <cstdio>
+#include <iostream>
 #include <string>
 
 namespace CBot
@@ -28,128 +28,173 @@ namespace CBot
 class CBotVar;
 class CBotTypResult;
 
-///////////////////////////////////////////////////////////////////////////////
-// routines for file management  (* FILE)
-
 /*!
- * \brief fOpen
- * \param name
- * \param mode
- * \return
+ * \brief Save a linked list if variables
+ * \param ostr Output stream
+ * \param pVar First variable in the list
+ * \return true on success
  */
-FILE* fOpen(const char* name, const char* mode);
-
-/*!
- * \brief fClose
- * \param filehandle
- * \return
- */
-int fClose(FILE* filehandle);
-
-/*!
- * \brief fWrite
- * \param buffer
- * \param elemsize
- * \param length
- * \param filehandle
- * \return
- */
-std::size_t fWrite(const void *buffer,
-                   std::size_t elemsize,
-                   std::size_t length,
-                   FILE* filehandle);
-
-/*!
- * \brief fRead
- * \param buffer
- * \param elemsize
- * \param length
- * \param filehandle
- * \return
- */
-std::size_t fRead(void *buffer,
-                  std::size_t elemsize,
-                  std::size_t length,
-                  FILE* filehandle);
-
-/*!
- * \brief SaveVars
- * \param pf
- * \param pVar
- * \return
- */
-bool SaveVars(FILE* pf, CBotVar* pVar);
+bool SaveVars(std::ostream &ostr, CBotVar* pVar);
 
 /*!
  * \brief WriteWord
- * \param pf
+ * \param ostr Output stream
  * \param w
- * \return
+ * \return true on success
  */
-bool WriteWord(FILE* pf, unsigned short w);
+bool WriteWord(std::ostream &ostr, unsigned short w);
 
 /*!
  * \brief ReadWord
- * \param pf
- * \param w
- * \return
+ * \param istr Input stream
+ * \param[out] w
+ * \return true on success
  */
-bool ReadWord(FILE* pf, unsigned short& w);
+bool ReadWord(std::istream &istr, unsigned short &w);
 
 /*!
- * \brief ReadLong
- * \param pf
- * \param w
- * \return
+ * \brief WriteByte
+ * \param ostr Output stream
+ * \param c
+ * \return true on success
  */
-bool ReadLong(FILE* pf, long& w);
+bool WriteByte(std::ostream &ostr, char c);
 
 /*!
- * \brief WriteFloat
- * \param pf
- * \param w
- * \return
+ * \brief ReadByte
+ * \param istr Input stream
+ * \param[out] c
+ * \return true on success
  */
-bool WriteFloat(FILE* pf, float w);
+bool ReadByte(std::istream &istr, char& c);
+
+/*!
+ * \brief WriteShort
+ * \param ostr Output stream
+ * \param s
+ * \return true on success
+ */
+bool WriteShort(std::ostream &ostr, short s);
+
+/*!
+ * \brief ReadShort
+ * \param istr Input stream
+ * \param[out] s
+ * \return true on success
+ */
+bool ReadShort(std::istream &istr, short &s);
+
+/*!
+ * \brief WriteInt
+ * \param ostr Output stream
+ * \param i
+ * \return true on success
+ */
+bool WriteInt(std::ostream &ostr, int i);
+
+/*!
+ * \brief ReadInt
+ * \param istr Input stream
+ * \param[out] i
+ * \return true on success
+ */
+bool ReadInt(std::istream &istr, int &i);
 
 /*!
  * \brief WriteLong
- * \param pf
- * \param w
- * \return
+ * \param ostr Output stream
+ * \param l
+ * \param padTo minimum number of bytes to write
+ * \return true on success
  */
-bool WriteLong(FILE* pf, long w);
+bool WriteLong(std::ostream &ostr, long l, unsigned padTo = 0);
+
+/*!
+ * \brief ReadLong
+ * \param istr Input stream
+ * \param[out] l
+ * \return true on success
+ */
+bool ReadLong(std::istream &istr, long &l);
+
+/*!
+ * \brief WriteFloat
+ * \param ostr Output stream
+ * \param f
+ * \return true on success
+ */
+bool WriteFloat(std::ostream &ostr, float f);
 
 /*!
  * \brief ReadFloat
- * \param pf
- * \param w
- * \return
+ * \param istr Input stream
+ * \param[out] f
+ * \return true on success
  */
-bool ReadFloat(FILE* pf, float& w);
+bool ReadFloat(std::istream &istr, float &f);
+
+/*!
+ * \brief WriteDouble
+ * \param ostr Output stream
+ * \param d
+ * \return true on success
+ */
+bool WriteDouble(std::ostream &ostr, double d);
+
+/*!
+ * \brief ReadDouble
+ * \param istr Input stream
+ * \param[out] d
+ * \return true on success
+ */
+bool ReadDouble(std::istream &istr, double &d);
+
+/*!
+ * \brief WriteString
+ * \param ostr Output stream
+ * \param s
+ * \return true on success
+ */
+bool WriteString(std::ostream &ostr, const std::string &s);
 
 /*!
  * \brief ReadString
- * \param pf
- * \param s
- * \return
+ * \param istr Input stream
+ * \param[out] s
+ * \return true on success
  */
-bool ReadString(FILE* pf, std::string& s);
+bool ReadString(std::istream &istr, std::string &s);
 
 /*!
  * \brief WriteType
- * \param pf
+ * \param ostr Output stream
  * \param type
- * \return
+ * \return true on success
  */
-bool WriteType(FILE* pf, const CBotTypResult &type);
+bool WriteType(std::ostream &ostr, const CBotTypResult &type);
 
 /*!
  * \brief ReadType
- * \param pf
- * \param type
- * \return
+ * \param istr Input stream
+ * \param[out] type
+ * \return true on success
  */
-bool ReadType(FILE* pf, CBotTypResult &type);
+bool ReadType(std::istream &istr, CBotTypResult &type);
+
+/*!
+ * \brief WriteStream
+ * \param ostr Output stream
+ * \param istr Input stream
+ * \return true on success
+ */
+bool WriteStream(std::ostream &ostr, std::istream& istr);
+
+/*!
+ * \brief ReadStream
+ * \param istr Input stream
+ * \param ostr Output stream
+ * \return true on success
+ */
+bool ReadStream(std::istream& istr, std::ostream &ostr);
 
 } // namespace CBot

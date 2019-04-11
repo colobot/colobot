@@ -53,9 +53,9 @@ public:
     virtual bool IsProgram() = 0;
 
     //! Save current execution status to file
-    virtual bool WriteStack(FILE *file) = 0;
+    virtual bool WriteStack(std::ostream &ostr) = 0;
     //! Read current execution status from file
-    virtual bool ReadStack(FILE *file) = 0;
+    virtual bool ReadStack(std::istream &istr) = 0;
 
     //! Start recording trace
     virtual void TraceRecordStart() = 0;

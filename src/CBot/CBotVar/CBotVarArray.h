@@ -51,7 +51,7 @@ public:
 
     std::string GetValString() override;
 
-    bool Save1State(FILE* pf) override;
+    bool Save1State(std::ostream &ostr) override;
 
 private:
     //! Array data

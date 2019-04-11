@@ -1032,16 +1032,16 @@ bool CScript::WriteScript(const char* filename)
 
 // Reads a stack of script by execution as a file.
 
-bool CScript::ReadStack(FILE *file)
+bool CScript::ReadStack(std::istream &istr)
 {
     int     nb;
 
-    CBot::fRead(&nb, sizeof(int), 1, file);
-    CBot::fRead(&m_ipf, sizeof(int), 1, file);
-    CBot::fRead(&m_errMode, sizeof(int), 1, file);
+    if (!CBot::ReadInt(istr, nb)) return false;
+    if (!CBot::ReadInt(istr, m_ipf)) return false;
+    if (!CBot::ReadInt(istr, m_errMode)) return false;
 
     if (m_botProg == nullptr) return false;
-    if ( !m_botProg->RestoreState(file) )  return false;
+    if (!m_botProg->RestoreState(istr)) return false;
 
     m_bRun = true;
     m_bContinue = false;
@@ -1050,16 +1050,16 @@ bool CScript::ReadStack(FILE *file)
 
 // Writes a stack of script by execution as a file.
 
-bool CScript::WriteStack(FILE *file)
+bool CScript::WriteStack(std::ostream &ostr)
 {
     int     nb;
 
     nb = 2;
-    CBot::fWrite(&nb, sizeof(int), 1, file);
-    CBot::fWrite(&m_ipf, sizeof(int), 1, file);
-    CBot::fWrite(&m_errMode, sizeof(int), 1, file);
+    if (!CBot::WriteInt(ostr, nb)) return false;
+    if (!CBot::WriteInt(ostr, m_ipf)) return false;
+    if (!CBot::WriteInt(ostr, m_errMode)) return false;
 
-    return m_botProg->SaveState(file);
+    return m_botProg->SaveState(ostr);
 }
 
 

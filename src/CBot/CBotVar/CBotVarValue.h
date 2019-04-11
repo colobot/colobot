@@ -86,7 +86,10 @@ template <typename T, CBotType type>
 class CBotVarNumberBase : public CBotVarValue<T, type>
 {
 public:
-    CBotVarNumberBase(const CBotToken &name) : CBotVarValue<T, type>(name) {}
+    CBotVarNumberBase(const CBotToken &name) : CBotVarValue<T, type>(name)
+    {
+        this->m_val = static_cast<T>(0);
+    }
 
     void SetValInt(int val, const std::string &s = "") override
     {

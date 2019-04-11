@@ -134,7 +134,7 @@ void* CBotVar::GetUserPtr()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotVar::Save1State(FILE* pf)
+bool CBotVar::Save1State(std::ostream &ostr)
 {
     // this routine "virtual" must never be called,
     // there must be a routine for each of the subclasses (CBotVarInt, CBotVarFloat, etc)

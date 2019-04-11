@@ -45,17 +45,17 @@ std::string CBotVarInt::GetValString()
 void CBotVarInt::Neg()
 {
     CBotVarNumber::Neg();
-    m_defnum.empty();
+    m_defnum.clear();
 }
 void CBotVarInt::Inc()
 {
     CBotVarNumber::Inc();
-    m_defnum.empty();
+    m_defnum.clear();
 }
 void CBotVarInt::Dec()
 {
     CBotVarNumber::Dec();
-    m_defnum.empty();
+    m_defnum.clear();
 }
 
 void CBotVarInt::XOr(CBotVar* left, CBotVar* right)
@@ -90,22 +90,23 @@ void CBotVarInt::SR(CBotVar* left, CBotVar* right)
 void CBotVarInt::Not()
 {
     m_val = ~m_val;
+    m_defnum.clear();
 }
 
-bool CBotVarInt::Save0State(FILE* pf)
+bool CBotVarInt::Save0State(std::ostream &ostr)
 {
     if (!m_defnum.empty())
     {
-        if(!WriteWord(pf, 200)) return false; // special marker
-        if(!WriteString(pf, m_defnum)) return false;
+        if(!WriteWord(ostr, 200)) return false; // special marker
+        if(!WriteString(ostr, m_defnum)) return false;
     }
 
-    return CBotVar::Save0State(pf);
+    return CBotVar::Save0State(ostr);
 }
 
-bool CBotVarInt::Save1State(FILE* pf)
+bool CBotVarInt::Save1State(std::ostream &ostr)
 {
-    return WriteWord(pf, m_val);
+    return WriteInt(ostr, m_val);
 }
 
 } // namespace CBot

@@ -623,28 +623,28 @@ public:
 
     /**
      * \brief Save common variable header (name, type, etc.)
-     * \param pf file pointer
+     * \param ostr Output stream
      * \return false on write error
      */
-    virtual bool Save0State(FILE* pf);
+    virtual bool Save0State(std::ostream &ostr);
 
     /**
      * \brief Save variable data
      *
      * Overriden in child classes
      *
-     * \param pf file pointer
+     * \param ostr Output stream
      * \return false on write error
      */
-    virtual bool Save1State(FILE* pf);
+    virtual bool Save1State(std::ostream &ostr);
 
     /**
      * \brief Restore variable
-     * \param pf file pointer
+     * \param istr Input stream
      * \param[out] pVar Pointer to recieve the variable
      * \return false on read error
      */
-    static bool RestoreState(FILE* pf, CBotVar* &pVar);
+    static bool RestoreState(std::istream &istr, CBotVar* &pVar);
 
     //@}
 

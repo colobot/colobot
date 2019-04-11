@@ -50,8 +50,8 @@ public:
     void SR(CBotVar* left, CBotVar* right) override;
     void ASR(CBotVar* left, CBotVar* right) override;
 
-    bool Save0State(FILE* pf) override;
-    bool Save1State(FILE* pf) override;
+    bool Save0State(std::ostream &ostr) override;
+    bool Save1State(std::ostream &ostr) override;
 
 protected:
     //! The name if given by DefineNum.

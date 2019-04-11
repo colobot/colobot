@@ -109,38 +109,6 @@ CBotTypResult ArrayType(CBotToken* &p, CBotCStack* pile, CBotTypResult type)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool WriteWord(FILE* pf, unsigned short w)
-{
-    size_t  lg;
-
-    lg = fwrite(&w, sizeof( unsigned short ), 1, pf );
-
-    return (lg == 1);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool WriteString(FILE* pf, std::string s)
-{
-    size_t  lg1, lg2;
-
-    lg1 = s.size();
-    if (!WriteWord(pf, lg1)) return false;
-
-    lg2 = fwrite(s.c_str(), 1, lg1, pf );
-    return (lg1 == lg2);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool WriteFloat(FILE* pf, float w)
-{
-    size_t  lg;
-
-    lg = fwrite(&w, sizeof( float ), 1, pf );
-
-    return (lg == 1);
-}
-
-////////////////////////////////////////////////////////////////////////////////
 long GetNumInt(const std::string& str)
 {
     const char* p = str.c_str();

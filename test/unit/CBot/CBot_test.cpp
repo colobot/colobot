@@ -22,6 +22,9 @@
 #include <gtest/gtest.h>
 #include <stdexcept>
 
+extern bool g_cbotTestSaveState;
+bool g_cbotTestSaveState = false;
+
 using namespace CBot;
 
 class CBotUT : public testing::Test
@@ -197,6 +200,23 @@ private:
         return ss.str();
     }
 
+    static void TestSaveAndRestore(CBotProgram* program)
+    {
+        std::stringstream sstr("");
+        // save
+        if (!program->SaveState(sstr))
+            throw CBotTestFail("CBotProgram::SaveState Failed");
+
+        if (!CBotClass::SaveStaticState(sstr))
+            throw CBotTestFail("CBotClass::SaveStaticState Failed");
+        // restore
+        if (!program->RestoreState(sstr))
+            throw CBotTestFail("CBotProgram::RestoreState Failed");
+
+        if (!CBotClass::RestoreStaticState(sstr))
+            throw CBotTestFail("CBotClass::RestoreStaticState Failed");
+    }
+
 protected:
     std::unique_ptr<CBotProgram> ExecuteTest(const std::string& code, CBotError expectedError = CBotNoErr)
     {
@@ -231,7 +251,17 @@ protected:
             try
             {
                 program->Start(test);
-                while (!program->Run());
+                if (g_cbotTestSaveState)
+                {
+                    while (!program->Run(nullptr, 0)) // save/restore at each step
+                    {
+                        TestSaveAndRestore(program.get());
+                    }
+                }
+                else
+                {
+                    while (!program->Run(nullptr, 0)); // execute in step mode
+                }
                 program->GetError(error, cursor1, cursor2);
                 if (error != expectedRuntimeError)
                 {

@@ -19,9 +19,8 @@
 
 #pragma once
 
-#include "CBot/CBotTypResult.h"
+#include "CBot/CBotFileUtils.h"
 
-#include <cstdio>
 #include <string>
 #include <cassert>
 
@@ -31,6 +30,8 @@ namespace CBot
 class CBotVar;
 class CBotToken;
 class CBotCStack;
+class CBotTypResult;
+
 
 /*!
  * \brief MakeListVars Transforms the array of pointers to variables in a
@@ -57,30 +58,6 @@ CBotTypResult TypeParam(CBotToken* &p, CBotCStack* pile);
  * \return
  */
 CBotTypResult ArrayType(CBotToken* &p, CBotCStack* pile, CBotTypResult type);
-
-/*!
- * \brief WriteWord
- * \param pf
- * \param w
- * \return
- */
-bool WriteWord(FILE* pf, unsigned short w);
-
-/*!
- * \brief WriteString
- * \param pf
- * \param s
- * \return
- */
-bool WriteString(FILE* pf, std::string s);
-
-/*!
- * \brief WriteFloat
- * \param pf
- * \param w
- * \return
- */
-bool WriteFloat(FILE* pf, float w);
 
 /*!
  * \brief GetNumInt Converts a string into integer may be of the form 0xabc123.
