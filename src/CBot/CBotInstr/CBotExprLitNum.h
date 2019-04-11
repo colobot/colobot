@@ -26,6 +26,8 @@ namespace CBot
 
 CBotInstr* CompileExprLitNum(CBotToken* &p, CBotCStack* pStack);
 
+CBotInstr* CompileSizeOf(CBotToken* &p, CBotCStack* pStack);
+
 /**
  * \brief A number literal - 5, 1, 2.5, 3.75, etc. or a predefined numerical constant (see CBotToken::DefineNum())
  *

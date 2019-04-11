@@ -68,6 +68,13 @@ CBotInstr* CBotParExpr::Compile(CBotToken* &p, CBotCStack* pStack)
     if (inst != nullptr || !pStk->IsOk())
         return pStack->Return(inst, pStk);
 
+    // is it sizeof operator ?
+    inst = CBot::CompileSizeOf(p, pStk);
+    if (inst != nullptr || !pStk->IsOk())
+    {
+        return pStack->Return(inst, pStk);
+    }
+
     // is it a variable name?
     if (p->GetType() == TokenTypVar)
     {
@@ -152,6 +159,13 @@ CBotInstr* CBotParExpr::CompileLitExpr(CBotToken* &p, CBotCStack* pStack)
         p->GetType() == TokenTypDef )
     {
         CBotInstr* inst = CBot::CompileExprLitNum(p, pStk);
+        return pStack->Return(inst, pStk);
+    }
+
+    // is it sizeof operator ?
+    inst = CBot::CompileSizeOf(p, pStk);
+    if (inst != nullptr || !pStk->IsOk())
+    {
         return pStack->Return(inst, pStk);
     }
 

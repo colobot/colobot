@@ -114,6 +114,46 @@ CBotInstr* CompileExprLitNum(CBotToken* &p, CBotCStack* pStack)
     return pStack->Return(nullptr, pStk);
 }
 
+CBotInstr* CompileSizeOf(CBotToken* &p, CBotCStack* pStack)
+{
+    CBotToken* pp = p;
+
+    if (!IsOfType(p, TokenTypVar)) return nullptr;
+    if (pp->GetString() == "sizeof" && IsOfType(p, ID_OPENPAR))
+    {
+        CBotCStack* pStk = pStack->TokenStack();
+
+        int value;
+
+        if (IsOfType(p, ID_BYTE)) value = sizeof(signed char);
+        else if (IsOfType(p, ID_SHORT)) value = sizeof(short);
+        else if (IsOfType(p, ID_CHAR)) value = sizeof(uint32_t);
+        else if (IsOfType(p, ID_INT)) value = sizeof(int);
+        else if (IsOfType(p, ID_LONG)) value = sizeof(long);
+        else if (IsOfType(p, ID_FLOAT)) value = sizeof(float);
+        else if (IsOfType(p, ID_DOUBLE)) value = sizeof(double);
+        else
+        {
+            p = pp;
+            return pStack->Return(nullptr, pStk);
+        }
+
+        if (IsOfType(p, ID_CLOSEPAR))
+        {
+            auto inst = new CBotExprLitNum<int>(value);
+            inst->SetToken(pp);
+
+            CBotVar* var = CBotVar::Create("", CBotTypInt);
+            pStk->SetVar(var);
+            return pStack->Return(inst, pStk);
+        }
+        pStk->SetError(CBotErrClosePar, p->GetStart());
+        return pStack->Return(nullptr, pStk);
+    }
+    p = pp;
+    return nullptr;
+}
+
 template <typename T>
 bool CBotExprLitNum<T>::Execute(CBotStack* &pj)
 {
