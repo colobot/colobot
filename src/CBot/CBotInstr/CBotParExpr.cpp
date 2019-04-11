@@ -151,7 +151,7 @@ CBotInstr* CBotParExpr::CompileLitExpr(CBotToken* &p, CBotCStack* pStack)
     if (p->GetType() == TokenTypNum ||
         p->GetType() == TokenTypDef )
     {
-        CBotInstr* inst = CBotExprLitNum::Compile(p, pStk);
+        CBotInstr* inst = CBot::CompileExprLitNum(p, pStk);
         return pStack->Return(inst, pStk);
     }
 

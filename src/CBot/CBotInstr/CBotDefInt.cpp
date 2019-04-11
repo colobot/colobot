@@ -47,13 +47,25 @@ CBotDefInt::~CBotDefInt()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotInstr* CBotDefInt::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bool noskip)
+CBotInstr* CBotDefInt::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bool noskip, CBotTypResult vartype)
 {
     CBotToken*    pp = cont ? nullptr : p;        // no repetition of the token "int"
 
-    if (!cont && !IsOfType(p, ID_INT)) return nullptr;
+    if (!cont)
+    {
+        switch (p->GetType())
+        {
+            case ID_BYTE:  vartype.SetType(CBotTypByte ); break;
+            case ID_SHORT: vartype.SetType(CBotTypShort); break;
+            case ID_CHAR:  vartype.SetType(CBotTypChar ); break;
+            case ID_INT:   vartype.SetType(CBotTypInt  ); break;
+            case ID_LONG:  vartype.SetType(CBotTypLong ); break;
+            default: return nullptr;
+        }
+        p = p->GetNext();
+    }
 
-    CBotDefInt*    inst = static_cast<CBotDefInt*>(CompileArray(p, pStack, CBotTypInt));
+    CBotDefInt* inst = static_cast<CBotDefInt*>(CompileArray(p, pStack, vartype));
     if (inst != nullptr || !pStack->IsOk()) return inst;
 
     CBotCStack* pStk = pStack->TokenStack(pp);
@@ -68,7 +80,7 @@ CBotInstr* CBotDefInt::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, boo
     // determines the expression is valid for the item on the left side
     if (nullptr != (inst->m_var = CBotLeftExprVar::Compile( p, pStk )))
     {
-        (static_cast<CBotLeftExprVar*>(inst->m_var))->m_typevar = CBotTypInt;
+        (static_cast<CBotLeftExprVar*>(inst->m_var))->m_typevar = vartype;
         if (pStk->CheckVarLocal(vartoken))  // redefinition of the variable
         {
             pStk->SetError(CBotErrRedefVar, vartoken);
@@ -82,7 +94,7 @@ CBotInstr* CBotDefInt::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, boo
 
             // compiles an array declaration
 
-            CBotInstr* inst2 = CBotDefArray::Compile(p, pStk, CBotTypInt);
+            CBotInstr* inst2 = CBotDefArray::Compile(p, pStk, vartype);
 
             inst = static_cast<CBotDefInt*>(inst2);
             goto suite;     // no assignment, variable already created
@@ -108,7 +120,7 @@ CBotInstr* CBotDefInt::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, boo
         }
 
         {
-            CBotVar*    var = CBotVar::Create(*vartoken, CBotTypInt);// create the variable (evaluated after the assignment)
+            CBotVar*    var = CBotVar::Create(*vartoken, vartype);   // create the variable (evaluated after the assignment)
             var->SetInit(inst->m_expr != nullptr ? CBotVar::InitType::DEF : CBotVar::InitType::UNDEF);     // if initialized with assignment
             var->SetUniqNum( //set it with a unique number
                 (static_cast<CBotLeftExprVar*>(inst->m_var))->m_nIdent = CBotVar::NextUniqNum());
@@ -117,7 +129,7 @@ CBotInstr* CBotDefInt::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, boo
 suite:
         if (pStk->IsOk() && IsOfType(p,  ID_COMMA))     // chained several definitions
         {
-            if (nullptr != ( inst->m_next2b = CBotDefInt::Compile(p, pStk, true, noskip)))    // compile next one
+            if (nullptr != ( inst->m_next2b = CBotDefInt::Compile(p, pStk, true, noskip, vartype))) // compile next one
             {
                 return pStack->Return(inst, pStk);
             }

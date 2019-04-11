@@ -24,25 +24,20 @@
 namespace CBot
 {
 
+CBotInstr* CompileExprLitNum(CBotToken* &p, CBotCStack* pStack);
+
 /**
  * \brief A number literal - 5, 1, 2.5, 3.75, etc. or a predefined numerical constant (see CBotToken::DefineNum())
  *
- * Can be of type ::CBotTypInt or ::CBotTypFloat
+ * Can be of type ::CBotTypInt, ::CBotTypLong, ::CBotTypFloat, or ::CBotTypDouble
  */
+template <typename T>
 class CBotExprLitNum : public CBotInstr
 {
 
 public:
-    CBotExprLitNum();
+    CBotExprLitNum(T val);
     ~CBotExprLitNum();
-
-    /*!
-     * \brief Compile
-     * \param p
-     * \param pStack
-     * \return
-     */
-    static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack);
 
     /*!
      * \brief Execute Execute, returns the corresponding number.
@@ -65,10 +60,8 @@ protected:
 private:
     //! The type of number.
     CBotType m_numtype;
-    //! Value for an int.
-    long m_valint;
-    //! Value for a float.
-    float m_valfloat;
+    //! Value
+    T m_value;
 
 };
 

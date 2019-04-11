@@ -35,13 +35,13 @@ namespace CBot
 enum CBotType
 {
     CBotTypVoid         = 0,  //!< void
-    CBotTypByte         = 1,  //!< byte (NOT IMPLEMENTED)
-    CBotTypShort        = 2,  //!< short (NOT IMPLEMENTED)
-    CBotTypChar         = 3,  //!< char (NOT IMPLEMENTED)
+    CBotTypByte         = 1,  //!< byte
+    CBotTypShort        = 2,  //!< short
+    CBotTypChar         = 3,  //!< char
     CBotTypInt          = 4,  //!< int
-    CBotTypLong         = 5,  //!< long (NOT IMPLEMENTED)
+    CBotTypLong         = 5,  //!< long
     CBotTypFloat        = 6,  //!< float
-    CBotTypDouble       = 7,  //!< double (NOT IMPLEMENTED)
+    CBotTypDouble       = 7,  //!< double
     CBotTypBoolean      = 8,  //!< bool
     CBotTypString       = 9,  //!< string
 
@@ -106,6 +106,11 @@ enum TokenId
     ID_STRING,
     ID_VOID,
     ID_BOOL,
+    ID_BYTE,
+    ID_SHORT,
+    ID_CHAR,
+    ID_LONG,
+    ID_DOUBLE,
 
     TokenKeyVal = 2200, //!< keywords that represent values (true, false, null, nan)
     ID_TRUE = 2200,

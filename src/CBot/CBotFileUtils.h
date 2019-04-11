@@ -85,6 +85,22 @@ bool WriteShort(std::ostream &ostr, short s);
 bool ReadShort(std::istream &istr, short &s);
 
 /*!
+ * \brief WriteUInt32
+ * \param ostr Output stream
+ * \param i
+ * \return true on success
+ */
+bool WriteUInt32(std::ostream &ostr, uint32_t i);
+
+/*!
+ * \brief ReadUInt32
+ * \param istr Input stream
+ * \param[out] i
+ * \return true on success
+ */
+bool ReadUInt32(std::istream &istr, uint32_t &i);
+
+/*!
  * \brief WriteInt
  * \param ostr Output stream
  * \param i

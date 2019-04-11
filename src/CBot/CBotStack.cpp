@@ -833,10 +833,28 @@ bool CBotVar::RestoreState(std::istream &istr, CBotVar* &pVar)
         switch (w)
         {
         case CBotTypBoolean:
+            char valBool;
+            if (!ReadByte(istr, valBool)) return false;
+            pNew = CBotVar::Create(token, w);                        // creates a variable
+            pNew->SetValInt(valBool);
+            break;
+        case CBotTypByte:
             char valByte;
             if (!ReadByte(istr, valByte)) return false;
             pNew = CBotVar::Create(token, w);                        // creates a variable
-            pNew->SetValInt(valByte);
+            pNew->SetValByte(valByte);
+            break;
+        case CBotTypShort:
+            short valShort;
+            if (!ReadShort(istr, valShort)) return false;
+            pNew = CBotVar::Create(token, w);                        // creates a variable
+            pNew->SetValShort(valShort);
+            break;
+        case CBotTypChar:
+            uint32_t valChar;
+            if (!ReadUInt32(istr, valChar)) return false;
+            pNew = CBotVar::Create(token, w);                        // creates a variable
+            pNew->SetValChar(valChar);
             break;
         case CBotTypInt:
             int valInt;
@@ -844,11 +862,23 @@ bool CBotVar::RestoreState(std::istream &istr, CBotVar* &pVar)
             pNew = CBotVar::Create(token, w);                        // creates a variable
             pNew->SetValInt(valInt, defnum);
             break;
+        case CBotTypLong:
+            long valLong;
+            if (!ReadLong(istr, valLong)) return false;
+            pNew = CBotVar::Create(token, w);                        // creates a variable
+            pNew->SetValInt(valLong);
+            break;
         case CBotTypFloat:
             float valFloat;
             if (!ReadFloat(istr, valFloat)) return false;
             pNew = CBotVar::Create(token, w);                        // creates a variable
             pNew->SetValFloat(valFloat);
+            break;
+        case CBotTypDouble:
+            double valDouble;
+            if (!ReadDouble(istr, valDouble)) return false;
+            pNew = CBotVar::Create(token, w);                        // creates a variable
+            pNew->SetValDouble(valDouble);
             break;
         case CBotTypString:
             {

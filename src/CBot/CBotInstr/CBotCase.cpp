@@ -51,7 +51,7 @@ CBotInstr* CBotCase::Compile(CBotToken* &p, CBotCStack* pStack)
     if ( pp->GetType() == ID_CASE )
     {
         pp = p;
-        inst->m_value = CBotExprLitNum::Compile(p, pStack);
+        inst->m_value = CBot::CompileExprLitNum(p, pStack);
         if (inst->m_value == nullptr )
         {
             pStack->SetError( CBotErrBadNum, pp );

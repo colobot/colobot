@@ -98,7 +98,27 @@ public:
         this->m_val = static_cast<T>(0);
     }
 
+    void SetValByte(signed char val) override
+    {
+        this->SetValue(static_cast<T>(val));
+    }
+
+    void SetValShort(short val) override
+    {
+        this->SetValue(static_cast<T>(val));
+    }
+
+    void SetValChar(uint32_t val) override
+    {
+        this->SetValue(static_cast<T>(val));
+    }
+
     void SetValInt(int val, const std::string &s = "") override
+    {
+        this->SetValue(static_cast<T>(val));
+    }
+
+    void SetValLong(long val) override
     {
         this->SetValue(static_cast<T>(val));
     }
@@ -108,9 +128,34 @@ public:
         this->SetValue(static_cast<T>(val));
     }
 
+    void SetValDouble(double val) override
+    {
+        this->SetValue(static_cast<T>(val));
+    }
+
+    signed char GetValByte() override
+    {
+        return static_cast<signed char>(this->m_val);
+    }
+
+    short GetValShort() override
+    {
+        return static_cast<short>(this->m_val);
+    }
+
+    uint32_t GetValChar() override
+    {
+        return static_cast<uint32_t>(this->m_val);
+    }
+
     int GetValInt() override
     {
         return static_cast<int>(this->m_val);
+    }
+
+    long GetValLong() override
+    {
+        return static_cast<long>(this->m_val);
     }
 
     float GetValFloat() override
@@ -118,6 +163,10 @@ public:
         return static_cast<float>(this->m_val);
     }
 
+    double GetValDouble() override
+    {
+        return static_cast<double>(this->m_val);
+    }
 
     bool Eq(CBotVar* left, CBotVar* right) override
     {

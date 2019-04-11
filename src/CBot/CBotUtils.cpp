@@ -62,12 +62,27 @@ CBotTypResult TypeParam(CBotToken* &p, CBotCStack* pile)
 
     switch (p->GetType())
     {
+    case ID_BYTE:
+        p = p->GetNext();
+        return ArrayType(p, pile, CBotTypResult( CBotTypByte ));
+    case ID_SHORT:
+        p = p->GetNext();
+        return ArrayType(p, pile, CBotTypResult( CBotTypShort ));
+    case ID_CHAR:
+        p = p->GetNext();
+        return ArrayType(p, pile, CBotTypResult( CBotTypChar ));
     case ID_INT:
         p = p->GetNext();
         return ArrayType(p, pile, CBotTypResult( CBotTypInt ));
+    case ID_LONG:
+        p = p->GetNext();
+        return ArrayType(p, pile, CBotTypResult( CBotTypLong ));
     case ID_FLOAT:
         p = p->GetNext();
         return ArrayType(p, pile, CBotTypResult( CBotTypFloat ));
+    case ID_DOUBLE:
+        p = p->GetNext();
+        return ArrayType(p, pile, CBotTypResult( CBotTypDouble ));
     case ID_BOOLEAN:
     case ID_BOOL:
         p = p->GetNext();
@@ -144,7 +159,7 @@ long GetNumInt(const std::string& str)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-float GetNumFloat(const std::string& str)
+double GetNumFloat(const std::string& str)
 {
     const char* p = str.c_str();
     double    num = 0;
@@ -201,7 +216,7 @@ float GetNumFloat(const std::string& str)
     }
 
     if (bNeg) num = -num;
-    return static_cast<float>(num);
+    return num;
 }
 
 bool CharInList(const char c, const char* list)

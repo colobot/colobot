@@ -208,10 +208,15 @@ CBotInstr* CBotInstr::Compile(CBotToken* &p, CBotCStack* pStack)
     case ID_THROW:
         return CBotThrow::Compile(p, pStack);
 
+    case ID_BYTE:
+    case ID_SHORT:
+    case ID_CHAR:
     case ID_INT:
+    case ID_LONG:
         return CBotDefInt::Compile(p, pStack);
 
     case ID_FLOAT:
+    case ID_DOUBLE:
         return CBotDefFloat::Compile(p, pStack);
 
     case ID_STRING:

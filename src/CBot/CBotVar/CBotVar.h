@@ -445,12 +445,22 @@ public:
     //@{
 
     operator bool();
+    operator signed char();
+    operator short();
+    operator uint32_t();
     operator int();
+    operator long();
     operator float();
+    operator double();
     operator std::string();
     void operator=(const CBotVar& var);
+    void operator=(signed char x);
+    void operator=(short x);
+    void operator=(uint32_t x);
     void operator=(int x);
+    void operator=(long x);
     void operator=(float x);
+    void operator=(double x);
     void operator=(const std::string &x);
 
     /**
@@ -466,6 +476,12 @@ public:
      */
     virtual void Copy(CBotVar* pSrc, bool bName = true);
 
+    virtual void SetValByte(signed char val);
+
+    virtual void SetValShort(short val);
+
+    virtual void SetValChar(uint32_t val);
+
     /**
      * \brief Set value as an integer
      *
@@ -476,11 +492,15 @@ public:
      */
     virtual void SetValInt(int val, const std::string& name = "");
 
+    virtual void SetValLong(long val);
+
     /**
      * \brief Set value as float
      * \param val New value
      */
     virtual void SetValFloat(float val);
+
+    virtual void SetValDouble(double val);
 
     /**
      * \brief Set value as string
@@ -488,17 +508,27 @@ public:
      */
     virtual void SetValString(const std::string& val);
 
+    virtual signed char GetValByte();
+
+    virtual short GetValShort();
+
+    virtual uint32_t GetValChar();
+
     /**
      * \brief Get value as integer
      * \return Current value
      */
     virtual int GetValInt();
 
+    virtual long GetValLong();
+
     /**
      * \brief Get value as float
      * \return Current value
      */
     virtual float GetValFloat();
+
+    virtual double GetValDouble();
 
     /**
      * \brief Get value as string

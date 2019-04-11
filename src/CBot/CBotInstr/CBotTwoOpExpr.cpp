@@ -399,7 +399,10 @@ bool CBotTwoOpExpr::Execute(CBotStack* &pStack)
         TypeRes = CBotTypBoolean;
         break;
     case ID_DIV:
-        TypeRes = std::max(TypeRes, static_cast<int>(CBotTypFloat));
+        if (TypeRes == CBotTypFloat)
+        {
+            if (type1.Eq(CBotTypLong) || type2.Eq(CBotTypLong)) TypeRes = CBotTypDouble;
+        }
     }
 
     // creates a variable for the result

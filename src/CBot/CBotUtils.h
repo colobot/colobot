@@ -71,7 +71,7 @@ long GetNumInt(const std::string& str);
  * \param str
  * \return
  */
-float GetNumFloat(const std::string& str);
+double GetNumFloat(const std::string& str);
 
 /*!
  * \brief Search a null-terminated string for a char value.

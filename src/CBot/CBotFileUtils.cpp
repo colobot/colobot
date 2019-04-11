@@ -151,6 +151,16 @@ bool ReadShort(std::istream &istr, short &s)
     return ReadSignedBinary<short>(istr, s);
 }
 
+bool WriteUInt32(std::ostream &ostr, uint32_t i)
+{
+    return WriteBinary<uint32_t>(ostr, i);
+}
+
+bool ReadUInt32(std::istream &istr, uint32_t &i)
+{
+    return ReadBinary<uint32_t>(istr, i);
+}
+
 bool WriteInt(std::ostream &ostr, int i)
 {
     return WriteSignedBinary<int>(ostr, i);
