@@ -65,7 +65,7 @@ public:
      * \param pOperations
      * \return
      */
-    static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack, int* pOperations = nullptr);
+    static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack, int* pOperations = nullptr, bool bConstExpr = false);
 
     /*!
      * \brief Execute Performes the operation on two operands.

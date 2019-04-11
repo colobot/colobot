@@ -640,6 +640,92 @@ TEST_F(CBotUT, BinaryLiterals)
     );
 }
 
+TEST_F(CBotUT, TestSwitchCase)
+{
+    ExecuteTest(
+        "extern void Test_Switch_Case() {\n"
+        "    int n = 0, c = 0;\n"
+        "    for (int i = -9; i < 11; ++i) {\n"
+        "        switch (i) {\n"
+        "            case -9: n = -9; ++c; break;\n"
+        "            case -8: n = -8; ++c; break;\n"
+        "            case -7: n = -7; ++c; break;\n"
+        "            case -6: n = -6; ++c; break;\n"
+        "            case -5: n = -5; ++c; break;\n"
+        "            case -4: n = -4; ++c; break;\n"
+        "            case -3: n = -3; ++c; break;\n"
+        "            case -2: n = -2; ++c; break;\n"
+        "            case -1: n = -1; ++c; break;\n"
+        "            case 0: n = 0; ++c; break;\n"
+        "            case 1: n = 1; ++c; break;\n"
+        "            case 2: n = 2; ++c; break;\n"
+        "            case 3: n = 3; ++c; break;\n"
+        "            case 4: n = 4; ++c; break;\n"
+        "            case 5: n = 5; ++c; break;\n"
+        "            case 6: n = 6; ++c; break;\n"
+        "            case 7: n = 7; ++c; break;\n"
+        "            case 8: n = 8; ++c; break;\n"
+        "            case 9: n = 9; ++c; break;\n"
+        "            default: n = 10; ++c; break;\n"
+        "        }\n"
+        "        ASSERT(n == i);\n"
+        "    }\n"
+        "    ASSERT(n == 10);\n"
+        "    ASSERT(c == 20);\n"
+        "}\n"
+        "extern void Test_Case_With_Math() {\n"
+        "    int n = 0, c = 0;\n"
+        "    for (int i = -9; i < 11; ++i) {\n"
+        "        switch (i * 10) {\n"
+        "            case -9*10: n = -90; ++c; break;\n"
+        "            case -8*10: n = -80; ++c; break;\n"
+        "            case -7*10: n = -70; ++c; break;\n"
+        "            case -6*10: n = -60; ++c; break;\n"
+        "            case -5*10: n = -50; ++c; break;\n"
+        "            case -4*10: n = -40; ++c; break;\n"
+        "            case -3*10: n = -30; ++c; break;\n"
+        "            case -2*10: n = -20; ++c; break;\n"
+        "            case -1*10: n = -10; ++c; break;\n"
+        "            case 0*10: n = 0; ++c; break;\n"
+        "            case 1*10: n = 10; ++c; break;\n"
+        "            case 2*10: n = 20; ++c; break;\n"
+        "            case 3*10: n = 30; ++c; break;\n"
+        "            case 4*10: n = 40; ++c; break;\n"
+        "            case 5*10: n = 50; ++c; break;\n"
+        "            case 6*10: n = 60; ++c; break;\n"
+        "            case 7*10: n = 70; ++c; break;\n"
+        "            case 8*10: n = 80; ++c; break;\n"
+        "            case 9*10: n = 90; ++c; break;\n"
+        "            default: n = 100; ++c; break;\n"
+        "        }\n"
+        "        ASSERT(n == i * 10);\n"
+        "    }\n"
+        "    ASSERT(n == 100);\n"
+        "    ASSERT(c == 20);\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "extern void Duplicate_Case() {\n"
+        "    switch(0) {\n"
+        "        case 1000:\n"
+        "        case 10*100:\n"
+        "    }\n"
+        "}\n",
+        CBotErrRedefCase
+    );
+
+    ExecuteTest(
+        "extern void Duplicate_Default() {\n"
+        "    switch(0) {\n"
+        "        default:\n"
+        "        default:\n"
+        "    }\n"
+        "}\n",
+        CBotErrRedefCase
+    );
+}
+
 TEST_F(CBotUT, ToString)
 {
     ExecuteTest(

@@ -317,13 +317,6 @@ void CBotInstr::RestoreStateVar(CBotStack* &pile, bool bMain)
     assert(0);            // dad do not know, see the girls
 }
 
-////////////////////////////////////////////////////////////////////////////////
-bool CBotInstr::CompCase(CBotStack* &pj, int val)
-{
-    return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 CBotInstr* CBotInstr::CompileArray(CBotToken* &p, CBotCStack* pStack, CBotTypResult type, bool first)
 {
     if (IsOfType(p, ID_OPBRK))

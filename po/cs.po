@@ -489,6 +489,9 @@ msgstr "Dolů (\\key gdown;)"
 msgid "Drawer bot"
 msgstr "Tužkobot"
 
+msgid "Duplicate label in switch"
+msgstr ""
+
 msgid "Dust\\Dust and dirt on bots and buildings"
 msgstr "Prach\\Prach a špína na robotech a budovách"
 

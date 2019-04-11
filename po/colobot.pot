@@ -1798,6 +1798,9 @@ msgstr ""
 msgid "Empty character constant"
 msgstr ""
 
+msgid "Duplicate label in switch"
+msgstr ""
+
 msgid "Dividing by zero"
 msgstr ""
 

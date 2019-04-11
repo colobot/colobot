@@ -32,6 +32,7 @@
 #include "CBot/CBotInstr/CBotNew.h"
 #include "CBot/CBotInstr/CBotPostIncExpr.h"
 #include "CBot/CBotInstr/CBotPreIncExpr.h"
+#include "CBot/CBotInstr/CBotTwoOpExpr.h"
 
 #include "CBot/CBotVar/CBotVar.h"
 
@@ -40,12 +41,14 @@
 namespace CBot
 {
 
-////////////////////////////////////////////////////////////////////////////////
-CBotInstr* CBotParExpr::Compile(CBotToken* &p, CBotCStack* pStack)
+CBotInstr* CBotParExpr::Compile(CBotToken* &p, CBotCStack* pStack, bool bConstExpr)
 {
     CBotCStack* pStk = pStack->TokenStack();
 
     pStk->SetStartError(p->GetStart());
+
+    if (bConstExpr)
+        return CBotParExpr::CompileConstExpr(p, pStack);
 
     // is it an expression in parentheses?
     if (IsOfType(p, ID_OPENPAR))
@@ -220,6 +223,57 @@ CBotInstr* CBotParExpr::CompileLitExpr(CBotToken* &p, CBotCStack* pStack)
         return pStack->Return(inst, pStk);
     }
 
+
+    return pStack->Return(nullptr, pStk);
+}
+
+CBotInstr* CBotParExpr::CompileConstExpr(CBotToken* &p, CBotCStack* pStack)
+{
+    CBotCStack* pStk = pStack->TokenStack();
+
+    // is it an expression in parentheses?
+    if (IsOfType(p, ID_OPENPAR))
+    {
+        CBotInstr* inst = CBotTwoOpExpr::Compile(p, pStk, nullptr, true);
+
+        if (nullptr != inst)
+        {
+            if (IsOfType(p, ID_CLOSEPAR))
+            {
+                return pStack->Return(inst, pStk);
+            }
+            pStk->SetError(CBotErrClosePar, p->GetStart());
+        }
+        delete inst;
+        return pStack->Return(nullptr, pStk);
+    }
+
+    // is this a unary operation?
+    CBotInstr* inst = CBotExprUnaire::Compile(p, pStk, true, true);
+    if (inst != nullptr || !pStk->IsOk())
+        return pStack->Return(inst, pStk);
+
+    // is it a number or DefineNum?
+    if (p->GetType() == TokenTypNum ||
+        p->GetType() == TokenTypDef )
+    {
+        CBotInstr* inst = CBot::CompileExprLitNum(p, pStk);
+        return pStack->Return(inst, pStk);
+    }
+
+    // is this a character?
+    if (p->GetType() == TokenTypChar)
+    {
+        CBotInstr* inst = CBotExprLitChar::Compile(p, pStk);
+        return pStack->Return(inst, pStk);
+    }
+
+    // is it sizeof operator ?
+    inst = CBot::CompileSizeOf(p, pStk);
+    if (inst != nullptr || !pStk->IsOk())
+    {
+        return pStack->Return(inst, pStk);
+    }
 
     return pStack->Return(nullptr, pStk);
 }

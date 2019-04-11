@@ -19,7 +19,7 @@
 
 #include "CBot/CBotInstr/CBotCase.h"
 
-#include "CBot/CBotInstr/CBotExprLitNum.h"
+#include "CBot/CBotInstr/CBotTwoOpExpr.h"
 
 #include "CBot/CBotStack.h"
 #include "CBot/CBotCStack.h"
@@ -30,69 +30,107 @@ namespace CBot
 ////////////////////////////////////////////////////////////////////////////////
 CBotCase::CBotCase()
 {
-    m_value = nullptr;
+    m_instr = nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotCase::~CBotCase()
 {
-    delete m_value;
+    delete m_instr;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-CBotInstr* CBotCase::Compile(CBotToken* &p, CBotCStack* pStack)
+CBotInstr* CBotCase::Compile(CBotToken* &p, CBotCStack* pStack, std::unordered_map<long, CBotInstr*>& labels)
 {
-    CBotCase*   inst = new CBotCase();          // creates the object
     CBotToken*  pp = p;                         // preserves at the ^ token (starting position)
 
-    inst->SetToken(p);
     if (!IsOfType(p, ID_CASE, ID_DEFAULT)) return nullptr;     // should never happen
+    pStack->SetStartError(pp->GetStart());
 
-    if ( pp->GetType() == ID_CASE )
+    long labelValue = 0;
+
+    if (pp->GetType() == ID_CASE)
     {
-        pp = p;
-        inst->m_value = CBot::CompileExprLitNum(p, pStack);
-        if (inst->m_value == nullptr )
+        CBotInstr* i = nullptr;
+        if (nullptr != (i = CBotTwoOpExpr::Compile(p, pStack, nullptr, true)))
         {
-            pStack->SetError( CBotErrBadNum, pp );
-            delete inst;
-            return nullptr;
+            if (pStack->GetType() <= CBotTypLong)
+            {
+                CBotStack* pile = CBotStack::AllocateStack();
+                while ( !i->Execute(pile) );
+                labelValue = pile->GetVar()->GetValLong();
+                pile->Delete();
+
+                if (labels.count(labelValue) > 0)
+                {
+                    pStack->SetError(CBotErrRedefCase, p->GetStart());
+                }
+            }
+            else
+                pStack->SetError(CBotErrBadNum, p->GetStart());
+            delete i;
         }
-    }
-    if ( !IsOfType( p, ID_DOTS ))
-    {
-        pStack->SetError( CBotErrNoDoubleDots, p->GetStart() );
-        delete inst;
-        return nullptr;
+        else
+            pStack->SetError(CBotErrBadNum, p->GetStart());
     }
 
-    return inst;
+    if (pStack->IsOk() && IsOfType(p, ID_DOTS))
+    {
+        CBotCase* newCase = new CBotCase();
+        newCase->SetToken(pp);
+        if (pp->GetType() == ID_CASE)
+            labels[labelValue] = newCase;
+        return newCase;
+    }
+
+    pStack->SetError(CBotErrNoDoubleDots, p->GetStart());
+    return nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotCase::Execute(CBotStack* &pj)
 {
-    return true;                                // the "case" statement does nothing!
+    if (m_instr == nullptr) return true;
+    CBotStack* pile = pj->AddStack(this, CBotStack::BlockVisibilityType::BLOCK);
+
+    int state = pile->GetState();
+    CBotInstr* p = m_instr;
+    while (state-- > 0) p = p->GetNext();
+
+    while (p != nullptr)
+    {
+        if (!p->Execute(pile)) return false;
+        pile->IncState();
+        p = p->GetNext();
+    }
+
+    pile->Delete();
+    return pj->IsOk();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void CBotCase::RestoreState(CBotStack* &pj, bool bMain)
 {
-}
+    if (!bMain) return;
 
-////////////////////////////////////////////////////////////////////////////////
-bool CBotCase::CompCase(CBotStack* &pile, int val)
-{
-    if (m_value == nullptr ) return true;         // "default" case
+    CBotStack* pile = pj->RestoreStack(this);
+    if (pile == nullptr) return;
 
-    while (!m_value->Execute(pile));            // puts the value on the correspondent stack (without interruption)
-    return (pile->GetVal() == val);             // compared with the given value
+    CBotInstr* p = m_instr;
+
+    int state = pile->GetState();
+    while (p != nullptr && state-- > 0)
+    {
+        p->RestoreState(pile, bMain);
+        p = p->GetNext();
+    }
+
+    if (p != nullptr) p->RestoreState(pile, bMain);
 }
 
 std::map<std::string, CBotInstr*> CBotCase::GetDebugLinks()
 {
     auto links = CBotInstr::GetDebugLinks();
-    links["m_value"] = m_value;
+    links["m_instr"] = m_instr;
     return links;
 }
 

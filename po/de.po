@@ -490,6 +490,9 @@ msgstr "Sinkt (\\key gdown;)"
 msgid "Drawer bot"
 msgstr "Zeichner"
 
+msgid "Duplicate label in switch"
+msgstr ""
+
 msgid "Dust\\Dust and dirt on bots and buildings"
 msgstr "Schmutz\\Schmutz auf Robotern und Bauten"
 

@@ -254,6 +254,7 @@ enum CBotError : int
     CBotErrHexRange      = 5053, //!< hex value out of range
     CBotErrUnicodeName   = 5054, //!< invalid universal character name
     CBotErrCharEmpty     = 5055, //!< empty character constant
+    CBotErrRedefCase     = 5056, //!< duplicate label in switch
 
     // Runtime errors
     CBotErrZeroDiv       = 6000, //!< division by zero
