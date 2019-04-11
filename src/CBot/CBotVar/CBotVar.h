@@ -444,6 +444,7 @@ public:
      */
     //@{
 
+    operator bool();
     operator int();
     operator float();
     operator std::string();

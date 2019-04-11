@@ -752,6 +752,11 @@ CBotClass* CBotVar::GetClass()
     return nullptr;
 }
 
+CBotVar::operator bool()
+{
+    return static_cast<bool>(GetValInt());
+}
+
 CBotVar::operator int()
 {
     return GetValInt();

@@ -605,6 +605,20 @@ TEST_F(CBotUT, VarImplicitCast)
     );
 }
 
+TEST_F(CBotUT, IntegerMathNearLimits_Issue993)
+{
+    ExecuteTest(
+        "extern void Test_Issue993() {\n"
+        "    ASSERT(-2147483600 *  1 == -2147483600);\n"
+        "    ASSERT( 2147483600 *  1 ==  2147483600);\n"
+        "    ASSERT( 2147483646 *  1 ==  2147483646);\n"
+        "    ASSERT( 2147483646 * -1 == -2147483646);\n"
+        "    ASSERT( 2147483000 * -1 == -2147483000);\n"
+        "    ASSERT( 2147483000 *  1 ==  2147483000);\n"
+        "}\n"
+    );
+}
+
 TEST_F(CBotUT, ToString)
 {
     ExecuteTest(

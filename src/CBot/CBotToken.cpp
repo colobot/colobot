@@ -103,7 +103,7 @@ static const boost::bimap<TokenId, std::string> KEYWORDS = makeBimap<TokenId, st
     {ID_ASSSR,      ">>>="},
     {ID_ASSASR,     ">>="},
     {ID_SL,         "<<"},
-    {ID_SR,         ">>"},
+    {ID_SR,         ">>>"},
     {ID_ASR,        ">>"},
     {ID_INC,        "++"},
     {ID_DEC,        "--"},

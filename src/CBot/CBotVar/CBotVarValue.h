@@ -75,6 +75,13 @@ public:
     }
 
 protected:
+    virtual void SetValue(T val)
+    {
+        this->m_val = val;
+        this->m_binit = CBotVar::InitType::DEF;
+    }
+
+protected:
     //! The value
     T m_val;
 };
@@ -93,14 +100,12 @@ public:
 
     void SetValInt(int val, const std::string &s = "") override
     {
-        this->m_val = static_cast<T>(val);
-        this->m_binit = CBotVar::InitType::DEF;
+        this->SetValue(static_cast<T>(val));
     }
 
     void SetValFloat(float val) override
     {
-        this->m_val = static_cast<T>(val);
-        this->m_binit = CBotVar::InitType::DEF;
+        this->SetValue(static_cast<T>(val));
     }
 
     int GetValInt() override
@@ -116,11 +121,11 @@ public:
 
     bool Eq(CBotVar* left, CBotVar* right) override
     {
-        return left->GetValFloat() == right->GetValFloat();
+        return static_cast<T>(*left) == static_cast<T>(*right);
     }
     bool Ne(CBotVar* left, CBotVar* right) override
     {
-        return left->GetValFloat() != right->GetValFloat();
+        return static_cast<T>(*left) != static_cast<T>(*right);
     }
 };
 
@@ -135,33 +140,33 @@ public:
 
     void Mul(CBotVar* left, CBotVar* right) override
     {
-        this->SetValFloat(left->GetValFloat() * right->GetValFloat());
+        this->SetValue(static_cast<T>(*left) * static_cast<T>(*right));
     }
     void Power(CBotVar* left, CBotVar* right) override
     {
-        this->SetValFloat(pow(left->GetValFloat(), right->GetValFloat()));
+        this->SetValue(pow(static_cast<T>(*left), static_cast<T>(*right)));
     }
     CBotError Div(CBotVar* left, CBotVar* right) override
     {
-        float r = right->GetValFloat();
-        if (r == 0) return CBotErrZeroDiv;
-        this->SetValFloat(left->GetValFloat() / r);
+        T r = static_cast<T>(*right);
+        if ( r == static_cast<T>(0) ) return CBotErrZeroDiv;
+        this->SetValue(static_cast<T>(*left) / r);
         return CBotNoErr;
     }
     CBotError Modulo(CBotVar* left, CBotVar* right) override
     {
-        float r = right->GetValFloat();
-        if (r == 0) return CBotErrZeroDiv;
-        this->SetValFloat(fmod(left->GetValFloat(), r));
+        T r = static_cast<T>(*right);
+        if ( r == static_cast<T>(0) ) return CBotErrZeroDiv;
+        this->SetValue(fmod(static_cast<T>(*left), r));
         return CBotNoErr;
     }
     void Add(CBotVar* left, CBotVar* right) override
     {
-        this->SetValFloat(left->GetValFloat() + right->GetValFloat());
+        this->SetValue(static_cast<T>(*left) + static_cast<T>(*right));
     }
     void Sub(CBotVar* left, CBotVar* right) override
     {
-        this->SetValFloat(left->GetValFloat() - right->GetValFloat());
+        this->SetValue(static_cast<T>(*left) - static_cast<T>(*right));
     }
 
     void Neg() override
@@ -179,21 +184,65 @@ public:
 
     bool Lo(CBotVar* left, CBotVar* right) override
     {
-        return left->GetValFloat() < right->GetValFloat();
+        return static_cast<T>(*left) < static_cast<T>(*right);
     }
     bool Hi(CBotVar* left, CBotVar* right) override
     {
-        return left->GetValFloat() > right->GetValFloat();
+        return static_cast<T>(*left) > static_cast<T>(*right);
     }
     bool Ls(CBotVar* left, CBotVar* right) override
     {
-        return left->GetValFloat() <= right->GetValFloat();
+        return static_cast<T>(*left) <= static_cast<T>(*right);
     }
     bool Hs(CBotVar* left, CBotVar* right) override
     {
-        return left->GetValFloat() >= right->GetValFloat();
+        return static_cast<T>(*left) >= static_cast<T>(*right);
     }
 };
 
-}
+/**
+ * \brief An integer variable (byte, short, char, int, long)
+ */
+template <typename T, CBotType type>
+class CBotVarInteger : public CBotVarNumber<T, type>
+{
+public:
+    CBotVarInteger(const CBotToken &name) : CBotVarNumber<T, type>(name) {}
 
+    CBotError Modulo(CBotVar* left, CBotVar* right) override
+    {
+        T r = static_cast<T>(*right);
+        if ( r == static_cast<T>(0) ) return CBotErrZeroDiv;
+        this->SetValue(static_cast<T>(*left) % r);
+        return CBotNoErr;
+    }
+
+    void XOr(CBotVar* left, CBotVar* right) override
+    {
+        this->SetValue(static_cast<T>(*left) ^ static_cast<T>(*right));
+    }
+    void And(CBotVar* left, CBotVar* right) override
+    {
+        this->SetValue(static_cast<T>(*left) & static_cast<T>(*right));
+    }
+    void Or(CBotVar* left, CBotVar* right) override
+    {
+        this->SetValue(static_cast<T>(*left) | static_cast<T>(*right));
+    }
+
+    void SL(CBotVar* left, CBotVar* right) override
+    {
+        this->SetValue(static_cast<T>(*left) << right->GetValInt());
+    }
+    void ASR(CBotVar* left, CBotVar* right) override
+    {
+        this->SetValue(static_cast<T>(*left) >> right->GetValInt());
+    }
+
+    void Not() override
+    {
+        this->m_val = ~(this->m_val);
+    }
+};
+
+} // namespace CBot

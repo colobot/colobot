@@ -58,33 +58,9 @@ void CBotVarInt::Dec()
     m_defnum.clear();
 }
 
-void CBotVarInt::XOr(CBotVar* left, CBotVar* right)
-{
-    SetValInt(left->GetValInt() ^ right->GetValInt());
-}
-void CBotVarInt::And(CBotVar* left, CBotVar* right)
-{
-    SetValInt(left->GetValInt() & right->GetValInt());
-}
-void CBotVarInt::Or(CBotVar* left, CBotVar* right)
-{
-    SetValInt(left->GetValInt() | right->GetValInt());
-}
-
-void CBotVarInt::SL(CBotVar* left, CBotVar* right)
-{
-    SetValInt(left->GetValInt() << right->GetValInt());
-}
-void CBotVarInt::ASR(CBotVar* left, CBotVar* right)
-{
-    SetValInt(left->GetValInt() >> right->GetValInt());
-}
 void CBotVarInt::SR(CBotVar* left, CBotVar* right)
 {
-    int source = left->GetValInt();
-    int shift  = right->GetValInt();
-    if (shift >= 1) source &= 0x7fffffff;
-    SetValInt(source >> shift);
+    SetValInt(static_cast<unsigned>(left->GetValInt()) >> right->GetValInt());
 }
 
 void CBotVarInt::Not()
