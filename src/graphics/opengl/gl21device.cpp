@@ -408,6 +408,7 @@ bool CGL21Device::Create()
         uni.fogColor = glGetUniformLocation(m_normalProgram, "uni_FogColor");
 
         uni.shadowColor = glGetUniformLocation(m_normalProgram, "uni_ShadowColor");
+        uni.shadowTexelSize = glGetUniformLocation(m_normalProgram, "uni_ShadowTexelSize");
         uni.lightCount = glGetUniformLocation(m_normalProgram, "uni_LightCount");
 
         uni.ambientColor = glGetUniformLocation(m_normalProgram, "uni_Material.ambient");
@@ -457,6 +458,7 @@ bool CGL21Device::Create()
         glUniform4f(uni.fogColor, 0.8f, 0.8f, 0.8f, 1.0f);
 
         glUniform1f(uni.shadowColor, 0.5f);
+        glUniform1f(uni.shadowTexelSize, 0.5f);
 
         glUniform1i(uni.lightCount, 0);
     }
@@ -1439,6 +1441,7 @@ void CGL21Device::SetRenderState(RenderState state, bool enabled)
     }
     else if (state == RENDER_STATE_SHADOW_MAPPING)
     {
+        glUniform1f(m_uniforms[m_mode].shadowTexelSize, 1.0/m_currentTextures[TEXTURE_SHADOW].size.x);
         SetTextureEnabled(TEXTURE_SHADOW, enabled);
 
         return;

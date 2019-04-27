@@ -193,6 +193,8 @@ struct UniformLocations
 
     //! Shadow color
     GLint shadowColor = -1;
+    //! Shadow texel size
+    GLint shadowTexelSize = -1;
 
     // Number of enabled lights
     GLint lightCount = -1;
