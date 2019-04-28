@@ -211,6 +211,7 @@ endif()
 
 # Special flags for boost
 add_definitions(-DBOOST_NO_SCOPED_ENUMS -DBOOST_NO_CXX11_SCOPED_ENUMS)
+set(Boost_NO_BOOST_CMAKE ON) #fix MSYS2 builds, see https://github.com/msys2/MINGW-packages/issues/5233
 
 set(COLOBOT_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${NORMAL_CXX_FLAGS}")
 set(COLOBOT_CXX_FLAGS_RELEASE "${RELEASE_CXX_FLAGS}")
