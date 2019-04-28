@@ -47,14 +47,15 @@ private:
         {
         }
 
-        CBotTestFail(std::string message, int cursor1, int cursor2) : CBotTestFail(message)
+        CBotTestFail(std::string message, std::size_t cursor1, std::size_t cursor2)
+            : CBotTestFail(message)
         {
             this->cursor1 = cursor1;
             this->cursor2 = cursor2;
         }
 
-        int cursor1 = -1;
-        int cursor2 = -1;
+        std::size_t cursor1 = SIZE_MAX;
+        std::size_t cursor2 = SIZE_MAX;
     };
 
     static CBotTypResult cFail(CBotVar* &var, void* user)
@@ -208,7 +209,7 @@ protected:
         program->Compile(code, tests);
 
         CBotError error;
-        int cursor1, cursor2;
+        std::size_t cursor1 = 0, cursor2 = 0;
         program->GetError(error, cursor1, cursor2);
         if (error != expectedCompileError)
         {

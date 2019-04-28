@@ -104,7 +104,7 @@ void CScript::PutScript(Ui::CEdit* edit, const char* name)
 
 bool CScript::GetScript(Ui::CEdit* edit)
 {
-    int len = edit->GetTextLength();
+    std::size_t len = edit->GetTextLength();
     m_script = MakeUniqueArray<char>(len+2);
 
     std::string tmp = edit->GetText(len+1);
@@ -143,7 +143,7 @@ bool CScript::GetCompile()
 
 bool CScript::IsEmpty()
 {
-    for (int i = 0; i < m_len; i++)
+    for (std::size_t i = 0; i < m_len; i++)
     {
         if ( m_script[i] != ' '  &&
              m_script[i] != '\n' )  return false;
@@ -165,8 +165,8 @@ bool CScript::CheckToken()
     m_bCompile = false;
 
     std::map<std::string, int> used;
-    std::map<std::string, int> cursor1;
-    std::map<std::string, int> cursor2;
+    std::map<std::string, std::size_t> cursor1;
+    std::map<std::string, std::size_t> cursor2;
 
     auto tokens = CBot::CBotToken::CompileTokens(m_script.get());
     CBot::CBotToken* bt = tokens.get();
@@ -262,8 +262,8 @@ bool CScript::Compile()
     else
     {
         m_botProg->GetError(m_error, m_cursor1, m_cursor2);
-        if ( m_cursor1 < 0 || m_cursor1 > m_len ||
-             m_cursor2 < 0 || m_cursor2 > m_len )
+        if ( m_cursor1 > m_len
+          || m_cursor2 > m_len )
         {
             m_cursor1 = 0;
             m_cursor2 = 0;
@@ -338,8 +338,8 @@ bool CScript::Continue()
             if ( m_botProg->Run(this, 0) )
             {
                 m_botProg->GetError(m_error, m_cursor1, m_cursor2);
-                if ( m_cursor1 < 0 || m_cursor1 > m_len ||
-                     m_cursor2 < 0 || m_cursor2 > m_len )
+                if ( m_cursor1 > m_len
+                  || m_cursor2 > m_len )
                 {
                     m_cursor1 = 0;
                     m_cursor2 = 0;
@@ -366,8 +366,8 @@ bool CScript::Continue()
     if ( m_botProg->Run(this, m_ipf) )
     {
         m_botProg->GetError(m_error, m_cursor1, m_cursor2);
-        if ( m_cursor1 < 0 || m_cursor1 > m_len ||
-             m_cursor2 < 0 || m_cursor2 > m_len )
+        if ( m_cursor1 > m_len
+          || m_cursor2 > m_len )
         {
             m_cursor1 = 0;
             m_cursor2 = 0;
@@ -402,8 +402,8 @@ bool CScript::Step()
     if ( m_botProg->Run(this, 0) )  // step mode
     {
         m_botProg->GetError(m_error, m_cursor1, m_cursor2);
-        if ( m_cursor1 < 0 || m_cursor1 > m_len ||
-             m_cursor2 < 0 || m_cursor2 > m_len )
+        if ( m_cursor1 > m_len
+          || m_cursor2 > m_len )
         {
             m_cursor1 = 0;
             m_cursor2 = 0;
@@ -457,8 +457,7 @@ bool CScript::IsContinue()
 
 
 // Gives the position of the cursor during the execution.
-
-bool CScript::GetCursor(int &cursor1, int &cursor2)
+bool CScript::GetCursor(std::size_t& cursor1, std::size_t& cursor2) const
 {
     std::string funcName;
     cursor1 = cursor2 = 0;
@@ -467,8 +466,8 @@ bool CScript::GetCursor(int &cursor1, int &cursor2)
     if ( !m_bRun )  return false;
 
     m_botProg->GetRunPos(funcName, cursor1, cursor2);
-    if ( cursor1 < 0 || cursor1 > m_len ||
-         cursor2 < 0 || cursor2 > m_len )
+    if ( cursor1 > m_len
+      || cursor2 > m_len )
     {
         cursor1 = 0;
         cursor2 = 0;
@@ -557,7 +556,7 @@ void CScript::UpdateList(Ui::CList* list)
 {
     CBot::CBotVar     *var;
     std::string progName, funcName;
-    int         total, select, level, cursor1, cursor2, rank;
+    int         total, select, level, rank;
 
     if (m_botProg == nullptr) return;
 
@@ -565,6 +564,7 @@ void CScript::UpdateList(Ui::CList* list)
     select = list->GetSelect();
 
     list->Flush();  // empty list
+    std::size_t cursor1, cursor2;
     m_botProg->GetRunPos(progName, cursor1, cursor2);
     if ( progName.empty() )  return;
 
@@ -590,8 +590,7 @@ void CScript::UpdateList(Ui::CList* list)
 }
 
 // Colorize a string literal with escape sequences also colored
-
-static void HighlightString(Ui::CEdit* edit, const std::string& s, int start)
+static void HighlightString(Ui::CEdit* edit, const std::string& s, std::size_t start)
 {
     edit->SetFormat(start, start + 1, Gfx::FONT_HIGHLIGHT_STRING);
 
@@ -609,8 +608,7 @@ static void HighlightString(Ui::CEdit* edit, const std::string& s, int start)
 
         if (it == s.cend()) break;
 
-        int end = start + 2;
-
+        std::size_t end = start + 2;
         if (CBot::CharInList(*it, "01234567"))           // octal escape sequence
         {
             for (int i = 0; ++it != s.cend() && i < 2; i++, end++)
@@ -621,9 +619,8 @@ static void HighlightString(Ui::CEdit* edit, const std::string& s, int start)
         else if (*it == 'x' || *it == 'u' || *it == 'U') // hex or unicode escape
         {
             bool isHexCode = (*it == 'x');
-            int maxlen = (*it == 'u') ? 4 : 8;
-
-            for (int i = 0; ++it != s.cend(); i++, end++)
+            std::size_t maxlen = (*it == 'u') ? 4 : 8;
+            for (std::size_t i = 0; ++it != s.cend(); i++, end++)
             {
                 if (!isHexCode && i >= maxlen) break;
                 if (!CBot::CharInList(*it, "0123456789ABCDEFabcdef")) break;
@@ -641,8 +638,7 @@ static void HighlightString(Ui::CEdit* edit, const std::string& s, int start)
 }
 
 // Colorize the text according to syntax.
-
-void CScript::ColorizeScript(Ui::CEdit* edit, int rangeStart, int rangeEnd)
+void CScript::ColorizeScript(Ui::CEdit* edit, std::size_t rangeStart, std::size_t rangeEnd)
 {
     if (rangeEnd > edit->GetTextLength())
         rangeEnd = edit->GetTextLength();
@@ -659,12 +655,15 @@ void CScript::ColorizeScript(Ui::CEdit* edit, int rangeStart, int rangeEnd)
     {
         std::string token = bt->GetString();
         int type = bt->GetType();
-
-        int cursor1 = bt->GetStart();
-        int cursor2 = bt->GetEnd();
-
-        if (cursor1 < 0 || cursor2 < 0 || cursor1 == cursor2 || type == 0) { bt = bt->GetNext(); continue; } // seems to be a bug in CBot engine (how does it even still work? D:)
-
+        std::size_t cursor1 = bt->GetStart();
+        std::size_t cursor2 = bt->GetEnd();
+        // TODO : add > len checks ?
+        if (cursor1 == cursor2 || type == 0 || cursor1> text.size() || cursor2> text.size())
+        {
+            // seems to be a bug in CBot engine (how does it even still work? D:)
+            bt = bt->GetNext();
+            continue;
+        }
         cursor1 += rangeStart;
         cursor2 += rangeStart;
 
@@ -714,12 +713,10 @@ void CScript::ColorizeScript(Ui::CEdit* edit, int rangeStart, int rangeEnd)
 
 // Seeks a token at random in a script.
 // Returns the index of the start of the token found, or -1.
-
-
-static int SearchToken(char* script, const char* token)
+static std::size_t SearchToken(char* script, const char* token)
 {
-    int     lScript, lToken, i, iFound;
-    int     found[100];
+    std::size_t lScript, lToken, i;
+    int     found[100], iFound;
     char*   p;
 
     lScript = strlen(script);
@@ -734,14 +731,13 @@ static int SearchToken(char* script, const char* token)
             if ( iFound >= 100 )  break;
         }
     }
-
-    if ( iFound == 0 )  return -1;
+    if ( iFound == 0 )
+        return SIZE_MAX;
     return found[rand()%iFound];
 }
 
 // Removes a token in a script.
-
-static void DeleteToken(char* script, int pos, int len)
+static void DeleteToken(char* script, std::size_t pos, const std::size_t len)
 {
     while ( true )
     {
@@ -751,14 +747,11 @@ static void DeleteToken(char* script, int pos, int len)
 }
 
 // Inserts a token in a script.
-
-static void InsertToken(char* script, int pos, const char* token)
+static void InsertToken(char* script, const std::size_t pos, const char* token)
 {
-    int     lScript, lToken, i;
-
-    lScript = strlen(script);
-    lToken  = strlen(token);
-    for ( i=lScript ; i>=pos ; i-- )
+    std::size_t lScript = strlen(script);
+    std::size_t lToken  = strlen(token);
+    for (std::size_t i=lScript ; i>=pos ; i-- )
     {
         script[i+lToken] = script[i];
     }
@@ -787,11 +780,11 @@ bool CScript::IntroduceVirus()
     };
 
     int iFound = 0;
-    int     found[11*2];
+    std::size_t found[11*2];
     for ( int i=0 ; i<11 ; i++ )
     {
-        int start = SearchToken(m_script.get(), names[i*2]);
-        if ( start != -1 )
+        std::size_t start = SearchToken(m_script.get(), names[i*2]);
+        if ( start != SIZE_MAX )
         {
             found[iFound++] = i*2;
             found[iFound++] = start;
@@ -799,8 +792,8 @@ bool CScript::IntroduceVirus()
     }
     if ( iFound == 0 )  return false;
 
-    int i = (rand()%(iFound/2))*2;
-    int start = found[i+1];
+    std::size_t i = (rand()%(iFound/2))*2;
+    std::size_t start = found[i+1];
     i     = found[i+0];
 
     auto newScript = MakeUniqueArray<char>(m_len + strlen(names[i+1]) + 1);
@@ -874,8 +867,6 @@ void CScript::New(Ui::CEdit* edit, const char* name)
     char    text[100];
     char    script[500];
     char    buffer[500];
-    int     cursor1, cursor2, len, i, j;
-
     std::string resStr;
     GetResource(RES_TEXT, RT_SCRIPT_NEW, resStr);
     strcpy(res, resStr.c_str());
@@ -884,7 +875,7 @@ void CScript::New(Ui::CEdit* edit, const char* name)
 
     sprintf(script, "extern void object::%s()\n{\n\t\n\t\n\t\n}\n", text);
     edit->SetText(script, false);
-
+    std::size_t cursor1, cursor2, len, i, j;
     if ( strcmp(text, res) == 0 )
     {
         cursor1 = 20;

@@ -76,9 +76,9 @@ public:
     void        Stop();
     bool        IsRunning();
     bool        IsContinue();
-    bool        GetCursor(int &cursor1, int &cursor2);
+    bool        GetCursor(std::size_t& cursor1, std::size_t& cursor2) const;
     void        UpdateList(Ui::CList* list);
-    static void ColorizeScript(Ui::CEdit* edit, int rangeStart = 0, int rangeEnd = std::numeric_limits<int>::max());
+    static void ColorizeScript(Ui::CEdit* edit, std::size_t rangeStart = 0, std::size_t rangeEnd = SIZE_MAX); //std::numeric_limits<std::size_t>::max()
     bool        IntroduceVirus();
 
     int         GetError();
@@ -113,7 +113,7 @@ protected:
 
     int     m_ipf = 0;          // number of instructions/second
     int     m_errMode = 0;      // what to do in case of error
-    int     m_len = 0;          // length of the script (without <0>)
+    std::size_t m_len = 0;          // length of the script (without <0>)
     std::unique_ptr<char[]> m_script;       // script ends with <0>
     bool    m_bRun = false;         // program during execution?
     bool    m_bStepMode = false;        // step by step
@@ -125,7 +125,7 @@ protected:
     std::string m_token = "";        // missing instruction
     int m_tokenUsed = 0, m_tokenAllowed = 0;
     CBot::CBotError m_error = CBot::CBotNoErr;        // error (0=ok)
-    int     m_cursor1 = 0;
-    int     m_cursor2 = 0;
+    std::size_t m_cursor1 = 0;
+    std::size_t m_cursor2 = 0;
     boost::optional<float> m_returnValue = boost::none;
 };

@@ -784,8 +784,7 @@ void CDisplayInfo::UpdateCopyButton()
     Ui::CWindow*    pw;
     Ui::CButton*    button;
     Ui::CEdit*      edit;
-    int         c1, c2;
-
+    std::size_t     c1, c2;
 //? if ( m_index != SATCOM_LOADING )  return;
 
     pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW4));
@@ -851,8 +850,7 @@ void CDisplayInfo::StopDisplayInfo()
 
 
 // Specifies the position.
-
-void CDisplayInfo::SetPosition(int pos)
+void CDisplayInfo::SetPosition(const std::size_t pos)
 {
     Ui::CWindow*        pw;
     Ui::CEdit*          edit;
@@ -867,8 +865,7 @@ void CDisplayInfo::SetPosition(int pos)
 }
 
 // Returns the position.
-
-int CDisplayInfo::GetPosition()
+std::size_t CDisplayInfo::GetPosition() const
 {
     Ui::CWindow*        pw;
     Ui::CEdit*          edit;

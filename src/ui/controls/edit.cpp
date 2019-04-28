@@ -20,11 +20,10 @@
 
 #include "ui/controls/edit.h"
 
-#include "common/config.h"
-
 #include "app/app.h"
 #include "app/input.h"
 
+#include "common/config.h"
 #include "common/logger.h"
 #include "common/make_unique.h"
 
@@ -39,10 +38,10 @@
 
 #include "ui/controls/scroll.h"
 
-#include <SDL.h>
 #include <boost/algorithm/string.hpp>
 
 #include <cstring>
+#include <SDL.h>
 
 namespace Ui
 {
@@ -102,7 +101,7 @@ bool IsDelimiter(char c)
 //! Object's constructor.
 CEdit::CEdit()
     : CControl(),
-      m_maxChar( std::numeric_limits<int>::max() ),
+      m_maxChar(SIZE_MAX), //std::numeric_limits<std::size_t>::max() )
       m_text(),
       m_lineOffset(),
       m_lineIndent()
@@ -588,15 +587,13 @@ void CEdit::SendModifEvent()
 
 bool CEdit::IsLinkPos(Math::Point pos)
 {
-    int     i;
-
     if ( m_format.empty() )  return false;
-
-    i = MouseDetect(pos);
-    if ( i == -1 )  return false;
+    std::size_t i = MouseDetect(pos);
+    if ( i == SIZE_MAX )
+        return false;
     if ( i >= m_len )  return false;
-
-    if ( m_format.size() > static_cast<unsigned int>(i) && ((m_format[i] & Gfx::FONT_MASK_LINK) != 0))  return true; // TODO
+    if ( m_format.size() > i && ((m_format[i] & Gfx::FONT_MASK_LINK) != 0))
+        return true;
     return false;
 }
 
@@ -605,25 +602,23 @@ bool CEdit::IsLinkPos(Math::Point pos)
 
 void CEdit::MouseDoubleClick(Math::Point mouse)
 {
-    int     i, character;
-
     if ( m_bMulti )  // Multi-line?
     {
-        i = MouseDetect(mouse);
-        if ( i == -1 )  return;
-
+        std::size_t i = MouseDetect(mouse);
+        if ( i == SIZE_MAX )
+            return;
         while ( i > 0 )
         {
-            character = static_cast<unsigned char>(m_text[i-1]);
-            if ( !IsWord(character) )  break;
+            if ( !IsWord(m_text[i-1]) )
+                break;
             i --;
         }
         m_cursor2 = i;
 
         while ( i < m_len )
         {
-            character = static_cast<unsigned char>(m_text[i]);
-            if ( !IsWord(character) )  break;
+            if ( !IsWord(m_text[i]) )
+                break;
             i ++;
         }
         m_cursor1 = i;
@@ -644,11 +639,9 @@ void CEdit::MouseDoubleClick(Math::Point mouse)
 
 void CEdit::MouseClick(Math::Point mouse)
 {
-    int     i;
-
-    i = MouseDetect(mouse);
-    if ( i == -1 )  return;
-
+    std::size_t i = MouseDetect(mouse);
+    if ( i == SIZE_MAX )
+        return;
     if ( m_bEdit || m_bHilite )
     {
         m_cursor1 = i;
@@ -663,16 +656,16 @@ void CEdit::MouseClick(Math::Point mouse)
 
 void CEdit::MouseRelease(Math::Point mouse)
 {
-    int i = MouseDetect(mouse);
-    if ( i == -1 )  return;
-
+    std::size_t i = MouseDetect(mouse);
+    if ( i == SIZE_MAX )
+        return;
     if ( !m_bEdit )
     {
         if ( m_format.size() > 0 && i < m_len && m_cursor1 == m_cursor2 &&
             (m_format[i]&Gfx::FONT_MASK_LINK) != 0) //TODO
         {
             int rank = -1;
-            for ( int j=0 ; j<=i ; j++ )
+            for (std::size_t j=0 ; j<=i ; j++ )
             {
                 if ( (j == 0 || (m_format[j-1]&Gfx::FONT_MASK_LINK) == 0) && // TODO check if good
                      (m_format[j+0]&Gfx::FONT_MASK_LINK) != 0) // TODO
@@ -690,8 +683,6 @@ void CEdit::MouseRelease(Math::Point mouse)
 
 void CEdit::MouseMove(Math::Point mouse)
 {
-    int     i;
-
     if ( m_bMulti &&
          m_timeLastScroll+DELAY_SCROLL <= m_time )
     {
@@ -707,9 +698,8 @@ void CEdit::MouseMove(Math::Point mouse)
         }
         m_timeLastScroll = m_time;
     }
-
-    i = MouseDetect(mouse);
-    if ( i != -1 )
+    std::size_t i = MouseDetect(mouse);
+    if ( i != SIZE_MAX )
     {
         m_cursor1 = i;
         m_bUndoForce = true;
@@ -719,8 +709,7 @@ void CEdit::MouseMove(Math::Point mouse)
 }
 
 // Positions the cursor when clicked.
-
-int CEdit::MouseDetect(Math::Point mouse)
+std::size_t CEdit::MouseDetect(const Math::Point mouse)
 {
     Math::Point pos;
     float   indentLength = 0.0f, offset, size;
@@ -781,7 +770,7 @@ int CEdit::MouseDetect(Math::Point mouse)
         if ( bTitle )  i ++;
         pos.y -= m_lineHeight;
     }
-    return -1;
+    return SIZE_MAX;  // means outside
 }
 
 
@@ -822,7 +811,7 @@ void CEdit::HyperJump(std::string name, std::string marker)
         auto it = std::find_if(m_marker.begin(), m_marker.end(), [&marker](HyperMarker hyperMarker) { return hyperMarker.name == marker; });
         if(it != m_marker.end())
         {
-            int pos = it->pos;
+            std::size_t pos = it->pos;
             for ( int i=0 ; i<m_lineTotal ; i++ )
             {
                 if ( pos >= m_lineOffset[i] )
@@ -909,7 +898,8 @@ void CEdit::Draw()
 {
     Math::Point     pos, ppos, dim, start, end;
     float       size = 0.0f, indentLength = 0.0f;
-    int         i, j, beg, len, c1, c2, o1, o2, eol, line;
+    int         i, j, eol, line;
+    std::size_t beg, len, o1, o2;
 
     if ( (m_state & STATE_VISIBLE) == 0 )  return;
 
@@ -928,8 +918,8 @@ void CEdit::Draw()
     if ( (m_state & STATE_ENABLE) == 0 ) return;
 
     // Displays all lines.
-    c1 = m_cursor1;
-    c2 = m_cursor2;
+    std::size_t c1 = m_cursor1;
+    std::size_t c2 = m_cursor2;
     if ( c1 > c2 )  Math::Swap(c1, c2);  // always c1 <= c2
 
     if ( m_bInsideScroll )
@@ -973,7 +963,7 @@ void CEdit::Draw()
         size = m_fontSize;
 
         // Headline \b;?
-        if ( beg+len < m_len && m_format.size() > static_cast<unsigned int>(beg) &&
+        if ( beg+len < m_len && m_format.size() > beg &&
              (m_format[beg]&Gfx::FONT_MASK_TITLE) == Gfx::FONT_TITLE_BIG )
         {
             start.x = ppos.x-MARGX;
@@ -987,7 +977,7 @@ void CEdit::Draw()
         }
 
         // As \t;?
-        if ( beg+len < m_len && m_format.size() > static_cast<unsigned int>(beg) &&
+        if ( beg+len < m_len && m_format.size() > beg &&
              (m_format[beg]&Gfx::FONT_MASK_TITLE) == Gfx::FONT_TITLE_NORM )
         {
             start.x = ppos.x-MARGX;
@@ -998,7 +988,7 @@ void CEdit::Draw()
         }
 
         // Subtitle \s;?
-        if ( beg+len < m_len && m_format.size() > static_cast<unsigned int>(beg) &&
+        if ( beg+len < m_len && m_format.size() > beg &&
              (m_format[beg]&Gfx::FONT_MASK_TITLE) == Gfx::FONT_TITLE_LITTLE )
         {
             start.x = ppos.x-MARGX;
@@ -1009,7 +999,7 @@ void CEdit::Draw()
         }
 
         // Table \tab;?
-        if ( beg+len < m_len && m_format.size() > static_cast<unsigned int>(beg) &&
+        if ( beg+len < m_len && m_format.size() > beg &&
              (m_format[beg]&Gfx::FONT_MASK_HIGHLIGHT) == Gfx::FONT_HIGHLIGHT_TABLE )
         {
             start.x = ppos.x-MARGX;
@@ -1020,7 +1010,7 @@ void CEdit::Draw()
         }
 
         // Image \image; ?
-        if ( beg+len < m_len && m_format.size() > static_cast<unsigned int>(beg) &&
+        if ( beg+len < m_len && m_format.size() > beg &&
              (m_format[beg]&Gfx::FONT_MASK_IMAGE) != 0 )
         {
             line = 1;
@@ -1028,7 +1018,8 @@ void CEdit::Draw()
             {
                 if ( i+line >= m_lineTotal                ||
                      i+line >= m_lineFirst+m_lineVisible  ||
-                     (m_format.size() > static_cast<unsigned int>(beg+line) && m_format[beg+line]&Gfx::FONT_MASK_IMAGE) == 0 )  break;
+                     (m_format.size() > beg+line && m_format[beg+line]&Gfx::FONT_MASK_IMAGE) == 0 )
+                    break;
                 line ++;
             }
 
@@ -1069,7 +1060,8 @@ void CEdit::Draw()
 
             start.y = ppos.y-(m_bMulti?0.0f:MARGY1);
             end.y   = m_lineHeight;
-            if ( m_format.size() > static_cast<unsigned int>(beg) && (m_format[beg]&Gfx::FONT_MASK_TITLE) == Gfx::FONT_TITLE_BIG)  end.y *= BIG_FONT;
+            if ( m_format.size() > beg && (m_format[beg]&Gfx::FONT_MASK_TITLE) == Gfx::FONT_TITLE_BIG)
+                end.y *= BIG_FONT;
             DrawColor(start, end, Gfx::Color(1.000f, 0.620f, 0.075f, 1.0f));  // plain yellow background
         }
 
@@ -1289,7 +1281,7 @@ void CEdit::DrawColor(Math::Point pos, Math::Point dim, Gfx::Color color)
 
 void CEdit::SetText(const std::string& text, bool bNew)
 {
-    int     i, j, font;
+    int     font;
     bool    bBOL;
 
     if ( !bNew )  UndoMemorize(OPERUNDO_SPEC);
@@ -1302,9 +1294,9 @@ void CEdit::SetText(const std::string& text, bool bNew)
     m_format.resize( m_len + 1, m_fontType );
 
     font = m_fontType;
-    j = 0;
+    std::size_t j = 0;
     bBOL = true;
-    for ( i=0 ; i<m_len ; i++ )
+    for (std::size_t i=0 ; i<m_len ; i++ )
     {
         if ( m_bAutoIndent )
         {
@@ -1380,8 +1372,7 @@ const std::string& CEdit::GetText()
 }
 
 // Returns the edited text.
-
-std::string CEdit::GetText(int max)
+std::string CEdit::GetText(std::size_t max) const
 {
     if ( m_len < max )  max = m_len;
     if ( m_len > max )  max = max-1;
@@ -1390,8 +1381,7 @@ std::string CEdit::GetText(int max)
 }
 
 // Returns the length of the text.
-
-int CEdit::GetTextLength()
+std::size_t CEdit::GetTextLength() const
 {
     return m_len;
 }
@@ -1445,7 +1435,7 @@ void CEdit::FreeImage()
 
 bool CEdit::ReadText(std::string filename)
 {
-    int         len, len2, i, j, n, font, iLines, iCount;
+    int         n, font, iLines, iCount;
     char        iName[50];
     float       iWidth;
     InputSlot   slot;
@@ -1461,9 +1451,8 @@ bool CEdit::ReadText(std::string filename)
         GetLogger()->Error("Failed to load text file %s\n", filename.c_str());
         return false;
     }
-
-    len = stream.size();
-    len2 = len + 1;
+    std::size_t len = stream.size();
+    std::size_t len2 = len + 1;
 
     m_len = len;
     m_cursor1 = 0;
@@ -1487,7 +1476,7 @@ bool CEdit::ReadText(std::string filename)
     m_image.clear();
     m_marker.clear();
     m_link.clear();
-    i = j = 0;
+    std::size_t i = 0, j = 0;
     bBOL = true;
     int cbotStart = 0;
     bool inCbotBackground = false;
@@ -1874,7 +1863,7 @@ bool CEdit::WriteText(std::string filename)
     return true;
 }
 
-void CEdit::GetIndentedText(std::ostream& stream, unsigned int start, unsigned int end)
+void CEdit::GetIndentedText(std::ostream& stream, const std::size_t start, const std::size_t end)
 {
     float iDim = 0.0f;
 
@@ -1884,11 +1873,11 @@ void CEdit::GetIndentedText(std::ostream& stream, unsigned int start, unsigned i
         m_dim.x = 1000.0f;  // puts an infinite width!
         Justif();
     }
-
-    unsigned int i = 0, line = 0;
-    while ( m_text[i] != 0 && i < end && i < static_cast<unsigned int>(m_len) ) // TODO: fix this (un)signed comparation
+    std::size_t i = 0;
+    unsigned int line = 0;
+    while ( m_text[i] != 0 && i < end && i < m_len )
     {
-        if ( m_bAutoIndent && i == static_cast<unsigned int>(m_lineOffset[line]) ) // TODO: fix this (un)signed comparation
+        if ( m_bAutoIndent && i == m_lineOffset[line] )
         {
             for (int n = 0; n < m_lineIndent[line]; n++)
             {
@@ -1917,8 +1906,7 @@ void CEdit::GetIndentedText(std::ostream& stream, unsigned int start, unsigned i
 
 
 // Manage the number of max characters editable.
-
-void CEdit::SetMaxChar(int max)
+void CEdit::SetMaxChar(const std::size_t max)
 {
     FreeImage();
 
@@ -1936,7 +1924,7 @@ void CEdit::SetMaxChar(int max)
     UndoFlush();
 }
 
-int CEdit::GetMaxChar()
+std::size_t CEdit::GetMaxChar() const
 {
     return m_maxChar;
 }
@@ -2018,8 +2006,7 @@ bool CEdit::GetAutoIndent()
 
 
 // Moves the cursors.
-
-void CEdit::SetCursor(int cursor1, int cursor2)
+void CEdit::SetCursor(std::size_t cursor1, std::size_t cursor2)
 {
     if ( cursor1 > m_len )  cursor1 = m_len;
     if ( cursor2 > m_len )  cursor2 = m_len;
@@ -2031,8 +2018,7 @@ void CEdit::SetCursor(int cursor1, int cursor2)
 }
 
 // Returns the sliders.
-
-void CEdit::GetCursor(int &cursor1, int &cursor2)
+void CEdit::GetCursor(std::size_t& cursor1, std::size_t& cursor2) const
 {
     cursor1 = m_cursor1;
     cursor2 = m_cursor2;
@@ -2069,8 +2055,7 @@ int CEdit::GetFirstLine()
 
 void CEdit::ShowSelect()
 {
-    int     cursor1, cursor2, line;
-
+    std::size_t cursor1, cursor2;
     if ( m_cursor1 < m_cursor2 )
     {
         cursor1 = m_cursor1;
@@ -2081,8 +2066,7 @@ void CEdit::ShowSelect()
         cursor1 = m_cursor2;
         cursor2 = m_cursor1;
     }
-
-    line = GetCursorLine(cursor2);
+    int line = GetCursorLine(cursor2);
     if ( line >= m_lineFirst+m_lineVisible )
     {
         line -= m_lineVisible-1;
@@ -2153,8 +2137,7 @@ void CEdit::Scroll()
 }
 
 // Moves according to the visible lift.
-
-void CEdit::Scroll(int pos, bool bAdjustCursor)
+void CEdit::Scroll(const std::size_t pos, const bool bAdjustCursor)
 {
     int     max, line;
 
@@ -2192,8 +2175,7 @@ void CEdit::Scroll(int pos, bool bAdjustCursor)
 
 void CEdit::MoveHome(bool bWord, bool bSelect)
 {
-    int     begin, tab;
-
+    std::size_t begin, tab;
     if ( bWord )
     {
         m_cursor1 = 0;
@@ -2487,10 +2469,8 @@ bool CEdit::Cut()
 
 bool CEdit::Copy(bool memorize_cursor)
 {
-    int c1, c2;
-
-    c1 = m_cursor1;
-    c2 = m_cursor2;
+    std::size_t c1 = m_cursor1;
+    std::size_t c2 = m_cursor2;
     if ( c1 > c2 )
     {
         Math::Swap(c1, c2);  // always c1 <= c2
@@ -2556,7 +2536,7 @@ bool CEdit::Paste()
     }
 
     UndoMemorize(OPERUNDO_SPEC);
-    for (unsigned int i = 0; i<strlen(text); ++i)
+    for (std::size_t i = 0; i<strlen(text); ++i)
     {
         c = text[i];
         switch(c)
@@ -2708,8 +2688,6 @@ void CEdit::Insert(char character)
 
 void CEdit::InsertOne(char character)
 {
-    int     i;
-
     if ( !m_bEdit )  return;
     if ( !m_bMulti && character == '\n' )  return;
 
@@ -2723,11 +2701,10 @@ void CEdit::InsertOne(char character)
     m_text.resize( m_text.size() + 1, '\0' );
     m_format.resize( m_format.size() + 1, m_fontType );
 
-    for ( i=m_len ; i>m_cursor1 ; i-- )
+    for (std::size_t i=m_len ; i>m_cursor1 && i<=m_len; i-- )
     {
         m_text[i] = m_text[i-1];  // shoot
-
-        if ( m_format.size() > static_cast<unsigned int>(i) )
+        if ( m_format.size() > i )
         {
             m_format[i] = m_format[i-1];  // shoot
         }
@@ -2736,8 +2713,7 @@ void CEdit::InsertOne(char character)
     m_len ++;
 
     m_text[m_cursor1] = character;
-
-    if ( static_cast<unsigned int>(m_cursor1) < m_format.size() )
+    if ( m_cursor1 < m_format.size() )
     {
         m_format[m_cursor1] = m_fontType;
     }
@@ -2763,8 +2739,6 @@ void CEdit::Delete(int dir)
 
 void CEdit::DeleteOne(int dir)
 {
-    int     i, end, hole;
-
     if ( !m_bEdit )  return;
 
     if ( m_cursor1 == m_cursor2 )
@@ -2782,13 +2756,13 @@ void CEdit::DeleteOne(int dir)
     }
 
     if ( m_cursor1 > m_cursor2 )  Math::Swap(m_cursor1, m_cursor2);
-    hole = m_cursor2-m_cursor1;
-    end = m_len-hole;
-    for ( i=m_cursor1 ; i<end ; i++ )
+    std::size_t hole = m_cursor2 - m_cursor1;
+    std::size_t end = m_len - hole;
+    for (std::size_t i=m_cursor1 ; i<end ; i++ )
     {
         m_text[i] = m_text[i+hole];
 
-        if ( m_format.size() > static_cast<unsigned int>(i + hole) )
+        if ( m_format.size() > i + hole )
         {
             m_format[i] = m_format[i+hole];
         }
@@ -2856,10 +2830,8 @@ void CEdit::DeleteWord(int dir)
 
 int CEdit::IndentCompute()
 {
-    int     i, level;
-
-    level = 0;
-    for ( i=0 ; i<m_cursor1 ; i++ )
+    int level = 0;
+    for (std::size_t i=0 ; i<m_cursor1 ; i++ )
     {
         if ( m_text[i] == '{' )  level ++;
         if ( m_text[i] == '}' )  level --;
@@ -2913,7 +2885,7 @@ void CEdit::IndentTabAdjust(int number)
 bool CEdit::Shift(bool bLeft)
 {
     bool    bInvert = false;
-    int     c1, c2, i;
+    std::size_t c1, c2, i;
 
     if ( m_cursor1 == m_cursor2 )  return false;
 
@@ -2977,17 +2949,16 @@ bool CEdit::Shift(bool bLeft)
 
 bool CEdit::MinMaj(bool bMaj)
 {
-    int     c1, c2, i, character;
-
+    int character;
     if ( m_cursor1 == m_cursor2 )  return false;
 
     UndoMemorize(OPERUNDO_SPEC);
 
-    c1 = m_cursor1;
-    c2 = m_cursor2;
+    std::size_t c1 = m_cursor1;
+    std::size_t c2 = m_cursor2;
     if ( c1 > c2 )  Math::Swap(c1, c2);  // always c1 <= c2
 
-    for ( i=c1 ; i<c2 ; i++ )
+    for (std::size_t i=c1 ; i<c2 ; i++ )
     {
         character = static_cast<unsigned char>(m_text[i]);
         if ( bMaj )  character = toupper(character);
@@ -3007,7 +2978,7 @@ bool CEdit::MinMaj(bool bMaj)
 void CEdit::Justif()
 {
     float   width, size, indentLength = 0.0f;
-    int     i, j, k, line, indent;
+    int     line, indent;
     bool    bDual, bString, bRem;
 
     m_lineOffset.clear();
@@ -3026,7 +2997,7 @@ void CEdit::Justif()
     }
 
     bString = bRem = false;
-    i = k = 0;
+    std::size_t i = 0, j = 0, k = 0;
     while ( true )
     {
         bDual = false;
@@ -3048,13 +3019,13 @@ void CEdit::Justif()
         {
             size = m_fontSize;
 
-            if ( m_format.size() > static_cast<unsigned int>(i) && (m_format[i]&Gfx::FONT_MASK_TITLE) == Gfx::FONT_TITLE_BIG )  // headline?
+            if ( m_format.size() > i && (m_format[i]&Gfx::FONT_MASK_TITLE) == Gfx::FONT_TITLE_BIG )  // headline?
             {
                 size *= BIG_FONT;
                 bDual = true;
             }
 
-            if ( m_format.size() > static_cast<unsigned int>(i) && (m_format[i]&Gfx::FONT_MASK_IMAGE) != 0 )  // image part?
+            if ( m_format.size() > i && (m_format[i] & Gfx::FONT_MASK_IMAGE) != 0 )  // image part?
             {
                 i ++;  // jumps just a character (index in m_image)
             }
@@ -3110,7 +3081,7 @@ void CEdit::Justif()
 
     if ( m_bAutoIndent )
     {
-        for ( i=0 ; i<=m_lineTotal ; i++ )
+        for (int i=0 ; i<=m_lineTotal ; i++ )
         {
             if ( m_text[m_lineOffset[i]] == '}' )
             {
@@ -3145,8 +3116,7 @@ void CEdit::Justif()
 }
 
 // Returns the rank of the line where the cursor is located.
-
-int CEdit::GetCursorLine(int cursor)
+int CEdit::GetCursorLine(const std::size_t cursor) const
 {
     int     line, i;
 
@@ -3181,8 +3151,6 @@ void CEdit::UndoFlush()
 
 void CEdit::UndoMemorize(OperUndo oper)
 {
-    int     i, len;
-
     if ( !m_bUndoForce               &&
          oper       != OPERUNDO_SPEC &&
          m_undoOper != OPERUNDO_SPEC &&
@@ -3193,13 +3161,13 @@ void CEdit::UndoMemorize(OperUndo oper)
 
     m_undo[EDITUNDOMAX-1].text.clear();
 
-    for ( i=EDITUNDOMAX-1 ; i>=1 ; i-- )
+    for (int i=EDITUNDOMAX-1 ; i>=1 ; i-- )
     {
         m_undo[i] = m_undo[i-1];
     }
-
-    len = m_len;
-    if ( len == 0 )  len ++;
+    std::size_t len = m_len;
+    if ( len == 0 )
+        ++len;
     m_undo[0].text = m_text;
     m_undo[0].len = m_len;
 
@@ -3251,15 +3219,11 @@ bool CEdit::ClearFormat()
 }
 
 // Changes the format of a sequence of characters.
-
-bool CEdit::SetFormat(int cursor1, int cursor2, int format)
+bool CEdit::SetFormat(const std::size_t cursor1, const std::size_t cursor2, const int format)
 {
-    int     i;
-
-    if ( m_format.size() < static_cast<unsigned int>(cursor2) )
+    if ( m_format.size() < cursor2 )
         SetMultiFont(true);
-
-    for ( i=cursor1 ; i<cursor2 ; i++ )
+    for (std::size_t i=cursor1 ; i<cursor2 ; i++ )
     {
         m_format.at(i) = (m_format.at(i) & ~Gfx::FONT_MASK_HIGHLIGHT) | format;
     }

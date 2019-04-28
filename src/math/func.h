@@ -110,18 +110,11 @@ inline float Norm(float a)
     return a;
 }
 
-//! Swaps two integers
-inline void Swap(int &a, int &b)
+//! Swaps two integers or real numbers (float, int, size_t...)
+    template<typename T>
+inline void Swap(T& a, T& b)
 {
-    int c = a;
-    a = b;
-    b = c;
-}
-
-//! Swaps two real numbers
-inline void Swap(float &a, float &b)
-{
-    float c = a;
+    T c = a;
     a = b;
     b = c;
 }

@@ -154,10 +154,11 @@ unsigned int StrUtils::Utf8CharToUnicode(const std::string &ch)
 std::wstring StrUtils::Utf8StringToUnicode(const std::string &str)
 {
     std::wstring result;
-    unsigned int pos = 0;
+    std::size_t pos = 0;
+    unsigned short len;
     while (pos < str.size())
     {
-        int len = StrUtils::Utf8CharSizeAt(str, pos);
+        len = StrUtils::Utf8CharSizeAt(str, pos);
         if (len == 0)
             break;
 
@@ -168,7 +169,7 @@ std::wstring StrUtils::Utf8StringToUnicode(const std::string &str)
     return result;
 }
 
-int StrUtils::Utf8CharSizeAt(const std::string &str, unsigned int pos)
+unsigned short StrUtils::Utf8CharSizeAt(const std::string &str, const std::size_t pos)
 {
     if (pos >= str.size())
         return 0;
@@ -186,7 +187,7 @@ int StrUtils::Utf8CharSizeAt(const std::string &str, unsigned int pos)
 std::size_t StrUtils::Utf8StringLength(const std::string &str)
 {
     std::size_t result = 0;
-    unsigned int i = 0;
+    std::size_t i = 0;
     while (i < str.size())
     {
         i += Utf8CharSizeAt(str, i);

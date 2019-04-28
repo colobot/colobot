@@ -54,8 +54,8 @@ public:
     void        StartDisplayInfo(std::string filename, int index, bool bSoluce);
     void        StopDisplayInfo();
 
-    void        SetPosition(int pos);
-    int         GetPosition();
+    void        SetPosition(const std::size_t pos);
+    std::size_t GetPosition() const;
 
 protected:
     bool        EventFrame(const Event &event);

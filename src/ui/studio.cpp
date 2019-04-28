@@ -338,7 +338,7 @@ bool CStudio::EventFrame(const Event &event)
     CEdit*      edit;
     CList*      list;
     float       time;
-    int         cursor1, cursor2, iCursor1, iCursor2;
+    std::size_t cursor1, cursor2, iCursor1, iCursor2;
 
     m_time += event.rTime;
     m_fixInfoTextTime -= event.rTime;
@@ -435,24 +435,23 @@ static bool IsToken(char c)
 void CStudio::SearchToken(CEdit* edit)
 {
     ObjectType  type;
-    int         len, cursor1, cursor2, i, character, level;
     std::string text;
     std::string token( 100, '\0');
 
     text = edit->GetText();
-    len  = edit->GetTextLength();
+    std::size_t len  = edit->GetTextLength();
+    std::size_t cursor1, cursor2;
     edit->GetCursor(cursor1, cursor2);
-
-    i = cursor1;
+    std::size_t i = cursor1;
     if ( i > 0 )
     {
-        character = static_cast< unsigned char > (text[i-1]);
-        if ( !IsToken(character) )
+        if ( !IsToken(text[i-1]) )
         {
-            level = 1;
+            int level = 1;
+            char character;
             while ( i > 0 )
             {
-                character = static_cast< unsigned char > (text[i-1]);
+                character = text[i-1];
                 if ( character == ')' )
                 {
                     level ++;
@@ -462,7 +461,7 @@ void CStudio::SearchToken(CEdit* edit)
                     level --;
                     if ( level == 0 )  break;
                 }
-                i --;
+                --i;
             }
             if ( level > 0 )
             {
@@ -472,26 +471,26 @@ void CStudio::SearchToken(CEdit* edit)
             }
             while ( i > 0 )
             {
-                character = static_cast< unsigned char > (text[i-1]);
-                if ( IsToken(character) )  break;
-                i --;
+                if ( IsToken(text[i-1]) )
+                    break;
+                --i;
             }
         }
     }
 
     while ( i > 0 )
     {
-        character = static_cast< unsigned char > (text[i-1]);
-        if ( !IsToken(character) )  break;
-        i --;
+        if ( !IsToken(text[i-1]) )
+            break;
+        --i;
     }
     cursor2 = i;
 
     while ( i < len )
     {
-        character = static_cast< unsigned char > (text[i]);
-        if ( !IsToken(character) )  break;
-        i ++;
+        if ( !IsToken(text[i]) )
+            break;
+        ++i;
     }
     cursor1 = i;
     len = cursor1-cursor2;
@@ -1513,8 +1512,7 @@ void CStudio::UpdateDialogAction()
     CWindow*    pw;
     CEdit*      pe;
     CButton*    pb;
-    std::string        name;
-    int         len, i;
+    std::string name;
     bool        bError;
 
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW9));
@@ -1525,7 +1523,7 @@ void CStudio::UpdateDialogAction()
     if ( pb == nullptr )  return;
 
     name = pe->GetText(100);
-    len = name.size();
+    std::size_t len = name.size();
     if ( len == 0 )
     {
         bError = true;
@@ -1533,7 +1531,7 @@ void CStudio::UpdateDialogAction()
     else
     {
         bError = false;
-        for ( i=0 ; i<len ; i++ )
+        for (std::size_t i=0 ; i<len ; i++ )
         {
             if ( name[i] == '*'  ||
                  name[i] == '?'  ||
@@ -1638,9 +1636,8 @@ bool CStudio::ReadProgram()
 {
     CWindow*    pw;
     CEdit*      pe;
-    std::string        filename;
-    std::string        dir;
-    size_t p;
+    std::string filename;
+    std::string dir;
 
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW9));
     if ( pw == nullptr )  return false;
@@ -1650,7 +1647,7 @@ bool CStudio::ReadProgram()
     filename = pe->GetText(100);
     if ( filename.empty() )  return false;
 
-    p = filename.find(".txt");
+    std::size_t p = filename.find(".txt");
     if ( p == std::string::npos )
     {
         filename += ".txt";
@@ -1676,10 +1673,8 @@ bool CStudio::WriteProgram()
 {
     CWindow*    pw;
     CEdit*      pe;
-    std::string        filename;
-    std::string        dir;
-    size_t p;
-
+    std::string filename;
+    std::string dir;
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW9));
     if ( pw == nullptr )  return false;
 
@@ -1688,7 +1683,7 @@ bool CStudio::WriteProgram()
     filename = pe->GetText(100);
     if ( filename.empty() )  return false;
 
-    p = filename.find(".txt");
+    std::size_t p = filename.find(".txt");
     if ( p == std::string::npos )
     {
         filename += ".txt";

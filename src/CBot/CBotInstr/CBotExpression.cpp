@@ -146,7 +146,7 @@ CBotInstr* CBotExpression::Compile(CBotToken* &p, CBotCStack* pStack)
     }
 
     delete inst;
-    int start, end;
+    std::size_t start = 0, end = 0;
     CBotError error = pStack->GetError(start, end);
 
     p = pp;                                        // returns to the top

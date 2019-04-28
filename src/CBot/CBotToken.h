@@ -98,8 +98,8 @@ public:
      */
     CBotToken(const std::string& text,
               const std::string& sep = "",
-              int start = 0,
-              int end = 0);
+              std::size_t start = 0,
+              std::size_t end = 0);
 
     /**
      * \brief Destructor
@@ -131,19 +131,19 @@ public:
     /**
      * \brief Return the beginning location of this token in the original program string
      */
-    int GetStart();
+    std::size_t GetStart() const;
 
     /**
      * \brief Return the ending location of this token in the original program string
      */
-    int GetEnd();
+    std::size_t GetEnd() const;
 
     /**
      * \brief SetPos Set the token position in the CBot program
      * \param start The start position of the token
      * \param end The end position of the token
      */
-    void SetPos(int start, int end);
+    void SetPos(const std::size_t start, const std::size_t end);
 
     /**
      * \brief Get the keyword id
@@ -201,9 +201,9 @@ private:
     std::string m_sep = "";
 
     //! The strat position of the token in the CBotProgram
-    int m_start = 0;
+    std::size_t m_start = 0;
     //! The end position of the token in the CBotProgram
-    int m_end = 0;
+    std::size_t m_end = 0;
 
     //! Map of all defined constants (see DefineNum())
     static std::map<std::string, long> m_defineNum;

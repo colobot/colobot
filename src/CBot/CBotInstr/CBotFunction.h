@@ -235,9 +235,9 @@ public:
      * \param modestop
      * \return
      */
-    bool GetPosition(int& start, int& stop,
+    bool GetPosition(std::size_t& start, std::size_t& stop,
                      CBotGet modestart,
-                     CBotGet modestop);
+                     CBotGet modestop) const;
 
     /*!
      * \brief Check if the function has a return statment that will execute.

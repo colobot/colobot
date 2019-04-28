@@ -45,11 +45,11 @@ struct EditUndo
     //! original text
     std::string text;
     //! length of the text
-    int     len = 0;
+    std::size_t len = 0;
     //! offset cursor
-    int     cursor1 = 0;
+    std::size_t cursor1 = 0;
     //! offset cursor
-    int     cursor2 = 0;
+    std::size_t cursor2 = 0;
     //! the first line displayed.
     int     lineFirst = 0;
 
@@ -90,7 +90,7 @@ struct HyperMarker
     //! name of the marker
     std::string    name;
     //! position in the text
-    int pos = 0;
+    std::size_t    pos = 0;
 };
 
 struct HyperHistory
@@ -119,16 +119,16 @@ public:
     bool        EventProcess(const Event &event) override;
     void        Draw() override;
 
-    void               SetText(const std::string& text, bool bNew=true);
-    std::string        GetText(int max);
+    void        SetText(const std::string& text, bool bNew=true);
+    std::string GetText(std::size_t max) const;
     const std::string& GetText();
-    int                GetTextLength();
+    std::size_t GetTextLength() const;
 
     bool        ReadText(std::string filename);
     bool        WriteText(std::string filename);
 
-    void        SetMaxChar(int max);
-    int         GetMaxChar();
+    void        SetMaxChar(const std::size_t max);
+    std::size_t GetMaxChar() const;
 
     void        SetEditCap(bool bMode);
     bool        GetEditCap();
@@ -148,8 +148,8 @@ public:
     void        SetAutoIndent(bool bMode);
     bool        GetAutoIndent();
 
-    void        SetCursor(int cursor1, int cursor2);
-    void        GetCursor(int &cursor1, int &cursor2);
+    void        SetCursor(std::size_t cursor1, std::size_t cursor2);
+    void        GetCursor(std::size_t &cursor1, std::size_t &cursor2) const;
 
     void        SetFirstLine(int rank);
     int         GetFirstLine();
@@ -174,7 +174,7 @@ public:
     void        SetFontSize(float size) override;
 
     bool        ClearFormat();
-    bool        SetFormat(int cursor1, int cursor2, int format);
+    bool        SetFormat(const std::size_t cursor1, const std::size_t cursor2, const int format);
 
 protected:
     void        SendModifEvent();
@@ -183,7 +183,7 @@ protected:
     void        MouseClick(Math::Point mouse);
     void        MouseMove(Math::Point mouse);
     void        MouseRelease(Math::Point mouse);
-    int         MouseDetect(Math::Point mouse);
+    std::size_t MouseDetect(Math::Point mouse);
     void        MoveAdjust();
 
     void        HyperJump(std::string name, std::string marker);
@@ -196,7 +196,7 @@ protected:
     void        DrawColor(Math::Point pos, Math::Point dim, Gfx::Color color);
 
     void        FreeImage();
-    void        Scroll(int pos, bool bAdjustCursor);
+    void        Scroll(const std::size_t pos, const bool bAdjustCursor);
     void        Scroll();
     void        MoveChar(int move, bool bWord, bool bSelect);
     void        MoveLine(int move, bool bWord, bool bSelect);
@@ -214,7 +214,7 @@ protected:
     bool        Shift(bool bLeft);
     bool        MinMaj(bool bMaj);
     void        Justif();
-    int         GetCursorLine(int cursor);
+    int         GetCursorLine(const std::size_t cursor) const;
 
     void        UndoFlush();
     void        UndoMemorize(OperUndo oper);
@@ -225,17 +225,17 @@ protected:
     void        SetFocus(CControl* control) override;
     void        UpdateFocus();      // Start/stop text input mode, this toggles the on-screen keyboard
 
-    void        GetIndentedText(std::ostream& stream, unsigned int start, unsigned int end);
+    void        GetIndentedText(std::ostream& stream, const std::size_t start, const std::size_t end);
 
 protected:
     std::unique_ptr<CScroll> m_scroll;           // vertical scrollbar on the right
 
-    int m_maxChar;
+    std::size_t m_maxChar;
     std::string m_text;             // text (without zero terminator)
     std::vector<Gfx::FontMetaChar> m_format;           // format characters
-    int     m_len;              // length used in m_text
-    int     m_cursor1;          // offset cursor
-    int     m_cursor2;          // offset cursor
+    std::size_t m_len;              // length used in m_text
+    std::size_t m_cursor1;          // offset cursor
+    std::size_t m_cursor2;          // offset cursor
 
     bool        m_bMulti;           // true -> multi-line
     bool        m_bEdit;            // true -> editable
@@ -252,7 +252,7 @@ protected:
     int     m_lineVisible;          // total number of viewable lines
     int     m_lineFirst;            // the first line displayed
     int     m_lineTotal;            // number lines used (in m_lineOffset)
-    std::vector<int> m_lineOffset;
+    std::vector<std::size_t> m_lineOffset;
     std::vector<char> m_lineIndent;
     std::vector<ImageLine> m_image;
     std::vector<HyperLink> m_link;

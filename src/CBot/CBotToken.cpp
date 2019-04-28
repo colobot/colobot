@@ -152,7 +152,7 @@ CBotToken::CBotToken()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotToken::CBotToken(const std::string& text, const std::string& sep, int start, int end)
+CBotToken::CBotToken(const std::string& text, const std::string& sep, std::size_t start, std::size_t end)
 {
     m_text  = text;
     m_sep   = sep;
@@ -233,19 +233,19 @@ void CBotToken::SetString(const std::string& name)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CBotToken::GetStart()
+std::size_t CBotToken::GetStart() const
 {
     return m_start;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CBotToken::GetEnd()
+std::size_t CBotToken::GetEnd() const
 {
     return m_end;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotToken::SetPos(int start, int end)
+void CBotToken::SetPos(const std::size_t start, const std::size_t end)
 {
     m_start = start;
     m_end   = end;
@@ -413,8 +413,7 @@ std::unique_ptr<CBotToken> CBotToken::CompileTokens(const std::string& program)
 {
     CBotToken       *nxt, *prv, *tokenbase;
     const char*     p = program.c_str();
-    int             pos = 0;
-
+    std::size_t     pos = 0;
     prv = tokenbase = NextToken(p, true);
 
     if (tokenbase == nullptr) return nullptr;

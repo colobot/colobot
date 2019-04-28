@@ -419,18 +419,19 @@ float CText::GetStringWidth(const std::string &text,
                             std::vector<FontMetaChar>::iterator format,
                             std::vector<FontMetaChar>::iterator end, float size)
 {
-    float width = 0.0f;
-    unsigned int index = 0;
-    unsigned int fmtIndex = 0;
+    float width          = 0.0f;
+    std::size_t index    = 0;
+    std::size_t fmtIndex = 0;
+    FontType font = FONT_COMMON;
+    unsigned short len;
     while (index < text.length())
     {
-        FontType font = FONT_COMMON;
         if (format + fmtIndex != end)
             font = static_cast<FontType>(*(format + fmtIndex) & FONT_MASK_FONT);
-
+        else
+            font = FONT_COMMON;
         UTF8Char ch;
-
-        int len = StrUtils::Utf8CharSizeAt(text, index);
+        len = StrUtils::Utf8CharSizeAt(text, index);
         if (len >= 1)
             ch.c1 = text[index];
         if (len >= 2)
@@ -553,19 +554,20 @@ int CText::Justify(const std::string &text, std::vector<FontMetaChar>::iterator 
                    std::vector<FontMetaChar>::iterator end,
                    float size, float width)
 {
-    float pos = 0.0f;
-    int cut = 0;
-    unsigned int index = 0;
-    unsigned int fmtIndex = 0;
+    float       pos      = 0.0f;
+    std::size_t cut      = 0;
+    std::size_t index    = 0;
+    std::size_t fmtIndex = 0;
+    unsigned short len;
+    FontType font = FONT_COMMON;
     while (index < text.length())
     {
-        FontType font = FONT_COMMON;
         if (format + fmtIndex != end)
             font = static_cast<FontType>(*(format + fmtIndex) & FONT_MASK_FONT);
-
+        else
+            font = FONT_COMMON;
         UTF8Char ch;
-
-        int len = StrUtils::Utf8CharSizeAt(text, index);
+        len = StrUtils::Utf8CharSizeAt(text, index);
         if (len >= 1)
             ch.c1 = text[index];
         if (len >= 2)
@@ -599,14 +601,14 @@ int CText::Justify(const std::string &text, FontType font, float size, float wid
 {
     assert(font != FONT_BUTTON);
 
-    float pos = 0.0f;
-    int cut = 0;
-    unsigned int index = 0;
+    float       pos   = 0.0f;
+    std::size_t cut   = 0;
+    std::size_t index = 0;
+    unsigned short len;
     while (index < text.length())
     {
         UTF8Char ch;
-
-        int len = StrUtils::Utf8CharSizeAt(text, index);
+        len = StrUtils::Utf8CharSizeAt(text, index);
         if (len >= 1)
             ch.c1 = text[index];
         if (len >= 2)
@@ -638,9 +640,10 @@ int CText::Detect(const std::string &text, std::vector<FontMetaChar>::iterator f
                   std::vector<FontMetaChar>::iterator end,
                   float size, float offset)
 {
-    float pos = 0.0f;
-    unsigned int index = 0;
-    unsigned int fmtIndex = 0;
+    float pos            = 0.0f;
+    std::size_t index    = 0;
+    std::size_t fmtIndex = 0;
+    unsigned short len;
     while (index < text.length())
     {
         FontType font = FONT_COMMON;
@@ -652,8 +655,7 @@ int CText::Detect(const std::string &text, std::vector<FontMetaChar>::iterator f
         //if (font == FONT_BUTTON) continue;
 
         UTF8Char ch;
-
-        int len = StrUtils::Utf8CharSizeAt(text, index);
+        len = StrUtils::Utf8CharSizeAt(text, index);
         if (len >= 1)
             ch.c1 = text[index];
         if (len >= 2)
@@ -681,12 +683,12 @@ int CText::Detect(const std::string &text, FontType font, float size, float offs
     assert(font != FONT_BUTTON);
 
     float pos = 0.0f;
-    unsigned int index = 0;
+    std::size_t index = 0;
+    unsigned short len;
     while (index < text.length())
     {
         UTF8Char ch;
-
-        int len = StrUtils::Utf8CharSizeAt(text, index);
+        len = StrUtils::Utf8CharSizeAt(text, index);
         if (len >= 1)
             ch.c1 = text[index];
         if (len >= 2)
@@ -772,9 +774,8 @@ void CText::DrawString(const std::string &text, std::vector<FontMetaChar>::itera
 {
     m_engine->SetWindowCoordinates();
 
-    int start = pos.x;
-
-    unsigned int fmtIndex = 0;
+    int start            = pos.x;
+    std::size_t fmtIndex = 0;
 
     std::vector<UTF8Char> chars;
     StringToUTFCharList(text, chars, format, end);
@@ -864,13 +865,13 @@ void CText::DrawString(const std::string &text, std::vector<FontMetaChar>::itera
 
 void CText::StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &chars)
 {
-    unsigned int index = 0;
-    unsigned int totalLength = text.length();
+    std::size_t index       = 0;
+    std::size_t totalLength = text.length();
+    unsigned short len;
     while (index < totalLength)
     {
         UTF8Char ch;
-
-        int len = StrUtils::Utf8CharSizeAt(text, index);
+        len = StrUtils::Utf8CharSizeAt(text, index);
         if (len >= 1)
             ch.c1 = text[index];
         if (len >= 2)
@@ -888,18 +889,17 @@ void CText::StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &
                                 std::vector<FontMetaChar>::iterator format,
                                 std::vector<FontMetaChar>::iterator end)
 {
-    unsigned int index = 0;
-    unsigned int totalLength = text.length();
+    std::size_t index       = 0;
+    std::size_t totalLength = text.length();
+    unsigned short len;
+    FontType font = FONT_COMMON;
     while (index < totalLength)
     {
         UTF8Char ch;
-
-        FontType font = FONT_COMMON;
         if (format + index != end)
             font = static_cast<FontType>(*(format + index) & FONT_MASK_FONT);
-
-        int len;
-
+        else
+            font = FONT_COMMON;
         if(font == FONT_BUTTON)
         {
             len = 1;
