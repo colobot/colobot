@@ -74,8 +74,7 @@ CBotInstr* CompileExprLitNum(CBotToken* &p, CBotCStack* pStack)
         if (s.find('.') != std::string::npos || ( s.find('x') == std::string::npos && ( s.find_first_of("eE") != std::string::npos ) ))
         {
             double val = GetNumFloat(s);
-            if (val < static_cast<double>(std::numeric_limits<float>::min()) &&
-                val > static_cast<double>(std::numeric_limits<float>::max()) )
+            if (val > static_cast<double>(std::numeric_limits<float>::max()))
             {
                 numtype = CBotTypDouble;
                 inst = new CBotExprLitNum<double>(val);
@@ -89,8 +88,7 @@ CBotInstr* CompileExprLitNum(CBotToken* &p, CBotCStack* pStack)
         else
         {
             long val = GetNumInt(s);
-            if (val < std::numeric_limits<int>::min() &&
-                val > std::numeric_limits<int>::max() )
+            if (val > std::numeric_limits<int>::max())
             {
                 numtype = CBotTypLong;
                 inst = new CBotExprLitNum<long>(val);
