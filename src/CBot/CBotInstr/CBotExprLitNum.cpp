@@ -48,7 +48,14 @@ CBotInstr* CBotExprLitNum::Compile(CBotToken* &p, CBotCStack* pStack)
     CBotExprLitNum* inst = new CBotExprLitNum();
 
     inst->SetToken(p);
-    std::string    s = p->GetString();
+
+    // Parsing a 'case' expression calls this. The token is whatever the player typed after 'case'
+    // so we need to check that it's actually a number.
+    // For some reason defines are also hacked on here so they can be treated as numbers.
+
+    // We also handle negative numbers which appear as two tokens: ID_SUB followed by the number.
+    // Note: - followed by a define is not supported, only - followed by a number.
+    // The case of - followed by a define will be handled more generically the future if we implement constant folding.
 
     inst->m_numtype = CBotTypInt;
     if (p->GetType() == TokenTypDef)
@@ -57,14 +64,40 @@ CBotInstr* CBotExprLitNum::Compile(CBotToken* &p, CBotCStack* pStack)
     }
     else
     {
+        bool negative = false;
+        if (p->GetType() == ID_SUB)
+        {
+            negative = true;
+            if (!pStk->NextToken(p))
+            {
+                // Program ended after the - symbol. Return error indication.
+                delete inst;
+                return pStack->Return(nullptr, pStk);
+            }
+        }
+
+        if (p->GetType() != TokenTypNum)
+        {
+            // Return error indication.
+            pStk->SetError(CBotErrBadNum, p->GetEnd());
+            delete inst;
+            return pStack->Return(nullptr, pStk);
+        }
+
+        std::string    s = p->GetString();
+
         if (s.find('.') != std::string::npos || ( s.find('x') == std::string::npos && ( s.find_first_of("eE") != std::string::npos ) ))
         {
             inst->m_numtype = CBotTypFloat;
             inst->m_valfloat = GetNumFloat(s);
+            if (negative)
+                inst->m_valfloat = -inst->m_valfloat;
         }
         else
         {
             inst->m_valint = GetNumInt(s);
+            if (negative)
+                inst->m_valint = -inst->m_valint;
         }
     }
 
@@ -75,6 +108,8 @@ CBotInstr* CBotExprLitNum::Compile(CBotToken* &p, CBotCStack* pStack)
 
         return pStack->Return(inst, pStk);
     }
+    // Program ended after the number. Return error indication.
+    // XXX: Why are we returning an error indication *here*, when the end-of-program doesn't actually affect the number parsing?
     delete inst;
     return pStack->Return(nullptr, pStk);
 }
