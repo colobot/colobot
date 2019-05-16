@@ -167,6 +167,41 @@ private:
     EngineRenderState m_renderState{};
 };
 
+/**
+ * Init from a given UTF8 character iif 0<size<4 (standards UTF8)
+ *     provide a warning trace in other cases
+ * @param  text          input data
+ * @param  index         wanted character position
+ * @param  optCallOrigin optional description trace from origin
+ * @return               size of the given UTF8 character
+ */
+unsigned short UTF8Char::Init(const std::string &text,
+                              const std::size_t index,
+                              const char*optCallOrigin)
+{
+    c1='\0';
+    c2='\0';
+    c3='\0';
+    c4='\0';
+    unsigned short len = StrUtils::Utf8CharSizeAt(text, index);
+    if (0==len)   //warning & do skip all : Risk of infinite loop !!
+        GetLogger()->Warn("Risk of infinite loop %s !!\nat %d <%s>\n",
+            optCallOrigin ? optCallOrigin : "",
+            index,text.c_str());
+    else if (5<=len)   // warning & do skip it
+        GetLogger()->Warn("long UTF8, len>=5, ignored !!\n");
+    else
+    {
+        c1 = text[index];
+        if (2<=len)
+            c2 = text[index+1];
+        if (3<=len)
+            c3 = text[index+2];
+        if (4<=len)
+            c4 = text[index+3];
+    }
+    return len;
+}
 
 CText::CText(CEngine* engine)
 {
@@ -236,7 +271,7 @@ void CText::SetDevice(CDevice* device)
     m_device = device;
 }
 
-std::string CText::GetError()
+std::string CText::GetError() const
 {
     return m_error;
 }
@@ -264,20 +299,25 @@ void CText::FlushCache()
     m_lastFontSize = 0;
 }
 
-int CText::GetTabSize()
+int CText::GetTabSize() const
 {
     return m_tabSize;
 }
 
-void CText::SetTabSize(int tabSize)
+void CText::SetTabSize(const int tabSize)
 {
     m_tabSize = tabSize;
 }
 
-void CText::DrawText(const std::string &text, std::vector<FontMetaChar>::iterator format,
-                     std::vector<FontMetaChar>::iterator end,
-                     float size, Math::Point pos, float width, TextAlign align,
-                     int eol, Color color)
+void CText::DrawText(const std::string &text,
+                     const std::vector<FontMetaChar>::iterator format,
+                     const std::vector<FontMetaChar>::iterator end,
+                     const float size,
+                     Math::Point pos,
+                     const float width,
+                     const TextAlign align,
+                     const int eol,
+                     const Color color)
 {
     float sw = 0.0f;
 
@@ -299,9 +339,14 @@ void CText::DrawText(const std::string &text, std::vector<FontMetaChar>::iterato
     DrawString(text, format, end, size, intPos, intWidth, eol, color);
 }
 
-void CText::DrawText(const std::string &text, FontType font,
-                     float size, Math::Point pos, float width, TextAlign align,
-                     int eol, Color color)
+void CText::DrawText(const std::string &text,
+                     const FontType font,
+                     const float size,
+                     Math::Point pos,
+                     const float width,
+                     const TextAlign align,
+                     const int eol,
+                     const Color color)
 {
     float sw = 0.0f;
 
@@ -323,9 +368,12 @@ void CText::DrawText(const std::string &text, FontType font,
     DrawString(text, font, size, intPos, intWidth, eol, color);
 }
 
-void CText::SizeText(const std::string &text, std::vector<FontMetaChar>::iterator format,
-                     std::vector<FontMetaChar>::iterator endFormat,
-                     float size, Math::Point pos, TextAlign align,
+void CText::SizeText(const std::string &text,
+                     const std::vector<FontMetaChar>::iterator format,
+                     const std::vector<FontMetaChar>::iterator endFormat,
+                     const float size,
+                     const Math::Point pos,
+                     const TextAlign align,
                      Math::Point &start, Math::Point &end)
 {
     start = end = pos;
@@ -347,9 +395,13 @@ void CText::SizeText(const std::string &text, std::vector<FontMetaChar>::iterato
     end.y   += GetAscent(FONT_COMMON, size);
 }
 
-void CText::SizeText(const std::string &text, FontType font,
-                     float size, Math::Point pos, TextAlign align,
-                     Math::Point &start, Math::Point &end)
+void CText::SizeText(const std::string &text,
+                     const FontType font,
+                     const float size,
+                     const Math::Point pos,
+                     const TextAlign align,
+                     Math::Point &start,
+                     Math::Point &end)
 {
     start = end = pos;
 
@@ -370,7 +422,7 @@ void CText::SizeText(const std::string &text, FontType font,
     end.y   += GetAscent(font, size);
 }
 
-float CText::GetAscent(FontType font, float size)
+float CText::GetAscent(const FontType font, const float size)
 {
     assert(font != FONT_BUTTON);
 
@@ -382,7 +434,7 @@ float CText::GetAscent(FontType font, float size)
     return ifSize.y;
 }
 
-float CText::GetDescent(FontType font, float size)
+float CText::GetDescent(const FontType font, const float size)
 {
     assert(font != FONT_BUTTON);
 
@@ -394,7 +446,7 @@ float CText::GetDescent(FontType font, float size)
     return ifSize.y;
 }
 
-float CText::GetHeight(FontType font, float size)
+float CText::GetHeight(const FontType font, const float size)
 {
     assert(font != FONT_BUTTON);
 
@@ -406,7 +458,7 @@ float CText::GetHeight(FontType font, float size)
     return ifSize.y;
 }
 
-int CText::GetHeightInt(FontType font, float size)
+int CText::GetHeightInt(const FontType font, const float size)
 {
     assert(font != FONT_BUTTON);
 
@@ -416,8 +468,9 @@ int CText::GetHeightInt(FontType font, float size)
 }
 
 float CText::GetStringWidth(const std::string &text,
-                            std::vector<FontMetaChar>::iterator format,
-                            std::vector<FontMetaChar>::iterator end, float size)
+                            const std::vector<FontMetaChar>::iterator format,
+                            const std::vector<FontMetaChar>::iterator end,
+                            const float size)
 {
     float width          = 0.0f;
     std::size_t index    = 0;
@@ -431,24 +484,20 @@ float CText::GetStringWidth(const std::string &text,
         else
             font = FONT_COMMON;
         UTF8Char ch;
-        len = StrUtils::Utf8CharSizeAt(text, index);
-        if (len >= 1)
-            ch.c1 = text[index];
-        if (len >= 2)
-            ch.c2 = text[index+1];
-        if (len >= 3)
-            ch.c3 = text[index+2];
-
-        width += GetCharWidth(ch, font, size, width);
-
+        len = ch.Init(text, index,"1 -CText::GetStringWidth");
+        if(0==len)  //Risk of infinite loop !!
+            break;
         index += len;
+        if(5<=len)  //Warning done, skip
+            continue;
+        width += GetCharWidth(ch, font, size, width);
         fmtIndex++;
     }
 
     return width;
 }
 
-float CText::GetStringWidth(std::string text, FontType font, float size)
+float CText::GetStringWidth(std::string text, const FontType font, const float size)
 {
     assert(font != FONT_BUTTON);
 
@@ -467,7 +516,7 @@ float CText::GetStringWidth(std::string text, FontType font, float size)
     return ifSize.x;
 }
 
-float CText::GetCharWidth(UTF8Char ch, FontType font, float size, float offset)
+float CText::GetCharWidth(UTF8Char ch, const FontType font, const float size, const float offset)
 {
     if (font == FONT_BUTTON)
     {
@@ -501,7 +550,7 @@ float CText::GetCharWidth(UTF8Char ch, FontType font, float size, float offset)
     {
         Math::IntPoint wndSize;
         std::string text;
-        text.append({ch.c1, ch.c2, ch.c3});
+        text.append({ch.c1, ch.c2, ch.c3, ch.c4});
         TTF_SizeUTF8(cf->font, text.c_str(), &wndSize.x, &wndSize.y);
         charSize = m_engine->WindowToInterfaceSize(wndSize);
     }
@@ -509,7 +558,7 @@ float CText::GetCharWidth(UTF8Char ch, FontType font, float size, float offset)
     return charSize.x * width;
 }
 
-int CText::GetCharWidthInt(UTF8Char ch, FontType font, float size, float offset)
+int CText::GetCharWidthInt(UTF8Char ch, const FontType font, const float size, const float offset)
 {
     if (font == FONT_BUTTON)
     {
@@ -542,7 +591,7 @@ int CText::GetCharWidthInt(UTF8Char ch, FontType font, float size, float offset)
     else
     {
         std::string text;
-        text.append({ch.c1, ch.c2, ch.c3});
+        text.append({ch.c1, ch.c2, ch.c3, ch.c4});
         TTF_SizeUTF8(cf->font, text.c_str(), &charSize.x, &charSize.y);
     }
 
@@ -550,9 +599,11 @@ int CText::GetCharWidthInt(UTF8Char ch, FontType font, float size, float offset)
 }
 
 
-int CText::Justify(const std::string &text, std::vector<FontMetaChar>::iterator format,
-                   std::vector<FontMetaChar>::iterator end,
-                   float size, float width)
+int CText::Justify(const std::string &text,
+                   const std::vector<FontMetaChar>::iterator format,
+                   const std::vector<FontMetaChar>::iterator end,
+                   const float size,
+                   const float width)
 {
     float       pos      = 0.0f;
     std::size_t cut      = 0;
@@ -567,14 +618,14 @@ int CText::Justify(const std::string &text, std::vector<FontMetaChar>::iterator 
         else
             font = FONT_COMMON;
         UTF8Char ch;
-        len = StrUtils::Utf8CharSizeAt(text, index);
-        if (len >= 1)
-            ch.c1 = text[index];
-        if (len >= 2)
-            ch.c2 = text[index+1];
-        if (len >= 3)
-            ch.c3 = text[index+2];
-
+        len = ch.Init(text, index,"2 -CText::Justify");
+        if(0==len)  //Risk of infinite loop !!
+            break;
+        if(5<=len)  //Warning done, skip
+        {
+            index += len;
+            continue;
+        }
         if (font != FONT_BUTTON)
         {
             if (ch.c1 == '\n')
@@ -597,7 +648,10 @@ int CText::Justify(const std::string &text, std::vector<FontMetaChar>::iterator 
     return index;
 }
 
-int CText::Justify(const std::string &text, FontType font, float size, float width)
+int CText::Justify(const std::string &text,
+                   const FontType font,
+                   const float size,
+                   const float width)
 {
     assert(font != FONT_BUTTON);
 
@@ -608,14 +662,14 @@ int CText::Justify(const std::string &text, FontType font, float size, float wid
     while (index < text.length())
     {
         UTF8Char ch;
-        len = StrUtils::Utf8CharSizeAt(text, index);
-        if (len >= 1)
-            ch.c1 = text[index];
-        if (len >= 2)
-            ch.c2 = text[index+1];
-        if (len >= 3)
-            ch.c3 = text[index+2];
-
+        len = ch.Init(text, index,"3 -CText::Justify 2");
+        if(0==len)  //Risk of infinite loop !!
+            break;
+        if(5<=len)  //Warning done, skip
+        {
+            index += len;
+            continue;
+        }
         if (ch.c1 == '\n')
         {
             return index+1;
@@ -636,9 +690,11 @@ int CText::Justify(const std::string &text, FontType font, float size, float wid
     return index;
 }
 
-int CText::Detect(const std::string &text, std::vector<FontMetaChar>::iterator format,
-                  std::vector<FontMetaChar>::iterator end,
-                  float size, float offset)
+int CText::Detect(const std::string &text,
+                  const std::vector<FontMetaChar>::iterator format,
+                  const std::vector<FontMetaChar>::iterator end,
+                  const float size,
+                  const float offset)
 {
     float pos            = 0.0f;
     std::size_t index    = 0;
@@ -653,16 +709,15 @@ int CText::Detect(const std::string &text, std::vector<FontMetaChar>::iterator f
 
         // TODO: if (font == FONT_BUTTON)
         //if (font == FONT_BUTTON) continue;
-
         UTF8Char ch;
-        len = StrUtils::Utf8CharSizeAt(text, index);
-        if (len >= 1)
-            ch.c1 = text[index];
-        if (len >= 2)
-            ch.c2 = text[index+1];
-        if (len >= 3)
-            ch.c3 = text[index+2];
-
+        len = ch.Init(text, index,"4 -CText::Detect");
+        if(0==len)  //Risk of infinite loop !!
+            break;
+        if(5<=len)  //Warning done, skip
+        {
+            index += len;
+            continue;
+        }
         if (ch.c1 == '\n')
             return index;
 
@@ -678,7 +733,10 @@ int CText::Detect(const std::string &text, std::vector<FontMetaChar>::iterator f
     return index;
 }
 
-int CText::Detect(const std::string &text, FontType font, float size, float offset)
+int CText::Detect(const std::string &text,
+                  const FontType font,
+                  const float size,
+                  const float offset)
 {
     assert(font != FONT_BUTTON);
 
@@ -688,16 +746,12 @@ int CText::Detect(const std::string &text, FontType font, float size, float offs
     while (index < text.length())
     {
         UTF8Char ch;
-        len = StrUtils::Utf8CharSizeAt(text, index);
-        if (len >= 1)
-            ch.c1 = text[index];
-        if (len >= 2)
-            ch.c2 = text[index+1];
-        if (len >= 3)
-            ch.c3 = text[index+2];
-
+        len = ch.Init(text, index,"5 -CText::Detect 2");
+        if(0==len)  //Risk of infinite loop !!
+            break;
         index += len;
-
+        if(5<=len)  //Warning done, skip
+            continue;
         if (ch.c1 == '\n')
             return index;
 
@@ -711,16 +765,16 @@ int CText::Detect(const std::string &text, FontType font, float size, float offs
     return index;
 }
 
-UTF8Char CText::TranslateSpecialChar(int specialChar)
+UTF8Char CText::TranslateSpecialChar(const char specialChar) const
 {
     UTF8Char ch;
-
+    ch.c2 = 0;
+    ch.c3 = 0;
+    ch.c4 = 0;
     switch (specialChar)
     {
         case CHAR_TAB:
             ch.c1 = ':';
-            ch.c2 = 0;
-            ch.c3 = 0;
             break;
 
         case CHAR_NEWLINE:
@@ -760,17 +814,17 @@ UTF8Char CText::TranslateSpecialChar(int specialChar)
 
         default:
             ch.c1 = '?';
-            ch.c2 = 0;
-            ch.c3 = 0;
             break;
     }
 
     return ch;
 }
 
-void CText::DrawString(const std::string &text, std::vector<FontMetaChar>::iterator format,
+void CText::DrawString(const std::string &text,
+                       std::vector<FontMetaChar>::iterator format,
                        std::vector<FontMetaChar>::iterator end,
-                       float size, Math::IntPoint pos, int width, int eol, Color color)
+                       float size, Math::IntPoint pos,
+                       int width, int eol, Color color)
 {
     m_engine->SetWindowCoordinates();
 
@@ -850,6 +904,8 @@ void CText::DrawString(const std::string &text, std::vector<FontMetaChar>::itera
             fmtIndex++;
         if ( ch.c3 != 0 )
             fmtIndex++;
+        if ( ch.c4 != 0 )
+            fmtIndex++;
     }
 
     if (eol != 0)
@@ -871,21 +927,18 @@ void CText::StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &
     while (index < totalLength)
     {
         UTF8Char ch;
-        len = StrUtils::Utf8CharSizeAt(text, index);
-        if (len >= 1)
-            ch.c1 = text[index];
-        if (len >= 2)
-            ch.c2 = text[index+1];
-        if (len >= 3)
-            ch.c3 = text[index+2];
-
+        len = ch.Init(text, index,"6 -CText::StringToUTFCharList");
+        if(0==len)  //Risk of infinite loop !!
+            break;
         index += len;
-
+        if(5<=len)  //Warning done, skip
+            continue;
         chars.push_back(ch);
     }
 }
 
-void CText::StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &chars,
+void CText::StringToUTFCharList(const std::string &text,
+                                std::vector<UTF8Char> &chars,
                                 std::vector<FontMetaChar>::iterator format,
                                 std::vector<FontMetaChar>::iterator end)
 {
@@ -903,21 +956,17 @@ void CText::StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &
         if(font == FONT_BUTTON)
         {
             len = 1;
+            ch=UTF8Char(text[index]);
         }
         else
         {
-            len = StrUtils::Utf8CharSizeAt(text, index);
+            len = ch.Init(text, index,"7 -CText::StringToUTFCharList 2");
         }
-
-        if (len >= 1)
-            ch.c1 = text[index];
-        if (len >= 2)
-            ch.c2 = text[index+1];
-        if (len >= 3)
-            ch.c3 = text[index+2];
-
+        if(0==len)  //Risk of infinite loop !!
+            break;
         index += len;
-
+        if(5<=len)  //Warning done, skip
+            continue;
         chars.push_back(ch);
     }
 }
@@ -995,7 +1044,7 @@ void CText::DrawHighlight(FontMetaChar hl, Math::IntPoint pos, Math::IntPoint si
     m_device->SetTextureEnabled(0, true);
 }
 
-void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::IntPoint &pos, Color color)
+void CText::DrawCharAndAdjustPos(UTF8Char ch, const FontType font, const float size, Math::IntPoint &pos, Color color)
 {
     if (font == FONT_BUTTON)
     {
@@ -1042,14 +1091,16 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::I
     else
     {
         int width = 1;
-        if (ch.c1 > 0 && ch.c1 < 32)
+        if (ch.c1 > 0 && ch.c1 < 32
+            && ch.c2=='\0'
+            && ch.c3=='\0'
+            && ch.c4=='\0')
         {
             if (ch.c1 == '\t')
             {
                 color = Color(1.0f, 0.0f, 0.0f, 1.0f);
                 width = m_tabSize;
             }
-
             ch = TranslateSpecialChar(ch.c1);
         }
 
@@ -1079,8 +1130,12 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::I
     }
 }
 
-CachedFont* CText::GetOrOpenFont(FontType font, float size)
+CachedFont* CText::GetOrOpenFont(const FontType font, const float size)
 {
+    // Nota: due to this optionnal loading, transforming getters of this class to const func
+    //  GetHeight, GetCharWidth & 2 Detect
+    //  would imply mutables for : m_error, m_lastFontType, m_lastFontSize & m_lastCachedFont
+
     Math::IntPoint windowSize = m_engine->GetWindowSize();
     int pointSize = static_cast<int>(size * (windowSize.Length() / REFERENCE_SIZE.Length()));
 
@@ -1129,7 +1184,7 @@ CachedFont* CText::GetOrOpenFont(FontType font, float size)
     return m_lastCachedFont;
 }
 
-CharTexture CText::GetCharTexture(UTF8Char ch, FontType font, float size)
+CharTexture CText::GetCharTexture(const UTF8Char ch, const FontType font, const float size)
 {
     CachedFont* cf = GetOrOpenFont(font, size);
 
@@ -1154,7 +1209,7 @@ CharTexture CText::GetCharTexture(UTF8Char ch, FontType font, float size)
     return tex;
 }
 
-Math::IntPoint CText::GetFontTextureSize()
+Math::IntPoint CText::GetFontTextureSize() const
 {
     return FONT_TEXTURE_SIZE;
 }
@@ -1165,7 +1220,7 @@ CharTexture CText::CreateCharTexture(UTF8Char ch, CachedFont* font)
 
     SDL_Surface* textSurface = nullptr;
     SDL_Color white = {255, 255, 255, 0};
-    char str[] = { ch.c1, ch.c2, ch.c3, '\0' };
+    char str[] = { ch.c1, ch.c2, ch.c3, '\0' };  //note: ch.c4 not to add there
     textSurface = TTF_RenderUTF8_Blended(font->font, str, white);
 
     if (textSurface == nullptr)

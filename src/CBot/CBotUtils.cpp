@@ -250,6 +250,12 @@ bool CharInList(const char c, const char* list)
 
 std::string CodePointToUTF8(unsigned int val)
 {
+    // nota : similare with StrUtils::UnicodeCharToUtf8 (with traces but CBotErrUnicodeName)
+    //  memo UTF8:
+    // 1 byte  : 00000000 -- 0000007F:  0xxxxxxx
+    // 2 bytes : 00000080 -- 000007FF:  110xxxxx 10xxxxxx
+    // 3 bytes : 00000800 -- 0000FFFF:  1110xxxx 10xxxxxx 10xxxxxx
+    // 4 bytes : 00010000 -- 001FFFFF:  11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
     std::string s = "";
 
     if (val < 0xD800 || (0xDFFF < val && val < 0x110000))
@@ -260,21 +266,21 @@ std::string CodePointToUTF8(unsigned int val)
         }
         else if (val < 0x800)
         {
-            s.push_back(0xC0 + (val >> 6));
-            s.push_back(0x80 + (val & 0x3F));
+            s.push_back(0xC0 | ((val & 0x07C0) >> 6));
+            s.push_back(0x80 | (val & 0x3F));
         }
         else if (val < 0x10000)
         {
-            s.push_back(0xE0 + (val >> 12));
-            s.push_back(0x80 + ((val >> 6) & 0x3F));
-            s.push_back(0x80 + (val & 0x3F));
+            s.push_back(0xE0 | ((val & 0xF000) >> 12));
+            s.push_back(0x80 | ((val & 0x07C0) >> 6));
+            s.push_back(0x80 | (val & 0x3F));
         }
         else
         {
-            s.push_back(0xF0 + (val >> 18));
-            s.push_back(0x80 + ((val >> 12) & 0x3F));
-            s.push_back(0x80 + ((val >> 6) & 0x3F));
-            s.push_back(0x80 + (val & 0x3F));
+            s.push_back(0xF0 | (val >> 18));
+            s.push_back(0x80 | ((val >> 12) & 0x3F));
+            s.push_back(0x80 | ((val >> 6) & 0x3F));
+            s.push_back(0x80 | (val & 0x3F));
         }
     }
 

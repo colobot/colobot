@@ -82,7 +82,32 @@ unsigned int Utf8CharToUnicode(const std::string &ch);
 std::wstring Utf8StringToUnicode(const std::string &str);
 
 //! Returns the size in bytes of UTF-8 character at given \a pos in a UTF-8 \a str
-unsigned short Utf8CharSizeAt(const std::string &str, const std::size_t pos);
+unsigned short Utf8CharSizeAt(const char*const str, const std::size_t pos, const std::size_t size);
+inline unsigned short Utf8CharSizeAt(const std::string& str, const std::size_t pos)
+{
+    return Utf8CharSizeAt(str.c_str(), pos, str.size());
+}
+
+//! warning log function to display eventual problematic chars
+void Utf8Log(const char*const invit, const char*const str, const std::size_t pos,
+             const std::size_t size, const bool bLogStd=false);
+inline void Utf8Log(const char*const invit, const std::string& str, const std::size_t pos,
+             const bool bLogStd=false)
+{
+    Utf8Log(invit, str.c_str(), pos, str.size(), bLogStd);
+}
+
+//! utf8 checks & log (Utf8CharSizeAt control)
+bool Utf8CheckWarnup(const char*const invit ,const char*const str, const std::size_t pos,
+                     const bool doInsideCheck, short nbBytes /*= -1*/, const std::size_t size);
+bool Utf8CheckWarnup(const char*const invit ,const char*const str, const std::size_t pos,
+                     const bool doInsideCheck);
+    // return Utf8CheckWarnup(invit, str, pos, doInsideCheck, -1, strlen(str) );
+inline bool Utf8CheckWarnup(const char*const invit ,const std::string& str, const std::size_t pos,
+                     const bool doInsideCheck, short nbBytes = -1)
+{
+    return Utf8CheckWarnup(invit, str.c_str(), pos, doInsideCheck, nbBytes, str.size());
+}
 
 //! Returns the length in characters of UTF-8 string \a str
 std::size_t Utf8StringLength(const std::string &str);

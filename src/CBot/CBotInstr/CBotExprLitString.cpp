@@ -48,7 +48,7 @@ CBotInstr* CBotExprLitString::Compile(CBotToken* &p, CBotCStack* pStack)
     if (++it != s.cend())
     {
         int pos = p->GetStart();
-        std::string valstring = "";
+        std::string valstring = "", plomp;
         while (it != s.cend() && *it != '\"')
         {
             pStk->SetStartError(++pos);
@@ -133,9 +133,10 @@ CBotInstr* CBotExprLitString::Compile(CBotToken* &p, CBotCStack* pStack)
                                 }
                                 else if (maxlen == hex.length()) // unicode character
                                 {
-                                    if (val < 0xD800 || (0xDFFF < val && val < 0x110000))
+                                    plomp = CodePointToUTF8(val);
+                                    if (plomp.size())
                                     {
-                                        valstring += CodePointToUTF8(val);
+                                        valstring += plomp;
                                         continue;
                                     }
                                     pStk->SetError(CBotErrUnicodeName, pos + 1);

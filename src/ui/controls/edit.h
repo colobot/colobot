@@ -121,7 +121,7 @@ public:
 
     void        SetText(const std::string& text, bool bNew=true);
     std::string GetText(std::size_t max) const;
-    const std::string& GetText();
+    const std::string& GetText() const;
     std::size_t GetTextLength() const;
 
     bool        ReadText(std::string filename);
@@ -201,10 +201,16 @@ protected:
     void        MoveChar(int move, bool bWord, bool bSelect);
     void        MoveLine(int move, bool bWord, bool bSelect);
     void        MoveHome(bool bWord, bool bSelect);
-    void        MoveEnd(bool bWord, bool bSelect);
+    void        MoveEnd(bool bEof, bool bSelect);
     void        ColumnFix();
     void        Insert(char character);
     void        InsertOne(char character);
+    // Inserts a string (ended by a null char)
+    void InsertTxt(const char* str);
+    inline void InsertTxt(const std::string& str)
+    {
+        InsertTxt(str.c_str());
+    }
     void        Delete(int dir);
     void        DeleteOne(int dir);
     void        DeleteWord(int dir);
