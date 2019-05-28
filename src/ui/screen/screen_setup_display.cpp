@@ -19,16 +19,13 @@
 
 #include "ui/screen/screen_setup_display.h"
 
-#include "common/config.h"
-
 #include "app/app.h"
-
+#include "common/config.h"
+#include "common/logger.h"
 #include "common/restext.h"
 #include "common/settings.h"
 #include "common/stringutils.h"
-
 #include "graphics/engine/camera.h"
-
 #include "ui/controls/button.h"
 #include "ui/controls/check.h"
 #include "ui/controls/interface.h"
@@ -42,10 +39,10 @@ namespace Ui
 CScreenSetupDisplay::CScreenSetupDisplay()
     : CScreenSetup({
         //EVENT_INTERFACE_SETUPd,   //0
-        EVENT_INTERFACE_SETUPg,
-        EVENT_INTERFACE_SETUPp,
-        EVENT_INTERFACE_SETUPc,
-        EVENT_INTERFACE_SETUPs,
+        //EVENT_INTERFACE_SETUPg,
+        //EVENT_INTERFACE_SETUPp,
+        //EVENT_INTERFACE_SETUPc,
+        //EVENT_INTERFACE_SETUPs,
 
         EVENT_LIST2,
         EVENT_INTERFACE_FULL,

@@ -489,6 +489,7 @@ void CList::Draw()
             if ( !m_bBlink && i + m_firstLine < m_totalLine )
                 m_buttons[i]->SetState(STATE_ENABLE, m_items[i+m_firstLine].enable && (m_state & STATE_ENABLE) );
 
+            m_buttons[i]->SetFocus(m_bFocus && i + m_firstLine == m_selectLine);
             m_buttons[i]->Draw();  // draws a box without text
 
             // draws text in the box

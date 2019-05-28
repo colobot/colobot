@@ -98,6 +98,9 @@ bool CMainDialog::EventProcess(const Event &event)
                 DisplayActive(0);
             switch (event.GetData<KeyEventData>()->key)
             {
+            case KEY(q):    //usual key to get quit in other menu...
+                if ( m_dialogType != DialogType::PauseMenu )
+                    return false;
             case KEY(RETURN):
                 pressedButton = EVENT_DIALOG_OK;
                 break;
@@ -116,6 +119,30 @@ bool CMainDialog::EventProcess(const Event &event)
             case KEY(TAB):
                 DisplayActive(event.kmodState & KEY_MOD(SHIFT) ? -1 : 1);
                 return false;
+            case KEY(SPACE):
+                if ( m_dialogType == DialogType::PauseMenu )
+                {
+                    // cf if(IsItemEnabled(m_tabOrder[m_iCurrentSelectedItem]))
+                    CWindow* pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW9));
+                    if ( nullptr != pw )
+                    {
+                        CControl* pc = pw->SearchControl(m_tabOrder[m_iCurrentSelectedItem]);
+                        if ( pc != nullptr)
+                            if ((STATE_VISIBLE | STATE_ENABLE) == static_cast<ControlState>(
+                                static_cast<uint32_t>(pc->GetState()) & (STATE_VISIBLE | STATE_ENABLE)))
+                                        pressedButton = m_tabOrder[m_iCurrentSelectedItem];
+
+                    }
+                }
+                else
+                {
+                    pressedButton = EVENT_DIALOG_OK;
+                    if(m_iCurrentSelectedItem)
+                        pressedButton = EVENT_DIALOG_CANCEL;
+                }
+                break;
+            default:
+                return false;   //try to capture KeyBoard ! (and avoid "hided" activation)
             }
             if (INPUT_SLOT_ACTION==event.GetData<KeyEventData>()->slot)
                 pressedButton = EVENT_DIALOG_OK;
@@ -211,26 +238,6 @@ bool CMainDialog::EventProcess(const Event &event)
             assert ( m_dialogType == DialogType::Question );
             //  0    : EVENT_DIALOG_OK
             // opt 1 : EVENT_DIALOG_CANCEL
-
-            if (EVENT_KEY_DOWN == event.type)
-            {
-                if( (event.kmodState & KEY_MOD(ALT) ) != 0 )
-                    DisplayActive(0);
-                switch (event.GetData<KeyEventData>()->key)
-                {
-                case KEY(SPACE):
-                    if(0==m_iCurrentSelectedItem)
-                        pressedButton = EVENT_DIALOG_OK;
-                    else
-                        pressedButton = EVENT_DIALOG_CANCEL;
-                    break;
-                case KEY(RETURN):
-                case KEY(ESCAPE):
-                    break;  //don't filter
-                default:
-                    return false;   //try to capture KeyBoard !
-                }
-            }
             if ( pressedButton == EVENT_DIALOG_OK )
             {
                 StopDialog();

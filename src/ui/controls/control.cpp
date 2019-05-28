@@ -489,6 +489,8 @@ void CControl::Draw()
         else
         {
             icon = 0;
+            if (m_bFocus)
+                icon = 4;   //line currently selected into list
         }
     }
     if ( m_state & STATE_PRESS )
@@ -557,8 +559,22 @@ void CControl::Draw()
     }
 }
 
-// Draw the vertex array.
-
+// Draw the vertex array. (mostly from image button1.png)
+// button1 description:
+//  icon = 0 : not pushed - yellow     : selected
+//  icon = 1 : not pushed - gray (~white)
+//  icon = 2 : not pushed - gray        : std
+//  icon = 3 : pushed - gray
+//  icon = 4 : not pushed - green (selected line into list) [patched]
+//  icon = 5 : cf 0
+//  icon = 6 : cf 4 [not pached] : mid white, strike, mid green
+//  icon = 7 : stop image ...
+//  icon = . : ...
+//  icon = 17: gray cross
+//  icon = . : ...
+//  icon = 26: cubic gray
+//  icon = 27: cubic yellow
+//  icon = . : ...
 void CControl::DrawPart(int icon, float zoom, float ex)
 {
     Math::Point     p1, p2, c, uv1, uv2;
@@ -590,6 +606,8 @@ void CControl::DrawPart(int icon, float zoom, float ex)
     uv1.y = (32.0f / 256.0f) * (icon/8);  // uv texture
     uv2.x = (32.0f / 256.0f) + uv1.x;
     uv2.y = (32.0f / 256.0f) + uv1.y;
+    if (4==icon)
+        uv1.y = uv2.y/2;    //mid selection : green part
 
     dp = 0.5f / 256.0f;
     uv1.x += dp;

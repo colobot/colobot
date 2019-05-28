@@ -538,8 +538,7 @@ void CSlider::DrawVertex(Math::Point pos, Math::Point dim, int icon)
 {
     Math::Point     uv1, uv2, corner;
     float       ex, dp;
-
-    if ( icon == 0 )
+    if ( icon == 0 )    //enable
     {
         m_engine->SetTexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
@@ -551,7 +550,7 @@ void CSlider::DrawVertex(Math::Point pos, Math::Point dim, int icon)
         corner.y = 2.0f/480.0f;
         ex = 4.0f/256.0f;
     }
-    else if ( icon == 1 )
+    else if ( icon == 1 )   //disable
     {
         m_engine->SetTexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
@@ -563,9 +562,12 @@ void CSlider::DrawVertex(Math::Point pos, Math::Point dim, int icon)
         corner.y = 2.0f/480.0f;
         ex = 4.0f/256.0f;
     }
-    else
+    else    //cabin
     {
-        m_engine->SetTexture("textures/interface/button2.png");
+        if (!m_bFocus)
+            m_engine->SetTexture("textures/interface/button2.png");
+        else
+            m_engine->SetTexture("textures/interface/button4.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x = 224.0f/256.0f;  // cursor
         uv1.y =  32.0f/256.0f;

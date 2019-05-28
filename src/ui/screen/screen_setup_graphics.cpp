@@ -44,9 +44,9 @@ CScreenSetupGraphics::CScreenSetupGraphics()
     : CScreenSetup({
         // EVENT_INTERFACE_SETUPd,
         // EVENT_INTERFACE_SETUPg, //0
-        EVENT_INTERFACE_SETUPp,
-        EVENT_INTERFACE_SETUPc,
-        EVENT_INTERFACE_SETUPs,
+        // EVENT_INTERFACE_SETUPp,
+        // EVENT_INTERFACE_SETUPc,
+        // EVENT_INTERFACE_SETUPs,
 
         EVENT_INTERFACE_PARTI,                  //EditValue
         EVENT_INTERFACE_CLIP,                   //EditValue
@@ -67,7 +67,7 @@ CScreenSetupGraphics::CScreenSetupGraphics()
         EVENT_INTERFACE_MAX,                    //Button
 
         EVENT_INTERFACE_BACK,
-        EVENT_INTERFACE_SETUPd,
+        // EVENT_INTERFACE_SETUPd,
     })
 {
 }

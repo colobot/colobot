@@ -97,6 +97,10 @@ public:
     virtual bool          SetTooltip(std::string name);
     virtual bool          GetTooltip(Math::Point pos, std::string &name);
     virtual void          SetFocus(CControl* focusControl);
+    virtual void          SetFocus(const bool bForce)
+    {
+        m_bFocus = bForce;
+    }
     virtual bool          GetFocus();
 
     virtual EventType     GetEventType();

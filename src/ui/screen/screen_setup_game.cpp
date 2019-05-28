@@ -43,8 +43,8 @@ CScreenSetupGame::CScreenSetupGame()
         // EVENT_INTERFACE_SETUPd,
         // EVENT_INTERFACE_SETUPg,
         // EVENT_INTERFACE_SETUPp,  //0
-        EVENT_INTERFACE_SETUPc,
-        EVENT_INTERFACE_SETUPs,
+        // EVENT_INTERFACE_SETUPc,
+        // EVENT_INTERFACE_SETUPs,
 
         EVENT_INTERFACE_MOVIES,            //Check
         EVENT_INTERFACE_SCROLL,            //Check
@@ -64,8 +64,8 @@ CScreenSetupGame::CScreenSetupGame()
         EVENT_INTERFACE_LANGUAGE,          //List
 
         EVENT_INTERFACE_BACK,
-        EVENT_INTERFACE_SETUPd,
-        EVENT_INTERFACE_SETUPg,
+        //EVENT_INTERFACE_SETUPd,
+        //EVENT_INTERFACE_SETUPg,
         })
 {
 }

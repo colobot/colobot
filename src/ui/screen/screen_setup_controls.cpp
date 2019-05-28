@@ -44,8 +44,8 @@ CScreenSetupControls::CScreenSetupControls()
         // EVENT_INTERFACE_SETUPd,
         // EVENT_INTERFACE_SETUPg,
         // EVENT_INTERFACE_SETUPp,
-        //EVENT_INTERFACE_SETUPc,
-        EVENT_INTERFACE_SETUPs,
+        // EVENT_INTERFACE_SETUPc,
+        // EVENT_INTERFACE_SETUPs,
 
         EVENT_INTERFACE_KSCROLL,           //Scroll
         EVENT_INTERFACE_JOYSTICK,          //List
@@ -65,9 +65,9 @@ CScreenSetupControls::CScreenSetupControls()
         EVENT_INTERFACE_KDEF,              //Button
 
         EVENT_INTERFACE_BACK,
-        EVENT_INTERFACE_SETUPd,
-        EVENT_INTERFACE_SETUPg,
-        EVENT_INTERFACE_SETUPp,
+        //EVENT_INTERFACE_SETUPd,
+        //EVENT_INTERFACE_SETUPg,
+        //EVENT_INTERFACE_SETUPp,
     })
 {
     m_input = CInput::GetInstancePointer();

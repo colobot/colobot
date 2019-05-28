@@ -441,6 +441,7 @@ bool CEdit::EventProcess(const Event &event)
                 Scroll(m_lineFirst+(m_lineVisible-1), true);
                 return true;
             }
+            // TODO : manage TAB to jump throw eventual "a" links
         }
 
         if ( data->key == KEY(HOME) )
