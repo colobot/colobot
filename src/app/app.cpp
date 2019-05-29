@@ -469,7 +469,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
 
 bool CApplication::Create()
 {
-    std::string path;
+//??    std::string path;
 
     GetLogger()->Info("Creating CApplication\n");
 
@@ -487,7 +487,7 @@ bool CApplication::Create()
     }
 
     // Create the sound instance.
-    #ifdef OPENAL_SOUND
+#ifdef OPENAL_SOUND
     if (!m_headless)
     {
         m_sound = MakeUnique<CALSound>();
@@ -496,10 +496,10 @@ bool CApplication::Create()
     {
         m_sound = MakeUnique<CSoundInterface>();
     }
-    #else
+#else   //OPENAL_SOUND
     GetLogger()->Info("No sound support.\n");
     m_sound = MakeUnique<CSoundInterface>();
-    #endif
+#endif  //OPENAL_SOUND
 
     m_sound->Create();
 
@@ -817,20 +817,27 @@ bool CApplication::CreateVideoSurface()
     int vsync = 0;
     if (GetConfigFile().GetIntProperty("Setup", "VSync", vsync))
     {
-        while (SDL_GL_SetSwapInterval(vsync) == -1)
+        //TODO : display an error message explaining the failure & permit i18n
+        while (SDL_GL_SetSwapInterval(vsync) == -1) // note : improbable infinite loop
         {
             switch(vsync)
             {
                 case -1: //failed with adaptive sync?
-                    GetLogger()->Warn("Adaptive sync not supported.\n");
+                    GetLogger()->Error("Adaptive sync not supported : %s.\n", SDL_GetError());
+                    // use ResTextType::RT_INTERFACE_VSYNC_OP_ADAPT
+                    // & ResTextType::RT_INTERFACE_VSYNC_ERROR
                     vsync = 1;
                     break;
                 case 1: //failed with VSync enabled?
-                    GetLogger()->Warn("Couldn't enable VSync.\n");
+                    GetLogger()->Error("Couldn't enable VSync : %s.\n", SDL_GetError());
+                    // use ResTextType::RT_INTERFACE_VSYNC_OP_ON
+                    // & ResTextType::RT_INTERFACE_VSYNC_ERROR
                     vsync = 0;
                     break;
                 case 0: //failed with VSync disabled?
-                    GetLogger()->Warn("Couldn't disable VSync.\n");
+                    GetLogger()->Error("Couldn't disable VSync : %s.\n", SDL_GetError());
+                    // use ResTextType::RT_INTERFACE_VSYNC_OP_OFF
+                    // & ResTextType::RT_INTERFACE_VSYNC_ERROR
                     vsync = 1;
                     break;
             }
@@ -854,18 +861,19 @@ bool CApplication::ChangeVideoConfig(const Gfx::DeviceConfig &newConfig)
     int vsync = m_engine->GetVSync();
     while (SDL_GL_SetSwapInterval(vsync) == -1)
     {
+        //TODO : display an error message explaining the failure & permit i18n
         switch(vsync)
         {
             case -1: //failed with adaptive sync?
-                GetLogger()->Warn("Adaptive sync not supported.\n");
+                GetLogger()->Warn("Adaptive sync not supported : %s.\n", SDL_GetError());
                 vsync = 1;
                 break;
             case 1: //failed with VSync enabled?
-                GetLogger()->Warn("Couldn't enable VSync.\n");
+                GetLogger()->Warn("Couldn't enable VSync : %s.\n", SDL_GetError());
                 vsync = 0;
                 break;
             case 0: //failed with VSync disabled?
-                GetLogger()->Warn("Couldn't disable VSync.\n");
+                GetLogger()->Warn("Couldn't disable VSync : %s.\n", SDL_GetError());
                 vsync = 1;
                 break;
         }
@@ -906,13 +914,13 @@ bool CApplication::OpenJoystick()
     if (m_private->haptic == nullptr)
     {
         GetLogger()->Warn("Haptic subsystem open failed: %s\n", SDL_GetError());
-        return true;
+        //here was return true;
     }
 
-    if (SDL_HapticRumbleInit(m_private->haptic) != 0)
+    else if (SDL_HapticRumbleInit(m_private->haptic) != 0)
     {
         GetLogger()->Warn("Haptic rumble effect init failed: %s\n", SDL_GetError());
-        return true;
+        //here was also return true;
     }
 
     return true;
@@ -1593,7 +1601,7 @@ void CApplication::GetVideoResolutionList(std::vector<Math::IntPoint> &resolutio
 
     for(int i = 0; i < SDL_GetNumDisplayModes(display); i++)
     {
-        SDL_DisplayMode mode;
+        SDL_DisplayMode mode = {};
         SDL_GetDisplayMode(display, i, &mode);
         Math::IntPoint resolution = Math::IntPoint(mode.w, mode.h);
 
@@ -1887,9 +1895,9 @@ void CApplication::SetLanguage(Language language)
 #if defined(_MSC_VER) && defined(_DEBUG)
         // Avoids failed assertion in VS debugger
         throw -1;
-#else
+#else   // non debug with Visual Studio
         std::locale::global(std::locale(systemLocale.c_str()));
-#endif
+#endif   // debug with Visual Studio
     }
     catch (...)
     {

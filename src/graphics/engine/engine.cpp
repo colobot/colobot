@@ -3029,7 +3029,7 @@ void CEngine::SetVSync(int value)
 {
     if (value < -1) value = -1;
     if (value > 1) value = 1;
-    if(m_vsync == value) return;
+    //?? if(m_vsync == value) return;
     m_vsync = value;
 }
 

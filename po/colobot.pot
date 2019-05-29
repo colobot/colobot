@@ -278,6 +278,21 @@ msgstr ""
 msgid "%s: %d pts"
 msgstr ""
 
+msgid "Off"
+msgstr ""
+
+msgid "Adaptive"
+msgstr ""
+
+msgid "On"
+msgstr ""
+
+#, c-format
+msgid ""
+"%s vertical Synchronization mode is not currently available.\n"
+" English detailed issue : <%s>"
+msgstr ""
+
 msgid "Code battle"
 msgstr ""
 

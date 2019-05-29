@@ -127,6 +127,11 @@ enum ResTextType
 
     RT_INTERFACE_REC        = 180,
 
+    RT_INTERFACE_VSYNC_OP_OFF   = 181,  //  option for VSync
+    RT_INTERFACE_VSYNC_OP_ADAPT = 182,  //  idem
+    RT_INTERFACE_VSYNC_OP_ON    = 183,  //  idem
+    RT_INTERFACE_VSYNC_ERROR    = 184,  //  Invit of error VSync message
+
     RT_LOADING_INIT           = 210,
     RT_LOADING_PROCESSING     = 211,
     RT_LOADING_LEVEL_SETTINGS = 212,

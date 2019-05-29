@@ -49,6 +49,7 @@ CScreenSetupDisplay::CScreenSetupDisplay()
 
         EVENT_LIST2,
         EVENT_INTERFACE_FULL,
+        EVENT_INTERFACE_VSYNC,
         EVENT_INTERFACE_APPLY,
 
         EVENT_INTERFACE_BACK,
@@ -129,9 +130,13 @@ void CScreenSetupDisplay::CreateInterface()
     ddim.y = dim.y*2;
     pli = pw->CreateList(pos, ddim, 0, EVENT_INTERFACE_VSYNC);
     pli->SetState(STATE_SHADOW);
-    pli->SetItemName(0, "Off");
-    pli->SetItemName(1, "Adaptive");
-    pli->SetItemName(2, "On");
+    GetResource(RES_TEXT, RT_INTERFACE_VSYNC_OP_OFF, name);
+    pli->SetItemName(0, name);  //"Off"
+    GetResource(RES_TEXT, RT_INTERFACE_VSYNC_OP_ADAPT, name);
+    pli->SetItemName(1, name);  //"Adaptive"
+    GetResource(RES_TEXT, RT_INTERFACE_VSYNC_OP_ON, name);
+    pli->SetItemName(2, name);  //"On"
+    pli->SetKeyCtrl(false);
     switch(m_engine->GetVSync())
     {
         case -1: //Adaptive?
@@ -156,13 +161,24 @@ void CScreenSetupDisplay::CreateInterface()
 
 bool CScreenSetupDisplay::EventProcess(const Event &event)
 {
-    if (!CScreenSetup::EventProcess(event)) return false;
-
     CWindow* pw;
-    CCheck* pc;
+    if (!CScreenSetup::EventProcess(event))
+    {
+        pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
+        if ( nullptr == pw )
+            return false;
+        CList* pl = static_cast<CList*>(pw->SearchControl(EVENT_LIST2));
+        if ( nullptr == pl )
+            return false;
+        pl->SetKeyCtrl( EVENT_INTERFACE_VSYNC != m_tabOrder[m_iCurrentSelectedItem]);
+        pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_VSYNC));
+        if ( pl == nullptr )
+            return false;
+        pl->SetKeyCtrl( EVENT_INTERFACE_VSYNC == m_tabOrder[m_iCurrentSelectedItem]);
+        return false;
+    }
+    CCheck*  pc;
     CButton* pb;
-    CList* pl;
-
     switch( event.type )
     {
         case EVENT_LIST2:
@@ -199,23 +215,7 @@ bool CScreenSetupDisplay::EventProcess(const Event &event)
             break;
 
         case EVENT_INTERFACE_VSYNC:
-            pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-            if ( pw == nullptr ) break;
-            pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_VSYNC));
-            if (pl == nullptr ) break;
-            switch(pl->GetSelect())
-            {
-                case 0: //Off?
-                    m_engine->SetVSync(0);
-                    break;
-                case 1: //Adaptive?
-                    m_engine->SetVSync(-1);
-                    break;
-                case 2: //On?
-                    m_engine->SetVSync(1);
-                    break;
-            }
-            ChangeDisplay();
+            //note : treatments done only when asked to apply...
             UpdateApply();
             break;
 
@@ -286,6 +286,23 @@ void CScreenSetupDisplay::ChangeDisplay()
     bFull = pc->TestState(STATE_CHECK);
     m_setupFull = bFull;
 
+    // VSync mgt
+    pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_VSYNC));
+    if (pl == nullptr )
+        return;
+    switch(pl->GetSelect())
+    {
+    case 0: //Off?
+        m_engine->SetVSync(0);
+        break;
+    case 1: //Adaptive?
+        m_engine->SetVSync(-1);
+        break;
+    case 2: //On?
+        m_engine->SetVSync(1);
+        break;
+    }
+
     std::vector<Math::IntPoint> modes;
     m_app->GetVideoResolutionList(modes);
 
@@ -308,7 +325,6 @@ void CScreenSetupDisplay::UpdateApply()
     CButton*    pb;
     CList*      pl;
     CCheck*     pc;
-    int         sel2;
     bool        bFull;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
@@ -317,14 +333,29 @@ void CScreenSetupDisplay::UpdateApply()
     pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_APPLY));
 
     pl = static_cast<CList*>(pw->SearchControl(EVENT_LIST2));
-    if ( pl == nullptr )  return;
-    sel2 = pl->GetSelect();
-
+    if ( nullptr == pl || nullptr == pb )
+        return;
+    int sel = pl->GetSelect();
+    pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_VSYNC));
+    if ( nullptr == pl )
+        return;
+    int sel2 = pl->GetSelect();
+    bool bSel2Chg = false;
+    switch(m_engine->GetVSync())
+    {
+    case 0: //Off?
+        bSel2Chg = 0!=sel2;
+        break;
+    case -1: //Adaptive?
+        bSel2Chg = 1!=sel2;
+        break;
+    case 1: //On?
+        bSel2Chg = 2!=sel2;
+        break;
+    }
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_FULL));
     bFull = pc->TestState(STATE_CHECK);
-
-    if ( sel2 == m_setupSelMode   &&
-         bFull == m_setupFull     )
+    if ( sel == m_setupSelMode && bFull == m_setupFull && !bSel2Chg )
     {
         pb->ClearState(STATE_ENABLE);
     }

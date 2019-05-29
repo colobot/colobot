@@ -28,6 +28,12 @@ msgid "\" ] \" missing"
 msgstr "Brak \" ] \""
 
 #, c-format
+msgid ""
+"%s vertical Synchronization mode is not currently available.\n"
+" English detailed issue : <%s>"
+msgstr ""
+
+#, c-format
 msgid "%s: %d pts"
 msgstr "%s: %d pkt"
 
@@ -84,6 +90,10 @@ msgstr "Dostęp do rozwiązania\\Pokazuje rozwiązanie (szczegółowe instrukcje
 
 msgid "Access to solutions\\Show program \"4: Solution\" in the exercises"
 msgstr "Accčs aux solutions\\Programme \"4: Solution\" dans les exercices"
+
+# cf VSynchro mode
+msgid "Adaptive"
+msgstr ""
 
 msgid "Add new program"
 msgstr "Dodaj nowy program"
@@ -1031,6 +1041,14 @@ msgid "Object too close"
 msgstr "Obiekt za blisko"
 
 msgid "Octal value out of range"
+msgstr ""
+
+# cf VSynchro mode
+msgid "Off"
+msgstr ""
+
+# cf VSynchro mode
+msgid "On"
 msgstr ""
 
 msgid "One step"

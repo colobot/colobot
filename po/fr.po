@@ -29,6 +29,14 @@ msgid "\" ] \" missing"
 msgstr "\" ] \" manquant"
 
 #, c-format
+msgid ""
+"%s vertical Synchronization mode is not currently available.\n"
+" English detailed issue : <%s>"
+msgstr ""
+"Le mode de synchronisation vertical %s n'est pas disponnible actuellement.\n"
+" Détail anglais du soucis : <%s>"
+
+#, c-format
 msgid "%s: %d pts"
 msgstr "%s: %d points"
 
@@ -85,6 +93,10 @@ msgstr "Accès à la solution\\Donne la solution (instructions détaillées pour
 
 msgid "Access to solutions\\Show program \"4: Solution\" in the exercises"
 msgstr "Accès aux solutions\\Programme \"4: Solution\" dans les exercices"
+
+# cf VSynchro mode
+msgid "Adaptive"
+msgstr "Adaptative"
 
 msgid "Add new program"
 msgstr "Ajouter un nouveau programme"
@@ -870,7 +882,7 @@ msgid "Lunar Roving Vehicle"
 msgstr "Véhicule d'exploration lunaire"
 
 msgid "MSAA\\Multisample anti-aliasing"
-msgstr "ACME\\Anticrénelage multiéchantillon"
+msgstr "ACME\\Anticrénelage multiéchantillon (MSAA: Multisample anti-aliasing)"
 
 msgid "Maximize"
 msgstr "Taille maximale"
@@ -1051,6 +1063,14 @@ msgstr "Objet trop proche"
 
 msgid "Octal value out of range"
 msgstr "Valeur octale impossible"
+
+# cf VSynchro mode
+msgid "Off"
+msgstr "Inactive"
+
+# cf VSynchro mode
+msgid "On"
+msgstr "Active"
 
 msgid "One step"
 msgstr "Un pas"
@@ -1688,7 +1708,7 @@ msgid "Vault"
 msgstr "Coffre-fort"
 
 msgid "Vertical Synchronization\\Limits the number of frames per second to display frequency"
-msgstr ""
+msgstr "Synchronisation verticale :\\Réduit la fréquence d'images par seconde à afficher."
 
 msgid "Violet flag"
 msgstr "Drapeau violet"
