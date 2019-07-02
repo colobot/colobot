@@ -167,6 +167,8 @@ struct UniformLocations
     GLint shadowMatrix = -1;
     //! Normal matrix
     GLint normalMatrix = -1;
+    //! Camera position
+    GLint cameraPosition = -1;
 
     //! Primary texture sampler
     GLint primaryTexture = -1;
