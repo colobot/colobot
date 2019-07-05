@@ -1829,6 +1829,7 @@ void CPhysics::WaterFrame(float aTime, float rTime)
          type == OBJECT_MOBILEwt ||
          type == OBJECT_MOBILEit ||
          type == OBJECT_MOBILErp ||
+         type == OBJECT_MOBILEtg ||
          type == OBJECT_MOBILEdr ||
          type == OBJECT_APOLLO2  )
     {
