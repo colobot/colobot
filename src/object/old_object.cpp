@@ -356,12 +356,18 @@ bool COldObject::DamageObject(DamageType type, float force, CObject* killer)
     }
     else if ( Implements(ObjectInterfaceType::Fragile) )
     {
-        if ((m_type == OBJECT_BOMB        ||
-             m_type == OBJECT_RUINfactory ||
-             m_type == OBJECT_RUINdoor    ||
-             m_type == OBJECT_RUINsupport ||
-             m_type == OBJECT_RUINradar   ||
-             m_type == OBJECT_RUINconvert  ) && type != DamageType::Explosive ) return false; // Mines and ruins can't be destroyed by shooting
+        if ((m_type == OBJECT_BOMB         ||
+             m_type == OBJECT_RUINmobilew1 ||
+             m_type == OBJECT_RUINmobilew2 ||
+             m_type == OBJECT_RUINmobilet1 ||
+             m_type == OBJECT_RUINmobilet2 ||
+             m_type == OBJECT_RUINmobiler1 ||
+             m_type == OBJECT_RUINmobiler2 ||
+             m_type == OBJECT_RUINfactory  ||
+             m_type == OBJECT_RUINdoor     ||
+             m_type == OBJECT_RUINsupport  ||
+             m_type == OBJECT_RUINradar    ||
+             m_type == OBJECT_RUINconvert   ) && type != DamageType::Explosive ) return false; // Mines and ruins can't be destroyed by shooting
         if ( m_type == OBJECT_URANIUM ) return false; // UraniumOre is not destroyable (see #777)
 
         DestroyObject(DestructionType::Explosion, killer);
@@ -840,11 +846,17 @@ void COldObject::SetType(ObjectType type)
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Fragile)] = false;
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Shielded)] = false;
     }
-    else if (m_type == OBJECT_RUINfactory ||
-             m_type == OBJECT_RUINdoor    ||
-             m_type == OBJECT_RUINsupport ||
-             m_type == OBJECT_RUINradar   ||
-             m_type == OBJECT_RUINconvert  )
+    else if (m_type == OBJECT_RUINmobilew1 ||
+             m_type == OBJECT_RUINmobilew2 ||
+             m_type == OBJECT_RUINmobilet1 ||
+             m_type == OBJECT_RUINmobilet2 ||
+             m_type == OBJECT_RUINmobiler1 ||
+             m_type == OBJECT_RUINmobiler2 ||
+             m_type == OBJECT_RUINfactory  ||
+             m_type == OBJECT_RUINdoor     ||
+             m_type == OBJECT_RUINsupport  ||
+             m_type == OBJECT_RUINradar    ||
+             m_type == OBJECT_RUINconvert   )
     {
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Damageable)] = true;
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Destroyable)] = true;
