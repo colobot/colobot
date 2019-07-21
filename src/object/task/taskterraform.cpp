@@ -363,7 +363,12 @@ bool CTaskTerraform::Terraform()
         type = pObj->GetType();
         if ( type == OBJECT_NULL )  continue;
 
-        if ( type == OBJECT_TEEN34       ||
+        if ( type == OBJECT_TEEN0        ||
+             type == OBJECT_TEEN1        ||
+             type == OBJECT_TEEN2        ||
+             type == OBJECT_TEEN4        ||
+             type == OBJECT_TEEN5        ||
+             type == OBJECT_TEEN34       ||
              type == OBJECT_POWER        ||
              type == OBJECT_ATOMIC       ||
              type == OBJECT_STONE        ||
@@ -371,6 +376,7 @@ bool CTaskTerraform::Terraform()
              type == OBJECT_METAL        ||
              type == OBJECT_BULLET       ||
              type == OBJECT_BBOX         ||
+             type == OBJECT_WAYPOINT     ||
              type == OBJECT_KEYa         ||
              type == OBJECT_KEYb         ||
              type == OBJECT_KEYc         ||
@@ -378,6 +384,15 @@ bool CTaskTerraform::Terraform()
              type == OBJECT_TNT          ||
              type == OBJECT_NEST         ||
              type == OBJECT_BOMB         ||
+             type == OBJECT_MARKPOWER    ||
+             type == OBJECT_MARKSTONE    ||
+             type == OBJECT_MARKURANIUM  ||
+             type == OBJECT_MARKKEYa     ||
+             type == OBJECT_MARKKEYb     ||
+             type == OBJECT_MARKKEYc     ||
+             type == OBJECT_MARKKEYd     ||
+             type == OBJECT_WINFIRE      ||
+             type == OBJECT_BAG          ||
              type == OBJECT_PLANT0       ||
              type == OBJECT_PLANT1       ||
              type == OBJECT_PLANT2       ||
@@ -391,18 +406,7 @@ bool CTaskTerraform::Terraform()
              type == OBJECT_PLANT17      ||
              type == OBJECT_PLANT18      ||
              type == OBJECT_PLANT19      ||
-             type == OBJECT_MUSHROOM1    ||
-             type == OBJECT_MUSHROOM2    ||
-             type == OBJECT_FACTORY      ||
-             type == OBJECT_STATION      ||
-             type == OBJECT_CONVERT      ||
-             type == OBJECT_REPAIR       ||
-             type == OBJECT_DESTROYER    ||
-             type == OBJECT_ENERGY       ||
-             type == OBJECT_LABO         ||
-             type == OBJECT_PARA         ||
-             type == OBJECT_START        ||
-             type == OBJECT_END          ||
+             type == OBJECT_QUARTZ0      ||
              type == OBJECT_EGG          ||
              type == OBJECT_RUINmobilew1 ||
              type == OBJECT_RUINmobilew2 ||
@@ -412,7 +416,10 @@ bool CTaskTerraform::Terraform()
              type == OBJECT_RUINsupport  ||
              type == OBJECT_RUINradar    ||
              type == OBJECT_BARRIER0     ||
-             type == OBJECT_APOLLO4 )  // almost everything?
+             type == OBJECT_BARRIER1     ||
+             type == OBJECT_BARRIER2     ||
+             type == OBJECT_BARRIER3     ||
+             type == OBJECT_APOLLO4      )  // everything what fits?
         {
             dist = Math::Distance(m_terraPos, pObj->GetPosition());
 
@@ -430,6 +437,18 @@ bool CTaskTerraform::Terraform()
                 m_engine->GetPyroManager()->Create(Gfx::PT_EXPLOT, pObj);
                 dynamic_cast<CDamageableObject*>(m_object)->DamageObject(DamageType::Explosive, 0.9f);
             }
+            else if (type == OBJECT_WAYPOINT     ||
+                     type == OBJECT_MARKPOWER    ||
+                     type == OBJECT_MARKSTONE    ||
+                     type == OBJECT_MARKURANIUM  ||
+                     type == OBJECT_MARKKEYa     ||
+                     type == OBJECT_MARKKEYb     ||
+                     type == OBJECT_MARKKEYc     ||
+                     type == OBJECT_MARKKEYd) // Marks?
+            {
+                if ( dist > 5.0f )  continue;
+                CObjectManager::GetInstancePointer()->DeleteObject(pObj);
+            }
             else if (type == OBJECT_PLANT0    ||
                      type == OBJECT_PLANT1    ||
                      type == OBJECT_PLANT2    ||
@@ -442,24 +461,10 @@ bool CTaskTerraform::Terraform()
                      type == OBJECT_PLANT16   ||
                      type == OBJECT_PLANT17   ||
                      type == OBJECT_PLANT18   ||
-                     type == OBJECT_PLANT19   ||
-                     type == OBJECT_MUSHROOM1 ||
-                     type == OBJECT_MUSHROOM2) // Plants?
+                     type == OBJECT_PLANT19) // Plants?
             {
                 if ( dist > 7.5f )  continue;
-                m_engine->GetPyroManager()->Create(Gfx::PT_EGG, pObj);
-            }
-            else if (type == OBJECT_FACTORY   ||
-                     type == OBJECT_STATION   ||
-                     type == OBJECT_CONVERT   ||
-                     type == OBJECT_REPAIR    ||
-                     type == OBJECT_DESTROYER ||
-                     type == OBJECT_ENERGY    ||
-                     type == OBJECT_LABO      ||
-                     type == OBJECT_PARA) // Buildings?
-            {
-                if ( dist > 15.0f )  continue;
-                dynamic_cast<CDamageableObject*>(pObj)->DamageObject(DamageType::Explosive, 0.2f);
+                m_engine->GetPyroManager()->Create(Gfx::PT_FRAGV, pObj);
             }
             else // Other?
             {
