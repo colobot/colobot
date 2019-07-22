@@ -1425,8 +1425,7 @@ void CPyro::CreateTriangle(CObject* obj, ObjectType oType, int part)
     if (total < 50) percent = 0.25f;
     if (total < 20) percent = 0.50f;
 
-    if (m_type == PT_FRAGV  ||
-        m_type == PT_EGG)
+    if ( m_type == PT_FRAGV || m_type == PT_EGG )
     {
         percent = 0.30f;
     }
@@ -1520,8 +1519,7 @@ void CPyro::CreateTriangle(CObject* obj, ObjectType oType, int part)
 
         Math::Matrix* mat = obj->GetWorldMatrix(part);
         Math::Vector pos = Math::Transform(*mat, offset);
-        if ( m_type == PT_FRAGV ||
-             m_type == PT_EGG   )
+        if ( m_type == PT_FRAGV || m_type == PT_EGG )
         {
             speed.x = (Math::Rand()-0.5f)*10.0f;
             speed.z = (Math::Rand()-0.5f)*10.0f;

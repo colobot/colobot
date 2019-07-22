@@ -376,7 +376,6 @@ bool CTaskTerraform::Terraform()
              type == OBJECT_METAL        ||
              type == OBJECT_BULLET       ||
              type == OBJECT_BBOX         ||
-             type == OBJECT_WAYPOINT     ||
              type == OBJECT_KEYa         ||
              type == OBJECT_KEYb         ||
              type == OBJECT_KEYc         ||
@@ -384,13 +383,6 @@ bool CTaskTerraform::Terraform()
              type == OBJECT_TNT          ||
              type == OBJECT_NEST         ||
              type == OBJECT_BOMB         ||
-             type == OBJECT_MARKPOWER    ||
-             type == OBJECT_MARKSTONE    ||
-             type == OBJECT_MARKURANIUM  ||
-             type == OBJECT_MARKKEYa     ||
-             type == OBJECT_MARKKEYb     ||
-             type == OBJECT_MARKKEYc     ||
-             type == OBJECT_MARKKEYd     ||
              type == OBJECT_WINFIRE      ||
              type == OBJECT_BAG          ||
              type == OBJECT_PLANT0       ||
@@ -406,7 +398,6 @@ bool CTaskTerraform::Terraform()
              type == OBJECT_PLANT17      ||
              type == OBJECT_PLANT18      ||
              type == OBJECT_PLANT19      ||
-             type == OBJECT_QUARTZ0      ||
              type == OBJECT_EGG          ||
              type == OBJECT_RUINmobilew1 ||
              type == OBJECT_RUINmobilew2 ||
@@ -423,45 +414,33 @@ bool CTaskTerraform::Terraform()
         {
             dist = Math::Distance(m_terraPos, pObj->GetPosition());
 
-            if (type == OBJECT_BULLET ||
-                type == OBJECT_NEST   ||
-                type == OBJECT_EGG) // Alien Organic?
+            if ( type == OBJECT_BULLET ||
+                 type == OBJECT_NEST   ||
+                 type == OBJECT_EGG    ) // Alien Organic?
             {
                 if ( dist > 5.0f )  continue;
                 m_engine->GetPyroManager()->Create(Gfx::PT_FRAGO, pObj);
             }
-            else if (type == OBJECT_TNT  ||
-                     type == OBJECT_BOMB) // Explosives?
+            else if ( type == OBJECT_TNT  ||
+                      type == OBJECT_BOMB ) // Explosives?
             {
                 if ( dist > 5.0f )  continue;
                 m_engine->GetPyroManager()->Create(Gfx::PT_EXPLOT, pObj);
                 dynamic_cast<CDamageableObject*>(m_object)->DamageObject(DamageType::Explosive, 0.9f);
             }
-            else if (type == OBJECT_WAYPOINT     ||
-                     type == OBJECT_MARKPOWER    ||
-                     type == OBJECT_MARKSTONE    ||
-                     type == OBJECT_MARKURANIUM  ||
-                     type == OBJECT_MARKKEYa     ||
-                     type == OBJECT_MARKKEYb     ||
-                     type == OBJECT_MARKKEYc     ||
-                     type == OBJECT_MARKKEYd) // Marks?
-            {
-                if ( dist > 5.0f )  continue;
-                CObjectManager::GetInstancePointer()->DeleteObject(pObj);
-            }
-            else if (type == OBJECT_PLANT0    ||
-                     type == OBJECT_PLANT1    ||
-                     type == OBJECT_PLANT2    ||
-                     type == OBJECT_PLANT3    ||
-                     type == OBJECT_PLANT4    ||
-                     type == OBJECT_PLANT5    ||
-                     type == OBJECT_PLANT6    ||
-                     type == OBJECT_PLANT7    ||
-                     type == OBJECT_PLANT15   ||
-                     type == OBJECT_PLANT16   ||
-                     type == OBJECT_PLANT17   ||
-                     type == OBJECT_PLANT18   ||
-                     type == OBJECT_PLANT19) // Plants?
+            else if ( type == OBJECT_PLANT0    ||
+                      type == OBJECT_PLANT1    ||
+                      type == OBJECT_PLANT2    ||
+                      type == OBJECT_PLANT3    ||
+                      type == OBJECT_PLANT4    ||
+                      type == OBJECT_PLANT5    ||
+                      type == OBJECT_PLANT6    ||
+                      type == OBJECT_PLANT7    ||
+                      type == OBJECT_PLANT15   ||
+                      type == OBJECT_PLANT16   ||
+                      type == OBJECT_PLANT17   ||
+                      type == OBJECT_PLANT18   ||
+                      type == OBJECT_PLANT19   ) // Plants?
             {
                 if ( dist > 7.5f )  continue;
                 m_engine->GetPyroManager()->Create(Gfx::PT_FRAGV, pObj);
