@@ -37,9 +37,8 @@ enum PyroType
     PT_FRAGT    = 1,        //! < fragmentation of technical object
     PT_FRAGO    = 2,        //! < fragmentation of organic object
     PT_FRAGW    = 4,        //! < fragmentation of object under water
-    PT_FRAGV    = 5,        //! < fragmentation of plant object
-    PT_EXPLOT   = 6,        //! < explosion of technical object
-    PT_EXPLOO   = 7,        //! < explosion of organic object
+    PT_EXPLOT   = 5,        //! < explosion of technical object
+    PT_EXPLOO   = 6,        //! < explosion of organic object
     PT_EXPLOW   = 8,        //! < explosion of object under water
     PT_SHOTT    = 9,        //! < hit technical object
     PT_SHOTH    = 10,       //! < hit human
@@ -59,6 +58,7 @@ enum PyroType
     PT_DEADG    = 24,       //! < shooting death
     PT_DEADW    = 25,       //! < drowning death
     PT_FINDING  = 26,       //! < object discovered
+    PT_FRAGV    = 27,       //! < fragmentation of plant object
 };
 
 } // namespace Gfx
