@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2019, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -127,7 +127,7 @@ bool CScreenSetupMods::EventProcess(const Event &event)
     CButton*               pb;
     CList*                 pl;
     int                    result;
-    std::string            modName, modPath, modPathRaw, OFF = "~";
+    std::string            modName, modPath;
 
     if (!CScreenSetup::EventProcess(event)) return false;
 
@@ -139,11 +139,8 @@ bool CScreenSetupMods::EventProcess(const Event &event)
         pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_MODS_UNLOADED));
         if ( pl == nullptr )  return false;
         modName = pl->GetItemName(pl->GetSelect());
+        LoadMod(modName);
 
-        modPathRaw = CResourceManager::GetSaveLocation() + "/" + "mods" + "/";
-        modPath = modPathRaw.c_str();
-        boost::filesystem::rename(modPath+OFF+modName, modPath+modName);
-        m_pathManager->AddMod(modPath+modName);
         m_app->Reload();
         m_main->ChangePhase(PHASE_SETUPm);
     }
@@ -152,23 +149,21 @@ bool CScreenSetupMods::EventProcess(const Event &event)
         pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_MODS_LOADED));
         if ( pl == nullptr )  return false;
         modName = pl->GetItemName(pl->GetSelect());
+        UnloadMod(modName);
 
-        modPathRaw = CResourceManager::GetSaveLocation() + "/" + "mods" + "/";
-        modPath = modPathRaw.c_str();
-        m_pathManager->RemoveMod(modPath+modName);
-        boost::filesystem::rename(modPath+modName, modPath+OFF+modName);
         m_app->Reload();
         m_main->ChangePhase(PHASE_SETUPm);
     }
     if (event.type == EVENT_INTERFACE_MODS_DIR)
     {
-        modPathRaw = CResourceManager::GetSaveLocation() + "/" + "mods";
+        modPath = CResourceManager::GetSaveLocation() + "/" + "mods";
         #if defined(PLATFORM_WINDOWS)
-            result = system(("start \""+modPathRaw+"\"").c_str());
+            std::replace(modPath.begin(), modPath.end(), '/', '\\');
+            result = system(("explorer \""+modPath+"\"").c_str());
         #elif defined(PLATFORM_LINUX)
-            result = system(("xdg-open \""+modPathRaw+"\"").c_str());
+            result = system(("xdg-open \""+modPath+"\"").c_str());
         #elif defined(PLATFORM_MACOSX)
-            result = system(("open \""+modPathRaw+"\"").c_str());
+            result = system(("open \""+modPath+"\"").c_str()); //TODO: Test on macOS
         #endif
         if (result == -1)
         {
@@ -207,11 +202,11 @@ bool CScreenSetupMods::EventProcess(const Event &event)
 
         case EVENT_INTERFACE_WORKSHOP:
             #if defined(PLATFORM_WINDOWS)
-                result = system("start \"https://colobot.info/forum/forumdisplay.php?fid=60\"");
+                result = system("rundll32 url.dll,FileProtocolHandler \"https://www.moddb.com/games/colobot-gold-edition\"");
             #elif defined(PLATFORM_LINUX)
-                result = system("xdg-open \"https://colobot.info/forum/forumdisplay.php?fid=60\"");
+                result = system("xdg-open \"https://www.moddb.com/games/colobot-gold-edition\"");
             #elif defined(PLATFORM_MACOSX)
-                result = system("open \"https://colobot.info/forum/forumdisplay.php?fid=60\"");
+                result = system("open \"https://www.moddb.com/games/colobot-gold-edition\""); //TODO: Test on macOS
             #endif
             if (result == -1)
             {
@@ -223,6 +218,29 @@ bool CScreenSetupMods::EventProcess(const Event &event)
     }
     return false;
 }
+
+void CScreenSetupMods::UnloadMod(std::string modName)
+{
+    std::string            modPath, modPathRaw, disabled = "~";
+
+    modPathRaw = CResourceManager::GetSaveLocation() + "/" + "mods" + "/";
+    modPath = modPathRaw.c_str();
+
+    m_pathManager->RemoveMod(modPath+modName);
+    boost::filesystem::rename(modPath+modName, modPath+disabled+modName);
+}
+
+void CScreenSetupMods::LoadMod(std::string modName)
+{
+    std::string            modPath, modPathRaw, disabled = "~";
+
+    modPathRaw = CResourceManager::GetSaveLocation() + "/" + "mods" + "/";
+    modPath = modPathRaw.c_str();
+
+    boost::filesystem::rename(modPath+disabled+modName, modPath+modName);
+    m_pathManager->AddMod(modPath+modName);
+}
+
 void CScreenSetupMods::UpdateUnloadedModList()
 {
     CWindow*    pw;
@@ -243,9 +261,9 @@ void CScreenSetupMods::UpdateUnloadedModList()
     for(auto const& modNameRaw : modsDir)
     {
         modName = modNameRaw;
-        std::string::size_type ON;
-        ON = modName.find('~');
-        if (ON != std::string::npos)
+        std::string::size_type enabled;
+        enabled = modName.find('~');
+        if (enabled != std::string::npos)
         {
             modName.erase(0,1);
             pl->SetItemName(i++, modName);
@@ -271,9 +289,9 @@ void CScreenSetupMods::UpdateLoadedModList()
 
     for(auto const &modName : modsDir)
     {
-        std::string::size_type ON;
-        ON = modName.find('~');
-        if (ON == std::string::npos)
+        std::string::size_type enabled;
+        enabled = modName.find('~');
+        if (enabled == std::string::npos)
             pl->SetItemName(i++, modName);
     }
     pl->ShowSelect(false);  // shows the selected columns

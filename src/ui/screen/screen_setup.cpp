@@ -240,7 +240,7 @@ bool CScreenSetup::EventProcess(const Event &event)
                 return false;
 
             case EVENT_INTERFACE_SETUPm:
-                return false;
+                assert(false); // should never get here
 
             default:
                 break;
