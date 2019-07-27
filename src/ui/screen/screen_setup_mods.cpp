@@ -41,6 +41,9 @@
 
 #include <algorithm>
 #include <boost/filesystem.hpp>
+#include <boost/algorithm/string.hpp>
+
+using namespace boost::filesystem;
 
 namespace Ui
 {
@@ -224,10 +227,11 @@ void CScreenSetupMods::LoadMod(std::string modName)
 
 void CScreenSetupMods::UpdateUnloadedModList()
 {
-    CWindow*    pw;
-    CList*      pl;
-    int         i = 0;
-    std::string modName;
+    CWindow*           pw;
+    CList*             pl;
+    int                i = 0;
+    std::string        modPath, modPathRaw;
+    directory_iterator end_itr;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == nullptr )  return;
@@ -236,12 +240,13 @@ void CScreenSetupMods::UpdateUnloadedModList()
     if ( pl == nullptr )  return;
     pl->Flush();
 
-    auto modsDir = CResourceManager::ListDirectories("mods/");
-    std::sort(modsDir.begin(), modsDir.end());
+    modPathRaw = CResourceManager::GetSaveLocation() + "/" + "mods" + "/";
+    modPath = modPathRaw.c_str();
 
-    for(auto const& modNameRaw : modsDir)
+    for (directory_iterator itr(modPath); itr != end_itr; ++itr)
     {
-        modName = modNameRaw;
+        std::string modName = itr->path().string();
+        boost::erase_all(modName, modPath);
         std::string::size_type enabled;
         enabled = modName.find('~');
         if (enabled != std::string::npos)
@@ -250,13 +255,16 @@ void CScreenSetupMods::UpdateUnloadedModList()
             pl->SetItemName(i++, modName);
         }
     }
+
     pl->ShowSelect(false);  // shows the selected columns
 }
 void CScreenSetupMods::UpdateLoadedModList()
 {
-    CWindow*    pw;
-    CList*      pl;
-    int         i = 0;
+    CWindow*           pw;
+    CList*             pl;
+    int                i = 0;
+    std::string        modPath, modPathRaw;
+    directory_iterator end_itr;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == nullptr )  return;
@@ -265,16 +273,19 @@ void CScreenSetupMods::UpdateLoadedModList()
     if ( pl == nullptr )  return;
     pl->Flush();
 
-    auto modsDir = CResourceManager::ListDirectories("mods/");
-    std::sort(modsDir.begin(), modsDir.end());
+    modPathRaw = CResourceManager::GetSaveLocation() + "/" + "mods" + "/";
+    modPath = modPathRaw.c_str();
 
-    for(auto const &modName : modsDir)
+    for (directory_iterator itr(modPath); itr != end_itr; ++itr)
     {
+        std::string modName = itr->path().string();
+        boost::erase_all(modName, modPath);
         std::string::size_type enabled;
         enabled = modName.find('~');
         if (enabled == std::string::npos)
             pl->SetItemName(i++, modName);
     }
+
     pl->ShowSelect(false);  // shows the selected columns
 }
 } // namespace Ui
