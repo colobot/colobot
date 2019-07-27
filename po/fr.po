@@ -821,11 +821,17 @@ msgstr "Liste des missions enregistrées"
 msgid "Load a saved mission"
 msgstr "Chargement d'une mission enregistrée"
 
+msgid "Load\\Load Mod"
+msgstr ""
+
 msgid "Load\\Load a saved mission"
 msgstr "Charger\\Charger une mission enregistrée"
 
 msgid "Load\\Loads the selected mission"
 msgstr "Charger\\Charger la mission sélectionnée"
+
+msgid "Loaded Mods:"
+msgstr ""
 
 msgid "Loading basic level settings"
 msgstr "Chargement des configurations de base du niveau"
@@ -894,6 +900,9 @@ msgstr "Liste des missions du chapitre :"
 
 msgid "Missions\\Select mission"
 msgstr "Missions\\La grande aventure"
+
+msgid "Mods\\Manage installed mods"
+msgstr ""
 
 msgid "Mouse inversion X\\Inversion of the scrolling direction on the X axis"
 msgstr "Inversion souris X\\Inversion de la rotation lorsque la souris touche un bord"
@@ -1056,6 +1065,9 @@ msgstr "Ouvrir"
 
 msgid "Open (Ctrl+O)"
 msgstr "Ouvrir (Ctrl+O)"
+
+msgid "Open Directory\\Open Mods directory"
+msgstr ""
 
 msgid "Opening brace missing"
 msgstr "Début d'un bloc attendu"
@@ -1660,6 +1672,12 @@ msgstr ""
 msgid "Unknown function"
 msgstr "Routine inconnue"
 
+msgid "Unload\\Unload Mod"
+msgstr ""
+
+msgid "Unloaded Mods:"
+msgstr ""
+
 msgid "Up (\\key gup;)"
 msgstr "Monte (\\key gup;)"
 
@@ -1725,6 +1743,9 @@ msgstr "Robot renifleur volant"
 
 msgid "Withdraw shield (\\key action;)"
 msgstr "Refermer le bouclier (\\key action;)"
+
+msgid "Workshop\\Open Workshop to search Mods"
+msgstr ""
 
 msgid "Worm"
 msgstr "Ver"

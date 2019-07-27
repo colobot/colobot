@@ -816,11 +816,17 @@ msgstr "Lista zapisanych misji"
 msgid "Load a saved mission"
 msgstr "Wczytaj zapisaną misję"
 
+msgid "Load\\Load Mod"
+msgstr ""
+
 msgid "Load\\Load a saved mission"
 msgstr "Wczytaj\\Wczytuje zapisaną misję"
 
 msgid "Load\\Loads the selected mission"
 msgstr "Wczytaj\\Wczytuje zaznaczoną misję"
+
+msgid "Loaded Mods:"
+msgstr ""
 
 msgid "Loading basic level settings"
 msgstr "Wczytywanie ustawień poziomu"
@@ -875,6 +881,9 @@ msgstr "Misje na tej planecie:"
 
 msgid "Missions\\Select mission"
 msgstr "Misje\\Wybierz misję"
+
+msgid "Mods\\Manage installed mods"
+msgstr ""
 
 msgid "Mouse inversion X\\Inversion of the scrolling direction on the X axis"
 msgstr "Odwrócenie myszy X\\Odwrócenie kierunków przewijania w poziomie"
@@ -1037,6 +1046,9 @@ msgstr "Otwórz"
 
 msgid "Open (Ctrl+O)"
 msgstr "Otwórz (Ctrl+O)"
+
+msgid "Open Directory\\Open Mods directory"
+msgstr ""
 
 msgid "Opening brace missing"
 msgstr "Brak klamry otwierającej"
@@ -1639,6 +1651,12 @@ msgstr ""
 msgid "Unknown function"
 msgstr "Funkcja nieznana"
 
+msgid "Unload\\Unload Mod"
+msgstr ""
+
+msgid "Unloaded Mods:"
+msgstr ""
+
 msgid "Up (\\key gup;)"
 msgstr "Góra (\\key gup;)"
 
@@ -1704,6 +1722,9 @@ msgstr "Szperacz latający"
 
 msgid "Withdraw shield (\\key action;)"
 msgstr "Wyłącz osłonę (\\key action;)"
+
+msgid "Workshop\\Open Workshop to search Mods"
+msgstr ""
 
 msgid "Worm"
 msgstr "Robal"
