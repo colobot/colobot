@@ -131,6 +131,28 @@ std::string CSystemUtilsWindows::GetSaveDir()
 #endif
 }
 
+void CSystemUtilsWindows::OpenPath(std::string path)
+{
+    int result;
+
+    result = system(("explorer \""+path+"\"").c_str()); // TODO: Test on macOS
+    if (result == -1)
+    {
+        GetLogger()->Error("Failed to open path: %s\n", path.c_str());
+    }
+}
+
+void CSystemUtilsWindows::OpenWebsite(std::string website)
+{
+    int result;
+
+    result = system(("rundll32 url.dll,FileProtocolHandler \""+website+"\"").c_str()); // TODO: Test on macOS
+    if (result == -1)
+    {
+        GetLogger()->Error("Failed to open website: %s\n", website.c_str());
+    }
+}
+
 void CSystemUtilsWindows::Usleep(int usec)
 {
    LARGE_INTEGER ft;

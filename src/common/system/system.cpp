@@ -192,3 +192,13 @@ std::string CSystemUtils::GetSaveDir()
 {
     return "./saves";
 }
+
+void CSystemUtils::OpenPath(std::string path)
+{
+    assert(false);
+}
+
+void CSystemUtils::OpenWebsite(std::string website)
+{
+    assert(false);
+}

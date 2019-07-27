@@ -22,6 +22,8 @@
 #include "app/app.h"
 #include "app/pathman.h"
 
+#include "common/system/system.h"
+
 #include "common/restext.h"
 #include "common/config.h"
 #include "common/logger.h"
@@ -126,8 +128,8 @@ bool CScreenSetupMods::EventProcess(const Event &event)
     CWindow*               pw;
     CButton*               pb;
     CList*                 pl;
-    int                    result;
-    std::string            modName, modPath;
+    std::string            modName, modPath, website = "https://www.moddb.com/games/colobot-gold-edition";
+    auto                   systemUtils = CSystemUtils::Create(); // platform-specific utils
 
     if (!CScreenSetup::EventProcess(event)) return false;
 
@@ -157,18 +159,7 @@ bool CScreenSetupMods::EventProcess(const Event &event)
     if (event.type == EVENT_INTERFACE_MODS_DIR)
     {
         modPath = CResourceManager::GetSaveLocation() + "/" + "mods";
-        #if defined(PLATFORM_WINDOWS)
-            std::replace(modPath.begin(), modPath.end(), '/', '\\');
-            result = system(("explorer \""+modPath+"\"").c_str());
-        #elif defined(PLATFORM_LINUX)
-            result = system(("xdg-open \""+modPath+"\"").c_str());
-        #elif defined(PLATFORM_MACOSX)
-            result = system(("open \""+modPath+"\"").c_str()); //TODO: Test on macOS
-        #endif
-        if (result == -1)
-        {
-            GetLogger()->Error("Failed to open Mods directory! Does directory exists?\n");
-        }
+        systemUtils->OpenPath(modPath);
     }
     switch (event.type)
     {
@@ -201,17 +192,7 @@ bool CScreenSetupMods::EventProcess(const Event &event)
             break;
 
         case EVENT_INTERFACE_WORKSHOP:
-            #if defined(PLATFORM_WINDOWS)
-                result = system("rundll32 url.dll,FileProtocolHandler \"https://www.moddb.com/games/colobot-gold-edition\"");
-            #elif defined(PLATFORM_LINUX)
-                result = system("xdg-open \"https://www.moddb.com/games/colobot-gold-edition\"");
-            #elif defined(PLATFORM_MACOSX)
-                result = system("open \"https://www.moddb.com/games/colobot-gold-edition\""); //TODO: Test on macOS
-            #endif
-            if (result == -1)
-            {
-                GetLogger()->Error("Failed to open Workshop page! Is any Web Broswer installed?\n");
-            }
+            systemUtils->OpenWebsite(website);
             break;
         default:
             return true;

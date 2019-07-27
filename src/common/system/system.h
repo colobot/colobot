@@ -134,6 +134,12 @@ public:
     //! Returns the save dir location
     virtual std::string GetSaveDir();
 
+    //! Opens a path with default file browser
+    virtual void OpenPath(std::string path);
+
+    //! Opens a website with default web browser
+    virtual void OpenWebsite(std::string website);
+
     //! Sleep for given amount of microseconds
     virtual void Usleep(int usecs) = 0;
 

@@ -36,6 +36,9 @@ public:
     std::string GetLangPath() override;
     std::string GetSaveDir() override;
 
+    void OpenPath(std::string path) override;
+    void OpenWebsite(std::string website) override;
+
     void Usleep(int usec) override;
 
 private:
