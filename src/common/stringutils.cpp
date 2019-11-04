@@ -315,7 +315,7 @@ void StrUtils::Utf8Log(const char*const invit, const char*const str, const std::
         else
         {
             char plomp[7];
-            std::memset(plomp,0,9);
+            std::memset(plomp,0,7);
             for(unsigned short i=0 ; i<len && pos+i<size ; ++i)
                 plomp[i]=str[pos+i];
             GetLogger()->Warn("%s len %d <%s>\n", invit, len, plomp);
