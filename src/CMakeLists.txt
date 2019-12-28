@@ -63,7 +63,6 @@ elseif(PLATFORM_WINDOWS)
             find_library(BZ2_LIBRARY NAMES bz2.lib)
             find_library(JPEG_LIBRARY NAMES jpeg.lib)
             find_library(TIFF_LIBRARY NAMES tiff.lib)
-            find_library(WEBP_LIBRARY NAMES webp.lib)
             find_library(LZMA_LIBRARY NAMES lzma.lib)
             find_library(FREETYPE_LIBRARY NAMES freetype.lib)
             set(MSVC_LIBS
@@ -72,7 +71,6 @@ elseif(PLATFORM_WINDOWS)
                 ${JPEG_LIBRARY}
                 ${TIFF_LIBRARY}
                 ${BZ2_LIBRARY}
-                ${WEBP_LIBRARY}
                 ${LZMA_LIBRARY}
                 ${FREETYPE_LIBRARY}
                 winmm.lib
