@@ -82,7 +82,7 @@ pipeline {
                                     # Create AppImage
                                     NO_STRIP=1 ./squashfs-root/AppRun -e colobot --output appimage --appdir colobot.AppDir -d desktop/colobot.desktop -i ../../desktop/colobot.svg
                                     #rename AppImage file to avoid "No such file or directory" errors
-                                    find . -maxdepth 1 -type f -name '*AppImage' -name 'Colobot*' -exec sh -c 'x="{}"; mv "$x" "Colobot-x86_64.AppImage"' \;
+                                    find . -maxdepth 1 -type f -name '*AppImage' -name 'Colobot*' -exec sh -c 'x="{}"; mv "$x" "Colobot-x86_64.AppImage"' \\;
                                     chmod +x Colobot-x86_64.AppImage
                                     
                                     # Prepare folder for zip
