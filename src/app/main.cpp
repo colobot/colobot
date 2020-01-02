@@ -61,7 +61,7 @@ object-oriented language, CBOT, which can be used to program the robots availabl
 The original version of the game was developed by [Epsitec](http://www.epsitec.ch/) and released in 2001.
 Later, in 2005 another version named Ceebot was released. In March 2012, through attempts
 by Polish Colobot fans, Epsitec agreeed to release the source code of the game on GPLv3 license.
-The license was given specfifically to our community, <b>TerranovaTeam</b>,
+The license was given specifically to our community, <b>TerranovaTeam</b>,
 part of <b>International Colobot Community (ICC)</b> (previously known as <i>Polish Portal of Colobot (PPC)</i>;
 Polish: <i>Polski Portal Colobota</i>) with our website at http://colobot.info/.
 

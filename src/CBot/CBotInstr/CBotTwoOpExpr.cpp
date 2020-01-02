@@ -359,7 +359,7 @@ bool CBotTwoOpExpr::Execute(CBotStack* &pStack)
     CBotStack* pStk2 = pStk1->AddStack();               // adds an item to the stack
                                                         // or return in case of recovery
 
-    // 2e état, évalue l'opérande de droite
+    // 2nd state, evalute right operand
     if ( pStk2->GetState() == 0 )
     {
         if ( !m_rightop->Execute(pStk2) ) return false;     // interrupted here?

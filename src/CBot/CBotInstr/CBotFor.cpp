@@ -67,7 +67,7 @@ CBotInstr* CBotFor::Compile(CBotToken* &p, CBotCStack* pStack)
         return nullptr;
     }
 
-    CBotCStack* pStk = pStack->TokenStack(pp, true);    // un petit bout de pile svp
+    CBotCStack* pStk = pStack->TokenStack(pp, true);    // some size for a stack, plz
 
     // compiles instructions for initialization
     inst->m_init = CBotListExpression::Compile(p, pStk );

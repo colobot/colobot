@@ -56,8 +56,7 @@ CBotInstr* CBotWhile::Compile(CBotToken* &p, CBotCStack* pStack)
     inst->SetToken(p);
     if (!IsOfType(p, ID_WHILE)) return nullptr;    // should never happen
 
-    CBotCStack* pStk = pStack->TokenStack(pp);  // un petit bout de pile svp
-                                                // a bit of battery please (??)
+    CBotCStack* pStk = pStack->TokenStack(pp);  // some space for a stack, plz
 
     if ( nullptr != (inst->m_condition = CBotCondition::Compile(p, pStk )) )
     {
