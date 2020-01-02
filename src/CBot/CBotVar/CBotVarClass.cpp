@@ -51,7 +51,7 @@ CBotVarClass::CBotVarClass(const CBotToken& name, const CBotTypResult& type) : C
     m_type        = type;
     if ( type.Eq(CBotTypArrayPointer) )    m_type.SetType( CBotTypArrayBody );
     else if ( !type.Eq(CBotTypArrayBody) ) m_type.SetType( CBotTypClass );
-                                                 // officel type for this object
+                                                 // official type for this object
 
     m_pClass    = nullptr;
     m_pParent    = nullptr;

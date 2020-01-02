@@ -194,8 +194,7 @@ CEdit* CInterface::CreateEdit(Math::Point pos, Math::Point dim, int icon, EventT
     return CreateControl<CEdit>(pos, dim, icon, eventMsg);
 }
 
-// Creates a new pave editable.
-
+// Creates a new editable area.
 CEditValue* CInterface::CreateEditValue(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
     CEditValue* ev = CreateControl<CEditValue>(pos, dim, icon, eventMsg);

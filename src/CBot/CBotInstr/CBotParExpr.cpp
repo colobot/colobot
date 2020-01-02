@@ -94,7 +94,7 @@ CBotInstr* CBotParExpr::Compile(CBotToken* &p, CBotCStack* pStack, bool bConstEx
 
 
         CBotToken* pvar = p;
-        // no, it an "ordinaty" variable
+        // no, it's an "ordinaty" variable
         inst =  CBotExprVar::Compile(p, pStk);
 
         CBotToken* pp = p;

@@ -259,7 +259,7 @@ void CTaskManip::InitAngle()
     float energy = GetObjectEnergy(m_object);
     if ( energy == 0.0f )
     {
-        m_speed *= 0.7f;  // slower if more energy!
+        m_speed *= 0.7f;  // slower if no more energy!
     }
 }
 

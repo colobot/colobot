@@ -140,7 +140,7 @@ CBotInstr* CBotDefClass::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* p
 
             if (typ == CBotErrUndefCall)
             {
-                // si le constructeur n'existe pas
+                // if the ctor don't exist
                 if (inst->m_parameters != nullptr)                 // with parameters
                 {
                     pStk->SetError(CBotErrNoConstruct, vartoken);

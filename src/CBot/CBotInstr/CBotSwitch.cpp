@@ -51,7 +51,7 @@ CBotInstr* CBotSwitch::Compile(CBotToken* &p, CBotCStack* pStack)
     inst->SetToken(p);
     if (!IsOfType(p, ID_SWITCH)) return nullptr;   // should never happen
 
-    CBotCStack* pStk = pStack->TokenStack(pp);  // un petit bout de pile svp
+    CBotCStack* pStk = pStack->TokenStack(pp);  // some space for a stack, plz
 
     if ( IsOfType(p, ID_OPENPAR ) )
     {
@@ -72,7 +72,7 @@ CBotInstr* CBotSwitch::Compile(CBotToken* &p, CBotCStack* pStack)
                             if ( p->GetType() == ID_CASE || p->GetType() == ID_DEFAULT)
                             {
                                 delete pStk2;
-                                pStk2 = pStk->TokenStack(p, true);          // un petit bout de pile svp
+                                pStk2 = pStk->TokenStack(p, true);          // some space for a stack, plz
 
                                 caseInst = static_cast<CBotCase*>(CBotCase::Compile(p, pStk2, inst->m_labels));
                                 if (caseInst == nullptr)

@@ -93,7 +93,7 @@ void CBotVarArray::SetPointer(CBotVar* pVarClass)
              !pVarClass->m_type.Eq(CBotTypArrayBody))
             assert(0);
 
-        (static_cast<CBotVarClass*>(pVarClass))->IncrementUse();            // incement the reference
+        (static_cast<CBotVarClass*>(pVarClass))->IncrementUse();            // increment the reference
     }
 
     if ( m_pInstance != nullptr ) m_pInstance->DecrementUse();

@@ -382,7 +382,7 @@ CBotVar::InitType CBotVar::GetInit() const
 void CBotVar::SetInit(CBotVar::InitType initType)
 {
     m_binit = initType;
-    if (initType == CBotVar::InitType::IS_POINTER ) m_binit = CBotVar::InitType::DEF;                    // cas spécial
+    if (initType == CBotVar::InitType::IS_POINTER ) m_binit = CBotVar::InitType::DEF;                    // special case
 
     if ( m_type.Eq(CBotTypPointer) && initType == CBotVar::InitType::IS_POINTER )
     {
@@ -535,7 +535,7 @@ void CBotVar::SetVal(CBotVar* var)
         assert(0);
     }
 
-    m_binit = var->m_binit;        // copie l'état nan s'il y a
+    m_binit = var->m_binit;        // copy the nan status if it has
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -877,7 +877,7 @@ void CParticle::FrameParticle(float rTime)
             m_track[r].drawParticle = (progress < 1.0f);
         }
 
-        if (m_particle[i].type == PARTITRACK1)  // explosion technique?
+        if (m_particle[i].type == PARTITRACK1)  // technical explosion?
         {
             m_particle[i].zoom = 1.0f-(m_particle[i].time-m_particle[i].duration);
 
@@ -2407,7 +2407,7 @@ void CParticle::FrameParticle(float rTime)
             ti.y = ts.y+0.125f;
         }
 
-        if (m_particle[i].type == PARTIRAY1)  // rayon tour ?
+        if (m_particle[i].type == PARTIRAY1)  // tower ray ?
         {
             if (progress >= 1.0f)
             {
@@ -2517,7 +2517,7 @@ void CParticle::TrackDraw(int i, ParticleType type)
 
     Math::Point texInf, texSup;
 
-    if (type == PARTITRACK1)  // explosion technique?
+    if (type == PARTITRACK1)  // technical explosion?
     {
         texInf.x = 64.5f/256.0f;
         texInf.y = 21.0f/256.0f;
