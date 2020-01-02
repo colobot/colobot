@@ -88,8 +88,8 @@ public:
     bool        SendScript(const char* text);
     bool        ReadScript(const char* filename);
     bool        WriteScript(const char* filename);
-    bool        ReadStack(FILE *file);
-    bool        WriteStack(FILE *file);
+    bool        ReadStack(std::istream &istr);
+    bool        WriteStack(std::ostream &ostr);
     bool        Compare(CScript* other);
 
     void        SetFilename(const std::string &filename);

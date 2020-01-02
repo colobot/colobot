@@ -496,6 +496,9 @@ msgstr "Вниз (\\key gdown;)"
 msgid "Drawer bot"
 msgstr "Рисовальщик"
 
+msgid "Duplicate label in switch"
+msgstr ""
+
 msgid "Dust\\Dust and dirt on bots and buildings"
 msgstr "Пыль\\Пыль и грязь на ботах и зданиях"
 
@@ -513,6 +516,9 @@ msgstr "Изменить выбранную программу"
 
 msgid "Egg"
 msgstr "Яйцо"
+
+msgid "Empty character constant"
+msgstr ""
 
 msgid "End of block missing"
 msgstr "Отсутствует конец блока"

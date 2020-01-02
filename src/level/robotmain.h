@@ -308,8 +308,8 @@ public:
 
     void        SaveAllScript();
     void        SaveOneScript(CObject *obj);
-    bool        SaveFileStack(CObject *obj, FILE *file, int objRank);
-    bool        ReadFileStack(CObject *obj, FILE *file, int objRank);
+    bool        SaveFileStack(CObject *obj, std::ostream &ostr);
+    bool        ReadFileStack(CObject *obj, std::istream &istr);
 
     //! Return list of scripts to load to robot created in BotFactory
     std::vector<std::string> GetNewScriptNames(ObjectType type);

@@ -121,9 +121,7 @@ bool CColor::EventProcess(const Event &event)
     return true;
 }
 
-
-// Dessine le bouton.
-
+// Draw the button.
 void CColor::Draw()
 {
     Gfx::CDevice* device;

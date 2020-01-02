@@ -25,40 +25,35 @@ namespace CBot
 {
 
 /**
- * \brief CBotVar subclass for managing integer values (::CBotTypInt)
+ * \brief CBotVar subclass for managing 32-bit Unicode values (::CBotTypChar)
  */
-class CBotVarInt : public CBotVarInteger<int, CBotTypInt>
+class CBotVarChar : public CBotVarInteger<uint32_t, CBotTypChar>
 {
 public:
-    CBotVarInt(const CBotToken &name) : CBotVarInteger(name) {}
+    CBotVarChar(const CBotToken &name) : CBotVarInteger(name) {}
 
-    void SetValInt(int val, const std::string& s = "") override;
-    std::string GetValString() override;
-
-    void Copy(CBotVar* pSrc, bool bName = true) override;
-
-    void Neg() override;
-    void Inc() override;
-    void Dec() override;
-    void Not() override;
-
-    void SR(CBotVar* left, CBotVar* right) override;
-
-    bool Save0State(std::ostream &ostr) override;
-    bool Save1State(std::ostream &ostr) override;
-
-protected:
-
-    void SetValue(int val) override
+    std::string GetValString() override
     {
-        CBotVarNumberBase::SetValue(val);
-        m_defnum.clear();
+        if (m_binit == CBotVar::InitType::UNDEF)
+            return LoadString(TX_UNDEF);
+        if (m_binit == CBotVar::InitType::IS_NAN)
+            return LoadString(TX_NAN);
+
+        if (0x10FFFF < m_val || (0xD7FF < m_val && m_val < 0xE000))
+            return "\xEF\xBF\xBD"; // replacement character U+FFFD
+
+        return CodePointToUTF8(m_val);
     }
 
-protected:
-    //! The name if given by DefineNum.
-    std::string m_defnum;
-    friend class CBotVar;
+    void SR(CBotVar* left, CBotVar* right) override
+    {
+        SetValChar(left->GetValChar() >> right->GetValInt());
+    }
+
+    bool Save1State(std::ostream &ostr) override
+    {
+        return WriteUInt32(ostr, m_val);
+    }
 };
 
 } // namespace CBot

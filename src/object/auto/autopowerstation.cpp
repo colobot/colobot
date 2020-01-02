@@ -302,9 +302,7 @@ Error CAutoPowerStation::GetError()
     return ERR_OK;
 }
 
-
-// Crée toute l'interface lorsque l'objet est sélectionné .
-
+// Create the all interface when the object is selected.
 bool CAutoPowerStation::CreateInterface(bool bSelect)
 {
     Ui::CWindow*    pw;

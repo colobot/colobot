@@ -181,7 +181,7 @@ CBotTypResult cfopen (CBotVar* pThis, CBotVar* &pVar)
 
 // process FILE :: close
 
-// execeution
+// execution
 bool rfclose (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user)
 {
     // it shouldn't be any parameters

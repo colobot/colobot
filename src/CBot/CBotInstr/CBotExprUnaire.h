@@ -40,7 +40,7 @@ public:
      * \param bLiteral If true, compiles only literal expressions Ex: ~11, -4.0, !false, not true
      * \return The compiled instruction or nullptr
      */
-    static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack, bool bLiteral = false);
+    static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack, bool bLiteral = false, bool bConstExpr = false);
 
     /*!
      * \brief Execute

@@ -61,7 +61,7 @@ public:
 
     void ConstructorSet() override;
 
-    bool Save1State(FILE* pf) override;
+    bool Save1State(std::ostream &ostr) override;
 
     void Update(void* pUser) override;
 

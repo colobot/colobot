@@ -502,7 +502,7 @@ void CAutoResearch::FireStopUpdate(float progress, bool bLightOn)
          4.7f,  -8.2f,
     };
 
-    if ( !bLightOn )  // �teint ?
+    if ( !bLightOn )  // light-off ?
     {
         for ( i=0 ; i<6 ; i++ )
         {

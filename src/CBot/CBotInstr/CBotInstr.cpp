@@ -208,10 +208,15 @@ CBotInstr* CBotInstr::Compile(CBotToken* &p, CBotCStack* pStack)
     case ID_THROW:
         return CBotThrow::Compile(p, pStack);
 
+    case ID_BYTE:
+    case ID_SHORT:
+    case ID_CHAR:
     case ID_INT:
+    case ID_LONG:
         return CBotDefInt::Compile(p, pStack);
 
     case ID_FLOAT:
+    case ID_DOUBLE:
         return CBotDefFloat::Compile(p, pStack);
 
     case ID_STRING:
@@ -312,13 +317,6 @@ void CBotInstr::RestoreStateVar(CBotStack* &pile, bool bMain)
     assert(0);            // dad do not know, see the girls
 }
 
-////////////////////////////////////////////////////////////////////////////////
-bool CBotInstr::CompCase(CBotStack* &pj, int val)
-{
-    return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 CBotInstr* CBotInstr::CompileArray(CBotToken* &p, CBotCStack* pStack, CBotTypResult type, bool first)
 {
     if (IsOfType(p, ID_OPBRK))

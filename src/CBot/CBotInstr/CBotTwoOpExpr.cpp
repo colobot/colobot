@@ -133,8 +133,7 @@ static bool TypeOk(int type, int test)
     }
 }
 
-////////////////////////////////////////////////////////////////////////////////
-CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOperations)
+CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOperations, bool bConstExpr)
 {
     int typeMask;
 
@@ -146,8 +145,8 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
 
     // search the intructions that may be suitable to the left of the operation
     CBotInstr*  left = (*pOp == 0) ?
-                        CBotParExpr::Compile( p, pStk ) :       // expression (...) left
-                        CBotTwoOpExpr::Compile( p, pStk, pOp ); // expression A * B left
+                        CBotParExpr::Compile(p, pStk, bConstExpr) :       // expression (...) left
+                        CBotTwoOpExpr::Compile(p, pStk, pOp, bConstExpr); // expression A * B left
 
     if (left == nullptr) return pStack->Return(nullptr, pStk);        // if error,  transmit
 
@@ -158,7 +157,7 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
         CBotTypResult    type1, type2;
         type1 = pStk->GetTypResult();                           // what kind of the first operand?
 
-        if (typeOp == ID_LOGIC)       // special case provided for: ? op1: op2;
+        if (!bConstExpr && typeOp == ID_LOGIC) // special case provided for: ? op1: op2;
         {
             if ( !type1.Eq(CBotTypBoolean) )
             {
@@ -207,7 +206,7 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
 
         // looking statements that may be suitable for right
 
-        if ( nullptr != (inst->m_rightop = CBotTwoOpExpr::Compile( p, pStk, pOp )) )
+        if ( nullptr != (inst->m_rightop = CBotTwoOpExpr::Compile(p, pStk, pOp, bConstExpr)) )
                                                                 // expression (...) right
         {
             // there is an second operand acceptable
@@ -264,7 +263,7 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
                     type1 = TypeRes;
 
                     p = p->GetNext();                                       // advance after
-                    i->m_rightop = CBotTwoOpExpr::Compile( p, pStk, pOp );
+                    i->m_rightop = CBotTwoOpExpr::Compile(p, pStk, pOp, bConstExpr);
                     type2 = pStk->GetTypResult();
 
                     if ( !TypeCompatible (type1, type2, typeOp) )       // the results are compatible
@@ -359,7 +358,7 @@ bool CBotTwoOpExpr::Execute(CBotStack* &pStack)
     CBotStack* pStk2 = pStk1->AddStack();               // adds an item to the stack
                                                         // or return in case of recovery
 
-    // 2e état, évalue l'opérande de droite
+    // 2nd state, evalute right operand
     if ( pStk2->GetState() == 0 )
     {
         if ( !m_rightop->Execute(pStk2) ) return false;     // interrupted here?
@@ -399,7 +398,10 @@ bool CBotTwoOpExpr::Execute(CBotStack* &pStack)
         TypeRes = CBotTypBoolean;
         break;
     case ID_DIV:
-        TypeRes = std::max(TypeRes, static_cast<int>(CBotTypFloat));
+        if (TypeRes == CBotTypFloat)
+        {
+            if (type1.Eq(CBotTypLong) || type2.Eq(CBotTypLong)) TypeRes = CBotTypDouble;
+        }
     }
 
     // creates a variable for the result

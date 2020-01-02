@@ -63,7 +63,7 @@ public:
     bool Eq(CBotVar* left, CBotVar* right) override;
     bool Ne(CBotVar* left, CBotVar* right) override;
 
-    bool Save1State(FILE* pf) override;
+    bool Save1State(std::ostream &ostr) override;
 
 private:
     template<typename T>

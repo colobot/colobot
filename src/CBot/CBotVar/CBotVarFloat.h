@@ -32,7 +32,7 @@ class CBotVarFloat : public CBotVarNumber<float, CBotTypFloat>
 public:
     CBotVarFloat(const CBotToken &name) : CBotVarNumber(name) {}
 
-    bool Save1State(FILE* pf) override;
+    bool Save1State(std::ostream &ostr) override;
 };
 
 } // namespace CBot

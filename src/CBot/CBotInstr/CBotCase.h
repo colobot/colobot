@@ -21,6 +21,8 @@
 
 #include "CBot/CBotInstr/CBotInstr.h"
 
+#include <unordered_map>
+
 namespace CBot
 {
 
@@ -42,7 +44,7 @@ public:
      * \param pStack
      * \return
      */
-    static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack);
+    static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack, std::unordered_map<long, CBotInstr*>& labels);
 
     /*!
      * \brief Execute Execution of instruction "case".
@@ -58,22 +60,15 @@ public:
      */
     void RestoreState(CBotStack* &pj, bool bMain) override;
 
-    /*!
-     * \brief CompCase Routine to find the entry point of "case" corresponding
-     * to the value seen.
-     * \param pj
-     * \param val
-     * \return
-     */
-    bool CompCase(CBotStack* &pj, int val) override;
-
 protected:
     virtual const std::string GetDebugName() override { return "CBotCase"; }
     virtual std::map<std::string, CBotInstr*> GetDebugLinks() override;
 
 private:
-    //! Value to compare.
-    CBotInstr* m_value;
+    //! List of instructions after case label
+    CBotInstr* m_instr;
+
+    friend class CBotSwitch;
 };
 
 } // namespace CBot

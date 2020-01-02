@@ -442,8 +442,8 @@ public:
     //! \name Write to file
     //@{
 
-    bool            SaveState(FILE* pf);
-    bool            RestoreState(FILE* pf, CBotStack* &pStack);
+    bool            SaveState(std::ostream &ostr);
+    bool            RestoreState(std::istream &istr, CBotStack* &pStack);
 
     //@}
 

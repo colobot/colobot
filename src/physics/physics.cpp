@@ -1196,7 +1196,7 @@ void CPhysics::EffectUpdate(float aTime, float rTime)
          type == OBJECT_MOBILEfc ||
          type == OBJECT_MOBILEfi ||
          type == OBJECT_MOBILEfs ||
-         type == OBJECT_MOBILEft )  // fliyng?
+         type == OBJECT_MOBILEft )  // flying?
     {
         if ( m_bLand )  // on the ground?
         {

@@ -133,7 +133,7 @@ bool CStudio::EventProcess(const Event &event)
         m_event->AddEvent(Event(EVENT_STUDIO_OK));
     }
 
-    if ( event.type == EVENT_STUDIO_EDIT )  // text modifief?
+    if ( event.type == EVENT_STUDIO_EDIT )  // text modified?
     {
         ColorizeScript(edit);
     }
