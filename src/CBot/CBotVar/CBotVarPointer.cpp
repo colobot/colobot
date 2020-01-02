@@ -24,7 +24,6 @@
 
 #include "CBot/CBotEnums.h"
 #include "CBot/CBotUtils.h"
-#include "CBot/CBotFileUtils.h"
 
 #include <cassert>
 
@@ -171,21 +170,21 @@ CBotClass* CBotVarPointer::GetClass()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotVarPointer::Save1State(FILE* pf)
+bool CBotVarPointer::Save1State(std::ostream &ostr)
 {
     if ( m_type.GetClass() != nullptr )
     {
-        if (!WriteString(pf, m_type.GetClass()->GetName())) return false;    // name of the class
+        if (!WriteString(ostr, m_type.GetClass()->GetName())) return false;  // name of the class
     }
     else
     {
-        if (!WriteString(pf, "")) return false;
+        if (!WriteString(ostr, "")) return false;
     }
 
-    if (!WriteLong(pf, GetIdent())) return false;        // the unique reference
+    if (!WriteLong(ostr, GetIdent())) return false;      // the unique reference
 
     // also saves the proceedings copies
-    return SaveVars(pf, GetPointer());
+    return SaveVars(ostr, GetPointer());
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -23,8 +23,6 @@
 #include "CBot/CBotStack.h"
 #include "CBot/CBotDefines.h"
 
-#include "CBot/CBotFileUtils.h"
-
 #include "CBot/CBotInstr/CBotInstr.h"
 
 #include <cassert>
@@ -464,12 +462,12 @@ bool CBotVarClass::Ne(CBotVar* left, CBotVar* right)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotVarClass::Save1State(FILE* pf)
+bool CBotVarClass::Save1State(std::ostream &ostr)
 {
-    if ( !WriteType(pf, m_type) ) return false;
-    if ( !WriteLong(pf, m_ItemIdent) ) return false;
+    if (!WriteType(ostr, m_type)) return false;
+    if (!WriteLong(ostr, m_ItemIdent)) return false;
 
-    return SaveVars(pf, m_pVar);                                // content of the object
+    return SaveVars(ostr, m_pVar);                              // content of the object
 }
 
 } // namespace CBot

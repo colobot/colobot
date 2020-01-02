@@ -25,52 +25,85 @@
 
 #include "CBot/CBotUtils.h"
 
+#include <limits>
 #include <sstream>
 
 namespace CBot
 {
 
-////////////////////////////////////////////////////////////////////////////////
-CBotExprLitNum::CBotExprLitNum()
+template <>
+CBotExprLitNum<int>::CBotExprLitNum(int val) : m_numtype(CBotTypInt), m_value(val)
 {
 }
 
-////////////////////////////////////////////////////////////////////////////////
-CBotExprLitNum::~CBotExprLitNum()
+template <>
+CBotExprLitNum<long>::CBotExprLitNum(long val) : m_numtype(CBotTypLong), m_value(val)
 {
 }
 
-////////////////////////////////////////////////////////////////////////////////
-CBotInstr* CBotExprLitNum::Compile(CBotToken* &p, CBotCStack* pStack)
+template <>
+CBotExprLitNum<float>::CBotExprLitNum(float val) : m_numtype(CBotTypFloat), m_value(val)
+{
+}
+
+template <>
+CBotExprLitNum<double>::CBotExprLitNum(double val) : m_numtype(CBotTypDouble), m_value(val)
+{
+}
+
+template <typename T>
+CBotExprLitNum<T>::~CBotExprLitNum()
+{
+}
+
+CBotInstr* CompileExprLitNum(CBotToken* &p, CBotCStack* pStack)
 {
     CBotCStack* pStk = pStack->TokenStack();
 
-    CBotExprLitNum* inst = new CBotExprLitNum();
+    const auto& s = p->GetString();
 
-    inst->SetToken(p);
-    std::string    s = p->GetString();
+    CBotInstr* inst = nullptr;
+    CBotType numtype = CBotTypInt;
 
-    inst->m_numtype = CBotTypInt;
     if (p->GetType() == TokenTypDef)
     {
-        inst->m_valint = p->GetKeywordId();
+        inst = new CBotExprLitNum<int>(static_cast<int>(p->GetKeywordId()));
     }
     else
     {
         if (s.find('.') != std::string::npos || ( s.find('x') == std::string::npos && ( s.find_first_of("eE") != std::string::npos ) ))
         {
-            inst->m_numtype = CBotTypFloat;
-            inst->m_valfloat = GetNumFloat(s);
+            double val = GetNumFloat(s);
+            if (val > static_cast<double>(std::numeric_limits<float>::max()))
+            {
+                numtype = CBotTypDouble;
+                inst = new CBotExprLitNum<double>(val);
+            }
+            else
+            {
+                numtype = CBotTypFloat;
+                inst = new CBotExprLitNum<float>(static_cast<float>(val));
+            }
         }
         else
         {
-            inst->m_valint = GetNumInt(s);
+            long val = GetNumInt(s);
+            if (val > std::numeric_limits<int>::max())
+            {
+                numtype = CBotTypLong;
+                inst = new CBotExprLitNum<long>(val);
+            }
+            else
+            {
+                inst = new CBotExprLitNum<int>(static_cast<int>(val));
+            }
         }
     }
 
+    inst->SetToken(p);
     if (pStk->NextToken(p))
     {
-        CBotVar*    var = CBotVar::Create("", inst->m_numtype);
+        CBotVar* var = CBotVar::Create("", numtype);
         pStk->SetVar(var);
 
         return pStack->Return(inst, pStk);
@@ -79,8 +112,48 @@ CBotInstr* CBotExprLitNum::Compile(CBotToken* &p, CBotCStack* pStack)
     return pStack->Return(nullptr, pStk);
 }
 
-////////////////////////////////////////////////////////////////////////////////
-bool CBotExprLitNum::Execute(CBotStack* &pj)
+CBotInstr* CompileSizeOf(CBotToken* &p, CBotCStack* pStack)
+{
+    CBotToken* pp = p;
+
+    if (!IsOfType(p, TokenTypVar)) return nullptr;
+    if (pp->GetString() == "sizeof" && IsOfType(p, ID_OPENPAR))
+    {
+        CBotCStack* pStk = pStack->TokenStack();
+
+        int value;
+
+        if (IsOfType(p, ID_BYTE)) value = sizeof(signed char);
+        else if (IsOfType(p, ID_SHORT)) value = sizeof(short);
+        else if (IsOfType(p, ID_CHAR)) value = sizeof(uint32_t);
+        else if (IsOfType(p, ID_INT)) value = sizeof(int);
+        else if (IsOfType(p, ID_LONG)) value = sizeof(long);
+        else if (IsOfType(p, ID_FLOAT)) value = sizeof(float);
+        else if (IsOfType(p, ID_DOUBLE)) value = sizeof(double);
+        else
+        {
+            p = pp;
+            return pStack->Return(nullptr, pStk);
+        }
+
+        if (IsOfType(p, ID_CLOSEPAR))
+        {
+            auto inst = new CBotExprLitNum<int>(value);
+            inst->SetToken(pp);
+
+            CBotVar* var = CBotVar::Create("", CBotTypInt);
+            pStk->SetVar(var);
+            return pStack->Return(inst, pStk);
+        }
+        pStk->SetError(CBotErrClosePar, p->GetStart());
+        return pStack->Return(nullptr, pStk);
+    }
+    p = pp;
+    return nullptr;
+}
+
+template <typename T>
+bool CBotExprLitNum<T>::Execute(CBotStack* &pj)
 {
     CBotStack*    pile = pj->AddStack(this);
 
@@ -88,39 +161,38 @@ bool CBotExprLitNum::Execute(CBotStack* &pj)
 
     CBotVar*    var = CBotVar::Create("", m_numtype);
 
-    std::string    nombre ;
     if (m_token.GetType() == TokenTypDef)
     {
-        nombre = m_token.GetString();
+        var->SetValInt(m_value, m_token.GetString());
     }
-
-    switch (m_numtype)
+    else
     {
-    case CBotTypShort:
-    case CBotTypInt:
-        var->SetValInt(m_valint, nombre);
-        break;
-    case CBotTypFloat:
-        var->SetValFloat(m_valfloat);
-        break;
-    default:
-        assert(false);
+        *var = m_value;
     }
     pile->SetVar(var);                            // place on the stack
 
     return pj->Return(pile);                        // it's ok
 }
 
-////////////////////////////////////////////////////////////////////////////////
-void CBotExprLitNum::RestoreState(CBotStack* &pj, bool bMain)
+template <typename T>
+void CBotExprLitNum<T>::RestoreState(CBotStack* &pj, bool bMain)
 {
     if (bMain) pj->RestoreStack(this);
 }
 
-std::string CBotExprLitNum::GetDebugData()
+template <typename T>
+std::string CBotExprLitNum<T>::GetDebugData()
 {
     std::stringstream ss;
-    ss << "(" << (m_numtype == CBotTypFloat ? "float" : "int") << ") " << (m_numtype == CBotTypFloat ? m_valfloat : m_valint);
+    switch (m_numtype)
+    {
+        case CBotTypInt   : ss << "(int) "; break;
+        case CBotTypLong  : ss << "(long) "; break;
+        case CBotTypFloat : ss << "(float) "; break;
+        case CBotTypDouble: ss << "(double) "; break;
+        default: assert(false);
+    }
+    ss << m_value;
     return ss.str();
 }
 

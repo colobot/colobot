@@ -25,40 +25,22 @@ namespace CBot
 {
 
 /**
- * \brief CBotVar subclass for managing integer values (::CBotTypInt)
+ * \brief CBotVar subclass for managing short integer values (::CBotTypShort)
  */
-class CBotVarInt : public CBotVarInteger<int, CBotTypInt>
+class CBotVarShort : public CBotVarInteger<short, CBotTypShort>
 {
 public:
-    CBotVarInt(const CBotToken &name) : CBotVarInteger(name) {}
+    CBotVarShort(const CBotToken &name) : CBotVarInteger(name) {}
 
-    void SetValInt(int val, const std::string& s = "") override;
-    std::string GetValString() override;
-
-    void Copy(CBotVar* pSrc, bool bName = true) override;
-
-    void Neg() override;
-    void Inc() override;
-    void Dec() override;
-    void Not() override;
-
-    void SR(CBotVar* left, CBotVar* right) override;
-
-    bool Save0State(std::ostream &ostr) override;
-    bool Save1State(std::ostream &ostr) override;
-
-protected:
-
-    void SetValue(int val) override
+    void SR(CBotVar* left, CBotVar* right) override
     {
-        CBotVarNumberBase::SetValue(val);
-        m_defnum.clear();
+        SetValShort(static_cast<unsigned short>(left->GetValShort()) >> right->GetValInt());
     }
 
-protected:
-    //! The name if given by DefineNum.
-    std::string m_defnum;
-    friend class CBotVar;
+    bool Save1State(std::ostream &ostr) override
+    {
+        return WriteShort(ostr, m_val);
+    }
 };
 
 } // namespace CBot

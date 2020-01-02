@@ -57,7 +57,7 @@ CBotInstr* CBotSwitch::Compile(CBotToken* &p, CBotCStack* pStack)
     {
         if ( nullptr != (inst->m_value = CBotExpression::Compile(p, pStk )) )
         {
-            if ( pStk->GetType() < CBotTypLong )
+            if ( pStk->GetType() <= CBotTypLong )
             {
                 if ( IsOfType(p, ID_CLOSEPAR ) )
                 {
@@ -65,21 +65,35 @@ CBotInstr* CBotSwitch::Compile(CBotToken* &p, CBotCStack* pStack)
                     {
                         IncLvl();
 
+                        CBotCase* caseInst = nullptr;
+                        CBotCStack* pStk2 = nullptr;
                         while( !IsOfType( p, ID_CLBLK ) )
                         {
                             if ( p->GetType() == ID_CASE || p->GetType() == ID_DEFAULT)
                             {
-                                CBotCStack* pStk2 = pStk->TokenStack(p);    // some space for a stack, plz
+                                delete pStk2;
+                                pStk2 = pStk->TokenStack(p, true);          // some space for a stack, plz
 
-                                CBotInstr* i = CBotCase::Compile( p, pStk2 );
-                                if (i == nullptr)
+                                caseInst = static_cast<CBotCase*>(CBotCase::Compile(p, pStk2, inst->m_labels));
+                                if (caseInst == nullptr)
                                 {
                                     delete inst;
                                     return pStack->Return(nullptr, pStk2);
                                 }
-                                delete pStk2;
-                                if (inst->m_block == nullptr ) inst->m_block = i;
-                                else inst->m_block->AddNext(i);
+
+                                if (inst->m_block == nullptr ) inst->m_block = caseInst;
+                                else inst->m_block->AddNext(caseInst);
+
+                                if (ID_DEFAULT == caseInst->GetTokenType())
+                                {
+                                    if (inst->m_default != nullptr)
+                                    {
+                                        pStk->SetError(CBotErrRedefCase, caseInst->GetToken());
+                                        delete inst;
+                                        return pStack->Return(nullptr, pStk);
+                                    }
+                                    inst->m_default = caseInst;
+                                }
                                 continue;
                             }
 
@@ -90,13 +104,14 @@ CBotInstr* CBotSwitch::Compile(CBotToken* &p, CBotCStack* pStack)
                                 return pStack->Return(nullptr, pStk);
                             }
 
-                            CBotInstr* i = CBotBlock::CompileBlkOrInst( p, pStk, true );
-                            if ( !pStk->IsOk() )
+                            CBotInstr* i = CBotBlock::CompileBlkOrInst(p, pStk2);
+                            if ( !pStk2->IsOk() )
                             {
                                 delete inst;
-                                return pStack->Return(nullptr, pStk);
+                                return pStack->Return(nullptr, pStk2);
                             }
-                            inst->m_block->AddNext(i);
+                            if (caseInst->m_instr == nullptr ) caseInst->m_instr = i;
+                            else caseInst->m_instr->AddNext(i);
 
                             if ( p == nullptr )
                             {
@@ -133,40 +148,21 @@ CBotInstr* CBotSwitch::Compile(CBotToken* &p, CBotCStack* pStack)
 bool CBotSwitch :: Execute(CBotStack* &pj)
 {
     CBotStack* pile1 = pj->AddStack(this);      // adds an item to the stack
-//  if ( pile1 == EOX ) return true;
-
-    CBotInstr*  p = m_block;                    // first expression
 
     int     state = pile1->GetState();
     if (state == 0)
     {
         if ( !m_value->Execute(pile1) ) return false;
-        pile1->SetState(state = -1);
+        pile1->SetState(state = 1);
     }
 
     if ( pile1->IfStep() ) return false;
 
-    if ( state == -1 )
-    {
-        state = 0;
-        int val = pile1->GetVal();                      // result of the value
+    auto it = m_labels.find(pile1->GetVar()->GetValLong());
 
-        CBotStack* pile2 = pile1->AddStack();
-        while ( p != nullptr )                             // search for the corresponding case in a list
-        {
-            state++;
-            if ( p->CompCase( pile2, val ) ) break;     // found the case
-            p = p->GetNext();
-        }
-        pile2->Delete();
+    CBotInstr* p = (it != m_labels.end()) ? it->second : m_default;
 
-        if ( p == nullptr ) return pj->Return(pile1);      // completed if nothing
-
-        if ( !pile1->SetState(state) ) return false;
-    }
-
-    p = m_block;                                        // returns to the beginning
-    while (state-->0) p = p->GetNext();                 // advance in the list
+    while (--state > 0) p = p->GetNext();
 
     while( p != nullptr )
     {
@@ -185,8 +181,6 @@ void CBotSwitch :: RestoreState(CBotStack* &pj, bool bMain)
     CBotStack* pile1 = pj->RestoreStack(this);  // adds an item to the stack
     if ( pile1 == nullptr ) return;
 
-    CBotInstr*  p = m_block;                    // first expression
-
     int     state = pile1->GetState();
     if (state == 0)
     {
@@ -194,13 +188,11 @@ void CBotSwitch :: RestoreState(CBotStack* &pj, bool bMain)
         return;
     }
 
-    if ( state == -1 )
-    {
-        return;
-    }
+    auto it = m_labels.find(pile1->GetVar()->GetValLong());
 
-//  p = m_block;                                // returns to the beginning
-    while ( p != nullptr && state-- > 0 )
+    CBotInstr* p = (it != m_labels.end()) ? it->second : m_default;
+
+    while (p != nullptr && --state > 0)
     {
         p->RestoreState(pile1, false);
         p = p->GetNext();                       // advance in the list

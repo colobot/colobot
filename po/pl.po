@@ -488,6 +488,9 @@ msgstr "Dół (\\key gdown;)"
 msgid "Drawer bot"
 msgstr "Robot rysownik"
 
+msgid "Duplicate label in switch"
+msgstr ""
+
 msgid "Dust\\Dust and dirt on bots and buildings"
 msgstr "Kurz\\Kurz i bród na robotach i budynkach"
 
@@ -505,6 +508,9 @@ msgstr "Edytuj zaznaczony program"
 
 msgid "Egg"
 msgstr "Jajo"
+
+msgid "Empty character constant"
+msgstr ""
 
 msgid "End of block missing"
 msgstr "Brak końca bloku"

@@ -490,6 +490,9 @@ msgstr "Sinkt (\\key gdown;)"
 msgid "Drawer bot"
 msgstr "Zeichner"
 
+msgid "Duplicate label in switch"
+msgstr ""
+
 msgid "Dust\\Dust and dirt on bots and buildings"
 msgstr "Schmutz\\Schmutz auf Robotern und Bauten"
 
@@ -507,6 +510,9 @@ msgstr "Gewähltes Programm bearbeiten"
 
 msgid "Egg"
 msgstr "Ei"
+
+msgid "Empty character constant"
+msgstr ""
 
 msgid "End of block missing"
 msgstr "Es fehlt eine geschlossene geschweifte Klammer \"}\" (Ende des Blocks)"

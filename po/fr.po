@@ -492,6 +492,9 @@ msgstr "Descend (\\key gdown;)"
 msgid "Drawer bot"
 msgstr "Robot dessinateur"
 
+msgid "Duplicate label in switch"
+msgstr ""
+
 msgid "Dust\\Dust and dirt on bots and buildings"
 msgstr "Salissures\\Salissures des robots et bâtiments"
 
@@ -509,6 +512,9 @@ msgstr "Éditer le programme sélectionné"
 
 msgid "Egg"
 msgstr "Oeuf"
+
+msgid "Empty character constant"
+msgstr ""
 
 msgid "End of block missing"
 msgstr "Il manque la fin du bloc"
