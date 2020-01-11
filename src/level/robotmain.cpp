@@ -3923,6 +3923,7 @@ void CRobotMain::ChangeColor()
         m_engine->ChangeTextureColor("textures/objects/lemt.png"+teamStr,    "textures/objects/lemt.png",    COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
         m_engine->ChangeTextureColor("textures/objects/roller.png"+teamStr,  "textures/objects/roller.png",  COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
         m_engine->ChangeTextureColor("textures/objects/search.png"+teamStr,  "textures/objects/search.png",  COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
+        m_engine->ChangeTextureColor("textures/objects/rollert.png"+teamStr, "textures/objects/rollert.png", COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
 
         exclu[0] = Math::Point(  0.0f/256.0f, 160.0f/256.0f);
         exclu[1] = Math::Point(256.0f/256.0f, 256.0f/256.0f);  // pencils
