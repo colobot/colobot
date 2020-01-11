@@ -3048,14 +3048,22 @@ void COldObject::UpdateSelectParticle()
         pos[2] = Math::Vector(-3.6f, 4.2f,  3.0f);
         pos[3] = Math::Vector(-3.6f, 4.2f, -3.0f);
     }
-    if ( m_type == OBJECT_MOBILErt ||
-         m_type == OBJECT_MOBILErc ||
-         m_type == OBJECT_MOBILErr ||
-         m_type == OBJECT_MOBILErs ||
-         m_type == OBJECT_MOBILErp )  // large caterpillars?
+    else if ( m_type == OBJECT_MOBILErt ||
+              m_type == OBJECT_MOBILErc ||
+              m_type == OBJECT_MOBILErr ||
+              m_type == OBJECT_MOBILErs )  // large caterpillars?
     {
         pos[2] = Math::Vector(-5.0f, 5.2f,  2.5f);
         pos[3] = Math::Vector(-5.0f, 5.2f, -2.5f);
+    }
+    if ( m_type == OBJECT_MOBILErp || ( GetTrainer() &&
+       ( m_type == OBJECT_MOBILErt ||
+         m_type == OBJECT_MOBILErc ||
+         m_type == OBJECT_MOBILErr ||
+         m_type == OBJECT_MOBILErs)))  // large caterpillars (trainer)?
+    {
+        pos[2] = Math::Vector(-4.6f, 5.2f,  2.6f);
+        pos[3] = Math::Vector(-4.6f, 5.2f, -2.6f);
     }
     if ( m_type == OBJECT_MOBILEsa ||
          m_type == OBJECT_MOBILEst )  // submarine?
