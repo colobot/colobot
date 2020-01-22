@@ -4753,7 +4753,7 @@ bool CRobotMain::IOWriteScene(std::string filename, std::string filecbot, std::s
         m_engine->SetScreenshotMode(true);
 
         m_engine->Render(); // update (but don't show, we're not swapping buffers here!)
-        m_engine->WriteScreenShot(CResourceManager::GetSaveLocation() + "/" + filescreenshot); //TODO: Use PHYSFS?
+        m_engine->WriteScreenShot(filescreenshot);
         m_shotSaving++;
 
         m_engine->SetScreenshotMode(false);
