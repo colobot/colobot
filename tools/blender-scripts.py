@@ -388,9 +388,9 @@ def append_obj_to_colobot_model(obj, model, scene, defaults):
         t.mat.specular[3] = mat.specular_alpha
 
         if (mat.texture_slots[0] != None):
-            t.tex1 = bpy.path.basename(mat.texture_slots[0].texture.image.filepath)
+            t.mat.tex1 = bpy.path.basename(mat.texture_slots[0].texture.image.filepath)
         if (mat.texture_slots[1] != None):
-            t.tex2 = bpy.path.basename(mat.texture_slots[1].texture.image.filepath)
+            t.mat.tex2 = bpy.path.basename(mat.texture_slots[1].texture.image.filepath)
 
         t.var_tex2 = mat.get('var_tex2', defaults['var_tex2'])
         t.state = mat.get('state', defaults['state'])
