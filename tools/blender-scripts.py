@@ -35,7 +35,7 @@ FUZZY_TOLERANCE = 1e-5
 
 class ColobotError(Exception):
     """Exception in I/O operations"""
-    def __init__(self, value):
+    def __init__(self, value, errcode=None):
         self.value = value
     def __str__(self):
         return repr(self.value)
