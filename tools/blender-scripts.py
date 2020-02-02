@@ -8,7 +8,7 @@
 bl_info = {
     "name": "Colobot Model Format (.txt)",
     "author": "TerranovaTeam",
-    "version": (0, 0, 2),
+    "version": (0, 0, 3),
     "blender": (2, 6, 4),
     "location": "File > Export > Colobot (.txt)",
     "description": "Export Colobot Model Format (.txt)",
