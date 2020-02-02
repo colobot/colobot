@@ -593,7 +593,7 @@ class ExportColobotDialog(bpy.types.Operator):
             write_colobot_model(EXPORT_FILEPATH, model)
 
         except ColobotError as e:
-            self.report({'ERROR'}, e.args.join(": "))
+            self.report({'ERROR'}, ": ".join(e.args))
             return {'FINISHED'}
 
         self.report({'INFO'}, 'Export OK')
@@ -669,7 +669,7 @@ class ImportColobotDialog(bpy.types.Operator):
                     obj.layers = layers
 
         except ColobotError as e:
-            self.report({'ERROR'}, e.args.join(": "))
+            self.report({'ERROR'}, ": ".join(e.args))
             return {'FINISHED'}
 
         self.report({'INFO'}, 'Import OK')
