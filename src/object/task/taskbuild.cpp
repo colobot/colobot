@@ -86,7 +86,7 @@ CTaskBuild::~CTaskBuild()
 
 // Creates a building.
 
-void CTaskBuild::CreateBuilding(Math::Vector pos, float angle)
+void CTaskBuild::CreateBuilding(Math::Vector pos, float angle, bool trainer)
 {
     ObjectCreateParams params;
     params.pos = pos;
@@ -94,6 +94,7 @@ void CTaskBuild::CreateBuilding(Math::Vector pos, float angle)
     params.type = m_type;
     params.power = 0.0f;
     params.team = m_object->GetTeam();
+    params.trainer = trainer;
     m_building = CObjectManager::GetInstancePointer()->CreateObject(params);
     m_building->SetLock(true);  // not yet usable
 
@@ -287,7 +288,7 @@ bool CTaskBuild::EventProcess(const Event &event)
 
         pos = m_metal->GetPosition();
         a   = m_object->GetRotationY();
-        CreateBuilding(pos, a+Math::PI);
+        CreateBuilding(pos, a+Math::PI, m_object->GetTrainer());
         CreateLight();
     }
 
