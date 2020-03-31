@@ -1830,10 +1830,11 @@ void CObjectInterface::UpdateInterface()
         }
     }
     
-    if ( type == OBJECT_MOBILEfb ||
-         type == OBJECT_MOBILEtb ||
-         type == OBJECT_MOBILEwb ||
-         type == OBJECT_MOBILEib ) // builder?
+    if ( (type == OBJECT_MOBILEfb ||
+          type == OBJECT_MOBILEtb ||
+          type == OBJECT_MOBILEwb ||
+          type == OBJECT_MOBILEib) &&  // builder?
+         !m_object->GetTrainer() )
     {
         if(!bEnable) m_buildInterface = false;
         CheckInterface(pw, EVENT_OBJECT_BUILD, m_buildInterface);
