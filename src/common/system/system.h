@@ -139,6 +139,9 @@ public:
     //! Returns the save dir location
     virtual std::string GetSaveDir();
 
+    //! Returns environment variable
+    virtual std::string GetEnvVar(const std::string &str);
+
     //! Sleep for given amount of microseconds
     virtual void Usleep(int usecs) = 0;
 

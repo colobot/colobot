@@ -131,6 +131,22 @@ std::string CSystemUtilsWindows::GetSaveDir()
 #endif
 }
 
+std::string CSystemUtilsWindows::GetEnvVar(const std::string& name)
+{
+    std::wstring wname(name.begin(), name.end());
+    wchar_t* envVar = _wgetenv(wname.c_str());
+    if (envVar == nullptr)
+    {
+        return "";
+    }
+    else
+    {
+        std::string var = UTF8_Encode(std::wstring(envVar));
+        GetLogger()->Trace("Detected environment variable %s = %s\n", name.c_str(), var.c_str());
+        return var;
+    }
+}
+
 void CSystemUtilsWindows::Usleep(int usec)
 {
    LARGE_INTEGER ft;

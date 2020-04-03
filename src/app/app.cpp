@@ -220,6 +220,30 @@ CSoundInterface* CApplication::GetSound()
     return m_sound.get();
 }
 
+void CApplication::LoadEnvironmentVariables()
+{
+    auto dataDir = m_systemUtils->GetEnvVar("COLOBOT_DATA_DIR");
+    if (!dataDir.empty())
+    {
+        m_pathManager->SetDataPath(dataDir);
+        GetLogger()->Info("Using data dir (based on environment variable): '%s'\n", dataDir.c_str());
+    }
+
+    auto langDir = m_systemUtils->GetEnvVar("COLOBOT_LANG_DIR");
+    if (!langDir.empty())
+    {
+        m_pathManager->SetLangPath(langDir);
+        GetLogger()->Info("Using lang dir (based on environment variable): '%s'\n", langDir.c_str());
+    }
+
+    auto saveDir = m_systemUtils->GetEnvVar("COLOBOT_SAVE_DIR");
+    if (!saveDir.empty())
+    {
+        m_pathManager->SetSavePath(saveDir);
+        GetLogger()->Info("Using save dir (based on environment variable): '%s'\n", saveDir.c_str());
+    }
+}
+
 ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
 {
     enum OptionType
@@ -286,15 +310,18 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 GetLogger()->Message("\n");
                 GetLogger()->Message("%s\n", COLOBOT_FULLNAME);
                 GetLogger()->Message("\n");
-                GetLogger()->Message("List of available options:\n");
+                GetLogger()->Message("List of available options and environment variables:\n");
                 GetLogger()->Message("  -help               this help\n");
                 GetLogger()->Message("  -debug modes        enable debug modes (more info printed in logs; see code for reference of modes)\n");
                 GetLogger()->Message("  -runscene sceneNNN  run given scene on start\n");
                 GetLogger()->Message("  -scenetest          win every mission right after it's loaded\n");
                 GetLogger()->Message("  -loglevel level     set log level to level (one of: trace, debug, info, warn, error, none)\n");
                 GetLogger()->Message("  -langdir path       set custom language directory path\n");
+                GetLogger()->Message("                      environment variable: COLOBOT_LANG_DIR\n");
                 GetLogger()->Message("  -datadir path       set custom data directory path\n");
+                GetLogger()->Message("                      environment variable: COLOBOT_DATA_DIR\n");
                 GetLogger()->Message("  -savedir path       set custom save directory path (must be writable)\n");
+                GetLogger()->Message("                      environment variable: COLOBOT_SAVE_DIR\n");
                 GetLogger()->Message("  -mod path           load datadir mod from given path\n");
                 GetLogger()->Message("  -resolution WxH     set resolution\n");
                 GetLogger()->Message("  -headless           headless mode - disables graphics, sound and user interaction\n");

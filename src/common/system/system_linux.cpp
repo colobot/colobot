@@ -126,6 +126,18 @@ std::string CSystemUtilsLinux::GetSaveDir()
 #endif
 }
 
+std::string CSystemUtilsLinux::GetEnvVar(const std::string& name)
+{
+    char* envVar = getenv(name.c_str());
+    if (envVar != nullptr)
+    {
+
+        GetLogger()->Trace("Detected environment variable %s = %s\n", name.c_str(), envVar);
+        return std::string(envVar);
+    }
+    return "";
+}
+
 void CSystemUtilsLinux::Usleep(int usec)
 {
     usleep(usec);

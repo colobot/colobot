@@ -210,3 +210,8 @@ std::string CSystemUtils::GetSaveDir()
 {
     return "./saves";
 }
+
+std::string CSystemUtils::GetEnvVar(const std::string& str)
+{
+    return std::string();
+}
