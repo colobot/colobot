@@ -24,6 +24,8 @@
 
 #include "CBot/CBotVar/CBotVar.h"
 
+#include <stdexcept>
+
 namespace CBot
 {
 

@@ -66,6 +66,8 @@ elseif(PLATFORM_WINDOWS)
             find_library(WEBP_LIBRARY NAMES webp.lib)
             find_library(LZMA_LIBRARY NAMES lzma.lib)
             find_library(FREETYPE_LIBRARY NAMES freetype.lib)
+            find_library(ICONV_LIBRARY NAMES libiconv.lib)
+            find_library(CHARSET_LIBRARY NAMES libcharset.lib)
             set(MSVC_LIBS
                 ${LIBINTL_LIBRARY}
                 ${OPENAL_MSVC_LIBS}
@@ -75,6 +77,8 @@ elseif(PLATFORM_WINDOWS)
                 ${WEBP_LIBRARY}
                 ${LZMA_LIBRARY}
                 ${FREETYPE_LIBRARY}
+                ${ICONV_LIBRARY}
+                ${CHARSET_LIBRARY}
                 winmm.lib
                 dxguid.lib
                 imm32.lib
@@ -83,6 +87,7 @@ elseif(PLATFORM_WINDOWS)
                 version.lib
                 wsock32.lib
                 ws2_32.lib
+                setupapi.lib
             )
         else(${MSVC_STATIC})
             set(MSVC_LIBS ${LIBINTL_LIBRARY})

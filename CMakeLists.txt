@@ -198,7 +198,7 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     add_definitions(-DNOEXCEPT= -DHAS_MSVC_EXCEPTION_BUG)
 
     # Needed for Debug information (it's set to "No" by default for some reason)
-    set(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS} /DEBUG")
+    set(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS} /DEBUG /NODEFAULTLIB:MSVCRTD /NODEFAULTLIB:LIBCMT")
     set(CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO "${CMAKE_EXE_LINKER_FLAGS} /DEBUG")
 else()
     message(FATAL_ERROR "Your C++ compiler doesn't seem to be supported.")
