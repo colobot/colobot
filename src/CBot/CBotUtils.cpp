@@ -62,12 +62,27 @@ CBotTypResult TypeParam(CBotToken* &p, CBotCStack* pile)
 
     switch (p->GetType())
     {
+    case ID_BYTE:
+        p = p->GetNext();
+        return ArrayType(p, pile, CBotTypResult( CBotTypByte ));
+    case ID_SHORT:
+        p = p->GetNext();
+        return ArrayType(p, pile, CBotTypResult( CBotTypShort ));
+    case ID_CHAR:
+        p = p->GetNext();
+        return ArrayType(p, pile, CBotTypResult( CBotTypChar ));
     case ID_INT:
         p = p->GetNext();
         return ArrayType(p, pile, CBotTypResult( CBotTypInt ));
+    case ID_LONG:
+        p = p->GetNext();
+        return ArrayType(p, pile, CBotTypResult( CBotTypLong ));
     case ID_FLOAT:
         p = p->GetNext();
         return ArrayType(p, pile, CBotTypResult( CBotTypFloat ));
+    case ID_DOUBLE:
+        p = p->GetNext();
+        return ArrayType(p, pile, CBotTypResult( CBotTypDouble ));
     case ID_BOOLEAN:
     case ID_BOOL:
         p = p->GetNext();
@@ -109,38 +124,6 @@ CBotTypResult ArrayType(CBotToken* &p, CBotCStack* pile, CBotTypResult type)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool WriteWord(FILE* pf, unsigned short w)
-{
-    size_t  lg;
-
-    lg = fwrite(&w, sizeof( unsigned short ), 1, pf );
-
-    return (lg == 1);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool WriteString(FILE* pf, std::string s)
-{
-    size_t  lg1, lg2;
-
-    lg1 = s.size();
-    if (!WriteWord(pf, lg1)) return false;
-
-    lg2 = fwrite(s.c_str(), 1, lg1, pf );
-    return (lg1 == lg2);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool WriteFloat(FILE* pf, float w)
-{
-    size_t  lg;
-
-    lg = fwrite(&w, sizeof( float ), 1, pf );
-
-    return (lg == 1);
-}
-
-////////////////////////////////////////////////////////////////////////////////
 long GetNumInt(const std::string& str)
 {
     const char* p = str.c_str();
@@ -172,11 +155,23 @@ long GetNumInt(const std::string& str)
             break;
         }
     }
+    else if (*p == 'b')
+    {
+        while (*++p != 0)
+        {
+            if (*p == '0' || *p == '1')
+            {
+                num = (num << 1) + *p - '0';
+                continue;
+            }
+            break;
+        }
+    }
     return num;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-float GetNumFloat(const std::string& str)
+double GetNumFloat(const std::string& str)
 {
     const char* p = str.c_str();
     double    num = 0;
@@ -233,7 +228,7 @@ float GetNumFloat(const std::string& str)
     }
 
     if (bNeg) num = -num;
-    return static_cast<float>(num);
+    return num;
 }
 
 bool CharInList(const char c, const char* list)

@@ -40,8 +40,7 @@ CBotExprUnaire::~CBotExprUnaire()
     delete m_expr;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-CBotInstr* CBotExprUnaire::Compile(CBotToken* &p, CBotCStack* pStack, bool bLiteral)
+CBotInstr* CBotExprUnaire::Compile(CBotToken* &p, CBotCStack* pStack, bool bLiteral, bool bConstExpr)
 {
     int op = p->GetType();
     CBotToken*    pp = p;
@@ -52,8 +51,10 @@ CBotInstr* CBotExprUnaire::Compile(CBotToken* &p, CBotCStack* pStack, bool bLite
     CBotExprUnaire* inst = new CBotExprUnaire();
     inst->SetToken(pp);
 
-    if (!bLiteral) inst->m_expr = CBotParExpr::Compile(p, pStk);
-    else inst->m_expr = CBotParExpr::CompileLitExpr(p, pStk);
+    if (bConstExpr || !bLiteral)
+        inst->m_expr = CBotParExpr::Compile(p, pStk, bConstExpr);
+    else
+        inst->m_expr = CBotParExpr::CompileLitExpr(p, pStk);
 
     if (inst->m_expr != nullptr)
     {

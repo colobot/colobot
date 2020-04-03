@@ -419,7 +419,7 @@ bool CTaskTake::TransporterTakeObject()
 //?     cargo = SearchTakeObject(angle, 1.5f, Math::PI*0.04f);
         float angle = 0.0f;
         CObject* cargo = SearchTakeObject(angle, 1.5f, Math::PI*0.15f);  //OK 1.9
-        if (cargo == nullptr)  return false;  // rien � prendre ?
+        if (cargo == nullptr)  return false;  // nothing to take ?
         assert(cargo->Implements(ObjectInterfaceType::Transportable));
 
         m_cargoType = cargo->GetType();

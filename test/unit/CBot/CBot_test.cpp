@@ -22,6 +22,9 @@
 #include <gtest/gtest.h>
 #include <stdexcept>
 
+extern bool g_cbotTestSaveState;
+bool g_cbotTestSaveState = false;
+
 using namespace CBot;
 
 class CBotUT : public testing::Test
@@ -197,6 +200,23 @@ private:
         return ss.str();
     }
 
+    static void TestSaveAndRestore(CBotProgram* program)
+    {
+        std::stringstream sstr("");
+        // save
+        if (!program->SaveState(sstr))
+            throw CBotTestFail("CBotProgram::SaveState Failed");
+
+        if (!CBotClass::SaveStaticState(sstr))
+            throw CBotTestFail("CBotClass::SaveStaticState Failed");
+        // restore
+        if (!program->RestoreState(sstr))
+            throw CBotTestFail("CBotProgram::RestoreState Failed");
+
+        if (!CBotClass::RestoreStaticState(sstr))
+            throw CBotTestFail("CBotClass::RestoreStaticState Failed");
+    }
+
 protected:
     std::unique_ptr<CBotProgram> ExecuteTest(const std::string& code, CBotError expectedError = CBotNoErr)
     {
@@ -231,7 +251,17 @@ protected:
             try
             {
                 program->Start(test);
-                while (!program->Run());
+                if (g_cbotTestSaveState)
+                {
+                    while (!program->Run(nullptr, 0)) // save/restore at each step
+                    {
+                        TestSaveAndRestore(program.get());
+                    }
+                }
+                else
+                {
+                    while (!program->Run(nullptr, 0)); // execute in step mode
+                }
                 program->GetError(error, cursor1, cursor2);
                 if (error != expectedRuntimeError)
                 {
@@ -572,6 +602,127 @@ TEST_F(CBotUT, VarImplicitCast)
         "    string a = func();\n"
         "    ASSERT(a == \"5\");"
         "}\n"
+    );
+}
+
+TEST_F(CBotUT, IntegerMathNearLimits_Issue993)
+{
+    ExecuteTest(
+        "extern void Test_Issue993() {\n"
+        "    ASSERT(-2147483600 *  1 == -2147483600);\n"
+        "    ASSERT( 2147483600 *  1 ==  2147483600);\n"
+        "    ASSERT( 2147483646 *  1 ==  2147483646);\n"
+        "    ASSERT( 2147483646 * -1 == -2147483646);\n"
+        "    ASSERT( 2147483000 * -1 == -2147483000);\n"
+        "    ASSERT( 2147483000 *  1 ==  2147483000);\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, BinaryLiterals)
+{
+    ExecuteTest(
+        "extern void TestBinaryLiterals() {\n"
+        "    ASSERT(  8 ==   0b00001000);\n"
+        "    ASSERT( 12 ==   0b00001100);\n"
+        "    ASSERT( 16 ==   0b00010000);\n"
+        "    ASSERT( 24 ==   0b00011000);\n"
+        "    ASSERT( 32 ==   0b00100000);\n"
+        "    ASSERT( 48 ==   0b00110000);\n"
+        "    ASSERT( 64 ==   0b01000000);\n"
+        "    ASSERT( 96 ==   0b01100000);\n"
+        "    ASSERT(128 ==   0b10000000);\n"
+        "    ASSERT(192 ==   0b11000000);\n"
+        "    ASSERT(256 ==  0b100000000);\n"
+        "    ASSERT(384 ==  0b110000000);\n"
+        "    ASSERT(512 == 0b1000000000);\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, TestSwitchCase)
+{
+    ExecuteTest(
+        "extern void Test_Switch_Case() {\n"
+        "    int n = 0, c = 0;\n"
+        "    for (int i = -9; i < 11; ++i) {\n"
+        "        switch (i) {\n"
+        "            case -9: n = -9; ++c; break;\n"
+        "            case -8: n = -8; ++c; break;\n"
+        "            case -7: n = -7; ++c; break;\n"
+        "            case -6: n = -6; ++c; break;\n"
+        "            case -5: n = -5; ++c; break;\n"
+        "            case -4: n = -4; ++c; break;\n"
+        "            case -3: n = -3; ++c; break;\n"
+        "            case -2: n = -2; ++c; break;\n"
+        "            case -1: n = -1; ++c; break;\n"
+        "            case 0: n = 0; ++c; break;\n"
+        "            case 1: n = 1; ++c; break;\n"
+        "            case 2: n = 2; ++c; break;\n"
+        "            case 3: n = 3; ++c; break;\n"
+        "            case 4: n = 4; ++c; break;\n"
+        "            case 5: n = 5; ++c; break;\n"
+        "            case 6: n = 6; ++c; break;\n"
+        "            case 7: n = 7; ++c; break;\n"
+        "            case 8: n = 8; ++c; break;\n"
+        "            case 9: n = 9; ++c; break;\n"
+        "            default: n = 10; ++c; break;\n"
+        "        }\n"
+        "        ASSERT(n == i);\n"
+        "    }\n"
+        "    ASSERT(n == 10);\n"
+        "    ASSERT(c == 20);\n"
+        "}\n"
+        "extern void Test_Case_With_Math() {\n"
+        "    int n = 0, c = 0;\n"
+        "    for (int i = -9; i < 11; ++i) {\n"
+        "        switch (i * 10) {\n"
+        "            case -9*10: n = -90; ++c; break;\n"
+        "            case -8*10: n = -80; ++c; break;\n"
+        "            case -7*10: n = -70; ++c; break;\n"
+        "            case -6*10: n = -60; ++c; break;\n"
+        "            case -5*10: n = -50; ++c; break;\n"
+        "            case -4*10: n = -40; ++c; break;\n"
+        "            case -3*10: n = -30; ++c; break;\n"
+        "            case -2*10: n = -20; ++c; break;\n"
+        "            case -1*10: n = -10; ++c; break;\n"
+        "            case 0*10: n = 0; ++c; break;\n"
+        "            case 1*10: n = 10; ++c; break;\n"
+        "            case 2*10: n = 20; ++c; break;\n"
+        "            case 3*10: n = 30; ++c; break;\n"
+        "            case 4*10: n = 40; ++c; break;\n"
+        "            case 5*10: n = 50; ++c; break;\n"
+        "            case 6*10: n = 60; ++c; break;\n"
+        "            case 7*10: n = 70; ++c; break;\n"
+        "            case 8*10: n = 80; ++c; break;\n"
+        "            case 9*10: n = 90; ++c; break;\n"
+        "            default: n = 100; ++c; break;\n"
+        "        }\n"
+        "        ASSERT(n == i * 10);\n"
+        "    }\n"
+        "    ASSERT(n == 100);\n"
+        "    ASSERT(c == 20);\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "extern void Duplicate_Case() {\n"
+        "    switch(0) {\n"
+        "        case 1000:\n"
+        "        case 10*100:\n"
+        "    }\n"
+        "}\n",
+        CBotErrRedefCase
+    );
+
+    ExecuteTest(
+        "extern void Duplicate_Default() {\n"
+        "    switch(0) {\n"
+        "        default:\n"
+        "        default:\n"
+        "    }\n"
+        "}\n",
+        CBotErrRedefCase
     );
 }
 
@@ -1705,6 +1856,107 @@ TEST_F(CBotUT, StringFunctions)
         "    ASSERT(strright(\"asdf\", 15) == \"asdf\");\n"
         "    ASSERT(strright(\"asdf\", -15) == \"\");\n"
         "}\n"
+    );
+}
+
+TEST_F(CBotUT, LiteralCharacters)
+{
+    ExecuteTest(
+        "extern void TestCharValue()\n"
+        "{\n"
+        "    ASSERT('A' == 65);\n"
+        "    ASSERT('B' == 66);\n"
+        "    ASSERT('C' == 67);\n"
+        "    ASSERT('\\a' == 0x07);\n"
+        "    ASSERT('\\b' == 0x08);\n"
+        "    ASSERT('\\t' == 0x09);\n"
+        "    ASSERT('\\n' == 0x0A);\n"
+        "    ASSERT('\\v' == 0x0B);\n"
+        "    ASSERT('\\f' == 0x0C);\n"
+        "    ASSERT('\\r' == 0x0D);\n"
+        "    ASSERT('\\\"' == 0x22);\n"
+        "    ASSERT('\\\'' == 0x27);\n"
+        "    ASSERT('\\\\' == 0x5C);\n"
+        "}\n"
+        "extern void TestCharUnicodeEscape()\n"
+        "{\n"
+        "    ASSERT('\\u0007' == '\\a');\n"
+        "    ASSERT('\\u0008' == '\\b');\n"
+        "    ASSERT('\\u0009' == '\\t');\n"
+        "    ASSERT('\\u000A' == '\\n');\n"
+        "    ASSERT('\\u000B' == '\\v');\n"
+        "    ASSERT('\\u000C' == '\\f');\n"
+        "    ASSERT('\\u000D' == '\\r');\n"
+        "    ASSERT('\\u0022' == '\\\"');\n"
+        "    ASSERT('\\u0027' == '\\\'');\n"
+        "    ASSERT('\\u005C' == '\\\\');\n"
+        "}\n"
+        "extern void AssignCharToString_ToUTF_8()\n"
+        "{\n"
+        "    string test = '\\u00A9';\n"
+        "    test += '\\u00AE';\n"
+        "    ASSERT(test == \"\\xC2\\xA9\\xC2\\xAE\");\n"
+        "}\n"
+        "extern void AddCharToString_ToUTF_8()\n"
+        "{\n"
+        "    ASSERT(\"\" + 'A' + 'B' + 'C' == \"ABC\");\n"
+        "    ASSERT(\"\" + '\\u00A9' == \"\\xC2\\xA9\");\n"
+        "    ASSERT(\"\" + '\\u00AE' == \"\\xC2\\xAE\");\n"
+        "    ASSERT(\"\" + '\\u262E' == \"\\xE2\\x98\\xAE\");\n"
+        "    ASSERT(\"\" + '\\u262F' == \"\\xE2\\x98\\xAF\");\n"
+        "    ASSERT(\"\" + '\\U0001F60E' == \"\\xF0\\x9F\\x98\\x8E\");\n"
+        "    ASSERT(\"\" + '\\U0001F61C' == \"\\xF0\\x9F\\x98\\x9C\");\n"
+        "    ASSERT(\"\" + '\\U0001F6E0' == \"\\xF0\\x9F\\x9B\\xA0\");\n"
+        "    ASSERT(\"\" + '\\U0010FFFF' == \"\\xF4\\x8F\\xBF\\xBF\");\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "extern void MissingEndQuote()\n"
+        "{\n"
+        "    '\n"
+        "}\n",
+        CBotErrEndQuote
+    );
+
+    ExecuteTest(
+        "extern void MissingEndQuote()\n"
+        "{\n"
+        "    'a\n"
+        "}\n",
+        CBotErrEndQuote
+    );
+
+    ExecuteTest(
+        "extern void EmptyQuotes()\n"
+        "{\n"
+        "    '';\n"
+        "}\n",
+        CBotErrCharEmpty
+    );
+
+    ExecuteTest(
+        "extern void UnknownEscapeSequence()\n"
+        "{\n"
+        "    '\\p';\n"
+        "}\n",
+        CBotErrBadEscape
+    );
+
+    ExecuteTest(
+        "extern void MissingHexDigits()\n"
+        "{\n"
+        "    '\\u';\n"
+        "}\n",
+        CBotErrHexDigits
+    );
+
+    ExecuteTest(
+        "extern void BadUnicodeCharacterName()\n"
+        "{\n"
+        "    '\\U00110000';\n"
+        "}\n",
+        CBotErrUnicodeName
     );
 }
 

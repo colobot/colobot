@@ -21,57 +21,40 @@
 
 #include "CBot/CBotInstr/CBotInstr.h"
 
-#include <unordered_map>
-
 namespace CBot
 {
 
 /**
- * \brief The switch structure
- *
- * \see CBotCase
+ * \brief A character literal
+ * \verbatim 'a', '\n', '\t', '\uFFFD', '\U0000FFFD', etc. \endverbatim
  */
-class CBotSwitch : public CBotInstr
+class CBotExprLitChar : public CBotInstr
 {
 public:
-    CBotSwitch();
-    ~CBotSwitch();
+    CBotExprLitChar();
+    ~CBotExprLitChar();
 
     /*!
-     * \brief Compile
-     * \param p
-     * \param pStack
-     * \return
+     * \brief Compile a character literal
      */
     static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack);
 
     /*!
-     * \brief Execute Executes instruction "switch".
-     * \param pj
-     * \return
+     * \brief Execute, returns the corresponding char.
      */
     bool Execute(CBotStack* &pj) override;
 
     /*!
      * \brief RestoreState
-     * \param pj
-     * \param bMain
      */
     void RestoreState(CBotStack* &pj, bool bMain) override;
 
 protected:
-    virtual const std::string GetDebugName() override { return "CBotSwitch"; }
-    virtual std::map<std::string, CBotInstr*> GetDebugLinks() override;
+    virtual const std::string GetDebugName() override { return "CBotExprLitChar"; }
+    virtual std::string GetDebugData() override;
 
 private:
-    //! Value to seek
-    CBotInstr* m_value;
-    //! List of case instructions
-    CBotInstr* m_block = nullptr;
-    //! Pointer to default label
-    CBotInstr* m_default = nullptr;
-    //! Map of case labels
-    std::unordered_map<long, CBotInstr*> m_labels;
+    uint32_t m_valchar = 0;
 };
 
 } // namespace CBot

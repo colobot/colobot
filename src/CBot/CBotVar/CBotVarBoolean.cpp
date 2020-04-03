@@ -40,9 +40,9 @@ void CBotVarBoolean::Not()
     SetValInt(!GetValInt());
 }
 
-bool CBotVarBoolean::Save1State(FILE* pf)
+bool CBotVarBoolean::Save1State(std::ostream &ostr)
 {
-    return WriteWord(pf, m_val);                            // the value of the variable
+    return WriteByte(ostr, m_val);                          // the value of the variable
 }
 
 } // namespace CBot

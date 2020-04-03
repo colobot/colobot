@@ -25,40 +25,22 @@ namespace CBot
 {
 
 /**
- * \brief CBotVar subclass for managing integer values (::CBotTypInt)
+ * \brief CBotVar subclass for managing long integer values (::CBotTypLong)
  */
-class CBotVarInt : public CBotVarInteger<int, CBotTypInt>
+class CBotVarLong : public CBotVarInteger<long, CBotTypLong>
 {
 public:
-    CBotVarInt(const CBotToken &name) : CBotVarInteger(name) {}
+    CBotVarLong(const CBotToken &name) : CBotVarInteger(name) {}
 
-    void SetValInt(int val, const std::string& s = "") override;
-    std::string GetValString() override;
-
-    void Copy(CBotVar* pSrc, bool bName = true) override;
-
-    void Neg() override;
-    void Inc() override;
-    void Dec() override;
-    void Not() override;
-
-    void SR(CBotVar* left, CBotVar* right) override;
-
-    bool Save0State(std::ostream &ostr) override;
-    bool Save1State(std::ostream &ostr) override;
-
-protected:
-
-    void SetValue(int val) override
+    void SR(CBotVar* left, CBotVar* right) override
     {
-        CBotVarNumberBase::SetValue(val);
-        m_defnum.clear();
+        SetValLong(static_cast<unsigned long>(left->GetValLong()) >> right->GetValInt());
     }
 
-protected:
-    //! The name if given by DefineNum.
-    std::string m_defnum;
-    friend class CBotVar;
+    bool Save1State(std::ostream &ostr) override
+    {
+        return WriteLong(ostr, m_val);
+    }
 };
 
 } // namespace CBot

@@ -185,8 +185,13 @@ std::string CBotTypResult::ToString()
     switch (m_type)
     {
         case CBotTypVoid: return "void";
+        case CBotTypByte: return "byte";
+        case CBotTypShort: return "short";
+        case CBotTypChar: return "char";
         case CBotTypInt: return "int";
+        case CBotTypLong: return "long";
         case CBotTypFloat: return "float";
+        case CBotTypDouble: return "double";
         case CBotTypBoolean: return "bool";
         case CBotTypString: return "string";
         case CBotTypArrayPointer: return m_next->ToString() + "[]";

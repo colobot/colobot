@@ -169,7 +169,7 @@ CBotFunction* CBotFunction::Compile(CBotToken* &p, CBotCStack* pStack, CBotFunct
             func->m_token = d;
         }
 
-        // un nom de fonction est-il là ?
+        // is there a function name here ?
         if (IsOfType(p, TokenTypVar))
         {
             if ( IsOfType( p, ID_DBLDOTS ) )        // method for a class
@@ -284,7 +284,7 @@ CBotFunction* CBotFunction::Compile1(CBotToken* &p, CBotCStack* pStack, CBotClas
             func->m_token = d;
         }
 
-        // un nom de fonction est-il là ?
+        // is there a function name here ?
         if (IsOfType(p, TokenTypVar))
         {
             if ( IsOfType( p, ID_DBLDOTS ) )        // method for a class
@@ -584,7 +584,7 @@ CBotFunction* CBotFunction::FindLocalOrPublic(const std::list<CBotFunction*>& lo
             {
                 int i = 0;
                 int alpha = 0;                          // signature of parameters
-                // parameters sont-ils compatibles ?
+                // are parameters compatible ?
                 CBotDefParam* pv = pt->m_param;         // list of expected parameters
                 CBotVar* pw = ppVars[i++];              // list of provided parameters
                 while ( pv != nullptr && (pw != nullptr || pv->HasDefault()) )

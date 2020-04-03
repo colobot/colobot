@@ -44,6 +44,8 @@ set(SOURCES
     CBotInstr/CBotEmpty.h
     CBotInstr/CBotExprLitBool.cpp
     CBotInstr/CBotExprLitBool.h
+    CBotInstr/CBotExprLitChar.cpp
+    CBotInstr/CBotExprLitChar.h
     CBotInstr/CBotExprLitNan.cpp
     CBotInstr/CBotExprLitNan.h
     CBotInstr/CBotExprLitNull.cpp
@@ -127,14 +129,19 @@ set(SOURCES
     CBotVar/CBotVarArray.h
     CBotVar/CBotVarBoolean.cpp
     CBotVar/CBotVarBoolean.h
+    CBotVar/CBotVarByte.h
+    CBotVar/CBotVarChar.h
     CBotVar/CBotVarClass.cpp
     CBotVar/CBotVarClass.h
+    CBotVar/CBotVarDouble.h
     CBotVar/CBotVarFloat.cpp
     CBotVar/CBotVarFloat.h
     CBotVar/CBotVarInt.cpp
     CBotVar/CBotVarInt.h
+    CBotVar/CBotVarLong.h
     CBotVar/CBotVarPointer.cpp
     CBotVar/CBotVarPointer.h
+    CBotVar/CBotVarShort.h
     CBotVar/CBotVarString.cpp
     CBotVar/CBotVarString.h
     stdlib/Compilation.cpp

@@ -52,7 +52,7 @@ public:
      * \param pStack
      * \return
      */
-    static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack);
+    static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack, bool bConstExpr = false);
 
     /*!
      * \brief Compile a literal expression ("string", number, true, false, null, nan, new)
@@ -61,6 +61,8 @@ public:
      * \return The compiled instruction or nullptr on error
      */
     static CBotInstr* CompileLitExpr(CBotToken* &p, CBotCStack* pStack);
+
+    static CBotInstr* CompileConstExpr(CBotToken* &p, CBotCStack* pStack);
 
 private:
     CBotParExpr() = delete;

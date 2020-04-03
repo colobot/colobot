@@ -25,40 +25,17 @@ namespace CBot
 {
 
 /**
- * \brief CBotVar subclass for managing integer values (::CBotTypInt)
+ * \brief CBotVar subclass for managing double values (::CBotTypDouble)
  */
-class CBotVarInt : public CBotVarInteger<int, CBotTypInt>
+class CBotVarDouble : public CBotVarNumber<double, CBotTypDouble>
 {
 public:
-    CBotVarInt(const CBotToken &name) : CBotVarInteger(name) {}
+    CBotVarDouble(const CBotToken &name) : CBotVarNumber(name) {}
 
-    void SetValInt(int val, const std::string& s = "") override;
-    std::string GetValString() override;
-
-    void Copy(CBotVar* pSrc, bool bName = true) override;
-
-    void Neg() override;
-    void Inc() override;
-    void Dec() override;
-    void Not() override;
-
-    void SR(CBotVar* left, CBotVar* right) override;
-
-    bool Save0State(std::ostream &ostr) override;
-    bool Save1State(std::ostream &ostr) override;
-
-protected:
-
-    void SetValue(int val) override
+    bool Save1State(std::ostream &ostr) override
     {
-        CBotVarNumberBase::SetValue(val);
-        m_defnum.clear();
+        return WriteDouble(ostr, m_val);
     }
-
-protected:
-    //! The name if given by DefineNum.
-    std::string m_defnum;
-    friend class CBotVar;
 };
 
 } // namespace CBot
