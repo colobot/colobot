@@ -190,28 +190,28 @@ std::string CSystemUtils::GetBasePath()
 
 std::string CSystemUtils::GetDataPath()
 {
-#if DEV_BUILD
-    return std::string{"./"} + COLOBOT_DEFAULT_DATADIR;
-#else
+#ifdef USE_RELATIVE_PATHS
     return GetBasePath() + COLOBOT_DEFAULT_DATADIR;
+#else
+    return COLOBOT_DEFAULT_DATADIR;
 #endif
 }
 
 std::string CSystemUtils::GetLangPath()
 {
-#if DEV_BUILD
-    return std::string{"./"} + COLOBOT_I18N_DIR;
-#else
+#ifdef USE_RELATIVE_PATHS
     return GetBasePath() + COLOBOT_I18N_DIR;
+#else
+    return COLOBOT_I18N_DIR;
 #endif
 }
 
 std::string CSystemUtils::GetSaveDir()
 {
-    return "./saves";
+    return GetBasePath() + "saves";
 }
 
-std::string CSystemUtils::GetEnvVar(const std::string& str)
+std::string CSystemUtils::GetEnvVar(const std::string& name)
 {
-    return std::string();
+    return "";
 }

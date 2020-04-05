@@ -230,7 +230,10 @@ option(DEV_BUILD "Enable development build (enables some debugging tools, local 
 # PLEASE DO NOT USE ON UNOFFICIAL BUILDS. Thanks.
 option(OFFICIAL_COLOBOT_BUILD "Official build (changes crash screen text)" OFF)
 
-# Portable build - load all data from current directory
+# Hardcode relative paths instead of absolute paths
+option(USE_RELATIVE_PATHS "Generate relative paths from absolute paths" OFF)
+
+# Portable build - load all data from the base directory
 option(PORTABLE "Portable build" OFF)
 
 # Portable saves - suitable for e.g. putting the whole game on external storage and moving your saves with it
@@ -392,37 +395,42 @@ endif()
 # Installation paths defined before compiling sources
 if(PORTABLE OR (PLATFORM_WINDOWS AND MXE))
     # We need to use STRING because PATH doesn't accept relative paths
-    set(COLOBOT_INSTALL_BIN_DIR ./ CACHE STRING "Colobot binary directory")
-    set(COLOBOT_INSTALL_LIB_DIR ./ CACHE STRING "Colobot libraries directory")
-    set(COLOBOT_RELATIVE_DATA_DIR data CACHE STRING "Colobot shared data directory (relative)")
-    set(COLOBOT_RELATIVE_I18N_DIR lang CACHE STRING "Colobot translations directory (relative)")
-    set(COLOBOT_INSTALL_DATA_DIR ./data CACHE STRING "Colobot shared data directory")
-    set(COLOBOT_INSTALL_I18N_DIR ./lang CACHE STRING "Colobot translations directory")
-    set(COLOBOT_INSTALL_DOC_DIR ./doc CACHE STRING "Colobot documentation directory")
+    set(COLOBOT_INSTALL_BIN_DIR ${CMAKE_INSTALL_PREFIX}/ CACHE STRING "Colobot binary directory")
+    set(COLOBOT_INSTALL_LIB_DIR ${CMAKE_INSTALL_PREFIX}/ CACHE STRING "Colobot libraries directory")
+    set(COLOBOT_INSTALL_DATA_DIR ${CMAKE_INSTALL_PREFIX}/data CACHE STRING "Colobot shared data directory")
+    set(COLOBOT_INSTALL_I18N_DIR ${CMAKE_INSTALL_PREFIX}/lang CACHE STRING "Colobot translations directory")
+    set(COLOBOT_INSTALL_DOC_DIR ${CMAKE_INSTALL_PREFIX}/doc CACHE STRING "Colobot documentation directory")
+    set(USE_RELATIVE_PATHS ON)
 elseif(PLATFORM_WINDOWS)
     set(COLOBOT_INSTALL_BIN_DIR ${CMAKE_INSTALL_PREFIX}/ CACHE PATH "Colobot binary directory")
     set(COLOBOT_INSTALL_LIB_DIR ${CMAKE_INSTALL_PREFIX}/ CACHE PATH "Colobot libraries directory")
-    set(COLOBOT_RELATIVE_DATA_DIR data CACHE STRING "Colobot shared data directory (relative)")
-    set(COLOBOT_RELATIVE_I18N_DIR lang CACHE STRING "Colobot translations directory (relative)")
     set(COLOBOT_INSTALL_DATA_DIR ${CMAKE_INSTALL_PREFIX}/data CACHE PATH "Colobot shared data directory")
     set(COLOBOT_INSTALL_I18N_DIR ${CMAKE_INSTALL_PREFIX}/lang CACHE PATH "Colobot translations directory")
     set(COLOBOT_INSTALL_DOC_DIR ${CMAKE_INSTALL_PREFIX}/doc CACHE PATH "Colobot documentation directory")
 elseif(PLATFORM_MACOSX)
     set(COLOBOT_INSTALL_BIN_DIR ../MacOS CACHE STRING "Colobot binary directory")
     set(COLOBOT_INSTALL_LIB_DIR ../MacOS CACHE STRING "Colobot libraries directory")
-    set(COLOBOT_RELATIVE_DATA_DIR . CACHE STRING "Colobot shared data directory (relative)")
-    set(COLOBOT_RELATIVE_I18N_DIR i18n CACHE STRING "Colobot translations directory (relative)")
     set(COLOBOT_INSTALL_DATA_DIR . CACHE STRING "Colobot shared data directory")
     set(COLOBOT_INSTALL_I18N_DIR i18n CACHE SRING "Colobot translations directory")
     set(COLOBOT_INSTALL_DOC_DIR doc CACHE STRING "Colobot documentation directory")
 else()
     set(COLOBOT_INSTALL_BIN_DIR ${CMAKE_INSTALL_PREFIX}/games CACHE PATH "Colobot binary directory")
     set(COLOBOT_INSTALL_LIB_DIR ${CMAKE_INSTALL_PREFIX}/lib/colobot CACHE PATH "Colobot libraries directory")
-    set(COLOBOT_RELATIVE_DATA_DIR ../share/games/colobot CACHE STRING "Colobot shared data directory (relative)")
-    set(COLOBOT_RELATIVE_I18N_DIR ../share/locale CACHE STRING "Colobot translations directory (relative)")
     set(COLOBOT_INSTALL_DATA_DIR ${CMAKE_INSTALL_PREFIX}/share/games/colobot CACHE PATH "Colobot shared data directory")
     set(COLOBOT_INSTALL_I18N_DIR ${CMAKE_INSTALL_PREFIX}/share/locale CACHE PATH "Colobot translations directory")
     set(COLOBOT_INSTALL_DOC_DIR ${CMAKE_INSTALL_PREFIX}/share/doc/colobot CACHE PATH "Colobot documentation directory")
+endif()
+
+# Generate relative paths from absolute paths
+if(USE_RELATIVE_PATHS)
+    message(STATUS "Generating relative paths")
+    file(RELATIVE_PATH COLOBOT_DATA_DIR ${COLOBOT_INSTALL_BIN_DIR} ${COLOBOT_INSTALL_DATA_DIR})
+    file(RELATIVE_PATH COLOBOT_I18N_DIR ${COLOBOT_INSTALL_BIN_DIR} ${COLOBOT_INSTALL_I18N_DIR})
+
+    add_definitions(-DUSE_RELATIVE_PATHS)
+else()
+    set(COLOBOT_DATA_DIR ${COLOBOT_INSTALL_DATA_DIR})
+    set(COLOBOT_I18N_DIR ${COLOBOT_INSTALL_I18N_DIR})
 endif()
 
 # Subdirectory with sources

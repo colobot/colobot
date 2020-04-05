@@ -102,23 +102,23 @@ std::string CSystemUtilsLinux::GetSaveDir()
     std::string savegameDir;
 
     // Determine savegame dir according to XDG Base Directory Specification
-    char *envXDG_DATA_HOME = getenv("XDG_DATA_HOME");
-    if (envXDG_DATA_HOME == nullptr)
+    auto envXDG_DATA_HOME = GetEnvVar("XDG_DATA_HOME");
+    if (envXDG_DATA_HOME.empty())
     {
-        char *envHOME = getenv("HOME");
-        if (envHOME == nullptr)
+        auto envHOME = GetEnvVar("HOME");
+        if (envHOME.empty())
         {
-            GetLogger()->Warn("Unable to find directory for saves - using current directory");
-            savegameDir = "./saves";
+            GetLogger()->Warn("Unable to find directory for saves - using default directory");
+            savegameDir = CSystemUtils::GetSaveDir();
         }
         else
         {
-            savegameDir = std::string(envHOME) + "/.local/share/colobot";
+            savegameDir = envHOME + "/.local/share/colobot";
         }
     }
     else
     {
-        savegameDir = std::string(envXDG_DATA_HOME) + "/colobot";
+        savegameDir = envXDG_DATA_HOME + "/colobot";
     }
     GetLogger()->Trace("Saved game files are going to %s\n", savegameDir.c_str());
 
@@ -131,7 +131,6 @@ std::string CSystemUtilsLinux::GetEnvVar(const std::string& name)
     char* envVar = getenv(name.c_str());
     if (envVar != nullptr)
     {
-
         GetLogger()->Trace("Detected environment variable %s = %s\n", name.c_str(), envVar);
         return std::string(envVar);
     }
