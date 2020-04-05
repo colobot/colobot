@@ -27,6 +27,7 @@ pipeline {
                         dir('build/windows') {
                             sh '''
                                 # FIXME: without -lsetupapi linking sdl2 fails
+                                rm -rf *
                                 /opt/mxe/usr/bin/i686-w64-mingw32.static-cmake \
                                     -DCMAKE_CXX_STANDARD_LIBRARIES="-lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 -lsetupapi" \
                                     -DCMAKE_INSTALL_PREFIX=/install \
