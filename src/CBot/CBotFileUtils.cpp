@@ -183,7 +183,8 @@ bool ReadLong(std::istream &istr, long &l)
 
 bool WriteFloat(std::ostream &ostr, float f)
 {
-    union TypeConverter {
+    union TypeConverter
+    {
         float fValue;
         unsigned int iValue;
     };
@@ -198,7 +199,8 @@ bool WriteFloat(std::ostream &ostr, float f)
 
 bool ReadFloat(std::istream &istr, float &f)
 {
-    union TypeConverter {
+    union TypeConverter
+    {
         float fValue;
         unsigned int iValue;
     };
@@ -214,7 +216,8 @@ bool ReadFloat(std::istream &istr, float &f)
 
 bool WriteDouble(std::ostream &ostr, double d)
 {
-    union TypeConverter {
+    union TypeConverter
+    {
         double dValue;
         unsigned long iValue;
     };
@@ -229,7 +232,8 @@ bool WriteDouble(std::ostream &ostr, double d)
 
 bool ReadDouble(std::istream &istr, double &d)
 {
-    union TypeConverter {
+    union TypeConverter
+    {
         double dValue;
         unsigned long iValue;
     };
