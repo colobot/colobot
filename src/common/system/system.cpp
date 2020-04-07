@@ -36,6 +36,7 @@
 #include <iostream>
 #include <algorithm>
 
+#include <SDL2/SDL.h>
 
 std::unique_ptr<CSystemUtils> CSystemUtils::Create()
 {
@@ -176,17 +177,41 @@ float CSystemUtils::TimeStampDiff(SystemTimeStamp *before, SystemTimeStamp *afte
     return result;
 }
 
+std::string CSystemUtils::GetBasePath()
+{
+    if (m_basePath.empty())
+    {
+        auto* path = SDL_GetBasePath();
+        m_basePath = path;
+        SDL_free(path);
+    }
+    return m_basePath;
+}
+
 std::string CSystemUtils::GetDataPath()
 {
+#ifdef USE_RELATIVE_PATHS
+    return GetBasePath() + COLOBOT_DEFAULT_DATADIR;
+#else
     return COLOBOT_DEFAULT_DATADIR;
+#endif
 }
 
 std::string CSystemUtils::GetLangPath()
 {
+#ifdef USE_RELATIVE_PATHS
+    return GetBasePath() + COLOBOT_I18N_DIR;
+#else
     return COLOBOT_I18N_DIR;
+#endif
 }
 
 std::string CSystemUtils::GetSaveDir()
 {
-    return "./saves";
+    return GetBasePath() + "saves";
+}
+
+std::string CSystemUtils::GetEnvVar(const std::string& name)
+{
+    return "";
 }

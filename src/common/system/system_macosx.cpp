@@ -113,6 +113,12 @@ std::string CSystemUtilsMacOSX::GetSaveDir()
 #endif
 }
 
+std::string CSystemUtilsMacOSX::GetEnvVar(const std::string& str)
+{
+    // TODO: I have no Mac
+    return std::string();
+}
+
 void CSystemUtilsMacOSX::Usleep(int usec)
 {
     usleep(usec);
