@@ -127,6 +127,9 @@ public:
     /** The difference is \a after - \a before. */
     virtual long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after) = 0;
 
+    //! Returns the path where the executable binary is located (ends with the path separator)
+    virtual std::string GetBasePath();
+
     //! Returns the data path (containing textures, levels, helpfiles, etc)
     virtual std::string GetDataPath();
 
@@ -136,9 +139,13 @@ public:
     //! Returns the save dir location
     virtual std::string GetSaveDir();
 
+    //! Returns the environment variable with the given name or an empty string if it does not exist
+    virtual std::string GetEnvVar(const std::string &name);
+
     //! Sleep for given amount of microseconds
     virtual void Usleep(int usecs) = 0;
 
 private:
+    std::string m_basePath;
     std::vector<std::unique_ptr<SystemTimeStamp>> m_timeStamps;
 };

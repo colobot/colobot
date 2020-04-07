@@ -164,7 +164,9 @@ public:
     CSoundInterface* GetSound();
 
 public:
-    //! Parses commandline arguments
+    //! Loads some data from environment variables
+    void LoadEnvironmentVariables();
+    //! Parses commandline arguments (they take priority)
     ParseArgsStatus ParseArguments(int argc, char *argv[]);
     //! Initializes the application
     bool        Create();

@@ -36,6 +36,8 @@ public:
     std::string GetLangPath() override;
     std::string GetSaveDir() override;
 
+    std::string GetEnvVar(const std::string& name) override;
+
     void Usleep(int usec) override;
 
 private:

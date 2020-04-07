@@ -115,20 +115,36 @@ std::string CSystemUtilsWindows::GetSaveDir()
 #else
     std::string savegameDir;
 
-    wchar_t* envUSERPROFILE = _wgetenv(L"USERPROFILE");
-    if (envUSERPROFILE == nullptr)
+    auto envUSERPROFILE = GetEnvVar("USERPROFILE");
+    if (envUSERPROFILE.empty())
     {
-        GetLogger()->Warn("Unable to find directory for saves - using current directory");
-        savegameDir = "./saves";
+        GetLogger()->Warn("Unable to find directory for saves - using default directory");
+        savegameDir = CSystemUtils::GetSaveDir();
     }
     else
     {
-        savegameDir = UTF8_Encode(std::wstring(envUSERPROFILE)) + "\\colobot";
+        savegameDir = envUSERPROFILE + "\\colobot";
     }
     GetLogger()->Trace("Saved game files are going to %s\n", savegameDir.c_str());
 
     return savegameDir;
 #endif
+}
+
+std::string CSystemUtilsWindows::GetEnvVar(const std::string& name)
+{
+    std::wstring wname(name.begin(), name.end());
+    wchar_t* envVar = _wgetenv(wname.c_str());
+    if (envVar == nullptr)
+    {
+        return "";
+    }
+    else
+    {
+        std::string var = UTF8_Encode(std::wstring(envVar));
+        GetLogger()->Trace("Detected environment variable %s = %s\n", name.c_str(), var.c_str());
+        return var;
+    }
 }
 
 void CSystemUtilsWindows::Usleep(int usec)

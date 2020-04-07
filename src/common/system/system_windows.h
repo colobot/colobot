@@ -43,6 +43,8 @@ public:
 
     std::string GetSaveDir() override;
 
+    std::string GetEnvVar(const std::string& name) override;
+
     void Usleep(int usec) override;
 
 public:
