@@ -123,21 +123,7 @@ void CShortcut::Draw()
         DrawVertex(icon, 0.95f);
     }
 
-    icon = m_icon;
-    if ( icon >= 128 )
-    {
-        icon -= 128;
-        m_engine->SetTexture("textures/interface/button3.png");
-    }
-    else if ( icon >= 64 )
-    {
-        icon -= 64;
-        m_engine->SetTexture("textures/interface/button2.png");
-    }
-    else
-    {
-        m_engine->SetTexture("textures/interface/button1.png");
-    }
+    icon = SetButtonTextureForIcon(m_icon);
     if (m_icon == 58)
     {
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);

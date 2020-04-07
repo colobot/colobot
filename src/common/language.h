@@ -33,7 +33,8 @@ enum Language
     LANGUAGE_GERMAN = 2,
     LANGUAGE_POLISH = 3,
     LANGUAGE_RUSSIAN = 4,
-    LANGUAGE_CZECH = 5
+    LANGUAGE_CZECH = 5,
+    LANGUAGE_PORTUGUESE_BRAZILIAN = 6
 };
 
 bool ParseLanguage(const std::string& str, Language& language);

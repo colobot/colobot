@@ -116,6 +116,13 @@ protected:
 
     std::string     GetResourceName(EventType eventType);
 
+    /**
+     * \brief Set texture in m_engine to correct buttonX.png for given icon
+     * \param icon Icon to draw
+     * \return Index inside the selected texture of the icon to draw
+     */
+    int             SetButtonTextureForIcon(int icon);
+
 protected:
     Gfx::CEngine*     m_engine;
     Gfx::CParticle*   m_particle;

@@ -267,6 +267,10 @@ msgid "The battle has ended"
 msgstr ""
 
 #, c-format
+msgid "Time: %s"
+msgstr ""
+
+#, c-format
 msgid "%s: %d pts"
 msgstr ""
 
@@ -445,6 +449,9 @@ msgid "Dynamic shadows ++\\Dynamic shadows + self shadowing"
 msgstr ""
 
 msgid "Shadow resolution\\Higher means better range and quality, but slower"
+msgstr ""
+
+msgid "Vertical Synchronization\\Limits the number of frames per second to display frequency"
 msgstr ""
 
 msgid "Standard controls\\Standard key functions"
@@ -1786,6 +1793,12 @@ msgid "Hex value out of range"
 msgstr ""
 
 msgid "Invalid universal character name"
+msgstr ""
+
+msgid "Empty character constant"
+msgstr ""
+
+msgid "Duplicate label in switch"
 msgstr ""
 
 msgid "Dividing by zero"

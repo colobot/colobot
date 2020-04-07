@@ -13,7 +13,7 @@ project(colobot C CXX)
 set(COLOBOT_VERSION_CODENAME "Gold")
 set(COLOBOT_VERSION_MAJOR    0)
 set(COLOBOT_VERSION_MINOR    1)
-set(COLOBOT_VERSION_REVISION 11)
+set(COLOBOT_VERSION_REVISION 12)
 
 # Used on official releases
 #set(COLOBOT_VERSION_RELEASE_CODENAME "-alpha")
@@ -60,6 +60,7 @@ if("${CMAKE_SYSTEM_NAME}" MATCHES "Windows")
     set(PLATFORM_GNU     0)
     set(PLATFORM_LINUX   0)
     set(PLATFORM_MACOSX  0)
+    set(PLATFORM_FREEBSD 0)
     set(PLATFORM_OTHER   0)
 
     # Platform-dependent implementation of system.h
@@ -71,6 +72,7 @@ elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
     set(PLATFORM_LINUX   1)
     set(PLATFORM_GNU     1)
     set(PLATFORM_MACOSX  0)
+    set(PLATFORM_FREEBSD 0)
     set(PLATFORM_OTHER   0)
 
     # Platform-dependent implementation of system.h
@@ -82,6 +84,7 @@ elseif("${CMAKE_SYSTEM_NAME}" MATCHES "kFreeBSD" OR "${CMAKE_SYSTEM_NAME}" STREQ
     set(PLATFORM_LINUX   0)
     set(PLATFORM_GNU     1)
     set(PLATFORM_MACOSX  0)
+    set(PLATFORM_FREEBSD 0)
     set(PLATFORM_OTHER   0)
 
     # Platform-dependent implementation of system.h
@@ -94,10 +97,26 @@ elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
     set(PLATFORM_GNU     0)
     set(PLATFORM_MACOSX  1)
     set(PLATFORM_OTHER   0)
+    set(PLATFORM_FREEBSD 0)
 
     # Platform-dependent implementation of system.h
     set(SYSTEM_CPP_MODULE "system_macosx.cpp")
     set(SYSTEM_H_MODULE "system_macosx.h")
+    # To avoid CMake warning
+    set(CMAKE_MACOSX_RPATH 1)
+elseif("${CMAKE_SYSTEM_NAME}" MATCHES "FreeBSD")
+    message(STATUS "Build for FreeBSD system")
+    set(PLATFORM_WINDOWS 0)
+    set(PLATFORM_LINUX   0)
+    set(PLATFORM_GNU     0)
+    set(PLATFORM_MACOSX  0)
+    set(PLATFORM_FREEBSD 1)
+    set(PLATFORM_OTHER   0)
+
+    # Platform-dependent implementation of system.h
+    # On FreeBSD we can use *_other
+    set(SYSTEM_CPP_MODULE "system_other.cpp")
+    set(SYSTEM_H_MODULE "system_other.h")
     # To avoid CMake warning
     set(CMAKE_MACOSX_RPATH 1)
 else()
@@ -106,6 +125,7 @@ else()
     set(PLATFORM_LINUX   0)
     set(PLATFORM_GNU     0)
     set(PLATFORM_MACOSX  0)
+    set(PLATFORM_FREEBSD 0)
     set(PLATFORM_OTHER   1)
 
     # Platform-dependent implementation of system.h
@@ -123,6 +143,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
 # Include cmake directory with some additional scripts
 set(CMAKE_MODULE_PATH "${colobot_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
+
+# MSVC needs different flags if linking statically
+option(MSVC_STATIC "Link statically when using MSVC" OFF)
 
 # Compiler detection
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
@@ -150,6 +173,10 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 
     message(STATUS "Detected Clang version 3.1+")
 
+    if (${PLATFORM_FREEBSD})
+	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=bfd")
+    endif()
+
     set(NORMAL_CXX_FLAGS "-std=c++11 -Wall -Werror -Wold-style-cast -pedantic-errors -Wmissing-prototypes")
     set(NORMAL_CXX_FLAGS "${NORMAL_CXX_FLAGS} -Wno-error=deprecated-declarations") # updated version of physfs is not available on some platforms so we keep using deprecated functions, see #958
     set(RELEASE_CXX_FLAGS "-O2")
@@ -160,14 +187,19 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     message(STATUS "Detected MSVC compiler")
 
     set(NORMAL_CXX_FLAGS "/wd\"4244\" /wd\"4309\" /wd\"4800\" /wd\"4996\" /wd\"4351\" /EHsc") # disable some useless warnings
-    set(RELEASE_CXX_FLAGS "/MD")
-    set(DEBUG_CXX_FLAGS "/MDd /ZI")
+    if(MSVC_STATIC)
+        set(RELEASE_CXX_FLAGS "/MT /Ox")
+        set(DEBUG_CXX_FLAGS "/MTd /ZI")
+    else(MSVC_STATIC)
+        set(RELEASE_CXX_FLAGS "/MD /Ox")
+        set(DEBUG_CXX_FLAGS "/MDd /ZI")
+    endif()
     set(TEST_CXX_FLAGS "")
     add_definitions(-DNOEXCEPT= -DHAS_MSVC_EXCEPTION_BUG)
 
     # Needed for Debug information (it's set to "No" by default for some reason)
-    set(CMAKE_EXE_LINKER_FLAGS_DEBUG "/DEBUG")
-    set(CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO "/DEBUG")
+    set(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS} /DEBUG")
+    set(CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO "${CMAKE_EXE_LINKER_FLAGS} /DEBUG")
 else()
     message(FATAL_ERROR "Your C++ compiler doesn't seem to be supported.")
 endif()
@@ -196,10 +228,13 @@ option(DEV_BUILD "Enable development build (enables some debugging tools, local 
 
 # Official build - changes text on the crash screen
 # PLEASE DO NOT USE ON UNOFFICIAL BUILDS. Thanks.
-option(OFFICIAL_BUILD "Official build (changes crash screen text)" OFF)
+option(OFFICIAL_COLOBOT_BUILD "Official build (changes crash screen text)" OFF)
 
 # Portable build - load all data from current directory
 option(PORTABLE "Portable build" OFF)
+
+# Portable saves - suitable for e.g. putting the whole game on external storage and moving your saves with it
+option(PORTABLE_SAVES "Portable saves" OFF)
 
 # Building tests can be enabled/disabled
 option(TESTS "Build tests" OFF)
@@ -312,6 +347,11 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
 
     set(CBOT_STATIC 1) # only this works for some reason
     set(WINGETOPT 1) # use wingetopt library
+
+    # Hide console in release builds
+    if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+        set(CMAKE_WIN32_EXECUTABLE 1)
+    endif()
 endif()
 
 ##
@@ -350,21 +390,19 @@ endif()
 ##
 
 # Installation paths defined before compiling sources
-if(PLATFORM_WINDOWS)
-    if(MXE)
-        # We need to use STRING because PATH doesn't accept relative paths
-        set(COLOBOT_INSTALL_BIN_DIR ./ CACHE STRING "Colobot binary directory")
-        set(COLOBOT_INSTALL_LIB_DIR ./ CACHE STRING "Colobot libraries directory")
-        set(COLOBOT_INSTALL_DATA_DIR ./data CACHE STRING "Colobot shared data directory")
-        set(COLOBOT_INSTALL_I18N_DIR ./lang CACHE STRING "Colobot translations directory")
-        set(COLOBOT_INSTALL_DOC_DIR ./doc CACHE STRING "Colobot documentation directory")
-    else()
-        set(COLOBOT_INSTALL_BIN_DIR ${CMAKE_INSTALL_PREFIX}/ CACHE PATH "Colobot binary directory")
-        set(COLOBOT_INSTALL_LIB_DIR ${CMAKE_INSTALL_PREFIX}/ CACHE PATH "Colobot libraries directory")
-        set(COLOBOT_INSTALL_DATA_DIR ${CMAKE_INSTALL_PREFIX}/data CACHE PATH "Colobot shared data directory")
-        set(COLOBOT_INSTALL_I18N_DIR ${CMAKE_INSTALL_PREFIX}/lang CACHE PATH "Colobot translations directory")
-        set(COLOBOT_INSTALL_DOC_DIR ${CMAKE_INSTALL_PREFIX}/doc CACHE PATH "Colobot documentation directory")
-    endif()
+if(PORTABLE OR (PLATFORM_WINDOWS AND MXE))
+    # We need to use STRING because PATH doesn't accept relative paths
+    set(COLOBOT_INSTALL_BIN_DIR ./ CACHE STRING "Colobot binary directory")
+    set(COLOBOT_INSTALL_LIB_DIR ./ CACHE STRING "Colobot libraries directory")
+    set(COLOBOT_INSTALL_DATA_DIR ./data CACHE STRING "Colobot shared data directory")
+    set(COLOBOT_INSTALL_I18N_DIR ./lang CACHE STRING "Colobot translations directory")
+    set(COLOBOT_INSTALL_DOC_DIR ./doc CACHE STRING "Colobot documentation directory")
+elseif(PLATFORM_WINDOWS)
+    set(COLOBOT_INSTALL_BIN_DIR ${CMAKE_INSTALL_PREFIX}/ CACHE PATH "Colobot binary directory")
+    set(COLOBOT_INSTALL_LIB_DIR ${CMAKE_INSTALL_PREFIX}/ CACHE PATH "Colobot libraries directory")
+    set(COLOBOT_INSTALL_DATA_DIR ${CMAKE_INSTALL_PREFIX}/data CACHE PATH "Colobot shared data directory")
+    set(COLOBOT_INSTALL_I18N_DIR ${CMAKE_INSTALL_PREFIX}/lang CACHE PATH "Colobot translations directory")
+    set(COLOBOT_INSTALL_DOC_DIR ${CMAKE_INSTALL_PREFIX}/doc CACHE PATH "Colobot documentation directory")
 elseif(PLATFORM_MACOSX)
     set(COLOBOT_INSTALL_BIN_DIR ../MacOS CACHE STRING "Colobot binary directory")
     set(COLOBOT_INSTALL_LIB_DIR ../MacOS CACHE STRING "Colobot libraries directory")

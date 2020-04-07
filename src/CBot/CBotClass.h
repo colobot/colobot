@@ -331,18 +331,18 @@ public:
     static void ClearPublic();
 
     /*!
-     * \brief SaveStaticState
-     * \param pf
-     * \return
+     * \brief Save all static variables from each public class
+     * \param ostr Output stream
+     * \return true on success
      */
-    static bool SaveStaticState(FILE* pf);
+    static bool SaveStaticState(std::ostream &ostr);
 
     /*!
-     * \brief RestoreStaticState
-     * \param pf
-     * \return
+     * \brief Restore all static variables in each public class
+     * \param istr Input stream
+     * \return true on success
      */
-    static bool RestoreStaticState(FILE* pf);
+    static bool RestoreStaticState(std::istream &istr);
 
     /**
      * \brief Request a lock on this class (for "synchronized" keyword)

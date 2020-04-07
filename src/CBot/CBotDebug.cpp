@@ -23,6 +23,7 @@
 #include "CBot/CBotInstr/CBotFunction.h"
 #include "CBot/CBotInstr/CBotInstrCall.h"
 
+#include <functional>
 #include <sstream>
 #include <iostream>
 #include <iomanip>

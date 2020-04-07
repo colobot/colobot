@@ -21,6 +21,8 @@
 
 #include "CBot/CBotInstr/CBotInstr.h"
 
+#include <unordered_map>
+
 namespace CBot
 {
 
@@ -64,8 +66,12 @@ protected:
 private:
     //! Value to seek
     CBotInstr* m_value;
-    //! Instructions
-    CBotInstr* m_block;
+    //! List of case instructions
+    CBotInstr* m_block = nullptr;
+    //! Pointer to default label
+    CBotInstr* m_default = nullptr;
+    //! Map of case labels
+    std::unordered_map<long, CBotInstr*> m_labels;
 };
 
 } // namespace CBot

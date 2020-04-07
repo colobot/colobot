@@ -58,8 +58,8 @@ public:
     Program* GetCurrentProgram() override;
     void StopProgram() override;
 
-    bool ReadStack(FILE *file) override;
-    bool WriteStack(FILE *file) override;
+    bool ReadStack(std::istream &istr) override;
+    bool WriteStack(std::ostream &ostr) override;
 
     void TraceRecordStart() override;
     void TraceRecordStop() override;

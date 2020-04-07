@@ -284,13 +284,19 @@ void COldObject::DeleteObject(bool bAll)
         if (m_power != nullptr)
         {
             if (m_power->Implements(ObjectInterfaceType::Old))
+            {
+                dynamic_cast<COldObject*>(m_power)->SetTransporter(nullptr);
                 dynamic_cast<COldObject*>(m_power)->DeleteObject(bAll);
+            }
             m_power = nullptr;
         }
         if (m_cargo != nullptr)
         {
             if (m_cargo->Implements(ObjectInterfaceType::Old))
+            {
+                dynamic_cast<COldObject*>(m_cargo)->SetTransporter(nullptr);
                 dynamic_cast<COldObject*>(m_cargo)->DeleteObject(bAll);
+            }
             m_cargo = nullptr;
         }
     }
@@ -683,6 +689,8 @@ void COldObject::SetType(ObjectType type)
 {
     m_type = type;
     m_name = GetObjectName(m_type);
+
+    SetSelectable(IsSelectableByDefault(m_type));
 
     // TODO: Temporary hack
     if ( m_type == OBJECT_MOBILEfa || // WingedGrabber
@@ -1088,6 +1096,10 @@ void COldObject::Read(CLevelParserLine* line)
     if (Implements(ObjectInterfaceType::JetFlying))
     {
         SetRange(line->GetParam("range")->AsFloat(30.0f));
+    }
+    if (Implements(ObjectInterfaceType::Fragile))
+    {
+        SetMagnifyDamage(line->GetParam("magnifyDamage")->AsFloat(1.0f)); // TODO: This is a temporary hack for now - CFragileObject doesn't have SetMagnifyDamage ~krzys_h
     }
     if (Implements(ObjectInterfaceType::Shielded))
     {

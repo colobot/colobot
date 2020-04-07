@@ -71,7 +71,7 @@ bool CObjectManager::DeleteObject(CObject* instance)
         it->second.reset();
         m_shouldCleanRemovedObjects = true;
         return true;
-    }
+    } else assert(false);
 
     return false;
 }

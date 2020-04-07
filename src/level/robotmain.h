@@ -152,8 +152,9 @@ struct MinMax
 
 struct Viewpoint
 {
-    Math::Vector    eye;
-    Math::Vector    look;
+    Math::Vector    eye{};
+    Math::Vector    look{};
+    int             button = 13; // 13 is the camera button
 };
 
 const int SATCOM_HUSTON     = 0;
@@ -307,8 +308,8 @@ public:
 
     void        SaveAllScript();
     void        SaveOneScript(CObject *obj);
-    bool        SaveFileStack(CObject *obj, FILE *file, int objRank);
-    bool        ReadFileStack(CObject *obj, FILE *file, int objRank);
+    bool        SaveFileStack(CObject *obj, std::ostream &ostr);
+    bool        ReadFileStack(CObject *obj, std::istream &istr);
 
     //! Return list of scripts to load to robot created in BotFactory
     std::vector<std::string> GetNewScriptNames(ObjectType type);
@@ -672,6 +673,8 @@ protected:
     //! If true, the mission ends immediately after completing the requirements without requiring SpaceShip takeoff
     bool            m_endTakeImmediat = false;
     long            m_endTakeResearch = 0;
+    float           m_endTakeTimeout = -1.0f;
+    bool            m_endTakeTeamImmediateWin = false;
     float           m_endTakeWinDelay = 0.0f;
     float           m_endTakeLostDelay = 0.0f;
     //! Set to true for teams that have already finished

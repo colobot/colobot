@@ -192,17 +192,6 @@ public:
                                  bool bMain);
 
     /**
-     * \brief CompCase This routine is defined only for the subclass CBotCase
-     * this allows to make the call on all instructions CompCase to see if it's
-     * a case to the desired value..
-     * \param pj
-     * \param val
-     * \return
-     */
-    virtual bool CompCase(CBotStack* &pj,
-                          int val);
-
-    /**
      * \brief SetToken Set the token corresponding to the instruction.
      * \param p
      */

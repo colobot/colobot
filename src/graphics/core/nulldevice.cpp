@@ -168,16 +168,6 @@ void CNullDevice::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, i
 {
 }
 
-void CNullDevice::DrawPrimitive(PrimitiveType type, const void *vertices,
-    int size, const VertexFormat &format, int vertexCount)
-{
-}
-
-void CNullDevice::DrawPrimitives(PrimitiveType type, const void *vertices,
-    int size, const VertexFormat &format, int first[], int count[], int drawCount)
-{
-}
-
 void CNullDevice::DrawPrimitives(PrimitiveType type, const Vertex *vertices,
     int first[], int count[], int drawCount, Color color)
 {

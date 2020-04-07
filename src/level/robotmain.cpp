@@ -60,6 +60,7 @@
 #include "level/parser/parser.h"
 
 #include "math/const.h"
+#include "math/func.h"
 #include "math/geometry.h"
 
 #include "object/object.h"
@@ -118,6 +119,10 @@
 
 const float UNIT = 4.0f;    // default for g_unit
 float   g_unit;             // conversion factor
+
+// Min/max values for the game speed.
+const float MIN_SPEED = 1/8.0f;
+const float MAX_SPEED = 256.0f;
 
 // Reference colors used when recoloring textures, see ChangeColor()
 const Gfx::Color COLOR_REF_BOT   = Gfx::Color( 10.0f/256.0f, 166.0f/256.0f, 254.0f/256.0f);  // blue
@@ -589,7 +594,7 @@ void CRobotMain::ChangePhase(Phase phase)
                     ddim.x = dim.x*15;  ddim.y = dim.y*3.0f;
                     pe = m_interface->CreateEdit(pos, ddim, 0, EVENT_EDIT0);
                     pe->SetGenericMode(true);
-                    pe->SetFontType(Gfx::FONT_COLOBOT);
+                    pe->SetFontType(Gfx::FONT_COMMON);
                     pe->SetEditCap(false);
                     pe->SetHighlightCap(false);
                     pe->ReadText(std::string("help/") + m_app->GetLanguageChar() + std::string("/win.txt"));
@@ -779,7 +784,7 @@ bool CRobotMain::ProcessEvent(Event &event)
 
         if (IsPhaseWithWorld(m_phase))
         {
-            if (data->key == KEY(F11))
+            if (data->key == KEY(F10))
             {
                 m_debugMenu->ToggleInterface();
                 return false;
@@ -2127,7 +2132,7 @@ void CRobotMain::CreateTooltip(Math::Point pos, const std::string& text)
 
     Math::Point start, end;
 
-    m_engine->GetText()->SizeText(text, Gfx::FONT_COLOBOT, Gfx::FONT_SIZE_SMALL,
+    m_engine->GetText()->SizeText(text, Gfx::FONT_COMMON, Gfx::FONT_SIZE_SMALL,
                                   corner, Gfx::TEXT_ALIGN_LEFT,
                                   start, end);
 
@@ -2162,7 +2167,7 @@ void CRobotMain::CreateTooltip(Math::Point pos, const std::string& text)
         pw->SetState(Ui::STATE_SHADOW);
         pw->SetTrashEvent(false);
 
-        pos.y -= m_engine->GetText()->GetHeight(Gfx::FONT_COLOBOT, Gfx::FONT_SIZE_SMALL) / 2.0f;
+        pos.y -= m_engine->GetText()->GetHeight(Gfx::FONT_COMMON, Gfx::FONT_SIZE_SMALL) / 2.0f;
         pw->CreateLabel(pos, dim, -1, EVENT_LABEL2, text);
     }
 }
@@ -2527,6 +2532,8 @@ bool CRobotMain::EventFrame(const Event &event)
         {
             CheckEndMission(true);
             UpdateAudio(true);
+            if (m_scoreboard)
+                m_scoreboard->UpdateObjectCount();
         }
 
         if (m_winDelay > 0.0f && !m_editLock)
@@ -2701,6 +2708,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_endTake.clear();
         m_endTakeImmediat = false;
         m_endTakeResearch = 0;
+        m_endTakeTimeout = -1.0f;
+        m_endTakeTeamImmediateWin = false;
         m_endTakeWinDelay = 2.0f;
         m_endTakeLostDelay = 2.0f;
         m_teamFinished.clear();
@@ -3551,8 +3560,9 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     continue;
                 }
                 Viewpoint tmp;
-                tmp.eye = line->GetParam("eye")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f))*g_unit;
-                tmp.look = line->GetParam("lookat")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f))*g_unit;
+                tmp.eye = line->GetParam("eye")->AsPoint()*g_unit;
+                tmp.look = line->GetParam("lookat")->AsPoint()*g_unit;
+                tmp.button = line->GetParam("button")->AsInt(13); // 13 is the camera button
                 m_viewpoints.push_back(tmp);
                 continue;
             }
@@ -3571,6 +3581,11 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 }
                 continue;
             }
+            if (line->GetCommand() == "EndMissionTeams" && !resetObject)
+            {
+                m_endTakeTeamImmediateWin = line->GetParam("immediateWin")->AsBool(false); // false = finishing removes the team that finished, true = finishing for one team ends the whole game
+                continue;
+            }
             if (line->GetCommand() == "EndMissionDelay" && !resetObject)
             {
                 m_endTakeWinDelay  = line->GetParam("win")->AsFloat(2.0f);
@@ -3582,6 +3597,11 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 m_endTakeResearch |= line->GetParam("type")->AsResearchFlag();
                 continue;
             }
+            if (line->GetCommand() == "EndMissionTimeout" && !resetObject)
+            {
+                m_endTakeTimeout = line->GetParam("time")->AsFloat();
+                continue;
+            }
 
             if (line->GetCommand() == "Scoreboard" && !resetObject)
             {
@@ -3589,13 +3609,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 {
                     // Create the scoreboard
                     m_scoreboard = MakeUnique<CScoreboard>();
+                    m_scoreboard->SetSortType(line->GetParam("sort")->AsSortType(CScoreboard::SortType::SORT_ID));
                 }
-                continue;
-            }
-
-            if (line->GetCommand() == "ScoreboardSortType" && !resetObject)
-            {
-                m_scoreboard->SetSortType(static_cast<SortType>(line->GetParam("sort")->AsSortType() ) );
                 continue;
             }
 
@@ -3606,6 +3621,15 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 auto rule = MakeUnique<CScoreboard::CScoreboardKillRule>();
                 rule->Read(line.get());
                 m_scoreboard->AddKillRule(std::move(rule));
+                continue;
+            }
+            if (line->GetCommand() == "ScoreboardObjectRule" && !resetObject)
+            {
+                if (!m_scoreboard)
+                    throw CLevelParserException("ScoreboardObjectRule encountered but scoreboard is not enabled");
+                auto rule = MakeUnique<CScoreboard::CScoreboardObjectRule>();
+                rule->Read(line.get());
+                m_scoreboard->AddObjectRule(std::move(rule));
                 continue;
             }
             if (line->GetCommand() == "ScoreboardEndTakeRule" && !resetObject)
@@ -4425,10 +4449,8 @@ void CRobotMain::SaveOneScript(CObject *obj)
 }
 
 //! Saves the stack of the program in execution of a robot
-bool CRobotMain::SaveFileStack(CObject *obj, FILE *file, int objRank)
+bool CRobotMain::SaveFileStack(CObject *obj, std::ostream &ostr)
 {
-    if (objRank == -1) return true;
-
     if (! obj->Implements(ObjectInterfaceType::Programmable)) return true;
 
     CProgrammableObject* programmable = dynamic_cast<CProgrammableObject*>(obj);
@@ -4436,14 +4458,24 @@ bool CRobotMain::SaveFileStack(CObject *obj, FILE *file, int objRank)
     ObjectType type = obj->GetType();
     if (type == OBJECT_HUMAN) return true;
 
-    return programmable->WriteStack(file);
+    long status = 1;
+    std::stringstream sstr("");
+
+    if (!programmable->WriteStack(sstr))
+    {
+        GetLogger()->Error("WriteStack failed at object id = %i\n", obj->GetID());
+        status = 100; // marked bad
+    }
+
+    if (!CBot::WriteLong(ostr, status)) return false;
+    if (!CBot::WriteStream(ostr, sstr)) return false;
+
+    return true;
 }
 
 //! Resumes the execution stack of the program in a robot
-bool CRobotMain::ReadFileStack(CObject *obj, FILE *file, int objRank)
+bool CRobotMain::ReadFileStack(CObject *obj, std::istream &istr)
 {
-    if (objRank == -1) return true;
-
     if (! obj->Implements(ObjectInterfaceType::Programmable)) return true;
 
     CProgrammableObject* programmable = dynamic_cast<CProgrammableObject*>(obj);
@@ -4451,7 +4483,29 @@ bool CRobotMain::ReadFileStack(CObject *obj, FILE *file, int objRank)
     ObjectType type = obj->GetType();
     if (type == OBJECT_HUMAN) return true;
 
-    return programmable->ReadStack(file);
+    long status;
+    if (!CBot::ReadLong(istr, status)) return false;
+
+    if (status == 100) // was marked bad ?
+    {
+        if (!CBot::ReadLong(istr, status)) return false;
+        if (!istr.seekg(status, istr.cur)) return false;
+        return true; // next program
+    }
+
+    if (status == 1)
+    {
+        std::stringstream sstr("");
+        if (!CBot::ReadStream(istr, sstr)) return false;
+
+        if (!programmable->ReadStack(sstr))
+        {
+            GetLogger()->Error("ReadStack failed at object id = %i\n", obj->GetID());
+        }
+        return true; // next program
+    }
+
+    return false; // error: status == ??
 }
 
 std::vector<std::string> CRobotMain::GetNewScriptNames(ObjectType type)
@@ -4646,25 +4700,36 @@ bool CRobotMain::IOWriteScene(std::string filename, std::string filecbot, std::s
     }
 
     // Writes the file of stacks of execution.
-    FILE* file = CBot::fOpen((CResourceManager::GetSaveLocation() + "/" + filecbot).c_str(), "wb");
-    if (file == nullptr) return false;
+    COutputStream ostr(filecbot);
+    if (!ostr.is_open()) return false;
 
+    bool bError = false;
     long version = 1;
-    CBot::fWrite(&version, sizeof(long), 1, file);  // version of COLOBOT
+    CBot::WriteLong(ostr, version);                 // version of COLOBOT
     version = CBot::CBotProgram::GetVersion();
-    CBot::fWrite(&version, sizeof(long), 1, file);  // version of CBOT
+    CBot::WriteLong(ostr, version);                 // version of CBOT
+    CBot::WriteWord(ostr, 0); // TODO
 
-    objRank = 0;
     for (CObject* obj : m_objMan->GetAllObjects())
     {
         if (obj->GetType() == OBJECT_TOTO) continue;
         if (IsObjectBeingTransported(obj)) continue;
         if (obj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject*>(obj)->IsDying()) continue;
 
-        if (!SaveFileStack(obj, file, objRank++))  break;
+        if (!SaveFileStack(obj, ostr))
+        {
+            GetLogger()->Error("SaveFileStack failed at object id = %i\n", obj->GetID());
+            bError = true;
+            break;
+        }
     }
-    CBot::CBotClass::SaveStaticState(file);
-    CBot::fClose(file);
+
+    if (!bError && !CBot::CBotClass::SaveStaticState(ostr))
+    {
+        GetLogger()->Error("CBotClass save static state failed\n");
+    }
+
+    ostr.close();
 
     if (!emergencySave)
     {
@@ -4822,29 +4887,48 @@ CObject* CRobotMain::IOReadScene(std::string filename, std::string filecbot)
     m_ui->GetLoadingScreen()->SetProgress(0.95f, RT_LOADING_CBOT_SAVE);
 
     // Reads the file of stacks of execution.
-    FILE* file = CBot::fOpen((CResourceManager::GetSaveLocation() + "/" + filecbot).c_str(), "rb");
-    if (file != nullptr)
+    CInputStream istr(filecbot);
+
+    if (istr.is_open())
     {
-        long version;
-        CBot::fRead(&version, sizeof(long), 1, file);  // version of COLOBOT
+        bool bError = false;
+        long version = 0;
+        CBot::ReadLong(istr, version);             // version of COLOBOT
         if (version == 1)
         {
-            CBot::fRead(&version, sizeof(long), 1, file);  // version of CBOT
+            CBot::ReadLong(istr, version);         // version of CBOT
             if (version == CBot::CBotProgram::GetVersion())
             {
-                objRank = 0;
-                for (CObject* obj : m_objMan->GetAllObjects())
+                unsigned short flag;
+                CBot::ReadWord(istr, flag); // TODO
+                bError = (flag != 0);
+
+                if (!bError) for (CObject* obj : m_objMan->GetAllObjects())
                 {
                     if (obj->GetType() == OBJECT_TOTO) continue;
                     if (IsObjectBeingTransported(obj)) continue;
                     if (obj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject*>(obj)->IsDying()) continue;
 
-                    if (!ReadFileStack(obj, file, objRank++)) break;
+                    if (!ReadFileStack(obj, istr))
+                    {
+                        GetLogger()->Error("ReadFileStack failed at object id = %i\n", obj->GetID());
+                        bError = true;
+                        break;
+                    }
+                }
+
+                if (!bError && !CBot::CBotClass::RestoreStaticState(istr))
+                {
+                    GetLogger()->Error("CBotClass restore static state failed\n");
+                    bError = true;
                 }
             }
+            else
+                GetLogger()->Error("cbot.run file is wrong version: %i\n", version);
         }
-        CBot::CBotClass::RestoreStaticState(file);
-        CBot::fClose(file);
+
+        if (bError) GetLogger()->Error("Restoring CBOT state failed at stream position: %li\n", istr.tellg());
+        istr.close();
     }
 
     m_ui->GetLoadingScreen()->SetProgress(1.0f, RT_LOADING_FINISHED);
@@ -4968,6 +5052,22 @@ Error CRobotMain::ProcessEndMissionTakeForGroup(std::vector<CSceneEndCondition*>
 //! If return value is different than ERR_MISSION_NOTERM, assume the mission is finished and pass on the result
 Error CRobotMain::ProcessEndMissionTake()
 {
+    bool timeout = false;
+    if (m_missionResult != INFO_LOST && m_missionResult != INFO_LOSTq)
+    {
+        if (m_endTakeTimeout >= 0.0f)
+        {
+            // Use the mission timer if available, or global mission time otherwise
+            // Useful for exercises where the time starts when you start the program, not the mission itself
+            float currentTime = m_missionTimerEnabled ? m_missionTimer : m_gameTime;
+            if (currentTime > m_endTakeTimeout)
+            {
+                m_missionResult = INFO_LOST;
+                timeout = true;
+            }
+        }
+    }
+
     // Sort end conditions by teams
     std::map<int, std::vector<CSceneEndCondition*>> teamsEndTake;
     for (std::unique_ptr<CSceneEndCondition>& endTake : m_endTake)
@@ -4978,28 +5078,50 @@ Error CRobotMain::ProcessEndMissionTake()
 
     if (!usesTeamConditions)
     {
-        m_missionResult = ProcessEndMissionTakeForGroup(teamsEndTake[0]);
+        if (!timeout)
+            m_missionResult = ProcessEndMissionTakeForGroup(teamsEndTake[0]);
+
+        if (m_missionResult != INFO_LOST && m_missionResult != INFO_LOSTq)
+        {
+            if (m_endTakeResearch != 0)
+            {
+                if (m_endTakeResearch != (m_endTakeResearch&m_researchDone[0]))
+                {
+                    m_missionResult = ERR_MISSION_NOTERM;
+                }
+            }
+        }
     }
     else
     {
+        assert(m_endTakeResearch == 0); // TODO: Add support for per-team EndTakeResearch
+
         // Special handling for teams
         m_missionResult = ERR_MISSION_NOTERM;
 
-        if (GetAllActiveTeams().empty())
+        if (GetAllActiveTeams().empty() || timeout)
         {
             GetLogger()->Info("All teams died, mission ended\n");
             if (m_scoreboard)
             {
                 std::string title, text, details_line;
                 GetResource(RES_TEXT, RT_SCOREBOARD_RESULTS, title);
-                GetResource(RES_TEXT, RT_SCOREBOARD_RESULTS_TEXT, text);
+                if (m_missionTimerEnabled && m_missionTimerStarted)
+                {
+                    GetResource(RES_TEXT, RT_SCOREBOARD_RESULTS_TIME, text);
+                    text = StrUtils::Format(text.c_str(), TimeFormat(m_missionTimer).c_str());
+                }
+                else
+                {
+                    GetResource(RES_TEXT, RT_SCOREBOARD_RESULTS_TEXT, text);
+                }
                 GetResource(RES_TEXT, RT_SCOREBOARD_RESULTS_LINE, details_line);
                 std::string details = "";
-                for (int team : GetAllTeams())
+                for (std::pair<int, CScoreboard::Score> team : m_scoreboard->GetSortedScores())
                 {
                     if (!details.empty())
                         details += ", ";
-                    details += StrUtils::Format(details_line.c_str(), GetTeamName(team).c_str(), m_scoreboard->GetScore(team).points);
+                    details += StrUtils::Format(details_line.c_str(), GetTeamName(team.first).c_str(), team.second.points);
                 }
                 m_ui->GetDialog()->StartInformation(
                     title,
@@ -5070,18 +5192,19 @@ Error CRobotMain::ProcessEndMissionTake()
                         m_scoreboard->ProcessEndTake(team);
                     m_objMan->DestroyTeam(team, DestructionType::Win);
                     m_teamFinished[team] = true;
-                }
-            }
-        }
-    }
+                    if (m_endTakeTeamImmediateWin)
+                    {
+                        // All other teams fail
+                        for(int other_team : GetAllActiveTeams())
+                        {
+                            m_displayText->SetEnable(false); // To prevent "bot destroyed" messages
+                            m_objMan->DestroyTeam(other_team);
+                            m_displayText->SetEnable(true);
 
-    if (m_missionResult != INFO_LOST && m_missionResult != INFO_LOSTq)
-    {
-        if (m_endTakeResearch != 0)
-        {
-            if (m_endTakeResearch != (m_endTakeResearch&m_researchDone[0]))
-            {
-                m_missionResult = ERR_MISSION_NOTERM;
+                            m_teamFinished[other_team] = true;
+                        }
+                    }
+                }
             }
         }
     }
@@ -5300,10 +5423,11 @@ void CRobotMain::UpdateChapterPassed()
     return m_ui->UpdateChapterPassed();
 }
 
-
 //! Changes game speed
 void CRobotMain::SetSpeed(float speed)
 {
+    speed = Math::Clamp(speed, MIN_SPEED, MAX_SPEED);
+
     m_app->SetSimulationSpeed(speed);
     UpdateSpeedLabel();
 }
@@ -5855,7 +5979,7 @@ void CRobotMain::CreateCodeBattleInterface()
 
         int numTeams = m_scoreboard ? GetAllTeams().size() : 0;
         assert(numTeams < EVENT_SCOREBOARD_MAX-EVENT_SCOREBOARD+1);
-        float textHeight = m_engine->GetText()->GetHeight(Gfx::FONT_COLOBOT, Gfx::FONT_SIZE_SMALL);
+        float textHeight = m_engine->GetText()->GetHeight(Gfx::FONT_COMMON, Gfx::FONT_SIZE_SMALL);
 
         //window
         ddim.x = 100.0f/640.0f;
@@ -5876,12 +6000,12 @@ void CRobotMain::CreateCodeBattleInterface()
         //viewpoint selection section
         ddim.x = 40.0f/640.0f;
         ddim.y = 50.0f/640.0f;
-        for(unsigned int i = 0; i<m_viewpoints.size(); i++)
+        for(unsigned int i = 0; i < m_viewpoints.size(); i++)
         {
             //create button
             pos.x = (550.0f+40.0f*(i%2))/640.0f;
             pos.y = (130.0f+offset)/480.0f + numTeams * textHeight - 45.0f*(i/2)/480.0f;
-            pw->CreateButton(pos,ddim, 13, EventType(EVENT_VIEWPOINT0 + i));
+            pw->CreateButton(pos, ddim, m_viewpoints[i].button, EventType(EVENT_VIEWPOINT0 + i));
         }
 
         //start/camera button
@@ -5962,32 +6086,19 @@ void CRobotMain::UpdateCodeBattleInterface()
 
     Ui::CWindow* pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW6));
     assert(pw != nullptr);
-    std::set<int> teams = GetAllTeams();
-    std::vector<int> sortedTeams(teams.begin(), teams.end());
-    if(m_scoreboard->GetSortType() == SortType::SORT_POINTS)
-    {
-        std::sort(sortedTeams.begin(), sortedTeams.end(), [this](int teamA, int teamB)
-        {
-            if (m_scoreboard->GetScore(teamA).points > m_scoreboard->GetScore(teamB).points) return true; //Team A have more points than B?
-            if (m_scoreboard->GetScore(teamA).points < m_scoreboard->GetScore(teamB).points) return false; //Team A have less points than B?
-
-            if (m_scoreboard->GetScore(teamA).time < m_scoreboard->GetScore(teamB).time) return true; //Team A scored faster than B?
-            else return false; //Team A scored slower than B?
-        });
-    }
 
     int i = 0;
-    for (int team : sortedTeams)
+    for (std::pair<int, CScoreboard::Score> team : m_scoreboard->GetSortedScores())
     {
         Ui::CControl* pl;
 
         pl = pw->SearchControl(static_cast<EventType>(EVENT_SCOREBOARD+2*i+0));
         assert(pl != nullptr);
-        pl->SetName(GetTeamName(team));
+        pl->SetName(GetTeamName(team.first));
 
         pl = pw->SearchControl(static_cast<EventType>(EVENT_SCOREBOARD+2*i+1));
         assert(pl != nullptr);
-        pl->SetName(StrUtils::ToString<int>(m_scoreboard->GetScore(team).points));
+        pl->SetName(StrUtils::ToString<int>(team.second.points));
 
         i++;
     }

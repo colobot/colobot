@@ -1115,33 +1115,70 @@ void CGL21Device::SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode 
     else  assert(false);
 }
 
+namespace
+{
+void SetVertexAttributes(const Vertex* bufferBase)
+{
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(3, GL_FLOAT, sizeof(Vertex), reinterpret_cast<const char*>(bufferBase) + offsetof(Vertex, coord));
+
+    glEnableClientState(GL_NORMAL_ARRAY);
+    glNormalPointer(GL_FLOAT, sizeof(Vertex), reinterpret_cast<const char*>(bufferBase) + offsetof(Vertex, normal));
+
+    glClientActiveTexture(GL_TEXTURE1);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    glClientActiveTexture(GL_TEXTURE0);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), reinterpret_cast<const char*>(bufferBase) + offsetof(Vertex, texCoord));
+
+    glDisableClientState(GL_COLOR_ARRAY);
+}
+
+void SetVertexAttributes(const VertexTex2* bufferBase)
+{
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(3, GL_FLOAT, sizeof(VertexTex2), reinterpret_cast<const char*>(bufferBase) + offsetof(VertexTex2, coord));
+
+    glEnableClientState(GL_NORMAL_ARRAY);
+    glNormalPointer(GL_FLOAT, sizeof(VertexTex2), reinterpret_cast<const char*>(bufferBase) + offsetof(VertexTex2, normal));
+
+    glClientActiveTexture(GL_TEXTURE1);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glTexCoordPointer(2, GL_FLOAT, sizeof(VertexTex2), reinterpret_cast<const char*>(bufferBase) + offsetof(VertexTex2, texCoord2));
+    glClientActiveTexture(GL_TEXTURE0);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glTexCoordPointer(2, GL_FLOAT, sizeof(VertexTex2), reinterpret_cast<const char*>(bufferBase) + offsetof(VertexTex2, texCoord));
+
+    glDisableClientState(GL_COLOR_ARRAY);
+}
+
+void SetVertexAttributes(const VertexCol* bufferBase)
+{
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(3, GL_FLOAT, sizeof(VertexCol), reinterpret_cast<const char*>(bufferBase) + offsetof(VertexCol, coord));
+
+    glDisableClientState(GL_NORMAL_ARRAY);
+
+    glClientActiveTexture(GL_TEXTURE1);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    glClientActiveTexture(GL_TEXTURE0);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+    glEnableClientState(GL_COLOR_ARRAY);
+    glColorPointer(4, GL_FLOAT, sizeof(VertexCol), reinterpret_cast<const char*>(bufferBase) + offsetof(VertexCol, color));
+}
+} // namespace
+
 void CGL21Device::DrawPrimitive(PrimitiveType type, const Vertex *vertices, int vertexCount,
                               Color color)
 {
     if (m_updateLights) UpdateLights();
 
     BindVBO(0);
-
-    Vertex* vs = const_cast<Vertex*>(vertices);
-
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glVertexPointer(3, GL_FLOAT, sizeof(Vertex), reinterpret_cast<GLfloat*>(&vs[0].coord));
-
-    glEnableClientState(GL_NORMAL_ARRAY);
-    glNormalPointer(GL_FLOAT, sizeof(Vertex), reinterpret_cast<GLfloat*>(&vs[0].normal));
-
-    glClientActiveTexture(GL_TEXTURE0);
-
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), reinterpret_cast<GLfloat*>(&vs[0].texCoord));
-
+    SetVertexAttributes(vertices);
     glColor4fv(color.Array());
 
     glDrawArrays(TranslateGfxPrimitive(type), 0, vertexCount);
-
-    glDisableClientState(GL_VERTEX_ARRAY);
-    glDisableClientState(GL_NORMAL_ARRAY);
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY); // GL_TEXTURE0
 }
 
 void CGL21Device::DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, int vertexCount,
@@ -1150,33 +1187,10 @@ void CGL21Device::DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, 
     if (m_updateLights) UpdateLights();
 
     BindVBO(0);
-
-    VertexTex2* vs = const_cast<VertexTex2*>(vertices);
-
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glVertexPointer(3, GL_FLOAT, sizeof(VertexTex2), reinterpret_cast<GLfloat*>(&vs[0].coord));
-
-    glEnableClientState(GL_NORMAL_ARRAY);
-    glNormalPointer(GL_FLOAT, sizeof(VertexTex2), reinterpret_cast<GLfloat*>(&vs[0].normal));
-
-    glClientActiveTexture(GL_TEXTURE0);
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    glTexCoordPointer(2, GL_FLOAT, sizeof(VertexTex2), reinterpret_cast<GLfloat*>(&vs[0].texCoord));
-
-    glClientActiveTexture(GL_TEXTURE1);
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    glTexCoordPointer(2, GL_FLOAT, sizeof(VertexTex2), reinterpret_cast<GLfloat*>(&vs[0].texCoord2));
-
+    SetVertexAttributes(vertices);
     glColor4fv(color.Array());
 
     glDrawArrays(TranslateGfxPrimitive(type), 0, vertexCount);
-
-    glDisableClientState(GL_VERTEX_ARRAY);
-    glDisableClientState(GL_NORMAL_ARRAY);
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY); // GL_TEXTURE1
-
-    glClientActiveTexture(GL_TEXTURE0);
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
 void CGL21Device::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, int vertexCount)
@@ -1184,179 +1198,8 @@ void CGL21Device::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, i
     if (m_updateLights) UpdateLights();
 
     BindVBO(0);
-
-    VertexCol* vs = const_cast<VertexCol*>(vertices);
-
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glVertexPointer(3, GL_FLOAT, sizeof(VertexCol), reinterpret_cast<GLfloat*>(&vs[0].coord));
-
-    glEnableClientState(GL_COLOR_ARRAY);
-    glColorPointer(4, GL_FLOAT, sizeof(VertexCol), reinterpret_cast<GLfloat*>(&vs[0].color));
-
+    SetVertexAttributes(vertices);
     glDrawArrays(TranslateGfxPrimitive(type), 0, vertexCount);
-
-    glDisableClientState(GL_VERTEX_ARRAY);
-    glDisableClientState(GL_COLOR_ARRAY);
-}
-
-void CGL21Device::DrawPrimitive(PrimitiveType type, const void *vertices,
-    int size, const VertexFormat &format, int vertexCount)
-{
-    if (m_updateLights) UpdateLights();
-
-    BindVBO(0);
-
-    const char *ptr = reinterpret_cast<const char*>(vertices);
-
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glVertexPointer(format.vertex.size,
-        TransformType(format.vertex.type),
-        format.vertex.stride,
-        ptr + format.vertex.offset);
-
-    if (format.color.enabled)
-    {
-        glEnableClientState(GL_COLOR_ARRAY);
-        glColorPointer(format.color.size,
-            TransformType(format.color.type),
-            format.color.stride,
-            ptr + format.color.offset);
-    }
-    else
-        glColor4fv(format.color.values);
-
-    if (format.normal.enabled)
-    {
-        glEnableClientState(GL_NORMAL_ARRAY);
-        glNormalPointer(TransformType(format.normal.type),
-            format.normal.stride,
-            ptr + format.normal.offset);
-    }
-    else
-        glNormal3fv(format.normal.values);
-
-    glClientActiveTexture(GL_TEXTURE0);
-    if (format.tex1.enabled)
-    {
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-        glTexCoordPointer(format.tex1.size,
-            TransformType(format.tex1.type),
-            format.tex1.stride,
-            ptr + format.tex1.offset);
-    }
-    else
-        glTexCoord2fv(format.tex1.values);
-
-    glClientActiveTexture(GL_TEXTURE1);
-    if (format.tex2.enabled)
-    {
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-        glTexCoordPointer(format.tex2.size,
-            TransformType(format.tex2.type),
-            format.tex2.stride,
-            ptr + format.tex2.offset);
-    }
-    else
-        glTexCoord2fv(format.tex2.values);
-
-    glDrawArrays(TranslateGfxPrimitive(type), 0, vertexCount);
-
-    glDisableClientState(GL_VERTEX_ARRAY);
-
-    if (format.color.enabled) glDisableClientState(GL_COLOR_ARRAY);
-    if (format.normal.enabled) glDisableClientState(GL_NORMAL_ARRAY);
-
-    if (format.tex1.enabled)
-    {
-        glClientActiveTexture(GL_TEXTURE0);
-        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    }
-
-    if (format.tex2.enabled)
-    {
-        glClientActiveTexture(GL_TEXTURE1);
-        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    }
-}
-
-void CGL21Device::DrawPrimitives(PrimitiveType type, const void *vertices,
-    int size, const VertexFormat &format, int first[], int count[], int drawCount)
-{
-    if (m_updateLights) UpdateLights();
-
-    BindVBO(0);
-
-    const char *ptr = reinterpret_cast<const char*>(vertices);
-
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glVertexPointer(format.vertex.size,
-        TransformType(format.vertex.type),
-        format.vertex.stride,
-        ptr + format.vertex.offset);
-
-    if (format.color.enabled)
-    {
-        glEnableClientState(GL_COLOR_ARRAY);
-        glColorPointer(format.color.size,
-            TransformType(format.color.type),
-            format.color.stride,
-            ptr + format.color.offset);
-    }
-    else
-        glColor4fv(format.color.values);
-
-    if (format.normal.enabled)
-    {
-        glEnableClientState(GL_NORMAL_ARRAY);
-        glNormalPointer(TransformType(format.normal.type),
-            format.normal.stride,
-            ptr + format.normal.offset);
-    }
-    else
-        glNormal3fv(format.normal.values);
-
-    glClientActiveTexture(GL_TEXTURE0);
-    if (format.tex1.enabled)
-    {
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-        glTexCoordPointer(format.tex1.size,
-            TransformType(format.tex1.type),
-            format.tex1.stride,
-            ptr + format.tex1.offset);
-    }
-    else
-        glTexCoord2fv(format.tex1.values);
-
-    glClientActiveTexture(GL_TEXTURE1);
-    if (format.tex2.enabled)
-    {
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-        glTexCoordPointer(format.tex2.size,
-            TransformType(format.tex2.type),
-            format.tex2.stride,
-            ptr + format.tex2.offset);
-    }
-    else
-        glTexCoord2fv(format.tex2.values);
-
-    glMultiDrawArrays(TranslateGfxPrimitive(type), first, count, drawCount);
-
-    glDisableClientState(GL_VERTEX_ARRAY);
-
-    if (format.color.enabled) glDisableClientState(GL_COLOR_ARRAY);
-    if (format.normal.enabled) glDisableClientState(GL_NORMAL_ARRAY);
-
-    if (format.tex1.enabled)
-    {
-        glClientActiveTexture(GL_TEXTURE0);
-        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    }
-
-    if (format.tex2.enabled)
-    {
-        glClientActiveTexture(GL_TEXTURE1);
-        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    }
 }
 
 void CGL21Device::DrawPrimitives(PrimitiveType type, const Vertex *vertices,
@@ -1365,26 +1208,10 @@ void CGL21Device::DrawPrimitives(PrimitiveType type, const Vertex *vertices,
     if (m_updateLights) UpdateLights();
 
     BindVBO(0);
-
-    Vertex* vs = const_cast<Vertex*>(vertices);
-
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glVertexPointer(3, GL_FLOAT, sizeof(Vertex), reinterpret_cast<GLfloat*>(&vs[0].coord));
-
-    glEnableClientState(GL_NORMAL_ARRAY);
-    glNormalPointer(GL_FLOAT, sizeof(Vertex), reinterpret_cast<GLfloat*>(&vs[0].normal));
-
-    glClientActiveTexture(GL_TEXTURE0);
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), reinterpret_cast<GLfloat*>(&vs[0].texCoord));
-
+    SetVertexAttributes(vertices);
     glColor4fv(color.Array());
 
     glMultiDrawArrays(TranslateGfxPrimitive(type), first, count, drawCount);
-
-    glDisableClientState(GL_VERTEX_ARRAY);
-    glDisableClientState(GL_NORMAL_ARRAY);
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY); // GL_TEXTURE0
 }
 
 void CGL21Device::DrawPrimitives(PrimitiveType type, const VertexTex2 *vertices,
@@ -1393,33 +1220,10 @@ void CGL21Device::DrawPrimitives(PrimitiveType type, const VertexTex2 *vertices,
     if (m_updateLights) UpdateLights();
 
     BindVBO(0);
-
-    VertexTex2* vs = const_cast<VertexTex2*>(vertices);
-
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glVertexPointer(3, GL_FLOAT, sizeof(VertexTex2), reinterpret_cast<GLfloat*>(&vs[0].coord));
-
-    glEnableClientState(GL_NORMAL_ARRAY);
-    glNormalPointer(GL_FLOAT, sizeof(VertexTex2), reinterpret_cast<GLfloat*>(&vs[0].normal));
-
-    glClientActiveTexture(GL_TEXTURE0);
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    glTexCoordPointer(2, GL_FLOAT, sizeof(VertexTex2), reinterpret_cast<GLfloat*>(&vs[0].texCoord));
-
-    glClientActiveTexture(GL_TEXTURE1);
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    glTexCoordPointer(2, GL_FLOAT, sizeof(VertexTex2), reinterpret_cast<GLfloat*>(&vs[0].texCoord2));
-
+    SetVertexAttributes(vertices);
     glColor4fv(color.Array());
 
     glMultiDrawArrays(TranslateGfxPrimitive(type), first, count, drawCount);
-
-    glDisableClientState(GL_VERTEX_ARRAY);
-    glDisableClientState(GL_NORMAL_ARRAY);
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY); // GL_TEXTURE1
-
-    glClientActiveTexture(GL_TEXTURE0);
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
 void CGL21Device::DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
@@ -1428,28 +1232,20 @@ void CGL21Device::DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
     if (m_updateLights) UpdateLights();
 
     BindVBO(0);
-
-    VertexCol* vs = const_cast<VertexCol*>(vertices);
-
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glVertexPointer(3, GL_FLOAT, sizeof(VertexCol), reinterpret_cast<GLfloat*>(&vs[0].coord));
-
-    glEnableClientState(GL_COLOR_ARRAY);
-    glColorPointer(4, GL_FLOAT, sizeof(VertexCol), reinterpret_cast<GLfloat*>(&vs[0].color));
+    SetVertexAttributes(vertices);
 
     glMultiDrawArrays(TranslateGfxPrimitive(type), first, count, drawCount);
-
-    glDisableClientState(GL_VERTEX_ARRAY);
-    glDisableClientState(GL_COLOR_ARRAY);
 }
 
-unsigned int CGL21Device::CreateStaticBuffer(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount)
+
+template <typename Vertex>
+unsigned int CGL21Device::CreateStaticBufferImpl(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount)
 {
     unsigned int id = ++m_lastVboId;
 
     VboObjectInfo info;
     info.primitiveType = primitiveType;
-    info.vertexType = VERTEX_TYPE_NORMAL;
+    info.vertexType = Vertex::VERTEX_TYPE;
     info.vertexCount = vertexCount;
     info.bufferId = 0;
     info.size = vertexCount * sizeof(Vertex);
@@ -1463,47 +1259,8 @@ unsigned int CGL21Device::CreateStaticBuffer(PrimitiveType primitiveType, const 
     return id;
 }
 
-unsigned int CGL21Device::CreateStaticBuffer(PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount)
-{
-    unsigned int id = ++m_lastVboId;
-
-    VboObjectInfo info;
-    info.primitiveType = primitiveType;
-    info.vertexType = VERTEX_TYPE_TEX2;
-    info.vertexCount = vertexCount;
-    info.bufferId = 0;
-    info.size = vertexCount * sizeof(VertexTex2);
-
-    glGenBuffers(1, &info.bufferId);
-    BindVBO(info.bufferId);
-    glBufferData(GL_ARRAY_BUFFER, info.size, vertices, GL_STATIC_DRAW);
-
-    m_vboObjects[id] = info;
-
-    return id;
-}
-
-unsigned int CGL21Device::CreateStaticBuffer(PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount)
-{
-    unsigned int id = ++m_lastVboId;
-
-    VboObjectInfo info;
-    info.primitiveType = primitiveType;
-    info.vertexType = VERTEX_TYPE_COL;
-    info.vertexCount = vertexCount;
-    info.bufferId = 0;
-    info.size = vertexCount * sizeof(VertexCol);
-
-    glGenBuffers(1, &info.bufferId);
-    BindVBO(info.bufferId);
-    glBufferData(GL_ARRAY_BUFFER, info.size, vertices, GL_STATIC_DRAW);
-
-    m_vboObjects[id] = info;
-
-    return id;
-}
-
-void CGL21Device::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const Vertex* vertices, int vertexCount)
+template <typename Vertex>
+void CGL21Device::UpdateStaticBufferImpl(unsigned int bufferId, PrimitiveType primitiveType, const Vertex* vertices, int vertexCount)
 {
     auto it = m_vboObjects.find(bufferId);
     if (it == m_vboObjects.end())
@@ -1513,60 +1270,8 @@ void CGL21Device::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primit
 
     VboObjectInfo& info = (*it).second;
     info.primitiveType = primitiveType;
-    info.vertexType = VERTEX_TYPE_NORMAL;
+    info.vertexType = Vertex::VERTEX_TYPE;
     info.vertexCount = vertexCount;
-
-    BindVBO(info.bufferId);
-
-    if (info.size < newSize)
-    {
-        glBufferData(GL_ARRAY_BUFFER, newSize, vertices, GL_STATIC_DRAW);
-        info.size = newSize;
-    }
-    else
-    {
-        glBufferSubData(GL_ARRAY_BUFFER, 0, newSize, vertices);
-    }
-}
-
-void CGL21Device::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount)
-{
-    auto it = m_vboObjects.find(bufferId);
-    if (it == m_vboObjects.end())
-        return;
-
-    VboObjectInfo& info = (*it).second;
-    info.primitiveType = primitiveType;
-    info.vertexType = VERTEX_TYPE_TEX2;
-    info.vertexCount = vertexCount;
-
-    int newSize = vertexCount * sizeof(VertexTex2);
-
-    BindVBO(info.bufferId);
-
-    if (info.size < newSize)
-    {
-        glBufferData(GL_ARRAY_BUFFER, newSize, vertices, GL_STATIC_DRAW);
-        info.size = newSize;
-    }
-    else
-    {
-        glBufferSubData(GL_ARRAY_BUFFER, 0, newSize, vertices);
-    }
-}
-
-void CGL21Device::UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount)
-{
-    auto it = m_vboObjects.find(bufferId);
-    if (it == m_vboObjects.end())
-        return;
-
-    VboObjectInfo& info = (*it).second;
-    info.primitiveType = primitiveType;
-    info.vertexType = VERTEX_TYPE_COL;
-    info.vertexCount = vertexCount;
-
-    int newSize = vertexCount * sizeof(VertexCol);
 
     BindVBO(info.bufferId);
 
@@ -1593,64 +1298,20 @@ void CGL21Device::DrawStaticBuffer(unsigned int bufferId)
 
     if ((*it).second.vertexType == VERTEX_TYPE_NORMAL)
     {
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glVertexPointer(3, GL_FLOAT, sizeof(Vertex), static_cast<char*>(nullptr) + offsetof(Vertex, coord));
-
-        glEnableClientState(GL_NORMAL_ARRAY);
-        glNormalPointer(GL_FLOAT, sizeof(Vertex), static_cast<char*>(nullptr) + offsetof(Vertex, normal));
-
-        glClientActiveTexture(GL_TEXTURE0);
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-        glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), static_cast<char*>(nullptr) + offsetof(Vertex, texCoord));
+        SetVertexAttributes(static_cast<const Vertex*>(nullptr));
     }
     else if ((*it).second.vertexType == VERTEX_TYPE_TEX2)
     {
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glVertexPointer(3, GL_FLOAT, sizeof(VertexTex2), static_cast<char*>(nullptr) + offsetof(VertexTex2, coord));
-
-        glEnableClientState(GL_NORMAL_ARRAY);
-        glNormalPointer(GL_FLOAT, sizeof(VertexTex2), static_cast<char*>(nullptr) + offsetof(VertexTex2, normal));
-
-        glClientActiveTexture(GL_TEXTURE0);
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-        glTexCoordPointer(2, GL_FLOAT, sizeof(VertexTex2), static_cast<char*>(nullptr) + offsetof(VertexTex2, texCoord));
-
-        glClientActiveTexture(GL_TEXTURE1);
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-        glTexCoordPointer(2, GL_FLOAT, sizeof(VertexTex2), static_cast<char*>(nullptr) + offsetof(VertexTex2, texCoord2));
+        SetVertexAttributes(static_cast<const VertexTex2*>(nullptr));
     }
     else if ((*it).second.vertexType == VERTEX_TYPE_COL)
     {
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glVertexPointer(3, GL_FLOAT, sizeof(VertexCol), static_cast<char*>(nullptr) + offsetof(VertexCol, coord));
-
-        glEnableClientState(GL_COLOR_ARRAY);
-        glColorPointer(4, GL_FLOAT, sizeof(VertexCol), static_cast<char*>(nullptr) + offsetof(VertexCol, color));
+        SetVertexAttributes(static_cast<const VertexCol*>(nullptr));
     }
 
     GLenum mode = TranslateGfxPrimitive((*it).second.primitiveType);
+
     glDrawArrays(mode, 0, (*it).second.vertexCount);
-
-    if ((*it).second.vertexType == VERTEX_TYPE_NORMAL)
-    {
-        glDisableClientState(GL_VERTEX_ARRAY);
-        glDisableClientState(GL_NORMAL_ARRAY);
-        glDisableClientState(GL_TEXTURE_COORD_ARRAY); // GL_TEXTURE0
-    }
-    else if ((*it).second.vertexType == VERTEX_TYPE_TEX2)
-    {
-        glDisableClientState(GL_VERTEX_ARRAY);
-        glDisableClientState(GL_NORMAL_ARRAY);
-        glDisableClientState(GL_TEXTURE_COORD_ARRAY); // GL_TEXTURE1
-
-        glClientActiveTexture(GL_TEXTURE0);
-        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    }
-    else if ((*it).second.vertexType == VERTEX_TYPE_COL)
-    {
-        glDisableClientState(GL_VERTEX_ARRAY);
-        glDisableClientState(GL_COLOR_ARRAY);
-    }
 }
 
 void CGL21Device::DestroyStaticBuffer(unsigned int bufferId)

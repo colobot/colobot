@@ -41,7 +41,7 @@ public:
      * \param noskip
      * \return
      */
-    static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack, bool cont = false, bool noskip=false);
+    static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack, bool cont = false, bool noskip=false, CBotTypResult vartype = CBotTypFloat);
 
     /*!
      * \brief Execute Executes the definition of a real variable.

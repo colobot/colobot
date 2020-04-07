@@ -129,6 +129,13 @@ bool TypeCompatible(CBotTypResult& type1, CBotTypResult& type2, int op)
         return true;
     }
 
+    if (op == ID_ASR || op == ID_SR || op == ID_SL ||
+        op == ID_ASSOR || op == ID_ASSSL || op == ID_ASSSR ||
+        op == ID_ASSAND || op == ID_ASSXOR || op == ID_ASSASR)
+    {
+        if (max > CBotTypLong) return false;
+    }
+
     type1.SetType(max);
     type2.SetType(max);
     return true;

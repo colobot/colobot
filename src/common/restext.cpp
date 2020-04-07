@@ -48,6 +48,9 @@ const char* stringsCbot[CBot::CBotErrMAX]         = { nullptr };
  */
 #define TR(x) x
 
+/* Please run `make update-pot` after changing this file
+ * in order to update translation files. Thank you.
+ */
 
 void InitializeRestext()
 {
@@ -145,6 +148,7 @@ void InitializeRestext()
 
     stringsText[RT_SCOREBOARD_RESULTS]     = TR("Results");
     stringsText[RT_SCOREBOARD_RESULTS_TEXT]= TR("The battle has ended");
+    stringsText[RT_SCOREBOARD_RESULTS_TIME]= TR("Time: %s");
     stringsText[RT_SCOREBOARD_RESULTS_LINE]= TR("%s: %d pts");
 
 
@@ -215,6 +219,7 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_SHADOW_MAPPING]    = TR("Dynamic shadows\\Beautiful shadows!");
     stringsEvent[EVENT_INTERFACE_SHADOW_MAPPING_QUALITY]= TR("Dynamic shadows ++\\Dynamic shadows + self shadowing");
     stringsEvent[EVENT_INTERFACE_SHADOW_MAPPING_BUFFER] = TR("Shadow resolution\\Higher means better range and quality, but slower");
+    stringsEvent[EVENT_INTERFACE_VSYNC]     = TR("Vertical Synchronization\\Limits the number of frames per second to display frequency");
 
     stringsEvent[EVENT_INTERFACE_KDEF]      = TR("Standard controls\\Standard key functions");
     assert(INPUT_SLOT_MAX < EVENT_INTERFACE_KEY_END-EVENT_INTERFACE_KEY);
@@ -737,6 +742,8 @@ void InitializeRestext()
     stringsCbot[CBot::CBotErrHexDigits]     = TR("Missing hex digits after escape sequence");
     stringsCbot[CBot::CBotErrHexRange]      = TR("Hex value out of range");
     stringsCbot[CBot::CBotErrUnicodeName]   = TR("Invalid universal character name");
+    stringsCbot[CBot::CBotErrCharEmpty]     = TR("Empty character constant");
+    stringsCbot[CBot::CBotErrRedefCase]     = TR("Duplicate label in switch");
 
     stringsCbot[CBot::CBotErrZeroDiv]       = TR("Dividing by zero");
     stringsCbot[CBot::CBotErrNotInit]       = TR("Variable not initialized");

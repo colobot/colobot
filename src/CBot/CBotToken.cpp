@@ -26,7 +26,8 @@
 namespace CBot
 {
 
-namespace {
+namespace
+{
     template <typename L, typename R>
     boost::bimap<L, R> makeBimap(std::initializer_list<typename boost::bimap<L, R>::value_type> list)
     {
@@ -70,6 +71,11 @@ static const boost::bimap<TokenId, std::string> KEYWORDS = makeBimap<TokenId, st
     {ID_STRING,     "string"},
     {ID_VOID,       "void"},
     {ID_BOOL,       "bool"},
+    {ID_BYTE,       "byte"},
+    {ID_SHORT,      "short"},
+    {ID_CHAR,       "char"},
+    {ID_LONG,       "long"},
+    {ID_DOUBLE,     "double"},
     {ID_TRUE,       "true"},
     {ID_FALSE,      "false"},
     {ID_NULL,       "null"},
@@ -102,7 +108,7 @@ static const boost::bimap<TokenId, std::string> KEYWORDS = makeBimap<TokenId, st
     {ID_ASSSR,      ">>>="},
     {ID_ASSASR,     ">>="},
     {ID_SL,         "<<"},
-    {ID_SR,         ">>"},
+    {ID_SR,         ">>>"},
     {ID_ASR,        ">>"},
     {ID_INC,        "++"},
     {ID_DEC,        "--"},
@@ -298,18 +304,65 @@ CBotToken*  CBotToken::NextToken(const char*& program, bool first)
             stop = true;
         }
 
+        // special case for characters
+        if (token[0] == '\'')
+        {
+            if (c == '\\')       // escape sequence
+            {
+                token += c;
+                c = *(program++);
+
+                if (c == 'u' || c == 'U') // unicode escape
+                {
+                    int maxlen = (c == 'u') ? 4 : 8;
+                    token += c;
+                    c = *(program++);
+                    for (int i = 0; i < maxlen; i++)
+                    {
+                        if (c == 0 || !CharInList(c, hexnum)) break;
+                        token += c;
+                        c = *(program++);
+                    }
+                }
+                else if (c != 0 && !CharInList(c, nch)) // other escape char
+                {
+                    token += c;
+                    c = *(program++);
+                }
+            }
+            else if (c != 0 && c != '\'' && !CharInList(c, nch)) // single character
+            {
+                token += c;
+                c = *(program++);
+            }
+
+            if (c == '\'') // close quote
+            {
+                token += c;
+                c = *(program++);
+            }
+            stop = true;
+        }
+
         // special case for numbers
         if ( CharInList(token[0], num ))
         {
             bool    bdot = false;   // found a point?
             bool    bexp = false;   // found an exponent?
 
+            char    bin[] = "01";
             char*   liste = num;
             if (token[0] == '0' && c == 'x')          // hexadecimal value?
             {
                 token += c;
                 c   = *(program++);                 // next character
                 liste = hexnum;
+            }
+            else if (token[0] == '0' && c == 'b')   // binary literal
+            {
+                liste = bin;
+                token += c;
+                c = *(program++);
             }
 cw:
             while (c != 0 && CharInList(c, liste))
@@ -393,6 +446,7 @@ bis:
 
             if (CharInList(token[0], num )) t->m_type = TokenTypNum;
             if (token[0] == '\"') t->m_type = TokenTypString;
+            if (token[0] == '\'') t->m_type = TokenTypChar;
             if (first) t->m_type = TokenTypNone;
 
             t->m_keywordId = GetKeyWord(token);
@@ -449,10 +503,11 @@ std::unique_ptr<CBotToken> CBotToken::CompileTokens(const std::string& program)
 ////////////////////////////////////////////////////////////////////////////////
 int CBotToken::GetKeyWord(const std::string& w)
 {
-	auto it = KEYWORDS.right.find(w);
-	if (it != KEYWORDS.right.end()) {
-		return it->second;
-	}
+    auto it = KEYWORDS.right.find(w);
+    if (it != KEYWORDS.right.end())
+    {
+        return it->second;
+    }
 
     return -1;
 }

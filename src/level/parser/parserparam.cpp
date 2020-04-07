@@ -955,21 +955,21 @@ int CLevelParserParam::AsResearchFlag(int def)
     return AsResearchFlag();
 }
 
-SortType CLevelParserParam::ToSortType(std::string value)
+CScoreboard::SortType CLevelParserParam::ToSortType(std::string value)
 {
-    if (value == "Points" ) return SortType::SORT_POINTS;
-    if (value == "Name"  ) return SortType::SORT_ID;
-	return SortType::SORT_ID;
+    if (value == "Points") return CScoreboard::SortType::SORT_POINTS;
+    if (value == "Name"  ) return CScoreboard::SortType::SORT_ID;
+    return CScoreboard::SortType::SORT_ID;
 }
 
-SortType CLevelParserParam::AsSortType()
+CScoreboard::SortType CLevelParserParam::AsSortType()
 {
     if (m_empty)
         throw CLevelParserExceptionMissingParam(this);
     return ToSortType(m_value);
 }
 
-SortType CLevelParserParam::AsSortType(SortType def)
+CScoreboard::SortType CLevelParserParam::AsSortType(CScoreboard::SortType def)
 {
     if (m_empty)
         return def;

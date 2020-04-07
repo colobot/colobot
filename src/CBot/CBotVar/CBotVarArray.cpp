@@ -20,7 +20,6 @@
 #include "CBot/CBotVar/CBotVarArray.h"
 #include "CBot/CBotVar/CBotVarClass.h"
 #include "CBot/CBotToken.h"
-#include "CBot/CBotFileUtils.h"
 
 #include "CBot/CBotEnums.h"
 
@@ -94,7 +93,7 @@ void CBotVarArray::SetPointer(CBotVar* pVarClass)
              !pVarClass->m_type.Eq(CBotTypArrayBody))
             assert(0);
 
-        (static_cast<CBotVarClass*>(pVarClass))->IncrementUse();            // incement the reference
+        (static_cast<CBotVarClass*>(pVarClass))->IncrementUse();            // increment the reference
     }
 
     if ( m_pInstance != nullptr ) m_pInstance->DecrementUse();
@@ -137,10 +136,10 @@ std::string CBotVarArray::GetValString()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotVarArray::Save1State(FILE* pf)
+bool CBotVarArray::Save1State(std::ostream &ostr)
 {
-    if ( !WriteType(pf, m_type) ) return false;
-    return SaveVars(pf, m_pInstance);                        // saves the instance that manages the table
+    if (!WriteType(ostr, m_type)) return false;
+    return SaveVars(ostr, m_pInstance);                      // saves the instance that manages the table
 }
 
 } // namespace CBot
