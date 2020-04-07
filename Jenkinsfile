@@ -54,6 +54,7 @@ pipeline {
                         sh 'mkdir -p build/linux'
                         dir('build/linux') {
                             sh '''
+                                rm -rf *
                                 cmake \
                                     -DCMAKE_INSTALL_PREFIX=/install -DCMAKE_SKIP_INSTALL_RPATH=ON \
                                     -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDEV_BUILD=1 -DPORTABLE=1 -DTOOLS=1 -DTESTS=1 -DDESKTOP=1 ../..
