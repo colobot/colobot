@@ -38,7 +38,9 @@ class CBotExprLitNum : public CBotInstr
 {
 
 public:
-    CBotExprLitNum(T val);
+    // To keep linter happy, instead of = delete (see https://stackoverflow.com/a/37593094)
+    CBotExprLitNum(T val) { static_assert(sizeof(T) == 0, "Only specializations of CBotExprLitNum can be used"); };
+
     ~CBotExprLitNum();
 
     /*!
