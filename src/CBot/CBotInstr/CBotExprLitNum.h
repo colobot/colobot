@@ -38,7 +38,7 @@ class CBotExprLitNum : public CBotInstr
 {
 
 public:
-    CBotExprLitNum(T val);
+    CBotExprLitNum(T val) = delete;
     ~CBotExprLitNum();
 
     /*!
