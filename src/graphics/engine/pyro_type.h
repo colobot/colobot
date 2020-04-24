@@ -58,6 +58,7 @@ enum PyroType
     PT_DEADG    = 24,       //! < shooting death
     PT_DEADW    = 25,       //! < drowning death
     PT_FINDING  = 26,       //! < object discovered
+    PT_FRAGV    = 27,       //! < fragmentation of plant object
 };
 
 } // namespace Gfx
