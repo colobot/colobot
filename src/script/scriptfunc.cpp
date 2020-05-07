@@ -936,8 +936,8 @@ static CBotTypResult compileRadar(CBotVar* &var, void* user, CBotTypResult retur
     if ( var == nullptr )  return returnValue;
     if ( var->GetType() == CBotTypArrayPointer )
     {
-		CBotTypResult type = var->GetTypResult().GetTypElem();
-		if ( type.GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadParam); //type
+        CBotTypResult type = var->GetTypResult().GetTypElem();
+        if ( type.GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadParam); //type
     }
     else if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadParam);  // type
     var = var->GetNext();
