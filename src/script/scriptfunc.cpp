@@ -933,16 +933,13 @@ bool CScriptFunctions::rSearchAll(CBotVar* var, CBotVar* result, int& exception,
 
 static CBotTypResult compileRadar(CBotVar* &var, void* user, CBotTypResult returnValue)
 {
-    CBotVar*    array;
-
     if ( var == nullptr )  return returnValue;
     if ( var->GetType() == CBotTypArrayPointer )
     {
-        array = var->GetItemList();
-        if ( array == nullptr )  return returnValue;
-        if ( array->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // type
+		CBotTypResult type = var->GetTypResult().GetTypElem();
+		if ( type.GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadParam); //type
     }
-    else if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // type
+    else if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadParam);  // type
     var = var->GetNext();
     if ( var == nullptr )  return returnValue;
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // angle
