@@ -858,6 +858,15 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetObjectParent(3, 1);
         modelManager->AddModelReference("subm3.mod", true, rank, m_object->GetTeam());
         m_object->SetPartPosition(3, Math::Vector(0.5f, 0.0f, 1.5f));
+
+        if (m_object->GetTrainer())
+        {
+            rank = m_engine->CreateObject();
+            m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+            m_object->SetObjectRank(4, rank);
+            m_object->SetObjectParent(4, 0);
+            modelManager->AddModelReference("trainerg.mod", true, rank, m_object->GetTeam());
+        }
     }
 
     if (type == OBJECT_MOBILEdr)
