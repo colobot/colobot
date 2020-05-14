@@ -810,6 +810,18 @@ msgstr ""
 msgid "Build a legged sniffer"
 msgstr ""
 
+msgid "Build a winged builder"
+msgstr ""
+
+msgid "Build a tracked builder"
+msgstr ""
+
+msgid "Build a wheeled builder"
+msgstr ""
+
+msgid "Build a legged builder"
+msgstr ""
+
 msgid "Build a thumper"
 msgstr ""
 
@@ -823,6 +835,9 @@ msgid "Build a shielder"
 msgstr ""
 
 msgid "Build a subber"
+msgstr ""
+
+msgid "Build a target bot"
 msgstr ""
 
 msgid "Run research program for tracked bots"
@@ -855,6 +870,12 @@ msgstr ""
 msgid "Run research program for orga shooter"
 msgstr ""
 
+msgid "Run research program for builder"
+msgstr ""
+
+msgid "Run research program for target bot"
+msgstr ""
+
 msgid "Return to start"
 msgstr ""
 
@@ -868,6 +889,9 @@ msgid "Shoot (\\key action;)"
 msgstr ""
 
 msgid "Explode (\\key action;)"
+msgstr ""
+
+msgid "Build (\\key action;)"
 msgstr ""
 
 msgid "Recycle (\\key action;)"
@@ -1248,6 +1272,18 @@ msgstr ""
 msgid "Legged grabber"
 msgstr ""
 
+msgid "Winged builder"
+msgstr ""
+
+msgid "Tracked builder"
+msgstr ""
+
+msgid "Wheeled builder"
+msgstr ""
+
+msgid "Legged builder"
+msgstr ""
+
 msgid "Winged shooter"
 msgstr ""
 
@@ -1464,7 +1500,7 @@ msgstr ""
 msgid "Nothing to analyze"
 msgstr ""
 
-msgid "Analyzes only organic matter"
+msgid "Inappropriate sample"
 msgstr ""
 
 msgid "Analysis already performed"
@@ -1561,6 +1597,9 @@ msgid "Plans for shielder available"
 msgstr ""
 
 msgid "Plans for nuclear power plant available"
+msgstr ""
+
+msgid "Plans for builder available"
 msgstr ""
 
 msgid "New bot available"
