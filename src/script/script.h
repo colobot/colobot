@@ -27,6 +27,7 @@
 #include "CBot/CBot.h"
 
 #include <memory>
+#include <limits>
 #include <string>
 #include <boost/optional.hpp>
 

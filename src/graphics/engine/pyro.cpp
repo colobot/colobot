@@ -223,6 +223,10 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
     {
         m_sound->Play(SOUND_EXPLOi, m_pos);
     }
+    if ( type == PT_FRAGV )
+    {
+        m_sound->Play(SOUND_BOUMv, m_pos);
+    }
     if ( type == PT_BURNT ||
          type == PT_BURNO )
     {
@@ -265,7 +269,8 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
 
     if ( m_type == PT_FRAGT ||
          m_type == PT_FRAGO ||
-         m_type == PT_FRAGW )
+         m_type == PT_FRAGW ||
+         m_type == PT_FRAGV )
     {
         m_engine->DeleteShadowSpot(m_object->GetObjectRank(0));
     }
@@ -391,9 +396,10 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
         m_engine->DeleteShadowSpot(m_object->GetObjectRank(0));
     }
 
-    if ( m_type != PT_EGG  &&
-         m_type != PT_WIN  &&
-         m_type != PT_LOST )
+    if ( m_type != PT_FRAGV &&
+         m_type != PT_EGG   &&
+         m_type != PT_WIN   &&
+         m_type != PT_LOST  )
     {
         float h = 40.0f;
         if ( m_type == PT_FRAGO  ||
@@ -460,6 +466,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
     if ( m_type == PT_FRAGT  ||
          m_type == PT_FRAGO  ||
          m_type == PT_FRAGW  ||
+         m_type == PT_FRAGV  ||
          m_type == PT_SPIDER ||
          m_type == PT_EGG    ||
         (m_type == PT_EXPLOT && oType == OBJECT_MOBILEtg) ||
@@ -1169,6 +1176,7 @@ Error CPyro::IsEnded()
     if ( m_type == PT_FRAGT  ||
          m_type == PT_FRAGO  ||
          m_type == PT_FRAGW  ||
+         m_type == PT_FRAGV  ||
          m_type == PT_SPIDER ||
          m_type == PT_EGG    )
     {
@@ -1416,7 +1424,11 @@ void CPyro::CreateTriangle(CObject* obj, ObjectType oType, int part)
     float percent = 0.10f;
     if (total < 50) percent = 0.25f;
     if (total < 20) percent = 0.50f;
-    if (m_type == PT_EGG) percent = 0.30f;
+
+    if ( m_type == PT_FRAGV || m_type == PT_EGG )
+    {
+        percent = 0.30f;
+    }
 
     if (oType == OBJECT_POWER    ||
         oType == OBJECT_ATOMIC   ||
@@ -1507,7 +1519,7 @@ void CPyro::CreateTriangle(CObject* obj, ObjectType oType, int part)
 
         Math::Matrix* mat = obj->GetWorldMatrix(part);
         Math::Vector pos = Math::Transform(*mat, offset);
-        if ( m_type == PT_EGG )
+        if ( m_type == PT_FRAGV || m_type == PT_EGG )
         {
             speed.x = (Math::Rand()-0.5f)*10.0f;
             speed.z = (Math::Rand()-0.5f)*10.0f;
