@@ -55,12 +55,15 @@ DriveType GetDriveFromObject(ObjectType type)
         case OBJECT_MOBILEib:
             return DriveType::Legged;
 
+        case OBJECT_MOBILErp:
         case OBJECT_MOBILErt:
         case OBJECT_MOBILErc:
         case OBJECT_MOBILErr:
         case OBJECT_MOBILErs:
-            // NOTE: Subber is not BigTracked!
-            return DriveType::BigTracked;
+            return DriveType::Heavy;
+        
+        case OBJECT_MOBILEsa:
+           return DriveType::Amphibious; 
 
         default:
             return DriveType::Other;

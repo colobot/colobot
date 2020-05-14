@@ -193,6 +193,7 @@ void COldModelManager::ChangeVariant(std::vector<ModelTriangle>& triangles, int 
             triangles[i].tex1Name == "factory.png" ||
             triangles[i].tex1Name == "lemt.png"    ||
             triangles[i].tex1Name == "roller.png"  ||
+            triangles[i].tex1Name == "rollert.png" ||
             triangles[i].tex1Name == "search.png"  ||
             triangles[i].tex1Name == "drawer.png"  ||
             triangles[i].tex1Name == "subm.png"     )

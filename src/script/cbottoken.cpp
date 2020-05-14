@@ -82,7 +82,12 @@ const char* GetObjectName(ObjectType type)
     if ( type == OBJECT_MARKKEYb    )  return "KeyBSpot";
     if ( type == OBJECT_MARKKEYc    )  return "KeyCSpot";
     if ( type == OBJECT_MARKKEYd    )  return "KeyDSpot";
-    if ( type == OBJECT_MOBILEwt    )  return "PracticeBot";
+    if ( type == OBJECT_MOBILEwt    )  return "WheeledTrainer";
+    if ( type == OBJECT_MOBILEtt    )  return "TrackedTrainer";
+    if ( type == OBJECT_MOBILEft    )  return "WingedTrainer";
+    if ( type == OBJECT_MOBILEit    )  return "LeggedTrainer";
+    if ( type == OBJECT_MOBILErp    )  return "HeavyTrainer";
+    if ( type == OBJECT_MOBILEst    )  return "AmphibiousTrainer";
     if ( type == OBJECT_MOBILEwa    )  return "WheeledGrabber";
     if ( type == OBJECT_MOBILEta    )  return "TrackedGrabber";
     if ( type == OBJECT_MOBILEfa    )  return "WingedGrabber";
@@ -110,6 +115,7 @@ const char* GetObjectName(ObjectType type)
     if ( type == OBJECT_MOBILEsa    )  return "Subber";
     if ( type == OBJECT_MOBILEtg    )  return "TargetBot";
     if ( type == OBJECT_MOBILEdr    )  return "Scribbler";
+    if ( type == OBJECT_MOBILEpr    )  return "PracticeBot";
     if ( type == OBJECT_HUMAN       )  return "Me";
     if ( type == OBJECT_TECH        )  return "Tech";
     if ( type == OBJECT_MOTHER      )  return "AlienQueen";
@@ -210,8 +216,14 @@ std::string GetHelpFilename(ObjectType type)
     if ( type == OBJECT_MOBILErs    )  helpfile = "object/botshld";
     if ( type == OBJECT_MOBILEsa    )  helpfile = "object/botsub";
     if ( type == OBJECT_MOBILEwt    )  helpfile = "object/bottr";
+    if ( type == OBJECT_MOBILEtt    )  helpfile = "object/bottr";
+    if ( type == OBJECT_MOBILEft    )  helpfile = "object/bottr";
+    if ( type == OBJECT_MOBILEit    )  helpfile = "object/bottr";
+    if ( type == OBJECT_MOBILErp    )  helpfile = "object/bottr";
+    if ( type == OBJECT_MOBILEst    )  helpfile = "object/bottr";
     if ( type == OBJECT_MOBILEtg    )  helpfile = "object/bottarg";
     if ( type == OBJECT_MOBILEdr    )  helpfile = "object/botdraw";
+    if ( type == OBJECT_MOBILEpr    )  helpfile = "object/bottr";
     if ( type == OBJECT_APOLLO2     )  helpfile = "object/lrv";
     if ( type == OBJECT_HUMAN       )  helpfile = "object/human";
     if ( type == OBJECT_MOTHER      )  helpfile = "object/mother";

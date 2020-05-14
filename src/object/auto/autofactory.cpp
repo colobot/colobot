@@ -195,6 +195,7 @@ ObjectType ObjectTypeFromFactoryButton(EventType eventType)
     if ( eventType == EVENT_OBJECT_FACTORYrr )  return OBJECT_MOBILErr;
     if ( eventType == EVENT_OBJECT_FACTORYrs )  return OBJECT_MOBILErs;
     if ( eventType == EVENT_OBJECT_FACTORYsa )  return OBJECT_MOBILEsa;
+    if ( eventType == EVENT_OBJECT_FACTORYtg )  return OBJECT_MOBILEtg;
 
     return OBJECT_NULL;
 }
@@ -617,6 +618,8 @@ bool CAutoFactory::NearestVehicle()
              type != OBJECT_MOBILEtt &&
              type != OBJECT_MOBILEwt &&
              type != OBJECT_MOBILEit &&
+             type != OBJECT_MOBILErp &&
+             type != OBJECT_MOBILEst &&
              type != OBJECT_MOBILEdr &&
              type != OBJECT_MOTHER   &&
              type != OBJECT_ANT      &&
@@ -661,6 +664,7 @@ bool CAutoFactory::CreateVehicle()
     params.angle = angle;
     params.type = m_type;
     params.team = m_object->GetTeam();
+    params.trainer = m_object->GetTrainer();
     CObject* vehicle = CObjectManager::GetInstancePointer()->CreateObject(params);
 
     vehicle->SetLock(true);  // not usable
@@ -719,84 +723,88 @@ bool CAutoFactory::CreateInterface(bool bSelect)
 
     pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
     if ( pw == nullptr )  return false;
-
+ 
     dim.x = 33.0f/640.0f;
     dim.y = 33.0f/480.0f;
     ox = 3.0f/640.0f;
     oy = 3.0f/480.0f;
     sx = 33.0f/640.0f;
     sy = 33.0f/480.0f;
+    if( !m_object->GetTrainer() )
+    {
+        pos.x = 0.0f;
+        pos.y = oy+sy*2.6f;
+        ddim.x = 138.0f/640.0f;
+        ddim.y = 258.0f/480.0f;
+        pw->CreateGroup(pos, ddim, 6, EVENT_WINDOW3);
 
-    pos.x = 0.0f;
-    pos.y = oy+sy*2.6f;
-    ddim.x = 138.0f/640.0f;
-    ddim.y = 258.0f/480.0f;
-    pw->CreateGroup(pos, ddim, 6, EVENT_WINDOW3);
+        pos.x = ox+sx*0.0f;
+        pos.y = oy+sy*9.3f;
+        pw->CreateButton(pos, dim, 128+9, EVENT_OBJECT_FACTORYwa);
+        pos.x += dim.x;
+        pw->CreateButton(pos, dim, 128+10, EVENT_OBJECT_FACTORYta);
+        pos.x += dim.x;
+        pw->CreateButton(pos, dim, 128+11, EVENT_OBJECT_FACTORYfa);
+        pos.x += dim.x;
+        pw->CreateButton(pos, dim, 128+22, EVENT_OBJECT_FACTORYia);
 
-    pos.x = ox+sx*0.0f;
-    pos.y = oy+sy*9.3f;
-    pw->CreateButton(pos, dim, 128+9, EVENT_OBJECT_FACTORYwa);
-    pos.x += dim.x;
-    pw->CreateButton(pos, dim, 128+10, EVENT_OBJECT_FACTORYta);
-    pos.x += dim.x;
-    pw->CreateButton(pos, dim, 128+11, EVENT_OBJECT_FACTORYfa);
-    pos.x += dim.x;
-    pw->CreateButton(pos, dim, 128+22, EVENT_OBJECT_FACTORYia);
+        pos.x = ox+sx*0.0f;
+        pos.y = oy+sy*8.2f;
+        pw->CreateButton(pos, dim, 128+12, EVENT_OBJECT_FACTORYws);
+        pos.x += dim.x;
+        pw->CreateButton(pos, dim, 128+13, EVENT_OBJECT_FACTORYts);
+        pos.x += dim.x;
+        pw->CreateButton(pos, dim, 128+14, EVENT_OBJECT_FACTORYfs);
+        pos.x += dim.x;
+        pw->CreateButton(pos, dim, 128+24, EVENT_OBJECT_FACTORYis);
 
-    pos.x = ox+sx*0.0f;
-    pos.y = oy+sy*8.2f;
-    pw->CreateButton(pos, dim, 128+12, EVENT_OBJECT_FACTORYws);
-    pos.x += dim.x;
-    pw->CreateButton(pos, dim, 128+13, EVENT_OBJECT_FACTORYts);
-    pos.x += dim.x;
-    pw->CreateButton(pos, dim, 128+14, EVENT_OBJECT_FACTORYfs);
-    pos.x += dim.x;
-    pw->CreateButton(pos, dim, 128+24, EVENT_OBJECT_FACTORYis);
+        pos.x = ox+sx*0.0f;
+        pos.y = oy+sy*7.1f;
+        pw->CreateButton(pos, dim, 128+15, EVENT_OBJECT_FACTORYwc);
+        pos.x += dim.x;
+        pw->CreateButton(pos, dim, 128+16, EVENT_OBJECT_FACTORYtc);
+        pos.x += dim.x;
+        pw->CreateButton(pos, dim, 128+17, EVENT_OBJECT_FACTORYfc);
+        pos.x += dim.x;
+        pw->CreateButton(pos, dim, 128+23, EVENT_OBJECT_FACTORYic);
 
-    pos.x = ox+sx*0.0f;
-    pos.y = oy+sy*7.1f;
-    pw->CreateButton(pos, dim, 128+15, EVENT_OBJECT_FACTORYwc);
-    pos.x += dim.x;
-    pw->CreateButton(pos, dim, 128+16, EVENT_OBJECT_FACTORYtc);
-    pos.x += dim.x;
-    pw->CreateButton(pos, dim, 128+17, EVENT_OBJECT_FACTORYfc);
-    pos.x += dim.x;
-    pw->CreateButton(pos, dim, 128+23, EVENT_OBJECT_FACTORYic);
-
-    pos.x = ox+sx*0.0f;
-    pos.y = oy+sy*6.0f;
-    pw->CreateButton(pos, dim, 128+25, EVENT_OBJECT_FACTORYwi);
-    pos.x += dim.x;
-    pw->CreateButton(pos, dim, 128+26, EVENT_OBJECT_FACTORYti);
-    pos.x += dim.x;
-    pw->CreateButton(pos, dim, 128+27, EVENT_OBJECT_FACTORYfi);
-    pos.x += dim.x;
-    pw->CreateButton(pos, dim, 128+28, EVENT_OBJECT_FACTORYii);
+        pos.x = ox+sx*0.0f;
+        pos.y = oy+sy*6.0f;
+        pw->CreateButton(pos, dim, 128+25, EVENT_OBJECT_FACTORYwi);
+        pos.x += dim.x;
+        pw->CreateButton(pos, dim, 128+26, EVENT_OBJECT_FACTORYti);
+        pos.x += dim.x;
+        pw->CreateButton(pos, dim, 128+27, EVENT_OBJECT_FACTORYfi);
+        pos.x += dim.x;
+        pw->CreateButton(pos, dim, 128+28, EVENT_OBJECT_FACTORYii);
     
-    pos.x = ox+sx*0.0f;
-    pos.y = oy+sy*4.9f;
-    pw->CreateButton(pos, dim, 192+0, EVENT_OBJECT_FACTORYwb);
-    pos.x += dim.x;
-    pw->CreateButton(pos, dim, 192+1, EVENT_OBJECT_FACTORYtb);
-    pos.x += dim.x;
-    pw->CreateButton(pos, dim, 192+2, EVENT_OBJECT_FACTORYfb);
-    pos.x += dim.x;
-    pw->CreateButton(pos, dim, 192+3, EVENT_OBJECT_FACTORYib);
+        pos.x = ox+sx*0.0f;
+        pos.y = oy+sy*4.9f;
+        pw->CreateButton(pos, dim, 192+0, EVENT_OBJECT_FACTORYwb);
+        pos.x += dim.x;
+        pw->CreateButton(pos, dim, 192+1, EVENT_OBJECT_FACTORYtb);
+        pos.x += dim.x;
+        pw->CreateButton(pos, dim, 192+2, EVENT_OBJECT_FACTORYfb);
+        pos.x += dim.x;
+        pw->CreateButton(pos, dim, 192+3, EVENT_OBJECT_FACTORYib);
 
-    pos.x = ox+sx*0.0f;
-    pos.y = oy+sy*3.8f;
-    pw->CreateButton(pos, dim, 128+18, EVENT_OBJECT_FACTORYrt);
-    pos.x += dim.x;
-    pw->CreateButton(pos, dim, 128+19, EVENT_OBJECT_FACTORYrc);
-    pos.x += dim.x;
-    pw->CreateButton(pos, dim, 128+20, EVENT_OBJECT_FACTORYrr);
-    pos.x += dim.x;
-    pw->CreateButton(pos, dim, 128+29, EVENT_OBJECT_FACTORYrs);
+        pos.x = ox+sx*0.0f;
+        pos.y = oy+sy*3.8f;
+        pw->CreateButton(pos, dim, 128+18, EVENT_OBJECT_FACTORYrt);
+        pos.x += dim.x;
+        pw->CreateButton(pos, dim, 128+19, EVENT_OBJECT_FACTORYrc);
+        pos.x += dim.x;
+        pw->CreateButton(pos, dim, 128+20, EVENT_OBJECT_FACTORYrr);
+        pos.x += dim.x;
+        pw->CreateButton(pos, dim, 128+29, EVENT_OBJECT_FACTORYrs);
 
-    pos.x = ox+sx*0.0f;
-    pos.y = oy+sy*2.7f;
-    pw->CreateButton(pos, dim, 128+21, EVENT_OBJECT_FACTORYsa);
-
+        pos.x = ox+sx*0.0f;
+        pos.y = oy+sy*2.7f;
+        pw->CreateButton(pos, dim, 128+21, EVENT_OBJECT_FACTORYsa);
+        pos.x += dim.x;
+        pw->CreateButton(pos, dim, 128+45, EVENT_OBJECT_FACTORYtg);
+    }
+    
     pos.x = ox+sx*0.0f;
     pos.y = oy+sy*0;
     ddim.x = 66.0f/640.0f;
@@ -844,6 +852,7 @@ void CAutoFactory::UpdateInterface()
     UpdateButton(pw, EVENT_OBJECT_FACTORYrr, m_bBusy);
     UpdateButton(pw, EVENT_OBJECT_FACTORYrs, m_bBusy);
     UpdateButton(pw, EVENT_OBJECT_FACTORYsa, m_bBusy);
+    UpdateButton(pw, EVENT_OBJECT_FACTORYtg, m_bBusy);
 }
 
 // Updates the status of one interface button.

@@ -875,6 +875,8 @@ bool CObjectInterface::CreateInterface(bool bSelect)
          type == OBJECT_MOBILEtt ||
          type == OBJECT_MOBILEwt ||
          type == OBJECT_MOBILEit ||
+         type == OBJECT_MOBILErp ||
+         type == OBJECT_MOBILEst ||
          type == OBJECT_MOBILEdr ||
          type == OBJECT_MOTHER   ||
          type == OBJECT_ANT      ||
@@ -1828,10 +1830,11 @@ void CObjectInterface::UpdateInterface()
         }
     }
     
-    if ( type == OBJECT_MOBILEfb ||
-         type == OBJECT_MOBILEtb ||
-         type == OBJECT_MOBILEwb ||
-         type == OBJECT_MOBILEib ) // builder?
+    if ( (type == OBJECT_MOBILEfb ||
+          type == OBJECT_MOBILEtb ||
+          type == OBJECT_MOBILEwb ||
+          type == OBJECT_MOBILEib) &&  // builder?
+         !m_object->GetTrainer() )
     {
         if(!bEnable) m_buildInterface = false;
         CheckInterface(pw, EVENT_OBJECT_BUILD, m_buildInterface);
@@ -1920,6 +1923,8 @@ void CObjectInterface::UpdateInterface()
          type == OBJECT_MOBILEtt ||
          type == OBJECT_MOBILEwt ||
          type == OBJECT_MOBILEit ||
+         type == OBJECT_MOBILErp ||
+         type == OBJECT_MOBILEst ||
          type == OBJECT_MOBILEdr ||
          type == OBJECT_MOTHER   ||
          type == OBJECT_ANT      ||

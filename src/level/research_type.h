@@ -39,5 +39,6 @@ enum ResearchType
     RESEARCH_RECYCLER   = (1<<10),      //! < recycler
     RESEARCH_SUBM       = (1<<11),      //! < submarine
     RESEARCH_SNIFFER    = (1<<12),      //! < sniffer
-    RESEARCH_BUILDER    = (1<<13)       //! < builder
+    RESEARCH_BUILDER    = (1<<13),      //! < builder
+    RESEARCH_TARGET     = (1<<14)       //! < target bot
 };

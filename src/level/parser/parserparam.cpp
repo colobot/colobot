@@ -339,6 +339,12 @@ ObjectType CLevelParserParam::ToObjectType(std::string value)
     if (value == "Portico"           ) return OBJECT_PORTICO;
     if (value == "SpaceShip"         ) return OBJECT_BASE;
     if (value == "PracticeBot"       ) return OBJECT_MOBILEwt;
+    if (value == "WingedTrainer"     ) return OBJECT_MOBILEft;
+    if (value == "TrackedTrainer"    ) return OBJECT_MOBILEtt;
+    if (value == "WheeledTrainer"    ) return OBJECT_MOBILEwt;
+    if (value == "LeggedTrainer"     ) return OBJECT_MOBILEit;
+    if (value == "HeavyTrainer"      ) return OBJECT_MOBILErp;
+    if (value == "AmphibiousTrainer" ) return OBJECT_MOBILEst;
     if (value == "WingedGrabber"     ) return OBJECT_MOBILEfa;
     if (value == "TrackedGrabber"    ) return OBJECT_MOBILEta;
     if (value == "WheeledGrabber"    ) return OBJECT_MOBILEwa;
@@ -543,7 +549,12 @@ const std::string CLevelParserParam::FromObjectType(ObjectType value)
 {
     if (value == OBJECT_PORTICO     ) return "Portico";
     if (value == OBJECT_BASE        ) return "SpaceShip";
-    if (value == OBJECT_MOBILEwt    ) return "PracticeBot";
+    if (value == OBJECT_MOBILEwt    ) return "WheeledTrainer";
+    if (value == OBJECT_MOBILEft    ) return "WingedTrainer";
+    if (value == OBJECT_MOBILEtt    ) return "TrackedTrainer";
+    if (value == OBJECT_MOBILEit    ) return "LeggedTrainer";
+    if (value == OBJECT_MOBILErp    ) return "HeavyTrainer";
+    if (value == OBJECT_MOBILEst    ) return "AmphibiousTrainer";
     if (value == OBJECT_MOBILEfa    ) return "WingedGrabber";
     if (value == OBJECT_MOBILEta    ) return "TrackedGrabber";
     if (value == OBJECT_MOBILEwa    ) return "WheeledGrabber";
@@ -757,12 +768,13 @@ ObjectType CLevelParserParam::AsObjectType(ObjectType def)
 
 DriveType CLevelParserParam::ToDriveType(std::string value)
 {
-    if (value == "Wheeled") return DriveType::Wheeled;
-    if (value == "Tracked") return DriveType::Tracked;
-    if (value == "Winged" ) return DriveType::Winged;
-    if (value == "Legged" ) return DriveType::Legged;
-    if (value == "BigTracked") return DriveType::BigTracked;
-    if (value == "Other"  ) return DriveType::Other;
+    if (value == "Wheeled"   ) return DriveType::Wheeled;
+    if (value == "Tracked"   ) return DriveType::Tracked;
+    if (value == "Winged"    ) return DriveType::Winged;
+    if (value == "Legged"    ) return DriveType::Legged;
+    if (value == "Heavy"     ) return DriveType::Heavy;
+    if (value == "Amphibious") return DriveType::Amphibious;
+    if (value == "Other"     ) return DriveType::Other;
     return static_cast<DriveType>(Cast<int>(value, "drive"));
 }
 
@@ -909,6 +921,7 @@ int CLevelParserParam::ToResearchFlag(std::string value)
     if (value == "SUBBER"  ) return RESEARCH_SUBM;
     if (value == "SNIFFER" ) return RESEARCH_SNIFFER;
     if (value == "BUILDER" ) return RESEARCH_BUILDER;
+    if (value == "TARGET"  ) return RESEARCH_TARGET;
     return Cast<int>(value, "researchflag");
 }
 

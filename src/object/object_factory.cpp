@@ -309,6 +309,8 @@ CObjectUPtr CObjectFactory::CreateObject(const ObjectCreateParams& params)
         case OBJECT_MOBILEtt:
         case OBJECT_MOBILEwt:
         case OBJECT_MOBILEit:
+        case OBJECT_MOBILErp:
+        case OBJECT_MOBILEst:
         case OBJECT_MOBILEdr:
         case OBJECT_APOLLO2:
         case OBJECT_CONTROLLER:

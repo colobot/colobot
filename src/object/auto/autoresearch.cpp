@@ -341,43 +341,45 @@ bool CAutoResearch::CreateInterface(bool bSelect)
     oy = 3.0f/480.0f;
     sx = 33.0f/640.0f;
     sy = 33.0f/480.0f;
+    if( !m_object->GetTrainer() )
+    {
+        pos.x = ox+sx*3.0f;
+        pos.y = oy+sy*0.5f;
+        pw->CreateButton(pos, dim, 64+0, EVENT_OBJECT_RTANK);
 
-    pos.x = ox+sx*3.0f;
-    pos.y = oy+sy*0.5f;
-    pw->CreateButton(pos, dim, 64+0, EVENT_OBJECT_RTANK);
+        pos.x = ox+sx*4.0f;
+        pos.y = oy+sy*0.5f;
+        pw->CreateButton(pos, dim, 64+1, EVENT_OBJECT_RFLY);
 
-    pos.x = ox+sx*4.0f;
-    pos.y = oy+sy*0.5f;
-    pw->CreateButton(pos, dim, 64+1, EVENT_OBJECT_RFLY);
+        pos.x = ox+sx*5.0f;
+        pos.y = oy+sy*0.5f;
+        pw->CreateButton(pos, dim, 64+3, EVENT_OBJECT_RCANON);
 
-    pos.x = ox+sx*5.0f;
-    pos.y = oy+sy*0.5f;
-    pw->CreateButton(pos, dim, 64+3, EVENT_OBJECT_RCANON);
+        pos.x = ox+sx*6.0f;
+        pos.y = oy+sy*0.5f;
+        pw->CreateButton(pos, dim, 64+4, EVENT_OBJECT_RTOWER);
 
-    pos.x = ox+sx*6.0f;
-    pos.y = oy+sy*0.5f;
-    pw->CreateButton(pos, dim, 64+4, EVENT_OBJECT_RTOWER);
+        pos.x = ox+sx*7.0f;
+        pos.y = oy+sy*0.5f;
+        pw->CreateButton(pos, dim, 64+7, EVENT_OBJECT_RATOMIC);
 
-    pos.x = ox+sx*7.0f;
-    pos.y = oy+sy*0.5f;
-    pw->CreateButton(pos, dim, 64+7, EVENT_OBJECT_RATOMIC);
+        pos.x = ox+sx*8.0f;
+        pos.y = oy+sy*0.5f;
+        pw->CreateButton(pos, dim, 64+2, EVENT_OBJECT_RTHUMP);
 
-    pos.x = ox+sx*8.0f;
-    pos.y = oy+sy*0.5f;
-    pw->CreateButton(pos, dim, 64+2, EVENT_OBJECT_RTHUMP);
+        pos.x = ox+sx*9.0f;
+        pos.y = oy+sy*0.5f;
+        pw->CreateButton(pos, dim, 64+6, EVENT_OBJECT_RSHIELD);
 
-    pos.x = ox+sx*9.0f;
-    pos.y = oy+sy*0.5f;
-    pw->CreateButton(pos, dim, 64+6, EVENT_OBJECT_RSHIELD);
+        pos.x = ox+sx*10.0f;
+        pos.y = oy+sy*0.5f;
+        pw->CreateButton(pos, dim, 64+5, EVENT_OBJECT_RPHAZER);
 
-    pos.x = ox+sx*10.0f;
-    pos.y = oy+sy*0.5f;
-    pw->CreateButton(pos, dim, 64+5, EVENT_OBJECT_RPHAZER);
+        pos.x = ox+sx*11.0f;
+        pos.y = oy+sy*0.5f;
+        pw->CreateButton(pos, dim, 192+4, EVENT_OBJECT_RBUILDER);
+    }
     
-    pos.x = ox+sx*11.0f;
-    pos.y = oy+sy*0.5f;
-    pw->CreateButton(pos, dim, 192+4, EVENT_OBJECT_RBUILDER);
-
     pos.x = ox+sx*14.5f;
     pos.y = oy+sy*0;
     ddim.x = 14.0f/640.0f;

@@ -380,6 +380,8 @@ CObject* CTaskTake::SearchFriendObject(float &angle,
              type != OBJECT_MOBILEtt &&
              type != OBJECT_MOBILEwt &&
              type != OBJECT_MOBILEit &&
+             type != OBJECT_MOBILErp &&
+             type != OBJECT_MOBILEst &&
              type != OBJECT_TOWER    &&
              type != OBJECT_RESEARCH &&
              type != OBJECT_ENERGY   &&

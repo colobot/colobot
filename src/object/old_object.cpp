@@ -356,7 +356,18 @@ bool COldObject::DamageObject(DamageType type, float force, CObject* killer)
     }
     else if ( Implements(ObjectInterfaceType::Fragile) )
     {
-        if ( m_type == OBJECT_BOMB && type != DamageType::Explosive ) return false; // Mine can't be destroyed by shooting
+        if ((m_type == OBJECT_BOMB         ||
+             m_type == OBJECT_RUINmobilew1 ||
+             m_type == OBJECT_RUINmobilew2 ||
+             m_type == OBJECT_RUINmobilet1 ||
+             m_type == OBJECT_RUINmobilet2 ||
+             m_type == OBJECT_RUINmobiler1 ||
+             m_type == OBJECT_RUINmobiler2 ||
+             m_type == OBJECT_RUINfactory  ||
+             m_type == OBJECT_RUINdoor     ||
+             m_type == OBJECT_RUINsupport  ||
+             m_type == OBJECT_RUINradar    ||
+             m_type == OBJECT_RUINconvert   ) && type != DamageType::Explosive ) return false; // Mines and ruins can't be destroyed by shooting
         if ( m_type == OBJECT_URANIUM ) return false; // UraniumOre is not destroyable (see #777)
 
         DestroyObject(DestructionType::Explosion, killer);
@@ -491,7 +502,12 @@ void COldObject::DestroyObject(DestructionType type, CObject* killer)
                   m_type == OBJECT_SAFE     ||
                   m_type == OBJECT_HUSTON   ||
                   m_type == OBJECT_START    ||
-                  m_type == OBJECT_END      )  // building?
+                  m_type == OBJECT_END      ||
+                  m_type == OBJECT_RUINfactory ||
+                  m_type == OBJECT_RUINdoor    ||
+                  m_type == OBJECT_RUINsupport ||
+                  m_type == OBJECT_RUINradar   ||
+                  m_type == OBJECT_RUINconvert  )  // building?
         {
             pyroType = Gfx::PT_FRAGT;
         }
@@ -682,7 +698,7 @@ void COldObject::SetType(ObjectType type)
          m_type == OBJECT_MOBILEfs || // WingedSniffer
          m_type == OBJECT_MOBILEfc || // WingedShooter
          m_type == OBJECT_MOBILEfi || // WingedOrgaShooter
-         m_type == OBJECT_MOBILEft || // winged PracticeBot (unused)
+         m_type == OBJECT_MOBILEft || // WingedTrainer
          m_type == OBJECT_HUMAN    || // Me
          m_type == OBJECT_TECH     || // Tech
          m_type == OBJECT_CONTROLLER)
@@ -732,6 +748,8 @@ void COldObject::SetType(ObjectType type)
         m_type == OBJECT_MOBILEtt ||
         m_type == OBJECT_MOBILEwt ||
         m_type == OBJECT_MOBILEit ||
+        m_type == OBJECT_MOBILErp ||
+        m_type == OBJECT_MOBILEst ||
         m_type == OBJECT_TOWER    ||
         m_type == OBJECT_RESEARCH ||
         m_type == OBJECT_ENERGY   ||
@@ -797,6 +815,8 @@ void COldObject::SetType(ObjectType type)
          m_type == OBJECT_MOBILEtt ||
          m_type == OBJECT_MOBILEwt ||
          m_type == OBJECT_MOBILEit ||
+         m_type == OBJECT_MOBILErp ||
+         m_type == OBJECT_MOBILEst ||
          m_type == OBJECT_FACTORY  ||
          m_type == OBJECT_REPAIR   ||
          m_type == OBJECT_DESTROYER||
@@ -824,6 +844,23 @@ void COldObject::SetType(ObjectType type)
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Damageable)] = true;
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Destroyable)] = false;
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Fragile)] = false;
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Shielded)] = false;
+    }
+    else if (m_type == OBJECT_RUINmobilew1 ||
+             m_type == OBJECT_RUINmobilew2 ||
+             m_type == OBJECT_RUINmobilet1 ||
+             m_type == OBJECT_RUINmobilet2 ||
+             m_type == OBJECT_RUINmobiler1 ||
+             m_type == OBJECT_RUINmobiler2 ||
+             m_type == OBJECT_RUINfactory  ||
+             m_type == OBJECT_RUINdoor     ||
+             m_type == OBJECT_RUINsupport  ||
+             m_type == OBJECT_RUINradar    ||
+             m_type == OBJECT_RUINconvert   )
+    {
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Damageable)] = true;
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Destroyable)] = true;
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Fragile)] = true;
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Shielded)] = false;
     }
     else
@@ -890,6 +927,9 @@ void COldObject::SetType(ObjectType type)
         m_type == OBJECT_MOBILEtt ||
         m_type == OBJECT_MOBILEwt ||
         m_type == OBJECT_MOBILEit ||
+        m_type == OBJECT_MOBILErp ||
+        m_type == OBJECT_MOBILEst ||
+        m_type == OBJECT_MOBILEtg ||
         m_type == OBJECT_MOBILEdr ||
         m_type == OBJECT_APOLLO2  ||
         m_type == OBJECT_BASE     ||
@@ -2290,7 +2330,8 @@ void COldObject::AdjustCamera(Math::Vector &eye, float &dirH, float &dirV,
     }
     else if ( m_type == OBJECT_MOBILErt ||
               m_type == OBJECT_MOBILErr ||
-              m_type == OBJECT_MOBILErs )
+              m_type == OBJECT_MOBILErs ||
+              m_type == OBJECT_MOBILErp )
     {
         eye.x = -1.1f;  // on the cap
         eye.y =  7.9f;
@@ -2332,7 +2373,8 @@ void COldObject::AdjustCamera(Math::Vector &eye, float &dirH, float &dirV,
         eye.y = 11.0f;
         eye.z =  0.0f;
     }
-    else if ( m_type == OBJECT_MOBILEsa )
+    else if ( m_type == OBJECT_MOBILEsa ||
+              m_type == OBJECT_MOBILEst )
     {
         eye.x =  3.0f;
         eye.y =  4.5f;
@@ -2879,6 +2921,8 @@ void COldObject::CreateSelectParticle()
              m_type == OBJECT_MOBILEtt ||
              m_type == OBJECT_MOBILEwt ||
              m_type == OBJECT_MOBILEit ||
+             m_type == OBJECT_MOBILErp ||
+             m_type == OBJECT_MOBILEst ||
              m_type == OBJECT_MOBILEdr )  // vehicle?
         {
             pos = Math::Vector(0.0f, 0.0f, 0.0f);
@@ -2915,24 +2959,16 @@ void COldObject::UpdateSelectParticle()
     if ( m_type == OBJECT_MOBILErt ||
          m_type == OBJECT_MOBILErc ||
          m_type == OBJECT_MOBILErr ||
-         m_type == OBJECT_MOBILErs )  // large caterpillars?
+         m_type == OBJECT_MOBILErs ||
+         m_type == OBJECT_MOBILErp )  // large caterpillars?
     {
         pos[0] = Math::Vector(4.2f, 2.8f,  1.5f);
         pos[1] = Math::Vector(4.2f, 2.8f, -1.5f);
         dim[0].x = 1.5f;
         dim[1].x = 1.5f;
     }
-    else if ( m_type == OBJECT_MOBILEwt ||
-              m_type == OBJECT_MOBILEtt ||
-              m_type == OBJECT_MOBILEft ||
-              m_type == OBJECT_MOBILEit )  // trainer ?
-    {
-        pos[0] = Math::Vector(4.2f, 2.5f,  1.2f);
-        pos[1] = Math::Vector(4.2f, 2.5f, -1.2f);
-        dim[0].x = 1.5f;
-        dim[1].x = 1.5f;
-    }
-    else if ( m_type == OBJECT_MOBILEsa )  // submarine?
+    else if ( m_type == OBJECT_MOBILEsa ||
+              m_type == OBJECT_MOBILEst )  // submarine?
     {
         pos[0] = Math::Vector(3.6f, 4.0f,  2.0f);
         pos[1] = Math::Vector(3.6f, 4.0f, -2.0f);
@@ -2947,6 +2983,17 @@ void COldObject::UpdateSelectParticle()
         pos[0] = Math::Vector(4.9f, 3.5f,  2.5f);
         pos[1] = Math::Vector(4.9f, 3.5f, -2.5f);
     }
+    else if ( m_type == OBJECT_MOBILEwt ||
+              m_type == OBJECT_MOBILEtt ||
+              m_type == OBJECT_MOBILEft ||
+              m_type == OBJECT_MOBILEit ||
+              GetTrainer())                // trainer ?
+    {
+        pos[0] = Math::Vector(4.2f, 2.5f,  1.2f);
+        pos[1] = Math::Vector(4.2f, 2.5f, -1.2f);
+        dim[0].x = 1.5f;
+        dim[1].x = 1.5f;
+    }
     else
     {
         pos[0] = Math::Vector(4.2f, 2.5f,  1.5f);
@@ -2954,61 +3001,72 @@ void COldObject::UpdateSelectParticle()
     }
 
     // Red back lens
-    if ( m_type == OBJECT_MOBILEfa ||
-         m_type == OBJECT_MOBILEfb ||
-         m_type == OBJECT_MOBILEfc ||
-         m_type == OBJECT_MOBILEfi ||
-         m_type == OBJECT_MOBILEfs ||
-         m_type == OBJECT_MOBILEft )  // flying?
+    if ( m_type == OBJECT_MOBILEwt ||
+         m_type == OBJECT_MOBILEtt ||
+         m_type == OBJECT_MOBILEft ||
+         m_type == OBJECT_MOBILEit ||
+         GetTrainer())               // trainer?
+    {
+        pos[2] = Math::Vector(-4.0f, 2.5f,  2.2f);
+        pos[3] = Math::Vector(-4.0f, 2.5f, -2.2f);
+    }
+    else if ( m_type == OBJECT_MOBILEfa ||
+              m_type == OBJECT_MOBILEfb ||
+              m_type == OBJECT_MOBILEfc ||
+              m_type == OBJECT_MOBILEfi ||
+              m_type == OBJECT_MOBILEfs )  // flying?
     {
         pos[2] = Math::Vector(-4.0f, 3.1f,  4.5f);
         pos[3] = Math::Vector(-4.0f, 3.1f, -4.5f);
         dim[2].x = 0.6f;
         dim[3].x = 0.6f;
     }
-    if ( m_type == OBJECT_MOBILEwa ||
-         m_type == OBJECT_MOBILEwb ||
-         m_type == OBJECT_MOBILEwc ||
-         m_type == OBJECT_MOBILEwi ||
-         m_type == OBJECT_MOBILEws )  // wheels?
+    else if ( m_type == OBJECT_MOBILEwa ||
+              m_type == OBJECT_MOBILEwb ||
+              m_type == OBJECT_MOBILEwc ||
+              m_type == OBJECT_MOBILEwi ||
+              m_type == OBJECT_MOBILEws )  // wheels?
     {
         pos[2] = Math::Vector(-4.5f, 2.7f,  2.8f);
         pos[3] = Math::Vector(-4.5f, 2.7f, -2.8f);
     }
-    if ( m_type == OBJECT_MOBILEwt )  // wheels?
-    {
-        pos[2] = Math::Vector(-4.0f, 2.5f,  2.2f);
-        pos[3] = Math::Vector(-4.0f, 2.5f, -2.2f);
-    }
-    if ( m_type == OBJECT_MOBILEia ||
-         m_type == OBJECT_MOBILEib ||
-         m_type == OBJECT_MOBILEic ||
-         m_type == OBJECT_MOBILEii ||
-         m_type == OBJECT_MOBILEis ||
-         m_type == OBJECT_MOBILEit )  // legs?
+    else if ( m_type == OBJECT_MOBILEia ||
+              m_type == OBJECT_MOBILEib ||
+              m_type == OBJECT_MOBILEic ||
+              m_type == OBJECT_MOBILEii ||
+              m_type == OBJECT_MOBILEis )  // legs?
     {
         pos[2] = Math::Vector(-4.5f, 2.7f,  2.8f);
         pos[3] = Math::Vector(-4.5f, 2.7f, -2.8f);
     }
-    if ( m_type == OBJECT_MOBILEta ||
-         m_type == OBJECT_MOBILEtb ||
-         m_type == OBJECT_MOBILEtc ||
-         m_type == OBJECT_MOBILEti ||
-         m_type == OBJECT_MOBILEts ||
-         m_type == OBJECT_MOBILEtt )  // caterpillars?
+    else if ( m_type == OBJECT_MOBILEta ||
+              m_type == OBJECT_MOBILEtb ||
+              m_type == OBJECT_MOBILEtc ||
+              m_type == OBJECT_MOBILEti ||
+              m_type == OBJECT_MOBILEts )  // caterpillars?
     {
         pos[2] = Math::Vector(-3.6f, 4.2f,  3.0f);
         pos[3] = Math::Vector(-3.6f, 4.2f, -3.0f);
     }
-    if ( m_type == OBJECT_MOBILErt ||
-         m_type == OBJECT_MOBILErc ||
-         m_type == OBJECT_MOBILErr ||
-         m_type == OBJECT_MOBILErs )  // large caterpillars?
+    else if ( m_type == OBJECT_MOBILErt ||
+              m_type == OBJECT_MOBILErc ||
+              m_type == OBJECT_MOBILErr ||
+              m_type == OBJECT_MOBILErs )  // large caterpillars?
     {
         pos[2] = Math::Vector(-5.0f, 5.2f,  2.5f);
         pos[3] = Math::Vector(-5.0f, 5.2f, -2.5f);
     }
-    if ( m_type == OBJECT_MOBILEsa )  // submarine?
+    if ( m_type == OBJECT_MOBILErp || ( GetTrainer() &&
+       ( m_type == OBJECT_MOBILErt ||
+         m_type == OBJECT_MOBILErc ||
+         m_type == OBJECT_MOBILErr ||
+         m_type == OBJECT_MOBILErs)))  // large caterpillars (trainer)?
+    {
+        pos[2] = Math::Vector(-4.6f, 5.2f,  2.6f);
+        pos[3] = Math::Vector(-4.6f, 5.2f, -2.6f);
+    }
+    if ( m_type == OBJECT_MOBILEsa ||
+         m_type == OBJECT_MOBILEst )  // submarine?
     {
         pos[2] = Math::Vector(-3.6f, 4.0f,  2.0f);
         pos[3] = Math::Vector(-3.6f, 4.0f, -2.0f);
@@ -3252,6 +3310,9 @@ float COldObject::GetLightningHitProbability()
          m_type == OBJECT_MOBILEtt ||
          m_type == OBJECT_MOBILEwt ||
          m_type == OBJECT_MOBILEit ||
+         m_type == OBJECT_MOBILErp ||
+         m_type == OBJECT_MOBILEst ||
+         m_type == OBJECT_MOBILEtg ||
          m_type == OBJECT_MOBILEdr )  // robot?
     {
         return 0.5f;
@@ -3265,8 +3326,7 @@ bool COldObject::IsSelectableByDefault(ObjectType type)
          type == OBJECT_ANT      ||
          type == OBJECT_SPIDER   ||
          type == OBJECT_BEE      ||
-         type == OBJECT_WORM     ||
-         type == OBJECT_MOBILEtg )
+         type == OBJECT_WORM     )
     {
         return false;
     }

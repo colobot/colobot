@@ -991,7 +991,8 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
              type == OBJECT_MOBILEib ||
              type == OBJECT_MOBILEis ||
              type == OBJECT_MOBILEic ||
-             type == OBJECT_MOBILEii )  factor = 0.5f;
+             type == OBJECT_MOBILEii ||
+             type == OBJECT_MOBILEit )  factor = 0.5f;
 
         energy = power->GetEnergy();
         energy -= fabs(motorSpeed.x)*rTime*factor*0.005f;
@@ -1827,6 +1828,8 @@ void CPhysics::WaterFrame(float aTime, float rTime)
          type == OBJECT_MOBILEtt ||
          type == OBJECT_MOBILEwt ||
          type == OBJECT_MOBILEit ||
+         type == OBJECT_MOBILErp ||
+         type == OBJECT_MOBILEtg ||
          type == OBJECT_MOBILEdr ||
          type == OBJECT_APOLLO2  )
     {
@@ -1848,7 +1851,8 @@ void CPhysics::SoundMotorFull(float rTime, ObjectType type)
          type == OBJECT_MOBILEib ||
          type == OBJECT_MOBILEic ||
          type == OBJECT_MOBILEii ||
-         type == OBJECT_MOBILEis )
+         type == OBJECT_MOBILEis ||
+         type == OBJECT_MOBILEit )
     {
         if ( m_soundChannel == -1 )
         {
@@ -1875,7 +1879,8 @@ void CPhysics::SoundMotorFull(float rTime, ObjectType type)
         return;
     }
 
-    if ( type == OBJECT_MOBILEsa )
+    if ( type == OBJECT_MOBILEsa ||
+         type == OBJECT_MOBILEst )
     {
         sound = SOUND_MOTORs;
         amplitude = 0.6f;
@@ -1884,7 +1889,8 @@ void CPhysics::SoundMotorFull(float rTime, ObjectType type)
     else if ( type == OBJECT_MOBILErt ||
               type == OBJECT_MOBILErc ||
               type == OBJECT_MOBILErr ||
-              type == OBJECT_MOBILErs )
+              type == OBJECT_MOBILErs ||
+              type == OBJECT_MOBILErp )
     {
         sound = SOUND_MOTORr;
         amplitude = 1.0f;
@@ -1893,7 +1899,8 @@ void CPhysics::SoundMotorFull(float rTime, ObjectType type)
     else if ( type == OBJECT_MOBILEta ||
               type == OBJECT_MOBILEtc ||
               type == OBJECT_MOBILEti ||
-              type == OBJECT_MOBILEts )
+              type == OBJECT_MOBILEts ||
+              type == OBJECT_MOBILEtt )
     {
         sound = SOUND_MOTORt;
         amplitude = 1.0f;
@@ -1964,7 +1971,8 @@ void CPhysics::SoundMotorSlow(float rTime, ObjectType type)
          type == OBJECT_MOBILEib ||
          type == OBJECT_MOBILEic ||
          type == OBJECT_MOBILEii ||
-         type == OBJECT_MOBILEis )
+         type == OBJECT_MOBILEis ||
+         type == OBJECT_MOBILEit )
     {
         if ( m_soundChannel != -1 )  // engine is running?
         {
@@ -1975,7 +1983,8 @@ void CPhysics::SoundMotorSlow(float rTime, ObjectType type)
         return;
     }
 
-    if ( type == OBJECT_MOBILEsa )
+    if ( type == OBJECT_MOBILEsa ||
+         type == OBJECT_MOBILEst )
     {
         sound = SOUND_MOTORs;
         amplitude = 0.4f;
@@ -1983,7 +1992,8 @@ void CPhysics::SoundMotorSlow(float rTime, ObjectType type)
     else if ( type == OBJECT_MOBILErt ||
               type == OBJECT_MOBILErc ||
               type == OBJECT_MOBILErr ||
-              type == OBJECT_MOBILErs )
+              type == OBJECT_MOBILErs ||
+              type == OBJECT_MOBILErp )
     {
         sound = SOUND_MOTORr;
         amplitude = 0.9f;
@@ -1992,7 +2002,8 @@ void CPhysics::SoundMotorSlow(float rTime, ObjectType type)
               type == OBJECT_MOBILEtb ||
               type == OBJECT_MOBILEtc ||
               type == OBJECT_MOBILEti ||
-              type == OBJECT_MOBILEts )
+              type == OBJECT_MOBILEts ||
+              type == OBJECT_MOBILEtt )
     {
         sound = SOUND_MOTORt;
         amplitude = 0.7f;
@@ -2041,7 +2052,8 @@ void CPhysics::SoundMotorSlow(float rTime, ObjectType type)
     if ( type == OBJECT_MOBILErt ||
          type == OBJECT_MOBILErc ||
          type == OBJECT_MOBILErr ||
-         type == OBJECT_MOBILErs )
+         type == OBJECT_MOBILErs ||
+         type == OBJECT_MOBILErp )
     {
         m_soundTimePshhh -= rTime;
 
@@ -2087,7 +2099,8 @@ void CPhysics::SoundMotorStop(float rTime, ObjectType type)
          type == OBJECT_MOBILEib ||
          type == OBJECT_MOBILEic ||
          type == OBJECT_MOBILEii ||
-         type == OBJECT_MOBILEis )
+         type == OBJECT_MOBILEis ||
+         type == OBJECT_MOBILEit )
     {
         if ( m_soundChannel != -1 )  // engine is running?
         {
@@ -2707,7 +2720,7 @@ bool CPhysics::ExploOther(ObjectType iType,
         if (pObj->GetType() == OBJECT_STONE   ) { destructionForce = 25.0f; } // TitaniumOre
         if (pObj->GetType() == OBJECT_URANIUM ) { destructionForce = 25.0f; } // UraniumOre
         if (pObj->GetType() == OBJECT_MOBILEtg) { destructionForce = 10.0f; damageType = DamageType::Explosive; } // TargetBot (something running into it)
-        if (iType           == OBJECT_MOBILEtg) { destructionForce = 10.0f; damageType = DamageType::Explosive; } // TargetBot (it running into something)
+        if (iType           == OBJECT_MOBILEtg) { destructionForce =  0.0f; damageType = DamageType::Explosive; } // TargetBot (it running into something)
         if (pObj->GetType() == OBJECT_TNT     ) { destructionForce = 10.0f; damageType = DamageType::Explosive; } // TNT
         if (pObj->GetType() == OBJECT_BOMB    ) { destructionForce =  0.0f; damageType = DamageType::Explosive; } // Mine
 
@@ -2771,7 +2784,9 @@ bool CPhysics::ExploOther(ObjectType iType,
             oType == OBJECT_MOBILEwt ||
             oType == OBJECT_MOBILEtt ||
             oType == OBJECT_MOBILEft ||
-            oType == OBJECT_MOBILEit  )  // vehicle?
+            oType == OBJECT_MOBILEit ||
+            oType == OBJECT_MOBILErp ||
+            oType == OBJECT_MOBILEst  )  // vehicle?
         {
             assert(pObj->Implements(ObjectInterfaceType::Damageable));
             // TODO: implement "killer"?
@@ -2795,7 +2810,7 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType, float force)
     float destructionForce = -1.0f; // minimal force required to destroy an object using this explosive, default: not explosive
     if ( oType == OBJECT_TNT      ) destructionForce = 10.0f; // TNT
     if ( oType == OBJECT_MOBILEtg ) destructionForce = 10.0f; // TargetBot (something running into it)
-    if ( iType == OBJECT_MOBILEtg ) destructionForce = 10.0f; // TargetBot (it running into something)
+    if ( iType == OBJECT_MOBILEtg ) destructionForce =  0.0f; // TargetBot (it running into something)
     if ( oType == OBJECT_BOMB     ) destructionForce =  0.0f; // Mine
 
     if ( force > destructionForce && destructionForce >= 0.0f )
@@ -2837,6 +2852,8 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType, float force)
              iType == OBJECT_MOBILEtt ||
              iType == OBJECT_MOBILEft ||
              iType == OBJECT_MOBILEit ||
+             iType == OBJECT_MOBILErp ||
+             iType == OBJECT_MOBILEst ||
              iType == OBJECT_MOBILEdr ||
              iType == OBJECT_APOLLO2  )  // vehicle?
         {
@@ -3041,7 +3058,8 @@ void CPhysics::MotorParticle(float aTime, float rTime)
          type == OBJECT_MOBILEib ||
          type == OBJECT_MOBILEic ||
          type == OBJECT_MOBILEii ||
-         type == OBJECT_MOBILEis ||  // legs?
+         type == OBJECT_MOBILEis ||
+         type == OBJECT_MOBILEit ||  // legs?
          type == OBJECT_MOBILEdr ||
          type == OBJECT_MOTHER   ||
          type == OBJECT_ANT      ||
@@ -3147,7 +3165,8 @@ void CPhysics::MotorParticle(float aTime, float rTime)
          type == OBJECT_MOBILEtb ||
          type == OBJECT_MOBILEtc ||
          type == OBJECT_MOBILEti ||
-         type == OBJECT_MOBILEts )  // caterpillars?
+         type == OBJECT_MOBILEts ||
+         type == OBJECT_MOBILEtt )  // caterpillars?
     {
         if ( aTime-m_lastSlideParticle >= m_engine->ParticleAdapt(0.05f) )
         {
@@ -3174,7 +3193,8 @@ void CPhysics::MotorParticle(float aTime, float rTime)
     if ( type == OBJECT_MOBILErt ||
          type == OBJECT_MOBILErc ||
          type == OBJECT_MOBILErr ||
-         type == OBJECT_MOBILErs )  // large caterpillars?
+         type == OBJECT_MOBILErs ||
+         type == OBJECT_MOBILErp )  // large caterpillars?
     {
         if ( aTime-m_lastSlideParticle >= m_engine->ParticleAdapt(0.05f) )
         {
@@ -3448,7 +3468,7 @@ void CPhysics::MotorParticle(float aTime, float rTime)
         }
     }
 
-    if ( type == OBJECT_MOBILEsa && m_bSwim )
+    if ( (type == OBJECT_MOBILEsa || type == OBJECT_MOBILEst) && m_bSwim )
     {
         h = Math::Mod(aTime, 3.0f);
         if ( h < 1.5f && ( h < 0.5f || h > 0.9f ) )  return;
@@ -3482,7 +3502,8 @@ void CPhysics::MotorParticle(float aTime, float rTime)
         if ( type == OBJECT_MOBILErt ||
              type == OBJECT_MOBILErc ||
              type == OBJECT_MOBILErr ||
-             type == OBJECT_MOBILErs )
+             type == OBJECT_MOBILErs ||
+             type == OBJECT_MOBILErp )
         {
             if ( !m_bMotor )  return;
 
