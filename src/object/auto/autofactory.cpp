@@ -723,7 +723,7 @@ bool CAutoFactory::CreateInterface(bool bSelect)
 
     pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
     if ( pw == nullptr )  return false;
- 
+
     dim.x = 33.0f/640.0f;
     dim.y = 33.0f/480.0f;
     ox = 3.0f/640.0f;
@@ -777,7 +777,7 @@ bool CAutoFactory::CreateInterface(bool bSelect)
         pw->CreateButton(pos, dim, 128+27, EVENT_OBJECT_FACTORYfi);
         pos.x += dim.x;
         pw->CreateButton(pos, dim, 128+28, EVENT_OBJECT_FACTORYii);
-    
+
         pos.x = ox+sx*0.0f;
         pos.y = oy+sy*4.9f;
         pw->CreateButton(pos, dim, 192+0, EVENT_OBJECT_FACTORYwb);
@@ -804,7 +804,7 @@ bool CAutoFactory::CreateInterface(bool bSelect)
         pos.x += dim.x;
         pw->CreateButton(pos, dim, 128+45, EVENT_OBJECT_FACTORYtg);
     }
-    
+
     pos.x = ox+sx*0.0f;
     pos.y = oy+sy*0;
     ddim.x = 66.0f/640.0f;

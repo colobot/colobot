@@ -120,7 +120,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
     {
         modelManager->AddModelReference("trainer.mod", false, rank, m_object->GetTeam());
     }
-    
+
     if (type == OBJECT_MOBILEfa ||
         type == OBJECT_MOBILEfb ||
         type == OBJECT_MOBILEfc ||
@@ -136,7 +136,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
             m_object->SetObjectRank(28, rank);
             m_object->SetObjectParent(28, 0);
             modelManager->AddModelReference("trainerf.mod", false, rank, m_object->GetTeam());
-            
+
             rank = m_engine->CreateObject();
             m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
             m_object->SetObjectRank(29, rank);
@@ -149,7 +149,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
              type == OBJECT_MOBILEtc ||
              type == OBJECT_MOBILEti ||
              type == OBJECT_MOBILEts)
-    { 
+    {
         if (!m_object->GetTrainer())
             modelManager->AddModelReference("lem1t.mod", false, rank, m_object->GetTeam());
         else
@@ -159,7 +159,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
             m_object->SetObjectRank(28, rank);
             m_object->SetObjectParent(28, 0);
             modelManager->AddModelReference("trainert.mod", false, rank, m_object->GetTeam());
-            
+
             rank = m_engine->CreateObject();
             m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
             m_object->SetObjectRank(29, rank);
@@ -182,7 +182,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
             m_object->SetObjectRank(28, rank);
             m_object->SetObjectParent(28, 0);
             modelManager->AddModelReference("trainerw.mod", false, rank, m_object->GetTeam());
-            
+
             rank = m_engine->CreateObject();
             m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
             m_object->SetObjectRank(29, rank);
@@ -205,7 +205,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
             m_object->SetObjectRank(28, rank);
             m_object->SetObjectParent(28, 0);
             modelManager->AddModelReference("traineri.mod", false, rank, m_object->GetTeam());
-            
+
             rank = m_engine->CreateObject();
             m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
             m_object->SetObjectRank(29, rank);
@@ -213,7 +213,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
             modelManager->AddModelReference("trainera.mod", false, rank, m_object->GetTeam());
         }
     }
-    else if (!m_object->GetTrainer() && 
+    else if (!m_object->GetTrainer() &&
             (type == OBJECT_MOBILErt ||
              type == OBJECT_MOBILErc ||
              type == OBJECT_MOBILErr ||
@@ -428,7 +428,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetPartPosition(2, Math::Vector(0.0f, 2.5f, 0.0f));
         m_object->SetPartRotationZ(2, 0.0f);
     }
-    
+
     if (type == OBJECT_MOBILEfb ||
         type == OBJECT_MOBILEtb ||
         type == OBJECT_MOBILEwb ||

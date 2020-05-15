@@ -100,7 +100,7 @@ CObjectInterface::CObjectInterface(COldObject* object)
     m_manipStyle   = EVENT_OBJECT_MFRONT;
 
     m_selScript = 0;
-    
+
     m_buildInterface = false;
 }
 
@@ -622,7 +622,7 @@ bool CObjectInterface::EventProcess(const Event &event)
         {
             err = m_taskExecutor->StartTaskSpiderExplo();
         }
-        
+
         if ( action == EVENT_OBJECT_BUILD )
         {
             m_buildInterface = !m_buildInterface;
@@ -1430,13 +1430,13 @@ bool CObjectInterface::CreateInterface(bool bSelect)
         pb = pw->CreateButton(pos, dim, 192+4, EVENT_OBJECT_BUILD);
         pb->SetImmediat(true);
         DefaultEnter(pw, EVENT_OBJECT_BUILD);
-        
+
         pos.x = 0.0f;
         pos.y = oy+sy*2.6f;
         ddim.x = 214.5f/640.0f;
         ddim.y = 66.0f/480.0f;
         pw->CreateGroup(pos, ddim, 6, EVENT_WINDOW3);
-        
+
         ddim.x = dim.x*0.9f;
         ddim.y = dim.y*0.9f;
         pos.y = oy+sy*3.6f;
@@ -1468,7 +1468,7 @@ bool CObjectInterface::CreateInterface(bool bSelect)
         pos.x = ox+sx*5.4f;
         pw->CreateButton(pos, ddim, 128+44, EVENT_OBJECT_BINFO);
         DeadInterface(pw, EVENT_OBJECT_BINFO, m_main->CanBuild(OBJECT_INFO, m_object->GetTeam()));
-        
+
         pos.y = oy+sy*2.7f;
 
         pos.x = ox+sx*0.0f;
@@ -1498,7 +1498,7 @@ bool CObjectInterface::CreateInterface(bool bSelect)
         pos.x = ox+sx*5.4f;
         pw->CreateButton(pos, ddim, 128+41, EVENT_OBJECT_BDESTROYER);
         DeadInterface(pw, EVENT_OBJECT_BDESTROYER, m_main->CanBuild(OBJECT_DESTROYER, m_object->GetTeam()));
-        
+
     }
     UpdateInterface();
     m_lastUpdateTime = 0.0f;
@@ -1829,7 +1829,7 @@ void CObjectInterface::UpdateInterface()
             ps->SetVisibleValue((RADIUS_SHIELD_MIN/g_unit)+dynamic_cast<CShielder*>(m_object)->GetShieldRadius()*((RADIUS_SHIELD_MAX-RADIUS_SHIELD_MIN)/g_unit));
         }
     }
-    
+
     if ( (type == OBJECT_MOBILEfb ||
           type == OBJECT_MOBILEtb ||
           type == OBJECT_MOBILEwb ||
@@ -1841,7 +1841,7 @@ void CObjectInterface::UpdateInterface()
 
         pb = static_cast< CButton* >(pw->SearchControl(EVENT_WINDOW3));
         pb->SetState(STATE_VISIBLE, m_buildInterface);
-        
+
         pb = static_cast< CButton* >(pw->SearchControl(EVENT_OBJECT_BFACTORY));
         pb->SetState(STATE_VISIBLE, m_buildInterface);
         pb = static_cast< CButton* >(pw->SearchControl(EVENT_OBJECT_BDERRICK));

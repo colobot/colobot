@@ -1939,7 +1939,7 @@ void CPyro::BurnStart()
         angle.z = -25.0f*Math::PI/180.0f;
         BurnAddPart(1, pos, angle);  // down the insect-cannon
     }
-    
+
     if ( m_burnType == OBJECT_MOBILEfb ||
          m_burnType == OBJECT_MOBILEtb ||
          m_burnType == OBJECT_MOBILEwb ||

@@ -46,12 +46,12 @@ ToolType GetToolFromObject(ObjectType type)
         case OBJECT_MOBILEfi:
         case OBJECT_MOBILEii:
             return ToolType::OrganicShooter;
-			
+
         case OBJECT_MOBILEwb:
         case OBJECT_MOBILEtb:
         case OBJECT_MOBILEfb:
         case OBJECT_MOBILEib:
-            return ToolType::Builder;	
+            return ToolType::Builder;
 
         default:
             return ToolType::Other;

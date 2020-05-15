@@ -367,7 +367,7 @@ bool CScriptFunctions::rIsBusy(CBotVar* var, CBotVar* result, int& exception, vo
         result->SetValInt(ERR_WRONG_OBJ);
         return false;
     }
-    
+
     CAuto* automat = obj->GetAuto();
 
     if ( pThis->GetTeam() != obj->GetTeam() && obj->GetTeam() != 0 )
@@ -400,7 +400,7 @@ bool CScriptFunctions::rDestroy(CBotVar* var, CBotVar* result, int& exception, v
         result->SetValInt(ERR_WRONG_OBJ);
         return false;
     }
-    
+
     CAuto* automat = obj->GetAuto();
 
     if ( pThis->GetTeam() != obj->GetTeam() && obj->GetTeam() != 0 )
@@ -463,7 +463,7 @@ bool CScriptFunctions::rFactory(CBotVar* var, CBotVar* result, int& exception, v
 
     ObjectType type = static_cast<ObjectType>(var->GetValInt());
     var = var->GetNext();
-    
+
     std::string program;
     if ( var != nullptr )
     {
@@ -472,13 +472,13 @@ bool CScriptFunctions::rFactory(CBotVar* var, CBotVar* result, int& exception, v
     }
     else
         program = "";
-    
+
     CObject* factory;
     if (var == nullptr)
         factory = CObjectManager::GetInstancePointer()->FindNearest(pThis, OBJECT_FACTORY);
     else
         factory = static_cast<CObject*>(var->GetUserPtr());
-    
+
     if (factory == nullptr)
     {
         exception = ERR_WRONG_OBJ;
@@ -562,20 +562,20 @@ bool CScriptFunctions::rResearch(CBotVar* var, CBotVar* result, int& exception, 
 
     ResearchType type = static_cast<ResearchType>(var->GetValInt());
     var = var->GetNext();
-    
+
     CObject* center;
     if (var == nullptr)
         center = CObjectManager::GetInstancePointer()->FindNearest(pThis, OBJECT_RESEARCH);
     else
         center = static_cast<CObject*>(var->GetUserPtr());
-    
+
     if (center == nullptr)
     {
         exception = ERR_WRONG_OBJ;
         result->SetValInt(ERR_WRONG_OBJ);
         return false;
     }
-    
+
     CAuto* automat = center->GetAuto();
 
     if ( pThis->GetTeam() != center->GetTeam() && center->GetTeam() != 0 )
@@ -654,7 +654,7 @@ bool CScriptFunctions::rTakeOff(CBotVar* var, CBotVar* result, int& exception, v
         result->SetValInt(ERR_WRONG_OBJ);
         return false;
     }
-    
+
     CAuto* automat = base->GetAuto();
 
     if ( pThis->GetTeam() != base->GetTeam() && base->GetTeam() != 0 )

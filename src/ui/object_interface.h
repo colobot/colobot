@@ -120,7 +120,7 @@ protected:
     float               m_lastAlarmTime;
     int                 m_soundChannelAlarm;
     int                 m_flagColor;
-    
+
     bool                m_buildInterface;
 };
 

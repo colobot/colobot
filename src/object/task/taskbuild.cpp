@@ -356,7 +356,7 @@ bool CTaskBuild::EventProcess(const Event &event)
             m_sound->Play(SOUND_BUILD, m_object->GetPosition(), 0.5f, 1.0f*Math::Rand()*1.5f);
         }
     }
-    
+
     if(m_object->GetType() == OBJECT_MOBILEfb && m_object->GetReactorRange()<0.2f && m_phase != TBP_MOVE)
     {
         pv = m_object->GetPosition();
@@ -415,7 +415,7 @@ Error CTaskBuild::Start(ObjectType type)
     pv = m_object->GetPosition();
     pm = m_metal->GetPosition();
     if(!m_physics->GetLand() && fabs(pm.y-pv.y)>8.0f) return ERR_BUILD_METALAWAY;
-    
+
     m_metal->SetLock(true);  // not usable
     m_camera->StartCentering(m_object, Math::PI*0.15f, 99.9f, 0.0f, 1.0f);
 

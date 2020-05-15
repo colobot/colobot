@@ -492,7 +492,7 @@ bool CAutoLabo::CreateInterface(bool bSelect)
         pos.x = ox+sx*6.0f;
         pos.y = oy+sy*0.5f;
         pw->CreateButton(pos, dim, 192+8, EVENT_OBJECT_RTARGET);
-        
+
         pos.x = ox+sx*7.0f;
         pos.y = oy+sy*0.5f;
         pw->CreateButton(pos, dim, 64+45, EVENT_OBJECT_RiPAW);

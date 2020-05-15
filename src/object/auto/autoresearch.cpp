@@ -379,7 +379,7 @@ bool CAutoResearch::CreateInterface(bool bSelect)
         pos.y = oy+sy*0.5f;
         pw->CreateButton(pos, dim, 192+4, EVENT_OBJECT_RBUILDER);
     }
-    
+
     pos.x = ox+sx*14.5f;
     pos.y = oy+sy*0;
     ddim.x = 14.0f/640.0f;
