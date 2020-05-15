@@ -414,7 +414,7 @@ Error CTaskBuild::Start(ObjectType type)
 
     pv = m_object->GetPosition();
     pm = m_metal->GetPosition();
-    if(!m_physics->GetLand() && abs(pm.y-pv.y)>8.0f) return ERR_BUILD_METALAWAY;
+    if(!m_physics->GetLand() && fabs(pm.y-pv.y)>8.0f) return ERR_BUILD_METALAWAY;
     
     m_metal->SetLock(true);  // not usable
     m_camera->StartCentering(m_object, Math::PI*0.15f, 99.9f, 0.0f, 1.0f);
