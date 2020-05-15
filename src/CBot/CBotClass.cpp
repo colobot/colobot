@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -36,7 +36,6 @@
 #include "CBot/CBotCStack.h"
 #include "CBot/CBotDefParam.h"
 #include "CBot/CBotUtils.h"
-#include "CBot/CBotFileUtils.h"
 
 #include <algorithm>
 
@@ -192,7 +191,7 @@ bool CBotClass::AddItem(CBotVar* pVar)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string  CBotClass::GetName()
+const std::string&  CBotClass::GetName()
 {
     return m_name;
 }
@@ -364,69 +363,70 @@ void CBotClass::RestoreMethode(long& nIdent,
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotClass::SaveStaticState(FILE* pf)
+bool CBotClass::SaveStaticState(std::ostream &ostr)
 {
-    if (!WriteWord( pf, CBOTVERSION*2)) return false;
+    if (!WriteLong(ostr, CBOTVERSION*2)) return false;
 
     // saves the state of static variables in classes
     for (CBotClass* p : m_publicClasses)
     {
-        if (!WriteWord( pf, 1 )) return false;
+        if (!WriteWord(ostr, 1)) return false;
         // save the name of the class
-        if (!WriteString( pf, p->GetName() )) return false;
+        if (!WriteString(ostr, p->GetName())) return false;
 
         CBotVar*    pv = p->GetVar();
         while( pv != nullptr )
         {
             if ( pv->IsStatic() )
             {
-                if (!WriteWord( pf, 1 )) return false;
-                if (!WriteString( pf, pv->GetName() )) return false;
+                if (!WriteWord(ostr, 1)) return false;
+                if (!WriteString(ostr, pv->GetName())) return false;
 
-                if ( !pv->Save0State(pf) ) return false;             // common header
-                if ( !pv->Save1State(pf) ) return false;                // saves as the child class
-                if ( !WriteWord( pf, 0 ) ) return false;
+                if (!pv->Save0State(ostr)) return false;             // common header
+                if (!pv->Save1State(ostr)) return false;                // saves as the child class
+                if (!WriteWord(ostr, 0)) return false;
             }
             pv = pv->GetNext();
         }
 
-        if (!WriteWord( pf, 0 )) return false;
+        if (!WriteWord(ostr, 0)) return false;
     }
 
-    if (!WriteWord( pf, 0 )) return false;
+    if (!WriteWord(ostr, 0)) return false;
     return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotClass::RestoreStaticState(FILE* pf)
+bool CBotClass::RestoreStaticState(std::istream &istr)
 {
     std::string      ClassName, VarName;
     CBotClass*      pClass;
     unsigned short  w;
 
-    if (!ReadWord( pf, w )) return false;
-    if ( w != CBOTVERSION*2 ) return false;
+    long version;
+    if (!ReadLong(istr, version)) return false;
+    if (version != CBOTVERSION*2) return false;
 
     while (true)
     {
-        if (!ReadWord( pf, w )) return false;
+        if (!ReadWord(istr, w)) return false;
         if ( w == 0 ) return true;
 
-        if (!ReadString( pf, ClassName )) return false;
+        if (!ReadString(istr, ClassName)) return false;
         pClass = Find(ClassName);
 
         while (true)
         {
-            if (!ReadWord( pf, w )) return false;
+            if (!ReadWord(istr, w)) return false;
             if ( w == 0 ) break;
 
             CBotVar*    pVar = nullptr;
             CBotVar*    pv = nullptr;
 
-            if (!ReadString( pf, VarName )) return false;
+            if (!ReadString(istr, VarName)) return false;
             if ( pClass != nullptr ) pVar = pClass->GetItem(VarName);
 
-            if (!CBotVar::RestoreState(pf, pv)) return false;   // the temp variable
+            if (!CBotVar::RestoreState(istr, pv)) return false; // the temp variable
 
             if ( pVar != nullptr ) pVar->Copy(pv);
             delete pv;

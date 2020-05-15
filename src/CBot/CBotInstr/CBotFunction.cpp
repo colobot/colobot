@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -169,7 +169,7 @@ CBotFunction* CBotFunction::Compile(CBotToken* &p, CBotCStack* pStack, CBotFunct
             func->m_token = d;
         }
 
-        // un nom de fonction est-il là ?
+        // is there a function name here ?
         if (IsOfType(p, TokenTypVar))
         {
             if ( IsOfType( p, ID_DBLDOTS ) )        // method for a class
@@ -284,7 +284,7 @@ CBotFunction* CBotFunction::Compile1(CBotToken* &p, CBotCStack* pStack, CBotClas
             func->m_token = d;
         }
 
-        // un nom de fonction est-il là ?
+        // is there a function name here ?
         if (IsOfType(p, TokenTypVar))
         {
             if ( IsOfType( p, ID_DBLDOTS ) )        // method for a class
@@ -584,7 +584,7 @@ CBotFunction* CBotFunction::FindLocalOrPublic(const std::list<CBotFunction*>& lo
             {
                 int i = 0;
                 int alpha = 0;                          // signature of parameters
-                // parameters sont-ils compatibles ?
+                // are parameters compatible ?
                 CBotDefParam* pv = pt->m_param;         // list of expected parameters
                 CBotVar* pw = ppVars[i++];              // list of provided parameters
                 while ( pv != nullptr && (pw != nullptr || pv->HasDefault()) )
@@ -996,7 +996,7 @@ bool CBotFunction::CheckParam(CBotDefParam* pParam)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string CBotFunction::GetName()
+const std::string& CBotFunction::GetName()
 {
     return  m_token.GetString();
 }

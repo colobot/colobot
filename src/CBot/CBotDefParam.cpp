@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -173,12 +173,32 @@ bool CBotDefParam::Execute(CBotVar** ppVars, CBotStack* &pj)
         {
             switch (p->m_type.GetType())
             {
+            case CBotTypByte:
+                newvar->SetValByte(pVar->GetValByte());
+                newvar->SetInit(pVar->GetInit()); // copy nan
+                break;
+            case CBotTypShort:
+                newvar->SetValShort(pVar->GetValShort());
+                newvar->SetInit(pVar->GetInit()); // copy nan
+                break;
+            case CBotTypChar:
+                newvar->SetValChar(pVar->GetValChar());
+                newvar->SetInit(pVar->GetInit()); // copy nan
+                break;
             case CBotTypInt:
                 newvar->SetValInt(pVar->GetValInt());
                 newvar->SetInit(pVar->GetInit()); // copy nan
                 break;
+            case CBotTypLong:
+                newvar->SetValLong(pVar->GetValLong());
+                newvar->SetInit(pVar->GetInit()); // copy nan
+                break;
             case CBotTypFloat:
                 newvar->SetValFloat(pVar->GetValFloat());
+                newvar->SetInit(pVar->GetInit()); // copy nan
+                break;
+            case CBotTypDouble:
+                newvar->SetValDouble(pVar->GetValDouble());
                 newvar->SetInit(pVar->GetInit()); // copy nan
                 break;
             case CBotTypString:

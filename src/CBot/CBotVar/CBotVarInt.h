@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -27,10 +27,10 @@ namespace CBot
 /**
  * \brief CBotVar subclass for managing integer values (::CBotTypInt)
  */
-class CBotVarInt : public CBotVarNumber<int, CBotTypInt>
+class CBotVarInt : public CBotVarInteger<int, CBotTypInt>
 {
 public:
-    CBotVarInt(const CBotToken &name) : CBotVarNumber(name) {}
+    CBotVarInt(const CBotToken &name) : CBotVarInteger(name) {}
 
     void SetValInt(int val, const std::string& s = "") override;
     std::string GetValString() override;
@@ -40,18 +40,20 @@ public:
     void Neg() override;
     void Inc() override;
     void Dec() override;
-
-    void XOr(CBotVar* left, CBotVar* right) override;
-    void Or(CBotVar* left, CBotVar* right) override;
-    void And(CBotVar* left, CBotVar* right) override;
     void Not() override;
 
-    void SL(CBotVar* left, CBotVar* right) override;
     void SR(CBotVar* left, CBotVar* right) override;
-    void ASR(CBotVar* left, CBotVar* right) override;
 
-    bool Save0State(FILE* pf) override;
-    bool Save1State(FILE* pf) override;
+    bool Save0State(std::ostream &ostr) override;
+    bool Save1State(std::ostream &ostr) override;
+
+protected:
+
+    void SetValue(int val) override
+    {
+        CBotVarNumberBase::SetValue(val);
+        m_defnum.clear();
+    }
 
 protected:
     //! The name if given by DefineNum.

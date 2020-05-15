@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -41,10 +41,15 @@ struct FramebufferParams
     int depth = 16;
     //! Requested number of samples for multisampling
     int samples = 1;
-    //! true requests color texture
-    bool colorTexture = false;
-    //! true requests depth texture
-    bool depthTexture = false;
+
+    enum class AttachmentType
+    {
+        Texture,
+        Renderbuffer,
+        None,
+    };
+    AttachmentType colorAttachment = AttachmentType::Renderbuffer;
+    AttachmentType depthAttachment = AttachmentType::Renderbuffer;
 
     //! Loads default values
     void LoadDefault()

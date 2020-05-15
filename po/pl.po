@@ -365,7 +365,7 @@ msgid "Checkpoint"
 msgstr "Punkt kontrolny"
 
 msgid "Class name expected"
-msgstr ""
+msgstr "Oczekiwano nazwy klasy"
 
 msgid "Climb\\Increases the power of the jet"
 msgstr "W górę\\Zwiększa moc silnika"
@@ -488,6 +488,9 @@ msgstr "Dół (\\key gdown;)"
 msgid "Drawer bot"
 msgstr "Robot rysownik"
 
+msgid "Duplicate label in switch"
+msgstr ""
+
 msgid "Dust\\Dust and dirt on bots and buildings"
 msgstr "Kurz\\Kurz i bród na robotach i budynkach"
 
@@ -505,6 +508,9 @@ msgstr "Edytuj zaznaczony program"
 
 msgid "Egg"
 msgstr "Jajo"
+
+msgid "Empty character constant"
+msgstr ""
 
 msgid "End of block missing"
 msgstr "Brak końca bloku"
@@ -628,7 +634,7 @@ msgid "Function name missing"
 msgstr "Brakująca nazwa funkcji"
 
 msgid "Function needs return type \"void\""
-msgstr ""
+msgstr "Funkcja potrzebuje typu zwracanego \"void\""
 
 msgid "Game speed"
 msgstr "Prędkość gry"
@@ -679,7 +685,7 @@ msgid "Help balloons\\Explain the function of the buttons"
 msgstr "Dymki pomocy\\Wyjaśnia funkcje przycisków"
 
 msgid "Hex value out of range"
-msgstr ""
+msgstr "Wartość heksadecymalna poza zakresem"
 
 msgid "Higher speed\\Doubles speed"
 msgstr "Zwiększ prędkość\\Podwaja prędkość"
@@ -859,10 +865,10 @@ msgid "Mipmap level\\Mipmap level"
 msgstr "Poziom mipmap\\Poziom mipmap"
 
 msgid "Missing end quote"
-msgstr ""
+msgstr "Brak cudzysłowu zamykającego"
 
 msgid "Missing hex digits after escape sequence"
-msgstr ""
+msgstr "Brak cyfr heksadecymalnych po znaku ucieczki"
 
 msgid "Mission name"
 msgstr "Nazwa misji"
@@ -964,7 +970,7 @@ msgid "No userlevels installed!"
 msgstr "Brak zainstalowanych poziomów użytkownika!"
 
 msgid "Non-void function needs \"return;\""
-msgstr ""
+msgstr "Funkcja zwracająca typ inny, niż \"void\", wymaga \"return;\""
 
 msgid "Normal size"
 msgstr "Normalna wielkość"
@@ -1027,7 +1033,7 @@ msgid "Object too close"
 msgstr "Obiekt za blisko"
 
 msgid "Octal value out of range"
-msgstr ""
+msgstr "Wartość ósemkowa poza zakresem"
 
 msgid "One step"
 msgstr "Jeden krok"
@@ -1072,7 +1078,7 @@ msgid "Paste (Ctrl+V)"
 msgstr "Wklej (Ctrl+V)"
 
 msgid "Pause blur\\Blur the background on the pause screen"
-msgstr ""
+msgstr "Rozmyta pauza\\Rozmyj tło na ekranie pauzy"
 
 msgid "Pause in background\\Pause the game when the window is unfocused"
 msgstr "Wstrzymaj w tle\\Wstrzymaj grę gdy okno stanie się nieaktywne"
@@ -1534,7 +1540,7 @@ msgid "This object is not a member of a class"
 msgstr "Ten obiekt nie jest członkiem klasy"
 
 msgid "This parameter needs a default value"
-msgstr ""
+msgstr "Ten parametr wymaga podania domyślnej wartości"
 
 msgid "This program is read-only, clone it to edit"
 msgstr "Ten program jest tylko do odczytu, skopiuj go, aby edytować"
@@ -1544,6 +1550,10 @@ msgstr "Uderz (\\key action;)"
 
 msgid "Thumper"
 msgstr "Uderzacz"
+
+#, c-format
+msgid "Time: %s"
+msgstr "Czas: %s"
 
 msgid "Titanium"
 msgstr "Tytan"
@@ -1658,6 +1668,9 @@ msgstr "Zmienna nie została zainicjalizowana"
 
 msgid "Vault"
 msgstr "Skrytka"
+
+msgid "Vertical Synchronization\\Limits the number of frames per second to display frequency"
+msgstr "Synchronizacja pionowa\\Ogranicza ilość klatek na sekundę do wartości odświeżania ekranu"
 
 msgid "Violet flag"
 msgstr "Fioletowa flaga"

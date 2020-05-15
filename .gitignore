@@ -41,3 +41,7 @@ CMakeLists.txt.user.*
 
 # Ignore CLion files
 /.idea
+
+# Ignore Visual Studio files
+/CMakeSettings.json
+/.vs

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -56,8 +56,7 @@ CBotInstr* CBotWhile::Compile(CBotToken* &p, CBotCStack* pStack)
     inst->SetToken(p);
     if (!IsOfType(p, ID_WHILE)) return nullptr;    // should never happen
 
-    CBotCStack* pStk = pStack->TokenStack(pp);  // un petit bout de pile svp
-                                                // a bit of battery please (??)
+    CBotCStack* pStk = pStack->TokenStack(pp);  // some space for a stack, plz
 
     if ( nullptr != (inst->m_condition = CBotCondition::Compile(p, pStk )) )
     {

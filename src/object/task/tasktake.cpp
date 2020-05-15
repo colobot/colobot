@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -425,7 +425,7 @@ bool CTaskTake::TransporterTakeObject()
 //?     cargo = SearchTakeObject(angle, 1.5f, Math::PI*0.04f);
         float angle = 0.0f;
         CObject* cargo = SearchTakeObject(angle, 1.5f, Math::PI*0.15f);  //OK 1.9
-        if (cargo == nullptr)  return false;  // rien � prendre ?
+        if (cargo == nullptr)  return false;  // nothing to take ?
         assert(cargo->Implements(ObjectInterfaceType::Transportable));
 
         m_cargoType = cargo->GetType();

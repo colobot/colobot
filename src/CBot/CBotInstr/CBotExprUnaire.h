@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ public:
      * \param bLiteral If true, compiles only literal expressions Ex: ~11, -4.0, !false, not true
      * \return The compiled instruction or nullptr
      */
-    static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack, bool bLiteral = false);
+    static CBotInstr* Compile(CBotToken* &p, CBotCStack* pStack, bool bLiteral = false, bool bConstExpr = false);
 
     /*!
      * \brief Execute

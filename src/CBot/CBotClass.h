@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -173,7 +173,7 @@ public:
      * \brief GetName Gives the name of the class.
      * \return
      */
-    std::string GetName();
+    const std::string& GetName();
 
     /*!
      * \brief GetParent Gives the parent class (or nullptr).
@@ -331,18 +331,18 @@ public:
     static void ClearPublic();
 
     /*!
-     * \brief SaveStaticState
-     * \param pf
-     * \return
+     * \brief Save all static variables from each public class
+     * \param ostr Output stream
+     * \return true on success
      */
-    static bool SaveStaticState(FILE* pf);
+    static bool SaveStaticState(std::ostream &ostr);
 
     /*!
-     * \brief RestoreStaticState
-     * \param pf
-     * \return
+     * \brief Restore all static variables in each public class
+     * \param istr Input stream
+     * \return true on success
      */
-    static bool RestoreStaticState(FILE* pf);
+    static bool RestoreStaticState(std::istream &istr);
 
     /**
      * \brief Request a lock on this class (for "synchronized" keyword)

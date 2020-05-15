@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -80,11 +80,6 @@ public:
     void SetTextureStageParams(int index, const TextureStageParams &params) override;
 
     void SetTextureStageWrap(int index, Gfx::TexWrapMode wrapS, Gfx::TexWrapMode wrapT) override;
-
-    void DrawPrimitive(PrimitiveType type, const void *vertices,
-        int size, const VertexFormat &format, int vertexCount) override;
-    void DrawPrimitives(PrimitiveType type, const void *vertices,
-        int size, const VertexFormat &format, int first[], int count[], int drawCount) override;
 
     void DrawPrimitive(PrimitiveType type, const Vertex* vertices, int vertexCount, Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) override;
     void DrawPrimitive(PrimitiveType type, const VertexTex2* vertices, int vertexCount, Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) override;

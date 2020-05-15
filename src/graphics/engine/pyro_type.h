@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -58,6 +58,7 @@ enum PyroType
     PT_DEADG    = 24,       //! < shooting death
     PT_DEADW    = 25,       //! < drowning death
     PT_FINDING  = 26,       //! < object discovered
+    PT_FRAGV    = 27,       //! < fragmentation of plant object
 };
 
 } // namespace Gfx

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -22,6 +22,7 @@
 
 #include "app/app.h"
 
+#include "common/font_loader.h"
 #include "common/image.h"
 #include "common/logger.h"
 #include "common/stringutils.h"
@@ -32,6 +33,7 @@
 
 #include "math/func.h"
 
+#include <algorithm>
 #include <SDL.h>
 #include <SDL_ttf.h>
 
@@ -94,6 +96,77 @@ const Math::IntPoint REFERENCE_SIZE(800, 600);
 const Math::IntPoint FONT_TEXTURE_SIZE(256, 256);
 } // anonymous namespace
 
+/// The QuadBatch is responsible for collecting as many quad (aka rectangle) draws as possible and
+/// sending them to the CDevice in one big batch. This avoids making one CDevice::DrawPrimitive call
+/// for every CText::DrawCharAndAdjustPos call, which makes text rendering much faster.
+/// Currently we only collect textured quads (ie. ones using Vertex), not untextured quads (which
+/// use VertexCol). Untextured quads are only drawn via DrawHighlight, which happens much less often
+/// than drawing textured quads.
+class CText::CQuadBatch
+{
+public:
+    explicit CQuadBatch(CEngine& engine)
+        : m_engine(engine)
+    {
+        m_quads.reserve(1024);
+    }
+
+    /// Add a quad to be rendered.
+    /// This may trigger a call to Flush() if necessary.
+    void Add(Vertex vertices[4], unsigned int texID, EngineRenderState renderState, Color color)
+    {
+        if (texID != m_texID || renderState != m_renderState || color != m_color)
+        {
+            Flush();
+            m_texID = texID;
+            m_renderState = renderState;
+            m_color = color;
+        }
+        m_quads.emplace_back(Quad{{vertices[0], vertices[1], vertices[2], vertices[3]}});
+    }
+
+    /// Draw all pending quads immediately.
+    void Flush()
+    {
+        if (m_quads.empty()) return;
+
+        m_engine.SetState(m_renderState);
+        m_engine.GetDevice()->SetTexture(0, m_texID);
+
+        assert(m_firsts.size() == m_counts.size());
+        if (m_firsts.size() < m_quads.size())
+        {
+            // m_firsts needs to look like { 0, 4, 8, 12, ... }
+            // m_counts needs to look like { 4, 4, 4,  4, ... }
+            // and both need to be the same length as m_quads
+            m_counts.resize(m_quads.size(), 4);
+            std::size_t begin = m_firsts.size();
+            m_firsts.resize(m_quads.size());
+            for (std::size_t i = begin; i < m_firsts.size(); ++i)
+            {
+                m_firsts[i] = static_cast<int>(4 * i);
+            }
+        }
+
+        const Vertex* vertices = m_quads.front().vertices;
+        m_engine.GetDevice()->DrawPrimitives(PRIMITIVE_TRIANGLE_STRIP, vertices, m_firsts.data(),
+                                             m_counts.data(), static_cast<int>(m_quads.size()), m_color);
+        m_engine.AddStatisticTriangle(static_cast<int>(m_quads.size() * 2));
+        m_quads.clear();
+    }
+private:
+    CEngine& m_engine;
+
+    struct Quad { Vertex vertices[4]; };
+    std::vector<Quad> m_quads;
+    std::vector<int> m_firsts;
+    std::vector<int> m_counts;
+
+    Color m_color;
+    unsigned int m_texID{};
+    EngineRenderState m_renderState{};
+};
+
 
 CText::CText(CEngine* engine)
 {
@@ -103,9 +176,11 @@ CText::CText(CEngine* engine)
     m_defaultSize = 12.0f;
     m_tabSize = 4;
 
-    m_lastFontType = FONT_COLOBOT;
+    m_lastFontType = FONT_COMMON;
     m_lastFontSize = 0;
     m_lastCachedFont = nullptr;
+
+    m_quadBatch = MakeUnique<CQuadBatch>(*engine);
 }
 
 CText::~CText()
@@ -116,18 +191,23 @@ CText::~CText()
 
 bool CText::Create()
 {
+    CFontLoader fontLoader;
+    if (!fontLoader.Init())
+    {
+        GetLogger()->Warn("Error on parsing fonts config file: failed to open file\n");
+    }
     if (TTF_Init() != 0)
     {
         m_error = std::string("TTF_Init error: ") + std::string(TTF_GetError());
         return false;
     }
 
-    m_fonts[FONT_COLOBOT]        = MakeUnique<MultisizeFont>("fonts/dvu_sans.ttf");
-    m_fonts[FONT_COLOBOT_BOLD]   = MakeUnique<MultisizeFont>("fonts/dvu_sans_bold.ttf");
-    m_fonts[FONT_COLOBOT_ITALIC] = MakeUnique<MultisizeFont>("fonts/dvu_sans_italic.ttf");
-
-    m_fonts[FONT_COURIER]        = MakeUnique<MultisizeFont>("fonts/dvu_sans_mono.ttf");
-    m_fonts[FONT_COURIER_BOLD]   = MakeUnique<MultisizeFont>("fonts/dvu_sans_mono_bold.ttf");
+    for (auto type : {FONT_COMMON, FONT_STUDIO, FONT_SATCOM})
+    {
+        m_fonts[static_cast<Gfx::FontType>(type)] = MakeUnique<MultisizeFont>(fontLoader.GetFont(type));
+        m_fonts[static_cast<Gfx::FontType>(type|FONT_BOLD)] = MakeUnique<MultisizeFont>(fontLoader.GetFont(static_cast<Gfx::FontType>(type|FONT_BOLD)));
+        m_fonts[static_cast<Gfx::FontType>(type|FONT_ITALIC)] = MakeUnique<MultisizeFont>(fontLoader.GetFont(static_cast<Gfx::FontType>(type|FONT_ITALIC)));
+    }
 
     for (auto it = m_fonts.begin(); it != m_fonts.end(); ++it)
     {
@@ -145,7 +225,7 @@ void CText::Destroy()
     m_fonts.clear();
 
     m_lastCachedFont = nullptr;
-    m_lastFontType = FONT_COLOBOT;
+    m_lastFontType = FONT_COMMON;
     m_lastFontSize = 0;
 
     TTF_Quit();
@@ -180,7 +260,7 @@ void CText::FlushCache()
     }
 
     m_lastCachedFont = nullptr;
-    m_lastFontType = FONT_COLOBOT;
+    m_lastFontType = FONT_COMMON;
     m_lastFontSize = 0;
 }
 
@@ -263,8 +343,8 @@ void CText::SizeText(const std::string &text, std::vector<FontMetaChar>::iterato
         end.x   -= sw;
     }
 
-    start.y -= GetDescent(FONT_COLOBOT, size);
-    end.y   += GetAscent(FONT_COLOBOT, size);
+    start.y -= GetDescent(FONT_COMMON, size);
+    end.y   += GetAscent(FONT_COMMON, size);
 }
 
 void CText::SizeText(const std::string &text, FontType font,
@@ -344,7 +424,7 @@ float CText::GetStringWidth(const std::string &text,
     unsigned int fmtIndex = 0;
     while (index < text.length())
     {
-        FontType font = FONT_COLOBOT;
+        FontType font = FONT_COMMON;
         if (format + fmtIndex != end)
             font = static_cast<FontType>(*(format + fmtIndex) & FONT_MASK_FONT);
 
@@ -391,7 +471,7 @@ float CText::GetCharWidth(UTF8Char ch, FontType font, float size, float offset)
     if (font == FONT_BUTTON)
     {
         Math::IntPoint windowSize = m_engine->GetWindowSize();
-        float height = GetHeight(FONT_COLOBOT, size);
+        float height = GetHeight(FONT_COMMON, size);
         float width = height*(static_cast<float>(windowSize.y)/windowSize.x);
         return width;
     }
@@ -433,7 +513,7 @@ int CText::GetCharWidthInt(UTF8Char ch, FontType font, float size, float offset)
     if (font == FONT_BUTTON)
     {
         Math::IntPoint windowSize = m_engine->GetWindowSize();
-        int height = GetHeightInt(FONT_COLOBOT, size);
+        int height = GetHeightInt(FONT_COMMON, size);
         int width = height*(static_cast<float>(windowSize.y)/windowSize.x);
         return width;
     }
@@ -479,7 +559,7 @@ int CText::Justify(const std::string &text, std::vector<FontMetaChar>::iterator 
     unsigned int fmtIndex = 0;
     while (index < text.length())
     {
-        FontType font = FONT_COLOBOT;
+        FontType font = FONT_COMMON;
         if (format + fmtIndex != end)
             font = static_cast<FontType>(*(format + fmtIndex) & FONT_MASK_FONT);
 
@@ -563,7 +643,7 @@ int CText::Detect(const std::string &text, std::vector<FontMetaChar>::iterator f
     unsigned int fmtIndex = 0;
     while (index < text.length())
     {
-        FontType font = FONT_COLOBOT;
+        FontType font = FONT_COMMON;
 
         if (format + fmtIndex != end)
             font = static_cast<FontType>(*(format + fmtIndex) & FONT_MASK_FONT);
@@ -690,7 +770,7 @@ void CText::DrawString(const std::string &text, std::vector<FontMetaChar>::itera
                        std::vector<FontMetaChar>::iterator end,
                        float size, Math::IntPoint pos, int width, int eol, Color color)
 {
-    m_engine->SetState(ENG_RSTATE_TEXT);
+    m_engine->SetWindowCoordinates();
 
     int start = pos.x;
 
@@ -700,7 +780,7 @@ void CText::DrawString(const std::string &text, std::vector<FontMetaChar>::itera
     StringToUTFCharList(text, chars, format, end);
     for (auto it = chars.begin(); it != chars.end(); ++it)
     {
-        FontType font = FONT_COLOBOT;
+        FontType font = FONT_COMMON;
         if (format + fmtIndex != end)
             font = static_cast<FontType>(*(format + fmtIndex) & FONT_MASK_FONT);
 
@@ -755,6 +835,8 @@ void CText::DrawString(const std::string &text, std::vector<FontMetaChar>::itera
             Math::IntPoint charSize;
             charSize.x = GetCharWidthInt(ch, font, size, offset);
             charSize.y = GetHeightInt(font, size);
+            // NB. for quad batching to improve highlight drawing performance, this code would have
+            // to be rearranged to draw all highlights before any characters are drawn.
             DrawHighlight(format[fmtIndex], pos, charSize);
         }
 
@@ -771,11 +853,13 @@ void CText::DrawString(const std::string &text, std::vector<FontMetaChar>::itera
 
     if (eol != 0)
     {
-        FontType font = FONT_COLOBOT;
+        FontType font = FONT_COMMON;
         UTF8Char ch = TranslateSpecialChar(eol);
         color = Color(1.0f, 0.0f, 0.0f);
         DrawCharAndAdjustPos(ch, font, size, pos, color);
     }
+    m_quadBatch->Flush();
+    m_engine->SetInterfaceCoordinates();
 }
 
 void CText::StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &chars)
@@ -810,7 +894,7 @@ void CText::StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &
     {
         UTF8Char ch;
 
-        FontType font = FONT_COLOBOT;
+        FontType font = FONT_COMMON;
         if (format + index != end)
             font = static_cast<FontType>(*(format + index) & FONT_MASK_FONT);
 
@@ -843,14 +927,15 @@ void CText::DrawString(const std::string &text, FontType font,
 {
     assert(font != FONT_BUTTON);
 
-    m_engine->SetState(ENG_RSTATE_TEXT);
-
     std::vector<UTF8Char> chars;
     StringToUTFCharList(text, chars);
+    m_engine->SetWindowCoordinates();
     for (auto it = chars.begin(); it != chars.end(); ++it)
     {
         DrawCharAndAdjustPos(*it, font, size, pos, color);
     }
+    m_quadBatch->Flush();
+    m_engine->SetInterfaceCoordinates();
 }
 
 void CText::DrawHighlight(FontMetaChar hl, Math::IntPoint pos, Math::IntPoint size)
@@ -873,6 +958,8 @@ void CText::DrawHighlight(FontMetaChar hl, Math::IntPoint pos, Math::IntPoint si
     {
         return;
     }
+
+    m_quadBatch->Flush();
 
     Math::IntPoint vsize = m_engine->GetWindowSize();
     float h = 0.0f;
@@ -902,9 +989,7 @@ void CText::DrawHighlight(FontMetaChar hl, Math::IntPoint pos, Math::IntPoint si
         VertexCol(Math::Vector(p2.x, p1.y, 0.0f), grad[1])
     };
 
-    m_engine->SetWindowCoordinates();
     m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, quad, 4);
-    m_engine->SetInterfaceCoordinates();
     m_engine->AddStatisticTriangle(2);
 
     m_device->SetTextureEnabled(0, true);
@@ -915,7 +1000,7 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::I
     if (font == FONT_BUTTON)
     {
         Math::IntPoint windowSize = m_engine->GetWindowSize();
-        int height = GetHeightInt(FONT_COLOBOT, size);
+        int height = GetHeightInt(FONT_COMMON, size);
         int width = height * (static_cast<float>(windowSize.y)/windowSize.x);
 
         Math::IntPoint p1(pos.x, pos.y - height);
@@ -925,29 +1010,10 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::I
 
         // For whatever reason ch.c1 is a SIGNED char, we need to fix that
         unsigned char icon = static_cast<unsigned char>(ch.c1);
-        if ( icon >= 192 )
-        {
-            icon -= 192;
-            m_engine->SetTexture("textures/interface/button4.png");
-            m_engine->SetState(ENG_RSTATE_TTEXTURE_WHITE);
-        }
-        else if ( icon >= 128 )
-        {
-            icon -= 128;
-            m_engine->SetTexture("textures/interface/button3.png");
-            m_engine->SetState(ENG_RSTATE_TTEXTURE_WHITE);
-        }
-        else if ( icon >= 64 )
-        {
-            icon -= 64;
-            m_engine->SetTexture("textures/interface/button2.png");
-            m_engine->SetState(ENG_RSTATE_TTEXTURE_WHITE);
-        }
-        else
-        {
-            m_engine->SetTexture("textures/interface/button1.png");
-            m_engine->SetState(ENG_RSTATE_TTEXTURE_WHITE);
-        }
+
+        // TODO: A bit of code duplication, see CControl::SetButtonTextureForIcon()
+        unsigned int texID = m_engine->LoadTexture("textures/interface/button" + StrUtils::ToString<int>((icon/64) + 1) + ".png").id;
+        icon = icon%64;
 
         Math::Point uv1, uv2;
         uv1.x = (32.0f / 256.0f) * (icon%8);
@@ -969,15 +1035,9 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::I
             Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(uv2.x, uv1.y))
         };
 
-        m_engine->SetWindowCoordinates();
-        m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, quad, 4, color);
-        m_engine->SetInterfaceCoordinates();
-        m_engine->AddStatisticTriangle(2);
+        m_quadBatch->Add(quad, texID, ENG_RSTATE_TTEXTURE_WHITE, color);
 
         pos.x += width;
-
-        // Don't forget to restore the state!
-        m_engine->SetState(ENG_RSTATE_TEXT);
     }
     else
     {
@@ -1013,11 +1073,7 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::I
             Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(texCoord2.x, texCoord1.y))
         };
 
-        m_device->SetTexture(0, tex.id);
-        m_engine->SetWindowCoordinates();
-        m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, quad, 4, color);
-        m_engine->SetInterfaceCoordinates();
-        m_engine->AddStatisticTriangle(2);
+        m_quadBatch->Add(quad, tex.id, ENG_RSTATE_TEXT, color);
 
         pos.x += tex.charSize.x * width;
     }
@@ -1197,13 +1253,13 @@ FontTexture CText::CreateFontTexture(Math::IntPoint tileSize)
 
 Math::IntPoint CText::GetNextTilePos(const FontTexture& fontTexture)
 {
-    int horizontalTiles = FONT_TEXTURE_SIZE.x / fontTexture.tileSize.x;
-    int verticalTiles = FONT_TEXTURE_SIZE.y / fontTexture.tileSize.y;
+    int horizontalTiles = FONT_TEXTURE_SIZE.x / std::max(1, fontTexture.tileSize.x); //this should prevent crashes in some combinations of resolution and font size, see issue #1128
+    int verticalTiles = FONT_TEXTURE_SIZE.y / std::max(1, fontTexture.tileSize.y);
 
     int totalTiles = horizontalTiles * verticalTiles;
     int tileNumber = totalTiles - fontTexture.freeSlots;
 
-    int verticalTileIndex = tileNumber / horizontalTiles;
+    int verticalTileIndex = tileNumber / std::max(1, horizontalTiles);
     int horizontalTileIndex = tileNumber % horizontalTiles;
 
     return Math::IntPoint(horizontalTileIndex * fontTexture.tileSize.x,

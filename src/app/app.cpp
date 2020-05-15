@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -220,6 +220,30 @@ CSoundInterface* CApplication::GetSound()
     return m_sound.get();
 }
 
+void CApplication::LoadEnvironmentVariables()
+{
+    auto dataDir = m_systemUtils->GetEnvVar("COLOBOT_DATA_DIR");
+    if (!dataDir.empty())
+    {
+        m_pathManager->SetDataPath(dataDir);
+        GetLogger()->Info("Using data dir (based on environment variable): '%s'\n", dataDir.c_str());
+    }
+
+    auto langDir = m_systemUtils->GetEnvVar("COLOBOT_LANG_DIR");
+    if (!langDir.empty())
+    {
+        m_pathManager->SetLangPath(langDir);
+        GetLogger()->Info("Using lang dir (based on environment variable): '%s'\n", langDir.c_str());
+    }
+
+    auto saveDir = m_systemUtils->GetEnvVar("COLOBOT_SAVE_DIR");
+    if (!saveDir.empty())
+    {
+        m_pathManager->SetSavePath(saveDir);
+        GetLogger()->Info("Using save dir (based on environment variable): '%s'\n", saveDir.c_str());
+    }
+}
+
 ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
 {
     enum OptionType
@@ -286,15 +310,18 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 GetLogger()->Message("\n");
                 GetLogger()->Message("%s\n", COLOBOT_FULLNAME);
                 GetLogger()->Message("\n");
-                GetLogger()->Message("List of available options:\n");
+                GetLogger()->Message("List of available options and environment variables:\n");
                 GetLogger()->Message("  -help               this help\n");
                 GetLogger()->Message("  -debug modes        enable debug modes (more info printed in logs; see code for reference of modes)\n");
                 GetLogger()->Message("  -runscene sceneNNN  run given scene on start\n");
                 GetLogger()->Message("  -scenetest          win every mission right after it's loaded\n");
                 GetLogger()->Message("  -loglevel level     set log level to level (one of: trace, debug, info, warn, error, none)\n");
                 GetLogger()->Message("  -langdir path       set custom language directory path\n");
+                GetLogger()->Message("                      environment variable: COLOBOT_LANG_DIR\n");
                 GetLogger()->Message("  -datadir path       set custom data directory path\n");
+                GetLogger()->Message("                      environment variable: COLOBOT_DATA_DIR\n");
                 GetLogger()->Message("  -savedir path       set custom save directory path (must be writable)\n");
+                GetLogger()->Message("                      environment variable: COLOBOT_SAVE_DIR\n");
                 GetLogger()->Message("  -mod path           load datadir mod from given path\n");
                 GetLogger()->Message("  -resolution WxH     set resolution\n");
                 GetLogger()->Message("  -headless           headless mode - disables graphics, sound and user interaction\n");
@@ -815,11 +842,29 @@ bool CApplication::CreateVideoSurface()
     m_private->glcontext = SDL_GL_CreateContext(m_private->window);
 
     int vsync = 0;
-    if (GetConfigFile().GetIntProperty("Experimental", "VSync", vsync))
+    if (GetConfigFile().GetIntProperty("Setup", "VSync", vsync))
     {
-        SDL_GL_SetSwapInterval(vsync);
+        while (SDL_GL_SetSwapInterval(vsync) == -1)
+        {
+            switch(vsync)
+            {
+                case -1: //failed with adaptive sync?
+                    GetLogger()->Warn("Adaptive sync not supported.\n");
+                    vsync = 1;
+                    break;
+                case 1: //failed with VSync enabled?
+                    GetLogger()->Warn("Couldn't enable VSync.\n");
+                    vsync = 0;
+                    break;
+                case 0: //failed with VSync disabled?
+                    GetLogger()->Warn("Couldn't disable VSync.\n");
+                    vsync = 1;
+                    break;
+            }
+        }
+        GetConfigFile().SetIntProperty("Setup", "VSync", vsync);
 
-        GetLogger()->Info("Using Vsync: %s\n", (vsync ? "true" : "false"));
+        GetLogger()->Info("Using Vsync: %s\n", (vsync == -1 ? "adaptive" : (vsync ? "true" : "false")));
     }
 
     return true;
@@ -832,6 +877,27 @@ bool CApplication::ChangeVideoConfig(const Gfx::DeviceConfig &newConfig)
     // TODO: Somehow this doesn't work for maximized windows (at least on Ubuntu)
     SDL_SetWindowSize(m_private->window, m_deviceConfig.size.x, m_deviceConfig.size.y);
     SDL_SetWindowFullscreen(m_private->window, m_deviceConfig.fullScreen ? SDL_WINDOW_FULLSCREEN : 0);
+
+    int vsync = m_engine->GetVSync();
+    while (SDL_GL_SetSwapInterval(vsync) == -1)
+    {
+        switch(vsync)
+        {
+            case -1: //failed with adaptive sync?
+                GetLogger()->Warn("Adaptive sync not supported.\n");
+                vsync = 1;
+                break;
+            case 1: //failed with VSync enabled?
+                GetLogger()->Warn("Couldn't enable VSync.\n");
+                vsync = 0;
+                break;
+            case 0: //failed with VSync disabled?
+                GetLogger()->Warn("Couldn't disable VSync.\n");
+                vsync = 1;
+                break;
+        }
+    }
+    m_engine->SetVSync(vsync);
 
     m_device->ConfigChanged(m_deviceConfig);
 
@@ -1699,6 +1765,10 @@ char CApplication::GetLanguageChar() const
             langChar = 'E';
             break;
 
+        case LANGUAGE_CZECH:
+            langChar = 'C';
+            break;
+
         case LANGUAGE_GERMAN:
             langChar = 'D';
             break;
@@ -1714,6 +1784,11 @@ char CApplication::GetLanguageChar() const
         case LANGUAGE_RUSSIAN:
             langChar = 'R';
             break;
+
+        case LANGUAGE_PORTUGUESE_BRAZILIAN:
+            langChar = 'B';
+            break;
+
     }
     return langChar;
 }
@@ -1750,6 +1825,10 @@ void CApplication::SetLanguage(Language language)
             {
                 m_language = LANGUAGE_ENGLISH;
             }
+            else if (strncmp(envLang,"cs",2) == 0)
+            {
+                m_language = LANGUAGE_CZECH;
+            }
             else if (strncmp(envLang,"de",2) == 0)
             {
                 m_language = LANGUAGE_GERMAN;
@@ -1766,6 +1845,10 @@ void CApplication::SetLanguage(Language language)
             {
                 m_language = LANGUAGE_RUSSIAN;
             }
+            else if (strncmp(envLang,"pt",2) == 0)
+            {
+                m_language = LANGUAGE_PORTUGUESE_BRAZILIAN;
+            }
             else
             {
                 GetLogger()->Warn("Enviromnent locale ('%s') is not supported, setting default language\n", envLang);
@@ -1779,6 +1862,10 @@ void CApplication::SetLanguage(Language language)
     {
         default:
             locale = "";
+            break;
+
+        case LANGUAGE_CZECH:
+            locale = "cs_CZ.utf8";
             break;
 
         case LANGUAGE_ENGLISH:
@@ -1800,6 +1887,10 @@ void CApplication::SetLanguage(Language language)
         case LANGUAGE_RUSSIAN:
             locale = "ru_RU.utf8";
             break;
+
+        case LANGUAGE_PORTUGUESE_BRAZILIAN:
+            locale = "pt_BR.utf8";
+            break;
     }
 
     std::string langStr = "LANGUAGE=";
@@ -1820,7 +1911,12 @@ void CApplication::SetLanguage(Language language)
     // Update C++ locale
     try
     {
+#if defined(_MSC_VER) && defined(_DEBUG)
+        // Avoids failed assertion in VS debugger
+        throw -1;
+#else
         std::locale::global(std::locale(systemLocale.c_str()));
+#endif
     }
     catch (...)
     {
