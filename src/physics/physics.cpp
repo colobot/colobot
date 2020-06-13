@@ -2525,7 +2525,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
     {
         if ( pObj == m_object )  continue;  // yourself?
         if (IsObjectBeingTransported(pObj))  continue;
-        if ( pObj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject*>(pObj)->IsDying() )  continue;  // is burning or exploding?
+        //if ( pObj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject*>(pObj)->IsDying() )  continue;  // is burning or exploding?
 
         oType = pObj->GetType();
         if ( oType == OBJECT_TOTO            )  continue;

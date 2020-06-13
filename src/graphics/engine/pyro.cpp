@@ -2243,6 +2243,7 @@ void CPyro::BurnTerminate()
     {
         m_object->SetType(OBJECT_RUINmobilew1); // Wreck (recoverable by Recycler)
     }
+    dynamic_cast<CDestroyableObject*>(m_object)->SetDying(DeathType::Alive);
     m_object->SetLock(false);
 }
 
