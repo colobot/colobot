@@ -398,7 +398,7 @@ bool CScriptFunctions::rDestroy(CBotVar* var, CBotVar* result, int& exception, v
         obj = CObjectManager::GetInstancePointer()->FindNearest(pThis, OBJECT_DESTROYER);
     else
         obj = static_cast<CObject*>(var->GetUserPtr());
-    
+
     if (obj == nullptr)
     {
         exception = ERR_WRONG_OBJ;
@@ -657,7 +657,7 @@ bool CScriptFunctions::rTakeOff(CBotVar* var, CBotVar* result, int& exception, v
         base = CObjectManager::GetInstancePointer()->FindNearest(pThis, OBJECT_BASE);
     else
         base = static_cast<CObject*>(var->GetUserPtr());
-    
+
     if (base == nullptr)
     {
         exception = ERR_WRONG_OBJ;
@@ -3070,12 +3070,12 @@ CBotTypResult CScriptFunctions::cOneObject(CBotVar* &var, void* user)
     {
         var = var->GetNext();
         if ( var == nullptr )  return CBotTypResult(CBotTypFloat);
-    } 
+    }
     else
         return CBotTypResult(CBotTypFloat);
-    
+
     return CBotTypResult(CBotErrOverParam);
-    
+
 }
 
 // Instruction "camerafocus(object)".
