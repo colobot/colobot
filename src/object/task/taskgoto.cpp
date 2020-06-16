@@ -556,6 +556,10 @@ CObject* CTaskGoto::WormSearch(Math::Vector &impact)
              oType != OBJECT_MOBILEta &&
              oType != OBJECT_MOBILEwa &&
              oType != OBJECT_MOBILEia &&
+             oType != OBJECT_MOBILEfb &&
+             oType != OBJECT_MOBILEtb &&
+             oType != OBJECT_MOBILEwb &&
+             oType != OBJECT_MOBILEib &&
              oType != OBJECT_MOBILEfc &&
              oType != OBJECT_MOBILEtc &&
              oType != OBJECT_MOBILEwc &&
@@ -578,6 +582,8 @@ CObject* CTaskGoto::WormSearch(Math::Vector &impact)
              oType != OBJECT_MOBILEtt &&
              oType != OBJECT_MOBILEwt &&
              oType != OBJECT_MOBILEit &&
+             oType != OBJECT_MOBILErp &&
+             oType != OBJECT_MOBILEst &&
              oType != OBJECT_MOBILEdr &&
              oType != OBJECT_DERRICK  &&
              oType != OBJECT_STATION  &&
@@ -721,7 +727,8 @@ Error CTaskGoto::Start(Math::Vector goal, float altitude,
          type == OBJECT_MOBILErt ||
          type == OBJECT_MOBILErc ||
          type == OBJECT_MOBILErr ||
-         type == OBJECT_MOBILErs )
+         type == OBJECT_MOBILErs ||
+         type == OBJECT_MOBILErp )
     {
         m_bApprox = true;
     }
@@ -1164,6 +1171,10 @@ bool CTaskGoto::AdjustTarget(CObject* pObj, Math::Vector &pos, float &distance)
          type == OBJECT_MOBILEta ||
          type == OBJECT_MOBILEwa ||
          type == OBJECT_MOBILEia ||
+         type == OBJECT_MOBILEfb ||
+         type == OBJECT_MOBILEtb ||
+         type == OBJECT_MOBILEwb ||
+         type == OBJECT_MOBILEib ||
          type == OBJECT_MOBILEfs ||
          type == OBJECT_MOBILEts ||
          type == OBJECT_MOBILEws ||
@@ -1186,6 +1197,8 @@ bool CTaskGoto::AdjustTarget(CObject* pObj, Math::Vector &pos, float &distance)
          type == OBJECT_MOBILEtt ||
          type == OBJECT_MOBILEwt ||
          type == OBJECT_MOBILEit ||
+         type == OBJECT_MOBILErp ||
+         type == OBJECT_MOBILEst ||
          type == OBJECT_MOBILEdr )
     {
         assert(pObj->Implements(ObjectInterfaceType::Powered));
@@ -1432,6 +1445,7 @@ void CTaskGoto::ComputeRepulse(Math::Point &dir)
     fac = 2.0f;
 
     if ( iType == OBJECT_MOBILEwa ||
+         iType == OBJECT_MOBILEwb ||
          iType == OBJECT_MOBILEwc ||
          iType == OBJECT_MOBILEwi ||
          iType == OBJECT_MOBILEws ||
@@ -1441,6 +1455,7 @@ void CTaskGoto::ComputeRepulse(Math::Point &dir)
         fac = 1.5f;
     }
     if ( iType == OBJECT_MOBILEta ||
+         iType == OBJECT_MOBILEtb ||
          iType == OBJECT_MOBILEtc ||
          iType == OBJECT_MOBILEti ||
          iType == OBJECT_MOBILEts ||
@@ -1451,6 +1466,7 @@ void CTaskGoto::ComputeRepulse(Math::Point &dir)
         fac = 1.5f;
     }
     if ( iType == OBJECT_MOBILEfa ||
+         iType == OBJECT_MOBILEfb ||
          iType == OBJECT_MOBILEfc ||
          iType == OBJECT_MOBILEfi ||
          iType == OBJECT_MOBILEfs ||
@@ -1468,6 +1484,7 @@ void CTaskGoto::ComputeRepulse(Math::Point &dir)
         }
     }
     if ( iType == OBJECT_MOBILEia ||
+         iType == OBJECT_MOBILEib ||
          iType == OBJECT_MOBILEic ||
          iType == OBJECT_MOBILEii ||
          iType == OBJECT_MOBILEis ||
@@ -1962,6 +1979,7 @@ void CTaskGoto::BitmapTerrain(int minx, int miny, int maxx, int maxy)
     type = m_object->GetType();
 
     if ( type == OBJECT_MOBILEwa ||
+         type == OBJECT_MOBILEwb ||
          type == OBJECT_MOBILEwc ||
          type == OBJECT_MOBILEws ||
          type == OBJECT_MOBILEwi ||
@@ -1972,6 +1990,7 @@ void CTaskGoto::BitmapTerrain(int minx, int miny, int maxx, int maxy)
     }
 
     if ( type == OBJECT_MOBILEta ||
+         type == OBJECT_MOBILEtb ||
          type == OBJECT_MOBILEtc ||
          type == OBJECT_MOBILEti ||
          type == OBJECT_MOBILEts )  // caterpillars?
@@ -1982,12 +2001,14 @@ void CTaskGoto::BitmapTerrain(int minx, int miny, int maxx, int maxy)
     if ( type == OBJECT_MOBILErt ||
          type == OBJECT_MOBILErc ||
          type == OBJECT_MOBILErr ||
-         type == OBJECT_MOBILErs )  // large caterpillars?
+         type == OBJECT_MOBILErs ||
+         type == OBJECT_MOBILErp )  // large caterpillars?
     {
         aLimit = 35.0f*Math::PI/180.0f;
     }
 
-    if ( type == OBJECT_MOBILEsa )  // submarine caterpillars?
+    if ( type == OBJECT_MOBILEsa ||
+         type == OBJECT_MOBILEst )  // submarine caterpillars?
     {
         aLimit = 35.0f*Math::PI/180.0f;
         bAcceptWater = true;
@@ -1999,6 +2020,7 @@ void CTaskGoto::BitmapTerrain(int minx, int miny, int maxx, int maxy)
     }
 
     if ( type == OBJECT_MOBILEfa ||
+         type == OBJECT_MOBILEfb ||
          type == OBJECT_MOBILEfc ||
          type == OBJECT_MOBILEfs ||
          type == OBJECT_MOBILEfi ||
@@ -2009,6 +2031,7 @@ void CTaskGoto::BitmapTerrain(int minx, int miny, int maxx, int maxy)
     }
 
     if ( type == OBJECT_MOBILEia ||
+         type == OBJECT_MOBILEib ||
          type == OBJECT_MOBILEic ||
          type == OBJECT_MOBILEis ||
          type == OBJECT_MOBILEii )  // insect legs?

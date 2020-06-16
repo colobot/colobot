@@ -136,7 +136,11 @@ Error CAutoLabo::StartAction(int param)
     {
         return ERR_LABO_NULL;
     }
-    if ( power->GetType() != OBJECT_BULLET )
+    if ( m_research != RESEARCH_TARGET && power->GetType() != OBJECT_BULLET )
+    {
+        return ERR_LABO_BAD;
+    }
+    if ( m_research == RESEARCH_TARGET && power->GetType() != OBJECT_TNT )
     {
         return ERR_LABO_BAD;
     }
@@ -177,6 +181,7 @@ bool CAutoLabo::EventProcess(const Event &event)
     if ( m_object->GetSelect() )  // center selected?
     {
         Error err = ERR_UNKNOWN;
+        if ( event.type == EVENT_OBJECT_RTARGET ) err = StartAction(RESEARCH_TARGET);
         if ( event.type == EVENT_OBJECT_RiPAW   ) err = StartAction(RESEARCH_iPAW);
         if ( event.type == EVENT_OBJECT_RiGUN   ) err = StartAction(RESEARCH_iGUN);
 
@@ -455,7 +460,7 @@ Error CAutoLabo::GetError()
     CObject* obj = m_object->GetPower();
     if (obj == nullptr)  return ERR_LABO_NULL;
     ObjectType type = obj->GetType();
-    if ( type != OBJECT_BULLET )  return ERR_LABO_BAD;
+    if ( type != OBJECT_BULLET && type != OBJECT_TNT )  return ERR_LABO_BAD;
 
     return ERR_OK;
 }
@@ -482,14 +487,20 @@ bool CAutoLabo::CreateInterface(bool bSelect)
     oy = 3.0f/480.0f;
     sx = 33.0f/640.0f;
     sy = 33.0f/480.0f;
+    if( !m_object->GetTrainer() )
+    {
+        pos.x = ox+sx*6.0f;
+        pos.y = oy+sy*0.5f;
+        pw->CreateButton(pos, dim, 192+8, EVENT_OBJECT_RTARGET);
 
-    pos.x = ox+sx*7.0f;
-    pos.y = oy+sy*0.5f;
-    pw->CreateButton(pos, dim, 64+45, EVENT_OBJECT_RiPAW);
+        pos.x = ox+sx*7.0f;
+        pos.y = oy+sy*0.5f;
+        pw->CreateButton(pos, dim, 64+45, EVENT_OBJECT_RiPAW);
 
-    pos.x = ox+sx*8.0f;
-    pos.y = oy+sy*0.5f;
-    pw->CreateButton(pos, dim, 64+46, EVENT_OBJECT_RiGUN);
+        pos.x = ox+sx*8.0f;
+        pos.y = oy+sy*0.5f;
+        pw->CreateButton(pos, dim, 64+46, EVENT_OBJECT_RiGUN);
+    }
 
     pos.x = ox+sx*0.0f;
     pos.y = oy+sy*0;
@@ -515,14 +526,17 @@ void CAutoLabo::UpdateInterface()
     pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
     if ( pw == nullptr )  return;
 
-    DeadInterface(pw, EVENT_OBJECT_RiPAW, m_main->IsResearchEnabled(RESEARCH_iPAW));
-    DeadInterface(pw, EVENT_OBJECT_RiGUN, m_main->IsResearchEnabled(RESEARCH_iGUN));
+    DeadInterface(pw, EVENT_OBJECT_RTARGET, m_main->IsResearchEnabled(RESEARCH_TARGET));
+    DeadInterface(pw, EVENT_OBJECT_RiPAW,   m_main->IsResearchEnabled(RESEARCH_iPAW));
+    DeadInterface(pw, EVENT_OBJECT_RiGUN,   m_main->IsResearchEnabled(RESEARCH_iGUN));
 
+    OkayButton(pw, EVENT_OBJECT_RTARGET);
     OkayButton(pw, EVENT_OBJECT_RiPAW);
     OkayButton(pw, EVENT_OBJECT_RiGUN);
 
-    VisibleInterface(pw, EVENT_OBJECT_RiPAW, !m_bBusy);
-    VisibleInterface(pw, EVENT_OBJECT_RiGUN, !m_bBusy);
+    VisibleInterface(pw, EVENT_OBJECT_RTARGET, !m_bBusy);
+    VisibleInterface(pw, EVENT_OBJECT_RiPAW,   !m_bBusy);
+    VisibleInterface(pw, EVENT_OBJECT_RiGUN,   !m_bBusy);
 }
 
 // Indicates the research conducted for a button.
@@ -542,8 +556,9 @@ void CAutoLabo::OkayButton(Ui::CWindow *pw, EventType event)
 
 bool CAutoLabo::TestResearch(EventType event)
 {
-    if ( event == EVENT_OBJECT_RiPAW )  return m_main->IsResearchDone(RESEARCH_iPAW, m_object->GetTeam());
-    if ( event == EVENT_OBJECT_RiGUN )  return m_main->IsResearchDone(RESEARCH_iGUN, m_object->GetTeam());
+    if ( event == EVENT_OBJECT_RTARGET )  return m_main->IsResearchDone(RESEARCH_TARGET, m_object->GetTeam());
+    if ( event == EVENT_OBJECT_RiPAW   )  return m_main->IsResearchDone(RESEARCH_iPAW, m_object->GetTeam());
+    if ( event == EVENT_OBJECT_RiGUN   )  return m_main->IsResearchDone(RESEARCH_iGUN, m_object->GetTeam());
 
     return m_main;
 }

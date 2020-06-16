@@ -67,7 +67,6 @@ static bool IsAlien(ObjectType type)
              type == OBJECT_NEST     ||
              type == OBJECT_BULLET   ||
              type == OBJECT_EGG      ||
-             type == OBJECT_MOBILEtg ||
              type == OBJECT_TEEN28   ||
              type == OBJECT_TEEN31   );
 }

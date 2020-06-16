@@ -28,6 +28,7 @@ enum class ToolType : unsigned int
     Sniffer,
     Shooter,
     OrganicShooter,
+    Builder,
 };
 
 ToolType GetToolFromObject(ObjectType type);

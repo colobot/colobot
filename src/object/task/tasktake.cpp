@@ -354,6 +354,10 @@ CObject* CTaskTake::SearchFriendObject(float &angle,
              type != OBJECT_MOBILEta &&
              type != OBJECT_MOBILEwa &&
              type != OBJECT_MOBILEia &&
+             type != OBJECT_MOBILEfb &&
+             type != OBJECT_MOBILEtb &&
+             type != OBJECT_MOBILEwb &&
+             type != OBJECT_MOBILEib &&
              type != OBJECT_MOBILEfc &&
              type != OBJECT_MOBILEtc &&
              type != OBJECT_MOBILEwc &&
@@ -376,6 +380,8 @@ CObject* CTaskTake::SearchFriendObject(float &angle,
              type != OBJECT_MOBILEtt &&
              type != OBJECT_MOBILEwt &&
              type != OBJECT_MOBILEit &&
+             type != OBJECT_MOBILErp &&
+             type != OBJECT_MOBILEst &&
              type != OBJECT_TOWER    &&
              type != OBJECT_RESEARCH &&
              type != OBJECT_ENERGY   &&

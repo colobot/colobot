@@ -28,7 +28,8 @@ enum class DriveType : unsigned int
     Tracked,
     Winged,
     Legged,
-    BigTracked,
+    Heavy,
+    Amphibious
 };
 
 DriveType GetDriveFromObject(ObjectType type);

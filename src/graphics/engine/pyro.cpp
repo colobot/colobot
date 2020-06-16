@@ -1268,6 +1268,10 @@ void CPyro::DisplayError(PyroType type, CObject* obj)
              oType == OBJECT_MOBILEta ||
              oType == OBJECT_MOBILEfa ||
              oType == OBJECT_MOBILEia ||
+             oType == OBJECT_MOBILEwb ||
+             oType == OBJECT_MOBILEtb ||
+             oType == OBJECT_MOBILEfb ||
+             oType == OBJECT_MOBILEib ||
              oType == OBJECT_MOBILEwc ||
              oType == OBJECT_MOBILEtc ||
              oType == OBJECT_MOBILEfc ||
@@ -1289,6 +1293,8 @@ void CPyro::DisplayError(PyroType type, CObject* obj)
              oType == OBJECT_MOBILEtt ||
              oType == OBJECT_MOBILEft ||
              oType == OBJECT_MOBILEit ||
+             oType == OBJECT_MOBILErp ||
+             oType == OBJECT_MOBILEst ||
              oType == OBJECT_MOBILEdr )
         {
             err = ERR_DELETEMOBILE;
@@ -1729,6 +1735,7 @@ void CPyro::BurnStart()
         angle.z = (Math::Rand()-0.5f)*0.4f;
     }
     else if ( m_burnType == OBJECT_MOBILEwa ||
+              m_burnType == OBJECT_MOBILEwb ||
               m_burnType == OBJECT_MOBILEwc ||
               m_burnType == OBJECT_MOBILEwi ||
               m_burnType == OBJECT_MOBILEws ||
@@ -1933,6 +1940,20 @@ void CPyro::BurnStart()
         BurnAddPart(1, pos, angle);  // down the insect-cannon
     }
 
+    if ( m_burnType == OBJECT_MOBILEfb ||
+         m_burnType == OBJECT_MOBILEtb ||
+         m_burnType == OBJECT_MOBILEwb ||
+         m_burnType == OBJECT_MOBILEib )
+    {
+        pos.x = -1.5f;
+        pos.y = -5.0f;
+        pos.z =  0.0f;
+        angle.x = (Math::Rand()-0.5f)*0.2f;
+        angle.y = (Math::Rand()-0.5f)*0.2f;
+        angle.z = -25.0f*Math::PI/180.0f;
+        BurnAddPart(1, pos, angle);  // down the neutron gun
+    }
+
     if ( m_burnType == OBJECT_MOBILErt ||
          m_burnType == OBJECT_MOBILErc )
     {
@@ -2019,6 +2040,7 @@ void CPyro::BurnStart()
     }
 
     if ( m_burnType == OBJECT_MOBILEwa ||
+         m_burnType == OBJECT_MOBILEwb ||
          m_burnType == OBJECT_MOBILEwc ||
          m_burnType == OBJECT_MOBILEwi ||
          m_burnType == OBJECT_MOBILEws ||
@@ -2041,14 +2063,18 @@ void CPyro::BurnStart()
     }
 
     if ( m_burnType == OBJECT_MOBILEta ||
+         m_burnType == OBJECT_MOBILEtb ||
          m_burnType == OBJECT_MOBILEtc ||
          m_burnType == OBJECT_MOBILEti ||
          m_burnType == OBJECT_MOBILEts ||
+         m_burnType == OBJECT_MOBILEtt ||
          m_burnType == OBJECT_MOBILErt ||
          m_burnType == OBJECT_MOBILErc ||
          m_burnType == OBJECT_MOBILErr ||
          m_burnType == OBJECT_MOBILErs ||
+         m_burnType == OBJECT_MOBILErp ||
          m_burnType == OBJECT_MOBILEsa ||
+         m_burnType == OBJECT_MOBILEst ||
          m_burnType == OBJECT_MOBILEdr )  // caterpillars?
     {
         pos.x =   0.0f;
@@ -2069,6 +2095,7 @@ void CPyro::BurnStart()
     }
 
     if ( m_burnType == OBJECT_MOBILEfa ||
+         m_burnType == OBJECT_MOBILEfb ||
          m_burnType == OBJECT_MOBILEfc ||
          m_burnType == OBJECT_MOBILEfi ||
          m_burnType == OBJECT_MOBILEfs ||
@@ -2089,9 +2116,11 @@ void CPyro::BurnStart()
     }
 
     if ( m_burnType == OBJECT_MOBILEia ||
+         m_burnType == OBJECT_MOBILEib ||
          m_burnType == OBJECT_MOBILEic ||
          m_burnType == OBJECT_MOBILEii ||
-         m_burnType == OBJECT_MOBILEis )  // legs?
+         m_burnType == OBJECT_MOBILEis ||
+         m_burnType == OBJECT_MOBILEit )  // legs?
     {
         for (int i = 0; i < 6; i++)
         {
@@ -2214,6 +2243,7 @@ void CPyro::BurnTerminate()
     {
         m_object->SetType(OBJECT_RUINmobilew1); // Wreck (recoverable by Recycler)
     }
+    dynamic_cast<CDestroyableObject*>(m_object)->SetDying(DeathType::Alive);
     m_object->SetLock(false);
 }
 

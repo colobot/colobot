@@ -493,6 +493,11 @@ enum EventType
     EVENT_OBJECT_FACTORYrr  = 1098,
     EVENT_OBJECT_FACTORYrs  = 1099,
     EVENT_OBJECT_FACTORYsa  = 1100,
+    EVENT_OBJECT_FACTORYwb  = 1101,
+    EVENT_OBJECT_FACTORYtb  = 1102,
+    EVENT_OBJECT_FACTORYfb  = 1103,
+    EVENT_OBJECT_FACTORYib  = 1104,
+    EVENT_OBJECT_FACTORYtg  = 1105,
     EVENT_OBJECT_SEARCH     = 1200,
     EVENT_OBJECT_TERRAFORM  = 1201,
     EVENT_OBJECT_FIRE       = 1202,
@@ -594,6 +599,10 @@ enum EventType
 
     EVENT_CODE_BATTLE_START = 2200, //!< button that starts the code battle
     EVENT_CODE_BATTLE_SPECTATOR = 2201, //!< button that controls the code battle spectator camera
+
+    EVENT_OBJECT_RBUILDER       = 2300,
+    EVENT_OBJECT_BUILD          = 2301,
+    EVENT_OBJECT_RTARGET        = 2302,
 
     //! Buttons that switch viewpoints
     EVENT_VIEWPOINT0 = 3000,

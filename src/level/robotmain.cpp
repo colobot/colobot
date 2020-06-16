@@ -1830,6 +1830,10 @@ void CRobotMain::SelectOneObject(CObject* obj, bool displayError)
          type == OBJECT_MOBILEta ||
          type == OBJECT_MOBILEwa ||
          type == OBJECT_MOBILEia ||
+         type == OBJECT_MOBILEfb ||
+         type == OBJECT_MOBILEtb ||
+         type == OBJECT_MOBILEwb ||
+         type == OBJECT_MOBILEib ||
          type == OBJECT_MOBILEfc ||
          type == OBJECT_MOBILEtc ||
          type == OBJECT_MOBILEwc ||
@@ -1851,6 +1855,8 @@ void CRobotMain::SelectOneObject(CObject* obj, bool displayError)
          type == OBJECT_MOBILEtt ||
          type == OBJECT_MOBILEwt ||
          type == OBJECT_MOBILEit ||
+         type == OBJECT_MOBILErp ||
+         type == OBJECT_MOBILEst ||
          type == OBJECT_MOBILEdr ||
          type == OBJECT_APOLLO2  )
     {
@@ -2211,6 +2217,10 @@ void CRobotMain::ChangeCamera()
          oType != OBJECT_MOBILEta &&
          oType != OBJECT_MOBILEwa &&
          oType != OBJECT_MOBILEia &&
+         oType != OBJECT_MOBILEfb &&
+         oType != OBJECT_MOBILEtb &&
+         oType != OBJECT_MOBILEwb &&
+         oType != OBJECT_MOBILEib &&
          oType != OBJECT_MOBILEfc &&
          oType != OBJECT_MOBILEtc &&
          oType != OBJECT_MOBILEwc &&
@@ -2233,6 +2243,8 @@ void CRobotMain::ChangeCamera()
          oType != OBJECT_MOBILEtt &&
          oType != OBJECT_MOBILEwt &&
          oType != OBJECT_MOBILEit &&
+         oType != OBJECT_MOBILErp &&
+         oType != OBJECT_MOBILEst &&
          oType != OBJECT_MOBILEdr &&
          oType != OBJECT_APOLLO2  )  return;
 
@@ -3971,6 +3983,7 @@ void CRobotMain::ChangeColor()
         m_engine->ChangeTextureColor("textures/objects/lemt.png"+teamStr,    "textures/objects/lemt.png",    COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
         m_engine->ChangeTextureColor("textures/objects/roller.png"+teamStr,  "textures/objects/roller.png",  COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
         m_engine->ChangeTextureColor("textures/objects/search.png"+teamStr,  "textures/objects/search.png",  COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
+        m_engine->ChangeTextureColor("textures/objects/rollert.png"+teamStr, "textures/objects/rollert.png", COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
 
         exclu[0] = Math::Point(  0.0f/256.0f, 160.0f/256.0f);
         exclu[1] = Math::Point(256.0f/256.0f, 256.0f/256.0f);  // pencils
@@ -5882,17 +5895,20 @@ Error CRobotMain::CanFactoryError(ObjectType type, int team)
     if (tool == ToolType::Sniffer        && !IsResearchDone(RESEARCH_SNIFFER,  team)) return ERR_BUILD_RESEARCH;
     if (tool == ToolType::Shooter        && !IsResearchDone(RESEARCH_CANON,    team)) return ERR_BUILD_RESEARCH;
     if (tool == ToolType::OrganicShooter && !IsResearchDone(RESEARCH_iGUN,     team)) return ERR_BUILD_RESEARCH;
+    if (tool == ToolType::Builder        && !IsResearchDone(RESEARCH_BUILDER,  team)) return ERR_BUILD_RESEARCH;
 
     if (drive == DriveType::Tracked      && !IsResearchDone(RESEARCH_TANK,     team)) return ERR_BUILD_RESEARCH;
     if (drive == DriveType::Winged       && !IsResearchDone(RESEARCH_FLY,      team)) return ERR_BUILD_RESEARCH;
     if (drive == DriveType::Legged       && !IsResearchDone(RESEARCH_iPAW,     team)) return ERR_BUILD_RESEARCH;
-    if (drive == DriveType::BigTracked   && !IsResearchDone(RESEARCH_TANK,     team)) return ERR_BUILD_RESEARCH; // NOTE: Subber is not BigTracked! It currently counts as Other
+    if (drive == DriveType::Heavy        && !IsResearchDone(RESEARCH_TANK,     team)) return ERR_BUILD_RESEARCH;
 
     if (type == OBJECT_MOBILErt          && !IsResearchDone(RESEARCH_THUMP,    team)) return ERR_BUILD_RESEARCH;
     if (type == OBJECT_MOBILErc          && !IsResearchDone(RESEARCH_PHAZER,   team)) return ERR_BUILD_RESEARCH;
     if (type == OBJECT_MOBILErr          && !IsResearchDone(RESEARCH_RECYCLER, team)) return ERR_BUILD_RESEARCH;
     if (type == OBJECT_MOBILErs          && !IsResearchDone(RESEARCH_SHIELD,   team)) return ERR_BUILD_RESEARCH;
     if (type == OBJECT_MOBILEsa          && !IsResearchDone(RESEARCH_SUBM,     team)) return ERR_BUILD_DISABLED; // Can be only researched manually in Scene file
+    if (type == OBJECT_MOBILEst          && !IsResearchDone(RESEARCH_SUBM,     team)) return ERR_BUILD_DISABLED;
+    if (type == OBJECT_MOBILEtg          && !IsResearchDone(RESEARCH_TARGET,   team)) return ERR_BUILD_RESEARCH;
 
     return ERR_OK;
 }

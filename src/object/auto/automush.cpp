@@ -236,6 +236,10 @@ bool CAutoMush::SearchTarget()
              type != OBJECT_MOBILEta &&
              type != OBJECT_MOBILEwa &&
              type != OBJECT_MOBILEia &&
+             type != OBJECT_MOBILEfb &&
+             type != OBJECT_MOBILEtb &&
+             type != OBJECT_MOBILEwb &&
+             type != OBJECT_MOBILEib &&
              type != OBJECT_MOBILEfc &&
              type != OBJECT_MOBILEtc &&
              type != OBJECT_MOBILEwc &&
@@ -258,6 +262,8 @@ bool CAutoMush::SearchTarget()
              type != OBJECT_MOBILEtt &&
              type != OBJECT_MOBILEwt &&
              type != OBJECT_MOBILEit &&
+             type != OBJECT_MOBILErp &&
+             type != OBJECT_MOBILEst &&
              type != OBJECT_MOBILEdr &&
              type != OBJECT_DERRICK  &&
              type != OBJECT_STATION  &&
