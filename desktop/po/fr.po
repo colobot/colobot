@@ -3,18 +3,20 @@
 # This file is distributed under the same license as the Colobot package.
 #
 # Didier Raboud <odyx@debian.org>, 2012, 2016.
+# B-CE <.>, 2019.
 msgid ""
 msgstr ""
-"Project-Id-Version: colobot 0.1.7\n"
+"Project-Id-Version: colobot 0.1.12\n"
 "POT-Creation-Date: 2016-03-30 13:45+0200\n"
-"PO-Revision-Date: 2016-03-30 13:49+0100\n"
-"Last-Translator: Didier Raboud <odyx@debian.org>\n"
+"PO-Revision-Date: 2019-06-01 09:43+0200\n"
+"Last-Translator: BCE <.>\n"
+"Language-Team: French <kde-i18n-doc@kde.org>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 2.0\n"
+"X-Generator: Lokalize 18.12.3\n"
 
 #. type: Name=
 #: colobot.ini:1
@@ -32,13 +34,13 @@ msgstr "Apprentissage de la programmation par le jeu"
 #: colobot.ini:3
 #, no-wrap
 msgid "Colonize with bots"
-msgstr "Colonise avec des roBots"
+msgstr "COlonise avec des roBOTs"
 
 #. type: Keywords=
 #: colobot.ini:4
 #, no-wrap
-msgid "robots;3d;space;astronaut;java;c++"
-msgstr "robots;3d;espace;astronaute;cosmonaute;java;c++"
+msgid "robots;3d;space;astronaut;java;c++;"
+msgstr "robots;3d;espace;astronaute;cosmonaute;java;c++;programmation;jeux"
 
 #. type: =head1
 #: colobot.pod:3
@@ -74,12 +76,12 @@ msgid ""
 "real-time graphics and a C++ and Java-like, object-oriented language, CBOT, "
 "which can be used to program the robots available in the game."
 msgstr ""
-"Colobot (Colonise avec des roBots) est un jeu éducatif visant à "
-"l'enseignement de la programmation par le jeu. Vous jouez un astronaute en "
+"Colobot (Colonise avec des roBots) est un jeu éducatif visant "
+"à l'enseignement de la programmation par le jeu. Vous jouez un astronaute en "
 "voyage avec des robots à la recherche d'une planète à coloniser. Son "
-"interface est en trois-dimensions et en temps réel; le language utilisé "
-"(CBOT) ressemble au C++ et à Java et peut être utilisé pour programmer les "
-"robots disponibles dans le jeu."
+"interface est en trois-dimensions et en temps réel. Le langage utilisé "
+"(CBOT), orienté objet , ressemble au C++ et à Java. Il peut être utilisé "
+"pour programmer les robots disponibles dans le jeu."
 
 #. type: =head1
 #: colobot.pod:19
@@ -208,9 +210,9 @@ msgid ""
 "Enable debug mode (more info printed in logs). Possible values are as "
 "follows, as well as any comma-separated combination"
 msgstr ""
-"Active le mode de I<debug> (plus d'informations dans les logs). Les valeurs"
-" possibles sont les suivantes, ainsi que toute combinaison séparée par des"
-" virgules"
+"Active le mode de I<debug> (plus d'informations dans les logs). "
+"Les valeurs possibles sont les suivantes, "
+"ainsi que toute combinaison séparée par des virgules"
 
 #. type: =item
 #: colobot.pod:81
@@ -260,7 +262,7 @@ msgstr "models"
 #. type: textblock
 #: colobot.pod:99
 msgid "Models-related debugging"
-msgstr "Debug pour les modèles"
+msgstr "Débug pour les modèles"
 
 #. type: =item
 #: colobot.pod:101
@@ -270,7 +272,7 @@ msgstr "all"
 #. type: textblock
 #: colobot.pod:103
 msgid "All above debugging statements"
-msgstr "Tout les messages de debug ci-dessus"
+msgstr "Tous les messages de debug ci-dessus"
 
 #. type: =item
 #: colobot.pod:107
@@ -280,9 +282,7 @@ msgstr "B<-headless>"
 #. type: textblock
 #: colobot.pod:109
 msgid "Run in headless mode - disables graphics, sound and user interaction"
-msgstr ""
-"Lance en mode I<headless> - désactive les graphiques, sons et interactions"
-" utilisateurs"
+msgstr "Lance en mode I<headless> - désactive les graphiques, sons et interactions utilisateurs"
 
 #. type: =item
 #: colobot.pod:111
@@ -292,7 +292,7 @@ msgstr "B<-runscene> I<scenecodename>"
 #. type: textblock
 #: colobot.pod:113
 msgid "Run given scene on start (skip menus)"
-msgstr "Lance une scène donnée au lancement (saute les menus)"
+msgstr "Démarre directement une scène (saute les menus)"
 
 #. type: =item
 #: colobot.pod:115
@@ -317,7 +317,7 @@ msgstr "LC_MESSAGES"
 #. type: textblock
 #: colobot.pod:127
 msgid "Used to determine the runtime language."
-msgstr "Utilisé pour déterminer la langue au lancement"
+msgstr "Utilisé pour déterminer la langue au lancement."
 
 #. type: =head1
 #: colobot.pod:131

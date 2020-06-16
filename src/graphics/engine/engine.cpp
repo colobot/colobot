@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -146,6 +146,7 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
     m_showStats = false;
 
     m_focus = 0.75f;
+    m_hfov = 2.0f * atan((640.f/480.f) * tan(m_focus / 2.0f));
 
     m_rankView = 0;
 
@@ -196,6 +197,7 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
     m_terrainShadows = false;
     m_shadowRange = 0.0f;
     m_multisample = 2;
+    m_vsync = 0;
 
     m_backForce = true;
     m_lightMode = true;
@@ -322,6 +324,7 @@ bool CEngine::Create()
     SetShadowMappingOffscreen(m_offscreenShadowRendering);
     SetShadowMappingOffscreenResolution(m_offscreenShadowRenderingResolution);
     SetMultiSample(m_multisample);
+    SetVSync(m_vsync);
 
     m_modelManager = MakeUnique<COldModelManager>(this);
     m_pyroManager = MakeUnique<CPyroManager>();
@@ -430,7 +433,7 @@ bool CEngine::ProcessEvent(const Event &event)
     {
         auto data = event.GetData<KeyEventData>();
 
-        if (data->key == KEY(F12))
+        if (data->key == KEY(F11) || data->key == KEY(F12))
         {
             m_showStats = !m_showStats;
             return false;
@@ -764,7 +767,7 @@ void CEngine::AddBaseObjTriangles(int baseObjRank, const std::vector<VertexTex2>
         p1.bboxMax.z = Math::Max(vertices[i].coord.z, p1.bboxMax.z);
     }
 
-    p1.radius = Math::Max(p1.bboxMin.Length(), p1.bboxMax.Length());
+    p1.boundingSphere = Math::BoundingSphereForBox(p1.bboxMin, p1.bboxMax);
 
     p1.totalTriangles += vertices.size() / 3;
 }
@@ -800,7 +803,7 @@ void CEngine::AddBaseObjQuick(int baseObjRank, const EngineBaseObjDataTier& buff
             p1.bboxMax.z = Math::Max(p3.vertices[i].coord.z, p1.bboxMax.z);
         }
 
-        p1.radius = Math::Max(p1.bboxMin.Length(), p1.bboxMax.Length());
+        p1.boundingSphere = Math::BoundingSphereForBox(p1.bboxMin, p1.bboxMax);
     }
 
     if (p3.type == ENG_TRIANGLE_TYPE_TRIANGLES)
@@ -855,7 +858,7 @@ void CEngine::DebugObject(int objRank)
     vecStr = p1.bboxMax.ToString();
     l->Debug("  bboxMax: %s\n", vecStr.c_str());
     l->Debug("  totalTriangles: %d\n", p1.totalTriangles);
-    l->Debug("  radius: %f\n", p1.radius);
+    l->Debug("  radius: %f\n", p1.boundingSphere.radius);
 
     for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
     {
@@ -1658,7 +1661,6 @@ void CEngine::UpdateGeometry()
 
         p1.bboxMin.LoadZero();
         p1.bboxMax.LoadZero();
-        p1.radius = 0;
 
         for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
         {
@@ -1677,10 +1679,10 @@ void CEngine::UpdateGeometry()
                         p1.bboxMax.y = Math::Max(p3.vertices[i].coord.y, p1.bboxMax.y);
                         p1.bboxMax.z = Math::Max(p3.vertices[i].coord.z, p1.bboxMax.z);
                 }
-
-                p1.radius = Math::Max(p1.bboxMin.Length(), p1.bboxMax.Length());
             }
         }
+
+        p1.boundingSphere = Math::BoundingSphereForBox(p1.bboxMin, p1.bboxMax);
     }
 
     m_updateGeometry = false;
@@ -1924,9 +1926,8 @@ bool CEngine::IsVisible(int objRank)
 
     assert(baseObjRank >= 0 && baseObjRank < static_cast<int>(m_baseObjects.size()));
 
-    float radius = m_baseObjects[baseObjRank].radius;
-    Math::Vector center(0.0f, 0.0f, 0.0f);
-    if (m_device->ComputeSphereVisibility(center, radius) == Gfx::FRUSTUM_PLANE_ALL)
+    const auto& sphere = m_baseObjects[baseObjRank].boundingSphere;
+    if (m_device->ComputeSphereVisibility(sphere.pos, sphere.radius) == Gfx::FRUSTUM_PLANE_ALL)
     {
         m_objects[objRank].visible = true;
         return true;
@@ -2309,6 +2310,7 @@ bool CEngine::LoadAllTextures()
     LoadTexture("textures/interface/button1.png");
     LoadTexture("textures/interface/button2.png");
     LoadTexture("textures/interface/button3.png");
+    LoadTexture("textures/interface/button4.png");
     LoadTexture("textures/effect00.png");
     LoadTexture("textures/effect01.png");
     LoadTexture("textures/effect02.png");
@@ -2382,7 +2384,7 @@ bool CEngine::LoadAllTextures()
     return ok;
 }
 
-bool IsExcludeColor(Math::Point *exclude, int x, int y)
+static bool IsExcludeColor(Math::Point *exclude, int x, int y)
 {
     int i = 0;
     while ( exclude[i+0].x != 0.0f || exclude[i+0].y != 0.0f ||
@@ -3024,6 +3026,19 @@ bool CEngine::GetTerrainShadows()
     return m_terrainShadows;
 }
 
+void CEngine::SetVSync(int value)
+{
+    if (value < -1) value = -1;
+    if (value > 1) value = 1;
+    if(m_vsync == value) return;
+    m_vsync = value;
+}
+
+int CEngine::GetVSync()
+{
+    return m_vsync;
+}
+
 void CEngine::SetBackForce(bool present)
 {
     m_backForce = present;
@@ -3145,24 +3160,6 @@ void CEngine::ApplyChange()
         m_worldCaptured = false;
     }
 }
-
-void CEngine::ClearDisplayCrashSpheres()
-{
-    m_displayCrashSpheres.clear();
-
-    m_debugCrashSpheres = false;
-}
-
-void CEngine::AddDisplayCrashSpheres(const std::vector<Math::Sphere>& crashSpheres)
-{
-    for (const auto& crashSphere : crashSpheres)
-    {
-        m_displayCrashSpheres.push_back(crashSphere);
-    }
-
-    m_debugCrashSpheres = true;
-}
-
 
 /*******************************************************
                       Rendering
@@ -3482,8 +3479,7 @@ void CEngine::Draw3DScene()
 
     m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
 
-    if (m_debugCrashSpheres)
-        DrawCrashSpheres();
+    RenderPendingDebugDraws();
 
     if (m_debugGoto)
     {
@@ -3650,74 +3646,137 @@ void CEngine::DrawCaptured3DScene()
     m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertices, 4);
 }
 
-void CEngine::DrawCrashSpheres()
+void CEngine::RenderDebugSphere(const Math::Sphere& sphere, const Math::Matrix& transform, const Gfx::Color& color)
 {
-    Math::Matrix worldMatrix;
-    worldMatrix.LoadIdentity();
-    m_device->SetTransform(TRANSFORM_WORLD, worldMatrix);
+    static constexpr int LONGITUDE_DIVISIONS = 16;
+    static constexpr int LATITUDE_DIVISIONS = 8;
+    static constexpr int NUM_LINE_STRIPS = 2 + LONGITUDE_DIVISIONS + LATITUDE_DIVISIONS;
+    static constexpr int VERTS_IN_LINE_STRIP = 32;
 
-    SetState(ENG_RSTATE_OPAQUE_COLOR);
-
-    static const int LINE_SEGMENTS = 32;
-    static const int LONGITUDE_DIVISIONS = 16;
-    static const int LATITUDE_DIVISIONS = 8;
-
-    std::vector<VertexCol> lines((2 + LONGITUDE_DIVISIONS + LATITUDE_DIVISIONS) * LINE_SEGMENTS);
-    std::vector<int> firsts(2 + LONGITUDE_DIVISIONS + LATITUDE_DIVISIONS);
-    std::vector<int> counts(2 + LONGITUDE_DIVISIONS + LATITUDE_DIVISIONS);
-
-    Color color(0.0f, 0.0f, 1.0f);
-
-    auto SpherePoint = [&](float sphereRadius, float latitude, float longitude)
+    static std::array<Math::Vector, NUM_LINE_STRIPS * VERTS_IN_LINE_STRIP> verticesTemplate = []
     {
-        float latitudeAngle = (latitude - 0.5f) * 2.0f * Math::PI;
-        float longitudeAngle = longitude * 2.0f * Math::PI;
-        return Math::Vector(sphereRadius * sinf(latitudeAngle) * cosf(longitudeAngle),
-                            sphereRadius * cosf(latitudeAngle),
-                            sphereRadius * sinf(latitudeAngle) * sinf(longitudeAngle));
-    };
+        std::array<Math::Vector, NUM_LINE_STRIPS * VERTS_IN_LINE_STRIP> vertices;
 
-    for (const auto& crashSphere : m_displayCrashSpheres)
-    {
-        int i = 0;
-        int primitive = 0;
+        auto SpherePoint = [&](float latitude, float longitude)
+        {
+            float latitudeAngle = (latitude - 0.5f) * 2.0f * Math::PI;
+            float longitudeAngle = longitude * 2.0f * Math::PI;
+            return Math::Vector(sinf(latitudeAngle) * cosf(longitudeAngle),
+                                cosf(latitudeAngle),
+                                sinf(latitudeAngle) * sinf(longitudeAngle));
+        };
+
+        auto vert = vertices.begin();
 
         for (int longitudeDivision = 0; longitudeDivision <= LONGITUDE_DIVISIONS; ++longitudeDivision)
         {
-            firsts[primitive] = i;
-            counts[primitive] = LINE_SEGMENTS;
-
-            for (int segment = 0; segment < LINE_SEGMENTS; ++segment)
+            for (int segment = 0; segment < VERTS_IN_LINE_STRIP; ++segment)
             {
-                Math::Vector pos = crashSphere.pos;
-                float latitude = static_cast<float>(segment) / LINE_SEGMENTS;
+                float latitude = static_cast<float>(segment) / VERTS_IN_LINE_STRIP;
                 float longitude = static_cast<float>(longitudeDivision) / (LONGITUDE_DIVISIONS);
-                pos += SpherePoint(crashSphere.radius, latitude, longitude);
-                lines[i++] = VertexCol(pos, color);
+                *vert++ = SpherePoint(latitude, longitude);
             }
-
-            primitive++;
         }
 
         for (int latitudeDivision = 0; latitudeDivision <= LATITUDE_DIVISIONS; ++latitudeDivision)
         {
-            firsts[primitive] = i;
-            counts[primitive] = LINE_SEGMENTS;
-
-            for (int segment = 0; segment < LINE_SEGMENTS; ++segment)
+            for (int segment = 0; segment < VERTS_IN_LINE_STRIP; ++segment)
             {
-                Math::Vector pos = crashSphere.pos;
                 float latitude = static_cast<float>(latitudeDivision + 1) / (LATITUDE_DIVISIONS + 2);
-                float longitude = static_cast<float>(segment) / LINE_SEGMENTS;
-                pos += SpherePoint(crashSphere.radius, latitude, longitude);
-                lines[i++] = VertexCol(pos, color);
+                float longitude = static_cast<float>(segment) / VERTS_IN_LINE_STRIP;
+                *vert++ = SpherePoint(latitude, longitude);
             }
-
-            primitive++;
         }
+        return vertices;
+    }();
 
-        m_device->DrawPrimitives(PRIMITIVE_LINE_STRIP, lines.data(), firsts.data(), counts.data(), primitive);
+
+    const int firstDraw = m_pendingDebugDraws.firsts.size();
+    const int firstVert = m_pendingDebugDraws.vertices.size();
+
+    m_pendingDebugDraws.firsts.resize(m_pendingDebugDraws.firsts.size() + NUM_LINE_STRIPS);
+    m_pendingDebugDraws.counts.resize(m_pendingDebugDraws.counts.size() + NUM_LINE_STRIPS);
+    m_pendingDebugDraws.vertices.resize(m_pendingDebugDraws.vertices.size() + verticesTemplate.size());
+
+    for (int i = 0; i < NUM_LINE_STRIPS; ++i)
+    {
+        m_pendingDebugDraws.firsts[i + firstDraw] = firstVert + i * VERTS_IN_LINE_STRIP;
     }
+
+    for (int i = 0; i < NUM_LINE_STRIPS; ++i)
+    {
+        m_pendingDebugDraws.counts[i + firstDraw] = VERTS_IN_LINE_STRIP;
+    }
+
+    for (std::size_t i = 0; i < verticesTemplate.size(); ++i)
+    {
+        auto pos = Math::MatrixVectorMultiply(transform, sphere.pos + verticesTemplate[i] * sphere.radius);
+        m_pendingDebugDraws.vertices[i + firstVert] = VertexCol{pos, color};
+    }
+}
+
+void CEngine::RenderDebugBox(const Math::Vector& mins, const Math::Vector& maxs, const Math::Matrix& transform, const Gfx::Color& color)
+{
+    static constexpr int NUM_LINE_STRIPS = 4;
+    static constexpr int VERTS_IN_LINE_STRIP = 4;
+
+    const int firstDraw = m_pendingDebugDraws.firsts.size();
+    const int firstVert = m_pendingDebugDraws.vertices.size();
+
+    m_pendingDebugDraws.firsts.resize(m_pendingDebugDraws.firsts.size() + NUM_LINE_STRIPS);
+    m_pendingDebugDraws.counts.resize(m_pendingDebugDraws.counts.size() + NUM_LINE_STRIPS);
+    m_pendingDebugDraws.vertices.resize(m_pendingDebugDraws.vertices.size() + NUM_LINE_STRIPS * VERTS_IN_LINE_STRIP);
+
+    for (int i = 0; i < NUM_LINE_STRIPS; ++i)
+    {
+        m_pendingDebugDraws.firsts[i + firstDraw] = firstVert + (i * VERTS_IN_LINE_STRIP);
+    }
+
+    for (int i = 0; i < NUM_LINE_STRIPS; ++i)
+    {
+        m_pendingDebugDraws.counts[i + firstDraw] = NUM_LINE_STRIPS;
+    }
+
+    auto vert = m_pendingDebugDraws.vertices.begin() + firstVert;
+
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{mins.x, mins.y, mins.z}), color};
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{maxs.x, mins.y, mins.z}), color};
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{maxs.x, maxs.y, mins.z}), color};
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{maxs.x, maxs.y, maxs.z}), color};
+
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{mins.x, mins.y, maxs.z}), color};
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{mins.x, mins.y, mins.z}), color};
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{mins.x, maxs.y, mins.z}), color};
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{maxs.x, maxs.y, mins.z}), color};
+
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{maxs.x, mins.y, maxs.z}), color};
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{mins.x, mins.y, maxs.z}), color};
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{mins.x, maxs.y, maxs.z}), color};
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{mins.x, maxs.y, mins.z}), color};
+
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{maxs.x, mins.y, mins.z}), color};
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{maxs.x, mins.y, maxs.z}), color};
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{maxs.x, maxs.y, maxs.z}), color};
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{mins.x, maxs.y, maxs.z}), color};
+}
+
+void CEngine::RenderPendingDebugDraws()
+{
+    if (m_pendingDebugDraws.firsts.empty()) return;
+
+    m_device->SetTransform(TRANSFORM_WORLD, Math::Matrix{});
+
+    SetState(ENG_RSTATE_OPAQUE_COLOR);
+
+    m_device->DrawPrimitives(PRIMITIVE_LINE_STRIP,
+                             m_pendingDebugDraws.vertices.data(),
+                             m_pendingDebugDraws.firsts.data(),
+                             m_pendingDebugDraws.counts.data(),
+                             m_pendingDebugDraws.firsts.size());
+
+    m_pendingDebugDraws.firsts.clear();
+    m_pendingDebugDraws.counts.clear();
+    m_pendingDebugDraws.vertices.clear();
 }
 
 void CEngine::RenderShadowMap()
@@ -3743,7 +3802,8 @@ void CEngine::RenderShadowMap()
             FramebufferParams params;
             params.width = params.height = width;
             params.depth = depth = 32;
-            params.depthTexture = true;
+            params.colorAttachment = FramebufferParams::AttachmentType::None;
+            params.depthAttachment = FramebufferParams::AttachmentType::Texture;
 
             CFramebuffer *framebuffer = m_device->CreateFramebuffer("shadow", params);
             if (framebuffer == nullptr)
@@ -3818,9 +3878,23 @@ void CEngine::RenderShadowMap()
 
     Math::Vector pos = m_lookatPt + 0.25f * dist * dir;
 
-    pos.x = round(pos.x);
-    pos.y = round(pos.y);
-    pos.z = round(pos.z);
+    {
+        // To prevent 'shadow shimmering', we ensure that the position only moves in texel-sized
+        // increments. To do this we transform the position to a space where the light's forward/right/up
+        // axes are aligned with the x/y/z axes (not necessarily in that order, and +/- signs don't matter).
+        Math::Matrix lightRotation;
+        Math::LoadViewMatrix(lightRotation, Math::Vector{}, lightDir, worldUp);
+        pos = Math::MatrixVectorMultiply(lightRotation, pos);
+        // ...then we round to the nearest worldUnitsPerTexel:
+        const float worldUnitsPerTexel = (dist * 2.0f) / m_shadowMap.size.x;
+        pos /= worldUnitsPerTexel;
+        pos.x = round(pos.x);
+        pos.y = round(pos.y);
+        pos.z = round(pos.z);
+        pos *= worldUnitsPerTexel;
+        // ...and convert back to world space.
+        pos = Math::MatrixVectorMultiply(lightRotation.Inverse(), pos);
+    }
 
     Math::Vector lookAt = pos - lightDir;
 
@@ -3975,7 +4049,10 @@ void CEngine::UseMSAA(bool enable)
                 }
             }
 
-            framebuffer->Bind();
+            if (framebuffer != nullptr)
+            {
+                framebuffer->Bind();
+            }
 
             m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, true);
             m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, true);
@@ -5060,7 +5137,7 @@ void CEngine::DrawStats()
     if (!m_showStats)
         return;
 
-    float height = m_text->GetAscent(FONT_COLOBOT, 13.0f);
+    float height = m_text->GetAscent(FONT_COMMON, 13.0f);
     float width = 0.4f;
     const int TOTAL_LINES = 22;
 
@@ -5087,13 +5164,13 @@ void CEngine::DrawStats()
     auto drawStatsLine = [&](const std::string& name, const std::string& value, const std::string& value2)
     {
         if (!name.empty())
-            m_text->DrawText(name+":", FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
+            m_text->DrawText(name+":", FONT_COMMON, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
         pos.x += 0.25f;
         if (!value.empty())
-            m_text->DrawText(value, FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
+            m_text->DrawText(value, FONT_COMMON, 12.0f, pos, 1.0f, TEXT_ALIGN_LEFT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
         pos.x += 0.15f;
         if (!value2.empty())
-            m_text->DrawText(value2, FONT_COLOBOT, 12.0f, pos, 1.0f, TEXT_ALIGN_RIGHT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
+            m_text->DrawText(value2, FONT_COMMON, 12.0f, pos, 1.0f, TEXT_ALIGN_RIGHT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
         pos.x -= 0.4f;
         pos.y -= height;
     };
@@ -5161,8 +5238,8 @@ void CEngine::DrawTimer()
 {
     SetState(ENG_RSTATE_TEXT);
 
-    Math::Point pos(0.98f, 0.98f-m_text->GetAscent(FONT_COLOBOT, 15.0f));
-    m_text->DrawText(m_timerText, FONT_COLOBOT, 15.0f, pos, 1.0f, TEXT_ALIGN_RIGHT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
+    Math::Point pos(0.98f, 0.98f-m_text->GetAscent(FONT_COMMON, 15.0f));
+    m_text->DrawText(m_timerText, FONT_COMMON, 15.0f, pos, 1.0f, TEXT_ALIGN_RIGHT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
 }
 
 void CEngine::AddBaseObjTriangles(int baseObjRank, const std::vector<Gfx::ModelTriangle>& triangles)

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -62,7 +62,7 @@ void CSignalHandlers::SignalHandler(int sig)
 #include <cstdlib>
 #include <memory>
 #include <cxxabi.h>
-std::string demangle(const char* name)
+static std::string demangle(const char* name)
 {
     int status;
     std::unique_ptr<char[], void(*)(void*)> result {
@@ -75,7 +75,7 @@ std::string demangle(const char* name)
 #else
 // For MSVC and others
 // In MSVC typeinfo(e).name() should be already demangled
-std::string demangle(const char* name)
+static std::string demangle(const char* name)
 {
     return name;
 }
@@ -133,7 +133,7 @@ void CSignalHandlers::ReportError(const std::string& errorMessage)
     msg << "including information on what you were doing before this happened and all the information below." << std::endl;
     msg << "==============================" << std::endl;
     #if BUILD_NUMBER == 0
-        #ifdef OFFICIAL_BUILD
+        #ifdef OFFICIAL_COLOBOT_BUILD
             msg << "You are running official " << COLOBOT_VERSION_DISPLAY << " build." << std::endl;
         #else
             // COLOBOT_VERSION_DISPLAY doesn't update if you don't run CMake after "git pull"

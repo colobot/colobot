@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -284,6 +284,10 @@ CObjectUPtr CObjectFactory::CreateObject(const ObjectCreateParams& params)
         case OBJECT_MOBILEta:
         case OBJECT_MOBILEwa:
         case OBJECT_MOBILEia:
+        case OBJECT_MOBILEfb:
+        case OBJECT_MOBILEtb:
+        case OBJECT_MOBILEwb:
+        case OBJECT_MOBILEib:
         case OBJECT_MOBILEfc:
         case OBJECT_MOBILEtc:
         case OBJECT_MOBILEwc:
@@ -305,6 +309,8 @@ CObjectUPtr CObjectFactory::CreateObject(const ObjectCreateParams& params)
         case OBJECT_MOBILEtt:
         case OBJECT_MOBILEwt:
         case OBJECT_MOBILEit:
+        case OBJECT_MOBILErp:
+        case OBJECT_MOBILEst:
         case OBJECT_MOBILEdr:
         case OBJECT_APOLLO2:
         case OBJECT_CONTROLLER:

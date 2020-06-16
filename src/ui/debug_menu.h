@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ class CInterface;
 
 /**
  * \class CDebugMenu
- * \brief Handles debug menu (F11)
+ * \brief Handles debug menu (F10)
  *
  * There should always be only one instance of this class for each associated CRobotMain class.
  */

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -96,29 +96,45 @@ long long CSystemUtilsLinux::TimeStampExactDiff(SystemTimeStamp *before, SystemT
 
 std::string CSystemUtilsLinux::GetSaveDir()
 {
+#if PORTABLE_SAVES || DEV_BUILD
+    return CSystemUtils::GetSaveDir();
+#else
     std::string savegameDir;
 
     // Determine savegame dir according to XDG Base Directory Specification
-    char *envXDG_DATA_HOME = getenv("XDG_CONFIG_DATA");
-    if (envXDG_DATA_HOME == nullptr)
+    auto envXDG_DATA_HOME = GetEnvVar("XDG_DATA_HOME");
+    if (envXDG_DATA_HOME.empty())
     {
-        char *envHOME = getenv("HOME");
-        if (envHOME == nullptr)
+        auto envHOME = GetEnvVar("HOME");
+        if (envHOME.empty())
         {
-            savegameDir = "/tmp/colobot-save";
+            GetLogger()->Warn("Unable to find directory for saves - using default directory");
+            savegameDir = CSystemUtils::GetSaveDir();
         }
         else
         {
-            savegameDir = std::string(envHOME) + "/.local/share/colobot";
+            savegameDir = envHOME + "/.local/share/colobot";
         }
     }
     else
     {
-        savegameDir = std::string(envXDG_DATA_HOME) + "/colobot";
+        savegameDir = envXDG_DATA_HOME + "/colobot";
     }
     GetLogger()->Trace("Saved game files are going to %s\n", savegameDir.c_str());
 
     return savegameDir;
+#endif
+}
+
+std::string CSystemUtilsLinux::GetEnvVar(const std::string& name)
+{
+    char* envVar = getenv(name.c_str());
+    if (envVar != nullptr)
+    {
+        GetLogger()->Trace("Detected environment variable %s = %s\n", name.c_str(), envVar);
+        return std::string(envVar);
+    }
+    return "";
 }
 
 void CSystemUtilsLinux::Usleep(int usec)

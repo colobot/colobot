@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,7 +24,6 @@
 
 #include "CBot/CBotEnums.h"
 #include "CBot/CBotUtils.h"
-#include "CBot/CBotFileUtils.h"
 
 #include <cassert>
 
@@ -32,14 +31,13 @@ namespace CBot
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotVarPointer::CBotVarPointer(const CBotToken& name, CBotTypResult& type)
+CBotVarPointer::CBotVarPointer(const CBotToken& name, CBotTypResult& type) : CBotVar(name)
 {
     if ( !type.Eq(CBotTypPointer) &&
          !type.Eq(CBotTypNullPointer) &&
          !type.Eq(CBotTypClass)   &&                    // for convenience accepts Class and Intrinsic
          !type.Eq(CBotTypIntrinsic) ) assert(0);
 
-    m_token        = new CBotToken(name);
     m_next        = nullptr;
     m_pMyThis    = nullptr;
     m_pUserPtr    = nullptr;
@@ -172,21 +170,21 @@ CBotClass* CBotVarPointer::GetClass()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotVarPointer::Save1State(FILE* pf)
+bool CBotVarPointer::Save1State(std::ostream &ostr)
 {
     if ( m_type.GetClass() != nullptr )
     {
-        if (!WriteString(pf, m_type.GetClass()->GetName())) return false;    // name of the class
+        if (!WriteString(ostr, m_type.GetClass()->GetName())) return false;  // name of the class
     }
     else
     {
-        if (!WriteString(pf, "")) return false;
+        if (!WriteString(ostr, "")) return false;
     }
 
-    if (!WriteLong(pf, GetIdent())) return false;        // the unique reference
+    if (!WriteLong(ostr, GetIdent())) return false;      // the unique reference
 
     // also saves the proceedings copies
-    return SaveVars(pf, GetPointer());
+    return SaveVars(ostr, GetPointer());
 }
 
 ////////////////////////////////////////////////////////////////////////////////

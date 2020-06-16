@@ -490,6 +490,9 @@ msgstr "Sinkt (\\key gdown;)"
 msgid "Drawer bot"
 msgstr "Zeichner"
 
+msgid "Duplicate label in switch"
+msgstr ""
+
 msgid "Dust\\Dust and dirt on bots and buildings"
 msgstr "Schmutz\\Schmutz auf Robotern und Bauten"
 
@@ -507,6 +510,9 @@ msgstr "Gewähltes Programm bearbeiten"
 
 msgid "Egg"
 msgstr "Ei"
+
+msgid "Empty character constant"
+msgstr ""
 
 msgid "End of block missing"
 msgstr "Es fehlt eine geschlossene geschweifte Klammer \"}\" (Ende des Blocks)"
@@ -1563,6 +1569,10 @@ msgstr "Stampfen (\\key action;)"
 msgid "Thumper"
 msgstr "Stampfer"
 
+#, c-format
+msgid "Time: %s"
+msgstr ""
+
 msgid "Titanium"
 msgstr "Titan"
 
@@ -1676,6 +1686,9 @@ msgstr "Der Wert dieser Variable wurde nicht definiert"
 
 msgid "Vault"
 msgstr "Bunker"
+
+msgid "Vertical Synchronization\\Limits the number of frames per second to display frequency"
+msgstr ""
 
 msgid "Violet flag"
 msgstr "Violette Fahne"

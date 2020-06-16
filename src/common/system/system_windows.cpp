@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -110,20 +110,41 @@ std::wstring CSystemUtilsWindows::UTF8_Decode(const std::string& str)
 
 std::string CSystemUtilsWindows::GetSaveDir()
 {
+#if PORTABLE_SAVES || DEV_BUILD
+    return CSystemUtils::GetSaveDir();
+#else
     std::string savegameDir;
 
-    wchar_t* envUSERPROFILE = _wgetenv(L"USERPROFILE");
-    if (envUSERPROFILE == nullptr)
+    auto envUSERPROFILE = GetEnvVar("USERPROFILE");
+    if (envUSERPROFILE.empty())
     {
-        savegameDir = "./saves";
+        GetLogger()->Warn("Unable to find directory for saves - using default directory");
+        savegameDir = CSystemUtils::GetSaveDir();
     }
     else
     {
-        savegameDir = UTF8_Encode(std::wstring(envUSERPROFILE)) + "\\colobot";
+        savegameDir = envUSERPROFILE + "\\colobot";
     }
     GetLogger()->Trace("Saved game files are going to %s\n", savegameDir.c_str());
 
     return savegameDir;
+#endif
+}
+
+std::string CSystemUtilsWindows::GetEnvVar(const std::string& name)
+{
+    std::wstring wname(name.begin(), name.end());
+    wchar_t* envVar = _wgetenv(wname.c_str());
+    if (envVar == nullptr)
+    {
+        return "";
+    }
+    else
+    {
+        std::string var = UTF8_Encode(std::wstring(envVar));
+        GetLogger()->Trace("Detected environment variable %s = %s\n", name.c_str(), var.c_str());
+        return var;
+    }
 }
 
 void CSystemUtilsWindows::Usleep(int usec)

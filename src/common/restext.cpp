@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -48,6 +48,9 @@ const char* stringsCbot[CBot::CBotErrMAX]         = { nullptr };
  */
 #define TR(x) x
 
+/* Please run `make update-pot` after changing this file
+ * in order to update translation files. Thank you.
+ */
 
 void InitializeRestext()
 {
@@ -145,6 +148,7 @@ void InitializeRestext()
 
     stringsText[RT_SCOREBOARD_RESULTS]     = TR("Results");
     stringsText[RT_SCOREBOARD_RESULTS_TEXT]= TR("The battle has ended");
+    stringsText[RT_SCOREBOARD_RESULTS_TIME]= TR("Time: %s");
     stringsText[RT_SCOREBOARD_RESULTS_LINE]= TR("%s: %d pts");
 
 
@@ -215,6 +219,7 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_SHADOW_MAPPING]    = TR("Dynamic shadows\\Beautiful shadows!");
     stringsEvent[EVENT_INTERFACE_SHADOW_MAPPING_QUALITY]= TR("Dynamic shadows ++\\Dynamic shadows + self shadowing");
     stringsEvent[EVENT_INTERFACE_SHADOW_MAPPING_BUFFER] = TR("Shadow resolution\\Higher means better range and quality, but slower");
+    stringsEvent[EVENT_INTERFACE_VSYNC]     = TR("Vertical Synchronization\\Limits the number of frames per second to display frequency");
 
     stringsEvent[EVENT_INTERFACE_KDEF]      = TR("Standard controls\\Standard key functions");
     assert(INPUT_SLOT_MAX < EVENT_INTERFACE_KEY_END-EVENT_INTERFACE_KEY);
@@ -357,11 +362,16 @@ void InitializeRestext()
     stringsEvent[EVENT_OBJECT_FACTORYts]    = TR("Build a tracked sniffer");
     stringsEvent[EVENT_OBJECT_FACTORYws]    = TR("Build a wheeled sniffer");
     stringsEvent[EVENT_OBJECT_FACTORYis]    = TR("Build a legged sniffer");
+    stringsEvent[EVENT_OBJECT_FACTORYfb]    = TR("Build a winged builder");
+    stringsEvent[EVENT_OBJECT_FACTORYtb]    = TR("Build a tracked builder");
+    stringsEvent[EVENT_OBJECT_FACTORYwb]    = TR("Build a wheeled builder");
+    stringsEvent[EVENT_OBJECT_FACTORYib]    = TR("Build a legged builder");
     stringsEvent[EVENT_OBJECT_FACTORYrt]    = TR("Build a thumper");
     stringsEvent[EVENT_OBJECT_FACTORYrc]    = TR("Build a phazer shooter");
     stringsEvent[EVENT_OBJECT_FACTORYrr]    = TR("Build a recycler");
     stringsEvent[EVENT_OBJECT_FACTORYrs]    = TR("Build a shielder");
     stringsEvent[EVENT_OBJECT_FACTORYsa]    = TR("Build a subber");
+    stringsEvent[EVENT_OBJECT_FACTORYtg]    = TR("Build a target bot");
     stringsEvent[EVENT_OBJECT_RTANK]        = TR("Run research program for tracked bots");
     stringsEvent[EVENT_OBJECT_RFLY]         = TR("Run research program for winged bots");
     stringsEvent[EVENT_OBJECT_RTHUMP]       = TR("Run research program for thumper");
@@ -372,11 +382,14 @@ void InitializeRestext()
     stringsEvent[EVENT_OBJECT_RATOMIC]      = TR("Run research program for nuclear power");
     stringsEvent[EVENT_OBJECT_RiPAW]        = TR("Run research program for legged bots");
     stringsEvent[EVENT_OBJECT_RiGUN]        = TR("Run research program for orga shooter");
+    stringsEvent[EVENT_OBJECT_RBUILDER]     = TR("Run research program for builder");
+    stringsEvent[EVENT_OBJECT_RTARGET]      = TR("Run research program for target bot");
     stringsEvent[EVENT_OBJECT_RESET]        = TR("Return to start");
     stringsEvent[EVENT_OBJECT_SEARCH]       = TR("Sniff (\\key action;)");
     stringsEvent[EVENT_OBJECT_TERRAFORM]    = TR("Thump (\\key action;)");
     stringsEvent[EVENT_OBJECT_FIRE]         = TR("Shoot (\\key action;)");
     stringsEvent[EVENT_OBJECT_SPIDEREXPLO]  = TR("Explode (\\key action;)");
+    stringsEvent[EVENT_OBJECT_BUILD]        = TR("Build (\\key action;)");
     stringsEvent[EVENT_OBJECT_RECOVER]      = TR("Recycle (\\key action;)");
     stringsEvent[EVENT_OBJECT_BEGSHIELD]    = TR("Extend shield (\\key action;)");
     stringsEvent[EVENT_OBJECT_ENDSHIELD]    = TR("Withdraw shield (\\key action;)");
@@ -513,10 +526,16 @@ void InitializeRestext()
     stringsObject[OBJECT_MOBILEtt]     = TR("Practice bot");
     stringsObject[OBJECT_MOBILEwt]     = TR("Practice bot");
     stringsObject[OBJECT_MOBILEit]     = TR("Practice bot");
+    stringsObject[OBJECT_MOBILErp]     = TR("Practice bot");
+    stringsObject[OBJECT_MOBILEst]     = TR("Practice bot");
     stringsObject[OBJECT_MOBILEfa]     = TR("Winged grabber");
     stringsObject[OBJECT_MOBILEta]     = TR("Tracked grabber");
     stringsObject[OBJECT_MOBILEwa]     = TR("Wheeled grabber");
     stringsObject[OBJECT_MOBILEia]     = TR("Legged grabber");
+    stringsObject[OBJECT_MOBILEfb]     = TR("Winged builder");
+    stringsObject[OBJECT_MOBILEtb]     = TR("Tracked builder");
+    stringsObject[OBJECT_MOBILEwb]     = TR("Wheeled builder");
+    stringsObject[OBJECT_MOBILEib]     = TR("Legged builder");
     stringsObject[OBJECT_MOBILEfc]     = TR("Winged shooter");
     stringsObject[OBJECT_MOBILEtc]     = TR("Tracked shooter");
     stringsObject[OBJECT_MOBILEwc]     = TR("Wheeled shooter");
@@ -616,7 +635,7 @@ void InitializeRestext()
     stringsErr[ERR_BASE_DLOCK]      = TR("Doors blocked by a robot or another object");
     stringsErr[ERR_BASE_DHUMAN]     = TR("You must get on the spaceship to take off");
     stringsErr[ERR_LABO_NULL]       = TR("Nothing to analyze");
-    stringsErr[ERR_LABO_BAD]        = TR("Analyzes only organic matter");
+    stringsErr[ERR_LABO_BAD]        = TR("Inappropriate sample");
     stringsErr[ERR_LABO_ALREADY]    = TR("Analysis already performed");
     stringsErr[ERR_NUCLEAR_EMPTY]   = TR("No uranium to transform");
     stringsErr[ERR_NUCLEAR_BAD]     = TR("Transforms only uranium");
@@ -654,6 +673,7 @@ void InitializeRestext()
     stringsErr[INFO_RESEARCHPHAZER] = TR("Plans for phazer shooter available");
     stringsErr[INFO_RESEARCHSHIELD] = TR("Plans for shielder available");
     stringsErr[INFO_RESEARCHATOMIC] = TR("Plans for nuclear power plant available");
+    stringsErr[INFO_RESEARCHBUILDER]= TR("Plans for builder available");
     stringsErr[INFO_FACTORY]        = TR("New bot available");
     stringsErr[INFO_LABO]           = TR("Analysis performed");
     stringsErr[INFO_ENERGY]         = TR("Power cell available");
@@ -737,6 +757,8 @@ void InitializeRestext()
     stringsCbot[CBot::CBotErrHexDigits]     = TR("Missing hex digits after escape sequence");
     stringsCbot[CBot::CBotErrHexRange]      = TR("Hex value out of range");
     stringsCbot[CBot::CBotErrUnicodeName]   = TR("Invalid universal character name");
+    stringsCbot[CBot::CBotErrCharEmpty]     = TR("Empty character constant");
+    stringsCbot[CBot::CBotErrRedefCase]     = TR("Duplicate label in switch");
 
     stringsCbot[CBot::CBotErrZeroDiv]       = TR("Dividing by zero");
     stringsCbot[CBot::CBotErrNotInit]       = TR("Variable not initialized");

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -82,7 +82,12 @@ const char* GetObjectName(ObjectType type)
     if ( type == OBJECT_MARKKEYb    )  return "KeyBSpot";
     if ( type == OBJECT_MARKKEYc    )  return "KeyCSpot";
     if ( type == OBJECT_MARKKEYd    )  return "KeyDSpot";
-    if ( type == OBJECT_MOBILEwt    )  return "PracticeBot";
+    if ( type == OBJECT_MOBILEwt    )  return "WheeledTrainer";
+    if ( type == OBJECT_MOBILEtt    )  return "TrackedTrainer";
+    if ( type == OBJECT_MOBILEft    )  return "WingedTrainer";
+    if ( type == OBJECT_MOBILEit    )  return "LeggedTrainer";
+    if ( type == OBJECT_MOBILErp    )  return "HeavyTrainer";
+    if ( type == OBJECT_MOBILEst    )  return "AmphibiousTrainer";
     if ( type == OBJECT_MOBILEwa    )  return "WheeledGrabber";
     if ( type == OBJECT_MOBILEta    )  return "TrackedGrabber";
     if ( type == OBJECT_MOBILEfa    )  return "WingedGrabber";
@@ -110,6 +115,7 @@ const char* GetObjectName(ObjectType type)
     if ( type == OBJECT_MOBILEsa    )  return "Subber";
     if ( type == OBJECT_MOBILEtg    )  return "TargetBot";
     if ( type == OBJECT_MOBILEdr    )  return "Scribbler";
+    if ( type == OBJECT_MOBILEpr    )  return "PracticeBot";
     if ( type == OBJECT_HUMAN       )  return "Me";
     if ( type == OBJECT_TECH        )  return "Tech";
     if ( type == OBJECT_MOTHER      )  return "AlienQueen";
@@ -200,14 +206,24 @@ std::string GetHelpFilename(ObjectType type)
     if ( type == OBJECT_MOBILEtc    )  helpfile = "object/botfc";
     if ( type == OBJECT_MOBILEfc    )  helpfile = "object/botfj";
     if ( type == OBJECT_MOBILEic    )  helpfile = "object/botfs";
+    if ( type == OBJECT_MOBILEwb    )  helpfile = "object/botbr";
+    if ( type == OBJECT_MOBILEtb    )  helpfile = "object/botbc";
+    if ( type == OBJECT_MOBILEfb    )  helpfile = "object/botbj";
+    if ( type == OBJECT_MOBILEib    )  helpfile = "object/botbs";
     if ( type == OBJECT_MOBILErt    )  helpfile = "object/bottump";
     if ( type == OBJECT_MOBILErc    )  helpfile = "object/botphaz";
     if ( type == OBJECT_MOBILErr    )  helpfile = "object/botrecy";
     if ( type == OBJECT_MOBILErs    )  helpfile = "object/botshld";
     if ( type == OBJECT_MOBILEsa    )  helpfile = "object/botsub";
     if ( type == OBJECT_MOBILEwt    )  helpfile = "object/bottr";
+    if ( type == OBJECT_MOBILEtt    )  helpfile = "object/bottr";
+    if ( type == OBJECT_MOBILEft    )  helpfile = "object/bottr";
+    if ( type == OBJECT_MOBILEit    )  helpfile = "object/bottr";
+    if ( type == OBJECT_MOBILErp    )  helpfile = "object/bottr";
+    if ( type == OBJECT_MOBILEst    )  helpfile = "object/bottr";
     if ( type == OBJECT_MOBILEtg    )  helpfile = "object/bottarg";
     if ( type == OBJECT_MOBILEdr    )  helpfile = "object/botdraw";
+    if ( type == OBJECT_MOBILEpr    )  helpfile = "object/bottr";
     if ( type == OBJECT_APOLLO2     )  helpfile = "object/lrv";
     if ( type == OBJECT_HUMAN       )  helpfile = "object/human";
     if ( type == OBJECT_MOTHER      )  helpfile = "object/mother";
@@ -240,8 +256,13 @@ std::string GetHelpFilename(const char *token)
     if ( strcmp(token, "continue"      ) == 0 )  helpfile = "cbot/continue";
     if ( strcmp(token, "return"        ) == 0 )  helpfile = "cbot/return";
     if ( strcmp(token, "sizeof"        ) == 0 )  helpfile = "cbot/sizeof";
+    if ( strcmp(token, "byte"          ) == 0 )  helpfile = "cbot/byte";
+    if ( strcmp(token, "short"         ) == 0 )  helpfile = "cbot/short";
+    if ( strcmp(token, "char"          ) == 0 )  helpfile = "cbot/char";
     if ( strcmp(token, "int"           ) == 0 )  helpfile = "cbot/int";
+    if ( strcmp(token, "long"          ) == 0 )  helpfile = "cbot/long";
     if ( strcmp(token, "float"         ) == 0 )  helpfile = "cbot/float";
+    if ( strcmp(token, "double"        ) == 0 )  helpfile = "cbot/double";
     if ( strcmp(token, "bool"          ) == 0 )  helpfile = "cbot/bool";
     if ( strcmp(token, "string"        ) == 0 )  helpfile = "cbot/string";
     if ( strcmp(token, "point"         ) == 0 )  helpfile = "cbot/point";
@@ -376,6 +397,9 @@ std::string GetHelpFilename(const char *token)
     if ( strcmp(token, "synchronized"  ) == 0 )  helpfile = "cbot/synchro";
     if ( strcmp(token, "new"           ) == 0 )  helpfile = "cbot/new";
     if ( strcmp(token, "this"          ) == 0 )  helpfile = "cbot/this";
+    if ( strcmp(token, "switch"        ) == 0 ||
+         strcmp(token, "case"          ) == 0 ||
+         strcmp(token, "default"       ) == 0 )  helpfile = "cbot/switch";
 
     if (helpfile.empty())
         return "";
@@ -389,8 +413,13 @@ std::string GetHelpFilename(const char *token)
 bool IsType(const char *token)
 {
     if ( strcmp(token, "void"   ) == 0 )  return true;
+    if ( strcmp(token, "byte"   ) == 0 )  return true;
+    if ( strcmp(token, "short"  ) == 0 )  return true;
+    if ( strcmp(token, "char"   ) == 0 )  return true;
     if ( strcmp(token, "int"    ) == 0 )  return true;
+    if ( strcmp(token, "long"   ) == 0 )  return true;
     if ( strcmp(token, "float"  ) == 0 )  return true;
+    if ( strcmp(token, "double" ) == 0 )  return true;
     if ( strcmp(token, "bool"   ) == 0 )  return true;
     if ( strcmp(token, "string" ) == 0 )  return true;
     if ( strcmp(token, "point"  ) == 0 )  return true;
@@ -495,11 +524,14 @@ bool IsFunction(const char *token)
 
 const char* GetHelpText(const char *token)
 {
-    if ( strcmp(token, "if"        ) == 0 )  return "if ( condition ) { bloc }";
-    if ( strcmp(token, "else"      ) == 0 )  return "else { bloc }";
+    if ( strcmp(token, "if"        ) == 0 )  return "if ( condition ) { code }";
+    if ( strcmp(token, "else"      ) == 0 )  return "else { code }";
     if ( strcmp(token, "for"       ) == 0 )  return "for ( before ; condition ; end )";
-    if ( strcmp(token, "while"     ) == 0 )  return "while ( condition ) { bloc }";
-    if ( strcmp(token, "do"        ) == 0 )  return "do { bloc } while ( condition );";
+    if ( strcmp(token, "while"     ) == 0 )  return "while ( condition ) { code }";
+    if ( strcmp(token, "do"        ) == 0 )  return "do { code } while ( condition );";
+    if ( strcmp(token, "switch"    ) == 0 )  return "switch ( value ) { code }";
+    if ( strcmp(token, "case"      ) == 0 )  return "case label: { code }";
+    if ( strcmp(token, "default"   ) == 0 )  return "default: { code } ";
     if ( strcmp(token, "break"     ) == 0 )  return "break;";
     if ( strcmp(token, "continue"  ) == 0 )  return "continue;";
     if ( strcmp(token, "return"    ) == 0 )  return "return;";

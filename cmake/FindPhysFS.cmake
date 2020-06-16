@@ -7,7 +7,7 @@ IF (WIN32)
     FIND_PATH( PHYSFS_INCLUDE_PATH physfs.h
                 DOC "The directory where physfs.h resides")
     FIND_LIBRARY( PHYSFS_LIBRARY
-                    NAMES physfs
+                    NAMES physfs physfs-static
                     PATHS /mingw/lib
                     DOC "The PhysFS library")
 ELSE (WIN32)

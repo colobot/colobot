@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -194,8 +194,7 @@ CEdit* CInterface::CreateEdit(Math::Point pos, Math::Point dim, int icon, EventT
     return CreateControl<CEdit>(pos, dim, icon, eventMsg);
 }
 
-// Creates a new pave editable.
-
+// Creates a new editable area.
 CEditValue* CInterface::CreateEditValue(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
     CEditValue* ev = CreateControl<CEditValue>(pos, dim, icon, eventMsg);

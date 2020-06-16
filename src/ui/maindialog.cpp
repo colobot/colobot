@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -323,7 +323,7 @@ void CMainDialog::StartInformation(const std::string& title, const std::string& 
     ddim.x = 1.00f;
     ddim.y = 0.05f;
     pl = pw->CreateLabel(pos, ddim, -1, EVENT_DIALOG_LABEL, text);
-    pl->SetFontType(Gfx::FONT_COLOBOT_BOLD);
+    pl->SetFontType(Gfx::FONT_COMMON_BOLD);
     //TODO: Add \n support in CLabel
     pos.y -= ddim.y;
     pl = pw->CreateLabel(pos, ddim, -1, EVENT_DIALOG_LABEL1, details);

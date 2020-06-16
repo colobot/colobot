@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ object-oriented language, CBOT, which can be used to program the robots availabl
 The original version of the game was developed by [Epsitec](http://www.epsitec.ch/) and released in 2001.
 Later, in 2005 another version named Ceebot was released. In March 2012, through attempts
 by Polish Colobot fans, Epsitec agreeed to release the source code of the game on GPLv3 license.
-The license was given specfifically to our community, <b>TerranovaTeam</b>,
+The license was given specifically to our community, <b>TerranovaTeam</b>,
 part of <b>International Colobot Community (ICC)</b> (previously known as <i>Polish Portal of Colobot (PPC)</i>;
 Polish: <i>Polski Portal Colobota</i>) with our website at http://colobot.info/.
 
@@ -171,6 +171,8 @@ int main(int argc, char *argv[])
 
     int code = 0;
     CApplication app(systemUtils.get()); // single instance of the application
+
+    app.LoadEnvironmentVariables();
 
     ParseArgsStatus status = app.ParseArguments(argc, argv);
     if (status == PARSE_ARGS_FAIL)

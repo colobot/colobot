@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -112,6 +112,18 @@ bool CObjectCondition::CheckForObject(CObject* obj)
     return false;
 }
 
+int CObjectCondition::CountObjects()
+{
+    int nb = 0;
+    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
+    {
+        if (!obj->GetActive()) continue;
+        if (!CheckForObject(obj)) continue;
+        nb ++;
+    }
+    return nb;
+}
+
 void CSceneCondition::Read(CLevelParserLine* line)
 {
     CObjectCondition::Read(line);
@@ -122,18 +134,6 @@ void CSceneCondition::Read(CLevelParserLine* line)
 
     this->min      = line->GetParam("min")->AsInt(1);
     this->max      = line->GetParam("max")->AsInt(9999);
-}
-
-int CSceneCondition::CountObjects()
-{
-    int nb = 0;
-    for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
-    {
-        if (!obj->GetActive()) continue;
-        if (!CheckForObject(obj)) continue;
-        nb ++;
-    }
-    return nb;
 }
 
 bool CSceneCondition::Check()

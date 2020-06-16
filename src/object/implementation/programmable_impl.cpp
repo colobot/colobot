@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -143,24 +143,43 @@ bool CProgrammableObjectImpl::IsProgram()
 
 // Load a stack of script implementation from a file.
 
-bool CProgrammableObjectImpl::ReadStack(FILE *file)
+bool CProgrammableObjectImpl::ReadStack(std::istream &istr)
 {
     short       op;
 
-    CBot::fRead(&op, sizeof(short), 1, file);
+    if (!CBot::ReadShort(istr, op)) return false;
     if ( op == 1 )  // run ?
     {
-        CBot::fRead(&op, sizeof(short), 1, file);  // program rank
+        if (!CBot::ReadShort(istr, op)) return false; // program rank
         if ( op >= 0 )
         {
             if (m_object->Implements(ObjectInterfaceType::ProgramStorage))
             {
-                assert(op < static_cast<int>(dynamic_cast<CProgramStorageObject*>(m_object)->GetProgramCount()));
+                int count = static_cast<int>(dynamic_cast<CProgramStorageObject*>(m_object)->GetProgramCount());
+                if (!(op < count))
+                {
+                    GetLogger()->Info("Object program count: %i\n", count);
+                    GetLogger()->Error("Error in file: program index out of range: %i\n", op);
+                    return false;
+                }
+
                 m_currentProgram = dynamic_cast<CProgramStorageObject*>(m_object)->GetProgram(op);
-                if ( !m_currentProgram->script->ReadStack(file) )  return false;
+                if (!m_currentProgram->script->ReadStack(istr))
+                {
+                    GetLogger()->Error("Restore state failed at program index: %i\n", op);
+                    int errNum = m_currentProgram->script->GetError();
+                    if (errNum != 0)
+                    {
+                        std::string errStr;
+                        m_currentProgram->script->GetError(errStr);
+                        GetLogger()->Error("Program reports error: %i:(%s)\n", errNum, errStr.c_str());
+                    }
+                    return false;
+                }
             }
             else
             {
+                GetLogger()->Error("Object is not a program storage object\n");
                 return false;
             }
         }
@@ -171,7 +190,7 @@ bool CProgrammableObjectImpl::ReadStack(FILE *file)
 
 // Save the script implementation stack of a file.
 
-bool CProgrammableObjectImpl::WriteStack(FILE *file)
+bool CProgrammableObjectImpl::WriteStack(std::ostream &ostr)
 {
     short       op;
 
@@ -179,21 +198,25 @@ bool CProgrammableObjectImpl::WriteStack(FILE *file)
          m_currentProgram->script->IsRunning() )
     {
         op = 1;  // run
-        CBot::fWrite(&op, sizeof(short), 1, file);
+        if (!CBot::WriteShort(ostr, op)) return false;
 
         op = -1;
         if (m_object->Implements(ObjectInterfaceType::ProgramStorage))
         {
             op = dynamic_cast<CProgramStorageObject*>(m_object)->GetProgramIndex(m_currentProgram);
         }
-        CBot::fWrite(&op, sizeof(short), 1, file);
+        if (!CBot::WriteShort(ostr, op)) return false;
 
-        return m_currentProgram->script->WriteStack(file);
+        if (!m_currentProgram->script->WriteStack(ostr))
+        {
+            GetLogger()->Error("Save state failed at program index: %i\n", op);
+            return false;
+        }
+        return true;
     }
 
     op = 0;  // stop
-    CBot::fWrite(&op, sizeof(short), 1, file);
-    return true;
+    return CBot::WriteShort(ostr, op);
 }
 
 

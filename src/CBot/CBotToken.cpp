@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,13 +21,23 @@
 
 #include <cstdarg>
 #include <cassert>
+#include <boost/bimap.hpp>
 
 namespace CBot
 {
 
+namespace
+{
+    template <typename L, typename R>
+    boost::bimap<L, R> makeBimap(std::initializer_list<typename boost::bimap<L, R>::value_type> list)
+    {
+        return boost::bimap<L, R>(list.begin(), list.end());
+    }
+}
+
 //! \brief Keeps the string corresponding to keyword ID
 //! Map is filled with id-string pars that are needed for CBot language parsing
-static const std::map<TokenId, const std::string> KEYWORDS = {
+static const boost::bimap<TokenId, std::string> KEYWORDS = makeBimap<TokenId, std::string>({
     {ID_IF,         "if"},
     {ID_ELSE,       "else"},
     {ID_WHILE,      "while"},
@@ -61,6 +71,11 @@ static const std::map<TokenId, const std::string> KEYWORDS = {
     {ID_STRING,     "string"},
     {ID_VOID,       "void"},
     {ID_BOOL,       "bool"},
+    {ID_BYTE,       "byte"},
+    {ID_SHORT,      "short"},
+    {ID_CHAR,       "char"},
+    {ID_LONG,       "long"},
+    {ID_DOUBLE,     "double"},
     {ID_TRUE,       "true"},
     {ID_FALSE,      "false"},
     {ID_NULL,       "null"},
@@ -93,7 +108,7 @@ static const std::map<TokenId, const std::string> KEYWORDS = {
     {ID_ASSSR,      ">>>="},
     {ID_ASSASR,     ">>="},
     {ID_SL,         "<<"},
-    {ID_SR,         ">>"},
+    {ID_SR,         ">>>"},
     {ID_ASR,        ">>"},
     {ID_INC,        "++"},
     {ID_DEC,        "--"},
@@ -115,7 +130,7 @@ static const std::map<TokenId, const std::string> KEYWORDS = {
     {ID_ASSMODULO,  "%="},
     {TX_UNDEF,      "undefined"},
     {TX_NAN,        "not a number"}
-};
+});
 
 namespace
 {
@@ -123,9 +138,10 @@ static const std::string emptyString = "";
 }
 const std::string& LoadString(TokenId id)
 {
-    if (KEYWORDS.find(id) != KEYWORDS.end())
+    auto it = KEYWORDS.left.find(id);
+    if (it != KEYWORDS.left.end())
     {
-        return KEYWORDS.at(id);
+        return it->second;
     }
     else
     {
@@ -210,7 +226,7 @@ long CBotToken::GetKeywordId()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string CBotToken::GetString()
+const std::string& CBotToken::GetString()
 {
     return m_text;
 }
@@ -242,6 +258,7 @@ void CBotToken::SetPos(int start, int end)
 
 ////////////////////////////////////////////////////////////////////////////////
 
+// TODO: CharInList could probably be optimized to conditions like (*c >= '0' && *c <= '9') to gain some performance
 static char    sep1[] = " \r\n\t,:()[]{}-+*/=;><!~^|&%.\"\'?";
 static char    sep2[] = " \r\n\t";                           // only separators
 static char    sep3[] = ",:()[]{}-+*/=;<>!~^|&%.?";          // operational separators
@@ -287,18 +304,65 @@ CBotToken*  CBotToken::NextToken(const char*& program, bool first)
             stop = true;
         }
 
+        // special case for characters
+        if (token[0] == '\'')
+        {
+            if (c == '\\')       // escape sequence
+            {
+                token += c;
+                c = *(program++);
+
+                if (c == 'u' || c == 'U') // unicode escape
+                {
+                    int maxlen = (c == 'u') ? 4 : 8;
+                    token += c;
+                    c = *(program++);
+                    for (int i = 0; i < maxlen; i++)
+                    {
+                        if (c == 0 || !CharInList(c, hexnum)) break;
+                        token += c;
+                        c = *(program++);
+                    }
+                }
+                else if (c != 0 && !CharInList(c, nch)) // other escape char
+                {
+                    token += c;
+                    c = *(program++);
+                }
+            }
+            else if (c != 0 && c != '\'' && !CharInList(c, nch)) // single character
+            {
+                token += c;
+                c = *(program++);
+            }
+
+            if (c == '\'') // close quote
+            {
+                token += c;
+                c = *(program++);
+            }
+            stop = true;
+        }
+
         // special case for numbers
         if ( CharInList(token[0], num ))
         {
             bool    bdot = false;   // found a point?
             bool    bexp = false;   // found an exponent?
 
+            char    bin[] = "01";
             char*   liste = num;
             if (token[0] == '0' && c == 'x')          // hexadecimal value?
             {
                 token += c;
                 c   = *(program++);                 // next character
                 liste = hexnum;
+            }
+            else if (token[0] == '0' && c == 'b')   // binary literal
+            {
+                liste = bin;
+                token += c;
+                c = *(program++);
             }
 cw:
             while (c != 0 && CharInList(c, liste))
@@ -382,6 +446,7 @@ bis:
 
             if (CharInList(token[0], num )) t->m_type = TokenTypNum;
             if (token[0] == '\"') t->m_type = TokenTypString;
+            if (token[0] == '\'') t->m_type = TokenTypChar;
             if (first) t->m_type = TokenTypNone;
 
             t->m_keywordId = GetKeyWord(token);
@@ -438,9 +503,10 @@ std::unique_ptr<CBotToken> CBotToken::CompileTokens(const std::string& program)
 ////////////////////////////////////////////////////////////////////////////////
 int CBotToken::GetKeyWord(const std::string& w)
 {
-    for (const auto& it : KEYWORDS)
+    auto it = KEYWORDS.right.find(w);
+    if (it != KEYWORDS.right.end())
     {
-        if (it.second == w) return it.first;
+        return it->second;
     }
 
     return -1;

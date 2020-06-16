@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -46,13 +46,22 @@ CBotDefFloat::~CBotDefFloat()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotInstr* CBotDefFloat::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bool noskip)
+CBotInstr* CBotDefFloat::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bool noskip, CBotTypResult vartype)
 {
     CBotToken*    pp = cont ? nullptr : p;
 
-    if (!cont && !IsOfType(p, ID_FLOAT)) return nullptr;
+    if (!cont)
+    {
+        switch (p->GetType())
+        {
+            case ID_FLOAT:  vartype.SetType(CBotTypFloat ); break;
+            case ID_DOUBLE: vartype.SetType(CBotTypDouble); break;
+            default: return nullptr;
+        }
+        p = p->GetNext();
+    }
 
-    CBotDefFloat*    inst = static_cast<CBotDefFloat*>(CompileArray(p, pStack, CBotTypFloat));
+    CBotDefFloat*    inst = static_cast<CBotDefFloat*>(CompileArray(p, pStack, vartype));
     if (inst != nullptr || !pStack->IsOk()) return inst;
 
     CBotCStack* pStk = pStack->TokenStack(pp);
@@ -67,7 +76,7 @@ CBotInstr* CBotDefFloat::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, b
 
     if (nullptr != (inst->m_var = CBotLeftExprVar::Compile( p, pStk )))
     {
-        (static_cast<CBotLeftExprVar*>(inst->m_var))->m_typevar = CBotTypFloat;
+        (static_cast<CBotLeftExprVar*>(inst->m_var))->m_typevar = vartype;
         if (pStk->CheckVarLocal(vartoken))                    // redefinition of a variable
         {
             pStk->SetStartError(vartoken->GetStart());
@@ -79,7 +88,7 @@ CBotInstr* CBotDefFloat::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, b
         {
             delete inst;
             p = vartoken;
-            inst = static_cast<CBotDefFloat*>(CBotDefArray::Compile(p, pStk, CBotTypFloat));
+            inst = static_cast<CBotDefFloat*>(CBotDefArray::Compile(p, pStk, vartype));
 
             goto suite;            // no assignment, variable already created
         }
@@ -103,7 +112,7 @@ CBotInstr* CBotDefFloat::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, b
             }
         }
 
-        var = CBotVar::Create(*vartoken, CBotTypFloat);
+        var = CBotVar::Create(*vartoken, vartype);
         var->SetInit(inst->m_expr != nullptr ? CBotVar::InitType::DEF : CBotVar::InitType::UNDEF);
         var->SetUniqNum(
             (static_cast<CBotLeftExprVar*>(inst->m_var))->m_nIdent = CBotVar::NextUniqNum());
@@ -111,7 +120,7 @@ CBotInstr* CBotDefFloat::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, b
 suite:
         if (pStk->IsOk() && IsOfType(p,  ID_COMMA))
         {
-            if (nullptr != ( inst->m_next2b = CBotDefFloat::Compile(p, pStk, true, noskip)))
+            if (nullptr != ( inst->m_next2b = CBotDefFloat::Compile(p, pStk, true, noskip, vartype)))
             {
                 return pStack->Return(inst, pStk);
             }
