@@ -109,9 +109,6 @@ msgstr "Анализ уже выполнен"
 msgid "Analysis performed"
 msgstr "Анализ выполнен"
 
-msgid "Analyzes only organic matter"
-msgstr "Анализирую только органические вещества"
-
 msgid "Anisotropy level\\Anisotropy level"
 msgstr "Уровень анизотр. фильтр.\\Уровень анизотропной фильтрации"
 
@@ -185,6 +182,9 @@ msgstr "Бот уничтожен"
 msgid "Bot factory"
 msgstr "Завод ботов"
 
+msgid "Build (\\key action;)"
+msgstr ""
+
 msgid "Build a bot factory"
 msgstr "Построить завод ботов"
 
@@ -202,6 +202,9 @@ msgstr "Построить уничтожитель"
 
 msgid "Build a exchange post"
 msgstr "Построить пост по обмену сообщениями"
+
+msgid "Build a legged builder"
+msgstr ""
 
 msgid "Build a legged grabber"
 msgstr "Собрать шагающего сборщика"
@@ -248,8 +251,14 @@ msgstr "Собрать передвижной щит"
 msgid "Build a subber"
 msgstr "Собрать саббера"
 
+msgid "Build a target bot"
+msgstr ""
+
 msgid "Build a thumper"
 msgstr "Собрать ударника"
+
+msgid "Build a tracked builder"
+msgstr ""
 
 msgid "Build a tracked grabber"
 msgstr "Собрать гусеничного сборщика"
@@ -263,6 +272,9 @@ msgstr "Собрать гусеничного стрелка"
 msgid "Build a tracked sniffer"
 msgstr "Собрать гусеничного искателя"
 
+msgid "Build a wheeled builder"
+msgstr ""
+
 msgid "Build a wheeled grabber"
 msgstr "Собрать колесного сборщика"
 
@@ -274,6 +286,9 @@ msgstr "Собрать колесного стрелка"
 
 msgid "Build a wheeled sniffer"
 msgstr "Собрать колесного искателя"
+
+msgid "Build a winged builder"
+msgstr ""
 
 msgid "Build a winged grabber"
 msgstr "Собрать летающего сборщика"
@@ -735,6 +750,9 @@ msgstr "Батарея не подходит"
 msgid "Inappropriate object"
 msgstr "Неподходящий объект"
 
+msgid "Inappropriate sample"
+msgstr ""
+
 msgid "Incorrect index type"
 msgstr "Неверный тип индекса"
 
@@ -803,6 +821,9 @@ msgstr "Помощь(\\key cbot;)"
 
 msgid "LOADING"
 msgstr "ЗАГРУЗКА"
+
+msgid "Legged builder"
+msgstr ""
 
 msgid "Legged grabber"
 msgstr "Шагающий сборщик"
@@ -1126,6 +1147,9 @@ msgstr "Место занято"
 msgid "Planets:"
 msgstr "Планеты:"
 
+msgid "Plans for builder available"
+msgstr ""
+
 msgid "Plans for defense tower available"
 msgstr "Доступны схемы защитной башни"
 
@@ -1334,6 +1358,9 @@ msgstr "Робби"
 msgid "Ruin"
 msgstr "Руины"
 
+msgid "Run research program for builder"
+msgstr ""
+
 msgid "Run research program for defense tower"
 msgstr "Начать исследование программы для защитной башни"
 
@@ -1354,6 +1381,9 @@ msgstr "Начать исследование программы для пере
 
 msgid "Run research program for shooter"
 msgstr "Начать исследование программы для стрелка"
+
+msgid "Run research program for target bot"
+msgstr ""
 
 msgid "Run research program for thumper"
 msgstr "Начать исследование программы для ударника"
@@ -1619,6 +1649,9 @@ msgstr "Слишком много флагов этого цвета (макси
 msgid "Too many parameters"
 msgstr "Слишком много параметров"
 
+msgid "Tracked builder"
+msgstr ""
+
 msgid "Tracked grabber"
 msgstr "Гусеничный сборщик"
 
@@ -1718,6 +1751,9 @@ msgstr "Оса смертельно ранена"
 msgid "Waste"
 msgstr "Мусор"
 
+msgid "Wheeled builder"
+msgstr ""
+
 msgid "Wheeled grabber"
 msgstr "Колесный сборщик"
 
@@ -1729,6 +1765,9 @@ msgstr "Колесный стрелок"
 
 msgid "Wheeled sniffer"
 msgstr "Колесный искатель"
+
+msgid "Winged builder"
+msgstr ""
 
 msgid "Winged grabber"
 msgstr "Летающий сборщик"

@@ -110,9 +110,6 @@ msgstr "Analýza již byla dokončena"
 msgid "Analysis performed"
 msgstr "Analýza dokončena"
 
-msgid "Analyzes only organic matter"
-msgstr "Analyzuje pouze organickou hmotu"
-
 msgid "Anisotropy level\\Anisotropy level"
 msgstr "Úroveň anizotropie\\Úroveň anizotropie"
 
@@ -185,6 +182,9 @@ msgstr "Robot zničen"
 msgid "Bot factory"
 msgstr "Továrna na roboty"
 
+msgid "Build (\\key action;)"
+msgstr ""
+
 msgid "Build a bot factory"
 msgstr "Postavit továrnu na roboty"
 
@@ -202,6 +202,9 @@ msgstr "Postavit drtič"
 
 msgid "Build a exchange post"
 msgstr "Postavit komunikační stanici"
+
+msgid "Build a legged builder"
+msgstr ""
 
 msgid "Build a legged grabber"
 msgstr "Vyrobit chodící rameno"
@@ -248,8 +251,14 @@ msgstr "Vyrobit mobilní štít"
 msgid "Build a subber"
 msgstr "Vyrobit ponorku"
 
+msgid "Build a target bot"
+msgstr ""
+
 msgid "Build a thumper"
 msgstr "Vyrobit buchar"
+
+msgid "Build a tracked builder"
+msgstr ""
 
 msgid "Build a tracked grabber"
 msgstr "Vyrobit pásové rameno"
@@ -263,6 +272,9 @@ msgstr "Vyrobit pásový kanón"
 msgid "Build a tracked sniffer"
 msgstr "Vyrobit pásový detektor"
 
+msgid "Build a wheeled builder"
+msgstr ""
+
 msgid "Build a wheeled grabber"
 msgstr "Vyrobit pojízdné rameno"
 
@@ -274,6 +286,9 @@ msgstr "Vyrobit pojízdný kanón"
 
 msgid "Build a wheeled sniffer"
 msgstr "Vyrobit pojízdný detektor"
+
+msgid "Build a winged builder"
+msgstr ""
 
 msgid "Build a winged grabber"
 msgstr "Vyrobit létající rameno"
@@ -727,6 +742,9 @@ msgstr "Nevhodný typ baterie"
 msgid "Inappropriate object"
 msgstr "Nevhodný objekt"
 
+msgid "Inappropriate sample"
+msgstr ""
+
 msgid "Incorrect index type"
 msgstr "Špatný datový typ indexu"
 
@@ -795,6 +813,9 @@ msgstr "Nápověda ke klíčovému slovu (\\key cbot;)"
 
 msgid "LOADING"
 msgstr "NAČÍTÁNÍ"
+
+msgid "Legged builder"
+msgstr ""
 
 msgid "Legged grabber"
 msgstr "Chodící rameno"
@@ -1102,6 +1123,9 @@ msgstr "Místo je obsazeno"
 msgid "Planets:"
 msgstr "Planety:"
 
+msgid "Plans for builder available"
+msgstr ""
+
 msgid "Plans for defense tower available"
 msgstr "Plány pro obrannou věž jsou k dispozici"
 
@@ -1306,6 +1330,9 @@ msgstr "Robbie"
 msgid "Ruin"
 msgstr "Trosky"
 
+msgid "Run research program for builder"
+msgstr ""
+
 msgid "Run research program for defense tower"
 msgstr "Spustit výzkum obranných věží"
 
@@ -1326,6 +1353,9 @@ msgstr "Spustit výzkum mobilního štítu"
 
 msgid "Run research program for shooter"
 msgstr "Spustit výzkum kanónů"
+
+msgid "Run research program for target bot"
+msgstr ""
 
 msgid "Run research program for thumper"
 msgstr "Spustit výzkum bucharu"
@@ -1589,6 +1619,9 @@ msgstr "Příliš mnoho vlajek této barvy (maximálně 5)"
 msgid "Too many parameters"
 msgstr "Příliš mnoho parametrů"
 
+msgid "Tracked builder"
+msgstr ""
+
 msgid "Tracked grabber"
 msgstr "Pásové rameno"
 
@@ -1688,6 +1721,9 @@ msgstr "Vosa byla smrtelně raněna"
 msgid "Waste"
 msgstr "Odpad"
 
+msgid "Wheeled builder"
+msgstr ""
+
 msgid "Wheeled grabber"
 msgstr "Pojízdné rameno"
 
@@ -1699,6 +1735,9 @@ msgstr "Pojízdný kanón"
 
 msgid "Wheeled sniffer"
 msgstr "Pojízdný detektor"
+
+msgid "Winged builder"
+msgstr ""
 
 msgid "Winged grabber"
 msgstr "Létající rameno"

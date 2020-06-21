@@ -109,9 +109,6 @@ msgstr "Analiza została już wykonana"
 msgid "Analysis performed"
 msgstr "Analiza wykonana"
 
-msgid "Analyzes only organic matter"
-msgstr "Analizuje jedynie materię organiczną"
-
 msgid "Anisotropy level\\Anisotropy level"
 msgstr "Filtrowanie anizotropowe\\Poziom filtrowania anizotropowego"
 
@@ -184,6 +181,9 @@ msgstr "Robot zniszczony"
 msgid "Bot factory"
 msgstr "Fabryka robotów"
 
+msgid "Build (\\key action;)"
+msgstr ""
+
 msgid "Build a bot factory"
 msgstr "Zbuduj fabrykę robotów"
 
@@ -201,6 +201,9 @@ msgstr "Zbuduj niszczarkę"
 
 msgid "Build a exchange post"
 msgstr "Zbuduj stację przekaźnikową"
+
+msgid "Build a legged builder"
+msgstr ""
 
 msgid "Build a legged grabber"
 msgstr "Zbuduj transporter na nogach"
@@ -247,8 +250,14 @@ msgstr "Zbuduj robota osłaniacza"
 msgid "Build a subber"
 msgstr "Zbuduj robota nurka"
 
+msgid "Build a target bot"
+msgstr ""
+
 msgid "Build a thumper"
 msgstr "Zbuduj robota uderzacza"
+
+msgid "Build a tracked builder"
+msgstr ""
 
 msgid "Build a tracked grabber"
 msgstr "Zbuduj transporter na gąsienicach"
@@ -262,6 +271,9 @@ msgstr "Zbuduj działo na gąsienicach"
 msgid "Build a tracked sniffer"
 msgstr "Zbuduj szperacz na gąsienicach"
 
+msgid "Build a wheeled builder"
+msgstr ""
+
 msgid "Build a wheeled grabber"
 msgstr "Zbuduj transporter na kołach"
 
@@ -273,6 +285,9 @@ msgstr "Zbuduj działo na kołach"
 
 msgid "Build a wheeled sniffer"
 msgstr "Zbuduj szperacz na kołach"
+
+msgid "Build a winged builder"
+msgstr ""
 
 msgid "Build a winged grabber"
 msgstr "Zbuduj transporter latający"
@@ -726,6 +741,9 @@ msgstr "Nieodpowiedni rodzaj ogniw"
 msgid "Inappropriate object"
 msgstr "Nieodpowiedni obiekt"
 
+msgid "Inappropriate sample"
+msgstr ""
+
 msgid "Incorrect index type"
 msgstr "Nieprawidłowy typ indeksu"
 
@@ -794,6 +812,9 @@ msgstr "Skróty klawiszowe (\\key cbot;)"
 
 msgid "LOADING"
 msgstr "WCZYTYWANIE"
+
+msgid "Legged builder"
+msgstr ""
 
 msgid "Legged grabber"
 msgstr "Transporter na nogach"
@@ -1101,6 +1122,9 @@ msgstr "Miejsce zajęte"
 msgid "Planets:"
 msgstr "Planety:"
 
+msgid "Plans for builder available"
+msgstr ""
+
 msgid "Plans for defense tower available"
 msgstr "Dostępne plany wieży obronnej"
 
@@ -1305,6 +1329,9 @@ msgstr "Robbie"
 msgid "Ruin"
 msgstr "Ruiny"
 
+msgid "Run research program for builder"
+msgstr ""
+
 msgid "Run research program for defense tower"
 msgstr "Rozpocznij prace badawcze nad wieżą obronną"
 
@@ -1325,6 +1352,9 @@ msgstr "Rozpocznij prace badawcze nad robotem osłaniaczem"
 
 msgid "Run research program for shooter"
 msgstr "Rozpocznij prace badawcze nad działem"
+
+msgid "Run research program for target bot"
+msgstr ""
 
 msgid "Run research program for thumper"
 msgstr "Rozpocznij prace badawcze nad robotem uderzaczem"
@@ -1588,6 +1618,9 @@ msgstr "Za dużo flag w tym kolorze (maksymalnie 5)"
 msgid "Too many parameters"
 msgstr "Za dużo parametrów"
 
+msgid "Tracked builder"
+msgstr ""
+
 msgid "Tracked grabber"
 msgstr "Transporter na gąsienicach"
 
@@ -1687,6 +1720,9 @@ msgstr "Osa śmiertelnie raniona"
 msgid "Waste"
 msgstr "Odpady"
 
+msgid "Wheeled builder"
+msgstr ""
+
 msgid "Wheeled grabber"
 msgstr "Transporter na kołach"
 
@@ -1698,6 +1734,9 @@ msgstr "Działo na kołach"
 
 msgid "Wheeled sniffer"
 msgstr "Szperacz na kołach"
+
+msgid "Winged builder"
+msgstr ""
 
 msgid "Winged grabber"
 msgstr "Transporter latający"
