@@ -89,7 +89,7 @@ CMainUserInterface::CMainUserInterface()
     m_screenPlayerSelect = MakeUnique<CScreenPlayerSelect>(m_dialog.get());
     m_screenQuit = MakeUnique<CScreenQuit>();
     m_screenWelcome = MakeUnique<CScreenWelcome>();
-    m_mouseParticles = MakeUnique<UI::ParticlesGenerator>();
+    m_mouseParticles = MakeUnique<UI::CParticlesGenerator>();
 
     m_currentScreen = nullptr;
 
@@ -723,16 +723,16 @@ void CMainUserInterface::FrameParticle(float rTime)
 
 void CMainUserInterface::CreateMouseParticles(Math::Point mouse, bool buttonPressed)
 {
-    if (isNotAllowedToCreateParticles()) {
-        return;
+    if (isAllowedToCreateMouseParticles())
+    {
+        m_mouseParticles -> generateMouseParticles(Math::Point(mouse.x, mouse.y), buttonPressed);
     }
-    m_mouseParticles -> generateMouseParticles(Math::Point(mouse.x, mouse.y), buttonPressed);
 }
 
-bool CMainUserInterface::isNotAllowedToCreateParticles()
+bool CMainUserInterface::isAllowedToCreateMouseParticles()
 {
-    return !m_settings->getMouseParticlesEnabled()
-        || ((m_phase == PHASE_SIMUL || m_phase == PHASE_WIN || m_phase == PHASE_LOST) && !m_dialog->IsDialog());
+    return m_settings->getMouseParticlesEnabled() &&
+        !((m_phase == PHASE_SIMUL || m_phase == PHASE_WIN || m_phase == PHASE_LOST) && !m_dialog->IsDialog());
 }
 
 // Updates the lists according to the cheat code.

@@ -139,12 +139,8 @@ protected:
     std::array<Particle, 10> m_particles;
 
 private:
-    std::unique_ptr<UI::ParticlesGenerator> m_mouseParticles;
-    bool isNotAllowedToCreateParticles();
-    void generateMouseParticles(Math::Point& mousePosition, bool buttonPressed);
-    Math::Vector CreateRandomSpeedForMouseParticles();
-    Math::Point CreateRandomDimensionsForMouseParticles(bool buttonPressed);
-    float CreateRandomDurationForMouseParticles();
+    std::unique_ptr<UI::CParticlesGenerator> m_mouseParticles;
+    bool isAllowedToCreateMouseParticles();
 };
 
 } // namespace Ui
