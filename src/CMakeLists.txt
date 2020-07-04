@@ -593,7 +593,6 @@ set(MAIN_SOURCES
 # Libraries
 set(LIBS
     CBot
-    localename
     ${OPENGL_LIBRARY}
     ${OPTIONAL_LIBS}
     ${PLATFORM_LIBS}
@@ -610,7 +609,6 @@ set(LOCAL_INCLUDES
 )
 
 set(SYSTEM_INCLUDES
-    ${LOCALENAME_INCLUDE_DIR}
     ${LIBINTL_INCLUDE_PATH}
     ${OPTIONAL_INCLUDES}
 )
@@ -639,6 +637,7 @@ target_link_libraries(colobotbase PUBLIC
     GLEW::GLEW
     PhysFS::PhysFS
     libsndfile::libsndfile
+    localename
 )
 
 add_executable(colobot ${MAIN_SOURCES})

@@ -360,7 +360,6 @@ endif()
 ##
 # Localename
 ##
-set(LOCALENAME_INCLUDE_DIR ${colobot_SOURCE_DIR}/lib/localename)
 add_subdirectory(lib/localename)
 
 
