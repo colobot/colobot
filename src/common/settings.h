@@ -44,8 +44,8 @@ public:
     void SetInterfaceGlint(bool interfaceGlint);
     bool GetInterfaceGlint();
 
-    void SetInterfaceRain(bool interfaceRain);
-    bool GetInterfaceRain();
+    void setMouseParticlesEnabled(bool mouseParticlesEnabled);
+    bool getMouseParticlesEnabled();
 
     void SetSoluce4(bool soluce4);
     bool GetSoluce4();
@@ -93,7 +93,7 @@ public:
 protected:
     bool m_tooltips;
     bool m_interfaceGlint;
-    bool m_interfaceRain;
+    bool m_mouseParticlesEnabled;
     bool m_soluce4;
     bool m_movies;
     bool m_focusLostPause;

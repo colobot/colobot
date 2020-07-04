@@ -56,6 +56,8 @@
 #include "ui/screen/screen_setup_sound.h"
 #include "ui/screen/screen_welcome.h"
 
+#include "ui/particlesGenerator.h"
+
 namespace Ui
 {
 
@@ -66,7 +68,7 @@ CMainUserInterface::CMainUserInterface()
     m_app        = CApplication::GetInstancePointer();
     m_main       = CRobotMain::GetInstancePointer();
     m_engine     = Gfx::CEngine::GetInstancePointer();
-    m_particle   = m_engine->GetParticle();
+    m_particleManager   = m_engine->GetParticle();
     m_interface  = m_main->GetInterface();
     m_sound      = m_app->GetSound();
     m_settings   = CSettings::GetInstancePointer();
@@ -87,6 +89,7 @@ CMainUserInterface::CMainUserInterface()
     m_screenPlayerSelect = MakeUnique<CScreenPlayerSelect>(m_dialog.get());
     m_screenQuit = MakeUnique<CScreenQuit>();
     m_screenWelcome = MakeUnique<CScreenWelcome>();
+    m_mouseParticles = MakeUnique<UI::ParticlesGenerator>();
 
     m_currentScreen = nullptr;
 
@@ -131,7 +134,6 @@ CScreenLoading* CMainUserInterface::GetLoadingScreen()
 {
     return m_screenLoading.get();
 }
-
 
 // Changes phase.
 
@@ -255,7 +257,7 @@ bool CMainUserInterface::EventProcess(const Event &event)
     if ( event.type == EVENT_MOUSE_MOVE )
     {
         m_glintMouse = event.mousePos;
-        NiceParticle(event.mousePos, event.mouseButtonsState & MOUSE_BUTTON_LEFT);
+        CreateMouseParticles(event.mousePos, event.mouseButtonsState & MOUSE_BUTTON_LEFT);
     }
 
     if (!m_dialog->EventProcess(event)) return false;
@@ -520,7 +522,7 @@ void CMainUserInterface::FrameParticle(float rTime)
         279.0f,  18.0f,
     };
 
-    if ( m_dialog->IsDialog() || !m_settings->GetInterfaceRain() )  return;
+    if ( m_dialog->IsDialog() || !m_settings->getMouseParticlesEnabled() )  return;
 
     if ( m_phase == PHASE_MAIN_MENU )
     {
@@ -584,7 +586,7 @@ void CMainUserInterface::FrameParticle(float rTime)
                     speed.z = 0.0f;
                     dim.x = 0.04f+Math::Rand()*0.04f;
                     dim.y = dim.x/0.75f;
-                    m_particle->CreateParticle(pos, speed, dim,
+                    m_particleManager->CreateParticle(pos, speed, dim,
                             rand()%2?Gfx::PARTIGLINT:Gfx::PARTICONTROL,
                             Math::Rand()*0.4f+0.4f, 0.0f, 0.0f,
                             Gfx::SH_INTERFACE);
@@ -650,7 +652,7 @@ void CMainUserInterface::FrameParticle(float rTime)
                     speed.z = 0.0f;
                     dim.x = 0.005f+Math::Rand()*0.005f;
                     dim.y = dim.x/0.75f;
-                    m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIBLITZ,
+                    m_particleManager->CreateParticle(pos, speed, dim, Gfx::PARTIBLITZ,
                             Math::Rand()*0.2f+0.2f, 0.0f, 0.0f,
                             Gfx::SH_INTERFACE);
                     pos.x = m_particles[i].pos.x;
@@ -661,7 +663,7 @@ void CMainUserInterface::FrameParticle(float rTime)
                     speed.z = 0.0f;
                     dim.x = 0.01f+Math::Rand()*0.01f;
                     dim.y = dim.x/0.75f;
-                    m_particle->CreateParticle(pos, speed, dim,
+                    m_particleManager->CreateParticle(pos, speed, dim,
                             static_cast<Gfx::ParticleType>(Gfx::PARTILENS1+rand()%3),
                             Math::Rand()*0.5f+0.5f, 2.0f, 0.0f,
                             Gfx::SH_INTERFACE);
@@ -678,7 +680,7 @@ void CMainUserInterface::FrameParticle(float rTime)
                     speed.z = 0.0f;
                     dim.x = 0.005f+Math::Rand()*0.005f;
                     dim.y = dim.x/0.75f;
-                    m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIBLITZ,
+                    m_particleManager->CreateParticle(pos, speed, dim, Gfx::PARTIBLITZ,
                             Math::Rand()*0.2f+0.2f, 0.0f, 0.0f,
                             Gfx::SH_INTERFACE);
                     pos.x = m_particles[i].pos.x;
@@ -689,7 +691,7 @@ void CMainUserInterface::FrameParticle(float rTime)
                     speed.z = 0.0f;
                     dim.x = 0.005f+Math::Rand()*0.005f;
                     dim.y = dim.x/0.75f;
-                    m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISCRAPS,
+                    m_particleManager->CreateParticle(pos, speed, dim, Gfx::PARTISCRAPS,
                             Math::Rand()*0.5f+0.5f, 2.0f, 0.0f,
                             Gfx::SH_INTERFACE);
                 }
@@ -705,7 +707,7 @@ void CMainUserInterface::FrameParticle(float rTime)
                     speed.z = 0.0f;
                     dim.x = 0.03f+Math::Rand()*0.07f;
                     dim.y = dim.x/0.75f;
-                    m_particle->CreateParticle(pos, speed, dim, Gfx::PARTICRASH,
+                    m_particleManager->CreateParticle(pos, speed, dim, Gfx::PARTICRASH,
                             Math::Rand()*0.4f+0.4f, 0.0f, 0.0f,
                             Gfx::SH_INTERFACE);
                 }
@@ -719,48 +721,18 @@ void CMainUserInterface::FrameParticle(float rTime)
     }
 }
 
-// Some nice particles following the mouse.
-
-void CMainUserInterface::NiceParticle(Math::Point mouse, bool bPress)
+void CMainUserInterface::CreateMouseParticles(Math::Point mouse, bool buttonPressed)
 {
-    Math::Vector    pos, speed;
-    Math::Point     dim;
-
-    if ( !m_settings->GetInterfaceRain() )  return;
-    if ( (m_phase == PHASE_SIMUL ||
-          m_phase == PHASE_WIN   ||
-          m_phase == PHASE_LOST  ) &&
-         !m_dialog->IsDialog()      )  return;
-
-    if ( bPress )
-    {
-        pos.x = mouse.x;
-        pos.y = mouse.y;
-        pos.z = 0.0f;
-        speed.x = (Math::Rand()-0.5f)*0.5f;
-        speed.y = (0.3f+Math::Rand()*0.3f);
-        speed.z = 0.0f;
-        dim.x = 0.005f+Math::Rand()*0.005f;
-        dim.y = dim.x/0.75f;
-        m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISCRAPS,
-                Math::Rand()*0.5f+0.5f, 2.0f, 0.0f,
-                Gfx::SH_INTERFACE);
+    if (isNotAllowedToCreateParticles()) {
+        return;
     }
-    else
-    {
-        pos.x = mouse.x;
-        pos.y = mouse.y;
-        pos.z = 0.0f;
-        speed.x = (Math::Rand()-0.5f)*0.5f;
-        speed.y = (0.3f+Math::Rand()*0.3f);
-        speed.z = 0.0f;
-        dim.x = 0.01f+Math::Rand()*0.01f;
-        dim.y = dim.x/0.75f;
-        m_particle->CreateParticle(pos, speed, dim,
-                static_cast<Gfx::ParticleType>(Gfx::PARTILENS1+rand()%3),
-                Math::Rand()*0.5f+0.5f, 2.0f, 0.0f,
-                Gfx::SH_INTERFACE);
-    }
+    m_mouseParticles -> generateMouseParticles(Math::Point(mouse.x, mouse.y), buttonPressed);
+}
+
+bool CMainUserInterface::isNotAllowedToCreateParticles()
+{
+    return !m_settings->getMouseParticlesEnabled()
+        || ((m_phase == PHASE_SIMUL || m_phase == PHASE_WIN || m_phase == PHASE_LOST) && !m_dialog->IsDialog());
 }
 
 // Updates the lists according to the cheat code.

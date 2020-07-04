@@ -20,6 +20,7 @@
 #pragma once
 
 #include "level/robotmain.h"
+#include "ui/particlesGenerator.h"
 
 #include <array>
 #include <string>
@@ -91,15 +92,14 @@ public:
 protected:
     void    GlintMove();
     void    FrameParticle(float rTime);
-    void    NiceParticle(Math::Point mouse, bool bPress);
-
+    void    CreateMouseParticles(Math::Point mouse, bool bPress);
     CScreenSetup* GetSetupScreen(Phase phase);
 
 protected:
     CApplication*     m_app;
     CRobotMain*       m_main;
     Gfx::CEngine*     m_engine;
-    Gfx::CParticle*   m_particle;
+    Gfx::CParticle*   m_particleManager;
     CInterface*       m_interface;
     CSoundInterface*  m_sound;
     CSettings*        m_settings;
@@ -137,6 +137,14 @@ protected:
         Math::Point pos;
     };
     std::array<Particle, 10> m_particles;
+
+private:
+    std::unique_ptr<UI::ParticlesGenerator> m_mouseParticles;
+    bool isNotAllowedToCreateParticles();
+    void generateMouseParticles(Math::Point& mousePosition, bool buttonPressed);
+    Math::Vector CreateRandomSpeedForMouseParticles();
+    Math::Point CreateRandomDimensionsForMouseParticles(bool buttonPressed);
+    float CreateRandomDurationForMouseParticles();
 };
 
 } // namespace Ui

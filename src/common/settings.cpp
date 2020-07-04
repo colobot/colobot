@@ -36,7 +36,7 @@ CSettings::CSettings()
 {
     m_tooltips       = true;
     m_interfaceGlint = true;
-    m_interfaceRain  = true;
+    m_mouseParticlesEnabled  = true;
     m_soluce4        = true;
     m_movies         = true;
     m_focusLostPause = true;
@@ -75,7 +75,7 @@ void CSettings::SaveSettings()
 
     GetConfigFile().SetBoolProperty("Setup", "Tooltips", m_tooltips);
     GetConfigFile().SetBoolProperty("Setup", "InterfaceGlint", m_interfaceGlint);
-    GetConfigFile().SetBoolProperty("Setup", "InterfaceRain", m_interfaceRain);
+    GetConfigFile().SetBoolProperty("Setup", "MouseParticlesEnabled", m_mouseParticlesEnabled);
     GetConfigFile().SetBoolProperty("Setup", "Soluce4", m_soluce4);
     GetConfigFile().SetBoolProperty("Setup", "Movies", m_movies);
     GetConfigFile().SetBoolProperty("Setup", "FocusLostPause", m_focusLostPause);
@@ -153,7 +153,7 @@ void CSettings::LoadSettings()
 
     GetConfigFile().GetBoolProperty("Setup", "Tooltips", m_tooltips);
     GetConfigFile().GetBoolProperty("Setup", "InterfaceGlint", m_interfaceGlint);
-    GetConfigFile().GetBoolProperty("Setup", "InterfaceRain", m_interfaceRain);
+    GetConfigFile().GetBoolProperty("Setup", "MouseParticlesEnabled", m_mouseParticlesEnabled);
     GetConfigFile().GetBoolProperty("Setup", "Soluce4", m_soluce4);
     GetConfigFile().GetBoolProperty("Setup", "Movies", m_movies);
     GetConfigFile().GetBoolProperty("Setup", "FocusLostPause", m_focusLostPause);
@@ -327,13 +327,13 @@ bool CSettings::GetInterfaceGlint()
     return m_interfaceGlint;
 }
 
-void CSettings::SetInterfaceRain(bool interfaceRain)
+void CSettings::setMouseParticlesEnabled(bool mouseParticlesEnabled)
 {
-    m_interfaceRain = interfaceRain;
+    m_mouseParticlesEnabled = mouseParticlesEnabled;
 }
-bool CSettings::GetInterfaceRain()
+bool CSettings::getMouseParticlesEnabled()
 {
-    return m_interfaceRain;
+    return m_mouseParticlesEnabled;
 }
 
 void CSettings::SetSoluce4(bool soluce4)
