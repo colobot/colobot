@@ -89,7 +89,7 @@ CMainUserInterface::CMainUserInterface()
     m_screenPlayerSelect = MakeUnique<CScreenPlayerSelect>(m_dialog.get());
     m_screenQuit = MakeUnique<CScreenQuit>();
     m_screenWelcome = MakeUnique<CScreenWelcome>();
-    m_mouseParticles = MakeUnique<UI::CParticlesGenerator>();
+    m_mouseParticlesGenerator = MakeUnique<UI::CParticlesGenerator>();
 
     m_currentScreen = nullptr;
 
@@ -725,7 +725,7 @@ void CMainUserInterface::CreateMouseParticles(Math::Point mouse, bool buttonPres
 {
     if (isAllowedToCreateMouseParticles())
     {
-        m_mouseParticles -> generateMouseParticles(Math::Point(mouse.x, mouse.y), buttonPressed);
+        m_mouseParticlesGenerator -> generateMouseParticles(Math::Point(mouse.x, mouse.y), buttonPressed);
     }
 }
 

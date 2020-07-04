@@ -139,7 +139,7 @@ protected:
     std::array<Particle, 10> m_particles;
 
 private:
-    std::unique_ptr<UI::CParticlesGenerator> m_mouseParticles;
+    std::unique_ptr<UI::CParticlesGenerator> m_mouseParticlesGenerator;
     bool isAllowedToCreateMouseParticles();
 };
 
