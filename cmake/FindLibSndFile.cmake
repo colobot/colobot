@@ -21,3 +21,7 @@ ELSE(LIBSNDFILE_FOUND)
 		MESSAGE(FATAL_ERROR "Could not find sndfile")
 	ENDIF(LibSndFile_FIND_REQUIRED)
 ENDIF (LIBSNDFILE_FOUND)
+
+add_library(libsndfile::libsndfile INTERFACE IMPORTED)
+target_include_directories(libsndfile::libsndfile SYSTEM INTERFACE ${LIBSNDFILE_INCLUDE_DIR})
+target_link_libraries(libsndfile::libsndfile INTERFACE ${LIBSNDFILE_LIBRARY})

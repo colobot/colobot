@@ -594,15 +594,9 @@ set(MAIN_SOURCES
 set(LIBS
     CBot
     localename
-    ${SDL2_LIBRARY}
-    ${SDL2_IMAGE_LIBRARY}
-    ${SDL2_TTF_LIBRARY}
     ${OPENGL_LIBRARY}
-    ${GLEW_LIBRARY}
-    ${LIBSNDFILE_LIBRARY}
     ${OPTIONAL_LIBS}
     ${PLATFORM_LIBS}
-    ${PHYSFS_LIBRARY}
 )
 
 set(COLOBOT_LIBS ${LIBS} PARENT_SCOPE)
@@ -616,13 +610,7 @@ set(LOCAL_INCLUDES
 )
 
 set(SYSTEM_INCLUDES
-    ${SDL2_INCLUDE_DIR}
-    ${SDL2_IMAGE_INCLUDE_DIR}
-    ${SDL2_TTF_INCLUDE_DIR}
-    ${GLEW_INCLUDE_PATH}
-    ${LIBSNDFILE_INCLUDE_DIR}
     ${LOCALENAME_INCLUDE_DIR}
-    ${PHYSFS_INCLUDE_PATH}
     ${LIBINTL_INCLUDE_PATH}
     ${OPTIONAL_INCLUDES}
 )
@@ -647,6 +635,10 @@ add_library(colobotbase STATIC ${BASE_SOURCES})
 target_link_libraries(colobotbase PUBLIC
     Boost::system Boost::regex Boost::filesystem
     PNG::PNG
+    SDL2::SDL2 SDL2_image::SDL2_image SDL2_ttf::SDL2_ttf
+    GLEW::GLEW
+    PhysFS::PhysFS
+    libsndfile::libsndfile
 )
 
 add_executable(colobot ${MAIN_SOURCES})
