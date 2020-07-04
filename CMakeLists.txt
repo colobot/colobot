@@ -455,8 +455,7 @@ if(TESTS)
 
     add_subdirectory(${GTEST_SRC_DIR} lib/gtest)
 
-    # Hippomocks library
-    set(HIPPOMOCKS_INCLUDE_DIR ${colobot_SOURCE_DIR}/lib/hippomocks)
+    add_subdirectory(lib/hippomocks)
 
     # Tests targets
     enable_testing()
