@@ -598,9 +598,7 @@ set(LIBS
     ${SDL2_IMAGE_LIBRARY}
     ${SDL2_TTF_LIBRARY}
     ${OPENGL_LIBRARY}
-    ${PNG_LIBRARIES}
     ${GLEW_LIBRARY}
-    ${Boost_LIBRARIES}
     ${LIBSNDFILE_LIBRARY}
     ${OPTIONAL_LIBS}
     ${PLATFORM_LIBS}
@@ -621,9 +619,7 @@ set(SYSTEM_INCLUDES
     ${SDL2_INCLUDE_DIR}
     ${SDL2_IMAGE_INCLUDE_DIR}
     ${SDL2_TTF_INCLUDE_DIR}
-    ${PNG_INCLUDE_DIRS}
     ${GLEW_INCLUDE_PATH}
-    ${Boost_INCLUDE_DIRS}
     ${LIBSNDFILE_INCLUDE_DIR}
     ${LOCALENAME_INCLUDE_DIR}
     ${PHYSFS_INCLUDE_PATH}
@@ -647,6 +643,11 @@ link_directories(
 # Targets
 
 add_library(colobotbase STATIC ${BASE_SOURCES})
+
+target_link_libraries(colobotbase PUBLIC
+    Boost::system Boost::regex Boost::filesystem
+    PNG::PNG
+)
 
 add_executable(colobot ${MAIN_SOURCES})
 target_link_libraries(colobot colobotbase ${LIBS})
