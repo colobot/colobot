@@ -478,13 +478,20 @@ std::vector<SavedScene> CPlayerProfile::GetSavedSceneList()
     for (auto dir : saveDirs)
     {
         std::string savegameFile = GetSaveFile(dir+"/data.sav");
-        if (CResourceManager::Exists(savegameFile))
+        if (CResourceManager::Exists(savegameFile) && CResourceManager::GetFileSize(savegameFile) > 0)
         {
             CLevelParser levelParser(savegameFile);
             levelParser.Load();
             CLevelParserLine* line = levelParser.GetIfDefined("Created");
             int time = line != nullptr ? line->GetParam("date")->AsInt() : 0;
-            sortedSaveDirs[time] = SavedScene(GetSaveFile(dir), levelParser.Get("Title")->GetParam("text")->AsString());
+            try
+            {
+                sortedSaveDirs[time] = SavedScene(GetSaveFile(dir), levelParser.Get("Title")->GetParam("text")->AsString());
+            }
+            catch (CLevelParserException &e)
+            {
+                GetLogger()->Error("Error trying to load savegame title: %s\n", e.what());
+            }
         }
     }
 

@@ -4738,7 +4738,7 @@ bool CRobotMain::IOWriteScene(std::string filename, std::string filecbot, std::s
     }
     catch (CLevelParserException& e)
     {
-        GetLogger()->Error("Failed to save level state - %s\n", e.what());
+        GetLogger()->Error("Failed to save level state - %s\n", e.what()); // TODO add visual error to notify user that save failed
         return false;
     }
 
