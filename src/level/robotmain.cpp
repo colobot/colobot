@@ -714,6 +714,12 @@ bool CRobotMain::ProcessEvent(Event &event)
         {
             m_focusPause = m_pause->ActivatePause(PAUSE_ENGINE);
         }
+
+        if (m_settings->GetFocusLostMute())
+        {
+            m_sound->SetAudioVolume(0);
+            m_sound->SetMusicVolume(0);
+        }
         return false;
     }
 
@@ -725,6 +731,30 @@ bool CRobotMain::ProcessEvent(Event &event)
             m_pause->DeactivatePause(m_focusPause);
             m_focusPause = nullptr;
         }
+
+        if (m_settings->GetFocusLostMute())
+        {
+            int volume;
+            // Set music volume
+            if (GetConfigFile().GetIntProperty("Setup", "MusicVolume", volume))
+            {
+                m_sound->SetMusicVolume(volume);
+            }
+            else
+            {
+                m_sound->SetMusicVolume(100);
+            }
+            // Set audio volume
+            if (GetConfigFile().GetIntProperty("Setup", "AudioVolume", volume))
+            {
+                m_sound->SetAudioVolume(volume);
+            }
+            else
+            {
+                m_sound->SetAudioVolume(100);
+            }
+        }
+
         return false;
     }
 
