@@ -143,6 +143,19 @@ void CScreenIO::IOUpdateList(bool isWrite)
     sel = pl->GetSelect();
     max = pl->GetTotal();
 
+    // enable/disable buttons if we have selected a game
+    pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_IODELETE));
+    if ( pb != nullptr )
+    {
+        pb->SetState(STATE_ENABLE, (!isWrite && sel < max) || (isWrite && sel < max - 1));
+    }
+
+    pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_IOREAD));
+    if ( pb != nullptr )
+    {
+        pb->SetState(STATE_ENABLE, sel < max);
+    }
+
     if (m_saveList.size() <= static_cast<unsigned int>(sel))
         return;
 
@@ -156,12 +169,6 @@ void CScreenIO::IOUpdateList(bool isWrite)
         else
         {
             pi->SetFilenameImage("");
-        }
-
-        pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_IODELETE));
-        if ( pb != nullptr )
-        {
-            pb->SetState(STATE_ENABLE, sel < max-1);
         }
     }
     else
