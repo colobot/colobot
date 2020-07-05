@@ -22,6 +22,7 @@
 
 #include <cstdarg>
 #include <cstdio>
+#include <stdexcept>
 #include <vector>
 
 
@@ -183,7 +184,7 @@ int StrUtils::Utf8CharSizeAt(const std::string &str, unsigned int pos)
 
     // Invalid char - unexpected continuation byte
     if(c >= 0x80)
-        return 0;
+        throw new std::invalid_argument("Unexpected UTF-8 continuation byte");
     
     return 1;
 }
