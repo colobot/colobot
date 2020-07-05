@@ -244,22 +244,24 @@ void CScreenIO::IOWriteScene()
 
 // Reads the scene.
 
-void CScreenIO::IOReadScene()
+bool CScreenIO::IOReadScene()
 {
     CWindow*    pw;
     CList*      pl;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == nullptr )  return;
+    if ( pw == nullptr )  return false;
     pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_IOLIST));
-    if ( pl == nullptr )  return;
+    if ( pl == nullptr )  return false;
 
     int sel = pl->GetSelect();
-    if (sel < 0 || sel >= static_cast<int>(m_saveList.size())) return;
+    if (sel < 0 || sel >= static_cast<int>(m_saveList.size())) return false;
 
     m_main->GetPlayerProfile()->LoadScene(m_saveList.at(sel));
 
     m_screenLevelList->SetSelection(m_main->GetLevelCategory(), m_main->GetLevelChap()-1, m_main->GetLevelRank()-1);
+
+    return true;
 }
 
 } // namespace Ui
