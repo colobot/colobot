@@ -77,13 +77,13 @@ bool CBotFunction::IsPublic()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotFunction::IsProtected()
+bool CBotFunction::IsProtected() const
 {
     return m_bProtect;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotFunction::IsPrivate()
+bool CBotFunction::IsPrivate() const
 {
     return m_bPrivate;
 }
@@ -1206,7 +1206,7 @@ std::string CBotFunction::GetParams()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const std::string& CBotFunction::GetClassName()
+const std::string& CBotFunction::GetClassName() const
 {
     return m_MasterClass;
 }

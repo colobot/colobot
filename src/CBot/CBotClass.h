@@ -307,7 +307,7 @@ public:
      * \brief Get the list of user-defined methods in this class.
      * \return List of methods, can be empty.
      */
-    const std::list<CBotFunction*>& GetFunctions();
+    const std::list<CBotFunction*>& GetFunctions() const;
 
     /*!
      * \brief CompileDefItem

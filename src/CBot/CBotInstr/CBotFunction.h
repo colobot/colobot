@@ -275,7 +275,7 @@ public:
      * \brief Get the name of the class for a method.
      * \return The name of a class or empty string if it's not a method.
      */
-    const std::string& GetClassName();
+    const std::string& GetClassName() const;
 
     /*!
      * \brief IsPublic
@@ -287,13 +287,13 @@ public:
      * \brief Check if a method is protected.
      * \return true if a method was compiled with "protected" keyword.
      */
-    bool IsProtected();
+    bool IsProtected() const;
 
     /*!
      * \brief Check if a method is private.
      * \return true if a method was compiled with "private" keyword.
      */
-    bool IsPrivate();
+    bool IsPrivate() const;
 
     /*!
      * \brief IsExtern
