@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,7 +24,6 @@
 #include "CBot/CBotCStack.h"
 #include "CBot/CBotClass.h"
 #include "CBot/CBotUtils.h"
-#include "CBot/CBotFileUtils.h"
 
 #include "CBot/CBotInstr/CBotFunction.h"
 
@@ -292,7 +291,7 @@ bool CBotProgram::ClassExists(std::string name)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotTypResult cSizeOf( CBotVar* &pVar, void* pUser )
+static CBotTypResult cSizeOf( CBotVar* &pVar, void* pUser )
 {
     if ( pVar == nullptr ) return CBotTypResult( CBotErrLowParam );
     if ( pVar->GetType() != CBotTypArrayPointer )
@@ -300,7 +299,7 @@ CBotTypResult cSizeOf( CBotVar* &pVar, void* pUser )
     return CBotTypResult( CBotTypInt );
 }
 
-bool rSizeOf( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
+static bool rSizeOf( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 {
     if ( pVar == nullptr ) { ex = CBotErrLowParam; return true; }
 
@@ -332,50 +331,55 @@ bool CBotProgram::DefineNum(const std::string& name, long val)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotProgram::SaveState(FILE* pf)
+bool CBotProgram::SaveState(std::ostream &ostr)
 {
-    if (!WriteWord( pf, CBOTVERSION)) return false;
+    if (!WriteLong(ostr, CBOTVERSION)) return false;
 
 
     if (m_stack != nullptr )
     {
-        if (!WriteWord( pf, 1)) return false;
-        if (!WriteString( pf, m_entryPoint->GetName() )) return false;
-        if (!m_stack->SaveState(pf)) return false;
+        if (!WriteWord(ostr, 1)) return false;
+        if (!WriteString(ostr, m_entryPoint->GetName())) return false;
+        if (!m_stack->SaveState(ostr)) return false;
     }
     else
     {
-        if (!WriteWord( pf, 0)) return false;
+        if (!WriteWord(ostr, 0)) return false;
     }
     return true;
 }
 
-bool CBotProgram::RestoreState(FILE* pf)
+bool CBotProgram::RestoreState(std::istream &istr)
 {
     unsigned short  w;
     std::string      s;
 
     Stop();
 
-    if (!ReadWord( pf, w )) return false;
-    if ( w != CBOTVERSION ) return false;
+    long version;
+    if (!ReadLong(istr, version)) return false;
+    if ( version != CBOTVERSION ) return false;
 
-    if (!ReadWord( pf, w )) return false;
+    if (!ReadWord(istr, w)) return false;
     if ( w == 0 ) return true;
 
-    if (!ReadString( pf, s )) return false;
-    Start(s);       // point de reprise
+    // don't restore if compile error exists
+    if (m_error != CBotNoErr) return false;
 
-    if (m_stack != nullptr)
+    if (!ReadString(istr, s)) return false;
+    if (!Start(s)) return false; // point de reprise
+    // Start() already created the new stack
+    // and called m_stack->SetProgram(this);
+
+    // retrieves the stack from the memory
+    if (!m_stack->RestoreState(istr, m_stack))
     {
         m_stack->Delete();
         m_stack = nullptr;
+        m_stack = CBotStack::AllocateStack(); // start from the top
+        m_stack->SetProgram(this);
+        return false; // signal error
     }
-
-    // retrieves the stack from the memory
-    m_stack = CBotStack::AllocateStack();
-    if (!m_stack->RestoreState(pf, m_stack)) return false;
-    m_stack->SetProgram(this);                     // bases for routines
 
     // restored some states in the stack according to the structure
     m_entryPoint->RestoreState(nullptr, m_stack, m_thisVar);

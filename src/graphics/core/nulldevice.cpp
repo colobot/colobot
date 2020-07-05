@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -165,16 +165,6 @@ void CNullDevice::DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, 
 }
 
 void CNullDevice::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, int vertexCount)
-{
-}
-
-void CNullDevice::DrawPrimitive(PrimitiveType type, const void *vertices,
-    int size, const VertexFormat &format, int vertexCount)
-{
-}
-
-void CNullDevice::DrawPrimitives(PrimitiveType type, const void *vertices,
-    int size, const VertexFormat &format, int first[], int count[], int drawCount)
 {
 }
 

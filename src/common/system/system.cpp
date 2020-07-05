@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,8 +20,6 @@
 
 #include "common/system/system.h"
 
-#include "common/config.h"
-
 #include "common/make_unique.h"
 
 #if defined(PLATFORM_WINDOWS)
@@ -38,6 +36,7 @@
 #include <iostream>
 #include <algorithm>
 
+#include <SDL2/SDL.h>
 
 std::unique_ptr<CSystemUtils> CSystemUtils::Create()
 {
@@ -178,17 +177,41 @@ float CSystemUtils::TimeStampDiff(SystemTimeStamp *before, SystemTimeStamp *afte
     return result;
 }
 
+std::string CSystemUtils::GetBasePath()
+{
+    if (m_basePath.empty())
+    {
+        auto* path = SDL_GetBasePath();
+        m_basePath = path;
+        SDL_free(path);
+    }
+    return m_basePath;
+}
+
 std::string CSystemUtils::GetDataPath()
 {
+#ifdef USE_RELATIVE_PATHS
+    return GetBasePath() + COLOBOT_DEFAULT_DATADIR;
+#else
     return COLOBOT_DEFAULT_DATADIR;
+#endif
 }
 
 std::string CSystemUtils::GetLangPath()
 {
+#ifdef USE_RELATIVE_PATHS
+    return GetBasePath() + COLOBOT_I18N_DIR;
+#else
     return COLOBOT_I18N_DIR;
+#endif
 }
 
 std::string CSystemUtils::GetSaveDir()
 {
-    return std::string("saves");
+    return GetBasePath() + "saves";
+}
+
+std::string CSystemUtils::GetEnvVar(const std::string& name)
+{
+    return "";
 }

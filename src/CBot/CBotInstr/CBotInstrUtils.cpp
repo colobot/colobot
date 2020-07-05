@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -127,6 +127,13 @@ bool TypeCompatible(CBotTypResult& type1, CBotTypResult& type2, int op)
         }
 
         return true;
+    }
+
+    if (op == ID_ASR || op == ID_SR || op == ID_SL ||
+        op == ID_ASSOR || op == ID_ASSSL || op == ID_ASSSR ||
+        op == ID_ASSAND || op == ID_ASSXOR || op == ID_ASSASR)
+    {
+        if (max > CBotTypLong) return false;
     }
 
     type1.SetType(max);

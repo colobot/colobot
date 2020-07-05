@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,8 +23,6 @@
 #include "CBot/CBotStack.h"
 #include "CBot/CBotDefines.h"
 
-#include "CBot/CBotFileUtils.h"
-
 #include "CBot/CBotInstr/CBotInstr.h"
 
 #include <cassert>
@@ -36,7 +34,7 @@ namespace CBot
 std::set<CBotVarClass*> CBotVarClass::m_instances{};
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotVarClass::CBotVarClass(const CBotToken& name, const CBotTypResult& type)
+CBotVarClass::CBotVarClass(const CBotToken& name, const CBotTypResult& type) : CBotVar(name)
 {
     if ( !type.Eq(CBotTypClass)        &&
          !type.Eq(CBotTypIntrinsic)    &&                // by convenience there accepts these types
@@ -44,7 +42,6 @@ CBotVarClass::CBotVarClass(const CBotToken& name, const CBotTypResult& type)
          !type.Eq(CBotTypArrayPointer) &&
          !type.Eq(CBotTypArrayBody)) assert(0);
 
-    m_token        = new CBotToken(name);
     m_next        = nullptr;
     m_pMyThis    = nullptr;
     m_pUserPtr    = OBJECTCREATED;//nullptr;
@@ -54,7 +51,7 @@ CBotVarClass::CBotVarClass(const CBotToken& name, const CBotTypResult& type)
     m_type        = type;
     if ( type.Eq(CBotTypArrayPointer) )    m_type.SetType( CBotTypArrayBody );
     else if ( !type.Eq(CBotTypArrayBody) ) m_type.SetType( CBotTypClass );
-                                                 // officel type for this object
+                                                 // official type for this object
 
     m_pClass    = nullptr;
     m_pParent    = nullptr;
@@ -465,12 +462,12 @@ bool CBotVarClass::Ne(CBotVar* left, CBotVar* right)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotVarClass::Save1State(FILE* pf)
+bool CBotVarClass::Save1State(std::ostream &ostr)
 {
-    if ( !WriteType(pf, m_type) ) return false;
-    if ( !WriteLong(pf, m_ItemIdent) ) return false;
+    if (!WriteType(ostr, m_type)) return false;
+    if (!WriteLong(ostr, m_ItemIdent)) return false;
 
-    return SaveVars(pf, m_pVar);                                // content of the object
+    return SaveVars(ostr, m_pVar);                              // content of the object
 }
 
 } // namespace CBot

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,11 +21,21 @@
 
 #include <gtest/gtest.h>
 
+extern bool g_cbotTestSaveState;
+
 int main(int argc, char* argv[])
 {
     CLogger logger;
 
     ::testing::InitGoogleTest(&argc, argv);
+
+    // parse arguments not removed by InitGoogleTest
+    for (int i = 1; i < argc; ++i)
+    {
+        std::string arg(argv[i]);
+        if (arg == "--CBotUT_TestSaveState")
+            g_cbotTestSaveState = true;
+    }
 
     return RUN_ALL_TESTS();
 }

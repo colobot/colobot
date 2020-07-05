@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -38,5 +38,7 @@ enum ResearchType
     RESEARCH_iGUN       = (1<<9),       //! < cannon of insects
     RESEARCH_RECYCLER   = (1<<10),      //! < recycler
     RESEARCH_SUBM       = (1<<11),      //! < submarine
-    RESEARCH_SNIFFER    = (1<<12)       //! < sniffer
+    RESEARCH_SNIFFER    = (1<<12),      //! < sniffer
+    RESEARCH_BUILDER    = (1<<13),      //! < builder
+    RESEARCH_TARGET     = (1<<14)       //! < target bot
 };

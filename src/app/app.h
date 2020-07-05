@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -164,7 +164,9 @@ public:
     CSoundInterface* GetSound();
 
 public:
-    //! Parses commandline arguments
+    //! Loads some data from environment variables
+    void LoadEnvironmentVariables();
+    //! Parses commandline arguments (they take priority)
     ParseArgsStatus ParseArguments(int argc, char *argv[]);
     //! Initializes the application
     bool        Create();

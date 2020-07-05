@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -830,62 +830,86 @@ void CMap::DrawObjectIcon(Math::Point pos, Math::Point dim, MapColor color,
 
     if ( bHilite )
     {
-        icon = -1;
-        if ( type == OBJECT_FACTORY  )  icon = 32;
-        if ( type == OBJECT_DERRICK  )  icon = 33;
-        if ( type == OBJECT_CONVERT  )  icon = 34;
-        if ( type == OBJECT_RESEARCH )  icon = 35;
-        if ( type == OBJECT_STATION  )  icon = 36;
-        if ( type == OBJECT_TOWER    )  icon = 37;
-        if ( type == OBJECT_LABO     )  icon = 38;
-        if ( type == OBJECT_ENERGY   )  icon = 39;
-        if ( type == OBJECT_RADAR    )  icon = 40;
-        if ( type == OBJECT_INFO     )  icon = 44;
-        if ( type == OBJECT_REPAIR   )  icon = 41;
-        if ( type == OBJECT_DESTROYER)  icon = 41;
-        if ( type == OBJECT_NUCLEAR  )  icon = 42;
-        if ( type == OBJECT_PARA     )  icon = 46;
-        if ( type == OBJECT_SAFE     )  icon = 47;
-        if ( type == OBJECT_HUSTON   )  icon = 48;
-        if ( type == OBJECT_TARGET1  )  icon = 45;
-        if ( type == OBJECT_BASE     )  icon = 43;
-        if ( type == OBJECT_HUMAN    )  icon =  8;
-        if ( type == OBJECT_MOBILEfa )  icon = 11;
-        if ( type == OBJECT_MOBILEta )  icon = 10;
-        if ( type == OBJECT_MOBILEwa )  icon =  9;
-        if ( type == OBJECT_MOBILEia )  icon = 22;
-        if ( type == OBJECT_MOBILEfc )  icon = 17;
-        if ( type == OBJECT_MOBILEtc )  icon = 16;
-        if ( type == OBJECT_MOBILEwc )  icon = 15;
-        if ( type == OBJECT_MOBILEic )  icon = 23;
-        if ( type == OBJECT_MOBILEfi )  icon = 27;
-        if ( type == OBJECT_MOBILEti )  icon = 26;
-        if ( type == OBJECT_MOBILEwi )  icon = 25;
-        if ( type == OBJECT_MOBILEii )  icon = 28;
-        if ( type == OBJECT_MOBILEfs )  icon = 14;
-        if ( type == OBJECT_MOBILEts )  icon = 13;
-        if ( type == OBJECT_MOBILEws )  icon = 12;
-        if ( type == OBJECT_MOBILEis )  icon = 24;
-        if ( type == OBJECT_MOBILErt )  icon = 18;
-        if ( type == OBJECT_MOBILErc )  icon = 19;
-        if ( type == OBJECT_MOBILErr )  icon = 20;
-        if ( type == OBJECT_MOBILErs )  icon = 29;
-        if ( type == OBJECT_MOBILEsa )  icon = 21;
-        if ( type == OBJECT_MOBILEft )  icon = 30;
-        if ( type == OBJECT_MOBILEtt )  icon = 30;
-        if ( type == OBJECT_MOBILEwt )  icon = 30;
-        if ( type == OBJECT_MOBILEit )  icon = 30;
-        if ( type == OBJECT_MOBILEtg )  icon = 45;
-        if ( type == OBJECT_MOBILEdr )  icon = 48;
-        if ( type == OBJECT_APOLLO2  )  icon = 49;
-        if ( type == OBJECT_MOTHER   )  icon = 31;
-        if ( type == OBJECT_ANT      )  icon = 31;
-        if ( type == OBJECT_SPIDER   )  icon = 31;
-        if ( type == OBJECT_BEE      )  icon = 31;
-        if ( type == OBJECT_WORM     )  icon = 31;
-        if ( type == OBJECT_TEEN28    )  icon = 48;  // bottle
-        if ( type == OBJECT_TEEN34    )  icon = 48;  // stone
+        switch ( type )
+        {
+            case OBJECT_FACTORY:    icon = 32; break;
+            case OBJECT_DERRICK:    icon = 33; break;
+            case OBJECT_CONVERT:    icon = 34; break;
+            case OBJECT_RESEARCH:   icon = 35; break;
+            case OBJECT_STATION:    icon = 36; break;
+            case OBJECT_TOWER:      icon = 37; break;
+            case OBJECT_LABO:       icon = 38; break;
+            case OBJECT_ENERGY:     icon = 39; break;
+            case OBJECT_RADAR:      icon = 40; break;
+            case OBJECT_INFO:       icon = 44; break;
+            case OBJECT_REPAIR:     icon = 41; break;
+            case OBJECT_DESTROYER:  icon = 41; break;
+            case OBJECT_NUCLEAR:    icon = 42; break;
+            case OBJECT_PARA:       icon = 46; break;
+            case OBJECT_SAFE:       icon = 47; break;
+            case OBJECT_HUSTON:     icon = 48; break;
+            case OBJECT_TARGET1:    icon = 45; break;
+            case OBJECT_BASE:       icon = 43; break;
+            case OBJECT_HUMAN:      icon = 8; break;
+            case OBJECT_MOBILEfa:   icon = 11; break;
+            case OBJECT_MOBILEta:   icon = 10; break;
+            case OBJECT_MOBILEwa:   icon = 9; break;
+            case OBJECT_MOBILEia:   icon = 22; break;
+            case OBJECT_MOBILEfb:   icon = 2; break; // button4
+            case OBJECT_MOBILEtb:   icon = 1; break;
+            case OBJECT_MOBILEwb:   icon = 0; break;
+            case OBJECT_MOBILEib:   icon = 3; break;
+            case OBJECT_MOBILEfc:   icon = 17; break;
+            case OBJECT_MOBILEtc:   icon = 16; break;
+            case OBJECT_MOBILEwc:   icon = 15; break;
+            case OBJECT_MOBILEic:   icon = 23; break;
+            case OBJECT_MOBILEfi:   icon = 27; break;
+            case OBJECT_MOBILEti:   icon = 26; break;
+            case OBJECT_MOBILEwi:   icon = 25; break;
+            case OBJECT_MOBILEii:   icon = 28; break;
+            case OBJECT_MOBILEfs:   icon = 14; break;
+            case OBJECT_MOBILEts:   icon = 13; break;
+            case OBJECT_MOBILEws:   icon = 12; break;
+            case OBJECT_MOBILEis:   icon = 24; break;
+            case OBJECT_MOBILErt:   icon = 18; break;
+            case OBJECT_MOBILErc:   icon = 19; break;
+            case OBJECT_MOBILErr:   icon = 20; break;
+            case OBJECT_MOBILErs:   icon = 29; break;
+            case OBJECT_MOBILEsa:   icon = 21; break;
+            case OBJECT_MOBILEft:   icon =  6; break;
+            case OBJECT_MOBILEtt:   icon =  5; break;
+            case OBJECT_MOBILEwt:   icon = 30; break;
+            case OBJECT_MOBILEit:   icon =  7; break;
+            case OBJECT_MOBILErp:   icon =  9; break;
+            case OBJECT_MOBILEst:   icon = 10; break;
+            case OBJECT_MOBILEtg:   icon = 45; break;
+            case OBJECT_MOBILEdr:   icon = 48; break;
+            case OBJECT_APOLLO2:    icon = 49; break;
+            case OBJECT_MOTHER:     icon = 31; break;
+            case OBJECT_ANT:        icon = 31; break;
+            case OBJECT_SPIDER:     icon = 31; break;
+            case OBJECT_BEE:        icon = 31; break;
+            case OBJECT_WORM:       icon = 31; break;
+            case OBJECT_TEEN28:     icon = 48; break;  // bottle
+            case OBJECT_TEEN34:     icon = 48; break;  // stone
+            default:                icon = -1;
+        }
         if ( icon == -1 )  return;
+
+        switch ( type )
+        {
+            case OBJECT_MOBILEfb:
+            case OBJECT_MOBILEtb:
+            case OBJECT_MOBILEwb:
+            case OBJECT_MOBILEib:
+            case OBJECT_MOBILEft:
+            case OBJECT_MOBILEtt:
+            case OBJECT_MOBILEit:
+            case OBJECT_MOBILErp:
+            case OBJECT_MOBILEst:
+                m_engine->SetTexture("textures/interface/button4.png"); break;
+            default: ; // button3.png
+        }
 
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
         uv1.x = (32.0f/256.0f)*(icon%8);
@@ -1231,6 +1255,10 @@ void CMap::UpdateObject(CObject* pObj)
          type == OBJECT_MOBILEta ||
          type == OBJECT_MOBILEfa ||
          type == OBJECT_MOBILEia ||
+         type == OBJECT_MOBILEwb ||
+         type == OBJECT_MOBILEtb ||
+         type == OBJECT_MOBILEfb ||
+         type == OBJECT_MOBILEib ||
          type == OBJECT_MOBILEwc ||
          type == OBJECT_MOBILEtc ||
          type == OBJECT_MOBILEfc ||
@@ -1253,6 +1281,8 @@ void CMap::UpdateObject(CObject* pObj)
          type == OBJECT_MOBILEtt ||
          type == OBJECT_MOBILEft ||
          type == OBJECT_MOBILEit ||
+         type == OBJECT_MOBILErp ||
+         type == OBJECT_MOBILEst ||
          type == OBJECT_MOBILEdr ||
          type == OBJECT_APOLLO2  )  // moving vehicle?
     {

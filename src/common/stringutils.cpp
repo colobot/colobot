@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -22,6 +22,7 @@
 
 #include <cstdarg>
 #include <cstdio>
+#include <stdexcept>
 #include <vector>
 
 
@@ -173,14 +174,19 @@ int StrUtils::Utf8CharSizeAt(const std::string &str, unsigned int pos)
     if (pos >= str.size())
         return 0;
 
-    if ((str[pos] & 0x80) == 0)
-        return 1;
-    else if ((str[pos] & 0xC0) == 0xC0)
-        return 2;
-    else
+    const char c = str[pos];
+    if(c >= 0xF0)
+        return 4;
+    if(c >= 0xE0)
         return 3;
+    if(c >= 0xC0)
+        return 2;
 
-    return 0;
+    // Invalid char - unexpected continuation byte
+    if(c >= 0x80)
+        throw new std::invalid_argument("Unexpected UTF-8 continuation byte");
+    
+    return 1;
 }
 
 std::size_t StrUtils::Utf8StringLength(const std::string &str)

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -314,10 +314,15 @@ bool CALSound::SearchFreeBuffer(SoundType sound, int &channel, bool &alreadyLoad
 
 int CALSound::Play(SoundType sound, float amplitude, float frequency, bool loop)
 {
-    return Play(sound, m_eye, amplitude, frequency, loop);
+    return Play(sound, Math::Vector{}, true, amplitude, frequency, loop);
 }
 
 int CALSound::Play(SoundType sound, const Math::Vector &pos, float amplitude, float frequency, bool loop)
+{
+    return Play(sound, pos, false, amplitude, frequency, loop);
+}
+
+int CALSound::Play(SoundType sound, const Math::Vector &pos, bool relativeToListener, float amplitude, float frequency, bool loop)
 {
     if (!m_enabled)
     {
@@ -347,7 +352,7 @@ int CALSound::Play(SoundType sound, const Math::Vector &pos, float amplitude, fl
 
     CChannel* chn = m_channels[channel].get();
 
-    chn->SetPosition(pos);
+    chn->SetPosition(pos, relativeToListener);
     chn->SetVolumeAtrib(1.0f);
 
     // setting initial values

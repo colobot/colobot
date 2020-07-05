@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -282,27 +282,20 @@ public:
 
     /**
      * \brief Save the current execution status into a file
-     * \param pf
-     * \parblock
-     * file handle
-     *
-     * This file handle must have been opened by this library! Otherwise crashes on Windows
-     *
-     * TODO: Verify this
-     * \endparblock
+     * \param ostr Output stream
      * \return true on success, false on write error
      */
-    bool SaveState(FILE* pf);
+    bool SaveState(std::ostream &ostr);
 
     /**
      * \brief Restore the execution state from a file
      *
      * The previous program code must already have been recompiled with Compile() before calling this function
      *
-     * \param pf file handle
+     * \param istr Input stream
      * \return true on success, false on read error
      */
-    bool RestoreState(FILE* pf);
+    bool RestoreState(std::istream &istr);
 
     /**
      * \brief GetPosition Gives the position of a routine in the original text

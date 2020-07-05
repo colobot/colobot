@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ CBotInstr* CBotTry::Compile(CBotToken* &p, CBotCStack* pStack)
     inst->SetToken(p);
     if (!IsOfType(p, ID_TRY)) return nullptr;      // should never happen
 
-    CBotCStack* pStk = pStack->TokenStack(pp);  // un petit bout de pile svp
+    CBotCStack* pStk = pStack->TokenStack(pp);  // some space for a stack, plz
 
     inst->m_block = CBotBlock::CompileBlkOrInst(p, pStk );
     CBotCatch** pn = &inst->m_catchList;
@@ -102,11 +102,11 @@ bool CBotTry::Execute(CBotStack* &pj)
 
         val = pile1->GetError();
         if ( val == CBotNoErr && pile1->GetTimer() == 0 )           // mode step?
-            return false;                                       // does not make the catch
+            return false;                   // don't jump to the catch
 
         pile1->IncState();
         pile2->SetState(val);                                   // stores the error number
-        pile1->SetError(CBotNoErr);                                     // for now there is are more errors!
+        pile1->SetError(CBotNoErr);         // for now there are more errors!
 
         if ( val == CBotNoErr && pile1->GetTimer() < 0 )            // mode step?
             return false;                                       // does not make the catch
@@ -124,8 +124,7 @@ bool CBotTry::Execute(CBotStack* &pj)
     {
         if ( --state <= 0 )
         {
-            // request to the catch block if they feel concerned
-            // demande au bloc catch s'il se sent concerné
+            // ask to the catch block if it feels concerned
             if ( !pc->TestCatch(pile2, val) ) return false;     // suspend !
             pile1->IncState();
         }
@@ -200,8 +199,7 @@ void CBotTry::RestoreState(CBotStack* &pj, bool bMain)
     {
         if ( --state <= 0 )
         {
-            // request to the catch block if they feel concerned
-            // demande au bloc catch s'il se sent concerné
+            // ask to the catch block if it feels concerned
             pc->RestoreCondState(pile2, bMain);     // suspend !
             return;
         }

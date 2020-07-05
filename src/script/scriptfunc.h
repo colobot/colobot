@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -80,6 +80,9 @@ private:
     static CBot::CBotTypResult cTopo(CBot::CBotVar* &var, void* user);
     static CBot::CBotTypResult cMessage(CBot::CBotVar* &var, void* user);
     static CBot::CBotTypResult cPenDown(CBot::CBotVar* &var, void* user);
+    static CBot::CBotTypResult cIsBusy(CBot::CBotVar* &var, void* user);
+    static CBot::CBotTypResult cFactory(CBot::CBotVar* &var, void* user);
+    static CBot::CBotTypResult cResearch(CBot::CBotVar* &var, void* user);
 
     static CBot::CBotTypResult cOnePoint(CBot::CBotVar* &var, void* user);
     static CBot::CBotTypResult cOneObject(CBot::CBotVar* &var, void* user);
@@ -143,18 +146,14 @@ private:
     static bool rPenColor(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
     static bool rPenWidth(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
     static bool rCameraFocus(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
+    static bool rIsBusy(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
+    static bool rTakeOff(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
+    static bool rFactory(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
+    static bool rResearch(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
+    static bool rDestroy(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
 
-
-    static CBot::CBotTypResult cBusy(CBot::CBotVar* thisclass, CBot::CBotVar* &var);
-    static CBot::CBotTypResult cFactory(CBot::CBotVar* thisclass, CBot::CBotVar* &var);
     static CBot::CBotTypResult cClassNull(CBot::CBotVar* thisclass, CBot::CBotVar* &var);
     static CBot::CBotTypResult cClassOneFloat(CBot::CBotVar* thisclass, CBot::CBotVar* &var);
-
-    static bool rBusy(CBot::CBotVar* thisclass, CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
-    static bool rFactory(CBot::CBotVar* thisclass, CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
-    static bool rResearch(CBot::CBotVar* thisclass, CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
-    static bool rTakeOff(CBot::CBotVar* thisclass, CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
-    static bool rDestroy(CBot::CBotVar* thisclass, CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
 
     static CBot::CBotTypResult cPointConstructor(CBot::CBotVar* pThis, CBot::CBotVar* &var);
     static bool rPointConstructor(CBot::CBotVar* pThis, CBot::CBotVar* var, CBot::CBotVar* pResult, int& Exception, void* user);

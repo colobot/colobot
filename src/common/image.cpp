@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -22,6 +22,7 @@
 
 #include "common/make_unique.h"
 
+#include "common/resources/outputstream.h"
 #include "common/resources/resourcemanager.h"
 
 #include "math/func.h"
@@ -70,7 +71,6 @@
 namespace
 {
 std::string PNG_ERROR = "";
-}
 
 void PNGUserError(png_structp ctx, png_const_charp str)
 {
@@ -94,8 +94,8 @@ bool PNGSaveSurface(const char *filename, SDL_Surface *surf)
     PNG_ERROR = "";
 
     /* Opening output file */
-    FILE *fp = fopen(filename, "wb");
-    if (fp == nullptr)
+    COutputStream ostr(filename);
+    if (!ostr.is_open())
     {
         PNG_ERROR = std::string("Could not open file '") + std::string(filename) + std::string("' for saving");
         return false;
@@ -105,7 +105,7 @@ bool PNGSaveSurface(const char *filename, SDL_Surface *surf)
     png_structp pngPtr = png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, PNGUserError, nullptr);
     if (pngPtr == nullptr)
     {
-        fclose(fp);
+        ostr.close();
         return false;
     }
 
@@ -114,18 +114,30 @@ bool PNGSaveSurface(const char *filename, SDL_Surface *surf)
     {
         png_destroy_write_struct(&pngPtr, static_cast<png_infopp>(nullptr));
         PNG_ERROR = "png_create_info_struct() error!";
-        fclose(fp);
+        ostr.close();
         return false;
     }
 
     if (setjmp(png_jmpbuf(pngPtr)))
     {
         png_destroy_write_struct(&pngPtr, &infoPtr);
-        fclose(fp);
+        ostr.close();
         return false;
     }
 
-    png_init_io(pngPtr, fp);
+    png_set_write_fn(
+        pngPtr, static_cast<std::ostream*>(&ostr),
+        [](png_structp pngPtr, png_bytep data, png_size_t length)
+        {
+            auto* file = static_cast<std::ostream*>(png_get_io_ptr(pngPtr));
+            file->write(reinterpret_cast<char*>(data), length);
+        },
+        [](png_structp pngPtr)
+        {
+            auto* file = static_cast<std::ostream*>(png_get_io_ptr(pngPtr));
+            file->flush();
+        }
+    );
 
     int colortype = PNGColortypeFromSurface(surf);
     png_set_IHDR(pngPtr, infoPtr, surf->w, surf->h, 8, colortype, PNG_INTERLACE_NONE,
@@ -142,10 +154,12 @@ bool PNGSaveSurface(const char *filename, SDL_Surface *surf)
     png_write_end(pngPtr, infoPtr);
 
     png_destroy_write_struct(&pngPtr, &infoPtr);
-    fclose(fp);
+    ostr.close();
 
     return true;
 }
+
+} // namespace
 
 /* <---------------------------------------------------------------> */
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -100,6 +100,8 @@ CObjectInterface::CObjectInterface(COldObject* object)
     m_manipStyle   = EVENT_OBJECT_MFRONT;
 
     m_selScript = 0;
+
+    m_buildInterface = false;
 }
 
 // Object's destructor.
@@ -621,6 +623,12 @@ bool CObjectInterface::EventProcess(const Event &event)
             err = m_taskExecutor->StartTaskSpiderExplo();
         }
 
+        if ( action == EVENT_OBJECT_BUILD )
+        {
+            m_buildInterface = !m_buildInterface;
+            UpdateInterface();
+        }
+
         if ( action == EVENT_OBJECT_PEN0 )  // up
         {
             err = m_taskExecutor->StartTaskPen(false);
@@ -841,6 +849,10 @@ bool CObjectInterface::CreateInterface(bool bSelect)
          type == OBJECT_MOBILEta ||
          type == OBJECT_MOBILEwa ||
          type == OBJECT_MOBILEia ||
+         type == OBJECT_MOBILEfb ||
+         type == OBJECT_MOBILEtb ||
+         type == OBJECT_MOBILEwb ||
+         type == OBJECT_MOBILEib ||
          type == OBJECT_MOBILEfc ||
          type == OBJECT_MOBILEtc ||
          type == OBJECT_MOBILEwc ||
@@ -863,6 +875,8 @@ bool CObjectInterface::CreateInterface(bool bSelect)
          type == OBJECT_MOBILEtt ||
          type == OBJECT_MOBILEwt ||
          type == OBJECT_MOBILEit ||
+         type == OBJECT_MOBILErp ||
+         type == OBJECT_MOBILEst ||
          type == OBJECT_MOBILEdr ||
          type == OBJECT_MOTHER   ||
          type == OBJECT_ANT      ||
@@ -1405,6 +1419,87 @@ bool CObjectInterface::CreateInterface(bool bSelect)
         pw->CreateGroup(pos, ddim, 16, EVENT_OBJECT_CORNERdr);
     }
 
+    if ( (type == OBJECT_MOBILEfb ||
+          type == OBJECT_MOBILEtb ||
+          type == OBJECT_MOBILEwb ||
+          type == OBJECT_MOBILEib) &&  // builder?
+         !m_object->GetTrainer() )
+    {
+        pos.x = ox+sx*7.7f;
+        pos.y = oy+sy*0.5f;
+        pb = pw->CreateButton(pos, dim, 192+4, EVENT_OBJECT_BUILD);
+        pb->SetImmediat(true);
+        DefaultEnter(pw, EVENT_OBJECT_BUILD);
+
+        pos.x = 0.0f;
+        pos.y = oy+sy*2.6f;
+        ddim.x = 214.5f/640.0f;
+        ddim.y = 66.0f/480.0f;
+        pw->CreateGroup(pos, ddim, 6, EVENT_WINDOW3);
+
+        ddim.x = dim.x*0.9f;
+        ddim.y = dim.y*0.9f;
+        pos.y = oy+sy*3.6f;
+
+        pos.x = ox+sx*0.0f;
+        pw->CreateButton(pos, ddim, 128+35, EVENT_OBJECT_BRESEARCH);
+        DeadInterface(pw, EVENT_OBJECT_BRESEARCH, m_main->CanBuild(OBJECT_RESEARCH, m_object->GetTeam()));
+
+        pos.x = ox+sx*0.9f;
+        pw->CreateButton(pos, ddim, 128+32, EVENT_OBJECT_BFACTORY);
+        DeadInterface(pw, EVENT_OBJECT_BFACTORY, m_main->CanBuild(OBJECT_FACTORY, m_object->GetTeam()));
+
+        pos.x = ox+sx*1.8f;
+        pw->CreateButton(pos, ddim, 128+34, EVENT_OBJECT_BCONVERT);
+        DeadInterface(pw, EVENT_OBJECT_BCONVERT, m_main->CanBuild(OBJECT_CONVERT, m_object->GetTeam()));
+
+        pos.x = ox+sx*2.7f;
+        pw->CreateButton(pos, ddim, 128+36, EVENT_OBJECT_BSTATION);
+        DeadInterface(pw, EVENT_OBJECT_BSTATION, m_main->CanBuild(OBJECT_STATION, m_object->GetTeam()));
+
+        pos.x = ox+sx*3.6f;
+        pw->CreateButton(pos, ddim, 128+40, EVENT_OBJECT_BRADAR);
+        DeadInterface(pw, EVENT_OBJECT_BRADAR, m_main->CanBuild(OBJECT_RADAR, m_object->GetTeam()));
+
+        pos.x = ox+sx*4.5f;
+        pw->CreateButton(pos, ddim, 128+41, EVENT_OBJECT_BREPAIR);
+        DeadInterface(pw, EVENT_OBJECT_BREPAIR, m_main->CanBuild(OBJECT_REPAIR, m_object->GetTeam()));
+
+        pos.x = ox+sx*5.4f;
+        pw->CreateButton(pos, ddim, 128+44, EVENT_OBJECT_BINFO);
+        DeadInterface(pw, EVENT_OBJECT_BINFO, m_main->CanBuild(OBJECT_INFO, m_object->GetTeam()));
+
+        pos.y = oy+sy*2.7f;
+
+        pos.x = ox+sx*0.0f;
+        pw->CreateButton(pos, ddim, 128+37, EVENT_OBJECT_BTOWER);
+        DeadInterface(pw, EVENT_OBJECT_BTOWER, m_main->CanBuild(OBJECT_TOWER, m_object->GetTeam()));
+
+        pos.x = ox+sx*0.9f;
+        pw->CreateButton(pos, ddim, 128+39, EVENT_OBJECT_BENERGY);
+        DeadInterface(pw, EVENT_OBJECT_BENERGY, m_main->CanBuild(OBJECT_ENERGY, m_object->GetTeam()));
+
+        pos.x = ox+sx*1.8f;
+        pw->CreateButton(pos, ddim, 128+33, EVENT_OBJECT_BDERRICK);
+        DeadInterface(pw, EVENT_OBJECT_BDERRICK, m_main->CanBuild(OBJECT_DERRICK, m_object->GetTeam()));
+
+        pos.x = ox+sx*2.7f;
+        pw->CreateButton(pos, ddim, 128+42, EVENT_OBJECT_BNUCLEAR);
+        DeadInterface(pw, EVENT_OBJECT_BNUCLEAR, m_main->CanBuild(OBJECT_NUCLEAR, m_object->GetTeam()));
+
+        pos.x = ox+sx*3.6f;
+        pw->CreateButton(pos, ddim, 128+38, EVENT_OBJECT_BLABO);
+        DeadInterface(pw, EVENT_OBJECT_BLABO, m_main->CanBuild(OBJECT_LABO, m_object->GetTeam()));
+
+        pos.x = ox+sx*4.5f;
+        pw->CreateButton(pos, ddim, 128+46, EVENT_OBJECT_BPARA);
+        DeadInterface(pw, EVENT_OBJECT_BPARA, m_main->CanBuild(OBJECT_PARA, m_object->GetTeam()));
+
+        pos.x = ox+sx*5.4f;
+        pw->CreateButton(pos, ddim, 128+41, EVENT_OBJECT_BDESTROYER);
+        DeadInterface(pw, EVENT_OBJECT_BDESTROYER, m_main->CanBuild(OBJECT_DESTROYER, m_object->GetTeam()));
+
+    }
     UpdateInterface();
     m_lastUpdateTime = 0.0f;
     UpdateInterface(0.0f);
@@ -1500,7 +1595,7 @@ void CObjectInterface::UpdateInterface(float rTime)
                 m_lastAlarmTime = 0.0f;
             }
         }
-        
+
         pg->SetLevel(shield);
         pg->SetIcon(icon);
     }
@@ -1664,6 +1759,7 @@ void CObjectInterface::UpdateInterface()
     EnableInterface(pw, EVENT_OBJECT_TERRAFORM,   bEnable);
     EnableInterface(pw, EVENT_OBJECT_RECOVER,     bEnable);
     EnableInterface(pw, EVENT_OBJECT_FIRE,        bEnable);
+    EnableInterface(pw, EVENT_OBJECT_BUILD,       bEnable);
     EnableInterface(pw, EVENT_OBJECT_SPIDEREXPLO, bEnable);
     EnableInterface(pw, EVENT_OBJECT_RESET,       bEnable);
     EnableInterface(pw, EVENT_OBJECT_PEN0,        bEnable);
@@ -1678,7 +1774,11 @@ void CObjectInterface::UpdateInterface()
     EnableInterface(pw, EVENT_OBJECT_REC,         bEnable);
     EnableInterface(pw, EVENT_OBJECT_STOP,        bEnable);
 
-    if ( type == OBJECT_HUMAN )  // builder?
+    if ( type == OBJECT_HUMAN    ||  // builder?
+         type == OBJECT_MOBILEfb ||
+         type == OBJECT_MOBILEtb ||
+         type == OBJECT_MOBILEwb ||
+         type == OBJECT_MOBILEib )
     {
         EnableInterface(pw, EVENT_OBJECT_BFACTORY,  bEnable);
         EnableInterface(pw, EVENT_OBJECT_BDERRICK,  bEnable);
@@ -1730,6 +1830,48 @@ void CObjectInterface::UpdateInterface()
         }
     }
 
+    if ( (type == OBJECT_MOBILEfb ||
+          type == OBJECT_MOBILEtb ||
+          type == OBJECT_MOBILEwb ||
+          type == OBJECT_MOBILEib) &&  // builder?
+         !m_object->GetTrainer() )
+    {
+        if(!bEnable) m_buildInterface = false;
+        CheckInterface(pw, EVENT_OBJECT_BUILD, m_buildInterface);
+
+        pb = static_cast< CButton* >(pw->SearchControl(EVENT_WINDOW3));
+        pb->SetState(STATE_VISIBLE, m_buildInterface);
+
+        pb = static_cast< CButton* >(pw->SearchControl(EVENT_OBJECT_BFACTORY));
+        pb->SetState(STATE_VISIBLE, m_buildInterface);
+        pb = static_cast< CButton* >(pw->SearchControl(EVENT_OBJECT_BDERRICK));
+        pb->SetState(STATE_VISIBLE, m_buildInterface);
+        pb = static_cast< CButton* >(pw->SearchControl(EVENT_OBJECT_BCONVERT));
+        pb->SetState(STATE_VISIBLE, m_buildInterface);
+        pb = static_cast< CButton* >(pw->SearchControl(EVENT_OBJECT_BSTATION));
+        pb->SetState(STATE_VISIBLE, m_buildInterface);
+        pb = static_cast< CButton* >(pw->SearchControl(EVENT_OBJECT_BREPAIR));
+        pb->SetState(STATE_VISIBLE, m_buildInterface);
+        pb = static_cast< CButton* >(pw->SearchControl(EVENT_OBJECT_BTOWER));
+        pb->SetState(STATE_VISIBLE, m_buildInterface);
+        pb = static_cast< CButton* >(pw->SearchControl(EVENT_OBJECT_BRESEARCH));
+        pb->SetState(STATE_VISIBLE, m_buildInterface);
+        pb = static_cast< CButton* >(pw->SearchControl(EVENT_OBJECT_BRADAR));
+        pb->SetState(STATE_VISIBLE, m_buildInterface);
+        pb = static_cast< CButton* >(pw->SearchControl(EVENT_OBJECT_BENERGY));
+        pb->SetState(STATE_VISIBLE, m_buildInterface);
+        pb = static_cast< CButton* >(pw->SearchControl(EVENT_OBJECT_BLABO));
+        pb->SetState(STATE_VISIBLE, m_buildInterface);
+        pb = static_cast< CButton* >(pw->SearchControl(EVENT_OBJECT_BNUCLEAR));
+        pb->SetState(STATE_VISIBLE, m_buildInterface);
+        pb = static_cast< CButton* >(pw->SearchControl(EVENT_OBJECT_BPARA));
+        pb->SetState(STATE_VISIBLE, m_buildInterface);
+        pb = static_cast< CButton* >(pw->SearchControl(EVENT_OBJECT_BDESTROYER));
+        pb->SetState(STATE_VISIBLE, m_buildInterface);
+        pb = static_cast< CButton* >(pw->SearchControl(EVENT_OBJECT_BINFO));
+        pb->SetState(STATE_VISIBLE, m_buildInterface);
+    }
+
     bFly = bEnable;
     if ( bFly && (type == OBJECT_HUMAN || type == OBJECT_TECH) )
     {
@@ -1755,6 +1897,10 @@ void CObjectInterface::UpdateInterface()
          type == OBJECT_MOBILEta ||
          type == OBJECT_MOBILEwa ||
          type == OBJECT_MOBILEia ||
+         type == OBJECT_MOBILEfb ||
+         type == OBJECT_MOBILEtb ||
+         type == OBJECT_MOBILEwb ||
+         type == OBJECT_MOBILEib ||
          type == OBJECT_MOBILEfc ||
          type == OBJECT_MOBILEtc ||
          type == OBJECT_MOBILEwc ||
@@ -1777,6 +1923,8 @@ void CObjectInterface::UpdateInterface()
          type == OBJECT_MOBILEtt ||
          type == OBJECT_MOBILEwt ||
          type == OBJECT_MOBILEit ||
+         type == OBJECT_MOBILErp ||
+         type == OBJECT_MOBILEst ||
          type == OBJECT_MOBILEdr ||
          type == OBJECT_MOTHER   ||
          type == OBJECT_ANT      ||

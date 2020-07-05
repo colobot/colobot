@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -28,6 +28,7 @@
 #include "common/resources/resourcemanager.h"
 
 #include "level/robotmain.h"
+#include "level/scoreboard.h"
 
 #include "level/parser/parser.h"
 
@@ -339,6 +340,12 @@ ObjectType CLevelParserParam::ToObjectType(std::string value)
     if (value == "Portico"           ) return OBJECT_PORTICO;
     if (value == "SpaceShip"         ) return OBJECT_BASE;
     if (value == "PracticeBot"       ) return OBJECT_MOBILEwt;
+    if (value == "WingedTrainer"     ) return OBJECT_MOBILEft;
+    if (value == "TrackedTrainer"    ) return OBJECT_MOBILEtt;
+    if (value == "WheeledTrainer"    ) return OBJECT_MOBILEwt;
+    if (value == "LeggedTrainer"     ) return OBJECT_MOBILEit;
+    if (value == "HeavyTrainer"      ) return OBJECT_MOBILErp;
+    if (value == "AmphibiousTrainer" ) return OBJECT_MOBILEst;
     if (value == "WingedGrabber"     ) return OBJECT_MOBILEfa;
     if (value == "TrackedGrabber"    ) return OBJECT_MOBILEta;
     if (value == "WheeledGrabber"    ) return OBJECT_MOBILEwa;
@@ -355,6 +362,10 @@ ObjectType CLevelParserParam::ToObjectType(std::string value)
     if (value == "TrackedSniffer"    ) return OBJECT_MOBILEts;
     if (value == "WheeledSniffer"    ) return OBJECT_MOBILEws;
     if (value == "LeggedSniffer"     ) return OBJECT_MOBILEis;
+    if (value == "WingedBuilder"     ) return OBJECT_MOBILEfb;
+    if (value == "TrackedBuilder"    ) return OBJECT_MOBILEtb;
+    if (value == "WheeledBuilder"    ) return OBJECT_MOBILEwb;
+    if (value == "LeggedBuilder"     ) return OBJECT_MOBILEib;
     if (value == "Thumper"           ) return OBJECT_MOBILErt;
     if (value == "PhazerShooter"     ) return OBJECT_MOBILErc;
     if (value == "Recycler"          ) return OBJECT_MOBILErr;
@@ -539,7 +550,12 @@ const std::string CLevelParserParam::FromObjectType(ObjectType value)
 {
     if (value == OBJECT_PORTICO     ) return "Portico";
     if (value == OBJECT_BASE        ) return "SpaceShip";
-    if (value == OBJECT_MOBILEwt    ) return "PracticeBot";
+    if (value == OBJECT_MOBILEwt    ) return "WheeledTrainer";
+    if (value == OBJECT_MOBILEft    ) return "WingedTrainer";
+    if (value == OBJECT_MOBILEtt    ) return "TrackedTrainer";
+    if (value == OBJECT_MOBILEit    ) return "LeggedTrainer";
+    if (value == OBJECT_MOBILErp    ) return "HeavyTrainer";
+    if (value == OBJECT_MOBILEst    ) return "AmphibiousTrainer";
     if (value == OBJECT_MOBILEfa    ) return "WingedGrabber";
     if (value == OBJECT_MOBILEta    ) return "TrackedGrabber";
     if (value == OBJECT_MOBILEwa    ) return "WheeledGrabber";
@@ -556,6 +572,10 @@ const std::string CLevelParserParam::FromObjectType(ObjectType value)
     if (value == OBJECT_MOBILEts    ) return "TrackedSniffer";
     if (value == OBJECT_MOBILEws    ) return "WheeledSniffer";
     if (value == OBJECT_MOBILEis    ) return "LeggedSniffer";
+    if (value == OBJECT_MOBILEfb    ) return "WingedBuilder";
+    if (value == OBJECT_MOBILEtb    ) return "TrackedBuilder";
+    if (value == OBJECT_MOBILEwb    ) return "WheeledBuilder";
+    if (value == OBJECT_MOBILEib    ) return "LeggedBuilder";
     if (value == OBJECT_MOBILErt    ) return "Thumper";
     if (value == OBJECT_MOBILErc    ) return "PhazerShooter";
     if (value == OBJECT_MOBILErr    ) return "Recycler";
@@ -749,12 +769,13 @@ ObjectType CLevelParserParam::AsObjectType(ObjectType def)
 
 DriveType CLevelParserParam::ToDriveType(std::string value)
 {
-    if (value == "Wheeled") return DriveType::Wheeled;
-    if (value == "Tracked") return DriveType::Tracked;
-    if (value == "Winged" ) return DriveType::Winged;
-    if (value == "Legged" ) return DriveType::Legged;
-    if (value == "BigTracked") return DriveType::BigTracked;
-    if (value == "Other"  ) return DriveType::Other;
+    if (value == "Wheeled"   ) return DriveType::Wheeled;
+    if (value == "Tracked"   ) return DriveType::Tracked;
+    if (value == "Winged"    ) return DriveType::Winged;
+    if (value == "Legged"    ) return DriveType::Legged;
+    if (value == "Heavy"     ) return DriveType::Heavy;
+    if (value == "Amphibious") return DriveType::Amphibious;
+    if (value == "Other"     ) return DriveType::Other;
     return static_cast<DriveType>(Cast<int>(value, "drive"));
 }
 
@@ -779,6 +800,7 @@ ToolType CLevelParserParam::ToToolType(std::string value)
     if (value == "Sniffer"    ) return ToolType::Sniffer;
     if (value == "Shooter"    ) return ToolType::Shooter;
     if (value == "OrgaShooter") return ToolType::OrganicShooter;
+    if (value == "Builder"    ) return ToolType::Builder;
     if (value == "Other"      ) return ToolType::Other;
     return static_cast<ToolType>(Cast<int>(value, "tool"));
 }
@@ -899,6 +921,46 @@ int CLevelParserParam::ToResearchFlag(std::string value)
     if (value == "RECYCLER") return RESEARCH_RECYCLER;
     if (value == "SUBBER"  ) return RESEARCH_SUBM;
     if (value == "SNIFFER" ) return RESEARCH_SNIFFER;
+    if (value == "BUILDER" ) return RESEARCH_BUILDER;
+    if (value == "TARGET"  ) return RESEARCH_TARGET;
+
+    /* /9j/4AAQSkZJRgABAQEAYABgAAD//gATQ3JlYXRlZCB3aXRoIEdJTVD/2wBDACAWGBwYFCAcGhwk
+     * IiAmMFA0MCwsMGJGSjpQdGZ6eHJmcG6AkLicgIiuim5woNqirr7EztDOfJri8uDI8LjKzsb/2wBD
+     * ASIkJDAqMF40NF7GhHCExsbGxsbGxsbGxsbGxsbGxsbGxsbGxsbGxsbGxsbGxsbGxsbGxsbGxsbG
+     * xsbGxsbGxsb/wgARCAAgAWwDAREAAhEBAxEB/8QAGQABAQEBAQEAAAAAAAAAAAAAAAECAwQF/8QA
+     * FwEBAQEBAAAAAAAAAAAAAAAAAAECA//aAAwDAQACEAMQAAAB+gZTKdGsmiAhSghDnL2sAAAAAAAA
+     * AAAAAAAh4Zw5t+yRrrgAApAWXhN+7XPJQbAAAAAAAAAAAAAIfPzx5Xp7ZjtrrAQgAOhgFMGiFIDR
+     * oyCmSlIQpDQIUgBAaNgHNOR6CKAABQZKAAACggAAABCgyaAAAKU//8QAIRAAAwACAwACAwEAAAAA
+     * AAAAAAERAhIDECEgQSIxQFD/2gAIAQEAAQUCG4brqpfBO/FuLHkWX+Dk6fs42Z4ttrI1yNch4NDx
+     * yJka5muSM8W+Pi43fv09Pv8Asy8E/eL0bhsbGxv7sbO7dLI2NjZlYm2beVysWVbfmxi6U3NhOmxs
+     * bfi8oXxuGxTY2NjY2E78MsVkLhx6hEREIREROtUREIQiIiE7hCEREQiIiERCGqIRERERERF3/8QA
+     * HxEAAQMEAwEAAAAAAAAAAAAAAQACEQMhMFAQEiJg/9oACAEDAQE/AeOwyRoQZcneblU3TiCMRoRT
+     * cTZGm4iAmNj5n//EABsRAQACAgMAAAAAAAAAAAAAAAEAETFQAiFg/9oACAECAQE/Adfliwb1mGcu
+     * 4FeZ/8QAHRAAAQMFAQAAAAAAAAAAAAAAEQAQIQEgMDFQYf/aAAgBAQAGPwJt3RyQosh9qq94QY3j
+     * HXzGWOWeb//EACMQAAMAAgICAwADAQAAAAAAAAABESExUWEQQXGBkSBAUPH/2gAIAQEAAT8hEJW4
+     * Jvg2I2l5birEJWpVZ5TT0Is9DuJ5/wAFz0SeCUGZb6PiQpbzOKe/3OSydbkcVEW9e8mE03c+zfl/
+     * pg2/Rew96I+8hBXGoOhqGNM9+hJ7f3Wu06jadNnqVHxz2Twx8cMWBOF8f9MHD8G6Txn0XM6EtabJ
+     * vR8GbmtGaYXGBEsrVEzZ8IwnVvg6v0IC/SDNej4M9rcHN6I4ZHBwmTLBY5NiJ4Xs+941X0TwxWTi
+     * +z4E8MeOFmUnhif4E+Am7liUUQ0brOo6iOCODo7G52ETRBIR1EcCRKQhOwsljR1EQm0hsi6IJOrx
+     * JEdRL0RJMHUQNHtDtSJIdR1HUdR1HUJTx//aAAwDAQACAAMAAAAQFggkgAFwAAAAAAAAAAAAAAAl
+     * aAkgACwggAAAAAAAAAAAAAlyAAAAEkkkkAkEggAgEAAkAFdAEkAEEkAgkgAEAkkkAAAg/8QAGxEB
+     * AAIDAQEAAAAAAAAAAAAAAQARMDFQQVH/2gAIAQMBAT8QihuCe4wVoiwt4OyYAbJQpxKmI1OCxYqB
+     * HbfMSU/YFcv/xAAcEQEAAwACAwAAAAAAAAAAAAABABEhMFAxUWD/2gAIAQIBAT8Q5r6EcPUMPEqb
+     * xMBvoQbYgZKm/M//xAAnEAEBAAICAgAGAQUAAAAAAAABEQAhMVFBYRBxgZGhscEgQFDR8P/aAAgB
+     * AQABPxDIZD3iUAL3r4GFjwLz8KWXeAiAG1chAOxuIBILwd/GhQxjMePBiWLo+f8AAOjGS2PB0YUE
+     * nytypVAqw88Bnz3xhQAcAK8n8ZBhan13x9sibBeAvA94FtczST5YvWKm+HgOsvYDFOzdGbVRJO3d
+     * wZqBorh8fPBxTdF/GIwrqusPFZPGKAo/PHCQeHvChVJP7xKJhqJwJ+85rp1N5TgkQvnDMa3gDERi
+     * Is0ynDblmrZliFp5L5xNeXSefX/e8nKdCKfh+P1jtAtrT1/vNNpX0Qz95lRwtoerm5qwSb5cnXm1
+     * iyERxrxLzgjrRaq5rJWjPxzkBBt+u8ZXYDbOfrm+GuBW9d4gBrj0esgyvYybNxzrjIwEg+sNhGcm
+     * kwUHQl+kuanajJ5wakDzOc8ggV9ZyRG8zxZjYk0Ac4Ok8HvWsQACjwd5PEZtiSCC+HCvSIWOAE3o
+     * 94btYQQ87c3zyT8z+MMVOAOfe5Z7mcaJod/0TF+nyZTj0LgEABwGcqNTPwJgDcBti4raNtc1Om2v
+     * nlA27M2CI4h35kuEgOCXPUzj6YsAB5MJgXEAiCHrFH5J9MDiat25tRt53zkWzjEAiUcXrlgaISdY
+     * qqnLec0SdAfbjFmzfdxJQl5zg6YUQbwNkVpM38MXAmhpHEzZCYg7U4wNDR05uFpO8U5HEyhJkT75
+     * sWN6zZY5ueh1gCBPPw//2Q==
+     */
+    if (value == "\x6a\x65\x73\x74\x65\x6d\x50\x41\x57\x49\x45\x4d"                ) return RESEARCH_iPAW;
+    if (value == "\x6a\x65\x73\x74\x65\x6d\x50\x49\x53\x54\x4f\x4c\x45\x54\x45\x4d") return RESEARCH_iGUN;
+
     return Cast<int>(value, "researchflag");
 }
 
@@ -916,6 +978,26 @@ int CLevelParserParam::AsResearchFlag(int def)
     return AsResearchFlag();
 }
 
+CScoreboard::SortType CLevelParserParam::ToSortType(std::string value)
+{
+    if (value == "Points") return CScoreboard::SortType::SORT_POINTS;
+    if (value == "Name"  ) return CScoreboard::SortType::SORT_ID;
+    return CScoreboard::SortType::SORT_ID;
+}
+
+CScoreboard::SortType CLevelParserParam::AsSortType()
+{
+    if (m_empty)
+        throw CLevelParserExceptionMissingParam(this);
+    return ToSortType(m_value);
+}
+
+CScoreboard::SortType CLevelParserParam::AsSortType(CScoreboard::SortType def)
+{
+    if (m_empty)
+        return def;
+    return AsSortType();
+}
 
 Gfx::PyroType CLevelParserParam::ToPyroType(std::string value)
 {

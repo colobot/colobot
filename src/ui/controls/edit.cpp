@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -46,7 +46,8 @@
 
 namespace Ui
 {
-
+namespace
+{
 const float MARGX           = (3.75f/640.0f);
 const float MARGY           = (3.75f/480.0f);
 const float MARGYS          = (2.75f/480.0f);
@@ -96,6 +97,8 @@ bool IsDelimiter(char c)
     return IsSpace( c ) || IsBreaker( c );
 }
 
+} // namespace
+
 //! Object's constructor.
 CEdit::CEdit()
     : CControl(),
@@ -106,7 +109,7 @@ CEdit::CEdit()
 {
     m_len = 0;
 
-    m_fontType = Gfx::FONT_COURIER;
+    m_fontType = Gfx::FONT_STUDIO;
     m_bEdit         = true;
     m_bHilite       = true;
     m_bInsideScroll = true;
@@ -1156,7 +1159,7 @@ void CEdit::Draw()
 
 // Draw an image part.
 
-std::string PrepareImageFilename(std::string name)
+static std::string PrepareImageFilename(std::string name)
 {
     std::string filename;
     filename = name + ".png";
@@ -1323,13 +1326,13 @@ void CEdit::SetText(const std::string& text, bool bNew)
             if ( text[i+1] == 'n' )  // normal ?
             {
                 font &= ~Gfx::FONT_MASK_FONT;
-                font |= Gfx::FONT_COLOBOT;
+                font |= Gfx::FONT_COMMON;
                 i += 2;
             }
             else if ( text[i+1] == 'c' )  // cbot ?
             {
                 font &= ~Gfx::FONT_MASK_FONT;
-                font |= Gfx::FONT_COURIER;
+                font |= Gfx::FONT_STUDIO;
                 i += 2;
             }
             else if ( text[i+1] == 'b' )  // big title ?
@@ -1398,7 +1401,7 @@ int CEdit::GetTextLength()
 // Returns a name in a command.
 // \x nom1 nom2 nom3;
 
-std::string GetNameParam(std::string cmd, int rank)
+static std::string GetNameParam(std::string cmd, int rank)
 {
     std::vector<std::string> results;
     boost::split(results, cmd, boost::is_any_of(" ;"));
@@ -1414,7 +1417,7 @@ std::string GetNameParam(std::string cmd, int rank)
 // Returns a number of a command.
 // \x nom n1 n2;
 
-int GetValueParam(std::string cmd, int rank)
+static int GetValueParam(std::string cmd, int rank)
 {
     std::vector<std::string> results;
     boost::split(results, cmd, boost::is_any_of(" ;"));
@@ -1519,7 +1522,7 @@ bool CEdit::ReadText(std::string filename)
                 if ( m_bSoluce || !bInSoluce )
                 {
                     font &= ~Gfx::FONT_MASK_FONT;
-                    font |= Gfx::FONT_COLOBOT;
+                    font |= Gfx::FONT_COMMON;
                     inCbot = false;
                 }
                 i += 3;
@@ -1529,7 +1532,7 @@ bool CEdit::ReadText(std::string filename)
                 if ( m_bSoluce || !bInSoluce )
                 {
                     font &= ~Gfx::FONT_MASK_FONT;
-                    font |= Gfx::FONT_COURIER;
+                    font |= Gfx::FONT_STUDIO;
                     if (!inCbot)
                     {
                         if (inCbotBackground)
@@ -1633,7 +1636,7 @@ bool CEdit::ReadText(std::string filename)
 
 //?             iWidth = m_lineHeight*RetValueParam(buffer.data()+i+7, 1);
                 iWidth = static_cast<float>(GetValueParam(buffer.data()+i+7, 1));
-                iWidth *= m_engine->GetText()->GetHeight(Gfx::FONT_COLOBOT, Gfx::FONT_SIZE_SMALL);
+                iWidth *= m_engine->GetText()->GetHeight(Gfx::FONT_COMMON, Gfx::FONT_SIZE_SMALL);
                 iLines = GetValueParam(buffer.data()+i+7, 2);
 
                 // A part of image per line of text.
@@ -2537,6 +2540,8 @@ bool CEdit::Paste()
 {
     char    c;
     char*   text;
+    int     iTabToInsert=0;
+    int     iTmp; //temp for tab space equivalant insertion
 
     if ( !m_bEdit )
     {
@@ -2551,20 +2556,36 @@ bool CEdit::Paste()
     }
 
     UndoMemorize(OPERUNDO_SPEC);
-    for ( unsigned int i = 0; i < strlen(text); i++ )
+    for (unsigned int i = 0; i<strlen(text); ++i)
     {
         c = text[i];
-        if ( c == '\r' )
+        switch(c)
         {
+        case '\r':
             continue;
+        case '\t':
+            if (m_bAutoIndent)
+            {
+                if (0<m_cursor1 && m_cursor1<=m_len && '\n'!=m_text[m_cursor1-1])
+                    iTabToInsert++;
+                continue;
+            }
+            break;
+        case '\n':
+            iTabToInsert=0;
         }
-        if ( c == '\t' && m_bAutoIndent )
+        if (0<iTabToInsert && m_bAutoIndent)
         {
-            continue;
+            for (iTmp=m_engine->GetEditIndentValue()*iTabToInsert; iTmp>0; --iTmp)
+                InsertOne(' ');
+            iTabToInsert=0;
         }
         InsertOne(c);
     }
-
+    if (0<iTabToInsert && m_bAutoIndent && 0<m_cursor1
+        && (m_cursor1>=m_len || '\n'!=m_text[m_cursor1]))
+        for (iTmp=m_engine->GetEditIndentValue() ; iTmp>0; --iTmp)
+            InsertOne(' ');
     SDL_free(text);
     Justif();
     ColumnFix();
@@ -2869,7 +2890,7 @@ int CEdit::IndentTabCount()
     return nb;
 }
 
-// Adds or removes qq tabs.
+// Adds or removes some tabs.
 
 void CEdit::IndentTabAdjust(int number)
 {

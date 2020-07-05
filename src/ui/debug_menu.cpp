@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -65,7 +65,7 @@ void CDebugMenu::ToggleInterface()
     {
         CreateInterface();
         CLabel* pl = m_interface->CreateLabel(Math::Point(0.0f, 0.9f), Math::Point(1.0f, 0.1f), -1, EVENT_LABEL19, "??");
-        pl->SetFontType(Gfx::FONT_COURIER);
+        pl->SetFontType(Gfx::FONT_STUDIO);
     }
     else
     {
