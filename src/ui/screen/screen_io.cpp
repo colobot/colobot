@@ -157,7 +157,10 @@ void CScreenIO::IOUpdateList(bool isWrite)
     }
 
     if (m_saveList.size() <= static_cast<unsigned int>(sel))
+    {
+        pi->SetFilenameImage(""); // clear screenshot, nothing selected or New save selected
         return;
+    }
 
     std::string filename = m_saveList.at(sel) + "/screen.png";
     if ( isWrite )
@@ -165,10 +168,6 @@ void CScreenIO::IOUpdateList(bool isWrite)
         if ( sel < max-1 )
         {
             pi->SetFilenameImage(filename.c_str());
-        }
-        else
-        {
-            pi->SetFilenameImage("");
         }
     }
     else
