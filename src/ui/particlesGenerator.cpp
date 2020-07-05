@@ -18,7 +18,7 @@
  */
 
 #include "ui/particlesGenerator.h"
-#include <graphics\engine\particle.h>
+#include <graphics/engine/particle.h>
 
 namespace UI
 {

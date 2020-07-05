@@ -19,9 +19,9 @@
 
 #pragma once
 
-#include <math\point.h>
-#include <math\vector.h>
-#include <graphics\engine\particle.h>
+#include <math/point.h>
+#include <math/vector.h>
+#include <graphics/engine/particle.h>
 
 namespace UI 
 {
