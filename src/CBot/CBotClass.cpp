@@ -542,7 +542,7 @@ void CBotClass::DefineClasses(std::list<CBotClass*> pClassList, CBotCStack* pSta
     }
 }
 
-const std::list<CBotFunction*>& CBotClass::GetFunctions()
+const std::list<CBotFunction*>& CBotClass::GetFunctions() const
 {
     return m_pMethod;
 }
