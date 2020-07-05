@@ -33,6 +33,7 @@
 #include "ui/controls/interface.h"
 #include "ui/controls/label.h"
 #include "ui/controls/slider.h"
+#include "ui/controls/check.h"
 #include "ui/controls/window.h"
 
 namespace Ui
@@ -53,6 +54,7 @@ void CScreenSetupSound::CreateInterface()
     CLabel*         pl;
     CSlider*        psl;
     CButton*        pb;
+    CCheck*         pc;
     Math::Point     pos, ddim;
     std::string     name;
 
@@ -96,6 +98,13 @@ void CScreenSetupSound::CreateInterface()
     pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_NOISY);
     pb->SetState(STATE_SHADOW);
 
+    ddim.x = dim.x*6;
+    ddim.y = dim.y*0.5f;
+    pos.x = ox+sx*10;
+    pos.y = 0.55f;
+    pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_BGMUTE);
+    pc->SetState(STATE_SHADOW);
+
     UpdateSetupButtons();
 }
 
@@ -121,6 +130,12 @@ bool CScreenSetupSound::EventProcess(const Event &event)
             UpdateSetupButtons();
             break;
 
+        case EVENT_INTERFACE_BGMUTE:
+            m_settings->SetFocusLostMute(!m_settings->GetFocusLostMute());
+            ChangeSetupButtons();
+            UpdateSetupButtons();
+            break;
+
         default:
             return true;
     }
@@ -133,6 +148,7 @@ void CScreenSetupSound::UpdateSetupButtons()
 {
     CWindow*    pw;
     CSlider*    ps;
+    CCheck*     pc;
     float       value;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
@@ -150,6 +166,12 @@ void CScreenSetupSound::UpdateSetupButtons()
     {
         value = static_cast<float>(m_sound->GetMusicVolume());
         ps->SetVisibleValue(value);
+    }
+
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_BGMUTE));
+    if ( pc != nullptr )
+    {
+        pc->SetState(STATE_CHECK, m_settings->GetFocusLostMute());
     }
 }
 
