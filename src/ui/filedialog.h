@@ -345,7 +345,7 @@ private:
     bool         m_askOverwriteMode = false;
     bool         m_confirmOverwrite = false;
 
-    bool         m_public;
+    bool         m_public = false;
     std::string  m_pathPublic  = "";
     std::string  m_pathPrivate = "";
     bool         m_usePublicPrivate = false;
