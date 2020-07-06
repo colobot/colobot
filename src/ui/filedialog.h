@@ -20,6 +20,7 @@
 #pragma once
 
 #include "common/event.h"
+
 #include "math/point.h"
 
 #include <string>
