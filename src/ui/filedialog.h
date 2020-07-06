@@ -254,7 +254,7 @@ public:
     /**
      * \brief Set the filename that appears in the edit box when the dialog opens.
      */
-    void        SetFilename(const std::string& name);
+    void        SetFilename(const std::string& filename);
 
     /**
      * \brief Get the filename that was selected or typed.
