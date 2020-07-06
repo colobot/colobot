@@ -175,15 +175,15 @@ int StrUtils::Utf8CharSizeAt(const std::string &str, unsigned int pos)
         return 0;
 
     const char c = str[pos];
-    if((c & 0b11111000) == 0b11110000)
+    if((c & 0xF8) == 0xF0)
         return 4;
-    if((c & 0b11110000) == 0b11100000)
+    if((c & 0xF0) == 0xE0)
         return 3;
-    if((c & 0b11100000) == 0b11000000)
+    if((c & 0xE0) == 0xC0)
         return 2;
 
     // Invalid char - unexpected continuation byte
-    if((c & 0b11000000) == 0b10000000)
+    if((c & 0xC0) == 0x80)
         throw std::invalid_argument("Unexpected UTF-8 continuation byte");
 
     return 1;
