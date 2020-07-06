@@ -37,6 +37,7 @@ public:
     void SaveSettings();
     void LoadSettings();
 
+    void SaveAudioSettings();
 
     void SetTooltips(bool tooltips);
     bool GetTooltips();
