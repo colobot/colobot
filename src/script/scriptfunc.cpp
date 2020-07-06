@@ -393,7 +393,12 @@ bool CScriptFunctions::rDestroy(CBotVar* var, CBotVar* result, int& exception, v
     exception = 0;
     Error err;
 
-    CObject* obj = static_cast<CObject*>(var->GetUserPtr());
+    CObject* obj;
+    if (var == nullptr)
+        obj = CObjectManager::GetInstancePointer()->FindNearest(pThis, OBJECT_DESTROYER);
+    else
+        obj = static_cast<CObject*>(var->GetUserPtr());
+
     if (obj == nullptr)
     {
         exception = ERR_WRONG_OBJ;
@@ -647,7 +652,12 @@ bool CScriptFunctions::rTakeOff(CBotVar* var, CBotVar* result, int& exception, v
     Error       err;
 
     exception = 0;
-    CObject* base = static_cast<CObject*>(var->GetUserPtr());
+    CObject* base;
+    if (var == nullptr)
+        base = CObjectManager::GetInstancePointer()->FindNearest(pThis, OBJECT_BASE);
+    else
+        base = static_cast<CObject*>(var->GetUserPtr());
+
     if (base == nullptr)
     {
         exception = ERR_WRONG_OBJ;
@@ -933,16 +943,13 @@ bool CScriptFunctions::rSearchAll(CBotVar* var, CBotVar* result, int& exception,
 
 static CBotTypResult compileRadar(CBotVar* &var, void* user, CBotTypResult returnValue)
 {
-    CBotVar*    array;
-
     if ( var == nullptr )  return returnValue;
     if ( var->GetType() == CBotTypArrayPointer )
     {
-        array = var->GetItemList();
-        if ( array == nullptr )  return returnValue;
-        if ( array->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // type
+        CBotTypResult type = var->GetTypResult().GetTypElem();
+        if ( type.GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadParam); //type
     }
-    else if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // type
+    else if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadParam);  // type
     var = var->GetNext();
     if ( var == nullptr )  return returnValue;
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // angle
@@ -3056,20 +3063,29 @@ bool CScriptFunctions::rPenWidth(CBotVar* var, CBotVar* result, int& exception, 
 
 CBotTypResult CScriptFunctions::cOneObject(CBotVar* &var, void* user)
 {
-    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
-    var = var->GetNext();
-    if ( var == nullptr )  return CBotTypResult(CBotTypFloat);
+    if ( var != nullptr )
+    {
+        var = var->GetNext();
+        if ( var == nullptr )  return CBotTypResult(CBotTypFloat);
+    }
+    else
+        return CBotTypResult(CBotTypFloat);
 
     return CBotTypResult(CBotErrOverParam);
+
 }
 
 // Instruction "camerafocus(object)".
 
 bool CScriptFunctions::rCameraFocus(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript* script = static_cast<CScript*>(user);
+    CScript*    script = static_cast<CScript*>(user);
 
-    CObject* object = static_cast<CObject*>(var->GetUserPtr());
+    CObject* object;
+    if (var == nullptr)
+        object = script->m_object;
+    else
+        object = static_cast<CObject*>(var->GetUserPtr());
 
     script->m_main->SelectObject(object, false);
 
@@ -3400,6 +3416,7 @@ void CScriptFunctions::Init()
     bc->AddItem("load",        CBotTypResult(CBotTypPointer, "object"), CBotVar::ProtectionLevel::ReadOnly);
     bc->AddItem("id",          CBotTypResult(CBotTypInt), CBotVar::ProtectionLevel::ReadOnly);
     bc->AddItem("team",        CBotTypResult(CBotTypInt), CBotVar::ProtectionLevel::ReadOnly);
+    bc->AddItem("dead",        CBotTypResult(CBotTypBoolean), CBotVar::ProtectionLevel::ReadOnly);
     bc->AddItem("velocity",    CBotTypResult(CBotTypClass, "point"), CBotVar::ProtectionLevel::ReadOnly);
 
     CBotProgram::AddFunction("endmission",rEndMission,cEndMission);
@@ -3596,6 +3613,10 @@ void CScriptFunctions::uObject(CBotVar* botThis, void* user)
 
     pVar = pVar->GetNext();  // "team"
     value = object->GetTeam();
+    pVar->SetValInt(value);
+
+    pVar = pVar->GetNext();  // "dead"
+    value = object->IsDying();
     pVar->SetValInt(value);
 
     // Updates the velocity of the object.

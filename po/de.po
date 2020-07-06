@@ -111,9 +111,6 @@ msgstr "Analyse schon durchgeführt"
 msgid "Analysis performed"
 msgstr "Analyse vollendet"
 
-msgid "Analyzes only organic matter"
-msgstr "Analysiert nur Orgastoff"
-
 msgid "Anisotropy level\\Anisotropy level"
 msgstr "Anisotropie-Level\\Anisotropie-Level"
 
@@ -186,6 +183,9 @@ msgstr "Roboter zerstört"
 msgid "Bot factory"
 msgstr "Roboterfabrik"
 
+msgid "Build (\\key action;)"
+msgstr ""
+
 msgid "Build a bot factory"
 msgstr "Baut eine Roboterfabrik"
 
@@ -203,6 +203,9 @@ msgstr "Baue einen Zerstörer"
 
 msgid "Build a exchange post"
 msgstr "Baut einen Infoserver"
+
+msgid "Build a legged builder"
+msgstr ""
 
 msgid "Build a legged grabber"
 msgstr "Baut einen Krabbeltransporter"
@@ -249,8 +252,14 @@ msgstr "Baut einen Schutzschild"
 msgid "Build a subber"
 msgstr "Baut einen Kettentaucher"
 
+msgid "Build a target bot"
+msgstr ""
+
 msgid "Build a thumper"
 msgstr "Baut einen Stampfer"
+
+msgid "Build a tracked builder"
+msgstr ""
 
 msgid "Build a tracked grabber"
 msgstr "Baut einen Kettentransporter"
@@ -264,6 +273,9 @@ msgstr "Baut einen Kettenshooter"
 msgid "Build a tracked sniffer"
 msgstr "Baut einen Kettenschnüffler"
 
+msgid "Build a wheeled builder"
+msgstr ""
+
 msgid "Build a wheeled grabber"
 msgstr "Baut einen Radtransporter"
 
@@ -275,6 +287,9 @@ msgstr "Baut einen Radshooter"
 
 msgid "Build a wheeled sniffer"
 msgstr "Baut einen Radschnüffler"
+
+msgid "Build a winged builder"
+msgstr ""
 
 msgid "Build a winged grabber"
 msgstr "Baut einen Jettransporter"
@@ -729,6 +744,9 @@ msgstr "Falscher Batterietyp"
 msgid "Inappropriate object"
 msgstr "Objekt ungeeignet"
 
+msgid "Inappropriate sample"
+msgstr ""
+
 msgid "Incorrect index type"
 msgstr "Falscher Typ für einen Index"
 
@@ -797,6 +815,9 @@ msgstr "Hilfe über den Begriff (\\key cbot;)"
 
 msgid "LOADING"
 msgstr "LADEN"
+
+msgid "Legged builder"
+msgstr ""
 
 msgid "Legged grabber"
 msgstr "Transporter"
@@ -928,6 +949,9 @@ msgstr "Neu"
 
 msgid "New ..."
 msgstr "Neu ..."
+
+msgid "New Folder"
+msgstr ""
 
 msgid "New bot available"
 msgstr "Neuer Roboter verfügbar"
@@ -1085,6 +1109,9 @@ msgstr "Ort der Meldung\\Zeigt den Ort, von dem die letzte Meldung stammt"
 msgid "Original game developed by:"
 msgstr "Ursprünglichen Spiel entwickelt von:"
 
+msgid "Overwrite existing file?"
+msgstr ""
+
 msgid "Parameters missing"
 msgstr "Nicht genug Parameter"
 
@@ -1117,6 +1144,9 @@ msgstr "Stelle schon besetzt"
 
 msgid "Planets:"
 msgstr "Liste der Planeten:"
+
+msgid "Plans for builder available"
+msgstr ""
 
 msgid "Plans for defense tower available"
 msgstr "Errichtung eines Geschützturms möglich"
@@ -1323,6 +1353,9 @@ msgstr "Robby"
 msgid "Ruin"
 msgstr "Gebäuderuine"
 
+msgid "Run research program for builder"
+msgstr ""
+
 msgid "Run research program for defense tower"
 msgstr "Forschungsprogramm Geschützturm"
 
@@ -1343,6 +1376,9 @@ msgstr "Forschungsprogramm Schutzschild"
 
 msgid "Run research program for shooter"
 msgstr "Forschungsprogramm Shooterkanone"
+
+msgid "Run research program for target bot"
+msgstr ""
 
 msgid "Run research program for thumper"
 msgstr "Forschungsprogramm Stampfer"
@@ -1373,6 +1409,9 @@ msgstr "Speichern\\Aktuelle Mission speichern"
 
 msgid "Save\\Saves the current mission"
 msgstr "Speichern\\Speichert die Mission"
+
+msgid "Select Folder"
+msgstr ""
 
 msgid "Select the astronaut\\Selects the astronaut"
 msgstr "Astronauten auswählen\\Astronauten auswählen"
@@ -1606,6 +1645,9 @@ msgstr "Zu viele Fahnen dieser Farbe (Maximum 5)"
 msgid "Too many parameters"
 msgstr "Zu viele Parameter"
 
+msgid "Tracked builder"
+msgstr ""
+
 msgid "Tracked grabber"
 msgstr "Transporter"
 
@@ -1705,6 +1747,9 @@ msgstr "Wespe tödlich verwundet"
 msgid "Waste"
 msgstr "Abfall"
 
+msgid "Wheeled builder"
+msgstr ""
+
 msgid "Wheeled grabber"
 msgstr "Transporter"
 
@@ -1716,6 +1761,9 @@ msgstr "Shooter"
 
 msgid "Wheeled sniffer"
 msgstr "Schnüffler"
+
+msgid "Winged builder"
+msgstr ""
 
 msgid "Winged grabber"
 msgstr "Transporter"

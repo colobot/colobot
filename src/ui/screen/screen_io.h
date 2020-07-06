@@ -39,7 +39,7 @@ protected:
     void IOUpdateList(bool isWrite);
     void IODeleteScene();
     void IOWriteScene();
-    void IOReadScene();
+    bool IOReadScene();
 
 protected:
     CScreenLevelList* m_screenLevelList;

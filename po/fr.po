@@ -110,9 +110,6 @@ msgstr "Analyse déjà effectuée"
 msgid "Analysis performed"
 msgstr "Analyse terminée"
 
-msgid "Analyzes only organic matter"
-msgstr "N'analyse que la matière organique"
-
 msgid "Anisotropy level\\Anisotropy level"
 msgstr "Niveau d'anisotropie\\Niveau d'anisotropie"
 
@@ -188,6 +185,9 @@ msgstr "Robot détruit"
 msgid "Bot factory"
 msgstr "Usine de robots"
 
+msgid "Build (\\key action;)"
+msgstr ""
+
 msgid "Build a bot factory"
 msgstr "Construire une usine de robots"
 
@@ -205,6 +205,9 @@ msgstr "Construire un destructeur"
 
 msgid "Build a exchange post"
 msgstr "Construire une station relais"
+
+msgid "Build a legged builder"
+msgstr ""
 
 msgid "Build a legged grabber"
 msgstr "Fabriquer un préhenseur à pattes"
@@ -251,8 +254,14 @@ msgstr "Fabriquer un robot bouclier"
 msgid "Build a subber"
 msgstr "Fabriquer un robot sous-marin"
 
+msgid "Build a target bot"
+msgstr ""
+
 msgid "Build a thumper"
 msgstr "Fabriquer un robot secoueur"
+
+msgid "Build a tracked builder"
+msgstr ""
 
 msgid "Build a tracked grabber"
 msgstr "Fabriquer un préhenseur à chenilles"
@@ -266,6 +275,9 @@ msgstr "Fabriquer un tireur à chenilles"
 msgid "Build a tracked sniffer"
 msgstr "Fabriquer un renifleur à chenilles"
 
+msgid "Build a wheeled builder"
+msgstr ""
+
 msgid "Build a wheeled grabber"
 msgstr "Fabriquer un préhenseur à roues"
 
@@ -277,6 +289,9 @@ msgstr "Fabriquer un tireur à roues"
 
 msgid "Build a wheeled sniffer"
 msgstr "Fabriquer un renifleur à roues"
+
+msgid "Build a winged builder"
+msgstr ""
 
 msgid "Build a winged grabber"
 msgstr "Fabriquer un préhenseur volant"
@@ -731,6 +746,9 @@ msgstr "Source d'énergie non adapté"
 msgid "Inappropriate object"
 msgstr "Pas le bon objet"
 
+msgid "Inappropriate sample"
+msgstr ""
+
 msgid "Incorrect index type"
 msgstr "Mauvais type d'index"
 
@@ -799,6 +817,9 @@ msgstr "Aide sur le mot-clé (\\key cbot;)"
 
 msgid "LOADING"
 msgstr "CHARGEMENT"
+
+msgid "Legged builder"
+msgstr ""
 
 msgid "Legged grabber"
 msgstr "Robot préhenseur à pattes"
@@ -930,6 +951,9 @@ msgstr "Nouveau"
 
 msgid "New ..."
 msgstr "Nouveau ..."
+
+msgid "New Folder"
+msgstr ""
 
 msgid "New bot available"
 msgstr "Nouveau robot disponible"
@@ -1087,6 +1111,9 @@ msgstr "Montrer le lieu d'un message\\Montrer le lieu du dernier message"
 msgid "Original game developed by:"
 msgstr "Jeu original développé par :"
 
+msgid "Overwrite existing file?"
+msgstr ""
+
 msgid "Parameters missing"
 msgstr "Pas assez de paramètres"
 
@@ -1119,6 +1146,9 @@ msgstr "Emplacement occupé"
 
 msgid "Planets:"
 msgstr "Liste des planètes :"
+
+msgid "Plans for builder available"
+msgstr ""
 
 msgid "Plans for defense tower available"
 msgstr "Construction d'une tour de défense possible"
@@ -1325,6 +1355,9 @@ msgstr "Robbie"
 msgid "Ruin"
 msgstr "Bâtiment en ruine"
 
+msgid "Run research program for builder"
+msgstr ""
+
 msgid "Run research program for defense tower"
 msgstr "Lancer la recherche de la tour de défense"
 
@@ -1345,6 +1378,9 @@ msgstr "Lancer la recherche du bouclier"
 
 msgid "Run research program for shooter"
 msgstr "Lancer la recherche du canon de tir"
+
+msgid "Run research program for target bot"
+msgstr ""
 
 msgid "Run research program for thumper"
 msgstr "Lancer la recherche du secoueur"
@@ -1375,6 +1411,9 @@ msgstr "Enregistrer\\Enregistrer la mission en cours"
 
 msgid "Save\\Saves the current mission"
 msgstr "Enregistrer\\Enregistrer la mission en cours"
+
+msgid "Select Folder"
+msgstr ""
 
 msgid "Select the astronaut\\Selects the astronaut"
 msgstr "Sélectionner le cosmonaute\\Sélectionner le cosmonaute"
@@ -1608,6 +1647,9 @@ msgstr "Trop de drapeaux de cette couleur (maximum 5)"
 msgid "Too many parameters"
 msgstr "Trop de paramètres"
 
+msgid "Tracked builder"
+msgstr ""
+
 msgid "Tracked grabber"
 msgstr "Robot préhenseur à chenilles"
 
@@ -1707,6 +1749,9 @@ msgstr "Guêpe mortellement touchée"
 msgid "Waste"
 msgstr "Déchet"
 
+msgid "Wheeled builder"
+msgstr ""
+
 msgid "Wheeled grabber"
 msgstr "Robot préhenseur à roues"
 
@@ -1718,6 +1763,9 @@ msgstr "Robot tireur à roues"
 
 msgid "Wheeled sniffer"
 msgstr "Robot renifleur à roues"
+
+msgid "Winged builder"
+msgstr ""
 
 msgid "Winged grabber"
 msgstr "Robot préhenseur volant"
@@ -2055,4 +2103,3 @@ msgstr "epsitec.com"
 
 #~ msgid "\\c; (none)\\n;\n"
 #~ msgstr "\\c; (aucun)\\n;\n"
-

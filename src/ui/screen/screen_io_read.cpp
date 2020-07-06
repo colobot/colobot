@@ -168,8 +168,7 @@ bool CScreenIORead::EventProcess(const Event &event)
 
     if ( event.type == EVENT_INTERFACE_IOREAD )
     {
-        IOReadScene();
-        if(m_inSimulation)
+        if(IOReadScene() && m_inSimulation)
         {
             m_main->StopSuspend();
             m_main->ChangePhase(PHASE_SIMUL);

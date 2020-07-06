@@ -56,6 +56,8 @@ public:
     void SetFocusLostPause(bool focusLostPause);
     bool GetFocusLostPause();
 
+    void SetFocusLostMute(bool focusLostMute);
+    bool GetFocusLostMute();
 
     //! Managing the size of the default fonts
     //@{
@@ -97,6 +99,7 @@ protected:
     bool m_soluce4;
     bool m_movies;
     bool m_focusLostPause;
+    bool m_focusLostMute;
 
     float           m_fontSize;
     Math::Point     m_windowPos;

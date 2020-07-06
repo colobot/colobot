@@ -40,6 +40,7 @@ CSettings::CSettings()
     m_soluce4        = true;
     m_movies         = true;
     m_focusLostPause = true;
+    m_focusLostMute  = true;
 
     m_fontSize  = 19.0f;
     m_windowPos = Math::Point(0.15f, 0.17f);
@@ -79,6 +80,7 @@ void CSettings::SaveSettings()
     GetConfigFile().SetBoolProperty("Setup", "Soluce4", m_soluce4);
     GetConfigFile().SetBoolProperty("Setup", "Movies", m_movies);
     GetConfigFile().SetBoolProperty("Setup", "FocusLostPause", m_focusLostPause);
+    GetConfigFile().SetBoolProperty("Setup", "FocusLostMute", m_focusLostMute);
     GetConfigFile().SetBoolProperty("Setup", "OldCameraScroll", camera->GetOldCameraScroll());
     GetConfigFile().SetBoolProperty("Setup", "CameraInvertX", camera->GetCameraInvertX());
     GetConfigFile().SetBoolProperty("Setup", "CameraInvertY", camera->GetCameraInvertY());
@@ -157,6 +159,7 @@ void CSettings::LoadSettings()
     GetConfigFile().GetBoolProperty("Setup", "Soluce4", m_soluce4);
     GetConfigFile().GetBoolProperty("Setup", "Movies", m_movies);
     GetConfigFile().GetBoolProperty("Setup", "FocusLostPause", m_focusLostPause);
+    GetConfigFile().GetBoolProperty("Setup", "FocusLostMute", m_focusLostMute);
 
     if (GetConfigFile().GetBoolProperty("Setup", "OldCameraScroll", bValue))
         camera->SetOldCameraScroll(bValue);
@@ -363,6 +366,14 @@ bool CSettings::GetFocusLostPause()
     return m_focusLostPause;
 }
 
+void CSettings::SetFocusLostMute(bool focusLostMute)
+{
+    m_focusLostMute = focusLostMute;
+}
+bool CSettings::GetFocusLostMute()
+{
+    return m_focusLostMute;
+}
 
 void CSettings::SetFontSize(float size)
 {

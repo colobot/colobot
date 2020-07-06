@@ -60,7 +60,7 @@ public:
     static bool RemoveDirectory(const std::string& directory);
 
     //! List files contained in directory
-    static std::vector<std::string> ListFiles(const std::string &directory);
+    static std::vector<std::string> ListFiles(const std::string &directory, bool excludeDirs = false);
     //! List directories contained in directory
     static std::vector<std::string> ListDirectories(const std::string &directory);
 

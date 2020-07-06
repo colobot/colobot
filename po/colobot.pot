@@ -206,6 +206,12 @@ msgstr ""
 msgid "Public\\Common folder"
 msgstr ""
 
+msgid "Overwrite existing file?"
+msgstr ""
+
+msgid "Select Folder"
+msgstr ""
+
 msgid "Original game developed by:"
 msgstr ""
 
@@ -284,6 +290,9 @@ msgid "Next"
 msgstr ""
 
 msgid "Previous"
+msgstr ""
+
+msgid "New Folder"
 msgstr ""
 
 msgid "Exercises\\Programming exercises"

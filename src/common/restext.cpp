@@ -124,6 +124,8 @@ void InitializeRestext()
     stringsText[RT_IO_DIR]           = TR("Folder:");
     stringsText[RT_IO_PRIVATE]       = TR("Private\\Private folder");
     stringsText[RT_IO_PUBLIC]        = TR("Public\\Common folder");
+    stringsText[RT_IO_REPLACE]       = TR("Overwrite existing file?");
+    stringsText[RT_IO_SELECT_DIR]    = TR("Select Folder");
 
     stringsText[RT_GENERIC_DEV1]     = TR("Original game developed by:");
     stringsText[RT_GENERIC_DEV2]     = TR("epsitec.com");
@@ -162,6 +164,7 @@ void InitializeRestext()
 
     stringsEvent[EVENT_DIALOG_OK]           = TR("OK");
     stringsEvent[EVENT_DIALOG_CANCEL]       = TR("Cancel");
+    stringsEvent[EVENT_DIALOG_NEWDIR]       = TR("New Folder");
 
     stringsEvent[EVENT_INTERFACE_TRAINER]   = TR("Exercises\\Programming exercises");
     stringsEvent[EVENT_INTERFACE_DEFI]      = TR("Challenges\\Programming challenges");
@@ -204,6 +207,7 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_INVERTY]   = TR("Mouse inversion Y\\Inversion of the scrolling direction on the Y axis");
     stringsEvent[EVENT_INTERFACE_EFFECT]    = TR("Quake at explosions\\The screen shakes at explosions");
     stringsEvent[EVENT_INTERFACE_BGPAUSE]   = TR("Pause in background\\Pause the game when the window is unfocused");
+    stringsEvent[EVENT_INTERFACE_BGMUTE]    = TR("Mute sounds in background\\Mute all game sounds when the window is unfocused");
     stringsEvent[EVENT_INTERFACE_EDITMODE]  = TR("Automatic indent\\When program editing");
     stringsEvent[EVENT_INTERFACE_EDITVALUE] = TR("Big indent\\Indent 2 or 4 spaces per level defined by braces");
     stringsEvent[EVENT_INTERFACE_SOLUCE4]   = TR("Access to solutions\\Show program \"4: Solution\" in the exercises");

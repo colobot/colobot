@@ -315,7 +315,7 @@ CBotTypResult CBotClass::CompileMethode(CBotToken* name,
 
     // find the methods declared by user
 
-    r = CBotFunction::CompileCall(m_pMethod, name->GetString(), ppParams, nIdent);
+    r = CBotFunction::CompileMethodCall(name->GetString(), ppParams, nIdent, pStack, this);
     if ( r.Eq(CBotErrUndefCall) && m_parent != nullptr )
         return m_parent->CompileMethode(name, pThis, ppParams, pStack, nIdent);
     return r;
@@ -332,7 +332,7 @@ bool CBotClass::ExecuteMethode(long& nIdent,
     int ret = m_externalMethods->DoCall(pToken, pThis, ppParams, pStack, pResultType);
     if (ret >= 0) return ret;
 
-    ret = CBotFunction::DoCall(m_pMethod, nIdent, pToken->GetString(), pThis, ppParams, pStack, pToken, this);
+    ret = CBotFunction::DoCall(nIdent, pToken->GetString(), pThis, ppParams, pStack, pToken, this);
     if (ret >= 0) return ret;
 
     if (m_parent != nullptr)
@@ -355,7 +355,7 @@ void CBotClass::RestoreMethode(long& nIdent,
     CBotClass* pClass = this;
     while (pClass != nullptr)
     {
-        bool ok = CBotFunction::RestoreCall(pClass->m_pMethod, nIdent, name->GetString(), pThis, ppParams, pStack, pClass);
+        bool ok = CBotFunction::RestoreCall(nIdent, name->GetString(), pThis, ppParams, pStack, pClass);
         if (ok) return;
         pClass = pClass->m_parent;
     }
@@ -542,6 +542,11 @@ void CBotClass::DefineClasses(std::list<CBotClass*> pClassList, CBotCStack* pSta
     }
 }
 
+const std::list<CBotFunction*>& CBotClass::GetFunctions() const
+{
+    return m_pMethod;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
 {
@@ -609,44 +614,7 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                     CBotFunction* pf = *pfIter;
                     delete params;
 
-                    bool bConstructor = (pp == GetName());
                     CBotCStack* pile = pStack->TokenStack(nullptr, true);
-
-                    // make "this" known
-                    CBotToken TokenThis(std::string("this"), std::string());
-                    CBotVar* pThis = CBotVar::Create(TokenThis, CBotTypResult( CBotTypClass, this ) );
-                    pThis->SetUniqNum(-2);
-                    pile->AddVar(pThis);
-
-                    if (m_parent)
-                    {
-                        // makes "super" known
-                        CBotToken TokenSuper(std::string("super"), std::string());
-                        CBotVar* pThis = CBotVar::Create(TokenSuper, CBotTypResult(CBotTypClass, m_parent) );
-                        pThis->SetUniqNum(-3);
-                        pile->AddVar(pThis);
-                    }
-
-//                  int num = 1;
-                    CBotClass*  my = this;
-                    while (my != nullptr)
-                    {
-                        // places a copy of variables of a class (this) on a stack
-                        CBotVar* pv = my->m_pVar;
-                        while (pv != nullptr)
-                        {
-                            CBotVar* pcopy = CBotVar::Create(pv);
-                            CBotVar::InitType initType = CBotVar::InitType::UNDEF;
-                            if (!bConstructor || pv->IsStatic())
-                                initType = CBotVar::InitType::DEF;
-                            pcopy->SetInit(initType);
-                            pcopy->SetUniqNum(pv->GetUniqNum());
-                            pcopy->SetPrivate(pv->GetPrivate());
-                            pile->AddVar(pcopy);
-                            pv = pv->GetNext();
-                        }
-                        my = my->m_parent;
-                    }
 
                     // compiles a method
                     p = pBase;
