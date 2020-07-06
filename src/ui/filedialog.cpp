@@ -53,7 +53,7 @@ const float DELAY_DBCLICK_DIR = 0.75f;
 
 // Object's constructor.
 
-CFileDialog::CFileDialog() : m_eventQueue{}
+CFileDialog::CFileDialog()
 {
     m_eventQueue = CApplication::GetInstancePointer()->GetEventQueue();
     m_interface = CRobotMain::GetInstancePointer()->GetInterface();
