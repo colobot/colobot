@@ -6,13 +6,19 @@ set(_potFile colobot.pot)
 
 # Extract translations
 
-find_program(XGETTEXT_CMD xgettext)
+find_program(XGETTEXT_CMD xgettext REQUIRED)
+
+# xgettext changes the POT-Creation-Date even when there were no changes,
+# which is annoying for version control,
+# so replace this date with a constant string
+set(POT_CREATION_DATE_REGEX_MATCH "^(\"POT-Creation-Date:).*$")
+set(POT_CREATION_DATE_REGEX_REPLACE "\\1 DATE\\\\n\"")
 
 add_custom_command(OUTPUT ${_potFile}
     COMMAND ${XGETTEXT_CMD} ${colobot_SOURCE_DIR}/src/app/app.cpp --output=${_potFile} --no-wrap
     COMMAND ${XGETTEXT_CMD} ${colobot_SOURCE_DIR}/src/common/restext.cpp --output=${_potFile} --no-wrap --join-existing --no-location --keyword=TR
     COMMAND ${XGETTEXT_CMD} ${colobot_SOURCE_DIR}/src/script/script.cpp --output=${_potFile} --no-wrap --join-existing --no-location
-    COMMAND sed -i -e "s|^\\(\"POT-Creation-Date:\\).*$|\\1 DATE\\\\n\"|" ${_potFile}
+    COMMAND ${CMAKE_COMMAND} -DREGEX_MATCH=${POT_CREATION_DATE_REGEX_MATCH} -DREPLACE_WITH=${POT_CREATION_DATE_REGEX_REPLACE} -DFILE_PATH=${_potFile} -P ${colobot_SOURCE_DIR}/cmake/replace_in_file.cmake
 
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     COMMENT "Extract translatable messages to ${_potFile}"
