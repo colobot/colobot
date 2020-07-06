@@ -19,7 +19,7 @@ add_custom_command(OUTPUT ${_potFile}
     VERBATIM
 )
 
-add_custom_target(update-pot DEPENDS ${_potFile})
+add_custom_target(update-pot ALL DEPENDS ${_potFile})
 
 # Generate translations
 
