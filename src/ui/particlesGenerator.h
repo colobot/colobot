@@ -30,7 +30,7 @@ namespace UI
 	{
 		public:
 			CParticlesGenerator();
-			void generateMouseParticles(Math::Point& mousePosition, bool buttonPressed);
+			void generateMouseParticles(Math::Point mousePosition, bool buttonPressed);
 		private:
 			Gfx::CParticle* m_particleManager;
 			Math::Point CreateRandomDimensionsForMouseParticles(bool buttonPressed);

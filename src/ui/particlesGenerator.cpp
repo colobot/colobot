@@ -27,7 +27,7 @@ namespace UI
 		m_particleManager = Gfx::CEngine::GetInstancePointer()->GetParticle();
 	}
 
-	void CParticlesGenerator::generateMouseParticles(Math::Point& mousePosition, bool buttonPressed)
+	void CParticlesGenerator::generateMouseParticles(Math::Point mousePosition, bool buttonPressed)
 	{
 		Gfx::ParticleType particleType = buttonPressed ? Gfx::ParticleType::PARTISCRAPS : Gfx::ParticleType::PARTILENS1;
 		m_particleManager->CreateParticle(Math::Vector(mousePosition.x, mousePosition.y, 0), CreateRandomSpeedForMouseParticles(),
