@@ -45,6 +45,8 @@
 
 #include "sound/sound.h"
 
+#include "ui/filedialog.h"
+
 #include "ui/controls/check.h"
 #include "ui/controls/color.h"
 #include "ui/controls/control.h"
@@ -60,7 +62,6 @@
 #include "ui/controls/slider.h"
 #include "ui/controls/target.h"
 #include "ui/controls/window.h"
-#include "ui/filedialog.h"
 
 #include <stdio.h>
 #include <ctime>
