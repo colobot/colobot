@@ -4,13 +4,22 @@ on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    container: krzysh/colobot-build:latest
+    runs-on: ${{ matrix.host_os }}
+    container: ${{ matrix.container }}
     strategy:
       matrix:
-        target_os: [windows, linux]
+        target_os: [linux]
+        host_os: [ubuntu-16.04, ubuntu-18.04, ubuntu-20.04]
+        container: ['']
+        include:
+          - target_os: windows
+            host_os: ubuntu-latest
+            container: krzysh/colobot-build:latest
       fail-fast: false
     steps:
+    - name: Install Colobot dependencies
+      run: sudo apt-get install -y --no-install-recommends build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-regex-dev libphysfs-dev gettext git po4a vorbis-tools librsvg2-bin xmlstarlet
+      if: matrix.container == ''
     - uses: actions/checkout@v1
     - name: Create build directory
       run: cmake -E make_directory build
@@ -38,6 +47,7 @@ jobs:
       with:
         name: ${{matrix.target_os}}-debug
         path: build/install
+      if: matrix.target_os == 'windows' || matrix.host_os == 'ubuntu-18.04'
     - name: Create AppImage
       working-directory: build
       run: |
@@ -61,7 +71,7 @@ jobs:
       with:
         name: ${{matrix.target_os}}-debug-AppImage
         path: build/appimage
-      if: matrix.target_os == 'linux'
+      if: matrix.target_os == 'linux' && matrix.host_os == 'ubuntu-18.04'
     - name: Run tests
       # TODO: Maybe run Windows tests using wine as well?
       working-directory: build
@@ -70,13 +80,14 @@ jobs:
     - name: Upload test results
       uses: actions/upload-artifact@v2
       with:
-        name: Test results
+        name: Test results (${{ matrix.target_os }}, ${{ matrix.host_os }})
         path: build/gtestresults.xml
       if: matrix.target_os == 'linux'
   doc:
     runs-on: ubuntu-latest
-    container: krzysh/colobot-build:latest
     steps:
+    - name: Install Colobot dependencies
+      run: sudo apt-get install -y --no-install-recommends build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-regex-dev libphysfs-dev gettext git po4a vorbis-tools librsvg2-bin xmlstarlet doxygen graphviz
     - uses: actions/checkout@v1
     - name: Create build directory
       run: cmake -E make_directory build
