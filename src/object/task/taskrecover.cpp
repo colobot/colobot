@@ -376,5 +376,5 @@ bool CTaskRecover::Abort()
 
 CObject* CTaskRecover::SearchRuin()
 {
-    return CObjectManager::GetInstancePointer()->FindNearest(nullptr, m_recoverPos, {OBJECT_RUINmobilew1, OBJECT_RUINmobilew2, OBJECT_RUINmobilet1, OBJECT_RUINmobilet2, OBJECT_RUINmobiler1, OBJECT_RUINmobiler2, OBJECT_RUINdoor, OBJECT_RUINsupport, OBJECT_RUINradar}, 40.0f/g_unit);
+    return CObjectManager::GetInstancePointer()->FindNearest(nullptr, m_recoverPos, {OBJECT_RUINmobilew1, OBJECT_RUINmobilew2, OBJECT_RUINmobilet1, OBJECT_RUINmobilet2, OBJECT_RUINmobiler1, OBJECT_RUINmobiler2}, 40.0f/g_unit);
 }
