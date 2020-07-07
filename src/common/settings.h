@@ -26,7 +26,7 @@
 
 namespace Gfx
 {
-struct DeviceConfig;
+    struct DeviceConfig;
 }
 
 class CSettings : public CSingleton<CSettings>
@@ -44,8 +44,8 @@ public:
     void SetInterfaceGlint(bool interfaceGlint);
     bool GetInterfaceGlint();
 
-    void setMouseParticlesEnabled(bool mouseParticlesEnabled);
-    bool getMouseParticlesEnabled();
+    void SetMouseParticlesEnabled(bool mouseParticlesEnabled);
+    bool GetMouseParticlesEnabled();
 
     void SetSoluce4(bool soluce4);
     bool GetSoluce4();

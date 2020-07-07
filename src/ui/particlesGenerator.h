@@ -19,23 +19,28 @@
 
 #pragma once
 
-#include <math/point.h>
-#include <math/vector.h>
-#include <graphics/engine/particle.h>
+#include "graphics/engine/particle.h"
+#include "math/point.h"
+#include "math/vector.h"
 
-namespace UI 
+namespace UI
 {
-
-	class CParticlesGenerator 
-	{
-		public:
-			CParticlesGenerator();
-			void generateMouseParticles(Math::Point mousePosition, bool buttonPressed);
-		private:
-			Gfx::CParticle* m_particleManager;
-			Math::Point CreateRandomDimensionsForMouseParticles(bool buttonPressed);
-			Math::Vector CreateRandomSpeedForMouseParticles();
-			float CreateRandomDurationForMouseParticles();
-	};
+    /**
+     * \brief class for generating particles in the menu
+     */
+    class CParticlesGenerator
+    {
+    public:
+        CParticlesGenerator();
+        /**
+         * \brief generates particles after mouse cursor movement
+         */
+        void generateMouseParticles(Math::Point mousePosition, bool buttonPressed);
+    private:
+        Gfx::CParticle* m_particleManager;
+        Math::Point CreateRandomDimensionsForMouseParticles(bool buttonPressed);
+        Math::Vector CreateRandomSpeedForMouseParticles();
+        float CreateRandomDurationForMouseParticles();
+    };
 
 }

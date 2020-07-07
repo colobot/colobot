@@ -522,7 +522,7 @@ void CMainUserInterface::FrameParticle(float rTime)
         279.0f,  18.0f,
     };
 
-    if ( m_dialog->IsDialog() || !m_settings->getMouseParticlesEnabled() )  return;
+		if (m_dialog->IsDialog() || !m_settings->GetMouseParticlesEnabled())  return;
 
     if ( m_phase == PHASE_MAIN_MENU )
     {
@@ -721,19 +721,19 @@ void CMainUserInterface::FrameParticle(float rTime)
     }
 }
 
-void CMainUserInterface::CreateMouseParticles(Math::Point mouse, bool buttonPressed)
-{
-    if (isAllowedToCreateMouseParticles())
-    {
-        m_mouseParticlesGenerator -> generateMouseParticles(Math::Point(mouse.x, mouse.y), buttonPressed);
-    }
-}
+	void CMainUserInterface::CreateMouseParticles(Math::Point mousePosition, bool buttonPressed)
+	{
+		if (isAllowedToCreateMouseParticles())
+		{
+			m_mouseParticlesGenerator->generateMouseParticles(Math::Point(mousePosition.x, mousePosition.y), buttonPressed);
+		}
+	}
 
-bool CMainUserInterface::isAllowedToCreateMouseParticles()
-{
-    return m_settings->getMouseParticlesEnabled() &&
-        !((m_phase == PHASE_SIMUL || m_phase == PHASE_WIN || m_phase == PHASE_LOST) && !m_dialog->IsDialog());
-}
+	bool CMainUserInterface::isAllowedToCreateMouseParticles()
+	{
+		return m_settings->GetMouseParticlesEnabled() &&
+			!((m_phase == PHASE_SIMUL || m_phase == PHASE_WIN || m_phase == PHASE_LOST) && !m_dialog->IsDialog());
+	}
 
 // Updates the lists according to the cheat code.
 
