@@ -35,7 +35,7 @@
 
 #include "ui/maindialog.h"
 
-#include "ui/particlesGenerator.h"
+#include "ui/particles_generator.h"
 
 #include "ui/controls/group.h"
 #include "ui/controls/interface.h"
