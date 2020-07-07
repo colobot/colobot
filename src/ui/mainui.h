@@ -20,6 +20,7 @@
 #pragma once
 
 #include "level/robotmain.h"
+
 #include "ui/particlesGenerator.h"
 
 #include <array>
@@ -92,7 +93,7 @@ public:
 protected:
     void    GlintMove();
     void    FrameParticle(float rTime);
-    void    CreateMouseParticles(Math::Point mouse, bool bPress);
+    void    CreateMouseParticles(Math::Point mousePosition, bool buttonPressed);
     CScreenSetup* GetSetupScreen(Phase phase);
 
 protected:

@@ -17,9 +17,9 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#include "graphics/engine/particle.h"
-
 #include "ui/particlesGenerator.h"
+
+#include "graphics/engine/particle.h"
 
 namespace UI
 {
@@ -28,7 +28,7 @@ namespace UI
         m_particleManager = Gfx::CEngine::GetInstancePointer()->GetParticle();
     }
 
-    void CParticlesGenerator::generateMouseParticles(Math::Point mousePosition, bool buttonPressed)
+    void CParticlesGenerator::GenerateMouseParticles(Math::Point mousePosition, bool buttonPressed)
     {
         Gfx::ParticleType particleType = buttonPressed ? Gfx::ParticleType::PARTISCRAPS : Gfx::ParticleType::PARTILENS1;
         m_particleManager->CreateParticle(Math::Vector(mousePosition.x, mousePosition.y, 0), CreateRandomSpeedForMouseParticles(),

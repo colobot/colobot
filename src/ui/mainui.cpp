@@ -35,6 +35,8 @@
 
 #include "ui/maindialog.h"
 
+#include "ui/particlesGenerator.h"
+
 #include "ui/controls/group.h"
 #include "ui/controls/interface.h"
 #include "ui/controls/label.h"
@@ -55,8 +57,6 @@
 #include "ui/screen/screen_setup_graphics.h"
 #include "ui/screen/screen_setup_sound.h"
 #include "ui/screen/screen_welcome.h"
-
-#include "ui/particlesGenerator.h"
 
 namespace Ui
 {
@@ -522,7 +522,7 @@ void CMainUserInterface::FrameParticle(float rTime)
         279.0f,  18.0f,
     };
 
-		if (m_dialog->IsDialog() || !m_settings->GetMouseParticlesEnabled())  return;
+    if (m_dialog->IsDialog() || !m_settings->GetMouseParticlesEnabled())  return;
 
     if ( m_phase == PHASE_MAIN_MENU )
     {
@@ -721,19 +721,19 @@ void CMainUserInterface::FrameParticle(float rTime)
     }
 }
 
-	void CMainUserInterface::CreateMouseParticles(Math::Point mousePosition, bool buttonPressed)
-	{
-		if (isAllowedToCreateMouseParticles())
-		{
-			m_mouseParticlesGenerator->generateMouseParticles(Math::Point(mousePosition.x, mousePosition.y), buttonPressed);
-		}
-	}
+void CMainUserInterface::CreateMouseParticles(Math::Point mousePosition, bool buttonPressed)
+{
+    if (isAllowedToCreateMouseParticles())
+    {
+        m_mouseParticlesGenerator->GenerateMouseParticles(Math::Point(mousePosition.x, mousePosition.y), buttonPressed);
+    }
+}
 
-	bool CMainUserInterface::isAllowedToCreateMouseParticles()
-	{
-		return m_settings->GetMouseParticlesEnabled() &&
-			!((m_phase == PHASE_SIMUL || m_phase == PHASE_WIN || m_phase == PHASE_LOST) && !m_dialog->IsDialog());
-	}
+bool CMainUserInterface::isAllowedToCreateMouseParticles()
+{
+    return m_settings->GetMouseParticlesEnabled() &&
+        !((m_phase == PHASE_SIMUL || m_phase == PHASE_WIN || m_phase == PHASE_LOST) && !m_dialog->IsDialog());
+}
 
 // Updates the lists according to the cheat code.
 
