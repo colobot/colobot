@@ -1,0 +1,162 @@
+name: Linter
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    # it's easiest if it matches the version that was used to build colobot-lint, newer versions don't have llvm-3.6-dev in repo...
+    runs-on: ubuntu-16.04
+    env:
+      CC: /usr/lib/llvm-3.6/bin/clang
+      CXX: /usr/lib/llvm-3.6/bin/clang++
+      CLANG_PREFIX: /usr/lib/llvm-3.6
+    steps:
+    - name: Download Colobot dependencies
+      run: sudo apt-get install -y --no-install-recommends build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng12-dev libglew-dev libopenal-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-regex-dev libphysfs-dev gettext vorbis-tools
+    # TODO: migrate colobot-lint to GitHub Actions
+    - name: Download colobot-lint
+      run: |
+        sudo apt-get install -y --no-install-recommends clang-3.6 libtinyxml2.6.2v5
+        mkdir -p /tmp/colobot-lint
+        cd /tmp/colobot-lint
+        wget -O colobot-lint.zip "https://compiled.colobot.info/job/colobot/job/colobot-lint/job/dev/lastSuccessfulBuild/artifact/*zip*/archive.zip"
+        unzip colobot-lint.zip
+        chmod +x archive/Tools/count_errors.py  # TODO: ???
+    - uses: actions/checkout@v1
+    - name: Create build directory
+      run: cmake -E make_directory build
+    - name: Run CMake
+      working-directory: build
+      run: cmake -DCOLOBOT_LINT_BUILD=1 -DTESTS=1 -DTOOLS=1 -DCMAKE_EXPORT_COMPILE_COMMANDS=1 ..
+    - name: Run linter
+      shell: bash
+      run: |
+        set -e +x
+        # Run colobot-lint
+        WORKSPACE=$PWD
+        COLOBOT_DIR="$WORKSPACE"
+        COLOBOT_BUILD_DIR="$WORKSPACE/build"
+        COLOBOT_LINT_BUILD_DIR="/tmp/colobot-lint/archive/build"
+        COLOBOT_LINT_REPORT_FILE="$WORKSPACE/build/colobot_lint_report.xml"
+        # CLANG_PREFIX="/usr/lib/llvm-3.6" # Set in top-level environment block
+        cd "$COLOBOT_LINT_BUILD_DIR"
+        chmod +x ./colobot-lint
+        # Workaround for Clang not finding system headers
+        rm -rf bin/
+        mkdir -p bin
+        mv ./colobot-lint ./bin/
+        rm -f ./lib
+        ln -s ${CLANG_PREFIX}/lib ./lib
+        echo "Running colobot-lint"
+        find "$WORKSPACE" \( -wholename "$COLOBOT_DIR/src/*.cpp" \
+                         -or -wholename "$COLOBOT_DIR/test/unit/*.cpp" \
+                         -or -wholename "$COLOBOT_BUILD_DIR/fake_header_sources/src/*.cpp" \
+                         -or -wholename "$COLOBOT_BUILD_DIR/fake_header_sources/test/unit/*.cpp" \) \
+                -exec ./bin/colobot-lint \
+                -verbose \
+                -output-format xml \
+                -output-file "$COLOBOT_LINT_REPORT_FILE" \
+                -p "$COLOBOT_BUILD_DIR" \
+                -project-local-include-path "$COLOBOT_DIR/src" -project-local-include-path "$COLOBOT_BUILD_DIR/src" \
+                -license-template-file "$COLOBOT_DIR/LICENSE-HEADER.txt" \
+                {} +
+    - name: Upload results (XML)
+      uses: actions/upload-artifact@v2
+      with:
+        name: XML results
+        path: build/colobot_lint_report.xml
+    - name: Generate HTML report
+      shell: bash
+      run: |
+        set -e +x
+        # Generate HTML report
+        WORKSPACE=$PWD
+        COLOBOT_LINT_BUILD_DIR="/tmp/colobot-lint/archive/build"
+        COLBOT_LINT_REPORT_FILE="$WORKSPACE/build/colobot_lint_report.xml"
+        HTML_REPORT_DIR="$WORKSPACE/build/html_report"
+        echo "Generating HTML report"
+        cd "$COLOBOT_LINT_BUILD_DIR"
+        rm -rf HtmlReport/
+        tar -zxf html_report.tar.gz
+        HtmlReport/generate.py --xml-report "$COLBOT_LINT_REPORT_FILE" --output-dir "$HTML_REPORT_DIR"
+    - name: Upload results (HTML)
+      uses: actions/upload-artifact@v2
+      with:
+        name: HTML results
+        path: build/html_report
+    - name: Update stable/unstable build status
+      shell: bash
+      run: |
+        set -e +x
+        # Update stable/unstable build status
+        ret=0
+        WORKSPACE=$PWD
+        COLOBOT_LINT_REPORT_FILE="$WORKSPACE/build/colobot_lint_report.xml"
+        COLOBOT_LINT_DIR="/tmp/colobot-lint/archive"
+        OVERALL_STABLE_RULES=(
+            "class naming"
+            "code block placement"
+            "compile error"
+        #    "compile warning"
+        #    "enum naming"
+        #    "function naming"
+            "header file not self-contained"
+        #    "implicit bool cast"
+        #    "include style"
+        #    "inconsistent declaration parameter name"
+            "license header"
+        #    "naked delete"
+        #    "naked new"
+        #    "old style function"
+            "old-style null pointer"
+        #    "possible forward declaration"
+            "undefined function"
+        #    "uninitialized field"
+        #    "uninitialized local variable"
+        #    "unused forward declaration"
+        #    "variable naming"
+            "whitespace"
+        )
+        echo "Checking rule stability (overall)"
+        for ((i = 0; i < ${#OVERALL_STABLE_RULES[@]}; i++)); do
+            rule="${OVERALL_STABLE_RULES[$i]}"
+            count="$("$COLOBOT_LINT_DIR/Tools/count_errors.py" --rule-filter="$rule" --xml-report-file "$COLOBOT_LINT_REPORT_FILE")"
+            if [ "$count" != "0" ]; then
+               echo "UNSTABLE RULE: $rule ($count occurences)"
+               ret=1
+            fi
+        done
+        STABLE_RULES_WITHOUT_CBOT=(
+            "class naming"
+            "code block placement"
+            "compile error"
+            "compile warning"
+        #    "enum naming"
+        #    "function naming"
+            "header file not self-contained"
+        #    "implicit bool cast"
+            "include style"
+            "inconsistent declaration parameter name"
+            "license header"
+            "naked delete"
+            "naked new"
+        #    "old style function"
+            "old-style null pointer"
+        #    "possible forward declaration"
+            "undefined function"
+            "uninitialized field"
+        #    "uninitialized local variable"
+            "unused forward declaration"
+        #    "variable naming"
+            "whitespace"
+        )
+        echo "Checking rule stability (without CBOT)"
+        for ((i = 0; i < ${#STABLE_RULES_WITHOUT_CBOT[@]}; i++)); do
+            rule="${STABLE_RULES_WITHOUT_CBOT[$i]}"
+            count="$("$COLOBOT_LINT_DIR/Tools/count_errors.py" --rule-filter="$rule" --file-filter="-.*CBot.*" --xml-report-file "$COLOBOT_LINT_REPORT_FILE")"
+            if [ "$count" != "0" ]; then
+               echo "UNSTABLE RULE: $rule (without CBOT, $count occurences)"
+               ret=1
+            fi
+        done
+        exit $ret

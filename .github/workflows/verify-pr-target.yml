@@ -1,0 +1,11 @@
+name: Verify pull request target
+
+on: [pull_request]
+
+jobs:
+  wrong_pr_target:
+    runs-on: ubuntu-latest
+    if: github.base_ref == 'master'
+    steps:
+    - name: Wrong pull request target
+      run: echo "This pull request targets the master branch. Please edit the pull request to target dev." && exit 1
