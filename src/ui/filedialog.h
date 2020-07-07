@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,6 +20,7 @@
 #pragma once
 
 #include "common/event.h"
+
 #include "math/point.h"
 
 #include <string>
@@ -253,7 +254,7 @@ public:
     /**
      * \brief Set the filename that appears in the edit box when the dialog opens.
      */
-    void        SetFilename(const std::string& name);
+    void        SetFilename(const std::string& filename);
 
     /**
      * \brief Get the filename that was selected or typed.
@@ -344,7 +345,7 @@ private:
     bool         m_askOverwriteMode = false;
     bool         m_confirmOverwrite = false;
 
-    bool         m_public;
+    bool         m_public = false;
     std::string  m_pathPublic  = "";
     std::string  m_pathPrivate = "";
     bool         m_usePublicPrivate = false;

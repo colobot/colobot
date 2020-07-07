@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -168,8 +168,7 @@ bool CScreenIORead::EventProcess(const Event &event)
 
     if ( event.type == EVENT_INTERFACE_IOREAD )
     {
-        IOReadScene();
-        if(m_inSimulation)
+        if(IOReadScene() && m_inSimulation)
         {
             m_main->StopSuspend();
             m_main->ChangePhase(PHASE_SIMUL);

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -302,6 +302,12 @@ public:
      * \param pStack
      */
     static void DefineClasses(std::list<CBotClass*> pClassList, CBotCStack* pStack);
+
+    /*!
+     * \brief Get the list of user-defined methods in this class.
+     * \return List of methods, can be empty.
+     */
+    const std::list<CBotFunction*>& GetFunctions() const;
 
     /*!
      * \brief CompileDefItem

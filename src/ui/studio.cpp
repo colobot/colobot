@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -45,6 +45,8 @@
 
 #include "sound/sound.h"
 
+#include "ui/filedialog.h"
+
 #include "ui/controls/check.h"
 #include "ui/controls/color.h"
 #include "ui/controls/control.h"
@@ -60,7 +62,6 @@
 #include "ui/controls/slider.h"
 #include "ui/controls/target.h"
 #include "ui/controls/window.h"
-#include "ui/filedialog.h"
 
 #include <stdio.h>
 #include <ctime>

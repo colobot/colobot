@@ -23,7 +23,7 @@ Makefile
 /saves
 
 # Standard build directory
-/build
+/build*
 
 # Ignore KDevelop files
 .kdev4
@@ -45,3 +45,4 @@ CMakeLists.txt.user.*
 # Ignore Visual Studio files
 /CMakeSettings.json
 /.vs
+/out
