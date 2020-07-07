@@ -585,6 +585,8 @@ set(BASE_SOURCES
     ui/screen/screen_welcome.h
     ui/studio.cpp
     ui/studio.h
+    ui/particlesGenerator.cpp
+    ui/particlesGenerator.h
 )
 
 set(MAIN_SOURCES

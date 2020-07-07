@@ -34,23 +34,23 @@
 
 CSettings::CSettings()
 {
-    m_tooltips       = true;
+    m_tooltips = true;
     m_interfaceGlint = true;
-    m_interfaceRain  = true;
-    m_soluce4        = true;
-    m_movies         = true;
+    m_mouseParticlesEnabled = true;
+    m_soluce4 = true;
+    m_movies = true;
     m_focusLostPause = true;
-    m_focusLostMute  = true;
+    m_focusLostMute = true;
 
-    m_fontSize  = 19.0f;
+    m_fontSize = 19.0f;
     m_windowPos = Math::Point(0.15f, 0.17f);
     m_windowDim = Math::Point(0.70f, 0.66f);
     m_windowMax = false;
 
     m_IOPublic = false;
-    m_IODim = Math::Point(320.0f/640.0f, (121.0f+18.0f*8)/480.0f);
-    m_IOPos.x = (1.0f-m_IODim.x)/2.0f;  // in the middle
-    m_IOPos.y = (1.0f-m_IODim.y)/2.0f;
+    m_IODim = Math::Point(320.0f / 640.0f, (121.0f + 18.0f * 8) / 480.0f);
+    m_IOPos.x = (1.0f - m_IODim.x) / 2.0f;  // in the middle
+    m_IOPos.y = (1.0f - m_IODim.y) / 2.0f;
 
     m_language = LANGUAGE_ENV;
 }
@@ -76,7 +76,7 @@ void CSettings::SaveSettings()
 
     GetConfigFile().SetBoolProperty("Setup", "Tooltips", m_tooltips);
     GetConfigFile().SetBoolProperty("Setup", "InterfaceGlint", m_interfaceGlint);
-    GetConfigFile().SetBoolProperty("Setup", "InterfaceRain", m_interfaceRain);
+    GetConfigFile().SetBoolProperty("Setup", "MouseParticlesEnabled", m_mouseParticlesEnabled);
     GetConfigFile().SetBoolProperty("Setup", "Soluce4", m_soluce4);
     GetConfigFile().SetBoolProperty("Setup", "Movies", m_movies);
     GetConfigFile().SetBoolProperty("Setup", "FocusLostPause", m_focusLostPause);
@@ -110,7 +110,7 @@ void CSettings::SaveSettings()
     GetConfigFile().SetBoolProperty("Setup", "ShadowMapping", engine->GetShadowMapping());
     GetConfigFile().SetBoolProperty("Setup", "ShadowMappingQuality", engine->GetShadowMappingQuality());
     GetConfigFile().SetIntProperty("Setup", "ShadowMappingResolution",
-                                   engine->GetShadowMappingOffscreen() ? engine->GetShadowMappingOffscreenResolution() : 0);
+        engine->GetShadowMappingOffscreen() ? engine->GetShadowMappingOffscreenResolution() : 0);
 
     // Experimental settings
     GetConfigFile().SetBoolProperty("Experimental", "TerrainShadows", engine->GetTerrainShadows());
@@ -125,7 +125,7 @@ void CSettings::SaveSettings()
     GetConfigFile().SetFloatProperty("Edit", "WindowPosY", m_windowPos.y);
     GetConfigFile().SetFloatProperty("Edit", "WindowDimX", m_windowDim.x);
     GetConfigFile().SetFloatProperty("Edit", "WindowDimY", m_windowDim.y);
-    GetConfigFile().SetBoolProperty ("Edit", "WindowMaximized", m_windowMax);
+    GetConfigFile().SetBoolProperty("Edit", "WindowMaximized", m_windowMax);
 
     GetConfigFile().SetBoolProperty("Edit", "IOPublic", m_IOPublic);
     GetConfigFile().SetFloatProperty("Edit", "IOPosX", m_IOPos.x);
@@ -155,7 +155,7 @@ void CSettings::LoadSettings()
 
     GetConfigFile().GetBoolProperty("Setup", "Tooltips", m_tooltips);
     GetConfigFile().GetBoolProperty("Setup", "InterfaceGlint", m_interfaceGlint);
-    GetConfigFile().GetBoolProperty("Setup", "InterfaceRain", m_interfaceRain);
+    GetConfigFile().GetBoolProperty("Setup", "MouseParticlesEnabled", m_mouseParticlesEnabled);
     GetConfigFile().GetBoolProperty("Setup", "Soluce4", m_soluce4);
     GetConfigFile().GetBoolProperty("Setup", "Movies", m_movies);
     GetConfigFile().GetBoolProperty("Setup", "FocusLostPause", m_focusLostPause);
@@ -202,7 +202,7 @@ void CSettings::LoadSettings()
         if (iValue >= 0)
         {
             auto joysticks = app->GetJoystickList();
-            for(const auto& joystick : joysticks)
+            for (const auto& joystick : joysticks)
             {
                 if (joystick.index == iValue)
                 {
@@ -287,18 +287,18 @@ void CSettings::LoadSettings()
 
 
 
-    GetConfigFile().GetFloatProperty("Edit", "FontSize",    m_fontSize);
-    GetConfigFile().GetFloatProperty("Edit", "WindowPosX",  m_windowPos.x);
-    GetConfigFile().GetFloatProperty("Edit", "WindowPosY",  m_windowPos.y);
-    GetConfigFile().GetFloatProperty("Edit", "WindowDimX",  m_windowDim.x);
-    GetConfigFile().GetFloatProperty("Edit", "WindowDimY",  m_windowDim.y);
-    GetConfigFile().GetBoolProperty ("Edit", "WindowMaximized", m_windowMax);
+    GetConfigFile().GetFloatProperty("Edit", "FontSize", m_fontSize);
+    GetConfigFile().GetFloatProperty("Edit", "WindowPosX", m_windowPos.x);
+    GetConfigFile().GetFloatProperty("Edit", "WindowPosY", m_windowPos.y);
+    GetConfigFile().GetFloatProperty("Edit", "WindowDimX", m_windowDim.x);
+    GetConfigFile().GetFloatProperty("Edit", "WindowDimY", m_windowDim.y);
+    GetConfigFile().GetBoolProperty("Edit", "WindowMaximized", m_windowMax);
 
-    GetConfigFile().GetBoolProperty ("Edit", "IOPublic", m_IOPublic);
-    GetConfigFile().GetFloatProperty("Edit", "IOPosX",   m_IOPos.x);
-    GetConfigFile().GetFloatProperty("Edit", "IOPosY",   m_IOPos.y);
-    GetConfigFile().GetFloatProperty("Edit", "IODimX",   m_IODim.x);
-    GetConfigFile().GetFloatProperty("Edit", "IODimY",   m_IODim.y);
+    GetConfigFile().GetBoolProperty("Edit", "IOPublic", m_IOPublic);
+    GetConfigFile().GetFloatProperty("Edit", "IOPosX", m_IOPos.x);
+    GetConfigFile().GetFloatProperty("Edit", "IOPosY", m_IOPos.y);
+    GetConfigFile().GetFloatProperty("Edit", "IODimX", m_IODim.x);
+    GetConfigFile().GetFloatProperty("Edit", "IODimY", m_IODim.y);
 
     m_language = LANGUAGE_ENV;
     if (GetConfigFile().GetStringProperty("Language", "Lang", sValue))
@@ -306,7 +306,7 @@ void CSettings::LoadSettings()
         if (!sValue.empty() && !ParseLanguage(sValue, m_language))
         {
             GetLogger()->Error("Failed to parse language '%s' from config file. Default language will be used.\n",
-                               sValue.c_str());
+                sValue.c_str());
         }
     }
     app->SetLanguage(m_language);
@@ -330,13 +330,13 @@ bool CSettings::GetInterfaceGlint()
     return m_interfaceGlint;
 }
 
-void CSettings::SetInterfaceRain(bool interfaceRain)
+void CSettings::SetMouseParticlesEnabled(bool mouseParticlesEnabled)
 {
-    m_interfaceRain = interfaceRain;
+    m_mouseParticlesEnabled = mouseParticlesEnabled;
 }
-bool CSettings::GetInterfaceRain()
+bool CSettings::GetMouseParticlesEnabled()
 {
-    return m_interfaceRain;
+    return m_mouseParticlesEnabled;
 }
 
 void CSettings::SetSoluce4(bool soluce4)
