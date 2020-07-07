@@ -17,7 +17,7 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#include "ui/particlesGenerator.h"
+#include "ui/particles_generator.h"
 
 #include "graphics/engine/particle.h"
 

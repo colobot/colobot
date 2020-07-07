@@ -21,7 +21,7 @@
 
 #include "level/robotmain.h"
 
-#include "ui/particlesGenerator.h"
+#include "ui/particles_generator.h"
 
 #include <array>
 #include <string>
