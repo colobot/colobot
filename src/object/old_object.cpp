@@ -1274,7 +1274,7 @@ int COldObject::SearchDescendant(int parent, int n)
 
 void COldObject::TransformCrashSphere(Math::Sphere& crashSphere)
 {
-    crashSphere.radius *= GetScaleX();
+    if(!Implements(ObjectInterfaceType::Jostleable)) crashSphere.radius *= GetScaleX();
 
     // Returns to the sphere collisions,
     // which ignores the tilt of the vehicle.
