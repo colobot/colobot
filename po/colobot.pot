@@ -415,6 +415,9 @@ msgstr ""
 msgid "Pause in background\\Pause the game when the window is unfocused"
 msgstr ""
 
+msgid "Mute sounds in background\\Mute all game sounds when the window is unfocused"
+msgstr ""
+
 msgid "Automatic indent\\When program editing"
 msgstr ""
 

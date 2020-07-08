@@ -916,6 +916,9 @@ msgstr "Posunout vybraný program níže"
 msgid "Move selected program up"
 msgstr "Posunout vybraný program výše"
 
+msgid "Mute sounds in background\\Mute all game sounds when the window is unfocused"
+msgstr ""
+
 msgid "Mute\\No sound"
 msgstr "Ticho\\Bez zvuku"
 
@@ -933,6 +936,9 @@ msgstr "Nový"
 
 msgid "New ..."
 msgstr "Nový..."
+
+msgid "New Folder"
+msgstr ""
 
 msgid "New bot available"
 msgstr "Robot vyroben"
@@ -1089,6 +1095,9 @@ msgstr "Zdroj poslední zprávy\\Zobrazí objekt, který poslal poslední zpráv
 
 msgid "Original game developed by:"
 msgstr "Vývojáři původní hry:"
+
+msgid "Overwrite existing file?"
+msgstr ""
 
 msgid "Parameters missing"
 msgstr "Některé parametry nejsou vyplněné"
@@ -1386,6 +1395,9 @@ msgstr "Uložit\\Uložit současnou misi"
 
 msgid "Save\\Saves the current mission"
 msgstr "Uložit\\Uloží současnou misi"
+
+msgid "Select Folder"
+msgstr ""
 
 msgid "Select the astronaut\\Selects the astronaut"
 msgstr "Vybrat kosmonauta\\Vybere kosmonauta"
