@@ -1,11 +1,13 @@
 # Using vscode
 
 ## Compilation and installation
+
 ### Prerequisites
 
 * before compilation you have to instal tools and dependencies (points 1,2,3) - https://github.com/colobot/colobot/wiki/How-to-Build-Colobot%3A-Gold-Edition-Using-MSVC
 
 ### Cloning project
+
 execute following command:
 ```
 git clone https://github.com/MrJohn10/colobot.git
@@ -26,6 +28,7 @@ git clone https://github.com/MrJohn10/colobot.git --recurse-submodules
 * on the status line at the bottom you can choose cmake configuration and compiler
 
 ### Adding cmake settings:
+
 * create folder .vscode if there is none. Inside that folder create file settings.json with the following content:
 ```json
 {
@@ -47,6 +50,7 @@ git clone https://github.com/MrJohn10/colobot.git --recurse-submodules
 ```
 
 ### Compilation and installation
+
 * Open cmake extension in the left menu
 * click on 'configure all projects'
 * on the status line at the bottom click compilation target and choose install
