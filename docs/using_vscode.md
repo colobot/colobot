@@ -4,7 +4,7 @@
 
 ### Prerequisites
 
-* before compilation you have to instal tools and dependencies (points 1,2,3) - https://github.com/colobot/colobot/wiki/How-to-Build-Colobot%3A-Gold-Edition-Using-MSVC
+* before compilation you have to instal tools and dependencies (points 1,2,3): [Installing tools and dependencies](https://github.com/colobot/colobot/wiki/How-to-Build-Colobot%3A-Gold-Edition-Using-MSVC#installing-tools-and-dependencies)
 
 ### Cloning project
 
