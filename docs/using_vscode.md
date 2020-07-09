@@ -10,7 +10,7 @@
 
 execute following command:
 ```
-git clone https://github.com/MrJohn10/colobot.git
+git clone https://github.com/colobot/colobot.git
 ```
 in order to clone 'data' submodlue you also have to execute: <b> (this module is needed to launch the game)</b>
 ```
@@ -18,7 +18,7 @@ git submodule update --init
 ```
 if you want you can combine this commands and execute:
 ```
-git clone https://github.com/MrJohn10/colobot.git --recurse-submodules
+git clone https://github.com/colobot/colobot.git --recurse-submodules
 ```
 ### Configuring vscode
 
@@ -36,8 +36,8 @@ git clone https://github.com/MrJohn10/colobot.git --recurse-submodules
             "name": "x64-Debug",
             "generator": "Ninja",
             "configurationType": "Debug",
-            "inheritEnvironments": [ "msvc_x64_x64" ],
-            "CMAKE_TOOLCHAIN_FILE":{input path to toolchain}
+            "inheritEnvironments": ["msvc_x64_x64"],
+            "CMAKE_TOOLCHAIN_FILE": {input path to toolchain},
             "VCPKG_TARGET_TRIPLET": "x64-windows-static",
             "BOOST_STATIC": "1",
             "GLEW_STATIC": "1",
