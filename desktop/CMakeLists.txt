@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.17)
 
 set(COLOBOT_ICON_FILE ${CMAKE_CURRENT_SOURCE_DIR}/colobot.svg)
 
