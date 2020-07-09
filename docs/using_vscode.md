@@ -37,7 +37,7 @@ git clone https://github.com/colobot/colobot.git --recurse-submodules
             "generator": "Ninja",
             "configurationType": "Debug",
             "inheritEnvironments": ["msvc_x64_x64"],
-            "CMAKE_TOOLCHAIN_FILE": {input path to toolchain},
+            "CMAKE_TOOLCHAIN_FILE": input path to toolchain,
             "VCPKG_TARGET_TRIPLET": "x64-windows-static",
             "BOOST_STATIC": "1",
             "GLEW_STATIC": "1",
