@@ -84,79 +84,133 @@ jobs:
       with:
         name: HTML results
         path: build/html_report
-    - name: Update stable/unstable build status
-      shell: bash
+    - run: pip install requests
+    - name: Send linter results to GitHub
+      shell: python
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        set -e +x
-        # Update stable/unstable build status
-        ret=0
-        WORKSPACE=$PWD
-        COLOBOT_LINT_REPORT_FILE="$WORKSPACE/build/colobot_lint_report.xml"
-        COLOBOT_LINT_DIR="/tmp/colobot-lint/archive"
-        OVERALL_STABLE_RULES=(
-            "class naming"
-            "code block placement"
-            "compile error"
-        #    "compile warning"
-        #    "enum naming"
-        #    "function naming"
-            "header file not self-contained"
-        #    "implicit bool cast"
-        #    "include style"
-        #    "inconsistent declaration parameter name"
-            "license header"
-        #    "naked delete"
-        #    "naked new"
-        #    "old style function"
-            "old-style null pointer"
-        #    "possible forward declaration"
-            "undefined function"
-        #    "uninitialized field"
-        #    "uninitialized local variable"
-        #    "unused forward declaration"
-        #    "variable naming"
-            "whitespace"
-        )
-        echo "Checking rule stability (overall)"
-        for ((i = 0; i < ${#OVERALL_STABLE_RULES[@]}; i++)); do
-            rule="${OVERALL_STABLE_RULES[$i]}"
-            count="$("$COLOBOT_LINT_DIR/Tools/count_errors.py" --rule-filter="$rule" --xml-report-file "$COLOBOT_LINT_REPORT_FILE")"
-            if [ "$count" != "0" ]; then
-               echo "UNSTABLE RULE: $rule ($count occurences)"
-               ret=1
-            fi
-        done
-        STABLE_RULES_WITHOUT_CBOT=(
-            "class naming"
-            "code block placement"
-            "compile error"
-            "compile warning"
-        #    "enum naming"
-        #    "function naming"
-            "header file not self-contained"
-        #    "implicit bool cast"
-            "include style"
-            "inconsistent declaration parameter name"
-            "license header"
-            "naked delete"
-            "naked new"
-        #    "old style function"
-            "old-style null pointer"
-        #    "possible forward declaration"
-            "undefined function"
-            "uninitialized field"
-        #    "uninitialized local variable"
-            "unused forward declaration"
-        #    "variable naming"
-            "whitespace"
-        )
-        echo "Checking rule stability (without CBOT)"
-        for ((i = 0; i < ${#STABLE_RULES_WITHOUT_CBOT[@]}; i++)); do
-            rule="${STABLE_RULES_WITHOUT_CBOT[$i]}"
-            count="$("$COLOBOT_LINT_DIR/Tools/count_errors.py" --rule-filter="$rule" --file-filter="-.*CBot.*" --xml-report-file "$COLOBOT_LINT_REPORT_FILE")"
-            if [ "$count" != "0" ]; then
-               echo "UNSTABLE RULE: $rule (without CBOT, $count occurences)"
-               ret=1
-            fi
-        done
-        exit $ret
+        import os
+        import sys
+        import requests
+        import xml.etree.ElementTree as ET
+
+        OVERALL_STABLE_RULES=[
+            "class naming",
+            "code block placement",
+            "compile error",
+        #    "compile warning",
+        #    "enum naming",
+        #    "function naming",
+            "header file not self-contained",
+        #    "implicit bool cast",
+        #    "include style",
+        #    "inconsistent declaration parameter name",
+            "license header",
+        #    "naked delete",
+        #    "naked new",
+        #    "old style function",
+            "old-style null pointer",
+        #    "possible forward declaration",
+            "undefined function",
+        #    "uninitialized field",
+        #    "uninitialized local variable",
+        #    "unused forward declaration",
+        #    "variable naming",
+            "whitespace",
+        ]
+
+        STABLE_RULES_WITHOUT_CBOT=[
+            "class naming",
+            "code block placement",
+            "compile error",
+            "compile warning",
+        #    "enum naming",
+        #    "function naming",
+            "header file not self-contained",
+        #    "implicit bool cast",
+            "include style",
+            "inconsistent declaration parameter name",
+            "license header",
+            "naked delete",
+            "naked new",
+        #    "old style function",
+            "old-style null pointer",
+        #    "possible forward declaration",
+            "undefined function",
+            "uninitialized field",
+        #    "uninitialized local variable",
+            "unused forward declaration",
+        #    "variable naming",
+            "whitespace",
+        ]
+
+        # None of the available actions seem to do what I want, they all do stupid things like adding another check... let's just do it manually
+        # GitHub also doesn't seem to provide you with the check suite or check run ID, so we have to get it from the action ID via the API
+        s = requests.Session()
+        s.headers.update({
+            'Authorization': 'token ' + os.environ['GITHUB_TOKEN'],
+            'Accept': 'application/vnd.github.antiope-preview+json'  # Annotations are still technically a preview feature of the API
+        })
+        action_run = s.get(os.environ['GITHUB_API_URL'] + "/repos/" + os.environ['GITHUB_REPOSITORY'] + "/actions/runs/" + os.environ['GITHUB_RUN_ID']).json()
+        check_suite = s.get(action_run['check_suite_url']).json()
+        check_suite_runs = s.get(check_suite['check_runs_url']).json()
+        check_run = check_suite_runs['check_runs'][0]  # NOTE: This assumes that the 'lint' job is the first one in the workflow. You could find it by name if you really wanted.
+
+        def we_care_about(file_name, type):
+            if 'CBot' in file_name:
+              return type in OVERALL_STABLE_RULES
+            else:
+              return type in STABLE_RULES_WITHOUT_CBOT
+
+        results = ET.parse('build/colobot_lint_report.xml')
+        annotations = []
+        for error in results.find('errors').findall('error'):
+            location = error.find('location')
+            file_name = os.path.relpath(location.get('file'), os.environ['GITHUB_WORKSPACE'])
+            line_num = int(location.get('line'))
+            type = error.get('id')
+            severity = error.get('severity')
+            msg = error.get('msg')
+
+            gh_severity = 'warning'
+            if severity == 'error':
+                gh_severity = 'failure'
+            elif severity == 'information':
+                gh_severity = 'notice'
+
+            if not we_care_about(file_name, type):
+                # don't send the unstable rules to github at all as there are way too many of them and it would overload the API rate limit
+                continue
+
+            print('{}:{}: [{}] {}'.format(file_name, line_num, type, msg))
+
+            annotations.append({
+                'path': file_name,
+                'start_line': line_num,
+                'end_line': line_num,
+                'annotation_level': gh_severity,
+                'title': type,
+                'message': msg
+            })
+
+        summary = 'colobot-lint found {} issues'.format(len(annotations))
+        all_ok = len(annotations) == 0
+
+        # Annotations have to be sent in batches of 50
+        first = True
+        while first or len(annotations) > 0:
+            first = False
+            to_send = annotations[:50]
+            annotations = annotations[50:]
+            data = {
+                'output': {
+                    'title': summary,
+                    'summary': summary,
+                    'annotations': to_send
+                }
+            }
+            r = s.patch(check_run['url'], json=data)
+            r.raise_for_status()
+
+        sys.exit(0 if all_ok else 1)
