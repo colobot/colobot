@@ -20,8 +20,18 @@ jobs:
         mkdir -p /tmp/colobot-lint
         cd /tmp/colobot-lint
         wget -O colobot-lint.zip "https://compiled.colobot.info/job/colobot/job/colobot-lint/job/dev/lastSuccessfulBuild/artifact/*zip*/archive.zip"
-        unzip colobot-lint.zip
-        chmod +x archive/Tools/count_errors.py  # TODO: ???
+
+        # Unzip the archive
+        unzip ./colobot-lint.zip
+        # Workaround for Clang not finding system headers
+        mkdir ./bin
+        mv ./archive/build/colobot-lint ./bin/
+        chmod +x ./bin/colobot-lint
+        ln -s ${CLANG_PREFIX}/lib ./lib
+        # Unpack HtmlReport
+        tar -zxf ./archive/build/html_report.tar.gz
+        # Clean up
+        rm -r ./archive
     - uses: actions/checkout@v1
     - name: Create build directory
       run: cmake -E make_directory build
@@ -32,22 +42,12 @@ jobs:
       shell: bash
       run: |
         set -e +x
-        # Run colobot-lint
-        WORKSPACE=$PWD
+        WORKSPACE="$GITHUB_WORKSPACE"
         COLOBOT_DIR="$WORKSPACE"
         COLOBOT_BUILD_DIR="$WORKSPACE/build"
-        COLOBOT_LINT_BUILD_DIR="/tmp/colobot-lint/archive/build"
         COLOBOT_LINT_REPORT_FILE="$WORKSPACE/build/colobot_lint_report.xml"
-        # CLANG_PREFIX="/usr/lib/llvm-3.6" # Set in top-level environment block
-        cd "$COLOBOT_LINT_BUILD_DIR"
-        chmod +x ./colobot-lint
-        # Workaround for Clang not finding system headers
-        rm -rf bin/
-        mkdir -p bin
-        mv ./colobot-lint ./bin/
-        rm -f ./lib
-        ln -s ${CLANG_PREFIX}/lib ./lib
-        echo "Running colobot-lint"
+
+        cd "/tmp/colobot-lint"
         find "$WORKSPACE" \( -wholename "$COLOBOT_DIR/src/*.cpp" \
                          -or -wholename "$COLOBOT_DIR/test/unit/*.cpp" \
                          -or -wholename "$COLOBOT_BUILD_DIR/fake_header_sources/src/*.cpp" \
@@ -67,18 +67,7 @@ jobs:
         path: build/colobot_lint_report.xml
     - name: Generate HTML report
       shell: bash
-      run: |
-        set -e +x
-        # Generate HTML report
-        WORKSPACE=$PWD
-        COLOBOT_LINT_BUILD_DIR="/tmp/colobot-lint/archive/build"
-        COLBOT_LINT_REPORT_FILE="$WORKSPACE/build/colobot_lint_report.xml"
-        HTML_REPORT_DIR="$WORKSPACE/build/html_report"
-        echo "Generating HTML report"
-        cd "$COLOBOT_LINT_BUILD_DIR"
-        rm -rf HtmlReport/
-        tar -zxf html_report.tar.gz
-        HtmlReport/generate.py --xml-report "$COLBOT_LINT_REPORT_FILE" --output-dir "$HTML_REPORT_DIR"
+      run: /tmp/colobot-lint/HtmlReport/generate.py --xml-report "build/colobot_lint_report.xml" --output-dir "build/html_report"
     - name: Upload results (HTML)
       uses: actions/upload-artifact@v2
       with:
