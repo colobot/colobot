@@ -32,7 +32,7 @@ jobs:
         tar -zxf ./archive/build/html_report.tar.gz
         # Clean up
         rm -r ./archive
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Create build directory
       run: cmake -E make_directory build
     - name: Run CMake
