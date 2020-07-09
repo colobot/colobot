@@ -18,15 +18,15 @@ jobs:
       fail-fast: false
     steps:
     - name: Install Colobot dependencies
-      run: sudo apt-get install -y --no-install-recommends build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-regex-dev libphysfs-dev gettext git po4a vorbis-tools librsvg2-bin xmlstarlet
+      run: sudo apt-get update && sudo apt-get install -y --no-install-recommends build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-regex-dev libphysfs-dev gettext git po4a vorbis-tools librsvg2-bin xmlstarlet
       if: matrix.container == ''
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Create build directory
       run: cmake -E make_directory build
     - name: Run CMake (for Windows using MXE)
       working-directory: build
       # FIXME: without -lsetupapi linking sdl2 fails
-      run: /opt/mxe/usr/bin/i686-w64-mingw32.static-cmake -DCMAKE_CXX_STANDARD_LIBRARIES="-lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 -lsetupapi" -DCMAKE_INSTALL_PREFIX=/install -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDEV_BUILD=1 -DPORTABLE=1 -DTOOLS=1 -DTESTS=0 ..
+      run: /opt/mxe/usr/bin/i686-w64-mingw32.static-cmake -DCMAKE_CXX_STANDARD_LIBRARIES="-lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 -lsetupapi" -DCMAKE_INSTALL_PREFIX=/install -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDEV_BUILD=1 -DPORTABLE=1 -DTOOLS=1 -DTESTS=0 -DMXE_USE_CCACHE=0 ..
       if: matrix.target_os == 'windows'
     - name: Run CMake (for Linux)
       working-directory: build
@@ -87,8 +87,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Install Colobot dependencies
-      run: sudo apt-get install -y --no-install-recommends build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-regex-dev libphysfs-dev gettext git po4a vorbis-tools librsvg2-bin xmlstarlet doxygen graphviz
-    - uses: actions/checkout@v1
+      run: sudo apt-get update && sudo apt-get install -y --no-install-recommends build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-regex-dev libphysfs-dev gettext git po4a vorbis-tools librsvg2-bin xmlstarlet doxygen graphviz
+    - uses: actions/checkout@v2
     - name: Create build directory
       run: cmake -E make_directory build
     - name: Run CMake
