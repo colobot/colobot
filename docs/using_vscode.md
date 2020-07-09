@@ -5,11 +5,24 @@
 
 * before compilation you have to instal tools and dependencies (points 1,2,3) - https://github.com/colobot/colobot/wiki/How-to-Build-Colobot%3A-Gold-Edition-Using-MSVC
 
+### Cloning project
+execute following command:
+```
+git clone https://github.com/MrJohn10/colobot.git
+```
+in order to clone 'data' submodlue you also have to execute: <b> (this module is needed to launch the game)</b>
+```
+git submodule update --init
+```
+if you want you can combine this commands and execute:
+```
+git clone https://github.com/MrJohn10/colobot.git --recurse-submodules
+```
 ### Configuring vscode
 
 * open project folder in vscode
-* install extension CMake Tools: https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools
-* install extensnion ms-vscode.cpptools: https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools
+* install extension [CMake Tools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools)
+* install extensnion [C/C++](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools)
 * on the status line at the bottom you can choose cmake configuration and compiler
 
 ### Adding cmake settings:
