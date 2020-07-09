@@ -31,7 +31,7 @@ pipeline {
                                 /opt/mxe/usr/bin/i686-w64-mingw32.static-cmake \
                                     -DCMAKE_CXX_STANDARD_LIBRARIES="-lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 -lsetupapi" \
                                     -DCMAKE_INSTALL_PREFIX=/install \
-                                    -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDEV_BUILD=1 -DPORTABLE=1 -DTOOLS=1 -DTESTS=0 ../..
+                                    -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDEV_BUILD=1 -DPORTABLE=1 -DTOOLS=1 -DTESTS=0 -DMXE_USE_CCACHE=0 ../..
                                 make
                                 rm -rf install
                                 DESTDIR=. make install
