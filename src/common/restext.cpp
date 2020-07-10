@@ -48,8 +48,8 @@ const char* stringsCbot[CBot::CBotErrMAX]         = { nullptr };
  */
 #define TR(x) x
 
-/* Please run `make update-pot` after changing this file
- * in order to update translation files. Thank you.
+/* Please run `cmake --build <path_to_build_folder> --target update-pot`
+ * after changing this file in order to update translation files. Thank you.
  */
 
 void InitializeRestext()
