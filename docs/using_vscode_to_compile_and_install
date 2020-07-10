@@ -51,11 +51,11 @@ git clone https://github.com/colobot/colobot.git --recurse-submodules
 
 * Open cmake extension in the left menu.
 * Click on 'configure all projects'.
-* On the status line at the bottom click compilation target and choose install.
+* On the status line at the bottom change the compilation target to 'install'
 * Click build.
 * Click launch.
 
 ![alt text](../docimg/vscode-screenshot.png "vscode screenshot")
 
 
-If you have any problems create an issue or talk to us on our Discord channel: https://discord.gg/TRCJRc.
+If you have any problems create an issue or talk to us on our [Discord channel](https://discord.gg/TRCJRc).
