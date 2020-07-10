@@ -173,6 +173,8 @@ void CScreenSetupSound::UpdateSetupButtons()
     {
         pc->SetState(STATE_CHECK, m_settings->GetFocusLostMute());
     }
+
+    m_settings->SaveAudioSettings();
 }
 
 // Updates the engine function of the buttons after the setup phase.
@@ -199,6 +201,8 @@ void CScreenSetupSound::ChangeSetupButtons()
         value = ps->GetVisibleValue();
         m_sound->SetMusicVolume(static_cast<int>(value));
     }
+
+    m_settings->SaveAudioSettings();
 }
 
 } // namespace Ui

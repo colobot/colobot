@@ -72,7 +72,6 @@ void CSettings::SaveSettings()
     CRobotMain* main = CRobotMain::GetInstancePointer();
     Gfx::CEngine* engine = Gfx::CEngine::GetInstancePointer();
     Gfx::CCamera* camera = main->GetCamera();
-    CSoundInterface* sound = app->GetSound();
 
     GetConfigFile().SetBoolProperty("Setup", "Tooltips", m_tooltips);
     GetConfigFile().SetBoolProperty("Setup", "InterfaceGlint", m_interfaceGlint);
@@ -80,7 +79,6 @@ void CSettings::SaveSettings()
     GetConfigFile().SetBoolProperty("Setup", "Soluce4", m_soluce4);
     GetConfigFile().SetBoolProperty("Setup", "Movies", m_movies);
     GetConfigFile().SetBoolProperty("Setup", "FocusLostPause", m_focusLostPause);
-    GetConfigFile().SetBoolProperty("Setup", "FocusLostMute", m_focusLostMute);
     GetConfigFile().SetBoolProperty("Setup", "OldCameraScroll", camera->GetOldCameraScroll());
     GetConfigFile().SetBoolProperty("Setup", "CameraInvertX", camera->GetCameraInvertX());
     GetConfigFile().SetBoolProperty("Setup", "CameraInvertY", camera->GetCameraInvertY());
@@ -95,8 +93,6 @@ void CSettings::SaveSettings()
     GetConfigFile().SetIntProperty("Setup", "JoystickIndex", app->GetJoystickEnabled() ? app->GetJoystick().index : -1);
     GetConfigFile().SetFloatProperty("Setup", "ParticleDensity", engine->GetParticleDensity());
     GetConfigFile().SetFloatProperty("Setup", "ClippingDistance", engine->GetClippingDistance());
-    GetConfigFile().SetIntProperty("Setup", "AudioVolume", sound->GetAudioVolume());
-    GetConfigFile().SetIntProperty("Setup", "MusicVolume", sound->GetMusicVolume());
     GetConfigFile().SetBoolProperty("Setup", "EditIndentMode", engine->GetEditIndentMode());
     GetConfigFile().SetIntProperty("Setup", "EditIndentValue", engine->GetEditIndentValue());
     GetConfigFile().SetBoolProperty("Setup", "PauseBlur", engine->GetPauseBlurEnabled());
@@ -111,6 +107,9 @@ void CSettings::SaveSettings()
     GetConfigFile().SetBoolProperty("Setup", "ShadowMappingQuality", engine->GetShadowMappingQuality());
     GetConfigFile().SetIntProperty("Setup", "ShadowMappingResolution",
         engine->GetShadowMappingOffscreen() ? engine->GetShadowMappingOffscreenResolution() : 0);
+
+    // Save Audio settings
+    SaveAudioSettings();
 
     // Experimental settings
     GetConfigFile().SetBoolProperty("Experimental", "TerrainShadows", engine->GetTerrainShadows());
@@ -138,6 +137,16 @@ void CSettings::SaveSettings()
     GetConfigFile().SetStringProperty("Language", "Lang", lang);
 
     GetConfigFile().Save();
+}
+
+void CSettings::SaveAudioSettings()
+{
+    CApplication* app = CApplication::GetInstancePointer();
+    CSoundInterface* sound = app->GetSound();
+
+    GetConfigFile().SetIntProperty("Setup", "AudioVolume", sound->GetAudioVolume());
+    GetConfigFile().SetIntProperty("Setup", "MusicVolume", sound->GetMusicVolume());
+    GetConfigFile().SetBoolProperty("Setup", "FocusLostMute", m_focusLostMute);
 }
 
 void CSettings::LoadSettings()

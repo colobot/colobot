@@ -742,7 +742,7 @@ bool CRobotMain::ProcessEvent(Event &event)
             }
             else
             {
-                m_sound->SetMusicVolume(100);
+                m_sound->SetMusicVolume(MAXVOLUME*3/4);
             }
             // Set audio volume
             if (GetConfigFile().GetIntProperty("Setup", "AudioVolume", volume))
@@ -751,7 +751,7 @@ bool CRobotMain::ProcessEvent(Event &event)
             }
             else
             {
-                m_sound->SetAudioVolume(100);
+                m_sound->SetAudioVolume(MAXVOLUME);
             }
         }
 
