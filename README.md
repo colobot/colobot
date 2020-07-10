@@ -42,4 +42,4 @@ If you want to contribute to the project, see [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## Contact
 
-If you want to help in the project, please contact us on our [Discord channel](https://discord.gg/TRCJRc).
+If you want to help in the project, please contact us on our [Discord server](https://discord.gg/56Fm9kb).
