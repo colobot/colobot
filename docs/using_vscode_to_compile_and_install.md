@@ -10,7 +10,7 @@ In order to clone the project execute the following command:
 ```
 git clone https://github.com/colobot/colobot.git
 ```
-In order to clone `data` submodule you also have to execute: **(this module is needed to launch the game)**
+In order to clone the `data` submodule you also have to execute: **(this module is needed to launch the game)**
 ```
 git submodule update --init
 ```
@@ -23,11 +23,11 @@ git clone https://github.com/colobot/colobot.git --recurse-submodules
 1. Open project folder in vscode.
 2. Install extension [CMake Tools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools).
 3. Install extension [C/C++](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools).
-4. On the status line at the bottom you can choose cmake configuration and compiler (see the screenshot attached at the bottom)
+4. On the status line at the bottom you can choose cmake configuration and compiler (for reference see the image at the bottom).
 
 ### Adding cmake settings:
 
-Create folder .vscode if there is none. Inside that folder create file settings.json with the following content:
+Create folder .vscode if there is none. Inside that folder create a file settings.json with the following content:
 ```json
 {
     "cmake.configureSettings": {
@@ -35,7 +35,7 @@ Create folder .vscode if there is none. Inside that folder create file settings.
             "generator": "Ninja",
             "configurationType": "Debug",
             "inheritEnvironments": ["msvc_x64_x64"],
-            "CMAKE_TOOLCHAIN_FILE": input path to toolchain,
+            "CMAKE_TOOLCHAIN_FILE": "input your path to the toolchain file",
             "VCPKG_TARGET_TRIPLET": "x64-windows-static",
             "BOOST_STATIC": "1",
             "GLEW_STATIC": "1",
@@ -49,13 +49,14 @@ Create folder .vscode if there is none. Inside that folder create file settings.
 
 ### Compilation and installation
 
-1. Open cmake extension in the left menu.
-2. Click on `configure all projects`.
-3. On the status line at the bottom change the compilation target to `install`.
-4. Click `build`.
-5. Click `launch`.
+1. Open cmake extension in the left menu and click on `build all projects`
+    
+    ![alt text](../docimg/cmake-build-all.png "cmake build all screenshot")
+2. On the status line at the bottom change the compilation target to `install`.
+3. Click `build` to build the project.
+4. After the project is built, click on `launch` to run a game.
 
-![alt text](../docimg/vscode-screenshot.png "vscode screenshot")
+    ![alt text](../docimg/vscode-screenshot.png "compilation and installation screenshot")
 
 
 If you have any problems create an issue or talk to us on our [Discord channel](https://discord.gg/56Fm9kb).
