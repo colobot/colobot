@@ -12,8 +12,6 @@
 #define HAVE_CFLOCALECOPYCURRENT 1
 #endif
 
-#cmakedefine GLEW_STATIC
-
 #cmakedefine OPENAL_SOUND
 
 #cmakedefine PORTABLE_SAVES @PORTABLE_SAVES@
