@@ -175,5 +175,3 @@ else()
             ARCHIVE DESTINATION ${COLOBOT_INSTALL_LIB_DIR}
             RUNTIME DESTINATION ${COLOBOT_INSTALL_BIN_DIR})
 endif()
-
-group_sources("${SOURCES}" "Source Files")

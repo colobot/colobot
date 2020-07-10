@@ -3,16 +3,6 @@ set(CMAKE_CXX_FLAGS "${COLOBOT_CXX_FLAGS} ${MXE_CFLAGS}")
 set(CMAKE_CXX_FLAGS_RELEASE ${COLOBOT_CXX_FLAGS_RELEASE})
 set(CMAKE_CXX_FLAGS_DEBUG ${COLOBOT_CXX_FLAGS_DEBUG})
 
-# Groups source files for IDE project
-macro(group_sources SOURCES GROUP_ROOT)
-    foreach(SOURCE_FILE ${SOURCES})
-        get_filename_component(GROUP "${SOURCE_FILE}" PATH)
-        string(REPLACE "/" "\\" GROUP "${GROUP}")
-        set(GROUP "${GROUP_ROOT}\\${GROUP}")
-        source_group("${GROUP}" FILES "${SOURCE_FILE}")
-    endforeach()
-endmacro()
-
 # Subdirectories
 
 add_subdirectory(CBot)
@@ -663,5 +653,3 @@ endif()
 if(COLOBOT_LINT_BUILD)
     add_fake_header_sources("src")
 endif()
-
-group_sources("${BASE_SOURCES}" "Source Files")
