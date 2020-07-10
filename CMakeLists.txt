@@ -144,9 +144,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 # Include cmake directory with some additional scripts
 set(CMAKE_MODULE_PATH "${colobot_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
-# MSVC needs different flags if linking statically
-option(MSVC_STATIC "Link statically when using MSVC" OFF)
-
 # Compiler detection
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.7)
@@ -187,12 +184,14 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     message(STATUS "Detected MSVC compiler")
 
     set(NORMAL_CXX_FLAGS "/wd\"4244\" /wd\"4309\" /wd\"4800\" /wd\"4996\" /wd\"4351\" /EHsc") # disable some useless warnings
-    if(MSVC_STATIC)
+    if(BUILD_STATIC)
         set(RELEASE_CXX_FLAGS "/MT /Ox")
         set(DEBUG_CXX_FLAGS "/MTd /ZI")
-    else(MSVC_STATIC)
+        set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+    else()
         set(RELEASE_CXX_FLAGS "/MD /Ox")
         set(DEBUG_CXX_FLAGS "/MDd /ZI")
+        set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDLL$<$<CONFIG:Debug>:Debug>")
     endif()
     set(TEST_CXX_FLAGS "")
     add_definitions(-DNOEXCEPT= -DHAS_MSVC_EXCEPTION_BUG)
@@ -245,9 +244,6 @@ option(TESTS "Build tests" OFF)
 # Building tool programs can be enabled/disabled
 option(TOOLS "Build tool programs" OFF)
 
-# CBot can also be a static library
-option(CBOT_STATIC "Build CBot as static libary" OFF)
-
 # Generate desktop files, manpage, etc.
 option(DESKTOP "Generate desktop files, manpages, etc" ON)
 
@@ -257,18 +253,26 @@ option(INSTALL_DOCS "Install Doxygen-generated documentation" OFF)
 # Build OpenAL sound support
 option(OPENAL_SOUND "Build OpenAL sound support" ON)
 
+# Build Colobot with static libraries
+option(BUILD_STATIC "The default linking option for external libraries" OFF)
+
+# CBot can also be a static library
+option(CBOT_STATIC "Build CBot as static libary" ${BUILD_STATIC})
+
 # This is useful in case you want to use static boost libraries
-option(BOOST_STATIC "Link with static boost libraries" OFF)
+option(BOOST_STATIC "Link with static boost libraries" ${BUILD_STATIC})
 
 # This is useful on Windows, if linking against standard GLEW dll fails
-option(GLEW_STATIC "Link statically with GLEW" OFF)
+option(GLEW_STATIC "Link statically with GLEW" ${BUILD_STATIC})
+
+# Link statically with LibSndFile
+option(SNDFILE_STATIC "Link statically with LibSndFile" ${BUILD_STATIC})
 
 # Sometimes helpful if there is a different version of gtest installed on system vs bundled
 option(FORCE_BUNDLED_GTEST "Force the use of bundled gtest" OFF)
 
 # This is for use with colobot-lint tool
 option(COLOBOT_LINT_BUILD "Generate some additional CMake targets for use with colobot-lint" OFF)
-
 
 # Default build type if not given is debug
 if(NOT CMAKE_BUILD_TYPE)
@@ -301,12 +305,12 @@ set(Boost_USE_STATIC_RUNTIME OFF)
 set(Boost_ADDITIONALVERSION "1.51" "1.51.0")
 find_package(Boost COMPONENTS system filesystem regex REQUIRED)
 
+set(GLEW_USE_STATIC_LIBS ${GLEW_STATIC})
 find_package(GLEW REQUIRED)
 
 if (OPENAL_SOUND)
     find_package(OpenAL REQUIRED)
-    include_directories(${OPENAL_INCLUDE_DIR})
-    find_package(LibSndFile REQUIRED)
+    find_package(SndFile REQUIRED)
 endif()
 
 
@@ -345,10 +349,9 @@ include("${colobot_SOURCE_DIR}/cmake/colobot-lint.cmake")
 # MSVC specific settings
 ##
 set(WINGETOPT 0)
-if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+if(MSVC)
     message(STATUS "Adding MSVC-specific options")
 
-    set(CBOT_STATIC 1) # only this works for some reason
     set(WINGETOPT 1) # use wingetopt library
 
     # Hide console in release builds
@@ -360,7 +363,6 @@ endif()
 ##
 # Localename
 ##
-set(LOCALENAME_INCLUDE_DIR ${colobot_SOURCE_DIR}/lib/localename)
 add_subdirectory(lib/localename)
 
 
@@ -368,7 +370,6 @@ add_subdirectory(lib/localename)
 # Wingetopt
 ##
 if(WINGETOPT)
-    set(WINGETOPT_INCLUDE_DIR ${colobot_SOURCE_DIR}/lib/wingetopt/src)
     add_subdirectory(lib/wingetopt)
 endif()
 
@@ -456,7 +457,7 @@ if(TESTS)
     add_subdirectory(${GTEST_SRC_DIR} lib/gtest)
 
     # Hippomocks library
-    set(HIPPOMOCKS_INCLUDE_DIR ${colobot_SOURCE_DIR}/lib/hippomocks)
+    add_subdirectory(${colobot_SOURCE_DIR}/lib/hippomocks)
 
     # Tests targets
     enable_testing()

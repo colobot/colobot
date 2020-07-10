@@ -1,4 +1,14 @@
-set(SOURCES
+if(CBOT_STATIC)
+    add_library(CBot STATIC)
+else()
+    add_library(CBot SHARED)
+    install(TARGETS CBot
+            LIBRARY DESTINATION ${COLOBOT_INSTALL_LIB_DIR}
+            ARCHIVE DESTINATION ${COLOBOT_INSTALL_LIB_DIR}
+            RUNTIME DESTINATION ${COLOBOT_INSTALL_BIN_DIR})
+endif()
+
+target_sources(CBot PRIVATE
     CBot.h
     CBotCStack.cpp
     CBotCStack.h
@@ -152,26 +162,5 @@ set(SOURCES
     stdlib/stdlib.h
     stdlib/stdlib_public.h
 )
-
-# Includes
-set(LOCAL_INCLUDES
-    ${CMAKE_CURRENT_SOURCE_DIR}/..
-)
-
-set(SYSTEM_INCLUDES
-    ${Boost_INCLUDE_DIRS}
-)
-
-include_directories(${LOCAL_INCLUDES})
-include_directories(SYSTEM ${SYSTEM_INCLUDES})
-
-
-if(CBOT_STATIC)
-    add_library(CBot STATIC ${SOURCES})
-else()
-    add_library(CBot SHARED ${SOURCES})
-    install(TARGETS CBot LIBRARY
-            DESTINATION ${COLOBOT_INSTALL_LIB_DIR}
-            ARCHIVE DESTINATION ${COLOBOT_INSTALL_LIB_DIR}
-            RUNTIME DESTINATION ${COLOBOT_INSTALL_BIN_DIR})
-endif()
+target_include_directories(CBot PUBLIC ${CMAKE_CURRENT_LIST_DIR}/..)
+target_link_libraries(CBot PRIVATE Boost::headers)
