@@ -20,7 +20,7 @@
 #pragma once
 
 #define    STACKMEM    1                /// \def preserve memory for the execution stack
-#define    MAXSTACK    990              /// \def stack size reserved
+#define    MAXSTACK    530              /// \def stack size reserved
 
 #define    MAXARRAYSIZE    9999
 
