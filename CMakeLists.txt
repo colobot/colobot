@@ -229,6 +229,9 @@ option(DEV_BUILD "Enable development build (enables some debugging tools, local 
 # PLEASE DO NOT USE ON UNOFFICIAL BUILDS. Thanks.
 option(OFFICIAL_COLOBOT_BUILD "Official build (changes crash screen text)" OFF)
 
+# Hide console on Windows (useful for release builds)
+option(HIDE_CONSOLE "Hide console" OFF)
+
 # Hardcode relative paths instead of absolute paths
 option(USE_RELATIVE_PATHS "Generate relative paths from absolute paths" OFF)
 
@@ -310,8 +313,8 @@ find_package(GLEW REQUIRED)
 
 if (OPENAL_SOUND)
     find_package(OpenAL REQUIRED)
-    find_package(SndFile REQUIRED)
 endif()
+find_package(SndFile REQUIRED)
 
 
 if(NOT ASSERTS)
@@ -353,11 +356,6 @@ if(MSVC)
     message(STATUS "Adding MSVC-specific options")
 
     set(WINGETOPT 1) # use wingetopt library
-
-    # Hide console in release builds
-    if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
-        set(CMAKE_WIN32_EXECUTABLE 1)
-    endif()
 endif()
 
 ##

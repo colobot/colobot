@@ -5,41 +5,84 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ${{ matrix.host_os }}
-    container: ${{ matrix.container }}
     strategy:
       matrix:
         target_os: [linux]
         host_os: [ubuntu-16.04, ubuntu-18.04, ubuntu-20.04]
-        container: ['']
         include:
           - target_os: windows
-            host_os: ubuntu-latest
-            container: krzysh/colobot-build:latest
+            host_os: windows-2019
       fail-fast: false
     steps:
-    - name: Install Colobot dependencies
-      run: sudo apt-get update && sudo apt-get install -y --no-install-recommends build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-regex-dev libphysfs-dev gettext git po4a vorbis-tools librsvg2-bin xmlstarlet
-      if: matrix.container == ''
     - uses: actions/checkout@v2
     - name: Checkout the Google Test submodule
       run: git submodule update --init -- lib/googletest
+    - name: Install Colobot dependencies (for Linux)
+      run: sudo apt-get update && sudo apt-get install -y --no-install-recommends build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-regex-dev libphysfs-dev gettext git po4a vorbis-tools librsvg2-bin xmlstarlet
+      if: matrix.target_os == 'linux'
+    - name: Install Ninja
+      uses: seanmiddleditch/gha-setup-ninja@master
+      if: matrix.target_os == 'windows'
+    - name: Setup VS Environment
+      uses: seanmiddleditch/gha-setup-vsdevenv@master
+      if: matrix.target_os == 'windows'
+    - name: Install Colobot dependencies (for Windows)
+      uses: lukka/run-vcpkg@v3
+      with:
+        vcpkgGitCommitId: '0523b5eb57341e44fc0551900e5803b13686821a'
+        vcpkgTriplet: 'x64-windows-static'
+        #FIXME: openal-soft not compiling, see https://github.com/kcat/openal-soft/issues/449, https://github.com/microsoft/vcpkg/issues/10825
+        vcpkgArguments: 'boost-system boost-filesystem boost-regex boost-lexical-cast boost-bimap boost-algorithm boost-property-tree boost-optional boost-range sdl2 sdl2-ttf sdl2-image glew libpng libwebp tiff gettext libsndfile libvorbis libogg physfs'
+        # SHA-256 hash of the list of packages above, for caching purposes
+        appendedCacheKey: '6654161b6d89bd7ad950e2eb4c1bb85c191b98202da52fc6fd18fbea28a8ea50'
+      if: matrix.target_os == 'windows'
+    - name: Upload vcpkg logs
+      uses: actions/upload-artifact@v2
+      with:
+        name: vcpkg_logs
+        path: vcpkg/buildtrees/openal-soft/*.log
+      if: always()
+    - name: Install external tools (for Windows)
+      working-directory: ${{ github.workspace }}
+      run: |
+        echo "Downloading gettext..."
+        (New-Object System.Net.WebClient).DownloadFile("https://github.com/mlocati/gettext-iconv-windows/releases/download/v0.20.2-v1.16/gettext0.20.2-iconv1.16-static-64.zip", "gettext.zip");
+        echo "Unpacking gettext..."
+        7z x -ogettext gettext.zip;
+        echo "Adding gettext to PATH..."
+        echo "::add-path::${{ github.workspace }}\gettext\bin"
+        echo "Downloading xmlstarlet..."
+        (New-Object System.Net.WebClient).DownloadFile("https://downloads.sourceforge.net/project/xmlstar/xmlstarlet/1.6.1/xmlstarlet-1.6.1-win32.zip", "xmlstarlet.zip");
+        echo "Unpacking xmlstarlet..."
+        7z x -oxmlstarlet xmlstarlet.zip;
+        echo "Renaming xml.exe to xmlstarlet.exe"
+        Rename-Item -Path "${{ github.workspace }}\xmlstarlet\xmlstarlet-1.6.1\xml.exe" -NewName "xmlstarlet.exe"
+        echo "Adding xmlstarlet to PATH..."
+        echo "::add-path::${{ github.workspace }}\xmlstarlet\xmlstarlet-1.6.1"
+        echo "Downloading rsvg-convert..."
+        (New-Object System.Net.WebClient).DownloadFile("https://downloads.sourceforge.net/project/tumagcc/rsvg-convert-2.40.20.7z", "rsvg-convert.zip");
+        echo "Unpacking xmlstarlet..."
+        7z x -orsvg-convert rsvg-convert.zip;
+        echo "Adding rsvg-convert to PATH..."
+        echo "::add-path::${{ github.workspace }}\rsvg-convert"
+      shell: pwsh
+      if: matrix.target_os == 'windows'
     - name: Create build directory
       run: cmake -E make_directory build
-    - name: Run CMake (for Windows using MXE)
+    - name: Run CMake (for Windows)
       working-directory: build
-      # FIXME: without -lsetupapi linking sdl2 fails
-      run: /opt/mxe/usr/bin/i686-w64-mingw32.static-cmake -DCMAKE_CXX_STANDARD_LIBRARIES="-lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 -lsetupapi" -DCMAKE_INSTALL_PREFIX=/install -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDEV_BUILD=1 -DPORTABLE=1 -DTOOLS=1 -DTESTS=0 -DMXE_USE_CCACHE=0 ..
+      run: cmake -G "Ninja" -DCMAKE_C_COMPILER=cl.exe -DCMAKE_CXX_COMPILER=cl.exe -DVCPKG_TARGET_TRIPLET=x64-windows-static -DCMAKE_TOOLCHAIN_FILE="${{ env.VCPKG_ROOT }}\scripts\buildsystems\vcpkg.cmake" -DBUILD_STATIC=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}\build\install -DDEV_BUILD=1 -DPORTABLE=1 -DTOOLS=1 -DTESTS=1 -DDESKTOP=1 -DOPENAL_SOUND=0 ..
       if: matrix.target_os == 'windows'
     - name: Run CMake (for Linux)
       working-directory: build
-      run: cmake -DCMAKE_INSTALL_PREFIX=/install -DCMAKE_SKIP_INSTALL_RPATH=ON -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDEV_BUILD=1 -DPORTABLE=1 -DTOOLS=1 -DTESTS=1 -DDESKTOP=1 ..
+      run: cmake -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/build/install -DCMAKE_SKIP_INSTALL_RPATH=ON -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDEV_BUILD=1 -DPORTABLE=1 -DTOOLS=1 -DTESTS=1 -DDESKTOP=1 ..
       if: matrix.target_os == 'linux'
     - name: Build
       working-directory: build
-      run: make -j `nproc`
+      run: cmake --build . -j 9
     - name: Install
       working-directory: build
-      run: DESTDIR=. make install
+      run: cmake --install .
     - name: Patch library path
       working-directory: build
       run: patchelf --set-rpath '.' install/colobot
@@ -75,16 +118,13 @@ jobs:
         path: build/appimage
       if: matrix.target_os == 'linux' && matrix.host_os == 'ubuntu-18.04'
     - name: Run tests
-      # TODO: Maybe run Windows tests using wine as well?
       working-directory: build
       run: ./colobot_ut --gtest_output=xml:gtestresults.xml
-      if: matrix.target_os == 'linux'
     - name: Upload test results
       uses: actions/upload-artifact@v2
       with:
         name: Test results (${{ matrix.target_os }}, ${{ matrix.host_os }})
         path: build/gtestresults.xml
-      if: matrix.target_os == 'linux'
   doc:
     runs-on: ubuntu-latest
     steps:

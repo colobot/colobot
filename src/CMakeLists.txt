@@ -571,7 +571,12 @@ set(COLOBOT_LIBS ${LIBS} PARENT_SCOPE)
 
 
 # Targets
-add_executable(colobot app/main.cpp)
+if(HIDE_CONSOLE)
+    add_executable(colobot WIN32 app/main.cpp)
+else()
+    add_executable(colobot app/main.cpp)
+endif()
+
 if(PLATFORM_WINDOWS)
     target_sources(colobot PRIVATE ../desktop/colobot.rc)
 endif()
