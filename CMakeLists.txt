@@ -7,6 +7,10 @@ cmake_minimum_required(VERSION 3.17)
 
 project(colobot C CXX)
 
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED YES)
+set(CMAKE_CXX_EXTENSIONS NO)
+
 ##
 # Project version
 ##
@@ -152,7 +156,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 
     message(STATUS "Detected GCC version 4.7+")
 
-    set(NORMAL_CXX_FLAGS "-std=gnu++11 -Wall -Werror -Wold-style-cast -pedantic-errors -Wmissing-declarations")
+    set(NORMAL_CXX_FLAGS "-Wall -Werror -Wold-style-cast -pedantic-errors -Wmissing-declarations")
     set(NORMAL_CXX_FLAGS "${NORMAL_CXX_FLAGS} -Wno-error=deprecated-declarations") # updated version of physfs is not available on some platforms so we keep using deprecated functions, see #958
 
     if(NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5.0)
@@ -174,7 +178,7 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=bfd")
     endif()
 
-    set(NORMAL_CXX_FLAGS "-std=c++11 -Wall -Werror -Wold-style-cast -pedantic-errors -Wmissing-prototypes")
+    set(NORMAL_CXX_FLAGS "-Wall -Werror -Wold-style-cast -pedantic-errors -Wmissing-prototypes")
     set(NORMAL_CXX_FLAGS "${NORMAL_CXX_FLAGS} -Wno-error=deprecated-declarations") # updated version of physfs is not available on some platforms so we keep using deprecated functions, see #958
     set(RELEASE_CXX_FLAGS "-O2")
     set(DEBUG_CXX_FLAGS "-g -O0")
@@ -185,12 +189,8 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
 
     set(NORMAL_CXX_FLAGS "/wd\"4244\" /wd\"4309\" /wd\"4800\" /wd\"4996\" /wd\"4351\" /EHsc") # disable some useless warnings
     if(BUILD_STATIC)
-        set(RELEASE_CXX_FLAGS "/MT /Ox")
-        set(DEBUG_CXX_FLAGS "/MTd /ZI")
         set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
     else()
-        set(RELEASE_CXX_FLAGS "/MD /Ox")
-        set(DEBUG_CXX_FLAGS "/MDd /ZI")
         set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDLL$<$<CONFIG:Debug>:Debug>")
     endif()
     set(TEST_CXX_FLAGS "")
