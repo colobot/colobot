@@ -453,6 +453,8 @@ if(TESTS)
         # Add aliases so target names are compatible with the find_package above
         add_library(GTest::GTest ALIAS gtest)
         add_library(GTest::Main ALIAS gtest_main)
+    else()
+        message(FATAL_ERROR "Could not find gtest, cannot enable testing")
     endif()
 
     # Hippomocks library
