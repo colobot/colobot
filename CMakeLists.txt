@@ -444,25 +444,24 @@ endif()
 
 if(TESTS)
     # Google Test library
-    find_path(GTEST_SRC_DIR NAMES src/gtest.cc src/gtest-all.cc PATHS /usr/src PATH_SUFFIXES gtest)
-    find_path(GTEST_INCLUDE_DIR gtest/gtest.h PATHS /usr/include)
-    if(NOT(FORCE_BUNDLED_GTEST) AND GTEST_SRC_DIR AND GTEST_INCLUDE_DIR)
-        message(STATUS "Using system gtest library in ${GTEST_SRC_DIR}")
-    else()
-        message(STATUS "Using bundled gtest library")
-        set(GTEST_SRC_DIR ${colobot_SOURCE_DIR}/lib/gtest)
-        set(GTEST_INCLUDE_DIR ${colobot_SOURCE_DIR}/lib/gtest/include)
+    find_package(GTest 1.10.0 QUIET)
+    if(NOT(FORCE_BUNDLED_GTEST) AND GTEST_FOUND)
+        message(STATUS "Using system gtest library in ${GTEST_BOTH_LIBRARIES}")
+    elseif(EXISTS "${colobot_SOURCE_DIR}/lib/googletest/googletest/CMakeLists.txt")
+        message(STATUS "Using gtest git submodule")
+        add_subdirectory("${colobot_SOURCE_DIR}/lib/googletest/googletest" "lib/googletest/googletest")
+        # Add aliases so target names are compatible with the find_package above
+        add_library(GTest::GTest ALIAS gtest)
+        add_library(GTest::Main ALIAS gtest_main)
     endif()
-
-    add_subdirectory(${GTEST_SRC_DIR} lib/gtest)
 
     # Hippomocks library
     add_subdirectory(${colobot_SOURCE_DIR}/lib/hippomocks)
 
     # Tests targets
     enable_testing()
+    include(GoogleTest)
     add_subdirectory(test)
-
 endif()
 
 
