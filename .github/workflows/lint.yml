@@ -33,6 +33,8 @@ jobs:
         # Clean up
         rm -r ./archive
     - uses: actions/checkout@v2
+    - name: Checkout the Google Test submodule
+      run: git submodule update --init -- lib/googletest
     - name: Create build directory
       run: cmake -E make_directory build
     - name: Run CMake
