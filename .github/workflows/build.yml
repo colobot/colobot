@@ -29,19 +29,12 @@ jobs:
     - name: Install Colobot dependencies (for Windows)
       uses: lukka/run-vcpkg@v3
       with:
-        vcpkgGitCommitId: '0523b5eb57341e44fc0551900e5803b13686821a'
+        vcpkgGitCommitId: '006a133d39a72cc7ec60f651e224ca8a3b41c734'
         vcpkgTriplet: 'x64-windows-static'
-        #FIXME: openal-soft not compiling, see https://github.com/kcat/openal-soft/issues/449, https://github.com/microsoft/vcpkg/issues/10825
-        vcpkgArguments: 'boost-system boost-filesystem boost-regex boost-lexical-cast boost-bimap boost-algorithm boost-property-tree boost-optional boost-range sdl2 sdl2-ttf sdl2-image glew libpng libwebp tiff gettext libsndfile libvorbis libogg physfs'
+        vcpkgArguments: 'boost-system boost-filesystem boost-regex boost-lexical-cast boost-bimap boost-algorithm boost-property-tree boost-optional boost-range sdl2 sdl2-ttf sdl2-image glew libpng libwebp tiff gettext libsndfile libvorbis libogg openal-soft physfs'
         # SHA-256 hash of the list of packages above, for caching purposes
-        appendedCacheKey: '6654161b6d89bd7ad950e2eb4c1bb85c191b98202da52fc6fd18fbea28a8ea50'
+        appendedCacheKey: '35754367e6e6b4fb1b1ec24fa631e5234548fa1f9a59e4f2d80d2174a3a4e1b5'
       if: matrix.target_os == 'windows'
-    - name: Upload vcpkg logs
-      uses: actions/upload-artifact@v2
-      with:
-        name: vcpkg_logs
-        path: vcpkg/buildtrees/openal-soft/*.log
-      if: always()
     - name: Install external tools (for Windows)
       working-directory: ${{ github.workspace }}
       run: |
@@ -71,7 +64,7 @@ jobs:
       run: cmake -E make_directory build
     - name: Run CMake (for Windows)
       working-directory: build
-      run: cmake -G "Ninja" -DCMAKE_C_COMPILER=cl.exe -DCMAKE_CXX_COMPILER=cl.exe -DVCPKG_TARGET_TRIPLET=x64-windows-static -DCMAKE_TOOLCHAIN_FILE="${{ env.VCPKG_ROOT }}\scripts\buildsystems\vcpkg.cmake" -DBUILD_STATIC=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}\build\install -DDEV_BUILD=1 -DPORTABLE=1 -DTOOLS=1 -DTESTS=1 -DDESKTOP=1 -DOPENAL_SOUND=0 ..
+      run: cmake -G "Ninja" -DCMAKE_C_COMPILER=cl.exe -DCMAKE_CXX_COMPILER=cl.exe -DVCPKG_TARGET_TRIPLET=x64-windows-static -DCMAKE_TOOLCHAIN_FILE="${{ env.VCPKG_ROOT }}\scripts\buildsystems\vcpkg.cmake" -DBUILD_STATIC=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX="${{ github.workspace }}\build\install" -DDEV_BUILD=1 -DPORTABLE=1 -DTOOLS=1 -DTESTS=1 -DDESKTOP=1 ..
       if: matrix.target_os == 'windows'
     - name: Run CMake (for Linux)
       working-directory: build
