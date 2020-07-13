@@ -33,6 +33,7 @@ enum class DestructionType
     Burn           = 3, //!< burning
     Drowned        = 4, //!< drowned (only for Me)
     Win            = 5, //!< used when removing objects from a team that won
+    Squash         = 6, //!< flatten
 };
 
 /**

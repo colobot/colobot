@@ -356,6 +356,12 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
         if (oType == OBJECT_APOLLO2) limit = 2.0f;
         m_speed = 1.0f/limit;
     }
+    if ( m_type == PT_SQUASH )
+    {
+        m_speed = 1.0f/2.0f;
+        m_object->SetLock(true);
+    }
+
 
     if ( m_type == PT_EXPLOT ||
          m_type == PT_EXPLOO ||
@@ -399,7 +405,8 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
     if ( m_type != PT_FRAGV &&
          m_type != PT_EGG   &&
          m_type != PT_WIN   &&
-         m_type != PT_LOST  )
+         m_type != PT_LOST  &&
+         m_type != PT_SQUASH)
     {
         float h = 40.0f;
         if ( m_type == PT_FRAGO  ||
@@ -454,7 +461,8 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
              m_type != PT_FLCREATE &&
              m_type != PT_FLDELETE &&
              m_type != PT_RESET    &&
-             m_type != PT_FINDING  )
+             m_type != PT_FINDING  &&
+             m_type != PT_SQUASH   )
         {
             m_camera->StartEffect(CAM_EFFECT_EXPLO, m_pos, force);
         }
@@ -1049,6 +1057,11 @@ bool CPyro::EventProcess(const Event &event)
         }
     }
 
+    if ( m_type == PT_SQUASH && m_object != nullptr )
+    {
+        m_object->SetScaleY(1.0f-sinf(m_progress)*0.5f);
+    }
+
     if ( (m_type == PT_BURNT || m_type == PT_BURNO) &&
          m_object != nullptr )
     {
@@ -1227,6 +1240,11 @@ Error CPyro::IsEnded()
     {
         m_object->SetRotationY(m_resetAngle);
         m_object->SetScale(1.0f);
+    }
+
+    if ( m_type == PT_SQUASH )
+    {
+        m_object->SetType(OBJECT_PLANT19);
     }
 
     if ( m_lightRank != -1 )

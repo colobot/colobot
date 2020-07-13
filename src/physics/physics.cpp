@@ -2794,6 +2794,20 @@ bool CPhysics::ExploOther(ObjectType iType,
         }
     }
 
+    if((oType == OBJECT_PLANT0  ||
+        oType == OBJECT_PLANT1  ||
+        oType == OBJECT_PLANT2  ||
+        oType == OBJECT_PLANT3  ||
+        oType == OBJECT_PLANT4  ||
+        oType == OBJECT_PLANT15 ||
+        oType == OBJECT_PLANT16 ||
+        oType == OBJECT_PLANT17 ||
+        oType == OBJECT_PLANT18)&&
+        GetDriveFromObject(iType)==DriveType::Heavy)
+    {
+        dynamic_cast<CDestroyableObject*>(pObj)->DestroyObject(DestructionType::Squash);
+    }
+
     return false;
 }
 
