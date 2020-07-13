@@ -25,7 +25,7 @@ macro(add_fake_header_sources subdir)
             list(APPEND all_fake_header_src_files ${fake_header_src_file})
         endforeach()
 
-        include_directories(${colobot_SOURCE_DIR})
         add_library(colobot_${subdir}_fake_header_srcs STATIC ${all_fake_header_src_files})
+        target_include_directories(colobot_${subdir}_fake_header_srcs PUBLIC ${colobot_SOURCE_DIR})
     endif()
 endmacro()
