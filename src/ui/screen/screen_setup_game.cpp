@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -173,7 +173,7 @@ bool CScreenSetupGame::EventProcess(const Event &event)
             break;
 
         case EVENT_INTERFACE_RAIN:
-            m_settings->SetInterfaceRain(!m_settings->GetInterfaceRain());
+            m_settings->SetMouseParticlesEnabled(!m_settings->GetMouseParticlesEnabled());
             ChangeSetupButtons();
             UpdateSetupButtons();
             break;
@@ -291,7 +291,7 @@ void CScreenSetupGame::UpdateSetupButtons()
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_RAIN));
     if ( pc != nullptr )
     {
-        pc->SetState(STATE_CHECK, m_settings->GetInterfaceRain());
+        pc->SetState(STATE_CHECK, m_settings->GetMouseParticlesEnabled());
     }
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_BGPAUSE));

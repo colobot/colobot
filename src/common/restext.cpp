@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -48,8 +48,8 @@ const char* stringsCbot[CBot::CBotErrMAX]         = { nullptr };
  */
 #define TR(x) x
 
-/* Please run `make update-pot` after changing this file
- * in order to update translation files. Thank you.
+/* Please run `cmake --build <path_to_build_folder> --target update-pot`
+ * after changing this file in order to update translation files. Thank you.
  */
 
 void InitializeRestext()

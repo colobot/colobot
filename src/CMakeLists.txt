@@ -549,6 +549,8 @@ set(BASE_SOURCES
     ui/mainui.h
     ui/object_interface.cpp
     ui/object_interface.h
+    ui/particles_generator.cpp
+    ui/particles_generator.h
     ui/screen/screen.cpp
     ui/screen/screen.h
     ui/screen/screen_apperance.cpp

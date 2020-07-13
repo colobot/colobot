@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -742,7 +742,7 @@ bool CRobotMain::ProcessEvent(Event &event)
             }
             else
             {
-                m_sound->SetMusicVolume(100);
+                m_sound->SetMusicVolume(MAXVOLUME*3/4);
             }
             // Set audio volume
             if (GetConfigFile().GetIntProperty("Setup", "AudioVolume", volume))
@@ -751,7 +751,7 @@ bool CRobotMain::ProcessEvent(Event &event)
             }
             else
             {
-                m_sound->SetAudioVolume(100);
+                m_sound->SetAudioVolume(MAXVOLUME);
             }
         }
 

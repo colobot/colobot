@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -173,6 +173,8 @@ void CScreenSetupSound::UpdateSetupButtons()
     {
         pc->SetState(STATE_CHECK, m_settings->GetFocusLostMute());
     }
+
+    m_settings->SaveAudioSettings();
 }
 
 // Updates the engine function of the buttons after the setup phase.
@@ -199,6 +201,8 @@ void CScreenSetupSound::ChangeSetupButtons()
         value = ps->GetVisibleValue();
         m_sound->SetMusicVolume(static_cast<int>(value));
     }
+
+    m_settings->SaveAudioSettings();
 }
 
 } // namespace Ui
