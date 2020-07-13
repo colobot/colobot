@@ -8,8 +8,10 @@ if((${CMAKE_CROSSCOMPILING}) AND (DEFINED MSYS))
     set(PLATFORM_LINUX 0)
     set(PLATFORM_OTHER 0)
     # All must be static, CBOT and GLEW too
+    set(BUILD_STATIC ON)
     set(CBOT_STATIC ON)
     set(GLEW_STATIC ON)
+    set(SNDFILE_STATIC ON)
 
     if (${OPENAL_SOUND})
         set(OPENAL_MXE_LIBS
