@@ -915,6 +915,9 @@ msgstr "Przenieś zaznaczony program w dół"
 msgid "Move selected program up"
 msgstr "Przenieś zaznaczony program w górę"
 
+msgid "Mute sounds in background\\Mute all game sounds when the window is unfocused"
+msgstr "Cisza, gdy okno jest w tle\\Wycisza wszystkie dźwięki, gdy okno gry stanie się nieaktywne"
+
 msgid "Mute\\No sound"
 msgstr "Cisza\\Brak dźwięków"
 

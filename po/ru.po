@@ -940,6 +940,9 @@ msgstr "Изменить выбранную программу"
 msgid "Move selected program up"
 msgstr "Изменить выбранную программу"
 
+msgid "Mute sounds in background\\Mute all game sounds when the window is unfocused"
+msgstr ""
+
 msgid "Mute\\No sound"
 msgstr "Без звука\\Без звука"
 

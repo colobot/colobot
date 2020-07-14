@@ -929,6 +929,9 @@ msgstr "Move o programa selecionado para baixo"
 msgid "Move selected program up"
 msgstr "Move o programa selecionado para cima"
 
+msgid "Mute sounds in background\\Mute all game sounds when the window is unfocused"
+msgstr ""
+
 msgid "Mute\\No sound"
 msgstr "Mudo\\Sem som"
 
@@ -946,6 +949,9 @@ msgstr "Novo"
 
 msgid "New ..."
 msgstr "Novo ..."
+
+msgid "New Folder"
+msgstr ""
 
 msgid "New bot available"
 msgstr "Novo robô disponível"
@@ -1102,6 +1108,9 @@ msgstr "Origem da última mensagem\\Mostra de onde a última mensagem foi enviad
 
 msgid "Original game developed by:"
 msgstr "Jogo original desenvolvido por:"
+
+msgid "Overwrite existing file?"
+msgstr ""
 
 msgid "Parameters missing"
 msgstr "Parâmetros ausentes"
@@ -1400,6 +1409,9 @@ msgstr "Salvar\\Salve a missão atual"
 
 msgid "Save\\Saves the current mission"
 msgstr "Salvar\\Salva a missão atual"
+
+msgid "Select Folder"
+msgstr ""
 
 msgid "Select the astronaut\\Selects the astronaut"
 msgstr "Selecione o astronauta\\Seleciona o astronauta"

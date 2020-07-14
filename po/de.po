@@ -932,6 +932,9 @@ msgstr "Gewähltes Programm nach unten"
 msgid "Move selected program up"
 msgstr "Gewähltes Programm nach oben"
 
+msgid "Mute sounds in background\\Mute all game sounds when the window is unfocused"
+msgstr ""
+
 msgid "Mute\\No sound"
 msgstr "Kein Ton\\Keine Geräusche und Geräuschkulisse"
 
