@@ -3543,6 +3543,7 @@ CObject* CParticle::SearchObjectGun(Math::Vector old, Math::Vector pos,
             continue;
         }
         if (!obj->Implements(ObjectInterfaceType::Damageable) && !obj->IsBulletWall())  continue;
+        if (obj->Implements(ObjectInterfaceType::Jostleable))  continue;
 
         Math::Vector oPos = obj->GetPosition();
 

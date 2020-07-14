@@ -2525,7 +2525,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
     {
         if ( pObj == m_object )  continue;  // yourself?
         if (IsObjectBeingTransported(pObj))  continue;
-        //if ( pObj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject*>(pObj)->IsDying() )  continue;  // is burning or exploding?
+        if ( pObj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject*>(pObj)->GetDying() == DeathType::Exploding )  continue;  // is exploding?
 
         oType = pObj->GetType();
         if ( oType == OBJECT_TOTO            )  continue;
@@ -2792,6 +2792,20 @@ bool CPhysics::ExploOther(ObjectType iType,
             // TODO: implement "killer"?
             dynamic_cast<CDamageableObject*>(pObj)->DamageObject(DamageType::Collision, force/200.0f);
         }
+    }
+
+    if((oType == OBJECT_PLANT0  ||
+        oType == OBJECT_PLANT1  ||
+        oType == OBJECT_PLANT2  ||
+        oType == OBJECT_PLANT3  ||
+        oType == OBJECT_PLANT4  ||
+        oType == OBJECT_PLANT15 ||
+        oType == OBJECT_PLANT16 ||
+        oType == OBJECT_PLANT17 ||
+        oType == OBJECT_PLANT18)&&
+        GetDriveFromObject(iType)==DriveType::Heavy)
+    {
+        dynamic_cast<CDestroyableObject*>(pObj)->DestroyObject(DestructionType::Squash);
     }
 
     return false;
