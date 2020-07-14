@@ -3,7 +3,10 @@ target_link_directories(CBot_console PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
 )
-target_link_libraries(CBot_console PRIVATE CBot colobotbase)
+target_link_libraries(CBot_console PRIVATE
+    CBot
+    colobotbase # Needed for error strings (TODO: why are they on Colobot side? :/)
+)
 
 add_executable(CBot_compile_graph compile_graph.cpp)
 target_link_directories(CBot_compile_graph PRIVATE

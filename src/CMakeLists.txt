@@ -1,5 +1,4 @@
 # Compile flags as defined in global CMakeLists
-# Todo: replace with target properties
 set(CMAKE_CXX_FLAGS "${COLOBOT_CXX_FLAGS} ${MXE_CFLAGS}")
 set(CMAKE_CXX_FLAGS_RELEASE ${COLOBOT_CXX_FLAGS_RELEASE})
 set(CMAKE_CXX_FLAGS_DEBUG ${COLOBOT_CXX_FLAGS_DEBUG})
@@ -519,7 +518,7 @@ elseif(PLATFORM_WINDOWS)
     if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
         if(BUILD_STATIC)
             find_package(Intl REQUIRED)
-            #todo figure out why those dependencies are needed and find them in a better way
+            # TODO: figure out why those dependencies are needed and find/link them in a better way
             find_library(BZ2_LIBRARY NAMES bz2.lib)
             find_library(JPEG_LIBRARY NAMES jpeg.lib)
             find_library(TIFF_LIBRARY NAMES tiff.lib)
