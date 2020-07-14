@@ -43,9 +43,4 @@ If you want to contribute to the project, see [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## Contact
 
-If you want to help in the project, please contact us on our IRC channels or [our forum](http://colobot.info/forum/).
-
-### IRC channels
-
-* [#colobot on Freenode](irc://freenode.net#colobot) - main development channel (English);
-* [#colobot on pirc.pl](irc://pirc.pl#colobot) - Polish community channel;
+If you want to help in the project, please contact us on our [Discord server](https://discord.gg/56Fm9kb).
