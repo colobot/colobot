@@ -8,8 +8,3 @@ add_subdirectory(unit)
 
 # CBot tests
 add_subdirectory(cbot)
-
-
-if(COLOBOT_LINT_BUILD)
-    add_fake_header_sources("test")
-endif()

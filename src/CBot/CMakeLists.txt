@@ -164,3 +164,7 @@ target_sources(CBot PRIVATE
 )
 target_include_directories(CBot PUBLIC ${CMAKE_CURRENT_LIST_DIR}/..)
 target_link_libraries(CBot PRIVATE Boost::headers)
+
+if(COLOBOT_LINT_BUILD)
+    add_fake_header_sources("src/CBot" CBot)
+endif()

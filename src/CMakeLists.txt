@@ -593,5 +593,6 @@ endif()
 
 # Linter-specific
 if(COLOBOT_LINT_BUILD)
-    add_fake_header_sources("src")
+    add_fake_header_sources("src" colobotbase)
+    add_fake_header_sources("src" colobot)
 endif()

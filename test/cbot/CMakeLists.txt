@@ -11,3 +11,8 @@ target_link_directories(CBot_compile_graph PRIVATE
     ${CMAKE_CURRENT_BINARY_DIR}
 )
 target_link_libraries(CBot_compile_graph CBot)
+
+if(COLOBOT_LINT_BUILD)
+    add_fake_header_sources("test/cbot" CBot_console)
+    add_fake_header_sources("test/cbot" CBot_compile_graph)
+endif()

@@ -4,17 +4,20 @@
 # This adds a new target with generated fake source files that include single header files
 # It is a workaround for how CMake and Clang handle header files in compilation database
 # And we need that to check each header file in the project exactly once, the same as .cpp modules
+# Note: This is modifying an existing target by adding fake source files.
 ##
-macro(add_fake_header_sources subdir)
+macro(add_fake_header_sources subdir the_target)
     set(all_fake_header_src_files "")
 
     set(fake_headers_src_dir ${colobot_BINARY_DIR}/fake_header_sources)
     file(MAKE_DIRECTORY ${fake_headers_src_dir})
 
-    file(GLOB_RECURSE all_header_files RELATIVE ${colobot_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
+    get_target_property(the_target_sources ${the_target} SOURCES)
 
-    if(all_header_files)
-        foreach(header_file ${all_header_files})
+    foreach(source_file IN LISTS the_target_sources)
+        string(REGEX MATCH [[^.*\.h$]] is_header_file ${source_file})
+        if(is_header_file)
+            file(RELATIVE_PATH header_file ${colobot_SOURCE_DIR} ${colobot_SOURCE_DIR}/${subdir}/${source_file})
             string(REGEX REPLACE "\\.h$" ".cpp" fake_header_src_file "${fake_headers_src_dir}/${header_file}")
 
             get_filename_component(fake_header_src_dir ${fake_header_src_file} PATH)
@@ -22,10 +25,8 @@ macro(add_fake_header_sources subdir)
 
             file(WRITE ${fake_header_src_file} "#include \"${header_file}\"\n\n")
 
-            list(APPEND all_fake_header_src_files ${fake_header_src_file})
-        endforeach()
-
-        add_library(colobot_${subdir}_fake_header_srcs STATIC ${all_fake_header_src_files})
-        target_include_directories(colobot_${subdir}_fake_header_srcs PUBLIC ${colobot_SOURCE_DIR})
-    endif()
+            target_sources(${the_target} PRIVATE ${fake_header_src_file})
+            target_include_directories(${the_target} PUBLIC ${colobot_SOURCE_DIR})
+        endif()
+    endforeach()
 endmacro()

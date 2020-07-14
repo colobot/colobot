@@ -48,3 +48,7 @@ gtest_discover_tests(colobot_ut
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU" AND NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5.0)
     target_compile_options(colobot_ut PRIVATE "-Wno-suggest-override")
 endif()
+
+if(COLOBOT_LINT_BUILD)
+    add_fake_header_sources("test/unit" colobot_ut)
+endif()

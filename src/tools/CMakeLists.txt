@@ -7,4 +7,3 @@ add_executable(convert_model
   convert_model.cpp)
 target_link_libraries(convert_model PRIVATE Boost::headers)
 target_include_directories(convert_model PRIVATE . ..)
-
