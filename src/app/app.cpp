@@ -1060,6 +1060,12 @@ int CApplication::Run()
 
     MoveMouse(Math::Point(0.5f, 0.5f)); // center mouse on start
 
+    SystemTimeStamp *lastLoopTimeStamp = m_systemUtils->CreateTimeStamp();
+    SystemTimeStamp *currentTimeStamp = m_systemUtils->CreateTimeStamp();
+    SystemTimeStamp *interpolatedTimeStamp = m_systemUtils->CreateTimeStamp();
+    m_systemUtils->GetCurrentTimeStamp(lastLoopTimeStamp);
+    m_systemUtils->CopyTimeStamp(currentTimeStamp, lastLoopTimeStamp);
+
     while (true)
     {
         if (m_active)
@@ -1158,21 +1164,30 @@ int CApplication::Run()
 
             CProfiler::StartPerformanceCounter(PCNT_UPDATE_ALL);
 
-            // Prepare and process step simulation event
-            Event event = CreateUpdateEvent();
-            if (event.type != EVENT_NULL && m_controller != nullptr)
+            // Prepare and process step simulation event(s)
+            // If game speed is increased then we do extra ticks per loop iteration to improve physics accuracy.
+            int numTickSlices = static_cast<int>(GetSimulationSpeed());
+            if(numTickSlices < 1) numTickSlices = 1;
+            m_systemUtils->CopyTimeStamp(lastLoopTimeStamp, currentTimeStamp);
+            m_systemUtils->GetCurrentTimeStamp(currentTimeStamp);
+            for(int tickSlice = 0; tickSlice < numTickSlices; tickSlice++)
             {
-                LogEvent(event);
+                m_systemUtils->InterpolateTimeStamp(interpolatedTimeStamp, lastLoopTimeStamp, currentTimeStamp, (tickSlice+1)/static_cast<float>(numTickSlices));
+                Event event = CreateUpdateEvent(interpolatedTimeStamp);
+                if (event.type != EVENT_NULL && m_controller != nullptr)
+                {
+                    LogEvent(event);
 
-                m_sound->FrameMove(m_relTime);
+                    m_sound->FrameMove(m_relTime);
 
-                CProfiler::StartPerformanceCounter(PCNT_UPDATE_GAME);
-                m_controller->ProcessEvent(event);
-                CProfiler::StopPerformanceCounter(PCNT_UPDATE_GAME);
+                    CProfiler::StartPerformanceCounter(PCNT_UPDATE_GAME);
+                    m_controller->ProcessEvent(event);
+                    CProfiler::StopPerformanceCounter(PCNT_UPDATE_GAME);
 
-                CProfiler::StartPerformanceCounter(PCNT_UPDATE_ENGINE);
-                m_engine->FrameUpdate();
-                CProfiler::StopPerformanceCounter(PCNT_UPDATE_ENGINE);
+                    CProfiler::StartPerformanceCounter(PCNT_UPDATE_ENGINE);
+                    m_engine->FrameUpdate();
+                    CProfiler::StopPerformanceCounter(PCNT_UPDATE_ENGINE);
+                }
             }
 
             CProfiler::StopPerformanceCounter(PCNT_UPDATE_ALL);
@@ -1188,6 +1203,10 @@ int CApplication::Run()
     }
 
 end:
+    m_systemUtils->DestroyTimeStamp(lastLoopTimeStamp);
+    m_systemUtils->DestroyTimeStamp(currentTimeStamp);
+    m_systemUtils->DestroyTimeStamp(interpolatedTimeStamp);
+
     return m_exitCode;
 }
 
@@ -1529,20 +1548,20 @@ void CApplication::SetSimulationSpeed(float speed)
 {
     m_simulationSpeed = speed;
 
-    m_systemUtils->GetCurrentTimeStamp(m_baseTimeStamp);
+    m_systemUtils->CopyTimeStamp(m_baseTimeStamp, m_curTimeStamp);
     m_realAbsTimeBase = m_realAbsTime;
     m_absTimeBase = m_exactAbsTime;
 
     GetLogger()->Info("Simulation speed = %.2f\n", speed);
 }
 
-Event CApplication::CreateUpdateEvent()
+Event CApplication::CreateUpdateEvent(SystemTimeStamp *newTimeStamp)
 {
     if (m_simulationSuspended)
         return Event(EVENT_NULL);
 
     m_systemUtils->CopyTimeStamp(m_lastTimeStamp, m_curTimeStamp);
-    m_systemUtils->GetCurrentTimeStamp(m_curTimeStamp);
+    m_systemUtils->CopyTimeStamp(m_curTimeStamp, newTimeStamp);
 
     long long absDiff = m_systemUtils->TimeStampExactDiff(m_baseTimeStamp, m_curTimeStamp);
     long long newRealAbsTime = m_realAbsTimeBase + absDiff;

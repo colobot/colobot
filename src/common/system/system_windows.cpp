@@ -83,6 +83,11 @@ void CSystemUtilsWindows::GetCurrentTimeStamp(SystemTimeStamp* stamp)
     stamp->counterValue = value.QuadPart;
 }
 
+void CSystemUtilsWindows::InterpolateTimeStamp(SystemTimeStamp *dst, SystemTimeStamp *a, SystemTimeStamp *b, float i)
+{
+    dst->counterValue = a->counterValue + static_cast<long long>((b->counterValue - a->counterValue) * static_cast<double>(i));
+}
+
 long long int CSystemUtilsWindows::TimeStampExactDiff(SystemTimeStamp* before, SystemTimeStamp* after)
 {
     float floatValue = static_cast<double>(after->counterValue - before->counterValue) * (1e9 / static_cast<double>(m_counterFrequency));

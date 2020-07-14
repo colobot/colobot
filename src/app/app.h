@@ -289,7 +289,7 @@ protected:
     //! If applicable, creates a virtual event to match the changed state as of new event
     Event       CreateVirtualEvent(const Event& sourceEvent);
     //! Prepares a simulation update event
-    TEST_VIRTUAL Event CreateUpdateEvent();
+    TEST_VIRTUAL Event CreateUpdateEvent(SystemTimeStamp *newTimeStamp);
     //! Logs debug data for event
     void        LogEvent(const Event& event);
 
