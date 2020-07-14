@@ -87,6 +87,13 @@ jobs:
       if: matrix.target_os == 'linux'
   build-windows:
     runs-on: windows-2019
+    strategy:
+      matrix:
+        include:
+          - arch: amd64
+            vcpkg_triplet: 'x64-windows-static'
+          - arch: x86
+            vcpkg_triplet: 'x86-windows-static'
     steps:
     - uses: actions/checkout@v2
     - name: Checkout the Google Test submodule
@@ -95,11 +102,13 @@ jobs:
       uses: seanmiddleditch/gha-setup-ninja@master
     - name: Setup VS Environment
       uses: seanmiddleditch/gha-setup-vsdevenv@master
+      with:
+        arch: ${{ matrix.arch }}
     - name: Install Colobot dependencies
       uses: lukka/run-vcpkg@v3
       with:
         vcpkgGitCommitId: '006a133d39a72cc7ec60f651e224ca8a3b41c734'
-        vcpkgTriplet: 'x64-windows-static'
+        vcpkgTriplet: ${{ matrix.vcpkg_triplet }}
         vcpkgArguments: 'boost-system boost-filesystem boost-regex boost-lexical-cast boost-bimap boost-algorithm boost-property-tree boost-optional boost-range sdl2 sdl2-ttf sdl2-image glew libpng libwebp tiff gettext libsndfile libvorbis libogg openal-soft physfs'
         # SHA-256 hash of the list of packages above, for caching purposes
         appendedCacheKey: '35754367e6e6b4fb1b1ec24fa631e5234548fa1f9a59e4f2d80d2174a3a4e1b5'
@@ -131,7 +140,7 @@ jobs:
       run: cmake -E make_directory build
     - name: Run CMake (for Windows)
       working-directory: build
-      run: cmake -G "Ninja" -DCMAKE_C_COMPILER=cl.exe -DCMAKE_CXX_COMPILER=cl.exe -DVCPKG_TARGET_TRIPLET=x64-windows-static -DCMAKE_TOOLCHAIN_FILE=${{ env.VCPKG_ROOT }}\scripts\buildsystems\vcpkg.cmake -DUSE_STATIC_RUNTIME=1 -DCBOT_STATIC=1 -DBOOST_STATIC=1 -DGLEW_STATIC=1 -DSNDFILE_STATIC=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}\build\install -DDEV_BUILD=1 -DPORTABLE=1 -DTOOLS=1 -DTESTS=1 -DDESKTOP=1 ..
+      run: cmake -G "Ninja" -DCMAKE_C_COMPILER=cl.exe -DCMAKE_CXX_COMPILER=cl.exe -DVCPKG_TARGET_TRIPLET=${{ matrix.vcpkg_triplet }} -DCMAKE_TOOLCHAIN_FILE=${{ env.VCPKG_ROOT }}\scripts\buildsystems\vcpkg.cmake -DUSE_STATIC_RUNTIME=1 -DCBOT_STATIC=1 -DBOOST_STATIC=1 -DGLEW_STATIC=1 -DSNDFILE_STATIC=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}\build\install -DDEV_BUILD=1 -DPORTABLE=1 -DTOOLS=1 -DTESTS=1 -DDESKTOP=1 ..
     - name: Build
       working-directory: build
       run: |
@@ -144,7 +153,7 @@ jobs:
     - name: Upload build
       uses: actions/upload-artifact@v2
       with:
-        name: windows-msvc-debug
+        name: windows-msvc-debug-${{ matrix.arch }}
         path: build/install
     - name: Run tests
       working-directory: build
@@ -152,7 +161,7 @@ jobs:
     - name: Upload test results
       uses: actions/upload-artifact@v2
       with:
-        name: 'Test results (Windows, MSVC)'
+        name: 'Test results (windows, MSVC, ${{ matrix.arch }})'
         path: build/gtestresults.xml
   doc:
     runs-on: ubuntu-latest
