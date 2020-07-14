@@ -516,9 +516,11 @@ if(MXE) # MXE requires special treatment
 elseif(PLATFORM_WINDOWS)
     # because it isn't included in standard linking libraries
     if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-        if(BUILD_STATIC)
+        # TODO: this shouldn't be needed, the libraries targets should care of those transitive dependencies
+        # This should be treated as a temporary workaround
+        if(USE_STATIC_RUNTIME) # Since we're using static runtime, assume every external library is static too
             find_package(Intl REQUIRED)
-            # TODO: figure out why those dependencies are needed and find/link them in a better way
+            
             find_library(BZ2_LIBRARY NAMES bz2.lib)
             find_library(JPEG_LIBRARY NAMES jpeg.lib)
             find_library(TIFF_LIBRARY NAMES tiff.lib)

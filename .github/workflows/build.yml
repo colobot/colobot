@@ -131,7 +131,7 @@ jobs:
       run: cmake -E make_directory build
     - name: Run CMake (for Windows)
       working-directory: build
-      run: cmake -G "Ninja" -DCMAKE_C_COMPILER=cl.exe -DCMAKE_CXX_COMPILER=cl.exe -DVCPKG_TARGET_TRIPLET=x64-windows-static -DCMAKE_TOOLCHAIN_FILE=${{ env.VCPKG_ROOT }}\scripts\buildsystems\vcpkg.cmake -DBUILD_STATIC=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}\build\install -DDEV_BUILD=1 -DPORTABLE=1 -DTOOLS=1 -DTESTS=1 -DDESKTOP=1 ..
+      run: cmake -G "Ninja" -DCMAKE_C_COMPILER=cl.exe -DCMAKE_CXX_COMPILER=cl.exe -DVCPKG_TARGET_TRIPLET=x64-windows-static -DCMAKE_TOOLCHAIN_FILE=${{ env.VCPKG_ROOT }}\scripts\buildsystems\vcpkg.cmake -DUSE_STATIC_RUNTIME=1 -DCBOT_STATIC=1 -DBOOST_STATIC=1 -DGLEW_STATIC=1 -DSNDFILE_STATIC=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}\build\install -DDEV_BUILD=1 -DPORTABLE=1 -DTOOLS=1 -DTESTS=1 -DDESKTOP=1 ..
     - name: Build
       working-directory: build
       run: |

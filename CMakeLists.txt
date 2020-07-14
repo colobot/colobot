@@ -189,7 +189,7 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
 
     # Disable some useless warnings
     set(NORMAL_CXX_FLAGS "/wd\"4244\" /wd\"4309\" /wd\"4800\" /wd\"4996\" /wd\"4351\"")
-    if(BUILD_STATIC)
+    if(USE_STATIC_RUNTIME)
         set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
     else()
         set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDLL$<$<CONFIG:Debug>:Debug>")
@@ -260,20 +260,20 @@ option(INSTALL_DOCS "Install Doxygen-generated documentation" OFF)
 # Build OpenAL sound support
 option(OPENAL_SOUND "Build OpenAL sound support" ON)
 
-# Build Colobot with static libraries
-option(BUILD_STATIC "The default linking option for external libraries" OFF)
+# Link runtime library statically (currently only works for MSVC)
+option(USE_STATIC_RUNTIME "Link the runtime library statically" OFF)
 
 # CBot can also be a static library
-option(CBOT_STATIC "Build CBot as static libary" ${BUILD_STATIC})
+option(CBOT_STATIC "Build CBot as static libary" OFF)
 
 # This is useful in case you want to use static boost libraries
-option(BOOST_STATIC "Link with static boost libraries" ${BUILD_STATIC})
+option(BOOST_STATIC "Link with static boost libraries" OFF)
 
 # This is useful on Windows, if linking against standard GLEW dll fails
-option(GLEW_STATIC "Link statically with GLEW" ${BUILD_STATIC})
+option(GLEW_STATIC "Link statically with GLEW" OFF)
 
 # Link statically with LibSndFile
-option(SNDFILE_STATIC "Link statically with LibSndFile" ${BUILD_STATIC})
+option(SNDFILE_STATIC "Link statically with LibSndFile" OFF)
 
 # Sometimes helpful if there is a different version of gtest installed on system vs bundled
 option(FORCE_BUNDLED_GTEST "Force the use of bundled gtest" OFF)
@@ -292,6 +292,21 @@ if(DEV_BUILD)
     message(STATUS "Building with development extensions")
 endif()
 
+##
+# Additional settings to use when cross-compiling with MXE (http://mxe.cc/)
+##
+
+include("${colobot_SOURCE_DIR}/cmake/mxe.cmake")
+
+##
+# Additional settings for MSYS
+##
+include("${colobot_SOURCE_DIR}/cmake/msys.cmake")
+
+##
+# Additional functions for colobot-lint
+##
+include("${colobot_SOURCE_DIR}/cmake/colobot-lint.cmake")
 
 ##
 # Searching for packages
@@ -307,7 +322,7 @@ find_package(PhysFS REQUIRED)
 
 set(Boost_USE_STATIC_LIBS ${BOOST_STATIC})
 set(Boost_USE_MULTITHREADED ON)
-set(Boost_USE_STATIC_RUNTIME OFF)
+set(Boost_USE_STATIC_RUNTIME ${USE_STATIC_RUNTIME})
 
 set(Boost_ADDITIONALVERSION "1.51" "1.51.0")
 find_package(Boost COMPONENTS system filesystem regex REQUIRED)
@@ -334,22 +349,6 @@ endif()
 if(DEV_BUILD)
     add_definitions(-DDEV_BUILD)
 endif()
-
-##
-# Additional settings to use when cross-compiling with MXE (http://mxe.cc/)
-##
-
-include("${colobot_SOURCE_DIR}/cmake/mxe.cmake")
-
-##
-# Additional settings for MSYS
-##
-include("${colobot_SOURCE_DIR}/cmake/msys.cmake")
-
-##
-# Additional functions for colobot-lint
-##
-include("${colobot_SOURCE_DIR}/cmake/colobot-lint.cmake")
 
 
 ##
