@@ -7,6 +7,10 @@ cmake_minimum_required(VERSION 3.17)
 
 project(colobot C CXX)
 
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED YES)
+set(CMAKE_CXX_EXTENSIONS NO)
+
 ##
 # Project version
 ##
@@ -144,9 +148,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 # Include cmake directory with some additional scripts
 set(CMAKE_MODULE_PATH "${colobot_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
-# MSVC needs different flags if linking statically
-option(MSVC_STATIC "Link statically when using MSVC" OFF)
-
 # Compiler detection
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.7)
@@ -155,7 +156,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 
     message(STATUS "Detected GCC version 4.7+")
 
-    set(NORMAL_CXX_FLAGS "-std=gnu++11 -Wall -Werror -Wold-style-cast -pedantic-errors -Wmissing-declarations")
+    set(NORMAL_CXX_FLAGS "-Wall -Werror -Wold-style-cast -pedantic-errors -Wmissing-declarations")
     set(NORMAL_CXX_FLAGS "${NORMAL_CXX_FLAGS} -Wno-error=deprecated-declarations") # updated version of physfs is not available on some platforms so we keep using deprecated functions, see #958
 
     if(NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5.0)
@@ -177,7 +178,7 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=bfd")
     endif()
 
-    set(NORMAL_CXX_FLAGS "-std=c++11 -Wall -Werror -Wold-style-cast -pedantic-errors -Wmissing-prototypes")
+    set(NORMAL_CXX_FLAGS "-Wall -Werror -Wold-style-cast -pedantic-errors -Wmissing-prototypes")
     set(NORMAL_CXX_FLAGS "${NORMAL_CXX_FLAGS} -Wno-error=deprecated-declarations") # updated version of physfs is not available on some platforms so we keep using deprecated functions, see #958
     set(RELEASE_CXX_FLAGS "-O2")
     set(DEBUG_CXX_FLAGS "-g -O0")
@@ -186,16 +187,18 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     message(STATUS "Detected MSVC compiler")
 
-    set(NORMAL_CXX_FLAGS "/wd\"4244\" /wd\"4309\" /wd\"4800\" /wd\"4996\" /wd\"4351\" /EHsc") # disable some useless warnings
-    if(MSVC_STATIC)
-        set(RELEASE_CXX_FLAGS "/MT /Ox")
-        set(DEBUG_CXX_FLAGS "/MTd /ZI")
-    else(MSVC_STATIC)
-        set(RELEASE_CXX_FLAGS "/MD /Ox")
-        set(DEBUG_CXX_FLAGS "/MDd /ZI")
+    # Disable some useless warnings
+    set(NORMAL_CXX_FLAGS "/wd\"4244\" /wd\"4309\" /wd\"4800\" /wd\"4996\" /wd\"4351\"")
+    if(USE_STATIC_RUNTIME)
+        set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+    else()
+        set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDLL$<$<CONFIG:Debug>:Debug>")
     endif()
     set(TEST_CXX_FLAGS "")
     add_definitions(-DNOEXCEPT= -DHAS_MSVC_EXCEPTION_BUG)
+
+    # Increase the stack size to 8 MB (the default is 1 MB), needed for CBOT
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /STACK:8388608")
 
     # Needed for Debug information (it's set to "No" by default for some reason)
     set(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS} /DEBUG /NODEFAULTLIB:MSVCRTD /NODEFAULTLIB:LIBCMT")
@@ -230,6 +233,9 @@ option(DEV_BUILD "Enable development build (enables some debugging tools, local 
 # PLEASE DO NOT USE ON UNOFFICIAL BUILDS. Thanks.
 option(OFFICIAL_COLOBOT_BUILD "Official build (changes crash screen text)" OFF)
 
+# Hide console on Windows (useful for release builds)
+option(HIDE_CONSOLE "Hide console" OFF)
+
 # Hardcode relative paths instead of absolute paths
 option(USE_RELATIVE_PATHS "Generate relative paths from absolute paths" OFF)
 
@@ -245,9 +251,6 @@ option(TESTS "Build tests" OFF)
 # Building tool programs can be enabled/disabled
 option(TOOLS "Build tool programs" OFF)
 
-# CBot can also be a static library
-option(CBOT_STATIC "Build CBot as static libary" OFF)
-
 # Generate desktop files, manpage, etc.
 option(DESKTOP "Generate desktop files, manpages, etc" ON)
 
@@ -257,18 +260,26 @@ option(INSTALL_DOCS "Install Doxygen-generated documentation" OFF)
 # Build OpenAL sound support
 option(OPENAL_SOUND "Build OpenAL sound support" ON)
 
+# Link runtime library statically (currently only works for MSVC)
+option(USE_STATIC_RUNTIME "Link the runtime library statically" OFF)
+
+# CBot can also be a static library
+option(CBOT_STATIC "Build CBot as static libary" OFF)
+
 # This is useful in case you want to use static boost libraries
 option(BOOST_STATIC "Link with static boost libraries" OFF)
 
 # This is useful on Windows, if linking against standard GLEW dll fails
 option(GLEW_STATIC "Link statically with GLEW" OFF)
 
+# Link statically with LibSndFile
+option(SNDFILE_STATIC "Link statically with LibSndFile" OFF)
+
 # Sometimes helpful if there is a different version of gtest installed on system vs bundled
 option(FORCE_BUNDLED_GTEST "Force the use of bundled gtest" OFF)
 
 # This is for use with colobot-lint tool
 option(COLOBOT_LINT_BUILD "Generate some additional CMake targets for use with colobot-lint" OFF)
-
 
 # Default build type if not given is debug
 if(NOT CMAKE_BUILD_TYPE)
@@ -279,49 +290,6 @@ endif()
 # Warn about development build
 if(DEV_BUILD)
     message(STATUS "Building with development extensions")
-endif()
-
-
-##
-# Searching for packages
-##
-
-find_package(OpenGL 1.4 REQUIRED)
-find_package(SDL2 REQUIRED)
-find_package(SDL2_image REQUIRED)
-find_package(SDL2_ttf REQUIRED)
-find_package(PNG 1.2 REQUIRED)
-find_package(Gettext REQUIRED)
-find_package(PhysFS REQUIRED)
-
-set(Boost_USE_STATIC_LIBS ${BOOST_STATIC})
-set(Boost_USE_MULTITHREADED ON)
-set(Boost_USE_STATIC_RUNTIME OFF)
-
-set(Boost_ADDITIONALVERSION "1.51" "1.51.0")
-find_package(Boost COMPONENTS system filesystem regex REQUIRED)
-
-find_package(GLEW REQUIRED)
-
-if (OPENAL_SOUND)
-    find_package(OpenAL REQUIRED)
-    include_directories(${OPENAL_INCLUDE_DIR})
-    find_package(LibSndFile REQUIRED)
-endif()
-
-
-if(NOT ASSERTS)
-    add_definitions(-DNDEBUG)
-endif()
-
-if(TESTS)
-    add_definitions(-DTESTS -DTEST_VIRTUAL=virtual)
-else()
-    add_definitions(-DTEST_VIRTUAL=)
-endif()
-
-if(DEV_BUILD)
-    add_definitions(-DDEV_BUILD)
 endif()
 
 ##
@@ -340,27 +308,62 @@ include("${colobot_SOURCE_DIR}/cmake/msys.cmake")
 ##
 include("${colobot_SOURCE_DIR}/cmake/colobot-lint.cmake")
 
+##
+# Searching for packages
+##
+
+find_package(OpenGL 1.4 REQUIRED)
+find_package(SDL2 REQUIRED)
+find_package(SDL2_image REQUIRED)
+find_package(SDL2_ttf REQUIRED)
+find_package(PNG 1.2 REQUIRED)
+find_package(Gettext REQUIRED)
+find_package(PhysFS REQUIRED)
+
+set(Boost_USE_STATIC_LIBS ${BOOST_STATIC})
+set(Boost_USE_MULTITHREADED ON)
+set(Boost_USE_STATIC_RUNTIME ${USE_STATIC_RUNTIME})
+
+set(Boost_ADDITIONALVERSION "1.51" "1.51.0")
+find_package(Boost COMPONENTS system filesystem regex REQUIRED)
+
+set(GLEW_USE_STATIC_LIBS ${GLEW_STATIC})
+find_package(GLEW REQUIRED)
+
+if (OPENAL_SOUND)
+    find_package(OpenAL REQUIRED)
+endif()
+find_package(SndFile REQUIRED)
+
+
+if(NOT ASSERTS)
+    add_definitions(-DNDEBUG)
+endif()
+
+if(TESTS)
+    add_definitions(-DTESTS -DTEST_VIRTUAL=virtual)
+else()
+    add_definitions(-DTEST_VIRTUAL=)
+endif()
+
+if(DEV_BUILD)
+    add_definitions(-DDEV_BUILD)
+endif()
+
 
 ##
 # MSVC specific settings
 ##
 set(WINGETOPT 0)
-if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+if(MSVC)
     message(STATUS "Adding MSVC-specific options")
 
-    set(CBOT_STATIC 1) # only this works for some reason
     set(WINGETOPT 1) # use wingetopt library
-
-    # Hide console in release builds
-    if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
-        set(CMAKE_WIN32_EXECUTABLE 1)
-    endif()
 endif()
 
 ##
 # Localename
 ##
-set(LOCALENAME_INCLUDE_DIR ${colobot_SOURCE_DIR}/lib/localename)
 add_subdirectory(lib/localename)
 
 
@@ -368,7 +371,6 @@ add_subdirectory(lib/localename)
 # Wingetopt
 ##
 if(WINGETOPT)
-    set(WINGETOPT_INCLUDE_DIR ${colobot_SOURCE_DIR}/lib/wingetopt/src)
     add_subdirectory(lib/wingetopt)
 endif()
 
@@ -443,25 +445,26 @@ endif()
 
 if(TESTS)
     # Google Test library
-    find_path(GTEST_SRC_DIR NAMES src/gtest.cc src/gtest-all.cc PATHS /usr/src PATH_SUFFIXES gtest)
-    find_path(GTEST_INCLUDE_DIR gtest/gtest.h PATHS /usr/include)
-    if(NOT(FORCE_BUNDLED_GTEST) AND GTEST_SRC_DIR AND GTEST_INCLUDE_DIR)
-        message(STATUS "Using system gtest library in ${GTEST_SRC_DIR}")
+    find_package(GTest 1.10.0 QUIET)
+    if(NOT(FORCE_BUNDLED_GTEST) AND GTEST_FOUND)
+        message(STATUS "Using system gtest library in ${GTEST_BOTH_LIBRARIES}")
+    elseif(EXISTS "${colobot_SOURCE_DIR}/lib/googletest/googletest/CMakeLists.txt")
+        message(STATUS "Using gtest git submodule")
+        add_subdirectory("${colobot_SOURCE_DIR}/lib/googletest/googletest" "lib/googletest/googletest")
+        # Add aliases so target names are compatible with the find_package above
+        add_library(GTest::GTest ALIAS gtest)
+        add_library(GTest::Main ALIAS gtest_main)
     else()
-        message(STATUS "Using bundled gtest library")
-        set(GTEST_SRC_DIR ${colobot_SOURCE_DIR}/lib/gtest)
-        set(GTEST_INCLUDE_DIR ${colobot_SOURCE_DIR}/lib/gtest/include)
+        message(FATAL_ERROR "Could not find gtest, cannot enable testing")
     endif()
 
-    add_subdirectory(${GTEST_SRC_DIR} lib/gtest)
-
     # Hippomocks library
-    set(HIPPOMOCKS_INCLUDE_DIR ${colobot_SOURCE_DIR}/lib/hippomocks)
+    add_subdirectory(${colobot_SOURCE_DIR}/lib/hippomocks)
 
     # Tests targets
     enable_testing()
+    include(GoogleTest)
     add_subdirectory(test)
-
 endif()
 
 
