@@ -1663,6 +1663,9 @@ msgstr "Zmienna nie została zainicjalizowana"
 msgid "Vault"
 msgstr "Skrytka"
 
+msgid "Vertical Synchronization\\Limits the number of frames per second to display frequency"
+msgstr "Synchronizacja pionowa\\Ogranicza ilość klatek na sekundę do wartości odświeżania ekranu"
+
 msgid "Violet flag"
 msgstr "Fioletowa flaga"
 

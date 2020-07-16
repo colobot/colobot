@@ -284,13 +284,19 @@ void COldObject::DeleteObject(bool bAll)
         if (m_power != nullptr)
         {
             if (m_power->Implements(ObjectInterfaceType::Old))
+            {
+                dynamic_cast<COldObject*>(m_power)->SetTransporter(nullptr);
                 dynamic_cast<COldObject*>(m_power)->DeleteObject(bAll);
+            }
             m_power = nullptr;
         }
         if (m_cargo != nullptr)
         {
             if (m_cargo->Implements(ObjectInterfaceType::Old))
+            {
+                dynamic_cast<COldObject*>(m_cargo)->SetTransporter(nullptr);
                 dynamic_cast<COldObject*>(m_cargo)->DeleteObject(bAll);
+            }
             m_cargo = nullptr;
         }
     }

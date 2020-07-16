@@ -38,46 +38,41 @@
 #include <boost/filesystem.hpp>
 
 CPathManager::CPathManager(CSystemUtils* systemUtils)
-    : m_systemUtils(systemUtils)
+    : m_dataPath(systemUtils->GetDataPath())
+    , m_langPath(systemUtils->GetLangPath())
+    , m_savePath(systemUtils->GetSaveDir())
+    , m_modAutoloadDir{ m_dataPath + "/mods", m_savePath + "/mods" }
+    , m_mods{}
 {
-    #ifdef PORTABLE
-        m_dataPath = "./data";
-        m_langPath = "./lang";
-        m_savePath = "./saves";
-    #else
-        m_dataPath = m_systemUtils->GetDataPath();
-        m_langPath = m_systemUtils->GetLangPath();
-        #ifdef DEV_BUILD
-            m_savePath = "./saves";
-        #else
-            m_savePath = m_systemUtils->GetSaveDir();
-        #endif
-    #endif
 }
 
 CPathManager::~CPathManager()
 {
 }
 
-void CPathManager::SetDataPath(std::string dataPath)
+void CPathManager::SetDataPath(const std::string &dataPath)
 {
     m_dataPath = dataPath;
 }
 
-void CPathManager::SetLangPath(std::string langPath)
+void CPathManager::SetLangPath(const std::string &langPath)
 {
     m_langPath = langPath;
 }
 
-void CPathManager::SetSavePath(std::string savePath)
+void CPathManager::SetSavePath(const std::string &savePath)
 {
     m_savePath = savePath;
 }
 
-void CPathManager::AddMod(std::string modPath)
+void CPathManager::AddModAutoloadDir(const std::string &modAutoloadDirPath)
 {
-    GetLogger()->Info("Loading mod: '%s'\n", modPath.c_str());
-    CResourceManager::AddLocation(modPath, true);
+    m_modAutoloadDir.push_back(modAutoloadDirPath);
+}
+
+void CPathManager::AddMod(const std::string &modPath)
+{
+    m_mods.push_back(modPath);
 }
 
 const std::string& CPathManager::GetDataPath()
@@ -106,8 +101,8 @@ std::string CPathManager::VerifyPaths()
     {
         GetLogger()->Error("Data directory '%s' doesn't exist or is not a directory\n", m_dataPath.c_str());
         return std::string("Could not read from data directory:\n") +
-        std::string("'") + m_dataPath + std::string("'\n") +
-        std::string("Please check your installation, or supply a valid data directory by -datadir option.");
+            std::string("'") + m_dataPath + std::string("'\n") +
+            std::string("Please check your installation, or supply a valid data directory by -datadir option.");
     }
 
     #if PLATFORM_WINDOWS
@@ -133,19 +128,51 @@ std::string CPathManager::VerifyPaths()
 
 void CPathManager::InitPaths()
 {
-    LoadModsFromDir(m_dataPath+"/mods");
-    LoadModsFromDir(m_savePath+"/mods");
-
     GetLogger()->Info("Data path: %s\n", m_dataPath.c_str());
     GetLogger()->Info("Save path: %s\n", m_savePath.c_str());
-    CResourceManager::AddLocation(m_dataPath, false);
+    if (!m_modAutoloadDir.empty())
+    {
+        GetLogger()->Info("Mod autoload dirs:\n");
+        for(const std::string& modAutoloadDir : m_modAutoloadDir)
+            GetLogger()->Info("  * %s\n", modAutoloadDir.c_str());
+    }
+    if (!m_mods.empty())
+    {
+        GetLogger()->Info("Mods:\n");
+        for(const std::string& modPath : m_mods)
+            GetLogger()->Info("  * %s\n", modPath.c_str());
+    }
+
+    CResourceManager::AddLocation(m_dataPath);
+
+    for (const std::string& modAutoloadDir : m_modAutoloadDir)
+    {
+        GetLogger()->Trace("Searching for mods in '%s'...\n", modAutoloadDir.c_str());
+        for (const std::string& modPath : FindModsInDir(modAutoloadDir))
+        {
+            GetLogger()->Info("Autoloading mod: '%s'\n", modPath.c_str());
+            CResourceManager::AddLocation(modPath);
+        }
+    }
+
+    for (const std::string& modPath : m_mods)
+    {
+        GetLogger()->Info("Loading mod: '%s'\n", modPath.c_str());
+        CResourceManager::AddLocation(modPath);
+    }
+
     CResourceManager::SetSaveLocation(m_savePath);
-    CResourceManager::AddLocation(m_savePath, true);
+    CResourceManager::AddLocation(m_savePath);
+
+    GetLogger()->Debug("Finished initalizing data paths\n");
+    GetLogger()->Debug("PHYSFS search path is:\n");
+    for (const std::string& path : CResourceManager::GetLocations())
+        GetLogger()->Debug("  * %s\n", path.c_str());
 }
 
-void CPathManager::LoadModsFromDir(const std::string &dir)
+std::vector<std::string> CPathManager::FindModsInDir(const std::string &dir)
 {
-    GetLogger()->Trace("Looking for mods in '%s' ...\n", dir.c_str());
+    std::vector<std::string> ret;
     try
     {
         #if PLATFORM_WINDOWS
@@ -156,9 +183,9 @@ void CPathManager::LoadModsFromDir(const std::string &dir)
         for(; iterator != boost::filesystem::directory_iterator(); ++iterator)
         {
             #if PLATFORM_WINDOWS
-            AddMod(CSystemUtilsWindows::UTF8_Encode(iterator->path().wstring()));
+            ret.push_back(CSystemUtilsWindows::UTF8_Encode(iterator->path().wstring()));
             #else
-            AddMod(iterator->path().string());
+            ret.push_back(iterator->path().string());
             #endif
         }
     }
@@ -166,4 +193,5 @@ void CPathManager::LoadModsFromDir(const std::string &dir)
     {
         GetLogger()->Warn("Unable to load mods from directory '%s': %s\n", dir.c_str(), e.what());
     }
+    return ret;
 }

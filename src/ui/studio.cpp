@@ -627,7 +627,7 @@ void CStudio::StartEditScript(CScript *script, std::string name, Program* progra
     edit->SetState(STATE_SHADOW);
     edit->SetInsideScroll(false);
 //? if ( m_bRunning )  edit->SetEdit(false);
-    edit->SetFontType(Gfx::FONT_COURIER);
+    edit->SetFontType(Gfx::FONT_STUDIO);
     edit->SetFontStretch(1.0f);
     edit->SetDisplaySpec(true);
     edit->SetAutoIndent(m_engine->GetEditIndentMode());
@@ -639,7 +639,7 @@ void CStudio::StartEditScript(CScript *script, std::string name, Program* progra
 
     list = pw->CreateList(pos, dim, 1, EVENT_STUDIO_LIST, 1.2f);
     list->SetState(STATE_SHADOW);
-    list->SetFontType(Gfx::FONT_COURIER);
+    list->SetFontType(Gfx::FONT_STUDIO);
     list->SetSelectCap(false);
     list->SetFontSize(Gfx::FONT_SIZE_SMALL*0.85f);
 //? list->SetFontStretch(1.0f);

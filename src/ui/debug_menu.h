@@ -39,7 +39,7 @@ class CInterface;
 
 /**
  * \class CDebugMenu
- * \brief Handles debug menu (F11)
+ * \brief Handles debug menu (F10)
  *
  * There should always be only one instance of this class for each associated CRobotMain class.
  */

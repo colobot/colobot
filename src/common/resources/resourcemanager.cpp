@@ -85,6 +85,16 @@ bool CResourceManager::RemoveLocation(const std::string &location)
     return true;
 }
 
+std::vector<std::string> CResourceManager::GetLocations()
+{
+    std::vector<std::string> ret;
+    char **list = PHYSFS_getSearchPath();
+    for (char **it = list; *it != nullptr; ++it)
+        ret.push_back(*it);
+    PHYSFS_freeList(list);
+    return ret;
+}
+
 
 bool CResourceManager::SetSaveLocation(const std::string &location)
 {

@@ -24,6 +24,8 @@
 
 #pragma once
 
+#include "common/config.h"
+
 #include <memory>
 #include <string>
 #include <vector>

@@ -65,7 +65,7 @@ void CDebugMenu::ToggleInterface()
     {
         CreateInterface();
         CLabel* pl = m_interface->CreateLabel(Math::Point(0.0f, 0.9f), Math::Point(1.0f, 0.1f), -1, EVENT_LABEL19, "??");
-        pl->SetFontType(Gfx::FONT_COURIER);
+        pl->SetFontType(Gfx::FONT_STUDIO);
     }
     else
     {

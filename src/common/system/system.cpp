@@ -20,8 +20,6 @@
 
 #include "common/system/system.h"
 
-#include "common/config.h"
-
 #include "common/make_unique.h"
 
 #if defined(PLATFORM_WINDOWS)
@@ -190,5 +188,5 @@ std::string CSystemUtils::GetLangPath()
 
 std::string CSystemUtils::GetSaveDir()
 {
-    return std::string("saves");
+    return "./saves";
 }

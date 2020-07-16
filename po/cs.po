@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: 0.1.11\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: DATE\n"
-"PO-Revision-Date: 2018-02-24 20:39+01\n"
+"PO-Revision-Date: 2018-08-20 22:48+02\n"
 "Last-Translator: next_ghost <next_ghost@quick.cz>\n"
 "Language-Team: Czech <next_ghost@quick.cz>\n"
 "Language: Czech\n"
@@ -1193,7 +1193,7 @@ msgid "Programming help\\Gives more detailed help with programming"
 msgstr "Nápověda\\Zobrazí nápovědu pro psaní programů"
 
 msgid "Programs dispatched by Houston"
-msgstr "Program poslaný z Houstonu"
+msgstr "Programy poslané z Houstonu"
 
 msgid "Public required"
 msgstr "Tato definice musí být veřejná (public)"
@@ -1548,7 +1548,7 @@ msgstr "Buchar"
 
 #, c-format
 msgid "Time: %s"
-msgstr ""
+msgstr "Čas: %s"
 
 msgid "Titanium"
 msgstr "Titan"
@@ -1664,6 +1664,9 @@ msgstr "Proměnná nebyla nastavena"
 msgid "Vault"
 msgstr "Trezor"
 
+msgid "Vertical Synchronization\\Limits the number of frames per second to display frequency"
+msgstr ""
+
 msgid "Violet flag"
 msgstr "Fialová vlajka"
 
@@ -1741,7 +1744,7 @@ msgid "You cannot use \"%s\" in this exercise (used: %d)"
 msgstr "V tomto cvičení nesmíte použít \"%s\" (použito: %dx)"
 
 msgid "You found a usable object"
-msgstr "Našli jste fungující objekt"
+msgstr "Našli jste použitelný objekt"
 
 #, c-format
 msgid "You have to use \"%1$s\" at least once in this exercise (used: %2$d)"
