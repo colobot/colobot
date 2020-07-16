@@ -3406,6 +3406,14 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
                 try
                 {
+                    float min = 0;
+                    float max = 100;
+                    if (params.type == OBJECT_POWER || params.type == OBJECT_ATOMIC) //prevent creation of overcharged or negatively charged power cells
+                    {
+                        max = 1;
+                    }
+                    Math::Clamp(params.power,min,max);
+                    
                     CObject* obj = m_objMan->CreateObject(params);
                     obj->Read(line.get());
 

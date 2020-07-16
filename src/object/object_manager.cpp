@@ -162,6 +162,14 @@ CObject* CObjectManager::CreateObject(Math::Vector pos, float angle, ObjectType 
     params.pos = pos;
     params.angle = angle;
     params.type = type;
+    
+    float min = 0;
+    float max = 100;
+    if (params.type == OBJECT_POWER || params.type == OBJECT_ATOMIC) //prevent creation of overcharged or negatively charged power cells
+    {
+        max = 1;
+    }
+    Math::Clamp(power,min,max);
     params.power = power;
 
     return CreateObject(params);
