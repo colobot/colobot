@@ -3412,7 +3412,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     {
                         max = 1;
                     }
-                    params.power = Math::Clamp(params.power,min,max);
+                    params.power = Math::Clamp(params.power, min, max);
                     
                     CObject* obj = m_objMan->CreateObject(params);
                     obj->Read(line.get());
