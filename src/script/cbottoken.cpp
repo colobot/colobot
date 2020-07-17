@@ -129,6 +129,8 @@ const char* GetObjectName(ObjectType type)
     if ( type == OBJECT_PLANT0      )  return "Bush";
     if ( type == OBJECT_ROOT5       )  return "GraviPlant";
     if ( type == OBJECT_QUARTZ0     )  return "Crystal";
+    if ( type == OBJECT_MUSHROOM1   )  return "BrownMushroom";
+    if ( type == OBJECT_MUSHROOM2   )  return "GreenMushroom";
     return "";
 }
 
@@ -241,6 +243,8 @@ std::string GetHelpFilename(ObjectType type)
     if ( type == OBJECT_PLANT0      )  helpfile = "object/bush";
     if ( type == OBJECT_ROOT5       )  helpfile = "object/gravi";
     if ( type == OBJECT_QUARTZ0     )  helpfile = "object/crystal";
+    if ( type == OBJECT_MUSHROOM1   )  helpfile = "object/gremush";
+    if ( type == OBJECT_MUSHROOM2   )  helpfile = "object/bromush";
 
     if (helpfile.empty())
         return "";
