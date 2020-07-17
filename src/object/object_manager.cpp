@@ -164,7 +164,6 @@ CObject* CObjectManager::CreateObject(Math::Vector pos, float angle, ObjectType 
     params.pos = pos;
     params.angle = angle;
     params.type = type;
-    params.power = ClampPower(type,power);
     return CreateObject(params);
 }
 
