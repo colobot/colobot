@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -345,6 +345,10 @@ bool CAutoNuclearPlant::SearchVehicle()
              type != OBJECT_MOBILEta &&
              type != OBJECT_MOBILEwa &&
              type != OBJECT_MOBILEia &&
+             type != OBJECT_MOBILEfb &&
+             type != OBJECT_MOBILEtb &&
+             type != OBJECT_MOBILEwb &&
+             type != OBJECT_MOBILEib &&
              type != OBJECT_MOBILEfc &&
              type != OBJECT_MOBILEtc &&
              type != OBJECT_MOBILEwc &&
@@ -367,6 +371,8 @@ bool CAutoNuclearPlant::SearchVehicle()
              type != OBJECT_MOBILEtt &&
              type != OBJECT_MOBILEwt &&
              type != OBJECT_MOBILEit &&
+             type != OBJECT_MOBILErp &&
+             type != OBJECT_MOBILEst &&
              type != OBJECT_MOBILEdr &&
              type != OBJECT_MOTHER   &&
              type != OBJECT_ANT      &&

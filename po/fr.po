@@ -1,19 +1,21 @@
 # Didier Raboud <odyx@debian.org>, 2012, 2015, 2016.
-# Martin Quinson <mquinson@debian.org>, 2016
-# B-CE, 2018
+# Martin Quinson <mquinson@debian.org>, 2016.
+# B-CE <.>, 2018, 2019.
+# Pascal Audoux <pascal.audoux@gmail.com>, 2018.
 msgid ""
 msgstr ""
-"Project-Id-Version: Colobot 0.1.11\n"
+"Project-Id-Version: Colobot 0.1.12\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: DATE\n"
-"PO-Revision-Date: 2018-02-28 20:00+0100\n"
-"Last-Translator: B-CE\n"
+"PO-Revision-Date: 2019-06-13 01:31+0200\n"
+"Last-Translator: BCE <.>\n"
+"Language-Team: French <>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 2.0\n"
+"X-Generator: Lokalize 18.12.3\n"
 "X-Language: fr_FR\n"
 "X-Source-Language: en_US\n"
 
@@ -37,7 +39,7 @@ msgid "..in front"
 msgstr "..devant"
 
 msgid "..power cell"
-msgstr "..pile"
+msgstr "..batterie"
 
 msgid "1) First click on the key you want to redefine."
 msgstr "1) Cliquez d'abord sur la touche à redéfinir."
@@ -108,9 +110,6 @@ msgstr "Analyse déjà effectuée"
 msgid "Analysis performed"
 msgstr "Analyse terminée"
 
-msgid "Analyzes only organic matter"
-msgstr "N'analyse que la matière organique"
-
 msgid "Anisotropy level\\Anisotropy level"
 msgstr "Niveau d'anisotropie\\Niveau d'anisotropie"
 
@@ -139,10 +138,10 @@ msgid "Automatic indent\\When program editing"
 msgstr "Indentation automatique\\Pendant l'édition d'un programme"
 
 msgid "Autosave interval\\How often your game will autosave"
-msgstr "Interval d'auto-sauvegarde\\À quels intervals les parties vont-t-elles êtres sauvegardées automatiquement"
+msgstr "Interval auto-sauvegarde\\À quels intervals les parties vont-t-elles êtres sauvegardées automatiquement"
 
 msgid "Autosave slots\\How many autosave slots you'll have"
-msgstr "Nombre d'auto-sauvegardes\\Combien d'auto-sauvegarde seront conservées"
+msgstr "Nb auto-sauvegardes\\Combien d'auto-sauvegarde seront conservées"
 
 msgid "Autosave\\Enables autosave"
 msgstr "Auto-sauvegarde\\Activer l'auto-sauvegarde"
@@ -184,13 +183,16 @@ msgid "Bot destroyed"
 msgstr "Robot détruit"
 
 msgid "Bot factory"
-msgstr "Fabrique de robots"
+msgstr "Usine de robots"
+
+msgid "Build (\\key action;)"
+msgstr ""
 
 msgid "Build a bot factory"
-msgstr "Construire une fabrique de robots"
+msgstr "Construire une usine de robots"
 
 msgid "Build a converter"
-msgstr "Construire un convertisseur"
+msgstr "Construire une raffinerie"
 
 msgid "Build a defense tower"
 msgstr "Construire une tour"
@@ -202,10 +204,13 @@ msgid "Build a destroyer"
 msgstr "Construire un destructeur"
 
 msgid "Build a exchange post"
-msgstr "Construire une borne d'information"
+msgstr "Construire une station relais"
+
+msgid "Build a legged builder"
+msgstr ""
 
 msgid "Build a legged grabber"
-msgstr "Fabriquer un déménageur à pattes"
+msgstr "Fabriquer un préhenseur à pattes"
 
 msgid "Build a legged orga shooter"
 msgstr "Fabriquer un tireur organique à pattes"
@@ -223,10 +228,10 @@ msgid "Build a nuclear power plant"
 msgstr "Construire une centrale nucléaire"
 
 msgid "Build a phazer shooter"
-msgstr "Fabriquer un robot canon à phases"
+msgstr "Fabriquer un robot canon hachoir"
 
 msgid "Build a power cell factory"
-msgstr "Construire une fabrique de piles"
+msgstr "Construire une fabrique de batteries"
 
 msgid "Build a power station"
 msgstr "Construire une station de recharge"
@@ -249,11 +254,17 @@ msgstr "Fabriquer un robot bouclier"
 msgid "Build a subber"
 msgstr "Fabriquer un robot sous-marin"
 
+msgid "Build a target bot"
+msgstr ""
+
 msgid "Build a thumper"
 msgstr "Fabriquer un robot secoueur"
 
+msgid "Build a tracked builder"
+msgstr ""
+
 msgid "Build a tracked grabber"
-msgstr "Fabriquer un déménageur à chenilles"
+msgstr "Fabriquer un préhenseur à chenilles"
 
 msgid "Build a tracked orga shooter"
 msgstr "Fabriquer un tireur organique à chenilles"
@@ -264,8 +275,11 @@ msgstr "Fabriquer un tireur à chenilles"
 msgid "Build a tracked sniffer"
 msgstr "Fabriquer un renifleur à chenilles"
 
+msgid "Build a wheeled builder"
+msgstr ""
+
 msgid "Build a wheeled grabber"
-msgstr "Fabriquer un déménageur à roues"
+msgstr "Fabriquer un préhenseur à roues"
 
 msgid "Build a wheeled orga shooter"
 msgstr "Fabriquer un tireur organique à roues"
@@ -276,8 +290,11 @@ msgstr "Fabriquer un tireur à roues"
 msgid "Build a wheeled sniffer"
 msgstr "Fabriquer un renifleur à roues"
 
+msgid "Build a winged builder"
+msgstr ""
+
 msgid "Build a winged grabber"
-msgstr "Fabriquer un déménageur volant"
+msgstr "Fabriquer un préhenseur volant"
 
 msgid "Build a winged orga shooter"
 msgstr "Fabriquer un tireur organique volant"
@@ -313,19 +330,19 @@ msgid "Camera border scrolling\\Scrolling when the mouse touches right or left b
 msgstr "Défilement dans les bords\\Défilement lorsque la souris touche les bords gauche ou droite"
 
 msgid "Camera closer\\Moves the camera forward"
-msgstr "Caméra plus proche\\Avance la caméra"
+msgstr "Plus proche\\Avance la caméra"
 
 msgid "Camera down\\Turns the camera down"
-msgstr "Baisser caméra\\Baisse la caméra"
+msgstr "Plus bas\\Tourne la caméra vers le bas"
 
 msgid "Camera left\\Turns the camera left"
-msgstr "Caméra à gauche\\Tourne la caméra vers la gauche"
+msgstr "À gauche\\Tourne la caméra vers la gauche"
 
 msgid "Camera right\\Turns the camera right"
-msgstr "Caméra à droite\\Tourne la caméra vers la droite"
+msgstr "À droite\\Tourne la caméra vers la droite"
 
 msgid "Camera up\\Turns the camera up"
-msgstr "Lever caméra\\Monte la caméra"
+msgstr "Plus haut\\Tourne la caméra vers le haut"
 
 msgid "Can not produce not researched object"
 msgstr "Impossible de créer un objet n'ayant pas été recherché"
@@ -364,7 +381,7 @@ msgid "Cheat console\\Show cheat console"
 msgstr "Console de triche\\Montre la console de triche"
 
 msgid "Checkpoint"
-msgstr "Indicateur"
+msgstr "Point de passage"
 
 msgid "Class name expected"
 msgstr "Nom de classe attendu"
@@ -384,9 +401,8 @@ msgstr "Fermer"
 msgid "Closing bracket missing"
 msgstr "Il manque une parenthèse fermante"
 
-#, fuzzy
 msgid "Code battle"
-msgstr "Batailles de code"
+msgstr "Bataille de code"
 
 msgid "Code battles"
 msgstr "Batailles de code"
@@ -419,7 +435,7 @@ msgid "Controls\\Keyboard, joystick and mouse settings"
 msgstr "Commandes\\Touches du clavier"
 
 msgid "Converts ore to titanium"
-msgstr "Conversion de minerai en titane"
+msgstr "Raffinage de minerai en titane"
 
 msgid "Copy"
 msgstr "Copier"
@@ -491,6 +507,9 @@ msgstr "Descend (\\key gdown;)"
 msgid "Drawer bot"
 msgstr "Robot dessinateur"
 
+msgid "Duplicate label in switch"
+msgstr ""
+
 msgid "Dust\\Dust and dirt on bots and buildings"
 msgstr "Salissures\\Salissures des robots et bâtiments"
 
@@ -501,7 +520,7 @@ msgid "Dynamic shadows ++\\Dynamic shadows + self shadowing"
 msgstr "Ombres dynamiques ++\\Active les ombres dynamiques et l'auto-ombrage"
 
 msgid "Dynamic shadows\\Beautiful shadows!"
-msgstr "Ombres dynamiques\\Magnifiques ombres !"
+msgstr "Ombres dynamiques\\Magnifiques ombres !"
 
 msgid "Edit the selected program"
 msgstr "Éditer le programme sélectionné"
@@ -509,11 +528,14 @@ msgstr "Éditer le programme sélectionné"
 msgid "Egg"
 msgstr "Oeuf"
 
+msgid "Empty character constant"
+msgstr ""
+
 msgid "End of block missing"
 msgstr "Il manque la fin du bloc"
 
 msgid "Energy deposit (site for power station)"
-msgstr "Emplacement pour une station de recharge ou une fabrique de pile"
+msgstr "Sous sol énergétique (Emplacement pour une station de recharge ou une fabrique de batteries)"
 
 msgid "Energy level"
 msgstr "Niveau d'énergie"
@@ -568,7 +590,7 @@ msgstr "But/Objectif"
 
 # OBJECT_END : GoalArea
 msgid "Fixed mine"
-msgstr "Mine fixe"
+msgstr "Mine anti-personnel"
 
 msgid "Flat ground not large enough"
 msgstr "Sol plat pas assez grand"
@@ -599,7 +621,7 @@ msgid "Found a site for a derrick"
 msgstr "Emplacement pour un derrick trouvé"
 
 msgid "Found a site for power station"
-msgstr "Emplacement pour station de recharge ou fabrique de pile trouvé"
+msgstr "Emplacement pour station de recharge ou fabrique de batteries trouvé"
 
 msgid "Found key A (site for derrick)"
 msgstr "Emplacement pour un derrick (clé A)"
@@ -647,7 +669,7 @@ msgid "Generating"
 msgstr "Génération"
 
 msgid "Gold Edition development by:"
-msgstr "Édition Gold développée par :"
+msgstr "Édition Gold développée par :"
 
 msgid "Goto: destination occupied"
 msgstr "Goto: destination occupée"
@@ -685,9 +707,8 @@ msgstr "Bulles d'aide\\Bulles explicatives"
 msgid "Hex value out of range"
 msgstr "Valeur hexadécimale impossible"
 
-#, fuzzy
 msgid "Higher speed\\Doubles speed"
-msgstr "Vitesse 2.0x\\Deux fois plus rapide"
+msgstr "Vitesse augmentée\\Deux fois plus rapide"
 
 msgid "Highest\\Highest graphic quality (lowest frame rate)"
 msgstr "Maxi\\Haute qualité (+ lent)"
@@ -720,10 +741,13 @@ msgid "Inappropriate bot"
 msgstr "Robot inadapté"
 
 msgid "Inappropriate cell type"
-msgstr "Pas le bon type de pile"
+msgstr "Source d'énergie non adapté"
 
 msgid "Inappropriate object"
 msgstr "Pas le bon objet"
+
+msgid "Inappropriate sample"
+msgstr ""
 
 msgid "Incorrect index type"
 msgstr "Mauvais type d'index"
@@ -732,7 +756,7 @@ msgid "Infected by a virus; temporarily out of order"
 msgstr "Infecté par un virus; ne fonctionne plus temporairement"
 
 msgid "Information exchange post"
-msgstr "Borne d'information"
+msgstr "Station relais"
 
 msgid "Instruction \"break\" outside a loop"
 msgstr "Instruction \"break\" en dehors d'une boucle"
@@ -794,8 +818,11 @@ msgstr "Aide sur le mot-clé (\\key cbot;)"
 msgid "LOADING"
 msgstr "CHARGEMENT"
 
+msgid "Legged builder"
+msgstr ""
+
 msgid "Legged grabber"
-msgstr "Robot déménageur à pattes"
+msgstr "Robot préhenseur à pattes"
 
 msgid "Legged orga shooter"
 msgstr "Robot tireur organique à pattes"
@@ -831,7 +858,7 @@ msgid "Loading basic level settings"
 msgstr "Chargement des configurations de base du niveau"
 
 msgid "Loading finished!"
-msgstr "Chargement terminé !"
+msgstr "Chargement terminé !"
 
 msgid "Loading music"
 msgstr "Chargement de la musique"
@@ -866,7 +893,7 @@ msgid "Lunar Roving Vehicle"
 msgstr "Véhicule d'exploration lunaire"
 
 msgid "MSAA\\Multisample anti-aliasing"
-msgstr "ACME\\Anticrénelage multiéchantillon"
+msgstr "ACME\\Anticrénelage multiéchantillon (MSAA: Multisample anti-aliasing)"
 
 msgid "Maximize"
 msgstr "Taille maximale"
@@ -907,6 +934,9 @@ msgstr "Déplace le programme sélectionné vers le bas"
 msgid "Move selected program up"
 msgstr "Déplace le programme sélectionné vers le haut"
 
+msgid "Mute sounds in background\\Mute all game sounds when the window is unfocused"
+msgstr ""
+
 msgid "Mute\\No sound"
 msgstr "Silencieux\\Totalement silencieux"
 
@@ -924,6 +954,9 @@ msgstr "Nouveau"
 
 msgid "New ..."
 msgstr "Nouveau ..."
+
+msgid "New Folder"
+msgstr ""
 
 msgid "New bot available"
 msgstr "Nouveau robot disponible"
@@ -953,7 +986,7 @@ msgid "No function with this name accepts this number of parameters"
 msgstr "Aucune fonction de ce nom n'accepte ce nombre de paramètres"
 
 msgid "No information exchange post within range"
-msgstr "Pas de borne d'information accessible"
+msgstr "Pas de station relais accessible"
 
 msgid "No more energy"
 msgstr "Plus d'énergie"
@@ -962,7 +995,7 @@ msgid "No ore in the subsoil"
 msgstr "Pas de minerai en sous-sol"
 
 msgid "No power cell"
-msgstr "Pas de pile"
+msgstr "Pas de source d'énergie"
 
 msgid "No titanium"
 msgstr "Pas de titane"
@@ -971,7 +1004,7 @@ msgid "No titanium around"
 msgstr "Pas de titane accessible"
 
 msgid "No titanium ore to convert"
-msgstr "Pas de minerai de titane à convertir"
+msgstr "Pas de minerai de titane à raffiner"
 
 msgid "No titanium to transform"
 msgstr "Pas de titane à transformer"
@@ -980,7 +1013,7 @@ msgid "No uranium to transform"
 msgstr "Pas de minerai d'uranium à transformer"
 
 msgid "No userlevels installed!"
-msgstr "Pas de niveaux spéciaux installés !"
+msgstr "Pas de niveaux spéciaux installés !"
 
 msgid "Non-void function needs \"return;\""
 msgstr "Les fonctions avec retour autre que void doivent comporter l'instruction \"return;\""
@@ -1016,10 +1049,10 @@ msgid "Nothing to recycle"
 msgstr "Rien à recycler"
 
 msgid "Nuclear power cell"
-msgstr "Pile nucléaire"
+msgstr "Pile atomique"
 
 msgid "Nuclear power cell available"
-msgstr "Pile nucléaire disponible"
+msgstr "Pile atomique disponible"
 
 msgid "Nuclear power station"
 msgstr "Centrale nucléaire"
@@ -1040,7 +1073,7 @@ msgid "OK\\Choose the selected player"
 msgstr "D'accord\\Choisir le joueur"
 
 msgid "OK\\Close program editor and return to game"
-msgstr "D'accord\\Compiler le programme"
+msgstr "D'accord\\Compiler le programme et fermer la fenêtre d'édition"
 
 msgid "Object too close"
 msgstr "Objet trop proche"
@@ -1081,6 +1114,9 @@ msgstr "Montrer le lieu d'un message\\Montrer le lieu du dernier message"
 msgid "Original game developed by:"
 msgstr "Jeu original développé par :"
 
+msgid "Overwrite existing file?"
+msgstr ""
+
 msgid "Parameters missing"
 msgstr "Pas assez de paramètres"
 
@@ -1103,7 +1139,7 @@ msgid "Pause\\Pause the game without opening menu"
 msgstr "Pause\\Mettre le jeu en pause sans ouvrir le menu"
 
 msgid "Phazer shooter"
-msgstr "Robot canon à phases"
+msgstr "Robot canon hachoir"
 
 msgid "Photography"
 msgstr "Vue de la mission"
@@ -1114,6 +1150,9 @@ msgstr "Emplacement occupé"
 msgid "Planets:"
 msgstr "Liste des planètes :"
 
+msgid "Plans for builder available"
+msgstr ""
+
 msgid "Plans for defense tower available"
 msgstr "Construction d'une tour de défense possible"
 
@@ -1121,7 +1160,7 @@ msgid "Plans for nuclear power plant available"
 msgstr "Construction d'une centrale nucléaire possible"
 
 msgid "Plans for phazer shooter available"
-msgstr "Fabrication des robots canon à phases possible"
+msgstr "Fabrication des robots canon hachoir possible"
 
 msgid "Plans for shielder available"
 msgstr "Fabrication d'un robot bouclier possible"
@@ -1151,13 +1190,13 @@ msgid "Player's name"
 msgstr "Nom du joueur"
 
 msgid "Power cell"
-msgstr "Pile normale"
+msgstr "Batterie standard"
 
 msgid "Power cell available"
-msgstr "Pile disponible"
+msgstr "Batterie disponible"
 
 msgid "Power cell factory"
-msgstr "Fabrique de piles"
+msgstr "Fabrique de batteries"
 
 msgid "Power station"
 msgstr "Station de recharge"
@@ -1228,15 +1267,14 @@ msgstr "Chargement rapide\\Chargement direct d'une sauvegarde"
 msgid "Quick save\\Immediately save game"
 msgstr "Sauvegarde rapide\\Sauvegarde direct"
 
-#, fuzzy
 msgid "Quicksave slot not found"
-msgstr "Objet n'existe pas"
+msgstr "Emplacement de sauvegarde rapide non trouvé"
 
 msgid "Quit\\Quit Colobot: Gold Edition"
-msgstr "Quitter\\Quitter Colobot : Édition Gold"
+msgstr "Quitter\\Quitter Colobot : Édition Gold"
 
 msgid "Quit\\Quit the current mission or exercise"
-msgstr "Quitter la mission en cours\\Terminer un exercice ou une mssion"
+msgstr "Quitter la mission en cours\\Terminer un exercice ou une mission"
 
 msgid "Radar station"
 msgstr "Radar"
@@ -1320,35 +1358,41 @@ msgstr "Robbie"
 msgid "Ruin"
 msgstr "Bâtiment en ruine"
 
+msgid "Run research program for builder"
+msgstr ""
+
 msgid "Run research program for defense tower"
-msgstr "Recherche la tour de défense"
+msgstr "Lancer la recherche de la tour de défense"
 
 msgid "Run research program for legged bots"
-msgstr "Recherche du fonctionnement des pattes"
+msgstr "Lancer la recherche du fonctionnement des pattes"
 
 msgid "Run research program for nuclear power"
-msgstr "Recherche du programme nucléaire"
+msgstr "Lancer la recherche du programme nucléaire"
 
 msgid "Run research program for orga shooter"
-msgstr "Recherche le canon organique"
+msgstr "Lancer la recherche du canon organique"
 
 msgid "Run research program for phazer shooter"
-msgstr "Recherche le canon à phases"
+msgstr "Lancer la recherche du canon hachoir"
 
 msgid "Run research program for shielder"
-msgstr "Recherche le bouclier"
+msgstr "Lancer la recherche du bouclier"
 
 msgid "Run research program for shooter"
-msgstr "Recherche le canon de tir"
+msgstr "Lancer la recherche du canon de tir"
+
+msgid "Run research program for target bot"
+msgstr ""
 
 msgid "Run research program for thumper"
-msgstr "Recherche le secoueur"
+msgstr "Lancer la recherche du secoueur"
 
 msgid "Run research program for tracked bots"
-msgstr "Recherche du fonctionnement des chenilles"
+msgstr "Lancer la recherche du fonctionnement des chenilles"
 
 msgid "Run research program for winged bots"
-msgstr "Recherche du fonctionnement du jet"
+msgstr "Lancer la recherche du fonctionnement du jet"
 
 msgid "SatCom"
 msgstr "SatCom"
@@ -1370,6 +1414,9 @@ msgstr "Enregistrer\\Enregistrer la mission en cours"
 
 msgid "Save\\Saves the current mission"
 msgstr "Enregistrer\\Enregistrer la mission en cours"
+
+msgid "Select Folder"
+msgstr ""
 
 msgid "Select the astronaut\\Selects the astronaut"
 msgstr "Sélectionner le cosmonaute\\Sélectionner le cosmonaute"
@@ -1441,7 +1488,7 @@ msgid "Spaceship"
 msgstr "Vaisseau spatial"
 
 msgid "Spaceship ruin"
-msgstr "Epave de vaisseau spatial"
+msgstr "Épave de vaisseau spatial"
 
 msgid "Spider"
 msgstr "Araignée"
@@ -1498,7 +1545,7 @@ msgid "Switch bots <-> buildings"
 msgstr "Permute robots <-> bâtiments"
 
 msgid "Take off to finish the mission"
-msgstr "Décolle pour terminer la mission"
+msgstr "Décollage pour terminer la mission"
 
 msgid "Target"
 msgstr "Cible"
@@ -1561,14 +1608,14 @@ msgid "This program is read-only, clone it to edit"
 msgstr "Ce programme est en lecture-seule, le dupliquer pour pouvoir le modifier"
 
 msgid "Thump (\\key action;)"
-msgstr "Secoue (\\key action;)"
+msgstr "Secouer (\\key action;)"
 
 msgid "Thumper"
 msgstr "Robot secoueur"
 
 #, c-format
 msgid "Time: %s"
-msgstr ""
+msgstr "Temps : %s"
 
 msgid "Titanium"
 msgstr "Titane"
@@ -1603,8 +1650,11 @@ msgstr "Trop de drapeaux de cette couleur (maximum 5)"
 msgid "Too many parameters"
 msgstr "Trop de paramètres"
 
+msgid "Tracked builder"
+msgstr ""
+
 msgid "Tracked grabber"
-msgstr "Robot déménageur à chenilles"
+msgstr "Robot préhenseur à chenilles"
 
 msgid "Tracked orga shooter"
 msgstr "Robot tireur organique à chenilles"
@@ -1655,7 +1705,7 @@ msgid "Unknown command"
 msgstr "Commande inconnue"
 
 msgid "Unknown escape sequence"
-msgstr ""
+msgstr "Séquence d'échappement inconnue"
 
 msgid "Unknown function"
 msgstr "Routine inconnue"
@@ -1685,7 +1735,7 @@ msgid "Vault"
 msgstr "Coffre-fort"
 
 msgid "Vertical Synchronization\\Limits the number of frames per second to display frequency"
-msgstr ""
+msgstr "Synchronisation verticale :\\Réduit la fréquence d'images par seconde à afficher."
 
 msgid "Violet flag"
 msgstr "Drapeau violet"
@@ -1702,8 +1752,11 @@ msgstr "Guêpe mortellement touchée"
 msgid "Waste"
 msgstr "Déchet"
 
+msgid "Wheeled builder"
+msgstr ""
+
 msgid "Wheeled grabber"
-msgstr "Robot déménageur à roues"
+msgstr "Robot préhenseur à roues"
 
 msgid "Wheeled orga shooter"
 msgstr "Robot tireur organique à roues"
@@ -1714,8 +1767,11 @@ msgstr "Robot tireur à roues"
 msgid "Wheeled sniffer"
 msgstr "Robot renifleur à roues"
 
+msgid "Winged builder"
+msgstr ""
+
 msgid "Winged grabber"
-msgstr "Robot déménageur volant"
+msgstr "Robot préhenseur volant"
 
 msgid "Winged orga shooter"
 msgstr "Robot tireur organique volant"
@@ -1736,7 +1792,7 @@ msgid "Worm fatally wounded"
 msgstr "Ver mortellement touché"
 
 msgid "Wreckage"
-msgstr "Epave de robot"
+msgstr "Épave de robot"
 
 msgid "Write error"
 msgstr "Erreur lors de l'écriture"
@@ -1821,7 +1877,7 @@ msgid "\\New player name"
 msgstr "\\Nom du joueur à créer"
 
 msgid "\\No eyeglasses"
-msgstr "\\Pas de lunettes"
+msgstr "\\Pas de lunette"
 
 msgid "\\Raise the pencil"
 msgstr "\\Relève le crayon"
@@ -1830,7 +1886,7 @@ msgid "\\Red flags"
 msgstr "\\Drapeaux rouges"
 
 msgid "\\Return to Colobot: Gold Edition"
-msgstr "\\Revenir à Colobot : Édition Gold"
+msgstr "\\Revenir à Colobot : Édition Gold"
 
 msgid "\\SatCom on standby"
 msgstr "\\Mettre le SatCom en veille"
@@ -1882,9 +1938,6 @@ msgstr "colobot.info"
 
 msgid "epsitec.com"
 msgstr "epsitec.com"
-
-#~ msgid " "
-#~ msgstr " "
 
 #~ msgid " Drivers:"
 #~ msgstr " Pilotes :"

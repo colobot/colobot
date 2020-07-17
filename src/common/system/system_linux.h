@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -40,10 +40,13 @@ public:
 
     SystemDialogResult SystemDialog(SystemDialogType type, const std::string& title, const std::string& message) override;
 
+    void InterpolateTimeStamp(SystemTimeStamp *dst, SystemTimeStamp *a, SystemTimeStamp *b, float i) override;
     void GetCurrentTimeStamp(SystemTimeStamp *stamp) override;
     long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after) override;
 
     std::string GetSaveDir() override;
+
+    std::string GetEnvVar(const std::string& name) override;
 
     void Usleep(int usec) override;
 

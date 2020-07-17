@@ -37,7 +37,7 @@ msgstr ""
 #. type: Keywords=
 #: colobot.ini:4
 #, no-wrap
-msgid "robots;3d;space;astronaut;java;c++"
+msgid "robots;3d;space;astronaut;java;c++;"
 msgstr ""
 
 #. type: =head1

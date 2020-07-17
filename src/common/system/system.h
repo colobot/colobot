@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,6 +23,8 @@
  */
 
 #pragma once
+
+#include "common/config.h"
 
 #include <memory>
 #include <string>
@@ -114,6 +116,9 @@ public:
     //! Copies the time stamp from \a src to \a dst
     TEST_VIRTUAL void CopyTimeStamp(SystemTimeStamp *dst, SystemTimeStamp *src);
 
+    //! Interpolates between two timestamps. If i=0 then dst=a. If i=1 then dst=b. If i=0.5 then dst is halfway between.
+    virtual void InterpolateTimeStamp(SystemTimeStamp *dst, SystemTimeStamp *a, SystemTimeStamp *b, float i) = 0;
+
     //! Returns a time stamp associated with current time
     virtual void GetCurrentTimeStamp(SystemTimeStamp *stamp) = 0;
 
@@ -125,6 +130,9 @@ public:
     /** The difference is \a after - \a before. */
     virtual long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after) = 0;
 
+    //! Returns the path where the executable binary is located (ends with the path separator)
+    virtual std::string GetBasePath();
+
     //! Returns the data path (containing textures, levels, helpfiles, etc)
     virtual std::string GetDataPath();
 
@@ -134,9 +142,13 @@ public:
     //! Returns the save dir location
     virtual std::string GetSaveDir();
 
+    //! Returns the environment variable with the given name or an empty string if it does not exist
+    virtual std::string GetEnvVar(const std::string &name);
+
     //! Sleep for given amount of microseconds
     virtual void Usleep(int usecs) = 0;
 
 private:
+    std::string m_basePath;
     std::vector<std::unique_ptr<SystemTimeStamp>> m_timeStamps;
 };

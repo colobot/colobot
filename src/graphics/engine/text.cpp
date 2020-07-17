@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -33,6 +33,7 @@
 
 #include "math/func.h"
 
+#include <algorithm>
 #include <SDL.h>
 #include <SDL_ttf.h>
 
@@ -1252,13 +1253,13 @@ FontTexture CText::CreateFontTexture(Math::IntPoint tileSize)
 
 Math::IntPoint CText::GetNextTilePos(const FontTexture& fontTexture)
 {
-    int horizontalTiles = FONT_TEXTURE_SIZE.x / fontTexture.tileSize.x;
-    int verticalTiles = FONT_TEXTURE_SIZE.y / fontTexture.tileSize.y;
+    int horizontalTiles = FONT_TEXTURE_SIZE.x / std::max(1, fontTexture.tileSize.x); //this should prevent crashes in some combinations of resolution and font size, see issue #1128
+    int verticalTiles = FONT_TEXTURE_SIZE.y / std::max(1, fontTexture.tileSize.y);
 
     int totalTiles = horizontalTiles * verticalTiles;
     int tileNumber = totalTiles - fontTexture.freeSlots;
 
-    int verticalTileIndex = tileNumber / horizontalTiles;
+    int verticalTileIndex = tileNumber / std::max(1, horizontalTiles);
     int horizontalTileIndex = tileNumber % horizontalTiles;
 
     return Math::IntPoint(horizontalTileIndex * fontTexture.tileSize.x,

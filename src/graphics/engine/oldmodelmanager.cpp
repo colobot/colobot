@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -193,6 +193,7 @@ void COldModelManager::ChangeVariant(std::vector<ModelTriangle>& triangles, int 
             triangles[i].tex1Name == "factory.png" ||
             triangles[i].tex1Name == "lemt.png"    ||
             triangles[i].tex1Name == "roller.png"  ||
+            triangles[i].tex1Name == "rollert.png" ||
             triangles[i].tex1Name == "search.png"  ||
             triangles[i].tex1Name == "drawer.png"  ||
             triangles[i].tex1Name == "subm.png"     )

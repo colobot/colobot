@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -174,7 +174,7 @@ bool CResourceManager::RemoveDirectory(const std::string& directory)
     return false;
 }
 
-std::vector<std::string> CResourceManager::ListFiles(const std::string &directory)
+std::vector<std::string> CResourceManager::ListFiles(const std::string &directory, bool excludeDirs)
 {
     std::vector<std::string> result;
 
@@ -184,6 +184,11 @@ std::vector<std::string> CResourceManager::ListFiles(const std::string &director
 
         for (char **i = files; *i != nullptr; i++)
         {
+            if (excludeDirs)
+            {
+                std::string path = CleanPath(directory) + "/" + (*i);
+                if (PHYSFS_isDirectory(path.c_str())) continue;
+            }
             result.push_back(*i);
         }
 

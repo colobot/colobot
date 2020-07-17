@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -2310,6 +2310,7 @@ bool CEngine::LoadAllTextures()
     LoadTexture("textures/interface/button1.png");
     LoadTexture("textures/interface/button2.png");
     LoadTexture("textures/interface/button3.png");
+    LoadTexture("textures/interface/button4.png");
     LoadTexture("textures/effect00.png");
     LoadTexture("textures/effect01.png");
     LoadTexture("textures/effect02.png");
@@ -4048,7 +4049,10 @@ void CEngine::UseMSAA(bool enable)
                 }
             }
 
-            framebuffer->Bind();
+            if (framebuffer != nullptr)
+            {
+                framebuffer->Bind();
+            }
 
             m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, true);
             m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, true);

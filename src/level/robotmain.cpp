@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -714,6 +714,12 @@ bool CRobotMain::ProcessEvent(Event &event)
         {
             m_focusPause = m_pause->ActivatePause(PAUSE_ENGINE);
         }
+
+        if (m_settings->GetFocusLostMute())
+        {
+            m_sound->SetAudioVolume(0);
+            m_sound->SetMusicVolume(0);
+        }
         return false;
     }
 
@@ -725,6 +731,30 @@ bool CRobotMain::ProcessEvent(Event &event)
             m_pause->DeactivatePause(m_focusPause);
             m_focusPause = nullptr;
         }
+
+        if (m_settings->GetFocusLostMute())
+        {
+            int volume;
+            // Set music volume
+            if (GetConfigFile().GetIntProperty("Setup", "MusicVolume", volume))
+            {
+                m_sound->SetMusicVolume(volume);
+            }
+            else
+            {
+                m_sound->SetMusicVolume(MAXVOLUME*3/4);
+            }
+            // Set audio volume
+            if (GetConfigFile().GetIntProperty("Setup", "AudioVolume", volume))
+            {
+                m_sound->SetAudioVolume(volume);
+            }
+            else
+            {
+                m_sound->SetAudioVolume(MAXVOLUME);
+            }
+        }
+
         return false;
     }
 
@@ -1830,6 +1860,10 @@ void CRobotMain::SelectOneObject(CObject* obj, bool displayError)
          type == OBJECT_MOBILEta ||
          type == OBJECT_MOBILEwa ||
          type == OBJECT_MOBILEia ||
+         type == OBJECT_MOBILEfb ||
+         type == OBJECT_MOBILEtb ||
+         type == OBJECT_MOBILEwb ||
+         type == OBJECT_MOBILEib ||
          type == OBJECT_MOBILEfc ||
          type == OBJECT_MOBILEtc ||
          type == OBJECT_MOBILEwc ||
@@ -1851,6 +1885,8 @@ void CRobotMain::SelectOneObject(CObject* obj, bool displayError)
          type == OBJECT_MOBILEtt ||
          type == OBJECT_MOBILEwt ||
          type == OBJECT_MOBILEit ||
+         type == OBJECT_MOBILErp ||
+         type == OBJECT_MOBILEst ||
          type == OBJECT_MOBILEdr ||
          type == OBJECT_APOLLO2  )
     {
@@ -2211,6 +2247,10 @@ void CRobotMain::ChangeCamera()
          oType != OBJECT_MOBILEta &&
          oType != OBJECT_MOBILEwa &&
          oType != OBJECT_MOBILEia &&
+         oType != OBJECT_MOBILEfb &&
+         oType != OBJECT_MOBILEtb &&
+         oType != OBJECT_MOBILEwb &&
+         oType != OBJECT_MOBILEib &&
          oType != OBJECT_MOBILEfc &&
          oType != OBJECT_MOBILEtc &&
          oType != OBJECT_MOBILEwc &&
@@ -2233,6 +2273,8 @@ void CRobotMain::ChangeCamera()
          oType != OBJECT_MOBILEtt &&
          oType != OBJECT_MOBILEwt &&
          oType != OBJECT_MOBILEit &&
+         oType != OBJECT_MOBILErp &&
+         oType != OBJECT_MOBILEst &&
          oType != OBJECT_MOBILEdr &&
          oType != OBJECT_APOLLO2  )  return;
 
@@ -3971,6 +4013,7 @@ void CRobotMain::ChangeColor()
         m_engine->ChangeTextureColor("textures/objects/lemt.png"+teamStr,    "textures/objects/lemt.png",    COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
         m_engine->ChangeTextureColor("textures/objects/roller.png"+teamStr,  "textures/objects/roller.png",  COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
         m_engine->ChangeTextureColor("textures/objects/search.png"+teamStr,  "textures/objects/search.png",  COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
+        m_engine->ChangeTextureColor("textures/objects/rollert.png"+teamStr, "textures/objects/rollert.png", COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
 
         exclu[0] = Math::Point(  0.0f/256.0f, 160.0f/256.0f);
         exclu[1] = Math::Point(256.0f/256.0f, 256.0f/256.0f);  // pencils
@@ -4449,10 +4492,8 @@ void CRobotMain::SaveOneScript(CObject *obj)
 }
 
 //! Saves the stack of the program in execution of a robot
-bool CRobotMain::SaveFileStack(CObject *obj, FILE *file, int objRank)
+bool CRobotMain::SaveFileStack(CObject *obj, std::ostream &ostr)
 {
-    if (objRank == -1) return true;
-
     if (! obj->Implements(ObjectInterfaceType::Programmable)) return true;
 
     CProgrammableObject* programmable = dynamic_cast<CProgrammableObject*>(obj);
@@ -4460,14 +4501,24 @@ bool CRobotMain::SaveFileStack(CObject *obj, FILE *file, int objRank)
     ObjectType type = obj->GetType();
     if (type == OBJECT_HUMAN) return true;
 
-    return programmable->WriteStack(file);
+    long status = 1;
+    std::stringstream sstr("");
+
+    if (!programmable->WriteStack(sstr))
+    {
+        GetLogger()->Error("WriteStack failed at object id = %i\n", obj->GetID());
+        status = 100; // marked bad
+    }
+
+    if (!CBot::WriteLong(ostr, status)) return false;
+    if (!CBot::WriteStream(ostr, sstr)) return false;
+
+    return true;
 }
 
 //! Resumes the execution stack of the program in a robot
-bool CRobotMain::ReadFileStack(CObject *obj, FILE *file, int objRank)
+bool CRobotMain::ReadFileStack(CObject *obj, std::istream &istr)
 {
-    if (objRank == -1) return true;
-
     if (! obj->Implements(ObjectInterfaceType::Programmable)) return true;
 
     CProgrammableObject* programmable = dynamic_cast<CProgrammableObject*>(obj);
@@ -4475,7 +4526,29 @@ bool CRobotMain::ReadFileStack(CObject *obj, FILE *file, int objRank)
     ObjectType type = obj->GetType();
     if (type == OBJECT_HUMAN) return true;
 
-    return programmable->ReadStack(file);
+    long status;
+    if (!CBot::ReadLong(istr, status)) return false;
+
+    if (status == 100) // was marked bad ?
+    {
+        if (!CBot::ReadLong(istr, status)) return false;
+        if (!istr.seekg(status, istr.cur)) return false;
+        return true; // next program
+    }
+
+    if (status == 1)
+    {
+        std::stringstream sstr("");
+        if (!CBot::ReadStream(istr, sstr)) return false;
+
+        if (!programmable->ReadStack(sstr))
+        {
+            GetLogger()->Error("ReadStack failed at object id = %i\n", obj->GetID());
+        }
+        return true; // next program
+    }
+
+    return false; // error: status == ??
 }
 
 std::vector<std::string> CRobotMain::GetNewScriptNames(ObjectType type)
@@ -4665,30 +4738,41 @@ bool CRobotMain::IOWriteScene(std::string filename, std::string filecbot, std::s
     }
     catch (CLevelParserException& e)
     {
-        GetLogger()->Error("Failed to save level state - %s\n", e.what());
+        GetLogger()->Error("Failed to save level state - %s\n", e.what()); // TODO add visual error to notify user that save failed
         return false;
     }
 
     // Writes the file of stacks of execution.
-    FILE* file = CBot::fOpen((CResourceManager::GetSaveLocation() + "/" + filecbot).c_str(), "wb");
-    if (file == nullptr) return false;
+    COutputStream ostr(filecbot);
+    if (!ostr.is_open()) return false;
 
+    bool bError = false;
     long version = 1;
-    CBot::fWrite(&version, sizeof(long), 1, file);  // version of COLOBOT
+    CBot::WriteLong(ostr, version);                 // version of COLOBOT
     version = CBot::CBotProgram::GetVersion();
-    CBot::fWrite(&version, sizeof(long), 1, file);  // version of CBOT
+    CBot::WriteLong(ostr, version);                 // version of CBOT
+    CBot::WriteWord(ostr, 0); // TODO
 
-    objRank = 0;
     for (CObject* obj : m_objMan->GetAllObjects())
     {
         if (obj->GetType() == OBJECT_TOTO) continue;
         if (IsObjectBeingTransported(obj)) continue;
         if (obj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject*>(obj)->IsDying()) continue;
 
-        if (!SaveFileStack(obj, file, objRank++))  break;
+        if (!SaveFileStack(obj, ostr))
+        {
+            GetLogger()->Error("SaveFileStack failed at object id = %i\n", obj->GetID());
+            bError = true;
+            break;
+        }
     }
-    CBot::CBotClass::SaveStaticState(file);
-    CBot::fClose(file);
+
+    if (!bError && !CBot::CBotClass::SaveStaticState(ostr))
+    {
+        GetLogger()->Error("CBotClass save static state failed\n");
+    }
+
+    ostr.close();
 
     if (!emergencySave)
     {
@@ -4699,7 +4783,7 @@ bool CRobotMain::IOWriteScene(std::string filename, std::string filecbot, std::s
         m_engine->SetScreenshotMode(true);
 
         m_engine->Render(); // update (but don't show, we're not swapping buffers here!)
-        m_engine->WriteScreenShot(CResourceManager::GetSaveLocation() + "/" + filescreenshot); //TODO: Use PHYSFS?
+        m_engine->WriteScreenShot(filescreenshot);
         m_shotSaving++;
 
         m_engine->SetScreenshotMode(false);
@@ -4846,29 +4930,48 @@ CObject* CRobotMain::IOReadScene(std::string filename, std::string filecbot)
     m_ui->GetLoadingScreen()->SetProgress(0.95f, RT_LOADING_CBOT_SAVE);
 
     // Reads the file of stacks of execution.
-    FILE* file = CBot::fOpen((CResourceManager::GetSaveLocation() + "/" + filecbot).c_str(), "rb");
-    if (file != nullptr)
+    CInputStream istr(filecbot);
+
+    if (istr.is_open())
     {
-        long version;
-        CBot::fRead(&version, sizeof(long), 1, file);  // version of COLOBOT
+        bool bError = false;
+        long version = 0;
+        CBot::ReadLong(istr, version);             // version of COLOBOT
         if (version == 1)
         {
-            CBot::fRead(&version, sizeof(long), 1, file);  // version of CBOT
+            CBot::ReadLong(istr, version);         // version of CBOT
             if (version == CBot::CBotProgram::GetVersion())
             {
-                objRank = 0;
-                for (CObject* obj : m_objMan->GetAllObjects())
+                unsigned short flag;
+                CBot::ReadWord(istr, flag); // TODO
+                bError = (flag != 0);
+
+                if (!bError) for (CObject* obj : m_objMan->GetAllObjects())
                 {
                     if (obj->GetType() == OBJECT_TOTO) continue;
                     if (IsObjectBeingTransported(obj)) continue;
                     if (obj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject*>(obj)->IsDying()) continue;
 
-                    if (!ReadFileStack(obj, file, objRank++)) break;
+                    if (!ReadFileStack(obj, istr))
+                    {
+                        GetLogger()->Error("ReadFileStack failed at object id = %i\n", obj->GetID());
+                        bError = true;
+                        break;
+                    }
+                }
+
+                if (!bError && !CBot::CBotClass::RestoreStaticState(istr))
+                {
+                    GetLogger()->Error("CBotClass restore static state failed\n");
+                    bError = true;
                 }
             }
+            else
+                GetLogger()->Error("cbot.run file is wrong version: %i\n", version);
         }
-        CBot::CBotClass::RestoreStaticState(file);
-        CBot::fClose(file);
+
+        if (bError) GetLogger()->Error("Restoring CBOT state failed at stream position: %li\n", istr.tellg());
+        istr.close();
     }
 
     m_ui->GetLoadingScreen()->SetProgress(1.0f, RT_LOADING_FINISHED);
@@ -5822,17 +5925,20 @@ Error CRobotMain::CanFactoryError(ObjectType type, int team)
     if (tool == ToolType::Sniffer        && !IsResearchDone(RESEARCH_SNIFFER,  team)) return ERR_BUILD_RESEARCH;
     if (tool == ToolType::Shooter        && !IsResearchDone(RESEARCH_CANON,    team)) return ERR_BUILD_RESEARCH;
     if (tool == ToolType::OrganicShooter && !IsResearchDone(RESEARCH_iGUN,     team)) return ERR_BUILD_RESEARCH;
+    if (tool == ToolType::Builder        && !IsResearchDone(RESEARCH_BUILDER,  team)) return ERR_BUILD_RESEARCH;
 
     if (drive == DriveType::Tracked      && !IsResearchDone(RESEARCH_TANK,     team)) return ERR_BUILD_RESEARCH;
     if (drive == DriveType::Winged       && !IsResearchDone(RESEARCH_FLY,      team)) return ERR_BUILD_RESEARCH;
     if (drive == DriveType::Legged       && !IsResearchDone(RESEARCH_iPAW,     team)) return ERR_BUILD_RESEARCH;
-    if (drive == DriveType::BigTracked   && !IsResearchDone(RESEARCH_TANK,     team)) return ERR_BUILD_RESEARCH; // NOTE: Subber is not BigTracked! It currently counts as Other
+    if (drive == DriveType::Heavy        && !IsResearchDone(RESEARCH_TANK,     team)) return ERR_BUILD_RESEARCH;
 
     if (type == OBJECT_MOBILErt          && !IsResearchDone(RESEARCH_THUMP,    team)) return ERR_BUILD_RESEARCH;
     if (type == OBJECT_MOBILErc          && !IsResearchDone(RESEARCH_PHAZER,   team)) return ERR_BUILD_RESEARCH;
     if (type == OBJECT_MOBILErr          && !IsResearchDone(RESEARCH_RECYCLER, team)) return ERR_BUILD_RESEARCH;
     if (type == OBJECT_MOBILErs          && !IsResearchDone(RESEARCH_SHIELD,   team)) return ERR_BUILD_RESEARCH;
     if (type == OBJECT_MOBILEsa          && !IsResearchDone(RESEARCH_SUBM,     team)) return ERR_BUILD_DISABLED; // Can be only researched manually in Scene file
+    if (type == OBJECT_MOBILEst          && !IsResearchDone(RESEARCH_SUBM,     team)) return ERR_BUILD_DISABLED;
+    if (type == OBJECT_MOBILEtg          && !IsResearchDone(RESEARCH_TARGET,   team)) return ERR_BUILD_RESEARCH;
 
     return ERR_OK;
 }

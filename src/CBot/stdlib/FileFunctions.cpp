@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -181,7 +181,7 @@ CBotTypResult cfopen (CBotVar* pThis, CBotVar* &pVar)
 
 // process FILE :: close
 
-// execeution
+// execution
 bool rfclose (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, void* user)
 {
     // it shouldn't be any parameters

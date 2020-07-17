@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ public:
     static bool RemoveDirectory(const std::string& directory);
 
     //! List files contained in directory
-    static std::vector<std::string> ListFiles(const std::string &directory);
+    static std::vector<std::string> ListFiles(const std::string &directory, bool excludeDirs = false);
     //! List directories contained in directory
     static std::vector<std::string> ListDirectories(const std::string &directory);
 

@@ -109,9 +109,6 @@ msgstr "Analiza została już wykonana"
 msgid "Analysis performed"
 msgstr "Analiza wykonana"
 
-msgid "Analyzes only organic matter"
-msgstr "Analizuje jedynie materię organiczną"
-
 msgid "Anisotropy level\\Anisotropy level"
 msgstr "Filtrowanie anizotropowe\\Poziom filtrowania anizotropowego"
 
@@ -184,6 +181,9 @@ msgstr "Robot zniszczony"
 msgid "Bot factory"
 msgstr "Fabryka robotów"
 
+msgid "Build (\\key action;)"
+msgstr ""
+
 msgid "Build a bot factory"
 msgstr "Zbuduj fabrykę robotów"
 
@@ -201,6 +201,9 @@ msgstr "Zbuduj niszczarkę"
 
 msgid "Build a exchange post"
 msgstr "Zbuduj stację przekaźnikową"
+
+msgid "Build a legged builder"
+msgstr ""
 
 msgid "Build a legged grabber"
 msgstr "Zbuduj transporter na nogach"
@@ -247,8 +250,14 @@ msgstr "Zbuduj robota osłaniacza"
 msgid "Build a subber"
 msgstr "Zbuduj robota nurka"
 
+msgid "Build a target bot"
+msgstr ""
+
 msgid "Build a thumper"
 msgstr "Zbuduj robota uderzacza"
+
+msgid "Build a tracked builder"
+msgstr ""
 
 msgid "Build a tracked grabber"
 msgstr "Zbuduj transporter na gąsienicach"
@@ -262,6 +271,9 @@ msgstr "Zbuduj działo na gąsienicach"
 msgid "Build a tracked sniffer"
 msgstr "Zbuduj szperacz na gąsienicach"
 
+msgid "Build a wheeled builder"
+msgstr ""
+
 msgid "Build a wheeled grabber"
 msgstr "Zbuduj transporter na kołach"
 
@@ -273,6 +285,9 @@ msgstr "Zbuduj działo na kołach"
 
 msgid "Build a wheeled sniffer"
 msgstr "Zbuduj szperacz na kołach"
+
+msgid "Build a winged builder"
+msgstr ""
 
 msgid "Build a winged grabber"
 msgstr "Zbuduj transporter latający"
@@ -365,7 +380,7 @@ msgid "Checkpoint"
 msgstr "Punkt kontrolny"
 
 msgid "Class name expected"
-msgstr ""
+msgstr "Oczekiwano nazwy klasy"
 
 msgid "Climb\\Increases the power of the jet"
 msgstr "W górę\\Zwiększa moc silnika"
@@ -488,6 +503,9 @@ msgstr "Dół (\\key gdown;)"
 msgid "Drawer bot"
 msgstr "Robot rysownik"
 
+msgid "Duplicate label in switch"
+msgstr ""
+
 msgid "Dust\\Dust and dirt on bots and buildings"
 msgstr "Kurz\\Kurz i bród na robotach i budynkach"
 
@@ -505,6 +523,9 @@ msgstr "Edytuj zaznaczony program"
 
 msgid "Egg"
 msgstr "Jajo"
+
+msgid "Empty character constant"
+msgstr ""
 
 msgid "End of block missing"
 msgstr "Brak końca bloku"
@@ -628,7 +649,7 @@ msgid "Function name missing"
 msgstr "Brakująca nazwa funkcji"
 
 msgid "Function needs return type \"void\""
-msgstr ""
+msgstr "Funkcja potrzebuje typu zwracanego \"void\""
 
 msgid "Game speed"
 msgstr "Prędkość gry"
@@ -679,7 +700,7 @@ msgid "Help balloons\\Explain the function of the buttons"
 msgstr "Dymki pomocy\\Wyjaśnia funkcje przycisków"
 
 msgid "Hex value out of range"
-msgstr ""
+msgstr "Wartość heksadecymalna poza zakresem"
 
 msgid "Higher speed\\Doubles speed"
 msgstr "Zwiększ prędkość\\Podwaja prędkość"
@@ -719,6 +740,9 @@ msgstr "Nieodpowiedni rodzaj ogniw"
 
 msgid "Inappropriate object"
 msgstr "Nieodpowiedni obiekt"
+
+msgid "Inappropriate sample"
+msgstr ""
 
 msgid "Incorrect index type"
 msgstr "Nieprawidłowy typ indeksu"
@@ -788,6 +812,9 @@ msgstr "Skróty klawiszowe (\\key cbot;)"
 
 msgid "LOADING"
 msgstr "WCZYTYWANIE"
+
+msgid "Legged builder"
+msgstr ""
 
 msgid "Legged grabber"
 msgstr "Transporter na nogach"
@@ -859,10 +886,10 @@ msgid "Mipmap level\\Mipmap level"
 msgstr "Poziom mipmap\\Poziom mipmap"
 
 msgid "Missing end quote"
-msgstr ""
+msgstr "Brak cudzysłowu zamykającego"
 
 msgid "Missing hex digits after escape sequence"
-msgstr ""
+msgstr "Brak cyfr heksadecymalnych po znaku ucieczki"
 
 msgid "Mission name"
 msgstr "Nazwa misji"
@@ -888,6 +915,9 @@ msgstr "Przenieś zaznaczony program w dół"
 msgid "Move selected program up"
 msgstr "Przenieś zaznaczony program w górę"
 
+msgid "Mute sounds in background\\Mute all game sounds when the window is unfocused"
+msgstr "Cisza, gdy okno jest w tle\\Wycisza wszystkie dźwięki, gdy okno gry stanie się nieaktywne"
+
 msgid "Mute\\No sound"
 msgstr "Cisza\\Brak dźwięków"
 
@@ -905,6 +935,9 @@ msgstr "Nowy"
 
 msgid "New ..."
 msgstr "Nowy ..."
+
+msgid "New Folder"
+msgstr ""
 
 msgid "New bot available"
 msgstr "Dostępny nowy robot"
@@ -964,7 +997,7 @@ msgid "No userlevels installed!"
 msgstr "Brak zainstalowanych poziomów użytkownika!"
 
 msgid "Non-void function needs \"return;\""
-msgstr ""
+msgstr "Funkcja zwracająca typ inny, niż \"void\", wymaga \"return;\""
 
 msgid "Normal size"
 msgstr "Normalna wielkość"
@@ -1027,7 +1060,7 @@ msgid "Object too close"
 msgstr "Obiekt za blisko"
 
 msgid "Octal value out of range"
-msgstr ""
+msgstr "Wartość ósemkowa poza zakresem"
 
 msgid "One step"
 msgstr "Jeden krok"
@@ -1062,6 +1095,9 @@ msgstr "Miejsce nadania wiadomości\\Pokazuje skąd została wysłana ostatnia w
 msgid "Original game developed by:"
 msgstr "Twórcy oryginalnej gry:"
 
+msgid "Overwrite existing file?"
+msgstr ""
+
 msgid "Parameters missing"
 msgstr "Brak wymaganego parametru"
 
@@ -1072,7 +1108,7 @@ msgid "Paste (Ctrl+V)"
 msgstr "Wklej (Ctrl+V)"
 
 msgid "Pause blur\\Blur the background on the pause screen"
-msgstr ""
+msgstr "Rozmyta pauza\\Rozmyj tło na ekranie pauzy"
 
 msgid "Pause in background\\Pause the game when the window is unfocused"
 msgstr "Wstrzymaj w tle\\Wstrzymaj grę gdy okno stanie się nieaktywne"
@@ -1094,6 +1130,9 @@ msgstr "Miejsce zajęte"
 
 msgid "Planets:"
 msgstr "Planety:"
+
+msgid "Plans for builder available"
+msgstr ""
 
 msgid "Plans for defense tower available"
 msgstr "Dostępne plany wieży obronnej"
@@ -1299,6 +1338,9 @@ msgstr "Robbie"
 msgid "Ruin"
 msgstr "Ruiny"
 
+msgid "Run research program for builder"
+msgstr ""
+
 msgid "Run research program for defense tower"
 msgstr "Rozpocznij prace badawcze nad wieżą obronną"
 
@@ -1319,6 +1361,9 @@ msgstr "Rozpocznij prace badawcze nad robotem osłaniaczem"
 
 msgid "Run research program for shooter"
 msgstr "Rozpocznij prace badawcze nad działem"
+
+msgid "Run research program for target bot"
+msgstr ""
 
 msgid "Run research program for thumper"
 msgstr "Rozpocznij prace badawcze nad robotem uderzaczem"
@@ -1349,6 +1394,9 @@ msgstr "Zapisz\\Zapisuje bieżącą misję"
 
 msgid "Save\\Saves the current mission"
 msgstr "Zapisz\\Zapisuje bieżącą misję"
+
+msgid "Select Folder"
+msgstr ""
 
 msgid "Select the astronaut\\Selects the astronaut"
 msgstr "Zaznacz astronautę\\Zaznacza astronautę"
@@ -1534,7 +1582,7 @@ msgid "This object is not a member of a class"
 msgstr "Ten obiekt nie jest członkiem klasy"
 
 msgid "This parameter needs a default value"
-msgstr ""
+msgstr "Ten parametr wymaga podania domyślnej wartości"
 
 msgid "This program is read-only, clone it to edit"
 msgstr "Ten program jest tylko do odczytu, skopiuj go, aby edytować"
@@ -1581,6 +1629,9 @@ msgstr "Za dużo flag w tym kolorze (maksymalnie 5)"
 
 msgid "Too many parameters"
 msgstr "Za dużo parametrów"
+
+msgid "Tracked builder"
+msgstr ""
 
 msgid "Tracked grabber"
 msgstr "Transporter na gąsienicach"
@@ -1681,6 +1732,9 @@ msgstr "Osa śmiertelnie raniona"
 msgid "Waste"
 msgstr "Odpady"
 
+msgid "Wheeled builder"
+msgstr ""
+
 msgid "Wheeled grabber"
 msgstr "Transporter na kołach"
 
@@ -1692,6 +1746,9 @@ msgstr "Działo na kołach"
 
 msgid "Wheeled sniffer"
 msgstr "Szperacz na kołach"
+
+msgid "Winged builder"
+msgstr ""
 
 msgid "Winged grabber"
 msgstr "Transporter latający"

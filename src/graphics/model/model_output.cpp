@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -328,7 +328,10 @@ void ModelOutput::WriteOldModel(const CModel& model, std::ostream &stream)
         t.material.ambient = triangle.ambient;
         t.material.diffuse = triangle.diffuse;
         t.material.specular = triangle.specular;
-        strncpy(t.texName, triangle.tex1Name.c_str(), 20);
+
+        strncpy(t.texName, triangle.tex1Name.c_str(), sizeof(t.texName)-1);
+        t.texName[sizeof(t.texName)-1] = '\0';
+
         t.min = 0.0f;
         t.max = 1000000.0f;
         t.state = ConvertToOldState(triangle);

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -40,8 +40,7 @@ CBotExprUnaire::~CBotExprUnaire()
     delete m_expr;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-CBotInstr* CBotExprUnaire::Compile(CBotToken* &p, CBotCStack* pStack, bool bLiteral)
+CBotInstr* CBotExprUnaire::Compile(CBotToken* &p, CBotCStack* pStack, bool bLiteral, bool bConstExpr)
 {
     int op = p->GetType();
     CBotToken*    pp = p;
@@ -52,8 +51,10 @@ CBotInstr* CBotExprUnaire::Compile(CBotToken* &p, CBotCStack* pStack, bool bLite
     CBotExprUnaire* inst = new CBotExprUnaire();
     inst->SetToken(pp);
 
-    if (!bLiteral) inst->m_expr = CBotParExpr::Compile(p, pStk);
-    else inst->m_expr = CBotParExpr::CompileLitExpr(p, pStk);
+    if (bConstExpr || !bLiteral)
+        inst->m_expr = CBotParExpr::Compile(p, pStk, bConstExpr);
+    else
+        inst->m_expr = CBotParExpr::CompileLitExpr(p, pStk);
 
     if (inst->m_expr != nullptr)
     {
