@@ -50,9 +50,6 @@ public:
     void GetCurrentTimeStamp(SystemTimeStamp *stamp) override;
     long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after) override;
 
-    void OpenPath(std::string path) override;
-    void OpenWebsite(std::string website) override;
-
     void Usleep(int usec) override;
 };
 

@@ -216,12 +216,12 @@ std::string CSystemUtils::GetEnvVar(const std::string& name)
     return "";
 }
 
-void CSystemUtils::OpenPath(std::string path)
+bool CSystemUtils::OpenPath(const std::string& path)
 {
-    assert(false);
+    return false;
 }
 
-void CSystemUtils::OpenWebsite(std::string website)
+bool CSystemUtils::OpenWebsite(const std::string& url)
 {
-    assert(false);
+    return false;
 }

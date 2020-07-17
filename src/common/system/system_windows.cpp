@@ -21,6 +21,7 @@
 
 #include "common/logger.h"
 
+#include <boost/filesystem.hpp>
 #include <windows.h>
 
 
@@ -152,26 +153,26 @@ std::string CSystemUtilsWindows::GetEnvVar(const std::string& name)
     }
 }
 
-void CSystemUtilsWindows::OpenPath(std::string path)
+bool CSystemUtilsWindows::OpenPath(const std::string& path)
 {
-    int result;
-
-    result = system(("explorer \""+path+"\"").c_str()); // TODO: Test on macOS
-    if (result == -1)
+    int result = system(("start explorer \"" + boost::filesystem::path(path).make_preferred().string() + "\"").c_str());
+    if (result != 0)
     {
-        GetLogger()->Error("Failed to open path: %s\n", path.c_str());
+        GetLogger()->Error("Failed to open path: %s, error code: %i\n", path.c_str(), result);
+        return false;
     }
+    return true;
 }
 
-void CSystemUtilsWindows::OpenWebsite(std::string website)
+bool CSystemUtilsWindows::OpenWebsite(const std::string& url)
 {
-    int result;
-
-    result = system(("rundll32 url.dll,FileProtocolHandler \""+website+"\"").c_str()); // TODO: Test on macOS
-    if (result == -1)
+    int result = system(("rundll32 url.dll,FileProtocolHandler \"" + url + "\"").c_str());
+    if (result != 0)
     {
-        GetLogger()->Error("Failed to open website: %s\n", website.c_str());
+        GetLogger()->Error("Failed to open website: %s, error code: %i\n", url.c_str(), result);
+        return false;
     }
+    return true;
 }
 
 void CSystemUtilsWindows::Usleep(int usec)

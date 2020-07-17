@@ -443,6 +443,12 @@ msgstr "Copier"
 msgid "Copy (Ctrl+C)"
 msgstr "Copier (Ctrl+C)"
 
+msgid "Could not open the file explorer!"
+msgstr ""
+
+msgid "Could not open the web browser!"
+msgstr ""
+
 msgid "Current mission saved"
 msgstr "Enregistrement effectué"
 
@@ -1574,6 +1580,10 @@ msgstr "Filtrage de textures\\Filtrage de textures"
 msgid "Textures"
 msgstr "Textures"
 
+#, c-format
+msgid "The address %s could not be opened in a web browser."
+msgstr ""
+
 msgid "The battle has ended"
 msgstr "La bataille est terminée"
 
@@ -1585,6 +1595,10 @@ msgstr "La fonction n'a pas retourné de résultat"
 
 msgid "The mission is not accomplished yet (press \\key help; for more details)"
 msgstr "La mission n'est pas terminée (appuyez sur \\key help; pour plus de détails)"
+
+#, c-format
+msgid "The path %s could not be opened in a file explorer."
+msgstr ""
 
 msgid "The types of the two operands are incompatible"
 msgstr "Les deux opérandes ne sont pas de types compatibles"

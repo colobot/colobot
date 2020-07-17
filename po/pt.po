@@ -438,6 +438,12 @@ msgstr "Copiar"
 msgid "Copy (Ctrl+C)"
 msgstr "Copiar (Ctrl+C)"
 
+msgid "Could not open the file explorer!"
+msgstr ""
+
+msgid "Could not open the web browser!"
+msgstr ""
+
 msgid "Current mission saved"
 msgstr "Missão atual salva"
 
@@ -843,11 +849,17 @@ msgstr "Lista das missões salvas"
 msgid "Load a saved mission"
 msgstr "Carregar uma missão salva"
 
+msgid "Load\\Load Mod"
+msgstr ""
+
 msgid "Load\\Load a saved mission"
 msgstr "Carregar\\Carregar uma missão salva"
 
 msgid "Load\\Loads the selected mission"
 msgstr "Carregar\\Carrega a missão selecionada"
+
+msgid "Loaded Mods:"
+msgstr ""
 
 msgid "Loading basic level settings"
 msgstr "Carregando configurações de nível básico"
@@ -916,6 +928,9 @@ msgstr "Lista de missões neste planeta:"
 
 msgid "Missions\\Select mission"
 msgstr "Missões\\Selecione uma missão"
+
+msgid "Mods\\Manage installed mods"
+msgstr ""
 
 msgid "Mouse inversion X\\Inversion of the scrolling direction on the X axis"
 msgstr "Inversão de mouse X\\Inverte a direção da rolagem no eixo X"
@@ -1084,6 +1099,9 @@ msgstr "Abrir"
 
 msgid "Open (Ctrl+O)"
 msgstr "Abrir (Ctrl+O)"
+
+msgid "Open Directory\\Open Mods directory"
+msgstr ""
 
 msgid "Opening brace missing"
 msgstr "Chave de abertura ausente"
@@ -1557,6 +1575,10 @@ msgstr "Filtragem de textura\\Filtragem de textura"
 msgid "Textures"
 msgstr "Texturas"
 
+#, c-format
+msgid "The address %s could not be opened in a web browser."
+msgstr ""
+
 msgid "The battle has ended"
 msgstr "A batalha acabou"
 
@@ -1568,6 +1590,10 @@ msgstr "A função não retornou nenhum valor"
 
 msgid "The mission is not accomplished yet (press \\key help; for more details)"
 msgstr "A missão não foi completada ainda (pressione \\key help; para mais detalhes)"
+
+#, c-format
+msgid "The path %s could not be opened in a file explorer."
+msgstr ""
 
 msgid "The types of the two operands are incompatible"
 msgstr "Os tipos dos dois operandos são incompativeis"
@@ -1705,6 +1731,12 @@ msgstr "Sequência de escape desconhecidade"
 msgid "Unknown function"
 msgstr "Função desconhecida"
 
+msgid "Unload\\Unload Mod"
+msgstr ""
+
+msgid "Unloaded Mods:"
+msgstr ""
+
 msgid "Up (\\key gup;)"
 msgstr "Cima (\\key gup;)"
 
@@ -1779,6 +1811,9 @@ msgstr "Farejador alado"
 
 msgid "Withdraw shield (\\key action;)"
 msgstr "Retirar escudo (\\key action;)"
+
+msgid "Workshop\\Open Workshop to search Mods"
+msgstr ""
 
 msgid "Worm"
 msgstr "Verme"

@@ -119,26 +119,26 @@ std::string CSystemUtilsMacOSX::GetEnvVar(const std::string& str)
     return std::string();
 }
 
-void CSystemUtilsLinux::OpenPath(std::string path)
+bool CSystemUtilsMacOSX::OpenPath(const std::string& path)
 {
-    int result;
-
-    result = system(("open \""+path+"\"").c_str()); // TODO: Test on macOS
-    if (result == -1)
+    int result = system(("open \"" + path + "\"").c_str()); // TODO: Test on macOS
+    if (result != 0)
     {
-        GetLogger()->Error("Failed to open path: %s\n", path.c_str());
+        GetLogger()->Error("Failed to open path: %s, error code: %i\n", path.c_str(), result);
+        return false;
     }
+    return true;
 }
 
-void CSystemUtilsLinux::OpenWebsite(std::string website)
+bool CSystemUtilsMacOSX::OpenWebsite(const std::string& url)
 {
-    int result;
-
-    result = system(("open \""+website+"\"").c_str()); // TODO: Test on macOS
-    if (result == -1)
+    int result = system(("open \"" + url + "\"").c_str()); // TODO: Test on macOS
+    if (result != 0)
     {
-        GetLogger()->Error("Failed to open website: %s\n", website.c_str());
+        GetLogger()->Error("Failed to open website: %s, error code: %i\n", website.c_str(), result);
+        return false;
     }
+    return true;
 }
 
 void CSystemUtilsMacOSX::Usleep(int usec)

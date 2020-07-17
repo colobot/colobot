@@ -85,7 +85,7 @@ CMainUserInterface::CMainUserInterface()
     m_screenSetupDisplay = MakeUnique<CScreenSetupDisplay>();
     m_screenSetupGame = MakeUnique<CScreenSetupGame>();
     m_screenSetupGraphics = MakeUnique<CScreenSetupGraphics>();
-    m_screenSetupMods = MakeUnique<CScreenSetupMods>();
+    m_screenSetupMods = MakeUnique<CScreenSetupMods>(m_dialog.get());
     m_screenSetupSound = MakeUnique<CScreenSetupSound>();
     m_screenMainMenu = MakeUnique<CScreenMainMenu>();
     m_screenPlayerSelect = MakeUnique<CScreenPlayerSelect>(m_dialog.get());

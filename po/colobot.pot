@@ -172,6 +172,20 @@ msgstr ""
 msgid "This menu is for userlevels from mods, but you didn't install any"
 msgstr ""
 
+msgid "Could not open the file explorer!"
+msgstr ""
+
+#, c-format
+msgid "The path %s could not be opened in a file explorer."
+msgstr ""
+
+msgid "Could not open the web browser!"
+msgstr ""
+
+#, c-format
+msgid "The address %s could not be opened in a web browser."
+msgstr ""
+
 msgid "Keyword help(\\key cbot;)"
 msgstr ""
 

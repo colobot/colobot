@@ -446,6 +446,12 @@ msgstr "Копировать"
 msgid "Copy (Ctrl+C)"
 msgstr "Копировать (Ctrl+C)"
 
+msgid "Could not open the file explorer!"
+msgstr ""
+
+msgid "Could not open the web browser!"
+msgstr ""
+
 msgid "Current mission saved"
 msgstr "Текущая миссия сохранена"
 
@@ -1585,6 +1591,10 @@ msgstr "Фильтрация текстур\\Фильтрация текстур
 msgid "Textures"
 msgstr "Текстуры"
 
+#, c-format
+msgid "The address %s could not be opened in a web browser."
+msgstr ""
+
 msgid "The battle has ended"
 msgstr ""
 
@@ -1596,6 +1606,10 @@ msgstr "Функция не возвратила значения"
 
 msgid "The mission is not accomplished yet (press \\key help; for more details)"
 msgstr "Миссия еще не выполнена (нажмите \\key help; для более подробной информации)"
+
+#, c-format
+msgid "The path %s could not be opened in a file explorer."
+msgstr ""
 
 msgid "The types of the two operands are incompatible"
 msgstr "Типы операндов несовместимы"

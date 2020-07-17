@@ -19,6 +19,7 @@
 
 #pragma once
 
+#include "ui/maindialog.h"
 #include "ui/screen/screen_setup.h"
 
 #include <vector>
@@ -31,7 +32,7 @@ namespace Ui
 class CScreenSetupMods : public CScreenSetup
 {
 public:
-    CScreenSetupMods();
+    CScreenSetupMods(CMainDialog* mainDialog);
     void SetActive() override;
 
     void CreateInterface() override;
@@ -44,6 +45,8 @@ protected:
     void UpdateLoadedModList();
 
 protected:
+    CMainDialog* m_dialog;
+
     CPathManager* m_pathManager;
     std::vector<std::string> m_unloadedModList;
     std::vector<std::string> m_loadedModList;

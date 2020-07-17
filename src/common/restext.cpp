@@ -111,6 +111,10 @@ void InitializeRestext()
     stringsText[RT_DIALOG_OK]        = TR("OK");
     stringsText[RT_DIALOG_NOUSRLVL_TITLE] = TR("No userlevels installed!");
     stringsText[RT_DIALOG_NOUSRLVL_TEXT]  = TR("This menu is for userlevels from mods, but you didn't install any");
+    stringsText[RT_DIALOG_OPEN_PATH_FAILED_TITLE] = TR("Could not open the file explorer!");
+    stringsText[RT_DIALOG_OPEN_PATH_FAILED_TEXT] = TR("The path %s could not be opened in a file explorer.");
+    stringsText[RT_DIALOG_OPEN_WEBSITE_FAILED_TITLE] = TR("Could not open the web browser!");
+    stringsText[RT_DIALOG_OPEN_WEBSITE_FAILED_TEXT] = TR("The address %s could not be opened in a web browser.");
 
     stringsText[RT_STUDIO_LISTTT]    = TR("Keyword help(\\key cbot;)");
     stringsText[RT_STUDIO_COMPOK]    = TR("Compilation ok (0 errors)");

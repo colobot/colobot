@@ -28,6 +28,7 @@
 #include "common/config.h"
 #include "common/logger.h"
 #include "common/settings.h"
+#include "common/stringutils.h"
 
 #include "common/resources/resourcemanager.h"
 #include "level/parser/parser.h"
@@ -48,7 +49,8 @@ using namespace boost::filesystem;
 namespace Ui
 {
 
-CScreenSetupMods::CScreenSetupMods()
+CScreenSetupMods::CScreenSetupMods(CMainDialog* mainDialog)
+    : m_dialog(mainDialog)
 {
 }
 
@@ -131,7 +133,9 @@ bool CScreenSetupMods::EventProcess(const Event &event)
     CWindow*               pw;
     CButton*               pb;
     CList*                 pl;
-    std::string            modName, modPath, website = "https://www.moddb.com/games/colobot-gold-edition";
+    std::string            modName;
+    const std::string      website = "https://www.moddb.com/games/colobot-gold-edition";
+    const std::string      modDir = CResourceManager::GetSaveLocation() + "/" + "mods";
     auto                   systemUtils = CSystemUtils::Create(); // platform-specific utils
 
     if (!CScreenSetup::EventProcess(event)) return false;
@@ -139,33 +143,28 @@ bool CScreenSetupMods::EventProcess(const Event &event)
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == nullptr )  return false;
 
-    if (event.type == EVENT_INTERFACE_LOAD)
-    {
-        pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_MODS_UNLOADED));
-        if ( pl == nullptr )  return false;
-        modName = pl->GetItemName(pl->GetSelect());
-        LoadMod(modName);
-
-        m_app->Reload();
-        m_main->ChangePhase(PHASE_SETUPm);
-    }
-    if (event.type == EVENT_INTERFACE_UNLOAD)
-    {
-        pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_MODS_LOADED));
-        if ( pl == nullptr )  return false;
-        modName = pl->GetItemName(pl->GetSelect());
-        UnloadMod(modName);
-
-        m_app->Reload();
-        m_main->ChangePhase(PHASE_SETUPm);
-    }
-    if (event.type == EVENT_INTERFACE_MODS_DIR)
-    {
-        modPath = CResourceManager::GetSaveLocation() + "/" + "mods";
-        systemUtils->OpenPath(modPath);
-    }
     switch (event.type)
     {
+        case EVENT_INTERFACE_LOAD:
+            pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_MODS_UNLOADED));
+            if (pl == nullptr)  return false;
+            modName = pl->GetItemName(pl->GetSelect());
+            LoadMod(modName);
+
+            m_app->Reload();
+            m_main->ChangePhase(PHASE_SETUPm);
+            break;
+
+        case EVENT_INTERFACE_UNLOAD:
+            pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_MODS_LOADED));
+            if (pl == nullptr)  return false;
+            modName = pl->GetItemName(pl->GetSelect());
+            UnloadMod(modName);
+
+            m_app->Reload();
+            m_main->ChangePhase(PHASE_SETUPm);
+            break;
+
         case EVENT_INTERFACE_MODS_UNLOADED:
             pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_MODS_LOADED));
             if ( pl == nullptr )  break;
@@ -194,9 +193,31 @@ bool CScreenSetupMods::EventProcess(const Event &event)
             pb->SetState(STATE_ENABLE);
             break;
 
-        case EVENT_INTERFACE_WORKSHOP:
-            systemUtils->OpenWebsite(website);
+        case EVENT_INTERFACE_MODS_DIR:
+            if (!systemUtils->OpenPath(modDir))
+            {
+                std::string title, text;
+                GetResource(RES_TEXT, RT_DIALOG_OPEN_PATH_FAILED_TITLE, title);
+                GetResource(RES_TEXT, RT_DIALOG_OPEN_PATH_FAILED_TEXT, text);
+
+                // Workaround for how labels treat the \\ character on Windows
+                std::string modDirWithoutBackSlashes = modDir;
+                std::replace(modDirWithoutBackSlashes.begin(), modDirWithoutBackSlashes.end(), '\\', '/');
+
+                m_dialog->StartInformation(title, title, StrUtils::Format(text.c_str(), modDirWithoutBackSlashes.c_str()));
+            }
             break;
+
+        case EVENT_INTERFACE_WORKSHOP:
+            if (!systemUtils->OpenWebsite(website))
+            {
+                std::string title, text;
+                GetResource(RES_TEXT, RT_DIALOG_OPEN_WEBSITE_FAILED_TITLE, title);
+                GetResource(RES_TEXT, RT_DIALOG_OPEN_WEBSITE_FAILED_TEXT, text);
+                m_dialog->StartInformation(title, title, StrUtils::Format(text.c_str(), website.c_str()));
+            }
+            break;
+
         default:
             return true;
     }

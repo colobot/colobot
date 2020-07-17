@@ -440,6 +440,12 @@ msgstr "Kopírovat"
 msgid "Copy (Ctrl+C)"
 msgstr "Kopírovat (Ctrl+C)"
 
+msgid "Could not open the file explorer!"
+msgstr ""
+
+msgid "Could not open the web browser!"
+msgstr ""
+
 msgid "Current mission saved"
 msgstr "Současná mise uložena"
 
@@ -1555,6 +1561,10 @@ msgstr "Filtrování textur\\Filtrování textur"
 msgid "Textures"
 msgstr "Textury"
 
+#, c-format
+msgid "The address %s could not be opened in a web browser."
+msgstr ""
+
 msgid "The battle has ended"
 msgstr "Souboj skončil"
 
@@ -1566,6 +1576,10 @@ msgstr "Funkce nevrátila žádnou hodnotu"
 
 msgid "The mission is not accomplished yet (press \\key help; for more details)"
 msgstr "Mise ještě nebyla splněna (pro podrobnosti stiskněte \\key help;)"
+
+#, c-format
+msgid "The path %s could not be opened in a file explorer."
+msgstr ""
 
 msgid "The types of the two operands are incompatible"
 msgstr "Operaci nelze provést s operandy těchto dvou typů"
