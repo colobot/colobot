@@ -852,11 +852,17 @@ msgstr "Список сохраненных миссий"
 msgid "Load a saved mission"
 msgstr "Загрузить"
 
+msgid "Load\\Load Mod"
+msgstr ""
+
 msgid "Load\\Load a saved mission"
 msgstr "Загрузить\\Загрузить сохраненную миссию"
 
 msgid "Load\\Loads the selected mission"
 msgstr "Загрузить\\Загрузить выбранную миссию"
+
+msgid "Loaded Mods:"
+msgstr ""
 
 msgid "Loading basic level settings"
 msgstr "Загрузка основных настроек уровня"
@@ -925,6 +931,9 @@ msgstr "Миссии на этой планете:"
 
 msgid "Missions\\Select mission"
 msgstr "Миссии\\Выбор миссии"
+
+msgid "Mods\\Manage installed mods"
+msgstr ""
 
 msgid "Mouse inversion X\\Inversion of the scrolling direction on the X axis"
 msgstr "Инверсия мыши по оси X\\Инверсия прокрутки по оси Х"
@@ -1095,6 +1104,9 @@ msgstr "Открыть"
 
 msgid "Open (Ctrl+O)"
 msgstr "Открыть (Ctrl+O)"
+
+msgid "Open Directory\\Open Mods directory"
+msgstr ""
 
 msgid "Opening brace missing"
 msgstr "Открывающая скобка отсутствует"
@@ -1721,6 +1733,12 @@ msgstr ""
 msgid "Unknown function"
 msgstr "Неизвестная функция"
 
+msgid "Unload\\Unload Mod"
+msgstr ""
+
+msgid "Unloaded Mods:"
+msgstr ""
+
 msgid "Up (\\key gup;)"
 msgstr "Вверх (\\key gup;)"
 
@@ -1795,6 +1813,9 @@ msgstr "Летающий искатель"
 
 msgid "Withdraw shield (\\key action;)"
 msgstr "Снять щит (\\key action;)"
+
+msgid "Workshop\\Open Workshop to search Mods"
+msgstr ""
 
 msgid "Worm"
 msgstr "Червь"

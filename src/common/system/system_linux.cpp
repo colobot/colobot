@@ -150,6 +150,28 @@ std::string CSystemUtilsLinux::GetEnvVar(const std::string& name)
     return "";
 }
 
+void CSystemUtilsLinux::OpenPath(std::string path)
+{
+    int result;
+
+    result = system(("xdg-open \""+path+"\"").c_str());
+    if (result == -1)
+    {
+        GetLogger()->Error("Failed to open path: %s\n", path.c_str());
+    }
+}
+
+void CSystemUtilsLinux::OpenWebsite(std::string website)
+{
+    int result;
+
+    result = system(("xdg-open \""+website+"\"").c_str());
+    if (result == -1)
+    {
+        GetLogger()->Error("Failed to open website: %s\n", website.c_str());
+    }
+}
+
 void CSystemUtilsLinux::Usleep(int usec)
 {
     usleep(usec);

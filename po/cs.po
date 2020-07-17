@@ -844,11 +844,17 @@ msgstr "Seznam uložených misí"
 msgid "Load a saved mission"
 msgstr "Nahrát uloženou misi"
 
+msgid "Load\\Load Mod"
+msgstr ""
+
 msgid "Load\\Load a saved mission"
 msgstr "Nahrát\\Nahrát uloženou misi"
 
 msgid "Load\\Loads the selected mission"
 msgstr "Nahrát\\Nahraje vybranou misi"
+
+msgid "Loaded Mods:"
+msgstr ""
 
 msgid "Loading basic level settings"
 msgstr "Načítám základní nastavení mapy"
@@ -903,6 +909,9 @@ msgstr "Mise na této planetě:"
 
 msgid "Missions\\Select mission"
 msgstr "Mise\\Vyberte misi"
+
+msgid "Mods\\Manage installed mods"
+msgstr ""
 
 msgid "Mouse inversion X\\Inversion of the scrolling direction on the X axis"
 msgstr "Vodorovné převrácení posunu\\Při vodorovném posunu kamery myší pousouvat opačným směrem"
@@ -1071,6 +1080,9 @@ msgstr "Otevřít"
 
 msgid "Open (Ctrl+O)"
 msgstr "Otevřít (Ctrl+O)"
+
+msgid "Open Directory\\Open Mods directory"
+msgstr ""
 
 msgid "Opening brace missing"
 msgstr "Chybí levá složená závorka"
@@ -1691,6 +1703,12 @@ msgstr "Neznámá zástupná sekvence"
 msgid "Unknown function"
 msgstr "Neznámá funkce"
 
+msgid "Unload\\Unload Mod"
+msgstr ""
+
+msgid "Unloaded Mods:"
+msgstr ""
+
 msgid "Up (\\key gup;)"
 msgstr "Vzhůru (\\key gup;)"
 
@@ -1765,6 +1783,9 @@ msgstr "Létající detektor"
 
 msgid "Withdraw shield (\\key action;)"
 msgstr "Vypnout štít (\\key action;)"
+
+msgid "Workshop\\Open Workshop to search Mods"
+msgstr ""
 
 msgid "Worm"
 msgstr "Červ"

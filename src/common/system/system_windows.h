@@ -46,6 +46,9 @@ public:
 
     std::string GetEnvVar(const std::string& name) override;
 
+    void OpenPath(std::string path) override;
+    void OpenWebsite(std::string website) override;
+
     void Usleep(int usec) override;
 
 public:

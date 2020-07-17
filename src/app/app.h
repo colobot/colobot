@@ -170,6 +170,8 @@ public:
     ParseArgsStatus ParseArguments(int argc, char *argv[]);
     //! Initializes the application
     bool        Create();
+    //! Reloads the application
+    void        Reload();
     //! Main event loop
     int         Run();
     //! Returns the code to be returned at main() exit

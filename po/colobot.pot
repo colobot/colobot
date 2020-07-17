@@ -120,6 +120,12 @@ msgstr ""
 msgid "2) Then press the key you want to use instead."
 msgstr ""
 
+msgid "Unloaded Mods:"
+msgstr ""
+
+msgid "Loaded Mods:"
+msgstr ""
+
 msgid "Face type:"
 msgstr ""
 
@@ -343,6 +349,18 @@ msgstr ""
 msgid "Play\\Start mission!"
 msgstr ""
 
+msgid "Workshop\\Open Workshop to search Mods"
+msgstr ""
+
+msgid "Open Directory\\Open Mods directory"
+msgstr ""
+
+msgid "Load\\Load Mod"
+msgstr ""
+
+msgid "Unload\\Unload Mod"
+msgstr ""
+
 msgid "Device\\Driver and resolution settings"
 msgstr ""
 
@@ -356,6 +374,9 @@ msgid "Controls\\Keyboard, joystick and mouse settings"
 msgstr ""
 
 msgid "Sound\\Music and game sound volume"
+msgstr ""
+
+msgid "Mods\\Manage installed mods"
 msgstr ""
 
 msgid "Unit"

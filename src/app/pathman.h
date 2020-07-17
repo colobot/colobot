@@ -39,6 +39,7 @@ public:
     void SetSavePath(const std::string &savePath);
     void AddModAutoloadDir(const std::string &modAutoloadDirPath);
     void AddMod(const std::string &modPath);
+    void RemoveMod(const std::string &modPath);
 
     const std::string& GetDataPath();
     const std::string& GetLangPath();
