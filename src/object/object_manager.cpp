@@ -303,7 +303,7 @@ std::vector<CObject*> CObjectManager::RadarAll(CObject* pThis, Math::Vector this
                 oType == OBJECT_RUINmobiler1 ||
                 oType == OBJECT_RUINmobiler2 )
             {
-                oType = OBJECT_RUINmobilew1;  // any ruin
+                oType = OBJECT_RUINmobilew1;  // any wreck
             }
 
             if ( oType == OBJECT_BARRIER2 ||
@@ -312,6 +312,33 @@ std::vector<CObject*> CObjectManager::RadarAll(CObject* pThis, Math::Vector this
                  oType == OBJECT_BARRICADE1 )  // barriers?
             {
                 oType = OBJECT_BARRIER1;  // any barrier
+            }
+
+            if ( oType == OBJECT_RUINdoor    ||
+                 oType == OBJECT_RUINsupport ||
+                 oType == OBJECT_RUINradar   ||
+                 oType == OBJECT_RUINconvert )  // ruins?
+            {
+                oType = OBJECT_RUINfactory;  // any ruin
+            }
+
+            if ( oType == OBJECT_PLANT1  ||
+                 oType == OBJECT_PLANT2  ||
+                 oType == OBJECT_PLANT3  ||
+                 oType == OBJECT_PLANT4  ||
+                 oType == OBJECT_PLANT15 ||
+                 oType == OBJECT_PLANT16 ||
+                 oType == OBJECT_PLANT17 ||
+                 oType == OBJECT_PLANT18 )  // bushes?
+            {
+                oType = OBJECT_PLANT0;  // any bush
+            }
+
+            if ( oType == OBJECT_QUARTZ1 ||
+                 oType == OBJECT_QUARTZ2 ||
+                 oType == OBJECT_QUARTZ3 )  // crystals?
+            {
+                oType = OBJECT_QUARTZ0;  // any crystal
             }
             // END OF TODO
         }

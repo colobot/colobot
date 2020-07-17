@@ -125,6 +125,10 @@ const char* GetObjectName(ObjectType type)
     if ( type == OBJECT_BEE         )  return "AlienWasp";
     if ( type == OBJECT_WORM        )  return "AlienWorm";
     if ( type == OBJECT_RUINmobilew1)  return "Wreck";
+    if ( type == OBJECT_RUINfactory )  return "Ruin";
+    if ( type == OBJECT_PLANT0      )  return "Bush";
+    if ( type == OBJECT_ROOT5       )  return "GraviPlant";
+    if ( type == OBJECT_QUARTZ0     )  return "Crystal";
     return "";
 }
 
@@ -233,6 +237,10 @@ std::string GetHelpFilename(ObjectType type)
     if ( type == OBJECT_BEE         )  helpfile = "object/wasp";
     if ( type == OBJECT_WORM        )  helpfile = "object/worm";
     if ( type == OBJECT_RUINmobilew1)  helpfile = "object/wreck";
+    if ( type == OBJECT_RUINfactory )  helpfile = "object/ruin";
+    if ( type == OBJECT_PLANT0      )  helpfile = "object/bush";
+    if ( type == OBJECT_ROOT5       )  helpfile = "object/gravi";
+    if ( type == OBJECT_QUARTZ0     )  helpfile = "object/crystal";
 
     if (helpfile.empty())
         return "";
