@@ -128,7 +128,7 @@ CObject* CObjectManager::GetObjectByRank(unsigned int id)
 }
 
 CObject* CObjectManager::CreateObject(ObjectCreateParams params)
-{
+{    
     if (params.id < 0)
     {
         params.id = m_nextId;
@@ -141,7 +141,9 @@ CObject* CObjectManager::CreateObject(ObjectCreateParams params)
             m_nextId = params.id + 1;
         }
     }
-
+    
+    params.power = ClampPower(params.type,params.power);
+    
     assert(m_objects.find(params.id) == m_objects.end());
 
     auto objectUPtr = m_objectFactory->CreateObject(params);
@@ -162,16 +164,19 @@ CObject* CObjectManager::CreateObject(Math::Vector pos, float angle, ObjectType 
     params.pos = pos;
     params.angle = angle;
     params.type = type;
-    
+    params.power = ClampPower(type,power);
+    return CreateObject(params);
+}
+
+float CObjectManager::ClampPower(ObjectType type, float power)
+{
     float min = 0;
     float max = 100;
-    if (params.type == OBJECT_POWER || params.type == OBJECT_ATOMIC) //prevent creation of overcharged or negatively charged power cells
+    if (type == OBJECT_POWER || type == OBJECT_ATOMIC)
     {
         max = 1;
     }
-    params.power = Math::Clamp(power, min, max);
-
-    return CreateObject(params);
+    return Math::Clamp(power, min, max);
 }
 
 std::vector<CObject*> CObjectManager::GetObjectsOfTeam(int team)

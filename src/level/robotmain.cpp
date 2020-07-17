@@ -3405,15 +3405,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 m_ui->GetLoadingScreen()->SetProgress(0.25f+objectProgress*0.75f, RT_LOADING_OBJECTS, details);
 
                 try
-                {
-                    float min = 0;
-                    float max = 100;
-                    if (params.type == OBJECT_POWER || params.type == OBJECT_ATOMIC) //prevent creation of overcharged or negatively charged power cells
-                    {
-                        max = 1;
-                    }
-                    params.power = Math::Clamp(params.power, min, max);
-                    
+                {                    
                     CObject* obj = m_objMan->CreateObject(params);
                     obj->Read(line.get());
 
