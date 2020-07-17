@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -47,8 +47,8 @@ const float PORTICO_TIME_OPEN   = 12.0f;
 
 
 
-// Si progress=0, return a.
-// Si progress=1, return b.
+// if progress=0, return a.
+// if progress=1, return b.
 
 static float Progress(float a, float b, float progress)
 {

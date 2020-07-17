@@ -107,9 +107,6 @@ msgstr "Análise já realizada"
 msgid "Analysis performed"
 msgstr "Análise realizada"
 
-msgid "Analyzes only organic matter"
-msgstr "Analisa apenas matéria orgânica"
-
 msgid "Anisotropy level\\Anisotropy level"
 msgstr "Nível de anisotropia\\Nível de anisotropia"
 
@@ -182,6 +179,9 @@ msgstr "Robo destruido"
 msgid "Bot factory"
 msgstr "Fábrica de robos"
 
+msgid "Build (\\key action;)"
+msgstr ""
+
 msgid "Build a bot factory"
 msgstr "Construir uma fábrica de robos"
 
@@ -199,6 +199,9 @@ msgstr "Construir um destruidor"
 
 msgid "Build a exchange post"
 msgstr "Construir um posto de troca"
+
+msgid "Build a legged builder"
+msgstr ""
 
 msgid "Build a legged grabber"
 msgstr "Construir um agarrador com pernas"
@@ -245,8 +248,14 @@ msgstr "Construir um defensor"
 msgid "Build a subber"
 msgstr "Construir um mergulhador"
 
+msgid "Build a target bot"
+msgstr ""
+
 msgid "Build a thumper"
 msgstr "Construir um batedor"
+
+msgid "Build a tracked builder"
+msgstr ""
 
 msgid "Build a tracked grabber"
 msgstr "Construir um agarrador com esteiras"
@@ -260,6 +269,9 @@ msgstr "Construir um atirador com esteiras"
 msgid "Build a tracked sniffer"
 msgstr "Construir um farejador com esteiras"
 
+msgid "Build a wheeled builder"
+msgstr ""
+
 msgid "Build a wheeled grabber"
 msgstr "Construir um agarrador com rodas"
 
@@ -271,6 +283,9 @@ msgstr "Construir um atirador com rodas"
 
 msgid "Build a wheeled sniffer"
 msgstr "Construir um farejador com rodas"
+
+msgid "Build a winged builder"
+msgstr ""
 
 msgid "Build a winged grabber"
 msgstr "Construir um agarrador alado"
@@ -487,6 +502,9 @@ msgstr "Baixo (\\key gdown;)"
 msgid "Drawer bot"
 msgstr "Robô cartoonista"
 
+msgid "Duplicate label in switch"
+msgstr ""
+
 msgid "Dust\\Dust and dirt on bots and buildings"
 msgstr "Poeira\\Poeira e sujeira nos robôs e prédios"
 
@@ -504,6 +522,9 @@ msgstr "Alterar o programa selecionado"
 
 msgid "Egg"
 msgstr "Ovo"
+
+msgid "Empty character constant"
+msgstr ""
 
 msgid "End of block missing"
 msgstr "Fim do bloco ausente"
@@ -720,6 +741,9 @@ msgstr "Tipo de célula inapropriada"
 msgid "Inappropriate object"
 msgstr "Objeto inapropiado"
 
+msgid "Inappropriate sample"
+msgstr ""
+
 msgid "Incorrect index type"
 msgstr "Tipo de índice inválido"
 
@@ -788,6 +812,9 @@ msgstr "Palavra-chave ajuda (\\key cbot;)"
 
 msgid "LOADING"
 msgstr "CARREGANDO"
+
+msgid "Legged builder"
+msgstr ""
 
 msgid "Legged grabber"
 msgstr "Agarrador com pernas"
@@ -902,6 +929,9 @@ msgstr "Move o programa selecionado para baixo"
 msgid "Move selected program up"
 msgstr "Move o programa selecionado para cima"
 
+msgid "Mute sounds in background\\Mute all game sounds when the window is unfocused"
+msgstr ""
+
 msgid "Mute\\No sound"
 msgstr "Mudo\\Sem som"
 
@@ -919,6 +949,9 @@ msgstr "Novo"
 
 msgid "New ..."
 msgstr "Novo ..."
+
+msgid "New Folder"
+msgstr ""
 
 msgid "New bot available"
 msgstr "Novo robô disponível"
@@ -1076,6 +1109,9 @@ msgstr "Origem da última mensagem\\Mostra de onde a última mensagem foi enviad
 msgid "Original game developed by:"
 msgstr "Jogo original desenvolvido por:"
 
+msgid "Overwrite existing file?"
+msgstr ""
+
 msgid "Parameters missing"
 msgstr "Parâmetros ausentes"
 
@@ -1108,6 +1144,9 @@ msgstr "Local ocupado"
 
 msgid "Planets:"
 msgstr "Planetas:"
+
+msgid "Plans for builder available"
+msgstr ""
 
 msgid "Plans for defense tower available"
 msgstr "Planos para a torre de defesa disponíveis"
@@ -1314,6 +1353,9 @@ msgstr "Robbie"
 msgid "Ruin"
 msgstr "Ruína"
 
+msgid "Run research program for builder"
+msgstr ""
+
 msgid "Run research program for defense tower"
 msgstr "Executar programa de pesquisa para torre de defesa"
 
@@ -1334,6 +1376,9 @@ msgstr "Executar programa de pesquisa para defensor"
 
 msgid "Run research program for shooter"
 msgstr "Executar programa de pesquisa para atirador"
+
+msgid "Run research program for target bot"
+msgstr ""
 
 msgid "Run research program for thumper"
 msgstr "Executar programa de pesquisa para batedor"
@@ -1364,6 +1409,9 @@ msgstr "Salvar\\Salve a missão atual"
 
 msgid "Save\\Saves the current mission"
 msgstr "Salvar\\Salva a missão atual"
+
+msgid "Select Folder"
+msgstr ""
 
 msgid "Select the astronaut\\Selects the astronaut"
 msgstr "Selecione o astronauta\\Seleciona o astronauta"
@@ -1597,6 +1645,9 @@ msgstr "Muitas bandeiras dessa cor (máximo 5)"
 msgid "Too many parameters"
 msgstr "Muitos parâmetros"
 
+msgid "Tracked builder"
+msgstr ""
+
 msgid "Tracked grabber"
 msgstr "Pegador com esteiras"
 
@@ -1696,6 +1747,9 @@ msgstr "Vespa fatalmente ferida"
 msgid "Waste"
 msgstr "Desperdício"
 
+msgid "Wheeled builder"
+msgstr ""
+
 msgid "Wheeled grabber"
 msgstr "Agarrador com rodas"
 
@@ -1707,6 +1761,9 @@ msgstr "Atirador com rodas"
 
 msgid "Wheeled sniffer"
 msgstr "Farejador com rodas"
+
+msgid "Winged builder"
+msgstr ""
 
 msgid "Winged grabber"
 msgstr "Agarrador alado"

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -344,22 +344,30 @@ bool CScriptFunctions::rGetObject(CBotVar* var, CBotVar* result, int& exception,
     return true;
 }
 
-// Compilation of instruction "object.busy()"
-CBotTypResult CScriptFunctions::cBusy(CBotVar* thisclass, CBotVar* &var)
+// Compilation of instruction "isbusy( object )"
+
+CBotTypResult CScriptFunctions::cIsBusy(CBot::CBotVar* &var, void* user)
 {
-    if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     return CBotTypResult(CBotTypBoolean);
 }
 
-// Instruction "object.busy()"
+// Instruction "isbusy( object )"
 
-bool CScriptFunctions::rBusy(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception, void* user)
+bool CScriptFunctions::rIsBusy(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     CObject*    pThis = static_cast<CScript*>(user)->m_object;
 
     exception = 0;
 
-    CObject* obj = static_cast<CObject*>(thisclass->GetUserPtr());
+    CObject* obj = static_cast<CObject*>(var->GetUserPtr());
+    if (obj == nullptr)
+    {
+        exception = ERR_WRONG_OBJ;
+        result->SetValInt(ERR_WRONG_OBJ);
+        return false;
+    }
+
     CAuto* automat = obj->GetAuto();
 
     if ( pThis->GetTeam() != obj->GetTeam() && obj->GetTeam() != 0 )
@@ -377,7 +385,7 @@ bool CScriptFunctions::rBusy(CBotVar* thisclass, CBotVar* var, CBotVar* result, 
     return true;
 }
 
-bool CScriptFunctions::rDestroy(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception, void* user)
+bool CScriptFunctions::rDestroy(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     CScript*    script = static_cast<CScript*>(user);
     CObject*    pThis = script->m_object;
@@ -385,7 +393,19 @@ bool CScriptFunctions::rDestroy(CBotVar* thisclass, CBotVar* var, CBotVar* resul
     exception = 0;
     Error err;
 
-    CObject* obj = static_cast<CObject*>(thisclass->GetUserPtr());
+    CObject* obj;
+    if (var == nullptr)
+        obj = CObjectManager::GetInstancePointer()->FindNearest(pThis, OBJECT_DESTROYER);
+    else
+        obj = static_cast<CObject*>(var->GetUserPtr());
+
+    if (obj == nullptr)
+    {
+        exception = ERR_WRONG_OBJ;
+        result->SetValInt(ERR_WRONG_OBJ);
+        return false;
+    }
+
     CAuto* automat = obj->GetAuto();
 
     if ( pThis->GetTeam() != obj->GetTeam() && obj->GetTeam() != 0 )
@@ -414,26 +434,30 @@ bool CScriptFunctions::rDestroy(CBotVar* thisclass, CBotVar* var, CBotVar* resul
     return true;
 }
 
+// Compilation of instruction "factory(cat[, program , object])"
 
-// Compilation of instruction "object.factory(cat, program)"
-
-CBotTypResult CScriptFunctions::cFactory(CBotVar* thisclass, CBotVar* &var)
+CBotTypResult CScriptFunctions::cFactory(CBotVar* &var, void* user)
 {
     if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
     if ( var != nullptr )
     {
-        if ( var->GetType() != CBotTypString )  return CBotTypResult(CBotErrBadNum);
+        if ( var->GetType() != CBotTypString )  return CBotTypResult(CBotErrBadParam);
         var = var->GetNext();
-        if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
+        if ( var != nullptr )
+        {
+            if ( var->GetType() != CBotTypPointer )  return CBotTypResult(CBotErrBadParam);
+            var = var->GetNext();
+            if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
+        }
     }
     return CBotTypResult(CBotTypFloat);
 }
 
-// Instruction "object.factory(cat, program)"
+// Instruction "factory(cat[, program , object])"
 
-bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception, void* user)
+bool CScriptFunctions::rFactory(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     CScript*    script = static_cast<CScript*>(user);
     CObject*    pThis = script->m_object;
@@ -444,18 +468,26 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
 
     ObjectType type = static_cast<ObjectType>(var->GetValInt());
     var = var->GetNext();
+
     std::string program;
     if ( var != nullptr )
+    {
         program = var->GetValString();
+        var = var->GetNext();
+    }
     else
         program = "";
 
-    CObject* factory = static_cast<CObject*>(thisclass->GetUserPtr());
+    CObject* factory;
+    if (var == nullptr)
+        factory = CObjectManager::GetInstancePointer()->FindNearest(pThis, OBJECT_FACTORY);
+    else
+        factory = static_cast<CObject*>(var->GetUserPtr());
+
     if (factory == nullptr)
     {
-        exception = ERR_UNKNOWN;
-        result->SetValInt(ERR_UNKNOWN);
-        GetLogger()->Error("in object.factory() - factory is nullptr");
+        exception = ERR_WRONG_OBJ;
+        result->SetValInt(ERR_WRONG_OBJ);
         return false;
     }
 
@@ -473,7 +505,7 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
         {
             exception = ERR_UNKNOWN;
             result->SetValInt(ERR_UNKNOWN);
-            GetLogger()->Error("in object.factory() - automat is nullptr");
+            GetLogger()->Error("in factory() - automat is nullptr");
             return false;
         }
 
@@ -507,9 +539,24 @@ bool CScriptFunctions::rFactory(CBotVar* thisclass, CBotVar* var, CBotVar* resul
     return true;
 }
 
-// Instruction "object.research(type)"
+// Compilation of instruction "research(type[, object])"
 
-bool CScriptFunctions::rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception, void* user)
+CBotTypResult CScriptFunctions::cResearch(CBotVar* &var, void* user)
+{
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
+    if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+    var = var->GetNext();
+    if ( var != nullptr )
+    {
+        if ( var->GetType() != CBotTypPointer )  return CBotTypResult(CBotErrBadParam);
+        var = var->GetNext();
+        if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
+    }
+    return CBotTypResult(CBotTypFloat);
+}
+// Instruction "research(type[, object])"
+
+bool CScriptFunctions::rResearch(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     CScript*    script = static_cast<CScript*>(user);
     CObject*    pThis = script->m_object;
@@ -519,8 +566,21 @@ bool CScriptFunctions::rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* resu
     exception = 0;
 
     ResearchType type = static_cast<ResearchType>(var->GetValInt());
+    var = var->GetNext();
 
-    CObject* center = static_cast<CObject*>(thisclass->GetUserPtr());
+    CObject* center;
+    if (var == nullptr)
+        center = CObjectManager::GetInstancePointer()->FindNearest(pThis, OBJECT_RESEARCH);
+    else
+        center = static_cast<CObject*>(var->GetUserPtr());
+
+    if (center == nullptr)
+    {
+        exception = ERR_WRONG_OBJ;
+        result->SetValInt(ERR_WRONG_OBJ);
+        return false;
+    }
+
     CAuto* automat = center->GetAuto();
 
     if ( pThis->GetTeam() != center->GetTeam() && center->GetTeam() != 0 )
@@ -582,9 +642,9 @@ bool CScriptFunctions::rResearch(CBotVar* thisclass, CBotVar* var, CBotVar* resu
     return true;
 }
 
-// Instruction "object.takeoff()"
+// Instruction "takeoff(object)"
 
-bool CScriptFunctions::rTakeOff(CBotVar* thisclass, CBotVar* var, CBotVar* result, int& exception, void* user)
+bool CScriptFunctions::rTakeOff(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     CScript*    script = static_cast<CScript*>(user);
     CObject*    pThis = script->m_object;
@@ -592,8 +652,19 @@ bool CScriptFunctions::rTakeOff(CBotVar* thisclass, CBotVar* var, CBotVar* resul
     Error       err;
 
     exception = 0;
+    CObject* base;
+    if (var == nullptr)
+        base = CObjectManager::GetInstancePointer()->FindNearest(pThis, OBJECT_BASE);
+    else
+        base = static_cast<CObject*>(var->GetUserPtr());
 
-    CObject* base = static_cast<CObject*>(thisclass->GetUserPtr());
+    if (base == nullptr)
+    {
+        exception = ERR_WRONG_OBJ;
+        result->SetValInt(ERR_WRONG_OBJ);
+        return false;
+    }
+
     CAuto* automat = base->GetAuto();
 
     if ( pThis->GetTeam() != base->GetTeam() && base->GetTeam() != 0 )
@@ -796,15 +867,33 @@ static bool runSearch(CBotVar* var, Math::Vector pos, int& exception, std::funct
     {
         while ( array != nullptr )
         {
+            if (array->GetValInt() == OBJECT_MOBILEpr)
+            {
+                type_v.push_back(OBJECT_MOBILEwt);
+                type_v.push_back(OBJECT_MOBILEtt);
+                type_v.push_back(OBJECT_MOBILEft);
+                type_v.push_back(OBJECT_MOBILEit);
+                type_v.push_back(OBJECT_MOBILErp);
+                type_v.push_back(OBJECT_MOBILEst);
+            }
             type_v.push_back(static_cast<ObjectType>(array->GetValInt()));
             array = array->GetNext();
         }
     }
     else
     {
-        if (type != OBJECT_NULL)
+        if (type != OBJECT_NULL && type != OBJECT_MOBILEpr)
         {
             type_v.push_back(static_cast<ObjectType>(type));
+        }
+        else if (type == OBJECT_MOBILEpr)
+        {
+           type_v.push_back(OBJECT_MOBILEwt);
+           type_v.push_back(OBJECT_MOBILEtt);
+           type_v.push_back(OBJECT_MOBILEft);
+           type_v.push_back(OBJECT_MOBILEit);
+           type_v.push_back(OBJECT_MOBILErp);
+           type_v.push_back(OBJECT_MOBILEst);
         }
     }
 
@@ -854,16 +943,13 @@ bool CScriptFunctions::rSearchAll(CBotVar* var, CBotVar* result, int& exception,
 
 static CBotTypResult compileRadar(CBotVar* &var, void* user, CBotTypResult returnValue)
 {
-    CBotVar*    array;
-
     if ( var == nullptr )  return returnValue;
     if ( var->GetType() == CBotTypArrayPointer )
     {
-        array = var->GetItemList();
-        if ( array == nullptr )  return returnValue;
-        if ( array->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // type
+        CBotTypResult type = var->GetTypResult().GetTypElem();
+        if ( type.GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadParam); //type
     }
-    else if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // type
+    else if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadParam);  // type
     var = var->GetNext();
     if ( var == nullptr )  return returnValue;
     if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // angle
@@ -971,15 +1057,33 @@ static bool runRadar(CBotVar* var, std::function<bool(std::vector<ObjectType>, f
     {
         while ( array != nullptr )
         {
+            if (array->GetValInt() == OBJECT_MOBILEpr)
+            {
+                type_v.push_back(OBJECT_MOBILEwt);
+                type_v.push_back(OBJECT_MOBILEtt);
+                type_v.push_back(OBJECT_MOBILEft);
+                type_v.push_back(OBJECT_MOBILEit);
+                type_v.push_back(OBJECT_MOBILErp);
+                type_v.push_back(OBJECT_MOBILEst);
+            }
             type_v.push_back(static_cast<ObjectType>(array->GetValInt()));
             array = array->GetNext();
         }
     }
     else
     {
-        if (type != OBJECT_NULL)
+        if (type != OBJECT_NULL && type != OBJECT_MOBILEpr)
         {
             type_v.push_back(static_cast<ObjectType>(type));
+        }
+        else if (type == OBJECT_MOBILEpr)
+        {
+           type_v.push_back(OBJECT_MOBILEwt);
+           type_v.push_back(OBJECT_MOBILEtt);
+           type_v.push_back(OBJECT_MOBILEft);
+           type_v.push_back(OBJECT_MOBILEit);
+           type_v.push_back(OBJECT_MOBILErp);
+           type_v.push_back(OBJECT_MOBILEst);
         }
     }
 
@@ -1142,15 +1246,33 @@ bool CScriptFunctions::rDetect(CBotVar* var, CBotVar* result, int& exception, vo
         {
             while ( array != nullptr )
             {
+                if (array->GetValInt() == OBJECT_MOBILEpr)
+                {
+                    type_v.push_back(OBJECT_MOBILEwt);
+                    type_v.push_back(OBJECT_MOBILEtt);
+                    type_v.push_back(OBJECT_MOBILEft);
+                    type_v.push_back(OBJECT_MOBILEit);
+                    type_v.push_back(OBJECT_MOBILErp);
+                    type_v.push_back(OBJECT_MOBILEst);
+                }
                 type_v.push_back(static_cast<ObjectType>(array->GetValInt()));
                 array = array->GetNext();
             }
         }
         else
         {
-            if (type != OBJECT_NULL)
+            if (type != OBJECT_NULL && type != OBJECT_MOBILEpr)
             {
                 type_v.push_back(static_cast<ObjectType>(type));
+            }
+            else if (type == OBJECT_MOBILEpr)
+            {
+                type_v.push_back(OBJECT_MOBILEwt);
+                type_v.push_back(OBJECT_MOBILEtt);
+                type_v.push_back(OBJECT_MOBILEft);
+                type_v.push_back(OBJECT_MOBILEit);
+                type_v.push_back(OBJECT_MOBILErp);
+                type_v.push_back(OBJECT_MOBILEst);
             }
         }
 
@@ -1278,10 +1400,10 @@ bool CScriptFunctions::rBuild(CBotVar* var, CBotVar* result, int& exception, voi
 
     oType = pThis->GetType();
 
-    if ( oType != OBJECT_MOBILEfa &&  // allowed only for grabber bots && humans
-         oType != OBJECT_MOBILEta &&
-         oType != OBJECT_MOBILEwa &&
-         oType != OBJECT_MOBILEia &&
+    if ( oType != OBJECT_MOBILEfb &&  // allowed only for builder bots && humans
+         oType != OBJECT_MOBILEtb &&
+         oType != OBJECT_MOBILEwb &&
+         oType != OBJECT_MOBILEib &&
          oType != OBJECT_HUMAN    &&
          oType != OBJECT_TECH      )
     {
@@ -1443,7 +1565,21 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
         {
             power = 1.0f;
         }
-        object = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, type, power);
+        int objectEnumArray[] = { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 
+        21, 22, 23, 24, 31, 32, 33, 34, 35, 36, 37, 38, 50, 51, 52, 53, 54, 55, 56, 60, 61, 62, 63, 70, 71, 
+        72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 100, 
+        101, 102, 103, 110, 111, 112, 113, 120, 121, 122, 123, 130, 131, 132, 133, 140, 141, 142, 143, 200, 
+        201, 202, 203, 210, 211, 212, 213, 250, 260, 261, 262, 263, 264, 270, 271, 272, 273, 300, 301, 302, 
+        400, 401, 402, 403, 410, 411, 500, 501, 502, 503, 504, 505, 600, 601, 602, 603, 604, 605, 606, 607, 
+        608, 609, 610, 611, 612, 620, 621, 622, 623, 624, 625, 626, 627, 628, 629, 630, 631, 632, 633, 634, 
+        635, 636, 637, 638, 639, 640, 641, 642, 643, 644, 645, 646, 647, 648, 649, 650, 651, 652, 653, 654, 
+        655, 656, 657, 658, 659, 660, 661, 662, 663, 664, 700, 701, 702, 703, 710, 711, 712, 713, 714, 715, 
+        731, 732, 900, 901, 902, 903, 904, 910 }; //All object types in object_type.h
+        bool exists = std::find(std::begin(objectEnumArray), std::end(objectEnumArray), type) != std::end(objectEnumArray); //The object type exists in object_type.h
+        if (exists)
+        {
+           object = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, type, power);     
+        }  
         if (object == nullptr)
         {
             result->SetValInt(1);  // error
@@ -2941,20 +3077,29 @@ bool CScriptFunctions::rPenWidth(CBotVar* var, CBotVar* result, int& exception, 
 
 CBotTypResult CScriptFunctions::cOneObject(CBotVar* &var, void* user)
 {
-    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
-    var = var->GetNext();
-    if ( var == nullptr )  return CBotTypResult(CBotTypFloat);
+    if ( var != nullptr )
+    {
+        var = var->GetNext();
+        if ( var == nullptr )  return CBotTypResult(CBotTypFloat);
+    }
+    else
+        return CBotTypResult(CBotTypFloat);
 
     return CBotTypResult(CBotErrOverParam);
+
 }
 
 // Instruction "camerafocus(object)".
 
 bool CScriptFunctions::rCameraFocus(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    CScript* script = static_cast<CScript*>(user);
+    CScript*    script = static_cast<CScript*>(user);
 
-    CObject* object = static_cast<CObject*>(var->GetUserPtr());
+    CObject* object;
+    if (var == nullptr)
+        object = script->m_object;
+    else
+        object = static_cast<CObject*>(var->GetUserPtr());
 
     script->m_main->SelectObject(object, false);
 
@@ -3255,6 +3400,8 @@ void CScriptFunctions::Init()
     CBotProgram::DefineNum("ResearchRecycler",      RESEARCH_RECYCLER);
     CBotProgram::DefineNum("ResearchSubber",        RESEARCH_SUBM);
     CBotProgram::DefineNum("ResearchSniffer",       RESEARCH_SNIFFER);
+    CBotProgram::DefineNum("ResearchBuilder",       RESEARCH_BUILDER);
+    CBotProgram::DefineNum("ResearchTarget",        RESEARCH_TARGET);
 
     CBotProgram::DefineNum("PolskiPortalColobota", 1337);
 
@@ -3283,12 +3430,8 @@ void CScriptFunctions::Init()
     bc->AddItem("load",        CBotTypResult(CBotTypPointer, "object"), CBotVar::ProtectionLevel::ReadOnly);
     bc->AddItem("id",          CBotTypResult(CBotTypInt), CBotVar::ProtectionLevel::ReadOnly);
     bc->AddItem("team",        CBotTypResult(CBotTypInt), CBotVar::ProtectionLevel::ReadOnly);
+    bc->AddItem("dead",        CBotTypResult(CBotTypBoolean), CBotVar::ProtectionLevel::ReadOnly);
     bc->AddItem("velocity",    CBotTypResult(CBotTypClass, "point"), CBotVar::ProtectionLevel::ReadOnly);
-    bc->AddFunction("busy",     rBusy,     cBusy);
-    bc->AddFunction("factory",  rFactory,  cFactory);
-    bc->AddFunction("research", rResearch, cClassOneFloat);
-    bc->AddFunction("takeoff",  rTakeOff,  cClassNull);
-    bc->AddFunction("destroy",  rDestroy,  cClassNull);
 
     CBotProgram::AddFunction("endmission",rEndMission,cEndMission);
     CBotProgram::AddFunction("playmusic", rPlayMusic ,cPlayMusic);
@@ -3352,8 +3495,12 @@ void CScriptFunctions::Init()
     CBotProgram::AddFunction("penup",     rPenUp,     cNull);
     CBotProgram::AddFunction("pencolor",  rPenColor,  cOneFloat);
     CBotProgram::AddFunction("penwidth",  rPenWidth,  cOneFloat);
-
+    CBotProgram::AddFunction("factory",   rFactory,   cFactory);
     CBotProgram::AddFunction("camerafocus", rCameraFocus, cOneObject);
+    CBotProgram::AddFunction("takeoff",   rTakeOff,   cOneObject);
+    CBotProgram::AddFunction("isbusy",    rIsBusy,    cIsBusy);
+    CBotProgram::AddFunction("research",  rResearch,  cResearch);
+    CBotProgram::AddFunction("destroy",   rDestroy,   cOneObject);
 
     SetFileAccessHandler(MakeUnique<CBotFileAccessHandlerColobot>());
 }
@@ -3480,6 +3627,10 @@ void CScriptFunctions::uObject(CBotVar* botThis, void* user)
 
     pVar = pVar->GetNext();  // "team"
     value = object->GetTeam();
+    pVar->SetValInt(value);
+
+    pVar = pVar->GetNext();  // "dead"
+    value = object->IsDying();
     pVar->SetValInt(value);
 
     // Updates the velocity of the object.

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,9 +19,8 @@
 
 #pragma once
 
-#include "CBot/CBotTypResult.h"
+#include "CBot/CBotFileUtils.h"
 
-#include <cstdio>
 #include <string>
 #include <cassert>
 
@@ -31,6 +30,8 @@ namespace CBot
 class CBotVar;
 class CBotToken;
 class CBotCStack;
+class CBotTypResult;
+
 
 /*!
  * \brief MakeListVars Transforms the array of pointers to variables in a
@@ -59,30 +60,6 @@ CBotTypResult TypeParam(CBotToken* &p, CBotCStack* pile);
 CBotTypResult ArrayType(CBotToken* &p, CBotCStack* pile, CBotTypResult type);
 
 /*!
- * \brief WriteWord
- * \param pf
- * \param w
- * \return
- */
-bool WriteWord(FILE* pf, unsigned short w);
-
-/*!
- * \brief WriteString
- * \param pf
- * \param s
- * \return
- */
-bool WriteString(FILE* pf, std::string s);
-
-/*!
- * \brief WriteFloat
- * \param pf
- * \param w
- * \return
- */
-bool WriteFloat(FILE* pf, float w);
-
-/*!
  * \brief GetNumInt Converts a string into integer may be of the form 0xabc123.
  * \param str
  * \return
@@ -94,7 +71,7 @@ long GetNumInt(const std::string& str);
  * \param str
  * \return
  */
-float GetNumFloat(const std::string& str);
+double GetNumFloat(const std::string& str);
 
 /*!
  * \brief Search a null-terminated string for a char value.

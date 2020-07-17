@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,6 +20,7 @@
 
 #include "CBot/CBotCStack.h"
 
+#include "CBot/CBotClass.h"
 #include "CBot/CBotToken.h"
 #include "CBot/CBotExternalCall.h"
 
@@ -321,6 +322,50 @@ void CBotCStack::AddVar(CBotVar* pVar)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void CBotCStack::CreateVarThis(CBotClass* pClass)
+{
+    if ( pClass == nullptr ) return;
+
+    CBotVar* pThis = CBotVar::Create("this", CBotTypResult(CBotTypClass, pClass));
+
+    pThis->SetUniqNum(-2); // special ID for "this"
+    AddVar(pThis);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void CBotCStack::CreateVarSuper(CBotClass* pClass)
+{
+    if ( pClass == nullptr ) return;
+
+    CBotVar* pSuper = CBotVar::Create("super", CBotTypResult(CBotTypClass, pClass));
+
+    pSuper->SetUniqNum(-3); // special ID for "super"
+    AddVar(pSuper);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void CBotCStack::CreateMemberVars(CBotClass* pClass, bool setDefined)
+{
+    while (pClass != nullptr)
+    {
+        CBotVar* pv = pClass->GetVar();
+        while (pv != nullptr)
+        {
+            CBotVar* pcopy = CBotVar::Create(pv);
+            CBotVar::InitType initType = CBotVar::InitType::UNDEF;
+            if (setDefined || pv->IsStatic())
+                initType = CBotVar::InitType::DEF;
+            pcopy->SetInit(initType);
+            pcopy->SetUniqNum(pv->GetUniqNum());
+            pcopy->SetPrivate(pv->GetPrivate());
+            AddVar(pcopy);
+            pv = pv->GetNext();
+        }
+        pClass = pClass->GetParent();
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool CBotCStack::CheckVarLocal(CBotToken* &pToken)
 {
     CBotCStack*    p = this;
@@ -350,7 +395,7 @@ CBotTypResult CBotCStack::CompileCall(CBotToken* &p, CBotVar** ppVars, long& nId
     val = m_prog->GetExternalCalls()->CompileCall(p, nullptr, ppVars, this);
     if (val.GetType() < 0)
     {
-        val = CBotFunction::CompileCall(m_prog->GetFunctions(), p->GetString(), ppVars, nIdent);
+        val = CBotFunction::CompileCall(p->GetString(), ppVars, nIdent, m_prog);
         if ( val.GetType() < 0 )
         {
     //        pVar = nullptr;                    // the error is not on a particular parameter
@@ -363,7 +408,7 @@ CBotTypResult CBotCStack::CompileCall(CBotToken* &p, CBotVar** ppVars, long& nId
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotCStack::CheckCall(CBotToken* &pToken, CBotDefParam* pParam)
+bool CBotCStack::CheckCall(CBotToken* &pToken, CBotDefParam* pParam, const std::string& className)
 {
     std::string    name = pToken->GetString();
 
@@ -373,6 +418,9 @@ bool CBotCStack::CheckCall(CBotToken* &pToken, CBotDefParam* pParam)
     {
         if ( pToken->GetString() == pp->GetName() )
         {
+            // ignore methods for a different class
+            if ( className != pp->GetClassName() )
+                continue;
             // are parameters exactly the same?
             if ( pp->CheckParam( pParam ) )
                 return true;
@@ -383,6 +431,9 @@ bool CBotCStack::CheckCall(CBotToken* &pToken, CBotDefParam* pParam)
     {
         if ( pToken->GetString() == pp->GetName() )
         {
+            // ignore methods for a different class
+            if ( className != pp->GetClassName() )
+                continue;
             // are parameters exactly the same?
             if ( pp->CheckParam( pParam ) )
                 return true;

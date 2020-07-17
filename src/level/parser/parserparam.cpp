@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -340,6 +340,12 @@ ObjectType CLevelParserParam::ToObjectType(std::string value)
     if (value == "Portico"           ) return OBJECT_PORTICO;
     if (value == "SpaceShip"         ) return OBJECT_BASE;
     if (value == "PracticeBot"       ) return OBJECT_MOBILEwt;
+    if (value == "WingedTrainer"     ) return OBJECT_MOBILEft;
+    if (value == "TrackedTrainer"    ) return OBJECT_MOBILEtt;
+    if (value == "WheeledTrainer"    ) return OBJECT_MOBILEwt;
+    if (value == "LeggedTrainer"     ) return OBJECT_MOBILEit;
+    if (value == "HeavyTrainer"      ) return OBJECT_MOBILErp;
+    if (value == "AmphibiousTrainer" ) return OBJECT_MOBILEst;
     if (value == "WingedGrabber"     ) return OBJECT_MOBILEfa;
     if (value == "TrackedGrabber"    ) return OBJECT_MOBILEta;
     if (value == "WheeledGrabber"    ) return OBJECT_MOBILEwa;
@@ -356,6 +362,10 @@ ObjectType CLevelParserParam::ToObjectType(std::string value)
     if (value == "TrackedSniffer"    ) return OBJECT_MOBILEts;
     if (value == "WheeledSniffer"    ) return OBJECT_MOBILEws;
     if (value == "LeggedSniffer"     ) return OBJECT_MOBILEis;
+    if (value == "WingedBuilder"     ) return OBJECT_MOBILEfb;
+    if (value == "TrackedBuilder"    ) return OBJECT_MOBILEtb;
+    if (value == "WheeledBuilder"    ) return OBJECT_MOBILEwb;
+    if (value == "LeggedBuilder"     ) return OBJECT_MOBILEib;
     if (value == "Thumper"           ) return OBJECT_MOBILErt;
     if (value == "PhazerShooter"     ) return OBJECT_MOBILErc;
     if (value == "Recycler"          ) return OBJECT_MOBILErr;
@@ -540,7 +550,12 @@ const std::string CLevelParserParam::FromObjectType(ObjectType value)
 {
     if (value == OBJECT_PORTICO     ) return "Portico";
     if (value == OBJECT_BASE        ) return "SpaceShip";
-    if (value == OBJECT_MOBILEwt    ) return "PracticeBot";
+    if (value == OBJECT_MOBILEwt    ) return "WheeledTrainer";
+    if (value == OBJECT_MOBILEft    ) return "WingedTrainer";
+    if (value == OBJECT_MOBILEtt    ) return "TrackedTrainer";
+    if (value == OBJECT_MOBILEit    ) return "LeggedTrainer";
+    if (value == OBJECT_MOBILErp    ) return "HeavyTrainer";
+    if (value == OBJECT_MOBILEst    ) return "AmphibiousTrainer";
     if (value == OBJECT_MOBILEfa    ) return "WingedGrabber";
     if (value == OBJECT_MOBILEta    ) return "TrackedGrabber";
     if (value == OBJECT_MOBILEwa    ) return "WheeledGrabber";
@@ -557,6 +572,10 @@ const std::string CLevelParserParam::FromObjectType(ObjectType value)
     if (value == OBJECT_MOBILEts    ) return "TrackedSniffer";
     if (value == OBJECT_MOBILEws    ) return "WheeledSniffer";
     if (value == OBJECT_MOBILEis    ) return "LeggedSniffer";
+    if (value == OBJECT_MOBILEfb    ) return "WingedBuilder";
+    if (value == OBJECT_MOBILEtb    ) return "TrackedBuilder";
+    if (value == OBJECT_MOBILEwb    ) return "WheeledBuilder";
+    if (value == OBJECT_MOBILEib    ) return "LeggedBuilder";
     if (value == OBJECT_MOBILErt    ) return "Thumper";
     if (value == OBJECT_MOBILErc    ) return "PhazerShooter";
     if (value == OBJECT_MOBILErr    ) return "Recycler";
@@ -750,12 +769,13 @@ ObjectType CLevelParserParam::AsObjectType(ObjectType def)
 
 DriveType CLevelParserParam::ToDriveType(std::string value)
 {
-    if (value == "Wheeled") return DriveType::Wheeled;
-    if (value == "Tracked") return DriveType::Tracked;
-    if (value == "Winged" ) return DriveType::Winged;
-    if (value == "Legged" ) return DriveType::Legged;
-    if (value == "BigTracked") return DriveType::BigTracked;
-    if (value == "Other"  ) return DriveType::Other;
+    if (value == "Wheeled"   ) return DriveType::Wheeled;
+    if (value == "Tracked"   ) return DriveType::Tracked;
+    if (value == "Winged"    ) return DriveType::Winged;
+    if (value == "Legged"    ) return DriveType::Legged;
+    if (value == "Heavy"     ) return DriveType::Heavy;
+    if (value == "Amphibious") return DriveType::Amphibious;
+    if (value == "Other"     ) return DriveType::Other;
     return static_cast<DriveType>(Cast<int>(value, "drive"));
 }
 
@@ -780,6 +800,7 @@ ToolType CLevelParserParam::ToToolType(std::string value)
     if (value == "Sniffer"    ) return ToolType::Sniffer;
     if (value == "Shooter"    ) return ToolType::Shooter;
     if (value == "OrgaShooter") return ToolType::OrganicShooter;
+    if (value == "Builder"    ) return ToolType::Builder;
     if (value == "Other"      ) return ToolType::Other;
     return static_cast<ToolType>(Cast<int>(value, "tool"));
 }
@@ -900,6 +921,8 @@ int CLevelParserParam::ToResearchFlag(std::string value)
     if (value == "RECYCLER") return RESEARCH_RECYCLER;
     if (value == "SUBBER"  ) return RESEARCH_SUBM;
     if (value == "SNIFFER" ) return RESEARCH_SNIFFER;
+    if (value == "BUILDER" ) return RESEARCH_BUILDER;
+    if (value == "TARGET"  ) return RESEARCH_TARGET;
 
     /* /9j/4AAQSkZJRgABAQEAYABgAAD//gATQ3JlYXRlZCB3aXRoIEdJTVD/2wBDACAWGBwYFCAcGhwk
      * IiAmMFA0MCwsMGJGSjpQdGZ6eHJmcG6AkLicgIiuim5woNqirr7EztDOfJri8uDI8LjKzsb/2wBD

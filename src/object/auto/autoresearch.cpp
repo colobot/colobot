@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -179,6 +179,7 @@ bool CAutoResearch::EventProcess(const Event &event)
         if ( event.type == EVENT_OBJECT_RPHAZER ) err = StartAction(RESEARCH_PHAZER);
         if ( event.type == EVENT_OBJECT_RSHIELD ) err = StartAction(RESEARCH_SHIELD);
         if ( event.type == EVENT_OBJECT_RATOMIC ) err = StartAction(RESEARCH_ATOMIC);
+        if ( event.type == EVENT_OBJECT_RBUILDER ) err = StartAction(RESEARCH_BUILDER);
 
         if( err != ERR_OK && err != ERR_UNKNOWN )
             m_main->DisplayError(err, m_object);
@@ -268,6 +269,7 @@ bool CAutoResearch::EventProcess(const Event &event)
             if ( m_research == RESEARCH_PHAZER )  message = INFO_RESEARCHPHAZER;
             if ( m_research == RESEARCH_SHIELD )  message = INFO_RESEARCHSHIELD;
             if ( m_research == RESEARCH_ATOMIC )  message = INFO_RESEARCHATOMIC;
+            if ( m_research == RESEARCH_BUILDER )  message = INFO_RESEARCHBUILDER;
             if ( message != ERR_OK )
             {
                 m_main->DisplayError(message, m_object);
@@ -339,38 +341,44 @@ bool CAutoResearch::CreateInterface(bool bSelect)
     oy = 3.0f/480.0f;
     sx = 33.0f/640.0f;
     sy = 33.0f/480.0f;
+    if( !m_object->GetTrainer() )
+    {
+        pos.x = ox+sx*3.0f;
+        pos.y = oy+sy*0.5f;
+        pw->CreateButton(pos, dim, 64+0, EVENT_OBJECT_RTANK);
 
-    pos.x = ox+sx*7.0f;
-    pos.y = oy+sy*1.0f;
-    pw->CreateButton(pos, dim, 64+0, EVENT_OBJECT_RTANK);
+        pos.x = ox+sx*4.0f;
+        pos.y = oy+sy*0.5f;
+        pw->CreateButton(pos, dim, 64+1, EVENT_OBJECT_RFLY);
 
-    pos.x = ox+sx*8.0f;
-    pos.y = oy+sy*1.0f;
-    pw->CreateButton(pos, dim, 64+1, EVENT_OBJECT_RFLY);
+        pos.x = ox+sx*5.0f;
+        pos.y = oy+sy*0.5f;
+        pw->CreateButton(pos, dim, 64+3, EVENT_OBJECT_RCANON);
 
-    pos.x = ox+sx*9.0f;
-    pos.y = oy+sy*1.0f;
-    pw->CreateButton(pos, dim, 64+3, EVENT_OBJECT_RCANON);
+        pos.x = ox+sx*6.0f;
+        pos.y = oy+sy*0.5f;
+        pw->CreateButton(pos, dim, 64+4, EVENT_OBJECT_RTOWER);
 
-    pos.x = ox+sx*10.0f;
-    pos.y = oy+sy*1.0f;
-    pw->CreateButton(pos, dim, 64+4, EVENT_OBJECT_RTOWER);
+        pos.x = ox+sx*7.0f;
+        pos.y = oy+sy*0.5f;
+        pw->CreateButton(pos, dim, 64+7, EVENT_OBJECT_RATOMIC);
 
-    pos.x = ox+sx*7.0f;
-    pos.y = oy+sy*0.0f;
-    pw->CreateButton(pos, dim, 64+7, EVENT_OBJECT_RATOMIC);
+        pos.x = ox+sx*8.0f;
+        pos.y = oy+sy*0.5f;
+        pw->CreateButton(pos, dim, 64+2, EVENT_OBJECT_RTHUMP);
 
-    pos.x = ox+sx*8.0f;
-    pos.y = oy+sy*0.0f;
-    pw->CreateButton(pos, dim, 64+2, EVENT_OBJECT_RTHUMP);
+        pos.x = ox+sx*9.0f;
+        pos.y = oy+sy*0.5f;
+        pw->CreateButton(pos, dim, 64+6, EVENT_OBJECT_RSHIELD);
 
-    pos.x = ox+sx*9.0f;
-    pos.y = oy+sy*0.0f;
-    pw->CreateButton(pos, dim, 64+6, EVENT_OBJECT_RSHIELD);
+        pos.x = ox+sx*10.0f;
+        pos.y = oy+sy*0.5f;
+        pw->CreateButton(pos, dim, 64+5, EVENT_OBJECT_RPHAZER);
 
-    pos.x = ox+sx*10.0f;
-    pos.y = oy+sy*0.0f;
-    pw->CreateButton(pos, dim, 64+5, EVENT_OBJECT_RPHAZER);
+        pos.x = ox+sx*11.0f;
+        pos.y = oy+sy*0.5f;
+        pw->CreateButton(pos, dim, 192+4, EVENT_OBJECT_RBUILDER);
+    }
 
     pos.x = ox+sx*14.5f;
     pos.y = oy+sy*0;
@@ -410,6 +418,7 @@ void CAutoResearch::UpdateInterface()
     DeadInterface(pw, EVENT_OBJECT_RPHAZER, m_main->IsResearchEnabled(RESEARCH_PHAZER));
     DeadInterface(pw, EVENT_OBJECT_RSHIELD, m_main->IsResearchEnabled(RESEARCH_SHIELD));
     DeadInterface(pw, EVENT_OBJECT_RATOMIC, m_main->IsResearchEnabled(RESEARCH_ATOMIC));
+    DeadInterface(pw, EVENT_OBJECT_RBUILDER, m_main->IsResearchEnabled(RESEARCH_BUILDER));
 
     OkayButton(pw, EVENT_OBJECT_RTANK);
     OkayButton(pw, EVENT_OBJECT_RFLY);
@@ -419,6 +428,7 @@ void CAutoResearch::UpdateInterface()
     OkayButton(pw, EVENT_OBJECT_RPHAZER);
     OkayButton(pw, EVENT_OBJECT_RSHIELD);
     OkayButton(pw, EVENT_OBJECT_RATOMIC);
+    OkayButton(pw, EVENT_OBJECT_RBUILDER);
 
     VisibleInterface(pw, EVENT_OBJECT_RTANK,   !m_bBusy);
     VisibleInterface(pw, EVENT_OBJECT_RFLY,    !m_bBusy);
@@ -428,6 +438,7 @@ void CAutoResearch::UpdateInterface()
     VisibleInterface(pw, EVENT_OBJECT_RPHAZER, !m_bBusy);
     VisibleInterface(pw, EVENT_OBJECT_RSHIELD, !m_bBusy);
     VisibleInterface(pw, EVENT_OBJECT_RATOMIC, !m_bBusy);
+    VisibleInterface(pw, EVENT_OBJECT_RBUILDER, !m_bBusy);
 }
 
 // Updates the state of all buttons on the interface,
@@ -478,6 +489,7 @@ bool CAutoResearch::TestResearch(EventType event)
     if ( event == EVENT_OBJECT_RPHAZER )  return m_main->IsResearchDone(RESEARCH_PHAZER, m_object->GetTeam());
     if ( event == EVENT_OBJECT_RSHIELD )  return m_main->IsResearchDone(RESEARCH_SHIELD, m_object->GetTeam());
     if ( event == EVENT_OBJECT_RATOMIC )  return m_main->IsResearchDone(RESEARCH_ATOMIC, m_object->GetTeam());
+    if ( event == EVENT_OBJECT_RBUILDER )  return m_main->IsResearchDone(RESEARCH_BUILDER, m_object->GetTeam());
 
     return false;
 }
@@ -502,7 +514,7 @@ void CAutoResearch::FireStopUpdate(float progress, bool bLightOn)
          4.7f,  -8.2f,
     };
 
-    if ( !bLightOn )  // �teint ?
+    if ( !bLightOn )  // light-off ?
     {
         for ( i=0 ; i<6 ; i++ )
         {

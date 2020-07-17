@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -118,6 +118,8 @@ enum ResTextType
     RT_IO_DIR               = 154,
     RT_IO_PRIVATE           = 155,
     RT_IO_PUBLIC            = 156,
+    RT_IO_REPLACE           = 157,
+    RT_IO_SELECT_DIR        = 158,
 
     RT_GENERIC_DEV1         = 170,
     RT_GENERIC_DEV2         = 171,

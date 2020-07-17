@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,6 +24,8 @@
 
 #include "CBot/CBotVar/CBotVar.h"
 
+#include <stdexcept>
+
 namespace CBot
 {
 
@@ -42,7 +44,7 @@ CBotInstr* CBotExprLitString::Compile(CBotToken* &p, CBotCStack* pStack)
 {
     CBotCStack* pStk = pStack->TokenStack();
 
-    std::string s = p->GetString();
+    const auto& s = p->GetString();
 
     auto it = s.cbegin();
     if (++it != s.cend())
@@ -51,7 +53,7 @@ CBotInstr* CBotExprLitString::Compile(CBotToken* &p, CBotCStack* pStack)
         std::string valstring = "";
         while (it != s.cend() && *it != '\"')
         {
-            pStk->SetStartError(++pos);
+            ++pos;
             if (*it != '\\') // not escape sequence ?
             {
                 valstring += *(it++);
@@ -59,6 +61,7 @@ CBotInstr* CBotExprLitString::Compile(CBotToken* &p, CBotCStack* pStack)
             }
 
             if (++it == s.cend()) break;
+            pStk->SetStartError(pos);
 
             if (CharInList(*it, "01234567"))          // octal
             {
