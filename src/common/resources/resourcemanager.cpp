@@ -95,6 +95,12 @@ std::vector<std::string> CResourceManager::GetLocations()
     return ret;
 }
 
+bool CResourceManager::LocationExists(const std::string& location)
+{
+    auto locations = GetLocations();
+    auto it = std::find(locations.cbegin(), locations.cend(), location);
+    return it != locations.cend();
+}
 
 bool CResourceManager::SetSaveLocation(const std::string &location)
 {

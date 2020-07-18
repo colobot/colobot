@@ -41,8 +41,7 @@ CPathManager::CPathManager(CSystemUtils* systemUtils)
     : m_dataPath(systemUtils->GetDataPath())
     , m_langPath(systemUtils->GetLangPath())
     , m_savePath(systemUtils->GetSaveDir())
-    , m_modAutoloadDir{}
-    , m_mods{}
+    , m_modSearchDirs{}
 {
 }
 
@@ -65,35 +64,41 @@ void CPathManager::SetSavePath(const std::string &savePath)
     m_savePath = savePath;
 }
 
-void CPathManager::AddModAutoloadDir(const std::string &modAutoloadDirPath)
+void CPathManager::AddModSearchDir(const std::string &modSearchDirPath)
 {
-    m_modAutoloadDir.push_back(modAutoloadDirPath);
+    m_modSearchDirs.push_back(modSearchDirPath);
 }
 
 void CPathManager::AddMod(const std::string &modPath)
 {
-    std::string::size_type enabled;
-    enabled = modPath.find('~');
-    if (enabled == std::string::npos)
-    {
-        GetLogger()->Info("Loading mod: '%s'\n", modPath.c_str());
-        CResourceManager::AddLocation(modPath, true);
-    }
-    else
-    {
-        GetLogger()->Info("Found excluded mod: '%s'\n", modPath.c_str());
-    }
+    GetLogger()->Info("Loading mod: '%s'\n", modPath.c_str());
+    CResourceManager::AddLocation(modPath, true);
 }
 
 void CPathManager::RemoveMod(const std::string &modPath)
 {
-    std::string::size_type enabled;
-    enabled = modPath.find('~');
-    if (enabled == std::string::npos)
+    GetLogger()->Info("Unloading mod: '%s'\n", modPath.c_str());
+    CResourceManager::RemoveLocation(modPath);
+}
+
+bool CPathManager::ModLoaded(const std::string& modPath)
+{
+    return CResourceManager::LocationExists(modPath);
+}
+
+std::vector<std::string> CPathManager::FindMods() const
+{
+    std::vector<std::string> mods;
+    GetLogger()->Info("Found mods:\n");
+    for (const auto &searchPath : m_modSearchDirs)
     {
-        GetLogger()->Info("Unloading mod: '%s'\n", modPath.c_str());
-        CResourceManager::RemoveLocation(modPath);
+        for (const auto &modPath : FindModsInDir(searchPath))
+        {
+            GetLogger()->Info("  * %s\n", modPath.c_str());
+            mods.push_back(modPath);
+        }
     }
+    return mods;
 }
 
 const std::string& CPathManager::GetDataPath()
@@ -152,57 +157,17 @@ void CPathManager::InitPaths()
     GetLogger()->Info("Data path: %s\n", m_dataPath.c_str());
     GetLogger()->Info("Save path: %s\n", m_savePath.c_str());
 
-    m_modAutoloadDir.push_back(m_dataPath + "/mods");
-    m_modAutoloadDir.push_back(m_savePath + "/mods");
+    m_modSearchDirs.push_back(m_dataPath + "/mods");
+    m_modSearchDirs.push_back(m_savePath + "/mods");
 
-    if (!m_modAutoloadDir.empty())
+    if (!m_modSearchDirs.empty())
     {
-        GetLogger()->Info("Mod autoload dirs:\n");
-        for(const std::string& modAutoloadDir : m_modAutoloadDir)
-            GetLogger()->Info("  * %s\n", modAutoloadDir.c_str());
-    }
-    if (!m_mods.empty())
-    {
-        GetLogger()->Info("Mods:\n");
-        for(const std::string& modPath : m_mods)
-            GetLogger()->Info("  * %s\n", modPath.c_str());
+        GetLogger()->Info("Mod search dirs:\n");
+        for(const std::string& modSearchDir : m_modSearchDirs)
+            GetLogger()->Info("  * %s\n", modSearchDir.c_str());
     }
 
     CResourceManager::AddLocation(m_dataPath);
-
-    for (const std::string& modAutoloadDir : m_modAutoloadDir)
-    {
-        GetLogger()->Trace("Searching for mods in '%s'...\n", modAutoloadDir.c_str());
-        for (const std::string& modPath : FindModsInDir(modAutoloadDir))
-        {
-            std::string::size_type enabled;
-            enabled = modPath.find('~');
-            if (enabled == std::string::npos)
-            {
-                GetLogger()->Info("Autoloading mod: '%s'\n", modPath.c_str());
-                CResourceManager::AddLocation(modPath);
-            }
-            else
-            {
-                GetLogger()->Info("Found excluded mod: '%s'\n", modPath.c_str());
-            }
-        }
-    }
-
-    for (const std::string& modPath : m_mods)
-    {
-        std::string::size_type enabled;
-        enabled = modPath.find('~');
-        if (enabled == std::string::npos)
-        {
-            GetLogger()->Info("Loading mod: '%s'\n", modPath.c_str());
-            CResourceManager::AddLocation(modPath);
-        }
-        else
-        {
-            GetLogger()->Info("Found excluded mod: '%s'\n", modPath.c_str());
-        }
-    }
 
     CResourceManager::SetSaveLocation(m_savePath);
     CResourceManager::AddLocation(m_savePath);
@@ -213,7 +178,7 @@ void CPathManager::InitPaths()
         GetLogger()->Debug("  * %s\n", path.c_str());
 }
 
-std::vector<std::string> CPathManager::FindModsInDir(const std::string &dir)
+std::vector<std::string> CPathManager::FindModsInDir(const std::string &dir) const
 {
     std::vector<std::string> ret;
     try

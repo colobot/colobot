@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2019, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,18 +19,20 @@
 
 #include "ui/screen/screen_setup_mods.h"
 
-#include "app/app.h"
-#include "app/pathman.h"
+#include "common/config.h"
 
-#include "common/system/system.h"
+#include "app/app.h"
+#include "app/modman.h"
 
 #include "common/restext.h"
-#include "common/config.h"
 #include "common/logger.h"
 #include "common/settings.h"
 #include "common/stringutils.h"
 
 #include "common/resources/resourcemanager.h"
+
+#include "common/system/system.h"
+
 #include "level/parser/parser.h"
 
 #include "ui/controls/button.h"
@@ -49,8 +51,9 @@ using namespace boost::filesystem;
 namespace Ui
 {
 
-CScreenSetupMods::CScreenSetupMods(CMainDialog* mainDialog)
-    : m_dialog(mainDialog)
+CScreenSetupMods::CScreenSetupMods(CMainDialog* dialog, CModManager* modManager)
+    : m_dialog(dialog),
+      m_modManager(modManager)
 {
 }
 
@@ -128,6 +131,7 @@ void CScreenSetupMods::CreateInterface()
     pb->SetState(STATE_SHADOW);
     pb->ClearState(STATE_ENABLE);
 }
+
 bool CScreenSetupMods::EventProcess(const Event &event)
 {
     CWindow*               pw;
@@ -135,7 +139,7 @@ bool CScreenSetupMods::EventProcess(const Event &event)
     CList*                 pl;
     std::string            modName;
     const std::string      website = "https://www.moddb.com/games/colobot-gold-edition";
-    const std::string      modDir = CResourceManager::GetSaveLocation() + "/" + "mods";
+    const std::string      modDir = CResourceManager::GetSaveLocation() + "/mods";
     auto                   systemUtils = CSystemUtils::Create(); // platform-specific utils
 
     if (!CScreenSetup::EventProcess(event)) return false;
@@ -149,9 +153,10 @@ bool CScreenSetupMods::EventProcess(const Event &event)
             pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_MODS_UNLOADED));
             if (pl == nullptr)  return false;
             modName = pl->GetItemName(pl->GetSelect());
-            LoadMod(modName);
 
-            m_app->Reload();
+            m_modManager->EnableMod(modName);
+            m_modManager->ReloadMods();
+
             m_main->ChangePhase(PHASE_SETUPm);
             break;
 
@@ -159,9 +164,10 @@ bool CScreenSetupMods::EventProcess(const Event &event)
             pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_MODS_LOADED));
             if (pl == nullptr)  return false;
             modName = pl->GetItemName(pl->GetSelect());
-            UnloadMod(modName);
 
-            m_app->Reload();
+            m_modManager->DisableMod(modName);
+            m_modManager->ReloadMods();
+
             m_main->ChangePhase(PHASE_SETUPm);
             break;
 
@@ -200,7 +206,7 @@ bool CScreenSetupMods::EventProcess(const Event &event)
                 GetResource(RES_TEXT, RT_DIALOG_OPEN_PATH_FAILED_TITLE, title);
                 GetResource(RES_TEXT, RT_DIALOG_OPEN_PATH_FAILED_TEXT, text);
 
-                // Workaround for how labels treat the \\ character on Windows
+                // Workaround for Windows: the label skips everything after the first \\ character
                 std::string modDirWithoutBackSlashes = modDir;
                 std::replace(modDirWithoutBackSlashes.begin(), modDirWithoutBackSlashes.end(), '\\', '/');
 
@@ -224,34 +230,11 @@ bool CScreenSetupMods::EventProcess(const Event &event)
     return false;
 }
 
-void CScreenSetupMods::UnloadMod(std::string modName)
-{
-    std::string            modPath, modPathRaw, disabled = "~";
-
-    modPathRaw = CResourceManager::GetSaveLocation() + "/" + "mods" + "/";
-    modPath = modPathRaw.c_str();
-
-    m_pathManager->RemoveMod(modPath+modName);
-    boost::filesystem::rename(modPath+modName, modPath+disabled+modName);
-}
-
-void CScreenSetupMods::LoadMod(std::string modName)
-{
-    std::string            modPath, modPathRaw, disabled = "~";
-
-    modPathRaw = CResourceManager::GetSaveLocation() + "/" + "mods" + "/";
-    modPath = modPathRaw.c_str();
-
-    boost::filesystem::rename(modPath+disabled+modName, modPath+modName);
-    m_pathManager->AddMod(modPath+modName);
-}
-
 void CScreenSetupMods::UpdateUnloadedModList()
 {
     CWindow*           pw;
     CList*             pl;
     int                i = 0;
-    std::string        modPath, modPathRaw;
     directory_iterator end_itr;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
@@ -261,30 +244,22 @@ void CScreenSetupMods::UpdateUnloadedModList()
     if ( pl == nullptr )  return;
     pl->Flush();
 
-    modPathRaw = CResourceManager::GetSaveLocation() + "/" + "mods" + "/";
-    modPath = modPathRaw.c_str();
-
-    for (directory_iterator itr(modPath); itr != end_itr; ++itr)
+    for (const auto& mod : m_modManager->GetMods())
     {
-        std::string modName = itr->path().string();
-        boost::erase_all(modName, modPath);
-        std::string::size_type enabled;
-        enabled = modName.find('~');
-        if (enabled != std::string::npos)
+        if (!mod.enabled)
         {
-            modName.erase(0,1);
-            pl->SetItemName(i++, modName);
+            pl->SetItemName(i++, mod.name);
         }
     }
 
     pl->ShowSelect(false);  // shows the selected columns
 }
+
 void CScreenSetupMods::UpdateLoadedModList()
 {
     CWindow*           pw;
     CList*             pl;
     int                i = 0;
-    std::string        modPath, modPathRaw;
     directory_iterator end_itr;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
@@ -294,19 +269,15 @@ void CScreenSetupMods::UpdateLoadedModList()
     if ( pl == nullptr )  return;
     pl->Flush();
 
-    modPathRaw = CResourceManager::GetSaveLocation() + "/" + "mods" + "/";
-    modPath = modPathRaw.c_str();
-
-    for (directory_iterator itr(modPath); itr != end_itr; ++itr)
+    for (const auto& mod : m_modManager->GetMods())
     {
-        std::string modName = itr->path().string();
-        boost::erase_all(modName, modPath);
-        std::string::size_type enabled;
-        enabled = modName.find('~');
-        if (enabled == std::string::npos)
-            pl->SetItemName(i++, modName);
+        if (mod.enabled)
+        {
+            pl->SetItemName(i++, mod.name);
+        }
     }
 
     pl->ShowSelect(false);  // shows the selected columns
 }
+
 } // namespace Ui

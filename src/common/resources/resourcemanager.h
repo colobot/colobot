@@ -41,6 +41,8 @@ public:
     static bool RemoveLocation(const std::string &location);
     //! List all locations in the search path
     static std::vector<std::string> GetLocations();
+    //! Check if given location is in the search path
+    static bool LocationExists(const std::string &location);
 
     static bool SetSaveLocation(const std::string &location);
     static std::string GetSaveLocation();

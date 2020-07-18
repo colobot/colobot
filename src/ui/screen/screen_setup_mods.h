@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2019, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,11 +20,12 @@
 #pragma once
 
 #include "ui/maindialog.h"
+
 #include "ui/screen/screen_setup.h"
 
 #include <vector>
 
-class CPathManager;
+class CModManager;
 
 namespace Ui
 {
@@ -32,24 +33,20 @@ namespace Ui
 class CScreenSetupMods : public CScreenSetup
 {
 public:
-    CScreenSetupMods(CMainDialog* mainDialog);
+    CScreenSetupMods(CMainDialog* dialog, CModManager* modManager);
     void SetActive() override;
 
     void CreateInterface() override;
     bool EventProcess(const Event &event) override;
 
 protected:
-    void UnloadMod(std::string ModName);
-    void LoadMod(std::string ModName);
     void UpdateUnloadedModList();
     void UpdateLoadedModList();
 
 protected:
-    CMainDialog* m_dialog;
+    CModManager* m_modManager;
 
-    CPathManager* m_pathManager;
-    std::vector<std::string> m_unloadedModList;
-    std::vector<std::string> m_loadedModList;
+    CMainDialog* m_dialog;
 };
 
 } // namespace Ui

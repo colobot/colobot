@@ -21,6 +21,7 @@
 
 #include "app/controller.h"
 #include "app/input.h"
+#include "app/modman.h"
 #include "app/pathman.h"
 
 #include "common/config_file.h"
@@ -113,7 +114,8 @@ CApplication::CApplication(CSystemUtils* systemUtils)
       m_private(MakeUnique<ApplicationPrivate>()),
       m_configFile(MakeUnique<CConfigFile>()),
       m_input(MakeUnique<CInput>()),
-      m_pathManager(MakeUnique<CPathManager>(systemUtils))
+      m_pathManager(MakeUnique<CPathManager>(systemUtils)),
+      m_modManager(MakeUnique<CModManager>(this, m_pathManager.get()))
 {
     m_exitCode      = 0;
     m_active        = false;
@@ -218,6 +220,11 @@ CEventQueue* CApplication::GetEventQueue()
 CSoundInterface* CApplication::GetSound()
 {
     return m_sound.get();
+}
+
+CModManager* CApplication::GetModManager()
+{
+    return m_modManager.get();
 }
 
 void CApplication::LoadEnvironmentVariables()
@@ -513,6 +520,8 @@ bool CApplication::Create()
         GetLogger()->Warn("Config could not be loaded. Default values will be used!\n");
     }
 
+    m_modManager->ReinitMods();
+
     // Create the sound instance.
     #ifdef OPENAL_SOUND
     if (!m_headless)
@@ -698,21 +707,7 @@ bool CApplication::Create()
     // Create the robot application.
     m_controller = MakeUnique<CController>();
 
-    CThread musicLoadThread([this]()
-    {
-        GetLogger()->Debug("Cache sounds...\n");
-        SystemTimeStamp* musicLoadStart = m_systemUtils->CreateTimeStamp();
-        m_systemUtils->GetCurrentTimeStamp(musicLoadStart);
-
-        m_sound->CacheAll();
-
-        SystemTimeStamp* musicLoadEnd = m_systemUtils->CreateTimeStamp();
-        m_systemUtils->GetCurrentTimeStamp(musicLoadEnd);
-        float musicLoadTime = m_systemUtils->TimeStampDiff(musicLoadStart, musicLoadEnd, STU_MSEC);
-        GetLogger()->Debug("Sound loading took %.2f ms\n", musicLoadTime);
-    },
-    "Sound loading thread");
-    musicLoadThread.Start();
+    StartLoadingMusic();
 
     if (m_runSceneCategory == LevelCategory::Max)
         m_controller->StartApp();
@@ -726,22 +721,11 @@ bool CApplication::Create()
     return true;
 }
 
-void CApplication::Reload()
+void CApplication::ReloadResources()
 {
-    m_sound->Create();
+    GetLogger()->Info("Reloading resources\n");
     m_engine->ReloadAllTextures();
-    CThread musicLoadThread([this]()
-    {
-        SystemTimeStamp* musicLoadStart = m_systemUtils->CreateTimeStamp();
-        m_systemUtils->GetCurrentTimeStamp(musicLoadStart);
-        m_sound->CacheAll();
-        SystemTimeStamp* musicLoadEnd = m_systemUtils->CreateTimeStamp();
-        m_systemUtils->GetCurrentTimeStamp(musicLoadEnd);
-        float musicLoadTime = m_systemUtils->TimeStampDiff(musicLoadStart, musicLoadEnd, STU_MSEC);
-        GetLogger()->Debug("Sound loading took %.2f ms\n", musicLoadTime);
-    },
-    "Sound loading thread");
-    musicLoadThread.Start();
+    StartLoadingMusic();
     m_controller->GetRobotMain()->UpdateCustomLevelList();
 }
 
@@ -1557,6 +1541,24 @@ void CApplication::InternalResumeSimulation()
     m_systemUtils->CopyTimeStamp(m_curTimeStamp, m_baseTimeStamp);
     m_realAbsTimeBase = m_realAbsTime;
     m_absTimeBase = m_exactAbsTime;
+}
+
+void CApplication::StartLoadingMusic()
+{
+    CThread musicLoadThread([this]()
+    {
+        GetLogger()->Debug("Cache sounds...\n");
+        SystemTimeStamp* musicLoadStart = m_systemUtils->CreateTimeStamp();
+        m_systemUtils->GetCurrentTimeStamp(musicLoadStart);
+
+        m_sound->CacheAll();
+
+        SystemTimeStamp* musicLoadEnd = m_systemUtils->CreateTimeStamp();
+        m_systemUtils->GetCurrentTimeStamp(musicLoadEnd);
+        float musicLoadTime = m_systemUtils->TimeStampDiff(musicLoadStart, musicLoadEnd, STU_MSEC);
+        GetLogger()->Debug("Sound loading took %.2f ms\n", musicLoadTime);
+    }, "Sound loading thread");
+    musicLoadThread.Start();
 }
 
 bool CApplication::GetSimulationSuspended() const

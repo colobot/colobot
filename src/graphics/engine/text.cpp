@@ -259,10 +259,8 @@ void CText::FlushCache()
         }
     }
 
-    m_lastCachedFont = nullptr;
-    m_lastFontType = FONT_COMMON;
-    m_lastFontSize = 0;
-
+    //TODO: fix this
+    Destroy();
     Create();
 }
 
