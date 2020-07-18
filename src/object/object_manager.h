@@ -179,7 +179,7 @@ public:
 
     //! Checks if any of team's objects exist
     bool TeamExists(int team);
-    
+
     //! Destroy all objects of team
     // TODO: This should be probably moved to separate class
     void DestroyTeam(int team, DestructionType destructionType = DestructionType::Explosion);
