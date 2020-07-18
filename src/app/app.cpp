@@ -1557,7 +1557,8 @@ void CApplication::StartLoadingMusic()
         m_systemUtils->GetCurrentTimeStamp(musicLoadEnd);
         float musicLoadTime = m_systemUtils->TimeStampDiff(musicLoadStart, musicLoadEnd, STU_MSEC);
         GetLogger()->Debug("Sound loading took %.2f ms\n", musicLoadTime);
-    }, "Sound loading thread");
+    },
+    "Sound loading thread");
     musicLoadThread.Start();
 }
 

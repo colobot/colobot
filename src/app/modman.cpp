@@ -17,7 +17,7 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#include "modman.h"
+#include "app/modman.h"
 
 //TODO: clean up includes
 #include "common/config.h"
@@ -25,8 +25,8 @@
 #include "app/app.h"
 #include "app/pathman.h"
 
-#include "common/restext.h"
 #include "common/logger.h"
+#include "common/restext.h"
 #include "common/settings.h"
 #include "common/stringutils.h"
 

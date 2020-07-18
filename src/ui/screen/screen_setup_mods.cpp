@@ -24,8 +24,8 @@
 #include "app/app.h"
 #include "app/modman.h"
 
-#include "common/restext.h"
 #include "common/logger.h"
+#include "common/restext.h"
 #include "common/settings.h"
 #include "common/stringutils.h"
 
