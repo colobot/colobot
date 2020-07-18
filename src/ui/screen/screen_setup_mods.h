@@ -44,9 +44,9 @@ protected:
     void UpdateLoadedModList();
 
 protected:
-    CModManager* m_modManager;
-
     CMainDialog* m_dialog;
+
+    CModManager* m_modManager;
 };
 
 } // namespace Ui

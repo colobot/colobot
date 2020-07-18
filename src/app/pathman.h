@@ -37,7 +37,7 @@ public:
     void SetDataPath(const std::string &dataPath);
     void SetLangPath(const std::string &langPath);
     void SetSavePath(const std::string &savePath);
-    void AddModSearchDir(const std::string &modAutoloadDirPath);
+    void AddModSearchDir(const std::string &modSearchDirPath);
     void AddMod(const std::string &modPath);
     void RemoveMod(const std::string &modPath);
     bool ModLoaded(const std::string& modPath);
