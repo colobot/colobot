@@ -180,9 +180,6 @@ public:
     //! Checks if any of team's objects exist
     bool TeamExists(int team);
     
-    //!Prevents creation of overcharged power cells
-    float ClampPower(ObjectType type, float power);
-    
     //! Destroy all objects of team
     // TODO: This should be probably moved to separate class
     void DestroyTeam(int team, DestructionType destructionType = DestructionType::Explosion);
@@ -306,6 +303,7 @@ public:
     //@}
 
 private:
+    float ClampPower(ObjectType type, float power); //!Prevents creation of overcharged power cells
     void CleanRemovedObjectsIfNeeded();
 
 private:

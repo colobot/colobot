@@ -128,7 +128,7 @@ CObject* CObjectManager::GetObjectByRank(unsigned int id)
 }
 
 CObject* CObjectManager::CreateObject(ObjectCreateParams params)
-{    
+{
     if (params.id < 0)
     {
         params.id = m_nextId;
@@ -141,9 +141,9 @@ CObject* CObjectManager::CreateObject(ObjectCreateParams params)
             m_nextId = params.id + 1;
         }
     }
-    
+
     params.power = ClampPower(params.type,params.power);
-    
+
     assert(m_objects.find(params.id) == m_objects.end());
 
     auto objectUPtr = m_objectFactory->CreateObject(params);
@@ -164,6 +164,7 @@ CObject* CObjectManager::CreateObject(Math::Vector pos, float angle, ObjectType 
     params.pos = pos;
     params.angle = angle;
     params.type = type;
+    params.power = ClampPower(type,power);
     return CreateObject(params);
 }
 

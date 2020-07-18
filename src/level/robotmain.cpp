@@ -3405,7 +3405,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 m_ui->GetLoadingScreen()->SetProgress(0.25f+objectProgress*0.75f, RT_LOADING_OBJECTS, details);
 
                 try
-                {                    
+                {
                     CObject* obj = m_objMan->CreateObject(params);
                     obj->Read(line.get());
 
