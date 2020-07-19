@@ -54,7 +54,7 @@ void CModManager::FindMods()
 
     // Transform the data into Mod structures
     m_mods.reserve(savedModNames.size());
-    for (int i = 0; i < savedModNames.size(); ++i)
+    for (size_t i = 0; i < savedModNames.size(); ++i)
     {
         Mod mod{};
         mod.name = savedModNames[i];
