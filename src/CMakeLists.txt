@@ -63,18 +63,20 @@ elseif(PLATFORM_WINDOWS)
             find_library(BZ2_LIBRARY NAMES bz2.lib)
             find_library(JPEG_LIBRARY NAMES jpeg.lib)
             find_library(TIFF_LIBRARY NAMES tiff.lib)
-            find_library(WEBP_LIBRARY NAMES webp.lib)
             find_library(LZMA_LIBRARY NAMES lzma.lib)
             find_library(FREETYPE_LIBRARY NAMES freetype.lib)
+            find_library(ICONV_LIBRARY NAMES libiconv.lib)
+            find_library(CHARSET_LIBRARY NAMES libcharset.lib)
             set(MSVC_LIBS
                 ${LIBINTL_LIBRARY}
                 ${OPENAL_MSVC_LIBS}
                 ${JPEG_LIBRARY}
                 ${TIFF_LIBRARY}
                 ${BZ2_LIBRARY}
-                ${WEBP_LIBRARY}
                 ${LZMA_LIBRARY}
                 ${FREETYPE_LIBRARY}
+                ${ICONV_LIBRARY}
+                ${CHARSET_LIBRARY}
                 winmm.lib
                 dxguid.lib
                 imm32.lib
@@ -83,6 +85,7 @@ elseif(PLATFORM_WINDOWS)
                 version.lib
                 wsock32.lib
                 ws2_32.lib
+                setupapi.lib
             )
         else(${MSVC_STATIC})
             set(MSVC_LIBS ${LIBINTL_LIBRARY})
@@ -98,6 +101,10 @@ elseif(PLATFORM_LINUX)
     # for clock_gettime
     set(PLATFORM_LIBS "-lrt")
 elseif(PLATFORM_MACOSX)
+    find_library(LIBINTL_LIBRARY NAMES intl libintl)
+    find_path(LIBINTL_INCLUDE_PATH NAMES libintl.h)
+    set(PLATFORM_LIBS ${LIBINTL_LIBRARY})
+elseif(PLATFORM_FREEBSD)
     find_library(LIBINTL_LIBRARY NAMES intl libintl)
     find_path(LIBINTL_INCLUDE_PATH NAMES libintl.h)
     set(PLATFORM_LIBS ${LIBINTL_LIBRARY})
@@ -530,6 +537,8 @@ set(BASE_SOURCES
     ui/displayinfo.h
     ui/displaytext.cpp
     ui/displaytext.h
+    ui/filedialog.cpp
+    ui/filedialog.h
     ui/maindialog.cpp
     ui/maindialog.h
     ui/mainmap.cpp
@@ -540,6 +549,8 @@ set(BASE_SOURCES
     ui/mainui.h
     ui/object_interface.cpp
     ui/object_interface.h
+    ui/particles_generator.cpp
+    ui/particles_generator.h
     ui/screen/screen.cpp
     ui/screen/screen.h
     ui/screen/screen_apperance.cpp

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -67,7 +67,6 @@ static bool IsAlien(ObjectType type)
              type == OBJECT_NEST     ||
              type == OBJECT_BULLET   ||
              type == OBJECT_EGG      ||
-             type == OBJECT_MOBILEtg ||
              type == OBJECT_TEEN28   ||
              type == OBJECT_TEEN31   );
 }
@@ -877,7 +876,7 @@ void CParticle::FrameParticle(float rTime)
             m_track[r].drawParticle = (progress < 1.0f);
         }
 
-        if (m_particle[i].type == PARTITRACK1)  // explosion technique?
+        if (m_particle[i].type == PARTITRACK1)  // technical explosion?
         {
             m_particle[i].zoom = 1.0f-(m_particle[i].time-m_particle[i].duration);
 
@@ -2407,7 +2406,7 @@ void CParticle::FrameParticle(float rTime)
             ti.y = ts.y+0.125f;
         }
 
-        if (m_particle[i].type == PARTIRAY1)  // rayon tour ?
+        if (m_particle[i].type == PARTIRAY1)  // tower ray ?
         {
             if (progress >= 1.0f)
             {
@@ -2517,7 +2516,7 @@ void CParticle::TrackDraw(int i, ParticleType type)
 
     Math::Point texInf, texSup;
 
-    if (type == PARTITRACK1)  // explosion technique?
+    if (type == PARTITRACK1)  // technical explosion?
     {
         texInf.x = 64.5f/256.0f;
         texInf.y = 21.0f/256.0f;
@@ -3544,6 +3543,7 @@ CObject* CParticle::SearchObjectGun(Math::Vector old, Math::Vector pos,
             continue;
         }
         if (!obj->Implements(ObjectInterfaceType::Damageable) && !obj->IsBulletWall())  continue;
+        if (obj->Implements(ObjectInterfaceType::Jostleable))  continue;
 
         Math::Vector oPos = obj->GetPosition();
 

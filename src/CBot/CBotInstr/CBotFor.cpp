@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -67,7 +67,7 @@ CBotInstr* CBotFor::Compile(CBotToken* &p, CBotCStack* pStack)
         return nullptr;
     }
 
-    CBotCStack* pStk = pStack->TokenStack(pp, true);    // un petit bout de pile svp
+    CBotCStack* pStk = pStack->TokenStack(pp, true);    // some size for a stack, plz
 
     // compiles instructions for initialization
     inst->m_init = CBotListExpression::Compile(p, pStk );

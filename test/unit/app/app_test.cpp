@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -55,9 +55,9 @@ public:
         SDL_Quit();
     }
 
-    Event CreateUpdateEvent() override
+    Event CreateUpdateEvent(SystemTimeStamp *timestamp) override
     {
-        return CApplication::CreateUpdateEvent();
+        return CApplication::CreateUpdateEvent(timestamp);
     }
 };
 
@@ -157,7 +157,9 @@ void CApplicationUT::TestCreateUpdateEvent(long long relTimeExact, long long abs
                                            float relTime, float absTime,
                                            long long relTimeReal, long long absTimeReal)
 {
-    Event event = m_app->CreateUpdateEvent();
+    SystemTimeStamp *now = CreateTimeStamp();
+    GetCurrentTimeStamp(now);
+    Event event = m_app->CreateUpdateEvent(now);
     EXPECT_EQ(EVENT_FRAME, event.type);
     EXPECT_FLOAT_EQ(relTime, event.rTime);
     EXPECT_FLOAT_EQ(relTime, m_app->GetRelTime());
@@ -172,7 +174,11 @@ void CApplicationUT::TestCreateUpdateEvent(long long relTimeExact, long long abs
 TEST_F(CApplicationUT, UpdateEventTimeCalculation_SimulationSuspended)
 {
     m_app->SuspendSimulation();
-    Event event = m_app->CreateUpdateEvent();
+
+    SystemTimeStamp *now = CreateTimeStamp();
+    GetCurrentTimeStamp(now);
+    Event event = m_app->CreateUpdateEvent(now);
+
     EXPECT_EQ(EVENT_NULL, event.type);
 }
 
@@ -224,7 +230,9 @@ TEST_F(CApplicationUT, UpdateEventTimeCalculation_NegativeTimeOperation)
 
     NextInstant(-1111);
 
-    Event event = m_app->CreateUpdateEvent();
+    SystemTimeStamp *now = CreateTimeStamp();
+    GetCurrentTimeStamp(now);
+    Event event = m_app->CreateUpdateEvent(now);
     EXPECT_EQ(EVENT_NULL, event.type);
 }
 

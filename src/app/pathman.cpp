@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ CPathManager::CPathManager(CSystemUtils* systemUtils)
     : m_dataPath(systemUtils->GetDataPath())
     , m_langPath(systemUtils->GetLangPath())
     , m_savePath(systemUtils->GetSaveDir())
-    , m_modAutoloadDir{ m_dataPath + "/mods", m_savePath + "/mods" }
+    , m_modAutoloadDir{}
     , m_mods{}
 {
 }
@@ -130,6 +130,10 @@ void CPathManager::InitPaths()
 {
     GetLogger()->Info("Data path: %s\n", m_dataPath.c_str());
     GetLogger()->Info("Save path: %s\n", m_savePath.c_str());
+
+    m_modAutoloadDir.push_back(m_dataPath + "/mods");
+    m_modAutoloadDir.push_back(m_savePath + "/mods");
+
     if (!m_modAutoloadDir.empty())
     {
         GetLogger()->Info("Mod autoload dirs:\n");

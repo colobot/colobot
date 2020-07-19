@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -77,6 +77,18 @@ bool CBotFunction::IsPublic()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool CBotFunction::IsProtected() const
+{
+    return m_bProtect;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool CBotFunction::IsPrivate() const
+{
+    return m_bPrivate;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool CBotFunction::IsExtern()
 {
     return m_bExtern;
@@ -129,21 +141,17 @@ CBotFunction* CBotFunction::Compile(CBotToken* &p, CBotCStack* pStack, CBotFunct
 {
     CBotToken*      pp;
     CBotFunction* func = finput;
-    if ( func == nullptr ) func = new CBotFunction();
+    assert(func != nullptr); // a pre-compiled function is required
 
     CBotCStack* pStk = pStack->TokenStack(p, bLocal);
 
-//  func->m_nFuncIdent = CBotVar::NextUniqNum();
-
     while (true)
     {
-        if ( IsOfType(p, ID_PUBLIC) )
-        {
-            func->m_bPublic = true;
-            continue;
-        }
+        if (IsOfType(p, ID_PRIVATE)) break;
+        if (IsOfType(p, ID_PROTECTED)) break;
+        if (IsOfType(p, ID_PUBLIC)) continue;
         pp = p;
-        if ( IsOfType(p, ID_EXTERN) )
+        if (IsOfType(p, ID_EXTERN))
         {
             func->m_extern = *pp;        // for the position of the word "extern"
             func->m_bExtern = true;
@@ -169,7 +177,7 @@ CBotFunction* CBotFunction::Compile(CBotToken* &p, CBotCStack* pStack, CBotFunct
             func->m_token = d;
         }
 
-        // un nom de fonction est-il là ?
+        // is there a function name here ?
         if (IsOfType(p, TokenTypVar))
         {
             if ( IsOfType( p, ID_DBLDOTS ) )        // method for a class
@@ -183,10 +191,23 @@ CBotFunction* CBotFunction::Compile(CBotToken* &p, CBotCStack* pStack, CBotFunct
                     goto bad;
                 }
 
-//              pp = p;
+                pp = p;
                 func->m_token = *p;
                 if (!IsOfType(p, TokenTypVar)) goto bad;
-
+                // check if the class has a method like this
+                if (pClass->CheckCall(pStack->GetProgram(), func->m_param, pp))
+                {
+                    pStk->SetStartError(func->m_classToken.GetStart());
+                    pStk->SetError(CBotErrRedefFunc, pp->GetEnd());
+                    goto bad;
+                }
+                // check if a constructor has return type void
+                if (func->GetName() == pClass->GetName() && !func->m_retTyp.Eq(CBotTypVoid))
+                {
+                    pp = &(func->m_retToken);
+                    pStk->SetError(CBotErrFuncNotVoid, pp);
+                    goto bad;
+                }
             }
             func->m_openpar = *p;
             delete func->m_param;
@@ -198,28 +219,13 @@ CBotFunction* CBotFunction::Compile(CBotToken* &p, CBotCStack* pStack, CBotFunct
 
                 if (!func->m_MasterClass.empty())
                 {
-                    // return "this" known
-                    CBotVar* pThis = CBotVar::Create("this", CBotTypResult( CBotTypClass, func->m_MasterClass ));
-                    pThis->SetInit(CBotVar::InitType::IS_POINTER);
-//                  pThis->SetUniqNum(func->m_nThisIdent = -2); //CBotVar::NextUniqNum() will not
-                    pThis->SetUniqNum(-2);
-                    pStk->AddVar(pThis);
+                    CBotClass* pClass = CBotClass::Find(func->m_MasterClass);
 
-                    // initialize variables acording to This
-                    // only saves the pointer to the first,
-                    // the rest is chained
-                    CBotVar* pv = pThis->GetItemList();
-//                  int num = 1;
-                    while (pv != nullptr)
-                    {
-                        CBotVar* pcopy = CBotVar::Create(pv);
-//                      pcopy->SetInit(2);
-                        pcopy->Copy(pv);
-                        pcopy->SetPrivate(pv->GetPrivate());
-//                      pcopy->SetUniqNum(pv->GetUniqNum()); //num++);
-                        pStk->AddVar(pcopy);
-                        pv = pv->GetNext();
-                    }
+                    pStk->CreateVarThis(pClass);
+                    pStk->CreateVarSuper(pClass->GetParent());
+
+                    bool bConstructor = (func->GetName() == func->m_MasterClass);
+                    pStk->CreateMemberVars(pClass, !bConstructor);
                 }
 
                 // and compiles the following instruction block
@@ -242,7 +248,6 @@ bad:
         pStk->SetError(CBotErrNoFunc, p);
     }
     pStk->SetError(CBotErrNoType, p);
-    if ( finput == nullptr ) delete func;
     return pStack->ReturnFunc(nullptr, pStk);
 }
 
@@ -254,14 +259,30 @@ CBotFunction* CBotFunction::Compile1(CBotToken* &p, CBotCStack* pStack, CBotClas
 
     CBotCStack* pStk = pStack->TokenStack(p, true);
 
+    CBotToken* pPriv = p;
+
     while (true)
     {
-        if ( IsOfType(p, ID_PUBLIC) )
+        if (!func->m_bPublic) // don't repeat 'public'
         {
-        //  func->m_bPublic = true;     // will be done in two passes
-            continue;
+            pPriv = p;
+            if (IsOfType(p, ID_PRIVATE))
+            {
+                func->m_bPrivate = true;
+                break;
+            }
+            if (IsOfType(p, ID_PROTECTED))
+            {
+                func->m_bProtect = true;
+                break;
+            }
+            if (IsOfType(p, ID_PUBLIC))
+            {
+                func->m_bPublic = true;
+                continue;
+            }
         }
-        if ( IsOfType(p, ID_EXTERN) )
+        if (!func->m_bExtern && IsOfType(p, ID_EXTERN))
         {
             func->m_bExtern = true;
             continue;
@@ -284,7 +305,7 @@ CBotFunction* CBotFunction::Compile1(CBotToken* &p, CBotCStack* pStack, CBotClas
             func->m_token = d;
         }
 
-        // un nom de fonction est-il là ?
+        // is there a function name here ?
         if (IsOfType(p, TokenTypVar))
         {
             if ( IsOfType( p, ID_DBLDOTS ) )        // method for a class
@@ -297,12 +318,21 @@ CBotFunction* CBotFunction::Compile1(CBotToken* &p, CBotCStack* pStack, CBotClas
                 if (!IsOfType(p, TokenTypVar)) goto bad;
 
             }
+            else if (pClass == nullptr) // not method in a class ?
+            {
+                if (func->m_bPrivate || func->m_bProtect) // not allowed for regular functions
+                {
+                    pStk->SetError(CBotErrNoType, pPriv);
+                    goto bad;
+                }
+            }
 
             CBotToken* openPar = p;
             func->m_param = CBotDefParam::Compile(p, pStk); // compile parameters
 
             if (pStk->IsOk() && pClass != nullptr) // method in a class
             {
+                func->m_MasterClass = pClass->GetName();
                 // check if a constructor has return type void
                 if (func->GetName() == pClass->GetName() && !func->m_retTyp.Eq(CBotTypVoid))
                 {
@@ -331,7 +361,7 @@ CBotFunction* CBotFunction::Compile1(CBotToken* &p, CBotCStack* pStack, CBotClas
             {
                 // looks if the function exists elsewhere
                 pp = &(func->m_token);
-                if (( pClass != nullptr || !pStack->CheckCall(pp, func->m_param)) &&
+                if (( pClass != nullptr || !pStack->CheckCall(pp, func->m_param, func->m_MasterClass)) &&
                     ( pClass == nullptr || !pClass->CheckCall(pStack->GetProgram(), func->m_param, pp)) )
                 {
                     if (IsOfType(p, ID_OPBLK))
@@ -472,10 +502,10 @@ void CBotFunction::RestoreState(CBotVar** ppVars, CBotStack* &pj, CBotVar* pInst
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotTypResult CBotFunction::CompileCall(const std::list<CBotFunction*>& localFunctionList, const std::string &name, CBotVar** ppVars, long &nIdent)
+CBotTypResult CBotFunction::CompileCall(const std::string &name, CBotVar** ppVars, long &nIdent, CBotProgram* program)
 {
     CBotTypResult type;
-    if (!FindLocalOrPublic(localFunctionList, nIdent, name, ppVars, type))
+    if (!FindLocalOrPublic(program->GetFunctions(), nIdent, name, ppVars, type, program))
     {
         // Reset the identifier to "not found" value
         nIdent = 0;
@@ -485,7 +515,7 @@ CBotTypResult CBotFunction::CompileCall(const std::list<CBotFunction*>& localFun
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotFunction* CBotFunction::FindLocalOrPublic(const std::list<CBotFunction*>& localFunctionList, long &nIdent, const std::string &name,
-                                              CBotVar** ppVars, CBotTypResult &TypeOrError, bool bPublic)
+                                              CBotVar** ppVars, CBotTypResult &TypeOrError, CBotProgram* baseProg)
 {
     TypeOrError.SetType(CBotErrUndefCall);      // no routine of the name
 
@@ -515,10 +545,39 @@ CBotFunction* CBotFunction::FindLocalOrPublic(const std::list<CBotFunction*>& lo
 
     std::map<CBotFunction*, int> funcMap;
 
-    for (CBotFunction* pt : localFunctionList)
+    CBotFunction::SearchList(localFunctionList, name, ppVars, TypeOrError, funcMap);
+
+    CBotFunction::SearchPublic(name, ppVars, TypeOrError, funcMap);
+
+    if (baseProg != nullptr && baseProg->m_thisVar != nullptr)
+    {
+        // find object:: functions
+        CBotClass* pClass = baseProg->m_thisVar->GetClass();
+        CBotFunction::SearchList(localFunctionList, name, ppVars, TypeOrError, funcMap, pClass);
+        CBotFunction::SearchPublic(name, ppVars, TypeOrError, funcMap, pClass);
+    }
+
+    return CBotFunction::BestFunction(funcMap, nIdent, TypeOrError);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void CBotFunction::SearchList(const std::list<CBotFunction*>& functionList,
+                              const std::string& name, CBotVar** ppVars, CBotTypResult& TypeOrError,
+                              std::map<CBotFunction*, int>& funcMap, CBotClass* pClass)
+{
+    for (CBotFunction* pt : functionList)
     {
         if ( pt->m_token.GetString() == name )
         {
+            if (pClass != nullptr) // looking for a method ?
+            {
+                if (pt->m_MasterClass != pClass->GetName()) continue;
+            }
+            else                   // looking for a function
+            {
+                if (!pt->m_MasterClass.empty()) continue;
+            }
+
             int i = 0;
             int alpha = 0;                          // signature of parameters
             // parameters are compatible?
@@ -575,16 +634,29 @@ CBotFunction* CBotFunction::FindLocalOrPublic(const std::list<CBotFunction*>& lo
             funcMap.insert( std::pair<CBotFunction*, int>(pt, alpha) );
         }
     }
+}
 
-    if ( bPublic )
+////////////////////////////////////////////////////////////////////////////////
+void CBotFunction::SearchPublic(const std::string& name, CBotVar** ppVars, CBotTypResult& TypeOrError,
+                                std::map<CBotFunction*, int>& funcMap, CBotClass* pClass)
+{
     {
         for (CBotFunction* pt : m_publicFunctions)
         {
             if ( pt->m_token.GetString() == name )
             {
+                if (pClass != nullptr) // looking for a method ?
+                {
+                    if (pt->m_MasterClass != pClass->GetName()) continue;
+                }
+                else                   // looking for a function
+                {
+                    if (!pt->m_MasterClass.empty()) continue;
+                }
+
                 int i = 0;
                 int alpha = 0;                          // signature of parameters
-                // parameters sont-ils compatibles ?
+                // are parameters compatible ?
                 CBotDefParam* pv = pt->m_param;         // list of expected parameters
                 CBotVar* pw = ppVars[i++];              // list of provided parameters
                 while ( pv != nullptr && (pw != nullptr || pv->HasDefault()) )
@@ -639,7 +711,12 @@ CBotFunction* CBotFunction::FindLocalOrPublic(const std::list<CBotFunction*>& lo
             }
         }
     }
+}
 
+////////////////////////////////////////////////////////////////////////////////
+CBotFunction* CBotFunction::BestFunction(std::map<CBotFunction*, int>& funcMap,
+                                         long& nIdent, CBotTypResult& TypeOrError)
+{
     if ( !funcMap.empty() )
     {
         auto it = funcMap.begin();
@@ -675,7 +752,7 @@ int CBotFunction::DoCall(CBotProgram* program, const std::list<CBotFunction*>& l
     CBotFunction*   pt = nullptr;
     CBotProgram*    baseProg = pStack->GetProgram(true);
 
-    pt = FindLocalOrPublic(localFunctionList, nIdent, name, ppVars, type);
+    pt = FindLocalOrPublic(localFunctionList, nIdent, name, ppVars, type, baseProg);
 
     if ( pt != nullptr )
     {
@@ -766,7 +843,7 @@ void CBotFunction::RestoreCall(const std::list<CBotFunction*>& localFunctionList
     CBotStack*      pStk3;
     CBotProgram*    baseProg = pStack->GetProgram(true);
 
-    pt = FindLocalOrPublic(localFunctionList, nIdent, name, ppVars, type);
+    pt = FindLocalOrPublic(localFunctionList, nIdent, name, ppVars, type, baseProg);
 
     if ( pt != nullptr )
     {
@@ -824,13 +901,121 @@ void CBotFunction::RestoreCall(const std::list<CBotFunction*>& localFunctionList
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CBotFunction::DoCall(const std::list<CBotFunction*>& localFunctionList, long &nIdent, const std::string &name, CBotVar* pThis,
+CBotTypResult CBotFunction::CompileMethodCall(const std::string& name, CBotVar** ppVars,
+                                              long& nIdent, CBotCStack* pStack, CBotClass* pClass)
+{
+    nIdent = 0;
+    CBotTypResult type;
+
+    CBotFunction* pt = FindMethod(nIdent, name, ppVars, type, pClass, pStack->GetProgram());
+
+    if (pt != nullptr)
+    {
+        CBotToken token("this");
+        CBotVar* pThis = pStack->FindVar(token); // for 'this' context
+
+        if (pThis == nullptr || pThis->GetType() != CBotTypPointer) // called from inside a function
+        {
+            if (pt->IsPrivate() || pt->IsProtected())
+                type.SetType(CBotErrPrivate);
+        }
+        else     // called from inside a method
+        {
+            CBotClass* thisClass = pThis->GetClass(); // current class
+            CBotClass* funcClass = CBotClass::Find(pt->m_MasterClass); // class of the method
+
+            if (pt->IsPrivate() && thisClass != funcClass)
+                type.SetType(CBotErrPrivate);
+
+            if (pt->IsProtected() && !thisClass->IsChildOf(funcClass))
+                type.SetType(CBotErrPrivate);
+        }
+    }
+
+    return type;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+CBotFunction* CBotFunction::FindMethod(long& nIdent, const std::string& name,
+                                       CBotVar** ppVars, CBotTypResult& TypeOrError,
+                                       CBotClass* pClass, CBotProgram* program)
+{
+    TypeOrError.SetType(CBotErrUndefCall);      // no routine of the name
+
+    auto methods = pClass->GetFunctions();
+
+    if ( nIdent )
+    {
+        // search methods in the class
+        for (CBotFunction* pt : methods)
+        {
+            if ( pt->m_nFuncIdent == nIdent )
+            {
+                TypeOrError = pt->m_retTyp;
+                return pt;
+            }
+        }
+
+        bool skipPublic = false;
+        if (program != nullptr)
+        {
+            // search the current program
+            for (CBotFunction* pt : program->GetFunctions())
+            {
+                if ( pt->m_nFuncIdent == nIdent )
+                {
+                    // check if the method is inherited
+                    if ( pt->GetClassName() != pClass->GetName() )
+                    {
+                        skipPublic = true;
+                        break; // break in case there is an override
+                    }
+                    TypeOrError = pt->m_retTyp;
+                    return pt;
+                }
+            }
+        }
+
+        // search the list of public functions
+        if (!skipPublic)
+        {
+            for (CBotFunction* pt : m_publicFunctions)
+            {
+                if (pt->m_nFuncIdent == nIdent)
+                {
+                    // check if the method is inherited, break in case there is an override
+                    if ( pt->GetClassName() != pClass->GetName() ) break;
+                    TypeOrError = pt->m_retTyp;
+                    return pt;
+                }
+            }
+        }
+    }
+
+    if ( name.empty() ) return nullptr;
+
+    std::map<CBotFunction*, int> funcMap;
+
+    // search methods in the class
+    CBotFunction::SearchList(methods, name, ppVars, TypeOrError, funcMap, pClass);
+
+    // search the current program for methods
+    if (program != nullptr)
+        CBotFunction::SearchList(program->GetFunctions(), name, ppVars, TypeOrError, funcMap, pClass);
+
+    CBotFunction::SearchPublic(name, ppVars, TypeOrError, funcMap, pClass);
+
+    return CBotFunction::BestFunction(funcMap, nIdent, TypeOrError);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int CBotFunction::DoCall(long &nIdent, const std::string &name, CBotVar* pThis,
                          CBotVar** ppVars, CBotStack* pStack, CBotToken* pToken, CBotClass* pClass)
 {
     CBotTypResult   type;
     CBotProgram*    pProgCurrent = pStack->GetProgram();
 
-    CBotFunction*   pt = FindLocalOrPublic(localFunctionList, nIdent, name, ppVars, type, false);
+    CBotFunction*   pt = FindMethod(nIdent, name, ppVars, type, pClass, pProgCurrent);
 
     if ( pt != nullptr )
     {
@@ -925,11 +1110,11 @@ int CBotFunction::DoCall(const std::list<CBotFunction*>& localFunctionList, long
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotFunction::RestoreCall(const std::list<CBotFunction*>& localFunctionList, long &nIdent, const std::string &name, CBotVar* pThis,
+bool CBotFunction::RestoreCall(long &nIdent, const std::string &name, CBotVar* pThis,
                                CBotVar** ppVars, CBotStack* pStack, CBotClass* pClass)
 {
     CBotTypResult   type;
-    CBotFunction*   pt = FindLocalOrPublic(localFunctionList, nIdent, name, ppVars, type);
+    CBotFunction*   pt = FindMethod(nIdent, name, ppVars, type, pClass, pStack->GetProgram());
 
     if ( pt != nullptr )
     {
@@ -1018,6 +1203,12 @@ std::string CBotFunction::GetParams()
 
     params += " )";
     return params;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::string& CBotFunction::GetClassName() const
+{
+    return m_MasterClass;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -220,6 +220,30 @@ CSoundInterface* CApplication::GetSound()
     return m_sound.get();
 }
 
+void CApplication::LoadEnvironmentVariables()
+{
+    auto dataDir = m_systemUtils->GetEnvVar("COLOBOT_DATA_DIR");
+    if (!dataDir.empty())
+    {
+        m_pathManager->SetDataPath(dataDir);
+        GetLogger()->Info("Using data dir (based on environment variable): '%s'\n", dataDir.c_str());
+    }
+
+    auto langDir = m_systemUtils->GetEnvVar("COLOBOT_LANG_DIR");
+    if (!langDir.empty())
+    {
+        m_pathManager->SetLangPath(langDir);
+        GetLogger()->Info("Using lang dir (based on environment variable): '%s'\n", langDir.c_str());
+    }
+
+    auto saveDir = m_systemUtils->GetEnvVar("COLOBOT_SAVE_DIR");
+    if (!saveDir.empty())
+    {
+        m_pathManager->SetSavePath(saveDir);
+        GetLogger()->Info("Using save dir (based on environment variable): '%s'\n", saveDir.c_str());
+    }
+}
+
 ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
 {
     enum OptionType
@@ -286,15 +310,18 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 GetLogger()->Message("\n");
                 GetLogger()->Message("%s\n", COLOBOT_FULLNAME);
                 GetLogger()->Message("\n");
-                GetLogger()->Message("List of available options:\n");
+                GetLogger()->Message("List of available options and environment variables:\n");
                 GetLogger()->Message("  -help               this help\n");
                 GetLogger()->Message("  -debug modes        enable debug modes (more info printed in logs; see code for reference of modes)\n");
                 GetLogger()->Message("  -runscene sceneNNN  run given scene on start\n");
                 GetLogger()->Message("  -scenetest          win every mission right after it's loaded\n");
                 GetLogger()->Message("  -loglevel level     set log level to level (one of: trace, debug, info, warn, error, none)\n");
                 GetLogger()->Message("  -langdir path       set custom language directory path\n");
+                GetLogger()->Message("                      environment variable: COLOBOT_LANG_DIR\n");
                 GetLogger()->Message("  -datadir path       set custom data directory path\n");
+                GetLogger()->Message("                      environment variable: COLOBOT_DATA_DIR\n");
                 GetLogger()->Message("  -savedir path       set custom save directory path (must be writable)\n");
+                GetLogger()->Message("                      environment variable: COLOBOT_SAVE_DIR\n");
                 GetLogger()->Message("  -mod path           load datadir mod from given path\n");
                 GetLogger()->Message("  -resolution WxH     set resolution\n");
                 GetLogger()->Message("  -headless           headless mode - disables graphics, sound and user interaction\n");
@@ -1033,6 +1060,12 @@ int CApplication::Run()
 
     MoveMouse(Math::Point(0.5f, 0.5f)); // center mouse on start
 
+    SystemTimeStamp *lastLoopTimeStamp = m_systemUtils->CreateTimeStamp();
+    SystemTimeStamp *currentTimeStamp = m_systemUtils->CreateTimeStamp();
+    SystemTimeStamp *interpolatedTimeStamp = m_systemUtils->CreateTimeStamp();
+    m_systemUtils->GetCurrentTimeStamp(lastLoopTimeStamp);
+    m_systemUtils->CopyTimeStamp(currentTimeStamp, lastLoopTimeStamp);
+
     while (true)
     {
         if (m_active)
@@ -1131,21 +1164,30 @@ int CApplication::Run()
 
             CProfiler::StartPerformanceCounter(PCNT_UPDATE_ALL);
 
-            // Prepare and process step simulation event
-            Event event = CreateUpdateEvent();
-            if (event.type != EVENT_NULL && m_controller != nullptr)
+            // Prepare and process step simulation event(s)
+            // If game speed is increased then we do extra ticks per loop iteration to improve physics accuracy.
+            int numTickSlices = static_cast<int>(GetSimulationSpeed());
+            if(numTickSlices < 1) numTickSlices = 1;
+            m_systemUtils->CopyTimeStamp(lastLoopTimeStamp, currentTimeStamp);
+            m_systemUtils->GetCurrentTimeStamp(currentTimeStamp);
+            for(int tickSlice = 0; tickSlice < numTickSlices; tickSlice++)
             {
-                LogEvent(event);
+                m_systemUtils->InterpolateTimeStamp(interpolatedTimeStamp, lastLoopTimeStamp, currentTimeStamp, (tickSlice+1)/static_cast<float>(numTickSlices));
+                Event event = CreateUpdateEvent(interpolatedTimeStamp);
+                if (event.type != EVENT_NULL && m_controller != nullptr)
+                {
+                    LogEvent(event);
 
-                m_sound->FrameMove(m_relTime);
+                    m_sound->FrameMove(m_relTime);
 
-                CProfiler::StartPerformanceCounter(PCNT_UPDATE_GAME);
-                m_controller->ProcessEvent(event);
-                CProfiler::StopPerformanceCounter(PCNT_UPDATE_GAME);
+                    CProfiler::StartPerformanceCounter(PCNT_UPDATE_GAME);
+                    m_controller->ProcessEvent(event);
+                    CProfiler::StopPerformanceCounter(PCNT_UPDATE_GAME);
 
-                CProfiler::StartPerformanceCounter(PCNT_UPDATE_ENGINE);
-                m_engine->FrameUpdate();
-                CProfiler::StopPerformanceCounter(PCNT_UPDATE_ENGINE);
+                    CProfiler::StartPerformanceCounter(PCNT_UPDATE_ENGINE);
+                    m_engine->FrameUpdate();
+                    CProfiler::StopPerformanceCounter(PCNT_UPDATE_ENGINE);
+                }
             }
 
             CProfiler::StopPerformanceCounter(PCNT_UPDATE_ALL);
@@ -1161,6 +1203,10 @@ int CApplication::Run()
     }
 
 end:
+    m_systemUtils->DestroyTimeStamp(lastLoopTimeStamp);
+    m_systemUtils->DestroyTimeStamp(currentTimeStamp);
+    m_systemUtils->DestroyTimeStamp(interpolatedTimeStamp);
+
     return m_exitCode;
 }
 
@@ -1502,20 +1548,20 @@ void CApplication::SetSimulationSpeed(float speed)
 {
     m_simulationSpeed = speed;
 
-    m_systemUtils->GetCurrentTimeStamp(m_baseTimeStamp);
+    m_systemUtils->CopyTimeStamp(m_baseTimeStamp, m_curTimeStamp);
     m_realAbsTimeBase = m_realAbsTime;
     m_absTimeBase = m_exactAbsTime;
 
     GetLogger()->Info("Simulation speed = %.2f\n", speed);
 }
 
-Event CApplication::CreateUpdateEvent()
+Event CApplication::CreateUpdateEvent(SystemTimeStamp *newTimeStamp)
 {
     if (m_simulationSuspended)
         return Event(EVENT_NULL);
 
     m_systemUtils->CopyTimeStamp(m_lastTimeStamp, m_curTimeStamp);
-    m_systemUtils->GetCurrentTimeStamp(m_curTimeStamp);
+    m_systemUtils->CopyTimeStamp(m_curTimeStamp, newTimeStamp);
 
     long long absDiff = m_systemUtils->TimeStampExactDiff(m_baseTimeStamp, m_curTimeStamp);
     long long newRealAbsTime = m_realAbsTimeBase + absDiff;

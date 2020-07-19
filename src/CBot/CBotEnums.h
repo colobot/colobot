@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -35,13 +35,13 @@ namespace CBot
 enum CBotType
 {
     CBotTypVoid         = 0,  //!< void
-    CBotTypByte         = 1,  //!< byte (NOT IMPLEMENTED)
-    CBotTypShort        = 2,  //!< short (NOT IMPLEMENTED)
-    CBotTypChar         = 3,  //!< char (NOT IMPLEMENTED)
+    CBotTypByte         = 1,  //!< byte
+    CBotTypShort        = 2,  //!< short
+    CBotTypChar         = 3,  //!< char
     CBotTypInt          = 4,  //!< int
-    CBotTypLong         = 5,  //!< long (NOT IMPLEMENTED)
+    CBotTypLong         = 5,  //!< long
     CBotTypFloat        = 6,  //!< float
-    CBotTypDouble       = 7,  //!< double (NOT IMPLEMENTED)
+    CBotTypDouble       = 7,  //!< double
     CBotTypBoolean      = 8,  //!< bool
     CBotTypString       = 9,  //!< string
 
@@ -106,6 +106,11 @@ enum TokenId
     ID_STRING,
     ID_VOID,
     ID_BOOL,
+    ID_BYTE,
+    ID_SHORT,
+    ID_CHAR,
+    ID_LONG,
+    ID_DOUBLE,
 
     TokenKeyVal = 2200, //!< keywords that represent values (true, false, null, nan)
     ID_TRUE = 2200,
@@ -177,7 +182,8 @@ enum TokenType
     TokenTypNum = 2,     //!< number
     TokenTypString = 3,  //!< string
     TokenTypVar = 4,     //!< a variable name
-    TokenTypDef = 5      //!< value according DefineNum
+    TokenTypDef = 5,     //!< value according DefineNum
+    TokenTypChar = 6,    //!< character literal
 };
 
 /**
@@ -247,6 +253,8 @@ enum CBotError : int
     CBotErrHexDigits     = 5052, //!< missing hex digits after escape sequence
     CBotErrHexRange      = 5053, //!< hex value out of range
     CBotErrUnicodeName   = 5054, //!< invalid universal character name
+    CBotErrCharEmpty     = 5055, //!< empty character constant
+    CBotErrRedefCase     = 5056, //!< duplicate label in switch
 
     // Runtime errors
     CBotErrZeroDiv       = 6000, //!< division by zero

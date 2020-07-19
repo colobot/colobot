@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -202,8 +202,13 @@ enum EventType
     EVENT_DIALOG_LABEL3     = 305,
     EVENT_DIALOG_LIST       = 306,
     EVENT_DIALOG_EDIT       = 307,
-    EVENT_DIALOG_CHECK1     = 308,
-    EVENT_DIALOG_CHECK2     = 309,
+    EVENT_DIALOG_EDIT2      = 308,
+    EVENT_DIALOG_CHECK1     = 309,
+    EVENT_DIALOG_CHECK2     = 310,
+    EVENT_DIALOG_GROUP1     = 320,
+    EVENT_DIALOG_NEWDIR     = 330,
+    EVENT_DIALOG_ACTION     = 348,
+    EVENT_DIALOG_STOP       = 349,
 
     EVENT_INTERFACE_TRAINER = 400,
     EVENT_INTERFACE_DEFI    = 401,
@@ -252,6 +257,7 @@ enum EventType
     EVENT_INTERFACE_INVERTY = 469,
     EVENT_INTERFACE_EFFECT  = 470,
     EVENT_INTERFACE_BGPAUSE = 471,
+    EVENT_INTERFACE_BGMUTE  = 472,
     EVENT_INTERFACE_FOG     = 474,
     EVENT_INTERFACE_EDITMODE= 476,
     EVENT_INTERFACE_EDITVALUE= 477,
@@ -493,6 +499,11 @@ enum EventType
     EVENT_OBJECT_FACTORYrr  = 1098,
     EVENT_OBJECT_FACTORYrs  = 1099,
     EVENT_OBJECT_FACTORYsa  = 1100,
+    EVENT_OBJECT_FACTORYwb  = 1101,
+    EVENT_OBJECT_FACTORYtb  = 1102,
+    EVENT_OBJECT_FACTORYfb  = 1103,
+    EVENT_OBJECT_FACTORYib  = 1104,
+    EVENT_OBJECT_FACTORYtg  = 1105,
     EVENT_OBJECT_SEARCH     = 1200,
     EVENT_OBJECT_TERRAFORM  = 1201,
     EVENT_OBJECT_FIRE       = 1202,
@@ -594,6 +605,10 @@ enum EventType
 
     EVENT_CODE_BATTLE_START = 2200, //!< button that starts the code battle
     EVENT_CODE_BATTLE_SPECTATOR = 2201, //!< button that controls the code battle spectator camera
+
+    EVENT_OBJECT_RBUILDER       = 2300,
+    EVENT_OBJECT_BUILD          = 2301,
+    EVENT_OBJECT_RTARGET        = 2302,
 
     //! Buttons that switch viewpoints
     EVENT_VIEWPOINT0 = 3000,

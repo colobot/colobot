@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -36,7 +36,6 @@
 #include "CBot/CBotCStack.h"
 #include "CBot/CBotDefParam.h"
 #include "CBot/CBotUtils.h"
-#include "CBot/CBotFileUtils.h"
 
 #include <algorithm>
 
@@ -316,7 +315,7 @@ CBotTypResult CBotClass::CompileMethode(CBotToken* name,
 
     // find the methods declared by user
 
-    r = CBotFunction::CompileCall(m_pMethod, name->GetString(), ppParams, nIdent);
+    r = CBotFunction::CompileMethodCall(name->GetString(), ppParams, nIdent, pStack, this);
     if ( r.Eq(CBotErrUndefCall) && m_parent != nullptr )
         return m_parent->CompileMethode(name, pThis, ppParams, pStack, nIdent);
     return r;
@@ -333,7 +332,7 @@ bool CBotClass::ExecuteMethode(long& nIdent,
     int ret = m_externalMethods->DoCall(pToken, pThis, ppParams, pStack, pResultType);
     if (ret >= 0) return ret;
 
-    ret = CBotFunction::DoCall(m_pMethod, nIdent, pToken->GetString(), pThis, ppParams, pStack, pToken, this);
+    ret = CBotFunction::DoCall(nIdent, pToken->GetString(), pThis, ppParams, pStack, pToken, this);
     if (ret >= 0) return ret;
 
     if (m_parent != nullptr)
@@ -356,7 +355,7 @@ void CBotClass::RestoreMethode(long& nIdent,
     CBotClass* pClass = this;
     while (pClass != nullptr)
     {
-        bool ok = CBotFunction::RestoreCall(pClass->m_pMethod, nIdent, name->GetString(), pThis, ppParams, pStack, pClass);
+        bool ok = CBotFunction::RestoreCall(nIdent, name->GetString(), pThis, ppParams, pStack, pClass);
         if (ok) return;
         pClass = pClass->m_parent;
     }
@@ -364,69 +363,70 @@ void CBotClass::RestoreMethode(long& nIdent,
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotClass::SaveStaticState(FILE* pf)
+bool CBotClass::SaveStaticState(std::ostream &ostr)
 {
-    if (!WriteWord( pf, CBOTVERSION*2)) return false;
+    if (!WriteLong(ostr, CBOTVERSION*2)) return false;
 
     // saves the state of static variables in classes
     for (CBotClass* p : m_publicClasses)
     {
-        if (!WriteWord( pf, 1 )) return false;
+        if (!WriteWord(ostr, 1)) return false;
         // save the name of the class
-        if (!WriteString( pf, p->GetName() )) return false;
+        if (!WriteString(ostr, p->GetName())) return false;
 
         CBotVar*    pv = p->GetVar();
         while( pv != nullptr )
         {
             if ( pv->IsStatic() )
             {
-                if (!WriteWord( pf, 1 )) return false;
-                if (!WriteString( pf, pv->GetName() )) return false;
+                if (!WriteWord(ostr, 1)) return false;
+                if (!WriteString(ostr, pv->GetName())) return false;
 
-                if ( !pv->Save0State(pf) ) return false;             // common header
-                if ( !pv->Save1State(pf) ) return false;                // saves as the child class
-                if ( !WriteWord( pf, 0 ) ) return false;
+                if (!pv->Save0State(ostr)) return false;             // common header
+                if (!pv->Save1State(ostr)) return false;                // saves as the child class
+                if (!WriteWord(ostr, 0)) return false;
             }
             pv = pv->GetNext();
         }
 
-        if (!WriteWord( pf, 0 )) return false;
+        if (!WriteWord(ostr, 0)) return false;
     }
 
-    if (!WriteWord( pf, 0 )) return false;
+    if (!WriteWord(ostr, 0)) return false;
     return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotClass::RestoreStaticState(FILE* pf)
+bool CBotClass::RestoreStaticState(std::istream &istr)
 {
     std::string      ClassName, VarName;
     CBotClass*      pClass;
     unsigned short  w;
 
-    if (!ReadWord( pf, w )) return false;
-    if ( w != CBOTVERSION*2 ) return false;
+    long version;
+    if (!ReadLong(istr, version)) return false;
+    if (version != CBOTVERSION*2) return false;
 
     while (true)
     {
-        if (!ReadWord( pf, w )) return false;
+        if (!ReadWord(istr, w)) return false;
         if ( w == 0 ) return true;
 
-        if (!ReadString( pf, ClassName )) return false;
+        if (!ReadString(istr, ClassName)) return false;
         pClass = Find(ClassName);
 
         while (true)
         {
-            if (!ReadWord( pf, w )) return false;
+            if (!ReadWord(istr, w)) return false;
             if ( w == 0 ) break;
 
             CBotVar*    pVar = nullptr;
             CBotVar*    pv = nullptr;
 
-            if (!ReadString( pf, VarName )) return false;
+            if (!ReadString(istr, VarName)) return false;
             if ( pClass != nullptr ) pVar = pClass->GetItem(VarName);
 
-            if (!CBotVar::RestoreState(pf, pv)) return false;   // the temp variable
+            if (!CBotVar::RestoreState(istr, pv)) return false; // the temp variable
 
             if ( pVar != nullptr ) pVar->Copy(pv);
             delete pv;
@@ -542,6 +542,11 @@ void CBotClass::DefineClasses(std::list<CBotClass*> pClassList, CBotCStack* pSta
     }
 }
 
+const std::list<CBotFunction*>& CBotClass::GetFunctions() const
+{
+    return m_pMethod;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
 {
@@ -609,44 +614,7 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                     CBotFunction* pf = *pfIter;
                     delete params;
 
-                    bool bConstructor = (pp == GetName());
                     CBotCStack* pile = pStack->TokenStack(nullptr, true);
-
-                    // make "this" known
-                    CBotToken TokenThis(std::string("this"), std::string());
-                    CBotVar* pThis = CBotVar::Create(TokenThis, CBotTypResult( CBotTypClass, this ) );
-                    pThis->SetUniqNum(-2);
-                    pile->AddVar(pThis);
-
-                    if (m_parent)
-                    {
-                        // makes "super" known
-                        CBotToken TokenSuper(std::string("super"), std::string());
-                        CBotVar* pThis = CBotVar::Create(TokenSuper, CBotTypResult(CBotTypClass, m_parent) );
-                        pThis->SetUniqNum(-3);
-                        pile->AddVar(pThis);
-                    }
-
-//                  int num = 1;
-                    CBotClass*  my = this;
-                    while (my != nullptr)
-                    {
-                        // places a copy of variables of a class (this) on a stack
-                        CBotVar* pv = my->m_pVar;
-                        while (pv != nullptr)
-                        {
-                            CBotVar* pcopy = CBotVar::Create(pv);
-                            CBotVar::InitType initType = CBotVar::InitType::UNDEF;
-                            if (!bConstructor || pv->IsStatic())
-                                initType = CBotVar::InitType::DEF;
-                            pcopy->SetInit(initType);
-                            pcopy->SetUniqNum(pv->GetUniqNum());
-                            pcopy->SetPrivate(pv->GetPrivate());
-                            pile->AddVar(pcopy);
-                            pv = pv->GetNext();
-                        }
-                        my = my->m_parent;
-                    }
 
                     // compiles a method
                     p = pBase;

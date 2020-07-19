@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -223,6 +223,10 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
     {
         m_sound->Play(SOUND_EXPLOi, m_pos);
     }
+    if ( type == PT_FRAGV )
+    {
+        m_sound->Play(SOUND_BOUMv, m_pos);
+    }
     if ( type == PT_BURNT ||
          type == PT_BURNO )
     {
@@ -265,7 +269,8 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
 
     if ( m_type == PT_FRAGT ||
          m_type == PT_FRAGO ||
-         m_type == PT_FRAGW )
+         m_type == PT_FRAGW ||
+         m_type == PT_FRAGV )
     {
         m_engine->DeleteShadowSpot(m_object->GetObjectRank(0));
     }
@@ -351,6 +356,12 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
         if (oType == OBJECT_APOLLO2) limit = 2.0f;
         m_speed = 1.0f/limit;
     }
+    if ( m_type == PT_SQUASH )
+    {
+        m_speed = 1.0f/2.0f;
+        m_object->SetLock(true);
+    }
+
 
     if ( m_type == PT_EXPLOT ||
          m_type == PT_EXPLOO ||
@@ -391,9 +402,11 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
         m_engine->DeleteShadowSpot(m_object->GetObjectRank(0));
     }
 
-    if ( m_type != PT_EGG  &&
-         m_type != PT_WIN  &&
-         m_type != PT_LOST )
+    if ( m_type != PT_FRAGV &&
+         m_type != PT_EGG   &&
+         m_type != PT_WIN   &&
+         m_type != PT_LOST  &&
+         m_type != PT_SQUASH)
     {
         float h = 40.0f;
         if ( m_type == PT_FRAGO  ||
@@ -448,7 +461,8 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
              m_type != PT_FLCREATE &&
              m_type != PT_FLDELETE &&
              m_type != PT_RESET    &&
-             m_type != PT_FINDING  )
+             m_type != PT_FINDING  &&
+             m_type != PT_SQUASH   )
         {
             m_camera->StartEffect(CAM_EFFECT_EXPLO, m_pos, force);
         }
@@ -460,6 +474,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
     if ( m_type == PT_FRAGT  ||
          m_type == PT_FRAGO  ||
          m_type == PT_FRAGW  ||
+         m_type == PT_FRAGV  ||
          m_type == PT_SPIDER ||
          m_type == PT_EGG    ||
         (m_type == PT_EXPLOT && oType == OBJECT_MOBILEtg) ||
@@ -1042,6 +1057,11 @@ bool CPyro::EventProcess(const Event &event)
         }
     }
 
+    if ( m_type == PT_SQUASH && m_object != nullptr )
+    {
+        m_object->SetScaleY(1.0f-sinf(m_progress)*0.5f);
+    }
+
     if ( (m_type == PT_BURNT || m_type == PT_BURNO) &&
          m_object != nullptr )
     {
@@ -1169,6 +1189,7 @@ Error CPyro::IsEnded()
     if ( m_type == PT_FRAGT  ||
          m_type == PT_FRAGO  ||
          m_type == PT_FRAGW  ||
+         m_type == PT_FRAGV  ||
          m_type == PT_SPIDER ||
          m_type == PT_EGG    )
     {
@@ -1221,6 +1242,11 @@ Error CPyro::IsEnded()
         m_object->SetScale(1.0f);
     }
 
+    if ( m_type == PT_SQUASH )
+    {
+        m_object->SetType(OBJECT_PLANT19);
+    }
+
     if ( m_lightRank != -1 )
     {
         m_lightMan->DeleteLight(m_lightRank);
@@ -1260,6 +1286,10 @@ void CPyro::DisplayError(PyroType type, CObject* obj)
              oType == OBJECT_MOBILEta ||
              oType == OBJECT_MOBILEfa ||
              oType == OBJECT_MOBILEia ||
+             oType == OBJECT_MOBILEwb ||
+             oType == OBJECT_MOBILEtb ||
+             oType == OBJECT_MOBILEfb ||
+             oType == OBJECT_MOBILEib ||
              oType == OBJECT_MOBILEwc ||
              oType == OBJECT_MOBILEtc ||
              oType == OBJECT_MOBILEfc ||
@@ -1281,6 +1311,8 @@ void CPyro::DisplayError(PyroType type, CObject* obj)
              oType == OBJECT_MOBILEtt ||
              oType == OBJECT_MOBILEft ||
              oType == OBJECT_MOBILEit ||
+             oType == OBJECT_MOBILErp ||
+             oType == OBJECT_MOBILEst ||
              oType == OBJECT_MOBILEdr )
         {
             err = ERR_DELETEMOBILE;
@@ -1416,7 +1448,11 @@ void CPyro::CreateTriangle(CObject* obj, ObjectType oType, int part)
     float percent = 0.10f;
     if (total < 50) percent = 0.25f;
     if (total < 20) percent = 0.50f;
-    if (m_type == PT_EGG) percent = 0.30f;
+
+    if ( m_type == PT_FRAGV || m_type == PT_EGG )
+    {
+        percent = 0.30f;
+    }
 
     if (oType == OBJECT_POWER    ||
         oType == OBJECT_ATOMIC   ||
@@ -1507,7 +1543,7 @@ void CPyro::CreateTriangle(CObject* obj, ObjectType oType, int part)
 
         Math::Matrix* mat = obj->GetWorldMatrix(part);
         Math::Vector pos = Math::Transform(*mat, offset);
-        if ( m_type == PT_EGG )
+        if ( m_type == PT_FRAGV || m_type == PT_EGG )
         {
             speed.x = (Math::Rand()-0.5f)*10.0f;
             speed.z = (Math::Rand()-0.5f)*10.0f;
@@ -1717,6 +1753,7 @@ void CPyro::BurnStart()
         angle.z = (Math::Rand()-0.5f)*0.4f;
     }
     else if ( m_burnType == OBJECT_MOBILEwa ||
+              m_burnType == OBJECT_MOBILEwb ||
               m_burnType == OBJECT_MOBILEwc ||
               m_burnType == OBJECT_MOBILEwi ||
               m_burnType == OBJECT_MOBILEws ||
@@ -1921,6 +1958,20 @@ void CPyro::BurnStart()
         BurnAddPart(1, pos, angle);  // down the insect-cannon
     }
 
+    if ( m_burnType == OBJECT_MOBILEfb ||
+         m_burnType == OBJECT_MOBILEtb ||
+         m_burnType == OBJECT_MOBILEwb ||
+         m_burnType == OBJECT_MOBILEib )
+    {
+        pos.x = -1.5f;
+        pos.y = -5.0f;
+        pos.z =  0.0f;
+        angle.x = (Math::Rand()-0.5f)*0.2f;
+        angle.y = (Math::Rand()-0.5f)*0.2f;
+        angle.z = -25.0f*Math::PI/180.0f;
+        BurnAddPart(1, pos, angle);  // down the neutron gun
+    }
+
     if ( m_burnType == OBJECT_MOBILErt ||
          m_burnType == OBJECT_MOBILErc )
     {
@@ -2007,6 +2058,7 @@ void CPyro::BurnStart()
     }
 
     if ( m_burnType == OBJECT_MOBILEwa ||
+         m_burnType == OBJECT_MOBILEwb ||
          m_burnType == OBJECT_MOBILEwc ||
          m_burnType == OBJECT_MOBILEwi ||
          m_burnType == OBJECT_MOBILEws ||
@@ -2029,14 +2081,18 @@ void CPyro::BurnStart()
     }
 
     if ( m_burnType == OBJECT_MOBILEta ||
+         m_burnType == OBJECT_MOBILEtb ||
          m_burnType == OBJECT_MOBILEtc ||
          m_burnType == OBJECT_MOBILEti ||
          m_burnType == OBJECT_MOBILEts ||
+         m_burnType == OBJECT_MOBILEtt ||
          m_burnType == OBJECT_MOBILErt ||
          m_burnType == OBJECT_MOBILErc ||
          m_burnType == OBJECT_MOBILErr ||
          m_burnType == OBJECT_MOBILErs ||
+         m_burnType == OBJECT_MOBILErp ||
          m_burnType == OBJECT_MOBILEsa ||
+         m_burnType == OBJECT_MOBILEst ||
          m_burnType == OBJECT_MOBILEdr )  // caterpillars?
     {
         pos.x =   0.0f;
@@ -2057,6 +2113,7 @@ void CPyro::BurnStart()
     }
 
     if ( m_burnType == OBJECT_MOBILEfa ||
+         m_burnType == OBJECT_MOBILEfb ||
          m_burnType == OBJECT_MOBILEfc ||
          m_burnType == OBJECT_MOBILEfi ||
          m_burnType == OBJECT_MOBILEfs ||
@@ -2077,9 +2134,11 @@ void CPyro::BurnStart()
     }
 
     if ( m_burnType == OBJECT_MOBILEia ||
+         m_burnType == OBJECT_MOBILEib ||
          m_burnType == OBJECT_MOBILEic ||
          m_burnType == OBJECT_MOBILEii ||
-         m_burnType == OBJECT_MOBILEis )  // legs?
+         m_burnType == OBJECT_MOBILEis ||
+         m_burnType == OBJECT_MOBILEit )  // legs?
     {
         for (int i = 0; i < 6; i++)
         {
@@ -2202,6 +2261,7 @@ void CPyro::BurnTerminate()
     {
         m_object->SetType(OBJECT_RUINmobilew1); // Wreck (recoverable by Recycler)
     }
+    dynamic_cast<CDestroyableObject*>(m_object)->SetDying(DeathType::Alive);
     m_object->SetLock(false);
 }
 

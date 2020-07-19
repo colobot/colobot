@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -143,8 +143,24 @@ void CScreenIO::IOUpdateList(bool isWrite)
     sel = pl->GetSelect();
     max = pl->GetTotal();
 
+    // enable/disable buttons if we have selected a game
+    pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_IODELETE));
+    if ( pb != nullptr )
+    {
+        pb->SetState(STATE_ENABLE, (!isWrite && sel < max) || (isWrite && sel < max - 1));
+    }
+
+    pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_IOREAD));
+    if ( pb != nullptr )
+    {
+        pb->SetState(STATE_ENABLE, sel < max);
+    }
+
     if (m_saveList.size() <= static_cast<unsigned int>(sel))
+    {
+        pi->SetFilenameImage(""); // clear screenshot, nothing selected or New save selected
         return;
+    }
 
     std::string filename = m_saveList.at(sel) + "/screen.png";
     if ( isWrite )
@@ -152,16 +168,6 @@ void CScreenIO::IOUpdateList(bool isWrite)
         if ( sel < max-1 )
         {
             pi->SetFilenameImage(filename.c_str());
-        }
-        else
-        {
-            pi->SetFilenameImage("");
-        }
-
-        pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_IODELETE));
-        if ( pb != nullptr )
-        {
-            pb->SetState(STATE_ENABLE, sel < max-1);
         }
     }
     else
@@ -244,22 +250,24 @@ void CScreenIO::IOWriteScene()
 
 // Reads the scene.
 
-void CScreenIO::IOReadScene()
+bool CScreenIO::IOReadScene()
 {
     CWindow*    pw;
     CList*      pl;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == nullptr )  return;
+    if ( pw == nullptr )  return false;
     pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_IOLIST));
-    if ( pl == nullptr )  return;
+    if ( pl == nullptr )  return false;
 
     int sel = pl->GetSelect();
-    if (sel < 0 || sel >= static_cast<int>(m_saveList.size())) return;
+    if (sel < 0 || sel >= static_cast<int>(m_saveList.size())) return false;
 
     m_main->GetPlayerProfile()->LoadScene(m_saveList.at(sel));
 
     m_screenLevelList->SetSelection(m_main->GetLevelCategory(), m_main->GetLevelChap()-1, m_main->GetLevelRank()-1);
+
+    return true;
 }
 
 } // namespace Ui
