@@ -71,6 +71,8 @@ void CScreenSetupMods::CreateInterface()
     Math::Point     pos, ddim;
     std::string     name;
 
+    m_modManager->FindMods();
+
     CScreenSetup::CreateInterface();
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == nullptr )  return;
@@ -155,7 +157,9 @@ bool CScreenSetupMods::EventProcess(const Event &event)
             modName = pl->GetItemName(pl->GetSelect());
 
             m_modManager->EnableMod(modName);
-            m_modManager->ReloadMods();
+            m_modManager->SaveMods();
+            m_modManager->UpdatePaths();
+            m_modManager->ReloadResources();
 
             m_main->ChangePhase(PHASE_SETUPm);
             break;
@@ -166,7 +170,9 @@ bool CScreenSetupMods::EventProcess(const Event &event)
             modName = pl->GetItemName(pl->GetSelect());
 
             m_modManager->DisableMod(modName);
-            m_modManager->ReloadMods();
+            m_modManager->SaveMods();
+            m_modManager->UpdatePaths();
+            m_modManager->ReloadResources();
 
             m_main->ChangePhase(PHASE_SETUPm);
             break;

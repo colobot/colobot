@@ -30,8 +30,8 @@ class CPathManager;
 
 struct Mod
 {
-    std::string name;
-    std::string path;
+    std::string name{};
+    std::string path{};
     bool enabled = false;
     //TODO: add metadata for UI
 };
@@ -41,6 +41,7 @@ struct Mod
  * \brief Main application
  *
  * This class handles the list of currently loaded mods.
+ * The order matters since the order in which files are loaded matters.
  *
  */
 class CModManager
@@ -49,7 +50,7 @@ public:
     CModManager(CApplication* app, CPathManager* pathManager);
 
     //! Finds all the mods along with their metadata
-    void ReinitMods();
+    void FindMods();
 
     //! Removes a mod from the list of loaded mods
     void EnableMod(const std::string& modName);
@@ -58,7 +59,13 @@ public:
     void DisableMod(const std::string& modName);
 
     //! Reloads application resources so the enabled mods are applied
-    void ReloadMods();
+    void ReloadResources();
+
+    //! Saves the current configuration of mods to the config file
+    void SaveMods();
+
+    //! Updates the paths in Path Manager according to the current mod configuration
+    void UpdatePaths();
 
     boost::optional<Mod> GetMod(const std::string& modName);
     const std::vector<Mod>& GetMods() const;

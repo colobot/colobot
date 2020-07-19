@@ -40,6 +40,7 @@ public:
     void AddModSearchDir(const std::string &modSearchDirPath);
     void AddMod(const std::string &modPath);
     void RemoveMod(const std::string &modPath);
+    void RemoveAllMods();
     bool ModLoaded(const std::string& modPath);
     std::vector<std::string> FindMods() const;
 
@@ -65,4 +66,6 @@ private:
     std::string m_savePath;
     //! Mod search paths
     std::vector<std::string> m_modSearchDirs;
+    //! Mod paths
+    std::vector<std::string> m_mods;
 };

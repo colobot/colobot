@@ -19,22 +19,18 @@
 
 #include "app/modman.h"
 
-//TODO: clean up includes
 #include "common/config.h"
 
 #include "app/app.h"
 #include "app/pathman.h"
 
+#include "common/config_file.h"
 #include "common/logger.h"
-#include "common/restext.h"
-#include "common/settings.h"
-#include "common/stringutils.h"
 
 #include "common/resources/resourcemanager.h"
 
-#include "common/system/system.h"
-
 #include <algorithm>
+#include <set>
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
 
@@ -46,16 +42,64 @@ CModManager::CModManager(CApplication* app, CPathManager* pathManager)
 {
 }
 
-void CModManager::ReinitMods()
+void CModManager::FindMods()
 {
     m_mods.clear();
-    const auto foundMods = m_pathManager->FindMods();
-    for (const auto& modPath : foundMods)
+
+    // Load names from the config file
+    std::vector<std::string> savedModNames;
+    GetConfigFile().GetArrayProperty("Mods", "Names", savedModNames);
+    std::vector<bool> savedEnabled;
+    GetConfigFile().GetArrayProperty("Mods", "Enabled", savedEnabled);
+
+    // Transform the data into Mod structures
+    m_mods.reserve(savedModNames.size());
+    for (int i = 0; i < savedModNames.size(); ++i)
     {
-        Mod mod;
-        mod.name = boost::filesystem::path(modPath).stem().string();
-        mod.path = modPath;
-        mod.enabled = m_pathManager->ModLoaded(mod.path); //TODO: load from some config file
+        Mod mod{};
+        mod.name = savedModNames[i];
+        if (i < savedEnabled.size())
+        {
+            mod.enabled = savedEnabled[i];
+        }
+        mod.path = ""; // Find the path later
+        m_mods.push_back(mod);
+    }
+
+    // Search the folders for mods
+    const auto rawPaths = m_pathManager->FindMods();
+    std::map<std::string, std::string> modPaths;
+    for (const auto& path : rawPaths)
+    {
+        auto modName = boost::filesystem::path(path).stem().string();
+        modPaths.insert(std::make_pair(modName, path));
+    }
+
+    // Find paths for already saved mods
+    auto it = m_mods.begin();
+    while (it != m_mods.end())
+    {
+        auto& mod = *it;
+        const auto pathsIt = modPaths.find(mod.name);
+        if (pathsIt != modPaths.end())
+        {
+            mod.path = (*pathsIt).second;
+            modPaths.erase(pathsIt);
+            ++it;
+        }
+        else
+        {
+            GetLogger()->Warn("Could not find mod %s, removing it from the list\n", mod.name.c_str());
+            it = m_mods.erase(it);
+        }
+    }
+
+    // Add the remaining found mods to the end of the list
+    for (const auto& newMod : modPaths)
+    {
+        Mod mod{};
+        mod.name = newMod.first;
+        mod.path = newMod.second;
         m_mods.push_back(mod);
     }
 }
@@ -82,21 +126,36 @@ void CModManager::DisableMod(const std::string& modName)
     mod->enabled = false;
 }
 
-void CModManager::ReloadMods()
+void CModManager::UpdatePaths()
 {
+    m_pathManager->RemoveAllMods();
     for (const auto& mod : m_mods)
     {
-        bool loaded = m_pathManager->ModLoaded(mod.path);
-        if (mod.enabled && !loaded)
+        if (mod.enabled)
         {
             m_pathManager->AddMod(mod.path);
         }
-        else if (!mod.enabled && loaded)
-        {
-            m_pathManager->RemoveMod(mod.path);
-        }
     }
+}
+
+void CModManager::ReloadResources()
+{
     m_app->ReloadResources();
+}
+
+void CModManager::SaveMods()
+{
+    std::vector<std::string> savedNames;
+    savedNames.reserve(m_mods.size());
+    std::transform(m_mods.begin(), m_mods.end(), std::back_inserter(savedNames), [](const Mod& mod) { return mod.name; });
+    GetConfigFile().SetArrayProperty("Mods", "Names", savedNames);
+
+    std::vector<bool> savedEnabled;
+    savedEnabled.reserve(m_mods.size());
+    std::transform(m_mods.begin(), m_mods.end(), std::back_inserter(savedEnabled), [](const Mod& mod) { return mod.enabled; });
+    GetConfigFile().SetArrayProperty("Mods", "Enabled", savedEnabled);
+
+    GetConfigFile().Save();
 }
 
 boost::optional<Mod> CModManager::GetMod(const std::string& modName)

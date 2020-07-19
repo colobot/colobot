@@ -73,17 +73,30 @@ void CPathManager::AddMod(const std::string &modPath)
 {
     GetLogger()->Info("Loading mod: '%s'\n", modPath.c_str());
     CResourceManager::AddLocation(modPath, true);
+    m_mods.push_back(modPath);
 }
 
 void CPathManager::RemoveMod(const std::string &modPath)
 {
     GetLogger()->Info("Unloading mod: '%s'\n", modPath.c_str());
     CResourceManager::RemoveLocation(modPath);
+    auto it = std::find(m_mods.cbegin(), m_mods.cend(), modPath);
+    if (it != m_mods.cend())
+        m_mods.erase(it);
+}
+
+void CPathManager::RemoveAllMods()
+{
+    for (const auto& modPath : m_mods)
+    {
+        CResourceManager::RemoveLocation(modPath);
+    }
+    m_mods.clear();
 }
 
 bool CPathManager::ModLoaded(const std::string& modPath)
 {
-    return CResourceManager::LocationExists(modPath);
+    return std::find(m_mods.cbegin(), m_mods.cend(), modPath) != m_mods.end();
 }
 
 std::vector<std::string> CPathManager::FindMods() const
