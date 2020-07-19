@@ -191,16 +191,31 @@ CText::~CText()
 
 bool CText::Create()
 {
-    CFontLoader fontLoader;
-    if (!fontLoader.Init())
-    {
-        GetLogger()->Warn("Error on parsing fonts config file: failed to open file\n");
-    }
     if (TTF_Init() != 0)
     {
         m_error = std::string("TTF_Init error: ") + std::string(TTF_GetError());
         return false;
     }
+
+    if (!ReloadFonts())
+    {
+        return false;
+    }
+
+    return true;
+}
+
+bool CText::ReloadFonts()
+{
+    CFontLoader fontLoader;
+    if (!fontLoader.Init())
+    {
+        GetLogger()->Warn("Error on parsing fonts config file: failed to open file\n");
+    }
+
+    // Backup previous fonts
+    auto fonts = std::move(m_fonts);
+    m_fonts.clear();
 
     for (auto type : {FONT_COMMON, FONT_STUDIO, FONT_SATCOM})
     {
@@ -214,7 +229,10 @@ bool CText::Create()
         FontType type = (*it).first;
         CachedFont* cf = GetOrOpenFont(type, m_defaultSize);
         if (cf == nullptr || cf->font == nullptr)
+        {
+            m_fonts = std::move(fonts);
             return false;
+        }
     }
 
     return true;
@@ -259,9 +277,9 @@ void CText::FlushCache()
         }
     }
 
-    //TODO: fix this
-    Destroy();
-    Create();
+    m_lastCachedFont = nullptr;
+    m_lastFontType = FONT_COMMON;
+    m_lastFontSize = 0;
 }
 
 int CText::GetTabSize()
