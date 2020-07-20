@@ -430,7 +430,15 @@ float CText::GetStringWidth(const std::string &text,
 
         UTF8Char ch;
 
-        int len = StrUtils::Utf8CharSizeAt(text, index);
+        int len = 0;
+        if(font == FONT_BUTTON)
+        {
+            len = 1;
+        }
+        else
+        {
+            len = StrUtils::Utf8CharSizeAt(text, index);
+        }
         if (len >= 1)
             ch.c1 = text[index];
         if (len >= 2)
@@ -565,7 +573,15 @@ int CText::Justify(const std::string &text, std::vector<FontMetaChar>::iterator 
 
         UTF8Char ch;
 
-        int len = StrUtils::Utf8CharSizeAt(text, index);
+        int len = 0;
+        if(font == FONT_BUTTON)
+        {
+            len = 1;
+        }
+        else
+        {
+            len = StrUtils::Utf8CharSizeAt(text, index);
+        }
         if (len >= 1)
             ch.c1 = text[index];
         if (len >= 2)
