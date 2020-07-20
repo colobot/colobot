@@ -122,6 +122,7 @@ jobs:
       shell: python
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        ACTUALLY_SEND: ${{ github.event.type != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
       run: |
         import os
         import sys
@@ -229,21 +230,25 @@ jobs:
 
         summary = 'colobot-lint found {} issues'.format(len(annotations))
         all_ok = len(annotations) == 0
+        print('Conclusion: {}'.format(summary))
 
-        # Annotations have to be sent in batches of 50
-        first = True
-        while first or len(annotations) > 0:
-            first = False
-            to_send = annotations[:50]
-            annotations = annotations[50:]
-            data = {
-                'output': {
-                    'title': summary,
-                    'summary': summary,
-                    'annotations': to_send
+        if os.environ['ACTUALLY_SEND'] != "true":
+            print('Skip uploading the results as annotations because tokens from forks are readonly and there seems to be no way to do it. Blame GitHub Actions devs.')
+        else:
+            # Annotations have to be sent in batches of 50
+            first = True
+            while first or len(annotations) > 0:
+                first = False
+                to_send = annotations[:50]
+                annotations = annotations[50:]
+                data = {
+                    'output': {
+                        'title': summary,
+                        'summary': summary,
+                        'annotations': to_send
+                    }
                 }
-            }
-            r = s.patch(check_run['url'], json=data)
-            r.raise_for_status()
+                r = s.patch(check_run['url'], json=data)
+                r.raise_for_status()
 
         sys.exit(0 if all_ok else 1)
