@@ -337,6 +337,8 @@ protected:
     void        StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &chars);
     void        StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &chars, std::vector<FontMetaChar>::iterator format, std::vector<FontMetaChar>::iterator end);
 
+    int GetCharSizeAt(Gfx::FontType font, const std::string& text, unsigned int index) const;
+
 protected:
     CEngine*       m_engine;
     CDevice*       m_device;
