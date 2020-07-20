@@ -84,6 +84,9 @@ msgstr ""
 msgid "Load a saved mission"
 msgstr ""
 
+msgid "Mods"
+msgstr ""
+
 msgid "Chapters:"
 msgstr ""
 
@@ -120,10 +123,19 @@ msgstr ""
 msgid "2) Then press the key you want to use instead."
 msgstr ""
 
-msgid "Unloaded Mods:"
+msgid "Mods:"
 msgstr ""
 
-msgid "Loaded Mods:"
+msgid "Information:"
+msgstr ""
+
+msgid "Description:"
+msgstr ""
+
+msgid "Enable\\Enable the selected mod"
+msgstr ""
+
+msgid "Disable\\Disable the selected mod"
 msgstr ""
 
 msgid "Face type:"
@@ -184,6 +196,9 @@ msgstr ""
 
 #, c-format
 msgid "The address %s could not be opened in a web browser."
+msgstr ""
+
+msgid "There are unsaved changes. Do you want to save them before leaving?"
 msgstr ""
 
 msgid "Keyword help(\\key cbot;)"
@@ -336,6 +351,9 @@ msgstr ""
 msgid "SatCom"
 msgstr ""
 
+msgid "Mods\\Mod manager"
+msgstr ""
+
 msgid "Change player\\Change player"
 msgstr ""
 
@@ -363,16 +381,22 @@ msgstr ""
 msgid "Play\\Start mission!"
 msgstr ""
 
-msgid "Workshop\\Open Workshop to search Mods"
+msgid "Workshop\\Open the workshop to search for mods"
 msgstr ""
 
-msgid "Open Directory\\Open Mods directory"
+msgid "Open Directory\\Open the mods directory"
 msgstr ""
 
-msgid "Load\\Load Mod"
+msgid "Apply\\Apply the current mod configuration"
 msgstr ""
 
-msgid "Unload\\Unload Mod"
+msgid "Up\\Move the selected mod up so it's loaded sooner (mods may overwrite files from the mods above them)"
+msgstr ""
+
+msgid "Down\\Move the selected mod down so it's loaded later (mods may overwrite files from the mods above them)"
+msgstr ""
+
+msgid "Refresh\\Refresh the list of currently installed mods"
 msgstr ""
 
 msgid "Device\\Driver and resolution settings"
@@ -388,9 +412,6 @@ msgid "Controls\\Keyboard, joystick and mouse settings"
 msgstr ""
 
 msgid "Sound\\Music and game sound volume"
-msgstr ""
-
-msgid "Mods\\Manage installed mods"
 msgstr ""
 
 msgid "Unit"

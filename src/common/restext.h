@@ -71,6 +71,7 @@ enum ResTextType
     RT_TITLE_WRITE          = 50,
     RT_TITLE_READ           = 51,
     RT_TITLE_USER           = 52,
+    RT_TITLE_MODS           = 54,
 
     RT_PLAY_CHAP_CHAPTERS   = 60,
     RT_PLAY_CHAP_PLANETS    = 61,
@@ -85,9 +86,6 @@ enum ResTextType
     RT_SETUP_MODE           = 81,
     RT_SETUP_KEY1           = 82,
     RT_SETUP_KEY2           = 83,
-
-    RT_MODS_UNLOADED        = 85,
-    RT_MODS_LOADED          = 86,
 
     RT_PERSO_FACE           = 90,
     RT_PERSO_GLASSES        = 91,
@@ -109,6 +107,7 @@ enum ResTextType
     RT_DIALOG_OPEN_PATH_FAILED_TEXT = 114,
     RT_DIALOG_OPEN_WEBSITE_FAILED_TITLE = 115,
     RT_DIALOG_OPEN_WEBSITE_FAILED_TEXT = 116,
+    RT_DIALOG_CHANGES_QUESTION = 117,
 
     RT_STUDIO_LISTTT        = 120,
     RT_STUDIO_COMPOK        = 121,
@@ -154,6 +153,11 @@ enum ResTextType
     RT_SCOREBOARD_RESULTS_TIME= 232,
     RT_SCOREBOARD_RESULTS_LINE= 233,
 
+    RT_MOD_LIST             = 234,
+    RT_MOD_DETAILS          = 235,
+    RT_MOD_SUMMARY          = 236,
+    RT_MOD_ENABLE           = 237,
+    RT_MOD_DISABLE          = 238,
 
     RT_MAX //! < number of values
 };

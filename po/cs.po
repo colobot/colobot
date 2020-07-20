@@ -125,6 +125,9 @@ msgstr "Vzhled\\Upravte svůj vzhled"
 msgid "Apply changes\\Activates the changed settings"
 msgstr "Uložit změny\\Aktivovat změny nastavení"
 
+msgid "Apply\\Apply the current mod configuration"
+msgstr ""
+
 msgid "Appropriate constructor missing"
 msgstr "Chybí vhodný konstruktor"
 
@@ -479,6 +482,10 @@ msgstr "Vrtná věž"
 msgid "Descend\\Reduces the power of the jet"
 msgstr "Klesat\\Snížit tah tryskového motoru"
 
+#, fuzzy
+msgid "Description:"
+msgstr "Rozlišení:"
+
 msgid "Destroy"
 msgstr "Zbourat"
 
@@ -490,6 +497,10 @@ msgstr "Drtič"
 
 msgid "Device\\Driver and resolution settings"
 msgstr "Obrazovka\\Nastavení grafické karty a rozlišení"
+
+#, fuzzy
+msgid "Disable\\Disable the selected mod"
+msgstr "Smazat\\Smaže vybraný soubor"
 
 msgid "Dividing by zero"
 msgstr "Dělení nulou"
@@ -506,6 +517,9 @@ msgstr "Dveře blokuje robot nebo jiný objekt"
 
 msgid "Down (\\key gdown;)"
 msgstr "Dolů (\\key gdown;)"
+
+msgid "Down\\Move the selected mod down so it's loaded later (mods may overwrite files from the mods above them)"
+msgstr ""
 
 msgid "Drawer bot"
 msgstr "Tužkobot"
@@ -533,6 +547,10 @@ msgstr "Vejce"
 
 msgid "Empty character constant"
 msgstr ""
+
+#, fuzzy
+msgid "Enable\\Enable the selected mod"
+msgstr "Nahrát\\Nahraje vybranou misi"
 
 msgid "End of block missing"
 msgstr "Chybí konec bloku"
@@ -760,6 +778,9 @@ msgstr "Infikováno virem; dočasně mimo provoz"
 msgid "Information exchange post"
 msgstr "Komunikační stanice"
 
+msgid "Information:"
+msgstr ""
+
 msgid "Instruction \"break\" outside a loop"
 msgstr "Příkaz \"break\" mimo cyklus"
 
@@ -850,17 +871,11 @@ msgstr "Seznam uložených misí"
 msgid "Load a saved mission"
 msgstr "Nahrát uloženou misi"
 
-msgid "Load\\Load Mod"
-msgstr ""
-
 msgid "Load\\Load a saved mission"
 msgstr "Nahrát\\Nahrát uloženou misi"
 
 msgid "Load\\Loads the selected mission"
 msgstr "Nahrát\\Nahraje vybranou misi"
-
-msgid "Loaded Mods:"
-msgstr ""
 
 msgid "Loading basic level settings"
 msgstr "Načítám základní nastavení mapy"
@@ -916,7 +931,13 @@ msgstr "Mise na této planetě:"
 msgid "Missions\\Select mission"
 msgstr "Mise\\Vyberte misi"
 
-msgid "Mods\\Manage installed mods"
+msgid "Mods"
+msgstr ""
+
+msgid "Mods:"
+msgstr ""
+
+msgid "Mods\\Mod manager"
 msgstr ""
 
 msgid "Mouse inversion X\\Inversion of the scrolling direction on the X axis"
@@ -1087,7 +1108,7 @@ msgstr "Otevřít"
 msgid "Open (Ctrl+O)"
 msgstr "Otevřít (Ctrl+O)"
 
-msgid "Open Directory\\Open Mods directory"
+msgid "Open Directory\\Open the mods directory"
 msgstr ""
 
 msgid "Opening brace missing"
@@ -1299,6 +1320,9 @@ msgstr "Červená vlajka"
 
 msgid "Reflections on the buttons \\Shiny buttons"
 msgstr "Odlesky na tlačítkách\\Blyštivá tlačítka"
+
+msgid "Refresh\\Refresh the list of currently installed mods"
+msgstr ""
 
 msgid "Remains of Apollo mission"
 msgstr "Pozůstatky mise Apollo"
@@ -1584,6 +1608,9 @@ msgstr ""
 msgid "The types of the two operands are incompatible"
 msgstr "Operaci nelze provést s operandy těchto dvou typů"
 
+msgid "There are unsaved changes. Do you want to save them before leaving?"
+msgstr ""
+
 msgid "This class already exists"
 msgstr "Tato třída již existuje"
 
@@ -1717,14 +1744,11 @@ msgstr "Neznámá zástupná sekvence"
 msgid "Unknown function"
 msgstr "Neznámá funkce"
 
-msgid "Unload\\Unload Mod"
-msgstr ""
-
-msgid "Unloaded Mods:"
-msgstr ""
-
 msgid "Up (\\key gup;)"
 msgstr "Vzhůru (\\key gup;)"
+
+msgid "Up\\Move the selected mod up so it's loaded sooner (mods may overwrite files from the mods above them)"
+msgstr ""
 
 msgid "Uranium deposit (site for derrick)"
 msgstr "Uranové ložisko (místo pro vrtnou věž)"
@@ -1798,7 +1822,7 @@ msgstr "Létající detektor"
 msgid "Withdraw shield (\\key action;)"
 msgstr "Vypnout štít (\\key action;)"
 
-msgid "Workshop\\Open Workshop to search Mods"
+msgid "Workshop\\Open the workshop to search for mods"
 msgstr ""
 
 msgid "Worm"
@@ -1956,3 +1980,7 @@ msgstr "colobot.info"
 
 msgid "epsitec.com"
 msgstr "epsitec.com"
+
+#, fuzzy
+#~ msgid "No mods installed!"
+#~ msgstr "Žádné uživatelské mapy nejsou nainstalovány!"

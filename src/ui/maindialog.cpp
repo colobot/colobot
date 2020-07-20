@@ -107,7 +107,6 @@ bool CMainDialog::EventProcess(const Event &event)
                 if ( CScreenSetup::GetTab() == PHASE_SETUPp )  m_main->ChangePhase(PHASE_SETUPps);
                 if ( CScreenSetup::GetTab() == PHASE_SETUPc )  m_main->ChangePhase(PHASE_SETUPcs);
                 if ( CScreenSetup::GetTab() == PHASE_SETUPs )  m_main->ChangePhase(PHASE_SETUPss);
-                if ( CScreenSetup::GetTab() == PHASE_SETUPm )  m_main->ChangePhase(PHASE_SETUPss);
             }
 
             if ( pressedButton == EVENT_INTERFACE_WRITE )

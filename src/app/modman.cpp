@@ -30,9 +30,10 @@
 #include "common/resources/resourcemanager.h"
 
 #include <algorithm>
-#include <set>
+#include <map>
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
+#include "modman.h"
 
 using namespace boost::filesystem;
 
@@ -104,26 +105,40 @@ void CModManager::FindMods()
     }
 }
 
-void CModManager::EnableMod(const std::string& modName)
+void CModManager::EnableMod(size_t i)
 {
-    Mod* mod = FindMod(modName);
-    if (!mod)
-    {
-        GetLogger()->Error("Could not enable mod: %s not found\n", modName.c_str());
-        return;
-    }
-    mod->enabled = true;
+    m_mods[i].enabled = true;
 }
 
-void CModManager::DisableMod(const std::string& modName)
+void CModManager::DisableMod(size_t i)
 {
-    Mod* mod = FindMod(modName);
-    if (!mod)
+    m_mods[i].enabled = false;
+}
+
+size_t CModManager::MoveUp(size_t i)
+{
+    if (i != 0)
     {
-        GetLogger()->Error("Could not disable mod: %s not found\n", modName.c_str());
-        return;
+        std::swap(m_mods[i - 1], m_mods[i]);
+        return i - 1;
     }
-    mod->enabled = false;
+    else
+    {
+        return i;
+    }
+}
+
+size_t CModManager::MoveDown(size_t i)
+{
+    if (i != m_mods.size() - 1)
+    {
+        std::swap(m_mods[i], m_mods[i + 1]);
+        return i + 1;
+    }
+    else
+    {
+        return i;
+    }
 }
 
 void CModManager::UpdatePaths()
@@ -158,19 +173,17 @@ void CModManager::SaveMods()
     GetConfigFile().Save();
 }
 
-boost::optional<Mod> CModManager::GetMod(const std::string& modName)
+size_t CModManager::CountMods() const
 {
-    Mod* mod = FindMod(modName);
-    return mod != nullptr ? *mod : boost::optional<Mod>();
+    return m_mods.size();
+}
+
+const Mod& CModManager::GetMod(size_t i) const
+{
+    return m_mods[i];
 }
 
 const std::vector<Mod>& CModManager::GetMods() const
 {
     return m_mods;
-}
-
-Mod* CModManager::FindMod(const std::string& modName)
-{
-    auto it = std::find_if(m_mods.begin(), m_mods.end(), [&](Mod& mod) { return mod.name == modName; });
-    return it != m_mods.end() ? &(*it) : nullptr;
 }

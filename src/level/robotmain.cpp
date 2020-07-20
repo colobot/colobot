@@ -320,19 +320,18 @@ std::string PhaseToString(Phase phase)
     if (phase == PHASE_APPERANCE) return "PHASE_APPERANCE";
     if (phase == PHASE_MAIN_MENU) return "PHASE_MAIN_MENU";
     if (phase == PHASE_LEVEL_LIST) return "PHASE_LEVEL_LIST";
+    if (phase == PHASE_MOD_LIST) return "PHASE_MOD_LIST";
     if (phase == PHASE_SIMUL) return "PHASE_SIMUL";
     if (phase == PHASE_SETUPd) return "PHASE_SETUPd";
     if (phase == PHASE_SETUPg) return "PHASE_SETUPg";
     if (phase == PHASE_SETUPp) return "PHASE_SETUPp";
     if (phase == PHASE_SETUPc) return "PHASE_SETUPc";
     if (phase == PHASE_SETUPs) return "PHASE_SETUPs";
-    if (phase == PHASE_SETUPm) return "PHASE_SETUPm";
     if (phase == PHASE_SETUPds) return "PHASE_SETUPds";
     if (phase == PHASE_SETUPgs) return "PHASE_SETUPgs";
     if (phase == PHASE_SETUPps) return "PHASE_SETUPps";
     if (phase == PHASE_SETUPcs) return "PHASE_SETUPcs";
     if (phase == PHASE_SETUPss) return "PHASE_SETUPss";
-    if (phase == PHASE_SETUPms) return "PHASE_SETUPms";
     if (phase == PHASE_WRITEs) return "PHASE_WRITEs";
     if (phase == PHASE_READ) return "PHASE_READ";
     if (phase == PHASE_READs) return "PHASE_READs";
@@ -345,7 +344,7 @@ std::string PhaseToString(Phase phase)
 
 bool IsInSimulationConfigPhase(Phase phase)
 {
-    return (phase >= PHASE_SETUPds && phase <= PHASE_SETUPms) || phase == PHASE_READs || phase == PHASE_WRITEs;
+    return (phase >= PHASE_SETUPds && phase <= PHASE_SETUPss) || phase == PHASE_READs || phase == PHASE_WRITEs;
 }
 
 bool IsPhaseWithWorld(Phase phase)
@@ -3913,7 +3912,7 @@ void CRobotMain::ChangeColor()
         m_phase != PHASE_SETUPps  &&
         m_phase != PHASE_SETUPcs  &&
         m_phase != PHASE_SETUPss  &&
-        m_phase != PHASE_SETUPms  &&
+        m_phase != PHASE_MOD_LIST &&
         m_phase != PHASE_WIN      &&
         m_phase != PHASE_LOST     &&
         m_phase != PHASE_APPERANCE ) return;

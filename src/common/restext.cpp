@@ -71,12 +71,13 @@ void InitializeRestext()
     stringsText[RT_TITLE_MISSION]    = TR("Missions");
     stringsText[RT_TITLE_FREE]       = TR("Free game");
     stringsText[RT_TITLE_USER]       = TR("User levels");
-    stringsText[RT_TITLE_CODE_BATTLES]=TR("Code battles");
+    stringsText[RT_TITLE_CODE_BATTLES] = TR("Code battles");
     stringsText[RT_TITLE_SETUP]      = TR("Options");
     stringsText[RT_TITLE_NAME]       = TR("Player's name");
     stringsText[RT_TITLE_PERSO]      = TR("Customize your appearance");
     stringsText[RT_TITLE_WRITE]      = TR("Save the current mission");
     stringsText[RT_TITLE_READ]       = TR("Load a saved mission");
+    stringsText[RT_TITLE_MODS]       = TR("Mods");
 
     stringsText[RT_PLAY_CHAP_CHAPTERS]   = TR("Chapters:");
     stringsText[RT_PLAY_CHAP_PLANETS]    = TR("Planets:");
@@ -92,8 +93,11 @@ void InitializeRestext()
     stringsText[RT_SETUP_KEY1]       = TR("1) First click on the key you want to redefine.");
     stringsText[RT_SETUP_KEY2]       = TR("2) Then press the key you want to use instead.");
 
-    stringsText[RT_MODS_UNLOADED]     = TR("Unloaded Mods:");
-    stringsText[RT_MODS_LOADED]       = TR("Loaded Mods:");
+    stringsText[RT_MOD_LIST]         = TR("Mods:");
+    stringsText[RT_MOD_DETAILS]      = TR("Information:");
+    stringsText[RT_MOD_SUMMARY]      = TR("Description:");
+    stringsText[RT_MOD_ENABLE]       = TR("Enable\\Enable the selected mod");
+    stringsText[RT_MOD_DISABLE]      = TR("Disable\\Disable the selected mod");
 
     stringsText[RT_PERSO_FACE]       = TR("Face type:");
     stringsText[RT_PERSO_GLASSES]    = TR("Eyeglasses:");
@@ -115,6 +119,7 @@ void InitializeRestext()
     stringsText[RT_DIALOG_OPEN_PATH_FAILED_TEXT] = TR("The path %s could not be opened in a file explorer.");
     stringsText[RT_DIALOG_OPEN_WEBSITE_FAILED_TITLE] = TR("Could not open the web browser!");
     stringsText[RT_DIALOG_OPEN_WEBSITE_FAILED_TEXT] = TR("The address %s could not be opened in a web browser.");
+    stringsText[RT_DIALOG_CHANGES_QUESTION] = TR("There are unsaved changes. Do you want to save them before leaving?");
 
     stringsText[RT_STUDIO_LISTTT]    = TR("Keyword help(\\key cbot;)");
     stringsText[RT_STUDIO_COMPOK]    = TR("Compilation ok (0 errors)");
@@ -180,6 +185,7 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_CODE_BATTLES] = TR("Code battles\\Program your robot to be the best of them all!");
     stringsEvent[EVENT_INTERFACE_USER]      = TR("Custom levels\\Levels from mods created by the users");
     stringsEvent[EVENT_INTERFACE_SATCOM]    = TR("SatCom");
+    stringsEvent[EVENT_INTERFACE_MODS]      = TR("Mods\\Mod manager");
     stringsEvent[EVENT_INTERFACE_NAME]      = TR("Change player\\Change player");
     stringsEvent[EVENT_INTERFACE_SETUP]     = TR("Options\\Preferences");
     stringsEvent[EVENT_INTERFACE_AGAIN]     = TR("Restart\\Restart the mission from the beginning");
@@ -189,16 +195,17 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_QUIT]      = TR("Quit\\Quit Colobot: Gold Edition");
     stringsEvent[EVENT_INTERFACE_BACK]      = TR("<<  Back  \\Back to the previous screen");
     stringsEvent[EVENT_INTERFACE_PLAY]      = TR("Play\\Start mission!");
-    stringsEvent[EVENT_INTERFACE_WORKSHOP]  = TR("Workshop\\Open Workshop to search Mods");
-    stringsEvent[EVENT_INTERFACE_MODS_DIR]  = TR("Open Directory\\Open Mods directory");
-    stringsEvent[EVENT_INTERFACE_LOAD]      = TR("Load\\Load Mod");
-    stringsEvent[EVENT_INTERFACE_UNLOAD]    = TR("Unload\\Unload Mod");
+    stringsEvent[EVENT_INTERFACE_WORKSHOP]  = TR("Workshop\\Open the workshop to search for mods");
+    stringsEvent[EVENT_INTERFACE_MODS_DIR]  = TR("Open Directory\\Open the mods directory");
+    stringsEvent[EVENT_INTERFACE_MODS_APPLY] = TR("Apply\\Apply the current mod configuration");
+    stringsEvent[EVENT_INTERFACE_MOD_MOVE_UP] = TR("Up\\Move the selected mod up so it's loaded sooner (mods may overwrite files from the mods above them)");
+    stringsEvent[EVENT_INTERFACE_MOD_MOVE_DOWN] = TR("Down\\Move the selected mod down so it's loaded later (mods may overwrite files from the mods above them)");
+    stringsEvent[EVENT_INTERFACE_MODS_REFRESH] = TR("Refresh\\Refresh the list of currently installed mods");
     stringsEvent[EVENT_INTERFACE_SETUPd]    = TR("Device\\Driver and resolution settings");
     stringsEvent[EVENT_INTERFACE_SETUPg]    = TR("Graphics\\Graphics settings");
     stringsEvent[EVENT_INTERFACE_SETUPp]    = TR("Game\\Game settings");
     stringsEvent[EVENT_INTERFACE_SETUPc]    = TR("Controls\\Keyboard, joystick and mouse settings");
     stringsEvent[EVENT_INTERFACE_SETUPs]    = TR("Sound\\Music and game sound volume");
-    stringsEvent[EVENT_INTERFACE_SETUPm]    = TR("Mods\\Manage installed mods");
     stringsEvent[EVENT_INTERFACE_DEVICE]    = TR("Unit");
     stringsEvent[EVENT_INTERFACE_RESOL]     = TR("Resolution");
     stringsEvent[EVENT_INTERFACE_FULL]      = TR("Full screen\\Full screen or window mode");

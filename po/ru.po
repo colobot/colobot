@@ -124,6 +124,9 @@ msgstr "Внешность\\Настройка внешности"
 msgid "Apply changes\\Activates the changed settings"
 msgstr "Принять\\Принять изменения настроек"
 
+msgid "Apply\\Apply the current mod configuration"
+msgstr ""
+
 msgid "Appropriate constructor missing"
 msgstr "Соответствующий конструктор отсутствует"
 
@@ -486,6 +489,10 @@ msgstr "Космический корабль"
 msgid "Descend\\Reduces the power of the jet"
 msgstr "Снижение и посадка\\Понижение мощности реактивного двигателя"
 
+#, fuzzy
+msgid "Description:"
+msgstr "Разрешение:"
+
 msgid "Destroy"
 msgstr "Уничтожить"
 
@@ -497,6 +504,10 @@ msgstr "Уничтожитель"
 
 msgid "Device\\Driver and resolution settings"
 msgstr "Устройство\\Драйвер и настройки разрешения"
+
+#, fuzzy
+msgid "Disable\\Disable the selected mod"
+msgstr "Удалить\\Удаление выбранного файла"
 
 msgid "Dividing by zero"
 msgstr "Деление на ноль (запрещено!)"
@@ -513,6 +524,9 @@ msgstr "Двери заблокированы роботом или другим
 
 msgid "Down (\\key gdown;)"
 msgstr "Вниз (\\key gdown;)"
+
+msgid "Down\\Move the selected mod down so it's loaded later (mods may overwrite files from the mods above them)"
+msgstr ""
 
 msgid "Drawer bot"
 msgstr "Рисовальщик"
@@ -540,6 +554,10 @@ msgstr "Яйцо"
 
 msgid "Empty character constant"
 msgstr ""
+
+#, fuzzy
+msgid "Enable\\Enable the selected mod"
+msgstr "Загрузить\\Загрузить выбранную миссию"
 
 msgid "End of block missing"
 msgstr "Отсутствует конец блока"
@@ -768,6 +786,9 @@ msgstr "Заражено вирусом. Временно вышел из стр
 msgid "Information exchange post"
 msgstr "Пост обмена информацией"
 
+msgid "Information:"
+msgstr ""
+
 msgid "Instruction \"break\" outside a loop"
 msgstr "Инструкция \"break\" вне цикла"
 
@@ -858,17 +879,11 @@ msgstr "Список сохраненных миссий"
 msgid "Load a saved mission"
 msgstr "Загрузить"
 
-msgid "Load\\Load Mod"
-msgstr ""
-
 msgid "Load\\Load a saved mission"
 msgstr "Загрузить\\Загрузить сохраненную миссию"
 
 msgid "Load\\Loads the selected mission"
 msgstr "Загрузить\\Загрузить выбранную миссию"
-
-msgid "Loaded Mods:"
-msgstr ""
 
 msgid "Loading basic level settings"
 msgstr "Загрузка основных настроек уровня"
@@ -938,7 +953,13 @@ msgstr "Миссии на этой планете:"
 msgid "Missions\\Select mission"
 msgstr "Миссии\\Выбор миссии"
 
-msgid "Mods\\Manage installed mods"
+msgid "Mods"
+msgstr ""
+
+msgid "Mods:"
+msgstr ""
+
+msgid "Mods\\Mod manager"
 msgstr ""
 
 msgid "Mouse inversion X\\Inversion of the scrolling direction on the X axis"
@@ -1111,7 +1132,7 @@ msgstr "Открыть"
 msgid "Open (Ctrl+O)"
 msgstr "Открыть (Ctrl+O)"
 
-msgid "Open Directory\\Open Mods directory"
+msgid "Open Directory\\Open the mods directory"
 msgstr ""
 
 msgid "Opening brace missing"
@@ -1325,6 +1346,9 @@ msgstr "Красный флаг"
 
 msgid "Reflections on the buttons \\Shiny buttons"
 msgstr "Отражения на кнопках \\Блестящие кнопки"
+
+msgid "Refresh\\Refresh the list of currently installed mods"
+msgstr ""
 
 msgid "Remains of Apollo mission"
 msgstr "Остатки миссии Аполлон"
@@ -1614,6 +1638,9 @@ msgstr ""
 msgid "The types of the two operands are incompatible"
 msgstr "Типы операндов несовместимы"
 
+msgid "There are unsaved changes. Do you want to save them before leaving?"
+msgstr ""
+
 msgid "This class already exists"
 msgstr "Этот класс уже существует"
 
@@ -1747,14 +1774,11 @@ msgstr ""
 msgid "Unknown function"
 msgstr "Неизвестная функция"
 
-msgid "Unload\\Unload Mod"
-msgstr ""
-
-msgid "Unloaded Mods:"
-msgstr ""
-
 msgid "Up (\\key gup;)"
 msgstr "Вверх (\\key gup;)"
+
+msgid "Up\\Move the selected mod up so it's loaded sooner (mods may overwrite files from the mods above them)"
+msgstr ""
 
 msgid "Uranium deposit (site for derrick)"
 msgstr "Запасы урана (место для буровой вышки)"
@@ -1828,7 +1852,7 @@ msgstr "Летающий искатель"
 msgid "Withdraw shield (\\key action;)"
 msgstr "Снять щит (\\key action;)"
 
-msgid "Workshop\\Open Workshop to search Mods"
+msgid "Workshop\\Open the workshop to search for mods"
 msgstr ""
 
 msgid "Worm"
@@ -2062,6 +2086,10 @@ msgstr "epsitec.com"
 
 #~ msgid "Mouse shadow\\Gives the mouse a shadow"
 #~ msgstr "Тень мыши\\Мышь отбрасывает тень"
+
+#, fuzzy
+#~ msgid "No mods installed!"
+#~ msgstr "Не установленны пользовательские уровни!"
 
 #~ msgid "No other robot"
 #~ msgstr "Нет робота"

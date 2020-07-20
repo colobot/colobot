@@ -37,11 +37,17 @@ struct Mod
 };
 
 /**
- * \class CApplication
- * \brief Main application
+ * \class CModManager
+ * \brief This class handles the list of mods.
  *
- * This class handles the list of currently loaded mods.
- * The order matters since the order in which files are loaded matters.
+ * The order matters since the order in which files are loaded matters,
+ * because some files can be overwritten.
+ *
+ * The list can be kept in the config file with the \ref SaveMods function.
+ *
+ * The changes in the list do not immediately apply.
+ * Separate calls to \ref UpdatePaths and \ref ReloadResources, probably in this order,
+ * need to be done for the changes to apply.
  *
  */
 class CModManager
@@ -53,10 +59,16 @@ public:
     void FindMods();
 
     //! Removes a mod from the list of loaded mods
-    void EnableMod(const std::string& modName);
+    void EnableMod(size_t i);
 
     //! Adds a mod to the list of loaded mods
-    void DisableMod(const std::string& modName);
+    void DisableMod(size_t i);
+
+    //! Moves the selected mod up in the list so that it's loaded sooner than others, returns the new index
+    size_t MoveUp(size_t i);
+
+    //! Moves the selected mod down in the list so that it's loaded later than others, returns the new index
+    size_t MoveDown(size_t i);
 
     //! Reloads application resources so the enabled mods are applied
     void ReloadResources();
@@ -67,11 +79,14 @@ public:
     //! Updates the paths in Path Manager according to the current mod configuration
     void UpdatePaths();
 
-    boost::optional<Mod> GetMod(const std::string& modName);
-    const std::vector<Mod>& GetMods() const;
+    //! Number of mods loaded
+    size_t CountMods() const;
 
-private:
-    Mod* FindMod(const std::string& modName);
+    //! Returns the reference to the mod in given position
+    const Mod& GetMod(size_t i) const;
+
+    //! Returns the list of mods
+    const std::vector<Mod>& GetMods() const;
 
 private:
     CApplication* m_app;

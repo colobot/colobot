@@ -125,6 +125,9 @@ msgstr "Aspect\\Choisir votre aspect"
 msgid "Apply changes\\Activates the changed settings"
 msgstr "Appliquer les changements\\Active les changements effectués"
 
+msgid "Apply\\Apply the current mod configuration"
+msgstr ""
+
 msgid "Appropriate constructor missing"
 msgstr "Constructeur approprié manquant"
 
@@ -482,6 +485,10 @@ msgstr "Derrick"
 msgid "Descend\\Reduces the power of the jet"
 msgstr "Descendre\\Diminuer la puissance du réacteur"
 
+#, fuzzy
+msgid "Description:"
+msgstr "Résolutions :"
+
 msgid "Destroy"
 msgstr "Détruire"
 
@@ -493,6 +500,10 @@ msgstr "Destructeur"
 
 msgid "Device\\Driver and resolution settings"
 msgstr "Affichage\\Pilote et résolution d'affichage"
+
+#, fuzzy
+msgid "Disable\\Disable the selected mod"
+msgstr "Supprimer\\Supprime l'enregistrement sélectionné"
 
 msgid "Dividing by zero"
 msgstr "Division par zéro"
@@ -509,6 +520,9 @@ msgstr "Portes bloquées par un robot ou un objet"
 
 msgid "Down (\\key gdown;)"
 msgstr "Descend (\\key gdown;)"
+
+msgid "Down\\Move the selected mod down so it's loaded later (mods may overwrite files from the mods above them)"
+msgstr ""
 
 msgid "Drawer bot"
 msgstr "Robot dessinateur"
@@ -536,6 +550,10 @@ msgstr "Oeuf"
 
 msgid "Empty character constant"
 msgstr ""
+
+#, fuzzy
+msgid "Enable\\Enable the selected mod"
+msgstr "Charger\\Charger la mission sélectionnée"
 
 msgid "End of block missing"
 msgstr "Il manque la fin du bloc"
@@ -764,6 +782,9 @@ msgstr "Infecté par un virus; ne fonctionne plus temporairement"
 msgid "Information exchange post"
 msgstr "Station relais"
 
+msgid "Information:"
+msgstr ""
+
 msgid "Instruction \"break\" outside a loop"
 msgstr "Instruction \"break\" en dehors d'une boucle"
 
@@ -854,17 +875,11 @@ msgstr "Liste des missions enregistrées"
 msgid "Load a saved mission"
 msgstr "Chargement d'une mission enregistrée"
 
-msgid "Load\\Load Mod"
-msgstr ""
-
 msgid "Load\\Load a saved mission"
 msgstr "Charger\\Charger une mission enregistrée"
 
 msgid "Load\\Loads the selected mission"
 msgstr "Charger\\Charger la mission sélectionnée"
-
-msgid "Loaded Mods:"
-msgstr ""
 
 msgid "Loading basic level settings"
 msgstr "Chargement des configurations de base du niveau"
@@ -934,7 +949,13 @@ msgstr "Liste des missions du chapitre :"
 msgid "Missions\\Select mission"
 msgstr "Missions\\La grande aventure"
 
-msgid "Mods\\Manage installed mods"
+msgid "Mods"
+msgstr ""
+
+msgid "Mods:"
+msgstr ""
+
+msgid "Mods\\Mod manager"
 msgstr ""
 
 msgid "Mouse inversion X\\Inversion of the scrolling direction on the X axis"
@@ -1105,7 +1126,7 @@ msgstr "Ouvrir"
 msgid "Open (Ctrl+O)"
 msgstr "Ouvrir (Ctrl+O)"
 
-msgid "Open Directory\\Open Mods directory"
+msgid "Open Directory\\Open the mods directory"
 msgstr ""
 
 msgid "Opening brace missing"
@@ -1318,6 +1339,9 @@ msgstr "Drapeau rouge"
 
 msgid "Reflections on the buttons \\Shiny buttons"
 msgstr "Reflets sur les boutons\\Boutons brillants"
+
+msgid "Refresh\\Refresh the list of currently installed mods"
+msgstr ""
 
 msgid "Remains of Apollo mission"
 msgstr "Vestige d'une mission Apollo"
@@ -1603,6 +1627,9 @@ msgstr ""
 msgid "The types of the two operands are incompatible"
 msgstr "Les deux opérandes ne sont pas de types compatibles"
 
+msgid "There are unsaved changes. Do you want to save them before leaving?"
+msgstr ""
+
 msgid "This class already exists"
 msgstr "Cette classe existe déjà"
 
@@ -1736,14 +1763,11 @@ msgstr "Séquence d'échappement inconnue"
 msgid "Unknown function"
 msgstr "Routine inconnue"
 
-msgid "Unload\\Unload Mod"
-msgstr ""
-
-msgid "Unloaded Mods:"
-msgstr ""
-
 msgid "Up (\\key gup;)"
 msgstr "Monte (\\key gup;)"
+
+msgid "Up\\Move the selected mod up so it's loaded sooner (mods may overwrite files from the mods above them)"
+msgstr ""
 
 msgid "Uranium deposit (site for derrick)"
 msgstr "Emplacement pour un derrick (minerai d'uranium)"
@@ -1817,7 +1841,7 @@ msgstr "Robot renifleur volant"
 msgid "Withdraw shield (\\key action;)"
 msgstr "Refermer le bouclier (\\key action;)"
 
-msgid "Workshop\\Open Workshop to search Mods"
+msgid "Workshop\\Open the workshop to search for mods"
 msgstr ""
 
 msgid "Worm"
@@ -2054,6 +2078,10 @@ msgstr "epsitec.com"
 
 #~ msgid "Mouse shadow\\Gives the mouse a shadow"
 #~ msgstr "Souris ombrée\\Jolie souris avec une ombre"
+
+#, fuzzy
+#~ msgid "No mods installed!"
+#~ msgstr "Pas de niveaux spéciaux installés !"
 
 #~ msgid "No other robot"
 #~ msgstr "Pas d'autre robot"

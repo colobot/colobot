@@ -49,13 +49,13 @@
 #include "ui/screen/screen_level_list.h"
 #include "ui/screen/screen_loading.h"
 #include "ui/screen/screen_main_menu.h"
+#include "ui/screen/screen_mod_list.h"
 #include "ui/screen/screen_player_select.h"
 #include "ui/screen/screen_quit.h"
 #include "ui/screen/screen_setup_controls.h"
 #include "ui/screen/screen_setup_display.h"
 #include "ui/screen/screen_setup_game.h"
 #include "ui/screen/screen_setup_graphics.h"
-#include "ui/screen/screen_setup_mods.h"
 #include "ui/screen/screen_setup_sound.h"
 #include "ui/screen/screen_welcome.h"
 
@@ -81,11 +81,11 @@ CMainUserInterface::CMainUserInterface()
     m_screenIORead = MakeUnique<CScreenIORead>(m_screenLevelList.get());
     m_screenIOWrite = MakeUnique<CScreenIOWrite>(m_screenLevelList.get());
     m_screenLoading = MakeUnique<CScreenLoading>();
+    m_screenModList = MakeUnique<CScreenModList>(m_dialog.get(), m_app->GetModManager());
     m_screenSetupControls = MakeUnique<CScreenSetupControls>();
     m_screenSetupDisplay = MakeUnique<CScreenSetupDisplay>();
     m_screenSetupGame = MakeUnique<CScreenSetupGame>();
     m_screenSetupGraphics = MakeUnique<CScreenSetupGraphics>();
-    m_screenSetupMods = MakeUnique<CScreenSetupMods>(m_dialog.get(), m_app->GetModManager());
     m_screenSetupSound = MakeUnique<CScreenSetupSound>();
     m_screenMainMenu = MakeUnique<CScreenMainMenu>();
     m_screenPlayerSelect = MakeUnique<CScreenPlayerSelect>(m_dialog.get());
@@ -146,7 +146,6 @@ CScreenSetup* CMainUserInterface::GetSetupScreen(Phase phase)
     if(phase == PHASE_SETUPp) return m_screenSetupGame.get();
     if(phase == PHASE_SETUPc) return m_screenSetupControls.get();
     if(phase == PHASE_SETUPs) return m_screenSetupSound.get();
-    if(phase == PHASE_SETUPm) return m_screenSetupMods.get();
     assert(false);
     return nullptr;
 }
@@ -187,14 +186,18 @@ void CMainUserInterface::ChangePhase(Phase phase)
         m_screenLevelList->SetLevelCategory(m_main->GetLevelCategory());
         m_currentScreen = m_screenLevelList.get();
     }
-    if (m_phase >= PHASE_SETUPd && m_phase <= PHASE_SETUPm)
+    if (m_phase == PHASE_MOD_LIST)
+    {
+        m_currentScreen = m_screenModList.get();
+    }
+    if (m_phase >= PHASE_SETUPd && m_phase <= PHASE_SETUPs)
     {
         CScreenSetup* screenSetup = GetSetupScreen(m_phase);
         screenSetup->SetInSimulation(false);
         screenSetup->SetActive();
         m_currentScreen = screenSetup;
     }
-    if (m_phase >= PHASE_SETUPds && m_phase <= PHASE_SETUPms)
+    if (m_phase >= PHASE_SETUPds && m_phase <= PHASE_SETUPss)
     {
         CScreenSetup* screenSetup = GetSetupScreen(static_cast<Phase>(m_phase - PHASE_SETUPds + PHASE_SETUPd));
         screenSetup->SetInSimulation(true);
@@ -350,7 +353,6 @@ void CMainUserInterface::GlintMove()
             m_phase == PHASE_SETUPp  ||
             m_phase == PHASE_SETUPc  ||
             m_phase == PHASE_SETUPs  ||
-            m_phase == PHASE_SETUPm  ||
             m_phase == PHASE_SETUPds ||
             m_phase == PHASE_SETUPgs ||
             m_phase == PHASE_SETUPps ||
@@ -535,12 +537,12 @@ void CMainUserInterface::FrameParticle(float rTime)
     }
     else if ( m_phase == PHASE_PLAYER_SELECT    ||
             m_phase == PHASE_LEVEL_LIST ||
+            m_phase == PHASE_MOD_LIST ||
             m_phase == PHASE_SETUPd  ||
             m_phase == PHASE_SETUPg  ||
             m_phase == PHASE_SETUPp  ||
             m_phase == PHASE_SETUPc  ||
             m_phase == PHASE_SETUPs  ||
-            m_phase == PHASE_SETUPm  ||
             m_phase == PHASE_READ    )
     {
         pParti = partiPosBig;

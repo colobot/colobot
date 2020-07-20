@@ -124,6 +124,9 @@ msgstr "Wygląd\\Wybierz swoją postać"
 msgid "Apply changes\\Activates the changed settings"
 msgstr "Zastosuj zmiany\\Aktywuje zmienione ustawienia"
 
+msgid "Apply\\Apply the current mod configuration"
+msgstr ""
+
 msgid "Appropriate constructor missing"
 msgstr "Brak odpowiedniego konstruktora"
 
@@ -478,6 +481,10 @@ msgstr "Kopalnia"
 msgid "Descend\\Reduces the power of the jet"
 msgstr "W dół\\Zmniejsza moc silnika"
 
+#, fuzzy
+msgid "Description:"
+msgstr "Rozdzielczość:"
+
 msgid "Destroy"
 msgstr "Zniszcz"
 
@@ -489,6 +496,10 @@ msgstr "Destroyer"
 
 msgid "Device\\Driver and resolution settings"
 msgstr "Urządzenie\\Ustawienia sterownika i rozdzielczości"
+
+#, fuzzy
+msgid "Disable\\Disable the selected mod"
+msgstr "Usuń\\Usuwa zaznaczony plik"
 
 msgid "Dividing by zero"
 msgstr "Dzielenie przez zero"
@@ -505,6 +516,9 @@ msgstr "Drzwi zablokowane przez robota lub inny obiekt"
 
 msgid "Down (\\key gdown;)"
 msgstr "Dół (\\key gdown;)"
+
+msgid "Down\\Move the selected mod down so it's loaded later (mods may overwrite files from the mods above them)"
+msgstr ""
 
 msgid "Drawer bot"
 msgstr "Robot rysownik"
@@ -532,6 +546,10 @@ msgstr "Jajo"
 
 msgid "Empty character constant"
 msgstr ""
+
+#, fuzzy
+msgid "Enable\\Enable the selected mod"
+msgstr "Wczytaj\\Wczytuje zaznaczoną misję"
 
 msgid "End of block missing"
 msgstr "Brak końca bloku"
@@ -759,6 +777,9 @@ msgstr "Zainfekowane wirusem, chwilowo niesprawne"
 msgid "Information exchange post"
 msgstr "Stacja przekaźnikowa informacji"
 
+msgid "Information:"
+msgstr ""
+
 msgid "Instruction \"break\" outside a loop"
 msgstr "Polecenie \"break\" na zewnątrz pętli"
 
@@ -849,17 +870,11 @@ msgstr "Lista zapisanych misji"
 msgid "Load a saved mission"
 msgstr "Wczytaj zapisaną misję"
 
-msgid "Load\\Load Mod"
-msgstr ""
-
 msgid "Load\\Load a saved mission"
 msgstr "Wczytaj\\Wczytuje zapisaną misję"
 
 msgid "Load\\Loads the selected mission"
 msgstr "Wczytaj\\Wczytuje zaznaczoną misję"
-
-msgid "Loaded Mods:"
-msgstr ""
 
 msgid "Loading basic level settings"
 msgstr "Wczytywanie ustawień poziomu"
@@ -915,7 +930,13 @@ msgstr "Misje na tej planecie:"
 msgid "Missions\\Select mission"
 msgstr "Misje\\Wybierz misję"
 
-msgid "Mods\\Manage installed mods"
+msgid "Mods"
+msgstr ""
+
+msgid "Mods:"
+msgstr ""
+
+msgid "Mods\\Mod manager"
 msgstr ""
 
 msgid "Mouse inversion X\\Inversion of the scrolling direction on the X axis"
@@ -1086,7 +1107,7 @@ msgstr "Otwórz"
 msgid "Open (Ctrl+O)"
 msgstr "Otwórz (Ctrl+O)"
 
-msgid "Open Directory\\Open Mods directory"
+msgid "Open Directory\\Open the mods directory"
 msgstr ""
 
 msgid "Opening brace missing"
@@ -1298,6 +1319,9 @@ msgstr "Czerwona flaga"
 
 msgid "Reflections on the buttons \\Shiny buttons"
 msgstr "Odbicia na przyciskach \\Świecące przyciski"
+
+msgid "Refresh\\Refresh the list of currently installed mods"
+msgstr ""
 
 msgid "Remains of Apollo mission"
 msgstr "Pozostałości z misji Apollo"
@@ -1583,6 +1607,9 @@ msgstr "Nie udało się otworzyć ścieżki %s w przeglądarce plików."
 msgid "The types of the two operands are incompatible"
 msgstr "Niezgodne typy operatorów"
 
+msgid "There are unsaved changes. Do you want to save them before leaving?"
+msgstr ""
+
 msgid "This class already exists"
 msgstr "Taka klasa już istnieje"
 
@@ -1716,14 +1743,11 @@ msgstr ""
 msgid "Unknown function"
 msgstr "Funkcja nieznana"
 
-msgid "Unload\\Unload Mod"
-msgstr ""
-
-msgid "Unloaded Mods:"
-msgstr ""
-
 msgid "Up (\\key gup;)"
 msgstr "Góra (\\key gup;)"
+
+msgid "Up\\Move the selected mod up so it's loaded sooner (mods may overwrite files from the mods above them)"
+msgstr ""
 
 msgid "Uranium deposit (site for derrick)"
 msgstr "Złoże uranu (miejsce na kopalnię)"
@@ -1797,7 +1821,7 @@ msgstr "Szperacz latający"
 msgid "Withdraw shield (\\key action;)"
 msgstr "Wyłącz osłonę (\\key action;)"
 
-msgid "Workshop\\Open Workshop to search Mods"
+msgid "Workshop\\Open the workshop to search for mods"
 msgstr ""
 
 msgid "Worm"
@@ -2033,6 +2057,10 @@ msgstr "epsitec.com"
 
 #~ msgid "Mouse shadow\\Gives the mouse a shadow"
 #~ msgstr "Cień kursora myszy\\Dodaje cień kursorowi myszy"
+
+#, fuzzy
+#~ msgid "No mods installed!"
+#~ msgstr "Brak zainstalowanych poziomów użytkownika!"
 
 #~ msgid "No other robot"
 #~ msgstr "Brak innego robota"

@@ -126,6 +126,9 @@ msgstr "Aussehen\\Erscheinungsbild des Astronauten einstellen"
 msgid "Apply changes\\Activates the changed settings"
 msgstr "Änderungen anwenden\\Getätigte Einstellungen anwenden"
 
+msgid "Apply\\Apply the current mod configuration"
+msgstr ""
+
 msgid "Appropriate constructor missing"
 msgstr "Es gibt keinen geeigneten Konstruktor"
 
@@ -480,6 +483,10 @@ msgstr "Bohrturm"
 msgid "Descend\\Reduces the power of the jet"
 msgstr "Sinken\\Leistung des Triebwerks drosseln"
 
+#, fuzzy
+msgid "Description:"
+msgstr "Auflösung:"
+
 msgid "Destroy"
 msgstr "Zerstören"
 
@@ -491,6 +498,10 @@ msgstr "Einstampfer"
 
 msgid "Device\\Driver and resolution settings"
 msgstr "Bildschirm\\Driver und Bildschirmauflösung"
+
+#, fuzzy
+msgid "Disable\\Disable the selected mod"
+msgstr "Löschen\\Löscht die gespeicherte Mission"
 
 msgid "Dividing by zero"
 msgstr "Division durch Null"
@@ -507,6 +518,9 @@ msgstr "Die Türen werden von einem Gegenstand blockiert"
 
 msgid "Down (\\key gdown;)"
 msgstr "Sinkt (\\key gdown;)"
+
+msgid "Down\\Move the selected mod down so it's loaded later (mods may overwrite files from the mods above them)"
+msgstr ""
 
 msgid "Drawer bot"
 msgstr "Zeichner"
@@ -534,6 +548,10 @@ msgstr "Ei"
 
 msgid "Empty character constant"
 msgstr ""
+
+#, fuzzy
+msgid "Enable\\Enable the selected mod"
+msgstr "Laden\\Öffnet eine gespeicherte Mission"
 
 msgid "End of block missing"
 msgstr "Es fehlt eine geschlossene geschweifte Klammer \"}\" (Ende des Blocks)"
@@ -762,6 +780,9 @@ msgstr "Von Virus infiziert, zeitweise außer Betrieb"
 msgid "Information exchange post"
 msgstr "Infoserver"
 
+msgid "Information:"
+msgstr ""
+
 msgid "Instruction \"break\" outside a loop"
 msgstr "Anweisung \"break\" außerhalb einer Schleife"
 
@@ -852,17 +873,11 @@ msgstr "Liste der gespeicherten Missionen"
 msgid "Load a saved mission"
 msgstr "Gespeicherte Mission laden"
 
-msgid "Load\\Load Mod"
-msgstr ""
-
 msgid "Load\\Load a saved mission"
 msgstr "Laden\\Eine gespeicherte Mission öffnen"
 
 msgid "Load\\Loads the selected mission"
 msgstr "Laden\\Öffnet eine gespeicherte Mission"
-
-msgid "Loaded Mods:"
-msgstr ""
 
 msgid "Loading basic level settings"
 msgstr "Lade Level-Grundeinstellungen"
@@ -932,7 +947,13 @@ msgstr "Liste der Missionen des Planeten:"
 msgid "Missions\\Select mission"
 msgstr "Missionen\\Aufbruch ins Weltall"
 
-msgid "Mods\\Manage installed mods"
+msgid "Mods"
+msgstr ""
+
+msgid "Mods:"
+msgstr ""
+
+msgid "Mods\\Mod manager"
 msgstr ""
 
 msgid "Mouse inversion X\\Inversion of the scrolling direction on the X axis"
@@ -1103,7 +1124,7 @@ msgstr "Öffnen"
 msgid "Open (Ctrl+O)"
 msgstr "Öffnen (Ctrl+O)"
 
-msgid "Open Directory\\Open Mods directory"
+msgid "Open Directory\\Open the mods directory"
 msgstr ""
 
 msgid "Opening brace missing"
@@ -1316,6 +1337,9 @@ msgstr "Rote Fahne"
 
 msgid "Reflections on the buttons \\Shiny buttons"
 msgstr "Glänzende Tasten\\Glänzende Tasten in den Menüs"
+
+msgid "Refresh\\Refresh the list of currently installed mods"
+msgstr ""
 
 msgid "Remains of Apollo mission"
 msgstr "Überreste einer Apollo-Mission"
@@ -1601,6 +1625,9 @@ msgstr ""
 msgid "The types of the two operands are incompatible"
 msgstr "Die zwei Operanden sind nicht kompatibel"
 
+msgid "There are unsaved changes. Do you want to save them before leaving?"
+msgstr ""
+
 msgid "This class already exists"
 msgstr "Diese Klasse gibt es schon"
 
@@ -1734,14 +1761,11 @@ msgstr ""
 msgid "Unknown function"
 msgstr "Unbekannte Funktion"
 
-msgid "Unload\\Unload Mod"
-msgstr ""
-
-msgid "Unloaded Mods:"
-msgstr ""
-
 msgid "Up (\\key gup;)"
 msgstr "Steigt (\\key gup;)"
+
+msgid "Up\\Move the selected mod up so it's loaded sooner (mods may overwrite files from the mods above them)"
+msgstr ""
 
 msgid "Uranium deposit (site for derrick)"
 msgstr "Markierung für unterirdisches Platinvorkommen"
@@ -1815,7 +1839,7 @@ msgstr "Schnüffler"
 msgid "Withdraw shield (\\key action;)"
 msgstr "Schutzschild einholen (\\key action;)"
 
-msgid "Workshop\\Open Workshop to search Mods"
+msgid "Workshop\\Open the workshop to search for mods"
 msgstr ""
 
 msgid "Worm"
@@ -2050,6 +2074,10 @@ msgstr "epsitec.com"
 
 #~ msgid "Mouse shadow\\Gives the mouse a shadow"
 #~ msgstr "Schatten unter der Maus\\Ein Schatten erscheint unter der Maus"
+
+#, fuzzy
+#~ msgid "No mods installed!"
+#~ msgstr "Keine benutzerdefinierten Level vorhanden"
 
 #~ msgid "No other robot"
 #~ msgstr "Kein anderer Roboter"
