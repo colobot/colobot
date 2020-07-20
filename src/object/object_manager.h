@@ -303,7 +303,8 @@ public:
     //@}
 
 private:
-    float ClampPower(ObjectType type, float power); //!Prevents creation of overcharged power cells
+    //! Prevents creation of overcharged power cells
+    float ClampPower(ObjectType type, float power);
     void CleanRemovedObjectsIfNeeded();
 
 private:
