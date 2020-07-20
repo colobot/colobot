@@ -266,6 +266,8 @@ public:
     const std::string& GetScriptName();
     const std::string& GetScriptFile();
     bool        GetTrainerPilot();
+    bool        GetPlusTrainer();
+    bool        GetPlusExplorer();
     bool        GetFixScene();
     bool        GetShowSoluce();
     bool        GetSceneSoluce();

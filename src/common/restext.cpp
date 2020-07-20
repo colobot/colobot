@@ -77,6 +77,7 @@ void InitializeRestext()
     stringsText[RT_TITLE_PERSO]      = TR("Customize your appearance");
     stringsText[RT_TITLE_WRITE]      = TR("Save the current mission");
     stringsText[RT_TITLE_READ]       = TR("Load a saved mission");
+    stringsText[RT_TITLE_PLUS]       = TR("Missions+");
 
     stringsText[RT_PLAY_CHAP_CHAPTERS]   = TR("Chapters:");
     stringsText[RT_PLAY_CHAP_PLANETS]    = TR("Planets:");
@@ -181,6 +182,7 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_ABORT]     = TR("\\Return to Colobot: Gold Edition");
     stringsEvent[EVENT_INTERFACE_QUIT]      = TR("Quit\\Quit Colobot: Gold Edition");
     stringsEvent[EVENT_INTERFACE_BACK]      = TR("<<  Back  \\Back to the previous screen");
+    stringsEvent[EVENT_INTERFACE_PLUS]      = TR("+\\Missions with bonus content and optional challenges");
     stringsEvent[EVENT_INTERFACE_PLAY]      = TR("Play\\Start mission!");
     stringsEvent[EVENT_INTERFACE_SETUPd]    = TR("Device\\Driver and resolution settings");
     stringsEvent[EVENT_INTERFACE_SETUPg]    = TR("Graphics\\Graphics settings");
@@ -274,6 +276,10 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_JOYSTICK_CAM_X_INVERT] = TR("Invert\\Invert values on this axis");
     stringsEvent[EVENT_INTERFACE_JOYSTICK_CAM_Y_INVERT] = TR("Invert\\Invert values on this axis");
     stringsEvent[EVENT_INTERFACE_JOYSTICK_CAM_Z_INVERT] = TR("Invert\\Invert values on this axis");
+
+    stringsEvent[EVENT_INTERFACE_PLUS_TRAINER]  = TR("Space Programmer\\Disables radio-control");
+    stringsEvent[EVENT_INTERFACE_PLUS_RESEARCH] = TR("Space Researcher\\Disables using all previously researched technologies");
+    stringsEvent[EVENT_INTERFACE_PLUS_EXPLORER] = TR("Space Explorer\\Disables astronaut abilities");
 
     stringsEvent[EVENT_INTERFACE_NEDIT]     = TR("\\New player name");
     stringsEvent[EVENT_INTERFACE_NOK]       = TR("OK\\Choose the selected player");

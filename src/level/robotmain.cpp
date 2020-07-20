@@ -2461,6 +2461,7 @@ bool CRobotMain::EventFrame(const Event &event)
             {
                 if (m_levelCategory == LevelCategory::Missions ||
                     m_levelCategory == LevelCategory::FreeGame ||
+                    m_levelCategory == LevelCategory::GamePlus ||
                     m_levelCategory == LevelCategory::CustomLevels)
                 {
                     if (!IOIsBusy() && m_missionType != MISSION_CODE_BATTLE)
@@ -3779,6 +3780,12 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             m_build |= BUILD_FACTORY;
             m_build |= BUILD_GFLAT;
             m_build |= BUILD_FLAG;
+        }
+
+        if (m_levelCategory == LevelCategory::GamePlus && !m_ui->GetPlusResearch() && !resetObject)  // new game plus?
+        {
+            m_researchDone[0] |= m_playerProfile->GetFreeGameResearchUnlock();
+            m_build |= m_playerProfile->GetFreeGameBuildUnlock();
         }
 
         if (!resetObject)
@@ -5345,6 +5352,16 @@ const std::map<std::string, MinMax>& CRobotMain::GetObligatoryTokenList()
 bool CRobotMain::GetTrainerPilot()
 {
     return m_cheatTrainerPilot;
+}
+
+bool CRobotMain::GetPlusTrainer()
+{
+    return m_ui->GetPlusTrainer();
+}
+
+bool CRobotMain::GetPlusExplorer()
+{
+    return m_ui->GetPlusExplorer();
 }
 
 //! Indicates whether the scene is fixed, without interaction

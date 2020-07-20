@@ -84,6 +84,9 @@ msgstr ""
 msgid "Load a saved mission"
 msgstr ""
 
+msgid "Missions+"
+msgstr ""
+
 msgid "Chapters:"
 msgstr ""
 
@@ -340,6 +343,9 @@ msgstr ""
 msgid "<<  Back  \\Back to the previous screen"
 msgstr ""
 
+msgid "+\\Missions with bonus content and optional challenges"
+msgstr ""
+
 msgid "Play\\Start mission!"
 msgstr ""
 
@@ -581,6 +587,15 @@ msgid "Access to solution\\Shows the solution (detailed instructions for mission
 msgstr ""
 
 msgid "Invert\\Invert values on this axis"
+msgstr ""
+
+msgid "Space Programmer\\Disables radio-control"
+msgstr ""
+
+msgid "Space Researcher\\Disables using all previously researched technologies"
+msgstr ""
+
+msgid "Space Explorer\\Disables astronaut abilities"
 msgstr ""
 
 msgid "\\New player name"

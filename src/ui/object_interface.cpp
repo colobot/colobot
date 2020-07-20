@@ -943,8 +943,9 @@ bool CObjectInterface::CreateInterface(bool bSelect)
         }
     }
 
-    if ( type == OBJECT_HUMAN ||
-         type == OBJECT_TECH  )
+    if ( (type == OBJECT_HUMAN ||
+          type == OBJECT_TECH  ) &&
+         !m_main->GetPlusExplorer() )
     {
         pos.x = ox+sx*7.7f;
         pos.y = oy+sy*0.5f;
@@ -986,7 +987,7 @@ bool CObjectInterface::CreateInterface(bool bSelect)
         DefaultEnter(pw, EVENT_OBJECT_MTAKE);
     }
 
-    if ( type == OBJECT_HUMAN )  // builder?
+    if ( type == OBJECT_HUMAN && !m_main->GetPlusExplorer())  // builder?
     {
         pos.x  =   1.0f/640.0f;
         pos.y  =   4.0f/480.0f;

@@ -29,6 +29,7 @@ const std::map<LevelCategory, std::string> CATEGORY_DIR_MAP = {
     { LevelCategory::Exercises,    "exercises"    },
     { LevelCategory::Challenges,   "challenges"   },
     { LevelCategory::CodeBattles,  "battles"      },
+    { LevelCategory::GamePlus,     "plus"         },
     { LevelCategory::CustomLevels, "custom"       },
 };
 

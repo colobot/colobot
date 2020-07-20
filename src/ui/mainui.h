@@ -76,6 +76,9 @@ public:
     void    ChangePhase(Phase phase);
 
     bool    GetSceneSoluce();
+    bool    GetPlusTrainer();
+    bool    GetPlusResearch();
+    bool    GetPlusExplorer();
 
     void    UpdateChapterPassed();
     void    NextMission();

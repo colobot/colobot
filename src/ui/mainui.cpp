@@ -762,6 +762,21 @@ bool CMainUserInterface::GetSceneSoluce()
     return m_screenLevelList->GetSceneSoluce();
 }
 
+bool CMainUserInterface::GetPlusTrainer()
+{
+    return m_screenLevelList->GetPlusTrainer();
+}
+
+bool CMainUserInterface::GetPlusResearch()
+{
+    return m_screenLevelList->GetPlusResearch();
+}
+
+bool CMainUserInterface::GetPlusExplorer()
+{
+    return m_screenLevelList->GetPlusExplorer();
+}
+
 bool CMainUserInterface::GetGamerOnlyHead()
 {
     if (m_phase == PHASE_APPERANCE)
