@@ -666,7 +666,8 @@ void CGL21Device::SetTransform(TransformType type, const Math::Matrix &matrix)
 
         glUniformMatrix4fv(m_uniforms[m_mode].viewMatrix, 1, GL_FALSE, m_viewMat.Array());
 
-        if (m_uniforms[m_mode].cameraPosition >= 0) {
+        if (m_uniforms[m_mode].cameraPosition >= 0)
+        {
             cameraPosition.LoadZero();
             cameraPosition = MatrixVectorMultiply(m_viewMat.Inverse(), cameraPosition);
             glUniform3fv(m_uniforms[m_mode].cameraPosition, 1, cameraPosition.Array());
