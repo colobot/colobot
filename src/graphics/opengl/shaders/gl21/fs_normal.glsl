@@ -35,6 +35,7 @@ uniform vec2 uni_FogRange;
 uniform vec4 uni_FogColor;
 
 uniform float uni_ShadowColor;
+uniform float uni_ShadowTexelSize;
 
 struct LightParams
 {
@@ -99,13 +100,11 @@ void main()
         if (uni_TextureEnabled[2])
         {
 #ifdef CONFIG_QUALITY_SHADOWS
-            float offset = 0.00025f;
-
             float value = (1.0f / 5.0f) * (shadow2D(uni_ShadowTexture, pass_TexCoord2).x
-                    + shadow2D(uni_ShadowTexture, pass_TexCoord2 + vec3( offset,    0.0f, 0.0f)).x
-                    + shadow2D(uni_ShadowTexture, pass_TexCoord2 + vec3(-offset,    0.0f, 0.0f)).x
-                    + shadow2D(uni_ShadowTexture, pass_TexCoord2 + vec3(   0.0f,  offset, 0.0f)).x
-                    + shadow2D(uni_ShadowTexture, pass_TexCoord2 + vec3(   0.0f, -offset, 0.0f)).x);
+                    + shadow2D(uni_ShadowTexture, pass_TexCoord2 + vec3( uni_ShadowTexelSize,    0.0f, 0.0f)).x
+                    + shadow2D(uni_ShadowTexture, pass_TexCoord2 + vec3(-uni_ShadowTexelSize,    0.0f, 0.0f)).x
+                    + shadow2D(uni_ShadowTexture, pass_TexCoord2 + vec3(   0.0f,  uni_ShadowTexelSize, 0.0f)).x
+                    + shadow2D(uni_ShadowTexture, pass_TexCoord2 + vec3(   0.0f, -uni_ShadowTexelSize, 0.0f)).x);
 
             shadow = mix(uni_ShadowColor, 1.0f, value);
 #else
