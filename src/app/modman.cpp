@@ -33,7 +33,6 @@
 #include <map>
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
-#include "modman.h"
 
 using namespace boost::filesystem;
 

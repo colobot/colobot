@@ -23,11 +23,6 @@
 
 #include "ui/screen/screen.h"
 
-#include "level/level_category.h"
-
-#include <map>
-#include <vector>
-
 namespace Ui
 {
 class CMainDialog;
