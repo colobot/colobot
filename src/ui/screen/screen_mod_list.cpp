@@ -169,13 +169,15 @@ void CScreenModList::CreateInterface()
     UpdateEnableDisableButton();
 
     // Display the move up button
-    pos.x -= dim.x*1.3f;
-    ddim.x = dim.x*1;
+    pos.x -= dim.x*0.8f;
+    pos.y = oy+sy*2.48;
+    ddim.x = dim.x*0.5;
+    ddim.y = dim.y*0.5;
     pb = pw->CreateButton(pos, ddim, 49, EVENT_INTERFACE_MOD_MOVE_UP);
     pb->SetState(STATE_SHADOW);
 
     // Display the move down button
-    pos.x -= dim.x*1.3f;
+    pos.y = oy+sy*2;
     pb = pw->CreateButton(pos, ddim, 50, EVENT_INTERFACE_MOD_MOVE_DOWN);
     pb->SetState(STATE_SHADOW);
 
@@ -183,6 +185,9 @@ void CScreenModList::CreateInterface()
 
     // Display the refresh button
     pos.x -= dim.x*1.3f;
+    pos.y = oy+sy*2;
+    ddim.x = dim.x*1;
+    ddim.y = dim.y*1;
     pb = pw->CreateButton(pos, ddim, 87, EVENT_INTERFACE_MODS_REFRESH);
     pb->SetState(STATE_SHADOW);
 
@@ -198,7 +203,7 @@ void CScreenModList::CreateInterface()
 
     // Back button
     pos.x = ox+sx*3;
-    ddim.x = dim.x*2.3f;
+    ddim.x = dim.x*4;
     pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_BACK);
     pb->SetState(STATE_SHADOW);
 
