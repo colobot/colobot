@@ -33,4 +33,4 @@ struct ModData
 };
 
 //! Loads the metadata for a mod in the given path.
-ModData LoadModData(const std::string& path, bool loaded = false);
+ModData LoadModData(const std::string& path);

@@ -43,6 +43,8 @@
 #include "ui/controls/list.h"
 #include "ui/controls/window.h"
 
+#include <algorithm>
+
 namespace Ui
 {
 
@@ -557,7 +559,7 @@ void CScreenModList::UpdateUpDownButtons()
     }
 }
 
-std::string CScreenModList::GetLanguageStringProperty(std::unordered_map<Language, std::string> property, const std::string& fallback)
+std::string CScreenModList::GetLanguageStringProperty(const std::unordered_map<Language, std::string>& property, const std::string& fallback)
 {
     std::string ret{};
     const auto language = m_app->GetLanguage();

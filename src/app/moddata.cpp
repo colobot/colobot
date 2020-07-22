@@ -31,16 +31,16 @@
 
 namespace pt = boost::property_tree;
 
-boost::optional<pt::ptree> LoadManifest(const std::string& path, bool loaded = false);
+boost::optional<pt::ptree> LoadManifest(const std::string& path);
 std::string GetStringProperty(const pt::ptree& manifest, const std::string& key);
 std::unordered_map<Language, std::string> GetLanguageStringProperty(const pt::ptree& manifest, const std::string& key);
 
-ModData LoadModData(const std::string& path, bool loaded)
+ModData LoadModData(const std::string& path)
 {
     ModData modData{};
 
     auto manifestOptional = LoadManifest(path);
-    if (!manifestOptional.has_value())
+    if (!manifestOptional)
     {
         return modData;
     }
@@ -55,7 +55,7 @@ ModData LoadModData(const std::string& path, bool loaded)
     return modData;
 }
 
-boost::optional<pt::ptree> LoadManifest(const std::string& path, bool loaded)
+boost::optional<pt::ptree> LoadManifest(const std::string& path)
 {
     try
     {
@@ -82,7 +82,7 @@ boost::optional<pt::ptree> LoadManifest(const std::string& path, bool loaded)
 std::string GetStringProperty(const pt::ptree& manifest, const std::string& key)
 {
     auto prop = manifest.get_optional<std::string>(key);
-    if (prop.has_value())
+    if (prop)
     {
         return prop.get();
     }
@@ -93,7 +93,7 @@ std::unordered_map<Language, std::string> GetLanguageStringProperty(const pt::pt
 {
     std::unordered_map<Language, std::string> ret;
     auto prop = manifest.get_child_optional(key);
-    if (prop.has_value())
+    if (prop)
     {
         for (const auto& child : prop.get())
         {

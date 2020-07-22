@@ -79,7 +79,7 @@ protected:
     void UpdateApplyButton();
     void UpdateUpDownButtons();
 
-    std::string GetLanguageStringProperty(std::unordered_map<Language, std::string> property, const std::string& fallback);
+    std::string GetLanguageStringProperty(const std::unordered_map<Language, std::string>& property, const std::string& fallback);
 
 protected:
     Ui::CMainDialog* m_dialog;

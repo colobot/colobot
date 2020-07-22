@@ -22,7 +22,7 @@
 #include "app/moddata.h"
 
 #include <unordered_map>
-#include <boost/optional.hpp>
+#include <vector>
 
 class CApplication;
 class CPathManager;
