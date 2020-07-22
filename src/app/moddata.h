@@ -21,15 +21,15 @@
 
 #include "common/language.h"
 
-#include <unordered_map>
+#include <map>
 
 struct ModData
 {
-    std::unordered_map<Language, std::string> displayName{};
+    std::map<Language, std::string> displayName{};
     std::string author{};
     std::string version{};
     std::string website{};
-    std::unordered_map<Language, std::string> summary{};
+    std::map<Language, std::string> summary{};
 };
 
 //! Loads the metadata for a mod in the given path.
