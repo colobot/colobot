@@ -22,8 +22,8 @@
 #include "common/logger.h"
 #include "common/make_unique.h"
 
-#include "common/resources/resourcemanager.h"
 #include "common/resources/inputstream.h"
+#include "common/resources/resourcemanager.h"
 
 #include <boost/optional.hpp>
 #include <boost/property_tree/json_parser.hpp>

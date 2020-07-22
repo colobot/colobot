@@ -421,7 +421,7 @@ void CScreenModList::UpdateModDetails()
         details += unknownAuthor;
     }
     details += '\n';
-    
+
     details += '\n';
 
     if (!data.version.empty())
