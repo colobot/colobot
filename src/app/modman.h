@@ -19,13 +19,20 @@
 
 #pragma once
 
-#include "app/moddata.h"
-
 #include <unordered_map>
 #include <vector>
 
 class CApplication;
 class CPathManager;
+
+struct ModData
+{
+    std::string displayName{};
+    std::string author{};
+    std::string version{};
+    std::string website{};
+    std::string summary{};
+};
 
 struct Mod
 {
@@ -89,6 +96,9 @@ private:
 
     //! Reloads application resources so the enabled mods are applied
     void ReloadResources();
+
+    //! Load mod data into mod
+    void LoadModData(Mod& mod);
 
 private:
     CApplication* m_app;

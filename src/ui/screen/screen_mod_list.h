@@ -81,8 +81,6 @@ protected:
     void UpdateApplyButton();
     void UpdateUpDownButtons();
 
-    std::string GetLanguageStringProperty(const std::map<Language, std::string>& property, const std::string& fallback);
-
 protected:
     Ui::CMainDialog* m_dialog;
 

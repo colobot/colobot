@@ -29,6 +29,8 @@
 
 #include "common/resources/resourcemanager.h"
 
+#include "level/parser/parser.h"
+
 #include <algorithm>
 #include <map>
 #include <boost/filesystem.hpp>
@@ -107,7 +109,7 @@ void CModManager::Init()
     for (auto& mod : m_mods)
     {
         m_pathManager->AddMod(mod.path);
-        mod.data = LoadModData(mod.path);
+        LoadModData(mod);
         m_pathManager->RemoveMod(mod.path);
     }
 
@@ -206,4 +208,75 @@ const Mod& CModManager::GetMod(size_t i) const
 const std::vector<Mod>& CModManager::GetMods() const
 {
     return m_mods;
+}
+
+void CModManager::LoadModData(Mod& mod)
+{
+    auto& data = mod.data;
+
+    data.displayName = mod.name;
+
+    try
+    {
+        CLevelParser levelParser("manifest.txt");
+        if (levelParser.Exists())
+        {
+            levelParser.Load();
+
+            CLevelParserLine* line = nullptr;
+
+            // DisplayName
+            line = levelParser.GetIfDefined("DisplayName");
+            if (line != nullptr && line->GetParam("text")->IsDefined())
+            {
+                data.displayName = line->GetParam("text")->AsString();
+            }
+
+            // Author
+            line = levelParser.GetIfDefined("Author");
+            if (line != nullptr && line->GetParam("text")->IsDefined())
+            {
+                data.author = line->GetParam("text")->AsString();
+            }
+
+            // Version
+            line = levelParser.GetIfDefined("Version");
+            if (line != nullptr)
+            {
+                if (line->GetParam("text")->IsDefined())
+                {
+                    data.version = line->GetParam("text")->AsString();
+                }
+                else if (line->GetParam("major")->IsDefined() && line->GetParam("minor")->IsDefined() &&  line->GetParam("patch")->IsDefined())
+                {
+                    auto major = boost::lexical_cast<std::string>(line->GetParam("major")->AsInt());
+                    auto minor = boost::lexical_cast<std::string>(line->GetParam("minor")->AsInt());
+                    auto patch = boost::lexical_cast<std::string>(line->GetParam("patch")->AsInt());
+                    data.version = boost::algorithm::join(std::vector<std::string>{ major, minor, patch }, ",");
+                }
+            }
+
+            // Website
+            line = levelParser.GetIfDefined("Website");
+            if (line != nullptr && line->GetParam("text")->IsDefined())
+            {
+                data.website = line->GetParam("text")->AsString();
+            }
+
+            // Summary
+            line = levelParser.GetIfDefined("Summary");
+            if (line != nullptr && line->GetParam("text")->IsDefined())
+            {
+                data.summary = line->GetParam("text")->AsString();
+            }
+        }
+        else
+        {
+            GetLogger()->Warn("No manifest file for mod %s\n", mod.name.c_str());
+        }
+    }
+    catch (CLevelParserException& e)
+    {
+        GetLogger()->Warn("Failed parsing manifest for mod %s: %s\n", mod.name.c_str(), e.what());
+    }
 }

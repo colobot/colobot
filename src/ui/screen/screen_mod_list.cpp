@@ -380,7 +380,7 @@ void CScreenModList::UpdateModList()
     for (size_t i = 0; i < mods.size(); ++i)
     {
         const auto& mod = mods[i];
-        auto name = GetLanguageStringProperty(mod.data.displayName, mod.name);
+        auto name = mod.data.displayName;
         pl->SetItemName(i, name);
         pl->SetCheck(i, mod.enabled);
         pl->SetEnable(i, true);
@@ -409,8 +409,7 @@ void CScreenModList::UpdateModDetails()
     const auto& mod = m_modManager->GetMod(m_modSelectedIndex);
     const auto data = mod.data;
 
-    auto name = GetLanguageStringProperty(data.displayName, mod.name);
-    details += "\\b;" + name + '\n';
+    details += "\\b;" + data.displayName + '\n';
 
     std::string authorFieldName;
     GetResource(RES_TEXT, RT_MOD_AUTHOR_FIELD_NAME, authorFieldName);
@@ -465,7 +464,14 @@ void CScreenModList::UpdateModSummary()
 
     const auto& mod = m_modManager->GetMod(m_modSelectedIndex);
 
-    pe->SetText(GetLanguageStringProperty(mod.data.summary, noSummary));
+    if (!mod.data.summary.empty())
+    {
+        pe->SetText(mod.data.summary);
+    }
+    else
+    {
+        pe->SetText(noSummary);
+    }
 }
 
 void CScreenModList::UpdateEnableDisableButton()
@@ -562,25 +568,6 @@ void CScreenModList::UpdateUpDownButtons()
     {
         pb_down->SetState(STATE_ENABLE);
     }
-}
-
-std::string CScreenModList::GetLanguageStringProperty(const std::map<Language, std::string>& property, const std::string& fallback)
-{
-    std::string ret{};
-    const auto language = m_app->GetLanguage();
-    if (property.count(language) > 0)
-    {
-        ret = property.at(language);
-    }
-    else if (property.count(LANGUAGE_ENGLISH) > 0)
-    {
-        ret = property.at(LANGUAGE_ENGLISH);
-    }
-    else
-    {
-        ret = fallback;
-    }
-    return ret;
 }
 
 } // namespace Ui
