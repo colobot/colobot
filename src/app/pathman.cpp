@@ -71,14 +71,14 @@ void CPathManager::AddModSearchDir(const std::string &modSearchDirPath)
 
 void CPathManager::AddMod(const std::string &modPath)
 {
-    GetLogger()->Info("Loading mod: '%s'\n", modPath.c_str());
+    GetLogger()->Debug("Adding mod: '%s'\n", modPath.c_str());
     CResourceManager::AddLocation(modPath, true);
     m_mods.push_back(modPath);
 }
 
 void CPathManager::RemoveMod(const std::string &modPath)
 {
-    GetLogger()->Info("Unloading mod: '%s'\n", modPath.c_str());
+    GetLogger()->Debug("Removing mod: '%s'\n", modPath.c_str());
     CResourceManager::RemoveLocation(modPath);
     auto it = std::find(m_mods.cbegin(), m_mods.cend(), modPath);
     if (it != m_mods.cend())

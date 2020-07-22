@@ -42,10 +42,8 @@ CModManager::CModManager(CApplication* app, CPathManager* pathManager)
 {
 }
 
-void CModManager::FindMods()
+void CModManager::Init()
 {
-    m_mods.clear();
-
     // Load names from the config file
     std::vector<std::string> savedModNames;
     GetConfigFile().GetArrayProperty("Mods", "Names", savedModNames);
@@ -102,6 +100,29 @@ void CModManager::FindMods()
         mod.path = newMod.second;
         m_mods.push_back(mod);
     }
+
+    SaveMods();
+
+    // Load the metadata for each mod
+    for (auto& mod : m_mods)
+    {
+        m_pathManager->AddMod(mod.path);
+        mod.data = LoadModData(mod.path);
+        m_pathManager->RemoveMod(mod.path);
+    }
+
+    UpdatePaths();
+}
+
+void CModManager::ReloadMods()
+{
+    m_mods.clear();
+    m_pathManager->RemoveAllMods();
+
+    Init();
+
+    // Apply the configuration
+    ReloadResources();
 }
 
 void CModManager::EnableMod(size_t i)

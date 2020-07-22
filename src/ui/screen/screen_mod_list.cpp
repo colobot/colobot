@@ -32,6 +32,8 @@
 
 #include "common/system/system.h"
 
+#include "level/robotmain.h"
+
 #include "math/func.h"
 
 #include "ui/controls/button.h"
@@ -94,7 +96,7 @@ void CScreenModList::CreateInterface()
     pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
 
     pos.y = oy+sy*6.7f;
-    ddim.y = dim.y*4.5f;
+    ddim.y = dim.y*4.6f;
     ddim.x = dim.x*6.5f;
     pli = pw->CreateList(pos, ddim, 0, EVENT_INTERFACE_MOD_LIST);
     pli->SetState(STATE_SHADOW);
@@ -112,10 +114,13 @@ void CScreenModList::CreateInterface()
     pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
 
     pos.y = oy+sy*6.7f;
-    ddim.y = dim.y*4.5f;
+    ddim.y = dim.y*4.3f;
     ddim.x = dim.x*6.5f;
-    pli = pw->CreateList(pos, ddim, 0, EVENT_INTERFACE_LIST);
-    pli->SetState(STATE_SHADOW);
+    pe = pw->CreateEdit(pos, ddim, 0, EVENT_INTERFACE_MOD_DETAILS);
+    pe->SetState(STATE_SHADOW);
+    pe->SetMaxChar(500);
+    pe->SetEditCap(false);  // just to see
+    pe->SetHighlightCap(true);
 
     UpdateModDetails();
 
@@ -139,7 +144,7 @@ void CScreenModList::CreateInterface()
     pe->SetState(STATE_SHADOW);
     pe->SetMaxChar(500);
     pe->SetEditCap(false);  // just to see
-    pe->SetHighlightCap(false);
+    pe->SetHighlightCap(true);
 
     UpdateModSummary();
 
@@ -337,13 +342,9 @@ void CScreenModList::ApplyChanges()
         m_modManager->SaveMods();
     }
 
-    m_modManager->FindMods();
-    m_modManager->SaveMods();
+    m_modManager->ReloadMods();
 
     m_empty = (m_modManager->CountMods() == 0);
-
-    m_modManager->UpdatePaths();
-    m_modManager->ReloadResources();
 
     m_modSelectedIndex = Math::Clamp(m_modSelectedIndex, static_cast<size_t>(0), m_modManager->CountMods() - 1);
 }
@@ -372,7 +373,8 @@ void CScreenModList::UpdateModList()
     for (size_t i = 0; i < mods.size(); ++i)
     {
         const auto& mod = mods[i];
-        pl->SetItemName(i, mod.name);
+        auto name = GetLanguageStringProperty(mod.data.displayName, mod.name);
+        pl->SetItemName(i, name);
         pl->SetCheck(i, mod.enabled);
         pl->SetEnable(i, true);
     }
@@ -383,12 +385,80 @@ void CScreenModList::UpdateModList()
 
 void CScreenModList::UpdateModDetails()
 {
-    //TODO
+    CWindow* pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
+    if (pw == nullptr) return;
+
+    CEdit* pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_MOD_DETAILS));
+    if (pe == nullptr) return;
+
+    if (m_empty)
+    {
+        pe->SetText("No information");
+        return;
+    }
+
+    std::string details{};
+
+    const auto& mod = m_modManager->GetMod(m_modSelectedIndex);
+    const auto data = mod.data;
+
+    auto name = GetLanguageStringProperty(data.displayName, mod.name);
+    details += "\\b;" + name + '\n';
+
+    std::string authorFieldName;
+    GetResource(RES_TEXT, RT_MOD_AUTHOR_FIELD_NAME, authorFieldName);
+    details += "\\s;" + authorFieldName + " ";
+    if (!data.author.empty())
+    {
+        details += data.author;
+    }
+    else
+    {
+        std::string unknownAuthor;
+        GetResource(RES_TEXT, RT_MOD_UNKNOWN_AUTHOR, unknownAuthor);
+        details += unknownAuthor;
+    }
+    details += '\n';
+    
+    details += '\n';
+
+    if (!data.version.empty())
+    {
+        std::string versionFieldName;
+        GetResource(RES_TEXT, RT_MOD_VERSION_FIELD_NAME, versionFieldName);
+        details += "\\t;" + versionFieldName + '\n' + data.version + '\n';
+    }
+
+    if (!data.website.empty())
+    {
+        std::string websiteFieldName;
+        GetResource(RES_TEXT, RT_MOD_WEBSITE_FIELD_NAME, websiteFieldName);
+        details += "\\t;" + websiteFieldName + '\n' + data.website + '\n';
+    }
+
+    pe->SetText(details);
 }
 
 void CScreenModList::UpdateModSummary()
 {
-    //TODO
+    CWindow* pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
+    if (pw == nullptr) return;
+
+    CEdit* pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_MOD_SUMMARY));
+    if (pe == nullptr) return;
+
+    std::string noSummary;
+    GetResource(RES_TEXT, RT_MOD_NO_SUMMARY, noSummary);
+
+    if (m_empty)
+    {
+        pe->SetText(noSummary);
+        return;
+    }
+
+    const auto& mod = m_modManager->GetMod(m_modSelectedIndex);
+
+    pe->SetText(GetLanguageStringProperty(mod.data.summary, noSummary));
 }
 
 void CScreenModList::UpdateEnableDisableButton()
@@ -485,6 +555,25 @@ void CScreenModList::UpdateUpDownButtons()
     {
         pb_down->SetState(STATE_ENABLE);
     }
+}
+
+std::string CScreenModList::GetLanguageStringProperty(std::unordered_map<Language, std::string> property, const std::string& fallback)
+{
+    std::string ret{};
+    const auto language = m_app->GetLanguage();
+    if (property.count(language) > 0)
+    {
+        ret = property.at(language);
+    }
+    else if (property.count(LANGUAGE_ENGLISH) > 0)
+    {
+        ret = property.at(LANGUAGE_ENGLISH);
+    }
+    else
+    {
+        ret = fallback;
+    }
+    return ret;
 }
 
 } // namespace Ui

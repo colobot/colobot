@@ -21,11 +21,12 @@
 
 #include "app/modman.h"
 
+#include "ui/maindialog.h"
+
 #include "ui/screen/screen.h"
 
 namespace Ui
 {
-class CMainDialog;
 
 /**
  * \class CScreenModList
@@ -77,6 +78,8 @@ protected:
     void UpdateEnableDisableButton();
     void UpdateApplyButton();
     void UpdateUpDownButtons();
+
+    std::string GetLanguageStringProperty(std::unordered_map<Language, std::string> property, const std::string& fallback);
 
 protected:
     Ui::CMainDialog* m_dialog;

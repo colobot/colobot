@@ -988,6 +988,10 @@ msgstr "Další objekt\\Vybere následující objekt"
 msgid "No"
 msgstr "Ne"
 
+#, fuzzy
+msgid "No description."
+msgstr "Rozlišení:"
+
 msgid "No energy in the subsoil"
 msgstr "Pod povrchem není zdroj energie"
 
@@ -1735,6 +1739,10 @@ msgstr "Jednotka"
 msgid "Unknown Object"
 msgstr "Neznámý objekt"
 
+#, fuzzy
+msgid "Unknown author"
+msgstr "Neznámá funkce"
+
 msgid "Unknown command"
 msgstr "Neznámý příkaz"
 
@@ -1771,6 +1779,9 @@ msgstr "Proměnná nebyla nastavena"
 msgid "Vault"
 msgstr "Trezor"
 
+msgid "Version"
+msgstr ""
+
 msgid "Vertical Synchronization\\Limits the number of frames per second to display frequency"
 msgstr ""
 
@@ -1788,6 +1799,9 @@ msgstr "Vosa byla smrtelně raněna"
 
 msgid "Waste"
 msgstr "Odpad"
+
+msgid "Website"
+msgstr ""
 
 msgid "Wheeled builder"
 msgstr ""
@@ -1974,6 +1988,9 @@ msgstr "\\Fialové vlajky"
 
 msgid "\\Yellow flags"
 msgstr "\\Žluté vlajky"
+
+msgid "by"
+msgstr ""
 
 msgid "colobot.info"
 msgstr "colobot.info"

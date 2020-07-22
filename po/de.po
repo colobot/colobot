@@ -1004,6 +1004,10 @@ msgstr "Nächstes auswählen\\Nächstes Objekt auswählen"
 msgid "No"
 msgstr "Nein"
 
+#, fuzzy
+msgid "No description."
+msgstr "Auflösung:"
+
 msgid "No energy in the subsoil"
 msgstr "Kein unterirdisches Energievorkommen"
 
@@ -1752,6 +1756,10 @@ msgstr "Einheit"
 msgid "Unknown Object"
 msgstr "Das Objekt existiert nicht"
 
+#, fuzzy
+msgid "Unknown author"
+msgstr "Unbekannte Funktion"
+
 msgid "Unknown command"
 msgstr "Befehl unbekannt"
 
@@ -1788,6 +1796,9 @@ msgstr "Der Wert dieser Variable wurde nicht definiert"
 msgid "Vault"
 msgstr "Bunker"
 
+msgid "Version"
+msgstr ""
+
 msgid "Vertical Synchronization\\Limits the number of frames per second to display frequency"
 msgstr ""
 
@@ -1805,6 +1816,9 @@ msgstr "Wespe tödlich verwundet"
 
 msgid "Waste"
 msgstr "Abfall"
+
+msgid "Website"
+msgstr ""
 
 msgid "Wheeled builder"
 msgstr ""
@@ -1989,6 +2003,9 @@ msgstr "\\Violette Fahne"
 
 msgid "\\Yellow flags"
 msgstr "\\Gelbe Fahne"
+
+msgid "by"
+msgstr ""
 
 msgid "colobot.info"
 msgstr "colobot.info"

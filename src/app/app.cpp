@@ -520,9 +520,7 @@ bool CApplication::Create()
         GetLogger()->Warn("Config could not be loaded. Default values will be used!\n");
     }
 
-    m_modManager->FindMods();
-    m_modManager->SaveMods();
-    m_modManager->UpdatePaths();
+    m_modManager->Init();
 
     // Create the sound instance.
     #ifdef OPENAL_SOUND

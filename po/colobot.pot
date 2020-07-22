@@ -123,21 +123,6 @@ msgstr ""
 msgid "2) Then press the key you want to use instead."
 msgstr ""
 
-msgid "Mods:"
-msgstr ""
-
-msgid "Information:"
-msgstr ""
-
-msgid "Description:"
-msgstr ""
-
-msgid "Enable\\Enable the selected mod"
-msgstr ""
-
-msgid "Disable\\Disable the selected mod"
-msgstr ""
-
 msgid "Face type:"
 msgstr ""
 
@@ -313,6 +298,36 @@ msgstr ""
 
 #, c-format
 msgid "%s: %d pts"
+msgstr ""
+
+msgid "Mods:"
+msgstr ""
+
+msgid "Information:"
+msgstr ""
+
+msgid "Description:"
+msgstr ""
+
+msgid "Enable\\Enable the selected mod"
+msgstr ""
+
+msgid "Disable\\Disable the selected mod"
+msgstr ""
+
+msgid "Unknown author"
+msgstr ""
+
+msgid "by"
+msgstr ""
+
+msgid "Version"
+msgstr ""
+
+msgid "Website"
+msgstr ""
+
+msgid "No description."
 msgstr ""
 
 msgid "Code battle"

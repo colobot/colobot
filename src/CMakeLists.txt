@@ -145,6 +145,8 @@ set(BASE_SOURCES
     app/controller.h
     app/input.cpp
     app/input.h
+    app/moddata.cpp
+    app/moddata.h
     app/modman.cpp
     app/modman.h
     app/pathman.cpp

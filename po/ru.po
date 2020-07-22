@@ -1012,6 +1012,10 @@ msgstr "Следующий объект\\Выбор следующего объ�
 msgid "No"
 msgstr "Нет"
 
+#, fuzzy
+msgid "No description."
+msgstr "Разрешение:"
+
 msgid "No energy in the subsoil"
 msgstr "Под землей нет запасов энергии"
 
@@ -1765,6 +1769,10 @@ msgstr "Юнит"
 msgid "Unknown Object"
 msgstr "Неизвестный объект"
 
+#, fuzzy
+msgid "Unknown author"
+msgstr "Неизвестная функция"
+
 msgid "Unknown command"
 msgstr "Неизвестная команда"
 
@@ -1801,6 +1809,9 @@ msgstr "Переменная не инициализирована"
 msgid "Vault"
 msgstr "Хранилище"
 
+msgid "Version"
+msgstr ""
+
 msgid "Vertical Synchronization\\Limits the number of frames per second to display frequency"
 msgstr ""
 
@@ -1818,6 +1829,9 @@ msgstr "Оса смертельно ранена"
 
 msgid "Waste"
 msgstr "Мусор"
+
+msgid "Website"
+msgstr ""
 
 msgid "Wheeled builder"
 msgstr ""
@@ -2002,6 +2016,9 @@ msgstr "\\Фиолетовый флаг"
 
 msgid "\\Yellow flags"
 msgstr "\\Желтый флаг"
+
+msgid "by"
+msgstr ""
 
 msgid "colobot.info"
 msgstr "colobot.info"

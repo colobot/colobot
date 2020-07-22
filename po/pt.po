@@ -1001,6 +1001,10 @@ msgstr "Próximo objeto\\Selecionar o próximo objeto"
 msgid "No"
 msgstr "Não"
 
+#, fuzzy
+msgid "No description."
+msgstr "Resolução:"
+
 msgid "No energy in the subsoil"
 msgstr "Nenhuma energia no subsolo"
 
@@ -1749,6 +1753,10 @@ msgstr "Unidade"
 msgid "Unknown Object"
 msgstr "Objeto desconhecido"
 
+#, fuzzy
+msgid "Unknown author"
+msgstr "Função desconhecida"
+
 msgid "Unknown command"
 msgstr "Comando desconhecido"
 
@@ -1785,6 +1793,9 @@ msgstr "Variável não inicializada"
 msgid "Vault"
 msgstr "Cofre"
 
+msgid "Version"
+msgstr ""
+
 msgid "Vertical Synchronization\\Limits the number of frames per second to display frequency"
 msgstr ""
 
@@ -1802,6 +1813,9 @@ msgstr "Vespa fatalmente ferida"
 
 msgid "Waste"
 msgstr "Desperdício"
+
+msgid "Website"
+msgstr ""
 
 msgid "Wheeled builder"
 msgstr ""
@@ -1986,6 +2000,9 @@ msgstr "\\Bandeiras violetas"
 
 msgid "\\Yellow flags"
 msgstr "\\Bandeiras amarelas"
+
+msgid "by"
+msgstr ""
 
 msgid "colobot.info"
 msgstr "colobot.info"

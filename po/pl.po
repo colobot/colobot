@@ -125,7 +125,7 @@ msgid "Apply changes\\Activates the changed settings"
 msgstr "Zastosuj zmiany\\Aktywuje zmienione ustawienia"
 
 msgid "Apply\\Apply the current mod configuration"
-msgstr ""
+msgstr "Zastosuj\\Zastosuj obecną konfigurację modów"
 
 msgid "Appropriate constructor missing"
 msgstr "Brak odpowiedniego konstruktora"
@@ -481,9 +481,8 @@ msgstr "Kopalnia"
 msgid "Descend\\Reduces the power of the jet"
 msgstr "W dół\\Zmniejsza moc silnika"
 
-#, fuzzy
 msgid "Description:"
-msgstr "Rozdzielczość:"
+msgstr "Opis:"
 
 msgid "Destroy"
 msgstr "Zniszcz"
@@ -497,9 +496,8 @@ msgstr "Destroyer"
 msgid "Device\\Driver and resolution settings"
 msgstr "Urządzenie\\Ustawienia sterownika i rozdzielczości"
 
-#, fuzzy
 msgid "Disable\\Disable the selected mod"
-msgstr "Usuń\\Usuwa zaznaczony plik"
+msgstr "Wyłącz\\Wyłącza zaznaczonego moda"
 
 msgid "Dividing by zero"
 msgstr "Dzielenie przez zero"
@@ -518,7 +516,7 @@ msgid "Down (\\key gdown;)"
 msgstr "Dół (\\key gdown;)"
 
 msgid "Down\\Move the selected mod down so it's loaded later (mods may overwrite files from the mods above them)"
-msgstr ""
+msgstr "W dół\\Przenieś zaznaczonego moda w dół, aby był załadowany później (mody mogą nadpisywać pliki modów wyżej)"
 
 msgid "Drawer bot"
 msgstr "Robot rysownik"
@@ -547,9 +545,8 @@ msgstr "Jajo"
 msgid "Empty character constant"
 msgstr ""
 
-#, fuzzy
 msgid "Enable\\Enable the selected mod"
-msgstr "Wczytaj\\Wczytuje zaznaczoną misję"
+msgstr "Włącz\\Włącza zaznaczonego moda"
 
 msgid "End of block missing"
 msgstr "Brak końca bloku"
@@ -778,7 +775,7 @@ msgid "Information exchange post"
 msgstr "Stacja przekaźnikowa informacji"
 
 msgid "Information:"
-msgstr ""
+msgstr "Informacje:"
 
 msgid "Instruction \"break\" outside a loop"
 msgstr "Polecenie \"break\" na zewnątrz pętli"
@@ -931,13 +928,13 @@ msgid "Missions\\Select mission"
 msgstr "Misje\\Wybierz misję"
 
 msgid "Mods"
-msgstr ""
+msgstr "Mody"
 
 msgid "Mods:"
-msgstr ""
+msgstr "Mody:"
 
 msgid "Mods\\Mod manager"
-msgstr ""
+msgstr "Mody\\Zarządzanie modami"
 
 msgid "Mouse inversion X\\Inversion of the scrolling direction on the X axis"
 msgstr "Odwrócenie myszy X\\Odwrócenie kierunków przewijania w poziomie"
@@ -986,6 +983,9 @@ msgstr "Następny obiekt\\Zaznacza następny obiekt"
 
 msgid "No"
 msgstr "Nie"
+
+msgid "No description."
+msgstr "Brak opisu."
 
 msgid "No energy in the subsoil"
 msgstr "Brak energii w ziemi"
@@ -1108,7 +1108,7 @@ msgid "Open (Ctrl+O)"
 msgstr "Otwórz (Ctrl+O)"
 
 msgid "Open Directory\\Open the mods directory"
-msgstr ""
+msgstr "Otwórz katalog\\Otwórz katalog z modami"
 
 msgid "Opening brace missing"
 msgstr "Brak klamry otwierającej"
@@ -1321,7 +1321,7 @@ msgid "Reflections on the buttons \\Shiny buttons"
 msgstr "Odbicia na przyciskach \\Świecące przyciski"
 
 msgid "Refresh\\Refresh the list of currently installed mods"
-msgstr ""
+msgstr "Odśwież\\Odśwież listę obecnie zainstalowanych modów"
 
 msgid "Remains of Apollo mission"
 msgstr "Pozostałości z misji Apollo"
@@ -1608,7 +1608,7 @@ msgid "The types of the two operands are incompatible"
 msgstr "Niezgodne typy operatorów"
 
 msgid "There are unsaved changes. Do you want to save them before leaving?"
-msgstr ""
+msgstr "Są niezapisane zmiany. Czy chcesz je zapisać przed wyjściem?"
 
 msgid "This class already exists"
 msgstr "Taka klasa już istnieje"
@@ -1734,6 +1734,9 @@ msgstr "Jednostka"
 msgid "Unknown Object"
 msgstr "Obiekt nieznany"
 
+msgid "Unknown author"
+msgstr "Nieznany autor"
+
 msgid "Unknown command"
 msgstr "Nieznane polecenie"
 
@@ -1747,7 +1750,7 @@ msgid "Up (\\key gup;)"
 msgstr "Góra (\\key gup;)"
 
 msgid "Up\\Move the selected mod up so it's loaded sooner (mods may overwrite files from the mods above them)"
-msgstr ""
+msgstr "W górę\\Przenieś zaznaczonego moda w górę, aby był załadowany wcześniej (mody mogą nadpisywać pliki modów wyżej)"
 
 msgid "Uranium deposit (site for derrick)"
 msgstr "Złoże uranu (miejsce na kopalnię)"
@@ -1770,6 +1773,9 @@ msgstr "Zmienna nie została zainicjalizowana"
 msgid "Vault"
 msgstr "Skrytka"
 
+msgid "Version"
+msgstr "Wersja"
+
 msgid "Vertical Synchronization\\Limits the number of frames per second to display frequency"
 msgstr "Synchronizacja pionowa\\Ogranicza ilość klatek na sekundę do wartości odświeżania ekranu"
 
@@ -1787,6 +1793,9 @@ msgstr "Osa śmiertelnie raniona"
 
 msgid "Waste"
 msgstr "Odpady"
+
+msgid "Website"
+msgstr "Strona internetowa"
 
 msgid "Wheeled builder"
 msgstr ""
@@ -1822,7 +1831,7 @@ msgid "Withdraw shield (\\key action;)"
 msgstr "Wyłącz osłonę (\\key action;)"
 
 msgid "Workshop\\Open the workshop to search for mods"
-msgstr ""
+msgstr "Warsztat\\Otwórz warsztat, aby poszukać modów"
 
 msgid "Worm"
 msgstr "Robal"
@@ -1973,6 +1982,9 @@ msgstr "\\Fioletowe flagi"
 
 msgid "\\Yellow flags"
 msgstr "\\Żółte flagi"
+
+msgid "by"
+msgstr "autorstwa"
 
 msgid "colobot.info"
 msgstr "colobot.info"

@@ -153,11 +153,16 @@ enum ResTextType
     RT_SCOREBOARD_RESULTS_TIME= 232,
     RT_SCOREBOARD_RESULTS_LINE= 233,
 
-    RT_MOD_LIST             = 234,
-    RT_MOD_DETAILS          = 235,
-    RT_MOD_SUMMARY          = 236,
-    RT_MOD_ENABLE           = 237,
-    RT_MOD_DISABLE          = 238,
+    RT_MOD_LIST               = 234,
+    RT_MOD_DETAILS            = 235,
+    RT_MOD_SUMMARY            = 236,
+    RT_MOD_ENABLE             = 237,
+    RT_MOD_DISABLE            = 238,
+    RT_MOD_UNKNOWN_AUTHOR     = 239,
+    RT_MOD_AUTHOR_FIELD_NAME  = 240,
+    RT_MOD_VERSION_FIELD_NAME = 241,
+    RT_MOD_WEBSITE_FIELD_NAME = 242,
+    RT_MOD_NO_SUMMARY         = 243,
 
     RT_MAX //! < number of values
 };

@@ -93,12 +93,6 @@ void InitializeRestext()
     stringsText[RT_SETUP_KEY1]       = TR("1) First click on the key you want to redefine.");
     stringsText[RT_SETUP_KEY2]       = TR("2) Then press the key you want to use instead.");
 
-    stringsText[RT_MOD_LIST]         = TR("Mods:");
-    stringsText[RT_MOD_DETAILS]      = TR("Information:");
-    stringsText[RT_MOD_SUMMARY]      = TR("Description:");
-    stringsText[RT_MOD_ENABLE]       = TR("Enable\\Enable the selected mod");
-    stringsText[RT_MOD_DISABLE]      = TR("Disable\\Disable the selected mod");
-
     stringsText[RT_PERSO_FACE]       = TR("Face type:");
     stringsText[RT_PERSO_GLASSES]    = TR("Eyeglasses:");
     stringsText[RT_PERSO_HAIR]       = TR("Hair color:");
@@ -165,7 +159,16 @@ void InitializeRestext()
     stringsText[RT_SCOREBOARD_RESULTS_TIME]= TR("Time: %s");
     stringsText[RT_SCOREBOARD_RESULTS_LINE]= TR("%s: %d pts");
 
-
+    stringsText[RT_MOD_LIST]               = TR("Mods:");
+    stringsText[RT_MOD_DETAILS]            = TR("Information:");
+    stringsText[RT_MOD_SUMMARY]            = TR("Description:");
+    stringsText[RT_MOD_ENABLE]             = TR("Enable\\Enable the selected mod");
+    stringsText[RT_MOD_DISABLE]            = TR("Disable\\Disable the selected mod");
+    stringsText[RT_MOD_UNKNOWN_AUTHOR]     = TR("Unknown author");
+    stringsText[RT_MOD_AUTHOR_FIELD_NAME]  = TR("by");
+    stringsText[RT_MOD_VERSION_FIELD_NAME] = TR("Version");
+    stringsText[RT_MOD_WEBSITE_FIELD_NAME] = TR("Website");
+    stringsText[RT_MOD_NO_SUMMARY]         = TR("No description.");
 
     stringsEvent[EVENT_LABEL_CODE_BATTLE]   = TR("Code battle");
 

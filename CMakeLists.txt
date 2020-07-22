@@ -189,7 +189,7 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     set(NORMAL_CXX_FLAGS "/wd\"4244\" /wd\"4309\" /wd\"4800\" /wd\"4996\" /wd\"4351\" /EHsc") # disable some useless warnings
     if(MSVC_STATIC)
         set(RELEASE_CXX_FLAGS "/MT /Ox")
-        set(DEBUG_CXX_FLAGS "/MTd /ZI")
+        set(DEBUG_CXX_FLAGS "/MTd /Od /ZI")
     else(MSVC_STATIC)
         set(RELEASE_CXX_FLAGS "/MD /Ox")
         set(DEBUG_CXX_FLAGS "/MDd /Od /ZI")

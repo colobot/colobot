@@ -19,13 +19,12 @@
 
 #pragma once
 
-#include "ui/maindialog.h"
-
-#include "ui/screen/screen_setup.h"
+#include "app/moddata.h"
 
 #include <unordered_map>
 #include <boost/optional.hpp>
 
+class CApplication;
 class CPathManager;
 
 struct Mod
@@ -33,7 +32,7 @@ struct Mod
     std::string name{};
     std::string path{};
     bool enabled = false;
-    //TODO: add metadata for UI
+    ModData data{};
 };
 
 /**
@@ -43,20 +42,22 @@ struct Mod
  * The order matters since the order in which files are loaded matters,
  * because some files can be overwritten.
  *
- * The list can be kept in the config file with the \ref SaveMods function.
+ * The changes in the list do not immediately apply
+ * and will be lost after the \ref ReloadMods call if they were not
+ * saved beforehand with \ref SaveMods.
  *
- * The changes in the list do not immediately apply.
- * Separate calls to \ref UpdatePaths and \ref ReloadResources, probably in this order,
- * need to be done for the changes to apply.
- *
+ * The changes are also lost to mods which are no longer found in the search paths.
  */
 class CModManager
 {
 public:
     CModManager(CApplication* app, CPathManager* pathManager);
 
+    //! Loads mods without resource reloading; should be called only once after creation
+    void Init();
+
     //! Finds all the mods along with their metadata
-    void FindMods();
+    void ReloadMods();
 
     //! Removes a mod from the list of loaded mods
     void EnableMod(size_t i);
@@ -70,14 +71,8 @@ public:
     //! Moves the selected mod down in the list so that it's loaded later than others, returns the new index
     size_t MoveDown(size_t i);
 
-    //! Reloads application resources so the enabled mods are applied
-    void ReloadResources();
-
     //! Saves the current configuration of mods to the config file
     void SaveMods();
-
-    //! Updates the paths in Path Manager according to the current mod configuration
-    void UpdatePaths();
 
     //! Number of mods loaded
     size_t CountMods() const;
@@ -89,9 +84,15 @@ public:
     const std::vector<Mod>& GetMods() const;
 
 private:
+    //! Updates the paths in Path Manager according to the current mod configuration
+    void UpdatePaths();
+
+    //! Reloads application resources so the enabled mods are applied
+    void ReloadResources();
+
+private:
     CApplication* m_app;
     CPathManager* m_pathManager;
 
-    //TODO: better data structure?
     std::vector<Mod> m_mods;
 };
