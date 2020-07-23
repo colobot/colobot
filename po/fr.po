@@ -377,9 +377,8 @@ msgstr "Changement de caméra\\Autre de point de vue"
 msgid "Change player\\Change player"
 msgstr "Autre joueur\\Choix du nom du joueur"
 
-#, fuzzy
 msgid "Changes"
-msgstr "Défis"
+msgstr ""
 
 msgid "Chapters:"
 msgstr "Liste des chapitres :"
@@ -489,9 +488,8 @@ msgstr "Derrick"
 msgid "Descend\\Reduces the power of the jet"
 msgstr "Descendre\\Diminuer la puissance du réacteur"
 
-#, fuzzy
 msgid "Description:"
-msgstr "Résolutions :"
+msgstr ""
 
 msgid "Destroy"
 msgstr "Détruire"
@@ -505,9 +503,8 @@ msgstr "Destructeur"
 msgid "Device\\Driver and resolution settings"
 msgstr "Affichage\\Pilote et résolution d'affichage"
 
-#, fuzzy
 msgid "Disable\\Disable the selected mod"
-msgstr "Supprimer\\Supprime l'enregistrement sélectionné"
+msgstr ""
 
 msgid "Dividing by zero"
 msgstr "Division par zéro"
@@ -555,9 +552,8 @@ msgstr "Oeuf"
 msgid "Empty character constant"
 msgstr ""
 
-#, fuzzy
 msgid "Enable\\Enable the selected mod"
-msgstr "Charger\\Charger la mission sélectionnée"
+msgstr ""
 
 msgid "End of block missing"
 msgstr "Il manque la fin du bloc"
@@ -1013,9 +1009,8 @@ msgstr "Non"
 msgid "No changes."
 msgstr ""
 
-#, fuzzy
 msgid "No description."
-msgstr "Résolutions :"
+msgstr ""
 
 msgid "No energy in the subsoil"
 msgstr "Pas d'énergie en sous-sol"
@@ -1765,9 +1760,8 @@ msgstr "Unité"
 msgid "Unknown Object"
 msgstr "Objet inconnu"
 
-#, fuzzy
 msgid "Unknown author"
-msgstr "Routine inconnue"
+msgstr ""
 
 msgid "Unknown command"
 msgstr "Commande inconnue"
@@ -2102,10 +2096,6 @@ msgstr "epsitec.com"
 
 #~ msgid "Mouse shadow\\Gives the mouse a shadow"
 #~ msgstr "Souris ombrée\\Jolie souris avec une ombre"
-
-#, fuzzy
-#~ msgid "No mods installed!"
-#~ msgstr "Pas de niveaux spéciaux installés !"
 
 #~ msgid "No other robot"
 #~ msgstr "Pas d'autre robot"

@@ -375,9 +375,8 @@ msgstr "Andere Kamera\\Sichtpunkt einstellen"
 msgid "Change player\\Change player"
 msgstr "Anderer Spieler\\Spielername ändern"
 
-#, fuzzy
 msgid "Changes"
-msgstr "Herausforderungen"
+msgstr ""
 
 msgid "Chapters:"
 msgstr "Liste der Kapitel:"
@@ -487,9 +486,8 @@ msgstr "Bohrturm"
 msgid "Descend\\Reduces the power of the jet"
 msgstr "Sinken\\Leistung des Triebwerks drosseln"
 
-#, fuzzy
 msgid "Description:"
-msgstr "Auflösung:"
+msgstr ""
 
 msgid "Destroy"
 msgstr "Zerstören"
@@ -503,9 +501,8 @@ msgstr "Einstampfer"
 msgid "Device\\Driver and resolution settings"
 msgstr "Bildschirm\\Driver und Bildschirmauflösung"
 
-#, fuzzy
 msgid "Disable\\Disable the selected mod"
-msgstr "Löschen\\Löscht die gespeicherte Mission"
+msgstr ""
 
 msgid "Dividing by zero"
 msgstr "Division durch Null"
@@ -553,9 +550,8 @@ msgstr "Ei"
 msgid "Empty character constant"
 msgstr ""
 
-#, fuzzy
 msgid "Enable\\Enable the selected mod"
-msgstr "Laden\\Öffnet eine gespeicherte Mission"
+msgstr ""
 
 msgid "End of block missing"
 msgstr "Es fehlt eine geschlossene geschweifte Klammer \"}\" (Ende des Blocks)"
@@ -1011,9 +1007,8 @@ msgstr "Nein"
 msgid "No changes."
 msgstr ""
 
-#, fuzzy
 msgid "No description."
-msgstr "Auflösung:"
+msgstr ""
 
 msgid "No energy in the subsoil"
 msgstr "Kein unterirdisches Energievorkommen"
@@ -1763,9 +1758,8 @@ msgstr "Einheit"
 msgid "Unknown Object"
 msgstr "Das Objekt existiert nicht"
 
-#, fuzzy
 msgid "Unknown author"
-msgstr "Unbekannte Funktion"
+msgstr ""
 
 msgid "Unknown command"
 msgstr "Befehl unbekannt"
@@ -2098,10 +2092,6 @@ msgstr "epsitec.com"
 
 #~ msgid "Mouse shadow\\Gives the mouse a shadow"
 #~ msgstr "Schatten unter der Maus\\Ein Schatten erscheint unter der Maus"
-
-#, fuzzy
-#~ msgid "No mods installed!"
-#~ msgstr "Keine benutzerdefinierten Level vorhanden"
 
 #~ msgid "No other robot"
 #~ msgstr "Kein anderer Roboter"

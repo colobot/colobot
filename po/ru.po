@@ -378,9 +378,8 @@ msgstr "Изменить вид\\Переключение между борто�
 msgid "Change player\\Change player"
 msgstr "Новый игрок\\Выберите имя для игрока"
 
-#, fuzzy
 msgid "Changes"
-msgstr "Задания"
+msgstr ""
 
 msgid "Chapters:"
 msgstr "Разделы:"
@@ -493,9 +492,8 @@ msgstr "Космический корабль"
 msgid "Descend\\Reduces the power of the jet"
 msgstr "Снижение и посадка\\Понижение мощности реактивного двигателя"
 
-#, fuzzy
 msgid "Description:"
-msgstr "Разрешение:"
+msgstr ""
 
 msgid "Destroy"
 msgstr "Уничтожить"
@@ -509,9 +507,8 @@ msgstr "Уничтожитель"
 msgid "Device\\Driver and resolution settings"
 msgstr "Устройство\\Драйвер и настройки разрешения"
 
-#, fuzzy
 msgid "Disable\\Disable the selected mod"
-msgstr "Удалить\\Удаление выбранного файла"
+msgstr ""
 
 msgid "Dividing by zero"
 msgstr "Деление на ноль (запрещено!)"
@@ -559,9 +556,8 @@ msgstr "Яйцо"
 msgid "Empty character constant"
 msgstr ""
 
-#, fuzzy
 msgid "Enable\\Enable the selected mod"
-msgstr "Загрузить\\Загрузить выбранную миссию"
+msgstr ""
 
 msgid "End of block missing"
 msgstr "Отсутствует конец блока"
@@ -1019,9 +1015,8 @@ msgstr "Нет"
 msgid "No changes."
 msgstr ""
 
-#, fuzzy
 msgid "No description."
-msgstr "Разрешение:"
+msgstr ""
 
 msgid "No energy in the subsoil"
 msgstr "Под землей нет запасов энергии"
@@ -1776,9 +1771,8 @@ msgstr "Юнит"
 msgid "Unknown Object"
 msgstr "Неизвестный объект"
 
-#, fuzzy
 msgid "Unknown author"
-msgstr "Неизвестная функция"
+msgstr ""
 
 msgid "Unknown command"
 msgstr "Неизвестная команда"
@@ -2110,10 +2104,6 @@ msgstr "epsitec.com"
 
 #~ msgid "Mouse shadow\\Gives the mouse a shadow"
 #~ msgstr "Тень мыши\\Мышь отбрасывает тень"
-
-#, fuzzy
-#~ msgid "No mods installed!"
-#~ msgstr "Не установленны пользовательские уровни!"
 
 #~ msgid "No other robot"
 #~ msgstr "Нет робота"

@@ -2076,10 +2076,6 @@ msgstr "epsitec.com"
 #~ msgid "Mouse shadow\\Gives the mouse a shadow"
 #~ msgstr "Cień kursora myszy\\Dodaje cień kursorowi myszy"
 
-#, fuzzy
-#~ msgid "No mods installed!"
-#~ msgstr "Brak zainstalowanych poziomów użytkownika!"
-
 #~ msgid "No other robot"
 #~ msgstr "Brak innego robota"
 

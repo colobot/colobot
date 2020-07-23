@@ -371,9 +371,8 @@ msgstr "Mudar câmera\\Alterna entre câmera incorporada e câmera seguidora"
 msgid "Change player\\Change player"
 msgstr "Mudar jogador\\Mudar jogador"
 
-#, fuzzy
 msgid "Changes"
-msgstr "Desafios"
+msgstr ""
 
 msgid "Chapters:"
 msgstr "Capítulos:"
@@ -484,9 +483,8 @@ msgstr "Extrator"
 msgid "Descend\\Reduces the power of the jet"
 msgstr "Descer\\Diminui o poder do jato"
 
-#, fuzzy
 msgid "Description:"
-msgstr "Resolução:"
+msgstr ""
 
 msgid "Destroy"
 msgstr "Destruir"
@@ -500,9 +498,8 @@ msgstr "Destruidor"
 msgid "Device\\Driver and resolution settings"
 msgstr "Dispositivo\\Configurações de driver e resolução"
 
-#, fuzzy
 msgid "Disable\\Disable the selected mod"
-msgstr "Excluir\\Exclui o arquivo selecionado"
+msgstr ""
 
 msgid "Dividing by zero"
 msgstr "Dividindo por zero"
@@ -550,9 +547,8 @@ msgstr "Ovo"
 msgid "Empty character constant"
 msgstr ""
 
-#, fuzzy
 msgid "Enable\\Enable the selected mod"
-msgstr "Carregar\\Carrega a missão selecionada"
+msgstr ""
 
 msgid "End of block missing"
 msgstr "Fim do bloco ausente"
@@ -1008,9 +1004,8 @@ msgstr "Não"
 msgid "No changes."
 msgstr ""
 
-#, fuzzy
 msgid "No description."
-msgstr "Resolução:"
+msgstr ""
 
 msgid "No energy in the subsoil"
 msgstr "Nenhuma energia no subsolo"
@@ -1760,9 +1755,8 @@ msgstr "Unidade"
 msgid "Unknown Object"
 msgstr "Objeto desconhecido"
 
-#, fuzzy
 msgid "Unknown author"
-msgstr "Função desconhecida"
+msgstr ""
 
 msgid "Unknown command"
 msgstr "Comando desconhecido"
@@ -2100,10 +2094,6 @@ msgstr "epsitec.com"
 
 #~ msgid "Mouse shadow\\Gives the mouse a shadow"
 #~ msgstr "Souris ombrée\\Jolie souris avec une ombre"
-
-#, fuzzy
-#~ msgid "No mods installed!"
-#~ msgstr "Nenhum nível de usuário instalado!"
 
 #~ msgid "No other robot"
 #~ msgstr "Pas d'autre robot"

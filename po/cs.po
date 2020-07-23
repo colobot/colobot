@@ -374,9 +374,8 @@ msgstr "Změnit kameru\\Přepíná mezi kamerou na robotu a za robotem"
 msgid "Change player\\Change player"
 msgstr "Změnit hráče\\Změnit hráče"
 
-#, fuzzy
 msgid "Changes"
-msgstr "Hlavolamy"
+msgstr ""
 
 msgid "Chapters:"
 msgstr "Kapitoly:"
@@ -486,9 +485,8 @@ msgstr "Vrtná věž"
 msgid "Descend\\Reduces the power of the jet"
 msgstr "Klesat\\Snížit tah tryskového motoru"
 
-#, fuzzy
 msgid "Description:"
-msgstr "Rozlišení:"
+msgstr ""
 
 msgid "Destroy"
 msgstr "Zbourat"
@@ -502,9 +500,8 @@ msgstr "Drtič"
 msgid "Device\\Driver and resolution settings"
 msgstr "Obrazovka\\Nastavení grafické karty a rozlišení"
 
-#, fuzzy
 msgid "Disable\\Disable the selected mod"
-msgstr "Smazat\\Smaže vybraný soubor"
+msgstr ""
 
 msgid "Dividing by zero"
 msgstr "Dělení nulou"
@@ -552,9 +549,8 @@ msgstr "Vejce"
 msgid "Empty character constant"
 msgstr ""
 
-#, fuzzy
 msgid "Enable\\Enable the selected mod"
-msgstr "Nahrát\\Nahraje vybranou misi"
+msgstr ""
 
 msgid "End of block missing"
 msgstr "Chybí konec bloku"
@@ -995,9 +991,8 @@ msgstr "Ne"
 msgid "No changes."
 msgstr ""
 
-#, fuzzy
 msgid "No description."
-msgstr "Rozlišení:"
+msgstr ""
 
 msgid "No energy in the subsoil"
 msgstr "Pod povrchem není zdroj energie"
@@ -1746,9 +1741,8 @@ msgstr "Jednotka"
 msgid "Unknown Object"
 msgstr "Neznámý objekt"
 
-#, fuzzy
 msgid "Unknown author"
-msgstr "Neznámá funkce"
+msgstr ""
 
 msgid "Unknown command"
 msgstr "Neznámý příkaz"
@@ -2004,7 +1998,3 @@ msgstr "colobot.info"
 
 msgid "epsitec.com"
 msgstr "epsitec.com"
-
-#, fuzzy
-#~ msgid "No mods installed!"
-#~ msgstr "Žádné uživatelské mapy nejsou nainstalovány!"
