@@ -35,6 +35,7 @@ uniform vec2 uni_FogRange;
 uniform vec4 uni_FogColor;
 
 uniform float uni_ShadowColor;
+uniform float uni_ShadowTexelSize;
 
 struct LightParams
 {
@@ -56,6 +57,7 @@ uniform Material uni_Material;
 uniform int uni_LightCount;
 uniform LightParams uni_Light[4];
 
+varying vec3 pass_CameraDirection;
 varying float pass_Distance;
 varying vec4 pass_Color;
 varying vec3 pass_Normal;
@@ -76,16 +78,17 @@ void main()
         vec4 specular = vec4(0.0f);
 
         vec3 normal = normalize(pass_Normal);
+        vec3 camera = normalize(pass_CameraDirection);
 
         for (int i = 0; i < uni_LightCount; i++)
         {
             LightParams light = uni_Light[i];
 
-            vec3 lightDirection = light.Position.xyz;
-            vec3 reflectDirection = -reflect(lightDirection, normal);
+            vec3 lightDirection = normalize(light.Position.xyz);
+            vec3 reflectAxis = normalize(lightDirection + camera);
 
             float diffuseComponent = clamp(dot(normal, lightDirection), 0.0f, 1.0f);
-            float specularComponent = clamp(pow(dot(normal, lightDirection + reflectDirection), 10.0f), 0.0f, 1.0f);
+            float specularComponent = pow(clamp(dot(normal, reflectAxis), 0.0f, 1.0f), 10.0f);
 
             ambient += light.Ambient;
             diffuse += diffuseComponent * light.Diffuse;
@@ -97,13 +100,11 @@ void main()
         if (uni_TextureEnabled[2])
         {
 #ifdef CONFIG_QUALITY_SHADOWS
-            float offset = 0.00025f;
-
             float value = (1.0f / 5.0f) * (shadow2D(uni_ShadowTexture, pass_TexCoord2).x
-                    + shadow2D(uni_ShadowTexture, pass_TexCoord2 + vec3( offset,    0.0f, 0.0f)).x
-                    + shadow2D(uni_ShadowTexture, pass_TexCoord2 + vec3(-offset,    0.0f, 0.0f)).x
-                    + shadow2D(uni_ShadowTexture, pass_TexCoord2 + vec3(   0.0f,  offset, 0.0f)).x
-                    + shadow2D(uni_ShadowTexture, pass_TexCoord2 + vec3(   0.0f, -offset, 0.0f)).x);
+                    + shadow2D(uni_ShadowTexture, pass_TexCoord2 + vec3( uni_ShadowTexelSize,    0.0f, 0.0f)).x
+                    + shadow2D(uni_ShadowTexture, pass_TexCoord2 + vec3(-uni_ShadowTexelSize,    0.0f, 0.0f)).x
+                    + shadow2D(uni_ShadowTexture, pass_TexCoord2 + vec3(   0.0f,  uni_ShadowTexelSize, 0.0f)).x
+                    + shadow2D(uni_ShadowTexture, pass_TexCoord2 + vec3(   0.0f, -uni_ShadowTexelSize, 0.0f)).x);
 
             shadow = mix(uni_ShadowColor, 1.0f, value);
 #else

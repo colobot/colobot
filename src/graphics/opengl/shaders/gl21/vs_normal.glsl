@@ -24,7 +24,9 @@ uniform mat4 uni_ViewMatrix;
 uniform mat4 uni_ModelMatrix;
 uniform mat4 uni_ShadowMatrix;
 uniform mat4 uni_NormalMatrix;
+uniform vec3 uni_CameraPosition;
 
+varying vec3 pass_CameraDirection;
 varying float pass_Distance;
 varying vec4 pass_Color;
 varying vec3 pass_Normal;
@@ -40,6 +42,7 @@ void main()
 
     gl_Position = uni_ProjectionMatrix * eyeSpace;
 
+    pass_CameraDirection = uni_CameraPosition - position.xyz;
     pass_Color = gl_Color;
     pass_Normal = normalize((uni_NormalMatrix * vec4(gl_Normal, 0.0f)).xyz);
     pass_Distance = abs(eyeSpace.z / eyeSpace.w);

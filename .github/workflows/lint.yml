@@ -13,16 +13,61 @@ jobs:
     steps:
     - name: Download Colobot dependencies
       run: sudo apt-get update && sudo apt-get install -y --no-install-recommends build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-regex-dev libphysfs-dev gettext git po4a vorbis-tools librsvg2-bin xmlstarlet
-    # TODO: migrate colobot-lint to GitHub Actions
+    - name: Download colobot-lint dependencies
+      run: sudo apt-get install -y --no-install-recommends clang-3.6 libtinyxml2.6.2v5
+    - run: pip install requests
+    - run: mkdir -p /tmp/colobot-lint
     - name: Download colobot-lint
+      working-directory: /tmp/colobot-lint
+      shell: python
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        REPO_NAME: colobot/colobot-lint
+        BRANCH_NAME: master
+        ARTIFACT_NAME: colobot-lint
       run: |
-        sudo apt-get install -y --no-install-recommends clang-3.6 libtinyxml2.6.2v5
-        mkdir -p /tmp/colobot-lint
-        cd /tmp/colobot-lint
-        wget -O colobot-lint.zip "https://compiled.colobot.info/job/colobot/job/colobot-lint/job/dev/lastSuccessfulBuild/artifact/*zip*/archive.zip"
+        import os
+        import requests
 
+        # How there can be no builtin action to download the latest artifact from another repo?!
+
+        s = requests.Session()
+        s.headers.update({
+            'Authorization': 'token ' + os.environ['GITHUB_TOKEN'],
+            'Accept': 'application/vnd.github.v3+json'
+        })
+
+        r = s.get("https://api.github.com/repos/" + os.environ['REPO_NAME'] + "/actions/runs", params={'branch': os.environ['BRANCH_NAME'], 'event': 'push', 'status': 'success'})
+        r.raise_for_status()
+
+        # Querying for "dev" returns all branches that have "dev" anywhere in the name... is that a GitHub bug or intended behaviour?
+        runs = list(filter(lambda x: x['head_branch'] == os.environ['BRANCH_NAME'], r.json()['workflow_runs']))
+        if len(runs) == 0:
+            raise Exception('No valid run found')
+        run = runs[0]
+        print("Using colobot-lint from run #{} ({}) for commit {}".format(run['run_number'], run['id'], run['head_sha']))
+
+        r = s.get(run['artifacts_url'])
+        r.raise_for_status()
+        artifacts = list(filter(lambda x: x['name'] == os.environ['ARTIFACT_NAME'], r.json()['artifacts']))
+        if len(artifacts) != 1:
+            raise Exception('Artifact not found')
+        artifact = artifacts[0]
+        print(artifact['archive_download_url'])
+
+        r = s.get(artifact['archive_download_url'], stream=True)
+        r.raise_for_status()
+        with open(os.environ['ARTIFACT_NAME'] + '.zip', 'wb') as f:
+            for block in r.iter_content(1024):
+                f.write(block)
+        print("Download finished")
+    - name: Unpack colobot-lint
+      working-directory: /tmp/colobot-lint
+      run: |
         # Unzip the archive
-        unzip ./colobot-lint.zip
+        mkdir archive; cd archive
+        unzip ../colobot-lint.zip
+        cd ..
         # Workaround for Clang not finding system headers
         mkdir ./bin
         mv ./archive/build/colobot-lint ./bin/
@@ -73,11 +118,11 @@ jobs:
       with:
         name: HTML results
         path: build/html_report
-    - run: pip install requests
     - name: Send linter results to GitHub
       shell: python
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        ACTUALLY_SEND: ${{ github.event.type != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
       run: |
         import os
         import sys
@@ -185,21 +230,25 @@ jobs:
 
         summary = 'colobot-lint found {} issues'.format(len(annotations))
         all_ok = len(annotations) == 0
+        print('Conclusion: {}'.format(summary))
 
-        # Annotations have to be sent in batches of 50
-        first = True
-        while first or len(annotations) > 0:
-            first = False
-            to_send = annotations[:50]
-            annotations = annotations[50:]
-            data = {
-                'output': {
-                    'title': summary,
-                    'summary': summary,
-                    'annotations': to_send
+        if os.environ['ACTUALLY_SEND'] != "true":
+            print('Skip uploading the results as annotations because tokens from forks are readonly and there seems to be no way to do it. Blame GitHub Actions devs.')
+        else:
+            # Annotations have to be sent in batches of 50
+            first = True
+            while first or len(annotations) > 0:
+                first = False
+                to_send = annotations[:50]
+                annotations = annotations[50:]
+                data = {
+                    'output': {
+                        'title': summary,
+                        'summary': summary,
+                        'annotations': to_send
+                    }
                 }
-            }
-            r = s.patch(check_run['url'], json=data)
-            r.raise_for_status()
+                r = s.patch(check_run['url'], json=data)
+                r.raise_for_status()
 
         sys.exit(0 if all_ok else 1)

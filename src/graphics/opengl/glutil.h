@@ -167,6 +167,8 @@ struct UniformLocations
     GLint shadowMatrix = -1;
     //! Normal matrix
     GLint normalMatrix = -1;
+    //! Camera position
+    GLint cameraPosition = -1;
 
     //! Primary texture sampler
     GLint primaryTexture = -1;
@@ -193,6 +195,8 @@ struct UniformLocations
 
     //! Shadow color
     GLint shadowColor = -1;
+    //! Shadow texel size
+    GLint shadowTexelSize = -1;
 
     // Number of enabled lights
     GLint lightCount = -1;
