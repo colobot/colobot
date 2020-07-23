@@ -67,7 +67,7 @@ void CModManager::Init()
     }
 
     // Search the folders for mods
-    const auto rawPaths = m_pathManager->FindMods();
+    auto rawPaths = m_pathManager->FindMods();
     std::map<std::string, std::string> modPaths;
     for (const auto& path : rawPaths)
     {
@@ -108,9 +108,9 @@ void CModManager::Init()
     // Load the metadata for each mod
     for (auto& mod : m_mods)
     {
-        m_pathManager->AddMod(mod.path);
+        MountMod(mod, "/temp/mod");
         LoadModData(mod);
-        m_pathManager->RemoveMod(mod.path);
+        UnmountMod(mod);
     }
 
     UpdatePaths();
@@ -118,8 +118,8 @@ void CModManager::Init()
 
 void CModManager::ReloadMods()
 {
+    UnmountAllMods();
     m_mods.clear();
-    m_pathManager->RemoveAllMods();
 
     Init();
 
@@ -165,12 +165,11 @@ size_t CModManager::MoveDown(size_t i)
 
 void CModManager::UpdatePaths()
 {
-    m_pathManager->RemoveAllMods();
     for (const auto& mod : m_mods)
     {
         if (mod.enabled)
         {
-            m_pathManager->AddMod(mod.path);
+            MountMod(mod);
         }
     }
 }
@@ -218,7 +217,7 @@ void CModManager::LoadModData(Mod& mod)
 
     try
     {
-        CLevelParser levelParser("manifest.txt");
+        CLevelParser levelParser("temp/mod/manifest.txt");
         if (levelParser.Exists())
         {
             levelParser.Load();
@@ -278,5 +277,31 @@ void CModManager::LoadModData(Mod& mod)
     catch (CLevelParserException& e)
     {
         GetLogger()->Warn("Failed parsing manifest for mod %s: %s\n", mod.name.c_str(), e.what());
+    }
+
+    // Changes
+    data.changes = CResourceManager::ListDirectories("temp/mod");
+}
+
+void CModManager::MountMod(const Mod& mod, const std::string& mountPoint)
+{
+    GetLogger()->Debug("Mounting mod: '%s' at path %s\n", mod.path.c_str(), mountPoint.c_str());
+    CResourceManager::AddLocation(mod.path, true, mountPoint);
+}
+
+void CModManager::UnmountMod(const Mod& mod)
+{
+    if (CResourceManager::LocationExists(mod.path))
+    {
+        GetLogger()->Debug("Unmounting mod: '%s'\n", mod.path.c_str());
+        CResourceManager::RemoveLocation(mod.path);
+    }
+}
+
+void CModManager::UnmountAllMods()
+{
+    for (const auto& mod : m_mods)
+    {
+        UnmountMod(mod);
     }
 }

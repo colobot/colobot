@@ -442,7 +442,26 @@ void CScreenModList::UpdateModDetails()
         details += "\\t;" + websiteFieldName + '\n' + data.website + '\n';
     }
 
+    std::string changesFieldName;
+    GetResource(RES_TEXT, RT_MOD_CHANGES_FIELD_NAME, changesFieldName);
+    details += "\\t;" + changesFieldName + '\n';
+    if (!data.changes.empty())
+    {
+        for (const auto& change : data.changes)
+        {
+            details += change + '\n';
+        }
+    }
+    else
+    {
+        std::string noChanges;
+        GetResource(RES_TEXT, RT_MOD_NO_CHANGES, noChanges);
+        details += noChanges;
+    }
+
     pe->SetText(details);
+
+    pe->SetFirstLine(0);
 }
 
 void CScreenModList::UpdateModSummary()

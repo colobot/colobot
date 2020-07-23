@@ -36,7 +36,7 @@ public:
     static std::string CleanPath(const std::string &path);
 
     //! Add a location to the search path
-    static bool AddLocation(const std::string &location, bool prepend = true);
+    static bool AddLocation(const std::string &location, bool prepend = true, const std::string &mountPoint = "");
     //! Remove a location from the search path
     static bool RemoveLocation(const std::string &location);
     //! List all locations in the search path

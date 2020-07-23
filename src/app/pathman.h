@@ -37,12 +37,6 @@ public:
     void SetDataPath(const std::string &dataPath);
     void SetLangPath(const std::string &langPath);
     void SetSavePath(const std::string &savePath);
-    void AddModSearchDir(const std::string &modSearchDirPath);
-    void AddMod(const std::string &modPath);
-    void RemoveMod(const std::string &modPath);
-    void RemoveAllMods();
-    bool ModLoaded(const std::string& modPath);
-    std::vector<std::string> FindMods() const;
 
     const std::string& GetDataPath();
     const std::string& GetLangPath();
@@ -53,8 +47,14 @@ public:
     //! Loads configured paths
     void InitPaths();
 
+    //! Adds a path to a mod
+    void AddMod(const std::string& path);
+    //! Find paths to mods in mod search directories
+    std::vector<std::string> FindMods() const;
+    //! Adds a mod search directory
+    void AddModSearchDir(const std::string &modSearchDirPath);
+
 private:
-    //! Loads all mods from given directory
     std::vector<std::string> FindModsInDir(const std::string &dir) const;
 
 private:
@@ -66,6 +66,6 @@ private:
     std::string m_savePath;
     //! Mod search paths
     std::vector<std::string> m_modSearchDirs;
-    //! Mod paths
+    //! Additional mod paths
     std::vector<std::string> m_mods;
 };

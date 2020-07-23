@@ -19,6 +19,7 @@
 
 #pragma once
 
+#include <string>
 #include <unordered_map>
 #include <vector>
 
@@ -32,6 +33,7 @@ struct ModData
     std::string version{};
     std::string website{};
     std::string summary{};
+    std::vector<std::string> changes{};
 };
 
 struct Mod
@@ -99,6 +101,10 @@ private:
 
     //! Load mod data into mod
     void LoadModData(Mod& mod);
+
+    void MountMod(const Mod& mod, const std::string& mountPoint = "");
+    void UnmountMod(const Mod& mod);
+    void UnmountAllMods();
 
 private:
     CApplication* m_app;

@@ -162,7 +162,9 @@ enum ResTextType
     RT_MOD_AUTHOR_FIELD_NAME  = 240,
     RT_MOD_VERSION_FIELD_NAME = 241,
     RT_MOD_WEBSITE_FIELD_NAME = 242,
-    RT_MOD_NO_SUMMARY         = 243,
+    RT_MOD_CHANGES_FIELD_NAME = 243,
+    RT_MOD_NO_SUMMARY         = 244,
+    RT_MOD_NO_CHANGES         = 245,
 
     RT_MAX //! < number of values
 };

@@ -373,6 +373,9 @@ msgstr "Zmień kamerę\\Przełącza pomiędzy kamerą pokładową i śledzącą"
 msgid "Change player\\Change player"
 msgstr "Zmień gracza\\Zmień gracza"
 
+msgid "Changes"
+msgstr "Zmiany"
+
 msgid "Chapters:"
 msgstr "Rozdziały:"
 
@@ -983,6 +986,9 @@ msgstr "Następny obiekt\\Zaznacza następny obiekt"
 
 msgid "No"
 msgstr "Nie"
+
+msgid "No changes."
+msgstr "Brak zmian."
 
 msgid "No description."
 msgstr "Brak opisu."

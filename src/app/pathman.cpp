@@ -64,56 +64,6 @@ void CPathManager::SetSavePath(const std::string &savePath)
     m_savePath = savePath;
 }
 
-void CPathManager::AddModSearchDir(const std::string &modSearchDirPath)
-{
-    m_modSearchDirs.push_back(modSearchDirPath);
-}
-
-void CPathManager::AddMod(const std::string &modPath)
-{
-    GetLogger()->Debug("Adding mod: '%s'\n", modPath.c_str());
-    CResourceManager::AddLocation(modPath, true);
-    m_mods.push_back(modPath);
-}
-
-void CPathManager::RemoveMod(const std::string &modPath)
-{
-    GetLogger()->Debug("Removing mod: '%s'\n", modPath.c_str());
-    CResourceManager::RemoveLocation(modPath);
-    auto it = std::find(m_mods.cbegin(), m_mods.cend(), modPath);
-    if (it != m_mods.cend())
-        m_mods.erase(it);
-}
-
-void CPathManager::RemoveAllMods()
-{
-    for (const auto& modPath : m_mods)
-    {
-        CResourceManager::RemoveLocation(modPath);
-    }
-    m_mods.clear();
-}
-
-bool CPathManager::ModLoaded(const std::string& modPath)
-{
-    return std::find(m_mods.cbegin(), m_mods.cend(), modPath) != m_mods.end();
-}
-
-std::vector<std::string> CPathManager::FindMods() const
-{
-    std::vector<std::string> mods;
-    GetLogger()->Info("Found mods:\n");
-    for (const auto &searchPath : m_modSearchDirs)
-    {
-        for (const auto &modPath : FindModsInDir(searchPath))
-        {
-            GetLogger()->Info("  * %s\n", modPath.c_str());
-            mods.push_back(modPath);
-        }
-    }
-    return mods;
-}
-
 const std::string& CPathManager::GetDataPath()
 {
     return m_dataPath;
@@ -189,6 +139,44 @@ void CPathManager::InitPaths()
     GetLogger()->Debug("PHYSFS search path is:\n");
     for (const std::string& path : CResourceManager::GetLocations())
         GetLogger()->Debug("  * %s\n", path.c_str());
+}
+
+void CPathManager::AddMod(const std::string &path)
+{
+    m_mods.push_back(path);
+}
+
+std::vector<std::string> CPathManager::FindMods() const
+{
+    std::vector<std::string> mods;
+    GetLogger()->Info("Found mods:\n");
+    for (const auto &searchPath : m_modSearchDirs)
+    {
+        for (const auto &modPath : FindModsInDir(searchPath))
+        {
+            GetLogger()->Info("  * %s\n", modPath.c_str());
+            mods.push_back(modPath);
+        }
+    }
+    GetLogger()->Info("Additional mod paths:\n");
+    for (const auto& modPath : m_mods)
+    {
+        if (boost::filesystem::exists(modPath))
+        {
+            GetLogger()->Info("  * %s\n", modPath.c_str());
+            mods.push_back(modPath);
+        }
+        else
+        {
+            GetLogger()->Warn("Mod does not exist: %s\n", modPath.c_str());
+        }
+    }
+    return mods;
+}
+
+void CPathManager::AddModSearchDir(const std::string &modSearchDirPath)
+{
+    m_modSearchDirs.push_back(modSearchDirPath);
 }
 
 std::vector<std::string> CPathManager::FindModsInDir(const std::string &dir) const

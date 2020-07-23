@@ -378,6 +378,10 @@ msgstr "Изменить вид\\Переключение между борто�
 msgid "Change player\\Change player"
 msgstr "Новый игрок\\Выберите имя для игрока"
 
+#, fuzzy
+msgid "Changes"
+msgstr "Задания"
+
 msgid "Chapters:"
 msgstr "Разделы:"
 
@@ -1011,6 +1015,9 @@ msgstr "Следующий объект\\Выбор следующего объ�
 
 msgid "No"
 msgstr "Нет"
+
+msgid "No changes."
+msgstr ""
 
 #, fuzzy
 msgid "No description."

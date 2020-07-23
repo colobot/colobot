@@ -374,6 +374,10 @@ msgstr "Změnit kameru\\Přepíná mezi kamerou na robotu a za robotem"
 msgid "Change player\\Change player"
 msgstr "Změnit hráče\\Změnit hráče"
 
+#, fuzzy
+msgid "Changes"
+msgstr "Hlavolamy"
+
 msgid "Chapters:"
 msgstr "Kapitoly:"
 
@@ -987,6 +991,9 @@ msgstr "Další objekt\\Vybere následující objekt"
 
 msgid "No"
 msgstr "Ne"
+
+msgid "No changes."
+msgstr ""
 
 #, fuzzy
 msgid "No description."

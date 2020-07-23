@@ -168,7 +168,9 @@ void InitializeRestext()
     stringsText[RT_MOD_AUTHOR_FIELD_NAME]  = TR("by");
     stringsText[RT_MOD_VERSION_FIELD_NAME] = TR("Version");
     stringsText[RT_MOD_WEBSITE_FIELD_NAME] = TR("Website");
+    stringsText[RT_MOD_CHANGES_FIELD_NAME] = TR("Changes");
     stringsText[RT_MOD_NO_SUMMARY]         = TR("No description.");
+    stringsText[RT_MOD_NO_CHANGES]         = TR("No changes.");
 
     stringsEvent[EVENT_LABEL_CODE_BATTLE]   = TR("Code battle");
 

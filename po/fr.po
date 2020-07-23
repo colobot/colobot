@@ -377,6 +377,10 @@ msgstr "Changement de caméra\\Autre de point de vue"
 msgid "Change player\\Change player"
 msgstr "Autre joueur\\Choix du nom du joueur"
 
+#, fuzzy
+msgid "Changes"
+msgstr "Défis"
+
 msgid "Chapters:"
 msgstr "Liste des chapitres :"
 
@@ -1005,6 +1009,9 @@ msgstr "Sélectionner l'objet suivant\\Sélectionner l'objet suivant"
 
 msgid "No"
 msgstr "Non"
+
+msgid "No changes."
+msgstr ""
 
 #, fuzzy
 msgid "No description."

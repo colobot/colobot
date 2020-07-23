@@ -371,6 +371,10 @@ msgstr "Mudar câmera\\Alterna entre câmera incorporada e câmera seguidora"
 msgid "Change player\\Change player"
 msgstr "Mudar jogador\\Mudar jogador"
 
+#, fuzzy
+msgid "Changes"
+msgstr "Desafios"
+
 msgid "Chapters:"
 msgstr "Capítulos:"
 
@@ -1000,6 +1004,9 @@ msgstr "Próximo objeto\\Selecionar o próximo objeto"
 
 msgid "No"
 msgstr "Não"
+
+msgid "No changes."
+msgstr ""
 
 #, fuzzy
 msgid "No description."

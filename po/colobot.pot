@@ -327,7 +327,13 @@ msgstr ""
 msgid "Website"
 msgstr ""
 
+msgid "Changes"
+msgstr ""
+
 msgid "No description."
+msgstr ""
+
+msgid "No changes."
 msgstr ""
 
 msgid "Code battle"
