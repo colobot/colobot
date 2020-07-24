@@ -251,7 +251,7 @@ void CModManager::LoadModData(Mod& mod)
                     auto major = boost::lexical_cast<std::string>(line->GetParam("major")->AsInt());
                     auto minor = boost::lexical_cast<std::string>(line->GetParam("minor")->AsInt());
                     auto patch = boost::lexical_cast<std::string>(line->GetParam("patch")->AsInt());
-                    data.version = boost::algorithm::join(std::vector<std::string>{ major, minor, patch }, ",");
+                    data.version = boost::algorithm::join(std::vector<std::string>{ major, minor, patch }, ".");
                 }
             }
 
