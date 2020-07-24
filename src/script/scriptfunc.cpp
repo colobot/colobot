@@ -1565,7 +1565,7 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
         {
             power = 1.0f;
         }
-        bool exists = !std::string(GetObjectName(type)).empty(); //The object type exists in object_type.h
+        bool exists = IsValidObjectTypeId(type) && type != OBJECT_NULL && type != OBJECT_MAX && type != OBJECT_MOBILEpr;
         if (exists)
         {
             object = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, type, power);
