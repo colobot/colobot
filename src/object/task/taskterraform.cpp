@@ -420,12 +420,14 @@ bool CTaskTerraform::Terraform()
             {
                 if ( dist > 5.0f )  continue;
                 m_engine->GetPyroManager()->Create(Gfx::PT_FRAGO, pObj);
+                m_main->NotifyObjectDestroyed(pObj);
             }
             else if ( type == OBJECT_TNT  ||
                       type == OBJECT_BOMB ) // Explosives?
             {
                 if ( dist > 5.0f )  continue;
                 m_engine->GetPyroManager()->Create(Gfx::PT_EXPLOT, pObj);
+                m_main->NotifyObjectDestroyed(pObj);
                 dynamic_cast<CDamageableObject&>(*m_object).DamageObject(DamageType::Explosive, 0.9f);
             }
             else if ( type == OBJECT_PLANT0    ||
@@ -450,6 +452,7 @@ bool CTaskTerraform::Terraform()
             {
                 if ( dist > 5.0f )  continue;
                 m_engine->GetPyroManager()->Create(Gfx::PT_FRAGT, pObj);
+                m_main->NotifyObjectDestroyed(pObj);
             }
         }
         else

@@ -583,6 +583,17 @@ void COldObject::DestroyObject(DestructionType type, CObject* killer)
         SetDying(DeathType::Exploding);
     }
     m_engine->GetPyroManager()->Create(pyroType, this);
+    if ( pyroType == Gfx::PT_FRAGT  ||
+         pyroType == Gfx::PT_FRAGO  ||
+         pyroType == Gfx::PT_FRAGW  ||
+         pyroType == Gfx::PT_EXPLOT ||
+         pyroType == Gfx::PT_EXPLOO ||
+         pyroType == Gfx::PT_EXPLOW ||
+         pyroType == Gfx::PT_BURNT  ||
+         pyroType == Gfx::PT_BURNO  )
+    {
+        m_main->NotifyObjectDestroyed(this);
+    }
 
     if ( Implements(ObjectInterfaceType::Programmable) )
     {

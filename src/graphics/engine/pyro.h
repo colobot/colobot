@@ -83,10 +83,6 @@ public:
     bool        EventProcess(const Event& event);
 
 protected:
-    //! Displays the error or eventual information
-    //! Information can be linked to the destruction of an insect, a vehicle or building
-    void        DisplayError(PyroType type, CObject* obj);
-
     //! Creates light to accompany a pyrotechnic effect
     void        CreateLight(Math::Vector pos, float height);
     //! Removes the binding to a pyrotechnic effect

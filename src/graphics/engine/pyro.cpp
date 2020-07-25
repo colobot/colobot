@@ -84,8 +84,6 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
     m_engine->GetObjectBBox(objRank, min, max);
     Math::Vector pos = obj->GetPosition();
 
-    DisplayError(type, obj);  // displays eventual messages
-
     for (const auto& crashSphere : obj->GetAllCrashSpheres())
     {
         m_crashSpheres.push_back(crashSphere.sphere);
@@ -1260,93 +1258,6 @@ void CPyro::CutObjectLink(CObject* obj)
 {
     if (m_object == obj)
         m_object = nullptr;
-}
-
-void CPyro::DisplayError(PyroType type, CObject* obj)
-{
-    ObjectType oType = obj->GetType();
-
-    if ( type == PT_FRAGT  ||
-         type == PT_FRAGO  ||
-         type == PT_FRAGW  ||
-         type == PT_EXPLOT ||
-         type == PT_EXPLOO ||
-         type == PT_EXPLOW ||
-         type == PT_BURNT  ||
-         type == PT_BURNO  )
-    {
-        Error err = ERR_OK;
-        if ( oType == OBJECT_MOTHER )  err = INFO_DELETEMOTHER;
-        if ( oType == OBJECT_ANT    )  err = INFO_DELETEANT;
-        if ( oType == OBJECT_BEE    )  err = INFO_DELETEBEE;
-        if ( oType == OBJECT_WORM   )  err = INFO_DELETEWORM;
-        if ( oType == OBJECT_SPIDER )  err = INFO_DELETESPIDER;
-
-        if ( oType == OBJECT_MOBILEwa ||
-             oType == OBJECT_MOBILEta ||
-             oType == OBJECT_MOBILEfa ||
-             oType == OBJECT_MOBILEia ||
-             oType == OBJECT_MOBILEwb ||
-             oType == OBJECT_MOBILEtb ||
-             oType == OBJECT_MOBILEfb ||
-             oType == OBJECT_MOBILEib ||
-             oType == OBJECT_MOBILEwc ||
-             oType == OBJECT_MOBILEtc ||
-             oType == OBJECT_MOBILEfc ||
-             oType == OBJECT_MOBILEic ||
-             oType == OBJECT_MOBILEwi ||
-             oType == OBJECT_MOBILEti ||
-             oType == OBJECT_MOBILEfi ||
-             oType == OBJECT_MOBILEii ||
-             oType == OBJECT_MOBILEws ||
-             oType == OBJECT_MOBILEts ||
-             oType == OBJECT_MOBILEfs ||
-             oType == OBJECT_MOBILEis ||
-             oType == OBJECT_MOBILErt ||
-             oType == OBJECT_MOBILErc ||
-             oType == OBJECT_MOBILErr ||
-             oType == OBJECT_MOBILErs ||
-             oType == OBJECT_MOBILEsa ||
-             oType == OBJECT_MOBILEwt ||
-             oType == OBJECT_MOBILEtt ||
-             oType == OBJECT_MOBILEft ||
-             oType == OBJECT_MOBILEit ||
-             oType == OBJECT_MOBILErp ||
-             oType == OBJECT_MOBILEst ||
-             oType == OBJECT_MOBILEdr )
-        {
-            err = ERR_DELETEMOBILE;
-        }
-
-        if ( oType == OBJECT_DERRICK  ||
-             oType == OBJECT_FACTORY  ||
-             oType == OBJECT_STATION  ||
-             oType == OBJECT_CONVERT  ||
-             oType == OBJECT_REPAIR   ||
-             oType == OBJECT_DESTROYER||
-             oType == OBJECT_TOWER    ||
-             oType == OBJECT_RESEARCH ||
-             oType == OBJECT_RADAR    ||
-             oType == OBJECT_INFO     ||
-             oType == OBJECT_ENERGY   ||
-             oType == OBJECT_LABO     ||
-             oType == OBJECT_NUCLEAR  ||
-             oType == OBJECT_PARA     ||
-             oType == OBJECT_SAFE     ||
-             oType == OBJECT_HUSTON   ||
-             oType == OBJECT_START    ||
-             oType == OBJECT_END      )
-        {
-            err = ERR_DELETEBUILDING;
-            m_main->DisplayError(err, obj->GetPosition(), 5.0f);
-            return;
-        }
-
-        if ( err != ERR_OK )
-        {
-            m_main->DisplayError(err, obj);
-        }
-    }
 }
 
 void CPyro::CreateLight(Math::Vector pos, float height)
