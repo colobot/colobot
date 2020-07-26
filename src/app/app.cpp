@@ -1060,11 +1060,9 @@ int CApplication::Run()
 
     MoveMouse(Math::Point(0.5f, 0.5f)); // center mouse on start
 
-    SystemTimeStamp *lastLoopTimeStamp = m_systemUtils->CreateTimeStamp();
+    SystemTimeStamp *previousTimeStamp = m_systemUtils->CreateTimeStamp();
     SystemTimeStamp *currentTimeStamp = m_systemUtils->CreateTimeStamp();
     SystemTimeStamp *interpolatedTimeStamp = m_systemUtils->CreateTimeStamp();
-    m_systemUtils->GetCurrentTimeStamp(lastLoopTimeStamp);
-    m_systemUtils->CopyTimeStamp(currentTimeStamp, lastLoopTimeStamp);
 
     while (true)
     {
@@ -1168,11 +1166,11 @@ int CApplication::Run()
             // If game speed is increased then we do extra ticks per loop iteration to improve physics accuracy.
             int numTickSlices = static_cast<int>(GetSimulationSpeed());
             if(numTickSlices < 1) numTickSlices = 1;
-            m_systemUtils->CopyTimeStamp(lastLoopTimeStamp, currentTimeStamp);
+            m_systemUtils->CopyTimeStamp(previousTimeStamp, m_curTimeStamp);
             m_systemUtils->GetCurrentTimeStamp(currentTimeStamp);
             for(int tickSlice = 0; tickSlice < numTickSlices; tickSlice++)
             {
-                m_systemUtils->InterpolateTimeStamp(interpolatedTimeStamp, lastLoopTimeStamp, currentTimeStamp, (tickSlice+1)/static_cast<float>(numTickSlices));
+                m_systemUtils->InterpolateTimeStamp(interpolatedTimeStamp, previousTimeStamp, currentTimeStamp, (tickSlice+1)/static_cast<float>(numTickSlices));
                 Event event = CreateUpdateEvent(interpolatedTimeStamp);
                 if (event.type != EVENT_NULL && m_controller != nullptr)
                 {
@@ -1203,7 +1201,7 @@ int CApplication::Run()
     }
 
 end:
-    m_systemUtils->DestroyTimeStamp(lastLoopTimeStamp);
+    m_systemUtils->DestroyTimeStamp(previousTimeStamp);
     m_systemUtils->DestroyTimeStamp(currentTimeStamp);
     m_systemUtils->DestroyTimeStamp(interpolatedTimeStamp);
 
