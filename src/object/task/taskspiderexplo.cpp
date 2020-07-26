@@ -20,10 +20,11 @@
 
 #include "object/task/taskspiderexplo.h"
 
-#include "level/robotmain.h"
-
 #include "graphics/engine/engine.h"
-#include "graphics/engine/pyro_manager.h"
+
+#include "graphics/pyro/pyro_manager.h"
+
+#include "level/robotmain.h"
 
 #include "object/old_object.h"
 

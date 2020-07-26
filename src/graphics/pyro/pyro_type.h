@@ -18,7 +18,7 @@
  */
 
 /**
- * \file graphics/engine/pyro_type.h
+ * \file graphics/pyro/pyro_type.h
  * \brief PyroType enum
  */
 
@@ -34,6 +34,8 @@ namespace Gfx
 enum PyroType
 {
     PT_NULL     = 0,
+
+    // CFragExploOrShotPyro
     PT_FRAGT    = 1,        //! < fragmentation of technical object
     PT_FRAGO    = 2,        //! < fragmentation of organic object
     PT_FRAGW    = 4,        //! < fragmentation of object under water
@@ -44,6 +46,8 @@ enum PyroType
     PT_SHOTH    = 10,       //! < hit human
     PT_SHOTM    = 11,       //! < hit queen
     PT_SHOTW    = 12,       //! < hit under water (TODO: check if unused)
+
+    // Other subclasses
     PT_EGG      = 13,       //! < break the egg
     PT_BURNT    = 14,       //! < burning of technical object
     PT_BURNO    = 15,       //! < burning of organic object

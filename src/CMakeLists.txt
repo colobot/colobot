@@ -246,11 +246,6 @@ set(BASE_SOURCES
     graphics/engine/particle.h
     graphics/engine/planet.cpp
     graphics/engine/planet.h
-    graphics/engine/pyro.cpp
-    graphics/engine/pyro.h
-    graphics/engine/pyro_manager.cpp
-    graphics/engine/pyro_manager.h
-    graphics/engine/pyro_type.h
     graphics/engine/terrain.cpp
     graphics/engine/terrain.h
     graphics/engine/text.cpp
@@ -283,6 +278,25 @@ set(BASE_SOURCES
     graphics/opengl/glframebuffer.h
     graphics/opengl/glutil.cpp
     graphics/opengl/glutil.h
+    graphics/pyro/pyro.cpp
+    graphics/pyro/pyro.h
+    graphics/pyro/pyro_manager.cpp
+    graphics/pyro/pyro_manager.h
+    graphics/pyro/pyro_type.h
+    graphics/pyro/pyro_type_burn.cpp
+    graphics/pyro/pyro_type_dead.cpp
+    graphics/pyro/pyro_type_egg.cpp
+    graphics/pyro/pyro_type_fall.cpp
+    graphics/pyro/pyro_type_finding.cpp
+    graphics/pyro/pyro_type_flag_create.cpp
+    graphics/pyro/pyro_type_flag_delete.cpp
+    graphics/pyro/pyro_type_frag_explo_or_shot.cpp
+    graphics/pyro/pyro_type_fragv.cpp
+    graphics/pyro/pyro_type_reset.cpp
+    graphics/pyro/pyro_type_spider.cpp
+    graphics/pyro/pyro_type_squash.cpp
+    graphics/pyro/pyro_type_waypoint_hit.cpp
+    graphics/pyro/pyro_type_win_lost.cpp
     level/build_type.h
     level/level_category.cpp
     level/level_category.h

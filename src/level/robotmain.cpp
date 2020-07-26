@@ -45,12 +45,13 @@
 #include "graphics/engine/oldmodelmanager.h"
 #include "graphics/engine/particle.h"
 #include "graphics/engine/planet.h"
-#include "graphics/engine/pyro_manager.h"
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/text.h"
 #include "graphics/engine/water.h"
 
 #include "graphics/model/model_manager.h"
+
+#include "graphics/pyro/pyro_manager.h"
 
 #include "level/mainmovie.h"
 #include "level/player_profile.h"

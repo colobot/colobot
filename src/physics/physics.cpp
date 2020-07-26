@@ -29,9 +29,10 @@
 #include "graphics/engine/camera.h"
 #include "graphics/engine/engine.h"
 #include "graphics/engine/lightman.h"
-#include "graphics/engine/pyro_manager.h"
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/water.h"
+
+#include "graphics/pyro/pyro_manager.h"
 
 #include "level/robotmain.h"
 

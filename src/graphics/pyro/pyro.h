@@ -18,7 +18,7 @@
  */
 
 /**
- * \file graphics/engine/pyro.h
+ * \file graphics/pyro/pyro.h
  * \brief Fire effect rendering - CPyro class
  */
 
@@ -29,7 +29,7 @@
 
 #include "graphics/core/color.h"
 
-#include "graphics/engine/pyro_type.h"
+#include "graphics/pyro/pyro_type.h"
 
 #include "math/sphere.h"
 
@@ -69,18 +69,22 @@ protected:
     //! Destroys the object
     void        DeleteObject();
 
+    virtual void AfterCreate();
+    virtual void UpdateEffect();
+    virtual void AfterEnd();
+
 public:
     CPyro(); // should only be called by CPyroManager
-    ~CPyro();
+    virtual ~CPyro();
 
     //! Indicates whether the pyrotechnic effect is complete
-    Error       IsEnded();
+    virtual Error IsEnded();
 
     //! Indicates that the object binds to the effect no longer exists, without deleting it
     void        CutObjectLink(CObject* obj);
 
     //! Management of an event
-    bool        EventProcess(const Event& event);
+    virtual bool EventProcess(const Event& event);
 
 protected:
     //! Creates light to accompany a pyrotechnic effect
@@ -91,37 +95,12 @@ protected:
     //! Creates an explosion with triangular form of particles
     void        CreateTriangle(CObject* obj, ObjectType oType, int part);
 
-    //! Starts the explosion of a vehicle
-    void        ExploStart();
-    //! Ends the explosion of a vehicle
-    void        ExploTerminate();
-
-    //! Starts a vehicle fire
-    void        BurnStart();
-    //! Adds a part move
-    void        BurnAddPart(int part, Math::Vector pos, Math::Vector angle);
-    //! Advances of a vehicle fire
-    void        BurnProgress();
-    //! Indicates whether a part should be retained
-    bool        BurnIsKeepPart(int part);
-    //! Ends the fire of an insect or a vehicle
-    void        BurnTerminate();
-
-    //! Start of an object freight falling
-    void        FallStart();
-    //! Seeks an object to explode by the falling ball of bees
-    CObject*    FallSearchBeeExplo();
-    //! Fall of an object's freight
-    void        FallProgress(float rTime);
-    //! Indicates whether the fall is over
-    Error       FallIsEnded();
-
     //! Empty the table of operations of animation of light
     void        LightOperFlush();
     //! Adds an animation operation of the light
     void        LightOperAdd(float progress, float intensity, float r, float g, float b);
     //! Updates the associated light
-    void        LightOperFrame(float rTime);
+    void        LightOperFrame();
 
 protected:
     CEngine*          m_engine = nullptr;
@@ -181,5 +160,144 @@ protected:
     float           m_resetAngle = 0.0f;
 };
 
+class CFlagCreatePyro : public CPyro
+{
+public:
+    void AfterCreate() override;
+    void UpdateEffect() override;
+    void AfterEnd() override;
+};
+
+class CFlagDeletePyro : public CPyro
+{
+public:
+    void AfterCreate() override;
+    void UpdateEffect() override;
+    void AfterEnd() override;
+};
+
+class CWaypointHitPyro : public CPyro
+{
+public:
+    void AfterCreate() override;
+    void UpdateEffect() override;
+    void AfterEnd() override;
+};
+
+class CFallPyro : public CPyro
+{
+public:
+    //! Start of an object freight falling
+    void        AfterCreate() override;
+    //! Seeks an object to explode by the falling ball of bees
+    CObject*    FallSearchBeeExplo();
+    //! Fall of an object's freight
+    void        FallProgress(float rTime);
+    //! Indicates whether the fall is over
+    Error       IsEnded() override;
+
+    bool EventProcess(const Event&) override;
+};
+
+class CResetPyro : public CPyro
+{
+public:
+    void AfterCreate() override;
+    void UpdateEffect() override;
+    void AfterEnd() override;
+};
+
+class CLostPyro : public CPyro
+{
+public:
+    Error IsEnded() override;
+    void UpdateEffect() override;
+};
+
+class CWinPyro : public CPyro
+{
+public:
+    Error IsEnded() override;
+    void UpdateEffect() override;
+};
+
+class CSpiderPyro : public CPyro
+{
+public:
+    Error IsEnded() override;
+    void AfterCreate() override;
+};
+
+class CEggPyro : public CPyro
+{
+public:
+    Error IsEnded() override;
+    void AfterCreate() override;
+};
+
+class CDeadGPyro : public CPyro
+{
+public:
+    void AfterCreate() override;
+};
+
+class CDeadWPyro : public CPyro
+{
+public:
+    void AfterCreate() override;
+};
+
+class CFindingPyro : public CPyro
+{
+public:
+    void AfterCreate() override;
+    void UpdateEffect() override;
+};
+
+class CSquashPyro : public CPyro
+{
+public:
+    void AfterCreate() override;
+    void UpdateEffect() override;
+    void AfterEnd() override;
+};
+
+class CFragVPyro : public CPyro
+{
+public:
+    Error IsEnded() override;
+    void AfterCreate() override;
+};
+
+class CBurnPyro : public CPyro
+{
+public:
+    void AfterCreate() override;
+    void UpdateEffect() override;
+
+    //! Starts a vehicle fire
+    void        BurnStart();
+    //! Adds a part move
+    void        BurnAddPart(int part, Math::Vector pos, Math::Vector angle);
+    //! Advances of a vehicle fire
+    void        BurnProgress();
+    //! Indicates whether a part should be retained
+    bool        BurnIsKeepPart(int part);
+    //! Ends the fire of an insect or a vehicle
+    void        AfterEnd() override;
+};
+
+class CFragExploOrShotPyro : public CPyro
+{
+public:
+    void AfterCreate() override;
+    Error IsEnded() override;
+    void UpdateEffect() override;
+
+    //! Starts the explosion of a vehicle
+    void        ExploStart();
+    //! Ends the explosion of a vehicle
+    void        AfterEnd() override;
+};
 
 } // namespace Gfx

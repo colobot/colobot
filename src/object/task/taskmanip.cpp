@@ -20,8 +20,9 @@
 
 #include "object/task/taskmanip.h"
 
-#include "graphics/engine/pyro_manager.h"
 #include "graphics/engine/terrain.h"
+
+#include "graphics/pyro/pyro_manager.h"
 
 #include "level/robotmain.h"
 

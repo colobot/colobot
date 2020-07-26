@@ -30,8 +30,9 @@
 #include "graphics/engine/lightman.h"
 #include "graphics/engine/lightning.h"
 #include "graphics/engine/particle.h"
-#include "graphics/engine/pyro_manager.h"
 #include "graphics/engine/terrain.h"
+
+#include "graphics/pyro/pyro_manager.h"
 
 #include "level/robotmain.h"
 #include "level/scoreboard.h"

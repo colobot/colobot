@@ -28,8 +28,9 @@
 
 #include "graphics/engine/camera.h"
 #include "graphics/engine/planet_type.h"
-#include "graphics/engine/pyro_type.h"
 #include "graphics/engine/water.h"
+
+#include "graphics/pyro/pyro_type.h"
 
 #include "level/scoreboard.h"
 
