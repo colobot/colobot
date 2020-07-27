@@ -44,8 +44,11 @@ CModManager::CModManager(CApplication* app, CPathManager* pathManager)
 {
 }
 
-void CModManager::Init()
+void CModManager::FindMods()
 {
+    m_mods.clear();
+    m_userChanges = false;
+
     // Load names from the config file
     std::vector<std::string> savedModNames;
     GetConfigFile().GetArrayProperty("Mods", "Names", savedModNames);
@@ -103,9 +106,15 @@ void CModManager::Init()
         m_mods.push_back(mod);
     }
 
-    SaveMods();
-
     // Load the metadata for each mod
+
+    // Unfortunately, the paths are distinguished by their real paths, not mount points
+    // So we must unmount mods temporarily
+    for (const auto& path : m_mountedModPaths)
+    {
+        UnmountMod(path);
+    }
+
     for (auto& mod : m_mods)
     {
         MountMod(mod, "/temp/mod");
@@ -113,28 +122,30 @@ void CModManager::Init()
         UnmountMod(mod);
     }
 
-    UpdatePaths();
+    // Mount back
+    for (const auto& path : m_mountedModPaths)
+    {
+        MountMod(path);
+    }
 }
 
 void CModManager::ReloadMods()
 {
-    UnmountAllMods();
-    m_mods.clear();
-
-    Init();
-
-    // Apply the configuration
+    UnmountAllMountedMods();
+    MountAllMods();
     ReloadResources();
 }
 
 void CModManager::EnableMod(size_t i)
 {
     m_mods[i].enabled = true;
+    m_userChanges = true;
 }
 
 void CModManager::DisableMod(size_t i)
 {
     m_mods[i].enabled = false;
+    m_userChanges = true;
 }
 
 size_t CModManager::MoveUp(size_t i)
@@ -142,6 +153,7 @@ size_t CModManager::MoveUp(size_t i)
     if (i != 0)
     {
         std::swap(m_mods[i - 1], m_mods[i]);
+        m_userChanges = true;
         return i - 1;
     }
     else
@@ -155,6 +167,7 @@ size_t CModManager::MoveDown(size_t i)
     if (i != m_mods.size() - 1)
     {
         std::swap(m_mods[i], m_mods[i + 1]);
+        m_userChanges = true;
         return i + 1;
     }
     else
@@ -163,13 +176,27 @@ size_t CModManager::MoveDown(size_t i)
     }
 }
 
-void CModManager::UpdatePaths()
+bool CModManager::Changes()
+{
+    std::vector<std::string> paths;
+    for (const auto& mod : m_mods)
+    {
+        if (mod.enabled)
+        {
+            paths.push_back(mod.path);
+        }
+    }
+    return paths != m_mountedModPaths || m_userChanges;
+}
+
+void CModManager::MountAllMods()
 {
     for (const auto& mod : m_mods)
     {
         if (mod.enabled)
         {
             MountMod(mod);
+            m_mountedModPaths.push_back(mod.path);
         }
     }
 }
@@ -192,6 +219,8 @@ void CModManager::SaveMods()
     GetConfigFile().SetArrayProperty("Mods", "Enabled", savedEnabled);
 
     GetConfigFile().Save();
+
+    m_userChanges = false;
 }
 
 size_t CModManager::CountMods() const
@@ -296,23 +325,34 @@ void CModManager::LoadModData(Mod& mod)
 
 void CModManager::MountMod(const Mod& mod, const std::string& mountPoint)
 {
-    GetLogger()->Debug("Mounting mod: '%s' at path %s\n", mod.path.c_str(), mountPoint.c_str());
-    CResourceManager::AddLocation(mod.path, true, mountPoint);
+    MountMod(mod.path, mountPoint);
+}
+
+void CModManager::MountMod(const std::string& path, const std::string& mountPoint)
+{
+    GetLogger()->Debug("Mounting mod: '%s' at path %s\n", path.c_str(), mountPoint.c_str());
+    CResourceManager::AddLocation(path, true, mountPoint);
 }
 
 void CModManager::UnmountMod(const Mod& mod)
 {
-    if (CResourceManager::LocationExists(mod.path))
+    UnmountMod(mod.path);
+}
+
+void CModManager::UnmountMod(const std::string& path)
+{
+    if (CResourceManager::LocationExists(path))
     {
-        GetLogger()->Debug("Unmounting mod: '%s'\n", mod.path.c_str());
-        CResourceManager::RemoveLocation(mod.path);
+        GetLogger()->Debug("Unmounting mod: '%s'\n", path.c_str());
+        CResourceManager::RemoveLocation(path);
     }
 }
 
-void CModManager::UnmountAllMods()
+void CModManager::UnmountAllMountedMods()
 {
-    for (const auto& mod : m_mods)
+    for (const auto& path : m_mountedModPaths)
     {
-        UnmountMod(mod);
+        UnmountMod(path);
     }
+    m_mountedModPaths.clear();
 }

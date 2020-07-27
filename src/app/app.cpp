@@ -520,7 +520,9 @@ bool CApplication::Create()
         GetLogger()->Warn("Config could not be loaded. Default values will be used!\n");
     }
 
-    m_modManager->Init();
+    m_modManager->FindMods();
+    m_modManager->SaveMods();
+    m_modManager->MountAllMods();
 
     // Create the sound instance.
     #ifdef OPENAL_SOUND
@@ -1551,6 +1553,7 @@ void CApplication::StartLoadingMusic()
         SystemTimeStamp* musicLoadStart = m_systemUtils->CreateTimeStamp();
         m_systemUtils->GetCurrentTimeStamp(musicLoadStart);
 
+        m_sound->Reset();
         m_sound->CacheAll();
 
         SystemTimeStamp* musicLoadEnd = m_systemUtils->CreateTimeStamp();

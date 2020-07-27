@@ -51,21 +51,17 @@ struct Mod
  * The order matters since the order in which files are loaded matters,
  * because some files can be overwritten.
  *
- * The changes in the list do not immediately apply
- * and will be lost after the \ref ReloadMods call if they were not
- * saved beforehand with \ref SaveMods.
- *
- * The changes are also lost to mods which are no longer found in the search paths.
+ * The changes in the list do not immediately apply.
  */
 class CModManager
 {
 public:
     CModManager(CApplication* app, CPathManager* pathManager);
 
-    //! Loads mods without resource reloading; should be called only once after creation
-    void Init();
-
     //! Finds all the mods along with their metadata
+    void FindMods();
+
+    //! Applies the current configuration and reloads the application
     void ReloadMods();
 
     //! Removes a mod from the list of loaded mods
@@ -80,6 +76,9 @@ public:
     //! Moves the selected mod down in the list so that it's loaded later than others, returns the new index
     size_t MoveDown(size_t i);
 
+    //! Checks if the list of currently used mods differs from the current configuration or there were changes made by the user
+    bool Changes();
+
     //! Saves the current configuration of mods to the config file
     void SaveMods();
 
@@ -93,8 +92,8 @@ public:
     const std::vector<Mod>& GetMods() const;
 
 private:
-    //! Updates the paths in Path Manager according to the current mod configuration
-    void UpdatePaths();
+    // Allow access to MountAllMods() as CApplication doesn't want to reload itself during initialization
+    friend CApplication;
 
     //! Reloads application resources so the enabled mods are applied
     void ReloadResources();
@@ -102,13 +101,24 @@ private:
     //! Load mod data into mod
     void LoadModData(Mod& mod);
 
+    //! Updates the paths in Path Manager according to the current mod configuration
+    void MountAllMods();
+
     void MountMod(const Mod& mod, const std::string& mountPoint = "");
+    void MountMod(const std::string& path, const std::string& mountPoint = "");
     void UnmountMod(const Mod& mod);
-    void UnmountAllMods();
+    void UnmountMod(const std::string& path);
+    void UnmountAllMountedMods();
 
 private:
     CApplication* m_app;
     CPathManager* m_pathManager;
 
+    //! Paths to mods already in the virtual filesystem
+    std::vector<std::string> m_mountedModPaths;
+
+    //! List of mods
     std::vector<Mod> m_mods;
+
+    bool m_userChanges = false;
 };

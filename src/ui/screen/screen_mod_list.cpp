@@ -36,6 +36,8 @@
 
 #include "math/func.h"
 
+#include "sound/sound.h"
+
 #include "ui/controls/button.h"
 #include "ui/controls/edit.h"
 #include "ui/controls/interface.h"
@@ -63,9 +65,6 @@ void CScreenModList::CreateInterface()
     CList*          pli;
     Math::Point     pos, ddim;
     std::string     name;
-
-    m_changes = false;
-    ApplyChanges();
 
     // Display the window
     pos.x = 0.10f;
@@ -104,8 +103,6 @@ void CScreenModList::CreateInterface()
     pli->SetState(STATE_SHADOW);
     pli->SetState(STATE_EXTEND);
 
-    UpdateModList();
-
     // Displays the mod details
     pos.x = ox+sx*9.5f;
     pos.y = oy+sy*10.5f;
@@ -123,8 +120,6 @@ void CScreenModList::CreateInterface()
     pe->SetMaxChar(500);
     pe->SetEditCap(false);  // just to see
     pe->SetHighlightCap(true);
-
-    UpdateModDetails();
 
     pos = pli->GetPos();
     ddim = pli->GetDim();
@@ -148,8 +143,6 @@ void CScreenModList::CreateInterface()
     pe->SetEditCap(false);  // just to see
     pe->SetHighlightCap(true);
 
-    UpdateModSummary();
-
     // Apply button
     pos.x = ox+sx*13.75f;
     pos.y = oy+sy*2;
@@ -158,15 +151,11 @@ void CScreenModList::CreateInterface()
     pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_MODS_APPLY);
     pb->SetState(STATE_SHADOW);
 
-    UpdateApplyButton();
-
     // Display the enable/disable button
     pos.x -= dim.x*2.3f;
     ddim.x = dim.x*2.0f;
     pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_MOD_ENABLE_OR_DISABLE);
     pb->SetState(STATE_SHADOW);
-
-    UpdateEnableDisableButton();
 
     // Display the move up button
     pos.x -= dim.x*0.8f;
@@ -180,8 +169,6 @@ void CScreenModList::CreateInterface()
     pos.y = oy+sy*2;
     pb = pw->CreateButton(pos, ddim, 50, EVENT_INTERFACE_MOD_MOVE_DOWN);
     pb->SetState(STATE_SHADOW);
-
-    UpdateUpDownButtons();
 
     // Display the refresh button
     pos.x -= dim.x*1.3f;
@@ -207,6 +194,9 @@ void CScreenModList::CreateInterface()
     pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_BACK);
     pb->SetState(STATE_SHADOW);
 
+    FindMods();
+    UpdateAll();
+
     // Background
     SetBackground("textures/interface/interface.png");
     CreateVersionDisplay();
@@ -231,7 +221,7 @@ bool CScreenModList::EventProcess(const Event &event)
         event.type == EVENT_INTERFACE_BACK    ||
         (event.type == EVENT_KEY_DOWN && event.GetData<KeyEventData>()->key == KEY(ESCAPE)))
     {
-        if (m_changes)
+        if (m_modManager->Changes())
         {
             m_dialog->StartQuestion(RT_DIALOG_CHANGES_QUESTION, true, true, false,
                 [this]()
@@ -241,14 +231,11 @@ bool CScreenModList::EventProcess(const Event &event)
                 },
                 [this]()
                 {
-                    m_changes = false; // do not save changes on "No"
-                    ApplyChanges();
                     CloseWindow();
                 });
         }
         else
         {
-            ApplyChanges();
             CloseWindow();
         }
         return false;
@@ -278,7 +265,6 @@ bool CScreenModList::EventProcess(const Event &event)
         }
         UpdateModList();
         UpdateEnableDisableButton();
-        m_changes = true;
         UpdateApplyButton();
         break;
 
@@ -286,7 +272,6 @@ bool CScreenModList::EventProcess(const Event &event)
         m_modSelectedIndex = m_modManager->MoveUp(m_modSelectedIndex);
         UpdateModList();
         UpdateUpDownButtons();
-        m_changes = true;
         UpdateApplyButton();
         break;
 
@@ -294,20 +279,21 @@ bool CScreenModList::EventProcess(const Event &event)
         m_modSelectedIndex = m_modManager->MoveDown(m_modSelectedIndex);
         UpdateModList();
         UpdateUpDownButtons();
-        m_changes = true;
         UpdateApplyButton();
         break;
 
     case EVENT_INTERFACE_MODS_REFRESH:
+        // Apply any changes before refresh so that the config file
+        // is better synchronized with the state of the game
     case EVENT_INTERFACE_MODS_APPLY:
         ApplyChanges();
-        // Update the whole UI
-        UpdateModList();
-        UpdateModSummary();
-        UpdateModDetails();
-        UpdateEnableDisableButton();
-        UpdateApplyButton();
-        UpdateUpDownButtons();
+        UpdateAll();
+        // Start playing the main menu music again
+        if (!m_app->GetSound()->IsPlayingMusic())
+        {
+            m_app->GetSound()->PlayMusic("music/Intro1.ogg", false);
+            m_app->GetSound()->CacheMusic("music/Intro2.ogg");
+        }
         break;
 
     case EVENT_INTERFACE_MODS_DIR:
@@ -341,24 +327,34 @@ bool CScreenModList::EventProcess(const Event &event)
     return false;
 }
 
+void CScreenModList::FindMods()
+{
+    m_modManager->FindMods();
+    if (m_modManager->CountMods() != 0)
+    {
+        m_modSelectedIndex = Math::Clamp(m_modSelectedIndex, static_cast<size_t>(0), m_modManager->CountMods() - 1);
+    }
+}
+
 void CScreenModList::ApplyChanges()
 {
-    if (m_changes)
-    {
-        m_changes = false;
-        m_modManager->SaveMods();
-    }
-
+    m_modManager->SaveMods();
     m_modManager->ReloadMods();
-
-    m_empty = (m_modManager->CountMods() == 0);
-
-    m_modSelectedIndex = Math::Clamp(m_modSelectedIndex, static_cast<size_t>(0), m_modManager->CountMods() - 1);
 }
 
 void CScreenModList::CloseWindow()
 {
     m_main->ChangePhase(PHASE_MAIN_MENU);
+}
+
+void CScreenModList::UpdateAll()
+{
+    UpdateModList();
+    UpdateModDetails();
+    UpdateModSummary();
+    UpdateEnableDisableButton();
+    UpdateApplyButton();
+    UpdateUpDownButtons();
 }
 
 void CScreenModList::UpdateModList()
@@ -371,16 +367,16 @@ void CScreenModList::UpdateModList()
 
     pl->Flush();
 
-    if (m_empty)
+    if (m_modManager->CountMods() == 0)
     {
         return;
     }
 
-    auto mods = m_modManager->GetMods();
+    const auto& mods = m_modManager->GetMods();
     for (size_t i = 0; i < mods.size(); ++i)
     {
         const auto& mod = mods[i];
-        auto name = mod.data.displayName;
+        const auto& name = mod.data.displayName;
         pl->SetItemName(i, name);
         pl->SetCheck(i, mod.enabled);
         pl->SetEnable(i, true);
@@ -398,7 +394,7 @@ void CScreenModList::UpdateModDetails()
     CEdit* pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_MOD_DETAILS));
     if (pe == nullptr) return;
 
-    if (m_empty)
+    if (m_modManager->CountMods() == 0)
     {
         pe->SetText("No information");
         return;
@@ -475,7 +471,7 @@ void CScreenModList::UpdateModSummary()
     std::string noSummary;
     GetResource(RES_TEXT, RT_MOD_NO_SUMMARY, noSummary);
 
-    if (m_empty)
+    if (m_modManager->CountMods() == 0)
     {
         pe->SetText(noSummary);
         return;
@@ -503,7 +499,7 @@ void CScreenModList::UpdateEnableDisableButton()
 
     std::string buttonName{};
 
-    if (m_empty)
+    if (m_modManager->CountMods() == 0)
     {
         pb->ClearState(STATE_ENABLE);
 
@@ -536,13 +532,7 @@ void CScreenModList::UpdateApplyButton()
     CButton* pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_MODS_APPLY));
     if (pb == nullptr) return;
 
-    if (m_empty)
-    {
-        pb->ClearState(STATE_ENABLE);
-        return;
-    }
-
-    if (m_changes)
+    if (m_modManager->Changes())
     {
         pb->SetState(STATE_ENABLE);
     }
@@ -563,7 +553,7 @@ void CScreenModList::UpdateUpDownButtons()
     CButton* pb_down = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_MOD_MOVE_DOWN));
     if (pb_down == nullptr) return;
 
-    if (m_empty)
+    if (m_modManager->CountMods() == 0)
     {
         pb_up->ClearState(STATE_ENABLE);
         pb_down->ClearState(STATE_ENABLE);
