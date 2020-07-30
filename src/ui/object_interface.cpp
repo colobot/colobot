@@ -1117,14 +1117,7 @@ bool CObjectInterface::CreateInterface(bool bSelect)
         pw->CreateButton(pos, dim, 40, EVENT_OBJECT_SEARCH);
         DefaultEnter(pw, EVENT_OBJECT_SEARCH);
 
-        if ( m_main->IsBuildingEnabled(BUILD_GFLAT) )
-        {
-            pos.x = ox+sx*9.0f;
-            pos.y = oy+sy*0.5f;
-            pw->CreateButton(pos, dim, 111, EVENT_OBJECT_GFLAT);
-        }
-
-        pos.x = ox+sx*10.1f;
+        pos.x = ox+sx*9.0f;
         pos.y = oy+sy*0.5f;
         pw->CreateButton(pos, dim, 11, EVENT_OBJECT_DELSEARCH);
     }
@@ -1500,6 +1493,12 @@ bool CObjectInterface::CreateInterface(bool bSelect)
         pw->CreateButton(pos, ddim, 128+41, EVENT_OBJECT_BDESTROYER);
         DeadInterface(pw, EVENT_OBJECT_BDESTROYER, m_main->CanBuild(OBJECT_DESTROYER, m_object->GetTeam()));
 
+        if ( m_main->IsBuildingEnabled(BUILD_GFLAT) )
+        {
+            pos.x = ox+sx*9.0f;
+            pos.y = oy+sy*0.5f;
+            pw->CreateButton(pos, dim, 64+47, EVENT_OBJECT_GFLAT);
+        }
     }
     UpdateInterface();
     m_lastUpdateTime = 0.0f;
