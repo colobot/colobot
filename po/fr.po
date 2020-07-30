@@ -32,6 +32,9 @@ msgstr "\" ] \" manquant"
 msgid "%s: %d pts"
 msgstr "%s: %d points"
 
+msgid "+\\Missions with bonus content and optional challenges"
+msgstr ""
+
 msgid "..behind"
 msgstr "..derrière"
 
@@ -919,6 +922,9 @@ msgstr "Missions"
 msgid "Missions on this planet:"
 msgstr "Liste des missions du chapitre :"
 
+msgid "Missions+"
+msgstr "Missions+"
+
 msgid "Missions\\Select mission"
 msgstr "Missions\\La grande aventure"
 
@@ -1483,6 +1489,15 @@ msgstr "Sons :\\Volume des moteurs, voix, etc."
 
 msgid "Sound\\Music and game sound volume"
 msgstr "Son\\Volumes des sons & musiques"
+
+msgid "Space Explorer\\Disables astronaut abilities"
+msgstr ""
+
+msgid "Space Programmer\\Disables radio-control"
+msgstr ""
+
+msgid "Space Researcher\\Disables using all previously researched technologies"
+msgstr ""
 
 msgid "Spaceship"
 msgstr "Vaisseau spatial"

@@ -29,6 +29,9 @@ msgstr "\" ] \" faltando"
 msgid "%s: %d pts"
 msgstr ""
 
+msgid "+\\Missions with bonus content and optional challenges"
+msgstr ""
+
 msgid "..behind"
 msgstr "..atrás"
 
@@ -914,6 +917,9 @@ msgstr "Missões"
 msgid "Missions on this planet:"
 msgstr "Lista de missões neste planeta:"
 
+msgid "Missions+"
+msgstr "Missões+"
+
 msgid "Missions\\Select mission"
 msgstr "Missões\\Selecione uma missão"
 
@@ -1478,6 +1484,15 @@ msgstr "Efeitos sonoros:\\Volume dos motores, voz, tiros, etc."
 
 msgid "Sound\\Music and game sound volume"
 msgstr "Som\\Volume do som das músicas e do jogo"
+
+msgid "Space Explorer\\Disables astronaut abilities"
+msgstr ""
+
+msgid "Space Programmer\\Disables radio-control"
+msgstr ""
+
+msgid "Space Researcher\\Disables using all previously researched technologies"
+msgstr ""
 
 msgid "Spaceship"
 msgstr "Nave espacial"

@@ -32,6 +32,9 @@ msgstr "Chybí \"]\""
 msgid "%s: %d pts"
 msgstr "%s: %d bodů"
 
+msgid "+\\Missions with bonus content and optional challenges"
+msgstr ""
+
 msgid "..behind"
 msgstr "...za sebou"
 
@@ -901,6 +904,9 @@ msgstr "Mise"
 msgid "Missions on this planet:"
 msgstr "Mise na této planetě:"
 
+msgid "Missions+"
+msgstr "Mise+"
+
 msgid "Missions\\Select mission"
 msgstr "Mise\\Vyberte misi"
 
@@ -1464,6 +1470,15 @@ msgstr "Zvukové efekty:\\Hlasitost motorů, hlasů, střelby, atd."
 
 msgid "Sound\\Music and game sound volume"
 msgstr "Zvuk\\Hlasitost hudby a zvukových efektů"
+
+msgid "Space Explorer\\Disables astronaut abilities"
+msgstr ""
+
+msgid "Space Programmer\\Disables radio-control"
+msgstr ""
+
+msgid "Space Researcher\\Disables using all previously researched technologies"
+msgstr ""
 
 msgid "Spaceship"
 msgstr "Raketa"

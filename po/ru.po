@@ -31,6 +31,9 @@ msgstr "Отсутствует \"]\" "
 msgid "%s: %d pts"
 msgstr ""
 
+msgid "+\\Missions with bonus content and optional challenges"
+msgstr ""
+
 msgid "..behind"
 msgstr "Сзади"
 
@@ -923,6 +926,9 @@ msgstr "Миссии"
 msgid "Missions on this planet:"
 msgstr "Миссии на этой планете:"
 
+msgid "Missions+"
+msgstr "Миссии+"
+
 msgid "Missions\\Select mission"
 msgstr "Миссии\\Выбор миссии"
 
@@ -1493,6 +1499,15 @@ msgstr "Общий звук:\\Гормкость двигателя, голос�
 
 msgid "Sound\\Music and game sound volume"
 msgstr "Звук\\Громкость музыки и звуков"
+
+msgid "Space Explorer\\Disables astronaut abilities"
+msgstr ""
+
+msgid "Space Programmer\\Disables radio-control"
+msgstr ""
+
+msgid "Space Researcher\\Disables using all previously researched technologies"
+msgstr ""
 
 msgid "Spaceship"
 msgstr "Космический корабль"
