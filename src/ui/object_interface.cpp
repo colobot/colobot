@@ -1120,6 +1120,36 @@ bool CObjectInterface::CreateInterface(bool bSelect)
         pos.x = ox+sx*9.0f;
         pos.y = oy+sy*0.5f;
         pw->CreateButton(pos, dim, 11, EVENT_OBJECT_DELSEARCH);
+
+        if ( m_main->IsBuildingEnabled(BUILD_FLAG) )
+        {
+            pos.x = ox+sx*10.1f;
+            pos.y = oy+sy*0.5f;
+            pw->CreateButton(pos, dim, 64+54, EVENT_OBJECT_FCREATE);
+
+            pos.x = ox+sx*11.1f;
+            pos.y = oy+sy*0.5f;
+            pw->CreateButton(pos, dim, 64+55, EVENT_OBJECT_FDELETE);
+
+            ddim.x = dim.x*0.4f;
+            ddim.y = dim.y*0.4f;
+            pos.x = ox+sx*10.1f;
+            pos.y = oy+sy*2.0f-ddim.y;
+            pc = pw->CreateColor(pos, ddim, -1, EVENT_OBJECT_FCOLORb);
+            pc->SetColor(Gfx::Color(0.28f, 0.56f, 1.0f, 0.0f));
+            pos.x += ddim.x;
+            pc = pw->CreateColor(pos, ddim, -1, EVENT_OBJECT_FCOLORr);
+            pc->SetColor(Gfx::Color(1.0f, 0.0f, 0.0f, 0.0f));
+            pos.x += ddim.x;
+            pc = pw->CreateColor(pos, ddim, -1, EVENT_OBJECT_FCOLORg);
+            pc->SetColor(Gfx::Color(0.0f, 0.8f, 0.0f, 0.0f));
+            pos.x += ddim.x;
+            pc = pw->CreateColor(pos, ddim, -1, EVENT_OBJECT_FCOLORy);
+            pc->SetColor(Gfx::Color(1.0f, 0.93f, 0.0f, 0.0f)); //0x00ffec00
+            pos.x += ddim.x;
+            pc = pw->CreateColor(pos, ddim, -1, EVENT_OBJECT_FCOLORv);
+            pc->SetColor(Gfx::Color(0.82f, 0.004f, 0.99f, 0.0f)); //0x00d101fe
+        }
     }
 
     if ( type == OBJECT_MOBILErt &&  // Terraformer?
@@ -1796,8 +1826,12 @@ void CObjectInterface::UpdateInterface()
         EnableInterface(pw, EVENT_OBJECT_BDESTROYER,bEnable);
     }
 
-    if ( type == OBJECT_HUMAN ||  // builder?
-         type == OBJECT_TECH  )
+    if ( type == OBJECT_HUMAN    ||  // can create flags?
+         type == OBJECT_TECH     ||
+         type == OBJECT_MOBILEfs ||
+         type == OBJECT_MOBILEts ||
+         type == OBJECT_MOBILEws ||
+         type == OBJECT_MOBILEis )
     {
         CheckInterface(pw, EVENT_OBJECT_FCOLORb, m_flagColor==0);
         CheckInterface(pw, EVENT_OBJECT_FCOLORr, m_flagColor==1);
