@@ -5957,6 +5957,8 @@ Error CRobotMain::CanFactoryError(ObjectType type, int team)
     if (type == OBJECT_MOBILEst          && !IsResearchDone(RESEARCH_SUBM,     team)) return ERR_BUILD_DISABLED;
     if (type == OBJECT_MOBILEtg          && !IsResearchDone(RESEARCH_TARGET,   team)) return ERR_BUILD_RESEARCH;
 
+    if (tool == ToolType::Other && drive == DriveType::Other && type != OBJECT_MOBILEtg)   return ERR_WRONG_OBJ;
+
     return ERR_OK;
 }
 
