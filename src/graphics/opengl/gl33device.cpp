@@ -886,6 +886,8 @@ void CGL33Device::UpdateTexture(const Texture& texture, Math::IntPoint offset, I
     glTexSubImage2D(GL_TEXTURE_2D, 0, offset.x, offset.y, texData.actualSurface->w, texData.actualSurface->h,
                     texData.sourceFormat, GL_UNSIGNED_BYTE, texData.actualSurface->pixels);
 
+    glGenerateMipmap(GL_TEXTURE_2D);
+
     SDL_FreeSurface(texData.convertedSurface);
 }
 
