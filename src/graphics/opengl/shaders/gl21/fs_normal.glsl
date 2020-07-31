@@ -84,8 +84,8 @@ void main()
         {
             LightParams light = uni_Light[i];
 
-            vec3 lightDirection = normalize(light.Position.xyz);
-            vec3 reflectAxis = normalize(lightDirection + camera);
+            vec3 lightDirection = light.Position.xyz;
+            vec3 reflectAxis = normalize(normalize(lightDirection) + camera);
 
             float diffuseComponent = clamp(dot(normal, lightDirection), 0.0f, 1.0f);
             float specularComponent = pow(clamp(dot(normal, reflectAxis), 0.0f, 1.0f), 10.0f);
