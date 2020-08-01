@@ -42,5 +42,8 @@ void CSquashPyro::UpdateEffect()
 
 void CSquashPyro::AfterEnd()
 {
-    m_object->SetType(OBJECT_PLANT19);
+    if ( m_object != nullptr )
+    {
+        m_object->SetType(OBJECT_PLANT19);
+    }
 }
