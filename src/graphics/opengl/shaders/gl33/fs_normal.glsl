@@ -83,8 +83,8 @@ void main()
 
         for (int i = 0; i < uni_LightCount; i++)
         {
-            vec3 lightDirection = normalize(uni_Light[i].Position.xyz);
-            vec3 reflectAxis = normalize(lightDirection + camera);
+            vec3 lightDirection = uni_Light[i].Position.xyz;
+            vec3 reflectAxis = normalize(normalize(lightDirection) + camera);
 
             ambient += uni_Light[i].Ambient;
             diffuse += clamp(dot(normal, lightDirection), 0.0f, 1.0f)
