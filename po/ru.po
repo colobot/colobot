@@ -200,9 +200,6 @@ msgstr "Построить защитную башню"
 msgid "Build a derrick"
 msgstr "Построить буровую вышку"
 
-msgid "Build a destroyer"
-msgstr "Построить уничтожитель"
-
 msgid "Build a exchange post"
 msgstr "Построить пост по обмену сообщениями"
 
@@ -274,6 +271,9 @@ msgstr "Собрать гусеничного стрелка"
 
 msgid "Build a tracked sniffer"
 msgstr "Собрать гусеничного искателя"
+
+msgid "Build a vault"
+msgstr ""
 
 msgid "Build a wheeled builder"
 msgstr ""
@@ -1979,6 +1979,9 @@ msgstr "epsitec.com"
 
 #~ msgid "3D sound\\3D positioning of the sound"
 #~ msgstr "3D-звук\\Стерео звук"
+
+#~ msgid "Build a destroyer"
+#~ msgstr "Построить уничтожитель"
 
 #~ msgid "Building too close"
 #~ msgstr "Здание слишком близко"

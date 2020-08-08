@@ -769,7 +769,7 @@ msgstr ""
 msgid "Build a exchange post"
 msgstr ""
 
-msgid "Build a destroyer"
+msgid "Build a vault"
 msgstr ""
 
 msgid "Show if the ground is flat"

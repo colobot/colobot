@@ -5887,6 +5887,7 @@ bool CRobotMain::IsBuildingEnabled(ObjectType type)
     if(type == OBJECT_NUCLEAR) return IsBuildingEnabled(BUILD_NUCLEAR);
     if(type == OBJECT_INFO) return IsBuildingEnabled(BUILD_INFO);
     if(type == OBJECT_PARA) return IsBuildingEnabled(BUILD_PARA);
+    if(type == OBJECT_SAFE) return IsBuildingEnabled(BUILD_SAFE);
     if(type == OBJECT_DESTROYER) return IsBuildingEnabled(BUILD_DESTROYER);
 
     return false;

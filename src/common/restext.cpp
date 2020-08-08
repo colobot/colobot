@@ -347,7 +347,7 @@ void InitializeRestext()
     stringsEvent[EVENT_OBJECT_BNUCLEAR]     = TR("Build a nuclear power plant");
     stringsEvent[EVENT_OBJECT_BPARA]        = TR("Build a lightning conductor");
     stringsEvent[EVENT_OBJECT_BINFO]        = TR("Build a exchange post");
-    stringsEvent[EVENT_OBJECT_BDESTROYER]   = TR("Build a destroyer");
+    stringsEvent[EVENT_OBJECT_BSAFE]        = TR("Build a vault");
     stringsEvent[EVENT_OBJECT_GFLAT]        = TR("Show if the ground is flat");
     stringsEvent[EVENT_OBJECT_FCREATE]      = TR("Plant a flag");
     stringsEvent[EVENT_OBJECT_FDELETE]      = TR("Remove a flag");

@@ -199,9 +199,6 @@ msgstr "Zbuduj wieżę obronną"
 msgid "Build a derrick"
 msgstr "Zbuduj kopalnię"
 
-msgid "Build a destroyer"
-msgstr "Zbuduj niszczarkę"
-
 msgid "Build a exchange post"
 msgstr "Zbuduj stację przekaźnikową"
 
@@ -273,6 +270,9 @@ msgstr "Zbuduj działo na gąsienicach"
 
 msgid "Build a tracked sniffer"
 msgstr "Zbuduj szperacz na gąsienicach"
+
+msgid "Build a vault"
+msgstr ""
 
 msgid "Build a wheeled builder"
 msgstr ""
@@ -1944,6 +1944,9 @@ msgstr "epsitec.com"
 
 #~ msgid "3D sound\\3D positioning of the sound"
 #~ msgstr "Dźwięk 3D\\Przestrzenne pozycjonowanie dźwięków"
+
+#~ msgid "Build a destroyer"
+#~ msgstr "Zbuduj niszczarkę"
 
 #~ msgid "Building too close"
 #~ msgstr "Budynek za blisko"

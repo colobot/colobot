@@ -3369,6 +3369,7 @@ void CScriptFunctions::Init()
     CBotProgram::DefineNum("BuildAutoLab",          BUILD_LABO);
     CBotProgram::DefineNum("BuildPowerCaptor",      BUILD_PARA);
     CBotProgram::DefineNum("BuildExchangePost",     BUILD_INFO);
+    CBotProgram::DefineNum("BuildVault",            BUILD_SAFE);
     CBotProgram::DefineNum("BuildDestroyer",        BUILD_DESTROYER);
     CBotProgram::DefineNum("FlatGround",            BUILD_GFLAT);
     CBotProgram::DefineNum("UseFlags",              BUILD_FLAG);

@@ -197,9 +197,6 @@ msgstr "Construir uma torre de defesa"
 msgid "Build a derrick"
 msgstr "Construir um extrator"
 
-msgid "Build a destroyer"
-msgstr "Construir um destruidor"
-
 msgid "Build a exchange post"
 msgstr "Construir um posto de troca"
 
@@ -271,6 +268,9 @@ msgstr "Construir um atirador com esteiras"
 
 msgid "Build a tracked sniffer"
 msgstr "Construir um farejador com esteiras"
+
+msgid "Build a vault"
+msgstr ""
 
 msgid "Build a wheeled builder"
 msgstr ""
@@ -1963,6 +1963,9 @@ msgstr "epsitec.com"
 
 #~ msgid "3D sound\\3D positioning of the sound"
 #~ msgstr "Bruitages 3D\\Positionnement sonore dans l'espace"
+
+#~ msgid "Build a destroyer"
+#~ msgstr "Construir um destruidor"
 
 #~ msgid "Building too close"
 #~ msgstr "Bâtiment trop proche"

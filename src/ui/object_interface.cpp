@@ -536,9 +536,9 @@ bool CObjectInterface::EventProcess(const Event &event)
         {
             err = m_taskExecutor->StartTaskBuild(OBJECT_INFO);
         }
-        if ( action == EVENT_OBJECT_BDESTROYER )
+        if ( action == EVENT_OBJECT_BSAFE )
         {
-            err = m_taskExecutor->StartTaskBuild(OBJECT_DESTROYER);
+            err = m_taskExecutor->StartTaskBuild(OBJECT_SAFE);
         }
 
         if ( action == EVENT_OBJECT_GFLAT )
@@ -1065,8 +1065,8 @@ bool CObjectInterface::CreateInterface(bool bSelect)
 
         pos.x = ox+sx*5.4f;
         pos.y = oy+sy*0.1f;
-        pw->CreateButton(pos, ddim, 128+41, EVENT_OBJECT_BDESTROYER);
-        DeadInterface(pw, EVENT_OBJECT_BDESTROYER, m_main->CanBuild(OBJECT_DESTROYER, m_object->GetTeam()));
+        pw->CreateButton(pos, ddim, 128+47, EVENT_OBJECT_BSAFE);
+        DeadInterface(pw, EVENT_OBJECT_BSAFE, m_main->CanBuild(OBJECT_SAFE, m_object->GetTeam()));
 
         if ( m_main->IsBuildingEnabled(BUILD_GFLAT) )
         {
@@ -1520,8 +1520,8 @@ bool CObjectInterface::CreateInterface(bool bSelect)
         DeadInterface(pw, EVENT_OBJECT_BPARA, m_main->CanBuild(OBJECT_PARA, m_object->GetTeam()));
 
         pos.x = ox+sx*5.4f;
-        pw->CreateButton(pos, ddim, 128+41, EVENT_OBJECT_BDESTROYER);
-        DeadInterface(pw, EVENT_OBJECT_BDESTROYER, m_main->CanBuild(OBJECT_DESTROYER, m_object->GetTeam()));
+        pw->CreateButton(pos, ddim, 128+47, EVENT_OBJECT_BSAFE);
+        DeadInterface(pw, EVENT_OBJECT_BSAFE, m_main->CanBuild(OBJECT_SAFE, m_object->GetTeam()));
 
         if ( m_main->IsBuildingEnabled(BUILD_GFLAT) )
         {
@@ -1823,7 +1823,7 @@ void CObjectInterface::UpdateInterface()
         EnableInterface(pw, EVENT_OBJECT_BNUCLEAR,  bEnable);
         EnableInterface(pw, EVENT_OBJECT_BPARA,     bEnable);
         EnableInterface(pw, EVENT_OBJECT_BINFO,     bEnable);
-        EnableInterface(pw, EVENT_OBJECT_BDESTROYER,bEnable);
+        EnableInterface(pw, EVENT_OBJECT_BSAFE,     bEnable);
     }
 
     if ( type == OBJECT_HUMAN    ||  // can create flags?
@@ -1900,7 +1900,7 @@ void CObjectInterface::UpdateInterface()
         pb->SetState(STATE_VISIBLE, m_buildInterface);
         pb = static_cast< CButton* >(pw->SearchControl(EVENT_OBJECT_BPARA));
         pb->SetState(STATE_VISIBLE, m_buildInterface);
-        pb = static_cast< CButton* >(pw->SearchControl(EVENT_OBJECT_BDESTROYER));
+        pb = static_cast< CButton* >(pw->SearchControl(EVENT_OBJECT_BSAFE));
         pb->SetState(STATE_VISIBLE, m_buildInterface);
         pb = static_cast< CButton* >(pw->SearchControl(EVENT_OBJECT_BINFO));
         pb->SetState(STATE_VISIBLE, m_buildInterface);

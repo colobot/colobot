@@ -201,9 +201,6 @@ msgstr "Baut einen Geschützturm"
 msgid "Build a derrick"
 msgstr "Baut einen Bohrturm"
 
-msgid "Build a destroyer"
-msgstr "Baue einen Zerstörer"
-
 msgid "Build a exchange post"
 msgstr "Baut einen Infoserver"
 
@@ -275,6 +272,9 @@ msgstr "Baut einen Kettenshooter"
 
 msgid "Build a tracked sniffer"
 msgstr "Baut einen Kettenschnüffler"
+
+msgid "Build a vault"
+msgstr ""
 
 msgid "Build a wheeled builder"
 msgstr ""
@@ -1966,6 +1966,9 @@ msgstr "epsitec.com"
 
 #~ msgid "3D sound\\3D positioning of the sound"
 #~ msgstr "3D-Geräusche\\Orten der Geräusche im Raum"
+
+#~ msgid "Build a destroyer"
+#~ msgstr "Baue einen Zerstörer"
 
 #~ msgid "Building too close"
 #~ msgstr "Gebäude zu nahe"
