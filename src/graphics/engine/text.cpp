@@ -194,7 +194,7 @@ bool CText::Create()
     CFontLoader fontLoader;
     if (!fontLoader.Init())
     {
-        GetLogger()->Warn("Error on parsing fonts config file: failed to open file\n");
+        GetLogger()->Debug("Error on parsing fonts config file: failed to open file\n");
     }
     if (TTF_Init() != 0)
     {
