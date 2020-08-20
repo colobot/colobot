@@ -39,6 +39,34 @@ namespace Ui
 {
 
 CScreenSetupGame::CScreenSetupGame()
+    : CScreenSetup({
+        // EVENT_INTERFACE_SETUPd,
+        // EVENT_INTERFACE_SETUPg,
+        // EVENT_INTERFACE_SETUPp,  //0
+        // EVENT_INTERFACE_SETUPc,
+        // EVENT_INTERFACE_SETUPs,
+
+        EVENT_INTERFACE_MOVIES,            //Check
+        EVENT_INTERFACE_SCROLL,            //Check
+        EVENT_INTERFACE_INVERTX,           //Check
+        EVENT_INTERFACE_INVERTY,           //Check
+        EVENT_INTERFACE_EFFECT,            //Check
+        EVENT_INTERFACE_BLOOD,             //Check
+        EVENT_INTERFACE_AUTOSAVE_ENABLE,   //Check
+        EVENT_INTERFACE_AUTOSAVE_INTERVAL, //Slider
+        EVENT_INTERFACE_AUTOSAVE_SLOTS,    //Slider
+        EVENT_INTERFACE_TOOLTIP,           //Check
+        EVENT_INTERFACE_GLINT,             //Check
+        EVENT_INTERFACE_RAIN,              //Check
+        EVENT_INTERFACE_BGPAUSE,           //Check
+        EVENT_INTERFACE_EDITMODE,          //Check
+        EVENT_INTERFACE_EDITVALUE,         //Check
+        EVENT_INTERFACE_LANGUAGE,          //List
+
+        EVENT_INTERFACE_BACK,
+        //EVENT_INTERFACE_SETUPd,
+        //EVENT_INTERFACE_SETUPg,
+        })
 {
 }
 
@@ -141,6 +169,7 @@ void CScreenSetupGame::CreateInterface()
     pos.y -= ddim.y;
     pli = pw->CreateList(pos, ddim, 0, EVENT_INTERFACE_LANGUAGE);
     pli->SetState(STATE_SHADOW);
+    pli->SetKeyCtrl(true);
     // TODO: Add something like GetSupportedLanguages() and GetLanguageFriendlyName() for this
     pli->SetItemName(1+LANGUAGE_ENV, "[System default]");
     pli->SetItemName(1+LANGUAGE_CZECH, "Czech");
@@ -377,9 +406,9 @@ void CScreenSetupGame::UpdateSetupButtons()
 
     pli = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_LANGUAGE));
     if ( pli != nullptr )
-    {
         pli->SetSelect(1+m_settings->GetLanguage());
-    }
+    if(0<m_iCurrentSelectedItem)
+        DisplayActive(0);
 }
 
 // Updates the engine function of the buttons after the setup phase.

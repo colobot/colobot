@@ -45,11 +45,16 @@ namespace Ui
 {
 
 CScreenLevelList::CScreenLevelList(CMainDialog* mainDialog)
-    : m_dialog(mainDialog),
-      m_category{},
-      m_sceneSoluce{false},
-      m_maxList{0},
-      m_accessChap{0}
+    : CScreen(EVENT_WINDOW5,{
+        EVENT_INTERFACE_PLAY,
+        EVENT_INTERFACE_SOLUCE,
+        EVENT_INTERFACE_READ,
+        EVENT_INTERFACE_BACK})
+    , m_dialog(mainDialog)
+    , m_category{}
+    , m_sceneSoluce{false}
+    , m_maxList{0}
+    , m_accessChap{0}
 {
 }
 
@@ -119,6 +124,7 @@ void CScreenLevelList::CreateInterface()
     ddim.x = dim.x*6.5f;
     pli = pw->CreateList(pos, ddim, 0, EVENT_INTERFACE_CHAP);
     pli->SetState(STATE_SHADOW);
+    pli->SetKeyCtrl(false);
     m_chap[m_category] = m_main->GetPlayerProfile()->GetSelectedChap(m_category)-1;
     UpdateSceneChap(m_chap[m_category]);
     if ( m_category != LevelCategory::FreeGame &&
@@ -147,6 +153,7 @@ void CScreenLevelList::CreateInterface()
     ddim.x = dim.x*6.5f;
     pli = pw->CreateList(pos, ddim, 0, EVENT_INTERFACE_LIST);
     pli->SetState(STATE_SHADOW);
+    pli->SetKeyCtrl(true);
     m_sel[m_category] = m_main->GetPlayerProfile()->GetSelectedRank(m_category)-1;
     UpdateSceneList(m_chap[m_category], m_sel[m_category]);
     if ( m_category != LevelCategory::FreeGame &&
@@ -173,7 +180,7 @@ void CScreenLevelList::CreateInterface()
     ddim.y = dim.y*1.9f;
     pe = pw->CreateEdit(pos, ddim, 0, EVENT_INTERFACE_RESUME);
     pe->SetState(STATE_SHADOW);
-    pe->SetMaxChar(500);
+    //no need to cut, a-priori...    pe->SetMaxChar(500);
     pe->SetEditCap(false);  // just to see
     pe->SetHighlightCap(false);
 
@@ -254,16 +261,18 @@ void CScreenLevelList::CreateInterface()
 
 bool CScreenLevelList::EventProcess(const Event &event)
 {
+    if(!EventProcessTabStop(event))
+        return false;   //mgd
     CWindow* pw;
     CList* pl;
+    CList* pl2;
     CButton* pb;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == nullptr )  return false;
 
     if ( event.type == pw->GetEventTypeClose() ||
-         event.type == EVENT_INTERFACE_BACK    ||
-         (event.type == EVENT_KEY_DOWN && event.GetData<KeyEventData>()->key == KEY(ESCAPE)) )
+         event.type == EVENT_INTERFACE_BACK)
     {
         m_main->ChangePhase(PHASE_MAIN_MENU);
         return false;
@@ -271,41 +280,76 @@ bool CScreenLevelList::EventProcess(const Event &event)
 
     switch( event.type )
     {
-        case EVENT_INTERFACE_CHAP:
-            pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_CHAP));
-            if ( pl == nullptr )  break;
-            m_chap[m_category] = pl->GetSelect();
-            m_main->GetPlayerProfile()->SetSelectedChap(m_category, m_chap[m_category]+1);
-            UpdateSceneList(m_chap[m_category], m_sel[m_category]);
-            UpdateSceneResume(m_chap[m_category]+1, m_sel[m_category]+1);
+    case EVENT_KEY_DOWN:
+        pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_CHAP));
+        if (nullptr==pl)
             break;
-
-        case EVENT_INTERFACE_LIST:
-            pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_LIST));
-            if ( pl == nullptr )  break;
-            m_sel[m_category] = pl->GetSelect();
-            m_main->GetPlayerProfile()->SetSelectedRank(m_category, m_sel[m_category]+1);
-            UpdateSceneResume(m_chap[m_category]+1, m_sel[m_category]+1);
+        pl2 = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_LIST));
+        if (nullptr==pl2)
             break;
+        switch(event.GetData<KeyEventData>()->key)
+        {
+        case KEY(LEFT):
+            pl->SetKeyCtrl(true);
+            pl2->SetKeyCtrl(false);
+            return false;
+        case KEY(RIGHT):
+            pl->SetKeyCtrl(false);
+            pl2->SetKeyCtrl(true);
+            return false;
+        case KEY(RETURN):
+            return EventProcess(Event(EVENT_INTERFACE_PLAY));
+        case KEY(ESCAPE):
+            return EventProcess(Event(EVENT_INTERFACE_BACK));
+        case KEY(F2):
+            m_main->ChangePhase(PHASE_SATCOM);
+            return false;
+        case KEY(q):
+            //m_sound->Play(SOUND_TZOING);
+            //FIXME    ↑:  error: member access into incomplete type 'CSoundInterface'
+            m_main->ChangePhase(PHASE_QUIT_SCREEN);
+            return false;
+        }
+        break;
 
-        case EVENT_INTERFACE_SOLUCE:
-            pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_SOLUCE));
-            if ( pb == nullptr )  break;
-            m_sceneSoluce = !m_sceneSoluce;
-            pb->SetState(STATE_CHECK, m_sceneSoluce);
+    case EVENT_INTERFACE_CHAP:
+        pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_CHAP));
+        if ( pl == nullptr )
             break;
+        m_chap[m_category] = pl->GetSelect();
+        m_main->GetPlayerProfile()->SetSelectedChap(m_category, m_chap[m_category]+1);
+        UpdateSceneList(m_chap[m_category], m_sel[m_category]);
+        UpdateSceneResume(m_chap[m_category]+1, m_sel[m_category]+1);
+        break;
 
-        case EVENT_INTERFACE_PLAY:
-            m_main->SetLevel(m_category, m_chap[m_category]+1, m_sel[m_category]+1);
-            m_main->ChangePhase(PHASE_SIMUL);
+    case EVENT_INTERFACE_LIST:
+        pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_LIST));
+        if ( pl == nullptr )
             break;
+        m_sel[m_category] = pl->GetSelect();
+        m_main->GetPlayerProfile()->SetSelectedRank(m_category, m_sel[m_category]+1);
+        UpdateSceneResume(m_chap[m_category]+1, m_sel[m_category]+1);
+        break;
 
-        case EVENT_INTERFACE_READ:
-            m_main->ChangePhase(PHASE_READ);
+    case EVENT_INTERFACE_SOLUCE:
+        pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_SOLUCE));
+        if ( pb == nullptr )
             break;
+        m_sceneSoluce = !m_sceneSoluce;
+        pb->SetState(STATE_CHECK, m_sceneSoluce);
+        break;
 
-        default:
-            return true;
+    case EVENT_INTERFACE_PLAY:
+        m_main->SetLevel(m_category, m_chap[m_category]+1, m_sel[m_category]+1);
+        m_main->ChangePhase(PHASE_SIMUL);
+        break;
+
+    case EVENT_INTERFACE_READ:
+        m_main->ChangePhase(PHASE_READ);
+        break;
+
+    default:
+        return true;
     }
     return false;
 }
@@ -610,6 +654,20 @@ std::string CScreenLevelList::GetCustomLevelName(int id)
 const std::vector<std::string>& CScreenLevelList::GetCustomLevelList()
 {
     return m_customLevelList;
+}
+
+/**
+ * Display current active ctrl highlighted (and reset other highlight)
+ *  + manage selection modif (tab-stops - taborder)
+ * @param slide         optionnal slide : 0:none, 1:next, -1: previous
+ * @param bUnselectEdit undisplay carret on eventual other edit areas
+ *  or let carret to opt CEdit in case of need
+ */
+void CScreenLevelList::DisplayActive(const short slide, const bool bUnselectEdit)
+{
+    if(m_dialog->IsDialog())
+        return;
+    CScreen::DisplayActive(slide, bUnselectEdit);
 }
 
 } // namespace Ui

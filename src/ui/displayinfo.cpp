@@ -122,7 +122,35 @@ bool CDisplayInfo::EventProcess(const Event &event)
         {
             m_event->AddEvent(Event(EVENT_OBJECT_INFOOK));
         }
-
+        if (EventType::EVENT_KEY_DOWN == event.type)
+            switch(event.GetData<KeyEventData>()->key)
+            {
+            case KEY(BACKSPACE):
+                return m_event->AddEvent(Event(EventType::EVENT_HYPER_PREV));
+            case KEY(LEFT):
+                GetLogger()->Trace("CDisplayInfo::EventProcess Arrow ←key\n");
+                if((event.kmodState & KEY_MOD(ALT)) != 0)
+                    return m_event->AddEvent(Event(EventType::EVENT_HYPER_PREV));
+                break;
+            case KEY(RIGHT):
+                GetLogger()->Trace("CDisplayInfo::EventProcess Arrow →key\n");
+                if((event.kmodState & KEY_MOD(ALT)) != 0)
+                    return m_event->AddEvent(Event(EventType::EVENT_HYPER_NEXT));
+                break;
+            case KEY(HOME):
+                if((event.kmodState & KEY_MOD(ALT)) != 0)
+                    return m_event->AddEvent(Event(EventType::EVENT_HYPER_HOME));
+                break;
+            case KEY(DOWN):
+            case KEY(UP):
+                GetLogger()->Trace("CDisplayInfo::EventProcess Arrow ↕key\n");
+            // PAGE_UP & PAGE DOWN are directely managed ...??
+                edit = static_cast<Ui::CEdit*>(pw->SearchControl(EventType::EVENT_EDIT1));
+                if ( nullptr != edit)
+                    return edit->EventProcess(event);
+                break;
+            // TODO : manage TAB to jump throught eventual "a" links (& space/enter activation)
+            }
         if ( event.type == EVENT_SATCOM_HUSTON )
         {
             ChangeIndexButton(SATCOM_HUSTON);

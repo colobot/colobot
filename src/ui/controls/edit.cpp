@@ -353,6 +353,11 @@ bool CEdit::EventProcess(const Event &event)
             m_event->AddEvent(Event(EVENT_STUDIO_SAVE));
         }
 
+        if ( data->key == KEY(w) && !bShift && bControl )
+        {
+            m_event->AddEvent(Event(EVENT_STUDIO_CANCEL));
+            return true;
+        }
         if ( data->key == KEY(z) && !bShift && bControl )
         {
             Undo();
@@ -436,6 +441,7 @@ bool CEdit::EventProcess(const Event &event)
                 Scroll(m_lineFirst+(m_lineVisible-1), true);
                 return true;
             }
+            // TODO : manage TAB to jump throw eventual "a" links
         }
 
         if ( data->key == KEY(HOME) )

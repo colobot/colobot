@@ -233,40 +233,97 @@ bool CSlider::EventProcess(const Event &event)
 {
     Math::Point pos, dim;
     float   value;
-
-    if ( (m_state & STATE_VISIBLE) == 0 )  return true;
-
+    EventType et=EVENT_OBJECT_DESELECT;
+    if ( (m_state & STATE_VISIBLE) == 0 )
+        return true;
     CControl::EventProcess(event);
+    if ( GetFocus() && event.type == EVENT_KEY_DOWN )
+        switch(event.GetData<KeyEventData>()->key)
+        {
+        case KEY(LEFT):
+            if(m_bHoriz)
+            {
+                if(m_buttonLeft)
+                {
+                    m_event->AddEvent(Event(m_buttonLeft->GetEventType()));
+                    return false;
+                }
+                else
+                    et=EVENT_OBJECT_LEFT;
+            }
+            break;
+        case KEY(DOWN):
+            if(!m_bHoriz)
+            {
+                if(m_buttonLeft)
+                {
+                    m_event->AddEvent(Event(m_buttonLeft->GetEventType()));
+                    return false;
+                }
+                else
+                    et=EVENT_OBJECT_LEFT;
+            }
+            break;
+        case KEY(RIGHT):
+            if(m_bHoriz)
+            {
+                if(m_buttonRight)
+                {
+                    m_event->AddEvent(Event(m_buttonRight->GetEventType()));
+                    return false;
+                }
+                else
+                    et=EVENT_OBJECT_RIGHT;
+            }
+            break;
+        case KEY(UP):
+            if(!m_bHoriz)
+            {
+                if( m_buttonRight)
+                {
+                    m_event->AddEvent(Event(m_buttonRight->GetEventType()));
+                    return false;
+                }
+                else
+                    et=EVENT_OBJECT_RIGHT;
+            }
+            break;
+        }
 
     if (m_buttonLeft != nullptr && !m_bCapture)
-    {
-        if ( !m_buttonLeft->EventProcess(event) )  return false;
-    }
+        if ( !m_buttonLeft->EventProcess(event) )
+            return false;
     if (m_buttonRight != nullptr && !m_bCapture)
-    {
-        if ( !m_buttonRight->EventProcess(event) )  return false;
-    }
+        if ( !m_buttonRight->EventProcess(event) )
+            return false;
 
-    if (m_buttonLeft != nullptr && event.type == m_buttonLeft->GetEventType() && m_step > 0.0f )
+    if ( ( (m_buttonLeft != nullptr
+        && event.type == m_buttonLeft->GetEventType() )
+        || EVENT_OBJECT_LEFT==et )
+        && m_step > 0.0f )
     {
         m_visibleValue -= m_bHoriz?m_step:-m_step;
-        if ( m_visibleValue < 0.0f )  m_visibleValue = 0.0f;
-        if ( m_visibleValue > 1.0f )  m_visibleValue = 1.0f;
+        if ( m_visibleValue < 0.0f )
+            m_visibleValue = 0.0f;
+        else if ( m_visibleValue > 1.0f )
+            m_visibleValue = 1.0f;
         AdjustGlint();
-
         m_event->AddEvent(Event(m_eventType));
     }
 
-    if (m_buttonRight != nullptr && event.type == m_buttonRight->GetEventType() && m_step > 0.0f )
+    if (((m_buttonRight != nullptr
+        && event.type == m_buttonRight->GetEventType() )
+        || EVENT_OBJECT_RIGHT==et)
+        && m_step > 0.0f )
     {
         m_visibleValue += m_bHoriz?m_step:-m_step;
-        if ( m_visibleValue < 0.0f )  m_visibleValue = 0.0f;
-        if ( m_visibleValue > 1.0f )  m_visibleValue = 1.0f;
+        if ( m_visibleValue < 0.0f )
+            m_visibleValue = 0.0f;
+        else if ( m_visibleValue > 1.0f )
+            m_visibleValue = 1.0f;
         AdjustGlint();
-
         m_event->AddEvent(Event(m_eventType));
     }
-
     if (event.type == EVENT_MOUSE_BUTTON_DOWN &&
         event.GetData<MouseButtonEventData>()->button == MOUSE_BUTTON_LEFT &&
         (m_state & STATE_VISIBLE) &&
@@ -343,27 +400,23 @@ bool CSlider::EventProcess(const Event &event)
         if (data->y > 0)
         {
             if (m_buttonLeft != nullptr)
-            {
                 for (int i = 0; i < data->y; i++)
                     m_event->AddEvent(Event(m_buttonLeft->GetEventType()));
-            }
         }
         else
         {
             if (m_buttonRight != nullptr)
-            {
                 for (int i = 0; i < -(data->y); i++)
                     m_event->AddEvent(Event(m_buttonRight->GetEventType()));
-            }
         }
         return false;
     }
-
+    if (EVENT_OBJECT_DESELECT != et)
+        return false;
     return true;
 }
 
-
-// Draws button.
+// Draws Slider
 
 void CSlider::Draw()
 {
@@ -485,8 +538,7 @@ void CSlider::DrawVertex(Math::Point pos, Math::Point dim, int icon)
 {
     Math::Point     uv1, uv2, corner;
     float       ex, dp;
-
-    if ( icon == 0 )
+    if ( icon == 0 )    //enable
     {
         m_engine->SetTexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
@@ -498,7 +550,7 @@ void CSlider::DrawVertex(Math::Point pos, Math::Point dim, int icon)
         corner.y = 2.0f/480.0f;
         ex = 4.0f/256.0f;
     }
-    else if ( icon == 1 )
+    else if ( icon == 1 )   //disable
     {
         m_engine->SetTexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
@@ -510,9 +562,12 @@ void CSlider::DrawVertex(Math::Point pos, Math::Point dim, int icon)
         corner.y = 2.0f/480.0f;
         ex = 4.0f/256.0f;
     }
-    else
+    else    //cabin
     {
-        m_engine->SetTexture("textures/interface/button2.png");
+        // if (!m_bFocus)
+            m_engine->SetTexture("textures/interface/button2.png");
+        // else
+        //     m_engine->SetTexture("textures/interface/button4.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x = 224.0f/256.0f;  // cursor
         uv1.y =  32.0f/256.0f;

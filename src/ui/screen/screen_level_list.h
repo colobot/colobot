@@ -58,6 +58,8 @@ protected:
     void UpdateSceneChap(int &chap);
     void UpdateSceneList(int chap, int &sel);
     void UpdateSceneResume(int chap, int rank);
+private:
+    void DisplayActive(const short slide, const bool bUnselectEdit =false) override;
 
 protected:
     Ui::CMainDialog* m_dialog;

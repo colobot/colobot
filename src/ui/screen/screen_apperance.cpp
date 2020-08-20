@@ -78,8 +78,62 @@ const int PERSO_COLOR[3*10*3] =
 };
 
 CScreenApperance::CScreenApperance()
-    : m_apperanceTab(0),
-      m_apperanceAngle(0.0f)
+    : CScreen(EVENT_WINDOW5,{
+        EVENT_INTERFACE_PHEAD,
+        EVENT_INTERFACE_PBODY,
+        EVENT_INTERFACE_PFACE1,
+        EVENT_INTERFACE_PFACE2,
+        EVENT_INTERFACE_PFACE3,
+        EVENT_INTERFACE_PFACE4,
+        EVENT_INTERFACE_PGLASS0,
+        EVENT_INTERFACE_PGLASS1,
+        EVENT_INTERFACE_PGLASS2,
+        EVENT_INTERFACE_PGLASS3,
+        EVENT_INTERFACE_PGLASS4,
+        EVENT_INTERFACE_PGLASS5,
+        EVENT_INTERFACE_PGLASS6,
+        EVENT_INTERFACE_PGLASS7,
+        EVENT_INTERFACE_PGLASS8,
+        EVENT_INTERFACE_PGLASS9,
+        // EVENT_INTERFACE_PC0a+j*3+i  (j:0-2)(i:0-2)   (colors)
+        EVENT_INTERFACE_PC0a,
+        EVENT_INTERFACE_PC1a,
+        EVENT_INTERFACE_PC2a,
+        EVENT_INTERFACE_PC3a,
+        EVENT_INTERFACE_PC4a,
+        EVENT_INTERFACE_PC5a,
+        EVENT_INTERFACE_PC6a,
+        EVENT_INTERFACE_PC7a,
+        EVENT_INTERFACE_PC8a,
+        EVENT_INTERFACE_PC9a,
+        EVENT_INTERFACE_PC0b,
+        // EVENT_INTERFACE_PC0b+j*3+i  (j:0-2)(i:0-2)   (colors B)
+        EVENT_INTERFACE_PC1b,
+        EVENT_INTERFACE_PC2b,
+        EVENT_INTERFACE_PC3b,
+        EVENT_INTERFACE_PC4b,
+        EVENT_INTERFACE_PC5b,
+        EVENT_INTERFACE_PC6b,
+        EVENT_INTERFACE_PC7b,
+        EVENT_INTERFACE_PC8b,
+        EVENT_INTERFACE_PC9b,
+        // EVENT_INTERFACE_PCRa+i      (0-2)   (SLIDERS)
+        EVENT_INTERFACE_PCRa,
+        EVENT_INTERFACE_PCGa,
+        EVENT_INTERFACE_PCBa,
+        // EVENT_INTERFACE_PCRb+i      (0-2)   (SLIDERS)
+        EVENT_INTERFACE_PCRb,
+        EVENT_INTERFACE_PCGb,
+        EVENT_INTERFACE_PCBb,
+        // EVENT_INTERFACE_PLROT,     //(button rotation!)
+        // EVENT_INTERFACE_PRROT,     //(button rotation!)
+
+        EVENT_INTERFACE_POK,
+        EVENT_INTERFACE_PCANCEL,
+        EVENT_INTERFACE_PDEF,         //(button default)
+        })
+    , m_apperanceTab(0)
+    , m_apperanceAngle(0.0f)
 {
 }
 
@@ -315,20 +369,28 @@ void CScreenApperance::CreateInterface()
 
 bool CScreenApperance::EventProcess(const Event &event)
 {
+    if(!EventProcessTabStop(event))
+        return false;   //mgd
     PlayerApperance& apperance = m_main->GetPlayerProfile()->GetApperance();
     switch( event.type )
     {
         case EVENT_KEY_DOWN:
         {
             auto data = event.GetData<KeyEventData>();
-
-            if (data->key == KEY(RETURN))
+            switch (data->key)
             {
+            case KEY(RETURN):
+                //??? NO SAVE ??
                 m_main->ChangePhase(PHASE_MAIN_MENU);
-            }
-            if (data->key == KEY(ESCAPE))
-            {
+                break;
+            case KEY(ESCAPE):
+                //??? NO RESTORE ??
                 m_main->ChangePhase(PHASE_PLAYER_SELECT);
+                break;
+            case KEY(LEFT):
+                return EventProcess(Event(EVENT_INTERFACE_PLROT));
+            case KEY(RIGHT):
+                return EventProcess(Event(EVENT_INTERFACE_PRROT));
             }
             break;
         }
@@ -437,6 +499,7 @@ bool CScreenApperance::EventProcess(const Event &event)
         case EVENT_INTERFACE_PCANCEL:
             m_main->GetPlayerProfile()->LoadApperance(); // reload apperance from file
             m_main->ChangePhase(PHASE_PLAYER_SELECT);
+            m_main->SelectPlayer(" ");  //used by SatCom from screan_player_select
             break;
 
         default:

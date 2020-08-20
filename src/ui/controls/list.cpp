@@ -36,11 +36,12 @@ const float MARGING = 4.0f;
 // Object's constructor.
 
 CList::CList()
-    : CControl(),
-      m_tabs(),
-      m_justifs()
+    : CControl()
+    , m_bKeyCtrl(false)
+    , m_tabs()
+    , m_justifs()
 {
-    for (int i = 0; i < 10; i++)
+    for (short i = 0; i < 10; i++)
     {
         m_tabs[i] = 0.0f;
         m_justifs[i] = Gfx::TEXT_ALIGN_LEFT;
@@ -65,8 +66,8 @@ CList::~CList()
 
 // Creates a new list.
 // if expand is less then zero, then the list would try to use expand's absolute value,
-// and try to scale items to some size, so that dim of the list would not change after
-// adjusting
+// and try to scale items to some size,
+// so that dim of the list would not change after adjusting
 
 bool CList::Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, float expand)
 {
@@ -133,7 +134,7 @@ bool CList::MoveAdjust()
     ppos.y = ipos.y + idim.y - h;
     ddim.x = idim.x - SCROLL_WIDTH;
     ddim.y = h;
-    for (int i = 0; i < m_displayLine; i++)
+    for (short i = 0; i < m_displayLine; i++)
     {
         auto button = MakeUnique<CButton>();
         button->Create(ppos, ddim, -1, EVENT_NULL);
@@ -290,6 +291,54 @@ bool CList::EventProcess(const Event &event)
         UpdateButton();
         return false;
     }
+    if (m_bKeyCtrl
+        //&& m_bSelectCap    //TODO : check if logic without
+        && EVENT_KEY_DOWN == event.type)
+    {
+        // ID : also manage EVENT_BUTTON_PREV & EVENT_BUTTON_NEXT
+        short slide=0;
+        switch (event.GetData<KeyEventData>()->key)
+        {
+        case KEY(DOWN):
+            slide = 1;
+            break;
+        case KEY(PAGEDOWN):
+            slide = m_displayLine;
+            break;
+        case KEY(UP):
+            slide = -1;
+            break;
+        case KEY(PAGEUP):
+            slide = -m_displayLine;
+            break;
+        case KEY(HOME):
+            slide = -GetSelect();
+            break;
+        case KEY(END):
+            slide = m_totalLine-GetSelect()-1;
+            break;
+        default:
+            return true;
+        }
+        if(0!=slide && m_totalLine)
+        {
+            const short sel=GetSelect();  // better instead of m_selectLine, cf !m_bSelectCap
+            if((0<slide && (-1==sel || (sel==m_totalLine-1 && m_totalLine<=sel+slide)))
+                || (0!=sel && 0>sel+slide))
+                SetSelect(0);
+            else if((0>slide && (-1==sel || (0==sel && 0>sel+slide)))
+                || m_totalLine<=sel+slide)
+                SetSelect(m_totalLine-1);
+            else
+                SetSelect(sel+slide);
+            UpdateButton();
+            UpdateScroll();
+            // MoveScroll();        // <-- create a crash into mission selection !!
+            ShowSelect(true);   //param ??
+            m_event->AddEvent(Event(m_eventType));  // selected line changes
+            return false;
+        }
+    }
 
     CControl::EventProcess(event);
 
@@ -440,6 +489,7 @@ void CList::Draw()
             if ( !m_bBlink && i + m_firstLine < m_totalLine )
                 m_buttons[i]->SetState(STATE_ENABLE, m_items[i+m_firstLine].enable && (m_state & STATE_ENABLE) );
 
+            m_buttons[i]->SetFocus(m_bFocus && i + m_firstLine == m_selectLine);
             m_buttons[i]->Draw();  // draws a box without text
 
             // draws text in the box

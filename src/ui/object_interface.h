@@ -54,6 +54,7 @@ public:
     ~CObjectInterface();
 
     void        DeleteObject(bool all=false);
+    void        DeletePrg();
 
     bool        EventProcess(const Event &event);
     bool        CreateInterface(bool bSelect);

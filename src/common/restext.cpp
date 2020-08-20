@@ -98,6 +98,7 @@ void InitializeRestext()
     stringsText[RT_PERSO_COMBI]      = TR("Suit color:");
     stringsText[RT_PERSO_BAND]       = TR("Strip color:");
 
+    stringsText[RT_DIALOG_DELGAME]   = TR("Are you sure to delete the program <%s>?");
     stringsText[RT_DIALOG_ABORT]     = TR("Abort\\Abort the current mission");
     stringsText[RT_DIALOG_CONTINUE]  = TR("Continue\\Continue the current mission");
     stringsText[RT_DIALOG_DELOBJ]    = TR("Do you really want to destroy the selected building?");
@@ -153,7 +154,10 @@ void InitializeRestext()
     stringsText[RT_SCOREBOARD_RESULTS_TIME]= TR("Time: %s");
     stringsText[RT_SCOREBOARD_RESULTS_LINE]= TR("%s: %d pts");
 
-
+    stringsText[RT_INTERFACE_VSYNC_OP_OFF]   = TR("Off");
+    stringsText[RT_INTERFACE_VSYNC_OP_ADAPT] = TR("Adaptive");
+    stringsText[RT_INTERFACE_VSYNC_OP_ON]    = TR("On");
+    stringsText[RT_INTERFACE_VSYNC_ERROR]    = TR("%s vertical Synchronization mode is not currently available.\n English detailed issue : <%s>");
 
     stringsEvent[EVENT_LABEL_CODE_BATTLE]   = TR("Code battle");
 
@@ -788,7 +792,7 @@ namespace
 char g_gamerName[100];
 } // anonymous namespace
 
-void SetGlobalGamerName(std::string name)
+void SetGlobalGamerName(const std::string& name)
 {
     strcpy(g_gamerName, name.c_str());
 }

@@ -93,6 +93,7 @@ void CScreenIOWrite::CreateInterface()
     ddim.y = 190.0f/480.0f;
     pli = pw->CreateList(pos, ddim, 0, EVENT_INTERFACE_IOLIST);
     pli->SetState(STATE_SHADOW);
+    pli->SetKeyCtrl(true);
 
     pos.y  = oy+sy*2;
     ddim.y = dim.y*1;
@@ -126,12 +127,15 @@ void CScreenIOWrite::CreateInterface()
 
 bool CScreenIOWrite::EventProcess(const Event &event)
 {
+    if(!EventProcessTabStop(event))
+        return false;   //mgd
     CWindow* pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == nullptr )  return false;
 
     if ( event.type == pw->GetEventTypeClose() ||
             event.type == EVENT_INTERFACE_BACK   ||
-            (event.type == EVENT_KEY_DOWN && event.GetData<KeyEventData>()->key == KEY(ESCAPE)) )
+            (event.type == EVENT_KEY_DOWN
+                && event.GetData<KeyEventData>()->key == KEY(ESCAPE)) )
     {
         m_interface->DeleteControl(EVENT_WINDOW5);
         m_main->ChangePhase(PHASE_SIMUL);
@@ -152,14 +156,15 @@ bool CScreenIOWrite::EventProcess(const Event &event)
         return false;
     }
 
-    if ( event.type == EVENT_INTERFACE_IOWRITE )
+    if ( event.type == EVENT_INTERFACE_IOWRITE
+        || (event.type == EVENT_KEY_DOWN
+            && event.GetData<KeyEventData>()->key == KEY(RETURN)) )
     {
         m_main->ChangePhase(PHASE_SIMUL);
         m_main->StopSuspend();
         IOWriteScene();
         return false;
     }
-
     return true;
 }
 

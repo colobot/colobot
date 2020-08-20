@@ -28,6 +28,12 @@ msgid "\" ] \" missing"
 msgstr "Отсутствует \"]\" "
 
 #, c-format
+msgid ""
+"%s vertical Synchronization mode is not currently available.\n"
+" English detailed issue : <%s>"
+msgstr ""
+
+#, c-format
 msgid "%s: %d pts"
 msgstr ""
 
@@ -85,6 +91,10 @@ msgstr "Доступ к решению\\Показывает решение (п�
 msgid "Access to solutions\\Show program \"4: Solution\" in the exercises"
 msgstr "Доступ к решению\\Показывает решение \"4: Решение\" в упражнениях"
 
+msgid "Adaptive"
+msgstr ""
+
+# cf VSynchro mode
 msgid "Add new program"
 msgstr "Добавить новую программу"
 
@@ -126,6 +136,10 @@ msgstr "Принять\\Принять изменения настроек"
 
 msgid "Appropriate constructor missing"
 msgstr "Соответствующий конструктор отсутствует"
+
+#, c-format
+msgid "Are you sure to delete the program <%s>?"
+msgstr ""
 
 msgid "Assignment impossible"
 msgstr "Назначение невозможно"
@@ -1085,6 +1099,14 @@ msgid "Object too close"
 msgstr "Объект слишком близок"
 
 msgid "Octal value out of range"
+msgstr ""
+
+# cf VSynchro mode
+msgid "Off"
+msgstr ""
+
+# cf VSynchro mode
+msgid "On"
 msgstr ""
 
 msgid "One step"

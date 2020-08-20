@@ -92,6 +92,7 @@ enum ResTextType
     RT_PERSO_COMBI          = 93,
     RT_PERSO_BAND           = 94,
 
+    RT_DIALOG_DELPRG        = 102,
     RT_DIALOG_ABORT         = 103,
     RT_DIALOG_CONTINUE      = 104,
     RT_DIALOG_DELOBJ        = 105,
@@ -128,6 +129,11 @@ enum ResTextType
 
     RT_INTERFACE_REC        = 180,
 
+    RT_INTERFACE_VSYNC_OP_OFF   = 181,  //  option for VSync
+    RT_INTERFACE_VSYNC_OP_ADAPT = 182,  //  idem
+    RT_INTERFACE_VSYNC_OP_ON    = 183,  //  idem
+    RT_INTERFACE_VSYNC_ERROR    = 184,  //  Invit of error VSync message
+
     RT_LOADING_INIT           = 210,
     RT_LOADING_PROCESSING     = 211,
     RT_LOADING_LEVEL_SETTINGS = 212,
@@ -156,5 +162,5 @@ enum ResTextType
 
 void     InitializeRestext();
 
-void     SetGlobalGamerName(std::string name);
+void     SetGlobalGamerName(const std::string& name);
 bool     GetResource(ResType type, unsigned int num, std::string& text);

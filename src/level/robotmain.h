@@ -109,6 +109,7 @@ class CModelManager;
 namespace Ui
 {
 class CMainUserInterface;
+class CMainDialog;
 class CMainShort;
 class CMainMap;
 class CInterface;
@@ -187,6 +188,8 @@ public:
     Ui::CInterface* GetInterface();
     Ui::CDisplayText* GetDisplayText();
     CPauseManager* GetPauseManager();
+ 
+    Ui::CMainDialog* GetDialog();
 
     /**
      * \name Phase management

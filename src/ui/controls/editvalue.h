@@ -69,6 +69,7 @@ public:
     float       GetMaxValue();
 
     void        SetInterface(Ui::CInterface* interface);
+    void        SetFocus(CControl* control) override;
 
 protected:
     void        MoveAdjust();

@@ -45,6 +45,7 @@ protected:
     bool NameCreate();
 
 private:
+    void DisplayActive(const short slide, const bool bUnselectEdit =false) override;
     CMainDialog* m_dialog;
 };
 

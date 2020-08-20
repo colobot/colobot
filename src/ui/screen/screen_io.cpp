@@ -46,9 +46,18 @@ namespace Ui
 {
 
 CScreenIO::CScreenIO(CScreenLevelList* screenLevelList)
-    : m_screenLevelList(screenLevelList)
-{}
-
+    : CScreen(EVENT_WINDOW5,{
+        EVENT_INTERFACE_IONAME,         //Edit   --  write only
+        EVENT_INTERFACE_IOLIST,         //List
+        EVENT_INTERFACE_IOREAD,         //Button --  read only
+        EVENT_INTERFACE_IOWRITE,        //Button --  write only
+        EVENT_INTERFACE_IODELETE,       //Button
+        // EVENT_INTERFACE_IOIMAGE,     //Image
+        EVENT_INTERFACE_BACK,           //Button
+    })
+    , m_screenLevelList(screenLevelList)
+{
+}
 
 // Builds the file name by default.
 

@@ -30,6 +30,12 @@ msgid "\" ] \" missing"
 msgstr "Es fehlt eine geschlossene eckige Klammer \" ] \""
 
 #, c-format
+msgid ""
+"%s vertical Synchronization mode is not currently available.\n"
+" English detailed issue : <%s>"
+msgstr ""
+
+#, c-format
 msgid "%s: %d pts"
 msgstr ""
 
@@ -87,6 +93,10 @@ msgstr "Zeigt die Lösung\\Zeigt nach 3mal Scheitern die Lösung"
 msgid "Access to solutions\\Show program \"4: Solution\" in the exercises"
 msgstr "Lösung zugänglich\\Die Lösung ist im Programmslot \"4: Lösung\" zugänglich"
 
+# cf VSynchro mode
+msgid "Adaptive"
+msgstr ""
+
 msgid "Add new program"
 msgstr "Neues Programm hinzufügen"
 
@@ -128,6 +138,10 @@ msgstr "Änderungen anwenden\\Getätigte Einstellungen anwenden"
 
 msgid "Appropriate constructor missing"
 msgstr "Es gibt keinen geeigneten Konstruktor"
+
+#, c-format
+msgid "Are you sure to delete the program <%s>?"
+msgstr "Wollen Sie <%s> Programm wirklich zerstören ?"
 
 msgid "Assignment impossible"
 msgstr "Zuweisung unmöglich"
@@ -1077,6 +1091,14 @@ msgid "Object too close"
 msgstr "Gegenstand zu nahe"
 
 msgid "Octal value out of range"
+msgstr ""
+
+# cf VSynchro mode
+msgid "Off"
+msgstr ""
+
+# cf VSynchro mode
+msgid "On"
 msgstr ""
 
 msgid "One step"

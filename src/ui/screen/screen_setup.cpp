@@ -26,6 +26,7 @@
 #include "common/restext.h"
 #include "common/settings.h"
 #include "common/stringutils.h"
+#include "common/logger.h"
 
 #include "graphics/engine/camera.h"
 
@@ -38,18 +39,20 @@ namespace Ui
 
 Phase CScreenSetup::m_tab = PHASE_SETUPg;
 
-CScreenSetup::CScreenSetup()
-    : m_simulationSetup{false}
+CScreenSetup::CScreenSetup(const std::vector<EventType> tabOrder)
+    : CScreen(EVENT_WINDOW5,tabOrder)
+    , m_simulationSetup{false}
 {
     m_settings = CSettings::GetInstancePointer();
     m_camera = m_main->GetCamera();
 }
 
-void CScreenSetup::SetInSimulation(bool simulationSetup)
+void CScreenSetup::SetInSimulation(const bool simulationSetup)
 {
     m_simulationSetup = simulationSetup;
 }
 
+//nota:  static
 Phase CScreenSetup::GetTab()
 {
     return m_tab;
@@ -143,11 +146,37 @@ void CScreenSetup::CreateInterface()
 
 bool CScreenSetup::EventProcess(const Event &event)
 {
+    CWindow* pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
+    if ( nullptr == pw )
+        return false;
+    if(!EventProcessTabStop(event, true))
+        return false;   //mgd
+    if(event.type == EVENT_KEY_DOWN)
+        switch(event.GetData<KeyEventData>()->key)
+        {
+        case KEY(LEFT):
+            m_tab=static_cast<Phase>(static_cast<const short>(m_tab)-1);//--
+            if(PHASE_SETUPd>m_tab)
+                m_tab=PHASE_SETUPs;
+            if(!m_simulationSetup)
+                m_main->ChangePhase(m_tab);
+            else
+                m_main->ChangePhase(static_cast<const Phase>
+                    (m_tab + PHASE_SETUPds - PHASE_SETUPd));
+            return false;
+        case KEY(RIGHT):
+            m_tab=static_cast<Phase>(static_cast<const short>(m_tab)+1);//++
+            if(PHASE_SETUPs<m_tab)
+                m_tab=PHASE_SETUPd;
+            if(!m_simulationSetup)
+                m_main->ChangePhase(m_tab);
+            else
+                m_main->ChangePhase(static_cast<const Phase>
+                    (m_tab+PHASE_SETUPds-PHASE_SETUPd));
+            return false;
+        }
     if ( !m_simulationSetup )
     {
-        CWindow* pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-        if ( pw == nullptr )  return false;
-
         if ( event.type == pw->GetEventTypeClose() ||
                 event.type == EVENT_INTERFACE_BACK   ||
                 (event.type == EVENT_KEY_DOWN && event.GetData<KeyEventData>()->key == KEY(ESCAPE)) )

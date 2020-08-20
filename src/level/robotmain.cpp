@@ -112,6 +112,7 @@
 #include <stdexcept>
 #include <ctime>
 
+#include <boost/algorithm/string/trim.hpp>
 #include <boost/lexical_cast.hpp>
 
 
@@ -6241,4 +6242,10 @@ std::set<int> CRobotMain::GetAllActiveTeams()
         teams.insert(team);
     }
     return teams;
+}
+
+Ui::CMainDialog* CRobotMain::GetDialog()
+{
+    assert(m_ui);
+    return m_ui->GetDialog();
 }

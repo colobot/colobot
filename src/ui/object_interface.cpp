@@ -22,7 +22,9 @@
 #include "app/app.h"
 
 #include "common/global.h"
+#include "common/logger.h"
 #include "common/restext.h"
+#include "common/stringutils.h"
 
 #include "graphics/core/color.h"
 
@@ -51,6 +53,7 @@
 
 #include "sound/sound.h"
 
+#include "ui/maindialog.h"    // (a-modal) yes-no question
 #include "ui/studio.h"
 
 #include "ui/controls/button.h"
@@ -175,10 +178,20 @@ bool CObjectInterface::EventProcess(const Event &event)
         bool alt = (event.kmodState & KEY_MOD(ALT)) != 0;
         CEventQueue* queue = CApplication::GetInstancePointer()->GetEventQueue();
 
-        if (data->slot == INPUT_SLOT_ACTION && control)
+        if (control)
         {
-            queue->AddEvent(Event(m_studio == nullptr ? EVENT_OBJECT_PROGEDIT : EVENT_STUDIO_OK));
-            return false;
+            if (data->slot == INPUT_SLOT_ACTION)
+            {
+                queue->AddEvent(Event(m_studio == nullptr
+                    ? EVENT_OBJECT_PROGEDIT
+                    : EVENT_STUDIO_OK));
+                return false;
+            }
+            else if(KEY(n)==data->key && nullptr==m_studio)
+            {
+                queue->AddEvent(Event(EVENT_OBJECT_PROGADD));
+                return false;
+            }
         }
 
         if (data->slot == INPUT_SLOT_ACTION && alt)
@@ -207,10 +220,55 @@ bool CObjectInterface::EventProcess(const Event &event)
                 index++;
             else if(data->key >= KEY(1) && data->key <= KEY(9))
                 index = data->key-KEY(1);
-            else if(data->key == KEY(0))
+            else if(INPUT_SLOT_CAM_NEAR==data->slot && nullptr==m_studio)
+            {   //'+'
+                if (nullptr==m_studio)
+                {
+                    queue->AddEvent(Event(EVENT_OBJECT_PROGADD));
+                    return false;
+                }
+            }
+            else if(INPUT_SLOT_CAM_AWAY==data->slot && nullptr==m_studio)
+            {   //'-'
+                if (nullptr==m_studio)
+                {
+                    pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
+                    if ( nullptr != pw
+                        && nullptr != (pc =
+                            pw->SearchControl(EVENT_OBJECT_PROGREMOVE))
+                        && (STATE_VISIBLE | STATE_ENABLE)
+                            == (pc->GetState() & (STATE_VISIBLE | STATE_ENABLE)))
+                    {
+                        queue->AddEvent(Event(EVENT_OBJECT_PROGREMOVE));
+                        return false;
+                    }
+                }
+            }
+            else switch(data->key)
+            {
+            case KEY(0):
                 index = 9;
+                break;
+            case KEY(PLUS):
+            case KEY(KP_PLUS):
+                if (nullptr==m_studio)
+                {
+                    queue->AddEvent(Event(EVENT_OBJECT_PROGADD));
+                    return false;
+                }
+                break;
+            case KEY(MINUS):
+            case KEY(KP_MINUS):
+                if (nullptr==m_studio)
+                {
+                    queue->AddEvent(Event(EVENT_OBJECT_PROGREMOVE));
+                    return false;
+                }
+                break;
+            }
             if(index < 0) index = m_programStorage->GetProgramCount()-1;
-            if(index > static_cast<int>(m_programStorage->GetProgramCount())-1) index = 0;
+            if(index > m_programStorage->GetProgramCount()-1)
+                index = 0;
 
             if(GetSelScript() != index)
             {
@@ -348,25 +406,31 @@ bool CObjectInterface::EventProcess(const Event &event)
         {
             if(m_selScript < m_programStorage->GetProgramCount())
             {
-                if(m_programmable->GetCurrentProgram() == m_programStorage->GetProgram(m_selScript))
+                auto prg=m_programStorage->GetProgram(m_selScript);
+                if(!prg->readOnly)
                 {
-                    m_programmable->StopProgram();
+                    //Question TODO! (need: modal embedded yes-no dialog)
+                    std::string prgName{"??"},invit;
+                    GetResource(RES_TEXT, RT_DIALOG_DELPRG, invit);
+                    if(nullptr!=prg && nullptr!=prg->script)
+                        prgName = prg->script->GetTitle();
+                    GetLogger()->Info("Rm prg <%s> =>YesNo Question\n",prgName.c_str());
+                    if(prgName.size())
+                        m_main->GetDialog()->StartQuestion(
+                            StrUtils::Format(invit.c_str(), prgName.c_str()), true, false, false,
+                            [&]()
+                        {
+                           DeletePrg();
+                        });
+                    else
+                    {
+                        GetLogger()->Info("Rm empty prg !!\n");
+                        DeletePrg();
+                        GetLogger()->Info("Rm prg done...\n");
+                    }
                 }
-                m_programStorage->RemoveProgram(m_programStorage->GetProgram(m_selScript));
-                if(m_selScript >= m_programStorage->GetProgramCount())
-                    m_selScript = m_programStorage->GetProgramCount()-1;
-                m_main->SaveOneScript(m_object);
-
-                UpdateInterface();
-                CWindow* pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
-                if ( pw != nullptr )
-                {
-                    UpdateScript(pw);
-                }
-                SetSelScript(m_selScript);
             }
         }
-
         if( action == EVENT_OBJECT_PROGCLONE )
         {
             if(m_selScript < m_programStorage->GetProgramCount())
@@ -2222,6 +2286,30 @@ void CObjectInterface::DefaultEnter(CWindow *pw, EventType event, bool bState)
     {
         control->ClearState(STATE_DEFAULT);
     }
+}
+
+// Delete current selected program/script (after opt yes confirmation)
+
+void CObjectInterface::DeletePrg()
+{
+//    GetLogger()->Info("Rm prg !! =>Yes Answer!!\n");
+    if(m_programmable->GetCurrentProgram()
+        == m_programStorage->GetProgram(m_selScript))
+    m_programmable->StopProgram();
+    m_programStorage->RemoveProgram(
+    m_programStorage->GetProgram(m_selScript));
+    if(m_selScript >= m_programStorage->GetProgramCount())
+    m_selScript = m_programStorage->GetProgramCount()-1;
+    GetLogger()->Info("Rm prg done...;next\n");
+    m_main->SaveOneScript(m_object);
+
+    UpdateInterface();
+    CWindow* pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
+    if ( pw != nullptr )
+       UpdateScript(pw);
+    SetSelScript(m_selScript);  //? TODO iif exist...
+//    GetLogger()->Info("Rm prg done... END\n");
+
 }
 
 } // namespace Ui

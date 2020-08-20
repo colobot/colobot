@@ -29,6 +29,12 @@ msgid "\" ] \" missing"
 msgstr "Chybí \"]\""
 
 #, c-format
+msgid ""
+"%s vertical Synchronization mode is not currently available.\n"
+" English detailed issue : <%s>"
+msgstr ""
+
+#, c-format
 msgid "%s: %d pts"
 msgstr "%s: %d bodů"
 
@@ -86,6 +92,10 @@ msgstr "Zpřístupnit řešení\\Ukázat řešení (podrobné instrukce pro spln
 msgid "Access to solutions\\Show program \"4: Solution\" in the exercises"
 msgstr "Zpřístupnit řešení\\Ve cvičných úlohách zobrazit program \"4: Řešení\""
 
+# cf VSynchro mode
+msgid "Adaptive"
+msgstr ""
+
 msgid "Add new program"
 msgstr "Přidat nový program"
 
@@ -127,6 +137,10 @@ msgstr "Uložit změny\\Aktivovat změny nastavení"
 
 msgid "Appropriate constructor missing"
 msgstr "Chybí vhodný konstruktor"
+
+#, c-format
+msgid "Are you sure to delete the program <%s>?"
+msgstr ""
 
 msgid "Assignment impossible"
 msgstr "Přiřazení není povoleno"
@@ -1062,6 +1076,14 @@ msgstr "Objekt je příliš blízko"
 
 msgid "Octal value out of range"
 msgstr "Oktalová hodnota mimo rozsah"
+
+# cf VSynchro mode
+msgid "Off"
+msgstr ""
+
+# cf VSynchro mode
+msgid "On"
+msgstr ""
 
 msgid "One step"
 msgstr "Jeden krok"

@@ -135,6 +135,10 @@ msgstr ""
 msgid "Strip color:"
 msgstr ""
 
+#, c-format
+msgid "Are you sure to delete the program <%s>?"
+msgstr ""
+
 msgid "Abort\\Abort the current mission"
 msgstr ""
 
@@ -278,6 +282,21 @@ msgstr ""
 
 #, c-format
 msgid "%s: %d pts"
+msgstr ""
+
+msgid "Off"
+msgstr ""
+
+msgid "Adaptive"
+msgstr ""
+
+msgid "On"
+msgstr ""
+
+#, c-format
+msgid ""
+"%s vertical Synchronization mode is not currently available.\n"
+" English detailed issue : <%s>"
 msgstr ""
 
 msgid "Code battle"

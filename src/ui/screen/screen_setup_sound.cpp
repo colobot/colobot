@@ -40,6 +40,24 @@ namespace Ui
 {
 
 CScreenSetupSound::CScreenSetupSound()
+    : CScreenSetup({
+        // EVENT_INTERFACE_SETUPd,
+        // EVENT_INTERFACE_SETUPg,
+        // EVENT_INTERFACE_SETUPp,
+        // EVENT_INTERFACE_SETUPc,
+        // EVENT_INTERFACE_SETUPs,  //0
+
+        EVENT_INTERFACE_VOLSOUND,
+        EVENT_INTERFACE_VOLMUSIC,
+        EVENT_INTERFACE_SILENT,
+        EVENT_INTERFACE_NOISY,
+
+        EVENT_INTERFACE_BACK,
+        EVENT_INTERFACE_SETUPd,
+        EVENT_INTERFACE_SETUPg,
+        EVENT_INTERFACE_SETUPp,
+        EVENT_INTERFACE_SETUPc,
+        })
 {
 }
 

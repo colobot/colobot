@@ -273,6 +273,8 @@ protected:
     bool        m_bUndoForce;
     OperUndo    m_undoOper;
     std::array<EditUndo, EDITUNDOMAX> m_undo;
+
+    friend class CEditValue;    //calls SetFocus()
 };
 
 

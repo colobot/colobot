@@ -26,6 +26,12 @@ msgid "\" ] \" missing"
 msgstr "\" ] \" faltando"
 
 #, c-format
+msgid ""
+"%s vertical Synchronization mode is not currently available.\n"
+" English detailed issue : <%s>"
+msgstr ""
+
+#, c-format
 msgid "%s: %d pts"
 msgstr ""
 
@@ -83,6 +89,10 @@ msgstr "Acesso a solução\\Exibe a solução (instruções detalhadas para miss
 msgid "Access to solutions\\Show program \"4: Solution\" in the exercises"
 msgstr "Acesso as soluções\\Exibir programa \"4: Solução\" nos exercícios"
 
+# cf VSynchro mode
+msgid "Adaptive"
+msgstr ""
+
 msgid "Add new program"
 msgstr "Adicionar novo programa"
 
@@ -124,6 +134,10 @@ msgstr "Aplicar mudanças\\Ativa as configurações alteradas"
 
 msgid "Appropriate constructor missing"
 msgstr "Construtor apropriado faltando"
+
+#, c-format
+msgid "Are you sure to delete the program <%s>?"
+msgstr ""
 
 msgid "Assignment impossible"
 msgstr "Tarefa impossível"
@@ -1075,6 +1089,14 @@ msgstr "Objeto muito próximo"
 
 msgid "Octal value out of range"
 msgstr "Valor octal fora do limite"
+
+# cf VSynchro mode
+msgid "Off"
+msgstr ""
+
+# cf VSynchro mode
+msgid "On"
+msgstr ""
 
 msgid "One step"
 msgstr "Um passo"

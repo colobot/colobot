@@ -150,12 +150,23 @@ bool CEditValue::EventProcess(const Event &event)
             SetValue(value, true);
             HiliteValue(event);
         }
-        if ( !m_edit->EventProcess(event) )  return false;
-
+        if ( !m_edit->EventProcess(event) )
+            return false;
+        if ( (GetFocus() || m_edit->GetFocus()) &&
+             event.type == EVENT_KEY_DOWN )
+            switch(event.GetData<KeyEventData>()->key)
+            {
+            case KEY(UP):
+                if(m_buttonUp)
+                    return EventProcess(Event(m_buttonUp->GetEventType()));
+                break;
+            case KEY(DOWN):
+                if(m_buttonDown)
+                    return EventProcess(Event(m_buttonDown->GetEventType()));
+                break;
+            }
         if ( event.type == m_edit->GetEventType() )
-        {
             m_event->AddEvent(Event(m_eventType));
-        }
     }
 
     if (m_buttonUp != nullptr)
@@ -357,6 +368,22 @@ float CEditValue::GetMaxValue()
 void CEditValue::SetInterface(CInterface* interface)
 {
     m_interface = interface;
+}
+
+void CEditValue::SetFocus(CControl* control)
+{
+    CControl::SetFocus(control);
+    if (m_edit != nullptr)
+    {
+        m_edit->SetState(STATE_HILIGHT,TestState(STATE_HILIGHT));
+        if(this==control)
+        {
+            HiliteValue(Event(m_edit->GetEventType()));
+            m_edit->SetFocus(m_edit.get());
+        }
+        else
+            m_edit->SetFocus(control);  //unselect on need
+    }
 }
 
 }

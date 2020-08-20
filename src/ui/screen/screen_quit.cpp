@@ -35,6 +35,7 @@ namespace Ui
 {
 
 CScreenQuit::CScreenQuit()
+    : CScreen(EVENT_WINDOW5)
 {
 }
 

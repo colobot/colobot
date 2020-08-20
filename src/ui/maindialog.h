@@ -19,6 +19,7 @@
 
 #pragma once
 
+#include "common/event.h"   //needed by enum EventType
 #include "common/restext.h"
 
 #include "math/point.h"
@@ -74,6 +75,8 @@ public:
 protected:
     void    StartDialog(Math::Point dim, bool fireParticles);
     void    FrameDialog(float rTime);
+private:
+    void    DisplayActive(const short slide=0);
 
 protected:
     CRobotMain*       m_main;
@@ -96,9 +99,12 @@ protected:
     Math::Point          m_dialogDim;
     float                m_dialogTime;
     float                m_dialogParti;
+    short                m_iCurrentSelectedItem;
 
     DialogCallback       m_callbackYes;
     DialogCallback       m_callbackNo;
+    const std::vector<EventType> m_tabOrder;    //item tab-order (tab-stop)
+      //specific to PauseMenu
 };
 
 } // namespace Ui

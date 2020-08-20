@@ -70,6 +70,9 @@ public:
     void        SetBlink(bool bEnable);
     bool        GetBlink();
 
+    void        SetKeyCtrl(const bool bEnable)  {m_bKeyCtrl=bEnable;}
+    bool        GetKeyCtrl()const               {return m_bKeyCtrl;}
+
     void        SetItemName(int i, const std::string& name);
     const std::string& GetItemName(int i);
 
@@ -109,6 +112,8 @@ protected:
     int         m_firstLine;    // first visible line
     bool        m_bBlink;
     bool        m_bSelectCap;
+    bool        m_bKeyCtrl;     //manage arrows & pg-up/pg-down & beg/end
+                                // Nota : better one max per windows!
     float       m_blinkTime;
     float       m_tabs[10];
     Gfx::TextAlign m_justifs[10];
