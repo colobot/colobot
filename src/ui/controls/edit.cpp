@@ -1299,7 +1299,9 @@ void CEdit::SetText(const std::string& text, bool bNew)
     if( m_len >= GetMaxChar() ) m_len = GetMaxChar();
 
     m_text.resize( m_len + 1, '\0' );
+    m_text[m_len] = '\0';
     m_format.resize( m_len + 1, m_fontType );
+    m_format[m_len] = m_fontType;
 
     font = m_fontType;
     j = 0;

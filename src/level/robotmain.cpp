@@ -320,6 +320,7 @@ std::string PhaseToString(Phase phase)
     if (phase == PHASE_APPERANCE) return "PHASE_APPERANCE";
     if (phase == PHASE_MAIN_MENU) return "PHASE_MAIN_MENU";
     if (phase == PHASE_LEVEL_LIST) return "PHASE_LEVEL_LIST";
+    if (phase == PHASE_MOD_LIST) return "PHASE_MOD_LIST";
     if (phase == PHASE_SIMUL) return "PHASE_SIMUL";
     if (phase == PHASE_SETUPd) return "PHASE_SETUPd";
     if (phase == PHASE_SETUPg) return "PHASE_SETUPg";
@@ -3911,6 +3912,7 @@ void CRobotMain::ChangeColor()
         m_phase != PHASE_SETUPps  &&
         m_phase != PHASE_SETUPcs  &&
         m_phase != PHASE_SETUPss  &&
+        m_phase != PHASE_MOD_LIST &&
         m_phase != PHASE_WIN      &&
         m_phase != PHASE_LOST     &&
         m_phase != PHASE_APPERANCE ) return;

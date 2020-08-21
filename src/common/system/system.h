@@ -145,6 +145,14 @@ public:
     //! Returns the environment variable with the given name or an empty string if it does not exist
     virtual std::string GetEnvVar(const std::string &name);
 
+    //! Opens a path with default file browser
+    /** \returns true if successful */
+    virtual bool OpenPath(const std::string& path);
+
+    //! Opens a website with default web browser
+    /** \returns true if successful */
+    virtual bool OpenWebsite(const std::string& url);
+
     //! Sleep for given amount of microseconds
     virtual void Usleep(int usecs) = 0;
 

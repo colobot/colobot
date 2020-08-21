@@ -84,6 +84,7 @@ public:
     ~CALSound();
 
     bool Create() override;
+    void Reset() override;
     bool Cache(SoundType, const std::string &) override;
     void CacheMusic(const std::string &) override;
     bool IsCached(SoundType) override;

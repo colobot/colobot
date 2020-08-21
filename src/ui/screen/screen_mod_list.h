@@ -17,35 +17,50 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
+#pragma once
+
+#include "app/modman.h"
+
+#include "ui/maindialog.h"
+
+#include "ui/screen/screen.h"
+
+#include <map>
+
+namespace Ui
+{
+
 /**
- * \file common/system/system_macosx.h
- * \brief MacOSX-specific implementation of system functions
+ * \class CScreenModList
+ * \brief This class is the front-end for the \ref CModManager.
  */
-
-#include "common/system/system.h"
-#include "common/system/system_other.h"
-
-//@colobot-lint-exclude UndefinedFunctionRule
-
-class CSystemUtilsMacOSX : public CSystemUtilsOther
+class CScreenModList : public CScreen
 {
 public:
-    void Init() override;
+    CScreenModList(CMainDialog* dialog, CModManager* modManager);
 
-    std::string GetDataPath() override;
-    std::string GetLangPath() override;
-    std::string GetSaveDir() override;
+    void CreateInterface() override;
+    bool EventProcess(const Event &event) override;
 
-    std::string GetEnvVar(const std::string& name) override;
+protected:
+    void FindMods();
+    void ApplyChanges();
+    void CloseWindow();
 
-    bool OpenPath(const std::string& path) override;
-    bool OpenWebsite(const std::string& url) override;
+    void UpdateAll();
+    void UpdateModList();
+    void UpdateModDetails();
+    void UpdateModSummary();
+    void UpdateEnableDisableButton();
+    void UpdateApplyButton();
+    void UpdateUpDownButtons();
 
-    void Usleep(int usec) override;
+protected:
+    Ui::CMainDialog* m_dialog;
 
-private:
-    std::string m_ASPath;
-    std::string m_dataPath;
+    CModManager* m_modManager;
+
+    size_t m_modSelectedIndex = 0;
 };
 
-//@end-colobot-lint-exclude
+} // namespace Ui

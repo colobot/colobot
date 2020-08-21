@@ -215,3 +215,13 @@ std::string CSystemUtils::GetEnvVar(const std::string& name)
 {
     return "";
 }
+
+bool CSystemUtils::OpenPath(const std::string& path)
+{
+    return false;
+}
+
+bool CSystemUtils::OpenWebsite(const std::string& url)
+{
+    return false;
+}

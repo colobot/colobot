@@ -124,6 +124,9 @@ msgstr "Wygląd\\Wybierz swoją postać"
 msgid "Apply changes\\Activates the changed settings"
 msgstr "Zastosuj zmiany\\Aktywuje zmienione ustawienia"
 
+msgid "Apply\\Apply the current mod configuration"
+msgstr "Zastosuj\\Zastosuj obecną konfigurację modów"
+
 msgid "Appropriate constructor missing"
 msgstr "Brak odpowiedniego konstruktora"
 
@@ -370,6 +373,9 @@ msgstr "Zmień kamerę\\Przełącza pomiędzy kamerą pokładową i śledzącą"
 msgid "Change player\\Change player"
 msgstr "Zmień gracza\\Zmień gracza"
 
+msgid "Changes"
+msgstr "Zmiany"
+
 msgid "Chapters:"
 msgstr "Rozdziały:"
 
@@ -439,6 +445,12 @@ msgstr "Kopiuj"
 msgid "Copy (Ctrl+C)"
 msgstr "Kopiuj (Ctrl+C)"
 
+msgid "Could not open the file explorer!"
+msgstr "Nie udało się otworzyć przeglądarki plików!"
+
+msgid "Could not open the web browser!"
+msgstr "Nie udało się otworzyć przeglądarki internetowej!"
+
 msgid "Current mission saved"
 msgstr "Bieżąca misja zapisana"
 
@@ -472,6 +484,9 @@ msgstr "Kopalnia"
 msgid "Descend\\Reduces the power of the jet"
 msgstr "W dół\\Zmniejsza moc silnika"
 
+msgid "Description:"
+msgstr "Opis:"
+
 msgid "Destroy"
 msgstr "Zniszcz"
 
@@ -483,6 +498,9 @@ msgstr "Destroyer"
 
 msgid "Device\\Driver and resolution settings"
 msgstr "Urządzenie\\Ustawienia sterownika i rozdzielczości"
+
+msgid "Disable\\Disable the selected mod"
+msgstr "Wyłącz\\Wyłącza zaznaczonego moda"
 
 msgid "Dividing by zero"
 msgstr "Dzielenie przez zero"
@@ -499,6 +517,9 @@ msgstr "Drzwi zablokowane przez robota lub inny obiekt"
 
 msgid "Down (\\key gdown;)"
 msgstr "Dół (\\key gdown;)"
+
+msgid "Down\\Move the selected mod down so it's loaded later (mods may overwrite files from the mods above them)"
+msgstr "W dół\\Przenieś zaznaczonego moda w dół, aby był załadowany później (mody mogą nadpisywać pliki modów wyżej)"
 
 msgid "Drawer bot"
 msgstr "Robot rysownik"
@@ -526,6 +547,9 @@ msgstr "Jajo"
 
 msgid "Empty character constant"
 msgstr ""
+
+msgid "Enable\\Enable the selected mod"
+msgstr "Włącz\\Włącza zaznaczonego moda"
 
 msgid "End of block missing"
 msgstr "Brak końca bloku"
@@ -753,6 +777,9 @@ msgstr "Zainfekowane wirusem, chwilowo niesprawne"
 msgid "Information exchange post"
 msgstr "Stacja przekaźnikowa informacji"
 
+msgid "Information:"
+msgstr "Informacje:"
+
 msgid "Instruction \"break\" outside a loop"
 msgstr "Polecenie \"break\" na zewnątrz pętli"
 
@@ -903,6 +930,15 @@ msgstr "Misje na tej planecie:"
 msgid "Missions\\Select mission"
 msgstr "Misje\\Wybierz misję"
 
+msgid "Mods"
+msgstr "Mody"
+
+msgid "Mods:"
+msgstr "Mody:"
+
+msgid "Mods\\Mod manager"
+msgstr "Mody\\Zarządzanie modami"
+
 msgid "Mouse inversion X\\Inversion of the scrolling direction on the X axis"
 msgstr "Odwrócenie myszy X\\Odwrócenie kierunków przewijania w poziomie"
 
@@ -950,6 +986,12 @@ msgstr "Następny obiekt\\Zaznacza następny obiekt"
 
 msgid "No"
 msgstr "Nie"
+
+msgid "No changes."
+msgstr "Brak zmian."
+
+msgid "No description."
+msgstr "Brak opisu."
 
 msgid "No energy in the subsoil"
 msgstr "Brak energii w ziemi"
@@ -1070,6 +1112,9 @@ msgstr "Otwórz"
 
 msgid "Open (Ctrl+O)"
 msgstr "Otwórz (Ctrl+O)"
+
+msgid "Open Directory\\Open the mods directory"
+msgstr "Otwórz katalog\\Otwórz katalog z modami"
 
 msgid "Opening brace missing"
 msgstr "Brak klamry otwierającej"
@@ -1280,6 +1325,9 @@ msgstr "Czerwona flaga"
 
 msgid "Reflections on the buttons \\Shiny buttons"
 msgstr "Odbicia na przyciskach \\Świecące przyciski"
+
+msgid "Refresh\\Refresh the list of currently installed mods"
+msgstr "Odśwież\\Odśwież listę obecnie zainstalowanych modów"
 
 msgid "Remains of Apollo mission"
 msgstr "Pozostałości z misji Apollo"
@@ -1542,6 +1590,10 @@ msgstr "Filtrowanie tekstur\\Filtrowanie tekstur"
 msgid "Textures"
 msgstr "Tekstury"
 
+#, c-format
+msgid "The address %s could not be opened in a web browser."
+msgstr "Nie udało się otworzyć adresu %s w przeglądarce internetowej."
+
 msgid "The battle has ended"
 msgstr "Bitwa zakończyła się"
 
@@ -1554,8 +1606,15 @@ msgstr "Funkcja nie zwróciła żadnej wartości"
 msgid "The mission is not accomplished yet (press \\key help; for more details)"
 msgstr "Misja nie jest wypełniona (naciśnij \\key help; aby uzyskać szczegóły)"
 
+#, c-format
+msgid "The path %s could not be opened in a file explorer."
+msgstr "Nie udało się otworzyć ścieżki %s w przeglądarce plików."
+
 msgid "The types of the two operands are incompatible"
 msgstr "Niezgodne typy operatorów"
+
+msgid "There are unsaved changes. Do you want to save them before leaving?"
+msgstr "Są niezapisane zmiany. Czy chcesz je zapisać przed wyjściem?"
 
 msgid "This class already exists"
 msgstr "Taka klasa już istnieje"
@@ -1681,6 +1740,9 @@ msgstr "Jednostka"
 msgid "Unknown Object"
 msgstr "Obiekt nieznany"
 
+msgid "Unknown author"
+msgstr "Nieznany autor"
+
 msgid "Unknown command"
 msgstr "Nieznane polecenie"
 
@@ -1692,6 +1754,9 @@ msgstr "Funkcja nieznana"
 
 msgid "Up (\\key gup;)"
 msgstr "Góra (\\key gup;)"
+
+msgid "Up\\Move the selected mod up so it's loaded sooner (mods may overwrite files from the mods above them)"
+msgstr "W górę\\Przenieś zaznaczonego moda w górę, aby był załadowany wcześniej (mody mogą nadpisywać pliki modów wyżej)"
 
 msgid "Uranium deposit (site for derrick)"
 msgstr "Złoże uranu (miejsce na kopalnię)"
@@ -1714,6 +1779,9 @@ msgstr "Zmienna nie została zainicjalizowana"
 msgid "Vault"
 msgstr "Skrytka"
 
+msgid "Version"
+msgstr "Wersja"
+
 msgid "Vertical Synchronization\\Limits the number of frames per second to display frequency"
 msgstr "Synchronizacja pionowa\\Ogranicza ilość klatek na sekundę do wartości odświeżania ekranu"
 
@@ -1731,6 +1799,9 @@ msgstr "Osa śmiertelnie raniona"
 
 msgid "Waste"
 msgstr "Odpady"
+
+msgid "Website"
+msgstr "Strona internetowa"
 
 msgid "Wheeled builder"
 msgstr ""
@@ -1764,6 +1835,9 @@ msgstr "Szperacz latający"
 
 msgid "Withdraw shield (\\key action;)"
 msgstr "Wyłącz osłonę (\\key action;)"
+
+msgid "Workshop\\Open the workshop to search for mods"
+msgstr "Warsztat\\Otwórz warsztat, aby poszukać modów"
 
 msgid "Worm"
 msgstr "Robal"
@@ -1914,6 +1988,9 @@ msgstr "\\Fioletowe flagi"
 
 msgid "\\Yellow flags"
 msgstr "\\Żółte flagi"
+
+msgid "by"
+msgstr "autorstwa"
 
 msgid "colobot.info"
 msgstr "colobot.info"

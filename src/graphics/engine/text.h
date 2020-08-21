@@ -256,6 +256,8 @@ public:
 
     //! Flushes cached textures
     void        FlushCache();
+    //! Try to load new font files
+    bool        ReloadFonts();
 
     //@{
     //! Tab size management
