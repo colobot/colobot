@@ -420,6 +420,7 @@ set(BASE_SOURCES
     object/object_interface_type.h
     object/object_manager.cpp
     object/object_manager.h
+    object/object_type.cpp
     object/object_type.h
     object/old_object.cpp
     object/old_object.h

@@ -734,6 +734,9 @@ bool CScriptFunctions::rDelete(CBotVar* var, CBotVar* result, int& exception, vo
     }
     else
     {
+        CScript* script = static_cast<CScript*>(user);
+        bool deleteSelf = (obj == script->m_object);
+
         if ( exploType != DestructionType::NoEffect && obj->Implements(ObjectInterfaceType::Destroyable) )
         {
             dynamic_cast<CDestroyableObject*>(obj)->DestroyObject(static_cast<DestructionType>(exploType));
@@ -752,12 +755,13 @@ bool CScriptFunctions::rDelete(CBotVar* var, CBotVar* result, int& exception, vo
             }
             CObjectManager::GetInstancePointer()->DeleteObject(obj);
         }
+        // Returning "false" here makes sure the program doesn't try to keep executing
+        // if the robot just destroyed itself using delete(this.id)
+        // See issue #925
+        return !deleteSelf;
     }
 
-    // Returning "false" here makes sure the program doesn't try to keep executing if the robot just destroyed itself
-    // using delete(this.id)
-    // See issue #925
-    return false;
+    return true;
 }
 
 static CBotTypResult compileSearch(CBotVar* &var, void* user, CBotTypResult returnValue)
@@ -1565,7 +1569,7 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
         {
             power = 1.0f;
         }
-        bool exists = !std::string(GetObjectName(type)).empty(); //The object type exists in object_type.h
+        bool exists = IsValidObjectTypeId(type) && type != OBJECT_NULL && type != OBJECT_MAX && type != OBJECT_MOBILEpr;
         if (exists)
         {
             object = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, type, power);
