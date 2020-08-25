@@ -468,6 +468,9 @@ public:
     //! Returns global magnifyDamage setting
     float       GetGlobalMagnifyDamage();
 
+    //! Returns global capacity setting
+    float       GetGlobalCapacity();
+
     void        StartDetectEffect(COldObject* object, CObject* target);
 
     //! Enable crash sphere debug rendering
@@ -649,6 +652,8 @@ protected:
     bool            m_winTerminate = false;
 
     float           m_globalMagnifyDamage = 0.0f;
+
+    float           m_globalCapacity = 1.0f;
 
     bool            m_exitAfterMission = false;
 

@@ -3150,6 +3150,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
                 m_missionType = line->GetParam("type")->AsMissionType(MISSION_NORMAL);
                 m_globalMagnifyDamage = line->GetParam("magnifyDamage")->AsFloat(1.0f);
+                m_globalCapacity = line->GetParam("capacity")->AsFloat(1.0f);
 
                 continue;
             }
@@ -5976,6 +5977,11 @@ void CRobotMain::RemoveFromSelectionHistory(CObject* object)
 float CRobotMain::GetGlobalMagnifyDamage()
 {
     return m_globalMagnifyDamage;
+}
+
+float CRobotMain::GetGlobalCapacity()
+{
+    return m_globalCapacity;
 }
 
 // Beginning of the effect when the instruction "detect" is used.
