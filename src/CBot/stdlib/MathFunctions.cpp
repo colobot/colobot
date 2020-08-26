@@ -153,7 +153,7 @@ bool rAbs(CBotVar* var, CBotVar* result, int& exception, void* user)
             *result = fabs(var->GetValFloat());
             break;
         case CBotTypLong:
-            *result = abs(var->GetValLong());
+            *result = labs(var->GetValLong());
             break;
         default:
             *result = abs(var->GetValInt());
