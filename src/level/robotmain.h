@@ -470,6 +470,10 @@ public:
 
     //! Returns global capacity setting
     float       GetGlobalCapacity();
+    //! Returns global NuclearCell capacity Setting
+    float       GetGlobalNuclearCapacity();
+    //! Returns global PowerCell capacity setting
+    float       GetGlobalCellCapacity();
 
     void        StartDetectEffect(COldObject* object, CObject* target);
 
@@ -654,6 +658,8 @@ protected:
     float           m_globalMagnifyDamage = 0.0f;
 
     float           m_globalCapacity = 1.0f;
+    float           m_globalNuclearCapacity = 1.0f;
+    float           m_globalCellCapacity = 1.0f;
 
     bool            m_exitAfterMission = false;
 
