@@ -468,8 +468,6 @@ public:
     //! Returns global magnifyDamage setting
     float       GetGlobalMagnifyDamage();
 
-    //! Returns global capacity setting
-    float       GetGlobalCapacity();
     //! Returns global NuclearCell capacity Setting
     float       GetGlobalNuclearCapacity();
     //! Returns global PowerCell capacity setting
@@ -657,8 +655,7 @@ protected:
 
     float           m_globalMagnifyDamage = 0.0f;
 
-    float           m_globalCapacity = 1.0f;
-    float           m_globalNuclearCapacity = 1.0f;
+    float           m_globalNuclearCapacity = 10.0f;
     float           m_globalCellCapacity = 1.0f;
 
     bool            m_exitAfterMission = false;
