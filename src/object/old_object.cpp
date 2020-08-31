@@ -2500,7 +2500,7 @@ float COldObject::GetAbsTime()
 
 float COldObject::GetCapacity()
 {
-    return m_type == OBJECT_ATOMIC ? 10.0f : 1.0f;
+    return m_type == OBJECT_ATOMIC ? m_main->GetGlobalNuclearCapacity() : m_main->GetGlobalCellCapacity() ;
 }
 
 bool COldObject::IsRechargeable()

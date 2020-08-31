@@ -468,6 +468,11 @@ public:
     //! Returns global magnifyDamage setting
     float       GetGlobalMagnifyDamage();
 
+    //! Returns global NuclearCell capacity Setting
+    float       GetGlobalNuclearCapacity();
+    //! Returns global PowerCell capacity setting
+    float       GetGlobalCellCapacity();
+
     void        StartDetectEffect(COldObject* object, CObject* target);
 
     //! Enable crash sphere debug rendering
@@ -649,6 +654,9 @@ protected:
     bool            m_winTerminate = false;
 
     float           m_globalMagnifyDamage = 0.0f;
+
+    float           m_globalNuclearCapacity = 10.0f;
+    float           m_globalCellCapacity = 1.0f;
 
     bool            m_exitAfterMission = false;
 
