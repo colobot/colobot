@@ -54,5 +54,5 @@ public:
 inline bool IsObjectBeingTransported(CObject* obj)
 {
     return obj->Implements(ObjectInterfaceType::Transportable) &&
-           dynamic_cast<CTransportableObject*>(obj)->IsBeingTransported();
+           dynamic_cast<CTransportableObject&>(*obj).IsBeingTransported();
 }

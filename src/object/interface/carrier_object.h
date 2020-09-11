@@ -51,5 +51,5 @@ public:
 inline bool IsObjectCarryingCargo(CObject* obj)
 {
     return obj->Implements(ObjectInterfaceType::Carrier) &&
-           dynamic_cast<CCarrierObject*>(obj)->IsCarryingCargo();
+           dynamic_cast<CCarrierObject&>(*obj).IsCarryingCargo();
 }
