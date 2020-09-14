@@ -258,7 +258,7 @@ void CDisplayText::DisplayText(const char *text, Math::Vector goal, float height
     if ( toto != nullptr )
     {
         assert(toto->Implements(ObjectInterfaceType::Movable));
-        motion = dynamic_cast<CMovableObject*>(toto)->GetMotion();
+        motion = dynamic_cast<CMovableObject&>(*toto).GetMotion();
 
         if ( type == TT_ERROR )
         {

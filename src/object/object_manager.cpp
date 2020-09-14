@@ -217,7 +217,7 @@ void CObjectManager::DestroyTeam(int team, DestructionType destructionType)
         {
             if (object->Implements(ObjectInterfaceType::Destroyable))
             {
-                dynamic_cast<CDestroyableObject*>(object)->DestroyObject(destructionType);
+                dynamic_cast<CDestroyableObject&>(*object).DestroyObject(destructionType);
             }
             else
             {
@@ -336,7 +336,7 @@ std::vector<CObject*> CObjectManager::RadarAll(CObject* pThis, Math::Vector this
         {
             if ( pObj->Implements(ObjectInterfaceType::Movable) )
             {
-                CPhysics* physics = dynamic_cast<CMovableObject*>(pObj)->GetPhysics();
+                CPhysics* physics = dynamic_cast<CMovableObject&>(*pObj).GetPhysics();
                 if ( physics != nullptr )
                 {
                     if ( !physics->GetLand() )  continue;
@@ -346,7 +346,7 @@ std::vector<CObject*> CObjectManager::RadarAll(CObject* pThis, Math::Vector this
         if ( filter_flying == FILTER_ONLYFLYING )
         {
             if ( !pObj->Implements(ObjectInterfaceType::Movable) ) continue;
-            CPhysics* physics = dynamic_cast<CMovableObject*>(pObj)->GetPhysics();
+            CPhysics* physics = dynamic_cast<CMovableObject&>(*pObj).GetPhysics();
             if ( physics == nullptr ) continue;
             if ( physics->GetLand() ) continue;
         }

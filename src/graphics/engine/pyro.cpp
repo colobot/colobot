@@ -129,7 +129,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
 
     CObject* power = nullptr;
     if (obj->Implements(ObjectInterfaceType::Powered))
-        power = dynamic_cast<CPoweredObject*>(obj)->GetPower();
+        power = dynamic_cast<CPoweredObject&>(*obj).GetPower();
 
     if (power == nullptr)
     {
@@ -260,7 +260,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
             m_sound->Play(SOUND_DEADw, m_pos);
         }
         assert(m_object->Implements(ObjectInterfaceType::Controllable));
-        if ( type == PT_SHOTH && dynamic_cast<CControllableObject*>(m_object)->GetSelect() )
+        if ( type == PT_SHOTH && dynamic_cast<CControllableObject&>(*m_object).GetSelect() )
         {
             m_sound->Play(SOUND_AIE, m_pos);
             m_sound->Play(SOUND_AIE, m_engine->GetEyePt());
@@ -278,10 +278,10 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
     if ( m_type == PT_DEADG )
     {
         assert(m_object->Implements(ObjectInterfaceType::Destroyable));
-        dynamic_cast<CDestroyableObject*>(m_object)->SetDying(DeathType::Dead);
+        dynamic_cast<CDestroyableObject&>(*m_object).SetDying(DeathType::Dead);
 
         assert(obj->Implements(ObjectInterfaceType::Movable));
-        dynamic_cast<CMovableObject*>(obj)->GetMotion()->SetAction(MHS_DEADg, 1.0f);
+        dynamic_cast<CMovableObject&>(*obj).GetMotion()->SetAction(MHS_DEADg, 1.0f);
 
         m_camera->StartCentering(m_object, Math::PI*0.5f, 99.9f, 0.0f, 1.5f);
         m_camera->StartOver(CAM_OVER_EFFECT_FADEOUT_WHITE, m_pos, 1.0f);
@@ -291,10 +291,10 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
     if ( m_type == PT_DEADW )
     {
         assert(m_object->Implements(ObjectInterfaceType::Destroyable));
-        dynamic_cast<CDestroyableObject*>(m_object)->SetDying(DeathType::Dead);
+        dynamic_cast<CDestroyableObject&>(*m_object).SetDying(DeathType::Dead);
 
         assert(obj->Implements(ObjectInterfaceType::Movable));
-        dynamic_cast<CMovableObject*>(obj)->GetMotion()->SetAction(MHS_DEADw, 1.0f);
+        dynamic_cast<CMovableObject&>(*obj).GetMotion()->SetAction(MHS_DEADw, 1.0f);
 
         m_camera->StartCentering(m_object, Math::PI*0.5f, 99.9f, 0.0f, 3.0f);
         m_camera->StartOver(CAM_OVER_EFFECT_FADEOUT_BLACK, m_pos, 1.0f);
@@ -312,7 +312,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
     if ( m_type == PT_SHOTH )
     {
         assert(m_object->Implements(ObjectInterfaceType::Controllable));
-        if ( m_camera->GetBlood() && dynamic_cast<CControllableObject*>(m_object)->GetSelect() )
+        if ( m_camera->GetBlood() && dynamic_cast<CControllableObject&>(*m_object).GetSelect() )
         {
             m_camera->StartOver(CAM_OVER_EFFECT_BLOOD, m_pos, force);
         }
@@ -1413,7 +1413,7 @@ void CPyro::DeleteObject(bool primary, bool secondary)
         if (m_object->Implements(ObjectInterfaceType::Transportable))
         {
             // TODO: this should be handled in the object's destructor
-            CObject* transporter = dynamic_cast<CTransportableObject*>(m_object)->GetTransporter();
+            CObject* transporter = dynamic_cast<CTransportableObject&>(*m_object).GetTransporter();
             if (transporter != nullptr)
             {
                 if (transporter->Implements(ObjectInterfaceType::Powered))
@@ -1582,12 +1582,12 @@ void CPyro::ExploStart()
     m_object->Simplify();
     m_object->SetLock(true);  // ruin not usable yet
     assert(m_object->Implements(ObjectInterfaceType::Destroyable));
-    dynamic_cast<CDestroyableObject*>(m_object)->SetDying(DeathType::Exploding);  // being destroyed
+    dynamic_cast<CDestroyableObject&>(*m_object).SetDying(DeathType::Exploding);  // being destroyed
     m_object->FlatParent();
 
-    if ( m_object->Implements(ObjectInterfaceType::Controllable) && dynamic_cast<CControllableObject*>(m_object)->GetSelect() )
+    if ( m_object->Implements(ObjectInterfaceType::Controllable) && dynamic_cast<CControllableObject&>(*m_object).GetSelect() )
     {
-        dynamic_cast<CControllableObject*>(m_object)->SetSelect(false);  // deselects the object
+        dynamic_cast<CControllableObject&>(*m_object).SetSelect(false);  // deselects the object
         m_camera->SetType(CAM_TYPE_EXPLO);
         m_main->DeselectAll();
     }
@@ -1611,7 +1611,7 @@ void CPyro::ExploStart()
 
         // TODO: temporary hack (hopefully)
         assert(m_object->Implements(ObjectInterfaceType::Old));
-        Math::Vector pos = dynamic_cast<COldObject*>(m_object)->GetPartPosition(i);
+        Math::Vector pos = dynamic_cast<COldObject&>(*m_object).GetPartPosition(i);
 
         Math::Vector speed;
         float weight;
@@ -1658,9 +1658,9 @@ void CPyro::BurnStart()
     m_object->Simplify();
     m_object->SetLock(true);  // ruin not usable yet
 
-    if ( m_object->Implements(ObjectInterfaceType::Controllable) && dynamic_cast<CControllableObject*>(m_object)->GetSelect() )
+    if ( m_object->Implements(ObjectInterfaceType::Controllable) && dynamic_cast<CControllableObject&>(*m_object).GetSelect() )
     {
-        dynamic_cast<CControllableObject*>(m_object)->SetSelect(false);  // deselects the object
+        dynamic_cast<CControllableObject&>(*m_object).SetSelect(false);  // deselects the object
         m_camera->SetType(CAM_TYPE_EXPLO);
         m_main->DeselectAll();
     }
@@ -2198,7 +2198,7 @@ void CPyro::BurnProgress()
 
     if (m_object->Implements(ObjectInterfaceType::Powered))
     {
-        CObject* sub = dynamic_cast<CPoweredObject*>(m_object)->GetPower();
+        CObject* sub = dynamic_cast<CPoweredObject&>(*m_object).GetPower();
         if (sub != nullptr)  // is there a battery?
             sub->SetScaleY(1.0f - m_progress);  // complete flattening
     }
@@ -2292,7 +2292,7 @@ CObject* CPyro::FallSearchBeeExplo()
 
         if (obj->GetType() == OBJECT_MOBILErs)
         {
-            float shieldRadius = dynamic_cast<CShielder*>(obj)->GetActiveShieldRadius();
+            float shieldRadius = dynamic_cast<CShielder&>(*obj).GetActiveShieldRadius();
             if ( shieldRadius > 0.0f )
             {
                 float distance = Math::Distance(oPos, bulletCrashSphere.sphere.pos);
@@ -2360,12 +2360,12 @@ void CPyro::FallProgress(float rTime)
                 {
                     assert(m_object->Implements(ObjectInterfaceType::Destroyable));
                     // TODO: implement "killer"?
-                    dynamic_cast<CDestroyableObject*>(m_object)->DestroyObject(DestructionType::Explosion);
+                    dynamic_cast<CDestroyableObject&>(*m_object).DestroyObject(DestructionType::Explosion);
                 }
             }
             else
             {
-                if (obj->GetType() == OBJECT_MOBILErs && dynamic_cast<CShielder*>(obj)->GetActiveShieldRadius() > 0.0f)  // protected by shield?
+                if (obj->GetType() == OBJECT_MOBILErs && dynamic_cast<CShielder&>(*obj).GetActiveShieldRadius() > 0.0f)  // protected by shield?
                 {
                     m_particle->CreateParticle(pos, Math::Vector(0.0f, 0.0f, 0.0f),
                                                 Math::Point(6.0f, 6.0f), PARTIGUNDEL, 2.0f, 0.0f, 0.0f);
@@ -2376,7 +2376,7 @@ void CPyro::FallProgress(float rTime)
                 else
                 {
                     assert(obj->Implements(ObjectInterfaceType::Damageable));
-                    if (dynamic_cast<CDamageableObject*>(obj)->DamageObject(DamageType::FallingObject))
+                    if (dynamic_cast<CDamageableObject&>(*obj).DamageObject(DamageType::FallingObject))
                     {
                         DeleteObject(true, true);  // removes the ball
                     }
@@ -2384,7 +2384,7 @@ void CPyro::FallProgress(float rTime)
                     {
                         assert(m_object->Implements(ObjectInterfaceType::Destroyable));
                         // TODO: implement "killer"?
-                        dynamic_cast<CDestroyableObject*>(m_object)->DestroyObject(DestructionType::Explosion);
+                        dynamic_cast<CDestroyableObject&>(*m_object).DestroyObject(DestructionType::Explosion);
                     }
                 }
             }

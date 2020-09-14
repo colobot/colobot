@@ -148,7 +148,7 @@ bool CAutoRepair::EventProcess(const Event &event)
             assert(vehicle->Implements(ObjectInterfaceType::Shielded));
 
         if ( m_progress < 1.0f ||
-             (vehicle != nullptr && dynamic_cast<CShieldedObject*>(vehicle)->GetShield() < 1.0f) )
+             (vehicle != nullptr && dynamic_cast<CShieldedObject&>(*vehicle).GetShield() < 1.0f) )
         {
             if ( vehicle != nullptr )
             {
@@ -243,9 +243,9 @@ CObject* CAutoRepair::SearchVehicle()
     {
         if (obj == m_object) continue;
         if ( !obj->Implements(ObjectInterfaceType::Shielded) ) continue;
-        if ( !dynamic_cast<CShieldedObject*>(obj)->IsRepairable() )  continue;
+        if ( !dynamic_cast<CShieldedObject&>(*obj).IsRepairable() )  continue;
 
-        if ( obj->Implements(ObjectInterfaceType::Movable) && !dynamic_cast<CMovableObject*>(obj)->GetPhysics()->GetLand() )  continue;  // in flight?
+        if ( obj->Implements(ObjectInterfaceType::Movable) && !dynamic_cast<CMovableObject&>(*obj).GetPhysics()->GetLand() )  continue;  // in flight?
 
         Math::Vector oPos = obj->GetPosition();
         float dist = Math::Distance(oPos, sPos);
