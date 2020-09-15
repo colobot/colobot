@@ -109,7 +109,7 @@ bool CDisplayInfo::EventProcess(const Event &event)
         if ( m_toto != nullptr )
         {
             assert(m_toto->Implements(ObjectInterfaceType::Movable));
-            CMotionToto* toto = static_cast<CMotionToto*>(dynamic_cast<CMovableObject*>(m_toto)->GetMotion());
+            CMotionToto* toto = static_cast<CMotionToto*>(dynamic_cast<CMovableObject&>(*m_toto).GetMotion());
             assert(toto != nullptr);
             toto->SetMousePos(event.mousePos);
         }
@@ -449,7 +449,7 @@ void CDisplayInfo::StartDisplayInfo(std::string filename, int index, bool bSoluc
         m_toto->SetDrawFront(true);
 
         assert(m_toto->Implements(ObjectInterfaceType::Movable));
-        CMotionToto* toto = static_cast<CMotionToto*>(dynamic_cast<CMovableObject*>(m_toto)->GetMotion());
+        CMotionToto* toto = static_cast<CMotionToto*>(dynamic_cast<CMovableObject&>(*m_toto).GetMotion());
         assert(toto != nullptr);
         toto->StartDisplayInfo();
     }
@@ -840,7 +840,7 @@ void CDisplayInfo::StopDisplayInfo()
     if ( m_toto != nullptr )
     {
         assert(m_toto->Implements(ObjectInterfaceType::Movable));
-        CMotionToto* toto = static_cast<CMotionToto*>(dynamic_cast<CMovableObject*>(m_toto)->GetMotion());
+        CMotionToto* toto = static_cast<CMotionToto*>(dynamic_cast<CMovableObject&>(*m_toto).GetMotion());
         assert(toto != nullptr);
         toto->StopDisplayInfo();
     }

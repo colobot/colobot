@@ -309,7 +309,7 @@ Error CTaskShield::Start(TaskShieldMode mode, float delay)
 
     CObject* power = m_object->GetPower();
     if (power == nullptr || !power->Implements(ObjectInterfaceType::PowerContainer))  return ERR_SHIELD_ENERGY;
-    float energy = dynamic_cast<CPowerContainerObject*>(power)->GetEnergy();
+    float energy = dynamic_cast<CPowerContainerObject&>(*power).GetEnergy();
     if ( energy == 0.0f )  return ERR_SHIELD_ENERGY;
 
     Math::Matrix* mat = m_object->GetWorldMatrix(0);

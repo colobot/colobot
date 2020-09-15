@@ -194,7 +194,7 @@ Error CTaskRecover::Start()
     CObject* power = dynamic_cast<CPoweredObject*>(m_object)->GetPower();
     if (power == nullptr || !power->Implements(ObjectInterfaceType::PowerContainer))  return ERR_RECOVER_ENERGY;
 
-    float energy = dynamic_cast<CPowerContainerObject*>(power)->GetEnergy();
+    float energy = dynamic_cast<CPowerContainerObject&>(*power).GetEnergy();
     if ( energy < ENERGY_RECOVER+0.05f )  return ERR_RECOVER_ENERGY;
 
     Math::Matrix* mat = m_object->GetWorldMatrix(0);

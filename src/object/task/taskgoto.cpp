@@ -1202,7 +1202,7 @@ bool CTaskGoto::AdjustTarget(CObject* pObj, Math::Vector &pos, float &distance)
          type == OBJECT_MOBILEdr )
     {
         assert(pObj->Implements(ObjectInterfaceType::Powered));
-        pos = dynamic_cast<CPoweredObject*>(pObj)->GetPowerPosition();
+        pos = dynamic_cast<CPoweredObject&>(*pObj).GetPowerPosition();
         pos.x -= TAKE_DIST+TAKE_DIST_OTHER+distance;
         mat = pObj->GetWorldMatrix(0);
         pos = Transform(*mat, pos);

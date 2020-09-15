@@ -176,7 +176,7 @@ bool CAutoDestroyer::EventProcess(const Event &event)
             if ( scrap != nullptr )
             {
                 assert(scrap->Implements(ObjectInterfaceType::Destroyable));
-                dynamic_cast<CDestroyableObject*>(scrap)->DestroyObject(DestructionType::Explosion);
+                dynamic_cast<CDestroyableObject&>(*scrap).DestroyObject(DestructionType::Explosion);
             }
             m_bExplo = true;
         }

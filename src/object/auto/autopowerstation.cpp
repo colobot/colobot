@@ -138,7 +138,7 @@ bool CAutoPowerStation::EventProcess(const Event &event)
         {
             if (vehicle->Implements(ObjectInterfaceType::Powered))
             {
-                CObject* power = dynamic_cast<CPoweredObject*>(vehicle)->GetPower();
+                CObject* power = dynamic_cast<CPoweredObject&>(*vehicle).GetPower();
                 if ( power != nullptr && power->Implements(ObjectInterfaceType::PowerContainer) )
                 {
                     CPowerContainerObject* powerContainer = dynamic_cast<CPowerContainerObject*>(power);
@@ -158,7 +158,7 @@ bool CAutoPowerStation::EventProcess(const Event &event)
 
             if (vehicle->Implements(ObjectInterfaceType::Carrier))
             {
-                CObject* power = dynamic_cast<CCarrierObject*>(vehicle)->GetCargo();
+                CObject* power = dynamic_cast<CCarrierObject&>(*vehicle).GetCargo();
                 if ( power != nullptr && power->Implements(ObjectInterfaceType::PowerContainer) )
                 {
                     CPowerContainerObject* powerContainer = dynamic_cast<CPowerContainerObject*>(power);

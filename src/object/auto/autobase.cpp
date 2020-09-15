@@ -169,7 +169,7 @@ begin:
             else
             {
                 assert(pObj->Implements(ObjectInterfaceType::Controllable));
-                m_camera->SetType(dynamic_cast<CControllableObject*>(pObj)->GetCameraType());
+                m_camera->SetType(dynamic_cast<CControllableObject&>(*pObj).GetCameraType());
             }
 
             m_main->StartMusic();
@@ -594,7 +594,7 @@ begin:
                 else
                 {
                     assert(pObj->Implements(ObjectInterfaceType::Controllable));
-                    m_camera->SetType(dynamic_cast<CControllableObject*>(pObj)->GetCameraType());
+                    m_camera->SetType(dynamic_cast<CControllableObject&>(*pObj).GetCameraType());
                 }
                 m_sound->Play(SOUND_BOUM, m_object->GetPosition());
                 m_soundChannel = -1;
@@ -1124,7 +1124,7 @@ bool CAutoBase::Abort()
             else
             {
                 assert(pObj->Implements(ObjectInterfaceType::Controllable));
-                m_camera->SetType(dynamic_cast<CControllableObject*>(pObj)->GetCameraType());
+                m_camera->SetType(dynamic_cast<CControllableObject&>(*pObj).GetCameraType());
             }
 
             m_engine->SetFogStart(m_fogStart);
@@ -1248,7 +1248,7 @@ void CAutoBase::FreezeCargo(bool freeze)
             m_cargoObjects.insert(obj);
             if ( obj->Implements(ObjectInterfaceType::Movable) )
             {
-                CPhysics* physics = dynamic_cast<CMovableObject*>(obj)->GetPhysics();
+                CPhysics* physics = dynamic_cast<CMovableObject&>(*obj).GetPhysics();
                 physics->SetFreeze(freeze);
             }
         }

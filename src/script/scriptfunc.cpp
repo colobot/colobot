@@ -728,7 +728,7 @@ bool CScriptFunctions::rDelete(CBotVar* var, CBotVar* result, int& exception, vo
     }
 
     CObject* obj = CObjectManager::GetInstancePointer()->GetObjectById(rank);
-    if ( obj == nullptr || (obj->Implements(ObjectInterfaceType::Old) && dynamic_cast<COldObject*>(obj)->IsDying()) )
+    if ( obj == nullptr || (obj->Implements(ObjectInterfaceType::Old) && dynamic_cast<COldObject&>(*obj).IsDying()) )
     {
         return true;
     }
@@ -739,7 +739,7 @@ bool CScriptFunctions::rDelete(CBotVar* var, CBotVar* result, int& exception, vo
 
         if ( exploType != DestructionType::NoEffect && obj->Implements(ObjectInterfaceType::Destroyable) )
         {
-            dynamic_cast<CDestroyableObject*>(obj)->DestroyObject(static_cast<DestructionType>(exploType));
+            dynamic_cast<CDestroyableObject&>(*obj).DestroyObject(static_cast<DestructionType>(exploType));
         }
         else
         {
@@ -1560,7 +1560,7 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
         CObjectManager::GetInstancePointer()->CreateObject(pos, angle, OBJECT_EGG);
         if (object->Implements(ObjectInterfaceType::Programmable))
         {
-            dynamic_cast<CProgrammableObject*>(object)->SetActivity(false);
+            dynamic_cast<CProgrammableObject&>(*object).SetActivity(false);
         }
     }
     else
@@ -1582,7 +1582,7 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
         if (type == OBJECT_MOBILEdr)
         {
             assert(object->Implements(ObjectInterfaceType::Old)); // TODO: temporary hack
-            dynamic_cast<COldObject*>(object)->SetManual(true);
+            dynamic_cast<COldObject&>(*object).SetManual(true);
         }
         script->m_main->CreateShortcuts();
     }
@@ -1597,7 +1597,7 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
             programStorage->ReadProgram(program, name2.c_str());
             program->readOnly = true;
             program->filename = name;
-            dynamic_cast<CProgrammableObject*>(object)->RunProgram(program);
+            dynamic_cast<CProgrammableObject&>(*object).RunProgram(program);
         }
     }
 
@@ -2203,7 +2203,7 @@ bool CScriptFunctions::rReceive(CBotVar* var, CBotVar* result, int& exception, v
             return true;
         }
 
-        CExchangePost* exchangePost = dynamic_cast<CTaskInfo*>(script->m_taskExecutor->GetForegroundTask())->FindExchangePost(power);
+        CExchangePost* exchangePost = dynamic_cast<CTaskInfo&>(*script->m_taskExecutor->GetForegroundTask()).FindExchangePost(power);
         script->m_returnValue = exchangePost->GetInfoValue(p);
     }
     if ( !WaitForForegroundTask(script, result, exception) )  return false;  // not finished
@@ -2488,7 +2488,7 @@ bool CScriptFunctions::rShield(CBotVar* var, CBotVar* result, int& exception, vo
         }
         else    // up ?
         {
-            dynamic_cast<CShielder*>(pThis)->SetShieldRadius(radius);
+            dynamic_cast<CShielder&>(*pThis).SetShieldRadius(radius);
             err = script->m_taskExecutor->StartTaskShield(TSM_UP, 1000.0f);
             if ( err != ERR_OK )
             {
@@ -2506,7 +2506,7 @@ bool CScriptFunctions::rShield(CBotVar* var, CBotVar* result, int& exception, vo
         else    // up?
         {
             //?         result->SetValInt(1);  // shows the error
-            dynamic_cast<CShielder*>(pThis)->SetShieldRadius(radius);
+            dynamic_cast<CShielder&>(*pThis).SetShieldRadius(radius);
             script->m_taskExecutor->StartTaskShield(TSM_UPDATE, 0.0f);
         }
     }
@@ -2680,7 +2680,7 @@ bool CScriptFunctions::rMotor(CBotVar* var, CBotVar* result, int& exception, voi
     if ( turn < -1.0f )  turn = -1.0f;
     if ( turn >  1.0f )  turn =  1.0f;
 
-    if ( dynamic_cast<CBaseAlien*>(pThis) != nullptr && dynamic_cast<CBaseAlien*>(pThis)->GetFixed() )  // ant on the back?
+    if ( dynamic_cast<CBaseAlien*>(pThis) != nullptr && dynamic_cast<CBaseAlien&>(*pThis).GetFixed() )  // ant on the back?
     {
         speed = 0.0f;
         turn  = 0.0f;
@@ -2789,7 +2789,7 @@ bool CScriptFunctions::rCmdline(CBotVar* var, CBotVar* result, int& exception, v
     assert(pThis->Implements(ObjectInterfaceType::Programmable));
 
     rank = var->GetValInt();
-    value = dynamic_cast<CProgrammableObject*>(pThis)->GetCmdLine(rank);
+    value = dynamic_cast<CProgrammableObject&>(*pThis).GetCmdLine(rank);
     result->SetValFloat(value);
 
     return true;

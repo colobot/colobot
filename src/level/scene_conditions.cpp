@@ -82,7 +82,7 @@ bool CObjectCondition::CheckForObject(CObject* obj)
     }
     else if (obj->Implements(ObjectInterfaceType::Powered))
     {
-        CObject* powerObj = dynamic_cast<CPoweredObject*>(obj)->GetPower();
+        CObject* powerObj = dynamic_cast<CPoweredObject&>(*obj).GetPower();
         if(powerObj != nullptr && powerObj->Implements(ObjectInterfaceType::PowerContainer))
         {
             power = dynamic_cast<CPowerContainerObject*>(powerObj);
@@ -98,7 +98,7 @@ bool CObjectCondition::CheckForObject(CObject* obj)
 
     Math::Vector oPos;
     if (IsObjectBeingTransported(obj))
-        oPos = dynamic_cast<CTransportableObject*>(obj)->GetTransporter()->GetPosition();
+        oPos = dynamic_cast<CTransportableObject&>(*obj).GetTransporter()->GetPosition();
     else
         oPos = obj->GetPosition();
     oPos.y = 0.0f;
