@@ -459,7 +459,7 @@ float CText::GetStringWidth(const std::string &text,
         width += GetCharWidth(ch, font, size, width);
 
         index += len;
-        fmtIndex++;
+        fmtIndex += len;
     }
 
     return width;
@@ -607,7 +607,7 @@ int CText::Justify(const std::string &text, std::vector<FontMetaChar>::iterator 
         }
 
         index += len;
-        fmtIndex++;
+        fmtIndex += len;
     }
 
     return index;
@@ -685,7 +685,7 @@ int CText::Detect(const std::string &text, std::vector<FontMetaChar>::iterator f
 
         pos += width;
         index += len;
-        fmtIndex++;
+        fmtIndex += len;
     }
 
     return index;
