@@ -595,7 +595,8 @@ bool CScriptFunctions::rResearch(CBotVar* var, CBotVar* result, int& exception, 
     {
         bool ok = false;
         if ( type == RESEARCH_iPAW       ||
-             type == RESEARCH_iGUN        )
+             type == RESEARCH_iGUN       ||
+             type == RESEARCH_TARGET      )
         {
             if ( center->GetType() != OBJECT_LABO )
                 err = ERR_WRONG_OBJ;
