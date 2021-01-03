@@ -48,25 +48,30 @@ elseif(PLATFORM_WINDOWS)
 
         if(${MSVC_STATIC})
             if (${OPENAL_SOUND})
-                find_library(FLAC_LIBRARY NAMES flac.lib)
-                find_library(VORBIS_LIBRARY NAMES vorbis.lib)
-                find_library(VORBISENC_LIBRARY NAMES vorbisenc.lib)
-                find_library(OGG_LIBRARY NAMES ogg.lib)
+                find_library(FLAC_LIBRARY NAMES flac)
+                find_library(VORBIS_LIBRARY NAMES vorbis)
+                find_library(VORBISENC_LIBRARY NAMES vorbisenc)
+                find_library(OGG_LIBRARY NAMES ogg)
+                find_library(OPUS_LIBRARY NAMES opus)
                 set(OPENAL_MSVC_LIBS
                     ${FLAC_LIBRARY}
                     ${VORBIS_LIBRARY}
                     ${VORBISENC_LIBRARY}
                     ${OGG_LIBRARY}
+                    ${OPUS_LIBRARY}
                 )
             endif()
 
-            find_library(BZ2_LIBRARY NAMES bz2.lib)
-            find_library(JPEG_LIBRARY NAMES jpeg.lib)
-            find_library(TIFF_LIBRARY NAMES tiff.lib)
-            find_library(LZMA_LIBRARY NAMES lzma.lib)
-            find_library(FREETYPE_LIBRARY NAMES freetype.lib)
-            find_library(ICONV_LIBRARY NAMES libiconv.lib)
-            find_library(CHARSET_LIBRARY NAMES libcharset.lib)
+            find_library(BZ2_LIBRARY NAMES bz2)
+            find_library(JPEG_LIBRARY NAMES jpeg)
+            find_library(TIFF_LIBRARY NAMES tiff)
+            find_library(LZMA_LIBRARY NAMES lzma)
+            find_library(FREETYPE_LIBRARY NAMES freetype)
+            find_library(ICONV_LIBRARY NAMES iconv)
+            find_library(CHARSET_LIBRARY NAMES charset)
+            find_library(BROTLICOMMON_LIBRARY NAMES brotlicommon-static)
+            find_library(BROTLIENC_LIBRARY NAMES brotlienc-static)
+            find_library(BROTLIDEC_LIBRARY NAMES brotlidec-static)
             set(MSVC_LIBS
                 ${LIBINTL_LIBRARY}
                 ${OPENAL_MSVC_LIBS}
@@ -77,6 +82,9 @@ elseif(PLATFORM_WINDOWS)
                 ${FREETYPE_LIBRARY}
                 ${ICONV_LIBRARY}
                 ${CHARSET_LIBRARY}
+                ${BROTLICOMMON_LIBRARY}
+                ${BROTLIENC_LIBRARY}
+                ${BROTLIDEC_LIBRARY}
                 winmm.lib
                 dxguid.lib
                 imm32.lib
