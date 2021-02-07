@@ -549,6 +549,8 @@ bool CApplication::Create()
 
     /* SDL initialization sequence */
 
+    // Creating the m_engine now because it holds the vsync flag
+    m_engine = MakeUnique<Gfx::CEngine>(this, m_systemUtils);
 
     Uint32 initFlags = SDL_INIT_VIDEO | SDL_INIT_TIMER;
 
@@ -693,8 +695,6 @@ bool CApplication::Create()
     }
 
     // Create the 3D engine
-    m_engine = MakeUnique<Gfx::CEngine>(this, m_systemUtils);
-
     m_engine->SetDevice(m_device.get());
 
     if (! m_engine->Create() )
@@ -850,30 +850,41 @@ bool CApplication::CreateVideoSurface()
     int vsync = 0;
     if (GetConfigFile().GetIntProperty("Setup", "VSync", vsync))
     {
-        while (SDL_GL_SetSwapInterval(vsync) == -1)
-        {
-            switch(vsync)
-            {
-                case -1: //failed with adaptive sync?
-                    GetLogger()->Warn("Adaptive sync not supported.\n");
-                    vsync = 1;
-                    break;
-                case 1: //failed with VSync enabled?
-                    GetLogger()->Warn("Couldn't enable VSync.\n");
-                    vsync = 0;
-                    break;
-                case 0: //failed with VSync disabled?
-                    GetLogger()->Warn("Couldn't disable VSync.\n");
-                    vsync = 1;
-                    break;
-            }
-        }
+        m_engine->SetVSync(vsync);
+        TryToSetVSync();
+        vsync = m_engine->GetVSync();
         GetConfigFile().SetIntProperty("Setup", "VSync", vsync);
 
         GetLogger()->Info("Using Vsync: %s\n", (vsync == -1 ? "adaptive" : (vsync ? "true" : "false")));
     }
 
     return true;
+}
+
+void CApplication::TryToSetVSync()
+{
+    int vsync = m_engine->GetVSync();
+    int result = SDL_GL_SetSwapInterval(vsync);
+    if (result == -1)
+    {
+        switch (vsync)
+        {
+        case -1:
+            GetLogger()->Warn("Adaptive sync not supported: %s\n", SDL_GetError());
+            m_engine->SetVSync(1);
+            TryToSetVSync();
+            break;
+        case 1:
+            GetLogger()->Warn("Couldn't enable VSync: %s\n", SDL_GetError());
+            m_engine->SetVSync(0);
+            TryToSetVSync();
+            break;
+        case 0:
+            GetLogger()->Warn("Couldn't disable VSync: %s\n", SDL_GetError());
+            m_engine->SetVSync(SDL_GL_GetSwapInterval());
+            break;
+        }
+    }
 }
 
 bool CApplication::ChangeVideoConfig(const Gfx::DeviceConfig &newConfig)
@@ -884,26 +895,7 @@ bool CApplication::ChangeVideoConfig(const Gfx::DeviceConfig &newConfig)
     SDL_SetWindowSize(m_private->window, m_deviceConfig.size.x, m_deviceConfig.size.y);
     SDL_SetWindowFullscreen(m_private->window, m_deviceConfig.fullScreen ? SDL_WINDOW_FULLSCREEN : 0);
 
-    int vsync = m_engine->GetVSync();
-    while (SDL_GL_SetSwapInterval(vsync) == -1)
-    {
-        switch(vsync)
-        {
-            case -1: //failed with adaptive sync?
-                GetLogger()->Warn("Adaptive sync not supported.\n");
-                vsync = 1;
-                break;
-            case 1: //failed with VSync enabled?
-                GetLogger()->Warn("Couldn't enable VSync.\n");
-                vsync = 0;
-                break;
-            case 0: //failed with VSync disabled?
-                GetLogger()->Warn("Couldn't disable VSync.\n");
-                vsync = 1;
-                break;
-        }
-    }
-    m_engine->SetVSync(vsync);
+    TryToSetVSync();
 
     m_device->ConfigChanged(m_deviceConfig);
 
