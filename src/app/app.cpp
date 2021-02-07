@@ -112,11 +112,11 @@ struct ApplicationPrivate
 CApplication::CApplication(CSystemUtils* systemUtils)
     : m_systemUtils(systemUtils),
       m_private(MakeUnique<ApplicationPrivate>()),
+      m_engine(MakeUnique<Gfx::CEngine>(this, m_systemUtils)),
       m_configFile(MakeUnique<CConfigFile>()),
       m_input(MakeUnique<CInput>()),
       m_pathManager(MakeUnique<CPathManager>(systemUtils)),
-      m_modManager(MakeUnique<CModManager>(this, m_pathManager.get())),
-      m_engine(MakeUnique<Gfx::CEngine>(this, m_systemUtils))
+      m_modManager(MakeUnique<CModManager>(this, m_pathManager.get()))
 {
     m_exitCode      = 0;
     m_active        = false;
