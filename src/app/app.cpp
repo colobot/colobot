@@ -112,7 +112,6 @@ struct ApplicationPrivate
 CApplication::CApplication(CSystemUtils* systemUtils)
     : m_systemUtils(systemUtils),
       m_private(MakeUnique<ApplicationPrivate>()),
-      m_engine(MakeUnique<Gfx::CEngine>(this, m_systemUtils)),
       m_configFile(MakeUnique<CConfigFile>()),
       m_input(MakeUnique<CInput>()),
       m_pathManager(MakeUnique<CPathManager>(systemUtils)),
@@ -550,6 +549,8 @@ bool CApplication::Create()
 
     /* SDL initialization sequence */
 
+    // Creating the m_engine now because it holds the vsync flag
+    m_engine = MakeUnique<Gfx::CEngine>(this, m_systemUtils);
 
     Uint32 initFlags = SDL_INIT_VIDEO | SDL_INIT_TIMER;
 
