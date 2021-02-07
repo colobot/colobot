@@ -288,6 +288,9 @@ public:
 protected:
     //! Creates the window's SDL_Surface
     bool CreateVideoSurface();
+    //! Tries to set the SDL vsync state desired by the 3D engine
+    //! The final state of SDL vsync is set in the 3D engine afterwards
+    void TryToSetVSync();
 
     //! Processes the captured SDL event to Event struct
     Event       ProcessSystemEvent();
