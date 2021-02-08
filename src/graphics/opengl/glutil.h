@@ -29,7 +29,11 @@
 #include "math/intpoint.h"
 #include "math/vector.h"
 
+#if defined(HAVE_OPENGL)
 #include <GL/glew.h>
+#elif defined(HAVE_OPENGLES)
+#include <GLES3/gl3.h>
+#endif
 
 #include <string>
 #include <memory>

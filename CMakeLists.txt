@@ -62,50 +62,39 @@ if("${CMAKE_SYSTEM_NAME}" MATCHES "Windows")
     message(STATUS "Build for Windows system")
     set(PLATFORM_WINDOWS 1)
     set(PLATFORM_GNU     0)
+    set(PLATFORM_ANDROID 0)
     set(PLATFORM_LINUX   0)
     set(PLATFORM_MACOSX  0)
     set(PLATFORM_FREEBSD 0)
     set(PLATFORM_OTHER   0)
-
-    # Platform-dependent implementation of system.h
-    set(SYSTEM_CPP_MODULE "system_windows.cpp")
-    set(SYSTEM_H_MODULE "system_windows.h")
 elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
     message(STATUS "Build for Linux system")
     set(PLATFORM_WINDOWS 0)
     set(PLATFORM_LINUX   1)
     set(PLATFORM_GNU     1)
+    set(PLATFORM_ANDROID 0)
     set(PLATFORM_MACOSX  0)
     set(PLATFORM_FREEBSD 0)
     set(PLATFORM_OTHER   0)
-
-    # Platform-dependent implementation of system.h
-    set(SYSTEM_CPP_MODULE "system_linux.cpp")
-    set(SYSTEM_H_MODULE "system_linux.h")
 elseif("${CMAKE_SYSTEM_NAME}" MATCHES "kFreeBSD" OR "${CMAKE_SYSTEM_NAME}" STREQUAL "GNU")
     message(STATUS "Build for kFreeBSD system")
     set(PLATFORM_WINDOWS 0)
     set(PLATFORM_LINUX   0)
     set(PLATFORM_GNU     1)
+    set(PLATFORM_ANDROID 0)
     set(PLATFORM_MACOSX  0)
     set(PLATFORM_FREEBSD 0)
     set(PLATFORM_OTHER   0)
-
-    # Platform-dependent implementation of system.h
-    set(SYSTEM_CPP_MODULE "system_other.cpp")
-    set(SYSTEM_H_MODULE "system_other.h")
 elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
     message(STATUS "Build for Mac OSX system")
     set(PLATFORM_WINDOWS 0)
     set(PLATFORM_LINUX   0)
     set(PLATFORM_GNU     0)
+    set(PLATFORM_ANDROID 0)
     set(PLATFORM_MACOSX  1)
     set(PLATFORM_OTHER   0)
     set(PLATFORM_FREEBSD 0)
 
-    # Platform-dependent implementation of system.h
-    set(SYSTEM_CPP_MODULE "system_macosx.cpp")
-    set(SYSTEM_H_MODULE "system_macosx.h")
     # To avoid CMake warning
     set(CMAKE_MACOSX_RPATH 1)
 elseif("${CMAKE_SYSTEM_NAME}" MATCHES "FreeBSD")
@@ -113,28 +102,31 @@ elseif("${CMAKE_SYSTEM_NAME}" MATCHES "FreeBSD")
     set(PLATFORM_WINDOWS 0)
     set(PLATFORM_LINUX   0)
     set(PLATFORM_GNU     0)
+    set(PLATFORM_ANDROID 0)
     set(PLATFORM_MACOSX  0)
     set(PLATFORM_FREEBSD 1)
     set(PLATFORM_OTHER   0)
 
-    # Platform-dependent implementation of system.h
-    # On FreeBSD we can use *_other
-    set(SYSTEM_CPP_MODULE "system_other.cpp")
-    set(SYSTEM_H_MODULE "system_other.h")
     # To avoid CMake warning
     set(CMAKE_MACOSX_RPATH 1)
+elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Android")
+    message(STATUS "Build for Android")
+    set(PLATFORM_WINDOWS 0)
+    set(PLATFORM_LINUX   0)
+    set(PLATFORM_GNU     0)
+    set(PLATFORM_ANDROID 1)
+    set(PLATFORM_MACOSX  0)
+    set(PLATFORM_FREEBSD 0)
+    set(PLATFORM_OTHER   0)
 else()
     message(STATUS "Build for other system")
     set(PLATFORM_WINDOWS 0)
     set(PLATFORM_LINUX   0)
     set(PLATFORM_GNU     0)
+    set(PLATFORM_ANDROID 0)
     set(PLATFORM_MACOSX  0)
     set(PLATFORM_FREEBSD 0)
     set(PLATFORM_OTHER   1)
-
-    # Platform-dependent implementation of system.h
-    set(SYSTEM_CPP_MODULE "system_other.cpp")
-    set(SYSTEM_H_MODULE "system_other.h")
 endif()
 
 
@@ -309,10 +301,34 @@ include("${colobot_SOURCE_DIR}/cmake/msys.cmake")
 include("${colobot_SOURCE_DIR}/cmake/colobot-lint.cmake")
 
 ##
+# Configure build dependencies for Android
+##
+if (PLATFORM_ANDROID)
+  list(APPEND CMAKE_FIND_ROOT_PATH "${colobot_SOURCE_DIR}/android/deps/${ANDROID_ABI}-${ANDROID_PLATFORM_LEVEL}/sysroot")
+  set(Boost_COMPILER clang)
+
+  # Not sure why this is needed
+  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-Bsymbolic")
+endif()
+
+##
 # Searching for packages
 ##
 
-find_package(OpenGL 1.4 REQUIRED)
+if(PLATFORM_ANDROID)
+    set(HAVE_OPENGL 0)
+    set(HAVE_OPENGLES 1)
+else()
+    set(HAVE_OPENGL 1)
+    set(HAVE_OPENGLES 0)
+endif()
+
+if(HAVE_OPENGL)
+    find_package(OpenGL 1.4 REQUIRED)
+
+    set(GLEW_USE_STATIC_LIBS ${GLEW_STATIC})
+    find_package(GLEW REQUIRED)
+endif()
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
 find_package(SDL2_ttf REQUIRED)
@@ -322,13 +338,14 @@ find_package(PhysFS REQUIRED)
 
 set(Boost_USE_STATIC_LIBS ${BOOST_STATIC})
 set(Boost_USE_MULTITHREADED ON)
-set(Boost_USE_STATIC_RUNTIME ${USE_STATIC_RUNTIME})
+if (PLATFORM_ANDROID)
+    set(Boost_USE_STATIC_RUNTIME OFF)
+else()
+    set(Boost_USE_STATIC_RUNTIME ${USE_STATIC_RUNTIME})
+endif()
 
 set(Boost_ADDITIONALVERSION "1.51" "1.51.0")
 find_package(Boost COMPONENTS system filesystem regex REQUIRED)
-
-set(GLEW_USE_STATIC_LIBS ${GLEW_STATIC})
-find_package(GLEW REQUIRED)
 
 if (OPENAL_SOUND)
     find_package(OpenAL REQUIRED)

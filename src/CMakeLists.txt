@@ -74,10 +74,6 @@ add_library(colobotbase STATIC
     common/restext.h
     common/system/system.cpp
     common/system/system.h
-    common/system/system_other.cpp
-    common/system/system_other.h
-    common/system/${SYSTEM_CPP_MODULE}
-    common/system/${SYSTEM_H_MODULE}
     common/settings.cpp
     common/settings.h
     common/singleton.h
@@ -144,16 +140,6 @@ add_library(colobotbase STATIC
     graphics/model/model_output.h
     graphics/model/model_shadow_spot.h
     graphics/model/model_triangle.h
-    graphics/opengl/gl14device.cpp
-    graphics/opengl/gl14device.h
-    graphics/opengl/gl21device.cpp
-    graphics/opengl/gl21device.h
-    graphics/opengl/gl33device.cpp
-    graphics/opengl/gl33device.h
-    graphics/opengl/glframebuffer.cpp
-    graphics/opengl/glframebuffer.h
-    graphics/opengl/glutil.cpp
-    graphics/opengl/glutil.h
     level/build_type.h
     level/level_category.cpp
     level/level_category.h
@@ -473,6 +459,56 @@ add_library(colobotbase STATIC
     ui/studio.h
 )
 
+# Platform-dependent implementation of system.h
+if (PLATFORM_WINDOWS)
+    target_sources(colobotbase PUBLIC
+        common/system/system_windows.cpp
+        common/system/system_windows.h
+    )
+elseif (PLATFORM_LINUX)
+    target_sources(colobotbase PUBLIC
+        common/system/system_linux.cpp
+        common/system/system_linux.h
+    )
+elseif (PLATFORM_MACOSX)
+    target_sources(colobotbase PUBLIC
+        common/system/system_macosx.cpp
+        common/system/system_macosx.h
+    )
+elseif (PLATFORM_ANDROID)
+    # Android is derived from Linux, so we have to compile both
+    target_sources(colobotbase PUBLIC
+        common/system/system_linux.cpp
+        common/system/system_linux.h
+        common/system/system_android.cpp
+        common/system/system_android.h
+    )
+else()
+    target_sources(colobotbase PUBLIC
+        common/system/system_other.cpp
+        common/system/system_other.h
+    )
+endif()
+
+if (HAVE_OPENGL)
+    target_sources(colobotbase PUBLIC
+        graphics/opengl/gl14device.cpp
+        graphics/opengl/gl14device.h
+        graphics/opengl/gl21device.cpp
+        graphics/opengl/gl21device.h
+        graphics/opengl/gl33device.cpp
+        graphics/opengl/gl33device.h
+        graphics/opengl/glframebuffer.cpp
+        graphics/opengl/glframebuffer.h
+        graphics/opengl/glutil.cpp
+        graphics/opengl/glutil.h
+    )
+endif()
+
+if (HAVE_OPENGLES)
+    # TODO: Add GLES rendering engine files here
+endif()
+
 target_include_directories(colobotbase PUBLIC
     ${CMAKE_CURRENT_LIST_DIR}
     ${CMAKE_CURRENT_LIST_DIR}/..
@@ -486,15 +522,30 @@ target_link_libraries(colobotbase PUBLIC
     SDL2::Core
     SDL2::Image
     SDL2::TTF
-    OpenGL::GL
     PNG::PNG
-    GLEW::GLEW
     Boost::headers
     Boost::filesystem
     Boost::regex
     PhysFS::PhysFS
     SndFile::sndfile
 )
+if (NOT PLATFORM_ANDROID)
+    target_link_libraries(colobotbase PUBLIC
+        OpenGL::GL
+        GLEW::GLEW
+    )
+else()
+    # "Using GLES* libraries is theoretically possible in place of OpenGL::OpenGL, but this module does not currently support that; contributions welcome."
+    # (╯°□°)╯︵ ┻━┻
+    # These are part of the NDK and should always be in the default compiler include path anyway
+    target_link_libraries(colobotbase PUBLIC
+        android
+        log
+        GLESv1_CM
+        GLESv2
+        GLESv3
+    )
+endif()
 
 # Optional libraries
 if(OPENAL_SOUND)
@@ -559,11 +610,25 @@ elseif(PLATFORM_WINDOWS)
     else()
         target_link_libraries(colobotbase PUBLIC -lintl)
     endif()
-elseif(PLATFORM_GNU)
-    # nothing
 elseif(PLATFORM_LINUX)
     # for clock_gettime
     target_link_libraries(colobotbase PUBLIC -lrt)
+elseif(PLATFORM_ANDROID)
+    find_package(Intl REQUIRED)
+    target_link_libraries(colobotbase PUBLIC Gettext::Intl)
+
+    if(USE_STATIC_RUNTIME)
+        # This is the same hack we use for static linking on MSVC
+        find_library(FREETYPE_LIBRARY NAMES libfreetype.a)
+        find_library(ICONV_LIBRARY NAMES libiconv.a)
+        target_link_libraries(colobotbase PUBLIC ${FREETYPE_LIBRARY} ${ICONV_LIBRARY})
+    endif()
+
+    # Blame SDL for this one
+    # (they hardcoded it to be dynamic and it's not built in static mode at all, causing the app to crash)
+    add_library(hidapi SHARED ${colobot_SOURCE_DIR}/android/deps/${ANDROID_ABI}-${ANDROID_PLATFORM_LEVEL}/work/SDL2-2.0.14/src/hidapi/android/hid.cpp)
+    target_compile_options(hidapi PRIVATE "-Wno-old-style-cast")
+    target_link_libraries(hidapi PUBLIC log)
 elseif(PLATFORM_MACOSX)
     find_package(Intl REQUIRED)
     target_link_libraries(colobotbase PUBLIC Gettext::Intl)
@@ -577,7 +642,9 @@ set(COLOBOT_LIBS ${LIBS} PARENT_SCOPE)
 
 
 # Targets
-if(HIDE_CONSOLE)
+if(PLATFORM_ANDROID)
+    add_library(colobot SHARED app/main.cpp)
+elseif(HIDE_CONSOLE)
     add_executable(colobot WIN32 app/main.cpp)
 else()
     add_executable(colobot app/main.cpp)
@@ -589,10 +656,13 @@ endif()
 target_link_libraries(colobot colobotbase SDL2::Main)
 
 # Install
-install(TARGETS colobot RUNTIME DESTINATION ${COLOBOT_INSTALL_BIN_DIR})
+install(TARGETS colobot
+        RUNTIME DESTINATION ${COLOBOT_INSTALL_BIN_DIR}
+        LIBRARY DESTINATION ${COLOBOT_INSTALL_LIB_DIR})
 if(MSVC)
     install(FILES $<TARGET_PDB_FILE:colobot> CONFIGURATIONS Debug RelWithDebInfo DESTINATION ${COLOBOT_INSTALL_BIN_DIR} OPTIONAL)
 endif()
+
 if(NOT CBOT_STATIC)
     set_target_properties(colobot PROPERTIES INSTALL_RPATH ${COLOBOT_INSTALL_LIB_DIR})
 endif()

@@ -42,7 +42,7 @@ CSNDFileWrapper::CSNDFileWrapper(const std::string& filename)
         m_snd_file = sf_open_virtual(&m_snd_callbacks, SFM_READ, &m_file_info, m_file);
         if (!m_snd_file)
         {
-            m_last_error = "Could not load file";
+            m_last_error = sf_strerror(nullptr);
         }
     }
     else

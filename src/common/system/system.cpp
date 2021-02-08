@@ -26,6 +26,8 @@
     #include "common/system/system_windows.h"
 #elif defined(PLATFORM_LINUX)
     #include "common/system/system_linux.h"
+#elif defined(PLATFORM_ANDROID)
+    #include "common/system/system_android.h"
 #elif defined(PLATFORM_MACOSX)
     #include "common/system/system_macosx.h"
 #else
@@ -45,6 +47,8 @@ std::unique_ptr<CSystemUtils> CSystemUtils::Create()
     instance = MakeUnique<CSystemUtilsWindows>();
 #elif defined(PLATFORM_LINUX)
     instance = MakeUnique<CSystemUtilsLinux>();
+#elif defined(PLATFORM_ANDROID)
+    instance = MakeUnique<CSystemUtilsAndroid>();
 #elif defined(PLATFORM_MACOSX)
     instance = MakeUnique<CSystemUtilsMacOSX>();
 #else

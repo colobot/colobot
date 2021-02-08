@@ -3,9 +3,13 @@
 // Macros set by CMake
 #cmakedefine PLATFORM_WINDOWS @PLATFORM_WINDOWS@
 #cmakedefine PLATFORM_LINUX @PLATFORM_LINUX@
+#cmakedefine PLATFORM_ANDROID @PLATFORM_ANDROID@
 #cmakedefine PLATFORM_GNU @PLATFORM_GNU@
 #cmakedefine PLATFORM_MACOSX @PLATFORM_MACOSX@
 #cmakedefine PLATFORM_OTHER @PLATFORM_OTHER@
+
+#cmakedefine HAVE_OPENGL @HAVE_OPENGL@
+#cmakedefine HAVE_OPENGLES @HAVE_OPENGLES@
 
 #ifdef PLATFORM_MACOSX
 // Assume we have the Mac OS X function CFLocaleCopyCurrent in the CoreFoundation framework

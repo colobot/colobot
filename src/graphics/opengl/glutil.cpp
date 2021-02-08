@@ -23,9 +23,11 @@
 #include "common/logger.h"
 #include "common/make_unique.h"
 
+#if defined(HAVE_OPENGL)
 #include "graphics/opengl/gl14device.h"
 #include "graphics/opengl/gl21device.h"
 #include "graphics/opengl/gl33device.h"
+#endif
 
 #include <SDL.h>
 #include <physfs.h>
@@ -41,6 +43,8 @@ namespace Gfx
 GLuint textureCoordinates[] = { GL_S, GL_T, GL_R, GL_Q };
 GLuint textureCoordGen[] = { GL_TEXTURE_GEN_S, GL_TEXTURE_GEN_T, GL_TEXTURE_GEN_R, GL_TEXTURE_GEN_Q };
 
+
+#if defined(HAVE_OPENGL)
 bool InitializeGLEW()
 {
     static bool glewInited = false;
@@ -60,6 +64,7 @@ bool InitializeGLEW()
 
     return true;
 }
+#endif
 
 FramebufferSupport DetectFramebufferSupport()
 {
@@ -71,18 +76,38 @@ FramebufferSupport DetectFramebufferSupport()
 
 std::unique_ptr<CDevice> CreateDevice(const DeviceConfig &config, const std::string& name)
 {
+#if defined(HAVE_OPENGL)
     if      (name == "default") return MakeUnique<CGL14Device>(config);
+#elif defined(HAVE_OPENGLES)
+    if      (name == "default") return nullptr; // TODO
+#else
+    if      (name == "default") return nullptr;
+#endif
+
+#if defined(HAVE_OPENGL)
     else if (name == "opengl")  return MakeUnique<CGL14Device>(config);
     else if (name == "gl14")    return MakeUnique<CGL14Device>(config);
     else if (name == "gl21")    return MakeUnique<CGL21Device>(config);
     else if (name == "gl33")    return MakeUnique<CGL33Device>(config);
+#endif
+#if defined(HAVE_OPENGL)
+    else if (name == "opengles")return nullptr; // TODO
+#endif
+
     else if (name == "auto")
     {
+        #if defined(HAVE_OPENGL)
         int version = GetOpenGLVersion();
 
              if (version >= 33) return MakeUnique<CGL33Device>(config);
         else if (version >= 21) return MakeUnique<CGL21Device>(config);
         else                    return MakeUnique<CGL14Device>(config);
+        return MakeUnique<CGL33Device>(config);
+        #elif defined(HAVE_OPENGLES)
+        return nullptr; // TODO
+        #else
+        return nullptr;
+        #endif
     }
 
     return nullptr;

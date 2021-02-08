@@ -840,6 +840,10 @@ bool CApplication::CreateVideoSurface()
     if (m_deviceConfig.hardwareAccel)
         SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
+#if PLATFORM_ANDROID
+    videoFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+#endif
+
     m_private->window = SDL_CreateWindow(m_windowTitle.c_str(),
                                          SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
                                          m_deviceConfig.size.x, m_deviceConfig.size.y,
@@ -892,8 +896,10 @@ bool CApplication::ChangeVideoConfig(const Gfx::DeviceConfig &newConfig)
     m_deviceConfig = newConfig;
 
     // TODO: Somehow this doesn't work for maximized windows (at least on Ubuntu)
+#if !PLATFORM_ANDROID
     SDL_SetWindowSize(m_private->window, m_deviceConfig.size.x, m_deviceConfig.size.y);
     SDL_SetWindowFullscreen(m_private->window, m_deviceConfig.fullScreen ? SDL_WINDOW_FULLSCREEN : 0);
+#endif
 
     TryToSetVSync();
 
@@ -1275,6 +1281,10 @@ Event CApplication::ProcessSystemEvent()
         // See issue #427 for details
         if (data->key == KEY(KP_ENTER))
             data->key = KEY(RETURN);
+
+        // Android back button
+        if (data->key == KEY(AC_BACK))
+            data->key = KEY(ESCAPE);
 
         if (data->key == KEY(TAB) && ((event.kmodState & KEY_MOD(ALT)) != 0))
         {

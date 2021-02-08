@@ -20,7 +20,12 @@
 
 #include "common/logger.h"
 
+#include "common/config.h"
+
 #include <stdio.h>
+#if PLATFORM_ANDROID
+  #include <android/log.h>
+#endif
 
 CLogger::CLogger()
 {
@@ -72,6 +77,32 @@ void CLogger::Log(LogLevel type, const char* str, va_list args)
         vfprintf(out, str, args2);
         va_end(args2);
     }
+
+#if PLATFORM_ANDROID
+    va_list args2;
+    va_copy(args2, args);
+    switch (type)
+    {
+        case LOG_TRACE:
+            __android_log_vprint(ANDROID_LOG_VERBOSE, "Colobot", str, args2);
+            break;
+        case LOG_DEBUG:
+            __android_log_vprint(ANDROID_LOG_DEBUG, "Colobot", str, args2);
+            break;
+        case LOG_WARN:
+            __android_log_vprint(ANDROID_LOG_WARN, "Colobot", str, args2);
+            break;
+        case LOG_INFO:
+            __android_log_vprint(ANDROID_LOG_INFO, "Colobot", str, args2);
+            break;
+        case LOG_ERROR:
+            __android_log_vprint(ANDROID_LOG_ERROR, "Colobot", str, args2);
+            break;
+        default:
+            __android_log_vprint(ANDROID_LOG_FATAL, "Colobot", str, args2);
+    }
+    va_end(args2);
+#endif
 }
 
 void CLogger::Trace(const char* str, ...)
