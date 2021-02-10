@@ -94,7 +94,7 @@ bool CGLFramebuffer::Create()
     }
     else
     {
-        glDrawBuffer(GL_NONE);
+        //glDrawBuffer(GL_NONE);
     }
 
     GLuint depthFormat = 0;
@@ -103,7 +103,7 @@ bool CGLFramebuffer::Create()
     {
     case 16: depthFormat = GL_DEPTH_COMPONENT16; break;
     case 24: depthFormat = GL_DEPTH_COMPONENT24; break;
-    case 32: depthFormat = GL_DEPTH_COMPONENT32; break;
+    case 32: depthFormat = GL_DEPTH_COMPONENT24; break;
     default: depthFormat = GL_DEPTH_COMPONENT16; break;
     }
 
@@ -122,13 +122,13 @@ bool CGLFramebuffer::Create()
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
 
-        float color[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+        //float color[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-        glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, color);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        //glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, color);
 
         glBindTexture(GL_TEXTURE_2D, previous);
 
@@ -167,12 +167,12 @@ bool CGLFramebuffer::Create()
         case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
             GetLogger()->Error("missing attachment");
             break;
-        case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
+/*        case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
             GetLogger()->Error("draw buffer has missing color attachments");
             break;
         case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
             GetLogger()->Error("read buffer has missing color attachments");
-            break;
+            break;*/
         case GL_FRAMEBUFFER_UNSUPPORTED:
             GetLogger()->Error("unsupported attachment format");
             break;
@@ -298,7 +298,7 @@ void CGLFramebuffer::CopyToScreen(int fromX, int fromY, int fromWidth, int fromH
 }
 
 // CGLFramebufferEXT
-GLuint CGLFramebufferEXT::m_currentFBO = 0;
+/*GLuint CGLFramebufferEXT::m_currentFBO = 0;
 
 CGLFramebufferEXT::CGLFramebufferEXT(const FramebufferParams& params)
     : m_params(params)
@@ -570,6 +570,6 @@ void CGLFramebufferEXT::CopyToScreen(int fromX, int fromY, int fromWidth, int fr
             toX, toY, toX + toWidth, toY + toHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_currentFBO);
-}
+}*/
 
 } // end of Gfx

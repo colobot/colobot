@@ -58,7 +58,7 @@ void CGL33Device::DebugHook()
 {
     /* This function is only called here, so it can be used
      * as a breakpoint when debugging using gDEBugger */
-    glColor3i(0, 0, 0);
+    //glColor3i(0, 0, 0);
 }
 
 void CGL33Device::DebugLights()
@@ -66,7 +66,7 @@ void CGL33Device::DebugLights()
     Gfx::ColorHSV color(0.0, 1.0, 1.0);
 
     glLineWidth(3.0f);
-    glDisable(GL_LIGHTING);
+    //glDisable(GL_LIGHTING);
     glDepthMask(GL_FALSE);
     glDisable(GL_BLEND);
 
@@ -146,16 +146,16 @@ void CGL33Device::DebugLights()
 
                 v[0].coord = l.position;
                 v[1].coord = l.position + Math::Normalize(l.direction) * 100.0f;
-                glEnable(GL_LINE_STIPPLE);
-                glLineStipple(3.0, 0xFF);
+                //glEnable(GL_LINE_STIPPLE);
+                //glLineStipple(3.0, 0xFF);
                 DrawPrimitive(PRIMITIVE_LINES, v, 2);
-                glDisable(GL_LINE_STIPPLE);
+                //glDisable(GL_LINE_STIPPLE);
             }
         }
     }
 
     glLineWidth(1.0f);
-    glEnable(GL_LIGHTING);
+    //glEnable(GL_LIGHTING);
     glDepthMask(GL_TRUE);
     glEnable(GL_BLEND);
 
@@ -171,11 +171,11 @@ bool CGL33Device::Create()
 {
     GetLogger()->Info("Creating CDevice - OpenGL 3.3\n");
 
-    if (!InitializeGLEW())
-    {
-        m_errorMessage = "An error occurred while initializing GLEW.";
-        return false;
-    }
+//    if (!InitializeGLEW())
+//    {
+//        m_errorMessage = "An error occurred while initializing GLEW.";
+//        return false;
+//    }
 
     // Extract OpenGL version
     int glMajor, glMinor;
@@ -210,13 +210,14 @@ bool CGL33Device::Create()
     m_capabilities.anisotropySupported = AreExtensionsSupported("GL_EXT_texture_filter_anisotropic");
     if (m_capabilities.anisotropySupported)
     {
+        assert(false);
         // Obtain maximum anisotropy level available
-        float level;
+        /*float level;
         glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &level);
         m_capabilities.maxAnisotropy = static_cast<int>(level);
 
         GetLogger()->Info("Anisotropic filtering available\n");
-        GetLogger()->Info("Maximum anisotropy: %d\n", m_capabilities.maxAnisotropy);
+        GetLogger()->Info("Maximum anisotropy: %d\n", m_capabilities.maxAnisotropy);*/
     }
     else
     {
@@ -806,9 +807,10 @@ Texture CGL33Device::CreateTexture(ImageData *data, const TextureCreateParams &p
     // Set anisotropy level if available
     if (m_capabilities.anisotropySupported)
     {
-        float level = Math::Min(m_capabilities.maxAnisotropy, CEngine::GetInstance().GetTextureAnisotropyLevel());
+        /*float level = Math::Min(m_capabilities.maxAnisotropy, CEngine::GetInstance().GetTextureAnisotropyLevel());
 
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, level);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, level);*/
+        assert(false);
     }
 
     PreparedTextureData texData = PrepareTextureData(data, params.format);
@@ -853,7 +855,8 @@ Texture CGL33Device::CreateDepthTexture(int width, int height, int depth)
         format = GL_DEPTH_COMPONENT24;
         break;
     case 32:
-        format = GL_DEPTH_COMPONENT32;
+        assert(false);
+//        format = GL_DEPTH_COMPONENT32;
         break;
     }
 
@@ -861,13 +864,13 @@ Texture CGL33Device::CreateDepthTexture(int width, int height, int depth)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
 
-    float color[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+    //float color[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, color);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    //glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, color);
 
     return result;
 }
@@ -1002,7 +1005,7 @@ void CGL33Device::UpdateTextureParams(int index)
     if      (params.wrapS == TEX_WRAP_CLAMP)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     else if (params.wrapS == TEX_WRAP_CLAMP_TO_BORDER)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     else if (params.wrapS == TEX_WRAP_REPEAT)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     else  assert(false);
@@ -1010,7 +1013,7 @@ void CGL33Device::UpdateTextureParams(int index)
     if      (params.wrapT == TEX_WRAP_CLAMP)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     else if (params.wrapT == TEX_WRAP_CLAMP_TO_BORDER)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     else if (params.wrapT == TEX_WRAP_REPEAT)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     else  assert(false);
@@ -1033,7 +1036,7 @@ void CGL33Device::SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode 
     if      (wrapS == TEX_WRAP_CLAMP)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     else if (wrapS == TEX_WRAP_CLAMP_TO_BORDER)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     else if (wrapS == TEX_WRAP_REPEAT)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     else  assert(false);
@@ -1041,7 +1044,7 @@ void CGL33Device::SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode 
     if      (wrapT == TEX_WRAP_CLAMP)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     else if (wrapT == TEX_WRAP_CLAMP_TO_BORDER)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     else if (wrapT == TEX_WRAP_REPEAT)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     else  assert(false);
@@ -1219,7 +1222,8 @@ void CGL33Device::DrawPrimitives(PrimitiveType type, const Vertex *vertices,
     glDisableVertexAttribArray(4);
     glVertexAttrib2f(4, 0.0f, 0.0f);
 
-    glMultiDrawArrays(TranslateGfxPrimitive(type), first, count, drawCount);
+    for(int i = 0; i < drawCount; ++i)
+        glDrawArrays(TranslateGfxPrimitive(type), first[i], count[i]);
 }
 
 void CGL33Device::DrawPrimitives(PrimitiveType type, const VertexTex2 *vertices,
@@ -1272,7 +1276,8 @@ void CGL33Device::DrawPrimitives(PrimitiveType type, const VertexTex2 *vertices,
     glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, sizeof(VertexTex2),
         reinterpret_cast<void*>(offset + offsetof(VertexTex2, texCoord2)));
 
-    glMultiDrawArrays(TranslateGfxPrimitive(type), first, count, drawCount);
+    for(int i = 0; i < drawCount; ++i)
+        glDrawArrays(TranslateGfxPrimitive(type), first[i], count[i]);
 }
 
 void CGL33Device::DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
@@ -1323,7 +1328,8 @@ void CGL33Device::DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
     glDisableVertexAttribArray(4);
     glVertexAttrib2f(4, 0.0f, 0.0f);
 
-    glMultiDrawArrays(TranslateGfxPrimitive(type), first, count, drawCount);
+    for(int i = 0; i < drawCount; ++i)
+        glDrawArrays(TranslateGfxPrimitive(type), first[i], count[i]);
 }
 
 namespace
@@ -1726,10 +1732,10 @@ void CGL33Device::SetShadowColor(float value)
 
 void CGL33Device::SetFillMode(FillMode mode)
 {
-    if      (mode == FILL_POINT) glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+    /*if      (mode == FILL_POINT) glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
     else if (mode == FILL_LINES) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     else if (mode == FILL_POLY)  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    else assert(false);
+    else assert(false);*/
 }
 
 void CGL33Device::CopyFramebufferToTexture(Texture& texture, int xOffset, int yOffset, int x, int y, int width, int height)

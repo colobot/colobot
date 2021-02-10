@@ -506,7 +506,15 @@ if (HAVE_OPENGL)
 endif()
 
 if (HAVE_OPENGLES)
-    # TODO: Add GLES rendering engine files here
+    # TODO: Replace with a proper GLES renderer and remove patches
+    target_sources(colobotbase PUBLIC
+        graphics/opengl/gl33device.cpp
+        graphics/opengl/gl33device.h
+        graphics/opengl/glframebuffer.cpp
+        graphics/opengl/glframebuffer.h
+        graphics/opengl/glutil.cpp
+        graphics/opengl/glutil.h
+    )
 endif()
 
 target_include_directories(colobotbase PUBLIC

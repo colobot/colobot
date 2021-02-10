@@ -252,8 +252,8 @@ void CImage::ConvertToRGBA()
 
 void CImage::BlitToNewRGBASurface(int width, int height)
 {
-    SDL_Surface* convertedSurface = SDL_CreateRGBSurface(0, width, height, 32, 0x00FF0000, 0x0000FF00,
-                                                         0x000000FF, 0xFF000000);
+    SDL_Surface* convertedSurface = SDL_CreateRGBSurface(0, width, height, 32, 0x000000FF, 0x0000FF00,
+                                                         0x00FF0000, 0xFF000000);
     assert(convertedSurface != nullptr);
     SDL_BlitSurface(m_data->surface, nullptr, convertedSurface, nullptr);
 

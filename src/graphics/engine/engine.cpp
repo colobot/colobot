@@ -2267,6 +2267,7 @@ Texture CEngine::CreateTexture(const std::string& texName, const TextureCreatePa
         image = &img;
     }
 
+    image->ConvertToRGBA();
     tex = m_device->CreateTexture(image, params);
 
     if (! tex.Valid())

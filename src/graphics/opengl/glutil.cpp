@@ -29,6 +29,10 @@
 #include "graphics/opengl/gl33device.h"
 #endif
 
+#if defined(HAVE_OPENGLES)
+#include "graphics/opengl/gl33device.h"
+#endif
+
 #include <SDL.h>
 #include <physfs.h>
 #include <cstring>
@@ -40,9 +44,8 @@
 namespace Gfx
 {
 
-GLuint textureCoordinates[] = { GL_S, GL_T, GL_R, GL_Q };
-GLuint textureCoordGen[] = { GL_TEXTURE_GEN_S, GL_TEXTURE_GEN_T, GL_TEXTURE_GEN_R, GL_TEXTURE_GEN_Q };
-
+//GLuint textureCoordinates[] = { GL_S, GL_T, GL_R, GL_Q };
+//GLuint textureCoordGen[] = { GL_TEXTURE_GEN_S, GL_TEXTURE_GEN_T, GL_TEXTURE_GEN_R, GL_TEXTURE_GEN_Q };
 
 #if defined(HAVE_OPENGL)
 bool InitializeGLEW()
@@ -69,8 +72,8 @@ bool InitializeGLEW()
 FramebufferSupport DetectFramebufferSupport()
 {
     if (GetOpenGLVersion() >= 30) return FBS_ARB;
-    if (glewIsSupported("GL_ARB_framebuffer_object")) return FBS_ARB;
-    if (glewIsSupported("GL_EXT_framebuffer_object")) return FBS_EXT;
+    //if (glewIsSupported("GL_ARB_framebuffer_object")) return FBS_ARB;
+    //if (glewIsSupported("GL_EXT_framebuffer_object")) return FBS_EXT;
     return FBS_NONE;
 }
 
@@ -79,7 +82,7 @@ std::unique_ptr<CDevice> CreateDevice(const DeviceConfig &config, const std::str
 #if defined(HAVE_OPENGL)
     if      (name == "default") return MakeUnique<CGL14Device>(config);
 #elif defined(HAVE_OPENGLES)
-    if      (name == "default") return nullptr; // TODO
+    if      (name == "default") return MakeUnique<CGL33Device>(config); // TODO
 #else
     if      (name == "default") return nullptr;
 #endif
@@ -91,9 +94,8 @@ std::unique_ptr<CDevice> CreateDevice(const DeviceConfig &config, const std::str
     else if (name == "gl33")    return MakeUnique<CGL33Device>(config);
 #endif
 #if defined(HAVE_OPENGL)
-    else if (name == "opengles")return nullptr; // TODO
+    else if (name == "opengles")return MakeUnique<CGL33Device>(config); // TODO
 #endif
-
     else if (name == "auto")
     {
         #if defined(HAVE_OPENGL)
@@ -104,7 +106,7 @@ std::unique_ptr<CDevice> CreateDevice(const DeviceConfig &config, const std::str
         else                    return MakeUnique<CGL14Device>(config);
         return MakeUnique<CGL33Device>(config);
         #elif defined(HAVE_OPENGLES)
-        return nullptr; // TODO
+        return MakeUnique<CGL33Device>(config); // TODO
         #else
         return nullptr;
         #endif
@@ -131,6 +133,7 @@ int GetOpenGLVersion(int &major, int &minor)
 
 bool AreExtensionsSupported(std::string list)
 {
+    return false;
     // Extract extensions to find
     std::vector<std::string> extensions;
     std::stringstream stream(list);
@@ -227,14 +230,14 @@ std::string GetHardwareInfo(bool full)
     glGetIntegerv(GL_MAX_TEXTURE_SIZE, &value);
     result << "Max Texture Size:\t\t" << value << '\n';
 
-    if (glewIsSupported("GL_EXT_texture_filter_anisotropic"))
+    if (false /*glewIsSupported("GL_EXT_texture_filter_anisotropic")*/)
     {
-        result << "Anisotropic filtering:\t\tsupported\n";
+/*        result << "Anisotropic filtering:\t\tsupported\n";
 
         float level;
         glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &level);
 
-        result << "    Max Level:\t\t" << static_cast<int>(level) << '\n';
+        result << "    Max Level:\t\t" << static_cast<int>(level) << '\n';*/
     }
     else
     {
@@ -245,8 +248,8 @@ std::string GetHardwareInfo(bool full)
     if (glversion >= 13)
     {
         result << "Multitexturing:\t\tsupported\n";
-        glGetIntegerv(GL_MAX_TEXTURE_UNITS, &value);
-        result << "    Max Texture Units:\t\t" << value << '\n';
+        /*glGetIntegerv(GL_MAX_TEXTURE_UNITS, &value);
+        result << "    Max Texture Units:\t\t" << value << '\n';*/
 
         if (glversion >= 20)
         {
@@ -278,7 +281,7 @@ std::string GetHardwareInfo(bool full)
         glGetIntegerv(GL_MAX_SAMPLES, &value);
         result << "    Max Framebuffer Samples:\t" << value << '\n';
     }
-    else if (framebuffer == FBS_EXT)
+    /*else if (framebuffer == FBS_EXT)
     {
         result << "Framebuffer Object:\tsupported\n";
         result << "    Type:\tEXT\n";
@@ -296,7 +299,7 @@ std::string GetHardwareInfo(bool full)
             glGetIntegerv(GL_MAX_SAMPLES_EXT, &value);
             result << "    Max Framebuffer Samples:\t" << value << '\n';
         }
-    }
+    }*/
     else
     {
         result << "Framebuffer Object:\tunsupported\n";
@@ -307,7 +310,7 @@ std::string GetHardwareInfo(bool full)
     {
         result << "VBO:\t\t\tsupported (core)\n";
     }
-    else if (glewIsSupported("GL_ARB_vertex_buffer_object"))
+    else if (false /*glewIsSupported("GL_ARB_vertex_buffer_object")*/)
     {
         result << "VBO:\t\t\tsupported (ARB)\n";
     }
@@ -454,7 +457,7 @@ bool InPlane(Math::Vector normal, float originPlane, Math::Vector center, float 
     return true;
 }
 
-GLenum TranslateTextureCoordinate(int index)
+/*GLenum TranslateTextureCoordinate(int index)
 {
     assert(index >= 0 && index < 4);
 
@@ -466,7 +469,7 @@ GLenum TranslateTextureCoordinateGen(int index)
     assert(index >= 0 && index < 4);
 
     return textureCoordGen[index];
-}
+}*/
 
 GLenum TranslateType(Type type)
 {
@@ -480,7 +483,7 @@ GLenum TranslateType(Type type)
     case Type::UINT: return GL_UNSIGNED_INT;
     case Type::HALF: return GL_HALF_FLOAT;
     case Type::FLOAT: return GL_FLOAT;
-    case Type::DOUBLE: return GL_DOUBLE;
+    case Type::DOUBLE: assert(false); //return GL_DOUBLE;
     default: return 0;
     }
 }
@@ -597,8 +600,9 @@ PreparedTextureData PrepareTextureData(ImageData* imageData, TexImgFormat format
     }
     else if (format == TEX_IMG_BGR)
     {
-        texData.sourceFormat = GL_BGR;
-        texData.alpha = false;
+        assert(false);
+//        texData.sourceFormat = GL_BGR;
+//        texData.alpha = false;
     }
     else if (format == TEX_IMG_RGBA)
     {
@@ -607,8 +611,9 @@ PreparedTextureData PrepareTextureData(ImageData* imageData, TexImgFormat format
     }
     else if (format == TEX_IMG_BGRA)
     {
-        texData.sourceFormat = GL_BGRA;
-        texData.alpha = true;
+        assert(false);
+//        texData.sourceFormat = GL_BGRA;
+//        texData.alpha = true;
     }
     else if (format == TEX_IMG_AUTO)
     {
@@ -619,8 +624,9 @@ PreparedTextureData PrepareTextureData(ImageData* imageData, TexImgFormat format
                 (imageData->surface->format->Gmask == 0x0000FF00) &&
                 (imageData->surface->format->Bmask == 0x000000FF))
             {
-                texData.sourceFormat = GL_BGRA;
-                texData.alpha = true;
+                assert(false);
+//                texData.sourceFormat = GL_BGRA;
+//                texData.alpha = true;
             }
             else if ((imageData->surface->format->Amask == 0xFF000000) &&
                      (imageData->surface->format->Bmask == 0x00FF0000) &&
@@ -642,8 +648,9 @@ PreparedTextureData PrepareTextureData(ImageData* imageData, TexImgFormat format
                 (imageData->surface->format->Gmask == 0x00FF00) &&
                 (imageData->surface->format->Bmask == 0x0000FF))
             {
-                texData.sourceFormat = GL_BGR;
-                texData.alpha = false;
+                assert(false);
+//                texData.sourceFormat = GL_BGR;
+//                texData.alpha = false;
             }
             else if ((imageData->surface->format->Bmask == 0xFF0000) &&
                      (imageData->surface->format->Gmask == 0x00FF00) &&
