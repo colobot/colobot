@@ -1,14 +1,21 @@
 name: Verify pull request target
 
-on: [pull_request]
+on: [pull_request_target]
 
 jobs:
   check_pr_target:
     runs-on: ubuntu-latest
     steps:
-    - name: Wrong pull request target
-      run: echo "This pull request targets the master branch. Please edit the pull request to target dev." && exit 1
+    - name: Send comment if wrong pull request target
       if: github.base_ref == 'master'
+      uses: peter-evans/create-or-update-comment@v1
+      with:
+        issue-number: ${{ github.event.number }}
+        body: |
+          Hey! This pull request targets the `master` branch. You should probably target `dev` instead. Make sure to read the [contributing guidelines](https://github.com/colobot/colobot/blob/master/CONTRIBUTING.md#submitting-pull-requests) and [edit the target branch if necessary](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/changing-the-base-branch-of-a-pull-request).
+    - name: Wrong pull request target
+      if: github.base_ref == 'master'
+      run: echo "This pull request targets the master branch. Please edit the pull request to target dev." && exit 1
     - name: Correct pull request target
-      run: echo "This pull request targets the correct branch." && exit 0
       if: github.base_ref != 'master'
+      run: echo "This pull request targets the correct branch." && exit 0
