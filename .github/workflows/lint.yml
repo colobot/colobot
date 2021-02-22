@@ -15,59 +15,20 @@ jobs:
       run: sudo apt-get update && sudo apt-get install -y --no-install-recommends build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-regex-dev libphysfs-dev gettext git po4a vorbis-tools librsvg2-bin xmlstarlet
     - name: Download colobot-lint dependencies
       run: sudo apt-get install -y --no-install-recommends clang-3.6 libtinyxml2.6.2v5
-    - run: pip install requests
     - run: mkdir -p /tmp/colobot-lint
     - name: Download colobot-lint
-      working-directory: /tmp/colobot-lint
-      shell: python
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        REPO_NAME: colobot/colobot-lint
-        BRANCH_NAME: master
-        ARTIFACT_NAME: colobot-lint
-      run: |
-        import os
-        import requests
-
-        # How there can be no builtin action to download the latest artifact from another repo?!
-
-        s = requests.Session()
-        s.headers.update({
-            'Authorization': 'token ' + os.environ['GITHUB_TOKEN'],
-            'Accept': 'application/vnd.github.v3+json'
-        })
-
-        r = s.get("https://api.github.com/repos/" + os.environ['REPO_NAME'] + "/actions/runs", params={'branch': os.environ['BRANCH_NAME'], 'event': 'push', 'status': 'success'})
-        r.raise_for_status()
-
-        # Querying for "dev" returns all branches that have "dev" anywhere in the name... is that a GitHub bug or intended behaviour?
-        runs = list(filter(lambda x: x['head_branch'] == os.environ['BRANCH_NAME'], r.json()['workflow_runs']))
-        if len(runs) == 0:
-            raise Exception('No valid run found')
-        run = runs[0]
-        print("Using colobot-lint from run #{} ({}) for commit {}".format(run['run_number'], run['id'], run['head_sha']))
-
-        r = s.get(run['artifacts_url'])
-        r.raise_for_status()
-        artifacts = list(filter(lambda x: x['name'] == os.environ['ARTIFACT_NAME'], r.json()['artifacts']))
-        if len(artifacts) != 1:
-            raise Exception('Artifact not found')
-        artifact = artifacts[0]
-        print(artifact['archive_download_url'])
-
-        r = s.get(artifact['archive_download_url'], stream=True)
-        r.raise_for_status()
-        with open(os.environ['ARTIFACT_NAME'] + '.zip', 'wb') as f:
-            for block in r.iter_content(1024):
-                f.write(block)
-        print("Download finished")
+      uses: dawidd6/action-download-artifact@v2
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        repo: colobot/colobot-lint
+        branch: master
+        workflow: build.yml
+        workflow_conclusion: success
+        name: colobot-lint
+        path: /tmp/colobot-lint/archive
     - name: Unpack colobot-lint
       working-directory: /tmp/colobot-lint
       run: |
-        # Unzip the archive
-        mkdir archive; cd archive
-        unzip ../colobot-lint.zip
-        cd ..
         # Workaround for Clang not finding system headers
         mkdir ./bin
         mv ./archive/build/colobot-lint ./bin/
@@ -118,6 +79,7 @@ jobs:
       with:
         name: HTML results
         path: build/html_report
+    - run: pip install requests
     - name: Send linter results to GitHub
       shell: python
       env:
