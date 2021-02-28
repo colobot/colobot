@@ -4,19 +4,21 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: DATE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2021-02-28 19:09+0300\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Translate Toolkit 1.11.0\n"
+"X-Generator: Poedit 2.2.1\n"
 "X-Language: ru_RU\n"
 "X-Source-Language: en_US\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+"Last-Translator: DavydovMA <davydovma@protonmail.ch>\n"
+"Language-Team: \n"
+"X-Poedit-Bookmarks: 334,-1,-1,-1,-1,-1,-1,-1,-1,539\n"
 
 msgid " or "
 msgstr " или "
@@ -25,11 +27,11 @@ msgid "\" [ \" expected"
 msgstr "Ожидалось \" [ \""
 
 msgid "\" ] \" missing"
-msgstr "Отсутствует \"]\" "
+msgstr "Отсутствует \"]\""
 
 #, c-format
 msgid "%s: %d pts"
-msgstr ""
+msgstr "%s: %d очков"
 
 msgid "..behind"
 msgstr "Сзади"
@@ -54,15 +56,15 @@ msgstr "<<< Миссия провалена >>>"
 
 #, c-format
 msgid "<<< Team %s finished! >>>"
-msgstr ""
+msgstr "<<< Команда %s финишировала! >>>"
 
 #, c-format
 msgid "<<< Team %s lost! >>>"
-msgstr ""
+msgstr "<<< Команда %s проиграла! >>>"
 
 #, c-format
 msgid "<<< Team %s recieved %d points >>>"
-msgstr ""
+msgstr "<<< Команда %s набрала %d очков >>>"
 
 msgid "<<< Well done; mission accomplished >>>"
 msgstr "<<< Отлично, миссия выполнена >>>"
@@ -74,7 +76,7 @@ msgid "A variable can not be declared twice"
 msgstr "Переменная не может быть объявлена дважды"
 
 msgid "Abort\\Abort the current mission"
-msgstr "Выход\\Прервать текущую миссию"
+msgstr "Прервать\\Прервать текущую миссию"
 
 msgid "Access beyond array limit"
 msgstr "Доступ к элементу за пределами массива"
@@ -89,10 +91,10 @@ msgid "Add new program"
 msgstr "Добавить новую программу"
 
 msgid "Alien Queen"
-msgstr "Королева чужих"
+msgstr "Королева Пришельцев"
 
 msgid "Alien Queen killed"
-msgstr "Королева чужих убита"
+msgstr "Королева Пришельцев убита"
 
 msgid "Already carrying something"
 msgstr "Уже что-то несу"
@@ -110,7 +112,7 @@ msgid "Analysis performed"
 msgstr "Анализ выполнен"
 
 msgid "Analyzes only organic matter"
-msgstr "Анализирую только органические вещества"
+msgstr "Анализирую только Био-Материю"
 
 msgid "Anisotropy level\\Anisotropy level"
 msgstr "Уровень анизотр. фильтр.\\Уровень анизотропной фильтрации"
@@ -140,7 +142,7 @@ msgid "Automatic indent\\When program editing"
 msgstr "Автоматический отступ\\При редактировании программы"
 
 msgid "Autosave interval\\How often your game will autosave"
-msgstr "Интервал автосохр.\\Как часно ваша игра будет сохраняться автоматически"
+msgstr "Интервал автосохр.\\Как часто ваша игра будет сохраняться автоматически"
 
 msgid "Autosave slots\\How many autosave slots you'll have"
 msgstr "Кол-во автосохр.\\Как много мест для автосохранений у вас есть"
@@ -151,9 +153,8 @@ msgstr "Автосохранение\\Включает автоматическ�
 msgid "Back"
 msgstr "Назад"
 
-#, fuzzy
 msgid "Background sound:\\Volume of audio tracks"
-msgstr "Фоновый звук:\\Громкость звуковых дорожек на CD"
+msgstr "Фоновый звук:\\Громкость звуковых дорожек"
 
 msgid "Backward (\\key down;)"
 msgstr "Назад (\\key down;)"
@@ -168,127 +169,127 @@ msgid "Big indent\\Indent 2 or 4 spaces per level defined by braces"
 msgstr "Большой отступ\\Отступать на 2 или 4 пробела, в зависимости от скобок"
 
 msgid "Black box"
-msgstr "Черный ящик"
+msgstr "Чёрный ящик"
 
 msgid "Blood\\Display blood when the astronaut is hit"
-msgstr "Кровь\\Показывать кровь когда астронавт ранен"
+msgstr "Кровь\\Показывать кровь когда космонавт ранен"
 
 msgid "Blue"
 msgstr "Синий"
 
 msgid "Blue flag"
-msgstr "Синий флаг"
+msgstr "Флаг Синий"
 
 msgid "Bot destroyed"
 msgstr "Бот уничтожен"
 
 msgid "Bot factory"
-msgstr "Завод ботов"
+msgstr "Фабрика Ботов"
 
 msgid "Build a bot factory"
-msgstr "Построить завод ботов"
+msgstr "Построить Фабрику Ботов"
 
 msgid "Build a converter"
-msgstr "Построить преобразователь"
+msgstr "Построить Преобразователь"
 
 msgid "Build a defense tower"
-msgstr "Построить защитную башню"
+msgstr "Построить Башню Обороны"
 
 msgid "Build a derrick"
-msgstr "Построить буровую вышку"
+msgstr "Построить Вышку"
 
 msgid "Build a destroyer"
-msgstr "Построить уничтожитель"
+msgstr "Построить Разрушитель"
 
 msgid "Build a exchange post"
-msgstr "Построить пост по обмену сообщениями"
+msgstr "Построить Пункт Обмена Информацией"
 
 msgid "Build a legged grabber"
-msgstr "Собрать шагающего сборщика"
+msgstr "Собрать Погрузчик Муравьиногий"
 
 msgid "Build a legged orga shooter"
-msgstr "Собрать шагающего орга-стрелка"
+msgstr "Собрать Био-Стрелок Муравьиногий"
 
 msgid "Build a legged shooter"
-msgstr "Собрать шагающего стрелка"
+msgstr "Собрать Стрелок Муравьиногий"
 
 msgid "Build a legged sniffer"
-msgstr "Собрать шагающего искателя"
+msgstr "Собрать Разведчик Муравьиногий"
 
 msgid "Build a lightning conductor"
-msgstr "Построить громоотвод"
+msgstr "Построить Молниеотвод"
 
 msgid "Build a nuclear power plant"
-msgstr "Построить завод атомных батарей (неперезаряж.)"
+msgstr "Построить Энергостанцию Ядерную"
 
 msgid "Build a phazer shooter"
-msgstr "Собрать фазового стрелка"
+msgstr "Собрать Стрелок Ферзь"
 
 msgid "Build a power cell factory"
-msgstr "Построить завод перезаряжаемых батарей"
+msgstr "Построить Энергостанцию Обычную"
 
 msgid "Build a power station"
-msgstr "Построить электростанцию"
+msgstr "Построить Энергозаправку"
 
 msgid "Build a radar station"
-msgstr "Построить радарную станцию"
+msgstr "Построить Радар"
 
 msgid "Build a recycler"
-msgstr "Собрать утилизатор"
+msgstr "Собрать Утилизатор"
 
 msgid "Build a repair center"
-msgstr "Построить ремонтный пункт"
+msgstr "Построить Пункт Ремонта"
 
 msgid "Build a research center"
-msgstr "Построить научно-исследовательский центр"
+msgstr "Построить Центр Исследований"
 
 msgid "Build a shielder"
-msgstr "Собрать передвижной щит"
+msgstr "Собрать Защитник"
 
 msgid "Build a subber"
-msgstr "Собрать саббера"
+msgstr "Собрать Амфибия"
 
 msgid "Build a thumper"
-msgstr "Собрать ударника"
+msgstr "Собрать Кувалдник"
 
 msgid "Build a tracked grabber"
-msgstr "Собрать гусеничного сборщика"
+msgstr "Собрать Погрузчик Гусеничный"
 
 msgid "Build a tracked orga shooter"
-msgstr "Собрать гусеничного орга-стрелка"
+msgstr "Собрать Био-Стрелок Гусеничный"
 
 msgid "Build a tracked shooter"
-msgstr "Собрать гусеничного стрелка"
+msgstr "Собрать Стрелок Гусеничный"
 
 msgid "Build a tracked sniffer"
-msgstr "Собрать гусеничного искателя"
+msgstr "Собрать Разведчик Гусеничный"
 
 msgid "Build a wheeled grabber"
-msgstr "Собрать колесного сборщика"
+msgstr "Собрать Погрузчик Колёсный"
 
 msgid "Build a wheeled orga shooter"
-msgstr "Собрать колесного орга-стрелка"
+msgstr "Собрать Био-Стрелок Колёсный"
 
 msgid "Build a wheeled shooter"
-msgstr "Собрать колесного стрелка"
+msgstr "Собрать Стрелок Колёсный"
 
 msgid "Build a wheeled sniffer"
-msgstr "Собрать колесного искателя"
+msgstr "Собрать Разведчик Колёсный"
 
 msgid "Build a winged grabber"
-msgstr "Собрать летающего сборщика"
+msgstr "Собрать Погрузчик Крылатый"
 
 msgid "Build a winged orga shooter"
-msgstr "Собрать летающего орга-стрелка"
+msgstr "Собрать Био-Стрелок Крылатый"
 
 msgid "Build a winged shooter"
-msgstr "Собрать летающего стрелка"
+msgstr "Собрать Стрелок Крылатый"
 
 msgid "Build a winged sniffer"
-msgstr "Собрать летающего искателя"
+msgstr "Собрать Разведчик Крылатый"
 
 msgid "Build an autolab"
-msgstr "Построить лабораторию"
+msgstr "Построить Лабораторию"
 
 msgid "Building completed"
 msgstr "Здание построено"
@@ -312,26 +313,22 @@ msgid "Camera border scrolling\\Scrolling when the mouse touches right or left b
 msgstr "Прокрутка\\Прокрутка, когда указатель мыши касается правой или левой грани экрана"
 
 msgid "Camera closer\\Moves the camera forward"
-msgstr "Приблизать камеру\\Перемещение камеры вперед"
+msgstr "Приблизить камеру\\Перемещение камеры вперед"
 
-#, fuzzy
 msgid "Camera down\\Turns the camera down"
-msgstr "Приблизать камеру\\Перемещение камеры вперед"
+msgstr "Камера вниз\\Поворачивает камеру вниз"
 
-#, fuzzy
 msgid "Camera left\\Turns the camera left"
-msgstr "Приблизать камеру\\Перемещение камеры вперед"
+msgstr "Камера влево\\Поворачивает камеру влево"
 
-#, fuzzy
 msgid "Camera right\\Turns the camera right"
-msgstr "Повернуть налево\\Поворот налево"
+msgstr "Камера вправо\\Поворачивает камеру вправо"
 
-#, fuzzy
 msgid "Camera up\\Turns the camera up"
-msgstr "Камера (\\key camera;)"
+msgstr "Камера вверх\\Поворачивает камеру вверх"
 
 msgid "Can not produce not researched object"
-msgstr "Невозможно изготовить неизученный объект"
+msgstr "Невозможно изготовить не исследованный объект"
 
 msgid "Can not produce this object in this mission"
 msgstr "Невозможно изготовить этот объект в этой миссии"
@@ -370,17 +367,16 @@ msgid "Checkpoint"
 msgstr "Контрольная точка"
 
 msgid "Class name expected"
-msgstr ""
+msgstr "Ожидается название класса"
 
 msgid "Climb\\Increases the power of the jet"
-msgstr "Взлет и подъем\\Увеличивает мощность реактивного двигателя"
+msgstr "Взлёт и подъём\\Увеличивает мощность реактивного двигателя"
 
 msgid "Clone program"
 msgstr "Клонировать программу"
 
-#, fuzzy
 msgid "Clone selected program"
-msgstr "Изменить выбранную программу"
+msgstr "Клонировать выбранную программу"
 
 msgid "Close"
 msgstr "Закрыть"
@@ -388,18 +384,17 @@ msgstr "Закрыть"
 msgid "Closing bracket missing"
 msgstr "Закрывающая скобка отсутствует"
 
-#, fuzzy
 msgid "Code battle"
-msgstr "Битвы роботов"
+msgstr "Битва программ"
 
 msgid "Code battles"
-msgstr "Битвы роботов"
+msgstr "Битвы программ"
 
 msgid "Code battles\\Program your robot to be the best of them all!"
-msgstr "Битвы роботов\\Запрограммируйте собственного робота чтобы быть лучшим среди них!"
+msgstr "Битвы программ\\Запрограммируйте собственного бота чтобы быть лучшим среди них!"
 
 msgid "Colobot rules!"
-msgstr "Правила игры!"
+msgstr "Правила Colobot!"
 
 msgid "Colobot: Gold Edition"
 msgstr "Colobot: Gold Edition"
@@ -423,7 +418,7 @@ msgid "Controls\\Keyboard, joystick and mouse settings"
 msgstr "Управление\\Настройки клавиатуры, джойстика и мыши"
 
 msgid "Converts ore to titanium"
-msgstr "Преобразует руду в титан"
+msgstr "Преобразует Руду в Титан"
 
 msgid "Copy"
 msgstr "Копировать"
@@ -447,11 +442,10 @@ msgid "Cut (Ctrl+X)"
 msgstr "Вырезать (Ctrl+X)"
 
 msgid "Defense tower"
-msgstr "Защитная башня"
+msgstr "Башня Обороны"
 
-#, fuzzy
 msgid "Delete mark"
-msgstr "Удалить"
+msgstr "Удалить метку"
 
 msgid "Delete player\\Deletes the player from the list"
 msgstr "Удалить игрока\\Удаление игрока из списка"
@@ -460,7 +454,7 @@ msgid "Delete\\Deletes the selected file"
 msgstr "Удалить\\Удаление выбранного файла"
 
 msgid "Derrick"
-msgstr "Космический корабль"
+msgstr "Вышка"
 
 msgid "Descend\\Reduces the power of the jet"
 msgstr "Снижение и посадка\\Понижение мощности реактивного двигателя"
@@ -472,7 +466,7 @@ msgid "Destroy the building"
 msgstr "Уничтожить здание"
 
 msgid "Destroyer"
-msgstr "Уничтожитель"
+msgstr "Разрушитель"
 
 msgid "Device\\Driver and resolution settings"
 msgstr "Устройство\\Драйвер и настройки разрешения"
@@ -488,7 +482,7 @@ msgid "Do you want to delete %s's saved games?"
 msgstr "Вы действительно хотите удалить сохраненные игры игрока %s?"
 
 msgid "Doors blocked by a robot or another object"
-msgstr "Двери заблокированы роботом или другим объектом"
+msgstr "Двери заблокированы ботом или другим объектом"
 
 msgid "Down (\\key gdown;)"
 msgstr "Вниз (\\key gdown;)"
@@ -500,25 +494,25 @@ msgid "Dust\\Dust and dirt on bots and buildings"
 msgstr "Пыль\\Пыль и грязь на ботах и зданиях"
 
 msgid "Dynamic lighting\\Mobile light sources"
-msgstr "Динамич. освещение\\Подвижные источники света"
+msgstr "Динам.. освещение\\Подвижные источники света"
 
 msgid "Dynamic shadows ++\\Dynamic shadows + self shadowing"
-msgstr "Динамич. тени ++\\Динамические тени + самозатенение"
+msgstr "Динам. тени ++\\Динамические тени + самозатенение"
 
 msgid "Dynamic shadows\\Beautiful shadows!"
-msgstr "Динамические тени\\Прекрасные тени!"
+msgstr "Динам. тени\\Великолепные тени!"
 
 msgid "Edit the selected program"
 msgstr "Изменить выбранную программу"
 
 msgid "Egg"
-msgstr "Яйцо"
+msgstr "Яйцо Пришельцев"
 
 msgid "End of block missing"
 msgstr "Отсутствует конец блока"
 
 msgid "Energy deposit (site for power station)"
-msgstr "Запасы энергии (место для электростанций)"
+msgstr "Месторождение Энергии (место для Энергозаправки)"
 
 msgid "Energy level"
 msgstr "Уровень энергии"
@@ -575,13 +569,13 @@ msgid "Fixed mine"
 msgstr "Мина"
 
 msgid "Flat ground not large enough"
-msgstr "Недостаточно плоской земли"
+msgstr "Ровная земля недостаточно велика"
 
 msgid "Fog\\Fog"
 msgstr "Туман\\Туман"
 
 msgid "Folder:"
-msgstr "Папка"
+msgstr "Папка:"
 
 #, c-format
 msgid "Folder: %s"
@@ -591,31 +585,31 @@ msgid "Font size"
 msgstr "Размер шрифта"
 
 msgid "Forward"
-msgstr "Вперед"
+msgstr "Вперёд"
 
 msgid "Forward (\\key up;)"
-msgstr "Вперед (\\key up;)"
+msgstr "Вперёд (\\key up;)"
 
 msgid "Forward\\Moves forward"
-msgstr "Вперед\\Двигаться вперед"
+msgstr "Вперёд\\Двигаться вперёд"
 
 msgid "Found a site for a derrick"
-msgstr "Найдено место для буровой вышки"
+msgstr "Найдено место для Вышки"
 
 msgid "Found a site for power station"
-msgstr "Найдено место для электростанции"
+msgstr "Найдено место для Энергозаправки"
 
 msgid "Found key A (site for derrick)"
-msgstr "Найден ключ A (место для буровой вышки)"
+msgstr "Найден ключ A (место для Вышки)"
 
 msgid "Found key B (site for derrick)"
-msgstr "Найден ключ B (место для буровой вышки)"
+msgstr "Найден ключ B (место для Вышки)"
 
 msgid "Found key C (site for derrick)"
-msgstr "Найден ключ C (место для буровой вышки)"
+msgstr "Найден ключ C (место для Вышки)"
 
 msgid "Found key D (site for derrick)"
-msgstr "Найден ключ D (место для буровой вышки)"
+msgstr "Найден ключ D (место для Вышки)"
 
 msgid "Free game"
 msgstr "Свободная игра"
@@ -624,10 +618,10 @@ msgid "Free game on this planet:"
 msgstr "Свободная игра на этой планете:"
 
 msgid "Free game\\Free game without a specific goal"
-msgstr "Свобод. игра\\Игра без четкой цели"
+msgstr "Свобод. игра\\Игра без чёткой цели"
 
 msgid "Full screen\\Full screen or window mode"
-msgstr "Во весь экран\\Выбор полноэкранного или оконного режима"
+msgstr "Весь экран\\Весь экран или оконный режим"
 
 msgid "Function already exists"
 msgstr "Функция уже существует"
@@ -636,7 +630,7 @@ msgid "Function name missing"
 msgstr "Имя функции отсутствует"
 
 msgid "Function needs return type \"void\""
-msgstr ""
+msgstr "Функция требует вернуть тип \"void\""
 
 msgid "Game speed"
 msgstr "Скорость игры"
@@ -645,13 +639,13 @@ msgid "Game\\Game settings"
 msgstr "Игра\\Настройки игры"
 
 msgid "Gantry crane"
-msgstr "Козловой кран"
+msgstr "Кран Козловой"
 
 msgid "Generating"
 msgstr "Выработка"
 
 msgid "Gold Edition development by:"
-msgstr "\"Золотое издание\" было разработано:"
+msgstr "Gold Edition разработано:"
 
 msgid "Goto: destination occupied"
 msgstr "Перейти: место занято"
@@ -660,19 +654,19 @@ msgid "Goto: inaccessible destination"
 msgstr "Перейти: место недоступно"
 
 msgid "Grab or drop (\\key action;)"
-msgstr "Взять или бросить (\\key action;)"
+msgstr "Брать или ставить (\\key action;)"
 
 msgid "Graphics\\Graphics settings"
 msgstr "Графика\\Настройки графики"
 
 msgid "Green"
-msgstr "Зеленый"
+msgstr "Зелёный"
 
 msgid "Green flag"
-msgstr "Зеленый флаг"
+msgstr "Флаг Зелёный"
 
 msgid "Ground not flat enough"
-msgstr "Земля недостаточно плоская"
+msgstr "Земля недостаточно ровная"
 
 msgid "Hair color:"
 msgstr "Цвет волос:"
@@ -687,23 +681,22 @@ msgid "Help balloons\\Explain the function of the buttons"
 msgstr "Подсказки\\Объяснение функций кнопок"
 
 msgid "Hex value out of range"
-msgstr ""
+msgstr "16-ричное значение вне диапазона"
 
-#, fuzzy
 msgid "Higher speed\\Doubles speed"
-msgstr "Скорость 2.0х\\В два раза быстрее"
+msgstr "Повышенная скорость\\В два раза быстрее"
 
 msgid "Highest\\Highest graphic quality (lowest frame rate)"
-msgstr "Высок.\\Самые высокие настройки графики (лучшее качество)"
+msgstr "Наивысшее\\Наивысшее качество графики (низкая частота кадров)"
 
 msgid "Home"
 msgstr "Домой"
 
 msgid "Houston Mission Control"
-msgstr "Центр управления Хьюстон"
+msgstr "Центр Управления Хьюстон"
 
 msgid "Illegal object"
-msgstr "Запрещенный объект"
+msgstr "Запрещённый объект"
 
 msgid "Impossible under water"
 msgstr "Невозможно под водой"
@@ -712,7 +705,7 @@ msgid "Impossible when carrying an object"
 msgstr "Невозможно при движении с объектом"
 
 msgid "Impossible when flying"
-msgstr "Невозможно в полете"
+msgstr "Невозможно в полёте"
 
 msgid "Impossible when moving"
 msgstr "Невозможно в движении"
@@ -721,7 +714,7 @@ msgid "Impossible when swimming"
 msgstr "Невозможно в воде"
 
 msgid "Inappropriate bot"
-msgstr "Неверный бот"
+msgstr "Неподходящий бот"
 
 msgid "Inappropriate cell type"
 msgstr "Батарея не подходит"
@@ -736,7 +729,7 @@ msgid "Infected by a virus; temporarily out of order"
 msgstr "Заражено вирусом. Временно вышел из строя"
 
 msgid "Information exchange post"
-msgstr "Пост обмена информацией"
+msgstr "Пункт Обмена Информацией"
 
 msgid "Instruction \"break\" outside a loop"
 msgstr "Инструкция \"break\" вне цикла"
@@ -745,10 +738,10 @@ msgid "Instruction \"case\" missing"
 msgstr "Отсутствует инструкция \"case\""
 
 msgid "Instruction \"case\" outside a block \"switch\""
-msgstr "Инструкция \"case\" вне блока \"switch\" "
+msgstr "Инструкция \"case\" вне блока \"switch\""
 
 msgid "Instruction \"else\" without corresponding \"if\""
-msgstr "Инструкция \"else\" без \"if\" "
+msgstr "Инструкция \"else\" без \"if\""
 
 msgid "Instructions (\\key help;)"
 msgstr "Инструкции (\\key help;)"
@@ -769,7 +762,7 @@ msgid "Internal error - tell the developers"
 msgstr "Внутренняя ошибка - сообщите разработчикам"
 
 msgid "Invalid universal character name"
-msgstr ""
+msgstr "Недействительное универсальное имя символа"
 
 msgid "Invert\\Invert values on this axis"
 msgstr "Инвертир.\\Инвертировать значения по этой оси"
@@ -790,7 +783,7 @@ msgid "Key D"
 msgstr "Ключ D"
 
 msgid "Keyword \"while\" missing"
-msgstr "Нет ключевого слова \"while\" "
+msgstr "Нет ключевого слова \"while\""
 
 msgid "Keyword help(\\key cbot;)"
 msgstr "Помощь(\\key cbot;)"
@@ -799,34 +792,34 @@ msgid "LOADING"
 msgstr "ЗАГРУЗКА"
 
 msgid "Legged grabber"
-msgstr "Шагающий сборщик"
+msgstr "Погрузчик Муравьиногий"
 
 msgid "Legged orga shooter"
-msgstr "Шагающий орга-стрелка"
+msgstr "Био-Стрелок Муравьиногий"
 
 msgid "Legged shooter"
-msgstr "Шагающий стрелок"
+msgstr "Стрелок Муравьиногий"
 
 msgid "Legged sniffer"
-msgstr "Шагающий искатель"
+msgstr "Разведчик Муравьиногий"
 
 msgid "Levels in this chapter:"
-msgstr "Упражнения в разделе:"
+msgstr "Уровни в этом разделе:"
 
 msgid "Lightning conductor"
-msgstr "Громоотвод"
+msgstr "Молниеотвод"
 
 msgid "List of objects"
 msgstr "Список объектов"
 
 msgid "List of saved missions"
-msgstr "Список сохраненных миссий"
+msgstr "Список сохранённых миссий"
 
 msgid "Load a saved mission"
 msgstr "Загрузить"
 
 msgid "Load\\Load a saved mission"
-msgstr "Загрузить\\Загрузить сохраненную миссию"
+msgstr "Загрузить\\Загрузить сохранённую миссию"
 
 msgid "Load\\Loads the selected mission"
 msgstr "Загрузить\\Загрузить выбранную миссию"
@@ -861,10 +854,10 @@ msgstr "Загрузка местности"
 # msgid "Speed 6.0x\\Sextuple speed"
 # msgstr ""
 msgid "Lower speed\\Decrease speed by half"
-msgstr ""
+msgstr "Уменьшить скорость\\Уменьшить скорость вдвое"
 
 msgid "Lowest\\Minimum graphic quality (highest frame rate)"
-msgstr "Низкое\\Минимальное качество графики (быстро)"
+msgstr "Наименьшее\\Минимальное качество графики (максимальная частота кадров)"
 
 msgid "Lunar Roving Vehicle"
 msgstr "Луноход"
@@ -882,10 +875,10 @@ msgid "Mipmap level\\Mipmap level"
 msgstr "Уровень уменьшающей фильтрации\\Уровень уменьшающей фильтрации"
 
 msgid "Missing end quote"
-msgstr ""
+msgstr "Отсутствует конечная кавычка"
 
 msgid "Missing hex digits after escape sequence"
-msgstr ""
+msgstr "Отсутствуют 16-ричные цифры после escape-последовательности"
 
 msgid "Mission name"
 msgstr "Название миссии"
@@ -905,13 +898,11 @@ msgstr "Инверсия мыши по оси X\\Инверсия прокрут
 msgid "Mouse inversion Y\\Inversion of the scrolling direction on the Y axis"
 msgstr "Инверсия мыши по оси Y\\Инверсия прокрутки по оси Y"
 
-#, fuzzy
 msgid "Move selected program down"
-msgstr "Изменить выбранную программу"
+msgstr "Сдвинуть выбранную программу вниз"
 
-#, fuzzy
 msgid "Move selected program up"
-msgstr "Изменить выбранную программу"
+msgstr "Сдвинуть выбранную программу вверх"
 
 msgid "Mute\\No sound"
 msgstr "Без звука\\Без звука"
@@ -923,7 +914,7 @@ msgid "Negative value rejected by \"throw\""
 msgstr "Отрицательное значение не принято"
 
 msgid "Nest"
-msgstr "Гнездо"
+msgstr "Гнездо Пришельцев"
 
 msgid "New"
 msgstr "Новый"
@@ -959,52 +950,52 @@ msgid "No function with this name accepts this number of parameters"
 msgstr "Нет функции с этим именем для этого числа параметра"
 
 msgid "No information exchange post within range"
-msgstr "Поста по обмену информацией нет рядом или он далеко"
+msgstr "Пункт Обмена Информацией не рядом или далеко"
 
 msgid "No more energy"
 msgstr "Нет энергии"
 
 msgid "No ore in the subsoil"
-msgstr "Под поверхностью нет руды"
+msgstr "Под поверхностью нет Руды"
 
 msgid "No power cell"
-msgstr "Нет батареи"
+msgstr "Нет Батареи"
 
 msgid "No titanium"
-msgstr "Нет титана"
+msgstr "Нет Титана"
 
 msgid "No titanium around"
-msgstr "Вокруг нет титана"
+msgstr "Вокруг нет Титана"
 
 msgid "No titanium ore to convert"
-msgstr "Нет титановых руд для преобразования"
+msgstr "Нет Руды Титановой для преобразования"
 
 msgid "No titanium to transform"
-msgstr "Нет титана для преобразования"
+msgstr "Нет Титана для преобразования"
 
 msgid "No uranium to transform"
-msgstr "Нет урана для преобразования"
+msgstr "Нет Урана для преобразования"
 
 msgid "No userlevels installed!"
 msgstr "Не установленны пользовательские уровни!"
 
 msgid "Non-void function needs \"return;\""
-msgstr ""
+msgstr "Функции требуется не пустой \"return;\""
 
 msgid "Normal size"
 msgstr "Нормальный размер"
 
 msgid "Normal\\Normal graphic quality"
-msgstr "Средн.\\Нормальное качество графики"
+msgstr "Среднее\\Нормальное качество графики"
 
 msgid "Normal\\Normal sound volume"
 msgstr "Нормально\\Нормальная громкость"
 
 msgid "Not enough energy"
-msgstr "Не хватает энергии"
+msgstr "Недостаточно энергии"
 
 msgid "Not enough energy yet"
-msgstr "Не хватает энергии"
+msgstr "Ещё недостаточно энергии"
 
 msgid "Not found anything to destroy"
 msgstr "Ничего не найдено для уничтожения"
@@ -1013,22 +1004,22 @@ msgid "Nothing to analyze"
 msgstr "Нечего анализировать"
 
 msgid "Nothing to drop"
-msgstr "Нечего бросить"
+msgstr "Нечего ставить"
 
 msgid "Nothing to grab"
-msgstr "Нечего взять"
+msgstr "Нечего брать"
 
 msgid "Nothing to recycle"
 msgstr "Нечего утилизировать"
 
 msgid "Nuclear power cell"
-msgstr "Атомная батарея"
+msgstr "Батарея Ядерная"
 
 msgid "Nuclear power cell available"
-msgstr "Доступна атомная батарея"
+msgstr "Доступна Батарея Ядерная"
 
 msgid "Nuclear power station"
-msgstr "Завод атомных батарей (неперезаряж.)"
+msgstr "Энергостанция Ядерная"
 
 msgid "Number missing"
 msgstr "Нет числа"
@@ -1052,7 +1043,7 @@ msgid "Object too close"
 msgstr "Объект слишком близок"
 
 msgid "Octal value out of range"
-msgstr ""
+msgstr "8-ричное значение вне диапазона"
 
 msgid "One step"
 msgstr "Один шаг"
@@ -1079,10 +1070,10 @@ msgid "Options\\Preferences"
 msgstr "Опции\\Настройки"
 
 msgid "Organic matter"
-msgstr "Органическое вещество"
+msgstr "Био-Материя"
 
 msgid "Origin of last message\\Shows where the last message was sent from"
-msgstr "Источник сообщения\\Показывает место, откуда было отправлено последнеее сообщение"
+msgstr "Источник сообщения\\Показывает место, откуда было отправлено последнее сообщение"
 
 msgid "Original game developed by:"
 msgstr "Оригинальная игра была разработана:"
@@ -1109,7 +1100,7 @@ msgid "Pause\\Pause the game without opening menu"
 msgstr "Пауза\\Приостанавливает игру без открытия меню"
 
 msgid "Phazer shooter"
-msgstr "Фазовый стрелок"
+msgstr "Стрелок Ферзь"
 
 msgid "Photography"
 msgstr "Фотография"
@@ -1121,25 +1112,25 @@ msgid "Planets:"
 msgstr "Планеты:"
 
 msgid "Plans for defense tower available"
-msgstr "Доступны схемы защитной башни"
+msgstr "Доступны схемы Башни Обороны"
 
 msgid "Plans for nuclear power plant available"
-msgstr "Доступны схемы АЭС"
+msgstr "Доступны схемы Энергостанции Ядерной"
 
 msgid "Plans for phazer shooter available"
-msgstr "Доступны схемы фазового стрелка"
+msgstr "Доступны схемы Стрелок Ферзь"
 
 msgid "Plans for shielder available"
-msgstr "Доступны схемы передвижного щита"
+msgstr "Доступны схемы Защитник"
 
 msgid "Plans for shooter available"
-msgstr "Доступны схемы стрелка"
+msgstr "Доступны схемы Стрелок"
 
 msgid "Plans for thumper available"
-msgstr "Доступны схемы ударника"
+msgstr "Доступны схемы Кувалдник"
 
 msgid "Plans for tracked robots available"
-msgstr "Доступны схемы гусеничных роботов"
+msgstr "Доступны схемы Бот Гусеничный"
 
 msgid "Plant a flag"
 msgstr "Установить флаг"
@@ -1154,25 +1145,25 @@ msgid "Player name"
 msgstr "Имя игрока"
 
 msgid "Player's name"
-msgstr "Имя игрока"
+msgstr "Имена игроков"
 
 msgid "Power cell"
 msgstr "Батарея"
 
 msgid "Power cell available"
-msgstr "Доступна батарея"
+msgstr "Доступна Батарея"
 
 msgid "Power cell factory"
-msgstr "Завод перезаряжаемых батарей"
+msgstr "Энергостанция Обычная"
 
 msgid "Power station"
-msgstr "Электростанция"
+msgstr "Энергозаправкa"
 
 msgid "Practice bot"
-msgstr "Тренировочный бот"
+msgstr "Бот Учебный"
 
 msgid "Press \\key help; to read instructions on your SatCom"
-msgstr "Нажмите \\key help; чтобы получить инструкции от SatCom"
+msgstr "Нажмите \\key help; чтобы прочитать инструкции на Вашем СпутникКом"
 
 msgid "Previous"
 msgstr "Предыдущий"
@@ -1192,9 +1183,8 @@ msgstr "Личное\\Личная папка"
 msgid "Processing level file"
 msgstr "Обработка файла уровня"
 
-#, fuzzy
 msgid "Program cloned"
-msgstr "Программа выполнена"
+msgstr "Программа клонирована"
 
 msgid "Program editor"
 msgstr "Редактор программ"
@@ -1218,7 +1208,7 @@ msgid "Programming help\\Gives more detailed help with programming"
 msgstr "Помощь в программировании\\Дает более детальную помощь в программировании"
 
 msgid "Programs dispatched by Houston"
-msgstr "Программы переданные с Хьюстона"
+msgstr "Программы переданные из Хьюстона"
 
 msgid "Public required"
 msgstr "Требуется общественное"
@@ -1227,20 +1217,19 @@ msgid "Public\\Common folder"
 msgstr "Общее\\Общая папка"
 
 msgid "Quake at explosions\\The screen shakes at explosions"
-msgstr "Землетряс. при взрывах\\Тряска экрана при взрывах"
+msgstr "Землетрясение при взрывах\\Экран дрожит при взрывах"
 
 msgid "Quick load\\Immediately load game"
-msgstr ""
+msgstr "Быстро загрузить\\Немедленная загрузка игры"
 
 msgid "Quick save\\Immediately save game"
-msgstr ""
+msgstr "Быстро сохранить\\Немедленное сохранение игры"
 
-#, fuzzy
 msgid "Quicksave slot not found"
-msgstr "Объект не найден"
+msgstr "Быстрое сохранение слот не найден"
 
 msgid "Quit\\Quit Colobot: Gold Edition"
-msgstr "Выход\\Выйти из Colobot: Gold Edition"
+msgstr "Выход\\Выход из Colobot: Gold Edition"
 
 msgid "Quit\\Quit the current mission or exercise"
 msgstr "Выход\\Выход из текущей миссии"
@@ -1264,7 +1253,7 @@ msgid "Red"
 msgstr "Красный"
 
 msgid "Red flag"
-msgstr "Красный флаг"
+msgstr "Флаг Красный"
 
 msgid "Reflections on the buttons \\Shiny buttons"
 msgstr "Отражения на кнопках \\Блестящие кнопки"
@@ -1275,25 +1264,23 @@ msgstr "Остатки миссии Аполлон"
 msgid "Remove a flag"
 msgstr "Удалить флаг"
 
-#, fuzzy
 msgid "Remove selected program"
-msgstr "Изменить выбранную программу"
+msgstr "Удалить выбранную программу"
 
-#, fuzzy
 msgid "Render distance\\Maximum visibility"
-msgstr "Дальность прорисовки\\Максимальная видимость"
+msgstr "Расстояние рендеринга\\Максимальная видимость"
 
 msgid "Repair center"
-msgstr "Ремонтный пункт"
+msgstr "Пункт Ремонта"
 
 msgid "Research center"
-msgstr "Научно-исследовательский центр"
+msgstr "Центр Исследований"
 
 msgid "Research program already performed"
-msgstr "Научно-исследовательская программа уже выполняется"
+msgstr "Исследовательская программа уже выполняется"
 
 msgid "Research program completed"
-msgstr "Научно-исследовательская программа завершена"
+msgstr "Исследовательская программа завершена"
 
 msgid "Reserved keyword of CBOT language"
 msgstr "Резервное ключевое слово языка CBOT"
@@ -1317,49 +1304,49 @@ msgid "Restoring saved objects"
 msgstr "Восстановить сохранённые объекты"
 
 msgid "Results"
-msgstr ""
+msgstr "Результаты"
 
 msgid "Return to start"
 msgstr "Вернуться в начало"
 
 msgid "Robbie"
-msgstr "Робби"
+msgstr "Robbie"
 
 msgid "Ruin"
 msgstr "Руины"
 
 msgid "Run research program for defense tower"
-msgstr "Начать исследование программы для защитной башни"
+msgstr "Начать исследование программы Башня Обороны"
 
 msgid "Run research program for legged bots"
-msgstr "Начать исследование программы для шагающих ботов"
+msgstr "Начать исследование программы Бот Муравьиногий"
 
 msgid "Run research program for nuclear power"
-msgstr "Начать исследование программы для атомной энергетики"
+msgstr "Начать исследование программы Энергостанция Ядерная"
 
 msgid "Run research program for orga shooter"
-msgstr "Начать исследование программы для орга-стерлка"
+msgstr "Начать исследование программы Био-Стрелок"
 
 msgid "Run research program for phazer shooter"
-msgstr "Начать исследование программы для фазового стрелка"
+msgstr "Начать исследование программы Стрелок Ферзь"
 
 msgid "Run research program for shielder"
-msgstr "Начать исследование программы для передвижного щита"
+msgstr "Начать исследование программы Защитник"
 
 msgid "Run research program for shooter"
-msgstr "Начать исследование программы для стрелка"
+msgstr "Начать исследование программы Стрелок"
 
 msgid "Run research program for thumper"
-msgstr "Начать исследование программы для ударника"
+msgstr "Начать исследование программы Кувалдник"
 
 msgid "Run research program for tracked bots"
-msgstr "Начать исследование программы для гусеничного бота "
+msgstr "Начать исследование программы Бог Гусеничный"
 
 msgid "Run research program for winged bots"
-msgstr "Начать исследование программы для летающего бота"
+msgstr "Начать исследование программы Бот Крылатый"
 
 msgid "SatCom"
-msgstr "SatCom"
+msgstr "СпутникКом"
 
 msgid "Satellite report"
 msgstr "Спутниковый отчет"
@@ -1380,7 +1367,7 @@ msgid "Save\\Saves the current mission"
 msgstr "Сохранить\\Сохранить текущую миссию"
 
 msgid "Select the astronaut\\Selects the astronaut"
-msgstr "Выбор астронавта\\Выбор астронавта"
+msgstr "Выбор космонавта\\Выбор космонавта"
 
 msgid "Semicolon terminator missing"
 msgstr "Отсутствует точка с запятой"
@@ -1389,25 +1376,25 @@ msgid "Shadow resolution\\Higher means better range and quality, but slower"
 msgstr "Разрешение тени\\Больше означает более лучшие дистанция и качество, но более медленные"
 
 msgid "Shield level"
-msgstr "Уровень брони"
+msgstr "Уровень щита"
 
 msgid "Shield radius"
 msgstr "Радиус щита"
 
 msgid "Shielder"
-msgstr "Передвижной щит"
+msgstr "Защитник"
 
 msgid "Shoot (\\key action;)"
 msgstr "Огонь (\\key action;)"
 
 msgid "Show if the ground is flat"
-msgstr "Показывать плоскую землю"
+msgstr "Показать если земля ровная"
 
 msgid "Show the place"
-msgstr "Место"
+msgstr "Показать место"
 
 msgid "Show the range"
-msgstr "Дальность"
+msgstr "Показать дальность"
 
 msgid "Show the solution"
 msgstr "Показать решение"
@@ -1415,9 +1402,8 @@ msgstr "Показать решение"
 msgid "Sign \" : \" missing"
 msgstr "Знак \" : \" отсутствует"
 
-#, fuzzy
 msgid "Simple shadows\\Shadows spots on the ground"
-msgstr "Тени\\Тени на земле"
+msgstr "Простые тени\\Тени пятна на земле"
 
 msgid "Size 1"
 msgstr "Размер 1"
@@ -1435,22 +1421,22 @@ msgid "Size 5"
 msgstr "Размер 5"
 
 msgid "Sniff (\\key action;)"
-msgstr "Искать (\\key action;)"
+msgstr "Разведать (\\key action;)"
 
 msgid "Solution"
 msgstr "Решение"
 
 msgid "Sound effects:\\Volume of engines, voice, shooting, etc."
-msgstr "Общий звук:\\Гормкость двигателя, голоса, стрельбы и т.д."
+msgstr "Звуковые эффекты:\\Громкость двигателей, голоса, стрельбы и т.д."
 
 msgid "Sound\\Music and game sound volume"
 msgstr "Звук\\Громкость музыки и звуков"
 
 msgid "Spaceship"
-msgstr "Космический корабль"
+msgstr "Космический Корабль"
 
 msgid "Spaceship ruin"
-msgstr "Обломки корабля"
+msgstr "Обломки Космического Корабля"
 
 msgid "Spider"
 msgstr "Паук"
@@ -1462,13 +1448,13 @@ msgid "Stack overflow"
 msgstr "Переполнение стека"
 
 msgid "Standard action\\Standard action of the bot (take/grab, shoot, sniff, etc)"
-msgstr "Стандартное действие\\Стандартное действие бота (брать/взять, стрелять, искать и т.д.)"
+msgstr "Стандартное действие\\Стандартное действие бота (брать/ставить, стрелять, искать и т.д.)"
 
 msgid "Standard controls\\Standard key functions"
 msgstr "Стандартное управление\\Сделать управление по умолчанию"
 
 msgid "Standard speed\\Reset speed to normal"
-msgstr ""
+msgstr "Стандартная скорость\\Сбросить скорость на нормальную"
 
 msgid "Standard\\Standard appearance settings"
 msgstr "По умолчанию\\Настройки внешнего вида по умолчанию"
@@ -1476,9 +1462,8 @@ msgstr "По умолчанию\\Настройки внешнего вида п
 msgid "Start"
 msgstr "Начало"
 
-#, fuzzy
 msgid "Starting..."
-msgstr "Начало"
+msgstr "Начало..."
 
 msgid "Still working ..."
 msgstr "Работает ..."
@@ -1487,16 +1472,16 @@ msgid "String missing"
 msgstr "Отсутствует строка"
 
 msgid "Strip color:"
-msgstr "Цвет полос"
+msgstr "Цвет полос:"
 
 msgid "Subber"
-msgstr "Саббер"
+msgstr "Амфибия"
 
 msgid "Suit color:"
 msgstr "Костюм:"
 
 msgid "Suit\\Astronaut suit"
-msgstr "Костюм\\Костюм астронавта"
+msgstr "Костюм\\Костюм космонавта"
 
 msgid "Summary:"
 msgstr "Итог:"
@@ -1508,13 +1493,13 @@ msgid "Switch bots <-> buildings"
 msgstr "Переключение между ботами и зданиями"
 
 msgid "Take off to finish the mission"
-msgstr "Взлететь, чтобы закончить миссию"
+msgstr "Взлетай, чтобы завершить миссию"
 
 msgid "Target"
 msgstr "Цель"
 
 msgid "Target bot"
-msgstr "Целевой бот"
+msgstr "Бот Цель"
 
 msgid "Terrain relief"
 msgstr "Рельеф местности"
@@ -1526,7 +1511,7 @@ msgid "Textures"
 msgstr "Текстуры"
 
 msgid "The battle has ended"
-msgstr ""
+msgstr "Битва окончена"
 
 msgid "The expression must return a boolean value"
 msgstr "Выражение должно возвращать логическое значение"
@@ -1547,7 +1532,7 @@ msgid "This class does not exist"
 msgstr "Этот класс не существует"
 
 msgid "This is example code that cannot be run directly"
-msgstr "Это пример кода который не может быть непосредственно запущен"
+msgstr "Это пример кода, который не может быть непосредственно запущен"
 
 msgid "This is not a member of this class"
 msgstr "Это не член этого класса"
@@ -1556,16 +1541,16 @@ msgid "This label does not exist"
 msgstr "Эта метка не существует"
 
 msgid "This menu is for userlevels from mods, but you didn't install any"
-msgstr "Это меню для пользовательских уровней из модов, но вы ни одного не уставили"
+msgstr "Это меню для пользовательских уровней из модов, но Вы ни одного не уставили"
 
 msgid "This object is currently busy"
-msgstr ""
+msgstr "Этот объект сейчас занят"
 
 msgid "This object is not a member of a class"
 msgstr "Этот объект не член класса"
 
 msgid "This parameter needs a default value"
-msgstr ""
+msgstr "Для этого параметра необходимо значение по умолчанию"
 
 msgid "This program is read-only, clone it to edit"
 msgstr "Эта программа только для чтения, для редактирования клонируйте её"
@@ -1574,11 +1559,11 @@ msgid "Thump (\\key action;)"
 msgstr "Удар (\\key action;)"
 
 msgid "Thumper"
-msgstr "Ударник"
+msgstr "Кувалдник"
 
 #, c-format
 msgid "Time: %s"
-msgstr ""
+msgstr "Время: %s"
 
 msgid "Titanium"
 msgstr "Титан"
@@ -1587,10 +1572,10 @@ msgid "Titanium available"
 msgstr "Титан доступен"
 
 msgid "Titanium deposit (site for derrick)"
-msgstr "Запасы титана (место для буровой вышки)"
+msgstr "Месторождение Титана (место для Вышки)"
 
 msgid "Titanium ore"
-msgstr "Титановая руда"
+msgstr "Руда Титановая"
 
 msgid "Titanium too close"
 msgstr "Титан слишком близко"
@@ -1605,7 +1590,7 @@ msgid "Too close to an existing flag"
 msgstr "Слишком близко к существующему флагу"
 
 msgid "Too close to space ship"
-msgstr "Слишком близко к кораблю"
+msgstr "Слишком близко к Космическому Кораблю"
 
 msgid "Too many flags of this color (maximum 5)"
 msgstr "Слишком много флагов этого цвета (максимум 5)"
@@ -1614,22 +1599,22 @@ msgid "Too many parameters"
 msgstr "Слишком много параметров"
 
 msgid "Tracked grabber"
-msgstr "Гусеничный сборщик"
+msgstr "Погрузчик Гусеничный"
 
 msgid "Tracked orga shooter"
-msgstr "Гусеничный орга-стрелок"
+msgstr "Био-Стрелок Гусеничный"
 
 msgid "Tracked shooter"
-msgstr "Гусеничный стрелок"
+msgstr "Стрелок Гусеничный"
 
 msgid "Tracked sniffer"
-msgstr "Гусеничный искатель"
+msgstr "Разведчик Гусеничный"
 
 msgid "Transforms only titanium"
-msgstr "Нет титана для преобразования"
+msgstr "Преобразовывает только Титан"
 
 msgid "Transforms only uranium"
-msgstr "Преобразовывается только уран"
+msgstr "Преобразовывает только Уран"
 
 msgid "Transmitted information"
 msgstr "Переданная информация"
@@ -1665,7 +1650,7 @@ msgid "Unknown command"
 msgstr "Неизвестная команда"
 
 msgid "Unknown escape sequence"
-msgstr ""
+msgstr "Неизвестная escape-последовательность"
 
 msgid "Unknown function"
 msgstr "Неизвестная функция"
@@ -1674,10 +1659,10 @@ msgid "Up (\\key gup;)"
 msgstr "Вверх (\\key gup;)"
 
 msgid "Uranium deposit (site for derrick)"
-msgstr "Запасы урана (место для буровой вышки)"
+msgstr "Месторождение Урана (место для Вышки)"
 
 msgid "Uranium ore"
-msgstr "Урановая руда"
+msgstr "Руда Урановая"
 
 msgid "User levels"
 msgstr "Пользовательские уровни"
@@ -1692,13 +1677,13 @@ msgid "Variable not initialized"
 msgstr "Переменная не инициализирована"
 
 msgid "Vault"
-msgstr "Хранилище"
+msgstr "Ангар"
 
 msgid "Vertical Synchronization\\Limits the number of frames per second to display frequency"
-msgstr ""
+msgstr "Вертикальная синхронизация\\Ограничение количество кадров в секунду для отображения частоты"
 
 msgid "Violet flag"
-msgstr "Фиолетовый флаг"
+msgstr "Флаг Фиолетовый"
 
 msgid "Void parameter"
 msgstr "Пустой параметр"
@@ -1713,28 +1698,28 @@ msgid "Waste"
 msgstr "Мусор"
 
 msgid "Wheeled grabber"
-msgstr "Колесный сборщик"
+msgstr "Погрузчик Колёсный"
 
 msgid "Wheeled orga shooter"
-msgstr "Колесный орга-стрелок"
+msgstr "Био-Стрелок Колёсный"
 
 msgid "Wheeled shooter"
-msgstr "Колесный стрелок"
+msgstr "Стрелок Колёсный"
 
 msgid "Wheeled sniffer"
-msgstr "Колесный искатель"
+msgstr "Разведчик Колёсный"
 
 msgid "Winged grabber"
-msgstr "Летающий сборщик"
+msgstr "Погрузчик Крылатый"
 
 msgid "Winged orga shooter"
-msgstr "Летающий орга-стрелок"
+msgstr "Био-Стрелок Крылатый"
 
 msgid "Winged shooter"
-msgstr "Летающий стрелок"
+msgstr "Стрелок Крылатый"
 
 msgid "Winged sniffer"
-msgstr "Летающий искатель"
+msgstr "Разведчик Крылатый"
 
 msgid "Withdraw shield (\\key action;)"
 msgstr "Снять щит (\\key action;)"
@@ -1755,13 +1740,13 @@ msgid "Wrong type for the assignment"
 msgstr "Неверный тип для назначения"
 
 msgid "Yellow flag"
-msgstr "Желтый флаг"
+msgstr "Флаг Жёлтый"
 
 msgid "Yes"
 msgstr "Да"
 
 msgid "You can fly with the keys (\\key gup;) and (\\key gdown;)"
-msgstr "Вы можете лететь с помощью клавиш (\\key gup;) и (\\key gdown;)"
+msgstr "Вы можете летать с помощью клавиш (\\key gup;) и (\\key gdown;)"
 
 msgid "You can not carry a radioactive object"
 msgstr "Вы не можете нести радиоактивные объекты"
@@ -1769,33 +1754,33 @@ msgstr "Вы не можете нести радиоактивные объек�
 msgid "You can not carry an object under water"
 msgstr "Вы не можете нести объекты под водой"
 
-#, fuzzy, c-format
+#, c-format
 msgid "You cannot use \"%s\" in this exercise (used: %d)"
-msgstr "Не используй в этом упражнении"
+msgstr "Вы не можете использовать \"%s\" в это упражнении (использовал: %d)"
 
 msgid "You found a usable object"
 msgstr "Вы нашли рабочий объект"
 
-#, fuzzy, c-format
+#, c-format
 msgid "You have to use \"%1$s\" at least once in this exercise (used: %2$d)"
 msgid_plural "You have to use \"%1$s\" at least %3$d times in this exercise (used: %2$d)"
-msgstr[0] "Не используй в этом упражнении"
-msgstr[1] "Не используй в этом упражнении"
+msgstr[0] "Вы должны использовать \"%1$s\" хотя бы один раз в этом упражнении (использовано: %2$d)"
+msgstr[1] "Вы должны использовать \"%1$s\" не менее %3$d раз в этом упражнении (использовано: %2$d)"
 
-#, fuzzy, c-format
+#, c-format
 msgid "You have to use \"%1$s\" at most once in this exercise (used: %2$d)"
 msgid_plural "You have to use \"%1$s\" at most %3$d times in this exercise (used: %2$d)"
-msgstr[0] "Не используй в этом упражнении"
-msgstr[1] "Не используй в этом упражнении"
+msgstr[0] "Вы должны использовать \"%1$s\" не более одного раза в этом упражнении (использовано: %2$d)"
+msgstr[1] "Вы должны использовать \"%1$s\" не более %3$d раз в этом упражнении (использовано: %2$d)\""
 
 msgid "You must get on the spaceship to take off"
-msgstr "Вы должны быть на борту корабля, чтобы взлететь"
+msgstr "Вы должны быть на борту Космического Корабля, чтобы взлететь"
 
 msgid "Zoom mini-map"
 msgstr "Масштаб мини-карты"
 
 msgid "\\Blue flags"
-msgstr "\\Синий флаг"
+msgstr "\\Флаг Синий"
 
 msgid "\\Eyeglasses 1"
 msgstr "\\Очки 1"
@@ -1813,7 +1798,7 @@ msgid "\\Eyeglasses 5"
 msgstr "\\Очки 5"
 
 msgid "\\Face 1"
-msgstr "Лицо 1"
+msgstr "\\Лицо 1"
 
 msgid "\\Face 2"
 msgstr "\\Лицо 4"
@@ -1825,7 +1810,7 @@ msgid "\\Face 4"
 msgstr "\\Лицо 4"
 
 msgid "\\Green flags"
-msgstr "\\Зеленый флаг"
+msgstr "\\Флаг Зелёный"
 
 msgid "\\New player name"
 msgstr "\\Новое имя"
@@ -1837,13 +1822,13 @@ msgid "\\Raise the pencil"
 msgstr "\\Поднять перо"
 
 msgid "\\Red flags"
-msgstr "\\Красный флаг"
+msgstr "\\Флаг Красный"
 
 msgid "\\Return to Colobot: Gold Edition"
-msgstr "Вернуться к Colobot: Gold Edition"
+msgstr "\\Вернуться к Colobot: Gold Edition"
 
 msgid "\\SatCom on standby"
-msgstr "\\SatCom ждет"
+msgstr "\\СпутниКом в ожидании"
 
 msgid "\\Start recording"
 msgstr "\\Начать запись"
@@ -1858,34 +1843,34 @@ msgid "\\Turn right"
 msgstr "\\Повернуть направо"
 
 msgid "\\Use the black pencil"
-msgstr "\\Использовать черное перо"
+msgstr "\\Использовать чёрное перо"
 
 msgid "\\Use the blue pencil"
 msgstr "\\Использовать синее перо"
 
 msgid "\\Use the brown pencil"
-msgstr "Использовать коричневое перо"
+msgstr "\\Использовать коричневое перо"
 
 msgid "\\Use the green pencil"
-msgstr "\\Использовать зеленое перо"
+msgstr "\\Использовать зелёное перо"
 
 msgid "\\Use the orange pencil"
 msgstr "\\Использовать оранжевое перо"
 
 msgid "\\Use the purple pencil"
-msgstr "Использовать фиолетовое перо"
+msgstr "\\Использовать фиолетовое перо"
 
 msgid "\\Use the red pencil"
 msgstr "\\Использовать красное перо"
 
 msgid "\\Use the yellow pencil"
-msgstr "\\Использовать желтое перо"
+msgstr "\\Использовать жёлтое перо"
 
 msgid "\\Violet flags"
-msgstr "\\Фиолетовый флаг"
+msgstr "\\Флаг Фиолетовый"
 
 msgid "\\Yellow flags"
-msgstr "\\Желтый флаг"
+msgstr "\\Флаг Жёлтый"
 
 msgid "colobot.info"
 msgstr "colobot.info"

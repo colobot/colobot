@@ -1,0 +1,329 @@
+# SOME DESCRIPTIVE TITLE
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2016-03-30 13:45+0200\n"
+"PO-Revision-Date: 2021-02-28 19:14+0300\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Last-Translator: DavydovMA <davydovma@protonmail.ch>\n"
+"Language-Team: \n"
+"X-Generator: Poedit 2.2.1\n"
+
+#. type: Name=
+#: colobot.ini:1
+#, no-wrap
+msgid "Colobot"
+msgstr "Colobot"
+
+#. type: GenericName=
+#: colobot.ini:2
+#, no-wrap
+msgid "Game to learn programming"
+msgstr "Игра для изучения программирования"
+
+#. type: Comment=
+#: colobot.ini:3
+#, no-wrap
+msgid "Colonize with bots"
+msgstr "Колонизация ботами"
+
+#. type: Keywords=
+#: colobot.ini:4
+#, no-wrap
+msgid "robots;3d;space;astronaut;java;c++"
+msgstr "robots;3d;space;astronaut;java;c++"
+
+#. type: =head1
+#: colobot.pod:3
+msgid "NAME"
+msgstr "НАЗВАНИЕ"
+
+#. type: textblock
+#: colobot.pod:5
+msgid "colobot - educational programming strategy game"
+msgstr "colobot - игра-стратегия обучающая программированию"
+
+#. type: =head1
+#: colobot.pod:7
+msgid "SYNOPSIS"
+msgstr "ОБЗОР"
+
+#. type: textblock
+#: colobot.pod:9
+msgid "B<colobot>"
+msgstr "B<colobot>"
+
+#. type: =head1
+#: colobot.pod:11
+msgid "DESCRIPTION"
+msgstr "ОПИСАНИЕ"
+
+#. type: textblock
+#: colobot.pod:13
+msgid ""
+"Colobot (Colonize with Bots) is an educational game aiming to teach "
+"programming through entertainment. You are playing as an astronaut on a "
+"journey with robot helpers to find a planet for colonization. It features 3D "
+"real-time graphics and a C++ and Java-like, object-oriented language, CBOT, "
+"which can be used to program the robots available in the game."
+msgstr ""
+"Colobot (Колонизация Ботами) - образовательная игра, целью которой является "
+"обучение программированию с помощью развлечения. Вы играете за космонавта "
+"путешествующего с ботами-помощниками, чтобы найти планету для колонизации. "
+"Она использует 3D графику в реальном времени и объектно-ориентированный "
+"язык, CBOT, похожий на C++ и Java-like, который можно использовать для "
+"программирования ботов, доступных в игре."
+
+#. type: =head1
+#: colobot.pod:19
+msgid "OPTIONS"
+msgstr "ОПЦИИ"
+
+#. type: =item
+#: colobot.pod:23
+msgid "B<-help>"
+msgstr "B<-help>"
+
+#. type: textblock
+#: colobot.pod:25
+msgid "Display a short help text"
+msgstr "Показать короткий текст справки"
+
+#. type: =item
+#: colobot.pod:27
+msgid "B<-resolution> I<WxH>"
+msgstr "B<-resolution> I<WxH>"
+
+#. type: textblock
+#: colobot.pod:29
+msgid "Set runtime screen resolution"
+msgstr "Установить разрешение экрана"
+
+#. type: =item
+#: colobot.pod:31
+msgid "B<-graphics> I<default>|I<auto>|I<opengl>|I<gl14>|I<gl21>|I<gl33>"
+msgstr "B<-graphics> I<default>|I<auto>|I<opengl>|I<gl14>|I<gl21>|I<gl33>"
+
+#. type: textblock
+#: colobot.pod:33
+msgid "Changes graphics device"
+msgstr "Сменить графическое устройство"
+
+#. type: =item
+#: colobot.pod:35
+msgid "B<-glversion> I<default>|I<#.#>"
+msgstr "B<-glversion> I<default>|I<#.#>"
+
+#. type: textblock
+#: colobot.pod:37
+msgid "Sets OpenGL context version to use."
+msgstr "Установить версию OpenGL."
+
+#. type: =item
+#: colobot.pod:39
+msgid "B<-glprofile> I<default>|I<core>|I<compatibility>|I<opengles>"
+msgstr "B<-glprofile> I<default>|I<core>|I<compatibility>|I<opengles>"
+
+#. type: textblock
+#: colobot.pod:41
+msgid "Sets OpenGL context profile to use."
+msgstr "Установить профиль OpenGL."
+
+#. type: =head1
+#: colobot.pod:45
+msgid "RUNTIME PATH OVERRIDES"
+msgstr "ОПЕРАТИВНАЯ СМЕНА ПУТИ"
+
+#. type: =item
+#: colobot.pod:49
+msgid "B<-langdir> F</path/to/lang/>"
+msgstr "B<-langdir> F</path/to/lang/>"
+
+#. type: textblock
+#: colobot.pod:51
+msgid "Set custom language directory path"
+msgstr "Установить путь к каталогу языков"
+
+#. type: =item
+#: colobot.pod:53
+msgid "B<-datadir> F</path/to/data/>"
+msgstr "B<-datadir> F</path/to/data/>"
+
+#. type: textblock
+#: colobot.pod:55
+msgid "Set custom data directory path"
+msgstr "Установить путь к каталогу данных"
+
+#. type: =item
+#: colobot.pod:57
+msgid "B<-savedir> F</path/to/save/>"
+msgstr "B<-savedir> F</path/to/save/>"
+
+#. type: textblock
+#: colobot.pod:59
+msgid "Set custom save directory path (must be writable)"
+msgstr "Установить путь к каталогу сохранения (требуется доступ по записи)"
+
+#. type: =item
+#: colobot.pod:61
+msgid "B<-mod> F</path/to/mods/>"
+msgstr "B<-mod> F</path/to/mods/>"
+
+#. type: textblock
+#: colobot.pod:63
+msgid "Set datadir mod path"
+msgstr "Установить путь к каталогу модов"
+
+#. type: =head1
+#: colobot.pod:67
+msgid "DEBUG OPTIONS"
+msgstr "ОПЦИИ ОТЛАДКИ"
+
+#. type: =item
+#: colobot.pod:71
+msgid "B<-loglevel> I<trace>|I<debug>|I<info>|I<warn>|I<error>|I<none>."
+msgstr "B<-loglevel> I<trace>|I<debug>|I<info>|I<warn>|I<error>|I<none>."
+
+#. type: textblock
+#: colobot.pod:73
+msgid "Set log level."
+msgstr "Установить уровень журнала."
+
+#. type: =item
+#: colobot.pod:75
+msgid "B<-debug> I<all>|I<event>|I<models>|..."
+msgstr "B<-debug> I<all>|I<event>|I<models>|..."
+
+#. type: textblock
+#: colobot.pod:77
+msgid ""
+"Enable debug mode (more info printed in logs). Possible values are as "
+"follows, as well as any comma-separated combination"
+msgstr ""
+"Включает режим отладки (больше информации печатает в журналах). Возможны "
+"следующие значения, а также любые комбинации, разделённые запятыми"
+
+#. type: =item
+#: colobot.pod:81
+msgid "sys_events"
+msgstr "sys_events"
+
+#. type: textblock
+#: colobot.pod:83
+msgid "System events"
+msgstr "События системы"
+
+#. type: =item
+#: colobot.pod:85
+msgid "update_events"
+msgstr "update_events"
+
+#. type: textblock
+#: colobot.pod:87
+msgid "Update events"
+msgstr "События обновления"
+
+#. type: =item
+#: colobot.pod:89
+msgid "app_events"
+msgstr "app_events"
+
+#. type: textblock
+#: colobot.pod:91
+msgid "Application events"
+msgstr "События приложения"
+
+#. type: =item
+#: colobot.pod:93
+msgid "events"
+msgstr "events"
+
+#. type: textblock
+#: colobot.pod:95
+msgid "All above events"
+msgstr "Все вышеуказанные события"
+
+#. type: =item
+#: colobot.pod:97
+msgid "models"
+msgstr "models"
+
+#. type: textblock
+#: colobot.pod:99
+msgid "Models-related debugging"
+msgstr "Отладка, связанная с моделями"
+
+#. type: =item
+#: colobot.pod:101
+msgid "all"
+msgstr "all"
+
+#. type: textblock
+#: colobot.pod:103
+msgid "All above debugging statements"
+msgstr "Все выше приведённые значения отладки"
+
+#. type: =item
+#: colobot.pod:107
+msgid "B<-headless>"
+msgstr "B<-headless>"
+
+#. type: textblock
+#: colobot.pod:109
+msgid "Run in headless mode - disables graphics, sound and user interaction"
+msgstr ""
+"Запустить в headless режиме - отключает графику, звук и взаимодействие с "
+"пользователем"
+
+#. type: =item
+#: colobot.pod:111
+msgid "B<-runscene> I<scenecodename>"
+msgstr "B<-runscene> I<scenecodename>"
+
+#. type: textblock
+#: colobot.pod:113
+msgid "Run given scene on start (skip menus)"
+msgstr "Запустить данную сцену при запуске (пропустить меню)"
+
+#. type: =item
+#: colobot.pod:115
+msgid "B<-scenetest>"
+msgstr "B<-scenetest>"
+
+#. type: textblock
+#: colobot.pod:117
+msgid "Win every mission right after it's loaded"
+msgstr "Выиграть каждую миссию сразу после ее загрузки"
+
+#. type: =head1
+#: colobot.pod:121
+msgid "ENVIRONMENT"
+msgstr "ОКРУЖЕНИЕ"
+
+#. type: =item
+#: colobot.pod:125
+msgid "LC_MESSAGES"
+msgstr "LC_MESSAGES"
+
+#. type: textblock
+#: colobot.pod:127
+msgid "Used to determine the runtime language."
+msgstr "Использовать определение среды выполнения языка."
+
+#. type: =head1
+#: colobot.pod:131
+msgid "AUTHOR"
+msgstr "АВТОР"
+
+#. type: textblock
+#: colobot.pod:133
+msgid "This manpage was written by Didier Raboud <S<odyx@debian.org>>."
+msgstr ""
+"Эта страница руководства была написана Didier Raboud <S<odyx@debian.org>>."
