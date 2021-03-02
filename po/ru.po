@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: DATE\n"
-"PO-Revision-Date: 2021-02-28 19:09+0300\n"
+"PO-Revision-Date: 2021-03-01 20:30+0300\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -545,7 +545,7 @@ msgid "Expression expected after ="
 msgstr "Выражение ожидалось после ="
 
 msgid "Extend shield (\\key action;)"
-msgstr "Поднять щит (\\key action;)"
+msgstr "Развернуть защиту (\\key action;)"
 
 msgid "Eyeglasses:"
 msgstr "Очки:"
@@ -557,7 +557,7 @@ msgid "File not open"
 msgstr "Файл не открыт"
 
 msgid "Filename:"
-msgstr "Имя файла:"
+msgstr "Название файла:"
 
 msgid "Film sequences\\Films before and after the missions"
 msgstr "Показывать видео\\Фильмы до и после миссий"
@@ -627,7 +627,7 @@ msgid "Function already exists"
 msgstr "Функция уже существует"
 
 msgid "Function name missing"
-msgstr "Имя функции отсутствует"
+msgstr "Название функции отсутствует"
 
 msgid "Function needs return type \"void\""
 msgstr "Функция требует вернуть тип \"void\""
@@ -762,7 +762,7 @@ msgid "Internal error - tell the developers"
 msgstr "Внутренняя ошибка - сообщите разработчикам"
 
 msgid "Invalid universal character name"
-msgstr "Недействительное универсальное имя символа"
+msgstr "Недействительное универсальное название символа"
 
 msgid "Invert\\Invert values on this axis"
 msgstr "Инвертир.\\Инвертировать значения по этой оси"
@@ -944,10 +944,10 @@ msgid "No function running"
 msgstr "Нет запущенной функции"
 
 msgid "No function with this name accepts this kind of parameter"
-msgstr "Нет функции с этим именем для этого вида параметра"
+msgstr "Нет функции с этим названием для этого вида параметра"
 
 msgid "No function with this name accepts this number of parameters"
-msgstr "Нет функции с этим именем для этого числа параметра"
+msgstr "Нет функции с этим названием для этого числа параметра"
 
 msgid "No information exchange post within range"
 msgstr "Пункт Обмена Информацией не рядом или далеко"
@@ -1376,10 +1376,10 @@ msgid "Shadow resolution\\Higher means better range and quality, but slower"
 msgstr "Разрешение тени\\Больше означает более лучшие дистанция и качество, но более медленные"
 
 msgid "Shield level"
-msgstr "Уровень щита"
+msgstr "Уровень защиты"
 
 msgid "Shield radius"
-msgstr "Радиус щита"
+msgstr "Радиус защиты"
 
 msgid "Shielder"
 msgstr "Защитник"
@@ -1668,7 +1668,7 @@ msgid "User levels"
 msgstr "Пользовательские уровни"
 
 msgid "Variable name missing"
-msgstr "Нет имени переменной"
+msgstr "Название переменной отсутствует"
 
 msgid "Variable not declared"
 msgstr "Переменная не объявлена"
@@ -1722,7 +1722,7 @@ msgid "Winged sniffer"
 msgstr "Разведчик Крылатый"
 
 msgid "Withdraw shield (\\key action;)"
-msgstr "Снять щит (\\key action;)"
+msgstr "Свернуть защиту (\\key action;)"
 
 msgid "Worm"
 msgstr "Червь"
