@@ -1340,7 +1340,7 @@ msgid "Run research program for thumper"
 msgstr "Начать исследование программы Кувалдник"
 
 msgid "Run research program for tracked bots"
-msgstr "Начать исследование программы Бог Гусеничный"
+msgstr "Начать исследование программы Бот Гусеничный"
 
 msgid "Run research program for winged bots"
 msgstr "Начать исследование программы Бот Крылатый"
