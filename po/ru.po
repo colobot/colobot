@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: DATE\n"
-"PO-Revision-Date: 2021-03-16 12:01+0300\n"
+"PO-Revision-Date: 2021-03-16 15:12+0300\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -205,16 +205,16 @@ msgid "Build a exchange post"
 msgstr "Построить Пункт Обмена Информацией"
 
 msgid "Build a legged grabber"
-msgstr "Собрать Погрузчик Лапчатый"
+msgstr "Создать Погрузчик Лапчатый"
 
 msgid "Build a legged orga shooter"
-msgstr "Собрать Био-Стрелок Лапчатый"
+msgstr "Создать Био-Стрелок Лапчатый"
 
 msgid "Build a legged shooter"
-msgstr "Собрать Стрелок Лапчатый"
+msgstr "Создать Стрелок Лапчатый"
 
 msgid "Build a legged sniffer"
-msgstr "Собрать Разведчик Лапчатый"
+msgstr "Создать Разведчик Лапчатый"
 
 msgid "Build a lightning conductor"
 msgstr "Построить Молниеотвод"
@@ -223,7 +223,7 @@ msgid "Build a nuclear power plant"
 msgstr "Построить Энергостанцию Ядерную"
 
 msgid "Build a phazer shooter"
-msgstr "Собрать Стрелок Ферзь"
+msgstr "Создать Стрелок Ферзь"
 
 msgid "Build a power cell factory"
 msgstr "Построить Энергостанцию Обычную"
@@ -235,7 +235,7 @@ msgid "Build a radar station"
 msgstr "Построить Радар"
 
 msgid "Build a recycler"
-msgstr "Собрать Утилизатор"
+msgstr "Создать Утилизатор"
 
 msgid "Build a repair center"
 msgstr "Построить Пункт Ремонта"
@@ -244,49 +244,49 @@ msgid "Build a research center"
 msgstr "Построить Центр Исследований"
 
 msgid "Build a shielder"
-msgstr "Собрать Защитник"
+msgstr "Создать Защитник"
 
 msgid "Build a subber"
-msgstr "Собрать Амфибия"
+msgstr "Создать Амфибия"
 
 msgid "Build a thumper"
-msgstr "Собрать Кувалдник"
+msgstr "Создать Кувалдник"
 
 msgid "Build a tracked grabber"
-msgstr "Собрать Погрузчик Гусеничный"
+msgstr "Создать Погрузчик Гусеничный"
 
 msgid "Build a tracked orga shooter"
-msgstr "Собрать Био-Стрелок Гусеничный"
+msgstr "Создать Био-Стрелок Гусеничный"
 
 msgid "Build a tracked shooter"
-msgstr "Собрать Стрелок Гусеничный"
+msgstr "Создать Стрелок Гусеничный"
 
 msgid "Build a tracked sniffer"
-msgstr "Собрать Разведчик Гусеничный"
+msgstr "Создать Разведчик Гусеничный"
 
 msgid "Build a wheeled grabber"
-msgstr "Собрать Погрузчик Колёсный"
+msgstr "Создать Погрузчик Колёсный"
 
 msgid "Build a wheeled orga shooter"
-msgstr "Собрать Био-Стрелок Колёсный"
+msgstr "Создать Био-Стрелок Колёсный"
 
 msgid "Build a wheeled shooter"
-msgstr "Собрать Стрелок Колёсный"
+msgstr "Создать Стрелок Колёсный"
 
 msgid "Build a wheeled sniffer"
-msgstr "Собрать Разведчик Колёсный"
+msgstr "Создать Разведчик Колёсный"
 
 msgid "Build a winged grabber"
-msgstr "Собрать Погрузчик Крылатый"
+msgstr "Создать Погрузчик Крылатый"
 
 msgid "Build a winged orga shooter"
-msgstr "Собрать Био-Стрелок Крылатый"
+msgstr "Создать Био-Стрелок Крылатый"
 
 msgid "Build a winged shooter"
-msgstr "Собрать Стрелок Крылатый"
+msgstr "Создать Стрелок Крылатый"
 
 msgid "Build a winged sniffer"
-msgstr "Собрать Разведчик Крылатый"
+msgstr "Создать Разведчик Крылатый"
 
 msgid "Build an autolab"
 msgstr "Построить Лабораторию"
@@ -328,10 +328,10 @@ msgid "Camera up\\Turns the camera up"
 msgstr "Камера вверх\\Поворачивает камеру вверх"
 
 msgid "Can not produce not researched object"
-msgstr "Невозможно изготовить не исследованный объект"
+msgstr "Невозможно создать не исследованный объект"
 
 msgid "Can not produce this object in this mission"
-msgstr "Невозможно изготовить этот объект в этой миссии"
+msgstr "Невозможно создать этот объект в этой миссии"
 
 msgid "Can't open file"
 msgstr "Невозможно открыть файл"
@@ -1766,14 +1766,12 @@ msgid "You have to use \"%1$s\" at least once in this exercise (used: %2$d)"
 msgid_plural "You have to use \"%1$s\" at least %3$d times in this exercise (used: %2$d)"
 msgstr[0] "Вы должны использовать \"%1$s\" хотя бы один раз в этом упражнении (использовано: %2$d)"
 msgstr[1] "Вы должны использовать \"%1$s\" не менее %3$d раз в этом упражнении (использовано: %2$d)"
-msgstr[2] ""
 
 #, c-format
 msgid "You have to use \"%1$s\" at most once in this exercise (used: %2$d)"
 msgid_plural "You have to use \"%1$s\" at most %3$d times in this exercise (used: %2$d)"
 msgstr[0] "Вы должны использовать \"%1$s\" не более одного раза в этом упражнении (использовано: %2$d)"
 msgstr[1] "Вы должны использовать \"%1$s\" не более %3$d раз в этом упражнении (использовано: %2$d)\""
-msgstr[2] ""
 
 msgid "You must get on the spaceship to take off"
 msgstr "Вы должны быть на борту Космического Корабля, чтобы взлететь"
