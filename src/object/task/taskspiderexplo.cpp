@@ -57,7 +57,7 @@ bool CTaskSpiderExplo::EventProcess(const Event &event)
     if ( event.type != EVENT_FRAME )  return true;
 
     // Momentarily stationary object (ant on the back)?
-    if ( dynamic_cast<CBaseAlien*>(m_object)->GetFixed() )
+    if ( dynamic_cast<CBaseAlien&>(*m_object).GetFixed() )
     {
         m_bError = true;
         return true;

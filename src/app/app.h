@@ -42,6 +42,7 @@ class CEventQueue;
 class CController;
 class CSoundInterface;
 class CInput;
+class CModManager;
 class CPathManager;
 class CConfigFile;
 class CSystemUtils;
@@ -162,6 +163,8 @@ public:
     CEventQueue* GetEventQueue();
     //! Returns the sound subsystem
     CSoundInterface* GetSound();
+    //! Returns the mod manager
+    CModManager* GetModManager();
 
 public:
     //! Loads some data from environment variables
@@ -170,6 +173,8 @@ public:
     ParseArgsStatus ParseArguments(int argc, char *argv[]);
     //! Initializes the application
     bool        Create();
+    //! Reloads the application resources, e.g. mods
+    void        ReloadResources();
     //! Main event loop
     int         Run();
     //! Returns the code to be returned at main() exit
@@ -283,6 +288,9 @@ public:
 protected:
     //! Creates the window's SDL_Surface
     bool CreateVideoSurface();
+    //! Tries to set the SDL vsync state desired by the 3D engine
+    //! The final state of SDL vsync is set in the 3D engine afterwards
+    void TryToSetVSync();
 
     //! Processes the captured SDL event to Event struct
     Event       ProcessSystemEvent();
@@ -300,6 +308,9 @@ protected:
 
     //! Internal procedure to reset time counters
     void InternalResumeSimulation();
+
+    //! Loads music in a new thread
+    void StartLoadingMusic();
 
 protected:
     //! System utils instance
@@ -322,6 +333,8 @@ protected:
     std::unique_ptr<CInput> m_input;
     //! Path manager
     std::unique_ptr<CPathManager> m_pathManager;
+    //! Mod manager
+    std::unique_ptr<CModManager> m_modManager;
 
     //! Code to return at exit
     int             m_exitCode;

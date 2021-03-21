@@ -47,22 +47,7 @@ void CALSound::CleanUp()
     if (m_enabled)
     {
         GetLogger()->Info("Unloading files and closing device...\n");
-        StopAll();
-        StopMusic();
-
-        m_channels.clear();
-
-        m_currentMusic.reset();
-
-        m_oldMusic.clear();
-
-        m_previousMusic.music.reset();
-
-        m_sounds.clear();
-
-        m_music.clear();
-
-        m_enabled = false;
+        Reset();
 
         alcDestroyContext(m_context);
         alcCloseDevice(m_device);
@@ -97,6 +82,24 @@ bool CALSound::Create()
     GetLogger()->Info("Done.\n");
     m_enabled = true;
     return true;
+}
+
+void CALSound::Reset()
+{
+    StopAll();
+    StopMusic();
+
+    m_channels.clear();
+
+    m_currentMusic.reset();
+
+    m_oldMusic.clear();
+
+    m_previousMusic.music.reset();
+
+    m_sounds.clear();
+
+    m_music.clear();
 }
 
 bool CALSound::GetEnable()

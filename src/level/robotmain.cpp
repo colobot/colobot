@@ -320,6 +320,7 @@ std::string PhaseToString(Phase phase)
     if (phase == PHASE_APPERANCE) return "PHASE_APPERANCE";
     if (phase == PHASE_MAIN_MENU) return "PHASE_MAIN_MENU";
     if (phase == PHASE_LEVEL_LIST) return "PHASE_LEVEL_LIST";
+    if (phase == PHASE_MOD_LIST) return "PHASE_MOD_LIST";
     if (phase == PHASE_SIMUL) return "PHASE_SIMUL";
     if (phase == PHASE_SETUPd) return "PHASE_SETUPd";
     if (phase == PHASE_SETUPg) return "PHASE_SETUPg";
@@ -1360,7 +1361,7 @@ void CRobotMain::ExecuteCmd(const std::string& cmd)
         {
             CObject* object = GetSelect();
             if (object != nullptr && object->Implements(ObjectInterfaceType::Shielded))
-                dynamic_cast<CShieldedObject*>(object)->SetMagnifyDamage(dynamic_cast<CShieldedObject*>(object)->GetMagnifyDamage()*0.1f);
+                dynamic_cast<CShieldedObject&>(*object).SetMagnifyDamage(dynamic_cast<CShieldedObject&>(*object).GetMagnifyDamage()*0.1f);
             return;
         }
 
@@ -1368,7 +1369,7 @@ void CRobotMain::ExecuteCmd(const std::string& cmd)
         {
             CObject* object = GetSelect();
             if (object != nullptr && object->Implements(ObjectInterfaceType::JetFlying))
-                dynamic_cast<CJetFlyingObject*>(object)->SetRange(dynamic_cast<CJetFlyingObject*>(object)->GetRange()*10.0f);
+                dynamic_cast<CJetFlyingObject&>(*object).SetRange(dynamic_cast<CJetFlyingObject&>(*object).GetRange()*10.0f);
             return;
         }
 
@@ -1393,16 +1394,16 @@ void CRobotMain::ExecuteCmd(const std::string& cmd)
             {
                 if (object->Implements(ObjectInterfaceType::Powered))
                 {
-                    CObject* power = dynamic_cast<CPoweredObject*>(object)->GetPower();
+                    CObject* power = dynamic_cast<CPoweredObject&>(*object).GetPower();
                     if (power != nullptr && power->Implements(ObjectInterfaceType::PowerContainer))
-                        dynamic_cast<CPowerContainerObject*>(power)->SetEnergyLevel(1.0f);
+                        dynamic_cast<CPowerContainerObject&>(*power).SetEnergyLevel(1.0f);
                 }
 
                 if (object->Implements(ObjectInterfaceType::Shielded))
-                    dynamic_cast<CShieldedObject*>(object)->SetShield(1.0f);
+                    dynamic_cast<CShieldedObject&>(*object).SetShield(1.0f);
 
                 if (object->Implements(ObjectInterfaceType::JetFlying))
-                    dynamic_cast<CJetFlyingObject*>(object)->SetReactorRange(1.0f);
+                    dynamic_cast<CJetFlyingObject&>(*object).SetReactorRange(1.0f);
             }
             return;
         }
@@ -1415,9 +1416,9 @@ void CRobotMain::ExecuteCmd(const std::string& cmd)
             {
                 if (object->Implements(ObjectInterfaceType::Powered))
                 {
-                    CObject* power = dynamic_cast<CPoweredObject*>(object)->GetPower();
+                    CObject* power = dynamic_cast<CPoweredObject&>(*object).GetPower();
                     if (power != nullptr && power->Implements(ObjectInterfaceType::PowerContainer))
-                        dynamic_cast<CPowerContainerObject*>(power)->SetEnergyLevel(1.0f);
+                        dynamic_cast<CPowerContainerObject&>(*power).SetEnergyLevel(1.0f);
                 }
             }
             return;
@@ -1427,7 +1428,7 @@ void CRobotMain::ExecuteCmd(const std::string& cmd)
         {
             CObject* object = GetSelect();
             if (object != nullptr && object->Implements(ObjectInterfaceType::Shielded))
-                dynamic_cast<CShieldedObject*>(object)->SetShield(1.0f);
+                dynamic_cast<CShieldedObject&>(*object).SetShield(1.0f);
             return;
         }
 
@@ -1437,7 +1438,7 @@ void CRobotMain::ExecuteCmd(const std::string& cmd)
             if (object != nullptr)
             {
                 if (object->Implements(ObjectInterfaceType::JetFlying))
-                    dynamic_cast<CJetFlyingObject*>(object)->SetReactorRange(1.0f);
+                    dynamic_cast<CJetFlyingObject&>(*object).SetReactorRange(1.0f);
             }
             return;
         }
@@ -1537,7 +1538,7 @@ void CRobotMain::StartDisplayInfo(int index, bool movie)
     if (!m_editLock && movie && !m_movie->IsExist() && human)
     {
         assert(obj->Implements(ObjectInterfaceType::Movable));
-        if (dynamic_cast<CMovableObject*>(obj)->GetMotion()->GetAction() == -1)
+        if (dynamic_cast<CMovableObject&>(*obj).GetMotion()->GetAction() == -1)
         {
             m_movieInfoIndex = index;
             m_movie->Start(MM_SATCOMopen, 2.5f);
@@ -1851,7 +1852,7 @@ CObject* CRobotMain::DeselectAll()
 void CRobotMain::SelectOneObject(CObject* obj, bool displayError)
 {
     assert(obj->Implements(ObjectInterfaceType::Controllable));
-    dynamic_cast<CControllableObject*>(obj)->SetSelect(true, displayError);
+    dynamic_cast<CControllableObject&>(*obj).SetSelect(true, displayError);
     m_camera->SetControllingObject(obj);
 
     ObjectType type = obj->GetType();
@@ -1890,7 +1891,7 @@ void CRobotMain::SelectOneObject(CObject* obj, bool displayError)
          type == OBJECT_MOBILEdr ||
          type == OBJECT_APOLLO2  )
     {
-        m_camera->SetType(dynamic_cast<CControllableObject*>(obj)->GetCameraType());
+        m_camera->SetType(dynamic_cast<CControllableObject&>(*obj).GetCameraType());
     }
     else
     {
@@ -1906,7 +1907,7 @@ bool CRobotMain::SelectObject(CObject* obj, bool displayError)
     if (m_movieLock || m_editLock) return false;
     if (m_movie->IsExist()) return false;
     if (obj != nullptr &&
-        (!obj->Implements(ObjectInterfaceType::Controllable) || !(dynamic_cast<CControllableObject*>(obj)->GetSelectable() || m_cheatSelectInsect))) return false;
+        (!obj->Implements(ObjectInterfaceType::Controllable) || !(dynamic_cast<CControllableObject&>(*obj).GetSelectable() || m_cheatSelectInsect))) return false;
 
     if (m_missionType == MISSION_CODE_BATTLE && m_codeBattleStarted && m_codeBattleSpectator)
     {
@@ -1982,7 +1983,7 @@ CObject* CRobotMain::GetSelect()
     for (CObject* obj : m_objMan->GetAllObjects())
     {
         if (!obj->Implements(ObjectInterfaceType::Controllable)) continue;
-        if (dynamic_cast<CControllableObject*>(obj)->GetSelect())
+        if (dynamic_cast<CControllableObject&>(*obj).GetSelect())
             return obj;
     }
     return nullptr;
@@ -2000,7 +2001,7 @@ CObject* CRobotMain::DetectObject(Math::Point pos)
 
         CObject* transporter = nullptr;
         if (obj->Implements(ObjectInterfaceType::Transportable))
-            transporter = dynamic_cast<CTransportableObject*>(obj)->GetTransporter();
+            transporter = dynamic_cast<CTransportableObject&>(*obj).GetTransporter();
 
         if (transporter != nullptr && !transporter->GetDetectable()) continue;
         if (obj->GetProxyActivate()) continue;
@@ -2008,14 +2009,14 @@ CObject* CRobotMain::DetectObject(Math::Point pos)
         CObject* target = obj;
         if (obj->Implements(ObjectInterfaceType::PowerContainer) && obj->Implements(ObjectInterfaceType::Transportable))
         {
-            target = dynamic_cast<CTransportableObject*>(obj)->GetTransporter();  // battery connected
+            target = dynamic_cast<CTransportableObject&>(*obj).GetTransporter();  // battery connected
             if (target == nullptr)
             {
                 target = obj; // standalone battery
             }
             else
             {
-                if (!target->Implements(ObjectInterfaceType::Powered) || dynamic_cast<CPoweredObject*>(target)->GetPower() != obj)
+                if (!target->Implements(ObjectInterfaceType::Powered) || dynamic_cast<CPoweredObject&>(*target).GetPower() != obj)
                 {
                     // transported, but not in the power slot
                     target = obj;
@@ -2045,7 +2046,7 @@ bool CRobotMain::DestroySelectedObject()
 
     m_engine->GetPyroManager()->Create(Gfx::PT_FRAGT, obj);
 
-    dynamic_cast<CControllableObject*>(obj)->SetSelect(false);  // deselects the object
+    dynamic_cast<CControllableObject&>(*obj).SetSelect(false);  // deselects the object
     m_camera->SetType(Gfx::CAM_TYPE_EXPLO);
     DeselectAll();
     RemoveFromSelectionHistory(obj);
@@ -2068,7 +2069,7 @@ void CRobotMain::HiliteClear()
     for (CObject* obj : m_objMan->GetAllObjects())
     {
         if (!obj->Implements(ObjectInterfaceType::Controllable)) continue;
-        dynamic_cast<CControllableObject*>(obj)->SetHighlight(false);
+        dynamic_cast<CControllableObject&>(*obj).SetHighlight(false);
     }
     m_map->SetHighlight(nullptr);
     m_short->SetHighlight(nullptr);
@@ -2128,12 +2129,12 @@ void CRobotMain::HiliteObject(Math::Point pos)
             }
         }
 
-        if (obj->Implements(ObjectInterfaceType::Controllable) && (dynamic_cast<CControllableObject*>(obj)->GetSelectable() || m_cheatSelectInsect))
+        if (obj->Implements(ObjectInterfaceType::Controllable) && (dynamic_cast<CControllableObject&>(*obj).GetSelectable() || m_cheatSelectInsect))
         {
-            if (dynamic_cast<CControllableObject*>(obj)->GetSelectable())
+            if (dynamic_cast<CControllableObject&>(*obj).GetSelectable())
             {
                 // Don't highlight objects that would not be selectable without selectinsect
-                dynamic_cast<CControllableObject*>(obj)->SetHighlight(true);
+                dynamic_cast<CControllableObject&>(*obj).SetHighlight(true);
             }
             m_map->SetHighlight(obj);
             m_short->SetHighlight(obj);
@@ -2390,7 +2391,7 @@ bool CRobotMain::EventFrame(const Event &event)
             if (obj->GetType() == OBJECT_TOTO)
                 toto = obj;
             else if (obj->Implements(ObjectInterfaceType::Interactive))
-                dynamic_cast<CInteractiveObject*>(obj)->EventProcess(event);
+                dynamic_cast<CInteractiveObject&>(*obj).EventProcess(event);
 
             if ( obj->GetProxyActivate() )  // active if it is near?
             {
@@ -2413,7 +2414,7 @@ bool CRobotMain::EventFrame(const Event &event)
                 continue;
 
             if (obj->Implements(ObjectInterfaceType::Interactive))
-                dynamic_cast<CInteractiveObject*>(obj)->EventProcess(event);
+                dynamic_cast<CInteractiveObject&>(*obj).EventProcess(event);
         }
 
         m_engine->GetPyroManager()->EventProcess(event);
@@ -2437,7 +2438,7 @@ bool CRobotMain::EventFrame(const Event &event)
 
     // Advances toto following the camera, because its position depends on the camera.
     if (toto != nullptr)
-        dynamic_cast<CInteractiveObject*>(toto)->EventProcess(event);
+        dynamic_cast<CInteractiveObject&>(*toto).EventProcess(event);
 
     // NOTE: m_movieLock is set only after the first update of CAutoBase finishes
 
@@ -2671,7 +2672,7 @@ bool CRobotMain::EventObject(const Event &event)
     {
         if (obj->Implements(ObjectInterfaceType::Interactive))
         {
-            dynamic_cast<CInteractiveObject*>(obj)->EventProcess(event);
+            dynamic_cast<CInteractiveObject&>(*obj).EventProcess(event);
         }
     }
 
@@ -2712,7 +2713,7 @@ void CRobotMain::ScenePerso()
         obj->SetDrawFront(true);  // draws the interface
 
         assert(obj->Implements(ObjectInterfaceType::Movable));
-        CMotionHuman* mh = static_cast<CMotionHuman*>(dynamic_cast<CMovableObject*>(obj)->GetMotion());
+        CMotionHuman* mh = static_cast<CMotionHuman*>(dynamic_cast<CMovableObject&>(*obj).GetMotion());
         mh->StartDisplayPerso();
     }
 }
@@ -3150,6 +3151,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
                 m_missionType = line->GetParam("type")->AsMissionType(MISSION_NORMAL);
                 m_globalMagnifyDamage = line->GetParam("magnifyDamage")->AsFloat(1.0f);
+                m_globalNuclearCapacity = line->GetParam("nuclearCapacity")->AsFloat(10.0f);
+                m_globalCellCapacity = line->GetParam("cellCapacity")->AsFloat(1.0f);
 
                 continue;
             }
@@ -3380,7 +3383,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 assert(m_controller->Implements(ObjectInterfaceType::ProgramStorage));
 
                 assert(m_controller->Implements(ObjectInterfaceType::Old));
-                dynamic_cast<COldObject*>(m_controller)->SetCheckToken(false);
+                dynamic_cast<COldObject&>(*m_controller).SetCheckToken(false);
 
                 if (line->GetParam("script")->IsDefined())
                 {
@@ -3388,7 +3391,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     Program* program = programStorage->AddProgram();
                     programStorage->ReadProgram(program, line->GetParam("script")->AsPath("ai"));
                     program->readOnly = true;
-                    dynamic_cast<CProgrammableObject*>(m_controller)->RunProgram(program);
+                    dynamic_cast<CProgrammableObject&>(*m_controller).RunProgram(program);
                 }
                 continue;
             }
@@ -3413,7 +3416,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     if (m_fixScene && obj->GetType() == OBJECT_HUMAN)
                     {
                         assert(obj->Implements(ObjectInterfaceType::Movable));
-                        CMotion* motion = dynamic_cast<CMovableObject*>(obj)->GetMotion();
+                        CMotion* motion = dynamic_cast<CMovableObject&>(*obj).GetMotion();
                         if (m_phase == PHASE_WIN ) motion->SetAction(MHS_WIN,  0.4f);
                         if (m_phase == PHASE_LOST) motion->SetAction(MHS_LOST, 0.5f);
                     }
@@ -3428,7 +3431,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     {
                         CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(obj);
 
-                        if (obj->Implements(ObjectInterfaceType::Controllable) && dynamic_cast<CControllableObject*>(obj)->GetSelectable() && obj->GetType() != OBJECT_HUMAN)
+                        if (obj->Implements(ObjectInterfaceType::Controllable) && dynamic_cast<CControllableObject&>(*obj).GetSelectable() && obj->GetType() != OBJECT_HUMAN)
                         {
                             programStorage->SetProgramStorageIndex(rankObj);
                         }
@@ -3817,7 +3820,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 assert(obj->Implements(ObjectInterfaceType::Controllable));
                 SelectObject(obj);
                 m_camera->SetControllingObject(obj);
-                m_camera->SetType(dynamic_cast<CControllableObject*>(obj)->GetCameraType());
+                m_camera->SetType(dynamic_cast<CControllableObject&>(*obj).GetCameraType());
             }
         }
 
@@ -3918,6 +3921,7 @@ void CRobotMain::ChangeColor()
         m_phase != PHASE_SETUPps  &&
         m_phase != PHASE_SETUPcs  &&
         m_phase != PHASE_SETUPss  &&
+        m_phase != PHASE_MOD_LIST &&
         m_phase != PHASE_WIN      &&
         m_phase != PHASE_LOST     &&
         m_phase != PHASE_APPERANCE ) return;
@@ -4413,7 +4417,7 @@ void CRobotMain::StartShowLimit()
     CObject* obj = GetSelect();
     if (obj == nullptr) return;
     if (!obj->Implements(ObjectInterfaceType::Ranged)) return;
-    float range = dynamic_cast<CRangedObject*>(obj)->GetShowLimitRadius();
+    float range = dynamic_cast<CRangedObject&>(*obj).GetShowLimitRadius();
     if (range == 0.0f) return;
     SetShowLimit(0, Gfx::PARTILIMIT1, obj, obj->GetPosition(), range);
 }
@@ -4583,8 +4587,8 @@ bool CRobotMain::IOIsBusy()
     {
         if (! obj->Implements(ObjectInterfaceType::TaskExecutor)) continue;
 
-        if (obj->Implements(ObjectInterfaceType::Programmable) && dynamic_cast<CProgrammableObject*>(obj)->IsProgram()) continue; // TODO: I'm not sure if this is correct but this is how it worked earlier
-        if (dynamic_cast<CTaskExecutorObject*>(obj)->IsForegroundTask()) return true;
+        if (obj->Implements(ObjectInterfaceType::Programmable) && dynamic_cast<CProgrammableObject&>(*obj).IsProgram()) continue; // TODO: I'm not sure if this is correct but this is how it worked earlier
+        if (dynamic_cast<CTaskExecutorObject&>(*obj).IsForegroundTask()) return true;
     }
     return false;
 }
@@ -4635,7 +4639,7 @@ void CRobotMain::IOWriteObject(CLevelParserLine* line, CObject* obj, const std::
 
         if (obj->Implements(ObjectInterfaceType::Programmable))
         {
-            int run = dynamic_cast<CProgramStorageObject*>(obj)->GetProgramIndex(dynamic_cast<CProgrammableObject*>(obj)->GetCurrentProgram());
+            int run = dynamic_cast<CProgramStorageObject&>(*obj).GetProgramIndex(dynamic_cast<CProgrammableObject&>(*obj).GetCurrentProgram());
             if (run != -1)
             {
                 line->AddParam("run", MakeUnique<CLevelParserParam>(run+1));
@@ -4710,11 +4714,11 @@ bool CRobotMain::IOWriteScene(std::string filename, std::string filecbot, std::s
     {
         if (obj->GetType() == OBJECT_TOTO) continue;
         if (IsObjectBeingTransported(obj)) continue;
-        if (obj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject*>(obj)->IsDying()) continue;
+        if (obj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject&>(*obj).IsDying()) continue;
 
         if (obj->Implements(ObjectInterfaceType::Carrier))
         {
-            CObject* cargo = dynamic_cast<CCarrierObject*>(obj)->GetCargo();
+            CObject* cargo = dynamic_cast<CCarrierObject&>(*obj).GetCargo();
             if (cargo != nullptr)  // object transported?
             {
                 line = MakeUnique<CLevelParserLine>("CreateFret");
@@ -4725,7 +4729,7 @@ bool CRobotMain::IOWriteScene(std::string filename, std::string filecbot, std::s
 
         if (obj->Implements(ObjectInterfaceType::Powered))
         {
-            CObject* power = dynamic_cast<CPoweredObject*>(obj)->GetPower();
+            CObject* power = dynamic_cast<CPoweredObject&>(*obj).GetPower();
             if (power != nullptr) // battery transported?
             {
                 line = MakeUnique<CLevelParserLine>("CreatePower");
@@ -4764,7 +4768,7 @@ bool CRobotMain::IOWriteScene(std::string filename, std::string filecbot, std::s
     {
         if (obj->GetType() == OBJECT_TOTO) continue;
         if (IsObjectBeingTransported(obj)) continue;
-        if (obj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject*>(obj)->IsDying()) continue;
+        if (obj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject&>(*obj).IsDying()) continue;
 
         if (!SaveFileStack(obj, ostr))
         {
@@ -4915,7 +4919,7 @@ CObject* CRobotMain::IOReadScene(std::string filename, std::string filecbot)
             {
                 assert(obj->Implements(ObjectInterfaceType::Carrier)); // TODO: exception?
                 assert(obj->Implements(ObjectInterfaceType::Old));
-                dynamic_cast<CCarrierObject*>(obj)->SetCargo(cargo);
+                dynamic_cast<CCarrierObject&>(*obj).SetCargo(cargo);
                 auto task = MakeUnique<CTaskManip>(dynamic_cast<COldObject*>(obj));
                 task->Start(TMO_AUTO, TMA_GRAB);  // holds the object!
             }
@@ -4923,9 +4927,9 @@ CObject* CRobotMain::IOReadScene(std::string filename, std::string filecbot)
             if (power != nullptr)
             {
                 assert(obj->Implements(ObjectInterfaceType::Powered));
-                dynamic_cast<CPoweredObject*>(obj)->SetPower(power);
+                dynamic_cast<CPoweredObject&>(*obj).SetPower(power);
                 assert(power->Implements(ObjectInterfaceType::Transportable));
-                dynamic_cast<CTransportableObject*>(power)->SetTransporter(obj);
+                dynamic_cast<CTransportableObject&>(*power).SetTransporter(obj);
             }
             cargo = nullptr;
             power = nullptr;
@@ -4957,7 +4961,7 @@ CObject* CRobotMain::IOReadScene(std::string filename, std::string filecbot)
                 {
                     if (obj->GetType() == OBJECT_TOTO) continue;
                     if (IsObjectBeingTransported(obj)) continue;
-                    if (obj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject*>(obj)->IsDying()) continue;
+                    if (obj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject&>(*obj).IsDying()) continue;
 
                     if (!ReadFileStack(obj, istr))
                     {
@@ -5314,7 +5318,7 @@ Error CRobotMain::CheckEndMission(bool frame)
             if (m_base != nullptr && !m_endTakeImmediat)
             {
                 assert(m_base->Implements(ObjectInterfaceType::Controllable));
-                if(dynamic_cast<CControllableObject*>(m_base)->GetSelectable())
+                if(dynamic_cast<CControllableObject&>(*m_base).GetSelectable())
                     return ERR_MISSION_NOTERM;
             }
         }
@@ -5994,6 +5998,16 @@ void CRobotMain::RemoveFromSelectionHistory(CObject* object)
 float CRobotMain::GetGlobalMagnifyDamage()
 {
     return m_globalMagnifyDamage;
+}
+
+float CRobotMain::GetGlobalNuclearCapacity()
+{
+    return m_globalNuclearCapacity;
+}
+
+float CRobotMain::GetGlobalCellCapacity()
+{
+    return m_globalCellCapacity;
 }
 
 // Beginning of the effect when the instruction "detect" is used.

@@ -19,37 +19,48 @@
 
 #pragma once
 
-#include "object/object.h"
-#include "object/object_interface_type.h"
+#include "app/modman.h"
+
+#include "ui/maindialog.h"
+
+#include "ui/screen/screen.h"
+
+#include <map>
+
+namespace Ui
+{
 
 /**
- * \class CCarrierObject
- * \brief Interface for carrier objects
+ * \class CScreenModList
+ * \brief This class is the front-end for the \ref CModManager.
  */
-class CCarrierObject
+class CScreenModList : public CScreen
 {
 public:
-    explicit CCarrierObject(ObjectInterfaceTypes& types)
-    {
-        types[static_cast<int>(ObjectInterfaceType::Carrier)] = true;
-    }
-    virtual ~CCarrierObject()
-    {}
+    CScreenModList(CMainDialog* dialog, CModManager* modManager);
 
-    //! Returns carried object
-    virtual CObject* GetCargo() = 0;
-    //! Sets carried object
-    virtual void SetCargo(CObject* cargo) = 0;
+    void CreateInterface() override;
+    bool EventProcess(const Event &event) override;
 
-    //! Checks whether there is any cargo
-    inline bool IsCarryingCargo()
-    {
-        return GetCargo() != nullptr;
-    }
+protected:
+    void FindMods();
+    void ApplyChanges();
+    void CloseWindow();
+
+    void UpdateAll();
+    void UpdateModList();
+    void UpdateModDetails();
+    void UpdateModSummary();
+    void UpdateEnableDisableButton();
+    void UpdateApplyButton();
+    void UpdateUpDownButtons();
+
+protected:
+    Ui::CMainDialog* m_dialog;
+
+    CModManager* m_modManager;
+
+    size_t m_modSelectedIndex = 0;
 };
 
-inline bool IsObjectCarryingCargo(CObject* obj)
-{
-    return obj->Implements(ObjectInterfaceType::Carrier) &&
-           dynamic_cast<CCarrierObject&>(*obj).IsCarryingCargo();
-}
+} // namespace Ui

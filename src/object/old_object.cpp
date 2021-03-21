@@ -285,8 +285,8 @@ void COldObject::DeleteObject(bool bAll)
         {
             if (m_power->Implements(ObjectInterfaceType::Old))
             {
-                dynamic_cast<COldObject*>(m_power)->SetTransporter(nullptr);
-                dynamic_cast<COldObject*>(m_power)->DeleteObject(bAll);
+                dynamic_cast<COldObject&>(*m_power).SetTransporter(nullptr);
+                dynamic_cast<COldObject&>(*m_power).DeleteObject(bAll);
             }
             m_power = nullptr;
         }
@@ -294,8 +294,8 @@ void COldObject::DeleteObject(bool bAll)
         {
             if (m_cargo->Implements(ObjectInterfaceType::Old))
             {
-                dynamic_cast<COldObject*>(m_cargo)->SetTransporter(nullptr);
-                dynamic_cast<COldObject*>(m_cargo)->DeleteObject(bAll);
+                dynamic_cast<COldObject&>(*m_cargo).SetTransporter(nullptr);
+                dynamic_cast<COldObject&>(*m_cargo).DeleteObject(bAll);
             }
             m_cargo = nullptr;
         }
@@ -2505,7 +2505,7 @@ float COldObject::GetAbsTime()
 
 float COldObject::GetCapacity()
 {
-    return m_type == OBJECT_ATOMIC ? 10.0f : 1.0f;
+    return m_type == OBJECT_ATOMIC ? m_main->GetGlobalNuclearCapacity() : m_main->GetGlobalCellCapacity() ;
 }
 
 bool COldObject::IsRechargeable()

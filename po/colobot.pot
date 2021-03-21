@@ -87,6 +87,9 @@ msgstr ""
 msgid "Missions+"
 msgstr ""
 
+msgid "Mods"
+msgstr ""
+
 msgid "Chapters:"
 msgstr ""
 
@@ -167,6 +170,23 @@ msgid "No userlevels installed!"
 msgstr ""
 
 msgid "This menu is for userlevels from mods, but you didn't install any"
+msgstr ""
+
+msgid "Could not open the file explorer!"
+msgstr ""
+
+#, c-format
+msgid "The path %s could not be opened in a file explorer."
+msgstr ""
+
+msgid "Could not open the web browser!"
+msgstr ""
+
+#, c-format
+msgid "The address %s could not be opened in a web browser."
+msgstr ""
+
+msgid "There are unsaved changes. Do you want to save them before leaving?"
 msgstr ""
 
 msgid "Keyword help(\\key cbot;)"
@@ -283,6 +303,42 @@ msgstr ""
 msgid "%s: %d pts"
 msgstr ""
 
+msgid "Mods:"
+msgstr ""
+
+msgid "Information:"
+msgstr ""
+
+msgid "Description:"
+msgstr ""
+
+msgid "Enable\\Enable the selected mod"
+msgstr ""
+
+msgid "Disable\\Disable the selected mod"
+msgstr ""
+
+msgid "Unknown author"
+msgstr ""
+
+msgid "by"
+msgstr ""
+
+msgid "Version"
+msgstr ""
+
+msgid "Website"
+msgstr ""
+
+msgid "Changes"
+msgstr ""
+
+msgid "No description."
+msgstr ""
+
+msgid "No changes."
+msgstr ""
+
 msgid "Code battle"
 msgstr ""
 
@@ -319,6 +375,9 @@ msgstr ""
 msgid "SatCom"
 msgstr ""
 
+msgid "Mods\\Mod manager"
+msgstr ""
+
 msgid "Change player\\Change player"
 msgstr ""
 
@@ -347,6 +406,24 @@ msgid "+\\Missions with bonus content and optional challenges"
 msgstr ""
 
 msgid "Play\\Start mission!"
+msgstr ""
+
+msgid "Workshop\\Open the workshop to search for mods"
+msgstr ""
+
+msgid "Open Directory\\Open the mods directory"
+msgstr ""
+
+msgid "Apply\\Apply the current mod configuration"
+msgstr ""
+
+msgid "Up\\Move the selected mod up so it's loaded sooner (mods may overwrite files from the mods above them)"
+msgstr ""
+
+msgid "Down\\Move the selected mod down so it's loaded later (mods may overwrite files from the mods above them)"
+msgstr ""
+
+msgid "Refresh\\Refresh the list of currently installed mods"
 msgstr ""
 
 msgid "Device\\Driver and resolution settings"

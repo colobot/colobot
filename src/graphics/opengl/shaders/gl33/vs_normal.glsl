@@ -25,6 +25,7 @@ uniform mat4 uni_ViewMatrix;
 uniform mat4 uni_ModelMatrix;
 uniform mat4 uni_ShadowMatrix;
 uniform mat4 uni_NormalMatrix;
+uniform vec3 uni_CameraPosition;
 
 layout(location = 0) in vec4 in_VertexCoord;
 layout(location = 1) in vec3 in_Normal;
@@ -41,6 +42,7 @@ out VertexData
     vec4 ShadowCoord;
     vec4 LightColor;
     float Distance;
+    vec3 CameraDirection;
 } data;
 
 void main()
@@ -56,4 +58,5 @@ void main()
     data.Normal = normalize((uni_NormalMatrix * vec4(in_Normal, 0.0f)).xyz);
     data.ShadowCoord = vec4(shadowCoord.xyz / shadowCoord.w, 1.0f);
     data.Distance = abs(eyeSpace.z);
+    data.CameraDirection = uni_CameraPosition - position.xyz;
 }

@@ -13,16 +13,22 @@ jobs:
     steps:
     - name: Download Colobot dependencies
       run: sudo apt-get update && sudo apt-get install -y --no-install-recommends build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-regex-dev libphysfs-dev gettext git po4a vorbis-tools librsvg2-bin xmlstarlet
-    # TODO: migrate colobot-lint to GitHub Actions
+    - name: Download colobot-lint dependencies
+      run: sudo apt-get install -y --no-install-recommends clang-3.6 libtinyxml2.6.2v5
+    - run: mkdir -p /tmp/colobot-lint
     - name: Download colobot-lint
+      uses: dawidd6/action-download-artifact@v2
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        repo: colobot/colobot-lint
+        branch: master
+        workflow: build.yml
+        workflow_conclusion: success
+        name: colobot-lint
+        path: /tmp/colobot-lint/archive
+    - name: Unpack colobot-lint
+      working-directory: /tmp/colobot-lint
       run: |
-        sudo apt-get install -y --no-install-recommends clang-3.6 libtinyxml2.6.2v5
-        mkdir -p /tmp/colobot-lint
-        cd /tmp/colobot-lint
-        wget -O colobot-lint.zip "https://compiled.colobot.info/job/colobot/job/colobot-lint/job/dev/lastSuccessfulBuild/artifact/*zip*/archive.zip"
-
-        # Unzip the archive
-        unzip ./colobot-lint.zip
         # Workaround for Clang not finding system headers
         mkdir ./bin
         mv ./archive/build/colobot-lint ./bin/
@@ -73,15 +79,12 @@ jobs:
       with:
         name: HTML results
         path: build/html_report
-    - run: pip install requests
-    - name: Send linter results to GitHub
+    - name: Generate GitHub annotations JSON and process check result
       shell: python
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         import os
         import sys
-        import requests
+        import json
         import xml.etree.ElementTree as ET
 
         OVERALL_STABLE_RULES=[
@@ -134,18 +137,6 @@ jobs:
             "whitespace",
         ]
 
-        # None of the available actions seem to do what I want, they all do stupid things like adding another check... let's just do it manually
-        # GitHub also doesn't seem to provide you with the check suite or check run ID, so we have to get it from the action ID via the API
-        s = requests.Session()
-        s.headers.update({
-            'Authorization': 'token ' + os.environ['GITHUB_TOKEN'],
-            'Accept': 'application/vnd.github.antiope-preview+json'  # Annotations are still technically a preview feature of the API
-        })
-        action_run = s.get(os.environ['GITHUB_API_URL'] + "/repos/" + os.environ['GITHUB_REPOSITORY'] + "/actions/runs/" + os.environ['GITHUB_RUN_ID']).json()
-        check_suite = s.get(action_run['check_suite_url']).json()
-        check_suite_runs = s.get(check_suite['check_runs_url']).json()
-        check_run = check_suite_runs['check_runs'][0]  # NOTE: This assumes that the 'lint' job is the first one in the workflow. You could find it by name if you really wanted.
-
         def we_care_about(file_name, type):
             if 'CBot' in file_name:
               return type in OVERALL_STABLE_RULES
@@ -154,6 +145,7 @@ jobs:
 
         results = ET.parse('build/colobot_lint_report.xml')
         annotations = []
+        stable_annotations = []
         for error in results.find('errors').findall('error'):
             location = error.find('location')
             file_name = os.path.relpath(location.get('file'), os.environ['GITHUB_WORKSPACE'])
@@ -168,38 +160,35 @@ jobs:
             elif severity == 'information':
                 gh_severity = 'notice'
 
-            if not we_care_about(file_name, type):
-                # don't send the unstable rules to github at all as there are way too many of them and it would overload the API rate limit
-                continue
-
-            print('{}:{}: [{}] {}'.format(file_name, line_num, type, msg))
-
-            annotations.append({
+            annotation = {
                 'path': file_name,
                 'start_line': line_num,
                 'end_line': line_num,
                 'annotation_level': gh_severity,
                 'title': type,
                 'message': msg
-            })
-
-        summary = 'colobot-lint found {} issues'.format(len(annotations))
-        all_ok = len(annotations) == 0
-
-        # Annotations have to be sent in batches of 50
-        first = True
-        while first or len(annotations) > 0:
-            first = False
-            to_send = annotations[:50]
-            annotations = annotations[50:]
-            data = {
-                'output': {
-                    'title': summary,
-                    'summary': summary,
-                    'annotations': to_send
-                }
             }
-            r = s.patch(check_run['url'], json=data)
-            r.raise_for_status()
+            annotations.append(annotation)
 
+            if we_care_about(file_name, type):
+                # don't send the unstable rules to github at all as there are way too many of them and it would overload the API rate limit
+                stable_annotations.append(annotation)
+                print('{}:{}: [{}] {}'.format(file_name, line_num, type, msg))
+
+        summary = 'colobot-lint found {} issues'.format(len(stable_annotations))
+        all_ok = len(stable_annotations) == 0
+        print('Conclusion: {}'.format(summary))
+
+        with open("build/annotations.json", "w") as f:
+            json.dump(annotations, f, indent=4)
+        with open("build/stable_annotations.json", "w") as f:
+            json.dump(stable_annotations, f, indent=4)
         sys.exit(0 if all_ok else 1)
+    - name: Upload results (JSON)
+      uses: actions/upload-artifact@v2
+      with:
+        name: JSON results
+        path: |
+          build/annotations.json
+          build/stable_annotations.json
+      if: ${{ always() }}

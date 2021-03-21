@@ -248,3 +248,5 @@ struct ObjectTypeHash
         return std::hash<int>()(t);
     }
 };
+
+bool IsValidObjectTypeId(int id);

@@ -63,6 +63,7 @@ in VertexData
     vec4 ShadowCoord;
     vec4 LightColor;
     float Distance;
+    vec3 CameraDirection;
 } data;
 
 out vec4 out_FragColor;
@@ -78,17 +79,17 @@ void main()
         vec4 specular = vec4(0.0f);
 
         vec3 normal = normalize(data.Normal);
+        vec3 camera = normalize(data.CameraDirection);
 
         for (int i = 0; i < uni_LightCount; i++)
         {
             vec3 lightDirection = uni_Light[i].Position.xyz;
-
-            vec3 reflectDirection = -reflect(lightDirection, normal);
+            vec3 reflectAxis = normalize(normalize(lightDirection) + camera);
 
             ambient += uni_Light[i].Ambient;
             diffuse += clamp(dot(normal, lightDirection), 0.0f, 1.0f)
                     * uni_Light[i].Diffuse;
-            specular += clamp(pow(dot(normal, lightDirection + reflectDirection), 10.0f), 0.0f, 1.0f)
+            specular += pow(clamp(dot(normal, reflectAxis), 0.0f, 1.0f), 10.0f)
                     * uni_Light[i].Specular;
         }
 

@@ -178,6 +178,13 @@ void CScreenMainMenu::CreateInterface()
     pb = pw->CreateButton(pos, ddim, 128+60, EVENT_INTERFACE_SATCOM);
     pb->SetState(STATE_SHADOW);
 
+    // Mods button
+    pos.x  = 447.0f/640.0f;
+    pos.y  = 313.0f/480.0f;
+    ddim.x = 0.09f;
+    pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_MODS);
+    pb->SetState(STATE_SHADOW);
+
     SetBackground("textures/interface/interface.png");
     CreateVersionDisplay();
 }
@@ -247,6 +254,9 @@ bool CScreenMainMenu::EventProcess(const Event &event)
         case EVENT_INTERFACE_SATCOM:
             m_main->ChangePhase(PHASE_SATCOM);
             break;
+
+        case EVENT_INTERFACE_MODS:
+            m_main->ChangePhase(PHASE_MOD_LIST);
 
         default:
             return true;

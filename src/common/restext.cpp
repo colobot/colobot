@@ -71,13 +71,14 @@ void InitializeRestext()
     stringsText[RT_TITLE_MISSION]    = TR("Missions");
     stringsText[RT_TITLE_FREE]       = TR("Free game");
     stringsText[RT_TITLE_USER]       = TR("User levels");
-    stringsText[RT_TITLE_CODE_BATTLES]=TR("Code battles");
+    stringsText[RT_TITLE_CODE_BATTLES] = TR("Code battles");
     stringsText[RT_TITLE_SETUP]      = TR("Options");
     stringsText[RT_TITLE_NAME]       = TR("Player's name");
     stringsText[RT_TITLE_PERSO]      = TR("Customize your appearance");
     stringsText[RT_TITLE_WRITE]      = TR("Save the current mission");
     stringsText[RT_TITLE_READ]       = TR("Load a saved mission");
     stringsText[RT_TITLE_PLUS]       = TR("Missions+");
+    stringsText[RT_TITLE_MODS]       = TR("Mods");
 
     stringsText[RT_PLAY_CHAP_CHAPTERS]   = TR("Chapters:");
     stringsText[RT_PLAY_CHAP_PLANETS]    = TR("Planets:");
@@ -109,6 +110,11 @@ void InitializeRestext()
     stringsText[RT_DIALOG_OK]        = TR("OK");
     stringsText[RT_DIALOG_NOUSRLVL_TITLE] = TR("No userlevels installed!");
     stringsText[RT_DIALOG_NOUSRLVL_TEXT]  = TR("This menu is for userlevels from mods, but you didn't install any");
+    stringsText[RT_DIALOG_OPEN_PATH_FAILED_TITLE] = TR("Could not open the file explorer!");
+    stringsText[RT_DIALOG_OPEN_PATH_FAILED_TEXT] = TR("The path %s could not be opened in a file explorer.");
+    stringsText[RT_DIALOG_OPEN_WEBSITE_FAILED_TITLE] = TR("Could not open the web browser!");
+    stringsText[RT_DIALOG_OPEN_WEBSITE_FAILED_TEXT] = TR("The address %s could not be opened in a web browser.");
+    stringsText[RT_DIALOG_CHANGES_QUESTION] = TR("There are unsaved changes. Do you want to save them before leaving?");
 
     stringsText[RT_STUDIO_LISTTT]    = TR("Keyword help(\\key cbot;)");
     stringsText[RT_STUDIO_COMPOK]    = TR("Compilation ok (0 errors)");
@@ -154,7 +160,18 @@ void InitializeRestext()
     stringsText[RT_SCOREBOARD_RESULTS_TIME]= TR("Time: %s");
     stringsText[RT_SCOREBOARD_RESULTS_LINE]= TR("%s: %d pts");
 
-
+    stringsText[RT_MOD_LIST]               = TR("Mods:");
+    stringsText[RT_MOD_DETAILS]            = TR("Information:");
+    stringsText[RT_MOD_SUMMARY]            = TR("Description:");
+    stringsText[RT_MOD_ENABLE]             = TR("Enable\\Enable the selected mod");
+    stringsText[RT_MOD_DISABLE]            = TR("Disable\\Disable the selected mod");
+    stringsText[RT_MOD_UNKNOWN_AUTHOR]     = TR("Unknown author");
+    stringsText[RT_MOD_AUTHOR_FIELD_NAME]  = TR("by");
+    stringsText[RT_MOD_VERSION_FIELD_NAME] = TR("Version");
+    stringsText[RT_MOD_WEBSITE_FIELD_NAME] = TR("Website");
+    stringsText[RT_MOD_CHANGES_FIELD_NAME] = TR("Changes");
+    stringsText[RT_MOD_NO_SUMMARY]         = TR("No description.");
+    stringsText[RT_MOD_NO_CHANGES]         = TR("No changes.");
 
     stringsEvent[EVENT_LABEL_CODE_BATTLE]   = TR("Code battle");
 
@@ -174,6 +191,7 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_CODE_BATTLES] = TR("Code battles\\Program your robot to be the best of them all!");
     stringsEvent[EVENT_INTERFACE_USER]      = TR("Custom levels\\Levels from mods created by the users");
     stringsEvent[EVENT_INTERFACE_SATCOM]    = TR("SatCom");
+    stringsEvent[EVENT_INTERFACE_MODS]      = TR("Mods\\Mod manager");
     stringsEvent[EVENT_INTERFACE_NAME]      = TR("Change player\\Change player");
     stringsEvent[EVENT_INTERFACE_SETUP]     = TR("Options\\Preferences");
     stringsEvent[EVENT_INTERFACE_AGAIN]     = TR("Restart\\Restart the mission from the beginning");
@@ -184,6 +202,12 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_BACK]      = TR("<<  Back  \\Back to the previous screen");
     stringsEvent[EVENT_INTERFACE_PLUS]      = TR("+\\Missions with bonus content and optional challenges");
     stringsEvent[EVENT_INTERFACE_PLAY]      = TR("Play\\Start mission!");
+    stringsEvent[EVENT_INTERFACE_WORKSHOP]  = TR("Workshop\\Open the workshop to search for mods");
+    stringsEvent[EVENT_INTERFACE_MODS_DIR]  = TR("Open Directory\\Open the mods directory");
+    stringsEvent[EVENT_INTERFACE_MODS_APPLY] = TR("Apply\\Apply the current mod configuration");
+    stringsEvent[EVENT_INTERFACE_MOD_MOVE_UP] = TR("Up\\Move the selected mod up so it's loaded sooner (mods may overwrite files from the mods above them)");
+    stringsEvent[EVENT_INTERFACE_MOD_MOVE_DOWN] = TR("Down\\Move the selected mod down so it's loaded later (mods may overwrite files from the mods above them)");
+    stringsEvent[EVENT_INTERFACE_MODS_REFRESH] = TR("Refresh\\Refresh the list of currently installed mods");
     stringsEvent[EVENT_INTERFACE_SETUPd]    = TR("Device\\Driver and resolution settings");
     stringsEvent[EVENT_INTERFACE_SETUPg]    = TR("Graphics\\Graphics settings");
     stringsEvent[EVENT_INTERFACE_SETUPp]    = TR("Game\\Game settings");

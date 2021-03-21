@@ -269,7 +269,7 @@ void CAutoPowerCaptor::ChargeObject(float rTime)
 
         if (obj->Implements(ObjectInterfaceType::Powered))
         {
-            CObject* power = dynamic_cast<CPoweredObject*>(obj)->GetPower();
+            CObject* power = dynamic_cast<CPoweredObject&>(*obj).GetPower();
             if ( power != nullptr && power->Implements(ObjectInterfaceType::PowerContainer) )
             {
                 CPowerContainerObject* powerContainer = dynamic_cast<CPowerContainerObject*>(power);
@@ -285,7 +285,7 @@ void CAutoPowerCaptor::ChargeObject(float rTime)
 
         if (obj->Implements(ObjectInterfaceType::Carrier))
         {
-            CObject* power = dynamic_cast<CCarrierObject*>(obj)->GetCargo();
+            CObject* power = dynamic_cast<CCarrierObject&>(*obj).GetCargo();
             if ( power != nullptr && power->Implements(ObjectInterfaceType::PowerContainer) )
             {
                 CPowerContainerObject* powerContainer = dynamic_cast<CPowerContainerObject*>(power);

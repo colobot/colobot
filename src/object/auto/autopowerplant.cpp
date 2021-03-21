@@ -331,7 +331,7 @@ bool CAutoPowerPlant::EventProcess(const Event &event)
 
                 cargo->SetScale(1.0f);
                 cargo->SetLock(false);  // usable battery
-                dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(m_object);
+                dynamic_cast<CTransportableObject&>(*cargo).SetTransporter(m_object);
                 cargo->SetPosition(Math::Vector(0.0f, 3.0f, 0.0f));
                 m_object->SetPower(cargo);
 

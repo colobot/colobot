@@ -52,6 +52,10 @@ void CSoundInterface::CacheAll()
     }
 }
 
+void CSoundInterface::Reset()
+{
+}
+
 bool CSoundInterface::Cache(SoundType sound, const std::string &file)
 {
     return true;

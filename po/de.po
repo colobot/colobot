@@ -129,6 +129,9 @@ msgstr "Aussehen\\Erscheinungsbild des Astronauten einstellen"
 msgid "Apply changes\\Activates the changed settings"
 msgstr "Änderungen anwenden\\Getätigte Einstellungen anwenden"
 
+msgid "Apply\\Apply the current mod configuration"
+msgstr ""
+
 msgid "Appropriate constructor missing"
 msgstr "Es gibt keinen geeigneten Konstruktor"
 
@@ -375,6 +378,9 @@ msgstr "Andere Kamera\\Sichtpunkt einstellen"
 msgid "Change player\\Change player"
 msgstr "Anderer Spieler\\Spielername ändern"
 
+msgid "Changes"
+msgstr ""
+
 msgid "Chapters:"
 msgstr "Liste der Kapitel:"
 
@@ -444,6 +450,12 @@ msgstr "Kopieren"
 msgid "Copy (Ctrl+C)"
 msgstr "Kopieren (Ctrl+C)"
 
+msgid "Could not open the file explorer!"
+msgstr ""
+
+msgid "Could not open the web browser!"
+msgstr ""
+
 msgid "Current mission saved"
 msgstr "Mission gespeichert"
 
@@ -477,6 +489,9 @@ msgstr "Bohrturm"
 msgid "Descend\\Reduces the power of the jet"
 msgstr "Sinken\\Leistung des Triebwerks drosseln"
 
+msgid "Description:"
+msgstr ""
+
 msgid "Destroy"
 msgstr "Zerstören"
 
@@ -488,6 +503,9 @@ msgstr "Einstampfer"
 
 msgid "Device\\Driver and resolution settings"
 msgstr "Bildschirm\\Driver und Bildschirmauflösung"
+
+msgid "Disable\\Disable the selected mod"
+msgstr ""
 
 msgid "Dividing by zero"
 msgstr "Division durch Null"
@@ -504,6 +522,9 @@ msgstr "Die Türen werden von einem Gegenstand blockiert"
 
 msgid "Down (\\key gdown;)"
 msgstr "Sinkt (\\key gdown;)"
+
+msgid "Down\\Move the selected mod down so it's loaded later (mods may overwrite files from the mods above them)"
+msgstr ""
 
 msgid "Drawer bot"
 msgstr "Zeichner"
@@ -530,6 +551,9 @@ msgid "Egg"
 msgstr "Ei"
 
 msgid "Empty character constant"
+msgstr ""
+
+msgid "Enable\\Enable the selected mod"
 msgstr ""
 
 msgid "End of block missing"
@@ -759,6 +783,9 @@ msgstr "Von Virus infiziert, zeitweise außer Betrieb"
 msgid "Information exchange post"
 msgstr "Infoserver"
 
+msgid "Information:"
+msgstr ""
+
 msgid "Instruction \"break\" outside a loop"
 msgstr "Anweisung \"break\" außerhalb einer Schleife"
 
@@ -926,6 +953,15 @@ msgstr "Missionen+"
 msgid "Missions\\Select mission"
 msgstr "Missionen\\Aufbruch ins Weltall"
 
+msgid "Mods"
+msgstr ""
+
+msgid "Mods:"
+msgstr ""
+
+msgid "Mods\\Mod manager"
+msgstr ""
+
 msgid "Mouse inversion X\\Inversion of the scrolling direction on the X axis"
 msgstr "Umkehr X\\Umkehr der Kameradrehung X-Achse"
 
@@ -973,6 +1009,12 @@ msgstr "Nächstes auswählen\\Nächstes Objekt auswählen"
 
 msgid "No"
 msgstr "Nein"
+
+msgid "No changes."
+msgstr ""
+
+msgid "No description."
+msgstr ""
 
 msgid "No energy in the subsoil"
 msgstr "Kein unterirdisches Energievorkommen"
@@ -1093,6 +1135,9 @@ msgstr "Öffnen"
 
 msgid "Open (Ctrl+O)"
 msgstr "Öffnen (Ctrl+O)"
+
+msgid "Open Directory\\Open the mods directory"
+msgstr ""
 
 msgid "Opening brace missing"
 msgstr "Es fehlt eine offene geschweifte Klammer\"{\""
@@ -1304,6 +1349,9 @@ msgstr "Rote Fahne"
 
 msgid "Reflections on the buttons \\Shiny buttons"
 msgstr "Glänzende Tasten\\Glänzende Tasten in den Menüs"
+
+msgid "Refresh\\Refresh the list of currently installed mods"
+msgstr ""
 
 msgid "Remains of Apollo mission"
 msgstr "Überreste einer Apollo-Mission"
@@ -1575,6 +1623,10 @@ msgstr "Texturfilterung\\Texturfilterung"
 msgid "Textures"
 msgstr "Texturen"
 
+#, c-format
+msgid "The address %s could not be opened in a web browser."
+msgstr ""
+
 msgid "The battle has ended"
 msgstr ""
 
@@ -1587,8 +1639,15 @@ msgstr "Die Funktion hat kein Ergebnis zurückgegeben"
 msgid "The mission is not accomplished yet (press \\key help; for more details)"
 msgstr "Mission noch nicht beendet (Drücken Sie auf \\key help; für weitere Informationen)"
 
+#, c-format
+msgid "The path %s could not be opened in a file explorer."
+msgstr ""
+
 msgid "The types of the two operands are incompatible"
 msgstr "Die zwei Operanden sind nicht kompatibel"
+
+msgid "There are unsaved changes. Do you want to save them before leaving?"
+msgstr ""
 
 msgid "This class already exists"
 msgstr "Diese Klasse gibt es schon"
@@ -1714,6 +1773,9 @@ msgstr "Einheit"
 msgid "Unknown Object"
 msgstr "Das Objekt existiert nicht"
 
+msgid "Unknown author"
+msgstr ""
+
 msgid "Unknown command"
 msgstr "Befehl unbekannt"
 
@@ -1725,6 +1787,9 @@ msgstr "Unbekannte Funktion"
 
 msgid "Up (\\key gup;)"
 msgstr "Steigt (\\key gup;)"
+
+msgid "Up\\Move the selected mod up so it's loaded sooner (mods may overwrite files from the mods above them)"
+msgstr ""
 
 msgid "Uranium deposit (site for derrick)"
 msgstr "Markierung für unterirdisches Platinvorkommen"
@@ -1747,6 +1812,9 @@ msgstr "Der Wert dieser Variable wurde nicht definiert"
 msgid "Vault"
 msgstr "Bunker"
 
+msgid "Version"
+msgstr ""
+
 msgid "Vertical Synchronization\\Limits the number of frames per second to display frequency"
 msgstr ""
 
@@ -1764,6 +1832,9 @@ msgstr "Wespe tödlich verwundet"
 
 msgid "Waste"
 msgstr "Abfall"
+
+msgid "Website"
+msgstr ""
 
 msgid "Wheeled builder"
 msgstr ""
@@ -1797,6 +1868,9 @@ msgstr "Schnüffler"
 
 msgid "Withdraw shield (\\key action;)"
 msgstr "Schutzschild einholen (\\key action;)"
+
+msgid "Workshop\\Open the workshop to search for mods"
+msgstr ""
 
 msgid "Worm"
 msgstr "Wurm"
@@ -1945,6 +2019,9 @@ msgstr "\\Violette Fahne"
 
 msgid "\\Yellow flags"
 msgstr "\\Gelbe Fahne"
+
+msgid "by"
+msgstr ""
 
 msgid "colobot.info"
 msgstr "colobot.info"

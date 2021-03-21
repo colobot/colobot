@@ -1075,7 +1075,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
 
         powerCell->SetPosition(powerCellPos);
         powerCell->SetRotation(Math::Vector(0.0f, powerCellAngle, 0.0f));
-        dynamic_cast<CTransportableObject*>(powerCell)->SetTransporter(m_object);
+        dynamic_cast<CTransportableObject&>(*powerCell).SetTransporter(m_object);
         assert(m_object->Implements(ObjectInterfaceType::Powered));
         m_object->SetPower(powerCell);
     }

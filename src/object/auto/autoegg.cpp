@@ -74,7 +74,7 @@ void CAutoEgg::DeleteObject(bool all)
                 alien->SetLock(false);
                 if (alien->Implements(ObjectInterfaceType::Programmable))
                 {
-                    dynamic_cast<CProgrammableObject*>(alien)->SetActivity(true);  // the insect is active
+                    dynamic_cast<CProgrammableObject&>(*alien).SetActivity(true);  // the insect is active
                 }
             }
             else
@@ -123,7 +123,7 @@ void CAutoEgg::Init()
 
     if (alien->Implements(ObjectInterfaceType::Programmable))
     {
-        dynamic_cast<CProgrammableObject*>(alien)->SetActivity(false);
+        dynamic_cast<CProgrammableObject&>(*alien).SetActivity(false);
     }
 }
 
@@ -204,7 +204,7 @@ bool CAutoEgg::EventProcess(const Event &event)
     if ( alien == nullptr )  return true;
     if (alien->Implements(ObjectInterfaceType::Programmable))
     {
-        dynamic_cast<CProgrammableObject*>(alien)->SetActivity(false);
+        dynamic_cast<CProgrammableObject&>(*alien).SetActivity(false);
     }
 
     m_progress += event.rTime*m_speed;
@@ -265,7 +265,7 @@ Error CAutoEgg::IsEnded()
         alien->SetLock(false);
         if(alien->Implements(ObjectInterfaceType::Programmable))
         {
-            dynamic_cast<CProgrammableObject*>(alien)->SetActivity(true);  // the insect is active
+            dynamic_cast<CProgrammableObject&>(*alien).SetActivity(true);  // the insect is active
         }
     }
 

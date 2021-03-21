@@ -323,7 +323,7 @@ CObject* CLightning::SearchObject(Math::Vector pos)
 
         if (!obj->Implements(ObjectInterfaceType::Destroyable)) continue;
 
-        float detect = m_magnetic * dynamic_cast<CDestroyableObject*>(obj)->GetLightningHitProbability();
+        float detect = m_magnetic * dynamic_cast<CDestroyableObject&>(*obj).GetLightningHitProbability();
         if (detect == 0.0f) continue;
 
         Math::Vector oPos = obj->GetPosition();

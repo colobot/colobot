@@ -50,6 +50,7 @@ class CScreenIOWrite;
 class CScreenLevelList;
 class CScreenLoading;
 class CScreenMainMenu;
+class CScreenModList;
 class CScreenPlayerSelect;
 class CScreenQuit;
 class CScreenSetup;
@@ -117,6 +118,7 @@ protected:
     std::unique_ptr<CScreenLevelList> m_screenLevelList;
     std::unique_ptr<CScreenLoading> m_screenLoading;
     std::unique_ptr<CScreenMainMenu> m_screenMainMenu;
+    std::unique_ptr<CScreenModList> m_screenModList;
     std::unique_ptr<CScreenPlayerSelect> m_screenPlayerSelect;
     std::unique_ptr<CScreenQuit> m_screenQuit;
     std::unique_ptr<CScreenSetupControls> m_screenSetupControls;

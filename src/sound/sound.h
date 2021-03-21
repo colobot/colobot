@@ -72,6 +72,10 @@ public:
      */
     void CacheAll();
 
+    /** Stop all sounds and music and clean cache.
+     */
+    virtual void Reset();
+
     /** Function called to cache sound effect file.
      *  This function is called by plugin interface for each file.
      * \param sound - id of a file, will be used to identify sound files

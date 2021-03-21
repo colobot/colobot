@@ -68,7 +68,7 @@ bool CProgrammableObjectImpl::EventProcess(const Event &event)
 {
     if (event.type == EVENT_FRAME)
     {
-        if ( m_object->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject*>(m_object)->IsDying() && IsProgram() )
+        if ( m_object->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject&>(*m_object).IsDying() && IsProgram() )
         {
             StopProgram();
         }
@@ -113,7 +113,7 @@ void CProgrammableObjectImpl::RunProgram(Program* program)
     {
         m_currentProgram = program;  // start new program
         m_object->UpdateInterface();
-        if (m_object->Implements(ObjectInterfaceType::Controllable) && dynamic_cast<CControllableObject*>(m_object)->GetTrainer())
+        if (m_object->Implements(ObjectInterfaceType::Controllable) && dynamic_cast<CControllableObject&>(*m_object).GetTrainer())
             CRobotMain::GetInstancePointer()->StartMissionTimer();
     }
 }
@@ -155,7 +155,7 @@ bool CProgrammableObjectImpl::ReadStack(std::istream &istr)
         {
             if (m_object->Implements(ObjectInterfaceType::ProgramStorage))
             {
-                int count = static_cast<int>(dynamic_cast<CProgramStorageObject*>(m_object)->GetProgramCount());
+                int count = static_cast<int>(dynamic_cast<CProgramStorageObject&>(*m_object).GetProgramCount());
                 if (!(op < count))
                 {
                     GetLogger()->Info("Object program count: %i\n", count);
@@ -163,7 +163,7 @@ bool CProgrammableObjectImpl::ReadStack(std::istream &istr)
                     return false;
                 }
 
-                m_currentProgram = dynamic_cast<CProgramStorageObject*>(m_object)->GetProgram(op);
+                m_currentProgram = dynamic_cast<CProgramStorageObject&>(*m_object).GetProgram(op);
                 if (!m_currentProgram->script->ReadStack(istr))
                 {
                     GetLogger()->Error("Restore state failed at program index: %i\n", op);
@@ -203,7 +203,7 @@ bool CProgrammableObjectImpl::WriteStack(std::ostream &ostr)
         op = -1;
         if (m_object->Implements(ObjectInterfaceType::ProgramStorage))
         {
-            op = dynamic_cast<CProgramStorageObject*>(m_object)->GetProgramIndex(m_currentProgram);
+            op = dynamic_cast<CProgramStorageObject&>(*m_object).GetProgramIndex(m_currentProgram);
         }
         if (!CBot::WriteShort(ostr, op)) return false;
 
@@ -266,7 +266,7 @@ void CProgrammableObjectImpl::TraceRecordFrame()
     assert(m_object->Implements(ObjectInterfaceType::TraceDrawing));
     CTraceDrawingObject* traceDrawing = dynamic_cast<CTraceDrawingObject*>(m_object);
 
-    CPhysics* physics = dynamic_cast<CMovableObject*>(m_object)->GetPhysics();
+    CPhysics* physics = dynamic_cast<CMovableObject&>(*m_object).GetPhysics();
 
     speed = physics->GetLinMotionX(MO_REASPEED);
     if ( speed > 0.0f )  oper = TO_ADVANCE;
@@ -353,7 +353,7 @@ void CProgrammableObjectImpl::TraceRecordStop()
     buffer << "}\n";
 
     assert(m_object->Implements(ObjectInterfaceType::ProgramStorage));
-    Program* prog = dynamic_cast<CProgramStorageObject*>(m_object)->AddProgram();
+    Program* prog = dynamic_cast<CProgramStorageObject&>(*m_object).AddProgram();
     prog->script->SendScript(buffer.str().c_str());
 }
 
