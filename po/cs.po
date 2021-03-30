@@ -32,6 +32,9 @@ msgstr "Chybí \"]\""
 msgid "%s: %d pts"
 msgstr "%s: %d bodů"
 
+msgid "+\\Missions with bonus content and optional challenges"
+msgstr ""
+
 msgid "..behind"
 msgstr "...za sebou"
 
@@ -200,9 +203,6 @@ msgstr "Postavit obrannou věž"
 msgid "Build a derrick"
 msgstr "Postavit vrtnou věž"
 
-msgid "Build a destroyer"
-msgstr "Postavit drtič"
-
 msgid "Build a exchange post"
 msgstr "Postavit komunikační stanici"
 
@@ -274,6 +274,9 @@ msgstr "Vyrobit pásový kanón"
 
 msgid "Build a tracked sniffer"
 msgstr "Vyrobit pásový detektor"
+
+msgid "Build a vault"
+msgstr ""
 
 msgid "Build a wheeled builder"
 msgstr ""
@@ -928,6 +931,9 @@ msgstr "Mise"
 msgid "Missions on this planet:"
 msgstr "Mise na této planetě:"
 
+msgid "Missions+"
+msgstr "Mise+"
+
 msgid "Missions\\Select mission"
 msgstr "Mise\\Vyberte misi"
 
@@ -1513,6 +1519,15 @@ msgstr "Zvukové efekty:\\Hlasitost motorů, hlasů, střelby, atd."
 msgid "Sound\\Music and game sound volume"
 msgstr "Zvuk\\Hlasitost hudby a zvukových efektů"
 
+msgid "Space Explorer\\Disables astronaut abilities"
+msgstr ""
+
+msgid "Space Programmer\\Disables radio-control"
+msgstr ""
+
+msgid "Space Researcher\\Disables using all previously researched technologies"
+msgstr ""
+
 msgid "Spaceship"
 msgstr "Raketa"
 
@@ -1998,3 +2013,6 @@ msgstr "colobot.info"
 
 msgid "epsitec.com"
 msgstr "epsitec.com"
+
+#~ msgid "Build a destroyer"
+#~ msgstr "Postavit drtič"

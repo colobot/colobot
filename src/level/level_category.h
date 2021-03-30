@@ -28,6 +28,7 @@ enum class LevelCategory
     Missions,
     FreeGame,
     CodeBattles,
+    GamePlus,
     CustomLevels,
     Max,
 };

@@ -885,6 +885,7 @@ int CLevelParserParam::ToBuildFlag(std::string value)
     if (value == "AutoLab"       ) return BUILD_LABO;
     if (value == "PowerCaptor"   ) return BUILD_PARA;
     if (value == "ExchangePost"  ) return BUILD_INFO;
+    if (value == "Vault"         ) return BUILD_SAFE;
     if (value == "Destroyer"     ) return BUILD_DESTROYER;
     if (value == "FlatGround"    ) return BUILD_GFLAT;
     if (value == "Flag"          ) return BUILD_FLAG;

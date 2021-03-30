@@ -31,6 +31,9 @@ msgstr "Brak \" ] \""
 msgid "%s: %d pts"
 msgstr "%s: %d pkt"
 
+msgid "+\\Missions with bonus content and optional challenges"
+msgstr ""
+
 msgid "..behind"
 msgstr "..za"
 
@@ -199,9 +202,6 @@ msgstr "Zbuduj wieżę obronną"
 msgid "Build a derrick"
 msgstr "Zbuduj kopalnię"
 
-msgid "Build a destroyer"
-msgstr "Zbuduj niszczarkę"
-
 msgid "Build a exchange post"
 msgstr "Zbuduj stację przekaźnikową"
 
@@ -273,6 +273,9 @@ msgstr "Zbuduj działo na gąsienicach"
 
 msgid "Build a tracked sniffer"
 msgstr "Zbuduj szperacz na gąsienicach"
+
+msgid "Build a vault"
+msgstr ""
 
 msgid "Build a wheeled builder"
 msgstr ""
@@ -927,6 +930,9 @@ msgstr "Misje"
 msgid "Missions on this planet:"
 msgstr "Misje na tej planecie:"
 
+msgid "Missions+"
+msgstr "Misje+"
+
 msgid "Missions\\Select mission"
 msgstr "Misje\\Wybierz misję"
 
@@ -1512,6 +1518,15 @@ msgstr "Efekty dźwiękowe:\\Głośność silników, głosów, strzałów, itp."
 msgid "Sound\\Music and game sound volume"
 msgstr "Dźwięk\\Głośność muzyki i dźwięków gry"
 
+msgid "Space Explorer\\Disables astronaut abilities"
+msgstr ""
+
+msgid "Space Programmer\\Disables radio-control"
+msgstr ""
+
+msgid "Space Researcher\\Disables using all previously researched technologies"
+msgstr ""
+
 msgid "Spaceship"
 msgstr "Statek kosmiczny"
 
@@ -2006,6 +2021,9 @@ msgstr "epsitec.com"
 
 #~ msgid "3D sound\\3D positioning of the sound"
 #~ msgstr "Dźwięk 3D\\Przestrzenne pozycjonowanie dźwięków"
+
+#~ msgid "Build a destroyer"
+#~ msgstr "Zbuduj niszczarkę"
 
 #~ msgid "Building too close"
 #~ msgstr "Budynek za blisko"

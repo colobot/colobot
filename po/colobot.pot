@@ -84,6 +84,9 @@ msgstr ""
 msgid "Load a saved mission"
 msgstr ""
 
+msgid "Missions+"
+msgstr ""
+
 msgid "Mods"
 msgstr ""
 
@@ -399,6 +402,9 @@ msgstr ""
 msgid "<<  Back  \\Back to the previous screen"
 msgstr ""
 
+msgid "+\\Missions with bonus content and optional challenges"
+msgstr ""
+
 msgid "Play\\Start mission!"
 msgstr ""
 
@@ -660,6 +666,15 @@ msgstr ""
 msgid "Invert\\Invert values on this axis"
 msgstr ""
 
+msgid "Space Programmer\\Disables radio-control"
+msgstr ""
+
+msgid "Space Researcher\\Disables using all previously researched technologies"
+msgstr ""
+
+msgid "Space Explorer\\Disables astronaut abilities"
+msgstr ""
+
 msgid "\\New player name"
 msgstr ""
 
@@ -831,7 +846,7 @@ msgstr ""
 msgid "Build a exchange post"
 msgstr ""
 
-msgid "Build a destroyer"
+msgid "Build a vault"
 msgstr ""
 
 msgid "Show if the ground is flat"

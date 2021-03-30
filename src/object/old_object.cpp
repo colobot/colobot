@@ -1627,6 +1627,11 @@ bool COldObject::GetTrainer()
     return m_bTrainer;
 }
 
+bool COldObject::GetPlusTrainer()
+{
+    return m_main->GetPlusTrainer();
+}
+
 void COldObject::SetToy(bool bEnable)
 {
     m_bToy = bEnable;

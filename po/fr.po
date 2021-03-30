@@ -32,6 +32,9 @@ msgstr "\" ] \" manquant"
 msgid "%s: %d pts"
 msgstr "%s: %d points"
 
+msgid "+\\Missions with bonus content and optional challenges"
+msgstr ""
+
 msgid "..behind"
 msgstr "..derrière"
 
@@ -203,9 +206,6 @@ msgstr "Construire une tour"
 msgid "Build a derrick"
 msgstr "Construire un derrick"
 
-msgid "Build a destroyer"
-msgstr "Construire un destructeur"
-
 msgid "Build a exchange post"
 msgstr "Construire une station relais"
 
@@ -277,6 +277,9 @@ msgstr "Fabriquer un tireur à chenilles"
 
 msgid "Build a tracked sniffer"
 msgstr "Fabriquer un renifleur à chenilles"
+
+msgid "Build a vault"
+msgstr ""
 
 msgid "Build a wheeled builder"
 msgstr ""
@@ -946,6 +949,9 @@ msgstr "Missions"
 msgid "Missions on this planet:"
 msgstr "Liste des missions du chapitre :"
 
+msgid "Missions+"
+msgstr "Missions+"
+
 msgid "Missions\\Select mission"
 msgstr "Missions\\La grande aventure"
 
@@ -1532,6 +1538,15 @@ msgstr "Sons :\\Volume des moteurs, voix, etc."
 msgid "Sound\\Music and game sound volume"
 msgstr "Son\\Volumes des sons & musiques"
 
+msgid "Space Explorer\\Disables astronaut abilities"
+msgstr ""
+
+msgid "Space Programmer\\Disables radio-control"
+msgstr ""
+
+msgid "Space Researcher\\Disables using all previously researched technologies"
+msgstr ""
+
 msgid "Spaceship"
 msgstr "Vaisseau spatial"
 
@@ -2027,6 +2042,9 @@ msgstr "epsitec.com"
 
 #~ msgid "3D sound\\3D positioning of the sound"
 #~ msgstr "Bruitages 3D\\Positionnement sonore dans l'espace"
+
+#~ msgid "Build a destroyer"
+#~ msgstr "Construire un destructeur"
 
 #~ msgid "Building too close"
 #~ msgstr "Bâtiment trop proche"

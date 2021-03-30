@@ -52,7 +52,7 @@ std::unique_ptr<CShielder> CShielder::Create(
     auto obj = MakeUnique<CShielder>(params.id);
 
     obj->SetTeam(params.team);
-    obj->SetTrainer(params.trainer);
+    obj->SetTrainer(params.trainer || obj->GetPlusTrainer());
     obj->SetToy(params.toy);
 
     auto physics = MakeUnique<CPhysics>(obj.get());

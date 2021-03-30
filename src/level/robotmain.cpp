@@ -2462,6 +2462,7 @@ bool CRobotMain::EventFrame(const Event &event)
             {
                 if (m_levelCategory == LevelCategory::Missions ||
                     m_levelCategory == LevelCategory::FreeGame ||
+                    m_levelCategory == LevelCategory::GamePlus ||
                     m_levelCategory == LevelCategory::CustomLevels)
                 {
                     if (!IOIsBusy() && m_missionType != MISSION_CODE_BATTLE)
@@ -3782,6 +3783,12 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             m_build |= BUILD_FACTORY;
             m_build |= BUILD_GFLAT;
             m_build |= BUILD_FLAG;
+        }
+
+        if (m_levelCategory == LevelCategory::GamePlus && !m_ui->GetPlusResearch() && !resetObject)  // new game plus?
+        {
+            m_researchDone[0] |= m_playerProfile->GetFreeGameResearchUnlock();
+            m_build |= m_playerProfile->GetFreeGameBuildUnlock();
         }
 
         if (!resetObject)
@@ -5351,6 +5358,16 @@ bool CRobotMain::GetTrainerPilot()
     return m_cheatTrainerPilot;
 }
 
+bool CRobotMain::GetPlusTrainer()
+{
+    return m_ui->GetPlusTrainer();
+}
+
+bool CRobotMain::GetPlusExplorer()
+{
+    return m_ui->GetPlusExplorer();
+}
+
 //! Indicates whether the scene is fixed, without interaction
 bool CRobotMain::GetFixScene()
 {
@@ -5874,6 +5891,7 @@ bool CRobotMain::IsBuildingEnabled(ObjectType type)
     if(type == OBJECT_NUCLEAR) return IsBuildingEnabled(BUILD_NUCLEAR);
     if(type == OBJECT_INFO) return IsBuildingEnabled(BUILD_INFO);
     if(type == OBJECT_PARA) return IsBuildingEnabled(BUILD_PARA);
+    if(type == OBJECT_SAFE) return IsBuildingEnabled(BUILD_SAFE);
     if(type == OBJECT_DESTROYER) return IsBuildingEnabled(BUILD_DESTROYER);
 
     return false;
@@ -5943,6 +5961,8 @@ Error CRobotMain::CanFactoryError(ObjectType type, int team)
     if (type == OBJECT_MOBILEsa          && !IsResearchDone(RESEARCH_SUBM,     team)) return ERR_BUILD_DISABLED; // Can be only researched manually in Scene file
     if (type == OBJECT_MOBILEst          && !IsResearchDone(RESEARCH_SUBM,     team)) return ERR_BUILD_DISABLED;
     if (type == OBJECT_MOBILEtg          && !IsResearchDone(RESEARCH_TARGET,   team)) return ERR_BUILD_RESEARCH;
+
+    if (tool == ToolType::Other && drive == DriveType::Other && type != OBJECT_MOBILEtg)   return ERR_WRONG_OBJ;
 
     return ERR_OK;
 }

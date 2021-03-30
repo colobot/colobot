@@ -110,6 +110,8 @@ private:
     static bool rResearched(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
     static bool rBuildingEnabled(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
     static bool rBuild(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
+    static bool rFlag(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
+    static bool rDeflag(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
     static bool rProduce(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
     static bool rDistance(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
     static bool rDistance2d(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);

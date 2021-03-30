@@ -77,6 +77,7 @@ void InitializeRestext()
     stringsText[RT_TITLE_PERSO]      = TR("Customize your appearance");
     stringsText[RT_TITLE_WRITE]      = TR("Save the current mission");
     stringsText[RT_TITLE_READ]       = TR("Load a saved mission");
+    stringsText[RT_TITLE_PLUS]       = TR("Missions+");
     stringsText[RT_TITLE_MODS]       = TR("Mods");
 
     stringsText[RT_PLAY_CHAP_CHAPTERS]   = TR("Chapters:");
@@ -199,6 +200,7 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_ABORT]     = TR("\\Return to Colobot: Gold Edition");
     stringsEvent[EVENT_INTERFACE_QUIT]      = TR("Quit\\Quit Colobot: Gold Edition");
     stringsEvent[EVENT_INTERFACE_BACK]      = TR("<<  Back  \\Back to the previous screen");
+    stringsEvent[EVENT_INTERFACE_PLUS]      = TR("+\\Missions with bonus content and optional challenges");
     stringsEvent[EVENT_INTERFACE_PLAY]      = TR("Play\\Start mission!");
     stringsEvent[EVENT_INTERFACE_WORKSHOP]  = TR("Workshop\\Open the workshop to search for mods");
     stringsEvent[EVENT_INTERFACE_MODS_DIR]  = TR("Open Directory\\Open the mods directory");
@@ -299,6 +301,10 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_JOYSTICK_CAM_Y_INVERT] = TR("Invert\\Invert values on this axis");
     stringsEvent[EVENT_INTERFACE_JOYSTICK_CAM_Z_INVERT] = TR("Invert\\Invert values on this axis");
 
+    stringsEvent[EVENT_INTERFACE_PLUS_TRAINER]  = TR("Space Programmer\\Disables radio-control");
+    stringsEvent[EVENT_INTERFACE_PLUS_RESEARCH] = TR("Space Researcher\\Disables using all previously researched technologies");
+    stringsEvent[EVENT_INTERFACE_PLUS_EXPLORER] = TR("Space Explorer\\Disables astronaut abilities");
+
     stringsEvent[EVENT_INTERFACE_NEDIT]     = TR("\\New player name");
     stringsEvent[EVENT_INTERFACE_NOK]       = TR("OK\\Choose the selected player");
     stringsEvent[EVENT_INTERFACE_NDELETE]   = TR("Delete player\\Deletes the player from the list");
@@ -365,7 +371,7 @@ void InitializeRestext()
     stringsEvent[EVENT_OBJECT_BNUCLEAR]     = TR("Build a nuclear power plant");
     stringsEvent[EVENT_OBJECT_BPARA]        = TR("Build a lightning conductor");
     stringsEvent[EVENT_OBJECT_BINFO]        = TR("Build a exchange post");
-    stringsEvent[EVENT_OBJECT_BDESTROYER]   = TR("Build a destroyer");
+    stringsEvent[EVENT_OBJECT_BSAFE]        = TR("Build a vault");
     stringsEvent[EVENT_OBJECT_GFLAT]        = TR("Show if the ground is flat");
     stringsEvent[EVENT_OBJECT_FCREATE]      = TR("Plant a flag");
     stringsEvent[EVENT_OBJECT_FDELETE]      = TR("Remove a flag");

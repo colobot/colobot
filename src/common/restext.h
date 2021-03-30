@@ -71,6 +71,7 @@ enum ResTextType
     RT_TITLE_WRITE          = 50,
     RT_TITLE_READ           = 51,
     RT_TITLE_USER           = 52,
+    RT_TITLE_PLUS           = 53,
     RT_TITLE_MODS           = 54,
 
     RT_PLAY_CHAP_CHAPTERS   = 60,

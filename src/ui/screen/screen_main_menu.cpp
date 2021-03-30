@@ -91,13 +91,21 @@ void CScreenMainMenu::CreateInterface()
     pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // quit
     pg->SetState(STATE_SHADOW);
 
-    ddim.x = 0.18f;
+    ddim.x = 0.12f;
     ddim.y = dim.y*0.8f;
     pos.x = 0.41f;
-
     pos.y = oy+sy*10.5f;
+
     pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_MISSION);
     pb->SetState(STATE_SHADOW);
+
+    ddim.x = 0.06f;
+    pos.x = 0.53f;
+    pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_PLUS);
+    pb->SetState(STATE_SHADOW);
+
+    ddim.x = 0.18f;
+    pos.x = 0.41f;
 
     pos.y = oy+sy*9.6f;
     pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_FREE);
@@ -222,6 +230,11 @@ bool CScreenMainMenu::EventProcess(const Event &event)
 
         case EVENT_INTERFACE_CODE_BATTLES:
             m_main->SetLevel(LevelCategory::CodeBattles, 0, 0);
+            m_main->ChangePhase(PHASE_LEVEL_LIST);
+            break;
+
+        case EVENT_INTERFACE_PLUS:
+            m_main->SetLevel(LevelCategory::GamePlus, 0, 0);
             m_main->ChangePhase(PHASE_LEVEL_LIST);
             break;
 

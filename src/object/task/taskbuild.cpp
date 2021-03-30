@@ -111,6 +111,7 @@ void CTaskBuild::CreateBuilding(Math::Vector pos, float angle, bool trainer)
     if ( m_type == OBJECT_NUCLEAR  )  m_buildingHeight = 40.0f;
     if ( m_type == OBJECT_PARA     )  m_buildingHeight = 68.0f;
     if ( m_type == OBJECT_INFO     )  m_buildingHeight = 19.0f;
+    if ( m_type == OBJECT_SAFE     )  m_buildingHeight = 16.0f;
     if ( m_type == OBJECT_DESTROYER)  m_buildingHeight = 35.0f;
     if ( m_type == OBJECT_HUSTON   )  m_buildingHeight = 45.0f;
     m_buildingHeight *= 0.25f;
@@ -682,6 +683,7 @@ Error CTaskBuild::FlatFloor()
     if ( m_type == OBJECT_NUCLEAR  )  radius = 20.0f;
     if ( m_type == OBJECT_PARA     )  radius = 20.0f;
     if ( m_type == OBJECT_INFO     )  radius =  5.0f;
+    if ( m_type == OBJECT_SAFE     )  radius = 20.0f;
     if ( m_type == OBJECT_DESTROYER)  radius = 20.0f;
     //if ( radius == 0.0f )  return ERR_UNKNOWN;
 

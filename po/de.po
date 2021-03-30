@@ -33,6 +33,9 @@ msgstr "Es fehlt eine geschlossene eckige Klammer \" ] \""
 msgid "%s: %d pts"
 msgstr ""
 
+msgid "+\\Missions with bonus content and optional challenges"
+msgstr ""
+
 msgid "..behind"
 msgstr "..hinten"
 
@@ -201,9 +204,6 @@ msgstr "Baut einen Geschützturm"
 msgid "Build a derrick"
 msgstr "Baut einen Bohrturm"
 
-msgid "Build a destroyer"
-msgstr "Baue einen Zerstörer"
-
 msgid "Build a exchange post"
 msgstr "Baut einen Infoserver"
 
@@ -275,6 +275,9 @@ msgstr "Baut einen Kettenshooter"
 
 msgid "Build a tracked sniffer"
 msgstr "Baut einen Kettenschnüffler"
+
+msgid "Build a vault"
+msgstr ""
 
 msgid "Build a wheeled builder"
 msgstr ""
@@ -944,6 +947,9 @@ msgstr "Missionen"
 msgid "Missions on this planet:"
 msgstr "Liste der Missionen des Planeten:"
 
+msgid "Missions+"
+msgstr "Missionen+"
+
 msgid "Missions\\Select mission"
 msgstr "Missionen\\Aufbruch ins Weltall"
 
@@ -1530,6 +1536,15 @@ msgstr "Geräusche:\\Lautstärke Motoren, Stimmen, usw."
 msgid "Sound\\Music and game sound volume"
 msgstr "Geräusche\\Lautstärke Geräusche und Musik"
 
+msgid "Space Explorer\\Disables astronaut abilities"
+msgstr ""
+
+msgid "Space Programmer\\Disables radio-control"
+msgstr ""
+
+msgid "Space Researcher\\Disables using all previously researched technologies"
+msgstr ""
+
 msgid "Spaceship"
 msgstr "Raumschiff"
 
@@ -2028,6 +2043,9 @@ msgstr "epsitec.com"
 
 #~ msgid "3D sound\\3D positioning of the sound"
 #~ msgstr "3D-Geräusche\\Orten der Geräusche im Raum"
+
+#~ msgid "Build a destroyer"
+#~ msgstr "Baue einen Zerstörer"
 
 #~ msgid "Building too close"
 #~ msgstr "Gebäude zu nahe"

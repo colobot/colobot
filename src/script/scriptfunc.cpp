@@ -595,7 +595,8 @@ bool CScriptFunctions::rResearch(CBotVar* var, CBotVar* result, int& exception, 
     {
         bool ok = false;
         if ( type == RESEARCH_iPAW       ||
-             type == RESEARCH_iGUN        )
+             type == RESEARCH_iGUN       ||
+             type == RESEARCH_TARGET      )
         {
             if ( center->GetType() != OBJECT_LABO )
                 err = ERR_WRONG_OBJ;
@@ -1441,6 +1442,102 @@ bool CScriptFunctions::rBuild(CBotVar* var, CBotVar* result, int& exception, voi
 
     return WaitForForegroundTask(script, result, exception);
 
+}
+
+// Instruction "flag(color)"
+
+bool CScriptFunctions::rFlag(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    CScript*    script = static_cast<CScript*>(user);
+    CObject*    pThis = script->m_object;
+    ObjectType  oType;
+    int         color;
+    Error       err;
+
+    exception = 0;
+
+    if ( !script->m_taskExecutor->IsForegroundTask() )
+    {
+        oType = pThis->GetType();
+        if ( oType != OBJECT_MOBILEfs &&  // allowed only for sniffer bots && humans
+             oType != OBJECT_MOBILEts &&
+             oType != OBJECT_MOBILEws &&
+             oType != OBJECT_MOBILEis &&
+             oType != OBJECT_HUMAN    &&
+             oType != OBJECT_TECH      )
+        {
+            err = ERR_WRONG_BOT; // Wrong object
+        }
+        else
+        {
+            if ( var == nullptr )
+            {
+                color = 0;
+            }
+            else
+            {
+                color = var->GetValInt();
+                if ( color < 0 || color > static_cast<int>(TraceColor::Violet) ) color = 0;
+            }
+            err = script->m_taskExecutor->StartTaskFlag(TFL_CREATE, color);
+        }
+
+        if ( err != ERR_OK )
+        {
+            script->m_taskExecutor->StopForegroundTask();
+            result->SetValInt(err);  // shows the error
+            if ( script->m_errMode == ERM_STOP )
+            {
+                exception = err;
+                return false;
+            }
+            return true;
+        }
+    }
+    return WaitForForegroundTask(script, result, exception);
+}
+
+// Instruction "deflag()"
+
+bool CScriptFunctions::rDeflag(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    CScript*    script = static_cast<CScript*>(user);
+    CObject*    pThis = script->m_object;
+    ObjectType  oType;
+    Error       err;
+
+    exception = 0;
+
+    if ( !script->m_taskExecutor->IsForegroundTask() )
+    {
+        oType = pThis->GetType();
+        if ( oType != OBJECT_MOBILEfs &&  // allowed only for sniffer bots && humans
+             oType != OBJECT_MOBILEts &&
+             oType != OBJECT_MOBILEws &&
+             oType != OBJECT_MOBILEis &&
+             oType != OBJECT_HUMAN    &&
+             oType != OBJECT_TECH      )
+        {
+            err = ERR_WRONG_BOT; // Wrong object
+        }
+        else
+        {
+            err = script->m_taskExecutor->StartTaskFlag(TFL_DELETE, 0);
+        }
+
+        if ( err != ERR_OK )
+        {
+            script->m_taskExecutor->StopForegroundTask();
+            result->SetValInt(err);  // shows the error
+            if ( script->m_errMode == ERM_STOP )
+            {
+                exception = err;
+                return false;
+            }
+            return true;
+        }
+    }
+    return WaitForForegroundTask(script, result, exception);
 }
 
 // Compilation of the instruction "produce(pos, angle, type[, scriptName[, power]])"
@@ -3377,6 +3474,7 @@ void CScriptFunctions::Init()
     CBotProgram::DefineNum("BuildAutoLab",          BUILD_LABO);
     CBotProgram::DefineNum("BuildPowerCaptor",      BUILD_PARA);
     CBotProgram::DefineNum("BuildExchangePost",     BUILD_INFO);
+    CBotProgram::DefineNum("BuildVault",            BUILD_SAFE);
     CBotProgram::DefineNum("BuildDestroyer",        BUILD_DESTROYER);
     CBotProgram::DefineNum("FlatGround",            BUILD_GFLAT);
     CBotProgram::DefineNum("UseFlags",              BUILD_FLAG);
@@ -3444,6 +3542,8 @@ void CScriptFunctions::Init()
     CBotProgram::AddFunction("buildingenabled", rBuildingEnabled, cOneIntReturnBool);
 
     CBotProgram::AddFunction("build",           rBuild,           cOneInt);
+    CBotProgram::AddFunction("flag",            rFlag,            cGrabDrop);
+    CBotProgram::AddFunction("deflag",          rDeflag,          cNull);
 
     CBotProgram::AddFunction("retobject", rGetObject, cGetObject);
     CBotProgram::AddFunction("retobjectbyid", rGetObjectById, cGetObject);

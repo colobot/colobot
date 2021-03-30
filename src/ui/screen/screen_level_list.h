@@ -43,6 +43,9 @@ public:
     void SetSelection(LevelCategory category, int chap, int rank);
 
     bool GetSceneSoluce();
+    bool GetPlusTrainer();
+    bool GetPlusResearch();
+    bool GetPlusExplorer();
 
     void AllMissionUpdate();
     void ShowSoluceUpdate();
@@ -65,6 +68,9 @@ protected:
     LevelCategory m_category;
 
     bool m_sceneSoluce;
+    bool m_plusTrainer;
+    bool m_plusResearch;
+    bool m_plusExplorer;
 
     std::map<LevelCategory, int> m_chap;     // selected chapter (0..8)
     std::map<LevelCategory, int> m_sel;      // chosen mission (0..98)
