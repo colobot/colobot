@@ -23,8 +23,6 @@
 #include "common/logger.h"
 #include "common/make_unique.h"
 
-#include "graphics/opengl/gl14device.h"
-#include "graphics/opengl/gl21device.h"
 #include "graphics/opengl/gl33device.h"
 
 #include <SDL.h>
@@ -71,18 +69,14 @@ FramebufferSupport DetectFramebufferSupport()
 
 std::unique_ptr<CDevice> CreateDevice(const DeviceConfig &config, const std::string& name)
 {
-    if      (name == "default") return MakeUnique<CGL14Device>(config);
-    else if (name == "opengl")  return MakeUnique<CGL14Device>(config);
-    else if (name == "gl14")    return MakeUnique<CGL14Device>(config);
-    else if (name == "gl21")    return MakeUnique<CGL21Device>(config);
+    if      (name == "default") return MakeUnique<CGL33Device>(config);
+    else if (name == "opengl")  return MakeUnique<CGL33Device>(config);
     else if (name == "gl33")    return MakeUnique<CGL33Device>(config);
     else if (name == "auto")
     {
         int version = GetOpenGLVersion();
 
-             if (version >= 33) return MakeUnique<CGL33Device>(config);
-        else if (version >= 21) return MakeUnique<CGL21Device>(config);
-        else                    return MakeUnique<CGL14Device>(config);
+        if (version >= 33) return MakeUnique<CGL33Device>(config);
     }
 
     return nullptr;
