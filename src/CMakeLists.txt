@@ -95,8 +95,6 @@ add_library(colobotbase STATIC
     graphics/core/framebuffer.h
     graphics/core/light.h
     graphics/core/material.h
-    graphics/core/nulldevice.cpp
-    graphics/core/nulldevice.h
     graphics/core/texture.h
     graphics/core/type.cpp
     graphics/core/type.h

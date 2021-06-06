@@ -39,8 +39,6 @@
 
 #include "common/thread/thread.h"
 
-#include "graphics/core/nulldevice.h"
-
 #include "graphics/opengl/glutil.h"
 
 #include "level/robotmain.h"
@@ -655,7 +653,7 @@ bool CApplication::Create()
         GetLogger()->Info("No joysticks detected\n");
     }
 
-    if (!m_headless)
+    //if (!m_headless)
     {
         std::string graphics = "default";
         std::string value;
@@ -679,10 +677,10 @@ bool CApplication::Create()
             m_device = Gfx::CreateDevice(m_deviceConfig, "opengl");
         }
     }
-    else
-    {
-        m_device = MakeUnique<Gfx::CNullDevice>();
-    }
+    //else
+    //{
+    //    m_device = MakeUnique<Gfx::CNullDevice>();
+    //}
 
     if (! m_device->Create() )
     {
