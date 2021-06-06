@@ -34,6 +34,7 @@
 #include <sstream>
 #include <cstdint>
 
+#include <glm/glm.hpp>
 
 // Graphics module namespace
 namespace Gfx
@@ -158,6 +159,16 @@ struct VertexTex2
     }
 };
 
+/**
+ * \struct Vertex2D
+ * \brief 2D vertex for interface rendering, contains UV and color
+ */
+struct Vertex2D
+{
+    glm::vec2 position;
+    glm::vec2 uv = { 0.0f, 0.0f };
+    glm::u8vec4 color = { 255, 255, 255, 255 };
+};
 
 } // namespace Gfx
 
