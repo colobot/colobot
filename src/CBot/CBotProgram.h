@@ -203,14 +203,6 @@ public:
     void Stop();
 
     /**
-     * \brief Sets the number of steps (parts of instructions) to execute in Run() before suspending the program execution
-     * \param n new timer value
-     *
-     * FIXME: Seems to be currently kind of broken (see issue #410)
-     */
-    static void SetTimer(int n);
-
-    /**
      * \brief Add a function that can be called from CBot
      *
      * To define an external function, proceed as follows:

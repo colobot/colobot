@@ -380,14 +380,7 @@ void CBotVarClass::DecrementUse()
         {
             m_CptUse++;    // does not return to the destructor
 
-            // m_error is static in the stack
-            // saves the value for return
-            CBotError err;
-            int start, end;
-            CBotStack*    pile = nullptr;
-            err = pile->GetError(start,end);    // stack == nullptr it does not bother!
-
-            pile = CBotStack::AllocateStack();        // clears the error
+            CBotStack*  pile = CBotStack::AllocateStack();
             CBotVar*    ppVars[1];
             ppVars[0] = nullptr;
 
@@ -400,8 +393,6 @@ void CBotVarClass::DecrementUse()
             CBotToken token(nom); // TODO
 
             while ( pile->IsOk() && !m_pClass->ExecuteMethode(ident, pThis, ppVars, CBotTypResult(CBotTypVoid), pile, &token)) ;    // waits for the end
-
-            pile->ResetError(err, start,end);
 
             pile->Delete();
             delete pThis;

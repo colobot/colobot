@@ -243,13 +243,6 @@ CBotVar* CBotProgram::GetStackVars(std::string& functionName, int level)
     return m_stack->GetStackVars(functionName, level);
 }
 
-////////////////////////////////////////////////////////////////////////////////
-void CBotProgram::SetTimer(int n)
-{
-    CBotStack::SetTimer( n );
-}
-
-////////////////////////////////////////////////////////////////////////////////
 CBotError CBotProgram::GetError()
 {
     return m_error;

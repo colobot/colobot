@@ -39,16 +39,24 @@ namespace CBot
 
 const int DEFAULT_TIMER = 100;
 
-int         CBotStack::m_initimer = DEFAULT_TIMER;
-int         CBotStack::m_timer = 0;
-CBotVar*    CBotStack::m_retvar = nullptr;
-CBotError   CBotStack::m_error = CBotNoErr;
-int         CBotStack::m_start = 0;
-int         CBotStack::m_end   = 0;
-std::string  CBotStack::m_labelBreak="";
-void*       CBotStack::m_pUser = nullptr;
+struct CBotStack::Data
+{
+    int          initimer   = DEFAULT_TIMER;
+    int          timer      = 0;
 
-////////////////////////////////////////////////////////////////////////////////
+    CBotError    error      = CBotNoErr;
+    int          errStart   = 0;
+    int          errEnd     = 0;
+
+    std::string  labelBreak = "";
+
+    CBotProgram* baseProg   = nullptr;
+    CBotStack*   topStack   = nullptr;
+    void*        pUser      = nullptr;
+
+    std::unique_ptr<CBotVar> retvar;
+};
+
 CBotStack* CBotStack::AllocateStack()
 {
     CBotStack*    p;
@@ -73,7 +81,8 @@ CBotStack* CBotStack::AllocateStack()
         pp ++;
     }
 
-    m_error = CBotNoErr;    // avoids deadlocks because m_error is static
+    p->m_data = new CBotStack::Data;
+    p->m_data->topStack = p;
     return p;
 }
 
@@ -97,6 +106,7 @@ void CBotStack::Delete()
 
     CBotStack*    p = m_prev;
     bool        bOver = m_bOver;
+    if ( m_prev == nullptr ) delete m_data;
 
     // clears the freed block
     memset(this, 0, sizeof(CBotStack));
@@ -123,6 +133,7 @@ CBotStack* CBotStack::AddStack(CBotInstr* instr, BlockVisibilityType bBlock)
     while ( p->m_prev != nullptr );
 
     m_next = p;                                    // chain an element
+    p->m_data   = m_data;
     p->m_block  = bBlock;
     p->m_instr  = instr;
     p->m_prog   = m_prog;
@@ -166,6 +177,7 @@ CBotStack* CBotStack::AddStack2(BlockVisibilityType bBlock)
     while ( p->m_prev != nullptr );
 
     m_next2 = p;                                // chain an element
+    p->m_data = m_data;
     p->m_prev = this;
     p->m_block = bBlock;
     p->m_prog = m_prog;
@@ -220,18 +232,32 @@ bool CBotStack::ReturnKeep(CBotStack* pfils)
 bool CBotStack::StackOver()
 {
     if (!m_bOver) return false;
-    m_error = CBotErrStackOver;
+    m_data->error = CBotErrStackOver;
     return true;
 }
 
-////////////////////////////////////////////////////////////////////////////////
+CBotError CBotStack::GetError(int& start, int& end)
+{
+    start = m_data->errStart;
+    end = m_data->errEnd;
+    return m_data->error;
+}
+
+CBotError CBotStack::GetError()
+{
+    return m_data->error;
+}
+
+bool CBotStack::IsOk()
+{
+    return m_data->error == CBotNoErr;
+}
+
 void CBotStack::Reset()
 {
-    m_timer = m_initimer; // resets the timer
-    m_error    = CBotNoErr;
-//    m_start = 0;
-//    m_end    = 0;
-    m_labelBreak.clear();
+    m_data->timer = m_data->initimer; // resets the timer
+    m_data->error = CBotNoErr;
+    m_data->labelBreak.clear();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -258,35 +284,35 @@ CBotStack* CBotStack::RestoreStackEOX(CBotExternalCall* instr)
 // routine for execution step by step
 bool CBotStack::IfStep()
 {
-    if ( m_initimer > 0 || m_step++ > 0 ) return false;
+    if (m_data->initimer > 0 || m_step++ > 0) return false;
     return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotStack::BreakReturn(CBotStack* pfils, const std::string& name)
 {
-    if ( m_error>=0 ) return false;                // normal output
-    if ( m_error==CBotError(-3) ) return false;            // normal output (return current)
+    if (m_data->error >= CBotNoErr) return false;  // normal output
+    if (m_data->error == CBotError(-3)) return false;      // normal output (return current)
 
-    if (!m_labelBreak.empty() && (name.empty() || m_labelBreak != name))
+    if (!m_data->labelBreak.empty() && (name.empty() || m_data->labelBreak != name))
         return false;                            // it's not for me
 
-    m_error = CBotNoErr;
-    m_labelBreak.clear();
+    m_data->error = CBotNoErr;
+    m_data->labelBreak.clear();
     return Return(pfils);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotStack::IfContinue(int state, const std::string& name)
 {
-    if ( m_error != CBotError(-2) ) return false;
+    if (m_data->error != CBotError(-2)) return false;
 
-    if (!m_labelBreak.empty() && (name.empty() || m_labelBreak != name))
+    if (!m_data->labelBreak.empty() && (name.empty() || m_data->labelBreak != name))
         return false;                            // it's not for me
 
     m_state = state;                            // where again?
-    m_error = CBotNoErr;
-    m_labelBreak.clear();
+    m_data->error = CBotNoErr;
+    m_data->labelBreak.clear();
     if (m_next != nullptr) m_next->Delete();            // purge above stack
     return true;
 }
@@ -294,11 +320,11 @@ bool CBotStack::IfContinue(int state, const std::string& name)
 ////////////////////////////////////////////////////////////////////////////////
 void CBotStack::SetBreak(int val, const std::string& name)
 {
-    m_error = static_cast<CBotError>(-val);                                // reacts as an Exception
-    m_labelBreak = name;
+    m_data->error = static_cast<CBotError>(-val); // reacts as an Exception
+    m_data->labelBreak = name;
     if (val == 3)    // for a return
     {
-        m_retvar = m_var;
+        m_data->retvar.reset(m_var);
         m_var = nullptr;
     }
 }
@@ -307,12 +333,11 @@ void CBotStack::SetBreak(int val, const std::string& name)
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotStack::GetRetVar(bool bRet)
 {
-    if (m_error == CBotError(-3))
+    if (m_data->error == CBotError(-3))
     {
         if ( m_var ) delete m_var;
-        m_var        = m_retvar;
-        m_retvar    = nullptr;
-        m_error      = CBotNoErr;
+        m_var         = m_data->retvar.release();
+        m_data->error = CBotNoErr;
         return        true;
     }
     return bRet;                        // interrupted by something other than return
@@ -322,7 +347,7 @@ bool CBotStack::GetRetVar(bool bRet)
 CBotVar* CBotStack::FindVar(CBotToken*& pToken, bool bUpdate)
 {
     CBotStack*    p = this;
-    std::string    name = pToken->GetString();
+    const auto&   name = pToken->GetString();
 
     while (p != nullptr)
     {
@@ -332,7 +357,7 @@ CBotVar* CBotStack::FindVar(CBotToken*& pToken, bool bUpdate)
             if (pp->GetName() == name)
             {
                 if ( bUpdate )
-                    pp->Update(m_pUser);
+                    pp->Update(m_data->pUser);
 
                 return pp;
             }
@@ -375,7 +400,7 @@ CBotVar* CBotStack::FindVar(long ident, bool bUpdate)
             if (pp->GetUniqNum() == ident)
             {
                 if ( bUpdate )
-                    pp->Update(m_pUser);
+                    pp->Update(m_data->pUser);
 
                 return pp;
             }
@@ -410,8 +435,8 @@ bool CBotStack::SetState(int n, int limite)
 {
     m_state = n;
 
-    m_timer--;                                    // decrement the timer
-    return ( m_timer > limite );                    // interrupted if timer pass
+    m_data->timer--;                              // decrement the timer
+    return (m_data->timer > limite);                // interrupted if timer pass
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -419,46 +444,46 @@ bool CBotStack::IncState(int limite)
 {
     m_state++;
 
-    m_timer--;                                    // decrement the timer
-    return ( m_timer > limite );                    // interrupted if timer pass
+    m_data->timer--;                              // decrement the timer
+    return (m_data->timer > limite);                // interrupted if timer pass
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void CBotStack::SetError(CBotError n, CBotToken* token)
 {
-    if (n != CBotNoErr && m_error != CBotNoErr) return;    // does not change existing error
-    m_error = n;
+    if (n != CBotNoErr && m_data->error != CBotNoErr) return; // does not change existing error
+    m_data->error = n;
     if (token != nullptr)
     {
-        m_start = token->GetStart();
-        m_end   = token->GetEnd();
+        m_data->errStart = token->GetStart();
+        m_data->errEnd = token->GetEnd();
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void CBotStack::ResetError(CBotError n, int start, int end)
 {
-    m_error = n;
-    m_start    = start;
-    m_end    = end;
+    m_data->error = n;
+    m_data->errStart = start;
+    m_data->errEnd = end;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void CBotStack::SetPosError(CBotToken* token)
 {
-    m_start = token->GetStart();
-    m_end   = token->GetEnd();
+    m_data->errStart = token->GetStart();
+    m_data->errEnd = token->GetEnd();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void CBotStack::SetTimer(int n)
 {
-    m_initimer = n;
+    m_data->initimer = n;
 }
 
 int CBotStack::GetTimer()
 {
-    return m_initimer;
+    return m_data->initimer;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -542,26 +567,25 @@ void CBotStack::SetProgram(CBotProgram* p)
 {
     m_prog = p;
     m_func = IsFunction::YES;
+    if (this == m_data->topStack) m_data->baseProg = p;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotProgram*  CBotStack::GetProgram(bool bFirst)
 {
     if ( ! bFirst )    return m_prog;
-    CBotStack*    p = this;
-    while ( p->m_prev != nullptr ) p = p->m_prev;
-    return p->m_prog;
+    return m_data->baseProg;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void* CBotStack::GetUserPtr()
 {
-    return m_pUser;
+    return m_data->pUser;
 }
 
 void CBotStack::SetUserPtr(void* user)
 {
-    m_pUser = user;
+    m_data->pUser = user;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
