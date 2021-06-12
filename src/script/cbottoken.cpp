@@ -261,6 +261,7 @@ std::string GetHelpFilename(const char *token)
 
     if ( strcmp(token, "if"            ) == 0 )  helpfile = "cbot/if";
     if ( strcmp(token, "else"          ) == 0 )  helpfile = "cbot/if";
+    if ( strcmp(token, "repeat"        ) == 0 )  helpfile = "cbot/repeat";
     if ( strcmp(token, "for"           ) == 0 )  helpfile = "cbot/for";
     if ( strcmp(token, "while"         ) == 0 )  helpfile = "cbot/while";
     if ( strcmp(token, "do"            ) == 0 )  helpfile = "cbot/do";
@@ -543,6 +544,7 @@ const char* GetHelpText(const char *token)
 {
     if ( strcmp(token, "if"        ) == 0 )  return "if ( condition ) { code }";
     if ( strcmp(token, "else"      ) == 0 )  return "else { code }";
+    if ( strcmp(token, "repeat"    ) == 0 )  return "repeat ( number )";
     if ( strcmp(token, "for"       ) == 0 )  return "for ( before ; condition ; end )";
     if ( strcmp(token, "while"     ) == 0 )  return "while ( condition ) { code }";
     if ( strcmp(token, "do"        ) == 0 )  return "do { code } while ( condition );";

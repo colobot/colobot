@@ -100,6 +100,8 @@ set(SOURCES
     CBotInstr/CBotPostIncExpr.h
     CBotInstr/CBotPreIncExpr.cpp
     CBotInstr/CBotPreIncExpr.h
+    CBotInstr/CBotRepeat.cpp
+    CBotInstr/CBotRepeat.h
     CBotInstr/CBotReturn.cpp
     CBotInstr/CBotReturn.h
     CBotInstr/CBotSwitch.cpp

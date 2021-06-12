@@ -65,6 +65,7 @@ static const boost::bimap<TokenId, std::string> KEYWORDS = makeBimap<TokenId, st
     {ID_STATIC,     "static"},
     {ID_PROTECTED,  "protected"},
     {ID_PRIVATE,    "private"},
+    {ID_REPEAT,     "repeat"},
     {ID_INT,        "int"},
     {ID_FLOAT,      "float"},
     {ID_BOOLEAN,    "boolean"},
