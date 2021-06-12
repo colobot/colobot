@@ -137,6 +137,7 @@ bool CBotDefParam::Execute(CBotVar** ppVars, CBotStack* &pj)
     while ( p != nullptr )
     {
         pile = pile->AddStack();
+        if (pile->StackOver()) return pj->Return(pile);
         if (pile->GetState() == 1) // already done?
         {
             if (ppVars != nullptr && ppVars[i] != nullptr) ++i;

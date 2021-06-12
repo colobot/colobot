@@ -360,6 +360,7 @@ bool CBotDefClass::Execute(CBotStack* &pj)
             if ( p != nullptr) while ( true )
             {
                 pile2 = pile2->AddStack();                      // place on the stack for the results
+                if (pile2->StackOver()) return pj->Return(pile2);
                 if ( pile2->GetState() == 0 )
                 {
                     if (!p->Execute(pile2)) return false;       // interrupted here?

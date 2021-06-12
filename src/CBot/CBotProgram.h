@@ -19,11 +19,12 @@
 
 #pragma once
 
-#include "CBot/CBotTypResult.h"
 #include "CBot/CBotEnums.h"
 
-#include <vector>
 #include <list>
+#include <memory>
+#include <string>
+#include <vector>
 
 namespace CBot
 {
@@ -31,6 +32,7 @@ namespace CBot
 class CBotFunction;
 class CBotClass;
 class CBotStack;
+class CBotTypResult;
 class CBotVar;
 class CBotExternalCallList;
 
@@ -335,11 +337,11 @@ public:
     /**
      * \brief Returns static list of all registered external calls
      */
-    static CBotExternalCallList* GetExternalCalls();
+    static const std::unique_ptr<CBotExternalCallList>& GetExternalCalls();
 
 private:
     //! All external calls
-    static CBotExternalCallList* m_externalCalls;
+    static std::unique_ptr<CBotExternalCallList> m_externalCalls;
     //! All user-defined functions
     std::list<CBotFunction*> m_functions{};
     //! The entry point function

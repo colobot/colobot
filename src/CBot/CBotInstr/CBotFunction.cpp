@@ -445,7 +445,7 @@ bool CBotFunction::Execute(CBotVar** ppVars, CBotStack* &pj, CBotVar* pInstance)
         pile->IncState();
     }
 
-    if ( !m_block->Execute(pile) )
+    if (!pile->GetRetVar(m_block->Execute(pile)))
     {
         if ( pile->GetError() < 0 )
             pile->SetError( CBotNoErr );

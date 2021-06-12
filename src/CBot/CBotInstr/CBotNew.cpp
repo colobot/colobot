@@ -189,6 +189,7 @@ bool CBotNew::Execute(CBotStack* &pj)
         if (p != nullptr) while ( true)
         {
             pile2 = pile2->AddStack();  // space on the stack for the result
+            if (pile2->StackOver()) return pj->Return(pile2);
             if (pile2->GetState() == 0)
             {
                 if (!p->Execute(pile2)) return false;   // interrupted here?

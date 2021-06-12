@@ -164,6 +164,7 @@ bool CBotInstrMethode::ExecuteVar(CBotVar* &pVar, CBotStack* &pj, CBotToken* pre
         }
         ppVars[i++] = pile2->GetVar();              // construct the list of pointers
         pile2 = pile2->AddStack();                  // space on the stack for the result
+        if (pile2->StackOver()) return pj->Return(pile2);
         p = p->GetNext();
         if ( p == nullptr) break;
     }

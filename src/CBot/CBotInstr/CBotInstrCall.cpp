@@ -138,6 +138,7 @@ bool CBotInstrCall::Execute(CBotStack* &pj)
     if ( p != nullptr) while ( true )
     {
         pile = pile->AddStack();                        // place on the stack for the results
+        if (pile->StackOver()) return pj->Return(pile);
         if ( pile->GetState() == 0 )
         {
             if (!p->Execute(pile)) return false;        // interrupted here?
