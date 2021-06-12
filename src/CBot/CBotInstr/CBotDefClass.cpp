@@ -135,7 +135,7 @@ CBotInstr* CBotDefClass::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* p
             // the constructor is there?
 //          std::string  noname;
             CBotTypResult r = pClass->CompileMethode(&token, var, ppVars, pStk, inst->m_nMethodeIdent);
-            delete pStk->TokenStack();                          // releases the supplement stack
+            pStk->DeleteNext();                                 // releases the supplement stack
             int typ = r.GetType();
 
             if (typ == CBotErrUndefCall)
@@ -160,7 +160,7 @@ CBotInstr* CBotDefClass::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* p
             if (nullptr != (inst->m_exprRetVar = CBotExprRetVar::Compile(p, pStk, true)))
             {
                 inst->m_exprRetVar->SetToken(vartoken);
-                delete pStk->TokenStack();
+                pStk->DeleteNext();
             }
             pStk->SetVar(nullptr);
 

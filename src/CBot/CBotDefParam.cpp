@@ -94,7 +94,7 @@ CBotDefParam* CBotDefParam::Compile(CBotToken* &p, CBotCStack* pStack)
                             prevHasDefault = true;
                         }
                         else pStack->SetError(CBotErrNoExpression, p);
-                        delete pStk;
+                        pStack->DeleteNext();
                     }
                     else
                         if (prevHasDefault) pStack->SetError(CBotErrDefaultValue, p->GetPrev());

@@ -70,7 +70,7 @@ CBotInstr* CBotInstrMethode::Compile(CBotToken* &p, CBotCStack* pStack, CBotVar*
             CBotClass* pClass = var->GetClass();    // pointer to the class
             inst->m_className = pClass->GetName();  // name of the class
             CBotTypResult r = pClass->CompileMethode(pp, var, ppVars, pStack, inst->m_MethodeIdent);
-            delete pStack->TokenStack();    // release parameters on the stack
+            pStack->DeleteNext();           // release parameters on the stack
             inst->m_typRes = r;
 
             if (inst->m_typRes.GetType() > 20)
@@ -95,7 +95,7 @@ CBotInstr* CBotInstrMethode::Compile(CBotToken* &p, CBotCStack* pStack, CBotVar*
             if (nullptr != (inst->m_exprRetVar = CBotExprRetVar::Compile(p, pStack, bMethodChain)))
             {
                 inst->m_exprRetVar->SetToken(pp);
-                delete pStack->TokenStack();
+                pStack->DeleteNext();
             }
 
             if ( pStack->IsOk() )

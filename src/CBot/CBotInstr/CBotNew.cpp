@@ -87,7 +87,7 @@ CBotInstr* CBotNew::Compile(CBotToken* &p, CBotCStack* pStack)
 
         // constructor exist?
         CBotTypResult r = pClass->CompileMethode(&inst->m_vartoken, pVar, ppVars, pStk, inst->m_nMethodeIdent);
-        delete pStk->TokenStack();  // release extra stack
+        pStk->DeleteNext(); // release extra stack
         int typ = r.GetType();
 
         // if there is no constructor, and no parameters either, it's ok
@@ -115,7 +115,7 @@ CBotInstr* CBotNew::Compile(CBotToken* &p, CBotCStack* pStack)
         if (nullptr != (inst->m_exprRetVar = CBotExprRetVar::Compile(p, pStk, true)))
         {
             inst->m_exprRetVar->SetToken(pp);
-            delete pStk->TokenStack();
+            pStk->DeleteNext();
         }
 
         if (pStack->IsOk())
