@@ -747,6 +747,48 @@ TEST_F(CBotUT, ToString)
         "}\n"
     );
 
+    ExecuteTest(
+        "extern void ClassToString_2()\n"
+        "{\n"
+        "    string s = new TestClass;\n"
+        "    ASSERT(s == \"Pointer to TestClass(  )\");\n"
+        "}\n"
+        "public class TestClass { /* no fields */ }\n"
+    );
+
+    ExecuteTest(
+        "extern void ClassInheritanceToString()\n"
+        "{\n"
+        "    string s = new SubClass;\n"
+        "    ASSERT(s == \"Pointer to SubClass( c=7, d=8, e=9 ) extends MidClass( b=4, c=5, d=6 ) extends BaseClass( a=1, b=2, c=3 )\");\n"
+        "}\n"
+        "public class BaseClass { int a = 1, b = 2, c = 3; }\n"
+        "public class MidClass extends BaseClass { int b = 4, c = 5, d = 6; }\n"
+        "public class SubClass extends MidClass { int c = 7, d = 8, e = 9; }\n"
+    );
+
+    ExecuteTest(
+        "extern void ClassInheritanceToString_2()\n"
+        "{\n"
+        "    string s = new SubClass;\n"
+        "    ASSERT(s == \"Pointer to SubClass( c=7, d=8, e=9 ) extends MidClass(  ) extends BaseClass( a=1, b=2, c=3 )\");\n"
+        "}\n"
+        "public class BaseClass { int a = 1, b = 2, c = 3; }\n"
+        "public class MidClass extends BaseClass { /* no fields */ }\n"
+        "public class SubClass extends MidClass { int c = 7, d = 8, e = 9; }\n"
+    );
+
+    ExecuteTest(
+        "extern void ClassInheritanceToString_3()\n"
+        "{\n"
+        "    string s = new SubClass;\n"
+        "    ASSERT(s == \"Pointer to SubClass( c=7, d=8, e=9 ) extends MidClass(  ) extends BaseClass(  )\");\n"
+        "}\n"
+        "public class BaseClass { /* no fields */ }\n"
+        "public class MidClass extends BaseClass { /* no fields */ }\n"
+        "public class SubClass extends MidClass { int c = 7, d = 8, e = 9; }\n"
+    );
+
     // TODO: IntrinsicClassToString ? (e.g. point)
 }
 
@@ -3195,5 +3237,27 @@ TEST_F(CBotUT, ClassTestPrivateMethod)
         "    }\n"
         "}\n",
         CBotErrPrivate
+    );
+}
+
+TEST_F(CBotUT, ClassTestSaveInheritedMembers)
+{
+    auto publicProgram = ExecuteTest(
+        "public class TestClass { int a = 123; }\n"
+        "public class TestClass2 extends TestClass { int b = 456; }\n"
+    );
+    // Note: Use --CBotUT_TestSaveState command line arg.
+    ExecuteTest(
+        "extern void TestSaveInheritedMembers()\n"
+        "{\n"
+        "    TestClass2 t();\n"
+        "    ASSERT(t.a == 123);\n"
+        "    ASSERT(t.b == 456);\n"
+        "    t.a = 789; t.b = 1011;\n"
+        "    ASSERT(t.a == 789);\n"
+        "    ASSERT(t.b == 1011);\n"
+        "    ASSERT(789 == t.a);\n"
+        "    ASSERT(1011 == t.b);\n"
+        "}\n"
     );
 }

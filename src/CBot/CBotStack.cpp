@@ -908,13 +908,18 @@ bool CBotVar::RestoreState(std::istream &istr, CBotVar* &pVar)
 
                     if (isClass && p == nullptr) // set id for each item in this instance
                     {
-                        CBotVar* pVars = pNew->GetItemList();
-                        CBotVar* pv = pNew->GetClass()->GetVar();
-                        while (pVars != nullptr && pv != nullptr)
+                        CBotClass* pClass = pNew->GetClass();
+                        CBotVar* pVars = (static_cast<CBotVarClass*>(pNew))->m_pVar;
+                        while (pClass != nullptr && pVars != nullptr)
                         {
-                            pVars->m_ident = pv->m_ident;
-                            pv = pv->GetNext();
-                            pVars = pVars->GetNext();
+                            CBotVar* pv = pClass->GetVar();
+                            while (pVars != nullptr && pv != nullptr)
+                            {
+                                pVars->m_ident = pv->m_ident;
+                                pVars = pVars->m_next;
+                                pv = pv->m_next;
+                            }
+                            pClass = pClass->GetParent();
                         }
                     }
 
