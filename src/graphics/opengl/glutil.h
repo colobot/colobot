@@ -99,7 +99,7 @@ std::string GetLastShaderError();
 
 GLint LoadShader(GLint type, const char* filename);
 
-GLint LinkProgram(int count, GLint shaders[]);
+GLint LinkProgram(int count, const GLint* shaders);
 
 // TODO: Moved this here temporarily only to remove code duplication in CGLDeviceXX
 struct PreparedTextureData

@@ -471,9 +471,12 @@ GLint LoadShader(GLint type, const char* filename)
         return 0;
     }
 
-    GLchar source[65536];
-    GLchar *sources[] = { source };
-    int length = PHYSFS_read(file, source, 1, 65536);
+    size_t len = PHYSFS_fileLength(file);
+
+    std::vector<GLchar> source(len + 1);
+
+    GLchar *sources[] = { source.data() };
+    size_t length = PHYSFS_read(file, source.data(), 1, len);
     source[length] = '\0';
 
     PHYSFS_close(file);
@@ -503,7 +506,7 @@ GLint LoadShader(GLint type, const char* filename)
     return shader;
 }
 
-GLint LinkProgram(int count, GLint shaders[])
+GLint LinkProgram(int count, const GLint* shaders)
 {
     GLint program = glCreateProgram();
 
