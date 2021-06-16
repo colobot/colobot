@@ -24,6 +24,7 @@
 #include "common/restext.h"
 
 #include "graphics/engine/engine.h"
+#include "graphics/core/device.h"
 
 
 namespace Ui
@@ -141,6 +142,8 @@ void CButton::Draw()
     Math::Point pos, dim, uv1, uv2;
     float   dp;
 
+    auto device = m_engine->GetDevice();
+
     if ( (m_state & STATE_VISIBLE) == 0 )  return;
 
     if ( m_state & STATE_WARNING )  // shading yellow-black?
@@ -167,8 +170,8 @@ void CButton::Draw()
          (m_state & STATE_CARD  ) == 0 &&
          (m_state & STATE_SIMPLY) == 0 )
     {
-        m_engine->SetTexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+        m_engine->SetUITexture("textures/interface/button2.png");
 
         dp = 0.5f / 256.0f;
 
@@ -199,6 +202,8 @@ void CButton::Draw()
         pos.x = m_pos.x + m_dim.x - 5.0f / 640.0f - 3.0f / 640.0f;
         DrawIcon(pos, dim, uv1, uv2, 0.0f);
     }
+
+    device->SetRenderMode(Gfx::RENDER_MODE_INTERFACE);
 }
 
 

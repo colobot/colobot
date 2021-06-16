@@ -57,6 +57,8 @@ struct DynamicBuffer
     unsigned int offset = 0;
 };
 
+class CGL33UIRenderer;
+
 /**
   \class CGL33Device
   \brief Implementation of CDevice interface in OpenGL 3.3
@@ -90,6 +92,7 @@ public:
     void Clear() override;
 
     void SetRenderMode(RenderMode mode) override;
+    CUIRenderer* GetUIRenderer() override;
 
     void SetTransform(TransformType type, const Math::Matrix &matrix) override;
 
@@ -120,6 +123,8 @@ public:
     virtual void DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, int vertexCount,
                                Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) override;
     virtual void DrawPrimitive(PrimitiveType type, const VertexCol *vertices , int vertexCount) override;
+
+    virtual void DrawPrimitive(PrimitiveType type, const Vertex2D* vertices, int vertexCount) override;
 
     virtual void DrawPrimitives(PrimitiveType type, const Vertex *vertices,
         int first[], int count[], int drawCount,
@@ -314,6 +319,9 @@ private:
     UniformLocations m_uniforms[3];
     //! Uniform locations for current mode
     UniformLocations* m_uni = nullptr;
+
+    //! Interface renderer
+    std::unique_ptr<CGL33UIRenderer> m_uiRenderer;
 };
 
 } // namespace Gfx

@@ -124,10 +124,9 @@ bool CColor::EventProcess(const Event &event)
 // Draw the button.
 void CColor::Draw()
 {
-    Gfx::CDevice* device;
-    Gfx::VertexCol  vertex[4];  // 2 triangles
-    Gfx::Color   color;
-    Math::Point     p1, p2;
+    Gfx::Vertex2D  vertex[4];  // 2 triangles
+    Gfx::Color     color;
+    Math::Point    p1, p2;
 
     if ( (m_state & STATE_VISIBLE) == 0 )  return;
 
@@ -136,7 +135,7 @@ void CColor::Draw()
         DrawShadow(m_pos, m_dim);
     }
 
-    m_engine->SetTexture("textures/interface/button1.png");
+    m_engine->SetUITexture("textures/interface/button1.png");
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
     CControl::Draw();
 
@@ -147,19 +146,23 @@ void CColor::Draw()
 
     color = GetColor();
 
-    m_engine->SetTexture("");  // no texture
+    glm::u8vec4 col = { color.r * 255, color.g * 255, color.b * 255, color.a * 255 };
+
+    m_engine->SetUITexture(Gfx::Texture{0});  // no texture
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
-    vertex[0] = Gfx::VertexCol(Math::Vector(p1.x, p1.y, 0.0f), color);
-    vertex[1] = Gfx::VertexCol(Math::Vector(p1.x, p2.y, 0.0f), color);
-    vertex[2] = Gfx::VertexCol(Math::Vector(p2.x, p1.y, 0.0f), color);
-    vertex[3] = Gfx::VertexCol(Math::Vector(p2.x, p2.y, 0.0f), color);
+    auto device = m_engine->GetDevice();
 
-    device = m_engine->GetDevice();
+    vertex[0] = { { p1.x, p1.y }, {}, col };
+    vertex[1] = { { p1.x, p2.y }, {}, col };
+    vertex[2] = { { p2.x, p1.y }, {}, col };
+    vertex[3] = { { p2.x, p2.y }, {}, col };
+
     device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
     m_engine->AddStatisticTriangle(2);
-}
 
+    device->SetRenderMode(Gfx::RENDER_MODE_INTERFACE);
+}
 
 void CColor::SetRepeat(bool bRepeat)
 {

@@ -29,6 +29,8 @@
 
 #include "common/resources/resourcemanager.h"
 
+#include "graphics/core/renderers.h"
+
 #include "graphics/engine/engine.h"
 
 #include "math/func.h"
@@ -113,7 +115,7 @@ public:
 
     /// Add a quad to be rendered.
     /// This may trigger a call to Flush() if necessary.
-    void Add(Vertex vertices[4], unsigned int texID, EngineRenderState renderState, Color color)
+    void Add(Vertex2D vertices[4], unsigned int texID, EngineRenderState renderState, Color color)
     {
         if (texID != m_texID || renderState != m_renderState || color != m_color)
         {
@@ -132,6 +134,7 @@ public:
 
         m_engine.SetState(m_renderState);
         m_engine.GetDevice()->SetTexture(0, m_texID);
+        m_engine.SetUITexture(Texture{ m_texID });
 
         assert(m_firsts.size() == m_counts.size());
         if (m_firsts.size() < m_quads.size())
@@ -148,16 +151,24 @@ public:
             }
         }
 
-        const Vertex* vertices = m_quads.front().vertices;
-        m_engine.GetDevice()->DrawPrimitives(PRIMITIVE_TRIANGLE_STRIP, vertices, m_firsts.data(),
-                                             m_counts.data(), static_cast<int>(m_quads.size()), m_color);
+        for (const auto& quad : m_quads)
+        {
+            m_engine.GetDevice()->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, quad.vertices, 4);
+        }
+
+        m_engine.GetDevice()->GetUIRenderer()->Flush();
+        m_engine.GetDevice()->SetRenderMode(Gfx::RENDER_MODE_INTERFACE);
+
+        //const Vertex* vertices = m_quads.front().vertices;
+        //m_engine.GetDevice()->DrawPrimitives(PRIMITIVE_TRIANGLE_STRIP, vertices, m_firsts.data(),
+        //                                     m_counts.data(), static_cast<int>(m_quads.size()), m_color);
         m_engine.AddStatisticTriangle(static_cast<int>(m_quads.size() * 2));
         m_quads.clear();
     }
 private:
     CEngine& m_engine;
 
-    struct Quad { Vertex vertices[4]; };
+    struct Quad { Vertex2D vertices[4]; };
     std::vector<Quad> m_quads;
     std::vector<int> m_firsts;
     std::vector<int> m_counts;
@@ -1026,8 +1037,6 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::I
         Math::IntPoint p1(pos.x, pos.y - height);
         Math::IntPoint p2(pos.x + width, pos.y);
 
-        Math::Vector n(0.0f, 0.0f, -1.0f);  // normal
-
         // For whatever reason ch.c1 is a SIGNED char, we need to fix that
         unsigned char icon = static_cast<unsigned char>(ch.c1);
 
@@ -1047,12 +1056,14 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::I
         uv2.x -= dp;
         uv2.y -= dp;
 
-        Vertex quad[4] =
+        glm::u8vec4 col = { color.r * 255, color.g * 255, color.b * 255, color.a * 255 };
+
+        Vertex2D quad[4] =
         {
-            Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(uv1.x, uv2.y)),
-            Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(uv1.x, uv1.y)),
-            Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(uv2.x, uv2.y)),
-            Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(uv2.x, uv1.y))
+            { { p1.x, p2.y }, { uv1.x, uv2.y }, col },
+            { { p1.x, p1.y }, { uv1.x, uv1.y }, col },
+            { { p2.x, p2.y }, { uv2.x, uv2.y }, col },
+            { { p2.x, p1.y }, { uv2.x, uv1.y }, col }
         };
 
         m_quadBatch->Add(quad, texID, ENG_RSTATE_TTEXTURE_WHITE, color);
@@ -1083,14 +1094,15 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::I
                               static_cast<float>(tex.charPos.y + halfPixelMargin) / FONT_TEXTURE_SIZE.y);
         Math::Point texCoord2(static_cast<float>(tex.charPos.x + tex.charSize.x - halfPixelMargin) / FONT_TEXTURE_SIZE.x,
                               static_cast<float>(tex.charPos.y + tex.charSize.y - halfPixelMargin) / FONT_TEXTURE_SIZE.y);
-        Math::Vector n(0.0f, 0.0f, -1.0f);  // normal
 
-        Vertex quad[4] =
+        glm::u8vec4 col = { color.r * 255, color.g * 255, color.b * 255, color.a * 255 };
+
+        Vertex2D quad[4] =
         {
-            Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(texCoord1.x, texCoord2.y)),
-            Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(texCoord1.x, texCoord1.y)),
-            Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(texCoord2.x, texCoord2.y)),
-            Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(texCoord2.x, texCoord1.y))
+            { { p1.x, p2.y }, { texCoord1.x, texCoord2.y }, col },
+            { { p1.x, p1.y }, { texCoord1.x, texCoord1.y }, col },
+            { { p2.x, p2.y }, { texCoord2.x, texCoord2.y }, col },
+            { { p2.x, p1.y }, { texCoord2.x, texCoord1.y }, col }
         };
 
         m_quadBatch->Add(quad, tex.id, ENG_RSTATE_TEXT, color);

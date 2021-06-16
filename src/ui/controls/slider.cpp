@@ -23,6 +23,7 @@
 #include "common/event.h"
 #include "common/stringutils.h"
 
+#include "graphics/core/device.h"
 #include "graphics/engine/engine.h"
 #include "graphics/engine/text.h"
 
@@ -371,6 +372,8 @@ void CSlider::Draw()
     int     icon;
     float   h;
 
+    auto device = m_engine->GetDevice();
+
     if ( (m_state & STATE_VISIBLE) == 0 )  return;
 
     if (m_buttonLeft != nullptr)
@@ -472,6 +475,8 @@ void CSlider::Draw()
             m_engine->GetText()->DrawText(text, m_fontType, m_fontSize, pos, dim.x, Gfx::TEXT_ALIGN_RIGHT, 0);
         }
     }
+
+    device->SetRenderMode(Gfx::RENDER_MODE_INTERFACE);
 }
 
 std::string CSlider::GetLabel()
@@ -486,9 +491,12 @@ void CSlider::DrawVertex(Math::Point pos, Math::Point dim, int icon)
     Math::Point     uv1, uv2, corner;
     float       ex, dp;
 
+    auto device = m_engine->GetDevice();
+    auto renderer = device->GetUIRenderer();
+
     if ( icon == 0 )
     {
-        m_engine->SetTexture("textures/interface/button2.png");
+        m_engine->SetUITexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x =   0.0f/256.0f;  // yellow rectangle
         uv1.y =  32.0f/256.0f;
@@ -500,7 +508,7 @@ void CSlider::DrawVertex(Math::Point pos, Math::Point dim, int icon)
     }
     else if ( icon == 1 )
     {
-        m_engine->SetTexture("textures/interface/button2.png");
+        m_engine->SetUITexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x = 128.0f/256.0f;  // gray rectangle
         uv1.y =  32.0f/256.0f;
@@ -512,7 +520,7 @@ void CSlider::DrawVertex(Math::Point pos, Math::Point dim, int icon)
     }
     else
     {
-        m_engine->SetTexture("textures/interface/button2.png");
+        m_engine->SetUITexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x = 224.0f/256.0f;  // cursor
         uv1.y =  32.0f/256.0f;
@@ -535,6 +543,8 @@ void CSlider::DrawVertex(Math::Point pos, Math::Point dim, int icon)
     uv2.y -= dp;
 
     DrawIcon(pos, dim, uv1, uv2, corner, ex);
+
+    device->SetRenderMode(Gfx::RENDER_MODE_INTERFACE);
 }
 
 

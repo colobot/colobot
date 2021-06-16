@@ -23,6 +23,7 @@
 #include "common/event.h"
 #include "common/restext.h"
 
+#include "graphics/core/device.h"
 #include "graphics/engine/engine.h"
 #include "graphics/engine/text.h"
 
@@ -92,6 +93,8 @@ void CCheck::Draw()
     float       zoomExt, zoomInt;
     int         icon;
 
+    auto device = m_engine->GetDevice();
+
     if ( (m_state & STATE_VISIBLE) == 0 )  return;
 
     iDim = m_dim;
@@ -102,8 +105,8 @@ void CCheck::Draw()
         DrawShadow(m_pos, m_dim);
     }
 
-    m_engine->SetTexture("textures/interface/button1.png");
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+    m_engine->SetUITexture("textures/interface/button1.png");
 
     zoomExt = 1.00f;
     zoomInt = 0.95f;
@@ -145,6 +148,8 @@ void CCheck::Draw()
             DrawPart(icon, zoomInt, 0.0f);  // draw the icon
         }
     }
+
+    device->SetRenderMode(Gfx::RENDER_MODE_INTERFACE);
 
     m_dim = iDim;
 

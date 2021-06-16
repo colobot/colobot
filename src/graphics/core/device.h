@@ -49,6 +49,7 @@ namespace Gfx
 {
 
 class CFramebuffer;
+class CUIRenderer;
 struct FramebufferParams;
 struct Light;
 struct Material;
@@ -374,6 +375,8 @@ public:
 
     //! Sets current rendering mode
     virtual void SetRenderMode(RenderMode mode) = 0;
+    //! Returns UI renderer
+    virtual CUIRenderer* GetUIRenderer() = 0;
 
     //! Sets the transform matrix of given type
     virtual void SetTransform(TransformType type, const Math::Matrix &matrix) = 0;
@@ -424,6 +427,8 @@ public:
                                Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) = 0;
     //! Renders primitive composed of vertices with solid color
     virtual void DrawPrimitive(PrimitiveType type, const VertexCol *vertices , int vertexCount) = 0;
+    //! Renders primitive using UI renderer
+    virtual void DrawPrimitive(PrimitiveType type, const Vertex2D* vertices, int vertexCount) = 0;
 
     //! Renders primitives composed of lists of vertices with single texture
     virtual void DrawPrimitives(PrimitiveType type, const Vertex *vertices,

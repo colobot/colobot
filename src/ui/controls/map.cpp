@@ -344,7 +344,7 @@ void CMap::Draw()
 
     if (m_fixImage.empty()) // drawing of the relief?
     {
-        m_engine->SetTexture("textures/interface/map.png");
+        m_engine->SetUITexture("textures/interface/map.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x = 0.5f + (m_offset.x - (m_half / m_zoom)) / (m_half * 2.0f);
         uv1.y = 0.5f - (m_offset.y + (m_half / m_zoom)) / (m_half * 2.0f);
@@ -355,7 +355,7 @@ void CMap::Draw()
     else // still image?
     {
         m_engine->LoadTexture(m_fixImage);
-        m_engine->SetTexture(m_fixImage);
+        m_engine->SetUITexture(m_fixImage);
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x = 0.0f;
         uv1.y = 0.0f;
@@ -493,7 +493,7 @@ void CMap::DrawFocus(Math::Point pos, float dir, ObjectType type, MapColor color
     uv2.x = 126.0f/256.0f;
     uv2.y = 255.0f/256.0f;
 
-    m_engine->SetTexture("textures/interface/button2.png");
+    m_engine->SetUITexture("textures/interface/button2.png");
     m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
 
     bEnding = false;
@@ -553,7 +553,7 @@ void CMap::DrawObject(Math::Point pos, float dir, ObjectType type, MapColor colo
             return;  // flashes
         }
 
-        m_engine->SetTexture("textures/interface/button2.png");
+        m_engine->SetUITexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
         if ( bUp )
         {
@@ -696,7 +696,7 @@ void CMap::DrawObject(Math::Point pos, float dir, ObjectType type, MapColor colo
     {
         if ( bSelect )
         {
-            m_engine->SetTexture("textures/interface/button2.png");
+            m_engine->SetUITexture("textures/interface/button2.png");
             m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
             if ( m_bToy )
             {
@@ -722,7 +722,7 @@ void CMap::DrawObject(Math::Point pos, float dir, ObjectType type, MapColor colo
     {
         if ( m_bRadar )
         {
-            m_engine->SetTexture("textures/interface/button2.png");
+            m_engine->SetUITexture("textures/interface/button2.png");
             m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
             uv1.x =  64.5f/256.0f;  // blue triangle
             uv1.y = 240.5f/256.0f;
@@ -742,7 +742,7 @@ void CMap::DrawObject(Math::Point pos, float dir, ObjectType type, MapColor colo
 
     if ( color == MAPCOLOR_WAYPOINTb )
     {
-        m_engine->SetTexture("textures/interface/button2.png");
+        m_engine->SetUITexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
         uv1.x = 192.5f/256.0f;  // blue cross
         uv1.y = 240.5f/256.0f;
@@ -752,7 +752,7 @@ void CMap::DrawObject(Math::Point pos, float dir, ObjectType type, MapColor colo
     }
     if ( color == MAPCOLOR_WAYPOINTr )
     {
-        m_engine->SetTexture("textures/interface/button2.png");
+        m_engine->SetUITexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
         uv1.x = 208.5f/256.0f;  // red cross
         uv1.y = 240.5f/256.0f;
@@ -762,7 +762,7 @@ void CMap::DrawObject(Math::Point pos, float dir, ObjectType type, MapColor colo
     }
     if ( color == MAPCOLOR_WAYPOINTg )
     {
-        m_engine->SetTexture("textures/interface/button2.png");
+        m_engine->SetUITexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
         uv1.x = 224.5f/256.0f;  // green cross
         uv1.y = 240.5f/256.0f;
@@ -772,7 +772,7 @@ void CMap::DrawObject(Math::Point pos, float dir, ObjectType type, MapColor colo
     }
     if ( color == MAPCOLOR_WAYPOINTy )
     {
-        m_engine->SetTexture("textures/interface/button2.png");
+        m_engine->SetUITexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
         uv1.x = 240.5f/256.0f;  // yellow cross
         uv1.y = 240.5f/256.0f;
@@ -782,7 +782,7 @@ void CMap::DrawObject(Math::Point pos, float dir, ObjectType type, MapColor colo
     }
     if ( color == MAPCOLOR_WAYPOINTv )
     {
-        m_engine->SetTexture("textures/interface/button2.png");
+        m_engine->SetUITexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
         uv1.x = 192.5f/256.0f;  // violet cross
         uv1.y = 224.5f/256.0f;
@@ -803,7 +803,7 @@ void CMap::DrawObjectIcon(Math::Point pos, Math::Point dim, MapColor color,
 
     dp = 0.5f/256.0f;
 
-    m_engine->SetTexture("textures/interface/button3.png");
+    m_engine->SetUITexture("textures/interface/button3.png");
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
     if ( color == MAPCOLOR_MOVE )
     {
@@ -907,7 +907,7 @@ void CMap::DrawObjectIcon(Math::Point pos, Math::Point dim, MapColor color,
             case OBJECT_MOBILEit:
             case OBJECT_MOBILErp:
             case OBJECT_MOBILEst:
-                m_engine->SetTexture("textures/interface/button4.png"); break;
+                m_engine->SetUITexture("textures/interface/button4.png"); break;
             default: ; // button3.png
         }
 
@@ -942,7 +942,7 @@ void CMap::DrawHighlight(Math::Point pos)
     dim.x *= 2.0f+cosf(m_time*8.0f)*0.5f;
     dim.y *= 2.0f+cosf(m_time*8.0f)*0.5f;
 
-    m_engine->SetTexture("textures/interface/button2.png");
+    m_engine->SetUITexture("textures/interface/button2.png");
     m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
     uv1.x = 160.5f/256.0f;  // hilite
     uv1.y = 224.5f/256.0f;
@@ -957,17 +957,13 @@ void CMap::DrawHighlight(Math::Point pos)
 
 void CMap::DrawTriangle(Math::Point p1, Math::Point p2, Math::Point p3, Math::Point uv1, Math::Point uv2)
 {
-    Gfx::CDevice* device;
-    Gfx::VertexTex2  vertex[3];  // 1 triangle
-    Math::Vector    n;
+    Gfx::Vertex2D  vertex[3];  // 1 triangle
 
-    device = m_engine->GetDevice();
+    auto device = m_engine->GetDevice();
 
-    n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
-
-    vertex[0] = Gfx::VertexTex2(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(uv1.x,uv1.y));
-    vertex[1] = Gfx::VertexTex2(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(uv1.x,uv2.y));
-    vertex[2] = Gfx::VertexTex2(Math::Vector(p3.x, p3.y, 0.0f), n, Math::Point(uv2.x,uv2.y));
+    vertex[0] = { { p1.x, p1.y }, { uv1.x, uv1.y } };
+    vertex[1] = { { p2.x, p2.y }, { uv1.x, uv2.y } };
+    vertex[2] = { { p3.x, p3.y }, { uv2.x, uv2.y } };
 
     device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLES, vertex, 3);
     m_engine->AddStatisticTriangle(1);
@@ -977,19 +973,15 @@ void CMap::DrawTriangle(Math::Point p1, Math::Point p2, Math::Point p3, Math::Po
 
 void CMap::DrawPenta(Math::Point p1, Math::Point p2, Math::Point p3, Math::Point p4, Math::Point p5, Math::Point uv1, Math::Point uv2)
 {
-    Gfx::CDevice* device;
-    Gfx::VertexTex2  vertex[5];  // 1 pentagon
-    Math::Vector    n;
+    Gfx::Vertex2D  vertex[5];  // 1 pentagon
 
-    device = m_engine->GetDevice();
+    auto device = m_engine->GetDevice();
 
-    n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
-
-    vertex[0] = Gfx::VertexTex2(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(uv1.x,uv1.y));
-    vertex[1] = Gfx::VertexTex2(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(uv1.x,uv2.y));
-    vertex[2] = Gfx::VertexTex2(Math::Vector(p5.x, p5.y, 0.0f), n, Math::Point(uv2.x,uv2.y));
-    vertex[3] = Gfx::VertexTex2(Math::Vector(p3.x, p3.y, 0.0f), n, Math::Point(uv2.x,uv2.y));
-    vertex[4] = Gfx::VertexTex2(Math::Vector(p4.x, p4.y, 0.0f), n, Math::Point(uv2.x,uv2.y));
+    vertex[0] = { { p1.x, p1.y }, { uv1.x, uv1.y } };
+    vertex[1] = { { p2.x, p2.y }, { uv1.x, uv2.y } };
+    vertex[2] = { { p5.x, p5.y }, { uv2.x, uv2.y } };
+    vertex[3] = { { p3.x, p3.y }, { uv2.x, uv2.y } };
+    vertex[4] = { { p4.x, p4.y }, { uv2.x, uv2.y } };
 
     device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 5);
     m_engine->AddStatisticTriangle(3);
@@ -999,12 +991,10 @@ void CMap::DrawPenta(Math::Point p1, Math::Point p2, Math::Point p3, Math::Point
 
 void CMap::DrawVertex(Math::Point uv1, Math::Point uv2, float zoom)
 {
-    Gfx::CDevice* device;
-    Gfx::VertexTex2  vertex[4];  // 2 triangles
+    Gfx::Vertex2D   vertex[4];  // 2 triangles
     Math::Point     p1, p2, c;
-    Math::Vector    n;
 
-    device = m_engine->GetDevice();
+    auto device = m_engine->GetDevice();
 
     p1.x = m_pos.x;
     p1.y = m_pos.y;
@@ -1024,12 +1014,10 @@ void CMap::DrawVertex(Math::Point uv1, Math::Point uv2, float zoom)
     m_mapDim.x = p2.x-p1.x;
     m_mapDim.y = p2.y-p1.y;
 
-    n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
-
-    vertex[0] = Gfx::VertexTex2(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(uv1.x,uv2.y));
-    vertex[1] = Gfx::VertexTex2(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(uv1.x,uv1.y));
-    vertex[2] = Gfx::VertexTex2(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(uv2.x,uv2.y));
-    vertex[3] = Gfx::VertexTex2(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(uv2.x,uv1.y));
+    vertex[0] = { { p1.x, p1.y }, { uv1.x, uv2.y } };
+    vertex[1] = { { p1.x, p2.y }, { uv1.x, uv1.y } };
+    vertex[2] = { { p2.x, p1.y }, { uv2.x, uv2.y } };
+    vertex[3] = { { p2.x, p2.y }, { uv2.x, uv1.y } };
 
     device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
     m_engine->AddStatisticTriangle(2);
@@ -1094,6 +1082,7 @@ void CMap::UpdateTerrain()
 
     m_engine->DeleteTexture("interface/map.png");
     m_engine->LoadTexture("textures/interface/map.png", &img);
+    m_engine->SetUITexture("textures/interface/map.png");
 }
 
 // Updates the field in the map.

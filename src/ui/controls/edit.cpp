@@ -1155,6 +1155,8 @@ void CEdit::Draw()
     {
         m_scroll->Draw();
     }
+
+    m_engine->GetDevice()->SetRenderMode(Gfx::RENDER_MODE_INTERFACE);
 }
 
 // Draw an image part.
@@ -1182,7 +1184,7 @@ void CEdit::DrawImage(Math::Point pos, std::string name, float width,
     params.padToNearestPowerOfTwo = true;
     Gfx::Texture tex = m_engine->LoadTexture(PrepareImageFilename(name), params);
 
-    m_engine->SetTexture(tex);
+    m_engine->SetUITexture(tex);
 
     uv1.x = 0.0f;
     uv2.x = 1.0f;
@@ -1214,7 +1216,7 @@ void CEdit::DrawBack(Math::Point pos, Math::Point dim)
 
     if ( m_bGeneric )  return;
 
-    m_engine->SetTexture("textures/interface/button2.png");
+    m_engine->SetUITexture("textures/interface/button2.png");
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
     if ( m_bMulti )
@@ -1267,12 +1269,15 @@ void CEdit::DrawHorizontalGradient(Math::Point pos, Math::Point dim, Gfx::Color 
     p2.x = pos.x + dim.x;
     p2.y = pos.y + dim.y;
 
-    Gfx::VertexCol quad[] =
+    glm::u8vec4 col1 = { color1.r * 255, color1.g * 255, color1.b * 255, color1.a * 255 };
+    glm::u8vec4 col2 = { color2.r * 255, color2.g * 255, color2.b * 255, color2.a * 255 };
+
+    Gfx::Vertex2D quad[] =
     {
-        Gfx::VertexCol(Math::Vector(p1.x, p1.y, 0.0f), color1),
-        Gfx::VertexCol(Math::Vector(p1.x, p2.y, 0.0f), color1),
-        Gfx::VertexCol(Math::Vector(p2.x, p1.y, 0.0f), color2),
-        Gfx::VertexCol(Math::Vector(p2.x, p2.y, 0.0f), color2)
+        { { p1.x, p1.y }, {}, col1 },
+        { { p1.x, p2.y }, {}, col1 },
+        { { p2.x, p1.y }, {}, col2 },
+        { { p2.x, p2.y }, {}, col2 }
     };
 
     m_engine->GetDevice()->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, quad, 4);

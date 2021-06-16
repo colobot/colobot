@@ -135,7 +135,7 @@ void CKey::Draw()
         DrawShadow(m_pos, m_dim);
 
 
-    m_engine->SetTexture("textures/interface/button1.png");
+    m_engine->SetUITexture("textures/interface/button1.png");
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
     float zoomExt = 1.00f;

@@ -98,6 +98,7 @@ add_library(colobotbase STATIC
     graphics/core/texture.h
     graphics/core/type.cpp
     graphics/core/type.h
+    graphics/core/renderers.h
     graphics/core/vertex.h
     graphics/engine/camera.cpp
     graphics/engine/camera.h
@@ -144,6 +145,8 @@ add_library(colobotbase STATIC
     graphics/model/model_triangle.h
     graphics/opengl/gl33device.cpp
     graphics/opengl/gl33device.h
+    graphics/opengl/gl33renderers.cpp
+    graphics/opengl/gl33renderers.h
     graphics/opengl/glframebuffer.cpp
     graphics/opengl/glframebuffer.h
     graphics/opengl/glutil.cpp

@@ -1189,6 +1189,10 @@ public:
     void            EnablePauseBlur();
     void            DisablePauseBlur();
 
+    void            SetUITexture(const std::string& name);
+    void            SetUITexture(const Texture& texture);
+
+
     //! Reloads all textures
     /** This additionally sends EVENT_RELOAD_TEXTURES to reload all textures not maintained by CEngine **/
     void ReloadAllTextures();

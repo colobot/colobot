@@ -31,6 +31,7 @@
 #include "graphics/engine/engine.h"
 
 #include "graphics/opengl/glframebuffer.h"
+#include "graphics/opengl/gl33renderers.h"
 
 #include "math/geometry.h"
 
@@ -39,6 +40,8 @@
 #include <physfs.h>
 
 #include <cassert>
+
+#include <glm/gtc/type_ptr.hpp>
 
 
 // Graphics module namespace
@@ -511,6 +514,8 @@ bool CGL33Device::Create()
         glUniform1f(uni.alphaReference, 1.0f);
     }
 
+    m_uiRenderer = std::make_unique<CGL33UIRenderer>();
+
     SetRenderMode(RENDER_MODE_NORMAL);
 
     // create default framebuffer object
@@ -570,6 +575,8 @@ void CGL33Device::Destroy()
     m_currentTextures.clear();
     m_texturesEnabled.clear();
     m_textureStageParams.clear();
+
+    m_uiRenderer = nullptr;
 }
 
 void CGL33Device::ConfigChanged(const DeviceConfig& newConfig)
@@ -615,6 +622,8 @@ void CGL33Device::Clear()
 
 void CGL33Device::SetRenderMode(RenderMode mode)
 {
+    m_uiRenderer->Flush();
+
     switch (mode)
     {
     case RENDER_MODE_NORMAL:
@@ -639,6 +648,11 @@ void CGL33Device::SetRenderMode(RenderMode mode)
     UpdateTextureState(0);
     UpdateTextureState(1);
     UpdateTextureState(2);
+}
+
+CUIRenderer* CGL33Device::GetUIRenderer()
+{
+    return m_uiRenderer.get();
 }
 
 void CGL33Device::SetTransform(TransformType type, const Math::Matrix &matrix)
@@ -1168,6 +1182,11 @@ void CGL33Device::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, i
     glVertexAttrib2f(4, 0.0f, 0.0f);
 
     glDrawArrays(TranslateGfxPrimitive(type), 0, vertexCount);
+}
+
+void CGL33Device::DrawPrimitive(PrimitiveType type, const Vertex2D* vertices, int vertexCount)
+{
+    m_uiRenderer->DrawPrimitive(type, vertexCount, vertices);
 }
 
 void CGL33Device::DrawPrimitives(PrimitiveType type, const Vertex *vertices,
@@ -1834,16 +1853,12 @@ void CGL33Device::UpdateLights()
 
 inline void CGL33Device::BindVBO(GLuint vbo)
 {
-    if (m_currentVBO == vbo) return;
-
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     m_currentVBO = vbo;
 }
 
 inline void CGL33Device::BindVAO(GLuint vao)
 {
-    if (m_currentVAO == vao) return;
-
     glBindVertexArray(vao);
     m_currentVAO = vao;
 }

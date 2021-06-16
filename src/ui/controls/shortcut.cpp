@@ -115,7 +115,7 @@ void CShortcut::Draw()
         zoom = 1.0f;
     }
 
-    m_engine->SetTexture("textures/interface/button3.png");
+    m_engine->SetUITexture("textures/interface/button3.png");
 
     if ( icon != -1 )
     {
@@ -216,19 +216,19 @@ void CShortcut::Draw()
 
       DrawIcon(m_pos, m_dim, uv1, uv2);
     }
+
+    m_engine->GetDevice()->SetRenderMode(Gfx::RENDER_MODE_INTERFACE);
 }
 
 // Draw the vertex array.
 
 void CShortcut::DrawVertex(int icon, float zoom)
 {
-    Gfx::CDevice* device;
-    Gfx::Vertex  vertex[4];  // 2 triangles
+    Gfx::Vertex2D vertex[4];  // 2 triangles
     Math::Point     p1, p2, c;
-    Math::Vector    n;
     float       u1, u2, v1, v2, dp;
 
-    device = m_engine->GetDevice();
+    auto device = m_engine->GetDevice();
 
     p1.x = m_pos.x;
     p1.y = m_pos.y;
@@ -255,12 +255,10 @@ void CShortcut::DrawVertex(int icon, float zoom)
     u2 -= dp;
     v2 -= dp;
 
-    n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
-
-    vertex[0] = Gfx::Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(u1, v2));
-    vertex[1] = Gfx::Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(u1, v1));
-    vertex[2] = Gfx::Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(u2, v2));
-    vertex[3] = Gfx::Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(u2, v1));
+    vertex[0] = { { p1.x, p1.y }, { u1, v2 } };
+    vertex[1] = { { p1.x, p2.y }, { u1, v1 } };
+    vertex[2] = { { p2.x, p1.y }, { u2, v2 } };
+    vertex[3] = { { p2.x, p2.y }, { u2, v1 } };
 
     device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
     m_engine->AddStatisticTriangle(2);

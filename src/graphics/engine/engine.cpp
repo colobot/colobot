@@ -36,6 +36,7 @@
 
 #include "graphics/core/device.h"
 #include "graphics/core/framebuffer.h"
+#include "graphics/core/renderers.h"
 
 #include "graphics/engine/camera.h"
 #include "graphics/engine/cloud.h"
@@ -355,6 +356,10 @@ bool CEngine::Create()
 
     m_matWorldInterface.LoadIdentity();
     m_matViewInterface.LoadIdentity();
+
+    auto renderer = m_device->GetUIRenderer();
+    renderer->SetProjection(0.0f, 1.0f, 0.0f, 1.0f);
+    m_device->SetRenderMode(RENDER_MODE_INTERFACE);
 
     Math::LoadOrthoProjectionMatrix(m_matProjInterface, 0.0f, 1.0f, 0.0f, 1.0f, -1.0f, 1.0f);
 
@@ -1970,6 +1975,8 @@ void CEngine::SetState(int state, const Color& color)
 {
     if (state == m_lastState && color == m_lastColor)
         return;
+
+    m_device->GetUIRenderer()->Flush();
 
     m_lastState = state;
     m_lastColor = color;
@@ -3631,20 +3638,21 @@ void CEngine::DrawCaptured3DScene()
     m_device->SetRenderState(RENDER_STATE_BLENDING, false);
     m_device->SetRenderState(RENDER_STATE_CULLING, false);
 
-    Vertex vertices[4];
+    Vertex2D vertices[4];
 
-    vertices[0] = Vertex(Math::Vector(-1.0f, -1.0f, 0.0f), Math::Vector(0.0f, 1.0f, 0.0f), Math::Point(0.0f, 0.0f));
-    vertices[1] = Vertex(Math::Vector(1.0f, -1.0f, 0.0f), Math::Vector(0.0f, 1.0f, 0.0f), Math::Point(1.0f, 0.0f));
-    vertices[2] = Vertex(Math::Vector(-1.0f, 1.0f, 0.0f), Math::Vector(0.0f, 1.0f, 0.0f), Math::Point(0.0f, 1.0f));
-    vertices[3] = Vertex(Math::Vector(1.0f, 1.0f, 0.0f), Math::Vector(0.0f, 1.0f, 0.0f), Math::Point(1.0f, 1.0f));
+    vertices[0] = { { 0.0f, 0.0f }, { 0.0f, 0.0f } };
+    vertices[1] = { { 1.0f, 0.0f }, { 1.0f, 0.0f } };
+    vertices[2] = { { 0.0f, 1.0f }, { 0.0f, 1.0f } };
+    vertices[3] = { { 1.0f, 1.0f }, { 1.0f, 1.0f } };
 
     m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, false);
 
-    m_device->SetTexture(TEXTURE_PRIMARY, m_capturedWorldTexture);
-    m_device->SetTextureEnabled(TEXTURE_PRIMARY, true);
-    m_device->SetTextureEnabled(TEXTURE_SECONDARY, false);
+    auto renderer = m_device->GetUIRenderer();
 
-    m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertices, 4);
+    renderer->SetTexture(m_capturedWorldTexture);
+    renderer->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, 4, vertices);
+
+    m_device->SetRenderMode(RENDER_MODE_INTERFACE);
 }
 
 void CEngine::RenderDebugSphere(const Math::Sphere& sphere, const Math::Matrix& transform, const Gfx::Color& color)
@@ -4859,23 +4867,20 @@ void CEngine::DrawBackgroundImage()
         v2 -= margin_v;
     }
 
-    SetTexture(m_backgroundTex);
-    SetState(ENG_RSTATE_OPAQUE_TEXTURE | ENG_RSTATE_WRAP);
+    SetUITexture(m_backgroundTex);
 
-    m_device->SetTransform(TRANSFORM_VIEW, m_matViewInterface);
-    m_device->SetTransform(TRANSFORM_PROJECTION, m_matProjInterface);
-    m_device->SetTransform(TRANSFORM_WORLD, m_matWorldInterface);
-
-    Vertex vertex[4] =
+    Vertex2D vertices[4] =
     {
-        Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(u1, v2)),
-        Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(u1, v1)),
-        Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(u2, v2)),
-        Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(u2, v1))
+        { { p1.x, p1.y }, { u1, v2 } },
+        { { p1.x, p2.y }, { u1, v1 } },
+        { { p2.x, p1.y }, { u2, v2 } },
+        { { p2.x, p2.y }, { u2, v1 } }
     };
 
-    m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
+    m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertices, 4);
     AddStatisticTriangle(2);
+
+    m_device->SetRenderMode(Gfx::RENDER_MODE_INTERFACE);
 }
 
 void CEngine::DrawPlanet()
@@ -5079,6 +5084,8 @@ void CEngine::DrawMouse()
     m_device->SetMaterial(material);
     m_device->SetTexture(0, m_miceTexture);
 
+    SetUITexture(m_miceTexture);
+
     Math::Point mousePos = CInput::GetInstancePointer()->GetMousePos();
     Math::IntPoint pos(mousePos.x * m_size.x, m_size.y - mousePos.y * m_size.y);
     pos.x -= MOUSE_TYPES.at(m_mouseType).hotPoint.x;
@@ -5119,18 +5126,18 @@ void CEngine::DrawMouseSprite(Math::IntPoint pos, Math::IntPoint size, int icon)
     u2 -= dp;
     v2 -= dp;
 
-    Math::Vector normal(0.0f, 0.0f, -1.0f);
-
-    Vertex vertex[4] =
+    Vertex2D vertex[4] =
     {
-        Vertex(Math::Vector(p1.x, p2.y, 0.0f), normal, Math::Point(u1, v2)),
-        Vertex(Math::Vector(p1.x, p1.y, 0.0f), normal, Math::Point(u1, v1)),
-        Vertex(Math::Vector(p2.x, p2.y, 0.0f), normal, Math::Point(u2, v2)),
-        Vertex(Math::Vector(p2.x, p1.y, 0.0f), normal, Math::Point(u2, v1))
+        { { p1.x, p2.y }, { u1, v2 } },
+        { { p1.x, p1.y }, { u1, v1 } },
+        { { p2.x, p2.y }, { u2, v2 } },
+        { { p2.x, p1.y }, { u2, v1 } }
     };
 
     m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
     AddStatisticTriangle(2);
+
+    m_device->SetRenderMode(RENDER_MODE_INTERFACE);
 }
 
 void CEngine::DrawStats()
@@ -5145,17 +5152,18 @@ void CEngine::DrawStats()
     Math::Point pos(0.05f * m_size.x/m_size.y, 0.05f + TOTAL_LINES * height);
 
     SetState(ENG_RSTATE_TCOLOR_ALPHA);
+    SetUITexture(Texture{});
 
-    Gfx::Color black(0.0f, 0.0f, 0.0f, 0.75f);
+    glm::u8vec4 black = { 0, 0, 0, 192 };
 
     Math::Point margin = Math::Point(5.f / m_size.x, 5.f / m_size.y);
 
-    VertexCol vertex[4] =
+    Vertex2D vertex[4] =
     {
-        VertexCol(Math::Vector(pos.x         - margin.x, pos.y - (TOTAL_LINES + 1) * height - margin.y, 0.0f), black),
-        VertexCol(Math::Vector(pos.x         - margin.x, pos.y + height                     + margin.y, 0.0f), black),
-        VertexCol(Math::Vector(pos.x + width + margin.x, pos.y - (TOTAL_LINES + 1) * height - margin.y, 0.0f), black),
-        VertexCol(Math::Vector(pos.x + width + margin.x, pos.y + height                     + margin.y, 0.0f), black)
+        { { pos.x         - margin.x, pos.y - (TOTAL_LINES + 1) * height - margin.y }, {}, black },
+        { { pos.x                             - margin.x, pos.y + height + margin.y }, {}, black },
+        { { pos.x + width + margin.x, pos.y - (TOTAL_LINES + 1) * height - margin.y }, {}, black },
+        { { pos.x + width + margin.x, pos.y                     + height + margin.y }, {}, black }
     };
 
     m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
@@ -5233,6 +5241,8 @@ void CEngine::DrawStats()
     std::stringstream str;
     str << std::fixed << std::setprecision(2) << m_statisticPos.x << "; " << m_statisticPos.z;
     drawStatsLine(   "Position",          str.str(), "");
+
+    m_device->SetRenderMode(RENDER_MODE_INTERFACE);
 }
 
 void CEngine::DrawTimer()
@@ -5241,6 +5251,8 @@ void CEngine::DrawTimer()
 
     Math::Point pos(0.98f, 0.98f-m_text->GetAscent(FONT_COMMON, 15.0f));
     m_text->DrawText(m_timerText, FONT_COMMON, 15.0f, pos, 1.0f, TEXT_ALIGN_RIGHT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
+
+    m_device->SetRenderMode(RENDER_MODE_INTERFACE);
 }
 
 void CEngine::AddBaseObjTriangles(int baseObjRank, const std::vector<Gfx::ModelTriangle>& triangles)
@@ -5525,6 +5537,11 @@ void CEngine::SetInterfaceCoordinates()
     m_device->SetTransform(TRANSFORM_VIEW,       m_matViewInterface);
     m_device->SetTransform(TRANSFORM_PROJECTION, m_matProjInterface);
     m_device->SetTransform(TRANSFORM_WORLD,      m_matWorldInterface);
+
+    auto renderer = m_device->GetUIRenderer();
+    renderer->SetProjection(0.0f, 1.0f, 0.0f, 1.0f);
+
+    m_device->SetRenderMode(RENDER_MODE_INTERFACE);
 }
 
 void CEngine::EnablePauseBlur()
@@ -5555,6 +5572,25 @@ void CEngine::SetWindowCoordinates()
     m_device->SetTransform(TRANSFORM_VIEW,       matViewWindow);
     m_device->SetTransform(TRANSFORM_PROJECTION, matProjWindow);
     m_device->SetTransform(TRANSFORM_WORLD,      matWorldWindow);
+
+    auto renderer = m_device->GetUIRenderer();
+    renderer->SetProjection(0.0f, m_size.x, m_size.y, 0.0f);
+
+    m_device->SetRenderMode(RENDER_MODE_INTERFACE);
+}
+
+void CEngine::SetUITexture(const std::string& name)
+{
+    auto texture = LoadTexture(name);
+
+    SetUITexture(texture);
+}
+
+void CEngine::SetUITexture(const Texture& texture)
+{
+    auto renderer = m_device->GetUIRenderer();
+
+    renderer->SetTexture(texture);
 }
 
 } // namespace Gfx

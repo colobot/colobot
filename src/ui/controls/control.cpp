@@ -453,8 +453,9 @@ void CControl::Draw()
 
     if ( (m_state & STATE_VISIBLE) == 0 )  return;
 
-    m_engine->SetTexture("textures/interface/button1.png");
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+    m_engine->SetUITexture("textures/interface/button1.png");
+    auto device = m_engine->GetDevice();
 
     zoomExt = 1.00f;
     zoomInt = 0.95f;
@@ -507,7 +508,7 @@ void CControl::Draw()
 
     if ( m_state & STATE_OKAY )
     {
-        m_engine->SetTexture("textures/interface/button3.png");
+        m_engine->SetUITexture("textures/interface/button3.png");
         icon = 3;  // yellow with green point pressed
     }
 
@@ -555,6 +556,8 @@ void CControl::Draw()
             m_engine->GetText()->DrawText(m_name, m_fontType, m_fontSize, pos, m_dim.x, m_textAlign, 0);
         }
     }
+
+    device->SetRenderMode(Gfx::RENDER_MODE_INTERFACE);
 }
 
 // Draw the vertex array.
@@ -606,26 +609,22 @@ void CControl::DrawPart(int icon, float zoom, float ex)
 void CControl::DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math::Point uv2,
                         float ex)
 {
-    Gfx::CDevice*   device;
-    Gfx::Vertex     vertex[8];  // 6 triangles
-    Math::Point     p1, p2, p3, p4;
-    Math::Vector    n;
+    Gfx::Vertex2D   vertex[8];  // 6 triangles
+    glm::vec2       p1, p2, p3, p4;
 
-    device = m_engine->GetDevice();
+    auto device = m_engine->GetDevice();
 
     p1.x = pos.x;
     p1.y = pos.y;
     p2.x = pos.x + dim.x;
     p2.y = pos.y + dim.y;
 
-    n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
-
     if ( ex == 0.0f )  // one piece?
     {
-        vertex[0] = Gfx::Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(uv1.x,uv2.y));
-        vertex[1] = Gfx::Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(uv1.x,uv1.y));
-        vertex[2] = Gfx::Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(uv2.x,uv2.y));
-        vertex[3] = Gfx::Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(uv2.x,uv1.y));
+        vertex[0] = { { p1.x, p1.y }, { uv1.x, uv2.y } };
+        vertex[1] = { { p1.x, p2.y }, { uv1.x, uv1.y } };
+        vertex[2] = { { p2.x, p1.y }, { uv2.x, uv2.y } };
+        vertex[3] = { { p2.x, p2.y }, { uv2.x, uv1.y } };
 
         device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
         m_engine->AddStatisticTriangle(2);
@@ -637,14 +636,14 @@ void CControl::DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math:
             p3.x = p1.x + ex*dim.y / (uv2.y - uv1.y);
             p4.x = p2.x - ex*dim.y / (uv2.y - uv1.y);
 
-            vertex[0] = Gfx::Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(uv1.x,   uv2.y));
-            vertex[1] = Gfx::Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(uv1.x,   uv1.y));
-            vertex[2] = Gfx::Vertex(Math::Vector(p3.x, p1.y, 0.0f), n, Math::Point(uv1.x+ex,uv2.y));
-            vertex[3] = Gfx::Vertex(Math::Vector(p3.x, p2.y, 0.0f), n, Math::Point(uv1.x+ex,uv1.y));
-            vertex[4] = Gfx::Vertex(Math::Vector(p4.x, p1.y, 0.0f), n, Math::Point(uv2.x-ex,uv2.y));
-            vertex[5] = Gfx::Vertex(Math::Vector(p4.x, p2.y, 0.0f), n, Math::Point(uv2.x-ex,uv1.y));
-            vertex[6] = Gfx::Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(uv2.x,   uv2.y));
-            vertex[7] = Gfx::Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(uv2.x,   uv1.y));
+            vertex[0] = { { p1.x, p1.y }, { uv1.x,   uv2.y } };
+            vertex[1] = { { p1.x, p2.y }, { uv1.x,   uv1.y } };
+            vertex[2] = { { p3.x, p1.y }, { uv1.x+ex,uv2.y } };
+            vertex[3] = { { p3.x, p2.y }, { uv1.x+ex,uv1.y } };
+            vertex[4] = { { p4.x, p1.y }, { uv2.x-ex,uv2.y } };
+            vertex[5] = { { p4.x, p2.y }, { uv2.x-ex,uv1.y } };
+            vertex[6] = { { p2.x, p1.y }, { uv2.x,   uv2.y } };
+            vertex[7] = { { p2.x, p2.y }, { uv2.x,   uv1.y } };
 
             device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 8);
             m_engine->AddStatisticTriangle(6);
@@ -654,19 +653,21 @@ void CControl::DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math:
             p3.y = p1.y + ex*dim.x / (uv2.x - uv1.x);
             p4.y = p2.y - ex*dim.x / (uv2.x - uv1.x);
 
-            vertex[0] = Gfx::Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(uv2.x, uv2.y     ));
-            vertex[1] = Gfx::Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(uv1.x, uv2.y     ));
-            vertex[2] = Gfx::Vertex(Math::Vector(p2.x, p3.y, 0.0f), n, Math::Point(uv2.x, uv2.y - ex));
-            vertex[3] = Gfx::Vertex(Math::Vector(p1.x, p3.y, 0.0f), n, Math::Point(uv1.x, uv2.y - ex));
-            vertex[4] = Gfx::Vertex(Math::Vector(p2.x, p4.y, 0.0f), n, Math::Point(uv2.x, uv1.y + ex));
-            vertex[5] = Gfx::Vertex(Math::Vector(p1.x, p4.y, 0.0f), n, Math::Point(uv1.x, uv1.y + ex));
-            vertex[6] = Gfx::Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(uv2.x, uv1.y     ));
-            vertex[7] = Gfx::Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(uv1.x, uv1.y     ));
+            vertex[0] = { { p2.x, p1.y }, { uv2.x, uv2.y      } };
+            vertex[1] = { { p1.x, p1.y }, { uv1.x, uv2.y      } };
+            vertex[2] = { { p2.x, p3.y }, { uv2.x, uv2.y - ex } };
+            vertex[3] = { { p1.x, p3.y }, { uv1.x, uv2.y - ex } };
+            vertex[4] = { { p2.x, p4.y }, { uv2.x, uv1.y + ex } };
+            vertex[5] = { { p1.x, p4.y }, { uv1.x, uv1.y + ex } };
+            vertex[6] = { { p2.x, p2.y }, { uv2.x, uv1.y      } };
+            vertex[7] = { { p1.x, p2.y }, { uv1.x, uv1.y      } };
 
             device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 8);
             m_engine->AddStatisticTriangle(6);
         }
     }
+
+    device->SetRenderMode(Gfx::RENDER_MODE_INTERFACE);
 }
 
 // Draws a rectangular icon made up of 9 pieces.
@@ -674,19 +675,15 @@ void CControl::DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math:
 void CControl::DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math::Point uv2,
                         Math::Point corner, float ex)
 {
-    Gfx::CDevice* device;
-    Gfx::Vertex    vertex[8];  // 6 triangles
-    Math::Point     p1, p2, p3, p4;
-    Math::Vector    n;
+    Gfx::Vertex2D   vertices[8];  // 6 triangles
+    glm::vec2       p1, p2, p3, p4;
 
-    device = m_engine->GetDevice();
+    auto device = m_engine->GetDevice();
 
     p1.x = pos.x;
     p1.y = pos.y;
     p2.x = pos.x + dim.x;
     p2.y = pos.y + dim.y;
-
-    n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
 
     if ( corner.x > dim.x / 2.0f )  corner.x = dim.x / 2.0f;
     if ( corner.y > dim.y / 2.0f )  corner.y = dim.y / 2.0f;
@@ -701,40 +698,45 @@ void CControl::DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math:
     p4.y = p2.y - corner.y;
 
     // Bottom horizontal band.
-    vertex[0] = Gfx::Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(uv1.x,      uv2.y     ));
-    vertex[1] = Gfx::Vertex(Math::Vector(p1.x, p3.y, 0.0f), n, Math::Point(uv1.x,      uv2.y - ex));
-    vertex[2] = Gfx::Vertex(Math::Vector(p3.x, p1.y, 0.0f), n, Math::Point(uv1.x + ex, uv2.y     ));
-    vertex[3] = Gfx::Vertex(Math::Vector(p3.x, p3.y, 0.0f), n, Math::Point(uv1.x + ex, uv2.y - ex));
-    vertex[4] = Gfx::Vertex(Math::Vector(p4.x, p1.y, 0.0f), n, Math::Point(uv2.x - ex, uv2.y     ));
-    vertex[5] = Gfx::Vertex(Math::Vector(p4.x, p3.y, 0.0f), n, Math::Point(uv2.x - ex, uv2.y - ex));
-    vertex[6] = Gfx::Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(uv2.x,      uv2.y     ));
-    vertex[7] = Gfx::Vertex(Math::Vector(p2.x, p3.y, 0.0f), n, Math::Point(uv2.x,      uv2.y - ex));
-    device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 8);
+    vertices[0] = { { p1.x, p1.y }, { uv1.x, uv2.y } };
+    vertices[1] = { { p1.x, p3.y }, { uv1.x,      uv2.y - ex } };
+    vertices[2] = { { p3.x, p1.y }, { uv1.x + ex, uv2.y      } };
+    vertices[3] = { { p3.x, p3.y }, { uv1.x + ex, uv2.y - ex } };
+    vertices[4] = { { p4.x, p1.y }, { uv2.x - ex, uv2.y      } };
+    vertices[5] = { { p4.x, p3.y }, { uv2.x - ex, uv2.y - ex } };
+    vertices[6] = { { p2.x, p1.y }, { uv2.x,      uv2.y      } };
+    vertices[7] = { { p2.x, p3.y }, { uv2.x,      uv2.y - ex } };
+
+    device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertices, 8);
     m_engine->AddStatisticTriangle(6);
 
     // Central horizontal band.
-    vertex[0] = Gfx::Vertex(Math::Vector(p1.x, p3.y, 0.0f), n, Math::Point(uv1.x,      uv2.y - ex));
-    vertex[1] = Gfx::Vertex(Math::Vector(p1.x, p4.y, 0.0f), n, Math::Point(uv1.x,      uv1.y + ex));
-    vertex[2] = Gfx::Vertex(Math::Vector(p3.x, p3.y, 0.0f), n, Math::Point(uv1.x + ex, uv2.y - ex));
-    vertex[3] = Gfx::Vertex(Math::Vector(p3.x, p4.y, 0.0f), n, Math::Point(uv1.x + ex, uv1.y + ex));
-    vertex[4] = Gfx::Vertex(Math::Vector(p4.x, p3.y, 0.0f), n, Math::Point(uv2.x - ex, uv2.y - ex));
-    vertex[5] = Gfx::Vertex(Math::Vector(p4.x, p4.y, 0.0f), n, Math::Point(uv2.x - ex, uv1.y + ex));
-    vertex[6] = Gfx::Vertex(Math::Vector(p2.x, p3.y, 0.0f), n, Math::Point(uv2.x,      uv2.y - ex));
-    vertex[7] = Gfx::Vertex(Math::Vector(p2.x, p4.y, 0.0f), n, Math::Point(uv2.x,      uv1.y + ex));
-    device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 8);
+    vertices[0] = { { p1.x, p3.y }, { uv1.x,      uv2.y - ex } };
+    vertices[1] = { { p1.x, p4.y }, { uv1.x,      uv1.y + ex } };
+    vertices[2] = { { p3.x, p3.y }, { uv1.x + ex, uv2.y - ex } };
+    vertices[3] = { { p3.x, p4.y }, { uv1.x + ex, uv1.y + ex } };
+    vertices[4] = { { p4.x, p3.y }, { uv2.x - ex, uv2.y - ex } };
+    vertices[5] = { { p4.x, p4.y }, { uv2.x - ex, uv1.y + ex } };
+    vertices[6] = { { p2.x, p3.y }, { uv2.x,      uv2.y - ex } };
+    vertices[7] = { { p2.x, p4.y }, { uv2.x,      uv1.y + ex } };
+
+    device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertices, 8);
     m_engine->AddStatisticTriangle(6);
 
     // Top horizontal band.
-    vertex[0] = Gfx::Vertex(Math::Vector(p1.x, p4.y, 0.0f), n, Math::Point(uv1.x,      uv1.y + ex));
-    vertex[1] = Gfx::Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(uv1.x,      uv1.y   ));
-    vertex[2] = Gfx::Vertex(Math::Vector(p3.x, p4.y, 0.0f), n, Math::Point(uv1.x + ex, uv1.y + ex));
-    vertex[3] = Gfx::Vertex(Math::Vector(p3.x, p2.y, 0.0f), n, Math::Point(uv1.x + ex, uv1.y   ));
-    vertex[4] = Gfx::Vertex(Math::Vector(p4.x, p4.y, 0.0f), n, Math::Point(uv2.x - ex, uv1.y + ex));
-    vertex[5] = Gfx::Vertex(Math::Vector(p4.x, p2.y, 0.0f), n, Math::Point(uv2.x - ex, uv1.y   ));
-    vertex[6] = Gfx::Vertex(Math::Vector(p2.x, p4.y, 0.0f), n, Math::Point(uv2.x,      uv1.y + ex));
-    vertex[7] = Gfx::Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(uv2.x,      uv1.y   ));
-    device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 8);
+    vertices[0] = { { p1.x, p4.y }, { uv1.x,      uv1.y + ex } };
+    vertices[1] = { { p1.x, p2.y }, { uv1.x,      uv1.y    } };
+    vertices[2] = { { p3.x, p4.y }, { uv1.x + ex, uv1.y + ex } };
+    vertices[3] = { { p3.x, p2.y }, { uv1.x + ex, uv1.y    } };
+    vertices[4] = { { p4.x, p4.y }, { uv2.x - ex, uv1.y + ex } };
+    vertices[5] = { { p4.x, p2.y }, { uv2.x - ex, uv1.y    } };
+    vertices[6] = { { p2.x, p4.y }, { uv2.x,      uv1.y + ex } };
+    vertices[7] = { { p2.x, p2.y }, { uv2.x,      uv1.y    } };
+
+    device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertices, 8);
     m_engine->AddStatisticTriangle(6);
+
+    device->SetRenderMode(Gfx::RENDER_MODE_INTERFACE);
 }
 
 // Draw round the hatch of a button.
@@ -746,8 +748,9 @@ void CControl::DrawWarning(Math::Point pos, Math::Point dim)
 
     dp = 0.5f / 256.0f;
 
-    m_engine->SetTexture("textures/interface/button2.png");
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+    m_engine->SetUITexture("textures/interface/button2.png");
+    auto device = m_engine->GetDevice();
 
     uv1.x =  64.0f / 256.0f;
     uv1.y = 208.0f / 256.0f;
@@ -779,6 +782,8 @@ void CControl::DrawWarning(Math::Point pos, Math::Point dim)
         pos.x += dim.x;
         DrawIcon(pos, dim, uv1, uv2);
     }
+
+    device->SetRenderMode(Gfx::RENDER_MODE_INTERFACE);
 }
 
 // Draw the shade under a button.
@@ -790,8 +795,9 @@ void CControl::DrawShadow(Math::Point pos, Math::Point dim, float deep)
 
     dp = 0.5f/256.0f;
 
-    m_engine->SetTexture("textures/interface/button2.png");
     m_engine->SetState( Gfx::ENG_RSTATE_TTEXTURE_WHITE);
+    m_engine->SetUITexture("textures/interface/button2.png");
+    auto device = m_engine->GetDevice();
 
     pos.x += deep * 0.010f * 0.75f;
     pos.y -= deep * 0.015f;
@@ -812,6 +818,8 @@ void CControl::DrawShadow(Math::Point pos, Math::Point dim, float deep)
     corner.y = 10.0f / 480.0f;
 
     DrawIcon(pos, dim, uv1, uv2, corner, 6.0f / 256.0f);
+
+    device->SetRenderMode(Gfx::RENDER_MODE_INTERFACE);
 }
 
 
@@ -841,7 +849,9 @@ int CControl::SetButtonTextureForIcon(int icon)
 {
     int iconIdx = icon%64;
     int buttonFile = (icon/64) + 1;
-    m_engine->SetTexture("textures/interface/button" + StrUtils::ToString<int>(buttonFile) + ".png");
+
+    m_engine->SetUITexture("textures/interface/button" + StrUtils::ToString<int>(buttonFile) + ".png");
+
     return iconIdx;
 }
 

@@ -102,7 +102,7 @@ void CImage::Draw()
 
     if ( m_icon == 0 )  // hollow frame?
     {
-        m_engine->SetTexture("textures/interface/button2.png");
+        m_engine->SetUITexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x = 160.0f / 256.0f;
         uv1.y = 192.0f / 256.0f;  // u-v texture
@@ -124,7 +124,7 @@ void CImage::Draw()
         params.filter = Gfx::TEX_FILTER_BILINEAR;
         params.padToNearestPowerOfTwo = true;
         Gfx::Texture tex = m_engine->LoadTexture(m_filename, params);
-        m_engine->SetTexture(tex);
+        m_engine->SetUITexture(tex);
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         pos = m_pos;
         dim = m_dim;

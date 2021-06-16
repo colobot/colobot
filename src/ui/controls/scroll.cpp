@@ -23,6 +23,7 @@
 #include "common/event.h"
 #include "common/make_unique.h"
 
+#include "graphics/core/device.h"
 #include "graphics/engine/engine.h"
 
 #include "ui/controls/button.h"
@@ -306,6 +307,8 @@ void CScroll::Draw()
     float   hButton;
     int     icon, n, i;
 
+    auto device = m_engine->GetDevice();
+
     hButton = m_buttonUp?m_dim.x/0.75f:0.0f;
 
     // Draws the bottom.
@@ -351,6 +354,8 @@ void CScroll::Draw()
     {
         m_buttonDown->Draw();
     }
+    
+    device->SetRenderMode(Gfx::RENDER_MODE_INTERFACE);
 }
 
 // Draws a rectangle.
@@ -360,9 +365,11 @@ void CScroll::DrawVertex(Math::Point pos, Math::Point dim, int icon)
     Math::Point     uv1, uv2;
     float       ex, dp;
 
+    auto device = m_engine->GetDevice();
+
     if ( icon == 0 )
     {
-        m_engine->SetTexture("textures/interface/button2.png");
+        m_engine->SetUITexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x =   0.0f/256.0f;  // yellow rectangle
         uv1.y =  32.0f/256.0f;
@@ -372,7 +379,7 @@ void CScroll::DrawVertex(Math::Point pos, Math::Point dim, int icon)
     }
     else if ( icon == 1 )
     {
-        m_engine->SetTexture("textures/interface/button2.png");
+        m_engine->SetUITexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x = 128.0f/256.0f;  // gray rectangle
         uv1.y =  32.0f/256.0f;
@@ -382,7 +389,7 @@ void CScroll::DrawVertex(Math::Point pos, Math::Point dim, int icon)
     }
     else if ( icon == 2 )
     {
-        m_engine->SetTexture("textures/interface/button1.png");
+        m_engine->SetUITexture("textures/interface/button1.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x =  64.0f/256.0f;  // blue rectangle
         uv1.y =   0.0f/256.0f;
@@ -392,7 +399,7 @@ void CScroll::DrawVertex(Math::Point pos, Math::Point dim, int icon)
     }
     else
     {
-        m_engine->SetTexture("textures/interface/button2.png");
+        m_engine->SetUITexture("textures/interface/button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x = 104.0f/256.0f;  // blue line -
         uv1.y =  32.0f/256.0f;
