@@ -24,6 +24,7 @@
 
 #include "graphics/engine/pyro_manager.h"
 
+#include "level/parser/parser.h"
 #include "level/parser/parserline.h"
 #include "level/parser/parserparam.h"
 
@@ -194,7 +195,9 @@ bool CAutoEgg::EventProcess(const Event &event)
 
             CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(alien);
             Program* program = programStorage->AddProgram();
-            programStorage->ReadProgram(program, m_alienProgramName.c_str());
+            programStorage->ReadProgram(program, InjectLevelPathsForCurrentLevel(m_alienProgramName, "ai"));
+            program->readOnly = true;
+            program->filename = m_alienProgramName;
             programmable->RunProgram(program);
         }
         Init();

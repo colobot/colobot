@@ -1226,7 +1226,7 @@ void COldObject::Read(CLevelParserLine* line)
             std::string op = "autoValue" + boost::lexical_cast<std::string>(i+1); // autoValue1..autoValue5
             m_auto->SetValue(i, line->GetParam(op)->AsFloat(0.0f));
         }
-        m_auto->SetString(const_cast<char*>(line->GetParam("autoString")->AsPath("ai", "").c_str()));
+        m_auto->SetString(const_cast<char*>(line->GetParam("autoString")->AsString("").c_str()));
 
         int i = line->GetParam("run")->AsInt(-1);
         if (i != -1)
