@@ -34,6 +34,10 @@
 using namespace Gfx;
 
 
+CDeadGPyro::CDeadGPyro(CObject *obj)
+    : CPyro(PT_OTHER, obj)
+{}
+
 void CDeadGPyro::AfterCreate()
 {
     if (m_object->GetType() == OBJECT_HUMAN)
@@ -52,6 +56,10 @@ void CDeadGPyro::AfterCreate()
     m_camera->StartOver(CAM_OVER_EFFECT_FADEOUT_WHITE, m_pos, 1.0f);
     m_speed = 1.0f/10.0f;
 }
+
+CDeadWPyro::CDeadWPyro(CObject *obj)
+    : CPyro(PT_OTHER, obj)
+{}
 
 void CDeadWPyro::AfterCreate()
 {

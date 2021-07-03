@@ -52,18 +52,11 @@ enum PyroType
     PT_BURNT    = 14,       //! < burning of technical object
     PT_BURNO    = 15,       //! < burning of organic object
     PT_SPIDER   = 16,       //! < spider explosion
-    PT_FALL     = 17,       //! < cargo falling
-    PT_WPCHECK  = 18,       //! < indicator reaches
-    PT_FLCREATE = 19,       //! < flag create
-    PT_FLDELETE = 20,       //! < flag destroy
-    PT_RESET    = 21,       //! < reset position of the object
     PT_WIN      = 22,       //! < fireworks
     PT_LOST     = 23,       //! < black smoke
-    PT_DEADG    = 24,       //! < shooting death
-    PT_DEADW    = 25,       //! < drowning death
-    PT_FINDING  = 26,       //! < object discovered
     PT_FRAGV    = 27,       //! < fragmentation of plant object
-    PT_SQUASH   = 28,       //! < flattening plants
+
+    PT_OTHER    = 100,      //! < No special type code; behaviour is decided by subclass
 };
 
 } // namespace Gfx

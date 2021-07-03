@@ -33,6 +33,10 @@
 
 using namespace Gfx;
 
+CSpiderPyro::CSpiderPyro(CObject *obj)
+    : CPyro(PT_SPIDER, obj)
+{}
+
 Error CSpiderPyro::IsEnded() {
     // Destroys the object that exploded.
     //It should not be destroyed at the end of the Create,
@@ -99,5 +103,5 @@ void CSpiderPyro::AfterCreate()
                                 2.0f+Math::Rand()*2.0f, 10.0f, 2.0f, 0.6f);
     }
 
-    m_camera->StartEffect(CAM_EFFECT_EXPLO, m_pos, m_force);
+    m_camera->StartEffect(CAM_EFFECT_EXPLO, m_pos, 1.0f);
 }

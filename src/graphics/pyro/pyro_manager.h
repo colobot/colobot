@@ -44,7 +44,7 @@ public:
     CPyroManager();
     ~CPyroManager();
 
-    void Create(PyroType type, CObject* obj, float force=1.0f);
+    void Create(CPyroUPtr pyroUPtr);
     void DeleteAll();
 
     void CutObjectLink(CObject* obj);

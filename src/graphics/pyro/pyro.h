@@ -65,7 +65,7 @@ protected:
     friend class CPyroManager;
 
     //! Creates pyrotechnic effect
-    bool        Create(PyroType type, CObject* obj, float force);
+    bool        Create();
     //! Destroys the object
     void        DeleteObject();
 
@@ -74,7 +74,7 @@ protected:
     virtual void AfterEnd();
 
 public:
-    CPyro(); // should only be called by CPyroManager
+    CPyro(PyroType type, CObject *obj);
     virtual ~CPyro();
 
     //! Indicates whether the pyrotechnic effect is complete
@@ -116,7 +116,6 @@ protected:
     Math::Vector    m_posPower;     // center of the battery
     bool            m_power = false;       // battery exists?
     PyroType        m_type = PT_NULL;
-    float           m_force = 0.0f;
     float           m_size = 0.0f;
     float           m_progress = 0.0f;
     float           m_speed = 0.0f;
@@ -163,6 +162,7 @@ protected:
 class CFlagCreatePyro : public CPyro
 {
 public:
+    CFlagCreatePyro(CObject *pObj);
     void AfterCreate() override;
     void UpdateEffect() override;
     void AfterEnd() override;
@@ -171,6 +171,7 @@ public:
 class CFlagDeletePyro : public CPyro
 {
 public:
+    CFlagDeletePyro(CObject *pObj);
     void AfterCreate() override;
     void UpdateEffect() override;
     void AfterEnd() override;
@@ -179,6 +180,7 @@ public:
 class CWaypointHitPyro : public CPyro
 {
 public:
+    CWaypointHitPyro(CObject *obj);
     void AfterCreate() override;
     void UpdateEffect() override;
     void AfterEnd() override;
@@ -187,6 +189,8 @@ public:
 class CFallPyro : public CPyro
 {
 public:
+    CFallPyro(CObject *obj);
+
     //! Start of an object freight falling
     void        AfterCreate() override;
     //! Seeks an object to explode by the falling ball of bees
@@ -202,6 +206,7 @@ public:
 class CResetPyro : public CPyro
 {
 public:
+    CResetPyro(CObject *obj);
     void AfterCreate() override;
     void UpdateEffect() override;
     void AfterEnd() override;
@@ -210,6 +215,7 @@ public:
 class CLostPyro : public CPyro
 {
 public:
+    CLostPyro(CObject *obj);
     Error IsEnded() override;
     void UpdateEffect() override;
 };
@@ -217,6 +223,7 @@ public:
 class CWinPyro : public CPyro
 {
 public:
+    CWinPyro(CObject *obj);
     Error IsEnded() override;
     void UpdateEffect() override;
 };
@@ -224,6 +231,7 @@ public:
 class CSpiderPyro : public CPyro
 {
 public:
+    CSpiderPyro(CObject *obj);
     Error IsEnded() override;
     void AfterCreate() override;
 };
@@ -231,6 +239,7 @@ public:
 class CEggPyro : public CPyro
 {
 public:
+    CEggPyro(CObject *obj);
     Error IsEnded() override;
     void AfterCreate() override;
 };
@@ -238,18 +247,21 @@ public:
 class CDeadGPyro : public CPyro
 {
 public:
+    CDeadGPyro(CObject *obj);
     void AfterCreate() override;
 };
 
 class CDeadWPyro : public CPyro
 {
 public:
+    CDeadWPyro(CObject *obj);
     void AfterCreate() override;
 };
 
 class CFindingPyro : public CPyro
 {
 public:
+    CFindingPyro(CObject *obj);
     void AfterCreate() override;
     void UpdateEffect() override;
 };
@@ -257,6 +269,7 @@ public:
 class CSquashPyro : public CPyro
 {
 public:
+    CSquashPyro(CObject *obj);
     void AfterCreate() override;
     void UpdateEffect() override;
     void AfterEnd() override;
@@ -265,6 +278,7 @@ public:
 class CFragVPyro : public CPyro
 {
 public:
+    CFragVPyro(CObject *obj);
     Error IsEnded() override;
     void AfterCreate() override;
 };
@@ -272,6 +286,7 @@ public:
 class CBurnPyro : public CPyro
 {
 public:
+    CBurnPyro(PyroType type, CObject *obj);
     void AfterCreate() override;
     void UpdateEffect() override;
 
@@ -289,7 +304,9 @@ public:
 
 class CFragExploOrShotPyro : public CPyro
 {
+    float m_force;
 public:
+    CFragExploOrShotPyro(PyroType type, CObject *obj, float force = 1.0f);
     void AfterCreate() override;
     Error IsEnded() override;
     void UpdateEffect() override;

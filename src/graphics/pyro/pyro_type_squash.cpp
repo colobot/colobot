@@ -26,6 +26,10 @@
 
 using namespace Gfx;
 
+CSquashPyro::CSquashPyro(CObject *obj)
+    : CPyro(PT_OTHER, obj)
+{}
+
 void CSquashPyro::AfterCreate()
 {
     m_speed = 1.0f/2.0f;

@@ -29,6 +29,10 @@
 
 using namespace Gfx;
 
+CFlagDeletePyro::CFlagDeletePyro(CObject *pObj)
+    : CPyro(PT_OTHER, pObj)
+{}
+
 void CFlagDeletePyro::AfterCreate()
 {
     m_sound->Play(SOUND_WAYPOINT, m_pos);

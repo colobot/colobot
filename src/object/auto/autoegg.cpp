@@ -22,6 +22,7 @@
 
 #include "common/make_unique.h"
 
+#include "graphics/pyro/pyro.h"
 #include "graphics/pyro/pyro_manager.h"
 
 #include "level/parser/parserline.h"
@@ -249,7 +250,7 @@ Error CAutoEgg::IsEnded()
     {
         if ( m_progress < 1.0f )  return ERR_CONTINUE;
 
-        m_engine->GetPyroManager()->Create(Gfx::PT_EGG, m_object);  // exploding egg
+        m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CEggPyro>(m_object));  // exploding egg
 
         alien->SetScale(1.0f);  // this is a big boy now
 

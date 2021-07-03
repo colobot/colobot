@@ -33,6 +33,9 @@
 
 using namespace Gfx;
 
+CFallPyro::CFallPyro(CObject *obj)
+    : CPyro(PT_OTHER, obj)
+{}
 
 void CFallPyro::AfterCreate()
 {

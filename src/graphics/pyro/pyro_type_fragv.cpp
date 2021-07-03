@@ -28,6 +28,10 @@
 using namespace Gfx;
 
 
+CFragVPyro::CFragVPyro(CObject *obj)
+    : CPyro(PT_FRAGV, obj)
+{}
+
 Error CFragVPyro::IsEnded() {
     // Destroys the object that exploded.
     //It should not be destroyed at the end of the Create,

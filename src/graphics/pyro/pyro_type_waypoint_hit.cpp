@@ -28,6 +28,10 @@
 
 using namespace Gfx;
 
+CWaypointHitPyro::CWaypointHitPyro(CObject *obj)
+    : CPyro(PT_OTHER, obj)
+{}
+
 void CWaypointHitPyro::AfterCreate()
 {
     m_sound->Play(SOUND_WAYPOINT, m_pos);

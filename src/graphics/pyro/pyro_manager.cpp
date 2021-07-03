@@ -35,47 +35,9 @@ Gfx::CPyroManager::CPyroManager()
 CPyroManager::~CPyroManager()
 {}
 
-void Gfx::CPyroManager::Create(PyroType type, CObject* obj, float force)
+void Gfx::CPyroManager::Create(CPyroUPtr pyroUPtr)
 {
-    std::unique_ptr<CPyro> pyroUPtr;
-    switch (type)
-    {
-    case PT_FRAGT:
-    case PT_FRAGO:
-    case PT_FRAGW:
-    case PT_EXPLOT:
-    case PT_EXPLOO:
-    case PT_EXPLOW:
-    case PT_SHOTT:
-    case PT_SHOTH:
-    case PT_SHOTM:
-    case PT_SHOTW:
-        pyroUPtr = MakeUnique<CFragExploOrShotPyro>();
-        break;
-    case PT_BURNT:
-    case PT_BURNO:
-        pyroUPtr = MakeUnique<CBurnPyro>();
-        break;
-    case PT_FLCREATE: pyroUPtr = MakeUnique<CFlagCreatePyro>(); break;
-    case PT_FLDELETE: pyroUPtr = MakeUnique<CFlagDeletePyro>(); break;
-    case PT_WPCHECK:  pyroUPtr = MakeUnique<CWaypointHitPyro>(); break;
-    case PT_FALL:     pyroUPtr = MakeUnique<CFallPyro>(); break;
-    case PT_RESET:    pyroUPtr = MakeUnique<CResetPyro>(); break;
-    case PT_LOST:     pyroUPtr = MakeUnique<CLostPyro>(); break;
-    case PT_WIN:      pyroUPtr = MakeUnique<CWinPyro>(); break;
-    case PT_SPIDER:   pyroUPtr = MakeUnique<CSpiderPyro>(); break;
-    case PT_DEADG:    pyroUPtr = MakeUnique<CDeadGPyro>(); break;
-    case PT_DEADW:    pyroUPtr = MakeUnique<CDeadWPyro>(); break;
-    case PT_FINDING:  pyroUPtr = MakeUnique<CFindingPyro>(); break;
-    case PT_SQUASH:   pyroUPtr = MakeUnique<CSquashPyro>(); break;
-    case PT_FRAGV:    pyroUPtr = MakeUnique<CFragVPyro>(); break;
-    default:
-        // shouldn't get here
-        assert(false);
-        pyroUPtr = MakeUnique<CPyro>();
-        break;
-    }
-    pyroUPtr->Create(type, obj, force);
+    pyroUPtr->Create();
     m_pyros.insert(std::move(pyroUPtr));
 }
 

@@ -51,6 +51,7 @@
 
 #include "graphics/model/model_manager.h"
 
+#include "graphics/pyro/pyro.h"
 #include "graphics/pyro/pyro_manager.h"
 
 #include "level/mainmovie.h"
@@ -2045,7 +2046,7 @@ bool CRobotMain::DestroySelectedObject()
     if (obj == nullptr) return false;
     assert(obj->Implements(ObjectInterfaceType::Controllable));
 
-    m_engine->GetPyroManager()->Create(Gfx::PT_FRAGT, obj);
+    m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CFragExploOrShotPyro>(Gfx::PT_FRAGT, obj));
     NotifyObjectDestroyed(obj);
 
     dynamic_cast<CControllableObject&>(*obj).SetSelect(false);  // deselects the object
@@ -2404,7 +2405,7 @@ bool CRobotMain::EventFrame(const Event &event)
                     obj->SetProxyActivate(false);
                     CreateShortcuts();
                     m_sound->Play(SOUND_FINDING);
-                    m_engine->GetPyroManager()->Create(Gfx::PT_FINDING, obj, 0.0f);
+                    m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CFindingPyro>(obj));
                     DisplayError(INFO_FINDING, obj);
                 }
             }
@@ -5042,7 +5043,7 @@ void CRobotMain::ResetCreate()
         {
             if (obj->GetAnimateOnReset())
             {
-                m_engine->GetPyroManager()->Create(Gfx::PT_RESET, obj);
+                m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CResetPyro>(obj));
             }
         }
     }

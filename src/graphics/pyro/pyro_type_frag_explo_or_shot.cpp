@@ -32,6 +32,11 @@
 
 using namespace Gfx;
 
+CFragExploOrShotPyro::CFragExploOrShotPyro(PyroType type, CObject *obj, float force)
+    : CPyro(type, obj),
+      m_force(force)
+{}
+
 void CFragExploOrShotPyro::AfterCreate()
 {
     ObjectType oType = m_object->GetType();

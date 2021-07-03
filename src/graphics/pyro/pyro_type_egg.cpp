@@ -27,6 +27,9 @@
 
 using namespace Gfx;
 
+CEggPyro::CEggPyro(CObject *obj)
+    : CPyro(PT_EGG, obj)
+{}
 
 Error CEggPyro::IsEnded() {
     // Destroys the object that exploded.

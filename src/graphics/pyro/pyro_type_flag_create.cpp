@@ -29,6 +29,10 @@
 
 using namespace Gfx;
 
+CFlagCreatePyro::CFlagCreatePyro(CObject *pObj)
+    : CPyro(PT_OTHER, pObj)
+{}
+
 void CFlagCreatePyro::AfterCreate()
 {
     m_sound->Play(SOUND_WAYPOINT, m_pos);

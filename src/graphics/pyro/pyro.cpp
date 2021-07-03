@@ -45,8 +45,10 @@ namespace Gfx
 {
 
 
-CPyro::CPyro()
+CPyro::CPyro(PyroType type, CObject *obj)
 {
+    m_object      = obj;
+    m_type        = type;
     m_engine      = CEngine::GetInstancePointer();
     m_main        = CRobotMain::GetInstancePointer();
     m_terrain     = m_main->GetTerrain();
@@ -68,21 +70,17 @@ void CPyro::DeleteObject()
         m_lightRank = -1;
     }
 }
-
-bool CPyro::Create(PyroType type, CObject* obj, float force)
+bool CPyro::Create()
 {
-    m_object = obj;
-    m_force = force;
-
-    ObjectType oType = obj->GetType();
-    int objRank = obj->GetObjectRank(0);
+    ObjectType oType = m_object->GetType();
+    int objRank = m_object->GetObjectRank(0);
     if (objRank == -1) return false;
 
     Math::Vector min, max;
     m_engine->GetObjectBBox(objRank, min, max);
-    Math::Vector pos = obj->GetPosition();
+    Math::Vector pos = m_object->GetPosition();
 
-    for (const auto& crashSphere : obj->GetAllCrashSpheres())
+    for (const auto& crashSphere : m_object->GetAllCrashSpheres())
     {
         m_crashSpheres.push_back(crashSphere.sphere);
     }
@@ -108,7 +106,6 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
     }
 
     m_pos = pos+(min+max)/2.0f;
-    m_type = type;
     m_progress = 0.0f;
     m_speed = 1.0f/20.0f;    m_time = 0.0f;
     m_lastParticle = 0.0f;
@@ -124,8 +121,8 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
     // Seeking the position of the battery.
 
     CObject* power = nullptr;
-    if (obj->Implements(ObjectInterfaceType::Powered))
-        power = dynamic_cast<CPoweredObject&>(*obj).GetPower();
+    if (m_object->Implements(ObjectInterfaceType::Powered))
+        power = dynamic_cast<CPoweredObject&>(*m_object).GetPower();
 
     if (power == nullptr)
     {
@@ -136,7 +133,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
         m_power = true;
         pos = power->GetPosition();
         pos.y += 1.0f;
-        Math::Matrix* mat = obj->GetWorldMatrix(0);
+        Math::Matrix* mat = m_object->GetWorldMatrix(0);
         m_posPower = Math::Transform(*mat, pos);
     }
 
@@ -154,14 +151,14 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
     if ( oType == OBJECT_STATION )
     {
         m_power = true;
-        Math::Matrix* mat = obj->GetWorldMatrix(0);
+        Math::Matrix* mat = m_object->GetWorldMatrix(0);
         m_posPower = Math::Transform(*mat, Math::Vector(-15.0f, 7.0f, 0.0f));
         m_pos = m_posPower;
     }
     if ( oType == OBJECT_ENERGY )
     {
         m_power = true;
-        Math::Matrix* mat = obj->GetWorldMatrix(0);
+        Math::Matrix* mat = m_object->GetWorldMatrix(0);
         m_posPower = Math::Transform(*mat, Math::Vector(-7.0f, 6.0f, 0.0f));
         m_pos = m_posPower;
     }

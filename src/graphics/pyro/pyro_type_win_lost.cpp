@@ -28,6 +28,14 @@
 
 using namespace Gfx;
 
+CWinPyro::CWinPyro(CObject *obj)
+    : CPyro(PT_OTHER, obj)
+{}
+
+CLostPyro::CLostPyro(CObject *obj)
+    : CPyro(PT_OTHER, obj)
+{}
+
 void CWinPyro::UpdateEffect()
 {
     if ( m_object == nullptr )

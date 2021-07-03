@@ -26,6 +26,10 @@
 
 using namespace Gfx;
 
+CResetPyro::CResetPyro(CObject *obj)
+    : CPyro(PT_OTHER, obj)
+{}
+
 void CResetPyro::AfterCreate()
 {
     m_speed = 1.0f/2.0f;

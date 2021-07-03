@@ -25,6 +25,7 @@
 #include "graphics/engine/particle.h"
 #include "graphics/engine/terrain.h"
 
+#include "graphics/pyro/pyro.h"
 #include "graphics/pyro/pyro_manager.h"
 
 #include "level/robotmain.h"
@@ -90,6 +91,6 @@ void CTaskDeleteMark::DeleteMark()
 
     if (obj != nullptr)
     {
-        m_engine->GetPyroManager()->Create(Gfx::PT_WPCHECK, obj);
+        m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CWaypointHitPyro>(obj));
     }
 }

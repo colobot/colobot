@@ -29,6 +29,10 @@
 
 using namespace Gfx;
 
+CFindingPyro::CFindingPyro(CObject *obj)
+    : CPyro(PT_OTHER, obj)
+{}
+
 void CFindingPyro::AfterCreate()
 {
     float limit = (m_size-1.0f)/4.0f;

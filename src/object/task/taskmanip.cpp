@@ -22,6 +22,7 @@
 
 #include "graphics/engine/terrain.h"
 
+#include "graphics/pyro/pyro.h"
 #include "graphics/pyro/pyro_manager.h"
 
 #include "level/robotmain.h"
@@ -324,7 +325,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
             pos.y += 2.0f;
             m_object->SetPosition(pos);  // against the top of jump
 
-            m_engine->GetPyroManager()->Create(Gfx::PT_FALL, other);  // the ball falls
+            m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CFallPyro>(other));  // the ball falls
         }
 
         m_bBee = true;

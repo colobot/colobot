@@ -32,6 +32,7 @@
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/water.h"
 
+#include "graphics/pyro/pyro.h"
 #include "graphics/pyro/pyro_manager.h"
 
 #include "level/robotmain.h"
@@ -2546,7 +2547,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
             if ( distance < 4.0f )
             {
                 m_sound->Play(SOUND_WAYPOINT, m_object->GetPosition());
-                m_engine->GetPyroManager()->Create(Gfx::PT_WPCHECK, pObj);
+                m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CWaypointHitPyro>(pObj));
             }
         }
 
@@ -2557,7 +2558,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
             if ( distance < 10.0f*1.5f )
             {
                 m_sound->Play(SOUND_WAYPOINT, m_object->GetPosition());
-                m_engine->GetPyroManager()->Create(Gfx::PT_WPCHECK, pObj);
+                m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CWaypointHitPyro>(pObj));
             }
         }
 

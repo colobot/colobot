@@ -32,6 +32,10 @@
 
 using namespace Gfx;
 
+CBurnPyro::CBurnPyro(PyroType type, CObject *obj)
+    : CPyro(type, obj)
+{}
+
 void CBurnPyro::AfterCreate()
 {
     assert( m_type == PT_BURNT || m_type == PT_BURNO );
