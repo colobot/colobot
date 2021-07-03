@@ -308,8 +308,6 @@ private:
 
     //! Shader program for normal rendering
     GLuint m_normalProgram = 0;
-    //! Shader program for interface rendering
-    GLuint m_interfaceProgram = 0;
     //! Shader program for shadow rendering
     GLuint m_shadowProgram = 0;
 

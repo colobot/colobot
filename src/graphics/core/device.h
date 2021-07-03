@@ -174,7 +174,6 @@ enum RenderState
 enum RenderMode
 {
     RENDER_MODE_NORMAL,
-    RENDER_MODE_INTERFACE,
     RENDER_MODE_SHADOW,
 };
 

@@ -294,36 +294,6 @@ bool CGL33Device::Create()
     glDeleteShader(shaders[0]);
     glDeleteShader(shaders[1]);
 
-    // Create program for interface rendering
-    strcpy(filename, "shaders/gl33/vs_interface.glsl");
-    shaders[0] = LoadShader(GL_VERTEX_SHADER, filename);
-    if (shaders[0] == 0)
-    {
-        m_errorMessage = GetLastShaderError();
-        GetLogger()->Error("Cound not create vertex shader from file '%s'\n", filename);
-        return false;
-    }
-
-    strcpy(filename, "shaders/gl33/fs_interface.glsl");
-    shaders[1] = LoadShader(GL_FRAGMENT_SHADER, filename);
-    if (shaders[1] == 0)
-    {
-        m_errorMessage = GetLastShaderError();
-        GetLogger()->Error("Cound not create fragment shader from file '%s'\n", filename);
-        return false;
-    }
-
-    m_interfaceProgram = LinkProgram(2, shaders);
-    if (m_interfaceProgram == 0)
-    {
-        m_errorMessage = GetLastShaderError();
-        GetLogger()->Error("Cound not link shader program for interface rendering\n");
-        return false;
-    }
-
-    glDeleteShader(shaders[0]);
-    glDeleteShader(shaders[1]);
-
     // Create program for shadow rendering
     strcpy(filename, "shaders/gl33/vs_shadow.glsl");
     shaders[0] = LoadShader(GL_VERTEX_SHADER, filename);
@@ -450,40 +420,11 @@ bool CGL33Device::Create()
         glUniform1i(uni.lightCount, 0);
     }
 
-    // Obtain uniform locations for interface program
-    glUseProgram(m_interfaceProgram);
-
-    {
-        UniformLocations &uni = m_uniforms[1];
-
-        uni.projectionMatrix = glGetUniformLocation(m_interfaceProgram, "uni_ProjectionMatrix");
-        uni.viewMatrix = glGetUniformLocation(m_interfaceProgram, "uni_ViewMatrix");
-        uni.modelMatrix = glGetUniformLocation(m_interfaceProgram, "uni_ModelMatrix");
-
-        uni.primaryTexture = glGetUniformLocation(m_interfaceProgram, "uni_Texture");
-
-        uni.textureEnabled[0] = glGetUniformLocation(m_interfaceProgram, "uni_TextureEnabled");
-        uni.textureEnabled[1] = -1;
-        uni.textureEnabled[2] = -1;
-
-        // Set default uniform values
-        Math::Matrix matrix;
-        matrix.LoadIdentity();
-
-        glUniformMatrix4fv(uni.projectionMatrix, 1, GL_FALSE, matrix.Array());
-        glUniformMatrix4fv(uni.viewMatrix, 1, GL_FALSE, matrix.Array());
-        glUniformMatrix4fv(uni.modelMatrix, 1, GL_FALSE, matrix.Array());
-
-        glUniform1i(uni.primaryTexture, 0);
-
-        glUniform1i(uni.textureEnabled[0], 0);
-    }
-
     // Obtain uniform locations for shadow program
     glUseProgram(m_shadowProgram);
 
     {
-        UniformLocations &uni = m_uniforms[2];
+        UniformLocations &uni = m_uniforms[1];
 
         uni.projectionMatrix = glGetUniformLocation(m_shadowProgram, "uni_ProjectionMatrix");
         uni.viewMatrix = glGetUniformLocation(m_shadowProgram, "uni_ViewMatrix");
@@ -550,7 +491,6 @@ void CGL33Device::Destroy()
     // delete shader program
     glUseProgram(0);
     glDeleteProgram(m_normalProgram);
-    glDeleteProgram(m_interfaceProgram);
     glDeleteProgram(m_shadowProgram);
 
     // delete framebuffers
@@ -632,13 +572,9 @@ void CGL33Device::SetRenderMode(RenderMode mode)
         glUseProgram(m_normalProgram);
         m_mode = 0;
         break;
-    case RENDER_MODE_INTERFACE:
-        glUseProgram(m_interfaceProgram);
-        m_mode = 1;
-        break;
     case RENDER_MODE_SHADOW:
         glUseProgram(m_shadowProgram);
-        m_mode = 2;
+        m_mode = 1;
         break;
     default:
         assert(false);
@@ -665,9 +601,6 @@ void CGL33Device::Restore()
         glUseProgram(m_normalProgram);
         break;
     case 1:
-        glUseProgram(m_interfaceProgram);
-        break;
-    case 2:
         glUseProgram(m_shadowProgram);
         break;
     }
