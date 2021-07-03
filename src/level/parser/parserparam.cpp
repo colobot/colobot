@@ -1002,22 +1002,6 @@ CScoreboard::SortType CLevelParserParam::AsSortType(CScoreboard::SortType def)
 
 Gfx::PyroType CLevelParserParam::ToPyroType(std::string value)
 {
-    if (value == "FRAGt" ) return Gfx::PT_FRAGT;
-    if (value == "FRAGo" ) return Gfx::PT_FRAGO;
-    if (value == "FRAGw" ) return Gfx::PT_FRAGW;
-    if (value == "EXPLOt") return Gfx::PT_EXPLOT;
-    if (value == "EXPLOo") return Gfx::PT_EXPLOO;
-    if (value == "EXPLOw") return Gfx::PT_EXPLOW;
-    if (value == "SHOTt" ) return Gfx::PT_SHOTT;
-    if (value == "SHOTh" ) return Gfx::PT_SHOTH;
-    if (value == "SHOTm" ) return Gfx::PT_SHOTM;
-    if (value == "SHOTw" ) return Gfx::PT_SHOTW;
-    if (value == "EGG"   ) return Gfx::PT_EGG;
-    if (value == "BURNt" ) return Gfx::PT_BURNT;
-    if (value == "BURNo" ) return Gfx::PT_BURNO;
-    if (value == "SPIDER") return Gfx::PT_SPIDER;
-    if (value == "FALL"  ) return Gfx::PT_FALL;
-    if (value == "RESET" ) return Gfx::PT_RESET;
     if (value == "WIN"   ) return Gfx::PT_WIN;
     if (value == "LOST"  ) return Gfx::PT_LOST;
     return static_cast<Gfx::PyroType>(Cast<int>(value, "pyrotype"));
