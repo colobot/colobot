@@ -35,10 +35,12 @@
 namespace Gfx
 {
 
+class CGL33Device;
+
 class CGL33UIRenderer : public CUIRenderer
 {
 public:
-    CGL33UIRenderer();
+    CGL33UIRenderer(CGL33Device* device);
     virtual ~CGL33UIRenderer();
 
     virtual void SetProjection(float left, float right, float bottom, float top) override;
@@ -49,6 +51,8 @@ public:
     virtual void Flush() override;
 
 private:
+    CGL33Device* const m_device;
+
     // location of uni_ProjectionMatrix uniform
     GLint m_projectionMatrix = -1;
 

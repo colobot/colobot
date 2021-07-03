@@ -94,6 +94,8 @@ public:
     void SetRenderMode(RenderMode mode) override;
     CUIRenderer* GetUIRenderer() override;
 
+    void Restore() override;
+
     void SetTransform(TransformType type, const Math::Matrix &matrix) override;
 
     void SetMaterial(const Material &material) override;

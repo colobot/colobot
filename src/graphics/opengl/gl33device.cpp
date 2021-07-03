@@ -514,7 +514,7 @@ bool CGL33Device::Create()
         glUniform1f(uni.alphaReference, 1.0f);
     }
 
-    m_uiRenderer = std::make_unique<CGL33UIRenderer>();
+    m_uiRenderer = std::make_unique<CGL33UIRenderer>(this);
 
     SetRenderMode(RENDER_MODE_NORMAL);
 
@@ -609,6 +609,8 @@ void CGL33Device::BeginScene()
 
 void CGL33Device::EndScene()
 {
+    m_uiRenderer->Flush();
+
 #ifdef DEV_BUILD
     CheckGLErrors();
 #endif
@@ -653,6 +655,22 @@ void CGL33Device::SetRenderMode(RenderMode mode)
 CUIRenderer* CGL33Device::GetUIRenderer()
 {
     return m_uiRenderer.get();
+}
+
+void CGL33Device::Restore()
+{
+    switch (m_mode)
+    {
+    case 0:
+        glUseProgram(m_normalProgram);
+        break;
+    case 1:
+        glUseProgram(m_interfaceProgram);
+        break;
+    case 2:
+        glUseProgram(m_shadowProgram);
+        break;
+    }
 }
 
 void CGL33Device::SetTransform(TransformType type, const Math::Matrix &matrix)

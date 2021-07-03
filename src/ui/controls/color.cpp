@@ -160,8 +160,6 @@ void CColor::Draw()
 
     device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
     m_engine->AddStatisticTriangle(2);
-
-    device->SetRenderMode(Gfx::RENDER_MODE_INTERFACE);
 }
 
 void CColor::SetRepeat(bool bRepeat)

@@ -354,8 +354,6 @@ void CScroll::Draw()
     {
         m_buttonDown->Draw();
     }
-    
-    device->SetRenderMode(Gfx::RENDER_MODE_INTERFACE);
 }
 
 // Draws a rectangle.

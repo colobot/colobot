@@ -202,8 +202,6 @@ void CButton::Draw()
         pos.x = m_pos.x + m_dim.x - 5.0f / 640.0f - 3.0f / 640.0f;
         DrawIcon(pos, dim, uv1, uv2, 0.0f);
     }
-
-    device->SetRenderMode(Gfx::RENDER_MODE_INTERFACE);
 }
 
 

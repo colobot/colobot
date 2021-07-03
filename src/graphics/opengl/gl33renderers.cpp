@@ -1,5 +1,6 @@
 #include "graphics/opengl/gl33renderers.h"
 
+#include "graphics/opengl/gl33device.h"
 #include "graphics/opengl/glutil.h"
 
 #include "graphics/core/vertex.h"
@@ -13,7 +14,8 @@
 namespace Gfx
 {
 
-CGL33UIRenderer::CGL33UIRenderer()
+CGL33UIRenderer::CGL33UIRenderer(CGL33Device* device)
+    : m_device(device)
 {
     GLint shaders[2];
 
@@ -95,7 +97,7 @@ void CGL33UIRenderer::SetProjection(float left, float right, float bottom, float
 
     glUniformMatrix4fv(m_projectionMatrix, 1, GL_FALSE, glm::value_ptr(matrix));
 
-    glUseProgram(0);
+    m_device->Restore();
 }
 
 void CGL33UIRenderer::SetTexture(const Texture& texture)
@@ -166,9 +168,6 @@ void CGL33UIRenderer::Flush()
     // Draw primitives by grouping by type
     for (size_t i = 0; i < m_types.size(); i++)
     {
-        //glDrawArrays(m_types[i], m_firsts[i], m_counts[i]);
-
-        //*
         size_t count = 1;
 
         for (; i + count < m_types.size(); count++)
@@ -180,7 +179,6 @@ void CGL33UIRenderer::Flush()
         glMultiDrawArrays(m_types[i], &m_firsts[i], &m_counts[i], count);
 
         i += count;
-        // */
     }
 
     // Clear buffers
@@ -189,7 +187,7 @@ void CGL33UIRenderer::Flush()
     m_firsts.clear();
     m_counts.clear();
 
-    glUseProgram(0);
+    m_device->Restore();
 }
 
 } // namespace Gfx

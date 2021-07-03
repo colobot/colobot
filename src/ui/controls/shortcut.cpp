@@ -216,8 +216,6 @@ void CShortcut::Draw()
 
       DrawIcon(m_pos, m_dim, uv1, uv2);
     }
-
-    m_engine->GetDevice()->SetRenderMode(Gfx::RENDER_MODE_INTERFACE);
 }
 
 // Draw the vertex array.

@@ -378,6 +378,9 @@ public:
     //! Returns UI renderer
     virtual CUIRenderer* GetUIRenderer() = 0;
 
+    //! Restores device rendering mode
+    virtual void Restore() = 0;
+
     //! Sets the transform matrix of given type
     virtual void SetTransform(TransformType type, const Math::Matrix &matrix) = 0;
 

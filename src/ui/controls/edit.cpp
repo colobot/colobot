@@ -1155,8 +1155,6 @@ void CEdit::Draw()
     {
         m_scroll->Draw();
     }
-
-    m_engine->GetDevice()->SetRenderMode(Gfx::RENDER_MODE_INTERFACE);
 }
 
 // Draw an image part.

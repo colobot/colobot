@@ -359,7 +359,6 @@ bool CEngine::Create()
 
     auto renderer = m_device->GetUIRenderer();
     renderer->SetProjection(0.0f, 1.0f, 0.0f, 1.0f);
-    m_device->SetRenderMode(RENDER_MODE_INTERFACE);
 
     Math::LoadOrthoProjectionMatrix(m_matProjInterface, 0.0f, 1.0f, 0.0f, 1.0f, -1.0f, 1.0f);
 
@@ -3651,8 +3650,6 @@ void CEngine::DrawCaptured3DScene()
 
     renderer->SetTexture(m_capturedWorldTexture);
     renderer->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, 4, vertices);
-
-    m_device->SetRenderMode(RENDER_MODE_INTERFACE);
 }
 
 void CEngine::RenderDebugSphere(const Math::Sphere& sphere, const Math::Matrix& transform, const Gfx::Color& color)
@@ -4114,7 +4111,7 @@ void CEngine::DrawObject(const EngineBaseObjDataTier& p4)
 
 void CEngine::DrawInterface()
 {
-    m_device->SetRenderMode(RENDER_MODE_INTERFACE);
+    m_device->SetRenderMode(RENDER_MODE_NORMAL);
 
     m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, false);
     m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
@@ -4219,7 +4216,7 @@ void CEngine::DrawInterface()
         m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
         m_device->SetRenderState(RENDER_STATE_FOG, false);
 
-        m_device->SetRenderMode(RENDER_MODE_INTERFACE);
+        m_device->SetRenderMode(RENDER_MODE_NORMAL);
 
         SetInterfaceCoordinates();
     }
@@ -4750,7 +4747,7 @@ void CEngine::DrawShadowSpots()
 
 void CEngine::DrawBackground()
 {
-    m_device->SetRenderMode(RENDER_MODE_INTERFACE);
+    m_device->SetRenderMode(RENDER_MODE_NORMAL);
 
     if (m_cloud->GetLevel() != 0.0f)  // clouds ?
     {
@@ -4879,8 +4876,6 @@ void CEngine::DrawBackgroundImage()
 
     m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertices, 4);
     AddStatisticTriangle(2);
-
-    m_device->SetRenderMode(Gfx::RENDER_MODE_INTERFACE);
 }
 
 void CEngine::DrawPlanet()
@@ -4927,7 +4922,7 @@ void CEngine::DrawForegroundImage()
     SetTexture(m_foregroundTex);
     SetState(ENG_RSTATE_CLAMP | ENG_RSTATE_TTEXTURE_BLACK);
 
-    m_device->SetRenderMode(RENDER_MODE_INTERFACE);
+    m_device->SetRenderMode(RENDER_MODE_NORMAL);
 
     m_device->SetTransform(TRANSFORM_VIEW, m_matViewInterface);
     m_device->SetTransform(TRANSFORM_PROJECTION, m_matProjInterface);
@@ -4935,8 +4930,6 @@ void CEngine::DrawForegroundImage()
 
     m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
     AddStatisticTriangle(2);
-
-    m_device->SetRenderMode(RENDER_MODE_NORMAL);
 }
 
 void CEngine::DrawOverColor()
@@ -4955,7 +4948,7 @@ void CEngine::DrawOverColor()
         Color(0.0f, 0.0f, 0.0f, 0.0f)
     };
 
-    m_device->SetRenderMode(RENDER_MODE_INTERFACE);
+    m_device->SetRenderMode(RENDER_MODE_NORMAL);
 
     SetState(m_overMode);
 
@@ -5136,8 +5129,6 @@ void CEngine::DrawMouseSprite(Math::IntPoint pos, Math::IntPoint size, int icon)
 
     m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
     AddStatisticTriangle(2);
-
-    m_device->SetRenderMode(RENDER_MODE_INTERFACE);
 }
 
 void CEngine::DrawStats()
@@ -5241,8 +5232,6 @@ void CEngine::DrawStats()
     std::stringstream str;
     str << std::fixed << std::setprecision(2) << m_statisticPos.x << "; " << m_statisticPos.z;
     drawStatsLine(   "Position",          str.str(), "");
-
-    m_device->SetRenderMode(RENDER_MODE_INTERFACE);
 }
 
 void CEngine::DrawTimer()
@@ -5251,8 +5240,6 @@ void CEngine::DrawTimer()
 
     Math::Point pos(0.98f, 0.98f-m_text->GetAscent(FONT_COMMON, 15.0f));
     m_text->DrawText(m_timerText, FONT_COMMON, 15.0f, pos, 1.0f, TEXT_ALIGN_RIGHT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
-
-    m_device->SetRenderMode(RENDER_MODE_INTERFACE);
 }
 
 void CEngine::AddBaseObjTriangles(int baseObjRank, const std::vector<Gfx::ModelTriangle>& triangles)
@@ -5540,8 +5527,6 @@ void CEngine::SetInterfaceCoordinates()
 
     auto renderer = m_device->GetUIRenderer();
     renderer->SetProjection(0.0f, 1.0f, 0.0f, 1.0f);
-
-    m_device->SetRenderMode(RENDER_MODE_INTERFACE);
 }
 
 void CEngine::EnablePauseBlur()
@@ -5575,8 +5560,6 @@ void CEngine::SetWindowCoordinates()
 
     auto renderer = m_device->GetUIRenderer();
     renderer->SetProjection(0.0f, m_size.x, m_size.y, 0.0f);
-
-    m_device->SetRenderMode(RENDER_MODE_INTERFACE);
 }
 
 void CEngine::SetUITexture(const std::string& name)

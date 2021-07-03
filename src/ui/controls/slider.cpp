@@ -475,8 +475,6 @@ void CSlider::Draw()
             m_engine->GetText()->DrawText(text, m_fontType, m_fontSize, pos, dim.x, Gfx::TEXT_ALIGN_RIGHT, 0);
         }
     }
-
-    device->SetRenderMode(Gfx::RENDER_MODE_INTERFACE);
 }
 
 std::string CSlider::GetLabel()
@@ -543,8 +541,6 @@ void CSlider::DrawVertex(Math::Point pos, Math::Point dim, int icon)
     uv2.y -= dp;
 
     DrawIcon(pos, dim, uv1, uv2, corner, ex);
-
-    device->SetRenderMode(Gfx::RENDER_MODE_INTERFACE);
 }
 
 

@@ -646,8 +646,6 @@ void CGroup::Draw()
         uv2.y -= dp;
         DrawIcon(pos, dim, uv1, uv2);
     }
-
-    device->SetRenderMode(Gfx::RENDER_MODE_INTERFACE);
 }
 
 

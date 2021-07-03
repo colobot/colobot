@@ -556,8 +556,6 @@ void CControl::Draw()
             m_engine->GetText()->DrawText(m_name, m_fontType, m_fontSize, pos, m_dim.x, m_textAlign, 0);
         }
     }
-
-    device->SetRenderMode(Gfx::RENDER_MODE_INTERFACE);
 }
 
 // Draw the vertex array.
@@ -666,8 +664,6 @@ void CControl::DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math:
             m_engine->AddStatisticTriangle(6);
         }
     }
-
-    device->SetRenderMode(Gfx::RENDER_MODE_INTERFACE);
 }
 
 // Draws a rectangular icon made up of 9 pieces.
@@ -735,8 +731,6 @@ void CControl::DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math:
 
     device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertices, 8);
     m_engine->AddStatisticTriangle(6);
-
-    device->SetRenderMode(Gfx::RENDER_MODE_INTERFACE);
 }
 
 // Draw round the hatch of a button.
@@ -782,8 +776,6 @@ void CControl::DrawWarning(Math::Point pos, Math::Point dim)
         pos.x += dim.x;
         DrawIcon(pos, dim, uv1, uv2);
     }
-
-    device->SetRenderMode(Gfx::RENDER_MODE_INTERFACE);
 }
 
 // Draw the shade under a button.
@@ -818,8 +810,6 @@ void CControl::DrawShadow(Math::Point pos, Math::Point dim, float deep)
     corner.y = 10.0f / 480.0f;
 
     DrawIcon(pos, dim, uv1, uv2, corner, 6.0f / 256.0f);
-
-    device->SetRenderMode(Gfx::RENDER_MODE_INTERFACE);
 }
 
 

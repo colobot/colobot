@@ -157,7 +157,6 @@ public:
         }
 
         m_engine.GetDevice()->GetUIRenderer()->Flush();
-        m_engine.GetDevice()->SetRenderMode(Gfx::RENDER_MODE_INTERFACE);
 
         //const Vertex* vertices = m_quads.front().vertices;
         //m_engine.GetDevice()->DrawPrimitives(PRIMITIVE_TRIANGLE_STRIP, vertices, m_firsts.data(),

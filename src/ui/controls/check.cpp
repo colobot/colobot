@@ -149,8 +149,6 @@ void CCheck::Draw()
         }
     }
 
-    device->SetRenderMode(Gfx::RENDER_MODE_INTERFACE);
-
     m_dim = iDim;
 
     // Draw the name.

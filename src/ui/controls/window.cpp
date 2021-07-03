@@ -866,8 +866,6 @@ void CWindow::Draw()
             DrawHach(pos, dim);  // right hatch
         }
 
-        device->SetRenderMode(Gfx::RENDER_MODE_INTERFACE);
-
         pos.x = m_pos.x+width/2.0f;
         pos.y = m_pos.y+m_dim.y-0.01f-h*1.10f;
         m_engine->GetText()->DrawText(m_name, m_fontType, m_fontSize, pos, width, Gfx::TEXT_ALIGN_CENTER, 0);
@@ -892,8 +890,6 @@ void CWindow::Draw()
     {
         control->Draw();
     }
-
-    device->SetRenderMode(Gfx::RENDER_MODE_INTERFACE);
 }
 
 // Draws a rectangle.
@@ -1266,8 +1262,6 @@ void CWindow::DrawVertex(Math::Point pos, Math::Point dim, int icon)
         corner.y = 6.0f/480.0f;
         DrawIcon(pos, dim, uv1, uv2, corner, 5.0f/256.0f);
     }
-
-    device->SetRenderMode(Gfx::RENDER_MODE_INTERFACE);
 }
 
 // Draws hatching.
@@ -1312,8 +1306,6 @@ void CWindow::DrawHach(Math::Point pos, Math::Point dim)
         ppos.x += ddim.x;
     }
     while ( !bStop );
-
-    device->SetRenderMode(Gfx::RENDER_MODE_INTERFACE);
 }
 
 void CWindow::SetFocus(CControl* focusControl)
