@@ -444,23 +444,11 @@ public:
     virtual void DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
         int first[], int count[], int drawCount) = 0;
 
-    //! Creates a static buffer composed of given primitives with single texture vertices
-    virtual unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount) = 0;
-
     //! Creates a static buffer composed of given primitives with multitexturing
     virtual unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount) = 0;
 
-    //! Creates a static buffer composed of given primitives with solid color
-    virtual unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount) = 0;
-
-    //! Updates the static buffer composed of given primitives with single texture vertices
-    virtual void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const Vertex* vertices, int vertexCount) = 0;
-
     //! Updates the static buffer composed of given primitives with multitexturing
     virtual void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount) = 0;
-
-    //! Updates the static buffer composed of given primitives with solid color
-    virtual void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount) = 0;
 
     //! Draws a static buffer
     virtual void DrawStaticBuffer(unsigned int bufferId) = 0;

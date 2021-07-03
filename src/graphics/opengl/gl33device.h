@@ -137,27 +137,11 @@ public:
     virtual void DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
         int first[], int count[], int drawCount) override;
 
-    unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount) override
-    {
-        return CreateStaticBufferImpl(primitiveType, vertices, vertexCount);
-    }
     unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount) override
     {
         return CreateStaticBufferImpl(primitiveType, vertices, vertexCount);
     }
-    unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount) override
-    {
-        return CreateStaticBufferImpl(primitiveType, vertices, vertexCount);
-    }
-    void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const Vertex* vertices, int vertexCount) override
-    {
-        UpdateStaticBufferImpl(bufferId, primitiveType, vertices, vertexCount);
-    }
     void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount) override
-    {
-        UpdateStaticBufferImpl(bufferId, primitiveType, vertices, vertexCount);
-    }
-    void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexCol* vertices, int vertexCount) override
     {
         UpdateStaticBufferImpl(bufferId, primitiveType, vertices, vertexCount);
     }
