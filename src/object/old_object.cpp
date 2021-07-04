@@ -552,24 +552,13 @@ void COldObject::DestroyObject(DestructionType type, CObject* killer)
     }
     else if ( type == DestructionType::Burn )  // burning?
     {
-        if ( m_type == OBJECT_MOTHER ||
-             m_type == OBJECT_ANT    ||
-             m_type == OBJECT_SPIDER ||
-             m_type == OBJECT_BEE    ||
-             m_type == OBJECT_WORM   ||
-             m_type == OBJECT_BULLET )
-        {
-            m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CBurnPyro>(Gfx::PT_BURNO, this));
-            SetDying(DeathType::Burning);
-            m_main->NotifyObjectDestroyed(this);
-        }
-        else if ( m_type == OBJECT_HUMAN )
+        if ( m_type == OBJECT_HUMAN )
         {
             m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CDeadGPyro>(this));
         }
         else
         {
-            m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CBurnPyro>(Gfx::PT_BURNT, this));
+            m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CBurnPyro>(this));
             SetDying(DeathType::Burning);
             m_main->NotifyObjectDestroyed(this);
         }

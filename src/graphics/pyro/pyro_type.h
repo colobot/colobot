@@ -48,8 +48,6 @@ enum PyroType
     PT_SHOTW    = 12,       //! < hit under water (TODO: check if unused)
 
     // Other subclasses
-    PT_BURNT    = 14,       //! < burning of technical object
-    PT_BURNO    = 15,       //! < burning of organic object
     PT_WIN      = 22,       //! < fireworks
     PT_LOST     = 23,       //! < black smoke
 

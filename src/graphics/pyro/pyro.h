@@ -292,8 +292,9 @@ public:
 
 class CBurnPyro : public CPyro
 {
+    bool m_organicBurn;
 public:
-    CBurnPyro(PyroType type, CObject *obj);
+    CBurnPyro(CObject *obj);
     void AfterCreate() override;
     void UpdateEffect() override;
 

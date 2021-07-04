@@ -32,25 +32,28 @@
 
 using namespace Gfx;
 
-CBurnPyro::CBurnPyro(PyroType type, CObject *obj)
-    : CPyro(type, obj)
+CBurnPyro::CBurnPyro(CObject *obj)
+    : CPyro(PT_OTHER, obj)
+    , m_organicBurn(obj->GetType() == OBJECT_MOTHER ||
+                    obj->GetType() == OBJECT_ANT    ||
+                    obj->GetType() == OBJECT_SPIDER ||
+                    obj->GetType() == OBJECT_BEE    ||
+                    obj->GetType() == OBJECT_WORM   ||
+                    obj->GetType() == OBJECT_BULLET)
 {}
 
 void CBurnPyro::AfterCreate()
 {
-    assert( m_type == PT_BURNT || m_type == PT_BURNO );
-
     m_soundChannel = m_sound->Play(SOUND_BURN, m_pos, 1.0f, 1.0f, true);
     m_sound->AddEnvelope(m_soundChannel, 1.0f, 1.0f, 12.0f, SOPER_CONTINUE);
     m_sound->AddEnvelope(m_soundChannel, 0.0f, 1.0f,  5.0f, SOPER_STOP);
 
-    if ( m_type == PT_BURNO )
+    if (m_organicBurn)
     {
         m_sound->Play(SOUND_DEADi, m_pos);
         m_sound->Play(SOUND_DEADi, m_engine->GetEyePt());
     }
-
-    if ( m_type == PT_BURNT )
+    else
     {
         BurnStart();
     }
@@ -108,7 +111,7 @@ void CBurnPyro::UpdateEffect()
         m_particle->CreateParticle(pos, speed, dim, PARTISMOKE3, 4.0f);
     }
 
-    if ( m_type == PT_BURNT )
+    if ( !m_organicBurn )
     {
         BurnProgress();
     }
@@ -699,7 +702,7 @@ void CBurnPyro::AfterEnd()
     if (m_object == nullptr)
         return;
 
-    if (m_type == PT_BURNO)  // organic object is burning?
+    if (m_organicBurn)  // organic object is burning?
     {
         DeleteObject(true, true);  // removes the insect
         return;
