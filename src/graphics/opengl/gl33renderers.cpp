@@ -36,7 +36,7 @@ CGL33UIRenderer::CGL33UIRenderer(CGL33Device* device)
     m_program = LinkProgram(2, shaders);
     if (m_program == 0)
     {
-        GetLogger()->Error("Cound not link shader program for normal rendering\n");
+        GetLogger()->Error("Cound not link shader program for interface renderer\n");
         return;
     }
 
@@ -45,9 +45,21 @@ CGL33UIRenderer::CGL33UIRenderer(CGL33Device* device)
 
     glUseProgram(m_program);
 
-    m_projectionMatrix = glGetUniformLocation(m_program, "uni_ProjectionMatrix");
-    auto matrix = glm::ortho(0.0f, +1.0f, 0.0f, +1.0f);
-    glUniformMatrix4fv(m_projectionMatrix, 1, GL_FALSE, glm::value_ptr(matrix));
+    // Create uniform buffer
+    glGenBuffers(1, &m_uniformBuffer);
+
+    m_uniforms.projectionMatrix = glm::ortho(0.0f, +1.0f, 0.0f, +1.0f);
+    m_uniforms.color = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+    m_uniformsDirty = true;
+
+    UpdateUniforms();
+
+    // Bind uniform block to uniform buffer binding
+    GLuint blockIndex = glGetUniformBlockIndex(m_program, "Uniforms");
+
+    glBindBufferBase(GL_UNIFORM_BUFFER, 0, m_uniformBuffer);
+    glUniformBlockBinding(m_program, blockIndex, 0);
 
     // Set texture unit to 8th
     auto texture = glGetUniformLocation(m_program, "uni_Texture");
@@ -91,13 +103,8 @@ void CGL33UIRenderer::SetProjection(float left, float right, float bottom, float
 {
     Flush();
 
-    glUseProgram(m_program);
-
-    auto matrix = glm::ortho(left, right, bottom, top);
-
-    glUniformMatrix4fv(m_projectionMatrix, 1, GL_FALSE, glm::value_ptr(matrix));
-
-    m_device->Restore();
+    m_uniforms.projectionMatrix = glm::ortho(left, right, bottom, top);
+    m_uniformsDirty = true;
 }
 
 void CGL33UIRenderer::SetTexture(const Texture& texture)
@@ -114,6 +121,14 @@ void CGL33UIRenderer::SetTexture(const Texture& texture)
         glBindTexture(GL_TEXTURE_2D, m_whiteTexture);
     else
         glBindTexture(GL_TEXTURE_2D, m_currentTexture);
+}
+
+void CGL33UIRenderer::SetColor(const glm::vec4& color)
+{
+    Flush();
+
+    m_uniforms.color = color;
+    m_uniformsDirty = true;
 }
 
 void CGL33UIRenderer::DrawPrimitive(PrimitiveType type, int count, const Vertex2D* vertices)
@@ -137,7 +152,11 @@ void CGL33UIRenderer::Flush()
 {
     if (m_types.empty()) return;
 
+    UpdateUniforms();
+
     glUseProgram(m_program);
+
+    glBindBufferBase(GL_UNIFORM_BUFFER, 0, m_uniformBuffer);
 
     // Increase buffer size if necessary
     size_t size = m_buffer.size() * sizeof(Vertex2D);
@@ -188,6 +207,16 @@ void CGL33UIRenderer::Flush()
     m_counts.clear();
 
     m_device->Restore();
+}
+
+void CGL33UIRenderer::UpdateUniforms()
+{
+    if (!m_uniformsDirty) return;
+
+    glBindBuffer(GL_COPY_WRITE_BUFFER, m_uniformBuffer);
+    glBufferData(GL_COPY_WRITE_BUFFER, sizeof(Uniforms), nullptr, GL_STREAM_DRAW);
+    glBufferSubData(GL_COPY_WRITE_BUFFER, 0, sizeof(Uniforms), &m_uniforms);
+    glBindBuffer(GL_COPY_WRITE_BUFFER, 0);
 }
 
 } // namespace Gfx

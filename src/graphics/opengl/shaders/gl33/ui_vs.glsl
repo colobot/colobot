@@ -20,11 +20,15 @@
 // VERTEX SHADER - UI RENDERER
 #version 330 core
 
-uniform mat4 uni_ProjectionMatrix;
-
 layout(location = 0) in vec4 in_VertexCoord;
 layout(location = 1) in vec2 in_TexCoord;
 layout(location = 2) in vec4 in_Color;
+
+uniform Uniforms
+{
+    mat4 uni_Matrix;
+    vec4 uni_Color;
+};
 
 out VertexData
 {
@@ -34,8 +38,8 @@ out VertexData
 
 void main()
 {
-    gl_Position = uni_ProjectionMatrix * in_VertexCoord;
+    gl_Position = uni_Matrix * in_VertexCoord;
 
-    data.Color = in_Color;
+    data.Color = uni_Color * in_Color;
     data.TexCoord = in_TexCoord;
 }

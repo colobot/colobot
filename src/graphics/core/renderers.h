@@ -61,6 +61,8 @@ public:
     virtual void SetProjection(float left, float right, float bottom, float top) = 0;
     //! Sets texture, setting texture 0 means using white texture
     virtual void SetTexture(const Texture& texture) = 0;
+    //! Sets color
+    virtual void SetColor(const glm::vec4& color) = 0;
 
     //! Draws primitive
     virtual void DrawPrimitive(PrimitiveType type, int count, const Vertex2D* vertices) = 0;

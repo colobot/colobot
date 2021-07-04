@@ -1976,6 +1976,7 @@ void CEngine::SetState(int state, const Color& color)
         return;
 
     m_device->GetUIRenderer()->Flush();
+    m_device->GetUIRenderer()->SetColor({ color.r, color.g, color.b, color.a });
 
     m_lastState = state;
     m_lastColor = color;
