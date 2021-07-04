@@ -1000,28 +1000,6 @@ CScoreboard::SortType CLevelParserParam::AsSortType(CScoreboard::SortType def)
     return AsSortType();
 }
 
-Gfx::PyroType CLevelParserParam::ToPyroType(std::string value)
-{
-    if (value == "WIN"   ) return Gfx::PT_WIN;
-    if (value == "LOST"  ) return Gfx::PT_LOST;
-    return static_cast<Gfx::PyroType>(Cast<int>(value, "pyrotype"));
-}
-
-Gfx::PyroType CLevelParserParam::AsPyroType()
-{
-    if (m_empty)
-        throw CLevelParserExceptionMissingParam(this);
-    return ToPyroType(m_value);
-}
-
-Gfx::PyroType CLevelParserParam::AsPyroType(Gfx::PyroType def)
-{
-    if (m_empty)
-        return def;
-    return AsPyroType();
-}
-
-
 Gfx::CameraType CLevelParserParam::ToCameraType(std::string value)
 {
     if (value == "BACK"   ) return Gfx::CAM_TYPE_BACK;

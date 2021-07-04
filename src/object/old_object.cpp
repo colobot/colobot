@@ -1153,16 +1153,19 @@ void COldObject::Read(CLevelParserLine* line)
         SetCameraType(line->GetParam("camera")->AsCameraType());
     SetCameraLock(line->GetParam("cameraLock")->AsBool(false));
 
-    if (line->GetParam("pyro")->IsDefined()) {
-        switch(line->GetParam("pyro")->AsPyroType()) {
-        case Gfx::PT_WIN:
+    if (line->GetParam("pyro")->IsDefined())
+    {
+        if(line->GetParam("pyro")->GetValue() == "WIN")
+        {
             m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CWinPyro>(this));
-            break;
-        case Gfx::PT_LOST:
+        }
+        else if(line->GetParam("pyro")->GetValue() == "LOST")
+        {
             m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CLostPyro>(this));
-            break;
-        default:
-            assert(false); // unreachable
+        }
+        else
+        {
+            throw CLevelParserExceptionBadParam(line->GetParam("pyro"), "pyrotype");
         }
     }
 

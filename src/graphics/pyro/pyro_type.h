@@ -47,10 +47,6 @@ enum PyroType
     PT_SHOTM    = 11,       //! < hit queen
     PT_SHOTW    = 12,       //! < hit under water (TODO: check if unused)
 
-    // Other subclasses
-    PT_WIN      = 22,       //! < fireworks
-    PT_LOST     = 23,       //! < black smoke
-
     PT_OTHER    = 100,      //! < No special type code; behaviour is decided by subclass
 };
 
