@@ -204,6 +204,8 @@ public:
     void        FallProgress(float rTime);
     //! Indicates whether the fall is over
     Error       IsEnded() override;
+    //! Makes a sound and unlocks the object after fall is done
+    void        AfterEnd() override;
 
     bool EventProcess(const Event&) override;
 };
@@ -237,7 +239,7 @@ class CSpiderPyro : public CPyro
 {
 public:
     CSpiderPyro(CObject *obj);
-    Error IsEnded() override;
+    bool EventProcess(const Event& event) override;
     void AfterCreate() override;
 };
 
@@ -245,7 +247,7 @@ class CEggPyro : public CPyro
 {
 public:
     CEggPyro(CObject *obj);
-    Error IsEnded() override;
+    bool EventProcess(const Event& event) override;
     void AfterCreate() override;
 };
 
@@ -284,7 +286,7 @@ class CFragVPyro : public CPyro
 {
 public:
     CFragVPyro(CObject *obj);
-    Error IsEnded() override;
+    bool EventProcess(const Event& event) override;
     void AfterCreate() override;
 };
 
@@ -313,7 +315,7 @@ class CFragExploOrShotPyro : public CPyro
 public:
     CFragExploOrShotPyro(PyroType type, CObject *obj, float force = 1.0f);
     void AfterCreate() override;
-    Error IsEnded() override;
+    bool EventProcess(const Event& event) override;
     void UpdateEffect() override;
 
     //! Starts the explosion of a vehicle

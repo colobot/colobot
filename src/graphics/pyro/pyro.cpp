@@ -219,14 +219,6 @@ Error CPyro::IsEnded()
     // End of the pyrotechnic effect?
     if ( m_progress < 1.0f )  return ERR_CONTINUE;
 
-    AfterEnd();
-
-    if ( m_lightRank != -1 )
-    {
-        m_lightMan->DeleteLight(m_lightRank);
-        m_lightRank = -1;
-    }
-
     return ERR_STOP;
 }
 

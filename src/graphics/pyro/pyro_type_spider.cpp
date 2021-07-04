@@ -37,14 +37,15 @@ CSpiderPyro::CSpiderPyro(CObject *obj)
     : CPyro(PT_OTHER, obj)
 {}
 
-Error CSpiderPyro::IsEnded() {
+bool CSpiderPyro::EventProcess(const Event& event)
+{
     // Destroys the object that exploded.
     //It should not be destroyed at the end of the Create,
     //because it is sometimes the object itself that makes the Create:
     //  pyro->Create(PT_FRAGT, this);
     DeleteObject(true, true);
 
-    return CPyro::IsEnded();
+    return CPyro::EventProcess(event);
 }
 
 void CSpiderPyro::AfterCreate()

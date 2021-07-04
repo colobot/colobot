@@ -297,7 +297,8 @@ void CFragExploOrShotPyro::AfterCreate()
     }
 }
 
-Error CFragExploOrShotPyro::IsEnded() {
+bool CFragExploOrShotPyro::EventProcess(const Event& event)
+{
     // Destroys the object that exploded.
     //It should not be destroyed at the end of the Create,
     //because it is sometimes the object itself that makes the Create:
@@ -309,7 +310,7 @@ Error CFragExploOrShotPyro::IsEnded() {
         DeleteObject(true, true);
     }
 
-    return CPyro::IsEnded();
+    return CPyro::EventProcess(event);
 }
 
 void CFragExploOrShotPyro::ExploStart()

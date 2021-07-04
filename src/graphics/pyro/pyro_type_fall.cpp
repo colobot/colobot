@@ -176,10 +176,16 @@ Error CFallPyro::IsEnded()
     Math::Vector pos = m_object->GetPosition();
     if (pos.y > m_fallFloor) return ERR_CONTINUE;
 
-    m_sound->Play(SOUND_BOUM, pos);
-    m_object->SetLock(false);  // usable again
-
     return ERR_STOP;
+}
+
+void CFallPyro::AfterEnd()
+{
+    if (m_object != nullptr)
+    {
+        m_sound->Play(SOUND_BOUM, m_object->GetPosition());
+        m_object->SetLock(false);  // usable again
+    }
 }
 
 bool CFallPyro::EventProcess(const Event& event)
