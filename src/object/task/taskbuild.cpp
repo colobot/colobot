@@ -36,7 +36,6 @@
 
 #include "object/auto/auto.h"
 
-#include "object/interface/carrier_object.h"
 #include "object/interface/transportable_object.h"
 
 #include "object/motion/motionhuman.h"

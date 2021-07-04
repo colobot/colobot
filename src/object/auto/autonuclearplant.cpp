@@ -32,7 +32,7 @@
 #include "object/object_manager.h"
 #include "object/old_object.h"
 
-#include "object/interface/powered_object.h"
+#include "object/interface/slotted_object.h"
 #include "object/interface/transportable_object.h"
 
 #include "sound/sound.h"
@@ -53,7 +53,7 @@ CAutoNuclearPlant::CAutoNuclearPlant(COldObject* object) : CAuto(object)
     m_channelSound = -1;
     Init();
 
-    assert(m_object->Implements(ObjectInterfaceType::Powered));
+    assert(m_object->GetNumSlots() == 1);
 }
 
 // Object's destructor.
@@ -239,7 +239,7 @@ bool CAutoNuclearPlant::EventProcess(const Event &event)
             if ( cargo != nullptr )
             {
                 CObjectManager::GetInstancePointer()->DeleteObject(cargo);
-                m_object->SetPower(nullptr);
+                m_object->SetSlotContainedObject(0, nullptr);
             }
 
             CreatePower();  // creates the atomic cell
@@ -327,7 +327,7 @@ bool CAutoNuclearPlant::CreateInterface(bool bSelect)
 
 CObject* CAutoNuclearPlant::SearchUranium()
 {
-    CObject* obj = m_object->GetPower();
+    CObject* obj = m_object->GetSlotContainedObject(0);
     if (obj == nullptr) return nullptr;
     if (obj->GetType() == OBJECT_URANIUM) return obj;
     return nullptr;
@@ -402,7 +402,7 @@ void CAutoNuclearPlant::CreatePower()
 
     dynamic_cast<CTransportableObject&>(*power).SetTransporter(m_object);
     power->SetPosition(Math::Vector(22.0f, 3.0f, 0.0f));
-    m_object->SetPower(power);
+    m_object->SetSlotContainedObject(0, power);
 }
 
 
@@ -422,7 +422,7 @@ Error CAutoNuclearPlant::GetError()
 
 //? if ( m_object->GetEnergy() < ENERGY_POWER )  return ERR_NUCLEAR_LOW;
 
-    CObject* obj = m_object->GetPower();
+    CObject* obj = m_object->GetSlotContainedObject(0);
     if ( obj == nullptr )  return ERR_NUCLEAR_EMPTY;
     if ( obj->GetLock() )  return ERR_OK;
     ObjectType type = obj->GetType();

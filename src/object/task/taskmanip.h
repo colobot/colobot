@@ -73,7 +73,7 @@ protected:
     CObject*    SearchTakeUnderObject(Math::Vector &pos, float dLimit);
     CObject*    SearchTakeFrontObject(bool bAdvance, Math::Vector &pos, float &distance, float &angle);
     CObject*    SearchTakeBackObject(bool bAdvance, Math::Vector &pos, float &distance, float &angle);
-    CObject*    SearchOtherObject(bool bAdvance, Math::Vector &pos, float &distance, float &angle, float &height);
+    CObject*    SearchOtherObject(bool bAdvance, Math::Vector &pos, float &distance, float &angle, float &height, int &slotNumOut);
     bool        TransporterTakeObject();
     bool        TransporterDeposeObject();
     bool        IsFreeDeposeObject(Math::Vector pos);

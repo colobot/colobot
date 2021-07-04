@@ -39,8 +39,6 @@ enum class ObjectInterfaceType
     Programmable, //!< objects that can be programmed in CBOT
     TaskExecutor, //!< objects that can execute tasks (CTask classes)
     Jostleable, //!< object that can be jostled
-    Carrier, //!< object that can carry other objects
-    Powered, //!< object powered with power cell
     Movable, //!< objects that can move
     Flying, //!< objects that can fly
     JetFlying, //!< objects that can fly using a jet engine
@@ -54,6 +52,7 @@ enum class ObjectInterfaceType
     Shielded, //!< objects that can be destroyed after the shield goes down to 0
     ShieldedAutoRegen, //!< shielded objects with auto shield regeneration
     Old, //!< old objects, TODO: remove once no longer necessary
+    Slotted, //!< objects that can carry other objects (in their gripper, power cell slot, or other slots)
     Max //!< maximum value (for getting number of items in enum)
 };
 
