@@ -28,7 +28,7 @@
 using namespace Gfx;
 
 CEggPyro::CEggPyro(CObject *obj)
-    : CPyro(PT_EGG, obj)
+    : CPyro(PT_OTHER, obj)
 {}
 
 Error CEggPyro::IsEnded() {
@@ -47,6 +47,6 @@ void CEggPyro::AfterCreate()
 
     for (int part = 0; part < OBJECTMAXPART; part++)
     {
-        CreateTriangle(m_object, m_object->GetType(), part);
+        CreateTriangle(m_object, m_object->GetType(), part, 5, 15, 20, 40, 0.30f);
     }
 }

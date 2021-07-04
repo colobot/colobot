@@ -29,7 +29,7 @@ using namespace Gfx;
 
 
 CFragVPyro::CFragVPyro(CObject *obj)
-    : CPyro(PT_FRAGV, obj)
+    : CPyro(PT_OTHER, obj)
 {}
 
 Error CFragVPyro::IsEnded() {
@@ -48,6 +48,6 @@ void CFragVPyro::AfterCreate()
     m_engine->DeleteShadowSpot(m_object->GetObjectRank(0));
     for (int part = 0; part < OBJECTMAXPART; part++)
     {
-        CreateTriangle(m_object, m_object->GetType(), part);
+        CreateTriangle(m_object, m_object->GetType(), part, 5, 15, 20, 40, 0.30f);
     }
 }

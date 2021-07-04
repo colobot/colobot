@@ -48,13 +48,10 @@ enum PyroType
     PT_SHOTW    = 12,       //! < hit under water (TODO: check if unused)
 
     // Other subclasses
-    PT_EGG      = 13,       //! < break the egg
     PT_BURNT    = 14,       //! < burning of technical object
     PT_BURNO    = 15,       //! < burning of organic object
-    PT_SPIDER   = 16,       //! < spider explosion
     PT_WIN      = 22,       //! < fireworks
     PT_LOST     = 23,       //! < black smoke
-    PT_FRAGV    = 27,       //! < fragmentation of plant object
 
     PT_OTHER    = 100,      //! < No special type code; behaviour is decided by subclass
 };

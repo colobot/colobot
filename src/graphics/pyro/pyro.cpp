@@ -328,7 +328,7 @@ void CPyro::DeleteObject(bool primary, bool secondary)
     }
 }
 
-void CPyro::CreateTriangle(CObject* obj, ObjectType oType, int part)
+void CPyro::CreateTriangle(CObject* obj, ObjectType oType, int part, float maxHParticleSpeed, float maxVParticleSpeed, float minParticleMass, float maxParticleMass, float overridePercent)
 {
     int objRank = obj->GetObjectRank(part);
     if (objRank == -1) return;
@@ -340,9 +340,9 @@ void CPyro::CreateTriangle(CObject* obj, ObjectType oType, int part)
     if (total < 50) percent = 0.25f;
     if (total < 20) percent = 0.50f;
 
-    if ( m_type == PT_FRAGV || m_type == PT_EGG )
+    if ( overridePercent >= 0 )
     {
-        percent = 0.30f;
+        percent = overridePercent;
     }
 
     if (oType == OBJECT_POWER    ||
@@ -434,27 +434,10 @@ void CPyro::CreateTriangle(CObject* obj, ObjectType oType, int part)
 
         Math::Matrix* mat = obj->GetWorldMatrix(part);
         Math::Vector pos = Math::Transform(*mat, offset);
-        if ( m_type == PT_FRAGV || m_type == PT_EGG )
-        {
-            speed.x = (Math::Rand()-0.5f)*10.0f;
-            speed.z = (Math::Rand()-0.5f)*10.0f;
-            speed.y = Math::Rand()*15.0f;
-            mass = Math::Rand()*20.0f+20.0f;
-        }
-        else if ( m_type == PT_SPIDER )
-        {
-            speed.x = (Math::Rand()-0.5f)*10.0f;
-            speed.z = (Math::Rand()-0.5f)*10.0f;
-            speed.y = Math::Rand()*20.0f;
-            mass = Math::Rand()*10.0f+15.0f;
-        }
-        else
-        {
-            speed.x = (Math::Rand()-0.5f)*30.0f;
-            speed.z = (Math::Rand()-0.5f)*30.0f;
-            speed.y = Math::Rand()*30.0f;
-            mass = Math::Rand()*10.0f+15.0f;
-        }
+        speed.x = (Math::Rand()-0.5f)*2.0f*maxHParticleSpeed;
+        speed.z = (Math::Rand()-0.5f)*2.0f*maxHParticleSpeed;
+        speed.y = Math::Rand()*maxVParticleSpeed;
+        mass = Math::Rand()*(maxParticleMass-minParticleMass) + minParticleMass;
         if ( oType == OBJECT_STONE   )  speed *= 0.5f;
         if ( oType == OBJECT_URANIUM )  speed *= 0.4f;
         float duration = Math::Rand()*3.0f+3.0f;

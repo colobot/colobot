@@ -93,7 +93,12 @@ protected:
     void        DeleteObject(bool primary, bool secondary);
 
     //! Creates an explosion with triangular form of particles
-    void        CreateTriangle(CObject* obj, ObjectType oType, int part);
+    void        CreateTriangle(CObject* obj, ObjectType oType, int part,
+            float maxHParticleSpeed = 15.0f,
+            float maxVParticleSpeed = 30.0f,
+            float minParticleMass = 15.0f,
+            float maxParticleMass = 25.0f,
+            float overridePercent = -1);
 
     //! Empty the table of operations of animation of light
     void        LightOperFlush();

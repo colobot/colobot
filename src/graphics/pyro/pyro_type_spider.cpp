@@ -34,7 +34,7 @@
 using namespace Gfx;
 
 CSpiderPyro::CSpiderPyro(CObject *obj)
-    : CPyro(PT_SPIDER, obj)
+    : CPyro(PT_OTHER, obj)
 {}
 
 Error CSpiderPyro::IsEnded() {
@@ -66,7 +66,7 @@ void CSpiderPyro::AfterCreate()
 
     for (int part = 0; part < OBJECTMAXPART; part++)
     {
-        CreateTriangle(m_object, m_object->GetType(), part);
+        CreateTriangle(m_object, m_object->GetType(), part, 5, 20, 15, 25);
     }
 
     for (int i = 0; i < 50; i++)
