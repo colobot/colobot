@@ -45,10 +45,9 @@ namespace Gfx
 {
 
 
-CPyro::CPyro(PyroType type, CObject *obj)
+CPyro::CPyro(CObject *obj)
 {
     m_object      = obj;
-    m_type        = type;
     m_engine      = CEngine::GetInstancePointer();
     m_main        = CRobotMain::GetInstancePointer();
     m_terrain     = m_main->GetTerrain();

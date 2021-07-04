@@ -24,8 +24,6 @@
 
 #pragma once
 
-#include "graphics/pyro/pyro_type.h"
-
 #include <memory>
 #include <set>
 

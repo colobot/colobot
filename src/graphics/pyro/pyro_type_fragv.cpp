@@ -29,7 +29,7 @@ using namespace Gfx;
 
 
 CFragVPyro::CFragVPyro(CObject *obj)
-    : CPyro(PT_OTHER, obj)
+    : CPyro(obj)
 {}
 
 bool CFragVPyro::EventProcess(const Event& event)

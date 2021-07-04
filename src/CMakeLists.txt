@@ -282,7 +282,6 @@ set(BASE_SOURCES
     graphics/pyro/pyro.h
     graphics/pyro/pyro_manager.cpp
     graphics/pyro/pyro_manager.h
-    graphics/pyro/pyro_type.h
     graphics/pyro/pyro_type_burn.cpp
     graphics/pyro/pyro_type_dead.cpp
     graphics/pyro/pyro_type_egg.cpp

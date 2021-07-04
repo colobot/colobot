@@ -29,11 +29,11 @@
 using namespace Gfx;
 
 CWinPyro::CWinPyro(CObject *obj)
-    : CPyro(PT_OTHER, obj)
+    : CPyro(obj)
 {}
 
 CLostPyro::CLostPyro(CObject *obj)
-    : CPyro(PT_OTHER, obj)
+    : CPyro(obj)
 {}
 
 void CWinPyro::UpdateEffect()

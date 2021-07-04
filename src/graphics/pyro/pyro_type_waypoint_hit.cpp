@@ -29,7 +29,7 @@
 using namespace Gfx;
 
 CWaypointHitPyro::CWaypointHitPyro(CObject *obj)
-    : CPyro(PT_OTHER, obj)
+    : CPyro(obj)
 {}
 
 void CWaypointHitPyro::AfterCreate()

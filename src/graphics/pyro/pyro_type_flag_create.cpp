@@ -30,7 +30,7 @@
 using namespace Gfx;
 
 CFlagCreatePyro::CFlagCreatePyro(CObject *pObj)
-    : CPyro(PT_OTHER, pObj)
+    : CPyro(pObj)
 {}
 
 void CFlagCreatePyro::AfterCreate()

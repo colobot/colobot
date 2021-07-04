@@ -29,8 +29,6 @@
 
 #include "graphics/core/color.h"
 
-#include "graphics/pyro/pyro_type.h"
-
 #include "math/sphere.h"
 
 #include "object/object_type.h"
@@ -74,7 +72,7 @@ protected:
     virtual void AfterEnd();
 
 public:
-    CPyro(PyroType type, CObject *obj);
+    CPyro(CObject *obj);
     virtual ~CPyro();
 
     //! Indicates whether the pyrotechnic effect is complete
@@ -120,7 +118,6 @@ protected:
     Math::Vector    m_pos;          // center of the effect
     Math::Vector    m_posPower;     // center of the battery
     bool            m_power = false;       // battery exists?
-    PyroType        m_type = PT_NULL;
     float           m_size = 0.0f;
     float           m_progress = 0.0f;
     float           m_speed = 0.0f;
@@ -310,11 +307,31 @@ public:
     void        AfterEnd() override;
 };
 
+
+/**
+ * \enum FragExploOrShotPyroType
+ * \brief Type of CFragExploOrShotPyro
+ */
+enum FragExploOrShotPyroType
+{
+    PT_FRAGT,               //! < fragmentation of technical object
+    PT_FRAGO,               //! < fragmentation of organic object
+    PT_FRAGW,               //! < fragmentation of object under water
+    PT_EXPLOT,              //! < explosion of technical object
+    PT_EXPLOO,              //! < explosion of organic object
+    PT_EXPLOW,              //! < explosion of object under water
+    PT_SHOTT,               //! < hit technical object
+    PT_SHOTH,               //! < hit human
+    PT_SHOTM,               //! < hit queen
+    PT_SHOTW,               //! < hit under water (TODO: check if unused)
+};
+
 class CFragExploOrShotPyro : public CPyro
 {
     float m_force;
+    FragExploOrShotPyroType m_type;
 public:
-    CFragExploOrShotPyro(PyroType type, CObject *obj, float force = 1.0f);
+    CFragExploOrShotPyro(FragExploOrShotPyroType type, CObject *obj, float force = 1.0f);
     void AfterCreate() override;
     bool EventProcess(const Event& event) override;
     void UpdateEffect() override;

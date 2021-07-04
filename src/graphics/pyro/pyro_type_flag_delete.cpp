@@ -30,7 +30,7 @@
 using namespace Gfx;
 
 CFlagDeletePyro::CFlagDeletePyro(CObject *pObj)
-    : CPyro(PT_OTHER, pObj)
+    : CPyro(pObj)
 {}
 
 void CFlagDeletePyro::AfterCreate()

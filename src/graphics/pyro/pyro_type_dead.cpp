@@ -35,7 +35,7 @@ using namespace Gfx;
 
 
 CDeadGPyro::CDeadGPyro(CObject *obj)
-    : CPyro(PT_OTHER, obj)
+    : CPyro(obj)
 {}
 
 void CDeadGPyro::AfterCreate()
@@ -58,7 +58,7 @@ void CDeadGPyro::AfterCreate()
 }
 
 CDeadWPyro::CDeadWPyro(CObject *obj)
-    : CPyro(PT_OTHER, obj)
+    : CPyro(obj)
 {}
 
 void CDeadWPyro::AfterCreate()

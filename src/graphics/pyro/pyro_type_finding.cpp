@@ -30,7 +30,7 @@
 using namespace Gfx;
 
 CFindingPyro::CFindingPyro(CObject *obj)
-    : CPyro(PT_OTHER, obj)
+    : CPyro(obj)
 {}
 
 void CFindingPyro::AfterCreate()

@@ -27,7 +27,7 @@
 using namespace Gfx;
 
 CResetPyro::CResetPyro(CObject *obj)
-    : CPyro(PT_OTHER, obj)
+    : CPyro(obj)
 {}
 
 void CResetPyro::AfterCreate()

@@ -27,7 +27,7 @@
 using namespace Gfx;
 
 CSquashPyro::CSquashPyro(CObject *obj)
-    : CPyro(PT_OTHER, obj)
+    : CPyro(obj)
 {}
 
 void CSquashPyro::AfterCreate()

@@ -28,7 +28,7 @@
 using namespace Gfx;
 
 CEggPyro::CEggPyro(CObject *obj)
-    : CPyro(PT_OTHER, obj)
+    : CPyro(obj)
 {}
 
 bool CEggPyro::EventProcess(const Event& event)

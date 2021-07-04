@@ -34,7 +34,7 @@
 using namespace Gfx;
 
 CSpiderPyro::CSpiderPyro(CObject *obj)
-    : CPyro(PT_OTHER, obj)
+    : CPyro(obj)
 {}
 
 bool CSpiderPyro::EventProcess(const Event& event)

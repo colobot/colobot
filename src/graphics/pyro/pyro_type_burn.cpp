@@ -33,7 +33,7 @@
 using namespace Gfx;
 
 CBurnPyro::CBurnPyro(CObject *obj)
-    : CPyro(PT_OTHER, obj)
+    : CPyro(obj)
     , m_organicBurn(obj->GetType() == OBJECT_MOTHER ||
                     obj->GetType() == OBJECT_ANT    ||
                     obj->GetType() == OBJECT_SPIDER ||
