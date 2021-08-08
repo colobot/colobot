@@ -60,11 +60,11 @@ enum class ModelTransparentMode
 struct ModelTriangle
 {
     //! 1st vertex
-    VertexTex2  p1;
+    Vertex3D  p1;
     //! 2nd vertex
-    VertexTex2  p2;
+    Vertex3D  p2;
     //! 3rd vertex
-    VertexTex2  p3;
+    Vertex3D  p3;
     //! Diffuse color
     Color diffuse;
     //! Ambient color

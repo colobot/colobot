@@ -32,6 +32,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 
 class CImage;
@@ -312,6 +313,92 @@ public:
     virtual void* GetPixelsData() = 0;
 };
 
+class CVertexBuffer
+{
+protected:
+    PrimitiveType m_type;
+    std::vector<Vertex3D> m_data;
+
+public:
+    CVertexBuffer(PrimitiveType type, size_t size)
+        : m_type(type), m_data(size, Vertex3D{})
+    {
+
+    }
+
+    virtual ~CVertexBuffer()
+    {
+
+    }
+
+    virtual void Update() = 0;
+
+    PrimitiveType GetType() const
+    {
+        return m_type;
+    }
+
+    void SetType(PrimitiveType type)
+    {
+        m_type = type;
+    }
+
+    size_t Size() const
+    {
+        return m_data.size();
+    }
+
+    void Resize(size_t size)
+    {
+        m_data.resize(size);
+    }
+
+    Vertex3D& operator[](size_t index)
+    {
+        return m_data[index];
+    }
+
+    const Vertex3D& operator[](size_t index) const
+    {
+        return m_data[index];
+    }
+
+    void SetData(const Vertex3D* data, size_t offset, size_t count)
+    {
+        std::copy(data, data + count, m_data.data() + offset);
+    }
+
+    auto Data()
+    {
+        return m_data.data();
+    }
+
+    auto Data() const
+    {
+        return m_data.data();
+    }
+
+    auto begin()
+    {
+        return m_data.begin();
+    }
+
+    auto end()
+    {
+        return m_data.end();
+    }
+
+    auto begin() const
+    {
+        return m_data.begin();
+    }
+
+    auto end() const
+    {
+        return m_data.end();
+    }
+};
+
 /**
  * \class CDevice
  * \brief Abstract interface of graphics device
@@ -431,6 +518,8 @@ public:
     virtual void DrawPrimitive(PrimitiveType type, const VertexCol *vertices , int vertexCount) = 0;
     //! Renders primitive using UI renderer
     virtual void DrawPrimitive(PrimitiveType type, const Vertex2D* vertices, int vertexCount) = 0;
+    //! Renders 3D primitive
+    virtual void DrawPrimitive(PrimitiveType type, const Vertex3D* vertices, int vertexCount) = 0;
 
     //! Renders primitives composed of lists of vertices with single texture
     virtual void DrawPrimitives(PrimitiveType type, const Vertex *vertices,
@@ -444,17 +533,9 @@ public:
     virtual void DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
         int first[], int count[], int drawCount) = 0;
 
-    //! Creates a static buffer composed of given primitives with multitexturing
-    virtual unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount) = 0;
-
-    //! Updates the static buffer composed of given primitives with multitexturing
-    virtual void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount) = 0;
-
-    //! Draws a static buffer
-    virtual void DrawStaticBuffer(unsigned int bufferId) = 0;
-
-    //! Deletes a static buffer
-    virtual void DestroyStaticBuffer(unsigned int bufferId) = 0;
+    virtual CVertexBuffer* CreateVertexBuffer(PrimitiveType primitiveType, const Vertex3D* vertices, int vertexCount) = 0;
+    virtual void DrawVertexBuffer(CVertexBuffer*) = 0;
+    virtual void DestroyVertexBuffer(CVertexBuffer*) = 0;
 
     //! Tests whether a sphere is (partially) within the frustum volume
     //! Returns a mask of frustum planes for which the test is positive

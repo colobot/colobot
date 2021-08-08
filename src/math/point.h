@@ -31,6 +31,7 @@
 
 #include <cmath>
 #include <sstream>
+#include <glm/glm.hpp>
 
 
 // Math module namespace
@@ -66,6 +67,11 @@ struct Point
      , y(_y)
     {}
 
+    inline Point(const glm::vec2& point)
+     : x(point.x)
+     , y(point.y)
+    {}
+
     //! Sets the zero point: (0,0)
     inline void LoadZero()
     {
@@ -82,6 +88,11 @@ struct Point
     inline const float* Array() const
     {
         return reinterpret_cast<const float*>(this);
+    }
+
+    operator glm::vec2() const
+    {
+        return { x, y };
     }
 
     //! Returns the distance from (0,0) to the point (x,y)

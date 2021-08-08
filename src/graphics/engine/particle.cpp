@@ -399,19 +399,19 @@ int CParticle::CreateFrag(Math::Vector pos, Math::Vector speed,
             m_totalInterface[t][sheet] ++;
 
             Math::Vector    p1;
-            p1.x = m_triangle[i].triangle[0].coord.x;
-            p1.y = m_triangle[i].triangle[0].coord.y;
-            p1.z = m_triangle[i].triangle[0].coord.z;
+            p1.x = m_triangle[i].triangle[0].position.x;
+            p1.y = m_triangle[i].triangle[0].position.y;
+            p1.z = m_triangle[i].triangle[0].position.z;
 
             Math::Vector p2;
-            p2.x = m_triangle[i].triangle[1].coord.x;
-            p2.y = m_triangle[i].triangle[1].coord.y;
-            p2.z = m_triangle[i].triangle[1].coord.z;
+            p2.x = m_triangle[i].triangle[1].position.x;
+            p2.y = m_triangle[i].triangle[1].position.y;
+            p2.z = m_triangle[i].triangle[1].position.z;
 
             Math::Vector p3;
-            p3.x = m_triangle[i].triangle[2].coord.x;
-            p3.y = m_triangle[i].triangle[2].coord.y;
-            p3.z = m_triangle[i].triangle[2].coord.z;
+            p3.x = m_triangle[i].triangle[2].position.x;
+            p3.y = m_triangle[i].triangle[2].position.y;
+            p3.z = m_triangle[i].triangle[2].position.z;
 
             float l1 = Math::Distance(p1, p2);
             float l2 = Math::Distance(p2, p3);
@@ -422,17 +422,17 @@ int CParticle::CreateFrag(Math::Vector pos, Math::Vector speed,
             p2 = Math::Vector( dx,  dy, 0.0f);
             p3 = Math::Vector(-dx, -dy, 0.0f);
 
-            m_triangle[i].triangle[0].coord.x = p1.x;
-            m_triangle[i].triangle[0].coord.y = p1.y;
-            m_triangle[i].triangle[0].coord.z = p1.z;
+            m_triangle[i].triangle[0].position.x = p1.x;
+            m_triangle[i].triangle[0].position.y = p1.y;
+            m_triangle[i].triangle[0].position.z = p1.z;
 
-            m_triangle[i].triangle[1].coord.x = p2.x;
-            m_triangle[i].triangle[1].coord.y = p2.y;
-            m_triangle[i].triangle[1].coord.z = p2.z;
+            m_triangle[i].triangle[1].position.x = p2.x;
+            m_triangle[i].triangle[1].position.y = p2.y;
+            m_triangle[i].triangle[1].position.z = p2.z;
 
-            m_triangle[i].triangle[2].coord.x = p3.x;
-            m_triangle[i].triangle[2].coord.y = p3.y;
-            m_triangle[i].triangle[2].coord.z = p3.z;
+            m_triangle[i].triangle[2].position.x = p3.x;
+            m_triangle[i].triangle[2].position.y = p3.y;
+            m_triangle[i].triangle[2].position.z = p3.z;
 
             Math::Vector n(0.0f, 0.0f, -1.0f);
 

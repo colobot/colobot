@@ -227,9 +227,9 @@ struct OldModelTriangleV3
 {
     char used = 0;
     char selected = 0;
-    VertexTex2 p1;
-    VertexTex2 p2;
-    VertexTex2 p3;
+    Vertex3D p1;
+    Vertex3D p2;
+    Vertex3D p3;
     Material   material;
     char texName[21] = {'\0'};
     float min = 0.0f;

@@ -1475,15 +1475,15 @@ void CPyro::CreateTriangle(CObject* obj, ObjectType oType, int part)
     {
         Math::Vector p1, p2, p3;
 
-        p1.x = buffer[i].triangle[0].coord.x;
-        p1.y = buffer[i].triangle[0].coord.y;
-        p1.z = buffer[i].triangle[0].coord.z;
-        p2.x = buffer[i].triangle[1].coord.x;
-        p2.y = buffer[i].triangle[1].coord.y;
-        p2.z = buffer[i].triangle[1].coord.z;
-        p3.x = buffer[i].triangle[2].coord.x;
-        p3.y = buffer[i].triangle[2].coord.y;
-        p3.z = buffer[i].triangle[2].coord.z;
+        p1.x = buffer[i].triangle[0].position.x;
+        p1.y = buffer[i].triangle[0].position.y;
+        p1.z = buffer[i].triangle[0].position.z;
+        p2.x = buffer[i].triangle[1].position.x;
+        p2.y = buffer[i].triangle[1].position.y;
+        p2.z = buffer[i].triangle[1].position.z;
+        p3.x = buffer[i].triangle[2].position.x;
+        p3.y = buffer[i].triangle[2].position.y;
+        p3.z = buffer[i].triangle[2].position.z;
 
         float h;
 
@@ -1511,32 +1511,32 @@ void CPyro::CreateTriangle(CObject* obj, ObjectType oType, int part)
             p1.z = p3.z+((p1.z-p3.z)*5.0f/h);
         }
 
-        buffer[i].triangle[0].coord.x = p1.x;
-        buffer[i].triangle[0].coord.y = p1.y;
-        buffer[i].triangle[0].coord.z = p1.z;
-        buffer[i].triangle[1].coord.x = p2.x;
-        buffer[i].triangle[1].coord.y = p2.y;
-        buffer[i].triangle[1].coord.z = p2.z;
-        buffer[i].triangle[2].coord.x = p3.x;
-        buffer[i].triangle[2].coord.y = p3.y;
-        buffer[i].triangle[2].coord.z = p3.z;
+        buffer[i].triangle[0].position.x = p1.x;
+        buffer[i].triangle[0].position.y = p1.y;
+        buffer[i].triangle[0].position.z = p1.z;
+        buffer[i].triangle[1].position.x = p2.x;
+        buffer[i].triangle[1].position.y = p2.y;
+        buffer[i].triangle[1].position.z = p2.z;
+        buffer[i].triangle[2].position.x = p3.x;
+        buffer[i].triangle[2].position.y = p3.y;
+        buffer[i].triangle[2].position.z = p3.z;
 
         Math::Vector offset;
-        offset.x = (buffer[i].triangle[0].coord.x+buffer[i].triangle[1].coord.x+buffer[i].triangle[2].coord.x)/3.0f;
-        offset.y = (buffer[i].triangle[0].coord.y+buffer[i].triangle[1].coord.y+buffer[i].triangle[2].coord.y)/3.0f;
-        offset.z = (buffer[i].triangle[0].coord.z+buffer[i].triangle[1].coord.z+buffer[i].triangle[2].coord.z)/3.0f;
+        offset.x = (buffer[i].triangle[0].position.x+buffer[i].triangle[1].position.x+buffer[i].triangle[2].position.x)/3.0f;
+        offset.y = (buffer[i].triangle[0].position.y+buffer[i].triangle[1].position.y+buffer[i].triangle[2].position.y)/3.0f;
+        offset.z = (buffer[i].triangle[0].position.z+buffer[i].triangle[1].position.z+buffer[i].triangle[2].position.z)/3.0f;
 
-        buffer[i].triangle[0].coord.x -= offset.x;
-        buffer[i].triangle[1].coord.x -= offset.x;
-        buffer[i].triangle[2].coord.x -= offset.x;
+        buffer[i].triangle[0].position.x -= offset.x;
+        buffer[i].triangle[1].position.x -= offset.x;
+        buffer[i].triangle[2].position.x -= offset.x;
 
-        buffer[i].triangle[0].coord.y -= offset.y;
-        buffer[i].triangle[1].coord.y -= offset.y;
-        buffer[i].triangle[2].coord.y -= offset.y;
+        buffer[i].triangle[0].position.y -= offset.y;
+        buffer[i].triangle[1].position.y -= offset.y;
+        buffer[i].triangle[2].position.y -= offset.y;
 
-        buffer[i].triangle[0].coord.z -= offset.z;
-        buffer[i].triangle[1].coord.z -= offset.z;
-        buffer[i].triangle[2].coord.z -= offset.z;
+        buffer[i].triangle[0].position.z -= offset.z;
+        buffer[i].triangle[1].position.z -= offset.z;
+        buffer[i].triangle[2].position.z -= offset.z;
 
         Math::Vector speed;
         float mass;

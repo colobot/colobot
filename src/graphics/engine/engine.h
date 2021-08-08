@@ -71,6 +71,7 @@ class CPlanet;
 class CTerrain;
 class CPyroManager;
 class CModelMesh;
+class CVertexBuffer;
 struct ModelShadowSpot;
 struct ModelTriangle;
 
@@ -154,7 +155,7 @@ enum EngineTriangleType
 struct EngineTriangle
 {
     //! Triangle vertices
-    VertexTex2     triangle[3];
+    Vertex3D     triangle[3];
     //! Material
     Material       material;
     //! Render state
@@ -196,8 +197,8 @@ struct EngineBaseObjDataTier
     EngineTriangleType      type;
     Material                material;
     int                     state;
-    std::vector<VertexTex2> vertices;
-    unsigned int            staticBufferId;
+    std::vector<Vertex3D>   vertices;
+    CVertexBuffer*          buffer;
     bool                    updateStaticBuffer;
 
     inline EngineBaseObjDataTier(EngineTriangleType type = ENG_TRIANGLE_TYPE_TRIANGLES,
@@ -206,7 +207,7 @@ struct EngineBaseObjDataTier
      : type(type)
      , material(material)
      , state(state)
-     , staticBufferId(0)
+     , buffer(nullptr)
      , updateStaticBuffer(false)
     {}
 };
@@ -1264,7 +1265,7 @@ protected:
     bool        GetBBox2D(int objRank, Math::Point& min, Math::Point& max);
 
     //! Detects whether the mouse is in a triangle.
-    bool        DetectTriangle(Math::Point mouse, VertexTex2* triangle, int objRank, float& dist, Math::Vector& pos);
+    bool        DetectTriangle(Math::Point mouse, Vertex3D* triangle, int objRank, float& dist, Math::Vector& pos);
 
     //! Transforms a 3D point (x, y, z) in 2D space (x, y, -) of the window
     /** The coordinated p2D.z gives the distance. */

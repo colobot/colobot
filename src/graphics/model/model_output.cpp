@@ -49,10 +49,10 @@ namespace ModelOutput
 
     int ConvertToOldState(const ModelTriangle& triangle);
 
-    void WriteBinaryVertexTex2(VertexTex2 vertex, std::ostream &stream);
+    void WriteBinaryVertex3D(const Vertex3D& vertex, std::ostream &stream);
     void WriteBinaryMaterial(const Material& material, std::ostream &stream);
 
-    void WriteTextVertexTex2(const VertexTex2& vertex, std::ostream &stream);
+    void WriteTextVertex3D(const Vertex3D& vertex, std::ostream &stream);
     void WriteTextMaterial(const Material& material, std::ostream &stream);
 }
 
@@ -180,11 +180,11 @@ void ModelOutput::WriteTextMesh(const CModelMesh* mesh, const std::string& meshN
     for (const ModelTriangle& t : mesh->GetTriangles())
     {
         stream << "p1 ";
-        WriteTextVertexTex2(t.p1, stream);
+        WriteTextVertex3D(t.p1, stream);
         stream << "p2 ";
-        WriteTextVertexTex2(t.p2, stream);
+        WriteTextVertex3D(t.p2, stream);
         stream << "p3 ";
-        WriteTextVertexTex2(t.p3, stream);
+        WriteTextVertex3D(t.p3, stream);
         stream << "mat ";
         Material material;
         material.ambient = t.ambient;
@@ -287,9 +287,9 @@ void ModelOutput::WriteBinaryModel(const CModel& model, std::ostream &stream)
         t.variableTex2 = triangle.variableTex2;
         t.state = ConvertToOldState(triangle);
 
-        WriteBinaryVertexTex2(t.p1, stream);
-        WriteBinaryVertexTex2(t.p2, stream);
-        WriteBinaryVertexTex2(t.p3, stream);
+        WriteBinaryVertex3D(t.p1, stream);
+        WriteBinaryVertex3D(t.p2, stream);
+        WriteBinaryVertex3D(t.p3, stream);
         WriteBinaryMaterial(t.material, stream);
         WriteBinaryString<1>(t.tex1Name, stream);
         WriteBinaryString<1>(t.tex2Name, stream);
@@ -350,9 +350,9 @@ void ModelOutput::WriteOldModel(const CModel& model, std::ostream &stream)
 
         /* padding */ WriteBinary<2, unsigned int>(0, stream);
 
-        WriteBinaryVertexTex2(t.p1, stream);
-        WriteBinaryVertexTex2(t.p2, stream);
-        WriteBinaryVertexTex2(t.p3, stream);
+        WriteBinaryVertex3D(t.p1, stream);
+        WriteBinaryVertex3D(t.p2, stream);
+        WriteBinaryVertex3D(t.p3, stream);
 
         WriteBinaryMaterial(t.material, stream);
         stream.write(t.texName, 20);
@@ -413,18 +413,18 @@ int ModelOutput::ConvertToOldState(const ModelTriangle& triangle)
     return state;
 }
 
-void ModelOutput::WriteBinaryVertexTex2(VertexTex2 vertex, std::ostream &stream)
+void ModelOutput::WriteBinaryVertex3D(const Vertex3D& vertex, std::ostream &stream)
 {
-    WriteBinaryFloat(vertex.coord.x, stream);
-    WriteBinaryFloat(vertex.coord.y, stream);
-    WriteBinaryFloat(vertex.coord.z, stream);
+    WriteBinaryFloat(vertex.position.x, stream);
+    WriteBinaryFloat(vertex.position.y, stream);
+    WriteBinaryFloat(vertex.position.z, stream);
     WriteBinaryFloat(vertex.normal.x, stream);
     WriteBinaryFloat(vertex.normal.y, stream);
     WriteBinaryFloat(vertex.normal.z, stream);
-    WriteBinaryFloat(vertex.texCoord.x, stream);
-    WriteBinaryFloat(vertex.texCoord.y, stream);
-    WriteBinaryFloat(vertex.texCoord2.x, stream);
-    WriteBinaryFloat(vertex.texCoord2.y, stream);
+    WriteBinaryFloat(vertex.uv.x, stream);
+    WriteBinaryFloat(vertex.uv.y, stream);
+    WriteBinaryFloat(vertex.uv2.x, stream);
+    WriteBinaryFloat(vertex.uv2.y, stream);
 }
 
 void ModelOutput::WriteBinaryMaterial(const Material& material, std::ostream &stream)
@@ -452,12 +452,12 @@ void ModelOutput::WriteBinaryMaterial(const Material& material, std::ostream &st
     /* power */       WriteBinaryFloat(0.0f, stream);
 }
 
-void ModelOutput::WriteTextVertexTex2(const VertexTex2& vertex, std::ostream &stream)
+void ModelOutput::WriteTextVertex3D(const Vertex3D& vertex, std::ostream &stream)
 {
-    stream << "c " << vertex.coord.x << " " << vertex.coord.y << " " << vertex.coord.z;
+    stream << "c " << vertex.position.x << " " << vertex.position.y << " " << vertex.position.z;
     stream << " n " << vertex.normal.x << " " << vertex.normal.y << " " << vertex.normal.z;
-    stream << " t1 " << vertex.texCoord.x << " " << vertex.texCoord.y;
-    stream << " t2 " << vertex.texCoord2.x << " " << vertex.texCoord2.y;
+    stream << " t1 " << vertex.uv.x << " " << vertex.uv.y;
+    stream << " t2 " << vertex.uv2.x << " " << vertex.uv2.y;
     stream << std::endl;
 }
 

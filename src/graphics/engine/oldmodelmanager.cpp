@@ -184,9 +184,9 @@ void COldModelManager::Mirror(std::vector<ModelTriangle>& triangles)
         triangles[i].p1 = triangles[i].p2;
         triangles[i].p2 = t;
 
-        triangles[i].p1.coord.z = -triangles[i].p1.coord.z;
-        triangles[i].p2.coord.z = -triangles[i].p2.coord.z;
-        triangles[i].p3.coord.z = -triangles[i].p3.coord.z;
+        triangles[i].p1.position.z = -triangles[i].p1.position.z;
+        triangles[i].p2.position.z = -triangles[i].p2.position.z;
+        triangles[i].p3.position.z = -triangles[i].p3.position.z;
 
         triangles[i].p1.normal.z = -triangles[i].p1.normal.z;
         triangles[i].p2.normal.z = -triangles[i].p2.normal.z;

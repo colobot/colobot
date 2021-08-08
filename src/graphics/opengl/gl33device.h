@@ -38,6 +38,7 @@
 #include <set>
 #include <string>
 #include <vector>
+#include <unordered_set>
 
 
 // Graphics module namespace
@@ -55,6 +56,28 @@ struct DynamicBuffer
     unsigned int size = 0;
     //! Dynamic buffer offset
     unsigned int offset = 0;
+};
+
+class CGL33VertexBuffer : public CVertexBuffer
+{
+    GLuint m_vao = 0;
+    GLuint m_vbo = 0;
+
+public:
+    CGL33VertexBuffer(PrimitiveType type, size_t size);
+    virtual ~CGL33VertexBuffer();
+
+    virtual void Update() override;
+
+    GLuint GetVAO() const
+    {
+        return m_vao;
+    }
+
+    GLuint GetVBO() const
+    {
+        return m_vbo;
+    }
 };
 
 class CGL33UIRenderer;
@@ -128,6 +151,8 @@ public:
 
     virtual void DrawPrimitive(PrimitiveType type, const Vertex2D* vertices, int vertexCount) override;
 
+    virtual void DrawPrimitive(PrimitiveType type, const Vertex3D* vertices, int vertexCount) override;
+
     virtual void DrawPrimitives(PrimitiveType type, const Vertex *vertices,
         int first[], int count[], int drawCount,
         Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) override;
@@ -137,16 +162,9 @@ public:
     virtual void DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
         int first[], int count[], int drawCount) override;
 
-    unsigned int CreateStaticBuffer(PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount) override
-    {
-        return CreateStaticBufferImpl(primitiveType, vertices, vertexCount);
-    }
-    void UpdateStaticBuffer(unsigned int bufferId, PrimitiveType primitiveType, const VertexTex2* vertices, int vertexCount) override
-    {
-        UpdateStaticBufferImpl(bufferId, primitiveType, vertices, vertexCount);
-    }
-    void DrawStaticBuffer(unsigned int bufferId) override;
-    void DestroyStaticBuffer(unsigned int bufferId) override;
+    CVertexBuffer* CreateVertexBuffer(PrimitiveType primitiveType, const Vertex3D* vertices, int vertexCount) override;
+    void DrawVertexBuffer(CVertexBuffer*) override;
+    void DestroyVertexBuffer(CVertexBuffer*) override;
 
     int ComputeSphereVisibility(const Math::Vector &center, float radius) override;
 
@@ -217,11 +235,6 @@ private:
     //! Uploads data to dynamic buffer and returns offset to it
     unsigned int UploadVertexData(DynamicBuffer& buffer, const void* data, unsigned int size);
 
-    template <typename Vertex>
-    unsigned int CreateStaticBufferImpl(PrimitiveType primitiveType, const Vertex* vertices, int vertexCount);
-    template <typename Vertex>
-    void UpdateStaticBufferImpl(unsigned int bufferId, PrimitiveType primitiveType, const Vertex* vertices, int vertexCount);
-
 private:
     //! Current config
     DeviceConfig m_config;
@@ -263,20 +276,9 @@ private:
     //! Free texture unit
     const int m_freeTexture = 3;
 
-    //! Info about static VBO buffers
-    struct VertexBufferInfo
-    {
-        PrimitiveType primitiveType = {};
-        GLuint vbo = 0;
-        GLuint vao = 0;
-        VertexType vertexType = {};
-        int vertexCount = 0;
-        unsigned int size = 0;
-    };
-
     //! Detected capabilities
-    //! Map of saved VBO objects
-    std::map<unsigned int, VertexBufferInfo> m_vboObjects;
+    //! Set of vertex buffers
+    std::unordered_set<CVertexBuffer*> m_buffers;
     //! Last ID of VBO object
     unsigned int m_lastVboId = 0;
     //! Currently bound VBO

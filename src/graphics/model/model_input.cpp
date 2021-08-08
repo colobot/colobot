@@ -446,9 +446,9 @@ std::vector<ModelTriangle> ModelInput::ReadOldModelV1(std::istream &stream, int 
             continue;
 
         ModelTriangle triangle;
-        triangle.p1.FromVertex(t.p1);
-        triangle.p2.FromVertex(t.p2);
-        triangle.p3.FromVertex(t.p3);
+        triangle.p1 = t.p1;
+        triangle.p2 = t.p2;
+        triangle.p3 = t.p3;
 
         triangle.ambient = t.material.ambient;
         triangle.diffuse = t.material.diffuse;
@@ -494,9 +494,9 @@ std::vector<ModelTriangle> ModelInput::ReadOldModelV2(std::istream &stream, int 
             continue;
 
         ModelTriangle triangle;
-        triangle.p1.FromVertex(t.p1);
-        triangle.p2.FromVertex(t.p2);
-        triangle.p3.FromVertex(t.p3);
+        triangle.p1 = t.p1;
+        triangle.p2 = t.p2;
+        triangle.p3 = t.p3;
 
         triangle.ambient = t.material.ambient;
         triangle.diffuse = t.material.diffuse;

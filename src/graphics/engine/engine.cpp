@@ -689,8 +689,8 @@ void CEngine::DeleteBaseObject(int baseObjRank)
         for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
         {
             EngineBaseObjDataTier& p3 = p2.next[l3];
-            m_device->DestroyStaticBuffer(p3.staticBufferId);
-            p3.staticBufferId = 0;
+            m_device->DestroyVertexBuffer(p3.buffer);
+            p3.buffer = nullptr;
         }
     }
 
@@ -714,8 +714,8 @@ void CEngine::DeleteAllBaseObjects()
             for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
             {
                 EngineBaseObjDataTier& p3 = p2.next[l3];
-                m_device->DestroyStaticBuffer(p3.staticBufferId);
-                p3.staticBufferId = 0;
+                m_device->DestroyVertexBuffer(p3.buffer);
+                p3.buffer = nullptr;
             }
         }
     }
@@ -742,7 +742,7 @@ void CEngine::CopyBaseObject(int sourceBaseObjRank, int destBaseObjRank)
         for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
         {
             EngineBaseObjDataTier& p3 = p2.next[l3];
-            p3.staticBufferId = 0;
+            p3.buffer = nullptr;
         }
     }
 }
@@ -800,12 +800,12 @@ void CEngine::AddBaseObjQuick(int baseObjRank, const EngineBaseObjDataTier& buff
     {
         for (int i = 0; i < static_cast<int>( p3.vertices.size() ); i++)
         {
-            p1.bboxMin.x = Math::Min(p3.vertices[i].coord.x, p1.bboxMin.x);
-            p1.bboxMin.y = Math::Min(p3.vertices[i].coord.y, p1.bboxMin.y);
-            p1.bboxMin.z = Math::Min(p3.vertices[i].coord.z, p1.bboxMin.z);
-            p1.bboxMax.x = Math::Max(p3.vertices[i].coord.x, p1.bboxMax.x);
-            p1.bboxMax.y = Math::Max(p3.vertices[i].coord.y, p1.bboxMax.y);
-            p1.bboxMax.z = Math::Max(p3.vertices[i].coord.z, p1.bboxMax.z);
+            p1.bboxMin.x = Math::Min(p3.vertices[i].position.x, p1.bboxMin.x);
+            p1.bboxMin.y = Math::Min(p3.vertices[i].position.y, p1.bboxMin.y);
+            p1.bboxMin.z = Math::Min(p3.vertices[i].position.z, p1.bboxMin.z);
+            p1.bboxMax.x = Math::Max(p3.vertices[i].position.x, p1.bboxMax.x);
+            p1.bboxMax.y = Math::Max(p3.vertices[i].position.y, p1.bboxMax.y);
+            p1.bboxMax.z = Math::Max(p3.vertices[i].position.z, p1.bboxMax.z);
         }
 
         p1.boundingSphere = Math::BoundingSphereForBox(p1.bboxMin, p1.bboxMax);
@@ -880,7 +880,7 @@ void CEngine::DebugObject(int objRank)
             l->Debug("   l3:\n");
             l->Debug("    type: %d\n", p3.type);
             l->Debug("    state: %d\n", p3.state);
-            l->Debug("    staticBufferId: %u\n", p3.staticBufferId);
+            l->Debug("    staticBufferId: %u\n", p3.buffer);
             l->Debug("    updateStaticBuffer: %s\n", p3.updateStaticBuffer ? "true" : "false");
         }
     }
@@ -1191,45 +1191,45 @@ void CEngine::ChangeTextureMapping(int objRank, const Material& mat, int state,
     {
         for (int i = 0; i < nb; i++)
         {
-            p4->vertices[i].texCoord.x = p4->vertices[i].coord.z * au + bu;
-            p4->vertices[i].texCoord.y = p4->vertices[i].coord.y * av + bv;
+            p4->vertices[i].uv.x = p4->vertices[i].position.z * au + bu;
+            p4->vertices[i].uv.y = p4->vertices[i].position.y * av + bv;
         }
     }
     else if (mode == ENG_TEX_MAPPING_Y)
     {
         for (int i = 0; i < nb; i++)
         {
-            p4->vertices[i].texCoord.x = p4->vertices[i].coord.x * au + bu;
-            p4->vertices[i].texCoord.y = p4->vertices[i].coord.z * av + bv;
+            p4->vertices[i].uv.x = p4->vertices[i].position.x * au + bu;
+            p4->vertices[i].uv.y = p4->vertices[i].position.z * av + bv;
         }
     }
     else if (mode == ENG_TEX_MAPPING_Z)
     {
         for (int i = 0; i < nb; i++)
         {
-            p4->vertices[i].texCoord.x = p4->vertices[i].coord.x * au + bu;
-            p4->vertices[i].texCoord.y = p4->vertices[i].coord.y * av + bv;
+            p4->vertices[i].uv.x = p4->vertices[i].position.x * au + bu;
+            p4->vertices[i].uv.y = p4->vertices[i].position.y * av + bv;
         }
     }
     else if (mode == ENG_TEX_MAPPING_1X)
     {
         for (int i = 0; i < nb; i++)
         {
-            p4->vertices[i].texCoord.x = p4->vertices[i].coord.x * au + bu;
+            p4->vertices[i].uv.x = p4->vertices[i].position.x * au + bu;
         }
     }
     else if (mode == ENG_TEX_MAPPING_1Y)
     {
         for (int i = 0; i < nb; i++)
         {
-            p4->vertices[i].texCoord.y = p4->vertices[i].coord.y * au + bu;
+            p4->vertices[i].uv.y = p4->vertices[i].position.y * au + bu;
         }
     }
     else if (mode == ENG_TEX_MAPPING_1Z)
     {
         for (int i = 0; i < nb; i++)
         {
-            p4->vertices[i].texCoord.x = p4->vertices[i].coord.z * au + bu;
+            p4->vertices[i].uv.x = p4->vertices[i].position.z * au + bu;
         }
     }
 
@@ -1251,7 +1251,7 @@ void CEngine::TrackTextureMapping(int objRank, const Material& mat, int state,
     if (tNum < 12 || tNum % 6 != 0)
         return;
 
-    std::vector<Gfx::VertexTex2>& vs = p4->vertices;
+    std::vector<Gfx::Vertex3D>& vs = p4->vertices;
 
     while (pos < 0.0f)
         pos += 1.0f;  // never negative!
@@ -1262,11 +1262,11 @@ void CEngine::TrackTextureMapping(int objRank, const Material& mat, int state,
     {
         for (int j = 0; j < 6; j++)
         {
-            if (Math::IsEqual(vs[i].coord.x, vs[j+6].coord.x) &&
-                Math::IsEqual(vs[i].coord.y, vs[j+6].coord.y))
+            if (Math::IsEqual(vs[i].position.x, vs[j+6].position.x) &&
+                Math::IsEqual(vs[i].position.y, vs[j+6].position.y))
             {
-                current.x = vs[i].coord.x;  // position end link
-                current.y = vs[i].coord.y;
+                current.x = vs[i].position.x;  // position end link
+                current.y = vs[i].position.y;
                 break;
             }
         }
@@ -1284,8 +1284,8 @@ void CEngine::TrackTextureMapping(int objRank, const Material& mat, int state,
 
         for (int i = 0; i < 6; i++)
         {
-            if (Math::IsEqual(vs[tBase + i].coord.x, current.x, 0.0001f) &&
-                Math::IsEqual(vs[tBase + i].coord.y, current.y, 0.0001f))
+            if (Math::IsEqual(vs[tBase + i].position.x, current.x, 0.0001f) &&
+                Math::IsEqual(vs[tBase + i].position.y, current.y, 0.0001f))
             {
                 ie[e++] = i;
             }
@@ -1296,8 +1296,8 @@ void CEngine::TrackTextureMapping(int objRank, const Material& mat, int state,
         }
         if (s == 3 && e == 3)
         {
-            pe = ps + Math::Point(vs[tBase + is[0]].coord.x - vs[tBase + ie[0]].coord.x,
-                                  vs[tBase + is[0]].coord.y - vs[tBase + ie[0]].coord.y).Length() / factor;  // end position on the periphery
+            pe = ps + Math::Point(vs[tBase + is[0]].position.x - vs[tBase + ie[0]].position.x,
+                                  vs[tBase + is[0]].position.y - vs[tBase + ie[0]].position.y).Length() / factor;  // end position on the periphery
 
             float pps = ps + pos;
             float ppe = pe + pos;
@@ -1307,8 +1307,8 @@ void CEngine::TrackTextureMapping(int objRank, const Material& mat, int state,
 
             for (int i = 0; i < 3; i++)
             {
-                vs[tBase + is[i]].texCoord.x = ((pps * tl) + ts) / tt;
-                vs[tBase + ie[i]].texCoord.x = ((ppe * tl) + ts) / tt;
+                vs[tBase + is[i]].uv.x = ((pps * tl) + ts) / tt;
+                vs[tBase + ie[i]].uv.x = ((ppe * tl) + ts) / tt;
             }
         }
 
@@ -1317,11 +1317,11 @@ void CEngine::TrackTextureMapping(int objRank, const Material& mat, int state,
 
         for (int i = 0; i < 6; i++)
         {
-            if (!Math::IsEqual(vs[tBase + i+6].coord.x, current.x, 0.0001f) ||
-                !Math::IsEqual(vs[tBase + i+6].coord.y, current.y, 0.0001f))
+            if (!Math::IsEqual(vs[tBase + i+6].position.x, current.x, 0.0001f) ||
+                !Math::IsEqual(vs[tBase + i+6].position.y, current.y, 0.0001f))
             {
-                current.x = vs[tBase + i+6].coord.x;  // end next link
-                current.y = vs[tBase + i+6].coord.y;
+                current.x = vs[tBase + i+6].position.x;  // end next link
+                current.y = vs[tBase + i+6].position.y;
                 break;
             }
         }
@@ -1677,12 +1677,12 @@ void CEngine::UpdateGeometry()
 
                 for (int i = 0; i < static_cast<int>( p3.vertices.size() ); i++)
                 {
-                        p1.bboxMin.x = Math::Min(p3.vertices[i].coord.x, p1.bboxMin.x);
-                        p1.bboxMin.y = Math::Min(p3.vertices[i].coord.y, p1.bboxMin.y);
-                        p1.bboxMin.z = Math::Min(p3.vertices[i].coord.z, p1.bboxMin.z);
-                        p1.bboxMax.x = Math::Max(p3.vertices[i].coord.x, p1.bboxMax.x);
-                        p1.bboxMax.y = Math::Max(p3.vertices[i].coord.y, p1.bboxMax.y);
-                        p1.bboxMax.z = Math::Max(p3.vertices[i].coord.z, p1.bboxMax.z);
+                        p1.bboxMin.x = Math::Min(p3.vertices[i].position.x, p1.bboxMin.x);
+                        p1.bboxMin.y = Math::Min(p3.vertices[i].position.y, p1.bboxMin.y);
+                        p1.bboxMin.z = Math::Min(p3.vertices[i].position.z, p1.bboxMin.z);
+                        p1.bboxMax.x = Math::Max(p3.vertices[i].position.x, p1.bboxMax.x);
+                        p1.bboxMax.y = Math::Max(p3.vertices[i].position.y, p1.bboxMax.y);
+                        p1.bboxMax.z = Math::Max(p3.vertices[i].position.z, p1.bboxMax.z);
                 }
             }
         }
@@ -1701,10 +1701,16 @@ void CEngine::UpdateStaticBuffer(EngineBaseObjDataTier& p4)
     else
         type = PRIMITIVE_TRIANGLE_STRIP;
 
-    if (p4.staticBufferId == 0)
-        p4.staticBufferId = m_device->CreateStaticBuffer(type, &p4.vertices[0], p4.vertices.size());
+    if (p4.buffer == nullptr)
+    {
+        p4.buffer = m_device->CreateVertexBuffer(type, &p4.vertices[0], p4.vertices.size());
+    }
     else
-        m_device->UpdateStaticBuffer(p4.staticBufferId, type, &p4.vertices[0], p4.vertices.size());
+    {
+        p4.buffer->SetType(type);
+        p4.buffer->SetData(&p4.vertices[0], 0, p4.vertices.size());
+        p4.buffer->Update();
+    }
 
     p4.updateStaticBuffer = false;
 }
@@ -1859,7 +1865,7 @@ int CEngine::DetectObject(Math::Point mouse, Math::Vector& targetPos, bool terra
     return nearest;
 }
 
-bool CEngine::DetectTriangle(Math::Point mouse, VertexTex2* triangle, int objRank, float& dist, Math::Vector& pos)
+bool CEngine::DetectTriangle(Math::Point mouse, Vertex3D* triangle, int objRank, float& dist, Math::Vector& pos)
 {
     assert(objRank >= 0 && objRank < static_cast<int>(m_objects.size()));
 
@@ -1867,9 +1873,9 @@ bool CEngine::DetectTriangle(Math::Point mouse, VertexTex2* triangle, int objRan
 
     for (int i = 0; i < 3; i++)
     {
-        p3D.x = triangle[i].coord.x;
-        p3D.y = triangle[i].coord.y;
-        p3D.z = triangle[i].coord.z;
+        p3D.x = triangle[i].position.x;
+        p3D.y = triangle[i].position.y;
+        p3D.z = triangle[i].position.z;
 
         if (! TransformPoint(p2D[i], objRank, p3D))
             return false;
@@ -1906,9 +1912,9 @@ bool CEngine::DetectTriangle(Math::Point mouse, VertexTex2* triangle, int objRan
     if (! Math::IsInsideTriangle(a, b, c, mouse))
         return false;
 
-    Math::Vector a2 = Math::Transform(m_objects[objRank].transform, triangle[0].coord);
-    Math::Vector b2 = Math::Transform(m_objects[objRank].transform, triangle[1].coord);
-    Math::Vector c2 = Math::Transform(m_objects[objRank].transform, triangle[2].coord);
+    Math::Vector a2 = Math::Transform(m_objects[objRank].transform, triangle[0].position);
+    Math::Vector b2 = Math::Transform(m_objects[objRank].transform, triangle[1].position);
+    Math::Vector c2 = Math::Transform(m_objects[objRank].transform, triangle[2].position);
     Math::Vector e  = Math::Transform(m_matView.Inverse(), Math::Vector(0.0f, 0.0f, -1.0f));
     Math::Vector f  = Math::Transform(m_matView.Inverse(), Math::Vector(
         (mouse.x*2.0f-1.0f)*m_matProj.Inverse().Get(1,1),
@@ -4086,9 +4092,9 @@ void CEngine::UseMSAA(bool enable)
 
 void CEngine::DrawObject(const EngineBaseObjDataTier& p4)
 {
-    if (p4.staticBufferId != 0)
+    if (p4.buffer != nullptr)
     {
-        m_device->DrawStaticBuffer(p4.staticBufferId);
+        m_device->DrawVertexBuffer(p4.buffer);
 
         if (p4.type == ENG_TRIANGLE_TYPE_TRIANGLES)
             m_statisticTriangle += p4.vertices.size() / 3;
@@ -4099,12 +4105,12 @@ void CEngine::DrawObject(const EngineBaseObjDataTier& p4)
     {
         if (p4.type == ENG_TRIANGLE_TYPE_TRIANGLES)
         {
-            m_device->DrawPrimitive(PRIMITIVE_TRIANGLES, &p4.vertices[0], p4.vertices.size());
+            m_device->DrawPrimitive(PRIMITIVE_TRIANGLES, p4.vertices.data(), p4.vertices.size());
             m_statisticTriangle += p4.vertices.size() / 3;
         }
         else
         {
-            m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, &p4.vertices[0], p4.vertices.size() );
+            m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, p4.vertices.data(), p4.vertices.size() );
             m_statisticTriangle += p4.vertices.size() - 2;
         }
     }

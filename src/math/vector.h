@@ -31,7 +31,7 @@
 
 #include <cmath>
 #include <sstream>
-
+#include <glm/glm.hpp>
 
 // Math module namespace
 namespace Math
@@ -73,6 +73,12 @@ struct Vector
      , z(_z)
     {}
 
+    inline Vector(const glm::vec3& vector)
+     : x(vector.x)
+     , y(vector.y)
+     , z(vector.z)
+    {}
+
     //! Loads the zero vector (0, 0, 0)
     inline void LoadZero()
     {
@@ -89,6 +95,11 @@ struct Vector
     inline const float* Array() const
     {
         return reinterpret_cast<const float*>(this);
+    }
+
+    operator glm::vec3() const
+    {
+        return { x, y, z };
     }
 
     //! Returns the vector length
