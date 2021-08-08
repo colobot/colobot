@@ -165,10 +165,51 @@ struct VertexTex2
  */
 struct Vertex2D
 {
-    glm::vec2 position;
+    glm::vec2 position = { 0.0f, 0.0f };
     glm::vec2 uv = { 0.0f, 0.0f };
     glm::u8vec4 color = { 255, 255, 255, 255 };
 };
 
-} // namespace Gfx
+/**
+ * \struct Vertex3D
+ * \brief 3D vertex for 3D rendering, contains UV, color and normal
+ */
+struct Vertex3D
+{
+    glm::vec3 position = { 0.0f, 0.0f, 0.0f };
+    glm::u8vec4 color = { 255, 255, 255, 255 };
+    glm::vec2 uv = { 0.0f, 0.0f };
+    glm::vec2 uv2 = { 0.0f, 0.0f };
+    glm::vec3 normal = { 0.0f, 0.0f, 1.0f };
 
+    Vertex3D() = default;
+
+    Vertex3D(const Vertex& vertex)
+        : position(vertex.coord)
+        , uv(vertex.texCoord)
+        , normal(vertex.normal)
+    {
+
+    }
+
+    Vertex3D(const VertexTex2& vertex)
+        : position(vertex.coord)
+        , uv(vertex.texCoord)
+        , uv2(vertex.texCoord2)
+        , normal(vertex.normal)
+    {
+
+    }
+
+    operator Vertex() const
+    {
+        return Vertex{ position, normal, uv };
+    }
+
+    operator VertexTex2() const
+    {
+        return VertexTex2{ position, normal, uv, uv2 };
+    }
+};
+
+} // namespace Gfx
