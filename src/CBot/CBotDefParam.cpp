@@ -94,7 +94,7 @@ CBotDefParam* CBotDefParam::Compile(CBotToken* &p, CBotCStack* pStack)
                             prevHasDefault = true;
                         }
                         else pStack->SetError(CBotErrNoExpression, p);
-                        delete pStk;
+                        pStack->DeleteNext();
                     }
                     else
                         if (prevHasDefault) pStack->SetError(CBotErrDefaultValue, p->GetPrev());
@@ -137,6 +137,7 @@ bool CBotDefParam::Execute(CBotVar** ppVars, CBotStack* &pj)
     while ( p != nullptr )
     {
         pile = pile->AddStack();
+        if (pile->StackOver()) return pj->Return(pile);
         if (pile->GetState() == 1) // already done?
         {
             if (ppVars != nullptr && ppVars[i] != nullptr) ++i;

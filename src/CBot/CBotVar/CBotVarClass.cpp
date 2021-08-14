@@ -54,7 +54,6 @@ CBotVarClass::CBotVarClass(const CBotToken& name, const CBotTypResult& type) : C
                                                  // official type for this object
 
     m_pClass    = nullptr;
-    m_pParent    = nullptr;
     m_binit        = InitType::UNDEF;
     m_bStatic    = false;
     m_mPrivate    = ProtectionLevel::Public;
@@ -63,14 +62,9 @@ CBotVarClass::CBotVarClass(const CBotToken& name, const CBotTypResult& type) : C
     m_ItemIdent = type.Eq(CBotTypIntrinsic) ? 0 : CBotVar::NextUniqNum();
 
     // add to the list
-    m_instances.insert(this);
+    if (m_ItemIdent != 0) m_instances.insert(this);
 
     CBotClass* pClass = type.GetClass();
-    if ( pClass != nullptr && pClass->GetParent() != nullptr )
-    {
-        // also creates an instance of the parent class
-        m_pParent = new CBotVarClass(name, CBotTypResult(type.GetType(), pClass->GetParent()) ); //, nIdent);
-    }
 
     SetClass( pClass );
 
@@ -82,11 +76,8 @@ CBotVarClass::~CBotVarClass( )
     if ( m_CptUse != 0 )
         assert(0);
 
-    if ( m_pParent ) delete m_pParent;
-    m_pParent = nullptr;
-
     // removes the class list
-    m_instances.erase(this);
+    if (m_ItemIdent != 0) m_instances.erase(this);
 
     delete    m_pVar;
 }
@@ -113,10 +104,6 @@ void CBotVarClass::Copy(CBotVar* pSrc, bool bName)
     m_binit        = p->m_binit;
 //-    m_bStatic    = p->m_bStatic;
     m_pClass    = p->m_pClass;
-    if ( p->m_pParent )
-    {
-        assert(0);       // "que faire du pParent";
-    }
 
 //    m_next        = nullptr;
     m_pUserPtr    = p->m_pUserPtr;
@@ -162,9 +149,11 @@ void CBotVarClass::SetClass(CBotClass* pClass)//, int &nIdent)
 
     if (pClass == nullptr) return;
 
-    CBotVar*    pv = pClass->GetVar();                // first on a list
-    while ( pv != nullptr )
+    CBotVar* pv = nullptr;
+    while (pClass != nullptr)
     {
+        if ( pv == nullptr ) pv = pClass->GetVar();
+        if ( pv == nullptr ) { pClass = pClass->GetParent(); continue; }
         // seeks the maximum dimensions of the table
         CBotInstr*    p  = pv->m_LimExpr;                            // the different formulas
         if ( p != nullptr )
@@ -214,6 +203,7 @@ void CBotVarClass::SetClass(CBotClass* pClass)//, int &nIdent)
         if ( m_pVar == nullptr) m_pVar = pn;
         else m_pVar->AddNext( pn );
         pv = pv->GetNext();
+        if ( pv == nullptr ) pClass = pClass->GetParent();
     }
 }
 
@@ -246,7 +236,6 @@ CBotVar* CBotVarClass::GetItem(const std::string& name)
         p = p->GetNext();
     }
 
-    if ( m_pParent != nullptr ) return m_pParent->GetItem(name);
     return nullptr;
 }
 
@@ -261,7 +250,6 @@ CBotVar* CBotVarClass::GetItemRef(int nIdent)
         p = p->GetNext();
     }
 
-    if ( m_pParent != nullptr ) return m_pParent->GetItemRef(nIdent);
     return nullptr;
 }
 
@@ -311,32 +299,46 @@ std::string CBotVarClass::GetValString()
     {
         res = m_pClass->GetName() + std::string("( ");
 
-        CBotVarClass*    my = this;
-        while ( my != nullptr )
+        CBotClass* pClass = m_pClass;
+        long prevID = 0;
         {
-            CBotVar*    pv = my->m_pVar;
-            while ( pv != nullptr )
+            CBotVar* pv = m_pVar;
+            if (pv != nullptr) while (true)
             {
+                if (pv->GetUniqNum() < prevID)
+                {
+                    pClass = pClass->GetParent();
+                    if (pClass == nullptr) break;
+                    res += " ) extends ";
+                    res += pClass->GetName();
+                    res += "( ";
+                    if (pClass->GetVar() == nullptr) continue;
+                }
+
+                prevID = pv->GetUniqNum();
+
                 res += pv->GetName() + std::string("=");
 
                 if ( pv->IsStatic() )
                 {
-                    CBotVar* pvv = my->m_pClass->GetItem(pv->GetName());
-                    res += pvv->GetValString();
+                    res += pClass->GetItemRef(prevID)->GetValString();
                 }
                 else
                 {
                     res += pv->GetValString();
                 }
                 pv = pv->GetNext();
-                if ( pv != nullptr ) res += ", ";
+                if ( pv == nullptr ) break;
+                if ( pv->GetUniqNum() > prevID ) res += ", ";
             }
-            my = my->m_pParent;
-            if ( my != nullptr )
+
+            if (pClass != nullptr) while (true)
             {
-                res += ") extends ";
-                res += my->m_pClass->GetName();
-                res += " (";
+                pClass = pClass->GetParent();
+                if (pClass == nullptr) break;
+                res += " ) extends ";
+                res += pClass->GetName();
+                res += "( ";
             }
         }
 
@@ -378,14 +380,7 @@ void CBotVarClass::DecrementUse()
         {
             m_CptUse++;    // does not return to the destructor
 
-            // m_error is static in the stack
-            // saves the value for return
-            CBotError err;
-            int start, end;
-            CBotStack*    pile = nullptr;
-            err = pile->GetError(start,end);    // stack == nullptr it does not bother!
-
-            pile = CBotStack::AllocateStack();        // clears the error
+            CBotStack*  pile = CBotStack::AllocateStack();
             CBotVar*    ppVars[1];
             ppVars[0] = nullptr;
 
@@ -398,8 +393,6 @@ void CBotVarClass::DecrementUse()
             CBotToken token(nom); // TODO
 
             while ( pile->IsOk() && !m_pClass->ExecuteMethode(ident, pThis, ppVars, CBotTypResult(CBotTypVoid), pile, &token)) ;    // waits for the end
-
-            pile->ResetError(err, start,end);
 
             pile->Delete();
             delete pThis;

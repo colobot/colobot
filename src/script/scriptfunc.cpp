@@ -3411,7 +3411,6 @@ private:
 
 void CScriptFunctions::Init()
 {
-    CBotProgram::SetTimer(100);
     CBotProgram::Init();
 
     for (int i = 0; i < OBJECT_MAX; i++)
