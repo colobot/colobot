@@ -32,6 +32,8 @@
 
 #include <cmath>
 #include <cassert>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 
 // Math module namespace
@@ -98,6 +100,32 @@ struct Matrix
                 m[4*c+r] = _m[r][c];
             }
         }
+    }
+
+    Matrix(const glm::mat4& matrix)
+    {
+        for (int c = 0; c < 4; ++c)
+        {
+            for (int r = 0; r < 4; ++r)
+            {
+                m[4 * c + r] = matrix[c][r];
+            }
+        }
+    }
+
+    operator glm::mat4() const
+    {
+        glm::mat4 matrix;
+
+        for (int c = 0; c < 4; ++c)
+        {
+            for (int r = 0; r < 4; ++r)
+            {
+                 matrix[c][r] = m[4 * c + r];
+            }
+        }
+
+        return matrix;
     }
 
     //! Sets value in given row and col
