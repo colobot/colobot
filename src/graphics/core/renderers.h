@@ -32,6 +32,7 @@
 namespace Gfx
 {
 
+class CVertexBuffer;
 enum PrimitiveType;
 struct Texture;
 
@@ -66,6 +67,31 @@ public:
 
     //! Draws primitive
     virtual void DrawPrimitive(PrimitiveType type, int count, const Vertex2D* vertices) = 0;
+};
+
+class CTerrainRenderer : public CRenderer
+{
+public:
+    virtual ~CTerrainRenderer() { }
+
+    virtual void Begin() = 0;
+
+    virtual void End() = 0;
+
+    //! Sets projection matrix
+    virtual void SetProjectionMatrix(const glm::mat4& matrix) = 0;
+    //! Sets view matrix
+    virtual void SetViewMatrix(const glm::mat4& matrix) = 0;
+    //! Sets model matrix
+    virtual void SetModelMatrix(const glm::mat4& matrix) = 0;
+
+    //! Sets primary texture, setting texture 0 means using white texture
+    virtual void SetPrimaryTexture(const Texture& texture) = 0;
+    //! Sets secondary texture
+    virtual void SetSecondaryTexture(const Texture& texture) = 0;
+
+    //! Draws terrain object
+    virtual void DrawObject(const glm::mat4& matrix, const CVertexBuffer* buffer) = 0;
 };
 
 } // namespace Gfx

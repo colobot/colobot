@@ -62,7 +62,8 @@ private:
         glm::mat4 projectionMatrix;
         glm::vec4 color;
     };
-    Uniforms m_uniforms;
+    Uniforms m_uniforms = {};
+
     // true means uniforms need to be updated
     bool m_uniformsDirty = false;
 
@@ -89,6 +90,62 @@ private:
     GLuint m_whiteTexture = 0;
     // Currently bound texture
     GLuint m_currentTexture = 0;
+};
+
+class CGL33TerrainRenderer : public CTerrainRenderer
+{
+public:
+    CGL33TerrainRenderer(CGL33Device* device);
+    virtual ~CGL33TerrainRenderer();
+
+    virtual void Begin() override;
+
+    virtual void End() override;
+
+    //! Sets projection matrix
+    virtual void SetProjectionMatrix(const glm::mat4& matrix) override;
+    //! Sets view matrix
+    virtual void SetViewMatrix(const glm::mat4& matrix) override;
+    //! Sets model matrix
+    virtual void SetModelMatrix(const glm::mat4& matrix) override;
+
+    //! Sets primary texture, setting texture 0 means using white texture
+    virtual void SetPrimaryTexture(const Texture& texture) override;
+    //! Sets secondary texture
+    virtual void SetSecondaryTexture(const Texture& texture) override;
+
+    //! Draws terrain object
+    virtual void DrawObject(const glm::mat4& matrix, const CVertexBuffer* buffer) override;
+
+    virtual void Flush() override;
+
+private:
+    CGL33Device* const m_device;
+
+    // Uniform data
+    struct Uniforms
+    {
+        glm::mat4 projectionMatrix;
+        glm::mat4 viewMatrix;
+        glm::mat4 modelMatrix;
+    };
+
+    Uniforms m_uniforms = {};
+
+    // true means uniforms need to be updated
+    bool m_uniformsDirty = false;
+
+    GLuint m_uniformBuffer = 0;
+
+    // Shader program
+    GLuint m_program = 0;
+
+    // 1x1 white texture
+    GLuint m_whiteTexture = 0;
+    // Currently bound primary texture
+    GLuint m_primaryTexture = 0;
+    // Currently bound secondary texture
+    GLuint m_secondaryTexture = 0;
 };
 
 } // namespace Gfx

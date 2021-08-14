@@ -499,6 +499,7 @@ bool CGL33Device::Create()
     }
 
     m_uiRenderer = std::make_unique<CGL33UIRenderer>(this);
+    m_terrainRenderer = std::make_unique<CGL33TerrainRenderer>(this);
 
     SetRenderMode(RENDER_MODE_NORMAL);
 
@@ -565,6 +566,7 @@ void CGL33Device::Destroy()
     m_buffers.clear();
 
     m_uiRenderer = nullptr;
+    m_terrainRenderer = nullptr;
 }
 
 void CGL33Device::ConfigChanged(const DeviceConfig& newConfig)
@@ -639,6 +641,11 @@ void CGL33Device::SetRenderMode(RenderMode mode)
 CUIRenderer* CGL33Device::GetUIRenderer()
 {
     return m_uiRenderer.get();
+}
+
+CTerrainRenderer* CGL33Device::GetTerrainRenderer()
+{
+    return m_terrainRenderer.get();
 }
 
 void CGL33Device::Restore()

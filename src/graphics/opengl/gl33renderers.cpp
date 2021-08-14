@@ -17,7 +17,9 @@ namespace Gfx
 CGL33UIRenderer::CGL33UIRenderer(CGL33Device* device)
     : m_device(device)
 {
-    GLint shaders[2];
+    GetLogger()->Info("Creating CGL33UIRenderer\n");
+
+    GLint shaders[2] = {};
 
     shaders[0] = LoadShader(GL_VERTEX_SHADER, "shaders/gl33/ui_vs.glsl");
     if (shaders[0] == 0)
@@ -88,6 +90,8 @@ CGL33UIRenderer::CGL33UIRenderer(CGL33Device* device)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_A, GL_ONE);
 
     glUseProgram(0);
+
+    GetLogger()->Info("CGL33UIRenderer created successfully\n");
 }
 
 CGL33UIRenderer::~CGL33UIRenderer()
@@ -217,6 +221,182 @@ void CGL33UIRenderer::UpdateUniforms()
     glBufferData(GL_COPY_WRITE_BUFFER, sizeof(Uniforms), nullptr, GL_STREAM_DRAW);
     glBufferSubData(GL_COPY_WRITE_BUFFER, 0, sizeof(Uniforms), &m_uniforms);
     glBindBuffer(GL_COPY_WRITE_BUFFER, 0);
+}
+
+
+CGL33TerrainRenderer::CGL33TerrainRenderer(CGL33Device* device)
+    : m_device(device)
+{
+    GetLogger()->Info("Creating CGL33TerrainRenderer\n");
+
+    GLint shaders[2] = {};
+
+    shaders[0] = LoadShader(GL_VERTEX_SHADER, "shaders/gl33/terrain_vs.glsl");
+    if (shaders[0] == 0)
+    {
+        GetLogger()->Error("Cound not create vertex shader from file 'terrain_vs.glsl'\n");
+        return;
+    }
+
+    shaders[1] = LoadShader(GL_FRAGMENT_SHADER, "shaders/gl33/terrain_fs.glsl");
+    if (shaders[1] == 0)
+    {
+        GetLogger()->Error("Cound not create fragment shader from file 'terrain_fs.glsl'\n");
+        return;
+    }
+
+    m_program = LinkProgram(2, shaders);
+    if (m_program == 0)
+    {
+        GetLogger()->Error("Cound not link shader program for terrain renderer\n");
+        return;
+    }
+
+    glDeleteShader(shaders[0]);
+    glDeleteShader(shaders[1]);
+
+    glUseProgram(m_program);
+
+    // Setup uniforms
+    auto identity = glm::identity<glm::mat4>();
+
+    m_uniforms.projectionMatrix = identity;
+    m_uniforms.viewMatrix = identity;
+    m_uniforms.modelMatrix = identity;
+
+    glGenBuffers(1, &m_uniformBuffer);
+    glBindBuffer(GL_COPY_WRITE_BUFFER, m_uniformBuffer);
+    glBufferData(GL_COPY_WRITE_BUFFER, sizeof(Uniforms), &m_uniforms, GL_STREAM_DRAW);
+    glBindBuffer(GL_COPY_WRITE_BUFFER, 0);
+
+    // Bind uniform block to uniform buffer binding
+    GLuint blockIndex = glGetUniformBlockIndex(m_program, "Uniforms");
+
+    glBindBufferBase(GL_UNIFORM_BUFFER, 0, m_uniformBuffer);
+    glUniformBlockBinding(m_program, blockIndex, 0);
+
+    // Set texture units to 10th and 11th
+    auto texture = glGetUniformLocation(m_program, "uni_PrimaryTexture");
+    glUniform1i(texture, 10);
+
+    texture = glGetUniformLocation(m_program, "uni_SecondaryTexture");
+    glUniform1i(texture, 11);
+
+    // White texture
+    glActiveTexture(GL_TEXTURE0);
+    glGenTextures(1, &m_whiteTexture);
+    glBindTexture(GL_TEXTURE_2D, m_whiteTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_R, GL_ONE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_G, GL_ONE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_B, GL_ONE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_A, GL_ONE);
+
+    glUseProgram(0);
+
+    GetLogger()->Info("CGL33TerrainRenderer created successfully\n");
+}
+
+CGL33TerrainRenderer::~CGL33TerrainRenderer()
+{
+    glDeleteProgram(m_program);
+    glDeleteTextures(1, &m_whiteTexture);
+}
+
+void CGL33TerrainRenderer::Begin()
+{
+    glUseProgram(m_program);
+}
+
+void CGL33TerrainRenderer::End()
+{
+    m_device->Restore();
+}
+
+void CGL33TerrainRenderer::SetProjectionMatrix(const glm::mat4& matrix)
+{
+    m_uniforms.projectionMatrix = matrix;
+    m_uniformsDirty = true;
+}
+
+void CGL33TerrainRenderer::SetViewMatrix(const glm::mat4& matrix)
+{
+    glm::mat4 scale(1.0f);
+    scale[2][2] = -1.0f;
+
+    m_uniforms.viewMatrix = scale * matrix;
+    m_uniformsDirty = true;
+}
+
+void CGL33TerrainRenderer::SetModelMatrix(const glm::mat4& matrix)
+{
+    m_uniforms.modelMatrix = matrix;
+    m_uniformsDirty = true;
+}
+
+void CGL33TerrainRenderer::SetPrimaryTexture(const Texture& texture)
+{
+    if (m_primaryTexture == texture.id) return;
+
+    m_primaryTexture = texture.id;
+
+    glActiveTexture(GL_TEXTURE10);
+
+    if (texture.id == 0)
+        glBindTexture(GL_TEXTURE_2D, m_whiteTexture);
+    else
+        glBindTexture(GL_TEXTURE_2D, texture.id);
+}
+
+void CGL33TerrainRenderer::SetSecondaryTexture(const Texture& texture)
+{
+    if (m_secondaryTexture == texture.id) return;
+
+    m_secondaryTexture = texture.id;
+
+    glActiveTexture(GL_TEXTURE11);
+
+    if (texture.id == 0)
+        glBindTexture(GL_TEXTURE_2D, m_whiteTexture);
+    else
+        glBindTexture(GL_TEXTURE_2D, texture.id);
+}
+
+void CGL33TerrainRenderer::DrawObject(const glm::mat4& matrix, const CVertexBuffer* buffer)
+{
+    auto b = dynamic_cast<const CGL33VertexBuffer*>(buffer);
+
+    if (b == nullptr)
+    {
+        GetLogger()->Error("No vertex buffer");
+        return;
+    }
+
+    SetModelMatrix(matrix);
+
+    if (m_uniformsDirty)
+    {
+        glBindBuffer(GL_COPY_WRITE_BUFFER, m_uniformBuffer);
+        glBufferData(GL_COPY_WRITE_BUFFER, sizeof(Uniforms), nullptr, GL_STREAM_DRAW);
+        glBufferSubData(GL_COPY_WRITE_BUFFER, 0, sizeof(Uniforms), &m_uniforms);
+        glBindBuffer(GL_COPY_WRITE_BUFFER, 0);
+
+        m_uniformsDirty = false;
+    }
+
+    glBindBufferBase(GL_UNIFORM_BUFFER, 0, m_uniformBuffer);
+    glBindVertexArray(b->GetVAO());
+
+    glDrawArrays(TranslateGfxPrimitive(b->GetType()), 0, b->Size());
+}
+
+void CGL33TerrainRenderer::Flush()
+{
+
 }
 
 } // namespace Gfx

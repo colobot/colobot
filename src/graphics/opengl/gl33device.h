@@ -81,6 +81,7 @@ public:
 };
 
 class CGL33UIRenderer;
+class CGL33TerrainRenderer;
 
 /**
   \class CGL33Device
@@ -116,6 +117,7 @@ public:
 
     void SetRenderMode(RenderMode mode) override;
     CUIRenderer* GetUIRenderer() override;
+    CTerrainRenderer* GetTerrainRenderer() override;
 
     void Restore() override;
 
@@ -308,6 +310,8 @@ private:
 
     //! Interface renderer
     std::unique_ptr<CGL33UIRenderer> m_uiRenderer;
+    //! Terrain renderer
+    std::unique_ptr<CGL33TerrainRenderer> m_terrainRenderer;
 };
 
 } // namespace Gfx

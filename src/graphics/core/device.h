@@ -51,6 +51,7 @@ namespace Gfx
 
 class CFramebuffer;
 class CUIRenderer;
+class CTerrainRenderer;
 struct FramebufferParams;
 struct Light;
 struct Material;
@@ -463,6 +464,8 @@ public:
     virtual void SetRenderMode(RenderMode mode) = 0;
     //! Returns UI renderer
     virtual CUIRenderer* GetUIRenderer() = 0;
+    //! Returns terrain renderer
+    virtual CTerrainRenderer* GetTerrainRenderer() = 0;
 
     //! Restores device rendering mode
     virtual void Restore() = 0;
