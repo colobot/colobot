@@ -726,6 +726,71 @@ TEST_F(CBotUT, TestSwitchCase)
     );
 }
 
+TEST_F(CBotUT, TestRepeatInstruction)
+{
+    ExecuteTest(
+        "extern void TestRepeat() {\n"
+        "    int c = 0;\n"
+        "    for (int i = 1; i < 11; ++i)\n"
+        "    {\n"
+        "        repeat (i) ++c;\n"
+        "    }\n"
+        "    ASSERT(c == 55);\n"
+        "}\n"
+        "extern void TestRepeatBreakAndContinue() {\n"
+        "    int c = 0;\n"
+        "    repeat (10)\n"
+        "    {\n"
+        "        if (++c == 5) break;\n"
+        "        continue;\n"
+        "        FAIL();\n"
+        "    }\n"
+        "    ASSERT(c == 5);\n"
+        "    label:repeat (10)\n"
+        "    {\n"
+        "        if (++c == 10) break label;\n"
+        "        continue label;\n"
+        "        FAIL();\n"
+        "    }\n"
+        "    ASSERT(c == 10);\n"
+        "}\n"
+        "extern void NoRepeatNumberLessThanOne() {\n"
+        "    repeat (0) FAIL();\n"
+        "    repeat (-1) FAIL();\n"
+        "    repeat (-2) FAIL();\n"
+        "}\n"
+        "extern void EvaluateExpressionOnlyOnce() {\n"
+        "    int c = 0;\n"
+        "    repeat (c + 5) ASSERT(++c < 6);\n"
+        "    ASSERT(c == 5);\n"
+        "}\n"
+    );
+    ExecuteTest(
+        "extern void MissingOpenParen() {\n"
+        "    repeat ;\n"
+        "}\n",
+        CBotErrOpenPar
+    );
+    ExecuteTest(
+        "extern void MissingNumber() {\n"
+        "    repeat (;\n"
+        "}\n",
+        CBotErrBadNum
+    );
+    ExecuteTest(
+        "extern void WrongType() {\n"
+        "    repeat (\"not number\");\n"
+        "}\n",
+        CBotErrBadType1
+    );
+    ExecuteTest(
+        "extern void MissingCloseParen() {\n"
+        "    repeat (2;\n"
+        "}\n",
+        CBotErrClosePar
+    );
+}
+
 TEST_F(CBotUT, ToString)
 {
     ExecuteTest(
