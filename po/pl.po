@@ -188,7 +188,7 @@ msgid "Bot factory"
 msgstr "Fabryka robotów"
 
 msgid "Build (\\key action;)"
-msgstr "Buduj (\\przycisk akcji;)"
+msgstr "Buduj (\\key action;)"
 
 msgid "Build a bot factory"
 msgstr "Zbuduj fabrykę robotów"
@@ -1450,7 +1450,7 @@ msgid "Save\\Saves the current mission"
 msgstr "Zapisz\\Zapisuje bieżącą misję"
 
 msgid "Select Folder"
-msgstr "Zaznacz folder"
+msgstr "Wybierz folder"
 
 msgid "Select the astronaut\\Selects the astronaut"
 msgstr "Zaznacz astronautę\\Zaznacza astronautę"
