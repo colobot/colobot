@@ -32,7 +32,7 @@ msgid "%s: %d pts"
 msgstr "%s: %d pkt"
 
 msgid "+\\Missions with bonus content and optional challenges"
-msgstr ""
+msgstr "+\\Misje z dodatkową zawartością i opcjonalnymi wyzwaniami"
 
 msgid "..behind"
 msgstr "..za"
@@ -188,7 +188,7 @@ msgid "Bot factory"
 msgstr "Fabryka robotów"
 
 msgid "Build (\\key action;)"
-msgstr ""
+msgstr "Buduj (\\key action;)"
 
 msgid "Build a bot factory"
 msgstr "Zbuduj fabrykę robotów"
@@ -206,7 +206,7 @@ msgid "Build a exchange post"
 msgstr "Zbuduj stację przekaźnikową"
 
 msgid "Build a legged builder"
-msgstr ""
+msgstr "Zbuduj budowniczego na nogach"
 
 msgid "Build a legged grabber"
 msgstr "Zbuduj transporter na nogach"
@@ -254,13 +254,13 @@ msgid "Build a subber"
 msgstr "Zbuduj robota nurka"
 
 msgid "Build a target bot"
-msgstr ""
+msgstr "Zbuduj robota-cel"
 
 msgid "Build a thumper"
 msgstr "Zbuduj robota uderzacza"
 
 msgid "Build a tracked builder"
-msgstr ""
+msgstr "Zbuduj budowniczego na gąsienicach"
 
 msgid "Build a tracked grabber"
 msgstr "Zbuduj transporter na gąsienicach"
@@ -275,10 +275,10 @@ msgid "Build a tracked sniffer"
 msgstr "Zbuduj szperacz na gąsienicach"
 
 msgid "Build a vault"
-msgstr ""
+msgstr "Zbuduj skrytkę"
 
 msgid "Build a wheeled builder"
-msgstr ""
+msgstr "Zbuduj budowniczego na kołach"
 
 msgid "Build a wheeled grabber"
 msgstr "Zbuduj transporter na kołach"
@@ -293,7 +293,7 @@ msgid "Build a wheeled sniffer"
 msgstr "Zbuduj szperacz na kołach"
 
 msgid "Build a winged builder"
-msgstr ""
+msgstr "Zbuduj latającego budowniczego"
 
 msgid "Build a winged grabber"
 msgstr "Zbuduj transporter latający"
@@ -528,7 +528,7 @@ msgid "Drawer bot"
 msgstr "Robot rysownik"
 
 msgid "Duplicate label in switch"
-msgstr ""
+msgstr "Zduplikowana wartość w instrukcji switch"
 
 msgid "Dust\\Dust and dirt on bots and buildings"
 msgstr "Kurz\\Kurz i bród na robotach i budynkach"
@@ -549,7 +549,7 @@ msgid "Egg"
 msgstr "Jajo"
 
 msgid "Empty character constant"
-msgstr ""
+msgstr "Stała będąca pustym znakiem"
 
 msgid "Enable\\Enable the selected mod"
 msgstr "Włącz\\Włącza zaznaczonego moda"
@@ -769,7 +769,7 @@ msgid "Inappropriate object"
 msgstr "Nieodpowiedni obiekt"
 
 msgid "Inappropriate sample"
-msgstr ""
+msgstr "Nieprawidłowa próbka"
 
 msgid "Incorrect index type"
 msgstr "Nieprawidłowy typ indeksu"
@@ -814,7 +814,7 @@ msgid "Internal error - tell the developers"
 msgstr "Błąd wewnętrzny - powiadom twórców gry"
 
 msgid "Invalid universal character name"
-msgstr ""
+msgstr "Nieprawidłowy znak Unicode"
 
 msgid "Invert\\Invert values on this axis"
 msgstr "Odwróć\\Odwróć wartości na tej osi"
@@ -844,7 +844,7 @@ msgid "LOADING"
 msgstr "WCZYTYWANIE"
 
 msgid "Legged builder"
-msgstr ""
+msgstr "Budowniczy na nogach"
 
 msgid "Legged grabber"
 msgstr "Transporter na nogach"
@@ -979,7 +979,7 @@ msgid "New ..."
 msgstr "Nowy ..."
 
 msgid "New Folder"
-msgstr ""
+msgstr "Nowy folder"
 
 msgid "New bot available"
 msgstr "Dostępny nowy robot"
@@ -1147,7 +1147,7 @@ msgid "Original game developed by:"
 msgstr "Twórcy oryginalnej gry:"
 
 msgid "Overwrite existing file?"
-msgstr ""
+msgstr "Nadpisać istniejący plik?"
 
 msgid "Parameters missing"
 msgstr "Brak wymaganego parametru"
@@ -1183,7 +1183,7 @@ msgid "Planets:"
 msgstr "Planety:"
 
 msgid "Plans for builder available"
-msgstr ""
+msgstr "Dostępne plany robota budowniczego"
 
 msgid "Plans for defense tower available"
 msgstr "Dostępne plany wieży obronnej"
@@ -1393,7 +1393,7 @@ msgid "Ruin"
 msgstr "Ruiny"
 
 msgid "Run research program for builder"
-msgstr ""
+msgstr "Rozpocznij prace badawcze nad robotem budowniczym"
 
 msgid "Run research program for defense tower"
 msgstr "Rozpocznij prace badawcze nad wieżą obronną"
@@ -1417,7 +1417,7 @@ msgid "Run research program for shooter"
 msgstr "Rozpocznij prace badawcze nad działem"
 
 msgid "Run research program for target bot"
-msgstr ""
+msgstr "Rozpocznij prace badawcze nad robotem-celem"
 
 msgid "Run research program for thumper"
 msgstr "Rozpocznij prace badawcze nad robotem uderzaczem"
@@ -1450,7 +1450,7 @@ msgid "Save\\Saves the current mission"
 msgstr "Zapisz\\Zapisuje bieżącą misję"
 
 msgid "Select Folder"
-msgstr ""
+msgstr "Wybierz folder"
 
 msgid "Select the astronaut\\Selects the astronaut"
 msgstr "Zaznacz astronautę\\Zaznacza astronautę"
@@ -1519,13 +1519,13 @@ msgid "Sound\\Music and game sound volume"
 msgstr "Dźwięk\\Głośność muzyki i dźwięków gry"
 
 msgid "Space Explorer\\Disables astronaut abilities"
-msgstr ""
+msgstr "Kosmiczny odkrywca\\Wyłącza umiejętności astronauty"
 
 msgid "Space Programmer\\Disables radio-control"
-msgstr ""
+msgstr "Kosmiczny koder\\Wyłącza zdalną kontrolę"
 
 msgid "Space Researcher\\Disables using all previously researched technologies"
-msgstr ""
+msgstr "Kosmiczny badacz\\Blokuje dostęp do poprzednio wynalezionych technologii"
 
 msgid "Spaceship"
 msgstr "Statek kosmiczny"
@@ -1705,7 +1705,7 @@ msgid "Too many parameters"
 msgstr "Za dużo parametrów"
 
 msgid "Tracked builder"
-msgstr ""
+msgstr "Budowniczy na gąsienicach"
 
 msgid "Tracked grabber"
 msgstr "Transporter na gąsienicach"
@@ -1762,7 +1762,7 @@ msgid "Unknown command"
 msgstr "Nieznane polecenie"
 
 msgid "Unknown escape sequence"
-msgstr ""
+msgstr "Nieznany znak ucieczki"
 
 msgid "Unknown function"
 msgstr "Funkcja nieznana"
@@ -1819,7 +1819,7 @@ msgid "Website"
 msgstr "Strona internetowa"
 
 msgid "Wheeled builder"
-msgstr ""
+msgstr "Budowniczy na kołach"
 
 msgid "Wheeled grabber"
 msgstr "Transporter na kołach"
@@ -1834,7 +1834,7 @@ msgid "Wheeled sniffer"
 msgstr "Szperacz na kołach"
 
 msgid "Winged builder"
-msgstr ""
+msgstr "Budowniczy latający"
 
 msgid "Winged grabber"
 msgstr "Transporter latający"
