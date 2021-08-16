@@ -34,7 +34,7 @@
 namespace CBot
 {
 
-CBotExternalCallList* CBotProgram::m_externalCalls = new CBotExternalCallList();
+std::unique_ptr<CBotExternalCallList> CBotProgram::m_externalCalls;
 
 CBotProgram::CBotProgram()
 {
@@ -243,13 +243,6 @@ CBotVar* CBotProgram::GetStackVars(std::string& functionName, int level)
     return m_stack->GetStackVars(functionName, level);
 }
 
-////////////////////////////////////////////////////////////////////////////////
-void CBotProgram::SetTimer(int n)
-{
-    CBotStack::SetTimer( n );
-}
-
-////////////////////////////////////////////////////////////////////////////////
 CBotError CBotProgram::GetError()
 {
     return m_error;
@@ -395,6 +388,8 @@ int CBotProgram::GetVersion()
 
 void CBotProgram::Init()
 {
+    m_externalCalls.reset(new CBotExternalCallList);
+
     CBotProgram::DefineNum("CBotErrZeroDiv",    CBotErrZeroDiv);     // division by zero
     CBotProgram::DefineNum("CBotErrNotInit",    CBotErrNotInit);     // uninitialized variable
     CBotProgram::DefineNum("CBotErrBadThrow",   CBotErrBadThrow);    // throw a negative value
@@ -420,9 +415,10 @@ void CBotProgram::Free()
     CBotToken::ClearDefineNum();
     m_externalCalls->Clear();
     CBotClass::ClearPublic();
+    m_externalCalls.reset();
 }
 
-CBotExternalCallList* CBotProgram::GetExternalCalls()
+const std::unique_ptr<CBotExternalCallList>& CBotProgram::GetExternalCalls()
 {
     return m_externalCalls;
 }

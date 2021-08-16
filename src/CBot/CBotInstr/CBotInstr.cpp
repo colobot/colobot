@@ -30,6 +30,7 @@
 #include "CBot/CBotInstr/CBotExpression.h"
 #include "CBot/CBotInstr/CBotFor.h"
 #include "CBot/CBotInstr/CBotIf.h"
+#include "CBot/CBotInstr/CBotRepeat.h"
 #include "CBot/CBotInstr/CBotReturn.h"
 #include "CBot/CBotInstr/CBotSwitch.h"
 #include "CBot/CBotInstr/CBotThrow.h"
@@ -176,7 +177,7 @@ CBotInstr* CBotInstr::Compile(CBotToken* &p, CBotCStack* pStack)
     {
          type = pp->GetType();
          // Allow only instructions that accept a label
-         if (!IsOfTypeList(pp, ID_WHILE, ID_FOR, ID_DO, 0))
+         if (!IsOfTypeList(pp, ID_WHILE, ID_FOR, ID_DO, ID_REPEAT, 0))
          {
              pStack->SetError(CBotErrLabel, pp->GetStart());
              return nullptr;
@@ -194,6 +195,9 @@ CBotInstr* CBotInstr::Compile(CBotToken* &p, CBotCStack* pStack)
 
     case ID_DO:
         return CBotDo::Compile(p, pStack);
+
+    case ID_REPEAT:
+        return CBotRepeat::Compile(p, pStack);
 
     case ID_BREAK:
     case ID_CONTINUE:

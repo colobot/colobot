@@ -65,7 +65,7 @@ CBotInstr* CompileParams(CBotToken* &p, CBotCStack* pStack, CBotVar** ppVars)
             {
                 if (pile->GetTypResult().Eq(99))
                 {
-                    delete pStack->TokenStack();
+                    pStack->DeleteNext();
                     pStack->SetError(CBotErrVoid, p->GetStart());
                     return nullptr;
                 }
@@ -78,7 +78,7 @@ CBotInstr* CompileParams(CBotToken* &p, CBotCStack* pStack, CBotVar** ppVars)
             }
 
             pStack->SetError(CBotErrClosePar, p->GetStart());
-            delete pStack->TokenStack();
+            pStack->DeleteNext();
             return nullptr;
         }
     }

@@ -726,6 +726,71 @@ TEST_F(CBotUT, TestSwitchCase)
     );
 }
 
+TEST_F(CBotUT, TestRepeatInstruction)
+{
+    ExecuteTest(
+        "extern void TestRepeat() {\n"
+        "    int c = 0;\n"
+        "    for (int i = 1; i < 11; ++i)\n"
+        "    {\n"
+        "        repeat (i) ++c;\n"
+        "    }\n"
+        "    ASSERT(c == 55);\n"
+        "}\n"
+        "extern void TestRepeatBreakAndContinue() {\n"
+        "    int c = 0;\n"
+        "    repeat (10)\n"
+        "    {\n"
+        "        if (++c == 5) break;\n"
+        "        continue;\n"
+        "        FAIL();\n"
+        "    }\n"
+        "    ASSERT(c == 5);\n"
+        "    label:repeat (10)\n"
+        "    {\n"
+        "        if (++c == 10) break label;\n"
+        "        continue label;\n"
+        "        FAIL();\n"
+        "    }\n"
+        "    ASSERT(c == 10);\n"
+        "}\n"
+        "extern void NoRepeatNumberLessThanOne() {\n"
+        "    repeat (0) FAIL();\n"
+        "    repeat (-1) FAIL();\n"
+        "    repeat (-2) FAIL();\n"
+        "}\n"
+        "extern void EvaluateExpressionOnlyOnce() {\n"
+        "    int c = 0;\n"
+        "    repeat (c + 5) ASSERT(++c < 6);\n"
+        "    ASSERT(c == 5);\n"
+        "}\n"
+    );
+    ExecuteTest(
+        "extern void MissingOpenParen() {\n"
+        "    repeat ;\n"
+        "}\n",
+        CBotErrOpenPar
+    );
+    ExecuteTest(
+        "extern void MissingNumber() {\n"
+        "    repeat (;\n"
+        "}\n",
+        CBotErrBadNum
+    );
+    ExecuteTest(
+        "extern void WrongType() {\n"
+        "    repeat (\"not number\");\n"
+        "}\n",
+        CBotErrBadType1
+    );
+    ExecuteTest(
+        "extern void MissingCloseParen() {\n"
+        "    repeat (2;\n"
+        "}\n",
+        CBotErrClosePar
+    );
+}
+
 TEST_F(CBotUT, ToString)
 {
     ExecuteTest(
@@ -745,6 +810,48 @@ TEST_F(CBotUT, ToString)
         "    string testStr = \"\"+test;\n"
         "    ASSERT(testStr == \"Pointer to Test( a=1337 )\");\n"
         "}\n"
+    );
+
+    ExecuteTest(
+        "extern void ClassToString_2()\n"
+        "{\n"
+        "    string s = new TestClass;\n"
+        "    ASSERT(s == \"Pointer to TestClass(  )\");\n"
+        "}\n"
+        "public class TestClass { /* no fields */ }\n"
+    );
+
+    ExecuteTest(
+        "extern void ClassInheritanceToString()\n"
+        "{\n"
+        "    string s = new SubClass;\n"
+        "    ASSERT(s == \"Pointer to SubClass( c=7, d=8, e=9 ) extends MidClass( b=4, c=5, d=6 ) extends BaseClass( a=1, b=2, c=3 )\");\n"
+        "}\n"
+        "public class BaseClass { int a = 1, b = 2, c = 3; }\n"
+        "public class MidClass extends BaseClass { int b = 4, c = 5, d = 6; }\n"
+        "public class SubClass extends MidClass { int c = 7, d = 8, e = 9; }\n"
+    );
+
+    ExecuteTest(
+        "extern void ClassInheritanceToString_2()\n"
+        "{\n"
+        "    string s = new SubClass;\n"
+        "    ASSERT(s == \"Pointer to SubClass( c=7, d=8, e=9 ) extends MidClass(  ) extends BaseClass( a=1, b=2, c=3 )\");\n"
+        "}\n"
+        "public class BaseClass { int a = 1, b = 2, c = 3; }\n"
+        "public class MidClass extends BaseClass { /* no fields */ }\n"
+        "public class SubClass extends MidClass { int c = 7, d = 8, e = 9; }\n"
+    );
+
+    ExecuteTest(
+        "extern void ClassInheritanceToString_3()\n"
+        "{\n"
+        "    string s = new SubClass;\n"
+        "    ASSERT(s == \"Pointer to SubClass( c=7, d=8, e=9 ) extends MidClass(  ) extends BaseClass(  )\");\n"
+        "}\n"
+        "public class BaseClass { /* no fields */ }\n"
+        "public class MidClass extends BaseClass { /* no fields */ }\n"
+        "public class SubClass extends MidClass { int c = 7, d = 8, e = 9; }\n"
     );
 
     // TODO: IntrinsicClassToString ? (e.g. point)
@@ -3195,5 +3302,27 @@ TEST_F(CBotUT, ClassTestPrivateMethod)
         "    }\n"
         "}\n",
         CBotErrPrivate
+    );
+}
+
+TEST_F(CBotUT, ClassTestSaveInheritedMembers)
+{
+    auto publicProgram = ExecuteTest(
+        "public class TestClass { int a = 123; }\n"
+        "public class TestClass2 extends TestClass { int b = 456; }\n"
+    );
+    // Note: Use --CBotUT_TestSaveState command line arg.
+    ExecuteTest(
+        "extern void TestSaveInheritedMembers()\n"
+        "{\n"
+        "    TestClass2 t();\n"
+        "    ASSERT(t.a == 123);\n"
+        "    ASSERT(t.b == 456);\n"
+        "    t.a = 789; t.b = 1011;\n"
+        "    ASSERT(t.a == 789);\n"
+        "    ASSERT(t.b == 1011);\n"
+        "    ASSERT(789 == t.a);\n"
+        "    ASSERT(1011 == t.b);\n"
+        "}\n"
     );
 }
