@@ -62,6 +62,7 @@ DriveType GetDriveFromObject(ObjectType type)
         case OBJECT_MOBILErs:
             return DriveType::Heavy;
 
+        case OBJECT_MOBILEst:
         case OBJECT_MOBILEsa:
            return DriveType::Amphibious;
 
