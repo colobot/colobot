@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -138,7 +138,7 @@ bool CAutoPowerStation::EventProcess(const Event &event)
         {
             if (vehicle->Implements(ObjectInterfaceType::Powered))
             {
-                CObject* power = dynamic_cast<CPoweredObject*>(vehicle)->GetPower();
+                CObject* power = dynamic_cast<CPoweredObject&>(*vehicle).GetPower();
                 if ( power != nullptr && power->Implements(ObjectInterfaceType::PowerContainer) )
                 {
                     CPowerContainerObject* powerContainer = dynamic_cast<CPowerContainerObject*>(power);
@@ -158,7 +158,7 @@ bool CAutoPowerStation::EventProcess(const Event &event)
 
             if (vehicle->Implements(ObjectInterfaceType::Carrier))
             {
-                CObject* power = dynamic_cast<CCarrierObject*>(vehicle)->GetCargo();
+                CObject* power = dynamic_cast<CCarrierObject&>(*vehicle).GetCargo();
                 if ( power != nullptr && power->Implements(ObjectInterfaceType::PowerContainer) )
                 {
                     CPowerContainerObject* powerContainer = dynamic_cast<CPowerContainerObject*>(power);
@@ -253,6 +253,10 @@ CObject* CAutoPowerStation::SearchVehicle()
              type != OBJECT_MOBILEta &&
              type != OBJECT_MOBILEwa &&
              type != OBJECT_MOBILEia &&
+             type != OBJECT_MOBILEfb &&
+             type != OBJECT_MOBILEtb &&
+             type != OBJECT_MOBILEwb &&
+             type != OBJECT_MOBILEib &&
              type != OBJECT_MOBILEfc &&
              type != OBJECT_MOBILEtc &&
              type != OBJECT_MOBILEwc &&
@@ -274,6 +278,9 @@ CObject* CAutoPowerStation::SearchVehicle()
              type != OBJECT_MOBILEtt &&
              type != OBJECT_MOBILEwt &&
              type != OBJECT_MOBILEit &&
+             type != OBJECT_MOBILErp &&
+             type != OBJECT_MOBILEst &&
+             type != OBJECT_MOBILEtg &&
              type != OBJECT_MOBILEdr )  continue;
 
         Math::Vector oPos = obj->GetPosition();
@@ -302,9 +309,7 @@ Error CAutoPowerStation::GetError()
     return ERR_OK;
 }
 
-
-// Crée toute l'interface lorsque l'objet est sélectionné .
-
+// Create the all interface when the object is selected.
 bool CAutoPowerStation::CreateInterface(bool bSelect)
 {
     Ui::CWindow*    pw;

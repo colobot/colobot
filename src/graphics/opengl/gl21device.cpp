@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -388,6 +388,7 @@ bool CGL21Device::Create()
         uni.modelMatrix = glGetUniformLocation(m_normalProgram, "uni_ModelMatrix");
         uni.normalMatrix = glGetUniformLocation(m_normalProgram, "uni_NormalMatrix");
         uni.shadowMatrix = glGetUniformLocation(m_normalProgram, "uni_ShadowMatrix");
+        uni.cameraPosition = glGetUniformLocation(m_normalProgram, "uni_CameraPosition");
 
         uni.primaryTexture = glGetUniformLocation(m_normalProgram, "uni_PrimaryTexture");
         uni.secondaryTexture = glGetUniformLocation(m_normalProgram, "uni_SecondaryTexture");
@@ -408,6 +409,7 @@ bool CGL21Device::Create()
         uni.fogColor = glGetUniformLocation(m_normalProgram, "uni_FogColor");
 
         uni.shadowColor = glGetUniformLocation(m_normalProgram, "uni_ShadowColor");
+        uni.shadowTexelSize = glGetUniformLocation(m_normalProgram, "uni_ShadowTexelSize");
         uni.lightCount = glGetUniformLocation(m_normalProgram, "uni_LightCount");
 
         uni.ambientColor = glGetUniformLocation(m_normalProgram, "uni_Material.ambient");
@@ -441,6 +443,7 @@ bool CGL21Device::Create()
         glUniformMatrix4fv(uni.modelMatrix, 1, GL_FALSE, matrix.Array());
         glUniformMatrix4fv(uni.normalMatrix, 1, GL_FALSE, matrix.Array());
         glUniformMatrix4fv(uni.shadowMatrix, 1, GL_FALSE, matrix.Array());
+        glUniform3f(uni.cameraPosition, 0.0f, 0.0f, 0.0f);
 
         glUniform1i(uni.primaryTexture, 0);
         glUniform1i(uni.secondaryTexture, 1);
@@ -457,6 +460,7 @@ bool CGL21Device::Create()
         glUniform4f(uni.fogColor, 0.8f, 0.8f, 0.8f, 1.0f);
 
         glUniform1f(uni.shadowColor, 0.5f);
+        glUniform1f(uni.shadowTexelSize, 0.5f);
 
         glUniform1i(uni.lightCount, 0);
     }
@@ -653,6 +657,7 @@ void CGL21Device::SetTransform(TransformType type, const Math::Matrix &matrix)
     else if (type == TRANSFORM_VIEW)
     {
         Math::Matrix scale;
+        Math::Vector cameraPosition;
         scale.Set(3, 3, -1.0f);
         m_viewMat = Math::MultiplyMatrices(scale, matrix);
 
@@ -660,6 +665,13 @@ void CGL21Device::SetTransform(TransformType type, const Math::Matrix &matrix)
         m_combinedMatrix = Math::MultiplyMatrices(m_projectionMat, m_modelviewMat);
 
         glUniformMatrix4fv(m_uniforms[m_mode].viewMatrix, 1, GL_FALSE, m_viewMat.Array());
+
+        if (m_uniforms[m_mode].cameraPosition >= 0)
+        {
+            cameraPosition.LoadZero();
+            cameraPosition = MatrixVectorMultiply(m_viewMat.Inverse(), cameraPosition);
+            glUniform3fv(m_uniforms[m_mode].cameraPosition, 1, cameraPosition.Array());
+        }
     }
     else if (type == TRANSFORM_PROJECTION)
     {
@@ -1439,6 +1451,7 @@ void CGL21Device::SetRenderState(RenderState state, bool enabled)
     }
     else if (state == RENDER_STATE_SHADOW_MAPPING)
     {
+        glUniform1f(m_uniforms[m_mode].shadowTexelSize, 1.0/m_currentTextures[TEXTURE_SHADOW].size.x);
         SetTextureEnabled(TEXTURE_SHADOW, enabled);
 
         return;

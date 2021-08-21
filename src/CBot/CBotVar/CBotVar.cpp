@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,12 +24,17 @@
 
 #include "CBot/CBotInstr/CBotInstr.h"
 #include "CBot/CBotVar/CBotVarArray.h"
-#include "CBot/CBotVar/CBotVarPointer.h"
-#include "CBot/CBotVar/CBotVarClass.h"
 #include "CBot/CBotVar/CBotVarBoolean.h"
-#include "CBot/CBotVar/CBotVarString.h"
+#include "CBot/CBotVar/CBotVarByte.h"
+#include "CBot/CBotVar/CBotVarChar.h"
+#include "CBot/CBotVar/CBotVarClass.h"
+#include "CBot/CBotVar/CBotVarDouble.h"
 #include "CBot/CBotVar/CBotVarFloat.h"
 #include "CBot/CBotVar/CBotVarInt.h"
+#include "CBot/CBotVar/CBotVarLong.h"
+#include "CBot/CBotVar/CBotVarPointer.h"
+#include "CBot/CBotVar/CBotVarShort.h"
+#include "CBot/CBotVar/CBotVarString.h"
 
 #include "CBot/CBotClass.h"
 #include "CBot/CBotToken.h"
@@ -134,7 +139,7 @@ void* CBotVar::GetUserPtr()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CBotVar::Save1State(FILE* pf)
+bool CBotVar::Save1State(std::ostream &ostr)
 {
     // this routine "virtual" must never be called,
     // there must be a routine for each of the subclasses (CBotVarInt, CBotVarFloat, etc)
@@ -160,11 +165,20 @@ CBotVar* CBotVar::Create(const CBotToken& name, CBotTypResult type)
 {
     switch (type.GetType())
     {
+    case CBotTypByte:
+        return new CBotVarByte(name);
     case CBotTypShort:
+        return new CBotVarShort(name);
+    case CBotTypChar:
+        return new CBotVarChar(name);
     case CBotTypInt:
         return new CBotVarInt(name);
+    case CBotTypLong:
+        return new CBotVarLong(name);
     case CBotTypFloat:
         return new CBotVarFloat(name);
+    case CBotTypDouble:
+        return new CBotVarDouble(name);
     case CBotTypBoolean:
         return new CBotVarBoolean(name);
     case CBotTypString:
@@ -223,11 +237,20 @@ CBotVar* CBotVar::Create(const std::string& n, CBotTypResult type)
 
     switch (type.GetType())
     {
+    case CBotTypByte:
+        return new CBotVarByte(name);
     case CBotTypShort:
+        return new CBotVarShort(name);
+    case CBotTypChar:
+        return new CBotVarChar(name);
     case CBotTypInt:
         return new CBotVarInt(name);
+    case CBotTypLong:
+        return new CBotVarLong(name);
     case CBotTypFloat:
         return new CBotVarFloat(name);
+    case CBotTypDouble:
+        return new CBotVarDouble(name);
     case CBotTypBoolean:
         return new CBotVarBoolean(name);
     case CBotTypString:
@@ -359,7 +382,7 @@ CBotVar::InitType CBotVar::GetInit() const
 void CBotVar::SetInit(CBotVar::InitType initType)
 {
     m_binit = initType;
-    if (initType == CBotVar::InitType::IS_POINTER ) m_binit = CBotVar::InitType::DEF;                    // cas spécial
+    if (initType == CBotVar::InitType::IS_POINTER ) m_binit = CBotVar::InitType::DEF;                    // special case
 
     if ( m_type.Eq(CBotTypPointer) && initType == CBotVar::InitType::IS_POINTER )
     {
@@ -472,11 +495,26 @@ void CBotVar::SetVal(CBotVar* var)
     case CBotTypBoolean:
         SetValInt(var->GetValInt());
         break;
+    case CBotTypByte:
+        SetValByte(var->GetValByte());
+        break;
+    case CBotTypShort:
+        SetValShort(var->GetValShort());
+        break;
+    case CBotTypChar:
+        SetValChar(var->GetValChar());
+        break;
     case CBotTypInt:
         SetValInt(var->GetValInt(), (static_cast<CBotVarInt*>(var))->m_defnum);
         break;
+    case CBotTypLong:
+        SetValLong(var->GetValLong());
+        break;
     case CBotTypFloat:
         SetValFloat(var->GetValFloat());
+        break;
+    case CBotTypDouble:
+        SetValDouble(var->GetValDouble());
         break;
     case CBotTypString:
         SetValString(var->GetValString());
@@ -497,7 +535,7 @@ void CBotVar::SetVal(CBotVar* var)
         assert(0);
     }
 
-    m_binit = var->m_binit;        // copie l'état nan s'il y a
+    m_binit = var->m_binit;        // copy the nan status if it has
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -545,33 +583,84 @@ CBotVarClass* CBotVar::GetPointer()
 
 // All these functions must be defined in the subclasses
 // derived from class CBotVar
-////////////////////////////////////////////////////////////////////////////////
+
+signed char CBotVar::GetValByte()
+{
+    assert(0);
+    return 0;
+}
+
+short CBotVar::GetValShort()
+{
+    assert(0);
+    return 0;
+}
+
+uint32_t CBotVar::GetValChar()
+{
+    assert(0);
+    return 0;
+}
+
 int CBotVar::GetValInt()
 {
     assert(0);
     return 0;
 }
 
-////////////////////////////////////////////////////////////////////////////////
+long CBotVar::GetValLong()
+{
+    assert(0);
+    return 0;
+}
+
 float CBotVar::GetValFloat()
 {
     assert(0);
     return 0;
 }
 
-////////////////////////////////////////////////////////////////////////////////
+double CBotVar::GetValDouble()
+{
+    assert(0);
+    return 0;
+}
+
+void CBotVar::SetValByte(signed char val)
+{
+    assert(false);
+}
+
+void CBotVar::SetValShort(short val)
+{
+    assert(false);
+}
+
+void CBotVar::SetValChar(uint32_t val)
+{
+    assert(false);
+}
+
 void CBotVar::SetValInt(int c, const std::string& s)
 {
     assert(0);
 }
 
-////////////////////////////////////////////////////////////////////////////////
+void CBotVar::SetValLong(long val)
+{
+    assert(false);
+}
+
 void CBotVar::SetValFloat(float c)
 {
     assert(0);
 }
 
-////////////////////////////////////////////////////////////////////////////////
+void CBotVar::SetValDouble(double val)
+{
+    assert(false);
+}
+
 void CBotVar::Mul(CBotVar* left, CBotVar* right)
 {
     assert(0);
@@ -752,14 +841,44 @@ CBotClass* CBotVar::GetClass()
     return nullptr;
 }
 
+CBotVar::operator bool()
+{
+    return static_cast<bool>(GetValInt());
+}
+
+CBotVar::operator signed char()
+{
+    return GetValByte();
+}
+
+CBotVar::operator short()
+{
+    return GetValShort();
+}
+
+CBotVar::operator uint32_t()
+{
+    return GetValChar();
+}
+
 CBotVar::operator int()
 {
     return GetValInt();
 }
 
+CBotVar::operator long()
+{
+    return GetValLong();
+}
+
 CBotVar::operator float()
 {
     return GetValFloat();
+}
+
+CBotVar::operator double()
+{
+    return GetValDouble();
 }
 
 CBotVar::operator std::string()
@@ -772,14 +891,39 @@ void CBotVar::operator=(const CBotVar &var)
     SetVal(const_cast<CBotVar*>(&var));
 }
 
+void CBotVar::operator=(signed char x)
+{
+    SetValByte(x);
+}
+
+void CBotVar::operator=(short x)
+{
+    SetValShort(x);
+}
+
+void CBotVar::operator=(uint32_t x)
+{
+    SetValChar(x);
+}
+
 void CBotVar::operator=(int x)
 {
     SetValInt(x);
 }
 
+void CBotVar::operator=(long x)
+{
+    SetValLong(x);
+}
+
 void CBotVar::operator=(float x)
 {
     SetValFloat(x);
+}
+
+void CBotVar::operator=(double x)
+{
+    SetValDouble(x);
 }
 
 void CBotVar::operator=(const std::string &x)

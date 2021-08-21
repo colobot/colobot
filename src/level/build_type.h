@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -41,7 +41,8 @@ enum BuildType
     BUILD_LABO          = (1<<10),      //! < AutoLab
     BUILD_PARA          = (1<<11),      //! < PowerCaptor
     BUILD_INFO          = (1<<12),      //! < ExchangePost
-    BUILD_DESTROYER     = (1<<13),      //! < Destroyer
+    BUILD_SAFE          = (1<<13),      //! < Vault
+    BUILD_DESTROYER     = (1<<14),      //! < Destroyer
     BUILD_GFLAT         = (1<<16),      //! < checking flat ground
     BUILD_FLAG          = (1<<17)       //! < putting / removing flags
 };

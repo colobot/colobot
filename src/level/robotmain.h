@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -55,6 +55,7 @@ enum Phase
     PHASE_APPERANCE,
     PHASE_MAIN_MENU,
     PHASE_LEVEL_LIST,
+    PHASE_MOD_LIST,
     PHASE_SIMUL,
     PHASE_SETUPd,
     PHASE_SETUPg,
@@ -266,6 +267,8 @@ public:
     const std::string& GetScriptName();
     const std::string& GetScriptFile();
     bool        GetTrainerPilot();
+    bool        GetPlusTrainer();
+    bool        GetPlusExplorer();
     bool        GetFixScene();
     bool        GetShowSoluce();
     bool        GetSceneSoluce();
@@ -308,8 +311,8 @@ public:
 
     void        SaveAllScript();
     void        SaveOneScript(CObject *obj);
-    bool        SaveFileStack(CObject *obj, FILE *file, int objRank);
-    bool        ReadFileStack(CObject *obj, FILE *file, int objRank);
+    bool        SaveFileStack(CObject *obj, std::ostream &ostr);
+    bool        ReadFileStack(CObject *obj, std::istream &istr);
 
     //! Return list of scripts to load to robot created in BotFactory
     std::vector<std::string> GetNewScriptNames(ObjectType type);
@@ -466,6 +469,11 @@ public:
 
     //! Returns global magnifyDamage setting
     float       GetGlobalMagnifyDamage();
+
+    //! Returns global NuclearCell capacity Setting
+    float       GetGlobalNuclearCapacity();
+    //! Returns global PowerCell capacity setting
+    float       GetGlobalCellCapacity();
 
     void        StartDetectEffect(COldObject* object, CObject* target);
 
@@ -648,6 +656,9 @@ protected:
     bool            m_winTerminate = false;
 
     float           m_globalMagnifyDamage = 0.0f;
+
+    float           m_globalNuclearCapacity = 10.0f;
+    float           m_globalCellCapacity = 1.0f;
 
     bool            m_exitAfterMission = false;
 

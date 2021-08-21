@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -87,7 +87,7 @@ CBotInstr* CBotNew::Compile(CBotToken* &p, CBotCStack* pStack)
 
         // constructor exist?
         CBotTypResult r = pClass->CompileMethode(&inst->m_vartoken, pVar, ppVars, pStk, inst->m_nMethodeIdent);
-        delete pStk->TokenStack();  // release extra stack
+        pStk->DeleteNext(); // release extra stack
         int typ = r.GetType();
 
         // if there is no constructor, and no parameters either, it's ok
@@ -115,7 +115,7 @@ CBotInstr* CBotNew::Compile(CBotToken* &p, CBotCStack* pStack)
         if (nullptr != (inst->m_exprRetVar = CBotExprRetVar::Compile(p, pStk, true)))
         {
             inst->m_exprRetVar->SetToken(pp);
-            delete pStk->TokenStack();
+            pStk->DeleteNext();
         }
 
         if (pStack->IsOk())
@@ -189,6 +189,7 @@ bool CBotNew::Execute(CBotStack* &pj)
         if (p != nullptr) while ( true)
         {
             pile2 = pile2->AddStack();  // space on the stack for the result
+            if (pile2->StackOver()) return pj->Return(pile2);
             if (pile2->GetState() == 0)
             {
                 if (!p->Execute(pile2)) return false;   // interrupted here?

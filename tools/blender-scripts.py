@@ -8,7 +8,7 @@
 bl_info = {
     "name": "Colobot Model Format (.txt)",
     "author": "TerranovaTeam",
-    "version": (0, 0, 2),
+    "version": (0, 0, 3),
     "blender": (2, 6, 4),
     "location": "File > Export > Colobot (.txt)",
     "description": "Export Colobot Model Format (.txt)",
@@ -35,7 +35,7 @@ FUZZY_TOLERANCE = 1e-5
 
 class ColobotError(Exception):
     """Exception in I/O operations"""
-    def __init__(self, value):
+    def __init__(self, value, errcode=None):
         self.value = value
     def __str__(self):
         return repr(self.value)
@@ -199,7 +199,8 @@ def write_colobot_model(filename, model):
         file.write('tex1 ' + t.mat.tex1 + '\n')
         file.write('tex2 ' + t.mat.tex2 + '\n')
         file.write('var_tex2 ' + ( 'Y' if t.mat.var_tex2 else 'N' + '\n' ) )
-        file.write('lod_level ' + str(t.lod_level) + '\n')
+        if model.version == 1:
+            file.write('lod_level ' + str(t.lod_level) + '\n')
         file.write('state ' + str(t.mat.state) + '\n')
         file.write('\n')
 
@@ -281,8 +282,8 @@ def read_colobot_model(filename):
     if (tokens[0] != 'version'):
         raise ColobotError("Invalid header", "version")
     model.version = int(tokens[1])
-    if (model.version != 1):
-        raise ColobotError("Unknown model file version")
+    if (model.version != 1 and model.version != 2):
+        raise ColobotError("Unknown model file version "+str(model.version))
 
     tokens, index = token_next_line(lines, index)
     if (tokens[0] != 'total_triangles'):
@@ -329,10 +330,13 @@ def read_colobot_model(filename):
             raise ColobotError("Invalid triangle", "var_tex2")
         t.mat.var_tex2 = tokens[1] == 'Y'
 
-        tokens, index = token_next_line(lines, index)
-        if (tokens[0] != 'lod_level'):
-            raise ColobotError("Invalid triangle", "lod_level")
-        t.lod_level = int(tokens[1])
+        if (model.version == 1):
+            tokens, index = token_next_line(lines, index)
+            if (tokens[0] != 'lod_level'):
+                raise ColobotError("Invalid triangle", "lod_level")
+            t.lod_level = int(tokens[1])
+        else:
+            t.lod_level = 0 # constant
 
         tokens, index = token_next_line(lines, index)
         if (tokens[0] != 'state'):
@@ -384,9 +388,9 @@ def append_obj_to_colobot_model(obj, model, scene, defaults):
         t.mat.specular[3] = mat.specular_alpha
 
         if (mat.texture_slots[0] != None):
-            t.tex1 = bpy.path.basename(mat.texture_slots[0].texture.image.filepath)
+            t.mat.tex1 = bpy.path.basename(mat.texture_slots[0].texture.image.filepath)
         if (mat.texture_slots[1] != None):
-            t.tex2 = bpy.path.basename(mat.texture_slots[1].texture.image.filepath)
+            t.mat.tex2 = bpy.path.basename(mat.texture_slots[1].texture.image.filepath)
 
         t.var_tex2 = mat.get('var_tex2', defaults['var_tex2'])
         t.state = mat.get('state', defaults['state'])
@@ -589,7 +593,7 @@ class ExportColobotDialog(bpy.types.Operator):
             write_colobot_model(EXPORT_FILEPATH, model)
 
         except ColobotError as e:
-            self.report({'ERROR'}, e.args.join(": "))
+            self.report({'ERROR'}, ": ".join(e.args))
             return {'FINISHED'}
 
         self.report({'INFO'}, 'Export OK')
@@ -665,7 +669,7 @@ class ImportColobotDialog(bpy.types.Operator):
                     obj.layers = layers
 
         except ColobotError as e:
-            self.report({'ERROR'}, e.args.join(": "))
+            self.report({'ERROR'}, ": ".join(e.args))
             return {'FINISHED'}
 
         self.report({'INFO'}, 'Import OK')

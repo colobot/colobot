@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,6 +20,8 @@
 #pragma once
 
 #include "level/robotmain.h"
+
+#include "ui/particles_generator.h"
 
 #include <array>
 #include <string>
@@ -48,6 +50,7 @@ class CScreenIOWrite;
 class CScreenLevelList;
 class CScreenLoading;
 class CScreenMainMenu;
+class CScreenModList;
 class CScreenPlayerSelect;
 class CScreenQuit;
 class CScreenSetup;
@@ -74,6 +77,9 @@ public:
     void    ChangePhase(Phase phase);
 
     bool    GetSceneSoluce();
+    bool    GetPlusTrainer();
+    bool    GetPlusResearch();
+    bool    GetPlusExplorer();
 
     void    UpdateChapterPassed();
     void    NextMission();
@@ -91,15 +97,14 @@ public:
 protected:
     void    GlintMove();
     void    FrameParticle(float rTime);
-    void    NiceParticle(Math::Point mouse, bool bPress);
-
+    void    CreateMouseParticles(Math::Point mousePosition, bool buttonPressed);
     CScreenSetup* GetSetupScreen(Phase phase);
 
 protected:
     CApplication*     m_app;
     CRobotMain*       m_main;
     Gfx::CEngine*     m_engine;
-    Gfx::CParticle*   m_particle;
+    Gfx::CParticle*   m_particleManager;
     CInterface*       m_interface;
     CSoundInterface*  m_sound;
     CSettings*        m_settings;
@@ -113,6 +118,7 @@ protected:
     std::unique_ptr<CScreenLevelList> m_screenLevelList;
     std::unique_ptr<CScreenLoading> m_screenLoading;
     std::unique_ptr<CScreenMainMenu> m_screenMainMenu;
+    std::unique_ptr<CScreenModList> m_screenModList;
     std::unique_ptr<CScreenPlayerSelect> m_screenPlayerSelect;
     std::unique_ptr<CScreenQuit> m_screenQuit;
     std::unique_ptr<CScreenSetupControls> m_screenSetupControls;
@@ -137,6 +143,10 @@ protected:
         Math::Point pos;
     };
     std::array<Particle, 10> m_particles;
+
+private:
+    std::unique_ptr<UI::CParticlesGenerator> m_mouseParticlesGenerator;
+    bool isAllowedToCreateMouseParticles();
 };
 
 } // namespace Ui

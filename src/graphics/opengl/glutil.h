@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -167,6 +167,8 @@ struct UniformLocations
     GLint shadowMatrix = -1;
     //! Normal matrix
     GLint normalMatrix = -1;
+    //! Camera position
+    GLint cameraPosition = -1;
 
     //! Primary texture sampler
     GLint primaryTexture = -1;
@@ -193,6 +195,8 @@ struct UniformLocations
 
     //! Shadow color
     GLint shadowColor = -1;
+    //! Shadow texel size
+    GLint shadowTexelSize = -1;
 
     // Number of enabled lights
     GLint lightCount = -1;

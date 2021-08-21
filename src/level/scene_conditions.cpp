@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -82,7 +82,7 @@ bool CObjectCondition::CheckForObject(CObject* obj)
     }
     else if (obj->Implements(ObjectInterfaceType::Powered))
     {
-        CObject* powerObj = dynamic_cast<CPoweredObject*>(obj)->GetPower();
+        CObject* powerObj = dynamic_cast<CPoweredObject&>(*obj).GetPower();
         if(powerObj != nullptr && powerObj->Implements(ObjectInterfaceType::PowerContainer))
         {
             power = dynamic_cast<CPowerContainerObject*>(powerObj);
@@ -98,7 +98,7 @@ bool CObjectCondition::CheckForObject(CObject* obj)
 
     Math::Vector oPos;
     if (IsObjectBeingTransported(obj))
-        oPos = dynamic_cast<CTransportableObject*>(obj)->GetTransporter()->GetPosition();
+        oPos = dynamic_cast<CTransportableObject&>(*obj).GetTransporter()->GetPosition();
     else
         oPos = obj->GetPosition();
     oPos.y = 0.0f;

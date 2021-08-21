@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -323,7 +323,7 @@ CObject* CLightning::SearchObject(Math::Vector pos)
 
         if (!obj->Implements(ObjectInterfaceType::Destroyable)) continue;
 
-        float detect = m_magnetic * dynamic_cast<CDestroyableObject*>(obj)->GetLightningHitProbability();
+        float detect = m_magnetic * dynamic_cast<CDestroyableObject&>(*obj).GetLightningHitProbability();
         if (detect == 0.0f) continue;
 
         Math::Vector oPos = obj->GetPosition();

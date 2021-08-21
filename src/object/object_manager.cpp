@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -142,6 +142,8 @@ CObject* CObjectManager::CreateObject(ObjectCreateParams params)
         }
     }
 
+    params.power = ClampPower(params.type,params.power);
+
     assert(m_objects.find(params.id) == m_objects.end());
 
     auto objectUPtr = m_objectFactory->CreateObject(params);
@@ -163,8 +165,18 @@ CObject* CObjectManager::CreateObject(Math::Vector pos, float angle, ObjectType 
     params.angle = angle;
     params.type = type;
     params.power = power;
-
     return CreateObject(params);
+}
+
+float CObjectManager::ClampPower(ObjectType type, float power)
+{
+    float min = 0;
+    float max = 100;
+    if (type == OBJECT_POWER || type == OBJECT_ATOMIC)
+    {
+        max = 1;
+    }
+    return Math::Clamp(power, min, max);
 }
 
 std::vector<CObject*> CObjectManager::GetObjectsOfTeam(int team)
@@ -205,7 +217,7 @@ void CObjectManager::DestroyTeam(int team, DestructionType destructionType)
         {
             if (object->Implements(ObjectInterfaceType::Destroyable))
             {
-                dynamic_cast<CDestroyableObject*>(object)->DestroyObject(destructionType);
+                dynamic_cast<CDestroyableObject&>(*object).DestroyObject(destructionType);
             }
             else
             {
@@ -303,7 +315,7 @@ std::vector<CObject*> CObjectManager::RadarAll(CObject* pThis, Math::Vector this
                 oType == OBJECT_RUINmobiler1 ||
                 oType == OBJECT_RUINmobiler2 )
             {
-                oType = OBJECT_RUINmobilew1;  // any ruin
+                oType = OBJECT_RUINmobilew1;  // any wreck
             }
 
             if ( oType == OBJECT_BARRIER2 ||
@@ -312,6 +324,33 @@ std::vector<CObject*> CObjectManager::RadarAll(CObject* pThis, Math::Vector this
                  oType == OBJECT_BARRICADE1 )  // barriers?
             {
                 oType = OBJECT_BARRIER1;  // any barrier
+            }
+
+            if ( oType == OBJECT_RUINdoor    ||
+                 oType == OBJECT_RUINsupport ||
+                 oType == OBJECT_RUINradar   ||
+                 oType == OBJECT_RUINconvert )  // ruins?
+            {
+                oType = OBJECT_RUINfactory;  // any ruin
+            }
+
+            if ( oType == OBJECT_PLANT1  ||
+                 oType == OBJECT_PLANT2  ||
+                 oType == OBJECT_PLANT3  ||
+                 oType == OBJECT_PLANT4  ||
+                 oType == OBJECT_PLANT15 ||
+                 oType == OBJECT_PLANT16 ||
+                 oType == OBJECT_PLANT17 ||
+                 oType == OBJECT_PLANT18 )  // bushes?
+            {
+                oType = OBJECT_PLANT0;  // any bush
+            }
+
+            if ( oType == OBJECT_QUARTZ1 ||
+                 oType == OBJECT_QUARTZ2 ||
+                 oType == OBJECT_QUARTZ3 )  // crystals?
+            {
+                oType = OBJECT_QUARTZ0;  // any crystal
             }
             // END OF TODO
         }
@@ -324,7 +363,7 @@ std::vector<CObject*> CObjectManager::RadarAll(CObject* pThis, Math::Vector this
         {
             if ( pObj->Implements(ObjectInterfaceType::Movable) )
             {
-                CPhysics* physics = dynamic_cast<CMovableObject*>(pObj)->GetPhysics();
+                CPhysics* physics = dynamic_cast<CMovableObject&>(*pObj).GetPhysics();
                 if ( physics != nullptr )
                 {
                     if ( !physics->GetLand() )  continue;
@@ -334,7 +373,7 @@ std::vector<CObject*> CObjectManager::RadarAll(CObject* pThis, Math::Vector this
         if ( filter_flying == FILTER_ONLYFLYING )
         {
             if ( !pObj->Implements(ObjectInterfaceType::Movable) ) continue;
-            CPhysics* physics = dynamic_cast<CMovableObject*>(pObj)->GetPhysics();
+            CPhysics* physics = dynamic_cast<CMovableObject&>(*pObj).GetPhysics();
             if ( physics == nullptr ) continue;
             if ( physics->GetLand() ) continue;
         }

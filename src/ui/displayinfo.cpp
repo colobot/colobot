@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -109,7 +109,7 @@ bool CDisplayInfo::EventProcess(const Event &event)
         if ( m_toto != nullptr )
         {
             assert(m_toto->Implements(ObjectInterfaceType::Movable));
-            CMotionToto* toto = static_cast<CMotionToto*>(dynamic_cast<CMovableObject*>(m_toto)->GetMotion());
+            CMotionToto* toto = static_cast<CMotionToto*>(dynamic_cast<CMovableObject&>(*m_toto).GetMotion());
             assert(toto != nullptr);
             toto->SetMousePos(event.mousePos);
         }
@@ -449,7 +449,7 @@ void CDisplayInfo::StartDisplayInfo(std::string filename, int index, bool bSoluc
         m_toto->SetDrawFront(true);
 
         assert(m_toto->Implements(ObjectInterfaceType::Movable));
-        CMotionToto* toto = static_cast<CMotionToto*>(dynamic_cast<CMovableObject*>(m_toto)->GetMotion());
+        CMotionToto* toto = static_cast<CMotionToto*>(dynamic_cast<CMovableObject&>(*m_toto).GetMotion());
         assert(toto != nullptr);
         toto->StartDisplayInfo();
     }
@@ -840,7 +840,7 @@ void CDisplayInfo::StopDisplayInfo()
     if ( m_toto != nullptr )
     {
         assert(m_toto->Implements(ObjectInterfaceType::Movable));
-        CMotionToto* toto = static_cast<CMotionToto*>(dynamic_cast<CMovableObject*>(m_toto)->GetMotion());
+        CMotionToto* toto = static_cast<CMotionToto*>(dynamic_cast<CMovableObject&>(*m_toto).GetMotion());
         assert(toto != nullptr);
         toto->StopDisplayInfo();
     }

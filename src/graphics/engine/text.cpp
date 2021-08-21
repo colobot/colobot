@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -191,16 +191,31 @@ CText::~CText()
 
 bool CText::Create()
 {
-    CFontLoader fontLoader;
-    if (!fontLoader.Init())
-    {
-        GetLogger()->Warn("Error on parsing fonts config file: failed to open file\n");
-    }
     if (TTF_Init() != 0)
     {
         m_error = std::string("TTF_Init error: ") + std::string(TTF_GetError());
         return false;
     }
+
+    if (!ReloadFonts())
+    {
+        return false;
+    }
+
+    return true;
+}
+
+bool CText::ReloadFonts()
+{
+    CFontLoader fontLoader;
+    if (!fontLoader.Init())
+    {
+        GetLogger()->Debug("Error on parsing fonts config file: failed to open file\n");
+    }
+
+    // Backup previous fonts
+    auto fonts = std::move(m_fonts);
+    m_fonts.clear();
 
     for (auto type : {FONT_COMMON, FONT_STUDIO, FONT_SATCOM})
     {
@@ -214,7 +229,10 @@ bool CText::Create()
         FontType type = (*it).first;
         CachedFont* cf = GetOrOpenFont(type, m_defaultSize);
         if (cf == nullptr || cf->font == nullptr)
+        {
+            m_fonts = std::move(fonts);
             return false;
+        }
     }
 
     return true;
@@ -430,7 +448,7 @@ float CText::GetStringWidth(const std::string &text,
 
         UTF8Char ch;
 
-        int len = StrUtils::Utf8CharSizeAt(text, index);
+        int len = GetCharSizeAt(font, text, index);
         if (len >= 1)
             ch.c1 = text[index];
         if (len >= 2)
@@ -441,7 +459,7 @@ float CText::GetStringWidth(const std::string &text,
         width += GetCharWidth(ch, font, size, width);
 
         index += len;
-        fmtIndex++;
+        fmtIndex += len;
     }
 
     return width;
@@ -565,7 +583,7 @@ int CText::Justify(const std::string &text, std::vector<FontMetaChar>::iterator 
 
         UTF8Char ch;
 
-        int len = StrUtils::Utf8CharSizeAt(text, index);
+        int len = GetCharSizeAt(font, text, index);
         if (len >= 1)
             ch.c1 = text[index];
         if (len >= 2)
@@ -589,7 +607,7 @@ int CText::Justify(const std::string &text, std::vector<FontMetaChar>::iterator 
         }
 
         index += len;
-        fmtIndex++;
+        fmtIndex += len;
     }
 
     return index;
@@ -606,7 +624,7 @@ int CText::Justify(const std::string &text, FontType font, float size, float wid
     {
         UTF8Char ch;
 
-        int len = StrUtils::Utf8CharSizeAt(text, index);
+        int len = GetCharSizeAt(font, text, index);
         if (len >= 1)
             ch.c1 = text[index];
         if (len >= 2)
@@ -648,12 +666,9 @@ int CText::Detect(const std::string &text, std::vector<FontMetaChar>::iterator f
         if (format + fmtIndex != end)
             font = static_cast<FontType>(*(format + fmtIndex) & FONT_MASK_FONT);
 
-        // TODO: if (font == FONT_BUTTON)
-        //if (font == FONT_BUTTON) continue;
-
         UTF8Char ch;
 
-        int len = StrUtils::Utf8CharSizeAt(text, index);
+        int len = GetCharSizeAt(font, text, index);
         if (len >= 1)
             ch.c1 = text[index];
         if (len >= 2)
@@ -670,7 +685,7 @@ int CText::Detect(const std::string &text, std::vector<FontMetaChar>::iterator f
 
         pos += width;
         index += len;
-        fmtIndex++;
+        fmtIndex += len;
     }
 
     return index;
@@ -686,7 +701,7 @@ int CText::Detect(const std::string &text, FontType font, float size, float offs
     {
         UTF8Char ch;
 
-        int len = StrUtils::Utf8CharSizeAt(text, index);
+        int len = GetCharSizeAt(font, text, index);
         if (len >= 1)
             ch.c1 = text[index];
         if (len >= 2)
@@ -898,16 +913,7 @@ void CText::StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &
         if (format + index != end)
             font = static_cast<FontType>(*(format + index) & FONT_MASK_FONT);
 
-        int len;
-
-        if(font == FONT_BUTTON)
-        {
-            len = 1;
-        }
-        else
-        {
-            len = StrUtils::Utf8CharSizeAt(text, index);
-        }
+        int len = GetCharSizeAt(font, text, index);
 
         if (len >= 1)
             ch.c1 = text[index];
@@ -920,6 +926,20 @@ void CText::StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &
 
         chars.push_back(ch);
     }
+}
+
+int CText::GetCharSizeAt(Gfx::FontType font, const std::string& text, unsigned int index) const
+{
+    int len = 0;
+    if (font == FONT_BUTTON)
+    {
+        len = 1;
+    }
+    else
+    {
+        len = StrUtils::Utf8CharSizeAt(text, index);
+    }
+    return len;
 }
 
 void CText::DrawString(const std::string &text, FontType font,

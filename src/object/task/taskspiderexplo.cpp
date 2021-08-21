@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ bool CTaskSpiderExplo::EventProcess(const Event &event)
     if ( event.type != EVENT_FRAME )  return true;
 
     // Momentarily stationary object (ant on the back)?
-    if ( dynamic_cast<CBaseAlien*>(m_object)->GetFixed() )
+    if ( dynamic_cast<CBaseAlien&>(*m_object).GetFixed() )
     {
         m_bError = true;
         return true;

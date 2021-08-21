@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -259,7 +259,7 @@ void CTaskManip::InitAngle()
     float energy = GetObjectEnergy(m_object);
     if ( energy == 0.0f )
     {
-        m_speed *= 0.7f;  // slower if more energy!
+        m_speed *= 0.7f;  // slower if no more energy!
     }
 }
 
@@ -304,8 +304,8 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
             assert(other->Implements(ObjectInterfaceType::Transportable));
 
             m_object->SetCargo(other);  // takes the ball
-            dynamic_cast<CTransportableObject*>(other)->SetTransporter(m_object);
-            dynamic_cast<CTransportableObject*>(other)->SetTransporterPart(0);  // taken with the base
+            dynamic_cast<CTransportableObject&>(*other).SetTransporter(m_object);
+            dynamic_cast<CTransportableObject&>(*other).SetTransporterPart(0);  // taken with the base
             other->SetPosition(Math::Vector(0.0f, -3.0f, 0.0f));
         }
         else
@@ -314,7 +314,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
             assert(other->Implements(ObjectInterfaceType::Transportable));
 
             m_object->SetCargo(nullptr);  // lick the ball
-            dynamic_cast<CTransportableObject*>(other)->SetTransporter(nullptr);
+            dynamic_cast<CTransportableObject&>(*other).SetTransporter(nullptr);
             pos = m_object->GetPosition();
             pos.y -= 3.0f;
             other->SetPosition(pos);
@@ -903,7 +903,7 @@ CObject* CTaskManip::SearchOtherObject(bool bAdvance, Math::Vector &pos,
         ObjectType type = pObj->GetType();
         if ( !pObj->Implements(ObjectInterfaceType::Powered) )  continue;
 
-        CObject* power = dynamic_cast<CPoweredObject*>(pObj)->GetPower();
+        CObject* power = dynamic_cast<CPoweredObject&>(*pObj).GetPower();
         if (power != nullptr)
         {
             if (power->GetLock())  continue;
@@ -911,7 +911,7 @@ CObject* CTaskManip::SearchOtherObject(bool bAdvance, Math::Vector &pos,
         }
 
         mat = pObj->GetWorldMatrix(0);
-        Math::Vector oPos = Transform(*mat, dynamic_cast<CPoweredObject*>(pObj)->GetPowerPosition());
+        Math::Vector oPos = Transform(*mat, dynamic_cast<CPoweredObject&>(*pObj).GetPowerPosition());
 
         oAngle = pObj->GetRotationY();
         if ( type == OBJECT_TOWER    ||
@@ -946,7 +946,7 @@ CObject* CTaskManip::SearchOtherObject(bool bAdvance, Math::Vector &pos,
             angle = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
             if ( Math::TestAngle(angle, iAngle-aLimit, iAngle+aLimit) )
             {
-                Math::Vector powerPos = dynamic_cast<CPoweredObject*>(pObj)->GetPowerPosition();
+                Math::Vector powerPos = dynamic_cast<CPoweredObject&>(*pObj).GetPowerPosition();
                 height = powerPos.y;
                 pos = oPos;
                 return pObj;
@@ -974,8 +974,8 @@ bool CTaskManip::TransporterTakeObject()
         if ( m_object->GetType() == OBJECT_HUMAN ||
              m_object->GetType() == OBJECT_TECH  )
         {
-            dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(m_object);
-            dynamic_cast<CTransportableObject*>(cargo)->SetTransporterPart(4);  // takes with the hand
+            dynamic_cast<CTransportableObject&>(*cargo).SetTransporter(m_object);
+            dynamic_cast<CTransportableObject&>(*cargo).SetTransporterPart(4);  // takes with the hand
 
             cargo->SetPosition(Math::Vector(1.7f, -0.5f, 1.1f));
             cargo->SetRotationY(0.1f);
@@ -984,8 +984,8 @@ bool CTaskManip::TransporterTakeObject()
         }
         else if ( m_bSubm )
         {
-            dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(m_object);
-            dynamic_cast<CTransportableObject*>(cargo)->SetTransporterPart(2);  // takes with the right claw
+            dynamic_cast<CTransportableObject&>(*cargo).SetTransporter(m_object);
+            dynamic_cast<CTransportableObject&>(*cargo).SetTransporterPart(2);  // takes with the right claw
 
             Math::Vector pos = Math::Vector(1.1f, -1.0f, 1.0f);  // relative
             cargo->SetPosition(pos);
@@ -995,8 +995,8 @@ bool CTaskManip::TransporterTakeObject()
         }
         else
         {
-            dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(m_object);
-            dynamic_cast<CTransportableObject*>(cargo)->SetTransporterPart(3);  // takes with the hand
+            dynamic_cast<CTransportableObject&>(*cargo).SetTransporter(m_object);
+            dynamic_cast<CTransportableObject&>(*cargo).SetTransporterPart(3);  // takes with the hand
 
             Math::Vector pos = Math::Vector(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
             cargo->SetPosition(pos);
@@ -1020,8 +1020,8 @@ bool CTaskManip::TransporterTakeObject()
 
         if ( m_bSubm )
         {
-            dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(m_object);
-            dynamic_cast<CTransportableObject*>(cargo)->SetTransporterPart(2);  // takes with the right claw
+            dynamic_cast<CTransportableObject&>(*cargo).SetTransporter(m_object);
+            dynamic_cast<CTransportableObject&>(*cargo).SetTransporterPart(2);  // takes with the right claw
 
             pos = Math::Vector(1.1f, -1.0f, 1.0f);  // relative
             cargo->SetPosition(pos);
@@ -1031,8 +1031,8 @@ bool CTaskManip::TransporterTakeObject()
         }
         else
         {
-            dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(m_object);
-            dynamic_cast<CTransportableObject*>(cargo)->SetTransporterPart(3);  // takes with the hand
+            dynamic_cast<CTransportableObject&>(*cargo).SetTransporter(m_object);
+            dynamic_cast<CTransportableObject&>(*cargo).SetTransporterPart(3);  // takes with the hand
 
             pos = Math::Vector(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
             cargo->SetPosition(pos);
@@ -1054,8 +1054,8 @@ bool CTaskManip::TransporterTakeObject()
 
         m_cargoType = cargo->GetType();
 
-        dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(m_object);
-        dynamic_cast<CTransportableObject*>(cargo)->SetTransporterPart(3);  // takes with the hand
+        dynamic_cast<CTransportableObject&>(*cargo).SetTransporter(m_object);
+        dynamic_cast<CTransportableObject&>(*cargo).SetTransporterPart(3);  // takes with the hand
 
         pos = Math::Vector(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
         cargo->SetPosition(pos);
@@ -1080,7 +1080,7 @@ bool CTaskManip::TransporterTakeObject()
         cargo->SetRotationX(0.0f);
         cargo->SetRotationZ(Math::PI/2.0f);
         cargo->SetRotationY(0.0f);
-        dynamic_cast<CTransportableObject*>(cargo)->SetTransporterPart(3);  // takes with the hand
+        dynamic_cast<CTransportableObject&>(*cargo).SetTransporterPart(3);  // takes with the hand
 
         m_object->SetPower(nullptr);
         m_object->SetCargo(cargo);  // takes
@@ -1094,15 +1094,15 @@ bool CTaskManip::TransporterTakeObject()
         if (other == nullptr)  return false;
         assert(other->Implements(ObjectInterfaceType::Powered));
 
-        CObject* cargo = dynamic_cast<CPoweredObject*>(other)->GetPower();
+        CObject* cargo = dynamic_cast<CPoweredObject&>(*other).GetPower();
         if (cargo == nullptr)  return false;  // the other does not have a battery?
         assert(cargo->Implements(ObjectInterfaceType::Transportable));
 
         m_cargoType = cargo->GetType();
 
-        dynamic_cast<CPoweredObject*>(other)->SetPower(nullptr);
-        dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(m_object);
-        dynamic_cast<CTransportableObject*>(cargo)->SetTransporterPart(3);  // takes with the hand
+        dynamic_cast<CPoweredObject&>(*other).SetPower(nullptr);
+        dynamic_cast<CTransportableObject&>(*cargo).SetTransporter(m_object);
+        dynamic_cast<CTransportableObject&>(*cargo).SetTransporterPart(3);  // takes with the hand
 
         pos = Math::Vector(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
         cargo->SetPosition(pos);
@@ -1137,7 +1137,7 @@ bool CTaskManip::TransporterDeposeObject()
         cargo->SetRotationZ(0.0f);
         cargo->FloorAdjust();  // plate well on the ground
 
-        dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(nullptr);
+        dynamic_cast<CTransportableObject&>(*cargo).SetTransporter(nullptr);
         m_object->SetCargo(nullptr);  // deposit
     }
 
@@ -1157,7 +1157,7 @@ bool CTaskManip::TransporterDeposeObject()
         cargo->SetRotationX(0.0f);
         cargo->SetRotationZ(0.0f);
 
-        dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(nullptr);
+        dynamic_cast<CTransportableObject&>(*cargo).SetTransporter(nullptr);
         m_object->SetCargo(nullptr);  // deposit
     }
 
@@ -1172,8 +1172,8 @@ bool CTaskManip::TransporterDeposeObject()
 
         if (m_object->GetPower() != nullptr)  return false;
 
-        dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(m_object);
-        dynamic_cast<CTransportableObject*>(cargo)->SetTransporterPart(0);  // carried by the base
+        dynamic_cast<CTransportableObject&>(*cargo).SetTransporter(m_object);
+        dynamic_cast<CTransportableObject&>(*cargo).SetTransporterPart(0);  // carried by the base
 
         cargo->SetPosition(m_object->GetPowerPosition());
         cargo->SetRotationY(0.0f);
@@ -1193,7 +1193,7 @@ bool CTaskManip::TransporterDeposeObject()
         if (other == nullptr)  return false;
         assert(other->Implements(ObjectInterfaceType::Powered));
 
-        CObject* cargo = dynamic_cast<CPoweredObject*>(other)->GetPower();
+        CObject* cargo = dynamic_cast<CPoweredObject&>(*other).GetPower();
         if (cargo != nullptr)  return false;  // the other already has a battery?
 
         cargo = m_object->GetCargo();
@@ -1202,14 +1202,14 @@ bool CTaskManip::TransporterDeposeObject()
 
         m_cargoType = cargo->GetType();
 
-        dynamic_cast<CPoweredObject*>(other)->SetPower(cargo);
-        dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(other);
+        dynamic_cast<CPoweredObject&>(*other).SetPower(cargo);
+        dynamic_cast<CTransportableObject&>(*cargo).SetTransporter(other);
 
-        cargo->SetPosition(dynamic_cast<CPoweredObject*>(other)->GetPowerPosition());
+        cargo->SetPosition(dynamic_cast<CPoweredObject&>(*other).GetPowerPosition());
         cargo->SetRotationY(0.0f);
         cargo->SetRotationX(0.0f);
         cargo->SetRotationZ(0.0f);
-        dynamic_cast<CTransportableObject*>(cargo)->SetTransporterPart(0);  // carried by the base
+        dynamic_cast<CTransportableObject&>(*cargo).SetTransporterPart(0);  // carried by the base
 
         m_object->SetCargo(nullptr);  // deposit
     }

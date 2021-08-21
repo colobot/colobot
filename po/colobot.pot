@@ -84,6 +84,12 @@ msgstr ""
 msgid "Load a saved mission"
 msgstr ""
 
+msgid "Missions+"
+msgstr ""
+
+msgid "Mods"
+msgstr ""
+
 msgid "Chapters:"
 msgstr ""
 
@@ -166,6 +172,23 @@ msgstr ""
 msgid "This menu is for userlevels from mods, but you didn't install any"
 msgstr ""
 
+msgid "Could not open the file explorer!"
+msgstr ""
+
+#, c-format
+msgid "The path %s could not be opened in a file explorer."
+msgstr ""
+
+msgid "Could not open the web browser!"
+msgstr ""
+
+#, c-format
+msgid "The address %s could not be opened in a web browser."
+msgstr ""
+
+msgid "There are unsaved changes. Do you want to save them before leaving?"
+msgstr ""
+
 msgid "Keyword help(\\key cbot;)"
 msgstr ""
 
@@ -204,6 +227,12 @@ msgid "Private\\Private folder"
 msgstr ""
 
 msgid "Public\\Common folder"
+msgstr ""
+
+msgid "Overwrite existing file?"
+msgstr ""
+
+msgid "Select Folder"
 msgstr ""
 
 msgid "Original game developed by:"
@@ -274,6 +303,42 @@ msgstr ""
 msgid "%s: %d pts"
 msgstr ""
 
+msgid "Mods:"
+msgstr ""
+
+msgid "Information:"
+msgstr ""
+
+msgid "Description:"
+msgstr ""
+
+msgid "Enable\\Enable the selected mod"
+msgstr ""
+
+msgid "Disable\\Disable the selected mod"
+msgstr ""
+
+msgid "Unknown author"
+msgstr ""
+
+msgid "by"
+msgstr ""
+
+msgid "Version"
+msgstr ""
+
+msgid "Website"
+msgstr ""
+
+msgid "Changes"
+msgstr ""
+
+msgid "No description."
+msgstr ""
+
+msgid "No changes."
+msgstr ""
+
 msgid "Code battle"
 msgstr ""
 
@@ -284,6 +349,9 @@ msgid "Next"
 msgstr ""
 
 msgid "Previous"
+msgstr ""
+
+msgid "New Folder"
 msgstr ""
 
 msgid "Exercises\\Programming exercises"
@@ -305,6 +373,9 @@ msgid "Custom levels\\Levels from mods created by the users"
 msgstr ""
 
 msgid "SatCom"
+msgstr ""
+
+msgid "Mods\\Mod manager"
 msgstr ""
 
 msgid "Change player\\Change player"
@@ -331,7 +402,28 @@ msgstr ""
 msgid "<<  Back  \\Back to the previous screen"
 msgstr ""
 
+msgid "+\\Missions with bonus content and optional challenges"
+msgstr ""
+
 msgid "Play\\Start mission!"
+msgstr ""
+
+msgid "Workshop\\Open the workshop to search for mods"
+msgstr ""
+
+msgid "Open Directory\\Open the mods directory"
+msgstr ""
+
+msgid "Apply\\Apply the current mod configuration"
+msgstr ""
+
+msgid "Up\\Move the selected mod up so it's loaded sooner (mods may overwrite files from the mods above them)"
+msgstr ""
+
+msgid "Down\\Move the selected mod down so it's loaded later (mods may overwrite files from the mods above them)"
+msgstr ""
+
+msgid "Refresh\\Refresh the list of currently installed mods"
 msgstr ""
 
 msgid "Device\\Driver and resolution settings"
@@ -404,6 +496,9 @@ msgid "Quake at explosions\\The screen shakes at explosions"
 msgstr ""
 
 msgid "Pause in background\\Pause the game when the window is unfocused"
+msgstr ""
+
+msgid "Mute sounds in background\\Mute all game sounds when the window is unfocused"
 msgstr ""
 
 msgid "Automatic indent\\When program editing"
@@ -569,6 +664,15 @@ msgid "Access to solution\\Shows the solution (detailed instructions for mission
 msgstr ""
 
 msgid "Invert\\Invert values on this axis"
+msgstr ""
+
+msgid "Space Programmer\\Disables radio-control"
+msgstr ""
+
+msgid "Space Researcher\\Disables using all previously researched technologies"
+msgstr ""
+
+msgid "Space Explorer\\Disables astronaut abilities"
 msgstr ""
 
 msgid "\\New player name"
@@ -742,7 +846,7 @@ msgstr ""
 msgid "Build a exchange post"
 msgstr ""
 
-msgid "Build a destroyer"
+msgid "Build a vault"
 msgstr ""
 
 msgid "Show if the ground is flat"
@@ -817,6 +921,18 @@ msgstr ""
 msgid "Build a legged sniffer"
 msgstr ""
 
+msgid "Build a winged builder"
+msgstr ""
+
+msgid "Build a tracked builder"
+msgstr ""
+
+msgid "Build a wheeled builder"
+msgstr ""
+
+msgid "Build a legged builder"
+msgstr ""
+
 msgid "Build a thumper"
 msgstr ""
 
@@ -830,6 +946,9 @@ msgid "Build a shielder"
 msgstr ""
 
 msgid "Build a subber"
+msgstr ""
+
+msgid "Build a target bot"
 msgstr ""
 
 msgid "Run research program for tracked bots"
@@ -862,6 +981,12 @@ msgstr ""
 msgid "Run research program for orga shooter"
 msgstr ""
 
+msgid "Run research program for builder"
+msgstr ""
+
+msgid "Run research program for target bot"
+msgstr ""
+
 msgid "Return to start"
 msgstr ""
 
@@ -875,6 +1000,9 @@ msgid "Shoot (\\key action;)"
 msgstr ""
 
 msgid "Explode (\\key action;)"
+msgstr ""
+
+msgid "Build (\\key action;)"
 msgstr ""
 
 msgid "Recycle (\\key action;)"
@@ -1255,6 +1383,18 @@ msgstr ""
 msgid "Legged grabber"
 msgstr ""
 
+msgid "Winged builder"
+msgstr ""
+
+msgid "Tracked builder"
+msgstr ""
+
+msgid "Wheeled builder"
+msgstr ""
+
+msgid "Legged builder"
+msgstr ""
+
 msgid "Winged shooter"
 msgstr ""
 
@@ -1471,7 +1611,7 @@ msgstr ""
 msgid "Nothing to analyze"
 msgstr ""
 
-msgid "Analyzes only organic matter"
+msgid "Inappropriate sample"
 msgstr ""
 
 msgid "Analysis already performed"
@@ -1568,6 +1708,9 @@ msgid "Plans for shielder available"
 msgstr ""
 
 msgid "Plans for nuclear power plant available"
+msgstr ""
+
+msgid "Plans for builder available"
 msgstr ""
 
 msgid "New bot available"
@@ -1793,6 +1936,12 @@ msgid "Hex value out of range"
 msgstr ""
 
 msgid "Invalid universal character name"
+msgstr ""
+
+msgid "Empty character constant"
+msgstr ""
+
+msgid "Duplicate label in switch"
 msgstr ""
 
 msgid "Dividing by zero"

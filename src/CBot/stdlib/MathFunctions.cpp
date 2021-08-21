@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -144,11 +144,34 @@ bool rRand(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 bool rAbs(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    float   value;
+    switch (result->GetType())
+    {
+        case CBotTypDouble:
+            *result = fabs(var->GetValDouble());
+            break;
+        case CBotTypFloat:
+            *result = fabs(var->GetValFloat());
+            break;
+        case CBotTypLong:
+            *result = labs(var->GetValLong());
+            break;
+        default:
+            *result = abs(var->GetValInt());
+            break;
+    }
 
-    value = var->GetValFloat();
-    result->SetValFloat(fabs(value));
     return true;
+}
+
+CBotTypResult cAbs(CBotVar* &var, void* user)
+{
+    if ( var == nullptr ) return CBotTypResult(CBotErrLowParam);
+    if ( var->GetType() > CBotTypDouble ) return CBotTypResult(CBotErrBadNum);
+
+    CBotTypResult returnType(var->GetType());
+    var = var->GetNext();
+    if ( var != nullptr ) return CBotTypResult(CBotErrOverParam);
+    return returnType;
 }
 
 // Instruction "floor()"
@@ -209,7 +232,7 @@ void InitMathFunctions()
     CBotProgram::AddFunction("sqrt",  rSqrt,  cOneFloat);
     CBotProgram::AddFunction("pow",   rPow,   cTwoFloat);
     CBotProgram::AddFunction("rand",  rRand,  cNull);
-    CBotProgram::AddFunction("abs",   rAbs,   cOneFloat);
+    CBotProgram::AddFunction("abs",   rAbs,   cAbs);
     CBotProgram::AddFunction("floor", rFloor, cOneFloat);
     CBotProgram::AddFunction("ceil",  rCeil,  cOneFloat);
     CBotProgram::AddFunction("round", rRound, cOneFloat);

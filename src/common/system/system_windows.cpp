@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,6 +21,7 @@
 
 #include "common/logger.h"
 
+#include <boost/filesystem.hpp>
 #include <windows.h>
 
 
@@ -83,6 +84,11 @@ void CSystemUtilsWindows::GetCurrentTimeStamp(SystemTimeStamp* stamp)
     stamp->counterValue = value.QuadPart;
 }
 
+void CSystemUtilsWindows::InterpolateTimeStamp(SystemTimeStamp *dst, SystemTimeStamp *a, SystemTimeStamp *b, float i)
+{
+    dst->counterValue = a->counterValue + static_cast<long long>((b->counterValue - a->counterValue) * static_cast<double>(i));
+}
+
 long long int CSystemUtilsWindows::TimeStampExactDiff(SystemTimeStamp* before, SystemTimeStamp* after)
 {
     float floatValue = static_cast<double>(after->counterValue - before->counterValue) * (1e9 / static_cast<double>(m_counterFrequency));
@@ -115,20 +121,58 @@ std::string CSystemUtilsWindows::GetSaveDir()
 #else
     std::string savegameDir;
 
-    wchar_t* envUSERPROFILE = _wgetenv(L"USERPROFILE");
-    if (envUSERPROFILE == nullptr)
+    auto envUSERPROFILE = GetEnvVar("USERPROFILE");
+    if (envUSERPROFILE.empty())
     {
-        GetLogger()->Warn("Unable to find directory for saves - using current directory");
-        savegameDir = "./saves";
+        GetLogger()->Warn("Unable to find directory for saves - using default directory");
+        savegameDir = CSystemUtils::GetSaveDir();
     }
     else
     {
-        savegameDir = UTF8_Encode(std::wstring(envUSERPROFILE)) + "\\colobot";
+        savegameDir = envUSERPROFILE + "\\colobot";
     }
     GetLogger()->Trace("Saved game files are going to %s\n", savegameDir.c_str());
 
     return savegameDir;
 #endif
+}
+
+std::string CSystemUtilsWindows::GetEnvVar(const std::string& name)
+{
+    std::wstring wname(name.begin(), name.end());
+    wchar_t* envVar = _wgetenv(wname.c_str());
+    if (envVar == nullptr)
+    {
+        return "";
+    }
+    else
+    {
+        std::string var = UTF8_Encode(std::wstring(envVar));
+        GetLogger()->Trace("Detected environment variable %s = %s\n", name.c_str(), var.c_str());
+        return var;
+    }
+}
+
+bool CSystemUtilsWindows::OpenPath(const std::string& path)
+{
+    int result = system(("start explorer \"" + boost::filesystem::path(path).make_preferred().string() + "\"").c_str());
+    if (result != 0)
+    {
+        GetLogger()->Error("Failed to open path: %s, error code: %i\n", path.c_str(), result);
+        return false;
+    }
+    return true;
+}
+
+bool CSystemUtilsWindows::OpenWebsite(const std::string& url)
+{
+    int result = system(("rundll32 url.dll,FileProtocolHandler \"" + url + "\"").c_str());
+    if (result != 0)
+    {
+        GetLogger()->Error("Failed to open website: %s, error code: %i\n", url.c_str(), result);
+        return false;
+    }
+    return true;
 }
 
 void CSystemUtilsWindows::Usleep(int usec)

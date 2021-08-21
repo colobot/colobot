@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -61,6 +61,24 @@ bool CTaskFlag::EventProcess(const Event &event)
 
     m_time += event.rTime;
 
+    ObjectType type = m_object->GetType();
+    if ( type == OBJECT_MOBILEfs ||
+         type == OBJECT_MOBILEts ||
+         type == OBJECT_MOBILEws ||
+         type == OBJECT_MOBILEis )
+    {
+        float angle =  110.0f*Math::PI/180.0f;
+        float diff  =  -10.0f*Math::PI/180.0f;
+        if ( m_time <= 0.5f )
+        {
+            m_object->SetPartRotationZ(1, angle+diff*m_time*2.0f);
+        }
+        else if ( m_time >= 1.5f && m_time < 2.0f )
+        {
+            m_object->SetPartRotationZ(1, angle+diff*(2.0f-m_time)*2.0f);
+        }
+    }
+
     return true;
 }
 
@@ -104,7 +122,32 @@ Error CTaskFlag::Start(TaskFlagOrder order, int rank)
 
     m_bError = false;
 
-    m_motion->SetAction(MHS_FLAG);  // sets/removes flag
+    switch ( m_object->GetType() )  // sets/removes flag
+    {
+        case OBJECT_HUMAN:
+        case OBJECT_TECH:
+            m_motion->SetAction(MHS_FLAG);
+            break;
+
+        case OBJECT_MOBILEws:
+        case OBJECT_MOBILEts:
+        case OBJECT_MOBILEfs:
+        case OBJECT_MOBILEis:
+        {
+            int i = m_sound->Play(SOUND_MANIP, m_object->GetPosition(), 0.0f, 0.3f, true);
+            m_sound->AddEnvelope(i, 0.5f, 1.0f, 0.1f, SOPER_CONTINUE);
+            m_sound->AddEnvelope(i, 0.5f, 1.0f, 0.3f, SOPER_CONTINUE);
+            m_sound->AddEnvelope(i, 0.0f, 0.3f, 0.1f, SOPER_CONTINUE);
+            m_sound->AddEnvelope(i, 0.0f, 0.3f, 1.0f, SOPER_CONTINUE);
+            m_sound->AddEnvelope(i, 0.5f, 1.0f, 0.1f, SOPER_CONTINUE);
+            m_sound->AddEnvelope(i, 0.5f, 1.0f, 0.3f, SOPER_CONTINUE);
+            m_sound->AddEnvelope(i, 0.0f, 0.3f, 0.1f, SOPER_STOP);
+            break;
+        }
+
+        default:
+            break;
+    }
     m_camera->StartCentering(m_object, Math::PI*0.3f, 99.9f, 0.0f, 0.5f);
 
     return ERR_OK;
@@ -127,7 +170,23 @@ Error CTaskFlag::IsEnded()
 
 bool CTaskFlag::Abort()
 {
-    m_motion->SetAction(-1);
+    switch ( m_object->GetType() )
+    {
+        case OBJECT_HUMAN:
+        case OBJECT_TECH:
+            m_motion->SetAction(-1);
+            break;
+
+        case OBJECT_MOBILEws:
+        case OBJECT_MOBILEts:
+        case OBJECT_MOBILEfs:
+        case OBJECT_MOBILEis:
+            m_object->SetPartRotationZ(1, 110.0f*Math::PI/180.0f);
+            break;
+
+        default:
+            break;
+    }
     m_camera->StopCentering(m_object, 2.0f);
     return true;
 }
@@ -190,7 +249,18 @@ Error CTaskFlag::CreateFlag(int rank)
     };
 
     Math::Matrix* mat = m_object->GetWorldMatrix(0);
-    Math::Vector pos = Transform(*mat, Math::Vector(4.0f, 0.0f, 0.0f));
+    Math::Vector pos;
+    switch ( m_object->GetType() )
+    {
+        case OBJECT_HUMAN:
+        case OBJECT_TECH:
+            pos = Transform(*mat, Math::Vector(4.0f, 0.0f, 0.0f));
+            break;
+
+        default:
+            pos = Transform(*mat, Math::Vector(6.0f, 0.0f, 0.0f));
+            break;
+    }
 
     CObject* pObj = SearchNearest(pos, OBJECT_NULL);
     if ( pObj != nullptr )

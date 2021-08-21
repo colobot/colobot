@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -48,8 +48,8 @@ const char* stringsCbot[CBot::CBotErrMAX]         = { nullptr };
  */
 #define TR(x) x
 
-/* Please run `make update-pot` after changing this file
- * in order to update translation files. Thank you.
+/* Please run `cmake --build <path_to_build_folder> --target update-pot`
+ * after changing this file in order to update translation files. Thank you.
  */
 
 void InitializeRestext()
@@ -71,12 +71,14 @@ void InitializeRestext()
     stringsText[RT_TITLE_MISSION]    = TR("Missions");
     stringsText[RT_TITLE_FREE]       = TR("Free game");
     stringsText[RT_TITLE_USER]       = TR("User levels");
-    stringsText[RT_TITLE_CODE_BATTLES]=TR("Code battles");
+    stringsText[RT_TITLE_CODE_BATTLES] = TR("Code battles");
     stringsText[RT_TITLE_SETUP]      = TR("Options");
     stringsText[RT_TITLE_NAME]       = TR("Player's name");
     stringsText[RT_TITLE_PERSO]      = TR("Customize your appearance");
     stringsText[RT_TITLE_WRITE]      = TR("Save the current mission");
     stringsText[RT_TITLE_READ]       = TR("Load a saved mission");
+    stringsText[RT_TITLE_PLUS]       = TR("Missions+");
+    stringsText[RT_TITLE_MODS]       = TR("Mods");
 
     stringsText[RT_PLAY_CHAP_CHAPTERS]   = TR("Chapters:");
     stringsText[RT_PLAY_CHAP_PLANETS]    = TR("Planets:");
@@ -108,6 +110,11 @@ void InitializeRestext()
     stringsText[RT_DIALOG_OK]        = TR("OK");
     stringsText[RT_DIALOG_NOUSRLVL_TITLE] = TR("No userlevels installed!");
     stringsText[RT_DIALOG_NOUSRLVL_TEXT]  = TR("This menu is for userlevels from mods, but you didn't install any");
+    stringsText[RT_DIALOG_OPEN_PATH_FAILED_TITLE] = TR("Could not open the file explorer!");
+    stringsText[RT_DIALOG_OPEN_PATH_FAILED_TEXT] = TR("The path %s could not be opened in a file explorer.");
+    stringsText[RT_DIALOG_OPEN_WEBSITE_FAILED_TITLE] = TR("Could not open the web browser!");
+    stringsText[RT_DIALOG_OPEN_WEBSITE_FAILED_TEXT] = TR("The address %s could not be opened in a web browser.");
+    stringsText[RT_DIALOG_CHANGES_QUESTION] = TR("There are unsaved changes. Do you want to save them before leaving?");
 
     stringsText[RT_STUDIO_LISTTT]    = TR("Keyword help(\\key cbot;)");
     stringsText[RT_STUDIO_COMPOK]    = TR("Compilation ok (0 errors)");
@@ -124,6 +131,8 @@ void InitializeRestext()
     stringsText[RT_IO_DIR]           = TR("Folder:");
     stringsText[RT_IO_PRIVATE]       = TR("Private\\Private folder");
     stringsText[RT_IO_PUBLIC]        = TR("Public\\Common folder");
+    stringsText[RT_IO_REPLACE]       = TR("Overwrite existing file?");
+    stringsText[RT_IO_SELECT_DIR]    = TR("Select Folder");
 
     stringsText[RT_GENERIC_DEV1]     = TR("Original game developed by:");
     stringsText[RT_GENERIC_DEV2]     = TR("epsitec.com");
@@ -151,7 +160,18 @@ void InitializeRestext()
     stringsText[RT_SCOREBOARD_RESULTS_TIME]= TR("Time: %s");
     stringsText[RT_SCOREBOARD_RESULTS_LINE]= TR("%s: %d pts");
 
-
+    stringsText[RT_MOD_LIST]               = TR("Mods:");
+    stringsText[RT_MOD_DETAILS]            = TR("Information:");
+    stringsText[RT_MOD_SUMMARY]            = TR("Description:");
+    stringsText[RT_MOD_ENABLE]             = TR("Enable\\Enable the selected mod");
+    stringsText[RT_MOD_DISABLE]            = TR("Disable\\Disable the selected mod");
+    stringsText[RT_MOD_UNKNOWN_AUTHOR]     = TR("Unknown author");
+    stringsText[RT_MOD_AUTHOR_FIELD_NAME]  = TR("by");
+    stringsText[RT_MOD_VERSION_FIELD_NAME] = TR("Version");
+    stringsText[RT_MOD_WEBSITE_FIELD_NAME] = TR("Website");
+    stringsText[RT_MOD_CHANGES_FIELD_NAME] = TR("Changes");
+    stringsText[RT_MOD_NO_SUMMARY]         = TR("No description.");
+    stringsText[RT_MOD_NO_CHANGES]         = TR("No changes.");
 
     stringsEvent[EVENT_LABEL_CODE_BATTLE]   = TR("Code battle");
 
@@ -162,6 +182,7 @@ void InitializeRestext()
 
     stringsEvent[EVENT_DIALOG_OK]           = TR("OK");
     stringsEvent[EVENT_DIALOG_CANCEL]       = TR("Cancel");
+    stringsEvent[EVENT_DIALOG_NEWDIR]       = TR("New Folder");
 
     stringsEvent[EVENT_INTERFACE_TRAINER]   = TR("Exercises\\Programming exercises");
     stringsEvent[EVENT_INTERFACE_DEFI]      = TR("Challenges\\Programming challenges");
@@ -170,6 +191,7 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_CODE_BATTLES] = TR("Code battles\\Program your robot to be the best of them all!");
     stringsEvent[EVENT_INTERFACE_USER]      = TR("Custom levels\\Levels from mods created by the users");
     stringsEvent[EVENT_INTERFACE_SATCOM]    = TR("SatCom");
+    stringsEvent[EVENT_INTERFACE_MODS]      = TR("Mods\\Mod manager");
     stringsEvent[EVENT_INTERFACE_NAME]      = TR("Change player\\Change player");
     stringsEvent[EVENT_INTERFACE_SETUP]     = TR("Options\\Preferences");
     stringsEvent[EVENT_INTERFACE_AGAIN]     = TR("Restart\\Restart the mission from the beginning");
@@ -178,7 +200,14 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_ABORT]     = TR("\\Return to Colobot: Gold Edition");
     stringsEvent[EVENT_INTERFACE_QUIT]      = TR("Quit\\Quit Colobot: Gold Edition");
     stringsEvent[EVENT_INTERFACE_BACK]      = TR("<<  Back  \\Back to the previous screen");
+    stringsEvent[EVENT_INTERFACE_PLUS]      = TR("+\\Missions with bonus content and optional challenges");
     stringsEvent[EVENT_INTERFACE_PLAY]      = TR("Play\\Start mission!");
+    stringsEvent[EVENT_INTERFACE_WORKSHOP]  = TR("Workshop\\Open the workshop to search for mods");
+    stringsEvent[EVENT_INTERFACE_MODS_DIR]  = TR("Open Directory\\Open the mods directory");
+    stringsEvent[EVENT_INTERFACE_MODS_APPLY] = TR("Apply\\Apply the current mod configuration");
+    stringsEvent[EVENT_INTERFACE_MOD_MOVE_UP] = TR("Up\\Move the selected mod up so it's loaded sooner (mods may overwrite files from the mods above them)");
+    stringsEvent[EVENT_INTERFACE_MOD_MOVE_DOWN] = TR("Down\\Move the selected mod down so it's loaded later (mods may overwrite files from the mods above them)");
+    stringsEvent[EVENT_INTERFACE_MODS_REFRESH] = TR("Refresh\\Refresh the list of currently installed mods");
     stringsEvent[EVENT_INTERFACE_SETUPd]    = TR("Device\\Driver and resolution settings");
     stringsEvent[EVENT_INTERFACE_SETUPg]    = TR("Graphics\\Graphics settings");
     stringsEvent[EVENT_INTERFACE_SETUPp]    = TR("Game\\Game settings");
@@ -204,6 +233,7 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_INVERTY]   = TR("Mouse inversion Y\\Inversion of the scrolling direction on the Y axis");
     stringsEvent[EVENT_INTERFACE_EFFECT]    = TR("Quake at explosions\\The screen shakes at explosions");
     stringsEvent[EVENT_INTERFACE_BGPAUSE]   = TR("Pause in background\\Pause the game when the window is unfocused");
+    stringsEvent[EVENT_INTERFACE_BGMUTE]    = TR("Mute sounds in background\\Mute all game sounds when the window is unfocused");
     stringsEvent[EVENT_INTERFACE_EDITMODE]  = TR("Automatic indent\\When program editing");
     stringsEvent[EVENT_INTERFACE_EDITVALUE] = TR("Big indent\\Indent 2 or 4 spaces per level defined by braces");
     stringsEvent[EVENT_INTERFACE_SOLUCE4]   = TR("Access to solutions\\Show program \"4: Solution\" in the exercises");
@@ -271,6 +301,10 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_JOYSTICK_CAM_Y_INVERT] = TR("Invert\\Invert values on this axis");
     stringsEvent[EVENT_INTERFACE_JOYSTICK_CAM_Z_INVERT] = TR("Invert\\Invert values on this axis");
 
+    stringsEvent[EVENT_INTERFACE_PLUS_TRAINER]  = TR("Space Programmer\\Disables radio-control");
+    stringsEvent[EVENT_INTERFACE_PLUS_RESEARCH] = TR("Space Researcher\\Disables using all previously researched technologies");
+    stringsEvent[EVENT_INTERFACE_PLUS_EXPLORER] = TR("Space Explorer\\Disables astronaut abilities");
+
     stringsEvent[EVENT_INTERFACE_NEDIT]     = TR("\\New player name");
     stringsEvent[EVENT_INTERFACE_NOK]       = TR("OK\\Choose the selected player");
     stringsEvent[EVENT_INTERFACE_NDELETE]   = TR("Delete player\\Deletes the player from the list");
@@ -337,7 +371,7 @@ void InitializeRestext()
     stringsEvent[EVENT_OBJECT_BNUCLEAR]     = TR("Build a nuclear power plant");
     stringsEvent[EVENT_OBJECT_BPARA]        = TR("Build a lightning conductor");
     stringsEvent[EVENT_OBJECT_BINFO]        = TR("Build a exchange post");
-    stringsEvent[EVENT_OBJECT_BDESTROYER]   = TR("Build a destroyer");
+    stringsEvent[EVENT_OBJECT_BSAFE]        = TR("Build a vault");
     stringsEvent[EVENT_OBJECT_GFLAT]        = TR("Show if the ground is flat");
     stringsEvent[EVENT_OBJECT_FCREATE]      = TR("Plant a flag");
     stringsEvent[EVENT_OBJECT_FDELETE]      = TR("Remove a flag");
@@ -362,11 +396,16 @@ void InitializeRestext()
     stringsEvent[EVENT_OBJECT_FACTORYts]    = TR("Build a tracked sniffer");
     stringsEvent[EVENT_OBJECT_FACTORYws]    = TR("Build a wheeled sniffer");
     stringsEvent[EVENT_OBJECT_FACTORYis]    = TR("Build a legged sniffer");
+    stringsEvent[EVENT_OBJECT_FACTORYfb]    = TR("Build a winged builder");
+    stringsEvent[EVENT_OBJECT_FACTORYtb]    = TR("Build a tracked builder");
+    stringsEvent[EVENT_OBJECT_FACTORYwb]    = TR("Build a wheeled builder");
+    stringsEvent[EVENT_OBJECT_FACTORYib]    = TR("Build a legged builder");
     stringsEvent[EVENT_OBJECT_FACTORYrt]    = TR("Build a thumper");
     stringsEvent[EVENT_OBJECT_FACTORYrc]    = TR("Build a phazer shooter");
     stringsEvent[EVENT_OBJECT_FACTORYrr]    = TR("Build a recycler");
     stringsEvent[EVENT_OBJECT_FACTORYrs]    = TR("Build a shielder");
     stringsEvent[EVENT_OBJECT_FACTORYsa]    = TR("Build a subber");
+    stringsEvent[EVENT_OBJECT_FACTORYtg]    = TR("Build a target bot");
     stringsEvent[EVENT_OBJECT_RTANK]        = TR("Run research program for tracked bots");
     stringsEvent[EVENT_OBJECT_RFLY]         = TR("Run research program for winged bots");
     stringsEvent[EVENT_OBJECT_RTHUMP]       = TR("Run research program for thumper");
@@ -377,11 +416,14 @@ void InitializeRestext()
     stringsEvent[EVENT_OBJECT_RATOMIC]      = TR("Run research program for nuclear power");
     stringsEvent[EVENT_OBJECT_RiPAW]        = TR("Run research program for legged bots");
     stringsEvent[EVENT_OBJECT_RiGUN]        = TR("Run research program for orga shooter");
+    stringsEvent[EVENT_OBJECT_RBUILDER]     = TR("Run research program for builder");
+    stringsEvent[EVENT_OBJECT_RTARGET]      = TR("Run research program for target bot");
     stringsEvent[EVENT_OBJECT_RESET]        = TR("Return to start");
     stringsEvent[EVENT_OBJECT_SEARCH]       = TR("Sniff (\\key action;)");
     stringsEvent[EVENT_OBJECT_TERRAFORM]    = TR("Thump (\\key action;)");
     stringsEvent[EVENT_OBJECT_FIRE]         = TR("Shoot (\\key action;)");
     stringsEvent[EVENT_OBJECT_SPIDEREXPLO]  = TR("Explode (\\key action;)");
+    stringsEvent[EVENT_OBJECT_BUILD]        = TR("Build (\\key action;)");
     stringsEvent[EVENT_OBJECT_RECOVER]      = TR("Recycle (\\key action;)");
     stringsEvent[EVENT_OBJECT_BEGSHIELD]    = TR("Extend shield (\\key action;)");
     stringsEvent[EVENT_OBJECT_ENDSHIELD]    = TR("Withdraw shield (\\key action;)");
@@ -518,10 +560,16 @@ void InitializeRestext()
     stringsObject[OBJECT_MOBILEtt]     = TR("Practice bot");
     stringsObject[OBJECT_MOBILEwt]     = TR("Practice bot");
     stringsObject[OBJECT_MOBILEit]     = TR("Practice bot");
+    stringsObject[OBJECT_MOBILErp]     = TR("Practice bot");
+    stringsObject[OBJECT_MOBILEst]     = TR("Practice bot");
     stringsObject[OBJECT_MOBILEfa]     = TR("Winged grabber");
     stringsObject[OBJECT_MOBILEta]     = TR("Tracked grabber");
     stringsObject[OBJECT_MOBILEwa]     = TR("Wheeled grabber");
     stringsObject[OBJECT_MOBILEia]     = TR("Legged grabber");
+    stringsObject[OBJECT_MOBILEfb]     = TR("Winged builder");
+    stringsObject[OBJECT_MOBILEtb]     = TR("Tracked builder");
+    stringsObject[OBJECT_MOBILEwb]     = TR("Wheeled builder");
+    stringsObject[OBJECT_MOBILEib]     = TR("Legged builder");
     stringsObject[OBJECT_MOBILEfc]     = TR("Winged shooter");
     stringsObject[OBJECT_MOBILEtc]     = TR("Tracked shooter");
     stringsObject[OBJECT_MOBILEwc]     = TR("Wheeled shooter");
@@ -621,7 +669,7 @@ void InitializeRestext()
     stringsErr[ERR_BASE_DLOCK]      = TR("Doors blocked by a robot or another object");
     stringsErr[ERR_BASE_DHUMAN]     = TR("You must get on the spaceship to take off");
     stringsErr[ERR_LABO_NULL]       = TR("Nothing to analyze");
-    stringsErr[ERR_LABO_BAD]        = TR("Analyzes only organic matter");
+    stringsErr[ERR_LABO_BAD]        = TR("Inappropriate sample");
     stringsErr[ERR_LABO_ALREADY]    = TR("Analysis already performed");
     stringsErr[ERR_NUCLEAR_EMPTY]   = TR("No uranium to transform");
     stringsErr[ERR_NUCLEAR_BAD]     = TR("Transforms only uranium");
@@ -659,6 +707,7 @@ void InitializeRestext()
     stringsErr[INFO_RESEARCHPHAZER] = TR("Plans for phazer shooter available");
     stringsErr[INFO_RESEARCHSHIELD] = TR("Plans for shielder available");
     stringsErr[INFO_RESEARCHATOMIC] = TR("Plans for nuclear power plant available");
+    stringsErr[INFO_RESEARCHBUILDER]= TR("Plans for builder available");
     stringsErr[INFO_FACTORY]        = TR("New bot available");
     stringsErr[INFO_LABO]           = TR("Analysis performed");
     stringsErr[INFO_ENERGY]         = TR("Power cell available");
@@ -742,6 +791,8 @@ void InitializeRestext()
     stringsCbot[CBot::CBotErrHexDigits]     = TR("Missing hex digits after escape sequence");
     stringsCbot[CBot::CBotErrHexRange]      = TR("Hex value out of range");
     stringsCbot[CBot::CBotErrUnicodeName]   = TR("Invalid universal character name");
+    stringsCbot[CBot::CBotErrCharEmpty]     = TR("Empty character constant");
+    stringsCbot[CBot::CBotErrRedefCase]     = TR("Duplicate label in switch");
 
     stringsCbot[CBot::CBotErrZeroDiv]       = TR("Dividing by zero");
     stringsCbot[CBot::CBotErrNotInit]       = TR("Variable not initialized");

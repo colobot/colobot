@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -67,7 +67,6 @@ static bool IsAlien(ObjectType type)
              type == OBJECT_NEST     ||
              type == OBJECT_BULLET   ||
              type == OBJECT_EGG      ||
-             type == OBJECT_MOBILEtg ||
              type == OBJECT_TEEN28   ||
              type == OBJECT_TEEN31   );
 }
@@ -877,7 +876,7 @@ void CParticle::FrameParticle(float rTime)
             m_track[r].drawParticle = (progress < 1.0f);
         }
 
-        if (m_particle[i].type == PARTITRACK1)  // explosion technique?
+        if (m_particle[i].type == PARTITRACK1)  // technical explosion?
         {
             m_particle[i].zoom = 1.0f-(m_particle[i].time-m_particle[i].duration);
 
@@ -954,7 +953,7 @@ void CParticle::FrameParticle(float rTime)
             m_particle[i].goal = m_particle[i].pos;
             if (object != nullptr && object->Implements(ObjectInterfaceType::Damageable))
             {
-                dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Phazer, 0.002f, m_particle[i].objFather);
+                dynamic_cast<CDamageableObject&>(*object).DamageObject(DamageType::Phazer, 0.002f, m_particle[i].objFather);
             }
 
             m_particle[i].zoom = 1.0f-(m_particle[i].time-m_particle[i].duration);
@@ -1157,7 +1156,7 @@ void CParticle::FrameParticle(float rTime)
                 {
                     if (object->Implements(ObjectInterfaceType::Damageable))
                     {
-                        dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Fire, 0.001f, m_particle[i].objFather);
+                        dynamic_cast<CDamageableObject&>(*object).DamageObject(DamageType::Fire, 0.001f, m_particle[i].objFather);
                     }
 
                     m_exploGunCounter++;
@@ -1223,7 +1222,7 @@ void CParticle::FrameParticle(float rTime)
                 m_particle[i].goal = m_particle[i].pos;
                 if (object != nullptr)
                 {
-                    if (object->GetType() == OBJECT_MOBILErs && dynamic_cast<CShielder*>(object)->GetActiveShieldRadius() > 0.0f)  // protected by shield?
+                    if (object->GetType() == OBJECT_MOBILErs && dynamic_cast<CShielder&>(*object).GetActiveShieldRadius() > 0.0f)  // protected by shield?
                     {
                         CreateParticle(m_particle[i].pos, Math::Vector(0.0f, 0.0f, 0.0f), Math::Point(6.0f, 6.0f), PARTIGUNDEL, 2.0f);
                         if (m_lastTimeGunDel > 0.2f)
@@ -1241,7 +1240,7 @@ void CParticle::FrameParticle(float rTime)
 
                         if (object->Implements(ObjectInterfaceType::Damageable))
                         {
-                            dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Organic, 0.1f, m_particle[i].objFather);  // starts explosion
+                            dynamic_cast<CDamageableObject&>(*object).DamageObject(DamageType::Organic, 0.1f, m_particle[i].objFather);  // starts explosion
                         }
                     }
                 }
@@ -1271,7 +1270,7 @@ void CParticle::FrameParticle(float rTime)
                 m_particle[i].goal = m_particle[i].pos;
                 if (object != nullptr)
                 {
-                    if (object->GetType() == OBJECT_MOBILErs && dynamic_cast<CShielder*>(object)->GetActiveShieldRadius() > 0.0f)
+                    if (object->GetType() == OBJECT_MOBILErs && dynamic_cast<CShielder&>(*object).GetActiveShieldRadius() > 0.0f)
                     {
                         CreateParticle(m_particle[i].pos, Math::Vector(0.0f, 0.0f, 0.0f), Math::Point(6.0f, 6.0f), PARTIGUNDEL, 2.0f);
                         if (m_lastTimeGunDel > 0.2f)
@@ -1286,7 +1285,7 @@ void CParticle::FrameParticle(float rTime)
                     {
                         if (object->Implements(ObjectInterfaceType::Damageable))
                         {
-                            dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Fire, std::numeric_limits<float>::infinity(), m_particle[i].objFather);  // starts explosion
+                            dynamic_cast<CDamageableObject&>(*object).DamageObject(DamageType::Fire, std::numeric_limits<float>::infinity(), m_particle[i].objFather);  // starts explosion
                         }
                     }
                 }
@@ -1345,7 +1344,7 @@ void CParticle::FrameParticle(float rTime)
                 {
                     if (object->Implements(ObjectInterfaceType::Damageable))
                     {
-                        dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Organic, 0.001f, m_particle[i].objFather);
+                        dynamic_cast<CDamageableObject&>(*object).DamageObject(DamageType::Organic, 0.001f, m_particle[i].objFather);
                     }
 
                     m_exploGunCounter ++;
@@ -2407,7 +2406,7 @@ void CParticle::FrameParticle(float rTime)
             ti.y = ts.y+0.125f;
         }
 
-        if (m_particle[i].type == PARTIRAY1)  // rayon tour ?
+        if (m_particle[i].type == PARTIRAY1)  // tower ray ?
         {
             if (progress >= 1.0f)
             {
@@ -2423,7 +2422,7 @@ void CParticle::FrameParticle(float rTime)
                 if (object != nullptr)
                 {
                     assert(object->Implements(ObjectInterfaceType::Damageable));
-                    dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Tower, std::numeric_limits<float>::infinity(), m_particle[i].objFather);
+                    dynamic_cast<CDamageableObject&>(*object).DamageObject(DamageType::Tower, std::numeric_limits<float>::infinity(), m_particle[i].objFather);
                 }
             }
 
@@ -2517,7 +2516,7 @@ void CParticle::TrackDraw(int i, ParticleType type)
 
     Math::Point texInf, texSup;
 
-    if (type == PARTITRACK1)  // explosion technique?
+    if (type == PARTITRACK1)  // technical explosion?
     {
         texInf.x = 64.5f/256.0f;
         texInf.y = 21.0f/256.0f;
@@ -3544,6 +3543,7 @@ CObject* CParticle::SearchObjectGun(Math::Vector old, Math::Vector pos,
             continue;
         }
         if (!obj->Implements(ObjectInterfaceType::Damageable) && !obj->IsBulletWall())  continue;
+        if (obj->Implements(ObjectInterfaceType::Jostleable))  continue;
 
         Math::Vector oPos = obj->GetPosition();
 

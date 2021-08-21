@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,6 +21,9 @@
 
 #include "CBot/CBotVar/CBotVar.h"
 #include "CBot/CBotProgram.h"
+
+#include <list>
+#include <memory>
 
 namespace CBot
 {
@@ -101,6 +104,25 @@ public:
     void AddVar(CBotVar* p);
 
     /*!
+     * \brief Create 'this' as a local variable.
+     * \param pClass The current class referred to by 'this'
+     */
+    void CreateVarThis(CBotClass* pClass);
+
+    /*!
+     * \brief Create 'super' as a local variable.
+     * \param pClass The parent class referred to by 'super'
+     */
+    void CreateVarSuper(CBotClass* pClass);
+
+    /*!
+     * \brief Create member variables of the current class as local variables.
+     * \param pClass The current class.
+     * \param setDefined Whether to mark the variables as initialized.
+     */
+    void CreateMemberVars(CBotClass* pClass, bool setDefined);
+
+    /*!
      * \brief FindVar Finds a variable. Seeks a variable on the stack the token
      * may be a result of TokenTypVar (object of a class) or a pointer in the
      * source.
@@ -137,6 +159,11 @@ public:
      * \return
      */
     CBotCStack* TokenStack(CBotToken* pToken = nullptr, bool bBlock = false);
+
+    /*!
+     * \brief Deletes all subsequent stack frames created by TokenStack.
+     */
+    void DeleteNext();
 
     /*!
      * \brief Return Transmits the result upper.
@@ -235,11 +262,12 @@ public:
 
     /*!
      * \brief CheckCall Test if a procedure name is already defined somewhere.
-     * \param pToken
-     * \param pParam
+     * \param pToken Token representing the name of a function.
+     * \param pParam List of parameters.
+     * \param className Name of a class when checking for methods.
      * \return
      */
-    bool CheckCall(CBotToken* &pToken, CBotDefParam* pParam);
+    bool CheckCall(CBotToken* &pToken, CBotDefParam* pParam, const std::string& className);
 
     /*!
      * \brief NextToken
@@ -249,21 +277,20 @@ public:
     bool NextToken(CBotToken* &p);
 
 private:
-    CBotCStack* m_next;
+    std::unique_ptr<CBotCStack> m_next;
     CBotCStack* m_prev;
 
-    static CBotError m_error;
-    static int m_end;
-    int m_start;
+    int m_errStart = 0;
+
+    struct Data;
+
+    CBotCStack::Data* m_data;
 
     //! Result of the operations.
-    CBotVar* m_var;
+    std::unique_ptr<CBotVar> m_var;
     //! Is part of a block (variables are local to this block).
     bool m_bBlock;
-    CBotVar* m_listVar;
-    //! List of compiled functions.
-    static CBotProgram* m_prog;
-    static CBotTypResult m_retTyp;
+    std::list<std::unique_ptr<CBotVar>> m_listVar;
 };
 
 } // namespace CBot

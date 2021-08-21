@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,6 +20,8 @@
 #pragma once
 
 #include "CBot/CBotInstr/CBotInstr.h"
+
+#include <unordered_map>
 
 namespace CBot
 {
@@ -64,8 +66,12 @@ protected:
 private:
     //! Value to seek
     CBotInstr* m_value;
-    //! Instructions
-    CBotInstr* m_block;
+    //! List of case instructions
+    CBotInstr* m_block = nullptr;
+    //! Pointer to default label
+    CBotInstr* m_default = nullptr;
+    //! Map of case labels
+    std::unordered_map<long, CBotInstr*> m_labels;
 };
 
 } // namespace CBot

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -59,14 +59,14 @@ static void SetTransparency(CObject* obj, float value)
 
     if (obj->Implements(ObjectInterfaceType::Carrier))
     {
-        CObject* cargo = dynamic_cast<CCarrierObject*>(obj)->GetCargo();
+        CObject* cargo = dynamic_cast<CCarrierObject&>(*obj).GetCargo();
         if (cargo != nullptr)
             cargo->SetTransparency(value);
     }
 
     if (obj->Implements(ObjectInterfaceType::Powered))
     {
-        CObject* power = dynamic_cast<CPoweredObject*>(obj)->GetPower();
+        CObject* power = dynamic_cast<CPoweredObject&>(*obj).GetPower();
         if (power != nullptr)
             power->SetTransparency(value);
     }
@@ -1233,7 +1233,7 @@ bool CCamera::EventFrameBack(const Event &event)
 
         bool ground = true;
         if (m_cameraObj->Implements(ObjectInterfaceType::Movable))
-            ground = dynamic_cast<CMovableObject*>(m_cameraObj)->GetPhysics()->GetLand();
+            ground = dynamic_cast<CMovableObject&>(*m_cameraObj).GetPhysics()->GetLand();
         if ( ground )  // ground?
         {
             Math::Vector pos = lookatPt + (lookatPt - m_eyePt);
@@ -1326,7 +1326,7 @@ bool CCamera::EventFrameOnBoard(const Event &event)
     {
         assert(m_cameraObj->Implements(ObjectInterfaceType::Controllable));
         Math::Vector lookatPt, upVec;
-        dynamic_cast<CControllableObject*>(m_cameraObj)->AdjustCamera(m_eyePt, m_directionH, m_directionV, lookatPt, upVec, m_type);
+        dynamic_cast<CControllableObject&>(*m_cameraObj).AdjustCamera(m_eyePt, m_directionH, m_directionV, lookatPt, upVec, m_type);
         Math::Vector eye    = m_effectOffset * 0.3f + m_eyePt;
         Math::Vector lookat = m_effectOffset * 0.3f + lookatPt;
 

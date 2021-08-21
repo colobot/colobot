@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -48,6 +48,9 @@ CScreenLevelList::CScreenLevelList(CMainDialog* mainDialog)
     : m_dialog(mainDialog),
       m_category{},
       m_sceneSoluce{false},
+      m_plusTrainer{false},
+      m_plusResearch{false},
+      m_plusExplorer{false},
       m_maxList{0},
       m_accessChap{0}
 {
@@ -86,6 +89,7 @@ void CScreenLevelList::CreateInterface()
     if ( m_category == LevelCategory::Missions     )  res = RT_TITLE_MISSION;
     if ( m_category == LevelCategory::FreeGame     )  res = RT_TITLE_FREE;
     if ( m_category == LevelCategory::CodeBattles  )  res = RT_TITLE_CODE_BATTLES;
+    if ( m_category == LevelCategory::GamePlus     )  res = RT_TITLE_PLUS;
     if ( m_category == LevelCategory::CustomLevels )  res = RT_TITLE_USER;
     GetResource(RES_TEXT, res, name);
     pw->SetName(name);
@@ -109,6 +113,7 @@ void CScreenLevelList::CreateInterface()
     res = RT_PLAY_CHAP_CHAPTERS;
     if ( m_category == LevelCategory::Missions     )  res = RT_PLAY_CHAP_PLANETS;
     if ( m_category == LevelCategory::FreeGame     )  res = RT_PLAY_CHAP_PLANETS;
+    if ( m_category == LevelCategory::GamePlus     )  res = RT_PLAY_CHAP_PLANETS;
     if ( m_category == LevelCategory::CustomLevels )  res = RT_PLAY_CHAP_USERLVL;
     GetResource(RES_TEXT, res, name);
     pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL11, name);
@@ -138,6 +143,7 @@ void CScreenLevelList::CreateInterface()
     if ( m_category == LevelCategory::Challenges   )  res = RT_PLAY_LIST_CHALLENGES;
     if ( m_category == LevelCategory::Missions     )  res = RT_PLAY_LIST_MISSIONS;
     if ( m_category == LevelCategory::FreeGame     )  res = RT_PLAY_LIST_FREEGAME;
+    if ( m_category == LevelCategory::GamePlus     )  res = RT_PLAY_LIST_MISSIONS;
     GetResource(RES_TEXT, res, name);
     pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL12, name);
     pl->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
@@ -179,6 +185,7 @@ void CScreenLevelList::CreateInterface()
 
     // Button displays the "soluce":
     if ( m_category != LevelCategory::Exercises &&
+         m_category != LevelCategory::GamePlus  &&
          m_category != LevelCategory::FreeGame   )
     {
         pos.x = ox+sx*9.5f;
@@ -191,10 +198,36 @@ void CScreenLevelList::CreateInterface()
     }
     m_sceneSoluce = false;
 
+    if ( m_category == LevelCategory::GamePlus )
+    {
+        pos.x = ox+sx*9.5f;
+        pos.y = oy+sy*6.1f;
+        ddim.x = dim.x*3.4f;
+        ddim.y = dim.y*0.5f;
+        pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_PLUS_TRAINER);
+        pc->SetState(STATE_SHADOW);
+        pc->ClearState(STATE_CHECK);
+
+        pos.y = oy+sy*5.5f;
+        pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_PLUS_RESEARCH);
+        pc->SetState(STATE_SHADOW);
+        pc->ClearState(STATE_CHECK);
+
+        pos.x = ox+sx*12.9f;
+        pos.y = oy+sy*6.1f;
+        pc = pw->CreateCheck(pos, ddim, -1, EVENT_INTERFACE_PLUS_EXPLORER);
+        pc->SetState(STATE_SHADOW);
+        pc->ClearState(STATE_CHECK);
+    }
+    m_plusTrainer  = false;
+    m_plusResearch = false;
+    m_plusExplorer = false;
+
     UpdateSceneResume(m_chap[m_category]+1, m_sel[m_category]+1);
 
     if ( m_category == LevelCategory::Missions    ||
          m_category == LevelCategory::FreeGame    ||
+         m_category == LevelCategory::GamePlus    ||
          m_category == LevelCategory::CustomLevels )
     {
         pos.x = ox+sx*9.5f;
@@ -295,6 +328,27 @@ bool CScreenLevelList::EventProcess(const Event &event)
             pb->SetState(STATE_CHECK, m_sceneSoluce);
             break;
 
+        case EVENT_INTERFACE_PLUS_TRAINER:
+            pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_PLUS_TRAINER));
+            if ( pb == nullptr )  break;
+            m_plusTrainer = !m_plusTrainer;
+            pb->SetState(STATE_CHECK, m_plusTrainer);
+            break;
+
+        case EVENT_INTERFACE_PLUS_RESEARCH:
+            pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_PLUS_RESEARCH));
+            if ( pb == nullptr )  break;
+            m_plusResearch = !m_plusResearch;
+            pb->SetState(STATE_CHECK, m_plusResearch);
+            break;
+
+        case EVENT_INTERFACE_PLUS_EXPLORER:
+            pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_PLUS_EXPLORER));
+            if ( pb == nullptr )  break;
+            m_plusExplorer = !m_plusExplorer;
+            pb->SetState(STATE_CHECK, m_plusExplorer);
+            break;
+
         case EVENT_INTERFACE_PLAY:
             m_main->SetLevel(m_category, m_chap[m_category]+1, m_sel[m_category]+1);
             m_main->ChangePhase(PHASE_SIMUL);
@@ -329,6 +383,21 @@ void CScreenLevelList::AllMissionUpdate()
 bool CScreenLevelList::GetSceneSoluce()
 {
     return m_sceneSoluce;
+}
+
+bool CScreenLevelList::GetPlusTrainer()
+{
+    return m_plusTrainer;
+}
+
+bool CScreenLevelList::GetPlusResearch()
+{
+    return m_plusResearch;
+}
+
+bool CScreenLevelList::GetPlusExplorer()
+{
+    return m_plusExplorer;
 }
 
 // Updates the chapters of exercises or missions.
@@ -392,7 +461,7 @@ void CScreenLevelList::UpdateSceneChap(int &chap)
             pl->SetCheck(j, bPassed);
             pl->SetEnable(j, true);
 
-            if ( m_category == LevelCategory::Missions && !m_main->GetShowAll() && !bPassed )
+            if ( (m_category == LevelCategory::Missions || m_category == LevelCategory::GamePlus) && !m_main->GetShowAll() && !bPassed )
             {
                 j ++;
                 break;
@@ -459,7 +528,7 @@ void CScreenLevelList::UpdateSceneList(int chap, int &sel)
         pl->SetCheck(j, bPassed);
         pl->SetEnable(j, true);
 
-        if ( m_category == LevelCategory::Missions && !m_main->GetShowAll() && !bPassed )
+        if ( (m_category == LevelCategory::Missions || m_category == LevelCategory::GamePlus) && !m_main->GetShowAll() && !bPassed )
         {
             readAll = false;
         }

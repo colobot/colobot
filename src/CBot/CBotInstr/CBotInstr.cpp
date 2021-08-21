@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -30,6 +30,7 @@
 #include "CBot/CBotInstr/CBotExpression.h"
 #include "CBot/CBotInstr/CBotFor.h"
 #include "CBot/CBotInstr/CBotIf.h"
+#include "CBot/CBotInstr/CBotRepeat.h"
 #include "CBot/CBotInstr/CBotReturn.h"
 #include "CBot/CBotInstr/CBotSwitch.h"
 #include "CBot/CBotInstr/CBotThrow.h"
@@ -176,7 +177,7 @@ CBotInstr* CBotInstr::Compile(CBotToken* &p, CBotCStack* pStack)
     {
          type = pp->GetType();
          // Allow only instructions that accept a label
-         if (!IsOfTypeList(pp, ID_WHILE, ID_FOR, ID_DO, 0))
+         if (!IsOfTypeList(pp, ID_WHILE, ID_FOR, ID_DO, ID_REPEAT, 0))
          {
              pStack->SetError(CBotErrLabel, pp->GetStart());
              return nullptr;
@@ -195,6 +196,9 @@ CBotInstr* CBotInstr::Compile(CBotToken* &p, CBotCStack* pStack)
     case ID_DO:
         return CBotDo::Compile(p, pStack);
 
+    case ID_REPEAT:
+        return CBotRepeat::Compile(p, pStack);
+
     case ID_BREAK:
     case ID_CONTINUE:
         return CBotBreak::Compile(p, pStack);
@@ -208,10 +212,15 @@ CBotInstr* CBotInstr::Compile(CBotToken* &p, CBotCStack* pStack)
     case ID_THROW:
         return CBotThrow::Compile(p, pStack);
 
+    case ID_BYTE:
+    case ID_SHORT:
+    case ID_CHAR:
     case ID_INT:
+    case ID_LONG:
         return CBotDefInt::Compile(p, pStack);
 
     case ID_FLOAT:
+    case ID_DOUBLE:
         return CBotDefFloat::Compile(p, pStack);
 
     case ID_STRING:
@@ -312,13 +321,6 @@ void CBotInstr::RestoreStateVar(CBotStack* &pile, bool bMain)
     assert(0);            // dad do not know, see the girls
 }
 
-////////////////////////////////////////////////////////////////////////////////
-bool CBotInstr::CompCase(CBotStack* &pj, int val)
-{
-    return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 CBotInstr* CBotInstr::CompileArray(CBotToken* &p, CBotCStack* pStack, CBotTypResult type, bool first)
 {
     if (IsOfType(p, ID_OPBRK))

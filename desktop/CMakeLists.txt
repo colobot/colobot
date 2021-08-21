@@ -82,20 +82,6 @@ if(PLATFORM_GNU)
         DESTINATION ${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/scalable/apps/
         )
 
-    # Translate translatable material
-    find_program(PO4A po4a)
-    if(NOT PO4A)
-        message(WARNING "po4a not found; desktop and manpage files will not be translated")
-    endif()
-
-    if(PO4A)
-        add_custom_target(desktop_po4a
-            COMMAND ${PO4A} po4a.cfg
-            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        )
-        add_dependencies(desktopfile desktop_po4a)
-    endif()
-
     # Create manpage from pod-formatted file
     find_program(POD2MAN pod2man)
     if(NOT POD2MAN)
@@ -133,11 +119,30 @@ if(PLATFORM_GNU)
         # Create the english manpage
         podman(PODFILE colobot.pod)
 
+        # Translate translatable material
+        find_program(PO4A po4a)
+        if(NOT PO4A)
+            message(WARNING "po4a not found; desktop and manpage files will not be translated")
+        endif()
+
         if(PO4A)
             # Translate the manpage to other languages
-            add_dependencies(man desktop_po4a)
             file(GLOB LINGUAS_PO RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/po/ ${CMAKE_CURRENT_SOURCE_DIR}/po/*.po)
             string(REGEX REPLACE ".po$" "" LINGUAS ${LINGUAS_PO})
+
+            set(PO4A_OUTPUTS)
+            foreach(LOCALE ${LINGUAS})
+                list(APPEND PO4A_OUTPUTS ${CMAKE_CURRENT_SOURCE_DIR}/lang/${LOCALE}/colobot.pod)
+            endforeach()
+            add_custom_command(
+                OUTPUT ${PO4A_OUTPUTS}
+                COMMAND ${PO4A} po4a.cfg
+                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+            )
+            add_custom_target(desktop_po4a DEPENDS ${PO4A_OUTPUTS})
+            add_dependencies(man desktop_po4a)
+            add_dependencies(desktopfile desktop_po4a)
+
             foreach(LOCALE ${LINGUAS})
                 podman(PODFILE lang/${LOCALE}/colobot.pod LOCALE ${LOCALE})
                 add_dependencies(man${PM_LOCALE} desktop_po4a)

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -478,13 +478,20 @@ std::vector<SavedScene> CPlayerProfile::GetSavedSceneList()
     for (auto dir : saveDirs)
     {
         std::string savegameFile = GetSaveFile(dir+"/data.sav");
-        if (CResourceManager::Exists(savegameFile))
+        if (CResourceManager::Exists(savegameFile) && CResourceManager::GetFileSize(savegameFile) > 0)
         {
             CLevelParser levelParser(savegameFile);
             levelParser.Load();
             CLevelParserLine* line = levelParser.GetIfDefined("Created");
             int time = line != nullptr ? line->GetParam("date")->AsInt() : 0;
-            sortedSaveDirs[time] = SavedScene(GetSaveFile(dir), levelParser.Get("Title")->GetParam("text")->AsString());
+            try
+            {
+                sortedSaveDirs[time] = SavedScene(GetSaveFile(dir), levelParser.Get("Title")->GetParam("text")->AsString());
+            }
+            catch (CLevelParserException &e)
+            {
+                GetLogger()->Error("Error trying to load savegame title: %s\n", e.what());
+            }
         }
     }
 

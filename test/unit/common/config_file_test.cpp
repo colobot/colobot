@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -51,4 +51,26 @@ TEST_F(CConfigFileTest, ReadTest)
     float float_value;
     ASSERT_TRUE(m_configFile.GetFloatProperty("test_float", "float_value", float_value));
     ASSERT_FLOAT_EQ(1.5, float_value);
+}
+
+TEST_F(CConfigFileTest, ReadArrayTest)
+{
+    m_configFile.SetUseCurrentDirectory(true);
+
+    ASSERT_TRUE(m_configFile.Init()); // load colobot.ini file
+
+    std::vector<std::string> expected_string_values = { "AAA", "Hello world", "Gold Edition" };
+    std::vector<std::string> string_values;
+    ASSERT_TRUE(m_configFile.GetArrayProperty("test_array", "string_array", string_values));
+    ASSERT_EQ(expected_string_values, string_values);
+
+    std::vector<int> expected_int_values = { 2, 3, 1 };
+    std::vector<int> int_values;
+    ASSERT_TRUE(m_configFile.GetArrayProperty("test_array", "int_array", int_values));
+    ASSERT_EQ(expected_int_values, int_values);
+
+    std::vector<bool> expected_bool_values = { true, false, true };
+    std::vector<bool> bool_values;
+    ASSERT_TRUE(m_configFile.GetArrayProperty("test_array", "bool_array", bool_values));
+    ASSERT_EQ(expected_bool_values, bool_values);
 }

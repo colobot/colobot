@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -50,6 +50,10 @@ void CSoundInterface::CacheAll()
         if ( !Cache(static_cast<SoundType>(i), filename.str()) )
             GetLogger()->Warn("Unable to load audio: %s\n", filename.str().c_str());
     }
+}
+
+void CSoundInterface::Reset()
+{
 }
 
 bool CSoundInterface::Cache(SoundType sound, const std::string &file)

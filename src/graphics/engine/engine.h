@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -1189,6 +1189,10 @@ public:
     void            EnablePauseBlur();
     void            DisablePauseBlur();
 
+    //! Reloads all textures
+    /** This additionally sends EVENT_RELOAD_TEXTURES to reload all textures not maintained by CEngine **/
+    void ReloadAllTextures();
+
 protected:
     //! Resets some states and flushes textures after device was changed (e.g. resoulution changed)
     /** Instead of calling this directly, send EVENT_RESOLUTION_CHANGED event **/
@@ -1286,10 +1290,6 @@ protected:
         std::string fileName;
     };
     static void WriteScreenShotThread(std::unique_ptr<WriteScreenShotData> data);
-
-    //! Reloads all textures
-    /** This additionally sends EVENT_RELOAD_TEXTURES to reload all textures not maintained by CEngine **/
-    void ReloadAllTextures();
 
 protected:
     CApplication*     m_app;

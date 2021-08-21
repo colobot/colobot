@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -169,7 +169,7 @@ begin:
             else
             {
                 assert(pObj->Implements(ObjectInterfaceType::Controllable));
-                m_camera->SetType(dynamic_cast<CControllableObject*>(pObj)->GetCameraType());
+                m_camera->SetType(dynamic_cast<CControllableObject&>(*pObj).GetCameraType());
             }
 
             m_main->StartMusic();
@@ -594,7 +594,7 @@ begin:
                 else
                 {
                     assert(pObj->Implements(ObjectInterfaceType::Controllable));
-                    m_camera->SetType(dynamic_cast<CControllableObject*>(pObj)->GetCameraType());
+                    m_camera->SetType(dynamic_cast<CControllableObject&>(*pObj).GetCameraType());
                 }
                 m_sound->Play(SOUND_BOUM, m_object->GetPosition());
                 m_soundChannel = -1;
@@ -1124,7 +1124,7 @@ bool CAutoBase::Abort()
             else
             {
                 assert(pObj->Implements(ObjectInterfaceType::Controllable));
-                m_camera->SetType(dynamic_cast<CControllableObject*>(pObj)->GetCameraType());
+                m_camera->SetType(dynamic_cast<CControllableObject&>(*pObj).GetCameraType());
             }
 
             m_engine->SetFogStart(m_fogStart);
@@ -1187,25 +1187,27 @@ bool CAutoBase::CreateInterface(bool bSelect)
     oy = 3.0f/480.0f;
     sx = 33.0f/640.0f;
     sy = 33.0f/480.0f;
-
-    ddim.x = dim.x*1.5f;
-    ddim.y = dim.y*1.5f;
-
-//? pos.x = ox+sx*7.25f;
-//? pos.y = oy+sy*0.25f;
-//? pw->CreateButton(pos, ddim, 63, EVENT_OBJECT_BHELP);
-
-    pos.x = ox+sx*8.00f;
-    pos.y = oy+sy*0.25f;
-    pw->CreateButton(pos, ddim, 28, EVENT_OBJECT_BTAKEOFF);
-
-    if ( m_lightning->GetStatus(sleep, delay, magnetic, progress) )
+    if( !m_object->GetTrainer() )
     {
-        pos.x = ox+sx*10.2f;
-        pos.y = oy+sy*0.5f;
-        ddim.x = dim.x*1.0f;
-        ddim.y = dim.y*1.0f;
-        pw->CreateButton(pos, ddim, 41, EVENT_OBJECT_LIMIT);
+        ddim.x = dim.x*1.5f;
+        ddim.y = dim.y*1.5f;
+
+    //? pos.x = ox+sx*7.25f;
+    //? pos.y = oy+sy*0.25f;
+    //? pw->CreateButton(pos, ddim, 63, EVENT_OBJECT_BHELP);
+
+        pos.x = ox+sx*8.00f;
+        pos.y = oy+sy*0.25f;
+        pw->CreateButton(pos, ddim, 28, EVENT_OBJECT_BTAKEOFF);
+
+        if ( m_lightning->GetStatus(sleep, delay, magnetic, progress) )
+        {
+            pos.x = ox+sx*10.2f;
+            pos.y = oy+sy*0.5f;
+            ddim.x = dim.x*1.0f;
+            ddim.y = dim.y*1.0f;
+            pw->CreateButton(pos, ddim, 41, EVENT_OBJECT_LIMIT);
+        }
     }
 
     pos.x = ox+sx*0.0f;
@@ -1246,7 +1248,7 @@ void CAutoBase::FreezeCargo(bool freeze)
             m_cargoObjects.insert(obj);
             if ( obj->Implements(ObjectInterfaceType::Movable) )
             {
-                CPhysics* physics = dynamic_cast<CMovableObject*>(obj)->GetPhysics();
+                CPhysics* physics = dynamic_cast<CMovableObject&>(*obj).GetPhysics();
                 physics->SetFreeze(freeze);
             }
         }

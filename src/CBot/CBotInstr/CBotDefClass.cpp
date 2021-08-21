@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -135,12 +135,12 @@ CBotInstr* CBotDefClass::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* p
             // the constructor is there?
 //          std::string  noname;
             CBotTypResult r = pClass->CompileMethode(&token, var, ppVars, pStk, inst->m_nMethodeIdent);
-            delete pStk->TokenStack();                          // releases the supplement stack
+            pStk->DeleteNext();                                 // releases the supplement stack
             int typ = r.GetType();
 
             if (typ == CBotErrUndefCall)
             {
-                // si le constructeur n'existe pas
+                // if the ctor don't exist
                 if (inst->m_parameters != nullptr)                 // with parameters
                 {
                     pStk->SetError(CBotErrNoConstruct, vartoken);
@@ -160,7 +160,7 @@ CBotInstr* CBotDefClass::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* p
             if (nullptr != (inst->m_exprRetVar = CBotExprRetVar::Compile(p, pStk, true)))
             {
                 inst->m_exprRetVar->SetToken(vartoken);
-                delete pStk->TokenStack();
+                pStk->DeleteNext();
             }
             pStk->SetVar(nullptr);
 
@@ -360,6 +360,7 @@ bool CBotDefClass::Execute(CBotStack* &pj)
             if ( p != nullptr) while ( true )
             {
                 pile2 = pile2->AddStack();                      // place on the stack for the results
+                if (pile2->StackOver()) return pj->Return(pile2);
                 if ( pile2->GetState() == 0 )
                 {
                     if (!p->Execute(pile2)) return false;       // interrupted here?

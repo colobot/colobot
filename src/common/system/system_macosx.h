@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -35,6 +35,11 @@ public:
     std::string GetDataPath() override;
     std::string GetLangPath() override;
     std::string GetSaveDir() override;
+
+    std::string GetEnvVar(const std::string& name) override;
+
+    bool OpenPath(const std::string& path) override;
+    bool OpenWebsite(const std::string& url) override;
 
     void Usleep(int usec) override;
 

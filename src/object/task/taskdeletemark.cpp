@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,6 +23,7 @@
 #include "common/global.h"
 
 #include "graphics/engine/particle.h"
+#include "graphics/engine/pyro_manager.h"
 #include "graphics/engine/terrain.h"
 
 #include "level/robotmain.h"
@@ -88,6 +89,6 @@ void CTaskDeleteMark::DeleteMark()
 
     if (obj != nullptr)
     {
-        CObjectManager::GetInstancePointer()->DeleteObject(obj);
+        m_engine->GetPyroManager()->Create(Gfx::PT_WPCHECK, obj);
     }
 }

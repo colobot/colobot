@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -111,6 +111,34 @@ std::string CSystemUtilsMacOSX::GetSaveDir()
 
     return savegameDir;
 #endif
+}
+
+std::string CSystemUtilsMacOSX::GetEnvVar(const std::string& str)
+{
+    // TODO: I have no Mac
+    return std::string();
+}
+
+bool CSystemUtilsMacOSX::OpenPath(const std::string& path)
+{
+    int result = system(("open \"" + path + "\"").c_str()); // TODO: Test on macOS
+    if (result != 0)
+    {
+        GetLogger()->Error("Failed to open path: %s, error code: %i\n", path.c_str(), result);
+        return false;
+    }
+    return true;
+}
+
+bool CSystemUtilsMacOSX::OpenWebsite(const std::string& url)
+{
+    int result = system(("open \"" + url + "\"").c_str()); // TODO: Test on macOS
+    if (result != 0)
+    {
+        GetLogger()->Error("Failed to open website: %s, error code: %i\n", website.c_str(), result);
+        return false;
+    }
+    return true;
 }
 
 void CSystemUtilsMacOSX::Usleep(int usec)

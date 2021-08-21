@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -53,9 +53,9 @@ public:
     virtual bool IsProgram() = 0;
 
     //! Save current execution status to file
-    virtual bool WriteStack(FILE *file) = 0;
+    virtual bool WriteStack(std::ostream &ostr) = 0;
     //! Read current execution status from file
-    virtual bool ReadStack(FILE *file) = 0;
+    virtual bool ReadStack(std::istream &istr) = 0;
 
     //! Start recording trace
     virtual void TraceRecordStart() = 0;

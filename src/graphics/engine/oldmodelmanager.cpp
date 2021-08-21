@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -57,7 +57,18 @@ bool COldModelManager::LoadModel(const std::string& fileName, bool mirrored, int
         if (!stream.is_open())
             throw CModelIOException(std::string("Could not open file '") + fileName + "'");
 
-        model = ModelInput::Read(stream, ModelFormat::Old);
+        std::string::size_type extension_index = fileName.find_last_of('.');
+        if (extension_index == std::string::npos)
+            throw CModelIOException(std::string("Filename '") + fileName + "' has no extension");
+
+        std::string extension = fileName.substr(extension_index + 1);
+
+        if (extension == "mod")
+            model = ModelInput::Read(stream, ModelFormat::Old);
+        else if (extension == "txt")
+            model = ModelInput::Read(stream, ModelFormat::Text);
+        else
+            throw CModelIOException(std::string("Filename '") + fileName + "' has unknown extension");
     }
     catch (const CModelIOException& e)
     {
@@ -193,6 +204,7 @@ void COldModelManager::ChangeVariant(std::vector<ModelTriangle>& triangles, int 
             triangles[i].tex1Name == "factory.png" ||
             triangles[i].tex1Name == "lemt.png"    ||
             triangles[i].tex1Name == "roller.png"  ||
+            triangles[i].tex1Name == "rollert.png" ||
             triangles[i].tex1Name == "search.png"  ||
             triangles[i].tex1Name == "drawer.png"  ||
             triangles[i].tex1Name == "subm.png"     )

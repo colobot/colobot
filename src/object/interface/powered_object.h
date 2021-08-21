@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -61,10 +61,10 @@ inline float GetObjectEnergy(CObject* object)
 
     if (object->Implements(ObjectInterfaceType::Powered))
     {
-        CObject* power = dynamic_cast<CPoweredObject*>(object)->GetPower();
+        CObject* power = dynamic_cast<CPoweredObject&>(*object).GetPower();
         if (power != nullptr && power->Implements(ObjectInterfaceType::PowerContainer))
         {
-            energy = dynamic_cast<CPowerContainerObject*>(power)->GetEnergy();
+            energy = dynamic_cast<CPowerContainerObject&>(*power).GetEnergy();
         }
     }
 
@@ -77,10 +77,10 @@ inline float GetObjectEnergyLevel(CObject* object)
 
     if (object->Implements(ObjectInterfaceType::Powered))
     {
-        CObject* power = dynamic_cast<CPoweredObject*>(object)->GetPower();
+        CObject* power = dynamic_cast<CPoweredObject&>(*object).GetPower();
         if (power != nullptr && power->Implements(ObjectInterfaceType::PowerContainer))
         {
-            energy = dynamic_cast<CPowerContainerObject*>(power)->GetEnergyLevel();
+            energy = dynamic_cast<CPowerContainerObject&>(*power).GetEnergyLevel();
         }
     }
 
@@ -90,5 +90,5 @@ inline float GetObjectEnergyLevel(CObject* object)
 inline bool ObjectHasPowerCell(CObject* object)
 {
     return object->Implements(ObjectInterfaceType::Powered) &&
-           dynamic_cast<CPoweredObject*>(object)->GetPower() != nullptr;
+           dynamic_cast<CPoweredObject&>(*object).GetPower() != nullptr;
 }

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -186,11 +186,16 @@ static ObjectType ObjectTypeFromFactoryButton(EventType eventType)
     if ( eventType == EVENT_OBJECT_FACTORYti )  return OBJECT_MOBILEti;
     if ( eventType == EVENT_OBJECT_FACTORYfi )  return OBJECT_MOBILEfi;
     if ( eventType == EVENT_OBJECT_FACTORYii )  return OBJECT_MOBILEii;
+    if ( eventType == EVENT_OBJECT_FACTORYwb )  return OBJECT_MOBILEwb;
+    if ( eventType == EVENT_OBJECT_FACTORYtb )  return OBJECT_MOBILEtb;
+    if ( eventType == EVENT_OBJECT_FACTORYfb )  return OBJECT_MOBILEfb;
+    if ( eventType == EVENT_OBJECT_FACTORYib )  return OBJECT_MOBILEib;
     if ( eventType == EVENT_OBJECT_FACTORYrt )  return OBJECT_MOBILErt;
     if ( eventType == EVENT_OBJECT_FACTORYrc )  return OBJECT_MOBILErc;
     if ( eventType == EVENT_OBJECT_FACTORYrr )  return OBJECT_MOBILErr;
     if ( eventType == EVENT_OBJECT_FACTORYrs )  return OBJECT_MOBILErs;
     if ( eventType == EVENT_OBJECT_FACTORYsa )  return OBJECT_MOBILEsa;
+    if ( eventType == EVENT_OBJECT_FACTORYtg )  return OBJECT_MOBILEtg;
 
     return OBJECT_NULL;
 }
@@ -392,7 +397,7 @@ bool CAutoFactory::EventProcess(const Event &event)
             if ( vehicle != nullptr )
             {
                 assert(vehicle->Implements(ObjectInterfaceType::Movable));
-                physics = dynamic_cast<CMovableObject*>(vehicle)->GetPhysics();
+                physics = dynamic_cast<CMovableObject&>(*vehicle).GetPhysics();
                 physics->SetFreeze(false);  // can move
 
                 vehicle->SetLock(false);  // vehicle useable
@@ -403,7 +408,7 @@ bool CAutoFactory::EventProcess(const Event &event)
                 {
                     if (vehicle->Implements(ObjectInterfaceType::Programmable) && vehicle->Implements(ObjectInterfaceType::ProgramStorage))
                     {
-                        Program* program = dynamic_cast<CProgramStorageObject*>(vehicle)->AddProgram();
+                        Program* program = dynamic_cast<CProgramStorageObject&>(*vehicle).AddProgram();
 
                         if (boost::regex_match(m_program, boost::regex("[A-Za-z0-9_]+"))) // Public function name?
                         {
@@ -419,7 +424,7 @@ bool CAutoFactory::EventProcess(const Event &event)
                             program->script->SendScript(m_program.c_str());
                         }
 
-                        dynamic_cast<CProgrammableObject*>(vehicle)->RunProgram(program);
+                        dynamic_cast<CProgrammableObject&>(*vehicle).RunProgram(program);
                     }
                 }
             }
@@ -587,6 +592,10 @@ bool CAutoFactory::NearestVehicle()
              type != OBJECT_MOBILEta &&
              type != OBJECT_MOBILEwa &&
              type != OBJECT_MOBILEia &&
+             type != OBJECT_MOBILEfb &&
+             type != OBJECT_MOBILEtb &&
+             type != OBJECT_MOBILEwb &&
+             type != OBJECT_MOBILEib &&
              type != OBJECT_MOBILEfc &&
              type != OBJECT_MOBILEtc &&
              type != OBJECT_MOBILEwc &&
@@ -609,6 +618,8 @@ bool CAutoFactory::NearestVehicle()
              type != OBJECT_MOBILEtt &&
              type != OBJECT_MOBILEwt &&
              type != OBJECT_MOBILEit &&
+             type != OBJECT_MOBILErp &&
+             type != OBJECT_MOBILEst &&
              type != OBJECT_MOBILEdr &&
              type != OBJECT_MOTHER   &&
              type != OBJECT_ANT      &&
@@ -653,12 +664,13 @@ bool CAutoFactory::CreateVehicle()
     params.angle = angle;
     params.type = m_type;
     params.team = m_object->GetTeam();
+    params.trainer = m_object->GetTrainer();
     CObject* vehicle = CObjectManager::GetInstancePointer()->CreateObject(params);
 
     vehicle->SetLock(true);  // not usable
 
     assert(vehicle->Implements(ObjectInterfaceType::Movable));
-    CPhysics* physics = dynamic_cast<CMovableObject*>(vehicle)->GetPhysics();
+    CPhysics* physics = dynamic_cast<CMovableObject&>(*vehicle).GetPhysics();
     physics->SetFreeze(true);  // it doesn't move
 
     if (vehicle->Implements(ObjectInterfaceType::ProgramStorage))
@@ -718,66 +730,80 @@ bool CAutoFactory::CreateInterface(bool bSelect)
     oy = 3.0f/480.0f;
     sx = 33.0f/640.0f;
     sy = 33.0f/480.0f;
+    if( !m_object->GetTrainer() )
+    {
+        pos.x = 0.0f;
+        pos.y = oy+sy*2.6f;
+        ddim.x = 138.0f/640.0f;
+        ddim.y = 258.0f/480.0f;
+        pw->CreateGroup(pos, ddim, 6, EVENT_WINDOW3);
 
-    pos.x = 0.0f;
-    pos.y = oy+sy*2.6f;
-    ddim.x = 138.0f/640.0f;
-    ddim.y = 222.0f/480.0f;
-    pw->CreateGroup(pos, ddim, 6, EVENT_WINDOW3);
+        pos.x = ox+sx*0.0f;
+        pos.y = oy+sy*9.3f;
+        pw->CreateButton(pos, dim, 128+9, EVENT_OBJECT_FACTORYwa);
+        pos.x += dim.x;
+        pw->CreateButton(pos, dim, 128+10, EVENT_OBJECT_FACTORYta);
+        pos.x += dim.x;
+        pw->CreateButton(pos, dim, 128+11, EVENT_OBJECT_FACTORYfa);
+        pos.x += dim.x;
+        pw->CreateButton(pos, dim, 128+22, EVENT_OBJECT_FACTORYia);
 
-    pos.x = ox+sx*0.0f;
-    pos.y = oy+sy*8.2f;
-    pw->CreateButton(pos, dim, 128+9, EVENT_OBJECT_FACTORYwa);
-    pos.x += dim.x;
-    pw->CreateButton(pos, dim, 128+10, EVENT_OBJECT_FACTORYta);
-    pos.x += dim.x;
-    pw->CreateButton(pos, dim, 128+11, EVENT_OBJECT_FACTORYfa);
-    pos.x += dim.x;
-    pw->CreateButton(pos, dim, 128+22, EVENT_OBJECT_FACTORYia);
+        pos.x = ox+sx*0.0f;
+        pos.y = oy+sy*8.2f;
+        pw->CreateButton(pos, dim, 128+12, EVENT_OBJECT_FACTORYws);
+        pos.x += dim.x;
+        pw->CreateButton(pos, dim, 128+13, EVENT_OBJECT_FACTORYts);
+        pos.x += dim.x;
+        pw->CreateButton(pos, dim, 128+14, EVENT_OBJECT_FACTORYfs);
+        pos.x += dim.x;
+        pw->CreateButton(pos, dim, 128+24, EVENT_OBJECT_FACTORYis);
 
-    pos.x = ox+sx*0.0f;
-    pos.y = oy+sy*7.1f;
-    pw->CreateButton(pos, dim, 128+12, EVENT_OBJECT_FACTORYws);
-    pos.x += dim.x;
-    pw->CreateButton(pos, dim, 128+13, EVENT_OBJECT_FACTORYts);
-    pos.x += dim.x;
-    pw->CreateButton(pos, dim, 128+14, EVENT_OBJECT_FACTORYfs);
-    pos.x += dim.x;
-    pw->CreateButton(pos, dim, 128+24, EVENT_OBJECT_FACTORYis);
+        pos.x = ox+sx*0.0f;
+        pos.y = oy+sy*7.1f;
+        pw->CreateButton(pos, dim, 128+15, EVENT_OBJECT_FACTORYwc);
+        pos.x += dim.x;
+        pw->CreateButton(pos, dim, 128+16, EVENT_OBJECT_FACTORYtc);
+        pos.x += dim.x;
+        pw->CreateButton(pos, dim, 128+17, EVENT_OBJECT_FACTORYfc);
+        pos.x += dim.x;
+        pw->CreateButton(pos, dim, 128+23, EVENT_OBJECT_FACTORYic);
 
-    pos.x = ox+sx*0.0f;
-    pos.y = oy+sy*6.0f;
-    pw->CreateButton(pos, dim, 128+15, EVENT_OBJECT_FACTORYwc);
-    pos.x += dim.x;
-    pw->CreateButton(pos, dim, 128+16, EVENT_OBJECT_FACTORYtc);
-    pos.x += dim.x;
-    pw->CreateButton(pos, dim, 128+17, EVENT_OBJECT_FACTORYfc);
-    pos.x += dim.x;
-    pw->CreateButton(pos, dim, 128+23, EVENT_OBJECT_FACTORYic);
+        pos.x = ox+sx*0.0f;
+        pos.y = oy+sy*6.0f;
+        pw->CreateButton(pos, dim, 128+25, EVENT_OBJECT_FACTORYwi);
+        pos.x += dim.x;
+        pw->CreateButton(pos, dim, 128+26, EVENT_OBJECT_FACTORYti);
+        pos.x += dim.x;
+        pw->CreateButton(pos, dim, 128+27, EVENT_OBJECT_FACTORYfi);
+        pos.x += dim.x;
+        pw->CreateButton(pos, dim, 128+28, EVENT_OBJECT_FACTORYii);
 
-    pos.x = ox+sx*0.0f;
-    pos.y = oy+sy*4.9f;
-    pw->CreateButton(pos, dim, 128+25, EVENT_OBJECT_FACTORYwi);
-    pos.x += dim.x;
-    pw->CreateButton(pos, dim, 128+26, EVENT_OBJECT_FACTORYti);
-    pos.x += dim.x;
-    pw->CreateButton(pos, dim, 128+27, EVENT_OBJECT_FACTORYfi);
-    pos.x += dim.x;
-    pw->CreateButton(pos, dim, 128+28, EVENT_OBJECT_FACTORYii);
+        pos.x = ox+sx*0.0f;
+        pos.y = oy+sy*4.9f;
+        pw->CreateButton(pos, dim, 192+0, EVENT_OBJECT_FACTORYwb);
+        pos.x += dim.x;
+        pw->CreateButton(pos, dim, 192+1, EVENT_OBJECT_FACTORYtb);
+        pos.x += dim.x;
+        pw->CreateButton(pos, dim, 192+2, EVENT_OBJECT_FACTORYfb);
+        pos.x += dim.x;
+        pw->CreateButton(pos, dim, 192+3, EVENT_OBJECT_FACTORYib);
 
-    pos.x = ox+sx*0.0f;
-    pos.y = oy+sy*3.8f;
-    pw->CreateButton(pos, dim, 128+18, EVENT_OBJECT_FACTORYrt);
-    pos.x += dim.x;
-    pw->CreateButton(pos, dim, 128+19, EVENT_OBJECT_FACTORYrc);
-    pos.x += dim.x;
-    pw->CreateButton(pos, dim, 128+20, EVENT_OBJECT_FACTORYrr);
-    pos.x += dim.x;
-    pw->CreateButton(pos, dim, 128+29, EVENT_OBJECT_FACTORYrs);
+        pos.x = ox+sx*0.0f;
+        pos.y = oy+sy*3.8f;
+        pw->CreateButton(pos, dim, 128+18, EVENT_OBJECT_FACTORYrt);
+        pos.x += dim.x;
+        pw->CreateButton(pos, dim, 128+19, EVENT_OBJECT_FACTORYrc);
+        pos.x += dim.x;
+        pw->CreateButton(pos, dim, 128+20, EVENT_OBJECT_FACTORYrr);
+        pos.x += dim.x;
+        pw->CreateButton(pos, dim, 128+29, EVENT_OBJECT_FACTORYrs);
 
-    pos.x = ox+sx*0.0f;
-    pos.y = oy+sy*2.7f;
-    pw->CreateButton(pos, dim, 128+21, EVENT_OBJECT_FACTORYsa);
+        pos.x = ox+sx*0.0f;
+        pos.y = oy+sy*2.7f;
+        pw->CreateButton(pos, dim, 128+21, EVENT_OBJECT_FACTORYsa);
+        pos.x += dim.x;
+        pw->CreateButton(pos, dim, 128+45, EVENT_OBJECT_FACTORYtg);
+    }
 
     pos.x = ox+sx*0.0f;
     pos.y = oy+sy*0;
@@ -817,11 +843,16 @@ void CAutoFactory::UpdateInterface()
     UpdateButton(pw, EVENT_OBJECT_FACTORYti, m_bBusy);
     UpdateButton(pw, EVENT_OBJECT_FACTORYfi, m_bBusy);
     UpdateButton(pw, EVENT_OBJECT_FACTORYii, m_bBusy);
+    UpdateButton(pw, EVENT_OBJECT_FACTORYwb, m_bBusy);
+    UpdateButton(pw, EVENT_OBJECT_FACTORYtb, m_bBusy);
+    UpdateButton(pw, EVENT_OBJECT_FACTORYfb, m_bBusy);
+    UpdateButton(pw, EVENT_OBJECT_FACTORYib, m_bBusy);
     UpdateButton(pw, EVENT_OBJECT_FACTORYrt, m_bBusy);
     UpdateButton(pw, EVENT_OBJECT_FACTORYrc, m_bBusy);
     UpdateButton(pw, EVENT_OBJECT_FACTORYrr, m_bBusy);
     UpdateButton(pw, EVENT_OBJECT_FACTORYrs, m_bBusy);
     UpdateButton(pw, EVENT_OBJECT_FACTORYsa, m_bBusy);
+    UpdateButton(pw, EVENT_OBJECT_FACTORYtg, m_bBusy);
 }
 
 // Updates the status of one interface button.

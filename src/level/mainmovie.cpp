@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -90,7 +90,7 @@ bool CMainMovie::Start(MainMovieType type, float time)
         }
 
         assert(pObj->Implements(ObjectInterfaceType::Movable));
-        dynamic_cast<CMovableObject*>(pObj)->GetMotion()->SetAction(MHS_SATCOM, 0.5f);  // reads the SatCom
+        dynamic_cast<CMovableObject&>(*pObj).GetMotion()->SetAction(MHS_SATCOM, 0.5f);  // reads the SatCom
 
         m_camera->GetCamera(m_initialEye, m_initialLookat);
         m_camera->SetType(Gfx::CAM_TYPE_SCRIPT);
@@ -110,7 +110,7 @@ bool CMainMovie::Start(MainMovieType type, float time)
         if ( pObj != nullptr )
         {
             assert(pObj->Implements(ObjectInterfaceType::Movable));
-            dynamic_cast<CMovableObject*>(pObj)->GetMotion()->SetAction(-1);  // finishes reading SatCom
+            dynamic_cast<CMovableObject&>(*pObj).GetMotion()->SetAction(-1);  // finishes reading SatCom
         }
 
         m_camera->SetType(Gfx::CAM_TYPE_BACK);
@@ -132,7 +132,7 @@ bool CMainMovie::Stop()
         if ( pObj != nullptr )
         {
             assert(pObj->Implements(ObjectInterfaceType::Movable));
-            dynamic_cast<CMovableObject*>(pObj)->GetMotion()->SetAction(-1);  // finishes reading SatCom
+            dynamic_cast<CMovableObject&>(*pObj).GetMotion()->SetAction(-1);  // finishes reading SatCom
         }
     }
 

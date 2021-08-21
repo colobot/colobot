@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -70,7 +70,7 @@ CBotInstr* CBotInstrMethode::Compile(CBotToken* &p, CBotCStack* pStack, CBotVar*
             CBotClass* pClass = var->GetClass();    // pointer to the class
             inst->m_className = pClass->GetName();  // name of the class
             CBotTypResult r = pClass->CompileMethode(pp, var, ppVars, pStack, inst->m_MethodeIdent);
-            delete pStack->TokenStack();    // release parameters on the stack
+            pStack->DeleteNext();           // release parameters on the stack
             inst->m_typRes = r;
 
             if (inst->m_typRes.GetType() > 20)
@@ -95,7 +95,7 @@ CBotInstr* CBotInstrMethode::Compile(CBotToken* &p, CBotCStack* pStack, CBotVar*
             if (nullptr != (inst->m_exprRetVar = CBotExprRetVar::Compile(p, pStack, bMethodChain)))
             {
                 inst->m_exprRetVar->SetToken(pp);
-                delete pStack->TokenStack();
+                pStack->DeleteNext();
             }
 
             if ( pStack->IsOk() )
@@ -164,6 +164,7 @@ bool CBotInstrMethode::ExecuteVar(CBotVar* &pVar, CBotStack* &pj, CBotToken* pre
         }
         ppVars[i++] = pile2->GetVar();              // construct the list of pointers
         pile2 = pile2->AddStack();                  // space on the stack for the result
+        if (pile2->StackOver()) return pj->Return(pile2);
         p = p->GetNext();
         if ( p == nullptr) break;
     }

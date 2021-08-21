@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -62,9 +62,9 @@ std::string CResourceManager::CleanPath(const std::string& path)
 }
 
 
-bool CResourceManager::AddLocation(const std::string &location, bool prepend)
+bool CResourceManager::AddLocation(const std::string &location, bool prepend, const std::string &mountPoint)
 {
-    if (!PHYSFS_mount(location.c_str(), nullptr, prepend ? 0 : 1))
+    if (!PHYSFS_mount(location.c_str(), mountPoint.c_str(), prepend ? 0 : 1))
     {
         GetLogger()->Error("Error while mounting \"%s\": %s\n", location.c_str(), PHYSFS_getLastError());
         return false;
@@ -95,6 +95,12 @@ std::vector<std::string> CResourceManager::GetLocations()
     return ret;
 }
 
+bool CResourceManager::LocationExists(const std::string& location)
+{
+    auto locations = GetLocations();
+    auto it = std::find(locations.cbegin(), locations.cend(), location);
+    return it != locations.cend();
+}
 
 bool CResourceManager::SetSaveLocation(const std::string &location)
 {
@@ -174,7 +180,7 @@ bool CResourceManager::RemoveDirectory(const std::string& directory)
     return false;
 }
 
-std::vector<std::string> CResourceManager::ListFiles(const std::string &directory)
+std::vector<std::string> CResourceManager::ListFiles(const std::string &directory, bool excludeDirs)
 {
     std::vector<std::string> result;
 
@@ -184,6 +190,11 @@ std::vector<std::string> CResourceManager::ListFiles(const std::string &director
 
         for (char **i = files; *i != nullptr; i++)
         {
+            if (excludeDirs)
+            {
+                std::string path = CleanPath(directory) + "/" + (*i);
+                if (PHYSFS_isDirectory(path.c_str())) continue;
+            }
             result.push_back(*i);
         }
 

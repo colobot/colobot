@@ -1,0 +1,104 @@
+name: Build
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.host_os }}
+    container: ${{ matrix.container }}
+    strategy:
+      matrix:
+        target_os: [linux]
+        host_os: [ubuntu-18.04, ubuntu-20.04]
+        container: ['']
+        include:
+          - target_os: windows
+            host_os: ubuntu-latest
+            container: krzysh/colobot-build:latest
+      fail-fast: false
+    steps:
+    - name: Install Colobot dependencies
+      run: sudo apt-get update && sudo apt-get install -y --no-install-recommends build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-regex-dev libphysfs-dev gettext git po4a vorbis-tools librsvg2-bin xmlstarlet
+      if: matrix.container == ''
+    - uses: actions/checkout@v2
+    - name: Create build directory
+      run: cmake -E make_directory build
+    - name: Run CMake (for Windows using MXE)
+      working-directory: build
+      # FIXME: without -lsetupapi linking sdl2 fails
+      run: /opt/mxe/usr/bin/i686-w64-mingw32.static-cmake -DCMAKE_CXX_STANDARD_LIBRARIES="-lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 -lsetupapi" -DCMAKE_INSTALL_PREFIX=/install -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDEV_BUILD=1 -DPORTABLE=1 -DTOOLS=1 -DTESTS=0 -DMXE_USE_CCACHE=0 ..
+      if: matrix.target_os == 'windows'
+    - name: Run CMake (for Linux)
+      working-directory: build
+      run: cmake -DCMAKE_INSTALL_PREFIX=/install -DCMAKE_SKIP_INSTALL_RPATH=ON -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDEV_BUILD=1 -DPORTABLE=1 -DTOOLS=1 -DTESTS=1 -DDESKTOP=1 ..
+      if: matrix.target_os == 'linux'
+    - name: Build
+      working-directory: build
+      run: make -j `nproc`
+    - name: Install
+      working-directory: build
+      run: DESTDIR=. make install
+    - name: Patch library path
+      working-directory: build
+      run: patchelf --set-rpath '.' install/colobot
+      if: matrix.target_os == 'linux'
+    - name: Upload build
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{matrix.target_os}}-debug
+        path: build/install
+      if: matrix.target_os == 'windows' || matrix.host_os == 'ubuntu-18.04'
+    - name: Create AppImage
+      working-directory: build
+      run: |
+        # Download app image tool
+        wget -N https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+        chmod +x linuxdeploy-x86_64.AppImage
+        ./linuxdeploy-x86_64.AppImage --appimage-extract
+        
+        # Create AppImage
+        NO_STRIP=1 ./squashfs-root/AppRun -e colobot --output appimage --appdir colobot.AppDir -d desktop/colobot.desktop -i ../desktop/colobot.svg
+        chmod +x Colobot-*-x86_64.AppImage
+        
+        # Prepare folder for zip
+        mkdir -p appimage
+        cp -rp install/data appimage/data
+        cp -rp install/lang appimage/lang
+        cp -p Colobot-*-x86_64.AppImage appimage/colobot
+      if: matrix.target_os == 'linux'
+    - name: Upload AppImage
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{matrix.target_os}}-debug-AppImage
+        path: build/appimage
+      if: matrix.target_os == 'linux' && matrix.host_os == 'ubuntu-18.04'
+    - name: Run tests
+      # TODO: Maybe run Windows tests using wine as well?
+      working-directory: build
+      run: ./colobot_ut --gtest_output=xml:gtestresults.xml
+      if: matrix.target_os == 'linux'
+    - name: Upload test results
+      uses: actions/upload-artifact@v2
+      with:
+        name: Test results (${{ matrix.target_os }}, ${{ matrix.host_os }})
+        path: build/gtestresults.xml
+      if: matrix.target_os == 'linux'
+  doc:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install Colobot dependencies
+      run: sudo apt-get update && sudo apt-get install -y --no-install-recommends build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-regex-dev libphysfs-dev gettext git po4a vorbis-tools librsvg2-bin xmlstarlet doxygen graphviz
+    - uses: actions/checkout@v2
+    - name: Create build directory
+      run: cmake -E make_directory build
+    - name: Run CMake
+      working-directory: build
+      run: cmake ..
+    - name: Build docs
+      working-directory: build
+      run: make doc
+    - name: Upload docs
+      uses: actions/upload-artifact@v2
+      with:
+        name: doc
+        path: build/doc

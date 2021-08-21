@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,11 +19,12 @@
 
 #pragma once
 
-#include "CBot/CBotTypResult.h"
 #include "CBot/CBotEnums.h"
 
-#include <vector>
 #include <list>
+#include <memory>
+#include <string>
+#include <vector>
 
 namespace CBot
 {
@@ -31,6 +32,7 @@ namespace CBot
 class CBotFunction;
 class CBotClass;
 class CBotStack;
+class CBotTypResult;
 class CBotVar;
 class CBotExternalCallList;
 
@@ -201,14 +203,6 @@ public:
     void Stop();
 
     /**
-     * \brief Sets the number of steps (parts of instructions) to execute in Run() before suspending the program execution
-     * \param n new timer value
-     *
-     * FIXME: Seems to be currently kind of broken (see issue #410)
-     */
-    static void SetTimer(int n);
-
-    /**
      * \brief Add a function that can be called from CBot
      *
      * To define an external function, proceed as follows:
@@ -282,27 +276,20 @@ public:
 
     /**
      * \brief Save the current execution status into a file
-     * \param pf
-     * \parblock
-     * file handle
-     *
-     * This file handle must have been opened by this library! Otherwise crashes on Windows
-     *
-     * TODO: Verify this
-     * \endparblock
+     * \param ostr Output stream
      * \return true on success, false on write error
      */
-    bool SaveState(FILE* pf);
+    bool SaveState(std::ostream &ostr);
 
     /**
      * \brief Restore the execution state from a file
      *
      * The previous program code must already have been recompiled with Compile() before calling this function
      *
-     * \param pf file handle
+     * \param istr Input stream
      * \return true on success, false on read error
      */
-    bool RestoreState(FILE* pf);
+    bool RestoreState(std::istream &istr);
 
     /**
      * \brief GetPosition Gives the position of a routine in the original text
@@ -342,11 +329,11 @@ public:
     /**
      * \brief Returns static list of all registered external calls
      */
-    static CBotExternalCallList* GetExternalCalls();
+    static const std::unique_ptr<CBotExternalCallList>& GetExternalCalls();
 
 private:
     //! All external calls
-    static CBotExternalCallList* m_externalCalls;
+    static std::unique_ptr<CBotExternalCallList> m_externalCalls;
     //! All user-defined functions
     std::list<CBotFunction*> m_functions{};
     //! The entry point function

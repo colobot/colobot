@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -289,7 +289,7 @@ CObject* CAutoTower::SearchTarget(Math::Vector &impact)
         {
             if ( obj->Implements(ObjectInterfaceType::Movable) )
             {
-                CPhysics* physics = dynamic_cast<CMovableObject*>(obj)->GetPhysics();
+                CPhysics* physics = dynamic_cast<CMovableObject&>(*obj).GetPhysics();
                 float speed = fabs(physics->GetLinMotionX(MO_REASPEED));
                 if ( speed > 20.0f )  continue;  // moving too fast?
             }
@@ -302,8 +302,7 @@ CObject* CAutoTower::SearchTarget(Math::Vector &impact)
         if ( distance > TOWER_SCOPE )  continue;  // too far
         if ( distance < min )
         {
-            min = distance;
-            best = obj;
+            min = distance; best = obj;
         }
     }
     if ( best == nullptr )  return nullptr;
@@ -327,7 +326,7 @@ Error CAutoTower::GetError()
         return ERR_TOWER_POWER;  // no battery
     }
 
-    if ( dynamic_cast<CPowerContainerObject*>(m_object->GetPower())->GetEnergy() < ENERGY_FIRE )
+    if ( dynamic_cast<CPowerContainerObject&>(*m_object->GetPower()).GetEnergy() < ENERGY_FIRE )
     {
         return ERR_TOWER_ENERGY;  // not enough energy
     }

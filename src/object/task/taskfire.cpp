@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -317,7 +317,7 @@ Error CTaskFire::Start(float delay)
     CObject* power = dynamic_cast<CPoweredObject*>(m_object)->GetPower();
     if (power == nullptr || !power->Implements(ObjectInterfaceType::PowerContainer))  return ERR_FIRE_ENERGY;
 
-    energy = dynamic_cast<CPowerContainerObject*>(power)->GetEnergy();
+    energy = dynamic_cast<CPowerContainerObject&>(*power).GetEnergy();
          if ( m_bOrganic )  fire = m_delay*ENERGY_FIREi;
     else if ( m_bRay     )  fire = m_delay*ENERGY_FIREr;
     else                    fire = m_delay*ENERGY_FIRE;

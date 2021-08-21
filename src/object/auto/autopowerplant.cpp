@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -331,7 +331,7 @@ bool CAutoPowerPlant::EventProcess(const Event &event)
 
                 cargo->SetScale(1.0f);
                 cargo->SetLock(false);  // usable battery
-                dynamic_cast<CTransportableObject*>(cargo)->SetTransporter(m_object);
+                dynamic_cast<CTransportableObject&>(*cargo).SetTransporter(m_object);
                 cargo->SetPosition(Math::Vector(0.0f, 3.0f, 0.0f));
                 m_object->SetPower(cargo);
 
@@ -410,6 +410,10 @@ bool CAutoPowerPlant::SearchVehicle()
              type != OBJECT_MOBILEta &&
              type != OBJECT_MOBILEwa &&
              type != OBJECT_MOBILEia &&
+             type != OBJECT_MOBILEfb &&
+             type != OBJECT_MOBILEtb &&
+             type != OBJECT_MOBILEwb &&
+             type != OBJECT_MOBILEib &&
              type != OBJECT_MOBILEfc &&
              type != OBJECT_MOBILEtc &&
              type != OBJECT_MOBILEwc &&
@@ -432,6 +436,8 @@ bool CAutoPowerPlant::SearchVehicle()
              type != OBJECT_MOBILEtt &&
              type != OBJECT_MOBILEwt &&
              type != OBJECT_MOBILEit &&
+             type != OBJECT_MOBILErp &&
+             type != OBJECT_MOBILEst &&
              type != OBJECT_MOBILEdr &&
              type != OBJECT_MOTHER   &&
              type != OBJECT_ANT      &&

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -314,7 +314,7 @@ void CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetPartRotation(13, Math::Vector(10.0f*Math::PI/180.0f, -5.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f));
 
     // Creates the neutron gun.
-    if ( option != 2 )  // with backpack?
+    if ( option != 2 && !m_main->GetPlusExplorer())  // with backpack?
     {
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);

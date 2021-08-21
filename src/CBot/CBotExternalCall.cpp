@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -82,19 +82,23 @@ int CBotExternalCallList::DoCall(CBotToken* token, CBotVar* thisVar, CBotVar** p
 
     CBotExternalCall* pt = m_list[token->GetString()].get();
 
-    if (pStack->IsCallFinished()) return true;
-    CBotStack* pile = pStack->AddStackExternalCall(pt);
+    if (thisVar == nullptr && pStack->IsCallFinished()) return true;  // only for non-method external call
 
-    // lists the parameters depending on the contents of the stack (pStackVar)
-    CBotVar* pVar = MakeListVars(ppVar, true);
+    // if this is a method call we need to use AddStack()
+    CBotStack* pile = (thisVar != nullptr) ? pStack->AddStack() : pStack->AddStackExternalCall(pt);
 
-    // creates a variable to the result
-    CBotVar* pResult = rettype.Eq(CBotTypVoid) ? nullptr : CBotVar::Create("", rettype);
+    if (pile->GetState() == 0) // the first time?
+    {
+        // lists the parameters depending on the contents of the stack
+        CBotVar* pVar = MakeListVars(ppVar, true);
+        pile->SetVar(pVar);
 
-    pile->SetVar(pVar);
-
-    CBotStack* pile2 = pile->AddStack();
-    pile2->SetVar(pResult);
+        CBotStack* pile2 = pile->AddStack();
+        // creates a variable to the result
+        CBotVar* pResult = rettype.Eq(CBotTypVoid) ? nullptr : CBotVar::Create("", rettype);
+        pile2->SetVar(pResult);
+        pile->IncState(); // increment state to mark this step done
+    }
 
     pile->SetError(CBotNoErr, token); // save token for the position in case of error
     return pt->Run(thisVar, pStack);
@@ -107,7 +111,8 @@ bool CBotExternalCallList::RestoreCall(CBotToken* token, CBotVar* thisVar, CBotV
 
     CBotExternalCall* pt = m_list[token->GetString()].get();
 
-    CBotStack* pile = pStack->RestoreStackEOX(pt);
+    // if this is a method call we need to use RestoreStack()
+    CBotStack* pile = (thisVar != nullptr) ? pStack->RestoreStack() : pStack->RestoreStackEOX(pt);
     if (pile == nullptr) return true;
 
     pile->RestoreStack();
@@ -163,8 +168,7 @@ bool CBotExternalCallDefault::Run(CBotVar* thisVar, CBotStack* pStack)
         return false;
     }
 
-    if (result != nullptr) pStack->SetCopyVar(result);
-
+    pStack->Return(pile2); // return 'result' and clear extra stack
     return true;
 }
 
@@ -187,8 +191,8 @@ CBotTypResult CBotExternalCallClass::Compile(CBotVar* thisVar, CBotVar* args, vo
 
 bool CBotExternalCallClass::Run(CBotVar* thisVar, CBotStack* pStack)
 {
-    if (pStack->IsCallFinished()) return true;
-    CBotStack* pile = pStack->AddStackExternalCall(this);
+    assert(thisVar != nullptr);
+    CBotStack* pile = pStack->AddStack();
     CBotVar* args = pile->GetVar();
 
     CBotStack* pile2 = pile->AddStack();
@@ -207,9 +211,8 @@ bool CBotExternalCallClass::Run(CBotVar* thisVar, CBotStack* pStack)
         return false;
     }
 
-    if (result != nullptr) pStack->SetCopyVar(result);
-
+    pStack->Return(pile2); // return 'result' and clear extra stack
     return true;
 }
 
-}
+} // namespace CBot

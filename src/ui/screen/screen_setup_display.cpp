@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -293,6 +293,7 @@ void CScreenSetupDisplay::UpdateApply()
     CWindow*    pw;
     CButton*    pb;
     CList*      pl;
+    CList*      pvl;
     CCheck*     pc;
     int         sel2;
     bool        bFull;
@@ -308,6 +309,22 @@ void CScreenSetupDisplay::UpdateApply()
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_FULL));
     bFull = pc->TestState(STATE_CHECK);
+
+    pvl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_VSYNC));
+    if (pvl == nullptr)  return;
+
+    switch (m_engine->GetVSync())
+    {
+    case -1: //Adaptive?
+        pvl->SetSelect(1);
+        break;
+    case 0: //Off?
+        pvl->SetSelect(0);
+        break;
+    case 1: //On?
+        pvl->SetSelect(2);
+        break;
+    }
 
     if ( sel2 == m_setupSelMode   &&
          bFull == m_setupFull     )

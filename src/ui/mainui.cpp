@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -35,6 +35,8 @@
 
 #include "ui/maindialog.h"
 
+#include "ui/particles_generator.h"
+
 #include "ui/controls/group.h"
 #include "ui/controls/interface.h"
 #include "ui/controls/label.h"
@@ -47,6 +49,7 @@
 #include "ui/screen/screen_level_list.h"
 #include "ui/screen/screen_loading.h"
 #include "ui/screen/screen_main_menu.h"
+#include "ui/screen/screen_mod_list.h"
 #include "ui/screen/screen_player_select.h"
 #include "ui/screen/screen_quit.h"
 #include "ui/screen/screen_setup_controls.h"
@@ -66,7 +69,7 @@ CMainUserInterface::CMainUserInterface()
     m_app        = CApplication::GetInstancePointer();
     m_main       = CRobotMain::GetInstancePointer();
     m_engine     = Gfx::CEngine::GetInstancePointer();
-    m_particle   = m_engine->GetParticle();
+    m_particleManager   = m_engine->GetParticle();
     m_interface  = m_main->GetInterface();
     m_sound      = m_app->GetSound();
     m_settings   = CSettings::GetInstancePointer();
@@ -78,6 +81,7 @@ CMainUserInterface::CMainUserInterface()
     m_screenIORead = MakeUnique<CScreenIORead>(m_screenLevelList.get());
     m_screenIOWrite = MakeUnique<CScreenIOWrite>(m_screenLevelList.get());
     m_screenLoading = MakeUnique<CScreenLoading>();
+    m_screenModList = MakeUnique<CScreenModList>(m_dialog.get(), m_app->GetModManager());
     m_screenSetupControls = MakeUnique<CScreenSetupControls>();
     m_screenSetupDisplay = MakeUnique<CScreenSetupDisplay>();
     m_screenSetupGame = MakeUnique<CScreenSetupGame>();
@@ -87,6 +91,7 @@ CMainUserInterface::CMainUserInterface()
     m_screenPlayerSelect = MakeUnique<CScreenPlayerSelect>(m_dialog.get());
     m_screenQuit = MakeUnique<CScreenQuit>();
     m_screenWelcome = MakeUnique<CScreenWelcome>();
+    m_mouseParticlesGenerator = MakeUnique<UI::CParticlesGenerator>();
 
     m_currentScreen = nullptr;
 
@@ -131,7 +136,6 @@ CScreenLoading* CMainUserInterface::GetLoadingScreen()
 {
     return m_screenLoading.get();
 }
-
 
 // Changes phase.
 
@@ -181,6 +185,10 @@ void CMainUserInterface::ChangePhase(Phase phase)
     {
         m_screenLevelList->SetLevelCategory(m_main->GetLevelCategory());
         m_currentScreen = m_screenLevelList.get();
+    }
+    if (m_phase == PHASE_MOD_LIST)
+    {
+        m_currentScreen = m_screenModList.get();
     }
     if (m_phase >= PHASE_SETUPd && m_phase <= PHASE_SETUPs)
     {
@@ -255,7 +263,7 @@ bool CMainUserInterface::EventProcess(const Event &event)
     if ( event.type == EVENT_MOUSE_MOVE )
     {
         m_glintMouse = event.mousePos;
-        NiceParticle(event.mousePos, event.mouseButtonsState & MOUSE_BUTTON_LEFT);
+        CreateMouseParticles(event.mousePos, event.mouseButtonsState & MOUSE_BUTTON_LEFT);
     }
 
     if (!m_dialog->EventProcess(event)) return false;
@@ -520,7 +528,7 @@ void CMainUserInterface::FrameParticle(float rTime)
         279.0f,  18.0f,
     };
 
-    if ( m_dialog->IsDialog() || !m_settings->GetInterfaceRain() )  return;
+    if (m_dialog->IsDialog() || !m_settings->GetMouseParticlesEnabled())  return;
 
     if ( m_phase == PHASE_MAIN_MENU )
     {
@@ -529,6 +537,7 @@ void CMainUserInterface::FrameParticle(float rTime)
     }
     else if ( m_phase == PHASE_PLAYER_SELECT    ||
             m_phase == PHASE_LEVEL_LIST ||
+            m_phase == PHASE_MOD_LIST ||
             m_phase == PHASE_SETUPd  ||
             m_phase == PHASE_SETUPg  ||
             m_phase == PHASE_SETUPp  ||
@@ -584,7 +593,7 @@ void CMainUserInterface::FrameParticle(float rTime)
                     speed.z = 0.0f;
                     dim.x = 0.04f+Math::Rand()*0.04f;
                     dim.y = dim.x/0.75f;
-                    m_particle->CreateParticle(pos, speed, dim,
+                    m_particleManager->CreateParticle(pos, speed, dim,
                             rand()%2?Gfx::PARTIGLINT:Gfx::PARTICONTROL,
                             Math::Rand()*0.4f+0.4f, 0.0f, 0.0f,
                             Gfx::SH_INTERFACE);
@@ -650,7 +659,7 @@ void CMainUserInterface::FrameParticle(float rTime)
                     speed.z = 0.0f;
                     dim.x = 0.005f+Math::Rand()*0.005f;
                     dim.y = dim.x/0.75f;
-                    m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIBLITZ,
+                    m_particleManager->CreateParticle(pos, speed, dim, Gfx::PARTIBLITZ,
                             Math::Rand()*0.2f+0.2f, 0.0f, 0.0f,
                             Gfx::SH_INTERFACE);
                     pos.x = m_particles[i].pos.x;
@@ -661,7 +670,7 @@ void CMainUserInterface::FrameParticle(float rTime)
                     speed.z = 0.0f;
                     dim.x = 0.01f+Math::Rand()*0.01f;
                     dim.y = dim.x/0.75f;
-                    m_particle->CreateParticle(pos, speed, dim,
+                    m_particleManager->CreateParticle(pos, speed, dim,
                             static_cast<Gfx::ParticleType>(Gfx::PARTILENS1+rand()%3),
                             Math::Rand()*0.5f+0.5f, 2.0f, 0.0f,
                             Gfx::SH_INTERFACE);
@@ -678,7 +687,7 @@ void CMainUserInterface::FrameParticle(float rTime)
                     speed.z = 0.0f;
                     dim.x = 0.005f+Math::Rand()*0.005f;
                     dim.y = dim.x/0.75f;
-                    m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIBLITZ,
+                    m_particleManager->CreateParticle(pos, speed, dim, Gfx::PARTIBLITZ,
                             Math::Rand()*0.2f+0.2f, 0.0f, 0.0f,
                             Gfx::SH_INTERFACE);
                     pos.x = m_particles[i].pos.x;
@@ -689,7 +698,7 @@ void CMainUserInterface::FrameParticle(float rTime)
                     speed.z = 0.0f;
                     dim.x = 0.005f+Math::Rand()*0.005f;
                     dim.y = dim.x/0.75f;
-                    m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISCRAPS,
+                    m_particleManager->CreateParticle(pos, speed, dim, Gfx::PARTISCRAPS,
                             Math::Rand()*0.5f+0.5f, 2.0f, 0.0f,
                             Gfx::SH_INTERFACE);
                 }
@@ -705,7 +714,7 @@ void CMainUserInterface::FrameParticle(float rTime)
                     speed.z = 0.0f;
                     dim.x = 0.03f+Math::Rand()*0.07f;
                     dim.y = dim.x/0.75f;
-                    m_particle->CreateParticle(pos, speed, dim, Gfx::PARTICRASH,
+                    m_particleManager->CreateParticle(pos, speed, dim, Gfx::PARTICRASH,
                             Math::Rand()*0.4f+0.4f, 0.0f, 0.0f,
                             Gfx::SH_INTERFACE);
                 }
@@ -719,48 +728,18 @@ void CMainUserInterface::FrameParticle(float rTime)
     }
 }
 
-// Some nice particles following the mouse.
-
-void CMainUserInterface::NiceParticle(Math::Point mouse, bool bPress)
+void CMainUserInterface::CreateMouseParticles(Math::Point mousePosition, bool buttonPressed)
 {
-    Math::Vector    pos, speed;
-    Math::Point     dim;
-
-    if ( !m_settings->GetInterfaceRain() )  return;
-    if ( (m_phase == PHASE_SIMUL ||
-          m_phase == PHASE_WIN   ||
-          m_phase == PHASE_LOST  ) &&
-         !m_dialog->IsDialog()      )  return;
-
-    if ( bPress )
+    if (isAllowedToCreateMouseParticles())
     {
-        pos.x = mouse.x;
-        pos.y = mouse.y;
-        pos.z = 0.0f;
-        speed.x = (Math::Rand()-0.5f)*0.5f;
-        speed.y = (0.3f+Math::Rand()*0.3f);
-        speed.z = 0.0f;
-        dim.x = 0.005f+Math::Rand()*0.005f;
-        dim.y = dim.x/0.75f;
-        m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISCRAPS,
-                Math::Rand()*0.5f+0.5f, 2.0f, 0.0f,
-                Gfx::SH_INTERFACE);
+        m_mouseParticlesGenerator->GenerateMouseParticles(Math::Point(mousePosition.x, mousePosition.y), buttonPressed);
     }
-    else
-    {
-        pos.x = mouse.x;
-        pos.y = mouse.y;
-        pos.z = 0.0f;
-        speed.x = (Math::Rand()-0.5f)*0.5f;
-        speed.y = (0.3f+Math::Rand()*0.3f);
-        speed.z = 0.0f;
-        dim.x = 0.01f+Math::Rand()*0.01f;
-        dim.y = dim.x/0.75f;
-        m_particle->CreateParticle(pos, speed, dim,
-                static_cast<Gfx::ParticleType>(Gfx::PARTILENS1+rand()%3),
-                Math::Rand()*0.5f+0.5f, 2.0f, 0.0f,
-                Gfx::SH_INTERFACE);
-    }
+}
+
+bool CMainUserInterface::isAllowedToCreateMouseParticles()
+{
+    return m_settings->GetMouseParticlesEnabled() &&
+        !((m_phase == PHASE_SIMUL || m_phase == PHASE_WIN || m_phase == PHASE_LOST) && !m_dialog->IsDialog());
 }
 
 // Updates the lists according to the cheat code.
@@ -788,6 +767,21 @@ void CMainUserInterface::ShowSoluceUpdate()
 bool CMainUserInterface::GetSceneSoluce()
 {
     return m_screenLevelList->GetSceneSoluce();
+}
+
+bool CMainUserInterface::GetPlusTrainer()
+{
+    return m_screenLevelList->GetPlusTrainer();
+}
+
+bool CMainUserInterface::GetPlusResearch()
+{
+    return m_screenLevelList->GetPlusResearch();
+}
+
+bool CMainUserInterface::GetPlusExplorer()
+{
+    return m_screenLevelList->GetPlusExplorer();
 }
 
 bool CMainUserInterface::GetGamerOnlyHead()

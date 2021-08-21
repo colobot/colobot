@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -148,7 +148,7 @@ bool CAutoRepair::EventProcess(const Event &event)
             assert(vehicle->Implements(ObjectInterfaceType::Shielded));
 
         if ( m_progress < 1.0f ||
-             (vehicle != nullptr && dynamic_cast<CShieldedObject*>(vehicle)->GetShield() < 1.0f) )
+             (vehicle != nullptr && dynamic_cast<CShieldedObject&>(*vehicle).GetShield() < 1.0f) )
         {
             if ( vehicle != nullptr )
             {
@@ -243,9 +243,9 @@ CObject* CAutoRepair::SearchVehicle()
     {
         if (obj == m_object) continue;
         if ( !obj->Implements(ObjectInterfaceType::Shielded) ) continue;
-        if ( !dynamic_cast<CShieldedObject*>(obj)->IsRepairable() )  continue;
+        if ( !dynamic_cast<CShieldedObject&>(*obj).IsRepairable() )  continue;
 
-        if ( obj->Implements(ObjectInterfaceType::Movable) && !dynamic_cast<CMovableObject*>(obj)->GetPhysics()->GetLand() )  continue;  // in flight?
+        if ( obj->Implements(ObjectInterfaceType::Movable) && !dynamic_cast<CMovableObject&>(*obj).GetPhysics()->GetLand() )  continue;  // in flight?
 
         Math::Vector oPos = obj->GetPosition();
         float dist = Math::Distance(oPos, sPos);

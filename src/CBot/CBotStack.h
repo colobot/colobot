@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -82,9 +82,6 @@ public:
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /** \name Error management
-     *
-     * BE CAREFUL - errors are stored in static variables!
-     * \todo Refactor that
      */
     //@{
 
@@ -94,24 +91,21 @@ public:
      * \param[out] end Ending position in code of the error
      * \return Error number
      */
-    CBotError GetError(int& start, int& end) { start = m_start; end = m_end; return m_error; }
+    CBotError       GetError(int& start, int& end);
 
     /**
      * \brief Get last error
      * \return Error number
      * \see GetError(int&, int&) for error position in code
      */
-    CBotError GetError() { return m_error; }
+    CBotError       GetError();
 
     /**
      * \brief Check if there was an error
      * \return false if an error occurred
      * \see GetError()
      */
-    bool IsOk()
-    {
-        return m_error == CBotNoErr;
-    }
+    bool            IsOk();
 
     /**
      * \brief Set execution error unless it's already set unless you are trying to reset it
@@ -357,7 +351,7 @@ public:
     /**
      * \todo Document
      *
-     * Copies the result value from static m_retvar (m_var at a moment of SetBreak(3)) to this stack result
+     * Copies the result value from m_data->retvar (m_var at a moment of SetBreak(3)) to this stack result
      */
     bool            GetRetVar(bool bRet);
 
@@ -434,8 +428,8 @@ public:
     //! \name Write to file
     //@{
 
-    bool            SaveState(FILE* pf);
-    bool            RestoreState(FILE* pf, CBotStack* &pStack);
+    bool            SaveState(std::ostream &ostr);
+    bool            RestoreState(std::istream &istr, CBotStack* &pStack);
 
     //@}
 
@@ -446,11 +440,11 @@ public:
      *
      * \todo Full documentation of the timer
      */
-    static void     SetTimer(int n);
+    void            SetTimer(int n);
     /**
      * \brief Get the current configured maximum number of "timer ticks" (parts of instructions) to execute
      */
-    static int GetTimer();
+    int             GetTimer();
 
     /**
      * \brief Get current position in the program
@@ -476,10 +470,10 @@ private:
 
     int               m_state;
     int               m_step;
-    static CBotError  m_error;
-    static int        m_start;
-    static int        m_end;
-    static CBotVar*   m_retvar;                    // result of a return
+
+    struct Data;
+
+    CBotStack::Data* m_data;
 
     CBotVar*        m_var;                        // result of the operations
     CBotVar*        m_listVar;                    // variables declared at this level
@@ -488,11 +482,6 @@ private:
     bool            m_bOver;                    // stack limits?
     //! CBotProgram instance the execution is in in this stack level
     CBotProgram*    m_prog;
-
-    static int      m_initimer;
-    static int      m_timer;
-    static std::string m_labelBreak;
-    static void*    m_pUser;
 
     //! The corresponding instruction
     CBotInstr* m_instr;

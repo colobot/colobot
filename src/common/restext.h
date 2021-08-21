@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -71,6 +71,8 @@ enum ResTextType
     RT_TITLE_WRITE          = 50,
     RT_TITLE_READ           = 51,
     RT_TITLE_USER           = 52,
+    RT_TITLE_PLUS           = 53,
+    RT_TITLE_MODS           = 54,
 
     RT_PLAY_CHAP_CHAPTERS   = 60,
     RT_PLAY_CHAP_PLANETS    = 61,
@@ -102,6 +104,11 @@ enum ResTextType
     RT_DIALOG_OK            = 110,
     RT_DIALOG_NOUSRLVL_TITLE = 111,
     RT_DIALOG_NOUSRLVL_TEXT = 112,
+    RT_DIALOG_OPEN_PATH_FAILED_TITLE = 113,
+    RT_DIALOG_OPEN_PATH_FAILED_TEXT = 114,
+    RT_DIALOG_OPEN_WEBSITE_FAILED_TITLE = 115,
+    RT_DIALOG_OPEN_WEBSITE_FAILED_TEXT = 116,
+    RT_DIALOG_CHANGES_QUESTION = 117,
 
     RT_STUDIO_LISTTT        = 120,
     RT_STUDIO_COMPOK        = 121,
@@ -118,6 +125,8 @@ enum ResTextType
     RT_IO_DIR               = 154,
     RT_IO_PRIVATE           = 155,
     RT_IO_PUBLIC            = 156,
+    RT_IO_REPLACE           = 157,
+    RT_IO_SELECT_DIR        = 158,
 
     RT_GENERIC_DEV1         = 170,
     RT_GENERIC_DEV2         = 171,
@@ -145,6 +154,18 @@ enum ResTextType
     RT_SCOREBOARD_RESULTS_TIME= 232,
     RT_SCOREBOARD_RESULTS_LINE= 233,
 
+    RT_MOD_LIST               = 234,
+    RT_MOD_DETAILS            = 235,
+    RT_MOD_SUMMARY            = 236,
+    RT_MOD_ENABLE             = 237,
+    RT_MOD_DISABLE            = 238,
+    RT_MOD_UNKNOWN_AUTHOR     = 239,
+    RT_MOD_AUTHOR_FIELD_NAME  = 240,
+    RT_MOD_VERSION_FIELD_NAME = 241,
+    RT_MOD_WEBSITE_FIELD_NAME = 242,
+    RT_MOD_CHANGES_FIELD_NAME = 243,
+    RT_MOD_NO_SUMMARY         = 244,
+    RT_MOD_NO_CHANGES         = 245,
 
     RT_MAX //! < number of values
 };

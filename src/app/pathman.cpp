@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -41,8 +41,7 @@ CPathManager::CPathManager(CSystemUtils* systemUtils)
     : m_dataPath(systemUtils->GetDataPath())
     , m_langPath(systemUtils->GetLangPath())
     , m_savePath(systemUtils->GetSaveDir())
-    , m_modAutoloadDir{ m_dataPath + "/mods", m_savePath + "/mods" }
-    , m_mods{}
+    , m_modSearchDirs{}
 {
 }
 
@@ -63,16 +62,6 @@ void CPathManager::SetLangPath(const std::string &langPath)
 void CPathManager::SetSavePath(const std::string &savePath)
 {
     m_savePath = savePath;
-}
-
-void CPathManager::AddModAutoloadDir(const std::string &modAutoloadDirPath)
-{
-    m_modAutoloadDir.push_back(modAutoloadDirPath);
-}
-
-void CPathManager::AddMod(const std::string &modPath)
-{
-    m_mods.push_back(modPath);
 }
 
 const std::string& CPathManager::GetDataPath()
@@ -130,36 +119,18 @@ void CPathManager::InitPaths()
 {
     GetLogger()->Info("Data path: %s\n", m_dataPath.c_str());
     GetLogger()->Info("Save path: %s\n", m_savePath.c_str());
-    if (!m_modAutoloadDir.empty())
+
+    m_modSearchDirs.push_back(m_dataPath + "/mods");
+    m_modSearchDirs.push_back(m_savePath + "/mods");
+
+    if (!m_modSearchDirs.empty())
     {
-        GetLogger()->Info("Mod autoload dirs:\n");
-        for(const std::string& modAutoloadDir : m_modAutoloadDir)
-            GetLogger()->Info("  * %s\n", modAutoloadDir.c_str());
-    }
-    if (!m_mods.empty())
-    {
-        GetLogger()->Info("Mods:\n");
-        for(const std::string& modPath : m_mods)
-            GetLogger()->Info("  * %s\n", modPath.c_str());
+        GetLogger()->Info("Mod search dirs:\n");
+        for(const std::string& modSearchDir : m_modSearchDirs)
+            GetLogger()->Info("  * %s\n", modSearchDir.c_str());
     }
 
     CResourceManager::AddLocation(m_dataPath);
-
-    for (const std::string& modAutoloadDir : m_modAutoloadDir)
-    {
-        GetLogger()->Trace("Searching for mods in '%s'...\n", modAutoloadDir.c_str());
-        for (const std::string& modPath : FindModsInDir(modAutoloadDir))
-        {
-            GetLogger()->Info("Autoloading mod: '%s'\n", modPath.c_str());
-            CResourceManager::AddLocation(modPath);
-        }
-    }
-
-    for (const std::string& modPath : m_mods)
-    {
-        GetLogger()->Info("Loading mod: '%s'\n", modPath.c_str());
-        CResourceManager::AddLocation(modPath);
-    }
 
     CResourceManager::SetSaveLocation(m_savePath);
     CResourceManager::AddLocation(m_savePath);
@@ -170,7 +141,45 @@ void CPathManager::InitPaths()
         GetLogger()->Debug("  * %s\n", path.c_str());
 }
 
-std::vector<std::string> CPathManager::FindModsInDir(const std::string &dir)
+void CPathManager::AddMod(const std::string &path)
+{
+    m_mods.push_back(path);
+}
+
+std::vector<std::string> CPathManager::FindMods() const
+{
+    std::vector<std::string> mods;
+    GetLogger()->Info("Found mods:\n");
+    for (const auto &searchPath : m_modSearchDirs)
+    {
+        for (const auto &modPath : FindModsInDir(searchPath))
+        {
+            GetLogger()->Info("  * %s\n", modPath.c_str());
+            mods.push_back(modPath);
+        }
+    }
+    GetLogger()->Info("Additional mod paths:\n");
+    for (const auto& modPath : m_mods)
+    {
+        if (boost::filesystem::exists(modPath))
+        {
+            GetLogger()->Info("  * %s\n", modPath.c_str());
+            mods.push_back(modPath);
+        }
+        else
+        {
+            GetLogger()->Warn("Mod does not exist: %s\n", modPath.c_str());
+        }
+    }
+    return mods;
+}
+
+void CPathManager::AddModSearchDir(const std::string &modSearchDirPath)
+{
+    m_modSearchDirs.push_back(modSearchDirPath);
+}
+
+std::vector<std::string> CPathManager::FindModsInDir(const std::string &dir) const
 {
     std::vector<std::string> ret;
     try

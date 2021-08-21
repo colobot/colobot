@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -256,6 +256,8 @@ public:
 
     //! Flushes cached textures
     void        FlushCache();
+    //! Try to load new font files
+    bool        ReloadFonts();
 
     //@{
     //! Tab size management
@@ -336,6 +338,8 @@ protected:
     void        DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::IntPoint &pos, Color color);
     void        StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &chars);
     void        StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &chars, std::vector<FontMetaChar>::iterator format, std::vector<FontMetaChar>::iterator end);
+
+    int GetCharSizeAt(Gfx::FontType font, const std::string& text, unsigned int index) const;
 
 protected:
     CEngine*       m_engine;

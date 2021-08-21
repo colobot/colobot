@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -41,6 +41,7 @@
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/regex.hpp>
 
 CLevelParser::CLevelParser()
 {
@@ -172,13 +173,28 @@ void CLevelParser::Load()
         boost::replace_all(line, "\t", " "); // replace tab by space
 
         // ignore comments
-        std::size_t comment = line.find("//");
-        if (comment != std::string::npos)
-            line = line.substr(0, comment);
+        size_t pos = 0;
+        std::string linesuffix = line;
+        boost::regex commentRegex{ R"(("[^"]*")|('[^']*')|(//.*$))" };
+        boost::smatch matches;
+        while (boost::regex_search(linesuffix, matches, commentRegex))
+        {
+            if (matches[3].matched)
+            {
+                pos += std::distance(linesuffix.cbegin(), matches.prefix().second);
+                line = line.substr(0, pos);
+                linesuffix = "";
+            }
+            else
+            {
+                pos += std::distance(linesuffix.cbegin(), matches.suffix().first);
+                linesuffix = matches.suffix().str();
+            }
+        }
 
         boost::algorithm::trim(line);
 
-        std::size_t pos = line.find_first_of(" \t\n");
+        pos = line.find_first_of(" \t\n");
         std::string command = line.substr(0, pos);
         if (pos != std::string::npos)
         {

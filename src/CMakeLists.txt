@@ -48,33 +48,43 @@ elseif(PLATFORM_WINDOWS)
 
         if(${MSVC_STATIC})
             if (${OPENAL_SOUND})
-                find_library(FLAC_LIBRARY NAMES flac.lib)
-                find_library(VORBIS_LIBRARY NAMES vorbis.lib)
-                find_library(VORBISENC_LIBRARY NAMES vorbisenc.lib)
-                find_library(OGG_LIBRARY NAMES ogg.lib)
+                find_library(FLAC_LIBRARY NAMES flac)
+                find_library(VORBIS_LIBRARY NAMES vorbis)
+                find_library(VORBISENC_LIBRARY NAMES vorbisenc)
+                find_library(OGG_LIBRARY NAMES ogg)
+                find_library(OPUS_LIBRARY NAMES opus)
                 set(OPENAL_MSVC_LIBS
                     ${FLAC_LIBRARY}
                     ${VORBIS_LIBRARY}
                     ${VORBISENC_LIBRARY}
                     ${OGG_LIBRARY}
+                    ${OPUS_LIBRARY}
                 )
             endif()
 
-            find_library(BZ2_LIBRARY NAMES bz2.lib)
-            find_library(JPEG_LIBRARY NAMES jpeg.lib)
-            find_library(TIFF_LIBRARY NAMES tiff.lib)
-            find_library(WEBP_LIBRARY NAMES webp.lib)
-            find_library(LZMA_LIBRARY NAMES lzma.lib)
-            find_library(FREETYPE_LIBRARY NAMES freetype.lib)
+            find_library(BZ2_LIBRARY NAMES bz2)
+            find_library(JPEG_LIBRARY NAMES jpeg)
+            find_library(TIFF_LIBRARY NAMES tiff)
+            find_library(LZMA_LIBRARY NAMES lzma)
+            find_library(FREETYPE_LIBRARY NAMES freetype)
+            find_library(ICONV_LIBRARY NAMES iconv)
+            find_library(CHARSET_LIBRARY NAMES charset)
+            find_library(BROTLICOMMON_LIBRARY NAMES brotlicommon-static)
+            find_library(BROTLIENC_LIBRARY NAMES brotlienc-static)
+            find_library(BROTLIDEC_LIBRARY NAMES brotlidec-static)
             set(MSVC_LIBS
                 ${LIBINTL_LIBRARY}
                 ${OPENAL_MSVC_LIBS}
                 ${JPEG_LIBRARY}
                 ${TIFF_LIBRARY}
                 ${BZ2_LIBRARY}
-                ${WEBP_LIBRARY}
                 ${LZMA_LIBRARY}
                 ${FREETYPE_LIBRARY}
+                ${ICONV_LIBRARY}
+                ${CHARSET_LIBRARY}
+                ${BROTLICOMMON_LIBRARY}
+                ${BROTLIENC_LIBRARY}
+                ${BROTLIDEC_LIBRARY}
                 winmm.lib
                 dxguid.lib
                 imm32.lib
@@ -83,6 +93,7 @@ elseif(PLATFORM_WINDOWS)
                 version.lib
                 wsock32.lib
                 ws2_32.lib
+                setupapi.lib
             )
         else(${MSVC_STATIC})
             set(MSVC_LIBS ${LIBINTL_LIBRARY})
@@ -98,6 +109,10 @@ elseif(PLATFORM_LINUX)
     # for clock_gettime
     set(PLATFORM_LIBS "-lrt")
 elseif(PLATFORM_MACOSX)
+    find_library(LIBINTL_LIBRARY NAMES intl libintl)
+    find_path(LIBINTL_INCLUDE_PATH NAMES libintl.h)
+    set(PLATFORM_LIBS ${LIBINTL_LIBRARY})
+elseif(PLATFORM_FREEBSD)
     find_library(LIBINTL_LIBRARY NAMES intl libintl)
     find_path(LIBINTL_INCLUDE_PATH NAMES libintl.h)
     set(PLATFORM_LIBS ${LIBINTL_LIBRARY})
@@ -138,6 +153,8 @@ set(BASE_SOURCES
     app/controller.h
     app/input.cpp
     app/input.h
+    app/modman.cpp
+    app/modman.h
     app/pathman.cpp
     app/pathman.h
     app/pausemanager.cpp
@@ -411,6 +428,7 @@ set(BASE_SOURCES
     object/object_interface_type.h
     object/object_manager.cpp
     object/object_manager.h
+    object/object_type.cpp
     object/object_type.h
     object/old_object.cpp
     object/old_object.h
@@ -530,6 +548,8 @@ set(BASE_SOURCES
     ui/displayinfo.h
     ui/displaytext.cpp
     ui/displaytext.h
+    ui/filedialog.cpp
+    ui/filedialog.h
     ui/maindialog.cpp
     ui/maindialog.h
     ui/mainmap.cpp
@@ -540,6 +560,8 @@ set(BASE_SOURCES
     ui/mainui.h
     ui/object_interface.cpp
     ui/object_interface.h
+    ui/particles_generator.cpp
+    ui/particles_generator.h
     ui/screen/screen.cpp
     ui/screen/screen.h
     ui/screen/screen_apperance.cpp
@@ -556,6 +578,8 @@ set(BASE_SOURCES
     ui/screen/screen_loading.h
     ui/screen/screen_main_menu.cpp
     ui/screen/screen_main_menu.h
+    ui/screen/screen_mod_list.cpp
+    ui/screen/screen_mod_list.h
     ui/screen/screen_player_select.cpp
     ui/screen/screen_player_select.h
     ui/screen/screen_quit.cpp

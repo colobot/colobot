@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ bool CTaskFireAnt::EventProcess(const Event &event)
     if ( event.type != EVENT_FRAME )  return true;
     if ( m_bError )  return false;
 
-    if ( dynamic_cast<CBaseAlien*>(m_object)->GetFixed() )  // insect on its back?
+    if ( dynamic_cast<CBaseAlien&>(*m_object).GetFixed() )  // insect on its back?
     {
         m_bError = true;
         return false;
@@ -100,7 +100,7 @@ Error CTaskFireAnt::Start(Math::Vector impact)
     if ( type != OBJECT_ANT )  return ERR_WRONG_BOT;
 
     // Insect on its back?
-    if ( dynamic_cast<CBaseAlien*>(m_object)->GetFixed() )  return ERR_WRONG_BOT;
+    if ( dynamic_cast<CBaseAlien&>(*m_object).GetFixed() )  return ERR_WRONG_BOT;
 
     m_physics->SetMotorSpeed(Math::Vector(0.0f, 0.0f, 0.0f));
 
@@ -130,7 +130,7 @@ Error CTaskFireAnt::IsEnded()
 
     if ( m_engine->GetPause() )  return ERR_CONTINUE;
     if ( m_bError )  return ERR_STOP;
-    if ( dynamic_cast<CBaseAlien*>(m_object)->GetFixed() )  return ERR_STOP;  // insect on its back?
+    if ( dynamic_cast<CBaseAlien&>(*m_object).GetFixed() )  return ERR_STOP;  // insect on its back?
 
     if ( m_phase == TFA_TURN )  // rotation ?
     {

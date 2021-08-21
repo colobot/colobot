@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -32,24 +32,25 @@ enum class TraceColor
 {
     Default = -1,
 
-    White = 0,
-    Black = 1,
-    Gray = 2,
-    LightGray = 3,
-    Red = 4,
-    Pink = 5,
-    Purple = 6,
-    Orange = 7,
-    Yellow = 8,
-    Beige = 9,
-    Brown = 10,
-    Skin = 11,
-    Green = 12,
-    LightGreen = 13,
-    Blue = 14,
-    LightBlue = 15,
-    BlackArrow = 16,
-    RedArrow = 17,
+    Blue = 0,
+    Red = 1,
+    Green = 2,
+    Yellow = 3,
+    Violet = 4,
+    White = 5,
+    Black = 6,
+    Gray = 7,
+    LightGray = 8,
+    Pink = 9,
+    Purple = 10,
+    Orange = 11,
+    Beige = 12,
+    Brown = 13,
+    Skin = 14,
+    LightGreen = 15,
+    LightBlue = 16,
+    BlackArrow = 17,
+    RedArrow = 18,
     Max,
 };
 //! Convert TraceColor to a std::string

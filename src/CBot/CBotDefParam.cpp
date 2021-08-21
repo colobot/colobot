@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -64,10 +64,8 @@ CBotDefParam* CBotDefParam::Compile(CBotToken* &p, CBotCStack* pStack)
             if (list == nullptr) list = param;
             else list->AddNext(param);          // added to the list
 
-//            CBotClass*  pClass = nullptr;//= CBotClass::Find(p);
             param->m_typename = p->GetString();
             CBotTypResult type = param->m_type = TypeParam(p, pStack);
-//          if ( type == CBotTypPointer ) type = CBotTypClass;          // we must create a new object
 
             if (param->m_type.GetType() > 0)
             {
@@ -96,7 +94,7 @@ CBotDefParam* CBotDefParam::Compile(CBotToken* &p, CBotCStack* pStack)
                             prevHasDefault = true;
                         }
                         else pStack->SetError(CBotErrNoExpression, p);
-                        delete pStk;
+                        pStack->DeleteNext();
                     }
                     else
                         if (prevHasDefault) pStack->SetError(CBotErrDefaultValue, p->GetPrev());
@@ -105,7 +103,6 @@ CBotDefParam* CBotDefParam::Compile(CBotToken* &p, CBotCStack* pStack)
 
                     if ( type.Eq(CBotTypArrayPointer) ) type.SetType(CBotTypArrayBody);
                     CBotVar*    var = CBotVar::Create(pp->GetString(), type);       // creates the variable
-//                  if ( pClass ) var->SetClass(pClass);
                     var->SetInit(CBotVar::InitType::IS_POINTER);                                    // mark initialized
                     param->m_nIdent = CBotVar::NextUniqNum();
                     var->SetUniqNum(param->m_nIdent);
@@ -140,6 +137,7 @@ bool CBotDefParam::Execute(CBotVar** ppVars, CBotStack* &pj)
     while ( p != nullptr )
     {
         pile = pile->AddStack();
+        if (pile->StackOver()) return pj->Return(pile);
         if (pile->GetState() == 1) // already done?
         {
             if (ppVars != nullptr && ppVars[i] != nullptr) ++i;
@@ -151,13 +149,12 @@ bool CBotDefParam::Execute(CBotVar** ppVars, CBotStack* &pj)
 
         if (useDefault || (ppVars == nullptr || ppVars[i] == nullptr))
         {
-            assert(p->m_expr != nullptr);
-
-            useDefault = true;
-
-            if (!p->m_expr->Execute(pile)) return false; // interupt here
-
-            pVar = pile->GetVar();
+            useDefault = true; // end of arguments found
+            if (p->m_expr != nullptr) // has default expression ?
+            {
+                if (!p->m_expr->Execute(pile)) return false; // interupt here
+                pVar = pile->GetVar();
+            }
         }
         else
             pVar = ppVars[i];
@@ -173,12 +170,32 @@ bool CBotDefParam::Execute(CBotVar** ppVars, CBotStack* &pj)
         {
             switch (p->m_type.GetType())
             {
+            case CBotTypByte:
+                newvar->SetValByte(pVar->GetValByte());
+                newvar->SetInit(pVar->GetInit()); // copy nan
+                break;
+            case CBotTypShort:
+                newvar->SetValShort(pVar->GetValShort());
+                newvar->SetInit(pVar->GetInit()); // copy nan
+                break;
+            case CBotTypChar:
+                newvar->SetValChar(pVar->GetValChar());
+                newvar->SetInit(pVar->GetInit()); // copy nan
+                break;
             case CBotTypInt:
                 newvar->SetValInt(pVar->GetValInt());
                 newvar->SetInit(pVar->GetInit()); // copy nan
                 break;
+            case CBotTypLong:
+                newvar->SetValLong(pVar->GetValLong());
+                newvar->SetInit(pVar->GetInit()); // copy nan
+                break;
             case CBotTypFloat:
                 newvar->SetValFloat(pVar->GetValFloat());
+                newvar->SetInit(pVar->GetInit()); // copy nan
+                break;
+            case CBotTypDouble:
+                newvar->SetValDouble(pVar->GetValDouble());
                 newvar->SetInit(pVar->GetInit()); // copy nan
                 break;
             case CBotTypString:

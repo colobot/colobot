@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -270,7 +270,7 @@ void CProgramStorageObjectImpl::LoadAllProgramsForLevel(CLevelParserLine* levelS
 
             if (m_object->Implements(ObjectInterfaceType::Programmable) && i == run)
             {
-                dynamic_cast<CProgrammableObject*>(m_object)->RunProgram(program);
+                dynamic_cast<CProgrammableObject&>(*m_object).RunProgram(program);
             }
         }
         else
@@ -327,7 +327,7 @@ void CProgramStorageObjectImpl::SaveAllProgramsForSavedScene(CLevelParserLine* l
     }
 
     if (m_programStorageIndex < 0) return;
-    if (!m_object->Implements(ObjectInterfaceType::Controllable) || !dynamic_cast<CControllableObject*>(m_object)->GetSelectable() || m_object->GetType() == OBJECT_HUMAN) return;
+    if (!m_object->Implements(ObjectInterfaceType::Controllable) || !dynamic_cast<CControllableObject&>(*m_object).GetSelectable() || m_object->GetType() == OBJECT_HUMAN) return;
 
     GetLogger()->Debug("Saving saved scene programs to '%s/prog%.3d___.txt'\n", levelSource.c_str(), m_programStorageIndex);
     for (unsigned int i = 0; i < m_program.size(); i++)
@@ -379,7 +379,7 @@ void CProgramStorageObjectImpl::LoadAllProgramsForSavedScene(CLevelParserLine* l
 
             if (m_object->Implements(ObjectInterfaceType::Programmable) && i == run)
             {
-                dynamic_cast<CProgrammableObject*>(m_object)->RunProgram(program);
+                dynamic_cast<CProgrammableObject&>(*m_object).RunProgram(program);
             }
         }
     }
@@ -403,7 +403,7 @@ void CProgramStorageObjectImpl::LoadAllProgramsForSavedScene(CLevelParserLine* l
 
             if (m_object->Implements(ObjectInterfaceType::Programmable) && i == run)
             {
-                dynamic_cast<CProgrammableObject*>(m_object)->RunProgram(program);
+                dynamic_cast<CProgrammableObject&>(*m_object).RunProgram(program);
             }
         }
     }

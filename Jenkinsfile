@@ -27,10 +27,11 @@ pipeline {
                         dir('build/windows') {
                             sh '''
                                 # FIXME: without -lsetupapi linking sdl2 fails
+                                rm -rf *
                                 /opt/mxe/usr/bin/i686-w64-mingw32.static-cmake \
                                     -DCMAKE_CXX_STANDARD_LIBRARIES="-lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 -lsetupapi" \
                                     -DCMAKE_INSTALL_PREFIX=/install \
-                                    -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDEV_BUILD=1 -DPORTABLE=1 -DTOOLS=1 -DTESTS=0 ../..
+                                    -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDEV_BUILD=1 -DPORTABLE=1 -DTOOLS=1 -DTESTS=0 -DMXE_USE_CCACHE=0 ../..
                                 make
                                 rm -rf install
                                 DESTDIR=. make install
@@ -53,6 +54,7 @@ pipeline {
                         sh 'mkdir -p build/linux'
                         dir('build/linux') {
                             sh '''
+                                rm -rf *
                                 cmake \
                                     -DCMAKE_INSTALL_PREFIX=/install -DCMAKE_SKIP_INSTALL_RPATH=ON \
                                     -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDEV_BUILD=1 -DPORTABLE=1 -DTOOLS=1 -DTESTS=1 -DDESKTOP=1 ../..
@@ -81,6 +83,8 @@ pipeline {
                                     
                                     # Create AppImage
                                     NO_STRIP=1 ./squashfs-root/AppRun -e colobot --output appimage --appdir colobot.AppDir -d desktop/colobot.desktop -i ../../desktop/colobot.svg
+                                    #rename AppImage file to avoid "No such file or directory" errors
+                                    find . -maxdepth 1 -type f -name '*AppImage' -name 'Colobot*' -exec sh -c 'x="{}"; mv "$x" "Colobot-x86_64.AppImage"' \\;
                                     chmod +x Colobot-x86_64.AppImage
                                     
                                     # Prepare folder for zip

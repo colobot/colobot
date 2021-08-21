@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2018, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -1299,7 +1299,9 @@ void CEdit::SetText(const std::string& text, bool bNew)
     if( m_len >= GetMaxChar() ) m_len = GetMaxChar();
 
     m_text.resize( m_len + 1, '\0' );
+    m_text[m_len] = '\0';
     m_format.resize( m_len + 1, m_fontType );
+    m_format[m_len] = m_fontType;
 
     font = m_fontType;
     j = 0;
