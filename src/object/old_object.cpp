@@ -808,6 +808,7 @@ void COldObject::SetType(ObjectType type)
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Shielded)] = false;
     }
     else if (m_type == OBJECT_HUMAN ||
+         m_type == OBJECT_TECH ||
          m_type == OBJECT_MOBILEfa ||
          m_type == OBJECT_MOBILEta ||
          m_type == OBJECT_MOBILEwa ||
@@ -839,6 +840,7 @@ void COldObject::SetType(ObjectType type)
          m_type == OBJECT_MOBILEit ||
          m_type == OBJECT_MOBILErp ||
          m_type == OBJECT_MOBILEst ||
+         m_type == OBJECT_MOBILEdr ||
          m_type == OBJECT_FACTORY  ||
          m_type == OBJECT_REPAIR   ||
          m_type == OBJECT_DESTROYER||
@@ -853,6 +855,9 @@ void COldObject::SetType(ObjectType type)
          m_type == OBJECT_LABO     ||
          m_type == OBJECT_NUCLEAR  ||
          m_type == OBJECT_PARA     ||
+         m_type == OBJECT_HUSTON   ||
+         m_type == OBJECT_TARGET1  ||
+         m_type == OBJECT_PORTICO  ||
          m_type == OBJECT_MOTHER    )
     {
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Damageable)] = true;
@@ -860,8 +865,7 @@ void COldObject::SetType(ObjectType type)
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Fragile)] = false;
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Shielded)] = true;
     }
-    else if (m_type == OBJECT_HUSTON ||
-             m_type == OBJECT_BASE    )
+    else if (m_type == OBJECT_BASE )
     {
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Damageable)] = true;
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Destroyable)] = false;
