@@ -28,6 +28,7 @@
 
 #include "sound/sound.h"
 
+#include "physics/physics.h"
 
 const int PARAM_DEPOSE = 2;     // run=2 -> deposits the spaceship
 
@@ -94,7 +95,8 @@ void CAutoPortico::Init()
 {
     m_time = 0.0f;
     m_lastParticle = 0.0f;
-    m_posTrack = 0.0f;
+    m_posTrackLeft = 0.0f;
+    m_posTrackRight = 0.0f;
 
     m_phase    = APOP_WAIT;
     m_progress = 0.0f;
@@ -189,7 +191,19 @@ bool CAutoPortico::EventProcess(const Event &event)
     m_object->SetPartRotationX(11, angle);
 
     if ( event.type != EVENT_FRAME )  return true;
-    if ( m_phase == APOP_WAIT )  return true;
+
+    // free movement
+    if ( m_phase == APOP_WAIT ) {
+        CPhysics* physics = dynamic_cast<CMovableObject&>(*m_object).GetPhysics();
+        float s = physics->GetLinMotionX(MO_CURSPEED)*0.5f;
+        float a = physics->GetCirMotionY(MO_CURSPEED)*2.0f;
+
+        m_posTrackLeft  += event.rTime*(s+a);
+        m_posTrackRight += event.rTime*(s-a);
+
+        UpdateTrackMapping(m_posTrackLeft, m_posTrackRight);
+        return true;
+    }
 
     m_progress += event.rTime*m_speed;
     m_cameraProgress += event.rTime*m_cameraSpeed;
@@ -202,8 +216,9 @@ bool CAutoPortico::EventProcess(const Event &event)
             pos.z -= event.rTime*5.0f;  // advance
             m_object->SetPosition(pos);
 
-            m_posTrack += event.rTime*0.5f;
-            UpdateTrackMapping(m_posTrack, m_posTrack);
+            m_posTrackLeft += event.rTime*0.5f;
+            m_posTrackRight += event.rTime*0.5f;
+            UpdateTrackMapping(m_posTrackLeft, m_posTrackRight);
         }
         else
         {
@@ -278,8 +293,9 @@ bool CAutoPortico::EventProcess(const Event &event)
             pos.z += event.rTime*5.3f;  // back
             m_object->SetPosition(pos);
 
-            m_posTrack -= event.rTime*1.0f;
-            UpdateTrackMapping(m_posTrack, m_posTrack);
+            m_posTrackLeft -= event.rTime*1.0f;
+            m_posTrackRight -= event.rTime*1.0f;
+            UpdateTrackMapping(m_posTrackLeft, m_posTrackRight);
 
             if ( m_progress < 0.5f )
             {

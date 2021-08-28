@@ -63,7 +63,8 @@ protected:
     float           m_lastParticle = 0.0f;
     Math::Vector        m_finalPos;
     Math::Vector        m_startPos;
-    float           m_posTrack = 0.0f;
+    float           m_posTrackLeft = 0.0f;
+    float           m_posTrackRight = 0.0f;
     int             m_param = 0;
     int             m_soundChannel = 0;
 };
