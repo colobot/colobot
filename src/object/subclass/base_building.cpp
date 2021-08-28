@@ -198,7 +198,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
         modelManager->AddModelReference("portico7.mod", false, rank, params.team);
         obj->SetPartPosition(11, Math::Vector(0.0f, 4.5f, 1.9f));
 
-        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 28.0f,   0.0f), 45.5f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 52.0f,   0.0f), 42.0f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(Math::Vector( 27.0f, 10.0f, -42.0f), 15.0f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 10.0f, -42.0f), 15.0f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(Math::Vector(-27.0f, 10.0f, -42.0f), 15.0f, SOUND_BOUMm, 0.45f));
