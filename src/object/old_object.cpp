@@ -936,6 +936,7 @@ void COldObject::SetType(ObjectType type)
     // TODO: You have been hacked!
     if (m_type == OBJECT_HUMAN    ||
         m_type == OBJECT_TOTO     ||
+        m_type == OBJECT_PORTICO  ||
         m_type == OBJECT_MOBILEfa ||
         m_type == OBJECT_MOBILEta ||
         m_type == OBJECT_MOBILEwa ||
