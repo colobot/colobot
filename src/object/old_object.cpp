@@ -408,6 +408,7 @@ bool COldObject::DamageObject(DamageType type, float force, CObject* killer)
             // Calculate the shield lost by the explosion
             loss = force * magnifyDamage;
             if (m_type == OBJECT_HUMAN) loss /= 2.5f; // Me is more resistant
+            if (m_type == OBJECT_PORTICO) loss /= 10.0f; // Portico is very resistant
             if (loss > 1.0f) loss = 1.0f;
 
             // Decreases the the shield
