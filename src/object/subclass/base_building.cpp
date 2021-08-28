@@ -46,6 +46,8 @@
 #include "object/auto/autoresearch.h"
 #include "object/auto/autotower.h"
 #include "object/auto/autovault.h"
+#include "object/motion/motionlevelcontroller.h"
+#include "physics/physics.h"
 
 
 CBaseBuilding::CBaseBuilding(int id, ObjectType type)
@@ -75,7 +77,36 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
 
     if ( params.type == OBJECT_PORTICO )
     {
+        std::unique_ptr<CPhysics> physics = MakeUnique<CPhysics>(obj.get());
+        std::unique_ptr<CMotion> motion = MakeUnique<CMotionLevelController>(obj.get());
+        assert(motion != nullptr);
+    
+        physics->SetLinMotionX(MO_ADVSPEED,  25.0f);
+        physics->SetLinMotionX(MO_RECSPEED,  25.0f);
+        physics->SetLinMotionX(MO_ADVACCEL,   5.0f);
+        physics->SetLinMotionX(MO_RECACCEL,   5.0f);
+        physics->SetLinMotionX(MO_STOACCEL,  40.0f);
+        physics->SetLinMotionX(MO_TERSLIDE,   5.0f);
+        physics->SetLinMotionZ(MO_TERSLIDE,   5.0f);
+        physics->SetLinMotionX(MO_TERFORCE,  30.0f);
+        physics->SetLinMotionZ(MO_TERFORCE,  20.0f);
+        physics->SetLinMotionZ(MO_MOTACCEL,  40.0f);
+    
+        physics->SetCirMotionY(MO_ADVSPEED,  0.1f*Math::PI);
+        physics->SetCirMotionY(MO_RECSPEED,  0.1f*Math::PI);
+        physics->SetCirMotionY(MO_ADVACCEL, 10.0f);
+        physics->SetCirMotionY(MO_RECACCEL, 10.0f);
+        physics->SetCirMotionY(MO_STOACCEL,  6.0f);
+
+        physics->SetMotion(motion.get());
+        motion->SetPhysics(physics.get());
+
+        obj->SetProgrammable();
+        obj->SetMovable(std::move(motion), std::move(physics));
+
         modelManager->AddModelReference("portico1.mod", false, rank, params.team);
+        engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICLE);  // this is a moving object
+        obj->SetObjectRank(0, rank);
         obj->SetPosition(params.pos);
         obj->SetRotationY(params.angle);
         obj->SetFloorHeight(0.0f);
