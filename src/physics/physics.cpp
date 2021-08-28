@@ -2514,133 +2514,143 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
     if (m_object->GetCrashSphereCount() < 1)
         return 0;
 
-    auto firstCrashSphere = m_object->GetFirstCrashSphere();
-    Math::Vector iiPos = firstCrashSphere.sphere.pos;
-    float iRad = firstCrashSphere.sphere.radius;
-
-    iPos = iiPos + (pos - m_object->GetPosition());
-    iType = m_object->GetType();
-
-    for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
+    int result = 0;
+    for (const auto& iCrashSphere : m_object->GetAllCrashSpheres())
     {
-        if ( pObj == m_object )  continue;  // yourself?
-        if (IsObjectBeingTransported(pObj))  continue;
-        if ( pObj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject&>(*pObj).GetDying() == DeathType::Exploding )  continue;  // is exploding?
+        Math::Vector iiPos = iCrashSphere.sphere.pos;
+        float iRad = iCrashSphere.sphere.radius;
 
-        oType = pObj->GetType();
-        if ( oType == OBJECT_TOTO            )  continue;
-        if ( !m_object->CanCollideWith(pObj) )  continue;
+        iPos = iiPos + (pos - m_object->GetPosition());
+        iType = m_object->GetType();
 
-        if (pObj->Implements(ObjectInterfaceType::Jostleable))
+        for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
         {
-            JostleObject(dynamic_cast<CJostleableObject*>(pObj), iPos, iRad);
-        }
+            if ( pObj == m_object )  continue;  // yourself?
+            if (IsObjectBeingTransported(pObj))  continue;
+            if ( pObj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject&>(*pObj).GetDying() == DeathType::Exploding )  continue;  // is exploding?
 
-        if ( oType == OBJECT_WAYPOINT &&
-             !pObj->GetLock()         &&
-             m_object->GetTrainer()   )  // driving vehicle?
-        {
-            Math::Vector oPos = pObj->GetPosition();
-            distance = Math::DistanceProjected(oPos, iPos);
-            if ( distance < 4.0f )
+            oType = pObj->GetType();
+            if ( oType == OBJECT_TOTO            )  continue;
+            if ( !m_object->CanCollideWith(pObj) )  continue;
+
+            if (pObj->Implements(ObjectInterfaceType::Jostleable))
             {
-                m_sound->Play(SOUND_WAYPOINT, m_object->GetPosition());
-                m_engine->GetPyroManager()->Create(Gfx::PT_WPCHECK, pObj);
+                JostleObject(dynamic_cast<CJostleableObject*>(pObj), iPos, iRad);
             }
-        }
 
-        if ( oType == OBJECT_TARGET2 && !pObj->GetLock() )
-        {
-            Math::Vector oPos = pObj->GetPosition();
-            distance = Math::Distance(oPos, iPos);
-            if ( distance < 10.0f*1.5f )
+            if ( oType == OBJECT_WAYPOINT &&
+                 !pObj->GetLock()         &&
+                 m_object->GetTrainer()   )  // driving vehicle?
             {
-                m_sound->Play(SOUND_WAYPOINT, m_object->GetPosition());
-                m_engine->GetPyroManager()->Create(Gfx::PT_WPCHECK, pObj);
-            }
-        }
-
-        for (const auto& crashSphere : pObj->GetAllCrashSpheres())
-        {
-            Math::Vector oPos = crashSphere.sphere.pos;
-            float oRad = crashSphere.sphere.radius;
-
-            // Aliens ignore small objects
-            // TODO: But why? :/
-            if ( iType == OBJECT_MOTHER && oRad <= 1.2f )  continue;
-            if ( iType == OBJECT_ANT    && oRad <= 1.2f )  continue;
-            if ( iType == OBJECT_SPIDER && oRad <= 1.2f )  continue;
-            if ( iType == OBJECT_BEE    && oRad <= 1.2f )  continue;
-            if ( iType == OBJECT_WORM   && oRad <= 1.2f )  continue;
-
-            distance = Math::Distance(oPos, iPos);
-            if ( distance < iRad+oRad )  // collision?
-            {
-                distance = Math::Distance(oPos, iiPos);
-                if ( distance >= iRad+oRad )  // view (*)
+                Math::Vector oPos = pObj->GetPosition();
+                distance = Math::DistanceProjected(oPos, iPos);
+                if ( distance < 4.0f )
                 {
-                    m_bCollision = true;
-                    m_bObstacle = true;
+                    m_sound->Play(SOUND_WAYPOINT, m_object->GetPosition());
+                    m_engine->GetPyroManager()->Create(Gfx::PT_WPCHECK, pObj);
+                }
+            }
 
-                    if (crashSphere.sound != SOUND_NONE)
-                    {
-                        force = fabs(m_linMotion.realSpeed.x);
-                        force *= crashSphere.hardness*2.0f;
-                        if ( ExploOther(iType, pObj, oType, force) )  continue;
-                        colType = ExploHimself(iType, oType, force);
-                        if ( colType == 2 )  return 2;  // destroyed?
-                        if ( colType == 0 )  continue;  // ignores?
-                    }
+            if ( oType == OBJECT_TARGET2 && !pObj->GetLock() )
+            {
+                Math::Vector oPos = pObj->GetPosition();
+                distance = Math::Distance(oPos, iPos);
+                if ( distance < 10.0f*1.5f )
+                {
+                    m_sound->Play(SOUND_WAYPOINT, m_object->GetPosition());
+                    m_engine->GetPyroManager()->Create(Gfx::PT_WPCHECK, pObj);
+                }
+            }
 
-                    force = m_linMotion.realSpeed.Length();
-                    force *= crashSphere.hardness;
-                    volume = fabs(force*0.05f);
-                    if ( volume > 1.0f )  volume = 1.0f;
-                    if ( crashSphere.sound != SOUND_NONE )
-                    {
-                        m_sound->Play(crashSphere.sound, m_object->GetPosition(), volume);
-                    }
-                    if ( iType == OBJECT_HUMAN && volume > 0.5f )
-                    {
-                        m_sound->Play(SOUND_AIE, m_object->GetPosition(), volume);
-                    }
+            for (const auto& crashSphere : pObj->GetAllCrashSpheres())
+            {
+                Math::Vector oPos = crashSphere.sphere.pos;
+                float oRad = crashSphere.sphere.radius;
 
-                    if ( m_repeatCollision > 0 )
-                    {
-                        force *= 0.5f*m_repeatCollision;
-                        if ( force > 20.0f )  force = 20.0f;
-                    }
-                    m_repeatCollision += 2;
-                    if ( m_repeatCollision > 10 )
-                    {
-                        m_repeatCollision = 10;
-                    }
+                // Aliens ignore small objects
+                // TODO: But why? :/
+                if ( iType == OBJECT_MOTHER && oRad <= 1.2f )  continue;
+                if ( iType == OBJECT_ANT    && oRad <= 1.2f )  continue;
+                if ( iType == OBJECT_SPIDER && oRad <= 1.2f )  continue;
+                if ( iType == OBJECT_BEE    && oRad <= 1.2f )  continue;
+                if ( iType == OBJECT_WORM   && oRad <= 1.2f )  continue;
 
-                    m_linMotion.currentSpeed = Normalize(iPos-oPos)*force;
-                    Math::LoadRotationXZYMatrix(matRotate, -angle);
-                    m_linMotion.currentSpeed = Transform(matRotate, m_linMotion.currentSpeed);
-                    if ( !m_object->Implements(ObjectInterfaceType::Flying) )
+                distance = Math::Distance(oPos, iPos);
+                if ( distance < iRad+oRad )  // collision?
+                {
+                    distance = Math::Distance(oPos, iiPos);
+                    if ( distance >= iRad+oRad )  // view (*)
                     {
-                        m_linMotion.currentSpeed.y = 0.0f;
-                    }
+                        m_bCollision = true;
+                        m_bObstacle = true;
 
-
-                    CPhysics* ph = nullptr;
-                    if (pObj->Implements(ObjectInterfaceType::Movable))
-                        ph = dynamic_cast<CMovableObject&>(*pObj).GetPhysics();
-                    if ( ph != nullptr )
-                    {
-                        oAngle = pObj->GetRotation();
-                        oSpeed = Normalize(oPos-iPos)*force;
-                        Math::LoadRotationXZYMatrix(matRotate, -oAngle);
-                        oSpeed = Transform(matRotate, oSpeed);
-                        if ( !pObj->Implements(ObjectInterfaceType::Flying) )
+                        if (crashSphere.sound != SOUND_NONE)
                         {
-                            oSpeed.y = 0.0f;
+                            force = fabs(m_linMotion.realSpeed.x);
+                            force *= crashSphere.hardness*2.0f;
+                            if ( ExploOther(iType, pObj, oType, force) )  continue;
+                            colType = ExploHimself(iType, oType, force);
+                            if ( colType == 2 )
+                            {
+                                result = 2;  // destroyed?
+                                break;       // go to next pObj
+                            }
+                            if ( colType == 0 )  continue;  // ignores?
                         }
-                        ph->SetLinMotion(MO_CURSPEED, oSpeed);
+
+                        force = m_linMotion.realSpeed.Length();
+                        force *= crashSphere.hardness;
+                        volume = fabs(force*0.05f);
+                        if ( volume > 1.0f )  volume = 1.0f;
+                        if ( crashSphere.sound != SOUND_NONE )
+                        {
+                            m_sound->Play(crashSphere.sound, m_object->GetPosition(), volume);
+                        }
+                        if ( iType == OBJECT_HUMAN && volume > 0.5f )
+                        {
+                            m_sound->Play(SOUND_AIE, m_object->GetPosition(), volume);
+                        }
+
+                        if ( m_repeatCollision > 0 )
+                        {
+                            force *= 0.5f*m_repeatCollision;
+                            if ( force > 20.0f )  force = 20.0f;
+                        }
+                        m_repeatCollision += 2;
+                        if ( m_repeatCollision > 10 )
+                        {
+                            m_repeatCollision = 10;
+                        }
+
+                        m_linMotion.currentSpeed = Normalize(iPos-oPos)*force;
+                        Math::LoadRotationXZYMatrix(matRotate, -angle);
+                        m_linMotion.currentSpeed = Transform(matRotate, m_linMotion.currentSpeed);
+                        if ( !m_object->Implements(ObjectInterfaceType::Flying) )
+                        {
+                            m_linMotion.currentSpeed.y = 0.0f;
+                        }
+
+
+                        CPhysics* ph = nullptr;
+                        if (pObj->Implements(ObjectInterfaceType::Movable))
+                            ph = dynamic_cast<CMovableObject&>(*pObj).GetPhysics();
+                        if ( ph != nullptr )
+                        {
+                            oAngle = pObj->GetRotation();
+                            oSpeed = Normalize(oPos-iPos)*force;
+                            Math::LoadRotationXZYMatrix(matRotate, -oAngle);
+                            oSpeed = Transform(matRotate, oSpeed);
+                            if ( !pObj->Implements(ObjectInterfaceType::Flying) )
+                            {
+                                oSpeed.y = 0.0f;
+                            }
+                            ph->SetLinMotion(MO_CURSPEED, oSpeed);
+                        }
+                        if (result == 0) {
+                            result = 1;
+                        }
+                        break; // go to next pObj
                     }
-                    return 1;
                 }
             }
         }
@@ -2650,7 +2660,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
     {
         m_repeatCollision --;
     }
-    return 0;
+    return result;
 }
 
 // (*)  Collision has the initial position (iiPos) and the new position (iPos),
