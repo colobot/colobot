@@ -2632,7 +2632,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
 
 
                         CPhysics* ph = nullptr;
-                        if (pObj->Implements(ObjectInterfaceType::Movable))
+                        if (pObj->Implements(ObjectInterfaceType::Movable) && pObj->GetType() != OBJECT_PORTICO)
                             ph = dynamic_cast<CMovableObject&>(*pObj).GetPhysics();
                         if ( ph != nullptr )
                         {
