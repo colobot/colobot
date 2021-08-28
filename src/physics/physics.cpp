@@ -2581,6 +2581,15 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
                     distance = Math::Distance(oPos, iiPos);
                     if ( distance >= iRad+oRad )  // view (*)
                     {
+                        if (iType == OBJECT_PORTICO)
+                        {
+                            if (pObj->Implements(ObjectInterfaceType::Damageable))
+                            {
+                                dynamic_cast<CDestroyableObject*>(pObj)->DamageObject(DamageType::Explosive);
+                                break;
+                            }
+                        }
+
                         m_bCollision = true;
                         m_bObstacle = true;
 
