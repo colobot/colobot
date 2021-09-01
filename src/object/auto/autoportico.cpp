@@ -432,3 +432,9 @@ void CAutoPortico::UpdateTrackMapping(float left, float right)
                                   Gfx::ENG_TEX_MAPPING_X,
                                   left, 8.0f, 8.0f, 192.0f, 256.0f);
 }
+
+bool CAutoPortico::CreateInterface(bool bSelect)
+{
+    // Everything is done at CObjectInterface::CreateInterface
+    return false;
+}

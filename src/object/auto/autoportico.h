@@ -50,6 +50,7 @@ public:
     bool        EventProcess(const Event &event) override;
     bool        Abort() override;
     Error       GetError() override;
+    bool        CreateInterface(bool bSelect) override;
 
 protected:
     void        UpdateTrackMapping(float left, float right);
