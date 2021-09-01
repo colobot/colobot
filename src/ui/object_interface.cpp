@@ -878,6 +878,7 @@ bool CObjectInterface::CreateInterface(bool bSelect)
          type == OBJECT_MOBILErp ||
          type == OBJECT_MOBILEst ||
          type == OBJECT_MOBILEdr ||
+         type == OBJECT_PORTICO  ||
          type == OBJECT_MOTHER   ||
          type == OBJECT_ANT      ||
          type == OBJECT_SPIDER   ||
@@ -1927,6 +1928,7 @@ void CObjectInterface::UpdateInterface()
 
     if ( type == OBJECT_HUMAN    ||
          type == OBJECT_TECH     ||
+         type == OBJECT_PORTICO  ||
          type == OBJECT_MOBILEfa ||
          type == OBJECT_MOBILEta ||
          type == OBJECT_MOBILEwa ||
