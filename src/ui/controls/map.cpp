@@ -851,6 +851,7 @@ void CMap::DrawObjectIcon(Math::Point pos, Math::Point dim, MapColor color,
             case OBJECT_TARGET1:    icon = 45; break;
             case OBJECT_BASE:       icon = 43; break;
             case OBJECT_HUMAN:      icon = 8; break;
+            case OBJECT_PORTICO:    icon = 48; break;
             case OBJECT_MOBILEfa:   icon = 11; break;
             case OBJECT_MOBILEta:   icon = 10; break;
             case OBJECT_MOBILEwa:   icon = 9; break;
