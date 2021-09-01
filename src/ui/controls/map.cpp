@@ -1251,6 +1251,7 @@ void CMap::UpdateObject(CObject* pObj)
         color = MAPCOLOR_BBOX;
     }
     if ( type == OBJECT_HUMAN    ||
+         type == OBJECT_PORTICO  ||
          type == OBJECT_MOBILEwa ||
          type == OBJECT_MOBILEta ||
          type == OBJECT_MOBILEfa ||
