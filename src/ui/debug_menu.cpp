@@ -454,6 +454,8 @@ bool CDebugMenu::HandleTeleport(Math::Point mousePos)
 
 void CDebugMenu::HandleFrameUpdate(const Event &event)
 {
+    if (!IsActive()) return;
+
     std::string str = "-";
     Math::Vector pos;
     int obj;
