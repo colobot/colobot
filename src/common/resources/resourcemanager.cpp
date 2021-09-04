@@ -156,7 +156,7 @@ bool CResourceManager::DirectoryExists(const std::string& directory)
     return false;
 }
 
-bool CResourceManager::CreateDirectory(const std::string& directory)
+bool CResourceManager::CreateNewDirectory(const std::string& directory)
 {
     if (PHYSFS_isInit())
     {
@@ -165,7 +165,7 @@ bool CResourceManager::CreateDirectory(const std::string& directory)
     return false;
 }
 
-bool CResourceManager::RemoveDirectory(const std::string& directory)
+bool CResourceManager::RemoveExistingDirectory(const std::string& directory)
 {
     if (PHYSFS_isInit())
     {

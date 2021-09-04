@@ -57,9 +57,9 @@ public:
     static bool DirectoryExists(const std::string& directory);
 
     //! Create directory in write directory
-    static bool CreateDirectory(const std::string& directory);
+    static bool CreateNewDirectory(const std::string& directory);
     //! Remove directory in write directory, recursively
-    static bool RemoveDirectory(const std::string& directory);
+    static bool RemoveExistingDirectory(const std::string& directory);
 
     //! List files contained in directory
     static std::vector<std::string> ListFiles(const std::string &directory, bool excludeDirs = false);

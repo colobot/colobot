@@ -1090,7 +1090,7 @@ std::string CFileDialog::SearchDirectory(bool bCreate)
 
     if (bCreate && !CResourceManager::DirectoryExists(dir))
     {
-        CResourceManager::CreateDirectory(dir);
+        CResourceManager::CreateNewDirectory(dir);
     }
 
     if (!m_subDirPath.empty())
@@ -1098,7 +1098,7 @@ std::string CFileDialog::SearchDirectory(bool bCreate)
         dir += "/" + m_subDirPath;
         if (bCreate && !CResourceManager::DirectoryExists(dir))
         {
-            CResourceManager::CreateDirectory(dir);
+            CResourceManager::CreateNewDirectory(dir);
         }
     }
 
