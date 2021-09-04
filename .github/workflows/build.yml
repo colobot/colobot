@@ -96,7 +96,7 @@ jobs:
       with:
         arch: ${{ matrix.arch }}
     - name: Install Colobot dependencies
-      uses: lukka/run-vcpkg@v3
+      uses: lukka/run-vcpkg@v7
       with:
         vcpkgGitCommitId: '210240b399fbc2f1363f4103b6a93629c207d7e3'
         vcpkgTriplet: ${{ matrix.vcpkg_triplet }}
