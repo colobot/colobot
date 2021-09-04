@@ -526,13 +526,16 @@ elseif(PLATFORM_WINDOWS)
         if(USE_STATIC_RUNTIME) # Since we're using static runtime, assume every external library is static too
             find_package(Intl REQUIRED)
             
-            find_library(BZ2_LIBRARY NAMES bz2.lib)
-            find_library(JPEG_LIBRARY NAMES jpeg.lib)
-            find_library(TIFF_LIBRARY NAMES tiff.lib)
-            find_library(LZMA_LIBRARY NAMES lzma.lib)
-            find_library(FREETYPE_LIBRARY NAMES freetype.lib)
-            find_library(ICONV_LIBRARY NAMES libiconv.lib)
-            find_library(CHARSET_LIBRARY NAMES libcharset.lib)
+            find_library(BZ2_LIBRARY NAMES bz2)
+            find_library(JPEG_LIBRARY NAMES jpeg)
+            find_library(TIFF_LIBRARY NAMES tiff)
+            find_library(LZMA_LIBRARY NAMES lzma)
+            find_library(FREETYPE_LIBRARY NAMES freetype)
+            find_library(ICONV_LIBRARY NAMES iconv)
+            find_library(CHARSET_LIBRARY NAMES charset)
+            find_library(BROTLICOMMON_LIBRARY NAMES brotlicommon-static)
+            find_library(BROTLIENC_LIBRARY NAMES brotlienc-static)
+            find_library(BROTLIDEC_LIBRARY NAMES brotlidec-static)
 
             target_link_libraries(colobotbase PUBLIC
                 Gettext::Intl
@@ -543,6 +546,9 @@ elseif(PLATFORM_WINDOWS)
                 ${FREETYPE_LIBRARY}
                 ${ICONV_LIBRARY}
                 ${CHARSET_LIBRARY}
+                ${BROTLICOMMON_LIBRARY}
+                ${BROTLIENC_LIBRARY}
+                ${BROTLIDEC_LIBRARY}
 
                 # why
                 winmm.lib
