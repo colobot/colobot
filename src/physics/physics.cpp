@@ -2583,9 +2583,24 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
                     {
                         if (iType == OBJECT_PORTICO)
                         {
-                            if (pObj->Implements(ObjectInterfaceType::Damageable))
+                            if( pObj->GetType() == OBJECT_BASE   ||
+                                pObj->GetType() == OBJECT_SAFE   ||
+                                pObj->GetType() == OBJECT_TREE5  ||
+                                pObj->GetType() == OBJECT_PORTICO )
                             {
-                                dynamic_cast<CDestroyableObject*>(pObj)->DamageObject(DamageType::Explosive);
+                                // no damage
+                            }
+                            else if (pObj->Implements(ObjectInterfaceType::Destroyable))
+                            {
+                                if (pObj->Implements(ObjectInterfaceType::Fragile))
+                                    dynamic_cast<CDestroyableObject*>(pObj)->DestroyObject(DestructionType::Explosion);
+                                else
+                                    dynamic_cast<CDamageableObject*>(pObj)->DamageObject(DamageType::Explosive);
+                                break;
+                            }
+                            else
+                            {
+                                m_engine->GetPyroManager()->Create(Gfx::PT_FRAGT, pObj);
                                 break;
                             }
                         }
