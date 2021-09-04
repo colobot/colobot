@@ -285,8 +285,8 @@ void COldObject::DeleteObject(bool bAll)
         {
             if (m_power->Implements(ObjectInterfaceType::Old))
             {
-                dynamic_cast<COldObject*>(m_power)->SetTransporter(nullptr);
-                dynamic_cast<COldObject*>(m_power)->DeleteObject(bAll);
+                dynamic_cast<COldObject&>(*m_power).SetTransporter(nullptr);
+                dynamic_cast<COldObject&>(*m_power).DeleteObject(bAll);
             }
             m_power = nullptr;
         }
@@ -294,8 +294,8 @@ void COldObject::DeleteObject(bool bAll)
         {
             if (m_cargo->Implements(ObjectInterfaceType::Old))
             {
-                dynamic_cast<COldObject*>(m_cargo)->SetTransporter(nullptr);
-                dynamic_cast<COldObject*>(m_cargo)->DeleteObject(bAll);
+                dynamic_cast<COldObject&>(*m_cargo).SetTransporter(nullptr);
+                dynamic_cast<COldObject&>(*m_cargo).DeleteObject(bAll);
             }
             m_cargo = nullptr;
         }
@@ -351,6 +351,7 @@ bool COldObject::DamageObject(DamageType type, float force, CObject* killer)
     assert(!Implements(ObjectInterfaceType::Destroyable) || Implements(ObjectInterfaceType::Shielded) || Implements(ObjectInterfaceType::Fragile));
 
     if ( IsDying() )  return false;
+    if ( Implements(ObjectInterfaceType::Jostleable) ) return false;
 
     if ( m_type == OBJECT_ANT    ||
          m_type == OBJECT_WORM   ||
@@ -568,6 +569,11 @@ void COldObject::DestroyObject(DestructionType type, CObject* killer)
     else if ( type == DestructionType::Win )
     {
         pyroType = Gfx::PT_WPCHECK;
+    }
+    else if ( type == DestructionType::Squash )
+    {
+        pyroType = Gfx::PT_SQUASH;
+        DeleteAllCrashSpheres();
     }
     assert(pyroType != Gfx::PT_NULL);
     if (pyroType == Gfx::PT_FRAGT ||
@@ -873,6 +879,21 @@ void COldObject::SetType(ObjectType type)
              m_type == OBJECT_RUINsupport  ||
              m_type == OBJECT_RUINradar    ||
              m_type == OBJECT_RUINconvert   )
+    {
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Damageable)] = true;
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Destroyable)] = true;
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Fragile)] = true;
+        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Shielded)] = false;
+    }
+    else if (m_type == OBJECT_PLANT0  ||
+             m_type == OBJECT_PLANT1  ||
+             m_type == OBJECT_PLANT2  ||
+             m_type == OBJECT_PLANT3  ||
+             m_type == OBJECT_PLANT4  ||
+             m_type == OBJECT_PLANT15 ||
+             m_type == OBJECT_PLANT16 ||
+             m_type == OBJECT_PLANT17 ||
+             m_type == OBJECT_PLANT18 )
     {
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Damageable)] = true;
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Destroyable)] = true;
@@ -1274,7 +1295,7 @@ int COldObject::SearchDescendant(int parent, int n)
 
 void COldObject::TransformCrashSphere(Math::Sphere& crashSphere)
 {
-    crashSphere.radius *= GetScaleX();
+    if(!Implements(ObjectInterfaceType::Jostleable)) crashSphere.radius *= GetScaleX();
 
     // Returns to the sphere collisions,
     // which ignores the tilt of the vehicle.
@@ -1604,6 +1625,11 @@ void COldObject::SetTrainer(bool bEnable)
 bool COldObject::GetTrainer()
 {
     return m_bTrainer;
+}
+
+bool COldObject::GetPlusTrainer()
+{
+    return m_main->GetPlusTrainer();
 }
 
 void COldObject::SetToy(bool bEnable)
@@ -2479,7 +2505,7 @@ float COldObject::GetAbsTime()
 
 float COldObject::GetCapacity()
 {
-    return m_type == OBJECT_ATOMIC ? 10.0f : 1.0f;
+    return m_type == OBJECT_ATOMIC ? m_main->GetGlobalNuclearCapacity() : m_main->GetGlobalCellCapacity() ;
 }
 
 bool COldObject::IsRechargeable()

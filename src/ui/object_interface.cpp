@@ -536,9 +536,9 @@ bool CObjectInterface::EventProcess(const Event &event)
         {
             err = m_taskExecutor->StartTaskBuild(OBJECT_INFO);
         }
-        if ( action == EVENT_OBJECT_BDESTROYER )
+        if ( action == EVENT_OBJECT_BSAFE )
         {
-            err = m_taskExecutor->StartTaskBuild(OBJECT_DESTROYER);
+            err = m_taskExecutor->StartTaskBuild(OBJECT_SAFE);
         }
 
         if ( action == EVENT_OBJECT_GFLAT )
@@ -595,7 +595,7 @@ bool CObjectInterface::EventProcess(const Event &event)
                 ps = static_cast< CSlider* >(pw->SearchControl(EVENT_OBJECT_DIMSHIELD));
                 if ( ps != nullptr )
                 {
-                    dynamic_cast<CShielder*>(m_object)->SetShieldRadius((ps->GetVisibleValue()-(RADIUS_SHIELD_MIN/g_unit))/((RADIUS_SHIELD_MAX-RADIUS_SHIELD_MIN)/g_unit));
+                    dynamic_cast<CShielder&>(*m_object).SetShieldRadius((ps->GetVisibleValue()-(RADIUS_SHIELD_MIN/g_unit))/((RADIUS_SHIELD_MAX-RADIUS_SHIELD_MIN)/g_unit));
                 }
             }
         }
@@ -943,8 +943,9 @@ bool CObjectInterface::CreateInterface(bool bSelect)
         }
     }
 
-    if ( type == OBJECT_HUMAN ||
-         type == OBJECT_TECH  )
+    if ( (type == OBJECT_HUMAN ||
+          type == OBJECT_TECH  ) &&
+         !m_main->GetPlusExplorer() )
     {
         pos.x = ox+sx*7.7f;
         pos.y = oy+sy*0.5f;
@@ -986,7 +987,7 @@ bool CObjectInterface::CreateInterface(bool bSelect)
         DefaultEnter(pw, EVENT_OBJECT_MTAKE);
     }
 
-    if ( type == OBJECT_HUMAN )  // builder?
+    if ( type == OBJECT_HUMAN && !m_main->GetPlusExplorer())  // builder?
     {
         pos.x  =   1.0f/640.0f;
         pos.y  =   4.0f/480.0f;
@@ -1064,8 +1065,8 @@ bool CObjectInterface::CreateInterface(bool bSelect)
 
         pos.x = ox+sx*5.4f;
         pos.y = oy+sy*0.1f;
-        pw->CreateButton(pos, ddim, 128+41, EVENT_OBJECT_BDESTROYER);
-        DeadInterface(pw, EVENT_OBJECT_BDESTROYER, m_main->CanBuild(OBJECT_DESTROYER, m_object->GetTeam()));
+        pw->CreateButton(pos, ddim, 128+47, EVENT_OBJECT_BSAFE);
+        DeadInterface(pw, EVENT_OBJECT_BSAFE, m_main->CanBuild(OBJECT_SAFE, m_object->GetTeam()));
 
         if ( m_main->IsBuildingEnabled(BUILD_GFLAT) )
         {
@@ -1116,16 +1117,39 @@ bool CObjectInterface::CreateInterface(bool bSelect)
         pw->CreateButton(pos, dim, 40, EVENT_OBJECT_SEARCH);
         DefaultEnter(pw, EVENT_OBJECT_SEARCH);
 
-        if ( m_main->IsBuildingEnabled(BUILD_GFLAT) )
-        {
-            pos.x = ox+sx*9.0f;
-            pos.y = oy+sy*0.5f;
-            pw->CreateButton(pos, dim, 111, EVENT_OBJECT_GFLAT);
-        }
-
-        pos.x = ox+sx*10.1f;
+        pos.x = ox+sx*9.0f;
         pos.y = oy+sy*0.5f;
         pw->CreateButton(pos, dim, 11, EVENT_OBJECT_DELSEARCH);
+
+        if ( m_main->IsBuildingEnabled(BUILD_FLAG) )
+        {
+            pos.x = ox+sx*10.1f;
+            pos.y = oy+sy*0.5f;
+            pw->CreateButton(pos, dim, 64+54, EVENT_OBJECT_FCREATE);
+
+            pos.x = ox+sx*11.1f;
+            pos.y = oy+sy*0.5f;
+            pw->CreateButton(pos, dim, 64+55, EVENT_OBJECT_FDELETE);
+
+            ddim.x = dim.x*0.4f;
+            ddim.y = dim.y*0.4f;
+            pos.x = ox+sx*10.1f;
+            pos.y = oy+sy*2.0f-ddim.y;
+            pc = pw->CreateColor(pos, ddim, -1, EVENT_OBJECT_FCOLORb);
+            pc->SetColor(Gfx::Color(0.28f, 0.56f, 1.0f, 0.0f));
+            pos.x += ddim.x;
+            pc = pw->CreateColor(pos, ddim, -1, EVENT_OBJECT_FCOLORr);
+            pc->SetColor(Gfx::Color(1.0f, 0.0f, 0.0f, 0.0f));
+            pos.x += ddim.x;
+            pc = pw->CreateColor(pos, ddim, -1, EVENT_OBJECT_FCOLORg);
+            pc->SetColor(Gfx::Color(0.0f, 0.8f, 0.0f, 0.0f));
+            pos.x += ddim.x;
+            pc = pw->CreateColor(pos, ddim, -1, EVENT_OBJECT_FCOLORy);
+            pc->SetColor(Gfx::Color(1.0f, 0.93f, 0.0f, 0.0f)); //0x00ffec00
+            pos.x += ddim.x;
+            pc = pw->CreateColor(pos, ddim, -1, EVENT_OBJECT_FCOLORv);
+            pc->SetColor(Gfx::Color(0.82f, 0.004f, 0.99f, 0.0f)); //0x00d101fe
+        }
     }
 
     if ( type == OBJECT_MOBILErt &&  // Terraformer?
@@ -1496,9 +1520,15 @@ bool CObjectInterface::CreateInterface(bool bSelect)
         DeadInterface(pw, EVENT_OBJECT_BPARA, m_main->CanBuild(OBJECT_PARA, m_object->GetTeam()));
 
         pos.x = ox+sx*5.4f;
-        pw->CreateButton(pos, ddim, 128+41, EVENT_OBJECT_BDESTROYER);
-        DeadInterface(pw, EVENT_OBJECT_BDESTROYER, m_main->CanBuild(OBJECT_DESTROYER, m_object->GetTeam()));
+        pw->CreateButton(pos, ddim, 128+47, EVENT_OBJECT_BSAFE);
+        DeadInterface(pw, EVENT_OBJECT_BSAFE, m_main->CanBuild(OBJECT_SAFE, m_object->GetTeam()));
 
+        if ( m_main->IsBuildingEnabled(BUILD_GFLAT) )
+        {
+            pos.x = ox+sx*9.0f;
+            pos.y = oy+sy*0.5f;
+            pw->CreateButton(pos, dim, 64+47, EVENT_OBJECT_GFLAT);
+        }
     }
     UpdateInterface();
     m_lastUpdateTime = 0.0f;
@@ -1793,11 +1823,15 @@ void CObjectInterface::UpdateInterface()
         EnableInterface(pw, EVENT_OBJECT_BNUCLEAR,  bEnable);
         EnableInterface(pw, EVENT_OBJECT_BPARA,     bEnable);
         EnableInterface(pw, EVENT_OBJECT_BINFO,     bEnable);
-        EnableInterface(pw, EVENT_OBJECT_BDESTROYER,bEnable);
+        EnableInterface(pw, EVENT_OBJECT_BSAFE,     bEnable);
     }
 
-    if ( type == OBJECT_HUMAN ||  // builder?
-         type == OBJECT_TECH  )
+    if ( type == OBJECT_HUMAN    ||  // can create flags?
+         type == OBJECT_TECH     ||
+         type == OBJECT_MOBILEfs ||
+         type == OBJECT_MOBILEts ||
+         type == OBJECT_MOBILEws ||
+         type == OBJECT_MOBILEis )
     {
         CheckInterface(pw, EVENT_OBJECT_FCOLORb, m_flagColor==0);
         CheckInterface(pw, EVENT_OBJECT_FCOLORr, m_flagColor==1);
@@ -1826,7 +1860,7 @@ void CObjectInterface::UpdateInterface()
         ps = static_cast< CSlider* >(pw->SearchControl(EVENT_OBJECT_DIMSHIELD));
         if ( ps != nullptr )
         {
-            ps->SetVisibleValue((RADIUS_SHIELD_MIN/g_unit)+dynamic_cast<CShielder*>(m_object)->GetShieldRadius()*((RADIUS_SHIELD_MAX-RADIUS_SHIELD_MIN)/g_unit));
+            ps->SetVisibleValue((RADIUS_SHIELD_MIN/g_unit)+dynamic_cast<CShielder&>(*m_object).GetShieldRadius()*((RADIUS_SHIELD_MAX-RADIUS_SHIELD_MIN)/g_unit));
         }
     }
 
@@ -1866,7 +1900,7 @@ void CObjectInterface::UpdateInterface()
         pb->SetState(STATE_VISIBLE, m_buildInterface);
         pb = static_cast< CButton* >(pw->SearchControl(EVENT_OBJECT_BPARA));
         pb->SetState(STATE_VISIBLE, m_buildInterface);
-        pb = static_cast< CButton* >(pw->SearchControl(EVENT_OBJECT_BDESTROYER));
+        pb = static_cast< CButton* >(pw->SearchControl(EVENT_OBJECT_BSAFE));
         pb->SetState(STATE_VISIBLE, m_buildInterface);
         pb = static_cast< CButton* >(pw->SearchControl(EVENT_OBJECT_BINFO));
         pb->SetState(STATE_VISIBLE, m_buildInterface);

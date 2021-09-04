@@ -1197,7 +1197,7 @@ void CMap::UpdateObject(CObject* pObj)
          type != OBJECT_WORM     &&
          type != OBJECT_MOBILEtg )
     {
-        if (pObj->Implements(ObjectInterfaceType::Controllable) && !dynamic_cast<CControllableObject*>(pObj)->GetSelectable()) return;
+        if (pObj->Implements(ObjectInterfaceType::Controllable) && !dynamic_cast<CControllableObject&>(*pObj).GetSelectable()) return;
     }
     if ( pObj->GetProxyActivate() )  return;
     if (IsObjectBeingTransported(pObj))  return;
@@ -1330,7 +1330,7 @@ void CMap::UpdateObject(CObject* pObj)
              color != MAPCOLOR_MOVE )  return;
     }*/
 
-    if ( pObj->Implements(ObjectInterfaceType::Controllable) && dynamic_cast<CControllableObject*>(pObj)->GetSelect() )
+    if ( pObj->Implements(ObjectInterfaceType::Controllable) && dynamic_cast<CControllableObject&>(*pObj).GetSelect() )
     {
         m_map[MAPMAXOBJECT-1].type   = type;
         m_map[MAPMAXOBJECT-1].object = pObj;

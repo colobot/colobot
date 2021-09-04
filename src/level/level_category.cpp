@@ -25,10 +25,11 @@
 // TODO: I'm not sure about "challenges" + "custom". It may be messing things up already right now.
 const std::map<LevelCategory, std::string> CATEGORY_DIR_MAP = {
     { LevelCategory::Missions,     "missions"     },
-    { LevelCategory::FreeGame,     "freemissions" },
+    { LevelCategory::FreeGame,     "free"         },
     { LevelCategory::Exercises,    "exercises"    },
     { LevelCategory::Challenges,   "challenges"   },
     { LevelCategory::CodeBattles,  "battles"      },
+    { LevelCategory::GamePlus,     "plus"         },
     { LevelCategory::CustomLevels, "custom"       },
 };
 

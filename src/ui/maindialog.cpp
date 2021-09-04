@@ -201,6 +201,7 @@ void CMainDialog::StartPauseMenu()
 
     if ( (m_main->GetLevelCategory() == LevelCategory::Missions    ||  // missions ?
          m_main->GetLevelCategory() == LevelCategory::FreeGame     ||  // free games?
+         m_main->GetLevelCategory() == LevelCategory::GamePlus     ||  // new game plus?
          m_main->GetLevelCategory() == LevelCategory::CustomLevels ) &&   // user ?
          m_main->GetMissionType() != MISSION_CODE_BATTLE             )
     {

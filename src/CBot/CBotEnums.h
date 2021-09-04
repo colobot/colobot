@@ -100,6 +100,7 @@ enum TokenId
     ID_STATIC,
     ID_PROTECTED,
     ID_PRIVATE,
+    ID_REPEAT,
     ID_INT,
     ID_FLOAT,
     ID_BOOLEAN,

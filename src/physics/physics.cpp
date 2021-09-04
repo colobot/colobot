@@ -804,7 +804,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
 
     if (m_object->Implements(ObjectInterfaceType::Powered))
     {
-        power = dynamic_cast<CPowerContainerObject*>(dynamic_cast<CPoweredObject*>(m_object)->GetPower());  // searches for the object battery uses
+        power = dynamic_cast<CPowerContainerObject*>(dynamic_cast<CPoweredObject&>(*m_object).GetPower());  // searches for the object battery uses
         if ( GetObjectEnergy(m_object) == 0.0f )  // no battery or flat?
         {
             motorSpeed.x =  0.0f;
@@ -822,7 +822,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
         }
     }
 
-    if ( m_object->GetType() == OBJECT_HUMAN && dynamic_cast<CDestroyableObject*>(m_object)->GetDying() == DeathType::Dead )  // dead man?
+    if ( m_object->GetType() == OBJECT_HUMAN && dynamic_cast<CDestroyableObject&>(*m_object).GetDying() == DeathType::Dead )  // dead man?
     {
         motorSpeed.x = 0.0f;
         motorSpeed.z = 0.0f;
@@ -852,7 +852,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
     }
 
     if ( m_object->Implements(ObjectInterfaceType::JetFlying) &&
-         dynamic_cast<CJetFlyingObject*>(m_object)->GetRange() > 0.0f )  // limited flight range?
+         dynamic_cast<CJetFlyingObject&>(*m_object).GetRange() > 0.0f )  // limited flight range?
     {
         CJetFlyingObject* jetFlying = dynamic_cast<CJetFlyingObject*>(m_object);
         if ( m_bLand || m_bSwim || m_bObstacle )  // on the ground or in the water?
@@ -960,7 +960,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
         bool reactorCool = true;
         if ( m_object->Implements(ObjectInterfaceType::JetFlying) )
         {
-            reactorCool = dynamic_cast<CJetFlyingObject*>(m_object)->GetReactorRange() > 0.1f;
+            reactorCool = dynamic_cast<CJetFlyingObject&>(*m_object).GetReactorRange() > 0.1f;
         }
         if ( motorSpeed.y > 0.0f && reactorCool && pos.y < h )
         {
@@ -1463,7 +1463,7 @@ bool CPhysics::EventFrame(const Event &event)
     iAngle = angle = m_object->GetRotation();
 
     // Accelerate is the descent, brake is the ascent.
-    if ( m_bFreeze || (m_object->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject*>(m_object)->IsDying()) )
+    if ( m_bFreeze || (m_object->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject&>(*m_object).IsDying()) )
     {
         m_linMotion.terrainSpeed.x = 0.0f;
         m_linMotion.terrainSpeed.z = 0.0f;
@@ -1618,8 +1618,8 @@ void CPhysics::SoundMotor(float rTime)
     else if ( type == OBJECT_ANT )
     {
         assert(m_object->Implements(ObjectInterfaceType::Destroyable));
-        if ( dynamic_cast<CDestroyableObject*>(m_object)->GetDying() == DeathType::Burning ||
-             dynamic_cast<CBaseAlien*>(m_object)->GetFixed() )
+        if ( dynamic_cast<CDestroyableObject&>(*m_object).GetDying() == DeathType::Burning ||
+             dynamic_cast<CBaseAlien&>(*m_object).GetFixed() )
         {
             if ( m_lastSoundInsect <= 0.0f )
             {
@@ -1649,7 +1649,7 @@ void CPhysics::SoundMotor(float rTime)
                 else             m_lastSoundInsect = 1.5f+Math::Rand()*4.0f;
             }
         }
-        else if ( dynamic_cast<CDestroyableObject*>(m_object)->GetDying() == DeathType::Burning )
+        else if ( dynamic_cast<CDestroyableObject&>(*m_object).GetDying() == DeathType::Burning )
         {
             if ( m_lastSoundInsect <= 0.0f )
             {
@@ -1670,7 +1670,7 @@ void CPhysics::SoundMotor(float rTime)
                 else             m_lastSoundInsect = 1.5f+Math::Rand()*4.0f;
             }
         }
-        else if ( dynamic_cast<CDestroyableObject*>(m_object)->GetDying() == DeathType::Burning )
+        else if ( dynamic_cast<CDestroyableObject&>(*m_object).GetDying() == DeathType::Burning )
         {
             if ( m_lastSoundInsect <= 0.0f )
             {
@@ -1682,8 +1682,8 @@ void CPhysics::SoundMotor(float rTime)
     else if ( type == OBJECT_SPIDER )
     {
         assert(m_object->Implements(ObjectInterfaceType::Destroyable));
-        if ( dynamic_cast<CDestroyableObject*>(m_object)->GetDying() == DeathType::Burning ||
-             dynamic_cast<CBaseAlien*>(m_object)->GetFixed() )
+        if ( dynamic_cast<CDestroyableObject&>(*m_object).GetDying() == DeathType::Burning ||
+             dynamic_cast<CBaseAlien&>(*m_object).GetFixed() )
         {
             if ( m_lastSoundInsect <= 0.0f )
             {
@@ -2506,7 +2506,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
     int             colType;
     ObjectType      iType, oType;
 
-    if ( m_object->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject*>(m_object)->IsDying() )  return 0;  // is burning or exploding?
+    if ( m_object->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject&>(*m_object).IsDying() )  return 0;  // is burning or exploding?
     if ( !m_object->GetCollisions() )  return 0;
 
     // iiPos = sphere center is the old position.
@@ -2525,7 +2525,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
     {
         if ( pObj == m_object )  continue;  // yourself?
         if (IsObjectBeingTransported(pObj))  continue;
-        //if ( pObj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject*>(pObj)->IsDying() )  continue;  // is burning or exploding?
+        if ( pObj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject&>(*pObj).GetDying() == DeathType::Exploding )  continue;  // is exploding?
 
         oType = pObj->GetType();
         if ( oType == OBJECT_TOTO            )  continue;
@@ -2627,7 +2627,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
 
                     CPhysics* ph = nullptr;
                     if (pObj->Implements(ObjectInterfaceType::Movable))
-                        ph = dynamic_cast<CMovableObject*>(pObj)->GetPhysics();
+                        ph = dynamic_cast<CMovableObject&>(*pObj).GetPhysics();
                     if ( ph != nullptr )
                     {
                         oAngle = pObj->GetRotation();
@@ -2727,7 +2727,7 @@ bool CPhysics::ExploOther(ObjectType iType,
         if ( force > destructionForce && destructionForce >= 0.0f )
         {
             // TODO: implement "killer"?
-            dynamic_cast<CDamageableObject*>(pObj)->DamageObject(damageType);
+            dynamic_cast<CDamageableObject&>(*pObj).DamageObject(damageType);
         }
     }
 
@@ -2753,7 +2753,7 @@ bool CPhysics::ExploOther(ObjectType iType,
         {
             assert(pObj->Implements(ObjectInterfaceType::Damageable));
             // TODO: implement "killer"?
-            dynamic_cast<CDamageableObject*>(pObj)->DamageObject(DamageType::Collision, force/400.0f);
+            dynamic_cast<CDamageableObject&>(*pObj).DamageObject(DamageType::Collision, force/400.0f);
         }
 
         if (oType == OBJECT_MOBILEwa ||
@@ -2790,8 +2790,22 @@ bool CPhysics::ExploOther(ObjectType iType,
         {
             assert(pObj->Implements(ObjectInterfaceType::Damageable));
             // TODO: implement "killer"?
-            dynamic_cast<CDamageableObject*>(pObj)->DamageObject(DamageType::Collision, force/200.0f);
+            dynamic_cast<CDamageableObject&>(*pObj).DamageObject(DamageType::Collision, force/200.0f);
         }
+    }
+
+    if((oType == OBJECT_PLANT0  ||
+        oType == OBJECT_PLANT1  ||
+        oType == OBJECT_PLANT2  ||
+        oType == OBJECT_PLANT3  ||
+        oType == OBJECT_PLANT4  ||
+        oType == OBJECT_PLANT15 ||
+        oType == OBJECT_PLANT16 ||
+        oType == OBJECT_PLANT17 ||
+        oType == OBJECT_PLANT18)&&
+        GetDriveFromObject(iType)==DriveType::Heavy)
+    {
+        dynamic_cast<CDestroyableObject*>(pObj)->DestroyObject(DestructionType::Squash);
     }
 
     return false;
@@ -2816,7 +2830,7 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType, float force)
     if ( force > destructionForce && destructionForce >= 0.0f )
     {
         // TODO: implement "killer"?
-        dynamic_cast<CDamageableObject*>(m_object)->DamageObject(DamageType::Explosive);
+        dynamic_cast<CDamageableObject&>(*m_object).DamageObject(DamageType::Explosive);
         return 2;
     }
 
@@ -2903,7 +2917,7 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType, float force)
             }
 
             // TODO: implement "killer"?
-            if ( dynamic_cast<CDamageableObject*>(m_object)->DamageObject(DamageType::Collision, force) )  return 2;
+            if ( dynamic_cast<CDamageableObject&>(*m_object).DamageObject(DamageType::Collision, force) )  return 2;
         }
     }
 
@@ -2955,9 +2969,9 @@ void CPhysics::PowerParticle(float factor, bool bBreak)
     bCarryPower = false;
     if (m_object->Implements(ObjectInterfaceType::Carrier))
     {
-        CObject* cargo = dynamic_cast<CCarrierObject*>(m_object)->GetCargo();
+        CObject* cargo = dynamic_cast<CCarrierObject&>(*m_object).GetCargo();
         if ( cargo != nullptr && cargo->Implements(ObjectInterfaceType::PowerContainer) &&
-            dynamic_cast<CPowerContainerObject*>(cargo)->IsRechargeable() &&
+            dynamic_cast<CPowerContainerObject&>(*cargo).IsRechargeable() &&
             m_object->GetPartRotationZ(1) == ARM_STOCK_ANGLE1 )
         {
             bCarryPower = true;  // carries a battery
@@ -3250,7 +3264,7 @@ void CPhysics::MotorParticle(float aTime, float rTime)
         }
         else    // in flight?
         {
-            if ( !m_bMotor || (m_object->Implements(ObjectInterfaceType::JetFlying) && dynamic_cast<CJetFlyingObject*>(m_object)->GetReactorRange() == 0.0f) )  return;
+            if ( !m_bMotor || (m_object->Implements(ObjectInterfaceType::JetFlying) && dynamic_cast<CJetFlyingObject&>(*m_object).GetReactorRange() == 0.0f) )  return;
 
             if ( m_reactorTemperature < 1.0f )  // not too hot?
             {
@@ -3380,7 +3394,7 @@ void CPhysics::MotorParticle(float aTime, float rTime)
         }
         else    // in flight?
         {
-            if ( !m_bMotor || (m_object->Implements(ObjectInterfaceType::JetFlying) && dynamic_cast<CJetFlyingObject*>(m_object)->GetReactorRange() == 0.0f) )  return;
+            if ( !m_bMotor || (m_object->Implements(ObjectInterfaceType::JetFlying) && dynamic_cast<CJetFlyingObject&>(*m_object).GetReactorRange() == 0.0f) )  return;
 
             if ( aTime-m_lastMotorParticle < m_engine->ParticleAdapt(0.02f) )  return;
             m_lastMotorParticle = aTime;
@@ -3441,7 +3455,7 @@ void CPhysics::MotorParticle(float aTime, float rTime)
 
     if ( (type == OBJECT_HUMAN || type == OBJECT_TECH) && m_bSwim )
     {
-        if ( !m_object->Implements(ObjectInterfaceType::Destroyable) || dynamic_cast<CDestroyableObject*>(m_object)->GetDying() != DeathType::Dead )
+        if ( !m_object->Implements(ObjectInterfaceType::Destroyable) || dynamic_cast<CDestroyableObject&>(*m_object).GetDying() != DeathType::Dead )
         {
             h = Math::Mod(aTime, 5.0f);
             if ( h < 3.5f && ( h < 1.5f || h > 1.6f ) )  return;
@@ -3764,7 +3778,7 @@ Error CPhysics::GetError()
 
     if (m_object->Implements(ObjectInterfaceType::ProgramStorage))
     {
-        if ( dynamic_cast<CProgramStorageObject*>(m_object)->GetActiveVirus() )
+        if ( dynamic_cast<CProgramStorageObject&>(*m_object).GetActiveVirus() )
         {
             return ERR_VEH_VIRUS;
         }
@@ -3772,14 +3786,14 @@ Error CPhysics::GetError()
 
     if (m_object->Implements(ObjectInterfaceType::Powered))
     {
-        CObject* power = dynamic_cast<CPoweredObject*>(m_object)->GetPower();  // searches for the object battery used
+        CObject* power = dynamic_cast<CPoweredObject&>(*m_object).GetPower();  // searches for the object battery used
         if (power == nullptr || !power->Implements(ObjectInterfaceType::PowerContainer))
         {
             return ERR_VEH_POWER;
         }
         else
         {
-            if ( dynamic_cast<CPowerContainerObject*>(power)->GetEnergy() == 0.0f )  return ERR_VEH_ENERGY;
+            if ( dynamic_cast<CPowerContainerObject&>(*power).GetEnergy() == 0.0f )  return ERR_VEH_ENERGY;
         }
     }
 

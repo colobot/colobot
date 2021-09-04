@@ -165,6 +165,7 @@ public:
 
     void        SetTrainer(bool bEnable) override;
     bool        GetTrainer() override;
+    bool        GetPlusTrainer();
 
     void        SetToy(bool bEnable);
     bool        GetToy();

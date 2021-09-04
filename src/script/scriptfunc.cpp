@@ -595,7 +595,8 @@ bool CScriptFunctions::rResearch(CBotVar* var, CBotVar* result, int& exception, 
     {
         bool ok = false;
         if ( type == RESEARCH_iPAW       ||
-             type == RESEARCH_iGUN        )
+             type == RESEARCH_iGUN       ||
+             type == RESEARCH_TARGET      )
         {
             if ( center->GetType() != OBJECT_LABO )
                 err = ERR_WRONG_OBJ;
@@ -728,15 +729,18 @@ bool CScriptFunctions::rDelete(CBotVar* var, CBotVar* result, int& exception, vo
     }
 
     CObject* obj = CObjectManager::GetInstancePointer()->GetObjectById(rank);
-    if ( obj == nullptr || (obj->Implements(ObjectInterfaceType::Old) && dynamic_cast<COldObject*>(obj)->IsDying()) )
+    if ( obj == nullptr || (obj->Implements(ObjectInterfaceType::Old) && dynamic_cast<COldObject&>(*obj).IsDying()) )
     {
         return true;
     }
     else
     {
+        CScript* script = static_cast<CScript*>(user);
+        bool deleteSelf = (obj == script->m_object);
+
         if ( exploType != DestructionType::NoEffect && obj->Implements(ObjectInterfaceType::Destroyable) )
         {
-            dynamic_cast<CDestroyableObject*>(obj)->DestroyObject(static_cast<DestructionType>(exploType));
+            dynamic_cast<CDestroyableObject&>(*obj).DestroyObject(static_cast<DestructionType>(exploType));
         }
         else
         {
@@ -752,12 +756,13 @@ bool CScriptFunctions::rDelete(CBotVar* var, CBotVar* result, int& exception, vo
             }
             CObjectManager::GetInstancePointer()->DeleteObject(obj);
         }
+        // Returning "false" here makes sure the program doesn't try to keep executing
+        // if the robot just destroyed itself using delete(this.id)
+        // See issue #925
+        return !deleteSelf;
     }
 
-    // Returning "false" here makes sure the program doesn't try to keep executing if the robot just destroyed itself
-    // using delete(this.id)
-    // See issue #925
-    return false;
+    return true;
 }
 
 static CBotTypResult compileSearch(CBotVar* &var, void* user, CBotTypResult returnValue)
@@ -1439,6 +1444,102 @@ bool CScriptFunctions::rBuild(CBotVar* var, CBotVar* result, int& exception, voi
 
 }
 
+// Instruction "flag(color)"
+
+bool CScriptFunctions::rFlag(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    CScript*    script = static_cast<CScript*>(user);
+    CObject*    pThis = script->m_object;
+    ObjectType  oType;
+    int         color;
+    Error       err;
+
+    exception = 0;
+
+    if ( !script->m_taskExecutor->IsForegroundTask() )
+    {
+        oType = pThis->GetType();
+        if ( oType != OBJECT_MOBILEfs &&  // allowed only for sniffer bots && humans
+             oType != OBJECT_MOBILEts &&
+             oType != OBJECT_MOBILEws &&
+             oType != OBJECT_MOBILEis &&
+             oType != OBJECT_HUMAN    &&
+             oType != OBJECT_TECH      )
+        {
+            err = ERR_WRONG_BOT; // Wrong object
+        }
+        else
+        {
+            if ( var == nullptr )
+            {
+                color = 0;
+            }
+            else
+            {
+                color = var->GetValInt();
+                if ( color < 0 || color > static_cast<int>(TraceColor::Violet) ) color = 0;
+            }
+            err = script->m_taskExecutor->StartTaskFlag(TFL_CREATE, color);
+        }
+
+        if ( err != ERR_OK )
+        {
+            script->m_taskExecutor->StopForegroundTask();
+            result->SetValInt(err);  // shows the error
+            if ( script->m_errMode == ERM_STOP )
+            {
+                exception = err;
+                return false;
+            }
+            return true;
+        }
+    }
+    return WaitForForegroundTask(script, result, exception);
+}
+
+// Instruction "deflag()"
+
+bool CScriptFunctions::rDeflag(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    CScript*    script = static_cast<CScript*>(user);
+    CObject*    pThis = script->m_object;
+    ObjectType  oType;
+    Error       err;
+
+    exception = 0;
+
+    if ( !script->m_taskExecutor->IsForegroundTask() )
+    {
+        oType = pThis->GetType();
+        if ( oType != OBJECT_MOBILEfs &&  // allowed only for sniffer bots && humans
+             oType != OBJECT_MOBILEts &&
+             oType != OBJECT_MOBILEws &&
+             oType != OBJECT_MOBILEis &&
+             oType != OBJECT_HUMAN    &&
+             oType != OBJECT_TECH      )
+        {
+            err = ERR_WRONG_BOT; // Wrong object
+        }
+        else
+        {
+            err = script->m_taskExecutor->StartTaskFlag(TFL_DELETE, 0);
+        }
+
+        if ( err != ERR_OK )
+        {
+            script->m_taskExecutor->StopForegroundTask();
+            result->SetValInt(err);  // shows the error
+            if ( script->m_errMode == ERM_STOP )
+            {
+                exception = err;
+                return false;
+            }
+            return true;
+        }
+    }
+    return WaitForForegroundTask(script, result, exception);
+}
+
 // Compilation of the instruction "produce(pos, angle, type[, scriptName[, power]])"
 // or "produce(type[, power])".
 
@@ -1556,7 +1657,7 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
         CObjectManager::GetInstancePointer()->CreateObject(pos, angle, OBJECT_EGG);
         if (object->Implements(ObjectInterfaceType::Programmable))
         {
-            dynamic_cast<CProgrammableObject*>(object)->SetActivity(false);
+            dynamic_cast<CProgrammableObject&>(*object).SetActivity(false);
         }
     }
     else
@@ -1565,7 +1666,11 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
         {
             power = 1.0f;
         }
-        object = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, type, power);
+        bool exists = IsValidObjectTypeId(type) && type != OBJECT_NULL && type != OBJECT_MAX && type != OBJECT_MOBILEpr;
+        if (exists)
+        {
+            object = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, type, power);
+        }
         if (object == nullptr)
         {
             result->SetValInt(1);  // error
@@ -1574,7 +1679,7 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
         if (type == OBJECT_MOBILEdr)
         {
             assert(object->Implements(ObjectInterfaceType::Old)); // TODO: temporary hack
-            dynamic_cast<COldObject*>(object)->SetManual(true);
+            dynamic_cast<COldObject&>(*object).SetManual(true);
         }
         script->m_main->CreateShortcuts();
     }
@@ -1589,7 +1694,7 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
             programStorage->ReadProgram(program, name2.c_str());
             program->readOnly = true;
             program->filename = name;
-            dynamic_cast<CProgrammableObject*>(object)->RunProgram(program);
+            dynamic_cast<CProgrammableObject&>(*object).RunProgram(program);
         }
     }
 
@@ -2195,7 +2300,7 @@ bool CScriptFunctions::rReceive(CBotVar* var, CBotVar* result, int& exception, v
             return true;
         }
 
-        CExchangePost* exchangePost = dynamic_cast<CTaskInfo*>(script->m_taskExecutor->GetForegroundTask())->FindExchangePost(power);
+        CExchangePost* exchangePost = dynamic_cast<CTaskInfo&>(*script->m_taskExecutor->GetForegroundTask()).FindExchangePost(power);
         script->m_returnValue = exchangePost->GetInfoValue(p);
     }
     if ( !WaitForForegroundTask(script, result, exception) )  return false;  // not finished
@@ -2480,7 +2585,7 @@ bool CScriptFunctions::rShield(CBotVar* var, CBotVar* result, int& exception, vo
         }
         else    // up ?
         {
-            dynamic_cast<CShielder*>(pThis)->SetShieldRadius(radius);
+            dynamic_cast<CShielder&>(*pThis).SetShieldRadius(radius);
             err = script->m_taskExecutor->StartTaskShield(TSM_UP, 1000.0f);
             if ( err != ERR_OK )
             {
@@ -2498,7 +2603,7 @@ bool CScriptFunctions::rShield(CBotVar* var, CBotVar* result, int& exception, vo
         else    // up?
         {
             //?         result->SetValInt(1);  // shows the error
-            dynamic_cast<CShielder*>(pThis)->SetShieldRadius(radius);
+            dynamic_cast<CShielder&>(*pThis).SetShieldRadius(radius);
             script->m_taskExecutor->StartTaskShield(TSM_UPDATE, 0.0f);
         }
     }
@@ -2672,7 +2777,7 @@ bool CScriptFunctions::rMotor(CBotVar* var, CBotVar* result, int& exception, voi
     if ( turn < -1.0f )  turn = -1.0f;
     if ( turn >  1.0f )  turn =  1.0f;
 
-    if ( dynamic_cast<CBaseAlien*>(pThis) != nullptr && dynamic_cast<CBaseAlien*>(pThis)->GetFixed() )  // ant on the back?
+    if ( dynamic_cast<CBaseAlien*>(pThis) != nullptr && dynamic_cast<CBaseAlien&>(*pThis).GetFixed() )  // ant on the back?
     {
         speed = 0.0f;
         turn  = 0.0f;
@@ -2781,7 +2886,7 @@ bool CScriptFunctions::rCmdline(CBotVar* var, CBotVar* result, int& exception, v
     assert(pThis->Implements(ObjectInterfaceType::Programmable));
 
     rank = var->GetValInt();
-    value = dynamic_cast<CProgrammableObject*>(pThis)->GetCmdLine(rank);
+    value = dynamic_cast<CProgrammableObject&>(*pThis).GetCmdLine(rank);
     result->SetValFloat(value);
 
     return true;
@@ -3306,7 +3411,6 @@ private:
 
 void CScriptFunctions::Init()
 {
-    CBotProgram::SetTimer(100);
     CBotProgram::Init();
 
     for (int i = 0; i < OBJECT_MAX; i++)
@@ -3369,6 +3473,7 @@ void CScriptFunctions::Init()
     CBotProgram::DefineNum("BuildAutoLab",          BUILD_LABO);
     CBotProgram::DefineNum("BuildPowerCaptor",      BUILD_PARA);
     CBotProgram::DefineNum("BuildExchangePost",     BUILD_INFO);
+    CBotProgram::DefineNum("BuildVault",            BUILD_SAFE);
     CBotProgram::DefineNum("BuildDestroyer",        BUILD_DESTROYER);
     CBotProgram::DefineNum("FlatGround",            BUILD_GFLAT);
     CBotProgram::DefineNum("UseFlags",              BUILD_FLAG);
@@ -3436,6 +3541,8 @@ void CScriptFunctions::Init()
     CBotProgram::AddFunction("buildingenabled", rBuildingEnabled, cOneIntReturnBool);
 
     CBotProgram::AddFunction("build",           rBuild,           cOneInt);
+    CBotProgram::AddFunction("flag",            rFlag,            cGrabDrop);
+    CBotProgram::AddFunction("deflag",          rDeflag,          cNull);
 
     CBotProgram::AddFunction("retobject", rGetObject, cGetObject);
     CBotProgram::AddFunction("retobjectbyid", rGetObjectById, cGetObject);

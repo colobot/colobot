@@ -26,9 +26,15 @@
 
 #include "common/singleton.h"
 
+#include "common/logger.h"
+
 #include <boost/property_tree/ptree.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include <string>
+#include <sstream>
+#include <vector>
+#include <stdexcept>
 
 
 /**
@@ -99,6 +105,76 @@ public:
      * \return return true on success
      */
     bool GetBoolProperty(std::string section, std::string key, bool &value);
+
+    /** Gets an array of values of type T in section under specified key
+     * The value separator is ','.
+     * \a array will only be changed if key exists
+     * \return return true on success
+     */
+    template<typename T>
+    bool SetArrayProperty(std::string section, std::string key, const std::vector<T>& array)
+    {
+        try
+        {
+            std::string convertedValue = ArrayToString(array);
+            m_propertyTree.put(section + "." + key, convertedValue);
+            m_needsSave = true;
+        }
+        catch (std::exception & e)
+        {
+            GetLogger()->Error("Error on editing config file: %s\n", e.what());
+            return false;
+        }
+        return true;
+    }
+
+    /** Sets an array of values of type T in section under specified key.
+     * The value separator is ','.
+     * \a array will only be changed if key exists
+     * \return return true on success
+     */
+    template<typename T>
+    bool GetArrayProperty(std::string section, std::string key, std::vector<T>& array)
+    {
+        try
+        {
+            std::string readValue = m_propertyTree.get<std::string>(section + "." + key);
+            std::vector<T> convertedValue = StringToArray<T>(readValue);
+            array = std::move(convertedValue);
+        }
+        catch (std::exception & e)
+        {
+            GetLogger()->Log(m_loaded ? LOG_INFO : LOG_TRACE, "Error on parsing config file: %s\n", e.what());
+            return false;
+        }
+        return true;
+    }
+
+private:
+    template<typename T>
+    std::vector<T> StringToArray(const std::string& s)
+    {
+        std::vector<T> result;
+        std::stringstream ss(s);
+        std::string item;
+        while (std::getline(ss, item, ','))
+        {
+            result.push_back(boost::lexical_cast<T>(item));
+        }
+        return result;
+    }
+
+    template<typename T>
+    std::string ArrayToString(const std::vector<T> &array)
+    {
+        std::ostringstream oss;
+        if (!array.empty())
+        {
+            std::copy(array.begin(), array.end() - 1, std::ostream_iterator<T>(oss, ","));
+            oss << array.back();
+        }
+        return oss.str();
+    }
 
 private:
     boost::property_tree::ptree m_propertyTree;

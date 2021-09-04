@@ -953,7 +953,7 @@ void CParticle::FrameParticle(float rTime)
             m_particle[i].goal = m_particle[i].pos;
             if (object != nullptr && object->Implements(ObjectInterfaceType::Damageable))
             {
-                dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Phazer, 0.002f, m_particle[i].objFather);
+                dynamic_cast<CDamageableObject&>(*object).DamageObject(DamageType::Phazer, 0.002f, m_particle[i].objFather);
             }
 
             m_particle[i].zoom = 1.0f-(m_particle[i].time-m_particle[i].duration);
@@ -1156,7 +1156,7 @@ void CParticle::FrameParticle(float rTime)
                 {
                     if (object->Implements(ObjectInterfaceType::Damageable))
                     {
-                        dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Fire, 0.001f, m_particle[i].objFather);
+                        dynamic_cast<CDamageableObject&>(*object).DamageObject(DamageType::Fire, 0.001f, m_particle[i].objFather);
                     }
 
                     m_exploGunCounter++;
@@ -1222,7 +1222,7 @@ void CParticle::FrameParticle(float rTime)
                 m_particle[i].goal = m_particle[i].pos;
                 if (object != nullptr)
                 {
-                    if (object->GetType() == OBJECT_MOBILErs && dynamic_cast<CShielder*>(object)->GetActiveShieldRadius() > 0.0f)  // protected by shield?
+                    if (object->GetType() == OBJECT_MOBILErs && dynamic_cast<CShielder&>(*object).GetActiveShieldRadius() > 0.0f)  // protected by shield?
                     {
                         CreateParticle(m_particle[i].pos, Math::Vector(0.0f, 0.0f, 0.0f), Math::Point(6.0f, 6.0f), PARTIGUNDEL, 2.0f);
                         if (m_lastTimeGunDel > 0.2f)
@@ -1240,7 +1240,7 @@ void CParticle::FrameParticle(float rTime)
 
                         if (object->Implements(ObjectInterfaceType::Damageable))
                         {
-                            dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Organic, 0.1f, m_particle[i].objFather);  // starts explosion
+                            dynamic_cast<CDamageableObject&>(*object).DamageObject(DamageType::Organic, 0.1f, m_particle[i].objFather);  // starts explosion
                         }
                     }
                 }
@@ -1270,7 +1270,7 @@ void CParticle::FrameParticle(float rTime)
                 m_particle[i].goal = m_particle[i].pos;
                 if (object != nullptr)
                 {
-                    if (object->GetType() == OBJECT_MOBILErs && dynamic_cast<CShielder*>(object)->GetActiveShieldRadius() > 0.0f)
+                    if (object->GetType() == OBJECT_MOBILErs && dynamic_cast<CShielder&>(*object).GetActiveShieldRadius() > 0.0f)
                     {
                         CreateParticle(m_particle[i].pos, Math::Vector(0.0f, 0.0f, 0.0f), Math::Point(6.0f, 6.0f), PARTIGUNDEL, 2.0f);
                         if (m_lastTimeGunDel > 0.2f)
@@ -1285,7 +1285,7 @@ void CParticle::FrameParticle(float rTime)
                     {
                         if (object->Implements(ObjectInterfaceType::Damageable))
                         {
-                            dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Fire, std::numeric_limits<float>::infinity(), m_particle[i].objFather);  // starts explosion
+                            dynamic_cast<CDamageableObject&>(*object).DamageObject(DamageType::Fire, std::numeric_limits<float>::infinity(), m_particle[i].objFather);  // starts explosion
                         }
                     }
                 }
@@ -1344,7 +1344,7 @@ void CParticle::FrameParticle(float rTime)
                 {
                     if (object->Implements(ObjectInterfaceType::Damageable))
                     {
-                        dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Organic, 0.001f, m_particle[i].objFather);
+                        dynamic_cast<CDamageableObject&>(*object).DamageObject(DamageType::Organic, 0.001f, m_particle[i].objFather);
                     }
 
                     m_exploGunCounter ++;
@@ -2422,7 +2422,7 @@ void CParticle::FrameParticle(float rTime)
                 if (object != nullptr)
                 {
                     assert(object->Implements(ObjectInterfaceType::Damageable));
-                    dynamic_cast<CDamageableObject*>(object)->DamageObject(DamageType::Tower, std::numeric_limits<float>::infinity(), m_particle[i].objFather);
+                    dynamic_cast<CDamageableObject&>(*object).DamageObject(DamageType::Tower, std::numeric_limits<float>::infinity(), m_particle[i].objFather);
                 }
             }
 
@@ -3543,6 +3543,7 @@ CObject* CParticle::SearchObjectGun(Math::Vector old, Math::Vector pos,
             continue;
         }
         if (!obj->Implements(ObjectInterfaceType::Damageable) && !obj->IsBulletWall())  continue;
+        if (obj->Implements(ObjectInterfaceType::Jostleable))  continue;
 
         Math::Vector oPos = obj->GetPosition();
 

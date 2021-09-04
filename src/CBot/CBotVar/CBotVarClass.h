@@ -99,8 +99,6 @@ private:
     static std::set<CBotVarClass*> m_instances;
     //! Class definition
     CBotClass* m_pClass;
-    //! Parent class instance
-    CBotVarClass* m_pParent;
     //! Class members
     CBotVar* m_pVar;
     //! Reference counter

@@ -24,6 +24,8 @@ add_library(colobotbase STATIC
     app/controller.h
     app/input.cpp
     app/input.h
+    app/modman.cpp
+    app/modman.h
     app/pathman.cpp
     app/pathman.h
     app/pausemanager.cpp
@@ -297,6 +299,7 @@ add_library(colobotbase STATIC
     object/object_interface_type.h
     object/object_manager.cpp
     object/object_manager.h
+    object/object_type.cpp
     object/object_type.h
     object/old_object.cpp
     object/old_object.h
@@ -446,6 +449,8 @@ add_library(colobotbase STATIC
     ui/screen/screen_loading.h
     ui/screen/screen_main_menu.cpp
     ui/screen/screen_main_menu.h
+    ui/screen/screen_mod_list.cpp
+    ui/screen/screen_mod_list.h
     ui/screen/screen_player_select.cpp
     ui/screen/screen_player_select.h
     ui/screen/screen_quit.cpp

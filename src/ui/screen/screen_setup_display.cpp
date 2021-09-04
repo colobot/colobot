@@ -293,6 +293,7 @@ void CScreenSetupDisplay::UpdateApply()
     CWindow*    pw;
     CButton*    pb;
     CList*      pl;
+    CList*      pvl;
     CCheck*     pc;
     int         sel2;
     bool        bFull;
@@ -308,6 +309,22 @@ void CScreenSetupDisplay::UpdateApply()
 
     pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_FULL));
     bFull = pc->TestState(STATE_CHECK);
+
+    pvl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_VSYNC));
+    if (pvl == nullptr)  return;
+
+    switch (m_engine->GetVSync())
+    {
+    case -1: //Adaptive?
+        pvl->SetSelect(1);
+        break;
+    case 0: //Off?
+        pvl->SetSelect(0);
+        break;
+    case 1: //On?
+        pvl->SetSelect(2);
+        break;
+    }
 
     if ( sel2 == m_setupSelMode   &&
          bFull == m_setupFull     )

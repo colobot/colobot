@@ -65,7 +65,7 @@ std::unique_ptr<CBaseRobot> CBaseRobot::Create(
     }
     else
     {
-        obj->SetTrainer(params.trainer);
+        obj->SetTrainer(params.trainer || obj->GetPlusTrainer());
     }
 
     obj->SetToy(params.toy);

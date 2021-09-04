@@ -397,7 +397,7 @@ bool CAutoFactory::EventProcess(const Event &event)
             if ( vehicle != nullptr )
             {
                 assert(vehicle->Implements(ObjectInterfaceType::Movable));
-                physics = dynamic_cast<CMovableObject*>(vehicle)->GetPhysics();
+                physics = dynamic_cast<CMovableObject&>(*vehicle).GetPhysics();
                 physics->SetFreeze(false);  // can move
 
                 vehicle->SetLock(false);  // vehicle useable
@@ -408,7 +408,7 @@ bool CAutoFactory::EventProcess(const Event &event)
                 {
                     if (vehicle->Implements(ObjectInterfaceType::Programmable) && vehicle->Implements(ObjectInterfaceType::ProgramStorage))
                     {
-                        Program* program = dynamic_cast<CProgramStorageObject*>(vehicle)->AddProgram();
+                        Program* program = dynamic_cast<CProgramStorageObject&>(*vehicle).AddProgram();
 
                         if (boost::regex_match(m_program, boost::regex("[A-Za-z0-9_]+"))) // Public function name?
                         {
@@ -424,7 +424,7 @@ bool CAutoFactory::EventProcess(const Event &event)
                             program->script->SendScript(m_program.c_str());
                         }
 
-                        dynamic_cast<CProgrammableObject*>(vehicle)->RunProgram(program);
+                        dynamic_cast<CProgrammableObject&>(*vehicle).RunProgram(program);
                     }
                 }
             }
@@ -670,7 +670,7 @@ bool CAutoFactory::CreateVehicle()
     vehicle->SetLock(true);  // not usable
 
     assert(vehicle->Implements(ObjectInterfaceType::Movable));
-    CPhysics* physics = dynamic_cast<CMovableObject*>(vehicle)->GetPhysics();
+    CPhysics* physics = dynamic_cast<CMovableObject&>(*vehicle).GetPhysics();
     physics->SetFreeze(true);  // it doesn't move
 
     if (vehicle->Implements(ObjectInterfaceType::ProgramStorage))

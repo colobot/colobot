@@ -408,6 +408,7 @@ void CEngine::ReloadAllTextures()
 {
     FlushTextureCache();
     m_text->FlushCache();
+    m_text->ReloadFonts();
 
     m_app->GetEventQueue()->AddEvent(Event(EVENT_RELOAD_TEXTURES));
     UpdateGroundSpotTextures();

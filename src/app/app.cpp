@@ -21,6 +21,7 @@
 
 #include "app/controller.h"
 #include "app/input.h"
+#include "app/modman.h"
 #include "app/pathman.h"
 
 #include "common/config_file.h"
@@ -113,7 +114,8 @@ CApplication::CApplication(CSystemUtils* systemUtils)
       m_private(MakeUnique<ApplicationPrivate>()),
       m_configFile(MakeUnique<CConfigFile>()),
       m_input(MakeUnique<CInput>()),
-      m_pathManager(MakeUnique<CPathManager>(systemUtils))
+      m_pathManager(MakeUnique<CPathManager>(systemUtils)),
+      m_modManager(MakeUnique<CModManager>(this, m_pathManager.get()))
 {
     m_exitCode      = 0;
     m_active        = false;
@@ -218,6 +220,11 @@ CEventQueue* CApplication::GetEventQueue()
 CSoundInterface* CApplication::GetSound()
 {
     return m_sound.get();
+}
+
+CModManager* CApplication::GetModManager()
+{
+    return m_modManager.get();
 }
 
 void CApplication::LoadEnvironmentVariables()
@@ -513,6 +520,10 @@ bool CApplication::Create()
         GetLogger()->Warn("Config could not be loaded. Default values will be used!\n");
     }
 
+    m_modManager->FindMods();
+    m_modManager->SaveMods();
+    m_modManager->MountAllMods();
+
     // Create the sound instance.
     #ifdef OPENAL_SOUND
     if (!m_headless)
@@ -538,6 +549,8 @@ bool CApplication::Create()
 
     /* SDL initialization sequence */
 
+    // Creating the m_engine now because it holds the vsync flag
+    m_engine = MakeUnique<Gfx::CEngine>(this, m_systemUtils);
 
     Uint32 initFlags = SDL_INIT_VIDEO | SDL_INIT_TIMER;
 
@@ -682,8 +695,6 @@ bool CApplication::Create()
     }
 
     // Create the 3D engine
-    m_engine = MakeUnique<Gfx::CEngine>(this, m_systemUtils);
-
     m_engine->SetDevice(m_device.get());
 
     if (! m_engine->Create() )
@@ -698,21 +709,7 @@ bool CApplication::Create()
     // Create the robot application.
     m_controller = MakeUnique<CController>();
 
-    CThread musicLoadThread([this]()
-    {
-        GetLogger()->Debug("Cache sounds...\n");
-        SystemTimeStamp* musicLoadStart = m_systemUtils->CreateTimeStamp();
-        m_systemUtils->GetCurrentTimeStamp(musicLoadStart);
-
-        m_sound->CacheAll();
-
-        SystemTimeStamp* musicLoadEnd = m_systemUtils->CreateTimeStamp();
-        m_systemUtils->GetCurrentTimeStamp(musicLoadEnd);
-        float musicLoadTime = m_systemUtils->TimeStampDiff(musicLoadStart, musicLoadEnd, STU_MSEC);
-        GetLogger()->Debug("Sound loading took %.2f ms\n", musicLoadTime);
-    },
-    "Sound loading thread");
-    musicLoadThread.Start();
+    StartLoadingMusic();
 
     if (m_runSceneCategory == LevelCategory::Max)
         m_controller->StartApp();
@@ -725,6 +722,15 @@ bool CApplication::Create()
 
     return true;
 }
+
+void CApplication::ReloadResources()
+{
+    GetLogger()->Info("Reloading resources\n");
+    m_engine->ReloadAllTextures();
+    StartLoadingMusic();
+    m_controller->GetRobotMain()->UpdateCustomLevelList();
+}
+
 
 bool CApplication::CreateVideoSurface()
 {
@@ -844,30 +850,41 @@ bool CApplication::CreateVideoSurface()
     int vsync = 0;
     if (GetConfigFile().GetIntProperty("Setup", "VSync", vsync))
     {
-        while (SDL_GL_SetSwapInterval(vsync) == -1)
-        {
-            switch(vsync)
-            {
-                case -1: //failed with adaptive sync?
-                    GetLogger()->Warn("Adaptive sync not supported.\n");
-                    vsync = 1;
-                    break;
-                case 1: //failed with VSync enabled?
-                    GetLogger()->Warn("Couldn't enable VSync.\n");
-                    vsync = 0;
-                    break;
-                case 0: //failed with VSync disabled?
-                    GetLogger()->Warn("Couldn't disable VSync.\n");
-                    vsync = 1;
-                    break;
-            }
-        }
+        m_engine->SetVSync(vsync);
+        TryToSetVSync();
+        vsync = m_engine->GetVSync();
         GetConfigFile().SetIntProperty("Setup", "VSync", vsync);
 
         GetLogger()->Info("Using Vsync: %s\n", (vsync == -1 ? "adaptive" : (vsync ? "true" : "false")));
     }
 
     return true;
+}
+
+void CApplication::TryToSetVSync()
+{
+    int vsync = m_engine->GetVSync();
+    int result = SDL_GL_SetSwapInterval(vsync);
+    if (result == -1)
+    {
+        switch (vsync)
+        {
+        case -1:
+            GetLogger()->Warn("Adaptive sync not supported: %s\n", SDL_GetError());
+            m_engine->SetVSync(1);
+            TryToSetVSync();
+            break;
+        case 1:
+            GetLogger()->Warn("Couldn't enable VSync: %s\n", SDL_GetError());
+            m_engine->SetVSync(0);
+            TryToSetVSync();
+            break;
+        case 0:
+            GetLogger()->Warn("Couldn't disable VSync: %s\n", SDL_GetError());
+            m_engine->SetVSync(SDL_GL_GetSwapInterval());
+            break;
+        }
+    }
 }
 
 bool CApplication::ChangeVideoConfig(const Gfx::DeviceConfig &newConfig)
@@ -878,26 +895,7 @@ bool CApplication::ChangeVideoConfig(const Gfx::DeviceConfig &newConfig)
     SDL_SetWindowSize(m_private->window, m_deviceConfig.size.x, m_deviceConfig.size.y);
     SDL_SetWindowFullscreen(m_private->window, m_deviceConfig.fullScreen ? SDL_WINDOW_FULLSCREEN : 0);
 
-    int vsync = m_engine->GetVSync();
-    while (SDL_GL_SetSwapInterval(vsync) == -1)
-    {
-        switch(vsync)
-        {
-            case -1: //failed with adaptive sync?
-                GetLogger()->Warn("Adaptive sync not supported.\n");
-                vsync = 1;
-                break;
-            case 1: //failed with VSync enabled?
-                GetLogger()->Warn("Couldn't enable VSync.\n");
-                vsync = 0;
-                break;
-            case 0: //failed with VSync disabled?
-                GetLogger()->Warn("Couldn't disable VSync.\n");
-                vsync = 1;
-                break;
-        }
-    }
-    m_engine->SetVSync(vsync);
+    TryToSetVSync();
 
     m_device->ConfigChanged(m_deviceConfig);
 
@@ -1060,6 +1058,10 @@ int CApplication::Run()
 
     MoveMouse(Math::Point(0.5f, 0.5f)); // center mouse on start
 
+    SystemTimeStamp *previousTimeStamp = m_systemUtils->CreateTimeStamp();
+    SystemTimeStamp *currentTimeStamp = m_systemUtils->CreateTimeStamp();
+    SystemTimeStamp *interpolatedTimeStamp = m_systemUtils->CreateTimeStamp();
+
     while (true)
     {
         if (m_active)
@@ -1158,21 +1160,30 @@ int CApplication::Run()
 
             CProfiler::StartPerformanceCounter(PCNT_UPDATE_ALL);
 
-            // Prepare and process step simulation event
-            Event event = CreateUpdateEvent();
-            if (event.type != EVENT_NULL && m_controller != nullptr)
+            // Prepare and process step simulation event(s)
+            // If game speed is increased then we do extra ticks per loop iteration to improve physics accuracy.
+            int numTickSlices = static_cast<int>(GetSimulationSpeed());
+            if(numTickSlices < 1) numTickSlices = 1;
+            m_systemUtils->CopyTimeStamp(previousTimeStamp, m_curTimeStamp);
+            m_systemUtils->GetCurrentTimeStamp(currentTimeStamp);
+            for(int tickSlice = 0; tickSlice < numTickSlices; tickSlice++)
             {
-                LogEvent(event);
+                m_systemUtils->InterpolateTimeStamp(interpolatedTimeStamp, previousTimeStamp, currentTimeStamp, (tickSlice+1)/static_cast<float>(numTickSlices));
+                Event event = CreateUpdateEvent(interpolatedTimeStamp);
+                if (event.type != EVENT_NULL && m_controller != nullptr)
+                {
+                    LogEvent(event);
 
-                m_sound->FrameMove(m_relTime);
+                    m_sound->FrameMove(m_relTime);
 
-                CProfiler::StartPerformanceCounter(PCNT_UPDATE_GAME);
-                m_controller->ProcessEvent(event);
-                CProfiler::StopPerformanceCounter(PCNT_UPDATE_GAME);
+                    CProfiler::StartPerformanceCounter(PCNT_UPDATE_GAME);
+                    m_controller->ProcessEvent(event);
+                    CProfiler::StopPerformanceCounter(PCNT_UPDATE_GAME);
 
-                CProfiler::StartPerformanceCounter(PCNT_UPDATE_ENGINE);
-                m_engine->FrameUpdate();
-                CProfiler::StopPerformanceCounter(PCNT_UPDATE_ENGINE);
+                    CProfiler::StartPerformanceCounter(PCNT_UPDATE_ENGINE);
+                    m_engine->FrameUpdate();
+                    CProfiler::StopPerformanceCounter(PCNT_UPDATE_ENGINE);
+                }
             }
 
             CProfiler::StopPerformanceCounter(PCNT_UPDATE_ALL);
@@ -1188,6 +1199,10 @@ int CApplication::Run()
     }
 
 end:
+    m_systemUtils->DestroyTimeStamp(previousTimeStamp);
+    m_systemUtils->DestroyTimeStamp(currentTimeStamp);
+    m_systemUtils->DestroyTimeStamp(interpolatedTimeStamp);
+
     return m_exitCode;
 }
 
@@ -1520,6 +1535,26 @@ void CApplication::InternalResumeSimulation()
     m_absTimeBase = m_exactAbsTime;
 }
 
+void CApplication::StartLoadingMusic()
+{
+    CThread musicLoadThread([this]()
+    {
+        GetLogger()->Debug("Cache sounds...\n");
+        SystemTimeStamp* musicLoadStart = m_systemUtils->CreateTimeStamp();
+        m_systemUtils->GetCurrentTimeStamp(musicLoadStart);
+
+        m_sound->Reset();
+        m_sound->CacheAll();
+
+        SystemTimeStamp* musicLoadEnd = m_systemUtils->CreateTimeStamp();
+        m_systemUtils->GetCurrentTimeStamp(musicLoadEnd);
+        float musicLoadTime = m_systemUtils->TimeStampDiff(musicLoadStart, musicLoadEnd, STU_MSEC);
+        GetLogger()->Debug("Sound loading took %.2f ms\n", musicLoadTime);
+    },
+    "Sound loading thread");
+    musicLoadThread.Start();
+}
+
 bool CApplication::GetSimulationSuspended() const
 {
     return m_simulationSuspended;
@@ -1529,20 +1564,20 @@ void CApplication::SetSimulationSpeed(float speed)
 {
     m_simulationSpeed = speed;
 
-    m_systemUtils->GetCurrentTimeStamp(m_baseTimeStamp);
+    m_systemUtils->CopyTimeStamp(m_baseTimeStamp, m_curTimeStamp);
     m_realAbsTimeBase = m_realAbsTime;
     m_absTimeBase = m_exactAbsTime;
 
     GetLogger()->Info("Simulation speed = %.2f\n", speed);
 }
 
-Event CApplication::CreateUpdateEvent()
+Event CApplication::CreateUpdateEvent(SystemTimeStamp *newTimeStamp)
 {
     if (m_simulationSuspended)
         return Event(EVENT_NULL);
 
     m_systemUtils->CopyTimeStamp(m_lastTimeStamp, m_curTimeStamp);
-    m_systemUtils->GetCurrentTimeStamp(m_curTimeStamp);
+    m_systemUtils->CopyTimeStamp(m_curTimeStamp, newTimeStamp);
 
     long long absDiff = m_systemUtils->TimeStampExactDiff(m_baseTimeStamp, m_curTimeStamp);
     long long newRealAbsTime = m_realAbsTimeBase + absDiff;

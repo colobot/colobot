@@ -31,6 +31,7 @@ On some Linux distributions there are also distribution packages available:
  * Arch Linux (AUR): https://aur.archlinux.org/packages/colobot-gold
  * openSUSE: http://software.opensuse.org/download.html?project=games&package=colobot
  * Fedora: https://src.fedoraproject.org/rpms/colobot
+ * Guix https://guix.gnu.org/en/packages/colobot-0.1.12-alpha/
 
 
 ## Compiling and running the game
@@ -43,9 +44,4 @@ If you want to contribute to the project, see [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## Contact
 
-If you want to help in the project, please contact us on our IRC channels or [our forum](http://colobot.info/forum/).
-
-### IRC channels
-
-* [#colobot on Freenode](irc://freenode.net#colobot) - main development channel (English);
-* [#colobot on pirc.pl](irc://pirc.pl#colobot) - Polish community channel;
+If you want to help in the project, please contact us on our [Discord server](https://discord.gg/56Fm9kb).

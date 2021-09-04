@@ -19,11 +19,12 @@
 
 #pragma once
 
-#include "CBot/CBotTypResult.h"
 #include "CBot/CBotEnums.h"
 
-#include <vector>
 #include <list>
+#include <memory>
+#include <string>
+#include <vector>
 
 namespace CBot
 {
@@ -31,6 +32,7 @@ namespace CBot
 class CBotFunction;
 class CBotClass;
 class CBotStack;
+class CBotTypResult;
 class CBotVar;
 class CBotExternalCallList;
 
@@ -201,14 +203,6 @@ public:
     void Stop();
 
     /**
-     * \brief Sets the number of steps (parts of instructions) to execute in Run() before suspending the program execution
-     * \param n new timer value
-     *
-     * FIXME: Seems to be currently kind of broken (see issue #410)
-     */
-    static void SetTimer(int n);
-
-    /**
      * \brief Add a function that can be called from CBot
      *
      * To define an external function, proceed as follows:
@@ -335,11 +329,11 @@ public:
     /**
      * \brief Returns static list of all registered external calls
      */
-    static CBotExternalCallList* GetExternalCalls();
+    static const std::unique_ptr<CBotExternalCallList>& GetExternalCalls();
 
 private:
     //! All external calls
-    static CBotExternalCallList* m_externalCalls;
+    static std::unique_ptr<CBotExternalCallList> m_externalCalls;
     //! All user-defined functions
     std::list<CBotFunction*> m_functions{};
     //! The entry point function

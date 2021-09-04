@@ -71,7 +71,7 @@ CBotInstr* CBotSwitch::Compile(CBotToken* &p, CBotCStack* pStack)
                         {
                             if ( p->GetType() == ID_CASE || p->GetType() == ID_DEFAULT)
                             {
-                                delete pStk2;
+                                pStk->DeleteNext();
                                 pStk2 = pStk->TokenStack(p, true);          // some space for a stack, plz
 
                                 caseInst = static_cast<CBotCase*>(CBotCase::Compile(p, pStk2, inst->m_labels));

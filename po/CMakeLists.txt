@@ -12,7 +12,7 @@ add_custom_command(OUTPUT ${_potFile}
     COMMAND ${XGETTEXT_CMD} ${colobot_SOURCE_DIR}/src/app/app.cpp --output=${_potFile} --no-wrap
     COMMAND ${XGETTEXT_CMD} ${colobot_SOURCE_DIR}/src/common/restext.cpp --output=${_potFile} --no-wrap --join-existing --no-location --keyword=TR
     COMMAND ${XGETTEXT_CMD} ${colobot_SOURCE_DIR}/src/script/script.cpp --output=${_potFile} --no-wrap --join-existing --no-location
-    COMMAND sed -i -e "s|^\\(\"POT-Creation-Date:\\).*$|\\1 DATE\\\\n\"|" ${_potFile}
+    COMMAND sed -bi -e "s/^\\(\"POT-Creation-Date:\\).*$/\\1 DATE\\\\n\"/" ${_potFile}
 
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     COMMENT "Extract translatable messages to ${_potFile}"

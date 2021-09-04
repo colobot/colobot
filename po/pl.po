@@ -31,6 +31,9 @@ msgstr "Brak \" ] \""
 msgid "%s: %d pts"
 msgstr "%s: %d pkt"
 
+msgid "+\\Missions with bonus content and optional challenges"
+msgstr "+\\Misje z dodatkową zawartością i opcjonalnymi wyzwaniami"
+
 msgid "..behind"
 msgstr "..za"
 
@@ -124,6 +127,9 @@ msgstr "Wygląd\\Wybierz swoją postać"
 msgid "Apply changes\\Activates the changed settings"
 msgstr "Zastosuj zmiany\\Aktywuje zmienione ustawienia"
 
+msgid "Apply\\Apply the current mod configuration"
+msgstr "Zastosuj\\Zastosuj obecną konfigurację modów"
+
 msgid "Appropriate constructor missing"
 msgstr "Brak odpowiedniego konstruktora"
 
@@ -182,7 +188,7 @@ msgid "Bot factory"
 msgstr "Fabryka robotów"
 
 msgid "Build (\\key action;)"
-msgstr ""
+msgstr "Buduj (\\key action;)"
 
 msgid "Build a bot factory"
 msgstr "Zbuduj fabrykę robotów"
@@ -196,14 +202,11 @@ msgstr "Zbuduj wieżę obronną"
 msgid "Build a derrick"
 msgstr "Zbuduj kopalnię"
 
-msgid "Build a destroyer"
-msgstr "Zbuduj niszczarkę"
-
 msgid "Build a exchange post"
 msgstr "Zbuduj stację przekaźnikową"
 
 msgid "Build a legged builder"
-msgstr ""
+msgstr "Zbuduj budowniczego na nogach"
 
 msgid "Build a legged grabber"
 msgstr "Zbuduj transporter na nogach"
@@ -251,13 +254,13 @@ msgid "Build a subber"
 msgstr "Zbuduj robota nurka"
 
 msgid "Build a target bot"
-msgstr ""
+msgstr "Zbuduj robota-cel"
 
 msgid "Build a thumper"
 msgstr "Zbuduj robota uderzacza"
 
 msgid "Build a tracked builder"
-msgstr ""
+msgstr "Zbuduj budowniczego na gąsienicach"
 
 msgid "Build a tracked grabber"
 msgstr "Zbuduj transporter na gąsienicach"
@@ -271,8 +274,11 @@ msgstr "Zbuduj działo na gąsienicach"
 msgid "Build a tracked sniffer"
 msgstr "Zbuduj szperacz na gąsienicach"
 
+msgid "Build a vault"
+msgstr "Zbuduj skrytkę"
+
 msgid "Build a wheeled builder"
-msgstr ""
+msgstr "Zbuduj budowniczego na kołach"
 
 msgid "Build a wheeled grabber"
 msgstr "Zbuduj transporter na kołach"
@@ -287,7 +293,7 @@ msgid "Build a wheeled sniffer"
 msgstr "Zbuduj szperacz na kołach"
 
 msgid "Build a winged builder"
-msgstr ""
+msgstr "Zbuduj latającego budowniczego"
 
 msgid "Build a winged grabber"
 msgstr "Zbuduj transporter latający"
@@ -370,6 +376,9 @@ msgstr "Zmień kamerę\\Przełącza pomiędzy kamerą pokładową i śledzącą"
 msgid "Change player\\Change player"
 msgstr "Zmień gracza\\Zmień gracza"
 
+msgid "Changes"
+msgstr "Zmiany"
+
 msgid "Chapters:"
 msgstr "Rozdziały:"
 
@@ -439,6 +448,12 @@ msgstr "Kopiuj"
 msgid "Copy (Ctrl+C)"
 msgstr "Kopiuj (Ctrl+C)"
 
+msgid "Could not open the file explorer!"
+msgstr "Nie udało się otworzyć przeglądarki plików!"
+
+msgid "Could not open the web browser!"
+msgstr "Nie udało się otworzyć przeglądarki internetowej!"
+
 msgid "Current mission saved"
 msgstr "Bieżąca misja zapisana"
 
@@ -472,6 +487,9 @@ msgstr "Kopalnia"
 msgid "Descend\\Reduces the power of the jet"
 msgstr "W dół\\Zmniejsza moc silnika"
 
+msgid "Description:"
+msgstr "Opis:"
+
 msgid "Destroy"
 msgstr "Zniszcz"
 
@@ -483,6 +501,9 @@ msgstr "Destroyer"
 
 msgid "Device\\Driver and resolution settings"
 msgstr "Urządzenie\\Ustawienia sterownika i rozdzielczości"
+
+msgid "Disable\\Disable the selected mod"
+msgstr "Wyłącz\\Wyłącza zaznaczonego moda"
 
 msgid "Dividing by zero"
 msgstr "Dzielenie przez zero"
@@ -500,11 +521,14 @@ msgstr "Drzwi zablokowane przez robota lub inny obiekt"
 msgid "Down (\\key gdown;)"
 msgstr "Dół (\\key gdown;)"
 
+msgid "Down\\Move the selected mod down so it's loaded later (mods may overwrite files from the mods above them)"
+msgstr "W dół\\Przenieś zaznaczonego moda w dół, aby był załadowany później (mody mogą nadpisywać pliki modów wyżej)"
+
 msgid "Drawer bot"
 msgstr "Robot rysownik"
 
 msgid "Duplicate label in switch"
-msgstr ""
+msgstr "Zduplikowana wartość w instrukcji switch"
 
 msgid "Dust\\Dust and dirt on bots and buildings"
 msgstr "Kurz\\Kurz i bród na robotach i budynkach"
@@ -525,7 +549,10 @@ msgid "Egg"
 msgstr "Jajo"
 
 msgid "Empty character constant"
-msgstr ""
+msgstr "Stała będąca pustym znakiem"
+
+msgid "Enable\\Enable the selected mod"
+msgstr "Włącz\\Włącza zaznaczonego moda"
 
 msgid "End of block missing"
 msgstr "Brak końca bloku"
@@ -742,7 +769,7 @@ msgid "Inappropriate object"
 msgstr "Nieodpowiedni obiekt"
 
 msgid "Inappropriate sample"
-msgstr ""
+msgstr "Nieprawidłowa próbka"
 
 msgid "Incorrect index type"
 msgstr "Nieprawidłowy typ indeksu"
@@ -752,6 +779,9 @@ msgstr "Zainfekowane wirusem, chwilowo niesprawne"
 
 msgid "Information exchange post"
 msgstr "Stacja przekaźnikowa informacji"
+
+msgid "Information:"
+msgstr "Informacje:"
 
 msgid "Instruction \"break\" outside a loop"
 msgstr "Polecenie \"break\" na zewnątrz pętli"
@@ -784,7 +814,7 @@ msgid "Internal error - tell the developers"
 msgstr "Błąd wewnętrzny - powiadom twórców gry"
 
 msgid "Invalid universal character name"
-msgstr ""
+msgstr "Nieprawidłowy znak Unicode"
 
 msgid "Invert\\Invert values on this axis"
 msgstr "Odwróć\\Odwróć wartości na tej osi"
@@ -814,7 +844,7 @@ msgid "LOADING"
 msgstr "WCZYTYWANIE"
 
 msgid "Legged builder"
-msgstr ""
+msgstr "Budowniczy na nogach"
 
 msgid "Legged grabber"
 msgstr "Transporter na nogach"
@@ -900,8 +930,20 @@ msgstr "Misje"
 msgid "Missions on this planet:"
 msgstr "Misje na tej planecie:"
 
+msgid "Missions+"
+msgstr "Misje+"
+
 msgid "Missions\\Select mission"
 msgstr "Misje\\Wybierz misję"
+
+msgid "Mods"
+msgstr "Mody"
+
+msgid "Mods:"
+msgstr "Mody:"
+
+msgid "Mods\\Mod manager"
+msgstr "Mody\\Zarządzanie modami"
 
 msgid "Mouse inversion X\\Inversion of the scrolling direction on the X axis"
 msgstr "Odwrócenie myszy X\\Odwrócenie kierunków przewijania w poziomie"
@@ -914,6 +956,9 @@ msgstr "Przenieś zaznaczony program w dół"
 
 msgid "Move selected program up"
 msgstr "Przenieś zaznaczony program w górę"
+
+msgid "Mute sounds in background\\Mute all game sounds when the window is unfocused"
+msgstr "Cisza, gdy okno jest w tle\\Wycisza wszystkie dźwięki, gdy okno gry stanie się nieaktywne"
 
 msgid "Mute\\No sound"
 msgstr "Cisza\\Brak dźwięków"
@@ -934,7 +979,7 @@ msgid "New ..."
 msgstr "Nowy ..."
 
 msgid "New Folder"
-msgstr ""
+msgstr "Nowy folder"
 
 msgid "New bot available"
 msgstr "Dostępny nowy robot"
@@ -947,6 +992,12 @@ msgstr "Następny obiekt\\Zaznacza następny obiekt"
 
 msgid "No"
 msgstr "Nie"
+
+msgid "No changes."
+msgstr "Brak zmian."
+
+msgid "No description."
+msgstr "Brak opisu."
 
 msgid "No energy in the subsoil"
 msgstr "Brak energii w ziemi"
@@ -1068,6 +1119,9 @@ msgstr "Otwórz"
 msgid "Open (Ctrl+O)"
 msgstr "Otwórz (Ctrl+O)"
 
+msgid "Open Directory\\Open the mods directory"
+msgstr "Otwórz katalog\\Otwórz katalog z modami"
+
 msgid "Opening brace missing"
 msgstr "Brak klamry otwierającej"
 
@@ -1093,7 +1147,7 @@ msgid "Original game developed by:"
 msgstr "Twórcy oryginalnej gry:"
 
 msgid "Overwrite existing file?"
-msgstr ""
+msgstr "Nadpisać istniejący plik?"
 
 msgid "Parameters missing"
 msgstr "Brak wymaganego parametru"
@@ -1129,7 +1183,7 @@ msgid "Planets:"
 msgstr "Planety:"
 
 msgid "Plans for builder available"
-msgstr ""
+msgstr "Dostępne plany robota budowniczego"
 
 msgid "Plans for defense tower available"
 msgstr "Dostępne plany wieży obronnej"
@@ -1278,6 +1332,9 @@ msgstr "Czerwona flaga"
 msgid "Reflections on the buttons \\Shiny buttons"
 msgstr "Odbicia na przyciskach \\Świecące przyciski"
 
+msgid "Refresh\\Refresh the list of currently installed mods"
+msgstr "Odśwież\\Odśwież listę obecnie zainstalowanych modów"
+
 msgid "Remains of Apollo mission"
 msgstr "Pozostałości z misji Apollo"
 
@@ -1336,7 +1393,7 @@ msgid "Ruin"
 msgstr "Ruiny"
 
 msgid "Run research program for builder"
-msgstr ""
+msgstr "Rozpocznij prace badawcze nad robotem budowniczym"
 
 msgid "Run research program for defense tower"
 msgstr "Rozpocznij prace badawcze nad wieżą obronną"
@@ -1360,7 +1417,7 @@ msgid "Run research program for shooter"
 msgstr "Rozpocznij prace badawcze nad działem"
 
 msgid "Run research program for target bot"
-msgstr ""
+msgstr "Rozpocznij prace badawcze nad robotem-celem"
 
 msgid "Run research program for thumper"
 msgstr "Rozpocznij prace badawcze nad robotem uderzaczem"
@@ -1393,7 +1450,7 @@ msgid "Save\\Saves the current mission"
 msgstr "Zapisz\\Zapisuje bieżącą misję"
 
 msgid "Select Folder"
-msgstr ""
+msgstr "Wybierz folder"
 
 msgid "Select the astronaut\\Selects the astronaut"
 msgstr "Zaznacz astronautę\\Zaznacza astronautę"
@@ -1460,6 +1517,15 @@ msgstr "Efekty dźwiękowe:\\Głośność silników, głosów, strzałów, itp."
 
 msgid "Sound\\Music and game sound volume"
 msgstr "Dźwięk\\Głośność muzyki i dźwięków gry"
+
+msgid "Space Explorer\\Disables astronaut abilities"
+msgstr "Kosmiczny odkrywca\\Wyłącza umiejętności astronauty"
+
+msgid "Space Programmer\\Disables radio-control"
+msgstr "Kosmiczny koder\\Wyłącza zdalną kontrolę"
+
+msgid "Space Researcher\\Disables using all previously researched technologies"
+msgstr "Kosmiczny badacz\\Blokuje dostęp do poprzednio wynalezionych technologii"
 
 msgid "Spaceship"
 msgstr "Statek kosmiczny"
@@ -1539,6 +1605,10 @@ msgstr "Filtrowanie tekstur\\Filtrowanie tekstur"
 msgid "Textures"
 msgstr "Tekstury"
 
+#, c-format
+msgid "The address %s could not be opened in a web browser."
+msgstr "Nie udało się otworzyć adresu %s w przeglądarce internetowej."
+
 msgid "The battle has ended"
 msgstr "Bitwa zakończyła się"
 
@@ -1551,8 +1621,15 @@ msgstr "Funkcja nie zwróciła żadnej wartości"
 msgid "The mission is not accomplished yet (press \\key help; for more details)"
 msgstr "Misja nie jest wypełniona (naciśnij \\key help; aby uzyskać szczegóły)"
 
+#, c-format
+msgid "The path %s could not be opened in a file explorer."
+msgstr "Nie udało się otworzyć ścieżki %s w przeglądarce plików."
+
 msgid "The types of the two operands are incompatible"
 msgstr "Niezgodne typy operatorów"
+
+msgid "There are unsaved changes. Do you want to save them before leaving?"
+msgstr "Są niezapisane zmiany. Czy chcesz je zapisać przed wyjściem?"
 
 msgid "This class already exists"
 msgstr "Taka klasa już istnieje"
@@ -1628,7 +1705,7 @@ msgid "Too many parameters"
 msgstr "Za dużo parametrów"
 
 msgid "Tracked builder"
-msgstr ""
+msgstr "Budowniczy na gąsienicach"
 
 msgid "Tracked grabber"
 msgstr "Transporter na gąsienicach"
@@ -1678,17 +1755,23 @@ msgstr "Jednostka"
 msgid "Unknown Object"
 msgstr "Obiekt nieznany"
 
+msgid "Unknown author"
+msgstr "Nieznany autor"
+
 msgid "Unknown command"
 msgstr "Nieznane polecenie"
 
 msgid "Unknown escape sequence"
-msgstr ""
+msgstr "Nieznany znak ucieczki"
 
 msgid "Unknown function"
 msgstr "Funkcja nieznana"
 
 msgid "Up (\\key gup;)"
 msgstr "Góra (\\key gup;)"
+
+msgid "Up\\Move the selected mod up so it's loaded sooner (mods may overwrite files from the mods above them)"
+msgstr "W górę\\Przenieś zaznaczonego moda w górę, aby był załadowany wcześniej (mody mogą nadpisywać pliki modów wyżej)"
 
 msgid "Uranium deposit (site for derrick)"
 msgstr "Złoże uranu (miejsce na kopalnię)"
@@ -1711,6 +1794,9 @@ msgstr "Zmienna nie została zainicjalizowana"
 msgid "Vault"
 msgstr "Skrytka"
 
+msgid "Version"
+msgstr "Wersja"
+
 msgid "Vertical Synchronization\\Limits the number of frames per second to display frequency"
 msgstr "Synchronizacja pionowa\\Ogranicza ilość klatek na sekundę do wartości odświeżania ekranu"
 
@@ -1729,8 +1815,11 @@ msgstr "Osa śmiertelnie raniona"
 msgid "Waste"
 msgstr "Odpady"
 
+msgid "Website"
+msgstr "Strona internetowa"
+
 msgid "Wheeled builder"
-msgstr ""
+msgstr "Budowniczy na kołach"
 
 msgid "Wheeled grabber"
 msgstr "Transporter na kołach"
@@ -1745,7 +1834,7 @@ msgid "Wheeled sniffer"
 msgstr "Szperacz na kołach"
 
 msgid "Winged builder"
-msgstr ""
+msgstr "Budowniczy latający"
 
 msgid "Winged grabber"
 msgstr "Transporter latający"
@@ -1761,6 +1850,9 @@ msgstr "Szperacz latający"
 
 msgid "Withdraw shield (\\key action;)"
 msgstr "Wyłącz osłonę (\\key action;)"
+
+msgid "Workshop\\Open the workshop to search for mods"
+msgstr "Warsztat\\Otwórz warsztat, aby poszukać modów"
 
 msgid "Worm"
 msgstr "Robal"
@@ -1912,6 +2004,9 @@ msgstr "\\Fioletowe flagi"
 msgid "\\Yellow flags"
 msgstr "\\Żółte flagi"
 
+msgid "by"
+msgstr "autorstwa"
+
 msgid "colobot.info"
 msgstr "colobot.info"
 
@@ -1926,6 +2021,9 @@ msgstr "epsitec.com"
 
 #~ msgid "3D sound\\3D positioning of the sound"
 #~ msgstr "Dźwięk 3D\\Przestrzenne pozycjonowanie dźwięków"
+
+#~ msgid "Build a destroyer"
+#~ msgstr "Zbuduj niszczarkę"
 
 #~ msgid "Building too close"
 #~ msgstr "Budynek za blisko"

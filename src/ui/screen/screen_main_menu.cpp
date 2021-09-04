@@ -91,13 +91,21 @@ void CScreenMainMenu::CreateInterface()
     pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // quit
     pg->SetState(STATE_SHADOW);
 
-    ddim.x = 0.18f;
+    ddim.x = 0.12f;
     ddim.y = dim.y*0.8f;
     pos.x = 0.41f;
-
     pos.y = oy+sy*10.5f;
+
     pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_MISSION);
     pb->SetState(STATE_SHADOW);
+
+    ddim.x = 0.06f;
+    pos.x = 0.53f;
+    pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_PLUS);
+    pb->SetState(STATE_SHADOW);
+
+    ddim.x = 0.18f;
+    pos.x = 0.41f;
 
     pos.y = oy+sy*9.6f;
     pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_FREE);
@@ -170,6 +178,13 @@ void CScreenMainMenu::CreateInterface()
     pb = pw->CreateButton(pos, ddim, 128+60, EVENT_INTERFACE_SATCOM);
     pb->SetState(STATE_SHADOW);
 
+    // Mods button
+    pos.x  = 447.0f/640.0f;
+    pos.y  = 313.0f/480.0f;
+    ddim.x = 0.09f;
+    pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_MODS);
+    pb->SetState(STATE_SHADOW);
+
     SetBackground("textures/interface/interface.png");
     CreateVersionDisplay();
 }
@@ -218,6 +233,11 @@ bool CScreenMainMenu::EventProcess(const Event &event)
             m_main->ChangePhase(PHASE_LEVEL_LIST);
             break;
 
+        case EVENT_INTERFACE_PLUS:
+            m_main->SetLevel(LevelCategory::GamePlus, 0, 0);
+            m_main->ChangePhase(PHASE_LEVEL_LIST);
+            break;
+
         case EVENT_INTERFACE_USER:
             m_main->SetLevel(LevelCategory::CustomLevels, 0, 0);
             m_main->ChangePhase(PHASE_LEVEL_LIST);
@@ -234,6 +254,9 @@ bool CScreenMainMenu::EventProcess(const Event &event)
         case EVENT_INTERFACE_SATCOM:
             m_main->ChangePhase(PHASE_SATCOM);
             break;
+
+        case EVENT_INTERFACE_MODS:
+            m_main->ChangePhase(PHASE_MOD_LIST);
 
         default:
             return true;

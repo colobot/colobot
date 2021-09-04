@@ -64,7 +64,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
 {
     auto obj = MakeUnique<CBaseBuilding>(params.id, params.type);
 
-    obj->SetTrainer(params.trainer);
+    obj->SetTrainer(params.trainer || obj->GetPlusTrainer());
     obj->SetTeam(params.team);
 
     float height = params.height;

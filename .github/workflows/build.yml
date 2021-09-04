@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         target_os: [linux]
-        host_os: [ubuntu-16.04, ubuntu-18.04, ubuntu-20.04]
+        host_os: [ubuntu-18.04, ubuntu-20.04]
         container: ['']
         include:
           - target_os: windows

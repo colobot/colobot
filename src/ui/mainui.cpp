@@ -49,6 +49,7 @@
 #include "ui/screen/screen_level_list.h"
 #include "ui/screen/screen_loading.h"
 #include "ui/screen/screen_main_menu.h"
+#include "ui/screen/screen_mod_list.h"
 #include "ui/screen/screen_player_select.h"
 #include "ui/screen/screen_quit.h"
 #include "ui/screen/screen_setup_controls.h"
@@ -80,6 +81,7 @@ CMainUserInterface::CMainUserInterface()
     m_screenIORead = MakeUnique<CScreenIORead>(m_screenLevelList.get());
     m_screenIOWrite = MakeUnique<CScreenIOWrite>(m_screenLevelList.get());
     m_screenLoading = MakeUnique<CScreenLoading>();
+    m_screenModList = MakeUnique<CScreenModList>(m_dialog.get(), m_app->GetModManager());
     m_screenSetupControls = MakeUnique<CScreenSetupControls>();
     m_screenSetupDisplay = MakeUnique<CScreenSetupDisplay>();
     m_screenSetupGame = MakeUnique<CScreenSetupGame>();
@@ -183,6 +185,10 @@ void CMainUserInterface::ChangePhase(Phase phase)
     {
         m_screenLevelList->SetLevelCategory(m_main->GetLevelCategory());
         m_currentScreen = m_screenLevelList.get();
+    }
+    if (m_phase == PHASE_MOD_LIST)
+    {
+        m_currentScreen = m_screenModList.get();
     }
     if (m_phase >= PHASE_SETUPd && m_phase <= PHASE_SETUPs)
     {
@@ -531,6 +537,7 @@ void CMainUserInterface::FrameParticle(float rTime)
     }
     else if ( m_phase == PHASE_PLAYER_SELECT    ||
             m_phase == PHASE_LEVEL_LIST ||
+            m_phase == PHASE_MOD_LIST ||
             m_phase == PHASE_SETUPd  ||
             m_phase == PHASE_SETUPg  ||
             m_phase == PHASE_SETUPp  ||
@@ -760,6 +767,21 @@ void CMainUserInterface::ShowSoluceUpdate()
 bool CMainUserInterface::GetSceneSoluce()
 {
     return m_screenLevelList->GetSceneSoluce();
+}
+
+bool CMainUserInterface::GetPlusTrainer()
+{
+    return m_screenLevelList->GetPlusTrainer();
+}
+
+bool CMainUserInterface::GetPlusResearch()
+{
+    return m_screenLevelList->GetPlusResearch();
+}
+
+bool CMainUserInterface::GetPlusExplorer()
+{
+    return m_screenLevelList->GetPlusExplorer();
 }
 
 bool CMainUserInterface::GetGamerOnlyHead()

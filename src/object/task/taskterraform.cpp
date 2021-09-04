@@ -215,7 +215,7 @@ Error CTaskTerraform::Start()
 
     power = m_object->GetPower();
     if ( power == nullptr || !power->Implements(ObjectInterfaceType::PowerContainer) )  return ERR_TERRA_ENERGY;
-    energy = dynamic_cast<CPowerContainerObject*>(power)->GetEnergy();
+    energy = dynamic_cast<CPowerContainerObject&>(*power).GetEnergy();
     if ( energy < ENERGY_TERRA+0.05f )  return ERR_TERRA_ENERGY;
 
     speed = m_physics->GetMotorSpeed();
@@ -426,7 +426,7 @@ bool CTaskTerraform::Terraform()
             {
                 if ( dist > 5.0f )  continue;
                 m_engine->GetPyroManager()->Create(Gfx::PT_EXPLOT, pObj);
-                dynamic_cast<CDamageableObject*>(m_object)->DamageObject(DamageType::Explosive, 0.9f);
+                dynamic_cast<CDamageableObject&>(*m_object).DamageObject(DamageType::Explosive, 0.9f);
             }
             else if ( type == OBJECT_PLANT0    ||
                       type == OBJECT_PLANT1    ||
@@ -444,6 +444,7 @@ bool CTaskTerraform::Terraform()
             {
                 if ( dist > 7.5f )  continue;
                 m_engine->GetPyroManager()->Create(Gfx::PT_FRAGV, pObj);
+
             }
             else // Other?
             {
@@ -454,7 +455,7 @@ bool CTaskTerraform::Terraform()
         else
         {
             if ( !pObj->Implements(ObjectInterfaceType::Movable) )  continue;
-            motion = dynamic_cast<CMovableObject*>(pObj)->GetMotion();
+            motion = dynamic_cast<CMovableObject&>(*pObj).GetMotion();
 
             dist = Math::Distance(m_terraPos, pObj->GetPosition());
             if ( dist > ACTION_RADIUS )  continue;
@@ -462,13 +463,13 @@ bool CTaskTerraform::Terraform()
             if ( type == OBJECT_ANT || type == OBJECT_SPIDER )
             {
                 assert(pObj->Implements(ObjectInterfaceType::TaskExecutor));
-                dynamic_cast<CTaskExecutorObject*>(pObj)->StopForegroundTask();
+                dynamic_cast<CTaskExecutorObject&>(*pObj).StopForegroundTask();
 
                 int actionType = -1;
                 if (type == OBJECT_ANT)    actionType = MAS_BACK1;
                 if (type == OBJECT_SPIDER) actionType = MSS_BACK1;
                 motion->SetAction(actionType, 0.8f+Math::Rand()*0.3f);
-                dynamic_cast<CBaseAlien*>(pObj)->SetFixed(true);  // not moving
+                dynamic_cast<CBaseAlien&>(*pObj).SetFixed(true);  // not moving
 
                 if ( dist > 5.0f ) continue;
                 m_engine->GetPyroManager()->Create(Gfx::PT_EXPLOO, pObj);

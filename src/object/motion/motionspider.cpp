@@ -364,7 +364,7 @@ bool CMotionSpider::EventFrame(const Event &event)
     assert(m_object->Implements(ObjectInterfaceType::Destroyable));
     if (dynamic_cast<CDestroyableObject*>(m_object)->GetDying() == DeathType::Burning )  // burning?
     {
-        if ( dynamic_cast<CBaseAlien*>(m_object)->GetFixed() )
+        if ( dynamic_cast<CBaseAlien&>(*m_object).GetFixed() )
         {
             m_actionType = MSS_BURN;
         }
@@ -648,7 +648,7 @@ bool CMotionSpider::EventFrame(const Event &event)
         if ( m_progress >= 1.0f )
         {
             SetAction(-1);
-            dynamic_cast<CBaseAlien*>(m_object)->SetFixed(false);  // moving again
+            dynamic_cast<CBaseAlien&>(*m_object).SetFixed(false);  // moving again
         }
     }
     else

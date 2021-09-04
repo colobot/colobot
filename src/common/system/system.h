@@ -116,6 +116,9 @@ public:
     //! Copies the time stamp from \a src to \a dst
     TEST_VIRTUAL void CopyTimeStamp(SystemTimeStamp *dst, SystemTimeStamp *src);
 
+    //! Interpolates between two timestamps. If i=0 then dst=a. If i=1 then dst=b. If i=0.5 then dst is halfway between.
+    virtual void InterpolateTimeStamp(SystemTimeStamp *dst, SystemTimeStamp *a, SystemTimeStamp *b, float i) = 0;
+
     //! Returns a time stamp associated with current time
     virtual void GetCurrentTimeStamp(SystemTimeStamp *stamp) = 0;
 
@@ -141,6 +144,14 @@ public:
 
     //! Returns the environment variable with the given name or an empty string if it does not exist
     virtual std::string GetEnvVar(const std::string &name);
+
+    //! Opens a path with default file browser
+    /** \returns true if successful */
+    virtual bool OpenPath(const std::string& path);
+
+    //! Opens a website with default web browser
+    /** \returns true if successful */
+    virtual bool OpenWebsite(const std::string& url);
 
     //! Sleep for given amount of microseconds
     virtual void Usleep(int usecs) = 0;

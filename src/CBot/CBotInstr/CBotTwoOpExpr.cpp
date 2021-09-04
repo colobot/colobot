@@ -357,6 +357,7 @@ bool CBotTwoOpExpr::Execute(CBotStack* &pStack)
 
     CBotStack* pStk2 = pStk1->AddStack();               // adds an item to the stack
                                                         // or return in case of recovery
+    if (pStk2->StackOver()) return pStack->Return(pStk2);
 
     // 2nd state, evalute right operand
     if ( pStk2->GetState() == 0 )
@@ -514,7 +515,6 @@ bool CBotTwoOpExpr::Execute(CBotStack* &pStack)
     pStk2->SetVar(result);                      // puts the result on the stack
     if ( err ) pStk2->SetError(err, &m_token);  // and the possible error (division by zero)
 
-//  pStk1->Return(pStk2);                       // releases the stack
     return pStack->Return(pStk2);               // transmits the result
 }
 

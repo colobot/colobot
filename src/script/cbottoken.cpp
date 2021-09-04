@@ -125,6 +125,12 @@ const char* GetObjectName(ObjectType type)
     if ( type == OBJECT_BEE         )  return "AlienWasp";
     if ( type == OBJECT_WORM        )  return "AlienWorm";
     if ( type == OBJECT_RUINmobilew1)  return "Wreck";
+    if ( type == OBJECT_RUINfactory )  return "Ruin";
+    if ( type == OBJECT_PLANT0      )  return "Bush";
+    if ( type == OBJECT_ROOT5       )  return "GraviPlant";
+    if ( type == OBJECT_QUARTZ0     )  return "Crystal";
+    if ( type == OBJECT_MUSHROOM1   )  return "BrownMushroom";
+    if ( type == OBJECT_MUSHROOM2   )  return "GreenMushroom";
     return "";
 }
 
@@ -233,6 +239,12 @@ std::string GetHelpFilename(ObjectType type)
     if ( type == OBJECT_BEE         )  helpfile = "object/wasp";
     if ( type == OBJECT_WORM        )  helpfile = "object/worm";
     if ( type == OBJECT_RUINmobilew1)  helpfile = "object/wreck";
+    if ( type == OBJECT_RUINfactory )  helpfile = "object/ruin";
+    if ( type == OBJECT_PLANT0      )  helpfile = "object/bush";
+    if ( type == OBJECT_ROOT5       )  helpfile = "object/gravi";
+    if ( type == OBJECT_QUARTZ0     )  helpfile = "object/crystal";
+    if ( type == OBJECT_MUSHROOM1   )  helpfile = "object/bromush";
+    if ( type == OBJECT_MUSHROOM2   )  helpfile = "object/gremush";
 
     if (helpfile.empty())
         return "";
@@ -249,6 +261,7 @@ std::string GetHelpFilename(const char *token)
 
     if ( strcmp(token, "if"            ) == 0 )  helpfile = "cbot/if";
     if ( strcmp(token, "else"          ) == 0 )  helpfile = "cbot/if";
+    if ( strcmp(token, "repeat"        ) == 0 )  helpfile = "cbot/repeat";
     if ( strcmp(token, "for"           ) == 0 )  helpfile = "cbot/for";
     if ( strcmp(token, "while"         ) == 0 )  helpfile = "cbot/while";
     if ( strcmp(token, "do"            ) == 0 )  helpfile = "cbot/do";
@@ -310,6 +323,8 @@ std::string GetHelpFilename(const char *token)
     if ( strcmp(token, "researched"     ) == 0 )  helpfile = "cbot/researched";
     if ( strcmp(token, "buildingenabled") == 0 )  helpfile = "cbot/buildingenabled";
     if ( strcmp(token, "build"         ) == 0 )  helpfile = "cbot/build";
+    if ( strcmp(token, "flag"          ) == 0 )  helpfile = "cbot/flag";
+    if ( strcmp(token, "deflag"        ) == 0 )  helpfile = "cbot/deflag";
     if ( strcmp(token, "wait"          ) == 0 )  helpfile = "cbot/wait";
     if ( strcmp(token, "move"          ) == 0 )  helpfile = "cbot/move";
     if ( strcmp(token, "turn"          ) == 0 )  helpfile = "cbot/turn";
@@ -332,23 +347,24 @@ std::string GetHelpFilename(const char *token)
     if ( strcmp(token, "topo"          ) == 0 )  helpfile = "cbot/topo";
     if ( strcmp(token, "message"       ) == 0 )  helpfile = "cbot/message";
     if ( strcmp(token, "abstime"       ) == 0 )  helpfile = "cbot/abstime";
+    if ( strcmp(token, "Blue"          ) == 0 )  helpfile = "cbot/flag";
+    if ( strcmp(token, "Red"           ) == 0 )  helpfile = "cbot/flag";
+    if ( strcmp(token, "Green"         ) == 0 )  helpfile = "cbot/flag";
+    if ( strcmp(token, "Yellow"        ) == 0 )  helpfile = "cbot/flag";
+    if ( strcmp(token, "Violet"        ) == 0 )  helpfile = "cbot/flag";
     if ( strcmp(token, "BlackArrow"    ) == 0 )  helpfile = "cbot/pendown";
     if ( strcmp(token, "RedArrow"      ) == 0 )  helpfile = "cbot/pendown";
     if ( strcmp(token, "White"         ) == 0 )  helpfile = "cbot/pendown";
     if ( strcmp(token, "Black"         ) == 0 )  helpfile = "cbot/pendown";
     if ( strcmp(token, "Gray"          ) == 0 )  helpfile = "cbot/pendown";
     if ( strcmp(token, "LightGray"     ) == 0 )  helpfile = "cbot/pendown";
-    if ( strcmp(token, "Red"           ) == 0 )  helpfile = "cbot/pendown";
     if ( strcmp(token, "Pink"          ) == 0 )  helpfile = "cbot/pendown";
     if ( strcmp(token, "Purple"        ) == 0 )  helpfile = "cbot/pendown";
     if ( strcmp(token, "Orange"        ) == 0 )  helpfile = "cbot/pendown";
-    if ( strcmp(token, "Yellow"        ) == 0 )  helpfile = "cbot/pendown";
     if ( strcmp(token, "Beige"         ) == 0 )  helpfile = "cbot/pendown";
     if ( strcmp(token, "Brown"         ) == 0 )  helpfile = "cbot/pendown";
     if ( strcmp(token, "Skin"          ) == 0 )  helpfile = "cbot/pendown";
-    if ( strcmp(token, "Green"         ) == 0 )  helpfile = "cbot/pendown";
     if ( strcmp(token, "LightGreen"    ) == 0 )  helpfile = "cbot/pendown";
-    if ( strcmp(token, "Blue"          ) == 0 )  helpfile = "cbot/pendown";
     if ( strcmp(token, "LightBlue"     ) == 0 )  helpfile = "cbot/pendown";
     if ( strcmp(token, "InFront"       ) == 0 )  helpfile = "cbot/grab";
     if ( strcmp(token, "Behind"        ) == 0 )  helpfile = "cbot/grab";
@@ -470,6 +486,8 @@ bool IsFunction(const char *token)
     if ( strcmp(token, "researched"     ) == 0 )  return true;
     if ( strcmp(token, "buildingenabled") == 0 )  return true;
     if ( strcmp(token, "build"        ) == 0 )  return true;
+    if ( strcmp(token, "flag"         ) == 0 )  return true;
+    if ( strcmp(token, "deflag"       ) == 0 )  return true;
     if ( strcmp(token, "wait"         ) == 0 )  return true;
     if ( strcmp(token, "move"         ) == 0 )  return true;
     if ( strcmp(token, "turn"         ) == 0 )  return true;
@@ -526,6 +544,7 @@ const char* GetHelpText(const char *token)
 {
     if ( strcmp(token, "if"        ) == 0 )  return "if ( condition ) { code }";
     if ( strcmp(token, "else"      ) == 0 )  return "else { code }";
+    if ( strcmp(token, "repeat"    ) == 0 )  return "repeat ( number )";
     if ( strcmp(token, "for"       ) == 0 )  return "for ( before ; condition ; end )";
     if ( strcmp(token, "while"     ) == 0 )  return "while ( condition ) { code }";
     if ( strcmp(token, "do"        ) == 0 )  return "do { code } while ( condition );";
@@ -576,6 +595,8 @@ const char* GetHelpText(const char *token)
     if ( strcmp(token, "researched"     ) == 0 )  return "researched ( research );";
     if ( strcmp(token, "buildingenabled") == 0 )  return "buildingenabled ( category );";
     if ( strcmp(token, "build"     ) == 0 )  return "build ( category );";
+    if ( strcmp(token, "flag"      ) == 0 )  return "flag ( color );";
+    if ( strcmp(token, "deflag"    ) == 0 )  return "deflag ( );";
     if ( strcmp(token, "wait"      ) == 0 )  return "wait ( time );";
     if ( strcmp(token, "move"      ) == 0 )  return "move ( distance );";
     if ( strcmp(token, "turn"      ) == 0 )  return "turn ( angle );";

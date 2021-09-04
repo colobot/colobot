@@ -31,6 +31,9 @@ msgstr "Отсутствует \"]\" "
 msgid "%s: %d pts"
 msgstr ""
 
+msgid "+\\Missions with bonus content and optional challenges"
+msgstr ""
+
 msgid "..behind"
 msgstr "Сзади"
 
@@ -124,6 +127,9 @@ msgstr "Внешность\\Настройка внешности"
 msgid "Apply changes\\Activates the changed settings"
 msgstr "Принять\\Принять изменения настроек"
 
+msgid "Apply\\Apply the current mod configuration"
+msgstr ""
+
 msgid "Appropriate constructor missing"
 msgstr "Соответствующий конструктор отсутствует"
 
@@ -197,9 +203,6 @@ msgstr "Построить защитную башню"
 msgid "Build a derrick"
 msgstr "Построить буровую вышку"
 
-msgid "Build a destroyer"
-msgstr "Построить уничтожитель"
-
 msgid "Build a exchange post"
 msgstr "Построить пост по обмену сообщениями"
 
@@ -271,6 +274,9 @@ msgstr "Собрать гусеничного стрелка"
 
 msgid "Build a tracked sniffer"
 msgstr "Собрать гусеничного искателя"
+
+msgid "Build a vault"
+msgstr ""
 
 msgid "Build a wheeled builder"
 msgstr ""
@@ -375,6 +381,9 @@ msgstr "Изменить вид\\Переключение между борто�
 msgid "Change player\\Change player"
 msgstr "Новый игрок\\Выберите имя для игрока"
 
+msgid "Changes"
+msgstr ""
+
 msgid "Chapters:"
 msgstr "Разделы:"
 
@@ -446,6 +455,12 @@ msgstr "Копировать"
 msgid "Copy (Ctrl+C)"
 msgstr "Копировать (Ctrl+C)"
 
+msgid "Could not open the file explorer!"
+msgstr ""
+
+msgid "Could not open the web browser!"
+msgstr ""
+
 msgid "Current mission saved"
 msgstr "Текущая миссия сохранена"
 
@@ -480,6 +495,9 @@ msgstr "Космический корабль"
 msgid "Descend\\Reduces the power of the jet"
 msgstr "Снижение и посадка\\Понижение мощности реактивного двигателя"
 
+msgid "Description:"
+msgstr ""
+
 msgid "Destroy"
 msgstr "Уничтожить"
 
@@ -491,6 +509,9 @@ msgstr "Уничтожитель"
 
 msgid "Device\\Driver and resolution settings"
 msgstr "Устройство\\Драйвер и настройки разрешения"
+
+msgid "Disable\\Disable the selected mod"
+msgstr ""
 
 msgid "Dividing by zero"
 msgstr "Деление на ноль (запрещено!)"
@@ -507,6 +528,9 @@ msgstr "Двери заблокированы роботом или другим
 
 msgid "Down (\\key gdown;)"
 msgstr "Вниз (\\key gdown;)"
+
+msgid "Down\\Move the selected mod down so it's loaded later (mods may overwrite files from the mods above them)"
+msgstr ""
 
 msgid "Drawer bot"
 msgstr "Рисовальщик"
@@ -533,6 +557,9 @@ msgid "Egg"
 msgstr "Яйцо"
 
 msgid "Empty character constant"
+msgstr ""
+
+msgid "Enable\\Enable the selected mod"
 msgstr ""
 
 msgid "End of block missing"
@@ -762,6 +789,9 @@ msgstr "Заражено вирусом. Временно вышел из стр
 msgid "Information exchange post"
 msgstr "Пост обмена информацией"
 
+msgid "Information:"
+msgstr ""
+
 msgid "Instruction \"break\" outside a loop"
 msgstr "Инструкция \"break\" вне цикла"
 
@@ -923,8 +953,20 @@ msgstr "Миссии"
 msgid "Missions on this planet:"
 msgstr "Миссии на этой планете:"
 
+msgid "Missions+"
+msgstr "Миссии+"
+
 msgid "Missions\\Select mission"
 msgstr "Миссии\\Выбор миссии"
+
+msgid "Mods"
+msgstr ""
+
+msgid "Mods:"
+msgstr ""
+
+msgid "Mods\\Mod manager"
+msgstr ""
 
 msgid "Mouse inversion X\\Inversion of the scrolling direction on the X axis"
 msgstr "Инверсия мыши по оси X\\Инверсия прокрутки по оси Х"
@@ -939,6 +981,9 @@ msgstr "Изменить выбранную программу"
 #, fuzzy
 msgid "Move selected program up"
 msgstr "Изменить выбранную программу"
+
+msgid "Mute sounds in background\\Mute all game sounds when the window is unfocused"
+msgstr ""
 
 msgid "Mute\\No sound"
 msgstr "Без звука\\Без звука"
@@ -972,6 +1017,12 @@ msgstr "Следующий объект\\Выбор следующего объ�
 
 msgid "No"
 msgstr "Нет"
+
+msgid "No changes."
+msgstr ""
+
+msgid "No description."
+msgstr ""
 
 msgid "No energy in the subsoil"
 msgstr "Под землей нет запасов энергии"
@@ -1092,6 +1143,9 @@ msgstr "Открыть"
 
 msgid "Open (Ctrl+O)"
 msgstr "Открыть (Ctrl+O)"
+
+msgid "Open Directory\\Open the mods directory"
+msgstr ""
 
 msgid "Opening brace missing"
 msgstr "Открывающая скобка отсутствует"
@@ -1305,6 +1359,9 @@ msgstr "Красный флаг"
 msgid "Reflections on the buttons \\Shiny buttons"
 msgstr "Отражения на кнопках \\Блестящие кнопки"
 
+msgid "Refresh\\Refresh the list of currently installed mods"
+msgstr ""
+
 msgid "Remains of Apollo mission"
 msgstr "Остатки миссии Аполлон"
 
@@ -1491,6 +1548,15 @@ msgstr "Общий звук:\\Гормкость двигателя, голос�
 msgid "Sound\\Music and game sound volume"
 msgstr "Звук\\Громкость музыки и звуков"
 
+msgid "Space Explorer\\Disables astronaut abilities"
+msgstr ""
+
+msgid "Space Programmer\\Disables radio-control"
+msgstr ""
+
+msgid "Space Researcher\\Disables using all previously researched technologies"
+msgstr ""
+
 msgid "Spaceship"
 msgstr "Космический корабль"
 
@@ -1570,6 +1636,10 @@ msgstr "Фильтрация текстур\\Фильтрация текстур
 msgid "Textures"
 msgstr "Текстуры"
 
+#, c-format
+msgid "The address %s could not be opened in a web browser."
+msgstr ""
+
 msgid "The battle has ended"
 msgstr ""
 
@@ -1582,8 +1652,15 @@ msgstr "Функция не возвратила значения"
 msgid "The mission is not accomplished yet (press \\key help; for more details)"
 msgstr "Миссия еще не выполнена (нажмите \\key help; для более подробной информации)"
 
+#, c-format
+msgid "The path %s could not be opened in a file explorer."
+msgstr ""
+
 msgid "The types of the two operands are incompatible"
 msgstr "Типы операндов несовместимы"
+
+msgid "There are unsaved changes. Do you want to save them before leaving?"
+msgstr ""
 
 msgid "This class already exists"
 msgstr "Этот класс уже существует"
@@ -1709,6 +1786,9 @@ msgstr "Юнит"
 msgid "Unknown Object"
 msgstr "Неизвестный объект"
 
+msgid "Unknown author"
+msgstr ""
+
 msgid "Unknown command"
 msgstr "Неизвестная команда"
 
@@ -1720,6 +1800,9 @@ msgstr "Неизвестная функция"
 
 msgid "Up (\\key gup;)"
 msgstr "Вверх (\\key gup;)"
+
+msgid "Up\\Move the selected mod up so it's loaded sooner (mods may overwrite files from the mods above them)"
+msgstr ""
 
 msgid "Uranium deposit (site for derrick)"
 msgstr "Запасы урана (место для буровой вышки)"
@@ -1742,6 +1825,9 @@ msgstr "Переменная не инициализирована"
 msgid "Vault"
 msgstr "Хранилище"
 
+msgid "Version"
+msgstr ""
+
 msgid "Vertical Synchronization\\Limits the number of frames per second to display frequency"
 msgstr ""
 
@@ -1759,6 +1845,9 @@ msgstr "Оса смертельно ранена"
 
 msgid "Waste"
 msgstr "Мусор"
+
+msgid "Website"
+msgstr ""
 
 msgid "Wheeled builder"
 msgstr ""
@@ -1792,6 +1881,9 @@ msgstr "Летающий искатель"
 
 msgid "Withdraw shield (\\key action;)"
 msgstr "Снять щит (\\key action;)"
+
+msgid "Workshop\\Open the workshop to search for mods"
+msgstr ""
 
 msgid "Worm"
 msgstr "Червь"
@@ -1941,6 +2033,9 @@ msgstr "\\Фиолетовый флаг"
 msgid "\\Yellow flags"
 msgstr "\\Желтый флаг"
 
+msgid "by"
+msgstr ""
+
 msgid "colobot.info"
 msgstr "colobot.info"
 
@@ -1961,6 +2056,9 @@ msgstr "epsitec.com"
 
 #~ msgid "3D sound\\3D positioning of the sound"
 #~ msgstr "3D-звук\\Стерео звук"
+
+#~ msgid "Build a destroyer"
+#~ msgstr "Построить уничтожитель"
 
 #~ msgid "Building too close"
 #~ msgstr "Здание слишком близко"

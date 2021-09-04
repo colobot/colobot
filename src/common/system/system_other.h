@@ -46,6 +46,7 @@ public:
     void Init() override;
     SystemDialogResult SystemDialog(SystemDialogType type, const std::string& title, const std::string& message) override;
 
+    void InterpolateTimeStamp(SystemTimeStamp *dst, SystemTimeStamp *a, SystemTimeStamp *b, float i) override;
     void GetCurrentTimeStamp(SystemTimeStamp *stamp) override;
     long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after) override;
 

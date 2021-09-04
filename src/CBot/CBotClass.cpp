@@ -605,8 +605,8 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                     // return a method precompiled in pass 1
                     CBotCStack* pStk = pStack->TokenStack(nullptr, true);
                     CBotDefParam* params = CBotDefParam::Compile(p, pStk );
-                    delete pStk;
-                    std::list<CBotFunction*>::iterator pfIter = std::find_if(m_pMethod.begin(), m_pMethod.end(), [&pp, &params](CBotFunction* x)
+                    pStack->DeleteNext();
+                    auto pfIter = std::find_if(m_pMethod.begin(), m_pMethod.end(), [&pp, &params](CBotFunction* x)
                     {
                         return x->GetName() == pp && x->CheckParam( params );
                     });
@@ -626,7 +626,7 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
                         f->m_pProg = pStack->GetProgram();
                         f->m_bSynchro = bSynchro;
                     }
-                    pStack->Return(nullptr, pile);
+                    pStack->DeleteNext();
                 }
 
                 return pStack->IsOk();

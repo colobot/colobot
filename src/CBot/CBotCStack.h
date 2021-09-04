@@ -22,6 +22,9 @@
 #include "CBot/CBotVar/CBotVar.h"
 #include "CBot/CBotProgram.h"
 
+#include <list>
+#include <memory>
+
 namespace CBot
 {
 
@@ -158,6 +161,11 @@ public:
     CBotCStack* TokenStack(CBotToken* pToken = nullptr, bool bBlock = false);
 
     /*!
+     * \brief Deletes all subsequent stack frames created by TokenStack.
+     */
+    void DeleteNext();
+
+    /*!
      * \brief Return Transmits the result upper.
      * \param p
      * \param pParent
@@ -269,21 +277,20 @@ public:
     bool NextToken(CBotToken* &p);
 
 private:
-    CBotCStack* m_next;
+    std::unique_ptr<CBotCStack> m_next;
     CBotCStack* m_prev;
 
-    static CBotError m_error;
-    static int m_end;
-    int m_start;
+    int m_errStart = 0;
+
+    struct Data;
+
+    CBotCStack::Data* m_data;
 
     //! Result of the operations.
-    CBotVar* m_var;
+    std::unique_ptr<CBotVar> m_var;
     //! Is part of a block (variables are local to this block).
     bool m_bBlock;
-    CBotVar* m_listVar;
-    //! List of compiled functions.
-    static CBotProgram* m_prog;
-    static CBotTypResult m_retTyp;
+    std::list<std::unique_ptr<CBotVar>> m_listVar;
 };
 
 } // namespace CBot

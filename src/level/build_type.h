@@ -41,7 +41,8 @@ enum BuildType
     BUILD_LABO          = (1<<10),      //! < AutoLab
     BUILD_PARA          = (1<<11),      //! < PowerCaptor
     BUILD_INFO          = (1<<12),      //! < ExchangePost
-    BUILD_DESTROYER     = (1<<13),      //! < Destroyer
+    BUILD_SAFE          = (1<<13),      //! < Vault
+    BUILD_DESTROYER     = (1<<14),      //! < Destroyer
     BUILD_GFLAT         = (1<<16),      //! < checking flat ground
     BUILD_FLAG          = (1<<17)       //! < putting / removing flags
 };
