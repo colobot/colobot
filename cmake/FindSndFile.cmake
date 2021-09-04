@@ -21,10 +21,11 @@ if(SndFile_FOUND AND NOT TARGET SndFile::sndfile)
     # If we want to statically link it, we also need its dependencies
     if(SNDFILE_STATIC)
         find_package(Ogg REQUIRED)
+        find_package(Opus REQUIRED)
         find_package(FLAC REQUIRED)
         find_package(Vorbis REQUIRED)
         find_package(VorbisEnc REQUIRED)
         set_property(TARGET SndFile::sndfile APPEND PROPERTY
-                     INTERFACE_LINK_LIBRARIES Ogg::ogg FLAC::FLAC Vorbis::vorbis Vorbis::VorbisEnc)
+                     INTERFACE_LINK_LIBRARIES Ogg::ogg Opus::opus FLAC::FLAC Vorbis::vorbis Vorbis::VorbisEnc)
     endif()
 endif()
