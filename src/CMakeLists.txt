@@ -1,5 +1,5 @@
 # Compile flags as defined in global CMakeLists
-set(CMAKE_CXX_FLAGS "${COLOBOT_CXX_FLAGS} ${MXE_CFLAGS}")
+set(CMAKE_CXX_FLAGS "${COLOBOT_CXX_FLAGS}")
 set(CMAKE_CXX_FLAGS_RELEASE ${COLOBOT_CXX_FLAGS_RELEASE})
 set(CMAKE_CXX_FLAGS_DEBUG ${COLOBOT_CXX_FLAGS_DEBUG})
 
@@ -516,9 +516,7 @@ if(WINGETOPT)
 endif()
 
 # Additional libraries per platform
-if(MXE) # MXE requires special treatment
-    target_link_libraries(colobotbase PUBLIC ${MXE_LIBS})
-elseif(PLATFORM_WINDOWS)
+if(PLATFORM_WINDOWS)
     # because it isn't included in standard linking libraries
     if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
         # TODO: this shouldn't be needed, the libraries targets should care of those transitive dependencies

@@ -27,24 +27,15 @@ any of the missions.
 
 ### Compiling on Windows
 
-The recommended way of compiling for Windows is using Linux in a cross-compilation environment called MXE.
-This is the way our build bot service (http://compiled.colobot.info/) prepares the release packages.
-You can also compile directly on Windows with MSYS2/MinGW-w64 or MSVC 2013 but this is a bit more difficult to set up.
-
-#### Cross-compiling using MXE
-
-MXE (M cross environment, http://mxe.cc/) is a very good cross-compiling framework, complete with a suite of libraries
-that make it extremely easy to port applications to Win32. It runs on pretty much any *nix flavor and generates generic,
-statically linked Win32 binaries. More information is available in
-[INSTALL-MXE.md](INSTALL-MXE.md) file.
+You can also compile directly on Windows with MSYS2/MinGW-w64 or Visual Studio since version 2015.
 
 #### Compiling with MSYS2/MinGW-w64
 
 See the [INSTALL-MSYS2.md](INSTALL-MSYS2.md) file for details.
 
-#### Compiling with MSVC
+#### Compiling with MSVC (Visual Studio)
 
-As of 0.1.5-alpha it's possible to compile binary with MSVC 2013. See [this post](http://colobot.info/forum/showthread.php?tid=595&pid=5831#pid5831) for details.
+See [this wiki page](https://github.com/colobot/colobot/wiki/How-to-Build-Colobot:-Gold-Edition-Using-MSVC) for details.
 
 
 ### Compiling on Linux
@@ -53,19 +44,19 @@ Since there are so many Linux flavors, it is difficult to write generic instruct
 you will need to compile colobot.
 
 You will need:
- * recent compiler (GCC >= 4.7, or Clang >= 3.1) since we are using some features of C++11
- * CMake >= 2.8
- * Boost >= 1.51 (header files + components: filesystem and regex)
+ * C++17 compiler
+ * CMake >= 3.16
+ * Boost
  * SDL2
  * SDL2_image
  * SDL2_ttf
- * GLEW >= 1.8.0
- * libpng >= 1.2
- * gettext >= 0.18
- * libsndfile >= 1.0.25
- * libvorbis >= 1.3.2
- * libogg >= 1.3.0
- * OpenAL (OpenAL-Soft) >= 1.13
+ * GLEW
+ * libpng
+ * gettext
+ * libsndfile
+ * libvorbis
+ * libogg
+ * OpenAL (OpenAL-Soft)
  * PhysFS
  * oggenc (to generate music files)
 

@@ -293,12 +293,6 @@ if(DEV_BUILD)
 endif()
 
 ##
-# Additional settings to use when cross-compiling with MXE (http://mxe.cc/)
-##
-
-include("${colobot_SOURCE_DIR}/cmake/mxe.cmake")
-
-##
 # Additional settings for MSYS
 ##
 include("${colobot_SOURCE_DIR}/cmake/msys.cmake")
@@ -395,7 +389,7 @@ endif()
 ##
 
 # Installation paths defined before compiling sources
-if(PORTABLE OR (PLATFORM_WINDOWS AND MXE))
+if(PORTABLE)
     set(COLOBOT_INSTALL_BIN_DIR ${CMAKE_INSTALL_PREFIX}/ CACHE PATH "Colobot binary directory")
     set(COLOBOT_INSTALL_LIB_DIR ${CMAKE_INSTALL_PREFIX}/ CACHE PATH "Colobot libraries directory")
     set(COLOBOT_INSTALL_DATA_DIR ${CMAKE_INSTALL_PREFIX}/data CACHE PATH "Colobot shared data directory")

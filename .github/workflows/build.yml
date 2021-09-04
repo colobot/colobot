@@ -11,10 +11,6 @@ jobs:
         target_os: [linux]
         host_os: [ubuntu-18.04, ubuntu-20.04]
         container: ['']
-        include:
-          - target_os: windows
-            host_os: ubuntu-latest
-            container: krzysh/colobot-build:latest
       fail-fast: false
     steps:
     - name: Install Colobot dependencies
@@ -25,11 +21,6 @@ jobs:
       run: git submodule update --init -- lib/googletest
     - name: Create build directory
       run: cmake -E make_directory build
-    - name: Run CMake (for Windows using MXE)
-      working-directory: build
-      # FIXME: without -lsetupapi linking sdl2 fails
-      run: /opt/mxe/usr/bin/i686-w64-mingw32.static-cmake -DCMAKE_CXX_STANDARD_LIBRARIES="-lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 -lsetupapi -limm32 -lwinmm -lversion" -DCMAKE_INSTALL_PREFIX=/install -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDEV_BUILD=1 -DPORTABLE=1 -DTOOLS=1 -DTESTS=0 -DMXE_USE_CCACHE=0 ..
-      if: matrix.target_os == 'windows'
     - name: Run CMake (for Linux)
       working-directory: build
       run: cmake -DCMAKE_INSTALL_PREFIX=/install -DCMAKE_SKIP_INSTALL_RPATH=ON -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDEV_BUILD=1 -DPORTABLE=1 -DTOOLS=1 -DTESTS=1 -DDESKTOP=1 ..
@@ -49,7 +40,7 @@ jobs:
       with:
         name: ${{matrix.target_os}}-debug
         path: build/install
-      if: matrix.target_os == 'windows' || matrix.host_os == 'ubuntu-18.04'
+      if: matrix.host_os == 'ubuntu-18.04'
     - name: Create AppImage
       working-directory: build
       run: |
