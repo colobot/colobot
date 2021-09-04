@@ -111,7 +111,7 @@ jobs:
         echo "Unpacking gettext..."
         7z x -ogettext gettext.zip;
         echo "Adding gettext to PATH..."
-        echo "::add-path::${{ github.workspace }}\gettext\bin"
+        echo "${{ github.workspace }}\gettext\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
         echo "Downloading xmlstarlet..."
         (New-Object System.Net.WebClient).DownloadFile("https://downloads.sourceforge.net/project/xmlstar/xmlstarlet/1.6.1/xmlstarlet-1.6.1-win32.zip", "xmlstarlet.zip");
         echo "Unpacking xmlstarlet..."
@@ -119,13 +119,13 @@ jobs:
         echo "Renaming xml.exe to xmlstarlet.exe"
         Rename-Item -Path "${{ github.workspace }}\xmlstarlet\xmlstarlet-1.6.1\xml.exe" -NewName "xmlstarlet.exe"
         echo "Adding xmlstarlet to PATH..."
-        echo "::add-path::${{ github.workspace }}\xmlstarlet\xmlstarlet-1.6.1"
+        echo "${{ github.workspace }}\xmlstarlet\xmlstarlet-1.6.1" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
         echo "Downloading rsvg-convert..."
         (New-Object System.Net.WebClient).DownloadFile("https://downloads.sourceforge.net/project/tumagcc/rsvg-convert-2.40.20.7z", "rsvg-convert.zip");
         echo "Unpacking xmlstarlet..."
         7z x -orsvg-convert rsvg-convert.zip;
         echo "Adding rsvg-convert to PATH..."
-        echo "::add-path::${{ github.workspace }}\rsvg-convert"
+        echo "${{ github.workspace }}\rsvg-convert" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
       shell: pwsh
     - name: Create build directory
       run: cmake -E make_directory build
