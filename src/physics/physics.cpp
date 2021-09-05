@@ -2590,6 +2590,11 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
                             {
                                 // no damage
                             }
+                            else if (pObj->GetType() == OBJECT_MOTHER)
+                            {
+                                dynamic_cast<CDamageableObject*>(pObj)->DamageObject(DamageType::Phazer);
+                                break;
+                            }
                             else if (pObj->Implements(ObjectInterfaceType::Destroyable))
                             {
                                 if (pObj->Implements(ObjectInterfaceType::Fragile))
