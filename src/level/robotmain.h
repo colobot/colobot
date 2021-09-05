@@ -341,6 +341,8 @@ public:
     //! Find the currently selected object
     CObject*    GetSelect();
 
+    //! Display an appropriate message banner for an object's destruction ("Bot destroyed" / "Building destroyed")
+    void        NotifyObjectDestroyed(CObject* pObj);
     void        DisplayError(Error err, CObject* pObj, float time=10.0f);
     void        DisplayError(Error err, Math::Vector goal, float height=15.0f, float dist=60.0f, float time=10.0f);
 

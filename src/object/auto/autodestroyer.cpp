@@ -22,7 +22,7 @@
 
 #include "common/make_unique.h"
 
-#include "graphics/engine/pyro_manager.h"
+#include "graphics/pyro/pyro_manager.h"
 
 #include "level/robotmain.h"
 

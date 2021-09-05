@@ -30,8 +30,10 @@
 #include "graphics/engine/lightman.h"
 #include "graphics/engine/lightning.h"
 #include "graphics/engine/particle.h"
-#include "graphics/engine/pyro_manager.h"
 #include "graphics/engine/terrain.h"
+
+#include "graphics/pyro/pyro.h"
+#include "graphics/pyro/pyro_manager.h"
 
 #include "level/robotmain.h"
 #include "level/scoreboard.h"
@@ -450,15 +452,15 @@ bool COldObject::DamageObject(DamageType type, float force, CObject* killer)
 
     if ( m_type == OBJECT_HUMAN )
     {
-        m_engine->GetPyroManager()->Create(Gfx::PT_SHOTH, this, loss);
+        m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CFragExploOrShotPyro>(Gfx::PT_SHOTH, this, loss));
     }
     else if ( m_type == OBJECT_MOTHER )
     {
-        m_engine->GetPyroManager()->Create(Gfx::PT_SHOTM, this, loss);
+        m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CFragExploOrShotPyro>(Gfx::PT_SHOTM, this, loss));
     }
     else
     {
-        m_engine->GetPyroManager()->Create(Gfx::PT_SHOTT, this, loss);
+        m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CFragExploOrShotPyro>(Gfx::PT_SHOTT, this, loss));
     }
     return false;
 }
@@ -478,7 +480,6 @@ void COldObject::DestroyObject(DestructionType type, CObject* killer)
         SetDamaging(false);
     }
 
-    Gfx::PyroType pyroType = Gfx::PT_NULL;
     if ( type == DestructionType::Explosion )   // explosion?
     {
         if ( m_type == OBJECT_ANT    ||
@@ -486,17 +487,20 @@ void COldObject::DestroyObject(DestructionType type, CObject* killer)
              m_type == OBJECT_BEE    ||
              m_type == OBJECT_WORM   )
         {
-            pyroType = Gfx::PT_EXPLOO;
+            m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CFragExploOrShotPyro>(Gfx::PT_EXPLOO, this, 1.0f));
+            m_main->NotifyObjectDestroyed(this);
         }
         else if ( m_type == OBJECT_MOTHER ||
                   m_type == OBJECT_NEST   ||
                   m_type == OBJECT_BULLET )
         {
-            pyroType = Gfx::PT_FRAGO;
+            m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CFragExploOrShotPyro>(Gfx::PT_FRAGO, this, 1.0f));
+            SetDying(DeathType::Exploding);
+            m_main->NotifyObjectDestroyed(this);
         }
         else if ( m_type == OBJECT_HUMAN )
         {
-            pyroType = Gfx::PT_DEADG;
+            m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CDeadGPyro>(this));
         }
         else if ( m_type == OBJECT_BASE     ||
                   m_type == OBJECT_DERRICK  ||
@@ -524,65 +528,60 @@ void COldObject::DestroyObject(DestructionType type, CObject* killer)
                   m_type == OBJECT_RUINradar   ||
                   m_type == OBJECT_RUINconvert  )  // building?
         {
-            pyroType = Gfx::PT_FRAGT;
+            m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CFragExploOrShotPyro>(Gfx::PT_FRAGT, this, 1.0f));
+            SetDying(DeathType::Exploding);
+            m_main->NotifyObjectDestroyed(this);
         }
         else if ( m_type == OBJECT_MOBILEtg )
         {
-            pyroType = Gfx::PT_FRAGT;
+            m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CFragExploOrShotPyro>(Gfx::PT_FRAGT, this, 1.0f));
+            SetDying(DeathType::Exploding);
+            m_main->NotifyObjectDestroyed(this);
         }
         else
         {
-            pyroType = Gfx::PT_EXPLOT;
+            m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CFragExploOrShotPyro>(Gfx::PT_EXPLOT, this, 1.0f));
+            m_main->NotifyObjectDestroyed(this);
         }
     }
     else if ( type == DestructionType::ExplosionWater )
     {
-        pyroType = Gfx::PT_FRAGW;
+        m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CFragExploOrShotPyro>(Gfx::PT_FRAGW, this, 1.0f));
+        SetDying(DeathType::Exploding);
+        m_main->NotifyObjectDestroyed(this);
     }
     else if ( type == DestructionType::Burn )  // burning?
     {
-        if ( m_type == OBJECT_MOTHER ||
-             m_type == OBJECT_ANT    ||
-             m_type == OBJECT_SPIDER ||
-             m_type == OBJECT_BEE    ||
-             m_type == OBJECT_WORM   ||
-             m_type == OBJECT_BULLET )
+        if ( m_type == OBJECT_HUMAN )
         {
-            pyroType = Gfx::PT_BURNO;
-            SetDying(DeathType::Burning);
-        }
-        else if ( m_type == OBJECT_HUMAN )
-        {
-            pyroType = Gfx::PT_DEADG;
+            m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CDeadGPyro>(this));
         }
         else
         {
-            pyroType = Gfx::PT_BURNT;
+            m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CBurnPyro>(this));
             SetDying(DeathType::Burning);
+            m_main->NotifyObjectDestroyed(this);
         }
         SetVirusMode(false);
     }
     else if ( type == DestructionType::Drowned )
     {
-        pyroType = Gfx::PT_DEADW;
+        m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CDeadWPyro>(this));
     }
     else if ( type == DestructionType::Win )
     {
-        pyroType = Gfx::PT_WPCHECK;
+        m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CWaypointHitPyro>(this));
     }
     else if ( type == DestructionType::Squash )
     {
-        pyroType = Gfx::PT_SQUASH;
+        m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CSquashPyro>(this));
         DeleteAllCrashSpheres();
     }
-    assert(pyroType != Gfx::PT_NULL);
-    if (pyroType == Gfx::PT_FRAGT ||
-        pyroType == Gfx::PT_FRAGO ||
-        pyroType == Gfx::PT_FRAGW)
+    else
     {
-        SetDying(DeathType::Exploding);
+        // should be unreachable
+        assert(false);
     }
-    m_engine->GetPyroManager()->Create(pyroType, this);
 
     if ( Implements(ObjectInterfaceType::Programmable) )
     {
@@ -1155,7 +1154,20 @@ void COldObject::Read(CLevelParserLine* line)
     SetCameraLock(line->GetParam("cameraLock")->AsBool(false));
 
     if (line->GetParam("pyro")->IsDefined())
-        m_engine->GetPyroManager()->Create(line->GetParam("pyro")->AsPyroType(), this);
+    {
+        if(line->GetParam("pyro")->GetValue() == "WIN")
+        {
+            m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CWinPyro>(this));
+        }
+        else if(line->GetParam("pyro")->GetValue() == "LOST")
+        {
+            m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CLostPyro>(this));
+        }
+        else
+        {
+            throw CLevelParserExceptionBadParam(line->GetParam("pyro"), "pyrotype");
+        }
+    }
 
     SetBulletWall(line->GetParam("bulletWall")->AsBool(IsBulletWallByDefault(m_type)));
 

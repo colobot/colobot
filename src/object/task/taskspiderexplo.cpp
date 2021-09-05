@@ -21,7 +21,11 @@
 #include "object/task/taskspiderexplo.h"
 
 #include "graphics/engine/engine.h"
-#include "graphics/engine/pyro_manager.h"
+
+#include "graphics/pyro/pyro.h"
+#include "graphics/pyro/pyro_manager.h"
+
+#include "level/robotmain.h"
 
 #include "object/old_object.h"
 
@@ -97,7 +101,8 @@ Error CTaskSpiderExplo::IsEnded()
 
     if ( m_time < 1.0f )  return ERR_CONTINUE;
 
-    m_engine->GetPyroManager()->Create(Gfx::PT_SPIDER, m_object);  // the spider explodes (suicide)
+    m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CSpiderPyro>(m_object));  // the spider explodes (suicide)
+    m_main->NotifyObjectDestroyed(m_object);
 
     Abort();
     return ERR_STOP;

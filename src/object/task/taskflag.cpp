@@ -20,8 +20,10 @@
 #include "object/task/taskflag.h"
 
 #include "graphics/engine/particle.h"
-#include "graphics/engine/pyro_manager.h"
 #include "graphics/engine/water.h"
+
+#include "graphics/pyro/pyro.h"
+#include "graphics/pyro/pyro_manager.h"
 
 #include "math/geometry.h"
 
@@ -283,7 +285,7 @@ Error CTaskFlag::CreateFlag(int rank)
     //pNew->SetScale(0.0f);
 
     m_sound->Play(SOUND_WAYPOINT, pos);
-    m_engine->GetPyroManager()->Create(Gfx::PT_FLCREATE, pNew);
+    m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CFlagCreatePyro>(pNew));
 
     return ERR_OK;
 }
@@ -321,7 +323,7 @@ Error CTaskFlag::DeleteFlag()
 
     m_sound->Play(SOUND_WAYPOINT, iPos);
 
-    m_engine->GetPyroManager()->Create(Gfx::PT_FLDELETE, pObj);
+    m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CFlagDeletePyro>(pObj));
 
     return ERR_OK;
 }

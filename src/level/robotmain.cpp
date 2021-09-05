@@ -45,12 +45,14 @@
 #include "graphics/engine/oldmodelmanager.h"
 #include "graphics/engine/particle.h"
 #include "graphics/engine/planet.h"
-#include "graphics/engine/pyro_manager.h"
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/text.h"
 #include "graphics/engine/water.h"
 
 #include "graphics/model/model_manager.h"
+
+#include "graphics/pyro/pyro.h"
+#include "graphics/pyro/pyro_manager.h"
 
 #include "level/mainmovie.h"
 #include "level/player_profile.h"
@@ -2044,7 +2046,8 @@ bool CRobotMain::DestroySelectedObject()
     if (obj == nullptr) return false;
     assert(obj->Implements(ObjectInterfaceType::Controllable));
 
-    m_engine->GetPyroManager()->Create(Gfx::PT_FRAGT, obj);
+    m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CFragExploOrShotPyro>(Gfx::PT_FRAGT, obj));
+    NotifyObjectDestroyed(obj);
 
     dynamic_cast<CControllableObject&>(*obj).SetSelect(false);  // deselects the object
     m_camera->SetType(Gfx::CAM_TYPE_EXPLO);
@@ -2402,7 +2405,7 @@ bool CRobotMain::EventFrame(const Event &event)
                     obj->SetProxyActivate(false);
                     CreateShortcuts();
                     m_sound->Play(SOUND_FINDING);
-                    m_engine->GetPyroManager()->Create(Gfx::PT_FINDING, obj, 0.0f);
+                    m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CFindingPyro>(obj));
                     DisplayError(INFO_FINDING, obj);
                 }
             }
@@ -5040,7 +5043,7 @@ void CRobotMain::ResetCreate()
         {
             if (obj->GetAnimateOnReset())
             {
-                m_engine->GetPyroManager()->Create(Gfx::PT_RESET, obj);
+                m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CResetPyro>(obj));
             }
         }
     }
@@ -5669,6 +5672,86 @@ void CRobotMain::ClearInterface()
 {
     HiliteClear();  // removes setting evidence
     m_tooltipName.clear();  // really removes the tooltip
+}
+
+void CRobotMain::NotifyObjectDestroyed(CObject* pObj)
+{
+    switch (pObj->GetType())
+    {
+    case OBJECT_MOTHER:
+        DisplayError(INFO_DELETEMOTHER, pObj);
+        break;
+    case OBJECT_ANT:
+        DisplayError(INFO_DELETEANT, pObj);
+        break;
+    case OBJECT_BEE:
+        DisplayError(INFO_DELETEBEE, pObj);
+        break;
+    case OBJECT_WORM:
+        DisplayError(INFO_DELETEWORM, pObj);
+        break;
+    case OBJECT_SPIDER:
+        DisplayError(INFO_DELETESPIDER, pObj);
+        break;
+
+    case OBJECT_MOBILEwa:
+    case OBJECT_MOBILEta:
+    case OBJECT_MOBILEfa:
+    case OBJECT_MOBILEia:
+    case OBJECT_MOBILEwb:
+    case OBJECT_MOBILEtb:
+    case OBJECT_MOBILEfb:
+    case OBJECT_MOBILEib:
+    case OBJECT_MOBILEwc:
+    case OBJECT_MOBILEtc:
+    case OBJECT_MOBILEfc:
+    case OBJECT_MOBILEic:
+    case OBJECT_MOBILEwi:
+    case OBJECT_MOBILEti:
+    case OBJECT_MOBILEfi:
+    case OBJECT_MOBILEii:
+    case OBJECT_MOBILEws:
+    case OBJECT_MOBILEts:
+    case OBJECT_MOBILEfs:
+    case OBJECT_MOBILEis:
+    case OBJECT_MOBILErt:
+    case OBJECT_MOBILErc:
+    case OBJECT_MOBILErr:
+    case OBJECT_MOBILErs:
+    case OBJECT_MOBILEsa:
+    case OBJECT_MOBILEwt:
+    case OBJECT_MOBILEtt:
+    case OBJECT_MOBILEft:
+    case OBJECT_MOBILEit:
+    case OBJECT_MOBILErp:
+    case OBJECT_MOBILEst:
+    case OBJECT_MOBILEdr:
+        DisplayError(ERR_DELETEMOBILE, pObj);
+        break;
+
+    case OBJECT_DERRICK:
+    case OBJECT_FACTORY:
+    case OBJECT_STATION:
+    case OBJECT_REPAIR:
+    case OBJECT_DESTROYER:
+    case OBJECT_TOWER:
+    case OBJECT_RESEARCH:
+    case OBJECT_RADAR:
+    case OBJECT_INFO:
+    case OBJECT_ENERGY:
+    case OBJECT_LABO:
+    case OBJECT_NUCLEAR:
+    case OBJECT_PARA:
+    case OBJECT_SAFE:
+    case OBJECT_HUSTON:
+    case OBJECT_START:
+    case OBJECT_END:
+        DisplayError(ERR_DELETEBUILDING, pObj);
+        break;
+
+    default:
+        break;
+    }
 }
 
 void CRobotMain::DisplayError(Error err, CObject* pObj, float time)

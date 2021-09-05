@@ -20,8 +20,10 @@
 #include "object/task/taskterraform.h"
 
 #include "graphics/engine/particle.h"
-#include "graphics/engine/pyro_manager.h"
 #include "graphics/engine/terrain.h"
+
+#include "graphics/pyro/pyro.h"
+#include "graphics/pyro/pyro_manager.h"
 
 #include "level/robotmain.h"
 
@@ -419,13 +421,15 @@ bool CTaskTerraform::Terraform()
                  type == OBJECT_EGG    ) // Alien Organic?
             {
                 if ( dist > 5.0f )  continue;
-                m_engine->GetPyroManager()->Create(Gfx::PT_FRAGO, pObj);
+                m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CFragExploOrShotPyro>(Gfx::PT_FRAGO, pObj, 1.0f));
+                m_main->NotifyObjectDestroyed(pObj);
             }
             else if ( type == OBJECT_TNT  ||
                       type == OBJECT_BOMB ) // Explosives?
             {
                 if ( dist > 5.0f )  continue;
-                m_engine->GetPyroManager()->Create(Gfx::PT_EXPLOT, pObj);
+                m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CFragExploOrShotPyro>(Gfx::PT_EXPLOT, pObj, 1.0f));
+                m_main->NotifyObjectDestroyed(pObj);
                 dynamic_cast<CDamageableObject&>(*m_object).DamageObject(DamageType::Explosive, 0.9f);
             }
             else if ( type == OBJECT_PLANT0    ||
@@ -443,13 +447,14 @@ bool CTaskTerraform::Terraform()
                       type == OBJECT_PLANT19   ) // Plants?
             {
                 if ( dist > 7.5f )  continue;
-                m_engine->GetPyroManager()->Create(Gfx::PT_FRAGV, pObj);
+                m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CFragVPyro>(pObj));
 
             }
             else // Other?
             {
                 if ( dist > 5.0f )  continue;
-                m_engine->GetPyroManager()->Create(Gfx::PT_FRAGT, pObj);
+                m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CFragExploOrShotPyro>(Gfx::PT_FRAGT, pObj, 1.0f));
+                m_main->NotifyObjectDestroyed(pObj);
             }
         }
         else
@@ -472,12 +477,12 @@ bool CTaskTerraform::Terraform()
                 dynamic_cast<CBaseAlien&>(*pObj).SetFixed(true);  // not moving
 
                 if ( dist > 5.0f ) continue;
-                m_engine->GetPyroManager()->Create(Gfx::PT_EXPLOO, pObj);
+                m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CFragExploOrShotPyro>(Gfx::PT_EXPLOO, pObj, 1.0f));
             }
             else if ( type == OBJECT_BEE || type == OBJECT_WORM )
             {
                 if ( dist > 5.0f ) continue;
-                m_engine->GetPyroManager()->Create(Gfx::PT_EXPLOO, pObj);
+                m_engine->GetPyroManager()->Create(MakeUnique<Gfx::CFragExploOrShotPyro>(Gfx::PT_EXPLOO, pObj, 1.0f));
             }
         }
     }

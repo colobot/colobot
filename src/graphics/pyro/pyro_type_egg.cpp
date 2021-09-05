@@ -17,42 +17,37 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-/**
- * \file graphics/engine/pyro_manager.h
- * \brief Manager for CPyro objects
- */
+#include "graphics/pyro/pyro.h"
 
-#pragma once
+#include "object/old_object.h"
 
-#include "graphics/engine/pyro_type.h"
+#include "sound/sound.h"
 
-#include <memory>
-#include <set>
+// old_object.h only needed for OBJECTMAXPART - TODO improve this
 
-struct Event;
-class CObject;
+using namespace Gfx;
 
-namespace Gfx
+CEggPyro::CEggPyro(CObject *obj)
+    : CPyro(obj)
+{}
+
+bool CEggPyro::EventProcess(const Event& event)
 {
+    // Destroys the object that exploded.
+    //It should not be destroyed at the end of the Create,
+    //because it is sometimes the object itself that makes the Create:
+    //  pyro->Create(PT_FRAGT, this);
+    DeleteObject(true, true);
 
-class CPyro;
-using CPyroUPtr = std::unique_ptr<CPyro>;
+    return CPyro::EventProcess(event);
+}
 
-class CPyroManager
+void CEggPyro::AfterCreate()
 {
-public:
-    CPyroManager();
-    ~CPyroManager();
+    m_sound->Play(SOUND_EGG, m_pos);
 
-    void Create(PyroType type, CObject* obj, float force=1.0f);
-    void DeleteAll();
-
-    void CutObjectLink(CObject* obj);
-
-    void EventProcess(const Event& event);
-
-private:
-    std::set<CPyroUPtr> m_pyros;
-};
-
-} // namespace Gfx
+    for (int part = 0; part < OBJECTMAXPART; part++)
+    {
+        CreateTriangle(m_object, m_object->GetType(), part, 5, 15, 20, 40, 0.30f);
+    }
+}

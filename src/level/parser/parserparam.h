@@ -28,7 +28,6 @@
 
 #include "graphics/engine/camera.h"
 #include "graphics/engine/planet_type.h"
-#include "graphics/engine/pyro_type.h"
 #include "graphics/engine/water.h"
 
 #include "level/scoreboard.h"
@@ -88,7 +87,6 @@ public:
     int AsBuildFlag();
     int AsResearchFlag();
     CScoreboard::SortType AsSortType();
-    Gfx::PyroType AsPyroType();
     Gfx::CameraType AsCameraType();
     MissionType AsMissionType();
     const CLevelParserParamVec& AsArray();
@@ -112,7 +110,6 @@ public:
     int AsBuildFlag(int def);
     int AsResearchFlag(int def);
     CScoreboard::SortType AsSortType(CScoreboard::SortType def);
-    Gfx::PyroType AsPyroType(Gfx::PyroType def);
     Gfx::CameraType AsCameraType(Gfx::CameraType def);
     MissionType AsMissionType(MissionType def);
     //@}
@@ -144,7 +141,6 @@ private:
     int ToBuildFlag(std::string value);
     int ToResearchFlag(std::string value);
     CScoreboard::SortType ToSortType(std::string value);
-    Gfx::PyroType ToPyroType(std::string value);
     Gfx::CameraType ToCameraType(std::string value);
     MissionType ToMissionType(std::string value);
 

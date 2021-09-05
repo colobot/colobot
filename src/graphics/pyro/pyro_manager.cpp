@@ -17,11 +17,13 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#include "graphics/engine/pyro_manager.h"
+#include "graphics/pyro/pyro_manager.h"
 
 #include "common/make_unique.h"
 
-#include "graphics/engine/pyro.h"
+#include "graphics/pyro/pyro.h"
+
+#include <assert.h>
 
 namespace Gfx
 {
@@ -33,10 +35,9 @@ Gfx::CPyroManager::CPyroManager()
 CPyroManager::~CPyroManager()
 {}
 
-void Gfx::CPyroManager::Create(PyroType type, CObject* obj, float force)
+void Gfx::CPyroManager::Create(CPyroUPtr pyroUPtr)
 {
-    auto pyroUPtr = MakeUnique<CPyro>();
-    pyroUPtr->Create(type, obj, force);
+    pyroUPtr->Create();
     m_pyros.insert(std::move(pyroUPtr));
 }
 
@@ -70,6 +71,7 @@ void Gfx::CPyroManager::EventProcess(const Event& event)
         }
         else
         {
+            (*it)->AfterEnd();
             (*it)->DeleteObject();
             it = m_pyros.erase(it);
         }
