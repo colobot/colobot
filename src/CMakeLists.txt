@@ -1,20 +1,9 @@
 # Compile flags as defined in global CMakeLists
-set(CMAKE_CXX_FLAGS "${COLOBOT_CXX_FLAGS} ${MXE_CFLAGS}")
+set(CMAKE_CXX_FLAGS "${COLOBOT_CXX_FLAGS}")
 set(CMAKE_CXX_FLAGS_RELEASE ${COLOBOT_CXX_FLAGS_RELEASE})
 set(CMAKE_CXX_FLAGS_DEBUG ${COLOBOT_CXX_FLAGS_DEBUG})
 
-# Groups source files for IDE project
-macro(group_sources SOURCES GROUP_ROOT)
-    foreach(SOURCE_FILE ${SOURCES})
-        get_filename_component(GROUP "${SOURCE_FILE}" PATH)
-        string(REPLACE "/" "\\" GROUP "${GROUP}")
-        set(GROUP "${GROUP_ROOT}\\${GROUP}")
-        source_group("${GROUP}" FILES "${SOURCE_FILE}")
-    endforeach()
-endmacro()
-
 # Subdirectories
-
 add_subdirectory(CBot)
 
 if(TOOLS)
@@ -23,130 +12,12 @@ endif()
 
 add_subdirectory(graphics/opengl/shaders)
 
-
-# Optional libraries
-set(OPTIONAL_LIBS "")
-set(OPTIONAL_INCLUDES "")
-
-if(OPENAL_SOUND)
-    set(OPTIONAL_LIBS ${OPENAL_LIBRARY})
-    set(OPTIONAL_INCLUDES ${OPENAL_INCLUDE_DIR})
-endif()
-
-if(WINGETOPT)
-    set(OPTIONAL_LIBS ${OPTIONAL_LIBS} wingetopt)
-    set(OPTIONAL_INCLUDES ${OPTIONAL_INCLUDES} ${WINGETOPT_INCLUDE_DIR})
-endif()
-
-# Additional libraries per platform
-if(MXE) # MXE requires special treatment
-    set(PLATFORM_LIBS ${MXE_LIBS})
-elseif(PLATFORM_WINDOWS)
-    # because it isn't included in standard linking libraries
-    if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-        find_library(LIBINTL_LIBRARY NAMES intl.lib libintl)
-
-        if(${MSVC_STATIC})
-            if (${OPENAL_SOUND})
-                find_library(FLAC_LIBRARY NAMES flac)
-                find_library(VORBIS_LIBRARY NAMES vorbis)
-                find_library(VORBISENC_LIBRARY NAMES vorbisenc)
-                find_library(OGG_LIBRARY NAMES ogg)
-                find_library(OPUS_LIBRARY NAMES opus)
-                set(OPENAL_MSVC_LIBS
-                    ${FLAC_LIBRARY}
-                    ${VORBIS_LIBRARY}
-                    ${VORBISENC_LIBRARY}
-                    ${OGG_LIBRARY}
-                    ${OPUS_LIBRARY}
-                )
-            endif()
-
-            find_library(BZ2_LIBRARY NAMES bz2)
-            find_library(JPEG_LIBRARY NAMES jpeg)
-            find_library(TIFF_LIBRARY NAMES tiff)
-            find_library(LZMA_LIBRARY NAMES lzma)
-            find_library(FREETYPE_LIBRARY NAMES freetype)
-            find_library(ICONV_LIBRARY NAMES iconv)
-            find_library(CHARSET_LIBRARY NAMES charset)
-            find_library(BROTLICOMMON_LIBRARY NAMES brotlicommon-static)
-            find_library(BROTLIENC_LIBRARY NAMES brotlienc-static)
-            find_library(BROTLIDEC_LIBRARY NAMES brotlidec-static)
-            set(MSVC_LIBS
-                ${LIBINTL_LIBRARY}
-                ${OPENAL_MSVC_LIBS}
-                ${JPEG_LIBRARY}
-                ${TIFF_LIBRARY}
-                ${BZ2_LIBRARY}
-                ${LZMA_LIBRARY}
-                ${FREETYPE_LIBRARY}
-                ${ICONV_LIBRARY}
-                ${CHARSET_LIBRARY}
-                ${BROTLICOMMON_LIBRARY}
-                ${BROTLIENC_LIBRARY}
-                ${BROTLIDEC_LIBRARY}
-                winmm.lib
-                dxguid.lib
-                imm32.lib
-                ole32.lib
-                oleaut32.lib
-                version.lib
-                wsock32.lib
-                ws2_32.lib
-                setupapi.lib
-            )
-        else(${MSVC_STATIC})
-            set(MSVC_LIBS ${LIBINTL_LIBRARY})
-        endif()
-
-        set(PLATFORM_LIBS ${MSVC_LIBS})
-    else()
-        set(PLATFORM_LIBS "-lintl")
-    endif()
-elseif(PLATFORM_GNU)
-    set(PLATFORM_LIBS "")
-elseif(PLATFORM_LINUX)
-    # for clock_gettime
-    set(PLATFORM_LIBS "-lrt")
-elseif(PLATFORM_MACOSX)
-    find_library(LIBINTL_LIBRARY NAMES intl libintl)
-    find_path(LIBINTL_INCLUDE_PATH NAMES libintl.h)
-    set(PLATFORM_LIBS ${LIBINTL_LIBRARY})
-elseif(PLATFORM_FREEBSD)
-    find_library(LIBINTL_LIBRARY NAMES intl libintl)
-    find_path(LIBINTL_INCLUDE_PATH NAMES libintl.h)
-    set(PLATFORM_LIBS ${LIBINTL_LIBRARY})
-endif()
-
-
 # Configure file
 configure_file(common/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/common/config.h)
 configure_file(common/version.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/common/version.h)
 
-set(OPENAL_SRC "")
-
-if(OPENAL_SOUND)
-    set(OPENAL_SRC
-        sound/oalsound/alsound.cpp
-        sound/oalsound/buffer.cpp
-        sound/oalsound/channel.cpp
-        sound/oalsound/check.cpp
-        sound/oalsound/alsound.h
-        sound/oalsound/buffer.h
-        sound/oalsound/channel.h
-        sound/oalsound/check.h
-    )
-endif()
-
-set(RES_FILES "")
-
-if(PLATFORM_WINDOWS)
-    set(RES_FILES "../desktop/colobot.rc")
-endif()
-
-# Source files
-set(BASE_SOURCES
-    ${OPENAL_SRC}
+# Todo: split this monstrosity into smaller libraries (graphics, math, ui, etc.)
+add_library(colobotbase STATIC
     app/app.cpp
     app/app.h
     app/controller.cpp
@@ -602,79 +473,136 @@ set(BASE_SOURCES
     ui/studio.h
 )
 
-set(MAIN_SOURCES
-    app/main.cpp
-    ${RES_FILES}
+target_include_directories(colobotbase PUBLIC
+    ${CMAKE_CURRENT_LIST_DIR}
+    ${CMAKE_CURRENT_LIST_DIR}/..
+    ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-# Libraries
-set(LIBS
+# Main libraries
+target_link_libraries(colobotbase PUBLIC
     CBot
     localename
-    ${SDL2_LIBRARY}
-    ${SDL2_IMAGE_LIBRARY}
-    ${SDL2_TTF_LIBRARY}
-    ${OPENGL_LIBRARY}
-    ${PNG_LIBRARIES}
-    ${GLEW_LIBRARY}
-    ${Boost_LIBRARIES}
-    ${LIBSNDFILE_LIBRARY}
-    ${OPTIONAL_LIBS}
-    ${PLATFORM_LIBS}
-    ${PHYSFS_LIBRARY}
+    SDL2::Core
+    SDL2::Image
+    SDL2::TTF
+    OpenGL::GL
+    PNG::PNG
+    GLEW::GLEW
+    Boost::headers
+    Boost::filesystem
+    Boost::regex
+    PhysFS::PhysFS
+    SndFile::sndfile
 )
+
+# Optional libraries
+if(OPENAL_SOUND)
+    target_sources(colobotbase PRIVATE
+        sound/oalsound/alsound.cpp
+        sound/oalsound/buffer.cpp
+        sound/oalsound/channel.cpp
+        sound/oalsound/check.cpp
+        sound/oalsound/alsound.h
+        sound/oalsound/buffer.h
+        sound/oalsound/channel.h
+        sound/oalsound/check.h
+    )
+    target_link_libraries(colobotbase PUBLIC OpenAL::OpenAL)
+endif()
+
+if(WINGETOPT)
+    target_link_libraries(colobotbase PUBLIC wingetopt)
+endif()
+
+# Additional libraries per platform
+if(PLATFORM_WINDOWS)
+    # because it isn't included in standard linking libraries
+    if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+        # TODO: this shouldn't be needed, the libraries targets should care of those transitive dependencies
+        # This should be treated as a temporary workaround
+        if(USE_STATIC_RUNTIME) # Since we're using static runtime, assume every external library is static too
+            find_package(Intl REQUIRED)
+            
+            find_library(BZ2_LIBRARY NAMES bz2)
+            find_library(JPEG_LIBRARY NAMES jpeg)
+            find_library(TIFF_LIBRARY NAMES tiff)
+            find_library(LZMA_LIBRARY NAMES lzma)
+            find_library(FREETYPE_LIBRARY NAMES freetype)
+            find_library(ICONV_LIBRARY NAMES iconv)
+            find_library(CHARSET_LIBRARY NAMES charset)
+            find_library(BROTLICOMMON_LIBRARY NAMES brotlicommon-static)
+            find_library(BROTLIENC_LIBRARY NAMES brotlienc-static)
+            find_library(BROTLIDEC_LIBRARY NAMES brotlidec-static)
+
+            target_link_libraries(colobotbase PUBLIC
+                Gettext::Intl
+                ${JPEG_LIBRARY}
+                ${TIFF_LIBRARY}
+                ${BZ2_LIBRARY}
+                ${LZMA_LIBRARY}
+                ${FREETYPE_LIBRARY}
+                ${ICONV_LIBRARY}
+                ${CHARSET_LIBRARY}
+                ${BROTLICOMMON_LIBRARY}
+                ${BROTLIENC_LIBRARY}
+                ${BROTLIDEC_LIBRARY}
+
+                # why
+                winmm.lib
+                dxguid.lib
+                imm32.lib
+                ole32.lib
+                oleaut32.lib
+                version.lib
+                wsock32.lib
+                ws2_32.lib
+                setupapi.lib
+            )
+        endif()
+    else()
+        target_link_libraries(colobotbase PUBLIC -lintl)
+    endif()
+elseif(PLATFORM_GNU)
+    # nothing
+elseif(PLATFORM_LINUX)
+    # for clock_gettime
+    target_link_libraries(colobotbase PUBLIC -lrt)
+elseif(PLATFORM_MACOSX)
+    find_package(Intl REQUIRED)
+    target_link_libraries(colobotbase PUBLIC Gettext::Intl)
+elseif(PLATFORM_FREEBSD)
+    find_package(Intl REQUIRED)
+    target_link_libraries(colobotbase PUBLIC Gettext::Intl)
+endif()
+
 
 set(COLOBOT_LIBS ${LIBS} PARENT_SCOPE)
 
 
-# Includes
-set(LOCAL_INCLUDES
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/..
-    ${CMAKE_CURRENT_BINARY_DIR}
-)
-
-set(SYSTEM_INCLUDES
-    ${SDL2_INCLUDE_DIR}
-    ${SDL2_IMAGE_INCLUDE_DIR}
-    ${SDL2_TTF_INCLUDE_DIR}
-    ${PNG_INCLUDE_DIRS}
-    ${GLEW_INCLUDE_PATH}
-    ${Boost_INCLUDE_DIRS}
-    ${LIBSNDFILE_INCLUDE_DIR}
-    ${LOCALENAME_INCLUDE_DIR}
-    ${PHYSFS_INCLUDE_PATH}
-    ${LIBINTL_INCLUDE_PATH}
-    ${OPTIONAL_INCLUDES}
-)
-
-set(COLOBOT_LOCAL_INCLUDES ${LOCAL_INCLUDES} PARENT_SCOPE)
-set(COLOBOT_SYSTEM_INCLUDES ${SYSTEM_INCLUDES} PARENT_SCOPE)
-
-include_directories(${LOCAL_INCLUDES})
-include_directories(SYSTEM ${SYSTEM_INCLUDES})
-
-
-# Link directories
-link_directories(
-    ${CMAKE_CURRENT_SOURCE_DIR}/CBot
-)
-
-
 # Targets
+if(HIDE_CONSOLE)
+    add_executable(colobot WIN32 app/main.cpp)
+else()
+    add_executable(colobot app/main.cpp)
+endif()
 
-add_library(colobotbase STATIC ${BASE_SOURCES})
+if(PLATFORM_WINDOWS)
+    target_sources(colobot PRIVATE ../desktop/colobot.rc)
+endif()
+target_link_libraries(colobot colobotbase SDL2::Main)
 
-add_executable(colobot ${MAIN_SOURCES})
-target_link_libraries(colobot colobotbase ${LIBS})
-
+# Install
 install(TARGETS colobot RUNTIME DESTINATION ${COLOBOT_INSTALL_BIN_DIR})
+if(MSVC)
+    install(FILES $<TARGET_PDB_FILE:colobot> CONFIGURATIONS Debug RelWithDebInfo DESTINATION ${COLOBOT_INSTALL_BIN_DIR} OPTIONAL)
+endif()
 if(NOT CBOT_STATIC)
     set_target_properties(colobot PROPERTIES INSTALL_RPATH ${COLOBOT_INSTALL_LIB_DIR})
 endif()
 
+# Linter-specific
 if(COLOBOT_LINT_BUILD)
-    add_fake_header_sources("src")
+    add_fake_header_sources("src" colobotbase)
+    add_fake_header_sources("src" colobot)
 endif()
-
-group_sources("${BASE_SOURCES}" "Source Files")

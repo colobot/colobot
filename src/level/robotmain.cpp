@@ -504,12 +504,12 @@ void CRobotMain::ChangePhase(Phase phase)
                     GetLogger()->Info("Trying to restore pre-crash state...\n");
                     assert(m_playerProfile != nullptr);
                     m_playerProfile->LoadScene("../../crashsave");
-                    CResourceManager::RemoveDirectory("crashsave");
+                    CResourceManager::RemoveExistingDirectory("crashsave");
                 },
                 [&]()
                 {
                     GetLogger()->Info("Not restoring pre-crash state\n");
-                    CResourceManager::RemoveDirectory("crashsave");
+                    CResourceManager::RemoveExistingDirectory("crashsave");
                 }
             );
         }
@@ -5766,7 +5766,7 @@ void CRobotMain::AutosaveRotate()
     std::sort(autosaves.begin(), autosaves.end(), std::less<std::string>());
     for (int i = 0; i < static_cast<int>(autosaves.size()) - m_autosaveSlots + 1; i++)
     {
-        CResourceManager::RemoveDirectory(m_playerProfile->GetSaveDir() + "/" + autosaves[i]);
+        CResourceManager::RemoveExistingDirectory(m_playerProfile->GetSaveDir() + "/" + autosaves[i]);
     }
 }
 

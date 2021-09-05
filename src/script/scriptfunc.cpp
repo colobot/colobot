@@ -3400,7 +3400,7 @@ public:
 private:
     static std::string PrepareFilename(const std::string& filename)
     {
-        CResourceManager::CreateDirectory("files");
+        CResourceManager::CreateNewDirectory("files");
         return "files/" + filename;
     }
 };

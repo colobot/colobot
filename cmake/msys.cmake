@@ -1,5 +1,5 @@
 # Hacks for MSYS
-if (MSYS AND (NOT MXE))
+if (MSYS)
     message(STATUS "Detected MSYS build")
 
     set(PLATFORM_WINDOWS 1)

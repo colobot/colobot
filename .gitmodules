@@ -1,3 +1,6 @@
 [submodule "data"]
 	path = data
 	url = git://github.com/colobot/colobot-data.git
+[submodule "lib/googletest"]
+	path = lib/googletest
+	url = git://github.com/google/googletest.git
