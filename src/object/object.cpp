@@ -115,7 +115,10 @@ bool CObject::CanCollideWith(CObject* other)
 {
     ObjectType otherType = other->GetType();
     if (m_type == OBJECT_WORM) return false;
-    if (otherType == OBJECT_WORM) return false;
+    if (otherType == OBJECT_WORM)
+    {
+        if (m_type != OBJECT_PORTICO) return false;
+    }
     if (m_type == OBJECT_MOTHER)
     {
         if (otherType == OBJECT_ANT) return false;
