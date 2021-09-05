@@ -485,6 +485,7 @@ target_link_libraries(colobotbase PUBLIC
     OpenGL::GL
     PNG::PNG
     GLEW::GLEW
+    glm::glm
     Boost::headers
     Boost::filesystem
     Boost::regex
