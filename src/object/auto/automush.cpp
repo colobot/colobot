@@ -279,6 +279,7 @@ bool CAutoMush::SearchTarget()
              type != OBJECT_LABO     &&
              type != OBJECT_NUCLEAR  &&
              type != OBJECT_PARA     &&
+             type != OBJECT_PORTICO  &&
              type != OBJECT_HUMAN    )  continue;
 
        Math::Vector oPos = obj->GetPosition();
