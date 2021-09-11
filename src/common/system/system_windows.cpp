@@ -27,11 +27,6 @@
 
 void CSystemUtilsWindows::Init()
 {
-    LARGE_INTEGER freq;
-    QueryPerformanceFrequency(&freq);
-    m_counterFrequency = freq.QuadPart;
-
-    assert(m_counterFrequency != 0);
 }
 
 SystemDialogResult CSystemUtilsWindows::SystemDialog(SystemDialogType type, const std::string& title, const std::string& message)
@@ -42,20 +37,20 @@ SystemDialogResult CSystemUtilsWindows::SystemDialog(SystemDialogType type, cons
 
     switch (type)
     {
-        case SDT_INFO:
+        case SystemDialogType::INFO:
         default:
             windowsType = MB_ICONINFORMATION|MB_OK;
             break;
-        case SDT_WARNING:
+        case SystemDialogType::WARNING:
             windowsType = MB_ICONWARNING|MB_OK;
             break;
-        case SDT_ERROR:
+        case SystemDialogType::ERROR_MSG:
             windowsType = MB_ICONERROR|MB_OK;
             break;
-        case SDT_YES_NO:
+        case SystemDialogType::YES_NO:
             windowsType = MB_ICONQUESTION|MB_YESNO;
             break;
-        case SDT_OK_CANCEL:
+        case SystemDialogType::OK_CANCEL:
             windowsType = MB_ICONWARNING|MB_OKCANCEL;
             break;
     }
@@ -63,36 +58,18 @@ SystemDialogResult CSystemUtilsWindows::SystemDialog(SystemDialogType type, cons
     switch (MessageBoxW(nullptr, windowsMessage.c_str(), windowsTitle.c_str(), windowsType))
     {
         case IDOK:
-            return SDR_OK;
+            return SystemDialogResult::OK;
         case IDCANCEL:
-            return SDR_CANCEL;
+            return SystemDialogResult::CANCEL;
         case IDYES:
-            return SDR_YES;
+            return SystemDialogResult::YES;
         case IDNO:
-            return SDR_NO;
+            return SystemDialogResult::NO;
         default:
             break;
     }
 
-    return SDR_OK;
-}
-
-void CSystemUtilsWindows::GetCurrentTimeStamp(SystemTimeStamp* stamp)
-{
-    LARGE_INTEGER value;
-    QueryPerformanceCounter(&value);
-    stamp->counterValue = value.QuadPart;
-}
-
-void CSystemUtilsWindows::InterpolateTimeStamp(SystemTimeStamp *dst, SystemTimeStamp *a, SystemTimeStamp *b, float i)
-{
-    dst->counterValue = a->counterValue + static_cast<long long>((b->counterValue - a->counterValue) * static_cast<double>(i));
-}
-
-long long int CSystemUtilsWindows::TimeStampExactDiff(SystemTimeStamp* before, SystemTimeStamp* after)
-{
-    float floatValue = static_cast<double>(after->counterValue - before->counterValue) * (1e9 / static_cast<double>(m_counterFrequency));
-    return static_cast<long long>(floatValue);
+    return SystemDialogResult::OK;
 }
 
 //! Converts a wide Unicode string to an UTF8 string
@@ -175,13 +152,3 @@ bool CSystemUtilsWindows::OpenWebsite(const std::string& url)
     return true;
 }
 
-void CSystemUtilsWindows::Usleep(int usec)
-{
-   LARGE_INTEGER ft;
-   ft.QuadPart = -(10 * usec); // Convert to 100 nanosecond interval, negative value indicates relative time
-
-   HANDLE timer = CreateWaitableTimer(nullptr, TRUE, nullptr);
-   SetWaitableTimer(timer, &ft, 0, nullptr, nullptr, 0);
-   WaitForSingleObject(timer, INFINITE);
-   CloseHandle(timer);
-}

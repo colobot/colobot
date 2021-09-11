@@ -162,7 +162,7 @@ void CSignalHandlers::ReportError(const std::string& errorMessage)
 
     std::cerr << std::endl << msg.str() << std::endl;
 
-    m_systemUtils->SystemDialog(SDT_ERROR, "Unhandled exception occurred!", msg.str());
+    m_systemUtils->SystemDialog(SystemDialogType::ERROR_MSG, "Unhandled exception occurred!", msg.str());
 
     if (canSave && !triedSaving)
     {
@@ -172,13 +172,13 @@ void CSignalHandlers::ReportError(const std::string& errorMessage)
         msg << std::endl;
         msg << "Do you want to try saving now?";
 
-        SystemDialogResult result = m_systemUtils->SystemDialog(SDT_YES_NO, "Try to save?", msg.str());
-        if (result == SDR_YES)
+        SystemDialogResult result = m_systemUtils->SystemDialog(SystemDialogType::YES_NO, "Try to save?", msg.str());
+        if (result == SystemDialogResult::YES)
         {
             triedSaving = true;
             CResourceManager::CreateNewDirectory("crashsave");
             robotMain->IOWriteScene("crashsave/data.sav", "crashsave/cbot.run", "crashsave/screen.png", "Backup at the moment of a crash", true);
-            m_systemUtils->SystemDialog(SDT_INFO, "Try to save?", "Saving finished.\nPlease restart the game now");
+            m_systemUtils->SystemDialog(SystemDialogType::INFO, "Try to save?", "Saving finished.\nPlease restart the game now");
         }
     }
 

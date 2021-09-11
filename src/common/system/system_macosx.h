@@ -41,8 +41,6 @@ public:
     bool OpenPath(const std::string& path) override;
     bool OpenWebsite(const std::string& url) override;
 
-    void Usleep(int usec) override;
-
 private:
     std::string m_ASPath;
     std::string m_dataPath;

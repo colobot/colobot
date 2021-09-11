@@ -31,14 +31,7 @@
 
 using namespace HippoMocks;
 namespace ph = std::placeholders;
-
-struct FakeSystemTimeStamp : public SystemTimeStamp
-{
-    FakeSystemTimeStamp(int uid) : uid(uid), time(0) {}
-
-    int uid;
-    long long time;
-};
+using TimeUtils::TimeStamp;
 
 class CApplicationWrapper : public CApplication
 {
@@ -55,7 +48,7 @@ public:
         SDL_Quit();
     }
 
-    Event CreateUpdateEvent(SystemTimeStamp *timestamp) override
+    Event CreateUpdateEvent(TimeStamp timestamp) override
     {
         return CApplication::CreateUpdateEvent(timestamp);
     }
@@ -66,7 +59,6 @@ class CApplicationUT : public testing::Test
 protected:
     CApplicationUT() :
         m_systemUtils(nullptr),
-        m_stampUid(0),
         m_currentTime(0)
     {}
 
@@ -78,11 +70,7 @@ protected:
 
     void NextInstant(long long diff);
 
-    SystemTimeStamp* CreateTimeStamp();
-    void DestroyTimeStamp(SystemTimeStamp *stamp);
-    void CopyTimeStamp(SystemTimeStamp *dst, SystemTimeStamp *src);
-    void GetCurrentTimeStamp(SystemTimeStamp *stamp);
-    long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after);
+    TimeStamp GetCurrentTimeStamp();
 
     void TestCreateUpdateEvent(long long relTimeExact, long long absTimeExact,
                                float relTime, float absTime,
@@ -92,10 +80,8 @@ protected:
     std::unique_ptr<CApplicationWrapper> m_app;
     MockRepository m_mocks;
     CSystemUtils* m_systemUtils;
-    std::vector<std::unique_ptr<FakeSystemTimeStamp>> m_timeStamps;
 
 private:
-    int m_stampUid;
     long long m_currentTime;
 };
 
@@ -107,11 +93,7 @@ void CApplicationUT::SetUp()
     m_mocks.OnCall(m_systemUtils, CSystemUtils::GetLangPath).Return("");
     m_mocks.OnCall(m_systemUtils, CSystemUtils::GetSaveDir).Return("");
 
-    m_mocks.OnCall(m_systemUtils, CSystemUtils::CreateTimeStamp).Do(std::bind(&CApplicationUT::CreateTimeStamp, this));
-    m_mocks.OnCall(m_systemUtils, CSystemUtils::DestroyTimeStamp).Do(std::bind(&CApplicationUT::DestroyTimeStamp, this, ph::_1));
-    m_mocks.OnCall(m_systemUtils, CSystemUtils::CopyTimeStamp).Do(std::bind(&CApplicationUT::CopyTimeStamp, this, ph::_1, ph::_2));
-    m_mocks.OnCall(m_systemUtils, CSystemUtils::GetCurrentTimeStamp).Do(std::bind(&CApplicationUT::GetCurrentTimeStamp, this, ph::_1));
-    m_mocks.OnCall(m_systemUtils, CSystemUtils::TimeStampExactDiff).Do(std::bind(&CApplicationUT::TimeStampExactDiff, this, ph::_1, ph::_2));
+    m_mocks.OnCall(m_systemUtils, CSystemUtils::GetCurrentTimeStamp).Do(std::bind(&CApplicationUT::GetCurrentTimeStamp, this));
 
     m_app = MakeUnique<CApplicationWrapper>(m_systemUtils);
 }
@@ -121,31 +103,10 @@ void CApplicationUT::TearDown()
     m_app.reset();
 }
 
-SystemTimeStamp* CApplicationUT::CreateTimeStamp()
-{
-    auto stamp = MakeUnique<FakeSystemTimeStamp>(++m_stampUid);
-    auto stampPtr = stamp.get();
-    m_timeStamps.push_back(std::move(stamp));
-    return stampPtr;
-}
 
-void CApplicationUT::DestroyTimeStamp(SystemTimeStamp *stamp)
+TimeStamp CApplicationUT::GetCurrentTimeStamp()
 {
-}
-
-void CApplicationUT::CopyTimeStamp(SystemTimeStamp *dst, SystemTimeStamp *src)
-{
-    *static_cast<FakeSystemTimeStamp*>(dst) = *static_cast<FakeSystemTimeStamp*>(src);
-}
-
-void CApplicationUT::GetCurrentTimeStamp(SystemTimeStamp *stamp)
-{
-    static_cast<FakeSystemTimeStamp*>(stamp)->time = m_currentTime;
-}
-
-long long CApplicationUT::TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after)
-{
-    return static_cast<FakeSystemTimeStamp*>(after)->time - static_cast<FakeSystemTimeStamp*>(before)->time;
+    return TimeStamp{ TimeStamp::duration{m_currentTime}};
 }
 
 void CApplicationUT::NextInstant(long long diff)
@@ -157,8 +118,7 @@ void CApplicationUT::TestCreateUpdateEvent(long long relTimeExact, long long abs
                                            float relTime, float absTime,
                                            long long relTimeReal, long long absTimeReal)
 {
-    SystemTimeStamp *now = CreateTimeStamp();
-    GetCurrentTimeStamp(now);
+    TimeStamp now = GetCurrentTimeStamp();
     Event event = m_app->CreateUpdateEvent(now);
     EXPECT_EQ(EVENT_FRAME, event.type);
     EXPECT_FLOAT_EQ(relTime, event.rTime);
@@ -175,9 +135,7 @@ TEST_F(CApplicationUT, UpdateEventTimeCalculation_SimulationSuspended)
 {
     m_app->SuspendSimulation();
 
-    SystemTimeStamp *now = CreateTimeStamp();
-    GetCurrentTimeStamp(now);
-    Event event = m_app->CreateUpdateEvent(now);
+    Event event = m_app->CreateUpdateEvent(GetCurrentTimeStamp());
 
     EXPECT_EQ(EVENT_NULL, event.type);
 }
@@ -230,9 +188,7 @@ TEST_F(CApplicationUT, UpdateEventTimeCalculation_NegativeTimeOperation)
 
     NextInstant(-1111);
 
-    SystemTimeStamp *now = CreateTimeStamp();
-    GetCurrentTimeStamp(now);
-    Event event = m_app->CreateUpdateEvent(now);
+    Event event = m_app->CreateUpdateEvent(GetCurrentTimeStamp());
     EXPECT_EQ(EVENT_NULL, event.type);
 }
 

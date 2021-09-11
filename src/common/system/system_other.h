@@ -30,27 +30,11 @@
 
 //@colobot-lint-exclude UndefinedFunctionRule
 
-struct SystemTimeStamp
-{
-    Uint32 sdlTicks;
-
-    SystemTimeStamp()
-    {
-        sdlTicks = 0;
-    }
-};
-
 class CSystemUtilsOther : public CSystemUtils
 {
 public:
     void Init() override;
     SystemDialogResult SystemDialog(SystemDialogType type, const std::string& title, const std::string& message) override;
-
-    void InterpolateTimeStamp(SystemTimeStamp *dst, SystemTimeStamp *a, SystemTimeStamp *b, float i) override;
-    void GetCurrentTimeStamp(SystemTimeStamp *stamp) override;
-    long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after) override;
-
-    void Usleep(int usec) override;
 };
 
 //@end-colobot-lint-exclude

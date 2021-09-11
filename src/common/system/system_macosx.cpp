@@ -140,8 +140,3 @@ bool CSystemUtilsMacOSX::OpenWebsite(const std::string& url)
     }
     return true;
 }
-
-void CSystemUtilsMacOSX::Usleep(int usec)
-{
-    usleep(usec);
-}

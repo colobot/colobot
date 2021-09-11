@@ -25,6 +25,7 @@
 #pragma once
 
 #include "common/singleton.h"
+#include "common/system/system.h"
 
 #include "graphics/core/color.h"
 #include "graphics/core/material.h"
@@ -50,7 +51,6 @@ class CApplication;
 class CSoundInterface;
 class CImage;
 class CSystemUtils;
-struct SystemTimeStamp;
 struct Event;
 
 
@@ -1310,8 +1310,8 @@ protected:
     //! Last encountered error
     std::string     m_error;
 
-    SystemTimeStamp* m_lastFrameTime;
-    SystemTimeStamp* m_currentFrameTime;
+    TimeUtils::TimeStamp m_lastFrameTime;
+    TimeUtils::TimeStamp m_currentFrameTime;
     int             m_fpsCounter;
     float           m_fps;
 

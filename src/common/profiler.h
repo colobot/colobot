@@ -20,8 +20,8 @@
 #pragma once
 
 class CSystemUtils;
-struct SystemTimeStamp;
 
+#include "common/system/system.h"
 #include <stack>
 
 /**
@@ -73,7 +73,7 @@ private:
 
     static long long m_performanceCounters[PCNT_MAX];
     static long long m_prevPerformanceCounters[PCNT_MAX];
-    static std::stack<SystemTimeStamp*> m_runningPerformanceCounters;
+    static std::stack<TimeUtils::TimeStamp> m_runningPerformanceCounters;
     static std::stack<PerformanceCounter> m_runningPerformanceCountersType;
 };
 
