@@ -61,6 +61,9 @@
 #include <localename.h>
 #include <thread>
 
+using TimeUtils::TimeStamp;
+using TimeUtils::TimeUnit;
+
 char CApplication::m_languageLocale[] = { 0 };
 
 
@@ -69,7 +72,6 @@ const int JOYSTICK_TIMER_INTERVAL = 1000/30;
 
 //! Function called by the timer
 Uint32 JoystickTimerCallback(Uint32 interval, void *);
-
 
 /**
  * \struct ApplicationPrivate
@@ -1043,9 +1045,9 @@ int CApplication::Run()
 
     MoveMouse(Math::Point(0.5f, 0.5f)); // center mouse on start
 
-    SystemTimeStamp previousTimeStamp{};
-    SystemTimeStamp currentTimeStamp{};
-    SystemTimeStamp interpolatedTimeStamp{};
+    TimeStamp previousTimeStamp{};
+    TimeStamp currentTimeStamp{};
+    TimeStamp interpolatedTimeStamp{};
 
     while (true)
     {
@@ -1153,7 +1155,7 @@ int CApplication::Run()
             currentTimeStamp = m_systemUtils->GetCurrentTimeStamp();
             for(int tickSlice = 0; tickSlice < numTickSlices; tickSlice++)
             {
-                interpolatedTimeStamp = m_systemUtils->TimeStampLerp(previousTimeStamp, currentTimeStamp, (tickSlice+1)/static_cast<float>(numTickSlices));
+                interpolatedTimeStamp = TimeUtils::Lerp(previousTimeStamp, currentTimeStamp, (tickSlice+1)/static_cast<float>(numTickSlices));
                 Event event = CreateUpdateEvent(interpolatedTimeStamp);
                 if (event.type != EVENT_NULL && m_controller != nullptr)
                 {
@@ -1478,7 +1480,7 @@ void CApplication::Render()
 void CApplication::RenderIfNeeded(int updateRate)
 {
     m_manualFrameTime = m_systemUtils->GetCurrentTimeStamp();
-    long long diff = m_systemUtils->TimeStampExactDiff(m_manualFrameLast, m_manualFrameTime);
+    long long diff = TimeUtils::ExactDiff(m_manualFrameLast, m_manualFrameTime);
     if (diff < 1e9f / updateRate)
     {
         return;
@@ -1522,13 +1524,13 @@ void CApplication::StartLoadingMusic()
     std::thread{[this]()
     {
         GetLogger()->Debug("Cache sounds...\n");
-        SystemTimeStamp musicLoadStart{m_systemUtils->GetCurrentTimeStamp()};
+        TimeStamp musicLoadStart{m_systemUtils->GetCurrentTimeStamp()};
 
         m_sound->Reset();
         m_sound->CacheAll();
 
-        SystemTimeStamp musicLoadEnd{m_systemUtils->GetCurrentTimeStamp()};
-        float musicLoadTime = m_systemUtils->TimeStampDiff(musicLoadStart, musicLoadEnd, SystemTimeUnit::MILLISECONDS);
+        TimeStamp musicLoadEnd{m_systemUtils->GetCurrentTimeStamp()};
+        float musicLoadTime = TimeUtils::Diff(musicLoadStart, musicLoadEnd, TimeUnit::MILLISECONDS);
         GetLogger()->Debug("Sound loading took %.2f ms\n", musicLoadTime);
     }}.detach();
 }
@@ -1549,7 +1551,7 @@ void CApplication::SetSimulationSpeed(float speed)
     GetLogger()->Info("Simulation speed = %.2f\n", speed);
 }
 
-Event CApplication::CreateUpdateEvent(SystemTimeStamp newTimeStamp)
+Event CApplication::CreateUpdateEvent(TimeStamp newTimeStamp)
 {
     if (m_simulationSuspended)
         return Event(EVENT_NULL);
@@ -1557,9 +1559,9 @@ Event CApplication::CreateUpdateEvent(SystemTimeStamp newTimeStamp)
     m_lastTimeStamp = m_curTimeStamp;
     m_curTimeStamp = newTimeStamp;
 
-    long long absDiff = m_systemUtils->TimeStampExactDiff(m_baseTimeStamp, m_curTimeStamp);
+    long long absDiff = TimeUtils::ExactDiff(m_baseTimeStamp, m_curTimeStamp);
     long long newRealAbsTime = m_realAbsTimeBase + absDiff;
-    long long newRealRelTime = m_systemUtils->TimeStampExactDiff(m_lastTimeStamp, m_curTimeStamp);
+    long long newRealRelTime = TimeUtils::ExactDiff(m_lastTimeStamp, m_curTimeStamp);
 
     if (newRealAbsTime < m_realAbsTime || newRealRelTime < 0)
     {

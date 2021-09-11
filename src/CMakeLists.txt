@@ -83,6 +83,8 @@ add_library(colobotbase STATIC
     common/singleton.h
     common/stringutils.cpp
     common/stringutils.h
+    common/timeutils.cpp
+    common/timeutils.h
     common/thread/worker_thread.h
     graphics/core/color.cpp
     graphics/core/color.h

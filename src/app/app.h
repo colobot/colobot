@@ -297,7 +297,7 @@ protected:
     //! If applicable, creates a virtual event to match the changed state as of new event
     Event       CreateVirtualEvent(const Event& sourceEvent);
     //! Prepares a simulation update event
-    TEST_VIRTUAL Event CreateUpdateEvent(SystemTimeStamp newTimeStamp);
+    TEST_VIRTUAL Event CreateUpdateEvent(TimeUtils::TimeStamp newTimeStamp);
     //! Logs debug data for event
     void        LogEvent(const Event& event);
 
@@ -354,9 +354,9 @@ protected:
 
     //! Animation time stamps, etc.
     //@{
-    SystemTimeStamp m_baseTimeStamp;
-    SystemTimeStamp m_lastTimeStamp;
-    SystemTimeStamp m_curTimeStamp;
+    TimeUtils::TimeStamp m_baseTimeStamp;
+    TimeUtils::TimeStamp m_lastTimeStamp;
+    TimeUtils::TimeStamp m_curTimeStamp;
 
     long long       m_realAbsTimeBase;
     long long       m_realAbsTime;
@@ -373,8 +373,8 @@ protected:
     bool            m_simulationSuspended;
     //@}
 
-    SystemTimeStamp m_manualFrameLast;
-    SystemTimeStamp m_manualFrameTime;
+    TimeUtils::TimeStamp m_manualFrameLast;
+    TimeUtils::TimeStamp m_manualFrameTime;
 
     //! Graphics device to use
     bool            m_graphicsOverride = false;

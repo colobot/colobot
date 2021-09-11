@@ -143,36 +143,9 @@ SystemDialogResult CSystemUtils::ConsoleSystemDialog(SystemDialogType type, cons
     return result;
 }
 
-SystemTimeStamp CSystemUtils::GetCurrentTimeStamp()
+TimeUtils::TimeStamp CSystemUtils::GetCurrentTimeStamp()
 {
     return std::chrono::high_resolution_clock::now();
-}
-
-SystemTimeStamp CSystemUtils::TimeStampLerp(SystemTimeStamp a, SystemTimeStamp b, float t)
-{
-    return a + std::chrono::duration_cast<SystemTimeStamp::duration>((b - a) * t);
-}
-
-long long CSystemUtils::TimeStampExactDiff(SystemTimeStamp before, SystemTimeStamp after)
-{
-    return std::chrono::duration_cast<std::chrono::nanoseconds>(after - before).count();
-}
-
-float CSystemUtils::TimeStampDiff(SystemTimeStamp before, SystemTimeStamp after, SystemTimeUnit unit)
-{
-    long long exact = TimeStampExactDiff(before, after);
-
-    float result = 0.0f;
-    if (unit == SystemTimeUnit::SECONDS)
-        result = exact * 1e-9;
-    else if (unit == SystemTimeUnit::MILLISECONDS)
-        result = exact * 1e-6;
-    else if (unit == SystemTimeUnit::MICROSECONDS)
-        result = exact * 1e-3;
-    else
-        assert(false);
-
-    return result;
 }
 
 std::string CSystemUtils::GetBasePath()

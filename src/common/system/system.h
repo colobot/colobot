@@ -25,6 +25,7 @@
 #pragma once
 
 #include "common/config.h"
+#include "common/timeutils.h"
 
 #include <chrono>
 #include <memory>
@@ -64,19 +65,6 @@ enum class SystemDialogResult
 };
 
 /**
- * \enum SystemTimeUnit
- * \brief Time unit
- */
-enum class SystemTimeUnit
-{
-    SECONDS,
-    MILLISECONDS,
-    MICROSECONDS
-};
-
-using SystemTimeStamp = std::chrono::time_point<std::chrono::high_resolution_clock>;
-
-/**
  * \class CSystemUtils
  * \brief Platform-specific utils
  *
@@ -101,18 +89,7 @@ public:
     TEST_VIRTUAL SystemDialogResult ConsoleSystemDialog(SystemDialogType type, const std::string& title, const std::string& message);
 
     //! Returns a time stamp associated with current time
-    TEST_VIRTUAL SystemTimeStamp GetCurrentTimeStamp();
-
-    //! Linearly interpolates between two timestamps.
-    SystemTimeStamp TimeStampLerp(SystemTimeStamp a, SystemTimeStamp b, float t);
-
-    //! Returns a difference between two timestamps in given time unit
-    /** The difference is \a after - \a before. */
-    float TimeStampDiff(SystemTimeStamp before, SystemTimeStamp after, SystemTimeUnit unit = SystemTimeUnit::SECONDS);
-
-    //! Returns the exact (in nanosecond units) difference between two timestamps
-    /** The difference is \a after - \a before. */
-    long long TimeStampExactDiff(SystemTimeStamp before, SystemTimeStamp after);
+    TEST_VIRTUAL TimeUtils::TimeStamp GetCurrentTimeStamp();
 
     //! Returns the path where the executable binary is located (ends with the path separator)
     virtual std::string GetBasePath();
@@ -142,5 +119,4 @@ public:
 
 private:
     std::string m_basePath;
-    std::vector<std::unique_ptr<SystemTimeStamp>> m_timeStamps;
 };

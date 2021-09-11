@@ -31,6 +31,7 @@
 
 using namespace HippoMocks;
 namespace ph = std::placeholders;
+using TimeUtils::TimeStamp;
 
 class CApplicationWrapper : public CApplication
 {
@@ -47,7 +48,7 @@ public:
         SDL_Quit();
     }
 
-    Event CreateUpdateEvent(SystemTimeStamp timestamp) override
+    Event CreateUpdateEvent(TimeStamp timestamp) override
     {
         return CApplication::CreateUpdateEvent(timestamp);
     }
@@ -69,7 +70,7 @@ protected:
 
     void NextInstant(long long diff);
 
-    SystemTimeStamp GetCurrentTimeStamp();
+    TimeStamp GetCurrentTimeStamp();
 
     void TestCreateUpdateEvent(long long relTimeExact, long long absTimeExact,
                                float relTime, float absTime,
@@ -103,9 +104,9 @@ void CApplicationUT::TearDown()
 }
 
 
-SystemTimeStamp CApplicationUT::GetCurrentTimeStamp()
+TimeStamp CApplicationUT::GetCurrentTimeStamp()
 {
-    return SystemTimeStamp{SystemTimeStamp::duration{m_currentTime}};
+    return TimeStamp{ TimeStamp::duration{m_currentTime}};
 }
 
 void CApplicationUT::NextInstant(long long diff)
@@ -117,7 +118,7 @@ void CApplicationUT::TestCreateUpdateEvent(long long relTimeExact, long long abs
                                            float relTime, float absTime,
                                            long long relTimeReal, long long absTimeReal)
 {
-    SystemTimeStamp now = GetCurrentTimeStamp();
+    TimeStamp now = GetCurrentTimeStamp();
     Event event = m_app->CreateUpdateEvent(now);
     EXPECT_EQ(EVENT_FRAME, event.type);
     EXPECT_FLOAT_EQ(relTime, event.rTime);

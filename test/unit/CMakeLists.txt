@@ -14,13 +14,12 @@ add_executable(colobot_ut
     CBot/CBotToken_test.cpp
     CBot/CBot_test.cpp
     common/config_file_test.cpp
-    common/system/system_test.cpp
+    common/timeutils_test.cpp
     graphics/engine/lightman_test.cpp
     math/func_test.cpp
     math/geometry_test.cpp
     math/matrix_test.cpp
-    math/vector_test.cpp
-)
+    math/vector_test.cpp)
 
 target_include_directories(colobot_ut PRIVATE
     common

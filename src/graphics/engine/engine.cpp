@@ -63,6 +63,8 @@
 #include <SDL_thread.h>
 #include <thread>
 
+using TimeUtils::TimeUnit;
+
 // Graphics module namespace
 namespace Gfx
 {
@@ -3168,7 +3170,7 @@ void CEngine::Render()
     m_fpsCounter++;
 
     m_currentFrameTime = m_systemUtils->GetCurrentTimeStamp();
-    float diff = m_systemUtils->TimeStampDiff(m_lastFrameTime, m_currentFrameTime, SystemTimeUnit::SECONDS);
+    float diff = TimeUtils::Diff(m_lastFrameTime, m_currentFrameTime, TimeUnit::SECONDS);
     if (diff > 1.0f)
     {
         m_lastFrameTime = m_currentFrameTime;
