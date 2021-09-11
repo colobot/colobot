@@ -662,7 +662,7 @@ bool CApplication::Create()
         {
             GetLogger()->Error("Unknown graphics device: %s\n", graphics.c_str());
             GetLogger()->Info("Changing to default device\n");
-            m_systemUtils->SystemDialog(SystemDialogType::ERROR, "Graphics initialization error", "You have selected invalid graphics device with -graphics switch. Game will use default OpenGL device instead.");
+            m_systemUtils->SystemDialog(SystemDialogType::ERROR_MSG, "Graphics initialization error", "You have selected invalid graphics device with -graphics switch. Game will use default OpenGL device instead.");
             m_device = Gfx::CreateDevice(m_deviceConfig, "opengl");
         }
     }

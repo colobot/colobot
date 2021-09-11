@@ -53,7 +53,7 @@ SystemDialogResult CSystemUtilsLinux::SystemDialog(SystemDialogType type, const 
         case SystemDialogType::WARNING:
             options = "--warning";
             break;
-        case SystemDialogType::ERROR:
+        case SystemDialogType::ERROR_MSG:
             options = "--error";
             break;
         case SystemDialogType::YES_NO:

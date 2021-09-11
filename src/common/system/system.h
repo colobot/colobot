@@ -43,7 +43,7 @@ enum class SystemDialogType
     //! Warning message
     WARNING,
     //! Error message
-    ERROR,
+    ERROR_MSG, // windows.h defines ERROR which collides with the "ERROR" enum name
     //! Yes/No question
     YES_NO,
     //! Ok/Cancel question

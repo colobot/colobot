@@ -44,11 +44,7 @@ SystemDialogResult CSystemUtilsWindows::SystemDialog(SystemDialogType type, cons
         case SystemDialogType::WARNING:
             windowsType = MB_ICONWARNING|MB_OK;
             break;
-// windows.h defines ERROR which collides with the enum name
-#pragma push_macro("ERROR")
-#undef ERROR
-        case SystemDialogType::ERROR:
-#pragma pop_macro("ERROR")
+        case SystemDialogType::ERROR_MSG:
             windowsType = MB_ICONERROR|MB_OK;
             break;
         case SystemDialogType::YES_NO:

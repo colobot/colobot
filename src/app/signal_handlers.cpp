@@ -162,7 +162,7 @@ void CSignalHandlers::ReportError(const std::string& errorMessage)
 
     std::cerr << std::endl << msg.str() << std::endl;
 
-    m_systemUtils->SystemDialog(SystemDialogType::ERROR, "Unhandled exception occurred!", msg.str());
+    m_systemUtils->SystemDialog(SystemDialogType::ERROR_MSG, "Unhandled exception occurred!", msg.str());
 
     if (canSave && !triedSaving)
     {

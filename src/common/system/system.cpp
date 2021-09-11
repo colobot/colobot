@@ -67,7 +67,7 @@ SystemDialogResult CSystemUtils::ConsoleSystemDialog(SystemDialogType type, cons
         case SystemDialogType::WARNING:
             std::cout << "WARNING:";
             break;
-        case SystemDialogType::ERROR:
+        case SystemDialogType::ERROR_MSG:
             std::cout << "ERROR: ";
             break;
         case SystemDialogType::YES_NO:
@@ -89,7 +89,7 @@ SystemDialogResult CSystemUtils::ConsoleSystemDialog(SystemDialogType type, cons
         {
             case SystemDialogType::INFO:
             case SystemDialogType::WARNING:
-            case SystemDialogType::ERROR:
+            case SystemDialogType::ERROR_MSG:
                 std::cout << "Press ENTER to continue";
                 break;
 
@@ -108,7 +108,7 @@ SystemDialogResult CSystemUtils::ConsoleSystemDialog(SystemDialogType type, cons
         {
             case SystemDialogType::INFO:
             case SystemDialogType::WARNING:
-            case SystemDialogType::ERROR:
+            case SystemDialogType::ERROR_MSG:
                 done = true;
                 break;
 
