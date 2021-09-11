@@ -172,7 +172,3 @@ bool CSystemUtilsLinux::OpenWebsite(const std::string& url)
     return true;
 }
 
-void CSystemUtilsLinux::Usleep(int usec)
-{
-    usleep(usec);
-}

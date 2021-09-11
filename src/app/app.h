@@ -27,6 +27,7 @@
 #include "common/event.h"
 #include "common/language.h"
 #include "common/singleton.h"
+#include "common/system/system.h"
 
 #include "graphics/core/device.h"
 
@@ -46,7 +47,6 @@ class CModManager;
 class CPathManager;
 class CConfigFile;
 class CSystemUtils;
-struct SystemTimeStamp;
 
 namespace Gfx
 {
@@ -354,9 +354,9 @@ protected:
 
     //! Animation time stamps, etc.
     //@{
-    SystemTimeStamp* m_baseTimeStamp;
-    SystemTimeStamp* m_lastTimeStamp;
-    SystemTimeStamp* m_curTimeStamp;
+    SystemTimeStamp m_baseTimeStamp;
+    SystemTimeStamp m_lastTimeStamp;
+    SystemTimeStamp m_curTimeStamp;
 
     long long       m_realAbsTimeBase;
     long long       m_realAbsTime;
@@ -373,8 +373,8 @@ protected:
     bool            m_simulationSuspended;
     //@}
 
-    SystemTimeStamp* m_manualFrameLast;
-    SystemTimeStamp* m_manualFrameTime;
+    SystemTimeStamp m_manualFrameLast;
+    SystemTimeStamp m_manualFrameTime;
 
     //! Graphics device to use
     bool            m_graphicsOverride = false;

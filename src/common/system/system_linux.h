@@ -28,11 +28,6 @@
 
 //@colobot-lint-exclude UndefinedFunctionRule
 
-struct SystemTimeStamp
-{
-    timespec clockTime = {0, 0};
-};
-
 class CSystemUtilsLinux : public CSystemUtils
 {
 public:
@@ -41,8 +36,6 @@ public:
     SystemDialogResult SystemDialog(SystemDialogType type, const std::string& title, const std::string& message) override;
 
     void InterpolateTimeStamp(SystemTimeStamp *dst, SystemTimeStamp *a, SystemTimeStamp *b, float i) override;
-    void GetCurrentTimeStamp(SystemTimeStamp *stamp) override;
-    long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after) override;
 
     std::string GetSaveDir() override;
 
@@ -50,8 +43,6 @@ public:
 
     bool OpenPath(const std::string& path) override;
     bool OpenWebsite(const std::string& url) override;
-
-    void Usleep(int usec) override;
 
 private:
     bool m_zenityAvailable = false;

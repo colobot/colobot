@@ -26,6 +26,7 @@
 
 #include "common/config.h"
 
+#include <chrono>
 #include <memory>
 #include <string>
 #include <vector>
@@ -76,12 +77,7 @@ enum SystemTimeUnit
     STU_USEC
 };
 
-/*
- * Forward declaration of time stamp struct
- * SystemTimeStamp should only be used in a pointer context.
- * The implementation details are hidden because of platform dependence.
- */
-struct SystemTimeStamp;
+using SystemTimeStamp = std::chrono::time_point<std::chrono::high_resolution_clock>;
 
 /**
  * \class CSystemUtils
@@ -107,31 +103,19 @@ public:
     //! Displays a fallback system dialog using console
     TEST_VIRTUAL SystemDialogResult ConsoleSystemDialog(SystemDialogType type, const std::string& title, const std::string& message);
 
-    //! Creates a new time stamp object
-    TEST_VIRTUAL SystemTimeStamp* CreateTimeStamp();
-
-    //! Destroys a time stamp object
-    TEST_VIRTUAL void DestroyTimeStamp(SystemTimeStamp *stamp);
-
-    //! Copies the time stamp from \a src to \a dst
-    TEST_VIRTUAL void CopyTimeStamp(SystemTimeStamp *dst, SystemTimeStamp *src);
-
     //! Interpolates between two timestamps. If i=0 then dst=a. If i=1 then dst=b. If i=0.5 then dst is halfway between.
     virtual void InterpolateTimeStamp(SystemTimeStamp *dst, SystemTimeStamp *a, SystemTimeStamp *b, float i) = 0;
 
     //! Returns a time stamp associated with current time
-    virtual void GetCurrentTimeStamp(SystemTimeStamp *stamp) = 0;
+    TEST_VIRTUAL SystemTimeStamp GetCurrentTimeStamp();
 
     //! Returns a difference between two timestamps in given time unit
     /** The difference is \a after - \a before. */
-    TEST_VIRTUAL float TimeStampDiff(SystemTimeStamp *before, SystemTimeStamp *after, SystemTimeUnit unit = STU_SEC);
+    float TimeStampDiff(SystemTimeStamp before, SystemTimeStamp after, SystemTimeUnit unit = STU_SEC);
 
     //! Returns the exact (in nanosecond units) difference between two timestamps
     /** The difference is \a after - \a before. */
-    virtual long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after) = 0;
-
-    //! Returns the path where the executable binary is located (ends with the path separator)
-    virtual std::string GetBasePath();
+    long long TimeStampExactDiff(SystemTimeStamp before, SystemTimeStamp after);
 
     //! Returns the data path (containing textures, levels, helpfiles, etc)
     virtual std::string GetDataPath();
@@ -154,7 +138,7 @@ public:
     virtual bool OpenWebsite(const std::string& url);
 
     //! Sleep for given amount of microseconds
-    virtual void Usleep(int usecs) = 0;
+    void Usleep(int usecs);
 
 private:
     std::string m_basePath;

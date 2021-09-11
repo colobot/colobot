@@ -27,11 +27,6 @@
 
 void CSystemUtilsWindows::Init()
 {
-    LARGE_INTEGER freq;
-    QueryPerformanceFrequency(&freq);
-    m_counterFrequency = freq.QuadPart;
-
-    assert(m_counterFrequency != 0);
 }
 
 SystemDialogResult CSystemUtilsWindows::SystemDialog(SystemDialogType type, const std::string& title, const std::string& message)
@@ -75,24 +70,6 @@ SystemDialogResult CSystemUtilsWindows::SystemDialog(SystemDialogType type, cons
     }
 
     return SDR_OK;
-}
-
-void CSystemUtilsWindows::GetCurrentTimeStamp(SystemTimeStamp* stamp)
-{
-    LARGE_INTEGER value;
-    QueryPerformanceCounter(&value);
-    stamp->counterValue = value.QuadPart;
-}
-
-void CSystemUtilsWindows::InterpolateTimeStamp(SystemTimeStamp *dst, SystemTimeStamp *a, SystemTimeStamp *b, float i)
-{
-    dst->counterValue = a->counterValue + static_cast<long long>((b->counterValue - a->counterValue) * static_cast<double>(i));
-}
-
-long long int CSystemUtilsWindows::TimeStampExactDiff(SystemTimeStamp* before, SystemTimeStamp* after)
-{
-    float floatValue = static_cast<double>(after->counterValue - before->counterValue) * (1e9 / static_cast<double>(m_counterFrequency));
-    return static_cast<long long>(floatValue);
 }
 
 //! Converts a wide Unicode string to an UTF8 string
@@ -175,13 +152,3 @@ bool CSystemUtilsWindows::OpenWebsite(const std::string& url)
     return true;
 }
 
-void CSystemUtilsWindows::Usleep(int usec)
-{
-   LARGE_INTEGER ft;
-   ft.QuadPart = -(10 * usec); // Convert to 100 nanosecond interval, negative value indicates relative time
-
-   HANDLE timer = CreateWaitableTimer(nullptr, TRUE, nullptr);
-   SetWaitableTimer(timer, &ft, 0, nullptr, nullptr, 0);
-   WaitForSingleObject(timer, INFINITE);
-   CloseHandle(timer);
-}

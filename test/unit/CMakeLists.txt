@@ -1,4 +1,9 @@
-# Test files
+# Platform-dependent tests
+if(PLATFORM_WINDOWS)
+    set(PLATFORM_TESTS common/system/system_windows_test.cpp)
+elseif(PLATFORM_LINUX)
+    set(PLATFORM_TESTS common/system/system_linux_test.cpp)
+endif()
 
 set(TEST_FILES
     common/colobot.ini

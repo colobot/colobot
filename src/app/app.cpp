@@ -37,8 +37,6 @@
 
 #include "common/system/system.h"
 
-#include "common/thread/thread.h"
-
 #include "graphics/core/nulldevice.h"
 
 #include "graphics/opengl/glutil.h"
@@ -61,6 +59,7 @@
 #include <libintl.h>
 #include <getopt.h>
 #include <localename.h>
+#include <thread>
 
 char CApplication::m_languageLocale[] = { 0 };
 
@@ -1052,9 +1051,9 @@ int CApplication::Run()
 {
     m_active = true;
 
-    m_systemUtils->GetCurrentTimeStamp(m_baseTimeStamp);
-    m_systemUtils->GetCurrentTimeStamp(m_lastTimeStamp);
-    m_systemUtils->GetCurrentTimeStamp(m_curTimeStamp);
+    m_baseTimeStamp = m_systemUtils->GetCurrentTimeStamp();
+    m_lastTimeStamp = m_systemUtils->GetCurrentTimeStamp();
+    m_curTimeStamp = m_systemUtils->GetCurrentTimeStamp();
 
     MoveMouse(Math::Point(0.5f, 0.5f)); // center mouse on start
 
@@ -1495,13 +1494,13 @@ void CApplication::Render()
 
 void CApplication::RenderIfNeeded(int updateRate)
 {
-    m_systemUtils->GetCurrentTimeStamp(m_manualFrameTime);
+    m_manualFrameTime = m_systemUtils->GetCurrentTimeStamp();
     long long diff = m_systemUtils->TimeStampExactDiff(m_manualFrameLast, m_manualFrameTime);
     if (diff < 1e9f / updateRate)
     {
         return;
     }
-    m_systemUtils->CopyTimeStamp(m_manualFrameLast, m_manualFrameTime);
+    m_manualFrameLast = m_manualFrameTime;
 
     Render();
 }
@@ -1529,15 +1528,15 @@ void CApplication::ResetTimeAfterLoading()
 
 void CApplication::InternalResumeSimulation()
 {
-    m_systemUtils->GetCurrentTimeStamp(m_baseTimeStamp);
-    m_systemUtils->CopyTimeStamp(m_curTimeStamp, m_baseTimeStamp);
+    m_baseTimeStamp = m_systemUtils->GetCurrentTimeStamp();
+    m_curTimeStamp = m_baseTimeStamp;
     m_realAbsTimeBase = m_realAbsTime;
     m_absTimeBase = m_exactAbsTime;
 }
 
 void CApplication::StartLoadingMusic()
 {
-    CThread musicLoadThread([this]()
+    std::thread{[this]()
     {
         GetLogger()->Debug("Cache sounds...\n");
         SystemTimeStamp* musicLoadStart = m_systemUtils->CreateTimeStamp();
@@ -1550,9 +1549,7 @@ void CApplication::StartLoadingMusic()
         m_systemUtils->GetCurrentTimeStamp(musicLoadEnd);
         float musicLoadTime = m_systemUtils->TimeStampDiff(musicLoadStart, musicLoadEnd, STU_MSEC);
         GetLogger()->Debug("Sound loading took %.2f ms\n", musicLoadTime);
-    },
-    "Sound loading thread");
-    musicLoadThread.Start();
+    }).detach();
 }
 
 bool CApplication::GetSimulationSuspended() const

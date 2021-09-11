@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2018, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,44 +17,21 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#pragma once
+#include "common/system/system_other.h"
 
-#include <SDL_thread.h>
+#include <gtest/gtest.h>
 
-/**
- * \class CSDLMutexWrapper
- * \brief Wrapper for safe creation/deletion of SDL_mutex
- */
-class CSDLMutexWrapper
-{
-public:
-    CSDLMutexWrapper()
-        : m_mutex(SDL_CreateMutex())
-    {}
-
-    ~CSDLMutexWrapper()
-    {
-        SDL_DestroyMutex(m_mutex);
-    }
-
-    CSDLMutexWrapper(const CSDLMutexWrapper&) = delete;
-    CSDLMutexWrapper& operator=(const CSDLMutexWrapper&) = delete;
-
-    SDL_mutex* operator*()
-    {
-        return m_mutex;
-    }
-
-    void Lock()
-    {
-        SDL_LockMutex(m_mutex);
-    }
-
-    void Unlock()
-    {
-        SDL_UnlockMutex(m_mutex);
-    }
-
-private:
-    SDL_mutex* m_mutex;
+struct SystemTest : ::testing::Test {
+    CSystemUtilsOther system;
 };
+
+TEST_F(SystemTest, TimeStampExactDiff) {
+    auto epoch = SystemTimeStamp{};
+    EXPECT_EQ(system.TimeStampExactDiff(epoch, epoch), 0);
+
+    auto duration = std::chrono::microseconds{123456789L};
+    auto before = std::chrono::high_resolution_clock::now();
+    auto after = before + duration;
+    EXPECT_EQ(system.TimeStampExactDiff(before, after), std::chrono::nanoseconds{duration}.count());
+    EXPECT_EQ(system.TimeStampExactDiff(after, before), -std::chrono::nanoseconds{duration}.count());
+}
