@@ -21,11 +21,13 @@
 
 #include <gtest/gtest.h>
 
-struct SystemTest : ::testing::Test {
+struct SystemTest : ::testing::Test
+{
     CSystemUtilsOther system;
 };
 
-TEST_F(SystemTest, TimeStampExactDiff) {
+TEST_F(SystemTest, TimeStampExactDiff)
+{
     auto epoch = SystemTimeStamp{};
     EXPECT_EQ(system.TimeStampExactDiff(epoch, epoch), 0);
 
@@ -35,3 +37,43 @@ TEST_F(SystemTest, TimeStampExactDiff) {
     EXPECT_EQ(system.TimeStampExactDiff(before, after), std::chrono::nanoseconds{duration}.count());
     EXPECT_EQ(system.TimeStampExactDiff(after, before), -std::chrono::nanoseconds{duration}.count());
 }
+
+constexpr auto TIMESTAMP_START = SystemTimeStamp{std::chrono::nanoseconds{300}};
+constexpr auto TIMESTAMP_MID = SystemTimeStamp{std::chrono::nanoseconds{600}};
+constexpr auto TIMESTAMP_END = SystemTimeStamp{std::chrono::nanoseconds{900}};
+
+constexpr auto LERP_PARAM_ZERO = 0.0f;
+constexpr auto LERP_PARAM_HALF = 0.5f;
+constexpr auto LERP_PARAM_ONE = 1.0f;
+
+TEST_F(SystemTest, TimeStampLerpReturnsStartWhenLerpParameterIsZero)
+{
+    EXPECT_EQ(TIMESTAMP_START, system.TimeStampLerp(TIMESTAMP_START, TIMESTAMP_END, LERP_PARAM_ZERO));
+}
+
+TEST_F(SystemTest, TimeStampLerpReturnsEndWhenLerpParameterIsOne)
+{
+    EXPECT_EQ(TIMESTAMP_END, system.TimeStampLerp(TIMESTAMP_START, TIMESTAMP_END, LERP_PARAM_ONE));
+}
+
+TEST_F(SystemTest, TimeStampLerpReturnsValueBetweenStartAndEndWhenLerpParameterIsBetweenZeroAndOne)
+{
+    EXPECT_EQ(TIMESTAMP_MID, system.TimeStampLerp(TIMESTAMP_START, TIMESTAMP_END, LERP_PARAM_HALF));
+}
+
+TEST_F(SystemTest, TimeStampLerpIsMonotonic)
+{
+    constexpr auto deltaLerpParam = 0.1f;
+    auto earlierTimeStamp = system.TimeStampLerp(TIMESTAMP_START, TIMESTAMP_END, LERP_PARAM_HALF - deltaLerpParam);
+    auto laterTimeStamp = system.TimeStampLerp(TIMESTAMP_START, TIMESTAMP_END, LERP_PARAM_HALF + deltaLerpParam);
+    EXPECT_TRUE(earlierTimeStamp < laterTimeStamp);
+}
+
+TEST_F(SystemTest, TimeStampLerpIsConsistent)
+{
+    auto timeStamp = TIMESTAMP_START;
+    EXPECT_EQ(timeStamp, system.TimeStampLerp(timeStamp, timeStamp, LERP_PARAM_ZERO));
+    EXPECT_EQ(timeStamp, system.TimeStampLerp(timeStamp, timeStamp, LERP_PARAM_HALF));
+    EXPECT_EQ(timeStamp, system.TimeStampLerp(timeStamp, timeStamp, LERP_PARAM_ONE));
+}
+

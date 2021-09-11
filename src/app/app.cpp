@@ -137,13 +137,6 @@ CApplication::CApplication(CSystemUtils* systemUtils)
     m_absTime = 0.0f;
     m_relTime = 0.0f;
 
-    m_baseTimeStamp = m_systemUtils->CreateTimeStamp();
-    m_curTimeStamp = m_systemUtils->CreateTimeStamp();
-    m_lastTimeStamp = m_systemUtils->CreateTimeStamp();
-
-    m_manualFrameLast = m_systemUtils->CreateTimeStamp();
-    m_manualFrameTime = m_systemUtils->CreateTimeStamp();
-
 
     m_joystickEnabled = false;
 
@@ -161,13 +154,6 @@ CApplication::CApplication(CSystemUtils* systemUtils)
 
 CApplication::~CApplication()
 {
-    m_systemUtils->DestroyTimeStamp(m_baseTimeStamp);
-    m_systemUtils->DestroyTimeStamp(m_curTimeStamp);
-    m_systemUtils->DestroyTimeStamp(m_lastTimeStamp);
-
-    m_systemUtils->DestroyTimeStamp(m_manualFrameLast);
-    m_systemUtils->DestroyTimeStamp(m_manualFrameTime);
-
     m_joystickEnabled = false;
 
     m_controller.reset();
@@ -674,7 +660,7 @@ bool CApplication::Create()
         {
             GetLogger()->Error("Unknown graphics device: %s\n", graphics.c_str());
             GetLogger()->Info("Changing to default device\n");
-            m_systemUtils->SystemDialog(SDT_ERROR, "Graphics initialization error", "You have selected invalid graphics device with -graphics switch. Game will use default OpenGL device instead.");
+            m_systemUtils->SystemDialog(SystemDialogType::ERROR, "Graphics initialization error", "You have selected invalid graphics device with -graphics switch. Game will use default OpenGL device instead.");
             m_device = Gfx::CreateDevice(m_deviceConfig, "opengl");
         }
     }
@@ -1057,9 +1043,9 @@ int CApplication::Run()
 
     MoveMouse(Math::Point(0.5f, 0.5f)); // center mouse on start
 
-    SystemTimeStamp *previousTimeStamp = m_systemUtils->CreateTimeStamp();
-    SystemTimeStamp *currentTimeStamp = m_systemUtils->CreateTimeStamp();
-    SystemTimeStamp *interpolatedTimeStamp = m_systemUtils->CreateTimeStamp();
+    SystemTimeStamp previousTimeStamp{};
+    SystemTimeStamp currentTimeStamp{};
+    SystemTimeStamp interpolatedTimeStamp{};
 
     while (true)
     {
@@ -1163,11 +1149,11 @@ int CApplication::Run()
             // If game speed is increased then we do extra ticks per loop iteration to improve physics accuracy.
             int numTickSlices = static_cast<int>(GetSimulationSpeed());
             if(numTickSlices < 1) numTickSlices = 1;
-            m_systemUtils->CopyTimeStamp(previousTimeStamp, m_curTimeStamp);
-            m_systemUtils->GetCurrentTimeStamp(currentTimeStamp);
+            previousTimeStamp = m_curTimeStamp;
+            currentTimeStamp = m_systemUtils->GetCurrentTimeStamp();
             for(int tickSlice = 0; tickSlice < numTickSlices; tickSlice++)
             {
-                m_systemUtils->InterpolateTimeStamp(interpolatedTimeStamp, previousTimeStamp, currentTimeStamp, (tickSlice+1)/static_cast<float>(numTickSlices));
+                interpolatedTimeStamp = m_systemUtils->TimeStampLerp(previousTimeStamp, currentTimeStamp, (tickSlice+1)/static_cast<float>(numTickSlices));
                 Event event = CreateUpdateEvent(interpolatedTimeStamp);
                 if (event.type != EVENT_NULL && m_controller != nullptr)
                 {
@@ -1198,9 +1184,6 @@ int CApplication::Run()
     }
 
 end:
-    m_systemUtils->DestroyTimeStamp(previousTimeStamp);
-    m_systemUtils->DestroyTimeStamp(currentTimeStamp);
-    m_systemUtils->DestroyTimeStamp(interpolatedTimeStamp);
 
     return m_exitCode;
 }
@@ -1539,17 +1522,15 @@ void CApplication::StartLoadingMusic()
     std::thread{[this]()
     {
         GetLogger()->Debug("Cache sounds...\n");
-        SystemTimeStamp* musicLoadStart = m_systemUtils->CreateTimeStamp();
-        m_systemUtils->GetCurrentTimeStamp(musicLoadStart);
+        SystemTimeStamp musicLoadStart{m_systemUtils->GetCurrentTimeStamp()};
 
         m_sound->Reset();
         m_sound->CacheAll();
 
-        SystemTimeStamp* musicLoadEnd = m_systemUtils->CreateTimeStamp();
-        m_systemUtils->GetCurrentTimeStamp(musicLoadEnd);
-        float musicLoadTime = m_systemUtils->TimeStampDiff(musicLoadStart, musicLoadEnd, STU_MSEC);
+        SystemTimeStamp musicLoadEnd{m_systemUtils->GetCurrentTimeStamp()};
+        float musicLoadTime = m_systemUtils->TimeStampDiff(musicLoadStart, musicLoadEnd, SystemTimeUnit::MILLISECONDS);
         GetLogger()->Debug("Sound loading took %.2f ms\n", musicLoadTime);
-    }).detach();
+    }}.detach();
 }
 
 bool CApplication::GetSimulationSuspended() const
@@ -1561,20 +1542,20 @@ void CApplication::SetSimulationSpeed(float speed)
 {
     m_simulationSpeed = speed;
 
-    m_systemUtils->CopyTimeStamp(m_baseTimeStamp, m_curTimeStamp);
+    m_baseTimeStamp = m_curTimeStamp;
     m_realAbsTimeBase = m_realAbsTime;
     m_absTimeBase = m_exactAbsTime;
 
     GetLogger()->Info("Simulation speed = %.2f\n", speed);
 }
 
-Event CApplication::CreateUpdateEvent(SystemTimeStamp *newTimeStamp)
+Event CApplication::CreateUpdateEvent(SystemTimeStamp newTimeStamp)
 {
     if (m_simulationSuspended)
         return Event(EVENT_NULL);
 
-    m_systemUtils->CopyTimeStamp(m_lastTimeStamp, m_curTimeStamp);
-    m_systemUtils->CopyTimeStamp(m_curTimeStamp, newTimeStamp);
+    m_lastTimeStamp = m_curTimeStamp;
+    m_curTimeStamp = newTimeStamp;
 
     long long absDiff = m_systemUtils->TimeStampExactDiff(m_baseTimeStamp, m_curTimeStamp);
     long long newRealAbsTime = m_realAbsTimeBase + absDiff;

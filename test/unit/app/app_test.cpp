@@ -47,7 +47,7 @@ public:
         SDL_Quit();
     }
 
-    Event CreateUpdateEvent(SystemTimeStamp *timestamp) override
+    Event CreateUpdateEvent(SystemTimeStamp timestamp) override
     {
         return CApplication::CreateUpdateEvent(timestamp);
     }
@@ -117,8 +117,7 @@ void CApplicationUT::TestCreateUpdateEvent(long long relTimeExact, long long abs
                                            float relTime, float absTime,
                                            long long relTimeReal, long long absTimeReal)
 {
-    SystemTimeStamp *now = CreateTimeStamp();
-    GetCurrentTimeStamp(now);
+    SystemTimeStamp now = GetCurrentTimeStamp();
     Event event = m_app->CreateUpdateEvent(now);
     EXPECT_EQ(EVENT_FRAME, event.type);
     EXPECT_FLOAT_EQ(relTime, event.rTime);
@@ -135,9 +134,7 @@ TEST_F(CApplicationUT, UpdateEventTimeCalculation_SimulationSuspended)
 {
     m_app->SuspendSimulation();
 
-    SystemTimeStamp *now = CreateTimeStamp();
-    GetCurrentTimeStamp(now);
-    Event event = m_app->CreateUpdateEvent(now);
+    Event event = m_app->CreateUpdateEvent(GetCurrentTimeStamp());
 
     EXPECT_EQ(EVENT_NULL, event.type);
 }
@@ -190,9 +187,7 @@ TEST_F(CApplicationUT, UpdateEventTimeCalculation_NegativeTimeOperation)
 
     NextInstant(-1111);
 
-    SystemTimeStamp *now = CreateTimeStamp();
-    GetCurrentTimeStamp(now);
-    Event event = m_app->CreateUpdateEvent(now);
+    Event event = m_app->CreateUpdateEvent(GetCurrentTimeStamp());
     EXPECT_EQ(EVENT_NULL, event.type);
 }
 

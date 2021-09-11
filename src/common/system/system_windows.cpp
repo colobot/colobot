@@ -37,20 +37,24 @@ SystemDialogResult CSystemUtilsWindows::SystemDialog(SystemDialogType type, cons
 
     switch (type)
     {
-        case SDT_INFO:
+        case SystemDialogType::INFO:
         default:
             windowsType = MB_ICONINFORMATION|MB_OK;
             break;
-        case SDT_WARNING:
+        case SystemDialogType::WARNING:
             windowsType = MB_ICONWARNING|MB_OK;
             break;
-        case SDT_ERROR:
+// windows.h defines ERROR which collides with the enum name
+#pragma push_macro("ERROR")
+#undef ERROR
+        case SystemDialogType::ERROR:
+#pragma pop_macro("ERROR")
             windowsType = MB_ICONERROR|MB_OK;
             break;
-        case SDT_YES_NO:
+        case SystemDialogType::YES_NO:
             windowsType = MB_ICONQUESTION|MB_YESNO;
             break;
-        case SDT_OK_CANCEL:
+        case SystemDialogType::OK_CANCEL:
             windowsType = MB_ICONWARNING|MB_OKCANCEL;
             break;
     }
@@ -58,18 +62,18 @@ SystemDialogResult CSystemUtilsWindows::SystemDialog(SystemDialogType type, cons
     switch (MessageBoxW(nullptr, windowsMessage.c_str(), windowsTitle.c_str(), windowsType))
     {
         case IDOK:
-            return SDR_OK;
+            return SystemDialogResult::OK;
         case IDCANCEL:
-            return SDR_CANCEL;
+            return SystemDialogResult::CANCEL;
         case IDYES:
-            return SDR_YES;
+            return SystemDialogResult::YES;
         case IDNO:
-            return SDR_NO;
+            return SystemDialogResult::NO;
         default:
             break;
     }
 
-    return SDR_OK;
+    return SystemDialogResult::OK;
 }
 
 //! Converts a wide Unicode string to an UTF8 string

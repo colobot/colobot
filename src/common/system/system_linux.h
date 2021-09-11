@@ -24,8 +24,6 @@
 
 #include "common/system/system.h"
 
-#include <sys/time.h>
-
 //@colobot-lint-exclude UndefinedFunctionRule
 
 class CSystemUtilsLinux : public CSystemUtils
@@ -34,8 +32,6 @@ public:
     void Init() override;
 
     SystemDialogResult SystemDialog(SystemDialogType type, const std::string& title, const std::string& message) override;
-
-    void InterpolateTimeStamp(SystemTimeStamp *dst, SystemTimeStamp *a, SystemTimeStamp *b, float i) override;
 
     std::string GetSaveDir() override;
 

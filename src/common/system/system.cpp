@@ -61,17 +61,17 @@ SystemDialogResult CSystemUtils::ConsoleSystemDialog(SystemDialogType type, cons
 {
     switch (type)
     {
-        case SDT_INFO:
+        case SystemDialogType::INFO:
             std::cout << "INFO: ";
             break;
-        case SDT_WARNING:
+        case SystemDialogType::WARNING:
             std::cout << "WARNING:";
             break;
-        case SDT_ERROR:
+        case SystemDialogType::ERROR:
             std::cout << "ERROR: ";
             break;
-        case SDT_YES_NO:
-        case SDT_OK_CANCEL:
+        case SystemDialogType::YES_NO:
+        case SystemDialogType::OK_CANCEL:
             std::cout << "QUESTION: ";
             break;
     }
@@ -80,24 +80,24 @@ SystemDialogResult CSystemUtils::ConsoleSystemDialog(SystemDialogType type, cons
 
     std::string line;
 
-    SystemDialogResult result = SDR_OK;
+    auto result = SystemDialogResult::OK;
 
     bool done = false;
     while (!done)
     {
         switch (type)
         {
-            case SDT_INFO:
-            case SDT_WARNING:
-            case SDT_ERROR:
+            case SystemDialogType::INFO:
+            case SystemDialogType::WARNING:
+            case SystemDialogType::ERROR:
                 std::cout << "Press ENTER to continue";
                 break;
 
-            case SDT_YES_NO:
+            case SystemDialogType::YES_NO:
                 std::cout << "Type 'Y' for Yes or 'N' for No";
                 break;
 
-            case SDT_OK_CANCEL:
+            case SystemDialogType::OK_CANCEL:
                 std::cout << "Type 'O' for OK or 'C' for Cancel";
                 break;
         }
@@ -106,35 +106,35 @@ SystemDialogResult CSystemUtils::ConsoleSystemDialog(SystemDialogType type, cons
 
         switch (type)
         {
-            case SDT_INFO:
-            case SDT_WARNING:
-            case SDT_ERROR:
+            case SystemDialogType::INFO:
+            case SystemDialogType::WARNING:
+            case SystemDialogType::ERROR:
                 done = true;
                 break;
 
-            case SDT_YES_NO:
+            case SystemDialogType::YES_NO:
                 if (line == "Y" || line == "y")
                 {
-                    result = SDR_YES;
+                    result = SystemDialogResult::YES;
                     done = true;
                 }
                 else if (line == "N" || line == "n")
                 {
-                    result = SDR_NO;
+                    result = SystemDialogResult::NO;
                     done = true;
                 }
                 break;
 
-            case SDT_OK_CANCEL:
+            case SystemDialogType::OK_CANCEL:
                 if (line == "O" || line == "o")
                 {
                     done = true;
-                    result = SDR_OK;
+                    result = SystemDialogResult::OK;
                 }
                 else if (line == "C" || line == "c")
                 {
                     done = true;
-                    result = SDR_CANCEL;
+                    result = SystemDialogResult::CANCEL;
                 }
                 break;
         }
@@ -148,6 +148,11 @@ SystemTimeStamp CSystemUtils::GetCurrentTimeStamp()
     return std::chrono::high_resolution_clock::now();
 }
 
+SystemTimeStamp CSystemUtils::TimeStampLerp(SystemTimeStamp a, SystemTimeStamp b, float t)
+{
+    return a + std::chrono::duration_cast<SystemTimeStamp::duration>((b - a) * t);
+}
+
 long long CSystemUtils::TimeStampExactDiff(SystemTimeStamp before, SystemTimeStamp after)
 {
     return std::chrono::duration_cast<std::chrono::nanoseconds>(after - before).count();
@@ -158,11 +163,11 @@ float CSystemUtils::TimeStampDiff(SystemTimeStamp before, SystemTimeStamp after,
     long long exact = TimeStampExactDiff(before, after);
 
     float result = 0.0f;
-    if (unit == STU_SEC)
+    if (unit == SystemTimeUnit::SECONDS)
         result = exact * 1e-9;
-    else if (unit == STU_MSEC)
+    else if (unit == SystemTimeUnit::MILLISECONDS)
         result = exact * 1e-6;
-    else if (unit == STU_USEC)
+    else if (unit == SystemTimeUnit::MICROSECONDS)
         result = exact * 1e-3;
     else
         assert(false);

@@ -35,18 +35,18 @@
  * \enum SystemDialogType
  * \brief Type of system dialog
  */
-enum SystemDialogType
+enum class SystemDialogType
 {
     //! Information message
-    SDT_INFO,
+    INFO,
     //! Warning message
-    SDT_WARNING,
+    WARNING,
     //! Error message
-    SDT_ERROR,
+    ERROR,
     //! Yes/No question
-    SDT_YES_NO,
+    YES_NO,
     //! Ok/Cancel question
-    SDT_OK_CANCEL
+    OK_CANCEL
 };
 
 /**
@@ -55,26 +55,23 @@ enum SystemDialogType
  *
  * Means which button was pressed.
  */
-enum SystemDialogResult
+enum class SystemDialogResult
 {
-    SDR_OK,
-    SDR_CANCEL,
-    SDR_YES,
-    SDR_NO
+    OK,
+    CANCEL,
+    YES,
+    NO
 };
 
 /**
  * \enum SystemTimeUnit
  * \brief Time unit
  */
-enum SystemTimeUnit
+enum class SystemTimeUnit
 {
-    //! seconds
-    STU_SEC,
-    //! milliseconds
-    STU_MSEC,
-    //! microseconds
-    STU_USEC
+    SECONDS,
+    MILLISECONDS,
+    MICROSECONDS
 };
 
 using SystemTimeStamp = std::chrono::time_point<std::chrono::high_resolution_clock>;
@@ -103,19 +100,22 @@ public:
     //! Displays a fallback system dialog using console
     TEST_VIRTUAL SystemDialogResult ConsoleSystemDialog(SystemDialogType type, const std::string& title, const std::string& message);
 
-    //! Interpolates between two timestamps. If i=0 then dst=a. If i=1 then dst=b. If i=0.5 then dst is halfway between.
-    virtual void InterpolateTimeStamp(SystemTimeStamp *dst, SystemTimeStamp *a, SystemTimeStamp *b, float i) = 0;
-
     //! Returns a time stamp associated with current time
     TEST_VIRTUAL SystemTimeStamp GetCurrentTimeStamp();
 
+    //! Linearly interpolates between two timestamps.
+    SystemTimeStamp TimeStampLerp(SystemTimeStamp a, SystemTimeStamp b, float t);
+
     //! Returns a difference between two timestamps in given time unit
     /** The difference is \a after - \a before. */
-    float TimeStampDiff(SystemTimeStamp before, SystemTimeStamp after, SystemTimeUnit unit = STU_SEC);
+    float TimeStampDiff(SystemTimeStamp before, SystemTimeStamp after, SystemTimeUnit unit = SystemTimeUnit::SECONDS);
 
     //! Returns the exact (in nanosecond units) difference between two timestamps
     /** The difference is \a after - \a before. */
     long long TimeStampExactDiff(SystemTimeStamp before, SystemTimeStamp after);
+
+    //! Returns the path where the executable binary is located (ends with the path separator)
+    virtual std::string GetBasePath();
 
     //! Returns the data path (containing textures, levels, helpfiles, etc)
     virtual std::string GetDataPath();

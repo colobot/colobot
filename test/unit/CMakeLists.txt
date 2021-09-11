@@ -1,10 +1,3 @@
-# Platform-dependent tests
-if(PLATFORM_WINDOWS)
-    set(PLATFORM_TESTS common/system/system_windows_test.cpp)
-elseif(PLATFORM_LINUX)
-    set(PLATFORM_TESTS common/system/system_linux_test.cpp)
-endif()
-
 set(TEST_FILES
     common/colobot.ini
 )
@@ -21,19 +14,13 @@ add_executable(colobot_ut
     CBot/CBotToken_test.cpp
     CBot/CBot_test.cpp
     common/config_file_test.cpp
+    common/system/system_test.cpp
     graphics/engine/lightman_test.cpp
     math/func_test.cpp
     math/geometry_test.cpp
     math/matrix_test.cpp
     math/vector_test.cpp
 )
-
-# Platform-dependent tests
-if(PLATFORM_WINDOWS)
-    target_sources(colobot_ut PRIVATE common/system/system_windows_test.cpp)
-elseif(PLATFORM_LINUX)
-    target_sources(colobot_ut PRIVATE common/system/system_linux_test.cpp)
-endif()
 
 target_include_directories(colobot_ut PRIVATE
     common
