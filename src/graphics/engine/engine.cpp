@@ -1927,7 +1927,7 @@ bool CEngine::DetectTriangle(Math::Point mouse, Vertex3D* triangle, int objRank,
 }
 
 //! Use only after world transform already set
-bool CEngine::IsVisible(int objRank)
+bool CEngine::IsVisible(const Math::Matrix& matrix, int objRank)
 {
     assert(objRank >= 0 && objRank < static_cast<int>(m_objects.size()));
 
@@ -1938,7 +1938,7 @@ bool CEngine::IsVisible(int objRank)
     assert(baseObjRank >= 0 && baseObjRank < static_cast<int>(m_baseObjects.size()));
 
     const auto& sphere = m_baseObjects[baseObjRank].boundingSphere;
-    if (m_device->ComputeSphereVisibility(sphere.pos, sphere.radius) == Gfx::FRUSTUM_PLANE_ALL)
+    if (ComputeSphereVisibility(matrix, sphere.pos, sphere.radius) == Gfx::FRUSTUM_PLANE_ALL)
     {
         m_objects[objRank].visible = true;
         return true;
@@ -1946,6 +1946,87 @@ bool CEngine::IsVisible(int objRank)
 
     m_objects[objRank].visible = false;
     return false;
+}
+
+int CEngine::ComputeSphereVisibility(const Math::Matrix& m, const Math::Vector& center, float radius)
+{
+    Math::Vector vec[6];
+    float originPlane[6];
+
+    // Left plane
+    vec[0].x = m.Get(4, 1) + m.Get(1, 1);
+    vec[0].y = m.Get(4, 2) + m.Get(1, 2);
+    vec[0].z = m.Get(4, 3) + m.Get(1, 3);
+    float l1 = vec[0].Length();
+    vec[0].Normalize();
+    originPlane[0] = (m.Get(4, 4) + m.Get(1, 4)) / l1;
+
+    // Right plane
+    vec[1].x = m.Get(4, 1) - m.Get(1, 1);
+    vec[1].y = m.Get(4, 2) - m.Get(1, 2);
+    vec[1].z = m.Get(4, 3) - m.Get(1, 3);
+    float l2 = vec[1].Length();
+    vec[1].Normalize();
+    originPlane[1] = (m.Get(4, 4) - m.Get(1, 4)) / l2;
+
+    // Bottom plane
+    vec[2].x = m.Get(4, 1) + m.Get(2, 1);
+    vec[2].y = m.Get(4, 2) + m.Get(2, 2);
+    vec[2].z = m.Get(4, 3) + m.Get(2, 3);
+    float l3 = vec[2].Length();
+    vec[2].Normalize();
+    originPlane[2] = (m.Get(4, 4) + m.Get(2, 4)) / l3;
+
+    // Top plane
+    vec[3].x = m.Get(4, 1) - m.Get(2, 1);
+    vec[3].y = m.Get(4, 2) - m.Get(2, 2);
+    vec[3].z = m.Get(4, 3) - m.Get(2, 3);
+    float l4 = vec[3].Length();
+    vec[3].Normalize();
+    originPlane[3] = (m.Get(4, 4) - m.Get(2, 4)) / l4;
+
+    // Front plane
+    vec[4].x = m.Get(4, 1) + m.Get(3, 1);
+    vec[4].y = m.Get(4, 2) + m.Get(3, 2);
+    vec[4].z = m.Get(4, 3) + m.Get(3, 3);
+    float l5 = vec[4].Length();
+    vec[4].Normalize();
+    originPlane[4] = (m.Get(4, 4) + m.Get(3, 4)) / l5;
+
+    // Back plane
+    vec[5].x = m.Get(4, 1) - m.Get(3, 1);
+    vec[5].y = m.Get(4, 2) - m.Get(3, 2);
+    vec[5].z = m.Get(4, 3) - m.Get(3, 3);
+    float l6 = vec[5].Length();
+    vec[5].Normalize();
+    originPlane[5] = (m.Get(4, 4) - m.Get(3, 4)) / l6;
+
+    int result = 0;
+
+    if (InPlane(vec[0], originPlane[0], center, radius))
+        result |= FRUSTUM_PLANE_LEFT;
+    if (InPlane(vec[1], originPlane[1], center, radius))
+        result |= FRUSTUM_PLANE_RIGHT;
+    if (InPlane(vec[2], originPlane[2], center, radius))
+        result |= FRUSTUM_PLANE_BOTTOM;
+    if (InPlane(vec[3], originPlane[3], center, radius))
+        result |= FRUSTUM_PLANE_TOP;
+    if (InPlane(vec[4], originPlane[4], center, radius))
+        result |= FRUSTUM_PLANE_FRONT;
+    if (InPlane(vec[5], originPlane[5], center, radius))
+        result |= FRUSTUM_PLANE_BACK;
+
+    return result;
+}
+
+bool CEngine::InPlane(Math::Vector normal, float originPlane, Math::Vector center, float radius)
+{
+    float distance = originPlane + Math::DotProduct(normal, center);
+
+    if (distance < -radius)
+        return false;
+
+    return true;
 }
 
 bool CEngine::TransformPoint(Math::Vector& p2D, int objRank, Math::Vector p3D)
@@ -3301,6 +3382,22 @@ void CEngine::Draw3DScene()
 
     UseShadowMapping(true);
 
+    SetState(0);
+
+    auto terrainRenderer = m_device->GetTerrainRenderer();
+    terrainRenderer->Begin();
+
+    terrainRenderer->SetProjectionMatrix(m_matProj);
+    terrainRenderer->SetViewMatrix(m_matView);
+    terrainRenderer->SetShadowMatrix(m_shadowTextureMat);
+    terrainRenderer->SetShadowMap(m_shadowMap);
+    terrainRenderer->SetLight(glm::vec4(1.0, 1.0, -1.0, 0.0), 1.0f, glm::vec3(1.0));
+
+    Math::Matrix scale;
+    scale.Set(3, 3, -1.0f);
+    auto projectionViewMatrix = Math::MultiplyMatrices(m_matProj, scale);
+    projectionViewMatrix = Math::MultiplyMatrices(projectionViewMatrix, m_matView);
+
     for (int objRank = 0; objRank < static_cast<int>(m_objects.size()); objRank++)
     {
         if (! m_objects[objRank].used)
@@ -3312,9 +3409,9 @@ void CEngine::Draw3DScene()
         if (! m_objects[objRank].drawWorld)
             continue;
 
-        m_device->SetTransform(TRANSFORM_WORLD, m_objects[objRank].transform);
+        auto combinedMatrix = Math::MultiplyMatrices(projectionViewMatrix, m_objects[objRank].transform);
 
-        if (! IsVisible(objRank))
+        if (! IsVisible(combinedMatrix, objRank))
             continue;
 
         int baseObjRank = m_objects[objRank].baseObjRank;
@@ -3331,20 +3428,19 @@ void CEngine::Draw3DScene()
         {
             EngineBaseObjTexTier& p2 = p1.next[l2];
 
-            SetTexture(p2.tex1, 0);
-            SetTexture(p2.tex2, 1);
+            terrainRenderer->SetPrimaryTexture(p2.tex1);
+            terrainRenderer->SetSecondaryTexture(p2.tex2);
 
             for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
             {
                 EngineBaseObjDataTier& p3 = p2.next[l3];
 
-                SetMaterial(p3.material);
-                SetState(p3.state);
-
-                DrawObject(p3);
+                terrainRenderer->DrawObject(m_objects[objRank].transform, p3.buffer);
             }
         }
     }
+
+    terrainRenderer->End();
 
     if (!m_qualityShadows)
         UseShadowMapping(false);
@@ -3373,8 +3469,9 @@ void CEngine::Draw3DScene()
             continue;
 
         m_device->SetTransform(TRANSFORM_WORLD, m_objects[objRank].transform);
+        auto combinedMatrix = Math::MultiplyMatrices(projectionViewMatrix, m_objects[objRank].transform);
 
-        if (! IsVisible(objRank))
+        if (! IsVisible(combinedMatrix, objRank))
             continue;
 
         int baseObjRank = m_objects[objRank].baseObjRank;
@@ -3435,8 +3532,9 @@ void CEngine::Draw3DScene()
                 continue;
 
             m_device->SetTransform(TRANSFORM_WORLD, m_objects[objRank].transform);
+            auto combinedMatrix = Math::MultiplyMatrices(projectionViewMatrix, m_objects[objRank].transform);
 
-            if (! IsVisible(objRank))
+            if (! IsVisible(combinedMatrix, objRank))
                 continue;
 
             int baseObjRank = m_objects[objRank].baseObjRank;
@@ -3930,6 +4028,8 @@ void CEngine::RenderShadowMap()
     m_device->SetTexture(1, 0);
     m_device->SetTexture(2, 0);
 
+    auto projectionViewMatrix = Math::MultiplyMatrices(m_shadowProjMat, m_shadowViewMat);
+
     // render objects into shadow map
     for (int objRank = 0; objRank < static_cast<int>(m_objects.size()); objRank++)
     {
@@ -3956,8 +4056,9 @@ void CEngine::RenderShadowMap()
         }
 
         m_device->SetTransform(TRANSFORM_WORLD, m_objects[objRank].transform);
+        auto combinedMatrix = Math::MultiplyMatrices(projectionViewMatrix, m_objects[objRank].transform);
 
-        if (!IsVisible(objRank))
+        if (!IsVisible(combinedMatrix, objRank))
             continue;
 
         int baseObjRank = m_objects[objRank].baseObjRank;
@@ -4170,6 +4271,8 @@ void CEngine::DrawInterface()
 
         m_device->SetTransform(TRANSFORM_VIEW, m_matView);
 
+        auto projectionViewMatrix = Math::MultiplyMatrices(m_matProj, m_matView);
+
         for (int objRank = 0; objRank < static_cast<int>(m_objects.size()); objRank++)
         {
             if (! m_objects[objRank].used)
@@ -4182,8 +4285,9 @@ void CEngine::DrawInterface()
                 continue;
 
             m_device->SetTransform(TRANSFORM_WORLD, m_objects[objRank].transform);
+            auto combinedMatrix = Math::MultiplyMatrices(projectionViewMatrix, m_objects[objRank].transform);
 
-            if (! IsVisible(objRank))
+            if (! IsVisible(combinedMatrix, objRank))
                 continue;
 
             int baseObjRank = m_objects[objRank].baseObjRank;

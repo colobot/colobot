@@ -1256,7 +1256,11 @@ protected:
     Texture CreateTexture(const std::string &texName, const TextureCreateParams &params, CImage* image = nullptr);
 
     //! Tests whether the given object is visible
-    bool        IsVisible(int objRank);
+    bool        IsVisible(const Math::Matrix& matrix, int objRank);
+
+    int         ComputeSphereVisibility(const Math::Matrix& m, const Math::Vector& center, float radius);
+
+    bool        InPlane(Math::Vector normal, float originPlane, Math::Vector center, float radius);
 
     //! Detects whether an object is affected by the mouse
     bool        DetectBBox(int objRank, Math::Point mouse);

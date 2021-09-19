@@ -108,11 +108,18 @@ public:
     virtual void SetViewMatrix(const glm::mat4& matrix) override;
     //! Sets model matrix
     virtual void SetModelMatrix(const glm::mat4& matrix) override;
+    //! Sets shadow matrix
+    virtual void SetShadowMatrix(const glm::mat4& matrix) override;
 
     //! Sets primary texture, setting texture 0 means using white texture
     virtual void SetPrimaryTexture(const Texture& texture) override;
     //! Sets secondary texture
     virtual void SetSecondaryTexture(const Texture& texture) override;
+    //! Sets shadow map
+    virtual void SetShadowMap(const Texture& texture) override;
+
+    //! Sets light parameters
+    virtual void SetLight(const glm::vec4& position, const float& intensity, const glm::vec3& color) override;
 
     //! Draws terrain object
     virtual void DrawObject(const glm::mat4& matrix, const CVertexBuffer* buffer) override;
@@ -123,19 +130,15 @@ private:
     CGL33Device* const m_device;
 
     // Uniform data
-    struct Uniforms
-    {
-        glm::mat4 projectionMatrix;
-        glm::mat4 viewMatrix;
-        glm::mat4 modelMatrix;
-    };
-
-    Uniforms m_uniforms = {};
-
-    // true means uniforms need to be updated
-    bool m_uniformsDirty = false;
-
-    GLuint m_uniformBuffer = 0;
+    GLint uni_projectionMatrix;
+    GLint uni_viewMatrix;
+    GLint uni_cameraMatrix;
+    GLint uni_shadowMatrix;
+    GLint uni_modelMatrix;
+    GLint uni_normalMatrix;
+    GLint uni_lightPosition;
+    GLint uni_lightIntensity;
+    GLint uni_lightColor;
 
     // Shader program
     GLuint m_program = 0;
@@ -146,6 +149,8 @@ private:
     GLuint m_primaryTexture = 0;
     // Currently bound secondary texture
     GLuint m_secondaryTexture = 0;
+    // Currently bound shadow map
+    GLuint m_shadowMap = 0;
 };
 
 } // namespace Gfx

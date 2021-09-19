@@ -145,7 +145,7 @@ struct Matrix
      * \param col column (1 to 4)
      * \returns value
      */
-    float Get(int row, int col)
+    float Get(int row, int col) const
     {
         return m[(col-1)*4+(row-1)];
     }

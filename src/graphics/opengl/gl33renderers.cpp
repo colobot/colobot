@@ -260,20 +260,15 @@ CGL33TerrainRenderer::CGL33TerrainRenderer(CGL33Device* device)
     // Setup uniforms
     auto identity = glm::identity<glm::mat4>();
 
-    m_uniforms.projectionMatrix = identity;
-    m_uniforms.viewMatrix = identity;
-    m_uniforms.modelMatrix = identity;
-
-    glGenBuffers(1, &m_uniformBuffer);
-    glBindBuffer(GL_COPY_WRITE_BUFFER, m_uniformBuffer);
-    glBufferData(GL_COPY_WRITE_BUFFER, sizeof(Uniforms), &m_uniforms, GL_STREAM_DRAW);
-    glBindBuffer(GL_COPY_WRITE_BUFFER, 0);
-
-    // Bind uniform block to uniform buffer binding
-    GLuint blockIndex = glGetUniformBlockIndex(m_program, "Uniforms");
-
-    glBindBufferBase(GL_UNIFORM_BUFFER, 0, m_uniformBuffer);
-    glUniformBlockBinding(m_program, blockIndex, 0);
+    uni_projectionMatrix = glGetUniformLocation(m_program, "uni_ProjectionMatrix");
+    uni_viewMatrix = glGetUniformLocation(m_program, "uni_ViewMatrix");
+    uni_cameraMatrix = glGetUniformLocation(m_program, "uni_CameraMatrix");
+    uni_shadowMatrix = glGetUniformLocation(m_program, "uni_ShadowMatrix");
+    uni_modelMatrix = glGetUniformLocation(m_program, "uni_ModelMatrix");
+    uni_normalMatrix = glGetUniformLocation(m_program, "uni_NormalMatrix");
+    uni_lightPosition = glGetUniformLocation(m_program, "uni_LightPosition");
+    uni_lightIntensity = glGetUniformLocation(m_program, "uni_LightIntensity");
+    uni_lightColor = glGetUniformLocation(m_program, "uni_LightColor");
 
     // Set texture units to 10th and 11th
     auto texture = glGetUniformLocation(m_program, "uni_PrimaryTexture");
@@ -281,6 +276,9 @@ CGL33TerrainRenderer::CGL33TerrainRenderer(CGL33Device* device)
 
     texture = glGetUniformLocation(m_program, "uni_SecondaryTexture");
     glUniform1i(texture, 11);
+
+    texture = glGetUniformLocation(m_program, "uni_ShadowMap");
+    glUniform1i(texture, 12);
 
     // White texture
     glActiveTexture(GL_TEXTURE0);
@@ -319,8 +317,7 @@ void CGL33TerrainRenderer::End()
 
 void CGL33TerrainRenderer::SetProjectionMatrix(const glm::mat4& matrix)
 {
-    m_uniforms.projectionMatrix = matrix;
-    m_uniformsDirty = true;
+    glUniformMatrix4fv(uni_projectionMatrix, 1, GL_FALSE, value_ptr(matrix));
 }
 
 void CGL33TerrainRenderer::SetViewMatrix(const glm::mat4& matrix)
@@ -328,14 +325,24 @@ void CGL33TerrainRenderer::SetViewMatrix(const glm::mat4& matrix)
     glm::mat4 scale(1.0f);
     scale[2][2] = -1.0f;
 
-    m_uniforms.viewMatrix = scale * matrix;
-    m_uniformsDirty = true;
+    auto viewMatrix = scale * matrix;
+    auto cameraMatrix = glm::inverse(viewMatrix);
+
+    glUniformMatrix4fv(uni_viewMatrix, 1, GL_FALSE, value_ptr(viewMatrix));
+    glUniformMatrix4fv(uni_cameraMatrix, 1, GL_FALSE, value_ptr(cameraMatrix));
 }
 
 void CGL33TerrainRenderer::SetModelMatrix(const glm::mat4& matrix)
 {
-    m_uniforms.modelMatrix = matrix;
-    m_uniformsDirty = true;
+    auto normalMatrix = glm::transpose(glm::inverse(glm::mat3(matrix)));
+
+    glUniformMatrix4fv(uni_modelMatrix, 1, GL_FALSE, value_ptr(matrix));
+    glUniformMatrix3fv(uni_normalMatrix, 1, GL_FALSE, value_ptr(normalMatrix));
+}
+
+void CGL33TerrainRenderer::SetShadowMatrix(const glm::mat4& matrix)
+{
+    glUniformMatrix4fv(uni_shadowMatrix, 1, GL_FALSE, value_ptr(matrix));
 }
 
 void CGL33TerrainRenderer::SetPrimaryTexture(const Texture& texture)
@@ -366,6 +373,27 @@ void CGL33TerrainRenderer::SetSecondaryTexture(const Texture& texture)
         glBindTexture(GL_TEXTURE_2D, texture.id);
 }
 
+void CGL33TerrainRenderer::SetShadowMap(const Texture& texture)
+{
+    if (m_shadowMap == texture.id) return;
+
+    m_shadowMap = texture.id;
+
+    glActiveTexture(GL_TEXTURE12);
+
+    if (texture.id == 0)
+        glBindTexture(GL_TEXTURE_2D, m_whiteTexture);
+    else
+        glBindTexture(GL_TEXTURE_2D, texture.id);
+}
+
+void CGL33TerrainRenderer::SetLight(const glm::vec4& position, const float& intensity, const glm::vec3& color)
+{
+    glUniform4fv(uni_lightPosition, 1, glm::value_ptr(position));
+    glUniform1f(uni_lightIntensity, intensity);
+    glUniform3fv(uni_lightColor, 1, glm::value_ptr(color));
+}
+
 void CGL33TerrainRenderer::DrawObject(const glm::mat4& matrix, const CVertexBuffer* buffer)
 {
     auto b = dynamic_cast<const CGL33VertexBuffer*>(buffer);
@@ -377,18 +405,6 @@ void CGL33TerrainRenderer::DrawObject(const glm::mat4& matrix, const CVertexBuff
     }
 
     SetModelMatrix(matrix);
-
-    if (m_uniformsDirty)
-    {
-        glBindBuffer(GL_COPY_WRITE_BUFFER, m_uniformBuffer);
-        glBufferData(GL_COPY_WRITE_BUFFER, sizeof(Uniforms), nullptr, GL_STREAM_DRAW);
-        glBufferSubData(GL_COPY_WRITE_BUFFER, 0, sizeof(Uniforms), &m_uniforms);
-        glBindBuffer(GL_COPY_WRITE_BUFFER, 0);
-
-        m_uniformsDirty = false;
-    }
-
-    glBindBufferBase(GL_UNIFORM_BUFFER, 0, m_uniformBuffer);
     glBindVertexArray(b->GetVAO());
 
     glDrawArrays(TranslateGfxPrimitive(b->GetType()), 0, b->Size());

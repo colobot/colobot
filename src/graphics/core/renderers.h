@@ -84,11 +84,18 @@ public:
     virtual void SetViewMatrix(const glm::mat4& matrix) = 0;
     //! Sets model matrix
     virtual void SetModelMatrix(const glm::mat4& matrix) = 0;
+    //! Sets shadow matrix
+    virtual void SetShadowMatrix(const glm::mat4& matrix) = 0;
 
     //! Sets primary texture, setting texture 0 means using white texture
     virtual void SetPrimaryTexture(const Texture& texture) = 0;
     //! Sets secondary texture
     virtual void SetSecondaryTexture(const Texture& texture) = 0;
+    //! Sets shadow map
+    virtual void SetShadowMap(const Texture& texture) = 0;
+
+    //! Sets light parameters
+    virtual void SetLight(const glm::vec4& position, const float& intensity, const glm::vec3& color) = 0;
 
     //! Draws terrain object
     virtual void DrawObject(const glm::mat4& matrix, const CVertexBuffer* buffer) = 0;
