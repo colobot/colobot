@@ -415,4 +415,116 @@ void CGL33TerrainRenderer::Flush()
 
 }
 
+CGL33ShadowRenderer::CGL33ShadowRenderer(CGL33Device* device)
+    : m_device(device)
+{
+    GetLogger()->Info("Creating CGL33ShadowRenderer\n");
+
+    GLint shaders[2] = {};
+
+    shaders[0] = LoadShader(GL_VERTEX_SHADER, "shaders/gl33/shadow_vs.glsl");
+    if (shaders[0] == 0)
+    {
+        GetLogger()->Error("Cound not create vertex shader from file 'shadow_vs.glsl'\n");
+        return;
+    }
+
+    shaders[1] = LoadShader(GL_FRAGMENT_SHADER, "shaders/gl33/shadow_fs.glsl");
+    if (shaders[1] == 0)
+    {
+        GetLogger()->Error("Cound not create fragment shader from file 'shadow_fs.glsl'\n");
+        return;
+    }
+
+    m_program = LinkProgram(2, shaders);
+    if (m_program == 0)
+    {
+        GetLogger()->Error("Cound not link shader program for terrain renderer\n");
+        return;
+    }
+
+    glDeleteShader(shaders[0]);
+    glDeleteShader(shaders[1]);
+
+    glUseProgram(m_program);
+
+    // Setup uniforms
+    auto texture = glGetUniformLocation(m_program, "uni_Texture");
+    glUniform1i(texture, 0);
+
+    auto identity = glm::identity<glm::mat4>();
+
+    m_projectionMatrix = glGetUniformLocation(m_program, "uni_ProjectionMatrix");
+    m_viewMatrix = glGetUniformLocation(m_program, "uni_ViewMatrix");
+    m_modelMatrix = glGetUniformLocation(m_program, "uni_ModelMatrix");
+    m_alphaScissor = glGetUniformLocation(m_program, "uni_AlphaScissor");
+
+    glUseProgram(0);
+
+    GetLogger()->Info("CGL33ShadowRenderer created successfully\n");
+}
+
+CGL33ShadowRenderer::~CGL33ShadowRenderer()
+{
+    glDeleteProgram(m_program);
+}
+
+void CGL33ShadowRenderer::Begin()
+{
+    glUseProgram(m_program);
+}
+
+void CGL33ShadowRenderer::End()
+{
+    m_device->Restore();
+}
+
+void CGL33ShadowRenderer::SetProjectionMatrix(const glm::mat4& matrix)
+{
+    glUniformMatrix4fv(m_projectionMatrix, 1, GL_FALSE, value_ptr(matrix));
+}
+
+void CGL33ShadowRenderer::SetViewMatrix(const glm::mat4& matrix)
+{
+    glm::mat4 scale(1.0f);
+    scale[2][2] = -1.0f;
+
+    auto viewMatrix = scale * matrix;
+
+    glUniformMatrix4fv(m_viewMatrix, 1, GL_FALSE, value_ptr(viewMatrix));
+}
+
+void CGL33ShadowRenderer::SetModelMatrix(const glm::mat4& matrix)
+{
+    glUniformMatrix4fv(m_modelMatrix, 1, GL_FALSE, value_ptr(matrix));
+}
+
+void CGL33ShadowRenderer::SetTexture(const Texture& texture)
+{
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture.id);
+}
+
+void CGL33ShadowRenderer::DrawObject(const CVertexBuffer* buffer, bool transparent)
+{
+    auto b = dynamic_cast<const CGL33VertexBuffer*>(buffer);
+
+    if (b == nullptr)
+    {
+        GetLogger()->Error("No vertex buffer");
+        return;
+    }
+
+    glUniform1i(m_alphaScissor, transparent ? 1 : 0);
+
+    glBindVertexArray(b->GetVAO());
+
+    glDrawArrays(TranslateGfxPrimitive(b->GetType()), 0, b->Size());
+}
+
+void CGL33ShadowRenderer::Flush()
+{
+
+}
+
 } // namespace Gfx

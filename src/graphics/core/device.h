@@ -52,6 +52,7 @@ namespace Gfx
 class CFramebuffer;
 class CUIRenderer;
 class CTerrainRenderer;
+class CShadowRenderer;
 struct FramebufferParams;
 struct Light;
 struct Material;
@@ -167,16 +168,6 @@ enum RenderState
     RENDER_STATE_CULLING,
     RENDER_STATE_DEPTH_BIAS,
     RENDER_STATE_SHADOW_MAPPING,
-};
-
-/**
-* \enum RenderMode
-* \brief Render modes the graphics device can be in
-*/
-enum RenderMode
-{
-    RENDER_MODE_NORMAL,
-    RENDER_MODE_SHADOW,
 };
 
 /**
@@ -460,12 +451,12 @@ public:
     //! Clears the screen to blank
     virtual void Clear() = 0;
 
-    //! Sets current rendering mode
-    virtual void SetRenderMode(RenderMode mode) = 0;
     //! Returns UI renderer
     virtual CUIRenderer* GetUIRenderer() = 0;
     //! Returns terrain renderer
     virtual CTerrainRenderer* GetTerrainRenderer() = 0;
+    //! Returns shadow renderer
+    virtual CShadowRenderer* GetShadowRenderer() = 0;
 
     //! Restores device rendering mode
     virtual void Restore() = 0;

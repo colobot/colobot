@@ -337,42 +337,11 @@ bool CGL33Device::Create()
     glDeleteShader(shaders[0]);
     glDeleteShader(shaders[1]);
 
-    // Create program for shadow rendering
-    strcpy(filename, "shaders/gl33/vs_shadow.glsl");
-    shaders[0] = LoadShader(GL_VERTEX_SHADER, filename);
-    if (shaders[0] == 0)
-    {
-        m_errorMessage = GetLastShaderError();
-        GetLogger()->Error("Cound not create vertex shader from file '%s'\n", filename);
-        return false;
-    }
-
-    strcpy(filename, "shaders/gl33/fs_shadow.glsl");
-    shaders[1] = LoadShader(GL_FRAGMENT_SHADER, filename);
-    if (shaders[1] == 0)
-    {
-        m_errorMessage = GetLastShaderError();
-        GetLogger()->Error("Cound not create fragment shader from file '%s'\n", filename);
-        return false;
-    }
-
-    m_shadowProgram = LinkProgram(2, shaders);
-    if (m_shadowProgram == 0)
-    {
-        m_errorMessage = GetLastShaderError();
-        GetLogger()->Error("Cound not link shader program for shadow rendering\n");
-        return false;
-    }
-
-    glDeleteShader(shaders[0]);
-    glDeleteShader(shaders[1]);
-
     // Obtain uniform locations
-    // Obtain uniform locations for normal program
     glUseProgram(m_normalProgram);
 
     {
-        UniformLocations &uni = m_uniforms[0];
+        UniformLocations &uni = m_uniforms;
 
         uni.projectionMatrix = glGetUniformLocation(m_normalProgram, "uni_ProjectionMatrix");
         uni.viewMatrix = glGetUniformLocation(m_normalProgram, "uni_ViewMatrix");
@@ -463,45 +432,11 @@ bool CGL33Device::Create()
         glUniform1i(uni.lightCount, 0);
     }
 
-    // Obtain uniform locations for shadow program
-    glUseProgram(m_shadowProgram);
-
-    {
-        UniformLocations &uni = m_uniforms[1];
-
-        uni.projectionMatrix = glGetUniformLocation(m_shadowProgram, "uni_ProjectionMatrix");
-        uni.viewMatrix = glGetUniformLocation(m_shadowProgram, "uni_ViewMatrix");
-        uni.modelMatrix = glGetUniformLocation(m_shadowProgram, "uni_ModelMatrix");
-
-        uni.primaryTexture = glGetUniformLocation(m_shadowProgram, "uni_Texture");
-
-        uni.textureEnabled[0] = glGetUniformLocation(m_shadowProgram, "uni_TextureEnabled");
-        uni.textureEnabled[1] = -1;
-        uni.textureEnabled[2] = -1;
-
-        uni.alphaTestEnabled = glGetUniformLocation(m_shadowProgram, "uni_AlphaTestEnabled");
-        uni.alphaReference = glGetUniformLocation(m_shadowProgram, "uni_AlphaReference");
-
-        // Set default uniform values
-        Math::Matrix matrix;
-        matrix.LoadIdentity();
-
-        glUniformMatrix4fv(uni.projectionMatrix, 1, GL_FALSE, matrix.Array());
-        glUniformMatrix4fv(uni.viewMatrix, 1, GL_FALSE, matrix.Array());
-        glUniformMatrix4fv(uni.modelMatrix, 1, GL_FALSE, matrix.Array());
-
-        glUniform1i(uni.primaryTexture, 0);
-
-        glUniform1i(uni.textureEnabled[0], 0);
-
-        glUniform1i(uni.alphaTestEnabled, 0);
-        glUniform1f(uni.alphaReference, 1.0f);
-    }
-
     m_uiRenderer = std::make_unique<CGL33UIRenderer>(this);
     m_terrainRenderer = std::make_unique<CGL33TerrainRenderer>(this);
+    m_shadowRenderer = std::make_unique<CGL33ShadowRenderer>(this);
 
-    SetRenderMode(RENDER_MODE_NORMAL);
+    glUseProgram(m_normalProgram);
 
     // create default framebuffer object
     FramebufferParams framebufferParams;
@@ -535,7 +470,6 @@ void CGL33Device::Destroy()
     // delete shader program
     glUseProgram(0);
     glDeleteProgram(m_normalProgram);
-    glDeleteProgram(m_shadowProgram);
 
     // delete framebuffers
     for (auto& framebuffer : m_framebuffers)
@@ -592,9 +526,9 @@ void CGL33Device::BeginScene()
 {
     Clear();
 
-    glUniformMatrix4fv(m_uni->projectionMatrix, 1, GL_FALSE, m_projectionMat.Array());
-    glUniformMatrix4fv(m_uni->viewMatrix, 1, GL_FALSE, m_viewMat.Array());
-    glUniformMatrix4fv(m_uni->modelMatrix, 1, GL_FALSE, m_worldMat.Array());
+    glUniformMatrix4fv(m_uniforms.projectionMatrix, 1, GL_FALSE, m_projectionMat.Array());
+    glUniformMatrix4fv(m_uniforms.viewMatrix, 1, GL_FALSE, m_viewMat.Array());
+    glUniformMatrix4fv(m_uniforms.modelMatrix, 1, GL_FALSE, m_worldMat.Array());
 }
 
 void CGL33Device::EndScene()
@@ -612,32 +546,6 @@ void CGL33Device::Clear()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void CGL33Device::SetRenderMode(RenderMode mode)
-{
-    m_uiRenderer->Flush();
-
-    switch (mode)
-    {
-    case RENDER_MODE_NORMAL:
-        glUseProgram(m_normalProgram);
-        m_mode = 0;
-        break;
-    case RENDER_MODE_SHADOW:
-        glUseProgram(m_shadowProgram);
-        m_mode = 1;
-        break;
-    default:
-        assert(false);
-        return;
-    }
-
-    m_uni = &m_uniforms[m_mode];
-
-    UpdateTextureState(0);
-    UpdateTextureState(1);
-    UpdateTextureState(2);
-}
-
 CUIRenderer* CGL33Device::GetUIRenderer()
 {
     return m_uiRenderer.get();
@@ -648,17 +556,19 @@ CTerrainRenderer* CGL33Device::GetTerrainRenderer()
     return m_terrainRenderer.get();
 }
 
+CShadowRenderer* CGL33Device::GetShadowRenderer()
+{
+    return m_shadowRenderer.get();
+}
+
 void CGL33Device::Restore()
 {
-    switch (m_mode)
-    {
-    case 0:
-        glUseProgram(m_normalProgram);
-        break;
-    case 1:
-        glUseProgram(m_shadowProgram);
-        break;
-    }
+    m_uiRenderer->Flush();
+    glUseProgram(m_normalProgram);
+
+    //UpdateTextureState(0);
+    //UpdateTextureState(1);
+    //UpdateTextureState(2);
 }
 
 void CGL33Device::SetTransform(TransformType type, const Math::Matrix &matrix)
@@ -666,7 +576,7 @@ void CGL33Device::SetTransform(TransformType type, const Math::Matrix &matrix)
     if      (type == TRANSFORM_WORLD)
     {
         m_worldMat = matrix;
-        glUniformMatrix4fv(m_uni->modelMatrix, 1, GL_FALSE, m_worldMat.Array());
+        glUniformMatrix4fv(m_uniforms.modelMatrix, 1, GL_FALSE, m_worldMat.Array());
 
         m_modelviewMat = Math::MultiplyMatrices(m_viewMat, m_worldMat);
         m_combinedMatrixOutdated = true;
@@ -677,7 +587,7 @@ void CGL33Device::SetTransform(TransformType type, const Math::Matrix &matrix)
         if (fabs(normalMat.Det()) > 1e-6)
             normalMat = normalMat.Inverse();
 
-        glUniformMatrix4fv(m_uni->normalMatrix, 1, GL_TRUE, normalMat.Array());
+        glUniformMatrix4fv(m_uniforms.normalMatrix, 1, GL_TRUE, normalMat.Array());
     }
     else if (type == TRANSFORM_VIEW)
     {
@@ -689,13 +599,13 @@ void CGL33Device::SetTransform(TransformType type, const Math::Matrix &matrix)
         m_modelviewMat = Math::MultiplyMatrices(m_viewMat, m_worldMat);
         m_combinedMatrixOutdated = true;
 
-        glUniformMatrix4fv(m_uni->viewMatrix, 1, GL_FALSE, m_viewMat.Array());
+        glUniformMatrix4fv(m_uniforms.viewMatrix, 1, GL_FALSE, m_viewMat.Array());
 
-        if (m_uni->cameraPosition >= 0)
+        if (m_uniforms.cameraPosition >= 0)
         {
             cameraPosition.LoadZero();
             cameraPosition = MatrixVectorMultiply(m_viewMat.Inverse(), cameraPosition);
-            glUniform3fv(m_uni->cameraPosition, 1, cameraPosition.Array());
+            glUniform3fv(m_uniforms.cameraPosition, 1, cameraPosition.Array());
         }
     }
     else if (type == TRANSFORM_PROJECTION)
@@ -703,12 +613,12 @@ void CGL33Device::SetTransform(TransformType type, const Math::Matrix &matrix)
         m_projectionMat = matrix;
         m_combinedMatrixOutdated = true;
 
-        glUniformMatrix4fv(m_uni->projectionMatrix, 1, GL_FALSE, m_projectionMat.Array());
+        glUniformMatrix4fv(m_uniforms.projectionMatrix, 1, GL_FALSE, m_projectionMat.Array());
     }
     else if (type == TRANSFORM_SHADOW)
     {
         Math::Matrix temp = matrix;
-        glUniformMatrix4fv(m_uni->shadowMatrix, 1, GL_FALSE, temp.Array());
+        glUniformMatrix4fv(m_uniforms.shadowMatrix, 1, GL_FALSE, temp.Array());
     }
     else
     {
@@ -720,9 +630,9 @@ void CGL33Device::SetMaterial(const Material &material)
 {
     m_material = material;
 
-    glUniform4fv(m_uni->ambientColor, 1, m_material.ambient.Array());
-    glUniform4fv(m_uni->diffuseColor, 1, m_material.diffuse.Array());
-    glUniform4fv(m_uni->specularColor, 1, m_material.specular.Array());
+    glUniform4fv(m_uniforms.ambientColor, 1, m_material.ambient.Array());
+    glUniform4fv(m_uniforms.diffuseColor, 1, m_material.diffuse.Array());
+    glUniform4fv(m_uniforms.specularColor, 1, m_material.specular.Array());
 }
 
 int CGL33Device::GetMaxLightCount()
@@ -1513,19 +1423,19 @@ void CGL33Device::SetRenderState(RenderState state, bool enabled)
 
         m_updateLights = true;
 
-        //glUniform1i(m_uni->lightingEnabled, enabled ? 1 : 0);
+        //glUniform1i(m_uniforms.lightingEnabled, enabled ? 1 : 0);
 
         return;
     }
     else if (state == RENDER_STATE_FOG)
     {
-        glUniform1i(m_uni->fogEnabled, enabled ? 1 : 0);
+        glUniform1i(m_uniforms.fogEnabled, enabled ? 1 : 0);
 
         return;
     }
     else if (state == RENDER_STATE_ALPHA_TEST)
     {
-        glUniform1i(m_uni->alphaTestEnabled, enabled ? 1 : 0);
+        glUniform1i(m_uniforms.alphaTestEnabled, enabled ? 1 : 0);
 
         return;
     }
@@ -1570,7 +1480,7 @@ void CGL33Device::SetDepthBias(float factor, float units)
 
 void CGL33Device::SetAlphaTestFunc(CompFunc func, float refValue)
 {
-    glUniform1f(m_uni->alphaReference, refValue);
+    glUniform1f(m_uniforms.alphaReference, refValue);
 }
 
 void CGL33Device::SetBlendFunc(BlendFunc srcBlend, BlendFunc dstBlend)
@@ -1592,8 +1502,8 @@ void CGL33Device::SetFogParams(FogMode mode, const Color &color, float start, fl
 {
     // TODO: reimplement
 
-    glUniform2f(m_uni->fogRange, start, end);
-    glUniform4f(m_uni->fogColor, color.r, color.g, color.b, color.a);
+    glUniform2f(m_uniforms.fogRange, start, end);
+    glUniform4f(m_uniforms.fogColor, color.r, color.g, color.b, color.a);
 
     /*
     if      (mode == FOG_LINEAR) glFogi(GL_FOG_MODE, GL_LINEAR);
@@ -1624,7 +1534,7 @@ void CGL33Device::SetShadeModel(ShadeModel model)
 
 void CGL33Device::SetShadowColor(float value)
 {
-    glUniform1f(m_uni->shadowColor, value);
+    glUniform1f(m_uniforms.shadowColor, value);
 }
 
 void CGL33Device::SetFillMode(FillMode mode)
@@ -1690,7 +1600,7 @@ void CGL33Device::DeleteFramebuffer(std::string name)
 inline void CGL33Device::UpdateTextureState(int index)
 {
     bool enabled = m_texturesEnabled[index] && (m_currentTextures[index].id != 0);
-    glUniform1i(m_uni->textureEnabled[index], enabled ? 1 : 0);
+    glUniform1i(m_uniforms.textureEnabled[index], enabled ? 1 : 0);
 }
 
 void CGL33Device::UpdateLights()
@@ -1715,7 +1625,7 @@ void CGL33Device::UpdateLights()
             if (m_lights[i].type != LIGHT_DIRECTIONAL) continue;
 
             Light &light = m_lights[i];
-            LightLocations &uni = m_uni->lights[index];
+            LightLocations &uni = m_uniforms.lights[index];
 
             glUniform4fv(uni.ambient, 1, light.ambient.Array());
             glUniform4fv(uni.diffuse, 1, light.diffuse.Array());
@@ -1726,12 +1636,12 @@ void CGL33Device::UpdateLights()
             index++;
         }
 
-        glUniform1i(m_uni->lightCount, index);
+        glUniform1i(m_uniforms.lightCount, index);
     }
     // Lighting disabled
     else
     {
-        glUniform1i(m_uni->lightCount, 0);
+        glUniform1i(m_uniforms.lightCount, 0);
     }
 }
 

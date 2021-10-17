@@ -101,4 +101,27 @@ public:
     virtual void DrawObject(const glm::mat4& matrix, const CVertexBuffer* buffer) = 0;
 };
 
+class CShadowRenderer : public CRenderer
+{
+public:
+    virtual ~CShadowRenderer() { }
+
+    virtual void Begin() = 0;
+
+    virtual void End() = 0;
+
+    //! Sets projection matrix
+    virtual void SetProjectionMatrix(const glm::mat4& matrix) = 0;
+    //! Sets view matrix
+    virtual void SetViewMatrix(const glm::mat4& matrix) = 0;
+    //! Sets model matrix
+    virtual void SetModelMatrix(const glm::mat4& matrix) = 0;
+
+    //! Sets texture
+    virtual void SetTexture(const Texture& texture) = 0;
+
+    //! Draws terrain object
+    virtual void DrawObject(const CVertexBuffer* buffer, bool transparent) = 0;
+};
+
 } // namespace Gfx

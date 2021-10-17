@@ -153,4 +153,42 @@ private:
     GLuint m_shadowMap = 0;
 };
 
+class CGL33ShadowRenderer : public CShadowRenderer
+{
+public:
+    CGL33ShadowRenderer(CGL33Device* device);
+    virtual ~CGL33ShadowRenderer();
+
+    virtual void Begin() override;
+
+    virtual void End() override;
+
+    //! Sets projection matrix
+    virtual void SetProjectionMatrix(const glm::mat4& matrix) override;
+    //! Sets view matrix
+    virtual void SetViewMatrix(const glm::mat4& matrix) override;
+    //! Sets model matrix
+    virtual void SetModelMatrix(const glm::mat4& matrix) override;
+
+    //! Sets texture
+    virtual void SetTexture(const Texture& texture) override;
+
+    //! Draws terrain object
+    virtual void DrawObject(const CVertexBuffer* buffer, bool transparent) override;
+
+    virtual void Flush() override;
+
+private:
+    CGL33Device* const m_device;
+
+    // Uniform data
+    GLint m_projectionMatrix = -1;
+    GLint m_viewMatrix = -1;
+    GLint m_modelMatrix = -1;
+    GLint m_alphaScissor = -1;
+
+    // Shader program
+    GLuint m_program = 0;
+};
+
 } // namespace Gfx

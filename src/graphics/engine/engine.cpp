@@ -3954,7 +3954,6 @@ void CEngine::RenderShadowMap()
         m_device->GetFramebuffer("shadow")->Bind();
     }
 
-    m_device->SetRenderMode(RENDER_MODE_SHADOW);
     m_device->Clear();
 
     // change state to rendering shadow maps
@@ -4028,7 +4027,15 @@ void CEngine::RenderShadowMap()
     m_device->SetTexture(1, 0);
     m_device->SetTexture(2, 0);
 
+    m_device->SetRenderState(RENDER_STATE_ALPHA_TEST, true);
+    m_device->SetRenderState(RENDER_STATE_CULLING, false);
+
     auto projectionViewMatrix = Math::MultiplyMatrices(m_shadowProjMat, m_shadowViewMat);
+
+    auto renderer = m_device->GetShadowRenderer();
+    renderer->Begin();
+    renderer->SetProjectionMatrix(m_shadowProjMat);
+    renderer->SetViewMatrix(m_shadowViewMat);
 
     // render objects into shadow map
     for (int objRank = 0; objRank < static_cast<int>(m_objects.size()); objRank++)
@@ -4038,24 +4045,8 @@ void CEngine::RenderShadowMap()
 
         bool terrain = (m_objects[objRank].type == ENG_OBJTYPE_TERRAIN);
 
-        if (terrain)
-        {
-            if (m_terrainShadows)
-            {
-                m_device->SetRenderState(RENDER_STATE_ALPHA_TEST, false);
-                m_device->SetRenderState(RENDER_STATE_CULLING, true);
-                m_device->SetCullMode(CULL_CCW);
-            }
-            else
-                continue;
-        }
-        else
-        {
-            m_device->SetRenderState(RENDER_STATE_ALPHA_TEST, true);
-            m_device->SetRenderState(RENDER_STATE_CULLING, false);
-        }
+        if (terrain && !m_terrainShadows) continue;
 
-        m_device->SetTransform(TRANSFORM_WORLD, m_objects[objRank].transform);
         auto combinedMatrix = Math::MultiplyMatrices(projectionViewMatrix, m_objects[objRank].transform);
 
         if (!IsVisible(combinedMatrix, objRank))
@@ -4071,20 +4062,24 @@ void CEngine::RenderShadowMap()
         if (!p1.used)
             continue;
 
+        renderer->SetModelMatrix(m_objects[objRank].transform);
+
         for (int l2 = 0; l2 < static_cast<int>(p1.next.size()); l2++)
         {
             EngineBaseObjTexTier& p2 = p1.next[l2];
 
-            SetTexture(p2.tex1, 0);
+            renderer->SetTexture(p2.tex1);
 
             for (int l3 = 0; l3 < static_cast<int>(p2.next.size()); l3++)
             {
                 EngineBaseObjDataTier& p3 = p2.next[l3];
 
-                DrawObject(p3);
+                renderer->DrawObject(p3.buffer, true);
             }
         }
     }
+
+    renderer->End();
 
     m_device->SetRenderState(RENDER_STATE_DEPTH_BIAS, false);
     m_device->SetDepthBias(0.0f, 0.0f);
@@ -4109,7 +4104,7 @@ void CEngine::RenderShadowMap()
 
     CProfiler::StopPerformanceCounter(PCNT_RENDER_SHADOW_MAP);
 
-    m_device->SetRenderMode(RENDER_MODE_NORMAL);
+    m_device->Restore();
     m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, false);
 }
 
@@ -4219,7 +4214,7 @@ void CEngine::DrawObject(const EngineBaseObjDataTier& p4)
 
 void CEngine::DrawInterface()
 {
-    m_device->SetRenderMode(RENDER_MODE_NORMAL);
+    m_device->Restore();
 
     m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, false);
     m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
@@ -4253,7 +4248,7 @@ void CEngine::DrawInterface()
     // 3D objects drawn in front of interface
     if (m_drawFront)
     {
-        m_device->SetRenderMode(RENDER_MODE_NORMAL);
+        m_device->Restore();
 
         // Display the objects
         m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, true);
@@ -4327,7 +4322,7 @@ void CEngine::DrawInterface()
         m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
         m_device->SetRenderState(RENDER_STATE_FOG, false);
 
-        m_device->SetRenderMode(RENDER_MODE_NORMAL);
+        m_device->Restore();
 
         SetInterfaceCoordinates();
     }
@@ -4346,7 +4341,7 @@ void CEngine::DrawInterface()
     if (m_renderInterface)
         DrawMouse();
 
-    m_device->SetRenderMode(RENDER_MODE_NORMAL);
+    m_device->Restore();
 }
 
 void CEngine::UpdateGroundSpotTextures()
@@ -4858,7 +4853,7 @@ void CEngine::DrawShadowSpots()
 
 void CEngine::DrawBackground()
 {
-    m_device->SetRenderMode(RENDER_MODE_NORMAL);
+    m_device->Restore();
 
     if (m_cloud->GetLevel() != 0.0f)  // clouds ?
     {
@@ -4876,7 +4871,7 @@ void CEngine::DrawBackground()
         DrawBackgroundImage();  // image
     }
 
-    m_device->SetRenderMode(RENDER_MODE_NORMAL);
+    m_device->Restore();
 }
 
 void CEngine::DrawBackgroundGradient(const Color& up, const Color& down)
@@ -5033,7 +5028,7 @@ void CEngine::DrawForegroundImage()
     SetTexture(m_foregroundTex);
     SetState(ENG_RSTATE_CLAMP | ENG_RSTATE_TTEXTURE_BLACK);
 
-    m_device->SetRenderMode(RENDER_MODE_NORMAL);
+    m_device->Restore();
 
     m_device->SetTransform(TRANSFORM_VIEW, m_matViewInterface);
     m_device->SetTransform(TRANSFORM_PROJECTION, m_matProjInterface);
@@ -5059,7 +5054,7 @@ void CEngine::DrawOverColor()
         Color(0.0f, 0.0f, 0.0f, 0.0f)
     };
 
-    m_device->SetRenderMode(RENDER_MODE_NORMAL);
+    m_device->Restore();
 
     SetState(m_overMode);
 
@@ -5079,7 +5074,7 @@ void CEngine::DrawOverColor()
     m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
     AddStatisticTriangle(2);
 
-    m_device->SetRenderMode(RENDER_MODE_NORMAL);
+    m_device->Restore();
 }
 
 void CEngine::DrawHighlight()

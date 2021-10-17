@@ -82,6 +82,7 @@ public:
 
 class CGL33UIRenderer;
 class CGL33TerrainRenderer;
+class CGL33ShadowRenderer;
 
 /**
   \class CGL33Device
@@ -115,9 +116,9 @@ public:
 
     void Clear() override;
 
-    void SetRenderMode(RenderMode mode) override;
     CUIRenderer* GetUIRenderer() override;
     CTerrainRenderer* GetTerrainRenderer() override;
+    CShadowRenderer* GetShadowRenderer() override;
 
     void Restore() override;
 
@@ -296,22 +297,20 @@ private:
 
     //! Shader program for normal rendering
     GLuint m_normalProgram = 0;
-    //! Shader program for shadow rendering
-    GLuint m_shadowProgram = 0;
 
     DynamicBuffer m_dynamicBuffer;
 
     //! Current mode
     unsigned int m_mode = 0;
     //! Uniform locations for all modes
-    UniformLocations m_uniforms[3];
-    //! Uniform locations for current mode
-    UniformLocations* m_uni = nullptr;
+    UniformLocations m_uniforms;
 
     //! Interface renderer
     std::unique_ptr<CGL33UIRenderer> m_uiRenderer;
     //! Terrain renderer
     std::unique_ptr<CGL33TerrainRenderer> m_terrainRenderer;
+    //! Shadow renderer
+    std::unique_ptr<CGL33ShadowRenderer> m_shadowRenderer;
 };
 
 } // namespace Gfx
