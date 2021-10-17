@@ -3393,6 +3393,10 @@ void CEngine::Draw3DScene()
     terrainRenderer->SetShadowMap(m_shadowMap);
     terrainRenderer->SetLight(glm::vec4(1.0, 1.0, -1.0, 0.0), 1.0f, glm::vec3(1.0));
 
+    Color fogColor = m_fogColor[m_rankView];
+
+    terrainRenderer->SetFog(fogStart, fogEnd, { fogColor.r, fogColor.g, fogColor.b });
+
     Math::Matrix scale;
     scale.Set(3, 3, -1.0f);
     auto projectionViewMatrix = Math::MultiplyMatrices(m_matProj, scale);

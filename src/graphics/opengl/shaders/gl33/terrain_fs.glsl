@@ -25,6 +25,9 @@ uniform vec4 uni_LightPosition;
 uniform float uni_LightIntensity;
 uniform vec3 uni_LightColor;
 
+uniform vec2 uni_FogRange;
+uniform vec3 uni_FogColor;
+
 uniform sampler2D uni_PrimaryTexture;
 uniform sampler2D uni_SecondaryTexture;
 uniform sampler2DShadow uni_ShadowMap;
@@ -112,6 +115,11 @@ void main()
     float skyIntensity = 0.10;
 
     vec3 color = lighting * shadow + albedo * skyColor * skyIntensity;
+
+    float dist = length(uni_CameraMatrix[3].xyz - data.Position);
+    float fogAmount = clamp((dist - uni_FogRange.x) / (uni_FogRange.y - uni_FogRange.x), 0.0, 1.0);
+
+    color = mix(color, uni_FogColor, fogAmount);
 
     out_FragColor = vec4(color, 1.0);
 }

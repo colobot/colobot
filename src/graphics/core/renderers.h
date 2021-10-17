@@ -97,6 +97,9 @@ public:
     //! Sets light parameters
     virtual void SetLight(const glm::vec4& position, const float& intensity, const glm::vec3& color) = 0;
 
+    //! Sets fog parameters
+    virtual void SetFog(float min, float max, const glm::vec3& color) = 0;
+
     //! Draws terrain object
     virtual void DrawObject(const glm::mat4& matrix, const CVertexBuffer* buffer) = 0;
 };

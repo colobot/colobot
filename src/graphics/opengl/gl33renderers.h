@@ -121,6 +121,9 @@ public:
     //! Sets light parameters
     virtual void SetLight(const glm::vec4& position, const float& intensity, const glm::vec3& color) override;
 
+    //! Sets fog parameters
+    virtual void SetFog(float min, float max, const glm::vec3& color) override;
+
     //! Draws terrain object
     virtual void DrawObject(const glm::mat4& matrix, const CVertexBuffer* buffer) override;
 
@@ -130,15 +133,17 @@ private:
     CGL33Device* const m_device;
 
     // Uniform data
-    GLint uni_projectionMatrix;
-    GLint uni_viewMatrix;
-    GLint uni_cameraMatrix;
-    GLint uni_shadowMatrix;
-    GLint uni_modelMatrix;
-    GLint uni_normalMatrix;
-    GLint uni_lightPosition;
-    GLint uni_lightIntensity;
-    GLint uni_lightColor;
+    GLint m_projectionMatrix;
+    GLint m_viewMatrix;
+    GLint m_cameraMatrix;
+    GLint m_shadowMatrix;
+    GLint m_modelMatrix;
+    GLint m_normalMatrix;
+    GLint m_lightPosition;
+    GLint m_lightIntensity;
+    GLint m_lightColor;
+    GLint m_fogRange;
+    GLint m_fogColor;
 
     // Shader program
     GLuint m_program = 0;
