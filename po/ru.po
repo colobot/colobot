@@ -57,11 +57,11 @@ msgstr "<<< Миссия провалена >>>"
 
 #, c-format
 msgid "<<< Team %s finished! >>>"
-msgstr "<<< Команда %s закончила! >>>"
+msgstr "<<< Команда %s финишировала! >>>"
 
 #, c-format
 msgid "<<< Team %s lost! >>>"
-msgstr "<<< Команда %s потеряна! >>>"
+msgstr "<<< Команда %s проиграла! >>>"
 
 #, c-format
 msgid "<<< Team %s recieved %d points >>>"
@@ -143,10 +143,10 @@ msgid "Automatic indent\\When program editing"
 msgstr "Автоматический отступ\\При редактировании программы"
 
 msgid "Autosave interval\\How often your game will autosave"
-msgstr "Интервал автосохр.\\Как часно ваша игра будет сохраняться автоматически"
+msgstr "Интервал автосохр.\\Как часто ваша игра будет сохраняться автоматически"
 
 msgid "Autosave slots\\How many autosave slots you'll have"
-msgstr "Кол-во автосохр.\\Как много мест для автосохранений у вас есть"
+msgstr "Кол-во автосохр.\\Как много слотов автосохранения у вас есть"
 
 msgid "Autosave\\Enables autosave"
 msgstr "Автосохранение\\Включает автоматическое сохранение"
@@ -684,7 +684,7 @@ msgid "Function name missing"
 msgstr "Имя функции отсутствует"
 
 msgid "Function needs return type \"void\""
-msgstr "Функции требуется возратить тип \"void\"
+msgstr "Функция требует вернуть тип \"void\""
 
 msgid "Game speed"
 msgstr "Скорость игры"
@@ -904,7 +904,7 @@ msgid "Loading terrain"
 msgstr "Загрузка местности"
 
 # msgid "Speed 0.5x\\Half speed"
-# msgstr "Скорость 0.5x\\Наполовину медленее"
+# msgstr "Скорость 0.5x\\В два раза медленее"
 # msgid "Speed 1.0x\\Normal speed"
 # msgstr "Скорость 1.0x\\Обычная скорость"
 # msgid "Speed 1.5x\\1.5 times faster"
@@ -918,7 +918,7 @@ msgstr "Загрузка местности"
 # msgid "Speed 6.0x\\Sextuple speed"
 # msgstr "Скорость 6.0x\\В шесть раз быстрее"
 msgid "Lower speed\\Decrease speed by half"
-msgstr "Уменьшить скорость\\Уменьшить скорость наполовину"
+msgstr "Уменьшить скорость\\Уменьшить скорость вдвое"
 
 msgid "Lowest\\Minimum graphic quality (highest frame rate)"
 msgstr "Низкое\\Минимальное качество графики (быстро)"
@@ -983,7 +983,7 @@ msgid "Move selected program up"
 msgstr "Изменить выбранную программу"
 
 msgid "Mute sounds in background\\Mute all game sounds when the window is unfocused"
-msgstr "Отключить звук в фоне\\Отлючает все звуки когда игра свернута"
+msgstr "Отключить звук в фоне\\Отключает все звуки когда игра свернута"
 
 msgid "Mute\\No sound"
 msgstr "Без звука\\Без звука"
@@ -1638,7 +1638,7 @@ msgstr "Текстуры"
 
 #, c-format
 msgid "The address %s could not be opened in a web browser."
-msgstr "Адрес %s не может быть открыть в баузере"
+msgstr "Адрес %s не может быть открыть в браузере"
 
 msgid "The battle has ended"
 msgstr "Битва окончена"
@@ -1654,7 +1654,7 @@ msgstr "Миссия еще не выполнена (нажмите \\key help; 
 
 #, c-format
 msgid "The path %s could not be opened in a file explorer."
-msgstr "Путь /% не может быть открыть в проводнике"
+msgstr "Путь /% не может быть открыт в проводнике"
 
 msgid "The types of the two operands are incompatible"
 msgstr "Типы операндов несовместимы"
@@ -1829,7 +1829,7 @@ msgid "Version"
 msgstr "Версия"
 
 msgid "Vertical Synchronization\\Limits the number of frames per second to display frequency"
-msgstr "Вертикальная синхронизация\\Ограничевает число кадров в секунду частотой экрана"
+msgstr "Вертикальная синхронизация\\Ограничивает число кадров в секунду частотой экрана"
 
 msgid "Violet flag"
 msgstr "Фиолетовый флаг"
