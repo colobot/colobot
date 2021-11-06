@@ -456,10 +456,10 @@ msgid "Copy (Ctrl+C)"
 msgstr "Копировать (Ctrl+C)"
 
 msgid "Could not open the file explorer!"
-msgstr "Невозмоно открыть проводник!"
+msgstr "Не могу открыть проводник!"
 
 msgid "Could not open the web browser!"
-msgstr "Не могу открыть баузер"
+msgstr "Не могу открыть браузер!"
 
 msgid "Current mission saved"
 msgstr "Текущая миссия сохранена"
