@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2021, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -46,20 +46,20 @@ SystemDialogResult CSystemUtilsLinux::SystemDialog(SystemDialogType type, const 
     std::string options = "";
     switch (type)
     {
-        case SDT_INFO:
+        case SystemDialogType::INFO:
         default:
             options = "--info";
             break;
-        case SDT_WARNING:
+        case SystemDialogType::WARNING:
             options = "--warning";
             break;
-        case SDT_ERROR:
+        case SystemDialogType::ERROR_MSG:
             options = "--error";
             break;
-        case SDT_YES_NO:
+        case SystemDialogType::YES_NO:
             options = "--question --ok-label=\"Yes\" --cancel-label=\"No\"";
             break;
-        case SDT_OK_CANCEL:
+        case SystemDialogType::OK_CANCEL:
             options = "--question --ok-label=\"OK\" --cancel-label=\"Cancel\"";
             break;
     }
@@ -67,44 +67,20 @@ SystemDialogResult CSystemUtilsLinux::SystemDialog(SystemDialogType type, const 
     std::string command = "zenity " + options + " --text=\"" + message + "\" --title=\"" + title + "\"";
     int code = system(command.c_str());
 
-    SystemDialogResult result = SDR_OK;
+    SystemDialogResult result = SystemDialogResult::OK;
     switch (type)
     {
-        case SDT_YES_NO:
-            result = code ? SDR_NO : SDR_YES;
+        case SystemDialogType::YES_NO:
+            result = code ? SystemDialogResult::NO : SystemDialogResult::YES;
             break;
-        case SDT_OK_CANCEL:
-            result = code ? SDR_CANCEL : SDR_OK;
+        case SystemDialogType::OK_CANCEL:
+            result = code ? SystemDialogResult::CANCEL : SystemDialogResult::OK;
             break;
         default:
             break;
     }
 
     return result;
-}
-
-void CSystemUtilsLinux::InterpolateTimeStamp(SystemTimeStamp *dst, SystemTimeStamp *a, SystemTimeStamp *b, float i)
-{
-    long long delta = TimeStampExactDiff(a, b);
-    delta *= i; // truncates
-    dst->clockTime.tv_sec = a->clockTime.tv_sec + delta / 1000000000;
-    dst->clockTime.tv_nsec = a->clockTime.tv_nsec + delta % 1000000000;
-    if(dst->clockTime.tv_nsec >= 1000000000)
-    {
-        dst->clockTime.tv_nsec -= 1000000000;
-        dst->clockTime.tv_sec++;
-    }
-}
-
-void CSystemUtilsLinux::GetCurrentTimeStamp(SystemTimeStamp *stamp)
-{
-    clock_gettime(CLOCK_MONOTONIC_RAW, &stamp->clockTime);
-}
-
-long long CSystemUtilsLinux::TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after)
-{
-    return (after->clockTime.tv_nsec - before->clockTime.tv_nsec) +
-           (after->clockTime.tv_sec  - before->clockTime.tv_sec) * 1000000000ll;
 }
 
 std::string CSystemUtilsLinux::GetSaveDir()
@@ -172,7 +148,3 @@ bool CSystemUtilsLinux::OpenWebsite(const std::string& url)
     return true;
 }
 
-void CSystemUtilsLinux::Usleep(int usec)
-{
-    usleep(usec);
-}

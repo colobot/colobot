@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2021, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,10 +23,12 @@
 
 #include <cassert>
 
+using TimeUtils::TimeStamp;
+
 CSystemUtils* CProfiler::m_systemUtils = nullptr;
 long long CProfiler::m_performanceCounters[PCNT_MAX] = {0};
 long long CProfiler::m_prevPerformanceCounters[PCNT_MAX] = {0};
-std::stack<SystemTimeStamp*> CProfiler::m_runningPerformanceCounters;
+std::stack<TimeStamp> CProfiler::m_runningPerformanceCounters;
 std::stack<PerformanceCounter> CProfiler::m_runningPerformanceCountersType;
 
 void CProfiler::SetSystemUtils(CSystemUtils* systemUtils)
@@ -39,8 +41,7 @@ void CProfiler::StartPerformanceCounter(PerformanceCounter counter)
     if (counter == PCNT_ALL)
         ResetPerformanceCounters();
 
-    SystemTimeStamp* timeStamp = m_systemUtils->CreateTimeStamp();
-    m_systemUtils->GetCurrentTimeStamp(timeStamp);
+    TimeStamp timeStamp = m_systemUtils->GetCurrentTimeStamp();
     m_runningPerformanceCounters.push(timeStamp);
     m_runningPerformanceCountersType.push(counter);
 }
@@ -50,11 +51,8 @@ void CProfiler::StopPerformanceCounter(PerformanceCounter counter)
     assert(m_runningPerformanceCountersType.top() == counter);
     m_runningPerformanceCountersType.pop();
 
-    SystemTimeStamp* timeStamp = m_systemUtils->CreateTimeStamp();
-    m_systemUtils->GetCurrentTimeStamp(timeStamp);
-    m_performanceCounters[counter] += m_systemUtils->TimeStampExactDiff(m_runningPerformanceCounters.top(), timeStamp);
-    m_systemUtils->DestroyTimeStamp(timeStamp);
-    m_systemUtils->DestroyTimeStamp(m_runningPerformanceCounters.top());
+    TimeStamp timeStamp = m_systemUtils->GetCurrentTimeStamp();
+    m_performanceCounters[counter] += TimeUtils::ExactDiff(m_runningPerformanceCounters.top(), timeStamp);
     m_runningPerformanceCounters.pop();
 
     if (counter == PCNT_ALL)

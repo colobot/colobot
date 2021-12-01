@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2021, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,6 +25,7 @@
 #pragma once
 
 #include "common/singleton.h"
+#include "common/system/system.h"
 
 #include "graphics/core/color.h"
 #include "graphics/core/material.h"
@@ -50,7 +51,6 @@ class CApplication;
 class CSoundInterface;
 class CImage;
 class CSystemUtils;
-struct SystemTimeStamp;
 struct Event;
 
 
@@ -1319,8 +1319,8 @@ protected:
     //! Last encountered error
     std::string     m_error;
 
-    SystemTimeStamp* m_lastFrameTime;
-    SystemTimeStamp* m_currentFrameTime;
+    TimeUtils::TimeStamp m_lastFrameTime;
+    TimeUtils::TimeStamp m_currentFrameTime;
     int             m_fpsCounter;
     float           m_fps;
 

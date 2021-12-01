@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2021, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,8 +20,8 @@
 #pragma once
 
 class CSystemUtils;
-struct SystemTimeStamp;
 
+#include "common/system/system.h"
 #include <stack>
 
 /**
@@ -73,7 +73,7 @@ private:
 
     static long long m_performanceCounters[PCNT_MAX];
     static long long m_prevPerformanceCounters[PCNT_MAX];
-    static std::stack<SystemTimeStamp*> m_runningPerformanceCounters;
+    static std::stack<TimeUtils::TimeStamp> m_runningPerformanceCounters;
     static std::stack<PerformanceCounter> m_runningPerformanceCountersType;
 };
 

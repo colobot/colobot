@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2021, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -27,12 +27,11 @@
 #include "common/key.h"
 #include "common/make_unique.h"
 
-#include "common/thread/sdl_mutex_wrapper.h"
-
 #include "math/point.h"
 #include "math/vector.h"
 
 #include <memory>
+#include <mutex>
 
 /**
   \enum EventType
@@ -932,7 +931,7 @@ public:
     Event GetEvent();
 
 protected:
-    CSDLMutexWrapper m_mutex;
+    std::mutex   m_mutex;
     Event        m_fifo[MAX_EVENT_QUEUE];
     int          m_head;
     int          m_tail;

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2021, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,13 +21,12 @@
 
 #include "common/make_unique.h"
 
-#include "common/thread/sdl_cond_wrapper.h"
-#include "common/thread/sdl_mutex_wrapper.h"
-#include "common/thread/thread.h"
-
+#include <condition_variable>
 #include <functional>
-#include <string>
+#include <mutex>
 #include <queue>
+#include <string>
+#include <thread>
 
 /**
  * \class CWorkerThread
@@ -39,27 +38,23 @@ public:
     using ThreadFunctionPtr = std::function<void()>;
 
 public:
-    CWorkerThread(std::string name = "")
-        : m_thread(std::bind(&CWorkerThread::Run, this), name)
-    {
-        m_thread.Start();
-    }
+    CWorkerThread() : m_thread{&CWorkerThread::Run, this} {}
 
     ~CWorkerThread()
     {
-        m_mutex.Lock();
-        m_running = false;
-        m_cond.Signal();
-        m_mutex.Unlock();
-        m_thread.Join();
+        {
+            std::lock_guard<std::mutex> lock{m_mutex};
+            m_running = false;
+            m_cond.notify_one();
+        }
+        m_thread.join();
     }
 
-    void Start(ThreadFunctionPtr func)
+    void Start(ThreadFunctionPtr&& func)
     {
-        m_mutex.Lock();
+        std::lock_guard<std::mutex> lock{m_mutex};
         m_queue.push(func);
-        m_cond.Signal();
-        m_mutex.Unlock();
+        m_cond.notify_one();
     }
 
     CWorkerThread(const CWorkerThread&) = delete;
@@ -68,25 +63,21 @@ public:
 private:
     void Run()
     {
-        m_mutex.Lock();
+        auto lock = std::unique_lock<std::mutex>(m_mutex);
         while (true)
         {
-            while (m_queue.empty() && m_running)
-            {
-                m_cond.Wait(*m_mutex);
-            }
+            m_cond.wait(lock, [&]() { return !m_running || !m_queue.empty(); });
             if (!m_running) break;
 
-            ThreadFunctionPtr func = m_queue.front();
+            ThreadFunctionPtr func = std::move(m_queue.front());
             m_queue.pop();
             func();
         }
-        m_mutex.Unlock();
     }
 
-    CThread m_thread;
-    CSDLMutexWrapper m_mutex;
-    CSDLCondWrapper m_cond;
+    std::thread m_thread;
+    std::mutex m_mutex;
+    std::condition_variable m_cond;
     bool m_running = true;
     std::queue<ThreadFunctionPtr> m_queue;
 };
