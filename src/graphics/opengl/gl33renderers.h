@@ -108,8 +108,6 @@ public:
     virtual void SetViewMatrix(const glm::mat4& matrix) override;
     //! Sets model matrix
     virtual void SetModelMatrix(const glm::mat4& matrix) override;
-    //! Sets shadow matrix
-    virtual void SetShadowMatrix(const glm::mat4& matrix) override;
 
     //! Sets primary texture, setting texture 0 means using white texture
     virtual void SetPrimaryTexture(const Texture& texture) override;
@@ -120,6 +118,8 @@ public:
 
     //! Sets light parameters
     virtual void SetLight(const glm::vec4& position, const float& intensity, const glm::vec3& color) override;
+
+    virtual void SetShadowParams(int count, const ShadowParam* params) override;
 
     //! Sets fog parameters
     virtual void SetFog(float min, float max, const glm::vec3& color) override;
@@ -144,6 +144,16 @@ private:
     GLint m_lightColor;
     GLint m_fogRange;
     GLint m_fogColor;
+
+    struct ShadowUniforms
+    {
+        GLint transform;
+        GLint offset;
+        GLint scale;
+    };
+
+    GLint m_shadowRegions;
+    ShadowUniforms m_shadows[4];
 
     // Shader program
     GLuint m_program = 0;
@@ -178,6 +188,11 @@ public:
     //! Sets texture
     virtual void SetTexture(const Texture& texture) override;
 
+    //! Sets shadow map
+    virtual void SetShadowMap(const Texture& texture) override;
+    //! Sets shadow region
+    virtual void SetShadowRegion(const glm::vec2& offset, const glm::vec2& scale) override;
+
     //! Draws terrain object
     virtual void DrawObject(const CVertexBuffer* buffer, bool transparent) override;
 
@@ -194,6 +209,11 @@ private:
 
     // Shader program
     GLuint m_program = 0;
+
+    // Framebuffer 
+    GLuint m_framebuffer = 0;
+    int m_width = 0;
+    int m_height = 0;
 };
 
 } // namespace Gfx

@@ -1423,6 +1423,16 @@ protected:
     bool            m_editIndentMode;
     int             m_editIndentValue;
 
+    struct ShadowParam
+    {
+        glm::mat4 transform;
+        glm::vec2 offset;
+        glm::vec2 scale;
+        float range;
+    };
+
+    int             m_shadowRegions = 4;
+    ShadowParam     m_shadowParams[4];
     Texture         m_shadowMap;
 
     struct PendingDebugDraw

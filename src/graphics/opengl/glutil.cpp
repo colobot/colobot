@@ -461,6 +461,61 @@ std::string GetLastShaderError()
     return lastShaderError;
 }
 
+std::string LoadSource(const std::string& path)
+{
+    PHYSFS_file* file = PHYSFS_openRead(path.c_str());
+    if (file == nullptr)
+    {
+        CLogger::GetInstance().Error("Cannot read shader source file\n");
+        CLogger::GetInstance().Error("Missing file \"%s\"\n", path);
+        return 0;
+    }
+
+    size_t len = PHYSFS_fileLength(file);
+
+    std::string source(len, ' ');
+
+    size_t length = PHYSFS_read(file, source.data(), 1, len);
+
+    PHYSFS_close(file);
+
+    return source;
+}
+
+GLint CreateShader(GLint type, const std::vector<std::string>& sources)
+{
+    std::vector<const GLchar*> parts;
+
+    for (const auto& source : sources)
+    {
+        parts.push_back(source.c_str());
+    }
+
+    GLuint shader = glCreateShader(type);
+    glShaderSource(shader, parts.size(), parts.data(), nullptr);
+    glCompileShader(shader);
+
+    GLint status;
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
+
+    if (status != GL_TRUE)
+    {
+        GLint len;
+        glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &len);
+
+        auto message = MakeUniqueArray<GLchar>(len + 1);
+        glGetShaderInfoLog(shader, len + 1, nullptr, message.get());
+
+        GetLogger()->Error("Shader compilation error occurred!\n%s\n", message.get());
+        lastShaderError = std::string("Shader compilation error occurred!\n\n") + std::string(message.get());
+
+        glDeleteShader(shader);
+        return 0;
+    }
+
+    return shader;
+}
+
 GLint LoadShader(GLint type, const char* filename)
 {
     PHYSFS_file *file = PHYSFS_openRead(filename);
@@ -531,6 +586,40 @@ GLint LinkProgram(int count, const GLint* shaders)
 
         GetLogger()->Error("Shader program linking error occurred!\n%s\n", message.get());
         lastShaderError = std::string("Shader program linking error occurred!\n\n") + std::string(message.get());
+
+        glDeleteProgram(program);
+
+        return 0;
+    }
+
+    return program;
+}
+
+GLint LinkProgram(const std::vector<GLint>& shaders)
+{
+    GLint program = glCreateProgram();
+
+    for (auto shader : shaders)
+        glAttachShader(program, shader);
+
+    glLinkProgram(program);
+
+    for (auto shader : shaders)
+        glDetachShader(program, shader);
+
+    GLint status;
+    glGetProgramiv(program, GL_LINK_STATUS, &status);
+
+    if (status != GL_TRUE)
+    {
+        GLint len;
+        glGetProgramiv(program, GL_INFO_LOG_LENGTH, &len);
+
+        std::string message(len, ' ');
+        glGetProgramInfoLog(program, len + 1, nullptr, message.data());
+
+        GetLogger()->Error("Shader program linking error occurred!\n%s\n", message.c_str());
+        lastShaderError = std::string("Shader program linking error occurred!\n\n") + std::string(message.c_str());
 
         glDeleteProgram(program);
 

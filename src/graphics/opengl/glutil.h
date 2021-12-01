@@ -33,6 +33,7 @@
 
 #include <string>
 #include <memory>
+#include <vector>
 
 struct SDL_Surface;
 
@@ -97,9 +98,15 @@ GLenum TranslateType(Type type);
 
 std::string GetLastShaderError();
 
+std::string LoadSource(const std::string& path);
+
+GLint CreateShader(GLint type, const std::vector<std::string>& sources);
+
 GLint LoadShader(GLint type, const char* filename);
 
 GLint LinkProgram(int count, const GLint* shaders);
+
+GLint LinkProgram(const std::vector<GLint>& shaders);
 
 // TODO: Moved this here temporarily only to remove code duplication in CGLDeviceXX
 struct PreparedTextureData

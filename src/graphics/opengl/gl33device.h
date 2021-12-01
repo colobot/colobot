@@ -82,6 +82,7 @@ public:
 
 class CGL33UIRenderer;
 class CGL33TerrainRenderer;
+class CGL33ObjectRenderer;
 class CGL33ShadowRenderer;
 
 /**
@@ -118,6 +119,7 @@ public:
 
     CUIRenderer* GetUIRenderer() override;
     CTerrainRenderer* GetTerrainRenderer() override;
+    CObjectRenderer* GetObjectRenderer() override;
     CShadowRenderer* GetShadowRenderer() override;
 
     void Restore() override;
@@ -309,6 +311,8 @@ private:
     std::unique_ptr<CGL33UIRenderer> m_uiRenderer;
     //! Terrain renderer
     std::unique_ptr<CGL33TerrainRenderer> m_terrainRenderer;
+    //! Object renderer
+    std::unique_ptr<CGL33ObjectRenderer> m_objectRenderer;
     //! Shadow renderer
     std::unique_ptr<CGL33ShadowRenderer> m_shadowRenderer;
 };

@@ -32,6 +32,7 @@
 
 #include "graphics/opengl/glframebuffer.h"
 #include "graphics/opengl/gl33renderers.h"
+#include "graphics/opengl/gl33objectrenderer.h"
 
 #include "math/geometry.h"
 
@@ -434,6 +435,7 @@ bool CGL33Device::Create()
 
     m_uiRenderer = std::make_unique<CGL33UIRenderer>(this);
     m_terrainRenderer = std::make_unique<CGL33TerrainRenderer>(this);
+    m_objectRenderer = std::make_unique<CGL33ObjectRenderer>(this);
     m_shadowRenderer = std::make_unique<CGL33ShadowRenderer>(this);
 
     glUseProgram(m_normalProgram);
@@ -556,6 +558,11 @@ CTerrainRenderer* CGL33Device::GetTerrainRenderer()
     return m_terrainRenderer.get();
 }
 
+CObjectRenderer* CGL33Device::GetObjectRenderer()
+{
+    return m_objectRenderer.get();
+}
+
 CShadowRenderer* CGL33Device::GetShadowRenderer()
 {
     return m_shadowRenderer.get();
@@ -565,6 +572,7 @@ void CGL33Device::Restore()
 {
     m_uiRenderer->Flush();
     glUseProgram(m_normalProgram);
+
 
     //UpdateTextureState(0);
     //UpdateTextureState(1);

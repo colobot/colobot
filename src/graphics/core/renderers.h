@@ -36,6 +36,21 @@ class CVertexBuffer;
 enum PrimitiveType;
 struct Texture;
 
+enum class TransparencyMode
+{
+    NONE,
+    ALPHA,
+    BLACK,
+    WHITE,
+};
+
+struct ShadowParam
+{
+    glm::mat4 matrix;
+    glm::vec2 uv_offset;
+    glm::vec2 uv_scale;
+};
+
 /**
  * \class CRenderer
  * \brief Common abstract interface for renderers
@@ -46,11 +61,11 @@ public:
     virtual ~CRenderer() { }
 
     //! Flush buffered content
-    virtual void Flush() = 0;
+    virtual void Flush() {}
 };
 
 /**
- * \class CRenderer
+ * \class CUIRenderer
  * \brief Abstract interface for UI renderers
  */
 class CUIRenderer : public CRenderer
@@ -69,6 +84,10 @@ public:
     virtual void DrawPrimitive(PrimitiveType type, int count, const Vertex2D* vertices) = 0;
 };
 
+/**
+ * \class CTerrainRenderer
+ * \brief Abstract interface for terrain renderers
+ */
 class CTerrainRenderer : public CRenderer
 {
 public:
@@ -84,8 +103,6 @@ public:
     virtual void SetViewMatrix(const glm::mat4& matrix) = 0;
     //! Sets model matrix
     virtual void SetModelMatrix(const glm::mat4& matrix) = 0;
-    //! Sets shadow matrix
-    virtual void SetShadowMatrix(const glm::mat4& matrix) = 0;
 
     //! Sets primary texture, setting texture 0 means using white texture
     virtual void SetPrimaryTexture(const Texture& texture) = 0;
@@ -96,6 +113,8 @@ public:
 
     //! Sets light parameters
     virtual void SetLight(const glm::vec4& position, const float& intensity, const glm::vec3& color) = 0;
+    //! Sets shadow parameters
+    virtual void SetShadowParams(int count, const ShadowParam* params) = 0;
 
     //! Sets fog parameters
     virtual void SetFog(float min, float max, const glm::vec3& color) = 0;
@@ -104,6 +123,65 @@ public:
     virtual void DrawObject(const glm::mat4& matrix, const CVertexBuffer* buffer) = 0;
 };
 
+/**
+ * \class CObjectRenderer
+ * \brief Abstract interface for object renderers
+ */
+class CObjectRenderer : public CRenderer
+{
+public:
+    virtual ~CObjectRenderer() { }
+
+    virtual void Begin() = 0;
+
+    virtual void End() = 0;
+
+    //! Sets projection matrix
+    virtual void SetProjectionMatrix(const glm::mat4& matrix) = 0;
+    //! Sets view matrix
+    virtual void SetViewMatrix(const glm::mat4& matrix) = 0;
+    //! Sets model matrix
+    virtual void SetModelMatrix(const glm::mat4& matrix) = 0;
+
+    //! Sets color
+    virtual void SetColor(const glm::vec4& color) = 0;
+
+    //! Sets primary texture
+    virtual void SetPrimaryTexture(const Texture& texture) = 0;
+    //! Sets secondary texture
+    virtual void SetSecondaryTexture(const Texture& texture) = 0;
+    //! Sets shadow map
+    virtual void SetShadowMap(const Texture& texture) = 0;
+
+    //! Enables lighting
+    virtual void SetLighting(bool enabled) = 0;
+    //! Sets light parameters
+    virtual void SetLight(const glm::vec4& position, const float& intensity, const glm::vec3& color) = 0;
+    //! Sets shadow parameters
+    virtual void SetShadowParams(int count, const ShadowParam* params) = 0;
+
+    //! Sets fog parameters
+    virtual void SetFog(float min, float max, const glm::vec3& color) = 0;
+    //! Sets alpha scissor
+    virtual void SetAlphaScissor(float alpha) = 0;
+
+    //! Sets cull mode
+    virtual void SetCullMode(bool enabled) = 0;
+    //! Sets transparency mode
+    virtual void SetTransparency(TransparencyMode mode) = 0;
+
+    virtual void SetPrimaryTextureEnabled(bool enabled) = 0;
+    //! Sets amount of dirt (second texture) to apply
+    virtual void SetDirty(float amount) = 0;
+
+    //! Draws an object
+    virtual void DrawObject(const CVertexBuffer* buffer) = 0;
+};
+
+/**
+ * \class CShadowRenderer
+ * \brief Abstract interface for shadow renderers
+ */
 class CShadowRenderer : public CRenderer
 {
 public:
@@ -122,6 +200,11 @@ public:
 
     //! Sets texture
     virtual void SetTexture(const Texture& texture) = 0;
+
+    //! Sets shadow map
+    virtual void SetShadowMap(const Texture& texture) = 0;
+    //! Sets shadow region
+    virtual void SetShadowRegion(const glm::vec2& offset, const glm::vec2& scale) = 0;
 
     //! Draws terrain object
     virtual void DrawObject(const CVertexBuffer* buffer, bool transparent) = 0;

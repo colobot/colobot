@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2014, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2021, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,6 +19,7 @@
 
 // FRAGMENT SHADER - TERRAIN RENDERER
 
+uniform bool uni_Lighting;
 uniform mat4 uni_CameraMatrix;
 uniform vec4 uni_LightPosition;
 uniform float uni_LightIntensity;
@@ -29,6 +30,11 @@ uniform vec3 uni_FogColor;
 
 uniform sampler2D uni_PrimaryTexture;
 uniform sampler2D uni_SecondaryTexture;
+
+uniform vec4 uni_Color;
+uniform float uni_PrimaryEnabled;
+uniform float uni_Dirty;
+uniform float uni_AlphaScissor;
 
 const float PI = 3.1415926;
 
@@ -90,29 +96,43 @@ vec3 PBR(vec3 position, vec3 color, vec3 normal, float roughness, float metalnes
 
 void main()
 {
-    vec3 albedo = data.Color.rgb;
+    vec4 albedo = data.Color * uni_Color;
 
-    albedo *= texture(uni_PrimaryTexture, data.TexCoord0).rgb;
-    albedo *= texture(uni_SecondaryTexture, data.TexCoord1).rgb;
+    vec4 primary = texture(uni_PrimaryTexture, data.TexCoord0);
+    primary = mix(vec4(1.0), primary, uni_PrimaryEnabled);
+    albedo *= primary;
 
-    float roughness = 0.7;
-    float metalness = 0.0;
+    vec3 dirty = texture(uni_SecondaryTexture, data.TexCoord1).rgb;
+    dirty = mix(vec3(1.0), dirty, uni_Dirty);
+    albedo.rgb *= dirty;
 
-    float shadow = CalculateShadow(data.ShadowCoords);
+    vec3 color = albedo.rgb;
 
-    shadow = mix(0.5, 1.0, shadow);
+    if (uni_Lighting)
+    {
+        float roughness = 0.9;
+        float metalness = 0.0;
 
-    vec3 lighting = PBR(data.Position, albedo, data.Normal, roughness, metalness);
+        float shadow = CalculateShadow(data.ShadowCoords);
 
-    vec3 skyColor = vec3(1.0);
-    float skyIntensity = 0.10;
+        shadow = mix(0.5, 1.0, shadow);
 
-    vec3 color = lighting * shadow + albedo * skyColor * skyIntensity;
+        vec3 normal = mix(-data.Normal, data.Normal, float(gl_FrontFacing));
+
+        vec3 lighting = PBR(data.Position, color.rgb, normal, roughness, metalness);
+
+        vec3 skyColor = vec3(1.0);
+        float skyIntensity = 0.25;
+
+        color = lighting * shadow * (1.0 - skyIntensity) + color.rgb * skyColor * skyIntensity;
+    }
 
     float dist = length(uni_CameraMatrix[3].xyz - data.Position);
     float fogAmount = clamp((dist - uni_FogRange.x) / (uni_FogRange.y - uni_FogRange.x), 0.0, 1.0);
 
     color = mix(color, uni_FogColor, fogAmount);
 
-    out_FragColor = vec4(color, 1.0);
+    if (albedo.a < uni_AlphaScissor) discard;
+
+    out_FragColor = vec4(color, albedo.a);
 }

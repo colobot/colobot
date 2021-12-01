@@ -3359,9 +3359,9 @@ void CEngine::Draw3DScene()
 
     // Display the objects
 
-    m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, true);
-    m_device->SetRenderState(RENDER_STATE_LIGHTING, true);
-    m_device->SetRenderState(RENDER_STATE_FOG, true);
+    //m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, true);
+    //m_device->SetRenderState(RENDER_STATE_LIGHTING, true);
+    //m_device->SetRenderState(RENDER_STATE_FOG, true);
 
     float fogStart = m_deepView[m_rankView] * m_fogStart[m_rankView] * m_clippingDistance;
     float fogEnd = m_deepView[m_rankView] * m_clippingDistance;
@@ -3378,20 +3378,28 @@ void CEngine::Draw3DScene()
 
     // Draw terrain
 
-    m_lightMan->UpdateDeviceLights(ENG_OBJTYPE_TERRAIN);
+    //m_lightMan->UpdateDeviceLights(ENG_OBJTYPE_TERRAIN);
 
     UseShadowMapping(true);
 
     SetState(0);
+
+    Gfx::ShadowParam shadowParams[4];
+    for (int i = 0; i < m_shadowRegions; i++)
+    {
+        shadowParams[i].matrix = m_shadowParams[i].transform;
+        shadowParams[i].uv_offset = m_shadowParams[i].offset;
+        shadowParams[i].uv_scale = m_shadowParams[i].scale;
+    }
 
     auto terrainRenderer = m_device->GetTerrainRenderer();
     terrainRenderer->Begin();
 
     terrainRenderer->SetProjectionMatrix(m_matProj);
     terrainRenderer->SetViewMatrix(m_matView);
-    terrainRenderer->SetShadowMatrix(m_shadowTextureMat);
     terrainRenderer->SetShadowMap(m_shadowMap);
     terrainRenderer->SetLight(glm::vec4(1.0, 1.0, -1.0, 0.0), 1.0f, glm::vec3(1.0));
+    terrainRenderer->SetShadowParams(m_shadowRegions, shadowParams);
 
     Color fogColor = m_fogColor[m_rankView];
 
@@ -3459,6 +3467,20 @@ void CEngine::Draw3DScene()
 
     CProfiler::StartPerformanceCounter(PCNT_RENDER_OBJECTS);
 
+    auto objectRenderer = m_device->GetObjectRenderer();
+    objectRenderer->Begin();
+
+    objectRenderer->SetProjectionMatrix(m_matProj);
+    objectRenderer->SetViewMatrix(m_matView);
+    objectRenderer->SetShadowMap(m_shadowMap);
+    objectRenderer->SetLighting(true);
+    objectRenderer->SetLight(glm::vec4(1.0, 1.0, -1.0, 0.0), 1.0f, glm::vec3(1.0));
+    objectRenderer->SetTransparency(TransparencyMode::NONE);
+
+    objectRenderer->SetFog(fogStart, fogEnd, { fogColor.r, fogColor.g, fogColor.b });
+    objectRenderer->SetAlphaScissor(0.5f);
+    objectRenderer->SetShadowParams(m_shadowRegions, shadowParams);
+
     bool transparent = false;
 
     for (int objRank = 0; objRank < static_cast<int>(m_objects.size()); objRank++)
@@ -3472,7 +3494,6 @@ void CEngine::Draw3DScene()
         if (! m_objects[objRank].drawWorld)
             continue;
 
-        m_device->SetTransform(TRANSFORM_WORLD, m_objects[objRank].transform);
         auto combinedMatrix = Math::MultiplyMatrices(projectionViewMatrix, m_objects[objRank].transform);
 
         if (! IsVisible(combinedMatrix, objRank))
@@ -3488,14 +3509,16 @@ void CEngine::Draw3DScene()
         if (! p1.used)
             continue;
 
+        objectRenderer->SetModelMatrix(m_objects[objRank].transform);
+
         m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
 
         for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
         {
             EngineBaseObjTexTier& p2 = p1.next[l2];
 
-            SetTexture(p2.tex1, 0);
-            SetTexture(p2.tex2, 1);
+            objectRenderer->SetPrimaryTexture(p2.tex1);
+            objectRenderer->SetSecondaryTexture(p2.tex2);
 
             for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
             {
@@ -3507,15 +3530,31 @@ void CEngine::Draw3DScene()
                     continue;
                 }
 
-                SetMaterial(p3.material);
-                SetState(p3.state);
+                if ((p3.state & ENG_RSTATE_TCOLOR_BLACK)
+                    || (p3.state & ENG_RSTATE_TCOLOR_WHITE)
+                    || (p3.state & ENG_RSTATE_TCOLOR_ALPHA))
+                    objectRenderer->SetPrimaryTextureEnabled(false);
+                else
+                    objectRenderer->SetPrimaryTextureEnabled(true);
 
-                DrawObject(p3);
+                float dirty = ((p3.state & ENG_RSTATE_DUAL_BLACK) && m_dirty) ? 1.0 : 0.0;
+                objectRenderer->SetDirty(dirty);
+                auto color = p3.material.diffuse;
+                objectRenderer->SetColor({ color.r, color.g, color.b, 1.0 });
+                objectRenderer->SetCullMode((p3.state& ENG_RSTATE_2FACE) == 0);
+                objectRenderer->DrawObject(p3.buffer);
             }
         }
     }
 
+    objectRenderer->End();
+
     UseShadowMapping(false);
+
+    objectRenderer->Begin();
+    objectRenderer->SetLighting(false);
+    objectRenderer->SetTransparency(TransparencyMode::ALPHA);
+    objectRenderer->SetAlphaScissor(0.0f);
 
     // Draw transparent objects
 
@@ -3535,7 +3574,6 @@ void CEngine::Draw3DScene()
             if (! m_objects[objRank].drawWorld)
                 continue;
 
-            m_device->SetTransform(TRANSFORM_WORLD, m_objects[objRank].transform);
             auto combinedMatrix = Math::MultiplyMatrices(projectionViewMatrix, m_objects[objRank].transform);
 
             if (! IsVisible(combinedMatrix, objRank))
@@ -3551,14 +3589,14 @@ void CEngine::Draw3DScene()
             if (! p1.used)
                 continue;
 
-            m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
+            objectRenderer->SetModelMatrix(m_objects[objRank].transform);
 
             for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
             {
                 EngineBaseObjTexTier& p2 = p1.next[l2];
 
-                SetTexture(p2.tex1, 0);
-                SetTexture(p2.tex2, 1);
+                objectRenderer->SetPrimaryTexture(p2.tex1);
+                objectRenderer->SetSecondaryTexture(p2.tex2);
 
                 for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
                 {
@@ -3567,14 +3605,18 @@ void CEngine::Draw3DScene()
                     if (m_objects[objRank].transparency == 0.0f)
                         continue;
 
-                    SetMaterial(p3.material);
-                    SetState(tState, tColor);
-
-                    DrawObject(p3);
+                    float dirty = (p3.state & ENG_RSTATE_DUAL_BLACK) && m_dirty ? 1.0 : 0.0;
+                    objectRenderer->SetDirty(dirty);
+                    auto color = p3.material.diffuse;
+                    objectRenderer->SetColor({ color.r, color.g, color.b, 0.5f });// -m_objects[objRank].transparency });
+                    objectRenderer->SetCullMode((p3.state& ENG_RSTATE_2FACE) == 0);
+                    objectRenderer->DrawObject(p3.buffer);
                 }
             }
         }
     }
+
+    objectRenderer->End();
 
     CProfiler::StopPerformanceCounter(PCNT_RENDER_OBJECTS);
 
@@ -3904,61 +3946,50 @@ void CEngine::RenderShadowMap()
 
     CProfiler::StartPerformanceCounter(PCNT_RENDER_SHADOW_MAP);
 
+    m_shadowRegions = 4;
+
+    m_shadowParams[0].range = 32.0;
+    m_shadowParams[0].offset = { 0.0, 0.0 };
+    m_shadowParams[0].scale = { 0.5, 0.5 };
+
+    m_shadowParams[1].range = 96.0;
+    m_shadowParams[1].offset = { 0.5, 0.0 };
+    m_shadowParams[1].scale = { 0.5, 0.5 };
+
+    m_shadowParams[2].range = 256.0;
+    m_shadowParams[2].offset = { 0.0, 0.5 };
+    m_shadowParams[2].scale = { 0.5, 0.5 };
+
+    m_shadowParams[3].range = 1024.0;
+    m_shadowParams[3].offset = { 0.5, 0.5 };
+    m_shadowParams[3].scale = { 0.5, 0.5 };
+
     // If no shadow map texture exists, create it
     if (m_shadowMap.id == 0)
     {
-        int width = 256, height = 256;
-        int depth;
+        FramebufferParams params;
+        params.width = m_offscreenShadowRenderingResolution;
+        params.height = m_offscreenShadowRenderingResolution;
+        params.depth = 32;
+        params.colorAttachment = FramebufferParams::AttachmentType::None;
+        params.depthAttachment = FramebufferParams::AttachmentType::Texture;
 
-        if (m_offscreenShadowRendering)
+        CFramebuffer* framebuffer = m_device->CreateFramebuffer("shadow", params);
+        if (framebuffer == nullptr)
         {
-            width = height = m_offscreenShadowRenderingResolution;
-
-            FramebufferParams params;
-            params.width = params.height = width;
-            params.depth = depth = 32;
-            params.colorAttachment = FramebufferParams::AttachmentType::None;
-            params.depthAttachment = FramebufferParams::AttachmentType::Texture;
-
-            CFramebuffer *framebuffer = m_device->CreateFramebuffer("shadow", params);
-            if (framebuffer == nullptr)
-            {
-                GetLogger()->Error("Could not create shadow mapping framebuffer, disabling dynamic shadows\n");
-                m_shadowMapping = false;
-                m_offscreenShadowRendering = false;
-                m_qualityShadows = false;
-                CProfiler::StopPerformanceCounter(PCNT_RENDER_SHADOW_MAP);
-                return;
-            }
-
-            m_shadowMap.id = framebuffer->GetDepthTexture();
-            m_shadowMap.size = Math::IntPoint(width, height);
-        }
-        else
-        {
-            int min = Math::Min(m_size.x, m_size.y);
-
-            for (int i = 0; i < 16; i++)
-            {
-                if (min < (1 << i)) break;
-
-                width = height = 1 << i;
-            }
-
-            depth = m_app->GetInstance().GetVideoConfig().depthSize;
-
-            m_shadowMap = m_device->CreateDepthTexture(width, height, depth);
+            GetLogger()->Error("Could not create shadow mapping framebuffer, disabling dynamic shadows\n");
+            m_shadowMapping = false;
+            m_offscreenShadowRendering = false;
+            m_qualityShadows = false;
+            CProfiler::StopPerformanceCounter(PCNT_RENDER_SHADOW_MAP);
+            return;
         }
 
-        GetLogger()->Info("Created shadow map texture: %dx%d, depth %d\n", width, height, depth);
-    }
+        m_shadowMap.id = framebuffer->GetDepthTexture();
+        m_shadowMap.size = Math::IntPoint(params.width, params.height);
 
-    if (m_offscreenShadowRendering)
-    {
-        m_device->GetFramebuffer("shadow")->Bind();
+        GetLogger()->Info("Created shadow map texture: %dx%d, depth %d\n", params.width, params.height, params.depth);
     }
-
-    m_device->Clear();
 
     // change state to rendering shadow maps
     m_device->SetColorMask(false, false, false, false);
@@ -3974,111 +4005,117 @@ void CEngine::RenderShadowMap()
     m_device->SetDepthBias(2.0f, 8.0f);
     m_device->SetViewport(0, 0, m_shadowMap.size.x, m_shadowMap.size.y);
 
-    // recompute matrices
-    Math::Vector worldUp(0.0f, 1.0f, 0.0f);
-    Math::Vector lightDir = Math::Vector(1.0f, 2.0f, -1.0f);
-    Math::Vector dir = m_lookatPt - m_eyePt;
-    dir.y = 0.0f;
-    dir.Normalize();
-
-    float dist = m_shadowRange;
-    float depth = 200.0f;
-
-    if (dist < 0.5f)
-    {
-        float scale = log(m_shadowMap.size.x) / log(2.0f) - 6.5f;
-        dist = 75.0f * scale;
-    }
-
-    Math::Vector pos = m_lookatPt + 0.25f * dist * dir;
-
-    {
-        // To prevent 'shadow shimmering', we ensure that the position only moves in texel-sized
-        // increments. To do this we transform the position to a space where the light's forward/right/up
-        // axes are aligned with the x/y/z axes (not necessarily in that order, and +/- signs don't matter).
-        Math::Matrix lightRotation;
-        Math::LoadViewMatrix(lightRotation, Math::Vector{}, lightDir, worldUp);
-        pos = Math::MatrixVectorMultiply(lightRotation, pos);
-        // ...then we round to the nearest worldUnitsPerTexel:
-        const float worldUnitsPerTexel = (dist * 2.0f) / m_shadowMap.size.x;
-        pos /= worldUnitsPerTexel;
-        pos.x = round(pos.x);
-        pos.y = round(pos.y);
-        pos.z = round(pos.z);
-        pos *= worldUnitsPerTexel;
-        // ...and convert back to world space.
-        pos = Math::MatrixVectorMultiply(lightRotation.Inverse(), pos);
-    }
-
-    Math::Vector lookAt = pos - lightDir;
-
-    Math::LoadOrthoProjectionMatrix(m_shadowProjMat, -dist, dist, -dist, dist, -depth, depth);
-    Math::LoadViewMatrix(m_shadowViewMat, pos, lookAt, worldUp);
-
-    Math::Matrix scaleMat;
-    Math::LoadScaleMatrix(scaleMat, Math::Vector(1.0f, 1.0f, -1.0f));
-    m_shadowViewMat = Math::MultiplyMatrices(scaleMat, m_shadowViewMat);
-
-    Math::Matrix temporary = Math::MultiplyMatrices(m_shadowProjMat, m_shadowViewMat);
-    m_shadowTextureMat = Math::MultiplyMatrices(m_shadowBias, temporary);
-
-    m_shadowViewMat = Math::MultiplyMatrices(scaleMat, m_shadowViewMat);
-
-    m_device->SetTransform(TRANSFORM_PROJECTION, m_shadowProjMat);
-    m_device->SetTransform(TRANSFORM_VIEW, m_shadowViewMat);
-
-    m_device->SetTexture(0, 0);
-    m_device->SetTexture(1, 0);
-    m_device->SetTexture(2, 0);
-
-    m_device->SetRenderState(RENDER_STATE_ALPHA_TEST, true);
-    m_device->SetRenderState(RENDER_STATE_CULLING, false);
-
-    auto projectionViewMatrix = Math::MultiplyMatrices(m_shadowProjMat, m_shadowViewMat);
-
     auto renderer = m_device->GetShadowRenderer();
     renderer->Begin();
-    renderer->SetProjectionMatrix(m_shadowProjMat);
-    renderer->SetViewMatrix(m_shadowViewMat);
+    renderer->SetShadowMap(m_shadowMap);
+    renderer->SetShadowRegion({ 0.0, 0.0 }, { 1.0, 1.0 });
 
-    // render objects into shadow map
-    for (int objRank = 0; objRank < static_cast<int>(m_objects.size()); objRank++)
+    m_device->Clear();
+
+    for (int region = 0; region < m_shadowRegions; region++)
     {
-        if (!m_objects[objRank].used)
-            continue;
+        renderer->SetShadowRegion(
+            m_shadowParams[region].offset,
+            m_shadowParams[region].scale);
 
-        bool terrain = (m_objects[objRank].type == ENG_OBJTYPE_TERRAIN);
+        // recompute matrices
+        Math::Vector worldUp(0.0f, 1.0f, 0.0f);
+        Math::Vector lightDir = Math::Vector(1.0f, 2.0f, -1.0f);
+        Math::Vector dir = m_lookatPt - m_eyePt;
+        dir.y = 0.0f;
+        dir.Normalize();
 
-        if (terrain && !m_terrainShadows) continue;
+        float range = m_shadowParams[region].range;
 
-        auto combinedMatrix = Math::MultiplyMatrices(projectionViewMatrix, m_objects[objRank].transform);
+        float dist = range;
+        float depth = 200.0f;
 
-        if (!IsVisible(combinedMatrix, objRank))
-            continue;
-
-        int baseObjRank = m_objects[objRank].baseObjRank;
-        if (baseObjRank == -1)
-            continue;
-
-        assert(baseObjRank >= 0 && baseObjRank < static_cast<int>(m_baseObjects.size()));
-
-        EngineBaseObject& p1 = m_baseObjects[baseObjRank];
-        if (!p1.used)
-            continue;
-
-        renderer->SetModelMatrix(m_objects[objRank].transform);
-
-        for (int l2 = 0; l2 < static_cast<int>(p1.next.size()); l2++)
+        if (dist < 0.5f)
         {
-            EngineBaseObjTexTier& p2 = p1.next[l2];
+            float scale = log(m_shadowMap.size.x) / log(2.0f) - 6.5f;
+            dist = 75.0f * scale;
+        }
 
-            renderer->SetTexture(p2.tex1);
+        Math::Vector pos = m_lookatPt + 0.25f * dist * dir;
 
-            for (int l3 = 0; l3 < static_cast<int>(p2.next.size()); l3++)
+        {
+            // To prevent 'shadow shimmering', we ensure that the position only moves in texel-sized
+            // increments. To do this we transform the position to a space where the light's forward/right/up
+            // axes are aligned with the x/y/z axes (not necessarily in that order, and +/- signs don't matter).
+            Math::Matrix lightRotation;
+            Math::LoadViewMatrix(lightRotation, Math::Vector{}, lightDir, worldUp);
+            pos = Math::MatrixVectorMultiply(lightRotation, pos);
+            // ...then we round to the nearest worldUnitsPerTexel:
+            const float worldUnitsPerTexel = (dist * 2.0f) / m_shadowMap.size.x;
+            pos /= worldUnitsPerTexel;
+            pos.x = round(pos.x);
+            pos.y = round(pos.y);
+            pos.z = round(pos.z);
+            pos *= worldUnitsPerTexel;
+            // ...and convert back to world space.
+            pos = Math::MatrixVectorMultiply(lightRotation.Inverse(), pos);
+        }
+
+        Math::Vector lookAt = pos - lightDir;
+
+        Math::LoadOrthoProjectionMatrix(m_shadowProjMat, -dist, dist, -dist, dist, -depth, depth);
+        Math::LoadViewMatrix(m_shadowViewMat, pos, lookAt, worldUp);
+
+        Math::Matrix scaleMat;
+        Math::LoadScaleMatrix(scaleMat, Math::Vector(1.0f, 1.0f, -1.0f));
+        m_shadowViewMat = Math::MultiplyMatrices(scaleMat, m_shadowViewMat);
+
+        Math::Matrix temporary = Math::MultiplyMatrices(m_shadowProjMat, m_shadowViewMat);
+        m_shadowTextureMat = Math::MultiplyMatrices(m_shadowBias, temporary);
+
+        m_shadowViewMat = Math::MultiplyMatrices(scaleMat, m_shadowViewMat);
+
+        auto projectionViewMatrix = Math::MultiplyMatrices(m_shadowProjMat, m_shadowViewMat);
+
+        m_shadowParams[region].transform = m_shadowTextureMat;
+
+        renderer->SetProjectionMatrix(m_shadowProjMat);
+        renderer->SetViewMatrix(m_shadowViewMat);
+
+        // render objects into shadow map
+        for (int objRank = 0; objRank < static_cast<int>(m_objects.size()); objRank++)
+        {
+            if (!m_objects[objRank].used)
+                continue;
+
+            bool terrain = (m_objects[objRank].type == ENG_OBJTYPE_TERRAIN);
+
+            if (terrain && !m_terrainShadows) continue;
+
+            auto combinedMatrix = Math::MultiplyMatrices(projectionViewMatrix, m_objects[objRank].transform);
+
+            if (!IsVisible(combinedMatrix, objRank))
+                continue;
+
+            int baseObjRank = m_objects[objRank].baseObjRank;
+            if (baseObjRank == -1)
+                continue;
+
+            assert(baseObjRank >= 0 && baseObjRank < static_cast<int>(m_baseObjects.size()));
+
+            EngineBaseObject& p1 = m_baseObjects[baseObjRank];
+            if (!p1.used)
+                continue;
+
+            renderer->SetModelMatrix(m_objects[objRank].transform);
+
+            for (int l2 = 0; l2 < static_cast<int>(p1.next.size()); l2++)
             {
-                EngineBaseObjDataTier& p3 = p2.next[l3];
+                EngineBaseObjTexTier& p2 = p1.next[l2];
 
-                renderer->DrawObject(p3.buffer, true);
+                renderer->SetTexture(p2.tex1);
+
+                for (int l3 = 0; l3 < static_cast<int>(p2.next.size()); l3++)
+                {
+                    EngineBaseObjDataTier& p3 = p2.next[l3];
+
+                    renderer->DrawObject(p3.buffer, true);
+                }
             }
         }
     }
@@ -4091,14 +4128,8 @@ void CEngine::RenderShadowMap()
     m_device->SetRenderState(RENDER_STATE_CULLING, false);
     m_device->SetCullMode(CULL_CW);
 
-    if (m_offscreenShadowRendering)     // shadow map texture already have depth information, just unbind it
-    {
-        m_device->GetFramebuffer("shadow")->Unbind();
-    }
-    else    // copy depth buffer to shadow map
-    {
-        m_device->CopyFramebufferToTexture(m_shadowMap, 0, 0, 0, 0, m_shadowMap.size.x, m_shadowMap.size.y);
-    }
+    m_device->GetFramebuffer("default")->Bind();
+    //m_device->GetFramebuffer("shadow")->Unbind();
 
     // restore default state
     m_device->SetViewport(0, 0, m_size.x, m_size.y);

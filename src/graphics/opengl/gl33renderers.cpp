@@ -229,31 +229,34 @@ CGL33TerrainRenderer::CGL33TerrainRenderer(CGL33Device* device)
 {
     GetLogger()->Info("Creating CGL33TerrainRenderer\n");
 
-    GLint shaders[2] = {};
+    std::string preamble = LoadSource("shaders/gl33/preamble.glsl");
+    std::string shadowSource = LoadSource("shaders/gl33/shadow.glsl");
+    std::string vsSource = LoadSource("shaders/gl33/terrain_vs.glsl");
+    std::string fsSource = LoadSource("shaders/gl33/terrain_fs.glsl");
 
-    shaders[0] = LoadShader(GL_VERTEX_SHADER, "shaders/gl33/terrain_vs.glsl");
-    if (shaders[0] == 0)
+    GLint vsShader = CreateShader(GL_VERTEX_SHADER, { preamble, shadowSource, vsSource });
+    if (vsShader == 0)
     {
         GetLogger()->Error("Cound not create vertex shader from file 'terrain_vs.glsl'\n");
         return;
     }
 
-    shaders[1] = LoadShader(GL_FRAGMENT_SHADER, "shaders/gl33/terrain_fs.glsl");
-    if (shaders[1] == 0)
+    GLint fsShader = CreateShader(GL_FRAGMENT_SHADER, { preamble, shadowSource, fsSource });
+    if (fsShader == 0)
     {
-        GetLogger()->Error("Cound not create fragment shader from file 'terrain_fs.glsl'\n");
+        GetLogger()->Error("Cound not create fragment shader from file 'terrain_vs.glsl'\n");
         return;
     }
 
-    m_program = LinkProgram(2, shaders);
+    m_program = LinkProgram({ vsShader, fsShader });
     if (m_program == 0)
     {
         GetLogger()->Error("Cound not link shader program for terrain renderer\n");
         return;
     }
 
-    glDeleteShader(shaders[0]);
-    glDeleteShader(shaders[1]);
+    glDeleteShader(vsShader);
+    glDeleteShader(fsShader);
 
     glUseProgram(m_program);
 
@@ -271,6 +274,22 @@ CGL33TerrainRenderer::CGL33TerrainRenderer(CGL33Device* device)
     m_lightColor = glGetUniformLocation(m_program, "uni_LightColor");
     m_fogRange = glGetUniformLocation(m_program, "uni_FogRange");
     m_fogColor = glGetUniformLocation(m_program, "uni_FogColor");
+
+    m_shadowRegions = glGetUniformLocation(m_program, "uni_ShadowRegions");
+
+    GLchar name[64];
+
+    for (int i = 0; i < 4; i++)
+    {
+        sprintf(name, "uni_ShadowParam[%d].transform", i);
+        m_shadows[i].transform = glGetUniformLocation(m_program, name);
+
+        sprintf(name, "uni_ShadowParam[%d].uv_offset", i);
+        m_shadows[i].offset = glGetUniformLocation(m_program, name);
+
+        sprintf(name, "uni_ShadowParam[%d].uv_scale", i);
+        m_shadows[i].scale = glGetUniformLocation(m_program, name);
+    }
 
     // Set texture units to 10th and 11th
     auto texture = glGetUniformLocation(m_program, "uni_PrimaryTexture");
@@ -310,10 +329,44 @@ CGL33TerrainRenderer::~CGL33TerrainRenderer()
 void CGL33TerrainRenderer::Begin()
 {
     glUseProgram(m_program);
+
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE);
+
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+
+    glDisable(GL_BLEND);
+
+    glActiveTexture(GL_TEXTURE10);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glActiveTexture(GL_TEXTURE11);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glActiveTexture(GL_TEXTURE12);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    m_primaryTexture = 0;
+    m_secondaryTexture = 0;
+    m_shadowMap = 0;
 }
 
 void CGL33TerrainRenderer::End()
 {
+    glActiveTexture(GL_TEXTURE10);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glActiveTexture(GL_TEXTURE11);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glActiveTexture(GL_TEXTURE12);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    m_primaryTexture = 0;
+    m_secondaryTexture = 0;
+    m_shadowMap = 0;
+
     m_device->Restore();
 }
 
@@ -340,11 +393,6 @@ void CGL33TerrainRenderer::SetModelMatrix(const glm::mat4& matrix)
 
     glUniformMatrix4fv(m_modelMatrix, 1, GL_FALSE, value_ptr(matrix));
     glUniformMatrix3fv(m_normalMatrix, 1, GL_FALSE, value_ptr(normalMatrix));
-}
-
-void CGL33TerrainRenderer::SetShadowMatrix(const glm::mat4& matrix)
-{
-    glUniformMatrix4fv(m_shadowMatrix, 1, GL_FALSE, value_ptr(matrix));
 }
 
 void CGL33TerrainRenderer::SetPrimaryTexture(const Texture& texture)
@@ -396,6 +444,18 @@ void CGL33TerrainRenderer::SetLight(const glm::vec4& position, const float& inte
     glUniform3fv(m_lightColor, 1, glm::value_ptr(color));
 }
 
+void CGL33TerrainRenderer::SetShadowParams(int count, const ShadowParam* params)
+{
+    glUniform1i(m_shadowRegions, count);
+
+    for (int i = 0; i < count; i++)
+    {
+        glUniformMatrix4fv(m_shadows[i].transform, 1, GL_FALSE, glm::value_ptr(params[i].matrix));
+        glUniform2fv(m_shadows[i].offset, 1, glm::value_ptr(params[i].uv_offset));
+        glUniform2fv(m_shadows[i].scale, 1, glm::value_ptr(params[i].uv_scale));
+    }
+}
+
 void CGL33TerrainRenderer::SetFog(float min, float max, const glm::vec3& color)
 {
     glUniform2f(m_fogRange, min, max);
@@ -406,11 +466,7 @@ void CGL33TerrainRenderer::DrawObject(const glm::mat4& matrix, const CVertexBuff
 {
     auto b = dynamic_cast<const CGL33VertexBuffer*>(buffer);
 
-    if (b == nullptr)
-    {
-        GetLogger()->Error("No vertex buffer");
-        return;
-    }
+    if (b == nullptr) return;
 
     SetModelMatrix(matrix);
     glBindVertexArray(b->GetVAO());
@@ -469,21 +525,34 @@ CGL33ShadowRenderer::CGL33ShadowRenderer(CGL33Device* device)
 
     glUseProgram(0);
 
+    glGenFramebuffers(1, &m_framebuffer);
+
     GetLogger()->Info("CGL33ShadowRenderer created successfully\n");
 }
 
 CGL33ShadowRenderer::~CGL33ShadowRenderer()
 {
     glDeleteProgram(m_program);
+
+    glDeleteFramebuffers(1, &m_framebuffer);
 }
 
 void CGL33ShadowRenderer::Begin()
 {
+    glViewport(0, 0, m_width, m_height);
+    glDepthMask(GL_TRUE);
+    glClear(GL_DEPTH_BUFFER_BIT);
+
     glUseProgram(m_program);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
 }
 
 void CGL33ShadowRenderer::End()
 {
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, 0, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
     m_device->Restore();
 }
 
@@ -513,15 +582,36 @@ void CGL33ShadowRenderer::SetTexture(const Texture& texture)
     glBindTexture(GL_TEXTURE_2D, texture.id);
 }
 
+void CGL33ShadowRenderer::SetShadowMap(const Texture& texture)
+{
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, texture.id, 0);
+
+    m_width = texture.size.x;
+    m_height = texture.size.y;
+
+    auto status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+
+    if (status != GL_FRAMEBUFFER_COMPLETE)
+    {
+        GetLogger()->Error("Framebuffer incomplete: %d\n", status);
+    }
+}
+
+void CGL33ShadowRenderer::SetShadowRegion(const glm::vec2& offset, const glm::vec2& scale)
+{
+    int x = static_cast<int>(m_width * offset.x);
+    int y = static_cast<int>(m_height * offset.y);
+    int width = static_cast<int>(m_width * scale.x);
+    int height = static_cast<int>(m_height * scale.y);
+
+    glViewport(x, y, width, height);
+}
+
 void CGL33ShadowRenderer::DrawObject(const CVertexBuffer* buffer, bool transparent)
 {
     auto b = dynamic_cast<const CGL33VertexBuffer*>(buffer);
 
-    if (b == nullptr)
-    {
-        GetLogger()->Error("No vertex buffer");
-        return;
-    }
+    if (b == nullptr) return;
 
     glUniform1i(m_alphaScissor, transparent ? 1 : 0);
 
