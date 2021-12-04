@@ -178,13 +178,13 @@ void DumpInfo(const CModel& model)
 
     for (const ModelTriangle& t : mesh->GetTriangles())
     {
-        bboxMin.x = Math::Min(t.p1.coord.x, t.p2.coord.x, t.p3.coord.x, bboxMin.x);
-        bboxMin.y = Math::Min(t.p1.coord.y, t.p2.coord.y, t.p3.coord.y, bboxMin.y);
-        bboxMin.z = Math::Min(t.p1.coord.z, t.p2.coord.z, t.p3.coord.z, bboxMin.z);
+        bboxMin.x = Math::Min(t.p1.position.x, t.p2.position.x, t.p3.position.x, bboxMin.x);
+        bboxMin.y = Math::Min(t.p1.position.y, t.p2.position.y, t.p3.position.y, bboxMin.y);
+        bboxMin.z = Math::Min(t.p1.position.z, t.p2.position.z, t.p3.position.z, bboxMin.z);
 
-        bboxMax.x = Math::Max(t.p1.coord.x, t.p2.coord.x, t.p3.coord.x, bboxMax.x);
-        bboxMax.y = Math::Max(t.p1.coord.y, t.p2.coord.y, t.p3.coord.y, bboxMax.y);
-        bboxMax.z = Math::Max(t.p1.coord.z, t.p2.coord.z, t.p3.coord.z, bboxMax.z);
+        bboxMax.x = Math::Max(t.p1.position.x, t.p2.position.x, t.p3.position.x, bboxMax.x);
+        bboxMax.y = Math::Max(t.p1.position.y, t.p2.position.y, t.p3.position.y, bboxMax.y);
+        bboxMax.z = Math::Max(t.p1.position.z, t.p2.position.z, t.p3.position.z, bboxMax.z);
 
         texs1[t.tex1Name] += 1;
         if (! t.tex2Name.empty())
