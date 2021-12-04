@@ -20,6 +20,7 @@
 #include "CBot/CBot.h"
 
 #include <gtest/gtest.h>
+#include <limits>
 #include <stdexcept>
 
 extern bool g_cbotTestSaveState;
@@ -318,6 +319,200 @@ protected:
         return program; // Take it if you want, destroy on exit otherwise
     }
 };
+
+TEST_F(CBotUT, TestSaveStateIOFunctions)
+{
+    std::stringstream sstr("");
+    std::string teststring;
+
+    for (char c = std::numeric_limits<char>::min() ;; ++c)
+    {
+        teststring.push_back(c);
+        if ( c == std::numeric_limits<char>::max() ) break;
+    }
+
+    auto CallWriteFunctions = [&sstr, &teststring]() -> bool
+    {
+        if (!WriteWord(sstr, static_cast<unsigned short>(0))) return false;
+        if (!WriteWord(sstr, std::numeric_limits<unsigned short>::max() / 2)) return false;
+        if (!WriteWord(sstr, std::numeric_limits<unsigned short>::max())) return false;
+
+        if (!WriteByte(sstr, std::numeric_limits<char>::min())) return false;
+        if (!WriteByte(sstr, std::numeric_limits<char>::max())) return false;
+
+        if (!WriteShort(sstr, std::numeric_limits<short>::min())) return false;
+        if (!WriteShort(sstr, std::numeric_limits<short>::min() / 2)) return false;
+        if (!WriteShort(sstr, -1)) return false;
+        if (!WriteShort(sstr, 0)) return false;
+        if (!WriteShort(sstr, std::numeric_limits<short>::max() / 2)) return false;
+        if (!WriteShort(sstr, std::numeric_limits<short>::max())) return false;
+
+        if (!WriteUInt32(sstr, static_cast<uint32_t>(0))) return false;
+        if (!WriteUInt32(sstr, std::numeric_limits<uint32_t>::max() / 2)) return false;
+        if (!WriteUInt32(sstr, std::numeric_limits<uint32_t>::max())) return false;
+
+        if (!WriteInt(sstr, std::numeric_limits<int>::min())) return false;
+        if (!WriteInt(sstr, std::numeric_limits<int>::min() / 2)) return false;
+        if (!WriteInt(sstr, -1)) return false;
+        if (!WriteInt(sstr, 0)) return false;
+        if (!WriteInt(sstr, std::numeric_limits<int>::max() / 2)) return false;
+        if (!WriteInt(sstr, std::numeric_limits<int>::max())) return false;
+
+        if (!WriteLong(sstr, std::numeric_limits<long>::min())) return false;
+        if (!WriteLong(sstr, std::numeric_limits<long>::min() / 2L)) return false;
+        if (!WriteLong(sstr, -1L)) return false;
+        if (!WriteLong(sstr, 0L)) return false;
+        if (!WriteLong(sstr, std::numeric_limits<long>::max() / 2L)) return false;
+        if (!WriteLong(sstr, std::numeric_limits<long>::max())) return false;
+
+        // test with padding bytes (not currently used anywhere)
+        if (!WriteLong(sstr, 1234567890L, 10)) return false;
+
+        if (!WriteFloat(sstr, std::numeric_limits<float>::min())) return false;
+        if (!WriteFloat(sstr, 0.0f)) return false;
+        if (!WriteFloat(sstr, std::numeric_limits<float>::max())) return false;
+
+        if (!WriteDouble(sstr, std::numeric_limits<double>::min())) return false;
+        if (!WriteDouble(sstr, 0.0)) return false;
+        if (!WriteDouble(sstr, std::numeric_limits<double>::max())) return false;
+
+        if (!WriteString(sstr, "")) return false;
+        if (!WriteString(sstr, teststring)) return false;
+        return true;
+    };
+
+    if ( !CallWriteFunctions() )
+    {
+        ADD_FAILURE() << "failed in CallWriteFunctions()" << std::endl;
+        return;
+    }
+
+    std::stringstream savestream("");
+
+    if ( !WriteStream(savestream, sstr) )
+    {
+        ADD_FAILURE() << "CBot::WriteStream() failed" << std::endl;
+        return;
+    }
+
+    std::stringstream newstream("");
+
+    if ( !ReadStream(savestream, newstream) )
+    {
+        ADD_FAILURE() << "CBot:ReadStream() failed" << std::endl;
+        return;
+    }
+
+    auto CallReadFunctions = [&teststring, &newstream]() -> bool
+    {
+        unsigned short w = 1;
+        if (!ReadWord(newstream, w)) return false;
+        if (w != static_cast<unsigned short>(0)) return false;
+        if (!ReadWord(newstream, w)) return false;
+        if (w != std::numeric_limits<unsigned short>::max() / 2) return false;
+
+        if (!ReadWord(newstream, w)) return false;
+        if (w != std::numeric_limits<unsigned short>::max()) return false;
+
+        char c = 1;
+        if (!ReadByte(newstream, c)) return false;
+        if (c != std::numeric_limits<char>::min()) return false;
+        if (!ReadByte(newstream, c)) return false;
+        if (c != std::numeric_limits<char>::max()) return false;
+
+        short s = 1;
+        if (!ReadShort(newstream, s)) return false;
+        if (s != std::numeric_limits<short>::min()) return false;
+        if (!ReadShort(newstream, s)) return false;
+        if (s != std::numeric_limits<short>::min() / 2) return false;
+
+        if (!ReadShort(newstream, s)) return false;
+        if (s != -1) return false;
+        if (!ReadShort(newstream, s)) return false;
+        if (s != 0) return false;
+
+        if (!ReadShort(newstream, s)) return false;
+        if (s != std::numeric_limits<short>::max() / 2) return false;
+        if (!ReadShort(newstream, s)) return false;
+        if (s != std::numeric_limits<short>::max()) return false;
+
+        uint32_t u = 1;
+        if (!ReadUInt32(newstream, u)) return false;
+        if (u != static_cast<uint32_t>(0)) return false;
+        if (!ReadUInt32(newstream, u)) return false;
+        if (u != std::numeric_limits<uint32_t>::max() / 2) return false;
+
+        if (!ReadUInt32(newstream, u)) return false;
+        if (u != std::numeric_limits<uint32_t>::max()) return false;
+
+        int i = 1;
+        if (!ReadInt(newstream, i)) return false;
+        if (i != std::numeric_limits<int>::min()) return false;
+        if (!ReadInt(newstream, i)) return false;
+        if (i != std::numeric_limits<int>::min() / 2) return false;
+
+        if (!ReadInt(newstream, i)) return false;
+        if (i != -1) return false;
+        if (!ReadInt(newstream, i)) return false;
+        if (i != 0) return false;
+
+        if (!ReadInt(newstream, i)) return false;
+        if (i != std::numeric_limits<int>::max() / 2) return false;
+        if (!ReadInt(newstream, i)) return false;
+        if (i != std::numeric_limits<int>::max()) return false;
+
+        long l = 1L;
+        if (!ReadLong(newstream, l)) return false;
+        if (l != std::numeric_limits<long>::min()) return false;
+        if (!ReadLong(newstream, l)) return false;
+        if (l != std::numeric_limits<long>::min() / 2L) return false;
+
+        if (!ReadLong(newstream, l)) return false;
+        if (l != -1L) return false;
+        if (!ReadLong(newstream, l)) return false;
+        if (l != 0L) return false;
+
+        if (!ReadLong(newstream, l)) return false;
+        if (l != std::numeric_limits<long>::max() / 2L) return false;
+        if (!ReadLong(newstream, l)) return false;
+        if (l != std::numeric_limits<long>::max()) return false;
+
+        if (!ReadLong(newstream, l)) return false;
+        if (l != 1234567890L) return false;
+
+        float f = 1.0f;
+        if (!ReadFloat(newstream, f)) return false;
+        if (f != std::numeric_limits<float>::min()) return false;
+        if (!ReadFloat(newstream, f)) return false;
+        if (f != 0.0f) return false;
+
+        if (!ReadFloat(newstream, f)) return false;
+        if (f != std::numeric_limits<float>::max()) return false;
+
+        double d = 1.0;
+        if (!ReadDouble(newstream, d)) return false;
+        if (d != std::numeric_limits<double>::min()) return false;
+        if (!ReadDouble(newstream, d)) return false;
+        if (d != 0.0) return false;
+
+        if (!ReadDouble(newstream, d)) return false;
+        if (d != std::numeric_limits<double>::max()) return false;
+
+        std::string newstring = "should be empty string after next read";
+        if (!ReadString(newstream, newstring)) return false;
+        if (newstring != "") return false;
+
+        if (!ReadString(newstream, newstring)) return false;
+        if (newstring != teststring) return false;
+        return true;
+    };
+
+    if ( !CallReadFunctions() )
+    {
+        ADD_FAILURE() << "failed in CallReadFunctions()" << std::endl;
+        return;
+    }
+}
 
 TEST_F(CBotUT, EmptyTest)
 {

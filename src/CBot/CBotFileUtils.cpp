@@ -342,7 +342,11 @@ bool WriteStream(std::ostream &ostr, std::istream& istr)
     if (!WriteLong(ostr, size)) return false;
 
     if (!istr.seekg(0, istr.beg)) return false;
-    if (!(ostr << istr.rdbuf())) return false;
+    while (size > 0)
+    {
+        size -= 1;
+        if (!ostr.put(istr.get())) return false;
+    }
 
     return true;
 }
@@ -355,7 +359,7 @@ bool ReadStream(std::istream& istr, std::ostream &ostr)
 
     while (length-- > 0)
     {
-        if (!(ostr << istr.get())) return false;
+        if (!ostr.put(istr.get())) return false;
     }
     return true;
 }
