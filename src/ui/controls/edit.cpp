@@ -955,7 +955,7 @@ void CEdit::Draw()
 
         if ( i >= m_lineFirst+m_lineVisible )  break;
 
-        pos.x = m_pos.x+(7.5f/640.0f)*(m_fontSize/Gfx::FONT_SIZE_SMALL);
+        pos.x = m_pos.x+(7.5f/640.0f);
         if ( m_bAutoIndent )
         {
             const char *s = "\t";  // line | dotted
@@ -1117,7 +1117,7 @@ void CEdit::Draw()
         {
             if ( i == m_lineTotal-1 || m_cursor1 < m_lineOffset[i+1] )
             {
-                pos.x = m_pos.x+(7.5f/640.0f)*(m_fontSize/Gfx::FONT_SIZE_SMALL);
+                pos.x = m_pos.x+(7.5f/640.0f);
                 if ( m_bAutoIndent )
                 {
                     pos.x += indentLength*m_lineIndent[i];
