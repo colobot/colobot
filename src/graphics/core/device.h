@@ -243,14 +243,14 @@ enum ShadeModel
  * \enum FillMode
  * \brief Polygon fill mode
  */
-enum FillMode
+enum class FillMode : unsigned char
 {
     //! Draw only points
-    FILL_POINT,
+    POINT,
     //! Draw only lines
-    FILL_LINES,
+    LINES,
     //! Draw full polygons
-    FILL_POLY
+    POLY
 };
 
 /**

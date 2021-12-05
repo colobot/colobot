@@ -1547,9 +1547,9 @@ void CGL33Device::SetShadowColor(float value)
 
 void CGL33Device::SetFillMode(FillMode mode)
 {
-    if      (mode == FILL_POINT) glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
-    else if (mode == FILL_LINES) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    else if (mode == FILL_POLY)  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    if      (mode == FillMode::POINT) glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+    else if (mode == FillMode::LINES) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    else if (mode == FillMode::POLY)  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     else assert(false);
 }
 
