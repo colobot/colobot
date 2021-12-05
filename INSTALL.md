@@ -60,7 +60,7 @@ You will need:
  * PhysFS
  * oggenc (to generate music files)
 
-On Ubuntu (and probably any other Debian-based system) you and use the following commands.
+On Ubuntu (and probably any other Debian-based system) you can use the following commands.
 
 The apt-get update is optional but recommended to use before install packages:
 
@@ -77,23 +77,23 @@ key `--no-install-recommends` is optional.
 Make sure you install the packages along with header files (often distributed in separate *-dev packages). If you miss any requirements,
 CMake should warn you.
 
-At First, create a folder to download data from github. And enter to it:
+Create a folder to sources. And enter into it:
 
 ```
   mkdir colobot_sources
   cd colobot_sources
 ```
 
-To compile colobot, download colobot source files:
+Download colobot source files from github:
 ```
   $ git clone https://github.com/colobot/colobot.git
 ```
-If you want to compile development branch, change the first command to:
+If you want to compile development branch, change command to:
 ```
   $ git clone -b dev https://github.com/colobot/colobot.git /path/to/colobot/sources
 ```
 
-Also we need resources for compile. Enter to colobot folder and download it:
+Also we need media resources for compile. Enter to colobot folder and download it:
 
 ```
   $ cd colobot
