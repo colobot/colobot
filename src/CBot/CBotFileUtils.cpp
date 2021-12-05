@@ -186,7 +186,7 @@ bool WriteFloat(std::ostream &ostr, float f)
     union TypeConverter
     {
         float fValue;
-        unsigned int iValue;
+        uint32_t iValue;
     };
 
     TypeConverter u;
@@ -194,7 +194,7 @@ bool WriteFloat(std::ostream &ostr, float f)
     u.iValue = 0;
 
     u.fValue = f;
-    return WriteBinary<unsigned int>(ostr, u.iValue);
+    return WriteBinary<uint32_t>(ostr, u.iValue);
 }
 
 bool ReadFloat(std::istream &istr, float &f)
@@ -202,14 +202,14 @@ bool ReadFloat(std::istream &istr, float &f)
     union TypeConverter
     {
         float fValue;
-        unsigned int iValue;
+        uint32_t iValue;
     };
 
     TypeConverter u;
     u.fValue = 0.0f;
     u.iValue = 0;
 
-    if (!ReadBinary<unsigned int>(istr, u.iValue)) return false;
+    if (!ReadBinary<uint32_t>(istr, u.iValue)) return false;
     f = u.fValue;
     return true;
 }
@@ -219,7 +219,7 @@ bool WriteDouble(std::ostream &ostr, double d)
     union TypeConverter
     {
         double dValue;
-        unsigned long iValue;
+        uint64_t iValue;
     };
 
     TypeConverter u;
@@ -227,7 +227,7 @@ bool WriteDouble(std::ostream &ostr, double d)
     u.iValue = 0;
 
     u.dValue = d;
-    return WriteBinary<unsigned long>(ostr, u.iValue);
+    return WriteBinary<uint64_t>(ostr, u.iValue);
 }
 
 bool ReadDouble(std::istream &istr, double &d)
@@ -235,14 +235,14 @@ bool ReadDouble(std::istream &istr, double &d)
     union TypeConverter
     {
         double dValue;
-        unsigned long iValue;
+        uint64_t iValue;
     };
 
     TypeConverter u;
     u.dValue = 0.0;
     u.iValue = 0;
 
-    if (!ReadBinary<unsigned long>(istr, u.iValue)) return false;
+    if (!ReadBinary<uint64_t>(istr, u.iValue)) return false;
     d = u.dValue;
     return true;
 }
