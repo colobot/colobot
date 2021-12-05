@@ -258,7 +258,7 @@ void CShortcut::DrawVertex(int icon, float zoom)
     vertex[2] = { { p2.x, p1.y }, { u2, v2 } };
     vertex[3] = { { p2.x, p2.y }, { u2, v1 } };
 
-    device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
+    device->DrawPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, vertex, 4);
     m_engine->AddStatisticTriangle(2);
 }
 

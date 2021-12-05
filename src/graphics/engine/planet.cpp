@@ -147,7 +147,7 @@ void CPlanet::Draw()
             Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(u2, v1))
         };
 
-        device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, quad, 4);
+        device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, quad, 4);
         m_engine->AddStatisticTriangle(2);
     }
 }

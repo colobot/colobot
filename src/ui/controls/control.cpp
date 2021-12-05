@@ -624,7 +624,7 @@ void CControl::DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math:
         vertex[2] = { { p2.x, p1.y }, { uv2.x, uv2.y } };
         vertex[3] = { { p2.x, p2.y }, { uv2.x, uv1.y } };
 
-        device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
+        device->DrawPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, vertex, 4);
         m_engine->AddStatisticTriangle(2);
     }
     else    // 3 pieces?
@@ -643,7 +643,7 @@ void CControl::DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math:
             vertex[6] = { { p2.x, p1.y }, { uv2.x,   uv2.y } };
             vertex[7] = { { p2.x, p2.y }, { uv2.x,   uv1.y } };
 
-            device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 8);
+            device->DrawPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, vertex, 8);
             m_engine->AddStatisticTriangle(6);
         }
         else
@@ -660,7 +660,7 @@ void CControl::DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math:
             vertex[6] = { { p2.x, p2.y }, { uv2.x, uv1.y      } };
             vertex[7] = { { p1.x, p2.y }, { uv1.x, uv1.y      } };
 
-            device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 8);
+            device->DrawPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, vertex, 8);
             m_engine->AddStatisticTriangle(6);
         }
     }
@@ -703,7 +703,7 @@ void CControl::DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math:
     vertices[6] = { { p2.x, p1.y }, { uv2.x,      uv2.y      } };
     vertices[7] = { { p2.x, p3.y }, { uv2.x,      uv2.y - ex } };
 
-    device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertices, 8);
+    device->DrawPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, vertices, 8);
     m_engine->AddStatisticTriangle(6);
 
     // Central horizontal band.
@@ -716,7 +716,7 @@ void CControl::DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math:
     vertices[6] = { { p2.x, p3.y }, { uv2.x,      uv2.y - ex } };
     vertices[7] = { { p2.x, p4.y }, { uv2.x,      uv1.y + ex } };
 
-    device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertices, 8);
+    device->DrawPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, vertices, 8);
     m_engine->AddStatisticTriangle(6);
 
     // Top horizontal band.
@@ -729,7 +729,7 @@ void CControl::DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math:
     vertices[6] = { { p2.x, p4.y }, { uv2.x,      uv1.y + ex } };
     vertices[7] = { { p2.x, p2.y }, { uv2.x,      uv1.y    } };
 
-    device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertices, 8);
+    device->DrawPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, vertices, 8);
     m_engine->AddStatisticTriangle(6);
 }
 

@@ -140,12 +140,12 @@ void CGL33Device::DebugLights()
                     v[0].coord.y += 10.0f;
                     v[1].coord.y += 10.0f;
                 }
-                DrawPrimitive(PRIMITIVE_LINES, v, 2);
+                DrawPrimitive(PrimitiveType::LINES, v, 2);
 
                 v[0].coord = v[1].coord + Math::Normalize(v[0].coord - v[1].coord) * 50.0f;
 
                 glLineWidth(10.0f);
-                DrawPrimitive(PRIMITIVE_LINES, v, 2);
+                DrawPrimitive(PrimitiveType::LINES, v, 2);
                 glLineWidth(3.0f);
             }
             else  if (l.type == LIGHT_POINT)
@@ -159,14 +159,14 @@ void CGL33Device::DebugLights()
                 v[2].coord = l.position + Math::Vector( 1.0f,  1.0f, -1.0f) * 4.0f;
                 v[3].coord = l.position + Math::Vector(-1.0f,  1.0f, -1.0f) * 4.0f;
                 v[4].coord = l.position + Math::Vector(-1.0f, -1.0f, -1.0f) * 4.0f;
-                DrawPrimitive(PRIMITIVE_LINE_STRIP, v, 5);
+                DrawPrimitive(PrimitiveType::LINE_STRIP, v, 5);
 
                 v[0].coord = l.position + Math::Vector(-1.0f, -1.0f,  1.0f) * 4.0f;
                 v[1].coord = l.position + Math::Vector( 1.0f, -1.0f,  1.0f) * 4.0f;
                 v[2].coord = l.position + Math::Vector( 1.0f,  1.0f,  1.0f) * 4.0f;
                 v[3].coord = l.position + Math::Vector(-1.0f,  1.0f,  1.0f) * 4.0f;
                 v[4].coord = l.position + Math::Vector(-1.0f, -1.0f,  1.0f) * 4.0f;
-                DrawPrimitive(PRIMITIVE_LINE_STRIP, v, 5);
+                DrawPrimitive(PrimitiveType::LINE_STRIP, v, 5);
 
                 v[0].coord = l.position + Math::Vector(-1.0f, -1.0f, -1.0f) * 4.0f;
                 v[1].coord = l.position + Math::Vector(-1.0f, -1.0f,  1.0f) * 4.0f;
@@ -176,7 +176,7 @@ void CGL33Device::DebugLights()
                 v[5].coord = l.position + Math::Vector( 1.0f,  1.0f,  1.0f) * 4.0f;
                 v[6].coord = l.position + Math::Vector(-1.0f,  1.0f, -1.0f) * 4.0f;
                 v[7].coord = l.position + Math::Vector(-1.0f,  1.0f,  1.0f) * 4.0f;
-                DrawPrimitive(PRIMITIVE_LINES, v, 8);
+                DrawPrimitive(PrimitiveType::LINES, v, 8);
             }
             else if (l.type == LIGHT_SPOT)
             {
@@ -189,13 +189,13 @@ void CGL33Device::DebugLights()
                 v[2].coord = l.position + Math::Vector( 1.0f,  0.0f,  1.0f) * 4.0f;
                 v[3].coord = l.position + Math::Vector(-1.0f,  0.0f,  1.0f) * 4.0f;
                 v[4].coord = l.position + Math::Vector(-1.0f,  0.0f, -1.0f) * 4.0f;
-                DrawPrimitive(PRIMITIVE_LINE_STRIP, v, 5);
+                DrawPrimitive(PrimitiveType::LINE_STRIP, v, 5);
 
                 v[0].coord = l.position;
                 v[1].coord = l.position + Math::Normalize(l.direction) * 100.0f;
                 glEnable(GL_LINE_STIPPLE);
                 glLineStipple(3.0, 0xFF);
-                DrawPrimitive(PRIMITIVE_LINES, v, 2);
+                DrawPrimitive(PrimitiveType::LINES, v, 2);
                 glDisable(GL_LINE_STIPPLE);
             }
         }

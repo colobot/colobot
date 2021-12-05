@@ -1691,9 +1691,9 @@ void CEngine::UpdateStaticBuffer(EngineBaseObjDataTier& p4)
 {
     PrimitiveType type;
     if (p4.type == ENG_TRIANGLE_TYPE_TRIANGLES)
-        type = PRIMITIVE_TRIANGLES;
+        type = PrimitiveType::TRIANGLES;
     else
-        type = PRIMITIVE_TRIANGLE_STRIP;
+        type = PrimitiveType::TRIANGLE_STRIP;
 
     if (p4.buffer == nullptr)
     {
@@ -3643,7 +3643,7 @@ void CEngine::Draw3DScene()
 
         for (const auto& line : m_displayGoto)
         {
-            m_device->DrawPrimitive(PRIMITIVE_LINE_STRIP, line.data(), line.size());
+            m_device->DrawPrimitive(PrimitiveType::LINE_STRIP, line.data(), line.size());
         }
     }
     m_displayGoto.clear();
@@ -3794,7 +3794,7 @@ void CEngine::DrawCaptured3DScene()
     auto renderer = m_device->GetUIRenderer();
 
     renderer->SetTexture(m_capturedWorldTexture);
-    renderer->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, 4, vertices);
+    renderer->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, 4, vertices);
 }
 
 void CEngine::RenderDebugSphere(const Math::Sphere& sphere, const Math::Matrix& transform, const Gfx::Color& color)
@@ -3919,7 +3919,7 @@ void CEngine::RenderPendingDebugDraws()
 
     SetState(ENG_RSTATE_OPAQUE_COLOR);
 
-    m_device->DrawPrimitives(PRIMITIVE_LINE_STRIP,
+    m_device->DrawPrimitives(PrimitiveType::LINE_STRIP,
                              m_pendingDebugDraws.vertices.data(),
                              m_pendingDebugDraws.firsts.data(),
                              m_pendingDebugDraws.counts.data(),
@@ -4230,12 +4230,12 @@ void CEngine::DrawObject(const EngineBaseObjDataTier& p4)
     {
         if (p4.type == ENG_TRIANGLE_TYPE_TRIANGLES)
         {
-            m_device->DrawPrimitive(PRIMITIVE_TRIANGLES, p4.vertices.data(), p4.vertices.size());
+            m_device->DrawPrimitive(PrimitiveType::TRIANGLES, p4.vertices.data(), p4.vertices.size());
             m_statisticTriangle += p4.vertices.size() / 3;
         }
         else
         {
-            m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, p4.vertices.data(), p4.vertices.size() );
+            m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, p4.vertices.data(), p4.vertices.size() );
             m_statisticTriangle += p4.vertices.size() - 2;
         }
     }
@@ -4872,7 +4872,7 @@ void CEngine::DrawShadowSpots()
             SetState(ENG_RSTATE_TTEXTURE_WHITE, Color(intensity, intensity, intensity, intensity));
         }
 
-        m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
+        m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
         AddStatisticTriangle(2);
     }
 
@@ -4929,7 +4929,7 @@ void CEngine::DrawBackgroundGradient(const Color& up, const Color& down)
         VertexCol(Math::Vector(p2.x, p2.y, 0.0f), color[0])
     };
 
-    m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
+    m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
     AddStatisticTriangle(2);
 }
 
@@ -5009,7 +5009,7 @@ void CEngine::DrawBackgroundImage()
         { { p2.x, p2.y }, { u2, v1 } }
     };
 
-    m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertices, 4);
+    m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertices, 4);
     AddStatisticTriangle(2);
 }
 
@@ -5063,7 +5063,7 @@ void CEngine::DrawForegroundImage()
     m_device->SetTransform(TRANSFORM_PROJECTION, m_matProjInterface);
     m_device->SetTransform(TRANSFORM_WORLD, m_matWorldInterface);
 
-    m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
+    m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
     AddStatisticTriangle(2);
 }
 
@@ -5100,7 +5100,7 @@ void CEngine::DrawOverColor()
         VertexCol(Math::Vector(p2.x, p2.y, 0.0f), color[0])
     };
 
-    m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
+    m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
     AddStatisticTriangle(2);
 
     m_device->Restore();
@@ -5179,22 +5179,22 @@ void CEngine::DrawHighlight()
     line[0].coord = Math::Vector(p1.x, p1.y + dy, 0.0f);
     line[1].coord = Math::Vector(p1.x, p1.y, 0.0f);
     line[2].coord = Math::Vector(p1.x + dx, p1.y, 0.0f);
-    m_device->DrawPrimitive(PRIMITIVE_LINE_STRIP, line, 3);
+    m_device->DrawPrimitive(PrimitiveType::LINE_STRIP, line, 3);
 
     line[0].coord = Math::Vector(p2.x - dx, p1.y, 0.0f);
     line[1].coord = Math::Vector(p2.x, p1.y, 0.0f);
     line[2].coord = Math::Vector(p2.x, p1.y + dy, 0.0f);
-    m_device->DrawPrimitive(PRIMITIVE_LINE_STRIP, line, 3);
+    m_device->DrawPrimitive(PrimitiveType::LINE_STRIP, line, 3);
 
     line[0].coord = Math::Vector(p2.x, p2.y - dy, 0.0f);
     line[1].coord = Math::Vector(p2.x, p2.y, 0.0f);
     line[2].coord = Math::Vector(p2.x - dx, p2.y, 0.0f);
-    m_device->DrawPrimitive(PRIMITIVE_LINE_STRIP, line, 3);
+    m_device->DrawPrimitive(PrimitiveType::LINE_STRIP, line, 3);
 
     line[0].coord = Math::Vector(p1.x + dx, p2.y, 0.0f);
     line[1].coord = Math::Vector(p1.x, p2.y, 0.0f);
     line[2].coord = Math::Vector(p1.x, p2.y - dy, 0.0f);
-    m_device->DrawPrimitive(PRIMITIVE_LINE_STRIP, line, 3);
+    m_device->DrawPrimitive(PrimitiveType::LINE_STRIP, line, 3);
 }
 
 void CEngine::DrawMouse()
@@ -5262,7 +5262,7 @@ void CEngine::DrawMouseSprite(Math::IntPoint pos, Math::IntPoint size, int icon)
         { { p2.x, p1.y }, { u2, v1 } }
     };
 
-    m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
+    m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
     AddStatisticTriangle(2);
 }
 
@@ -5292,7 +5292,7 @@ void CEngine::DrawStats()
         { { pos.x + width + margin.x, pos.y                     + height + margin.y }, {}, black }
     };
 
-    m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
+    m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
 
     SetState(ENG_RSTATE_TEXT);
 

@@ -288,7 +288,7 @@ void CLightning::Draw()
             vertex[3] = Vertex(corner[3], n, Math::Point(texInf.x, texInf.y));
         }
 
-        device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
+        device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
         m_engine->AddStatisticTriangle(2);
 
         p1 = p2;

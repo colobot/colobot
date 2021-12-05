@@ -326,13 +326,13 @@ GLenum TranslateGfxPrimitive(PrimitiveType type)
     GLenum flag = 0;
     switch (type)
     {
-    case PRIMITIVE_POINTS:         flag = GL_POINTS; break;
-    case PRIMITIVE_LINES:          flag = GL_LINES; break;
-    case PRIMITIVE_LINE_STRIP:     flag = GL_LINE_STRIP; break;
-    case PRIMITIVE_LINE_LOOP:      flag = GL_LINE_LOOP; break;
-    case PRIMITIVE_TRIANGLES:      flag = GL_TRIANGLES; break;
-    case PRIMITIVE_TRIANGLE_STRIP: flag = GL_TRIANGLE_STRIP; break;
-    case PRIMITIVE_TRIANGLE_FAN:   flag = GL_TRIANGLE_FAN; break;
+    case PrimitiveType::POINTS:         flag = GL_POINTS; break;
+    case PrimitiveType::LINES:          flag = GL_LINES; break;
+    case PrimitiveType::LINE_STRIP:     flag = GL_LINE_STRIP; break;
+    case PrimitiveType::LINE_LOOP:      flag = GL_LINE_LOOP; break;
+    case PrimitiveType::TRIANGLES:      flag = GL_TRIANGLES; break;
+    case PrimitiveType::TRIANGLE_STRIP: flag = GL_TRIANGLE_STRIP; break;
+    case PrimitiveType::TRIANGLE_FAN:   flag = GL_TRIANGLE_FAN; break;
     default: assert(false); break;
     }
     return flag;

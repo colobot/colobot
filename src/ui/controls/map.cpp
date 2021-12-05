@@ -965,7 +965,7 @@ void CMap::DrawTriangle(Math::Point p1, Math::Point p2, Math::Point p3, Math::Po
     vertex[1] = { { p2.x, p2.y }, { uv1.x, uv2.y } };
     vertex[2] = { { p3.x, p3.y }, { uv2.x, uv2.y } };
 
-    device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLES, vertex, 3);
+    device->DrawPrimitive(Gfx::PrimitiveType::TRIANGLES, vertex, 3);
     m_engine->AddStatisticTriangle(1);
 }
 
@@ -983,7 +983,7 @@ void CMap::DrawPenta(Math::Point p1, Math::Point p2, Math::Point p3, Math::Point
     vertex[3] = { { p3.x, p3.y }, { uv2.x, uv2.y } };
     vertex[4] = { { p4.x, p4.y }, { uv2.x, uv2.y } };
 
-    device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 5);
+    device->DrawPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, vertex, 5);
     m_engine->AddStatisticTriangle(3);
 }
 
@@ -1019,7 +1019,7 @@ void CMap::DrawVertex(Math::Point uv1, Math::Point uv2, float zoom)
     vertex[2] = { { p2.x, p1.y }, { uv2.x, uv2.y } };
     vertex[3] = { { p2.x, p2.y }, { uv2.x, uv1.y } };
 
-    device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
+    device->DrawPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, vertex, 4);
     m_engine->AddStatisticTriangle(2);
 }
 

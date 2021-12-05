@@ -158,7 +158,7 @@ void CColor::Draw()
     vertex[2] = { { p2.x, p1.y }, {}, col };
     vertex[3] = { { p2.x, p2.y }, {}, col };
 
-    device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
+    device->DrawPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, vertex, 4);
     m_engine->AddStatisticTriangle(2);
 }
 

@@ -2663,7 +2663,7 @@ void CParticle::TrackDraw(int i, ParticleType type)
             vertex[3] = Vertex(corner[3], n, Math::Point(texInf.x, texInf.y));
         }
 
-        m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
+        m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
         m_engine->AddStatisticTriangle(2);
 
         if (f2 < 0.0f) break;
@@ -2695,7 +2695,7 @@ void CParticle::DrawParticleTriangle(int i)
     mat.Set(3, 4, pos.z);
     m_device->SetTransform(TRANSFORM_WORLD, mat);
 
-    m_device->DrawPrimitive(PRIMITIVE_TRIANGLES, m_triangle[i].triangle, 3);
+    m_device->DrawPrimitive(PrimitiveType::TRIANGLES, m_triangle[i].triangle, 3);
     m_engine->AddStatisticTriangle(1);
 }
 
@@ -2741,7 +2741,7 @@ void CParticle::DrawParticleNorm(int i)
         vertex[2] = Vertex(corner[3], n, Math::Point(m_particle[i].texSup.x, m_particle[i].texInf.y));
         vertex[3] = Vertex(corner[2], n, Math::Point(m_particle[i].texInf.x, m_particle[i].texInf.y));
 
-        m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
+        m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
         m_engine->AddStatisticTriangle(2);
     }
     else
@@ -2792,7 +2792,7 @@ void CParticle::DrawParticleNorm(int i)
         vertex[2] = Vertex(corner[3], n, Math::Point(m_particle[i].texSup.x, m_particle[i].texInf.y));
         vertex[3] = Vertex(corner[2], n, Math::Point(m_particle[i].texInf.x, m_particle[i].texInf.y));
 
-        m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4, m_particle[i].color);
+        m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4, m_particle[i].color);
         m_engine->AddStatisticTriangle(2);
     }
 }
@@ -2856,7 +2856,7 @@ void CParticle::DrawParticleFlat(int i)
     vertex[2] = Vertex(corner[3], n, Math::Point(m_particle[i].texSup.x, m_particle[i].texInf.y));
     vertex[3] = Vertex(corner[2], n, Math::Point(m_particle[i].texInf.x, m_particle[i].texInf.y));
 
-    m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
+    m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
     m_engine->AddStatisticTriangle(2);
 }
 
@@ -2943,7 +2943,7 @@ void CParticle::DrawParticleFog(int i)
     vertex[2] = Vertex(corner[3], n, Math::Point(m_particle[i].texSup.x, m_particle[i].texInf.y));
     vertex[3] = Vertex(corner[2], n, Math::Point(m_particle[i].texInf.x, m_particle[i].texInf.y));
 
-    m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
+    m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
     m_engine->AddStatisticTriangle(2);
 }
 
@@ -3097,7 +3097,7 @@ void CParticle::DrawParticleRay(int i)
             vertex[2] = Vertex(corner[3], n, Math::Point(texSup.x, texInf.y));
             vertex[3] = Vertex(corner[2], n, Math::Point(texInf.x, texInf.y));
 
-            m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
+            m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
             m_engine->AddStatisticTriangle(2);
         }
         adv += dim.x*2.0f;
@@ -3197,7 +3197,7 @@ void CParticle::DrawParticleSphere(int i)
         }
     }
 
-    m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, j);
+    m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, j);
     m_engine->AddStatisticTriangle(j);
 
     m_engine->SetState(ENG_RSTATE_TTEXTURE_BLACK, IntensityToColor(m_particle[i].intensity));
@@ -3292,7 +3292,7 @@ void CParticle::DrawParticleCylinder(int i)
         }
     }
 
-    m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, j);
+    m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, j);
     m_engine->AddStatisticTriangle(j);
 
     m_engine->SetState(ENG_RSTATE_TTEXTURE_BLACK, IntensityToColor(m_particle[i].intensity));
@@ -3349,7 +3349,7 @@ void CParticle::DrawParticleWheel(int i)
         vertex[2] = Vertex(pos[2], n, Math::Point(ts.x, ti.y));
         vertex[3] = Vertex(pos[3], n, Math::Point(ti.x, ti.y));
 
-        m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4, TraceColorColor(m_wheelTrace[i].color));
+        m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4, TraceColorColor(m_wheelTrace[i].color));
         m_engine->AddStatisticTriangle(2);
 
         m_engine->SetState(ENG_RSTATE_OPAQUE_COLOR);
@@ -3370,7 +3370,7 @@ void CParticle::DrawParticleWheel(int i)
         vertex[2] = Vertex(pos[2], n);
         vertex[3] = Vertex(pos[3], n);
 
-        m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertex, 4, TraceColorColor(m_wheelTrace[i].color));
+        m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4, TraceColorColor(m_wheelTrace[i].color));
         m_engine->AddStatisticTriangle(2);
     }
 }

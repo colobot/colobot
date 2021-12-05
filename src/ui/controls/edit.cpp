@@ -1278,7 +1278,7 @@ void CEdit::DrawHorizontalGradient(Math::Point pos, Math::Point dim, Gfx::Color 
         { { p2.x, p2.y }, {}, col2 }
     };
 
-    m_engine->GetDevice()->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, quad, 4);
+    m_engine->GetDevice()->DrawPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, quad, 4);
     m_engine->AddStatisticTriangle(2);
 }
 

@@ -306,7 +306,7 @@ void CWater::DrawBack()
         VertexCol(Math::Vector(p2.x, p1.y, p2.z), white)
     };
 
-    device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertices, 4);
+    device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertices, 4);
     m_engine->AddStatisticTriangle(2);
 
     m_engine->SetDeepView(deep, 0);
@@ -420,7 +420,7 @@ void CWater::DrawSurf()
             pos.x += size*2.0f;
         }
 
-        device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, &vertices[0], vertexIndex);
+        device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, &vertices[0], vertexIndex);
         m_engine->AddStatisticTriangle(vertexIndex - 2);
     }
 

@@ -257,15 +257,15 @@ enum FillMode
  * \enum PrimitiveType
  * \brief Type of primitive to render
  */
-enum PrimitiveType
+enum class PrimitiveType : unsigned char
 {
-    PRIMITIVE_POINTS,
-    PRIMITIVE_LINES,
-    PRIMITIVE_LINE_STRIP,
-    PRIMITIVE_LINE_LOOP,
-    PRIMITIVE_TRIANGLES,
-    PRIMITIVE_TRIANGLE_STRIP,
-    PRIMITIVE_TRIANGLE_FAN
+    POINTS,
+    LINES,
+    LINE_STRIP,
+    LINE_LOOP,
+    TRIANGLES,
+    TRIANGLE_STRIP,
+    TRIANGLE_FAN
 };
 
 /**

@@ -153,13 +153,13 @@ public:
 
         for (const auto& quad : m_quads)
         {
-            m_engine.GetDevice()->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, quad.vertices, 4);
+            m_engine.GetDevice()->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, quad.vertices, 4);
         }
 
         m_engine.GetDevice()->GetUIRenderer()->Flush();
 
         //const Vertex* vertices = m_quads.front().vertices;
-        //m_engine.GetDevice()->DrawPrimitives(PRIMITIVE_TRIANGLE_STRIP, vertices, m_firsts.data(),
+        //m_engine.GetDevice()->DrawPrimitives(PrimitiveType::TRIANGLE_STRIP, vertices, m_firsts.data(),
         //                                     m_counts.data(), static_cast<int>(m_quads.size()), m_color);
         m_engine.AddStatisticTriangle(static_cast<int>(m_quads.size() * 2));
         m_quads.clear();
@@ -1019,7 +1019,7 @@ void CText::DrawHighlight(FontMetaChar hl, Math::IntPoint pos, Math::IntPoint si
         VertexCol(Math::Vector(p2.x, p1.y, 0.0f), grad[1])
     };
 
-    m_device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, quad, 4);
+    m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, quad, 4);
     m_engine->AddStatisticTriangle(2);
 
     m_device->SetTextureEnabled(0, true);

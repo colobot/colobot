@@ -33,7 +33,7 @@ namespace Gfx
 {
 
 class CVertexBuffer;
-enum PrimitiveType;
+enum class PrimitiveType : unsigned char;
 struct Texture;
 
 enum class TransparencyMode

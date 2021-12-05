@@ -177,7 +177,7 @@ void CCloud::Draw()
             pos.x += size*2.0f;
         }
 
-        device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, &vertices[0], vertexIndex);
+        device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, &vertices[0], vertexIndex);
         m_engine->AddStatisticTriangle(vertexIndex - 2);
     }
 
