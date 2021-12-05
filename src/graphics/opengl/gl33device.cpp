@@ -1535,11 +1535,6 @@ void CGL33Device::SetCullMode(CullMode mode)
     else assert(false);
 }
 
-void CGL33Device::SetShadeModel(ShadeModel model)
-{
-    //glUniform1i(uni_SmoothShading, (model == SHADE_SMOOTH ? 1 : 0));
-}
-
 void CGL33Device::SetShadowColor(float value)
 {
     glUniform1f(m_uniforms.shadowColor, value);

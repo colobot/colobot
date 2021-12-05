@@ -344,7 +344,6 @@ bool CEngine::Create()
     }
 
     m_device->SetClearColor(Color(0.0f, 0.0f, 0.0f, 0.0f));
-    m_device->SetShadeModel(SHADE_SMOOTH);
     m_device->SetFillMode(FillMode::POLY);
 
     SetFocus(m_focus);

@@ -195,8 +195,6 @@ public:
 
     void SetCullMode(CullMode mode) override;
 
-    void SetShadeModel(ShadeModel model) override;
-
     void SetShadowColor(float value) override;
 
     void SetFillMode(FillMode mode) override;

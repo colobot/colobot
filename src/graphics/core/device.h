@@ -230,16 +230,6 @@ enum CullMode
 };
 
 /**
- * \enum ShadeModel
- * \brief Shade model used in rendering
- */
-enum ShadeModel
-{
-    SHADE_FLAT,
-    SHADE_SMOOTH
-};
-
-/**
  * \enum FillMode
  * \brief Polygon fill mode
  */
@@ -570,9 +560,6 @@ public:
 
     //! Sets the current cull mode
     virtual void SetCullMode(CullMode mode) = 0;
-
-    //! Sets the shade model
-    virtual void SetShadeModel(ShadeModel model) = 0;
 
     //! Sets shadow color
     virtual void SetShadowColor(float value) = 0;
