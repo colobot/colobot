@@ -53,18 +53,16 @@ You will need:
  * GLEW
  * libpng
  * gettext
- * librsvg2
  * libsndfile
  * libvorbis
  * libogg
  * OpenAL (OpenAL-Soft)
  * PhysFS
  * oggenc (to generate music files)
- * xmlstarlet
 
 On Ubuntu (and probably any other Debian-based system), you can use the following command to install all required packages:
 ```
-  $ sudo apt-get update && sudo apt-get install --no-install-recommends build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-regex-dev libphysfs-dev gettext git po4a vorbis-tools librsvg2-bin xmlstarlet
+  $ sudo apt-get update && sudo apt-get install --no-install-recommends build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-regex-dev libphysfs-dev gettext git po4a vorbis-tools
 ```
 
 Make sure you install the packages along with header files (often distributed in separate *-dev packages). If you miss any requirements,
