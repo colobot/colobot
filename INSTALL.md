@@ -60,15 +60,14 @@ You will need:
  * PhysFS
  * oggenc (to generate music files)
 
-On Ubuntu (and probably any other Debian-based system) you can use the following commands.
+To build colobot in Ubuntu (and probably any other Debian-based system), run your favorite shell and use the following commands.
 
-The apt-get update is optional but recommended to use before install packages:
-
+The apt-get update is optional but recommended to use before install packages
 ```
   $ sudo apt-get update
 ```
 
-Use the following command to install all required packages:
+The following command is install all required packages:
 ```
   $ sudo apt-get install --no-install-recommends build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-regex-dev libphysfs-dev gettext git po4a vorbis-tools
 ```
@@ -77,30 +76,24 @@ key `--no-install-recommends` is optional.
 Make sure you install the packages along with header files (often distributed in separate *-dev packages). If you miss any requirements,
 CMake should warn you.
 
-Create a folder to sources. And enter into it:
+Create a separate folder for sources if you need to. And enter into it from terminal.
 
-```
-  mkdir colobot_sources
-  cd colobot_sources
-```
-
-Download colobot source files from github:
+Download colobot source files from github to current folder:
 ```
   $ git clone https://github.com/colobot/colobot.git
 ```
 If you want to compile development branch, change command to:
 ```
-  $ git clone -b dev https://github.com/colobot/colobot.git /path/to/colobot/sources
+  $ git clone -b dev https://github.com/colobot/colobot.git
 ```
 
-Also we need media resources for compile. Enter to colobot folder and download it:
-
+Media resources also is needed to build. Enter to \colobot folder and download it too:
 ```
   $ cd colobot
   $ git submodule update --init
 ```
 
-If you also want to download optional music files, add --recursive to third command like so:
+If you also want to download optional music files, add --recursive to command like so:
 ```
   $ git submodule update --init --recursive
 ```
