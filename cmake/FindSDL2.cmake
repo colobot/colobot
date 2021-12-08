@@ -317,8 +317,7 @@ FIND_PACKAGE_HANDLE_STANDARD_ARGS(SDL2
 if(SDL2MAIN_LIBRARY)
   FIND_PACKAGE_HANDLE_STANDARD_ARGS(SDL2main
                                     REQUIRED_VARS SDL2MAIN_LIBRARY SDL2_INCLUDE_DIR
-                                    VERSION_VAR SDL2_VERSION_STRING
-                                    NAME_MISMATCHED)
+                                    VERSION_VAR SDL2_VERSION_STRING)
 endif()
 
 
