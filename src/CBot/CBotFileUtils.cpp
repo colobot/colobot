@@ -59,7 +59,7 @@ static bool ReadBinary(std::istream &istr, T &value)
     while (true)        // unsigned LEB128
     {
         if (!istr.read(reinterpret_cast<char*>(&chr), 1)) return false;
-        if (shift < sizeof(T) * 8 - 1)
+        if (shift < sizeof(T) * 8)
             value |= static_cast<T>(chr & 0x7F) << shift;
         shift += 7;
         if ((chr & 0x80) == 0) break;
