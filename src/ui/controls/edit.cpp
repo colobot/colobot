@@ -31,6 +31,7 @@
 #include "common/resources/inputstream.h"
 #include "common/resources/outputstream.h"
 
+#include "graphics/core/renderers.h"
 #include "graphics/engine/engine.h"
 
 #include "level/parser/parser.h"
@@ -1278,7 +1279,9 @@ void CEdit::DrawHorizontalGradient(Math::Point pos, Math::Point dim, Gfx::Color 
         { { p2.x, p2.y }, {}, col2 }
     };
 
-    m_engine->GetDevice()->DrawPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, quad, 4);
+    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+
+    renderer->DrawPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, 4, quad);
     m_engine->AddStatisticTriangle(2);
 }
 

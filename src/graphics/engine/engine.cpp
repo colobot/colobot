@@ -5008,7 +5008,8 @@ void CEngine::DrawBackgroundImage()
         { { p2.x, p2.y }, { u2, v1 } }
     };
 
-    m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertices, 4);
+    auto renderer = m_device->GetUIRenderer();
+    renderer->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, 4, vertices);
     AddStatisticTriangle(2);
 }
 
@@ -5261,7 +5262,8 @@ void CEngine::DrawMouseSprite(Math::IntPoint pos, Math::IntPoint size, int icon)
         { { p2.x, p1.y }, { u2, v1 } }
     };
 
-    m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
+    auto renderer = m_device->GetUIRenderer();
+    renderer->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, 4, vertex);
     AddStatisticTriangle(2);
 }
 
@@ -5277,7 +5279,8 @@ void CEngine::DrawStats()
     Math::Point pos(0.05f * m_size.x/m_size.y, 0.05f + TOTAL_LINES * height);
 
     SetState(ENG_RSTATE_TCOLOR_ALPHA);
-    SetUITexture(Texture{});
+    auto renderer = m_device->GetUIRenderer();
+    renderer->SetTexture(Texture{});
 
     glm::u8vec4 black = { 0, 0, 0, 192 };
 
@@ -5291,7 +5294,7 @@ void CEngine::DrawStats()
         { { pos.x + width + margin.x, pos.y                     + height + margin.y }, {}, black }
     };
 
-    m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
+    renderer->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, 4, vertex);
 
     SetState(ENG_RSTATE_TEXT);
 

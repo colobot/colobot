@@ -151,9 +151,11 @@ public:
             }
         }
 
+        auto renderer = m_engine.GetDevice()->GetUIRenderer();
+
         for (const auto& quad : m_quads)
         {
-            m_engine.GetDevice()->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, quad.vertices, 4);
+            renderer->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, 4, quad.vertices);
         }
 
         m_engine.GetDevice()->GetUIRenderer()->Flush();

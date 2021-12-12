@@ -23,6 +23,7 @@
 #include "common/image.h"
 
 #include "graphics/core/device.h"
+#include "graphics/core/renderers.h"
 
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/water.h"
@@ -959,13 +960,13 @@ void CMap::DrawTriangle(Math::Point p1, Math::Point p2, Math::Point p3, Math::Po
 {
     Gfx::Vertex2D  vertex[3];  // 1 triangle
 
-    auto device = m_engine->GetDevice();
+    auto renderer = m_engine->GetDevice()->GetUIRenderer();
 
     vertex[0] = { { p1.x, p1.y }, { uv1.x, uv1.y } };
     vertex[1] = { { p2.x, p2.y }, { uv1.x, uv2.y } };
     vertex[2] = { { p3.x, p3.y }, { uv2.x, uv2.y } };
 
-    device->DrawPrimitive(Gfx::PrimitiveType::TRIANGLES, vertex, 3);
+    renderer->DrawPrimitive(Gfx::PrimitiveType::TRIANGLES, 3, vertex);
     m_engine->AddStatisticTriangle(1);
 }
 
@@ -975,7 +976,7 @@ void CMap::DrawPenta(Math::Point p1, Math::Point p2, Math::Point p3, Math::Point
 {
     Gfx::Vertex2D  vertex[5];  // 1 pentagon
 
-    auto device = m_engine->GetDevice();
+    auto renderer = m_engine->GetDevice()->GetUIRenderer();
 
     vertex[0] = { { p1.x, p1.y }, { uv1.x, uv1.y } };
     vertex[1] = { { p2.x, p2.y }, { uv1.x, uv2.y } };
@@ -983,7 +984,7 @@ void CMap::DrawPenta(Math::Point p1, Math::Point p2, Math::Point p3, Math::Point
     vertex[3] = { { p3.x, p3.y }, { uv2.x, uv2.y } };
     vertex[4] = { { p4.x, p4.y }, { uv2.x, uv2.y } };
 
-    device->DrawPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, vertex, 5);
+    renderer->DrawPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, 5, vertex);
     m_engine->AddStatisticTriangle(3);
 }
 
@@ -994,7 +995,7 @@ void CMap::DrawVertex(Math::Point uv1, Math::Point uv2, float zoom)
     Gfx::Vertex2D   vertex[4];  // 2 triangles
     Math::Point     p1, p2, c;
 
-    auto device = m_engine->GetDevice();
+    auto renderer = m_engine->GetDevice()->GetUIRenderer();
 
     p1.x = m_pos.x;
     p1.y = m_pos.y;
@@ -1019,7 +1020,7 @@ void CMap::DrawVertex(Math::Point uv1, Math::Point uv2, float zoom)
     vertex[2] = { { p2.x, p1.y }, { uv2.x, uv2.y } };
     vertex[3] = { { p2.x, p2.y }, { uv2.x, uv1.y } };
 
-    device->DrawPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, vertex, 4);
+    renderer->DrawPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, 4, vertex);
     m_engine->AddStatisticTriangle(2);
 }
 

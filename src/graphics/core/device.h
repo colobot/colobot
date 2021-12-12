@@ -503,8 +503,6 @@ public:
                                Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) = 0;
     //! Renders primitive composed of vertices with solid color
     virtual void DrawPrimitive(PrimitiveType type, const VertexCol *vertices , int vertexCount) = 0;
-    //! Renders primitive using UI renderer
-    virtual void DrawPrimitive(PrimitiveType type, const Vertex2D* vertices, int vertexCount) = 0;
     //! Renders 3D primitive
     virtual void DrawPrimitive(PrimitiveType type, const Vertex3D* vertices, int vertexCount) = 0;
 

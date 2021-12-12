@@ -1143,11 +1143,6 @@ void CGL33Device::DrawPrimitive(PrimitiveType type, const Vertex3D* vertices, in
     glDrawArrays(TranslateGfxPrimitive(type), 0, vertexCount);
 }
 
-void CGL33Device::DrawPrimitive(PrimitiveType type, const Vertex2D* vertices, int vertexCount)
-{
-    m_uiRenderer->DrawPrimitive(type, vertexCount, vertices);
-}
-
 void CGL33Device::DrawPrimitives(PrimitiveType type, const Vertex *vertices,
     int first[], int count[], int drawCount, Color color)
 {

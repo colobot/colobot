@@ -154,8 +154,6 @@ public:
                                Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) override;
     virtual void DrawPrimitive(PrimitiveType type, const VertexCol *vertices , int vertexCount) override;
 
-    virtual void DrawPrimitive(PrimitiveType type, const Vertex2D* vertices, int vertexCount) override;
-
     virtual void DrawPrimitive(PrimitiveType type, const Vertex3D* vertices, int vertexCount) override;
 
     virtual void DrawPrimitives(PrimitiveType type, const Vertex *vertices,

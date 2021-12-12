@@ -23,6 +23,7 @@
 #include "common/event.h"
 
 #include "graphics/core/device.h"
+#include "graphics/core/renderers.h"
 
 #include "graphics/engine/engine.h"
 
@@ -226,8 +227,6 @@ void CShortcut::DrawVertex(int icon, float zoom)
     Math::Point     p1, p2, c;
     float       u1, u2, v1, v2, dp;
 
-    auto device = m_engine->GetDevice();
-
     p1.x = m_pos.x;
     p1.y = m_pos.y;
     p2.x = m_pos.x + m_dim.x;
@@ -258,7 +257,9 @@ void CShortcut::DrawVertex(int icon, float zoom)
     vertex[2] = { { p2.x, p1.y }, { u2, v2 } };
     vertex[3] = { { p2.x, p2.y }, { u2, v1 } };
 
-    device->DrawPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, vertex, 4);
+    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+
+    renderer->DrawPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, 4, vertex);
     m_engine->AddStatisticTriangle(2);
 }
 

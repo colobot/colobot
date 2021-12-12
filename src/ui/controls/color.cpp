@@ -24,6 +24,7 @@
 #include "common/restext.h"
 
 #include "graphics/core/device.h"
+#include "graphics/core/renderers.h"
 
 #include "graphics/engine/engine.h"
 
@@ -151,14 +152,14 @@ void CColor::Draw()
     m_engine->SetUITexture(Gfx::Texture{0});  // no texture
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
-    auto device = m_engine->GetDevice();
-
     vertex[0] = { { p1.x, p1.y }, {}, col };
     vertex[1] = { { p1.x, p2.y }, {}, col };
     vertex[2] = { { p2.x, p1.y }, {}, col };
     vertex[3] = { { p2.x, p2.y }, {}, col };
 
-    device->DrawPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, vertex, 4);
+    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+
+    renderer->DrawPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, 4, vertex);
     m_engine->AddStatisticTriangle(2);
 }
 
