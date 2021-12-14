@@ -315,6 +315,11 @@ find_package(Gettext REQUIRED)
 find_package(PhysFS REQUIRED)
 find_package(glm CONFIG REQUIRED)
 
+# Add target alias glm::glm for older versions of the library
+if(NOT TARGET glm::glm)
+    add_library(glm::glm ALIAS glm)
+endif()
+
 set(Boost_USE_STATIC_LIBS ${BOOST_STATIC})
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME ${USE_STATIC_RUNTIME})
