@@ -141,10 +141,10 @@ void CGL33ObjectRenderer::CGL33ObjectRenderer::Begin()
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     glActiveTexture(GL_TEXTURE10);
-    glBindTexture(GL_TEXTURE_2D, 0);
+    glBindTexture(GL_TEXTURE_2D, m_whiteTexture);
 
     glActiveTexture(GL_TEXTURE11);
-    glBindTexture(GL_TEXTURE_2D, 0);
+    glBindTexture(GL_TEXTURE_2D, m_whiteTexture);
 
     glActiveTexture(GL_TEXTURE12);
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -158,6 +158,19 @@ void CGL33ObjectRenderer::CGL33ObjectRenderer::Begin()
 
 void CGL33ObjectRenderer::CGL33ObjectRenderer::End()
 {
+    glActiveTexture(GL_TEXTURE10);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glActiveTexture(GL_TEXTURE11);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glActiveTexture(GL_TEXTURE12);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    m_primaryTexture = 0;
+    m_secondaryTexture = 0;
+    m_shadowMap = 0;
+
     m_device->Restore();
 
     glDepthMask(GL_TRUE);
