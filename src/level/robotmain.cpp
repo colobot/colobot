@@ -1495,6 +1495,40 @@ void CRobotMain::ExecuteCmd(const std::string& cmd)
         return;
     }
 
+    if (cmd.find("triplanar") != std::string::npos)
+    {
+        std::string command, arg;
+
+        std::istringstream stream(cmd);
+        stream >> command >> arg;
+
+        if (command == "triplanar_mode")
+        {
+            if (arg == "1" || arg == "on")
+            {
+                m_engine->SetTriplanarMode(true);
+                return;
+            }
+
+            if (arg == "0" || arg == "off")
+            {
+                m_engine->SetTriplanarMode(false);
+                return;
+            }
+        }
+
+        if (command == "triplanar_scale")
+        {
+            float scale = std::stof(arg);
+
+            if (scale > 0.01f && scale < 1000.0f)
+            {
+                m_engine->SetTriplanarScale(scale);
+                return;
+            }
+        }
+    }
+
     float speed;
     if (sscanf(cmd.c_str(), "speed %f", &speed) > 0)
     {
