@@ -3471,7 +3471,7 @@ void CEngine::Draw3DScene()
     objectRenderer->SetTransparency(TransparencyMode::NONE);
 
     objectRenderer->SetFog(fogStart, fogEnd, { fogColor.r, fogColor.g, fogColor.b });
-    objectRenderer->SetAlphaScissor(0.5f);
+    objectRenderer->SetAlphaScissor(0.0f);
     objectRenderer->SetShadowParams(m_shadowRegions, shadowParams);
 
     bool transparent = false;
@@ -3522,6 +3522,11 @@ void CEngine::Draw3DScene()
                     transparent = true;
                     continue;
                 }
+
+                if (p3.state & ENG_RSTATE_ALPHA)
+                    objectRenderer->SetAlphaScissor(0.2f);
+                else
+                    objectRenderer->SetAlphaScissor(0.0f);
 
                 if ((p3.state & ENG_RSTATE_TCOLOR_BLACK)
                     || (p3.state & ENG_RSTATE_TCOLOR_WHITE)
