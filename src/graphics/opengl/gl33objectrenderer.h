@@ -26,7 +26,7 @@
 
 #include "graphics/core/renderers.h"
 
-#include <gl/glew.h>
+#include <GL/glew.h>
 
 #include <array>
 #include <vector>
