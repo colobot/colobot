@@ -262,7 +262,7 @@ CGL33TerrainRenderer::CGL33TerrainRenderer(CGL33Device* device)
     glUseProgram(m_program);
 
     // Setup uniforms
-    auto identity = glm::identity<glm::mat4>();
+    glm::mat4 identity(1.0f);
 
     m_projectionMatrix = glGetUniformLocation(m_program, "uni_ProjectionMatrix");
     m_viewMatrix = glGetUniformLocation(m_program, "uni_ViewMatrix");
@@ -517,7 +517,7 @@ CGL33ShadowRenderer::CGL33ShadowRenderer(CGL33Device* device)
     auto texture = glGetUniformLocation(m_program, "uni_Texture");
     glUniform1i(texture, 0);
 
-    auto identity = glm::identity<glm::mat4>();
+    glm::mat4 identity(1.0f);
 
     m_projectionMatrix = glGetUniformLocation(m_program, "uni_ProjectionMatrix");
     m_viewMatrix = glGetUniformLocation(m_program, "uni_ViewMatrix");

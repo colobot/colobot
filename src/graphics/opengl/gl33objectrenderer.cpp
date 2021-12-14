@@ -66,7 +66,7 @@ CGL33ObjectRenderer::CGL33ObjectRenderer(CGL33Device* device)
     glUseProgram(m_program);
 
     // Setup uniforms
-    auto identity = glm::identity<glm::mat4>();
+    glm::mat4 identity(1.0f);
 
     m_projectionMatrix = glGetUniformLocation(m_program, "uni_ProjectionMatrix");
     m_viewMatrix = glGetUniformLocation(m_program, "uni_ViewMatrix");
