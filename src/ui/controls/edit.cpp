@@ -492,7 +492,10 @@ bool CEdit::EventProcess(const Event &event)
     if ( event.type == EVENT_TEXT_INPUT && !bControl && m_bFocus )
     {
         auto data = event.GetData<TextInputData>();
-        Insert(data->text[0]); // TODO: insert utf-8 char
+        for ( char c : data->text )
+        {
+            Insert(c);
+        }
         SendModifEvent();
         return true;
     }
