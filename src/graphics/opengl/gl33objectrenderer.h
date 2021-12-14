@@ -81,6 +81,11 @@ public:
     //! Sets transparency mode
     virtual void SetTransparency(TransparencyMode mode) override;
     virtual void SetPrimaryTextureEnabled(bool enabled) override;
+
+    //! Sets triplanar mode
+    virtual void SetTriplanarMode(bool enabled) override;
+    //! Sets triplanar scale
+    virtual void SetTriplanarScale(float scale) override;
     //! Sets amount of dirt (second texture) to apply
     virtual void SetDirty(float amount) override;
 
@@ -105,6 +110,8 @@ private:
     GLint m_fogColor = -1;
     GLint m_color = -1;
     GLint m_primaryEnabled = -1;
+    GLint m_triplanarMode = -1;
+    GLint m_triplanarScale = -1;
     GLint m_dirty = -1;
     GLint m_alphaScissor = -1;
 

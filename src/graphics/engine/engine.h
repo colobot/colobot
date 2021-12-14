@@ -934,6 +934,12 @@ public:
     float           GetHFovAngle();
     //@}
 
+    void            SetTriplanarMode(bool enabled);
+    bool            GetTriplanarMode();
+
+    void            SetTriplanarScale(float scale);
+    float           GetTriplanarScale();
+
     //@{
     //! Management of the global mode of contamination
     // NOTE: This is an user configuration setting
@@ -1415,6 +1421,8 @@ protected:
     float           m_tracePrecision;
     bool            m_pauseBlurEnabled;
 
+    bool            m_triplanarMode;
+    float           m_triplanarScale;
     bool            m_dirty;
     bool            m_fog;
     float           m_particleDensity;

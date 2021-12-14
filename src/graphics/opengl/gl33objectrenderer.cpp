@@ -81,6 +81,8 @@ CGL33ObjectRenderer::CGL33ObjectRenderer(CGL33Device* device)
     m_fogColor = glGetUniformLocation(m_program, "uni_FogColor");
     m_color = glGetUniformLocation(m_program, "uni_Color");
     m_primaryEnabled = glGetUniformLocation(m_program, "uni_PrimaryEnabled");
+    m_triplanarMode = glGetUniformLocation(m_program, "uni_TriplanarMode");
+    m_triplanarScale = glGetUniformLocation(m_program, "uni_TriplanarScale");
     m_dirty = glGetUniformLocation(m_program, "uni_Dirty");
     m_alphaScissor = glGetUniformLocation(m_program, "uni_AlphaScissor");
 
@@ -323,6 +325,16 @@ void CGL33ObjectRenderer::SetTransparency(TransparencyMode mode)
 void CGL33ObjectRenderer::SetPrimaryTextureEnabled(bool enabled)
 {
     glUniform1f(m_primaryEnabled, enabled ? 1.0f : 0.0f);
+}
+
+void CGL33ObjectRenderer::SetTriplanarMode(bool enabled)
+{
+    glUniform1i(m_triplanarMode, enabled ? 1 : 0);
+}
+
+void CGL33ObjectRenderer::SetTriplanarScale(float scale)
+{
+    glUniform1f(m_triplanarScale, scale);
 }
 
 void CGL33ObjectRenderer::SetDirty(float amount)

@@ -171,6 +171,10 @@ public:
     virtual void SetTransparency(TransparencyMode mode) = 0;
 
     virtual void SetPrimaryTextureEnabled(bool enabled) = 0;
+    //! Sets triplanar mode
+    virtual void SetTriplanarMode(bool enabled) = 0;
+    //! Sets triplanar scale
+    virtual void SetTriplanarScale(float scale) = 0;
     //! Sets amount of dirt (second texture) to apply
     virtual void SetDirty(float amount) = 0;
 

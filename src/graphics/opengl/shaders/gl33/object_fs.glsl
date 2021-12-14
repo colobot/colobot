@@ -33,6 +33,8 @@ uniform sampler2D uni_SecondaryTexture;
 
 uniform vec4 uni_Color;
 uniform float uni_PrimaryEnabled;
+uniform bool uni_TriplanarMode;
+uniform float uni_TriplanarScale;
 uniform float uni_Dirty;
 uniform float uni_AlphaScissor;
 
@@ -44,6 +46,8 @@ in VertexData
     vec2 TexCoord0;
     vec2 TexCoord1;
     vec3 Normal;
+    vec3 VertexCoord;
+    vec3 VertexNormal;
     vec3 Position;
     vec3 ShadowCoords[4];
 } data;
@@ -94,6 +98,17 @@ vec3 PBR(vec3 position, vec3 color, vec3 normal, float roughness, float metalnes
     return (diffuseBrdf + PI * specBrdf) * lightIntensity * uni_LightColor * NdL;
 }
 
+vec3 Triplanar(vec3 position, vec3 normal)
+{
+    vec3 weights = normal * normal;
+
+    vec3 sum = texture(uni_SecondaryTexture, position.yz).rgb * weights.x;
+    sum += texture(uni_SecondaryTexture, position.zx).rgb * weights.y;
+    sum += texture(uni_SecondaryTexture, position.xy).rgb * weights.z;
+
+    return sum;
+}
+
 void main()
 {
     vec4 albedo = data.Color * uni_Color;
@@ -102,7 +117,17 @@ void main()
     primary = mix(vec4(1.0), primary, uni_PrimaryEnabled);
     albedo *= primary;
 
-    vec3 dirty = texture(uni_SecondaryTexture, data.TexCoord1).rgb;
+    vec3 dirty = vec3(0.0);
+
+    if (uni_TriplanarMode)
+    {
+        dirty = Triplanar(data.VertexCoord * uni_TriplanarScale, data.VertexNormal);
+    }
+    else
+    {
+        dirty = texture(uni_SecondaryTexture, data.TexCoord1).rgb;
+    }
+
     dirty = mix(vec3(1.0), dirty, uni_Dirty);
     albedo.rgb *= dirty;
 

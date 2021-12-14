@@ -165,6 +165,8 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
     m_render            = true;
     m_renderInterface   = true;
     m_screenshotMode    = false;
+    m_triplanarMode     = false;
+    m_triplanarScale    = 0.2f;
     m_dirty             = true;
     m_fog               = true;
     m_secondTex         = "";
@@ -2775,6 +2777,26 @@ int CEngine::GetMultiSample()
     return m_multisample;
 }
 
+void CEngine::SetTriplanarMode(bool enabled)
+{
+    m_triplanarMode = enabled;
+}
+
+bool CEngine::GetTriplanarMode()
+{
+    return m_triplanarMode;
+}
+
+void CEngine::SetTriplanarScale(float scale)
+{
+    m_triplanarScale = scale;
+}
+
+float CEngine::GetTriplanarScale()
+{
+    return m_triplanarScale;
+}
+
 void CEngine::SetDirty(bool mode)
 {
     m_dirty = mode;
@@ -3473,6 +3495,9 @@ void CEngine::Draw3DScene()
     objectRenderer->SetFog(fogStart, fogEnd, { fogColor.r, fogColor.g, fogColor.b });
     objectRenderer->SetAlphaScissor(0.0f);
     objectRenderer->SetShadowParams(m_shadowRegions, shadowParams);
+
+    objectRenderer->SetTriplanarMode(m_triplanarMode);
+    objectRenderer->SetTriplanarScale(m_triplanarScale);
 
     bool transparent = false;
 

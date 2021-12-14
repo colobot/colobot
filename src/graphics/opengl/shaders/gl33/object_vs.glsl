@@ -36,6 +36,8 @@ out VertexData
     vec2 TexCoord0;
     vec2 TexCoord1;
     vec3 Normal;
+    vec3 VertexCoord;
+    vec3 VertexNormal;
     vec3 Position;
     vec3 ShadowCoords[4];
 } data;
@@ -50,7 +52,8 @@ void main()
     data.TexCoord0 = in_TexCoord0;
     data.TexCoord1 = in_TexCoord1;
     data.Normal = mat3(uni_NormalMatrix) * in_Normal;
-    //data.Distance = abs(eyeSpace.z);
+    data.VertexCoord = in_VertexCoord.xyz;
+    data.VertexNormal = in_Normal;
     data.Position = position.xyz;
     data.ShadowCoords = ProjectShadows(position.xyz);
 }
