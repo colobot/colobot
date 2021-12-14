@@ -28,6 +28,8 @@
 
 #include <GL/glew.h>
 
+#include <glm/ext/matrix_common.hpp>
+#include <glm/ext/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 using namespace Gfx;

@@ -9,6 +9,7 @@
 
 #include <GL/glew.h>
 
+#include <glm/ext/matrix_clip_space.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 namespace Gfx
