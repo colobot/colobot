@@ -2261,7 +2261,7 @@ void CEdit::MoveChar(int move, bool bWord, bool bSelect)
 {
     int     character;
 
-    if ( move == -1 )  // back?
+    if ( move == -1 )  // back
     {
         if ( bWord )
         {
@@ -2306,12 +2306,15 @@ void CEdit::MoveChar(int move, bool bWord, bool bSelect)
         }
         else
         {
-            m_cursor1 --;
-            if ( m_cursor1 < 0 )  m_cursor1 = 0;
+            if ( m_cursor1 > 0 )
+            {
+                m_cursor1 --;
+                while ( m_cursor1 > 0 && (m_text[m_cursor1] & 0xC0) == 0x80 )  m_cursor1 --;
+            }
         }
     }
 
-    if ( move == 1 )  // advance?
+    if ( move == 1 )  // advance
     {
         if ( bWord )
         {
@@ -2356,8 +2359,11 @@ void CEdit::MoveChar(int move, bool bWord, bool bSelect)
         }
         else
         {
-            m_cursor1 ++;
-            if ( m_cursor1 > m_len )  m_cursor1 = m_len;
+            if ( m_cursor1 < m_len )
+            {
+                m_cursor1 ++;
+                while ( m_cursor1 < m_len && (m_text[m_cursor1] & 0xC0) == 0x80 )  m_cursor1 ++;
+            }
         }
     }
 
