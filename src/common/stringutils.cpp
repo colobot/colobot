@@ -182,10 +182,6 @@ int StrUtils::Utf8CharSizeAt(const std::string &str, unsigned int pos)
     if((c & 0xE0) == 0xC0)
         return 2;
 
-    // Invalid char - unexpected continuation byte
-    if((c & 0xC0) == 0x80)
-        throw std::invalid_argument("Unexpected UTF-8 continuation byte");
-
     return 1;
 }
 
