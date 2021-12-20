@@ -82,6 +82,24 @@ struct CachedFont
         font = TTF_OpenFontRW(this->fontFile->GetHandler(), 0, pointSize);
     }
 
+    CachedFont(CachedFont&& other) noexcept
+        : fontFile{std::move(other.fontFile)},
+          font{std::exchange(other.font, nullptr)},
+          cache{std::move(other.cache)}
+    {
+    }
+
+    CachedFont& operator=(CachedFont&& other) noexcept
+    {
+        fontFile = std::move(other.fontFile);
+        std::swap(font, other.font);
+        cache = std::move(other.cache);
+        return *this;
+    }
+
+    CachedFont(const CachedFont& other) = delete;
+    CachedFont& operator=(const CachedFont& other) = delete;
+
     ~CachedFont()
     {
         if (font != nullptr)
@@ -89,11 +107,38 @@ struct CachedFont
     }
 };
 
+std::string ToString(FontType type)
+{
+    switch (type)
+    {
+        case FontType::FONT_COMMON:         return "FontCommon";
+        case FontType::FONT_COMMON_BOLD:    return "FontCommonBold";
+        case FontType::FONT_COMMON_ITALIC:  return "FontCommonItalic";
+        case FontType::FONT_STUDIO:         return "FontStudio";
+        case FontType::FONT_STUDIO_BOLD:    return "FontStudioBold";
+        case FontType::FONT_STUDIO_ITALIC:  return "FontStudioItalic";
+        case FontType::FONT_SATCOM:         return "FontSatCom";
+        case FontType::FONT_SATCOM_BOLD:    return "FontSatComBold";
+        case FontType::FONT_SATCOM_ITALIC:  return "FontSatComItalic";
+        case FontType::FONT_BUTTON:         return "FontButton";
+        default: throw std::invalid_argument("Unsupported value for Gfx::FontType -> std::string conversion: " + std::to_string(type));
+    }
+}
 
 namespace
 {
 const Math::IntPoint REFERENCE_SIZE(800, 600);
 const Math::IntPoint FONT_TEXTURE_SIZE(256, 256);
+
+Gfx::FontType ToBoldFontType(Gfx::FontType type)
+{
+    return static_cast<Gfx::FontType>(type | FONT_BOLD);
+}
+
+Gfx::FontType ToItalicFontType(Gfx::FontType type)
+{
+    return static_cast<Gfx::FontType>(type | FONT_ITALIC);
+}
 } // anonymous namespace
 
 /// The QuadBatch is responsible for collecting as many quad (aka rectangle) draws as possible and
@@ -167,6 +212,166 @@ private:
     EngineRenderState m_renderState{};
 };
 
+class FontsCache
+{
+public:
+    using Fonts = std::map<FontType, std::unique_ptr<MultisizeFont>>;
+
+    FontsCache()
+    {
+        ClearLastCachedFont();
+    }
+
+    bool Reload(const CFontLoader& fontLoader, int pointSize)
+    {
+        Flush();
+        if (!PrepareCache(fontLoader)) { Flush(); return false; }
+        if (!LoadDefaultFonts(fontLoader, pointSize)) { Flush(); return false; }
+        return true;
+    }
+
+    CachedFont* GetOrOpenFont(FontType type, int pointSize)
+    {
+        if (IsLastCachedFont(type, pointSize))
+            return m_lastCachedFont;
+
+        auto multisizeFontIt = m_fonts.find(type);
+        if (multisizeFontIt == m_fonts.end())
+        {
+            m_error = std::string("Font type not found in cache: ") + ToString(type);
+            return nullptr;
+        }
+        MultisizeFont* multisizeFont = multisizeFontIt->second.get();
+
+        auto cachedFontIt = multisizeFont->fonts.find(pointSize);
+        if (cachedFontIt != multisizeFont->fonts.end())
+        {
+            auto* cachedFont = cachedFontIt->second.get();
+            SaveLastCachedFont(cachedFont, type, pointSize);
+            return m_lastCachedFont;
+        }
+
+        auto newFont = LoadFont(multisizeFont, pointSize);
+        if (!newFont) return nullptr;
+
+        SaveLastCachedFont(newFont.get(), type, pointSize);
+        multisizeFont->fonts[pointSize] = std::move(newFont);
+        return m_lastCachedFont;
+    }
+
+    void Flush()
+    {
+        Clear();
+        ClearLastCachedFont();
+    }
+
+    ~FontsCache()
+    {
+        Flush();
+    }
+
+    std::string GetError() const
+    {
+        return m_error;
+    }
+
+private:
+    bool PrepareCache(const CFontLoader& fontLoader)
+    {
+        for (auto type : {FONT_COMMON, FONT_STUDIO, FONT_SATCOM})
+        {
+            if (!PrepareCacheForFontType(type, fontLoader)) return false;
+            if (!PrepareCacheForFontType(ToBoldFontType(type), fontLoader)) return false;
+            if (!PrepareCacheForFontType(ToItalicFontType(type), fontLoader)) return false;
+        }
+        return true;
+    }
+
+    bool PrepareCacheForFontType(Gfx::FontType type, const CFontLoader& fontLoader)
+    {
+        if (auto font = fontLoader.GetFont(type))
+        {
+            m_fonts[type] = MakeUnique<MultisizeFont>(std::move(*font));
+            return true;
+        }
+        m_error = "Error on loading fonts: font type " + ToString(type) + " is not configured";
+        return false;
+    }
+
+    bool LoadDefaultFonts(const CFontLoader& fontLoader, int pointSize)
+    {
+        for (auto& font : m_fonts)
+        {
+            auto type = font.first;
+            auto* cachedFont = GetOrOpenFont(type, pointSize);
+            if (cachedFont == nullptr || cachedFont->font == nullptr)
+                return false;
+        }
+        return true;
+    }
+
+    std::unique_ptr<CachedFont> LoadFont(MultisizeFont* multisizeFont, int pointSize)
+    {
+        auto file = CResourceManager::GetSDLMemoryHandler(multisizeFont->fileName);
+        if (!file->IsOpen())
+        {
+            m_error = "Unable to open file '" + multisizeFont->fileName + "' (font size = " + std::to_string(pointSize) + ")";
+            return nullptr;
+        }
+        GetLogger()->Debug("Loaded font file %s (font size = %d)\n", multisizeFont->fileName.c_str(), pointSize);
+        auto newFont = MakeUnique<CachedFont>(std::move(file), pointSize);
+        if (newFont->font == nullptr)
+        {
+            m_error = std::string("TTF_OpenFont error ") + std::string(TTF_GetError());
+            return nullptr;
+        }
+        return newFont;
+    }
+
+    void SaveLastCachedFont(CachedFont* font, FontType type, int pointSize)
+    {
+        m_lastCachedFont = font;
+        m_lastFontType = type;
+        m_lastFontSize = pointSize;
+    }
+
+    bool IsLastCachedFont(FontType font, int pointSize)
+    {
+        return
+            m_lastCachedFont != nullptr &&
+            m_lastFontType == font &&
+            m_lastFontSize == pointSize;
+    }
+
+    void Clear()
+    {
+        for (auto& [fontType, multisizeFont] : m_fonts)
+        {
+            for (auto& cachedFont : multisizeFont->fonts)
+            {
+                cachedFont.second->cache.clear();
+            }
+        }
+        m_fonts.clear();
+    }
+
+    void ClearLastCachedFont()
+    {
+        m_lastCachedFont = nullptr;
+        m_lastFontType = FONT_COMMON;
+        m_lastFontSize = 0;
+    }
+
+private:
+    Fonts m_fonts;
+
+    CachedFont* m_lastCachedFont;
+    FontType m_lastFontType;
+    int m_lastFontSize;
+
+    std::string m_error;
+};
+
 
 CText::CText(CEngine* engine)
 {
@@ -176,9 +381,7 @@ CText::CText(CEngine* engine)
     m_defaultSize = 12.0f;
     m_tabSize = 4;
 
-    m_lastFontType = FONT_COMMON;
-    m_lastFontSize = 0;
-    m_lastCachedFont = nullptr;
+    m_fontsCache = std::make_unique<FontsCache>();
 
     m_quadBatch = MakeUnique<CQuadBatch>(*engine);
 }
@@ -210,42 +413,24 @@ bool CText::ReloadFonts()
     CFontLoader fontLoader;
     if (!fontLoader.Init())
     {
-        GetLogger()->Debug("Error on parsing fonts config file: failed to open file\n");
+        m_error = "Error on parsing fonts config file: failed to open file";
+        return false;
     }
 
-    // Backup previous fonts
-    auto fonts = std::move(m_fonts);
-    m_fonts.clear();
-
-    for (auto type : {FONT_COMMON, FONT_STUDIO, FONT_SATCOM})
+    auto newCache = std::make_unique<FontsCache>();
+    if (!newCache->Reload(fontLoader, GetFontPointSize(m_defaultSize)))
     {
-        m_fonts[static_cast<Gfx::FontType>(type)] = MakeUnique<MultisizeFont>(fontLoader.GetFont(type));
-        m_fonts[static_cast<Gfx::FontType>(type|FONT_BOLD)] = MakeUnique<MultisizeFont>(fontLoader.GetFont(static_cast<Gfx::FontType>(type|FONT_BOLD)));
-        m_fonts[static_cast<Gfx::FontType>(type|FONT_ITALIC)] = MakeUnique<MultisizeFont>(fontLoader.GetFont(static_cast<Gfx::FontType>(type|FONT_ITALIC)));
+        m_error = newCache->GetError();
+        return false;
     }
 
-    for (auto it = m_fonts.begin(); it != m_fonts.end(); ++it)
-    {
-        FontType type = (*it).first;
-        CachedFont* cf = GetOrOpenFont(type, m_defaultSize);
-        if (cf == nullptr || cf->font == nullptr)
-        {
-            m_fonts = std::move(fonts);
-            return false;
-        }
-    }
-
+    m_fontsCache = std::move(newCache);
     return true;
 }
 
 void CText::Destroy()
 {
-    m_fonts.clear();
-
-    m_lastCachedFont = nullptr;
-    m_lastFontType = FONT_COMMON;
-    m_lastFontSize = 0;
-
+    m_fontsCache->Flush();
     TTF_Quit();
 }
 
@@ -269,17 +454,7 @@ void CText::FlushCache()
     }
     m_fontTextures.clear();
 
-    for (auto& multisizeFont : m_fonts)
-    {
-        for (auto& cachedFont : multisizeFont.second->fonts)
-        {
-            cachedFont.second->cache.clear();
-        }
-    }
-
-    m_lastCachedFont = nullptr;
-    m_lastFontType = FONT_COMMON;
-    m_lastFontSize = 0;
+    m_fontsCache->Flush();
 }
 
 int CText::GetTabSize()
@@ -1099,54 +1274,21 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::I
     }
 }
 
-CachedFont* CText::GetOrOpenFont(FontType font, float size)
+int CText::GetFontPointSize(float size) const
 {
     Math::IntPoint windowSize = m_engine->GetWindowSize();
-    int pointSize = static_cast<int>(size * (windowSize.Length() / REFERENCE_SIZE.Length()));
+    return static_cast<int>(size * (windowSize.Length() / REFERENCE_SIZE.Length()));
+}
 
-    if (m_lastCachedFont != nullptr &&
-        m_lastFontType == font &&
-        m_lastFontSize == pointSize)
+CachedFont* CText::GetOrOpenFont(FontType type, float size)
+{
+    auto* cachedFont = m_fontsCache->GetOrOpenFont(type, GetFontPointSize(size));
+    if (!cachedFont)
     {
-        return m_lastCachedFont;
-    }
-
-    auto it = m_fonts.find(font);
-    if (it == m_fonts.end())
-    {
-        m_error = std::string("Invalid font type ") + StrUtils::ToString<int>(static_cast<int>(font));
+        m_error = m_fontsCache->GetError();
         return nullptr;
     }
-
-    MultisizeFont* mf = it->second.get();
-
-    auto jt = mf->fonts.find(pointSize);
-    if (jt != mf->fonts.end())
-    {
-        m_lastCachedFont = jt->second.get();
-        m_lastFontType = font;
-        m_lastFontSize = pointSize;
-        return m_lastCachedFont;
-    }
-
-    auto file = CResourceManager::GetSDLMemoryHandler(mf->fileName);
-    if (!file->IsOpen())
-    {
-        m_error = std::string("Unable to open file '") + mf->fileName + "' (font size = " + StrUtils::ToString<float>(size) + ")";
-        return nullptr;
-    }
-    GetLogger()->Debug("Loaded font file %s (font size = %.1f)\n", mf->fileName.c_str(), size);
-
-    auto newFont = MakeUnique<CachedFont>(std::move(file), pointSize);
-    if (newFont->font == nullptr)
-    {
-        m_error = std::string("TTF_OpenFont error ") + std::string(TTF_GetError());
-        return nullptr;
-    }
-
-    m_lastCachedFont = newFont.get();
-    mf->fonts[pointSize] = std::move(newFont);
-    return m_lastCachedFont;
+    return cachedFont;
 }
 
 CharTexture CText::GetCharTexture(UTF8Char ch, FontType font, float size)

@@ -33,36 +33,12 @@
 #include <memory>
 #include <utility>
 #include <cstring>
+#include <optional>
 #include <boost/property_tree/ini_parser.hpp>
 #include <boost/regex.hpp>
 
 namespace bp = boost::property_tree;
 
-const std::map<Gfx::FontType, std::string> DEFAULT_FONT =
-{
-    { Gfx::FONT_COMMON, "dvu_sans.ttf" },
-    { Gfx::FONT_COMMON_BOLD, "dvu_sans_bold.ttf" },
-    { Gfx::FONT_COMMON_ITALIC, "dvu_sans_italic.ttf" },
-    { Gfx::FONT_STUDIO, "dvu_sans_mono.ttf" },
-    { Gfx::FONT_STUDIO_BOLD, "dvu_sans_mono_bold.ttf" },
-    { Gfx::FONT_STUDIO_ITALIC, "dvu_sans_mono.ttf" }, //placeholder for future use, DejaVu Sans Mono doesn't have italic variant
-    { Gfx::FONT_SATCOM, "dvu_sans.ttf" },
-    { Gfx::FONT_SATCOM_BOLD, "dvu_sans_bold.ttf" },
-    { Gfx::FONT_SATCOM_ITALIC, "dvu_sans_italic.ttf" },
-};
-
-const std::map<Gfx::FontType, std::string> FONT_TYPE =
-{
-    { Gfx::FONT_COMMON, "FontCommon" },
-    { Gfx::FONT_COMMON_BOLD, "FontCommonBold" },
-    { Gfx::FONT_COMMON_ITALIC, "FontCommonItalic" },
-    { Gfx::FONT_STUDIO, "FontStudio" },
-    { Gfx::FONT_STUDIO_BOLD, "FontStudioBold" },
-    { Gfx::FONT_STUDIO_ITALIC, "FontStudioItalic" },
-    { Gfx::FONT_SATCOM, "FontSatCom" },
-    { Gfx::FONT_SATCOM_BOLD, "FontSatComBold" },
-    { Gfx::FONT_SATCOM_ITALIC, "FontSatComItalic" },
-};
 
 CFontLoader::CFontLoader()
 {
@@ -99,17 +75,10 @@ bool CFontLoader::Init()
     return true;
 }
 
-std::string CFontLoader::GetFont(Gfx::FontType type)
+std::optional<std::string> CFontLoader::GetFont(Gfx::FontType type) const
 {
-    return std::string("/fonts/") + m_propertyTree.get<std::string>(GetFontType(type), GetDefaultFont(type));
-}
-
-std::string CFontLoader::GetDefaultFont(Gfx::FontType type) const
-{
-    return DEFAULT_FONT.at(type);
-}
-
-std::string CFontLoader::GetFontType(Gfx::FontType type) const
-{
-    return FONT_TYPE.at(type);
+    auto font = m_propertyTree.get_optional<std::string>(ToString(type));
+    if (font)
+        return std::string("/fonts/") + *font;
+    return std::nullopt;
 }
