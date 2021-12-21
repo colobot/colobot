@@ -33,7 +33,6 @@
 #include <memory>
 #include <utility>
 #include <cstring>
-#include <optional>
 #include <boost/property_tree/ini_parser.hpp>
 #include <boost/regex.hpp>
 

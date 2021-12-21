@@ -31,6 +31,7 @@
 #include <boost/property_tree/ptree.hpp>
 
 #include <string>
+#include <optional>
 
 /**
 * \class CFontLoader

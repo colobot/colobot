@@ -291,7 +291,7 @@ private:
     {
         if (auto font = fontLoader.GetFont(type))
         {
-            m_fonts[type] = MakeUnique<MultisizeFont>(std::move(*font));
+            m_fonts[type] = std::make_unique<MultisizeFont>(std::move(*font));
             return true;
         }
         m_error = "Error on loading fonts: font type " + ToString(type) + " is not configured";
@@ -319,7 +319,7 @@ private:
             return nullptr;
         }
         GetLogger()->Debug("Loaded font file %s (font size = %d)\n", multisizeFont->fileName.c_str(), pointSize);
-        auto newFont = MakeUnique<CachedFont>(std::move(file), pointSize);
+        auto newFont = std::make_unique<CachedFont>(std::move(file), pointSize);
         if (newFont->font == nullptr)
         {
             m_error = std::string("TTF_OpenFont error ") + std::string(TTF_GetError());
@@ -335,7 +335,7 @@ private:
         m_lastFontSize = pointSize;
     }
 
-    bool IsLastCachedFont(FontType font, int pointSize)
+    bool IsLastCachedFont(FontType font, int pointSize) const
     {
         return
             m_lastCachedFont != nullptr &&
