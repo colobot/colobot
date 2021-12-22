@@ -31,6 +31,7 @@
 #include "common/resources/outputstream.h"
 #include "common/resources/resourcemanager.h"
 
+#include "graphics/engine/particle.h"
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/water.h"
 
@@ -2983,6 +2984,73 @@ bool CScriptFunctions::rPenUp(CBotVar* var, CBotVar* result, int& exception, voi
     }
 }
 
+bool GetTraceColor(CBotVar* &var, int& exception, TraceColor& color);
+
+bool GetTraceColor(CBotVar* &var, int& exception, TraceColor& color)
+{
+    color = TraceColor::Default;
+    if ( var != nullptr )
+    {
+        int color2 = var->GetValInt();
+        if ( color2 >= 0 || color2 <= static_cast<int>(TraceColor::Max) )
+            color = static_cast<TraceColor>(color2);
+    }
+    return true;
+}
+
+CBotTypResult CScriptFunctions::cDrawLine(CBotVar* &var, void* user)
+{
+    CBotTypResult   ret;
+
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
+    ret = cPoint(var, user);
+    if ( ret.GetType() != 0 )  return ret;
+
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
+    ret = cPoint(var, user);
+    if ( ret.GetType() != 0 )  return ret;
+
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
+    ret = cPoint(var, user);
+    if ( ret.GetType() != 0 )  return ret;
+
+    if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
+    ret = cPoint(var, user);
+    if ( ret.GetType() != 0 )  return ret;
+
+    if ( var != nullptr  )
+    {
+        if(var->GetType() > CBotTypLong) return CBotTypResult(CBotErrBadNum);
+        var = var->GetNext();
+    }
+
+    if ( var != nullptr )  return CBotTypResult(CBotErrOverParam);
+
+    return CBotTypResult(CBotTypFloat);
+}
+
+bool CScriptFunctions::rDrawLine(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+
+    CScript*    script = static_cast<CScript*>(user);
+    TraceColor         color;
+    Math::Vector        pos1, pos2, pos3, pos4;
+
+    Gfx::CEngine *m_engine    = script->m_engine;
+    Gfx::CParticle    *m_particle  = m_engine->GetParticle();
+
+    exception = 0;
+
+    if ( !GetPoint(var, exception, pos1) )  return true;
+    if ( !GetPoint(var, exception, pos2) )  return true;
+    if ( !GetPoint(var, exception, pos3) )  return true;
+    if ( !GetPoint(var, exception, pos4) )  return true;
+    if ( !GetTraceColor(var, exception, color) )  return true;
+
+    m_particle->CreateWheelTrace(pos1, pos2, pos3, pos4, color);
+    return true;
+}
+
 // Instruction "pencolor()".
 
 bool CScriptFunctions::rPenColor(CBotVar* var, CBotVar* result, int& exception, void* user)
@@ -3488,6 +3556,7 @@ void CScriptFunctions::Init()
     CBotProgram::AddFunction("pendown",   rPenDown,   cPenDown);
     CBotProgram::AddFunction("penup",     rPenUp,     cNull);
     CBotProgram::AddFunction("pencolor",  rPenColor,  cOneFloat);
+    CBotProgram::AddFunction("drawline",  rDrawLine,  cDrawLine);
     CBotProgram::AddFunction("penwidth",  rPenWidth,  cOneFloat);
     CBotProgram::AddFunction("factory",   rFactory,   cFactory);
     CBotProgram::AddFunction("camerafocus", rCameraFocus, cOneObject);

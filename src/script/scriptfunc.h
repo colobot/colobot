@@ -141,6 +141,9 @@ private:
     static bool rErrMode(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
     static bool rIPF(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
     static bool rAbsTime(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
+    static bool rDrawLine(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
+    static CBot::CBotTypResult cDrawLine(CBot::CBotVar* &var, void* user);
+
     static bool rPenDown(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
     static bool rPenUp(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
     static bool rPenColor(CBot::CBotVar* var, CBot::CBotVar* result, int& exception, void* user);
