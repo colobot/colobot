@@ -197,3 +197,7 @@ std::size_t StrUtils::Utf8StringLength(const std::string &str)
     return result;
 }
 
+bool StrUtils::isUtf8ContinuationByte(char c)
+{
+    return (c & 0b11'000000) == 0b10'000000;
+}

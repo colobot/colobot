@@ -27,6 +27,7 @@
 
 #include "common/logger.h"
 #include "common/make_unique.h"
+#include "common/stringutils.h"
 
 #include "common/resources/inputstream.h"
 #include "common/resources/outputstream.h"
@@ -2309,7 +2310,10 @@ void CEdit::MoveChar(int move, bool bWord, bool bSelect)
             if ( m_cursor1 > 0 )
             {
                 m_cursor1 --;
-                while ( m_cursor1 > 0 && (m_text[m_cursor1] & 0xC0) == 0x80 )  m_cursor1 --;
+                while ( m_cursor1 > 0 && StrUtils::isUtf8ContinuationByte(m_text[m_cursor1]) )
+                {
+                    m_cursor1 --;
+                }
             }
         }
     }
@@ -2362,7 +2366,10 @@ void CEdit::MoveChar(int move, bool bWord, bool bSelect)
             if ( m_cursor1 < m_len )
             {
                 m_cursor1 ++;
-                while ( m_cursor1 < m_len && (m_text[m_cursor1] & 0xC0) == 0x80 )  m_cursor1 ++;
+                while ( m_cursor1 < m_len && StrUtils::isUtf8ContinuationByte(m_text[m_cursor1]) )
+                {
+                    m_cursor1 ++;
+                }
             }
         }
     }
@@ -2795,8 +2802,8 @@ void CEdit::DeleteOne(int dir)
     if ( m_cursor1 > m_cursor2 )  Math::Swap(m_cursor1, m_cursor2);
 
     // Expands selection to delete integer number of UTF-8 symbols
-    while ( m_cursor1 > 0     && (m_text[m_cursor1] & 0xC0) == 0x80 )  m_cursor1 --;
-    while ( m_cursor2 < m_len && (m_text[m_cursor2] & 0xC0) == 0x80 )  m_cursor2 ++;
+    while ( m_cursor1 > 0     && StrUtils::isUtf8ContinuationByte(m_text[m_cursor1]) )  m_cursor1 --;
+    while ( m_cursor2 < m_len && StrUtils::isUtf8ContinuationByte(m_text[m_cursor2]) )  m_cursor2 ++;
 
     hole = m_cursor2-m_cursor1;
     end = m_len-hole;
