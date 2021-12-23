@@ -27,12 +27,13 @@
 
 #include "graphics/core/color.h"
 
-#include "math/intpoint.h"
 #include "math/point.h"
 
 #include <map>
 #include <memory>
 #include <vector>
+
+#include <glm/glm.hpp>
 
 
 // Graphics module namespace
@@ -199,8 +200,8 @@ struct UTF8Char
 struct CharTexture
 {
     unsigned int id = 0;
-    Math::IntPoint charPos;
-    Math::IntPoint charSize;
+    glm::ivec2 charPos;
+    glm::ivec2 charSize;
 };
 
 // Definition is private - in text.cpp
@@ -320,22 +321,22 @@ public:
     UTF8Char    TranslateSpecialChar(int specialChar);
 
     CharTexture GetCharTexture(UTF8Char ch, FontType font, float size);
-    Math::IntPoint GetFontTextureSize();
+    glm::ivec2 GetFontTextureSize();
 
 protected:
     CachedFont* GetOrOpenFont(FontType font, float size);
     CharTexture CreateCharTexture(UTF8Char ch, CachedFont* font);
-    FontTexture* GetOrCreateFontTexture(Math::IntPoint tileSize);
-    FontTexture CreateFontTexture(Math::IntPoint tileSize);
-    Math::IntPoint GetNextTilePos(const FontTexture& fontTexture);
+    FontTexture* GetOrCreateFontTexture(const glm::ivec2& tileSize);
+    FontTexture CreateFontTexture(const glm::ivec2& tileSize);
+    glm::ivec2 GetNextTilePos(const FontTexture& fontTexture);
 
     void        DrawString(const std::string &text, std::vector<FontMetaChar>::iterator format,
                            std::vector<FontMetaChar>::iterator end,
-                           float size, Math::IntPoint pos, int width, int eol, Color color);
+                           float size, const glm::ivec2& pos, int width, int eol, Color color);
     void        DrawString(const std::string &text, FontType font,
-                           float size, Math::IntPoint pos, int width, int eol, Color color);
-    void        DrawHighlight(FontMetaChar hl, Math::IntPoint pos, Math::IntPoint size);
-    void        DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::IntPoint &pos, Color color);
+                           float size, const glm::ivec2& pos, int width, int eol, Color color);
+    void        DrawHighlight(FontMetaChar hl, const glm::ivec2& pos, const glm::ivec2& size);
+    void        DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, glm::ivec2&pos, Color color);
     void        StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &chars);
     void        StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &chars, std::vector<FontMetaChar>::iterator format, std::vector<FontMetaChar>::iterator end);
 

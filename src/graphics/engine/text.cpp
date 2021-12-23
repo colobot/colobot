@@ -64,7 +64,7 @@ struct MultisizeFont
 struct FontTexture
 {
     unsigned int id = 0;
-    Math::IntPoint tileSize;
+    glm::ivec2 tileSize;
     int freeSlots = 0;
 };
 
@@ -94,8 +94,8 @@ struct CachedFont
 
 namespace
 {
-const Math::IntPoint REFERENCE_SIZE(800, 600);
-const Math::IntPoint FONT_TEXTURE_SIZE(256, 256);
+constexpr glm::ivec2 REFERENCE_SIZE(800, 600);
+constexpr glm::ivec2 FONT_TEXTURE_SIZE(256, 256);
 } // anonymous namespace
 
 /// The QuadBatch is responsible for collecting as many quad (aka rectangle) draws as possible and
@@ -324,7 +324,7 @@ void CText::DrawText(const std::string &text, std::vector<FontMetaChar>::iterato
         pos.x -= sw;
     }
 
-    Math::IntPoint intPos = m_engine->InterfaceToWindowCoords(pos);
+    glm::ivec2 intPos = m_engine->InterfaceToWindowCoords(pos);
     int intWidth = width * m_engine->GetWindowSize().x;
     DrawString(text, format, end, size, intPos, intWidth, eol, color);
 }
@@ -348,7 +348,7 @@ void CText::DrawText(const std::string &text, FontType font,
         pos.x -= sw;
     }
 
-    Math::IntPoint intPos = m_engine->InterfaceToWindowCoords(pos);
+    glm::ivec2 intPos = m_engine->InterfaceToWindowCoords(pos);
     int intWidth = width * m_engine->GetWindowSize().x;
     DrawString(text, font, size, intPos, intWidth, eol, color);
 }
@@ -406,8 +406,7 @@ float CText::GetAscent(FontType font, float size)
 
     CachedFont* cf = GetOrOpenFont(font, size);
     assert(cf != nullptr);
-    Math::IntPoint wndSize;
-    wndSize.y = TTF_FontAscent(cf->font);
+    glm::ivec2 wndSize = { 0, TTF_FontAscent(cf->font) };
     Math::Point ifSize = m_engine->WindowToInterfaceSize(wndSize);
     return ifSize.y;
 }
@@ -418,8 +417,7 @@ float CText::GetDescent(FontType font, float size)
 
     CachedFont* cf = GetOrOpenFont(font, size);
     assert(cf != nullptr);
-    Math::IntPoint wndSize;
-    wndSize.y = TTF_FontDescent(cf->font);
+    glm::ivec2 wndSize = { 0, TTF_FontDescent(cf->font) };
     Math::Point ifSize = m_engine->WindowToInterfaceSize(wndSize);
     return ifSize.y;
 }
@@ -430,8 +428,7 @@ float CText::GetHeight(FontType font, float size)
 
     CachedFont* cf = GetOrOpenFont(font, size);
     assert(cf != nullptr);
-    Math::IntPoint wndSize;
-    wndSize.y = TTF_FontHeight(cf->font);
+    glm::ivec2 wndSize = { 0, TTF_FontHeight(cf->font) };
     Math::Point ifSize = m_engine->WindowToInterfaceSize(wndSize);
     return ifSize.y;
 }
@@ -490,7 +487,7 @@ float CText::GetStringWidth(std::string text, FontType font, float size)
 
     CachedFont* cf = GetOrOpenFont(font, size);
     assert(cf != nullptr);
-    Math::IntPoint wndSize;
+    glm::ivec2 wndSize{};
     TTF_SizeUTF8(cf->font, text.c_str(), &wndSize.x, &wndSize.y);
     Math::Point ifSize = m_engine->WindowToInterfaceSize(wndSize);
     return ifSize.x;
@@ -500,7 +497,7 @@ float CText::GetCharWidth(UTF8Char ch, FontType font, float size, float offset)
 {
     if (font == FONT_BUTTON)
     {
-        Math::IntPoint windowSize = m_engine->GetWindowSize();
+        glm::ivec2 windowSize = m_engine->GetWindowSize();
         float height = GetHeight(FONT_COMMON, size);
         float width = height*(static_cast<float>(windowSize.y)/windowSize.x);
         return width;
@@ -528,7 +525,7 @@ float CText::GetCharWidth(UTF8Char ch, FontType font, float size, float offset)
     }
     else
     {
-        Math::IntPoint wndSize;
+        glm::ivec2 wndSize{};
         std::string text;
         text.append({ch.c1, ch.c2, ch.c3});
         TTF_SizeUTF8(cf->font, text.c_str(), &wndSize.x, &wndSize.y);
@@ -542,7 +539,7 @@ int CText::GetCharWidthInt(UTF8Char ch, FontType font, float size, float offset)
 {
     if (font == FONT_BUTTON)
     {
-        Math::IntPoint windowSize = m_engine->GetWindowSize();
+        glm::ivec2 windowSize = m_engine->GetWindowSize();
         int height = GetHeightInt(FONT_COMMON, size);
         int width = height*(static_cast<float>(windowSize.y)/windowSize.x);
         return width;
@@ -562,7 +559,7 @@ int CText::GetCharWidthInt(UTF8Char ch, FontType font, float size, float offset)
     CachedFont* cf = GetOrOpenFont(font, size);
     assert(cf != nullptr);
 
-    Math::IntPoint charSize;
+    glm::ivec2 charSize{ 0, 0 };
     auto it = cf->cache.find(ch);
     if (it != cf->cache.end())
     {
@@ -795,9 +792,11 @@ UTF8Char CText::TranslateSpecialChar(int specialChar)
 
 void CText::DrawString(const std::string &text, std::vector<FontMetaChar>::iterator format,
                        std::vector<FontMetaChar>::iterator end,
-                       float size, Math::IntPoint pos, int width, int eol, Color color)
+                       float size, const glm::ivec2& position, int width, int eol, Color color)
 {
     m_engine->SetWindowCoordinates();
+
+    glm::ivec2 pos = position;
 
     int start = pos.x;
 
@@ -859,7 +858,7 @@ void CText::DrawString(const std::string &text, std::vector<FontMetaChar>::itera
         // draw highlight background or link underline
         if (font != FONT_BUTTON)
         {
-            Math::IntPoint charSize;
+            glm::ivec2 charSize{};
             charSize.x = GetCharWidthInt(ch, font, size, offset);
             charSize.y = GetHeightInt(font, size);
             // NB. for quad batching to improve highlight drawing performance, this code would have
@@ -955,9 +954,11 @@ int CText::GetCharSizeAt(Gfx::FontType font, const std::string& text, unsigned i
 }
 
 void CText::DrawString(const std::string &text, FontType font,
-                       float size, Math::IntPoint pos, int width, int eol, Color color)
+                       float size, const glm::ivec2& position, int width, int eol, Color color)
 {
     assert(font != FONT_BUTTON);
+
+    glm::ivec2 pos = position;
 
     std::vector<UTF8Char> chars;
     StringToUTFCharList(text, chars);
@@ -970,7 +971,7 @@ void CText::DrawString(const std::string &text, FontType font,
     m_engine->SetInterfaceCoordinates();
 }
 
-void CText::DrawHighlight(FontMetaChar hl, Math::IntPoint pos, Math::IntPoint size)
+void CText::DrawHighlight(FontMetaChar hl, const glm::ivec2& pos, const glm::ivec2& size)
 {
     // Gradient colors
     Color grad[4];
@@ -993,7 +994,7 @@ void CText::DrawHighlight(FontMetaChar hl, Math::IntPoint pos, Math::IntPoint si
 
     m_quadBatch->Flush();
 
-    Math::IntPoint vsize = m_engine->GetWindowSize();
+    glm::ivec2 vsize = m_engine->GetWindowSize();
     float h = 0.0f;
     if (vsize.y <= 768.0f)    // 1024x768 or less?
         h = 1.01f;  // 1 pixel
@@ -1027,16 +1028,16 @@ void CText::DrawHighlight(FontMetaChar hl, Math::IntPoint pos, Math::IntPoint si
     m_device->SetTextureEnabled(0, true);
 }
 
-void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::IntPoint &pos, Color color)
+void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, glm::ivec2&pos, Color color)
 {
     if (font == FONT_BUTTON)
     {
-        Math::IntPoint windowSize = m_engine->GetWindowSize();
+        glm::ivec2 windowSize = m_engine->GetWindowSize();
         int height = GetHeightInt(FONT_COMMON, size);
         int width = height * (static_cast<float>(windowSize.y)/windowSize.x);
 
-        Math::IntPoint p1(pos.x, pos.y - height);
-        Math::IntPoint p2(pos.x + width, pos.y);
+        glm::ivec2 p1(pos.x, pos.y - height);
+        glm::ivec2 p2(pos.x + width, pos.y);
 
         // For whatever reason ch.c1 is a SIGNED char, we need to fix that
         unsigned char icon = static_cast<unsigned char>(ch.c1);
@@ -1114,7 +1115,7 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::I
 
 CachedFont* CText::GetOrOpenFont(FontType font, float size)
 {
-    Math::IntPoint windowSize = m_engine->GetWindowSize();
+    glm::ivec2 windowSize = m_engine->GetWindowSize();
     int pointSize = static_cast<int>(size * (glm::length(glm::vec2(windowSize)) / glm::length(glm::vec2(REFERENCE_SIZE))));
 
     if (m_lastCachedFont != nullptr &&
@@ -1187,7 +1188,7 @@ CharTexture CText::GetCharTexture(UTF8Char ch, FontType font, float size)
     return tex;
 }
 
-Math::IntPoint CText::GetFontTextureSize()
+glm::ivec2 CText::GetFontTextureSize()
 {
     return FONT_TEXTURE_SIZE;
 }
@@ -1208,8 +1209,8 @@ CharTexture CText::CreateCharTexture(UTF8Char ch, CachedFont* font)
     }
 
     const int pixelMargin = 1;
-    Math::IntPoint tileSize(Math::Max(16, Math::NextPowerOfTwo(textSurface->w)) + pixelMargin,
-                            Math::Max(16, Math::NextPowerOfTwo(textSurface->h)) + pixelMargin);
+    glm::ivec2 tileSize(Math::Max(16, Math::NextPowerOfTwo(textSurface->w)) + pixelMargin,
+                        Math::Max(16, Math::NextPowerOfTwo(textSurface->h)) + pixelMargin);
 
     FontTexture* fontTexture = GetOrCreateFontTexture(tileSize);
 
@@ -1221,7 +1222,7 @@ CharTexture CText::CreateCharTexture(UTF8Char ch, CachedFont* font)
     {
         texture.id = fontTexture->id;
         texture.charPos = GetNextTilePos(*fontTexture);
-        texture.charSize = Math::IntPoint(textSurface->w, textSurface->h);
+        texture.charSize = { textSurface->w, textSurface->h };
 
         ImageData imageData;
         imageData.surface = textSurface;
@@ -1240,7 +1241,7 @@ CharTexture CText::CreateCharTexture(UTF8Char ch, CachedFont* font)
     return texture;
 }
 
-FontTexture* CText::GetOrCreateFontTexture(Math::IntPoint tileSize)
+FontTexture* CText::GetOrCreateFontTexture(const glm::ivec2& tileSize)
 {
     for (auto& fontTexture : m_fontTextures)
     {
@@ -1258,7 +1259,7 @@ FontTexture* CText::GetOrCreateFontTexture(Math::IntPoint tileSize)
     return &m_fontTextures.back();
 }
 
-FontTexture CText::CreateFontTexture(Math::IntPoint tileSize)
+FontTexture CText::CreateFontTexture(const glm::ivec2& tileSize)
 {
     SDL_Surface* textureSurface = SDL_CreateRGBSurface(0, FONT_TEXTURE_SIZE.x, FONT_TEXTURE_SIZE.y, 32,
                                                        0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
@@ -1284,7 +1285,7 @@ FontTexture CText::CreateFontTexture(Math::IntPoint tileSize)
     return fontTexture;
 }
 
-Math::IntPoint CText::GetNextTilePos(const FontTexture& fontTexture)
+glm::ivec2 CText::GetNextTilePos(const FontTexture& fontTexture)
 {
     int horizontalTiles = FONT_TEXTURE_SIZE.x / std::max(1, fontTexture.tileSize.x); //this should prevent crashes in some combinations of resolution and font size, see issue #1128
     int verticalTiles = FONT_TEXTURE_SIZE.y / std::max(1, fontTexture.tileSize.y);
@@ -1295,8 +1296,8 @@ Math::IntPoint CText::GetNextTilePos(const FontTexture& fontTexture)
     int verticalTileIndex = tileNumber / std::max(1, horizontalTiles);
     int horizontalTileIndex = tileNumber % horizontalTiles;
 
-    return Math::IntPoint(horizontalTileIndex * fontTexture.tileSize.x,
-                          verticalTileIndex * fontTexture.tileSize.y);
+    return { horizontalTileIndex * fontTexture.tileSize.x,
+             verticalTileIndex * fontTexture.tileSize.y };
 }
 
 } // namespace Gfx
