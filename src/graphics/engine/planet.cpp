@@ -141,10 +141,10 @@ void CPlanet::Draw()
 
         Vertex quad[4] =
         {
-            Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(u1, v2)),
-            Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(u1, v1)),
-            Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(u2, v2)),
-            Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(u2, v1))
+            { Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(u1, v2) },
+            { Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(u1, v1) },
+            { Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(u2, v2) },
+            { Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(u2, v1) }
         };
 
         device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, quad, 4);

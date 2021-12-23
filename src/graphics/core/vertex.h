@@ -28,7 +28,6 @@
 #include "graphics/core/color.h"
 #include "graphics/core/type.h"
 
-#include "math/point.h"
 #include "math/vector.h"
 
 #include <sstream>
@@ -56,32 +55,15 @@ enum VertexType
  * It contains:
  *  - vertex coordinates (x,y,z) as Math::Vector,
  *  - normal coordinates (nx,ny,nz) as Math::Vector
- *  - texture coordinates (u,v) as Math::Point.
+ *  - texture coordinates (u,v) as glm::vec2.
  */
 struct Vertex
 {
     static constexpr VertexType VERTEX_TYPE = VERTEX_TYPE_NORMAL;
 
-    Math::Vector coord;
-    Math::Vector normal;
-    Math::Point texCoord;
-
-    explicit Vertex(Math::Vector aCoord = Math::Vector(),
-                    Math::Vector aNormal = Math::Vector(),
-                    Math::Point aTexCoord = Math::Point())
-        : coord(aCoord), normal(aNormal),
-          texCoord(aTexCoord) {}
-
-
-    //! Returns a string "(c: [...], n: [...], tc: [...])"
-    inline std::string ToString() const
-    {
-        std::stringstream s;
-        s.precision(3);
-        s << "(c: " << coord.ToString() << ", n: " << normal.ToString()
-          << ", tc: " << Math::ToString(texCoord) << ")";
-        return s.str();
-    }
+    Math::Vector coord = Math::Vector();
+    Math::Vector normal = Math::Vector();
+    glm::vec2 texCoord = { 0, 0 };
 };
 
 /**
@@ -96,48 +78,25 @@ struct VertexCol
 {
     static constexpr VertexType VERTEX_TYPE = VERTEX_TYPE_COL;
 
-    Math::Vector coord;
-    Color color;
-
-    VertexCol() = default;
-
-    explicit VertexCol(Math::Vector aCoord,
-                       Color aColor = Color())
-        : coord(aCoord), color(aColor) {}
-
-    //! Returns a string "(c: [...], col: [...])"
-    inline std::string ToString() const
-    {
-        std::stringstream s;
-        s.precision(3);
-        s << "(c: " << coord.ToString() << ", col: " << color.ToString() << ")";
-        return s.str();
-    }
+    Math::Vector coord = Math::Vector();
+    Color color = Color();
 };
-
 
 /**
  * \struct VertexTex2
  * \brief Vertex with secondary texture coordinates
  *
  * In addition to fields from Vector, it contains
- * secondary texture coordinates (u2, v2) as Math::Point
+ * secondary texture coordinates (u2, v2) as glm::vec2
  */
 struct VertexTex2
 {
     static constexpr VertexType VERTEX_TYPE = VERTEX_TYPE_TEX2;
 
-    Math::Vector coord;
-    Math::Vector normal;
-    Math::Point texCoord;
-    Math::Point texCoord2;
-
-    explicit VertexTex2(Math::Vector aCoord = Math::Vector(),
-                        Math::Vector aNormal = Math::Vector(),
-                        Math::Point aTexCoord = Math::Point(),
-                        Math::Point aTexCoord2 = Math::Point())
-        : coord(aCoord), normal(aNormal),
-          texCoord(aTexCoord), texCoord2(aTexCoord2) {}
+    Math::Vector coord = Math::Vector();
+    Math::Vector normal = Math::Vector();
+    glm::vec2 texCoord = { 0, 0 };
+    glm::vec2 texCoord2 = { 0, 0 };
 
     //! Sets the fields from Vertex with texCoord2 = (0,0)
     void FromVertex(const Vertex &v)
@@ -145,17 +104,7 @@ struct VertexTex2
         coord = v.coord;
         normal = v.normal;
         texCoord = v.texCoord;
-        texCoord2 = Math::Point();
-    }
-
-    //! Returns a string "(c: [...], n: [...], tc: [...], tc2: [...])"
-    inline std::string ToString() const
-    {
-        std::stringstream s;
-        s.precision(3);
-        s << "(c: " << coord.ToString() << ", n: " << normal.ToString()
-          << ", tc: " << Math::ToString(texCoord) << ", tc2: " << Math::ToString(texCoord2) << ")";
-        return s.str();
+        texCoord2 = { 0, 0 };
     }
 };
 

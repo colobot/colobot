@@ -4883,10 +4883,10 @@ void CEngine::DrawShadowSpots()
 
         Vertex vertex[4] =
         {
-            Vertex(corner[1], n, Math::Point(ts.x, ts.y)),
-            Vertex(corner[0], n, Math::Point(ti.x, ts.y)),
-            Vertex(corner[3], n, Math::Point(ts.x, ti.y)),
-            Vertex(corner[2], n, Math::Point(ti.x, ti.y))
+            { corner[1], n, Math::Point(ts.x, ts.y) },
+            { corner[0], n, Math::Point(ti.x, ts.y) },
+            { corner[3], n, Math::Point(ts.x, ti.y) },
+            { corner[2], n, Math::Point(ti.x, ti.y) }
         };
 
         float intensity = (0.5f+m_shadowSpots[i].intensity*0.5f)*hFactor;
@@ -4956,10 +4956,10 @@ void CEngine::DrawBackgroundGradient(const Color& up, const Color& down)
 
     VertexCol vertex[4] =
     {
-        VertexCol(Math::Vector(p1.x, p1.y, 0.0f), color[1]),
-        VertexCol(Math::Vector(p1.x, p2.y, 0.0f), color[0]),
-        VertexCol(Math::Vector(p2.x, p1.y, 0.0f), color[1]),
-        VertexCol(Math::Vector(p2.x, p2.y, 0.0f), color[0])
+        { Math::Vector(p1.x, p1.y, 0.0f), color[1] },
+        { Math::Vector(p1.x, p2.y, 0.0f), color[0] },
+        { Math::Vector(p2.x, p1.y, 0.0f), color[1] },
+        { Math::Vector(p2.x, p2.y, 0.0f), color[0] }
     };
 
     m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
@@ -5082,10 +5082,10 @@ void CEngine::DrawForegroundImage()
 
     Vertex vertex[4] =
     {
-        Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(u1, v2)),
-        Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(u1, v1)),
-        Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(u2, v2)),
-        Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(u2, v1))
+        { Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(u1, v2) },
+        { Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(u1, v1) },
+        { Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(u2, v2) },
+        { Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(u2, v1) }
     };
 
     SetTexture(m_foregroundTex);
@@ -5128,10 +5128,10 @@ void CEngine::DrawOverColor()
 
     VertexCol vertex[4] =
     {
-        VertexCol(Math::Vector(p1.x, p1.y, 0.0f), color[1]),
-        VertexCol(Math::Vector(p1.x, p2.y, 0.0f), color[0]),
-        VertexCol(Math::Vector(p2.x, p1.y, 0.0f), color[1]),
-        VertexCol(Math::Vector(p2.x, p2.y, 0.0f), color[0])
+        { Math::Vector(p1.x, p1.y, 0.0f), color[1] },
+        { Math::Vector(p1.x, p2.y, 0.0f), color[0] },
+        { Math::Vector(p2.x, p1.y, 0.0f), color[1] },
+        { Math::Vector(p2.x, p2.y, 0.0f), color[0] }
     };
 
     m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
@@ -5201,11 +5201,11 @@ void CEngine::DrawHighlight()
     Color color(1.0f, 1.0f, 0.0f);  // yellow
 
     VertexCol line[3] =
-        {
-            VertexCol(Math::Vector(), color),
-            VertexCol(Math::Vector(), color),
-            VertexCol(Math::Vector(), color)
-        };
+    {
+        { Math::Vector(), color },
+        { Math::Vector(), color },
+        { Math::Vector(), color }
+    };
 
     float dx = (p2.x - p1.x) / 5.0f;
     float dy = (p2.y - p1.y) / 5.0f;

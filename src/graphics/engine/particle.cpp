@@ -2650,17 +2650,17 @@ void CParticle::TrackDraw(int i, ParticleType type)
 
         if (p2.y < p1.y)
         {
-            vertex[0] = Vertex(corner[1], n, Math::Point(texSup.x, texSup.y));
-            vertex[1] = Vertex(corner[0], n, Math::Point(texInf.x, texSup.y));
-            vertex[2] = Vertex(corner[3], n, Math::Point(texSup.x, texInf.y));
-            vertex[3] = Vertex(corner[2], n, Math::Point(texInf.x, texInf.y));
+            vertex[0] = { corner[1], n, Math::Point(texSup.x, texSup.y) };
+            vertex[1] = { corner[0], n, Math::Point(texInf.x, texSup.y) };
+            vertex[2] = { corner[3], n, Math::Point(texSup.x, texInf.y) };
+            vertex[3] = { corner[2], n, Math::Point(texInf.x, texInf.y) };
         }
         else
         {
-            vertex[0] = Vertex(corner[0], n, Math::Point(texSup.x, texSup.y));
-            vertex[1] = Vertex(corner[1], n, Math::Point(texInf.x, texSup.y));
-            vertex[2] = Vertex(corner[2], n, Math::Point(texSup.x, texInf.y));
-            vertex[3] = Vertex(corner[3], n, Math::Point(texInf.x, texInf.y));
+            vertex[0] = { corner[0], n, Math::Point(texSup.x, texSup.y) };
+            vertex[1] = { corner[1], n, Math::Point(texInf.x, texSup.y) };
+            vertex[2] = { corner[2], n, Math::Point(texSup.x, texInf.y) };
+            vertex[3] = { corner[3], n, Math::Point(texInf.x, texInf.y) };
         }
 
         m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
@@ -2736,10 +2736,10 @@ void CParticle::DrawParticleNorm(int i)
         corner[3].y = pos.y-dim.y;
         corner[3].z = 0.0f;
 
-        vertex[0] = Vertex(corner[1], n, Math::Point(m_particle[i].texSup.x, m_particle[i].texSup.y));
-        vertex[1] = Vertex(corner[0], n, Math::Point(m_particle[i].texInf.x, m_particle[i].texSup.y));
-        vertex[2] = Vertex(corner[3], n, Math::Point(m_particle[i].texSup.x, m_particle[i].texInf.y));
-        vertex[3] = Vertex(corner[2], n, Math::Point(m_particle[i].texInf.x, m_particle[i].texInf.y));
+        vertex[0] = { corner[1], n, Math::Point(m_particle[i].texSup.x, m_particle[i].texSup.y) };
+        vertex[1] = { corner[0], n, Math::Point(m_particle[i].texInf.x, m_particle[i].texSup.y) };
+        vertex[2] = { corner[3], n, Math::Point(m_particle[i].texSup.x, m_particle[i].texInf.y) };
+        vertex[3] = { corner[2], n, Math::Point(m_particle[i].texInf.x, m_particle[i].texInf.y) };
 
         m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
         m_engine->AddStatisticTriangle(2);
@@ -2787,10 +2787,10 @@ void CParticle::DrawParticleNorm(int i)
         corner[3].y = -dim.y;
         corner[3].z =  0.0f;
 
-        vertex[0] = Vertex(corner[1], n, Math::Point(m_particle[i].texSup.x, m_particle[i].texSup.y));
-        vertex[1] = Vertex(corner[0], n, Math::Point(m_particle[i].texInf.x, m_particle[i].texSup.y));
-        vertex[2] = Vertex(corner[3], n, Math::Point(m_particle[i].texSup.x, m_particle[i].texInf.y));
-        vertex[3] = Vertex(corner[2], n, Math::Point(m_particle[i].texInf.x, m_particle[i].texInf.y));
+        vertex[0] = { corner[1], n, Math::Point(m_particle[i].texSup.x, m_particle[i].texSup.y) };
+        vertex[1] = { corner[0], n, Math::Point(m_particle[i].texInf.x, m_particle[i].texSup.y) };
+        vertex[2] = { corner[3], n, Math::Point(m_particle[i].texSup.x, m_particle[i].texInf.y) };
+        vertex[3] = { corner[2], n, Math::Point(m_particle[i].texInf.x, m_particle[i].texInf.y) };
 
         m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4, m_particle[i].color);
         m_engine->AddStatisticTriangle(2);
@@ -2851,10 +2851,10 @@ void CParticle::DrawParticleFlat(int i)
     corner[3].z =  0.0f;
 
     Vertex vertex[4];
-    vertex[0] = Vertex(corner[1], n, Math::Point(m_particle[i].texSup.x, m_particle[i].texSup.y));
-    vertex[1] = Vertex(corner[0], n, Math::Point(m_particle[i].texInf.x, m_particle[i].texSup.y));
-    vertex[2] = Vertex(corner[3], n, Math::Point(m_particle[i].texSup.x, m_particle[i].texInf.y));
-    vertex[3] = Vertex(corner[2], n, Math::Point(m_particle[i].texInf.x, m_particle[i].texInf.y));
+    vertex[0] = { corner[1], n, Math::Point(m_particle[i].texSup.x, m_particle[i].texSup.y) };
+    vertex[1] = { corner[0], n, Math::Point(m_particle[i].texInf.x, m_particle[i].texSup.y) };
+    vertex[2] = { corner[3], n, Math::Point(m_particle[i].texSup.x, m_particle[i].texInf.y) };
+    vertex[3] = { corner[2], n, Math::Point(m_particle[i].texInf.x, m_particle[i].texInf.y) };
 
     m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
     m_engine->AddStatisticTriangle(2);
@@ -2938,10 +2938,10 @@ void CParticle::DrawParticleFog(int i)
 
     Vertex vertex[4];
 
-    vertex[0] = Vertex(corner[1], n, Math::Point(m_particle[i].texSup.x, m_particle[i].texSup.y));
-    vertex[1] = Vertex(corner[0], n, Math::Point(m_particle[i].texInf.x, m_particle[i].texSup.y));
-    vertex[2] = Vertex(corner[3], n, Math::Point(m_particle[i].texSup.x, m_particle[i].texInf.y));
-    vertex[3] = Vertex(corner[2], n, Math::Point(m_particle[i].texInf.x, m_particle[i].texInf.y));
+    vertex[0] = { corner[1], n, Math::Point(m_particle[i].texSup.x, m_particle[i].texSup.y) };
+    vertex[1] = { corner[0], n, Math::Point(m_particle[i].texInf.x, m_particle[i].texSup.y) };
+    vertex[2] = { corner[3], n, Math::Point(m_particle[i].texSup.x, m_particle[i].texInf.y) };
+    vertex[3] = { corner[2], n, Math::Point(m_particle[i].texInf.x, m_particle[i].texInf.y) };
 
     m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
     m_engine->AddStatisticTriangle(2);
@@ -3092,10 +3092,10 @@ void CParticle::DrawParticleRay(int i)
             if (r % 4 < 2)
                 Math::Swap(texInf.y, texSup.y);
 
-            vertex[0] = Vertex(corner[1], n, Math::Point(texSup.x, texSup.y));
-            vertex[1] = Vertex(corner[0], n, Math::Point(texInf.x, texSup.y));
-            vertex[2] = Vertex(corner[3], n, Math::Point(texSup.x, texInf.y));
-            vertex[3] = Vertex(corner[2], n, Math::Point(texInf.x, texInf.y));
+            vertex[0] = { corner[1], n, Math::Point(texSup.x, texSup.y) };
+            vertex[1] = { corner[0], n, Math::Point(texInf.x, texSup.y) };
+            vertex[2] = { corner[3], n, Math::Point(texSup.x, texInf.y) };
+            vertex[3] = { corner[2], n, Math::Point(texInf.x, texInf.y) };
 
             m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
             m_engine->AddStatisticTriangle(2);
@@ -3192,8 +3192,8 @@ void CParticle::DrawParticleSphere(int i)
             tu0 = ts.x+(ti.x-ts.x)*tu0;
             float tu1 = tu0;
 
-            vertex[j++] = Vertex(v0, v0, Math::Point(tu0, tv0));
-            vertex[j++] = Vertex(v1, v1, Math::Point(tu1, tv1));
+            vertex[j++] = { v0, v0, Math::Point(tu0, tv0) };
+            vertex[j++] = { v1, v1, Math::Point(tu1, tv1) };
         }
     }
 
@@ -3287,8 +3287,8 @@ void CParticle::DrawParticleCylinder(int i)
             tu0 = ts.x+(ti.x-ts.x)*tu0;
             float tu1 = tu0;
 
-            vertex[j++] = Vertex(v0, v0, Math::Point(tu0, tv0));
-            vertex[j++] = Vertex(v1, v1, Math::Point(tu1, tv1));
+            vertex[j++] = { v0, v0, Math::Point(tu0, tv0) };
+            vertex[j++] = { v1, v1, Math::Point(tu1, tv1) };
         }
     }
 
@@ -3344,10 +3344,10 @@ void CParticle::DrawParticleWheel(int i)
         ti.y = ti.y-dp;
 
         Vertex vertex[4];
-        vertex[0] = Vertex(pos[0], n, Math::Point(ts.x, ts.y));
-        vertex[1] = Vertex(pos[1], n, Math::Point(ti.x, ts.y));
-        vertex[2] = Vertex(pos[2], n, Math::Point(ts.x, ti.y));
-        vertex[3] = Vertex(pos[3], n, Math::Point(ti.x, ti.y));
+        vertex[0] = { pos[0], n, Math::Point(ts.x, ts.y) };
+        vertex[1] = { pos[1], n, Math::Point(ti.x, ts.y) };
+        vertex[2] = { pos[2], n, Math::Point(ts.x, ti.y) };
+        vertex[3] = { pos[3], n, Math::Point(ti.x, ti.y) };
 
         m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4, TraceColorColor(m_wheelTrace[i].color));
         m_engine->AddStatisticTriangle(2);
@@ -3365,10 +3365,10 @@ void CParticle::DrawParticleWheel(int i)
         Math::Vector n(0.0f, 1.0f, 0.0f);
 
         Vertex vertex[4];
-        vertex[0] = Vertex(pos[0], n);
-        vertex[1] = Vertex(pos[1], n);
-        vertex[2] = Vertex(pos[2], n);
-        vertex[3] = Vertex(pos[3], n);
+        vertex[0] = { pos[0], n };
+        vertex[1] = { pos[1], n };
+        vertex[2] = { pos[2], n };
+        vertex[3] = { pos[3], n };
 
         m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4, TraceColorColor(m_wheelTrace[i].color));
         m_engine->AddStatisticTriangle(2);

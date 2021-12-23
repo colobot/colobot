@@ -152,13 +152,13 @@ void CCloud::Draw()
         p.z = pos.z+size;
         p.y = pos.y;
         AdjustLevel(p, eye, deep, uv1, uv2);
-        vertices[vertexIndex++] = VertexTex2(p, n, uv1, uv2);
+        vertices[vertexIndex++] = VertexTex2{ p, n, uv1, uv2 };
 
         p.x = pos.x-size;
         p.z = pos.z-size;
         p.y = pos.y;
         AdjustLevel(p, eye, deep, uv1, uv2);
-        vertices[vertexIndex++] = VertexTex2(p, n, uv1, uv2);
+        vertices[vertexIndex++] = VertexTex2{ p, n, uv1, uv2 };
 
         for (int j = 0; j < m_lines[i].len; j++)
         {
@@ -166,13 +166,13 @@ void CCloud::Draw()
             p.z = pos.z+size;
             p.y = pos.y;
             AdjustLevel(p, eye, deep, uv1, uv2);
-            vertices[vertexIndex++] = VertexTex2(p, n, uv1, uv2);
+            vertices[vertexIndex++] = VertexTex2{ p, n, uv1, uv2 };
 
             p.x = pos.x+size;
             p.z = pos.z-size;
             p.y = pos.y;
             AdjustLevel(p, eye, deep, uv1, uv2);
-            vertices[vertexIndex++] = VertexTex2(p, n, uv1, uv2);
+            vertices[vertexIndex++] = VertexTex2{ p, n, uv1, uv2 };
 
             pos.x += size*2.0f;
         }

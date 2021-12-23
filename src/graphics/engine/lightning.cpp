@@ -275,17 +275,17 @@ void CLightning::Draw()
 
         if (p2.y < p1.y)
         {
-            vertex[0] = Vertex(corner[1], n, Math::Point(texSup.x, texSup.y));
-            vertex[1] = Vertex(corner[0], n, Math::Point(texInf.x, texSup.y));
-            vertex[2] = Vertex(corner[3], n, Math::Point(texSup.x, texInf.y));
-            vertex[3] = Vertex(corner[2], n, Math::Point(texInf.x, texInf.y));
+            vertex[0] = { corner[1], n, Math::Point(texSup.x, texSup.y) };
+            vertex[1] = { corner[0], n, Math::Point(texInf.x, texSup.y) };
+            vertex[2] = { corner[3], n, Math::Point(texSup.x, texInf.y) };
+            vertex[3] = { corner[2], n, Math::Point(texInf.x, texInf.y) };
         }
         else
         {
-            vertex[0] = Vertex(corner[0], n, Math::Point(texSup.x, texSup.y));
-            vertex[1] = Vertex(corner[1], n, Math::Point(texInf.x, texSup.y));
-            vertex[2] = Vertex(corner[2], n, Math::Point(texSup.x, texInf.y));
-            vertex[3] = Vertex(corner[3], n, Math::Point(texInf.x, texInf.y));
+            vertex[0] = { corner[0], n, Math::Point(texSup.x, texSup.y) };
+            vertex[1] = { corner[1], n, Math::Point(texInf.x, texSup.y) };
+            vertex[2] = { corner[2], n, Math::Point(texSup.x, texInf.y) };
+            vertex[3] = { corner[3], n, Math::Point(texInf.x, texInf.y) };
         }
 
         device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);

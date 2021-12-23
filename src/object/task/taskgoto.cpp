@@ -100,14 +100,14 @@ bool CTaskGoto::EventProcess(const Event &event)
             {
                 if (i > m_bmIndex-1)
                     color = Gfx::Color(1.0f, 0.0f, 0.0f);
-                debugLine.push_back(Gfx::VertexCol(AdjustPoint(m_bmPoints[i]), color));
+                debugLine.push_back({ AdjustPoint(m_bmPoints[i]), color });
             }
             m_engine->AddDebugGotoLine(debugLine);
             debugLine.clear();
         }
         Gfx::Color color = Gfx::Color(0.0f, 0.0f, 1.0f);
-        debugLine.push_back(Gfx::VertexCol(m_object->GetPosition(), color));
-        debugLine.push_back(Gfx::VertexCol(AdjustPoint(m_bmTotal > 0 && m_bmIndex <= m_bmTotal && m_phase != TGP_BEAMSEARCH ? m_bmPoints[m_bmIndex] : m_goal), color));
+        debugLine.push_back({ m_object->GetPosition(), color });
+        debugLine.push_back({ AdjustPoint(m_bmTotal > 0 && m_bmIndex <= m_bmTotal && m_phase != TGP_BEAMSEARCH ? m_bmPoints[m_bmIndex] : m_goal), color });
         m_engine->AddDebugGotoLine(debugLine);
 
         if (m_object->GetSelect() && m_bmChanged)

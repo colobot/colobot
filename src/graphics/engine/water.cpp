@@ -300,10 +300,10 @@ void CWater::DrawBack()
 
     VertexCol vertices[4] =
     {
-        VertexCol(Math::Vector(p1.x, p2.y, p1.z), white),
-        VertexCol(Math::Vector(p1.x, p1.y, p1.z), white),
-        VertexCol(Math::Vector(p2.x, p2.y, p2.z), white),
-        VertexCol(Math::Vector(p2.x, p1.y, p2.z), white)
+        { Math::Vector(p1.x, p2.y, p1.z), white },
+        { Math::Vector(p1.x, p1.y, p1.z), white },
+        { Math::Vector(p2.x, p2.y, p2.z), white },
+        { Math::Vector(p2.x, p1.y, p2.z), white }
     };
 
     device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertices, 4);
@@ -392,14 +392,14 @@ void CWater::DrawSurf()
         p.y = pos.y;
         AdjustLevel(p, n, uv1, uv2);
         if (under) n.y = -n.y;
-        vertices[vertexIndex++] = Vertex(p, n, uv1);
+        vertices[vertexIndex++] = { p, n, uv1 };
 
         p.x = pos.x-size;
         p.z = pos.z+sizez;
         p.y = pos.y;
         AdjustLevel(p, n, uv1, uv2);
         if (under)  n.y = -n.y;
-        vertices[vertexIndex++] = Vertex(p, n, uv1);
+        vertices[vertexIndex++] = { p, n, uv1 };
 
         for (int j = 0; j < m_lines[i].len; j++)
         {
@@ -408,14 +408,14 @@ void CWater::DrawSurf()
             p.y = pos.y;
             AdjustLevel(p, n, uv1, uv2);
             if (under)  n.y = -n.y;
-            vertices[vertexIndex++] = Vertex(p, n, uv1);
+            vertices[vertexIndex++] = { p, n, uv1 };
 
             p.x = pos.x+size;
             p.z = pos.z+sizez;
             p.y = pos.y;
             AdjustLevel(p, n, uv1, uv2);
             if (under)  n.y = -n.y;
-            vertices[vertexIndex++] = Vertex(p, n, uv1);
+            vertices[vertexIndex++] = { p, n, uv1 };
 
             pos.x += size*2.0f;
         }
