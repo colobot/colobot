@@ -1031,7 +1031,7 @@ void CMap::UpdateTerrain()
 {
     if (! m_fixImage.empty()) return;  // still image?
 
-    CImage img(Math::IntPoint(256, 256));
+    CImage img(glm::ivec2(256, 256));
 
     float scale = m_terrain->GetReliefScale();
     float water = m_water->GetLevel();
@@ -1077,7 +1077,7 @@ void CMap::UpdateTerrain()
                 color.b = Math::Norm(m_waterColor.b + (intensity - 0.5f));
             }
 
-            img.SetPixel(Math::IntPoint(x, y), color);
+            img.SetPixel({ x, y }, color);
         }
     }
 

@@ -890,7 +890,6 @@ void CDisplayInfo::ViewDisplayInfo()
 {
     Ui::CWindow*    pw;
     Ui::CEdit*      edit;
-    Math::IntPoint       dim;
 
     pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW4));
     if ( pw == nullptr )  return;
@@ -898,7 +897,7 @@ void CDisplayInfo::ViewDisplayInfo()
     edit = static_cast<Ui::CEdit*>(pw->SearchControl(EVENT_EDIT1));
     if ( edit == nullptr )  return;
 
-    dim = m_engine->GetWindowSize();
+    auto dim = m_engine->GetWindowSize();
     edit->SetFontSize(CSettings::GetInstancePointer()->GetFontSize()/(dim.x / 640.0f));
 }
 

@@ -114,7 +114,7 @@ bool CTaskGoto::EventProcess(const Event &event)
         {
             if (m_bmArray != nullptr)
             {
-                std::unique_ptr<CImage> debugImage = MakeUnique<CImage>(Math::IntPoint(m_bmSize, m_bmSize));
+                std::unique_ptr<CImage> debugImage = MakeUnique<CImage>(glm::ivec2(m_bmSize, m_bmSize));
                 debugImage->Fill(Gfx::IntColor(255, 255, 255, 255));
                 for (int x = 0; x < m_bmSize; x++)
                 {
@@ -126,7 +126,7 @@ bool CTaskGoto::EventProcess(const Event &event)
                         {
                             Gfx::Color c = Gfx::Color(0.0f, 0.0f, 0.0f, 1.0f);
                             if (b) c = Gfx::Color(0.0f, 0.0f, 1.0f, 1.0f);
-                            debugImage->SetPixel(Math::IntPoint(x, y), c);
+                            debugImage->SetPixel({ x, y }, c);
                         }
                     }
                 }

@@ -237,7 +237,7 @@ bool CMotionToto::EventFrame(const Event &event)
     Math::Vector        eye, lookat, dir, perp, nPos, aPos, pos, speed;
     Math::Vector        vibLin, vibCir, dirSpeed, aAntenna;
     Math::Point         dim;
-    Math::IntPoint           wDim;
+    glm::ivec2          wDim;
     Gfx::ParticleType   type;
     float           progress, focus, distance, shift, verti, level, zoom;
     float           aAngle, nAngle, mAngle, angle, linSpeed, cirSpeed;

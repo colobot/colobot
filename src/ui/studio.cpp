@@ -1111,7 +1111,6 @@ void CStudio::ViewEditScript()
 {
     CWindow*    pw;
     CEdit*      edit;
-    Math::IntPoint dim;
 
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW3));
     if ( pw == nullptr )  return;
@@ -1119,7 +1118,7 @@ void CStudio::ViewEditScript()
     edit = static_cast< CEdit* >(pw->SearchControl(EVENT_STUDIO_EDIT));
     if ( edit == nullptr )  return;
 
-    dim = m_engine->GetWindowSize();
+    glm::ivec2 dim = m_engine->GetWindowSize();
     edit->SetFontSize(m_settings->GetFontSize()/(dim.x/640.0f));
 }
 

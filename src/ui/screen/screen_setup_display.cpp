@@ -64,8 +64,8 @@ void CScreenSetupDisplay::CreateInterface()
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == nullptr )  return;
 
-    std::vector<Math::IntPoint> modes;
-    m_app->GetVideoResolutionList(modes);
+    auto modes = m_app->GetVideoResolutionList();
+
     for (auto it = modes.begin(); it != modes.end(); ++it)
     {
         if (it->x == m_app->GetVideoConfig().size.x && it->y == m_app->GetVideoConfig().size.y)
@@ -218,10 +218,9 @@ static int GCD(int a, int b)
     return (b == 0) ? a : GCD(b, a%b);
 }
 
-static Math::IntPoint AspectRatio(Math::IntPoint resolution)
+static glm::ivec2 AspectRatio(const glm::ivec2& resolution)
 {
-    int gcd = GCD(resolution.x, resolution.y);
-    return Math::IntPoint(static_cast<float>(resolution.x) / gcd, static_cast<float>(resolution.y) / gcd);
+    return resolution / GCD(resolution.x, resolution.y);
 }
 
 void CScreenSetupDisplay::UpdateDisplayMode()
@@ -235,14 +234,14 @@ void CScreenSetupDisplay::UpdateDisplayMode()
     if ( pl == nullptr )  return;
     pl->Flush();
 
-    std::vector<Math::IntPoint> modes;
-    m_app->GetVideoResolutionList(modes);
+    auto modes = m_app->GetVideoResolutionList();
+
     int i = 0;
     std::stringstream mode_text;
-    for (Math::IntPoint mode : modes)
+    for (const auto& mode : modes)
     {
         mode_text.str("");
-        Math::IntPoint aspect = AspectRatio(mode);
+        glm::ivec2 aspect = AspectRatio(mode);
         mode_text << mode.x << "x" << mode.y << " [" << aspect.x << ":" << aspect.y << "]";
         pl->SetItemName(i++, mode_text.str());
     }
@@ -272,8 +271,7 @@ void CScreenSetupDisplay::ChangeDisplay()
     bFull = pc->TestState(STATE_CHECK);
     m_setupFull = bFull;
 
-    std::vector<Math::IntPoint> modes;
-    m_app->GetVideoResolutionList(modes);
+    auto modes = m_app->GetVideoResolutionList();
 
     Gfx::DeviceConfig config = m_app->GetVideoConfig();
     config.size = modes[m_setupSelMode];

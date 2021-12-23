@@ -32,7 +32,8 @@
 #include "graphics/core/device.h"
 
 #include "level/level_category.h"
-#include "math/intpoint.h"
+
+#include <glm/glm.hpp>
 
 #include <string>
 #include <vector>
@@ -184,7 +185,7 @@ public:
     const std::string& GetErrorMessage() const;
 
     //! Returns a list of possible video modes
-    void        GetVideoResolutionList(std::vector<Math::IntPoint> &resolutions, int display = 0) const;
+    std::vector<glm::ivec2> GetVideoResolutionList(int display = 0) const;
 
     //! Returns the current video mode
     Gfx::DeviceConfig GetVideoConfig() const;

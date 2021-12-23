@@ -575,8 +575,7 @@ bool CApplication::Create()
 
         // GetVideoResolutionList() has to be called here because it is responsible
         // for list of resolutions in options menu, not calling it results in empty list
-        std::vector<Math::IntPoint> modes;
-        GetVideoResolutionList(modes);
+        auto modes = GetVideoResolutionList();
 
         if ( GetConfigFile().GetStringProperty("Setup", "Resolution", sValue) && !m_resolutionOverride )
         {
@@ -1028,7 +1027,7 @@ void CApplication::UpdateJoystick()
 
 void CApplication::UpdateMouse()
 {
-    Math::IntPoint pos;
+    glm::ivec2 pos{};
     SDL_GetMouseState(&pos.x, &pos.y);
     m_input->MouseMove(pos);
 }
@@ -1302,7 +1301,7 @@ Event CApplication::ProcessSystemEvent()
     {
         event.type = EVENT_MOUSE_MOVE;
 
-        m_input->MouseMove(Math::IntPoint(m_private->currentEvent.button.x, m_private->currentEvent.button.y));
+        m_input->MouseMove({ m_private->currentEvent.button.x, m_private->currentEvent.button.y });
     }
     else if (m_private->currentEvent.type == SDL_JOYAXISMOTION)
     {
@@ -1627,19 +1626,21 @@ Gfx::DeviceConfig CApplication::GetVideoConfig() const
     return m_deviceConfig;
 }
 
-void CApplication::GetVideoResolutionList(std::vector<Math::IntPoint> &resolutions, int display) const
+std::vector<glm::ivec2> CApplication::GetVideoResolutionList(int display) const
 {
-    resolutions.clear();
+    std::vector<glm::ivec2> resolutions;
 
     for(int i = 0; i < SDL_GetNumDisplayModes(display); i++)
     {
         SDL_DisplayMode mode;
         SDL_GetDisplayMode(display, i, &mode);
-        Math::IntPoint resolution = Math::IntPoint(mode.w, mode.h);
+        glm::ivec2 resolution = { mode.w, mode.h };
 
         if (std::find(resolutions.begin(), resolutions.end(), resolution) == resolutions.end())
             resolutions.push_back(resolution);
     }
+
+    return resolutions;
 }
 
 void CApplication::SetDebugModeActive(DebugMode mode, bool active)
@@ -1713,7 +1714,7 @@ MouseMode CApplication::GetMouseMode() const
 
 void CApplication::MoveMouse(Math::Point pos)
 {
-    Math::IntPoint windowPos = m_engine->InterfaceToWindowCoords(pos);
+    glm::ivec2 windowPos = m_engine->InterfaceToWindowCoords(pos);
     m_input->MouseMove(windowPos);
     SDL_WarpMouseInWindow(m_private->window, windowPos.x, windowPos.y);
 }
