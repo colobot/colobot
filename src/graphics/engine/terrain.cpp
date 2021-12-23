@@ -237,7 +237,7 @@ bool CTerrain::LoadResources(const std::string& fileName)
     {
         for (int y = 0; y < size; ++y)
         {
-            Gfx::IntColor pixel = img.GetPixelInt(Math::IntPoint(x, size - y - 1));
+            Gfx::IntColor pixel = img.GetPixelInt({ x, size - y - 1 });
             TerrainRes res = TR_NULL;
 
             for (const auto& it : RESOURCE_PALETTE)
@@ -324,7 +324,7 @@ bool CTerrain::LoadRelief(const std::string &fileName, float scaleRelief,
     {
         for (int x = 0; x < size; x++)
         {
-            Gfx::IntColor color = img.GetPixelInt(Math::IntPoint(x, size - y - 1));
+            Gfx::IntColor color = img.GetPixelInt({ x, size - y - 1 });
 
             float avg = (color.r + color.g + color.b) / 3.0f; // to be sure it is grayscale
             float level = (255.0f - avg) * scaleRelief;
@@ -1285,7 +1285,7 @@ bool CTerrain::Terraform(const Math::Vector &p1, const Math::Vector &p2, float h
 {
     float dim = (m_mosaicCount*m_brickCount*m_brickSize)/2.0f;
 
-    Math::IntPoint tp1, tp2;
+    glm::ivec2 tp1, tp2;
     tp1.x = static_cast<int>((p1.x+dim+m_brickSize/2.0f)/m_brickSize);
     tp1.y = static_cast<int>((p1.z+dim+m_brickSize/2.0f)/m_brickSize);
     tp2.x = static_cast<int>((p2.x+dim+m_brickSize/2.0f)/m_brickSize);
@@ -1342,7 +1342,7 @@ bool CTerrain::Terraform(const Math::Vector &p1, const Math::Vector &p2, float h
     }
     AdjustRelief();
 
-    Math::IntPoint pp1, pp2;
+    glm::ivec2 pp1, pp2;
     pp1.x = (tp1.x-2)/m_brickCount;
     pp1.y = (tp1.y-2)/m_brickCount;
     pp2.x = (tp2.x+1)/m_brickCount;
