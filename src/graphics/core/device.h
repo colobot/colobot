@@ -28,7 +28,7 @@
 #include "graphics/core/texture.h"
 #include "graphics/core/vertex.h"
 
-#include "math/intpoint.h"
+#include <glm/glm.hpp>
 
 #include <memory>
 #include <string>
@@ -70,7 +70,7 @@ struct VertexTex2;
 struct DeviceConfig
 {
     //! Screen size
-    Math::IntPoint size = Math::IntPoint(800, 600);
+    glm::ivec2 size = { 800, 600 };
     //! Bits per pixel
     int bpp = 32;
     //! Full screen
@@ -474,7 +474,7 @@ public:
     //! Creates a depth texture with specific dimensions and depth
     virtual Texture CreateDepthTexture(int width, int height, int depth) = 0;
     //! Updates a part of texture from raw image data
-    virtual void UpdateTexture(const Texture& texture, Math::IntPoint offset, ImageData* data, TexImgFormat format) = 0;
+    virtual void UpdateTexture(const Texture& texture, const glm::ivec2& offset, ImageData* data, TexImgFormat format) = 0;
     //! Deletes a given texture, freeing it from video memory
     virtual void DestroyTexture(const Texture &texture) = 0;
     //! Deletes all textures created so far

@@ -26,10 +26,10 @@
 
 #include "graphics/core/device.h"
 
-#include "math/intpoint.h"
 #include "math/vector.h"
 
 #include <GL/glew.h>
+#include <glm/glm.hpp>
 
 #include <string>
 #include <memory>
@@ -135,7 +135,7 @@ private:
     std::unique_ptr<GLubyte[]> m_pixels;
 };
 
-std::unique_ptr<CGLFrameBufferPixels> GetGLFrameBufferPixels(Math::IntPoint size);
+std::unique_ptr<CGLFrameBufferPixels> GetGLFrameBufferPixels(const glm::ivec2& size);
 
 struct LightLocations
 {

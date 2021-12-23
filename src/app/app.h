@@ -32,7 +32,7 @@
 #include "graphics/core/device.h"
 
 #include "level/level_category.h"
-
+#include "math/intpoint.h"
 
 #include <string>
 #include <vector>

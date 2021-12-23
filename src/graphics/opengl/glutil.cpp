@@ -629,7 +629,7 @@ GLint LinkProgram(const std::vector<GLint>& shaders)
     return program;
 }
 
-std::unique_ptr<CGLFrameBufferPixels> GetGLFrameBufferPixels(Math::IntPoint size)
+std::unique_ptr<CGLFrameBufferPixels> GetGLFrameBufferPixels(const glm::ivec2& size)
 {
     auto pixels = MakeUnique<CGLFrameBufferPixels>(4 * size.x * size.y);
 

@@ -680,7 +680,7 @@ Texture CGL33Device::CreateTexture(CImage *image, const TextureCreateParams &par
         return Texture(); // invalid texture
     }
 
-    Math::IntPoint originalSize = image->GetSize();
+    glm::ivec2 originalSize = image->GetSize();
 
     if (params.padToNearestPowerOfTwo)
         image->PadToNearestPowerOfTwo();
@@ -810,7 +810,7 @@ Texture CGL33Device::CreateDepthTexture(int width, int height, int depth)
     return result;
 }
 
-void CGL33Device::UpdateTexture(const Texture& texture, Math::IntPoint offset, ImageData* data, TexImgFormat format)
+void CGL33Device::UpdateTexture(const Texture& texture, const glm::ivec2& offset, ImageData* data, TexImgFormat format)
 {
     if (texture.id == 0) return;
 

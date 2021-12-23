@@ -27,7 +27,7 @@
 
 #include "graphics/core/color.h"
 
-#include "math/intpoint.h"
+#include <glm/glm.hpp>
 
 
 // Graphics module namespace
@@ -217,9 +217,9 @@ struct Texture
     //! ID of the texture in graphics engine; 0 = invalid texture
     unsigned int id = 0;
     //! Size of texture
-    Math::IntPoint size;
+    glm::ivec2 size;
     //! Original size of texture (as loaded from image)
-    Math::IntPoint originalSize;
+    glm::ivec2 originalSize;
     //! Whether the texture has alpha channel
     bool alpha = false;
 
