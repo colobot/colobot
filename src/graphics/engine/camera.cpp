@@ -967,7 +967,8 @@ bool CCamera::EventProcess(const Event &event)
             m_engine->SetMouseType(ENG_MOUSE_MOVE);
         }
 
-        m_mouseDeltaEdge.LoadZero();
+        m_mouseDeltaEdge = { 0, 0 };
+
         if (m_oldCameraScroll)
         {
             if (event.mousePos.x < MOUSE_EDGE_MARGIN)
@@ -1457,7 +1458,8 @@ Math::Vector CCamera::CalculateCameraMovement(const Event &event, bool keysAllow
 
     delta.x += m_mouseDelta.x * 2*Math::PI;
     delta.y -= m_mouseDelta.y * Math::PI;
-    m_mouseDelta.LoadZero();
+
+    m_mouseDelta = { 0, 0 };
 
     delta.z += m_mouseWheelDelta * 8.0f;
     m_mouseWheelDelta = 0.0f;

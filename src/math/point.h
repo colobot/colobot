@@ -39,147 +39,18 @@ namespace Math
 {
 
 
-/**
- * \struct Point
- * \brief 2D point
- *
- * Represents a 2D point (x, y).
- * Contains the required methods for operating on points.
- *
- * All methods are made inline to maximize optimization.
- */
-struct Point
+// Temporary type alias
+using Point = glm::vec2;
+
+
+//! Returns a string "[x, y]"
+inline std::string ToString(const Point& point)
 {
-    //! X coord
-    float x;
-    //! Y coord
-    float y;
-
-    //! Constructs a zero point: (0,0)
-    inline Point()
-     : x(0.0f)
-     , y(0.0f)
-    {}
-
-    //! Constructs a point from given coords: (x,y)
-    inline explicit Point(float _x, float _y)
-     : x(_x)
-     , y(_y)
-    {}
-
-    inline Point(const glm::vec2& point)
-     : x(point.x)
-     , y(point.y)
-    {}
-
-    //! Sets the zero point: (0,0)
-    inline void LoadZero()
-    {
-        x = y = 0.0f;
-    }
-
-    //! Returns the struct cast to \c float* array; use with care!
-    inline float* Array()
-    {
-        return reinterpret_cast<float*>(this);
-    }
-
-    //! Returns the struct cast to <tt>const float*</tt> array; use with care!
-    inline const float* Array() const
-    {
-        return reinterpret_cast<const float*>(this);
-    }
-
-    operator glm::vec2() const
-    {
-        return { x, y };
-    }
-
-    //! Returns the distance from (0,0) to the point (x,y)
-    inline float Length()
-    {
-        return sqrtf(x*x + y*y);
-    }
-
-    //! Returns the inverted point
-    inline Point operator-() const
-    {
-        return Point(-x, -y);
-    }
-
-    //! Adds the given point
-    inline const Point& operator+=(const Point &right)
-    {
-        x += right.x;
-        y += right.y;
-        return *this;
-    }
-
-    //! Adds two points
-    inline friend const Point operator+(const Point &left, const Point &right)
-    {
-        return Point(left.x + right.x, left.y + right.y);
-    }
-
-    //! Subtracts the given point
-    inline const Point& operator-=(const Point &right)
-    {
-        x -= right.x;
-        y -= right.y;
-        return *this;
-    }
-
-    //! Subtracts two points
-    inline friend const Point operator-(const Point &left, const Point &right)
-    {
-        return Point(left.x - right.x, left.y - right.y);
-    }
-
-    //! Multiplies by given scalar
-    inline const Point& operator*=(const float &right)
-    {
-        x *= right;
-        y *= right;
-        return *this;
-    }
-
-    //! Multiplies point by scalar
-    inline friend const Point operator*(const float &left, const Point &right)
-    {
-        return Point(left * right.x, left * right.y);
-    }
-
-    //! Multiplies point by scalar
-    inline friend const Point operator*(const Point &left, const float &right)
-    {
-        return Point(left.x * right, left.y * right);
-    }
-
-    //! Divides by given scalar
-    inline const Point& operator/=(const float &right)
-    {
-        x /= right;
-        y /= right;
-        return *this;
-    }
-
-    //! Divides point by scalar
-    inline friend const Point operator/(const Point &left, const float &right)
-    {
-        return Point(left.x / right, left.y / right);
-    }
-
-
-    //! Returns a string "[x, y]"
-    inline std::string ToString() const
-    {
-        std::stringstream s;
-        s.precision(3);
-        s << "[" << x << ", " << y << "]";
-        return s.str();
-    }
-}; // struct Point
-
+    std::stringstream s;
+    s.precision(3);
+    s << "[" << point.x << ", " << point.y << "]";
+    return s.str();
+}
 
 //! Checks if two vectors are equal within given \a tolerance
 inline bool PointsEqual(const Point &a, const Point &b, float tolerance = TOLERANCE)

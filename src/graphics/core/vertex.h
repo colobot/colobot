@@ -79,7 +79,7 @@ struct Vertex
         std::stringstream s;
         s.precision(3);
         s << "(c: " << coord.ToString() << ", n: " << normal.ToString()
-          << ", tc: " << texCoord.ToString() << ")";
+          << ", tc: " << Math::ToString(texCoord) << ")";
         return s.str();
     }
 };
@@ -154,7 +154,7 @@ struct VertexTex2
         std::stringstream s;
         s.precision(3);
         s << "(c: " << coord.ToString() << ", n: " << normal.ToString()
-          << ", tc: " << texCoord.ToString() << ", tc2: " << texCoord2.ToString() << ")";
+          << ", tc: " << Math::ToString(texCoord) << ", tc2: " << Math::ToString(texCoord2) << ")";
         return s.str();
     }
 };

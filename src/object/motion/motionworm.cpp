@@ -345,7 +345,7 @@ bool CMotionWorm::EventFrame(const Event &event)
         pos  = m_object->GetPartPosition(i+2);
         pos -= m_object->GetPartPosition(i+1);
 
-        angle.z = -Math::RotateAngle(Math::Point(pos.x, pos.z).Length(), pos.y);
+        angle.z = -Math::RotateAngle(glm::length(glm::vec2(pos.x, pos.z)), pos.y);
         angle.y = Math::PI-Math::RotateAngle(pos.x, pos.z);
         angle.x = 0.0f;
         m_object->SetPartRotation(i+1, angle);

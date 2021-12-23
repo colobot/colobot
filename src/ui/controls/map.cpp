@@ -31,6 +31,7 @@
 #include "level/robotmain.h"
 
 #include "math/geometry.h"
+#include "math/point.h"
 
 #include "object/interface/controllable_object.h"
 #include "object/interface/transportable_object.h"
@@ -298,7 +299,7 @@ CObject* CMap::DetectObject(Math::Point pos, bool &bInMap)
         if ( m_map[i].color == MAPCOLOR_ALIEN && !m_bRadar )
             continue;
 
-        dist = Math::Point(m_map[i].pos.x - pos.x, m_map[i].pos.y - pos.y).Length();
+        dist = glm::length(glm::vec2(m_map[i].pos.x - pos.x, m_map[i].pos.y - pos.y));
         if ( dist > m_half / m_zoom * 8.0f / 100.0f )
             continue;  // too far?
         if ( dist < min )
@@ -1197,7 +1198,7 @@ void CMap::UpdateObject(CObject* pObj)
 
     if ( m_angle != 0.0f )
     {
-        ppos = RotatePoint(m_angle, Math::Point(pos.x, pos.z));
+        ppos = Math::RotatePoint(m_angle, glm::vec2(pos.x, pos.z));
         pos.x = ppos.x;
         pos.z = ppos.y;
         dir += m_angle;

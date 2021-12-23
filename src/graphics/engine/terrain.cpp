@@ -605,7 +605,7 @@ bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank,
     float pixel = 1.0f/256.0f;  // 1 pixel cover (*)
     float dp = 1.0f/512.0f;
 
-    Math::Point uv;
+    glm::vec2 uv;
 
     for (int my = 0; my < m_textureSubdivCount; my++)
     {
@@ -763,7 +763,7 @@ void CTerrain::GetTexture(int x, int y, std::string& name, Math::Point &uv)
     if (tm == nullptr)
     {
         name = "";
-        uv = Math::Point(0.0f, 0.0f);
+        uv = { 0.0f, 0.0f };
     }
     else
     {
@@ -1383,7 +1383,7 @@ float CTerrain::GetFineSlope(const Math::Vector &pos)
 {
     Math::Vector n;
     if (! GetNormal(n, pos)) return 0.0f;
-    return fabs(Math::RotateAngle(Math::Point(n.x, n.z).Length(), n.y) - Math::PI/2.0f);
+    return fabs(Math::RotateAngle(glm::length(glm::vec2(n.x, n.z)), n.y) - Math::PI/2.0f);
 }
 
 float CTerrain::GetCoarseSlope(const Math::Vector &pos)
@@ -1785,7 +1785,7 @@ void CTerrain::ShowFlatGround(Math::Vector pos)
             p.z = (y-20)*radius;
             p.y = 0.0f;
 
-            if (Math::Point(p.x, p.y).Length() > 20.0f*radius)
+            if (glm::length(glm::vec2(p.x, p.y)) > 20.0f*radius)
                 continue;
 
             float angle = GetFineSlope(pos+p);

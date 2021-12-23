@@ -2323,7 +2323,7 @@ void CPhysics::FloorAdapt(float aTime, float rTime,
         if ( !m_bLand )  // in flight?
         {
             m_terrain->GetNormal(norm, pos);
-            a1 = fabs(Math::RotateAngle(Math::Point(norm.x, norm.z).Length(), norm.y));
+            a1 = fabs(Math::RotateAngle(glm::length(glm::vec2(norm.x, norm.z)), norm.y));
             if ( a1 < (90.0f-55.0f)*Math::PI/180.0f )  // slope exceeds 55 degrees?
             {
                 bSlopingTerrain = true;  // very sloped ground

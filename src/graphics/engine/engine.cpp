@@ -1291,8 +1291,11 @@ void CEngine::TrackTextureMapping(int objRank, const Material& mat, int state,
         }
         if (s == 3 && e == 3)
         {
-            pe = ps + Math::Point(vs[tBase + is[0]].position.x - vs[tBase + ie[0]].position.x,
-                                  vs[tBase + is[0]].position.y - vs[tBase + ie[0]].position.y).Length() / factor;  // end position on the periphery
+            glm::vec2 endPosition{};
+            endPosition.x = vs[tBase + is[0]].position.x - vs[tBase + ie[0]].position.x;
+            endPosition.y = vs[tBase + is[0]].position.y - vs[tBase + ie[0]].position.y;
+
+            pe = ps + glm::length(endPosition) / factor;  // end position on the periphery
 
             float pps = ps + pos;
             float ppe = pe + pos;
@@ -4527,7 +4530,7 @@ void CEngine::UpdateGroundSpotTextures()
                             if (dot == 0)
                                 intensity = 0.0f;
                             else
-                                intensity = Math::Point(ppx-cx, ppy-cy).Length()/dot;
+                                intensity = glm::length(glm::vec2(ppx-cx, ppy-cy)) / dot;
 
                             ppx -= min.x;  // on the texture
                             ppy -= min.y;
@@ -4610,7 +4613,7 @@ void CEngine::UpdateGroundSpotTextures()
                         ppx -= min.x;  // on the texture
                         ppy -= min.y;
 
-                        float intensity = 1.0f - Math::Point(ix, iy).Length() / dot;
+                        float intensity = 1.0f - glm::length(glm::vec2(ix, iy)) / dot;
                         if (intensity <= 0.0f)
                             continue;
 

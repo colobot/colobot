@@ -77,7 +77,7 @@ CTaskGoto::~CTaskGoto()
 bool CTaskGoto::EventProcess(const Event &event)
 {
     Math::Vector    pos, goal;
-    Math::Point     rot, repulse;
+    glm::vec2       rot, repulse;
     float           a, g, dist, linSpeed, cirSpeed, h, hh, factor, dir;
     Error           ret;
 
@@ -162,7 +162,7 @@ bool CTaskGoto::EventProcess(const Event &event)
 
         rot.x = m_leakPos.x-pos.x;
         rot.y = m_leakPos.z-pos.z;
-        dist = Math::Point(rot.x, rot.y).Length();
+        dist = glm::length(glm::vec2(rot.x, rot.y));
         if (dist != 0)
         {
             rot.x /= dist;
@@ -300,7 +300,7 @@ bool CTaskGoto::EventProcess(const Event &event)
 
         rot.x = m_bmPoints[m_bmIndex].x-pos.x;
         rot.y = m_bmPoints[m_bmIndex].z-pos.z;
-        dist = Math::Point(rot.x, rot.y).Length();
+        dist = glm::length(glm::vec2(rot.x, rot.y));
         rot.x /= dist;
         rot.y /= dist;
 
@@ -447,7 +447,7 @@ bool CTaskGoto::EventProcess(const Event &event)
 
         rot.x = m_goal.x-pos.x;
         rot.y = m_goal.z-pos.z;
-        dist = Math::Point(rot.x, rot.y).Length();
+        dist = glm::length(glm::vec2(rot.x, rot.y));
         rot.x /= dist;
         rot.y /= dist;
 
@@ -1421,10 +1421,10 @@ bool CTaskGoto::LeakSearch(Math::Vector &pos, float &delay)
 // Calculates the force of repulsion due to obstacles.
 // The vector length rendered is between 0 and 1.
 
-void CTaskGoto::ComputeRepulse(Math::Point &dir)
+void CTaskGoto::ComputeRepulse(glm::vec2&dir)
 {
     ObjectType  iType, oType;
-    Math::Point     repulse;
+    glm::vec2   repulse;
     float       gDist, add, addi, fac, dist;
     bool        bAlien;
 
@@ -2131,7 +2131,7 @@ void CTaskGoto::BitmapSetCircle(const Math::Vector &pos, float radius)
     {
         for ( ix=cx-static_cast<int>(r) ; ix<=cx+static_cast<int>(r) ; ix++ )
         {
-            d = Math::Point(static_cast<float>(ix-cx), static_cast<float>(iy-cy)).Length();
+            d = glm::length(glm::vec2(static_cast<float>(ix-cx), static_cast<float>(iy-cy)));
             if ( d > r )  continue;
             BitmapSetDot(0, ix, iy);
         }
@@ -2153,7 +2153,7 @@ void CTaskGoto::BitmapClearCircle(const Math::Vector &pos, float radius)
     {
         for ( ix=cx-static_cast<int>(r) ; ix<=cx+static_cast<int>(r) ; ix++ )
         {
-            d = Math::Point(static_cast<float>(ix-cx), static_cast<float>(iy-cy)).Length();
+            d = glm::length(glm::vec2(static_cast<float>(ix-cx), static_cast<float>(iy-cy)));
             if ( d > r )  continue;
             BitmapClearDot(0, ix, iy);
         }

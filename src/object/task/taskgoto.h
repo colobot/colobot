@@ -23,12 +23,9 @@
 
 #include "math/vector.h"
 
-#include <memory>
+#include <glm/glm.hpp>
 
-namespace Math
-{
-struct Point;
-} // namespace Math;
+#include <memory>
 
 
 class CObject;
@@ -96,7 +93,7 @@ protected:
     bool        AdjustBuilding(Math::Vector &pos, float margin, float &distance);
     bool        GetHotPoint(CObject *pObj, Math::Vector &pos, bool bTake, float distance, float &suppl);
     bool        LeakSearch(Math::Vector &pos, float &delay);
-    void        ComputeRepulse(Math::Point &dir);
+    void        ComputeRepulse(glm::vec2& dir);
     void        ComputeFlyingRepulse(float &dir);
 
     int         BeamShortcut();

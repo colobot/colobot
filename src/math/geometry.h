@@ -31,6 +31,7 @@
 #include "math/point.h"
 #include "math/vector.h"
 
+#include <glm/glm.hpp>
 
 #include <cmath>
 #include <cstdlib>
@@ -42,7 +43,7 @@ namespace Math
 
 
 //! Returns py up on the line \a a - \a b
-inline float MidPoint(const Math::Point &a, const Math::Point &b, float px)
+inline float MidPoint(const glm::vec2&a, const glm::vec2&b, float px)
 {
     if (IsEqual(a.x, b.x))
     {
@@ -55,7 +56,7 @@ inline float MidPoint(const Math::Point &a, const Math::Point &b, float px)
 }
 
 //! Tests whether the point \a p is inside the triangle (\a a,\a b,\a c)
-inline bool IsInsideTriangle(Math::Point a, Math::Point b, Math::Point c, Math::Point p)
+inline bool IsInsideTriangle(glm::vec2 a, glm::vec2 b, glm::vec2 c, glm::vec2 p)
 {
     float n, m;
 
@@ -64,10 +65,10 @@ inline bool IsInsideTriangle(Math::Point a, Math::Point b, Math::Point c, Math::
     if ( p.y < a.y && p.y < b.y && p.y < c.y ) return false;
     if ( p.y > a.y && p.y > b.y && p.y > c.y ) return false;
 
-    if ( a.x > b.x ) Swap(a,b);
-    if ( a.x > c.x ) Swap(a,c);
-    if ( c.x < a.x ) Swap(c,a);
-    if ( c.x < b.x ) Swap(c,b);
+    if ( a.x > b.x ) std::swap(a,b);
+    if ( a.x > c.x ) std::swap(a,c);
+    if ( c.x < a.x ) std::swap(c,a);
+    if ( c.x < b.x ) std::swap(c,b);
 
     n = MidPoint(a, b, p.x);
     m = MidPoint(a, c, p.x);
@@ -86,13 +87,13 @@ inline bool IsInsideTriangle(Math::Point a, Math::Point b, Math::Point c, Math::
  * \param angle   angle [radians] (positive is CCW)
  * \param p       the point to be rotated
  */
-inline Math::Point RotatePoint(const Math::Point &center, float angle, const Math::Point &p)
+inline glm::vec2 RotatePoint(const glm::vec2& center, float angle, const glm::vec2& p)
 {
-    Math::Point a;
+    glm::vec2 a;
     a.x = p.x-center.x;
     a.y = p.y-center.y;
 
-    Math::Point b;
+    glm::vec2 b;
     b.x = a.x*cosf(angle) - a.y*sinf(angle);
     b.y = a.x*sinf(angle) + a.y*cosf(angle);
 
@@ -107,12 +108,12 @@ inline Math::Point RotatePoint(const Math::Point &center, float angle, const Mat
  * \param angle angle [radians] (positive is CCW)
  * \param p     the point to be rotated
  */
-inline Math::Point RotatePoint(float angle, const Math::Point &p)
+inline glm::vec2 RotatePoint(float angle, const glm::vec2&p)
 {
     float x = p.x*cosf(angle) - p.y*sinf(angle);
     float y = p.x*sinf(angle) + p.y*cosf(angle);
 
-    return Math::Point(x, y);
+    return { x, y };
 }
 
 //! Rotates a vector (dist, 0)
@@ -120,12 +121,12 @@ inline Math::Point RotatePoint(float angle, const Math::Point &p)
  * \param angle angle [radians] (positive is CCW)
  * \param dist  distance to origin
  */
-inline Math::Point RotatePoint(float angle, float dist)
+inline glm::vec2 RotatePoint(float angle, float dist)
 {
     float x = dist*cosf(angle);
     float y = dist*sinf(angle);
 
-    return Math::Point(x, y);
+    return { x, y };
 }
 
 //! Rotates a point around a center on 2D plane
@@ -236,7 +237,7 @@ inline float RotateAngle(float x, float y)
  * \param p1,p2   the two points
  * \returns       the angle [radians] (positive is CCW)
  */
-inline float RotateAngle(const Math::Point &center, const Math::Point &p1, const Math::Point &p2)
+inline float RotateAngle(const glm::vec2&center, const glm::vec2&p1, const glm::vec2&p2)
 {
     if (PointsEqual(p1, center))
         return 0;
@@ -244,8 +245,8 @@ inline float RotateAngle(const Math::Point &center, const Math::Point &p1, const
     if (PointsEqual(p2, center))
         return 0;
 
-    float a1 = asinf((p1.y - center.y) / Distance(p1, center));
-    float a2 = asinf((p2.y - center.y) / Distance(p2, center));
+    float a1 = asinf((p1.y - center.y) / glm::distance(p1, center));
+    float a2 = asinf((p2.y - center.y) / glm::distance(p2, center));
 
     if (p1.x < center.x) a1 = PI - a1;
     if (p2.x < center.x) a2 = PI - a2;
