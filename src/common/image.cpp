@@ -169,7 +169,7 @@ CImage::CImage()
     m_data = nullptr;
 }
 
-CImage::CImage(Math::IntPoint size)
+CImage::CImage(const glm::ivec2& size)
 {
     m_data = MakeUnique<ImageData>();
     m_data->surface = SDL_CreateRGBSurface(0, size.x, size.y, 32,
@@ -204,12 +204,12 @@ ImageData* CImage::GetData()
     return m_data.get();
 }
 
-Math::IntPoint CImage::GetSize() const
+glm::ivec2 CImage::GetSize() const
 {
     if (m_data == nullptr)
-        return Math::IntPoint();
+        return { 0, 0 };
 
-    return Math::IntPoint(m_data->surface->w, m_data->surface->h);
+    return { m_data->surface->w, m_data->surface->h };
 }
 
 /** Image must be valid. */
@@ -268,7 +268,7 @@ void CImage::BlitToNewRGBASurface(int width, int height)
  * \param pixel pixel coords (range x: 0..width-1 y: 0..height-1)
  * \returns color
  */
-Gfx::IntColor CImage::GetPixelInt(Math::IntPoint pixel)
+Gfx::IntColor CImage::GetPixelInt(const glm::ivec2& pixel)
 {
     assert(m_data != nullptr);
     assert(pixel.x >= 0 && pixel.x < m_data->surface->w);
@@ -316,7 +316,7 @@ Gfx::IntColor CImage::GetPixelInt(Math::IntPoint pixel)
  * \param pixel pixel coords (range x: 0..width-1 y: 0..height-1)
  * \returns color
  */
-Gfx::Color CImage::GetPixel(Math::IntPoint pixel)
+Gfx::Color CImage::GetPixel(const glm::ivec2& pixel)
 {
     return Gfx::IntColorToColor(GetPixelInt(pixel));
 }
@@ -328,7 +328,7 @@ Gfx::Color CImage::GetPixel(Math::IntPoint pixel)
  * \param pixel pixel coords (range x: 0..width-1 y: 0..height-1)
  * \param color color
  */
-void CImage::SetPixelInt(Math::IntPoint pixel, Gfx::IntColor color)
+void CImage::SetPixelInt(const glm::ivec2& pixel, Gfx::IntColor color)
 {
     assert(m_data != nullptr);
     assert(pixel.x >= 0 && pixel.x < m_data->surface->w);
@@ -380,7 +380,7 @@ void CImage::SetPixelInt(Math::IntPoint pixel, Gfx::IntColor color)
  * \param pixel pixel coords (range x: 0..width-1 y: 0..height-1)
  * \param color color
  */
-void CImage::SetPixel(Math::IntPoint pixel, Gfx::Color color)
+void CImage::SetPixel(const glm::ivec2& pixel, Gfx::Color color)
 {
     SetPixelInt(pixel, Gfx::ColorToIntColor(color));
 }

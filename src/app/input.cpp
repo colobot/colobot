@@ -201,7 +201,7 @@ void CInput::EventProcess(Event& event)
     event.cameraInput = Math::Clamp(m_joyMotionCam + m_cameraKeyMotion, Math::Vector(-1.0f, -1.0f, -1.0f), Math::Vector(1.0f, 1.0f, 1.0f));
 }
 
-void CInput::MouseMove(Math::IntPoint pos)
+void CInput::MouseMove(const glm::ivec2& pos)
 {
     m_mousePos = Gfx::CEngine::GetInstancePointer()->WindowToInterfaceCoords(pos);
 }

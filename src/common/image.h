@@ -26,7 +26,7 @@
 
 #include "graphics/core/color.h"
 
-#include "math/intpoint.h"
+#include <glm/glm.hpp>
 
 #include <memory>
 #include <string>
@@ -57,7 +57,7 @@ public:
     //! Constructs empty image (with nullptr data)
     CImage();
     //! Constructs a RGBA image of given size
-    CImage(Math::IntPoint size);
+    CImage(const glm::ivec2& size);
     //! Destroys image, calling Free()
     virtual ~CImage();
 
@@ -74,22 +74,22 @@ public:
     ImageData* GetData();
 
     //! Returns the image size
-    Math::IntPoint GetSize() const;
+    glm::ivec2 GetSize() const;
 
     //! Fills the whole image with given color
     void Fill(Gfx::IntColor color);
 
     //! Sets the color at given pixel
-    void SetPixel(Math::IntPoint pixel, Gfx::Color color);
+    void SetPixel(const glm::ivec2& pixel, Gfx::Color color);
 
     //! Sets the precise color at given pixel
-    void SetPixelInt(Math::IntPoint pixel, Gfx::IntColor color);
+    void SetPixelInt(const glm::ivec2& pixel, Gfx::IntColor color);
 
     //! Returns the color at given pixel
-    Gfx::Color GetPixel(Math::IntPoint pixel);
+    Gfx::Color GetPixel(const glm::ivec2& pixel);
 
     //! Returns the precise color at given pixel
-    Gfx::IntColor GetPixelInt(Math::IntPoint pixel);
+    Gfx::IntColor GetPixelInt(const glm::ivec2& pixel);
 
     //! Pads the image to nearest power of 2 dimensions
     void PadToNearestPowerOfTwo();

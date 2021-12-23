@@ -27,9 +27,10 @@
 #include "common/key.h"
 #include "common/singleton.h"
 
-#include "math/intpoint.h"
 #include "math/point.h"
 #include "math/vector.h"
+
+#include <glm/glm.hpp>
 
 #include <map>
 
@@ -78,7 +79,7 @@ public:
     void EventProcess(Event &event);
 
     //! Called by CApplication on SDL MOUSE_MOTION event
-    void MouseMove(Math::IntPoint pos);
+    void MouseMove(const glm::ivec2& pos);
 
 
     //! Returns whether the key is pressed
