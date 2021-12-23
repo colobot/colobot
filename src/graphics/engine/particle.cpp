@@ -3306,7 +3306,7 @@ void CParticle::DrawParticleText(int i)
     m_device->SetTexture(0, tex.id);
     m_engine->SetState(ENG_RSTATE_TTEXTURE_ALPHA, IntensityToColor(m_particle[i].intensity));
 
-    Math::IntPoint fontTextureSize = m_engine->GetText()->GetFontTextureSize();
+    glm::ivec2 fontTextureSize = m_engine->GetText()->GetFontTextureSize();
     m_particle[i].texSup.x = static_cast<float>(tex.charPos.x) / fontTextureSize.x;
     m_particle[i].texSup.y = static_cast<float>(tex.charPos.y) / fontTextureSize.y;
     m_particle[i].texInf.x = static_cast<float>(tex.charPos.x + tex.charSize.x) / fontTextureSize.x;

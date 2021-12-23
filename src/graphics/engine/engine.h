@@ -32,12 +32,12 @@
 #include "graphics/core/texture.h"
 #include "graphics/core/vertex.h"
 
-#include "math/intpoint.h"
 #include "math/matrix.h"
 #include "math/point.h"
 #include "math/sphere.h"
 #include "math/vector.h"
 
+#include <glm/glm.hpp>
 
 #include <string>
 #include <vector>
@@ -663,21 +663,21 @@ public:
     //@}
 
     //! Returns current size of viewport window
-    Math::IntPoint   GetWindowSize();
+    glm::ivec2      GetWindowSize();
 
     //@{
     //! Conversion functions between window and interface coordinates
     /** Window coordinates are from top-left (0,0) to bottom-right (w,h) - size of window
         Interface cords are from bottom-left (0,0) to top-right (1,1) - and do not depend on window size */
-    Math::Point     WindowToInterfaceCoords(Math::IntPoint pos);
-    Math::IntPoint  InterfaceToWindowCoords(Math::Point pos);
+    Math::Point     WindowToInterfaceCoords(const glm::ivec2& pos);
+    glm::ivec2      InterfaceToWindowCoords(Math::Point pos);
     //@}
 
     //@{
     //! Conversion functions between window and interface sizes
     /** Unlike coordinate conversions, this is only scale conversion, not translation and scale. */
-    Math::Point      WindowToInterfaceSize(Math::IntPoint size);
-    Math::IntPoint   InterfaceToWindowSize(Math::Point size);
+    Math::Point      WindowToInterfaceSize(const glm::ivec2& size);
+    glm::ivec2       InterfaceToWindowSize(Math::Point size);
     //@}
 
     //! Increments the triangle counter for the current frame
@@ -1245,7 +1245,7 @@ protected:
     //! Draws the mouse cursor
     void        DrawMouse();
     //! Draw part of mouse cursor sprite
-    void        DrawMouseSprite(Math::IntPoint pos, Math::IntPoint size, int icon);
+    void        DrawMouseSprite(const glm::ivec2& pos, const glm::ivec2& size, int icon);
     //! Draw statistic texts
     void        DrawStats();
     //! Draw mission timer
@@ -1369,7 +1369,7 @@ protected:
     Math::Matrix    m_matViewInterface;
 
     //! Current size of viewport window
-    Math::IntPoint   m_size;
+    glm::ivec2      m_size;
 
     //! Base objects (also level 1 tier list)
     std::vector<EngineBaseObject> m_baseObjects;

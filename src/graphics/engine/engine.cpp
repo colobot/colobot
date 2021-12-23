@@ -87,14 +87,14 @@ struct EngineMouse
     //! Mode to render 2nd image in
     EngineRenderState mode2;
     //! Hot point
-    Math::IntPoint hotPoint;
+    glm::ivec2 hotPoint;
 
     EngineMouse(int icon1 = -1,
                 int icon2 = -1,
                 int iconShadow = -1,
                 EngineRenderState mode1 = ENG_RSTATE_NORMAL,
                 EngineRenderState mode2 = ENG_RSTATE_NORMAL,
-                Math::IntPoint hotPoint = Math::IntPoint())
+                glm::ivec2 hotPoint = { 0, 0 })
         : icon1(icon1)
         , icon2(icon2)
         , iconShadow(iconShadow)
@@ -104,24 +104,24 @@ struct EngineMouse
     {}
 };
 
-const Math::IntPoint MOUSE_SIZE(32, 32);
+constexpr glm::ivec2 MOUSE_SIZE(32, 32);
 const std::map<EngineMouseType, EngineMouse> MOUSE_TYPES = {
-    {{ENG_MOUSE_NORM},    {EngineMouse( 0,  1, 32, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, Math::IntPoint( 1,  1))}},
-    {{ENG_MOUSE_WAIT},    {EngineMouse( 2,  3, 33, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, Math::IntPoint( 8, 12))}},
-    {{ENG_MOUSE_HAND},    {EngineMouse( 4,  5, 34, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, Math::IntPoint( 7,  2))}},
-    {{ENG_MOUSE_NO},      {EngineMouse( 6,  7, 35, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, Math::IntPoint(10, 10))}},
-    {{ENG_MOUSE_EDIT},    {EngineMouse( 8,  9, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::IntPoint( 6, 10))}},
-    {{ENG_MOUSE_CROSS},   {EngineMouse(10, 11, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::IntPoint(10, 10))}},
-    {{ENG_MOUSE_MOVEV},   {EngineMouse(12, 13, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::IntPoint( 5, 11))}},
-    {{ENG_MOUSE_MOVEH},   {EngineMouse(14, 15, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::IntPoint(11,  5))}},
-    {{ENG_MOUSE_MOVED},   {EngineMouse(16, 17, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::IntPoint( 9,  9))}},
-    {{ENG_MOUSE_MOVEI},   {EngineMouse(18, 19, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::IntPoint( 9,  9))}},
-    {{ENG_MOUSE_MOVE},    {EngineMouse(20, 21, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::IntPoint(11, 11))}},
-    {{ENG_MOUSE_TARGET},  {EngineMouse(22, 23, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::IntPoint(15, 15))}},
-    {{ENG_MOUSE_SCROLLL}, {EngineMouse(24, 25, 43, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::IntPoint( 2,  9))}},
-    {{ENG_MOUSE_SCROLLR}, {EngineMouse(26, 27, 44, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::IntPoint(17,  9))}},
-    {{ENG_MOUSE_SCROLLU}, {EngineMouse(28, 29, 45, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::IntPoint( 9,  2))}},
-    {{ENG_MOUSE_SCROLLD}, {EngineMouse(30, 31, 46, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, Math::IntPoint( 9, 17))}},
+    {{ENG_MOUSE_NORM},    {EngineMouse( 0,  1, 32, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, glm::ivec2( 1,  1))}},
+    {{ENG_MOUSE_WAIT},    {EngineMouse( 2,  3, 33, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, glm::ivec2( 8, 12))}},
+    {{ENG_MOUSE_HAND},    {EngineMouse( 4,  5, 34, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, glm::ivec2( 7,  2))}},
+    {{ENG_MOUSE_NO},      {EngineMouse( 6,  7, 35, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, glm::ivec2(10, 10))}},
+    {{ENG_MOUSE_EDIT},    {EngineMouse( 8,  9, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, glm::ivec2( 6, 10))}},
+    {{ENG_MOUSE_CROSS},   {EngineMouse(10, 11, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, glm::ivec2(10, 10))}},
+    {{ENG_MOUSE_MOVEV},   {EngineMouse(12, 13, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, glm::ivec2( 5, 11))}},
+    {{ENG_MOUSE_MOVEH},   {EngineMouse(14, 15, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, glm::ivec2(11,  5))}},
+    {{ENG_MOUSE_MOVED},   {EngineMouse(16, 17, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, glm::ivec2( 9,  9))}},
+    {{ENG_MOUSE_MOVEI},   {EngineMouse(18, 19, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, glm::ivec2( 9,  9))}},
+    {{ENG_MOUSE_MOVE},    {EngineMouse(20, 21, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, glm::ivec2(11, 11))}},
+    {{ENG_MOUSE_TARGET},  {EngineMouse(22, 23, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, glm::ivec2(15, 15))}},
+    {{ENG_MOUSE_SCROLLL}, {EngineMouse(24, 25, 43, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, glm::ivec2( 2,  9))}},
+    {{ENG_MOUSE_SCROLLR}, {EngineMouse(26, 27, 44, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, glm::ivec2(17,  9))}},
+    {{ENG_MOUSE_SCROLLU}, {EngineMouse(28, 29, 45, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, glm::ivec2( 9,  2))}},
+    {{ENG_MOUSE_SCROLLD}, {EngineMouse(30, 31, 46, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, glm::ivec2( 9, 17))}},
 };
 
 CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
@@ -495,7 +495,7 @@ void CEngine::FrameUpdate()
 void CEngine::WriteScreenShot(const std::string& fileName)
 {
     auto data = MakeUnique<WriteScreenShotData>();
-    data->img = MakeUnique<CImage>(Math::IntPoint(m_size.x, m_size.y));
+    data->img = MakeUnique<CImage>(glm::ivec2(m_size.x, m_size.y));
 
     auto pixels = m_device->GetFrameBufferPixels();
     data->img->SetDataPixels(pixels->GetPixelsData());
@@ -565,33 +565,33 @@ bool CEngine::GetScreenshotMode()
     return m_screenshotMode;
 }
 
-Math::IntPoint CEngine::GetWindowSize()
+glm::ivec2 CEngine::GetWindowSize()
 {
     return m_size;
 }
 
-Math::Point CEngine::WindowToInterfaceCoords(Math::IntPoint pos)
+Math::Point CEngine::WindowToInterfaceCoords(const glm::ivec2& pos)
 {
     return Math::Point(        static_cast<float>(pos.x) / static_cast<float>(m_size.x),
                         1.0f - static_cast<float>(pos.y) / static_cast<float>(m_size.y)  );
 }
 
-Math::IntPoint CEngine::InterfaceToWindowCoords(Math::Point pos)
+glm::ivec2 CEngine::InterfaceToWindowCoords(Math::Point pos)
 {
-    return Math::IntPoint(static_cast<int>(pos.x * m_size.x),
-                          static_cast<int>((1.0f - pos.y) * m_size.y));
+    return { static_cast<int>(pos.x * m_size.x),
+             static_cast<int>((1.0f - pos.y) * m_size.y) };
 }
 
-Math::Point CEngine::WindowToInterfaceSize(Math::IntPoint size)
+Math::Point CEngine::WindowToInterfaceSize(const glm::ivec2& size)
 {
     return Math::Point(static_cast<float>(size.x) / static_cast<float>(m_size.x),
                        static_cast<float>(size.y) / static_cast<float>(m_size.y));
 }
 
-Math::IntPoint CEngine::InterfaceToWindowSize(Math::Point size)
+glm::ivec2 CEngine::InterfaceToWindowSize(Math::Point size)
 {
-    return Math::IntPoint(static_cast<int>(size.x * m_size.x),
-                          static_cast<int>(size.y * m_size.y));
+    return { static_cast<int>(size.x * m_size.x),
+             static_cast<int>(size.y * m_size.y) };
 }
 
 void CEngine::AddStatisticTriangle(int count)
@@ -1534,7 +1534,7 @@ void CEngine::DeleteAllGroundSpots()
 
     for (int s = 0; s < 16; s++)
     {
-        CImage shadowImg(Math::IntPoint(256, 256));
+        CImage shadowImg(glm::ivec2(256, 256));
         shadowImg.Fill(Gfx::IntColor(255, 255, 255, 255));
 
         std::stringstream str;
@@ -2547,7 +2547,7 @@ bool CEngine::ChangeTextureColor(const std::string& texName,
                 if (exclude != nullptr && IsExcludeColor(exclude, x,y) )
                     continue;
 
-                Color color = img.GetPixel(Math::IntPoint(x, y));
+                Color color = img.GetPixel({ x, y });
 
                 if (hsv)
                 {
@@ -2563,7 +2563,7 @@ bool CEngine::ChangeTextureColor(const std::string& texName,
                         color.r = Math::Norm(color.r + shift);
                         color.g = Math::Norm(color.g + shift);
                         color.b = Math::Norm(color.b + shift);
-                        img.SetPixel(Math::IntPoint(x, y), color);
+                        img.SetPixel({ x, y }, color);
                     }
                     else if (tolerance2 != -1.0f &&
                             c.s > 0.01f && fabs(c.h - cr2.h) < tolerance2)
@@ -2577,7 +2577,7 @@ bool CEngine::ChangeTextureColor(const std::string& texName,
                         color.r = Math::Norm(color.r + shift);
                         color.g = Math::Norm(color.g + shift);
                         color.b = Math::Norm(color.b + shift);
-                        img.SetPixel(Math::IntPoint(x, y), color);
+                        img.SetPixel({ x, y }, color);
                     }
                 }
                 else
@@ -2589,7 +2589,7 @@ bool CEngine::ChangeTextureColor(const std::string& texName,
                         color.r = Math::Norm(colorNew1.r + color.r - colorRef1.r + shift);
                         color.g = Math::Norm(colorNew1.g + color.g - colorRef1.g + shift);
                         color.b = Math::Norm(colorNew1.b + color.b - colorRef1.b + shift);
-                        img.SetPixel(Math::IntPoint(x, y), color);
+                        img.SetPixel({ x, y }, color);
                     }
                     else if (tolerance2 != -1 &&
                             fabs(color.r - colorRef2.r) +
@@ -2599,7 +2599,7 @@ bool CEngine::ChangeTextureColor(const std::string& texName,
                         color.r = Math::Norm(colorNew2.r + color.r - colorRef2.r + shift);
                         color.g = Math::Norm(colorNew2.g + color.g - colorRef2.g + shift);
                         color.b = Math::Norm(colorNew2.b + color.b - colorRef2.b + shift);
-                        img.SetPixel(Math::IntPoint(x, y), color);
+                        img.SetPixel({ x, y }, color);
                     }
                 }
             }
@@ -2661,7 +2661,7 @@ void CEngine::CreateOrUpdateTexture(const std::string& texName, CImage* img)
     }
     else
     {
-        m_device->UpdateTexture((*it).second, Math::IntPoint(0, 0), img->GetData(), m_defaultTexParams.format);
+        m_device->UpdateTexture((*it).second, { 0, 0 }, img->GetData(), m_defaultTexParams.format);
     }
 }
 
@@ -4009,7 +4009,7 @@ void CEngine::RenderShadowMap()
         }
 
         m_shadowMap.id = framebuffer->GetDepthTexture();
-        m_shadowMap.size = Math::IntPoint(params.width, params.height);
+        m_shadowMap.size = { params.width, params.height };
 
         GetLogger()->Info("Created shadow map texture: %dx%d, depth %d\n", params.width, params.height, params.depth);
     }
@@ -4478,7 +4478,7 @@ void CEngine::UpdateGroundSpotTextures()
 
         if (clear || set || m_debugResources || m_displayGotoImage != nullptr)
         {
-            CImage shadowImg(Math::IntPoint(256, 256));
+            CImage shadowImg(glm::ivec2(256, 256));
             shadowImg.Fill(Gfx::IntColor(255, 255, 255, 255));
 
             // Draw the new shadows.
@@ -4531,7 +4531,7 @@ void CEngine::UpdateGroundSpotTextures()
 
                             ppx -= min.x;  // on the texture
                             ppy -= min.y;
-                            Math::IntPoint pp(ppx, ppy);
+                            glm::ivec2 pp(ppx, ppy);
 
                             Gfx::Color color = shadowImg.GetPixel(pp);
                             color.r *= Math::Norm(m_groundSpots[i].color.r+intensity);
@@ -4565,7 +4565,7 @@ void CEngine::UpdateGroundSpotTextures()
 
                             if (intensity < 0.0f) intensity = 0.0f;
 
-                            Math::IntPoint pp(ix, iy);
+                            glm::ivec2 pp(ix, iy);
 
                             Gfx::Color color = shadowImg.GetPixel(pp);
                             color.r *= Math::Norm(m_groundSpots[i].color.r+intensity);
@@ -4619,7 +4619,7 @@ void CEngine::UpdateGroundSpotTextures()
                         int j = (ix+dot) + (iy+dot) * m_groundMark.dx;
                         if (m_groundMark.table[j] == 1)  // green ?
                         {
-                            Math::IntPoint pp(ppx, ppy);
+                            glm::ivec2 pp(ppx, ppy);
                             Gfx::Color color = shadowImg.GetPixel(pp);
                             color.r *= Math::Norm(1.0f-intensity);
                             color.g *= 1.0f;
@@ -4628,7 +4628,7 @@ void CEngine::UpdateGroundSpotTextures()
                         }
                         if (m_groundMark.table[j] == 2)  // red ?
                         {
-                            Math::IntPoint pp(ppx, ppy);
+                            glm::ivec2 pp(ppx, ppy);
                             Gfx::Color color = shadowImg.GetPixel(pp);
                             color.r *= 1.0f;
                             color.g *= Math::Norm(1.0f-intensity);
@@ -4651,7 +4651,7 @@ void CEngine::UpdateGroundSpotTextures()
                             y / 4.0f / 254.0f * 3200.0f - 1600.0f
                         );
                         TerrainRes res = m_terrain->GetResource(pos);
-                        Math::IntPoint p(x-min.x, y-min.y);
+                        glm::ivec2 p(x-min.x, y-min.y);
                         if (res == TR_NULL)
                         {
                             shadowImg.SetPixel(p, Gfx::Color(0.5f, 0.5f, 0.5f));
@@ -4664,7 +4664,7 @@ void CEngine::UpdateGroundSpotTextures()
 
             if (m_displayGotoImage != nullptr)
             {
-                Math::IntPoint size = m_displayGotoImage->GetSize();
+                glm::ivec2 size = m_displayGotoImage->GetSize();
                 for (float x = min.x; x < max.x; x += 1.0f)
                 {
                     for (float y = min.y; y < max.y; y += 1.0f)
@@ -4674,7 +4674,8 @@ void CEngine::UpdateGroundSpotTextures()
                         // This can happen because the shadow??.png textures have a 1 pixel margin around them
                         if (px < 0 || px >= size.x || py < 0 || py >= size.y)
                             continue;
-                        shadowImg.SetPixelInt(Math::IntPoint(x-min.x, y-min.y), m_displayGotoImage->GetPixelInt(Math::IntPoint(px, py)));
+                        auto color = m_displayGotoImage->GetPixelInt({ px, py });
+                        shadowImg.SetPixelInt({ x - min.x, y - min.y }, color);
                     }
                 }
             }
@@ -5245,13 +5246,11 @@ void CEngine::DrawMouse()
     SetUITexture(m_miceTexture);
 
     Math::Point mousePos = CInput::GetInstancePointer()->GetMousePos();
-    Math::IntPoint pos(mousePos.x * m_size.x, m_size.y - mousePos.y * m_size.y);
+    glm::ivec2 pos(mousePos.x * m_size.x, m_size.y - mousePos.y * m_size.y);
     pos.x -= MOUSE_TYPES.at(m_mouseType).hotPoint.x;
     pos.y -= MOUSE_TYPES.at(m_mouseType).hotPoint.y;
 
-    Math::IntPoint shadowPos;
-    shadowPos.x = pos.x + 4;
-    shadowPos.y = pos.y - 3;
+    glm::ivec2 shadowPos = { pos.x + 4, pos.y - 3 };
 
     SetState(ENG_RSTATE_TCOLOR_WHITE);
     DrawMouseSprite(shadowPos, MOUSE_SIZE, MOUSE_TYPES.at(m_mouseType).iconShadow);
@@ -5265,13 +5264,13 @@ void CEngine::DrawMouse()
     SetInterfaceCoordinates();
 }
 
-void CEngine::DrawMouseSprite(Math::IntPoint pos, Math::IntPoint size, int icon)
+void CEngine::DrawMouseSprite(const glm::ivec2& pos, const glm::ivec2& size, int icon)
 {
     if (icon == -1)
         return;
 
-    Math::IntPoint p1 = pos;
-    Math::IntPoint p2 = p1 + size;
+    glm::ivec2 p1 = pos;
+    glm::ivec2 p2 = p1 + size;
 
     float u1 = (32.0f / 256.0f) * (icon % 8);
     float v1 = (32.0f / 256.0f) * (icon / 8);
