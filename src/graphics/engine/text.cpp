@@ -1115,7 +1115,7 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, Math::I
 CachedFont* CText::GetOrOpenFont(FontType font, float size)
 {
     Math::IntPoint windowSize = m_engine->GetWindowSize();
-    int pointSize = static_cast<int>(size * (windowSize.Length() / REFERENCE_SIZE.Length()));
+    int pointSize = static_cast<int>(size * (glm::length(glm::vec2(windowSize)) / glm::length(glm::vec2(REFERENCE_SIZE))));
 
     if (m_lastCachedFont != nullptr &&
         m_lastFontType == font &&
