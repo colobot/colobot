@@ -570,25 +570,25 @@ glm::ivec2 CEngine::GetWindowSize()
     return m_size;
 }
 
-Math::Point CEngine::WindowToInterfaceCoords(const glm::ivec2& pos)
+glm::vec2 CEngine::WindowToInterfaceCoords(const glm::ivec2& pos)
 {
-    return Math::Point(        static_cast<float>(pos.x) / static_cast<float>(m_size.x),
-                        1.0f - static_cast<float>(pos.y) / static_cast<float>(m_size.y)  );
+    return { static_cast<float>(pos.x) / static_cast<float>(m_size.x),
+             1.0f - static_cast<float>(pos.y) / static_cast<float>(m_size.y) };
 }
 
-glm::ivec2 CEngine::InterfaceToWindowCoords(Math::Point pos)
+glm::ivec2 CEngine::InterfaceToWindowCoords(const glm::vec2& pos)
 {
     return { static_cast<int>(pos.x * m_size.x),
              static_cast<int>((1.0f - pos.y) * m_size.y) };
 }
 
-Math::Point CEngine::WindowToInterfaceSize(const glm::ivec2& size)
+glm::vec2 CEngine::WindowToInterfaceSize(const glm::ivec2& size)
 {
-    return Math::Point(static_cast<float>(size.x) / static_cast<float>(m_size.x),
-                       static_cast<float>(size.y) / static_cast<float>(m_size.y));
+    return { static_cast<float>(size.x) / static_cast<float>(m_size.x),
+             static_cast<float>(size.y) / static_cast<float>(m_size.y) };
 }
 
-glm::ivec2 CEngine::InterfaceToWindowSize(Math::Point size)
+glm::ivec2 CEngine::InterfaceToWindowSize(const glm::vec2& size)
 {
     return { static_cast<int>(size.x * m_size.x),
              static_cast<int>(size.y * m_size.y) };
@@ -1466,7 +1466,7 @@ void CEngine::SetObjectShadowSpotHeight(int objRank, float height)
     m_shadowSpots[shadowRank].height = height;
 }
 
-bool CEngine::GetHighlight(Math::Point &p1, Math::Point &p2)
+bool CEngine::GetHighlight(glm::vec2& p1, glm::vec2& p2)
 {
     p1 = m_highlightP1;
     p2 = m_highlightP2;
@@ -1483,7 +1483,7 @@ void CEngine::SetHighlightRank(int *rankList)
     m_highlightRank[i] = -1;  // terminator
 }
 
-bool CEngine::GetBBox2D(int objRank, Math::Point &min, Math::Point &max)
+bool CEngine::GetBBox2D(int objRank, glm::vec2& min, glm::vec2& max)
 {
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
@@ -1750,7 +1750,7 @@ void CEngine::Update()
     UpdateStaticBuffers();
 }
 
-bool CEngine::DetectBBox(int objRank, Math::Point mouse)
+bool CEngine::DetectBBox(int objRank, const glm::vec2& mouse)
 {
     assert(objRank >= 0 && objRank < static_cast<int>(m_objects.size()));
 
@@ -1762,7 +1762,7 @@ bool CEngine::DetectBBox(int objRank, Math::Point mouse)
 
     EngineBaseObject& p1 = m_baseObjects[baseObjRank];
 
-    Math::Point min, max;
+    glm::vec2 min, max;
     min.x =  1000000.0f;
     min.y =  1000000.0f;
     max.x = -1000000.0f;
@@ -1795,7 +1795,7 @@ bool CEngine::DetectBBox(int objRank, Math::Point mouse)
              mouse.y <= max.y );
 }
 
-int CEngine::DetectObject(Math::Point mouse, Math::Vector& targetPos, bool terrain)
+int CEngine::DetectObject(const glm::vec2& mouse, Math::Vector& targetPos, bool terrain)
 {
     float min = 1000000.0f;
     int nearest = -1;
@@ -1863,7 +1863,7 @@ int CEngine::DetectObject(Math::Point mouse, Math::Vector& targetPos, bool terra
     return nearest;
 }
 
-bool CEngine::DetectTriangle(Math::Point mouse, Vertex3D* triangle, int objRank, float& dist, Math::Vector& pos)
+bool CEngine::DetectTriangle(const glm::vec2& mouse, Vertex3D* triangle, int objRank, float& dist, Math::Vector& pos)
 {
     assert(objRank >= 0 && objRank < static_cast<int>(m_objects.size()));
 
@@ -1899,7 +1899,7 @@ bool CEngine::DetectTriangle(Math::Point mouse, Vertex3D* triangle, int objRank,
         mouse.y > p2D[2].y)
         return false;
 
-    Math::Point a, b, c;
+    glm::vec2 a, b, c;
     a.x = p2D[0].x;
     a.y = p2D[0].y;
     b.x = p2D[1].x;
@@ -2477,7 +2477,7 @@ bool CEngine::LoadAllTextures()
     return ok;
 }
 
-static bool IsExcludeColor(Math::Point *exclude, int x, int y)
+static bool IsExcludeColor(glm::vec2* exclude, int x, int y)
 {
     int i = 0;
     while ( exclude[i+0].x != 0.0f || exclude[i+0].y != 0.0f ||
@@ -2501,8 +2501,8 @@ bool CEngine::ChangeTextureColor(const std::string& texName,
                                  Color colorRef1, Color colorNew1,
                                  Color colorRef2, Color colorNew2,
                                  float tolerance1, float tolerance2,
-                                 Math::Point ts, Math::Point ti,
-                                 Math::Point *exclude, float shift, bool hsv)
+                                 const glm::vec2& ts, const glm::vec2& ti,
+                                 glm::vec2* exclude, float shift, bool hsv)
 {
     CImage img;
     if (!img.Load(srcName))
@@ -2618,8 +2618,8 @@ bool CEngine::ChangeTextureColor(const std::string& texName,
                                  Color colorRef1, Color colorNew1,
                                  Color colorRef2, Color colorNew2,
                                  float tolerance1, float tolerance2,
-                                 Math::Point ts, Math::Point ti,
-                                 Math::Point *exclude, float shift, bool hsv)
+                                 const glm::vec2& ts, const glm::vec2& ti,
+                                 glm::vec2* exclude, float shift, bool hsv)
 {
     return ChangeTextureColor(texName, texName, colorRef1, colorNew1, colorRef2, colorNew2, tolerance1, tolerance2, ts, ti, exclude, shift, hsv);
 }
@@ -4416,7 +4416,7 @@ void CEngine::UpdateGroundSpotTextures()
 
     for (int s = 0; s < 16; s++)
     {
-        Math::Point min, max;
+        glm::vec2 min, max;
         min.x = (s%4) * 254.0f - 1.0f;  // 1 pixel cover
         min.y = (s/4) * 254.0f - 1.0f;
         max.x = min.x + 254.0f + 2.0f;
@@ -4730,7 +4730,7 @@ void CEngine::DrawShadowSpots()
     // TODO: create a separate texture
     SetTexture("textures/effect03.png");
 
-    Math::Point ts, ti;
+    glm::vec2 ts, ti;
 
     float dp = 0.5f/256.0f;
     ts.y = 192.0f/256.0f;
@@ -4834,24 +4834,24 @@ void CEngine::DrawShadowSpots()
         }
         else
         {
-            Math::Point rot;
+            glm::vec2 rot;
 
-            rot = Math::RotatePoint(-m_shadowSpots[i].angle, Math::Point(radius, radius));
+            rot = Math::RotatePoint(-m_shadowSpots[i].angle, { radius, radius });
             corner[0].x = rot.x;
             corner[0].z = rot.y;
             corner[0].y = 0.0f;
 
-            rot = Math::RotatePoint(-m_shadowSpots[i].angle, Math::Point(-radius, radius));
+            rot = Math::RotatePoint(-m_shadowSpots[i].angle, { -radius, radius });
             corner[1].x = rot.x;
             corner[1].z = rot.y;
             corner[1].y = 0.0f;
 
-            rot = Math::RotatePoint(-m_shadowSpots[i].angle, Math::Point(radius, -radius));
+            rot = Math::RotatePoint(-m_shadowSpots[i].angle, { radius, -radius });
             corner[2].x = rot.x;
             corner[2].z = rot.y;
             corner[2].y = 0.0f;
 
-            rot = Math::RotatePoint(-m_shadowSpots[i].angle, Math::Point(-radius, -radius));
+            rot = Math::RotatePoint(-m_shadowSpots[i].angle, { -radius, -radius });
             corner[3].x = rot.x;
             corner[3].z = rot.y;
             corner[3].y = 0.0f;
@@ -4883,10 +4883,10 @@ void CEngine::DrawShadowSpots()
 
         Vertex vertex[4] =
         {
-            { corner[1], n, Math::Point(ts.x, ts.y) },
-            { corner[0], n, Math::Point(ti.x, ts.y) },
-            { corner[3], n, Math::Point(ts.x, ti.y) },
-            { corner[2], n, Math::Point(ti.x, ti.y) }
+            { corner[1], n, { ts.x, ts.y } },
+            { corner[0], n, { ti.x, ts.y } },
+            { corner[3], n, { ts.x, ti.y } },
+            { corner[2], n, { ti.x, ti.y } }
         };
 
         float intensity = (0.5f+m_shadowSpots[i].intensity*0.5f)*hFactor;
@@ -4938,8 +4938,8 @@ void CEngine::DrawBackground()
 
 void CEngine::DrawBackgroundGradient(const Color& up, const Color& down)
 {
-    Math::Point p1(0.0f, 0.5f);
-    Math::Point p2(1.0f, 1.0f);
+    glm::vec2 p1(0.0f, 0.5f);
+    glm::vec2 p2(1.0f, 1.0f);
 
     Color color[3] =
     {
@@ -4968,7 +4968,7 @@ void CEngine::DrawBackgroundGradient(const Color& up, const Color& down)
 
 void CEngine::DrawBackgroundImage()
 {
-    Math::Point p1, p2;
+    glm::vec2 p1, p2;
     p1.x = 0.0f;
     p1.y = 0.0f;
     p2.x = 1.0f;
@@ -5000,7 +5000,7 @@ void CEngine::DrawBackgroundImage()
         v2 = v1+h;
     }
 
-    Math::Point backgroundScale;
+    glm::vec2 backgroundScale;
     backgroundScale.x = static_cast<float>(m_backgroundTex.originalSize.x) / static_cast<float>(m_backgroundTex.size.x);
     backgroundScale.y = static_cast<float>(m_backgroundTex.originalSize.y) / static_cast<float>(m_backgroundTex.size.y);
 
@@ -5009,7 +5009,7 @@ void CEngine::DrawBackgroundImage()
 
     if (m_backgroundScale)
     {
-        Math::Point scale;
+        glm::vec2 scale;
         scale.x = static_cast<float>(m_size.x) / static_cast<float>(m_backgroundTex.originalSize.x);
         scale.y = static_cast<float>(m_size.y) / static_cast<float>(m_backgroundTex.originalSize.y);
         if (scale.x > scale.y)
@@ -5070,8 +5070,8 @@ void CEngine::DrawForegroundImage()
 
     Math::Vector n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
 
-    Math::Point p1(0.0f, 0.0f);
-    Math::Point p2(1.0f, 1.0f);
+    glm::vec2 p1(0.0f, 0.0f);
+    glm::vec2 p2(1.0f, 1.0f);
 
     float u1 = -m_eyeDirH/(Math::PI*0.6f)+Math::PI*0.5f;
     float u2 = u1+0.50f;
@@ -5082,10 +5082,10 @@ void CEngine::DrawForegroundImage()
 
     Vertex vertex[4] =
     {
-        { Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(u1, v2) },
-        { Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(u1, v1) },
-        { Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(u2, v2) },
-        { Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(u2, v1) }
+        { Math::Vector(p1.x, p1.y, 0.0f), n, { u1, v2 } },
+        { Math::Vector(p1.x, p2.y, 0.0f), n, { u1, v1 } },
+        { Math::Vector(p2.x, p1.y, 0.0f), n, { u2, v2 } },
+        { Math::Vector(p2.x, p2.y, 0.0f), n, { u2, v1 } }
     };
 
     SetTexture(m_foregroundTex);
@@ -5107,8 +5107,8 @@ void CEngine::DrawOverColor()
         (m_overColor == Color(1.0f, 1.0f, 1.0f, 1.0f) && m_overMode == ENG_RSTATE_TCOLOR_WHITE))
         return;
 
-    Math::Point p1(0.0f, 0.0f);
-    Math::Point p2(1.0f, 1.0f);
+    glm::vec2 p1(0.0f, 0.0f);
+    glm::vec2 p2(1.0f, 1.0f);
 
     Color color[3] =
     {
@@ -5142,7 +5142,7 @@ void CEngine::DrawOverColor()
 
 void CEngine::DrawHighlight()
 {
-    Math::Point min, max;
+    glm::vec2 min, max;
     min.x = 1000000.0f;
     min.y = 1000000.0f;
     max.x = -1000000.0f;
@@ -5151,7 +5151,7 @@ void CEngine::DrawHighlight()
     int i = 0;
     while (m_highlightRank[i] != -1)
     {
-        Math::Point omin, omax;
+        glm::vec2 omin, omax;
         if (GetBBox2D(m_highlightRank[i++], omin, omax))
         {
             min.x = Math::Min(min.x, omin.x);
@@ -5178,8 +5178,8 @@ void CEngine::DrawHighlight()
     if (!m_highlight)
         return;
 
-    Math::Point p1 = m_highlightP1;
-    Math::Point p2 = m_highlightP2;
+    glm::vec2 p1 = m_highlightP1;
+    glm::vec2 p2 = m_highlightP2;
 
     int nbOut = 0;
     if (p1.x < 0.0f || p1.x > 1.0f) nbOut++;
@@ -5248,7 +5248,7 @@ void CEngine::DrawMouse()
 
     SetUITexture(m_miceTexture);
 
-    Math::Point mousePos = CInput::GetInstancePointer()->GetMousePos();
+    glm::vec2 mousePos = CInput::GetInstancePointer()->GetMousePos();
     glm::ivec2 pos(mousePos.x * m_size.x, m_size.y - mousePos.y * m_size.y);
     pos.x -= MOUSE_TYPES.at(m_mouseType).hotPoint.x;
     pos.y -= MOUSE_TYPES.at(m_mouseType).hotPoint.y;
@@ -5308,7 +5308,7 @@ void CEngine::DrawStats()
     float width = 0.4f;
     const int TOTAL_LINES = 22;
 
-    Math::Point pos(0.05f * m_size.x/m_size.y, 0.05f + TOTAL_LINES * height);
+    glm::vec2 pos(0.05f * m_size.x/m_size.y, 0.05f + TOTAL_LINES * height);
 
     SetState(ENG_RSTATE_TCOLOR_ALPHA);
     auto renderer = m_device->GetUIRenderer();
@@ -5316,7 +5316,7 @@ void CEngine::DrawStats()
 
     glm::u8vec4 black = { 0, 0, 0, 192 };
 
-    Math::Point margin = Math::Point(5.f / m_size.x, 5.f / m_size.y);
+    glm::vec2 margin = { 5.f / m_size.x, 5.f / m_size.y };
 
     Vertex2D vertex[4] =
     {
@@ -5407,7 +5407,7 @@ void CEngine::DrawTimer()
 {
     SetState(ENG_RSTATE_TEXT);
 
-    Math::Point pos(0.98f, 0.98f-m_text->GetAscent(FONT_COMMON, 15.0f));
+    glm::vec2 pos(0.98f, 0.98f-m_text->GetAscent(FONT_COMMON, 15.0f));
     m_text->DrawText(m_timerText, FONT_COMMON, 15.0f, pos, 1.0f, TEXT_ALIGN_RIGHT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
 }
 

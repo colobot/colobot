@@ -669,15 +669,15 @@ public:
     //! Conversion functions between window and interface coordinates
     /** Window coordinates are from top-left (0,0) to bottom-right (w,h) - size of window
         Interface cords are from bottom-left (0,0) to top-right (1,1) - and do not depend on window size */
-    Math::Point     WindowToInterfaceCoords(const glm::ivec2& pos);
-    glm::ivec2      InterfaceToWindowCoords(Math::Point pos);
+    glm::vec2       WindowToInterfaceCoords(const glm::ivec2& pos);
+    glm::ivec2      InterfaceToWindowCoords(const glm::vec2& pos);
     //@}
 
     //@{
     //! Conversion functions between window and interface sizes
     /** Unlike coordinate conversions, this is only scale conversion, not translation and scale. */
-    Math::Point      WindowToInterfaceSize(const glm::ivec2& size);
-    glm::ivec2       InterfaceToWindowSize(Math::Point size);
+    glm::vec2       WindowToInterfaceSize(const glm::ivec2& size);
+    glm::ivec2      InterfaceToWindowSize(const glm::vec2& size);
     //@}
 
     //! Increments the triangle counter for the current frame
@@ -808,7 +808,7 @@ public:
 
     //! Detects the target object that is selected with the mouse
     /** Returns the rank of the object or -1. */
-    int             DetectObject(Math::Point mouse, Math::Vector& targetPos, bool terrain = false);
+    int             DetectObject(const glm::vec2& mouse, Math::Vector& targetPos, bool terrain = false);
 
     //! Creates a shadow for the given object
     void            CreateShadowSpot(int objRank);
@@ -830,7 +830,7 @@ public:
     //! Lists the ranks of objects and subobjects selected
     void            SetHighlightRank(int* rankList);
     //! Returns the highlighted rectangle
-    bool            GetHighlight(Math::Point& p1, Math::Point& p2);
+    bool            GetHighlight(glm::vec2& p1, glm::vec2& p2);
 
     //! Deletes all ground spots
     void            DeleteAllGroundSpots();
@@ -889,15 +889,15 @@ public:
                                        Color colorRef1, Color colorNew1,
                                        Color colorRef2, Color colorNew2,
                                        float tolerance1, float tolerance2,
-                                       Math::Point ts, Math::Point ti,
-                                       Math::Point *exclude = nullptr,
+                                       const glm::vec2& ts, const glm::vec2& ti,
+                                       glm::vec2* exclude = nullptr,
                                        float shift = 0.0f, bool hsv = false);
     bool            ChangeTextureColor(const std::string& texName,
                                        Color colorRef1, Color colorNew1,
                                        Color colorRef2, Color colorNew2,
                                        float tolerance1, float tolerance2,
-                                       Math::Point ts, Math::Point ti,
-                                       Math::Point *exclude = nullptr,
+                                       const glm::vec2& ts, const glm::vec2& ti,
+                                       glm::vec2* exclude = nullptr,
                                        float shift = 0.0f, bool hsv = false);
     //@}
 
@@ -1269,13 +1269,13 @@ protected:
     bool        InPlane(Math::Vector normal, float originPlane, Math::Vector center, float radius);
 
     //! Detects whether an object is affected by the mouse
-    bool        DetectBBox(int objRank, Math::Point mouse);
+    bool        DetectBBox(int objRank, const glm::vec2& mouse);
 
     //! Compute and return the 2D box on screen of any object
-    bool        GetBBox2D(int objRank, Math::Point& min, Math::Point& max);
+    bool        GetBBox2D(int objRank, glm::vec2& min, glm::vec2& max);
 
     //! Detects whether the mouse is in a triangle.
-    bool        DetectTriangle(Math::Point mouse, Vertex3D* triangle, int objRank, float& dist, Math::Vector& pos);
+    bool        DetectTriangle(const glm::vec2& mouse, Vertex3D* triangle, int objRank, float& dist, Math::Vector& pos);
 
     //! Transforms a 3D point (x, y, z) in 2D space (x, y, -) of the window
     /** The coordinated p2D.z gives the distance. */
@@ -1459,8 +1459,8 @@ protected:
     float           m_highlightTime;
     //@{
     //! Highlight rectangle points
-    Math::Point     m_highlightP1;
-    Math::Point     m_highlightP2;
+    glm::vec2       m_highlightP1;
+    glm::vec2       m_highlightP2;
     //@}
 
     //! Default texture create params
