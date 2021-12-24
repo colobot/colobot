@@ -43,7 +43,7 @@ public:
     virtual ~CKey();
 
     //! Creates a new key slot button
-    bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg) override;
+    bool    Create(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg) override;
     //! Management of an event
     bool    EventProcess(const Event &event) override;
 

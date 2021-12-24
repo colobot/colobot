@@ -51,10 +51,10 @@ CControl::CControl()
     m_icon = 0;
     m_fontStretch = false;
     m_bGlint        = false;
-    m_glintCorner1  = Math::Point(0.0f, 0.0f);
-    m_glintCorner2  = Math::Point(0.0f, 0.0f);
+    m_glintCorner1 = { 0.0f, 0.0f };
+    m_glintCorner2 = { 0.0f, 0.0f };
     m_glintProgress = 999.0f;
-    m_glintMouse    = Math::Point(0.0f, 0.0f);
+    m_glintMouse = { 0.0f, 0.0f };
 }
 
 // Object's destructor.
@@ -67,10 +67,12 @@ CControl::~CControl()
 // Creates a new button.
 //  pos: [0..1]
 
-bool CControl::Create(Math::Point pos, Math::Point dim, int icon, EventType eventType)
+bool CControl::Create(const glm::vec2& position, const glm::vec2& dim, int icon, EventType eventType)
 {
     if ( eventType == EVENT_NULL )
         eventType = GetUniqueEventType();
+
+    glm::vec2 pos = position;
 
     m_pos = pos;
     m_dim = dim;
@@ -98,32 +100,26 @@ bool CControl::Create(Math::Point pos, Math::Point dim, int icon, EventType even
 }
 
 
-void CControl::SetPos(Math::Point pos)
+void CControl::SetPos(const glm::vec2& pos)
 {
     m_pos = pos;
 
-    pos.x = m_pos.x;
-    pos.y = m_pos.y + m_dim.y;
-    GlintCreate(pos);
+    GlintCreate({ m_pos.x, m_pos.y + m_dim.y });
 }
 
-Math::Point CControl::GetPos()
+glm::vec2 CControl::GetPos()
 {
     return m_pos;
 }
 
-void CControl::SetDim(Math::Point dim)
+void CControl::SetDim(const glm::vec2& dim)
 {
-    Math::Point pos;
-
     m_dim = dim;
 
-    pos.x = m_pos.x;
-    pos.y = m_pos.y + m_dim.y;
-    GlintCreate(pos);
+    GlintCreate({ m_pos.x, m_pos.y + m_dim.y });
 }
 
-Math::Point CControl::GetDim()
+glm::vec2 CControl::GetDim()
 {
     return m_dim;
 }
@@ -269,7 +265,7 @@ bool CControl::SetTooltip(std::string name)
     return true;
 }
 
-bool CControl::GetTooltip(Math::Point pos, std::string &name)
+bool CControl::GetTooltip(const glm::vec2& pos, std::string &name)
 {
     if ( m_tooltip.length() == 0 ) return false;
     if ( (m_state & STATE_VISIBLE) == 0 ) return false;
@@ -377,7 +373,7 @@ void CControl::GlintDelete()
 
 // Creates a reflection for that button.
 
-void CControl::GlintCreate(Math::Point ref, bool bLeft, bool bUp)
+void CControl::GlintCreate(const glm::vec2& ref, bool bLeft, bool bUp)
 {
     float   offset;
 
@@ -417,7 +413,7 @@ void CControl::GlintCreate(Math::Point ref, bool bLeft, bool bUp)
 void CControl::GlintFrame(const Event &event)
 {
     Math::Vector    pos, speed;
-    Math::Point     dim;
+    glm::vec2       dim;
 
     if ( (m_state & STATE_GLINT  ) == 0 ||
          (m_state & STATE_ENABLE ) == 0 ||
@@ -447,7 +443,7 @@ void CControl::GlintFrame(const Event &event)
 
 void CControl::Draw()
 {
-    Math::Point     pos;
+    glm::vec2   pos;
     float       zoomExt, zoomInt;
     int         icon;
 
@@ -562,7 +558,7 @@ void CControl::Draw()
 
 void CControl::DrawPart(int icon, float zoom, float ex)
 {
-    Math::Point     p1, p2, c, uv1, uv2;
+    glm::vec2   p1, p2, c, uv1, uv2;
     float       dp;
 
     p1.x = m_pos.x;
@@ -604,7 +600,7 @@ void CControl::DrawPart(int icon, float zoom, float ex)
 // Draws an icon made up of a rectangular (if x = 0)
 // or 3 pieces.
 
-void CControl::DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math::Point uv2,
+void CControl::DrawIcon(const glm::vec2& pos, const glm::vec2& dim, const glm::vec2& uv1, const glm::vec2& uv2,
                         float ex)
 {
     Gfx::Vertex2D   vertex[8];  // 6 triangles
@@ -668,11 +664,13 @@ void CControl::DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math:
 
 // Draws a rectangular icon made up of 9 pieces.
 
-void CControl::DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math::Point uv2,
-                        Math::Point corner, float ex)
+void CControl::DrawIcon(const glm::vec2& pos, const glm::vec2& dim, const glm::vec2& uv1, const glm::vec2& uv2,
+                        const glm::vec2& cor, float ex)
 {
     Gfx::Vertex2D   vertices[8];  // 6 triangles
     glm::vec2       p1, p2, p3, p4;
+
+    glm::vec2 corner = cor;
 
     auto renderer = m_engine->GetDevice()->GetUIRenderer();
 
@@ -735,10 +733,13 @@ void CControl::DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math:
 
 // Draw round the hatch of a button.
 
-void CControl::DrawWarning(Math::Point pos, Math::Point dim)
+void CControl::DrawWarning(const glm::vec2& position, const glm::vec2& dimension)
 {
-    Math::Point     uv1, uv2;
+    glm::vec2   uv1, uv2;
     float       dp;
+
+    glm::vec2 pos = position;
+    glm::vec2 dim = dimension;
 
     dp = 0.5f / 256.0f;
 
@@ -780,10 +781,13 @@ void CControl::DrawWarning(Math::Point pos, Math::Point dim)
 
 // Draw the shade under a button.
 
-void CControl::DrawShadow(Math::Point pos, Math::Point dim, float deep)
+void CControl::DrawShadow(const glm::vec2& position, const glm::vec2& dimension, float deep)
 {
-    Math::Point     uv1, uv2, corner;
+    glm::vec2   uv1, uv2, corner;
     float       dp;
+
+    glm::vec2 pos = position;
+    glm::vec2 dim = dimension;
 
     dp = 0.5f/256.0f;
 
@@ -815,7 +819,7 @@ void CControl::DrawShadow(Math::Point pos, Math::Point dim, float deep)
 
 // Detects whether a position is in the button.
 
-bool CControl::Detect(Math::Point pos)
+bool CControl::Detect(const glm::vec2& pos)
 {
     return ( pos.x >= m_pos.x           &&
               pos.x <= m_pos.x + m_dim.x &&

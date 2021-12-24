@@ -159,7 +159,7 @@ CEdit::~CEdit()
 
 // Creates a new editable line.
 
-bool CEdit::Create(Math::Point pos, Math::Point dim, int icon, EventType eventType)
+bool CEdit::Create(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventType)
 {
     if ( eventType == EVENT_NULL )  eventType = GetUniqueEventType();
     CControl::Create(pos, dim, icon, eventType);
@@ -190,13 +190,13 @@ bool CEdit::Create(Math::Point pos, Math::Point dim, int icon, EventType eventTy
 }
 
 
-void CEdit::SetPos(Math::Point pos)
+void CEdit::SetPos(const glm::vec2& pos)
 {
     CControl::SetPos(pos);
     MoveAdjust();
 }
 
-void CEdit::SetDim(Math::Point dim)
+void CEdit::SetDim(const glm::vec2& dim)
 {
     CControl::SetDim(dim);
     MoveAdjust();
@@ -204,7 +204,7 @@ void CEdit::SetDim(Math::Point dim)
 
 void CEdit::MoveAdjust()
 {
-    Math::Point     pos, dim;
+    glm::vec2   pos, dim;
     float       height;
 
     m_lineDescent = m_engine->GetText()->GetDescent(m_fontType, m_fontSize);
@@ -587,7 +587,7 @@ void CEdit::SendModifEvent()
 
 // Detects whether the mouse is over a hyperlink character.
 
-bool CEdit::IsLinkPos(Math::Point pos)
+bool CEdit::IsLinkPos(const glm::vec2& pos)
 {
     int     i;
 
@@ -604,7 +604,7 @@ bool CEdit::IsLinkPos(Math::Point pos)
 
 // Positions the cursor after a double click.
 
-void CEdit::MouseDoubleClick(Math::Point mouse)
+void CEdit::MouseDoubleClick(const glm::vec2& mouse)
 {
     int     i, character;
 
@@ -643,7 +643,7 @@ void CEdit::MouseDoubleClick(Math::Point mouse)
 
 // Positions the cursor when clicked.
 
-void CEdit::MouseClick(Math::Point mouse)
+void CEdit::MouseClick(const glm::vec2& mouse)
 {
     int     i;
 
@@ -662,7 +662,7 @@ void CEdit::MouseClick(Math::Point mouse)
 
 // Positions the cursor when clicked released.
 
-void CEdit::MouseRelease(Math::Point mouse)
+void CEdit::MouseRelease(const glm::vec2& mouse)
 {
     int i = MouseDetect(mouse);
     if ( i == -1 )  return;
@@ -689,27 +689,27 @@ void CEdit::MouseRelease(Math::Point mouse)
 
 // Positions the cursor after movement.
 
-void CEdit::MouseMove(Math::Point mouse)
+void CEdit::MouseMove(const glm::vec2& mouse)
 {
-    int     i;
+    glm::vec2 pos = mouse;
 
     if ( m_bMulti &&
          m_timeLastScroll+DELAY_SCROLL <= m_time )
     {
-        if ( mouse.y > m_pos.y+m_dim.y )  // above?
+        if (pos.y > m_pos.y+m_dim.y )  // above?
         {
             Scroll(m_lineFirst-1, false);
-            mouse.y = m_pos.y+m_dim.y-MARGY-m_lineHeight/2.0f;
+            pos.y = m_pos.y+m_dim.y-MARGY-m_lineHeight/2.0f;
         }
-        if ( mouse.y < m_pos.y )  // lower?
+        if (pos.y < m_pos.y )  // lower?
         {
             Scroll(m_lineFirst+1, false);
-            mouse.y = m_pos.y+m_dim.y-MARGY-m_lineVisible*m_lineHeight+m_lineHeight/2.0f;
+            pos.y = m_pos.y+m_dim.y-MARGY-m_lineVisible*m_lineHeight+m_lineHeight/2.0f;
         }
         m_timeLastScroll = m_time;
     }
 
-    i = MouseDetect(mouse);
+    int i = MouseDetect(pos);
     if ( i != -1 )
     {
         m_cursor1 = i;
@@ -721,9 +721,9 @@ void CEdit::MouseMove(Math::Point mouse)
 
 // Positions the cursor when clicked.
 
-int CEdit::MouseDetect(Math::Point mouse)
+int CEdit::MouseDetect(const glm::vec2& mouse)
 {
-    Math::Point pos;
+    glm::vec2 pos;
     float   indentLength = 0.0f, offset, size;
     int     i, len, c;
     bool    bTitle;
@@ -908,7 +908,7 @@ bool CEdit::HyperGo(EventType event)
 
 void CEdit::Draw()
 {
-    Math::Point     pos, ppos, dim, start, end;
+    glm::vec2   pos, ppos, dim, start, end;
     float       size = 0.0f, indentLength = 0.0f;
     int         i, j, beg, len, c1, c2, o1, o2, eol, line;
 
@@ -1169,10 +1169,10 @@ static std::string PrepareImageFilename(std::string name)
     return filename;
 }
 
-void CEdit::DrawImage(Math::Point pos, std::string name, float width,
+void CEdit::DrawImage(const glm::vec2& pos, std::string name, float width,
                       float offset, float height, int nbLine)
 {
-    Math::Point uv1, uv2, dim;
+    glm::vec2 uv1, uv2, dim;
     float dp;
 
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
@@ -1208,9 +1208,9 @@ void CEdit::DrawImage(Math::Point pos, std::string name, float width,
 
 // Draw the background.
 
-void CEdit::DrawBack(Math::Point pos, Math::Point dim)
+void CEdit::DrawBack(const glm::vec2& pos, const glm::vec2& dim)
 {
-    Math::Point     uv1,uv2, corner;
+    glm::vec2   uv1,uv2, corner;
     float       dp;
 
     if ( m_bGeneric )  return;
@@ -1258,11 +1258,11 @@ void CEdit::DrawBack(Math::Point pos, Math::Point dim)
     }
 }
 
-void CEdit::DrawHorizontalGradient(Math::Point pos, Math::Point dim, Gfx::Color color1, Gfx::Color color2)
+void CEdit::DrawHorizontalGradient(const glm::vec2& pos, const glm::vec2& dim, Gfx::Color color1, Gfx::Color color2)
 {
     m_engine->SetState(Gfx::ENG_RSTATE_OPAQUE_COLOR);
 
-    Math::Point p1, p2;
+    glm::vec2 p1, p2;
     p1.x = pos.x;
     p1.y = pos.y;
     p2.x = pos.x + dim.x;
@@ -1285,7 +1285,7 @@ void CEdit::DrawHorizontalGradient(Math::Point pos, Math::Point dim, Gfx::Color 
     m_engine->AddStatisticTriangle(2);
 }
 
-void CEdit::DrawColor(Math::Point pos, Math::Point dim, Gfx::Color color)
+void CEdit::DrawColor(const glm::vec2& pos, const glm::vec2& dim, Gfx::Color color)
 {
     DrawHorizontalGradient(pos, dim, color, color);
 }

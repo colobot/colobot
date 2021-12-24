@@ -45,10 +45,10 @@ public:
     CEditValue();
     virtual ~CEditValue();
 
-    bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventType) override;
+    bool        Create(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventType) override;
 
-    void        SetPos(Math::Point pos) override;
-    void        SetDim(Math::Point dim) override;
+    void        SetPos(const glm::vec2& pos) override;
+    void        SetDim(const glm::vec2& dim) override;
 
     bool        EventProcess(const Event &event) override;
     void        Draw() override;

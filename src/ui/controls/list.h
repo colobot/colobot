@@ -44,10 +44,10 @@ public:
     CList();
     ~CList();
 
-    bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, float expand);
+    bool        Create(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg, float expand);
 
-    void        SetPos(Math::Point pos) override;
-    void        SetDim(Math::Point dim) override;
+    void        SetPos(const glm::vec2& pos) override;
+    void        SetDim(const glm::vec2& dim) override;
 
     bool        SetState(int state, bool bState) override;
     bool        SetState(int state) override;
@@ -92,11 +92,11 @@ protected:
     void        UpdateButton();
     void        UpdateScroll();
     void        MoveScroll();
-    void        DrawCase(const char* text, Math::Point pos, float width, Gfx::TextAlign justif);
+    void        DrawCase(const char* text, const glm::vec2& pos, float width, Gfx::TextAlign justif);
 
 private:
     // Overridden to avoid warning about hiding the virtual function
-    bool Create(Math::Point pos, Math::Point dim, int icon, EventType eventType) override;
+    bool        Create(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventType) override;
 
 protected:
     std::array<std::unique_ptr<CButton>, LISTMAXDISPLAY> m_buttons;

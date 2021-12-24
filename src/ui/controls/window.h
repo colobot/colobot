@@ -55,24 +55,24 @@ public:
     ~CWindow();
 
     void        Flush();
-    bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg) override;
-    CButton*    CreateButton(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-    CColor*     CreateColor(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-    CCheck*     CreateCheck(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-    CKey*       CreateKey(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-    CGroup*     CreateGroup(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-    CImage*     CreateImage(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-    CLabel*     CreateLabel(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, std::string name);
-    CEdit*      CreateEdit(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-    CEditValue* CreateEditValue(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-    CScroll*    CreateScroll(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-    CSlider*    CreateSlider(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-    CEnumSlider* CreateEnumSlider(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-    CList*      CreateList(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, float expand=1.2f);
-    CShortcut*  CreateShortcut(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-    CMap*       CreateMap(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-    CGauge*     CreateGauge(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-    CTarget*    CreateTarget(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+    bool        Create(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg) override;
+    CButton*    CreateButton(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg);
+    CColor*     CreateColor(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg);
+    CCheck*     CreateCheck(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg);
+    CKey*       CreateKey(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg);
+    CGroup*     CreateGroup(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg);
+    CImage*     CreateImage(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg);
+    CLabel*     CreateLabel(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg, std::string name);
+    CEdit*      CreateEdit(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg);
+    CEditValue* CreateEditValue(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg);
+    CScroll*    CreateScroll(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg);
+    CSlider*    CreateSlider(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg);
+    CEnumSlider* CreateEnumSlider(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg);
+    CList*      CreateList(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg, float expand=1.2f);
+    CShortcut*  CreateShortcut(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg);
+    CMap*       CreateMap(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg);
+    CGauge*     CreateGauge(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg);
+    CTarget*    CreateTarget(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg);
     bool        DeleteControl(EventType eventMsg);
     CControl*   SearchControl(EventType eventMsg);
 
@@ -85,13 +85,13 @@ public:
     void        SetTrashEvent(bool bTrash);
     bool        GetTrashEvent();
 
-    void        SetPos(Math::Point pos) override;
-    void        SetDim(Math::Point dim) override;
+    void        SetPos(const glm::vec2& pos) override;
+    void        SetDim(const glm::vec2& dim) override;
 
-    void        SetMinDim(Math::Point dim);
-    void        SetMaxDim(Math::Point dim);
-    Math::Point     GetMinDim();
-    Math::Point     GetMaxDim();
+    void        SetMinDim(const glm::vec2& dim);
+    void        SetMaxDim(const glm::vec2& dim);
+    glm::vec2   GetMinDim();
+    glm::vec2   GetMaxDim();
 
     void        SetMovable(bool bMode);
     bool        GetMovable();
@@ -109,7 +109,7 @@ public:
     void        SetFixed(bool bFix);
     bool        GetFixed();
 
-    bool        GetTooltip(Math::Point pos, std::string &name) override;
+    bool        GetTooltip(const glm::vec2& pos, std::string &name) override;
 
     bool        EventProcess(const Event &event) override;
 
@@ -118,13 +118,13 @@ public:
     void        SetFocus(CControl* focusControl) override;
 
 protected:
-    int         BorderDetect(Math::Point pos);
+    int         BorderDetect(const glm::vec2& pos);
     void        AdjustButtons();
     void        MoveAdjust();
-    void        DrawVertex(Math::Point pos, Math::Point dim, int icon);
-    void        DrawHach(Math::Point pos, Math::Point dim);
+    void        DrawVertex(const glm::vec2& pos, const glm::vec2& dim, int icon);
+    void        DrawHach(const glm::vec2& pos, const glm::vec2& dim);
     template<typename ControlClass>
-    ControlClass* CreateControl(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+    ControlClass* CreateControl(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg);
 
 protected:
     std::vector<std::unique_ptr<CControl>> m_controls;
@@ -134,8 +134,8 @@ protected:
     bool        m_bMinimized;
     bool        m_bFixed;
 
-    Math::Point     m_minDim;
-    Math::Point     m_maxDim;
+    glm::vec2   m_minDim;
+    glm::vec2   m_maxDim;
 
     std::unique_ptr<CButton> m_buttonReduce;
     std::unique_ptr<CButton> m_buttonFull;
@@ -145,7 +145,7 @@ protected:
     bool        m_bRedim;
     bool        m_bClosable;
     bool        m_bCapture;
-    Math::Point     m_pressPos;
+    glm::vec2   m_pressPos;
     int         m_pressFlags;
     Gfx::EngineMouseType    m_pressMouse;
 };

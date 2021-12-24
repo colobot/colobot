@@ -41,7 +41,7 @@ CGauge::~CGauge()
 
 // Creates a new button.
 
-bool CGauge::Create(Math::Point pos, Math::Point dim, int icon, EventType eventType)
+bool CGauge::Create(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventType)
 {
     if ( eventType == EVENT_NULL )  eventType = GetUniqueEventType();
 
@@ -73,7 +73,7 @@ bool CGauge::EventProcess(const Event &event)
 
 void CGauge::Draw()
 {
-    Math::Point     pos, dim, ddim, uv1, uv2, corner;
+    glm::vec2   pos, dim, ddim, uv1, uv2, corner;
     float       dp;
 
     if ( (m_state & STATE_VISIBLE) == 0 )  return;

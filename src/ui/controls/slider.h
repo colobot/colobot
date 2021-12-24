@@ -34,10 +34,10 @@ public:
     CSlider();
     ~CSlider();
 
-    bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventType) override;
+    bool        Create(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventType) override;
 
-    void        SetPos(Math::Point pos) override;
-    void        SetDim(Math::Point dim) override;
+    void        SetPos(const glm::vec2& pos) override;
+    void        SetDim(const glm::vec2& dim) override;
 
     bool        SetState(int state, bool bState) override;
     bool        SetState(int state) override;
@@ -57,7 +57,7 @@ public:
 protected:
     void        MoveAdjust();
     void        AdjustGlint();
-    void        DrawVertex(Math::Point pos, Math::Point dim, int icon);
+    void        DrawVertex(const glm::vec2& pos, const glm::vec2& dim, int icon);
     virtual std::string GetLabel();
 
 protected:
@@ -73,7 +73,7 @@ protected:
     float       m_marginButton;
 
     bool        m_bCapture;
-    Math::Point     m_pressPos;
+    glm::vec2   m_pressPos;
     float       m_pressValue;
 };
 

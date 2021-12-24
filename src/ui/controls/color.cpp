@@ -60,7 +60,7 @@ CColor::~CColor()
 
 // Creates a new button.
 
-bool CColor::Create(Math::Point pos, Math::Point dim, int icon, EventType eventType)
+bool CColor::Create(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventType)
 {
     if ( eventType == EVENT_NULL )  eventType = GetUniqueEventType();
 
@@ -127,7 +127,7 @@ void CColor::Draw()
 {
     Gfx::Vertex2D  vertex[4];  // 2 triangles
     Gfx::Color     color;
-    Math::Point    p1, p2;
+    glm::vec2      p1, p2;
 
     if ( (m_state & STATE_VISIBLE) == 0 )  return;
 

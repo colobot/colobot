@@ -40,10 +40,10 @@ public:
     CScroll();
     ~CScroll();
 
-    bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg) override;
+    bool        Create(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg) override;
 
-    void        SetPos(Math::Point pos) override;
-    void        SetDim(Math::Point dim) override;
+    void        SetPos(const glm::vec2& pos) override;
+    void        SetDim(const glm::vec2& dim) override;
 
     bool        SetState(int state, bool bState) override;
     bool        SetState(int state) override;
@@ -64,7 +64,7 @@ public:
 protected:
     void        MoveAdjust();
     void        AdjustGlint();
-    void        DrawVertex(Math::Point pos, Math::Point dim, int icon);
+    void        DrawVertex(const glm::vec2& pos, const glm::vec2& dim, int icon);
 
 protected:
     std::unique_ptr<CButton> m_buttonUp;
@@ -75,7 +75,7 @@ protected:
     float       m_step;
 
     bool        m_bCapture;
-    Math::Point     m_pressPos;
+    glm::vec2   m_pressPos;
     float       m_pressValue;
 };
 

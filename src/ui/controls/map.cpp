@@ -31,7 +31,6 @@
 #include "level/robotmain.h"
 
 #include "math/geometry.h"
-#include "math/point.h"
 
 #include "object/interface/controllable_object.h"
 #include "object/interface/transportable_object.h"
@@ -88,7 +87,7 @@ CMap::~CMap()
 
 // Creates a new button.
 
-bool CMap::Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+bool CMap::Create(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg)
 {
     if (eventMsg == EVENT_NULL)
         eventMsg = GetUniqueEventType();
@@ -231,17 +230,18 @@ bool CMap::EventProcess(const Event &event)
 
 // Adjusts the offset to not exceed the card.
 
-Math::Point CMap::AdjustOffset(Math::Point offset)
+glm::vec2 CMap::AdjustOffset(const glm::vec2& offset)
 {
-    float   limit;
+    glm::vec2 off = offset;
 
-    limit = m_half - m_half / m_zoom;
-    if ( offset.x < -limit )  offset.x = -limit;
-    if ( offset.x >  limit )  offset.x =  limit;
-    if ( offset.y < -limit )  offset.y = -limit;
-    if ( offset.y >  limit )  offset.y =  limit;
+    float limit = m_half - m_half / m_zoom;
 
-    return offset;
+    if (off.x < -limit)  off.x = -limit;
+    if (off.x >  limit)  off.x =  limit;
+    if (off.y < -limit)  off.y = -limit;
+    if (off.y >  limit)  off.y =  limit;
+
+    return off;
 }
 
 // Indicates the object with the mouse hovers over.
@@ -269,10 +269,12 @@ void CMap::SetHighlight(CObject* pObj)
 
 // Detects an object in the map.
 
-CObject* CMap::DetectObject(Math::Point pos, bool &bInMap)
+CObject* CMap::DetectObject(const glm::vec2& position, bool &bInMap)
 {
     float dist, min;
     int best;
+
+    glm::vec2 pos = position;
 
     bInMap = false;
     if ( pos.x < m_pos.x ||
@@ -315,7 +317,7 @@ CObject* CMap::DetectObject(Math::Point pos, bool &bInMap)
 
 // Selects an object.
 
-void CMap::SelectObject(Math::Point pos)
+void CMap::SelectObject(const glm::vec2& pos)
 {
     CObject *pObj;
     bool bInMap;
@@ -330,7 +332,7 @@ void CMap::SelectObject(Math::Point pos)
 
 void CMap::Draw()
 {
-    Math::Point     uv1, uv2;
+    glm::vec2 uv1, uv2;
     int i;
 
     if ( (m_state & STATE_VISIBLE) == 0 )
@@ -398,9 +400,9 @@ void CMap::Draw()
 
 // Computing a point for drawFocus.
 
-Math::Point CMap::MapInter(Math::Point pos, float dir)
+glm::vec2 CMap::MapInter(const glm::vec2& pos, float dir)
 {
-    Math::Point p1;
+    glm::vec2 p1;
     float   limit;
 
     p1.x = pos.x + 1.0f;
@@ -443,13 +445,15 @@ Math::Point CMap::MapInter(Math::Point pos, float dir)
 
 // Draw the field of vision of the selected object.
 
-void CMap::DrawFocus(Math::Point pos, float dir, ObjectType type, MapColor color)
+void CMap::DrawFocus(const glm::vec2& position, float dir, ObjectType type, MapColor color)
 {
-    Math::Point p0, p1, p2, uv1, uv2, rel;
+    glm::vec2 p0, p1, p2, uv1, uv2, rel;
     float   aMin, aMax, aOct, focus, a;
     float   limit[5];
     bool    bEnding;
     int     quart;
+
+    glm::vec2 pos = position;
 
     if (m_bToy || !m_fixImage.empty())  return;  // map with still image?
     if ( color != MAPCOLOR_MOVE )  return;
@@ -525,11 +529,13 @@ void CMap::DrawFocus(Math::Point pos, float dir, ObjectType type, MapColor color
 
 // Draw an object.
 
-void CMap::DrawObject(Math::Point pos, float dir, ObjectType type, MapColor color,
+void CMap::DrawObject(const glm::vec2& position, float dir, ObjectType type, MapColor color,
                       bool bSelect, bool bHilite)
 {
-    Math::Point     p1, p2, p3, p4, p5, dim, uv1, uv2;
+    glm::vec2   p1, p2, p3, p4, p5, dim, uv1, uv2;
     bool        bOut, bUp, bDown, bLeft, bRight;
+
+    glm::vec2 pos = position;
 
     pos.x = (pos.x-m_offset.x)*(m_zoom*0.5f)/m_half+0.5f;
     pos.y = (pos.y-m_offset.y)*(m_zoom*0.5f)/m_half+0.5f;
@@ -796,10 +802,10 @@ void CMap::DrawObject(Math::Point pos, float dir, ObjectType type, MapColor colo
 
 // Draws the icon of an object.
 
-void CMap::DrawObjectIcon(Math::Point pos, Math::Point dim, MapColor color,
+void CMap::DrawObjectIcon(const glm::vec2& pos, const glm::vec2& dim, MapColor color,
                           ObjectType type, bool bHilite)
 {
-    Math::Point ppos, ddim, uv1, uv2;
+    glm::vec2 ppos, ddim, uv1, uv2;
     float   dp;
     int     icon;
 
@@ -928,9 +934,11 @@ void CMap::DrawObjectIcon(Math::Point pos, Math::Point dim, MapColor color,
 
 // Draw the object with the mouse hovers over.
 
-void CMap::DrawHighlight(Math::Point pos)
+void CMap::DrawHighlight(const glm::vec2& position)
 {
-    Math::Point dim, uv1, uv2;
+    glm::vec2 dim, uv1, uv2;
+
+    glm::vec2 pos = position;
 
     if (m_bToy || !m_fixImage.empty())  return;  // map with still image?
 
@@ -957,7 +965,7 @@ void CMap::DrawHighlight(Math::Point pos)
 
 // Draws a triangular icon.
 
-void CMap::DrawTriangle(Math::Point p1, Math::Point p2, Math::Point p3, Math::Point uv1, Math::Point uv2)
+void CMap::DrawTriangle(const glm::vec2& p1, const glm::vec2& p2, const glm::vec2& p3, const glm::vec2& uv1, const glm::vec2& uv2)
 {
     Gfx::Vertex2D  vertex[3];  // 1 triangle
 
@@ -973,7 +981,7 @@ void CMap::DrawTriangle(Math::Point p1, Math::Point p2, Math::Point p3, Math::Po
 
 // Draw a pentagon icon (a 5 rating, what!).
 
-void CMap::DrawPenta(Math::Point p1, Math::Point p2, Math::Point p3, Math::Point p4, Math::Point p5, Math::Point uv1, Math::Point uv2)
+void CMap::DrawPenta(const glm::vec2& p1, const glm::vec2& p2, const glm::vec2& p3, const glm::vec2& p4, const glm::vec2& p5, const glm::vec2& uv1, const glm::vec2& uv2)
 {
     Gfx::Vertex2D  vertex[5];  // 1 pentagon
 
@@ -991,10 +999,10 @@ void CMap::DrawPenta(Math::Point p1, Math::Point p2, Math::Point p3, Math::Point
 
 // Draw the vertex array.
 
-void CMap::DrawVertex(Math::Point uv1, Math::Point uv2, float zoom)
+void CMap::DrawVertex(const glm::vec2& uv1, const glm::vec2& uv2, float zoom)
 {
     Gfx::Vertex2D   vertex[4];  // 2 triangles
-    Math::Point     p1, p2, c;
+    glm::vec2       p1, p2, c;
 
     auto renderer = m_engine->GetDevice()->GetUIRenderer();
 
@@ -1172,8 +1180,8 @@ void CMap::UpdateObject(CObject* pObj)
 {
     ObjectType      type;
     MapColor        color;
-    Math::Vector        pos;
-    Math::Point         ppos;
+    Math::Vector    pos;
+    glm::vec2       ppos;
     float           dir;
 
     if ( !m_bEnable )  return;

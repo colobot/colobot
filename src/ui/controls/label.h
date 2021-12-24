@@ -32,7 +32,7 @@ public:
     CLabel();
     virtual ~CLabel();
 
-    bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg) override;
+    bool    Create(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg) override;
     bool    EventProcess(const Event &event) override;
 
     void    Draw() override;

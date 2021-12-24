@@ -66,7 +66,7 @@ CSlider::~CSlider()
 
 // Creates a new button.
 
-bool CSlider::Create(Math::Point pos, Math::Point dim, int icon, EventType eventType)
+bool CSlider::Create(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventType)
 {
     if ( eventType == EVENT_NULL )  eventType = GetUniqueEventType();
     CControl::Create(pos, dim, icon, eventType);
@@ -76,13 +76,13 @@ bool CSlider::Create(Math::Point pos, Math::Point dim, int icon, EventType event
 }
 
 
-void CSlider::SetPos(Math::Point pos)
+void CSlider::SetPos(const glm::vec2& pos)
 {
     CControl::SetPos(pos);
     MoveAdjust();
 }
 
-void CSlider::SetDim(Math::Point dim)
+void CSlider::SetDim(const glm::vec2& dim)
 {
     CControl::SetDim(dim);
     MoveAdjust();
@@ -90,7 +90,7 @@ void CSlider::SetDim(Math::Point dim)
 
 void CSlider::MoveAdjust()
 {
-    Math::Point     pos, dim;
+    glm::vec2 pos, dim;
 
     m_bHoriz = ( m_dim.x > m_dim.y );
 
@@ -106,7 +106,7 @@ void CSlider::MoveAdjust()
         if (m_buttonLeft == nullptr)
         {
             m_buttonLeft = MakeUnique<CButton>();
-            m_buttonLeft->Create(Math::Point(0.0f, 0.0f), Math::Point(0.0f, 0.0f), m_bHoriz?55:49, EVENT_NULL);  // </^
+            m_buttonLeft->Create({ 0.0f, 0.0f }, { 0.0f, 0.0f }, m_bHoriz ? 55 : 49, EVENT_NULL);  // </^
             m_buttonLeft->SetRepeat(true);
             if ( m_state & STATE_SHADOW )  m_buttonLeft->SetState(STATE_SHADOW);
         }
@@ -114,7 +114,7 @@ void CSlider::MoveAdjust()
         if (m_buttonRight == nullptr)
         {
             m_buttonRight = MakeUnique<CButton>();
-            m_buttonRight->Create(Math::Point(0.0f, 0.0f), Math::Point(0.0f, 0.0f), m_bHoriz?48:50, EVENT_NULL);  // >/v
+            m_buttonRight->Create({ 0.0f, 0.0f }, { 0.0f, 0.0f }, m_bHoriz ? 48 : 50, EVENT_NULL);  // >/v
             m_buttonRight->SetRepeat(true);
             if ( m_state & STATE_SHADOW )  m_buttonRight->SetState(STATE_SHADOW);
         }
@@ -169,7 +169,7 @@ void CSlider::MoveAdjust()
 
 void CSlider::AdjustGlint()
 {
-    Math::Point ref;
+    glm::vec2 ref;
     float   w;
 
     if ( m_bHoriz )
@@ -232,7 +232,7 @@ bool CSlider::ClearState(int state)
 
 bool CSlider::EventProcess(const Event &event)
 {
-    Math::Point pos, dim;
+    glm::vec2 pos, dim;
     float   value;
 
     if ( (m_state & STATE_VISIBLE) == 0 )  return true;
@@ -368,7 +368,7 @@ bool CSlider::EventProcess(const Event &event)
 
 void CSlider::Draw()
 {
-    Math::Point pos, dim, ppos, ddim, spos;
+    glm::vec2 pos, dim, ppos, ddim, spos;
     int     icon;
     float   h;
 
@@ -484,9 +484,9 @@ std::string CSlider::GetLabel()
 
 // Draws a rectangle.
 
-void CSlider::DrawVertex(Math::Point pos, Math::Point dim, int icon)
+void CSlider::DrawVertex(const glm::vec2& pos, const glm::vec2& dim, int icon)
 {
-    Math::Point     uv1, uv2, corner;
+    glm::vec2   uv1, uv2, corner;
     float       ex, dp;
 
     auto device = m_engine->GetDevice();

@@ -68,7 +68,7 @@ CList::~CList()
 // and try to scale items to some size, so that dim of the list would not change after
 // adjusting
 
-bool CList::Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, float expand)
+bool CList::Create(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg, float expand)
 {
     m_expand = expand;
 
@@ -84,7 +84,7 @@ bool CList::Create(Math::Point pos, Math::Point dim, int icon, EventType eventMs
 }
 
 // Should never be called
-bool CList::Create(Math::Point pos, Math::Point dim, int icon, EventType eventType)
+bool CList::Create(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventType)
 {
     assert(false);
     return false;
@@ -95,7 +95,7 @@ bool CList::Create(Math::Point pos, Math::Point dim, int icon, EventType eventTy
 
 bool CList::MoveAdjust()
 {
-    Math::Point ipos, idim, ppos, ddim;
+    glm::vec2 ipos, idim, ppos, ddim;
     float marging, h;
 
     for (auto& button : m_buttons)
@@ -183,13 +183,13 @@ EventType CList::GetEventMsgScroll()
 }
 
 
-void CList::SetPos(Math::Point pos)
+void CList::SetPos(const glm::vec2& pos)
 {
     CControl::SetPos(pos);
 }
 
 
-void CList::SetDim(Math::Point dim)
+void CList::SetDim(const glm::vec2& dim)
 {
     m_dim = dim;
     MoveAdjust();
@@ -350,7 +350,7 @@ bool CList::EventProcess(const Event &event)
 
 void CList::Draw()
 {
-    Math::Point uv1, uv2, corner, pos, dim, ppos, ddim;
+    glm::vec2 uv1, uv2, corner, pos, dim, ppos, ddim;
     float   dp;
     int     i;
     char    text[100];
@@ -548,8 +548,10 @@ void CList::Draw()
 
 // Displays text in a box.
 
-void CList::DrawCase(const char* text, Math::Point pos, float width, Gfx::TextAlign justif)
+void CList::DrawCase(const char* text, const glm::vec2& position, float width, Gfx::TextAlign justif)
 {
+    glm::vec2 pos = position;
+
     if (justif == Gfx::TEXT_ALIGN_CENTER)
         pos.x += width / 2.0f;
     else if (justif == Gfx::TEXT_ALIGN_RIGHT)

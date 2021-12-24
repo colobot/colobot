@@ -45,7 +45,7 @@ CKey::~CKey()
     m_input = nullptr;
 }
 
-bool CKey::Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+bool CKey::Create(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg)
 {
     if (eventMsg == EVENT_NULL)
         eventMsg = GetUniqueEventType();
@@ -128,7 +128,7 @@ void CKey::Draw()
     if ((m_state & STATE_VISIBLE) == 0)
         return;
 
-    Math::Point iDim = m_dim;
+    glm::vec2 iDim = m_dim;
     m_dim.x = 100.0f/640.0f;
 
     if (m_state & STATE_SHADOW)
@@ -180,7 +180,7 @@ void CKey::Draw()
 
     std::string keyName = m_input->GetKeysString(m_binding);
 
-    Math::Point pos;
+    glm::vec2 pos;
     pos.x = m_pos.x + m_dim.x * 0.5f;
     pos.y = m_pos.y + m_dim.y * 0.5f;
     pos.y -= h;

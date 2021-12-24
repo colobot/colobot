@@ -54,7 +54,7 @@ CScroll::~CScroll()
 
 // Creates a new button.
 
-bool CScroll::Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+bool CScroll::Create(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg)
 {
     if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventType();
     CControl::Create(pos, dim, icon, eventMsg);
@@ -64,13 +64,13 @@ bool CScroll::Create(Math::Point pos, Math::Point dim, int icon, EventType event
 }
 
 
-void CScroll::SetPos(Math::Point pos)
+void CScroll::SetPos(const glm::vec2& pos)
 {
     CControl::SetPos(pos);
     MoveAdjust();
 }
 
-void CScroll::SetDim(Math::Point dim)
+void CScroll::SetDim(const glm::vec2& dim)
 {
     CControl::SetDim(dim);
     MoveAdjust();
@@ -80,7 +80,7 @@ void CScroll::SetDim(Math::Point dim)
 
 void CScroll::MoveAdjust()
 {
-    Math::Point     pos, dim;
+    glm::vec2 pos, dim;
 
     if ( m_dim.y < m_dim.x*2.0f )  // very short lift?
     {
@@ -92,14 +92,14 @@ void CScroll::MoveAdjust()
         if (m_buttonUp == nullptr)
         {
             m_buttonUp = MakeUnique<CButton>();
-            m_buttonUp->Create(Math::Point(0.0f, 0.0f), Math::Point(0.0f, 0.0f), 49, EVENT_NULL);
+            m_buttonUp->Create({ 0.0f, 0.0f }, { 0.0f, 0.0f }, 49, EVENT_NULL);
             m_buttonUp->SetRepeat(true);
         }
 
         if (m_buttonDown == nullptr)
         {
             m_buttonDown = MakeUnique<CButton>();
-            m_buttonDown->Create(Math::Point(0.0f, 0.0f), Math::Point(0.0f, 0.0f), 50, EVENT_NULL);
+            m_buttonDown->Create({ 0.0f, 0.0f }, { 0.0f, 0.0f }, 50, EVENT_NULL);
             m_buttonDown->SetRepeat(true);
         }
     }
@@ -131,7 +131,7 @@ void CScroll::MoveAdjust()
 
 void CScroll::AdjustGlint()
 {
-    Math::Point ref;
+    glm::vec2 ref;
     float   hButton, h;
 
     hButton = m_buttonUp?m_dim.x/0.75f:0.0f;
@@ -222,7 +222,7 @@ bool CScroll::EventProcess(const Event &event)
     {
         if ( CControl::Detect(event.mousePos) )
         {
-            Math::Point pos, dim;
+            glm::vec2 pos, dim;
 
             pos.y = m_pos.y+hButton;
             dim.y = m_dim.y-hButton*2.0f;
@@ -303,7 +303,7 @@ bool CScroll::EventProcess(const Event &event)
 
 void CScroll::Draw()
 {
-    Math::Point pos, dim, ppos, ddim;
+    glm::vec2 pos, dim, ppos, ddim;
     float   hButton;
     int     icon, n, i;
 
@@ -358,9 +358,9 @@ void CScroll::Draw()
 
 // Draws a rectangle.
 
-void CScroll::DrawVertex(Math::Point pos, Math::Point dim, int icon)
+void CScroll::DrawVertex(const glm::vec2& pos, const glm::vec2& dim, int icon)
 {
-    Math::Point     uv1, uv2;
+    glm::vec2   uv1, uv2;
     float       ex, dp;
 
     auto device = m_engine->GetDevice();

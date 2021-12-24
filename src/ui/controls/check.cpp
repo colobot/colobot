@@ -48,7 +48,7 @@ CCheck::~CCheck()
 
 // Creates a new button.
 
-bool CCheck::Create(Math::Point pos, Math::Point dim, int icon, EventType eventType)
+bool CCheck::Create(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventType)
 {
     if ( eventType == EVENT_NULL )  eventType = GetUniqueEventType();
 
@@ -89,7 +89,7 @@ bool CCheck::EventProcess(const Event &event)
 
 void CCheck::Draw()
 {
-    Math::Point     iDim, pos;
+    glm::vec2   iDim, pos;
     float       zoomExt, zoomInt;
     int         icon;
 

@@ -23,7 +23,7 @@
 
 #include "graphics/engine/text.h"
 
-#include "math/point.h"
+#include <glm/glm.hpp>
 
 #include <string>
 
@@ -71,14 +71,14 @@ public:
     CControl();
     virtual ~CControl();
 
-    virtual bool          Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
+    virtual bool          Create(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventType);
 
     virtual bool          EventProcess(const Event &event);
 
-    virtual void          SetPos(Math::Point pos);
-    virtual Math::Point   GetPos();
-    virtual void          SetDim(Math::Point dim);
-    virtual Math::Point   GetDim();
+    virtual void          SetPos(const glm::vec2& pos);
+    virtual glm::vec2     GetPos();
+    virtual void          SetDim(const glm::vec2& dim);
+    virtual glm::vec2     GetDim();
     virtual bool          SetState(int state, bool bState);
     virtual bool          SetState(int state);
     virtual bool          ClearState(int state);
@@ -97,7 +97,7 @@ public:
     virtual void          SetFontType(Gfx::FontType font);
     virtual Gfx::FontType GetFontType();
     virtual bool          SetTooltip(std::string name);
-    virtual bool          GetTooltip(Math::Point pos, std::string &name);
+    virtual bool          GetTooltip(const glm::vec2& pos, std::string &name);
     virtual void          SetFocus(CControl* focusControl);
     virtual bool          GetFocus();
 
@@ -107,14 +107,14 @@ public:
 
 protected:
             void    GlintDelete();
-            void    GlintCreate(Math::Point ref, bool bLeft=true, bool bUp=true);
+            void    GlintCreate(const glm::vec2& ref, bool bLeft=true, bool bUp=true);
             void    GlintFrame(const Event &event);
             void    DrawPart(int icon, float zoom, float ex);
-            void    DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math::Point uv2, float ex=0.0f);
-            void    DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math::Point uv2, Math::Point corner, float ex);
-            void    DrawWarning(Math::Point pos, Math::Point dim);
-            void    DrawShadow(Math::Point pos, Math::Point dim, float deep=1.0f);
-    virtual bool    Detect(Math::Point pos);
+            void    DrawIcon(const glm::vec2& pos, const glm::vec2& dim, const glm::vec2& uv1, const glm::vec2& uv2, float ex=0.0f);
+            void    DrawIcon(const glm::vec2& pos, const glm::vec2& dim, const glm::vec2& uv1, const glm::vec2& uv2, const glm::vec2& corner, float ex);
+            void    DrawWarning(const glm::vec2& pos, const glm::vec2& dim);
+            void    DrawShadow(const glm::vec2& pos, const glm::vec2& dim, float deep=1.0f);
+    virtual bool    Detect(const glm::vec2& pos);
 
     std::string     GetResourceName(EventType eventType);
 
@@ -133,8 +133,8 @@ protected:
     CSoundInterface*  m_sound;
     CSettings*        m_settings;
 
-    Math::Point       m_pos;          // corner upper / left
-    Math::Point       m_dim;          // dimensions
+    glm::vec2         m_pos;          // corner upper / left
+    glm::vec2         m_dim;          // dimensions
     int               m_icon;
     EventType         m_eventType;     // message to send when clicking
     int               m_state;        // states (STATE_ *)
@@ -148,10 +148,10 @@ protected:
     bool              m_bCapture;
 
     bool              m_bGlint;
-    Math::Point       m_glintCorner1;
-    Math::Point       m_glintCorner2;
+    glm::vec2         m_glintCorner1;
+    glm::vec2         m_glintCorner2;
     float             m_glintProgress;
-    Math::Point       m_glintMouse;
+    glm::vec2         m_glintMouse;
 };
 
 } // namespace Ui

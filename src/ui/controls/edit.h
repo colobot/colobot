@@ -111,10 +111,10 @@ public:
 
     virtual ~CEdit();
 
-    bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventType) override;
+    bool        Create(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventType) override;
 
-    void        SetPos(Math::Point pos) override;
-    void        SetDim(Math::Point dim) override;
+    void        SetPos(const glm::vec2& pos) override;
+    void        SetDim(const glm::vec2& dim) override;
 
     bool        EventProcess(const Event &event) override;
     void        Draw() override;
@@ -178,22 +178,22 @@ public:
 
 protected:
     void        SendModifEvent();
-    bool        IsLinkPos(Math::Point pos);
-    void        MouseDoubleClick(Math::Point mouse);
-    void        MouseClick(Math::Point mouse);
-    void        MouseMove(Math::Point mouse);
-    void        MouseRelease(Math::Point mouse);
-    int         MouseDetect(Math::Point mouse);
+    bool        IsLinkPos(const glm::vec2& pos);
+    void        MouseDoubleClick(const glm::vec2& mouse);
+    void        MouseClick(const glm::vec2& mouse);
+    void        MouseMove(const glm::vec2& mouse);
+    void        MouseRelease(const glm::vec2& mouse);
+    int         MouseDetect(const glm::vec2& mouse);
     void        MoveAdjust();
 
     void        HyperJump(std::string name, std::string marker);
     bool        HyperAdd(std::string filename, int firstLine);
 
-    void        DrawImage(Math::Point pos, std::string name, float width, float offset, float height, int nbLine);
-    void        DrawBack(Math::Point pos, Math::Point dim);
+    void        DrawImage(const glm::vec2& pos, std::string name, float width, float offset, float height, int nbLine);
+    void        DrawBack(const glm::vec2& pos, const glm::vec2& dim);
 
-    void        DrawHorizontalGradient(Math::Point pos, Math::Point dim, Gfx::Color color1, Gfx::Color color2);
-    void        DrawColor(Math::Point pos, Math::Point dim, Gfx::Color color);
+    void        DrawHorizontalGradient(const glm::vec2& pos, const glm::vec2& dim, Gfx::Color color1, Gfx::Color color2);
+    void        DrawColor(const glm::vec2& pos, const glm::vec2& dim, Gfx::Color color);
 
     void        FreeImage();
     void        Scroll(int pos, bool bAdjustCursor);
@@ -264,8 +264,8 @@ protected:
     float       m_timeBlink;
     float       m_timeLastClick;
     float       m_timeLastScroll;
-    Math::Point     m_mouseFirstPos;
-    Math::Point     m_mouseLastPos;
+    glm::vec2   m_mouseFirstPos;
+    glm::vec2   m_mouseLastPos;
     float       m_column;
 
     bool        m_bCapture;

@@ -48,7 +48,7 @@ CShortcut::~CShortcut()
 
 // Creates a new button.
 
-bool CShortcut::Create(Math::Point pos, Math::Point dim, int icon, EventType eventType)
+bool CShortcut::Create(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventType)
 {
     if ( eventType == EVENT_NULL )  eventType = GetUniqueEventType();
 
@@ -137,7 +137,7 @@ void CShortcut::Draw()
 
     if ( m_state & STATE_FRAME )
     {
-        Math::Point p1, p2, c, uv1, uv2;
+        glm::vec2 p1, p2, c, uv1, uv2;
         float   dp;
 
         m_engine->SetTexture("textures/interface/button2.png");
@@ -177,7 +177,7 @@ void CShortcut::Draw()
 
     if ( (m_state & STATE_RUN) && Math::Mod(m_time, 0.7f) >= 0.3f )
     {
-        Math::Point uv1, uv2;
+        glm::vec2 uv1, uv2;
         float   dp;
 
         m_engine->SetTexture("textures/interface/button3.png");
@@ -198,24 +198,24 @@ void CShortcut::Draw()
     }
     if ( (m_state & STATE_DAMAGE) && Math::Mod(m_time, 0.7f) >= 0.3f )
     {
-      Math::Point uv1, uv2;
-      float   dp;
+        glm::vec2 uv1, uv2;
+        float   dp;
 
-      m_engine->SetTexture("textures/interface/button2.png");
-      m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
+        m_engine->SetTexture("textures/interface/button2.png");
+        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
 
-      uv1.x = 159.0f/256.0f;
-      uv1.y = 240.0f/256.0f;
-      uv2.x = 145.0f/256.0f;
-      uv2.y = 256.0f/256.0f;
+        uv1.x = 159.0f / 256.0f;
+        uv1.y = 240.0f / 256.0f;
+        uv2.x = 145.0f / 256.0f;
+        uv2.y = 256.0f / 256.0f;
 
-      dp = 0.5f/256.0f;
-      uv1.x += dp;
-      uv1.y += dp;
-      uv2.x -= dp;
-      uv2.y -= dp;
+        dp = 0.5f / 256.0f;
+        uv1.x += dp;
+        uv1.y += dp;
+        uv2.x -= dp;
+        uv2.y -= dp;
 
-      DrawIcon(m_pos, m_dim, uv1, uv2);
+        DrawIcon(m_pos, m_dim, uv1, uv2);
     }
 }
 
@@ -224,7 +224,7 @@ void CShortcut::Draw()
 void CShortcut::DrawVertex(int icon, float zoom)
 {
     Gfx::Vertex2D vertex[4];  // 2 triangles
-    Math::Point     p1, p2, c;
+    glm::vec2   p1, p2, c;
     float       u1, u2, v1, v2, dp;
 
     p1.x = m_pos.x;

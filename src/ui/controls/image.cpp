@@ -47,7 +47,7 @@ CImage::~CImage()
 
 // Creates a new button.
 
-bool CImage::Create(Math::Point pos, Math::Point dim, int icon, EventType eventType)
+bool CImage::Create(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventType)
 {
     if ( eventType == EVENT_NULL )  eventType = GetUniqueEventType();
 
@@ -88,7 +88,7 @@ bool CImage::EventProcess(const Event &event)
 
 void CImage::Draw()
 {
-    Math::Point     uv1,uv2, corner, pos, dim;
+    glm::vec2   uv1,uv2, corner, pos, dim;
     float       dp;
 
     if ( (m_state & STATE_VISIBLE) == 0 )  return;

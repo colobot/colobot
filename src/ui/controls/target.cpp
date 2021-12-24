@@ -43,7 +43,7 @@ CTarget::~CTarget()
 
 // Creates a new button.
 
-bool CTarget::Create(Math::Point pos, Math::Point dim, int icon, EventType eventType)
+bool CTarget::Create(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventType)
 {
     if ( eventType == EVENT_NULL )  eventType = GetUniqueEventType();
 
@@ -114,7 +114,7 @@ void CTarget::Draw()
 
 // Returns the tooltip.
 
-bool CTarget::GetTooltip(Math::Point pos, std::string &name)
+bool CTarget::GetTooltip(const glm::vec2& pos, std::string &name)
 {
     if ( (m_state & STATE_VISIBLE) == 0 )  return false;
 
@@ -133,7 +133,7 @@ bool CTarget::GetTooltip(Math::Point pos, std::string &name)
 
 // Detects the object aimed by the mouse.
 
-CObject* CTarget::DetectFriendObject(Math::Point pos)
+CObject* CTarget::DetectFriendObject(const glm::vec2& pos)
 {
     Math::Vector p;
     int objRank = m_engine->DetectObject(pos, p);

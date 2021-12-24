@@ -32,7 +32,7 @@ public:
     CColor();
     virtual   ~CColor();
 
-    bool      Create(Math::Point pos, Math::Point dim, int icon, EventType eventType) override;
+    bool      Create(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventType) override;
 
     bool      EventProcess(const Event &event) override;
 

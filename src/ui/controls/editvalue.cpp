@@ -56,7 +56,7 @@ CEditValue::~CEditValue()
 
 // Creates a new button.
 
-bool CEditValue::Create(Math::Point pos, Math::Point dim, int icon, EventType eventType)
+bool CEditValue::Create(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventType)
 {
     if ( eventType == EVENT_NULL )  eventType = GetUniqueEventType();
     CControl::Create(pos, dim, icon, eventType);
@@ -80,13 +80,13 @@ bool CEditValue::Create(Math::Point pos, Math::Point dim, int icon, EventType ev
 }
 
 
-void CEditValue::SetPos(Math::Point pos)
+void CEditValue::SetPos(const glm::vec2& pos)
 {
     CControl::SetPos(pos);
     MoveAdjust();
 }
 
-void CEditValue::SetDim(Math::Point dim)
+void CEditValue::SetDim(const glm::vec2& dim)
 {
     CControl::SetDim(dim);
     MoveAdjust();
@@ -94,7 +94,7 @@ void CEditValue::SetDim(Math::Point dim)
 
 void CEditValue::MoveAdjust()
 {
-    Math::Point     pos, dim;
+    glm::vec2 pos, dim;
 
     if (m_edit != nullptr)
     {

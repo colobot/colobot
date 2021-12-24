@@ -53,7 +53,7 @@ CButton::~CButton()
 
 // Creates a new button.
 
-bool CButton::Create(Math::Point pos, Math::Point dim, int icon, EventType eventType)
+bool CButton::Create(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventType)
 {
     if ( eventType == EVENT_NULL )  eventType = GetUniqueEventType();
 
@@ -139,7 +139,7 @@ bool CButton::EventProcess(const Event &event)
 
 void CButton::Draw()
 {
-    Math::Point pos, dim, uv1, uv2;
+    glm::vec2 pos, dim, uv1, uv2;
     float   dp;
 
     auto device = m_engine->GetDevice();

@@ -48,7 +48,7 @@ CGroup::~CGroup()
 
 // Creates a new button.
 
-bool CGroup::Create(Math::Point pos, Math::Point dim, int icon, EventType eventType)
+bool CGroup::Create(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventType)
 {
     if ( eventType == EVENT_NULL )  eventType = GetUniqueEventType();
 
@@ -76,7 +76,7 @@ bool CGroup::EventProcess(const Event &event)
 
 void CGroup::Draw()
 {
-    Math::Point     uv1,uv2, corner, pos, dim;
+    glm::vec2   uv1,uv2, corner, pos, dim;
     float       dp;
     int         icon;
 

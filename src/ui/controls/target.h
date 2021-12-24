@@ -37,14 +37,14 @@ public:
     CTarget();
     ~CTarget();
 
-    bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventType) override;
+    bool        Create(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventType) override;
 
     bool        EventProcess(const Event &event) override;
     void        Draw() override;
-    bool        GetTooltip(Math::Point pos, std::string &name) override;
+    bool        GetTooltip(const glm::vec2& pos, std::string &name) override;
 
 protected:
-    CObject*    DetectFriendObject(Math::Point pos);
+    CObject*    DetectFriendObject(const glm::vec2& pos);
 };
 
 

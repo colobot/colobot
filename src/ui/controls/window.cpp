@@ -54,8 +54,8 @@ CWindow::CWindow() : CControl()
     m_bMinimized  = false;
     m_bFixed      = false;
 
-    m_minDim = Math::Point(0.0f, 0.0f);
-    m_maxDim = Math::Point(1.0f, 1.0f);
+    m_minDim = { 0.0f, 0.0f };
+    m_maxDim = { 1.0f, 1.0f };
 
     m_bMovable  = false;
     m_bRedim    = false;
@@ -88,7 +88,7 @@ void CWindow::Flush()
 
 // Creates a new window.
 
-bool CWindow::Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+bool CWindow::Create(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg)
 {
     if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventType();
 
@@ -97,7 +97,7 @@ bool CWindow::Create(Math::Point pos, Math::Point dim, int icon, EventType event
 }
 
 template<typename ControlClass>
-ControlClass* CWindow::CreateControl(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+ControlClass* CWindow::CreateControl(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg)
 {
     auto control = MakeUnique<ControlClass>();
     control->Create(pos, dim, icon, eventMsg);
@@ -109,49 +109,49 @@ ControlClass* CWindow::CreateControl(Math::Point pos, Math::Point dim, int icon,
 
 // Creates a new button.
 
-CButton* CWindow::CreateButton(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+CButton* CWindow::CreateButton(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg)
 {
     return CreateControl<CButton>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new button.
 
-CColor* CWindow::CreateColor(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+CColor* CWindow::CreateColor(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg)
 {
     return CreateControl<CColor>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new button.
 
-CCheck* CWindow::CreateCheck(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+CCheck* CWindow::CreateCheck(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg)
 {
     return CreateControl<CCheck>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new button.
 
-CKey* CWindow::CreateKey(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+CKey* CWindow::CreateKey(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg)
 {
     return CreateControl<CKey>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new button.
 
-CGroup* CWindow::CreateGroup(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+CGroup* CWindow::CreateGroup(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg)
 {
     return CreateControl<CGroup>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new button.
 
-CImage* CWindow::CreateImage(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+CImage* CWindow::CreateImage(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg)
 {
     return CreateControl<CImage>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new label.
 
-CLabel* CWindow::CreateLabel(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, std::string name)
+CLabel* CWindow::CreateLabel(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg, std::string name)
 {
     CLabel* label = CreateControl<CLabel>(pos, dim, icon, eventMsg);
 
@@ -166,21 +166,21 @@ CLabel* CWindow::CreateLabel(Math::Point pos, Math::Point dim, int icon, EventTy
 
 // Creates a new editable pave.
 
-CEdit* CWindow::CreateEdit(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+CEdit* CWindow::CreateEdit(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg)
 {
     return CreateControl<CEdit>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new editable pave.
 
-CEditValue* CWindow::CreateEditValue(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+CEditValue* CWindow::CreateEditValue(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg)
 {
     return CreateControl<CEditValue>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new elevator.
 
-CScroll* CWindow::CreateScroll(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+CScroll* CWindow::CreateScroll(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg)
 {
     if (eventMsg == EVENT_NULL)
         eventMsg = GetUniqueEventType();
@@ -190,7 +190,7 @@ CScroll* CWindow::CreateScroll(Math::Point pos, Math::Point dim, int icon, Event
 
 // Creates a new cursor.
 
-CSlider* CWindow::CreateSlider(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+CSlider* CWindow::CreateSlider(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg)
 {
     if (eventMsg == EVENT_NULL)
         eventMsg = GetUniqueEventType();
@@ -198,7 +198,7 @@ CSlider* CWindow::CreateSlider(Math::Point pos, Math::Point dim, int icon, Event
     return CreateControl<CSlider>(pos, dim, icon, eventMsg);
 }
 
-CEnumSlider* CWindow::CreateEnumSlider(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+CEnumSlider* CWindow::CreateEnumSlider(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg)
 {
     if (eventMsg == EVENT_NULL)
         eventMsg = GetUniqueEventType();
@@ -211,7 +211,7 @@ CEnumSlider* CWindow::CreateEnumSlider(Math::Point pos, Math::Point dim, int ico
 // and try to scale items to some size, so that dim of the list would not change after
 // adjusting
 
-CList* CWindow::CreateList(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, float expand)
+CList* CWindow::CreateList(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg, float expand)
 {
     if (eventMsg == EVENT_NULL)
         eventMsg = GetUniqueEventType();
@@ -225,7 +225,7 @@ CList* CWindow::CreateList(Math::Point pos, Math::Point dim, int icon, EventType
 
 // Creates a new shortcut.
 
-CShortcut* CWindow::CreateShortcut(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+CShortcut* CWindow::CreateShortcut(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg)
 {
     if (eventMsg == EVENT_NULL)
         eventMsg = GetUniqueEventType();
@@ -235,7 +235,7 @@ CShortcut* CWindow::CreateShortcut(Math::Point pos, Math::Point dim, int icon, E
 
 // Creates a new card.
 
-CMap* CWindow::CreateMap(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+CMap* CWindow::CreateMap(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg)
 {
     if (eventMsg == EVENT_NULL)
         eventMsg = GetUniqueEventType();
@@ -245,7 +245,7 @@ CMap* CWindow::CreateMap(Math::Point pos, Math::Point dim, int icon, EventType e
 
 // Creates a new gauge.
 
-CGauge* CWindow::CreateGauge(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+CGauge* CWindow::CreateGauge(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg)
 {
     if (eventMsg == EVENT_NULL)
         eventMsg = GetUniqueEventType();
@@ -255,7 +255,7 @@ CGauge* CWindow::CreateGauge(Math::Point pos, Math::Point dim, int icon, EventTy
 
 // Creates a new target.
 
-CTarget* CWindow::CreateTarget(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+CTarget* CWindow::CreateTarget(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg)
 {
     if (eventMsg == EVENT_NULL)
         eventMsg = GetUniqueEventType();
@@ -299,7 +299,7 @@ CControl* CWindow::SearchControl(EventType eventMsg)
 
 // Makes the tooltip binds to the window.
 
-bool CWindow::GetTooltip(Math::Point pos, std::string &name)
+bool CWindow::GetTooltip(const glm::vec2& pos, std::string &name)
 {
     for (auto& control : m_controls)
     {
@@ -373,14 +373,16 @@ void CWindow::SetName(std::string name, bool tooltip)
 }
 
 
-void CWindow::SetPos(Math::Point pos)
+void CWindow::SetPos(const glm::vec2& pos)
 {
     CControl::SetPos(pos);
     MoveAdjust();
 }
 
-void CWindow::SetDim(Math::Point dim)
+void CWindow::SetDim(const glm::vec2& dimension)
 {
+    glm::vec2 dim = dimension;
+
     if ( dim.x < m_minDim.x )  dim.x = m_minDim.x;
     if ( dim.x > m_maxDim.x )  dim.x = m_maxDim.x;
     if ( dim.y < m_minDim.y )  dim.y = m_minDim.y;
@@ -393,14 +395,14 @@ void CWindow::SetDim(Math::Point dim)
 void CWindow::MoveAdjust()
 {
     float h = m_engine->GetText()->GetHeight(m_fontType, m_fontSize);
-    Math::Point dim;
+    glm::vec2 dim;
     dim.y = h*1.2f;
     dim.x = dim.y*0.75f;
 
     float offset = 0.0f;
     if (m_buttonClose != nullptr)
     {
-        Math::Point pos;
+        glm::vec2 pos;
         pos.x = m_pos.x+m_dim.x-0.01f-dim.x;
         pos.y = m_pos.y+m_dim.y-0.01f-h*1.2f;
         m_buttonClose->SetPos(pos);
@@ -414,7 +416,7 @@ void CWindow::MoveAdjust()
 
     if (m_buttonFull != nullptr)
     {
-        Math::Point pos;
+        glm::vec2 pos;
         pos.x = m_pos.x+m_dim.x-0.01f-dim.x-offset;
         pos.y = m_pos.y+m_dim.y-0.01f-h*1.2f;
         m_buttonFull->SetPos(pos);
@@ -423,7 +425,7 @@ void CWindow::MoveAdjust()
 
     if (m_buttonReduce != nullptr)
     {
-        Math::Point pos;
+        glm::vec2 pos;
         pos.x = m_pos.x+m_dim.x-0.01f-dim.x*2.0f-offset;
         pos.y = m_pos.y+m_dim.y-0.01f-h*1.2f;
         m_buttonReduce->SetPos(pos);
@@ -432,22 +434,22 @@ void CWindow::MoveAdjust()
 }
 
 
-void CWindow::SetMinDim(Math::Point dim)
+void CWindow::SetMinDim(const glm::vec2& dim)
 {
     m_minDim = dim;
 }
 
-void CWindow::SetMaxDim(Math::Point dim)
+void CWindow::SetMaxDim(const glm::vec2& dim)
 {
     m_maxDim = dim;
 }
 
-Math::Point CWindow::GetMinDim()
+glm::vec2 CWindow::GetMinDim()
 {
     return m_minDim;
 }
 
-Math::Point CWindow::GetMaxDim()
+glm::vec2 CWindow::GetMaxDim()
 {
     return m_maxDim;
 }
@@ -611,9 +613,9 @@ EventType CWindow::GetEventTypeClose()
 // Detects whether the mouse is in an edge of the window, to resize it.
 // Bit returns: 0 = left, 1 = down, 2 = right, 3 = up, 1 = all.
 
-int CWindow::BorderDetect(Math::Point pos)
+int CWindow::BorderDetect(const glm::vec2& pos)
 {
-    Math::Point dim;
+    glm::vec2 dim;
     float   h;
     int     flags;
 
@@ -752,7 +754,7 @@ bool CWindow::EventProcess(const Event &event)
 
     if ( event.type == EVENT_MOUSE_MOVE && m_bCapture )
     {
-        Math::Point pos = event.mousePos;
+        glm::vec2 pos = event.mousePos;
         if ( m_pressFlags == -1 )  // all moves?
         {
             m_pos.x += pos.x-m_pressPos.x;
@@ -831,10 +833,10 @@ void CWindow::Draw()
     {
         float h = m_engine->GetText()->GetHeight(m_fontType, m_fontSize);
 
-        Math::Point pos, dim;
+        glm::vec2 pos, dim;
         // Draws the shadow under the title bar.
         {
-            Math::Point sPos, sDim;
+            glm::vec2 sPos, sDim;
 
             pos.x = m_pos.x+0.01f;
             dim.x = m_dim.x-0.02f;
@@ -894,11 +896,14 @@ void CWindow::Draw()
 
 // Draws a rectangle.
 
-void CWindow::DrawVertex(Math::Point pos, Math::Point dim, int icon)
+void CWindow::DrawVertex(const glm::vec2& position, const glm::vec2& dimension, int icon)
 {
-    Math::Point     p1, p2, uv1, uv2, corner;
+    glm::vec2   p1, p2, uv1, uv2, corner;
     float       dp;
     int         i;
+
+    glm::vec2 pos = position;
+    glm::vec2 dim = dimension;
 
     auto device = m_engine->GetDevice();
 
@@ -1266,9 +1271,9 @@ void CWindow::DrawVertex(Math::Point pos, Math::Point dim, int icon)
 
 // Draws hatching.
 
-void CWindow::DrawHach(Math::Point pos, Math::Point dim)
+void CWindow::DrawHach(const glm::vec2& pos, const glm::vec2& dim)
 {
-    Math::Point     ppos, ddim, uv1, uv2;
+    glm::vec2   ppos, ddim, uv1, uv2;
     float       dp, max, ndim;
     bool        bStop;
 

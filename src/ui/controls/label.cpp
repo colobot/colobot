@@ -41,7 +41,7 @@ CLabel::~CLabel()
 
 // Creates a new button.
 
-bool CLabel::Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+bool CLabel::Create(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg)
 {
     if (eventMsg == EVENT_NULL)
         eventMsg = GetUniqueEventType();
@@ -64,7 +64,7 @@ bool CLabel::EventProcess(const Event &event)
 
 void CLabel::Draw()
 {
-    Math::Point pos;
+    glm::vec2 pos = { 0, 0 };
 
     if ( (m_state & STATE_VISIBLE) == 0 )
         return;

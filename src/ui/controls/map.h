@@ -60,7 +60,7 @@ struct MapObject
     CObject*    object = nullptr;
     MapColor    color = MAPCOLOR_NULL;
     ObjectType  type = OBJECT_NULL;
-    Math::Point pos;
+    glm::vec2   pos = { 0, 0 };
     float       dir = 0.0f;
 };
 
@@ -72,7 +72,7 @@ public:
     CMap();
     ~CMap();
 
-    bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg) override;
+    bool        Create(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg) override;
     bool        EventProcess(const Event &event) override;
     void        Draw() override;
 
@@ -100,20 +100,20 @@ public:
     void        FlushObject();
     void        UpdateObject(CObject* pObj);
 
-    CObject*    DetectObject(Math::Point pos, bool &bInMap);
+    CObject*    DetectObject(const glm::vec2& pos, bool &bInMap);
     void        SetHighlight(CObject* pObj);
 
 protected:
-    Math::Point AdjustOffset(Math::Point offset);
-    void        SelectObject(Math::Point pos);
-    Math::Point MapInter(Math::Point pos, float dir);
-    void        DrawFocus(Math::Point pos, float dir, ObjectType type, MapColor color);
-    void        DrawObject(Math::Point pos, float dir, ObjectType type, MapColor color, bool bSelect, bool bHilite);
-    void        DrawObjectIcon(Math::Point pos, Math::Point dim, MapColor color, ObjectType type, bool bHilite);
-    void        DrawHighlight(Math::Point pos);
-    void        DrawTriangle(Math::Point p1, Math::Point p2, Math::Point p3, Math::Point uv1, Math::Point uv2);
-    void        DrawPenta(Math::Point p1, Math::Point p2, Math::Point p3, Math::Point p4, Math::Point p5, Math::Point uv1, Math::Point uv2);
-    void        DrawVertex(Math::Point uv1, Math::Point uv2, float zoom);
+    glm::vec2   AdjustOffset(const glm::vec2& offset);
+    void        SelectObject(const glm::vec2& pos);
+    glm::vec2   MapInter(const glm::vec2& pos, float dir);
+    void        DrawFocus(const glm::vec2& pos, float dir, ObjectType type, MapColor color);
+    void        DrawObject(const glm::vec2& pos, float dir, ObjectType type, MapColor color, bool bSelect, bool bHilite);
+    void        DrawObjectIcon(const glm::vec2& pos, const glm::vec2& dim, MapColor color, ObjectType type, bool bHilite);
+    void        DrawHighlight(const glm::vec2& pos);
+    void        DrawTriangle(const glm::vec2& p1, const glm::vec2& p2, const glm::vec2& p3, const glm::vec2& uv1, const glm::vec2& uv2);
+    void        DrawPenta(const glm::vec2& p1, const glm::vec2& p2, const glm::vec2& p3, const glm::vec2& p4, const glm::vec2& p5, const glm::vec2& uv1, const glm::vec2& uv2);
+    void        DrawVertex(const glm::vec2& uv1, const glm::vec2& uv2, float zoom);
 
 protected:
     Gfx::CTerrain*  m_terrain;
@@ -124,7 +124,7 @@ protected:
     float           m_time;
     float           m_half;
     float           m_zoom;
-    Math::Point     m_offset;
+    glm::vec2       m_offset;
     float           m_angle;
     Gfx::Color      m_floorColor;
     Gfx::Color      m_waterColor;
@@ -132,8 +132,8 @@ protected:
     int             m_totalFix;
     int             m_totalMove;
     int             m_highlightRank;
-    Math::Point     m_mapPos;
-    Math::Point     m_mapDim;
+    glm::vec2       m_mapPos;
+    glm::vec2       m_mapDim;
     bool            m_bRadar;
     std::string     m_fixImage;
     int             m_mode;
