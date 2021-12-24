@@ -21,7 +21,7 @@
 
 #include "object/motion/motion.h"
 
-#include "math/point.h"
+#include <glm/glm.hpp>
 
 
 enum MotionTotoAction
@@ -46,7 +46,7 @@ public:
 
     void    StartDisplayInfo();
     void    StopDisplayInfo();
-    void    SetMousePos(Math::Point pos);
+    void    SetMousePos(const glm::vec2& pos);
 
 protected:
     bool    EventFrame(const Event &event);
@@ -64,5 +64,5 @@ protected:
     float       m_blinkTime;
     float       m_blinkProgress;
     int         m_soundChannel;
-    Math::Point     m_mousePos;
+    glm::vec2   m_mousePos;
 };

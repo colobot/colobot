@@ -232,7 +232,7 @@ bool CMotionWorm::EventFrame(const Event &event)
 {
     Math::Matrix*   mat;
     Math::Vector    pos, p, angle, speed;
-    Math::Point     center, pp, dim;
+    glm::vec2     center, pp, dim;
     float       height[WORM_PART+2];
     float       floor, a, s, px, curve, phase, h, zoom, radius;
     int         i, under;

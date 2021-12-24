@@ -1934,7 +1934,7 @@ bool CMotionVehicle::EventFrameInsect(const Event &event)
 bool CMotionVehicle::EventFrameCanoni(const Event &event)
 {
     Math::Vector    pos, speed;
-    Math::Point     dim;
+    glm::vec2     dim;
     float       zoom, angle, factor;
     bool        bOnBoard = false;
 

@@ -392,7 +392,7 @@ bool CMotionAnt::EventProcess(const Event &event)
 bool CMotionAnt::EventFrame(const Event &event)
 {
     Math::Vector    dir, pos, speed;
-    Math::Point     dim;
+    glm::vec2       dim;
     float       s, a, prog = 0.0f, time;
     float       tSt[9], tNd[9];
     int         i, ii, st, nd, action;

@@ -327,7 +327,7 @@ bool CMotionSpider::EventProcess(const Event &event)
 bool CMotionSpider::EventFrame(const Event &event)
 {
     Math::Vector    dir, pos, speed;
-    Math::Point     dim;
+    glm::vec2       dim;
     float       s, a, prog = 0.0f, time;
     float       tSt[12], tNd[12];
     int         i, ii, st, nd, action;

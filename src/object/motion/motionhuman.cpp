@@ -614,7 +614,7 @@ bool CMotionHuman::EventFrame(const Event &event)
 {
     Math::Matrix*   mat;
     Math::Vector    dir, actual, pos, speed, pf;
-    Math::Point     center, dim, p2;
+    glm::vec2       center, dim, p2;
     float       s, a, prog, rTime[2], lTime[2], time, rot, hr, hl;
     float       al, ar, af;
     float       tSt[9], tNd[9];

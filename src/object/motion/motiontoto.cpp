@@ -57,7 +57,7 @@ CMotionToto::CMotionToto(COldObject* object) : CMotion(object)
     m_blinkTime   = 0.0f;
     m_blinkProgress = -1.0f;
     m_lastMotorParticle = 0.0f;
-    m_mousePos = Math::Point(0.0f, 0.0f);
+    m_mousePos = { 0.0f, 0.0f };
 }
 
 // Object's destructor.
@@ -196,7 +196,7 @@ return;
     m_progress   = 0.0f;
 
     m_object->SetRotationY(0.0f);
-    m_mousePos = Math::Point(0.5f, 0.5f);
+    m_mousePos = { 0.5f, 0.5f };
 }
 
 // End of the display of informations.
@@ -209,7 +209,7 @@ void CMotionToto::StopDisplayInfo()
 
 // Getes the position of the mouse.
 
-void CMotionToto::SetMousePos(Math::Point pos)
+void CMotionToto::SetMousePos(const glm::vec2& pos)
 {
     m_mousePos = pos;
 }
@@ -236,7 +236,7 @@ bool CMotionToto::EventFrame(const Event &event)
     Math::Matrix*       mat;
     Math::Vector        eye, lookat, dir, perp, nPos, aPos, pos, speed;
     Math::Vector        vibLin, vibCir, dirSpeed, aAntenna;
-    Math::Point         dim;
+    glm::vec2           dim;
     glm::ivec2          wDim;
     Gfx::ParticleType   type;
     float           progress, focus, distance, shift, verti, level, zoom;
