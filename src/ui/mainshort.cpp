@@ -73,7 +73,7 @@ void CMainShort::SetMode(bool bBuilding)
 
 bool CMainShort::CreateShortcuts()
 {
-    Math::Point     pos, dim;
+    glm::vec2 pos, dim;
 
     if ( m_main->GetFixScene() )  return false;
 
@@ -139,7 +139,7 @@ bool CMainShort::CreateShortcuts()
     }
     std::sort(teams.begin(), teams.end());
 
-    std::vector<Math::Point> positions;
+    std::vector<glm::vec2> positions;
     for(unsigned int i = 0; i < teams.size(); i++)
     {
         positions.push_back(pos);
@@ -336,15 +336,15 @@ void CMainShort::SelectNext()
 
 // The object detected by the mouse hovers over.
 
-CObject* CMainShort::DetectShort(Math::Point pos)
+CObject* CMainShort::DetectShort(const glm::vec2& pos)
 {
     for (unsigned int i = 0; i < m_shortcuts.size(); i++)
     {
         CControl* pc = m_interface->SearchControl(static_cast<EventType>(EVENT_OBJECT_SHORTCUT+i));
         if ( pc != nullptr )
         {
-            Math::Point cpos = pc->GetPos();
-            Math::Point cdim = pc->GetDim();
+            glm::vec2 cpos = pc->GetPos();
+            glm::vec2 cdim = pc->GetDim();
 
             if ( pos.x >= cpos.x        &&
                  pos.x <= cpos.x+cdim.x &&

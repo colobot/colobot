@@ -201,8 +201,8 @@ std::string CFileDialog::GetFilename()
 void CFileDialog::StartFileDialog()
 {
     m_captureClick = false;
-    Math::Point pos = m_windowPos;
-    Math::Point dim = m_windowDim;
+    glm::vec2 pos = m_windowPos;
+    glm::vec2 dim = m_windowDim;
     int icon = (m_dialogtype == CFileDialog::Type::Open) ? 14 : 13 ;
 
     CWindow* pw = m_interface->CreateWindows(pos, dim, icon, m_windowEvent);
@@ -216,7 +216,7 @@ void CFileDialog::StartFileDialog()
     pw->SetState(STATE_SHADOW);
     pw->SetMovable(true);
     pw->SetClosable(true);
-    pw->SetMinDim(Math::Point(320.0f/640.0f, (121.0f+18.0f*4)/480.0f));
+    pw->SetMinDim({ 320.0f / 640.0f, (121.0f + 18.0f * 4) / 480.0f });
 
     if ( m_title.empty() )
     {
@@ -232,8 +232,8 @@ void CFileDialog::StartFileDialog()
     pw->SetName(m_title);
 
     std::string name;
-    pos = Math::Point(0.0f, 0.0f);
-    dim = Math::Point(0.0f, 0.0f);
+    pos = { 0.0f, 0.0f };
+    dim = { 0.0f, 0.0f };
 
     GetResource(RES_TEXT, RT_IO_LIST, name);
     CLabel* pla = pw->CreateLabel(pos, dim, 0, EVENT_DIALOG_LABEL1, name); // path label
@@ -355,14 +355,14 @@ void CFileDialog::AdjustDialog()
     CWindow* pw = static_cast< CWindow* >(m_interface->SearchControl(m_windowEvent));
     if ( pw == nullptr )  return;
 
-    Math::Point wpos = m_windowPos = pw->GetPos();
-    Math::Point wdim = m_windowDim = pw->GetDim();
+    glm::vec2 wpos = m_windowPos = pw->GetPos();
+    glm::vec2 wdim = m_windowDim = pw->GetDim();
 
     pw->SetPos(wpos);  // to move the buttons on the titlebar
     pw->SetDim(wdim);
 
-    Math::Point ppos(wpos.x+10.0f/640.0f, wpos.y+wdim.y-55.0f/480.0f);
-    Math::Point ddim(wdim.x-150.0f/640.0f, 20.0f/480.0f);
+    glm::vec2 ppos(wpos.x+10.0f/640.0f, wpos.y+wdim.y-55.0f/480.0f);
+    glm::vec2 ddim(wdim.x-150.0f/640.0f, 20.0f/480.0f);
 
     CLabel* pla = static_cast< CLabel* >(pw->SearchControl(EVENT_DIALOG_LABEL1)); // path label
     if ( pla != nullptr )
@@ -692,13 +692,13 @@ bool CFileDialog::StartNewFolderMode()
 
     CList* pli = static_cast< CList* >(pw->SearchControl(EVENT_DIALOG_LIST));    // file list
     if ( pli == nullptr ) return false;
-    Math::Point dim = pli->GetDim();
+    glm::vec2 dim = pli->GetDim();
     dim.y -= 17.5f/480.0f;
     pli->SetDim(dim);
     pli->SetSelect(-1);
     pli->ShowSelect(false);
 
-    Math::Point pos = pli->GetPos();
+    glm::vec2 pos = pli->GetPos();
 
     pos.y += dim.y-3.0f/480.0f;
     dim.y = 20.0f/480.0f;
@@ -1025,7 +1025,7 @@ void CFileDialog::UpdatePathLabel()
     CLabel* pl = static_cast< CLabel* >(pw->SearchControl(EVENT_DIALOG_LABEL1));
     if ( pl != nullptr )
     {
-        Math::Point dim = pl->GetDim();
+        glm::vec2 dim = pl->GetDim();
         size_t nch = static_cast< size_t >((dim.x*640.0f)/5.75f);
         std::string text = SearchDirectory(false);
         if (text.length() > nch)

@@ -21,9 +21,9 @@
 
 #include "common/event.h"
 
-#include "math/point.h"
-
 #include "object/object_type.h"
+
+#include <glm/glm.hpp>
 
 #include <vector>
 
@@ -51,7 +51,7 @@ public:
     bool        UpdateShortcuts();
     void        SelectShortcut(EventType event);
     void        SelectNext();
-    CObject*    DetectShort(Math::Point pos);
+    CObject*    DetectShort(const glm::vec2& pos);
     void        SetHighlight(CObject* pObj);
 
 protected:

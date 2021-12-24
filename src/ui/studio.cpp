@@ -557,7 +557,7 @@ void CStudio::ColorizeScript(CEdit* edit)
 
 void CStudio::StartEditScript(CScript *script, std::string name, Program* program)
 {
-    Math::Point     pos, dim;
+    glm::vec2   pos, dim;
     CWindow*    pw;
     CEdit*      edit;
     CButton*    button;
@@ -615,7 +615,7 @@ void CStudio::StartEditScript(CScript *script, std::string name, Program* progra
     GetResource(RES_TEXT, RT_STUDIO_TITLE, res);
     pw->SetName(res);
 
-    pw->SetMinDim(Math::Point(0.49f, 0.50f));
+    pw->SetMinDim({ 0.49f, 0.50f });
     pw->SetMaximized(m_bEditMaximized);
     pw->SetMinimized(m_bEditMinimized);
 
@@ -710,7 +710,7 @@ void CStudio::AdjustEditScript()
     CGroup*     group;
     CSlider*    slider;
     CList*      list;
-    Math::Point     wpos, wdim, pos, dim, ppos, ddim;
+    glm::vec2   wpos, wdim, pos, dim, ppos, ddim;
     float       hList;
 
     wpos = m_editActualPos;

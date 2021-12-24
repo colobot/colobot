@@ -21,7 +21,7 @@
 
 #include "common/restext.h"
 
-#include "math/point.h"
+#include <glm/glm.hpp>
 
 #include <vector>
 #include <functional>
@@ -72,7 +72,7 @@ public:
     bool    IsDialog();
 
 protected:
-    void    StartDialog(Math::Point dim, bool fireParticles);
+    void    StartDialog(const glm::vec2& dim, bool fireParticles);
     void    FrameDialog(float rTime);
 
 protected:
@@ -92,8 +92,8 @@ protected:
     bool                 m_dialogOpen;
     DialogType           m_dialogType;
     bool                 m_dialogFireParticles;
-    Math::Point          m_dialogPos;
-    Math::Point          m_dialogDim;
+    glm::vec2            m_dialogPos;
+    glm::vec2            m_dialogDim;
     float                m_dialogTime;
     float                m_dialogParti;
 

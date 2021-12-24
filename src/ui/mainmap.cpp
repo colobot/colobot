@@ -62,7 +62,7 @@ CMainMap::~CMainMap()
 void CMainMap::CreateMap()
 {
     CWindow*    pw;
-    Math::Point     pos, dim;
+    glm::vec2   pos, dim;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW1));
     if (pw == nullptr)
@@ -158,7 +158,7 @@ void CMainMap::DimMap()
     CWindow*    pw;
     CMap*       pm;
     CSlider*    ps;
-    Math::Point     pos, dim;
+    glm::vec2   pos, dim;
     float       value;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW1));
@@ -361,7 +361,7 @@ bool CMainMap::GetFixImage()
 
 // The object is detected in the mini-map.
 
-CObject* CMainMap::DetectMap(Math::Point pos, bool &bInMap)
+CObject* CMainMap::DetectMap(const glm::vec2& pos, bool &bInMap)
 {
     CWindow*    pw;
     CMap*       pm;

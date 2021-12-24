@@ -84,14 +84,14 @@ protected:
     bool        m_bEditMaximized;
     bool        m_bEditMinimized;
 
-    Math::Point     m_editActualPos;
-    Math::Point     m_editActualDim;
-    Math::Point     m_editFinalPos;
-    Math::Point     m_editFinalDim;
-    Math::Point     m_windowPos;
-    Math::Point     m_windowDim;
-    Math::Point     m_dialogPos;
-    Math::Point     m_dialogDim;
+    glm::vec2    m_editActualPos;
+    glm::vec2    m_editActualDim;
+    glm::vec2    m_editFinalPos;
+    glm::vec2    m_editFinalDim;
+    glm::vec2    m_windowPos;
+    glm::vec2    m_windowDim;
+    glm::vec2    m_dialogPos;
+    glm::vec2    m_dialogDim;
 
     float        m_time;
     float        m_fixInfoTextTime;

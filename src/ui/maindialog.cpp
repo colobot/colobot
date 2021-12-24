@@ -169,10 +169,10 @@ void CMainDialog::StartPauseMenu()
 {
     CWindow*    pw;
     CButton*    pb;
-    Math::Point     pos, dim;
+    glm::vec2   pos, dim;
     std::string name;
 
-    StartDialog(Math::Point(0.3f, 0.8f), true);
+    StartDialog({ 0.3f, 0.8f }, true);
     m_dialogType = DialogType::PauseMenu;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW9));
@@ -244,7 +244,7 @@ void CMainDialog::StartQuestion(const std::string& text, bool warningYes, bool w
 {
     CWindow*    pw;
     CButton*    pb;
-    Math::Point pos, dim, ddim;
+    glm::vec2   pos, dim, ddim;
     std::string name;
 
     dim.x = 0.7f;
@@ -303,7 +303,7 @@ void CMainDialog::StartInformation(const std::string& title, const std::string& 
     CWindow*    pw;
     CButton*    pb;
     CLabel*     pl;
-    Math::Point pos, dim, ddim;
+    glm::vec2   pos, dim, ddim;
     std::string name;
 
     dim.x = 0.7f;
@@ -346,10 +346,10 @@ void CMainDialog::StartInformation(const std::string& title, const std::string& 
 
 // Beginning of displaying a dialog.
 
-void CMainDialog::StartDialog(Math::Point dim, bool fireParticles)
+void CMainDialog::StartDialog(const glm::vec2& dim, bool fireParticles)
 {
     CWindow*    pw;
-    Math::Point pos, ddim;
+    glm::vec2   pos, ddim;
 
     m_main->StartSuspend();
 
@@ -405,7 +405,7 @@ void CMainDialog::FrameDialog(float rTime)
 {
     CWindow*    pw;
     Math::Vector    pos, speed;
-    Math::Point     dim, dpos, ddim;
+    glm::vec2   dim, dpos, ddim;
     float       zoom;
     int         i;
 

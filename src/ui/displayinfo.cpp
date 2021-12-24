@@ -73,8 +73,8 @@ CDisplayInfo::CDisplayInfo()
     m_bInfoMaximized = true;
     m_bInfoMinimized = false;
 
-    m_infoFinalPos = m_infoActualPos = m_infoNormalPos = Math::Point(0.00f, 0.00f);
-    m_infoFinalDim = m_infoActualPos = m_infoNormalDim = Math::Point(1.00f, 1.00f);
+    m_infoFinalPos = m_infoActualPos = m_infoNormalPos = { 0.00f, 0.00f };
+    m_infoFinalDim = m_infoActualPos = m_infoNormalDim = { 1.00f, 1.00f };
 
     m_lightSuppl = -1;
     m_toto = nullptr;
@@ -340,7 +340,7 @@ void CDisplayInfo::HyperUpdate()
 void CDisplayInfo::StartDisplayInfo(std::string filename, int index, bool bSoluce)
 {
     Gfx::Light          light;
-    Math::Point         pos, dim;
+    glm::vec2           pos, dim;
     Ui::CWindow*        pw;
     Ui::CEdit*          edit;
     Ui::CButton*        button;
@@ -373,7 +373,7 @@ void CDisplayInfo::StartDisplayInfo(std::string filename, int index, bool bSoluc
 //? pw->SetClosable(true);
 //? GetResource(RES_TEXT, RT_DISINFO_TITLE, res);
 //? pw->SetName(res);
-//? pw->SetMinDim(Math::Point(0.56f, 0.40f));
+//? pw->SetMinDim(glm::vec2(0.56f, 0.40f));
 //? pw->SetMaximized(m_bInfoMaximized);
 //? pw->SetMinimized(m_bInfoMinimized);
 //? m_main->SetEditFull(m_bInfoMaximized);
@@ -466,14 +466,14 @@ void CDisplayInfo::StartDisplayInfo(std::string filename, int index, bool bSoluc
 
 // Repositions all controls editing.
 
-void CDisplayInfo::AdjustDisplayInfo(Math::Point wpos, Math::Point wdim)
+void CDisplayInfo::AdjustDisplayInfo(glm::vec2 wpos, glm::vec2 wdim)
 {
     CWindow*    pw;
     CEdit*      edit;
     CButton*    button;
     CSlider*    slider;
     CGroup*     group;
-    Math::Point     pos, dim;
+    glm::vec2   pos, dim;
 
     wpos.x =  50.0f / 640.0f;
     wpos.y =  30.0f / 480.0f;
@@ -682,7 +682,7 @@ void CDisplayInfo::UpdateIndexButton()
     Ui::CButton*    button;
     Ui::CGroup*     group;
     Ui::CEdit*      edit;
-    Math::Point     pos, dim;
+    glm::vec2       pos, dim;
     char*       filename;
 
     static int table[SATCOM_MAX] =

@@ -1746,7 +1746,7 @@ void CPhysics::WaterFrame(float aTime, float rTime)
 {
     ObjectType  type;
     Math::Vector    pos, speed;
-    Math::Point     dim;
+    glm::vec2   dim;
     float       level;
 
     level = m_water->GetLevel();
@@ -1962,7 +1962,7 @@ void CPhysics::SoundMotorSlow(float rTime, ObjectType type)
 {
     Math::Matrix*   mat;
     Math::Vector    pos, speed;
-    Math::Point     dim;
+    glm::vec2       dim;
     SoundType       sound;
     float       amplitude;
     int         i, max;
@@ -2128,7 +2128,7 @@ void CPhysics::SoundReactorFull(float rTime, ObjectType type)
     SoundType      sound;
     Math::Matrix*   mat;
     Math::Vector    pos, speed;
-    Math::Point     dim;
+    glm::vec2       dim;
     float       freq;
     int         i;
 
@@ -2963,7 +2963,7 @@ void CPhysics::PowerParticle(float factor, bool bBreak)
 {
     Math::Matrix*   mat;
     Math::Vector    pos, ppos, eye, speed;
-    Math::Point     dim;
+    glm::vec2       dim;
     bool        bCarryPower;
 
     bCarryPower = false;
@@ -3024,7 +3024,7 @@ void CPhysics::PowerParticle(float factor, bool bBreak)
 void CPhysics::CrashParticle(float crash)
 {
     Math::Vector    pos, ppos, speed;
-    Math::Point     dim;
+    glm::vec2       dim;
     float           len;
     int             i, max;
 
@@ -3058,9 +3058,9 @@ void CPhysics::MotorParticle(float aTime, float rTime)
 {
     Math::Matrix*   mat;
     Math::Vector    pos, speed;
-    Math::Point     dim;
+    glm::vec2       dim;
     ObjectType  type;
-    Math::Point     c, p;
+    glm::vec2   c, p;
     float       h, a, delay, level;
     int         r, i, nb;
 
@@ -3582,7 +3582,7 @@ void CPhysics::WaterParticle(float aTime, Math::Vector pos, ObjectType type,
                               float floor, float advance, float turn)
 {
     Math::Vector    ppos, speed;
-    Math::Point     dim;
+    glm::vec2       dim;
     float       delay, level, min, max, force, volume, diam;
     int         i, nb;
 

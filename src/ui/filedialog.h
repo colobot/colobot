@@ -21,7 +21,7 @@
 
 #include "common/event.h"
 
-#include "math/point.h"
+#include <glm/glm.hpp>
 
 #include <string>
 #include <vector>
@@ -148,22 +148,22 @@ public:
     /**
      * \brief Set the initial position of the window.
      */
-    void        SetWindowPos(Math::Point pos) { m_windowPos = pos; }
+    void        SetWindowPos(const glm::vec2& pos) { m_windowPos = pos; }
 
     /**
      * \brief Get the position of the window.
      */
-    Math::Point GetWindowPos()                { return m_windowPos; }
+    glm::vec2   GetWindowPos()                { return m_windowPos; }
 
     /**
      * \brief Set the initial size of the window.
      */
-    void        SetWindowDim(Math::Point dim) { m_windowDim = dim; }
+    void        SetWindowDim(const glm::vec2& dim) { m_windowDim = dim; }
 
     /**
      * \brief Get the size of the window.
      */
-    Math::Point GetWindowDim()                { return m_windowDim; }
+    glm::vec2   GetWindowDim()                { return m_windowDim; }
 
     /**
      * \brief Set the text for the title bar of the dialog.
@@ -332,8 +332,8 @@ private:
     // With EVENT_NULL, a unique EventType will be used.
     EventType    m_windowEvent = EVENT_NULL;
 
-    Math::Point  m_windowPos;
-    Math::Point  m_windowDim;
+    glm::vec2    m_windowPos;
+    glm::vec2    m_windowDim;
     std::string  m_title = "";
 
     float        m_time;

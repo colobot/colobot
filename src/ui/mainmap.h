@@ -21,7 +21,7 @@
 
 #include "graphics/core/color.h"
 
-#include "math/point.h"
+#include <glm/glm.hpp>
 
 class CObject;
 class CEventQueue;
@@ -53,7 +53,7 @@ public:
     void        ZoomMap();
     void        MapEnable(bool bEnable);
     bool        GetFixImage();
-    CObject*    DetectMap(Math::Point pos, bool &bInMap);
+    CObject*    DetectMap(const glm::vec2& pos, bool &bInMap);
     void        SetHighlight(CObject* pObj);
     void        SetToy(bool bToy);
     void        SetFixParam(float zoom, float ox, float oy, float angle, int mode, bool bDebug);

@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "math/point.h"
+#include <glm/glm.hpp>
 
 #include <string>
 
@@ -60,7 +60,7 @@ public:
 protected:
     bool        EventFrame(const Event &event);
     void        HyperUpdate();
-    void        AdjustDisplayInfo(Math::Point wpos, Math::Point wdim);
+    void        AdjustDisplayInfo(glm::vec2 wpos, glm::vec2 wdim);
     void        ChangeIndexButton(int index);
     void        UpdateIndexButton();
     void        UpdateCopyButton();
@@ -81,12 +81,12 @@ protected:
     bool        m_bInfoMinimized;
 
     int         m_index;
-    Math::Point     m_infoNormalPos;
-    Math::Point     m_infoNormalDim;
-    Math::Point     m_infoActualPos;
-    Math::Point     m_infoActualDim;
-    Math::Point     m_infoFinalPos;
-    Math::Point     m_infoFinalDim;
+    glm::vec2   m_infoNormalPos;
+    glm::vec2   m_infoNormalDim;
+    glm::vec2   m_infoActualPos;
+    glm::vec2   m_infoActualDim;
+    glm::vec2   m_infoFinalPos;
+    glm::vec2   m_infoFinalDim;
     int         m_lightSuppl;
     bool        m_bEditLock;
     ActivePause* m_satcomPause = nullptr;
