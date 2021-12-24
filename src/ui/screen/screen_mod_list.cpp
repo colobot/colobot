@@ -63,7 +63,7 @@ void CScreenModList::CreateInterface()
     CLabel*         pl;
     CButton*        pb;
     CList*          pli;
-    Math::Point     pos, ddim;
+    glm::vec2       pos, ddim;
     std::string     name;
 
     // Display the window

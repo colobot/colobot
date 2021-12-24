@@ -57,7 +57,7 @@ void CScreenSetupGraphics::CreateInterface()
     CCheck*         pc;
     CEnumSlider*    pes;
     CButton*        pb;
-    Math::Point     pos, ddim;
+    glm::vec2       pos, ddim;
     std::string     name;
 
     CScreenSetup::CreateInterface();

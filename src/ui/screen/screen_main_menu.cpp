@@ -49,7 +49,7 @@ void CScreenMainMenu::CreateInterface()
     CLabel*         pl;
     CButton*        pb;
     CGroup*         pg;
-    Math::Point     pos, ddim;
+    glm::vec2       pos, ddim;
     std::string     name;
 
     pos.x  = 0.35f;

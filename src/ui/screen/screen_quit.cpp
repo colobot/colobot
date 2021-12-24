@@ -44,7 +44,7 @@ void CScreenQuit::CreateInterface()
     CEdit*          pe;
     CLabel*         pl;
     CButton*        pb;
-    Math::Point     pos, ddim;
+    glm::vec2       pos, ddim;
     std::string     name;
 
     pos.x  = 0.0f;

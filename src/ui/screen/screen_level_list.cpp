@@ -69,7 +69,7 @@ void CScreenLevelList::CreateInterface()
     CButton*        pb;
     CCheck*         pc;
     CList*          pli;
-    Math::Point     pos, ddim;
+    glm::vec2       pos, ddim;
     int             res;
     std::string     name;
 

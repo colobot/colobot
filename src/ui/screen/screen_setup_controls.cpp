@@ -58,8 +58,8 @@ void CScreenSetupControls::CreateInterface()
     CButton*        pb;
     CGroup*         pg;
     CList*          pli;
-    CEditValue* pev;
-    Math::Point     pos, ddim;
+    CEditValue*     pev;
+    glm::vec2       pos, ddim;
     std::string     name;
 
     CScreenSetup::CreateInterface();
@@ -344,10 +344,10 @@ void CScreenSetupControls::UpdateKey()
     for (int i = 0; i < INPUT_SLOT_MAX; i++)
         pw->DeleteControl(static_cast<EventType>(EVENT_INTERFACE_KEY+i));
 
-    Math::Point dim;
+    glm::vec2 dim;
     dim.x = 250.0f/640.0f;
     dim.y =  20.0f/480.0f;
-    Math::Point pos;
+    glm::vec2 pos;
     pos.x = 110.0f/640.0f;
     pos.y = 128.0f/480.0f + dim.y*(KEY_VISIBLE-1);
     for (int i = 0; i < KEY_VISIBLE; i++)

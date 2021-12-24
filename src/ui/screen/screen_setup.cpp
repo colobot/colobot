@@ -59,7 +59,7 @@ void CScreenSetup::CreateInterface()
 {
     CWindow*        pw;
     CButton*        pb;
-    Math::Point     pos, ddim;
+    glm::vec2       pos, ddim;
     std::string     name;
 
     pos.x = 0.10f;

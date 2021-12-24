@@ -49,7 +49,7 @@ void CScreenWelcome::SetImageIndex(int imageIndex)
 
 void CScreenWelcome::CreateInterface()
 {
-    Math::Point     pos, ddim;
+    glm::vec2     pos, ddim;
 
     pos.x  = 0.0f;
     pos.y  = 0.0f;

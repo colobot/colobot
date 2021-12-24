@@ -55,7 +55,7 @@ void CScreenSetupSound::CreateInterface()
     CSlider*        psl;
     CButton*        pb;
     CCheck*         pc;
-    Math::Point     pos, ddim;
+    glm::vec2       pos, ddim;
     std::string     name;
 
     CScreenSetup::CreateInterface();

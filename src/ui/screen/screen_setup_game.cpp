@@ -54,7 +54,7 @@ void CScreenSetupGame::CreateInterface()
     CCheck*         pc;
     CSlider*        psl;
     CList*          pli;
-    Math::Point     pos, ddim;
+    glm::vec2       pos, ddim;
     std::string     name;
 
     CScreenSetup::CreateInterface();
