@@ -762,7 +762,7 @@ void CObjectInterface::StopEditScript(bool closeWithErrors)
 void CObjectInterface::GroundFlat()
 {
     Math::Vector    pos, speed;
-    Math::Point     dim;
+    glm::vec2     dim;
     Error       err;
     float       level;
 
@@ -807,7 +807,7 @@ bool CObjectInterface::CreateInterface(bool bSelect)
     CColor*      pc;
     CTarget*     pt;
     CLabel*      pl;
-    Math::Point      pos, dim, ddim;
+    glm::vec2      pos, dim, ddim;
     float       ox, oy, sx, sy;
 
     pw = static_cast< CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
@@ -1547,7 +1547,7 @@ void CObjectInterface::UpdateInterface(float rTime)
     CGroup*     pgr;
     CTarget*    ptg;
     Math::Vector    pos, hPos;
-    Math::Point     ppos;
+    glm::vec2     ppos;
     float       range;
     int         icon;
     bool        bOnBoard;

@@ -1368,14 +1368,14 @@ void COldObject::SetFloorHeight(float height)
 void COldObject::FloorAdjust()
 {
     Math::Vector        pos, n;
-    Math::Point         nn;
+    glm::vec2           nn;
     float           a;
 
     pos = GetPosition();
     if ( m_terrain->GetNormal(n, pos) )
     {
         a = GetRotationY();
-        nn = Math::RotatePoint(-a, Math::Point(n.z, n.x));
+        nn = Math::RotatePoint(-a, { n.z, n.x });
         SetRotationX( sinf(nn.x));
         SetRotationZ(-sinf(nn.y));
     }
@@ -2304,7 +2304,7 @@ void COldObject::VirusFrame(float rTime)
         speed.x = (Math::Rand()-0.5f)*2.0f;
         speed.z = (Math::Rand()-0.5f)*2.0f;
         speed.y = Math::Rand()*4.0f+4.0f;
-        Math::Point dim;
+        glm::vec2 dim;
         dim.x = Math::Rand()*0.3f+0.3f;
         dim.y = dim.x;
 
@@ -2921,7 +2921,7 @@ float COldObject::GetShowLimitRadius()
 void COldObject::CreateSelectParticle()
 {
     Math::Vector    pos, speed;
-    Math::Point     dim;
+    glm::vec2     dim;
     int         i;
 
     // Removes particles preceding.
@@ -2989,7 +2989,7 @@ void COldObject::CreateSelectParticle()
 void COldObject::UpdateSelectParticle()
 {
     Math::Vector    pos[4];
-    Math::Point     dim[4];
+    glm::vec2     dim[4];
     float       zoom[4];
     float       angle;
     int         i;

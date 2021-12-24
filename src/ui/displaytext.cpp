@@ -179,7 +179,7 @@ void CDisplayText::DisplayText(const char *text, Math::Vector goal, float height
     Ui::CButton*    button;
     Ui::CGroup*     group;
     Ui::CLabel*     label;
-    Math::Point     pos, ppos, dim;
+    glm::vec2     pos, ppos, dim;
     SoundType   sound;
     float       hLine, hBox;
     int         nLine, icon, i;

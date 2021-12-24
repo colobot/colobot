@@ -501,11 +501,11 @@ protected:
 
     int         CreateLight(Math::Vector direction, Gfx::Color color);
     void        HiliteClear();
-    void        HiliteObject(Math::Point pos);
+    void        HiliteObject(const glm::vec2& pos);
     void        HiliteFrame(float rTime);
-    void        CreateTooltip(Math::Point pos, const std::string& text);
+    void        CreateTooltip(const glm::vec2& pos, const std::string& text);
     void        ClearTooltip();
-    CObject*    DetectObject(Math::Point pos);
+    CObject*    DetectObject(const glm::vec2& pos);
     void        ChangeCamera();
     void        AbortMovie();
     //! \brief Select an object, without deselecting the previous one
@@ -640,7 +640,7 @@ protected:
 
     ActivePause*    m_suspend = nullptr;
 
-    Math::Point     m_tooltipPos;
+    glm::vec2       m_tooltipPos;
     std::string     m_tooltipName;
     float           m_tooltipTime = 0.0f;
 

@@ -19,9 +19,9 @@
 
 #pragma once
 
-#include "math/point.h"
-
 #include "object/object_type.h"
+
+#include <glm/glm.hpp>
 
 class CRobotMain;
 class CObjectManager;
@@ -76,16 +76,16 @@ protected:
 
     //! Handle spawning a new object at mouse position
     //! \return true on success, false on error
-    bool HandleSpawnObject(ObjectType type, Math::Point mousePos);
+    bool HandleSpawnObject(ObjectType type, const glm::vec2& mousePos);
     //! Handle lightning at position
     //! \return true on success, false on error
-    bool HandleLightning(Math::Point mousePos);
+    bool HandleLightning(const glm::vec2& mousePos);
     //! Handle teleport to position
     //! \return true on success, false on error
-    bool HandleTeleport(Math::Point mousePos);
+    bool HandleTeleport(const glm::vec2& mousePos);
     //! Handle ctrl+c (copy coordinates under cursor to clipboard)
     //! \return true on success, false on error
-    bool HandleCopy(Math::Point mousePos);
+    bool HandleCopy(const glm::vec2& mousePos);
 
 protected:
     CRobotMain* m_main;

@@ -64,7 +64,7 @@ void CDebugMenu::ToggleInterface()
     if (!IsActive())
     {
         CreateInterface();
-        CLabel* pl = m_interface->CreateLabel(Math::Point(0.0f, 0.9f), Math::Point(1.0f, 0.1f), -1, EVENT_LABEL19, "??");
+        CLabel* pl = m_interface->CreateLabel({ 0.0f, 0.9f }, { 1.0f, 0.1f }, -1, EVENT_LABEL19, "??");
         pl->SetFontType(Gfx::FONT_STUDIO);
     }
     else
@@ -74,14 +74,14 @@ void CDebugMenu::ToggleInterface()
     }
 }
 
-const Math::Point dim = Math::Point(33.0f/640.0f, 33.0f/480.0f);
-const float ox = 3.0f/640.0f, oy = 3.0f/480.0f;
-const float /*sx = 33.0f/640.0f,*/ sy = 33.0f/480.0f;
+constexpr glm::vec2 dim = { 33.0f / 640.0f, 33.0f / 480.0f };
+constexpr float ox = 3.0f/640.0f, oy = 3.0f/480.0f;
+constexpr float /*sx = 33.0f/640.0f,*/ sy = 33.0f/480.0f;
 
 void CDebugMenu::CreateInterface()
 {
-    CWindow* pw = m_interface->CreateWindows(Math::Point(), Math::Point(), 0, EVENT_WINDOW7);
-    Math::Point pos, ddim;
+    CWindow* pw = m_interface->CreateWindows({ 0, 0 }, { 0, 0 }, 0, EVENT_WINDOW7);
+    glm::vec2 pos, ddim;
     CCheck* pc;
     CButton* pb;
 
@@ -128,8 +128,8 @@ void CDebugMenu::CreateInterface()
 
 void CDebugMenu::CreateSpawnInterface()
 {
-    CWindow* pw = m_interface->CreateWindows(Math::Point(), Math::Point(), 0, EVENT_WINDOW7);
-    Math::Point pos, ddim;
+    CWindow* pw = m_interface->CreateWindows({ 0, 0 }, { 0, 0 }, 0, EVENT_WINDOW7);
+    glm::vec2 pos, ddim;
     CButton* pb;
 
     ddim.x = 4*dim.x+4*ox;
@@ -391,7 +391,7 @@ bool CDebugMenu::EventProcess(const Event &event)
     return true;
 }
 
-bool CDebugMenu::HandleSpawnObject(ObjectType type, Math::Point mousePos)
+bool CDebugMenu::HandleSpawnObject(ObjectType type, const glm::vec2& mousePos)
 {
     Math::Vector pos;
     if (m_engine->DetectObject(mousePos, pos, true) == -1)
@@ -414,7 +414,7 @@ bool CDebugMenu::HandleSpawnObject(ObjectType type, Math::Point mousePos)
     return true;
 }
 
-bool CDebugMenu::HandleLightning(Math::Point mousePos)
+bool CDebugMenu::HandleLightning(const glm::vec2& mousePos)
 {
     Math::Vector pos;
     if (m_engine->DetectObject(mousePos, pos, true) == -1)
@@ -428,7 +428,7 @@ bool CDebugMenu::HandleLightning(Math::Point mousePos)
     return true;
 }
 
-bool CDebugMenu::HandleTeleport(Math::Point mousePos)
+bool CDebugMenu::HandleTeleport(const glm::vec2& mousePos)
 {
     CObject* select = m_main->GetSelect();
 
@@ -465,7 +465,7 @@ void CDebugMenu::HandleFrameUpdate(const Event &event)
     pl->SetName(str.c_str());
 }
 
-bool CDebugMenu::HandleCopy(Math::Point mousePos)
+bool CDebugMenu::HandleCopy(const glm::vec2& mousePos)
 {
     Math::Vector pos;
     if (m_engine->DetectObject(mousePos, pos, true) == -1)

@@ -1184,7 +1184,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
 
         Math::Matrix* mat = obj->GetWorldMatrix(0);
         pos = Math::Transform(*mat, Math::Vector(-56.0f, 22.0f, 0.0f));
-        m_particle->CreateParticle(pos, Math::Vector(0.0f, 0.0f, 0.0f), Math::Point(20.0f, 20.0f), Gfx::PARTISELY, 1.0f, 0.0f, 0.0f);
+        m_particle->CreateParticle(pos, Math::Vector(0.0f, 0.0f, 0.0f), { 20.0f, 20.0f }, Gfx::PARTISELY, 1.0f, 0.0f, 0.0f);
 
         pos = Math::Transform(*mat, Math::Vector(-65.0f, 40.0f, 0.0f));
         Gfx::Color color;
@@ -1446,7 +1446,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
 
         Math::Matrix* mat = obj->GetWorldMatrix(0);
         pos = Math::Transform(*mat, Math::Vector(0.0f, 50.0f, 0.0f));
-        m_particle->CreateParticle(pos, Math::Vector(0.0f, 0.0f, 0.0f), Math::Point(100.0f, 100.0f), Gfx::PARTISELY, 1.0f, 0.0f, 0.0f);
+        m_particle->CreateParticle(pos, Math::Vector(0.0f, 0.0f, 0.0f), { 100.0f, 100.0f }, Gfx::PARTISELY, 1.0f, 0.0f, 0.0f);
 
         pos = Math::Transform(*mat, Math::Vector(0.0f, 50.0f, 0.0f));
         Gfx::Color color;
@@ -1834,8 +1834,8 @@ CObjectUPtr CObjectFactory::CreateQuartz(const ObjectCreateParams& params)
         pos.y += 16.0f;
         radius = 8.0f;
     }
-    m_particle->CreateParticle(pos, pos, Math::Point(2.0f, 2.0f), Gfx::PARTIQUARTZ, 0.7f+Math::Rand()*0.7f, radius, 0.0f);
-    m_particle->CreateParticle(pos, pos, Math::Point(2.0f, 2.0f), Gfx::PARTIQUARTZ, 0.7f+Math::Rand()*0.7f, radius, 0.0f);
+    m_particle->CreateParticle(pos, pos, { 2.0f, 2.0f }, Gfx::PARTIQUARTZ, 0.7f + Math::Rand() * 0.7f, radius, 0.0f);
+    m_particle->CreateParticle(pos, pos, { 2.0f, 2.0f }, Gfx::PARTIQUARTZ, 0.7f + Math::Rand() * 0.7f, radius, 0.0f);
 
     return std::move(obj);
 }

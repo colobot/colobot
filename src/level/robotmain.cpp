@@ -230,7 +230,7 @@ CRobotMain::CRobotMain()
 
     m_movieInfoIndex = -1;
 
-    m_tooltipPos = Math::Point(0.0f, 0.0f);
+    m_tooltipPos = { 0.0f, 0.0f };
     m_tooltipName.clear();
     m_tooltipTime = 0.0f;
 
@@ -469,7 +469,7 @@ void CRobotMain::ChangePhase(Phase phase)
     }
     ClearInterface();
 
-    Math::Point dim, pos;
+    glm::vec2 dim, pos;
 
     // Creates and hide the command console.
     dim.x = 200.0f/640.0f;
@@ -585,7 +585,7 @@ void CRobotMain::ChangePhase(Phase phase)
                 CreateScene(false, true, false);  // sets scene
 
                 pos.x = ox+sx*1;  pos.y = oy+sy*1;
-                Math::Point ddim;
+                glm::vec2 ddim;
                 ddim.x = dim.x*2;  ddim.y = dim.y*2;
                 m_interface->CreateButton(pos, ddim, 16, EVENT_BUTTON_OK);
 
@@ -629,7 +629,7 @@ void CRobotMain::ChangePhase(Phase phase)
                 CreateScene(false, true, false);  // sets scene
 
                 pos.x = ox+sx*1;  pos.y = oy+sy*1;
-                Math::Point ddim;
+                glm::vec2 ddim;
                 ddim.x = dim.x*2;  ddim.y = dim.y*2;
                 m_interface->CreateButton(pos, ddim, 16, EVENT_BUTTON_OK);
                 m_displayText->DisplayError(INFO_LOST, Math::Vector(0.0f,0.0f,0.0f), 15.0f, 60.0f, 1000.0f);
@@ -1760,7 +1760,7 @@ void CRobotMain::StartDisplayVisit(EventType event)
     // Creates the "continue" button.
     if (m_interface->SearchControl(EVENT_DT_END) == nullptr)
     {
-        Math::Point pos, dim;
+        glm::vec2 pos, dim;
         pos.x = 10.0f/640.0f;
         pos.y = 10.0f/480.0f;
         dim.x = 50.0f/640.0f;
@@ -1820,7 +1820,7 @@ void CRobotMain::FrameVisit(float rTime)
         float level = m_terrain->GetFloorLevel(pos)+2.0f;
         if (pos.y < level) pos.y = level;  // not below the ground
         Math::Vector speed(0.0f, 0.0f, 0.0f);
-        Math::Point dim;
+        glm::vec2 dim;
         dim.x = 30.0f;
         dim.y = dim.x;
         m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISHOW, 2.0f);
@@ -2024,7 +2024,7 @@ CObject* CRobotMain::GetSelect()
 }
 
 //! Detects the object aimed by the mouse
-CObject* CRobotMain::DetectObject(Math::Point pos)
+CObject* CRobotMain::DetectObject(const glm::vec2& pos)
 {
     Math::Vector p;
     int objRank = m_engine->DetectObject(pos, p);
@@ -2112,7 +2112,7 @@ void CRobotMain::HiliteClear()
 }
 
 //! Highlights the object with the mouse hovers over
-void CRobotMain::HiliteObject(Math::Point pos)
+void CRobotMain::HiliteObject(const glm::vec2& pos)
 {
     if (m_fixScene && m_phase != PHASE_APPERANCE) return;
     if (m_movieLock) return;
@@ -2195,13 +2195,15 @@ void CRobotMain::HiliteFrame(float rTime)
 }
 
 //! Creates a tooltip
-void CRobotMain::CreateTooltip(Math::Point pos, const std::string& text)
+void CRobotMain::CreateTooltip(const glm::vec2& position, const std::string& text)
 {
-    Math::Point corner;
+    glm::vec2 pos = position;
+
+    glm::vec2 corner;
     corner.x = pos.x+0.022f;
     corner.y = pos.y-0.052f;
 
-    Math::Point start, end;
+    glm::vec2 start, end;
 
     m_engine->GetText()->SizeText(text, Gfx::FONT_COMMON, Gfx::FONT_SIZE_SMALL,
                                   corner, Gfx::TEXT_ALIGN_LEFT,
@@ -2215,11 +2217,11 @@ void CRobotMain::CreateTooltip(Math::Point pos, const std::string& text)
     pos.x = start.x;
     pos.y = start.y;
 
-    Math::Point dim;
+    glm::vec2 dim;
     dim.x = end.x-start.x;
     dim.y = end.y-start.y;
 
-    Math::Point offset;
+    glm::vec2 offset;
     offset.x = 0.0f;
     offset.y = 0.0f;
     if (pos.x+dim.x > 1.0f) offset.x = 1.0f-(pos.x+dim.x);
@@ -2517,7 +2519,7 @@ bool CRobotMain::EventFrame(const Event &event)
         Ui::CControl* pc = m_interface->SearchControl(EVENT_OBJECT_MOVIELOCK);
         if (pc != nullptr)
         {
-            Math::Point pos, dim;
+            glm::vec2 pos, dim;
 
             dim.x = 32.0f/640.0f;
             dim.y = 32.0f/480.0f;
@@ -2541,7 +2543,7 @@ bool CRobotMain::EventFrame(const Event &event)
         Ui::CControl* pc = m_interface->SearchControl(EVENT_OBJECT_EDITLOCK);
         if (pc != nullptr)
         {
-            Math::Point pos, dim;
+            glm::vec2 pos, dim;
 
             if (m_editFull || m_editLock)
             {
@@ -2571,7 +2573,7 @@ bool CRobotMain::EventFrame(const Event &event)
     Ui::CControl* pc = m_interface->SearchControl(EVENT_OBJECT_SAVING);
     if (pc != nullptr)
     {
-        Math::Point pos, dim;
+        glm::vec2 pos, dim;
 
         if (m_shotSaving <= 0)
         {
@@ -2671,7 +2673,7 @@ void CRobotMain::ShowSaveIndicator(bool show)
     Ui::CControl* pc = m_interface->SearchControl(EVENT_OBJECT_SAVING);
     if (pc != nullptr)
     {
-        Math::Point pos, dim;
+        glm::vec2 pos, dim;
 
         if (!show)
         {
@@ -3159,13 +3161,13 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 uv1   = line->GetParam("uv1")->AsPoint();
                 uv2   = line->GetParam("uv2")->AsPoint();
                 m_planet->Create(line->GetParam("mode")->AsPlanetType(),
-                                Math::Point(ppos.x, ppos.z),
+                                { ppos.x, ppos.z },
                                 line->GetParam("dim")->AsFloat(0.2f),
                                 line->GetParam("speed")->AsFloat(0.0f),
                                 line->GetParam("dir")->AsFloat(0.0f),
                                 line->GetParam("image")->AsPath("textures"),
-                                Math::Point(uv1.x, uv1.z),
-                                Math::Point(uv2.x, uv2.z),
+                                { uv1.x, uv1.z },
+                                { uv2.x, uv2.z },
                                 line->GetParam("image")->AsPath("textures").find("planet") != std::string::npos // TODO: add transparent op or modify textures
                 );
                 continue;
@@ -3336,8 +3338,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
                 m_terrain->AddMaterial(line->GetParam("id")->AsInt(0),
                                     name.c_str(),
-                                    Math::Point(line->GetParam("u")->AsFloat(),
-                                                line->GetParam("v")->AsFloat()),
+                                    { line->GetParam("u")->AsFloat(),
+                                      line->GetParam("v")->AsFloat() },
                                     line->GetParam("up")->AsInt(),
                                     line->GetParam("right")->AsInt(),
                                     line->GetParam("down")->AsInt(),
@@ -3497,7 +3499,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 float delay = line->GetParam("delay")->AsFloat(2.0f);
                 m_terrain->AdjustToFloor(pos);
                 pos.y += height;
-                Math::Point dim;
+                glm::vec2 dim;
                 dim.x = ddim;
                 dim.y = dim.x;
                 m_particle->CreateParticle(pos, Math::Vector(0.0f, 0.0f, 0.0f), dim, type, delay, 0.0f, 0.0f);
@@ -3962,8 +3964,8 @@ void CRobotMain::ChangeColor()
 
     // Player texture
 
-    Math::Point ts = Math::Point(0.0f, 0.0f);
-    Math::Point ti = Math::Point(1.0f, 1.0f);  // the entire image
+    glm::vec2 ts = { 0.0f, 0.0f };
+    glm::vec2 ti = { 1.0f, 1.0f };  // the entire image
 
     Gfx::Color colorRef1, colorNew1, colorRef2, colorNew2;
 
@@ -3979,13 +3981,13 @@ void CRobotMain::ChangeColor()
     colorRef2.b =   1.0f/256.0f;  // orange
     colorNew2 = m_playerProfile->GetApperance().colorBand;
 
-    Math::Point exclu[6];
-    exclu[0] = Math::Point(192.0f/256.0f,   0.0f/256.0f);
-    exclu[1] = Math::Point(256.0f/256.0f,  64.0f/256.0f);  // crystals + cylinders
-    exclu[2] = Math::Point(208.0f/256.0f, 224.0f/256.0f);
-    exclu[3] = Math::Point(256.0f/256.0f, 256.0f/256.0f);  // SatCom screen
-    exclu[4] = Math::Point(0.0f, 0.0f);
-    exclu[5] = Math::Point(0.0f, 0.0f);  // terminator
+    glm::vec2 exclu[6];
+    exclu[0] = { 192.0f / 256.0f,   0.0f / 256.0f };
+    exclu[1] = { 256.0f / 256.0f,  64.0f / 256.0f };  // crystals + cylinders
+    exclu[2] = { 208.0f / 256.0f, 224.0f / 256.0f };
+    exclu[3] = { 256.0f / 256.0f, 256.0f / 256.0f };  // SatCom screen
+    exclu[4] = { 0.0f, 0.0f };
+    exclu[5] = { 0.0f, 0.0f };  // terminator
     m_engine->ChangeTextureColor("textures/objects/human.png", colorRef1, colorNew1, colorRef2, colorNew2, 0.30f, 0.01f, ts, ti, exclu);
 
     float tolerance;
@@ -4029,10 +4031,10 @@ void CRobotMain::ChangeColor()
 
     char name[100];
     sprintf(name, "textures/objects/face%.2d.png", face+1);
-    exclu[0] = Math::Point(105.0f/256.0f, 47.0f/166.0f);
-    exclu[1] = Math::Point(153.0f/256.0f, 79.0f/166.0f);  // blue canister
-    exclu[2] = Math::Point(0.0f, 0.0f);
-    exclu[3] = Math::Point(0.0f, 0.0f);  // terminator
+    exclu[0] = { 105.0f / 256.0f, 47.0f / 166.0f };
+    exclu[1] = { 153.0f / 256.0f, 79.0f / 166.0f };  // blue canister
+    exclu[2] = { 0.0f, 0.0f };
+    exclu[3] = { 0.0f, 0.0f };  // terminator
     m_engine->ChangeTextureColor(name, colorRef1, colorNew1, colorRef2, colorNew2, tolerance, 0.00f, ts, ti, exclu);
 
     colorRef2.r = 0.0f;
@@ -4044,7 +4046,7 @@ void CRobotMain::ChangeColor()
 
     // VehicleColor
 
-    for (auto it : m_colorNewBot)
+    for (const auto& it : m_colorNewBot)
     {
         int team = it.first;
         Gfx::Color newColor = it.second;
@@ -4060,27 +4062,27 @@ void CRobotMain::ChangeColor()
         m_engine->ChangeTextureColor("textures/objects/search.png"+teamStr,  "textures/objects/search.png",  COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
         m_engine->ChangeTextureColor("textures/objects/rollert.png"+teamStr, "textures/objects/rollert.png", COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
 
-        exclu[0] = Math::Point(  0.0f/256.0f, 160.0f/256.0f);
-        exclu[1] = Math::Point(256.0f/256.0f, 256.0f/256.0f);  // pencils
-        exclu[2] = Math::Point(0.0f, 0.0f);
-        exclu[3] = Math::Point(0.0f, 0.0f);  // terminator
+        exclu[0] = { 0.0f / 256.0f, 160.0f / 256.0f };
+        exclu[1] = { 256.0f / 256.0f, 256.0f / 256.0f };  // pencils
+        exclu[2] = { 0.0f, 0.0f };
+        exclu[3] = { 0.0f, 0.0f };  // terminator
         m_engine->ChangeTextureColor("textures/objects/drawer.png"+teamStr, "textures/objects/drawer.png",  COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, exclu, 0, true);
 
-        exclu[0] = Math::Point(237.0f/256.0f, 176.0f/256.0f);
-        exclu[1] = Math::Point(256.0f/256.0f, 220.0f/256.0f);  // blue canister
-        exclu[2] = Math::Point(106.0f/256.0f, 150.0f/256.0f);
-        exclu[3] = Math::Point(130.0f/256.0f, 214.0f/256.0f);  // safe location
-        exclu[4] = Math::Point(0.0f, 0.0f);
-        exclu[5] = Math::Point(0.0f, 0.0f);  // terminator
+        exclu[0] = { 237.0f / 256.0f, 176.0f / 256.0f };
+        exclu[1] = { 256.0f / 256.0f, 220.0f / 256.0f };  // blue canister
+        exclu[2] = { 106.0f / 256.0f, 150.0f / 256.0f };
+        exclu[3] = { 130.0f / 256.0f, 214.0f / 256.0f };  // safe location
+        exclu[4] = { 0.0f, 0.0f };
+        exclu[5] = { 0.0f, 0.0f };  // terminator
         m_engine->ChangeTextureColor("textures/objects/subm.png"+teamStr,   "textures/objects/subm.png",    COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, exclu, 0, true);
     }
 
     // AlienColor
 
-    exclu[0] = Math::Point(128.0f/256.0f, 160.0f/256.0f);
-    exclu[1] = Math::Point(256.0f/256.0f, 256.0f/256.0f);  // SatCom
-    exclu[2] = Math::Point(0.0f, 0.0f);
-    exclu[3] = Math::Point(0.0f, 0.0f);  // terminator
+    exclu[0] = { 128.0f / 256.0f, 160.0f / 256.0f };
+    exclu[1] = { 256.0f / 256.0f, 256.0f / 256.0f };  // SatCom
+    exclu[2] = { 0.0f, 0.0f };
+    exclu[3] = { 0.0f, 0.0f };  // terminator
     m_engine->ChangeTextureColor("textures/objects/ant.png",     COLOR_REF_ALIEN, m_colorNewAlien, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti, exclu);
     m_engine->ChangeTextureColor("textures/objects/mother.png",  COLOR_REF_ALIEN, m_colorNewAlien, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti);
 
@@ -4090,13 +4092,13 @@ void CRobotMain::ChangeColor()
     // water color
 
     // PARTIPLOUF0 and PARTIDROP :
-    ts = Math::Point(0.500f, 0.500f);
-    ti = Math::Point(0.875f, 0.750f);
+    ts = { 0.500f, 0.500f };
+    ti = { 0.875f, 0.750f };
     m_engine->ChangeTextureColor("textures/effect00.png", COLOR_REF_WATER, m_colorNewWater, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, nullptr, m_colorShiftWater, true);
 
     // PARTIFLIC :
-    ts = Math::Point(0.00f, 0.75f);
-    ti = Math::Point(0.25f, 1.00f);
+    ts = { 0.00f, 0.75f };
+    ti = { 0.25f, 1.00f };
     m_engine->ChangeTextureColor("textures/effect02.png", COLOR_REF_WATER, m_colorNewWater, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, nullptr, m_colorShiftWater, true);
 }
 
@@ -4163,10 +4165,10 @@ bool CRobotMain::FreeSpace(Math::Vector &center, float minRadius, float maxRadiu
             float ia = space/radius;
             for (float angle = 0.0f; angle < Math::PI*2.0f; angle += ia)
             {
-                Math::Point p;
+                glm::vec2 p;
                 p.x = center.x+radius;
                 p.y = center.z;
-                p = Math::RotatePoint(Math::Point(center.x, center.z), angle, p);
+                p = Math::RotatePoint({ center.x, center.z }, angle, p);
                 Math::Vector pos;
                 pos.x = p.x;
                 pos.z = p.y;
@@ -4192,10 +4194,10 @@ bool CRobotMain::FreeSpace(Math::Vector &center, float minRadius, float maxRadiu
             float ia = space/radius;
             for (float angle=0.0f ; angle<Math::PI*2.0f ; angle+=ia )
             {
-                Math::Point p;
+                glm::vec2 p;
                 p.x = center.x+radius;
                 p.y = center.z;
-                p = Math::RotatePoint(Math::Point(center.x, center.z), angle, p);
+                p = Math::RotatePoint({ center.x, center.z }, angle, p);
                 Math::Vector pos;
                 pos.x = p.x;
                 pos.z = p.y;
@@ -4228,10 +4230,10 @@ bool CRobotMain::FlatFreeSpace(Math::Vector &center, float minFlat, float minRad
             float ia = space/radius;
             for (float angle = 0.0f; angle < Math::PI*2.0f; angle += ia)
             {
-                Math::Point p;
+                glm::vec2 p;
                 p.x = center.x+radius;
                 p.y = center.z;
-                p = Math::RotatePoint(Math::Point(center.x, center.z), angle, p);
+                p = Math::RotatePoint({ center.x, center.z }, angle, p);
                 Math::Vector pos;
                 pos.x = p.x;
                 pos.z = p.y;
@@ -4261,10 +4263,10 @@ bool CRobotMain::FlatFreeSpace(Math::Vector &center, float minFlat, float minRad
             float ia = space/radius;
             for (float angle=0.0f ; angle<Math::PI*2.0f ; angle+=ia )
             {
-                Math::Point p;
+                glm::vec2 p;
                 p.x = center.x+radius;
                 p.y = center.z;
-                p = Math::RotatePoint(Math::Point(center.x, center.z), angle, p);
+                p = Math::RotatePoint({ center.x, center.z }, angle, p);
                 Math::Vector pos;
                 pos.x = p.x;
                 pos.z = p.y;
@@ -4417,16 +4419,16 @@ void CRobotMain::SetShowLimit(int i, Gfx::ParticleType parti, CObject *obj,
 
     if (radius <= 0.0f) return;
 
-    Math::Point dim;
+    glm::vec2 dim;
     float dist;
     if (radius <= 50.0f)
     {
-        dim = Math::Point(0.3f, 0.3f);
+        dim = { 0.3f, 0.3f };
         dist = 2.5f;
     }
     else
     {
-        dim = Math::Point(1.5f, 1.5f);
+        dim = { 1.5f, 1.5f };
         dist = 10.0f;
     }
 
@@ -4494,10 +4496,10 @@ void CRobotMain::FrameShowLimit(float rTime)
         {
             if (m_showLimit[i].parti[j] == 0) continue;
 
-            Math::Point center;
+            glm::vec2 center;
             center.x = m_showLimit[i].pos.x;
             center.y = m_showLimit[i].pos.z;
-            Math::Point rotate;
+            glm::vec2 rotate;
             rotate.x = center.x+m_showLimit[i].radius*factor;
             rotate.y = center.y;
             rotate = Math::RotatePoint(center, angle, rotate);
@@ -6050,7 +6052,7 @@ void CRobotMain::StartDetectEffect(COldObject* object, CObject* target)
 {
     Math::Matrix*   mat;
     Math::Vector    pos, goal;
-    Math::Point     dim;
+    glm::vec2       dim;
 
     mat = object->GetWorldMatrix(0);
     pos = Math::Transform(*mat, Math::Vector(2.0f, 3.0f, 0.0f));
@@ -6088,7 +6090,7 @@ void CRobotMain::CreateCodeBattleInterface()
 {
     if (m_phase == PHASE_SIMUL)
     {
-        Math::Point pos, ddim;
+        glm::vec2 pos, ddim;
         float offset = (ceil(m_viewpoints.size() / 2.0f) * 50);
 
         int numTeams = m_scoreboard ? GetAllTeams().size() : 0;

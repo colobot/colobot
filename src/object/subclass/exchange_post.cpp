@@ -313,7 +313,7 @@ void CAutoInfo::Start(int param)
     m_goal = m_object->GetPosition();
 
     Math::Vector    pos, speed;
-    Math::Point     dim;
+    glm::vec2       dim;
 
     if (m_phase == Phase::Send)
     {
@@ -411,7 +411,7 @@ bool CAutoInfo::EventProcess(const Event &event)
                 speed.z = (Math::Rand()-0.5f)*50.0f;
                 speed.y = (Math::Rand()-0.5f)*50.0f;
                 speed *= 0.5f+m_progress*0.5f;
-                Math::Point dim(0.6f, 0.6f);
+                glm::vec2 dim(0.6f, 0.6f);
                 float duration = Math::Rand()*0.5f+0.5f;
                 m_particle->CreateTrack(pos, speed, dim, Gfx::PARTITRACK6,
                                          duration, 0.0f,
@@ -458,7 +458,7 @@ bool CAutoInfo::EventProcess(const Event &event)
                 pos.z += (Math::Rand()-0.5f)*40.0f;
                 speed = (speed-pos)*1.0f;
 //?             speed *= 0.5f+m_progress*0.5f;
-                Math::Point dim(0.6f, 0.6f);
+                glm::vec2 dim(0.6f, 0.6f);
                 float duration = Math::Rand()*0.5f+0.5f;
                 m_particle->CreateTrack(pos, speed, dim, Gfx::PARTITRACK6,
                                          duration, 0.0f,
@@ -500,7 +500,7 @@ bool CAutoInfo::EventProcess(const Event &event)
             speed.x = (Math::Rand()-0.5f)*5.0f;
             speed.z = (Math::Rand()-0.5f)*5.0f;
             speed.y = 5.0f+Math::Rand()*5.0f;
-            Math::Point dim;
+            glm::vec2 dim;
             dim.x = 5.0f+Math::Rand()*5.0f;
             dim.y = dim.x;
             float duration = 4.0f;
@@ -578,7 +578,7 @@ bool CAutoInfo::CreateInterface(bool select)
     float sx = 33.0f/640.0f;
     float sy = 33.0f/480.0f;
 
-    Math::Point pos, ddim;
+    glm::vec2 pos, ddim;
 
     pos.x = ox+sx*7.0f;
     pos.y = oy+sy*0.0f;

@@ -197,7 +197,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
             obj->SetObjectRank(1+i, rank);
             obj->SetObjectParent(1+i, 0);
             modelManager->AddModelReference("base2.mod", false, rank, params.team);
-            Math::Point p = Math::RotatePoint(-Math::PI/4.0f*i, 27.8f);
+            glm::vec2 p = Math::RotatePoint(-Math::PI/4.0f*i, 27.8f);
             obj->SetPartPosition(1+i, Math::Vector(p.x, 30.0f, p.y));
             obj->SetPartRotationY(1+i, Math::PI/4.0f*i);
             obj->SetPartRotationZ(1+i, Math::PI/2.0f);
