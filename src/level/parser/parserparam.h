@@ -33,12 +33,12 @@
 
 #include "level/scoreboard.h"
 
-#include "math/point.h"
-
 #include "object/drive_type.h"
 #include "object/mission_type.h"
 #include "object/object_type.h"
 #include "object/tool_type.h"
+
+#include <glm/glm.hpp>
 
 #include <string>
 #include <vector>
@@ -60,7 +60,7 @@ public:
     CLevelParserParam(std::string value);
     CLevelParserParam(bool value);
     CLevelParserParam(Gfx::Color value);
-    CLevelParserParam(Math::Point value);
+    CLevelParserParam(glm::vec2 value);
     CLevelParserParam(Math::Vector value);
     CLevelParserParam(ObjectType value);
     CLevelParserParam(Gfx::CameraType value);

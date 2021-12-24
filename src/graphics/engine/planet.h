@@ -26,8 +26,9 @@
 
 #include "graphics/engine/planet_type.h"
 
-#include "math/point.h"
+#include <glm/glm.hpp>
 
+#include <string>
 #include <vector>
 
 struct Event;
@@ -57,8 +58,8 @@ public:
     //! Management of an event
     bool        EventProcess(const Event &event);
     //! Creates a new planet
-    void        Create(PlanetType type, Math::Point start, float dim, float speed, float dir,
-                       const std::string& name, Math::Point uv1, Math::Point uv2,
+    void        Create(PlanetType type, const glm::vec2& start, float dim, float speed, float dir,
+                       const std::string& name, const glm::vec2& uv1, const glm::vec2& uv2,
                        bool transparent);
     //! Indicates if there is at least one planet
     bool        PlanetExist();
@@ -88,9 +89,9 @@ protected:
         //! Type of planet
         PlanetType      type = PlanetType::Sky;
         //! Initial position in degrees
-        Math::Point     start;
+        glm::vec2       start;
         //! Current position in degrees
-        Math::Point     angle;
+        glm::vec2       angle;
         //! Dimensions (0..1)
         float           dim = 0.0f;
         //! Speed
@@ -100,7 +101,7 @@ protected:
         //! Name of the texture
         std::string     name;
         //! Texture mapping
-        Math::Point     uv1, uv2;
+        glm::vec2       uv1, uv2;
 
         // TODO: make all textures transparent?
         //! Transparent texture

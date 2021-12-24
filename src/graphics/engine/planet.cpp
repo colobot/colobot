@@ -113,7 +113,7 @@ void CPlanet::Draw()
         else
             m_engine->SetState(ENG_RSTATE_WRAP | ENG_RSTATE_TTEXTURE_BLACK);
 
-        Math::Point p1, p2;
+        glm::vec2 p1, p2;
 
         // Determine the 2D coordinates of the centre of the planet.
 
@@ -141,10 +141,10 @@ void CPlanet::Draw()
 
         Vertex quad[4] =
         {
-            { Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(u1, v2) },
-            { Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(u1, v1) },
-            { Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(u2, v2) },
-            { Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(u2, v1) }
+            { Math::Vector(p1.x, p1.y, 0.0f), n, { u1, v2 } },
+            { Math::Vector(p1.x, p2.y, 0.0f), n, { u1, v1 } },
+            { Math::Vector(p2.x, p1.y, 0.0f), n, { u2, v2 } },
+            { Math::Vector(p2.x, p2.y, 0.0f), n, { u2, v1 } }
         };
 
         device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, quad, 4);
@@ -152,8 +152,8 @@ void CPlanet::Draw()
     }
 }
 
-void CPlanet::Create(PlanetType type, Math::Point start, float dim, float speed,
-                     float dir, const std::string& name, Math::Point uv1, Math::Point uv2,
+void CPlanet::Create(PlanetType type, const glm::vec2& start, float dim, float speed,
+                     float dir, const std::string& name, const glm::vec2& uv1, const glm::vec2& uv2,
                      bool transparent)
 {
     Planet planet;

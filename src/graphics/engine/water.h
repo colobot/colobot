@@ -108,7 +108,7 @@ protected:
     //! Makes evolve the steam jets on the lava
     void        LavaFrame(float rTime);
     //! Adjusts the position to normal, to imitate reflections on an expanse of water at rest
-    void        AdjustLevel(Math::Vector &pos, Math::Vector &norm, Math::Point &uv1, Math::Point &uv2);
+    void        AdjustLevel(Math::Vector &pos, Math::Vector &norm, glm::vec2& uv1, glm::vec2& uv2);
     //! Indicates if there is water in a given position
     bool        GetWater(int x, int y);
     //! Updates the positions, relative to the ground

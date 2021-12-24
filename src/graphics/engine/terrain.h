@@ -27,7 +27,6 @@
 #include "graphics/core/vertex.h"
 
 #include "math/const.h"
-#include "math/point.h"
 #include "math/vector.h"
 
 #include <string>
@@ -159,7 +158,7 @@ public:
     //! Clears all terrain materials
     void        FlushMaterials();
     //! Adds a terrain material the names of textures to use for the land
-    void        AddMaterial(int id, const std::string& texName, const Math::Point& uv,
+    void        AddMaterial(int id, const std::string& texName, const glm::vec2& uv,
                             int up, int right, int down, int left, float hardness);
     //! Initializes all the ground with one material
     bool        InitMaterials(int id);
@@ -266,7 +265,7 @@ protected:
     //! Seeks a material based on neighbor values
     int         FindMaterialByNeighbors(char *mat);
     //! Returns the texture name and UV coords to use for a given square
-    void        GetTexture(int x, int y, std::string& name, Math::Point& uv);
+    void        GetTexture(int x, int y, std::string& name, glm::vec2& uv);
     //! Returns the height of the terrain
     float       GetHeight(int x, int y);
     //! Decide whether a point is using the materials
@@ -334,7 +333,7 @@ protected:
         //! Texture
         std::string texName;
         //! UV texture coordinates
-        Math::Point uv;
+        glm::vec2   uv;
         //! Terrain hardness (defines e.g. sound of walking)
         float       hardness = 0.0f;
         //! IDs of neighbor materials: up, right, down, left

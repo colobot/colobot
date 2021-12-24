@@ -73,7 +73,7 @@ CLevelParserParam::CLevelParserParam(Gfx::Color value)
     LoadArray();
 }
 
-CLevelParserParam::CLevelParserParam(Math::Point value)
+CLevelParserParam::CLevelParserParam(glm::vec2 value)
 {
     m_array.push_back(MakeUnique<CLevelParserParam>(value.x));
     m_array.push_back(MakeUnique<CLevelParserParam>(value.y));

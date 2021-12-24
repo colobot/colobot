@@ -161,7 +161,7 @@ void CTerrain::FlushMaterials()
     FlushMaterialPoints();
 }
 
-void CTerrain::AddMaterial(int id, const std::string& texName, const Math::Point &uv,
+void CTerrain::AddMaterial(int id, const std::string& texName, const glm::vec2& uv,
                            int up, int right, int down, int left,
                            float hardness)
 {
@@ -754,7 +754,7 @@ CTerrain::TerrainMaterial* CTerrain::FindMaterial(int id)
     return nullptr;
 }
 
-void CTerrain::GetTexture(int x, int y, std::string& name, Math::Point &uv)
+void CTerrain::GetTexture(int x, int y, std::string& name, glm::vec2&uv)
 {
     x /= m_brickCount/m_textureSubdivCount;
     y /= m_brickCount/m_textureSubdivCount;
@@ -1807,7 +1807,7 @@ float CTerrain::GetFlatZoneRadius(Math::Vector center, float max)
         return 0.0f;
 
     float ref = GetFloorLevel(center, true);
-    Math::Point c(center.x, center.z);
+    glm::vec2 c = { center.x, center.z };
     float radius = 1.0f;
 
     while (radius <= max)
@@ -1816,10 +1816,10 @@ float CTerrain::GetFlatZoneRadius(Math::Vector center, float max)
         int nb = static_cast<int>(2.0f*Math::PI*radius);
         if (nb < 8) nb = 8;
 
-        Math::Point p (center.x+radius, center.z);
+        glm::vec2 p = { center.x + radius, center.z };
         for (int i = 0; i < nb; i++)
         {
-            Math::Point result = Math::RotatePoint(c, angle, p);
+            glm::vec2 result = Math::RotatePoint(c, angle, p);
             Math::Vector pos;
             pos.x = result.x;
             pos.z = result.y;

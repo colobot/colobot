@@ -191,7 +191,7 @@ void CWater::VaporFrame(int i, float rTime)
                     speed.x = (Math::Rand()-0.5f)*6.0f;
                     speed.z = (Math::Rand()-0.5f)*6.0f;
                     speed.y = 8.0f+Math::Rand()*5.0f;
-                    Math::Point dim;
+                    glm::vec2 dim;
                     dim.x = Math::Rand()*1.5f+1.5f;
                     dim.y = dim.x;
                     m_particle->CreateParticle(pos, speed, dim, PARTIERROR, 2.0f, 10.0f);
@@ -207,7 +207,7 @@ void CWater::VaporFrame(int i, float rTime)
                 speed.x = (Math::Rand()-0.5f)*2.0f;
                 speed.z = (Math::Rand()-0.5f)*2.0f;
                 speed.y = 4.0f+Math::Rand()*4.0f;
-                Math::Point dim;
+                glm::vec2 dim;
                 dim.x = Math::Rand()*2.0f+2.0f;
                 dim.y = dim.x;
                 m_particle->CreateParticle(pos, speed, dim, PARTIFLAME);
@@ -222,7 +222,7 @@ void CWater::VaporFrame(int i, float rTime)
                 speed.x = (Math::Rand()-0.5f)*2.0f;
                 speed.z = (Math::Rand()-0.5f)*2.0f;
                 speed.y = 8.0f+Math::Rand()*8.0f;
-                Math::Point dim;
+                glm::vec2 dim;
                 dim.x = Math::Rand()*1.0f+1.0f;
                 dim.y = dim.x;
                 m_particle->CreateParticle(pos, speed, dim, PARTIVAPOR);
@@ -236,7 +236,7 @@ void CWater::VaporFrame(int i, float rTime)
 }
 
 void CWater::AdjustLevel(Math::Vector &pos, Math::Vector &norm,
-                              Math::Point &uv1, Math::Point &uv2)
+                         glm::vec2& uv1, glm::vec2& uv2)
 {
     float t1 = m_time*1.5f + pos.x*0.1f * pos.z*0.2f;
     pos.y += sinf(t1)*m_eddy.y;
@@ -384,7 +384,7 @@ void CWater::DrawSurf()
 
         int vertexIndex = 0;
 
-        Math::Point uv1, uv2;
+        glm::vec2 uv1, uv2;
         Math::Vector n;
 
         p.x = pos.x-size;
