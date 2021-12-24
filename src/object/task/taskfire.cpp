@@ -66,7 +66,7 @@ bool CTaskFire::EventProcess(const Event &event)
     Math::Matrix*   mat;
     Math::Vector    pos, speed, dir, vib;
     ObjectType  type;
-    Math::Point     dim;
+    glm::vec2   dim;
     float       energy, fire;
     int         i, channel;
 

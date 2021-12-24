@@ -74,7 +74,7 @@ bool CTaskShield::EventProcess(const Event &event)
     Math::Matrix    matrix;
     Math::Vector    pos, speed, goal, angle;
     Gfx::Color      color;
-    Math::Point     dim;
+    glm::vec2       dim;
     float           energy;
 
     if ( m_engine->GetPause() )  return true;
@@ -259,7 +259,7 @@ Error CTaskShield::Start(TaskShieldMode mode, float delay)
     if ( mode == TSM_START )
     {
         Math::Vector pos;
-        Math::Point dim;
+        glm::vec2 dim;
 
         pos.x = 7.0f;
         pos.y = 4.5f+3.0f;
@@ -382,7 +382,7 @@ Error CTaskShield::Stop()
 Error CTaskShield::IsEnded()
 {
     Math::Vector    pos, speed;
-    Math::Point     dim;
+    glm::vec2       dim;
     float       energy;
 
     if ( m_engine->GetPause() )  return ERR_CONTINUE;

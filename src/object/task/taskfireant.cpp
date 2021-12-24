@@ -124,7 +124,7 @@ Error CTaskFireAnt::IsEnded()
 {
     Math::Matrix*   mat;
     Math::Vector    pos, speed;
-    Math::Point     dim;
+    glm::vec2       dim;
     float       angle, dist;
     int         i, channel;
 

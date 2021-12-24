@@ -63,7 +63,7 @@ CTaskRecover::~CTaskRecover()
 bool CTaskRecover::EventProcess(const Event &event)
 {
     Math::Vector    pos, speed;
-    Math::Point     dim;
+    glm::vec2       dim;
     float       a, g, cirSpeed, angle, energy, dist, linSpeed;
 
     if ( m_engine->GetPause() )  return true;
@@ -230,7 +230,7 @@ Error CTaskRecover::IsEnded()
 {
     Math::Matrix*   mat;
     Math::Vector    pos, speed, goal;
-    Math::Point     dim;
+    glm::vec2       dim;
     float       angle, dist, time;
     int         i;
 
@@ -314,7 +314,7 @@ Error CTaskRecover::IsEnded()
         goal = Math::Vector(RECOVER_DIST, 3.1f, -3.9f);
         goal = Transform(*mat, goal);
         m_particle->CreateRay(pos, goal, Gfx::PARTIRAY2,
-                               Math::Point(2.0f, 2.0f), 8.0f);
+                              { 2.0f, 2.0f }, 8.0f);
 
         m_soundChannel = m_sound->Play(SOUND_RECOVER, m_ruin->GetPosition(), 0.0f, 1.0f, true);
         m_sound->AddEnvelope(m_soundChannel, 0.6f, 1.0f, 2.0f, SOPER_CONTINUE);

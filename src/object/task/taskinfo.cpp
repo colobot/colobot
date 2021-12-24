@@ -102,7 +102,7 @@ Error CTaskInfo::Start(const char *name, float value, float power, bool send)
         pos.y += 9.5f;
         goal = m_object->GetPosition();
         goal.y += 4.0f;
-        m_particle->CreateRay(pos, goal, Gfx::PARTIRAY3, Math::Point(2.0f, 2.0f), 1.0f);
+        m_particle->CreateRay(pos, goal, Gfx::PARTIRAY3, { 2.0f, 2.0f }, 1.0f);
     }
     if (op == 2)  // reception?
     {
@@ -110,7 +110,7 @@ Error CTaskInfo::Start(const char *name, float value, float power, bool send)
         goal.y += 9.5f;
         pos = m_object->GetPosition();
         pos.y += 4.0f;
-        m_particle->CreateRay(pos, goal, Gfx::PARTIRAY3, Math::Point(2.0f, 2.0f), 1.0f);
+        m_particle->CreateRay(pos, goal, Gfx::PARTIRAY3, { 2.0f, 2.0f }, 1.0f);
     }
 
     m_progress = 0.0f;

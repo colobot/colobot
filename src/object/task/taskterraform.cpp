@@ -71,7 +71,7 @@ bool CTaskTerraform::EventProcess(const Event &event)
     CObject*    power;
     Math::Matrix*   mat;
     Math::Vector    pos, dir, speed;
-    Math::Point     dim;
+    glm::vec2       dim;
     float       energy;
 
     if ( m_engine->GetPause() )  return true;
@@ -244,7 +244,7 @@ Error CTaskTerraform::IsEnded()
 {
     CObject*    power;
     Math::Vector    pos, speed;
-    Math::Point     dim;
+    glm::vec2       dim;
     float       dist, duration;
     int         i, max;
 

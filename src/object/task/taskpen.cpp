@@ -48,7 +48,7 @@ CTaskPen::~CTaskPen()
 bool CTaskPen::EventProcess(const Event &event)
 {
     Math::Vector    pos, speed;
-    Math::Point     dim;
+    glm::vec2       dim;
     int         i;
 
     if ( m_engine->GetPause() )  return true;

@@ -127,7 +127,7 @@ void CTaskBuild::CreateLight()
 {
     Gfx::Color   color;
     Math::Vector center, pos, dir;
-    Math::Point  c, p;
+    glm::vec2    c, p;
     float        angle;
     int          i;
 
@@ -205,7 +205,7 @@ bool CTaskBuild::EventProcess(const Event &event)
 {
     Math::Matrix*       mat;
     Math::Vector        pos, dir, speed, pv, pm, tilt;
-    Math::Point         dim;
+    glm::vec2           dim;
     float           a, g, cirSpeed, dist, linSpeed, diff;
 
     if ( m_engine->GetPause() )  return true;
@@ -665,7 +665,7 @@ Error CTaskBuild::FlatFloor()
 {
     ObjectType  type;
     Math::Vector    center, pos, bPos;
-    Math::Point     c, p;
+    glm::vec2       c, p;
     float       radius, max, bRadius = 0.0f, angle, dist;
     bool        bLittleFlat, bBase;
 
