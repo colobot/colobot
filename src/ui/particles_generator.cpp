@@ -28,7 +28,7 @@ namespace UI
         m_particleManager = Gfx::CEngine::GetInstancePointer()->GetParticle();
     }
 
-    void CParticlesGenerator::GenerateMouseParticles(Math::Point mousePosition, bool buttonPressed)
+    void CParticlesGenerator::GenerateMouseParticles(const glm::vec2& mousePosition, bool buttonPressed)
     {
         Gfx::ParticleType particleType = buttonPressed ? Gfx::ParticleType::PARTISCRAPS : Gfx::ParticleType::PARTILENS1;
         m_particleManager->CreateParticle(Math::Vector(mousePosition.x, mousePosition.y, 0), CreateRandomSpeedForMouseParticles(),
@@ -36,10 +36,10 @@ namespace UI
             CreateRandomDurationForMouseParticles(), 2.0f, 0.0f, Gfx::SH_INTERFACE);
     }
 
-    Math::Point CParticlesGenerator::CreateRandomDimensionsForMouseParticles(bool buttonPressed)
+    glm::vec2 CParticlesGenerator::CreateRandomDimensionsForMouseParticles(bool buttonPressed)
     {
         float dimensionX = buttonPressed ? (0.005f + Math::Rand() * 0.005f) : (0.01f + Math::Rand() * 0.01f);
-        return Math::Point(dimensionX, dimensionX / 0.75f);
+        return { dimensionX, dimensionX / 0.75f };
     }
 
     Math::Vector CParticlesGenerator::CreateRandomSpeedForMouseParticles()

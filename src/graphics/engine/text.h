@@ -27,8 +27,6 @@
 
 #include "graphics/core/color.h"
 
-#include "math/point.h"
-
 #include <map>
 #include <memory>
 #include <vector>
@@ -269,22 +267,22 @@ public:
     //! Draws text (multi-format)
     void        DrawText(const std::string &text, std::vector<FontMetaChar>::iterator format,
                          std::vector<FontMetaChar>::iterator end,
-                         float size, Math::Point pos, float width, TextAlign align,
+                         float size, glm::vec2 pos, float width, TextAlign align,
                          int eol, Color color = Color(0.0f, 0.0f, 0.0f, 1.0f));
     //! Draws text (one font)
     void        DrawText(const std::string &text, FontType font,
-                         float size, Math::Point pos, float width, TextAlign align,
+                         float size, glm::vec2 pos, float width, TextAlign align,
                          int eol, Color color = Color(0.0f, 0.0f, 0.0f, 1.0f));
 
     //! Calculates dimensions for text (multi-format)
     void        SizeText(const std::string &text, std::vector<FontMetaChar>::iterator format,
                          std::vector<FontMetaChar>::iterator endFormat,
-                         float size, Math::Point pos, TextAlign align,
-                         Math::Point &start, Math::Point &end);
+                         float size, glm::vec2 pos, TextAlign align,
+                         glm::vec2&start, glm::vec2&end);
     //! Calculates dimensions for text (one font)
     void        SizeText(const std::string &text, FontType font,
-                         float size, Math::Point pos, TextAlign align,
-                         Math::Point &start, Math::Point &end);
+                         float size, glm::vec2 pos, TextAlign align,
+                         glm::vec2&start, glm::vec2&end);
 
     //! Returns the ascent font metric
     float       GetAscent(FontType font, float size);

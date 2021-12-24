@@ -175,7 +175,7 @@ static char RandomLetter()
 }
 
 /** Returns the channel of the particle created or -1 on error. */
-int CParticle::CreateParticle(Math::Vector pos, Math::Vector speed, Math::Point dim,
+int CParticle::CreateParticle(Math::Vector pos, Math::Vector speed, const glm::vec2& dim,
                               ParticleType type,
                               float duration, float mass,
                               float windSensitivity, int sheet)
@@ -509,7 +509,7 @@ int CParticle::CreatePart(Math::Vector pos, Math::Vector speed,
 
 /** Returns the channel of the particle created or -1 on error */
 int CParticle::CreateRay(Math::Vector pos, Math::Vector goal,
-                          ParticleType type, Math::Point dim,
+                          ParticleType type, const glm::vec2& dim,
                           float duration, int sheet)
 {
     int t = -1;
@@ -566,7 +566,7 @@ int CParticle::CreateRay(Math::Vector pos, Math::Vector goal,
 }
 
 /** "length" is the length of the tail of drag (in seconds)! */
-int CParticle::CreateTrack(Math::Vector pos, Math::Vector speed, Math::Point dim,
+int CParticle::CreateTrack(Math::Vector pos, Math::Vector speed, const glm::vec2& dim,
                            ParticleType type, float duration, float mass,
                            float length, float width)
 {
@@ -714,7 +714,7 @@ void CParticle::SetPosition(int channel, Math::Vector pos)
     m_particle[channel].pos = pos;
 }
 
-void CParticle::SetDimension(int channel, Math::Point dim)
+void CParticle::SetDimension(int channel, const glm::vec2& dim)
 {
     if (!CheckChannel(channel))  return;
     m_particle[channel].dim = dim;
@@ -738,7 +738,7 @@ void CParticle::SetIntensity(int channel, float intensity)
     m_particle[channel].intensity = intensity;
 }
 
-void CParticle::SetParam(int channel, Math::Vector pos, Math::Point dim, float zoom,
+void CParticle::SetParam(int channel, Math::Vector pos, const glm::vec2& dim, float zoom,
                           float angle, float intensity)
 {
     if (!CheckChannel(channel))  return;
@@ -791,7 +791,7 @@ void CParticle::FrameParticle(float rTime)
     Math::Vector wind = m_terrain->GetWind();
     Math::Vector eye = m_engine->GetEyePt();
 
-    Math::Point ts, ti;
+    glm::vec2 ts, ti;
     Math::Vector pos;
 
     for (int i = 0; i < MAXPARTICULE*MAXPARTITYPE; i++)
@@ -1121,7 +1121,7 @@ void CParticle::FrameParticle(float rTime)
                         speed.x = 0.0f;
                         speed.z = 0.0f;
                         speed.y = 0.0f;
-                        Math::Point dim;
+                        glm::vec2 dim;
                         dim.x = Math::Rand()*6.0f+6.0f;
                         dim.y = dim.x;
                         float duration = Math::Rand()*1.0f+1.0f;
@@ -1168,7 +1168,7 @@ void CParticle::FrameParticle(float rTime)
                         speed.x = 0.0f;
                         speed.z = 0.0f;
                         speed.y = 0.0f;
-                        Math::Point dim;
+                        glm::vec2 dim;
                         dim.x = Math::Rand()*6.0f+6.0f;
                         dim.y = dim.x;
                         float duration = Math::Rand()*1.0f+1.0f;
@@ -1224,7 +1224,7 @@ void CParticle::FrameParticle(float rTime)
                 {
                     if (object->GetType() == OBJECT_MOBILErs && dynamic_cast<CShielder&>(*object).GetActiveShieldRadius() > 0.0f)  // protected by shield?
                     {
-                        CreateParticle(m_particle[i].pos, Math::Vector(0.0f, 0.0f, 0.0f), Math::Point(6.0f, 6.0f), PARTIGUNDEL, 2.0f);
+                        CreateParticle(m_particle[i].pos, Math::Vector(0.0f, 0.0f, 0.0f), { 6.0f, 6.0f }, PARTIGUNDEL, 2.0f);
                         if (m_lastTimeGunDel > 0.2f)
                         {
                             m_lastTimeGunDel = 0.0f;
@@ -1272,7 +1272,7 @@ void CParticle::FrameParticle(float rTime)
                 {
                     if (object->GetType() == OBJECT_MOBILErs && dynamic_cast<CShielder&>(*object).GetActiveShieldRadius() > 0.0f)
                     {
-                        CreateParticle(m_particle[i].pos, Math::Vector(0.0f, 0.0f, 0.0f), Math::Point(6.0f, 6.0f), PARTIGUNDEL, 2.0f);
+                        CreateParticle(m_particle[i].pos, Math::Vector(0.0f, 0.0f, 0.0f), { 6.0f, 6.0f }, PARTIGUNDEL, 2.0f);
                         if (m_lastTimeGunDel > 0.2f)
                         {
                             m_lastTimeGunDel = 0.0f;
@@ -1321,7 +1321,7 @@ void CParticle::FrameParticle(float rTime)
                         speed.x = 0.0f;
                         speed.z = 0.0f;
                         speed.y = 0.0f;
-                        Math::Point dim;
+                        glm::vec2 dim;
                         dim.x = Math::Rand()*4.0f+2.0f;
                         dim.y = dim.x;
                         float duration = Math::Rand()*0.7f+0.7f;
@@ -1356,7 +1356,7 @@ void CParticle::FrameParticle(float rTime)
                         speed.x = 0.0f;
                         speed.z = 0.0f;
                         speed.y = 0.0f;
-                        Math::Point dim;
+                        glm::vec2 dim;
                         dim.x = Math::Rand()*4.0f+2.0f;
                         dim.y = dim.x;
                         float duration = Math::Rand()*0.7f+0.7f;
@@ -1898,7 +1898,7 @@ void CParticle::FrameParticle(float rTime)
 
                 pos = m_particle[i].pos;
                 Math::Vector speed = Math::Vector(0.0f, 0.0f, 0.0f);
-                Math::Point dim;
+                glm::vec2 dim;
                 dim.x = 1.0f*(Math::Rand()*0.8f+0.6f);
                 dim.y = dim.x;
                 CreateParticle(pos, speed, dim, PARTIGAS, 0.5f);
@@ -1917,7 +1917,7 @@ void CParticle::FrameParticle(float rTime)
                 DeleteRank(i);
 
                 pos = m_particle[i].pos;
-                Math::Point dim;
+                glm::vec2 dim;
                 dim.x    = m_particle[i].dim.x/4.0f;
                 dim.y    = dim.x;
                 float duration = m_particle[i].duration;
@@ -2514,7 +2514,7 @@ void CParticle::TrackDraw(int i, ParticleType type)
     mat.LoadIdentity();
     m_device->SetTransform(TRANSFORM_WORLD, mat);
 
-    Math::Point texInf, texSup;
+    glm::vec2 texInf{ 0, 0 }, texSup{ 0, 0 };
 
     if (type == PARTITRACK1)  // technical explosion?
     {
@@ -2624,43 +2624,43 @@ void CParticle::TrackDraw(int i, ParticleType type)
         Math::Vector n = Normalize(p1-eye);
 
         Math::Vector p;
-        Math::Point rot;
+        glm::vec2 rot;
 
         p = p1;
         p.x += f1*m_track[i].width;
-        rot = Math::RotatePoint(Math::Point(p1.x, p1.z), a+Math::PI/2.0f, Math::Point(p.x, p.z));
+        rot = Math::RotatePoint({ p1.x, p1.z }, a + Math::PI / 2.0f, { p.x, p.z });
         corner[0].x = rot.x;
         corner[0].y = p1.y;
         corner[0].z = rot.y;
-        rot = Math::RotatePoint(Math::Point(p1.x, p1.z), a-Math::PI/2.0f, Math::Point(p.x, p.z));
+        rot = Math::RotatePoint({ p1.x, p1.z }, a - Math::PI / 2.0f, { p.x, p.z });
         corner[1].x = rot.x;
         corner[1].y = p1.y;
         corner[1].z = rot.y;
 
         p = p2;
         p.x += f2*m_track[i].width;
-        rot = Math::RotatePoint(Math::Point(p2.x, p2.z), a+Math::PI/2.0f, Math::Point(p.x, p.z));
+        rot = Math::RotatePoint({ p2.x, p2.z }, a + Math::PI / 2.0f, { p.x, p.z });
         corner[2].x = rot.x;
         corner[2].y = p2.y;
         corner[2].z = rot.y;
-        rot = Math::RotatePoint(Math::Point(p2.x, p2.z), a-Math::PI/2.0f, Math::Point(p.x, p.z));
+        rot = Math::RotatePoint({ p2.x, p2.z }, a - Math::PI / 2.0f, { p.x, p.z });
         corner[3].x = rot.x;
         corner[3].y = p2.y;
         corner[3].z = rot.y;
 
         if (p2.y < p1.y)
         {
-            vertex[0] = { corner[1], n, Math::Point(texSup.x, texSup.y) };
-            vertex[1] = { corner[0], n, Math::Point(texInf.x, texSup.y) };
-            vertex[2] = { corner[3], n, Math::Point(texSup.x, texInf.y) };
-            vertex[3] = { corner[2], n, Math::Point(texInf.x, texInf.y) };
+            vertex[0] = { corner[1], n, { texSup.x, texSup.y } };
+            vertex[1] = { corner[0], n, { texInf.x, texSup.y } };
+            vertex[2] = { corner[3], n, { texSup.x, texInf.y } };
+            vertex[3] = { corner[2], n, { texInf.x, texInf.y } };
         }
         else
         {
-            vertex[0] = { corner[0], n, Math::Point(texSup.x, texSup.y) };
-            vertex[1] = { corner[1], n, Math::Point(texInf.x, texSup.y) };
-            vertex[2] = { corner[2], n, Math::Point(texSup.x, texInf.y) };
-            vertex[3] = { corner[3], n, Math::Point(texInf.x, texInf.y) };
+            vertex[0] = { corner[0], n, { texSup.x, texSup.y } };
+            vertex[1] = { corner[1], n, { texInf.x, texSup.y } };
+            vertex[2] = { corner[2], n, { texSup.x, texInf.y } };
+            vertex[3] = { corner[3], n, { texInf.x, texInf.y } };
         }
 
         m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
@@ -2736,10 +2736,10 @@ void CParticle::DrawParticleNorm(int i)
         corner[3].y = pos.y-dim.y;
         corner[3].z = 0.0f;
 
-        vertex[0] = { corner[1], n, Math::Point(m_particle[i].texSup.x, m_particle[i].texSup.y) };
-        vertex[1] = { corner[0], n, Math::Point(m_particle[i].texInf.x, m_particle[i].texSup.y) };
-        vertex[2] = { corner[3], n, Math::Point(m_particle[i].texSup.x, m_particle[i].texInf.y) };
-        vertex[3] = { corner[2], n, Math::Point(m_particle[i].texInf.x, m_particle[i].texInf.y) };
+        vertex[0] = { corner[1], n, { m_particle[i].texSup.x, m_particle[i].texSup.y } };
+        vertex[1] = { corner[0], n, { m_particle[i].texInf.x, m_particle[i].texSup.y } };
+        vertex[2] = { corner[3], n, { m_particle[i].texSup.x, m_particle[i].texInf.y } };
+        vertex[3] = { corner[2], n, { m_particle[i].texInf.x, m_particle[i].texInf.y } };
 
         m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
         m_engine->AddStatisticTriangle(2);
@@ -2787,10 +2787,10 @@ void CParticle::DrawParticleNorm(int i)
         corner[3].y = -dim.y;
         corner[3].z =  0.0f;
 
-        vertex[0] = { corner[1], n, Math::Point(m_particle[i].texSup.x, m_particle[i].texSup.y) };
-        vertex[1] = { corner[0], n, Math::Point(m_particle[i].texInf.x, m_particle[i].texSup.y) };
-        vertex[2] = { corner[3], n, Math::Point(m_particle[i].texSup.x, m_particle[i].texInf.y) };
-        vertex[3] = { corner[2], n, Math::Point(m_particle[i].texInf.x, m_particle[i].texInf.y) };
+        vertex[0] = { corner[1], n, { m_particle[i].texSup.x, m_particle[i].texSup.y } };
+        vertex[1] = { corner[0], n, { m_particle[i].texInf.x, m_particle[i].texSup.y } };
+        vertex[2] = { corner[3], n, { m_particle[i].texSup.x, m_particle[i].texInf.y } };
+        vertex[3] = { corner[2], n, { m_particle[i].texInf.x, m_particle[i].texInf.y } };
 
         m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4, m_particle[i].color);
         m_engine->AddStatisticTriangle(2);
@@ -2851,10 +2851,10 @@ void CParticle::DrawParticleFlat(int i)
     corner[3].z =  0.0f;
 
     Vertex vertex[4];
-    vertex[0] = { corner[1], n, Math::Point(m_particle[i].texSup.x, m_particle[i].texSup.y) };
-    vertex[1] = { corner[0], n, Math::Point(m_particle[i].texInf.x, m_particle[i].texSup.y) };
-    vertex[2] = { corner[3], n, Math::Point(m_particle[i].texSup.x, m_particle[i].texInf.y) };
-    vertex[3] = { corner[2], n, Math::Point(m_particle[i].texInf.x, m_particle[i].texInf.y) };
+    vertex[0] = { corner[1], n, { m_particle[i].texSup.x, m_particle[i].texSup.y } };
+    vertex[1] = { corner[0], n, { m_particle[i].texInf.x, m_particle[i].texSup.y } };
+    vertex[2] = { corner[3], n, { m_particle[i].texSup.x, m_particle[i].texInf.y } };
+    vertex[3] = { corner[2], n, { m_particle[i].texInf.x, m_particle[i].texInf.y } };
 
     m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
     m_engine->AddStatisticTriangle(2);
@@ -2938,10 +2938,10 @@ void CParticle::DrawParticleFog(int i)
 
     Vertex vertex[4];
 
-    vertex[0] = { corner[1], n, Math::Point(m_particle[i].texSup.x, m_particle[i].texSup.y) };
-    vertex[1] = { corner[0], n, Math::Point(m_particle[i].texInf.x, m_particle[i].texSup.y) };
-    vertex[2] = { corner[3], n, Math::Point(m_particle[i].texSup.x, m_particle[i].texInf.y) };
-    vertex[3] = { corner[2], n, Math::Point(m_particle[i].texInf.x, m_particle[i].texInf.y) };
+    vertex[0] = { corner[1], n, { m_particle[i].texSup.x, m_particle[i].texSup.y } };
+    vertex[1] = { corner[0], n, { m_particle[i].texInf.x, m_particle[i].texSup.y } };
+    vertex[2] = { corner[3], n, { m_particle[i].texSup.x, m_particle[i].texInf.y } };
+    vertex[3] = { corner[2], n, { m_particle[i].texInf.x, m_particle[i].texInf.y } };
 
     m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
     m_engine->AddStatisticTriangle(2);
@@ -2960,7 +2960,7 @@ void CParticle::DrawParticleRay(int i)
     if (object != nullptr)
         pos += object->GetPosition();
 
-    float a = Math::RotateAngle(Math::Point(pos.x,pos.z), Math::Point(goal.x,goal.z), Math::Point(eye.x,eye.z));
+    float a = Math::RotateAngle({ pos.x,pos.z }, { goal.x, goal.z }, { eye.x, eye.z });
     bool left = (a < Math::PI);
 
     Math::Vector proj = Math::Projection(pos, goal, eye);
@@ -3092,10 +3092,10 @@ void CParticle::DrawParticleRay(int i)
             if (r % 4 < 2)
                 Math::Swap(texInf.y, texSup.y);
 
-            vertex[0] = { corner[1], n, Math::Point(texSup.x, texSup.y) };
-            vertex[1] = { corner[0], n, Math::Point(texInf.x, texSup.y) };
-            vertex[2] = { corner[3], n, Math::Point(texSup.x, texInf.y) };
-            vertex[3] = { corner[2], n, Math::Point(texInf.x, texInf.y) };
+            vertex[0] = { corner[1], n, { texSup.x, texSup.y } };
+            vertex[1] = { corner[0], n, { texInf.x, texSup.y } };
+            vertex[2] = { corner[3], n, { texSup.x, texInf.y } };
+            vertex[3] = { corner[2], n, { texInf.x, texInf.y } };
 
             m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
             m_engine->AddStatisticTriangle(2);
@@ -3192,8 +3192,8 @@ void CParticle::DrawParticleSphere(int i)
             tu0 = ts.x+(ti.x-ts.x)*tu0;
             float tu1 = tu0;
 
-            vertex[j++] = { v0, v0, Math::Point(tu0, tv0) };
-            vertex[j++] = { v1, v1, Math::Point(tu1, tv1) };
+            vertex[j++] = { v0, v0, { tu0, tv0 } };
+            vertex[j++] = { v1, v1, { tu1, tv1 } };
         }
     }
 
@@ -3287,8 +3287,8 @@ void CParticle::DrawParticleCylinder(int i)
             tu0 = ts.x+(ti.x-ts.x)*tu0;
             float tu1 = tu0;
 
-            vertex[j++] = { v0, v0, Math::Point(tu0, tv0) };
-            vertex[j++] = { v1, v1, Math::Point(tu1, tv1) };
+            vertex[j++] = { v0, v0, { tu0, tv0 } };
+            vertex[j++] = { v1, v1, { tu1, tv1 } };
         }
     }
 
@@ -3344,10 +3344,10 @@ void CParticle::DrawParticleWheel(int i)
         ti.y = ti.y-dp;
 
         Vertex vertex[4];
-        vertex[0] = { pos[0], n, Math::Point(ts.x, ts.y) };
-        vertex[1] = { pos[1], n, Math::Point(ti.x, ts.y) };
-        vertex[2] = { pos[2], n, Math::Point(ts.x, ti.y) };
-        vertex[3] = { pos[3], n, Math::Point(ti.x, ti.y) };
+        vertex[0] = { pos[0], n, { ts.x, ts.y } };
+        vertex[1] = { pos[1], n, { ti.x, ts.y } };
+        vertex[2] = { pos[2], n, { ts.x, ti.y } };
+        vertex[3] = { pos[3], n, { ti.x, ti.y } };
 
         m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4, TraceColorColor(m_wheelTrace[i].color));
         m_engine->AddStatisticTriangle(2);

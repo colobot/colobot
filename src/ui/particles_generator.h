@@ -21,7 +21,6 @@
 
 #include "graphics/engine/particle.h"
 
-#include "math/point.h"
 #include "math/vector.h"
 
 namespace UI
@@ -36,10 +35,10 @@ namespace UI
         /**
          * \brief generates particles after mouse cursor movement
          */
-        void GenerateMouseParticles(Math::Point mousePosition, bool buttonPressed);
+        void GenerateMouseParticles(const glm::vec2& mousePosition, bool buttonPressed);
     private:
         Gfx::CParticle* m_particleManager;
-        Math::Point CreateRandomDimensionsForMouseParticles(bool buttonPressed);
+        glm::vec2 CreateRandomDimensionsForMouseParticles(bool buttonPressed);
         Math::Vector CreateRandomSpeedForMouseParticles();
         float CreateRandomDurationForMouseParticles();
     };

@@ -23,6 +23,8 @@
 
 #include "graphics/engine/text.h"
 
+#include "math/point.h"
+
 #include <string>
 
 class CRobotMain;

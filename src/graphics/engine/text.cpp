@@ -306,7 +306,7 @@ void CText::SetTabSize(int tabSize)
 
 void CText::DrawText(const std::string &text, std::vector<FontMetaChar>::iterator format,
                      std::vector<FontMetaChar>::iterator end,
-                     float size, Math::Point pos, float width, TextAlign align,
+                     float size, glm::vec2 pos, float width, TextAlign align,
                      int eol, Color color)
 {
     float sw = 0.0f;
@@ -330,7 +330,7 @@ void CText::DrawText(const std::string &text, std::vector<FontMetaChar>::iterato
 }
 
 void CText::DrawText(const std::string &text, FontType font,
-                     float size, Math::Point pos, float width, TextAlign align,
+                     float size, glm::vec2 pos, float width, TextAlign align,
                      int eol, Color color)
 {
     float sw = 0.0f;
@@ -355,8 +355,8 @@ void CText::DrawText(const std::string &text, FontType font,
 
 void CText::SizeText(const std::string &text, std::vector<FontMetaChar>::iterator format,
                      std::vector<FontMetaChar>::iterator endFormat,
-                     float size, Math::Point pos, TextAlign align,
-                     Math::Point &start, Math::Point &end)
+                     float size, glm::vec2 pos, TextAlign align,
+                     glm::vec2 &start, glm::vec2 &end)
 {
     start = end = pos;
 
@@ -378,8 +378,8 @@ void CText::SizeText(const std::string &text, std::vector<FontMetaChar>::iterato
 }
 
 void CText::SizeText(const std::string &text, FontType font,
-                     float size, Math::Point pos, TextAlign align,
-                     Math::Point &start, Math::Point &end)
+                     float size, glm::vec2 pos, TextAlign align,
+                     glm::vec2 &start, glm::vec2 &end)
 {
     start = end = pos;
 
@@ -407,7 +407,7 @@ float CText::GetAscent(FontType font, float size)
     CachedFont* cf = GetOrOpenFont(font, size);
     assert(cf != nullptr);
     glm::ivec2 wndSize = { 0, TTF_FontAscent(cf->font) };
-    Math::Point ifSize = m_engine->WindowToInterfaceSize(wndSize);
+    glm::vec2 ifSize = m_engine->WindowToInterfaceSize(wndSize);
     return ifSize.y;
 }
 
@@ -418,7 +418,7 @@ float CText::GetDescent(FontType font, float size)
     CachedFont* cf = GetOrOpenFont(font, size);
     assert(cf != nullptr);
     glm::ivec2 wndSize = { 0, TTF_FontDescent(cf->font) };
-    Math::Point ifSize = m_engine->WindowToInterfaceSize(wndSize);
+    glm::vec2 ifSize = m_engine->WindowToInterfaceSize(wndSize);
     return ifSize.y;
 }
 
@@ -429,7 +429,7 @@ float CText::GetHeight(FontType font, float size)
     CachedFont* cf = GetOrOpenFont(font, size);
     assert(cf != nullptr);
     glm::ivec2 wndSize = { 0, TTF_FontHeight(cf->font) };
-    Math::Point ifSize = m_engine->WindowToInterfaceSize(wndSize);
+    glm::vec2 ifSize = m_engine->WindowToInterfaceSize(wndSize);
     return ifSize.y;
 }
 
@@ -489,7 +489,7 @@ float CText::GetStringWidth(std::string text, FontType font, float size)
     assert(cf != nullptr);
     glm::ivec2 wndSize{};
     TTF_SizeUTF8(cf->font, text.c_str(), &wndSize.x, &wndSize.y);
-    Math::Point ifSize = m_engine->WindowToInterfaceSize(wndSize);
+    glm::vec2 ifSize = m_engine->WindowToInterfaceSize(wndSize);
     return ifSize.x;
 }
 
@@ -517,7 +517,7 @@ float CText::GetCharWidth(UTF8Char ch, FontType font, float size, float offset)
     CachedFont* cf = GetOrOpenFont(font, size);
     assert(cf != nullptr);
 
-    Math::Point charSize;
+    glm::vec2 charSize;
     auto it = cf->cache.find(ch);
     if (it != cf->cache.end())
     {
@@ -1001,7 +1001,7 @@ void CText::DrawHighlight(FontMetaChar hl, const glm::ivec2& pos, const glm::ive
     else                      // more than 1024x768?
         h = 2.0f;   // 2 pixels
 
-    Math::Point p1, p2;
+    glm::vec2 p1, p2;
     p1.x = pos.x;
     p1.y = pos.y - size.y;
     p2.x = pos.x + size.x;
@@ -1046,7 +1046,7 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, glm::iv
         unsigned int texID = m_engine->LoadTexture("textures/interface/button" + StrUtils::ToString<int>((icon/64) + 1) + ".png").id;
         icon = icon%64;
 
-        Math::Point uv1, uv2;
+        glm::vec2 uv1, uv2;
         uv1.x = (32.0f / 256.0f) * (icon%8);
         uv1.y = (32.0f / 256.0f) * (icon/8);
         uv2.x = (32.0f / 256.0f) + uv1.x;
@@ -1088,14 +1088,14 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, glm::iv
 
         CharTexture tex = GetCharTexture(ch, font, size);
 
-        Math::Point p1(pos.x, pos.y - tex.charSize.y);
-        Math::Point p2(pos.x + tex.charSize.x, pos.y);
+        glm::vec2 p1(pos.x, pos.y - tex.charSize.y);
+        glm::vec2 p2(pos.x + tex.charSize.x, pos.y);
 
         const float halfPixelMargin = 0.5f;
-        Math::Point texCoord1(static_cast<float>(tex.charPos.x + halfPixelMargin) / FONT_TEXTURE_SIZE.x,
-                              static_cast<float>(tex.charPos.y + halfPixelMargin) / FONT_TEXTURE_SIZE.y);
-        Math::Point texCoord2(static_cast<float>(tex.charPos.x + tex.charSize.x - halfPixelMargin) / FONT_TEXTURE_SIZE.x,
-                              static_cast<float>(tex.charPos.y + tex.charSize.y - halfPixelMargin) / FONT_TEXTURE_SIZE.y);
+        glm::vec2 texCoord1(static_cast<float>(tex.charPos.x + halfPixelMargin) / FONT_TEXTURE_SIZE.x,
+                            static_cast<float>(tex.charPos.y + halfPixelMargin) / FONT_TEXTURE_SIZE.y);
+        glm::vec2 texCoord2(static_cast<float>(tex.charPos.x + tex.charSize.x - halfPixelMargin) / FONT_TEXTURE_SIZE.x,
+                            static_cast<float>(tex.charPos.y + tex.charSize.y - halfPixelMargin) / FONT_TEXTURE_SIZE.y);
 
         glm::u8vec4 col = { color.r * 255, color.g * 255, color.b * 255, color.a * 255 };
 

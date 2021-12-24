@@ -229,10 +229,10 @@ void CLightning::Draw()
     m_engine->SetTexture("textures/effect00.png");
     m_engine->SetState(ENG_RSTATE_TTEXTURE_BLACK);
 
-    Math::Point texInf;
+    glm::vec2 texInf;
     texInf.x = 64.5f/256.0f;
     texInf.y = 33.0f/256.0f;
-    Math::Point texSup;
+    glm::vec2 texSup;
     texSup.x = 95.5f/256.0f;
     texSup.y = 34.0f/256.0f;  // blank
 
@@ -249,43 +249,43 @@ void CLightning::Draw()
         Math::Vector p2 = p1;
         p2.y += 8.0f+0.2f*i;
 
-        Math::Point rot;
+        glm::vec2 rot;
 
         Math::Vector p = p1;
         p.x += m_segments[i].width;
-        rot = Math::RotatePoint(Math::Point(p1.x, p1.z), a+Math::PI/2.0f, Math::Point(p.x, p.z));
+        rot = Math::RotatePoint({ p1.x, p1.z }, a + Math::PI / 2.0f, { p.x, p.z });
         corner[0].x = rot.x+m_segments[i].shift.x;
         corner[0].y = p1.y;
         corner[0].z = rot.y+m_segments[i].shift.y;
-        rot = Math::RotatePoint(Math::Point(p1.x, p1.z), a-Math::PI/2.0f, Math::Point(p.x, p.z));
+        rot = Math::RotatePoint({ p1.x, p1.z }, a - Math::PI / 2.0f, { p.x, p.z });
         corner[1].x = rot.x+m_segments[i].shift.x;
         corner[1].y = p1.y;
         corner[1].z = rot.y+m_segments[i].shift.y;
 
         p = p2;
         p.x += m_segments[i+1].width;
-        rot = Math::RotatePoint(Math::Point(p2.x, p2.z), a+Math::PI/2.0f, Math::Point(p.x, p.z));
+        rot = Math::RotatePoint({ p2.x, p2.z }, a + Math::PI / 2.0f, { p.x, p.z });
         corner[2].x = rot.x+m_segments[i+1].shift.x;
         corner[2].y = p2.y;
         corner[2].z = rot.y+m_segments[i+1].shift.y;
-        rot = Math::RotatePoint(Math::Point(p2.x, p2.z), a-Math::PI/2.0f, Math::Point(p.x, p.z));
+        rot = Math::RotatePoint({ p2.x, p2.z }, a - Math::PI / 2.0f, { p.x, p.z });
         corner[3].x = rot.x+m_segments[i+1].shift.x;
         corner[3].y = p2.y;
         corner[3].z = rot.y+m_segments[i+1].shift.y;
 
         if (p2.y < p1.y)
         {
-            vertex[0] = { corner[1], n, Math::Point(texSup.x, texSup.y) };
-            vertex[1] = { corner[0], n, Math::Point(texInf.x, texSup.y) };
-            vertex[2] = { corner[3], n, Math::Point(texSup.x, texInf.y) };
-            vertex[3] = { corner[2], n, Math::Point(texInf.x, texInf.y) };
+            vertex[0] = { corner[1], n, { texSup.x, texSup.y } };
+            vertex[1] = { corner[0], n, { texInf.x, texSup.y } };
+            vertex[2] = { corner[3], n, { texSup.x, texInf.y } };
+            vertex[3] = { corner[2], n, { texInf.x, texInf.y } };
         }
         else
         {
-            vertex[0] = { corner[0], n, Math::Point(texSup.x, texSup.y) };
-            vertex[1] = { corner[1], n, Math::Point(texInf.x, texSup.y) };
-            vertex[2] = { corner[2], n, Math::Point(texSup.x, texInf.y) };
-            vertex[3] = { corner[3], n, Math::Point(texInf.x, texInf.y) };
+            vertex[0] = { corner[0], n, { texSup.x, texSup.y } };
+            vertex[1] = { corner[1], n, { texInf.x, texSup.y } };
+            vertex[2] = { corner[2], n, { texSup.x, texInf.y } };
+            vertex[3] = { corner[3], n, { texInf.x, texInf.y } };
         }
 
         device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);

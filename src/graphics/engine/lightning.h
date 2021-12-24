@@ -24,8 +24,9 @@
 
 #pragma once
 
-#include "math/point.h"
 #include "math/vector.h"
+
+#include <glm/glm.hpp>
 
 #include <vector>
 
@@ -108,7 +109,7 @@ protected:
 
     struct LightningSegment
     {
-        Math::Point shift;
+        glm::vec2 shift;
         float width = 0.0f;
     };
     std::vector<LightningSegment> m_segments;

@@ -176,12 +176,12 @@ struct Particle
     Math::Vector    speed;      // speed of displacement
     float           windSensitivity = 0.0f;
     short           bounce = 0;     // number of rebounds
-    Math::Point     dim;        // dimensions of the rectangle
+    glm::vec2       dim;        // dimensions of the rectangle
     float           zoom = 0.0f;       // zoom (0..1)
     float           angle = 0.0f;      // angle of rotation
     float           intensity = 0.0f;  // intensity
-    Math::Point     texSup;     // coordinated upper texture
-    Math::Point     texInf;     // coordinated lower texture
+    glm::vec2       texSup;     // coordinated upper texture
+    glm::vec2       texInf;     // coordinated lower texture
     float           time = 0.0f;       // age of the particle (0..n)
     float           phaseTime = 0.0f;  // age at the beginning of phase
     float           testTime = 0.0f;   // time since last test
@@ -236,7 +236,7 @@ public:
     void        FlushParticle(int sheet);
 
     //! Creates a new particle
-    int         CreateParticle(Math::Vector pos, Math::Vector speed, Math::Point dim,
+    int         CreateParticle(Math::Vector pos, Math::Vector speed, const glm::vec2& dim,
                                ParticleType type, float duration = 1.0f, float mass = 0.0f,
                                float windSensitivity = 1.0f, int sheet = 0);
 
@@ -251,11 +251,11 @@ public:
                            float windSensitivity = 1.0f, int sheet = 0);
 
     //! Creates a new linear particle (radius)
-    int         CreateRay(Math::Vector pos, Math::Vector goal, ParticleType type, Math::Point dim,
+    int         CreateRay(Math::Vector pos, Math::Vector goal, ParticleType type, const glm::vec2& dim,
                           float duration = 1.0f, int sheet = 0);
 
     //! Creates a particle with a trail
-    int         CreateTrack(Math::Vector pos, Math::Vector speed, Math::Point dim, ParticleType type,
+    int         CreateTrack(Math::Vector pos, Math::Vector speed, const glm::vec2& dim, ParticleType type,
                             float duration = 1.0f, float mass = 0.0f, float length = 10.0f, float width = 1.0f);
 
     //! Creates a tire mark
@@ -271,11 +271,11 @@ public:
     //! Specifies the parent object that created the particle
     void        SetObjectFather(int channel, CObject *object);
     void        SetPosition(int channel, Math::Vector pos);
-    void        SetDimension(int channel, Math::Point dim);
+    void        SetDimension(int channel, const glm::vec2& dim);
     void        SetZoom(int channel, float zoom);
     void        SetAngle(int channel, float angle);
     void        SetIntensity(int channel, float intensity);
-    void        SetParam(int channel, Math::Vector pos, Math::Point dim, float zoom, float angle, float intensity);
+    void        SetParam(int channel, Math::Vector pos, const glm::vec2& dim, float zoom, float angle, float intensity);
     void        SetPhase(int channel, ParticlePhase phase, float duration);
 
     //! Returns the position of the particle
