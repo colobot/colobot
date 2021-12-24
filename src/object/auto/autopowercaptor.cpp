@@ -107,7 +107,7 @@ void CAutoPowerCaptor::StartLightning()
 bool CAutoPowerCaptor::EventProcess(const Event &event)
 {
     Math::Vector    pos, speed;
-    Math::Point     dim;
+    glm::vec2     dim;
     int         i;
 
     CAuto::EventProcess(event);
@@ -200,7 +200,7 @@ bool CAutoPowerCaptor::EventProcess(const Event &event)
 bool CAutoPowerCaptor::CreateInterface(bool bSelect)
 {
     Ui::CWindow*    pw;
-    Math::Point     pos, ddim;
+    glm::vec2     pos, ddim;
     float       ox, oy, sx, sy;
 
     CAuto::CreateInterface(bSelect);

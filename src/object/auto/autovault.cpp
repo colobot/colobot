@@ -113,7 +113,7 @@ bool CAutoVault::EventProcess(const Event &event)
 {
     CObject*    pObj;
     Math::Vector    pos, speed;
-    Math::Point     dim;
+    glm::vec2     dim;
     int         i, count;
 
     CAuto::EventProcess(event);
@@ -314,7 +314,7 @@ bool CAutoVault::EventProcess(const Event &event)
 bool CAutoVault::CreateInterface(bool bSelect)
 {
     Ui::CWindow*    pw;
-    Math::Point     pos, ddim;
+    glm::vec2     pos, ddim;
     float       ox, oy, sx, sy;
 
     CAuto::CreateInterface(bSelect);
@@ -442,7 +442,7 @@ int CAutoVault::CountKeys()
         if ( !Math::TestAngle(angle, limit-8.0f*Math::PI/180.0f, limit+8.0f*Math::PI/180.0f) )  continue;
 
         // Key changes the shape of the base.
-        Math::Point rot = Math::RotatePoint(Math::Point(cPos.x, cPos.z), limit-cAngle, Math::Point(cPos.x+16.0f, cPos.z));
+        glm::vec2 rot = Math::RotatePoint({ cPos.x, cPos.z }, limit - cAngle, { cPos.x + 16.0f, cPos.z });
         oPos.x = rot.x;
         oPos.z = rot.y;
         oPos.y = cPos.y+1.0f;

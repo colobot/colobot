@@ -204,7 +204,7 @@ bool CAutoPowerStation::EventProcess(const Event &event)
         m_lastParticle = m_time;
 
         Math::Vector    pos, ppos, speed;
-        Math::Point     dim;
+        glm::vec2     dim;
 
         Math::Matrix* mat = m_object->GetWorldMatrix(0);
         pos = Math::Vector(-15.0f, 7.0f, 0.0f);  // battery position
@@ -313,7 +313,7 @@ Error CAutoPowerStation::GetError()
 bool CAutoPowerStation::CreateInterface(bool bSelect)
 {
     Ui::CWindow*    pw;
-    Math::Point     pos, ddim;
+    glm::vec2     pos, ddim;
     float       ox, oy, sx, sy;
 
     CAuto::CreateInterface(bSelect);

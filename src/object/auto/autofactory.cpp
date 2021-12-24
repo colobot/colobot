@@ -210,7 +210,7 @@ bool CAutoFactory::EventProcess(const Event &event)
     Math::Matrix*   mat;
     CPhysics*   physics;
     Math::Vector    pos, speed;
-    Math::Point     dim;
+    glm::vec2     dim;
     float       zoom, angle, prog;
     int         i;
 
@@ -714,7 +714,7 @@ CObject* CAutoFactory::SearchVehicle()
 bool CAutoFactory::CreateInterface(bool bSelect)
 {
     Ui::CWindow*    pw;
-    Math::Point     pos, dim, ddim;
+    glm::vec2     pos, dim, ddim;
     float       ox, oy, sx, sy;
 
     CAuto::CreateInterface(bSelect);

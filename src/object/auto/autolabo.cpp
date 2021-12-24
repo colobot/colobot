@@ -165,7 +165,7 @@ bool CAutoLabo::EventProcess(const Event &event)
 {
     CObject*    power;
     Math::Vector    pos, goal, speed;
-    Math::Point     dim, rot;
+    glm::vec2     dim, rot;
     float       angle;
     int         i;
 
@@ -280,7 +280,7 @@ bool CAutoLabo::EventProcess(const Event &event)
             {
                 m_partiRank[i] = m_particle->CreateRay(pos, goal,
                                                         Gfx::PARTIRAY2,
-                                                        Math::Point(2.9f, 2.9f),
+                                                        { 2.9f, 2.9f },
                                                         LABO_DELAY);
             }
 
@@ -471,7 +471,7 @@ Error CAutoLabo::GetError()
 bool CAutoLabo::CreateInterface(bool bSelect)
 {
     Ui::CWindow*    pw;
-    Math::Point     pos, dim, ddim;
+    glm::vec2     pos, dim, ddim;
     float       ox, oy, sx, sy;
 
     CAuto::CreateInterface(bSelect);

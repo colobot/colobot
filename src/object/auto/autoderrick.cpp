@@ -140,7 +140,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
 {
     CObject*    cargo;
     Math::Vector    pos, speed;
-    Math::Point     dim;
+    glm::vec2     dim;
     float       angle, duration, factor;
 
     CAuto::EventProcess(event);
@@ -403,7 +403,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
 bool CAutoDerrick::CreateInterface(bool bSelect)
 {
     Ui::CWindow*    pw;
-    Math::Point     pos, ddim;
+    glm::vec2     pos, ddim;
     float       ox, oy, sx, sy;
 
     CAuto::CreateInterface(bSelect);

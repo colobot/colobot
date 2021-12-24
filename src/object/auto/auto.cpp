@@ -175,7 +175,7 @@ bool CAuto::Abort()
 bool CAuto::CreateInterface(bool bSelect)
 {
     Ui::CWindow*    pw;
-    Math::Point     pos, dim, ddim;
+    glm::vec2     pos, dim, ddim;
     float       ox, oy, sx, sy;
 
     pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW0));

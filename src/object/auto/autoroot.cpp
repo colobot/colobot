@@ -57,7 +57,7 @@ void CAutoRoot::Init()
 {
     Math::Matrix*   mat;
     Math::Vector    pos, speed;
-    Math::Point     dim;
+    glm::vec2     dim;
 
     m_time = 0.0f;
     m_lastParticle = 0.0f;
@@ -81,7 +81,7 @@ void CAutoRoot::Init()
 bool CAutoRoot::EventProcess(const Event &event)
 {
     Math::Vector    pos, speed;
-    Math::Point     dim;
+    glm::vec2     dim;
 
     CAuto::EventProcess(event);
 

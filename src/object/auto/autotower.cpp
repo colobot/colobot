@@ -247,7 +247,7 @@ bool CAutoTower::EventProcess(const Event &event)
             pos = m_object->GetPosition();
             pos.y += 24.5f;
             m_particle->CreateRay(pos, m_targetPos, Gfx::PARTIRAY1,
-                                   Math::Point(5.0f, 5.0f), 1.5f);
+                { 5.0f, 5.0f }, 1.5f);
         }
         if ( m_progress >= 1.0f )
         {
@@ -341,7 +341,7 @@ void CAutoTower::FireStopUpdate(float progress, bool bLightOn)
 {
     Math::Matrix*   mat;
     Math::Vector    pos, speed;
-    Math::Point     dim;
+    glm::vec2     dim;
     int         i;
 
     static float listpos[8] =
@@ -404,7 +404,7 @@ void CAutoTower::FireStopUpdate(float progress, bool bLightOn)
 bool CAutoTower::CreateInterface(bool bSelect)
 {
     Ui::CWindow*    pw;
-    Math::Point     pos, ddim;
+    glm::vec2     pos, ddim;
     float       ox, oy, sx, sy;
 
     CAuto::CreateInterface(bSelect);

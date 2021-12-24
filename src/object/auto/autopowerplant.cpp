@@ -121,7 +121,7 @@ bool CAutoPowerPlant::EventProcess(const Event &event)
 {
     CObject*    cargo;
     Math::Vector    pos, ppos, speed;
-    Math::Point     dim, c, p;
+    glm::vec2     dim, c, p;
     Gfx::TerrainRes  res;
     float       big;
     bool        bGO;
@@ -527,7 +527,7 @@ Error CAutoPowerPlant::GetError()
 bool CAutoPowerPlant::CreateInterface(bool bSelect)
 {
     Ui::CWindow*    pw;
-    Math::Point     pos, ddim;
+    glm::vec2     pos, ddim;
     float       ox, oy, sx, sy;
 
     CAuto::CreateInterface(bSelect);

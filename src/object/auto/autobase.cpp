@@ -125,7 +125,7 @@ bool CAutoBase::EventProcess(const Event &event)
     Math::Matrix*   mat;
     CObject*    pObj;
     Math::Vector    pos, speed, vibCir, iPos;
-    Math::Point     dim, p;
+    glm::vec2     dim, p;
     float       angle, dist, time, h, len, vSpeed;
     int         i, max;
 
@@ -1170,7 +1170,7 @@ Error CAutoBase::GetError()
 bool CAutoBase::CreateInterface(bool bSelect)
 {
     Ui::CWindow*    pw;
-    Math::Point     pos, dim, ddim;
+    glm::vec2     pos, dim, ddim;
     float       ox, oy, sx, sy;
     float       sleep, delay, magnetic, progress;
 

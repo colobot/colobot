@@ -115,7 +115,7 @@ bool CAutoNuclearPlant::EventProcess(const Event &event)
     CObject*    cargo;
     Math::Matrix*   mat;
     Math::Vector    pos, goal, speed;
-    Math::Point     dim, rot;
+    glm::vec2     dim, rot;
     float       angle;
     int         i, max;
 
@@ -298,7 +298,7 @@ bool CAutoNuclearPlant::EventProcess(const Event &event)
 bool CAutoNuclearPlant::CreateInterface(bool bSelect)
 {
     Ui::CWindow*    pw;
-    Math::Point     pos, ddim;
+    glm::vec2     pos, ddim;
     float       ox, oy, sx, sy;
 
     CAuto::CreateInterface(bSelect);

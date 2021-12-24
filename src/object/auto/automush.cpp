@@ -71,7 +71,7 @@ void CAutoMush::Init()
 bool CAutoMush::EventProcess(const Event &event)
 {
     Math::Vector    pos, speed, dir;
-    Math::Point     dim;
+    glm::vec2     dim;
     float       factor, zoom, size, angle;
     int         i, channel;
 

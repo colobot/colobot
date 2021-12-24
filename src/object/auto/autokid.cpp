@@ -141,7 +141,7 @@ bool CAutoKid::EventProcess(const Event &event)
             speed.y = 0.0f;
             speed.x = 0.0f;
             speed.z = 0.0f;
-            Math::Point dim;
+            glm::vec2 dim;
             dim.x = 50.0f;
             dim.y = dim.x;
             m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIFLIC, 3.0f, 0.0f, 0.0f);
@@ -174,7 +174,7 @@ bool CAutoKid::EventProcess(const Event &event)
             speed.y = 0.0f;
             speed.x = 0.0f;
             speed.z = 0.0f;
-            Math::Point dim;
+            glm::vec2 dim;
             dim.x = 20.0f;
             dim.y = dim.x;
             m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIFLIC, 3.0f, 0.0f, 0.0f);

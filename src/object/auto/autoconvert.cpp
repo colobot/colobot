@@ -101,7 +101,7 @@ bool CAutoConvert::EventProcess(const Event &event)
 {
     CObject*    cargo;
     Math::Vector    pos, speed;
-    Math::Point     dim, c, p;
+    glm::vec2     dim, c, p;
     float       angle;
 
     CAuto::EventProcess(event);
@@ -335,7 +335,7 @@ bool CAutoConvert::Abort()
 bool CAutoConvert::CreateInterface(bool bSelect)
 {
     Ui::CWindow*    pw;
-    Math::Point     pos, ddim;
+    glm::vec2     pos, ddim;
     float       ox, oy, sx, sy;
 
     CAuto::CreateInterface(bSelect);

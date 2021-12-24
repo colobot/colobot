@@ -118,7 +118,7 @@ bool CAutoDestroyer::EventProcess(const Event &event)
 {
     CObject*        scrap;
     Math::Vector    pos, speed;
-    Math::Point     dim;
+    glm::vec2     dim;
     Ui::CWindow*    pw;
 
     CAuto::EventProcess(event);
@@ -240,7 +240,7 @@ bool CAutoDestroyer::EventProcess(const Event &event)
 bool CAutoDestroyer::CreateInterface(bool bSelect)
 {
     Ui::CWindow*    pw;
-    Math::Point     pos, ddim;
+    glm::vec2     pos, ddim;
     float       ox, oy, sx, sy;
     CObject*        scrap;
 

@@ -206,7 +206,7 @@ Error CAutoRadar::GetError()
 bool CAutoRadar::CreateInterface(bool bSelect)
 {
     Ui::CWindow*    pw;
-    Math::Point     pos, dim, ddim;
+    glm::vec2     pos, dim, ddim;
     float       ox, oy, sx, sy;
 
     CAuto::CreateInterface(bSelect);

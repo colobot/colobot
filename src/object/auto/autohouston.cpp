@@ -232,7 +232,7 @@ bool CAutoHouston::EventProcess(const Event &event)
         {
             if ( m_lens[i].parti == -1 )
             {
-                Math::Point dim;
+                glm::vec2 dim;
                 dim.x = m_lens[i].dim;
                 dim.y = dim.x;
 
@@ -260,7 +260,7 @@ bool CAutoHouston::Abort()
 bool CAutoHouston::CreateInterface(bool bSelect)
 {
     Ui::CWindow*    pw;
-    Math::Point     pos, ddim;
+    glm::vec2     pos, ddim;
     float       ox, oy, sx, sy;
 
     CAuto::CreateInterface(bSelect);

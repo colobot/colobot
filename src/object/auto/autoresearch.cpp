@@ -156,7 +156,7 @@ bool CAutoResearch::EventProcess(const Event &event)
     CPowerContainerObject*    power;
     Math::Vector    pos, speed;
     Error       message;
-    Math::Point     dim;
+    glm::vec2     dim;
     float       angle;
 
     CAuto::EventProcess(event);
@@ -325,7 +325,7 @@ Error CAutoResearch::GetError()
 bool CAutoResearch::CreateInterface(bool bSelect)
 {
     Ui::CWindow*    pw;
-    Math::Point     pos, dim, ddim;
+    glm::vec2     pos, dim, ddim;
     float       ox, oy, sx, sy;
 
     CAuto::CreateInterface(bSelect);
@@ -501,7 +501,7 @@ void CAutoResearch::FireStopUpdate(float progress, bool bLightOn)
 {
     Math::Matrix*   mat;
     Math::Vector    pos, speed;
-    Math::Point     dim;
+    glm::vec2     dim;
     int         i;
 
     static float listpos[12] =
