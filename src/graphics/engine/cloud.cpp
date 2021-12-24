@@ -77,7 +77,7 @@ bool CCloud::EventFrame(const Event &event)
 }
 
 void CCloud::AdjustLevel(Math::Vector& pos, Math::Vector& eye, float deep,
-                         Math::Point& uv1, Math::Point& uv2)
+                         glm::vec2& uv1, glm::vec2& uv2)
 {
     uv1.x = (pos.x+20000.0f)/1280.0f;
     uv1.y = (pos.z+20000.0f)/1280.0f;
@@ -146,7 +146,7 @@ void CCloud::Draw()
         int vertexIndex = 0;
 
         Math::Vector p;
-        Math::Point uv1, uv2;
+        glm::vec2 uv1, uv2;
 
         p.x = pos.x-size;
         p.z = pos.z+size;

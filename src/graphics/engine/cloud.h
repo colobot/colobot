@@ -83,7 +83,7 @@ protected:
     bool        EventFrame(const Event &event);
     //! Adjusts the position to normal, to imitate the clouds at movement
     void        AdjustLevel(Math::Vector& pos, Math::Vector& eye, float deep,
-                            Math::Point& uv1, Math::Point& uv2);
+                            glm::vec2& uv1, glm::vec2& uv2);
     //! Updates the positions, relative to the ground
     void        CreateLine(int x, int y, int len);
 
@@ -97,7 +97,7 @@ protected:
     //! Texture
     std::string     m_fileName;
     //! Feedrate (wind)
-    Math::Point     m_speed;
+    glm::vec2       m_speed;
     //! Diffuse color
     Color           m_diffuse;
     //! Ambient color

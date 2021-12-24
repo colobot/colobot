@@ -361,11 +361,11 @@ protected:
     float        m_visitDirectionV;
 
     //! Last known mouse position, used to calculate change since last frame
-    Math::Point  m_mousePos = Math::Point(0.5f, 0.5f);
+    glm::vec2    m_mousePos = { 0.5f, 0.5f };
     //! Change of mouse position since last frame
-    Math::Point  m_mouseDelta = Math::Point(0.0f, 0.0f);
+    glm::vec2    m_mouseDelta = { 0.0f, 0.0f };
     //! Change of camera position caused by edge camera
-    Math::Point  m_mouseDeltaEdge = Math::Point(0.0f, 0.0f);
+    glm::vec2    m_mouseDeltaEdge = { 0.0f, 0.0f };
     //! Change of mouse wheel since last frame
     float        m_mouseWheelDelta = 0.0f;
 

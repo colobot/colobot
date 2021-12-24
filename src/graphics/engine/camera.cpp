@@ -957,7 +957,7 @@ bool CCamera::EventProcess(const Event &event)
 
         if ((event.mouseButtonsState & MOUSE_BUTTON_RIGHT) != 0 || (event.mouseButtonsState & MOUSE_BUTTON_MIDDLE) != 0)
         {
-            Math::Point newDelta = event.mousePos - m_mousePos;
+            glm::vec2 newDelta = event.mousePos - m_mousePos;
             if (m_cameraInvertX)
                 newDelta.x = -newDelta.x;
             if (m_cameraInvertY)
@@ -1031,7 +1031,7 @@ bool CCamera::EventProcess(const Event &event)
 
     if (event.type == EVENT_FRAME && !m_freeze)
     {
-        Math::Point newDelta = m_mouseDeltaEdge * m_speed * event.rTime;
+        glm::vec2 newDelta = m_mouseDeltaEdge * m_speed * event.rTime;
         if (m_cameraInvertX)
             newDelta.x = -newDelta.x;
         if (m_cameraInvertY)

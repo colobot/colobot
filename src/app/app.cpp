@@ -1040,7 +1040,7 @@ int CApplication::Run()
     m_lastTimeStamp = m_systemUtils->GetCurrentTimeStamp();
     m_curTimeStamp = m_systemUtils->GetCurrentTimeStamp();
 
-    MoveMouse(Math::Point(0.5f, 0.5f)); // center mouse on start
+    MoveMouse({ 0.5f, 0.5f }); // center mouse on start
 
     TimeStamp previousTimeStamp{};
     TimeStamp currentTimeStamp{};
@@ -1712,7 +1712,7 @@ MouseMode CApplication::GetMouseMode() const
     return m_mouseMode;
 }
 
-void CApplication::MoveMouse(Math::Point pos)
+void CApplication::MoveMouse(const glm::vec2& pos)
 {
     glm::ivec2 windowPos = m_engine->InterfaceToWindowCoords(pos);
     m_input->MouseMove(windowPos);

@@ -92,7 +92,7 @@ public:
     void        ResetKeyStates();
 
     //! Returns the position of mouse cursor (in interface coords)
-    Math::Point GetMousePos() const;
+    glm::vec2   GetMousePos() const;
 
 
     //! Sets the default input bindings (keys and joystick axes)
@@ -140,7 +140,7 @@ private:
 
 
     //! Current position of mouse cursor
-    Math::Point     m_mousePos;
+    glm::vec2       m_mousePos;
     //! Current state of mouse buttons (bitmask of MouseButton enum values)
     unsigned int    m_mouseButtonsState;
 

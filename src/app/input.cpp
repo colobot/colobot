@@ -68,7 +68,7 @@ CInput::CInput()
         { INPUT_SLOT_CMDLINE,  "cmdline" },
     };
 
-    m_mousePos = Math::Point();
+    m_mousePos = { 0, 0 };
     m_mouseButtonsState = 0;
     std::fill_n(m_keyPresses, static_cast<std::size_t>(INPUT_SLOT_MAX), false);
 
@@ -227,7 +227,7 @@ void CInput::ResetKeyStates()
         m_keyPresses[i] = false;
 }
 
-Math::Point CInput::GetMousePos() const
+glm::vec2 CInput::GetMousePos() const
 {
     return m_mousePos;
 }

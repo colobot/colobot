@@ -257,7 +257,7 @@ public:
     void        SetTextInput(bool textInputEnabled, int id);
 
     //! Moves (warps) the mouse cursor to the specified position (in interface coords)
-    void        MoveMouse(Math::Point pos);
+    void        MoveMouse(const glm::vec2& pos);
 
     //! Management of debug modes (printing more info in logger)
     //@{

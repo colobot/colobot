@@ -27,8 +27,9 @@
 #include "common/key.h"
 #include "common/make_unique.h"
 
-#include "math/point.h"
 #include "math/vector.h"
+
+#include <glm/glm.hpp>
 
 #include <memory>
 #include <mutex>
@@ -878,7 +879,7 @@ struct Event
 
     //! Current position of mouse cursor in interface coords
     //! Scope: all system events
-    Math::Point  mousePos;
+    glm::vec2    mousePos;
 
     //! Current state of mouse buttons: bitmask of MouseButton enum values
     //! Scope: all system events
