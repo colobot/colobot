@@ -502,7 +502,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
                 speed.x = (Math::Rand()-0.5f)*30.0f;
                 speed.z = (Math::Rand()-0.5f)*30.0f;
                 speed.y = Math::Rand()*30.0f;
-                Math::Point dim;
+                glm::vec2 dim;
                 dim.x = 1.0f;
                 dim.y = dim.x;
                 float duration = Math::Rand()*3.0f+2.0f;
@@ -524,7 +524,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
                 m_terrain->AdjustToFloor(pos);
                 pos.y += 1.0f;
             }
-            Math::Point dim;
+            glm::vec2 dim;
             dim.x = m_size*0.4f;
             dim.y = dim.x;
             m_particle->CreateParticle(pos, Math::Vector(0.0f,0.0f,0.0f), dim, PARTISPHERE0, 2.0f, 0.0f, 0.0f);
@@ -542,7 +542,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
             speed.x = (Math::Rand()-0.5f)*30.0f;
             speed.z = (Math::Rand()-0.5f)*30.0f;
             speed.y = Math::Rand()*50.0f;
-            Math::Point dim;
+            glm::vec2 dim;
             dim.x = 1.0f;
             dim.y = dim.x;
             float duration = Math::Rand()*1.0f+0.8f;
@@ -558,7 +558,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
             speed.x = (Math::Rand()-0.5f)*30.0f;
             speed.z = (Math::Rand()-0.5f)*30.0f;
             speed.y = Math::Rand()*50.0f;
-            Math::Point dim;
+            glm::vec2 dim;
             dim.x = 1.0f;
             dim.y = dim.x;
             float duration = Math::Rand()*2.0f+1.4f;
@@ -580,7 +580,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
             speed.x = (Math::Rand()-0.5f)*24.0f;
             speed.z = (Math::Rand()-0.5f)*24.0f;
             speed.y = 10.0f+Math::Rand()*10.0f;
-            Math::Point dim;
+            glm::vec2 dim;
             dim.x = 1.0f;
             dim.y = dim.x;
             int channel = m_particle->CreateParticle(pos, speed, dim, PARTIGUN3, 2.0f+Math::Rand()*2.0f, 10.0f);
@@ -597,7 +597,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
             speed.x = (Math::Rand()-0.5f)*24.0f;
             speed.z = (Math::Rand()-0.5f)*24.0f;
             speed.y = 7.0f+Math::Rand()*7.0f;
-            Math::Point dim;
+            glm::vec2 dim;
             dim.x = 1.0f;
             dim.y = dim.x;
             m_particle->CreateTrack(pos, speed, dim, PARTITRACK3,
@@ -614,7 +614,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
         {
             pos = m_pos;
             Math::Vector speed(0.0f, 0.0f, 0.0f);
-            Math::Point dim;
+            glm::vec2 dim;
             dim.x = m_size;
             dim.y = dim.x;
             m_particle->CreateParticle(pos, speed, dim, PARTICHOC, 2.0f);
@@ -660,7 +660,7 @@ bool CPyro::EventProcess(const Event &event)
             speed.x = (Math::Rand()-0.5f)*radius*0.5f;
             speed.z = (Math::Rand()-0.5f)*radius*0.5f;
             speed.y = Math::Rand()*radius*1.0f;
-            Math::Point dim;
+            glm::vec2 dim;
             dim.x = Math::Rand()*radius*0.5f+radius*0.75f*m_force;
             dim.y = dim.x;
             m_particle->CreateParticle(pos, speed, dim, PARTISMOKE1, 3.0f);
@@ -674,7 +674,7 @@ bool CPyro::EventProcess(const Event &event)
             speed.x = (Math::Rand()-0.5f)*m_size*0.1f;
             speed.z = (Math::Rand()-0.5f)*m_size*0.1f;
             speed.y = Math::Rand()*m_size*0.2f;
-            Math::Point dim;
+            glm::vec2 dim;
             dim.x = Math::Rand()*m_size/10.0f+m_size/10.0f*m_force;
             dim.y = dim.x;
             m_particle->CreateParticle(pos, speed, dim, PARTISMOKE1, 3.0f);
@@ -696,7 +696,7 @@ bool CPyro::EventProcess(const Event &event)
             speed.x = (Math::Rand()-0.5f)*5.0f;
             speed.z = (Math::Rand()-0.5f)*5.0f;
             speed.y = Math::Rand()*1.0f;
-            Math::Point dim;
+            glm::vec2 dim;
             dim.x = 1.0f;
             dim.y = dim.x;
             m_particle->CreateParticle(pos, speed, dim, PARTIBLOOD, Math::Rand()*3.0f+3.0f, Math::Rand()*10.0f+15.0f, 0.5f);
@@ -719,7 +719,7 @@ bool CPyro::EventProcess(const Event &event)
             speed.x = (Math::Rand()-0.5f)*40.0f;
             speed.z = (Math::Rand()-0.5f)*40.0f;
             speed.y = Math::Rand()*40.0f;
-            Math::Point dim;
+            glm::vec2 dim;
             dim.x = Math::Rand()*8.0f+8.0f*m_force;
             dim.y = dim.x;
 
@@ -743,7 +743,7 @@ bool CPyro::EventProcess(const Event &event)
             speed.x = (Math::Rand()-0.5f)*radius*0.5f;
             speed.z = (Math::Rand()-0.5f)*radius*0.5f;
             speed.y = Math::Rand()*radius*1.0f;
-            Math::Point dim;
+            glm::vec2 dim;
             dim.x = 1.0f*m_force;
             dim.y = dim.x;
             m_particle->CreateParticle(pos, speed, dim, PARTIBLITZ, 0.5f, 0.0f, 0.0f);
@@ -757,7 +757,7 @@ bool CPyro::EventProcess(const Event &event)
             speed.x = (Math::Rand()-0.5f)*m_size*0.1f;
             speed.z = (Math::Rand()-0.5f)*m_size*0.1f;
             speed.y = Math::Rand()*m_size*0.2f;
-            Math::Point dim;
+            glm::vec2 dim;
             dim.x = 1.0f*m_force;
             dim.y = dim.x;
             m_particle->CreateParticle(pos, speed, dim, PARTIBLITZ, 0.5f, 0.0f, 0.0f);
@@ -777,7 +777,7 @@ bool CPyro::EventProcess(const Event &event)
         speed.x = 0.0f;
         speed.z = 0.0f;
         speed.y = 10.0f+Math::Rand()*10.0f;
-        Math::Point dim;
+        glm::vec2 dim;
         dim.x = Math::Rand()*2.5f+2.0f*m_force;
         dim.y = dim.x;
         m_particle->CreateParticle(pos, speed, dim, PARTICRASH, 4.0f);
@@ -794,7 +794,7 @@ bool CPyro::EventProcess(const Event &event)
         speed.x = (Math::Rand()-0.5f)*m_size*1.0f;
         speed.z = (Math::Rand()-0.5f)*m_size*1.0f;
         speed.y = Math::Rand()*m_size*0.50f;
-        Math::Point dim;
+        glm::vec2 dim;
         dim.x = Math::Rand()*m_size/5.0f+m_size/5.0f;
         dim.y = dim.x;
 
@@ -807,7 +807,7 @@ bool CPyro::EventProcess(const Event &event)
     {
         m_lastParticleSmoke = m_time;
 
-        Math::Point dim;
+        glm::vec2 dim;
         dim.x = Math::Rand()*m_size/3.0f+m_size/3.0f;
         dim.y = dim.x;
         Math::Vector pos = m_pos;
@@ -838,7 +838,7 @@ bool CPyro::EventProcess(const Event &event)
         speed.x = (Math::Rand()-0.5f)*m_size*2.0f;
         speed.z = (Math::Rand()-0.5f)*m_size*2.0f;
         speed.y = Math::Rand()*m_size*1.0f;
-        Math::Point dim;
+        glm::vec2 dim;
         dim.x = Math::Rand()*m_size/2.0f+m_size/2.0f;
         dim.y = dim.x;
 
@@ -856,7 +856,7 @@ bool CPyro::EventProcess(const Event &event)
         speed.x = (Math::Rand()-0.5f)*m_size*1.0f;
         speed.z = (Math::Rand()-0.5f)*m_size*1.0f;
         speed.y = Math::Rand()*m_size*0.50f;
-        Math::Point dim;
+        glm::vec2 dim;
         dim.x = 1.0f;
         dim.y = dim.x;
 
@@ -877,7 +877,7 @@ bool CPyro::EventProcess(const Event &event)
         speed.x = 0.0f;
         speed.z = 0.0f;
         speed.y = 4.0f+Math::Rand()*4.0f;
-        Math::Point dim;
+        glm::vec2 dim;
         dim.x = Math::Rand()*2.5f+2.0f;
         dim.y = dim.x;
         m_particle->CreateParticle(pos, speed, dim, PARTICRASH, 4.0f);
@@ -904,7 +904,7 @@ bool CPyro::EventProcess(const Event &event)
             speed.x = 0.0f;
             speed.z = 0.0f;
             speed.y = 5.0f+Math::Rand()*5.0f;
-            Math::Point dim;
+            glm::vec2 dim;
             dim.x = Math::Rand()*1.5f+1.5f;
             dim.y = dim.x;
             m_particle->CreateParticle(pos, speed, dim, PARTIGLINT, 2.0f);
@@ -943,7 +943,7 @@ bool CPyro::EventProcess(const Event &event)
             speed.x = (Math::Rand()-0.5f)*2.0f;
             speed.z = (Math::Rand()-0.5f)*2.0f;
             speed.y = 2.0f+Math::Rand()*2.0f;
-            Math::Point dim;
+            glm::vec2 dim;
             dim.x = (Math::Rand()*1.0f+1.0f)*(0.2f+m_progress*0.8f);
             dim.y = dim.x;
             m_particle->CreateParticle(pos, speed, dim, PARTIGLINT, 2.0f, 0.0f, 0.0f);
@@ -974,7 +974,7 @@ bool CPyro::EventProcess(const Event &event)
             speed.x = (Math::Rand()-0.5f)*2.0f;
             speed.z = (Math::Rand()-0.5f)*2.0f;
             speed.y = 2.0f+Math::Rand()*2.0f;
-            Math::Point dim;
+            glm::vec2 dim;
             dim.x = (Math::Rand()*1.0f+1.0f)*(0.2f+m_progress*0.8f);
             dim.y = dim.x;
             m_particle->CreateParticle(pos, speed, dim, PARTIGLINT, 2.0f, 0.0f, 0.5f);
@@ -1005,7 +1005,7 @@ bool CPyro::EventProcess(const Event &event)
             speed.x = 0.0f;
             speed.z = 0.0f;
             speed.y = 5.0f+Math::Rand()*5.0f;
-            Math::Point dim;
+            glm::vec2 dim;
             dim.x = Math::Rand()*2.0f+2.0f;
             dim.y = dim.x;
             m_particle->CreateParticle(pos, speed, dim, PARTIGLINTb, 2.0f);
@@ -1050,7 +1050,7 @@ bool CPyro::EventProcess(const Event &event)
             speed.x = (Math::Rand()-0.5f)*2.0f;
             speed.z = (Math::Rand()-0.5f)*2.0f;
             speed.y = 4.0f+Math::Rand()*4.0f;
-            Math::Point dim;
+            glm::vec2 dim;
             dim.x = (Math::Rand()*3.0f+3.0f)*(1.0f-m_progress*0.9f);
             dim.y = dim.x;
             m_particle->CreateParticle(pos, speed, dim, PARTIGLINT, 2.0f, 0.0f, 0.5f);
@@ -1079,7 +1079,7 @@ bool CPyro::EventProcess(const Event &event)
             speed.x = 0.0f;
             speed.z = 0.0f;
             speed.y = 0.0f;
-            Math::Point dim;
+            glm::vec2 dim;
             dim.x = (Math::Rand()*2.5f+1.0f)*factor;
             dim.y = dim.x;
             m_particle->CreateParticle(pos, speed, dim, PARTIFLAME, 2.0f, 0.0f, 0.2f);
@@ -1140,7 +1140,7 @@ bool CPyro::EventProcess(const Event &event)
             speed.x = (Math::Rand()-0.5f)*10.0f;
             speed.z = (Math::Rand()-0.5f)*10.0f;
             speed.y = 8.0f+Math::Rand()*8.0f;
-            Math::Point dim;
+            glm::vec2 dim;
             dim.x = Math::Rand()*0.2f+0.2f;
             dim.y = dim.x;
             m_particle->CreateTrack(pos, speed, dim,
@@ -1164,7 +1164,7 @@ bool CPyro::EventProcess(const Event &event)
             speed.x = 0.0f;
             speed.z = 0.0f;
             speed.y = 1.0f+Math::Rand()*1.0f;
-            Math::Point dim;
+            glm::vec2 dim;
             dim.x = Math::Rand()*1.0f+1.0f;
             dim.y = dim.x;
             m_particle->CreateParticle(pos, speed, dim, PARTISMOKE1, 8.0f, 0.0f, 0.0f);
@@ -2368,7 +2368,7 @@ void CPyro::FallProgress(float rTime)
                 if (obj->GetType() == OBJECT_MOBILErs && dynamic_cast<CShielder&>(*obj).GetActiveShieldRadius() > 0.0f)  // protected by shield?
                 {
                     m_particle->CreateParticle(pos, Math::Vector(0.0f, 0.0f, 0.0f),
-                                                Math::Point(6.0f, 6.0f), PARTIGUNDEL, 2.0f, 0.0f, 0.0f);
+                                               { 6.0f, 6.0f }, PARTIGUNDEL, 2.0f, 0.0f, 0.0f);
                     m_sound->Play(SOUND_GUNDEL);
 
                     DeleteObject(true, true);  // removes the ball

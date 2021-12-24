@@ -97,7 +97,7 @@ CMainUserInterface::CMainUserInterface()
 
     m_phase         = PHASE_PLAYER_SELECT;
 
-    m_glintMouse = Math::Point(0.0f, 0.0f);
+    m_glintMouse = { 0.0f, 0.0f };
     m_glintTime  = 1000.0f;
     m_shotDelay = 0;
 }
@@ -278,7 +278,7 @@ void CMainUserInterface::GlintMove()
 {
     CWindow*    pw;
     CGroup*     pg;
-    Math::Point     pos, dim, zoom;
+    glm::vec2     pos, dim, zoom;
 
     if ( m_phase == PHASE_SIMUL )  return;
 
@@ -424,7 +424,7 @@ void CMainUserInterface::GlintMove()
 
 // Returns the position for a sound.
 
-static Math::Vector SoundPos(Math::Point pos)
+static Math::Vector SoundPos(const glm::vec2& pos)
 {
     Math::Vector    s;
 
@@ -453,7 +453,7 @@ static Math::Vector SoundRand()
 void CMainUserInterface::FrameParticle(float rTime)
 {
     Math::Vector    pos, speed;
-    Math::Point     dim;
+    glm::vec2     dim;
     float       *pParti, *pGlint;
     int          nParti,  nGlint;
     int         i, r, ii;
@@ -728,11 +728,11 @@ void CMainUserInterface::FrameParticle(float rTime)
     }
 }
 
-void CMainUserInterface::CreateMouseParticles(Math::Point mousePosition, bool buttonPressed)
+void CMainUserInterface::CreateMouseParticles(const glm::vec2& mousePosition, bool buttonPressed)
 {
     if (isAllowedToCreateMouseParticles())
     {
-        m_mouseParticlesGenerator->GenerateMouseParticles(Math::Point(mousePosition.x, mousePosition.y), buttonPressed);
+        m_mouseParticlesGenerator->GenerateMouseParticles({ mousePosition.x, mousePosition.y }, buttonPressed);
     }
 }
 

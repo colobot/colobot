@@ -2716,7 +2716,7 @@ void CParticle::DrawParticleNorm(int i)
 
         Math::Vector n(0.0f, 0.0f, -1.0f);
 
-        Math::Point dim;
+        glm::vec2 dim;
         dim.x = m_particle[i].dim.x * zoom;
         dim.y = m_particle[i].dim.y * zoom;
 
@@ -2767,7 +2767,7 @@ void CParticle::DrawParticleNorm(int i)
 
         Math::Vector n(0.0f, 0.0f, -1.0f);
 
-        Math::Point dim;
+        glm::vec2 dim;
         dim.x = m_particle[i].dim.x * zoom;
         dim.y = m_particle[i].dim.y * zoom;
 
@@ -2829,7 +2829,7 @@ void CParticle::DrawParticleFlat(int i)
 
     Math::Vector n(0.0f, 0.0f, -1.0f);
 
-    Math::Point dim;
+    glm::vec2 dim;
     dim.x = m_particle[i].dim.x * m_particle[i].zoom;
     dim.y = m_particle[i].dim.y * m_particle[i].zoom;
 
@@ -2867,11 +2867,11 @@ void CParticle::DrawParticleFog(int i)
 
     Math::Vector pos = m_particle[i].pos;
 
-    Math::Point dim;
+    glm::vec2 dim;
     dim.x = m_particle[i].dim.x;
     dim.y = m_particle[i].dim.y;
 
-    Math::Point zoom;
+    glm::vec2 zoom;
 
     if ( m_particle[i].type == PARTIFOG0 ||
          m_particle[i].type == PARTIFOG2 ||
@@ -2979,7 +2979,7 @@ void CParticle::DrawParticleRay(int i)
 
     Math::Vector n(0.0f, 0.0f, left ? 1.0f : -1.0f);
 
-    Math::Point dim;
+    glm::vec2 dim;
     dim.x = m_particle[i].dim.x * m_particle[i].zoom;
     dim.y = m_particle[i].dim.y * m_particle[i].zoom;
 
@@ -3080,8 +3080,8 @@ void CParticle::DrawParticleRay(int i)
 
         if (rank >= first && rank <= last)
         {
-            Math::Point texInf = m_particle[i].texInf;
-            Math::Point texSup = m_particle[i].texSup;
+            glm::vec2 texInf = m_particle[i].texInf;
+            glm::vec2 texSup = m_particle[i].texSup;
 
             int r = rand() % 16;
             texInf.x += 0.25f*(r/4);
@@ -3135,7 +3135,7 @@ void CParticle::DrawParticleSphere(int i)
 
     m_device->SetTransform(TRANSFORM_WORLD, mat);
 
-    Math::Point ts, ti;
+    glm::vec2 ts, ti;
     ts.x = m_particle[i].texSup.x;
     ts.y = m_particle[i].texSup.y;
     ti.x = m_particle[i].texInf.x;
@@ -3232,7 +3232,7 @@ void CParticle::DrawParticleCylinder(int i)
     mat.Set(3, 4, m_particle[i].pos.z);
     m_device->SetTransform(TRANSFORM_WORLD, mat);
 
-    Math::Point ts, ti;
+    glm::vec2 ts, ti;
     ts.x = m_particle[i].texSup.x;
     ts.y = m_particle[i].texSup.y;
     ti.x = m_particle[i].texInf.x;
@@ -3334,8 +3334,8 @@ void CParticle::DrawParticleWheel(int i)
 
         Math::Vector n(0.0f, 1.0f, 0.0f);
 
-        Math::Point ts(160.0f/256.0f, 224.0f/256.0f);
-        Math::Point ti(ts.x+16.0f/256.0f, ts.y+16.0f/256.0f);
+        glm::vec2 ts(160.0f/256.0f, 224.0f/256.0f);
+        glm::vec2 ti(ts.x+16.0f/256.0f, ts.y+16.0f/256.0f);
 
         float dp = (1.0f/256.0f)/2.0f;
         ts.x = ts.x+dp;

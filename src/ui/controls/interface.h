@@ -21,7 +21,7 @@
 
 #include "common/event.h"
 
-#include "math/point.h"
+#include <glm/glm.hpp>
 
 #include <array>
 #include <memory>
@@ -63,27 +63,27 @@ public:
     ~CInterface();
 
     bool        EventProcess(const Event &event);
-    bool        GetTooltip(Math::Point pos, std::string &name);
+    bool        GetTooltip(const glm::vec2& pos, std::string &name);
 
     void        Flush();
-    CButton*    CreateButton(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-    CColor*     CreateColor(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-    CCheck*     CreateCheck(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-    CKey*       CreateKey(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-    CGroup*     CreateGroup(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-    CImage*     CreateImage(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-    CEdit*      CreateEdit(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-    CEditValue* CreateEditValue(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-    CScroll*    CreateScroll(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-    CSlider*    CreateSlider(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-    CEnumSlider* CreateEnumSlider(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-    CShortcut*  CreateShortcut(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-    CTarget*    CreateTarget(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-    CMap*       CreateMap(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+    CButton*    CreateButton(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg);
+    CColor*     CreateColor(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg);
+    CCheck*     CreateCheck(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg);
+    CKey*       CreateKey(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg);
+    CGroup*     CreateGroup(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg);
+    CImage*     CreateImage(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg);
+    CEdit*      CreateEdit(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg);
+    CEditValue* CreateEditValue(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg);
+    CScroll*    CreateScroll(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg);
+    CSlider*    CreateSlider(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg);
+    CEnumSlider* CreateEnumSlider(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg);
+    CShortcut*  CreateShortcut(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg);
+    CTarget*    CreateTarget(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg);
+    CMap*       CreateMap(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg);
 
-    CWindow*    CreateWindows(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-    CList*      CreateList(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, float expand=1.2f);
-    CLabel*     CreateLabel(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, std::string name);
+    CWindow*    CreateWindows(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg);
+    CList*      CreateList(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg, float expand=1.2f);
+    CLabel*     CreateLabel(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg, std::string name);
 
     bool        DeleteControl(EventType eventMsg);
     CControl*   SearchControl(EventType eventMsg);
@@ -96,7 +96,7 @@ protected:
     int GetNextFreeControl();
 
     template <typename ControlClass>
-    ControlClass* CreateControl(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+    ControlClass* CreateControl(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg);
 
     CEventQueue* m_event;
     Gfx::CEngine* m_engine;

@@ -23,6 +23,8 @@
 
 #include "ui/particles_generator.h"
 
+#include <glm/glm.hpp>
+
 #include <array>
 #include <string>
 #include <vector>
@@ -97,7 +99,7 @@ public:
 protected:
     void    GlintMove();
     void    FrameParticle(float rTime);
-    void    CreateMouseParticles(Math::Point mousePosition, bool buttonPressed);
+    void    CreateMouseParticles(const glm::vec2& mousePosition, bool buttonPressed);
     CScreenSetup* GetSetupScreen(Phase phase);
 
 protected:
@@ -133,14 +135,14 @@ protected:
     int                  m_shotDelay;        // number of frames before copy
     std::string          m_shotName;        // generate a file name
 
-    Math::Point          m_glintMouse;
+    glm::vec2            m_glintMouse;
     float                m_glintTime;
 
     struct Particle
     {
         int phase = 0;
         float time = 0.0f;
-        Math::Point pos;
+        glm::vec2 pos = { 0, 0 };
     };
     std::array<Particle, 10> m_particles;
 

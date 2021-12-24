@@ -19,9 +19,9 @@
 
 #pragma once
 
-#include "math/point.h"
-
 #include <string>
+
+#include <glm/glm.hpp>
 
 class CRobotMain;
 class CApplication;
@@ -60,7 +60,7 @@ protected:
     Gfx::CEngine* m_engine;
     CSoundInterface* m_sound;
 
-    const Math::Point dim = Math::Point(32.0f/640.0f, 32.0f/480.0f);
+    const glm::vec2 dim = { 32.0f / 640.0f, 32.0f / 480.0f };
     const float ox = 3.0f/640.0f,         oy = 3.0f/480.0f;
     const float sx = (32.0f+2.0f)/640.0f, sy = (32.0f+2.0f)/480.0f;
 };

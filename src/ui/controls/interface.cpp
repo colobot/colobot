@@ -84,7 +84,7 @@ int CInterface::GetNextFreeControl()
 }
 
 template <typename ControlClass>
-ControlClass* CInterface::CreateControl(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+ControlClass* CInterface::CreateControl(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg)
 {
     if (eventMsg == EVENT_NULL)
         eventMsg = GetUniqueEventType();
@@ -103,7 +103,7 @@ ControlClass* CInterface::CreateControl(Math::Point pos, Math::Point dim, int ic
 
 // Creates a new button.
 
-CWindow* CInterface::CreateWindows(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+CWindow* CInterface::CreateWindows(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg)
 {
     if (eventMsg == EVENT_NULL)
         eventMsg = GetUniqueEventType();
@@ -137,49 +137,49 @@ CWindow* CInterface::CreateWindows(Math::Point pos, Math::Point dim, int icon, E
 
 // Creates a new button.
 
-CButton* CInterface::CreateButton(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+CButton* CInterface::CreateButton(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg)
 {
     return CreateControl<CButton>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new button.
 
-CColor* CInterface::CreateColor(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+CColor* CInterface::CreateColor(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg)
 {
     return CreateControl<CColor>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new button.
 
-CCheck* CInterface::CreateCheck(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+CCheck* CInterface::CreateCheck(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg)
 {
     return CreateControl<CCheck>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new button.
 
-CKey* CInterface::CreateKey(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+CKey* CInterface::CreateKey(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg)
 {
     return CreateControl<CKey>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new button.
 
-CGroup* CInterface::CreateGroup(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+CGroup* CInterface::CreateGroup(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg)
 {
     return CreateControl<CGroup>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new button.
 
-CImage* CInterface::CreateImage(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+CImage* CInterface::CreateImage(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg)
 {
     return CreateControl<CImage>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new label.
 
-CLabel* CInterface::CreateLabel(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, std::string name)
+CLabel* CInterface::CreateLabel(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg, std::string name)
 {
     CLabel* pc = CreateControl<CLabel>(pos, dim, icon, eventMsg);
     if (pc != nullptr)
@@ -189,13 +189,13 @@ CLabel* CInterface::CreateLabel(Math::Point pos, Math::Point dim, int icon, Even
 
 // Creates a new pave editable.
 
-CEdit* CInterface::CreateEdit(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+CEdit* CInterface::CreateEdit(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg)
 {
     return CreateControl<CEdit>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new editable area.
-CEditValue* CInterface::CreateEditValue(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+CEditValue* CInterface::CreateEditValue(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg)
 {
     CEditValue* ev = CreateControl<CEditValue>(pos, dim, icon, eventMsg);
     ev->SetInterface(this);
@@ -204,19 +204,19 @@ CEditValue* CInterface::CreateEditValue(Math::Point pos, Math::Point dim, int ic
 
 // Creates a new lift.
 
-CScroll* CInterface::CreateScroll(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+CScroll* CInterface::CreateScroll(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg)
 {
     return CreateControl<CScroll>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new cursor.
 
-CSlider* CInterface::CreateSlider(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+CSlider* CInterface::CreateSlider(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg)
 {
     return CreateControl<CSlider>(pos, dim, icon, eventMsg);
 }
 
-CEnumSlider* CInterface::CreateEnumSlider(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+CEnumSlider* CInterface::CreateEnumSlider(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg)
 {
     return CreateControl<CEnumSlider>(pos, dim, icon, eventMsg);
 }
@@ -226,7 +226,7 @@ CEnumSlider* CInterface::CreateEnumSlider(Math::Point pos, Math::Point dim, int 
 // and try to scale items to some size, so that dim of the list would not change after
 // adjusting
 
-CList* CInterface::CreateList(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, float expand)
+CList* CInterface::CreateList(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg, float expand)
 {
     if (eventMsg == EVENT_NULL)
         eventMsg = GetUniqueEventType();
@@ -244,21 +244,21 @@ CList* CInterface::CreateList(Math::Point pos, Math::Point dim, int icon, EventT
 
 // Creates a new shortcut.
 
-CShortcut* CInterface::CreateShortcut(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+CShortcut* CInterface::CreateShortcut(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg)
 {
     return CreateControl<CShortcut>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new target.
 
-CTarget* CInterface::CreateTarget(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+CTarget* CInterface::CreateTarget(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg)
 {
     return CreateControl<CTarget>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new map.
 
-CMap* CInterface::CreateMap(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+CMap* CInterface::CreateMap(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg)
 {
     return CreateControl<CMap>(pos, dim, icon, eventMsg);
 }
@@ -318,7 +318,7 @@ bool CInterface::EventProcess(const Event &event)
 
 // Gives the tooltip binding to the window.
 
-bool CInterface::GetTooltip(Math::Point pos, std::string &name)
+bool CInterface::GetTooltip(const glm::vec2& pos, std::string &name)
 {
     for (auto& control : boost::adaptors::reverse(m_controls))
     {

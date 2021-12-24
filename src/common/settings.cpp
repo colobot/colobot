@@ -43,12 +43,12 @@ CSettings::CSettings()
     m_focusLostMute = true;
 
     m_fontSize = 19.0f;
-    m_windowPos = Math::Point(0.15f, 0.17f);
-    m_windowDim = Math::Point(0.70f, 0.66f);
+    m_windowPos = { 0.15f, 0.17f };
+    m_windowDim = { 0.70f, 0.66f };
     m_windowMax = false;
 
     m_IOPublic = false;
-    m_IODim = Math::Point(320.0f / 640.0f, (121.0f + 18.0f * 8) / 480.0f);
+    m_IODim = { 320.0f / 640.0f, (121.0f + 18.0f * 8) / 480.0f };
     m_IOPos.x = (1.0f - m_IODim.x) / 2.0f;  // in the middle
     m_IOPos.y = (1.0f - m_IODim.y) / 2.0f;
 
@@ -396,7 +396,7 @@ float CSettings::GetFontSize()
     return m_fontSize;
 }
 
-void CSettings::SetWindowPos(Math::Point pos)
+void CSettings::SetWindowPos(const glm::vec2& pos)
 {
     m_windowPos = pos;
     GetConfigFile().SetFloatProperty("Edit", "WindowPosX", m_windowPos.x);
@@ -404,12 +404,12 @@ void CSettings::SetWindowPos(Math::Point pos)
     GetConfigFile().Save();
 }
 
-Math::Point CSettings::GetWindowPos()
+glm::vec2 CSettings::GetWindowPos()
 {
     return m_windowPos;
 }
 
-void CSettings::SetWindowDim(Math::Point dim)
+void CSettings::SetWindowDim(const glm::vec2& dim)
 {
     m_windowDim = dim;
     GetConfigFile().SetFloatProperty("Edit", "WindowDimX", m_windowDim.x);
@@ -417,7 +417,7 @@ void CSettings::SetWindowDim(Math::Point dim)
     GetConfigFile().Save();
 }
 
-Math::Point CSettings::GetWindowDim()
+glm::vec2 CSettings::GetWindowDim()
 {
     return m_windowDim;
 }
@@ -446,7 +446,7 @@ bool CSettings::GetIOPublic()
     return m_IOPublic;
 }
 
-void CSettings::SetIOPos(Math::Point pos)
+void CSettings::SetIOPos(const glm::vec2& pos)
 {
     m_IOPos = pos;
     GetConfigFile().SetFloatProperty("Edit", "IOPosX", m_IOPos.x);
@@ -454,12 +454,12 @@ void CSettings::SetIOPos(Math::Point pos)
     GetConfigFile().Save();
 }
 
-Math::Point CSettings::GetIOPos()
+glm::vec2 CSettings::GetIOPos()
 {
     return m_IOPos;
 }
 
-void CSettings::SetIODim(Math::Point dim)
+void CSettings::SetIODim(const glm::vec2& dim)
 {
     m_IODim = dim;
     GetConfigFile().SetFloatProperty("Edit", "IODimX", m_IODim.x);
@@ -467,7 +467,7 @@ void CSettings::SetIODim(Math::Point dim)
     GetConfigFile().Save();
 }
 
-Math::Point CSettings::GetIODim()
+glm::vec2 CSettings::GetIODim()
 {
     return m_IODim;
 }

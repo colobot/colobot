@@ -64,7 +64,7 @@ void CScreen::CreateVersionDisplay()
     CWindow* pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if (pw != nullptr)
     {
-        Math::Point pos, ddim;
+        glm::vec2 pos, ddim;
 
         pos.x  = 540.0f/640.0f;
         pos.y  =   9.0f/480.0f;

@@ -22,7 +22,7 @@
 #include "common/language.h"
 #include "common/singleton.h"
 
-#include "math/point.h"
+#include <glm/glm.hpp>
 
 namespace Gfx
 {
@@ -68,11 +68,11 @@ public:
 
     //! Managing the size of the default window
     //@{
-    void        SetWindowPos(Math::Point pos);
-    Math::Point GetWindowPos();
+    void        SetWindowPos(const glm::vec2& pos);
+    glm::vec2   GetWindowPos();
 
-    void        SetWindowDim(Math::Point dim);
-    Math::Point GetWindowDim();
+    void        SetWindowDim(const glm::vec2& dim);
+    glm::vec2   GetWindowDim();
 
     void        SetWindowMax(bool max);
     bool        GetWindowMax();
@@ -83,11 +83,11 @@ public:
     void        SetIOPublic(bool mode);
     bool        GetIOPublic();
 
-    void        SetIOPos(Math::Point pos);
-    Math::Point GetIOPos();
+    void        SetIOPos(const glm::vec2& pos);
+    glm::vec2   GetIOPos();
 
-    void        SetIODim(Math::Point dim);
-    Math::Point GetIODim();
+    void        SetIODim(const glm::vec2& dim);
+    glm::vec2   GetIODim();
     //@}
 
     void SetLanguage(Language language);
@@ -103,13 +103,13 @@ protected:
     bool m_focusLostMute;
 
     float           m_fontSize;
-    Math::Point     m_windowPos;
-    Math::Point     m_windowDim;
+    glm::vec2       m_windowPos;
+    glm::vec2       m_windowDim;
     bool            m_windowMax;
 
     bool            m_IOPublic;
-    Math::Point     m_IOPos;
-    Math::Point     m_IODim;
+    glm::vec2       m_IOPos;
+    glm::vec2       m_IODim;
 
     Language m_language;
 };
