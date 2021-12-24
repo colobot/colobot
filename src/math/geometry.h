@@ -28,7 +28,6 @@
 #include "math/const.h"
 #include "math/func.h"
 #include "math/matrix.h"
-#include "math/point.h"
 #include "math/vector.h"
 
 #include <glm/glm.hpp>
@@ -239,10 +238,10 @@ inline float RotateAngle(float x, float y)
  */
 inline float RotateAngle(const glm::vec2&center, const glm::vec2&p1, const glm::vec2&p2)
 {
-    if (PointsEqual(p1, center))
+    if (glm::all(glm::epsilonEqual(p1, center, TOLERANCE)))
         return 0;
 
-    if (PointsEqual(p2, center))
+    if (glm::all(glm::epsilonEqual(p2, center, TOLERANCE)))
         return 0;
 
     float a1 = asinf((p1.y - center.y) / glm::distance(p1, center));

@@ -30,6 +30,5 @@
 #include "math/geometry.h"
 #include "math/half.h"
 #include "math/matrix.h"
-#include "math/point.h"
 #include "math/vector.h"
 

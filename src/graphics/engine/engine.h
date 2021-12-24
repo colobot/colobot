@@ -33,7 +33,6 @@
 #include "graphics/core/vertex.h"
 
 #include "math/matrix.h"
-#include "math/point.h"
 #include "math/sphere.h"
 #include "math/vector.h"
 

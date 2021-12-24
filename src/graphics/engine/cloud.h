@@ -26,7 +26,6 @@
 
 #include "graphics/core/color.h"
 
-#include "math/point.h"
 #include "math/vector.h"
 
 #include <vector>

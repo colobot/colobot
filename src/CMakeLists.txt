@@ -180,7 +180,6 @@ add_library(colobotbase STATIC
     math/half.cpp
     math/half.h
     math/matrix.h
-    math/point.h
     math/sphere.h
     math/vector.h
     object/auto/auto.cpp
