@@ -38,7 +38,7 @@ TEST(VectorTest, LengthTest)
     Math::Vector vec(-1.288447945923275, 0.681452565308134, -0.633761098985957);
     const float expectedLength = 1.58938001708428;
 
-    EXPECT_TRUE(Math::IsEqual(vec.Length(), expectedLength, TEST_TOLERANCE));
+    EXPECT_TRUE(Math::IsEqual(glm::length(vec), expectedLength, TEST_TOLERANCE));
 }
 
 TEST(VectorTest, NormalizeTest)
@@ -46,7 +46,7 @@ TEST(VectorTest, NormalizeTest)
     Math::Vector vec(1.848877241804398, -0.157262961268577, -1.963031403332377);
     const Math::Vector expectedNormalized(0.6844609421393856, -0.0582193085618106, -0.7267212194481797);
 
-    vec.Normalize();
+    vec = glm::normalize(vec);
 
     EXPECT_TRUE(Math::VectorsEqual(vec, expectedNormalized, TEST_TOLERANCE));
 }
@@ -69,7 +69,7 @@ TEST(VectorTest, CrossTest)
     Math::Vector expectedCross(-1.937932065431669, 2.978844370287636, -0.437739173833581);
     Math::Vector expectedReverseCross = -expectedCross;
 
-    EXPECT_TRUE(Math::VectorsEqual(vecA.CrossMultiply(vecB), expectedCross, TEST_TOLERANCE));
+    EXPECT_TRUE(Math::VectorsEqual(glm::cross(vecA, vecB), expectedCross, TEST_TOLERANCE));
 
-    EXPECT_TRUE(Math::VectorsEqual(vecB.CrossMultiply(vecA), expectedReverseCross, TEST_TOLERANCE));
+    EXPECT_TRUE(Math::VectorsEqual(glm::cross(vecB, vecA), expectedReverseCross, TEST_TOLERANCE));
 }

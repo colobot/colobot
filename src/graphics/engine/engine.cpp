@@ -185,8 +185,8 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
     m_highlight = false;
     std::fill_n(m_highlightRank, 100, -1);
     m_highlightTime = 0.0f;
-    m_eyePt    = Math::Vector(0.0f, 0.0f, 0.0f);
-    m_lookatPt = Math::Vector(0.0f, 0.0f, 1.0f);
+    m_eyePt    = glm::vec3(0.0f, 0.0f, 0.0f);
+    m_lookatPt = glm::vec3(0.0f, 0.0f, 1.0f);
     m_drawWorld = true;
     m_drawFront = false;
     m_particleDensity = 1.0f;
@@ -233,8 +233,8 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
 
     // Compute bias matrix for shadow mapping
     Math::Matrix temp1, temp2;
-    Math::LoadScaleMatrix(temp1, Math::Vector(0.5f, 0.5f, 0.5f));
-    Math::LoadTranslationMatrix(temp2, Math::Vector(1.0f, 1.0f, 1.0f));
+    Math::LoadScaleMatrix(temp1, glm::vec3(0.5f, 0.5f, 0.5f));
+    Math::LoadTranslationMatrix(temp2, glm::vec3(1.0f, 1.0f, 1.0f));
     m_shadowBias = Math::MultiplyMatrices(temp1, temp2);
 
     m_lastState = -1;
@@ -604,7 +604,7 @@ int CEngine::GetStatisticTriangle()
     return m_statisticTriangle;
 }
 
-void CEngine::SetStatisticPos(Math::Vector pos)
+void CEngine::SetStatisticPos(glm::vec3 pos)
 {
     m_statisticPos = pos;
 }
@@ -853,9 +853,9 @@ void CEngine::DebugObject(int objRank)
 
     std::string vecStr;
 
-    vecStr = p1.bboxMin.ToString();
+    vecStr = Math::ToString(p1.bboxMin);
     l->Debug("  bboxMin: %s\n", vecStr.c_str());
-    vecStr = p1.bboxMax.ToString();
+    vecStr = Math::ToString(p1.bboxMax);
     l->Debug("  bboxMax: %s\n", vecStr.c_str());
     l->Debug("  totalTriangles: %d\n", p1.totalTriangles);
     l->Debug("  radius: %f\n", p1.boundingSphere.radius);
@@ -994,7 +994,7 @@ void CEngine::SetObjectTransparency(int objRank, float value)
     m_objects[objRank].transparency = value;
 }
 
-void CEngine::GetObjectBBox(int objRank, Math::Vector& min, Math::Vector& max)
+void CEngine::GetObjectBBox(int objRank, glm::vec3& min, glm::vec3& max)
 {
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
@@ -1251,7 +1251,7 @@ void CEngine::TrackTextureMapping(int objRank, const Material& mat, int state,
     while (pos < 0.0f)
         pos += 1.0f;  // never negative!
 
-    Math::Vector current;
+    glm::vec3 current{ 0, 0, 0 };
 
     for (int i = 0; i < 6; i++)
     {
@@ -1401,7 +1401,7 @@ void CEngine::SetObjectShadowSpotType(int objRank, EngineShadowType type)
     m_shadowSpots[shadowRank].type = type;
 }
 
-void CEngine::SetObjectShadowSpotPos(int objRank, const Math::Vector& pos)
+void CEngine::SetObjectShadowSpotPos(int objRank, const glm::vec3& pos)
 {
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
@@ -1502,7 +1502,7 @@ bool CEngine::GetBBox2D(int objRank, glm::vec2& min, glm::vec2& max)
 
     for (int i = 0; i < 8; i++)
     {
-        Math::Vector p;
+        glm::vec3 p{ 0, 0, 0 };
 
         if ( i & (1<<0) )  p.x = p1.bboxMin.x;
         else               p.x = p1.bboxMax.x;
@@ -1511,7 +1511,7 @@ bool CEngine::GetBBox2D(int objRank, glm::vec2& min, glm::vec2& max)
         if ( i & (1<<2) )  p.z = p1.bboxMin.z;
         else               p.z = p1.bboxMax.z;
 
-        Math::Vector pp;
+        glm::vec3 pp{ 0, 0, 0 };
         if (TransformPoint(pp, objRank, p))
         {
             if (pp.x < min.x) min.x = pp.x;
@@ -1573,10 +1573,10 @@ void CEngine::DeleteGroundSpot(int rank)
     assert(rank >= 0 && rank < static_cast<int>( m_groundSpots.size() ));
 
     m_groundSpots[rank].used = false;
-    m_groundSpots[rank].pos = Math::Vector(0.0f, 0.0f, 0.0f);
+    m_groundSpots[rank].pos = glm::vec3(0.0f, 0.0f, 0.0f);
 }
 
-void CEngine::SetObjectGroundSpotPos(int rank, const Math::Vector& pos)
+void CEngine::SetObjectGroundSpotPos(int rank, const glm::vec3& pos)
 {
     assert(rank >= 0 && rank < static_cast<int>( m_groundSpots.size() ));
 
@@ -1612,7 +1612,7 @@ void CEngine::SetObjectGroundSpotSmooth(int rank, float smooth)
     m_groundSpots[rank].smooth = smooth;
 }
 
-void CEngine::CreateGroundMark(Math::Vector pos, float radius,
+void CEngine::CreateGroundMark(glm::vec3 pos, float radius,
                                    float delay1, float delay2, float delay3,
                                    int dx, int dy, char* table)
 {
@@ -1643,11 +1643,11 @@ void CEngine::ComputeDistance()
         if (! m_objects[i].used)
             continue;
 
-        Math::Vector v;
+        glm::vec3 v{};
         v.x = m_eyePt.x - m_objects[i].transform.Get(1, 4);
         v.y = m_eyePt.y - m_objects[i].transform.Get(2, 4);
         v.z = m_eyePt.z - m_objects[i].transform.Get(3, 4);
-        m_objects[i].distance = v.Length();
+        m_objects[i].distance = glm::length(v);
     }
 }
 
@@ -1662,8 +1662,8 @@ void CEngine::UpdateGeometry()
         if (! p1.used)
             continue;
 
-        p1.bboxMin.LoadZero();
-        p1.bboxMax.LoadZero();
+        p1.bboxMin = { 0, 0, 0 };
+        p1.bboxMax = { 0, 0, 0 };
 
         for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
         {
@@ -1770,7 +1770,7 @@ bool CEngine::DetectBBox(int objRank, const glm::vec2& mouse)
 
     for (int i = 0; i < 8; i++)
     {
-        Math::Vector p;
+        glm::vec3 p{ 0, 0, 0 };
 
         if ( i & (1<<0) )  p.x = p1.bboxMin.x;
         else               p.x = p1.bboxMax.x;
@@ -1779,7 +1779,7 @@ bool CEngine::DetectBBox(int objRank, const glm::vec2& mouse)
         if ( i & (1<<2) )  p.z = p1.bboxMin.z;
         else               p.z = p1.bboxMax.z;
 
-        Math::Vector pp;
+        glm::vec3 pp{ 0, 0, 0 };
         if ( TransformPoint(pp, objRank, p) )
         {
             if (pp.x < min.x) min.x = pp.x;
@@ -1795,11 +1795,11 @@ bool CEngine::DetectBBox(int objRank, const glm::vec2& mouse)
              mouse.y <= max.y );
 }
 
-int CEngine::DetectObject(const glm::vec2& mouse, Math::Vector& targetPos, bool terrain)
+int CEngine::DetectObject(const glm::vec2& mouse, glm::vec3& targetPos, bool terrain)
 {
     float min = 1000000.0f;
     int nearest = -1;
-    Math::Vector pos;
+    glm::vec3 pos{ 0, 0, 0 };
 
     for (int objRank = 0; objRank < static_cast<int>( m_objects.size() ); objRank++)
     {
@@ -1863,11 +1863,11 @@ int CEngine::DetectObject(const glm::vec2& mouse, Math::Vector& targetPos, bool 
     return nearest;
 }
 
-bool CEngine::DetectTriangle(const glm::vec2& mouse, Vertex3D* triangle, int objRank, float& dist, Math::Vector& pos)
+bool CEngine::DetectTriangle(const glm::vec2& mouse, Vertex3D* triangle, int objRank, float& dist, glm::vec3& pos)
 {
     assert(objRank >= 0 && objRank < static_cast<int>(m_objects.size()));
 
-    Math::Vector p2D[3], p3D;
+    glm::vec3 p2D[3], p3D{ 0, 0, 0 };
 
     for (int i = 0; i < 3; i++)
     {
@@ -1910,11 +1910,11 @@ bool CEngine::DetectTriangle(const glm::vec2& mouse, Vertex3D* triangle, int obj
     if (! Math::IsInsideTriangle(a, b, c, mouse))
         return false;
 
-    Math::Vector a2 = Math::Transform(m_objects[objRank].transform, triangle[0].position);
-    Math::Vector b2 = Math::Transform(m_objects[objRank].transform, triangle[1].position);
-    Math::Vector c2 = Math::Transform(m_objects[objRank].transform, triangle[2].position);
-    Math::Vector e  = Math::Transform(m_matView.Inverse(), Math::Vector(0.0f, 0.0f, -1.0f));
-    Math::Vector f  = Math::Transform(m_matView.Inverse(), Math::Vector(
+    glm::vec3 a2 = Math::Transform(m_objects[objRank].transform, triangle[0].position);
+    glm::vec3 b2 = Math::Transform(m_objects[objRank].transform, triangle[1].position);
+    glm::vec3 c2 = Math::Transform(m_objects[objRank].transform, triangle[2].position);
+    glm::vec3 e  = Math::Transform(m_matView.Inverse(), glm::vec3(0.0f, 0.0f, -1.0f));
+    glm::vec3 f  = Math::Transform(m_matView.Inverse(), glm::vec3(
         (mouse.x*2.0f-1.0f)*m_matProj.Inverse().Get(1,1),
         (mouse.y*2.0f-1.0f)*m_matProj.Inverse().Get(2,2),
         0.0f));
@@ -1946,57 +1946,57 @@ bool CEngine::IsVisible(const Math::Matrix& matrix, int objRank)
     return false;
 }
 
-int CEngine::ComputeSphereVisibility(const Math::Matrix& m, const Math::Vector& center, float radius)
+int CEngine::ComputeSphereVisibility(const Math::Matrix& m, const glm::vec3& center, float radius)
 {
-    Math::Vector vec[6];
+    glm::vec3 vec[6];
     float originPlane[6];
 
     // Left plane
     vec[0].x = m.Get(4, 1) + m.Get(1, 1);
     vec[0].y = m.Get(4, 2) + m.Get(1, 2);
     vec[0].z = m.Get(4, 3) + m.Get(1, 3);
-    float l1 = vec[0].Length();
-    vec[0].Normalize();
+    float l1 = glm::length(vec[0]);
+    vec[0] = glm::normalize(vec[0]);
     originPlane[0] = (m.Get(4, 4) + m.Get(1, 4)) / l1;
 
     // Right plane
     vec[1].x = m.Get(4, 1) - m.Get(1, 1);
     vec[1].y = m.Get(4, 2) - m.Get(1, 2);
     vec[1].z = m.Get(4, 3) - m.Get(1, 3);
-    float l2 = vec[1].Length();
-    vec[1].Normalize();
+    float l2 = glm::length(vec[1]);
+    vec[1] = glm::normalize(vec[1]);
     originPlane[1] = (m.Get(4, 4) - m.Get(1, 4)) / l2;
 
     // Bottom plane
     vec[2].x = m.Get(4, 1) + m.Get(2, 1);
     vec[2].y = m.Get(4, 2) + m.Get(2, 2);
     vec[2].z = m.Get(4, 3) + m.Get(2, 3);
-    float l3 = vec[2].Length();
-    vec[2].Normalize();
+    float l3 = glm::length(vec[2]);
+    vec[2] = glm::normalize(vec[2]);
     originPlane[2] = (m.Get(4, 4) + m.Get(2, 4)) / l3;
 
     // Top plane
     vec[3].x = m.Get(4, 1) - m.Get(2, 1);
     vec[3].y = m.Get(4, 2) - m.Get(2, 2);
     vec[3].z = m.Get(4, 3) - m.Get(2, 3);
-    float l4 = vec[3].Length();
-    vec[3].Normalize();
+    float l4 = glm::length(vec[3]);
+    vec[3] = glm::normalize(vec[3]);
     originPlane[3] = (m.Get(4, 4) - m.Get(2, 4)) / l4;
 
     // Front plane
     vec[4].x = m.Get(4, 1) + m.Get(3, 1);
     vec[4].y = m.Get(4, 2) + m.Get(3, 2);
     vec[4].z = m.Get(4, 3) + m.Get(3, 3);
-    float l5 = vec[4].Length();
-    vec[4].Normalize();
+    float l5 = glm::length(vec[4]);
+    vec[4] = glm::normalize(vec[4]);
     originPlane[4] = (m.Get(4, 4) + m.Get(3, 4)) / l5;
 
     // Back plane
     vec[5].x = m.Get(4, 1) - m.Get(3, 1);
     vec[5].y = m.Get(4, 2) - m.Get(3, 2);
     vec[5].z = m.Get(4, 3) - m.Get(3, 3);
-    float l6 = vec[5].Length();
-    vec[5].Normalize();
+    float l6 = glm::length(vec[5]);
+    vec[5] = glm::normalize(vec[5]);
     originPlane[5] = (m.Get(4, 4) - m.Get(3, 4)) / l6;
 
     int result = 0;
@@ -2017,7 +2017,7 @@ int CEngine::ComputeSphereVisibility(const Math::Matrix& m, const Math::Vector& 
     return result;
 }
 
-bool CEngine::InPlane(Math::Vector normal, float originPlane, Math::Vector center, float radius)
+bool CEngine::InPlane(glm::vec3 normal, float originPlane, glm::vec3 center, float radius)
 {
     float distance = originPlane + Math::DotProduct(normal, center);
 
@@ -2027,7 +2027,7 @@ bool CEngine::InPlane(Math::Vector normal, float originPlane, Math::Vector cente
     return true;
 }
 
-bool CEngine::TransformPoint(Math::Vector& p2D, int objRank, Math::Vector p3D)
+bool CEngine::TransformPoint(glm::vec3& p2D, int objRank, glm::vec3 p3D)
 {
     assert(objRank >= 0 && objRank < static_cast<int>(m_objects.size()));
 
@@ -2319,7 +2319,7 @@ void CEngine::SetMaterial(const Material& mat)
     m_device->SetMaterial(mat);
 }
 
-void CEngine::SetViewParams(const Math::Vector &eyePt, const Math::Vector &lookatPt, const Math::Vector &upVec)
+void CEngine::SetViewParams(const glm::vec3 &eyePt, const glm::vec3 &lookatPt, const glm::vec3 &upVec)
 {
     m_eyePt = eyePt;
     m_lookatPt = lookatPt;
@@ -3232,12 +3232,12 @@ const Math::Matrix& CEngine::GetMatProj()
     return m_matProj;
 }
 
-Math::Vector CEngine::GetEyePt()
+glm::vec3 CEngine::GetEyePt()
 {
     return m_eyePt;
 }
 
-Math::Vector CEngine::GetLookatPt()
+glm::vec3 CEngine::GetLookatPt()
 {
     return m_lookatPt;
 }
@@ -3252,7 +3252,7 @@ float CEngine::GetEyeDirV()
     return m_eyeDirV;
 }
 
-bool CEngine::IsVisiblePoint(const Math::Vector &pos)
+bool CEngine::IsVisiblePoint(const glm::vec3 &pos)
 {
     return Math::Distance(m_eyePt, pos) <= (m_deepView[0] * m_clippingDistance);
 }
@@ -3836,15 +3836,15 @@ void CEngine::RenderDebugSphere(const Math::Sphere& sphere, const Math::Matrix& 
     static constexpr int NUM_LINE_STRIPS = 2 + LONGITUDE_DIVISIONS + LATITUDE_DIVISIONS;
     static constexpr int VERTS_IN_LINE_STRIP = 32;
 
-    static std::array<Math::Vector, NUM_LINE_STRIPS * VERTS_IN_LINE_STRIP> verticesTemplate = []
+    static std::array<glm::vec3, NUM_LINE_STRIPS * VERTS_IN_LINE_STRIP> verticesTemplate = []
     {
-        std::array<Math::Vector, NUM_LINE_STRIPS * VERTS_IN_LINE_STRIP> vertices;
+        std::array<glm::vec3, NUM_LINE_STRIPS * VERTS_IN_LINE_STRIP> vertices;
 
         auto SpherePoint = [&](float latitude, float longitude)
         {
             float latitudeAngle = (latitude - 0.5f) * 2.0f * Math::PI;
             float longitudeAngle = longitude * 2.0f * Math::PI;
-            return Math::Vector(sinf(latitudeAngle) * cosf(longitudeAngle),
+            return glm::vec3(sinf(latitudeAngle) * cosf(longitudeAngle),
                                 cosf(latitudeAngle),
                                 sinf(latitudeAngle) * sinf(longitudeAngle));
         };
@@ -3898,7 +3898,7 @@ void CEngine::RenderDebugSphere(const Math::Sphere& sphere, const Math::Matrix& 
     }
 }
 
-void CEngine::RenderDebugBox(const Math::Vector& mins, const Math::Vector& maxs, const Math::Matrix& transform, const Gfx::Color& color)
+void CEngine::RenderDebugBox(const glm::vec3& mins, const glm::vec3& maxs, const Math::Matrix& transform, const Gfx::Color& color)
 {
     static constexpr int NUM_LINE_STRIPS = 4;
     static constexpr int VERTS_IN_LINE_STRIP = 4;
@@ -3922,25 +3922,25 @@ void CEngine::RenderDebugBox(const Math::Vector& mins, const Math::Vector& maxs,
 
     auto vert = m_pendingDebugDraws.vertices.begin() + firstVert;
 
-    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{mins.x, mins.y, mins.z}), color};
-    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{maxs.x, mins.y, mins.z}), color};
-    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{maxs.x, maxs.y, mins.z}), color};
-    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{maxs.x, maxs.y, maxs.z}), color};
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, glm::vec3{mins.x, mins.y, mins.z}), color};
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, glm::vec3{maxs.x, mins.y, mins.z}), color};
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, glm::vec3{maxs.x, maxs.y, mins.z}), color};
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, glm::vec3{maxs.x, maxs.y, maxs.z}), color};
 
-    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{mins.x, mins.y, maxs.z}), color};
-    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{mins.x, mins.y, mins.z}), color};
-    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{mins.x, maxs.y, mins.z}), color};
-    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{maxs.x, maxs.y, mins.z}), color};
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, glm::vec3{mins.x, mins.y, maxs.z}), color};
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, glm::vec3{mins.x, mins.y, mins.z}), color};
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, glm::vec3{mins.x, maxs.y, mins.z}), color};
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, glm::vec3{maxs.x, maxs.y, mins.z}), color};
 
-    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{maxs.x, mins.y, maxs.z}), color};
-    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{mins.x, mins.y, maxs.z}), color};
-    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{mins.x, maxs.y, maxs.z}), color};
-    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{mins.x, maxs.y, mins.z}), color};
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, glm::vec3{maxs.x, mins.y, maxs.z}), color};
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, glm::vec3{mins.x, mins.y, maxs.z}), color};
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, glm::vec3{mins.x, maxs.y, maxs.z}), color};
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, glm::vec3{mins.x, maxs.y, mins.z}), color};
 
-    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{maxs.x, mins.y, mins.z}), color};
-    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{maxs.x, mins.y, maxs.z}), color};
-    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{maxs.x, maxs.y, maxs.z}), color};
-    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, Math::Vector{mins.x, maxs.y, maxs.z}), color};
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, glm::vec3{maxs.x, mins.y, mins.z}), color};
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, glm::vec3{maxs.x, mins.y, maxs.z}), color};
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, glm::vec3{maxs.x, maxs.y, maxs.z}), color};
+    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, glm::vec3{mins.x, maxs.y, maxs.z}), color};
 }
 
 void CEngine::RenderPendingDebugDraws()
@@ -4045,11 +4045,11 @@ void CEngine::RenderShadowMap()
             m_shadowParams[region].scale);
 
         // recompute matrices
-        Math::Vector worldUp(0.0f, 1.0f, 0.0f);
-        Math::Vector lightDir = Math::Vector(1.0f, 2.0f, -1.0f);
-        Math::Vector dir = m_lookatPt - m_eyePt;
+        glm::vec3 worldUp(0.0f, 1.0f, 0.0f);
+        glm::vec3 lightDir = glm::vec3(1.0f, 2.0f, -1.0f);
+        glm::vec3 dir = m_lookatPt - m_eyePt;
         dir.y = 0.0f;
-        dir.Normalize();
+        dir = glm::normalize(dir);
 
         float range = m_shadowParams[region].range;
 
@@ -4062,14 +4062,14 @@ void CEngine::RenderShadowMap()
             dist = 75.0f * scale;
         }
 
-        Math::Vector pos = m_lookatPt + 0.25f * dist * dir;
+        glm::vec3 pos = m_lookatPt + 0.25f * dist * dir;
 
         {
             // To prevent 'shadow shimmering', we ensure that the position only moves in texel-sized
             // increments. To do this we transform the position to a space where the light's forward/right/up
             // axes are aligned with the x/y/z axes (not necessarily in that order, and +/- signs don't matter).
             Math::Matrix lightRotation;
-            Math::LoadViewMatrix(lightRotation, Math::Vector{}, lightDir, worldUp);
+            Math::LoadViewMatrix(lightRotation, glm::vec3{0, 0, 0}, lightDir, worldUp);
             pos = Math::MatrixVectorMultiply(lightRotation, pos);
             // ...then we round to the nearest worldUnitsPerTexel:
             const float worldUnitsPerTexel = (dist * 2.0f) / m_shadowMap.size.x;
@@ -4082,13 +4082,13 @@ void CEngine::RenderShadowMap()
             pos = Math::MatrixVectorMultiply(lightRotation.Inverse(), pos);
         }
 
-        Math::Vector lookAt = pos - lightDir;
+        glm::vec3 lookAt = pos - lightDir;
 
         Math::LoadOrthoProjectionMatrix(m_shadowProjMat, -dist, dist, -dist, dist, -depth, depth);
         Math::LoadViewMatrix(m_shadowViewMat, pos, lookAt, worldUp);
 
         Math::Matrix scaleMat;
-        Math::LoadScaleMatrix(scaleMat, Math::Vector(1.0f, 1.0f, -1.0f));
+        Math::LoadScaleMatrix(scaleMat, glm::vec3(1.0f, 1.0f, -1.0f));
         m_shadowViewMat = Math::MultiplyMatrices(scaleMat, m_shadowViewMat);
 
         Math::Matrix temporary = Math::MultiplyMatrices(m_shadowProjMat, m_shadowViewMat);
@@ -4550,7 +4550,7 @@ void CEngine::UpdateGroundSpotTextures()
                     {
                         for (int ix = 0; ix < 256; ix++)
                         {
-                            Math::Vector pos;
+                            glm::vec3 pos{};
                             pos.x = (256.0f * (s%4) + ix) * 3200.0f/1024.0f - 1600.0f;
                             pos.z = (256.0f * (s/4) + iy) * 3200.0f/1024.0f - 1600.0f;
                             pos.y = 0.0f;
@@ -4648,7 +4648,7 @@ void CEngine::UpdateGroundSpotTextures()
                 {
                     for (float y = min.y; y < max.y; y += 1.0f)
                     {
-                        Math::Vector pos(
+                        glm::vec3 pos(
                             x / 4.0f / 254.0f * 3200.0f - 1600.0f,
                             0.0f,
                             y / 4.0f / 254.0f * 3200.0f - 1600.0f
@@ -4738,7 +4738,7 @@ void CEngine::DrawShadowSpots()
     ts.y += dp;
     ti.y -= dp;
 
-    Math::Vector n(0.0f, 1.0f, 0.0f);
+    glm::vec3 n(0.0f, 1.0f, 0.0f);
 
     float startDeepView = m_deepView[m_rankView] * m_fogStart[m_rankView] * m_clippingDistance;
     float endDeepView = m_deepView[m_rankView] * m_clippingDistance;
@@ -4749,7 +4749,7 @@ void CEngine::DrawShadowSpots()
         if (m_shadowSpots[i].hide || !m_shadowSpots[i].used)
             continue;
 
-        Math::Vector pos = m_shadowSpots[i].pos;  // pos = center of the shadow on the ground
+        glm::vec3 pos = m_shadowSpots[i].pos;  // pos = center of the shadow on the ground
 
         if (m_eyePt.y == pos.y)
             continue;  // camera at the same level?
@@ -4809,7 +4809,7 @@ void CEngine::DrawShadowSpots()
         radius *= 1.0f-d/D;  // smaller if close
 
 
-        Math::Vector corner[4];
+        glm::vec3 corner[4];
 
         if (m_shadowSpots[i].type == ENG_SHADOW_NORM)
         {
@@ -4956,10 +4956,10 @@ void CEngine::DrawBackgroundGradient(const Color& up, const Color& down)
 
     VertexCol vertex[4] =
     {
-        { Math::Vector(p1.x, p1.y, 0.0f), color[1] },
-        { Math::Vector(p1.x, p2.y, 0.0f), color[0] },
-        { Math::Vector(p2.x, p1.y, 0.0f), color[1] },
-        { Math::Vector(p2.x, p2.y, 0.0f), color[0] }
+        { glm::vec3(p1.x, p1.y, 0.0f), color[1] },
+        { glm::vec3(p1.x, p2.y, 0.0f), color[0] },
+        { glm::vec3(p2.x, p1.y, 0.0f), color[1] },
+        { glm::vec3(p2.x, p2.y, 0.0f), color[0] }
     };
 
     m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
@@ -4974,7 +4974,7 @@ void CEngine::DrawBackgroundImage()
     p2.x = 1.0f;
     p2.y = 1.0f;
 
-    Math::Vector n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
+    glm::vec3 n = glm::vec3(0.0f, 0.0f, -1.0f);  // normal
 
     float u1, u2, v1, v2;
     if (m_backgroundFull)
@@ -5068,7 +5068,7 @@ void CEngine::DrawForegroundImage()
     if (m_foregroundName.empty())
         return;
 
-    Math::Vector n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
+    glm::vec3 n = glm::vec3(0.0f, 0.0f, -1.0f);  // normal
 
     glm::vec2 p1(0.0f, 0.0f);
     glm::vec2 p2(1.0f, 1.0f);
@@ -5082,10 +5082,10 @@ void CEngine::DrawForegroundImage()
 
     Vertex vertex[4] =
     {
-        { Math::Vector(p1.x, p1.y, 0.0f), n, { u1, v2 } },
-        { Math::Vector(p1.x, p2.y, 0.0f), n, { u1, v1 } },
-        { Math::Vector(p2.x, p1.y, 0.0f), n, { u2, v2 } },
-        { Math::Vector(p2.x, p2.y, 0.0f), n, { u2, v1 } }
+        { glm::vec3(p1.x, p1.y, 0.0f), n, { u1, v2 } },
+        { glm::vec3(p1.x, p2.y, 0.0f), n, { u1, v1 } },
+        { glm::vec3(p2.x, p1.y, 0.0f), n, { u2, v2 } },
+        { glm::vec3(p2.x, p2.y, 0.0f), n, { u2, v1 } }
     };
 
     SetTexture(m_foregroundTex);
@@ -5128,10 +5128,10 @@ void CEngine::DrawOverColor()
 
     VertexCol vertex[4] =
     {
-        { Math::Vector(p1.x, p1.y, 0.0f), color[1] },
-        { Math::Vector(p1.x, p2.y, 0.0f), color[0] },
-        { Math::Vector(p2.x, p1.y, 0.0f), color[1] },
-        { Math::Vector(p2.x, p2.y, 0.0f), color[0] }
+        { glm::vec3(p1.x, p1.y, 0.0f), color[1] },
+        { glm::vec3(p1.x, p2.y, 0.0f), color[0] },
+        { glm::vec3(p2.x, p1.y, 0.0f), color[1] },
+        { glm::vec3(p2.x, p2.y, 0.0f), color[0] }
     };
 
     m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
@@ -5202,32 +5202,32 @@ void CEngine::DrawHighlight()
 
     VertexCol line[3] =
     {
-        { Math::Vector(), color },
-        { Math::Vector(), color },
-        { Math::Vector(), color }
+        { { 0, 0, 0 }, color },
+        { { 0, 0, 0 }, color},
+        { { 0, 0, 0 }, color}
     };
 
     float dx = (p2.x - p1.x) / 5.0f;
     float dy = (p2.y - p1.y) / 5.0f;
 
-    line[0].coord = Math::Vector(p1.x, p1.y + dy, 0.0f);
-    line[1].coord = Math::Vector(p1.x, p1.y, 0.0f);
-    line[2].coord = Math::Vector(p1.x + dx, p1.y, 0.0f);
+    line[0].coord = glm::vec3(p1.x, p1.y + dy, 0.0f);
+    line[1].coord = glm::vec3(p1.x, p1.y, 0.0f);
+    line[2].coord = glm::vec3(p1.x + dx, p1.y, 0.0f);
     m_device->DrawPrimitive(PrimitiveType::LINE_STRIP, line, 3);
 
-    line[0].coord = Math::Vector(p2.x - dx, p1.y, 0.0f);
-    line[1].coord = Math::Vector(p2.x, p1.y, 0.0f);
-    line[2].coord = Math::Vector(p2.x, p1.y + dy, 0.0f);
+    line[0].coord = glm::vec3(p2.x - dx, p1.y, 0.0f);
+    line[1].coord = glm::vec3(p2.x, p1.y, 0.0f);
+    line[2].coord = glm::vec3(p2.x, p1.y + dy, 0.0f);
     m_device->DrawPrimitive(PrimitiveType::LINE_STRIP, line, 3);
 
-    line[0].coord = Math::Vector(p2.x, p2.y - dy, 0.0f);
-    line[1].coord = Math::Vector(p2.x, p2.y, 0.0f);
-    line[2].coord = Math::Vector(p2.x - dx, p2.y, 0.0f);
+    line[0].coord = glm::vec3(p2.x, p2.y - dy, 0.0f);
+    line[1].coord = glm::vec3(p2.x, p2.y, 0.0f);
+    line[2].coord = glm::vec3(p2.x - dx, p2.y, 0.0f);
     m_device->DrawPrimitive(PrimitiveType::LINE_STRIP, line, 3);
 
-    line[0].coord = Math::Vector(p1.x + dx, p2.y, 0.0f);
-    line[1].coord = Math::Vector(p1.x, p2.y, 0.0f);
-    line[2].coord = Math::Vector(p1.x, p2.y - dy, 0.0f);
+    line[0].coord = glm::vec3(p1.x + dx, p2.y, 0.0f);
+    line[1].coord = glm::vec3(p1.x, p2.y, 0.0f);
+    line[2].coord = glm::vec3(p1.x, p2.y - dy, 0.0f);
     m_device->DrawPrimitive(PrimitiveType::LINE_STRIP, line, 3);
 }
 
@@ -5504,11 +5504,11 @@ void CEngine::UpdateObjectShadowSpotNormal(int objRank)
     // Calculating the normal to the ground in nine strategic locations,
     // then perform a weighted average (the dots in the center are more important).
 
-    Math::Vector pos = m_shadowSpots[shadowRank].pos;
+    glm::vec3 pos = m_shadowSpots[shadowRank].pos;
     float radius = m_shadowSpots[shadowRank].radius;
 
-    Math::Vector n[20];
-    Math::Vector norm;
+    glm::vec3 n[20];
+    glm::vec3 norm = { 0, 0, 0 };
     int i = 0;
 
     m_terrain->GetNormal(norm, pos);
@@ -5516,7 +5516,7 @@ void CEngine::UpdateObjectShadowSpotNormal(int objRank)
     n[i++] = norm;
     n[i++] = norm;
 
-    Math::Vector shPos = pos;
+    glm::vec3 shPos = pos;
     shPos.x += radius*0.6f;
     shPos.z += radius*0.6f;
     m_terrain->GetNormal(norm, shPos);
@@ -5568,7 +5568,7 @@ void CEngine::UpdateObjectShadowSpotNormal(int objRank)
     m_terrain->GetNormal(norm, shPos);
     n[i++] = norm;
 
-    norm.LoadZero();
+    norm = { 0, 0, 0 };
     for (int j = 0; j < i; j++)
     {
         norm += n[j];

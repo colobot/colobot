@@ -76,7 +76,7 @@ bool CCloud::EventFrame(const Event &event)
     return true;
 }
 
-void CCloud::AdjustLevel(Math::Vector& pos, Math::Vector& eye, float deep,
+void CCloud::AdjustLevel(glm::vec3& pos, glm::vec3& eye, float deep,
                          glm::vec2& uv1, glm::vec2& uv2)
 {
     uv1.x = (pos.x+20000.0f)/1280.0f;
@@ -132,20 +132,20 @@ void CCloud::Draw()
     device->SetTransform(TRANSFORM_WORLD, matrix);
 
     float size = m_brickSize/2.0f;
-    Math::Vector eye = m_engine->GetEyePt();
-    Math::Vector n = Math::Vector(0.0f, -1.0f, 0.0f);
+    glm::vec3 eye = m_engine->GetEyePt();
+    glm::vec3 n = glm::vec3(0.0f, -1.0f, 0.0f);
 
     // Draws all the lines
     for (int i = 0; i < static_cast<int>( m_lines.size() ); i++)
     {
-        Math::Vector pos;
+        glm::vec3 pos{};
         pos.y = m_level;
         pos.z = m_lines[i].pz;
         pos.x = m_lines[i].px1;
 
         int vertexIndex = 0;
 
-        Math::Vector p;
+        glm::vec3 p{};
         glm::vec2 uv1, uv2;
 
         p.x = pos.x-size;

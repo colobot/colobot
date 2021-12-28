@@ -158,7 +158,7 @@ CObject* CObjectManager::CreateObject(ObjectCreateParams params)
     return objectPtr;
 }
 
-CObject* CObjectManager::CreateObject(Math::Vector pos, float angle, ObjectType type, float power)
+CObject* CObjectManager::CreateObject(glm::vec3 pos, float angle, ObjectType type, float power)
 {
     ObjectCreateParams params;
     params.pos = pos;
@@ -248,7 +248,7 @@ std::vector<CObject*> CObjectManager::RadarAll(CObject* pThis, ObjectType type, 
 
 std::vector<CObject*> CObjectManager::RadarAll(CObject* pThis, std::vector<ObjectType> type, float angle, float focus, float minDist, float maxDist, bool furthest, RadarFilter filter, bool cbotTypes)
 {
-    Math::Vector iPos;
+    glm::vec3 iPos{};
     float iAngle;
     if (pThis != nullptr)
     {
@@ -258,13 +258,13 @@ std::vector<CObject*> CObjectManager::RadarAll(CObject* pThis, std::vector<Objec
     }
     else
     {
-        iPos   = Math::Vector();
+        iPos   = glm::vec3(0, 0, 0);
         iAngle = 0.0f;
     }
     return RadarAll(pThis, iPos, iAngle, type, angle, focus, minDist, maxDist, furthest, filter, cbotTypes);
 }
 
-std::vector<CObject*> CObjectManager::RadarAll(CObject* pThis, Math::Vector thisPosition, float thisAngle, ObjectType type, float angle, float focus, float minDist, float maxDist, bool furthest, RadarFilter filter, bool cbotTypes)
+std::vector<CObject*> CObjectManager::RadarAll(CObject* pThis, glm::vec3 thisPosition, float thisAngle, ObjectType type, float angle, float focus, float minDist, float maxDist, bool furthest, RadarFilter filter, bool cbotTypes)
 {
     std::vector<ObjectType> types;
     if (type != OBJECT_NULL)
@@ -272,10 +272,10 @@ std::vector<CObject*> CObjectManager::RadarAll(CObject* pThis, Math::Vector this
     return RadarAll(pThis, thisPosition, thisAngle, types, angle, focus, minDist, maxDist, furthest, filter, cbotTypes);
 }
 
-std::vector<CObject*> CObjectManager::RadarAll(CObject* pThis, Math::Vector thisPosition, float thisAngle, std::vector<ObjectType> type, float angle, float focus, float minDist, float maxDist, bool furthest, RadarFilter filter, bool cbotTypes)
+std::vector<CObject*> CObjectManager::RadarAll(CObject* pThis, glm::vec3 thisPosition, float thisAngle, std::vector<ObjectType> type, float angle, float focus, float minDist, float maxDist, bool furthest, RadarFilter filter, bool cbotTypes)
 {
     CObject     *pObj;
-    Math::Vector    iPos, oPos;
+    glm::vec3    iPos{ 0, 0, 0 }, oPos{ 0, 0, 0 };
     float       iAngle, d, a;
     ObjectType  oType;
 
@@ -432,13 +432,13 @@ CObject* CObjectManager::Radar(CObject* pThis, std::vector<ObjectType> type, flo
     return best.size() > 0 ? best[0] : nullptr;
 }
 
-CObject* CObjectManager::Radar(CObject* pThis, Math::Vector thisPosition, float thisAngle, ObjectType type, float angle, float focus, float minDist, float maxDist, bool furthest, RadarFilter filter, bool cbotTypes)
+CObject* CObjectManager::Radar(CObject* pThis, glm::vec3 thisPosition, float thisAngle, ObjectType type, float angle, float focus, float minDist, float maxDist, bool furthest, RadarFilter filter, bool cbotTypes)
 {
     std::vector<CObject*> best = RadarAll(pThis, thisPosition, thisAngle, type, angle, focus, minDist, maxDist, furthest, filter, cbotTypes);
     return best.size() > 0 ? best[0] : nullptr;
 }
 
-CObject* CObjectManager::Radar(CObject* pThis, Math::Vector thisPosition, float thisAngle, std::vector<ObjectType> type, float angle, float focus, float minDist, float maxDist, bool furthest, RadarFilter filter, bool cbotTypes)
+CObject* CObjectManager::Radar(CObject* pThis, glm::vec3 thisPosition, float thisAngle, std::vector<ObjectType> type, float angle, float focus, float minDist, float maxDist, bool furthest, RadarFilter filter, bool cbotTypes)
 {
     std::vector<CObject*> best = RadarAll(pThis, thisPosition, thisAngle, type, angle, focus, minDist, maxDist, furthest, filter, cbotTypes);
     return best.size() > 0 ? best[0] : nullptr;
@@ -454,12 +454,12 @@ CObject*  CObjectManager::FindNearest(CObject* pThis, std::vector<ObjectType> ty
     return Radar(pThis, type, 0.0f, Math::PI*2.0f, 0.0f, maxDist, false, FILTER_NONE, cbotTypes);
 }
 
-CObject*  CObjectManager::FindNearest(CObject* pThis, Math::Vector thisPosition, ObjectType type, float maxDist, bool cbotTypes)
+CObject*  CObjectManager::FindNearest(CObject* pThis, glm::vec3 thisPosition, ObjectType type, float maxDist, bool cbotTypes)
 {
     return Radar(pThis, thisPosition, 0.0f, type, 0.0f, Math::PI*2.0f, 0.0f, maxDist, false, FILTER_NONE, cbotTypes);
 }
 
-CObject*  CObjectManager::FindNearest(CObject* pThis, Math::Vector thisPosition, std::vector<ObjectType> type, float maxDist, bool cbotTypes)
+CObject*  CObjectManager::FindNearest(CObject* pThis, glm::vec3 thisPosition, std::vector<ObjectType> type, float maxDist, bool cbotTypes)
 {
     return Radar(pThis, thisPosition, 0.0f, type, 0.0f, Math::PI*2.0f, 0.0f, maxDist, false, FILTER_NONE, cbotTypes);
 }

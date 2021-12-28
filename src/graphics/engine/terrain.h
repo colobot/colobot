@@ -371,7 +371,7 @@ protected:
      */
     struct BuildingLevel
     {
-        Math::Vector center;
+        Math::Vector center{ 0, 0, 0 };
         float        factor = 0.0f;
         float        min = 0.0f;
         float        max = 0.0f;
@@ -385,7 +385,7 @@ protected:
     std::vector<BuildingLevel> m_buildingLevels;
 
     //! Wind speed
-    Math::Vector    m_wind;
+    Math::Vector    m_wind{ 0, 0, 0 };
 
     //! Global flying height limit
     float           m_flyingMaxHeight;
@@ -396,7 +396,7 @@ protected:
      */
     struct FlyingLimit
     {
-        Math::Vector center;
+        Math::Vector center{ 0, 0, 0 };
         float        extRadius = 0.0f;
         float        intRadius = 0.0f;
         float        maxHeight = 0.0f;

@@ -2621,7 +2621,7 @@ void CParticle::TrackDraw(int i, ParticleType type)
 
         Math::Vector p2 = m_track[i].pos[h];
 
-        Math::Vector n = Normalize(p1-eye);
+        Math::Vector n = glm::normalize(p1-eye);
 
         Math::Vector p;
         glm::vec2 rot;

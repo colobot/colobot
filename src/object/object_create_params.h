@@ -25,7 +25,7 @@
 
 struct ObjectCreateParams
 {
-    Math::Vector pos;
+    glm::vec3 pos;
     float angle;
     ObjectType type;
     float power;
@@ -38,7 +38,7 @@ struct ObjectCreateParams
 
     ObjectCreateParams()
     {
-        pos = Math::Vector(0.0f, 0.0f, 0.0f);
+        pos = glm::vec3(0.0f, 0.0f, 0.0f);
         angle = 0.0f;
         type = OBJECT_NULL;
         power = -1.0f;

@@ -41,7 +41,6 @@ struct ImageData;
 namespace Math
 {
 struct Matrix;
-struct Vector;
 } // namespace Math
 
 
@@ -524,7 +523,7 @@ public:
 
     //! Tests whether a sphere is (partially) within the frustum volume
     //! Returns a mask of frustum planes for which the test is positive
-    virtual int ComputeSphereVisibility(const Math::Vector &center, float radius) = 0;
+    virtual int ComputeSphereVisibility(const glm::vec3& center, float radius) = 0;
 
     //! Changes rendering viewport
     virtual void SetViewport(int x, int y, int width, int height) = 0;

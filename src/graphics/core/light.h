@@ -62,9 +62,9 @@ struct Light
     //! Color of specular light
     Color      specular = Color(1.0f, 1.0f, 1.0f);
     //! Position in world space (for point & spot lights)
-    Math::Vector    position = Math::Vector(0.0f, 0.0f, 0.0f);
+    glm::vec3    position = glm::vec3(0.0f, 0.0f, 0.0f);
     //! Direction in world space (for directional & spot lights)
-    Math::Vector    direction = Math::Vector(0.0f, 0.0f, 1.0f);
+    glm::vec3    direction = glm::vec3(0.0f, 0.0f, 1.0f);
     //! Constant attenuation factor
     float           attenuation0 = 1.0f;
     //! Linear attenuation factor

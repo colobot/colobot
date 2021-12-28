@@ -81,7 +81,7 @@ protected:
     //! Makes the clouds evolve
     bool        EventFrame(const Event &event);
     //! Adjusts the position to normal, to imitate the clouds at movement
-    void        AdjustLevel(Math::Vector& pos, Math::Vector& eye, float deep,
+    void        AdjustLevel(glm::vec3& pos, glm::vec3& eye, float deep,
                             glm::vec2& uv1, glm::vec2& uv2);
     //! Updates the positions, relative to the ground
     void        CreateLine(int x, int y, int len);
@@ -106,7 +106,7 @@ protected:
     int             m_subdiv = 8;
 
     //! Wind speed
-    Math::Vector    m_wind;
+    glm::vec3    m_wind{ 0, 0, 0 };
     //! Brick mosaic
     int             m_brickCount = 0;
     //! Size of a brick element

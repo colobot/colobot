@@ -48,7 +48,7 @@ inline Sphere BoundingSphereForBox(Vector mins, Vector maxs)
 {
     auto centroid = (maxs + mins) / 2.0f;
     auto halfExtent = (maxs - centroid);
-    return Sphere{centroid, halfExtent.Length()};
+    return Sphere{centroid, glm::length(halfExtent)};
 }
 
 } // namespace Math

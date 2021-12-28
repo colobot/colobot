@@ -98,7 +98,7 @@ void CWater::LavaFrame(float rTime)
         float distance = Math::Rand()*200.0f;
         float shift = (Math::Rand()-0.5f)*200.0f;
 
-        Math::Vector dir = Normalize(lookat-eye);
+        Math::Vector dir = glm::normalize(lookat-eye);
         Math::Vector pos = eye + dir*distance;
 
         Math::Vector perp;

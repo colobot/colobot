@@ -39,7 +39,7 @@ namespace ModelOutput
     void WriteShadowSpot(const ModelShadowSpot& shadowSpot, std::ostream &stream);
     void WriteCameraCollisionSphere(const Math::Sphere& sphere, std::ostream &stream);
     void WriteTextMesh(const CModelMesh* mesh, const std::string& meshName, std::ostream &stream);
-    std::string VectorToString(const Math::Vector& vector);
+    std::string VectorToString(const glm::vec3& vector);
     std::string TransparentModeToString(ModelTransparentMode mode);
     std::string SpecialMarkToString(ModelSpecialMark specialMark);
 
@@ -203,7 +203,7 @@ void ModelOutput::WriteTextMesh(const CModelMesh* mesh, const std::string& meshN
     }
 }
 
-std::string ModelOutput::VectorToString(const Math::Vector& vector)
+std::string ModelOutput::VectorToString(const glm::vec3& vector)
 {
     std::ostringstream str;
     str << vector.x << " " << vector.y << " " << vector.z;

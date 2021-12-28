@@ -160,7 +160,7 @@ public:
     //! Creates an object
     //@{
     CObject*  CreateObject(ObjectCreateParams params);
-    CObject*  CreateObject(Math::Vector pos, float angle, ObjectType type, float power = -1.0f);
+    CObject*  CreateObject(glm::vec3 pos, float angle, ObjectType type, float power = -1.0f);
     //@}
 
     //! Deletes the object
@@ -215,7 +215,7 @@ public:
                     RadarFilter filter = FILTER_NONE,
                     bool cbotTypes = false);
     std::vector<CObject*> RadarAll(CObject* pThis,
-                       Math::Vector thisPosition,
+                       glm::vec3 thisPosition,
                        float thisAngle,
                        ObjectType type = OBJECT_NULL,
                        float angle = 0.0f,
@@ -226,7 +226,7 @@ public:
                        RadarFilter filter = FILTER_NONE,
                        bool cbotTypes = false);
     std::vector<CObject*> RadarAll(CObject* pThis,
-                    Math::Vector thisPosition,
+                    glm::vec3 thisPosition,
                     float thisAngle,
                     std::vector<ObjectType> type = std::vector<ObjectType>(),
                     float angle = 0.0f,
@@ -258,7 +258,7 @@ public:
                     RadarFilter filter = FILTER_NONE,
                     bool cbotTypes = false);
     CObject*  Radar(CObject* pThis,
-                    Math::Vector thisPosition,
+                    glm::vec3 thisPosition,
                     float thisAngle,
                     ObjectType type = OBJECT_NULL,
                     float angle = 0.0f,
@@ -269,7 +269,7 @@ public:
                     RadarFilter filter = FILTER_NONE,
                     bool cbotTypes = false);
     CObject*  Radar(CObject* pThis,
-                    Math::Vector thisPosition,
+                    glm::vec3 thisPosition,
                     float thisAngle,
                     std::vector<ObjectType> type = std::vector<ObjectType>(),
                     float angle = 0.0f,
@@ -291,12 +291,12 @@ public:
                           float maxDist = 1000.0f,
                           bool cbotTypes = false);
     CObject*  FindNearest(CObject* pThis,
-                          Math::Vector thisPosition,
+                          glm::vec3 thisPosition,
                           ObjectType type = OBJECT_NULL,
                           float maxDist = 1000.0f,
                           bool cbotTypes = false);
     CObject*  FindNearest(CObject* pThis,
-                          Math::Vector thisPosition,
+                          glm::vec3 thisPosition,
                           std::vector<ObjectType> type = std::vector<ObjectType>(),
                           float maxDist = 1000.0f,
                           bool cbotTypes = false);

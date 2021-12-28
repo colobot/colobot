@@ -823,12 +823,12 @@ void CCamera::IsCollisionBack()
     else
         iType = m_cameraObj->GetType();
 
-    Math::Vector min;
+    Math::Vector min{};
     min.x = Math::Min(m_actualEye.x, m_actualLookat.x);
     min.y = Math::Min(m_actualEye.y, m_actualLookat.y);
     min.z = Math::Min(m_actualEye.z, m_actualLookat.z);
 
-    Math::Vector max;
+    Math::Vector max{};
     max.x = Math::Max(m_actualEye.x, m_actualLookat.x);
     max.y = Math::Max(m_actualEye.y, m_actualLookat.y);
     max.z = Math::Max(m_actualEye.z, m_actualLookat.z);
@@ -880,7 +880,7 @@ void CCamera::IsCollisionBack()
              oPos.y-oRadius > max.y ||
              oPos.z-oRadius > max.z )  continue;
 
-        Math::Vector proj = Projection(m_actualEye, m_actualLookat, oPos);
+        Math::Vector proj = Math::Projection(m_actualEye, m_actualLookat, oPos);
         float dpp = Math::Distance(proj, oPos);
         if ( dpp > oRadius )  continue;
 
@@ -935,7 +935,7 @@ void CCamera::IsCollisionFix(Math::Vector &eye, Math::Vector lookat)
         if (dist < objRadius)
         {
             dist = Math::Distance(eye, lookat);
-            Math::Vector proj = Projection(eye, lookat, objPos);
+            Math::Vector proj = Math::Projection(eye, lookat, objPos);
             eye = (lookat - eye) * objRadius / dist + proj;
             return;
         }
@@ -1230,7 +1230,7 @@ bool CCamera::EventFrameBack(const Event &event)
         m_centeringCurrentH = m_centeringAngleH * centeringH;
         m_centeringCurrentV = m_centeringAngleV * centeringV;
 
-        m_eyePt = RotateView(lookatPt, h, v, d);
+        m_eyePt = Math::RotateView(lookatPt, h, v, d);
 
         bool ground = true;
         if (m_cameraObj->Implements(ObjectInterfaceType::Movable))
@@ -1275,7 +1275,7 @@ bool CCamera::EventFrameFix(const Event &event)
         float v = m_fixDirectionV;
 
         float d = m_fixDist;
-        m_eyePt = RotateView(lookatPt, h, v, d);
+        m_eyePt = Math::RotateView(lookatPt, h, v, d);
         if (m_type == CAM_TYPE_PLANE) m_eyePt.y += m_fixDist / 2.0f;
         m_eyePt = ExcludeTerrain(m_eyePt, lookatPt, h, v);
         m_eyePt = ExcludeObject(m_eyePt, lookatPt, h, v);
@@ -1354,7 +1354,7 @@ bool CCamera::EventFrameVisit(const Event &event)
 
     float angleH = (m_visitTime / 10.0f) * (Math::PI * 2.0f);
     float angleV = m_visitDirectionV;
-    Math::Vector eye = RotateView(m_visitGoal, angleH, angleV, m_visitDist);
+    Math::Vector eye = Math::RotateView(m_visitGoal, angleH, angleV, m_visitDist);
     eye = ExcludeTerrain(eye, m_visitGoal, angleH, angleV);
     eye = ExcludeObject(eye, m_visitGoal, angleH, angleV);
     UpdateCameraAnimation(eye, m_visitGoal, event.rTime);
@@ -1414,7 +1414,7 @@ Math::Vector CCamera::ExcludeTerrain(Math::Vector eye, Math::Vector lookat,
         if ( pos.y > eye.y )
         {
             angleV = -Math::RotateAngle(dist, pos.y-lookat.y);
-            eye = RotateView(lookat, angleH, angleV, dist);
+            eye = Math::RotateView(lookat, angleH, angleV, dist);
         }
     }
     return eye;
@@ -1454,7 +1454,7 @@ void CCamera::SetCameraSpeed(float speed)
 
 Math::Vector CCamera::CalculateCameraMovement(const Event &event, bool keysAllowed)
 {
-    Math::Vector delta;
+    Math::Vector delta{};
 
     delta.x += m_mouseDelta.x * 2*Math::PI;
     delta.y -= m_mouseDelta.y * Math::PI;
@@ -1478,7 +1478,7 @@ Math::Vector CCamera::CalculateCameraMovement(const Event &event, bool keysAllow
         }
     }
 
-    if (delta.Length() > 0)
+    if (glm::length(delta) > 0)
         AbortCentering();  // special stops framing
 
     return delta;

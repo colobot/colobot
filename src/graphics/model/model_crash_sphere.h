@@ -30,7 +30,7 @@ namespace Gfx
  */
 struct ModelCrashSphere
 {
-    Math::Vector position;
+    Math::Vector position{ 0, 0, 0 };
     float radius = 0.0f;
     std::string sound;
     float hardness = 0.0f;

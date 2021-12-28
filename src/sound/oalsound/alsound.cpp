@@ -574,8 +574,7 @@ void CALSound::SetListener(const Math::Vector &eye, const Math::Vector &lookat)
 {
     m_eye = eye;
     m_lookat = lookat;
-    Math::Vector forward = lookat - eye;
-    forward.Normalize();
+    Math::Vector forward = glm::normalize(lookat - eye);
     float orientation[] = {forward.x, forward.y, forward.z, 0.f, -1.0f, 0.0f};
 
     alListener3f(AL_POSITION, eye.x, eye.y, eye.z);

@@ -140,7 +140,7 @@ public:
      * \param lookat Initial lookat position
      * \param delay Time of the initial entry animation
      */
-    void        Init(Math::Vector eye, Math::Vector lookat, float delay);
+    void        Init(glm::vec3 eye, glm::vec3 lookat, float delay);
 
     //! Sets the object controlling the camera
     void        SetControllingObject(CObject* object);
@@ -159,12 +159,12 @@ public:
 
 
     //! Returns the current point of view of the camera
-    void        GetCamera(Math::Vector &eye, Math::Vector &lookat);
+    void        GetCamera(glm::vec3 &eye, glm::vec3 &lookat);
 
     //! \name Visit camera management (CAM_TYPE_VISIT) - camera in this mode shows a position, constantly rotating around it
     //@{
     //! Start visit camera
-    void        StartVisit(Math::Vector goal, float dist);
+    void        StartVisit(glm::vec3 goal, float dist);
     //! Stop visit camera
     void        StopVisit();
     //@}
@@ -182,7 +182,7 @@ public:
     //! \name Camera shake effects
     //@{
     //! Starts a camera shake effect
-    void        StartEffect(CameraEffect effect, Math::Vector pos, float force);
+    void        StartEffect(CameraEffect effect, glm::vec3 pos, float force);
     //! Removes the camera shake effect
     void        FlushEffect();
     //@}
@@ -190,7 +190,7 @@ public:
     //! \name Camera overlay effects
     //@{
     //! Starts camera overlay effect
-    void        StartOver(CameraOverEffect effect, Math::Vector pos, float force);
+    void        StartOver(CameraOverEffect effect, glm::vec3 pos, float force);
     //! Removes camera overlay effect
     void        FlushOver();
     //! Specifies camera overlay effect base color
@@ -200,13 +200,13 @@ public:
     //! \name Script camera - cutscenes controlled by external code
     //@{
     //! Script camera: Set camera position
-    void        SetScriptCamera(Math::Vector eye, Math::Vector lookat);
+    void        SetScriptCamera(glm::vec3 eye, glm::vec3 lookat);
     //! Script camera: Animate to given camera position
-    void        SetScriptCameraAnimate(Math::Vector eye, Math::Vector lookat);
+    void        SetScriptCameraAnimate(glm::vec3 eye, glm::vec3 lookat);
     //! Script camera: Animate to given eye position
-    void        SetScriptCameraAnimateEye(Math::Vector eye);
+    void        SetScriptCameraAnimateEye(glm::vec3 eye);
     //! Script camera: Animate to given lookat position
-    void        SetScriptCameraAnimateLookat(Math::Vector lookat);
+    void        SetScriptCameraAnimateLookat(glm::vec3 lookat);
     //@}
 
     //! \name Configuration settings
@@ -250,7 +250,7 @@ protected:
      * \param rTime Time since last time this function was called (used to calculate animation)
      * \see SetViewParams
      */
-    void        UpdateCameraAnimation(const Math::Vector &eyePt, const Math::Vector &lookatPt, float rTime);
+    void        UpdateCameraAnimation(const glm::vec3 &eyePt, const glm::vec3 &lookatPt, float rTime);
 
     /**
      * \brief Avoid the obstacles
@@ -261,16 +261,16 @@ protected:
      * \param eye Eye position, may be adjusted
      * \param lookat Lookat point
      */
-    void        IsCollision(Math::Vector &eye, Math::Vector lookat);
+    void        IsCollision(glm::vec3 &eye, glm::vec3 lookat);
     //! Avoid the obstacles (CAM_TYPE_BACK)
     void        IsCollisionBack();
     //! Avoid the obstacles (CAM_TYPE_FIX or CAM_TYPE_PLANE)
-    void        IsCollisionFix(Math::Vector &eye, Math::Vector lookat);
+    void        IsCollisionFix(glm::vec3 &eye, glm::vec3 lookat);
 
     //! Adjusts the camera not to enter the ground
-    Math::Vector ExcludeTerrain(Math::Vector eye, Math::Vector lookat, float &angleH, float &angleV);
+    glm::vec3 ExcludeTerrain(glm::vec3 eye, glm::vec3 lookat, float &angleH, float &angleV);
     //! Adjusts the camera not to enter an object
-    Math::Vector ExcludeObject(Math::Vector eye, Math::Vector lookat, float &angleH, float &angleV);
+    glm::vec3 ExcludeObject(glm::vec3 eye, glm::vec3 lookat, float &angleH, float &angleV);
 
     /**
      * \brief Updates the location and direction of the camera in the 3D engine
@@ -279,14 +279,14 @@ protected:
      * \param up Up vector
      * \see CEngine::SetViewParams
      */
-    void        SetViewParams(const Math::Vector &eye, const Math::Vector &lookat, const Math::Vector &up = Math::Vector(0.0f, 1.0f, 0.0f));
+    void        SetViewParams(const glm::vec3 &eye, const glm::vec3 &lookat, const glm::vec3 &up = glm::vec3(0.0f, 1.0f, 0.0f));
 
     /**
      * \brief Calculate camera movement (from user inputs) to apply
-     * \return Math::Vector where x, y represent respectively horizontal and vertical angle change in radians and z represents zoom (distance change)
+     * \return glm::vec3 where x, y represent respectively horizontal and vertical angle change in radians and z represents zoom (distance change)
      * \remarks Should not be called more often than once every EVENT_FRAME
      **/
-    Math::Vector CalculateCameraMovement(const Event &event, bool keysAllowed = true);
+    glm::vec3 CalculateCameraMovement(const Event &event, bool keysAllowed = true);
 
 protected:
     CEngine*     m_engine;
@@ -306,22 +306,22 @@ protected:
     float        m_initDelay;
 
     //! Current eye
-    Math::Vector    m_actualEye;
+    glm::vec3    m_actualEye{ 0, 0, 0 };
     //! Current aim
-    Math::Vector    m_actualLookat;
+    glm::vec3    m_actualLookat{ 0, 0, 0 };
     //! Final eye
-    Math::Vector    m_finalEye;
+    glm::vec3    m_finalEye{ 0, 0, 0 };
     //! Final lookat
-    Math::Vector    m_finalLookat;
+    glm::vec3    m_finalLookat{ 0, 0, 0 };
     //! Eye position at the moment of entering CAM_TYPE_INFO/CAM_TYPE_VISIT
-    Math::Vector    m_prevEye;
+    glm::vec3    m_prevEye{ 0, 0, 0 };
     //! Lookat position at the moment of entering CAM_TYPE_INFO/CAM_TYPE_VISIT
-    Math::Vector    m_prevLookat;
+    glm::vec3    m_prevLookat{ 0, 0, 0 };
 
     float            m_focus;
 
     //! CAM_TYPE_FREE: eye
-    Math::Vector    m_eyePt;
+    glm::vec3    m_eyePt{ 0, 0, 0 };
     //! CAM_TYPE_FREE: horizontal direction
     float       m_directionH;
     //! CAM_TYPE_FREE: vertical direction
@@ -350,7 +350,7 @@ protected:
     float       m_fixDirectionV;
 
     //! CAM_TYPE_VISIT: target position
-    Math::Vector m_visitGoal;
+    glm::vec3 m_visitGoal{ 0, 0, 0 };
     //! CAM_TYPE_VISIT: distance
     float        m_visitDist;
     //! CAM_TYPE_VISIT: relative time
@@ -379,10 +379,10 @@ protected:
     float       m_centeringProgress;
 
     CameraEffect m_effectType;
-    Math::Vector m_effectPos;
+    glm::vec3 m_effectPos{ 0, 0, 0 };
     float        m_effectForce;
     float        m_effectProgress;
-    Math::Vector m_effectOffset;
+    glm::vec3 m_effectOffset{ 0, 0, 0 };
 
     CameraOverEffect  m_overType;
     float       m_overForce;
@@ -393,8 +393,8 @@ protected:
     float       m_overFadeIn;
     float       m_overFadeOut;
 
-    Math::Vector m_scriptEye;
-    Math::Vector m_scriptLookat;
+    glm::vec3 m_scriptEye{ 0, 0, 0 };
+    glm::vec3 m_scriptLookat{ 0, 0, 0 };
 
     //! Is camera frozen?
     bool m_freeze = false;

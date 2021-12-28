@@ -84,7 +84,7 @@ CPhysics::CPhysics(COldObject* object)
     m_gravity = 9.81f;  // default gravity
     m_time = 0.0f;
     m_timeUnderWater = 0.0f;
-    m_motorSpeed = Math::Vector(0.0f, 0.0f, 0.0f);
+    m_motorSpeed = glm::vec3(0.0f, 0.0f, 0.0f);
     m_bMotor = false;
     m_bLand = true;  // ground
     m_bSwim = false;  // in air
@@ -181,7 +181,7 @@ bool CPhysics::Write(CLevelParserLine* line)
 
 bool CPhysics::Read(CLevelParserLine* line)
 {
-    m_motorSpeed = line->GetParam("motor")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f));
+    m_motorSpeed = line->GetParam("motor")->AsPoint(glm::vec3(0.0f, 0.0f, 0.0f));
 
     if ( m_object->Implements(ObjectInterfaceType::Flying) )
     {
@@ -302,7 +302,7 @@ bool CPhysics::GetFreeze()
 // y = up/down
 // z = turn
 
-void CPhysics::SetMotorSpeed(Math::Vector speed)
+void CPhysics::SetMotorSpeed(glm::vec3 speed)
 {
     m_motorSpeed = speed;
 }
@@ -334,7 +334,7 @@ void CPhysics::SetMotorSpeedZ(float speed)
     m_motorSpeed.z = speed;
 }
 
-Math::Vector CPhysics::GetMotorSpeed()
+glm::vec3 CPhysics::GetMotorSpeed()
 {
     return m_motorSpeed;
 }
@@ -358,7 +358,7 @@ float CPhysics::GetMotorSpeedZ()
 // Management of linear and angular velocities.
 // Specifies the speed parallel to the direction of travel.
 
-void CPhysics::SetLinMotion(PhysicsMode mode, Math::Vector value)
+void CPhysics::SetLinMotion(PhysicsMode mode, glm::vec3 value)
 {
     if ( mode == MO_ADVACCEL )  m_linMotion.advanceAccel  = value;
     if ( mode == MO_RECACCEL )  m_linMotion.recedeAccel   = value;
@@ -374,7 +374,7 @@ void CPhysics::SetLinMotion(PhysicsMode mode, Math::Vector value)
     if ( mode == MO_REASPEED )  m_linMotion.realSpeed     = value;
 }
 
-Math::Vector CPhysics::GetLinMotion(PhysicsMode mode)
+glm::vec3 CPhysics::GetLinMotion(PhysicsMode mode)
 {
     if ( mode == MO_ADVACCEL )  return m_linMotion.advanceAccel;
     if ( mode == MO_RECACCEL )  return m_linMotion.recedeAccel;
@@ -388,7 +388,7 @@ Math::Vector CPhysics::GetLinMotion(PhysicsMode mode)
     if ( mode == MO_MOTSPEED )  return m_linMotion.motorSpeed;
     if ( mode == MO_CURSPEED )  return m_linMotion.currentSpeed;
     if ( mode == MO_REASPEED )  return m_linMotion.realSpeed;
-    return Math::Vector(0.0f, 0.0f, 0.0f);
+    return glm::vec3(0.0f, 0.0f, 0.0f);
 }
 
 void CPhysics::SetLinMotionX(PhysicsMode mode, float value)
@@ -496,7 +496,7 @@ float CPhysics::GetLinMotionZ(PhysicsMode mode)
 
 // Specifies the rotation around the axis of walk.
 
-void CPhysics::SetCirMotion(PhysicsMode mode, Math::Vector value)
+void CPhysics::SetCirMotion(PhysicsMode mode, glm::vec3 value)
 {
     if ( mode == MO_ADVACCEL )  m_cirMotion.advanceAccel  = value;
     if ( mode == MO_RECACCEL )  m_cirMotion.recedeAccel   = value;
@@ -512,7 +512,7 @@ void CPhysics::SetCirMotion(PhysicsMode mode, Math::Vector value)
     if ( mode == MO_REASPEED )  m_cirMotion.realSpeed     = value;
 }
 
-Math::Vector CPhysics::GetCirMotion(PhysicsMode mode)
+glm::vec3 CPhysics::GetCirMotion(PhysicsMode mode)
 {
     if ( mode == MO_ADVACCEL )  return m_cirMotion.advanceAccel;
     if ( mode == MO_RECACCEL )  return m_cirMotion.recedeAccel;
@@ -526,7 +526,7 @@ Math::Vector CPhysics::GetCirMotion(PhysicsMode mode)
     if ( mode == MO_MOTSPEED )  return m_cirMotion.motorSpeed;
     if ( mode == MO_CURSPEED )  return m_cirMotion.currentSpeed;
     if ( mode == MO_REASPEED )  return m_cirMotion.realSpeed;
-    return Math::Vector(0.0f, 0.0f, 0.0f);
+    return glm::vec3(0.0f, 0.0f, 0.0f);
 }
 
 void CPhysics::SetCirMotionX(PhysicsMode mode, float value)
@@ -757,7 +757,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
 {
     ObjectType  type;
     CPowerContainerObject* power = nullptr;
-    Math::Vector    pos, motorSpeed;
+    glm::vec3    pos{ 0, 0, 0 }, motorSpeed{ 0, 0, 0 };
     float       energy, speed, factor, h;
 
     type = m_object->GetType();
@@ -1013,7 +1013,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
 void CPhysics::EffectUpdate(float aTime, float rTime)
 {
     Character*  character;
-    Math::Vector    vibLin, vibCir, incl;
+    glm::vec3    vibLin{ 0, 0, 0 }, vibCir{ 0, 0, 0 }, incl{ 0, 0, 0 };
     float       speedLin, speedCir, accel;
     ObjectType  type;
     bool        bOnBoard;
@@ -1142,10 +1142,10 @@ void CPhysics::EffectUpdate(float aTime, float rTime)
         }
         else
         {
-            m_motion->SetLinVibration(Math::Vector(0.0f, 0.0f, 0.0f));
+            m_motion->SetLinVibration(glm::vec3(0.0f, 0.0f, 0.0f));
 
-//?         m_motion->SetCirVibration(Math::Vector(0.0f, 0.0f, 0.0f));
-//?         m_motion->SetTilt(Math::Vector(0.0f, 0.0f, 0.0f));
+//?         m_motion->SetCirVibration(glm::vec3(0.0f, 0.0f, 0.0f));
+//?         m_motion->SetTilt(glm::vec3(0.0f, 0.0f, 0.0f));
         }
     }
 
@@ -1204,9 +1204,9 @@ void CPhysics::EffectUpdate(float aTime, float rTime)
     {
         if ( m_bLand )  // on the ground?
         {
-            m_motion->SetLinVibration(Math::Vector(0.0f, 0.0f, 0.0f));
-            m_motion->SetCirVibration(Math::Vector(0.0f, 0.0f, 0.0f));
-            m_motion->SetTilt(Math::Vector(0.0f, 0.0f, 0.0f));
+            m_motion->SetLinVibration(glm::vec3(0.0f, 0.0f, 0.0f));
+            m_motion->SetCirVibration(glm::vec3(0.0f, 0.0f, 0.0f));
+            m_motion->SetTilt(glm::vec3(0.0f, 0.0f, 0.0f));
         }
         else    // in flight?
         {
@@ -1442,7 +1442,7 @@ bool CPhysics::EventFrame(const Event &event)
 {
     ObjectType  type;
     Math::Matrix    objRotate, matRotate;
-    Math::Vector    iPos, iAngle, tAngle, pos, newpos, angle, newangle, n;
+    glm::vec3    iPos{ 0, 0, 0 }, iAngle{ 0, 0, 0 }, tAngle{ 0, 0, 0 }, pos{ 0, 0, 0 }, newpos{ 0, 0, 0 }, angle{ 0, 0, 0 }, newangle{ 0, 0, 0 }, n{ 0, 0, 0 };
     float       h, w;
     int         i;
 
@@ -1745,7 +1745,7 @@ void CPhysics::SoundMotor(float rTime)
 void CPhysics::WaterFrame(float aTime, float rTime)
 {
     ObjectType  type;
-    Math::Vector    pos, speed;
+    glm::vec3    pos{ 0, 0, 0 }, speed{ 0, 0, 0 };
     glm::vec2   dim;
     float       level;
 
@@ -1961,7 +1961,7 @@ void CPhysics::SoundMotorFull(float rTime, ObjectType type)
 void CPhysics::SoundMotorSlow(float rTime, ObjectType type)
 {
     Math::Matrix*   mat;
-    Math::Vector    pos, speed;
+    glm::vec3    pos{ 0, 0, 0 }, speed{ 0, 0, 0 };
     glm::vec2       dim;
     SoundType       sound;
     float       amplitude;
@@ -2069,7 +2069,7 @@ void CPhysics::SoundMotorSlow(float rTime, ObjectType type)
             max = static_cast<int>(10.0f*m_engine->GetParticleDensity());
             for ( i=0 ; i<max ; i++ )
             {
-                pos = Math::Vector(-5.0f, 2.0f, 0.0f);
+                pos = glm::vec3(-5.0f, 2.0f, 0.0f);
                 pos.x += Math::Rand()*4.0f;
                 pos.z += (Math::Rand()-0.5f)*2.0f;
 
@@ -2127,7 +2127,7 @@ void CPhysics::SoundReactorFull(float rTime, ObjectType type)
 {
     SoundType      sound;
     Math::Matrix*   mat;
-    Math::Vector    pos, speed;
+    glm::vec3    pos{ 0, 0, 0 }, speed{ 0, 0, 0 };
     glm::vec2       dim;
     float       freq;
     int         i;
@@ -2186,11 +2186,11 @@ void CPhysics::SoundReactorFull(float rTime, ObjectType type)
                 if ( m_object->GetType() == OBJECT_HUMAN ||
                      m_object->GetType() == OBJECT_TECH  )
                 {
-                    pos = Math::Vector(-1.6f, -0.5f, 0.0f);
+                    pos = glm::vec3(-1.6f, -0.5f, 0.0f);
                 }
                 else
                 {
-                    pos = Math::Vector(0.0f, -1.0f, 0.0f);
+                    pos = glm::vec3(0.0f, -1.0f, 0.0f);
                 }
                 pos.x += (Math::Rand()-0.5f)*2.0f;
                 pos.z += (Math::Rand()-0.5f)*2.0f;
@@ -2211,11 +2211,11 @@ void CPhysics::SoundReactorFull(float rTime, ObjectType type)
             if ( m_object->GetType() == OBJECT_HUMAN ||
                  m_object->GetType() == OBJECT_TECH  )
             {
-                pos = Math::Vector(-1.6f, -0.5f, 0.0f);
+                pos = glm::vec3(-1.6f, -0.5f, 0.0f);
             }
             else
             {
-                pos = Math::Vector(0.0f, -1.0f, 0.0f);
+                pos = glm::vec3(0.0f, -1.0f, 0.0f);
             }
             pos.x += (Math::Rand()-0.5f)*1.0f;
             pos.z += (Math::Rand()-0.5f)*1.0f;
@@ -2285,11 +2285,11 @@ void CPhysics::SoundReactorStop(float rTime, ObjectType type)
 // Adapts the physics of the object based on the ground.
 
 void CPhysics::FloorAdapt(float aTime, float rTime,
-                          Math::Vector &pos, Math::Vector &angle)
+                          glm::vec3 &pos, glm::vec3 &angle)
 {
     Character*  character;
     ObjectType  type;
-    Math::Vector    norm;
+    glm::vec3    norm{ 0, 0, 0 };
     Math::Matrix    matRotate;
     float       level, h, f, a1, volume, freq, force;
     bool        bSlopingTerrain;
@@ -2459,10 +2459,10 @@ void CPhysics::FloorAdapt(float aTime, float rTime,
 
 // Calculates the angle of an object with the field.
 
-void CPhysics::FloorAngle(const Math::Vector &pos, Math::Vector &angle)
+void CPhysics::FloorAngle(const glm::vec3 &pos, glm::vec3 &angle)
 {
     Character*  character;
-    Math::Vector    pw, norm;
+    glm::vec3    pw{ 0, 0, 0 }, norm{ 0, 0, 0 };
     float       a1, a2;
 
     character = m_object->GetCharacter();
@@ -2498,10 +2498,10 @@ void CPhysics::FloorAngle(const Math::Vector &pos, Math::Vector &angle)
 // Returns 1 -> immobile object (because collision)
 // Returns 2 -> destroyed object
 
-int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
+int CPhysics::ObjectAdapt(const glm::vec3 &pos, const glm::vec3 &angle)
 {
     Math::Matrix    matRotate;
-    Math::Vector    iPos, oAngle, oSpeed;
+    glm::vec3    iPos{ 0, 0, 0 }, oAngle{ 0, 0, 0 }, oSpeed{ 0, 0, 0 };
     float           distance, force, volume;
     int             colType;
     ObjectType      iType, oType;
@@ -2515,7 +2515,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
         return 0;
 
     auto firstCrashSphere = m_object->GetFirstCrashSphere();
-    Math::Vector iiPos = firstCrashSphere.sphere.pos;
+    glm::vec3 iiPos = firstCrashSphere.sphere.pos;
     float iRad = firstCrashSphere.sphere.radius;
 
     iPos = iiPos + (pos - m_object->GetPosition());
@@ -2540,7 +2540,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
              !pObj->GetLock()         &&
              m_object->GetTrainer()   )  // driving vehicle?
         {
-            Math::Vector oPos = pObj->GetPosition();
+            glm::vec3 oPos = pObj->GetPosition();
             distance = Math::DistanceProjected(oPos, iPos);
             if ( distance < 4.0f )
             {
@@ -2551,7 +2551,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
 
         if ( oType == OBJECT_TARGET2 && !pObj->GetLock() )
         {
-            Math::Vector oPos = pObj->GetPosition();
+            glm::vec3 oPos = pObj->GetPosition();
             distance = Math::Distance(oPos, iPos);
             if ( distance < 10.0f*1.5f )
             {
@@ -2562,7 +2562,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
 
         for (const auto& crashSphere : pObj->GetAllCrashSpheres())
         {
-            Math::Vector oPos = crashSphere.sphere.pos;
+            glm::vec3 oPos = crashSphere.sphere.pos;
             float oRad = crashSphere.sphere.radius;
 
             // Aliens ignore small objects
@@ -2592,7 +2592,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
                         if ( colType == 0 )  continue;  // ignores?
                     }
 
-                    force = m_linMotion.realSpeed.Length();
+                    force = glm::length(m_linMotion.realSpeed);
                     force *= crashSphere.hardness;
                     volume = fabs(force*0.05f);
                     if ( volume > 1.0f )  volume = 1.0f;
@@ -2616,7 +2616,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
                         m_repeatCollision = 10;
                     }
 
-                    m_linMotion.currentSpeed = Normalize(iPos-oPos)*force;
+                    m_linMotion.currentSpeed = glm::normalize(iPos-oPos)*force;
                     Math::LoadRotationXZYMatrix(matRotate, -angle);
                     m_linMotion.currentSpeed = Transform(matRotate, m_linMotion.currentSpeed);
                     if ( !m_object->Implements(ObjectInterfaceType::Flying) )
@@ -2631,7 +2631,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
                     if ( ph != nullptr )
                     {
                         oAngle = pObj->GetRotation();
-                        oSpeed = Normalize(oPos-iPos)*force;
+                        oSpeed = glm::normalize(oPos-iPos)*force;
                         Math::LoadRotationXZYMatrix(matRotate, -oAngle);
                         oSpeed = Transform(matRotate, oSpeed);
                         if ( !pObj->Implements(ObjectInterfaceType::Flying) )
@@ -2660,7 +2660,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
 
 // Shakes an object.
 
-bool CPhysics::JostleObject(CJostleableObject* pObj, Math::Vector iPos, float iRad)
+bool CPhysics::JostleObject(CJostleableObject* pObj, glm::vec3 iPos, float iRad)
 {
     Math::Sphere jostlingSphere = pObj->GetJostlingSphere();
 
@@ -2672,9 +2672,9 @@ bool CPhysics::JostleObject(CJostleableObject* pObj, Math::Vector iPos, float iR
     if ( f < 0.0f )  f = 0.0f;
     if ( f > 1.0f )  f = 1.0f;
 
-    Math::Vector speed = m_linMotion.realSpeed;
+    glm::vec3 speed = m_linMotion.realSpeed;
     speed.y = 0.0f;
-    float force = speed.Length()*f*0.05f;
+    float force = glm::length(speed)*f*0.05f;
     if ( force > 1.0f )  force = 1.0f;
 
     if ( m_soundTimeJostle >= 0.20f )
@@ -2962,7 +2962,7 @@ void CPhysics::FrameParticle(float aTime, float rTime)
 void CPhysics::PowerParticle(float factor, bool bBreak)
 {
     Math::Matrix*   mat;
-    Math::Vector    pos, ppos, eye, speed;
+    glm::vec3    pos{ 0, 0, 0 }, ppos{ 0, 0, 0 }, eye{ 0, 0, 0 }, speed{ 0, 0, 0 };
     glm::vec2       dim;
     bool        bCarryPower;
 
@@ -3000,7 +3000,7 @@ void CPhysics::PowerParticle(float factor, bool bBreak)
 
     if ( bCarryPower )  // carry a battery?
     {
-        pos = Math::Vector(3.0f, 5.6f, 0.0f);  // position of battery holder // TODO: Move to CTransportableObject
+        pos = glm::vec3(3.0f, 5.6f, 0.0f);  // position of battery holder // TODO: Move to CTransportableObject
         pos = Transform(*mat, pos);
 
         speed.x = (Math::Rand()-0.5f)*12.0f;
@@ -3023,7 +3023,7 @@ void CPhysics::PowerParticle(float factor, bool bBreak)
 
 void CPhysics::CrashParticle(float crash)
 {
-    Math::Vector    pos, ppos, speed;
+    glm::vec3    pos{ 0, 0, 0 }, ppos{ 0, 0, 0 }, speed{ 0, 0, 0 };
     glm::vec2       dim;
     float           len;
     int             i, max;
@@ -3057,7 +3057,7 @@ void CPhysics::CrashParticle(float crash)
 void CPhysics::MotorParticle(float aTime, float rTime)
 {
     Math::Matrix*   mat;
-    Math::Vector    pos, speed;
+    glm::vec3    pos{ 0, 0, 0 }, speed{ 0, 0, 0 };
     glm::vec2       dim;
     ObjectType  type;
     glm::vec2   c, p;
@@ -3166,7 +3166,7 @@ void CPhysics::MotorParticle(float aTime, float rTime)
                 pos.z = Math::Rand()*0.4f+1.0f;
                 if ( rand()%2 == 0 )  pos.z = -pos.z;
                 pos = Transform(*mat, pos);
-                speed = Math::Vector(0.0f, 1.0f, 0.0f);
+                speed = glm::vec3(0.0f, 1.0f, 0.0f);
                 dim.x = Math::Rand()*(h-5.0f)/2.0f+1.0f;
                 if ( dim.x > 2.5f )  dim.x = 2.5f;
                 dim.y = dim.x;
@@ -3195,7 +3195,7 @@ void CPhysics::MotorParticle(float aTime, float rTime)
                 pos.z = Math::Rand()*2.0f+3.0f;
                 if ( rand()%2 == 0 )  pos.z = -pos.z;
                 pos = Transform(*mat, pos);
-                speed = Math::Vector(0.0f, 0.0f, 0.0f);
+                speed = glm::vec3(0.0f, 0.0f, 0.0f);
                 dim.x = Math::Rand()*(h-5.0f)/2.0f+1.0f;
                 if ( dim.x > 3.0f )  dim.x = 3.0f;
                 dim.y = dim.x;
@@ -3223,7 +3223,7 @@ void CPhysics::MotorParticle(float aTime, float rTime)
                 pos.z = Math::Rand()*3.0f+3.0f;
                 if ( rand()%2 == 0 )  pos.z = -pos.z;
                 pos = Transform(*mat, pos);
-                speed = Math::Vector(0.0f, 0.0f, 0.0f);
+                speed = glm::vec3(0.0f, 0.0f, 0.0f);
                 dim.x = Math::Rand()*(h-5.0f)/2.0f+1.0f;
                 if ( dim.x > 3.0f )  dim.x = 3.0f;
                 dim.y = dim.x;
@@ -3249,7 +3249,7 @@ void CPhysics::MotorParticle(float aTime, float rTime)
                  aTime-m_lastMotorParticle < m_engine->ParticleAdapt(0.05f) )  return;
             m_lastMotorParticle = aTime;
 
-            pos = Math::Vector(-1.6f, -0.5f, 0.0f);
+            pos = glm::vec3(-1.6f, -0.5f, 0.0f);
             mat = m_object->GetWorldMatrix(0);
             pos = Transform(*mat, pos);
 
@@ -3278,7 +3278,7 @@ void CPhysics::MotorParticle(float aTime, float rTime)
             if ( aTime-m_lastMotorParticle < m_engine->ParticleAdapt(0.02f) )  return;
             m_lastMotorParticle = aTime;
 
-            pos = Math::Vector(-1.6f, -1.0f, 0.0f);
+            pos = glm::vec3(-1.6f, -1.0f, 0.0f);
             pos.x += (Math::Rand()-0.5f)*3.0f;
             pos.y += (Math::Rand()-0.5f)*1.5f;
             pos.z += (Math::Rand()-0.5f)*3.0f;
@@ -3288,7 +3288,7 @@ void CPhysics::MotorParticle(float aTime, float rTime)
             h = m_floorHeight;
             if ( h > 10.0f )  // high enough?
             {
-                speed = Math::Vector(0.0f, -10.0f, 0.0f);  // against the bottom
+                speed = glm::vec3(0.0f, -10.0f, 0.0f);  // against the bottom
             }
             else
             {
@@ -3302,7 +3302,7 @@ void CPhysics::MotorParticle(float aTime, float rTime)
 
             m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISCRAPS, 2.0f, 10.0f);
 
-            pos = Math::Vector(-1.6f, -0.5f, 0.0f);
+            pos = glm::vec3(-1.6f, -0.5f, 0.0f);
             pos = Transform(*mat, pos);
 
             speed.x = (Math::Rand()-0.5f)*1.0f;
@@ -3356,15 +3356,15 @@ void CPhysics::MotorParticle(float aTime, float rTime)
                 m_lastMotorParticle = aTime;
 
                 r = rand()%3;
-                if ( r == 0 )  pos = Math::Vector(-3.0f, 0.0f, -4.0f);
-                if ( r == 1 )  pos = Math::Vector(-3.0f, 0.0f,  4.0f);
-                if ( r == 2 )  pos = Math::Vector( 4.0f, 0.0f,  0.0f);
+                if ( r == 0 )  pos = glm::vec3(-3.0f, 0.0f, -4.0f);
+                if ( r == 1 )  pos = glm::vec3(-3.0f, 0.0f,  4.0f);
+                if ( r == 2 )  pos = glm::vec3( 4.0f, 0.0f,  0.0f);
 
                 pos.x += (Math::Rand()-0.5f)*2.0f;
                 pos.z += (Math::Rand()-0.5f)*2.0f;
                 mat = m_object->GetWorldMatrix(0);
                 pos = Transform(*mat, pos);
-                speed = Math::Vector(0.0f, 0.0f, 0.0f);
+                speed = glm::vec3(0.0f, 0.0f, 0.0f);
                 dim.x = Math::Rand()*h/5.0f+2.0f;
                 dim.y = dim.x;
                 m_particle->CreateParticle(pos, speed, dim, Gfx::PARTICRASH, 2.0f);
@@ -3378,15 +3378,15 @@ void CPhysics::MotorParticle(float aTime, float rTime)
                 m_lastMotorParticle = aTime;
 
                 r = rand()%3;
-                if ( r == 0 )  pos = Math::Vector(-3.0f, 0.0f, -4.0f);
-                if ( r == 1 )  pos = Math::Vector(-3.0f, 0.0f,  4.0f);
-                if ( r == 2 )  pos = Math::Vector( 4.0f, 0.0f,  0.0f);
+                if ( r == 0 )  pos = glm::vec3(-3.0f, 0.0f, -4.0f);
+                if ( r == 1 )  pos = glm::vec3(-3.0f, 0.0f,  4.0f);
+                if ( r == 2 )  pos = glm::vec3( 4.0f, 0.0f,  0.0f);
 
                 pos.x += (Math::Rand()-0.5f)*1.0f;
                 pos.z += (Math::Rand()-0.5f)*1.0f;
                 mat = m_object->GetWorldMatrix(0);
                 pos = Transform(*mat, pos);
-                speed = Math::Vector(0.0f, 0.0f, 0.0f);
+                speed = glm::vec3(0.0f, 0.0f, 0.0f);
                 dim.x = 1.0f;
                 dim.y = dim.x;
                 m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIEJECT);
@@ -3399,7 +3399,7 @@ void CPhysics::MotorParticle(float aTime, float rTime)
             if ( aTime-m_lastMotorParticle < m_engine->ParticleAdapt(0.02f) )  return;
             m_lastMotorParticle = aTime;
 
-            pos = Math::Vector(0.0f, -1.0f, 0.0f);
+            pos = glm::vec3(0.0f, -1.0f, 0.0f);
             pos.x += (Math::Rand()-0.5f)*6.0f;
             pos.y += (Math::Rand()-0.5f)*3.0f;
             pos.z += (Math::Rand()-0.5f)*6.0f;
@@ -3409,7 +3409,7 @@ void CPhysics::MotorParticle(float aTime, float rTime)
             h = m_floorHeight;
             if ( h > 10.0f )  // high enough?
             {
-                speed = Math::Vector(0.0f, -10.0f, 0.0f);  // against the bottom
+                speed = glm::vec3(0.0f, -10.0f, 0.0f);  // against the bottom
             }
             else
             {
@@ -3423,7 +3423,7 @@ void CPhysics::MotorParticle(float aTime, float rTime)
 
             m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISCRAPS, 2.0f, 10.0f);
 
-            pos = Math::Vector(0.0f, 1.0f, 0.0f);
+            pos = glm::vec3(0.0f, 1.0f, 0.0f);
             pos = Transform(*mat, pos);
 
             speed.x = (Math::Rand()-0.5f)*1.0f;
@@ -3463,7 +3463,7 @@ void CPhysics::MotorParticle(float aTime, float rTime)
         if ( aTime-m_lastMotorParticle < m_engine->ParticleAdapt(0.06f) )  return;
         m_lastMotorParticle = aTime;
 
-        pos = Math::Vector(0.0f, 3.0f, 0.0f);
+        pos = glm::vec3(0.0f, 3.0f, 0.0f);
         mat = m_object->GetWorldMatrix(0);
         pos = Transform(*mat, pos);
         pos.x += (Math::Rand()-0.5f)*1.0f;
@@ -3489,7 +3489,7 @@ void CPhysics::MotorParticle(float aTime, float rTime)
         if ( aTime-m_lastMotorParticle < m_engine->ParticleAdapt(0.06f) )  return;
         m_lastMotorParticle = aTime;
 
-        pos = Math::Vector(0.0f, 3.0f, 0.0f);
+        pos = glm::vec3(0.0f, 3.0f, 0.0f);
         mat = m_object->GetWorldMatrix(0);
         pos = Transform(*mat, pos);
         pos.x += (Math::Rand()-0.5f)*1.0f;
@@ -3524,7 +3524,7 @@ void CPhysics::MotorParticle(float aTime, float rTime)
             if ( aTime-m_lastMotorParticle < m_engine->ParticleAdapt(0.1f) )  return;
             m_lastMotorParticle = aTime;
 
-            pos = Math::Vector(-2.5f, 10.3f, -1.3f);
+            pos = glm::vec3(-2.5f, 10.3f, -1.3f);
             pos.x += (Math::Rand()-0.5f)*1.0f;
             pos.z += (Math::Rand()-0.5f)*1.0f;
             mat = m_object->GetWorldMatrix(0);
@@ -3546,7 +3546,7 @@ void CPhysics::MotorParticle(float aTime, float rTime)
             if ( aTime-m_lastMotorParticle < m_engine->ParticleAdapt(0.05f) )  return;
             m_lastMotorParticle = aTime;
 
-            pos = Math::Vector(-3.4f, 1.8f, 0.5f);
+            pos = glm::vec3(-3.4f, 1.8f, 0.5f);
 
             speed = pos;
             if ( m_linMotion.currentSpeed.x < 0.0f )
@@ -3578,10 +3578,10 @@ void CPhysics::MotorParticle(float aTime, float rTime)
 
 // Generates some particles after falling into the water.
 
-void CPhysics::WaterParticle(float aTime, Math::Vector pos, ObjectType type,
+void CPhysics::WaterParticle(float aTime, glm::vec3 pos, ObjectType type,
                               float floor, float advance, float turn)
 {
-    Math::Vector    ppos, speed;
+    glm::vec3    ppos{ 0, 0, 0 }, speed{ 0, 0, 0 };
     glm::vec2       dim;
     float       delay, level, min, max, force, volume, diam;
     int         i, nb;
@@ -3625,7 +3625,7 @@ void CPhysics::WaterParticle(float aTime, Math::Vector pos, ObjectType type,
         pos.y = m_water->GetLevel()-1.0f;
         dim.x = 2.0f*force;  // height
         dim.y = diam;  // diameter
-        m_particle->CreateParticle(pos, Math::Vector(0.0f, 0.0f, 0.0f), dim, Gfx::PARTIPLOUF0, 1.4f, 0.0f, 0.0f);
+        m_particle->CreateParticle(pos, glm::vec3(0.0f, 0.0f, 0.0f), dim, Gfx::PARTIPLOUF0, 1.4f, 0.0f, 0.0f);
 
         force = (0.5f+force*0.5f);
         nb = static_cast<int>(force*50.0f*m_engine->GetParticleDensity());
@@ -3697,7 +3697,7 @@ void CPhysics::WaterParticle(float aTime, Math::Vector pos, ObjectType type,
 void CPhysics::WheelParticle(TraceColor color, float width)
 {
     Math::Matrix*       mat;
-    Math::Vector        goal1, goal2, wheel1, wheel2;
+    glm::vec3        goal1{ 0, 0, 0 }, goal2{ 0, 0, 0 }, wheel1{ 0, 0, 0 }, wheel2{ 0, 0, 0 };
     float               dist1, dist2, step;
 
     mat = m_object->GetWorldMatrix(0);

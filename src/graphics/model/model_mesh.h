@@ -21,8 +21,6 @@
 
 #include "graphics/model/model_triangle.h"
 
-#include "math/vector.h"
-
 #include <vector>
 
 namespace Gfx
@@ -45,19 +43,19 @@ public:
     int GetTriangleCount() const;
 
     //! Returns the mesh position
-    const Math::Vector& GetPosition() const;
+    const glm::vec3& GetPosition() const;
     //! Sets the mesh rotation
-    void SetPosition(const Math::Vector& position);
+    void SetPosition(const glm::vec3& position);
 
     //! Returns the mesh rotation
-    const Math::Vector& GetRotation() const;
+    const glm::vec3& GetRotation() const;
     //! Sets the mesh rotation
-    void SetRotation(const Math::Vector& rotation);
+    void SetRotation(const glm::vec3& rotation);
 
     //! Returns the mesh scale
-    const Math::Vector& GetScale() const;
+    const glm::vec3& GetScale() const;
     //! Sets the mesh scale
-    void SetScale(const Math::Vector& scale);
+    void SetScale(const glm::vec3& scale);
 
     //! Returns the name of parent mesh
     const std::string& GetParent() const;
@@ -66,9 +64,9 @@ public:
 
 private:
     std::vector<ModelTriangle> m_triangles;
-    Math::Vector m_position;
-    Math::Vector m_rotation;
-    Math::Vector m_scale;
+    glm::vec3 m_position;
+    glm::vec3 m_rotation;
+    glm::vec3 m_scale;
     std::string m_parent;
 };
 

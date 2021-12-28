@@ -447,7 +447,7 @@ void CRobotMain::ChangePhase(Phase phase)
         m_engine->SetOverColor();
         m_engine->DeleteGroundMark(0);
         SetSpeed(1.0f);
-        m_terrain->SetWind(Math::Vector(0.0f, 0.0f, 0.0f));
+        m_terrain->SetWind(glm::vec3(0.0f, 0.0f, 0.0f));
         m_terrain->FlushBuildingLevel();
         m_terrain->FlushFlyingLimit();
         m_lightMan->FlushLights();
@@ -458,7 +458,7 @@ void CRobotMain::ChangePhase(Phase phase)
         m_planet->Flush();
         m_interface->Flush();
         m_newScriptName.clear();
-        m_sound->SetListener(Math::Vector(0.0f, 0.0f, 0.0f), Math::Vector(0.0f, 0.0f, 1.0f));
+        m_sound->SetListener(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         m_sound->StopAll();
         m_camera->SetType(Gfx::CAM_TYPE_NULL);
         m_movie->Flush();
@@ -602,7 +602,7 @@ void CRobotMain::ChangePhase(Phase phase)
                 }
                 else
                 {
-                    m_displayText->DisplayError(INFO_WIN, Math::Vector(0.0f,0.0f,0.0f), 15.0f, 60.0f, 1000.0f);
+                    m_displayText->DisplayError(INFO_WIN, glm::vec3(0.0f,0.0f,0.0f), 15.0f, 60.0f, 1000.0f);
                 }
                 StartMusic();
             }
@@ -632,7 +632,7 @@ void CRobotMain::ChangePhase(Phase phase)
                 glm::vec2 ddim;
                 ddim.x = dim.x*2;  ddim.y = dim.y*2;
                 m_interface->CreateButton(pos, ddim, 16, EVENT_BUTTON_OK);
-                m_displayText->DisplayError(INFO_LOST, Math::Vector(0.0f,0.0f,0.0f), 15.0f, 60.0f, 1000.0f);
+                m_displayText->DisplayError(INFO_LOST, glm::vec3(0.0f,0.0f,0.0f), 15.0f, 60.0f, 1000.0f);
 
                 StartMusic();
             }
@@ -1043,7 +1043,7 @@ bool CRobotMain::ProcessEvent(Event &event)
                         CLevelParserLine line("CreateObject");
                         line.AddParam("type", MakeUnique<CLevelParserParam>(obj->GetType()));
 
-                        Math::Vector pos = obj->GetPosition()/g_unit;
+                        glm::vec3 pos = obj->GetPosition()/g_unit;
                         pos.y = 0.0f;
                         line.AddParam("pos", MakeUnique<CLevelParserParam>(pos));
 
@@ -1538,7 +1538,7 @@ void CRobotMain::ExecuteCmd(const std::string& cmd)
     }
 
     if (m_phase == PHASE_SIMUL)
-        m_displayText->DisplayError(ERR_CMD, Math::Vector(0.0f,0.0f,0.0f));
+        m_displayText->DisplayError(ERR_CMD, glm::vec3(0.0f,0.0f,0.0f));
 }
 
 
@@ -1805,7 +1805,7 @@ void CRobotMain::FrameVisit(float rTime)
     // Moves the arrow.
     m_visitTime += rTime;
 
-    Math::Vector pos = m_visitPosArrow;
+    glm::vec3 pos = m_visitPosArrow;
     pos.y += 1.5f+sinf(m_visitTime*4.0f)*4.0f;
     m_visitArrow->SetPosition(pos);
     m_visitArrow->SetRotationY(m_visitTime*2.0f);
@@ -1819,7 +1819,7 @@ void CRobotMain::FrameVisit(float rTime)
         pos = m_visitPos;
         float level = m_terrain->GetFloorLevel(pos)+2.0f;
         if (pos.y < level) pos.y = level;  // not below the ground
-        Math::Vector speed(0.0f, 0.0f, 0.0f);
+        glm::vec3 speed(0.0f, 0.0f, 0.0f);
         glm::vec2 dim;
         dim.x = 30.0f;
         dim.y = dim.x;
@@ -2026,7 +2026,7 @@ CObject* CRobotMain::GetSelect()
 //! Detects the object aimed by the mouse
 CObject* CRobotMain::DetectObject(const glm::vec2& pos)
 {
-    Math::Vector p;
+    glm::vec3 p;
     int objRank = m_engine->DetectObject(pos, p);
 
     for (CObject* obj : m_objMan->GetAllObjects())
@@ -2372,7 +2372,7 @@ void CRobotMain::UpdateInfoText()
         CObject* obj = GetSelect();
         if (obj != nullptr)
         {
-            Math::Vector pos = obj->GetPosition();
+            glm::vec3 pos = obj->GetPosition();
             m_engine->SetStatisticPos(pos / g_unit);
         }
     }
@@ -2384,8 +2384,8 @@ void CRobotMain::UpdateInfoText()
 void CRobotMain::InitEye()
 {
     if (m_phase == PHASE_SIMUL)
-        m_camera->Init(Math::Vector( 0.0f, 10.0f, 0.0f),
-                       Math::Vector(10.0f,  5.0f, 0.0f), 0.0f);
+        m_camera->Init(glm::vec3( 0.0f, 10.0f, 0.0f),
+                       glm::vec3(10.0f,  5.0f, 0.0f), 0.0f);
 }
 
 //! Advances the entire scene
@@ -2431,7 +2431,7 @@ bool CRobotMain::EventFrame(const Event &event)
 
             if ( obj->GetProxyActivate() )  // active if it is near?
             {
-                Math::Vector eye = m_engine->GetLookatPt();
+                glm::vec3 eye = m_engine->GetLookatPt();
                 float dist = Math::Distance(eye, obj->GetPosition());
                 if ( dist < obj->GetProxyDistance() )
                 {
@@ -2482,7 +2482,7 @@ bool CRobotMain::EventFrame(const Event &event)
     {
         if (!m_immediatSatCom && !m_beginSatCom && !m_movieLock)
         {
-            m_displayText->DisplayError(INFO_BEGINSATCOM, Math::Vector(0.0f, 0.0f, 0.0f));
+            m_displayText->DisplayError(INFO_BEGINSATCOM, glm::vec3(0.0f, 0.0f, 0.0f));
             m_beginSatCom = true;  // message appears
         }
 
@@ -3155,7 +3155,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "Planet" && !resetObject)
             {
-                Math::Vector    ppos, uv1, uv2;
+                glm::vec3    ppos, uv1, uv2;
 
                 ppos  = line->GetParam("pos")->AsPoint();
                 uv1   = line->GetParam("uv1")->AsPoint();
@@ -3237,7 +3237,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "TerrainWater" && !resetObject)
             {
-                Math::Vector pos;
+                glm::vec3 pos;
                 pos.x = line->GetParam("moveX")->AsFloat(0.0f);
                 pos.y = line->GetParam("moveY")->AsFloat(0.0f);
                 pos.z = pos.x;
@@ -3374,7 +3374,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                                             line->GetParam("max")->AsFloat(100.0f)*g_unit,
                                             line->GetParam("slope")->AsFloat(5.0f),
                                             line->GetParam("freq")->AsFloat(100.0f),
-                                            line->GetParam("center")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f))*g_unit,
+                                            line->GetParam("center")->AsPoint(glm::vec3(0.0f, 0.0f, 0.0f))*g_unit,
                                             line->GetParam("radius")->AsFloat(0.0f)*g_unit);
                 continue;
             }
@@ -3414,7 +3414,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     throw CLevelParserException("There can be only one LevelController in the level");
                 }
 
-                m_controller = m_objMan->CreateObject(Math::Vector(0.0f, 0.0f, 0.0f), 0.0f, OBJECT_CONTROLLER);
+                m_controller = m_objMan->CreateObject(glm::vec3(0.0f, 0.0f, 0.0f), 0.0f, OBJECT_CONTROLLER);
                 assert(m_controller->Implements(ObjectInterfaceType::Programmable));
                 assert(m_controller->Implements(ObjectInterfaceType::ProgramStorage));
 
@@ -3493,7 +3493,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             if (line->GetCommand() == "CreateFog" && !resetObject)
             {
                 Gfx::ParticleType type = static_cast<Gfx::ParticleType>(Gfx::PARTIFOG0+(line->GetParam("type")->AsInt()));
-                Math::Vector pos = line->GetParam("pos")->AsPoint()*g_unit;
+                glm::vec3 pos = line->GetParam("pos")->AsPoint()*g_unit;
                 float height = line->GetParam("height")->AsFloat(1.0f)*g_unit;
                 float ddim = line->GetParam("dim")->AsFloat(50.0f)*g_unit;
                 float delay = line->GetParam("delay")->AsFloat(2.0f);
@@ -3502,7 +3502,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 glm::vec2 dim;
                 dim.x = ddim;
                 dim.y = dim.x;
-                m_particle->CreateParticle(pos, Math::Vector(0.0f, 0.0f, 0.0f), dim, type, delay, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, glm::vec3(0.0f, 0.0f, 0.0f), dim, type, delay, 0.0f, 0.0f);
                 continue;
             }
 
@@ -3560,7 +3560,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 int rank = m_engine->CreateGroundSpot();
                 if (rank != -1)
                 {
-                    m_engine->SetObjectGroundSpotPos(rank, line->GetParam("pos")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f))*g_unit);
+                    m_engine->SetObjectGroundSpotPos(rank, line->GetParam("pos")->AsPoint(glm::vec3(0.0f, 0.0f, 0.0f))*g_unit);
                     m_engine->SetObjectGroundSpotRadius(rank, line->GetParam("radius")->AsFloat(10.0f)*g_unit);
                     m_engine->SetObjectGroundSpotColor(rank, line->GetParam("color")->AsColor(Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)));
                     m_engine->SetObjectGroundSpotSmooth(rank, line->GetParam("smooth")->AsFloat(1.0f));
@@ -3585,9 +3585,9 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 m_mapImage = line->GetParam("image")->AsBool(false);
                 if (m_mapImage)
                 {
-                    Math::Vector offset;
+                    glm::vec3 offset;
                     strcpy(m_mapFilename, line->GetParam("filename")->AsPath("textures").c_str());
-                    offset = line->GetParam("offset")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f));
+                    offset = line->GetParam("offset")->AsPoint(glm::vec3(0.0f, 0.0f, 0.0f));
                     m_map->SetFixParam(line->GetParam("zoom")->AsFloat(1.0f),
                                     offset.x, offset.z,
                                     line->GetParam("angle")->AsFloat(0.0f)*Math::PI/180.0f,
@@ -3621,12 +3621,12 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "Camera")
             {
-                m_camera->Init(line->GetParam("eye")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f))*g_unit,
-                            line->GetParam("lookat")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f))*g_unit,
+                m_camera->Init(line->GetParam("eye")->AsPoint(glm::vec3(0.0f, 0.0f, 0.0f))*g_unit,
+                            line->GetParam("lookat")->AsPoint(glm::vec3(0.0f, 0.0f, 0.0f))*g_unit,
                             resetObject ? 0.0f : line->GetParam("delay")->AsFloat(0.0f));
 
                 if (line->GetParam("fadeIn")->AsBool(false))
-                    m_camera->StartOver(Gfx::CAM_OVER_EFFECT_FADEIN_WHITE, Math::Vector(0.0f, 0.0f, 0.0f), 1.0f);
+                    m_camera->StartOver(Gfx::CAM_OVER_EFFECT_FADEIN_WHITE, glm::vec3(0.0f, 0.0f, 0.0f), 1.0f);
                 continue;
             }
 
@@ -3865,7 +3865,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
         if (!m_sceneReadPath.empty() && sel != nullptr)  // loading file?
         {
-            Math::Vector pos = sel->GetPosition();
+            glm::vec3 pos = sel->GetPosition();
             m_camera->Init(pos, pos, 0.0f);
 
             SelectObject(sel);
@@ -3903,7 +3903,7 @@ void CRobotMain::LevelLoadingError(const std::string& error, const std::runtime_
 }
 
 //! Creates a directional light
-int CRobotMain::CreateLight(Math::Vector direction, Gfx::Color color)
+int CRobotMain::CreateLight(glm::vec3 direction, Gfx::Color color)
 {
     if (direction.x == 0.0f &&
         direction.y == 0.0f &&
@@ -3924,7 +3924,7 @@ int CRobotMain::CreateLight(Math::Vector direction, Gfx::Color color)
 }
 
 //! Creates a light spot
-int CRobotMain::CreateSpot(Math::Vector pos, Gfx::Color color)
+int CRobotMain::CreateSpot(glm::vec3 pos, Gfx::Color color)
 {
     if (!m_engine->GetLightMode()) return -1;
 
@@ -3935,7 +3935,7 @@ int CRobotMain::CreateSpot(Math::Vector pos, Gfx::Color color)
     light.diffuse       = color;
     light.ambient       = color * 0.1f;
     light.position      = pos;
-    light.direction     = Math::Vector(0.0f, -1.0f, 0.0f);
+    light.direction     = glm::vec3(0.0f, -1.0f, 0.0f);
     light.spotIntensity = 1.0f;
     light.spotAngle     = 90.0f*Math::PI/180.0f;
     light.attenuation0  = 2.0f;
@@ -4105,7 +4105,7 @@ void CRobotMain::ChangeColor()
 //! Calculates the distance to the nearest object
 namespace
 {
-float SearchNearestObject(CObjectManager* objMan, Math::Vector center, CObject* exclu)
+float SearchNearestObject(CObjectManager* objMan, glm::vec3 center, CObject* exclu)
 {
     float min = 100000.0f;
     for (CObject* obj : objMan->GetAllObjects())
@@ -4119,7 +4119,7 @@ float SearchNearestObject(CObjectManager* objMan, Math::Vector center, CObject* 
 
         if (type == OBJECT_BASE)
         {
-            Math::Vector oPos = obj->GetPosition();
+            glm::vec3 oPos = obj->GetPosition();
             if (oPos.x != center.x ||
                 oPos.z != center.z)
             {
@@ -4134,7 +4134,7 @@ float SearchNearestObject(CObjectManager* objMan, Math::Vector center, CObject* 
             type == OBJECT_REPAIR ||
             type == OBJECT_DESTROYER)
         {
-            Math::Vector oPos = obj->GetPosition();
+            glm::vec3 oPos = obj->GetPosition();
             float dist = Math::Distance(center, oPos) - 8.0f;
             if (dist < 0.0f) dist = 0.0f;
             min = Math::Min(min, dist);
@@ -4142,7 +4142,7 @@ float SearchNearestObject(CObjectManager* objMan, Math::Vector center, CObject* 
 
         for (const auto &crashSphere : obj->GetAllCrashSpheres())
         {
-            Math::Vector oPos = crashSphere.sphere.pos;
+            glm::vec3 oPos = crashSphere.sphere.pos;
             float oRadius = crashSphere.sphere.radius;
 
             float dist = Math::Distance(center, oPos) - oRadius;
@@ -4155,7 +4155,7 @@ float SearchNearestObject(CObjectManager* objMan, Math::Vector center, CObject* 
 }
 
 //! Calculates a free space
-bool CRobotMain::FreeSpace(Math::Vector &center, float minRadius, float maxRadius,
+bool CRobotMain::FreeSpace(glm::vec3 &center, float minRadius, float maxRadius,
                            float space, CObject *exclu)
 {
     if (minRadius < maxRadius)  // from internal to external?
@@ -4169,7 +4169,7 @@ bool CRobotMain::FreeSpace(Math::Vector &center, float minRadius, float maxRadiu
                 p.x = center.x+radius;
                 p.y = center.z;
                 p = Math::RotatePoint({ center.x, center.z }, angle, p);
-                Math::Vector pos;
+                glm::vec3 pos;
                 pos.x = p.x;
                 pos.z = p.y;
                 pos.y = 0.0f;
@@ -4198,7 +4198,7 @@ bool CRobotMain::FreeSpace(Math::Vector &center, float minRadius, float maxRadiu
                 p.x = center.x+radius;
                 p.y = center.z;
                 p = Math::RotatePoint({ center.x, center.z }, angle, p);
-                Math::Vector pos;
+                glm::vec3 pos;
                 pos.x = p.x;
                 pos.z = p.y;
                 pos.y = 0.0f;
@@ -4220,7 +4220,7 @@ bool CRobotMain::FreeSpace(Math::Vector &center, float minRadius, float maxRadiu
 }
 
 //! Calculates a flat free space
-bool CRobotMain::FlatFreeSpace(Math::Vector &center, float minFlat, float minRadius, float maxRadius,
+bool CRobotMain::FlatFreeSpace(glm::vec3 &center, float minFlat, float minRadius, float maxRadius,
                            float space, CObject *exclu)
 {
     if (minRadius < maxRadius)  // from internal to external?
@@ -4234,7 +4234,7 @@ bool CRobotMain::FlatFreeSpace(Math::Vector &center, float minFlat, float minRad
                 p.x = center.x+radius;
                 p.y = center.z;
                 p = Math::RotatePoint({ center.x, center.z }, angle, p);
-                Math::Vector pos;
+                glm::vec3 pos;
                 pos.x = p.x;
                 pos.z = p.y;
                 pos.y = 0.0f;
@@ -4267,7 +4267,7 @@ bool CRobotMain::FlatFreeSpace(Math::Vector &center, float minFlat, float minRad
                 p.x = center.x+radius;
                 p.y = center.z;
                 p = Math::RotatePoint({ center.x, center.z }, angle, p);
-                Math::Vector pos;
+                glm::vec3 pos;
                 pos.x = p.x;
                 pos.z = p.y;
                 pos.y = 0.0f;
@@ -4293,7 +4293,7 @@ bool CRobotMain::FlatFreeSpace(Math::Vector &center, float minFlat, float minRad
 }
 
 //! Calculates the maximum radius of a free space
-float CRobotMain::GetFlatZoneRadius(Math::Vector center, float maxRadius,
+float CRobotMain::GetFlatZoneRadius(glm::vec3 center, float maxRadius,
                                     CObject *exclu)
 {
     float dist = SearchNearestObject(m_objMan.get(), center, exclu);
@@ -4326,7 +4326,7 @@ void CRobotMain::ShowDropZone(CObject* metal, CObject* transporter)
 {
     if (metal == nullptr) return;
 
-    Math::Vector center = metal->GetPosition();
+    glm::vec3 center = metal->GetPosition();
 
     // Calculates the maximum radius possible depending on other items.
     float oMax = 30.0f;  // radius to build the biggest building
@@ -4339,7 +4339,7 @@ void CRobotMain::ShowDropZone(CObject* metal, CObject* transporter)
         if (obj == metal) continue;
         if (obj == transporter) continue;
 
-        Math::Vector oPos;
+        glm::vec3 oPos;
 
         ObjectType type = obj->GetType();
         if (type == OBJECT_BASE)
@@ -4413,7 +4413,7 @@ void CRobotMain::FlushShowLimit(int i)
 
 //! Specifies the boundaries to show
 void CRobotMain::SetShowLimit(int i, Gfx::ParticleType parti, CObject *obj,
-                              Math::Vector pos, float radius, float duration)
+                              glm::vec3 pos, float radius, float duration)
 {
     FlushShowLimit(i);  // erases the current boundaries
 
@@ -4443,7 +4443,7 @@ void CRobotMain::SetShowLimit(int i, Gfx::ParticleType parti, CObject *obj,
 
     for (int j = 0; j < m_showLimit[i].total; j++)
     {
-        m_showLimit[i].parti[j] = m_particle->CreateParticle(pos, Math::Vector(0.0f, 0.0f, 0.0f), dim, parti, duration);
+        m_showLimit[i].parti[j] = m_particle->CreateParticle(pos, glm::vec3(0.0f, 0.0f, 0.0f), dim, parti, duration);
     }
 }
 
@@ -4504,7 +4504,7 @@ void CRobotMain::FrameShowLimit(float rTime)
             rotate.y = center.y;
             rotate = Math::RotatePoint(center, angle, rotate);
 
-            Math::Vector pos;
+            glm::vec3 pos;
             pos.x = rotate.x;
             pos.z = rotate.y;
             pos.y = 0.0f;
@@ -4845,7 +4845,7 @@ bool CRobotMain::IOWriteScene(std::string filename, std::string filecbot, std::s
 //! Notifies the user that scene write is finished
 void CRobotMain::IOWriteSceneFinished()
 {
-    m_displayText->DisplayError(INFO_WRITEOK, Math::Vector(0.0f,0.0f,0.0f));
+    m_displayText->DisplayError(INFO_WRITEOK, glm::vec3(0.0f,0.0f,0.0f));
     m_shotSaving--;
 }
 
@@ -5246,7 +5246,7 @@ Error CRobotMain::ProcessEndMissionTake()
                     std::string text;
                     GetResource(RES_ERR, INFO_TEAM_DEAD, text);
                     text = StrUtils::Format(text.c_str(), GetTeamName(team).c_str());
-                    m_displayText->DisplayText(text.c_str(), Math::Vector(0.0f,0.0f,0.0f), 15.0f, 60.0f, 10.0f, Ui::TT_ERROR);
+                    m_displayText->DisplayText(text.c_str(), glm::vec3(0.0f,0.0f,0.0f), 15.0f, 60.0f, 10.0f, Ui::TT_ERROR);
 
                     m_displayText->SetEnable(false); // To prevent "bot destroyed" messages
                     m_objMan->DestroyTeam(team);
@@ -5260,11 +5260,11 @@ Error CRobotMain::ProcessEndMissionTake()
                     {
                         GetLogger()->Info("Team %d won\n", team);
 
-                        m_displayText->DisplayText(("<<< Team "+boost::lexical_cast<std::string>(team)+" won the game >>>").c_str(), Math::Vector(0.0f,0.0f,0.0f));
+                        m_displayText->DisplayText(("<<< Team "+boost::lexical_cast<std::string>(team)+" won the game >>>").c_str(), glm::vec3(0.0f,0.0f,0.0f));
                         if (m_missionTimerEnabled && m_missionTimerStarted)
                         {
                             GetLogger()->Info("Mission time: %s\n", TimeFormat(m_missionTimer).c_str());
-                            m_displayText->DisplayText(("Time: " + TimeFormat(m_missionTimer)).c_str(), Math::Vector(0.0f,0.0f,0.0f));
+                            m_displayText->DisplayText(("Time: " + TimeFormat(m_missionTimer)).c_str(), glm::vec3(0.0f,0.0f,0.0f));
                         }
                         m_missionTimerEnabled = m_missionTimerStarted = false;
                         m_winDelay  = m_endTakeWinDelay;  // wins in two seconds
@@ -5277,7 +5277,7 @@ Error CRobotMain::ProcessEndMissionTake()
                     std::string text;
                     GetResource(RES_ERR, INFO_TEAM_FINISH, text);
                     text = StrUtils::Format(text.c_str(), GetTeamName(team).c_str());
-                    m_displayText->DisplayText(text.c_str(), Math::Vector(0.0f,0.0f,0.0f));
+                    m_displayText->DisplayText(text.c_str(), glm::vec3(0.0f,0.0f,0.0f));
                     if (m_scoreboard)
                         m_scoreboard->ProcessEndTake(team);
                     m_objMan->DestroyTeam(team, DestructionType::Win);
@@ -5329,7 +5329,7 @@ Error CRobotMain::CheckEndMission(bool frame)
     {
         if (m_lostDelay == 0.0f)
         {
-            m_displayText->DisplayError(INFO_LOST, Math::Vector(0.0f,0.0f,0.0f));
+            m_displayText->DisplayError(INFO_LOST, glm::vec3(0.0f,0.0f,0.0f));
             m_lostDelay = m_endTakeLostDelay;  // lost in 6 seconds
             m_winDelay  = 0.0f;
         }
@@ -5361,11 +5361,11 @@ Error CRobotMain::CheckEndMission(bool frame)
 
         if (m_winDelay == 0.0f)
         {
-            m_displayText->DisplayError(INFO_WIN, Math::Vector(0.0f,0.0f,0.0f));
+            m_displayText->DisplayError(INFO_WIN, glm::vec3(0.0f,0.0f,0.0f));
             if (m_missionTimerEnabled && m_missionTimerStarted)
             {
                 GetLogger()->Info("Mission time: %s\n", TimeFormat(m_missionTimer).c_str());
-                m_displayText->DisplayText(("Time: " + TimeFormat(m_missionTimer)).c_str(), Math::Vector(0.0f,0.0f,0.0f));
+                m_displayText->DisplayText(("Time: " + TimeFormat(m_missionTimer)).c_str(), glm::vec3(0.0f,0.0f,0.0f));
             }
             m_missionTimerEnabled = m_missionTimerStarted = false;
             m_winDelay  = m_endTakeWinDelay;  // wins in two seconds
@@ -5712,7 +5712,7 @@ void CRobotMain::DisplayError(Error err, CObject* pObj, float time)
     m_displayText->DisplayError(err, pObj, time);
 }
 
-void CRobotMain::DisplayError(Error err, Math::Vector goal, float height, float dist, float time)
+void CRobotMain::DisplayError(Error err, glm::vec3 goal, float height, float dist, float time)
 {
     m_displayText->DisplayError(err, goal, height, dist, time);
 }
@@ -5840,7 +5840,7 @@ void CRobotMain::QuickLoad()
     std::string dir = m_playerProfile->GetSaveFile(std::string("quicksave"));
     if(!CResourceManager::Exists(dir))
     {
-        m_displayText->DisplayError(ERR_NO_QUICK_SLOT, Math::Vector(0.0f,0.0f,0.0f), 15.0f, 60.0f, 1000.0f);
+        m_displayText->DisplayError(ERR_NO_QUICK_SLOT, glm::vec3(0.0f,0.0f,0.0f), 15.0f, 60.0f, 1000.0f);
         GetLogger()->Debug("Quicksave slot not found\n");
         return;
     }
@@ -6051,15 +6051,15 @@ float CRobotMain::GetGlobalCellCapacity()
 void CRobotMain::StartDetectEffect(COldObject* object, CObject* target)
 {
     Math::Matrix*   mat;
-    Math::Vector    pos, goal;
+    glm::vec3    pos, goal;
     glm::vec2       dim;
 
     mat = object->GetWorldMatrix(0);
-    pos = Math::Transform(*mat, Math::Vector(2.0f, 3.0f, 0.0f));
+    pos = Math::Transform(*mat, glm::vec3(2.0f, 3.0f, 0.0f));
 
     if ( target == nullptr )
     {
-        goal = Math::Transform(*mat, Math::Vector(50.0f, 3.0f, 0.0f));
+        goal = Math::Transform(*mat, glm::vec3(50.0f, 3.0f, 0.0f));
     }
     else
     {
@@ -6079,7 +6079,7 @@ void CRobotMain::StartDetectEffect(COldObject* object, CObject* target)
         goal = Math::SegmentPoint(pos, goal, Math::Distance(pos, goal)-1.0f);
         dim.x = 6.0f;
         dim.y = dim.x;
-        m_particle->CreateParticle(goal, Math::Vector(0.0f, 0.0f, 0.0f), dim,
+        m_particle->CreateParticle(goal, glm::vec3(0.0f, 0.0f, 0.0f), dim,
                                      target != nullptr ? Gfx::PARTIGLINT : Gfx::PARTIGLINTr, 0.5f);
     }
 

@@ -145,14 +145,14 @@ private:
 
 
     //! Motion vector set by keyboard or joystick buttons
-    Math::Vector    m_keyMotion;
+    glm::vec3       m_keyMotion{ 0, 0, 0 };
     //! Motion vector set by joystick axes
-    Math::Vector    m_joyMotion;
+    glm::vec3       m_joyMotion{ 0, 0, 0 };
     //! Camera motion vector set by joystick axes
-    Math::Vector    m_joyMotionCam;
+    glm::vec3       m_joyMotionCam{ 0, 0, 0 };
 
     //! Camera controls on the numpad
-    Math::Vector    m_cameraKeyMotion;
+    glm::vec3       m_cameraKeyMotion{ 0, 0, 0 };
 
     //! Bindings for user inputs
     InputBinding    m_inputBindings[INPUT_SLOT_MAX];

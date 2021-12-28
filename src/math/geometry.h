@@ -271,7 +271,7 @@ inline void LoadViewMatrix(Math::Matrix &mat, const Math::Vector &from,
     // difference from the eyepoint to the lookat point.
     Math::Vector view = at - from;
 
-    float length = view.Length();
+    float length = glm::length(view);
     assert(! IsZero(length) );
 
     // Normalize the z basis vector
@@ -285,16 +285,16 @@ inline void LoadViewMatrix(Math::Matrix &mat, const Math::Vector &from,
 
     // If this vector has near-zero length because the input specified a
     // bogus up vector, let's try a default up vector
-    if ( IsZero(length = up.Length()) )
+    if ( IsZero(length = glm::length(up)) )
     {
         up = Math::Vector(0.0f, 1.0f, 0.0f) - view.y * view;
 
         // If we still have near-zero length, resort to a different axis.
-        if ( IsZero(length = up.Length()) )
+        if ( IsZero(length = glm::length(up)) )
         {
             up = Math::Vector(0.0f, 0.0f, 1.0f) - view.z * view;
 
-            assert(! IsZero(up.Length()) );
+            assert(! IsZero(glm::length(up)) );
         }
     }
 
@@ -518,9 +518,7 @@ inline Math::Vector NormalToPlane(const Math::Vector &p1, const Math::Vector &p2
  */
 inline Math::Vector SegmentPoint(const Math::Vector &p1, const Math::Vector &p2, float dist)
 {
-    Math::Vector direction = p2 - p1;
-
-    direction.Normalize();
+    Math::Vector direction = glm::normalize(p2 - p1);
 
     return p1 + direction * dist;
 }

@@ -243,9 +243,9 @@ struct EngineBaseObject
     //! Number of triangles
     int                    totalTriangles = 0;
     //! Bounding box min (origin 0,0,0 always included)
-    Math::Vector           bboxMin;
+    glm::vec3           bboxMin{ 0, 0, 0 };
     //! bounding box max (origin 0,0,0 always included)
-    Math::Vector           bboxMax;
+    glm::vec3           bboxMax{ 0, 0, 0 };
     //! A bounding sphere that contains all the vertices in this EngineBaseObject
     Math::Sphere           boundingSphere;
     //! Next tier (Tex)
@@ -318,9 +318,9 @@ struct EngineShadow
     //! Type of shadow
     EngineShadowType type = ENG_SHADOW_NORM;
     //! Position of the shadow
-    Math::Vector        pos;
+    glm::vec3        pos{ 0, 0, 0 };
     //! Normal to the terrain
-    Math::Vector        normal;
+    glm::vec3        normal{ 0, 0, 0 };
     //! Angle of the shadow
     float               angle = 0.0f;
     //! Radius of the shadow
@@ -353,11 +353,11 @@ struct EngineGroundSpot
     //! Transition area
     float           smooth = 0.0f;
     //! Position for the shadow
-    Math::Vector    pos;
+    glm::vec3    pos{ 0, 0, 0 };
     //! Radius of the shadow
     float           radius = 0.0f;
     //! Position of the shadow drawn
-    Math::Vector    drawPos;
+    glm::vec3    drawPos{ 0, 0, 0 };
     //! Radius of the shadow drawn
     float           drawRadius = 0.0f;
 
@@ -398,13 +398,13 @@ struct EngineGroundMark
     //! Fixed time
     float                       fix = 0.0f;
     //! Position for marks
-    Math::Vector                pos;
+    glm::vec3                   pos{ 0, 0, 0 };
     //! Radius of marks
     float                       radius = 0.0f;
     //! Color intensity
     float                       intensity = 0.0f;
     //! Draw position for marks
-    Math::Vector                drawPos;
+    glm::vec3                   drawPos{ 0, 0, 0 };
     //! Radius for  marks
     float                       drawRadius = 0.0f;
     //! Draw intensity for marks
@@ -685,7 +685,7 @@ public:
     int             GetStatisticTriangle();
 
     //! Sets the coordinates to display in stats window
-    void            SetStatisticPos(Math::Vector pos);
+    void            SetStatisticPos(glm::vec3 pos);
 
     //! Sets text to display as mission timer
     void            SetTimerDisplay(const std::string& text);
@@ -777,7 +777,7 @@ public:
     void            SetObjectTransparency(int objRank, float value);
 
     //! Returns the bounding box for an object
-    void            GetObjectBBox(int objRank, Math::Vector& min, Math::Vector& max);
+    void            GetObjectBBox(int objRank, glm::vec3& min, glm::vec3& max);
 
     //! Returns the total number of triangles of given object
     int             GetObjectTotalTriangles(int objRank);
@@ -807,7 +807,7 @@ public:
 
     //! Detects the target object that is selected with the mouse
     /** Returns the rank of the object or -1. */
-    int             DetectObject(const glm::vec2& mouse, Math::Vector& targetPos, bool terrain = false);
+    int             DetectObject(const glm::vec2& mouse, glm::vec3& targetPos, bool terrain = false);
 
     //! Creates a shadow for the given object
     void            CreateShadowSpot(int objRank);
@@ -818,7 +818,7 @@ public:
     //! Management of different shadow params
     void            SetObjectShadowSpotHide(int objRank, bool hide);
     void            SetObjectShadowSpotType(int objRank, EngineShadowType type);
-    void            SetObjectShadowSpotPos(int objRank, const Math::Vector& pos);
+    void            SetObjectShadowSpotPos(int objRank, const glm::vec3& pos);
     void            SetObjectShadowSpotAngle(int objRank, float angle);
     void            SetObjectShadowSpotRadius(int objRank, float radius);
     void            SetObjectShadowSpotIntensity(int objRank, float intensity);
@@ -840,7 +840,7 @@ public:
 
     //@{
     //! Management of different ground spot params
-    void            SetObjectGroundSpotPos(int rank, const Math::Vector& pos);
+    void            SetObjectGroundSpotPos(int rank, const glm::vec3& pos);
     void            SetObjectGroundSpotRadius(int rank, float radius);
     void            SetObjectGroundSpotColor(int rank, const Color& color);
     void            SetObjectGroundSpotMinMax(int rank, float min, float max);
@@ -848,7 +848,7 @@ public:
     //@}
 
     //! Creates the ground mark with the given params
-    void            CreateGroundMark(Math::Vector pos, float radius,
+    void            CreateGroundMark(glm::vec3 pos, float radius,
                                      float delay1, float delay2, float delay3,
                                      int dx, int dy, char* table);
     //! Deletes the ground mark
@@ -867,7 +867,7 @@ public:
     void            SetMaterial(const Material& mat);
 
     //! Specifies the location and direction of view
-    void SetViewParams(const Math::Vector &eyePt, const Math::Vector &lookatPt, const Math::Vector &upVec);
+    void SetViewParams(const glm::vec3 &eyePt, const glm::vec3 &lookatPt, const glm::vec3 &upVec);
 
     //! Updates the textures used for drawing ground spot
     void        UpdateGroundSpotTextures();
@@ -1158,15 +1158,15 @@ public:
     //! Returns the projection matrix
     const Math::Matrix& GetMatProj();
     //! Returns the camera center point
-    TEST_VIRTUAL Math::Vector GetEyePt();
+    TEST_VIRTUAL glm::vec3 GetEyePt();
     //! Returns the camera target point
-    TEST_VIRTUAL Math::Vector GetLookatPt();
+    TEST_VIRTUAL glm::vec3 GetLookatPt();
     //! Returns the horizontal direction angle of view
     float           GetEyeDirH();
     //! Returns the vertical direction angle of view
     float           GetEyeDirV();
     //! Indicates whether a point is visible
-    bool            IsVisiblePoint(const Math::Vector& pos);
+    bool            IsVisiblePoint(const glm::vec3& pos);
 
     //! Resets the projection matrix after changes
     void            UpdateMatProj();
@@ -1175,7 +1175,7 @@ public:
     void            ApplyChange();
 
     void            RenderDebugSphere(const Math::Sphere&, const Math::Matrix& transform = Math::Matrix{}, const Color& = Color{0.0f, 0.0f, 1.0f, 1.0f});
-    void            RenderDebugBox(const Math::Vector& mins, const Math::Vector& maxs, const Math::Matrix& transform = Math::Matrix{}, const Color& = Color{0.0f, 0.0f, 1.0f, 1.0f});
+    void            RenderDebugBox(const glm::vec3& mins, const glm::vec3& maxs, const Math::Matrix& transform = Math::Matrix{}, const Color& = Color{0.0f, 0.0f, 1.0f, 1.0f});
 
     void            SetDebugLights(bool debugLights);
     bool            GetDebugLights();
@@ -1263,9 +1263,9 @@ protected:
     //! Tests whether the given object is visible
     bool        IsVisible(const Math::Matrix& matrix, int objRank);
 
-    int         ComputeSphereVisibility(const Math::Matrix& m, const Math::Vector& center, float radius);
+    int         ComputeSphereVisibility(const Math::Matrix& m, const glm::vec3& center, float radius);
 
-    bool        InPlane(Math::Vector normal, float originPlane, Math::Vector center, float radius);
+    bool        InPlane(glm::vec3 normal, float originPlane, glm::vec3 center, float radius);
 
     //! Detects whether an object is affected by the mouse
     bool        DetectBBox(int objRank, const glm::vec2& mouse);
@@ -1274,11 +1274,11 @@ protected:
     bool        GetBBox2D(int objRank, glm::vec2& min, glm::vec2& max);
 
     //! Detects whether the mouse is in a triangle.
-    bool        DetectTriangle(const glm::vec2& mouse, Vertex3D* triangle, int objRank, float& dist, Math::Vector& pos);
+    bool        DetectTriangle(const glm::vec2& mouse, Vertex3D* triangle, int objRank, float& dist, glm::vec3& pos);
 
     //! Transforms a 3D point (x, y, z) in 2D space (x, y, -) of the window
     /** The coordinated p2D.z gives the distance. */
-    bool        TransformPoint(Math::Vector& p2D, int objRank, Math::Vector p3D);
+    bool        TransformPoint(glm::vec3& p2D, int objRank, glm::vec3 p3D);
 
     //! Calculates the distances between the viewpoint and the origin of different objects
     void        ComputeDistance();
@@ -1382,9 +1382,9 @@ protected:
     EngineGroundMark              m_groundMark;
 
     //! Location of camera
-    Math::Vector    m_eyePt;
+    glm::vec3       m_eyePt{ 0, 0, 0 };
     //! Camera target
-    Math::Vector    m_lookatPt;
+    glm::vec3       m_lookatPt{ 0, 0, 0 };
     float           m_eyeDirH;
     float           m_eyeDirV;
     int             m_rankView;
@@ -1395,7 +1395,7 @@ protected:
     float           m_fogStart[2];
     Color           m_waterAddColor;
     int             m_statisticTriangle;
-    Math::Vector    m_statisticPos;
+    glm::vec3       m_statisticPos{ 0, 0, 0 };
     bool            m_updateGeometry;
     bool            m_updateStaticBuffers;
     bool            m_firstGroundSpot;

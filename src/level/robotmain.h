@@ -46,6 +46,8 @@
 #include <deque>
 #include <stdexcept>
 
+#include <glm/glm.hpp>
+
 enum Phase
 {
     PHASE_WELCOME1,
@@ -136,7 +138,7 @@ const int MAXSCENE = 999;
 struct ShowLimit
 {
     bool            used = false;
-    Math::Vector    pos;
+    glm::vec3       pos;
     float           radius = 0.0f;
     int             total = 0;
     int             parti[MAXSHOWPARTI] = {};
@@ -153,8 +155,8 @@ struct MinMax
 
 struct Viewpoint
 {
-    Math::Vector    eye{};
-    Math::Vector    look{};
+    glm::vec3    eye{};
+    glm::vec3    look{};
     int             button = 13; // 13 is the camera button
 };
 
@@ -295,15 +297,15 @@ public:
     void        ClearInterface();
     void        ChangeColor();
 
-    bool        FreeSpace(Math::Vector &center, float minRadius, float maxRadius, float space, CObject *exclu);
-    bool        FlatFreeSpace(Math::Vector &center, float minFlat, float minRadius, float maxRadius, float space, CObject *exclu);
+    bool        FreeSpace(glm::vec3 &center, float minRadius, float maxRadius, float space, CObject *exclu);
+    bool        FlatFreeSpace(glm::vec3 &center, float minFlat, float minRadius, float maxRadius, float space, CObject *exclu);
     //! \name In-world indicators
     //@{
-    float       GetFlatZoneRadius(Math::Vector center, float maxRadius, CObject *exclu);
+    float       GetFlatZoneRadius(glm::vec3 center, float maxRadius, CObject *exclu);
     void        HideDropZone(CObject* metal);
     void        ShowDropZone(CObject* metal, CObject* transporter);
     void        FlushShowLimit(int i);
-    void        SetShowLimit(int i, Gfx::ParticleType parti, CObject *obj, Math::Vector pos,
+    void        SetShowLimit(int i, Gfx::ParticleType parti, CObject *obj, glm::vec3 pos,
                              float radius, float duration=SHOWLIMITTIME);
     void        StartShowLimit();
     void        FrameShowLimit(float rTime);
@@ -336,13 +338,13 @@ public:
     CObject*    IOReadObject(CLevelParserLine *line, const std::string& programDir, const std::string& objCounterText, float objectProgress, int objRank = -1);
     //@}
 
-    int         CreateSpot(Math::Vector pos, Gfx::Color color);
+    int         CreateSpot(glm::vec3 pos, Gfx::Color color);
 
     //! Find the currently selected object
     CObject*    GetSelect();
 
     void        DisplayError(Error err, CObject* pObj, float time=10.0f);
-    void        DisplayError(Error err, Math::Vector goal, float height=15.0f, float dist=60.0f, float time=10.0f);
+    void        DisplayError(Error err, glm::vec3 goal, float height=15.0f, float dist=60.0f, float time=10.0f);
 
     void        UpdateCustomLevelList();
     std::string GetCustomLevelName(int id);
@@ -499,7 +501,7 @@ protected:
 
     void        LevelLoadingError(const std::string& error, const std::runtime_error& exception, Phase exitPhase = PHASE_LEVEL_LIST);
 
-    int         CreateLight(Math::Vector direction, Gfx::Color color);
+    int         CreateLight(glm::vec3 direction, Gfx::Color color);
     void        HiliteClear();
     void        HiliteObject(const glm::vec2& pos);
     void        HiliteFrame(float rTime);
@@ -676,8 +678,8 @@ protected:
     CObject*        m_visitArrow = nullptr;
     float           m_visitTime = 0.0f;
     float           m_visitParticle = 0.0f;
-    Math::Vector    m_visitPos;
-    Math::Vector    m_visitPosArrow;
+    glm::vec3       m_visitPos;
+    glm::vec3       m_visitPosArrow;
     ActivePause*    m_visitPause = nullptr;
 
     std::vector<std::unique_ptr<CSceneEndCondition>> m_endTake;

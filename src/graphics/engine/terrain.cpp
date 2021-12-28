@@ -547,7 +547,7 @@ VertexTex2 CTerrain::GetVertex(int x, int y, int step)
     if (x-step >= 0 && y-step >= 0)
         s += Math::NormalToPlane(a,f,o);
 
-    s = Normalize(s);
+    s = glm::normalize(s);
     v.normal = s;
 
     int brick = m_brickCount/m_textureSubdivCount;
@@ -1453,11 +1453,11 @@ float CTerrain::GetFloorLevel(const Math::Vector &pos, bool brut, bool water)
     Math::Vector ps = pos;
     if ( fabs(pos.z-p2.z) < fabs(pos.x-p2.x) )
     {
-        if ( !IntersectY(p1, p2, p3, ps) )  return 0.0f;
+        if ( !Math::IntersectY(p1, p2, p3, ps) )  return 0.0f;
     }
     else
     {
-        if ( !IntersectY(p2, p4, p3, ps) )  return 0.0f;
+        if ( !Math::IntersectY(p2, p4, p3, ps) )  return 0.0f;
     }
 
     if (! brut) AdjustBuildingLevel(ps);
@@ -1489,11 +1489,11 @@ float CTerrain::GetHeightToFloor(const Math::Vector &pos, bool brut, bool water)
     Math::Vector ps = pos;
     if ( fabs(pos.z-p2.z) < fabs(pos.x-p2.x) )
     {
-        if ( !IntersectY(p1, p2, p3, ps) )  return 0.0f;
+        if ( !Math::IntersectY(p1, p2, p3, ps) )  return 0.0f;
     }
     else
     {
-        if ( !IntersectY(p2, p4, p3, ps) )  return 0.0f;
+        if ( !Math::IntersectY(p2, p4, p3, ps) )  return 0.0f;
     }
 
     if (! brut) AdjustBuildingLevel(ps);
@@ -1720,7 +1720,7 @@ void CTerrain::AdjustBuildingLevel(Math::Vector &p)
             return;
         }
 
-        Math::Vector border;
+        Math::Vector border{ 0, 0, 0 };
         border.x = ((p.x - m_buildingLevels[i].center.x) * m_buildingLevels[i].max) /
                    dist + m_buildingLevels[i].center.x;
         border.z = ((p.z - m_buildingLevels[i].center.z) * m_buildingLevels[i].max) /
@@ -1780,7 +1780,7 @@ void CTerrain::ShowFlatGround(Math::Vector pos)
             int i = x + y*41;
             table[i] = 0;
 
-            Math::Vector p;
+            Math::Vector p{};
             p.x = (x-20)*radius;
             p.z = (y-20)*radius;
             p.y = 0.0f;
@@ -1820,7 +1820,7 @@ float CTerrain::GetFlatZoneRadius(Math::Vector center, float max)
         for (int i = 0; i < nb; i++)
         {
             glm::vec2 result = Math::RotatePoint(c, angle, p);
-            Math::Vector pos;
+            Math::Vector pos{ 0, 0, 0 };
             pos.x = result.x;
             pos.z = result.y;
             float h = GetFloorLevel(pos, true);

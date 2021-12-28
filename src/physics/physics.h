@@ -72,23 +72,23 @@ enum PhysicsMode
 
 struct Motion
 {
-    Math::Vector    advanceAccel;   // acceleration starting (+)
-    Math::Vector    recedeAccel;    // acceleration starting (+)
-    Math::Vector    stopAccel;  // acceleration stoping (+)
-    Math::Vector    motorAccel; // current acceleration (+/-)
+    glm::vec3    advanceAccel{ 0, 0, 0 };   // acceleration starting (+)
+    glm::vec3    recedeAccel{ 0, 0, 0 };    // acceleration starting (+)
+    glm::vec3    stopAccel{ 0, 0, 0 };  // acceleration stoping (+)
+    glm::vec3    motorAccel{ 0, 0, 0 }; // current acceleration (+/-)
 
-    Math::Vector    advanceSpeed;   // forward speed (+)
-    Math::Vector    recedeSpeed;    // reversing speed (+)
-    Math::Vector    motorSpeed; // desired speed (+/-)
-    Math::Vector    currentSpeed;   // current speed (+/-)
+    glm::vec3    advanceSpeed{ 0, 0, 0 };   // forward speed (+)
+    glm::vec3    recedeSpeed{ 0, 0, 0 };    // reversing speed (+)
+    glm::vec3    motorSpeed{ 0, 0, 0 }; // desired speed (+/-)
+    glm::vec3    currentSpeed{ 0, 0, 0 };   // current speed (+/-)
 
-    Math::Vector    terrainForce;   // power of resistance of the ground (+)
-    Math::Vector    terrainSpeed;   // speed of the ground (+/-)
-    Math::Vector    terrainSlide;   // limit sliding speed (+)
+    glm::vec3    terrainForce{ 0, 0, 0 };   // power of resistance of the ground (+)
+    glm::vec3    terrainSpeed{ 0, 0, 0 };   // speed of the ground (+/-)
+    glm::vec3    terrainSlide{ 0, 0, 0 };   // limit sliding speed (+)
 
-    Math::Vector    realSpeed;  // real speed(+/-)
+    glm::vec3    realSpeed{ 0, 0, 0 };  // real speed(+/-)
 
-    Math::Vector    finalInclin;    // final inclination
+    glm::vec3    finalInclin{ 0, 0, 0 };    // final inclination
 };
 
 
@@ -114,8 +114,8 @@ public:
 
     float       GetFloorHeight();
 
-    void        SetLinMotion(PhysicsMode mode, Math::Vector value);
-    Math::Vector    GetLinMotion(PhysicsMode mode);
+    void        SetLinMotion(PhysicsMode mode, glm::vec3 value);
+    glm::vec3    GetLinMotion(PhysicsMode mode);
     void        SetLinMotionX(PhysicsMode mode, float value);
     void        SetLinMotionY(PhysicsMode mode, float value);
     void        SetLinMotionZ(PhysicsMode mode, float value);
@@ -123,8 +123,8 @@ public:
     float       GetLinMotionY(PhysicsMode mode);
     float       GetLinMotionZ(PhysicsMode mode);
 
-    void        SetCirMotion(PhysicsMode mode, Math::Vector value);
-    Math::Vector    GetCirMotion(PhysicsMode mode);
+    void        SetCirMotion(PhysicsMode mode, glm::vec3 value);
+    glm::vec3    GetCirMotion(PhysicsMode mode);
     void        SetCirMotionX(PhysicsMode mode, float value);
     void        SetCirMotionY(PhysicsMode mode, float value);
     void        SetCirMotionZ(PhysicsMode mode, float value);
@@ -149,11 +149,11 @@ public:
     void        SetFreeze(bool bFreeze);
     bool        GetFreeze();
 
-    void        SetMotorSpeed(Math::Vector speed);
+    void        SetMotorSpeed(glm::vec3 speed);
     void        SetMotorSpeedX(float speed);
     void        SetMotorSpeedY(float speed);
     void        SetMotorSpeedZ(float speed);
-    Math::Vector    GetMotorSpeed();
+    glm::vec3    GetMotorSpeed();
     float       GetMotorSpeedX();
     float       GetMotorSpeedY();
     float       GetMotorSpeedZ();
@@ -181,10 +181,10 @@ protected:
     void        MotorUpdate(float aTime, float rTime);
     void        EffectUpdate(float aTime, float rTime);
     void        UpdateMotionStruct(float rTime, Motion &motion);
-    void        FloorAdapt(float aTime, float rTime, Math::Vector &pos, Math::Vector &angle);
-    void        FloorAngle(const Math::Vector &pos, Math::Vector &angle);
-    int         ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle);
-    bool        JostleObject(CJostleableObject* pObj, Math::Vector iPos, float iRad);
+    void        FloorAdapt(float aTime, float rTime, glm::vec3 &pos, glm::vec3 &angle);
+    void        FloorAngle(const glm::vec3 &pos, glm::vec3 &angle);
+    int         ObjectAdapt(const glm::vec3 &pos, const glm::vec3 &angle);
+    bool        JostleObject(CJostleableObject* pObj, glm::vec3 iPos, float iRad);
     bool        JostleObject(CObject* pObj, float force);
     bool        ExploOther(ObjectType iType, CObject *pObj, ObjectType oType, float force);
     int         ExploHimself(ObjectType iType, ObjectType oType, float force);
@@ -192,7 +192,7 @@ protected:
     void        PowerParticle(float factor, bool bBreak);
     void        CrashParticle(float crash);
     void        MotorParticle(float aTime, float rTime);
-    void        WaterParticle(float aTime, Math::Vector pos, ObjectType type, float floor, float advance, float turn);
+    void        WaterParticle(float aTime, glm::vec3 pos, ObjectType type, float floor, float advance, float turn);
     void        WheelParticle(TraceColor color, float width);
     void        SetFalling();
 
@@ -210,7 +210,7 @@ protected:
 
     float       m_gravity;      // force of gravity
     float       m_time;         // absolute time
-    Math::Vector    m_motorSpeed;       // motor speed (-1..1)
+    glm::vec3    m_motorSpeed{ 0, 0, 0 };       // motor speed (-1..1)
     Motion      m_linMotion;        // linear motion
     Motion      m_cirMotion;        // circular motion
     bool        m_bMotor;
@@ -231,7 +231,7 @@ protected:
     float       m_lastPloufParticle;
     float       m_lastFlameParticle;
     bool        m_bWheelParticleBrake;
-    Math::Vector    m_wheelParticlePos[2];
+    glm::vec3    m_wheelParticlePos[2];
     float       m_absorbWater;
     float       m_reactorTemperature;
     float       m_timeReactorFail;

@@ -131,9 +131,9 @@ void CGL33Device::DebugLights()
             if (l.type == LIGHT_DIRECTIONAL)
             {
                 Gfx::VertexCol v[2];
-                v[0].coord = -Math::Normalize(l.direction) * 100.0f + Math::Vector(0.0f, 0.0f, 1.0f) * i;
+                v[0].coord = -Math::Normalize(l.direction) * 100.0f + glm::vec3(0.0f, 0.0f, 1.0f) * float(i);
                 v[0].color = HSV2RGB(color);
-                v[1].coord =  Math::Normalize(l.direction) * 100.0f + Math::Vector(0.0f, 0.0f, 1.0f) * i;
+                v[1].coord =  Math::Normalize(l.direction) * 100.0f + glm::vec3(0.0f, 0.0f, 1.0f) * float(i);
                 v[1].color = HSV2RGB(color);
                 while (v[0].coord.y < 60.0f && v[0].coord.y < 60.0f)
                 {
@@ -154,28 +154,28 @@ void CGL33Device::DebugLights()
                 for (int i = 0; i < 8; ++i)
                     v[i].color = HSV2RGB(color);
 
-                v[0].coord = l.position + Math::Vector(-1.0f, -1.0f, -1.0f) * 4.0f;
-                v[1].coord = l.position + Math::Vector( 1.0f, -1.0f, -1.0f) * 4.0f;
-                v[2].coord = l.position + Math::Vector( 1.0f,  1.0f, -1.0f) * 4.0f;
-                v[3].coord = l.position + Math::Vector(-1.0f,  1.0f, -1.0f) * 4.0f;
-                v[4].coord = l.position + Math::Vector(-1.0f, -1.0f, -1.0f) * 4.0f;
+                v[0].coord = l.position + glm::vec3(-1.0f, -1.0f, -1.0f) * 4.0f;
+                v[1].coord = l.position + glm::vec3( 1.0f, -1.0f, -1.0f) * 4.0f;
+                v[2].coord = l.position + glm::vec3( 1.0f,  1.0f, -1.0f) * 4.0f;
+                v[3].coord = l.position + glm::vec3(-1.0f,  1.0f, -1.0f) * 4.0f;
+                v[4].coord = l.position + glm::vec3(-1.0f, -1.0f, -1.0f) * 4.0f;
                 DrawPrimitive(PrimitiveType::LINE_STRIP, v, 5);
 
-                v[0].coord = l.position + Math::Vector(-1.0f, -1.0f,  1.0f) * 4.0f;
-                v[1].coord = l.position + Math::Vector( 1.0f, -1.0f,  1.0f) * 4.0f;
-                v[2].coord = l.position + Math::Vector( 1.0f,  1.0f,  1.0f) * 4.0f;
-                v[3].coord = l.position + Math::Vector(-1.0f,  1.0f,  1.0f) * 4.0f;
-                v[4].coord = l.position + Math::Vector(-1.0f, -1.0f,  1.0f) * 4.0f;
+                v[0].coord = l.position + glm::vec3(-1.0f, -1.0f,  1.0f) * 4.0f;
+                v[1].coord = l.position + glm::vec3( 1.0f, -1.0f,  1.0f) * 4.0f;
+                v[2].coord = l.position + glm::vec3( 1.0f,  1.0f,  1.0f) * 4.0f;
+                v[3].coord = l.position + glm::vec3(-1.0f,  1.0f,  1.0f) * 4.0f;
+                v[4].coord = l.position + glm::vec3(-1.0f, -1.0f,  1.0f) * 4.0f;
                 DrawPrimitive(PrimitiveType::LINE_STRIP, v, 5);
 
-                v[0].coord = l.position + Math::Vector(-1.0f, -1.0f, -1.0f) * 4.0f;
-                v[1].coord = l.position + Math::Vector(-1.0f, -1.0f,  1.0f) * 4.0f;
-                v[2].coord = l.position + Math::Vector( 1.0f, -1.0f, -1.0f) * 4.0f;
-                v[3].coord = l.position + Math::Vector( 1.0f, -1.0f,  1.0f) * 4.0f;
-                v[4].coord = l.position + Math::Vector( 1.0f,  1.0f, -1.0f) * 4.0f;
-                v[5].coord = l.position + Math::Vector( 1.0f,  1.0f,  1.0f) * 4.0f;
-                v[6].coord = l.position + Math::Vector(-1.0f,  1.0f, -1.0f) * 4.0f;
-                v[7].coord = l.position + Math::Vector(-1.0f,  1.0f,  1.0f) * 4.0f;
+                v[0].coord = l.position + glm::vec3(-1.0f, -1.0f, -1.0f) * 4.0f;
+                v[1].coord = l.position + glm::vec3(-1.0f, -1.0f,  1.0f) * 4.0f;
+                v[2].coord = l.position + glm::vec3( 1.0f, -1.0f, -1.0f) * 4.0f;
+                v[3].coord = l.position + glm::vec3( 1.0f, -1.0f,  1.0f) * 4.0f;
+                v[4].coord = l.position + glm::vec3( 1.0f,  1.0f, -1.0f) * 4.0f;
+                v[5].coord = l.position + glm::vec3( 1.0f,  1.0f,  1.0f) * 4.0f;
+                v[6].coord = l.position + glm::vec3(-1.0f,  1.0f, -1.0f) * 4.0f;
+                v[7].coord = l.position + glm::vec3(-1.0f,  1.0f,  1.0f) * 4.0f;
                 DrawPrimitive(PrimitiveType::LINES, v, 8);
             }
             else if (l.type == LIGHT_SPOT)
@@ -184,11 +184,11 @@ void CGL33Device::DebugLights()
                 for (int i = 0; i < 5; ++i)
                     v[i].color = HSV2RGB(color);
 
-                v[0].coord = l.position + Math::Vector(-1.0f,  0.0f, -1.0f) * 4.0f;
-                v[1].coord = l.position + Math::Vector( 1.0f,  0.0f, -1.0f) * 4.0f;
-                v[2].coord = l.position + Math::Vector( 1.0f,  0.0f,  1.0f) * 4.0f;
-                v[3].coord = l.position + Math::Vector(-1.0f,  0.0f,  1.0f) * 4.0f;
-                v[4].coord = l.position + Math::Vector(-1.0f,  0.0f, -1.0f) * 4.0f;
+                v[0].coord = l.position + glm::vec3(-1.0f,  0.0f, -1.0f) * 4.0f;
+                v[1].coord = l.position + glm::vec3( 1.0f,  0.0f, -1.0f) * 4.0f;
+                v[2].coord = l.position + glm::vec3( 1.0f,  0.0f,  1.0f) * 4.0f;
+                v[3].coord = l.position + glm::vec3(-1.0f,  0.0f,  1.0f) * 4.0f;
+                v[4].coord = l.position + glm::vec3(-1.0f,  0.0f, -1.0f) * 4.0f;
                 DrawPrimitive(PrimitiveType::LINE_STRIP, v, 5);
 
                 v[0].coord = l.position;
@@ -600,7 +600,7 @@ void CGL33Device::SetTransform(TransformType type, const Math::Matrix &matrix)
     else if (type == TRANSFORM_VIEW)
     {
         Math::Matrix scale;
-        Math::Vector cameraPosition;
+        glm::vec3 cameraPosition;
         scale.Set(3, 3, -1.0f);
         m_viewMat = Math::MultiplyMatrices(scale, matrix);
 
@@ -611,9 +611,9 @@ void CGL33Device::SetTransform(TransformType type, const Math::Matrix &matrix)
 
         if (m_uniforms.cameraPosition >= 0)
         {
-            cameraPosition.LoadZero();
+            cameraPosition = { 0, 0, 0 };
             cameraPosition = MatrixVectorMultiply(m_viewMat.Inverse(), cameraPosition);
-            glUniform3fv(m_uniforms.cameraPosition, 1, cameraPosition.Array());
+            glUniform3fv(m_uniforms.cameraPosition, 1, glm::value_ptr(cameraPosition));
         }
     }
     else if (type == TRANSFORM_PROJECTION)
@@ -1329,7 +1329,7 @@ void CGL33Device::DestroyVertexBuffer(CVertexBuffer* buffer)
 
 /* Based on libwine's implementation */
 
-int CGL33Device::ComputeSphereVisibility(const Math::Vector &center, float radius)
+int CGL33Device::ComputeSphereVisibility(const glm::vec3 &center, float radius)
 {
     if (m_combinedMatrixOutdated)
     {
@@ -1339,55 +1339,55 @@ int CGL33Device::ComputeSphereVisibility(const Math::Vector &center, float radiu
 
     Math::Matrix &m = m_combinedMatrix;
 
-    Math::Vector vec[6];
+    glm::vec3 vec[6];
     float originPlane[6];
 
     // Left plane
     vec[0].x = m.Get(4, 1) + m.Get(1, 1);
     vec[0].y = m.Get(4, 2) + m.Get(1, 2);
     vec[0].z = m.Get(4, 3) + m.Get(1, 3);
-    float l1 = vec[0].Length();
-    vec[0].Normalize();
+    float l1 = glm::length(vec[0]);
+    vec[0] = glm::normalize(vec[0]);
     originPlane[0] = (m.Get(4, 4) + m.Get(1, 4)) / l1;
 
     // Right plane
     vec[1].x = m.Get(4, 1) - m.Get(1, 1);
     vec[1].y = m.Get(4, 2) - m.Get(1, 2);
     vec[1].z = m.Get(4, 3) - m.Get(1, 3);
-    float l2 = vec[1].Length();
-    vec[1].Normalize();
+    float l2 = glm::length(vec[1]);
+    vec[1] = glm::normalize(vec[1]);
     originPlane[1] = (m.Get(4, 4) - m.Get(1, 4)) / l2;
 
     // Bottom plane
     vec[2].x = m.Get(4, 1) + m.Get(2, 1);
     vec[2].y = m.Get(4, 2) + m.Get(2, 2);
     vec[2].z = m.Get(4, 3) + m.Get(2, 3);
-    float l3 = vec[2].Length();
-    vec[2].Normalize();
+    float l3 = glm::length(vec[2]);
+    vec[2] = glm::normalize(vec[2]);
     originPlane[2] = (m.Get(4, 4) + m.Get(2, 4)) / l3;
 
     // Top plane
     vec[3].x = m.Get(4, 1) - m.Get(2, 1);
     vec[3].y = m.Get(4, 2) - m.Get(2, 2);
     vec[3].z = m.Get(4, 3) - m.Get(2, 3);
-    float l4 = vec[3].Length();
-    vec[3].Normalize();
+    float l4 = glm::length(vec[3]);
+    vec[3] = glm::normalize(vec[3]);
     originPlane[3] = (m.Get(4, 4) - m.Get(2, 4)) / l4;
 
     // Front plane
     vec[4].x = m.Get(4, 1) + m.Get(3, 1);
     vec[4].y = m.Get(4, 2) + m.Get(3, 2);
     vec[4].z = m.Get(4, 3) + m.Get(3, 3);
-    float l5 = vec[4].Length();
-    vec[4].Normalize();
+    float l5 = glm::length(vec[4]);
+    vec[4] = glm::normalize(vec[4]);
     originPlane[4] = (m.Get(4, 4) + m.Get(3, 4)) / l5;
 
     // Back plane
     vec[5].x = m.Get(4, 1) - m.Get(3, 1);
     vec[5].y = m.Get(4, 2) - m.Get(3, 2);
     vec[5].z = m.Get(4, 3) - m.Get(3, 3);
-    float l6 = vec[5].Length();
-    vec[5].Normalize();
+    float l6 = glm::length(vec[5]);
+    vec[5] = glm::normalize(vec[5]);
     originPlane[5] = (m.Get(4, 4) - m.Get(3, 4)) / l6;
 
     int result = 0;

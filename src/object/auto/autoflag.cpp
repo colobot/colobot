@@ -64,7 +64,7 @@ void CAutoFlag::Init()
     angle = Math::RotateAngle(wind.x, -wind.z);
     m_object->SetRotationY(angle);  // directs the flag in the wind
 
-    m_strong = wind.Length();
+    m_strong = glm::length(wind);
 }
 
 

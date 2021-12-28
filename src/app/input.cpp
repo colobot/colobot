@@ -197,8 +197,8 @@ void CInput::EventProcess(Event& event)
         }
     }
 
-    event.motionInput = Math::Clamp(m_joyMotion + m_keyMotion, Math::Vector(-1.0f, -1.0f, -1.0f), Math::Vector(1.0f, 1.0f, 1.0f));
-    event.cameraInput = Math::Clamp(m_joyMotionCam + m_cameraKeyMotion, Math::Vector(-1.0f, -1.0f, -1.0f), Math::Vector(1.0f, 1.0f, 1.0f));
+    event.motionInput = Math::Clamp(m_joyMotion + m_keyMotion, glm::vec3(-1.0f, -1.0f, -1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+    event.cameraInput = Math::Clamp(m_joyMotionCam + m_cameraKeyMotion, glm::vec3(-1.0f, -1.0f, -1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 }
 
 void CInput::MouseMove(const glm::ivec2& pos)
@@ -219,10 +219,10 @@ bool CInput::GetMouseButtonState(int index) const
 void CInput::ResetKeyStates()
 {
     GetLogger()->Trace("Reset key states\n");
-    m_keyMotion = Math::Vector(0.0f, 0.0f, 0.0f);
-    m_joyMotion = Math::Vector(0.0f, 0.0f, 0.0f);
-    m_cameraKeyMotion = Math::Vector(0.0f, 0.0f, 0.0f);
-    m_joyMotionCam = Math::Vector(0.0f, 0.0f, 0.0f);
+    m_keyMotion = glm::vec3(0.0f, 0.0f, 0.0f);
+    m_joyMotion = glm::vec3(0.0f, 0.0f, 0.0f);
+    m_cameraKeyMotion = glm::vec3(0.0f, 0.0f, 0.0f);
+    m_joyMotionCam = glm::vec3(0.0f, 0.0f, 0.0f);
     for(int i=0; i<INPUT_SLOT_MAX; i++)
         m_keyPresses[i] = false;
 }

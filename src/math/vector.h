@@ -38,212 +38,10 @@ namespace Math
 {
 
 
-/**
- * \struct Vector
- * \brief 3D (3x1) vector
- *
- * Represents a universal 3x1 vector that can be used in OpenGL and DirectX engines.
- * Contains the required methods for operating on vectors.
- *
- * All methods are made inline to maximize optimization.
- *
- * Unit tests for the structure and related functions are in module: math/test/vector_test.cpp.
- *
- */
-struct Vector
-{
-    //! X - 1st coord
-    float x;
-    //! Y - 2nd coord
-    float y;
-    //! Z - 3rd coord
-    float z;
-
-    //! Creates a zero vector (0, 0, 0)
-    inline Vector()
-     : x(0.0f)
-     , y(0.0f)
-     , z(0.0f)
-    {}
-
-    //! Creates a vector from given values
-    inline explicit Vector(float _x, float _y, float _z)
-     : x(_x)
-     , y(_y)
-     , z(_z)
-    {}
-
-    inline Vector(const glm::vec3& vector)
-     : x(vector.x)
-     , y(vector.y)
-     , z(vector.z)
-    {}
-
-    //! Loads the zero vector (0, 0, 0)
-    inline void LoadZero()
-    {
-        x = y = z = 0.0f;
-    }
-
-    //! Returns the struct cast to \c float* array; use with care!
-    inline float* Array()
-    {
-        return reinterpret_cast<float*>(this);
-    }
-
-    //! Returns the struct cast to <tt>const float*</tt> array; use with care!
-    inline const float* Array() const
-    {
-        return reinterpret_cast<const float*>(this);
-    }
-
-    operator glm::vec3() const
-    {
-        return { x, y, z };
-    }
-
-    //! Returns the vector length
-    inline float Length() const
-    {
-        return sqrtf(x*x + y*y + z*z);
-    }
-
-    //! Normalizes the vector
-    inline void Normalize()
-    {
-        float l = Length();
-        if (IsZero(l))
-            return;
-
-        x /= l;
-        y /= l;
-        z /= l;
-    }
-
-    //! Calculates the cross product with another vector
-    /**
-     * \param right right-hand side vector
-     * \returns the cross product
-     */
-    inline Vector CrossMultiply(const Vector &right) const
-    {
-        float px = y * right.z - z * right.y;
-        float py = z * right.x - x * right.z;
-        float pz = x * right.y - y * right.x;
-        return Vector(px, py, pz);
-    }
-
-    //! Calculates the dot product with another vector
-    /**
-     * \param right right-hand side vector
-     * \returns the dot product
-     */
-    inline float DotMultiply(const Vector &right) const
-    {
-        return x * right.x + y * right.y + z * right.z;
-    }
-
-    //! Returns the cosine of angle between this and another vector
-    inline float CosAngle(const Vector &right) const
-    {
-        return DotMultiply(right) / (Length() * right.Length());
-    }
-
-    //! Returns angle (in radians) between this and another vector
-    inline float Angle(const Vector &right) const
-    {
-        return acos(CosAngle(right));
-    }
-
-
-    /* Operators */
-
-    //! Returns the inverted vector
-    inline Vector operator-() const
-    {
-        return Vector(-x, -y, -z);
-    }
-
-    //! Adds the given vector
-    inline const Vector& operator+=(const Vector &right)
-    {
-        x += right.x;
-        y += right.y;
-        z += right.z;
-        return *this;
-    }
-
-    //! Adds two vectors
-    inline friend const Vector operator+(const Vector &left, const Vector &right)
-    {
-        return Vector(left.x + right.x, left.y + right.y, left.z + right.z);
-    }
-
-    //! Subtracts the given vector
-    inline const Vector& operator-=(const Vector &right)
-    {
-        x -= right.x;
-        y -= right.y;
-        z -= right.z;
-        return *this;
-    }
-
-    //! Subtracts two vectors
-    inline friend const Vector operator-(const Vector &left, const Vector &right)
-    {
-        return Vector(left.x - right.x, left.y - right.y, left.z - right.z);
-    }
-
-    //! Multiplies by given scalar
-    inline const Vector& operator*=(const float &right)
-    {
-        x *= right;
-        y *= right;
-        z *= right;
-        return *this;
-    }
-
-    //! Multiplies vector by scalar
-    inline friend const Vector operator*(const float &left, const Vector &right)
-    {
-        return Vector(left * right.x, left * right.y, left * right.z);
-    }
-
-    //! Multiplies vector by scalar
-    inline friend const Vector operator*(const Vector &left, const float &right)
-    {
-        return Vector(left.x * right, left.y * right, left.z * right);
-    }
-
-    //! Divides by given scalar
-    inline const Vector& operator/=(const float &right)
-    {
-        x /= right;
-        y /= right;
-        z /= right;
-        return *this;
-    }
-
-    //! Divides vector by scalar
-    inline friend const Vector operator/(const Vector &left, const float &right)
-    {
-        return Vector(left.x / right, left.y / right, left.z / right);
-    }
-
-
-    //! Returns a string "[x, y, z]"
-    inline std::string ToString() const
-    {
-        std::stringstream s;
-        s.precision(3);
-        s << "[" << x << ", " << y << ", " << z << "]";
-        return s.str();
-    }
-
-}; // struct Vector
+using Vector = glm::vec3;
 
 //! Checks if two vectors are equal within given \a tolerance
-inline bool VectorsEqual(const Math::Vector &a, const Math::Vector &b, float tolerance = TOLERANCE)
+inline bool VectorsEqual(const glm::vec3 &a, const glm::vec3 &b, float tolerance = TOLERANCE)
 {
     return IsEqual(a.x, b.x, tolerance)
             && IsEqual(a.y, b.y, tolerance)
@@ -251,47 +49,47 @@ inline bool VectorsEqual(const Math::Vector &a, const Math::Vector &b, float tol
 }
 
 //! Convenience function for getting normalized vector
-inline Vector Normalize(const Math::Vector &v)
+inline Vector Normalize(const glm::vec3 &v)
 {
-    Vector result = v;
-    result.Normalize();
-    return result;
+    return glm::normalize(v);
 }
 
 //! Convenience function for calculating dot product
-inline float DotProduct(const Math::Vector &left, const Math::Vector &right)
+inline float DotProduct(const glm::vec3 &left, const glm::vec3 &right)
 {
-    return left.DotMultiply(right);
+    return glm::dot(left, right);
 }
 
 //! Convenience function for calculating cross product
-inline Vector CrossProduct(const Math::Vector &left, const Math::Vector &right)
+inline Vector CrossProduct(const glm::vec3 &left, const glm::vec3 &right)
 {
-    return left.CrossMultiply(right);
+    return glm::cross(left, right);
 }
 
 //! Convenience function for calculating angle (in radians) between two vectors
-inline float Angle(const Math::Vector &a, const Math::Vector &b)
+inline float Angle(const glm::vec3 &a, const glm::vec3 &b)
 {
-    return a.Angle(b);
+    return std::acosf(glm::dot(a, b) / (glm::length(a) * glm::length(b)));
 }
 
 //! Returns the distance between the ends of two vectors
-inline float Distance(const Math::Vector &a, const Math::Vector &b)
+inline float Distance(const glm::vec3 &a, const glm::vec3 &b)
 {
-    return sqrtf( (a.x-b.x)*(a.x-b.x) +
-                  (a.y-b.y)*(a.y-b.y) +
-                  (a.z-b.z)*(a.z-b.z) );
+    return glm::distance(a, b);
 }
 
 //! Clamps the vector \a vec to range between \a min and \a max
 inline Vector Clamp(const Vector &vec, const Vector &min, const Vector &max)
 {
-    Vector clamped;
-    clamped.x = Min(Max(min.x, vec.x), max.x);
-    clamped.y = Min(Max(min.y, vec.y), max.y);
-    clamped.z = Min(Max(min.z, vec.z), max.z);
-    return clamped;
+    return glm::clamp(vec, min, max);
+}
+
+inline std::string ToString(const Vector& vector)
+{
+    std::stringstream s;
+    s.precision(3);
+    s << "[" << vector.x << ", " << vector.y << ", " << vector.z << "]";
+    return s.str();
 }
 
 

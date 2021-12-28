@@ -400,7 +400,7 @@ bool CMotionToto::EventFrame(const Event &event)
 //?     shift    *= focus;
         verti    /= focus;
 
-        dir = Normalize(lookat-eye);
+        dir = glm::normalize(lookat-eye);
         nPos = eye + dir*distance;
 
         perp.x = -dir.z;

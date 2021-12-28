@@ -53,16 +53,16 @@ enum VertexType
  * This structure was created as analog to DirectX's D3DVERTEX.
  *
  * It contains:
- *  - vertex coordinates (x,y,z) as Math::Vector,
- *  - normal coordinates (nx,ny,nz) as Math::Vector
+ *  - vertex coordinates (x,y,z) as glm::vec3,
+ *  - normal coordinates (nx,ny,nz) as glm::vec3
  *  - texture coordinates (u,v) as glm::vec2.
  */
 struct Vertex
 {
     static constexpr VertexType VERTEX_TYPE = VERTEX_TYPE_NORMAL;
 
-    Math::Vector coord = Math::Vector();
-    Math::Vector normal = Math::Vector();
+    glm::vec3 coord = { 0, 0, 0 };
+    glm::vec3 normal = { 0, 0, 0 };
     glm::vec2 texCoord = { 0, 0 };
 };
 
@@ -71,14 +71,14 @@ struct Vertex
  * \brief Colored vertex
  *
  * It contains:
- *  - vertex coordinates (x,y,z) as Math::Vector,
+ *  - vertex coordinates (x,y,z) as glm::vec3,
  *  - RGBA color as Color
  */
 struct VertexCol
 {
     static constexpr VertexType VERTEX_TYPE = VERTEX_TYPE_COL;
 
-    Math::Vector coord = Math::Vector();
+    glm::vec3 coord = { 0, 0, 0 };
     Color color = Color();
 };
 
@@ -93,8 +93,8 @@ struct VertexTex2
 {
     static constexpr VertexType VERTEX_TYPE = VERTEX_TYPE_TEX2;
 
-    Math::Vector coord = Math::Vector();
-    Math::Vector normal = Math::Vector();
+    glm::vec3 coord = { 0, 0, 0 };
+    glm::vec3 normal = { 0, 0, 0 };
     glm::vec2 texCoord = { 0, 0 };
     glm::vec2 texCoord2 = { 0, 0 };
 

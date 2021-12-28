@@ -867,11 +867,11 @@ struct Event
 
     //! Motion vector set by keyboard or joystick (managed by CInput)
     //! Scope: all system events
-    Math::Vector motionInput;
+    glm::vec3 motionInput{ 0, 0, 0 };
 
     //! Motion vector set by numeric keyboard (managed by CInput)
     //! Scope: all system events
-    Math::Vector cameraInput;
+    glm::vec3 cameraInput{ 0, 0, 0 };
 
     //! Current state of keyboard modifier keys: bitmask made of KEY_MOD(...) macro values (from common/key.h)
     //! Scope: all system events

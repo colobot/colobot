@@ -169,7 +169,7 @@ public:
     void DrawVertexBuffer(CVertexBuffer*) override;
     void DestroyVertexBuffer(CVertexBuffer*) override;
 
-    int ComputeSphereVisibility(const Math::Vector &center, float radius) override;
+    int ComputeSphereVisibility(const glm::vec3 &center, float radius) override;
 
     void SetViewport(int x, int y, int width, int height) override;
 

@@ -141,23 +141,23 @@ bool CObject::CanCollideWith(CObject* other)
     return true;
 }
 
-Math::Vector CObject::GetPosition() const
+glm::vec3 CObject::GetPosition() const
 {
     return m_position;
 }
 
-void CObject::SetPosition(const Math::Vector& pos)
+void CObject::SetPosition(const glm::vec3& pos)
 {
     // TODO: provide default implementation...
     throw std::logic_error("CObject::SetPosition() - not implemented!");
 }
 
-Math::Vector CObject::GetRotation() const
+glm::vec3 CObject::GetRotation() const
 {
     return m_rotation;
 }
 
-void CObject::SetRotation(const Math::Vector& rotation)
+void CObject::SetRotation(const glm::vec3& rotation)
 {
     // TODO: provide default implementation...
     throw std::logic_error("CObject::SetRotation() - not implemented!");
@@ -165,21 +165,21 @@ void CObject::SetRotation(const Math::Vector& rotation)
 
 void CObject::SetRotationX(float angle)
 {
-    Math::Vector rotation = GetRotation();
+    glm::vec3 rotation = GetRotation();
     rotation.x = angle;
     return SetRotation(rotation);
 }
 
 void CObject::SetRotationY(float angle)
 {
-    Math::Vector rotation = GetRotation();
+    glm::vec3 rotation = GetRotation();
     rotation.y = angle;
     return SetRotation(rotation);
 }
 
 void CObject::SetRotationZ(float angle)
 {
-    Math::Vector rotation = GetRotation();
+    glm::vec3 rotation = GetRotation();
     rotation.z = angle;
     return SetRotation(rotation);
 }
@@ -199,12 +199,12 @@ float CObject::GetRotationZ()
     return GetRotation().z;
 }
 
-Math::Vector CObject::GetScale() const
+glm::vec3 CObject::GetScale() const
 {
     return m_scale;
 }
 
-void CObject::SetScale(const Math::Vector& scale)
+void CObject::SetScale(const glm::vec3& scale)
 {
     // TODO: provide default implementation...
     throw std::logic_error("CObject::SetScale() - not implemented!");
@@ -212,26 +212,26 @@ void CObject::SetScale(const Math::Vector& scale)
 
 void CObject::SetScale(float scale)
 {
-    SetScale(Math::Vector(scale, scale, scale));
+    SetScale(glm::vec3(scale, scale, scale));
 }
 
 void CObject::SetScaleX(float angle)
 {
-    Math::Vector scale = GetScale();
+    glm::vec3 scale = GetScale();
     scale.x = angle;
     return SetScale(scale);
 }
 
 void CObject::SetScaleY(float angle)
 {
-    Math::Vector scale = GetScale();
+    glm::vec3 scale = GetScale();
     scale.y = angle;
     return SetScale(scale);
 }
 
 void CObject::SetScaleZ(float angle)
 {
-    Math::Vector scale = GetScale();
+    glm::vec3 scale = GetScale();
     scale.z = angle;
     return SetScale(scale);
 }

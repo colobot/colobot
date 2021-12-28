@@ -42,32 +42,32 @@ int CModelMesh::GetTriangleCount() const
     return m_triangles.size();
 }
 
-const Math::Vector& CModelMesh::GetPosition() const
+const glm::vec3& CModelMesh::GetPosition() const
 {
     return m_position;
 }
 
-void CModelMesh::SetPosition(const Math::Vector& position)
+void CModelMesh::SetPosition(const glm::vec3& position)
 {
     m_position = position;
 }
 
-const Math::Vector& CModelMesh::GetRotation() const
+const glm::vec3& CModelMesh::GetRotation() const
 {
     return m_rotation;
 }
 
-void CModelMesh::SetRotation(const Math::Vector& rotation)
+void CModelMesh::SetRotation(const glm::vec3& rotation)
 {
     m_rotation = rotation;
 }
 
-const Math::Vector& CModelMesh::GetScale() const
+const glm::vec3& CModelMesh::GetScale() const
 {
     return m_scale;
 }
 
-void CModelMesh::SetScale(const Math::Vector& scale)
+void CModelMesh::SetScale(const glm::vec3& scale)
 {
     m_scale = scale;
 }

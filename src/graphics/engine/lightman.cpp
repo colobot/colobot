@@ -130,9 +130,9 @@ void CLightManager::DebugDumpLights()
         l->Debug("   diffuse = %s\n", str.c_str());
         str = light.specular.ToString();
         l->Debug("   specular = %s\n", str.c_str());
-        str = light.position.ToString();
+        str = Math::ToString(light.position);
         l->Debug("   position = %s\n", str.c_str());
-        str = light.direction.ToString();
+        str = Math::ToString(light.direction);
         l->Debug("   direction = %s\n", str.c_str());
         l->Debug("   attenuation0 = %f\n", light.attenuation0);
         l->Debug("   attenuation1 = %f\n", light.attenuation1);
@@ -515,7 +515,7 @@ float CLightManager::CLightsComparator::GetLightWeight(const DynamicLight& dynLi
     else if (dynLight.excludeType != ENG_OBJTYPE_NULL)
         enabled = dynLight.excludeType != m_objectType;
 
-    return enabled ? ( (dynLight.light.position - m_eyePos).Length() * dynLight.priority ) : 10000.0f;
+    return enabled ? ( glm::length(dynLight.light.position - m_eyePos) * dynLight.priority ) : 10000.0f;
 }
 
 bool CLightManager::CLightsComparator::operator()(const DynamicLight& left, const DynamicLight& right)

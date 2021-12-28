@@ -100,16 +100,16 @@ public:
     }
 
     //! Returns object's position
-    virtual Math::Vector GetPosition() const;
+    virtual glm::vec3 GetPosition() const;
     //! Sets object's position
-    virtual void SetPosition(const Math::Vector& pos);
+    virtual void SetPosition(const glm::vec3& pos);
 
     //! Returns object's rotation (Euler angles)
     /** Angles are given in radians */
-    virtual Math::Vector GetRotation() const;
+    virtual glm::vec3 GetRotation() const;
     //! Sets object's rotation (Euler angles)
     /** Angles are given in radians */
-    virtual void SetRotation(const Math::Vector& rotation);
+    virtual void SetRotation(const glm::vec3& rotation);
 
     //!@{
     //! Shortcuts for rotation components
@@ -122,9 +122,9 @@ public:
     //!@}
 
     //! Returns object's scale
-    virtual Math::Vector GetScale() const;
+    virtual glm::vec3 GetScale() const;
     //! Sets objects's scale
-    virtual void SetScale(const Math::Vector& scale);
+    virtual void SetScale(const glm::vec3& scale);
     //! Sets objects's scale (uniform value)
     void SetScale(float scale);
 
@@ -221,9 +221,9 @@ protected:
     const int m_id; //!< unique identifier
     ObjectType m_type; //!< object type
     ObjectInterfaceTypes m_implementedInterfaces; //!< interfaces that the object implements
-    Math::Vector m_position;
-    Math::Vector m_rotation;
-    Math::Vector m_scale;
+    glm::vec3 m_position{ 0, 0, 0 };
+    glm::vec3 m_rotation{ 0, 0, 0 };
+    glm::vec3 m_scale{ 0, 0, 0 };
     std::vector<CrashSphere> m_crashSpheres; //!< crash spheres
     Math::Sphere m_cameraCollisionSphere;
     bool m_animateOnReset;

@@ -26,12 +26,9 @@
 
 #include "sound/sound_type.h"
 
-#include <string>
+#include "math/vector.h"
 
-namespace Math
-{
-struct Vector;
-} // namespace Math
+#include <string>
 
 /*!
  * Maximum possible audio volume
