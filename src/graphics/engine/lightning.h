@@ -77,13 +77,13 @@ public:
     void        Draw();
 
     //! Shoots lightning strike at given position
-    void        StrikeAtPos(Math::Vector pos);
+    void        StrikeAtPos(glm::vec3 pos);
 
 protected:
     //! Updates lightning
     bool        EventFrame(const Event &event);
     //! Seeks for the object closest to the lightning
-    CObject*    SearchObject(Math::Vector pos);
+    CObject*    SearchObject(glm::vec3 pos);
 
 protected:
     CEngine*          m_engine = nullptr;
@@ -98,7 +98,7 @@ protected:
 
     float           m_speed = 0.0f;
     float           m_progress = 0.0f;
-    Math::Vector    m_pos;
+    glm::vec3       m_pos = { 0, 0, 0 };
 
     enum class LightningPhase
     {

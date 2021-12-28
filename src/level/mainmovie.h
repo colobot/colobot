@@ -24,7 +24,7 @@
 
 #pragma once
 
-#include "math/vector.h"
+#include <glm/glm.hpp>
 
 
 class CRobotMain;
@@ -70,9 +70,9 @@ protected:
     MainMovieType       m_stopType;
     float               m_speed;
     float               m_progress;
-    Math::Vector        m_initialEye;
-    Math::Vector        m_initialLookat;
-    Math::Vector        m_finalEye[2];
-    Math::Vector        m_finalLookat[2];
+    glm::vec3           m_initialEye;
+    glm::vec3           m_initialLookat;
+    glm::vec3           m_finalEye[2];
+    glm::vec3           m_finalLookat[2];
 };
 

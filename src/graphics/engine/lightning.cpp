@@ -236,22 +236,22 @@ void CLightning::Draw()
     texSup.x = 95.5f/256.0f;
     texSup.y = 34.0f/256.0f;  // blank
 
-    Math::Vector p1 = m_pos;
-    Math::Vector eye = m_engine->GetEyePt();
+    glm::vec3 p1 = m_pos;
+    glm::vec3 eye = m_engine->GetEyePt();
     float a = Math::RotateAngle(eye.x-p1.x, eye.z-p1.z);
-    Math::Vector n = Math::Normalize(p1-eye);
+    glm::vec3 n = Math::Normalize(p1-eye);
 
-    Math::Vector corner[4];
+    glm::vec3 corner[4];
     Vertex vertex[4];
 
     for (std::size_t i = 0; i < m_segments.size() - 1; i++)
     {
-        Math::Vector p2 = p1;
+        glm::vec3 p2 = p1;
         p2.y += 8.0f+0.2f*i;
 
         glm::vec2 rot;
 
-        Math::Vector p = p1;
+        glm::vec3 p = p1;
         p.x += m_segments[i].width;
         rot = Math::RotatePoint({ p1.x, p1.z }, a + Math::PI / 2.0f, { p.x, p.z });
         corner[0].x = rot.x+m_segments[i].shift.x;
@@ -295,12 +295,12 @@ void CLightning::Draw()
     }
 }
 
-CObject* CLightning::SearchObject(Math::Vector pos)
+CObject* CLightning::SearchObject(glm::vec3 pos)
 {
     // Lightning conductors
     std::vector<CObject*> paraObj;
     paraObj.reserve(100);
-    std::vector<Math::Vector> paraObjPos;
+    std::vector<glm::vec3> paraObjPos;
     paraObjPos.reserve(100);
 
     // Seeking the object closest to the point of impact of lightning.
@@ -326,7 +326,7 @@ CObject* CLightning::SearchObject(Math::Vector pos)
         float detect = m_magnetic * dynamic_cast<CDestroyableObject&>(*obj).GetLightningHitProbability();
         if (detect == 0.0f) continue;
 
-        Math::Vector oPos = obj->GetPosition();
+        glm::vec3 oPos = obj->GetPosition();
         float dist = Math::DistanceProjected(oPos, pos);
         if (dist > detect) continue;
         if (dist < min)
@@ -340,7 +340,7 @@ CObject* CLightning::SearchObject(Math::Vector pos)
         return nullptr;  // nothing found
 
     // Under the protection of a lightning conductor?
-    Math::Vector oPos = bestObj->GetPosition();
+    glm::vec3 oPos = bestObj->GetPosition();
     for (int i = paraObj.size()-1; i >= 0; i--)
     {
         float dist = Math::DistanceProjected(oPos, paraObjPos[i]);
@@ -352,17 +352,17 @@ CObject* CLightning::SearchObject(Math::Vector pos)
 }
 
 
-void CLightning::StrikeAtPos(Math::Vector pos)
+void CLightning::StrikeAtPos(glm::vec3 pos)
 {
     m_pos = pos;
 
-    Math::Vector eye = m_engine->GetEyePt();
+    glm::vec3 eye = m_engine->GetEyePt();
     float dist = Math::Distance(m_pos, eye);
     float deep = m_engine->GetDeepView();
 
     if (dist < deep)
     {
-        Math::Vector pos = eye+((m_pos-eye)*0.2f);  // like so close!
+        glm::vec3 pos = eye+((m_pos-eye)*0.2f);  // like so close!
         m_sound->Play(SOUND_BLITZ, pos);
 
         m_camera->StartOver(CAM_OVER_EFFECT_LIGHTNING, m_pos, 1.0f);

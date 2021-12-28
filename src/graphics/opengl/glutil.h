@@ -88,7 +88,7 @@ BlendFunc TranslateGLBlendFunc(GLenum flag);
 
 GLenum TranslateGfxBlendFunc(BlendFunc func);
 
-bool InPlane(Math::Vector normal, float originPlane, Math::Vector center, float radius);
+bool InPlane(glm::vec3 normal, float originPlane, glm::vec3 center, float radius);
 
 GLenum TranslateTextureCoordinate(int index);
 

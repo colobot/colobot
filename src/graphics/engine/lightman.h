@@ -178,14 +178,14 @@ public:
     bool            SetLightExcludeType(int lightRank, EngineObjectType type);
 
     //! Sets the position of dynamic light
-    bool            SetLightPos(int lightRank, const Math::Vector &pos);
+    bool            SetLightPos(int lightRank, const glm::vec3 &pos);
     //! Returns the position of dynamic light
-    Math::Vector    GetLightPos(int lightRank);
+    glm::vec3       GetLightPos(int lightRank);
 
     //! Sets the direction of dynamic light
-    bool            SetLightDir(int lightRank, const Math::Vector &dir);
+    bool            SetLightDir(int lightRank, const glm::vec3 &dir);
     //! Returns the direction of dynamic light
-    Math::Vector    GetLightDir(int lightRank);
+    glm::vec3       GetLightDir(int lightRank);
 
     //! Sets the destination intensity for dynamic light's intensity progression
     bool            SetLightIntensity(int lightRank, float value);
@@ -215,14 +215,14 @@ protected:
     class CLightsComparator
     {
         public:
-            CLightsComparator(Math::Vector eyePos, EngineObjectType objectType);
+            CLightsComparator(glm::vec3 eyePos, EngineObjectType objectType);
 
             bool operator()(const DynamicLight& left, const DynamicLight& right);
 
         private:
             float GetLightWeight(const DynamicLight& dynLight);
 
-            Math::Vector m_eyePos;
+            glm::vec3 m_eyePos = { 0, 0, 0 };
             EngineObjectType m_objectType;
     };
 

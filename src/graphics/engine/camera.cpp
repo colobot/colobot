@@ -90,15 +90,15 @@ CCamera::CCamera()
 
     m_initDelay   =  0.0f;
 
-    m_actualEye    = Math::Vector(0.0f, 0.0f, 0.0f);
-    m_actualLookat = Math::Vector(0.0f, 0.0f, 0.0f);
-    m_finalEye     = Math::Vector(0.0f, 0.0f, 0.0f);
-    m_finalLookat  = Math::Vector(0.0f, 0.0f, 0.0f);
-    m_prevEye      = Math::Vector(0.0f, 0.0f, 0.0f);
-    m_prevLookat   = Math::Vector(0.0f, 0.0f, 0.0f);
+    m_actualEye    = glm::vec3(0.0f, 0.0f, 0.0f);
+    m_actualLookat = glm::vec3(0.0f, 0.0f, 0.0f);
+    m_finalEye     = glm::vec3(0.0f, 0.0f, 0.0f);
+    m_finalLookat  = glm::vec3(0.0f, 0.0f, 0.0f);
+    m_prevEye      = glm::vec3(0.0f, 0.0f, 0.0f);
+    m_prevLookat   = glm::vec3(0.0f, 0.0f, 0.0f);
     m_focus        = 1.0f;
 
-    m_eyePt        = Math::Vector(0.0f, 0.0f, 0.0f);
+    m_eyePt        = glm::vec3(0.0f, 0.0f, 0.0f);
     m_directionH   =  0.0f;
     m_directionV   =  0.0f;
     m_heightEye    = 40.0f;
@@ -114,7 +114,7 @@ CCamera::CCamera()
     m_fixDirectionH = 0.0f;
     m_fixDirectionV = 0.0f;
 
-    m_visitGoal       = Math::Vector(0.0f, 0.0f, 0.0f);
+    m_visitGoal       = glm::vec3(0.0f, 0.0f, 0.0f);
     m_visitDist       = 0.0f;
     m_visitTime       = 0.0f;
     m_visitType       = CAM_TYPE_NULL;
@@ -130,10 +130,10 @@ CCamera::CCamera()
     m_centeringProgress = 0.0f;
 
     m_effectType     = CAM_EFFECT_NULL;
-    m_effectPos      = Math::Vector(0.0f, 0.0f, 0.0f);
+    m_effectPos      = glm::vec3(0.0f, 0.0f, 0.0f);
     m_effectForce    = 0.0f;
     m_effectProgress = 0.0f;
-    m_effectOffset   = Math::Vector(0.0f, 0.0f, 0.0f);
+    m_effectOffset   = glm::vec3(0.0f, 0.0f, 0.0f);
 
     m_overType = CAM_OVER_EFFECT_NULL;
     m_overForce = 0.0f;
@@ -142,8 +142,8 @@ CCamera::CCamera()
     m_overFadeIn = 0.0f;
     m_overFadeOut = 0.0f;
 
-    m_scriptEye    = Math::Vector(0.0f, 0.0f, 0.0f);
-    m_scriptLookat = Math::Vector(0.0f, 0.0f, 0.0f);
+    m_scriptEye    = glm::vec3(0.0f, 0.0f, 0.0f);
+    m_scriptLookat = glm::vec3(0.0f, 0.0f, 0.0f);
 
     m_effect        = true;
     m_blood         = true;
@@ -206,7 +206,7 @@ bool CCamera::GetCameraInvertY()
     return m_cameraInvertY;
 }
 
-void CCamera::Init(Math::Vector eye, Math::Vector lookat, float delay)
+void CCamera::Init(glm::vec3 eye, glm::vec3 lookat, float delay)
 {
     m_initDelay = delay;
 
@@ -280,7 +280,7 @@ void CCamera::SetType(CameraType type)
         m_engine->SetFocus(m_focus);  // gives initial focus
         m_type = type;
 
-        Math::Vector upVec = Math::Vector(0.0f, 1.0f, 0.0f);
+        glm::vec3 upVec = glm::vec3(0.0f, 1.0f, 0.0f);
         SetViewParams(m_prevEye, m_prevLookat, upVec);
         return;
     }
@@ -377,7 +377,7 @@ CameraSmooth CCamera::GetSmooth()
     return m_smooth;
 }
 
-void CCamera::StartVisit(Math::Vector goal, float dist)
+void CCamera::StartVisit(glm::vec3 goal, float dist)
 {
     m_visitType = m_type;
     SetType(CAM_TYPE_VISIT);
@@ -392,7 +392,7 @@ void CCamera::StopVisit()
     SetType(m_visitType);  // presents the initial type
 }
 
-void CCamera::GetCamera(Math::Vector &eye, Math::Vector &lookat)
+void CCamera::GetCamera(glm::vec3 &eye, glm::vec3 &lookat)
 {
     eye = m_eyePt;
     lookat = Math::LookatPoint(m_eyePt, m_directionH, m_directionV, 50.0f);
@@ -471,12 +471,12 @@ void CCamera::FlushEffect()
     m_effectType     = CAM_EFFECT_NULL;
     m_effectForce    = 0.0f;
     m_effectProgress = 0.0f;
-    m_effectOffset   = Math::Vector(0.0f, 0.0f, 0.0f);
+    m_effectOffset   = glm::vec3(0.0f, 0.0f, 0.0f);
 
     CApplication::GetInstancePointer()->StopForceFeedbackEffect();
 }
 
-void CCamera::StartEffect(CameraEffect effect, Math::Vector pos, float force)
+void CCamera::StartEffect(CameraEffect effect, glm::vec3 pos, float force)
 {
     if ( !m_effect )  return;
 
@@ -494,7 +494,7 @@ void CCamera::EffectFrame(const Event &event)
     if (m_effectType == CAM_EFFECT_NULL)
         return;
 
-    m_effectOffset = Math::Vector(0.0f, 0.0f, 0.0f);
+    m_effectOffset = glm::vec3(0.0f, 0.0f, 0.0f);
 
     float force = m_effectForce;
 
@@ -593,7 +593,7 @@ void CCamera::SetOverBaseColor(Color color)
     m_overColorBase = color;
 }
 
-void CCamera::StartOver(CameraOverEffect effect, Math::Vector pos, float force)
+void CCamera::StartOver(CameraOverEffect effect, glm::vec3 pos, float force)
 {
     m_overType = effect;
     m_overTime = 0.0f;
@@ -748,8 +748,8 @@ void CCamera::OverFrame(const Event &event)
     }
 }
 
-void CCamera::UpdateCameraAnimation(const Math::Vector &eyePt,
-                                    const Math::Vector &lookatPt,
+void CCamera::UpdateCameraAnimation(const glm::vec3 &eyePt,
+                                    const glm::vec3 &lookatPt,
                                     float rTime)
 {
     if (m_initDelay > 0.0f)
@@ -796,19 +796,19 @@ void CCamera::UpdateCameraAnimation(const Math::Vector &eyePt,
         m_actualLookat = (m_finalLookat - m_actualLookat) / dist * prog + m_actualLookat;
     }
 
-    Math::Vector eye = m_effectOffset+m_actualEye;
+    glm::vec3 eye = m_effectOffset+m_actualEye;
     m_water->AdjustEye(eye);
 
     float h = m_terrain->GetFloorLevel(eye);
     if (eye.y < h + 4.0f)
         eye.y = h + 4.0f;
 
-    Math::Vector lookat = m_effectOffset+m_actualLookat;
+    glm::vec3 lookat = m_effectOffset+m_actualLookat;
 
     SetViewParams(eye, lookat);
 }
 
-void CCamera::IsCollision(Math::Vector &eye, Math::Vector lookat)
+void CCamera::IsCollision(glm::vec3 &eye, glm::vec3 lookat)
 {
     if (m_type == CAM_TYPE_BACK ) IsCollisionBack();
     if (m_type == CAM_TYPE_FIX  ) IsCollisionFix (eye, lookat);
@@ -823,12 +823,12 @@ void CCamera::IsCollisionBack()
     else
         iType = m_cameraObj->GetType();
 
-    Math::Vector min{};
+    glm::vec3 min{};
     min.x = Math::Min(m_actualEye.x, m_actualLookat.x);
     min.y = Math::Min(m_actualEye.y, m_actualLookat.y);
     min.z = Math::Min(m_actualEye.z, m_actualLookat.z);
 
-    Math::Vector max{};
+    glm::vec3 max{};
     max.x = Math::Max(m_actualEye.x, m_actualLookat.x);
     max.y = Math::Max(m_actualEye.y, m_actualLookat.y);
     max.z = Math::Max(m_actualEye.z, m_actualLookat.z);
@@ -869,7 +869,7 @@ void CCamera::IsCollisionBack()
              oType == OBJECT_WORM   )  continue;
 
         Math::Sphere objSphere = obj->GetCameraCollisionSphere();
-        Math::Vector oPos = objSphere.pos;
+        glm::vec3 oPos = objSphere.pos;
         float oRadius = objSphere.radius;
         if ( oRadius <= 2.0f )  continue;  // ignores small objects
 
@@ -880,7 +880,7 @@ void CCamera::IsCollisionBack()
              oPos.y-oRadius > max.y ||
              oPos.z-oRadius > max.z )  continue;
 
-        Math::Vector proj = Math::Projection(m_actualEye, m_actualLookat, oPos);
+        glm::vec3 proj = Math::Projection(m_actualEye, m_actualLookat, oPos);
         float dpp = Math::Distance(proj, oPos);
         if ( dpp > oRadius )  continue;
 
@@ -902,7 +902,7 @@ void CCamera::IsCollisionBack()
     }
 }
 
-void CCamera::IsCollisionFix(Math::Vector &eye, Math::Vector lookat)
+void CCamera::IsCollisionFix(glm::vec3 &eye, glm::vec3 lookat)
 {
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
@@ -927,7 +927,7 @@ void CCamera::IsCollisionFix(Math::Vector &eye, Math::Vector lookat)
              type == OBJECT_WORM )  continue;
 
         Math::Sphere objSphere = obj->GetCameraCollisionSphere();
-        Math::Vector objPos = objSphere.pos;
+        glm::vec3 objPos = objSphere.pos;
         float objRadius = objSphere.radius;
         if (objRadius == 0.0f) continue;
 
@@ -935,7 +935,7 @@ void CCamera::IsCollisionFix(Math::Vector &eye, Math::Vector lookat)
         if (dist < objRadius)
         {
             dist = Math::Distance(eye, lookat);
-            Math::Vector proj = Math::Projection(eye, lookat, objPos);
+            glm::vec3 proj = Math::Projection(eye, lookat, objPos);
             eye = (lookat - eye) * objRadius / dist + proj;
             return;
         }
@@ -1069,7 +1069,7 @@ bool CCamera::EventProcess(const Event &event)
 
 bool CCamera::EventFrameFree(const Event &event, bool keysAllowed)
 {
-    Math::Vector cameraMove = CalculateCameraMovement(event, keysAllowed);
+    glm::vec3 cameraMove = CalculateCameraMovement(event, keysAllowed);
 
     float factor = m_heightEye * 0.5f + 30.0f;
     bool secondary = m_input->GetKeyState(INPUT_SLOT_CAM_ALT) || event.mouseButtonsState & MOUSE_BUTTON_MIDDLE; // TODO: make mouse button a keybinding
@@ -1104,7 +1104,7 @@ bool CCamera::EventFrameFree(const Event &event, bool keysAllowed)
     {
         m_eyePt.y += m_heightEye;
 
-        Math::Vector pos = m_eyePt;
+        glm::vec3 pos = m_eyePt;
         if (m_terrain->AdjustToFloor(pos, true))
         {
             pos.y -= 2.0f;
@@ -1114,7 +1114,7 @@ bool CCamera::EventFrameFree(const Event &event, bool keysAllowed)
 
     }
 
-    Math::Vector lookatPt = Math::LookatPoint(m_eyePt, m_directionH, m_directionV, 50.0f);
+    glm::vec3 lookatPt = Math::LookatPoint(m_eyePt, m_directionH, m_directionV, 50.0f);
 
     if (m_terrain->AdjustToFloor(lookatPt, true))
         lookatPt.y += m_heightLookat;
@@ -1126,7 +1126,7 @@ bool CCamera::EventFrameFree(const Event &event, bool keysAllowed)
 
 bool CCamera::EventFrameBack(const Event &event)
 {
-    Math::Vector cameraMove = CalculateCameraMovement(event);
+    glm::vec3 cameraMove = CalculateCameraMovement(event);
     m_addDirectionH += cameraMove.x;
     m_addDirectionV += cameraMove.y;
     m_backDist += cameraMove.z;
@@ -1178,7 +1178,7 @@ bool CCamera::EventFrameBack(const Event &event)
     {
         ObjectType type = m_cameraObj->GetType();
 
-        Math::Vector lookatPt = m_cameraObj->GetPosition();
+        glm::vec3 lookatPt = m_cameraObj->GetPosition();
              if (type == OBJECT_BASE ) lookatPt.y += 40.0f;
         else if (type == OBJECT_HUMAN) lookatPt.y +=  1.0f;
         else if (type == OBJECT_TECH ) lookatPt.y +=  1.0f;
@@ -1237,7 +1237,7 @@ bool CCamera::EventFrameBack(const Event &event)
             ground = dynamic_cast<CMovableObject&>(*m_cameraObj).GetPhysics()->GetLand();
         if ( ground )  // ground?
         {
-            Math::Vector pos = lookatPt + (lookatPt - m_eyePt);
+            glm::vec3 pos = lookatPt + (lookatPt - m_eyePt);
             float floor = m_terrain->GetHeightToFloor(pos) - 4.0f;
             if (floor > 0.0f)
                 m_eyePt.y += floor;  // shows the descent in front
@@ -1257,7 +1257,7 @@ bool CCamera::EventFrameBack(const Event &event)
 
 bool CCamera::EventFrameFix(const Event &event)
 {
-    Math::Vector cameraMove = CalculateCameraMovement(event);
+    glm::vec3 cameraMove = CalculateCameraMovement(event);
     m_fixDirectionH += cameraMove.x;
     m_fixDirectionV += cameraMove.y;
     m_fixDist += cameraMove.z;
@@ -1269,7 +1269,7 @@ bool CCamera::EventFrameFix(const Event &event)
 
     if (m_cameraObj != nullptr)
     {
-        Math::Vector lookatPt = m_cameraObj->GetPosition();
+        glm::vec3 lookatPt = m_cameraObj->GetPosition();
 
         float h = m_fixDirectionH;
         float v = m_fixDirectionV;
@@ -1291,7 +1291,7 @@ bool CCamera::EventFrameFix(const Event &event)
 
 bool CCamera::EventFrameExplo(const Event &event)
 {
-    Math::Vector cameraMove = CalculateCameraMovement(event);
+    glm::vec3 cameraMove = CalculateCameraMovement(event);
     m_directionH += cameraMove.x;
     m_directionH = Math::NormAngle(m_directionH);
 
@@ -1301,7 +1301,7 @@ bool CCamera::EventFrameExplo(const Event &event)
     {
         m_eyePt.y += m_heightEye;
 
-        Math::Vector pos = m_eyePt;
+        glm::vec3 pos = m_eyePt;
         if ( m_terrain->AdjustToFloor(pos, false) )
         {
             pos.y += 2.0f;
@@ -1311,7 +1311,7 @@ bool CCamera::EventFrameExplo(const Event &event)
 
     }
 
-    Math::Vector lookatPt = Math::LookatPoint(m_eyePt, m_directionH, m_directionV, 50.0f);
+    glm::vec3 lookatPt = Math::LookatPoint(m_eyePt, m_directionH, m_directionV, 50.0f);
 
     if (m_terrain->AdjustToFloor(lookatPt, true))
         lookatPt.y += m_heightLookat;
@@ -1326,10 +1326,10 @@ bool CCamera::EventFrameOnBoard(const Event &event)
     if (m_cameraObj != nullptr)
     {
         assert(m_cameraObj->Implements(ObjectInterfaceType::Controllable));
-        Math::Vector lookatPt, upVec;
+        glm::vec3 lookatPt, upVec;
         dynamic_cast<CControllableObject&>(*m_cameraObj).AdjustCamera(m_eyePt, m_directionH, m_directionV, lookatPt, upVec, m_type);
-        Math::Vector eye    = m_effectOffset * 0.3f + m_eyePt;
-        Math::Vector lookat = m_effectOffset * 0.3f + lookatPt;
+        glm::vec3 eye    = m_effectOffset * 0.3f + m_eyePt;
+        glm::vec3 lookat = m_effectOffset * 0.3f + lookatPt;
 
         SetViewParams(eye, lookat, upVec);
         m_actualEye    = eye;
@@ -1342,7 +1342,7 @@ bool CCamera::EventFrameVisit(const Event &event)
 {
     m_visitTime += event.rTime;
 
-    Math::Vector cameraMove = CalculateCameraMovement(event);
+    glm::vec3 cameraMove = CalculateCameraMovement(event);
 
     // ZoomIn/ZoomOut
     m_visitDist += cameraMove.z;
@@ -1354,7 +1354,7 @@ bool CCamera::EventFrameVisit(const Event &event)
 
     float angleH = (m_visitTime / 10.0f) * (Math::PI * 2.0f);
     float angleV = m_visitDirectionV;
-    Math::Vector eye = Math::RotateView(m_visitGoal, angleH, angleV, m_visitDist);
+    glm::vec3 eye = Math::RotateView(m_visitGoal, angleH, angleV, m_visitDist);
     eye = ExcludeTerrain(eye, m_visitGoal, angleH, angleV);
     eye = ExcludeObject(eye, m_visitGoal, angleH, angleV);
     UpdateCameraAnimation(eye, m_visitGoal, event.rTime);
@@ -1369,17 +1369,17 @@ bool CCamera::EventFrameScript(const Event &event)
     return true;
 }
 
-void CCamera::SetScriptCameraAnimateEye(Math::Vector eye)
+void CCamera::SetScriptCameraAnimateEye(glm::vec3 eye)
 {
     m_scriptEye = eye;
 }
 
-void CCamera::SetScriptCameraAnimateLookat(Math::Vector lookat)
+void CCamera::SetScriptCameraAnimateLookat(glm::vec3 lookat)
 {
     m_scriptLookat = lookat;
 }
 
-void CCamera::SetScriptCamera(Math::Vector eye, Math::Vector lookat)
+void CCamera::SetScriptCamera(glm::vec3 eye, glm::vec3 lookat)
 {
     SetScriptCameraAnimate(eye, lookat);
 
@@ -1388,14 +1388,14 @@ void CCamera::SetScriptCamera(Math::Vector eye, Math::Vector lookat)
     m_actualLookat = m_finalLookat = m_scriptLookat;
 }
 
-void CCamera::SetScriptCameraAnimate(Math::Vector eye, Math::Vector lookat)
+void CCamera::SetScriptCameraAnimate(glm::vec3 eye, glm::vec3 lookat)
 {
     m_scriptEye = eye;
     m_scriptLookat = lookat;
 }
 
-void CCamera::SetViewParams(const Math::Vector &eye, const Math::Vector &lookat,
-                            const Math::Vector &up)
+void CCamera::SetViewParams(const glm::vec3 &eye, const glm::vec3 &lookat,
+                            const glm::vec3 &up)
 {
     m_engine->SetViewParams(eye, lookat, up);
 
@@ -1403,10 +1403,10 @@ void CCamera::SetViewParams(const Math::Vector &eye, const Math::Vector &lookat,
     m_engine->SetRankView(under ? 1 : 0);
 }
 
-Math::Vector CCamera::ExcludeTerrain(Math::Vector eye, Math::Vector lookat,
+glm::vec3 CCamera::ExcludeTerrain(glm::vec3 eye, glm::vec3 lookat,
                                           float &angleH, float &angleV)
 {
-    Math::Vector pos = eye;
+    glm::vec3 pos = eye;
     if (m_terrain->AdjustToFloor(pos))
     {
         float dist = Math::DistanceProjected(lookat, pos);
@@ -1420,7 +1420,7 @@ Math::Vector CCamera::ExcludeTerrain(Math::Vector eye, Math::Vector lookat,
     return eye;
 }
 
-Math::Vector CCamera::ExcludeObject(Math::Vector eye, Math::Vector lookat,
+glm::vec3 CCamera::ExcludeObject(glm::vec3 eye, glm::vec3 lookat,
                                          float &angleH, float &angleV)
 {
     return eye;
@@ -1434,7 +1434,7 @@ Math::Vector CCamera::ExcludeObject(Math::Vector eye, Math::Vector lookat,
             break;
 
         int j = 0;
-        Math::Vector oPos;
+        glm::vec3 oPos;
         float oRad;
         while (obj->GetCrashSphere(j++, oPos, oRad))
         {
@@ -1452,9 +1452,9 @@ void CCamera::SetCameraSpeed(float speed)
     m_speed = speed;
 }
 
-Math::Vector CCamera::CalculateCameraMovement(const Event &event, bool keysAllowed)
+glm::vec3 CCamera::CalculateCameraMovement(const Event &event, bool keysAllowed)
 {
-    Math::Vector delta{};
+    glm::vec3 delta{};
 
     delta.x += m_mouseDelta.x * 2*Math::PI;
     delta.y -= m_mouseDelta.y * Math::PI;

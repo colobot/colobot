@@ -156,13 +156,13 @@ inline void RotatePoint(float cx, float cy, float angle, float &px, float &py)
  * \param angleH,angleV  rotation angles [radians] (positive is CCW)
  * \param p              the point to be rotated
  */
-inline void RotatePoint(const Math::Vector &center, float angleH, float angleV, Math::Vector &p)
+inline void RotatePoint(const glm::vec3 &center, float angleH, float angleV, glm::vec3 &p)
 {
     p.x -= center.x;
     p.y -= center.y;
     p.z -= center.z;
 
-    Math::Vector b;
+    glm::vec3 b{};
     b.x = p.x*cosf(angleH) - p.z*sinf(angleH);
     b.y = p.z*sinf(angleV) + p.y*cosf(angleV);
     b.z = p.x*sinf(angleH) + p.z*cosf(angleH);
@@ -178,18 +178,18 @@ inline void RotatePoint(const Math::Vector &center, float angleH, float angleV, 
  * \param angleH,angleV  rotation angles [radians] (positive is CCW)
  * \param p              the point to be rotated
  */
-inline void RotatePoint2(const Math::Vector center, float angleH, float angleV, Math::Vector &p)
+inline void RotatePoint2(const glm::vec3 center, float angleH, float angleV, glm::vec3 &p)
 {
     p.x -= center.x;
     p.y -= center.y;
     p.z -= center.z;
 
-    Math::Vector a;
+    glm::vec3 a{};
     a.x = p.x*cosf(angleH) - p.z*sinf(angleH);
     a.y = p.y;
     a.z = p.x*sinf(angleH) + p.z*cosf(angleH);
 
-    Math::Vector b;
+    glm::vec3 b{};
     b.x = a.x;
     b.y = a.z*sinf(angleV) + a.y*cosf(angleV);
     b.z = a.z*cosf(angleV) - a.y*sinf(angleV);
@@ -264,12 +264,12 @@ inline float RotateAngle(const glm::vec2&center, const glm::vec2&p1, const glm::
  * \param at       view direction
  * \param worldUp  up vector
  */
-inline void LoadViewMatrix(Math::Matrix &mat, const Math::Vector &from,
-                           const Math::Vector &at, const Math::Vector &worldUp)
+inline void LoadViewMatrix(Math::Matrix &mat, const glm::vec3 &from,
+                           const glm::vec3 &at, const glm::vec3 &worldUp)
 {
     // Get the z basis vector, which points straight ahead. This is the
     // difference from the eyepoint to the lookat point.
-    Math::Vector view = at - from;
+    glm::vec3 view = at - from;
 
     float length = glm::length(view);
     assert(! IsZero(length) );
@@ -281,18 +281,18 @@ inline void LoadViewMatrix(Math::Matrix &mat, const Math::Vector &from,
     // vector onto the up vector. The projection is the y basis vector.
     float dotProduct = DotProduct(worldUp, view);
 
-    Math::Vector up = worldUp - dotProduct * view;
+    glm::vec3 up = worldUp - dotProduct * view;
 
     // If this vector has near-zero length because the input specified a
     // bogus up vector, let's try a default up vector
     if ( IsZero(length = glm::length(up)) )
     {
-        up = Math::Vector(0.0f, 1.0f, 0.0f) - view.y * view;
+        up = glm::vec3(0.0f, 1.0f, 0.0f) - view.y * view;
 
         // If we still have near-zero length, resort to a different axis.
         if ( IsZero(length = glm::length(up)) )
         {
-            up = Math::Vector(0.0f, 0.0f, 1.0f) - view.z * view;
+            up = glm::vec3(0.0f, 0.0f, 1.0f) - view.z * view;
 
             assert(! IsZero(glm::length(up)) );
         }
@@ -303,7 +303,7 @@ inline void LoadViewMatrix(Math::Matrix &mat, const Math::Vector &from,
 
     // The x basis vector is found simply with the cross product of the y
     // and z basis vectors
-    Math::Vector right = CrossProduct(up, view);
+    glm::vec3 right = CrossProduct(up, view);
 
     // Start building the matrix. The first three rows contains the basis
     // vectors used to rotate the view to point at the lookat point
@@ -376,7 +376,7 @@ inline void LoadOrthoProjectionMatrix(Math::Matrix &mat, float left, float right
  * \param mat   result matrix
  * \param trans vector of translation
  */
-inline void LoadTranslationMatrix(Math::Matrix &mat, const Math::Vector &trans)
+inline void LoadTranslationMatrix(Math::Matrix &mat, const glm::vec3 &trans)
 {
     mat.LoadIdentity();
     /* (1,4) */ mat.m[12] = trans.x;
@@ -389,7 +389,7 @@ inline void LoadTranslationMatrix(Math::Matrix &mat, const Math::Vector &trans)
  * \param mat    result matrix
  * \param scale  vector with scaling factors for X, Y, Z
  */
-inline void LoadScaleMatrix(Math::Matrix &mat, const Math::Vector &scale)
+inline void LoadScaleMatrix(Math::Matrix &mat, const glm::vec3 &scale)
 {
     mat.LoadIdentity();
     /* (1,1) */ mat.m[0 ] = scale.x;
@@ -445,11 +445,11 @@ inline void LoadRotationZMatrix(Math::Matrix &mat, float angle)
  * \param dir    axis of rotation
  * \param angle  angle [radians]
  */
-inline void LoadRotationMatrix(Math::Matrix &mat, const Math::Vector &dir, float angle)
+inline void LoadRotationMatrix(Math::Matrix &mat, const glm::vec3 &dir, float angle)
 {
     float cos = cosf(angle);
     float sin = sinf(angle);
-    Math::Vector v = Normalize(dir);
+    glm::vec3 v = Normalize(dir);
 
     mat.LoadIdentity();
 
@@ -467,7 +467,7 @@ inline void LoadRotationMatrix(Math::Matrix &mat, const Math::Vector &dir, float
 }
 
 //! Calculates the matrix to make three rotations in the order X, Z and Y
-inline void LoadRotationXZYMatrix(Math::Matrix &mat, const Math::Vector &angles)
+inline void LoadRotationXZYMatrix(Math::Matrix &mat, const glm::vec3 &angles)
 {
     Math::Matrix temp;
     LoadRotationXMatrix(temp, angles.x);
@@ -480,7 +480,7 @@ inline void LoadRotationXZYMatrix(Math::Matrix &mat, const Math::Vector &angles)
 }
 
 //! Calculates the matrix to make three rotations in the order Z, X and Y
-inline void LoadRotationZXYMatrix(Math::Matrix &mat, const Math::Vector &angles)
+inline void LoadRotationZXYMatrix(Math::Matrix &mat, const glm::vec3 &angles)
 {
     Math::Matrix temp;
     LoadRotationZMatrix(temp, angles.z);
@@ -493,7 +493,7 @@ inline void LoadRotationZXYMatrix(Math::Matrix &mat, const Math::Vector &angles)
 }
 
 //! Returns the distance between projections on XZ plane of two vectors
-inline float DistanceProjected(const Math::Vector &a, const Math::Vector &b)
+inline float DistanceProjected(const glm::vec3 &a, const glm::vec3 &b)
 {
     return sqrtf( (a.x-b.x)*(a.x-b.x) +
                   (a.z-b.z)*(a.z-b.z) );
@@ -503,10 +503,10 @@ inline float DistanceProjected(const Math::Vector &a, const Math::Vector &b)
 /**
  * \param p1,p2,p3 points defining the plane
  */
-inline Math::Vector NormalToPlane(const Math::Vector &p1, const Math::Vector &p2, const Math::Vector &p3)
+inline glm::vec3 NormalToPlane(const glm::vec3 &p1, const glm::vec3 &p2, const glm::vec3 &p3)
 {
-    Math::Vector u = p3 - p1;
-    Math::Vector v = p2 - p1;
+    glm::vec3 u = p3 - p1;
+    glm::vec3 v = p2 - p1;
 
     return Normalize(CrossProduct(u, v));
 }
@@ -516,9 +516,9 @@ inline Math::Vector NormalToPlane(const Math::Vector &p1, const Math::Vector &p2
  * \param p1,p2  line start and end
  * \param dist   scaling factor from \a p1, relative to distance between \a p1 and \a p2
  */
-inline Math::Vector SegmentPoint(const Math::Vector &p1, const Math::Vector &p2, float dist)
+inline glm::vec3 SegmentPoint(const glm::vec3 &p1, const glm::vec3 &p2, float dist)
 {
-    Math::Vector direction = glm::normalize(p2 - p1);
+    glm::vec3 direction = glm::normalize(p2 - p1);
 
     return p1 + direction * dist;
 }
@@ -528,10 +528,10 @@ inline Math::Vector SegmentPoint(const Math::Vector &p1, const Math::Vector &p2,
  * \param p      the point
  * \param a,b,c  points defining the plane
  */
-inline float DistanceToPlane(const Math::Vector &a, const Math::Vector &b,
-                             const Math::Vector &c, const Math::Vector &p)
+inline float DistanceToPlane(const glm::vec3 &a, const glm::vec3 &b,
+                             const glm::vec3 &c, const glm::vec3 &p)
 {
-    Math::Vector n = NormalToPlane(a, b, c);
+    glm::vec3 n = NormalToPlane(a, b, c);
     float d = -(n.x*a.x + n.y*a.y + n.z*a.z);
 
     return fabs(n.x*p.x + n.y*p.y + n.z*p.z + d);
@@ -542,10 +542,10 @@ inline float DistanceToPlane(const Math::Vector &a, const Math::Vector &b,
  * \param plane1  array of three vectors defining the first plane
  * \param plane2  array of three vectors defining the second plane
  */
-inline bool IsSamePlane(const Math::Vector (&plane1)[3], const Math::Vector (&plane2)[3])
+inline bool IsSamePlane(const glm::vec3 (&plane1)[3], const glm::vec3 (&plane2)[3])
 {
-    Math::Vector n1 = NormalToPlane(plane1[0], plane1[1], plane1[2]);
-    Math::Vector n2 = NormalToPlane(plane2[0], plane2[1], plane2[2]);
+    glm::vec3 n1 = NormalToPlane(plane1[0], plane1[1], plane1[2]);
+    glm::vec3 n2 = NormalToPlane(plane2[0], plane2[1], plane2[2]);
 
     if ( fabs(n1.x-n2.x) > 0.1f ||
          fabs(n1.y-n2.y) > 0.1f ||
@@ -560,8 +560,8 @@ inline bool IsSamePlane(const Math::Vector (&plane1)[3], const Math::Vector (&pl
 }
 
 //! Calculates the intersection "i" right "of" the plane "abc" (TODO: ?)
-inline bool Intersect(const Math::Vector &a, const Math::Vector &b, const Math::Vector &c,
-                      const Math::Vector &d, const Math::Vector &e, Math::Vector &i)
+inline bool Intersect(const glm::vec3 &a, const glm::vec3 &b, const glm::vec3 &c,
+                      const glm::vec3 &d, const glm::vec3 &e, glm::vec3 &i)
 {
     float d1 = (d.x-a.x)*((b.y-a.y)*(c.z-a.z)-(c.y-a.y)*(b.z-a.z)) -
                (d.y-a.y)*((b.x-a.x)*(c.z-a.z)-(c.x-a.x)*(b.z-a.z)) +
@@ -583,7 +583,7 @@ inline bool Intersect(const Math::Vector &a, const Math::Vector &b, const Math::
 
 //! Calculates the intersection of the straight line passing through p (x, z)
 /** Line is parallel to the y axis, with the plane abc. Returns p.y. (TODO: ?) */
-inline bool IntersectY(const Math::Vector &a, const Math::Vector &b, const Math::Vector &c, Math::Vector &p)
+inline bool IntersectY(const glm::vec3 &a, const glm::vec3 &b, const glm::vec3 &c, glm::vec3 &p)
 {
     float d  = (b.x-a.x)*(c.z-a.z) - (c.x-a.x)*(b.z-a.z);
     float d1 = (p.x-a.x)*(c.z-a.z) - (c.x-a.x)*(p.z-a.z);
@@ -598,9 +598,9 @@ inline bool IntersectY(const Math::Vector &a, const Math::Vector &b, const Math:
 }
 
 //! Calculates the end point
-inline Math::Vector LookatPoint(const Math::Vector &eye, float angleH, float angleV, float length)
+inline glm::vec3 LookatPoint(const glm::vec3 &eye, float angleH, float angleV, float length)
 {
-    Math::Vector lookat = eye;
+    glm::vec3 lookat = eye;
     lookat.z += length;
 
     RotatePoint(eye, angleH, angleV, lookat);
@@ -610,7 +610,7 @@ inline Math::Vector LookatPoint(const Math::Vector &eye, float angleH, float ang
 
 //! Transforms the point \a p by matrix \a m
 /** Is equal to multiplying the matrix by the vector (of course without perspective divide). */
-inline Math::Vector Transform(const Math::Matrix &m, const Math::Vector &p)
+inline glm::vec3 Transform(const Math::Matrix &m, const glm::vec3 &p)
 {
     return MatrixVectorMultiply(m, p);
 }
@@ -620,7 +620,7 @@ inline Math::Vector Transform(const Math::Matrix &m, const Math::Vector &p)
  * \param p      point to project
  * \param a,b    two ends of the line
  */
-inline Math::Vector Projection(const Math::Vector &a, const Math::Vector &b, const Math::Vector &p)
+inline glm::vec3 Projection(const glm::vec3 &a, const glm::vec3 &b, const glm::vec3 &p)
 {
     float k = DotProduct(b - a, p - a);
     k /= DotProduct(b - a, b - a);
@@ -629,7 +629,7 @@ inline Math::Vector Projection(const Math::Vector &a, const Math::Vector &b, con
 }
 
 //! Calculates point of view to look at a center two angles and a distance
-inline Math::Vector RotateView(Math::Vector center, float angleH, float angleV, float dist)
+inline glm::vec3 RotateView(glm::vec3 center, float angleH, float angleV, float dist)
 {
     Math::Matrix mat1, mat2;
     LoadRotationZMatrix(mat1, -angleV);
@@ -637,7 +637,7 @@ inline Math::Vector RotateView(Math::Vector center, float angleH, float angleV, 
 
     Math::Matrix mat = MultiplyMatrices(mat2, mat1);
 
-    Math::Vector eye;
+    glm::vec3 eye{};
     eye.x = 0.0f+dist;
     eye.y = 0.0f;
     eye.z = 0.0f;

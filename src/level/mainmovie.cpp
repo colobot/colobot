@@ -73,7 +73,7 @@ void CMainMovie::Flush()
 bool CMainMovie::Start(MainMovieType type, float time)
 {
     Math::Matrix*   mat;
-    Math::Vector    pos;
+    glm::vec3    pos{ 0, 0, 0 };
     CObject*    pObj;
 
     m_type = type;
@@ -98,10 +98,10 @@ bool CMainMovie::Start(MainMovieType type, float time)
         m_camera->SetScriptCamera(m_initialEye, m_initialLookat);
 
         mat = pObj->GetWorldMatrix(0);
-        m_finalLookat[0] = Math::Transform(*mat, Math::Vector( 1.6f, 1.0f, 1.2f));
-        m_finalEye[0]    = Math::Transform(*mat, Math::Vector(-1.5f, 5.0f, 3.0f));
-        m_finalLookat[1] = Math::Transform(*mat, Math::Vector( 1.6f, 1.0f, 1.2f));
-        m_finalEye[1]    = Math::Transform(*mat, Math::Vector( 0.8f, 3.0f, 0.8f));
+        m_finalLookat[0] = Math::Transform(*mat, glm::vec3( 1.6f, 1.0f, 1.2f));
+        m_finalEye[0]    = Math::Transform(*mat, glm::vec3(-1.5f, 5.0f, 3.0f));
+        m_finalLookat[1] = Math::Transform(*mat, glm::vec3( 1.6f, 1.0f, 1.2f));
+        m_finalEye[1]    = Math::Transform(*mat, glm::vec3( 0.8f, 3.0f, 0.8f));
     }
 
     if ( m_type == MM_SATCOMclose )
@@ -152,9 +152,6 @@ bool CMainMovie::IsExist()
 
 bool CMainMovie::EventProcess(const Event &event)
 {
-    Math::Vector    initialEye, initialLookat, finalEye, finalLookat, eye, lookat;
-    float       progress;
-
     if ( m_type == MM_NONE )  return true;
 
     m_progress += event.rTime*m_speed;
@@ -163,7 +160,10 @@ bool CMainMovie::EventProcess(const Event &event)
     {
         if ( m_progress < 1.0f )
         {
-            progress = 1.0f-powf(1.0f-m_progress, 3.0f);
+            glm::vec3 initialEye, initialLookat;
+            glm::vec3 finalEye, finalLookat, eye, lookat;
+
+            float progress = 1.0f-powf(1.0f-m_progress, 3.0f);
 
             if ( progress < 0.6f )
             {

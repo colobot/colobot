@@ -177,8 +177,8 @@ int CLightManager::CreateLight(LightPriority priority)
     m_dynLights[index].light.type      = LIGHT_DIRECTIONAL;
     m_dynLights[index].light.diffuse   = Color(0.5f, 0.5f, 0.5f);
     m_dynLights[index].light.ambient   = Color(0.0f, 0.0f, 0.0f);
-    m_dynLights[index].light.position  = Math::Vector(-100.0f,  100.0f, -100.0f);
-    m_dynLights[index].light.direction = Math::Vector( 1.0f, -1.0f,  1.0f);
+    m_dynLights[index].light.position  = glm::vec3(-100.0f,  100.0f, -100.0f);
+    m_dynLights[index].light.direction = glm::vec3( 1.0f, -1.0f,  1.0f);
 
     m_dynLights[index].intensity.Init(1.0f);  // maximum
     m_dynLights[index].colorRed.Init(0.5f);
@@ -256,7 +256,7 @@ bool CLightManager::SetLightExcludeType(int lightRank, EngineObjectType type)
     return true;
 }
 
-bool CLightManager::SetLightPos(int lightRank, const Math::Vector &pos)
+bool CLightManager::SetLightPos(int lightRank, const glm::vec3 &pos)
 {
     if ( (lightRank < 0) || (lightRank >= static_cast<int>( m_dynLights.size() )) )
         return false;
@@ -265,15 +265,15 @@ bool CLightManager::SetLightPos(int lightRank, const Math::Vector &pos)
     return true;
 }
 
-Math::Vector CLightManager::GetLightPos(int lightRank)
+glm::vec3 CLightManager::GetLightPos(int lightRank)
 {
     if ( (lightRank < 0) || (lightRank >= static_cast<int>( m_dynLights.size() )) )
-        return Math::Vector(0.0f, 0.0f, 0.0f);
+        return glm::vec3(0.0f, 0.0f, 0.0f);
 
     return m_dynLights[lightRank].light.position;
 }
 
-bool CLightManager::SetLightDir(int lightRank, const Math::Vector &dir)
+bool CLightManager::SetLightDir(int lightRank, const glm::vec3 &dir)
 {
     if ( (lightRank < 0) || (lightRank >= static_cast<int>( m_dynLights.size() )) )
         return false;
@@ -282,10 +282,10 @@ bool CLightManager::SetLightDir(int lightRank, const Math::Vector &dir)
     return true;
 }
 
-Math::Vector CLightManager::GetLightDir(int lightRank)
+glm::vec3 CLightManager::GetLightDir(int lightRank)
 {
     if ( (lightRank < 0) || (lightRank >= static_cast<int>( m_dynLights.size() )) )
-        return Math::Vector(0.0f, 0.0f, 0.0f);
+        return glm::vec3(0.0f, 0.0f, 0.0f);
 
     return m_dynLights[lightRank].light.direction;
 }
@@ -401,7 +401,7 @@ void CLightManager::UpdateProgression(float rTime)
 
         if (m_dynLights[i].includeType == ENG_OBJTYPE_METAL)
         {
-            Math::Vector dir = m_engine->GetEyePt() - m_engine->GetLookatPt();
+            glm::vec3 dir = m_engine->GetEyePt() - m_engine->GetLookatPt();
             float angle = Math::RotateAngle(dir.x, dir.z);
             angle += Math::PI * 0.5f * i;
             m_dynLights[i].light.direction.x = sinf(2.0f * angle);
@@ -496,7 +496,7 @@ void CLightManager::UpdateDeviceLights(EngineObjectType type)
 
 // -----------
 
-CLightManager::CLightsComparator::CLightsComparator(Math::Vector eyePos, EngineObjectType objectType)
+CLightManager::CLightsComparator::CLightsComparator(glm::vec3 eyePos, EngineObjectType objectType)
 {
     m_eyePos = eyePos;
     m_objectType = objectType;
