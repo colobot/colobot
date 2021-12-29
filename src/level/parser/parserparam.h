@@ -61,7 +61,7 @@ public:
     CLevelParserParam(bool value);
     CLevelParserParam(Gfx::Color value);
     CLevelParserParam(glm::vec2 value);
-    CLevelParserParam(Math::Vector value);
+    CLevelParserParam(glm::vec3 value);
     CLevelParserParam(ObjectType value);
     CLevelParserParam(Gfx::CameraType value);
     CLevelParserParam(CLevelParserParamVec&& array);
@@ -79,7 +79,7 @@ public:
     bool AsBool();
     std::string AsPath(const std::string defaultDir);
     Gfx::Color AsColor();
-    Math::Vector AsPoint();
+    glm::vec3 AsPoint();
     ObjectType AsObjectType();
     DriveType AsDriveType();
     ToolType AsToolType();
@@ -103,7 +103,7 @@ public:
     bool AsBool(bool def);
     std::string AsPath(const std::string defaultDir, std::string def);
     Gfx::Color AsColor(Gfx::Color def);
-    Math::Vector AsPoint(Math::Vector def);
+    glm::vec3 AsPoint(glm::vec3 def);
     ObjectType AsObjectType(ObjectType def);
     DriveType AsDriveType(DriveType def);
     ToolType AsToolType(ToolType def);

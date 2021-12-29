@@ -127,7 +127,7 @@ void CScoreboard::AddPoints(int team, int points)
     std::string text;
     GetResource(RES_ERR, INFO_TEAM_SCORE, text);
     text = StrUtils::Format(text.c_str(), main->GetTeamName(team).c_str(), points);
-    main->GetDisplayText()->DisplayText(text.c_str(), Math::Vector(0.0f,0.0f,0.0f), 15.0f, 60.0f, 10.0f, Ui::TT_WARNING);
+    main->GetDisplayText()->DisplayText(text.c_str(), glm::vec3(0.0f,0.0f,0.0f), 15.0f, 60.0f, 10.0f, Ui::TT_WARNING);
 
     m_score[team].points += points;
     m_score[team].time = main->GetGameTime();

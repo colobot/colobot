@@ -81,7 +81,7 @@ CLevelParserParam::CLevelParserParam(glm::vec2 value)
     LoadArray();
 }
 
-CLevelParserParam::CLevelParserParam(Math::Vector value)
+CLevelParserParam::CLevelParserParam(glm::vec3 value)
 {
     m_array.push_back(MakeUnique<CLevelParserParam>(value.x));
     if(value.y != 0.0f)
@@ -304,7 +304,7 @@ Gfx::Color CLevelParserParam::AsColor(Gfx::Color def)
 }
 
 
-Math::Vector CLevelParserParam::AsPoint()
+glm::vec3 CLevelParserParam::AsPoint()
 {
     if (m_empty)
         throw CLevelParserExceptionMissingParam(this);
@@ -313,11 +313,11 @@ Math::Vector CLevelParserParam::AsPoint()
 
     if (m_array.size() == 2) //XZ
     {
-        return Math::Vector(m_array[0]->AsFloat(), 0.0f, m_array[1]->AsFloat());
+        return glm::vec3(m_array[0]->AsFloat(), 0.0f, m_array[1]->AsFloat());
     }
     else if (m_array.size() == 3) //XYZ
     {
-        return Math::Vector(m_array[0]->AsFloat(), m_array[1]->AsFloat(), m_array[2]->AsFloat());
+        return glm::vec3(m_array[0]->AsFloat(), m_array[1]->AsFloat(), m_array[2]->AsFloat());
     }
     else
     {
@@ -325,7 +325,7 @@ Math::Vector CLevelParserParam::AsPoint()
     }
 }
 
-Math::Vector CLevelParserParam::AsPoint(Math::Vector def)
+glm::vec3 CLevelParserParam::AsPoint(glm::vec3 def)
 {
     if (m_empty)
         return def;

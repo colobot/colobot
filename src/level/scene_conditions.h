@@ -27,11 +27,11 @@
 #include "common/error.h"
 #include "common/global.h"
 
-#include "math/vector.h"
-
 #include "object/drive_type.h"
 #include "object/object_type.h"
 #include "object/tool_type.h"
+
+#include <glm/glm.hpp>
 
 class CLevelParserLine;
 class CObject;
@@ -43,7 +43,7 @@ class CObject;
 class CObjectCondition
 {
 public:
-    Math::Vector  pos = Math::Vector(0.0f, 0.0f, 0.0f)*g_unit;
+    glm::vec3     pos = glm::vec3(0.0f, 0.0f, 0.0f) * g_unit;
     float         dist = 8.0f*g_unit;
     ObjectType    type = OBJECT_NULL;
     float         powermin = -1;  // wins if energy cell >=

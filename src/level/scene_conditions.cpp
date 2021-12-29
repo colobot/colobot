@@ -34,7 +34,7 @@
 
 void CObjectCondition::Read(CLevelParserLine* line)
 {
-    this->pos      = line->GetParam("pos")->AsPoint(Math::Vector(0.0f, 0.0f, 0.0f))*g_unit;
+    this->pos      = line->GetParam("pos")->AsPoint(glm::vec3(0.0f, 0.0f, 0.0f))*g_unit;
     this->dist     = line->GetParam("dist")->AsFloat(std::numeric_limits<float>::infinity())*g_unit;
     this->type     = line->GetParam("type")->AsObjectType(OBJECT_NULL);
     this->powermin = line->GetParam("powermin")->AsFloat(-1);
@@ -96,14 +96,14 @@ bool CObjectCondition::CheckForObject(CObject* obj)
     }
     if (energyLevel < this->powermin || energyLevel > this->powermax) return false;
 
-    Math::Vector oPos;
+    glm::vec3 oPos{};
     if (IsObjectBeingTransported(obj))
         oPos = dynamic_cast<CTransportableObject&>(*obj).GetTransporter()->GetPosition();
     else
         oPos = obj->GetPosition();
     oPos.y = 0.0f;
 
-    Math::Vector bPos = this->pos;
+    glm::vec3 bPos = this->pos;
     bPos.y = 0.0f;
 
     if (Math::DistanceProjected(oPos, bPos) <= this->dist)
