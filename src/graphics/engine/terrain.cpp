@@ -54,7 +54,7 @@ CTerrain::CTerrain()
     m_textureSubdivCount   = 1;
     m_depth           = 2;
     m_maxMaterialID   = 0;
-    m_wind            = Math::Vector(0.0f, 0.0f, 0.0f);
+    m_wind            = glm::vec3(0.0f, 0.0f, 0.0f);
     m_defaultHardness = 0.5f;
     m_useMaterials    = false;
 
@@ -253,7 +253,7 @@ bool CTerrain::LoadResources(const std::string& fileName)
     return true;
 }
 
-TerrainRes CTerrain::GetResource(const Math::Vector &pos)
+TerrainRes CTerrain::GetResource(const glm::vec3 &pos)
 {
     if (m_resources.empty())
         return TR_NULL;
@@ -401,7 +401,7 @@ bool CTerrain::RandomizeRelief()
     return true;
 }
 
-bool CTerrain::AddReliefPoint(Math::Vector pos, float scaleRelief)
+bool CTerrain::AddReliefPoint(glm::vec3 pos, float scaleRelief)
 {
     float dim = (m_mosaicCount*m_brickCount*m_brickSize)/2.0f;
     int size = (m_mosaicCount*m_brickCount)+1;
@@ -480,9 +480,9 @@ void CTerrain::AdjustRelief()
     }
 }
 
-Math::Vector CTerrain::GetVector(int x, int y)
+glm::vec3 CTerrain::GetVector(int x, int y)
 {
-    Math::Vector p;
+    glm::vec3 p{};
     p.x = x*m_brickSize - (m_mosaicCount*m_brickCount*m_brickSize) / 2.0;
     p.z = y*m_brickSize - (m_mosaicCount*m_brickCount*m_brickSize) / 2.0;
 
@@ -517,17 +517,17 @@ VertexTex2 CTerrain::GetVertex(int x, int y, int step)
 {
     VertexTex2 v;
 
-    Math::Vector o = GetVector(x, y);
+    glm::vec3 o = GetVector(x, y);
     v.coord = o;
 
-    Math::Vector a = GetVector(x-step, y     );
-    Math::Vector b = GetVector(x-step, y+step);
-    Math::Vector c = GetVector(x,      y+step);
-    Math::Vector d = GetVector(x+step, y     );
-    Math::Vector e = GetVector(x+step, y-step);
-    Math::Vector f = GetVector(x,      y-step);
+    glm::vec3 a = GetVector(x-step, y     );
+    glm::vec3 b = GetVector(x-step, y+step);
+    glm::vec3 c = GetVector(x,      y+step);
+    glm::vec3 d = GetVector(x+step, y     );
+    glm::vec3 e = GetVector(x+step, y-step);
+    glm::vec3 f = GetVector(x,      y-step);
 
-    Math::Vector s(0.0f, 0.0f, 0.0f);
+    glm::vec3 s(0.0f, 0.0f, 0.0f);
 
     if (x-step >= 0 && y+step <= m_mosaicCount*m_brickCount+1)
     {
@@ -551,7 +551,7 @@ VertexTex2 CTerrain::GetVertex(int x, int y, int step)
     v.normal = s;
 
     int brick = m_brickCount/m_textureSubdivCount;
-    Math::Vector oo = GetVector((x/brick)*brick, (y/brick)*brick);
+    glm::vec3 oo = GetVector((x/brick)*brick, (y/brick)*brick);
     o  = GetVector(x, y);
     v.texCoord.x =        (o.x-oo.x)*m_textureScale*m_textureSubdivCount;
     v.texCoord.y = 1.0f - (o.z-oo.z)*m_textureScale*m_textureSubdivCount;
@@ -1150,7 +1150,7 @@ bool CTerrain::InitMaterials(int id)
 
 bool CTerrain::GenerateMaterials(int *id, float min, float max,
                                  float slope, float freq,
-                                 Math::Vector center, float radius)
+                                 glm::vec3 center, float radius)
 {
     static char random[100] =
     {
@@ -1200,7 +1200,7 @@ bool CTerrain::GenerateMaterials(int *id, float min, float max,
             {
                 if (radius != 0.0f)
                 {
-                    Math::Vector pos;
+                    glm::vec3 pos = { 0, 0, 0 };
                     pos.x = (static_cast<float>(x)-m_materialPointCount/2.0f)*group*m_brickSize;
                     pos.z = (static_cast<float>(y)-m_materialPointCount/2.0f)*group*m_brickSize;
                     if (Math::DistanceProjected(pos, center) > radius) continue;
@@ -1281,7 +1281,7 @@ bool CTerrain::CreateObjects()
 }
 
 /** ATTENTION: ok only with m_depth = 2! */
-bool CTerrain::Terraform(const Math::Vector &p1, const Math::Vector &p2, float height)
+bool CTerrain::Terraform(const glm::vec3 &p1, const glm::vec3 &p2, float height)
 {
     float dim = (m_mosaicCount*m_brickCount*m_brickSize)/2.0f;
 
@@ -1369,24 +1369,24 @@ bool CTerrain::Terraform(const Math::Vector &p1, const Math::Vector &p2, float h
     return true;
 }
 
-void CTerrain::SetWind(Math::Vector speed)
+void CTerrain::SetWind(glm::vec3 speed)
 {
     m_wind = speed;
 }
 
-Math::Vector CTerrain::GetWind()
+glm::vec3 CTerrain::GetWind()
 {
     return m_wind;
 }
 
-float CTerrain::GetFineSlope(const Math::Vector &pos)
+float CTerrain::GetFineSlope(const glm::vec3 &pos)
 {
-    Math::Vector n;
+    glm::vec3 n{};
     if (! GetNormal(n, pos)) return 0.0f;
     return fabs(Math::RotateAngle(glm::length(glm::vec2(n.x, n.z)), n.y) - Math::PI/2.0f);
 }
 
-float CTerrain::GetCoarseSlope(const Math::Vector &pos)
+float CTerrain::GetCoarseSlope(const glm::vec3 &pos)
 {
     if (m_relief.empty()) return 0.0f;
 
@@ -1412,7 +1412,7 @@ float CTerrain::GetCoarseSlope(const Math::Vector &pos)
     return atanf((max-min)/m_brickSize);
 }
 
-bool CTerrain::GetNormal(Math::Vector &n, const Math::Vector &p)
+bool CTerrain::GetNormal(glm::vec3 &n, const glm::vec3 &p)
 {
     float dim = (m_mosaicCount*m_brickCount*m_brickSize)/2.0f;
 
@@ -1422,10 +1422,10 @@ bool CTerrain::GetNormal(Math::Vector &n, const Math::Vector &p)
     if ( x < 0 || x > m_mosaicCount*m_brickCount ||
          y < 0 || y > m_mosaicCount*m_brickCount )  return false;
 
-    Math::Vector p1 = GetVector(x+0, y+0);
-    Math::Vector p2 = GetVector(x+1, y+0);
-    Math::Vector p3 = GetVector(x+0, y+1);
-    Math::Vector p4 = GetVector(x+1, y+1);
+    glm::vec3 p1 = GetVector(x+0, y+0);
+    glm::vec3 p2 = GetVector(x+1, y+0);
+    glm::vec3 p3 = GetVector(x+0, y+1);
+    glm::vec3 p4 = GetVector(x+1, y+1);
 
     if ( fabs(p.z - p2.z) < fabs(p.x - p2.x) )
         n = Math::NormalToPlane(p1,p2,p3);
@@ -1435,7 +1435,7 @@ bool CTerrain::GetNormal(Math::Vector &n, const Math::Vector &p)
     return true;
 }
 
-float CTerrain::GetFloorLevel(const Math::Vector &pos, bool brut, bool water)
+float CTerrain::GetFloorLevel(const glm::vec3 &pos, bool brut, bool water)
 {
     float dim = (m_mosaicCount*m_brickCount*m_brickSize)/2.0f;
 
@@ -1445,12 +1445,12 @@ float CTerrain::GetFloorLevel(const Math::Vector &pos, bool brut, bool water)
     if ( x < 0 || x > m_mosaicCount*m_brickCount ||
          y < 0 || y > m_mosaicCount*m_brickCount )  return false;
 
-    Math::Vector p1 = GetVector(x+0, y+0);
-    Math::Vector p2 = GetVector(x+1, y+0);
-    Math::Vector p3 = GetVector(x+0, y+1);
-    Math::Vector p4 = GetVector(x+1, y+1);
+    glm::vec3 p1 = GetVector(x+0, y+0);
+    glm::vec3 p2 = GetVector(x+1, y+0);
+    glm::vec3 p3 = GetVector(x+0, y+1);
+    glm::vec3 p4 = GetVector(x+1, y+1);
 
-    Math::Vector ps = pos;
+    glm::vec3 ps = pos;
     if ( fabs(pos.z-p2.z) < fabs(pos.x-p2.x) )
     {
         if ( !Math::IntersectY(p1, p2, p3, ps) )  return 0.0f;
@@ -1471,7 +1471,7 @@ float CTerrain::GetFloorLevel(const Math::Vector &pos, bool brut, bool water)
     return ps.y;
 }
 
-float CTerrain::GetHeightToFloor(const Math::Vector &pos, bool brut, bool water)
+float CTerrain::GetHeightToFloor(const glm::vec3 &pos, bool brut, bool water)
 {
     float dim = (m_mosaicCount*m_brickCount*m_brickSize)/2.0f;
 
@@ -1481,12 +1481,12 @@ float CTerrain::GetHeightToFloor(const Math::Vector &pos, bool brut, bool water)
     if ( x < 0 || x > m_mosaicCount*m_brickCount ||
          y < 0 || y > m_mosaicCount*m_brickCount )  return false;
 
-    Math::Vector p1 = GetVector(x+0, y+0);
-    Math::Vector p2 = GetVector(x+1, y+0);
-    Math::Vector p3 = GetVector(x+0, y+1);
-    Math::Vector p4 = GetVector(x+1, y+1);
+    glm::vec3 p1 = GetVector(x+0, y+0);
+    glm::vec3 p2 = GetVector(x+1, y+0);
+    glm::vec3 p3 = GetVector(x+0, y+1);
+    glm::vec3 p4 = GetVector(x+1, y+1);
 
-    Math::Vector ps = pos;
+    glm::vec3 ps = pos;
     if ( fabs(pos.z-p2.z) < fabs(pos.x-p2.x) )
     {
         if ( !Math::IntersectY(p1, p2, p3, ps) )  return 0.0f;
@@ -1507,7 +1507,7 @@ float CTerrain::GetHeightToFloor(const Math::Vector &pos, bool brut, bool water)
     return pos.y-ps.y;
 }
 
-bool CTerrain::AdjustToFloor(Math::Vector &pos, bool brut, bool water)
+bool CTerrain::AdjustToFloor(glm::vec3 &pos, bool brut, bool water)
 {
     float dim = (m_mosaicCount*m_brickCount*m_brickSize)/2.0f;
 
@@ -1517,10 +1517,10 @@ bool CTerrain::AdjustToFloor(Math::Vector &pos, bool brut, bool water)
     if ( x < 0 || x > m_mosaicCount*m_brickCount ||
          y < 0 || y > m_mosaicCount*m_brickCount )  return false;
 
-    Math::Vector p1 = GetVector(x+0, y+0);
-    Math::Vector p2 = GetVector(x+1, y+0);
-    Math::Vector p3 = GetVector(x+0, y+1);
-    Math::Vector p4 = GetVector(x+1, y+1);
+    glm::vec3 p1 = GetVector(x+0, y+0);
+    glm::vec3 p2 = GetVector(x+1, y+0);
+    glm::vec3 p3 = GetVector(x+0, y+1);
+    glm::vec3 p4 = GetVector(x+1, y+1);
 
     if (fabs(pos.z - p2.z) < fabs(pos.x - p2.x))
     {
@@ -1546,7 +1546,7 @@ bool CTerrain::AdjustToFloor(Math::Vector &pos, bool brut, bool water)
  * \param pos position to adjust
  * \returns \c false if the initial coordinate was outside terrain area; \c true otherwise
  */
-bool CTerrain::AdjustToStandardBounds(Math::Vector& pos)
+bool CTerrain::AdjustToStandardBounds(glm::vec3& pos)
 {
     bool ok = true;
 
@@ -1585,7 +1585,7 @@ bool CTerrain::AdjustToStandardBounds(Math::Vector& pos)
  * \param margin margin to the terrain border
  * \returns \c false if the initial coordinate was outside terrain area; \c true otherwise
  */
-bool CTerrain::AdjustToBounds(Math::Vector& pos, float margin)
+bool CTerrain::AdjustToBounds(glm::vec3& pos, float margin)
 {
     bool ok = true;
     float limit = m_mosaicCount*m_brickCount*m_brickSize/2.0f - margin;
@@ -1622,7 +1622,7 @@ void CTerrain::FlushBuildingLevel()
     m_buildingLevels.clear();
 }
 
-bool CTerrain::AddBuildingLevel(Math::Vector center, float min, float max,
+bool CTerrain::AddBuildingLevel(glm::vec3 center, float min, float max,
                                      float height, float factor)
 {
     int i = 0;
@@ -1652,7 +1652,7 @@ bool CTerrain::AddBuildingLevel(Math::Vector center, float min, float max,
     return true;
 }
 
-bool CTerrain::UpdateBuildingLevel(Math::Vector center)
+bool CTerrain::UpdateBuildingLevel(glm::vec3 center)
 {
     for (int i = 0; i < static_cast<int>( m_buildingLevels.size() ); i++)
     {
@@ -1667,7 +1667,7 @@ bool CTerrain::UpdateBuildingLevel(Math::Vector center)
     return false;
 }
 
-bool CTerrain::DeleteBuildingLevel(Math::Vector center)
+bool CTerrain::DeleteBuildingLevel(glm::vec3 center)
 {
     for (int i = 0; i < static_cast<int>( m_buildingLevels.size() ); i++)
     {
@@ -1684,7 +1684,7 @@ bool CTerrain::DeleteBuildingLevel(Math::Vector center)
     return false;
 }
 
-float CTerrain::GetBuildingFactor(const Math::Vector &pos)
+float CTerrain::GetBuildingFactor(const glm::vec3 &pos)
 {
     for (int i = 0; i < static_cast<int>( m_buildingLevels.size() ); i++)
     {
@@ -1701,7 +1701,7 @@ float CTerrain::GetBuildingFactor(const Math::Vector &pos)
     return 1.0f;  // it is normal on the ground
 }
 
-void CTerrain::AdjustBuildingLevel(Math::Vector &p)
+void CTerrain::AdjustBuildingLevel(glm::vec3 &p)
 {
     for (int i = 0; i < static_cast<int>( m_buildingLevels.size() ); i++)
     {
@@ -1720,7 +1720,7 @@ void CTerrain::AdjustBuildingLevel(Math::Vector &p)
             return;
         }
 
-        Math::Vector border{ 0, 0, 0 };
+        glm::vec3 border{ 0, 0, 0 };
         border.x = ((p.x - m_buildingLevels[i].center.x) * m_buildingLevels[i].max) /
                    dist + m_buildingLevels[i].center.x;
         border.z = ((p.z - m_buildingLevels[i].center.z) * m_buildingLevels[i].max) /
@@ -1737,7 +1737,7 @@ void CTerrain::AdjustBuildingLevel(Math::Vector &p)
     }
 }
 
-float CTerrain::GetHardness(const Math::Vector &pos)
+float CTerrain::GetHardness(const glm::vec3 &pos)
 {
     float factor = GetBuildingFactor(pos);
     if (factor != 1.0f) return 1.0f;  // on building level
@@ -1767,7 +1767,7 @@ float CTerrain::GetHardness(const Math::Vector &pos)
     return tm->hardness;
 }
 
-void CTerrain::ShowFlatGround(Math::Vector pos)
+void CTerrain::ShowFlatGround(glm::vec3 pos)
 {
     static char table[41*41] = { 1 };
 
@@ -1780,7 +1780,7 @@ void CTerrain::ShowFlatGround(Math::Vector pos)
             int i = x + y*41;
             table[i] = 0;
 
-            Math::Vector p{};
+            glm::vec3 p{};
             p.x = (x-20)*radius;
             p.z = (y-20)*radius;
             p.y = 0.0f;
@@ -1800,7 +1800,7 @@ void CTerrain::ShowFlatGround(Math::Vector pos)
     m_engine->CreateGroundMark(pos, 40.0f, 0.001f, 15.0f, 0.001f, 41, 41, table);
 }
 
-float CTerrain::GetFlatZoneRadius(Math::Vector center, float max)
+float CTerrain::GetFlatZoneRadius(glm::vec3 center, float max)
 {
     float angle = GetFineSlope(center);
     if (angle >= TERRAIN_FLATLIMIT)
@@ -1820,7 +1820,7 @@ float CTerrain::GetFlatZoneRadius(Math::Vector center, float max)
         for (int i = 0; i < nb; i++)
         {
             glm::vec2 result = Math::RotatePoint(c, angle, p);
-            Math::Vector pos{ 0, 0, 0 };
+            glm::vec3 pos{ 0, 0, 0 };
             pos.x = result.x;
             pos.z = result.y;
             float h = GetFloorLevel(pos, true);
@@ -1849,7 +1849,7 @@ void CTerrain::FlushFlyingLimit()
     m_flyingLimits.clear();
 }
 
-void CTerrain::AddFlyingLimit(Math::Vector center,
+void CTerrain::AddFlyingLimit(glm::vec3 center,
                                    float extRadius, float intRadius,
                                    float maxHeight)
 {
@@ -1861,7 +1861,7 @@ void CTerrain::AddFlyingLimit(Math::Vector center,
     m_flyingLimits.push_back(fl);
 }
 
-float CTerrain::GetFlyingLimit(Math::Vector pos, bool noLimit)
+float CTerrain::GetFlyingLimit(glm::vec3 pos, bool noLimit)
 {
     if (noLimit)
         return 280.0f;

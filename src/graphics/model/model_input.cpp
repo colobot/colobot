@@ -63,7 +63,7 @@ namespace ModelInput
     void ReadValuePrefix(std::istream& stream, const std::string& expectedPrefix);
     VertexTex2 ParseVertexTex2(const std::string& text);
     Material ParseMaterial(const std::string& text);
-    Math::Vector ParseVector(const std::string& text);
+    glm::vec3 ParseVector(const std::string& text);
     ModelCrashSphere ParseCrashSphere(const std::string& text);
     ModelShadowSpot ParseShadowSpot(const std::string& text);
     Math::Sphere ParseCameraCollisionSphere(const std::string& text);
@@ -769,9 +769,9 @@ Material ModelInput::ParseMaterial(const std::string& text)
     return material;
 }
 
-Math::Vector ModelInput::ParseVector(const std::string& text)
+glm::vec3 ModelInput::ParseVector(const std::string& text)
 {
-    Math::Vector vector;
+    glm::vec3 vector = { 0, 0, 0 };
 
     std::stringstream stream;
     stream.str(text);

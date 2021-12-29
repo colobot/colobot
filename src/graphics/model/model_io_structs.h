@@ -134,11 +134,11 @@ struct ModelMeshHeaderV3
     //! Parent mesh name
     std::string parentName;
     //! Mesh position
-    Math::Vector position;
+    glm::vec3 position = { 0, 0, 0 };
     //! Mesh rotation
-    Math::Vector rotation;
+    glm::vec3 rotation = { 0, 0, 0 };
     //! Mesh scale
-    Math::Vector scale;
+    glm::vec3 scale = { 1, 1, 1 };
 };
 
 /**

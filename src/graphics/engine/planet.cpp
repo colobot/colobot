@@ -98,7 +98,7 @@ void CPlanet::Draw()
     float eyeDirH = m_engine->GetEyeDirH();
     float eyeDirV = m_engine->GetEyeDirV();
 
-    Math::Vector n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
+    glm::vec3 n = glm::vec3(0.0f, 0.0f, -1.0f);  // normal
     float dp = 0.5f/256.0f;
 
     for (const auto& planet : m_planets)
@@ -141,10 +141,10 @@ void CPlanet::Draw()
 
         Vertex quad[4] =
         {
-            { Math::Vector(p1.x, p1.y, 0.0f), n, { u1, v2 } },
-            { Math::Vector(p1.x, p2.y, 0.0f), n, { u1, v1 } },
-            { Math::Vector(p2.x, p1.y, 0.0f), n, { u2, v2 } },
-            { Math::Vector(p2.x, p2.y, 0.0f), n, { u2, v1 } }
+            { glm::vec3(p1.x, p1.y, 0.0f), n, { u1, v2 } },
+            { glm::vec3(p1.x, p2.y, 0.0f), n, { u1, v1 } },
+            { glm::vec3(p2.x, p1.y, 0.0f), n, { u2, v2 } },
+            { glm::vec3(p2.x, p2.y, 0.0f), n, { u2, v1 } }
         };
 
         device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, quad, 4);

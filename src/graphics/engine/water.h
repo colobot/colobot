@@ -80,7 +80,7 @@ public:
     void        Flush();
     //! Creates all expanses of water
     void        Create(WaterType type1, WaterType type2, const std::string& fileName,
-                       Color diffuse, Color ambient, float level, float glint, Math::Vector eddy);
+                       Color diffuse, Color ambient, float level, float glint, glm::vec3 eddy);
     //! Draw the back surface of the water
     void        DrawBack();
     //! Draws the flat surface of the water
@@ -100,7 +100,7 @@ public:
     //@}
 
     //! Adjusts the eye of the camera, not to be in the water
-    void        AdjustEye(Math::Vector &eye);
+    void        AdjustEye(glm::vec3 &eye);
 
 protected:
     //! Makes water evolve
@@ -108,7 +108,7 @@ protected:
     //! Makes evolve the steam jets on the lava
     void        LavaFrame(float rTime);
     //! Adjusts the position to normal, to imitate reflections on an expanse of water at rest
-    void        AdjustLevel(Math::Vector &pos, Math::Vector &norm, glm::vec2& uv1, glm::vec2& uv2);
+    void        AdjustLevel(glm::vec3 &pos, glm::vec3 &norm, glm::vec2& uv1, glm::vec2& uv2);
     //! Indicates if there is water in a given position
     bool        GetWater(int x, int y);
     //! Updates the positions, relative to the ground
@@ -117,7 +117,7 @@ protected:
     //! Removes all the steam jets
     void        VaporFlush();
     //! Creates a new steam
-    bool        VaporCreate(ParticleType type, Math::Vector pos, float delay);
+    bool        VaporCreate(ParticleType type, glm::vec3 pos, float delay);
     //! Makes evolve a steam jet
     void        VaporFrame(int i, float rTime);
 
@@ -135,7 +135,7 @@ protected:
     //! Amplitude of reflections
     float           m_glint = 0.0f;
     //! Amplitude of swirls
-    Math::Vector    m_eddy;
+    glm::vec3       m_eddy = { 0, 0, 0 };
     //! Diffuse color
     Color           m_diffuse;
     //! Ambient color
@@ -174,7 +174,7 @@ protected:
     {
         bool              used = false;
         ParticleType type = PARTIWATER;
-        Math::Vector      pos;
+        glm::vec3         pos = { 0, 0, 0 };
         float             delay = 0.0f;
         float             time = 0.0f;
         float             last = 0.0f;

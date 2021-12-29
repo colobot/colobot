@@ -163,7 +163,7 @@ public:
     //! Initializes all the ground with one material
     bool        InitMaterials(int id);
     //! Generates a level in the terrain
-    bool        GenerateMaterials(int *id, float min, float max, float slope, float freq, Math::Vector center, float radius);
+    bool        GenerateMaterials(int *id, float min, float max, float slope, float freq, glm::vec3 center, float radius);
 
     //! Clears the relief, resources and all other associated data
     void        FlushRelief();
@@ -179,45 +179,45 @@ public:
     bool        CreateObjects();
 
     //! Modifies the terrain's relief
-    bool        Terraform(const Math::Vector& p1, const Math::Vector& p2, float height);
+    bool        Terraform(const glm::vec3& p1, const glm::vec3& p2, float height);
 
     //@{
     //! Management of the wind
-    void         SetWind(Math::Vector speed);
-    Math::Vector GetWind();
+    void        SetWind(glm::vec3 speed);
+    glm::vec3   GetWind();
     //@}
 
     //! Gives the exact slope of the terrain at 2D (XZ) position
-    float       GetFineSlope(const Math::Vector& pos);
+    float       GetFineSlope(const glm::vec3& pos);
     //! Gives the approximate slope of the terrain at 2D (XZ) position
-    float       GetCoarseSlope(const Math::Vector& pos);
+    float       GetCoarseSlope(const glm::vec3& pos);
     //! Gives the normal vector at 2D (XZ) position
-    bool        GetNormal(Math::Vector& n, const Math::Vector &p);
+    bool        GetNormal(glm::vec3& n, const glm::vec3 &p);
     //! Returns the height of the ground level at 2D (XZ) position
-    float       GetFloorLevel(const Math::Vector& pos, bool brut=false, bool water=false);
+    float       GetFloorLevel(const glm::vec3& pos, bool brut=false, bool water=false);
     //! Returns the distance to the ground level from 3D position
-    float       GetHeightToFloor(const Math::Vector& pos, bool brut=false, bool water=false);
+    float       GetHeightToFloor(const glm::vec3& pos, bool brut=false, bool water=false);
     //! Modifies the Y coordinate of 3D position to rest on the ground floor
-    bool        AdjustToFloor(Math::Vector& pos, bool brut=false, bool water=false);
+    bool        AdjustToFloor(glm::vec3& pos, bool brut=false, bool water=false);
     //! Adjusts 3D position so that it is within standard terrain boundaries
-    bool        AdjustToStandardBounds(Math::Vector &pos);
+    bool        AdjustToStandardBounds(glm::vec3 &pos);
     //! Adjusts 3D position so that it is within terrain boundaries and the given margin
-    bool        AdjustToBounds(Math::Vector& pos, float margin);
+    bool        AdjustToBounds(glm::vec3& pos, float margin);
     //! Returns the resource type available underground at 2D (XZ) position
-    TerrainRes GetResource(const Math::Vector& pos);
+    TerrainRes GetResource(const glm::vec3& pos);
 
     //! Empty the table of elevations
     void        FlushBuildingLevel();
     //! Adds a new elevation for a building
-    bool        AddBuildingLevel(Math::Vector center, float min, float max, float height, float factor);
+    bool        AddBuildingLevel(glm::vec3 center, float min, float max, float height, float factor);
     //! Updates the elevation for a building when it was moved up (after a terraforming)
-    bool        UpdateBuildingLevel(Math::Vector center);
+    bool        UpdateBuildingLevel(glm::vec3 center);
     //! Removes the elevation for a building when it was destroyed
-    bool        DeleteBuildingLevel(Math::Vector center);
+    bool        DeleteBuildingLevel(glm::vec3 center);
     //! Returns the influence factor whether a position is on a possible rise
-    float       GetBuildingFactor(const Math::Vector& pos);
+    float       GetBuildingFactor(const glm::vec3& pos);
     //! Returns the hardness of the ground in a given place
-    float       GetHardness(const Math::Vector& pos);
+    float       GetHardness(const glm::vec3& pos);
 
     //! Returns number of mosaics
     int         GetMosaicCount();
@@ -229,9 +229,9 @@ public:
     float       GetReliefScale();
 
     //! Shows the flat areas on the ground
-    void        ShowFlatGround(Math::Vector pos);
+    void        ShowFlatGround(glm::vec3 pos);
     //! Calculates the radius of the largest flat area available
-    float       GetFlatZoneRadius(Math::Vector center, float max);
+    float       GetFlatZoneRadius(glm::vec3 center, float max);
 
     //@{
     //! Management of the global max flying height
@@ -241,17 +241,17 @@ public:
     //! Empty the table of flying limits
     void        FlushFlyingLimit();
     //! Adds a new flying limit
-    void        AddFlyingLimit(Math::Vector center, float extRadius, float intRadius, float maxHeight);
+    void        AddFlyingLimit(glm::vec3 center, float extRadius, float intRadius, float maxHeight);
     //! Returns the maximum height of flight
-    float       GetFlyingLimit(Math::Vector pos, bool noLimit);
+    float       GetFlyingLimit(glm::vec3 pos, bool noLimit);
 
 protected:
     //! Adds a point of elevation in the buffer of relief
-    bool        AddReliefPoint(Math::Vector pos, float scaleRelief);
+    bool        AddReliefPoint(glm::vec3 pos, float scaleRelief);
     //! Adjust the edges of each mosaic to be compatible with all lower resolutions
     void        AdjustRelief();
     //! Calculates a vector of the terrain
-    Math::Vector GetVector(int x, int y);
+    glm::vec3   GetVector(int x, int y);
     //! Calculates a vertex of the terrain
     VertexTex2  GetVertex(int x, int y, int step);
     //! Creates all objects of a mosaic
@@ -282,7 +282,7 @@ protected:
     void        FlushMaterialPoints();
 
     //! Adjusts a position according to a possible rise
-    void        AdjustBuildingLevel(Math::Vector &p);
+    void        AdjustBuildingLevel(glm::vec3 &p);
 
 protected:
     CEngine*        m_engine;
@@ -371,7 +371,7 @@ protected:
      */
     struct BuildingLevel
     {
-        Math::Vector center{ 0, 0, 0 };
+        glm::vec3    center{ 0, 0, 0 };
         float        factor = 0.0f;
         float        min = 0.0f;
         float        max = 0.0f;
@@ -385,7 +385,7 @@ protected:
     std::vector<BuildingLevel> m_buildingLevels;
 
     //! Wind speed
-    Math::Vector    m_wind{ 0, 0, 0 };
+    glm::vec3    m_wind{ 0, 0, 0 };
 
     //! Global flying height limit
     float           m_flyingMaxHeight;
@@ -396,7 +396,7 @@ protected:
      */
     struct FlyingLimit
     {
-        Math::Vector center{ 0, 0, 0 };
+        glm::vec3    center{ 0, 0, 0 };
         float        extRadius = 0.0f;
         float        intRadius = 0.0f;
         float        maxHeight = 0.0f;

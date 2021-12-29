@@ -92,16 +92,16 @@ void CWater::LavaFrame(float rTime)
 
     if (m_time - m_lastLava >= 0.1f)
     {
-        Math::Vector eye    = m_engine->GetEyePt();
-        Math::Vector lookat = m_engine->GetLookatPt();
+        glm::vec3 eye    = m_engine->GetEyePt();
+        glm::vec3 lookat = m_engine->GetLookatPt();
 
         float distance = Math::Rand()*200.0f;
         float shift = (Math::Rand()-0.5f)*200.0f;
 
-        Math::Vector dir = glm::normalize(lookat-eye);
-        Math::Vector pos = eye + dir*distance;
+        glm::vec3 dir = glm::normalize(lookat-eye);
+        glm::vec3 pos = eye + dir*distance;
 
-        Math::Vector perp;
+        glm::vec3 perp{};
         perp.x = -dir.z;
         perp.y =  dir.y;
         perp.z =  dir.x;
@@ -140,7 +140,7 @@ void CWater::VaporFlush()
     }
 }
 
-bool CWater::VaporCreate(ParticleType type, Math::Vector pos, float delay)
+bool CWater::VaporCreate(ParticleType type, glm::vec3 pos, float delay)
 {
     for (int i = 0; i < static_cast<int>( m_vapors.size() ); i++)
     {
@@ -183,11 +183,11 @@ void CWater::VaporFrame(int i, float rTime)
             {
                 for (int j = 0; j < 10; j++)
                 {
-                    Math::Vector pos = m_vapors[i].pos;
+                    glm::vec3 pos = m_vapors[i].pos;
                     pos.x += (Math::Rand()-0.5f)*2.0f;
                     pos.z += (Math::Rand()-0.5f)*2.0f;
                     pos.y -= 1.0f;
-                    Math::Vector speed;
+                    glm::vec3 speed{};
                     speed.x = (Math::Rand()-0.5f)*6.0f;
                     speed.z = (Math::Rand()-0.5f)*6.0f;
                     speed.y = 8.0f+Math::Rand()*5.0f;
@@ -199,11 +199,11 @@ void CWater::VaporFrame(int i, float rTime)
             }
             else if (m_vapors[i].type == PARTIFLAME)
             {
-                Math::Vector pos = m_vapors[i].pos;
+                glm::vec3 pos = m_vapors[i].pos;
                 pos.x += (Math::Rand()-0.5f)*8.0f;
                 pos.z += (Math::Rand()-0.5f)*8.0f;
                 pos.y -= 2.0f;
-                Math::Vector speed;
+                glm::vec3 speed{};
                 speed.x = (Math::Rand()-0.5f)*2.0f;
                 speed.z = (Math::Rand()-0.5f)*2.0f;
                 speed.y = 4.0f+Math::Rand()*4.0f;
@@ -214,11 +214,11 @@ void CWater::VaporFrame(int i, float rTime)
             }
             else
             {
-                Math::Vector pos = m_vapors[i].pos;
+                glm::vec3 pos = m_vapors[i].pos;
                 pos.x += (Math::Rand()-0.5f)*4.0f;
                 pos.z += (Math::Rand()-0.5f)*4.0f;
                 pos.y -= 2.0f;
-                Math::Vector speed;
+                glm::vec3 speed{};
                 speed.x = (Math::Rand()-0.5f)*2.0f;
                 speed.z = (Math::Rand()-0.5f)*2.0f;
                 speed.y = 8.0f+Math::Rand()*8.0f;
@@ -235,7 +235,7 @@ void CWater::VaporFrame(int i, float rTime)
     }
 }
 
-void CWater::AdjustLevel(Math::Vector &pos, Math::Vector &norm,
+void CWater::AdjustLevel(glm::vec3 &pos, glm::vec3 &norm,
                          glm::vec2& uv1, glm::vec2& uv2)
 {
     float t1 = m_time*1.5f + pos.x*0.1f * pos.z*0.2f;
@@ -249,7 +249,7 @@ void CWater::AdjustLevel(Math::Vector &pos, Math::Vector &norm,
 
     t1 = m_time*0.50f + pos.x*2.1f + pos.z*1.1f;
     float t2 = m_time*0.75f + pos.x*2.0f + pos.z*1.0f;
-    norm = Math::Vector(sinf(t1)*m_glint, 1.0f, sinf(t2)*m_glint);
+    norm = glm::vec3(sinf(t1)*m_glint, 1.0f, sinf(t2)*m_glint);
 }
 
 /** This surface prevents to see the sky (background) underwater! */
@@ -259,8 +259,8 @@ void CWater::DrawBack()
     if (m_type[0] == WATER_NULL) return;
     if (m_lines.empty()) return;
 
-    Math::Vector eye = m_engine->GetEyePt();
-    Math::Vector lookat = m_engine->GetLookatPt();
+    glm::vec3 eye = m_engine->GetEyePt();
+    glm::vec3 lookat = m_engine->GetLookatPt();
 
     Material material;
     material.diffuse = m_diffuse;
@@ -280,14 +280,14 @@ void CWater::DrawBack()
     matrix.LoadIdentity();
     device->SetTransform(TRANSFORM_WORLD, matrix);
 
-    Math::Vector p;
+    glm::vec3 p = { 0, 0, 0 };
     p.x = eye.x;
     p.z = eye.z;
     float dist = Math::DistanceProjected(eye, lookat);
     p.x = (lookat.x-eye.x)*deep*1.0f/dist + eye.x;
     p.z = (lookat.z-eye.z)*deep*1.0f/dist + eye.z;
 
-    Math::Vector p1, p2;
+    glm::vec3 p1{}, p2{};
     p1.x =  (lookat.z-eye.z)*deep*2.0f/dist + p.x;
     p1.z = -(lookat.x-eye.x)*deep*2.0f/dist + p.z;
     p2.x = -(lookat.z-eye.z)*deep*2.0f/dist + p.x;
@@ -300,10 +300,10 @@ void CWater::DrawBack()
 
     VertexCol vertices[4] =
     {
-        { Math::Vector(p1.x, p2.y, p1.z), white },
-        { Math::Vector(p1.x, p1.y, p1.z), white },
-        { Math::Vector(p2.x, p2.y, p2.z), white },
-        { Math::Vector(p2.x, p1.y, p2.z), white }
+        { glm::vec3(p1.x, p2.y, p1.z), white },
+        { glm::vec3(p1.x, p1.y, p1.z), white },
+        { glm::vec3(p2.x, p2.y, p2.z), white },
+        { glm::vec3(p2.x, p1.y, p2.z), white }
     };
 
     device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertices, 4);
@@ -322,7 +322,7 @@ void CWater::DrawSurf()
 
     std::vector<Vertex> vertices((m_brickCount+2)*2, Vertex());
 
-    Math::Vector eye = m_engine->GetEyePt();
+    glm::vec3 eye = m_engine->GetEyePt();
 
     int rankview = m_engine->GetRankView();
     bool under = ( rankview == 1);
@@ -367,13 +367,13 @@ void CWater::DrawSurf()
 
     for (int i = 0; i < static_cast<int>( m_lines.size() ); i++)
     {
-        Math::Vector pos;
+        glm::vec3 pos{};
         pos.y = m_level;
         pos.z = m_lines[i].pz;
         pos.x = m_lines[i].px1;
 
         // Visible line?
-        Math::Vector p = pos;
+        glm::vec3 p = pos;
         p.x += size*(m_lines[i].len-1);
         float radius = sqrtf(powf(size, 2.0f)+powf(size*m_lines[i].len, 2.0f));
         if (Math::Distance(p, eye) > deep + radius)
@@ -385,7 +385,7 @@ void CWater::DrawSurf()
         int vertexIndex = 0;
 
         glm::vec2 uv1, uv2;
-        Math::Vector n;
+        glm::vec3 n{};
 
         p.x = pos.x-size;
         p.z = pos.z-sizez;
@@ -440,7 +440,7 @@ bool CWater::GetWater(int x, int y)
     {
         for (int dx = 0; dx <= m_subdiv; dx++)
         {
-            Math::Vector pos;
+            glm::vec3 pos{};
             pos.x = (x+dx)*size - offset;
             pos.z = (y+dy)*size - offset;
             pos.y = 0.0f;
@@ -471,7 +471,7 @@ void CWater::CreateLine(int x, int y, int len)
 
 void CWater::Create(WaterType type1, WaterType type2, const std::string& fileName,
                     Color diffuse, Color ambient,
-                    float level, float glint, Math::Vector eddy)
+                    float level, float glint, glm::vec3 eddy)
 {
     m_type[0]  = type1;
     m_type[1]  = type2;
@@ -612,7 +612,7 @@ bool CWater::GetLava()
     return m_lava;
 }
 
-void CWater::AdjustEye(Math::Vector &eye)
+void CWater::AdjustEye(glm::vec3 &eye)
 {
     if (m_lava)
     {

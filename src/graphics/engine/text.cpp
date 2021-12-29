@@ -1016,10 +1016,10 @@ void CText::DrawHighlight(FontMetaChar hl, const glm::ivec2& pos, const glm::ive
 
     VertexCol quad[] =
     {
-        { Math::Vector(p1.x, p2.y, 0.0f), grad[3] },
-        { Math::Vector(p1.x, p1.y, 0.0f), grad[0] },
-        { Math::Vector(p2.x, p2.y, 0.0f), grad[2] },
-        { Math::Vector(p2.x, p1.y, 0.0f), grad[1] }
+        { glm::vec3(p1.x, p2.y, 0.0f), grad[3] },
+        { glm::vec3(p1.x, p1.y, 0.0f), grad[0] },
+        { glm::vec3(p2.x, p2.y, 0.0f), grad[2] },
+        { glm::vec3(p2.x, p1.y, 0.0f), grad[1] }
     };
 
     m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, quad, 4);

@@ -88,7 +88,7 @@ protected:
     void        DisplayError(PyroType type, CObject* obj);
 
     //! Creates light to accompany a pyrotechnic effect
-    void        CreateLight(Math::Vector pos, float height);
+    void        CreateLight(glm::vec3 pos, float height);
     //! Removes the binding to a pyrotechnic effect
     void        DeleteObject(bool primary, bool secondary);
 
@@ -103,7 +103,7 @@ protected:
     //! Starts a vehicle fire
     void        BurnStart();
     //! Adds a part move
-    void        BurnAddPart(int part, Math::Vector pos, Math::Vector angle);
+    void        BurnAddPart(int part, glm::vec3 pos, glm::vec3 angle);
     //! Advances of a vehicle fire
     void        BurnProgress();
     //! Indicates whether a part should be retained
@@ -137,8 +137,8 @@ protected:
     CRobotMain*       m_main = nullptr;
     CSoundInterface*  m_sound = nullptr;
 
-    Math::Vector    m_pos;          // center of the effect
-    Math::Vector    m_posPower;     // center of the battery
+    glm::vec3       m_pos = { 0, 0, 0 };          // center of the effect
+    glm::vec3       m_posPower = { 0, 0, 0 };     // center of the battery
     bool            m_power = false;       // battery exists?
     PyroType        m_type = PT_NULL;
     float           m_force = 0.0f;
@@ -167,10 +167,10 @@ protected:
     struct PyroBurnPart
     {
         int             part = 0;
-        Math::Vector    initialPos;
-        Math::Vector    finalPos;
-        Math::Vector    initialAngle;
-        Math::Vector    finalAngle;
+        glm::vec3       initialPos = { 0, 0, 0 };
+        glm::vec3       finalPos = { 0, 0, 0 };
+        glm::vec3       initialAngle = { 0, 0, 0 };
+        glm::vec3       finalAngle = { 0, 0, 0 };
     };
     PyroBurnPart    m_burnPart[10];
     int             m_burnKeepPart[10] = {};

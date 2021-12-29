@@ -171,9 +171,9 @@ struct Particle
     float           mass = 0.0f;       // mass of the particle (in rebounding)
     float           weight = 0.0f;     // weight of the particle (for noise)
     float           duration = 0.0f;   // length of life
-    Math::Vector    pos;        // absolute position (relative if object links)
-    Math::Vector    goal;       // goal position (if ray)
-    Math::Vector    speed;      // speed of displacement
+    glm::vec3       pos = { 0, 0, 0 };        // absolute position (relative if object links)
+    glm::vec3       goal = { 0, 0, 0 };       // goal position (if ray)
+    glm::vec3       speed = { 0, 0, 0 };      // speed of displacement
     float           windSensitivity = 0.0f;
     short           bounce = 0;     // number of rebounds
     glm::vec2       dim;        // dimensions of the rectangle
@@ -203,14 +203,14 @@ struct Track
     float           width = 0.0f;      // tail width
     int             posUsed = 0.0f;    // number of positions in "pos"
     int             head = 0;       // head to write index
-    Math::Vector    pos[MAXTRACKLEN];
+    glm::vec3    pos[MAXTRACKLEN];
     float           len[MAXTRACKLEN] = {};
 };
 
 struct WheelTrace
 {
     TraceColor      color = TraceColor::Black;
-    Math::Vector    pos[4];
+    glm::vec3    pos[4];
 };
 
 
@@ -236,31 +236,31 @@ public:
     void        FlushParticle(int sheet);
 
     //! Creates a new particle
-    int         CreateParticle(Math::Vector pos, Math::Vector speed, const glm::vec2& dim,
+    int         CreateParticle(glm::vec3 pos, glm::vec3 speed, const glm::vec2& dim,
                                ParticleType type, float duration = 1.0f, float mass = 0.0f,
                                float windSensitivity = 1.0f, int sheet = 0);
 
     //! Creates a new triangular particle (debris)
-    int         CreateFrag(Math::Vector pos, Math::Vector speed, EngineTriangle* triangle,
+    int         CreateFrag(glm::vec3 pos, glm::vec3 speed, EngineTriangle* triangle,
                            ParticleType type, float duration = 1.0f, float mass = 0.0f,
                            float windSensitivity = 1.0f, int sheet = 0);
 
     //! Creates a new particle being a part of object
-    int         CreatePart(Math::Vector pos, Math::Vector speed, ParticleType type,
+    int         CreatePart(glm::vec3 pos, glm::vec3 speed, ParticleType type,
                            float duration = 1.0f, float mass = 0.0f, float weight = 0.0f,
                            float windSensitivity = 1.0f, int sheet = 0);
 
     //! Creates a new linear particle (radius)
-    int         CreateRay(Math::Vector pos, Math::Vector goal, ParticleType type, const glm::vec2& dim,
+    int         CreateRay(glm::vec3 pos, glm::vec3 goal, ParticleType type, const glm::vec2& dim,
                           float duration = 1.0f, int sheet = 0);
 
     //! Creates a particle with a trail
-    int         CreateTrack(Math::Vector pos, Math::Vector speed, const glm::vec2& dim, ParticleType type,
+    int         CreateTrack(glm::vec3 pos, glm::vec3 speed, const glm::vec2& dim, ParticleType type,
                             float duration = 1.0f, float mass = 0.0f, float length = 10.0f, float width = 1.0f);
 
     //! Creates a tire mark
-    void        CreateWheelTrace(const Math::Vector &p1, const Math::Vector &p2, const Math::Vector &p3,
-                                 const Math::Vector &p4, TraceColor color);
+    void        CreateWheelTrace(const glm::vec3 &p1, const glm::vec3 &p2, const glm::vec3 &p3,
+                                 const glm::vec3 &p4, TraceColor color);
 
     //! Removes all particles of a given type
     void        DeleteParticle(ParticleType type);
@@ -270,19 +270,19 @@ public:
     void        SetObjectLink(int channel, CObject *object);
     //! Specifies the parent object that created the particle
     void        SetObjectFather(int channel, CObject *object);
-    void        SetPosition(int channel, Math::Vector pos);
+    void        SetPosition(int channel, glm::vec3 pos);
     void        SetDimension(int channel, const glm::vec2& dim);
     void        SetZoom(int channel, float zoom);
     void        SetAngle(int channel, float angle);
     void        SetIntensity(int channel, float intensity);
-    void        SetParam(int channel, Math::Vector pos, const glm::vec2& dim, float zoom, float angle, float intensity);
+    void        SetParam(int channel, glm::vec3 pos, const glm::vec2& dim, float zoom, float angle, float intensity);
     void        SetPhase(int channel, ParticlePhase phase, float duration);
 
     //! Returns the position of the particle
-    bool        GetPosition(int channel, Math::Vector &pos);
+    bool        GetPosition(int channel, glm::vec3 &pos);
 
     //! Returns the color if you're in the fog or black if you're not
-    Color       GetFogColor(Math::Vector pos);
+    Color       GetFogColor(glm::vec3 pos);
 
     //! Indicates whether a sheet is updated or not
     void        SetFrameUpdate(int sheet, bool update);
@@ -322,13 +322,13 @@ protected:
     //! Draws a tire mark
     void        DrawParticleWheel(int i);
     //! Seeks if an object collided with a bullet
-    CObject*    SearchObjectGun(Math::Vector old, Math::Vector pos, ParticleType type, CObject *father);
+    CObject*    SearchObjectGun(glm::vec3 old, glm::vec3 pos, ParticleType type, CObject *father);
     //! Seeks if an object collided with a ray
-    CObject*    SearchObjectRay(Math::Vector pos, Math::Vector goal, ParticleType type, CObject *father);
+    CObject*    SearchObjectRay(glm::vec3 pos, glm::vec3 goal, ParticleType type, CObject *father);
     //! Sounded one
-    void        Play(SoundType sound, Math::Vector pos, float amplitude);
+    void        Play(SoundType sound, glm::vec3 pos, float amplitude);
     //! Moves a drag; returns true if the drag is finished
-    bool        TrackMove(int i, Math::Vector pos, float progress);
+    bool        TrackMove(int i, glm::vec3 pos, float progress);
     //! Draws a drag
     void        TrackDraw(int i, ParticleType type);
 

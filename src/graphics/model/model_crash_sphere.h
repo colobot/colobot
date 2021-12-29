@@ -19,7 +19,9 @@
 
 #pragma once
 
-#include "math/vector.h"
+#include <string>
+
+#include <glm/glm.hpp>
 
 namespace Gfx
 {
@@ -30,7 +32,7 @@ namespace Gfx
  */
 struct ModelCrashSphere
 {
-    Math::Vector position{ 0, 0, 0 };
+    glm::vec3 position = { 0, 0, 0 };
     float radius = 0.0f;
     std::string sound;
     float hardness = 0.0f;

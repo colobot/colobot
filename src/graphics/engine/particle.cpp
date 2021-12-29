@@ -175,7 +175,7 @@ static char RandomLetter()
 }
 
 /** Returns the channel of the particle created or -1 on error. */
-int CParticle::CreateParticle(Math::Vector pos, Math::Vector speed, const glm::vec2& dim,
+int CParticle::CreateParticle(glm::vec3 pos, glm::vec3 speed, const glm::vec2& dim,
                               ParticleType type,
                               float duration, float mass,
                               float windSensitivity, int sheet)
@@ -355,7 +355,7 @@ int CParticle::CreateParticle(Math::Vector pos, Math::Vector speed, const glm::v
 }
 
 /** Returns the channel of the particle created or -1 on error */
-int CParticle::CreateFrag(Math::Vector pos, Math::Vector speed,
+int CParticle::CreateFrag(glm::vec3 pos, glm::vec3 speed,
                           EngineTriangle *triangle,
                           ParticleType type,
                           float duration, float mass,
@@ -398,17 +398,17 @@ int CParticle::CreateFrag(Math::Vector pos, Math::Vector speed,
 
             m_totalInterface[t][sheet] ++;
 
-            Math::Vector    p1;
+            glm::vec3    p1;
             p1.x = m_triangle[i].triangle[0].position.x;
             p1.y = m_triangle[i].triangle[0].position.y;
             p1.z = m_triangle[i].triangle[0].position.z;
 
-            Math::Vector p2;
+            glm::vec3 p2;
             p2.x = m_triangle[i].triangle[1].position.x;
             p2.y = m_triangle[i].triangle[1].position.y;
             p2.z = m_triangle[i].triangle[1].position.z;
 
-            Math::Vector p3;
+            glm::vec3 p3;
             p3.x = m_triangle[i].triangle[2].position.x;
             p3.y = m_triangle[i].triangle[2].position.y;
             p3.z = m_triangle[i].triangle[2].position.z;
@@ -418,9 +418,9 @@ int CParticle::CreateFrag(Math::Vector pos, Math::Vector speed,
             float l3 = Math::Distance(p3, p1);
             float dx = fabs(Math::Min(l1, l2, l3))*0.5f;
             float dy = fabs(Math::Max(l1, l2, l3))*0.5f;
-            p1 = Math::Vector(-dx,  dy, 0.0f);
-            p2 = Math::Vector( dx,  dy, 0.0f);
-            p3 = Math::Vector(-dx, -dy, 0.0f);
+            p1 = glm::vec3(-dx,  dy, 0.0f);
+            p2 = glm::vec3( dx,  dy, 0.0f);
+            p3 = glm::vec3(-dx, -dy, 0.0f);
 
             m_triangle[i].triangle[0].position.x = p1.x;
             m_triangle[i].triangle[0].position.y = p1.y;
@@ -434,7 +434,7 @@ int CParticle::CreateFrag(Math::Vector pos, Math::Vector speed,
             m_triangle[i].triangle[2].position.y = p3.y;
             m_triangle[i].triangle[2].position.z = p3.z;
 
-            Math::Vector n(0.0f, 0.0f, -1.0f);
+            glm::vec3 n(0.0f, 0.0f, -1.0f);
 
             m_triangle[i].triangle[0].normal.x = n.x;
             m_triangle[i].triangle[0].normal.y = n.y;
@@ -460,7 +460,7 @@ int CParticle::CreateFrag(Math::Vector pos, Math::Vector speed,
 
 
 /** Returns the channel of the particle created or -1 on error */
-int CParticle::CreatePart(Math::Vector pos, Math::Vector speed,
+int CParticle::CreatePart(glm::vec3 pos, glm::vec3 speed,
                           ParticleType type,
                           float duration, float mass, float weight,
                           float windSensitivity, int sheet)
@@ -508,7 +508,7 @@ int CParticle::CreatePart(Math::Vector pos, Math::Vector speed,
 }
 
 /** Returns the channel of the particle created or -1 on error */
-int CParticle::CreateRay(Math::Vector pos, Math::Vector goal,
+int CParticle::CreateRay(glm::vec3 pos, glm::vec3 goal,
                           ParticleType type, const glm::vec2& dim,
                           float duration, int sheet)
 {
@@ -537,7 +537,7 @@ int CParticle::CreateRay(Math::Vector pos, Math::Vector goal,
             m_particle[i].duration  = duration;
             m_particle[i].pos       = pos;
             m_particle[i].goal      = goal;
-            m_particle[i].speed     = Math::Vector(0.0f, 0.0f, 0.0f);
+            m_particle[i].speed     = glm::vec3(0.0f, 0.0f, 0.0f);
             m_particle[i].windSensitivity = 0.0f;
             m_particle[i].dim       = dim;
             m_particle[i].zoom      = 1.0f;
@@ -566,7 +566,7 @@ int CParticle::CreateRay(Math::Vector pos, Math::Vector goal,
 }
 
 /** "length" is the length of the tail of drag (in seconds)! */
-int CParticle::CreateTrack(Math::Vector pos, Math::Vector speed, const glm::vec2& dim,
+int CParticle::CreateTrack(glm::vec3 pos, glm::vec3 speed, const glm::vec2& dim,
                            ParticleType type, float duration, float mass,
                            float length, float width)
 {
@@ -598,8 +598,8 @@ int CParticle::CreateTrack(Math::Vector pos, Math::Vector speed, const glm::vec2
     return channel;
 }
 
-void CParticle::CreateWheelTrace(const Math::Vector &p1, const Math::Vector &p2,
-                                 const Math::Vector &p3, const Math::Vector &p4,
+void CParticle::CreateWheelTrace(const glm::vec3 &p1, const glm::vec3 &p2,
+                                 const glm::vec3 &p3, const glm::vec3 &p4,
                                  TraceColor color)
 {
     int max = MAXWHEELTRACE;
@@ -708,7 +708,7 @@ void CParticle::SetObjectFather(int channel, CObject *object)
     m_particle[channel].objFather = object;
 }
 
-void CParticle::SetPosition(int channel, Math::Vector pos)
+void CParticle::SetPosition(int channel, glm::vec3 pos)
 {
     if (!CheckChannel(channel))  return;
     m_particle[channel].pos = pos;
@@ -738,7 +738,7 @@ void CParticle::SetIntensity(int channel, float intensity)
     m_particle[channel].intensity = intensity;
 }
 
-void CParticle::SetParam(int channel, Math::Vector pos, const glm::vec2& dim, float zoom,
+void CParticle::SetParam(int channel, glm::vec3 pos, const glm::vec2& dim, float zoom,
                           float angle, float intensity)
 {
     if (!CheckChannel(channel))  return;
@@ -757,7 +757,7 @@ void CParticle::SetPhase(int channel, ParticlePhase phase, float duration)
     m_particle[channel].phaseTime = m_particle[channel].time;
 }
 
-bool CParticle::GetPosition(int channel, Math::Vector &pos)
+bool CParticle::GetPosition(int channel, glm::vec3 &pos)
 {
     if (!CheckChannel(channel))  return false;
     pos = m_particle[channel].pos;
@@ -788,11 +788,11 @@ void CParticle::FrameParticle(float rTime)
         m_absTime += rTime;
     }
 
-    Math::Vector wind = m_terrain->GetWind();
-    Math::Vector eye = m_engine->GetEyePt();
+    glm::vec3 wind = m_terrain->GetWind();
+    glm::vec3 eye = m_engine->GetEyePt();
 
     glm::vec2 ts, ti;
-    Math::Vector pos;
+    glm::vec3 pos = { 0, 0, 0 };
 
     for (int i = 0; i < MAXPARTICULE*MAXPARTITYPE; i++)
     {
@@ -1117,7 +1117,7 @@ void CParticle::FrameParticle(float rTime)
                     {
                         pos = m_particle[i].goal;
                         m_terrain->AdjustToFloor(pos, true);
-                        Math::Vector speed;
+                        glm::vec3 speed;
                         speed.x = 0.0f;
                         speed.z = 0.0f;
                         speed.y = 0.0f;
@@ -1164,7 +1164,7 @@ void CParticle::FrameParticle(float rTime)
                     if (m_exploGunCounter % 2 == 0)
                     {
                         pos = m_particle[i].pos;
-                        Math::Vector speed;
+                        glm::vec3 speed;
                         speed.x = 0.0f;
                         speed.z = 0.0f;
                         speed.y = 0.0f;
@@ -1224,7 +1224,7 @@ void CParticle::FrameParticle(float rTime)
                 {
                     if (object->GetType() == OBJECT_MOBILErs && dynamic_cast<CShielder&>(*object).GetActiveShieldRadius() > 0.0f)  // protected by shield?
                     {
-                        CreateParticle(m_particle[i].pos, Math::Vector(0.0f, 0.0f, 0.0f), { 6.0f, 6.0f }, PARTIGUNDEL, 2.0f);
+                        CreateParticle(m_particle[i].pos, glm::vec3(0.0f, 0.0f, 0.0f), { 6.0f, 6.0f }, PARTIGUNDEL, 2.0f);
                         if (m_lastTimeGunDel > 0.2f)
                         {
                             m_lastTimeGunDel = 0.0f;
@@ -1272,7 +1272,7 @@ void CParticle::FrameParticle(float rTime)
                 {
                     if (object->GetType() == OBJECT_MOBILErs && dynamic_cast<CShielder&>(*object).GetActiveShieldRadius() > 0.0f)
                     {
-                        CreateParticle(m_particle[i].pos, Math::Vector(0.0f, 0.0f, 0.0f), { 6.0f, 6.0f }, PARTIGUNDEL, 2.0f);
+                        CreateParticle(m_particle[i].pos, glm::vec3(0.0f, 0.0f, 0.0f), { 6.0f, 6.0f }, PARTIGUNDEL, 2.0f);
                         if (m_lastTimeGunDel > 0.2f)
                         {
                             m_lastTimeGunDel = 0.0f;
@@ -1317,10 +1317,7 @@ void CParticle::FrameParticle(float rTime)
                     {
                         pos = m_particle[i].goal;
                         m_terrain->AdjustToFloor(pos, true);
-                        Math::Vector speed;
-                        speed.x = 0.0f;
-                        speed.z = 0.0f;
-                        speed.y = 0.0f;
+                        glm::vec3 speed = { 0, 0, 0 };
                         glm::vec2 dim;
                         dim.x = Math::Rand()*4.0f+2.0f;
                         dim.y = dim.x;
@@ -1352,10 +1349,7 @@ void CParticle::FrameParticle(float rTime)
                     if (m_exploGunCounter % 2 == 0)
                     {
                         pos = m_particle[i].pos;
-                        Math::Vector speed;
-                        speed.x = 0.0f;
-                        speed.z = 0.0f;
-                        speed.y = 0.0f;
+                        glm::vec3 speed = { 0, 0, 0 };
                         glm::vec2 dim;
                         dim.x = Math::Rand()*4.0f+2.0f;
                         dim.y = dim.x;
@@ -1897,7 +1891,7 @@ void CParticle::FrameParticle(float rTime)
                 m_particle[i].testTime = 0.0f;
 
                 pos = m_particle[i].pos;
-                Math::Vector speed = Math::Vector(0.0f, 0.0f, 0.0f);
+                glm::vec3 speed = glm::vec3(0.0f, 0.0f, 0.0f);
                 glm::vec2 dim;
                 dim.x = 1.0f*(Math::Rand()*0.8f+0.6f);
                 dim.y = dim.x;
@@ -1925,7 +1919,7 @@ void CParticle::FrameParticle(float rTime)
                 int total = static_cast<int>((10.0f*m_engine->GetParticleDensity()));
                 for (int j = 0; j < total; j++)
                 {
-                    Math::Vector speed;
+                    glm::vec3 speed;
                     speed.x = (Math::Rand()-0.5f)*20.0f;
                     speed.y = (Math::Rand()-0.5f)*20.0f;
                     speed.z = (Math::Rand()-0.5f)*20.0f;
@@ -1934,7 +1928,7 @@ void CParticle::FrameParticle(float rTime)
                 total = static_cast<int>((5.0f*m_engine->GetParticleDensity()));
                 for (int j = 0; j < total; j++)
                 {
-                    Math::Vector speed;
+                    glm::vec3 speed;
                     speed.x = (Math::Rand()-0.5f)*20.0f;
                     speed.y = (Math::Rand()-0.5f)*20.0f;
                     speed.z = (Math::Rand()-0.5f)*20.0f;
@@ -2457,7 +2451,7 @@ void CParticle::FrameParticle(float rTime)
     }
 }
 
-bool CParticle::TrackMove(int i, Math::Vector pos, float progress)
+bool CParticle::TrackMove(int i, glm::vec3 pos, float progress)
 {
     if (i < 0 || i >= MAXTRACK)  return true;
     if (! m_track[i].used) return true;
@@ -2466,7 +2460,7 @@ bool CParticle::TrackMove(int i, Math::Vector pos, float progress)
     {
         int h = m_track[i].head;
 
-        Math::Vector last;
+        glm::vec3 last = { 0, 0, 0 };
 
         if ( m_track[i].posUsed == 1 ||
              m_track[i].last+m_track[i].step <= progress )
@@ -2602,14 +2596,14 @@ void CParticle::TrackDraw(int i, ParticleType type)
     }
 
     h  = m_track[i].head;
-    Math::Vector p1 = m_track[i].pos[h];
+    glm::vec3 p1 = m_track[i].pos[h];
     float f1 = m_track[i].intensity;
 
-    Math::Vector eye = m_engine->GetEyePt();
+    glm::vec3 eye = m_engine->GetEyePt();
     float a = Math::RotateAngle(eye.x-p1.x, eye.z-p1.z);
 
     Vertex vertex[4];
-    Math::Vector corner[4];
+    glm::vec3 corner[4];
 
     for (int counter = 0; counter < m_track[i].posUsed-1; counter++)
     {
@@ -2619,14 +2613,13 @@ void CParticle::TrackDraw(int i, ParticleType type)
         h --;
         if (h < 0) h = MAXTRACKLEN-1;
 
-        Math::Vector p2 = m_track[i].pos[h];
+        glm::vec3 p2 = m_track[i].pos[h];
 
-        Math::Vector n = glm::normalize(p1-eye);
+        glm::vec3 n = glm::normalize(p1-eye);
 
-        Math::Vector p;
         glm::vec2 rot;
 
-        p = p1;
+        glm::vec3 p = p1;
         p.x += f1*m_track[i].width;
         rot = Math::RotatePoint({ p1.x, p1.z }, a + Math::PI / 2.0f, { p.x, p.z });
         corner[0].x = rot.x;
@@ -2676,14 +2669,14 @@ void CParticle::DrawParticleTriangle(int i)
 {
     if (m_particle[i].zoom == 0.0f)  return;
 
-    Math::Vector eye = m_engine->GetEyePt();
-    Math::Vector pos = m_particle[i].pos;
+    glm::vec3 eye = m_engine->GetEyePt();
+    glm::vec3 pos = m_particle[i].pos;
 
     CObject* object = m_particle[i].objLink;
     if (object != nullptr)
         pos += object->GetPosition();
 
-    Math::Vector angle;
+    glm::vec3 angle;
     angle.x = -Math::RotateAngle(Math::DistanceProjected(pos, eye), pos.y-eye.y);
     angle.y = Math::RotateAngle(pos.z-eye.z, pos.x-eye.x);
     angle.z = m_particle[i].angle;
@@ -2707,14 +2700,14 @@ void CParticle::DrawParticleNorm(int i)
     if (m_particle[i].intensity == 0.0f) return;
 
 
-    Math::Vector corner[4];
+    glm::vec3 corner[4];
     Vertex vertex[4];
 
     if (m_particle[i].sheet == SH_INTERFACE)
     {
-        Math::Vector pos = m_particle[i].pos;
+        glm::vec3 pos = m_particle[i].pos;
 
-        Math::Vector n(0.0f, 0.0f, -1.0f);
+        glm::vec3 n(0.0f, 0.0f, -1.0f);
 
         glm::vec2 dim;
         dim.x = m_particle[i].dim.x * zoom;
@@ -2746,14 +2739,14 @@ void CParticle::DrawParticleNorm(int i)
     }
     else
     {
-        Math::Vector eye = m_engine->GetEyePt();
-        Math::Vector pos = m_particle[i].pos;
+        glm::vec3 eye = m_engine->GetEyePt();
+        glm::vec3 pos = m_particle[i].pos;
 
         CObject* object = m_particle[i].objLink;
         if (object != nullptr)
             pos += object->GetPosition();
 
-        Math::Vector angle;
+        glm::vec3 angle;
         angle.x = -Math::RotateAngle(Math::DistanceProjected(pos, eye), pos.y-eye.y);
         angle.y = Math::RotateAngle(pos.z-eye.z, pos.x-eye.x);
         angle.z = m_particle[i].angle;
@@ -2765,7 +2758,7 @@ void CParticle::DrawParticleNorm(int i)
         mat.Set(3, 4, pos.z);
         m_device->SetTransform(TRANSFORM_WORLD, mat);
 
-        Math::Vector n(0.0f, 0.0f, -1.0f);
+        glm::vec3 n(0.0f, 0.0f, -1.0f);
 
         glm::vec2 dim;
         dim.x = m_particle[i].dim.x * zoom;
@@ -2802,13 +2795,13 @@ void CParticle::DrawParticleFlat(int i)
     if (m_particle[i].zoom == 0.0f) return;
     if (m_particle[i].intensity == 0.0f) return;
 
-    Math::Vector pos = m_particle[i].pos;
+    glm::vec3 pos = m_particle[i].pos;
 
     CObject* object = m_particle[i].objLink;
     if (object != nullptr)
         pos += object->GetPosition();
 
-    Math::Vector angle;
+    glm::vec3 angle;
     angle.x = Math::PI/2.0f;
     angle.y = 0.0f;
     angle.z = m_particle[i].angle;
@@ -2816,7 +2809,7 @@ void CParticle::DrawParticleFlat(int i)
     if (m_engine->GetRankView() == 1)  // underwater?
         pos.y -= 1.0f;
 
-    Math::Vector eye = m_engine->GetEyePt();
+    glm::vec3 eye = m_engine->GetEyePt();
     if (pos.y > eye.y)  // seen from below?
         angle.x = -Math::PI/2.0f;
 
@@ -2827,13 +2820,13 @@ void CParticle::DrawParticleFlat(int i)
     mat.Set(3, 4, pos.z);
     m_device->SetTransform(TRANSFORM_WORLD, mat);
 
-    Math::Vector n(0.0f, 0.0f, -1.0f);
+    glm::vec3 n(0.0f, 0.0f, -1.0f);
 
     glm::vec2 dim;
     dim.x = m_particle[i].dim.x * m_particle[i].zoom;
     dim.y = m_particle[i].dim.y * m_particle[i].zoom;
 
-    Math::Vector corner[4];
+    glm::vec3 corner[4];
     corner[0].x =  dim.x;
     corner[0].y =  dim.y;
     corner[0].z =  0.0f;
@@ -2865,7 +2858,7 @@ void CParticle::DrawParticleFog(int i)
     if (!m_engine->GetFog()) return;
     if (m_particle[i].intensity == 0.0f) return;
 
-    Math::Vector pos = m_particle[i].pos;
+    glm::vec3 pos = m_particle[i].pos;
 
     glm::vec2 dim;
     dim.x = m_particle[i].dim.x;
@@ -2897,7 +2890,7 @@ void CParticle::DrawParticleFog(int i)
     if (object != nullptr)
         pos += object->GetPosition();
 
-    Math::Vector angle;
+    glm::vec3 angle;
     angle.x = Math::PI/2.0f;
     angle.y = 0.0f;
     angle.z = m_particle[i].angle;
@@ -2905,7 +2898,7 @@ void CParticle::DrawParticleFog(int i)
     if (m_engine->GetRankView() == 1)  // underwater?
         pos.y -= 1.0f;
 
-    Math::Vector eye = m_engine->GetEyePt();
+    glm::vec3 eye = m_engine->GetEyePt();
     if (pos.y > eye.y)  // seen from below?
         angle.x = -Math::PI/2.0f;
 
@@ -2916,9 +2909,9 @@ void CParticle::DrawParticleFog(int i)
     mat.Set(3, 4, pos.z);
     m_device->SetTransform(TRANSFORM_WORLD, mat);
 
-    Math::Vector n(0.0f, 0.0f, -1.0f);
+    glm::vec3 n(0.0f, 0.0f, -1.0f);
 
-    Math::Vector corner[4];
+    glm::vec3 corner[4];
 
     corner[0].x =  dim.x;
     corner[0].y =  dim.y;
@@ -2952,9 +2945,9 @@ void CParticle::DrawParticleRay(int i)
     if (m_particle[i].zoom == 0.0f)  return;
     if (m_particle[i].intensity == 0.0f)  return;
 
-    Math::Vector eye = m_engine->GetEyePt();
-    Math::Vector pos = m_particle[i].pos;
-    Math::Vector goal = m_particle[i].goal;
+    glm::vec3 eye = m_engine->GetEyePt();
+    glm::vec3 pos = m_particle[i].pos;
+    glm::vec3 goal = m_particle[i].goal;
 
     CObject* object = m_particle[i].objLink;
     if (object != nullptr)
@@ -2963,8 +2956,8 @@ void CParticle::DrawParticleRay(int i)
     float a = Math::RotateAngle({ pos.x,pos.z }, { goal.x, goal.z }, { eye.x, eye.z });
     bool left = (a < Math::PI);
 
-    Math::Vector proj = Math::Projection(pos, goal, eye);
-    Math::Vector angle;
+    glm::vec3 proj = Math::Projection(pos, goal, eye);
+    glm::vec3 angle;
     angle.x = -Math::RotateAngle(Math::DistanceProjected(proj, eye), proj.y-eye.y);
     angle.y = Math::RotateAngle(pos.z-goal.z, pos.x-goal.x)+Math::PI/2.0f;
     angle.z = -Math::RotateAngle(Math::DistanceProjected(pos, goal), pos.y-goal.y);
@@ -2977,7 +2970,7 @@ void CParticle::DrawParticleRay(int i)
     mat.Set(3, 4, pos.z);
     m_device->SetTransform(TRANSFORM_WORLD, mat);
 
-    Math::Vector n(0.0f, 0.0f, left ? 1.0f : -1.0f);
+    glm::vec3 n(0.0f, 0.0f, left ? 1.0f : -1.0f);
 
     glm::vec2 dim;
     dim.x = m_particle[i].dim.x * m_particle[i].zoom;
@@ -3053,7 +3046,7 @@ void CParticle::DrawParticleRay(int i)
         }
     }
 
-    Math::Vector corner[4];
+    glm::vec3 corner[4];
 
     corner[0].x = adv;
     corner[2].x = adv;
@@ -3124,7 +3117,7 @@ void CParticle::DrawParticleSphere(int i)
 
     if (m_particle[i].angle != 0.0f)
     {
-        Math::Vector angle;
+        glm::vec3 angle;
         angle.x = m_particle[i].angle*0.4f;
         angle.y = m_particle[i].angle*1.0f;
         angle.z = m_particle[i].angle*0.7f;
@@ -3169,7 +3162,7 @@ void CParticle::DrawParticleSphere(int i)
         float r0   = sinf((ring+0)*deltaRingAngle);
         float r1   = sinf((ring+1)*deltaRingAngle);
 
-        Math::Vector v0, v1;
+        glm::vec3 v0, v1;
 
         v0.y = cosf((ring+0)*deltaRingAngle);
         v1.y = cosf((ring+1)*deltaRingAngle);
@@ -3263,7 +3256,7 @@ void CParticle::DrawParticleCylinder(int i)
     int j = 0;
     for (int ring = 0; ring < numRings; ring++)
     {
-        Math::Vector v0, v1;
+        glm::vec3 v0, v1;
 
         float r0   = 1.0f*d[ring+0];  // radius at the base
         float r1   = 1.0f*d[ring+1];  // radius at the top
@@ -3326,13 +3319,13 @@ void CParticle::DrawParticleWheel(int i)
         m_engine->SetTexture("textures/effect03.png");
         m_engine->SetState(ENG_RSTATE_ALPHA);
 
-        Math::Vector pos[4];
+        glm::vec3 pos[4];
         pos[0] = m_wheelTrace[i].pos[0];
         pos[1] = m_wheelTrace[i].pos[1];
         pos[2] = m_wheelTrace[i].pos[2];
         pos[3] = m_wheelTrace[i].pos[3];
 
-        Math::Vector n(0.0f, 1.0f, 0.0f);
+        glm::vec3 n(0.0f, 1.0f, 0.0f);
 
         glm::vec2 ts(160.0f/256.0f, 224.0f/256.0f);
         glm::vec2 ti(ts.x+16.0f/256.0f, ts.y+16.0f/256.0f);
@@ -3356,13 +3349,13 @@ void CParticle::DrawParticleWheel(int i)
     }
     else
     {
-        Math::Vector pos[4];
+        glm::vec3 pos[4];
         pos[0] = m_wheelTrace[i].pos[0];
         pos[1] = m_wheelTrace[i].pos[1];
         pos[2] = m_wheelTrace[i].pos[2];
         pos[3] = m_wheelTrace[i].pos[3];
 
-        Math::Vector n(0.0f, 1.0f, 0.0f);
+        glm::vec3 n(0.0f, 1.0f, 0.0f);
 
         Vertex vertex[4];
         vertex[0] = { pos[0], n };
@@ -3486,7 +3479,7 @@ void CParticle::DrawParticle(int sheet)
     }
 }
 
-CObject* CParticle::SearchObjectGun(Math::Vector old, Math::Vector pos,
+CObject* CParticle::SearchObjectGun(glm::vec3 old, glm::vec3 pos,
                                     ParticleType type, CObject *father)
 {
     if (m_main->GetMovieLock()) return nullptr;  // current movie?
@@ -3495,8 +3488,8 @@ CObject* CParticle::SearchObjectGun(Math::Vector old, Math::Vector pos,
     if (type == PARTIGUN2) min = 2.0f;  // shooting insect?
     if (type == PARTIGUN3) min = 3.0f;  // suiciding spider?
 
-    Math::Vector box1 = old;
-    Math::Vector box2 = pos;
+    glm::vec3 box1 = old;
+    glm::vec3 box2 = pos;
     if (box1.x > box2.x)  Math::Swap(box1.x, box2.x);  // box1 < box2
     if (box1.y > box2.y)  Math::Swap(box1.y, box2.y);
     if (box1.z > box2.z)  Math::Swap(box1.z, box2.z);
@@ -3545,7 +3538,7 @@ CObject* CParticle::SearchObjectGun(Math::Vector old, Math::Vector pos,
         if (!obj->Implements(ObjectInterfaceType::Damageable) && !obj->IsBulletWall())  continue;
         if (obj->Implements(ObjectInterfaceType::Jostleable))  continue;
 
-        Math::Vector oPos = obj->GetPosition();
+        glm::vec3 oPos = obj->GetPosition();
 
         if (obj->GetType() == OBJECT_MOBILErs)
         {
@@ -3587,7 +3580,7 @@ CObject* CParticle::SearchObjectGun(Math::Vector old, Math::Vector pos,
                  oPos.y+oRadius < box1.y || oPos.y-oRadius > box2.y ||
                  oPos.z+oRadius < box1.z || oPos.z-oRadius > box2.z )  continue;
 
-            Math::Vector p = Math::Projection(old, pos, oPos);
+            glm::vec3 p = Math::Projection(old, pos, oPos);
             float ddist = Math::Distance(p, oPos)-oRadius;
             float obj_dist = Math::Distance(old, oPos);
             if (ddist < min && obj_dist < best_dist)
@@ -3601,15 +3594,15 @@ CObject* CParticle::SearchObjectGun(Math::Vector old, Math::Vector pos,
     return best;
 }
 
-CObject* CParticle::SearchObjectRay(Math::Vector pos, Math::Vector goal,
+CObject* CParticle::SearchObjectRay(glm::vec3 pos, glm::vec3 goal,
                                     ParticleType type, CObject *father)
 {
     if (m_main->GetMovieLock()) return nullptr;  // current movie?
 
     float min = 10.0f;
 
-    Math::Vector box1 = pos;
-    Math::Vector box2 = goal;
+    glm::vec3 box1 = pos;
+    glm::vec3 box2 = goal;
     if (box1.x > box2.x)  Math::Swap(box1.x, box2.x);  // box1 < box2
     if (box1.y > box2.y)  Math::Swap(box1.y, box2.y);
     if (box1.z > box2.z)  Math::Swap(box1.z, box2.z);
@@ -3640,13 +3633,13 @@ CObject* CParticle::SearchObjectRay(Math::Vector pos, Math::Vector goal,
              oType != OBJECT_MOTHER   &&
              oType != OBJECT_NEST     )  continue;
 
-        Math::Vector oPos = obj->GetPosition();
+        glm::vec3 oPos = obj->GetPosition();
 
         if ( oPos.x < box1.x || oPos.x > box2.x ||  // outside the box?
              oPos.y < box1.y || oPos.y > box2.y ||
              oPos.z < box1.z || oPos.z > box2.z )  continue;
 
-        Math::Vector p = Math::Projection(pos, goal, oPos);
+        glm::vec3 p = Math::Projection(pos, goal, oPos);
         float dist = Math::Distance(p, oPos);
         if (dist < min)  return obj;
     }
@@ -3654,7 +3647,7 @@ CObject* CParticle::SearchObjectRay(Math::Vector pos, Math::Vector goal,
     return nullptr;
 }
 
-void CParticle::Play(SoundType sound, Math::Vector pos, float amplitude)
+void CParticle::Play(SoundType sound, glm::vec3 pos, float amplitude)
 {
     if (m_sound == nullptr)
         m_sound = CApplication::GetInstancePointer()->GetSound();
@@ -3662,7 +3655,7 @@ void CParticle::Play(SoundType sound, Math::Vector pos, float amplitude)
     m_sound->Play(sound, pos, amplitude);
 }
 
-Color CParticle::GetFogColor(Math::Vector pos)
+Color CParticle::GetFogColor(glm::vec3 pos)
 {
     Color result;
     result.r = 0.0f;

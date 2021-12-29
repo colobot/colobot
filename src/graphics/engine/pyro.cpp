@@ -80,9 +80,9 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
     int objRank = obj->GetObjectRank(0);
     if (objRank == -1) return false;
 
-    Math::Vector min, max;
+    glm::vec3 min{}, max{};
     m_engine->GetObjectBBox(objRank, min, max);
-    Math::Vector pos = obj->GetPosition();
+    glm::vec3 pos = obj->GetPosition();
 
     DisplayError(type, obj);  // displays eventual messages
 
@@ -159,14 +159,14 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
     {
         m_power = true;
         Math::Matrix* mat = obj->GetWorldMatrix(0);
-        m_posPower = Math::Transform(*mat, Math::Vector(-15.0f, 7.0f, 0.0f));
+        m_posPower = Math::Transform(*mat, glm::vec3(-15.0f, 7.0f, 0.0f));
         m_pos = m_posPower;
     }
     if ( oType == OBJECT_ENERGY )
     {
         m_power = true;
         Math::Matrix* mat = obj->GetWorldMatrix(0);
-        m_posPower = Math::Transform(*mat, Math::Vector(-7.0f, 6.0f, 0.0f));
+        m_posPower = Math::Transform(*mat, glm::vec3(-7.0f, 6.0f, 0.0f));
         m_pos = m_posPower;
     }
     if ( oType == OBJECT_NUCLEAR )
@@ -395,7 +395,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
     {
         m_speed = 1.0f/15.0f;
 
-        pos = Math::Vector(-3.0f, 2.0f, 0.0f);
+        pos = glm::vec3(-3.0f, 2.0f, 0.0f);
         Math::Matrix* mat = obj->GetWorldMatrix(0);
         m_pos = Math::Transform(*mat, pos);
 
@@ -498,7 +498,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
             for (int i = 0; i < total; i++)
             {
                 pos = m_posPower;
-                Math::Vector speed;
+                glm::vec3 speed{};
                 speed.x = (Math::Rand()-0.5f)*30.0f;
                 speed.z = (Math::Rand()-0.5f)*30.0f;
                 speed.y = Math::Rand()*30.0f;
@@ -527,7 +527,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
             glm::vec2 dim;
             dim.x = m_size*0.4f;
             dim.y = dim.x;
-            m_particle->CreateParticle(pos, Math::Vector(0.0f,0.0f,0.0f), dim, PARTISPHERE0, 2.0f, 0.0f, 0.0f);
+            m_particle->CreateParticle(pos, glm::vec3(0.0f,0.0f,0.0f), dim, PARTISPHERE0, 2.0f, 0.0f, 0.0f);
         }
     }
 
@@ -538,7 +538,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
         for (int i = 0; i < total; i++)
         {
             pos = m_pos;
-            Math::Vector speed;
+            glm::vec3 speed{};
             speed.x = (Math::Rand()-0.5f)*30.0f;
             speed.z = (Math::Rand()-0.5f)*30.0f;
             speed.y = Math::Rand()*50.0f;
@@ -554,7 +554,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
         for (int i = 0; i < total; i++)
         {
             pos = m_pos;
-            Math::Vector speed;
+            glm::vec3 speed{};
             speed.x = (Math::Rand()-0.5f)*30.0f;
             speed.z = (Math::Rand()-0.5f)*30.0f;
             speed.y = Math::Rand()*50.0f;
@@ -576,7 +576,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
             pos.x += (Math::Rand()-0.5f)*3.0f;
             pos.z += (Math::Rand()-0.5f)*3.0f;
             pos.y += (Math::Rand()-0.5f)*2.0f;
-            Math::Vector speed;
+            glm::vec3 speed{};
             speed.x = (Math::Rand()-0.5f)*24.0f;
             speed.z = (Math::Rand()-0.5f)*24.0f;
             speed.y = 10.0f+Math::Rand()*10.0f;
@@ -593,11 +593,11 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
             pos.x += (Math::Rand()-0.5f)*3.0f;
             pos.z += (Math::Rand()-0.5f)*3.0f;
             pos.y += (Math::Rand()-0.5f)*2.0f;
-            Math::Vector speed;
+            glm::vec3 speed{};
             speed.x = (Math::Rand()-0.5f)*24.0f;
             speed.z = (Math::Rand()-0.5f)*24.0f;
             speed.y = 7.0f+Math::Rand()*7.0f;
-            glm::vec2 dim;
+            glm::vec2 dim{};
             dim.x = 1.0f;
             dim.y = dim.x;
             m_particle->CreateTrack(pos, speed, dim, PARTITRACK3,
@@ -613,7 +613,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
         if (m_size > 10.0f || m_power)
         {
             pos = m_pos;
-            Math::Vector speed(0.0f, 0.0f, 0.0f);
+            glm::vec3 speed(0.0f, 0.0f, 0.0f);
             glm::vec2 dim;
             dim.x = m_size;
             dim.y = dim.x;
@@ -634,7 +634,7 @@ bool CPyro::EventProcess(const Event &event)
 
     if (m_soundChannel != -1 && m_object != nullptr)
     {
-        Math::Vector pos = m_object->GetPosition();
+        glm::vec3 pos = m_object->GetPosition();
         m_sound->Position(m_soundChannel, pos);
 
         if (m_lightRank != -1)
@@ -652,25 +652,25 @@ bool CPyro::EventProcess(const Event &event)
         if (m_crashSpheres.size() > 0)
         {
             int i = rand() % m_crashSpheres.size();
-            Math::Vector pos = m_crashSpheres[i].pos;
+            glm::vec3 pos = m_crashSpheres[i].pos;
             float radius = m_crashSpheres[i].radius;
             pos.x += (Math::Rand()-0.5f)*radius*2.0f;
             pos.z += (Math::Rand()-0.5f)*radius*2.0f;
-            Math::Vector speed;
+            glm::vec3 speed{};
             speed.x = (Math::Rand()-0.5f)*radius*0.5f;
             speed.z = (Math::Rand()-0.5f)*radius*0.5f;
             speed.y = Math::Rand()*radius*1.0f;
-            glm::vec2 dim;
+            glm::vec2 dim{};
             dim.x = Math::Rand()*radius*0.5f+radius*0.75f*m_force;
             dim.y = dim.x;
             m_particle->CreateParticle(pos, speed, dim, PARTISMOKE1, 3.0f);
         }
         else
         {
-            Math::Vector pos = m_pos;
+            glm::vec3 pos = m_pos;
             pos.x += (Math::Rand()-0.5f)*m_size*0.3f;
             pos.z += (Math::Rand()-0.5f)*m_size*0.3f;
-            Math::Vector speed;
+            glm::vec3 speed{};
             speed.x = (Math::Rand()-0.5f)*m_size*0.1f;
             speed.z = (Math::Rand()-0.5f)*m_size*0.1f;
             speed.y = Math::Rand()*m_size*0.2f;
@@ -688,11 +688,11 @@ bool CPyro::EventProcess(const Event &event)
 
         for (int i = 0; i < 10; i++)
         {
-            Math::Vector pos = m_pos;
+            glm::vec3 pos = m_pos;
             pos.x += (Math::Rand()-0.5f)*m_size*0.2f;
             pos.z += (Math::Rand()-0.5f)*m_size*0.2f;
             pos.y += (Math::Rand()-0.5f)*m_size*0.5f;
-            Math::Vector speed;
+            glm::vec3 speed{};
             speed.x = (Math::Rand()-0.5f)*5.0f;
             speed.z = (Math::Rand()-0.5f)*5.0f;
             speed.y = Math::Rand()*1.0f;
@@ -711,11 +711,11 @@ bool CPyro::EventProcess(const Event &event)
         int r = static_cast<int>(10.0f*m_engine->GetParticleDensity());
         for (int i = 0; i < r; i++)
         {
-            Math::Vector pos = m_pos;
+            glm::vec3 pos = m_pos;
             pos.x += (Math::Rand()-0.5f)*20.0f;
             pos.z += (Math::Rand()-0.5f)*20.0f;
             pos.y += 8.0f;
-            Math::Vector speed;
+            glm::vec3 speed{};
             speed.x = (Math::Rand()-0.5f)*40.0f;
             speed.z = (Math::Rand()-0.5f)*40.0f;
             speed.y = Math::Rand()*40.0f;
@@ -735,11 +735,11 @@ bool CPyro::EventProcess(const Event &event)
         if (m_crashSpheres.size() > 0)
         {
             int i = rand() % m_crashSpheres.size();
-            Math::Vector pos = m_crashSpheres[i].pos;
+            glm::vec3 pos = m_crashSpheres[i].pos;
             float radius = m_crashSpheres[i].radius;
             pos.x += (Math::Rand()-0.5f)*radius*2.0f;
             pos.z += (Math::Rand()-0.5f)*radius*2.0f;
-            Math::Vector speed;
+            glm::vec3 speed{};
             speed.x = (Math::Rand()-0.5f)*radius*0.5f;
             speed.z = (Math::Rand()-0.5f)*radius*0.5f;
             speed.y = Math::Rand()*radius*1.0f;
@@ -750,10 +750,10 @@ bool CPyro::EventProcess(const Event &event)
         }
         else
         {
-            Math::Vector pos = m_pos;
+            glm::vec3 pos = m_pos;
             pos.x += (Math::Rand()-0.5f)*m_size*0.3f;
             pos.z += (Math::Rand()-0.5f)*m_size*0.3f;
-            Math::Vector speed;
+            glm::vec3 speed{};
             speed.x = (Math::Rand()-0.5f)*m_size*0.1f;
             speed.z = (Math::Rand()-0.5f)*m_size*0.1f;
             speed.y = Math::Rand()*m_size*0.2f;
@@ -769,11 +769,11 @@ bool CPyro::EventProcess(const Event &event)
     {
         m_lastParticleSmoke = m_time;
 
-        Math::Vector pos = m_pos;
+        glm::vec3 pos = m_pos;
         pos.y -= 2.0f;
         pos.x += (Math::Rand()-0.5f)*4.0f;
         pos.z += (Math::Rand()-0.5f)*4.0f;
-        Math::Vector speed;
+        glm::vec3 speed{};
         speed.x = 0.0f;
         speed.z = 0.0f;
         speed.y = 10.0f+Math::Rand()*10.0f;
@@ -789,8 +789,8 @@ bool CPyro::EventProcess(const Event &event)
     {
         m_lastParticle = m_time;
 
-        Math::Vector pos = m_pos;
-        Math::Vector speed;
+        glm::vec3 pos = m_pos;
+        glm::vec3 speed{};
         speed.x = (Math::Rand()-0.5f)*m_size*1.0f;
         speed.z = (Math::Rand()-0.5f)*m_size*1.0f;
         speed.y = Math::Rand()*m_size*0.50f;
@@ -810,11 +810,11 @@ bool CPyro::EventProcess(const Event &event)
         glm::vec2 dim;
         dim.x = Math::Rand()*m_size/3.0f+m_size/3.0f;
         dim.y = dim.x;
-        Math::Vector pos = m_pos;
+        glm::vec3 pos = m_pos;
         pos.x += (Math::Rand()-0.5f)*m_size*0.5f;
         pos.z += (Math::Rand()-0.5f)*m_size*0.5f;
         m_terrain->AdjustToFloor(pos);
-        Math::Vector speed;
+        glm::vec3 speed{};
         speed.x = 0.0f;
         speed.z = 0.0f;
         speed.y = -dim.x/2.0f/4.0f;
@@ -833,8 +833,8 @@ bool CPyro::EventProcess(const Event &event)
     {
         m_lastParticle = m_time;
 
-        Math::Vector pos = m_pos;
-        Math::Vector speed;
+        glm::vec3 pos = m_pos;
+        glm::vec3 speed{};
         speed.x = (Math::Rand()-0.5f)*m_size*2.0f;
         speed.z = (Math::Rand()-0.5f)*m_size*2.0f;
         speed.y = Math::Rand()*m_size*1.0f;
@@ -851,8 +851,8 @@ bool CPyro::EventProcess(const Event &event)
     {
         m_lastParticle = m_time;
 
-        Math::Vector pos = m_pos;
-        Math::Vector speed;
+        glm::vec3 pos = m_pos;
+        glm::vec3 speed{};
         speed.x = (Math::Rand()-0.5f)*m_size*1.0f;
         speed.z = (Math::Rand()-0.5f)*m_size*1.0f;
         speed.y = Math::Rand()*m_size*0.50f;
@@ -869,11 +869,11 @@ bool CPyro::EventProcess(const Event &event)
     {
         m_lastParticleSmoke = m_time;
 
-        Math::Vector pos = m_pos;
+        glm::vec3 pos = m_pos;
         pos.y -= 2.0f;
         pos.x += (Math::Rand()-0.5f)*4.0f;
         pos.z += (Math::Rand()-0.5f)*4.0f;
-        Math::Vector speed;
+        glm::vec3 speed{};
         speed.x = 0.0f;
         speed.z = 0.0f;
         speed.y = 4.0f+Math::Rand()*4.0f;
@@ -896,11 +896,11 @@ bool CPyro::EventProcess(const Event &event)
         {
             m_lastParticle = m_time;
 
-            Math::Vector pos = m_pos;
+            glm::vec3 pos = m_pos;
             pos.y += factor;
             pos.x += (Math::Rand()-0.5f)*3.0f;
             pos.z += (Math::Rand()-0.5f)*3.0f;
-            Math::Vector speed;
+            glm::vec3 speed;
             speed.x = 0.0f;
             speed.z = 0.0f;
             speed.y = 5.0f+Math::Rand()*5.0f;
@@ -912,13 +912,13 @@ bool CPyro::EventProcess(const Event &event)
 
         if(m_object != nullptr)
         {
-            Math::Vector angle = m_object->GetRotation();
+            glm::vec3 angle = m_object->GetRotation();
             angle.y = m_progress*20.0f;
             angle.x = sinf(m_progress*49.0f)*0.3f;
             angle.z = sinf(m_progress*47.0f)*0.2f;
             m_object->SetRotation(angle);
 
-            Math::Vector pos = m_pos;
+            glm::vec3 pos = m_pos;
             pos.y += factor;
             m_object->SetPosition(pos);
 
@@ -935,11 +935,11 @@ bool CPyro::EventProcess(const Event &event)
         {
             m_lastParticle = m_time;
 
-            Math::Vector pos = m_pos;
+            glm::vec3 pos = m_pos;
             m_terrain->AdjustToFloor(pos);
             pos.x += (Math::Rand()-0.5f)*1.0f;
             pos.z += (Math::Rand()-0.5f)*1.0f;
-            Math::Vector speed;
+            glm::vec3 speed;
             speed.x = (Math::Rand()-0.5f)*2.0f;
             speed.z = (Math::Rand()-0.5f)*2.0f;
             speed.y = 2.0f+Math::Rand()*2.0f;
@@ -951,7 +951,7 @@ bool CPyro::EventProcess(const Event &event)
 
         if(m_object != nullptr)
         {
-            Math::Vector angle = m_object->GetRotation();
+            glm::vec3 angle = m_object->GetRotation();
             angle.x = sinf(m_progress*49.0f)*0.3f*(1.0f-m_progress);
             angle.z = sinf(m_progress*47.0f)*0.2f*(1.0f-m_progress);
             m_object->SetRotation(angle);
@@ -966,11 +966,11 @@ bool CPyro::EventProcess(const Event &event)
         {
             m_lastParticle = m_time;
 
-            Math::Vector pos = m_pos;
+            glm::vec3 pos = m_pos;
             m_terrain->AdjustToFloor(pos);
             pos.x += (Math::Rand()-0.5f)*1.0f;
             pos.z += (Math::Rand()-0.5f)*1.0f;
-            Math::Vector speed;
+            glm::vec3 speed;
             speed.x = (Math::Rand()-0.5f)*2.0f;
             speed.z = (Math::Rand()-0.5f)*2.0f;
             speed.y = 2.0f+Math::Rand()*2.0f;
@@ -982,7 +982,7 @@ bool CPyro::EventProcess(const Event &event)
 
         if(m_object != nullptr)
         {
-            Math::Vector angle = m_object->GetRotation();
+            glm::vec3 angle = m_object->GetRotation();
             angle.y = m_progress*20.0f;
             angle.x = sinf(m_progress*49.0f)*0.3f;
             angle.z = sinf(m_progress*47.0f)*0.2f;
@@ -998,10 +998,10 @@ bool CPyro::EventProcess(const Event &event)
         {
             m_lastParticle = m_time;
 
-            Math::Vector pos = m_pos;
+            glm::vec3 pos = m_pos;
             pos.x += (Math::Rand()-0.5f)*5.0f;
             pos.z += (Math::Rand()-0.5f)*5.0f;
-            Math::Vector speed;
+            glm::vec3 speed;
             speed.x = 0.0f;
             speed.z = 0.0f;
             speed.y = 5.0f+Math::Rand()*5.0f;
@@ -1042,11 +1042,11 @@ bool CPyro::EventProcess(const Event &event)
             float factor = m_size*0.3f;
             if (m_object->GetType() == OBJECT_SAFE) factor *= 1.3f;
             if (factor > 40.0f) factor = 40.0f;
-            Math::Vector pos = m_pos;
+            glm::vec3 pos = m_pos;
             m_terrain->AdjustToFloor(pos);
             pos.x += (Math::Rand()-0.5f)*factor;
             pos.z += (Math::Rand()-0.5f)*factor;
-            Math::Vector speed;
+            glm::vec3 speed;
             speed.x = (Math::Rand()-0.5f)*2.0f;
             speed.z = (Math::Rand()-0.5f)*2.0f;
             speed.y = 4.0f+Math::Rand()*4.0f;
@@ -1071,11 +1071,11 @@ bool CPyro::EventProcess(const Event &event)
 
             float factor = m_size/25.0f;  // 1 = standard size
 
-            Math::Vector pos = m_object->GetPosition();
+            glm::vec3 pos = m_object->GetPosition();
             pos.y -= m_object->GetCharacter()->height;
             pos.x += (Math::Rand()-0.5f)*(4.0f+8.0f*m_progress)*factor;
             pos.z += (Math::Rand()-0.5f)*(4.0f+8.0f*m_progress)*factor;
-            Math::Vector speed;
+            glm::vec3 speed;
             speed.x = 0.0f;
             speed.z = 0.0f;
             speed.y = 0.0f;
@@ -1113,7 +1113,7 @@ bool CPyro::EventProcess(const Event &event)
         }
         else
         {
-            Math::Vector speed;
+            glm::vec3 speed;
             speed.y = 0.0f;
             speed.x = (Math::Rand()-0.5f)*m_progress*1.0f;
             speed.z = (Math::Rand()-0.5f)*m_progress*1.0f;
@@ -1134,9 +1134,9 @@ bool CPyro::EventProcess(const Event &event)
         {
             m_lastParticle = m_time;
 
-            Math::Vector pos = m_object->GetPosition();
+            glm::vec3 pos = m_object->GetPosition();
             pos.y += 1.5f;
-            Math::Vector speed;
+            glm::vec3 speed;
             speed.x = (Math::Rand()-0.5f)*10.0f;
             speed.z = (Math::Rand()-0.5f)*10.0f;
             speed.y = 8.0f+Math::Rand()*8.0f;
@@ -1156,11 +1156,11 @@ bool CPyro::EventProcess(const Event &event)
         {
             m_lastParticle = m_time;
 
-            Math::Vector pos = m_object->GetPosition();
+            glm::vec3 pos = m_object->GetPosition();
             pos.y -= 2.0f;
             pos.x += (Math::Rand()-0.5f)*10.0f;
             pos.z += (Math::Rand()-0.5f)*10.0f;
-            Math::Vector speed;
+            glm::vec3 speed;
             speed.x = 0.0f;
             speed.z = 0.0f;
             speed.y = 1.0f+Math::Rand()*1.0f;
@@ -1349,7 +1349,7 @@ void CPyro::DisplayError(PyroType type, CObject* obj)
     }
 }
 
-void CPyro::CreateLight(Math::Vector pos, float height)
+void CPyro::CreateLight(glm::vec3 pos, float height)
 {
     if (!m_engine->GetLightMode()) return;
 
@@ -1358,8 +1358,8 @@ void CPyro::CreateLight(Math::Vector pos, float height)
     Gfx::Light light;
     light.type        = LIGHT_SPOT;
     light.ambient     = Gfx::Color(0.0f, 0.0f, 0.0f);
-    light.position    = Math::Vector(pos.x, pos.y+height, pos.z);
-    light.direction   = Math::Vector(0.0f, -1.0f, 0.0f);  // against the bottom
+    light.position    = glm::vec3(pos.x, pos.y+height, pos.z);
+    light.direction   = glm::vec3(0.0f, -1.0f, 0.0f);  // against the bottom
     light.spotIntensity = 1.0f;
     light.attenuation0 = 1.0f;
     light.attenuation1 = 0.0f;
@@ -1473,7 +1473,7 @@ void CPyro::CreateTriangle(CObject* obj, ObjectType oType, int part)
 
     for (int i = 0; i < total; i++)
     {
-        Math::Vector p1, p2, p3;
+        glm::vec3 p1, p2, p3;
 
         p1.x = buffer[i].triangle[0].position.x;
         p1.y = buffer[i].triangle[0].position.y;
@@ -1521,7 +1521,7 @@ void CPyro::CreateTriangle(CObject* obj, ObjectType oType, int part)
         buffer[i].triangle[2].position.y = p3.y;
         buffer[i].triangle[2].position.z = p3.z;
 
-        Math::Vector offset;
+        glm::vec3 offset;
         offset.x = (buffer[i].triangle[0].position.x+buffer[i].triangle[1].position.x+buffer[i].triangle[2].position.x)/3.0f;
         offset.y = (buffer[i].triangle[0].position.y+buffer[i].triangle[1].position.y+buffer[i].triangle[2].position.y)/3.0f;
         offset.z = (buffer[i].triangle[0].position.z+buffer[i].triangle[1].position.z+buffer[i].triangle[2].position.z)/3.0f;
@@ -1538,11 +1538,11 @@ void CPyro::CreateTriangle(CObject* obj, ObjectType oType, int part)
         buffer[i].triangle[1].position.z -= offset.z;
         buffer[i].triangle[2].position.z -= offset.z;
 
-        Math::Vector speed;
+        glm::vec3 speed;
         float mass;
 
         Math::Matrix* mat = obj->GetWorldMatrix(part);
-        Math::Vector pos = Math::Transform(*mat, offset);
+        glm::vec3 pos = Math::Transform(*mat, offset);
         if ( m_type == PT_FRAGV || m_type == PT_EGG )
         {
             speed.x = (Math::Rand()-0.5f)*10.0f;
@@ -1576,7 +1576,7 @@ void CPyro::ExploStart()
 {
     m_burnType = m_object->GetType();
 
-    Math::Vector oPos = m_object->GetPosition();
+    glm::vec3 oPos = m_object->GetPosition();
     m_burnFall = m_terrain->GetHeightToFloor(oPos, true);
 
     m_object->Simplify();
@@ -1611,9 +1611,9 @@ void CPyro::ExploStart()
 
         // TODO: temporary hack (hopefully)
         assert(m_object->Implements(ObjectInterfaceType::Old));
-        Math::Vector pos = dynamic_cast<COldObject&>(*m_object).GetPartPosition(i);
+        glm::vec3 pos = dynamic_cast<COldObject&>(*m_object).GetPartPosition(i);
 
-        Math::Vector speed;
+        glm::vec3 speed;
         float weight;
 
         if (i == 0)  // main part?
@@ -1626,7 +1626,7 @@ void CPyro::ExploStart()
         }
         else
         {
-            Math::Vector min, max;
+            glm::vec3 min, max;
             m_engine->GetObjectBBox(objRank, min, max);
             weight = Math::Distance(min, max);  // weight according to size!
 
@@ -1652,7 +1652,7 @@ void CPyro::BurnStart()
 {
     m_burnType = m_object->GetType();
 
-    Math::Vector oPos = m_object->GetPosition();
+    glm::vec3 oPos = m_object->GetPosition();
     m_burnFall = m_terrain->GetHeightToFloor(oPos, true);
 
     m_object->Simplify();
@@ -1686,7 +1686,7 @@ void CPyro::BurnStart()
 
     m_burnPartTotal = 0;
 
-    Math::Vector pos, angle;
+    glm::vec3 pos, angle;
 
     if ( m_burnType == OBJECT_DERRICK  ||
          m_burnType == OBJECT_FACTORY  ||
@@ -2153,7 +2153,7 @@ void CPyro::BurnStart()
     }
 }
 
-void CPyro::BurnAddPart(int part, Math::Vector pos, Math::Vector angle)
+void CPyro::BurnAddPart(int part, glm::vec3 pos, glm::vec3 angle)
 {
     // TODO: temporary hack (hopefully)
     assert(m_object->Implements(ObjectInterfaceType::Old));
@@ -2178,7 +2178,7 @@ void CPyro::BurnProgress()
 
     for (int i = 0; i < m_burnPartTotal; i++)
     {
-        Math::Vector pos = m_burnPart[i].initialPos + m_progress*(m_burnPart[i].finalPos-m_burnPart[i].initialPos);
+        glm::vec3 pos = m_burnPart[i].initialPos + m_progress*(m_burnPart[i].finalPos-m_burnPart[i].initialPos);
         if ( i == 0 && m_burnFall > 0.0f )
         {
             float h = powf(m_progress, 2.0f)*1000.0f;
@@ -2269,7 +2269,7 @@ void CPyro::FallStart()
 {
     m_object->SetLock(true);  // usable
 
-    Math::Vector pos = m_object->GetPosition();
+    glm::vec3 pos = m_object->GetPosition();
     m_fallFloor = m_terrain->GetFloorLevel(pos);
     m_fallSpeed = 0.0f;
     m_fallBulletTime = 0.0f;
@@ -2288,7 +2288,7 @@ CObject* CPyro::FallSearchBeeExplo()
 
         if (IsObjectBeingTransported(obj)) continue;
 
-        Math::Vector oPos = obj->GetPosition();
+        glm::vec3 oPos = obj->GetPosition();
 
         if (obj->GetType() == OBJECT_MOBILErs)
         {
@@ -2332,7 +2332,7 @@ void CPyro::FallProgress(float rTime)
     if (m_object == nullptr) return;
 
     m_fallSpeed += rTime*50.0f;  // v2 = v1 + a*dt
-    Math::Vector pos;
+    glm::vec3 pos;
     pos = m_object->GetPosition();
     pos.y -= m_fallSpeed*rTime;  // dd -= v2*dt
 
@@ -2367,7 +2367,7 @@ void CPyro::FallProgress(float rTime)
             {
                 if (obj->GetType() == OBJECT_MOBILErs && dynamic_cast<CShielder&>(*obj).GetActiveShieldRadius() > 0.0f)  // protected by shield?
                 {
-                    m_particle->CreateParticle(pos, Math::Vector(0.0f, 0.0f, 0.0f),
+                    m_particle->CreateParticle(pos, glm::vec3(0.0f, 0.0f, 0.0f),
                                                { 6.0f, 6.0f }, PARTIGUNDEL, 2.0f, 0.0f, 0.0f);
                     m_sound->Play(SOUND_GUNDEL);
 
@@ -2401,7 +2401,7 @@ Error CPyro::FallIsEnded()
 {
     if (m_fallEnding || m_object == nullptr) return ERR_STOP;
 
-    Math::Vector pos = m_object->GetPosition();
+    glm::vec3 pos = m_object->GetPosition();
     if (pos.y > m_fallFloor) return ERR_CONTINUE;
 
     m_sound->Play(SOUND_BOUM, pos);
