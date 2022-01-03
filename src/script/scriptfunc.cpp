@@ -122,7 +122,7 @@ CBotTypResult CScriptFunctions::cOnePoint(CBotVar* &var, void* user)
 
 // Gives a parameter of type "point".
 
-static bool GetPoint(CBotVar* &var, int& exception, Math::Vector& pos)
+static bool GetPoint(CBotVar* &var, int& exception, glm::vec3& pos)
 {
     CBotVar     *pX, *pY, *pZ;
 
@@ -809,7 +809,7 @@ CBotTypResult CScriptFunctions::cSearchAll(CBotVar* &var, void* user)
     return compileSearch(var, user, CBotTypResult(CBotTypArrayPointer, CBotTypResult(CBotTypPointer, "object")));
 }
 
-static bool runSearch(CBotVar* var, Math::Vector pos, int& exception, std::function<bool(std::vector<ObjectType>, Math::Vector, float, float, bool, RadarFilter)> code)
+static bool runSearch(CBotVar* var, glm::vec3 pos, int& exception, std::function<bool(std::vector<ObjectType>, glm::vec3, float, float, bool, RadarFilter)> code)
 {
     CBotVar*    array;
     RadarFilter filter;
@@ -909,7 +909,7 @@ bool CScriptFunctions::rSearch(CBotVar* var, CBotVar* result, int& exception, vo
 {
     CObject* pThis = static_cast<CScript*>(user)->m_object;
 
-    return runSearch(var, pThis->GetPosition(), exception, [&result, pThis](std::vector<ObjectType> types, Math::Vector pos, float minDist, float maxDist, bool furthest, RadarFilter filter)
+    return runSearch(var, pThis->GetPosition(), exception, [&result, pThis](std::vector<ObjectType> types, glm::vec3 pos, float minDist, float maxDist, bool furthest, RadarFilter filter)
     {
         CObject* pBest = CObjectManager::GetInstancePointer()->Radar(pThis, pos, 0.0f, types, 0.0f, Math::PI*2.0f, minDist, maxDist, furthest, filter, true);
 
@@ -930,7 +930,7 @@ bool CScriptFunctions::rSearchAll(CBotVar* var, CBotVar* result, int& exception,
 {
     CObject* pThis = static_cast<CScript*>(user)->m_object;
 
-    return runSearch(var, pThis->GetPosition(), exception, [&result, pThis](std::vector<ObjectType> types, Math::Vector pos, float minDist, float maxDist, bool furthest, RadarFilter filter)
+    return runSearch(var, pThis->GetPosition(), exception, [&result, pThis](std::vector<ObjectType> types, glm::vec3 pos, float minDist, float maxDist, bool furthest, RadarFilter filter)
     {
         std::vector<CObject*> best = CObjectManager::GetInstancePointer()->RadarAll(pThis, pos, 0.0f, types, 0.0f, Math::PI*2.0f, minDist, maxDist, furthest, filter, true);
 
@@ -1335,7 +1335,7 @@ CBotTypResult CScriptFunctions::cDirection(CBotVar* &var, void* user)
 bool CScriptFunctions::rDirection(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     CObject*        pThis = static_cast<CScript*>(user)->m_object;
-    Math::Vector    iPos, oPos;
+    glm::vec3    iPos, oPos;
     float           a, g;
 
     if ( !GetPoint(var, exception, oPos) )  return true;
@@ -1597,7 +1597,7 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
     CScript*    script = static_cast<CScript*>(user);
     CObject*    me = script->m_object;
     std::string name = "";
-    Math::Vector pos;
+    glm::vec3 pos;
     float       angle = 0.0f;
     ObjectType  type = OBJECT_NULL;
     float       power = 0.0f;
@@ -1609,7 +1609,7 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
 
         pos = me->GetPosition();
 
-        Math::Vector rotation = me->GetRotation() + me->GetTilt();
+        glm::vec3 rotation = me->GetRotation() + me->GetTilt();
         angle = rotation.y;
 
         if ( var != nullptr )
@@ -1726,7 +1726,7 @@ CBotTypResult CScriptFunctions::cDistance(CBotVar* &var, void* user)
 
 bool CScriptFunctions::rDistance(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    Math::Vector    p1, p2;
+    glm::vec3    p1, p2;
     float       value;
 
     if ( !GetPoint(var, exception, p1) )  return true;
@@ -1741,7 +1741,7 @@ bool CScriptFunctions::rDistance(CBotVar* var, CBotVar* result, int& exception, 
 
 bool CScriptFunctions::rDistance2d(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    Math::Vector    p1, p2;
+    glm::vec3    p1, p2;
     float       value;
 
     if ( !GetPoint(var, exception, p1) )  return true;
@@ -1786,7 +1786,7 @@ bool CScriptFunctions::rSpace(CBotVar* var, CBotVar* result, int& exception, voi
     CScript*    script = static_cast<CScript*>(user);
     CObject*    pThis = script->m_object;
     CBotVar*    pSub;
-    Math::Vector    center;
+    glm::vec3    center;
     float       rMin, rMax, dist;
 
     rMin = 10.0f*g_unit;
@@ -1869,7 +1869,7 @@ bool CScriptFunctions::rFlatSpace(CBotVar* var, CBotVar* result, int& exception,
     CScript*    script = static_cast<CScript*>(user);
     CObject*    pThis = script->m_object;
     CBotVar*    pSub;
-    Math::Vector    center;
+    glm::vec3    center;
     float       flatMin, rMin, rMax, dist;
 
     rMin = 10.0f*g_unit;
@@ -1942,7 +1942,7 @@ bool CScriptFunctions::rFlatGround(CBotVar* var, CBotVar* result, int& exception
 {
     CScript*    script = static_cast<CScript*>(user);
     CObject*    pThis = script->m_object;
-    Math::Vector    center;
+    glm::vec3    center;
     float       rMax, dist;
 
     if ( !GetPoint(var, exception, center) )  return true;
@@ -2074,7 +2074,7 @@ CBotTypResult CScriptFunctions::cGoto(CBotVar* &var, void* user)
 bool CScriptFunctions::rGoto(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     CScript*        script = static_cast<CScript*>(user);
-    Math::Vector        pos;
+    glm::vec3        pos;
     TaskGotoGoal    goal;
     TaskGotoCrash   crash;
     float           altitude;
@@ -2650,7 +2650,7 @@ bool CScriptFunctions::rFire(CBotVar* var, CBotVar* result, int& exception, void
     CScript*    script = static_cast<CScript*>(user);
     CObject*    pThis = script->m_object;
     float       delay;
-    Math::Vector    impact;
+    glm::vec3    impact;
     Error       err;
     ObjectType  type;
 
@@ -2823,7 +2823,7 @@ CBotTypResult CScriptFunctions::cTopo(CBotVar* &var, void* user)
 bool CScriptFunctions::rTopo(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     CScript*    script = static_cast<CScript*>(user);
-    Math::Vector    pos;
+    glm::vec3    pos;
     float       level;
 
     exception = 0;
@@ -3606,7 +3606,7 @@ void CScriptFunctions::uObject(CBotVar* botThis, void* user)
     CPhysics*   physics;
     CBotVar     *pVar, *pSub;
     ObjectType  type;
-    Math::Vector    pos;
+    glm::vec3    pos;
     float       value;
 
     if ( user == nullptr )  return;
