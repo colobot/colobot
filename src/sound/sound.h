@@ -129,7 +129,7 @@ public:
      * \param eye - position of listener
      * \param lookat - direction listener is looking at
      */
-    virtual void SetListener(const Math::Vector &eye, const Math::Vector &lookat);
+    virtual void SetListener(const glm::vec3 &eye, const glm::vec3 &lookat);
 
     /** Update data each frame
      * \param rTime - time since last update
@@ -153,7 +153,7 @@ public:
      * \param loop - loop sound
      * \return identifier of channel that sound will be played on
      */
-    virtual int Play(SoundType sound, const Math::Vector &pos, float amplitude=1.0f, float frequency=1.0f, bool loop = false);
+    virtual int Play(SoundType sound, const glm::vec3 &pos, float amplitude=1.0f, float frequency=1.0f, bool loop = false);
 
     /** Remove all operations that would be made on sound in channel.
      * \param channel - channel to work on
@@ -176,7 +176,7 @@ public:
      * \param pos - new positino of a sound
      * \return return true on success
      */
-    virtual bool Position(int channel, const Math::Vector &pos);
+    virtual bool Position(int channel, const glm::vec3 &pos);
 
     /** Set sound frequency
      * \param channel - channel to work on

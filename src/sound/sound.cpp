@@ -98,7 +98,7 @@ int CSoundInterface::GetMusicVolume()
     return 0;
 }
 
-void CSoundInterface::SetListener(const Math::Vector &eye, const Math::Vector &lookat)
+void CSoundInterface::SetListener(const glm::vec3 &eye, const glm::vec3 &lookat)
 {
 }
 
@@ -111,7 +111,7 @@ int CSoundInterface::Play(SoundType sound, float amplitude, float frequency, boo
     return 0;
 }
 
-int CSoundInterface::Play(SoundType sound, const Math::Vector &pos, float amplitude, float frequency, bool loop)
+int CSoundInterface::Play(SoundType sound, const glm::vec3 &pos, float amplitude, float frequency, bool loop)
 {
     return 0;
 }
@@ -126,7 +126,7 @@ bool CSoundInterface::AddEnvelope(int channel, float amplitude, float frequency,
     return true;
 }
 
-bool CSoundInterface::Position(int channel, const Math::Vector &pos)
+bool CSoundInterface::Position(int channel, const glm::vec3 &pos)
 {
     return true;
 }

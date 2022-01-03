@@ -316,15 +316,15 @@ bool CALSound::SearchFreeBuffer(SoundType sound, int &channel, bool &alreadyLoad
 
 int CALSound::Play(SoundType sound, float amplitude, float frequency, bool loop)
 {
-    return Play(sound, Math::Vector{}, true, amplitude, frequency, loop);
+    return Play(sound, glm::vec3{0, 0, 0}, true, amplitude, frequency, loop);
 }
 
-int CALSound::Play(SoundType sound, const Math::Vector &pos, float amplitude, float frequency, bool loop)
+int CALSound::Play(SoundType sound, const glm::vec3 &pos, float amplitude, float frequency, bool loop)
 {
     return Play(sound, pos, false, amplitude, frequency, loop);
 }
 
-int CALSound::Play(SoundType sound, const Math::Vector &pos, bool relativeToListener, float amplitude, float frequency, bool loop)
+int CALSound::Play(SoundType sound, const glm::vec3 &pos, bool relativeToListener, float amplitude, float frequency, bool loop)
 {
     if (!m_enabled)
     {
@@ -408,7 +408,7 @@ bool CALSound::AddEnvelope(int channel, float amplitude, float frequency, float 
     return true;
 }
 
-bool CALSound::Position(int channel, const Math::Vector &pos)
+bool CALSound::Position(int channel, const glm::vec3 &pos)
 {
     if (!CheckChannel(channel))
     {
@@ -570,11 +570,11 @@ void CALSound::FrameMove(float rTime)
     }
 }
 
-void CALSound::SetListener(const Math::Vector &eye, const Math::Vector &lookat)
+void CALSound::SetListener(const glm::vec3 &eye, const glm::vec3 &lookat)
 {
     m_eye = eye;
     m_lookat = lookat;
-    Math::Vector forward = glm::normalize(lookat - eye);
+    glm::vec3 forward = glm::normalize(lookat - eye);
     float orientation[] = {forward.x, forward.y, forward.z, 0.f, -1.0f, 0.0f};
 
     alListener3f(AL_POSITION, eye.x, eye.y, eye.z);

@@ -59,7 +59,7 @@ public:
     bool Pause();
     bool Stop();
 
-    bool SetPosition(const Math::Vector &pos, bool relativeToListener = false);
+    bool SetPosition(const glm::vec3 &pos, bool relativeToListener = false);
 
     bool SetFrequency(float freq);
     float GetFrequency();
@@ -120,6 +120,6 @@ private:
     bool m_ready;
     bool m_loop;
     bool m_mute;
-    Math::Vector m_position;
+    glm::vec3 m_position;
 };
 

@@ -94,7 +94,7 @@ bool CChannel::Pause()
     return true;
 }
 
-bool CChannel::SetPosition(const Math::Vector &pos, bool relativeToListener)
+bool CChannel::SetPosition(const glm::vec3 &pos, bool relativeToListener)
 {
     if (!m_ready || m_buffer == nullptr)
     {

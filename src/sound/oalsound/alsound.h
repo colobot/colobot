@@ -96,14 +96,14 @@ public:
     void SetMusicVolume(int volume) override;
     int GetMusicVolume() override;
 
-    void SetListener(const Math::Vector &eye, const Math::Vector &lookat) override;
+    void SetListener(const glm::vec3 &eye, const glm::vec3 &lookat) override;
     void FrameMove(float rTime) override;
 
     int Play(SoundType sound, float amplitude=1.0f, float frequency=1.0f, bool loop = false) override;
-    int Play(SoundType sound, const Math::Vector &pos, float amplitude=1.0f, float frequency=1.0f, bool loop = false) override;
+    int Play(SoundType sound, const glm::vec3 &pos, float amplitude=1.0f, float frequency=1.0f, bool loop = false) override;
     bool FlushEnvelope(int channel) override;
     bool AddEnvelope(int channel, float amplitude, float frequency, float time, SoundNext oper) override;
-    bool Position(int channel, const Math::Vector &pos) override;
+    bool Position(int channel, const glm::vec3 &pos) override;
     bool Frequency(int channel, float frequency) override;
     bool Stop(int channel) override;
     bool StopAll() override;
@@ -117,7 +117,7 @@ public:
 
 private:
     void CleanUp();
-    int Play(SoundType sound, const Math::Vector &pos, bool relativeToListener, float amplitude, float frequency, bool loop);
+    int Play(SoundType sound, const glm::vec3 &pos, bool relativeToListener, float amplitude, float frequency, bool loop);
     int GetPriority(SoundType);
     bool SearchFreeBuffer(SoundType sound, int &channel, bool &alreadyLoaded);
     bool CheckChannel(int &channel);
@@ -134,7 +134,7 @@ private:
     std::unique_ptr<CChannel> m_currentMusic;
     std::list<OldMusic> m_oldMusic;
     OldMusic m_previousMusic;
-    Math::Vector m_eye;
-    Math::Vector m_lookat;
+    glm::vec3 m_eye;
+    glm::vec3 m_lookat;
     CWorkerThread m_thread;
 };
