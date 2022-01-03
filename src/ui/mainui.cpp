@@ -424,9 +424,9 @@ void CMainUserInterface::GlintMove()
 
 // Returns the position for a sound.
 
-static Math::Vector SoundPos(const glm::vec2& pos)
+static glm::vec3 SoundPos(const glm::vec2& pos)
 {
-    Math::Vector    s;
+    glm::vec3    s;
 
     s.x = (pos.x-0.5f)*2.0f;
     s.y = (pos.y-0.5f)*2.0f;
@@ -437,9 +437,9 @@ static Math::Vector SoundPos(const glm::vec2& pos)
 
 // Returns a random position for a sound.
 
-static Math::Vector SoundRand()
+static glm::vec3 SoundRand()
 {
-    Math::Vector    s;
+    glm::vec3    s;
 
     s.x = (Math::Rand()-0.5f)*2.0f;
     s.y = (Math::Rand()-0.5f)*2.0f;
@@ -452,7 +452,7 @@ static Math::Vector SoundRand()
 
 void CMainUserInterface::FrameParticle(float rTime)
 {
-    Math::Vector    pos, speed;
+    glm::vec3    pos, speed;
     glm::vec2     dim;
     float       *pParti, *pGlint;
     int          nParti,  nGlint;

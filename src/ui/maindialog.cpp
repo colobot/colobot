@@ -404,7 +404,7 @@ void CMainDialog::StartDialog(const glm::vec2& dim, bool fireParticles)
 void CMainDialog::FrameDialog(float rTime)
 {
     CWindow*    pw;
-    Math::Vector    pos, speed;
+    glm::vec3    pos, speed;
     glm::vec2   dim, dpos, ddim;
     float       zoom;
     int         i;
@@ -452,7 +452,7 @@ void CMainDialog::FrameDialog(float rTime)
     ddim = m_dialogDim;
 
     pos.z = 0.0f;
-    speed = Math::Vector(0.0f, 0.0f, 0.0f);
+    speed = glm::vec3(0.0f, 0.0f, 0.0f);
 
     for ( i=0 ; i<2 ; i++ )
     {

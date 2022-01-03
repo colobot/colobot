@@ -123,7 +123,7 @@ void CDisplayText::DisplayError(Error err, CObject* pObj, float time)
     if (pObj == nullptr)
         return;
 
-    Math::Vector pos = pObj->GetPosition();
+    glm::vec3 pos = pObj->GetPosition();
     float h = GetIdealHeight(pObj);
     float d = GetIdealDist(pObj);
     DisplayError(err, pos, h, d, time);
@@ -131,7 +131,7 @@ void CDisplayText::DisplayError(Error err, CObject* pObj, float time)
 
 // Displays an error.
 
-void CDisplayText::DisplayError(Error err, Math::Vector goal, float height,
+void CDisplayText::DisplayError(Error err, glm::vec3 goal, float height,
                                 float dist, float time)
 {
     if ( err == ERR_OK )  return;
@@ -162,7 +162,7 @@ void CDisplayText::DisplayText(const char *text, CObject* pObj,
 {
     if (pObj == nullptr)  return;
 
-    Math::Vector pos = pObj->GetPosition();
+    glm::vec3 pos = pObj->GetPosition();
     float h = GetIdealHeight(pObj);
     float d = GetIdealDist(pObj);
     DisplayText(text, pos, h, d, time, type);
@@ -170,7 +170,7 @@ void CDisplayText::DisplayText(const char *text, CObject* pObj,
 
 // Displays text.
 
-void CDisplayText::DisplayText(const char *text, Math::Vector goal, float height,
+void CDisplayText::DisplayText(const char *text, glm::vec3 goal, float height,
                                float dist, float time, TextType type)
 {
     CObject*    toto;
@@ -421,10 +421,10 @@ void CDisplayText::SetEnable(bool bEnable)
 
 // Returns the goal during a visit.
 
-Math::Vector CDisplayText::GetVisitGoal(EventType event)
+glm::vec3 CDisplayText::GetVisitGoal(EventType event)
 {
     int i = event - EVENT_DT_VISIT0;
-    if (i < 0 || i >= MAXDTLINE)  return Math::Vector(0.0f, 0.0f, 0.0f);
+    if (i < 0 || i >= MAXDTLINE)  return glm::vec3(0.0f, 0.0f, 0.0f);
     return m_textLines[i].visitGoal;
 }
 

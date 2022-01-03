@@ -457,7 +457,7 @@ void CDisplayInfo::StartDisplayInfo(std::string filename, int index, bool bSoluc
     light.type    = Gfx::LIGHT_DIRECTIONAL;
     light.ambient = Gfx::Color(0.0f, 0.0f, 0.0f);
     light.diffuse = Gfx::Color(1.0f, 0.1f, 0.1f);
-    light.direction  = Math::Vector(1.0f, 0.0f, 1.0f);
+    light.direction  = glm::vec3(1.0f, 0.0f, 1.0f);
 
     m_lightSuppl = m_light->CreateLight();
     m_light->SetLight(m_lightSuppl, light);

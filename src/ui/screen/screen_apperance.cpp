@@ -704,14 +704,14 @@ void CScreenApperance::SetCamera(float x, float y, float cameraDistance)
 
     camera->SetType(Gfx::CAM_TYPE_SCRIPT);
 
-    Math::Vector p2D(x, y, cameraDistance);
-    Math::Vector p3D;
+    glm::vec3 p2D(x, y, cameraDistance);
+    glm::vec3 p3D{};
     Math::Matrix matView;
     Math::Matrix matProj = engine->GetMatProj();
 
-    Math::LoadViewMatrix(matView, Math::Vector(0.0f, 0.0f, -cameraDistance),
-                            Math::Vector(0.0f, 0.0f, 0.0f),
-                            Math::Vector(0.0f, 0.0f, 1.0f));
+    Math::LoadViewMatrix(matView, glm::vec3(0.0f, 0.0f, -cameraDistance),
+                            glm::vec3(0.0f, 0.0f, 0.0f),
+                            glm::vec3(0.0f, 0.0f, 1.0f));
 
     p2D.x = p2D.x * 2.0f - 1.0f;  // [0..1] -> [-1..1]
     p2D.y = p2D.y * 2.0f - 1.0f;
@@ -723,8 +723,8 @@ void CScreenApperance::SetCamera(float x, float y, float cameraDistance)
     p3D = Math::Transform(matView.Inverse(), p3D);
     p3D = -p3D;
 
-    camera->SetScriptCamera(Math::Vector(cameraDistance, p3D.y, p3D.x),
-                            Math::Vector(0.0f, p3D.y, p3D.x));
+    camera->SetScriptCamera(glm::vec3(cameraDistance, p3D.y, p3D.x),
+                            glm::vec3(0.0f, p3D.y, p3D.x));
 }
 
 } // namespace Ui

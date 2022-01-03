@@ -393,7 +393,7 @@ bool CDebugMenu::EventProcess(const Event &event)
 
 bool CDebugMenu::HandleSpawnObject(ObjectType type, const glm::vec2& mousePos)
 {
-    Math::Vector pos;
+    glm::vec3 pos;
     if (m_engine->DetectObject(mousePos, pos, true) == -1)
     {
         m_sound->Play(SOUND_CLICK, 1.0f, 0.5f);
@@ -416,7 +416,7 @@ bool CDebugMenu::HandleSpawnObject(ObjectType type, const glm::vec2& mousePos)
 
 bool CDebugMenu::HandleLightning(const glm::vec2& mousePos)
 {
-    Math::Vector pos;
+    glm::vec3 pos;
     if (m_engine->DetectObject(mousePos, pos, true) == -1)
     {
         m_sound->Play(SOUND_CLICK, 1.0f, 0.5f);
@@ -432,7 +432,7 @@ bool CDebugMenu::HandleTeleport(const glm::vec2& mousePos)
 {
     CObject* select = m_main->GetSelect();
 
-    Math::Vector pos;
+    glm::vec3 pos;
     if (m_engine->DetectObject(mousePos, pos, true) == -1 || !m_engine->GetTerrain()->AdjustToFloor(pos) || select == nullptr)
     {
         m_sound->Play(SOUND_CLICK, 1.0f, 0.5f);
@@ -455,7 +455,7 @@ bool CDebugMenu::HandleTeleport(const glm::vec2& mousePos)
 void CDebugMenu::HandleFrameUpdate(const Event &event)
 {
     std::string str = "-";
-    Math::Vector pos;
+    glm::vec3 pos;
     int obj;
     if ((obj = m_engine->DetectObject(event.mousePos, pos, true)) != -1)
         str = StrUtils::Format("pos=% 3.2f; % 3.2f    height=% 3.2f    objId=% 4d", pos.x, pos.z, pos.y, obj);
@@ -467,7 +467,7 @@ void CDebugMenu::HandleFrameUpdate(const Event &event)
 
 bool CDebugMenu::HandleCopy(const glm::vec2& mousePos)
 {
-    Math::Vector pos;
+    glm::vec3 pos;
     if (m_engine->DetectObject(mousePos, pos, true) == -1)
     {
         m_sound->Play(SOUND_CLICK, 1.0f, 0.5f);

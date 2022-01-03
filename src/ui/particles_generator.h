@@ -21,7 +21,7 @@
 
 #include "graphics/engine/particle.h"
 
-#include "math/vector.h"
+#include <glm/glm.hpp>
 
 namespace UI
 {
@@ -39,7 +39,7 @@ namespace UI
     private:
         Gfx::CParticle* m_particleManager;
         glm::vec2 CreateRandomDimensionsForMouseParticles(bool buttonPressed);
-        Math::Vector CreateRandomSpeedForMouseParticles();
+        glm::vec3 CreateRandomSpeedForMouseParticles();
         float CreateRandomDurationForMouseParticles();
     };
 

@@ -761,7 +761,7 @@ void CObjectInterface::StopEditScript(bool closeWithErrors)
 
 void CObjectInterface::GroundFlat()
 {
-    Math::Vector    pos, speed;
+    glm::vec3    pos, speed;
     glm::vec2     dim;
     Error       err;
     float       level;
@@ -781,7 +781,7 @@ void CObjectInterface::GroundFlat()
 
     level = m_terrain->GetFloorLevel(pos)+2.0f;
     if ( pos.y < level )  pos.y = level;  // not below the soil
-    speed = Math::Vector(0.0f, 0.0f, 0.0f);
+    speed = glm::vec3(0.0f, 0.0f, 0.0f);
     dim.x = 40.0f;
     dim.y = dim.x;
     m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGFLAT, 1.0f);
@@ -1546,7 +1546,7 @@ void CObjectInterface::UpdateInterface(float rTime)
     CButton*    pb;
     CGroup*     pgr;
     CTarget*    ptg;
-    Math::Vector    pos, hPos;
+    glm::vec3    pos, hPos;
     glm::vec2     ppos;
     float       range;
     int         icon;
