@@ -67,7 +67,7 @@ std::unique_ptr<CExchangePost> CExchangePost::Create(
     obj->SetObjectRank(1, rank);
     obj->SetObjectParent(1, 0);
     modelManager->AddModelReference("info2.mod", false, rank);
-    obj->SetPartPosition(1, Math::Vector(0.0f, 5.0f, 0.0f));
+    obj->SetPartPosition(1, glm::vec3(0.0f, 5.0f, 0.0f));
 
     for (int i = 0; i < 3; ++i)
     {
@@ -76,25 +76,25 @@ std::unique_ptr<CExchangePost> CExchangePost::Create(
         obj->SetObjectRank(2+i*2, rank);
         obj->SetObjectParent(2+i*2, 1);
         modelManager->AddModelReference("info3.mod", false, rank);
-        obj->SetPartPosition(2+i*2, Math::Vector(0.0f, 4.5f, 0.0f));
+        obj->SetPartPosition(2+i*2, glm::vec3(0.0f, 4.5f, 0.0f));
 
         rank = engine->CreateObject();
         engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(3+i*2, rank);
         obj->SetObjectParent(3+i*2, 2+i*2);
         modelManager->AddModelReference("radar4.mod", false, rank);
-        obj->SetPartPosition(3+i*2, Math::Vector(0.0f, 0.0f, -4.0f));
+        obj->SetPartPosition(3+i*2, glm::vec3(0.0f, 0.0f, -4.0f));
 
         obj->SetPartRotationY(2+i*2, 2.0f*Math::PI/3.0f*i);
     }
 
-    obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f,  3.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f));
-    obj->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 11.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f));
-    obj->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 5.0f, 0.0f), 6.0f));
+    obj->AddCrashSphere(CrashSphere(glm::vec3(0.0f,  3.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f));
+    obj->AddCrashSphere(CrashSphere(glm::vec3(0.0f, 11.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f));
+    obj->SetCameraCollisionSphere(Math::Sphere(glm::vec3(0.0f, 5.0f, 0.0f), 6.0f));
 
     obj->CreateShadowCircle(8.0f, 1.0f);
 
-    Math::Vector pos = obj->GetPosition();
+    glm::vec3 pos = obj->GetPosition();
     pos.y += params.height;
     obj->SetPosition(pos);  // to display the shadows immediately
 
@@ -312,14 +312,14 @@ void CAutoInfo::Start(int param)
     m_lastParticle = 0;
     m_goal = m_object->GetPosition();
 
-    Math::Vector    pos, speed;
+    glm::vec3    pos, speed;
     glm::vec2       dim;
 
     if (m_phase == Phase::Send)
     {
         pos = m_goal;
         pos.y += 9.5f;
-        speed = Math::Vector(0.0f, 0.0f, 0.0f);
+        speed = glm::vec3(0.0f, 0.0f, 0.0f);
         dim.x = 30.0f;
         dim.y = dim.x;
         m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISPHERE4, 1.5f, 0.0f, 0.0f);
@@ -330,7 +330,7 @@ void CAutoInfo::Start(int param)
     {
         pos = m_goal;
         pos.y += 9.5f;
-        speed = Math::Vector(0.0f, 0.0f, 0.0f);
+        speed = glm::vec3(0.0f, 0.0f, 0.0f);
         dim.x = 50.0f;
         dim.y = dim.x;
         m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISPHERE6, 1.5f, 0.0f, 0.0f);
@@ -404,9 +404,9 @@ bool CAutoInfo::EventProcess(const Event &event)
 
             for (int i = 0; i < 4; i++)
             {
-                Math::Vector pos = m_goal;
+                glm::vec3 pos = m_goal;
                 pos.y += 9.5f;
-                Math::Vector speed;
+                glm::vec3 speed;
                 speed.x = (Math::Rand()-0.5f)*50.0f;
                 speed.z = (Math::Rand()-0.5f)*50.0f;
                 speed.y = (Math::Rand()-0.5f)*50.0f;
@@ -450,9 +450,9 @@ bool CAutoInfo::EventProcess(const Event &event)
 
             for (int i = 0; i < 4; i++)
             {
-                Math::Vector pos = m_goal;
+                glm::vec3 pos = m_goal;
                 pos.y += 9.5f;
-                Math::Vector speed = pos;
+                glm::vec3 speed = pos;
                 pos.x += (Math::Rand()-0.5f)*40.0f;
                 pos.y += (Math::Rand()-0.5f)*40.0f;
                 pos.z += (Math::Rand()-0.5f)*40.0f;
@@ -495,8 +495,8 @@ bool CAutoInfo::EventProcess(const Event &event)
         {
             m_lastParticle = m_time;
 
-            Math::Vector pos = m_goal;
-            Math::Vector speed;
+            glm::vec3 pos = m_goal;
+            glm::vec3 speed;
             speed.x = (Math::Rand()-0.5f)*5.0f;
             speed.z = (Math::Rand()-0.5f)*5.0f;
             speed.y = 5.0f+Math::Rand()*5.0f;

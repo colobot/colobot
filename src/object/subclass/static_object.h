@@ -41,7 +41,7 @@ public:
     CStaticObject(int id,
                   ObjectType type,
                   const std::string& key,
-                  const Math::Vector& position,
+                  const glm::vec3& position,
                   float angleY,
                   const Gfx::CModel& model,
                   Gfx::CEngine* engine);
@@ -58,7 +58,7 @@ public:
 
     static CStaticObjectUPtr Create(int id,
                                     ObjectType type,
-                                    const Math::Vector& position,
+                                    const glm::vec3& position,
                                     float angleY,
                                     float height,
                                     Gfx::CEngine* engine,
@@ -70,7 +70,7 @@ protected:
     void TransformCameraCollisionSphere(Math::Sphere& collisionSphere) override;
 
 private:
-    static Math::Matrix ComputeWorldMatrix(const Math::Vector& position,
+    static Math::Matrix ComputeWorldMatrix(const glm::vec3& position,
                                            float angleY);
 
 private:

@@ -54,7 +54,7 @@ public:
     virtual Error StartTaskTerraform() = 0;
     virtual Error StartTaskRecover() = 0;
     virtual Error StartTaskFire(float delay) = 0;
-    virtual Error StartTaskFireAnt(Math::Vector impact) = 0;
+    virtual Error StartTaskFireAnt(glm::vec3 impact) = 0;
     virtual Error StartTaskSpiderExplo() = 0;
     virtual Error StartTaskPen(bool down, TraceColor color = TraceColor::Default) = 0;
     //@}
@@ -63,7 +63,7 @@ public:
     virtual Error StartTaskWait(float time) = 0;
     virtual Error StartTaskAdvance(float length) = 0;
     virtual Error StartTaskTurn(float angle) = 0;
-    virtual Error StartTaskGoto(Math::Vector pos, float altitude, TaskGotoGoal goalMode, TaskGotoCrash crashMode) = 0;
+    virtual Error StartTaskGoto(glm::vec3 pos, float altitude, TaskGotoGoal goalMode, TaskGotoCrash crashMode) = 0;
     virtual Error StartTaskInfo(const char *name, float value, float power, bool bSend) = 0;
     //@}
     //! Starts a background task

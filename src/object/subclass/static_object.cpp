@@ -44,7 +44,7 @@ const std::unordered_map<ObjectType, std::string, ObjectTypeHash> CStaticObject:
 CStaticObject::CStaticObject(int id,
                              ObjectType type,
                              const std::string& key,
-                             const Math::Vector& position,
+                             const glm::vec3& position,
                              float angleY,
                              const Gfx::CModel& model,
                              Gfx::CEngine* engine)
@@ -74,13 +74,13 @@ CStaticObject::~CStaticObject()
     m_engine->DeleteStaticMesh(m_meshHandle);
 }
 
-Math::Matrix CStaticObject::ComputeWorldMatrix(const Math::Vector& position, float angleY)
+Math::Matrix CStaticObject::ComputeWorldMatrix(const glm::vec3& position, float angleY)
 {
     Math::Matrix translationMatrix;
     Math::LoadTranslationMatrix(translationMatrix, position);
 
     Math::Matrix rotationMatrix;
-    Math::LoadRotationZXYMatrix(rotationMatrix, Math::Vector(0.0f, angleY, 0.0f));
+    Math::LoadRotationZXYMatrix(rotationMatrix, glm::vec3(0.0f, angleY, 0.0f));
 
     return Math::MultiplyMatrices(translationMatrix, rotationMatrix);
 }
@@ -117,7 +117,7 @@ bool CStaticObject::IsStaticObject(ObjectType type)
 
 CStaticObjectUPtr CStaticObject::Create(int id,
                                         ObjectType type,
-                                        const Math::Vector& position,
+                                        const glm::vec3& position,
                                         float angleY,
                                         float height,
                                         Gfx::CEngine* engine,
@@ -130,7 +130,7 @@ CStaticObjectUPtr CStaticObject::Create(int id,
 
     std::string modelFile = it->second;
 
-    Math::Vector adjustedPosition = position;
+    glm::vec3 adjustedPosition = position;
     terrain->AdjustToFloor(adjustedPosition);
     adjustedPosition.y += height;
 

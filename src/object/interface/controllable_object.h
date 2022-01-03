@@ -65,7 +65,7 @@ public:
 
     //! Adjust camera parameters for the given object
     /** TODO: Seems to be for onboard camera only? Check and rename appropriately */
-    virtual void AdjustCamera(Math::Vector &eye, float &dirH, float &dirV,
-                              Math::Vector &lookat, Math::Vector &upVec,
+    virtual void AdjustCamera(glm::vec3 &eye, float &dirH, float &dirV,
+                              glm::vec3 &lookat, glm::vec3 &upVec,
                               Gfx::CameraType type) = 0;
 };

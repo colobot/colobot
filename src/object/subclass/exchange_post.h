@@ -106,6 +106,6 @@ protected:
     float           m_speed;
     float           m_timeVirus;
     float           m_lastParticle;
-    Math::Vector    m_goal;
+    glm::vec3       m_goal;
     bool            m_lastVirus;
 };
