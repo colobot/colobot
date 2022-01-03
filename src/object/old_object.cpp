@@ -114,9 +114,9 @@ COldObject::COldObject(int id)
     m_name = "";
     m_shadowLight   = -1;
     m_shadowHeight  = 0.0f;
-    m_linVibration  = Math::Vector(0.0f, 0.0f, 0.0f);
-    m_cirVibration  = Math::Vector(0.0f, 0.0f, 0.0f);
-    m_tilt   = Math::Vector(0.0f, 0.0f, 0.0f);
+    m_linVibration  = glm::vec3(0.0f, 0.0f, 0.0f);
+    m_cirVibration  = glm::vec3(0.0f, 0.0f, 0.0f);
+    m_tilt   = glm::vec3(0.0f, 0.0f, 0.0f);
 
     m_power = nullptr;
     m_cargo  = nullptr;
@@ -625,11 +625,11 @@ void COldObject::InitPart(int part)
     m_objectPart[part].object     = -1;
     m_objectPart[part].parentPart = -1;
 
-    m_objectPart[part].position   = Math::Vector(0.0f, 0.0f, 0.0f);
+    m_objectPart[part].position   = glm::vec3(0.0f, 0.0f, 0.0f);
     m_objectPart[part].angle.y    = 0.0f;
     m_objectPart[part].angle.x    = 0.0f;
     m_objectPart[part].angle.z    = 0.0f;
-    m_objectPart[part].zoom       = Math::Vector(1.0f, 1.0f, 1.0f);
+    m_objectPart[part].zoom       = glm::vec3(1.0f, 1.0f, 1.0f);
 
     m_objectPart[part].bTranslate = true;
     m_objectPart[part].bRotate    = true;
@@ -1050,7 +1050,7 @@ int COldObject::GetOption()
 
 void COldObject::Write(CLevelParserLine* line)
 {
-    Math::Vector    pos;
+    glm::vec3    pos;
 
     line->AddParam("camera", MakeUnique<CLevelParserParam>(GetCameraType()));
 
@@ -1146,7 +1146,7 @@ void COldObject::Write(CLevelParserLine* line)
 
 void COldObject::Read(CLevelParserLine* line)
 {
-    Math::Vector zoom = line->GetParam("zoom")->AsPoint(Math::Vector(1.0f, 1.0f, 1.0f));
+    glm::vec3 zoom = line->GetParam("zoom")->AsPoint(glm::vec3(1.0f, 1.0f, 1.0f));
     if (zoom.x != 1.0f || zoom.y != 1.0f || zoom.z != 1.0f)
         SetScale(zoom);
 
@@ -1348,7 +1348,7 @@ Math::Sphere COldObject::GetJostlingSphere() const
 
 void COldObject::SetFloorHeight(float height)
 {
-    Math::Vector    pos;
+    glm::vec3    pos;
 
     pos = m_objectPart[0].position;
     m_terrain->AdjustToFloor(pos);
@@ -1367,7 +1367,7 @@ void COldObject::SetFloorHeight(float height)
 
 void COldObject::FloorAdjust()
 {
-    Math::Vector        pos, n;
+    glm::vec3        pos, n;
     glm::vec2           nn;
     float           a;
 
@@ -1384,7 +1384,7 @@ void COldObject::FloorAdjust()
 
 // Getes the linear vibration.
 
-void COldObject::SetLinVibration(Math::Vector dir)
+void COldObject::SetLinVibration(glm::vec3 dir)
 {
     if ( m_linVibration.x != dir.x ||
          m_linVibration.y != dir.y ||
@@ -1395,14 +1395,14 @@ void COldObject::SetLinVibration(Math::Vector dir)
     }
 }
 
-Math::Vector COldObject::GetLinVibration()
+glm::vec3 COldObject::GetLinVibration()
 {
     return m_linVibration;
 }
 
 // Getes the circular vibration.
 
-void COldObject::SetCirVibration(Math::Vector dir)
+void COldObject::SetCirVibration(glm::vec3 dir)
 {
     if ( m_cirVibration.x != dir.x ||
          m_cirVibration.y != dir.y ||
@@ -1413,14 +1413,14 @@ void COldObject::SetCirVibration(Math::Vector dir)
     }
 }
 
-Math::Vector COldObject::GetCirVibration()
+glm::vec3 COldObject::GetCirVibration()
 {
     return m_cirVibration;
 }
 
 // Getes the inclination.
 
-void COldObject::SetTilt(Math::Vector dir)
+void COldObject::SetTilt(glm::vec3 dir)
 {
     if ( m_tilt.x != dir.x ||
          m_tilt.y != dir.y ||
@@ -1431,7 +1431,7 @@ void COldObject::SetTilt(Math::Vector dir)
     }
 }
 
-Math::Vector COldObject::GetTilt()
+glm::vec3 COldObject::GetTilt()
 {
     return m_tilt;
 }
@@ -1439,7 +1439,7 @@ Math::Vector COldObject::GetTilt()
 
 // Getes the position of center of the object.
 
-void COldObject::SetPartPosition(int part, const Math::Vector &pos)
+void COldObject::SetPartPosition(int part, const glm::vec3 &pos)
 {
     m_objectPart[part].position = pos;
     m_objectPart[part].bTranslate = true;  // it will recalculate the matrices
@@ -1448,7 +1448,7 @@ void COldObject::SetPartPosition(int part, const Math::Vector &pos)
     {
         int rank = m_objectPart[0].object;
 
-        Math::Vector shPos = pos;
+        glm::vec3 shPos = pos;
         m_terrain->AdjustToFloor(shPos, true);
         m_engine->SetObjectShadowSpotPos(rank, shPos);
 
@@ -1463,21 +1463,21 @@ void COldObject::SetPartPosition(int part, const Math::Vector &pos)
 
         if ( m_shadowLight != -1 )
         {
-            Math::Vector lightPos = pos;
+            glm::vec3 lightPos = pos;
             lightPos.y += m_shadowHeight;
             m_lightMan->SetLightPos(m_shadowLight, lightPos);
         }
     }
 }
 
-Math::Vector COldObject::GetPartPosition(int part) const
+glm::vec3 COldObject::GetPartPosition(int part) const
 {
     return m_objectPart[part].position;
 }
 
 // Getes the rotation around three axis.
 
-void COldObject::SetPartRotation(int part, const Math::Vector &angle)
+void COldObject::SetPartRotation(int part, const glm::vec3 &angle)
 {
     m_objectPart[part].angle = angle;
     m_objectPart[part].bRotate = true;  // it will recalculate the matrices
@@ -1488,7 +1488,7 @@ void COldObject::SetPartRotation(int part, const Math::Vector &angle)
     }
 }
 
-Math::Vector COldObject::GetPartRotation(int part) const
+glm::vec3 COldObject::GetPartRotation(int part) const
 {
     return m_objectPart[part].angle;
 }
@@ -1552,7 +1552,7 @@ void COldObject::SetPartScale(int part, float zoom)
                                  m_objectPart[part].zoom.z != 1.0f );
 }
 
-void COldObject::SetPartScale(int part, Math::Vector zoom)
+void COldObject::SetPartScale(int part, glm::vec3 zoom)
 {
     m_objectPart[part].bTranslate = true;  // it will recalculate the matrices
     m_objectPart[part].zoom = zoom;
@@ -1562,7 +1562,7 @@ void COldObject::SetPartScale(int part, Math::Vector zoom)
                                  m_objectPart[part].zoom.z != 1.0f );
 }
 
-Math::Vector COldObject::GetPartScale(int part) const
+glm::vec3 COldObject::GetPartScale(int part) const
 {
     return m_objectPart[part].zoom;
 }
@@ -1672,12 +1672,12 @@ CObject* COldObject::GetPower()
     return m_power;
 }
 
-void COldObject::SetPowerPosition(const Math::Vector& powerPosition)
+void COldObject::SetPowerPosition(const glm::vec3& powerPosition)
 {
     m_powerPosition = powerPosition;
 }
 
-Math::Vector COldObject::GetPowerPosition()
+glm::vec3 COldObject::GetPowerPosition()
 {
     return m_powerPosition;
 }
@@ -1758,15 +1758,15 @@ bool COldObject::CreateShadowLight(float height, Gfx::Color color)
 {
     if ( !m_engine->GetLightMode() )  return true;
 
-    Math::Vector pos = GetPosition();
+    glm::vec3 pos = GetPosition();
     m_shadowHeight = height;
 
     Gfx::Light light;
     light.type          = Gfx::LIGHT_SPOT;
     light.diffuse       = color;
     light.ambient       = color * 0.1f;
-    light.position      = Math::Vector(pos.x, pos.y+height, pos.z);
-    light.direction     = Math::Vector(0.0f, -1.0f, 0.0f); // against the bottom
+    light.position      = glm::vec3(pos.x, pos.y+height, pos.z);
+    light.direction     = glm::vec3(0.0f, -1.0f, 0.0f); // against the bottom
     light.spotIntensity = 128;
     light.attenuation0  = 1.0f;
     light.attenuation1  = 0.0f;
@@ -1819,7 +1819,7 @@ bool COldObject::CreateShadowCircle(float radius, float intensity,
 
 bool COldObject::UpdateTransformObject(int part, bool bForceUpdate)
 {
-    Math::Vector    position, angle, eye;
+    glm::vec3    position, angle, eye;
     bool        bModif = false;
     int         parent;
 
@@ -2297,10 +2297,10 @@ void COldObject::VirusFrame(float rTime)
     {
         m_lastVirusParticle = m_aTime;
 
-        Math::Vector pos = GetPosition();
+        glm::vec3 pos = GetPosition();
         pos.x += (Math::Rand()-0.5f)*10.0f;
         pos.z += (Math::Rand()-0.5f)*10.0f;
-        Math::Vector speed;
+        glm::vec3 speed;
         speed.x = (Math::Rand()-0.5f)*2.0f;
         speed.z = (Math::Rand()-0.5f)*2.0f;
         speed.y = Math::Rand()*4.0f+4.0f;
@@ -2316,7 +2316,7 @@ void COldObject::VirusFrame(float rTime)
 
 void COldObject::PartiFrame(float rTime)
 {
-    Math::Vector    pos, angle, factor;
+    glm::vec3    pos, angle, factor;
     int         i, channel;
 
     for ( i=0 ; i<OBJECTMAXPART ; i++ )
@@ -2337,11 +2337,11 @@ void COldObject::PartiFrame(float rTime)
         // Each song spins differently.
         switch( i%5 )
         {
-            case 0:  factor = Math::Vector( 0.5f, 0.3f, 0.6f); break;
-            case 1:  factor = Math::Vector(-0.3f, 0.4f,-0.2f); break;
-            case 2:  factor = Math::Vector( 0.4f,-0.6f,-0.3f); break;
-            case 3:  factor = Math::Vector(-0.6f,-0.2f, 0.0f); break;
-            case 4:  factor = Math::Vector( 0.4f, 0.1f,-0.7f); break;
+            case 0:  factor = glm::vec3( 0.5f, 0.3f, 0.6f); break;
+            case 1:  factor = glm::vec3(-0.3f, 0.4f,-0.2f); break;
+            case 2:  factor = glm::vec3( 0.4f,-0.6f,-0.3f); break;
+            case 3:  factor = glm::vec3(-0.6f,-0.2f, 0.0f); break;
+            case 4:  factor = glm::vec3( 0.4f, 0.1f,-0.7f); break;
         }
 
         angle = GetPartRotation(i);
@@ -2354,8 +2354,8 @@ void COldObject::PartiFrame(float rTime)
 // Changes the perspective to view if it was like in the vehicle,
 // or behind the vehicle.
 
-void COldObject::AdjustCamera(Math::Vector &eye, float &dirH, float &dirV,
-                              Math::Vector  &lookat, Math::Vector &upVec,
+void COldObject::AdjustCamera(glm::vec3 &eye, float &dirH, float &dirV,
+                              glm::vec3  &lookat, glm::vec3 &upVec,
                               Gfx::CameraType type)
 {
     float   speed;
@@ -2459,7 +2459,7 @@ void COldObject::AdjustCamera(Math::Vector &eye, float &dirH, float &dirV,
     lookat = Math::Transform(m_objectPart[part].matWorld, lookat);
 
     // Camera tilts when turning.
-    upVec = Math::Vector(0.0f, 1.0f, 0.0f);
+    upVec = glm::vec3(0.0f, 1.0f, 0.0f);
     if ( m_physics != nullptr )
     {
         if ( m_physics->GetLand() )  // on ground?
@@ -2920,7 +2920,7 @@ float COldObject::GetShowLimitRadius()
 
 void COldObject::CreateSelectParticle()
 {
-    Math::Vector    pos, speed;
+    glm::vec3    pos, speed;
     glm::vec2     dim;
     int         i;
 
@@ -2971,8 +2971,8 @@ void COldObject::CreateSelectParticle()
              m_type == OBJECT_MOBILEst ||
              m_type == OBJECT_MOBILEdr )  // vehicle?
         {
-            pos = Math::Vector(0.0f, 0.0f, 0.0f);
-            speed = Math::Vector(0.0f, 0.0f, 0.0f);
+            pos = glm::vec3(0.0f, 0.0f, 0.0f);
+            speed = glm::vec3(0.0f, 0.0f, 0.0f);
             dim.x = 0.0f;
             dim.y = 0.0f;
             m_partiSel[0] = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISELY, 1.0f, 0.0f, 0.0f);
@@ -2988,7 +2988,7 @@ void COldObject::CreateSelectParticle()
 
 void COldObject::UpdateSelectParticle()
 {
-    Math::Vector    pos[4];
+    glm::vec3    pos[4];
     glm::vec2     dim[4];
     float       zoom[4];
     float       angle;
@@ -3008,26 +3008,26 @@ void COldObject::UpdateSelectParticle()
          m_type == OBJECT_MOBILErs ||
          m_type == OBJECT_MOBILErp )  // large caterpillars?
     {
-        pos[0] = Math::Vector(4.2f, 2.8f,  1.5f);
-        pos[1] = Math::Vector(4.2f, 2.8f, -1.5f);
+        pos[0] = glm::vec3(4.2f, 2.8f,  1.5f);
+        pos[1] = glm::vec3(4.2f, 2.8f, -1.5f);
         dim[0].x = 1.5f;
         dim[1].x = 1.5f;
     }
     else if ( m_type == OBJECT_MOBILEsa ||
               m_type == OBJECT_MOBILEst )  // submarine?
     {
-        pos[0] = Math::Vector(3.6f, 4.0f,  2.0f);
-        pos[1] = Math::Vector(3.6f, 4.0f, -2.0f);
+        pos[0] = glm::vec3(3.6f, 4.0f,  2.0f);
+        pos[1] = glm::vec3(3.6f, 4.0f, -2.0f);
     }
     else if ( m_type == OBJECT_MOBILEtg )  // target?
     {
-        pos[0] = Math::Vector(3.4f, 6.5f,  2.0f);
-        pos[1] = Math::Vector(3.4f, 6.5f, -2.0f);
+        pos[0] = glm::vec3(3.4f, 6.5f,  2.0f);
+        pos[1] = glm::vec3(3.4f, 6.5f, -2.0f);
     }
     else if ( m_type == OBJECT_MOBILEdr )  // designer?
     {
-        pos[0] = Math::Vector(4.9f, 3.5f,  2.5f);
-        pos[1] = Math::Vector(4.9f, 3.5f, -2.5f);
+        pos[0] = glm::vec3(4.9f, 3.5f,  2.5f);
+        pos[1] = glm::vec3(4.9f, 3.5f, -2.5f);
     }
     else if ( m_type == OBJECT_MOBILEwt ||
               m_type == OBJECT_MOBILEtt ||
@@ -3035,15 +3035,15 @@ void COldObject::UpdateSelectParticle()
               m_type == OBJECT_MOBILEit ||
               GetTrainer())                // trainer ?
     {
-        pos[0] = Math::Vector(4.2f, 2.5f,  1.2f);
-        pos[1] = Math::Vector(4.2f, 2.5f, -1.2f);
+        pos[0] = glm::vec3(4.2f, 2.5f,  1.2f);
+        pos[1] = glm::vec3(4.2f, 2.5f, -1.2f);
         dim[0].x = 1.5f;
         dim[1].x = 1.5f;
     }
     else
     {
-        pos[0] = Math::Vector(4.2f, 2.5f,  1.5f);
-        pos[1] = Math::Vector(4.2f, 2.5f, -1.5f);
+        pos[0] = glm::vec3(4.2f, 2.5f,  1.5f);
+        pos[1] = glm::vec3(4.2f, 2.5f, -1.5f);
     }
 
     // Red back lens
@@ -3053,8 +3053,8 @@ void COldObject::UpdateSelectParticle()
          m_type == OBJECT_MOBILEit ||
          GetTrainer())               // trainer?
     {
-        pos[2] = Math::Vector(-4.0f, 2.5f,  2.2f);
-        pos[3] = Math::Vector(-4.0f, 2.5f, -2.2f);
+        pos[2] = glm::vec3(-4.0f, 2.5f,  2.2f);
+        pos[3] = glm::vec3(-4.0f, 2.5f, -2.2f);
     }
     else if ( m_type == OBJECT_MOBILEfa ||
               m_type == OBJECT_MOBILEfb ||
@@ -3062,8 +3062,8 @@ void COldObject::UpdateSelectParticle()
               m_type == OBJECT_MOBILEfi ||
               m_type == OBJECT_MOBILEfs )  // flying?
     {
-        pos[2] = Math::Vector(-4.0f, 3.1f,  4.5f);
-        pos[3] = Math::Vector(-4.0f, 3.1f, -4.5f);
+        pos[2] = glm::vec3(-4.0f, 3.1f,  4.5f);
+        pos[3] = glm::vec3(-4.0f, 3.1f, -4.5f);
         dim[2].x = 0.6f;
         dim[3].x = 0.6f;
     }
@@ -3073,8 +3073,8 @@ void COldObject::UpdateSelectParticle()
               m_type == OBJECT_MOBILEwi ||
               m_type == OBJECT_MOBILEws )  // wheels?
     {
-        pos[2] = Math::Vector(-4.5f, 2.7f,  2.8f);
-        pos[3] = Math::Vector(-4.5f, 2.7f, -2.8f);
+        pos[2] = glm::vec3(-4.5f, 2.7f,  2.8f);
+        pos[3] = glm::vec3(-4.5f, 2.7f, -2.8f);
     }
     else if ( m_type == OBJECT_MOBILEia ||
               m_type == OBJECT_MOBILEib ||
@@ -3082,8 +3082,8 @@ void COldObject::UpdateSelectParticle()
               m_type == OBJECT_MOBILEii ||
               m_type == OBJECT_MOBILEis )  // legs?
     {
-        pos[2] = Math::Vector(-4.5f, 2.7f,  2.8f);
-        pos[3] = Math::Vector(-4.5f, 2.7f, -2.8f);
+        pos[2] = glm::vec3(-4.5f, 2.7f,  2.8f);
+        pos[3] = glm::vec3(-4.5f, 2.7f, -2.8f);
     }
     else if ( m_type == OBJECT_MOBILEta ||
               m_type == OBJECT_MOBILEtb ||
@@ -3091,16 +3091,16 @@ void COldObject::UpdateSelectParticle()
               m_type == OBJECT_MOBILEti ||
               m_type == OBJECT_MOBILEts )  // caterpillars?
     {
-        pos[2] = Math::Vector(-3.6f, 4.2f,  3.0f);
-        pos[3] = Math::Vector(-3.6f, 4.2f, -3.0f);
+        pos[2] = glm::vec3(-3.6f, 4.2f,  3.0f);
+        pos[3] = glm::vec3(-3.6f, 4.2f, -3.0f);
     }
     else if ( m_type == OBJECT_MOBILErt ||
               m_type == OBJECT_MOBILErc ||
               m_type == OBJECT_MOBILErr ||
               m_type == OBJECT_MOBILErs )  // large caterpillars?
     {
-        pos[2] = Math::Vector(-5.0f, 5.2f,  2.5f);
-        pos[3] = Math::Vector(-5.0f, 5.2f, -2.5f);
+        pos[2] = glm::vec3(-5.0f, 5.2f,  2.5f);
+        pos[3] = glm::vec3(-5.0f, 5.2f, -2.5f);
     }
     if ( m_type == OBJECT_MOBILErp || ( GetTrainer() &&
        ( m_type == OBJECT_MOBILErt ||
@@ -3108,24 +3108,24 @@ void COldObject::UpdateSelectParticle()
          m_type == OBJECT_MOBILErr ||
          m_type == OBJECT_MOBILErs)))  // large caterpillars (trainer)?
     {
-        pos[2] = Math::Vector(-4.6f, 5.2f,  2.6f);
-        pos[3] = Math::Vector(-4.6f, 5.2f, -2.6f);
+        pos[2] = glm::vec3(-4.6f, 5.2f,  2.6f);
+        pos[3] = glm::vec3(-4.6f, 5.2f, -2.6f);
     }
     if ( m_type == OBJECT_MOBILEsa ||
          m_type == OBJECT_MOBILEst )  // submarine?
     {
-        pos[2] = Math::Vector(-3.6f, 4.0f,  2.0f);
-        pos[3] = Math::Vector(-3.6f, 4.0f, -2.0f);
+        pos[2] = glm::vec3(-3.6f, 4.0f,  2.0f);
+        pos[3] = glm::vec3(-3.6f, 4.0f, -2.0f);
     }
     if ( m_type == OBJECT_MOBILEtg )  // target?
     {
-        pos[2] = Math::Vector(-2.4f, 6.5f,  2.0f);
-        pos[3] = Math::Vector(-2.4f, 6.5f, -2.0f);
+        pos[2] = glm::vec3(-2.4f, 6.5f,  2.0f);
+        pos[3] = glm::vec3(-2.4f, 6.5f, -2.0f);
     }
     if ( m_type == OBJECT_MOBILEdr )  // designer?
     {
-        pos[2] = Math::Vector(-5.3f, 2.7f,  1.8f);
-        pos[3] = Math::Vector(-5.3f, 2.7f, -1.8f);
+        pos[2] = glm::vec3(-5.3f, 2.7f,  1.8f);
+        pos[3] = glm::vec3(-5.3f, 2.7f, -1.8f);
     }
 
     angle = GetRotationY()/Math::PI;
@@ -3198,32 +3198,32 @@ void COldObject::SetAuto(std::unique_ptr<CAuto> automat)
 }
 
 
-Math::Vector COldObject::GetPosition() const
+glm::vec3 COldObject::GetPosition() const
 {
     return GetPartPosition(0);
 }
 
-void COldObject::SetPosition(const Math::Vector& pos)
+void COldObject::SetPosition(const glm::vec3& pos)
 {
     SetPartPosition(0, pos);
 }
 
-Math::Vector COldObject::GetRotation() const
+glm::vec3 COldObject::GetRotation() const
 {
     return GetPartRotation(0);
 }
 
-void COldObject::SetRotation(const Math::Vector& rotation)
+void COldObject::SetRotation(const glm::vec3& rotation)
 {
     SetPartRotation(0, rotation);
 }
 
-Math::Vector COldObject::GetScale() const
+glm::vec3 COldObject::GetScale() const
 {
     return GetPartScale(0);
 }
 
-void COldObject::SetScale(const Math::Vector& scale)
+void COldObject::SetScale(const glm::vec3& scale)
 {
     SetPartScale(0, scale);
 }

@@ -58,9 +58,9 @@ struct ObjectPart
     int          object = -1;         // number of the object in CEngine
     int          parentPart = -1;     // number of father part
     int          masterParti = -1;        // master canal of the particle
-    Math::Vector position;
-    Math::Vector angle;
-    Math::Vector zoom;
+    glm::vec3    position = { 0, 0, 0 };
+    glm::vec3    angle = { 0, 0, 0 };
+    glm::vec3    zoom = { 0, 0, 0 };
     bool         bTranslate = false;
     bool         bRotate = false;
     bool         bZoom = false;
@@ -134,18 +134,18 @@ public:
     void        SetFloorHeight(float height);
     void        FloorAdjust() override;
 
-    void        SetLinVibration(Math::Vector dir) override;
-    Math::Vector    GetLinVibration();
-    void        SetCirVibration(Math::Vector dir) override;
-    Math::Vector    GetCirVibration();
-    void        SetTilt(Math::Vector dir);
-    Math::Vector    GetTilt() override;
+    void        SetLinVibration(glm::vec3 dir) override;
+    glm::vec3   GetLinVibration();
+    void        SetCirVibration(glm::vec3 dir) override;
+    glm::vec3   GetCirVibration();
+    void        SetTilt(glm::vec3 dir);
+    glm::vec3   GetTilt() override;
 
-    void        SetPartPosition(int part, const Math::Vector &pos);
-    Math::Vector    GetPartPosition(int part) const;
+    void        SetPartPosition(int part, const glm::vec3 &pos);
+    glm::vec3   GetPartPosition(int part) const;
 
-    void        SetPartRotation(int part, const Math::Vector &angle);
-    Math::Vector    GetPartRotation(int part) const;
+    void        SetPartRotation(int part, const glm::vec3 &angle);
+    glm::vec3   GetPartRotation(int part) const;
     void        SetPartRotationY(int part, float angle);
     void        SetPartRotationX(int part, float angle);
     void        SetPartRotationZ(int part, float angle);
@@ -154,8 +154,8 @@ public:
     float       GetPartRotationZ(int part);
 
     void        SetPartScale(int part, float zoom);
-    void        SetPartScale(int part, Math::Vector zoom);
-    Math::Vector    GetPartScale(int part) const;
+    void        SetPartScale(int part, glm::vec3 zoom);
+    glm::vec3   GetPartScale(int part) const;
     void        SetPartScaleX(int part, float zoom);
     float       GetPartScaleX(int part);
     void        SetPartScaleY(int part, float zoom);
@@ -177,8 +177,8 @@ public:
 
     void        SetPower(CObject* power) override;
     CObject*    GetPower() override;
-    Math::Vector GetPowerPosition() override;
-    void         SetPowerPosition(const Math::Vector& powerPosition) override;
+    glm::vec3   GetPowerPosition() override;
+    void        SetPowerPosition(const glm::vec3& powerPosition) override;
     void        SetCargo(CObject* cargo) override;
     CObject*    GetCargo() override;
     void        SetTransporter(CObject* transporter) override;
@@ -188,8 +188,8 @@ public:
     Math::Matrix*   GetRotateMatrix(int part);
     Math::Matrix*   GetWorldMatrix(int part) override;
 
-    void        AdjustCamera(Math::Vector &eye, float &dirH, float &dirV,
-                             Math::Vector &lookat, Math::Vector &upVec,
+    void        AdjustCamera(glm::vec3 &eye, float &dirH, float &dirV,
+                             glm::vec3 &lookat, glm::vec3 &upVec,
                              Gfx::CameraType type) override;
 
     Character*  GetCharacter() override;
@@ -266,15 +266,15 @@ public:
 
     void        FlatParent() override;
 
-    void SetPosition(const Math::Vector& pos) override;
-    Math::Vector GetPosition() const override;
+    void        SetPosition(const glm::vec3& pos) override;
+    glm::vec3   GetPosition() const override;
 
-    void SetRotation(const Math::Vector& rotation) override;
-    Math::Vector GetRotation() const override;
+    void        SetRotation(const glm::vec3& rotation) override;
+    glm::vec3   GetRotation() const override;
 
     using CObject::SetScale; // SetScale(float) version
-    void SetScale(const Math::Vector& scale) override;
-    Math::Vector GetScale() const override;
+    void        SetScale(const glm::vec3& scale) override;
+    glm::vec3   GetScale() const override;
 
     void        UpdateInterface() override;
 
@@ -340,11 +340,11 @@ protected:
     int     m_option;           // option
     int     m_shadowLight;          // number of light from the shadows
     float       m_shadowHeight;         // height of light from the shadows
-    Math::Vector    m_linVibration;         // linear vibration
-    Math::Vector    m_cirVibration;         // circular vibration
-    Math::Vector    m_tilt;          // tilt
+    glm::vec3    m_linVibration;         // linear vibration
+    glm::vec3    m_cirVibration;         // circular vibration
+    glm::vec3    m_tilt;          // tilt
     CObject*    m_power;            // battery used by the vehicle
-    Math::Vector m_powerPosition;
+    glm::vec3   m_powerPosition;
     CObject*    m_cargo;             // object transported
     CObject*    m_transporter;            // object with the latter
     int     m_transporterLink;            // part

@@ -24,9 +24,9 @@
 
 #pragma once
 
-#include "math/vector.h"
-
 #include "object/object_type.h"
+
+#include <glm/glm.hpp>
 
 namespace Math
 {
@@ -63,10 +63,10 @@ public:
 
     virtual void        FloorAdjust();
 
-    virtual void        SetLinVibration(Math::Vector dir);
-    virtual void        SetCirVibration(Math::Vector dir);
+    virtual void        SetLinVibration(glm::vec3 dir);
+    virtual void        SetCirVibration(glm::vec3 dir);
 
-    virtual Math::Vector    GetTilt();
+    virtual glm::vec3   GetTilt();
 
     virtual void        SetMasterParticle(int part, int parti);
 

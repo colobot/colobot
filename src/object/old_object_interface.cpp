@@ -58,17 +58,17 @@ void COldObjectInterface::FloorAdjust()
 }
 
 
-void COldObjectInterface::SetLinVibration(Math::Vector dir)
+void COldObjectInterface::SetLinVibration(glm::vec3 dir)
 {
     throw std::logic_error("SetLinVibration: not implemented!");
 }
 
-void COldObjectInterface::SetCirVibration(Math::Vector dir)
+void COldObjectInterface::SetCirVibration(glm::vec3 dir)
 {
     throw std::logic_error("SetCirVibration: not implemented!");
 }
 
-Math::Vector COldObjectInterface::GetTilt()
+glm::vec3 COldObjectInterface::GetTilt()
 {
     throw std::logic_error("GetTilt: not implemented!");
 }

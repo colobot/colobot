@@ -22,7 +22,6 @@
 #include "common/logger.h"
 
 #include "math/sphere.h"
-#include "math/vector.h"
 
 #include "sound/sound_type.h"
 
@@ -32,7 +31,7 @@
  */
 struct CrashSphere
 {
-    CrashSphere(const Math::Vector& pos = Math::Vector(),
+    CrashSphere(const glm::vec3& pos = { 0, 0, 0 },
                 float radius = 0.0f,
                 SoundType _sound = SOUND_NONE,
                 float _hardness = 0.45f)
