@@ -169,8 +169,8 @@ void DumpInfo(const CModel& model)
         return;
     }
 
-    Math::Vector bboxMin( Math::HUGE_NUM,  Math::HUGE_NUM,  Math::HUGE_NUM);
-    Math::Vector bboxMax(-Math::HUGE_NUM, -Math::HUGE_NUM, -Math::HUGE_NUM);
+    glm::vec3 bboxMin( Math::HUGE_NUM,  Math::HUGE_NUM,  Math::HUGE_NUM);
+    glm::vec3 bboxMax(-Math::HUGE_NUM, -Math::HUGE_NUM, -Math::HUGE_NUM);
 
     std::map<std::string, int> texs1, texs2;
     std::map<int, int> states;
