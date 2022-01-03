@@ -112,7 +112,7 @@ void CAutoVault::Init()
 bool CAutoVault::EventProcess(const Event &event)
 {
     CObject*    pObj;
-    Math::Vector    pos, speed;
+    glm::vec3    pos, speed;
     glm::vec2     dim;
     int         i, count;
 
@@ -243,7 +243,7 @@ bool CAutoVault::EventProcess(const Event &event)
             }
 
             m_object->DeleteAllCrashSpheres();
-            m_object->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 0.0f, 0.0f), 0.0f));
+            m_object->SetCameraCollisionSphere(Math::Sphere(glm::vec3(0.0f, 0.0f, 0.0f), 0.0f));
 
             m_sound->Play(SOUND_FINDING, m_object->GetPosition());
 
@@ -281,7 +281,7 @@ bool CAutoVault::EventProcess(const Event &event)
     }
 
     // Blinks the keys.
-    speed = Math::Vector(0.0f, 0.0f, 0.0f);
+    speed = glm::vec3(0.0f, 0.0f, 0.0f);
     dim.x = 2.0f;
     dim.y = dim.x;
     for ( i=0 ; i<4 ; i++ )
@@ -387,7 +387,7 @@ bool CAutoVault::Read(CLevelParserLine* line)
 
 int CAutoVault::CountKeys()
 {
-    Math::Vector cPos = m_object->GetPosition();
+    glm::vec3 cPos = m_object->GetPosition();
     float cAngle = m_object->GetRotationY();
 
     for (int index = 0; index < 4; index++)
@@ -406,7 +406,7 @@ int CAutoVault::CountKeys()
              oType != OBJECT_KEYc &&
              oType != OBJECT_KEYd )  continue;
 
-        Math::Vector oPos = obj->GetPosition();
+        glm::vec3 oPos = obj->GetPosition();
         float dist = Math::DistanceProjected(oPos, cPos);
         if ( dist > 20.0f )  continue;
 
@@ -465,7 +465,7 @@ int CAutoVault::CountKeys()
 
 void CAutoVault::LockKeys()
 {
-    Math::Vector cPos = m_object->GetPosition();
+    glm::vec3 cPos = m_object->GetPosition();
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
@@ -477,7 +477,7 @@ void CAutoVault::LockKeys()
              oType != OBJECT_KEYc &&
              oType != OBJECT_KEYd )  continue;
 
-        Math::Vector oPos = obj->GetPosition();
+        glm::vec3 oPos = obj->GetPosition();
         float dist = Math::DistanceProjected(oPos, cPos);
         if ( dist > 20.0f )  continue;
 
@@ -489,7 +489,7 @@ void CAutoVault::LockKeys()
 
 void CAutoVault::DownKeys(float progress)
 {
-    Math::Vector cPos = m_object->GetPosition();
+    glm::vec3 cPos = m_object->GetPosition();
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
@@ -501,7 +501,7 @@ void CAutoVault::DownKeys(float progress)
              oType != OBJECT_KEYc &&
              oType != OBJECT_KEYd )  continue;
 
-        Math::Vector oPos = obj->GetPosition();
+        glm::vec3 oPos = obj->GetPosition();
         float dist = Math::DistanceProjected(oPos, cPos);
         if ( dist > 20.0f )  continue;
 
@@ -514,7 +514,7 @@ void CAutoVault::DownKeys(float progress)
 
 void CAutoVault::DeleteKeys()
 {
-    Math::Vector cPos = m_object->GetPosition();
+    glm::vec3 cPos = m_object->GetPosition();
 
     bool haveDeleted = false;
     do
@@ -530,7 +530,7 @@ void CAutoVault::DeleteKeys()
                  oType != OBJECT_KEYc &&
                  oType != OBJECT_KEYd )  continue;
 
-            Math::Vector oPos = obj->GetPosition();
+            glm::vec3 oPos = obj->GetPosition();
             float dist = Math::DistanceProjected(oPos, cPos);
             if ( dist > 20.0f )  continue;
 
@@ -546,14 +546,14 @@ void CAutoVault::DeleteKeys()
 
 CObject* CAutoVault::SearchVehicle()
 {
-    Math::Vector cPos = m_object->GetPosition();
+    glm::vec3 cPos = m_object->GetPosition();
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         if ( obj == m_object )  continue;
         if (IsObjectBeingTransported(obj))  continue;
 
-        Math::Vector oPos = obj->GetPosition();
+        glm::vec3 oPos = obj->GetPosition();
         float dist = Math::DistanceProjected(oPos, cPos);
         if ( dist <= 4.0f )  return obj;
     }

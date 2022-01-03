@@ -60,6 +60,6 @@ protected:
     float           m_speed = 0.0f;
     float           m_timeVirus = 0.0f;
     float           m_lastParticle = 0.0f;
-    Math::Vector        m_pos;
+    glm::vec3       m_pos = { 0, 0, 0 };
     int             m_channelSound = 0;
 };

@@ -203,11 +203,11 @@ bool CAutoPowerStation::EventProcess(const Event &event)
     {
         m_lastParticle = m_time;
 
-        Math::Vector    pos, ppos, speed;
+        glm::vec3    pos, ppos, speed;
         glm::vec2     dim;
 
         Math::Matrix* mat = m_object->GetWorldMatrix(0);
-        pos = Math::Vector(-15.0f, 7.0f, 0.0f);  // battery position
+        pos = glm::vec3(-15.0f, 7.0f, 0.0f);  // battery position
         pos = Math::Transform(*mat, pos);
         speed.x = (Math::Rand()-0.5f)*20.0f;
         speed.y = (Math::Rand()-0.5f)*20.0f;
@@ -243,7 +243,7 @@ bool CAutoPowerStation::EventProcess(const Event &event)
 
 CObject* CAutoPowerStation::SearchVehicle()
 {
-    Math::Vector sPos = m_object->GetPosition();
+    glm::vec3 sPos = m_object->GetPosition();
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
@@ -283,7 +283,7 @@ CObject* CAutoPowerStation::SearchVehicle()
              type != OBJECT_MOBILEtg &&
              type != OBJECT_MOBILEdr )  continue;
 
-        Math::Vector oPos = obj->GetPosition();
+        glm::vec3 oPos = obj->GetPosition();
         float dist = Math::Distance(oPos, sPos);
         if ( dist <= 5.0f )  return obj;
     }

@@ -75,7 +75,7 @@ void CAutoRadar::Init()
 
 bool CAutoRadar::EventProcess(const Event &event)
 {
-    Math::Vector    pos, ePos;
+    glm::vec3    pos, ePos;
     float       speed, angle, prog, freq, ampl;
 
     CAuto::EventProcess(event);
@@ -264,9 +264,9 @@ void CAutoRadar::UpdateInterface()
 
 // Seeking the position of an enemy.
 
-bool CAutoRadar::SearchEnemy(Math::Vector &pos)
+bool CAutoRadar::SearchEnemy(glm::vec3 &pos)
 {
-    Math::Vector iPos = m_object->GetPosition();
+    glm::vec3 iPos = m_object->GetPosition();
     float min = 1000000.0f;
     m_totalDetect = 0;
 
@@ -284,7 +284,7 @@ bool CAutoRadar::SearchEnemy(Math::Vector &pos)
 
         m_totalDetect ++;
 
-        Math::Vector oPos = obj->GetPosition();
+        glm::vec3 oPos = obj->GetPosition();
         float distance = Math::Distance(oPos, iPos);
         if ( distance < min )
         {

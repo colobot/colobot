@@ -61,14 +61,14 @@ void CAutoKid::Init()
 
     if ( m_type == OBJECT_TEEN36 )  // trunk ?
     {
-        Math::Vector pos = m_object->GetPosition();
+        glm::vec3 pos = m_object->GetPosition();
         m_speed = 1.0f/(1.0f+(Math::Mod(pos.x/10.0f-0.5f, 1.0f)*0.2f));
         m_progress = Math::Mod(pos.x/10.0f, 1.0f);
     }
 
     if ( m_type == OBJECT_TEEN37 )  // boat?
     {
-        Math::Vector pos = m_object->GetPosition();
+        glm::vec3 pos = m_object->GetPosition();
         m_speed = 1.0f/(1.0f+(Math::Mod(pos.x/10.0f-0.5f, 1.0f)*0.2f))*2.5f;
         m_progress = Math::Mod(pos.x/10.0f, 1.0f);
     }
@@ -117,7 +117,7 @@ bool CAutoKid::EventProcess(const Event &event)
 
     if ( m_type == OBJECT_TEEN36 )  // trunk?
     {
-        Math::Vector vib;
+        glm::vec3 vib{};
         vib.x = 0.0f;
         vib.y = sinf(m_progress)*1.0f;
         vib.z = 0.0f;
@@ -132,12 +132,11 @@ bool CAutoKid::EventProcess(const Event &event)
         {
             m_lastParticle = m_time;
 
-            Math::Vector pos;
-            pos = m_object->GetPosition();
+            glm::vec3 pos = m_object->GetPosition();
             pos.y = m_water->GetLevel()+1.0f;
             pos.x += (Math::Rand()-0.5f)*50.0f;
             pos.z += (Math::Rand()-0.5f)*50.0f;
-            Math::Vector speed;
+            glm::vec3 speed{};
             speed.y = 0.0f;
             speed.x = 0.0f;
             speed.z = 0.0f;
@@ -150,7 +149,7 @@ bool CAutoKid::EventProcess(const Event &event)
 
     if ( m_type == OBJECT_TEEN37 )  // boat?
     {
-        Math::Vector vib;
+        glm::vec3 vib{};
         vib.x = 0.0f;
         vib.y = sinf(m_progress)*1.0f;
         vib.z = 0.0f;
@@ -165,12 +164,11 @@ bool CAutoKid::EventProcess(const Event &event)
         {
             m_lastParticle = m_time;
 
-            Math::Vector pos;
-            pos = m_object->GetPosition();
+            glm::vec3 pos = m_object->GetPosition();
             pos.y = m_water->GetLevel()+1.0f;
             pos.x += (Math::Rand()-0.5f)*20.0f;
             pos.z += (Math::Rand()-0.5f)*20.0f;
-            Math::Vector speed;
+            glm::vec3 speed{};
             speed.y = 0.0f;
             speed.x = 0.0f;
             speed.z = 0.0f;

@@ -82,7 +82,7 @@ void CAutoPowerCaptor::Init()
     m_lastParticle = 0.0f;
 
     mat = m_object->GetWorldMatrix(0);
-    m_pos = Math::Transform(*mat, Math::Vector(22.0f, 4.0f, 0.0f));
+    m_pos = Math::Transform(*mat, glm::vec3(22.0f, 4.0f, 0.0f));
 
     m_phase    = APAP_WAIT;  // waiting ...
     m_progress = 0.0f;
@@ -106,7 +106,7 @@ void CAutoPowerCaptor::StartLightning()
 
 bool CAutoPowerCaptor::EventProcess(const Event &event)
 {
-    Math::Vector    pos, speed;
+    glm::vec3    pos, speed;
     glm::vec2     dim;
     int         i;
 
@@ -247,11 +247,11 @@ Error CAutoPowerCaptor::GetError()
 
 void CAutoPowerCaptor::ChargeObject(float rTime)
 {
-    Math::Vector sPos = m_object->GetPosition();
+    glm::vec3 sPos = m_object->GetPosition();
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
-        Math::Vector oPos = obj->GetPosition();
+        glm::vec3 oPos = obj->GetPosition();
         float dist = Math::Distance(oPos, sPos);
         if ( dist > 20.0f )  continue;
 

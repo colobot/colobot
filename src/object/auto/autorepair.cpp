@@ -81,7 +81,7 @@ void CAutoRepair::Init()
 bool CAutoRepair::EventProcess(const Event &event)
 {
     CObject*    vehicle;
-    Math::Vector    pos, speed;
+    glm::vec3    pos, speed;
     glm::vec2     dim;
     float       angle;
 
@@ -237,7 +237,7 @@ bool CAutoRepair::CreateInterface(bool bSelect)
 
 CObject* CAutoRepair::SearchVehicle()
 {
-    Math::Vector sPos = m_object->GetPosition();
+    glm::vec3 sPos = m_object->GetPosition();
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
@@ -247,7 +247,7 @@ CObject* CAutoRepair::SearchVehicle()
 
         if ( obj->Implements(ObjectInterfaceType::Movable) && !dynamic_cast<CMovableObject&>(*obj).GetPhysics()->GetLand() )  continue;  // in flight?
 
-        Math::Vector oPos = obj->GetPosition();
+        glm::vec3 oPos = obj->GetPosition();
         float dist = Math::Distance(oPos, sPos);
         if ( dist <= 5.0f )  return obj;
     }

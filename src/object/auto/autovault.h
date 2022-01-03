@@ -70,6 +70,6 @@ protected:
     float           m_actualAngle = 0.0f;
     float           m_finalAngle = 0.0f;
     bool            m_bKey[4] = {};
-    Math::Vector        m_keyPos[4];
+    glm::vec3       m_keyPos[4] = {};
     int             m_keyParti[4] = {};
 };

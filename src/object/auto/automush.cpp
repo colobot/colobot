@@ -70,7 +70,7 @@ void CAutoMush::Init()
 
 bool CAutoMush::EventProcess(const Event &event)
 {
-    Math::Vector    pos, speed, dir;
+    glm::vec3    pos, speed, dir;
     glm::vec2     dim;
     float       factor, zoom, size, angle;
     int         i, channel;
@@ -214,7 +214,7 @@ bool CAutoMush::EventProcess(const Event &event)
     {
         m_object->SetRotationX(0.0f);
         m_object->SetRotationZ(0.0f);
-        m_object->SetScale(Math::Vector(1.0f, 1.0f, 1.0f));
+        m_object->SetScale(glm::vec3(1.0f, 1.0f, 1.0f));
     }
 
     return true;
@@ -225,7 +225,7 @@ bool CAutoMush::EventProcess(const Event &event)
 
 bool CAutoMush::SearchTarget()
 {
-    Math::Vector iPos = m_object->GetPosition();
+    glm::vec3 iPos = m_object->GetPosition();
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
@@ -281,7 +281,7 @@ bool CAutoMush::SearchTarget()
              type != OBJECT_PARA     &&
              type != OBJECT_HUMAN    )  continue;
 
-       Math::Vector oPos = obj->GetPosition();
+        glm::vec3 oPos = obj->GetPosition();
         float dist = Math::Distance(oPos, iPos);
         if ( dist < 50.0f )  return true;
     }

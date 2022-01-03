@@ -40,5 +40,5 @@ protected:
 
 protected:
     float           m_lastParticle = 0.0f;
-    Math::Vector        m_center;
+    glm::vec3       m_center = { 0, 0, 0 };
 };

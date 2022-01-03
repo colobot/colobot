@@ -53,7 +53,7 @@ void CAutoFlag::DeleteObject(bool bAll)
 
 void CAutoFlag::Init()
 {
-    Math::Vector    wind;
+    glm::vec3    wind;
     float       angle;
 
     m_time = 0.0f;

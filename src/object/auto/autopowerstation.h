@@ -51,7 +51,7 @@ protected:
     float           m_lastUpdateTime = 0.0f;
     float           m_lastParticle = 0.0f;
     int             m_soundChannel = 0;
-    Math::Vector        m_cargoPos;
+    glm::vec3       m_cargoPos = { 0, 0, 0 };
     bool            m_bLastVirus = false;
     float           m_energyVirus = 0.0f;
 };

@@ -56,18 +56,18 @@ void CAutoRoot::DeleteObject(bool bAll)
 void CAutoRoot::Init()
 {
     Math::Matrix*   mat;
-    Math::Vector    pos, speed;
+    glm::vec3    pos, speed;
     glm::vec2     dim;
 
     m_time = 0.0f;
     m_lastParticle = 0.0f;
 
     mat = m_object->GetWorldMatrix(0);
-    pos = Math::Vector(-5.0f, 28.0f, -4.0f);  // peak position
+    pos = glm::vec3(-5.0f, 28.0f, -4.0f);  // peak position
     pos = Math::Transform(*mat, pos);
     m_center = pos;
 
-    speed = Math::Vector(0.0f, 0.0f, 0.0f);
+    speed = glm::vec3(0.0f, 0.0f, 0.0f);
     dim.x = 100.0f;
     dim.y = dim.x;
     m_particle->CreateParticle(m_center, speed, dim, Gfx::PARTISPHERE5, 0.5f, 0.0f, 0.0f);
@@ -80,7 +80,7 @@ void CAutoRoot::Init()
 
 bool CAutoRoot::EventProcess(const Event &event)
 {
-    Math::Vector    pos, speed;
+    glm::vec3    pos, speed;
     glm::vec2     dim;
 
     CAuto::EventProcess(event);

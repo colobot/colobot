@@ -100,7 +100,7 @@ void CAutoTower::Init()
 bool CAutoTower::EventProcess(const Event &event)
 {
     CObject*    target;
-    Math::Vector    pos;
+    glm::vec3    pos;
     float       angle, quick;
 
     CAuto::EventProcess(event);
@@ -263,9 +263,9 @@ bool CAutoTower::EventProcess(const Event &event)
 
 // Seeks the nearest target object.
 
-CObject* CAutoTower::SearchTarget(Math::Vector &impact)
+CObject* CAutoTower::SearchTarget(glm::vec3 &impact)
 {
-    Math::Vector iPos = m_object->GetPosition();
+    glm::vec3 iPos = m_object->GetPosition();
     float min = 1000000.0f;
 
     CObject* best = nullptr;
@@ -297,7 +297,7 @@ CObject* CAutoTower::SearchTarget(Math::Vector &impact)
 
         if (obj->GetCrashSphereCount() == 0) continue;
 
-        Math::Vector oPos = obj->GetFirstCrashSphere().sphere.pos;
+        glm::vec3 oPos = obj->GetFirstCrashSphere().sphere.pos;
         float distance = Math::Distance(oPos, iPos);
         if ( distance > TOWER_SCOPE )  continue;  // too far
         if ( distance < min )
@@ -340,7 +340,7 @@ Error CAutoTower::GetError()
 void CAutoTower::FireStopUpdate(float progress, bool bLightOn)
 {
     Math::Matrix*   mat;
-    Math::Vector    pos, speed;
+    glm::vec3    pos, speed;
     glm::vec2     dim;
     int         i;
 
@@ -367,7 +367,7 @@ void CAutoTower::FireStopUpdate(float progress, bool bLightOn)
 
     mat = m_object->GetWorldMatrix(0);
 
-    speed = Math::Vector(0.0f, 0.0f, 0.0f);
+    speed = glm::vec3(0.0f, 0.0f, 0.0f);
     dim.x = 2.0f;
     dim.y = dim.x;
 
@@ -494,7 +494,7 @@ bool CAutoTower::Read(CLevelParserLine* line)
     m_phase = static_cast< AutoTowerPhase >(line->GetParam("aPhase")->AsInt(ATP_WAIT));
     m_progress = line->GetParam("aProgress")->AsFloat(0.0f);
     m_speed = line->GetParam("aSpeed")->AsFloat(1.0f);
-    m_targetPos = line->GetParam("aTargetPos")->AsPoint(Math::Vector());
+    m_targetPos = line->GetParam("aTargetPos")->AsPoint(glm::vec3(0.0f, 0.0f, 0.0f));
     m_angleYactual = line->GetParam("aAngleYactual")->AsFloat(0.0f);
     m_angleZactual = line->GetParam("aAngleZactual")->AsFloat(0.0f);
     m_angleYfinal = line->GetParam("aAngleYfinal")->AsFloat(0.0f);

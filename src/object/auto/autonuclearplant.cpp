@@ -98,7 +98,7 @@ void CAutoNuclearPlant::Init()
     m_lastParticle = 0.0f;
 
     mat = m_object->GetWorldMatrix(0);
-    m_pos = Math::Transform(*mat, Math::Vector(22.0f, 4.0f, 0.0f));
+    m_pos = Math::Transform(*mat, glm::vec3(22.0f, 4.0f, 0.0f));
 
     m_phase    = ANUP_WAIT;  // waiting ...
     m_progress = 0.0f;
@@ -114,7 +114,7 @@ bool CAutoNuclearPlant::EventProcess(const Event &event)
 {
     CObject*    cargo;
     Math::Matrix*   mat;
-    Math::Vector    pos, goal, speed;
+    glm::vec3    pos, goal, speed;
     glm::vec2     dim, rot;
     float       angle;
     int         i, max;
@@ -394,14 +394,14 @@ bool CAutoNuclearPlant::SearchVehicle()
 
 void CAutoNuclearPlant::CreatePower()
 {
-    Math::Vector pos = m_object->GetPosition();
+    glm::vec3 pos = m_object->GetPosition();
     float angle = m_object->GetRotationY();
 
     float powerLevel = 1.0f;
     CObject* power = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, OBJECT_ATOMIC, powerLevel);
 
     dynamic_cast<CTransportableObject&>(*power).SetTransporter(m_object);
-    power->SetPosition(Math::Vector(22.0f, 3.0f, 0.0f));
+    power->SetPosition(glm::vec3(22.0f, 3.0f, 0.0f));
     m_object->SetPower(power);
 }
 

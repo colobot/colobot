@@ -154,7 +154,7 @@ Error CAutoResearch::StartAction(int param)
 bool CAutoResearch::EventProcess(const Event &event)
 {
     CPowerContainerObject*    power;
-    Math::Vector    pos, speed;
+    glm::vec3    pos, speed;
     Error       message;
     glm::vec2     dim;
     float       angle;
@@ -500,7 +500,7 @@ bool CAutoResearch::TestResearch(EventType event)
 void CAutoResearch::FireStopUpdate(float progress, bool bLightOn)
 {
     Math::Matrix*   mat;
-    Math::Vector    pos, speed;
+    glm::vec3    pos, speed;
     glm::vec2     dim;
     int         i;
 
@@ -529,7 +529,7 @@ void CAutoResearch::FireStopUpdate(float progress, bool bLightOn)
 
     mat = m_object->GetWorldMatrix(0);
 
-    speed = Math::Vector(0.0f, 0.0f, 0.0f);
+    speed = glm::vec3(0.0f, 0.0f, 0.0f);
     dim.x = 2.0f;
     dim.y = dim.x;
 

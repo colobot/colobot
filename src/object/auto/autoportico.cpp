@@ -109,15 +109,13 @@ void CAutoPortico::Init()
 
 void CAutoPortico::Start(int param)
 {
-    Math::Vector    pos;
-
-    pos = m_object->GetPosition();
+    glm::vec3 pos = m_object->GetPosition();
     m_finalPos = pos;
     pos.z += PORTICO_TIME_MOVE*5.0f;  // back to start
     m_object->SetPosition(pos);
     m_finalPos.z += PORTICO_TIME_OPEN*5.3f;
 
-    m_object->SetPartPosition(1, Math::Vector(0.0f, PORTICO_POSa, 0.0f));
+    m_object->SetPartPosition(1, glm::vec3(0.0f, PORTICO_POSa, 0.0f));
     m_object->SetPartRotationY(2,  PORTICO_ANGLE1a);
     m_object->SetPartRotationY(3,  PORTICO_ANGLE2a);
     m_object->SetPartRotationY(4,  PORTICO_ANGLE3a);
@@ -138,7 +136,7 @@ void CAutoPortico::Start(int param)
 bool CAutoPortico::EventProcess(const Event &event)
 {
     CObject*    pObj;
-    Math::Vector    pos;
+    glm::vec3   pos;
     float       angle;
 
     CAuto::EventProcess(event);
@@ -164,12 +162,12 @@ bool CAutoPortico::EventProcess(const Event &event)
 
             m_camera->SetType(Gfx::CAM_TYPE_SCRIPT);
 
-            Math::Vector eye = m_startPos;
+            glm::vec3 eye = m_startPos;
             eye.x += -100.0f;
             eye.y +=    9.0f;
             eye.z += -200.0f;
 
-            Math::Vector lookat = m_object->GetPosition();
+            glm::vec3 lookat = m_object->GetPosition();
             lookat.x +=   0.0f;
             lookat.y +=  10.0f;
             lookat.z += -40.0f;
@@ -353,7 +351,7 @@ bool CAutoPortico::Abort()
     CObject*    pObj;
 
     m_object->SetPosition(m_finalPos);
-    m_object->SetPartPosition(1, Math::Vector(0.0f, PORTICO_POSb, 0.0f));
+    m_object->SetPartPosition(1, glm::vec3(0.0f, PORTICO_POSb, 0.0f));
     m_object->SetPartRotationY(2,  PORTICO_ANGLE1b);
     m_object->SetPartRotationY(3,  PORTICO_ANGLE2b);
     m_object->SetPartRotationY(4,  PORTICO_ANGLE3b);

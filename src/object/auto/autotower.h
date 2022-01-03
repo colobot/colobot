@@ -56,7 +56,7 @@ public:
 protected:
     void        UpdateInterface(float rTime);
 
-    CObject*    SearchTarget(Math::Vector &impact);
+    CObject*    SearchTarget(glm::vec3 &impact);
     void        FireStopUpdate(float progress, bool bLightOn);
 
 protected:
@@ -66,7 +66,7 @@ protected:
     float           m_timeVirus = 0.0f;
     float           m_lastUpdateTime = 0.0f;
     float           m_lastParticle = 0.0f;
-    Math::Vector        m_targetPos;
+    glm::vec3       m_targetPos = { 0, 0, 0 };
     float           m_angleYactual = 0.0f;
     float           m_angleZactual = 0.0f;
     float           m_angleYfinal = 0.0f;

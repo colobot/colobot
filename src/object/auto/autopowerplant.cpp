@@ -120,7 +120,7 @@ void CAutoPowerPlant::Init()
 bool CAutoPowerPlant::EventProcess(const Event &event)
 {
     CObject*    cargo;
-    Math::Vector    pos, ppos, speed;
+    glm::vec3    pos, ppos, speed;
     glm::vec2     dim, c, p;
     Gfx::TerrainRes  res;
     float       big;
@@ -199,7 +199,7 @@ bool CAutoPowerPlant::EventProcess(const Event &event)
 
                 pos = m_object->GetPosition();
                 pos.y += 4.0f;
-                speed = Math::Vector(0.0f, 0.0f, 0.0f);
+                speed = glm::vec3(0.0f, 0.0f, 0.0f);
                 dim.x = 3.0f;
                 dim.y = dim.x;
                 m_partiSphere = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISPHERE1, POWERPLANT_DELAY, 0.0f, 0.0f);
@@ -288,7 +288,7 @@ bool CAutoPowerPlant::EventProcess(const Event &event)
                 pos.x = p.x;
                 pos.z = p.y;
                 pos.y += 2.5f+Math::Rand()*3.0f;
-                speed = Math::Vector(0.0f, 0.0f, 0.0f);
+                speed = glm::vec3(0.0f, 0.0f, 0.0f);
                 dim.x = Math::Rand()*2.0f+1.0f;
                 dim.y = dim.x;
                 m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGLINT, 1.0f, 0.0f, 0.0f);
@@ -332,7 +332,7 @@ bool CAutoPowerPlant::EventProcess(const Event &event)
                 cargo->SetScale(1.0f);
                 cargo->SetLock(false);  // usable battery
                 dynamic_cast<CTransportableObject&>(*cargo).SetTransporter(m_object);
-                cargo->SetPosition(Math::Vector(0.0f, 3.0f, 0.0f));
+                cargo->SetPosition(glm::vec3(0.0f, 3.0f, 0.0f));
                 m_object->SetPower(cargo);
 
                 m_main->DisplayError(INFO_ENERGY, m_object);
@@ -400,7 +400,7 @@ CObject* CAutoPowerPlant::SearchMetal()
 
 bool CAutoPowerPlant::SearchVehicle()
 {
-    Math::Vector cPos = m_object->GetPosition();
+    glm::vec3 cPos = m_object->GetPosition();
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
@@ -459,7 +459,7 @@ bool CAutoPowerPlant::SearchVehicle()
 
 void CAutoPowerPlant::CreatePower()
 {
-    Math::Vector pos = m_object->GetPosition();
+    glm::vec3 pos = m_object->GetPosition();
     float angle = m_object->GetRotationY();
     float powerLevel = 1.0f;
     CObject* power = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, OBJECT_POWER, powerLevel);
@@ -474,7 +474,7 @@ void CAutoPowerPlant::CreatePower()
 
 CObject* CAutoPowerPlant::SearchPower()
 {
-    Math::Vector cPos = m_object->GetPosition();
+    glm::vec3 cPos = m_object->GetPosition();
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
@@ -483,7 +483,7 @@ CObject* CAutoPowerPlant::SearchPower()
         ObjectType  type = obj->GetType();
         if ( type != OBJECT_POWER )  continue;
 
-        Math::Vector oPos = obj->GetPosition();
+        glm::vec3 oPos = obj->GetPosition();
         if ( oPos.x == cPos.x &&
              oPos.z == cPos.z )
         {

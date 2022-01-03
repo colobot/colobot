@@ -49,7 +49,7 @@ public:
 
 protected:
     void        UpdateInterface();
-    bool        SearchEnemy(Math::Vector &pos);
+    bool        SearchEnemy(glm::vec3 &pos);
 
 protected:
     AutoRadarPhase  m_phase = ARAP_WAIT;
