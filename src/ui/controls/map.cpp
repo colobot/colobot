@@ -1052,7 +1052,7 @@ void CMap::UpdateTerrain()
     {
         for (int x = 0; x < 256; x++)
         {
-            Math::Vector pos;
+            glm::vec3 pos{};
             pos.x =  (static_cast<float>(x) - 128.0f) * m_half / 128.0f;
             pos.z = -(static_cast<float>(y) - 128.0f) * m_half / 128.0f;
             pos.y = 0.0f;
@@ -1100,7 +1100,7 @@ void CMap::UpdateTerrain()
 void CMap::UpdateTerrain(int bx, int by, int ex, int ey)
 {
     Gfx::Color   color;
-    Math::Vector        pos;
+    glm::vec3        pos;
     float           scale, water, level, intensity;
     int             x, y;
 
@@ -1180,7 +1180,7 @@ void CMap::UpdateObject(CObject* pObj)
 {
     ObjectType      type;
     MapColor        color;
-    Math::Vector    pos;
+    glm::vec3    pos;
     glm::vec2       ppos;
     float           dir;
 

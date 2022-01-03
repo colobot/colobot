@@ -412,7 +412,7 @@ void CControl::GlintCreate(const glm::vec2& ref, bool bLeft, bool bUp)
 
 void CControl::GlintFrame(const Event &event)
 {
-    Math::Vector    pos, speed;
+    glm::vec3    pos, speed;
     glm::vec2       dim;
 
     if ( (m_state & STATE_GLINT  ) == 0 ||
@@ -428,7 +428,7 @@ void CControl::GlintFrame(const Event &event)
         pos.x = m_glintCorner1.x + (m_glintCorner2.x - m_glintCorner1.x) * Math::Rand();
         pos.y = m_glintCorner1.y + (m_glintCorner2.y - m_glintCorner1.y) * Math::Rand();
         pos.z = 0.0f;
-        speed = Math::Vector(0.0f, 0.0f, 0.0f);
+        speed = glm::vec3(0.0f, 0.0f, 0.0f);
         dim.x = ((15.0f + Math::Rand() * 15.0f) / 640.0f);
         dim.y = dim.x / 0.75f;
         m_particle->CreateParticle(pos, speed, dim, Gfx::PARTICONTROL,
