@@ -92,7 +92,7 @@ private:
 
     bool                m_traceRecord;
     TraceOper           m_traceOper;
-    Math::Vector        m_tracePos;
+    glm::vec3           m_tracePos;
     float               m_traceAngle;
     TraceColor          m_traceColor;
     int                 m_traceRecordIndex;

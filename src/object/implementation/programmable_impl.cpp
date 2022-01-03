@@ -260,7 +260,7 @@ void CProgrammableObjectImpl::TraceRecordStart()
 void CProgrammableObjectImpl::TraceRecordFrame()
 {
     TraceOper   oper = TO_STOP;
-    Math::Vector    pos;
+    glm::vec3    pos;
     float       angle, len, speed;
 
     assert(m_object->Implements(ObjectInterfaceType::TraceDrawing));

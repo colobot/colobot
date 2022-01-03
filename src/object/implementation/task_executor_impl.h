@@ -51,14 +51,14 @@ public:
     Error StartTaskTerraform() override;
     Error StartTaskRecover() override;
     Error StartTaskFire(float delay) override;
-    Error StartTaskFireAnt(Math::Vector impact) override;
+    Error StartTaskFireAnt(glm::vec3 impact) override;
     Error StartTaskSpiderExplo() override;
     Error StartTaskPen(bool down, TraceColor color = TraceColor::Default) override;
 
     Error StartTaskWait(float time) override;
     Error StartTaskAdvance(float length) override;
     Error StartTaskTurn(float angle) override;
-    Error StartTaskGoto(Math::Vector pos, float altitude, TaskGotoGoal goalMode, TaskGotoCrash crashMode) override;
+    Error StartTaskGoto(glm::vec3 pos, float altitude, TaskGotoGoal goalMode, TaskGotoCrash crashMode) override;
     Error StartTaskInfo(const char *name, float value, float power, bool bSend) override;
 
     Error StartTaskShield(TaskShieldMode mode, float delay = 1000.0f) override;

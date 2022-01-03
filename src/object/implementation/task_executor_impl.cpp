@@ -222,7 +222,7 @@ Error CTaskExecutorObjectImpl::StartTaskFire(float delay)
     return StartForegroundTask<CTaskFire>(delay);
 }
 
-Error CTaskExecutorObjectImpl::StartTaskFireAnt(Math::Vector impact)
+Error CTaskExecutorObjectImpl::StartTaskFireAnt(glm::vec3 impact)
 {
     return StartForegroundTask<CTaskFireAnt>(impact);
 }
@@ -253,7 +253,7 @@ Error CTaskExecutorObjectImpl::StartTaskTurn(float angle)
     return StartForegroundTask<CTaskTurn>(angle);
 }
 
-Error CTaskExecutorObjectImpl::StartTaskGoto(Math::Vector pos, float altitude, TaskGotoGoal goalMode, TaskGotoCrash crashMode)
+Error CTaskExecutorObjectImpl::StartTaskGoto(glm::vec3 pos, float altitude, TaskGotoGoal goalMode, TaskGotoCrash crashMode)
 {
     return StartForegroundTask<CTaskGoto>(pos, altitude, goalMode, crashMode);
 }
