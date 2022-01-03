@@ -61,8 +61,8 @@ protected:
     float           m_cameraProgress = 0.0f;
     float           m_cameraSpeed = 0.0f;
     float           m_lastParticle = 0.0f;
-    Math::Vector        m_finalPos;
-    Math::Vector        m_startPos;
+    glm::vec3       m_finalPos = { 0, 0, 0 };
+    glm::vec3       m_startPos = { 0, 0, 0 };
     float           m_posTrack = 0.0f;
     int             m_param = 0;
     int             m_soundChannel = 0;

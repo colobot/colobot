@@ -117,7 +117,7 @@ Error CAutoDestroyer::StartAction(int param)
 bool CAutoDestroyer::EventProcess(const Event &event)
 {
     CObject*        scrap;
-    Math::Vector    pos, speed;
+    glm::vec3    pos, speed;
     glm::vec2     dim;
     Ui::CWindow*    pw;
 
@@ -183,13 +183,13 @@ bool CAutoDestroyer::EventProcess(const Event &event)
 
         if ( m_progress < 1.0f )
         {
-            pos = Math::Vector(0.0f, -10.0f, 0.0f);
+            pos = glm::vec3(0.0f, -10.0f, 0.0f);
             pos.y = -Math::Bounce(m_progress, 0.3f)*10.0f;
             m_object->SetPartPosition(1, pos);
         }
         else
         {
-            m_object->SetPartPosition(1, Math::Vector(0.0f, -10.0f, 0.0f));
+            m_object->SetPartPosition(1, glm::vec3(0.0f, -10.0f, 0.0f));
             m_sound->Play(SOUND_REPAIR, m_object->GetPosition());
 
             m_phase    = ADEP_REPAIR;
@@ -217,13 +217,13 @@ bool CAutoDestroyer::EventProcess(const Event &event)
     {
         if ( m_progress < 1.0f )
         {
-            pos = Math::Vector(0.0f, -10.0f, 0.0f);
+            pos = glm::vec3(0.0f, -10.0f, 0.0f);
             pos.y = -(1.0f-m_progress)*10.0f;
             m_object->SetPartPosition(1, pos);
         }
         else
         {
-            m_object->SetPartPosition(1, Math::Vector(0.0f, 0.0f, 0.0f));
+            m_object->SetPartPosition(1, glm::vec3(0.0f, 0.0f, 0.0f));
 
             m_phase    = ADEP_WAIT;
             m_progress = 0.0f;
@@ -279,7 +279,7 @@ bool CAutoDestroyer::CreateInterface(bool bSelect)
 
 CObject* CAutoDestroyer::SearchPlastic()
 {
-    Math::Vector sPos = m_object->GetPosition();
+    glm::vec3 sPos = m_object->GetPosition();
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
@@ -287,7 +287,7 @@ CObject* CAutoDestroyer::SearchPlastic()
         if (!obj->Implements(ObjectInterfaceType::Destroyable)) continue;
         if (obj->GetType() == OBJECT_HUMAN || obj->GetType() == OBJECT_TECH) continue;
 
-        Math::Vector oPos = obj->GetPosition();
+        glm::vec3 oPos = obj->GetPosition();
         float dist = Math::Distance(oPos, sPos);
         if ( dist <= 5.0f )  return obj;
     }

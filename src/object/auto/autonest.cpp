@@ -66,7 +66,7 @@ void CAutoNest::DeleteObject(bool all)
 
 void CAutoNest::Init()
 {
-    Math::Vector    pos;
+    glm::vec3    pos;
 
     m_phase    = ANP_WAIT;
     m_progress = 0.0f;
@@ -145,7 +145,7 @@ bool CAutoNest::EventProcess(const Event &event)
 
 // Seeks if a site is free.
 
-bool CAutoNest::SearchFree(Math::Vector pos)
+bool CAutoNest::SearchFree(glm::vec3 pos)
 {
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
@@ -154,7 +154,7 @@ bool CAutoNest::SearchFree(Math::Vector pos)
 
         for (const auto& crashSphere : obj->GetAllCrashSpheres())
         {
-            Math::Vector sPos = crashSphere.sphere.pos;
+            glm::vec3 sPos = crashSphere.sphere.pos;
             float sRadius = crashSphere.sphere.radius;
 
             float distance = Math::Distance(sPos, pos);
@@ -168,7 +168,7 @@ bool CAutoNest::SearchFree(Math::Vector pos)
 
 // Create a transportable object.
 
-void CAutoNest::CreateCargo(Math::Vector pos, float angle, ObjectType type)
+void CAutoNest::CreateCargo(glm::vec3 pos, float angle, ObjectType type)
 {
     CObject* cargo = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, type);
     cargo->SetLock(true);  // not usable
@@ -186,7 +186,7 @@ CObject* CAutoNest::SearchCargo()
         ObjectType type = obj->GetType();
         if ( type != OBJECT_BULLET )  continue;
 
-        Math::Vector oPos = obj->GetPosition();
+        glm::vec3 oPos = obj->GetPosition();
         if ( oPos.x == m_cargoPos.x &&
              oPos.z == m_cargoPos.z )
         {

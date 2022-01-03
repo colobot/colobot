@@ -124,7 +124,7 @@ bool CAutoBase::EventProcess(const Event &event)
 {
     Math::Matrix*   mat;
     CObject*    pObj;
-    Math::Vector    pos, speed, vibCir, iPos;
+    glm::vec3    pos, speed, vibCir, iPos;
     glm::vec2     dim, p;
     float       angle, dist, time, h, len, vSpeed;
     int         i, max;
@@ -155,8 +155,8 @@ begin:
                 m_object->SetPartRotationZ(1+i, Math::PI/2.0f-124.0f*Math::PI/180.0f);
                 m_object->SetPartRotationX(10+i, -10.0f*Math::PI/180.0f);
                 m_object->SetPartRotationX(18+i,  10.0f*Math::PI/180.0f);
-                m_object->SetPartPosition(10+i, Math::Vector(23.5f, 0.0f, -11.5f));
-                m_object->SetPartPosition(18+i, Math::Vector(23.5f, 0.0f,  11.5f));
+                m_object->SetPartPosition(10+i, glm::vec3(23.5f, 0.0f, -11.5f));
+                m_object->SetPartPosition(18+i, glm::vec3(23.5f, 0.0f,  11.5f));
             }
 
             pObj = m_main->GetSelectObject();
@@ -186,8 +186,8 @@ begin:
                 m_object->SetPartRotationZ(1+i, Math::PI/2.0f-124.0f*Math::PI/180.0f);
                 m_object->SetPartRotationX(10+i, -10.0f*Math::PI/180.0f);
                 m_object->SetPartRotationX(18+i,  10.0f*Math::PI/180.0f);
-                m_object->SetPartPosition(10+i, Math::Vector(23.5f, 0.0f, -11.5f));
-                m_object->SetPartPosition(18+i, Math::Vector(23.5f, 0.0f,  11.5f));
+                m_object->SetPartPosition(10+i, glm::vec3(23.5f, 0.0f, -11.5f));
+                m_object->SetPartPosition(18+i, glm::vec3(23.5f, 0.0f,  11.5f));
             }
         }
 
@@ -202,12 +202,12 @@ begin:
 
             m_camera->SetType(Gfx::CAM_TYPE_SCRIPT);
 
-            Math::Vector eye = m_pos;
+            glm::vec3 eye = m_pos;
             eye.x -= 150.0f;
             m_terrain->AdjustToFloor(eye);
             eye.y += 10.0f;
 
-            Math::Vector lookat = m_object->GetPosition();
+            glm::vec3 lookat = m_object->GetPosition();
             lookat.y += 300.0f+50.0f;
 
             m_camera->SetScriptCamera(eye, lookat);
@@ -265,37 +265,37 @@ begin:
             pos.z -= 60.0f;
             pos.y += 80.0f;
             m_posSound = pos;
-            m_camera->SetScriptCamera(pos, Math::Vector(0.0f, 0.0f, 0.0f));
+            m_camera->SetScriptCamera(pos, glm::vec3(0.0f, 0.0f, 0.0f));
             m_engine->SetFocus(1.0f);
 
             BeginTransit();
 
             mat = m_object->GetWorldMatrix(0);
-            speed = Math::Vector(0.0f, 0.0f, 0.0f);
+            speed = glm::vec3(0.0f, 0.0f, 0.0f);
             dim.x = 10.0f;
             dim.y = dim.x;
-            pos = Math::Vector(42.0f, -2.0f, 17.0f);
+            pos = glm::vec3(42.0f, -2.0f, 17.0f);
             pos = Transform(*mat, pos);
             m_partiChannel[0] = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
-            pos = Math::Vector(17.0f, -2.0f, 42.0f);
+            pos = glm::vec3(17.0f, -2.0f, 42.0f);
             pos = Transform(*mat, pos);
             m_partiChannel[1] = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
-            pos = Math::Vector(42.0f, -2.0f, -17.0f);
+            pos = glm::vec3(42.0f, -2.0f, -17.0f);
             pos = Transform(*mat, pos);
             m_partiChannel[2] = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
-            pos = Math::Vector(17.0f, -2.0f, -42.0f);
+            pos = glm::vec3(17.0f, -2.0f, -42.0f);
             pos = Transform(*mat, pos);
             m_partiChannel[3] = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
-            pos = Math::Vector(-42.0f, -2.0f, 17.0f);
+            pos = glm::vec3(-42.0f, -2.0f, 17.0f);
             pos = Transform(*mat, pos);
             m_partiChannel[4] = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
-            pos = Math::Vector(-17.0f, -2.0f, 42.0f);
+            pos = glm::vec3(-17.0f, -2.0f, 42.0f);
             pos = Transform(*mat, pos);
             m_partiChannel[5] = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
-            pos = Math::Vector(-42.0f, -2.0f, -17.0f);
+            pos = glm::vec3(-42.0f, -2.0f, -17.0f);
             pos = Transform(*mat, pos);
             m_partiChannel[6] = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
-            pos = Math::Vector(-17.0f, -2.0f, -42.0f);
+            pos = glm::vec3(-17.0f, -2.0f, -42.0f);
             pos = Transform(*mat, pos);
             m_partiChannel[7] = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
 
@@ -342,12 +342,12 @@ begin:
             vibCir *= Math::Min(1.0f, (1.0f-m_progress)*3.0f);
             m_object->SetCirVibration(vibCir);
 
-            Math::Vector eye = m_pos;
+            glm::vec3 eye = m_pos;
             eye.x -= 150.0f;
             m_terrain->AdjustToFloor(eye);
             eye.y += 10.0f;
 
-            Math::Vector lookat = m_object->GetPosition();
+            glm::vec3 lookat = m_object->GetPosition();
             lookat.y += 50.0f;
 
             m_camera->SetScriptCameraAnimate(eye, lookat);
@@ -407,7 +407,7 @@ begin:
             m_bMotor = false;  // put out the reactor
 
             m_object->SetPosition(m_pos);  // setting down
-            m_object->SetCirVibration(Math::Vector(0.0f, 0.0f, 0.0f));
+            m_object->SetCirVibration(glm::vec3(0.0f, 0.0f, 0.0f));
             MoveCargo();  // all cargo moves
 
             // Impact with the ground.
@@ -419,7 +419,7 @@ begin:
                 pos = m_pos;
                 pos.x += p.x;
                 pos.z += p.y;
-                speed = Math::Vector(0.0f, 0.0f, 0.0f);
+                speed = glm::vec3(0.0f, 0.0f, 0.0f);
                 dim.x = Math::Rand()*10.0f+10.0f;
                 dim.y = dim.x;
                 time = Math::Rand()*2.0f+1.5f;
@@ -513,7 +513,7 @@ begin:
                 pos = m_pos;
                 pos.x += p.x;
                 pos.z += p.y;
-                speed = Math::Vector(0.0f, 0.0f, 0.0f);
+                speed = glm::vec3(0.0f, 0.0f, 0.0f);
                 dim.x = Math::Rand()*8.0f+8.0f;
                 dim.y = dim.x;
                 time = Math::Rand()*2.0f+1.5f;
@@ -537,8 +537,8 @@ begin:
             len = 7.0f-m_progress*(7.0f+11.5f);
             for ( i=0 ; i<8 ; i++ )
             {
-                m_object->SetPartPosition(10+i, Math::Vector(23.5f, 0.0f,  len));
-                m_object->SetPartPosition(18+i, Math::Vector(23.5f, 0.0f, -len));
+                m_object->SetPartPosition(10+i, glm::vec3(23.5f, 0.0f,  len));
+                m_object->SetPartPosition(18+i, glm::vec3(23.5f, 0.0f, -len));
                 m_object->SetPartRotationX(10+i, -10.0f*Math::PI/180.0f*m_progress);
                 m_object->SetPartRotationX(18+i,  10.0f*Math::PI/180.0f*m_progress);
             }
@@ -562,8 +562,8 @@ begin:
         {
             for ( i=0 ; i<8 ; i++ )
             {
-                m_object->SetPartPosition(10+i, Math::Vector(23.5f, 0.0f, -11.5f));
-                m_object->SetPartPosition(18+i, Math::Vector(23.5f, 0.0f,  11.5f));
+                m_object->SetPartPosition(10+i, glm::vec3(23.5f, 0.0f, -11.5f));
+                m_object->SetPartPosition(18+i, glm::vec3(23.5f, 0.0f,  11.5f));
                 m_object->SetPartRotationX(10+i, -10.0f*Math::PI/180.0f);
                 m_object->SetPartRotationX(18+i,  10.0f*Math::PI/180.0f);
             }
@@ -616,8 +616,8 @@ begin:
             len = 7.0f-(1.0f-m_progress)*(7.0f+11.5f);
             for ( i=0 ; i<8 ; i++ )
             {
-                m_object->SetPartPosition(10+i, Math::Vector(23.5f, 0.0f,  len));
-                m_object->SetPartPosition(18+i, Math::Vector(23.5f, 0.0f, -len));
+                m_object->SetPartPosition(10+i, glm::vec3(23.5f, 0.0f,  len));
+                m_object->SetPartPosition(18+i, glm::vec3(23.5f, 0.0f, -len));
                 m_object->SetPartRotationX(10+i, -10.0f*Math::PI/180.0f*(1.0f-m_progress));
                 m_object->SetPartRotationX(18+i,  10.0f*Math::PI/180.0f*(1.0f-m_progress));
             }
@@ -626,8 +626,8 @@ begin:
         {
             for ( i=0 ; i<8 ; i++ )
             {
-                m_object->SetPartPosition(10+i, Math::Vector(23.5f, 0.0f,  7.0f));
-                m_object->SetPartPosition(18+i, Math::Vector(23.5f, 0.0f, -7.0f));
+                m_object->SetPartPosition(10+i, glm::vec3(23.5f, 0.0f,  7.0f));
+                m_object->SetPartPosition(18+i, glm::vec3(23.5f, 0.0f, -7.0f));
                 m_object->SetPartRotationX(10+i, 0.0f);
                 m_object->SetPartRotationX(18+i, 0.0f);
             }
@@ -671,7 +671,7 @@ begin:
                 pos.x += p.x;
                 pos.z += p.y;
                 pos.y += 85.0f;
-                speed = Math::Vector(0.0f, 0.0f, 0.0f);
+                speed = glm::vec3(0.0f, 0.0f, 0.0f);
                 dim.x = Math::Rand()*3.0f+3.0f;
                 dim.y = dim.x;
                 time = Math::Rand()*1.0f+1.0f;
@@ -745,12 +745,12 @@ begin:
             vibCir.y = 0.0f;
             m_object->SetCirVibration(vibCir);
 
-            Math::Vector eye = m_pos;
+            glm::vec3 eye = m_pos;
             eye.x -= 110.0f+m_progress*250.0f;
             m_terrain->AdjustToFloor(eye);
             eye.y += 10.0f;
 
-            Math::Vector lookat = m_object->GetPosition();
+            glm::vec3 lookat = m_object->GetPosition();
             lookat.y += 50.0f;
 
             m_camera->SetScriptCameraAnimate(eye, lookat);
@@ -859,7 +859,7 @@ begin:
                 pos = m_pos;
                 pos.x += p.x;
                 pos.z += p.y;
-                speed = Math::Vector(0.0f, 0.0f, 0.0f);
+                speed = glm::vec3(0.0f, 0.0f, 0.0f);
                 dim.x = Math::Rand()*10.0f+10.0f;
                 dim.y = dim.x;
                 time = Math::Rand()*2.0f+1.5f;
@@ -952,7 +952,7 @@ begin:
                 if ( vSpeed < 0.0f )  vSpeed *= 1.5f;
             }
 
-            pos = Math::Vector(0.0f, 6.0f, 0.0f);
+            pos = glm::vec3(0.0f, 6.0f, 0.0f);
             speed.x = (Math::Rand()-0.5f)*4.0f;
             speed.z = (Math::Rand()-0.5f)*4.0f;
             speed.y = vSpeed*0.8f-(8.0f+Math::Rand()*6.0f);
@@ -968,72 +968,72 @@ begin:
 
             if ( m_phase == ABP_TRANSIT_MOVE )
             {
-                speed = Math::Vector(0.0f, 0.0f, 0.0f);
+                speed = glm::vec3(0.0f, 0.0f, 0.0f);
                 dim.x = 12.0f;
                 dim.y = dim.x;
-                pos = Math::Vector(0.0f, 7.0f, 0.0f);
+                pos = glm::vec3(0.0f, 7.0f, 0.0f);
                 pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
                 pos = Transform(*mat, pos);
                 m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGAS, 1.0f, 0.0f, 0.0f);
 
-                speed = Math::Vector(0.0f, 0.0f, 0.0f);
+                speed = glm::vec3(0.0f, 0.0f, 0.0f);
                 dim.x = 4.0f;
                 dim.y = dim.x;
-                pos = Math::Vector(42.0f, 0.0f, 17.0f);
+                pos = glm::vec3(42.0f, 0.0f, 17.0f);
                 pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
                 pos = Transform(*mat, pos);
                 m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGAS, 0.5f, 0.0f, 0.0f);
-                pos = Math::Vector(17.0f, 0.0f, 42.0f);
+                pos = glm::vec3(17.0f, 0.0f, 42.0f);
                 pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
                 pos = Transform(*mat, pos);
                 m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGAS, 0.5f, 0.0f, 0.0f);
-                pos = Math::Vector(42.0f, 0.0f, -17.0f);
+                pos = glm::vec3(42.0f, 0.0f, -17.0f);
                 pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
                 pos = Transform(*mat, pos);
                 m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGAS, 0.5f, 0.0f, 0.0f);
-                pos = Math::Vector(17.0f, 0.0f, -42.0f);
+                pos = glm::vec3(17.0f, 0.0f, -42.0f);
                 pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
                 pos = Transform(*mat, pos);
                 m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGAS, 0.5f, 0.0f, 0.0f);
-                pos = Math::Vector(-42.0f, 0.0f, 17.0f);
+                pos = glm::vec3(-42.0f, 0.0f, 17.0f);
                 pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
                 pos = Transform(*mat, pos);
                 m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGAS, 0.5f, 0.0f, 0.0f);
-                pos = Math::Vector(-17.0f, 0.0f, 42.0f);
+                pos = glm::vec3(-17.0f, 0.0f, 42.0f);
                 pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
                 pos = Transform(*mat, pos);
                 m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGAS, 0.5f, 0.0f, 0.0f);
-                pos = Math::Vector(-42.0f, 0.0f, -17.0f);
+                pos = glm::vec3(-42.0f, 0.0f, -17.0f);
                 pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
                 pos = Transform(*mat, pos);
                 m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGAS, 0.5f, 0.0f, 0.0f);
-                pos = Math::Vector(-17.0f, 0.0f, -42.0f);
+                pos = glm::vec3(-17.0f, 0.0f, -42.0f);
                 pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
                 pos = Transform(*mat, pos);
                 m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGAS, 0.5f, 0.0f, 0.0f);
 
-                pos = Math::Vector(42.0f, -2.0f, 17.0f);
+                pos = glm::vec3(42.0f, -2.0f, 17.0f);
                 pos = Transform(*mat, pos);
                 m_particle->SetPosition(m_partiChannel[0], pos);
-                pos = Math::Vector(17.0f, -2.0f, 42.0f);
+                pos = glm::vec3(17.0f, -2.0f, 42.0f);
                 pos = Transform(*mat, pos);
                 m_particle->SetPosition(m_partiChannel[1], pos);
-                pos = Math::Vector(42.0f, -2.0f, -17.0f);
+                pos = glm::vec3(42.0f, -2.0f, -17.0f);
                 pos = Transform(*mat, pos);
                 m_particle->SetPosition(m_partiChannel[2], pos);
-                pos = Math::Vector(17.0f, -2.0f, -42.0f);
+                pos = glm::vec3(17.0f, -2.0f, -42.0f);
                 pos = Transform(*mat, pos);
                 m_particle->SetPosition(m_partiChannel[3], pos);
-                pos = Math::Vector(-42.0f, -2.0f, 17.0f);
+                pos = glm::vec3(-42.0f, -2.0f, 17.0f);
                 pos = Transform(*mat, pos);
                 m_particle->SetPosition(m_partiChannel[4], pos);
-                pos = Math::Vector(-17.0f, -2.0f, 42.0f);
+                pos = glm::vec3(-17.0f, -2.0f, 42.0f);
                 pos = Transform(*mat, pos);
                 m_particle->SetPosition(m_partiChannel[5], pos);
-                pos = Math::Vector(-42.0f, -2.0f, -17.0f);
+                pos = glm::vec3(-42.0f, -2.0f, -17.0f);
                 pos = Transform(*mat, pos);
                 m_particle->SetPosition(m_partiChannel[6], pos);
-                pos = Math::Vector(-17.0f, -2.0f, -42.0f);
+                pos = glm::vec3(-17.0f, -2.0f, -42.0f);
                 pos = Transform(*mat, pos);
                 m_particle->SetPosition(m_partiChannel[7], pos);
             }
@@ -1086,8 +1086,8 @@ bool CAutoBase::Abort()
             m_object->SetPartRotationZ(1+i, Math::PI/2.0f-124.0f*Math::PI/180.0f);
             m_object->SetPartRotationX(10+i, -10.0f*Math::PI/180.0f);
             m_object->SetPartRotationX(18+i,  10.0f*Math::PI/180.0f);
-            m_object->SetPartPosition(10+i, Math::Vector(23.5f, 0.0f, -11.5f));
-            m_object->SetPartPosition(18+i, Math::Vector(23.5f, 0.0f,  11.5f));
+            m_object->SetPartPosition(10+i, glm::vec3(23.5f, 0.0f, -11.5f));
+            m_object->SetPartPosition(18+i, glm::vec3(23.5f, 0.0f,  11.5f));
         }
     }
     else
@@ -1101,15 +1101,15 @@ bool CAutoBase::Abort()
             m_bOpen = true;
 
             m_object->SetPosition(m_pos);  // setting down
-            m_object->SetCirVibration(Math::Vector(0.0f, 0.0f, 0.0f));
+            m_object->SetCirVibration(glm::vec3(0.0f, 0.0f, 0.0f));
             MoveCargo();  // all cargo moves
             for ( i=0 ; i<8 ; i++ )
             {
                 m_object->SetPartRotationZ(1+i, Math::PI/2.0f-124.0f*Math::PI/180.0f);
                 m_object->SetPartRotationX(10+i, -10.0f*Math::PI/180.0f);
                 m_object->SetPartRotationX(18+i,  10.0f*Math::PI/180.0f);
-                m_object->SetPartPosition(10+i, Math::Vector(23.5f, 0.0f, -11.5f));
-                m_object->SetPartPosition(18+i, Math::Vector(23.5f, 0.0f,  11.5f));
+                m_object->SetPartPosition(10+i, glm::vec3(23.5f, 0.0f, -11.5f));
+                m_object->SetPartPosition(18+i, glm::vec3(23.5f, 0.0f,  11.5f));
             }
 
             m_main->SetMovieLock(false);  // you can play!
@@ -1241,7 +1241,7 @@ void CAutoBase::FreezeCargo(bool freeze)
         if ( obj == m_object )  continue;  // yourself?
         if (IsObjectBeingTransported(obj)) continue;
 
-        Math::Vector oPos = obj->GetPosition();
+        glm::vec3 oPos = obj->GetPosition();
         float dist = Math::DistanceProjected(m_pos, oPos);
         if ( dist < 32.0f )
         {
@@ -1259,11 +1259,11 @@ void CAutoBase::FreezeCargo(bool freeze)
 
 void CAutoBase::MoveCargo()
 {
-    Math::Vector sPos = m_object->GetPosition();
+    glm::vec3 sPos = m_object->GetPosition();
 
     for (CObject* obj : m_cargoObjects)
     {
-        Math::Vector oPos = obj->GetPosition();
+        glm::vec3 oPos = obj->GetPosition();
         oPos.y = sPos.y+30.0f;
         oPos.y += obj->GetCharacter()->height;
         oPos.x += sPos.x-m_lastPos.x;
@@ -1289,7 +1289,7 @@ Error CAutoBase::CheckCloseDoor()
 
         for (const auto& crashSphere : obj->GetAllCrashSpheres())
         {
-            Math::Vector oPos = crashSphere.sphere.pos;
+            glm::vec3 oPos = crashSphere.sphere.pos;
             float oRad = crashSphere.sphere.radius;
             float dist = Math::DistanceProjected(m_pos, oPos);
             if ( dist+oRad > 32.0f &&
@@ -1384,12 +1384,12 @@ Error CAutoBase::TakeOff(bool printMsg)
 
     m_camera->SetType(Gfx::CAM_TYPE_SCRIPT);
 
-    Math::Vector eye = m_pos;
+    glm::vec3 eye = m_pos;
     eye.x -= 110.0f;
     m_terrain->AdjustToFloor(eye);
     eye.y += 10.0f;
 
-    Math::Vector lookat = m_object->GetPosition();
+    glm::vec3 lookat = m_object->GetPosition();
     lookat.y += 50.0f;
 
     m_camera->SetScriptCameraAnimate(eye, lookat);

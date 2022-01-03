@@ -40,10 +40,10 @@ CAutoHouston::CAutoHouston(COldObject* object) : CAuto(object)
     m_lens[1].type = Gfx::PARTISELR;
     m_lens[2].type = Gfx::PARTISELR;
     m_lens[3].type = Gfx::PARTISELR;
-    m_lens[0].pos = Math::Vector(0.0f+13.0f, 34.0f, 30.0f      );
-    m_lens[1].pos = Math::Vector(0.0f-13.0f, 34.0f, 30.0f      );
-    m_lens[2].pos = Math::Vector(0.0f      , 34.0f, 30.0f+13.0f);
-    m_lens[3].pos = Math::Vector(0.0f      , 34.0f, 30.0f-13.0f);
+    m_lens[0].pos = glm::vec3(0.0f+13.0f, 34.0f, 30.0f      );
+    m_lens[1].pos = glm::vec3(0.0f-13.0f, 34.0f, 30.0f      );
+    m_lens[2].pos = glm::vec3(0.0f      , 34.0f, 30.0f+13.0f);
+    m_lens[3].pos = glm::vec3(0.0f      , 34.0f, 30.0f-13.0f);
     m_lens[0].dim = 4.0f;
     m_lens[1].dim = 4.0f;
     m_lens[2].dim = 4.0f;
@@ -61,46 +61,46 @@ CAutoHouston::CAutoHouston(COldObject* object) : CAuto(object)
 
     // Part under the radar.
     m_lens[i].type = Gfx::PARTISELR;
-    m_lens[i].pos = Math::Vector(-7.0f, 9.9f, 40.1f);
+    m_lens[i].pos = glm::vec3(-7.0f, 9.9f, 40.1f);
     m_lens[i].dim = 1.8f;
     m_lens[i].total = 0.4f;
     m_lens[i].off = 0.2f;
     i ++;
 
     m_lens[i].type = Gfx::PARTISELY;
-    m_lens[i].pos = Math::Vector(-7.0f, 7.2f, 34.8f);
+    m_lens[i].pos = glm::vec3(-7.0f, 7.2f, 34.8f);
     m_lens[i].dim = 0.4f;
     m_lens[i].total = 0.7f;
     m_lens[i].off = 0.3f;
     i ++;
     m_lens[i].type = Gfx::PARTISELY;
-    m_lens[i].pos = Math::Vector(-7.0f, 6.5f, 34.3f);
+    m_lens[i].pos = glm::vec3(-7.0f, 6.5f, 34.3f);
     m_lens[i].dim = 0.4f;
     m_lens[i].total = 0.7f;
     m_lens[i].off = 0.3f;
     i ++;
     m_lens[i].type = Gfx::PARTISELR;
-    m_lens[i].pos = Math::Vector(-7.0f, 6.5f, 33.4f);
+    m_lens[i].pos = glm::vec3(-7.0f, 6.5f, 33.4f);
     m_lens[i].dim = 0.4f;
     m_lens[i].total = 0.0f;
     m_lens[i].off = 0.0f;
     i ++;
     m_lens[i].type = Gfx::PARTISELR;
-    m_lens[i].pos = Math::Vector(-7.0f, 6.5f, 33.0f);
+    m_lens[i].pos = glm::vec3(-7.0f, 6.5f, 33.0f);
     m_lens[i].dim = 0.4f;
     m_lens[i].total = 1.0f;
     m_lens[i].off = 0.5f;
     i ++;
 
     m_lens[i].type = Gfx::PARTISELY;
-    m_lens[i].pos = Math::Vector(-7.0f, 8.5f, 14.0f);
+    m_lens[i].pos = glm::vec3(-7.0f, 8.5f, 14.0f);
     m_lens[i].dim = 1.2f;
     m_lens[i].total = 0.8f;
     m_lens[i].off = 0.2f;
     i ++;
 
     m_lens[i].type = Gfx::PARTISELR;
-    m_lens[i].pos = Math::Vector(4.0f, 6.0f, 8.6f);
+    m_lens[i].pos = glm::vec3(4.0f, 6.0f, 8.6f);
     m_lens[i].dim = 1.0f;
     m_lens[i].total = 0.9f;
     m_lens[i].off = 0.7f;
@@ -108,53 +108,53 @@ CAutoHouston::CAutoHouston(COldObject* object) : CAuto(object)
 
     // Part with three windows.
     m_lens[i].type = Gfx::PARTISELR;
-    m_lens[i].pos = Math::Vector(-7.0f, 9.9f, -19.9f);
+    m_lens[i].pos = glm::vec3(-7.0f, 9.9f, -19.9f);
     m_lens[i].dim = 1.0f;
     m_lens[i].total = 0.6f;
     m_lens[i].off = 0.3f;
     i ++;
 
     m_lens[i].type = Gfx::PARTISELY;
-    m_lens[i].pos = Math::Vector(-7.0f, 7.2f, 34.8f-60.0f);
+    m_lens[i].pos = glm::vec3(-7.0f, 7.2f, 34.8f-60.0f);
     m_lens[i].dim = 0.4f;
     m_lens[i].total = 0.7f;
     m_lens[i].off = 0.3f;
     i ++;
     m_lens[i].type = Gfx::PARTISELY;
-    m_lens[i].pos = Math::Vector(-7.0f, 6.5f, 34.3f-60.0f);
+    m_lens[i].pos = glm::vec3(-7.0f, 6.5f, 34.3f-60.0f);
     m_lens[i].dim = 0.4f;
     m_lens[i].total = 0.0f;
     m_lens[i].off = 0.0f;
     i ++;
     m_lens[i].type = Gfx::PARTISELR;
-    m_lens[i].pos = Math::Vector(-7.0f, 6.5f, 33.4f-60.0f);
+    m_lens[i].pos = glm::vec3(-7.0f, 6.5f, 33.4f-60.0f);
     m_lens[i].dim = 0.4f;
     m_lens[i].total = 0.6f;
     m_lens[i].off = 0.4f;
     i ++;
     m_lens[i].type = Gfx::PARTISELR;
-    m_lens[i].pos = Math::Vector(-7.0f, 6.5f, 33.0f-60.0f);
+    m_lens[i].pos = glm::vec3(-7.0f, 6.5f, 33.0f-60.0f);
     m_lens[i].dim = 0.4f;
     m_lens[i].total = 0.8f;
     m_lens[i].off = 0.2f;
     i ++;
 
     m_lens[i].type = Gfx::PARTISELY;
-    m_lens[i].pos = Math::Vector(-6.5f, 13.5f, -37.0f);
+    m_lens[i].pos = glm::vec3(-6.5f, 13.5f, -37.0f);
     m_lens[i].dim = 1.0f;
     m_lens[i].total = 0.0f;
     m_lens[i].off = 0.0f;
     i ++;
 
     m_lens[i].type = Gfx::PARTISELY;
-    m_lens[i].pos = Math::Vector(-7.0f, 12.2f, -39.8f);
+    m_lens[i].pos = glm::vec3(-7.0f, 12.2f, -39.8f);
     m_lens[i].dim = 1.8f;
     m_lens[i].total = 1.5f;
     m_lens[i].off = 0.5f;
     i ++;
 
     m_lens[i].type = Gfx::PARTISELY;
-    m_lens[i].pos = Math::Vector(-7.0f, 8.5f, -47.0f);
+    m_lens[i].pos = glm::vec3(-7.0f, 8.5f, -47.0f);
     m_lens[i].dim = 0.6f;
     m_lens[i].total = 0.7f;
     m_lens[i].off = 0.5f;
@@ -236,10 +236,10 @@ bool CAutoHouston::EventProcess(const Event &event)
                 dim.x = m_lens[i].dim;
                 dim.y = dim.x;
 
-                Math::Vector pos = m_lens[i].pos;
-                Math::RotatePoint(Math::Vector(0.0f, 0.0f, 0.0f), -m_object->GetRotationY(), 0.0f, pos);
+                glm::vec3 pos = m_lens[i].pos;
+                Math::RotatePoint(glm::vec3(0.0f, 0.0f, 0.0f), -m_object->GetRotationY(), 0.0f, pos);
 
-                m_lens[i].parti = m_particle->CreateParticle(m_object->GetPosition()+pos, Math::Vector(0.0f, 0.0f, 0.0f), dim, m_lens[i].type, 1.0f, 0.0f, 0.0f);
+                m_lens[i].parti = m_particle->CreateParticle(m_object->GetPosition()+pos, glm::vec3(0.0f, 0.0f, 0.0f), dim, m_lens[i].type, 1.0f, 0.0f, 0.0f);
             }
         }
     }

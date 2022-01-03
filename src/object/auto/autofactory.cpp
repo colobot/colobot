@@ -209,7 +209,7 @@ bool CAutoFactory::EventProcess(const Event &event)
     CObject*    vehicle;
     Math::Matrix*   mat;
     CPhysics*   physics;
-    Math::Vector    pos, speed;
+    glm::vec3    pos, speed;
     glm::vec2     dim;
     float       zoom, angle, prog;
     int         i;
@@ -369,7 +369,7 @@ bool CAutoFactory::EventProcess(const Event &event)
                 m_lastParticle = m_time;
 
                 mat = m_object->GetWorldMatrix(0);
-                pos = Math::Vector(-12.0f, 20.0f, -4.0f);  // position of chimney
+                pos = glm::vec3(-12.0f, 20.0f, -4.0f);  // position of chimney
                 pos = Math::Transform(*mat, pos);
                 pos.y += 2.0f;
                 pos.x += (Math::Rand()-0.5f)*2.0f;
@@ -456,7 +456,7 @@ bool CAutoFactory::EventProcess(const Event &event)
                 pos.x += (Math::Rand()-0.5f)*10.0f;
                 pos.z += (Math::Rand()-0.5f)*10.0f;
                 pos.y += Math::Rand()*10.0f;
-                speed = Math::Vector(0.0f, 0.0f, 0.0f);
+                speed = glm::vec3(0.0f, 0.0f, 0.0f);
                 dim.x = 2.0f;
                 dim.y = dim.x;
                 m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGLINT, 2.0f, 0.0f, 0.0f);
@@ -499,7 +499,7 @@ bool CAutoFactory::EventProcess(const Event &event)
                 pos.x += (Math::Rand()-0.5f)*10.0f;
                 pos.z += (Math::Rand()-0.5f)*10.0f;
                 pos.y += Math::Rand()*10.0f;
-                speed = Math::Vector(0.0f, 0.0f, 0.0f);
+                speed = glm::vec3(0.0f, 0.0f, 0.0f);
                 dim.x = 2.0f;
                 dim.y = dim.x;
                 m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGLINT, 2.0f, 0.0f, 0.0f);
@@ -569,7 +569,7 @@ CObject* CAutoFactory::SearchCargo()
         if ( type != OBJECT_METAL )  continue;
         if (IsObjectBeingTransported(obj))  continue;
 
-        Math::Vector oPos = obj->GetPosition();
+        glm::vec3 oPos = obj->GetPosition();
         float dist = Math::Distance(oPos, m_cargoPos);
 
         if ( dist < 8.0f )  return obj;
@@ -582,7 +582,7 @@ CObject* CAutoFactory::SearchCargo()
 
 bool CAutoFactory::NearestVehicle()
 {
-    Math::Vector cPos = m_object->GetPosition();
+    glm::vec3 cPos = m_object->GetPosition();
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
@@ -644,17 +644,17 @@ bool CAutoFactory::CreateVehicle()
 {
     float angle = m_object->GetRotationY();
 
-    Math::Vector pos;
+    glm::vec3 pos{};
     if ( m_type == OBJECT_MOBILErt ||
          m_type == OBJECT_MOBILErc ||
          m_type == OBJECT_MOBILErr ||
          m_type == OBJECT_MOBILErs )
     {
-        pos = Math::Vector(2.0f, 0.0f, 0.0f);
+        pos = glm::vec3(2.0f, 0.0f, 0.0f);
     }
     else
     {
-        pos = Math::Vector(4.0f, 0.0f, 0.0f);
+        pos = glm::vec3(4.0f, 0.0f, 0.0f);
     }
     Math::Matrix* mat = m_object->GetWorldMatrix(0);
     pos = Transform(*mat, pos);
@@ -700,7 +700,7 @@ CObject* CAutoFactory::SearchVehicle()
         if ( type != m_type )  continue;
         if (IsObjectBeingTransported(obj))  continue;
 
-        Math::Vector oPos = obj->GetPosition();
+        glm::vec3 oPos = obj->GetPosition();
         float dist = Math::Distance(oPos, m_cargoPos);
 
         if ( dist < 8.0f )  return obj;

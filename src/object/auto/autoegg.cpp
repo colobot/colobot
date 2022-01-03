@@ -184,7 +184,7 @@ bool CAutoEgg::EventProcess(const Event &event)
         m_progress += event.rTime*m_speed;
         if ( m_progress < 1.0f )  return true;
 
-        Math::Vector pos = m_object->GetPosition();
+        glm::vec3 pos = m_object->GetPosition();
         float angle = m_object->GetRotationY();
         CObject* alien = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, m_type);
 
@@ -288,7 +288,7 @@ Error CAutoEgg::GetError()
 
 CObject* CAutoEgg::SearchAlien()
 {
-    Math::Vector cPos = m_object->GetPosition();
+    glm::vec3 cPos = m_object->GetPosition();
     float min = 100000.0f;
     CObject* best = nullptr;
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
@@ -301,7 +301,7 @@ CObject* CAutoEgg::SearchAlien()
              type != OBJECT_SPIDER &&
              type != OBJECT_WORM   )  continue;
 
-        Math::Vector oPos = obj->GetPosition();
+        glm::vec3 oPos = obj->GetPosition();
         float dist = Math::DistanceProjected(oPos, cPos);
         if ( dist < 8.0f && dist < min )
         {

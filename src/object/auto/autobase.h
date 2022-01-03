@@ -101,10 +101,10 @@ protected:
     float           m_lastMotorParticle = 0.0f;
     float           m_fogStart = 0.0f;
     float           m_deepView = 0.0f;
-    Math::Vector    m_pos;
-    Math::Vector    m_posSound;
-    Math::Vector    m_finalPos;
-    Math::Vector    m_lastPos;
+    glm::vec3       m_pos = { 0, 0, 0 };
+    glm::vec3       m_posSound = { 0, 0, 0 };
+    glm::vec3       m_finalPos = { 0, 0, 0 };
+    glm::vec3       m_lastPos = { 0, 0, 0 };
     int             m_param = 0;
     int             m_soundChannel = 0;
     int             m_partiChannel[8] = {};

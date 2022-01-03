@@ -55,11 +55,11 @@ public:
 
 protected:
     CObject*    SearchCargo();
-    bool        SearchFree(Math::Vector pos);
-    void        CreateCargo(Math::Vector pos, float angle, ObjectType type, float height);
+    bool        SearchFree(glm::vec3 pos);
+    void        CreateCargo(glm::vec3 pos, float angle, ObjectType type, float height);
     bool        ExistKey();
 
-    Math::Vector GetCargoPos();
+    glm::vec3   GetCargoPos();
 
 protected:
     AutoDerrickPhase    m_phase = ADP_WAIT;

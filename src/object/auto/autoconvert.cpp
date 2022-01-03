@@ -100,7 +100,7 @@ void CAutoConvert::Init()
 bool CAutoConvert::EventProcess(const Event &event)
 {
     CObject*    cargo;
-    Math::Vector    pos, speed;
+    glm::vec3    pos, speed;
     glm::vec2     dim, c, p;
     float       angle;
 
@@ -221,7 +221,7 @@ bool CAutoConvert::EventProcess(const Event &event)
                 pos.x = p.x;
                 pos.z = p.y;
                 pos.y += 1.0f;
-                speed = Math::Vector(0.0f, 0.0f, 0.0f);
+                speed = glm::vec3(0.0f, 0.0f, 0.0f);
                 dim.x = Math::Rand()*2.0f+1.0f;
                 dim.y = dim.x;
                 m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGAS, 1.0f, 0.0f, 0.0f);
@@ -265,7 +265,7 @@ bool CAutoConvert::EventProcess(const Event &event)
                 pos.x += (Math::Rand()-0.5f)*6.0f;
                 pos.z += (Math::Rand()-0.5f)*6.0f;
                 pos.y += Math::Rand()*4.0f;
-                speed = Math::Vector(0.0f, 0.0f, 0.0f);
+                speed = glm::vec3(0.0f, 0.0f, 0.0f);
                 dim.x = Math::Rand()*4.0f+3.0f;
                 dim.y = dim.x;
                 m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIBLUE, 1.0f, 0.0f, 0.0f);
@@ -397,7 +397,7 @@ bool CAutoConvert::Read(CLevelParserLine* line)
 
 CObject* CAutoConvert::SearchStone(ObjectType type)
 {
-    Math::Vector cPos = m_object->GetPosition();
+    glm::vec3 cPos = m_object->GetPosition();
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
@@ -405,7 +405,7 @@ CObject* CAutoConvert::SearchStone(ObjectType type)
         if ( oType != type )  continue;
         if (IsObjectBeingTransported(obj)) continue;
 
-        Math::Vector oPos = obj->GetPosition();
+        glm::vec3 oPos = obj->GetPosition();
         float dist = Math::Distance(oPos, cPos);
 
         if ( dist <= 5.0f )  return obj;
@@ -418,7 +418,7 @@ CObject* CAutoConvert::SearchStone(ObjectType type)
 
 bool CAutoConvert::SearchVehicle()
 {
-    Math::Vector cPos = m_object->GetPosition();
+    glm::vec3 cPos = m_object->GetPosition();
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
@@ -440,7 +440,7 @@ bool CAutoConvert::SearchVehicle()
 
 void CAutoConvert::CreateMetal()
 {
-    Math::Vector pos = m_object->GetPosition();
+    glm::vec3 pos = m_object->GetPosition();
     float angle = m_object->GetRotationY();
 
     CObjectManager::GetInstancePointer()->CreateObject(pos, angle, OBJECT_METAL);

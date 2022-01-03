@@ -89,7 +89,7 @@ void CAutoDerrick::DeleteObject(bool all)
 
 void CAutoDerrick::Init()
 {
-    Math::Vector pos = m_object->GetPosition();
+    glm::vec3 pos = m_object->GetPosition();
     Gfx::TerrainRes res = m_terrain->GetResource(pos);
 
     if ( res == Gfx::TR_STONE   ||
@@ -124,9 +124,9 @@ void CAutoDerrick::Init()
     m_lastTrack = 0.0f;
 }
 
-Math::Vector CAutoDerrick::GetCargoPos()
+glm::vec3 CAutoDerrick::GetCargoPos()
 {
-    Math::Vector pos = Math::Vector(7.0f, 0.0f, 0.0f);
+    glm::vec3 pos = glm::vec3(7.0f, 0.0f, 0.0f);
     Math::Matrix* mat = m_object->GetWorldMatrix(0);
     pos = Math::Transform(*mat, pos);
     m_terrain->AdjustToFloor(pos);
@@ -139,7 +139,7 @@ Math::Vector CAutoDerrick::GetCargoPos()
 bool CAutoDerrick::EventProcess(const Event &event)
 {
     CObject*    cargo;
-    Math::Vector    pos, speed;
+    glm::vec3    pos, speed;
     glm::vec2     dim;
     float       angle, duration, factor;
 
@@ -310,7 +310,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
     {
         if ( m_progress == 0.0f )
         {
-            Math::Vector cargoPos = GetCargoPos();
+            glm::vec3 cargoPos = GetCargoPos();
             if ( SearchFree(cargoPos) )
             {
                 angle = m_object->GetRotationY();
@@ -339,7 +339,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
                 pos.x += (Math::Rand()-0.5f)*5.0f;
                 pos.z += (Math::Rand()-0.5f)*5.0f;
                 pos.y += (Math::Rand()-0.5f)*5.0f;
-                speed = Math::Vector(0.0f, 0.0f, 0.0f);
+                speed = glm::vec3(0.0f, 0.0f, 0.0f);
                 dim.x = 3.0f;
                 dim.y = dim.x;
                 m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIFIRE, 1.0f, 0.0f, 0.0f);
@@ -350,7 +350,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
                 pos.x += (Math::Rand()-0.5f)*5.0f;
                 pos.z += (Math::Rand()-0.5f)*5.0f;
                 pos.y += Math::Rand()*2.5f;
-                speed = Math::Vector(0.0f, 0.0f, 0.0f);
+                speed = glm::vec3(0.0f, 0.0f, 0.0f);
                 dim.x = 1.0f;
                 dim.y = dim.x;
                 m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGLINT, 2.0f, 0.0f, 0.0f);
@@ -361,7 +361,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
         {
             if ( cargo != nullptr )
             {
-                Math::Vector cargoPos = GetCargoPos();
+                glm::vec3 cargoPos = GetCargoPos();
                 pos = cargo->GetPosition();
                 pos.y -= event.rTime*20.0f;  // grave
                 if ( !m_bSoundFall && pos.y < cargoPos.y )
@@ -464,13 +464,13 @@ bool CAutoDerrick::Read(CLevelParserLine* line)
 
 CObject* CAutoDerrick::SearchCargo()
 {
-    Math::Vector cargoPos = GetCargoPos();
+    glm::vec3 cargoPos = GetCargoPos();
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         ObjectType type = obj->GetType();
         if ( type == OBJECT_DERRICK )  continue;
 
-            Math::Vector oPos = obj->GetPosition();
+            glm::vec3 oPos = obj->GetPosition();
 
         if ( oPos.x == cargoPos.x &&
              oPos.z == cargoPos.z )  return obj;
@@ -481,7 +481,7 @@ CObject* CAutoDerrick::SearchCargo()
 
 // Seeks if a site is free.
 
-bool CAutoDerrick::SearchFree(Math::Vector pos)
+bool CAutoDerrick::SearchFree(glm::vec3 pos)
 {
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
@@ -490,7 +490,7 @@ bool CAutoDerrick::SearchFree(Math::Vector pos)
 
         for (const auto& crashSphere : obj->GetAllCrashSpheres())
         {
-            Math::Vector sPos = crashSphere.sphere.pos;
+            glm::vec3 sPos = crashSphere.sphere.pos;
             float sRadius = crashSphere.sphere.radius;
 
             float distance = Math::Distance(sPos, pos);
@@ -504,7 +504,7 @@ bool CAutoDerrick::SearchFree(Math::Vector pos)
 
 // Create a transportable object.
 
-void CAutoDerrick::CreateCargo(Math::Vector pos, float angle, ObjectType type,
+void CAutoDerrick::CreateCargo(glm::vec3 pos, float angle, ObjectType type,
                               float height)
 {
     CObject* cargo = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, type);

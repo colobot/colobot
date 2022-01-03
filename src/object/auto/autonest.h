@@ -49,8 +49,8 @@ public:
     bool        Read(CLevelParserLine* line) override;
 
 protected:
-    bool        SearchFree(Math::Vector pos);
-    void        CreateCargo(Math::Vector pos, float angle, ObjectType type);
+    bool        SearchFree(glm::vec3 pos);
+    void        CreateCargo(glm::vec3 pos, float angle, ObjectType type);
     CObject*    SearchCargo();
 
 protected:
@@ -58,5 +58,5 @@ protected:
     float           m_progress = 0.0f;
     float           m_speed = 0.0f;
     float           m_lastParticle = 0.0f;
-    Math::Vector    m_cargoPos;
+    glm::vec3       m_cargoPos = { 0, 0, 0 };
 };

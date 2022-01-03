@@ -22,6 +22,8 @@
 
 #include "object/auto/auto.h"
 
+#include <string>
+
 class CObject;
 
 enum AutoFactoryPhase
@@ -72,7 +74,7 @@ protected:
     float               m_progress = 0.0f;
     float               m_speed = 0.0f;
     float               m_lastParticle = 0.0f;
-    Math::Vector        m_cargoPos;
+    glm::vec3           m_cargoPos = { 0, 0, 0 };
     int                 m_channelSound = 0;
 
     std::string         m_program;

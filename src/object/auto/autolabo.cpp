@@ -164,7 +164,7 @@ Error CAutoLabo::StartAction(int param)
 bool CAutoLabo::EventProcess(const Event &event)
 {
     CObject*    power;
-    Math::Vector    pos, goal, speed;
+    glm::vec3    pos, goal, speed;
     glm::vec2     dim, rot;
     float       angle;
     int         i;
@@ -251,7 +251,7 @@ bool CAutoLabo::EventProcess(const Event &event)
         }
         else
         {
-            m_object->SetPartPosition(1, Math::Vector(-9.0f, 13.0f, 0.0f));
+            m_object->SetPartPosition(1, glm::vec3(-9.0f, 13.0f, 0.0f));
 
             SoundManip(1.5f, 1.0f, 0.5f);
             m_phase    = ALAP_OPEN3;
@@ -292,7 +292,7 @@ bool CAutoLabo::EventProcess(const Event &event)
 
             pos = m_object->GetPosition();
             pos.y += 4.0f;
-            speed = Math::Vector(0.0f, 0.0f, 0.0f);
+            speed = glm::vec3(0.0f, 0.0f, 0.0f);
             dim.x = 4.0f;
             dim.y = dim.x;
             m_partiSphere = m_particle->CreateParticle(pos, speed,
@@ -411,7 +411,7 @@ bool CAutoLabo::EventProcess(const Event &event)
         }
         else
         {
-            m_object->SetPartPosition(1, Math::Vector(-9.0f, 3.0f, 0.0f));
+            m_object->SetPartPosition(1, glm::vec3(-9.0f, 3.0f, 0.0f));
 
             SoundManip(1.0f, 1.0f, 1.0f);
             m_phase    = ALAP_CLOSE3;

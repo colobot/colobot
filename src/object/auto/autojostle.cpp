@@ -89,7 +89,7 @@ void CAutoJostle::Start(int param)
 
 bool CAutoJostle::EventProcess(const Event &event)
 {
-    Math::Vector    dir;
+    glm::vec3    dir;
     float       factor, angle, zoom;
 
     CAuto::EventProcess(event);
@@ -129,7 +129,7 @@ bool CAutoJostle::EventProcess(const Event &event)
     {
         m_object->SetRotationX(0.0f);
         m_object->SetRotationZ(0.0f);
-        m_object->SetScale(Math::Vector(1.0f, 1.0f, 1.0f));
+        m_object->SetScale(glm::vec3(1.0f, 1.0f, 1.0f));
         m_error = ERR_STOP;
     }
 

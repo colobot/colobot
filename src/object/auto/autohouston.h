@@ -30,7 +30,7 @@ struct HustonLens
 {
     int                 parti = 0;
     Gfx::ParticleType   type = {};
-    Math::Vector        pos;
+    glm::vec3           pos = { 0, 0, 0 };
     float               dim = 0.0f;
     float               total = 0.0f;
     float               off = 0.0f;
