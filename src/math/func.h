@@ -270,7 +270,7 @@ inline float Bounce(float progress, float middle = 0.3f, float bounce = 0.4f)
 //! Convenience function for calculating angle (in radians) between two vectors
 inline float Angle(const glm::vec3& a, const glm::vec3& b)
 {
-    return std::acosf(glm::dot(a, b) / (glm::length(a) * glm::length(b)));
+    return acosf(glm::dot(a, b) / (glm::length(a) * glm::length(b)));
 }
 
 inline std::string ToString(const glm::vec3& vector)
