@@ -279,7 +279,7 @@ inline void LoadViewMatrix(Math::Matrix &mat, const glm::vec3 &from,
 
     // Get the dot product, and calculate the projection of the z basis
     // vector onto the up vector. The projection is the y basis vector.
-    float dotProduct = DotProduct(worldUp, view);
+    float dotProduct = glm::dot(worldUp, view);
 
     glm::vec3 up = worldUp - dotProduct * view;
 
@@ -303,7 +303,7 @@ inline void LoadViewMatrix(Math::Matrix &mat, const glm::vec3 &from,
 
     // The x basis vector is found simply with the cross product of the y
     // and z basis vectors
-    glm::vec3 right = CrossProduct(up, view);
+    glm::vec3 right = glm::cross(up, view);
 
     // Start building the matrix. The first three rows contains the basis
     // vectors used to rotate the view to point at the lookat point
@@ -320,9 +320,9 @@ inline void LoadViewMatrix(Math::Matrix &mat, const glm::vec3 &from,
     /* (3,3) */ mat.m[10] = view.z;
 
     // Do the translation values (rotations are still about the eyepoint)
-    /* (1,4) */ mat.m[12] = -DotProduct(from, right);
-    /* (2,4) */ mat.m[13] = -DotProduct(from, up);
-    /* (3,4) */ mat.m[14] = -DotProduct(from, view);
+    /* (1,4) */ mat.m[12] = -glm::dot(from, right);
+    /* (2,4) */ mat.m[13] = -glm::dot(from, up);
+    /* (3,4) */ mat.m[14] = -glm::dot(from, view);
 }
 
 //! Loads a perspective projection matrix
@@ -449,7 +449,7 @@ inline void LoadRotationMatrix(Math::Matrix &mat, const glm::vec3 &dir, float an
 {
     float cos = cosf(angle);
     float sin = sinf(angle);
-    glm::vec3 v = Normalize(dir);
+    glm::vec3 v = glm::normalize(dir);
 
     mat.LoadIdentity();
 
@@ -508,7 +508,7 @@ inline glm::vec3 NormalToPlane(const glm::vec3 &p1, const glm::vec3 &p2, const g
     glm::vec3 u = p3 - p1;
     glm::vec3 v = p2 - p1;
 
-    return Normalize(CrossProduct(u, v));
+    return glm::normalize(glm::cross(u, v));
 }
 
 //! Returns a point on the line \a p1 - \a p2, in \a dist distance from \a p1
@@ -622,8 +622,8 @@ inline glm::vec3 Transform(const Math::Matrix &m, const glm::vec3 &p)
  */
 inline glm::vec3 Projection(const glm::vec3 &a, const glm::vec3 &b, const glm::vec3 &p)
 {
-    float k = DotProduct(b - a, p - a);
-    k /= DotProduct(b - a, b - a);
+    float k = glm::dot(b - a, p - a);
+    k /= glm::dot(b - a, b - a);
 
     return a + k*(b-a);
 }

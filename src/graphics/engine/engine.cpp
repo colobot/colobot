@@ -2019,7 +2019,7 @@ int CEngine::ComputeSphereVisibility(const Math::Matrix& m, const glm::vec3& cen
 
 bool CEngine::InPlane(glm::vec3 normal, float originPlane, glm::vec3 center, float radius)
 {
-    float distance = originPlane + Math::DotProduct(normal, center);
+    float distance = originPlane + glm::dot(normal, center);
 
     if (distance < -radius)
         return false;
@@ -3764,8 +3764,8 @@ void CEngine::Capture3DScene()
             {
                 for (int j = -3; j <= 3; j++)
                 {
-                    int xp = Math::Clamp(x + i, 0, newWidth - 1);
-                    int yp = Math::Clamp(y + j, 0, newHeight - 1);
+                    int xp = glm::clamp(x + i, 0, newWidth - 1);
+                    int yp = glm::clamp(y + j, 0, newHeight - 1);
 
                     float weight = matrix[i + 3][j + 3];
 
@@ -3780,7 +3780,7 @@ void CEngine::Capture3DScene()
 
             for (int k = 0; k < 4; k++)
             {
-                float value = Math::Clamp(color[k], 0.0f, 255.0f);
+                float value = glm::clamp(color[k], 0.0f, 255.0f);
                 blured[index + k] = static_cast<unsigned char>(value);
             }
         }
@@ -4868,10 +4868,10 @@ void CEngine::DrawShadowSpots()
             }
         }
 
-        corner[0] = Math::CrossProduct(corner[0], m_shadowSpots[i].normal);
-        corner[1] = Math::CrossProduct(corner[1], m_shadowSpots[i].normal);
-        corner[2] = Math::CrossProduct(corner[2], m_shadowSpots[i].normal);
-        corner[3] = Math::CrossProduct(corner[3], m_shadowSpots[i].normal);
+        corner[0] = glm::cross(corner[0], m_shadowSpots[i].normal);
+        corner[1] = glm::cross(corner[1], m_shadowSpots[i].normal);
+        corner[2] = glm::cross(corner[2], m_shadowSpots[i].normal);
+        corner[3] = glm::cross(corner[3], m_shadowSpots[i].normal);
 
         corner[0] += pos;
         corner[1] += pos;

@@ -239,7 +239,7 @@ void CLightning::Draw()
     glm::vec3 p1 = m_pos;
     glm::vec3 eye = m_engine->GetEyePt();
     float a = Math::RotateAngle(eye.x-p1.x, eye.z-p1.z);
-    glm::vec3 n = Math::Normalize(p1-eye);
+    glm::vec3 n = glm::normalize(p1-eye);
 
     glm::vec3 corner[4];
     Vertex vertex[4];

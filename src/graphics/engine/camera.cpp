@@ -1096,7 +1096,7 @@ bool CCamera::EventFrameFree(const Event &event, bool keysAllowed)
     else
         m_heightEye -= cameraMove.z;
 
-    m_heightEye = Math::Clamp(m_heightEye, -2.0f, 500.0f);
+    m_heightEye = glm::clamp(m_heightEye, -2.0f, 500.0f);
 
     m_terrain->AdjustToBounds(m_eyePt, 10.0f);
 
@@ -1134,7 +1134,7 @@ bool CCamera::EventFrameBack(const Event &event)
     m_addDirectionH = Math::NormAngle(m_addDirectionH);
     m_addDirectionV = Math::NormAngle(m_addDirectionV);
 
-    m_backDist = Math::Clamp(m_backDist, m_backMin, 200.0f);
+    m_backDist = glm::clamp(m_backDist, m_backMin, 200.0f);
 
     // Increase the special framework
     float centeringH = 0.0f;
@@ -1264,8 +1264,8 @@ bool CCamera::EventFrameFix(const Event &event)
 
     m_fixDirectionH = Math::NormAngle(m_fixDirectionH);
 
-    m_fixDirectionV = Math::Clamp(m_fixDirectionV, -0.5f*Math::PI, 0.25f*Math::PI);
-    m_fixDist = Math::Clamp(m_fixDist, 10.0f, 200.0f);
+    m_fixDirectionV = glm::clamp(m_fixDirectionV, -0.5f*Math::PI, 0.25f*Math::PI);
+    m_fixDist = glm::clamp(m_fixDist, 10.0f, 200.0f);
 
     if (m_cameraObj != nullptr)
     {
@@ -1346,11 +1346,11 @@ bool CCamera::EventFrameVisit(const Event &event)
 
     // ZoomIn/ZoomOut
     m_visitDist += cameraMove.z;
-    m_visitDist = Math::Clamp(m_visitDist, 20.0f, 200.0f);
+    m_visitDist = glm::clamp(m_visitDist, 20.0f, 200.0f);
 
     // Up/Down
     m_visitDirectionV += cameraMove.y;
-    m_visitDirectionV = Math::Clamp(m_visitDirectionV, -Math::PI * 0.40f, 0.0f);
+    m_visitDirectionV = glm::clamp(m_visitDirectionV, -Math::PI * 0.40f, 0.0f);
 
     float angleH = (m_visitTime / 10.0f) * (Math::PI * 2.0f);
     float angleV = m_visitDirectionV;

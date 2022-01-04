@@ -415,7 +415,7 @@ GLenum TranslateGfxBlendFunc(BlendFunc func)
 
 bool InPlane(glm::vec3 normal, float originPlane, glm::vec3 center, float radius)
 {
-    float distance = originPlane + Math::DotProduct(normal, center);
+    float distance = originPlane + glm::dot(normal, center);
 
     if (distance < -radius)
         return false;

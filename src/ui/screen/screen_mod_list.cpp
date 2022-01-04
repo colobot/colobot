@@ -332,7 +332,7 @@ void CScreenModList::FindMods()
     m_modManager->FindMods();
     if (m_modManager->CountMods() != 0)
     {
-        m_modSelectedIndex = Math::Clamp(m_modSelectedIndex, static_cast<size_t>(0), m_modManager->CountMods() - 1);
+        m_modSelectedIndex = glm::clamp(m_modSelectedIndex, static_cast<size_t>(0), m_modManager->CountMods() - 1);
     }
 }
 

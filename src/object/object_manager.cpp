@@ -176,7 +176,7 @@ float CObjectManager::ClampPower(ObjectType type, float power)
     {
         max = 1;
     }
-    return Math::Clamp(power, min, max);
+    return glm::clamp(power, min, max);
 }
 
 std::vector<CObject*> CObjectManager::GetObjectsOfTeam(int team)

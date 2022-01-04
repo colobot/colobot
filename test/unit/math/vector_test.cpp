@@ -58,7 +58,7 @@ TEST(VectorTest, DotTest)
 
     float expectedDot = -0.238988896477326;
 
-    EXPECT_TRUE(Math::IsEqual(Math::DotProduct(vecA, vecB), expectedDot, TEST_TOLERANCE));
+    EXPECT_TRUE(Math::IsEqual(glm::dot(vecA, vecB), expectedDot, TEST_TOLERANCE));
 }
 
 TEST(VectorTest, CrossTest)

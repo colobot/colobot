@@ -131,9 +131,9 @@ void CGL33Device::DebugLights()
             if (l.type == LIGHT_DIRECTIONAL)
             {
                 Gfx::VertexCol v[2];
-                v[0].coord = -Math::Normalize(l.direction) * 100.0f + glm::vec3(0.0f, 0.0f, 1.0f) * float(i);
+                v[0].coord = -glm::normalize(l.direction) * 100.0f + glm::vec3(0.0f, 0.0f, 1.0f) * float(i);
                 v[0].color = HSV2RGB(color);
-                v[1].coord =  Math::Normalize(l.direction) * 100.0f + glm::vec3(0.0f, 0.0f, 1.0f) * float(i);
+                v[1].coord =  glm::normalize(l.direction) * 100.0f + glm::vec3(0.0f, 0.0f, 1.0f) * float(i);
                 v[1].color = HSV2RGB(color);
                 while (v[0].coord.y < 60.0f && v[0].coord.y < 60.0f)
                 {
@@ -142,7 +142,7 @@ void CGL33Device::DebugLights()
                 }
                 DrawPrimitive(PrimitiveType::LINES, v, 2);
 
-                v[0].coord = v[1].coord + Math::Normalize(v[0].coord - v[1].coord) * 50.0f;
+                v[0].coord = v[1].coord + glm::normalize(v[0].coord - v[1].coord) * 50.0f;
 
                 glLineWidth(10.0f);
                 DrawPrimitive(PrimitiveType::LINES, v, 2);
@@ -192,7 +192,7 @@ void CGL33Device::DebugLights()
                 DrawPrimitive(PrimitiveType::LINE_STRIP, v, 5);
 
                 v[0].coord = l.position;
-                v[1].coord = l.position + Math::Normalize(l.direction) * 100.0f;
+                v[1].coord = l.position + glm::normalize(l.direction) * 100.0f;
                 glEnable(GL_LINE_STIPPLE);
                 glLineStipple(3.0, 0xFF);
                 DrawPrimitive(PrimitiveType::LINES, v, 2);

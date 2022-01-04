@@ -45,24 +45,6 @@ inline bool VectorsEqual(const glm::vec3 &a, const glm::vec3 &b, float tolerance
             && IsEqual(a.z, b.z, tolerance);
 }
 
-//! Convenience function for getting normalized vector
-inline glm::vec3 Normalize(const glm::vec3 &v)
-{
-    return glm::normalize(v);
-}
-
-//! Convenience function for calculating dot product
-inline float DotProduct(const glm::vec3 &left, const glm::vec3 &right)
-{
-    return glm::dot(left, right);
-}
-
-//! Convenience function for calculating cross product
-inline glm::vec3 CrossProduct(const glm::vec3 &left, const glm::vec3 &right)
-{
-    return glm::cross(left, right);
-}
-
 //! Convenience function for calculating angle (in radians) between two vectors
 inline float Angle(const glm::vec3 &a, const glm::vec3 &b)
 {
@@ -73,12 +55,6 @@ inline float Angle(const glm::vec3 &a, const glm::vec3 &b)
 inline float Distance(const glm::vec3 &a, const glm::vec3 &b)
 {
     return glm::distance(a, b);
-}
-
-//! Clamps the vector \a vec to range between \a min and \a max
-inline glm::vec3 Clamp(const glm::vec3&vec, const glm::vec3&min, const glm::vec3&max)
-{
-    return glm::clamp(vec, min, max);
 }
 
 inline std::string ToString(const glm::vec3& vector)

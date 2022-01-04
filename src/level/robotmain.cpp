@@ -5526,7 +5526,7 @@ void CRobotMain::UpdateChapterPassed()
 //! Changes game speed
 void CRobotMain::SetSpeed(float speed)
 {
-    speed = Math::Clamp(speed, MIN_SPEED, MAX_SPEED);
+    speed = glm::clamp(speed, MIN_SPEED, MAX_SPEED);
 
     m_app->SetSimulationSpeed(speed);
     UpdateSpeedLabel();

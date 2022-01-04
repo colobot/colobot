@@ -197,8 +197,8 @@ void CInput::EventProcess(Event& event)
         }
     }
 
-    event.motionInput = Math::Clamp(m_joyMotion + m_keyMotion, glm::vec3(-1.0f, -1.0f, -1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
-    event.cameraInput = Math::Clamp(m_joyMotionCam + m_cameraKeyMotion, glm::vec3(-1.0f, -1.0f, -1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+    event.motionInput = glm::clamp(m_joyMotion + m_keyMotion, glm::vec3(-1.0f, -1.0f, -1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+    event.cameraInput = glm::clamp(m_joyMotionCam + m_cameraKeyMotion, glm::vec3(-1.0f, -1.0f, -1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 }
 
 void CInput::MouseMove(const glm::ivec2& pos)
