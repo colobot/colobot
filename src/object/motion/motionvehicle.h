@@ -30,7 +30,7 @@ public:
     ~CMotionVehicle();
 
     void        DeleteObject(bool bAll=false) override;
-    void        Create(Math::Vector pos, float angle, ObjectType type, float power, Gfx::COldModelManager* modelManager) override;
+    void        Create(glm::vec3 pos, float angle, ObjectType type, float power, Gfx::COldModelManager* modelManager) override;
     bool        EventProcess(const Event &event) override;
 
 protected:
@@ -50,8 +50,8 @@ protected:
     float       m_armTimeAbs;
     float       m_armMember;
     float       m_canonTime;
-    Math::Vector    m_wheelLastPos;
-    Math::Vector    m_wheelLastAngle;
-    Math::Vector    m_posKey;
+    glm::vec3   m_wheelLastPos = { 0, 0, 0 };
+    glm::vec3   m_wheelLastAngle = { 0, 0, 0 };
+    glm::vec3   m_posKey = { 0, 0, 0 };
     bool        m_bFlyFix;
 };

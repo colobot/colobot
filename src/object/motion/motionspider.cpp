@@ -67,7 +67,7 @@ void CMotionSpider::DeleteObject(bool bAll)
 
 // Creates a vehicle traveling any lands on the ground.
 
-void CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
+void CMotionSpider::Create(glm::vec3 pos, float angle, ObjectType type,
                            float power, Gfx::COldModelManager* modelManager)
 {
     int         rank, i, j, parent;
@@ -109,8 +109,8 @@ void CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
 
     // A vehicle must have a obligatory collision
     // with a sphere of center (0, y, 0) (see GetCrashSphere).
-    m_object->AddCrashSphere(CrashSphere(Math::Vector(0.0f, -2.0f, 0.0f), 4.0f, SOUND_BOUM, 0.20f));
-    m_object->SetCameraCollisionSphere(Math::Sphere(Math::Vector(-0.5f, 1.0f, 0.0f), 4.0f));
+    m_object->AddCrashSphere(CrashSphere(glm::vec3(0.0f, -2.0f, 0.0f), 4.0f, SOUND_BOUM, 0.20f));
+    m_object->SetCameraCollisionSphere(Math::Sphere(glm::vec3(-0.5f, 1.0f, 0.0f), 4.0f));
 
     // Creates the abdomen.
     rank = m_engine->CreateObject();
@@ -118,7 +118,7 @@ void CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(1, rank);
     m_object->SetObjectParent(1, 0);
     modelManager->AddModelReference("spider1.mod", false, rank);
-    m_object->SetPartPosition(1, Math::Vector(1.0f, 0.0f, 0.0f));
+    m_object->SetPartPosition(1, glm::vec3(1.0f, 0.0f, 0.0f));
 
     // Creates the head.
     rank = m_engine->CreateObject();
@@ -126,7 +126,7 @@ void CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(2, rank);
     m_object->SetObjectParent(2, 0);
     modelManager->AddModelReference("spider2.mod", false, rank);
-    m_object->SetPartPosition(2, Math::Vector(1.0f, 0.0f, 0.0f));
+    m_object->SetPartPosition(2, glm::vec3(1.0f, 0.0f, 0.0f));
 
     // Creates legs.
     for ( i=0 ; i<4 ; i++ )
@@ -169,7 +169,7 @@ void CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(35, rank);
     m_object->SetObjectParent(35, 1);
     modelManager->AddModelReference("spider7.mod", false, rank);
-    m_object->SetPartPosition(35, Math::Vector(0.0f, 0.0f, -0.3f));
+    m_object->SetPartPosition(35, glm::vec3(0.0f, 0.0f, -0.3f));
 
     // Creates the left mandible.
     rank = m_engine->CreateObject();
@@ -177,7 +177,7 @@ void CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(36, rank);
     m_object->SetObjectParent(36, 1);
     modelManager->AddModelReference("spider7.mod", true, rank);
-    m_object->SetPartPosition(36, Math::Vector(0.0f, 0.0f, 0.3f));
+    m_object->SetPartPosition(36, glm::vec3(0.0f, 0.0f, 0.3f));
 
     m_object->CreateShadowCircle(4.0f, 0.5f);
 
@@ -326,7 +326,7 @@ bool CMotionSpider::EventProcess(const Event &event)
 
 bool CMotionSpider::EventFrame(const Event &event)
 {
-    Math::Vector    dir, pos, speed;
+    glm::vec3    dir, pos, speed;
     glm::vec2       dim;
     float       s, a, prog = 0.0f, time;
     float       tSt[12], tNd[12];
@@ -490,9 +490,9 @@ bool CMotionSpider::EventFrame(const Event &event)
 
     if ( m_actionType == MSS_BURN )  // burning?
     {
-        dir = Math::Vector(Math::PI, 0.0f, 0.0f);
+        dir = glm::vec3(Math::PI, 0.0f, 0.0f);
         SetCirVibration(dir);
-        dir = Math::Vector(0.0f, 0.0f, 0.0f);
+        dir = glm::vec3(0.0f, 0.0f, 0.0f);
         SetLinVibration(dir);
         SetTilt(dir);
 
@@ -501,7 +501,7 @@ bool CMotionSpider::EventFrame(const Event &event)
     }
     else if ( m_actionType == MSS_RUIN )  // destroyed?
     {
-        dir = Math::Vector(0.0f, 0.0f, 0.0f);
+        dir = glm::vec3(0.0f, 0.0f, 0.0f);
         SetLinVibration(dir);
         SetCirVibration(dir);
         SetTilt(dir);
@@ -551,7 +551,7 @@ bool CMotionSpider::EventFrame(const Event &event)
         dir.z = 0.0f;
         SetCirVibration(dir);
 
-        dir = Math::Vector(0.0f, 0.0f, 0.0f);
+        dir = glm::vec3(0.0f, 0.0f, 0.0f);
         SetTilt(dir);
 
         if ( m_progress >= 1.0f )
@@ -580,7 +580,7 @@ bool CMotionSpider::EventFrame(const Event &event)
             }
         }
 
-        dir = Math::Vector(0.0f, 0.0f, 0.0f);
+        dir = glm::vec3(0.0f, 0.0f, 0.0f);
         SetLinVibration(dir);
         dir.x = sinf(m_armTimeAbs* 3.0f)*0.20f+
                 sinf(m_armTimeAbs* 6.0f)*0.20f+
@@ -595,7 +595,7 @@ bool CMotionSpider::EventFrame(const Event &event)
                 sinf(m_armTimeAbs*13.0f)*0.02f+
                 sinf(m_armTimeAbs*15.0f)*0.03f;
         SetCirVibration(dir);
-        dir = Math::Vector(0.0f, 0.0f, 0.0f);
+        dir = glm::vec3(0.0f, 0.0f, 0.0f);
         SetTilt(dir);
 
         m_object->SetPartRotationY(1, sinf(m_armTimeAbs*5.0f)*0.05f);  // tail
@@ -642,7 +642,7 @@ bool CMotionSpider::EventFrame(const Event &event)
         dir.z = 0.0f;
         SetCirVibration(dir);
 
-        dir = Math::Vector(0.0f, 0.0f, 0.0f);
+        dir = glm::vec3(0.0f, 0.0f, 0.0f);
         SetTilt(dir);
 
         if ( m_progress >= 1.0f )
@@ -655,7 +655,7 @@ bool CMotionSpider::EventFrame(const Event &event)
     {
         if ( bStop )
         {
-            dir = Math::Vector(0.0f, 0.0f, 0.0f);
+            dir = glm::vec3(0.0f, 0.0f, 0.0f);
             SetTilt(dir);
         }
         else
@@ -674,7 +674,7 @@ bool CMotionSpider::EventFrame(const Event &event)
             SetTilt(dir);
         }
 
-        dir = Math::Vector(0.0f, 0.0f, 0.0f);
+        dir = glm::vec3(0.0f, 0.0f, 0.0f);
         SetLinVibration(dir);
         SetCirVibration(dir);
 

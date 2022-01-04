@@ -31,7 +31,7 @@ public:
     ~CMotionWorm();
 
     void    DeleteObject(bool bAll=false) override;
-    void    Create(Math::Vector pos, float angle, ObjectType type, float power, Gfx::COldModelManager* modelManager) override;
+    void    Create(glm::vec3 pos, float angle, ObjectType type, float power, Gfx::COldModelManager* modelManager) override;
     bool    EventProcess(const Event &event) override;
 
     bool    SetParam(int rank, float value) override;

@@ -105,7 +105,7 @@ Error CMotionHuman::SetAction(int action, float time)
 
 // Creates cosmonaut on the ground.
 
-void CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
+void CMotionHuman::Create(glm::vec3 pos, float angle, ObjectType type,
                           float power, Gfx::COldModelManager* modelManager)
 {
     char        filename[100];
@@ -158,8 +158,8 @@ void CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetRotationY(angle);
 
     // A vehicle must have an obligatory collision with a sphere of center (0, y, 0) (see GetCrashSphere).
-    m_object->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 2.0f, SOUND_AIE, 0.20f));
-    m_object->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 1.0f, 0.0f), 4.0f));
+    m_object->AddCrashSphere(CrashSphere(glm::vec3(0.0f, 0.0f, 0.0f), 2.0f, SOUND_AIE, 0.20f));
+    m_object->SetCameraCollisionSphere(Math::Sphere(glm::vec3(0.0f, 1.0f, 0.0f), 4.0f));
 
     // Creates the head.
     rank = m_engine->CreateObject();
@@ -188,11 +188,11 @@ void CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
         modelManager->AddModelReference("human2t.mod", false, rank);
     }
 
-    m_object->SetPartPosition(1, Math::Vector(0.0f, 2.7f, 0.0f));
+    m_object->SetPartPosition(1, glm::vec3(0.0f, 2.7f, 0.0f));
     if (option == 1 ||  // head without helmet?
         option == 2)    // without a backpack?
     {
-        m_object->SetPartScale(1, Math::Vector(1.0f, 1.05f, 1.0f));
+        m_object->SetPartScale(1, glm::vec3(1.0f, 1.05f, 1.0f));
     }
 
     // Creates the glasses.
@@ -213,8 +213,8 @@ void CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(2, rank);
     m_object->SetObjectParent(2, 0);
     modelManager->AddModelReference("human3.mod", false, rank);
-    m_object->SetPartPosition(2, Math::Vector(0.0f, 2.3f, -1.2f));
-    m_object->SetPartRotation(2, Math::Vector(90.0f*Math::PI/180.0f, 90.0f*Math::PI/180.0f, -50.0f*Math::PI/180.0f));
+    m_object->SetPartPosition(2, glm::vec3(0.0f, 2.3f, -1.2f));
+    m_object->SetPartRotation(2, glm::vec3(90.0f*Math::PI/180.0f, 90.0f*Math::PI/180.0f, -50.0f*Math::PI/180.0f));
 
     // Creates the right forearm.
     rank = m_engine->CreateObject();
@@ -222,8 +222,8 @@ void CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(3, rank);
     m_object->SetObjectParent(3, 2);
     modelManager->AddModelReference("human4r.mod", false, rank);
-    m_object->SetPartPosition(3, Math::Vector(1.3f, 0.0f, 0.0f));
-    m_object->SetPartRotation(3, Math::Vector(0.0f*Math::PI/180.0f, -20.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f));
+    m_object->SetPartPosition(3, glm::vec3(1.3f, 0.0f, 0.0f));
+    m_object->SetPartRotation(3, glm::vec3(0.0f*Math::PI/180.0f, -20.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f));
 
     // Creates right hand.
     rank = m_engine->CreateObject();
@@ -231,7 +231,7 @@ void CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(4, rank);
     m_object->SetObjectParent(4, 3);
     modelManager->AddModelReference("human5.mod", false, rank);
-    m_object->SetPartPosition(4, Math::Vector(1.2f, 0.0f, 0.0f));
+    m_object->SetPartPosition(4, glm::vec3(1.2f, 0.0f, 0.0f));
 
     // Creates the right thigh.
     rank = m_engine->CreateObject();
@@ -239,8 +239,8 @@ void CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(5, rank);
     m_object->SetObjectParent(5, 0);
     modelManager->AddModelReference("human6.mod", false, rank);
-    m_object->SetPartPosition(5, Math::Vector(0.0f, 0.0f, -0.7f));
-    m_object->SetPartRotation(5, Math::Vector(10.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f));
+    m_object->SetPartPosition(5, glm::vec3(0.0f, 0.0f, -0.7f));
+    m_object->SetPartRotation(5, glm::vec3(10.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f));
 
     // Creates the right leg.
     rank = m_engine->CreateObject();
@@ -248,8 +248,8 @@ void CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(6, rank);
     m_object->SetObjectParent(6, 5);
     modelManager->AddModelReference("human7.mod", false, rank);
-    m_object->SetPartPosition(6, Math::Vector(0.0f, -1.5f, 0.0f));
-    m_object->SetPartRotation(6, Math::Vector(0.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f, -10.0f*Math::PI/180.0f));
+    m_object->SetPartPosition(6, glm::vec3(0.0f, -1.5f, 0.0f));
+    m_object->SetPartRotation(6, glm::vec3(0.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f, -10.0f*Math::PI/180.0f));
 
     // Creates the right foot.
     rank = m_engine->CreateObject();
@@ -257,8 +257,8 @@ void CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(7, rank);
     m_object->SetObjectParent(7, 6);
     modelManager->AddModelReference("human8.mod", false, rank);
-    m_object->SetPartPosition(7, Math::Vector(0.0f, -1.5f, 0.0f));
-    m_object->SetPartRotation(7, Math::Vector(-10.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f));
+    m_object->SetPartPosition(7, glm::vec3(0.0f, -1.5f, 0.0f));
+    m_object->SetPartRotation(7, glm::vec3(-10.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f));
 
     // Creates the left arm.
     rank = m_engine->CreateObject();
@@ -266,8 +266,8 @@ void CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(8, rank);
     m_object->SetObjectParent(8, 0);
     modelManager->AddModelReference("human3.mod", true, rank);
-    m_object->SetPartPosition(8, Math::Vector(0.0f, 2.3f, 1.2f));
-    m_object->SetPartRotation(8, Math::Vector(-90.0f*Math::PI/180.0f, -90.0f*Math::PI/180.0f, -50.0f*Math::PI/180.0f));
+    m_object->SetPartPosition(8, glm::vec3(0.0f, 2.3f, 1.2f));
+    m_object->SetPartRotation(8, glm::vec3(-90.0f*Math::PI/180.0f, -90.0f*Math::PI/180.0f, -50.0f*Math::PI/180.0f));
 
     // Creates the left forearm.
     rank = m_engine->CreateObject();
@@ -275,8 +275,8 @@ void CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(9, rank);
     m_object->SetObjectParent(9, 8);
     modelManager->AddModelReference("human4l.mod", true, rank);
-    m_object->SetPartPosition(9, Math::Vector(1.3f, 0.0f, 0.0f));
-    m_object->SetPartRotation(9, Math::Vector(0.0f*Math::PI/180.0f, 20.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f));
+    m_object->SetPartPosition(9, glm::vec3(1.3f, 0.0f, 0.0f));
+    m_object->SetPartRotation(9, glm::vec3(0.0f*Math::PI/180.0f, 20.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f));
 
     // Creates left hand.
     rank = m_engine->CreateObject();
@@ -284,7 +284,7 @@ void CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(10, rank);
     m_object->SetObjectParent(10, 9);
     modelManager->AddModelReference("human5.mod", true, rank);
-    m_object->SetPartPosition(10, Math::Vector(1.2f, 0.0f, 0.0f));
+    m_object->SetPartPosition(10, glm::vec3(1.2f, 0.0f, 0.0f));
 
     // Creates the left thigh.
     rank = m_engine->CreateObject();
@@ -292,8 +292,8 @@ void CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(11, rank);
     m_object->SetObjectParent(11, 0);
     modelManager->AddModelReference("human6.mod", true, rank);
-    m_object->SetPartPosition(11, Math::Vector(0.0f, 0.0f, 0.7f));
-    m_object->SetPartRotation(11, Math::Vector(-10.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f));
+    m_object->SetPartPosition(11, glm::vec3(0.0f, 0.0f, 0.7f));
+    m_object->SetPartRotation(11, glm::vec3(-10.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f));
 
     // Creates the left leg.
     rank = m_engine->CreateObject();
@@ -301,8 +301,8 @@ void CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(12, rank);
     m_object->SetObjectParent(12, 11);
     modelManager->AddModelReference("human7.mod", true, rank);
-    m_object->SetPartPosition(12, Math::Vector(0.0f, -1.5f, 0.0f));
-    m_object->SetPartRotation(12, Math::Vector(0.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f, -10.0f*Math::PI/180.0f));
+    m_object->SetPartPosition(12, glm::vec3(0.0f, -1.5f, 0.0f));
+    m_object->SetPartRotation(12, glm::vec3(0.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f, -10.0f*Math::PI/180.0f));
 
     // Creates the left foot.
     rank = m_engine->CreateObject();
@@ -310,8 +310,8 @@ void CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(13, rank);
     m_object->SetObjectParent(13, 12);
     modelManager->AddModelReference("human8.mod", true, rank);
-    m_object->SetPartPosition(13, Math::Vector(0.0f, -1.5f, 0.0f));
-    m_object->SetPartRotation(13, Math::Vector(10.0f*Math::PI/180.0f, -5.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f));
+    m_object->SetPartPosition(13, glm::vec3(0.0f, -1.5f, 0.0f));
+    m_object->SetPartRotation(13, glm::vec3(10.0f*Math::PI/180.0f, -5.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f));
 
     // Creates the neutron gun.
     if ( option != 2 && !m_main->GetPlusExplorer())  // with backpack?
@@ -321,7 +321,7 @@ void CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetObjectRank(14, rank);
         m_object->SetObjectParent(14, 0);
         modelManager->AddModelReference("human9.mod", false, rank);
-        m_object->SetPartPosition(14, Math::Vector(-1.5f, 0.3f, -1.35f));
+        m_object->SetPartPosition(14, glm::vec3(-1.5f, 0.3f, -1.35f));
         m_object->SetPartRotationZ(14, Math::PI);
     }
 
@@ -613,7 +613,7 @@ bool CMotionHuman::EventProcess(const Event &event)
 bool CMotionHuman::EventFrame(const Event &event)
 {
     Math::Matrix*   mat;
-    Math::Vector    dir, actual, pos, speed, pf;
+    glm::vec3    dir, actual, pos, speed, pf;
     glm::vec2       center, dim, p2;
     float       s, a, prog, rTime[2], lTime[2], time, rot, hr, hl;
     float       al, ar, af;
@@ -644,13 +644,13 @@ bool CMotionHuman::EventFrame(const Event &event)
     if ( m_bDisplayPerso && m_main->GetGamerOnlyHead() )
     {
         m_time += event.rTime;
-        m_object->SetLinVibration(Math::Vector(0.0f, -0.55f, 0.0f));
-        m_object->SetCirVibration(Math::Vector(0.0f, m_main->GetPersoAngle(), 0.0f));
+        m_object->SetLinVibration(glm::vec3(0.0f, -0.55f, 0.0f));
+        m_object->SetCirVibration(glm::vec3(0.0f, m_main->GetPersoAngle(), 0.0f));
         return true;
     }
     if ( m_bDisplayPerso )
     {
-        m_object->SetCirVibration(Math::Vector(0.0f, m_main->GetPersoAngle()+0.2f, 0.0f));
+        m_object->SetCirVibration(glm::vec3(0.0f, m_main->GetPersoAngle()+0.2f, 0.0f));
     }
 
     if ( m_glassesRank != -1 )
@@ -1181,7 +1181,7 @@ bool CMotionHuman::EventFrame(const Event &event)
                 pos.x += (Math::Rand()-0.5f)*4.0f;
                 pos.z += (Math::Rand()-0.5f)*4.0f;
                 m_terrain->AdjustToFloor(pos);
-                speed = Math::Vector(0.0f, 0.0f, 0.0f);
+                speed = glm::vec3(0.0f, 0.0f, 0.0f);
                 dim.x = 1.2f+Math::Rand()*1.2f;
                 dim.y = dim.x;
                 m_particle->CreateParticle(pos, speed, dim, Gfx::PARTICRASH, 2.0f, 0.0f, 0.0f);
@@ -1251,7 +1251,7 @@ bool CMotionHuman::EventFrame(const Event &event)
                 pos.x += (Math::Rand()-0.5f)*8.0f;
                 pos.z += (Math::Rand()-0.5f)*8.0f;
                 m_terrain->AdjustToFloor(pos);
-                speed = Math::Vector(0.0f, 0.0f, 0.0f);
+                speed = glm::vec3(0.0f, 0.0f, 0.0f);
                 dim.x = 2.0f+Math::Rand()*1.5f;
                 dim.y = dim.x;
                 m_particle->CreateParticle(pos, speed, dim, Gfx::PARTICRASH, 2.0f, 0.0f, 0.0f);
@@ -1352,7 +1352,7 @@ bool CMotionHuman::EventFrame(const Event &event)
         dir.z = Math::Smooth(actual.z, dir.z, time);
         m_object->SetTilt(dir);
 
-        m_object->SetCirVibration(Math::Vector(0.0f, 0.0f, 0.0f));
+        m_object->SetCirVibration(glm::vec3(0.0f, 0.0f, 0.0f));
     }
     else if ( m_actionType == MHS_LOST )   // lost?
     {
@@ -1374,7 +1374,7 @@ bool CMotionHuman::EventFrame(const Event &event)
         SetLinVibration(dir);
 
         mat = m_object->GetWorldMatrix(0);
-        pos = Math::Vector(0.5f, 3.7f, 0.0f);
+        pos = glm::vec3(0.5f, 3.7f, 0.0f);
         pos.x += (Math::Rand()-0.5f)*1.0f;
         pos.y += (Math::Rand()-0.5f)*1.0f;
         pos.z += (Math::Rand()-0.5f)*1.0f;
@@ -1388,9 +1388,9 @@ bool CMotionHuman::EventFrame(const Event &event)
     }
     else if ( m_actionType == MHS_SATCOM )  // look at the SatCom?
     {
-        SetCirVibration(Math::Vector(0.0f, 0.0f, 0.0f));
-        SetLinVibration(Math::Vector(0.0f, 0.0f, 0.0f));
-        SetTilt(Math::Vector(0.0f, 0.0f, 0.0f));
+        SetCirVibration(glm::vec3(0.0f, 0.0f, 0.0f));
+        SetLinVibration(glm::vec3(0.0f, 0.0f, 0.0f));
+        SetTilt(glm::vec3(0.0f, 0.0f, 0.0f));
     }
     else
     {

@@ -68,7 +68,7 @@ void CMotionAnt::DeleteObject(bool bAll)
 
 // Creates a vehicle poses some rolling on the floor.
 
-void CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
+void CMotionAnt::Create(glm::vec3 pos, float angle, ObjectType type,
                         float power, Gfx::COldModelManager* modelManager)
 {
     int rank;
@@ -85,8 +85,8 @@ void CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
 
     // A vehicle must have necessarily a collision
     //with a sphere of center (0, y, 0) (see GetCrashSphere).
-    m_object->AddCrashSphere(CrashSphere(Math::Vector(0.0f, -2.0f, 0.0f), 4.0f, SOUND_BOUM, 0.20f));
-    m_object->SetCameraCollisionSphere(Math::Sphere(Math::Vector(-0.5f, 1.0f, 0.0f), 4.0f));
+    m_object->AddCrashSphere(CrashSphere(glm::vec3(0.0f, -2.0f, 0.0f), 4.0f, SOUND_BOUM, 0.20f));
+    m_object->SetCameraCollisionSphere(Math::Sphere(glm::vec3(-0.5f, 1.0f, 0.0f), 4.0f));
 
     // Creates the head.
     rank = m_engine->CreateObject();
@@ -94,7 +94,7 @@ void CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(1, rank);
     m_object->SetObjectParent(1, 0);
     modelManager->AddModelReference("ant2.mod", false, rank);
-    m_object->SetPartPosition(1, Math::Vector(2.0f, 0.0f, 0.0f));
+    m_object->SetPartPosition(1, glm::vec3(2.0f, 0.0f, 0.0f));
 
     // Creates the tail.
     rank = m_engine->CreateObject();
@@ -102,7 +102,7 @@ void CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(2, rank);
     m_object->SetObjectParent(2, 0);
     modelManager->AddModelReference("ant3.mod", false, rank);
-    m_object->SetPartPosition(2, Math::Vector(-1.0f, 0.0f, 0.0f));
+    m_object->SetPartPosition(2, glm::vec3(-1.0f, 0.0f, 0.0f));
 
     // Creates a right-back thigh.
     rank = m_engine->CreateObject();
@@ -110,7 +110,7 @@ void CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(3, rank);
     m_object->SetObjectParent(3, 0);
     modelManager->AddModelReference("ant4.mod", false, rank);
-    m_object->SetPartPosition(3, Math::Vector(-0.4f, -0.1f, -0.3f));
+    m_object->SetPartPosition(3, glm::vec3(-0.4f, -0.1f, -0.3f));
 
     // Creates a right-back leg.
     rank = m_engine->CreateObject();
@@ -118,7 +118,7 @@ void CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(4, rank);
     m_object->SetObjectParent(4, 3);
     modelManager->AddModelReference("ant5.mod", false, rank);
-    m_object->SetPartPosition(4, Math::Vector(0.0f, 0.0f, -1.0f));
+    m_object->SetPartPosition(4, glm::vec3(0.0f, 0.0f, -1.0f));
 
     // Creates a right-back foot.
     rank = m_engine->CreateObject();
@@ -126,7 +126,7 @@ void CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(5, rank);
     m_object->SetObjectParent(5, 4);
     modelManager->AddModelReference("ant6.mod", false, rank);
-    m_object->SetPartPosition(5, Math::Vector(0.0f, 0.0f, -2.0f));
+    m_object->SetPartPosition(5, glm::vec3(0.0f, 0.0f, -2.0f));
 
     // Creates two middle-right thighs.
     rank = m_engine->CreateObject();
@@ -134,7 +134,7 @@ void CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(6, rank);
     m_object->SetObjectParent(6, 0);
     modelManager->AddModelReference("ant4.mod", false, rank);
-    m_object->SetPartPosition(6, Math::Vector(0.1f, -0.1f, -0.4f));
+    m_object->SetPartPosition(6, glm::vec3(0.1f, -0.1f, -0.4f));
 
     // Creates two middle-right legs.
     rank = m_engine->CreateObject();
@@ -142,7 +142,7 @@ void CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(7, rank);
     m_object->SetObjectParent(7, 6);
     modelManager->AddModelReference("ant5.mod", false, rank);
-    m_object->SetPartPosition(7, Math::Vector(0.0f, 0.0f, -1.0f));
+    m_object->SetPartPosition(7, glm::vec3(0.0f, 0.0f, -1.0f));
 
     // Creates two middle-right foots.
     rank = m_engine->CreateObject();
@@ -150,7 +150,7 @@ void CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(8, rank);
     m_object->SetObjectParent(8, 7);
     modelManager->AddModelReference("ant6.mod", false, rank);
-    m_object->SetPartPosition(8, Math::Vector(0.0f, 0.0f, -2.0f));
+    m_object->SetPartPosition(8, glm::vec3(0.0f, 0.0f, -2.0f));
 
     // Creates the right front thigh.
     rank = m_engine->CreateObject();
@@ -158,7 +158,7 @@ void CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(9, rank);
     m_object->SetObjectParent(9, 0);
     modelManager->AddModelReference("ant4.mod", false, rank);
-    m_object->SetPartPosition(9, Math::Vector(1.4f, -0.1f, -0.6f));
+    m_object->SetPartPosition(9, glm::vec3(1.4f, -0.1f, -0.6f));
 
     // Creates the right front leg.
     rank = m_engine->CreateObject();
@@ -166,7 +166,7 @@ void CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(10, rank);
     m_object->SetObjectParent(10, 9);
     modelManager->AddModelReference("ant5.mod", false, rank);
-    m_object->SetPartPosition(10, Math::Vector(0.0f, 0.0f, -1.0f));
+    m_object->SetPartPosition(10, glm::vec3(0.0f, 0.0f, -1.0f));
 
     // Creates the right front foot.
     rank = m_engine->CreateObject();
@@ -174,7 +174,7 @@ void CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(11, rank);
     m_object->SetObjectParent(11, 10);
     modelManager->AddModelReference("ant6.mod", false, rank);
-    m_object->SetPartPosition(11, Math::Vector(0.0f, 0.0f, -2.0f));
+    m_object->SetPartPosition(11, glm::vec3(0.0f, 0.0f, -2.0f));
 
     // Creates a left-back thigh.
     rank = m_engine->CreateObject();
@@ -182,7 +182,7 @@ void CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(12, rank);
     m_object->SetObjectParent(12, 0);
     modelManager->AddModelReference("ant4.mod", true, rank);
-    m_object->SetPartPosition(12, Math::Vector(-0.4f, -0.1f, 0.3f));
+    m_object->SetPartPosition(12, glm::vec3(-0.4f, -0.1f, 0.3f));
 
     // Creates a left-back leg.
     rank = m_engine->CreateObject();
@@ -190,7 +190,7 @@ void CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(13, rank);
     m_object->SetObjectParent(13, 12);
     modelManager->AddModelReference("ant5.mod", true, rank);
-    m_object->SetPartPosition(13, Math::Vector(0.0f, 0.0f, 1.0f));
+    m_object->SetPartPosition(13, glm::vec3(0.0f, 0.0f, 1.0f));
 
     // Creates a left-back foot.
     rank = m_engine->CreateObject();
@@ -198,7 +198,7 @@ void CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(14, rank);
     m_object->SetObjectParent(14, 13);
     modelManager->AddModelReference("ant6.mod", true, rank);
-    m_object->SetPartPosition(14, Math::Vector(0.0f, 0.0f, 2.0f));
+    m_object->SetPartPosition(14, glm::vec3(0.0f, 0.0f, 2.0f));
 
     // Creates two middle-left thighs.
     rank = m_engine->CreateObject();
@@ -206,7 +206,7 @@ void CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(15, rank);
     m_object->SetObjectParent(15, 0);
     modelManager->AddModelReference("ant4.mod", true, rank);
-    m_object->SetPartPosition(15, Math::Vector(0.1f, -0.1f, 0.4f));
+    m_object->SetPartPosition(15, glm::vec3(0.1f, -0.1f, 0.4f));
 
     // Creates two middle-left legs.
     rank = m_engine->CreateObject();
@@ -214,7 +214,7 @@ void CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(16, rank);
     m_object->SetObjectParent(16, 15);
     modelManager->AddModelReference("ant5.mod", true, rank);
-    m_object->SetPartPosition(16, Math::Vector(0.0f, 0.0f, 1.0f));
+    m_object->SetPartPosition(16, glm::vec3(0.0f, 0.0f, 1.0f));
 
     // Creates two middle-left foot.
     rank = m_engine->CreateObject();
@@ -222,7 +222,7 @@ void CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(17, rank);
     m_object->SetObjectParent(17, 16);
     modelManager->AddModelReference("ant6.mod", true, rank);
-    m_object->SetPartPosition(17, Math::Vector(0.0f, 0.0f, 2.0f));
+    m_object->SetPartPosition(17, glm::vec3(0.0f, 0.0f, 2.0f));
 
     // Creates the left front thigh.
     rank = m_engine->CreateObject();
@@ -230,7 +230,7 @@ void CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(18, rank);
     m_object->SetObjectParent(18, 0);
     modelManager->AddModelReference("ant4.mod", true, rank);
-    m_object->SetPartPosition(18, Math::Vector(1.4f, -0.1f, 0.6f));
+    m_object->SetPartPosition(18, glm::vec3(1.4f, -0.1f, 0.6f));
 
     // Creates the left front leg.
     rank = m_engine->CreateObject();
@@ -238,7 +238,7 @@ void CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(19, rank);
     m_object->SetObjectParent(19, 18);
     modelManager->AddModelReference("ant5.mod", true, rank);
-    m_object->SetPartPosition(19, Math::Vector(0.0f, 0.0f, 1.0f));
+    m_object->SetPartPosition(19, glm::vec3(0.0f, 0.0f, 1.0f));
 
     // Creates the left front foot.
     rank = m_engine->CreateObject();
@@ -246,7 +246,7 @@ void CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(20, rank);
     m_object->SetObjectParent(20, 19);
     modelManager->AddModelReference("ant6.mod", true, rank);
-    m_object->SetPartPosition(20, Math::Vector(0.0f, 0.0f, 2.0f));
+    m_object->SetPartPosition(20, glm::vec3(0.0f, 0.0f, 2.0f));
 
     m_object->CreateShadowCircle(4.0f, 0.5f);
 
@@ -391,7 +391,7 @@ bool CMotionAnt::EventProcess(const Event &event)
 
 bool CMotionAnt::EventFrame(const Event &event)
 {
-    Math::Vector    dir, pos, speed;
+    glm::vec3    dir, pos, speed;
     glm::vec2       dim;
     float       s, a, prog = 0.0f, time;
     float       tSt[9], tNd[9];
@@ -575,11 +575,11 @@ bool CMotionAnt::EventFrame(const Event &event)
     }
     else if ( m_actionType == MAS_BURN )  // burning?
     {
-        dir = Math::Vector(Math::PI, 0.0f, 0.0f);
+        dir = glm::vec3(Math::PI, 0.0f, 0.0f);
         SetCirVibration(dir);
-        dir = Math::Vector(0.0f, -1.5f, 0.0f);
+        dir = glm::vec3(0.0f, -1.5f, 0.0f);
         SetLinVibration(dir);
-        dir = Math::Vector(0.0f, 0.0f, 0.0f);
+        dir = glm::vec3(0.0f, 0.0f, 0.0f);
         SetTilt(dir);
 
         time = event.rTime*1.0f;
@@ -588,7 +588,7 @@ bool CMotionAnt::EventFrame(const Event &event)
     }
     else if ( m_actionType == MAS_RUIN )  // destroyed?
     {
-        dir = Math::Vector(0.0f, 0.0f, 0.0f);
+        dir = glm::vec3(0.0f, 0.0f, 0.0f);
         SetLinVibration(dir);
         SetCirVibration(dir);
         SetTilt(dir);
@@ -627,7 +627,7 @@ bool CMotionAnt::EventFrame(const Event &event)
         dir.z = 0.0f;
         SetCirVibration(dir);
 
-        dir = Math::Vector(0.0f, 0.0f, 0.0f);
+        dir = glm::vec3(0.0f, 0.0f, 0.0f);
         SetTilt(dir);
 
         if ( m_progress >= 1.0f )
@@ -656,7 +656,7 @@ bool CMotionAnt::EventFrame(const Event &event)
             }
         }
 
-        dir = Math::Vector(0.0f, -1.0f, 0.0f);
+        dir = glm::vec3(0.0f, -1.0f, 0.0f);
         SetLinVibration(dir);
         dir.x = sinf(m_armTimeAbs* 4.0f)*0.10f+
                 sinf(m_armTimeAbs* 7.0f)*0.20f+
@@ -671,7 +671,7 @@ bool CMotionAnt::EventFrame(const Event &event)
                 sinf(m_armTimeAbs* 9.0f)*0.04f+
                 sinf(m_armTimeAbs*23.0f)*0.03f;
         SetCirVibration(dir);
-        dir = Math::Vector(0.0f, 0.0f, 0.0f);
+        dir = glm::vec3(0.0f, 0.0f, 0.0f);
         SetTilt(dir);
 
         m_object->SetPartRotationY(1, sinf(m_armTimeAbs*8.0f)*0.7f);  // head
@@ -718,7 +718,7 @@ bool CMotionAnt::EventFrame(const Event &event)
         dir.z = 0.0f;
         SetCirVibration(dir);
 
-        dir = Math::Vector(0.0f, 0.0f, 0.0f);
+        dir = glm::vec3(0.0f, 0.0f, 0.0f);
         SetTilt(dir);
 
         if ( m_progress >= 1.0f )
@@ -737,7 +737,7 @@ bool CMotionAnt::EventFrame(const Event &event)
         {
             m_object->SetPartRotationZ(2, sinf(m_armTimeAbs*1.7f)*0.15f);  // tail
 
-            dir = Math::Vector(0.0f, 0.0f, 0.0f);
+            dir = glm::vec3(0.0f, 0.0f, 0.0f);
             SetLinVibration(dir);
             SetTilt(dir);
         }
@@ -776,7 +776,7 @@ bool CMotionAnt::EventFrame(const Event &event)
             SetLinVibration(dir);
         }
 
-        dir = Math::Vector(0.0f, 0.0f, 0.0f);
+        dir = glm::vec3(0.0f, 0.0f, 0.0f);
         SetCirVibration(dir);
 
         m_object->SetPartRotationZ(1, sinf(m_armTimeAbs*1.4f)*0.20f);  // head

@@ -81,7 +81,7 @@ void CMotionToto::DeleteObject(bool bAll)
 
 // Creates a vehicle traveling any lands on the ground.
 
-void CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
+void CMotionToto::Create(glm::vec3 pos, float angle, ObjectType type,
                          float power, Gfx::COldModelManager* modelManager)
 {
     int             rank;
@@ -103,7 +103,7 @@ void CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(1, rank);
     m_object->SetObjectParent(1, 0);
     modelManager->AddModelReference("toto2.mod", false, rank);
-    m_object->SetPartPosition(1, Math::Vector(1.00f, 0.17f, 0.00f));
+    m_object->SetPartPosition(1, glm::vec3(1.00f, 0.17f, 0.00f));
 
     // Creates the left eye.
     rank = m_engine->CreateObject();
@@ -111,7 +111,7 @@ void CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(2, rank);
     m_object->SetObjectParent(2, 0);
     modelManager->AddModelReference("toto3.mod", true, rank);
-    m_object->SetPartPosition(2, Math::Vector(0.85f, 1.04f, 0.25f));
+    m_object->SetPartPosition(2, glm::vec3(0.85f, 1.04f, 0.25f));
     m_object->SetPartRotationY(2, -20.0f*Math::PI/180.0f);
 
     // Creates the right eye.
@@ -120,7 +120,7 @@ void CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(3, rank);
     m_object->SetObjectParent(3, 0);
     modelManager->AddModelReference("toto3.mod", false, rank);
-    m_object->SetPartPosition(3, Math::Vector(0.85f, 1.04f, -0.25f));
+    m_object->SetPartPosition(3, glm::vec3(0.85f, 1.04f, -0.25f));
     m_object->SetPartRotationY(3, 20.0f*Math::PI/180.0f);
 
     // Creates left antenna.
@@ -129,7 +129,7 @@ void CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(4, rank);
     m_object->SetObjectParent(4, 0);
     modelManager->AddModelReference("toto4.mod", false, rank);
-    m_object->SetPartPosition(4, Math::Vector(0.0f, 1.9f, 0.3f));
+    m_object->SetPartPosition(4, glm::vec3(0.0f, 1.9f, 0.3f));
     m_object->SetPartRotationX(4, 30.0f*Math::PI/180.0f);
 
     rank = m_engine->CreateObject();
@@ -137,7 +137,7 @@ void CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(5, rank);
     m_object->SetObjectParent(5, 4);
     modelManager->AddModelReference("toto4.mod", false, rank);
-    m_object->SetPartPosition(5, Math::Vector(0.0f, 0.67f, 0.0f));
+    m_object->SetPartPosition(5, glm::vec3(0.0f, 0.67f, 0.0f));
     m_object->SetPartRotationX(5, 30.0f*Math::PI/180.0f);
 
     rank = m_engine->CreateObject();
@@ -145,7 +145,7 @@ void CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(6, rank);
     m_object->SetObjectParent(6, 5);
     modelManager->AddModelReference("toto5.mod", false, rank);
-    m_object->SetPartPosition(6, Math::Vector(0.0f, 0.70f, 0.0f));
+    m_object->SetPartPosition(6, glm::vec3(0.0f, 0.70f, 0.0f));
     m_object->SetPartRotationX(6, 30.0f*Math::PI/180.0f);
 
     // Creates right antenna.
@@ -154,7 +154,7 @@ void CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(7, rank);
     m_object->SetObjectParent(7, 0);
     modelManager->AddModelReference("toto4.mod", false, rank);
-    m_object->SetPartPosition(7, Math::Vector(0.0f, 1.9f, -0.3f));
+    m_object->SetPartPosition(7, glm::vec3(0.0f, 1.9f, -0.3f));
     m_object->SetPartRotationX(7, -30.0f*Math::PI/180.0f);
 
     rank = m_engine->CreateObject();
@@ -162,7 +162,7 @@ void CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(8, rank);
     m_object->SetObjectParent(8, 7);
     modelManager->AddModelReference("toto4.mod", false, rank);
-    m_object->SetPartPosition(8, Math::Vector(0.0f, 0.67f, 0.0f));
+    m_object->SetPartPosition(8, glm::vec3(0.0f, 0.67f, 0.0f));
     m_object->SetPartRotationX(8, -30.0f*Math::PI/180.0f);
 
     rank = m_engine->CreateObject();
@@ -170,7 +170,7 @@ void CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(9, rank);
     m_object->SetObjectParent(9, 8);
     modelManager->AddModelReference("toto5.mod", false, rank);
-    m_object->SetPartPosition(9, Math::Vector(0.0f, 0.70f, 0.0f));
+    m_object->SetPartPosition(9, glm::vec3(0.0f, 0.70f, 0.0f));
     m_object->SetPartRotationX(9, -30.0f*Math::PI/180.0f);
 
     m_object->SetScale(0.5f);  // is little
@@ -234,8 +234,8 @@ bool CMotionToto::EventProcess(const Event &event)
 bool CMotionToto::EventFrame(const Event &event)
 {
     Math::Matrix*       mat;
-    Math::Vector        eye, lookat, dir, perp, nPos, aPos, pos, speed;
-    Math::Vector        vibLin, vibCir, dirSpeed, aAntenna;
+    glm::vec3           eye, lookat, dir, perp, nPos, aPos, pos, speed;
+    glm::vec3           vibLin, vibCir, dirSpeed, aAntenna;
     glm::vec2           dim;
     glm::ivec2          wDim;
     Gfx::ParticleType   type;
@@ -304,9 +304,9 @@ bool CMotionToto::EventFrame(const Event &event)
     eye    = m_engine->GetEyePt();
     lookat = m_engine->GetLookatPt();
 
-    vibLin   = Math::Vector(0.0f, 0.0f, 0.0f);
-    vibCir   = Math::Vector(0.0f, 0.0f, 0.0f);
-    aAntenna = Math::Vector(0.0f, 0.0f, 0.0f);
+    vibLin   = glm::vec3(0.0f, 0.0f, 0.0f);
+    vibCir   = glm::vec3(0.0f, 0.0f, 0.0f);
+    aAntenna = glm::vec3(0.0f, 0.0f, 0.0f);
     aAntenna.x += 30.0f*Math::PI/180.0f;
 
     // Calculates the new position.
@@ -717,7 +717,7 @@ bool CMotionToto::EventFrame(const Event &event)
             float t = Math::Mod(m_time, 3.5f);
             if ( t >= 2.2f || ( t >= 1.2f && t <= 1.4f ) )  // breathe?
             {
-                pos = Math::Vector(1.0f, 0.2f, 0.0f);
+                pos = glm::vec3(1.0f, 0.2f, 0.0f);
                 pos.z += (Math::Rand()-0.5f)*0.5f;
 
                 speed = pos;
@@ -735,7 +735,7 @@ bool CMotionToto::EventFrame(const Event &event)
         }
         else    // out of water?
         {
-            pos = Math::Vector(0.0f, -0.5f, 0.0f);
+            pos = glm::vec3(0.0f, -0.5f, 0.0f);
             pos.z += (Math::Rand()-0.5f)*0.5f;
 
             speed = pos;
@@ -759,7 +759,7 @@ bool CMotionToto::EventFrame(const Event &event)
             pos.y = (Math::Rand()-0.5f)*1.0f+3.5f;
             pos.z = (Math::Rand()-0.5f)*1.0f;
             pos   = Transform(*mat, pos);
-            speed = Math::Vector(0.0f, 0.0f, 0.0f);
+            speed = glm::vec3(0.0f, 0.0f, 0.0f);
             dim.x = (Math::Rand()*0.3f+0.3f);
             dim.y = dim.x;
             if ( m_actionType == MT_ERROR   )  type = Gfx::PARTIERROR;
@@ -783,7 +783,7 @@ bool CMotionToto::EventFrame(const Event &event)
             pos.y = (Math::Rand()-0.5f)*1.4f+3.5f;
             pos.z = (Math::Rand()-0.5f)*1.4f;
             pos   = Transform(*mat, pos);
-            speed = Math::Vector(0.0f, 0.0f, 0.0f);
+            speed = glm::vec3(0.0f, 0.0f, 0.0f);
             dim.x = (Math::Rand()*0.5f+0.5f);
             dim.y = dim.x;
             m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIERROR, 0.5f+Math::Rand()*0.5f, 0.0f, 1.0f, sheet);

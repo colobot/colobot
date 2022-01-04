@@ -85,7 +85,7 @@ void CMotionWorm::DeleteObject(bool bAll)
 
 // Creates a vehicle traveling any lands on the ground.
 
-void CMotionWorm::Create(Math::Vector pos, float angle, ObjectType type,
+void CMotionWorm::Create(glm::vec3 pos, float angle, ObjectType type,
                          float power, Gfx::COldModelManager* modelManager)
 {
     int         rank, i;
@@ -102,8 +102,8 @@ void CMotionWorm::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetRotationY(angle);
 
     // A vehicle must have a obligatory collision with a sphere of center (0, y, 0) (see GetCrashSphere).
-    m_object->AddCrashSphere(CrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 4.0f, SOUND_BOUM, 0.20f));
-    m_object->SetCameraCollisionSphere(Math::Sphere(Math::Vector(0.0f, 0.0f, 0.0f), 5.0f));
+    m_object->AddCrashSphere(CrashSphere(glm::vec3(0.0f, 0.0f, 0.0f), 4.0f, SOUND_BOUM, 0.20f));
+    m_object->SetCameraCollisionSphere(Math::Sphere(glm::vec3(0.0f, 0.0f, 0.0f), 5.0f));
 
     px = 1.0f+WORM_PART/2;
 
@@ -113,7 +113,7 @@ void CMotionWorm::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(1, rank);
     m_object->SetObjectParent(1, 0);
     modelManager->AddModelReference("worm1.mod", false, rank);
-    m_object->SetPartPosition(1, Math::Vector(px, 0.0f, 0.0f));
+    m_object->SetPartPosition(1, glm::vec3(px, 0.0f, 0.0f));
     px -= 1.0f;
 
     // Creates the body.
@@ -124,7 +124,7 @@ void CMotionWorm::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetObjectRank(2+i, rank);
         m_object->SetObjectParent(2+i, 0);
         modelManager->AddModelReference("worm2.mod", false, rank);
-        m_object->SetPartPosition(2+i, Math::Vector(px, 0.0f, 0.0f));
+        m_object->SetPartPosition(2+i, glm::vec3(px, 0.0f, 0.0f));
         px -= 1.0f;
     }
 
@@ -134,7 +134,7 @@ void CMotionWorm::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetObjectRank(2+WORM_PART, rank);
     m_object->SetObjectParent(2+WORM_PART, 0);
     modelManager->AddModelReference("worm3.mod", false, rank);
-    m_object->SetPartPosition(2+WORM_PART, Math::Vector(px, 0.0f, 0.0f));
+    m_object->SetPartPosition(2+WORM_PART, glm::vec3(px, 0.0f, 0.0f));
 
     m_object->CreateShadowCircle(0.0f, 1.0f, Gfx::ENG_SHADOW_WORM);
 
@@ -231,7 +231,7 @@ bool CMotionWorm::EventProcess(const Event &event)
 bool CMotionWorm::EventFrame(const Event &event)
 {
     Math::Matrix*   mat;
-    Math::Vector    pos, p, angle, speed;
+    glm::vec3    pos, p, angle, speed;
     glm::vec2     center, pp, dim;
     float       height[WORM_PART+2];
     float       floor, a, s, px, curve, phase, h, zoom, radius;
@@ -331,7 +331,7 @@ bool CMotionWorm::EventFrame(const Event &event)
             pos.y += -height[i];
             pos.x += (Math::Rand()-0.5f)*4.0f;
             pos.z += (Math::Rand()-0.5f)*4.0f;
-            speed = Math::Vector(0.0f, 0.0f, 0.0f);
+            speed = glm::vec3(0.0f, 0.0f, 0.0f);
             dim.x = Math::Rand()*2.0f+1.5f;
             dim.y = dim.x;
             m_particle->CreateParticle(pos, speed, dim, Gfx::PARTICRASH, 2.0f);

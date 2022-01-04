@@ -25,6 +25,8 @@
 
 #include "object/object_type.h"
 
+#include <glm/glm.hpp>
+
 namespace Gfx
 {
 class CEngine;
@@ -53,7 +55,7 @@ public:
     void    SetPhysics(CPhysics* physics);
 
     virtual void            DeleteObject(bool bAll=false) = 0;
-    virtual void            Create(Math::Vector pos, float angle, ObjectType type, float power, Gfx::COldModelManager* modelManager) = 0;
+    virtual void            Create(glm::vec3 pos, float angle, ObjectType type, float power, Gfx::COldModelManager* modelManager) = 0;
     virtual bool            EventProcess(const Event &event);
     virtual Error           SetAction(int action, float time=0.2f);
     virtual int             GetAction();
@@ -64,12 +66,12 @@ public:
     virtual bool            Write(CLevelParserLine* line);
     virtual bool            Read(CLevelParserLine* line);
 
-    virtual void            SetLinVibration(Math::Vector dir);
-    virtual Math::Vector    GetLinVibration();
-    virtual void            SetCirVibration(Math::Vector dir);
-    virtual Math::Vector    GetCirVibration();
-    virtual void            SetTilt(Math::Vector dir);
-    virtual Math::Vector    GetTilt();
+    virtual void            SetLinVibration(glm::vec3 dir);
+    virtual glm::vec3       GetLinVibration();
+    virtual void            SetCirVibration(glm::vec3 dir);
+    virtual glm::vec3       GetCirVibration();
+    virtual void            SetTilt(glm::vec3 dir);
+    virtual glm::vec3       GetTilt();
 
 protected:
     CApplication*       m_app;
@@ -87,7 +89,7 @@ protected:
     float               m_actionTime;
     float               m_progress;
 
-    Math::Vector        m_linVibration;     // linear vibration
-    Math::Vector        m_cirVibration;     // circular vibration
-    Math::Vector        m_inclinaison;      // tilt
+    glm::vec3           m_linVibration = { 0, 0, 0 };     // linear vibration
+    glm::vec3           m_cirVibration = { 0, 0, 0 };     // circular vibration
+    glm::vec3           m_inclinaison = { 0, 0, 0 };      // tilt
 };

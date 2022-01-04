@@ -46,7 +46,7 @@ void CMotionLevelController::DeleteObject(bool bAll)
 
 // Creates a LevelController motion
 
-void CMotionLevelController::Create(Math::Vector pos, float angle, ObjectType type,
+void CMotionLevelController::Create(glm::vec3 pos, float angle, ObjectType type,
                           float power, Gfx::COldModelManager*)
 {
     m_object->SetType(type);

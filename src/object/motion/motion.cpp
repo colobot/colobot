@@ -57,9 +57,9 @@ CMotion::CMotion(COldObject* object)
     m_actionTime = 0.0f;
     m_progress   = 0.0f;
 
-    m_linVibration  = Math::Vector(0.0f, 0.0f, 0.0f);
-    m_cirVibration  = Math::Vector(0.0f, 0.0f, 0.0f);
-    m_inclinaison   = Math::Vector(0.0f, 0.0f, 0.0f);
+    m_linVibration  = glm::vec3(0.0f, 0.0f, 0.0f);
+    m_cirVibration  = glm::vec3(0.0f, 0.0f, 0.0f);
+    m_inclinaison   = glm::vec3(0.0f, 0.0f, 0.0f);
 }
 
 // Object's destructor.
@@ -77,7 +77,7 @@ void CMotion::SetPhysics(CPhysics* physics)
 
 bool CMotion::EventProcess(const Event &event)
 {
-    Math::Vector    pos, dir;
+    glm::vec3    pos, dir;
     float       time;
 
     if ( m_object->GetType() != OBJECT_TOTO &&
@@ -181,36 +181,36 @@ bool CMotion::Read(CLevelParserLine* line)
 
 // Getes the linear vibration.
 
-void CMotion::SetLinVibration(Math::Vector dir)
+void CMotion::SetLinVibration(glm::vec3 dir)
 {
     m_linVibration = dir;
 }
 
-Math::Vector CMotion::GetLinVibration()
+glm::vec3 CMotion::GetLinVibration()
 {
     return m_linVibration;
 }
 
 // Getes the circular vibration.
 
-void CMotion::SetCirVibration(Math::Vector dir)
+void CMotion::SetCirVibration(glm::vec3 dir)
 {
     m_cirVibration = dir;
 }
 
-Math::Vector CMotion::GetCirVibration()
+glm::vec3 CMotion::GetCirVibration()
 {
     return m_cirVibration;
 }
 
 // Getes the tilt.
 
-void CMotion::SetTilt(Math::Vector dir)
+void CMotion::SetTilt(glm::vec3 dir)
 {
     m_inclinaison = dir;
 }
 
-Math::Vector CMotion::GetTilt()
+glm::vec3 CMotion::GetTilt()
 {
     return m_inclinaison;
 }
