@@ -72,7 +72,7 @@ CTaskManip::~CTaskManip()
 
 bool CTaskManip::EventProcess(const Event &event)
 {
-    Math::Vector    pos;
+    glm::vec3    pos;
     float       angle, a, g, cirSpeed, progress;
     int         i;
 
@@ -271,7 +271,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
     CObject      *front, *other;
     float        iAngle, dist, len;
     float        fDist, fAngle, oDist, oAngle, oHeight;
-    Math::Vector pos, fPos, oPos;
+    glm::vec3 pos, fPos, oPos;
 
     m_arm      = arm;
     m_height   = 0.0f;
@@ -290,7 +290,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
          m_arm != TMA_POWER  &&
          m_arm != TMA_GRAB   )  return ERR_WRONG_BOT;
 
-    m_physics->SetMotorSpeed(Math::Vector(0.0f, 0.0f, 0.0f));
+    m_physics->SetMotorSpeed(glm::vec3(0.0f, 0.0f, 0.0f));
 
     type = m_object->GetType();
     if ( type == OBJECT_BEE )  // bee?
@@ -306,7 +306,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
             m_object->SetCargo(other);  // takes the ball
             dynamic_cast<CTransportableObject&>(*other).SetTransporter(m_object);
             dynamic_cast<CTransportableObject&>(*other).SetTransporterPart(0);  // taken with the base
-            other->SetPosition(Math::Vector(0.0f, -3.0f, 0.0f));
+            other->SetPosition(glm::vec3(0.0f, -3.0f, 0.0f));
         }
         else
         {
@@ -447,12 +447,12 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
             }
             else
             {
-                if ( !IsFreeDeposeObject(Math::Vector(TAKE_DIST, 0.0f, 0.0f)) )  return ERR_MANIP_OCC;
+                if ( !IsFreeDeposeObject(glm::vec3(TAKE_DIST, 0.0f, 0.0f)) )  return ERR_MANIP_OCC;
             }
         }
         if ( m_arm == TMA_FBACK )
         {
-            if ( !IsFreeDeposeObject(Math::Vector(-TAKE_DIST, 0.0f, 0.0f)) )  return ERR_MANIP_OCC;
+            if ( !IsFreeDeposeObject(glm::vec3(-TAKE_DIST, 0.0f, 0.0f)) )  return ERR_MANIP_OCC;
         }
         if ( m_arm == TMA_POWER )
         {
@@ -514,7 +514,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 Error CTaskManip::IsEnded()
 {
     CObject*    cargo;
-    Math::Vector    pos;
+    glm::vec3    pos;
     float       angle, dist;
     int         i;
 
@@ -695,10 +695,10 @@ bool CTaskManip::Abort()
 
 // Seeks the object below to take (for bees).
 
-CObject* CTaskManip::SearchTakeUnderObject(Math::Vector &pos, float dLimit)
+CObject* CTaskManip::SearchTakeUnderObject(glm::vec3 &pos, float dLimit)
 {
     CObject    *pBest;
-    Math::Vector    iPos, oPos;
+    glm::vec3    iPos, oPos;
     float       min, distance;
 
     iPos   = m_object->GetPosition();
@@ -731,11 +731,11 @@ CObject* CTaskManip::SearchTakeUnderObject(Math::Vector &pos, float dLimit)
 
 // Seeks the object in front to take.
 
-CObject* CTaskManip::SearchTakeFrontObject(bool bAdvance, Math::Vector &pos,
+CObject* CTaskManip::SearchTakeFrontObject(bool bAdvance, glm::vec3 &pos,
                                            float &distance, float &angle)
 {
     CObject     *pBest;
-    Math::Vector    iPos, oPos;
+    glm::vec3    iPos, oPos;
     float       min, iAngle, bAngle, aLimit, dLimit, f;
 
     iPos   = m_object->GetPosition();
@@ -799,11 +799,11 @@ CObject* CTaskManip::SearchTakeFrontObject(bool bAdvance, Math::Vector &pos,
 
 // Seeks the object back to take.
 
-CObject* CTaskManip::SearchTakeBackObject(bool bAdvance, Math::Vector &pos,
+CObject* CTaskManip::SearchTakeBackObject(bool bAdvance, glm::vec3 &pos,
                                           float &distance, float &angle)
 {
     CObject     *pBest;
-    Math::Vector    iPos, oPos;
+    glm::vec3    iPos, oPos;
     float       min, iAngle, bAngle, aLimit, dLimit, f;
 
     iPos   = m_object->GetPosition();
@@ -866,7 +866,7 @@ CObject* CTaskManip::SearchTakeBackObject(bool bAdvance, Math::Vector &pos,
 
 // Seeks the robot or building on which it wants to put a battery or or other object.
 
-CObject* CTaskManip::SearchOtherObject(bool bAdvance, Math::Vector &pos,
+CObject* CTaskManip::SearchOtherObject(bool bAdvance, glm::vec3 &pos,
                                        float &distance, float &angle,
                                        float &height)
 {
@@ -880,7 +880,7 @@ CObject* CTaskManip::SearchOtherObject(bool bAdvance, Math::Vector &pos,
 
     if (m_object->GetCrashSphereCount() == 0) return nullptr;
 
-    Math::Vector iPos = m_object->GetFirstCrashSphere().sphere.pos;
+    glm::vec3 iPos = m_object->GetFirstCrashSphere().sphere.pos;
 
     iAngle = m_object->GetRotationY();
     iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
@@ -911,7 +911,7 @@ CObject* CTaskManip::SearchOtherObject(bool bAdvance, Math::Vector &pos,
         }
 
         mat = pObj->GetWorldMatrix(0);
-        Math::Vector oPos = Transform(*mat, dynamic_cast<CPoweredObject&>(*pObj).GetPowerPosition());
+        glm::vec3 oPos = Transform(*mat, dynamic_cast<CPoweredObject&>(*pObj).GetPowerPosition());
 
         oAngle = pObj->GetRotationY();
         if ( type == OBJECT_TOWER    ||
@@ -946,7 +946,7 @@ CObject* CTaskManip::SearchOtherObject(bool bAdvance, Math::Vector &pos,
             angle = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
             if ( Math::TestAngle(angle, iAngle-aLimit, iAngle+aLimit) )
             {
-                Math::Vector powerPos = dynamic_cast<CPoweredObject&>(*pObj).GetPowerPosition();
+                glm::vec3 powerPos = dynamic_cast<CPoweredObject&>(*pObj).GetPowerPosition();
                 height = powerPos.y;
                 pos = oPos;
                 return pObj;
@@ -977,7 +977,7 @@ bool CTaskManip::TransporterTakeObject()
             dynamic_cast<CTransportableObject&>(*cargo).SetTransporter(m_object);
             dynamic_cast<CTransportableObject&>(*cargo).SetTransporterPart(4);  // takes with the hand
 
-            cargo->SetPosition(Math::Vector(1.7f, -0.5f, 1.1f));
+            cargo->SetPosition(glm::vec3(1.7f, -0.5f, 1.1f));
             cargo->SetRotationY(0.1f);
             cargo->SetRotationX(0.0f);
             cargo->SetRotationZ(0.8f);
@@ -987,7 +987,7 @@ bool CTaskManip::TransporterTakeObject()
             dynamic_cast<CTransportableObject&>(*cargo).SetTransporter(m_object);
             dynamic_cast<CTransportableObject&>(*cargo).SetTransporterPart(2);  // takes with the right claw
 
-            Math::Vector pos = Math::Vector(1.1f, -1.0f, 1.0f);  // relative
+            glm::vec3 pos = glm::vec3(1.1f, -1.0f, 1.0f);  // relative
             cargo->SetPosition(pos);
             cargo->SetRotationX(0.0f);
             cargo->SetRotationY(0.0f);
@@ -998,7 +998,7 @@ bool CTaskManip::TransporterTakeObject()
             dynamic_cast<CTransportableObject&>(*cargo).SetTransporter(m_object);
             dynamic_cast<CTransportableObject&>(*cargo).SetTransporterPart(3);  // takes with the hand
 
-            Math::Vector pos = Math::Vector(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
+            glm::vec3 pos = glm::vec3(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
             cargo->SetPosition(pos);
             cargo->SetRotationX(0.0f);
             cargo->SetRotationZ(Math::PI/2.0f);
@@ -1010,7 +1010,7 @@ bool CTaskManip::TransporterTakeObject()
 
     if (m_arm == TMA_FFRONT)  // takes on the ground in front?
     {
-        Math::Vector pos;
+        glm::vec3 pos;
         float dist = 0.0f, angle = 0.0f;
         CObject* cargo = SearchTakeFrontObject(false, pos, dist, angle);
         if (cargo == nullptr)  return false;  // nothing to take?
@@ -1023,7 +1023,7 @@ bool CTaskManip::TransporterTakeObject()
             dynamic_cast<CTransportableObject&>(*cargo).SetTransporter(m_object);
             dynamic_cast<CTransportableObject&>(*cargo).SetTransporterPart(2);  // takes with the right claw
 
-            pos = Math::Vector(1.1f, -1.0f, 1.0f);  // relative
+            pos = glm::vec3(1.1f, -1.0f, 1.0f);  // relative
             cargo->SetPosition(pos);
             cargo->SetRotationX(0.0f);
             cargo->SetRotationY(0.0f);
@@ -1034,7 +1034,7 @@ bool CTaskManip::TransporterTakeObject()
             dynamic_cast<CTransportableObject&>(*cargo).SetTransporter(m_object);
             dynamic_cast<CTransportableObject&>(*cargo).SetTransporterPart(3);  // takes with the hand
 
-            pos = Math::Vector(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
+            pos = glm::vec3(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
             cargo->SetPosition(pos);
             cargo->SetRotationX(0.0f);
             cargo->SetRotationZ(Math::PI/2.0f);
@@ -1046,7 +1046,7 @@ bool CTaskManip::TransporterTakeObject()
 
     if (m_arm == TMA_FBACK)  // takes on the ground behind?
     {
-        Math::Vector pos;
+        glm::vec3 pos;
         float dist = 0.0f, angle = 0.0f;
         CObject* cargo = SearchTakeBackObject(false, pos, dist, angle);
         if (cargo == nullptr) return false;  // nothing to take?
@@ -1057,7 +1057,7 @@ bool CTaskManip::TransporterTakeObject()
         dynamic_cast<CTransportableObject&>(*cargo).SetTransporter(m_object);
         dynamic_cast<CTransportableObject&>(*cargo).SetTransporterPart(3);  // takes with the hand
 
-        pos = Math::Vector(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
+        pos = glm::vec3(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
         cargo->SetPosition(pos);
         cargo->SetRotationX(0.0f);
         cargo->SetRotationZ(Math::PI/2.0f);
@@ -1075,7 +1075,7 @@ bool CTaskManip::TransporterTakeObject()
 
         m_cargoType = cargo->GetType();
 
-        Math::Vector pos = Math::Vector(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
+        glm::vec3 pos = glm::vec3(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
         cargo->SetPosition(pos);
         cargo->SetRotationX(0.0f);
         cargo->SetRotationZ(Math::PI/2.0f);
@@ -1088,7 +1088,7 @@ bool CTaskManip::TransporterTakeObject()
 
     if (m_arm == TMA_OTHER)  // battery takes from friend?
     {
-        Math::Vector pos;
+        glm::vec3 pos;
         float dist = 0.0f, angle = 0.0f;
         CObject* other = SearchOtherObject(false, pos, dist, angle, m_height);
         if (other == nullptr)  return false;
@@ -1104,7 +1104,7 @@ bool CTaskManip::TransporterTakeObject()
         dynamic_cast<CTransportableObject&>(*cargo).SetTransporter(m_object);
         dynamic_cast<CTransportableObject&>(*cargo).SetTransporterPart(3);  // takes with the hand
 
-        pos = Math::Vector(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
+        pos = glm::vec3(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
         cargo->SetPosition(pos);
         cargo->SetRotationX(0.0f);
         cargo->SetRotationZ(Math::PI/2.0f);
@@ -1129,7 +1129,7 @@ bool CTaskManip::TransporterDeposeObject()
         m_cargoType = cargo->GetType();
 
         Math::Matrix* mat = cargo->GetWorldMatrix(0);
-        Math::Vector pos = Transform(*mat, Math::Vector(0.0f, 1.0f, 0.0f));
+        glm::vec3 pos = Transform(*mat, glm::vec3(0.0f, 1.0f, 0.0f));
         m_terrain->AdjustToFloor(pos);
         cargo->SetPosition(pos);
         cargo->SetRotationY(m_object->GetRotationY()+Math::PI/2.0f);
@@ -1150,7 +1150,7 @@ bool CTaskManip::TransporterDeposeObject()
         m_cargoType = cargo->GetType();
 
         Math::Matrix* mat = cargo->GetWorldMatrix(0);
-        Math::Vector pos = Transform(*mat, Math::Vector(0.0f, 1.0f, 0.0f));
+        glm::vec3 pos = Transform(*mat, glm::vec3(0.0f, 1.0f, 0.0f));
         m_terrain->AdjustToFloor(pos);
         cargo->SetPosition(pos);
         cargo->SetRotationY(m_object->GetRotationY()+Math::PI/2.0f);
@@ -1186,7 +1186,7 @@ bool CTaskManip::TransporterDeposeObject()
 
     if (m_arm == TMA_OTHER)  // deposits battery on friend?
     {
-        Math::Vector pos;
+        glm::vec3 pos;
         float angle = 0.0f, dist = 0.0f;
 
         CObject* other = SearchOtherObject(false, pos, dist, angle, m_height);
@@ -1219,10 +1219,10 @@ bool CTaskManip::TransporterDeposeObject()
 
 // Seeks if a location allows to deposit an object.
 
-bool CTaskManip::IsFreeDeposeObject(Math::Vector pos)
+bool CTaskManip::IsFreeDeposeObject(glm::vec3 pos)
 {
     Math::Matrix* mat = m_object->GetWorldMatrix(0);
-    Math::Vector iPos = Transform(*mat, pos);
+    glm::vec3 iPos = Transform(*mat, pos);
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {

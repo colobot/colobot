@@ -76,7 +76,7 @@ CTaskGoto::~CTaskGoto()
 
 bool CTaskGoto::EventProcess(const Event &event)
 {
-    Math::Vector    pos, goal;
+    glm::vec3    pos, goal;
     glm::vec2       rot, repulse;
     float           a, g, dist, linSpeed, cirSpeed, h, hh, factor, dir;
     Error           ret;
@@ -85,7 +85,7 @@ bool CTaskGoto::EventProcess(const Event &event)
 
     if (m_engine->GetDebugGoto())
     {
-        auto AdjustPoint = [&](Math::Vector p) -> Math::Vector
+        auto AdjustPoint = [&](glm::vec3 p) -> glm::vec3
         {
             m_terrain->AdjustToFloor(p);
             p.y += 2.0f;
@@ -543,9 +543,9 @@ bool CTaskGoto::EventProcess(const Event &event)
 
 // Sought a target for the worm.
 
-CObject* CTaskGoto::WormSearch(Math::Vector &impact)
+CObject* CTaskGoto::WormSearch(glm::vec3 &impact)
 {
-    Math::Vector iPos = m_object->GetPosition();
+    glm::vec3 iPos = m_object->GetPosition();
     float min = 1000000.0f;
 
     CObject* best = nullptr;
@@ -606,7 +606,7 @@ CObject* CTaskGoto::WormSearch(Math::Vector &impact)
 
         if (obj->GetCrashSphereCount() == 0) continue;
 
-        Math::Vector oPos = obj->GetFirstCrashSphere().sphere.pos;
+        glm::vec3 oPos = obj->GetFirstCrashSphere().sphere.pos;
         float distance = Math::DistanceProjected(oPos, iPos);
         if (distance < min)
         {
@@ -625,7 +625,7 @@ CObject* CTaskGoto::WormSearch(Math::Vector &impact)
 void CTaskGoto::WormFrame(float rTime)
 {
     CObject*    pObj;
-    Math::Vector    impact, pos;
+    glm::vec3    impact, pos;
     float       dist;
 
     m_wormLastTime += rTime;
@@ -652,10 +652,10 @@ void CTaskGoto::WormFrame(float rTime)
 // Assigns the goal was achieved.
 // "dist" is the distance that needs to go far to make a deposit or object.
 
-Error CTaskGoto::Start(Math::Vector goal, float altitude,
+Error CTaskGoto::Start(glm::vec3 goal, float altitude,
                        TaskGotoGoal goalMode, TaskGotoCrash crashMode)
 {
-    Math::Vector    pos;
+    glm::vec3    pos;
     CObject*    target;
     ObjectType  type;
     float       dist;
@@ -809,7 +809,7 @@ Error CTaskGoto::Start(Math::Vector goal, float altitude,
 
 Error CTaskGoto::IsEnded()
 {
-    Math::Vector    pos;
+    glm::vec3    pos;
     float       limit, angle = 0.0f, h, level;
     volatile float dist; //fix for issue #844
 
@@ -1080,7 +1080,7 @@ Error CTaskGoto::IsEnded()
 
 // Tries the object is the target position.
 
-CObject* CTaskGoto::SearchTarget(Math::Vector pos, float margin)
+CObject* CTaskGoto::SearchTarget(glm::vec3 pos, float margin)
 {
     //return CObjectManager::GetInstancePointer()->FindNearest(nullptr, pos, OBJECT_NULL, margin/g_unit);
 
@@ -1110,7 +1110,7 @@ CObject* CTaskGoto::SearchTarget(Math::Vector pos, float margin)
         if ( !pObj->GetActive() )  continue;
         if ( IsObjectBeingTransported(pObj) )  continue;  // object transtorted?
 
-        Math::Vector oPos = pObj->GetPosition();
+        glm::vec3 oPos = pObj->GetPosition();
         float dist = Math::DistanceProjected(pos, oPos);
 
         if ( dist <= margin && dist <= min )
@@ -1126,11 +1126,11 @@ CObject* CTaskGoto::SearchTarget(Math::Vector pos, float margin)
 // Adjusts the target as a function of the object.
 // Returns true if it is cargo laying on the ground, which can be approached from any site.
 
-bool CTaskGoto::AdjustTarget(CObject* pObj, Math::Vector &pos, float &distance)
+bool CTaskGoto::AdjustTarget(CObject* pObj, glm::vec3 &pos, float &distance)
 {
     ObjectType  type;
     Math::Matrix*   mat;
-    Math::Vector    goal;
+    glm::vec3    goal;
     float       dist, suppl;
 
     type = m_object->GetType();
@@ -1224,14 +1224,14 @@ bool CTaskGoto::AdjustTarget(CObject* pObj, Math::Vector &pos, float &distance)
 // If you are on an object produced by a building (ore produced by derrick),
 // changes the position by report the building.
 
-bool CTaskGoto::AdjustBuilding(Math::Vector &pos, float margin, float &distance)
+bool CTaskGoto::AdjustBuilding(glm::vec3 &pos, float margin, float &distance)
 {
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         if ( !obj->GetActive() )  continue;
         if (IsObjectBeingTransported(obj))  continue;
 
-        Math::Vector oPos;
+        glm::vec3 oPos;
         float suppl = 0.0f;
         if ( !GetHotPoint(obj, oPos, false, 0.0f, suppl) )  continue;
         float dist = Math::DistanceProjected(pos, oPos);
@@ -1247,13 +1247,13 @@ bool CTaskGoto::AdjustBuilding(Math::Vector &pos, float margin, float &distance)
 
 // Returns the item or product or pose is something on a building.
 
-bool CTaskGoto::GetHotPoint(CObject *pObj, Math::Vector &pos,
+bool CTaskGoto::GetHotPoint(CObject *pObj, glm::vec3 &pos,
                             bool bTake, float distance, float &suppl)
 {
     ObjectType  type;
     Math::Matrix*   mat;
 
-    pos = Math::Vector(0.0f, 0.0f, 0.0f);
+    pos = glm::vec3(0.0f, 0.0f, 0.0f);
     suppl = 0.0f;
     type = pObj->GetType();
 
@@ -1373,7 +1373,7 @@ bool CTaskGoto::GetHotPoint(CObject *pObj, Math::Vector &pos,
 
 // Seeks an object too close that he must flee.
 
-bool CTaskGoto::LeakSearch(Math::Vector &pos, float &delay)
+bool CTaskGoto::LeakSearch(glm::vec3 &pos, float &delay)
 {
     if (!m_physics->GetLand())  return false;  // in flight?
 
@@ -1436,7 +1436,7 @@ void CTaskGoto::ComputeRepulse(glm::vec2&dir)
     if ( iType == OBJECT_WORM || iType == OBJECT_CONTROLLER )  return;
 
     auto firstCrashSphere = m_object->GetFirstCrashSphere();
-    Math::Vector iPos = firstCrashSphere.sphere.pos;
+    glm::vec3 iPos = firstCrashSphere.sphere.pos;
     float iRadius = firstCrashSphere.sphere.radius;
 
     gDist = Math::Distance(iPos, m_goal);
@@ -1545,7 +1545,7 @@ void CTaskGoto::ComputeRepulse(glm::vec2&dir)
 
         for (const auto& crashSphere : pObj->GetAllCrashSpheres())
         {
-            Math::Vector oPos = crashSphere.sphere.pos;
+            glm::vec3 oPos = crashSphere.sphere.pos;
             float oRadius = crashSphere.sphere.radius;
 
             if ( oPos.y-oRadius > iPos.y+iRadius )  continue;
@@ -1580,7 +1580,7 @@ void CTaskGoto::ComputeRepulse(glm::vec2&dir)
 void CTaskGoto::ComputeFlyingRepulse(float &dir)
 {
     auto firstCrashSphere = m_object->GetFirstCrashSphere();
-    Math::Vector iPos = firstCrashSphere.sphere.pos;
+    glm::vec3 iPos = firstCrashSphere.sphere.pos;
     float iRadius = firstCrashSphere.sphere.radius;
 
     float add = 0.0f;
@@ -1598,7 +1598,7 @@ void CTaskGoto::ComputeFlyingRepulse(float &dir)
 
         for (const auto& crashSphere : pObj->GetAllCrashSpheres())
         {
-            Math::Vector oPos = crashSphere.sphere.pos;
+            glm::vec3 oPos = crashSphere.sphere.pos;
             float oRadius = crashSphere.sphere.radius;
 
             oRadius += iRadius+add;
@@ -1644,7 +1644,7 @@ int CTaskGoto::BeamShortcut()
 
 void CTaskGoto::BeamStart()
 {
-    Math::Vector    min, max;
+    glm::vec3    min, max;
 
     BitmapOpen();
     BitmapObject();
@@ -1694,7 +1694,7 @@ void CTaskGoto::BeamInit()
 // ERR_CONTINUE if not done yet
 // goalRadius: distance at which we must approach the goal
 
-Error CTaskGoto::BeamSearch(const Math::Vector &start, const Math::Vector &goal,
+Error CTaskGoto::BeamSearch(const glm::vec3 &start, const glm::vec3 &goal,
                             float goalRadius)
 {
     float     step, len;
@@ -1720,12 +1720,12 @@ Error CTaskGoto::BeamSearch(const Math::Vector &start, const Math::Vector &goal,
 // i        number of recursions made
 // nbIter   maximum number of iterations you have the right to make before temporarily interrupt
 
-Error CTaskGoto::BeamExplore(const Math::Vector &prevPos, const Math::Vector &curPos,
-                             const Math::Vector &goalPos, float goalRadius,
+Error CTaskGoto::BeamExplore(const glm::vec3 &prevPos, const glm::vec3 &curPos,
+                             const glm::vec3 &goalPos, float goalRadius,
                              float angle, int nbDiv, float step,
                              int i, int nbIter)
 {
-    Math::Vector    newPos;
+    glm::vec3    newPos;
     Error       ret;
     int         iDiv, iClear, iLar;
 
@@ -1813,11 +1813,11 @@ Error CTaskGoto::BeamExplore(const Math::Vector &prevPos, const Math::Vector &cu
 // Is a right "start-goal". Calculates the point located at the distance "step"
 // from the point "start" and an angle "angle" with the right.
 
-Math::Vector CTaskGoto::BeamPoint(const Math::Vector &startPoint,
-                               const Math::Vector &goalPoint,
+glm::vec3 CTaskGoto::BeamPoint(const glm::vec3 &startPoint,
+                               const glm::vec3 &goalPoint,
                                float angle, float step)
 {
-    Math::Vector    resPoint;
+    glm::vec3    resPoint;
     float       goalAngle;
 
     goalAngle = Math::RotateAngle(goalPoint.x-startPoint.x, goalPoint.z-startPoint.z);
@@ -1831,10 +1831,10 @@ Math::Vector CTaskGoto::BeamPoint(const Math::Vector &startPoint,
 
 // Tests if a path along a straight line is possible.
 
-bool CTaskGoto::BitmapTestLine(const Math::Vector &start, const Math::Vector &goal,
+bool CTaskGoto::BitmapTestLine(const glm::vec3 &start, const glm::vec3 &goal,
                                float stepAngle, bool bSecond)
 {
-    Math::Vector    pos, inc;
+    glm::vec3    pos, inc;
     float       dist, step;
     float       distNoB2;
     int         i, max, x, y;
@@ -1913,7 +1913,7 @@ void CTaskGoto::BitmapObject()
 
         for (const auto& crashSphere : pObj->GetAllCrashSpheres())
         {
-            Math::Vector oPos = crashSphere.sphere.pos;
+            glm::vec3 oPos = crashSphere.sphere.pos;
             float oRadius = crashSphere.sphere.radius;
 
             if ( m_object->Implements(ObjectInterfaceType::Flying) && m_altitude > 0.0f )  // flying?
@@ -1934,7 +1934,7 @@ void CTaskGoto::BitmapObject()
 
 // Adds a section of land in the bitmap.
 
-void CTaskGoto::BitmapTerrain(const Math::Vector &min, const Math::Vector &max)
+void CTaskGoto::BitmapTerrain(const glm::vec3 &min, const glm::vec3 &max)
 {
     int     minx, miny, maxx, maxy;
 
@@ -1951,7 +1951,7 @@ void CTaskGoto::BitmapTerrain(const Math::Vector &min, const Math::Vector &max)
 void CTaskGoto::BitmapTerrain(int minx, int miny, int maxx, int maxy)
 {
     ObjectType  type;
-    Math::Vector    p;
+    glm::vec3    p;
     float       aLimit, angle, h;
     int         x, y;
     bool        bAcceptWater, bFly;
@@ -2118,7 +2118,7 @@ bool CTaskGoto::BitmapClose()
 
 // Puts a circle in the bitmap.
 
-void CTaskGoto::BitmapSetCircle(const Math::Vector &pos, float radius)
+void CTaskGoto::BitmapSetCircle(const glm::vec3 &pos, float radius)
 {
     float   d, r;
     int     cx, cy, ix, iy;
@@ -2140,7 +2140,7 @@ void CTaskGoto::BitmapSetCircle(const Math::Vector &pos, float radius)
 
 // Removes a circle in the bitmap.
 //TODO this method is almost same as above one
-void CTaskGoto::BitmapClearCircle(const Math::Vector &pos, float radius)
+void CTaskGoto::BitmapClearCircle(const glm::vec3 &pos, float radius)
 {
     float   d, r;
     int     cx, cy, ix, iy;

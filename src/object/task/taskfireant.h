@@ -44,14 +44,14 @@ public:
 
     bool    EventProcess(const Event &event) override;
 
-    Error   Start(Math::Vector impact);
+    Error   Start(glm::vec3 impact);
     Error   IsEnded() override;
     bool    Abort() override;
 
 protected:
 
 protected:
-    Math::Vector    m_impact;
+    glm::vec3   m_impact = { 0, 0, 0 };
     TaskFireAnt m_phase = TFA_NULL;
     float       m_progress = 0.0f;
     float       m_speed = 0.0f;

@@ -97,7 +97,7 @@ Error CTaskAdvance::Start(float length)
 
 Error CTaskAdvance::IsEnded()
 {
-    Math::Vector    pos;
+    glm::vec3    pos;
     float       length;
 
     if ( m_engine->GetPause() )  return ERR_CONTINUE;

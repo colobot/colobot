@@ -53,7 +53,7 @@ CTaskFireAnt::~CTaskFireAnt()
 
 bool CTaskFireAnt::EventProcess(const Event &event)
 {
-    Math::Vector    dir, vib;
+    glm::vec3    dir, vib;
     float       a, g, cirSpeed;
 
     if ( m_engine->GetPause() )  return true;
@@ -86,9 +86,9 @@ bool CTaskFireAnt::EventProcess(const Event &event)
 
 // Assigns the goal was achieved.
 
-Error CTaskFireAnt::Start(Math::Vector impact)
+Error CTaskFireAnt::Start(glm::vec3 impact)
 {
-    Math::Vector    pos;
+    glm::vec3    pos;
     ObjectType  type;
 
     m_impact = impact;
@@ -102,7 +102,7 @@ Error CTaskFireAnt::Start(Math::Vector impact)
     // Insect on its back?
     if ( dynamic_cast<CBaseAlien&>(*m_object).GetFixed() )  return ERR_WRONG_BOT;
 
-    m_physics->SetMotorSpeed(Math::Vector(0.0f, 0.0f, 0.0f));
+    m_physics->SetMotorSpeed(glm::vec3(0.0f, 0.0f, 0.0f));
 
     pos = m_object->GetPosition();
     m_angle = Math::RotateAngle(m_impact.x-pos.x, pos.z-m_impact.z);  // CW !
@@ -123,7 +123,7 @@ Error CTaskFireAnt::Start(Math::Vector impact)
 Error CTaskFireAnt::IsEnded()
 {
     Math::Matrix*   mat;
-    Math::Vector    pos, speed;
+    glm::vec3    pos, speed;
     glm::vec2       dim;
     float       angle, dist;
     int         i, channel;
@@ -168,7 +168,7 @@ Error CTaskFireAnt::IsEnded()
 
             for ( i=0 ; i<20 ; i++ )
             {
-                pos = Math::Vector(-2.5f, -0.7f, 0.0f);
+                pos = glm::vec3(-2.5f, -0.7f, 0.0f);
                 mat = m_object->GetWorldMatrix(2);
                 pos = Math::Transform(*mat, pos);
                 dist = Math::Distance(pos, m_impact);

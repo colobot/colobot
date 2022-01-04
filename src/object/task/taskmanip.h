@@ -70,13 +70,13 @@ public:
 
 protected:
     void        InitAngle();
-    CObject*    SearchTakeUnderObject(Math::Vector &pos, float dLimit);
-    CObject*    SearchTakeFrontObject(bool bAdvance, Math::Vector &pos, float &distance, float &angle);
-    CObject*    SearchTakeBackObject(bool bAdvance, Math::Vector &pos, float &distance, float &angle);
-    CObject*    SearchOtherObject(bool bAdvance, Math::Vector &pos, float &distance, float &angle, float &height);
+    CObject*    SearchTakeUnderObject(glm::vec3 &pos, float dLimit);
+    CObject*    SearchTakeFrontObject(bool bAdvance, glm::vec3 &pos, float &distance, float &angle);
+    CObject*    SearchTakeBackObject(bool bAdvance, glm::vec3 &pos, float &distance, float &angle);
+    CObject*    SearchOtherObject(bool bAdvance, glm::vec3 &pos, float &distance, float &angle, float &height);
     bool        TransporterTakeObject();
     bool        TransporterDeposeObject();
-    bool        IsFreeDeposeObject(Math::Vector pos);
+    bool        IsFreeDeposeObject(glm::vec3 pos);
     void        SoundManip(float time, float amplitude=1.0f, float frequency=1.0f);
 
 protected:
@@ -97,7 +97,7 @@ protected:
     bool            m_bBee = false;
     float           m_angle = 0.0f;
     float           m_move = 0.0f;
-    Math::Vector        m_targetPos;
+    glm::vec3       m_targetPos = { 0, 0, 0 };
     float           m_timeLimit = 0.0f;
     ObjectType      m_cargoType = OBJECT_NULL;
 };

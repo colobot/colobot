@@ -86,7 +86,7 @@ CTaskBuild::~CTaskBuild()
 
 // Creates a building.
 
-void CTaskBuild::CreateBuilding(Math::Vector pos, float angle, bool trainer)
+void CTaskBuild::CreateBuilding(glm::vec3 pos, float angle, bool trainer)
 {
     ObjectCreateParams params;
     params.pos = pos;
@@ -126,7 +126,7 @@ void CTaskBuild::CreateBuilding(Math::Vector pos, float angle, bool trainer)
 void CTaskBuild::CreateLight()
 {
     Gfx::Color   color;
-    Math::Vector center, pos, dir;
+    glm::vec3 center, pos, dir;
     glm::vec2    c, p;
     float        angle;
     int          i;
@@ -204,7 +204,7 @@ void CTaskBuild::BlackLight()
 bool CTaskBuild::EventProcess(const Event &event)
 {
     Math::Matrix*       mat;
-    Math::Vector        pos, dir, speed, pv, pm, tilt;
+    glm::vec3        pos, dir, speed, pv, pm, tilt;
     glm::vec2           dim;
     float           a, g, cirSpeed, dist, linSpeed, diff;
 
@@ -324,7 +324,7 @@ bool CTaskBuild::EventProcess(const Event &event)
         dim.y = dim.x;
         m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIFIRE);
 
-        pos = Math::Vector(0.0f, 0.5f, 0.0f);
+        pos = glm::vec3(0.0f, 0.5f, 0.0f);
         switch(m_object->GetType())
         {
             case OBJECT_HUMAN:
@@ -376,7 +376,7 @@ bool CTaskBuild::EventProcess(const Event &event)
 
 Error CTaskBuild::Start(ObjectType type)
 {
-    Math::Vector    pos, speed, pv, pm;
+    glm::vec3    pos, speed, pv, pm;
     Error       err;
     float       iAngle, oAngle;
 
@@ -439,7 +439,7 @@ Error CTaskBuild::IsEnded()
 {
     CAuto*      automat;
     float       angle, dist, time, diff;
-    Math::Vector       pv,   pm,   tilt;
+    glm::vec3       pv,   pm,   tilt;
 
     if ( m_engine->GetPause() )  return ERR_CONTINUE;
     if ( m_bError )  return ERR_STOP;
@@ -515,7 +515,7 @@ Error CTaskBuild::IsEnded()
         if (m_object->GetType() == OBJECT_HUMAN)
         {
             m_object->SetObjectParent(14, 4);
-            m_object->SetPartPosition(14, Math::Vector(0.6f, 0.1f, 0.3f));
+            m_object->SetPartPosition(14, glm::vec3(0.6f, 0.1f, 0.3f));
             m_object->SetPartRotationZ(14, 0.0f);
         }
         if (m_object->GetType() == OBJECT_MOBILEfb ||
@@ -563,7 +563,7 @@ Error CTaskBuild::IsEnded()
         m_metal = nullptr;
 
         m_building->SetScale(1.0f);
-        m_building->SetCirVibration(Math::Vector(0.0f, 0.0f, 0.0f));
+        m_building->SetCirVibration(glm::vec3(0.0f, 0.0f, 0.0f));
         m_building->SetLock(false);  // building usable
         m_main->CreateShortcuts();
         m_main->DisplayError(INFO_BUILD, m_buildingPos, 10.0f, 50.0f);
@@ -588,7 +588,7 @@ Error CTaskBuild::IsEnded()
         if (m_object->GetType() == OBJECT_HUMAN)
         {
             m_object->SetObjectParent(14, 0);
-            m_object->SetPartPosition(14, Math::Vector(-1.5f, 0.3f, -1.35f));
+            m_object->SetPartPosition(14, glm::vec3(-1.5f, 0.3f, -1.35f));
             m_object->SetPartRotationZ(14, Math::PI);
         }
         else
@@ -628,7 +628,7 @@ Error CTaskBuild::IsEnded()
 
         // Place gun back
         m_object->SetObjectParent(14, 0);
-        m_object->SetPartPosition(14, Math::Vector(-1.5f, 0.3f, -1.35f));
+        m_object->SetPartPosition(14, glm::vec3(-1.5f, 0.3f, -1.35f));
         m_object->SetPartRotationZ(14, Math::PI);
 
         m_physics->SetMotorSpeedX(0.0f);
@@ -664,7 +664,7 @@ bool CTaskBuild::Abort()
 Error CTaskBuild::FlatFloor()
 {
     ObjectType  type;
-    Math::Vector    center, pos, bPos;
+    glm::vec3    center, pos, bPos;
     glm::vec2       c, p;
     float       radius, max, bRadius = 0.0f, angle, dist;
     bool        bLittleFlat, bBase;
@@ -713,7 +713,7 @@ Error CTaskBuild::FlatFloor()
         type = pObj->GetType();
         if ( type == OBJECT_BASE )
         {
-            Math::Vector oPos = pObj->GetPosition();
+            glm::vec3 oPos = pObj->GetPosition();
             dist = Math::Distance(center, oPos)-80.0f;
             if ( dist < max )
             {
@@ -727,7 +727,7 @@ Error CTaskBuild::FlatFloor()
         {
             for (const auto& crashSphere : pObj->GetAllCrashSpheres())
             {
-                Math::Vector oPos = crashSphere.sphere.pos;
+                glm::vec3 oPos = crashSphere.sphere.pos;
                 float oRadius = crashSphere.sphere.radius;
 
                 dist = Math::Distance(center, oPos)-oRadius;
@@ -779,7 +779,7 @@ Error CTaskBuild::FlatFloor()
         {
             for (const auto& crashSphere : pObj->GetAllCrashSpheres())
             {
-                Math::Vector oPos = crashSphere.sphere.pos;
+                glm::vec3 oPos = crashSphere.sphere.pos;
                 float oRadius = crashSphere.sphere.radius;
 
                 dist = Math::Distance(center, oPos)-oRadius;
@@ -808,7 +808,7 @@ CObject* CTaskBuild::SearchMetalObject(float &angle, float dMin, float dMax,
                                        float aLimit, Error &err)
 {
     CObject     *pBest;
-    Math::Vector    iPos, oPos;
+    glm::vec3    iPos, oPos;
     ObjectType  type;
     float       min, iAngle, a, aa, aBest, distance, magic;
     bool        bMetal;
@@ -870,7 +870,7 @@ CObject* CTaskBuild::SearchMetalObject(float &angle, float dMin, float dMax,
 
 // Destroys all the close marks.
 
-void CTaskBuild::DeleteMark(Math::Vector pos, float radius)
+void CTaskBuild::DeleteMark(glm::vec3 pos, float radius)
 {
     std::vector<CObject*> objectsToDelete;
 
@@ -885,7 +885,7 @@ void CTaskBuild::DeleteMark(Math::Vector pos, float radius)
              type != OBJECT_MARKKEYd    &&
              type != OBJECT_MARKPOWER   )  continue;
 
-        Math::Vector oPos = obj->GetPosition();
+        glm::vec3 oPos = obj->GetPosition();
         float distance = Math::Distance(oPos, pos);
         if ( distance <= radius )
         {

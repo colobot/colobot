@@ -64,7 +64,7 @@ bool CTaskFire::EventProcess(const Event &event)
 {
     CPhysics*   physics;
     Math::Matrix*   mat;
-    Math::Vector    pos, speed, dir, vib;
+    glm::vec3    pos, speed, dir, vib;
     ObjectType  type;
     glm::vec2   dim;
     float       energy, fire;
@@ -100,10 +100,10 @@ bool CTaskFire::EventProcess(const Event &event)
 
             for ( i=0 ; i<6 ; i++ )
             {
-                pos = Math::Vector(0.0f, 2.5f, 0.0f);
+                pos = glm::vec3(0.0f, 2.5f, 0.0f);
                 pos = Math::Transform(*mat, pos);
 
-                speed = Math::Vector(200.0f, 0.0f, 0.0f);
+                speed = glm::vec3(200.0f, 0.0f, 0.0f);
 
                 physics = m_object->GetPhysics();
                 if ( physics != nullptr )
@@ -130,12 +130,12 @@ bool CTaskFire::EventProcess(const Event &event)
 
             for ( i=0 ; i<4 ; i++ )
             {
-                pos = Math::Vector(4.0f, 0.0f, 0.0f);
+                pos = glm::vec3(4.0f, 0.0f, 0.0f);
                 pos.y += (rand()%3-1)*1.5f;
                 pos.z += (rand()%3-1)*1.5f;
                 pos = Math::Transform(*mat, pos);
 
-                speed = Math::Vector(200.0f, 0.0f, 0.0f);
+                speed = glm::vec3(200.0f, 0.0f, 0.0f);
                 speed.x += (Math::Rand()-0.5f)*6.0f;
                 speed.y += (Math::Rand()-0.5f)*12.0f;
                 speed.z += (Math::Rand()-0.5f)*12.0f;
@@ -148,7 +148,7 @@ bool CTaskFire::EventProcess(const Event &event)
                                                    2.0f, 200.0f, 0.5f, 1.0f);
                 m_particle->SetObjectFather(channel, m_object);
 
-                speed = Math::Vector(5.0f, 0.0f, 0.0f);
+                speed = glm::vec3(5.0f, 0.0f, 0.0f);
                 speed.x += (Math::Rand()-0.5f)*1.0f;
                 speed.y += (Math::Rand()-0.5f)*2.0f;
                 speed.z += (Math::Rand()-0.5f)*2.0f;
@@ -178,17 +178,17 @@ bool CTaskFire::EventProcess(const Event &event)
             {
                 if ( type == OBJECT_MOBILErc )
                 {
-                    pos = Math::Vector(0.0f, 0.0f, 0.0f);
+                    pos = glm::vec3(0.0f, 0.0f, 0.0f);
                 }
                 else
                 {
-                    pos = Math::Vector(3.0f, 1.0f, 0.0f);
+                    pos = glm::vec3(3.0f, 1.0f, 0.0f);
                 }
                 pos.y += (Math::Rand()-0.5f)*1.0f;
                 pos.z += (Math::Rand()-0.5f)*1.0f;
                 pos = Math::Transform(*mat, pos);
 
-                speed = Math::Vector(200.0f, 0.0f, 0.0f);
+                speed = glm::vec3(200.0f, 0.0f, 0.0f);
 
                 physics = m_object->GetPhysics();
                 if ( physics != nullptr )
@@ -212,12 +212,12 @@ bool CTaskFire::EventProcess(const Event &event)
             if ( type != OBJECT_MOBILErc &&
                  m_progress > 0.3f )
             {
-                pos = Math::Vector(-1.0f, 1.0f, 0.0f);
+                pos = glm::vec3(-1.0f, 1.0f, 0.0f);
                 pos.y += (Math::Rand()-0.5f)*0.4f;
                 pos.z += (Math::Rand()-0.5f)*0.4f;
                 pos = Math::Transform(*mat, pos);
 
-                speed = Math::Vector(-4.0f, 0.0f, 0.0f);
+                speed = glm::vec3(-4.0f, 0.0f, 0.0f);
                 speed.x += (Math::Rand()-0.5f)*2.0f;
                 speed.y += (Math::Rand()-0.2f)*4.0f;
                 speed.z += (Math::Rand()-0.5f)*4.0f;
@@ -232,7 +232,7 @@ bool CTaskFire::EventProcess(const Event &event)
             }
         }
 
-        dir = Math::Vector(0.0f, 0.0f, 0.0f);
+        dir = glm::vec3(0.0f, 0.0f, 0.0f);
         if ( m_progress < 0.1f )
         {
             dir.z = (Math::PI*0.04f)*(m_progress*10.0f);
@@ -272,7 +272,7 @@ bool CTaskFire::EventProcess(const Event &event)
 
 Error CTaskFire::Start(float delay)
 {
-    Math::Vector    pos, goal, speed;
+    glm::vec3    pos, goal, speed;
     float       energy, fire;
     ObjectType  type;
 
@@ -373,9 +373,9 @@ Error CTaskFire::IsEnded()
 
 bool CTaskFire::Abort()
 {
-    m_object->SetTilt(Math::Vector(0.0f, 0.0f, 0.0f));
-    m_object->SetCirVibration(Math::Vector(0.0f, 0.0f, 0.0f));
-    m_object->SetLinVibration(Math::Vector(0.0f, 0.0f, 0.0f));
+    m_object->SetTilt(glm::vec3(0.0f, 0.0f, 0.0f));
+    m_object->SetCirVibration(glm::vec3(0.0f, 0.0f, 0.0f));
+    m_object->SetLinVibration(glm::vec3(0.0f, 0.0f, 0.0f));
 
     if ( m_soundChannel != -1 )
     {

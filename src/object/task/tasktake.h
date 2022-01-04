@@ -60,7 +60,7 @@ protected:
     CObject*    SearchFriendObject(float &angle, float dLimit, float aLimit);
     bool        TransporterTakeObject();
     bool        TransporterDeposeObject();
-    bool        IsFreeDeposeObject(Math::Vector pos);
+    bool        IsFreeDeposeObject(glm::vec3 pos);
 
 protected:
     TaskTakeOrder   m_order = TTO_TAKE;

@@ -60,7 +60,7 @@ protected:
     float           m_delay = 0.0f;
     float           m_time = 0.0f;
     float           m_lastParticle = 0.0f;
-    Math::Vector    m_supportPos;
+    glm::vec3       m_supportPos = { 0, 0, 0 };
 
     float           m_timeUp = 0.0f;
     float           m_oldAngle = 0.0f;

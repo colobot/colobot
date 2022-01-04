@@ -70,7 +70,7 @@ bool CTaskTerraform::EventProcess(const Event &event)
 {
     CObject*    power;
     Math::Matrix*   mat;
-    Math::Vector    pos, dir, speed;
+    glm::vec3    pos, dir, speed;
     glm::vec2       dim;
     float       energy;
 
@@ -148,7 +148,7 @@ bool CTaskTerraform::EventProcess(const Event &event)
         if ( m_phase == TTP_CHARGE )
         {
             // Battery.
-            pos = Math::Vector(-6.0f, 5.5f+2.0f*m_progress, 0.0f);
+            pos = glm::vec3(-6.0f, 5.5f+2.0f*m_progress, 0.0f);
             pos.x += (Math::Rand()-0.5f)*1.0f;
             pos.z += (Math::Rand()-0.5f)*1.0f;
             pos   = Math::Transform(*mat, pos);
@@ -163,7 +163,7 @@ bool CTaskTerraform::EventProcess(const Event &event)
         if ( m_phase != TTP_CHARGE )
         {
             // Left grid.
-            pos = Math::Vector(-1.0f, 5.8f, 3.5f);
+            pos = glm::vec3(-1.0f, 5.8f, 3.5f);
             pos.x += (Math::Rand()-0.5f)*1.0f;
             pos.z += (Math::Rand()-0.5f)*1.0f;
             pos   = Math::Transform(*mat, pos);
@@ -177,7 +177,7 @@ bool CTaskTerraform::EventProcess(const Event &event)
             m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISMOKE1, 3.0f);
 
             // Right grid.
-            pos = Math::Vector(-1.0f, 5.8f, -3.5f);
+            pos = glm::vec3(-1.0f, 5.8f, -3.5f);
             pos.x += (Math::Rand()-0.5f)*1.0f;
             pos.z += (Math::Rand()-0.5f)*1.0f;
             pos   = Math::Transform(*mat, pos);
@@ -202,7 +202,7 @@ Error CTaskTerraform::Start()
 {
     CObject*    power;
     Math::Matrix*   mat;
-    Math::Vector    pos, speed;
+    glm::vec3    pos, speed;
     float       energy;
 
     ObjectType  type;
@@ -223,7 +223,7 @@ Error CTaskTerraform::Start()
          speed.z != 0.0f )  return ERR_MANIP_MOTOR;
 
     mat = m_object->GetWorldMatrix(0);
-    pos = Math::Vector(9.0f, 0.0f, 0.0f);
+    pos = glm::vec3(9.0f, 0.0f, 0.0f);
     pos = Math::Transform(*mat, pos);  // battery position
     m_terraPos = pos;
 
@@ -243,7 +243,7 @@ Error CTaskTerraform::Start()
 Error CTaskTerraform::IsEnded()
 {
     CObject*    power;
-    Math::Vector    pos, speed;
+    glm::vec3    pos, speed;
     glm::vec2       dim;
     float       dist, duration;
     int         i, max;
@@ -266,7 +266,7 @@ Error CTaskTerraform::IsEnded()
     {
         Terraform();  // changes the terrain.
 
-        m_object->SetCirVibration(Math::Vector(0.0f, 0.0f, 0.0f));
+        m_object->SetCirVibration(glm::vec3(0.0f, 0.0f, 0.0f));
         m_object->SetScale(1.0f);
 
         power = m_object->GetPower();
@@ -283,7 +283,7 @@ Error CTaskTerraform::IsEnded()
             pos.y = m_terraPos.y;
             m_terrain->AdjustToFloor(pos);
             dist = Math::Distance(pos, m_terraPos);
-            speed = Math::Vector(0.0f, 0.0f, 0.0f);
+            speed = glm::vec3(0.0f, 0.0f, 0.0f);
             dim.x = 2.0f+(40.0f-dist)/(1.0f+Math::Rand()*4.0f);
             dim.y = dim.x;
             m_particle->CreateParticle(pos, speed, dim, Gfx::PARTICRASH, 2.0f);
@@ -330,9 +330,9 @@ bool CTaskTerraform::Abort()
         m_soundChannel = -1;
     }
 
-    m_object->SetPartPosition(2, Math::Vector(9.0f, 4.0f, 0.0f));
-    m_object->SetTilt(Math::Vector(0.0f, 0.0f, 0.0f));
-    m_object->SetCirVibration(Math::Vector(0.0f, 0.0f, 0.0f));
+    m_object->SetPartPosition(2, glm::vec3(9.0f, 4.0f, 0.0f));
+    m_object->SetTilt(glm::vec3(0.0f, 0.0f, 0.0f));
+    m_object->SetCirVibration(glm::vec3(0.0f, 0.0f, 0.0f));
     m_object->SetScale(1.0f);
 
     power = m_object->GetPower();

@@ -82,42 +82,42 @@ public:
 
     bool        EventProcess(const Event &event) override;
 
-    Error       Start(Math::Vector goal, float altitude, TaskGotoGoal goalMode, TaskGotoCrash crashMode);
+    Error       Start(glm::vec3 goal, float altitude, TaskGotoGoal goalMode, TaskGotoCrash crashMode);
     Error       IsEnded() override;
 
 protected:
-    CObject*    WormSearch(Math::Vector &impact);
+    CObject*    WormSearch(glm::vec3 &impact);
     void        WormFrame(float rTime);
-    CObject*    SearchTarget(Math::Vector pos, float margin);
-    bool        AdjustTarget(CObject* pObj, Math::Vector &pos, float &distance);
-    bool        AdjustBuilding(Math::Vector &pos, float margin, float &distance);
-    bool        GetHotPoint(CObject *pObj, Math::Vector &pos, bool bTake, float distance, float &suppl);
-    bool        LeakSearch(Math::Vector &pos, float &delay);
+    CObject*    SearchTarget(glm::vec3 pos, float margin);
+    bool        AdjustTarget(CObject* pObj, glm::vec3 &pos, float &distance);
+    bool        AdjustBuilding(glm::vec3 &pos, float margin, float &distance);
+    bool        GetHotPoint(CObject *pObj, glm::vec3 &pos, bool bTake, float distance, float &suppl);
+    bool        LeakSearch(glm::vec3 &pos, float &delay);
     void        ComputeRepulse(glm::vec2& dir);
     void        ComputeFlyingRepulse(float &dir);
 
     int         BeamShortcut();
     void        BeamStart();
     void        BeamInit();
-    Error       BeamSearch(const Math::Vector &start, const Math::Vector &goal, float goalRadius);
-    Error       BeamExplore(const Math::Vector &prevPos, const Math::Vector &curPos, const Math::Vector &goalPos, float goalRadius, float angle, int nbDiv, float step, int i, int nbIter);
-    Math::Vector    BeamPoint(const Math::Vector &startPoint, const Math::Vector &goalPoint, float angle, float step);
+    Error       BeamSearch(const glm::vec3 &start, const glm::vec3 &goal, float goalRadius);
+    Error       BeamExplore(const glm::vec3 &prevPos, const glm::vec3 &curPos, const glm::vec3 &goalPos, float goalRadius, float angle, int nbDiv, float step, int i, int nbIter);
+    glm::vec3   BeamPoint(const glm::vec3 &startPoint, const glm::vec3 &goalPoint, float angle, float step);
 
-    bool        BitmapTestLine(const Math::Vector &start, const Math::Vector &goal, float stepAngle, bool bSecond);
+    bool        BitmapTestLine(const glm::vec3 &start, const glm::vec3 &goal, float stepAngle, bool bSecond);
     void        BitmapObject();
-    void        BitmapTerrain(const Math::Vector &min, const Math::Vector &max);
+    void        BitmapTerrain(const glm::vec3 &min, const glm::vec3 &max);
     void        BitmapTerrain(int minx, int miny, int maxx, int maxy);
     bool        BitmapOpen();
     bool        BitmapClose();
-    void        BitmapSetCircle(const Math::Vector &pos, float radius);
-    void        BitmapClearCircle(const Math::Vector &pos, float radius);
+    void        BitmapSetCircle(const glm::vec3 &pos, float radius);
+    void        BitmapClearCircle(const glm::vec3 &pos, float radius);
     void        BitmapSetDot(int rank, int x, int y);
     void        BitmapClearDot(int rank, int x, int y);
     bool        BitmapTestDot(int rank, int x, int y);
 
 protected:
-    Math::Vector        m_goal;
-    Math::Vector        m_goalObject;
+    glm::vec3        m_goal = { 0, 0, 0 };
+    glm::vec3        m_goalObject = { 0, 0, 0 };
     float           m_angle = 0.0f;
     float           m_altitude = 0.0f;
     TaskGotoCrash   m_crashMode = TGC_DEFAULT;
@@ -128,7 +128,7 @@ protected:
     bool            m_bTake = false;
     float           m_stopLength = 0.0f;   // braking distance
     float           m_time = 0.0f;
-    Math::Vector        m_pos;
+    glm::vec3       m_pos = { 0, 0, 0 };
     bool            m_bWorm = false;
     bool            m_bApprox = false;
     float           m_wormLastTime = 0.0f;
@@ -143,18 +143,18 @@ protected:
     int             m_bmMaxX = 0, m_bmMaxY = 0;
     int             m_bmTotal = 0;      // number of points in m_bmPoints
     int             m_bmIndex = 0;      // index in m_bmPoints
-    Math::Vector        m_bmPoints[MAXPOINTS+2];
+    glm::vec3       m_bmPoints[MAXPOINTS+2];
     signed char     m_bmIter[MAXPOINTS+2] = {};
     int             m_bmIterCounter = 0;
     CObject*        m_bmCargoObject = nullptr;
     float           m_bmFinalMove = 0.0f;  // final advance distance
     float           m_bmFinalDist = 0.0f;  // effective distance to advance
-    Math::Vector        m_bmFinalPos;   // initial position before advance
+    glm::vec3       m_bmFinalPos = { 0, 0, 0 };   // initial position before advance
     float           m_bmTimeLimit = 0.0f;
     int             m_bmStep = 0;
-    Math::Vector        m_bmWatchDogPos;
+    glm::vec3       m_bmWatchDogPos = { 0, 0, 0 };
     float           m_bmWatchDogTime = 0.0f;
-    Math::Vector        m_leakPos;      // initial position leak
+    glm::vec3       m_leakPos = { 0, 0, 0 };      // initial position leak
     float           m_leakDelay = 0.0f;
     float           m_leakTime = 0.0f;
     bool            m_bLeakRecede = false;

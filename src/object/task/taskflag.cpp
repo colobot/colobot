@@ -88,7 +88,7 @@ bool CTaskFlag::EventProcess(const Event &event)
 
 Error CTaskFlag::Start(TaskFlagOrder order, int rank)
 {
-    Math::Vector    pos, speed;
+    glm::vec3    pos, speed;
     Error       err;
 
     m_order = order;
@@ -195,7 +195,7 @@ bool CTaskFlag::Abort()
 
 // Returns the closest object to a given position.
 
-CObject* CTaskFlag::SearchNearest(Math::Vector pos, ObjectType type)
+CObject* CTaskFlag::SearchNearest(glm::vec3 pos, ObjectType type)
 {
     std::vector<ObjectType> types;
     if(type == OBJECT_NULL)
@@ -249,16 +249,16 @@ Error CTaskFlag::CreateFlag(int rank)
     };
 
     Math::Matrix* mat = m_object->GetWorldMatrix(0);
-    Math::Vector pos;
+    glm::vec3 pos;
     switch ( m_object->GetType() )
     {
         case OBJECT_HUMAN:
         case OBJECT_TECH:
-            pos = Transform(*mat, Math::Vector(4.0f, 0.0f, 0.0f));
+            pos = Transform(*mat, glm::vec3(4.0f, 0.0f, 0.0f));
             break;
 
         default:
-            pos = Transform(*mat, Math::Vector(6.0f, 0.0f, 0.0f));
+            pos = Transform(*mat, glm::vec3(6.0f, 0.0f, 0.0f));
             break;
     }
 
@@ -293,7 +293,7 @@ Error CTaskFlag::CreateFlag(int rank)
 Error CTaskFlag::DeleteFlag()
 {
     CObject*     pObj;
-    Math::Vector iPos, oPos;
+    glm::vec3 iPos, oPos;
     float        iAngle, angle, aLimit, dist;
 
     iPos = m_object->GetPosition();

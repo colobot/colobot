@@ -51,7 +51,7 @@ public:
 protected:
     Error       CreateFlag(int rank);
     Error       DeleteFlag();
-    CObject*    SearchNearest(Math::Vector pos, ObjectType type);
+    CObject*    SearchNearest(glm::vec3 pos, ObjectType type);
     int         CountObject(ObjectType type);
 
 protected:

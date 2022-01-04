@@ -68,7 +68,7 @@ public:
 
 protected:
     Error       Stop();
-    bool        CreateLight(Math::Vector pos);
+    bool        CreateLight(glm::vec3 pos);
     void        IncreaseShield();
     float       GetRadius();
 
@@ -84,7 +84,7 @@ protected:
     float           m_lastIncrease = 0.0f;
     float           m_energyUsed = 0.0f;
     bool            m_bError = false;
-    Math::Vector    m_shieldPos;
+    glm::vec3       m_shieldPos = { 0, 0, 0 };
     int             m_rankSphere = 0;
     int             m_soundChannel = 0;
     int             m_effectLight = 0;

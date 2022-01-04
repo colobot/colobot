@@ -42,7 +42,7 @@ protected:
     float       m_advanceLength = 0.0f;
     float       m_direction = 0.0f;
     float       m_timeLimit = 0.0f;
-    Math::Vector    m_startPos;
+    glm::vec3   m_startPos = { 0, 0, 0 };
     float       m_lastDist = 0.0f;
     float       m_fixTime = 0.0f;
     bool        m_bError = false;

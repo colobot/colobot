@@ -62,7 +62,7 @@ CTaskRecover::~CTaskRecover()
 
 bool CTaskRecover::EventProcess(const Event &event)
 {
-    Math::Vector    pos, speed;
+    glm::vec3    pos, speed;
     glm::vec2       dim;
     float       a, g, cirSpeed, angle, energy, dist, linSpeed;
 
@@ -198,7 +198,7 @@ Error CTaskRecover::Start()
     if ( energy < ENERGY_RECOVER+0.05f )  return ERR_RECOVER_ENERGY;
 
     Math::Matrix* mat = m_object->GetWorldMatrix(0);
-    Math::Vector pos = Math::Vector(RECOVER_DIST, 3.3f, 0.0f);
+    glm::vec3 pos = glm::vec3(RECOVER_DIST, 3.3f, 0.0f);
     pos = Transform(*mat, pos);  // position in front
     m_recoverPos = pos;
 
@@ -206,8 +206,8 @@ Error CTaskRecover::Start()
     if ( m_ruin == nullptr )  return ERR_RECOVER_NULL;
     m_ruin->SetLock(true);  // ruin no longer usable
 
-    Math::Vector iPos = m_object->GetPosition();
-    Math::Vector oPos = m_ruin->GetPosition();
+    glm::vec3 iPos = m_object->GetPosition();
+    glm::vec3 oPos = m_ruin->GetPosition();
     m_angle = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
 
     m_metal = nullptr;
@@ -229,7 +229,7 @@ Error CTaskRecover::Start()
 Error CTaskRecover::IsEnded()
 {
     Math::Matrix*   mat;
-    Math::Vector    pos, speed, goal;
+    glm::vec3    pos, speed, goal;
     glm::vec2       dim;
     float       angle, dist, time;
     int         i;
@@ -273,7 +273,7 @@ Error CTaskRecover::IsEnded()
             m_physics->SetMotorSpeedX(0.0f);
 
             mat = m_object->GetWorldMatrix(0);
-            pos = Math::Vector(RECOVER_DIST, 3.3f, 0.0f);
+            pos = glm::vec3(RECOVER_DIST, 3.3f, 0.0f);
             pos = Transform(*mat, pos);  // position in front
             m_recoverPos = pos;
 
@@ -309,9 +309,9 @@ Error CTaskRecover::IsEnded()
         m_metal->SetScale(0.0f);
 
         mat = m_object->GetWorldMatrix(0);
-        pos = Math::Vector(RECOVER_DIST, 3.1f, 3.9f);
+        pos = glm::vec3(RECOVER_DIST, 3.1f, 3.9f);
         pos = Transform(*mat, pos);
-        goal = Math::Vector(RECOVER_DIST, 3.1f, -3.9f);
+        goal = glm::vec3(RECOVER_DIST, 3.1f, -3.9f);
         goal = Transform(*mat, goal);
         m_particle->CreateRay(pos, goal, Gfx::PARTIRAY2,
                               { 2.0f, 2.0f }, 8.0f);

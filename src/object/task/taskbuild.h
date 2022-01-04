@@ -61,11 +61,11 @@ public:
 
 protected:
     Error       FlatFloor();
-    void        CreateBuilding(Math::Vector pos, float angle, bool trainer);
+    void        CreateBuilding(glm::vec3 pos, float angle, bool trainer);
     void        CreateLight();
     void        BlackLight();
     CObject*    SearchMetalObject(float &angle, float dMin, float dMax, float aLimit, Error &err);
-    void        DeleteMark(Math::Vector pos, float radius);
+    void        DeleteMark(glm::vec3 pos, float radius);
 
 protected:
     ObjectType      m_type = OBJECT_NULL;                  // type of construction
@@ -82,7 +82,7 @@ protected:
     float           m_speed = 0.0f;                 // speed of progression
     float           m_angleY = 0.0f;                // rotation angle of the vehicle
     float           m_angleZ = 0.0f;                // angle of rotation of the gun
-    Math::Vector    m_buildingPos;           // initial position of the building
+    glm::vec3       m_buildingPos = { 0, 0, 0 };           // initial position of the building
     float           m_buildingHeight = 0.0f;        // height of the building
     int             m_lightRank[TBMAXLIGHT] = {}; // lights for the effects
     int             m_soundChannel = 0;

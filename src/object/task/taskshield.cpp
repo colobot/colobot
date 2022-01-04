@@ -72,7 +72,7 @@ bool CTaskShield::EventProcess(const Event &event)
 {
     Math::Matrix*   mat;
     Math::Matrix    matrix;
-    Math::Vector    pos, speed, goal, angle;
+    glm::vec3    pos, speed, goal, angle;
     Gfx::Color      color;
     glm::vec2       dim;
     float           energy;
@@ -86,7 +86,7 @@ bool CTaskShield::EventProcess(const Event &event)
     m_delay -= event.rTime;
 
     mat = m_object->GetWorldMatrix(0);
-    pos = Math::Vector(7.0f, 15.0f, 0.0f);
+    pos = glm::vec3(7.0f, 15.0f, 0.0f);
     pos = Math::Transform(*mat, pos);  // sphere position
     m_shieldPos = pos;
 
@@ -180,7 +180,7 @@ bool CTaskShield::EventProcess(const Event &event)
             angle.y = 0.0f;
             angle.z = (Math::Rand()-0.5f)*Math::PI*1.2f;
             Math::LoadRotationXZYMatrix(matrix, angle);
-            goal = Math::Transform(matrix, Math::Vector(0.0f, GetRadius()-dim.x, 0.0f));
+            goal = Math::Transform(matrix, glm::vec3(0.0f, GetRadius()-dim.x, 0.0f));
             goal += pos;
             m_particle->CreateRay(pos, goal, Gfx::PARTIRAY2, dim, 0.3f);
         }
@@ -258,7 +258,7 @@ Error CTaskShield::Start(TaskShieldMode mode, float delay)
 
     if ( mode == TSM_START )
     {
-        Math::Vector pos;
+        glm::vec3 pos;
         glm::vec2 dim;
 
         pos.x = 7.0f;
@@ -272,12 +272,12 @@ Error CTaskShield::Start(TaskShieldMode mode, float delay)
         m_object->SetPartPosition(3, pos);
 
         Math::Matrix* mat = m_object->GetWorldMatrix(0);
-        pos = Math::Vector(7.0f, 15.0f, 0.0f);
+        pos = glm::vec3(7.0f, 15.0f, 0.0f);
         pos = Transform(*mat, pos);  // sphere position
         m_shieldPos = pos;
 
         pos = m_shieldPos;
-        Math::Vector speed = Math::Vector(0.0f, 0.0f, 0.0f);
+        glm::vec3 speed = glm::vec3(0.0f, 0.0f, 0.0f);
         dim.x = GetRadius();
         dim.y = dim.x;
         m_rankSphere = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISPHERE3, 2.0f, 0.0f, 0.0f);
@@ -313,7 +313,7 @@ Error CTaskShield::Start(TaskShieldMode mode, float delay)
     if ( energy == 0.0f )  return ERR_SHIELD_ENERGY;
 
     Math::Matrix* mat = m_object->GetWorldMatrix(0);
-    Math::Vector pos = Math::Vector(7.0f, 15.0f, 0.0f);
+    glm::vec3 pos = glm::vec3(7.0f, 15.0f, 0.0f);
     pos = Transform(*mat, pos);  // sphere position
     m_shieldPos = pos;
 
@@ -381,7 +381,7 @@ Error CTaskShield::Stop()
 
 Error CTaskShield::IsEnded()
 {
-    Math::Vector    pos, speed;
+    glm::vec3    pos, speed;
     glm::vec2       dim;
     float       energy;
 
@@ -424,7 +424,7 @@ Error CTaskShield::IsEnded()
         m_object->SetPartPosition(3, pos);
 
         pos = m_shieldPos;
-        speed = Math::Vector(0.0f, 0.0f, 0.0f);
+        speed = glm::vec3(0.0f, 0.0f, 0.0f);
         dim.x = GetRadius();
         dim.y = dim.x;
         m_rankSphere = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISPHERE3, 2.0f, 0.0f, 0.0f);
@@ -477,7 +477,7 @@ bool CTaskShield::IsBusy()
 
 bool CTaskShield::Abort()
 {
-    Math::Vector    pos;
+    glm::vec3    pos;
 
     pos.x = 7.0f;
     pos.y = 4.5f;
@@ -515,7 +515,7 @@ bool CTaskShield::Abort()
 
 // Creates the light to accompany a pyrotechnic effect.
 
-bool CTaskShield::CreateLight(Math::Vector pos)
+bool CTaskShield::CreateLight(glm::vec3 pos)
 {
     Gfx::Light light;
 
@@ -525,7 +525,7 @@ bool CTaskShield::CreateLight(Math::Vector pos)
     light.ambient    = Gfx::Color(0.0f, 0.0f, 0.0f);
     light.diffuse    = Gfx::Color(0.0f, 1.0f, 2.0f);
     light.position   = pos;
-    light.direction  = Math::Vector(0.0f, -1.0f, 0.0f); // against the bottom
+    light.direction  = glm::vec3(0.0f, -1.0f, 0.0f); // against the bottom
     light.spotIntensity = 128;
     light.attenuation0 = 1.0f;
     light.attenuation1 = 0.0f;
@@ -552,7 +552,7 @@ void CTaskShield::IncreaseShield()
         CShieldedObject* shielded = dynamic_cast<CShieldedObject*>(obj);
         if (!shielded->IsRepairable()) continue; // NOTE: Looks like the original code forgot to check that
 
-        Math::Vector oPos = obj->GetPosition();
+        glm::vec3 oPos = obj->GetPosition();
         float dist = Math::Distance(oPos, m_shieldPos);
         if ( dist <= GetRadius()+10.0f )
         {

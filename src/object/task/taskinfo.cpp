@@ -95,7 +95,7 @@ Error CTaskInfo::Start(const char *name, float value, float power, bool send)
 
     exchangePost->GetAuto()->Start(op);
 
-    Math::Vector pos, goal;
+    glm::vec3 pos, goal;
     if (op == 0)  // transmission?
     {
         pos = exchangePost->GetPosition();

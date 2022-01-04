@@ -58,5 +58,5 @@ protected:
     float           m_lastParticle = 0.0f;
     int             m_soundChannel = 0;
     bool            m_bError = false;
-    Math::Vector    m_terraPos;
+    glm::vec3       m_terraPos = { 0, 0, 0 };
 };

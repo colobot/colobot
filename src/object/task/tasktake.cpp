@@ -83,7 +83,7 @@ bool CTaskTake::EventProcess(const Event &event)
 
     m_progress += event.rTime*m_speed;  // others advance
 
-    m_physics->SetMotorSpeed(Math::Vector(0.0f, 0.0f, 0.0f));  // immobile!
+    m_physics->SetMotorSpeed(glm::vec3(0.0f, 0.0f, 0.0f));  // immobile!
 
     return true;
 }
@@ -104,7 +104,7 @@ Error CTaskTake::Start()
     m_bError = true;  // operation impossible
     if ( !m_physics->GetLand() )
     {
-        Math::Vector pos = m_object->GetPosition();
+        glm::vec3 pos = m_object->GetPosition();
         float h = m_water->GetLevel(m_object);
         if ( pos.y < h )  return ERR_MANIP_WATER;  // impossible under water
         return ERR_MANIP_FLY;
@@ -114,7 +114,7 @@ Error CTaskTake::Start()
     if ( type != OBJECT_HUMAN &&
          type != OBJECT_TECH  )  return ERR_WRONG_BOT;
 
-    m_physics->SetMotorSpeed(Math::Vector(0.0f, 0.0f, 0.0f));
+    m_physics->SetMotorSpeed(glm::vec3(0.0f, 0.0f, 0.0f));
 
     if (m_object->IsCarryingCargo())
         m_order = TTO_DEPOSE;
@@ -124,7 +124,7 @@ Error CTaskTake::Start()
 
     if ( m_order == TTO_TAKE )
     {
-        Math::Vector pos = m_object->GetPosition();
+        glm::vec3 pos = m_object->GetPosition();
         float h = m_water->GetLevel(m_object);
         if ( pos.y < h )  return ERR_MANIP_WATER;  // impossible under water
 
@@ -168,7 +168,7 @@ Error CTaskTake::Start()
         }
         else
         {
-            if ( !IsFreeDeposeObject(Math::Vector(2.5f, 0.0f, 0.0f)) )  return ERR_MANIP_OCC;
+            if ( !IsFreeDeposeObject(glm::vec3(2.5f, 0.0f, 0.0f)) )  return ERR_MANIP_OCC;
 //?         m_camera->StartCentering(m_object, Math::PI*0.3f, 99.9f, 0.0f, 0.8f);
             m_arm = TTA_FFRONT;
         }
@@ -290,7 +290,7 @@ CObject* CTaskTake::SearchTakeObject(float &angle,
                                      float dLimit, float aLimit)
 {
     CObject     *pBest;
-    Math::Vector    iPos, oPos;
+    glm::vec3    iPos, oPos;
     float       min, iAngle, bAngle, a, distance;
 
     iPos   = m_object->GetPosition();
@@ -339,7 +339,7 @@ CObject* CTaskTake::SearchFriendObject(float &angle,
     if (m_object->GetCrashSphereCount() == 0) return nullptr;
 
     auto crashSphere = m_object->GetFirstCrashSphere();
-    Math::Vector iPos = crashSphere.sphere.pos;
+    glm::vec3 iPos = crashSphere.sphere.pos;
     float iRad = crashSphere.sphere.radius;
 
     float iAngle = m_object->GetRotationY();
@@ -398,7 +398,7 @@ CObject* CTaskTake::SearchFriendObject(float &angle,
         }
 
         Math::Matrix* mat = pObj->GetWorldMatrix(0);
-        Math::Vector oPos = Math::Transform(*mat, dynamic_cast<CPoweredObject&>(*pObj).GetPowerPosition());
+        glm::vec3 oPos = Math::Transform(*mat, dynamic_cast<CPoweredObject&>(*pObj).GetPowerPosition());
 
         float distance = fabs(Math::Distance(oPos, iPos) - (iRad+1.0f));
         if ( distance <= dLimit )
@@ -406,7 +406,7 @@ CObject* CTaskTake::SearchFriendObject(float &angle,
             angle = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
             if ( Math::TestAngle(angle, iAngle-aLimit, iAngle+aLimit) )
             {
-                Math::Vector powerPos = dynamic_cast<CPoweredObject&>(*pObj).GetPowerPosition();
+                glm::vec3 powerPos = dynamic_cast<CPoweredObject&>(*pObj).GetPowerPosition();
                 m_height = powerPos.y;
                 return pObj;
             }
@@ -433,8 +433,8 @@ bool CTaskTake::TransporterTakeObject()
         dynamic_cast<CTransportableObject&>(*cargo).SetTransporter(m_object);
         dynamic_cast<CTransportableObject&>(*cargo).SetTransporterPart(4);  // takes with the hand
 
-//?     cargo->SetPosition(Math::Vector(2.2f, -1.0f, 1.1f));
-        cargo->SetPosition(Math::Vector(1.7f, -0.5f, 1.1f));
+//?     cargo->SetPosition(glm::vec3(2.2f, -1.0f, 1.1f));
+        cargo->SetPosition(glm::vec3(1.7f, -0.5f, 1.1f));
         cargo->SetRotationY(0.1f);
         cargo->SetRotationX(0.0f);
         cargo->SetRotationZ(0.8f);
@@ -459,8 +459,8 @@ bool CTaskTake::TransporterTakeObject()
         dynamic_cast<CTransportableObject&>(*cargo).SetTransporter(m_object);
         dynamic_cast<CTransportableObject&>(*cargo).SetTransporterPart(4);  // takes with the hand
 
-//?     cargo->SetPosition(Math::Vector(2.2f, -1.0f, 1.1f));
-        cargo->SetPosition(Math::Vector(1.7f, -0.5f, 1.1f));
+//?     cargo->SetPosition(glm::vec3(2.2f, -1.0f, 1.1f));
+        cargo->SetPosition(glm::vec3(1.7f, -0.5f, 1.1f));
         cargo->SetRotationY(0.1f);
         cargo->SetRotationX(0.0f);
         cargo->SetRotationZ(0.8f);
@@ -484,7 +484,7 @@ bool CTaskTake::TransporterDeposeObject()
         m_cargoType = cargo->GetType();
 
         Math::Matrix* mat = cargo->GetWorldMatrix(0);
-        Math::Vector pos = Transform(*mat, Math::Vector(-0.5f, 1.0f, 0.0f));
+        glm::vec3 pos = Transform(*mat, glm::vec3(-0.5f, 1.0f, 0.0f));
         m_terrain->AdjustToFloor(pos);
         cargo->SetPosition(pos);
         cargo->SetRotationY(m_object->GetRotationY()+Math::PI/2.0f);
@@ -528,10 +528,10 @@ bool CTaskTake::TransporterDeposeObject()
 
 // Seeks if a location allows to deposit an object.
 
-bool CTaskTake::IsFreeDeposeObject(Math::Vector pos)
+bool CTaskTake::IsFreeDeposeObject(glm::vec3 pos)
 {
     Math::Matrix* mat = m_object->GetWorldMatrix(0);
-    Math::Vector iPos = Transform(*mat, pos);
+    glm::vec3 iPos = Transform(*mat, pos);
 
     for (CObject* pObj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {

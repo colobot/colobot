@@ -62,6 +62,6 @@ protected:
     bool            m_bError = false;
     CObject*        m_ruin = nullptr;
     CObject*        m_metal = nullptr;
-    Math::Vector    m_recoverPos;
+    glm::vec3       m_recoverPos = { 0, 0, 0 };
     int             m_soundChannel = 0;
 };
