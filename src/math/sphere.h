@@ -26,15 +26,15 @@ namespace Math
 
 struct Sphere
 {
-    Sphere(const Vector& pos = Vector(), float radius = 0.0f)
+    Sphere(const glm::vec3& pos = glm::vec3(), float radius = 0.0f)
         : pos(pos), radius(radius) {}
 
-    Vector pos;
+    glm::vec3 pos;
     float radius;
 };
 
 //! Compute distance between given \a point and \a sphere
-inline float DistanceToSphere(const Vector& point, const Sphere& sphere)
+inline float DistanceToSphere(const glm::vec3& point, const Sphere& sphere)
 {
     return Math::Distance(point, sphere.pos) - sphere.radius;
 }
@@ -44,7 +44,7 @@ inline float DistanceBetweenSpheres(const Sphere& sphere1, const Sphere& sphere2
     return Math::Distance(sphere1.pos, sphere2.pos) - sphere1.radius - sphere2.radius;
 }
 
-inline Sphere BoundingSphereForBox(Vector mins, Vector maxs)
+inline Sphere BoundingSphereForBox(glm::vec3 mins, glm::vec3 maxs)
 {
     auto centroid = (maxs + mins) / 2.0f;
     auto halfExtent = (maxs - centroid);

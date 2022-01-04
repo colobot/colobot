@@ -46,11 +46,11 @@ protected:
 
     void SetUp() override;
 
-    void PrepareLightTesting(int maxLights, Math::Vector eyePos);
+    void PrepareLightTesting(int maxLights, glm::vec3 eyePos);
     void CheckLightSorting(EngineObjectType objectType, const std::vector<int>& expectedLights);
     void CheckLight(int index, const Light& light);
     void AddLight(int type, LightPriority priority, bool used, bool enabled,
-                  Math::Vector pos, EngineObjectType includeType, EngineObjectType excludeType);
+                  glm::vec3 pos, EngineObjectType includeType, EngineObjectType excludeType);
 
 
     std::unique_ptr<CLightManager> m_lightManager;
@@ -72,7 +72,7 @@ void CLightManagerUT::SetUp()
     m_lightManager = MakeUnique<CLightManager>(m_engine);
 }
 
-void CLightManagerUT::PrepareLightTesting(int maxLights, Math::Vector eyePos)
+void CLightManagerUT::PrepareLightTesting(int maxLights, glm::vec3 eyePos)
 {
     m_maxLightsCount = maxLights;
 
@@ -112,7 +112,7 @@ void CLightManagerUT::CheckLight(int index, const Light& light)
 }
 
 void CLightManagerUT::AddLight(int type, LightPriority priority, bool used, bool enabled,
-                               Math::Vector pos, EngineObjectType includeType, EngineObjectType excludeType)
+                               glm::vec3 pos, EngineObjectType includeType, EngineObjectType excludeType)
 {
     int rank = m_lightManager->CreateLight(priority);
 
@@ -132,12 +132,12 @@ void CLightManagerUT::AddLight(int type, LightPriority priority, bool used, bool
 TEST_F(CLightManagerUT, LightSorting_UnusedOrDisabledAreSkipped)
 {
     const int lightCount = 10;
-    const Math::Vector eyePos(0.0f, 0.0f, 0.0f);
+    const glm::vec3 eyePos(0.0f, 0.0f, 0.0f);
     PrepareLightTesting(lightCount, eyePos);
 
-    AddLight(1, LIGHT_PRI_LOW,  false,  true, Math::Vector(0.0f, 0.0f, 0.0f), ENG_OBJTYPE_NULL, ENG_OBJTYPE_NULL);
-    AddLight(2, LIGHT_PRI_LOW,  true,  false, Math::Vector(0.0f, 0.0f, 0.0f), ENG_OBJTYPE_NULL, ENG_OBJTYPE_NULL);
-    AddLight(3, LIGHT_PRI_LOW,  false, false, Math::Vector(0.0f, 0.0f, 0.0f), ENG_OBJTYPE_NULL, ENG_OBJTYPE_NULL);
+    AddLight(1, LIGHT_PRI_LOW,  false,  true, glm::vec3(0.0f, 0.0f, 0.0f), ENG_OBJTYPE_NULL, ENG_OBJTYPE_NULL);
+    AddLight(2, LIGHT_PRI_LOW,  true,  false, glm::vec3(0.0f, 0.0f, 0.0f), ENG_OBJTYPE_NULL, ENG_OBJTYPE_NULL);
+    AddLight(3, LIGHT_PRI_LOW,  false, false, glm::vec3(0.0f, 0.0f, 0.0f), ENG_OBJTYPE_NULL, ENG_OBJTYPE_NULL);
 
     std::vector<int> expectedLights;
     CheckLightSorting(ENG_OBJTYPE_TERRAIN, expectedLights);
@@ -146,12 +146,12 @@ TEST_F(CLightManagerUT, LightSorting_UnusedOrDisabledAreSkipped)
 TEST_F(CLightManagerUT, LightSorting_IncludeTypesAreIncluded)
 {
     const int lightCount = 10;
-    const Math::Vector eyePos(0.0f, 0.0f, 0.0f);
+    const glm::vec3 eyePos(0.0f, 0.0f, 0.0f);
     PrepareLightTesting(lightCount, eyePos);
 
-    AddLight(1, LIGHT_PRI_LOW, true, true, Math::Vector(0.0f, 0.0f, 0.0f), ENG_OBJTYPE_NULL,    ENG_OBJTYPE_NULL);
-    AddLight(2, LIGHT_PRI_LOW, true, true, Math::Vector(0.0f, 0.0f, 0.0f), ENG_OBJTYPE_TERRAIN, ENG_OBJTYPE_NULL);
-    AddLight(3, LIGHT_PRI_LOW, true, true, Math::Vector(0.0f, 0.0f, 0.0f), ENG_OBJTYPE_QUARTZ,  ENG_OBJTYPE_NULL);
+    AddLight(1, LIGHT_PRI_LOW, true, true, glm::vec3(0.0f, 0.0f, 0.0f), ENG_OBJTYPE_NULL,    ENG_OBJTYPE_NULL);
+    AddLight(2, LIGHT_PRI_LOW, true, true, glm::vec3(0.0f, 0.0f, 0.0f), ENG_OBJTYPE_TERRAIN, ENG_OBJTYPE_NULL);
+    AddLight(3, LIGHT_PRI_LOW, true, true, glm::vec3(0.0f, 0.0f, 0.0f), ENG_OBJTYPE_QUARTZ,  ENG_OBJTYPE_NULL);
 
     std::vector<int> expectedLights = { 1, 2 };
     CheckLightSorting(ENG_OBJTYPE_TERRAIN, expectedLights);
@@ -160,12 +160,12 @@ TEST_F(CLightManagerUT, LightSorting_IncludeTypesAreIncluded)
 TEST_F(CLightManagerUT, LightSorting_ExcludeTypesAreExcluded)
 {
     const int lightCount = 10;
-    const Math::Vector eyePos(0.0f, 0.0f, 0.0f);
+    const glm::vec3 eyePos(0.0f, 0.0f, 0.0f);
     PrepareLightTesting(lightCount, eyePos);
 
-    AddLight(1, LIGHT_PRI_LOW, true, true, Math::Vector(0.0f, 0.0f, 0.0f), ENG_OBJTYPE_NULL, ENG_OBJTYPE_NULL);
-    AddLight(2, LIGHT_PRI_LOW, true, true, Math::Vector(0.0f, 0.0f, 0.0f), ENG_OBJTYPE_NULL, ENG_OBJTYPE_TERRAIN);
-    AddLight(3, LIGHT_PRI_LOW, true, true, Math::Vector(0.0f, 0.0f, 0.0f), ENG_OBJTYPE_NULL, ENG_OBJTYPE_QUARTZ);
+    AddLight(1, LIGHT_PRI_LOW, true, true, glm::vec3(0.0f, 0.0f, 0.0f), ENG_OBJTYPE_NULL, ENG_OBJTYPE_NULL);
+    AddLight(2, LIGHT_PRI_LOW, true, true, glm::vec3(0.0f, 0.0f, 0.0f), ENG_OBJTYPE_NULL, ENG_OBJTYPE_TERRAIN);
+    AddLight(3, LIGHT_PRI_LOW, true, true, glm::vec3(0.0f, 0.0f, 0.0f), ENG_OBJTYPE_NULL, ENG_OBJTYPE_QUARTZ);
 
     std::vector<int> expectedLights = { 1, 3 };
     CheckLightSorting(ENG_OBJTYPE_TERRAIN, expectedLights);
@@ -174,15 +174,15 @@ TEST_F(CLightManagerUT, LightSorting_ExcludeTypesAreExcluded)
 TEST_F(CLightManagerUT, LightSorting_SortingAccordingToDistance)
 {
     const int lightCount = 3;
-    const Math::Vector eyePos(0.0f, 0.0f, 0.0f);
+    const glm::vec3 eyePos(0.0f, 0.0f, 0.0f);
     PrepareLightTesting(lightCount, eyePos);
 
-    AddLight(1, LIGHT_PRI_HIGH, true, true, Math::Vector(10.0f, 0.0f, 0.0f),  ENG_OBJTYPE_NULL, ENG_OBJTYPE_NULL);
-    AddLight(2, LIGHT_PRI_LOW,  true, true, Math::Vector(4.0f, 0.0f, 0.0f),   ENG_OBJTYPE_NULL, ENG_OBJTYPE_NULL);
-    AddLight(3, LIGHT_PRI_HIGH, true, true, Math::Vector(20.0f, 0.0f, 0.0f),  ENG_OBJTYPE_NULL, ENG_OBJTYPE_NULL);
-    AddLight(4, LIGHT_PRI_LOW,  true, true, Math::Vector(11.0f, 0.0f, 0.0f),  ENG_OBJTYPE_NULL, ENG_OBJTYPE_NULL);
-    AddLight(5, LIGHT_PRI_LOW,  true, true, Math::Vector(100.0f, 0.0f, 0.0f), ENG_OBJTYPE_NULL, ENG_OBJTYPE_NULL);
-    AddLight(6, LIGHT_PRI_HIGH, true, true, Math::Vector(21.0f, 0.0f, 0.0f),  ENG_OBJTYPE_NULL, ENG_OBJTYPE_NULL);
+    AddLight(1, LIGHT_PRI_HIGH, true, true, glm::vec3(10.0f, 0.0f, 0.0f),  ENG_OBJTYPE_NULL, ENG_OBJTYPE_NULL);
+    AddLight(2, LIGHT_PRI_LOW,  true, true, glm::vec3(4.0f, 0.0f, 0.0f),   ENG_OBJTYPE_NULL, ENG_OBJTYPE_NULL);
+    AddLight(3, LIGHT_PRI_HIGH, true, true, glm::vec3(20.0f, 0.0f, 0.0f),  ENG_OBJTYPE_NULL, ENG_OBJTYPE_NULL);
+    AddLight(4, LIGHT_PRI_LOW,  true, true, glm::vec3(11.0f, 0.0f, 0.0f),  ENG_OBJTYPE_NULL, ENG_OBJTYPE_NULL);
+    AddLight(5, LIGHT_PRI_LOW,  true, true, glm::vec3(100.0f, 0.0f, 0.0f), ENG_OBJTYPE_NULL, ENG_OBJTYPE_NULL);
+    AddLight(6, LIGHT_PRI_HIGH, true, true, glm::vec3(21.0f, 0.0f, 0.0f),  ENG_OBJTYPE_NULL, ENG_OBJTYPE_NULL);
 
     std::vector<int> expectedLights = { 2, 1, 3 };
     CheckLightSorting(ENG_OBJTYPE_TERRAIN, expectedLights);

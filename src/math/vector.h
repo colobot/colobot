@@ -37,9 +37,6 @@
 namespace Math
 {
 
-
-using Vector = glm::vec3;
-
 //! Checks if two vectors are equal within given \a tolerance
 inline bool VectorsEqual(const glm::vec3 &a, const glm::vec3 &b, float tolerance = TOLERANCE)
 {
@@ -49,7 +46,7 @@ inline bool VectorsEqual(const glm::vec3 &a, const glm::vec3 &b, float tolerance
 }
 
 //! Convenience function for getting normalized vector
-inline Vector Normalize(const glm::vec3 &v)
+inline glm::vec3 Normalize(const glm::vec3 &v)
 {
     return glm::normalize(v);
 }
@@ -61,7 +58,7 @@ inline float DotProduct(const glm::vec3 &left, const glm::vec3 &right)
 }
 
 //! Convenience function for calculating cross product
-inline Vector CrossProduct(const glm::vec3 &left, const glm::vec3 &right)
+inline glm::vec3 CrossProduct(const glm::vec3 &left, const glm::vec3 &right)
 {
     return glm::cross(left, right);
 }
@@ -79,12 +76,12 @@ inline float Distance(const glm::vec3 &a, const glm::vec3 &b)
 }
 
 //! Clamps the vector \a vec to range between \a min and \a max
-inline Vector Clamp(const Vector &vec, const Vector &min, const Vector &max)
+inline glm::vec3 Clamp(const glm::vec3&vec, const glm::vec3&min, const glm::vec3&max)
 {
     return glm::clamp(vec, min, max);
 }
 
-inline std::string ToString(const Vector& vector)
+inline std::string ToString(const glm::vec3& vector)
 {
     std::stringstream s;
     s.precision(3);

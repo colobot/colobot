@@ -58,8 +58,8 @@ TEST(GeometryTest, RotateAngleTest)
 
 int TestAngle()
 {
-    const Math::Vector u(-0.0786076246943884, 0.2231249091714256, -1.1601361718477805);
-    const Math::Vector v(-1.231228742001907, -1.720549809950561, -0.690468438834111);
+    const glm::vec3 u(-0.0786076246943884, 0.2231249091714256, -1.1601361718477805);
+    const glm::vec3 v(-1.231228742001907, -1.720549809950561, -0.690468438834111);
 
     float mathResult = Math::Angle(u, v);
     float oldMathResult = Angle(VEC_TO_D3DVEC(u), VEC_TO_D3DVEC(v));
@@ -72,13 +72,13 @@ int TestAngle()
 
 int TestRotateView()
 {
-    const Math::Vector center(0.617909142705555, 0.896939729454538, -0.615041943652284);
+    const glm::vec3 center(0.617909142705555, 0.896939729454538, -0.615041943652284);
     const float angleH = 44.5;
     const float angleV = 12.3;
     const float dist = 34.76;
 
-    Math::Vector mathResult = Math::RotateView(center, angleH, angleV, dist);
-    Math::Vector oldMathResult = D3DVEC_TO_VEC(RotateView(VEC_TO_D3DVEC(center), angleH, angleV, dist));
+    glm::vec3 mathResult = Math::RotateView(center, angleH, angleV, dist);
+    glm::vec3 oldMathResult = D3DVEC_TO_VEC(RotateView(VEC_TO_D3DVEC(center), angleH, angleV, dist));
 
     if (! Math::VectorsEqual(mathResult, oldMathResult, TEST_TOLERANCE))
         return __LINE__;
@@ -88,13 +88,13 @@ int TestRotateView()
 
 int TestLookatPoint()
 {
-    const Math::Vector eye(-2.451183170579471,  0.241270270546559, -0.490677411454893);
+    const glm::vec3 eye(-2.451183170579471,  0.241270270546559, -0.490677411454893);
     const float angleH = 48.4;
     const float angleV = 32.4;
     const float length = 74.44;
 
-    Math::Vector mathResult = Math::LookatPoint(eye, angleH, angleV, length);
-    Math::Vector oldMathResult = D3DVEC_TO_VEC(LookatPoint(VEC_TO_D3DVEC(eye), angleH, angleV, length));
+    glm::vec3 mathResult = Math::LookatPoint(eye, angleH, angleV, length);
+    glm::vec3 oldMathResult = D3DVEC_TO_VEC(LookatPoint(VEC_TO_D3DVEC(eye), angleH, angleV, length));
 
     if (! Math::VectorsEqual(mathResult, oldMathResult, TEST_TOLERANCE))
         return __LINE__;
@@ -104,12 +104,12 @@ int TestLookatPoint()
 
 int TestProjection()
 {
-    const Math::Vector a(0.852064846846319, -0.794279497087496, -0.655779805476688);
-    const Math::Vector b(-0.245838834102304, -0.841115596038861, 0.470457161487799);
-    const Math::Vector p(2.289326061164255, -0.505511362271196,  0.660204551169491);
+    const glm::vec3 a(0.852064846846319, -0.794279497087496, -0.655779805476688);
+    const glm::vec3 b(-0.245838834102304, -0.841115596038861, 0.470457161487799);
+    const glm::vec3 p(2.289326061164255, -0.505511362271196,  0.660204551169491);
 
-    Math::Vector mathResult = Math::Projection(a, b, p);
-    Math::Vector oldMathResult = D3DVEC_TO_VEC(Projection(VEC_TO_D3DVEC(a), VEC_TO_D3DVEC(b), VEC_TO_D3DVEC(p)));
+    glm::vec3 mathResult = Math::Projection(a, b, p);
+    glm::vec3 oldMathResult = D3DVEC_TO_VEC(Projection(VEC_TO_D3DVEC(a), VEC_TO_D3DVEC(b), VEC_TO_D3DVEC(p)));
 
     if (! Math::VectorsEqual(mathResult, oldMathResult, TEST_TOLERANCE))
         return __LINE__;
@@ -119,9 +119,9 @@ int TestProjection()
 
 int TestLoadViewMatrix()
 {
-    const Math::Vector from(2.5646013154868874, -0.6058794133917031, -0.0441195127419744);
-    const Math::Vector at(0.728044925765569, -0.206343977871841, 2.543158236935463);
-    const Math::Vector worldUp(-1.893738133660711, -1.009584441407070, 0.521745988225582);
+    const glm::vec3 from(2.5646013154868874, -0.6058794133917031, -0.0441195127419744);
+    const glm::vec3 at(0.728044925765569, -0.206343977871841, 2.543158236935463);
+    const glm::vec3 worldUp(-1.893738133660711, -1.009584441407070, 0.521745988225582);
 
     Math::Matrix mathResult;
     Math::LoadViewMatrix(mathResult, from, at, worldUp);
@@ -167,7 +167,7 @@ int TestLoadProjectionMatrix()
 
 int TestLoadTranslationMatrix()
 {
-    const Math::Vector translation(-0.3631590720995237, 1.6976327614875211, 0.0148815191502145);
+    const glm::vec3 translation(-0.3631590720995237, 1.6976327614875211, 0.0148815191502145);
 
     Math::Matrix mathResult;
     Math::LoadTranslationMatrix(mathResult, translation);
@@ -187,7 +187,7 @@ int TestLoadTranslationMatrix()
 
 int TestLoadScaleMatrix()
 {
-    const Math::Vector scale(0.612236460285503, -0.635566935025364, -0.254321375332065);
+    const glm::vec3 scale(0.612236460285503, -0.635566935025364, -0.254321375332065);
 
     Math::Matrix mathResult;
     Math::LoadScaleMatrix(mathResult, scale);
@@ -268,7 +268,7 @@ int TestLoadRotationZMatrix()
 int TestLoadRotationMatrix()
 {
     const float angle = -0.987747190637790;
-    const Math::Vector dir(-0.113024727688331, -0.781265998072571, 1.838972397076884);
+    const glm::vec3 dir(-0.113024727688331, -0.781265998072571, 1.838972397076884);
 
     Math::Matrix mathResult;
     Math::LoadRotationMatrix(mathResult, dir, angle);
@@ -289,7 +289,7 @@ int TestLoadRotationMatrix()
 
 int TestLoadRotationXZYMatrix()
 {
-    const Math::Vector angles(-0.841366567984597, -0.100543315396357, 1.610647811559988);
+    const glm::vec3 angles(-0.841366567984597, -0.100543315396357, 1.610647811559988);
 
     Math::Matrix mathResult;
     Math::LoadRotationXZYMatrix(mathResult, angles);
@@ -309,7 +309,7 @@ int TestLoadRotationXZYMatrix()
 
 int TestLoadRotationZXYMatrix()
 {
-    const Math::Vector angles(0.275558495480206, -0.224328265970090, 0.943077216574253);
+    const glm::vec3 angles(0.275558495480206, -0.224328265970090, 0.943077216574253);
 
     Math::Matrix mathResult;
     Math::LoadRotationZXYMatrix(mathResult, angles);
@@ -338,10 +338,10 @@ int TestTransform()
             {  0.0f, 0.0f, 0.0f, 1.0f }
         }
     );
-    Math::Vector vector(-0.314596433318370, -0.622681232583150, -0.371307535743574);
+    glm::vec3 vector(-0.314596433318370, -0.622681232583150, -0.371307535743574);
 
-    Math::Vector mathResult = Math::Transform(transformMatrix, vector);
-    Math::Vector oldMathResult = Transform(transformMatrix, vector);
+    glm::vec3 mathResult = Math::Transform(transformMatrix, vector);
+    glm::vec3 oldMathResult = Transform(transformMatrix, vector);
 
     if (! Math::VectorsEqual(mathResult, oldMathResult, TEST_TOLERANCE))
         return __LINE__;

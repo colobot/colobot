@@ -472,25 +472,25 @@ inline Math::Matrix MultiplyMatrices(const Math::Matrix &left, const Math::Matri
 
    The result, a 4x1 vector is then converted to 3x1 by dividing
    x,y,z coords by the fourth coord (w). */
-inline Math::Vector MatrixVectorMultiply(const Math::Matrix &m, const Math::Vector &v, bool wDivide = false)
+inline glm::vec3 MatrixVectorMultiply(const Math::Matrix &m, const glm::vec3 &v, bool wDivide = false)
 {
     float x = v.x * m.m[0 ] + v.y * m.m[4 ] + v.z * m.m[8 ] + m.m[12];
     float y = v.x * m.m[1 ] + v.y * m.m[5 ] + v.z * m.m[9 ] + m.m[13];
     float z = v.x * m.m[2 ] + v.y * m.m[6 ] + v.z * m.m[10] + m.m[14];
 
     if (!wDivide)
-        return Math::Vector(x, y, z);
+        return glm::vec3(x, y, z);
 
     float w = v.x * m.m[3 ] + v.y * m.m[7 ] + v.z * m.m[11] + m.m[15];
 
     if (IsZero(w))
-        return Math::Vector(x, y, z);
+        return glm::vec3(x, y, z);
 
     x /= w;
     y /= w;
     z /= w;
 
-    return Math::Vector(x, y, z);
+    return glm::vec3(x, y, z);
 }
 
 

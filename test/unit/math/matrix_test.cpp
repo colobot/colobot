@@ -270,11 +270,11 @@ TEST(MatrixTest, MultiplyVectorTest)
         }
     );
 
-    const Math::Vector vec1(-0.824708565156661f, -1.598287748103842f, -0.422498044734181f);
+    const glm::vec3 vec1(-0.824708565156661f, -1.598287748103842f, -0.422498044734181f);
 
-    const Math::Vector expectedMultiply1(0.608932463260470f, -1.356893266403749f, 3.457156276255142f);
+    const glm::vec3 expectedMultiply1(0.608932463260470f, -1.356893266403749f, 3.457156276255142f);
 
-    Math::Vector multiply1 = Math::MatrixVectorMultiply(mat1, vec1, false);
+    glm::vec3 multiply1 = Math::MatrixVectorMultiply(mat1, vec1, false);
     EXPECT_TRUE(Math::VectorsEqual(multiply1, expectedMultiply1, TEST_TOLERANCE));
 
     const Math::Matrix mat2(
@@ -286,10 +286,10 @@ TEST(MatrixTest, MultiplyVectorTest)
         }
     );
 
-    const Math::Vector vec2(0.330987381051962f, 1.494375516393466f, 1.483422335561857f);
+    const glm::vec3 vec2(0.330987381051962f, 1.494375516393466f, 1.483422335561857f);
 
-    const Math::Vector expectedMultiply2(0.2816820577317669f, 0.0334468811767428f, 0.1996974284970455f);
+    const glm::vec3 expectedMultiply2(0.2816820577317669f, 0.0334468811767428f, 0.1996974284970455f);
 
-    Math::Vector multiply2 = Math::MatrixVectorMultiply(mat2, vec2, true);
+    glm::vec3 multiply2 = Math::MatrixVectorMultiply(mat2, vec2, true);
     EXPECT_TRUE(Math::VectorsEqual(multiply2, expectedMultiply2, TEST_TOLERANCE));
 }
