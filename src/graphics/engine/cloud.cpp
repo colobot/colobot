@@ -127,8 +127,7 @@ void CCloud::Draw()
 
     m_engine->SetState(ENG_RSTATE_TTEXTURE_BLACK | ENG_RSTATE_FOG | ENG_RSTATE_WRAP);
 
-    Math::Matrix matrix;
-    matrix.LoadIdentity();
+    Math::Matrix matrix = glm::mat4(1.0f);
     device->SetTransform(TRANSFORM_WORLD, matrix);
 
     float size = m_brickSize/2.0f;

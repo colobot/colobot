@@ -70,7 +70,6 @@ CTaskShield::~CTaskShield()
 
 bool CTaskShield::EventProcess(const Event &event)
 {
-    Math::Matrix*   mat;
     Math::Matrix    matrix;
     glm::vec3    pos, speed, goal, angle;
     Gfx::Color      color;
@@ -85,9 +84,9 @@ bool CTaskShield::EventProcess(const Event &event)
     m_time += event.rTime;
     m_delay -= event.rTime;
 
-    mat = m_object->GetWorldMatrix(0);
+    glm::mat4 mat = m_object->GetWorldMatrix(0);
     pos = glm::vec3(7.0f, 15.0f, 0.0f);
-    pos = Math::Transform(*mat, pos);  // sphere position
+    pos = Math::Transform(mat, pos);  // sphere position
     m_shieldPos = pos;
 
     if ( m_rankSphere != -1 )
@@ -271,9 +270,9 @@ Error CTaskShield::Start(TaskShieldMode mode, float delay)
         pos.z = 0.0f;
         m_object->SetPartPosition(3, pos);
 
-        Math::Matrix* mat = m_object->GetWorldMatrix(0);
+        glm::mat4 mat = m_object->GetWorldMatrix(0);
         pos = glm::vec3(7.0f, 15.0f, 0.0f);
-        pos = Transform(*mat, pos);  // sphere position
+        pos = Math::Transform(mat, pos);  // sphere position
         m_shieldPos = pos;
 
         pos = m_shieldPos;
@@ -312,9 +311,9 @@ Error CTaskShield::Start(TaskShieldMode mode, float delay)
     float energy = dynamic_cast<CPowerContainerObject&>(*power).GetEnergy();
     if ( energy == 0.0f )  return ERR_SHIELD_ENERGY;
 
-    Math::Matrix* mat = m_object->GetWorldMatrix(0);
+    glm::mat4 mat = m_object->GetWorldMatrix(0);
     glm::vec3 pos = glm::vec3(7.0f, 15.0f, 0.0f);
-    pos = Transform(*mat, pos);  // sphere position
+    pos = Math::Transform(mat, pos);  // sphere position
     m_shieldPos = pos;
 
     m_sound->Play(SOUND_PSHHH2, m_shieldPos, 1.0f, 0.7f);

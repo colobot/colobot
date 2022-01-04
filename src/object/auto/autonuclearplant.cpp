@@ -91,14 +91,12 @@ void CAutoNuclearPlant::DeleteObject(bool all)
 
 void CAutoNuclearPlant::Init()
 {
-    Math::Matrix*   mat;
-
     m_time = 0.0f;
     m_timeVirus = 0.0f;
     m_lastParticle = 0.0f;
 
-    mat = m_object->GetWorldMatrix(0);
-    m_pos = Math::Transform(*mat, glm::vec3(22.0f, 4.0f, 0.0f));
+    glm::mat4 mat = m_object->GetWorldMatrix(0);
+    m_pos = Math::Transform(mat, glm::vec3(22.0f, 4.0f, 0.0f));
 
     m_phase    = ANUP_WAIT;  // waiting ...
     m_progress = 0.0f;
@@ -113,7 +111,6 @@ void CAutoNuclearPlant::Init()
 bool CAutoNuclearPlant::EventProcess(const Event &event)
 {
     CObject*    cargo;
-    Math::Matrix*   mat;
     glm::vec3    pos, goal, speed;
     glm::vec2     dim, rot;
     float       angle;
@@ -177,14 +174,14 @@ bool CAutoNuclearPlant::EventProcess(const Event &event)
         {
             m_object->SetPartRotationZ(1, 0.0f);
 
-            mat = m_object->GetWorldMatrix(0);
+            glm::mat4 mat = m_object->GetWorldMatrix(0);
             max = static_cast< int >(10.0f*m_engine->GetParticleDensity());
             for ( i=0 ; i<max ; i++ )
             {
                 pos.x = 27.0f;
                 pos.y =  0.0f;
                 pos.z = (Math::Rand()-0.5f)*8.0f;
-                pos = Transform(*mat, pos);
+                pos = Math::Transform(mat, pos);
                 speed.y = 0.0f;
                 speed.x = 0.0f;
                 speed.z = 0.0f;

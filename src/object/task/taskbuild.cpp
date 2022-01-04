@@ -203,7 +203,6 @@ void CTaskBuild::BlackLight()
 
 bool CTaskBuild::EventProcess(const Event &event)
 {
-    Math::Matrix*       mat;
     glm::vec3        pos, dir, speed, pv, pm, tilt;
     glm::vec2           dim;
     float           a, g, cirSpeed, dist, linSpeed, diff;
@@ -324,6 +323,8 @@ bool CTaskBuild::EventProcess(const Event &event)
         dim.y = dim.x;
         m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIFIRE);
 
+        glm::mat4 mat{};
+
         pos = glm::vec3(0.0f, 0.5f, 0.0f);
         switch(m_object->GetType())
         {
@@ -343,7 +344,7 @@ bool CTaskBuild::EventProcess(const Event &event)
                 mat = m_object->GetWorldMatrix(0);
                 break;
         }
-        pos = Transform(*mat, pos);
+        pos = Math::Transform(mat, pos);
         speed = m_metal->GetPosition();
         speed.x += (Math::Rand()-0.5f)*5.0f;
         speed.z += (Math::Rand()-0.5f)*5.0f;

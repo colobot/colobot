@@ -276,8 +276,7 @@ void CWater::DrawBack()
     m_engine->SetFocus(m_engine->GetFocus());
     m_engine->UpdateMatProj();  // twice the depth of view
 
-    Math::Matrix matrix;
-    matrix.LoadIdentity();
+    glm::mat4 matrix = glm::mat4(1.0f);
     device->SetTransform(TRANSFORM_WORLD, matrix);
 
     glm::vec3 p = { 0, 0, 0 };
@@ -329,8 +328,7 @@ void CWater::DrawSurf()
 
     CDevice* device = m_engine->GetDevice();
 
-    Math::Matrix matrix;
-    matrix.LoadIdentity();
+    glm::mat4 matrix = glm::mat4(1.0f);
     device->SetTransform(TRANSFORM_WORLD, matrix);
 
     Material material;
@@ -379,8 +377,9 @@ void CWater::DrawSurf()
         if (glm::distance(p, eye) > deep + radius)
             continue;
 
-        if (device->ComputeSphereVisibility(p, radius) != Gfx::FRUSTUM_PLANE_ALL)
-            continue;
+        /// TODO: use m_engine->ComputeSphereVisibility() instead
+        //if (device->ComputeSphereVisibility(p, radius) != Gfx::FRUSTUM_PLANE_ALL)
+        //    continue;
 
         int vertexIndex = 0;
 

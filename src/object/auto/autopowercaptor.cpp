@@ -75,14 +75,12 @@ void CAutoPowerCaptor::DeleteObject(bool bAll)
 
 void CAutoPowerCaptor::Init()
 {
-    Math::Matrix*   mat;
-
     m_time = 0.0f;
     m_timeVirus = 0.0f;
     m_lastParticle = 0.0f;
 
-    mat = m_object->GetWorldMatrix(0);
-    m_pos = Math::Transform(*mat, glm::vec3(22.0f, 4.0f, 0.0f));
+    glm::mat4 mat = m_object->GetWorldMatrix(0);
+    m_pos = Math::Transform(mat, glm::vec3(22.0f, 4.0f, 0.0f));
 
     m_phase    = APAP_WAIT;  // waiting ...
     m_progress = 0.0f;

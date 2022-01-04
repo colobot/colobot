@@ -1129,7 +1129,6 @@ CObject* CTaskGoto::SearchTarget(glm::vec3 pos, float margin)
 bool CTaskGoto::AdjustTarget(CObject* pObj, glm::vec3 &pos, float &distance)
 {
     ObjectType  type;
-    Math::Matrix*   mat;
     glm::vec3    goal;
     float       dist, suppl;
 
@@ -1204,8 +1203,8 @@ bool CTaskGoto::AdjustTarget(CObject* pObj, glm::vec3 &pos, float &distance)
         assert(pObj->Implements(ObjectInterfaceType::Powered));
         pos = dynamic_cast<CPoweredObject&>(*pObj).GetPowerPosition();
         pos.x -= TAKE_DIST+TAKE_DIST_OTHER+distance;
-        mat = pObj->GetWorldMatrix(0);
-        pos = Transform(*mat, pos);
+        glm::mat4 mat = pObj->GetWorldMatrix(0);
+        pos = Math::Transform(mat, pos);
         return false;  // single approach
     }
 
@@ -1251,7 +1250,6 @@ bool CTaskGoto::GetHotPoint(CObject *pObj, glm::vec3 &pos,
                             bool bTake, float distance, float &suppl)
 {
     ObjectType  type;
-    Math::Matrix*   mat;
 
     pos = glm::vec3(0.0f, 0.0f, 0.0f);
     suppl = 0.0f;
@@ -1259,110 +1257,110 @@ bool CTaskGoto::GetHotPoint(CObject *pObj, glm::vec3 &pos,
 
     if ( type == OBJECT_DERRICK )
     {
-        mat = pObj->GetWorldMatrix(0);
+        glm::mat4 mat = pObj->GetWorldMatrix(0);
         pos.x += 8.0f;
         if ( bTake && distance != 0.0f )  suppl = 4.0f;
         if ( bTake )  pos.x += TAKE_DIST+distance+suppl;
-        pos = Transform(*mat, pos);
+        pos = Math::Transform(mat, pos);
         return true;
     }
 
     if ( type == OBJECT_CONVERT )
     {
-        mat = pObj->GetWorldMatrix(0);
+        glm::mat4 mat = pObj->GetWorldMatrix(0);
         pos.x += 0.0f;
         if ( bTake && distance != 0.0f )  suppl = 4.0f;
         if ( bTake )  pos.x += TAKE_DIST+distance+suppl;
-        pos = Transform(*mat, pos);
+        pos = Math::Transform(mat, pos);
         return true;
     }
 
     if ( type == OBJECT_RESEARCH )
     {
-        mat = pObj->GetWorldMatrix(0);
+        glm::mat4 mat = pObj->GetWorldMatrix(0);
         pos.x += 10.0f;
         if ( bTake && distance != 0.0f )  suppl = 2.5f;
         if ( bTake )  pos.x += TAKE_DIST+TAKE_DIST_OTHER+distance+suppl;
-        pos = Transform(*mat, pos);
+        pos = Math::Transform(mat, pos);
         return true;
     }
 
     if ( type == OBJECT_ENERGY )
     {
-        mat = pObj->GetWorldMatrix(0);
+        glm::mat4 mat = pObj->GetWorldMatrix(0);
         pos.x += 6.0f;
         if ( bTake && distance != 0.0f )  suppl = 6.0f;
         if ( bTake )  pos.x += TAKE_DIST+TAKE_DIST_OTHER+distance;
-        pos = Transform(*mat, pos);
+        pos = Math::Transform(mat, pos);
         return true;
     }
 
     if ( type == OBJECT_TOWER )
     {
-        mat = pObj->GetWorldMatrix(0);
+        glm::mat4 mat = pObj->GetWorldMatrix(0);
         pos.x += 5.0f;
         if ( bTake && distance != 0.0f )  suppl = 4.0f;
         if ( bTake )  pos.x += TAKE_DIST+TAKE_DIST_OTHER+distance+suppl;
-        pos = Transform(*mat, pos);
+        pos = Math::Transform(mat, pos);
         return true;
     }
 
     if ( type == OBJECT_LABO )
     {
-        mat = pObj->GetWorldMatrix(0);
+        glm::mat4 mat = pObj->GetWorldMatrix(0);
         pos.x += 6.0f;
         if ( bTake && distance != 0.0f )  suppl = 6.0f;
         if ( bTake )  pos.x += TAKE_DIST+TAKE_DIST_OTHER+distance;
-        pos = Transform(*mat, pos);
+        pos = Math::Transform(mat, pos);
         return true;
     }
 
     if ( type == OBJECT_NUCLEAR )
     {
-        mat = pObj->GetWorldMatrix(0);
+        glm::mat4 mat = pObj->GetWorldMatrix(0);
         pos.x += 22.0f;
         if ( bTake && distance != 0.0f )  suppl = 4.0f;
         if ( bTake )  pos.x += TAKE_DIST+TAKE_DIST_OTHER+distance+suppl;
-        pos = Transform(*mat, pos);
+        pos = Math::Transform(mat, pos);
         return true;
     }
 
     if ( type == OBJECT_FACTORY )
     {
-        mat = pObj->GetWorldMatrix(0);
+        glm::mat4 mat = pObj->GetWorldMatrix(0);
         pos.x += 4.0f;
         if ( bTake && distance != 0.0f )  suppl = 6.0f;
         if ( bTake )  pos.x += TAKE_DIST+distance+suppl;
-        pos = Transform(*mat, pos);
+        pos = Math::Transform(mat, pos);
         return true;
     }
 
     if ( type == OBJECT_STATION )
     {
-        mat = pObj->GetWorldMatrix(0);
+        glm::mat4 mat = pObj->GetWorldMatrix(0);
         pos.x += 4.0f;
         if ( bTake && distance != 0.0f )  suppl = 4.0f;
         if ( bTake )  pos.x += distance;
-        pos = Transform(*mat, pos);
+        pos = Math::Transform(mat, pos);
         return true;
     }
 
     if ( type == OBJECT_REPAIR )
     {
-        mat = pObj->GetWorldMatrix(0);
+        glm::mat4 mat = pObj->GetWorldMatrix(0);
         pos.x += 4.0f;
         if ( bTake && distance != 0.0f )  suppl = 4.0f;
         if ( bTake )  pos.x += distance;
-        pos = Transform(*mat, pos);
+        pos = Math::Transform(mat, pos);
         return true;
     }
 
     if ( type == OBJECT_PARA && m_object->Implements(ObjectInterfaceType::Flying) )
     {
-        mat = pObj->GetWorldMatrix(0);
+        glm::mat4 mat = pObj->GetWorldMatrix(0);
         if ( bTake && distance != 0.0f )  suppl = 20.0f;
         if ( bTake )  pos.x += distance+suppl;
-        pos = Transform(*mat, pos);
+        pos = Math::Transform(mat, pos);
         return true;
     }
 

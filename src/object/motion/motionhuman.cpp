@@ -612,7 +612,6 @@ bool CMotionHuman::EventProcess(const Event &event)
 
 bool CMotionHuman::EventFrame(const Event &event)
 {
-    Math::Matrix*   mat;
     glm::vec3    dir, actual, pos, speed, pf;
     glm::vec2       center, dim, p2;
     float       s, a, prog, rTime[2], lTime[2], time, rot, hr, hl;
@@ -1373,12 +1372,12 @@ bool CMotionHuman::EventFrame(const Event &event)
         m_object->SetLinVibration(dir);
         SetLinVibration(dir);
 
-        mat = m_object->GetWorldMatrix(0);
+        glm::mat4 mat = m_object->GetWorldMatrix(0);
         pos = glm::vec3(0.5f, 3.7f, 0.0f);
         pos.x += (Math::Rand()-0.5f)*1.0f;
         pos.y += (Math::Rand()-0.5f)*1.0f;
         pos.z += (Math::Rand()-0.5f)*1.0f;
-        pos = Transform(*mat, pos);
+        pos = Math::Transform(mat, pos);
         speed.x = (Math::Rand()-0.5f)*0.5f;
         speed.y = (Math::Rand()-0.5f)*0.5f;
         speed.z = (Math::Rand()-0.5f)*0.5f;

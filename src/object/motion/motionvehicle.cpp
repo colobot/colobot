@@ -1382,7 +1382,6 @@ bool CMotionVehicle::EventProcess(const Event &event)
 
 bool CMotionVehicle::EventFrame(const Event &event)
 {
-    Math::Matrix*   mat;
     Character*  character;
     glm::vec3    pos, angle, floor;
     ObjectType  type;
@@ -1489,12 +1488,12 @@ bool CMotionVehicle::EventFrame(const Event &event)
             if ( glm::distance(pos, m_engine->GetEyePt()) < 50.0f )  // suspension?
             {
                 character = m_object->GetCharacter();
-                mat = m_object->GetWorldMatrix(0);
+                glm::mat4 mat = m_object->GetWorldMatrix(0);
 
                 pos.x = -character->wheelBack;  // right back wheel
                 pos.z = -character->wheelRight;
                 pos.y =  0.0f;
-                pos = Math::Transform(*mat, pos);
+                pos = Math::Transform(mat, pos);
                 h = m_terrain->GetHeightToFloor(pos);
                 if ( h >  0.5f )  h =  0.5f;
                 if ( h < -0.5f )  h = -0.5f;
@@ -1507,7 +1506,7 @@ bool CMotionVehicle::EventFrame(const Event &event)
                 pos.x = -character->wheelBack;  // left back wheel
                 pos.z =  character->wheelLeft;
                 pos.y =  0.0f;
-                pos = Math::Transform(*mat, pos);
+                pos = Math::Transform(mat, pos);
                 h = m_terrain->GetHeightToFloor(pos);
                 if ( h >  0.5f )  h =  0.5f;
                 if ( h < -0.5f )  h = -0.5f;
@@ -1520,7 +1519,7 @@ bool CMotionVehicle::EventFrame(const Event &event)
                 pos.x =  character->wheelFront;  // right front wheel
                 pos.z = -character->wheelRight;
                 pos.y =  0.0f;
-                pos = Math::Transform(*mat, pos);
+                pos = Math::Transform(mat, pos);
                 h = m_terrain->GetHeightToFloor(pos);
                 if ( h >  0.5f )  h =  0.5f;
                 if ( h < -0.5f )  h = -0.5f;
@@ -1533,7 +1532,7 @@ bool CMotionVehicle::EventFrame(const Event &event)
                 pos.x =  character->wheelFront;  // left front wheel
                 pos.z =  character->wheelLeft;
                 pos.y =  0.0f;
-                pos = Math::Transform(*mat, pos);
+                pos = Math::Transform(mat, pos);
                 h = m_terrain->GetHeightToFloor(pos);
                 if ( h >  0.5f )  h =  0.5f;
                 if ( h < -0.5f )  h = -0.5f;
@@ -1625,18 +1624,18 @@ bool CMotionVehicle::EventFrame(const Event &event)
             if ( glm::distance(pos, m_engine->GetEyePt()) < 50.0f )  // suspension?
             {
                 character = m_object->GetCharacter();
-                mat = m_object->GetWorldMatrix(0);
+                glm::mat4 mat = m_object->GetWorldMatrix(0);
 
                 pos.x =  character->wheelFront;  // right front wheel
                 pos.z = -character->wheelRight;
                 pos.y =  0.0f;
-                pos = Transform(*mat, pos);
+                pos = Math::Transform(mat, pos);
                 a1 = atanf(m_terrain->GetHeightToFloor(pos)/character->wheelFront);
 
                 pos.x = -character->wheelBack;  // right back wheel
                 pos.z = -character->wheelRight;
                 pos.y =  0.0f;
-                pos = Transform(*mat, pos);
+                pos = Math::Transform(mat, pos);
                 a2 = atanf(m_terrain->GetHeightToFloor(pos)/character->wheelBack);
 
                 a = (a2-a1)/2.0f;
@@ -1647,13 +1646,13 @@ bool CMotionVehicle::EventFrame(const Event &event)
                 pos.x =  character->wheelFront;  // left front wheel
                 pos.z =  character->wheelLeft;
                 pos.y =  0.0f;
-                pos = Transform(*mat, pos);
+                pos = Math::Transform(mat, pos);
                 a1 = atanf(m_terrain->GetHeightToFloor(pos)/character->wheelFront);
 
                 pos.x = -character->wheelBack;  // left back wheel
                 pos.z =  character->wheelLeft;
                 pos.y =  0.0f;
-                pos = Transform(*mat, pos);
+                pos = Math::Transform(mat, pos);
                 a2 = atanf(m_terrain->GetHeightToFloor(pos)/character->wheelBack);
 
                 a = (a2-a1)/2.0f;
@@ -1740,10 +1739,10 @@ bool CMotionVehicle::EventFrameFly(const Event &event)
 
     if ( m_physics->GetLand() )  // on the ground?
     {
-        mat = m_object->GetWorldMatrix(0);
-        paw[0] = Transform(*mat, glm::vec3( 4.2f, 0.0f,  0.0f));  // front
-        paw[1] = Transform(*mat, glm::vec3(-3.0f, 0.0f, -3.7f));  // right back
-        paw[2] = Transform(*mat, glm::vec3(-3.0f, 0.0f,  3.7f));  // left back
+        glm::mat4 mat = m_object->GetWorldMatrix(0);
+        paw[0] = Math::Transform(mat, glm::vec3( 4.2f, 0.0f,  0.0f));  // front
+        paw[1] = Math::Transform(mat, glm::vec3(-3.0f, 0.0f, -3.7f));  // right back
+        paw[2] = Math::Transform(mat, glm::vec3(-3.0f, 0.0f,  3.7f));  // left back
 
         for ( i=0 ; i<3 ; i++ )
         {

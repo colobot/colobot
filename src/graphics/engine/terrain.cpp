@@ -734,10 +734,9 @@ bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank,
         }
     }
 
-    Math::Matrix transform;
-    transform.LoadIdentity();
-    transform.Set(1, 4, o.coord.x);
-    transform.Set(3, 4, o.coord.z);
+    glm::mat4 transform = glm::mat4(1.0f);
+    transform[3][0] = o.coord.x;
+    transform[3][2] = o.coord.z;
     m_engine->SetObjectTransform(objRank, transform);
 
     return true;

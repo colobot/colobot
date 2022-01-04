@@ -248,17 +248,17 @@ Error CTaskFlag::CreateFlag(int rank)
         OBJECT_FLAGv,
     };
 
-    Math::Matrix* mat = m_object->GetWorldMatrix(0);
+    glm::mat4 mat = m_object->GetWorldMatrix(0);
     glm::vec3 pos;
     switch ( m_object->GetType() )
     {
         case OBJECT_HUMAN:
         case OBJECT_TECH:
-            pos = Transform(*mat, glm::vec3(4.0f, 0.0f, 0.0f));
+            pos = Math::Transform(mat, glm::vec3(4.0f, 0.0f, 0.0f));
             break;
 
         default:
-            pos = Transform(*mat, glm::vec3(6.0f, 0.0f, 0.0f));
+            pos = Math::Transform(mat, glm::vec3(6.0f, 0.0f, 0.0f));
             break;
     }
 

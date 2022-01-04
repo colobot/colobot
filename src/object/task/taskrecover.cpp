@@ -197,9 +197,9 @@ Error CTaskRecover::Start()
     float energy = dynamic_cast<CPowerContainerObject&>(*power).GetEnergy();
     if ( energy < ENERGY_RECOVER+0.05f )  return ERR_RECOVER_ENERGY;
 
-    Math::Matrix* mat = m_object->GetWorldMatrix(0);
+    glm::mat4 mat = m_object->GetWorldMatrix(0);
     glm::vec3 pos = glm::vec3(RECOVER_DIST, 3.3f, 0.0f);
-    pos = Transform(*mat, pos);  // position in front
+    pos = Math::Transform(mat, pos);  // position in front
     m_recoverPos = pos;
 
     m_ruin = SearchRuin();
@@ -228,7 +228,6 @@ Error CTaskRecover::Start()
 
 Error CTaskRecover::IsEnded()
 {
-    Math::Matrix*   mat;
     glm::vec3    pos, speed, goal;
     glm::vec2       dim;
     float       angle, dist, time;
@@ -272,9 +271,9 @@ Error CTaskRecover::IsEnded()
         {
             m_physics->SetMotorSpeedX(0.0f);
 
-            mat = m_object->GetWorldMatrix(0);
+            glm::mat4 mat = m_object->GetWorldMatrix(0);
             pos = glm::vec3(RECOVER_DIST, 3.3f, 0.0f);
-            pos = Transform(*mat, pos);  // position in front
+            pos = Math::Transform(mat, pos);  // position in front
             m_recoverPos = pos;
 
             i = m_sound->Play(SOUND_MANIP, m_object->GetPosition(), 0.0f, 0.9f, true);
@@ -308,11 +307,11 @@ Error CTaskRecover::IsEnded()
         m_metal->SetLock(true);  // metal not yet usable
         m_metal->SetScale(0.0f);
 
-        mat = m_object->GetWorldMatrix(0);
+        glm::mat4 mat = m_object->GetWorldMatrix(0);
         pos = glm::vec3(RECOVER_DIST, 3.1f, 3.9f);
-        pos = Transform(*mat, pos);
+        pos = Math::Transform(mat, pos);
         goal = glm::vec3(RECOVER_DIST, 3.1f, -3.9f);
-        goal = Transform(*mat, goal);
+        goal = Math::Transform(mat, goal);
         m_particle->CreateRay(pos, goal, Gfx::PARTIRAY2,
                               { 2.0f, 2.0f }, 8.0f);
 

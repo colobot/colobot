@@ -870,7 +870,6 @@ CObject* CTaskManip::SearchOtherObject(bool bAdvance, glm::vec3 &pos,
                                        float &distance, float &angle,
                                        float &height)
 {
-    Math::Matrix*   mat;
     float       iAngle, oAngle, oLimit, aLimit, dLimit;
 
     distance = 1000000.0f;
@@ -910,8 +909,8 @@ CObject* CTaskManip::SearchOtherObject(bool bAdvance, glm::vec3 &pos,
             if (power->GetScaleY() != 1.0f)  continue;
         }
 
-        mat = pObj->GetWorldMatrix(0);
-        glm::vec3 oPos = Transform(*mat, dynamic_cast<CPoweredObject&>(*pObj).GetPowerPosition());
+        glm::mat4 mat = pObj->GetWorldMatrix(0);
+        glm::vec3 oPos = Math::Transform(mat, dynamic_cast<CPoweredObject&>(*pObj).GetPowerPosition());
 
         oAngle = pObj->GetRotationY();
         if ( type == OBJECT_TOWER    ||
@@ -1128,8 +1127,8 @@ bool CTaskManip::TransporterDeposeObject()
 
         m_cargoType = cargo->GetType();
 
-        Math::Matrix* mat = cargo->GetWorldMatrix(0);
-        glm::vec3 pos = Transform(*mat, glm::vec3(0.0f, 1.0f, 0.0f));
+        glm::mat4 mat = cargo->GetWorldMatrix(0);
+        glm::vec3 pos = Math::Transform(mat, glm::vec3(0.0f, 1.0f, 0.0f));
         m_terrain->AdjustToFloor(pos);
         cargo->SetPosition(pos);
         cargo->SetRotationY(m_object->GetRotationY()+Math::PI/2.0f);
@@ -1149,8 +1148,8 @@ bool CTaskManip::TransporterDeposeObject()
 
         m_cargoType = cargo->GetType();
 
-        Math::Matrix* mat = cargo->GetWorldMatrix(0);
-        glm::vec3 pos = Transform(*mat, glm::vec3(0.0f, 1.0f, 0.0f));
+        glm::mat4 mat = cargo->GetWorldMatrix(0);
+        glm::vec3 pos = Math::Transform(mat, glm::vec3(0.0f, 1.0f, 0.0f));
         m_terrain->AdjustToFloor(pos);
         cargo->SetPosition(pos);
         cargo->SetRotationY(m_object->GetRotationY()+Math::PI/2.0f);
@@ -1221,8 +1220,8 @@ bool CTaskManip::TransporterDeposeObject()
 
 bool CTaskManip::IsFreeDeposeObject(glm::vec3 pos)
 {
-    Math::Matrix* mat = m_object->GetWorldMatrix(0);
-    glm::vec3 iPos = Transform(*mat, pos);
+    glm::mat4 mat = m_object->GetWorldMatrix(0);
+    glm::vec3 iPos = Math::Transform(mat, pos);
 
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {

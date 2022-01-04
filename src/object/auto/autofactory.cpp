@@ -207,7 +207,7 @@ bool CAutoFactory::EventProcess(const Event &event)
     ObjectType  type;
     CObject*    cargo;
     CObject*    vehicle;
-    Math::Matrix*   mat;
+    glm::mat4   mat;
     CPhysics*   physics;
     glm::vec3    pos, speed;
     glm::vec2     dim;
@@ -370,7 +370,7 @@ bool CAutoFactory::EventProcess(const Event &event)
 
                 mat = m_object->GetWorldMatrix(0);
                 pos = glm::vec3(-12.0f, 20.0f, -4.0f);  // position of chimney
-                pos = Math::Transform(*mat, pos);
+                pos = Math::Transform(mat, pos);
                 pos.y += 2.0f;
                 pos.x += (Math::Rand()-0.5f)*2.0f;
                 pos.z += (Math::Rand()-0.5f)*2.0f;
@@ -656,8 +656,8 @@ bool CAutoFactory::CreateVehicle()
     {
         pos = glm::vec3(4.0f, 0.0f, 0.0f);
     }
-    Math::Matrix* mat = m_object->GetWorldMatrix(0);
-    pos = Transform(*mat, pos);
+    glm::mat4 mat = m_object->GetWorldMatrix(0);
+    pos = Math::Transform(mat, pos);
 
     ObjectCreateParams params;
     params.pos = pos;

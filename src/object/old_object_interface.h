@@ -28,11 +28,6 @@
 
 #include <glm/glm.hpp>
 
-namespace Math
-{
-struct Matrix;
-} // namespace Math
-
 class CAuto;
 
 
@@ -70,7 +65,7 @@ public:
 
     virtual void        SetMasterParticle(int part, int parti);
 
-    virtual Math::Matrix*   GetWorldMatrix(int part);
+    virtual glm::mat4   GetWorldMatrix(int part);
 
     virtual Character*  GetCharacter();
 

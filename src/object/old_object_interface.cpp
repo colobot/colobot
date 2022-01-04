@@ -78,7 +78,7 @@ void COldObjectInterface::SetMasterParticle(int part, int parti)
     throw std::logic_error("SetMasterParticle: not implemented!");
 }
 
-Math::Matrix* COldObjectInterface::GetWorldMatrix(int part)
+glm::mat4 COldObjectInterface::GetWorldMatrix(int part)
 {
     throw std::logic_error("GetWorldMatrix: not implemented!");
 }

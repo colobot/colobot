@@ -230,7 +230,6 @@ bool CMotionWorm::EventProcess(const Event &event)
 
 bool CMotionWorm::EventFrame(const Event &event)
 {
-    Math::Matrix*   mat;
     glm::vec3    pos, p, angle, speed;
     glm::vec2     center, pp, dim;
     float       height[WORM_PART+2];
@@ -286,7 +285,7 @@ bool CMotionWorm::EventFrame(const Event &event)
     pos = m_object->GetPosition();
     floor = m_terrain->GetFloorLevel(pos, true);
 
-    mat = m_object->GetWorldMatrix(0);
+    glm::mat4 mat = m_object->GetWorldMatrix(0);
 
     px = 1.0f+WORM_PART/2;
     for ( i=0 ; i<WORM_PART+2 ; i++ )
@@ -311,7 +310,7 @@ bool CMotionWorm::EventFrame(const Event &event)
         pos.x = pp.x;
         pos.z = pp.y;
 
-        p = Transform(*mat, pos);
+        p = Math::Transform(mat, pos);
         pos.y += m_terrain->GetFloorLevel(p, true)-floor;
         m_object->SetPartPosition(i+1, pos);
 

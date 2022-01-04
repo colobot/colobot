@@ -21,6 +21,8 @@
 
 #include "object/object.h"
 
+#include <glm/glm.hpp>
+
 #include <memory>
 #include <unordered_map>
 
@@ -70,8 +72,7 @@ protected:
     void TransformCameraCollisionSphere(Math::Sphere& collisionSphere) override;
 
 private:
-    static Math::Matrix ComputeWorldMatrix(const glm::vec3& position,
-                                           float angleY);
+    static glm::mat4 ComputeWorldMatrix(const glm::vec3& position, float angleY);
 
 private:
     Gfx::CEngine* m_engine;

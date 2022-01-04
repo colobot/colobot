@@ -233,7 +233,6 @@ bool CMotionToto::EventProcess(const Event &event)
 
 bool CMotionToto::EventFrame(const Event &event)
 {
-    Math::Matrix*       mat;
     glm::vec3           eye, lookat, dir, perp, nPos, aPos, pos, speed;
     glm::vec3           vibLin, vibCir, dirSpeed, aAntenna;
     glm::vec2           dim;
@@ -700,7 +699,7 @@ bool CMotionToto::EventFrame(const Event &event)
         m_object->SetPartRotationX(3, 0.0f);
     }
 
-    mat = m_object->GetWorldMatrix(0);  // must be done every time!
+    glm::mat4 mat = m_object->GetWorldMatrix(0);  // must be done every time!
 
     // Generates particles.
     if ( m_time-m_lastMotorParticle >= m_engine->ParticleAdapt(0.05f) )
@@ -725,8 +724,8 @@ bool CMotionToto::EventFrame(const Event &event)
                 speed.x += Math::Rand()*2.0f;
                 speed.z += (Math::Rand()-0.5f)*2.0f;
 
-                pos   = Transform(*mat, pos);
-                speed = Transform(*mat, speed)-pos;
+                pos   = Math::Transform(mat, pos);
+                speed = Math::Transform(mat, speed)-pos;
 
                 dim.x = 0.12f;
                 dim.y = dim.x;
@@ -744,8 +743,8 @@ bool CMotionToto::EventFrame(const Event &event)
             speed.z += (Math::Rand()-0.5f)*2.0f;
 
 //          mat = m_object->GetWorldMatrix(0);
-            pos   = Transform(*mat, pos);
-            speed = Transform(*mat, speed)-pos;
+            pos   = Math::Transform(mat, pos);
+            speed = Math::Transform(mat, speed)-pos;
 
             dim.x = (Math::Rand()*0.4f+0.4f)*(1.0f+Math::Min(linSpeed*0.1f, 5.0f));
             dim.y = dim.x;
@@ -758,7 +757,7 @@ bool CMotionToto::EventFrame(const Event &event)
             pos.x = (Math::Rand()-0.5f)*1.0f;
             pos.y = (Math::Rand()-0.5f)*1.0f+3.5f;
             pos.z = (Math::Rand()-0.5f)*1.0f;
-            pos   = Transform(*mat, pos);
+            pos   = Math::Transform(mat, pos);
             speed = glm::vec3(0.0f, 0.0f, 0.0f);
             dim.x = (Math::Rand()*0.3f+0.3f);
             dim.y = dim.x;
@@ -782,7 +781,7 @@ bool CMotionToto::EventFrame(const Event &event)
             pos.x = (Math::Rand()-0.5f)*1.4f;
             pos.y = (Math::Rand()-0.5f)*1.4f+3.5f;
             pos.z = (Math::Rand()-0.5f)*1.4f;
-            pos   = Transform(*mat, pos);
+            pos   = Math::Transform(mat, pos);
             speed = glm::vec3(0.0f, 0.0f, 0.0f);
             dim.x = (Math::Rand()*0.5f+0.5f);
             dim.y = dim.x;

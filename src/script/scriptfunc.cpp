@@ -3742,7 +3742,7 @@ void CScriptFunctions::uObject(CBotVar* botThis, void* user)
         Math::Matrix matRotate;
         Math::LoadRotationZXYMatrix(matRotate, object->GetRotation());
         pos = physics->GetLinMotion(MO_CURSPEED);
-        pos = Transform(matRotate, pos);
+        pos = Math::Transform(matRotate, pos);
 
         pSub = pVar->GetItemList();  // "x"
         pSub->SetValFloat(pos.x/g_unit);

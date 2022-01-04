@@ -72,7 +72,6 @@ void CMainMovie::Flush()
 
 bool CMainMovie::Start(MainMovieType type, float time)
 {
-    Math::Matrix*   mat;
     glm::vec3    pos{ 0, 0, 0 };
     CObject*    pObj;
 
@@ -97,11 +96,11 @@ bool CMainMovie::Start(MainMovieType type, float time)
         m_camera->SetSmooth(Gfx::CAM_SMOOTH_HARD);
         m_camera->SetScriptCamera(m_initialEye, m_initialLookat);
 
-        mat = pObj->GetWorldMatrix(0);
-        m_finalLookat[0] = Math::Transform(*mat, glm::vec3( 1.6f, 1.0f, 1.2f));
-        m_finalEye[0]    = Math::Transform(*mat, glm::vec3(-1.5f, 5.0f, 3.0f));
-        m_finalLookat[1] = Math::Transform(*mat, glm::vec3( 1.6f, 1.0f, 1.2f));
-        m_finalEye[1]    = Math::Transform(*mat, glm::vec3( 0.8f, 3.0f, 0.8f));
+        glm::mat4 mat = pObj->GetWorldMatrix(0);
+        m_finalLookat[0] = Math::Transform(mat, glm::vec3( 1.6f, 1.0f, 1.2f));
+        m_finalEye[0]    = Math::Transform(mat, glm::vec3(-1.5f, 5.0f, 3.0f));
+        m_finalLookat[1] = Math::Transform(mat, glm::vec3( 1.6f, 1.0f, 1.2f));
+        m_finalEye[1]    = Math::Transform(mat, glm::vec3( 0.8f, 3.0f, 0.8f));
     }
 
     if ( m_type == MM_SATCOMclose )

@@ -55,16 +55,15 @@ void CAutoRoot::DeleteObject(bool bAll)
 
 void CAutoRoot::Init()
 {
-    Math::Matrix*   mat;
     glm::vec3    pos, speed;
     glm::vec2     dim;
 
     m_time = 0.0f;
     m_lastParticle = 0.0f;
 
-    mat = m_object->GetWorldMatrix(0);
+    glm::mat4 mat = m_object->GetWorldMatrix(0);
     pos = glm::vec3(-5.0f, 28.0f, -4.0f);  // peak position
-    pos = Math::Transform(*mat, pos);
+    pos = Math::Transform(mat, pos);
     m_center = pos;
 
     speed = glm::vec3(0.0f, 0.0f, 0.0f);

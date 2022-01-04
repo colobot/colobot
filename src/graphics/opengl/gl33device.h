@@ -169,8 +169,6 @@ public:
     void DrawVertexBuffer(CVertexBuffer*) override;
     void DestroyVertexBuffer(CVertexBuffer*) override;
 
-    int ComputeSphereVisibility(const glm::vec3 &center, float radius) override;
-
     void SetViewport(int x, int y, int width, int height) override;
 
     void SetRenderState(RenderState state, bool enabled) override;

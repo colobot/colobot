@@ -222,8 +222,7 @@ void CLightning::Draw()
 
     CDevice* device = m_engine->GetDevice();
 
-    Math::Matrix mat;
-    mat.LoadIdentity();
+    glm::mat4 mat = glm::mat4(1.0f);
     device->SetTransform(TRANSFORM_WORLD, mat);
 
     m_engine->SetTexture("textures/effect00.png");

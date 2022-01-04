@@ -38,11 +38,6 @@
 class CImage;
 struct ImageData;
 
-namespace Math
-{
-struct Matrix;
-} // namespace Math
-
 
 // Graphics module namespace
 namespace Gfx
@@ -454,7 +449,7 @@ public:
     virtual void Restore() = 0;
 
     //! Sets the transform matrix of given type
-    virtual void SetTransform(TransformType type, const Math::Matrix &matrix) = 0;
+    virtual void SetTransform(TransformType type, const glm::mat4 &matrix) = 0;
 
     //! Sets the current material
     virtual void SetMaterial(const Material &material) = 0;
@@ -520,10 +515,6 @@ public:
     virtual CVertexBuffer* CreateVertexBuffer(PrimitiveType primitiveType, const Vertex3D* vertices, int vertexCount) = 0;
     virtual void DrawVertexBuffer(CVertexBuffer*) = 0;
     virtual void DestroyVertexBuffer(CVertexBuffer*) = 0;
-
-    //! Tests whether a sphere is (partially) within the frustum volume
-    //! Returns a mask of frustum planes for which the test is positive
-    virtual int ComputeSphereVisibility(const glm::vec3& center, float radius) = 0;
 
     //! Changes rendering viewport
     virtual void SetViewport(int x, int y, int width, int height) = 0;

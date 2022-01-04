@@ -1523,7 +1523,7 @@ bool CPhysics::EventFrame(const Event &event)
     newangle = angle + event.rTime*m_cirMotion.realSpeed;
     Math::LoadRotationZXYMatrix(matRotate, newangle);
     newpos = event.rTime*m_linMotion.realSpeed;
-    newpos = Transform(matRotate, newpos);
+    newpos = Math::Transform(matRotate, newpos);
     newpos += pos;
 
     m_terrain->AdjustToStandardBounds(newpos);
@@ -1960,7 +1960,6 @@ void CPhysics::SoundMotorFull(float rTime, ObjectType type)
 
 void CPhysics::SoundMotorSlow(float rTime, ObjectType type)
 {
-    Math::Matrix*   mat;
     glm::vec3    pos{ 0, 0, 0 }, speed{ 0, 0, 0 };
     glm::vec2       dim;
     SoundType       sound;
@@ -2078,9 +2077,9 @@ void CPhysics::SoundMotorSlow(float rTime, ObjectType type)
                 speed.y -= Math::Rand()*3.0f;
                 speed.z += (Math::Rand()-0.5f)*6.0f;
 
-                mat = m_object->GetWorldMatrix(0);
-                pos   = Transform(*mat, pos);
-                speed = Transform(*mat, speed)-pos;
+                glm::mat4 mat = m_object->GetWorldMatrix(0);
+                pos   = Math::Transform(mat, pos);
+                speed = Math::Transform(mat, speed)-pos;
 
                 dim.x = Math::Rand()*1.0f+1.0f;
                 dim.y = dim.x;
@@ -2126,7 +2125,6 @@ void CPhysics::SoundMotorStop(float rTime, ObjectType type)
 void CPhysics::SoundReactorFull(float rTime, ObjectType type)
 {
     SoundType      sound;
-    Math::Matrix*   mat;
     glm::vec3    pos{ 0, 0, 0 }, speed{ 0, 0, 0 };
     glm::vec2       dim;
     float       freq;
@@ -2194,8 +2192,8 @@ void CPhysics::SoundReactorFull(float rTime, ObjectType type)
                 }
                 pos.x += (Math::Rand()-0.5f)*2.0f;
                 pos.z += (Math::Rand()-0.5f)*2.0f;
-                mat = m_object->GetWorldMatrix(0);
-                pos = Transform(*mat, pos);
+                glm::mat4 mat = m_object->GetWorldMatrix(0);
+                pos = Math::Transform(mat, pos);
                 speed.x = (Math::Rand()-0.5f)*5.0f;
                 speed.z = (Math::Rand()-0.5f)*5.0f;
                 speed.y = -(4.0f+Math::Rand()*4.0f);
@@ -2219,8 +2217,8 @@ void CPhysics::SoundReactorFull(float rTime, ObjectType type)
             }
             pos.x += (Math::Rand()-0.5f)*1.0f;
             pos.z += (Math::Rand()-0.5f)*1.0f;
-            mat = m_object->GetWorldMatrix(0);
-            pos = Transform(*mat, pos);
+            glm::mat4 mat = m_object->GetWorldMatrix(0);
+            pos = Math::Transform(mat, pos);
             speed.x = (Math::Rand()-0.5f)*2.0f;
             speed.z = (Math::Rand()-0.5f)*2.0f;
             speed.y = -(4.0f+Math::Rand()*4.0f);
@@ -2334,7 +2332,7 @@ void CPhysics::FloorAdapt(float aTime, float rTime,
                                  fabs(m_linMotion.realSpeed.y*0.3f);
                     m_linMotion.currentSpeed = norm*force;
                     Math::LoadRotationXZYMatrix(matRotate, -angle);
-                    m_linMotion.currentSpeed = Transform(matRotate, m_linMotion.currentSpeed);
+                    m_linMotion.currentSpeed = Math::Transform(matRotate, m_linMotion.currentSpeed);
 
                     if ( aTime-m_soundTimeBoum > 0.5f )
                     {
@@ -2618,7 +2616,7 @@ int CPhysics::ObjectAdapt(const glm::vec3 &pos, const glm::vec3 &angle)
 
                     m_linMotion.currentSpeed = glm::normalize(iPos-oPos)*force;
                     Math::LoadRotationXZYMatrix(matRotate, -angle);
-                    m_linMotion.currentSpeed = Transform(matRotate, m_linMotion.currentSpeed);
+                    m_linMotion.currentSpeed = Math::Transform(matRotate, m_linMotion.currentSpeed);
                     if ( !m_object->Implements(ObjectInterfaceType::Flying) )
                     {
                         m_linMotion.currentSpeed.y = 0.0f;
@@ -2633,7 +2631,7 @@ int CPhysics::ObjectAdapt(const glm::vec3 &pos, const glm::vec3 &angle)
                         oAngle = pObj->GetRotation();
                         oSpeed = glm::normalize(oPos-iPos)*force;
                         Math::LoadRotationXZYMatrix(matRotate, -oAngle);
-                        oSpeed = Transform(matRotate, oSpeed);
+                        oSpeed = Math::Transform(matRotate, oSpeed);
                         if ( !pObj->Implements(ObjectInterfaceType::Flying) )
                         {
                             oSpeed.y = 0.0f;
@@ -2961,7 +2959,6 @@ void CPhysics::FrameParticle(float aTime, float rTime)
 
 void CPhysics::PowerParticle(float factor, bool bBreak)
 {
-    Math::Matrix*   mat;
     glm::vec3    pos{ 0, 0, 0 }, ppos{ 0, 0, 0 }, eye{ 0, 0, 0 }, speed{ 0, 0, 0 };
     glm::vec2       dim;
     bool        bCarryPower;
@@ -2978,12 +2975,12 @@ void CPhysics::PowerParticle(float factor, bool bBreak)
         }
     }
 
-    mat = m_object->GetWorldMatrix(0);
+    glm::mat4 mat = m_object->GetWorldMatrix(0);
 
     pos = m_object->GetPowerPosition();
     pos.x -= 0.3f;
     pos.y += 1.0f;  // battery center position
-    pos = Transform(*mat, pos);
+    pos = Math::Transform(mat, pos);
 
     speed.x = (Math::Rand()-0.5f)*12.0f;
     speed.y = (Math::Rand()-0.5f)*12.0f;
@@ -3001,7 +2998,7 @@ void CPhysics::PowerParticle(float factor, bool bBreak)
     if ( bCarryPower )  // carry a battery?
     {
         pos = glm::vec3(3.0f, 5.6f, 0.0f);  // position of battery holder // TODO: Move to CTransportableObject
-        pos = Transform(*mat, pos);
+        pos = Math::Transform(mat, pos);
 
         speed.x = (Math::Rand()-0.5f)*12.0f;
         speed.y = (Math::Rand()-0.5f)*12.0f;
@@ -3056,7 +3053,6 @@ void CPhysics::CrashParticle(float crash)
 
 void CPhysics::MotorParticle(float aTime, float rTime)
 {
-    Math::Matrix*   mat;
     glm::vec3    pos{ 0, 0, 0 }, speed{ 0, 0, 0 };
     glm::vec2       dim;
     ObjectType  type;
@@ -3160,12 +3156,12 @@ void CPhysics::MotorParticle(float aTime, float rTime)
             {
                 m_lastSlideParticle = aTime;
 
-                mat = m_object->GetWorldMatrix(0);
+                glm::mat4 mat = m_object->GetWorldMatrix(0);
                 pos.x = (Math::Rand()-0.5f)*1.0f;
                 pos.y = -m_object->GetCharacter()->height;
                 pos.z = Math::Rand()*0.4f+1.0f;
                 if ( rand()%2 == 0 )  pos.z = -pos.z;
-                pos = Transform(*mat, pos);
+                pos = Math::Transform(mat, pos);
                 speed = glm::vec3(0.0f, 1.0f, 0.0f);
                 dim.x = Math::Rand()*(h-5.0f)/2.0f+1.0f;
                 if ( dim.x > 2.5f )  dim.x = 2.5f;
@@ -3189,12 +3185,12 @@ void CPhysics::MotorParticle(float aTime, float rTime)
             {
                 m_lastSlideParticle = aTime;
 
-                mat = m_object->GetWorldMatrix(0);
+                glm::mat4 mat = m_object->GetWorldMatrix(0);
                 pos.x = (Math::Rand()-0.5f)*8.0f;
                 pos.y = 0.0f;
                 pos.z = Math::Rand()*2.0f+3.0f;
                 if ( rand()%2 == 0 )  pos.z = -pos.z;
-                pos = Transform(*mat, pos);
+                pos = Math::Transform(mat, pos);
                 speed = glm::vec3(0.0f, 0.0f, 0.0f);
                 dim.x = Math::Rand()*(h-5.0f)/2.0f+1.0f;
                 if ( dim.x > 3.0f )  dim.x = 3.0f;
@@ -3217,12 +3213,12 @@ void CPhysics::MotorParticle(float aTime, float rTime)
             {
                 m_lastSlideParticle = aTime;
 
-                mat = m_object->GetWorldMatrix(0);
+                glm::mat4 mat = m_object->GetWorldMatrix(0);
                 pos.x = (Math::Rand()-0.5f)*9.0f;
                 pos.y = 0.0f;
                 pos.z = Math::Rand()*3.0f+3.0f;
                 if ( rand()%2 == 0 )  pos.z = -pos.z;
-                pos = Transform(*mat, pos);
+                pos = Math::Transform(mat, pos);
                 speed = glm::vec3(0.0f, 0.0f, 0.0f);
                 dim.x = Math::Rand()*(h-5.0f)/2.0f+1.0f;
                 if ( dim.x > 3.0f )  dim.x = 3.0f;
@@ -3250,8 +3246,8 @@ void CPhysics::MotorParticle(float aTime, float rTime)
             m_lastMotorParticle = aTime;
 
             pos = glm::vec3(-1.6f, -0.5f, 0.0f);
-            mat = m_object->GetWorldMatrix(0);
-            pos = Transform(*mat, pos);
+            glm::mat4 mat = m_object->GetWorldMatrix(0);
+            pos = Math::Transform(mat, pos);
 
             speed.x = (Math::Rand()-0.5f)*0.6f;
             speed.z = (Math::Rand()-0.5f)*0.6f;
@@ -3282,8 +3278,8 @@ void CPhysics::MotorParticle(float aTime, float rTime)
             pos.x += (Math::Rand()-0.5f)*3.0f;
             pos.y += (Math::Rand()-0.5f)*1.5f;
             pos.z += (Math::Rand()-0.5f)*3.0f;
-            mat = m_object->GetWorldMatrix(0);
-            pos = Transform(*mat, pos);
+            glm::mat4 mat = m_object->GetWorldMatrix(0);
+            pos = Math::Transform(mat, pos);
 
             h = m_floorHeight;
             if ( h > 10.0f )  // high enough?
@@ -3303,7 +3299,7 @@ void CPhysics::MotorParticle(float aTime, float rTime)
             m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISCRAPS, 2.0f, 10.0f);
 
             pos = glm::vec3(-1.6f, -0.5f, 0.0f);
-            pos = Transform(*mat, pos);
+            pos = Math::Transform(mat, pos);
 
             speed.x = (Math::Rand()-0.5f)*1.0f;
             speed.z = (Math::Rand()-0.5f)*1.0f;
@@ -3362,8 +3358,8 @@ void CPhysics::MotorParticle(float aTime, float rTime)
 
                 pos.x += (Math::Rand()-0.5f)*2.0f;
                 pos.z += (Math::Rand()-0.5f)*2.0f;
-                mat = m_object->GetWorldMatrix(0);
-                pos = Transform(*mat, pos);
+                glm::mat4 mat = m_object->GetWorldMatrix(0);
+                pos = Math::Transform(mat, pos);
                 speed = glm::vec3(0.0f, 0.0f, 0.0f);
                 dim.x = Math::Rand()*h/5.0f+2.0f;
                 dim.y = dim.x;
@@ -3384,8 +3380,8 @@ void CPhysics::MotorParticle(float aTime, float rTime)
 
                 pos.x += (Math::Rand()-0.5f)*1.0f;
                 pos.z += (Math::Rand()-0.5f)*1.0f;
-                mat = m_object->GetWorldMatrix(0);
-                pos = Transform(*mat, pos);
+                glm::mat4 mat = m_object->GetWorldMatrix(0);
+                pos = Math::Transform(mat, pos);
                 speed = glm::vec3(0.0f, 0.0f, 0.0f);
                 dim.x = 1.0f;
                 dim.y = dim.x;
@@ -3403,8 +3399,8 @@ void CPhysics::MotorParticle(float aTime, float rTime)
             pos.x += (Math::Rand()-0.5f)*6.0f;
             pos.y += (Math::Rand()-0.5f)*3.0f;
             pos.z += (Math::Rand()-0.5f)*6.0f;
-            mat = m_object->GetWorldMatrix(0);
-            pos = Transform(*mat, pos);
+            glm::mat4 mat = m_object->GetWorldMatrix(0);
+            pos = Math::Transform(mat, pos);
 
             h = m_floorHeight;
             if ( h > 10.0f )  // high enough?
@@ -3424,7 +3420,7 @@ void CPhysics::MotorParticle(float aTime, float rTime)
             m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISCRAPS, 2.0f, 10.0f);
 
             pos = glm::vec3(0.0f, 1.0f, 0.0f);
-            pos = Transform(*mat, pos);
+            pos = Math::Transform(mat, pos);
 
             speed.x = (Math::Rand()-0.5f)*1.0f;
             speed.z = (Math::Rand()-0.5f)*1.0f;
@@ -3464,8 +3460,8 @@ void CPhysics::MotorParticle(float aTime, float rTime)
         m_lastMotorParticle = aTime;
 
         pos = glm::vec3(0.0f, 3.0f, 0.0f);
-        mat = m_object->GetWorldMatrix(0);
-        pos = Transform(*mat, pos);
+        glm::mat4 mat = m_object->GetWorldMatrix(0);
+        pos = Math::Transform(mat, pos);
         pos.x += (Math::Rand()-0.5f)*1.0f;
         pos.z += (Math::Rand()-0.5f)*1.0f;
         speed.y = (Math::Rand()-0.5f)*8.0f+8.0f;
@@ -3490,8 +3486,8 @@ void CPhysics::MotorParticle(float aTime, float rTime)
         m_lastMotorParticle = aTime;
 
         pos = glm::vec3(0.0f, 3.0f, 0.0f);
-        mat = m_object->GetWorldMatrix(0);
-        pos = Transform(*mat, pos);
+        glm::mat4 mat = m_object->GetWorldMatrix(0);
+        pos = Math::Transform(mat, pos);
         pos.x += (Math::Rand()-0.5f)*1.0f;
         pos.z += (Math::Rand()-0.5f)*1.0f;
         speed.y = (Math::Rand()-0.5f)*8.0f+8.0f;
@@ -3527,8 +3523,8 @@ void CPhysics::MotorParticle(float aTime, float rTime)
             pos = glm::vec3(-2.5f, 10.3f, -1.3f);
             pos.x += (Math::Rand()-0.5f)*1.0f;
             pos.z += (Math::Rand()-0.5f)*1.0f;
-            mat = m_object->GetWorldMatrix(0);
-            pos   = Transform(*mat, pos);
+            glm::mat4 mat = m_object->GetWorldMatrix(0);
+            pos   = Math::Transform(mat, pos);
 
             speed.x = (Math::Rand()-0.5f)*2.0f;
             speed.z = (Math::Rand()-0.5f)*2.0f;
@@ -3564,9 +3560,9 @@ void CPhysics::MotorParticle(float aTime, float rTime)
             speed.y -= 0.5f+Math::Rand()*2.0f;
             speed.z += (Math::Rand()-0.5f)*3.0f;
 
-            mat = m_object->GetWorldMatrix(0);
-            pos   = Transform(*mat, pos);
-            speed = Transform(*mat, speed)-pos;
+            glm::mat4 mat = m_object->GetWorldMatrix(0);
+            pos   = Math::Transform(mat, pos);
+            speed = Math::Transform(mat, speed)-pos;
 
             dim.x = Math::Rand()*0.4f+0.3f;
             dim.y = dim.x;
@@ -3696,11 +3692,10 @@ void CPhysics::WaterParticle(float aTime, glm::vec3 pos, ObjectType type,
 
 void CPhysics::WheelParticle(TraceColor color, float width)
 {
-    Math::Matrix*       mat;
     glm::vec3        goal1{ 0, 0, 0 }, goal2{ 0, 0, 0 }, wheel1{ 0, 0, 0 }, wheel2{ 0, 0, 0 };
     float               dist1, dist2, step;
 
-    mat = m_object->GetWorldMatrix(0);
+    glm::mat4 mat = m_object->GetWorldMatrix(0);
 
     // Draw a trace on the ground.
     if ( color != TraceColor::Default )
@@ -3716,12 +3711,12 @@ void CPhysics::WheelParticle(TraceColor color, float width)
         goal1.x = step/2.0f;
         goal1.y = 0.0f;
         goal1.z = -width/2.0f;
-        goal1 = Transform(*mat, goal1);
+        goal1 = Math::Transform(mat, goal1);
 
         goal2.x = step/2.0f;
         goal2.y = 0.0f;
         goal2.z = width/2.0f;
-        goal2 = Transform(*mat, goal2);
+        goal2 = Math::Transform(mat, goal2);
 
         if ( !m_bWheelParticleBrake )
         {

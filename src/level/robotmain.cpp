@@ -6050,16 +6050,15 @@ float CRobotMain::GetGlobalCellCapacity()
 
 void CRobotMain::StartDetectEffect(COldObject* object, CObject* target)
 {
-    Math::Matrix*   mat;
-    glm::vec3    pos, goal;
-    glm::vec2       dim;
+    glm::vec3    goal;
+    glm::vec2    dim;
 
-    mat = object->GetWorldMatrix(0);
-    pos = Math::Transform(*mat, glm::vec3(2.0f, 3.0f, 0.0f));
+    glm::mat4 mat = object->GetWorldMatrix(0);
+    glm::vec3 pos = Math::Transform(mat, glm::vec3(2.0f, 3.0f, 0.0f));
 
     if ( target == nullptr )
     {
-        goal = Math::Transform(*mat, glm::vec3(50.0f, 3.0f, 0.0f));
+        goal = Math::Transform(mat, glm::vec3(50.0f, 3.0f, 0.0f));
     }
     else
     {

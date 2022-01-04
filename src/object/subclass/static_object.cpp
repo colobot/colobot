@@ -57,7 +57,7 @@ CStaticObject::CStaticObject(int id,
     m_position = position;
     m_rotation.y = angleY;
 
-    Math::Matrix worldMatrix = ComputeWorldMatrix(position, angleY);
+    glm::mat4 worldMatrix = ComputeWorldMatrix(position, angleY);
     m_meshHandle = m_engine->AddStaticMesh(key, mesh, worldMatrix);
 
     if (model.HasShadowSpot())
@@ -74,15 +74,15 @@ CStaticObject::~CStaticObject()
     m_engine->DeleteStaticMesh(m_meshHandle);
 }
 
-Math::Matrix CStaticObject::ComputeWorldMatrix(const glm::vec3& position, float angleY)
+glm::mat4 CStaticObject::ComputeWorldMatrix(const glm::vec3& position, float angleY)
 {
-    Math::Matrix translationMatrix;
+    glm::mat4 translationMatrix;
     Math::LoadTranslationMatrix(translationMatrix, position);
 
-    Math::Matrix rotationMatrix;
+    glm::mat4 rotationMatrix;
     Math::LoadRotationZXYMatrix(rotationMatrix, glm::vec3(0.0f, angleY, 0.0f));
 
-    return Math::MultiplyMatrices(translationMatrix, rotationMatrix);
+    return translationMatrix * rotationMatrix;
 }
 
 void CStaticObject::Read(CLevelParserLine* line)

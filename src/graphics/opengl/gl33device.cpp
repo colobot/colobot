@@ -118,8 +118,7 @@ void CGL33Device::DebugLights()
     glDisable(GL_BLEND);
 
     Math::Matrix saveWorldMat = m_worldMat;
-    Math::Matrix identity;
-    identity.LoadIdentity();
+    glm::mat4 identity = glm::mat4(1.0f);
     SetTransform(TRANSFORM_WORLD, identity);
 
     for (int i = 0; i < static_cast<int>( m_lights.size() ); ++i)
@@ -399,14 +398,13 @@ bool CGL33Device::Create()
         }
 
         // Set default uniform values
-        Math::Matrix matrix;
-        matrix.LoadIdentity();
+        glm::mat4 matrix = glm::mat4(1.0f);
 
-        glUniformMatrix4fv(uni.projectionMatrix, 1, GL_FALSE, matrix.Array());
-        glUniformMatrix4fv(uni.viewMatrix, 1, GL_FALSE, matrix.Array());
-        glUniformMatrix4fv(uni.modelMatrix, 1, GL_FALSE, matrix.Array());
-        glUniformMatrix4fv(uni.normalMatrix, 1, GL_FALSE, matrix.Array());
-        glUniformMatrix4fv(uni.shadowMatrix, 1, GL_FALSE, matrix.Array());
+        glUniformMatrix4fv(uni.projectionMatrix, 1, GL_FALSE, glm::value_ptr(matrix));
+        glUniformMatrix4fv(uni.viewMatrix, 1, GL_FALSE, glm::value_ptr(matrix));
+        glUniformMatrix4fv(uni.modelMatrix, 1, GL_FALSE, glm::value_ptr(matrix));
+        glUniformMatrix4fv(uni.normalMatrix, 1, GL_FALSE, glm::value_ptr(matrix));
+        glUniformMatrix4fv(uni.shadowMatrix, 1, GL_FALSE, glm::value_ptr(matrix));
         glUniform3f(uni.cameraPosition, 0.0f, 0.0f, 0.0f);
 
         glUniform1i(uni.primaryTexture, 0);
@@ -528,9 +526,9 @@ void CGL33Device::BeginScene()
 {
     Clear();
 
-    glUniformMatrix4fv(m_uniforms.projectionMatrix, 1, GL_FALSE, m_projectionMat.Array());
-    glUniformMatrix4fv(m_uniforms.viewMatrix, 1, GL_FALSE, m_viewMat.Array());
-    glUniformMatrix4fv(m_uniforms.modelMatrix, 1, GL_FALSE, m_worldMat.Array());
+    glUniformMatrix4fv(m_uniforms.projectionMatrix, 1, GL_FALSE, glm::value_ptr(m_projectionMat));
+    glUniformMatrix4fv(m_uniforms.viewMatrix, 1, GL_FALSE, glm::value_ptr(m_viewMat));
+    glUniformMatrix4fv(m_uniforms.modelMatrix, 1, GL_FALSE, glm::value_ptr(m_worldMat));
 }
 
 void CGL33Device::EndScene()
@@ -584,35 +582,31 @@ void CGL33Device::SetTransform(TransformType type, const Math::Matrix &matrix)
     if      (type == TRANSFORM_WORLD)
     {
         m_worldMat = matrix;
-        glUniformMatrix4fv(m_uniforms.modelMatrix, 1, GL_FALSE, m_worldMat.Array());
+        glUniformMatrix4fv(m_uniforms.modelMatrix, 1, GL_FALSE, glm::value_ptr(m_worldMat));
 
-        m_modelviewMat = Math::MultiplyMatrices(m_viewMat, m_worldMat);
+        m_modelviewMat = m_viewMat * m_worldMat;
         m_combinedMatrixOutdated = true;
 
         // normal transform
-        Math::Matrix normalMat = matrix;
+        Math::Matrix normalMat = glm::inverse(normalMat);
 
-        if (fabs(normalMat.Det()) > 1e-6)
-            normalMat = normalMat.Inverse();
-
-        glUniformMatrix4fv(m_uniforms.normalMatrix, 1, GL_TRUE, normalMat.Array());
+        glUniformMatrix4fv(m_uniforms.normalMatrix, 1, GL_TRUE, glm::value_ptr(normalMat));
     }
     else if (type == TRANSFORM_VIEW)
     {
-        Math::Matrix scale;
-        glm::vec3 cameraPosition;
-        scale.Set(3, 3, -1.0f);
-        m_viewMat = Math::MultiplyMatrices(scale, matrix);
+        Math::Matrix scale = glm::mat4(1.0f);
+        scale[2][2] = -1.0f;
+        m_viewMat = scale * matrix;
 
-        m_modelviewMat = Math::MultiplyMatrices(m_viewMat, m_worldMat);
+        m_modelviewMat = m_viewMat * m_worldMat;
         m_combinedMatrixOutdated = true;
 
-        glUniformMatrix4fv(m_uniforms.viewMatrix, 1, GL_FALSE, m_viewMat.Array());
+        glUniformMatrix4fv(m_uniforms.viewMatrix, 1, GL_FALSE, glm::value_ptr(m_viewMat));
 
         if (m_uniforms.cameraPosition >= 0)
         {
-            cameraPosition = { 0, 0, 0 };
-            cameraPosition = MatrixVectorMultiply(m_viewMat.Inverse(), cameraPosition);
+            glm::vec3 cameraPosition = { 0, 0, 0 };
+            cameraPosition = glm::vec3(glm::inverse(m_viewMat) * glm::vec4(cameraPosition, 1.0f));
             glUniform3fv(m_uniforms.cameraPosition, 1, glm::value_ptr(cameraPosition));
         }
     }
@@ -621,12 +615,12 @@ void CGL33Device::SetTransform(TransformType type, const Math::Matrix &matrix)
         m_projectionMat = matrix;
         m_combinedMatrixOutdated = true;
 
-        glUniformMatrix4fv(m_uniforms.projectionMatrix, 1, GL_FALSE, m_projectionMat.Array());
+        glUniformMatrix4fv(m_uniforms.projectionMatrix, 1, GL_FALSE, glm::value_ptr(m_projectionMat));
     }
     else if (type == TRANSFORM_SHADOW)
     {
         Math::Matrix temp = matrix;
-        glUniformMatrix4fv(m_uniforms.shadowMatrix, 1, GL_FALSE, temp.Array());
+        glUniformMatrix4fv(m_uniforms.shadowMatrix, 1, GL_FALSE, glm::value_ptr(temp));
     }
     else
     {
@@ -1325,87 +1319,6 @@ void CGL33Device::DestroyVertexBuffer(CVertexBuffer* buffer)
     m_buffers.erase(buffer);
 
     delete buffer;
-}
-
-/* Based on libwine's implementation */
-
-int CGL33Device::ComputeSphereVisibility(const glm::vec3 &center, float radius)
-{
-    if (m_combinedMatrixOutdated)
-    {
-        m_combinedMatrix = Math::MultiplyMatrices(m_projectionMat, m_modelviewMat);
-        m_combinedMatrixOutdated = false;
-    }
-
-    Math::Matrix &m = m_combinedMatrix;
-
-    glm::vec3 vec[6];
-    float originPlane[6];
-
-    // Left plane
-    vec[0].x = m.Get(4, 1) + m.Get(1, 1);
-    vec[0].y = m.Get(4, 2) + m.Get(1, 2);
-    vec[0].z = m.Get(4, 3) + m.Get(1, 3);
-    float l1 = glm::length(vec[0]);
-    vec[0] = glm::normalize(vec[0]);
-    originPlane[0] = (m.Get(4, 4) + m.Get(1, 4)) / l1;
-
-    // Right plane
-    vec[1].x = m.Get(4, 1) - m.Get(1, 1);
-    vec[1].y = m.Get(4, 2) - m.Get(1, 2);
-    vec[1].z = m.Get(4, 3) - m.Get(1, 3);
-    float l2 = glm::length(vec[1]);
-    vec[1] = glm::normalize(vec[1]);
-    originPlane[1] = (m.Get(4, 4) - m.Get(1, 4)) / l2;
-
-    // Bottom plane
-    vec[2].x = m.Get(4, 1) + m.Get(2, 1);
-    vec[2].y = m.Get(4, 2) + m.Get(2, 2);
-    vec[2].z = m.Get(4, 3) + m.Get(2, 3);
-    float l3 = glm::length(vec[2]);
-    vec[2] = glm::normalize(vec[2]);
-    originPlane[2] = (m.Get(4, 4) + m.Get(2, 4)) / l3;
-
-    // Top plane
-    vec[3].x = m.Get(4, 1) - m.Get(2, 1);
-    vec[3].y = m.Get(4, 2) - m.Get(2, 2);
-    vec[3].z = m.Get(4, 3) - m.Get(2, 3);
-    float l4 = glm::length(vec[3]);
-    vec[3] = glm::normalize(vec[3]);
-    originPlane[3] = (m.Get(4, 4) - m.Get(2, 4)) / l4;
-
-    // Front plane
-    vec[4].x = m.Get(4, 1) + m.Get(3, 1);
-    vec[4].y = m.Get(4, 2) + m.Get(3, 2);
-    vec[4].z = m.Get(4, 3) + m.Get(3, 3);
-    float l5 = glm::length(vec[4]);
-    vec[4] = glm::normalize(vec[4]);
-    originPlane[4] = (m.Get(4, 4) + m.Get(3, 4)) / l5;
-
-    // Back plane
-    vec[5].x = m.Get(4, 1) - m.Get(3, 1);
-    vec[5].y = m.Get(4, 2) - m.Get(3, 2);
-    vec[5].z = m.Get(4, 3) - m.Get(3, 3);
-    float l6 = glm::length(vec[5]);
-    vec[5] = glm::normalize(vec[5]);
-    originPlane[5] = (m.Get(4, 4) - m.Get(3, 4)) / l6;
-
-    int result = 0;
-
-    if (InPlane(vec[0], originPlane[0], center, radius))
-        result |= FRUSTUM_PLANE_LEFT;
-    if (InPlane(vec[1], originPlane[1], center, radius))
-        result |= FRUSTUM_PLANE_RIGHT;
-    if (InPlane(vec[2], originPlane[2], center, radius))
-        result |= FRUSTUM_PLANE_BOTTOM;
-    if (InPlane(vec[3], originPlane[3], center, radius))
-        result |= FRUSTUM_PLANE_TOP;
-    if (InPlane(vec[4], originPlane[4], center, radius))
-        result |= FRUSTUM_PLANE_FRONT;
-    if (InPlane(vec[5], originPlane[5], center, radius))
-        result |= FRUSTUM_PLANE_BACK;
-
-    return result;
 }
 
 void CGL33Device::SetViewport(int x, int y, int width, int height)

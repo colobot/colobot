@@ -235,7 +235,7 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
     Math::Matrix temp1, temp2;
     Math::LoadScaleMatrix(temp1, glm::vec3(0.5f, 0.5f, 0.5f));
     Math::LoadTranslationMatrix(temp2, glm::vec3(1.0f, 1.0f, 1.0f));
-    m_shadowBias = Math::MultiplyMatrices(temp1, temp2);
+    m_shadowBias = temp1 * temp2;
 
     m_lastState = -1;
     m_statisticTriangle = 0;
@@ -350,8 +350,8 @@ bool CEngine::Create()
 
     SetFocus(m_focus);
 
-    m_matWorldInterface.LoadIdentity();
-    m_matViewInterface.LoadIdentity();
+    m_matWorldInterface = glm::mat4(1.0f);
+    m_matViewInterface = glm::mat4(1.0f);
 
     auto renderer = m_device->GetUIRenderer();
     renderer->SetProjection(0.0f, 1.0f, 0.0f, 1.0f);
@@ -900,7 +900,7 @@ int CEngine::CreateObject()
     m_objects[objRank].used = true;
 
     Math::Matrix mat;
-    mat.LoadIdentity();
+    mat = glm::mat4(1.0f);
     SetObjectTransform(objRank, mat);
 
     m_objects[objRank].drawWorld = true;
@@ -1644,9 +1644,9 @@ void CEngine::ComputeDistance()
             continue;
 
         glm::vec3 v{};
-        v.x = m_eyePt.x - m_objects[i].transform.Get(1, 4);
-        v.y = m_eyePt.y - m_objects[i].transform.Get(2, 4);
-        v.z = m_eyePt.z - m_objects[i].transform.Get(3, 4);
+        v.x = m_eyePt.x - m_objects[i].transform[3][0];
+        v.y = m_eyePt.y - m_objects[i].transform[3][1];
+        v.z = m_eyePt.z - m_objects[i].transform[3][2];
         m_objects[i].distance = glm::length(v);
     }
 }
@@ -1910,13 +1910,16 @@ bool CEngine::DetectTriangle(const glm::vec2& mouse, Vertex3D* triangle, int obj
     if (! Math::IsInsideTriangle(a, b, c, mouse))
         return false;
 
+    auto matViewInverse = glm::inverse(m_matView);
+    auto matProjInverse = glm::inverse(m_matProj);
+
     glm::vec3 a2 = Math::Transform(m_objects[objRank].transform, triangle[0].position);
     glm::vec3 b2 = Math::Transform(m_objects[objRank].transform, triangle[1].position);
     glm::vec3 c2 = Math::Transform(m_objects[objRank].transform, triangle[2].position);
-    glm::vec3 e  = Math::Transform(m_matView.Inverse(), glm::vec3(0.0f, 0.0f, -1.0f));
-    glm::vec3 f  = Math::Transform(m_matView.Inverse(), glm::vec3(
-        (mouse.x*2.0f-1.0f)*m_matProj.Inverse().Get(1,1),
-        (mouse.y*2.0f-1.0f)*m_matProj.Inverse().Get(2,2),
+    glm::vec3 e  = Math::Transform(matViewInverse, glm::vec3(0.0f, 0.0f, -1.0f));
+    glm::vec3 f  = Math::Transform(matViewInverse, glm::vec3(
+        (mouse.x*2.0f-1.0f) * matProjInverse[0][0],
+        (mouse.y*2.0f-1.0f) * matProjInverse[1][1],
         0.0f));
     Math::Intersect(a2, b2, c2, e, f, pos);
 
@@ -1952,52 +1955,52 @@ int CEngine::ComputeSphereVisibility(const Math::Matrix& m, const glm::vec3& cen
     float originPlane[6];
 
     // Left plane
-    vec[0].x = m.Get(4, 1) + m.Get(1, 1);
-    vec[0].y = m.Get(4, 2) + m.Get(1, 2);
-    vec[0].z = m.Get(4, 3) + m.Get(1, 3);
+    vec[0].x = m[0][3] + m[0][0];
+    vec[0].y = m[1][3] + m[1][0];
+    vec[0].z = m[2][3] + m[2][0];
     float l1 = glm::length(vec[0]);
     vec[0] = glm::normalize(vec[0]);
-    originPlane[0] = (m.Get(4, 4) + m.Get(1, 4)) / l1;
+    originPlane[0] = (m[3][3] + m[3][0]) / l1;
 
     // Right plane
-    vec[1].x = m.Get(4, 1) - m.Get(1, 1);
-    vec[1].y = m.Get(4, 2) - m.Get(1, 2);
-    vec[1].z = m.Get(4, 3) - m.Get(1, 3);
+    vec[1].x = m[0][3] - m[0][0];
+    vec[1].y = m[1][3] - m[1][0];
+    vec[1].z = m[2][3] - m[2][0];
     float l2 = glm::length(vec[1]);
     vec[1] = glm::normalize(vec[1]);
-    originPlane[1] = (m.Get(4, 4) - m.Get(1, 4)) / l2;
+    originPlane[1] = (m[3][3] - m[3][0]) / l2;
 
     // Bottom plane
-    vec[2].x = m.Get(4, 1) + m.Get(2, 1);
-    vec[2].y = m.Get(4, 2) + m.Get(2, 2);
-    vec[2].z = m.Get(4, 3) + m.Get(2, 3);
+    vec[2].x = m[0][3] + m[1][0];
+    vec[2].y = m[1][3] + m[1][1];
+    vec[2].z = m[3][2] + m[1][2];
     float l3 = glm::length(vec[2]);
     vec[2] = glm::normalize(vec[2]);
-    originPlane[2] = (m.Get(4, 4) + m.Get(2, 4)) / l3;
+    originPlane[2] = (m[3][3] + m[3][1]) / l3;
 
     // Top plane
-    vec[3].x = m.Get(4, 1) - m.Get(2, 1);
-    vec[3].y = m.Get(4, 2) - m.Get(2, 2);
-    vec[3].z = m.Get(4, 3) - m.Get(2, 3);
+    vec[3].x = m[0][3] - m[0][1];
+    vec[3].y = m[1][3] - m[1][1];
+    vec[3].z = m[2][3] - m[2][1];
     float l4 = glm::length(vec[3]);
     vec[3] = glm::normalize(vec[3]);
-    originPlane[3] = (m.Get(4, 4) - m.Get(2, 4)) / l4;
+    originPlane[3] = (m[3][3] - m[3][1]) / l4;
 
     // Front plane
-    vec[4].x = m.Get(4, 1) + m.Get(3, 1);
-    vec[4].y = m.Get(4, 2) + m.Get(3, 2);
-    vec[4].z = m.Get(4, 3) + m.Get(3, 3);
+    vec[4].x = m[0][3] + m[0][2];
+    vec[4].y = m[1][3] + m[1][2];
+    vec[4].z = m[2][3] + m[2][2];
     float l5 = glm::length(vec[4]);
     vec[4] = glm::normalize(vec[4]);
-    originPlane[4] = (m.Get(4, 4) + m.Get(3, 4)) / l5;
+    originPlane[4] = (m[3][3] + m[3][2]) / l5;
 
     // Back plane
-    vec[5].x = m.Get(4, 1) - m.Get(3, 1);
-    vec[5].y = m.Get(4, 2) - m.Get(3, 2);
-    vec[5].z = m.Get(4, 3) - m.Get(3, 3);
+    vec[5].x = m[0][3] - m[0][2];
+    vec[5].y = m[1][3] - m[1][2];
+    vec[5].z = m[2][3] - m[2][2];
     float l6 = glm::length(vec[5]);
     vec[5] = glm::normalize(vec[5]);
-    originPlane[5] = (m.Get(4, 4) - m.Get(3, 4)) / l6;
+    originPlane[5] = (m[3][3] - m[3][2]) / l6;
 
     int result = 0;
 
@@ -2037,8 +2040,8 @@ bool CEngine::TransformPoint(glm::vec3& p2D, int objRank, glm::vec3 p3D)
     if (p3D.z < 2.0f)
         return false;  // behind?
 
-    p2D.x = (p3D.x/p3D.z)*m_matProj.Get(1,1);
-    p2D.y = (p3D.y/p3D.z)*m_matProj.Get(2,2);
+    p2D.x = (p3D.x/p3D.z)*m_matProj[0][0];
+    p2D.y = (p3D.y/p3D.z)*m_matProj[1][1];
     p2D.z = p3D.z;
 
     p2D.x = (p2D.x+1.0f)/2.0f;  // [-1..1] -> [0..1]
@@ -3423,10 +3426,10 @@ void CEngine::Draw3DScene()
 
     terrainRenderer->SetFog(fogStart, fogEnd, { fogColor.r, fogColor.g, fogColor.b });
 
-    Math::Matrix scale;
-    scale.Set(3, 3, -1.0f);
-    auto projectionViewMatrix = Math::MultiplyMatrices(m_matProj, scale);
-    projectionViewMatrix = Math::MultiplyMatrices(projectionViewMatrix, m_matView);
+    glm::mat4 scale = glm::mat4(1.0f);
+    scale[2][2] = -1.0f;
+    auto projectionViewMatrix = m_matProj * scale;
+    projectionViewMatrix = projectionViewMatrix * m_matView;
 
     for (int objRank = 0; objRank < static_cast<int>(m_objects.size()); objRank++)
     {
@@ -3439,7 +3442,7 @@ void CEngine::Draw3DScene()
         if (! m_objects[objRank].drawWorld)
             continue;
 
-        auto combinedMatrix = Math::MultiplyMatrices(projectionViewMatrix, m_objects[objRank].transform);
+        auto combinedMatrix = projectionViewMatrix * m_objects[objRank].transform;
 
         if (! IsVisible(combinedMatrix, objRank))
             continue;
@@ -3515,7 +3518,7 @@ void CEngine::Draw3DScene()
         if (! m_objects[objRank].drawWorld)
             continue;
 
-        auto combinedMatrix = Math::MultiplyMatrices(projectionViewMatrix, m_objects[objRank].transform);
+        auto combinedMatrix = projectionViewMatrix * m_objects[objRank].transform;
 
         if (! IsVisible(combinedMatrix, objRank))
             continue;
@@ -3600,7 +3603,7 @@ void CEngine::Draw3DScene()
             if (! m_objects[objRank].drawWorld)
                 continue;
 
-            auto combinedMatrix = Math::MultiplyMatrices(projectionViewMatrix, m_objects[objRank].transform);
+            auto combinedMatrix = projectionViewMatrix * m_objects[objRank].transform;
 
             if (! IsVisible(combinedMatrix, objRank))
                 continue;
@@ -3667,8 +3670,7 @@ void CEngine::Draw3DScene()
 
     if (m_debugGoto)
     {
-        Math::Matrix worldMatrix;
-        worldMatrix.LoadIdentity();
+        Math::Matrix worldMatrix = glm::mat4(1.0f);
         m_device->SetTransform(TRANSFORM_WORLD, worldMatrix);
 
         SetState(ENG_RSTATE_OPAQUE_COLOR);
@@ -4079,7 +4081,7 @@ void CEngine::RenderShadowMap()
             pos.z = round(pos.z);
             pos *= worldUnitsPerTexel;
             // ...and convert back to world space.
-            pos = Math::MatrixVectorMultiply(lightRotation.Inverse(), pos);
+            pos = Math::MatrixVectorMultiply(glm::inverse(lightRotation), pos);
         }
 
         glm::vec3 lookAt = pos - lightDir;
@@ -4089,14 +4091,14 @@ void CEngine::RenderShadowMap()
 
         Math::Matrix scaleMat;
         Math::LoadScaleMatrix(scaleMat, glm::vec3(1.0f, 1.0f, -1.0f));
-        m_shadowViewMat = Math::MultiplyMatrices(scaleMat, m_shadowViewMat);
+        m_shadowViewMat = scaleMat * m_shadowViewMat;
 
-        Math::Matrix temporary = Math::MultiplyMatrices(m_shadowProjMat, m_shadowViewMat);
-        m_shadowTextureMat = Math::MultiplyMatrices(m_shadowBias, temporary);
+        Math::Matrix temporary = m_shadowProjMat * m_shadowViewMat;
+        m_shadowTextureMat = m_shadowBias * temporary;
 
-        m_shadowViewMat = Math::MultiplyMatrices(scaleMat, m_shadowViewMat);
+        m_shadowViewMat = scaleMat * m_shadowViewMat;
 
-        auto projectionViewMatrix = Math::MultiplyMatrices(m_shadowProjMat, m_shadowViewMat);
+        auto projectionViewMatrix = m_shadowProjMat * m_shadowViewMat;
 
         m_shadowParams[region].transform = m_shadowTextureMat;
 
@@ -4113,7 +4115,7 @@ void CEngine::RenderShadowMap()
 
             if (terrain && !m_terrainShadows) continue;
 
-            auto combinedMatrix = Math::MultiplyMatrices(projectionViewMatrix, m_objects[objRank].transform);
+            auto combinedMatrix = projectionViewMatrix * m_objects[objRank].transform;
 
             if (!IsVisible(combinedMatrix, objRank))
                 continue;
@@ -4327,7 +4329,7 @@ void CEngine::DrawInterface()
 
         m_device->SetTransform(TRANSFORM_VIEW, m_matView);
 
-        auto projectionViewMatrix = Math::MultiplyMatrices(m_matProj, m_matView);
+        auto projectionViewMatrix = m_matProj * m_matView;
 
         for (int objRank = 0; objRank < static_cast<int>(m_objects.size()); objRank++)
         {
@@ -4341,7 +4343,7 @@ void CEngine::DrawInterface()
                 continue;
 
             m_device->SetTransform(TRANSFORM_WORLD, m_objects[objRank].transform);
-            auto combinedMatrix = Math::MultiplyMatrices(projectionViewMatrix, m_objects[objRank].transform);
+            auto combinedMatrix = projectionViewMatrix * m_objects[objRank].transform;
 
             if (! IsVisible(combinedMatrix, objRank))
                 continue;
@@ -4717,8 +4719,7 @@ void CEngine::DrawShadowSpots()
     m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
     m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
 
-    Math::Matrix matrix;
-    matrix.LoadIdentity();
+    Math::Matrix matrix = glm::mat4(1.0f);
     m_device->SetTransform(TRANSFORM_WORLD, matrix);
 
 
@@ -5714,11 +5715,9 @@ void CEngine::DisablePauseBlur()
 
 void CEngine::SetWindowCoordinates()
 {
-    Math::Matrix matWorldWindow;
-    matWorldWindow.LoadIdentity();
+    Math::Matrix matWorldWindow = glm::mat4(1.0f);
 
-    Math::Matrix matViewWindow;
-    matViewWindow.LoadIdentity();
+    Math::Matrix matViewWindow = glm::mat4(1.0f);
 
     Math::Matrix matProjWindow;
     Math::LoadOrthoProjectionMatrix(matProjWindow, 0.0f, m_size.x, m_size.y, 0.0f, -1.0f, 1.0f);

@@ -53,7 +53,6 @@ CTaskSearch::~CTaskSearch()
 
 bool CTaskSearch::EventProcess(const Event &event)
 {
-    Math::Matrix*   mat;
     glm::vec3    pos, speed;
     glm::vec2       dim;
     float       angle;
@@ -82,9 +81,9 @@ bool CTaskSearch::EventProcess(const Event &event)
     {
         m_lastParticle = m_time;
 
-        mat = m_object->GetWorldMatrix(0);
+        glm::mat4 mat = m_object->GetWorldMatrix(0);
         pos = glm::vec3(6.5f, 0.2f, 0.0f);
-        pos = Math::Transform(*mat, pos);  // sensor position
+        pos = Math::Transform(mat, pos);  // sensor position
 
         speed.x = (Math::Rand()-0.5f)*20.0f;
         speed.z = (Math::Rand()-0.5f)*20.0f;
@@ -239,9 +238,9 @@ bool CTaskSearch::Abort()
 
 bool CTaskSearch::CreateMark()
 {
-    Math::Matrix* mat = m_object->GetWorldMatrix(0);
+    glm::mat4 mat = m_object->GetWorldMatrix(0);
     glm::vec3 pos = glm::vec3(7.5f, 0.0f, 0.0f);
-    pos = Math::Transform(*mat, pos);  // sensor position
+    pos = Math::Transform(mat, pos);  // sensor position
 
     Gfx::TerrainRes res = m_terrain->GetResource(pos);
     if ( res == Gfx::TR_NULL )  return false;

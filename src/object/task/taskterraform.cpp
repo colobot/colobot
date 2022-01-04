@@ -69,7 +69,6 @@ CTaskTerraform::~CTaskTerraform()
 bool CTaskTerraform::EventProcess(const Event &event)
 {
     CObject*    power;
-    Math::Matrix*   mat;
     glm::vec3    pos, dir, speed;
     glm::vec2       dim;
     float       energy;
@@ -143,7 +142,7 @@ bool CTaskTerraform::EventProcess(const Event &event)
     {
         m_lastParticle = m_time;
 
-        mat = m_object->GetWorldMatrix(0);
+        glm::mat4 mat = m_object->GetWorldMatrix(0);
 
         if ( m_phase == TTP_CHARGE )
         {
@@ -151,7 +150,7 @@ bool CTaskTerraform::EventProcess(const Event &event)
             pos = glm::vec3(-6.0f, 5.5f+2.0f*m_progress, 0.0f);
             pos.x += (Math::Rand()-0.5f)*1.0f;
             pos.z += (Math::Rand()-0.5f)*1.0f;
-            pos   = Math::Transform(*mat, pos);
+            pos   = Math::Transform(mat, pos);
             speed.x = (Math::Rand()-0.5f)*6.0f*(1.0f+m_progress*4.0f);
             speed.z = (Math::Rand()-0.5f)*6.0f*(1.0f+m_progress*4.0f);
             speed.y = 6.0f+Math::Rand()*4.0f*(1.0f+m_progress*2.0f);
@@ -166,11 +165,11 @@ bool CTaskTerraform::EventProcess(const Event &event)
             pos = glm::vec3(-1.0f, 5.8f, 3.5f);
             pos.x += (Math::Rand()-0.5f)*1.0f;
             pos.z += (Math::Rand()-0.5f)*1.0f;
-            pos   = Math::Transform(*mat, pos);
+            pos   = Math::Transform(mat, pos);
             speed.x = Math::Rand()*4.0f;
             speed.z = Math::Rand()*2.0f;
             speed.y = 2.5f+Math::Rand()*1.0f;
-            speed = Math::Transform(*mat, speed);
+            speed = Math::Transform(mat, speed);
             speed -= m_object->GetPosition();
             dim.x = Math::Rand()*1.0f+1.0f;
             dim.y = dim.x;
@@ -180,11 +179,11 @@ bool CTaskTerraform::EventProcess(const Event &event)
             pos = glm::vec3(-1.0f, 5.8f, -3.5f);
             pos.x += (Math::Rand()-0.5f)*1.0f;
             pos.z += (Math::Rand()-0.5f)*1.0f;
-            pos   = Math::Transform(*mat, pos);
+            pos   = Math::Transform(mat, pos);
             speed.x =  Math::Rand()*4.0f;
             speed.z = -Math::Rand()*2.0f;
             speed.y = 2.5f+Math::Rand()*1.0f;
-            speed = Math::Transform(*mat, speed);
+            speed = Math::Transform(mat, speed);
             speed -= m_object->GetPosition();
             dim.x = Math::Rand()*1.0f+1.0f;
             dim.y = dim.x;
@@ -201,7 +200,6 @@ bool CTaskTerraform::EventProcess(const Event &event)
 Error CTaskTerraform::Start()
 {
     CObject*    power;
-    Math::Matrix*   mat;
     glm::vec3    pos, speed;
     float       energy;
 
@@ -222,9 +220,9 @@ Error CTaskTerraform::Start()
     if ( speed.x != 0.0f ||
          speed.z != 0.0f )  return ERR_MANIP_MOTOR;
 
-    mat = m_object->GetWorldMatrix(0);
+    glm::mat4 mat = m_object->GetWorldMatrix(0);
     pos = glm::vec3(9.0f, 0.0f, 0.0f);
-    pos = Math::Transform(*mat, pos);  // battery position
+    pos = Math::Transform(mat, pos);  // battery position
     m_terraPos = pos;
 
     m_phase    = TTP_CHARGE;

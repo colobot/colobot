@@ -63,7 +63,6 @@ CTaskFire::~CTaskFire()
 bool CTaskFire::EventProcess(const Event &event)
 {
     CPhysics*   physics;
-    Math::Matrix*   mat;
     glm::vec3    pos, speed, dir, vib;
     ObjectType  type;
     glm::vec2   dim;
@@ -96,12 +95,12 @@ bool CTaskFire::EventProcess(const Event &event)
 
         if ( m_bOrganic )
         {
-            mat = m_object->GetWorldMatrix(1);  // insect-cannon
+            glm::mat4 mat = m_object->GetWorldMatrix(1);  // insect-cannon
 
             for ( i=0 ; i<6 ; i++ )
             {
                 pos = glm::vec3(0.0f, 2.5f, 0.0f);
-                pos = Math::Transform(*mat, pos);
+                pos = Math::Transform(mat, pos);
 
                 speed = glm::vec3(200.0f, 0.0f, 0.0f);
 
@@ -114,7 +113,7 @@ bool CTaskFire::EventProcess(const Event &event)
                 speed.x += (Math::Rand()-0.5f)*10.0f;
                 speed.y += (Math::Rand()-0.5f)*20.0f;
                 speed.z += (Math::Rand()-0.5f)*30.0f;
-                speed = Math::Transform(*mat, speed);
+                speed = Math::Transform(mat, speed);
                 speed -= pos;
 
                 dim.x = Math::Rand()*0.5f+0.5f;
@@ -126,20 +125,20 @@ bool CTaskFire::EventProcess(const Event &event)
         }
         else if ( m_bRay )
         {
-            mat = m_object->GetWorldMatrix(2);  // cannon
+            glm::mat4 mat = m_object->GetWorldMatrix(2);  // cannon
 
             for ( i=0 ; i<4 ; i++ )
             {
                 pos = glm::vec3(4.0f, 0.0f, 0.0f);
                 pos.y += (rand()%3-1)*1.5f;
                 pos.z += (rand()%3-1)*1.5f;
-                pos = Math::Transform(*mat, pos);
+                pos = Math::Transform(mat, pos);
 
                 speed = glm::vec3(200.0f, 0.0f, 0.0f);
                 speed.x += (Math::Rand()-0.5f)*6.0f;
                 speed.y += (Math::Rand()-0.5f)*12.0f;
                 speed.z += (Math::Rand()-0.5f)*12.0f;
-                speed = Math::Transform(*mat, speed);
+                speed = Math::Transform(mat, speed);
                 speed -= pos;
 
                 dim.x = 1.0f;
@@ -152,7 +151,7 @@ bool CTaskFire::EventProcess(const Event &event)
                 speed.x += (Math::Rand()-0.5f)*1.0f;
                 speed.y += (Math::Rand()-0.5f)*2.0f;
                 speed.z += (Math::Rand()-0.5f)*2.0f;
-                speed = Math::Transform(*mat, speed);
+                speed = Math::Transform(mat, speed);
                 speed -= pos;
                 speed.y += 5.0f;
 
@@ -164,6 +163,8 @@ bool CTaskFire::EventProcess(const Event &event)
         else
         {
             type = m_object->GetType();
+
+            glm::mat4 mat = glm::mat4(1.0f);
 
             if ( type == OBJECT_MOBILErc )
             {
@@ -186,7 +187,7 @@ bool CTaskFire::EventProcess(const Event &event)
                 }
                 pos.y += (Math::Rand()-0.5f)*1.0f;
                 pos.z += (Math::Rand()-0.5f)*1.0f;
-                pos = Math::Transform(*mat, pos);
+                pos = Math::Transform(mat, pos);
 
                 speed = glm::vec3(200.0f, 0.0f, 0.0f);
 
@@ -199,7 +200,7 @@ bool CTaskFire::EventProcess(const Event &event)
                 speed.x += (Math::Rand()-0.5f)*3.0f;
                 speed.y += (Math::Rand()-0.5f)*6.0f;
                 speed.z += (Math::Rand()-0.5f)*6.0f;
-                speed = Math::Transform(*mat, speed);
+                speed = Math::Transform(mat, speed);
                 speed -= pos;
 
                 dim.x = Math::Rand()*0.7f+0.7f;
@@ -215,13 +216,13 @@ bool CTaskFire::EventProcess(const Event &event)
                 pos = glm::vec3(-1.0f, 1.0f, 0.0f);
                 pos.y += (Math::Rand()-0.5f)*0.4f;
                 pos.z += (Math::Rand()-0.5f)*0.4f;
-                pos = Math::Transform(*mat, pos);
+                pos = Math::Transform(mat, pos);
 
                 speed = glm::vec3(-4.0f, 0.0f, 0.0f);
                 speed.x += (Math::Rand()-0.5f)*2.0f;
                 speed.y += (Math::Rand()-0.2f)*4.0f;
                 speed.z += (Math::Rand()-0.5f)*4.0f;
-                speed = Math::Transform(*mat, speed);
+                speed = Math::Transform(mat, speed);
                 speed -= pos;
 
                 dim.x = Math::Rand()*1.2f+1.2f;

@@ -306,22 +306,22 @@ inline void LoadViewMatrix(Math::Matrix &mat, const glm::vec3 &from,
 
     // Start building the matrix. The first three rows contains the basis
     // vectors used to rotate the view to point at the lookat point
-    mat.LoadIdentity();
+    mat = glm::mat4(1.0f);
 
-    /* (1,1) */ mat.m[0 ] = right.x;
-    /* (2,1) */ mat.m[1 ] = up.x;
-    /* (3,1) */ mat.m[2 ] = view.x;
-    /* (1,2) */ mat.m[4 ] = right.y;
-    /* (2,2) */ mat.m[5 ] = up.y;
-    /* (3,2) */ mat.m[6 ] = view.y;
-    /* (1,3) */ mat.m[8 ] = right.z;
-    /* (2,3) */ mat.m[9 ] = up.z;
-    /* (3,3) */ mat.m[10] = view.z;
+    mat[0][0] = right.x;
+    mat[0][1] = up.x;
+    mat[0][2] = view.x;
+    mat[1][0] = right.y;
+    mat[1][1] = up.y;
+    mat[1][2] = view.y;
+    mat[2][0] = right.z;
+    mat[2][1] = up.z;
+    mat[2][2] = view.z;
 
     // Do the translation values (rotations are still about the eyepoint)
-    /* (1,4) */ mat.m[12] = -glm::dot(from, right);
-    /* (2,4) */ mat.m[13] = -glm::dot(from, up);
-    /* (3,4) */ mat.m[14] = -glm::dot(from, view);
+    mat[3][0] = -glm::dot(from, right);
+    mat[3][1] = -glm::dot(from, up);
+    mat[3][2] = -glm::dot(from, view);
 }
 
 //! Loads a perspective projection matrix
@@ -340,13 +340,13 @@ inline void LoadProjectionMatrix(Math::Matrix &mat, float fov = Math::PI / 2.0f,
 
     float f = cosf(fov / 2.0f) / sinf(fov / 2.0f);
 
-    mat.LoadZero();
+    mat = glm::mat4(0.0f);
 
-    /* (1,1) */ mat.m[0 ] = f / aspect;
-    /* (2,2) */ mat.m[5 ] = f;
-    /* (3,3) */ mat.m[10] = (nearPlane + farPlane) / (nearPlane - farPlane);
-    /* (4,3) */ mat.m[11] = -1.0f;
-    /* (3,4) */ mat.m[14] = (2.0f * farPlane * nearPlane) / (nearPlane - farPlane);
+    mat[0][0] = f / aspect;
+    mat[1][1] = f;
+    mat[2][2] = (nearPlane + farPlane) / (nearPlane - farPlane);
+    mat[2][3] = -1.0f;
+    mat[3][2] = (2.0f * farPlane * nearPlane) / (nearPlane - farPlane);
 }
 
 //! Loads an othogonal projection matrix
@@ -359,15 +359,15 @@ inline void LoadProjectionMatrix(Math::Matrix &mat, float fov = Math::PI / 2.0f,
 inline void LoadOrthoProjectionMatrix(Math::Matrix &mat, float left, float right, float bottom, float top,
                                       float zNear = -1.0f, float zFar = 1.0f)
 {
-    mat.LoadIdentity();
+    mat = glm::mat4(1.0f);
 
-    /* (1,1) */ mat.m[0 ] =  2.0f / (right - left);
-    /* (2,2) */ mat.m[5 ] =  2.0f / (top - bottom);
-    /* (3,3) */ mat.m[10] = -2.0f / (zFar - zNear);
+    mat[0][0] =  2.0f / (right - left);
+    mat[1][1] =  2.0f / (top - bottom);
+    mat[2][2] = -2.0f / (zFar - zNear);
 
-    /* (1,4) */ mat.m[12] =  - (right + left) / (right - left);
-    /* (2,4) */ mat.m[13] =  - (top + bottom) / (top - bottom);
-    /* (3,4) */ mat.m[14] =  - (zFar + zNear) / (zFar - zNear);
+    mat[3][0] =  - (right + left) / (right - left);
+    mat[3][1] =  - (top + bottom) / (top - bottom);
+    mat[3][2] =  - (zFar + zNear) / (zFar - zNear);
 }
 
 //! Loads a translation matrix from given vector
@@ -377,10 +377,7 @@ inline void LoadOrthoProjectionMatrix(Math::Matrix &mat, float left, float right
  */
 inline void LoadTranslationMatrix(Math::Matrix &mat, const glm::vec3 &trans)
 {
-    mat.LoadIdentity();
-    /* (1,4) */ mat.m[12] = trans.x;
-    /* (2,4) */ mat.m[13] = trans.y;
-    /* (3,4) */ mat.m[14] = trans.z;
+    mat = glm::translate(glm::mat4(1.0f), trans);
 }
 
 //! Loads a scaling matrix fom given vector
@@ -390,10 +387,7 @@ inline void LoadTranslationMatrix(Math::Matrix &mat, const glm::vec3 &trans)
  */
 inline void LoadScaleMatrix(Math::Matrix &mat, const glm::vec3 &scale)
 {
-    mat.LoadIdentity();
-    /* (1,1) */ mat.m[0 ] = scale.x;
-    /* (2,2) */ mat.m[5 ] = scale.y;
-    /* (3,3) */ mat.m[10] = scale.z;
+    mat = glm::scale(glm::mat4(1.0f), scale);
 }
 
 //! Loads a rotation matrix along the X axis
@@ -403,11 +397,12 @@ inline void LoadScaleMatrix(Math::Matrix &mat, const glm::vec3 &scale)
  */
 inline void LoadRotationXMatrix(Math::Matrix &mat, float angle)
 {
-    mat.LoadIdentity();
-    /* (2,2) */ mat.m[5 ] =  cosf(angle);
-    /* (3,2) */ mat.m[6 ] =  sinf(angle);
-    /* (2,3) */ mat.m[9 ] = -sinf(angle);
-    /* (3,3) */ mat.m[10] =  cosf(angle);
+    mat = glm::mat4(1.0f);
+
+    mat[1][1] =  cosf(angle);
+    mat[1][2] =  sinf(angle);
+    mat[2][1] = -sinf(angle);
+    mat[2][2] =  cosf(angle);
 }
 
 //! Loads a rotation matrix along the Y axis
@@ -417,11 +412,12 @@ inline void LoadRotationXMatrix(Math::Matrix &mat, float angle)
  */
 inline void LoadRotationYMatrix(Math::Matrix &mat, float angle)
 {
-    mat.LoadIdentity();
-    /* (1,1) */ mat.m[0 ] =  cosf(angle);
-    /* (3,1) */ mat.m[2 ] = -sinf(angle);
-    /* (1,3) */ mat.m[8 ] =  sinf(angle);
-    /* (3,3) */ mat.m[10] =  cosf(angle);
+    mat = glm::mat4(1.0f);
+
+    mat[0][0] =  cosf(angle);
+    mat[0][2] = -sinf(angle);
+    mat[2][0] =  sinf(angle);
+    mat[2][2] =  cosf(angle);
 }
 
 //! Loads a rotation matrix along the Z axis
@@ -431,11 +427,12 @@ inline void LoadRotationYMatrix(Math::Matrix &mat, float angle)
  */
 inline void LoadRotationZMatrix(Math::Matrix &mat, float angle)
 {
-    mat.LoadIdentity();
-    /* (1,1) */ mat.m[0 ] =  cosf(angle);
-    /* (2,1) */ mat.m[1 ] =  sinf(angle);
-    /* (1,2) */ mat.m[4 ] = -sinf(angle);
-    /* (2,2) */ mat.m[5 ] =  cosf(angle);
+    mat = glm::mat4(1.0f);
+
+    mat[0][0] =  cosf(angle);
+    mat[0][1] =  sinf(angle);
+    mat[1][0] = -sinf(angle);
+    mat[1][1] =  cosf(angle);
 }
 
 //! Loads a rotation matrix along the given axis
@@ -450,19 +447,19 @@ inline void LoadRotationMatrix(Math::Matrix &mat, const glm::vec3 &dir, float an
     float sin = sinf(angle);
     glm::vec3 v = glm::normalize(dir);
 
-    mat.LoadIdentity();
+    mat = glm::mat4(1.0f);
 
-    /* (1,1) */ mat.m[0 ] = (v.x * v.x) * (1.0f - cos) + cos;
-    /* (2,1) */ mat.m[1 ] = (v.x * v.y) * (1.0f - cos) - (v.z * sin);
-    /* (3,1) */ mat.m[2 ] = (v.x * v.z) * (1.0f - cos) + (v.y * sin);
+    mat[0][0] = (v.x * v.x) * (1.0f - cos) + cos;
+    mat[0][1] = (v.x * v.y) * (1.0f - cos) - (v.z * sin);
+    mat[0][2] = (v.x * v.z) * (1.0f - cos) + (v.y * sin);
 
-    /* (1,2) */ mat.m[4 ] = (v.y * v.x) * (1.0f - cos) + (v.z * sin);
-    /* (2,2) */ mat.m[5 ] = (v.y * v.y) * (1.0f - cos) + cos ;
-    /* (3,2) */ mat.m[6 ] = (v.y * v.z) * (1.0f - cos) - (v.x * sin);
+    mat[1][0] = (v.y * v.x) * (1.0f - cos) + (v.z * sin);
+    mat[1][1] = (v.y * v.y) * (1.0f - cos) + cos ;
+    mat[1][2] = (v.y * v.z) * (1.0f - cos) - (v.x * sin);
 
-    /* (1,3) */ mat.m[8 ] = (v.z * v.x) * (1.0f - cos) - (v.y * sin);
-    /* (2,3) */ mat.m[9 ] = (v.z * v.y) * (1.0f - cos) + (v.x * sin);
-    /* (3,3) */ mat.m[10] = (v.z * v.z) * (1.0f - cos) + cos;
+    mat[2][0] = (v.z * v.x) * (1.0f - cos) - (v.y * sin);
+    mat[2][1] = (v.z * v.y) * (1.0f - cos) + (v.x * sin);
+    mat[2][2] = (v.z * v.z) * (1.0f - cos) + cos;
 }
 
 //! Calculates the matrix to make three rotations in the order X, Z and Y
@@ -472,10 +469,10 @@ inline void LoadRotationXZYMatrix(Math::Matrix &mat, const glm::vec3 &angles)
     LoadRotationXMatrix(temp, angles.x);
 
     LoadRotationZMatrix(mat, angles.z);
-    mat = Math::MultiplyMatrices(temp, mat);
+    mat = temp * mat;
 
     LoadRotationYMatrix(temp, angles.y);
-    mat = Math::MultiplyMatrices(temp, mat);
+    mat = temp * mat;
 }
 
 //! Calculates the matrix to make three rotations in the order Z, X and Y
@@ -485,10 +482,10 @@ inline void LoadRotationZXYMatrix(Math::Matrix &mat, const glm::vec3 &angles)
     LoadRotationZMatrix(temp, angles.z);
 
     LoadRotationXMatrix(mat, angles.x);
-    mat = Math::MultiplyMatrices(temp, mat);
+    mat = temp * mat;
 
     LoadRotationYMatrix(temp, angles.y);
-    mat = Math::MultiplyMatrices(temp, mat);
+    mat = temp * mat;
 }
 
 //! Returns the distance between projections on XZ plane of two vectors
@@ -611,7 +608,7 @@ inline glm::vec3 LookatPoint(const glm::vec3 &eye, float angleH, float angleV, f
 /** Is equal to multiplying the matrix by the vector (of course without perspective divide). */
 inline glm::vec3 Transform(const Math::Matrix &m, const glm::vec3 &p)
 {
-    return MatrixVectorMultiply(m, p);
+    return glm::vec3(m * glm::vec4(p, 1.0f));
 }
 
 //! Calculates the projection of the point \a p on a straight line \a a to \a b
@@ -634,7 +631,7 @@ inline glm::vec3 RotateView(glm::vec3 center, float angleH, float angleV, float 
     LoadRotationZMatrix(mat1, -angleV);
     LoadRotationYMatrix(mat2, -angleH);
 
-    Math::Matrix mat = MultiplyMatrices(mat2, mat1);
+    Math::Matrix mat = mat2 * mat1;
 
     glm::vec3 eye{};
     eye.x = 0.0f+dist;

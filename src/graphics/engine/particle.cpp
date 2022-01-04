@@ -2504,8 +2504,7 @@ void CParticle::TrackDraw(int i, ParticleType type)
         if (h < 0) h = MAXTRACKLEN-1;
     }
 
-    Math::Matrix mat;
-    mat.LoadIdentity();
+    glm::mat4 mat = glm::mat4(1.0f);
     m_device->SetTransform(TRANSFORM_WORLD, mat);
 
     glm::vec2 texInf{ 0, 0 }, texSup{ 0, 0 };
@@ -2681,11 +2680,11 @@ void CParticle::DrawParticleTriangle(int i)
     angle.y = Math::RotateAngle(pos.z-eye.z, pos.x-eye.x);
     angle.z = m_particle[i].angle;
 
-    Math::Matrix mat;
+    glm::mat4 mat;
     Math::LoadRotationXZYMatrix(mat, angle);
-    mat.Set(1, 4, pos.x);
-    mat.Set(2, 4, pos.y);
-    mat.Set(3, 4, pos.z);
+    mat[3][0] = pos.x;
+    mat[3][1] = pos.y;
+    mat[3][2] = pos.z;
     m_device->SetTransform(TRANSFORM_WORLD, mat);
 
     m_device->DrawPrimitive(PrimitiveType::TRIANGLES, m_triangle[i].triangle, 3);
@@ -2751,11 +2750,11 @@ void CParticle::DrawParticleNorm(int i)
         angle.y = Math::RotateAngle(pos.z-eye.z, pos.x-eye.x);
         angle.z = m_particle[i].angle;
 
-        Math::Matrix mat;
+        glm::mat4 mat;
         Math::LoadRotationXZYMatrix(mat, angle);
-        mat.Set(1, 4, pos.x);
-        mat.Set(2, 4, pos.y);
-        mat.Set(3, 4, pos.z);
+        mat[3][0] = pos.x;
+        mat[3][1] = pos.y;
+        mat[3][2] = pos.z;
         m_device->SetTransform(TRANSFORM_WORLD, mat);
 
         glm::vec3 n(0.0f, 0.0f, -1.0f);
@@ -2813,11 +2812,11 @@ void CParticle::DrawParticleFlat(int i)
     if (pos.y > eye.y)  // seen from below?
         angle.x = -Math::PI/2.0f;
 
-    Math::Matrix mat;
+    glm::mat4 mat;
     Math::LoadRotationXZYMatrix(mat, angle);
-    mat.Set(1, 4, pos.x);
-    mat.Set(2, 4, pos.y);
-    mat.Set(3, 4, pos.z);
+    mat[3][0] = pos.x;
+    mat[3][1] = pos.y;
+    mat[3][2] = pos.z;
     m_device->SetTransform(TRANSFORM_WORLD, mat);
 
     glm::vec3 n(0.0f, 0.0f, -1.0f);
@@ -2902,11 +2901,11 @@ void CParticle::DrawParticleFog(int i)
     if (pos.y > eye.y)  // seen from below?
         angle.x = -Math::PI/2.0f;
 
-    Math::Matrix mat;
+    glm::mat4 mat;
     Math::LoadRotationXZYMatrix(mat, angle);
-    mat.Set(1, 4, pos.x);
-    mat.Set(2, 4, pos.y);
-    mat.Set(3, 4, pos.z);
+    mat[3][0] = pos.x;
+    mat[3][1] = pos.y;
+    mat[3][2] = pos.z;
     m_device->SetTransform(TRANSFORM_WORLD, mat);
 
     glm::vec3 n(0.0f, 0.0f, -1.0f);
@@ -2963,11 +2962,11 @@ void CParticle::DrawParticleRay(int i)
     angle.z = -Math::RotateAngle(Math::DistanceProjected(pos, goal), pos.y-goal.y);
     if (left)  angle.x = -angle.x;
 
-    Math::Matrix mat;
+    glm::mat4 mat;
     Math::LoadRotationZXYMatrix(mat, angle);
-    mat.Set(1, 4, pos.x);
-    mat.Set(2, 4, pos.y);
-    mat.Set(3, 4, pos.z);
+    mat[3][0] = pos.x;
+    mat[3][1] = pos.y;
+    mat[3][2] = pos.z;
     m_device->SetTransform(TRANSFORM_WORLD, mat);
 
     glm::vec3 n(0.0f, 0.0f, left ? 1.0f : -1.0f);
@@ -3106,14 +3105,13 @@ void CParticle::DrawParticleSphere(int i)
     m_engine->SetState(ENG_RSTATE_TTEXTURE_BLACK | ENG_RSTATE_2FACE | ENG_RSTATE_WRAP,
                        IntensityToColor(m_particle[i].intensity));
 
-    Math::Matrix mat;
-    mat.LoadIdentity();
-    mat.Set(1, 1, zoom);
-    mat.Set(2, 2, zoom);
-    mat.Set(3, 3, zoom);
-    mat.Set(1, 4, m_particle[i].pos.x);
-    mat.Set(2, 4, m_particle[i].pos.y);
-    mat.Set(3, 4, m_particle[i].pos.z);
+    glm::mat4 mat = glm::mat4(1.0f);
+    mat[0][0] = zoom;
+    mat[1][1] = zoom;
+    mat[2][2] = zoom;
+    mat[3][0] = m_particle[i].pos.x;
+    mat[3][1] = m_particle[i].pos.y;
+    mat[3][2] = m_particle[i].pos.z;
 
     if (m_particle[i].angle != 0.0f)
     {
@@ -3121,9 +3119,9 @@ void CParticle::DrawParticleSphere(int i)
         angle.x = m_particle[i].angle*0.4f;
         angle.y = m_particle[i].angle*1.0f;
         angle.z = m_particle[i].angle*0.7f;
-        Math::Matrix rot;
+        glm::mat4 rot;
         Math::LoadRotationZXYMatrix(rot, angle);
-        mat = Math::MultiplyMatrices(mat, rot);
+        mat = mat * rot;
     }
 
     m_device->SetTransform(TRANSFORM_WORLD, mat);
@@ -3215,14 +3213,14 @@ void CParticle::DrawParticleCylinder(int i)
     m_engine->SetState(ENG_RSTATE_TTEXTURE_BLACK | ENG_RSTATE_2FACE | ENG_RSTATE_WRAP,
                        IntensityToColor(m_particle[i].intensity));
 
-    Math::Matrix mat;
-    mat.LoadIdentity();
-    mat.Set(1, 1, zoom);
-    mat.Set(2, 2, zoom);
-    mat.Set(3, 3, zoom);
-    mat.Set(1, 4, m_particle[i].pos.x);
-    mat.Set(2, 4, m_particle[i].pos.y);
-    mat.Set(3, 4, m_particle[i].pos.z);
+    glm::mat4 mat = glm::mat4(1.0f);
+    mat[0][0] = zoom;
+    mat[1][1] = zoom;
+    mat[2][2] = zoom;
+    mat[3][0] = m_particle[i].pos.x;
+    mat[3][1] = m_particle[i].pos.y;
+    mat[3][2] = m_particle[i].pos.z;
+
     m_device->SetTransform(TRANSFORM_WORLD, mat);
 
     glm::vec2 ts, ti;
@@ -3399,8 +3397,7 @@ void CParticle::DrawParticle(int sheet)
     if (m_wheelTraceTotal > 0 && sheet == SH_WORLD)
     {
         m_engine->SetState(ENG_RSTATE_OPAQUE_COLOR);
-        Math::Matrix matrix;
-        matrix.LoadIdentity();
+        glm::mat4 matrix = glm::mat4(1.0f);
         m_device->SetTransform(TRANSFORM_WORLD, matrix);
 
         for (int i = 0; i < m_wheelTraceTotal; i++)

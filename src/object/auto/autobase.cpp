@@ -122,7 +122,7 @@ void CAutoBase::Start(int param)
 
 bool CAutoBase::EventProcess(const Event &event)
 {
-    Math::Matrix*   mat;
+    glm::mat4   mat;
     CObject*    pObj;
     glm::vec3    pos, speed, vibCir, iPos;
     glm::vec2     dim, p;
@@ -275,28 +275,28 @@ begin:
             dim.x = 10.0f;
             dim.y = dim.x;
             pos = glm::vec3(42.0f, -2.0f, 17.0f);
-            pos = Transform(*mat, pos);
+            pos = Math::Transform(mat, pos);
             m_partiChannel[0] = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
             pos = glm::vec3(17.0f, -2.0f, 42.0f);
-            pos = Transform(*mat, pos);
+            pos = Math::Transform(mat, pos);
             m_partiChannel[1] = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
             pos = glm::vec3(42.0f, -2.0f, -17.0f);
-            pos = Transform(*mat, pos);
+            pos = Math::Transform(mat, pos);
             m_partiChannel[2] = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
             pos = glm::vec3(17.0f, -2.0f, -42.0f);
-            pos = Transform(*mat, pos);
+            pos = Math::Transform(mat, pos);
             m_partiChannel[3] = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
             pos = glm::vec3(-42.0f, -2.0f, 17.0f);
-            pos = Transform(*mat, pos);
+            pos = Math::Transform(mat, pos);
             m_partiChannel[4] = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
             pos = glm::vec3(-17.0f, -2.0f, 42.0f);
-            pos = Transform(*mat, pos);
+            pos = Math::Transform(mat, pos);
             m_partiChannel[5] = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
             pos = glm::vec3(-42.0f, -2.0f, -17.0f);
-            pos = Transform(*mat, pos);
+            pos = Math::Transform(mat, pos);
             m_partiChannel[6] = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
             pos = glm::vec3(-17.0f, -2.0f, -42.0f);
-            pos = Transform(*mat, pos);
+            pos = Math::Transform(mat, pos);
             m_partiChannel[7] = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
 
             if ( m_soundChannel == -1 )
@@ -957,8 +957,8 @@ begin:
             speed.z = (Math::Rand()-0.5f)*4.0f;
             speed.y = vSpeed*0.8f-(8.0f+Math::Rand()*6.0f);
             speed += pos;
-            pos = Transform(*mat, pos);
-            speed = Transform(*mat, speed);
+            pos = Math::Transform(mat, pos);
+            speed = Math::Transform(mat, speed);
             speed -= pos;
 
             dim.x = 4.0f+Math::Rand()*4.0f;
@@ -973,7 +973,7 @@ begin:
                 dim.y = dim.x;
                 pos = glm::vec3(0.0f, 7.0f, 0.0f);
                 pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
-                pos = Transform(*mat, pos);
+                pos = Math::Transform(mat, pos);
                 m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGAS, 1.0f, 0.0f, 0.0f);
 
                 speed = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -981,60 +981,60 @@ begin:
                 dim.y = dim.x;
                 pos = glm::vec3(42.0f, 0.0f, 17.0f);
                 pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
-                pos = Transform(*mat, pos);
+                pos = Math::Transform(mat, pos);
                 m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGAS, 0.5f, 0.0f, 0.0f);
                 pos = glm::vec3(17.0f, 0.0f, 42.0f);
                 pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
-                pos = Transform(*mat, pos);
+                pos = Math::Transform(mat, pos);
                 m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGAS, 0.5f, 0.0f, 0.0f);
                 pos = glm::vec3(42.0f, 0.0f, -17.0f);
                 pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
-                pos = Transform(*mat, pos);
+                pos = Math::Transform(mat, pos);
                 m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGAS, 0.5f, 0.0f, 0.0f);
                 pos = glm::vec3(17.0f, 0.0f, -42.0f);
                 pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
-                pos = Transform(*mat, pos);
+                pos = Math::Transform(mat, pos);
                 m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGAS, 0.5f, 0.0f, 0.0f);
                 pos = glm::vec3(-42.0f, 0.0f, 17.0f);
                 pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
-                pos = Transform(*mat, pos);
+                pos = Math::Transform(mat, pos);
                 m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGAS, 0.5f, 0.0f, 0.0f);
                 pos = glm::vec3(-17.0f, 0.0f, 42.0f);
                 pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
-                pos = Transform(*mat, pos);
+                pos = Math::Transform(mat, pos);
                 m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGAS, 0.5f, 0.0f, 0.0f);
                 pos = glm::vec3(-42.0f, 0.0f, -17.0f);
                 pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
-                pos = Transform(*mat, pos);
+                pos = Math::Transform(mat, pos);
                 m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGAS, 0.5f, 0.0f, 0.0f);
                 pos = glm::vec3(-17.0f, 0.0f, -42.0f);
                 pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
-                pos = Transform(*mat, pos);
+                pos = Math::Transform(mat, pos);
                 m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGAS, 0.5f, 0.0f, 0.0f);
 
                 pos = glm::vec3(42.0f, -2.0f, 17.0f);
-                pos = Transform(*mat, pos);
+                pos = Math::Transform(mat, pos);
                 m_particle->SetPosition(m_partiChannel[0], pos);
                 pos = glm::vec3(17.0f, -2.0f, 42.0f);
-                pos = Transform(*mat, pos);
+                pos = Math::Transform(mat, pos);
                 m_particle->SetPosition(m_partiChannel[1], pos);
                 pos = glm::vec3(42.0f, -2.0f, -17.0f);
-                pos = Transform(*mat, pos);
+                pos = Math::Transform(mat, pos);
                 m_particle->SetPosition(m_partiChannel[2], pos);
                 pos = glm::vec3(17.0f, -2.0f, -42.0f);
-                pos = Transform(*mat, pos);
+                pos = Math::Transform(mat, pos);
                 m_particle->SetPosition(m_partiChannel[3], pos);
                 pos = glm::vec3(-42.0f, -2.0f, 17.0f);
-                pos = Transform(*mat, pos);
+                pos = Math::Transform(mat, pos);
                 m_particle->SetPosition(m_partiChannel[4], pos);
                 pos = glm::vec3(-17.0f, -2.0f, 42.0f);
-                pos = Transform(*mat, pos);
+                pos = Math::Transform(mat, pos);
                 m_particle->SetPosition(m_partiChannel[5], pos);
                 pos = glm::vec3(-42.0f, -2.0f, -17.0f);
-                pos = Transform(*mat, pos);
+                pos = Math::Transform(mat, pos);
                 m_particle->SetPosition(m_partiChannel[6], pos);
                 pos = glm::vec3(-17.0f, -2.0f, -42.0f);
-                pos = Transform(*mat, pos);
+                pos = Math::Transform(mat, pos);
                 m_particle->SetPosition(m_partiChannel[7], pos);
             }
         }

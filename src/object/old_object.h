@@ -185,8 +185,8 @@ public:
     CObject*    GetTransporter() override;
     void        SetTransporterPart(int part) override;
 
-    Math::Matrix*   GetRotateMatrix(int part);
-    Math::Matrix*   GetWorldMatrix(int part) override;
+    glm::mat4   GetRotateMatrix(int part);
+    glm::mat4   GetWorldMatrix(int part) override;
 
     void        AdjustCamera(glm::vec3 &eye, float &dirH, float &dirV,
                              glm::vec3 &lookat, glm::vec3 &upVec,

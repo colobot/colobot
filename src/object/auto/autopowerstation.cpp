@@ -206,9 +206,9 @@ bool CAutoPowerStation::EventProcess(const Event &event)
         glm::vec3    pos, ppos, speed;
         glm::vec2     dim;
 
-        Math::Matrix* mat = m_object->GetWorldMatrix(0);
+        glm::mat4 mat = m_object->GetWorldMatrix(0);
         pos = glm::vec3(-15.0f, 7.0f, 0.0f);  // battery position
-        pos = Math::Transform(*mat, pos);
+        pos = Math::Transform(mat, pos);
         speed.x = (Math::Rand()-0.5f)*20.0f;
         speed.y = (Math::Rand()-0.5f)*20.0f;
         speed.z = (Math::Rand()-0.5f)*20.0f;

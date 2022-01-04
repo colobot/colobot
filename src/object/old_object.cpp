@@ -635,10 +635,10 @@ void COldObject::InitPart(int part)
     m_objectPart[part].bRotate    = true;
     m_objectPart[part].bZoom      = false;
 
-    m_objectPart[part].matTranslate.LoadIdentity();
-    m_objectPart[part].matRotate.LoadIdentity();
-    m_objectPart[part].matTransform.LoadIdentity();
-    m_objectPart[part].matWorld.LoadIdentity();;
+    m_objectPart[part].matTranslate = glm::mat4(1.0f);
+    m_objectPart[part].matRotate = glm::mat4(1.0f);
+    m_objectPart[part].matTransform = glm::mat4(1.0f);
+    m_objectPart[part].matWorld = glm::mat4(1.0f);
 
     m_objectPart[part].masterParti = -1;
 }
@@ -1720,12 +1720,12 @@ void COldObject::SetTransporterPart(int part)
 
 // Returns matrices of an object portion.
 
-Math::Matrix* COldObject::GetRotateMatrix(int part)
+Math::Matrix COldObject::GetRotateMatrix(int part)
 {
-    return &m_objectPart[part].matRotate;
+    return m_objectPart[part].matRotate;
 }
 
-Math::Matrix* COldObject::GetWorldMatrix(int part)
+Math::Matrix COldObject::GetWorldMatrix(int part)
 {
     if ( m_objectPart[0].bTranslate ||
          m_objectPart[0].bRotate    )
@@ -1733,7 +1733,7 @@ Math::Matrix* COldObject::GetWorldMatrix(int part)
         UpdateTransformObject();
     }
 
-    return &m_objectPart[part].matWorld;
+    return m_objectPart[part].matWorld;
 }
 
 
@@ -1847,10 +1847,10 @@ bool COldObject::UpdateTransformObject(int part, bool bForceUpdate)
     {
         if ( m_objectPart[part].bTranslate )
         {
-            m_objectPart[part].matTranslate.LoadIdentity();
-            m_objectPart[part].matTranslate.Set(1, 4, position.x);
-            m_objectPart[part].matTranslate.Set(2, 4, position.y);
-            m_objectPart[part].matTranslate.Set(3, 4, position.z);
+            m_objectPart[part].matTranslate = glm::mat4(1.0f);
+            m_objectPart[part].matTranslate[3][0] = position.x;
+            m_objectPart[part].matTranslate[3][1] = position.y;
+            m_objectPart[part].matTranslate[3][2] = position.z;
         }
 
         if ( m_objectPart[part].bRotate )
@@ -1860,18 +1860,15 @@ bool COldObject::UpdateTransformObject(int part, bool bForceUpdate)
 
         if ( m_objectPart[part].bZoom )
         {
-            Math::Matrix    mz;
-            mz.LoadIdentity();
-            mz.Set(1, 1, m_objectPart[part].zoom.x);
-            mz.Set(2, 2, m_objectPart[part].zoom.y);
-            mz.Set(3, 3, m_objectPart[part].zoom.z);
-            m_objectPart[part].matTransform = Math::MultiplyMatrices(m_objectPart[part].matTranslate,
-                                                Math::MultiplyMatrices(m_objectPart[part].matRotate, mz));
+            glm::mat4 mz = glm::mat4(1.0f);
+            mz[0][0] = m_objectPart[part].zoom.x;
+            mz[1][1] = m_objectPart[part].zoom.y;
+            mz[2][2] = m_objectPart[part].zoom.z;
+            m_objectPart[part].matTransform = m_objectPart[part].matTranslate * m_objectPart[part].matRotate * mz;
         }
         else
         {
-            m_objectPart[part].matTransform = Math::MultiplyMatrices(m_objectPart[part].matTranslate,
-                                                                     m_objectPart[part].matRotate);
+            m_objectPart[part].matTransform = m_objectPart[part].matTranslate * m_objectPart[part].matRotate;
         }
         bModif = true;
     }
@@ -1884,10 +1881,8 @@ bool COldObject::UpdateTransformObject(int part, bool bForceUpdate)
 
         if ( part == 0 && m_transporter != nullptr )  // transported by a transporter?
         {
-            Math::Matrix*   matWorldTransporter;
-            matWorldTransporter = m_transporter->GetWorldMatrix(m_transporterLink);
-            m_objectPart[part].matWorld = Math::MultiplyMatrices(*matWorldTransporter,
-                                                                 m_objectPart[part].matTransform);
+            glm::mat4 matWorldTransporter = m_transporter->GetWorldMatrix(m_transporterLink);
+            m_objectPart[part].matWorld = matWorldTransporter * m_objectPart[part].matTransform;
         }
         else
         {
@@ -1897,8 +1892,7 @@ bool COldObject::UpdateTransformObject(int part, bool bForceUpdate)
             }
             else
             {
-                m_objectPart[part].matWorld = Math::MultiplyMatrices(m_objectPart[parent].matWorld,
-                                                                     m_objectPart[part].matTransform);
+                m_objectPart[part].matWorld = m_objectPart[parent].matWorld * m_objectPart[part].matTransform;
             }
         }
         bModif = true;
@@ -1988,17 +1982,17 @@ void COldObject::FlatParent()
 
     for ( i=0 ; i<m_totalPart ; i++ )
     {
-        m_objectPart[i].position.x = m_objectPart[i].matWorld.Get(1, 4);
-        m_objectPart[i].position.y = m_objectPart[i].matWorld.Get(2, 4);
-        m_objectPart[i].position.z = m_objectPart[i].matWorld.Get(3, 4);
+        m_objectPart[i].position.x = m_objectPart[i].matWorld[3][0];
+        m_objectPart[i].position.y = m_objectPart[i].matWorld[3][1];
+        m_objectPart[i].position.z = m_objectPart[i].matWorld[3][2];
 
-        m_objectPart[i].matWorld.Set(1, 4, 0.0f);
-        m_objectPart[i].matWorld.Set(2, 4, 0.0f);
-        m_objectPart[i].matWorld.Set(3, 4, 0.0f);
+        m_objectPart[i].matWorld[3][0] = 0.0f;
+        m_objectPart[i].matWorld[3][1] = 0.0f;
+        m_objectPart[i].matWorld[3][2] = 0.0f;
 
-        m_objectPart[i].matTranslate.Set(1, 4, 0.0f);
-        m_objectPart[i].matTranslate.Set(2, 4, 0.0f);
-        m_objectPart[i].matTranslate.Set(3, 4, 0.0f);
+        m_objectPart[i].matTranslate[3][0] = 0.0f;
+        m_objectPart[i].matTranslate[3][1] = 0.0f;
+        m_objectPart[i].matTranslate[3][2] = 0.0f;
 
         m_objectPart[i].parentPart = -1;  // more parents
     }

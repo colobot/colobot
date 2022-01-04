@@ -716,11 +716,11 @@ void CScreenApperance::SetCamera(float x, float y, float cameraDistance)
     p2D.x = p2D.x * 2.0f - 1.0f;  // [0..1] -> [-1..1]
     p2D.y = p2D.y * 2.0f - 1.0f;
 
-    p3D.x = p2D.x * p2D.z / matProj.Get(1,1);
-    p3D.y = p2D.y * p2D.z / matProj.Get(2,2);
+    p3D.x = p2D.x * p2D.z / matProj[0][0];
+    p3D.y = p2D.y * p2D.z / matProj[1][1];
     p3D.z = p2D.z;
 
-    p3D = Math::Transform(matView.Inverse(), p3D);
+    p3D = Math::Transform(glm::inverse(matView), p3D);
     p3D = -p3D;
 
     camera->SetScriptCamera(glm::vec3(cameraDistance, p3D.y, p3D.x),
