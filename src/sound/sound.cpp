@@ -21,7 +21,7 @@
 
 #include "common/logger.h"
 
-#include "math/vector.h"
+#include "math/func.h"
 
 #include <iostream>
 #include <iomanip>

@@ -461,7 +461,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
         }
     }
 
-    dist = Math::Distance(m_object->GetPosition(), m_targetPos);
+    dist = glm::distance(m_object->GetPosition(), m_targetPos);
     len = dist-TAKE_DIST;
     if ( m_arm == TMA_OTHER ) len -= TAKE_DIST_OTHER;
     if ( len < 0.0f )  len = 0.0f;
@@ -548,7 +548,7 @@ Error CTaskManip::IsEnded()
         if ( m_timeLimit <= 0.0f )
         {
 //OK 1.9
-            dist = Math::Distance(m_object->GetPosition(), m_targetPos);
+            dist = glm::distance(m_object->GetPosition(), m_targetPos);
             if ( dist <= m_advanceLength + 2.0f )
             {
                 m_move = 0.0f;  // advance ended
@@ -566,7 +566,7 @@ Error CTaskManip::IsEnded()
             }
         }
 
-        dist = Math::Distance(m_object->GetPosition(), m_targetPos);
+        dist = glm::distance(m_object->GetPosition(), m_targetPos);
         if ( dist <= m_advanceLength )
         {
             m_move = 0.0f;  // advance ended
@@ -714,7 +714,7 @@ CObject* CTaskManip::SearchTakeUnderObject(glm::vec3 &pos, float dLimit)
         if ( pObj->GetScaleY() != 1.0f )  continue;
 
         oPos = pObj->GetPosition();
-        distance = Math::Distance(oPos, iPos);
+        distance = glm::distance(oPos, iPos);
         if ( distance <= dLimit &&
              distance < min     )
         {
@@ -766,7 +766,7 @@ CObject* CTaskManip::SearchTakeFrontObject(bool bAdvance, glm::vec3 &pos,
         if ( pObj->GetScaleY() != 1.0f )  continue;
 
         oPos = pObj->GetPosition();
-        distance = fabs(Math::Distance(oPos, iPos)-TAKE_DIST);
+        distance = fabs(glm::distance(oPos, iPos)-TAKE_DIST);
         f = 1.0f-distance/50.0f;
         if ( f < 0.5f )  f = 0.5f;
 
@@ -833,7 +833,7 @@ CObject* CTaskManip::SearchTakeBackObject(bool bAdvance, glm::vec3 &pos,
         if ( pObj->GetScaleY() != 1.0f )  continue;
 
         oPos = pObj->GetPosition();
-        distance = fabs(Math::Distance(oPos, iPos)-TAKE_DIST);
+        distance = fabs(glm::distance(oPos, iPos)-TAKE_DIST);
         f = 1.0f-distance/50.0f;
         if ( f < 0.5f )  f = 0.5f;
 
@@ -940,7 +940,7 @@ CObject* CTaskManip::SearchOtherObject(bool bAdvance, glm::vec3 &pos,
         angle = Math::RotateAngle(iPos.x-oPos.x, oPos.z-iPos.z);  // CW !
         if ( !Math::TestAngle(angle, oAngle-oLimit, oAngle+oLimit) )  continue;
 
-        distance = fabs(Math::Distance(oPos, iPos)-TAKE_DIST);
+        distance = fabs(glm::distance(oPos, iPos)-TAKE_DIST);
         if ( distance <= dLimit )
         {
             angle = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
@@ -1232,7 +1232,7 @@ bool CTaskManip::IsFreeDeposeObject(glm::vec3 pos)
 
         for (const auto& crashSphere : obj->GetAllCrashSpheres())
         {
-            if ( Math::Distance(iPos, crashSphere.sphere.pos)-(crashSphere.sphere.radius+1.0f) < 2.0f )
+            if ( glm::distance(iPos, crashSphere.sphere.pos)-(crashSphere.sphere.radius+1.0f) < 2.0f )
             {
                 return false;  // location occupied
             }

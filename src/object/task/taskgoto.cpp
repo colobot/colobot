@@ -638,7 +638,7 @@ void CTaskGoto::WormFrame(float rTime)
         if ( pObj != nullptr )
         {
             pos = m_object->GetPosition();
-            dist = Math::Distance(pos, impact);
+            dist = glm::distance(pos, impact);
             if ( dist <= 15.0f )
             {
                 pObj->SetVirusMode(true);  // bam, infected!
@@ -1019,7 +1019,7 @@ Error CTaskGoto::IsEnded()
 
     if ( m_phase == TGP_CRADVANCE )  // advance after collision?
     {
-        if ( Math::Distance(pos, m_pos) >= 5.0f )
+        if ( glm::distance(pos, m_pos) >= 5.0f )
         {
             m_phase = TGP_ADVANCE;
         }
@@ -1052,7 +1052,7 @@ Error CTaskGoto::IsEnded()
 
     if ( m_phase == TGP_CLADVANCE )  // advance after collision?
     {
-        if ( Math::Distance(pos, m_pos) >= 10.0f )
+        if ( glm::distance(pos, m_pos) >= 10.0f )
         {
             m_phase = TGP_ADVANCE;
             m_try ++;
@@ -1068,7 +1068,7 @@ Error CTaskGoto::IsEnded()
             return ERR_STOP;
         }
 
-        dist = Math::Distance(m_bmFinalPos, m_object->GetPosition());
+        dist = glm::distance(m_bmFinalPos, m_object->GetPosition());
         if ( dist < m_bmFinalDist )  return ERR_CONTINUE;
         m_physics->SetMotorSpeedX(0.0f);  // stops the advance
         return ERR_STOP;
@@ -1153,7 +1153,7 @@ bool CTaskGoto::AdjustTarget(CObject* pObj, glm::vec3 &pos, float &distance)
     {
         pos = m_object->GetPosition();
         goal = pObj->GetPosition();
-        dist = Math::Distance(goal, pos);
+        dist = glm::distance(goal, pos);
         pos = (pos-goal)*(TAKE_DIST+distance)/dist + goal;
         return true;  // approach from all sites
     }
@@ -1162,7 +1162,7 @@ bool CTaskGoto::AdjustTarget(CObject* pObj, glm::vec3 &pos, float &distance)
     {
         pos = m_object->GetPosition();
         goal = pObj->GetPosition();
-        dist = Math::Distance(goal, pos);
+        dist = glm::distance(goal, pos);
         pos = (pos-goal)*(TAKE_DIST+distance)/dist + goal;
         return true;  // approach from all sites
     }
@@ -1439,7 +1439,7 @@ void CTaskGoto::ComputeRepulse(glm::vec2&dir)
     glm::vec3 iPos = firstCrashSphere.sphere.pos;
     float iRadius = firstCrashSphere.sphere.radius;
 
-    gDist = Math::Distance(iPos, m_goal);
+    gDist = glm::distance(iPos, m_goal);
 
     add = m_physics->GetLinStopLength()*1.1f;  // braking distance
     fac = 2.0f;
@@ -1551,7 +1551,7 @@ void CTaskGoto::ComputeRepulse(glm::vec2&dir)
             if ( oPos.y-oRadius > iPos.y+iRadius )  continue;
             if ( oPos.y+oRadius < iPos.y-iRadius )  continue;
 
-            dist = Math::Distance(oPos, m_goal);
+            dist = glm::distance(oPos, m_goal);
             if ( dist <= 1.0f )  continue;  // on purpose?
 
             oRadius += iRadius+addi;

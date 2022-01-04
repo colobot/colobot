@@ -284,7 +284,7 @@ CObject* CAutoPowerStation::SearchVehicle()
              type != OBJECT_MOBILEdr )  continue;
 
         glm::vec3 oPos = obj->GetPosition();
-        float dist = Math::Distance(oPos, sPos);
+        float dist = glm::distance(oPos, sPos);
         if ( dist <= 5.0f )  return obj;
     }
 

@@ -3254,7 +3254,7 @@ float CEngine::GetEyeDirV()
 
 bool CEngine::IsVisiblePoint(const glm::vec3 &pos)
 {
-    return Math::Distance(m_eyePt, pos) <= (m_deepView[0] * m_clippingDistance);
+    return glm::distance(m_eyePt, pos) <= (m_deepView[0] * m_clippingDistance);
 }
 
 void CEngine::UpdateMatProj()
@@ -4767,7 +4767,7 @@ void CEngine::DrawShadowSpots()
             if ( h > max  )  h = max;
             if ( h > 4.0f )  h = 4.0f;
 
-            D = Math::Distance(m_eyePt, pos);
+            D = glm::distance(m_eyePt, pos);
             if (D >= endDeepView)
                 continue;
 
@@ -4785,7 +4785,7 @@ void CEngine::DrawShadowSpots()
             if ( h > max  )  h = max;
             if ( h > 4.0f )  h = 4.0f;
 
-            D = Math::Distance(m_eyePt, pos);
+            D = glm::distance(m_eyePt, pos);
             if (D >= endDeepView)
                 continue;
 

@@ -406,7 +406,7 @@ CObject* CAutoConvert::SearchStone(ObjectType type)
         if (IsObjectBeingTransported(obj)) continue;
 
         glm::vec3 oPos = obj->GetPosition();
-        float dist = Math::Distance(oPos, cPos);
+        float dist = glm::distance(oPos, cPos);
 
         if ( dist <= 5.0f )  return obj;
     }

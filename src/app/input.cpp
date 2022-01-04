@@ -27,6 +27,7 @@
 
 #include "level/robotmain.h"
 
+#include "math/func.h"
 
 #include <sstream>
 #include <boost/lexical_cast.hpp>

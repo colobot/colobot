@@ -98,7 +98,7 @@ bool CTaskRecover::EventProcess(const Event &event)
 
     if ( m_phase == TRP_MOVE )  // preliminary forward/backward?
     {
-        dist = Math::Distance(m_object->GetPosition(), m_ruin->GetPosition());
+        dist = glm::distance(m_object->GetPosition(), m_ruin->GetPosition());
         linSpeed = 0.0f;
         if ( dist > RECOVER_DIST )  linSpeed =  1.0f;
         if ( dist < RECOVER_DIST )  linSpeed = -1.0f;
@@ -246,7 +246,7 @@ Error CTaskRecover::IsEnded()
         {
             m_physics->SetMotorSpeedZ(0.0f);
 
-            dist = Math::Distance(m_object->GetPosition(), m_ruin->GetPosition());
+            dist = glm::distance(m_object->GetPosition(), m_ruin->GetPosition());
             if ( dist > RECOVER_DIST )
             {
                 time = m_physics->GetLinTimeLength(dist-RECOVER_DIST, 1.0f);
@@ -265,7 +265,7 @@ Error CTaskRecover::IsEnded()
 
     if ( m_phase == TRP_MOVE )  // preliminary advance?
     {
-        dist = Math::Distance(m_object->GetPosition(), m_ruin->GetPosition());
+        dist = glm::distance(m_object->GetPosition(), m_ruin->GetPosition());
 
         if ( dist >= RECOVER_DIST-1.0f &&
              dist <= RECOVER_DIST+1.0f )

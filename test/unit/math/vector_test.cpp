@@ -25,7 +25,9 @@
  */
 
 #include "math/func.h"
-#include "math/vector.h"
+
+#include <glm/glm.hpp>
+#include <glm/ext.hpp>
 
 #include <gtest/gtest.h>
 
@@ -48,7 +50,7 @@ TEST(VectorTest, NormalizeTest)
 
     vec = glm::normalize(vec);
 
-    EXPECT_TRUE(Math::VectorsEqual(vec, expectedNormalized, TEST_TOLERANCE));
+    EXPECT_TRUE(glm::all(glm::epsilonEqual(vec, expectedNormalized, TEST_TOLERANCE)));
 }
 
 TEST(VectorTest, DotTest)
@@ -69,7 +71,7 @@ TEST(VectorTest, CrossTest)
     glm::vec3 expectedCross(-1.937932065431669, 2.978844370287636, -0.437739173833581);
     glm::vec3 expectedReverseCross = -expectedCross;
 
-    EXPECT_TRUE(Math::VectorsEqual(glm::cross(vecA, vecB), expectedCross, TEST_TOLERANCE));
+    EXPECT_TRUE(glm::all(glm::epsilonEqual(glm::cross(vecA, vecB), expectedCross, TEST_TOLERANCE)));
 
-    EXPECT_TRUE(Math::VectorsEqual(glm::cross(vecB, vecA), expectedReverseCross, TEST_TOLERANCE));
+    EXPECT_TRUE(glm::all(glm::epsilonEqual(glm::cross(vecB, vecA), expectedReverseCross, TEST_TOLERANCE)));
 }

@@ -357,7 +357,7 @@ void CLightning::StrikeAtPos(glm::vec3 pos)
     m_pos = pos;
 
     glm::vec3 eye = m_engine->GetEyePt();
-    float dist = Math::Distance(m_pos, eye);
+    float dist = glm::distance(m_pos, eye);
     float deep = m_engine->GetDeepView();
 
     if (dist < deep)

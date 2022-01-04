@@ -22,7 +22,7 @@
 
 #include "object/task/task.h"
 
-#include "math/vector.h"
+#include <glm/glm.hpp>
 
 class CObject;
 

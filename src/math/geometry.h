@@ -28,7 +28,6 @@
 #include "math/const.h"
 #include "math/func.h"
 #include "math/matrix.h"
-#include "math/vector.h"
 
 #include <glm/glm.hpp>
 

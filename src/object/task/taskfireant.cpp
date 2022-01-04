@@ -171,7 +171,7 @@ Error CTaskFireAnt::IsEnded()
                 pos = glm::vec3(-2.5f, -0.7f, 0.0f);
                 mat = m_object->GetWorldMatrix(2);
                 pos = Math::Transform(*mat, pos);
-                dist = Math::Distance(pos, m_impact);
+                dist = glm::distance(pos, m_impact);
                 speed = m_impact-pos;
                 speed.x += (Math::Rand()-0.5f)*dist*1.2f;
                 speed.y += (Math::Rand()-0.5f)*dist*0.4f+50.0f;

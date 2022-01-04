@@ -285,7 +285,7 @@ bool CAutoRadar::SearchEnemy(glm::vec3 &pos)
         m_totalDetect ++;
 
         glm::vec3 oPos = obj->GetPosition();
-        float distance = Math::Distance(oPos, iPos);
+        float distance = glm::distance(oPos, iPos);
         if ( distance < min )
         {
             min = distance;

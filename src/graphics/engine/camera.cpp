@@ -32,6 +32,7 @@
 #include "level/robotmain.h"
 
 #include "math/const.h"
+#include "math/func.h"
 #include "math/geometry.h"
 
 #include "object/object.h"
@@ -552,7 +553,7 @@ void CCamera::EffectFrame(const Event &event)
         m_effectOffset.z = (Math::Rand() - 0.5f) * 0.2f;
     }
 
-    float dist = Math::Distance(m_eyePt, m_effectPos);
+    float dist = glm::distance(m_eyePt, m_effectPos);
     dist = Math::Norm((dist - 100.f) / 100.0f);
 
     force *= 1.0f-dist;
@@ -604,7 +605,7 @@ void CCamera::StartOver(CameraOverEffect effect, glm::vec3 pos, float force)
     else
         decay = 100.0f;
 
-    float dist = Math::Distance(m_eyePt, pos);
+    float dist = glm::distance(m_eyePt, pos);
     dist = (dist - decay) / decay;
     if (dist < 0.0f) dist = 0.0f;
     if (dist > 1.0f) dist = 1.0f;
@@ -765,7 +766,7 @@ void CCamera::UpdateCameraAnimation(const glm::vec3 &eyePt,
     IsCollision(m_finalEye, m_finalLookat);
 
     float prog = 0.0f;
-    float dist = Math::Distance(m_finalEye, m_actualEye);
+    float dist = glm::distance(m_finalEye, m_actualEye);
 
     if (m_smooth == CAM_SMOOTH_NONE) prog = dist;
     if (m_smooth == CAM_SMOOTH_NORM) prog = powf(dist, 1.5f) * rTime * 0.75f;
@@ -781,7 +782,7 @@ void CCamera::UpdateCameraAnimation(const glm::vec3 &eyePt,
         m_actualEye = (m_finalEye - m_actualEye) / dist * prog + m_actualEye;
     }
 
-    dist = Math::Distance(m_finalLookat, m_actualLookat);
+    dist = glm::distance(m_finalLookat, m_actualLookat);
     if ( m_smooth == CAM_SMOOTH_NONE ) prog = dist;
     if ( m_smooth == CAM_SMOOTH_NORM ) prog = powf(dist, 1.5f) * rTime * 3.0f;
     if ( m_smooth == CAM_SMOOTH_HARD ) prog = dist * rTime * 4.0f;
@@ -881,7 +882,7 @@ void CCamera::IsCollisionBack()
              oPos.z-oRadius > max.z )  continue;
 
         glm::vec3 proj = Math::Projection(m_actualEye, m_actualLookat, oPos);
-        float dpp = Math::Distance(proj, oPos);
+        float dpp = glm::distance(proj, oPos);
         if ( dpp > oRadius )  continue;
 
         if ( oType == OBJECT_FACTORY )
@@ -891,11 +892,11 @@ void CCamera::IsCollisionBack()
             if ( fabs(angle) < 30.0f*Math::PI/180.0f )  continue;  // in the gate?
         }
 
-        float del = Math::Distance(m_actualEye, m_actualLookat);
+        float del = glm::distance(m_actualEye, m_actualLookat);
         if (oType == OBJECT_FACTORY)
             del += oRadius;
 
-        float len = Math::Distance(m_actualEye, proj);
+        float len = glm::distance(m_actualEye, proj);
         if (len > del) continue;
 
         SetTransparency(obj, 1.0f);  // transparent object
@@ -931,10 +932,10 @@ void CCamera::IsCollisionFix(glm::vec3 &eye, glm::vec3 lookat)
         float objRadius = objSphere.radius;
         if (objRadius == 0.0f) continue;
 
-        float dist = Math::Distance(eye, objPos);
+        float dist = glm::distance(eye, objPos);
         if (dist < objRadius)
         {
-            dist = Math::Distance(eye, lookat);
+            dist = glm::distance(eye, lookat);
             glm::vec3 proj = Math::Projection(eye, lookat, objPos);
             eye = (lookat - eye) * objRadius / dist + proj;
             return;
@@ -1438,7 +1439,7 @@ glm::vec3 CCamera::ExcludeObject(glm::vec3 eye, glm::vec3 lookat,
         float oRad;
         while (obj->GetCrashSphere(j++, oPos, oRad))
         {
-            float dist = Math::Distance(oPos, eye);
+            float dist = glm::distance(oPos, eye);
             if (dist < oRad + 2.0f)
                 eye.y = oPos.y + oRad + 2.0f;
         }

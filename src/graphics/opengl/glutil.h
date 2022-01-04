@@ -26,8 +26,6 @@
 
 #include "graphics/core/device.h"
 
-#include "math/vector.h"
-
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 

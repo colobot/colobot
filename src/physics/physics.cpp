@@ -2552,7 +2552,7 @@ int CPhysics::ObjectAdapt(const glm::vec3 &pos, const glm::vec3 &angle)
         if ( oType == OBJECT_TARGET2 && !pObj->GetLock() )
         {
             glm::vec3 oPos = pObj->GetPosition();
-            distance = Math::Distance(oPos, iPos);
+            distance = glm::distance(oPos, iPos);
             if ( distance < 10.0f*1.5f )
             {
                 m_sound->Play(SOUND_WAYPOINT, m_object->GetPosition());
@@ -2573,10 +2573,10 @@ int CPhysics::ObjectAdapt(const glm::vec3 &pos, const glm::vec3 &angle)
             if ( iType == OBJECT_BEE    && oRad <= 1.2f )  continue;
             if ( iType == OBJECT_WORM   && oRad <= 1.2f )  continue;
 
-            distance = Math::Distance(oPos, iPos);
+            distance = glm::distance(oPos, iPos);
             if ( distance < iRad+oRad )  // collision?
             {
-                distance = Math::Distance(oPos, iiPos);
+                distance = glm::distance(oPos, iiPos);
                 if ( distance >= iRad+oRad )  // view (*)
                 {
                     m_bCollision = true;
@@ -2664,7 +2664,7 @@ bool CPhysics::JostleObject(CJostleableObject* pObj, glm::vec3 iPos, float iRad)
 {
     Math::Sphere jostlingSphere = pObj->GetJostlingSphere();
 
-    float distance = Math::Distance(jostlingSphere.pos, iPos);
+    float distance = glm::distance(jostlingSphere.pos, iPos);
     if ( distance >= iRad+jostlingSphere.radius)  return false;
 
     float d = (iRad+jostlingSphere.radius)/2.0f;
@@ -3041,7 +3041,7 @@ void CPhysics::CrashParticle(float crash)
         ppos.x = pos.x + (Math::Rand()-0.5f)*15.0f*crash;
         ppos.z = pos.z + (Math::Rand()-0.5f)*15.0f*crash;
         ppos.y = pos.y + Math::Rand()*4.0f;
-        len = 1.0f-(Math::Distance(ppos, pos)/(15.0f+5.0f));
+        len = 1.0f-(glm::distance(ppos, pos)/(15.0f+5.0f));
         if ( len <= 0.0f )  continue;
         speed.x = (ppos.x-pos.x)*0.1f;
         speed.z = (ppos.z-pos.z)*0.1f;
@@ -3731,10 +3731,10 @@ void CPhysics::WheelParticle(TraceColor color, float width)
 
         while ( true )
         {
-            dist1 = Math::Distance(m_wheelParticlePos[0], goal1);
+            dist1 = glm::distance(m_wheelParticlePos[0], goal1);
             if ( dist1 < step )  break;
 
-            dist2 = Math::Distance(m_wheelParticlePos[1], goal2);
+            dist2 = glm::distance(m_wheelParticlePos[1], goal2);
 
             wheel1 = Math::SegmentPoint(m_wheelParticlePos[0], goal1, step);
             wheel2 = Math::SegmentPoint(m_wheelParticlePos[1], goal2, step * dist2 / dist1);

@@ -309,7 +309,7 @@ CObject* CTaskTake::SearchTakeObject(float &angle,
         if ( pObj->GetScaleY() != 1.0f )  continue;
 
         oPos = pObj->GetPosition();
-        distance = Math::Distance(oPos, iPos);
+        distance = glm::distance(oPos, iPos);
         if ( distance >= 4.0f-dLimit &&
              distance <= 4.0f+dLimit )
         {
@@ -400,7 +400,7 @@ CObject* CTaskTake::SearchFriendObject(float &angle,
         Math::Matrix* mat = pObj->GetWorldMatrix(0);
         glm::vec3 oPos = Math::Transform(*mat, dynamic_cast<CPoweredObject&>(*pObj).GetPowerPosition());
 
-        float distance = fabs(Math::Distance(oPos, iPos) - (iRad+1.0f));
+        float distance = fabs(glm::distance(oPos, iPos) - (iRad+1.0f));
         if ( distance <= dLimit )
         {
             angle = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
@@ -541,7 +541,7 @@ bool CTaskTake::IsFreeDeposeObject(glm::vec3 pos)
 
         for (const auto& crashSphere : pObj->GetAllCrashSpheres())
         {
-            if ( Math::Distance(iPos, crashSphere.sphere.pos)-(crashSphere.sphere.radius+1.0f) < 1.0f )
+            if ( glm::distance(iPos, crashSphere.sphere.pos)-(crashSphere.sphere.radius+1.0f) < 1.0f )
             {
                 return false;  // location occupied
             }

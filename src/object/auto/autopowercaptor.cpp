@@ -252,7 +252,7 @@ void CAutoPowerCaptor::ChargeObject(float rTime)
     for (CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects())
     {
         glm::vec3 oPos = obj->GetPosition();
-        float dist = Math::Distance(oPos, sPos);
+        float dist = glm::distance(oPos, sPos);
         if ( dist > 20.0f )  continue;
 
         if (! IsObjectBeingTransported(obj) && obj->Implements(ObjectInterfaceType::PowerContainer) )

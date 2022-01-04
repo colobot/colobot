@@ -2432,7 +2432,7 @@ bool CRobotMain::EventFrame(const Event &event)
             if ( obj->GetProxyActivate() )  // active if it is near?
             {
                 glm::vec3 eye = m_engine->GetLookatPt();
-                float dist = Math::Distance(eye, obj->GetPosition());
+                float dist = glm::distance(eye, obj->GetPosition());
                 if ( dist < obj->GetProxyDistance() )
                 {
                     obj->SetProxyActivate(false);
@@ -4123,7 +4123,7 @@ float SearchNearestObject(CObjectManager* objMan, glm::vec3 center, CObject* exc
             if (oPos.x != center.x ||
                 oPos.z != center.z)
             {
-                float dist = Math::Distance(center, oPos) - 80.0f;
+                float dist = glm::distance(center, oPos) - 80.0f;
                 if (dist < 0.0f) dist = 0.0f;
                 min = Math::Min(min, dist);
                 continue;
@@ -4135,7 +4135,7 @@ float SearchNearestObject(CObjectManager* objMan, glm::vec3 center, CObject* exc
             type == OBJECT_DESTROYER)
         {
             glm::vec3 oPos = obj->GetPosition();
-            float dist = Math::Distance(center, oPos) - 8.0f;
+            float dist = glm::distance(center, oPos) - 8.0f;
             if (dist < 0.0f) dist = 0.0f;
             min = Math::Min(min, dist);
         }
@@ -4145,7 +4145,7 @@ float SearchNearestObject(CObjectManager* objMan, glm::vec3 center, CObject* exc
             glm::vec3 oPos = crashSphere.sphere.pos;
             float oRadius = crashSphere.sphere.radius;
 
-            float dist = Math::Distance(center, oPos) - oRadius;
+            float dist = glm::distance(center, oPos) - oRadius;
             if (dist < 0.0f) dist = 0.0f;
             min = Math::Min(min, dist);
         }
@@ -4345,14 +4345,14 @@ void CRobotMain::ShowDropZone(CObject* metal, CObject* transporter)
         if (type == OBJECT_BASE)
         {
             oPos = obj->GetPosition();
-            float dist = Math::Distance(center, oPos)-80.0f;
+            float dist = glm::distance(center, oPos)-80.0f;
             oMax = Math::Min(oMax, dist);
         }
         else
         {
             for (const auto& crashSphere : obj->GetAllCrashSpheres())
             {
-                float dist = Math::Distance(center, crashSphere.sphere.pos)-crashSphere.sphere.radius;
+                float dist = glm::distance(center, crashSphere.sphere.pos)-crashSphere.sphere.radius;
                 oMax = Math::Min(oMax, dist);
             }
         }
@@ -4378,7 +4378,7 @@ void CRobotMain::ShowDropZone(CObject* metal, CObject* transporter)
         {
             for (const auto& crashSphere : obj->GetAllCrashSpheres())
             {
-                float dist = Math::Distance(center, crashSphere.sphere.pos)-crashSphere.sphere.radius-BUILDMARGIN;
+                float dist = glm::distance(center, crashSphere.sphere.pos)-crashSphere.sphere.radius-BUILDMARGIN;
                 oMax = Math::Min(oMax, dist);
             }
         }
@@ -6065,7 +6065,7 @@ void CRobotMain::StartDetectEffect(COldObject* object, CObject* target)
     {
         goal = target->GetPosition();
         goal.y += 3.0f;
-        goal = Math::SegmentPoint(pos, goal, Math::Distance(pos, goal)-3.0f);
+        goal = Math::SegmentPoint(pos, goal, glm::distance(pos, goal)-3.0f);
     }
 
     dim.x = 3.0f;
@@ -6076,7 +6076,7 @@ void CRobotMain::StartDetectEffect(COldObject* object, CObject* target)
     {
         goal = target->GetPosition();
         goal.y += 3.0f;
-        goal = Math::SegmentPoint(pos, goal, Math::Distance(pos, goal)-1.0f);
+        goal = Math::SegmentPoint(pos, goal, glm::distance(pos, goal)-1.0f);
         dim.x = 6.0f;
         dim.y = dim.x;
         m_particle->CreateParticle(goal, glm::vec3(0.0f, 0.0f, 0.0f), dim,

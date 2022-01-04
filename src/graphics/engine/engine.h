@@ -34,7 +34,6 @@
 
 #include "math/matrix.h"
 #include "math/sphere.h"
-#include "math/vector.h"
 
 #include <glm/glm.hpp>
 

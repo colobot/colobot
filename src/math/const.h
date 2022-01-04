@@ -34,26 +34,26 @@ namespace Math
 
 
 //! Tolerance level -- minimum accepted float value
-const float TOLERANCE = 1e-6f;
+constexpr float TOLERANCE = 1e-6f;
 
 //! Very small number (used in testing/returning some values)
-const float VERY_SMALL_NUM = 1e-6f;
+constexpr float VERY_SMALL_NUM = 1e-6f;
 //! Very big number (used in testing/returning some values)
-const float VERY_BIG_NUM = 1e6f;
+constexpr float VERY_BIG_NUM = 1e6f;
 
 //! Huge number
-const float HUGE_NUM = 1.0e+38f;
+constexpr float HUGE_NUM = 1.0e+38f;
 
 //! PI
-const float PI       = 3.14159265358979323846f;
+constexpr float PI       = 3.14159265358979323846f;
 
 //! Degrees to radians multiplier
-const float DEG_TO_RAD =  0.01745329251994329547f;
+constexpr float DEG_TO_RAD =  0.01745329251994329547f;
 //! Radians to degrees multiplier
-const float RAD_TO_DEG = 57.29577951308232286465f;
+constexpr float RAD_TO_DEG = 57.29577951308232286465f;
 
 //! Natural logarithm of 2
-const float LOG_2 = log(2.0f);
+const float LOG_2 = std::log(2.0f);
 
 
 } // namespace Math

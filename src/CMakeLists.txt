@@ -181,7 +181,6 @@ add_library(colobotbase STATIC
     math/half.h
     math/matrix.h
     math/sphere.h
-    math/vector.h
     object/auto/auto.cpp
     object/auto/auto.h
     object/auto/autobase.cpp

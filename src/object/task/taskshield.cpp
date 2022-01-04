@@ -553,7 +553,7 @@ void CTaskShield::IncreaseShield()
         if (!shielded->IsRepairable()) continue; // NOTE: Looks like the original code forgot to check that
 
         glm::vec3 oPos = obj->GetPosition();
-        float dist = Math::Distance(oPos, m_shieldPos);
+        float dist = glm::distance(oPos, m_shieldPos);
         if ( dist <= GetRadius()+10.0f )
         {
             shielded->SetShield(shielded->GetShield() + 0.1f);

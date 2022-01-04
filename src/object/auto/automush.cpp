@@ -282,7 +282,7 @@ bool CAutoMush::SearchTarget()
              type != OBJECT_HUMAN    )  continue;
 
         glm::vec3 oPos = obj->GetPosition();
-        float dist = Math::Distance(oPos, iPos);
+        float dist = glm::distance(oPos, iPos);
         if ( dist < 50.0f )  return true;
     }
 

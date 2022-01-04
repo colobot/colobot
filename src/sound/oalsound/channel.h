@@ -24,11 +24,11 @@
 
 #pragma once
 
-#include "math/vector.h"
-
 #include "sound/sound.h"
 
 #include "sound/oalsound/check.h"
+
+#include <glm/glm.hpp>
 
 #include <string>
 #include <deque>

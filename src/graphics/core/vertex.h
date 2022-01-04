@@ -28,8 +28,6 @@
 #include "graphics/core/color.h"
 #include "graphics/core/type.h"
 
-#include "math/vector.h"
-
 #include <sstream>
 #include <cstdint>
 

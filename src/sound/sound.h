@@ -26,7 +26,7 @@
 
 #include "sound/sound_type.h"
 
-#include "math/vector.h"
+#include <glm/glm.hpp>
 
 #include <string>
 

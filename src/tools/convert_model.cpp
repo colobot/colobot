@@ -23,6 +23,8 @@
 #include "graphics/model/model_io_exception.h"
 #include "graphics/model/model_output.h"
 
+#include "math/func.h"
+
 #include <iostream>
 #include <fstream>
 #include <map>

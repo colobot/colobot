@@ -570,7 +570,7 @@ CObject* CAutoFactory::SearchCargo()
         if (IsObjectBeingTransported(obj))  continue;
 
         glm::vec3 oPos = obj->GetPosition();
-        float dist = Math::Distance(oPos, m_cargoPos);
+        float dist = glm::distance(oPos, m_cargoPos);
 
         if ( dist < 8.0f )  return obj;
     }
@@ -701,7 +701,7 @@ CObject* CAutoFactory::SearchVehicle()
         if (IsObjectBeingTransported(obj))  continue;
 
         glm::vec3 oPos = obj->GetPosition();
-        float dist = Math::Distance(oPos, m_cargoPos);
+        float dist = glm::distance(oPos, m_cargoPos);
 
         if ( dist < 8.0f )  return obj;
     }

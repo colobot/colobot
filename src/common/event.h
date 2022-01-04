@@ -27,8 +27,6 @@
 #include "common/key.h"
 #include "common/make_unique.h"
 
-#include "math/vector.h"
-
 #include <glm/glm.hpp>
 
 #include <memory>

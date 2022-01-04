@@ -298,7 +298,7 @@ CObject* CAutoTower::SearchTarget(glm::vec3 &impact)
         if (obj->GetCrashSphereCount() == 0) continue;
 
         glm::vec3 oPos = obj->GetFirstCrashSphere().sphere.pos;
-        float distance = Math::Distance(oPos, iPos);
+        float distance = glm::distance(oPos, iPos);
         if ( distance > TOWER_SCOPE )  continue;  // too far
         if ( distance < min )
         {

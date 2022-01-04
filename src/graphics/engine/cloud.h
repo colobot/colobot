@@ -26,7 +26,7 @@
 
 #include "graphics/core/color.h"
 
-#include "math/vector.h"
+#include <glm/glm.hpp>
 
 #include <vector>
 #include <string>

@@ -27,7 +27,6 @@
 
 #include "math/const.h"
 #include "math/func.h"
-#include "math/vector.h"
 
 
 #include <cmath>

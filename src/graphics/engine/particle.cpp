@@ -413,9 +413,9 @@ int CParticle::CreateFrag(glm::vec3 pos, glm::vec3 speed,
             p3.y = m_triangle[i].triangle[2].position.y;
             p3.z = m_triangle[i].triangle[2].position.z;
 
-            float l1 = Math::Distance(p1, p2);
-            float l2 = Math::Distance(p2, p3);
-            float l3 = Math::Distance(p3, p1);
+            float l1 = glm::distance(p1, p2);
+            float l2 = glm::distance(p2, p3);
+            float l3 = glm::distance(p3, p1);
             float dx = fabs(Math::Min(l1, l2, l3))*0.5f;
             float dy = fabs(Math::Max(l1, l2, l3))*0.5f;
             p1 = glm::vec3(-dx,  dy, 0.0f);
@@ -2478,7 +2478,7 @@ bool CParticle::TrackMove(int i, glm::vec3 pos, float progress)
             last = m_track[i].pos[hh];
         }
         m_track[i].pos[h] = pos;
-        m_track[i].len[h] = Math::Distance(pos, last);
+        m_track[i].len[h] = glm::distance(pos, last);
 
         m_track[i].head = h;
 
@@ -2978,7 +2978,7 @@ void CParticle::DrawParticleRay(int i)
 
     if (left) dim.y = -dim.y;
 
-    float len = Math::Distance(pos, goal);
+    float len = glm::distance(pos, goal);
     float adv = 0.0f;
 
     int step = static_cast<int>((len/(dim.x*2.0f))+1);
@@ -3550,7 +3550,7 @@ CObject* CParticle::SearchObjectGun(glm::vec3 old, glm::vec3 pos,
                 float shieldRadius = shielder->GetActiveShieldRadius();
                 if (shieldRadius > 0.0f)
                 {
-                    float dist = Math::Distance(oPos, pos);
+                    float dist = glm::distance(oPos, pos);
                     if (dist <= shieldRadius)
                     {
                         best = obj;
@@ -3563,8 +3563,8 @@ CObject* CParticle::SearchObjectGun(glm::vec3 old, glm::vec3 pos,
 
         // Test the center of the object, which is necessary for objects
         // that have no sphere in the center (station).
-        float dist = Math::Distance(oPos, pos)-4.0f;
-        float obj_dist = Math::Distance(old, oPos);
+        float dist = glm::distance(oPos, pos)-4.0f;
+        float obj_dist = glm::distance(old, oPos);
         if (dist < min && obj_dist < best_dist)
         {
             best = obj;
@@ -3581,8 +3581,8 @@ CObject* CParticle::SearchObjectGun(glm::vec3 old, glm::vec3 pos,
                  oPos.z+oRadius < box1.z || oPos.z-oRadius > box2.z )  continue;
 
             glm::vec3 p = Math::Projection(old, pos, oPos);
-            float ddist = Math::Distance(p, oPos)-oRadius;
-            float obj_dist = Math::Distance(old, oPos);
+            float ddist = glm::distance(p, oPos)-oRadius;
+            float obj_dist = glm::distance(old, oPos);
             if (ddist < min && obj_dist < best_dist)
             {
                 best = obj;
@@ -3640,7 +3640,7 @@ CObject* CParticle::SearchObjectRay(glm::vec3 pos, glm::vec3 goal,
              oPos.z < box1.z || oPos.z > box2.z )  continue;
 
         glm::vec3 p = Math::Projection(pos, goal, oPos);
-        float dist = Math::Distance(p, oPos);
+        float dist = glm::distance(p, oPos);
         if (dist < min)  return obj;
     }
 

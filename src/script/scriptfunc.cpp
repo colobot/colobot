@@ -1732,7 +1732,7 @@ bool CScriptFunctions::rDistance(CBotVar* var, CBotVar* result, int& exception, 
     if ( !GetPoint(var, exception, p1) )  return true;
     if ( !GetPoint(var, exception, p2) )  return true;
 
-    value = Math::Distance(p1, p2);
+    value = glm::distance(p1, p2);
     result->SetValFloat(value/g_unit);
     return true;
 }

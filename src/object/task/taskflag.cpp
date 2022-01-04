@@ -265,7 +265,7 @@ Error CTaskFlag::CreateFlag(int rank)
     CObject* pObj = SearchNearest(pos, OBJECT_NULL);
     if ( pObj != nullptr )
     {
-        float dist = Math::Distance(pos, pObj->GetPosition());
+        float dist = glm::distance(pos, pObj->GetPosition());
         if ( dist < 10.0f )
         {
             return ERR_FLAG_PROXY;
@@ -305,7 +305,7 @@ Error CTaskFlag::DeleteFlag()
     {
         return ERR_FLAG_DELETE;
     }
-    dist = Math::Distance(iPos, pObj->GetPosition());
+    dist = glm::distance(iPos, pObj->GetPosition());
     if ( dist > 10.0f )
     {
         return ERR_FLAG_DELETE;

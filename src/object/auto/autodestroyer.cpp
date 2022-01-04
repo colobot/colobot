@@ -288,7 +288,7 @@ CObject* CAutoDestroyer::SearchPlastic()
         if (obj->GetType() == OBJECT_HUMAN || obj->GetType() == OBJECT_TECH) continue;
 
         glm::vec3 oPos = obj->GetPosition();
-        float dist = Math::Distance(oPos, sPos);
+        float dist = glm::distance(oPos, sPos);
         if ( dist <= 5.0f )  return obj;
     }
 

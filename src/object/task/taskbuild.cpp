@@ -246,7 +246,7 @@ bool CTaskBuild::EventProcess(const Event &event)
 
     if ( m_phase == TBP_MOVE )  // preliminary forward/backward?
     {
-        dist = Math::Distance(m_object->GetPosition(), m_metal->GetPosition());
+        dist = glm::distance(m_object->GetPosition(), m_metal->GetPosition());
         linSpeed = 0.0f;
         if ( m_physics->GetLand() )
         {
@@ -362,7 +362,7 @@ bool CTaskBuild::EventProcess(const Event &event)
     {
         pv = m_object->GetPosition();
         pm = m_metal->GetPosition();
-        dist = Math::Distance(pv, pm);
+        dist = glm::distance(pv, pm);
         diff = pm.y - 8.0f - pv.y;
         tilt = m_object->GetRotation();
         m_object->StartTaskGunGoal(asin(diff/dist)-tilt.z, 0.0f);
@@ -453,7 +453,7 @@ Error CTaskBuild::IsEnded()
         {
             m_physics->SetMotorSpeedZ(0.0f);
 
-            dist = Math::Distance(m_object->GetPosition(), m_metal->GetPosition());
+            dist = glm::distance(m_object->GetPosition(), m_metal->GetPosition());
             if ( dist > 30.0f )
             {
                 time = m_physics->GetLinTimeLength(dist-30.0f, 1.0f);
@@ -472,7 +472,7 @@ Error CTaskBuild::IsEnded()
 
     if ( m_phase == TBP_MOVE )  // preliminary forward/backward?
     {
-        dist = Math::Distance(m_object->GetPosition(), m_metal->GetPosition());
+        dist = glm::distance(m_object->GetPosition(), m_metal->GetPosition());
 
         if ( !m_physics->GetLand())
         {
@@ -526,7 +526,7 @@ Error CTaskBuild::IsEnded()
             m_object->SetObjectParent(1, 0);
             pv = m_object->GetPosition();
             pm = m_metal->GetPosition();
-            dist = Math::Distance(pv, pm);
+            dist = glm::distance(pv, pm);
             diff = pm.y - 8.0f - pv.y;
             tilt = m_object->GetRotation();
             if(dist) m_object->StartTaskGunGoal(asin(diff/dist)-tilt.z, 0.0f);
@@ -714,7 +714,7 @@ Error CTaskBuild::FlatFloor()
         if ( type == OBJECT_BASE )
         {
             glm::vec3 oPos = pObj->GetPosition();
-            dist = Math::Distance(center, oPos)-80.0f;
+            dist = glm::distance(center, oPos)-80.0f;
             if ( dist < max )
             {
                 max = dist;
@@ -730,7 +730,7 @@ Error CTaskBuild::FlatFloor()
                 glm::vec3 oPos = crashSphere.sphere.pos;
                 float oRadius = crashSphere.sphere.radius;
 
-                dist = Math::Distance(center, oPos)-oRadius;
+                dist = glm::distance(center, oPos)-oRadius;
                 if ( dist < max )
                 {
                     max = dist;
@@ -782,7 +782,7 @@ Error CTaskBuild::FlatFloor()
                 glm::vec3 oPos = crashSphere.sphere.pos;
                 float oRadius = crashSphere.sphere.radius;
 
-                dist = Math::Distance(center, oPos)-oRadius;
+                dist = glm::distance(center, oPos)-oRadius;
                 if ( dist < max )
                 {
                     max = dist;
@@ -831,7 +831,7 @@ CObject* CTaskBuild::SearchMetalObject(float &angle, float dMin, float dMax,
         bMetal = true;  // metal exists
 
         oPos = pObj->GetPosition();
-        distance = Math::Distance(oPos, iPos);
+        distance = glm::distance(oPos, iPos);
         a = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW!
 
         if ( distance > dMax )  continue;
@@ -886,7 +886,7 @@ void CTaskBuild::DeleteMark(glm::vec3 pos, float radius)
              type != OBJECT_MARKPOWER   )  continue;
 
         glm::vec3 oPos = obj->GetPosition();
-        float distance = Math::Distance(oPos, pos);
+        float distance = glm::distance(oPos, pos);
         if ( distance <= radius )
         {
             objectsToDelete.push_back(obj);

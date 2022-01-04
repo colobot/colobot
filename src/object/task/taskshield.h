@@ -22,7 +22,7 @@
 
 #include "object/task/task.h"
 
-#include "math/vector.h"
+#include <glm/glm.hpp>
 
 
 const float RADIUS_SHIELD_MIN = 40.0f;      // minimum radius of the protected zone

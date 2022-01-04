@@ -282,7 +282,7 @@ Error CTaskTerraform::IsEnded()
             pos.z = m_terraPos.z+(Math::Rand()-0.5f)*80.0f;
             pos.y = m_terraPos.y;
             m_terrain->AdjustToFloor(pos);
-            dist = Math::Distance(pos, m_terraPos);
+            dist = glm::distance(pos, m_terraPos);
             speed = glm::vec3(0.0f, 0.0f, 0.0f);
             dim.x = 2.0f+(40.0f-dist)/(1.0f+Math::Rand()*4.0f);
             dim.y = dim.x;
@@ -412,7 +412,7 @@ bool CTaskTerraform::Terraform()
              type == OBJECT_BARRIER3     ||
              type == OBJECT_APOLLO4      )  // everything what fits?
         {
-            dist = Math::Distance(m_terraPos, pObj->GetPosition());
+            dist = glm::distance(m_terraPos, pObj->GetPosition());
 
             if ( type == OBJECT_BULLET ||
                  type == OBJECT_NEST   ||
@@ -457,7 +457,7 @@ bool CTaskTerraform::Terraform()
             if ( !pObj->Implements(ObjectInterfaceType::Movable) )  continue;
             motion = dynamic_cast<CMovableObject&>(*pObj).GetMotion();
 
-            dist = Math::Distance(m_terraPos, pObj->GetPosition());
+            dist = glm::distance(m_terraPos, pObj->GetPosition());
             if ( dist > ACTION_RADIUS )  continue;
 
             if ( type == OBJECT_ANT || type == OBJECT_SPIDER )

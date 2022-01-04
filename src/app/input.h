@@ -27,11 +27,10 @@
 #include "common/key.h"
 #include "common/singleton.h"
 
-#include "math/vector.h"
-
 #include <glm/glm.hpp>
 
 #include <map>
+#include <string>
 
 struct Event;
 

@@ -27,9 +27,12 @@
 
 #include "math/const.h"
 
+#include <glm/glm.hpp>
 
 #include <cmath>
 #include <cstdlib>
+#include <sstream>
+#include <string>
 
 
 // Math module namespace
@@ -262,6 +265,20 @@ inline float Bounce(float progress, float middle = 0.3f, float bounce = 0.4f)
         progress = (progress-middle)/(1.0f-middle);    // 0..1
         return (1.0f-bounce/2.0f)+sinf((0.5f+progress*2.0f)*PI)*(bounce/2.0f);
     }
+}
+
+//! Convenience function for calculating angle (in radians) between two vectors
+inline float Angle(const glm::vec3& a, const glm::vec3& b)
+{
+    return std::acosf(glm::dot(a, b) / (glm::length(a) * glm::length(b)));
+}
+
+inline std::string ToString(const glm::vec3& vector)
+{
+    std::stringstream s;
+    s.precision(3);
+    s << "[" << vector.x << ", " << vector.y << ", " << vector.z << "]";
+    return s.str();
 }
 
 

@@ -21,7 +21,7 @@
 
 #include "object/interface/program_storage_object.h"
 
-#include "math/vector.h"
+#include <glm/glm.hpp>
 
 #include <sstream>
 

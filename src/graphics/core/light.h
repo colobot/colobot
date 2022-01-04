@@ -27,7 +27,9 @@
 
 #include "graphics/core/color.h"
 
-#include "math/vector.h"
+#include "math/const.h"
+
+#include <glm/glm.hpp>
 
 
 // Graphics module namespace

@@ -21,8 +21,6 @@
 
 #include "common/error.h"
 
-#include "math/vector.h"
-
 #include "object/object_type.h"
 
 #include <glm/glm.hpp>

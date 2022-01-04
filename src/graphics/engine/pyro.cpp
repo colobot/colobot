@@ -101,7 +101,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
     }
     else
     {
-        m_size = Math::Distance(min, max)*2.0f;
+        m_size = glm::distance(min, max)*2.0f;
         if ( m_size <  4.0f )  m_size =  4.0f;
         if ( m_size > 80.0f )  m_size = 80.0f;
     }
@@ -1487,7 +1487,7 @@ void CPyro::CreateTriangle(CObject* obj, ObjectType oType, int part)
 
         float h;
 
-        h = Math::Distance(p1, p2);
+        h = glm::distance(p1, p2);
         if ( h > 5.0f )
         {
             p2.x = p1.x+((p2.x-p1.x)*5.0f/h);
@@ -1495,7 +1495,7 @@ void CPyro::CreateTriangle(CObject* obj, ObjectType oType, int part)
             p2.z = p1.z+((p2.z-p1.z)*5.0f/h);
         }
 
-        h = Math::Distance(p2, p3);
+        h = glm::distance(p2, p3);
         if ( h > 5.0f )
         {
             p3.x = p2.x+((p3.x-p2.x)*5.0f/h);
@@ -1503,7 +1503,7 @@ void CPyro::CreateTriangle(CObject* obj, ObjectType oType, int part)
             p3.z = p2.z+((p3.z-p2.z)*5.0f/h);
         }
 
-        h = Math::Distance(p3, p1);
+        h = glm::distance(p3, p1);
         if ( h > 5.0f )
         {
             p1.x = p3.x+((p1.x-p3.x)*5.0f/h);
@@ -1628,7 +1628,7 @@ void CPyro::ExploStart()
         {
             glm::vec3 min, max;
             m_engine->GetObjectBBox(objRank, min, max);
-            weight = Math::Distance(min, max);  // weight according to size!
+            weight = glm::distance(min, max);  // weight according to size!
 
             speed.y = 10.0f+Math::Rand()*20.0f;
             speed.x = (Math::Rand()-0.5f)*20.0f;
@@ -2295,7 +2295,7 @@ CObject* CPyro::FallSearchBeeExplo()
             float shieldRadius = dynamic_cast<CShielder&>(*obj).GetActiveShieldRadius();
             if ( shieldRadius > 0.0f )
             {
-                float distance = Math::Distance(oPos, bulletCrashSphere.sphere.pos);
+                float distance = glm::distance(oPos, bulletCrashSphere.sphere.pos);
                 if (distance <= shieldRadius)
                     return obj;
             }
@@ -2303,14 +2303,14 @@ CObject* CPyro::FallSearchBeeExplo()
 
         if ( obj->GetType() == OBJECT_BASE )
         {
-            float distance = Math::Distance(oPos, bulletCrashSphere.sphere.pos);
+            float distance = glm::distance(oPos, bulletCrashSphere.sphere.pos);
             if (distance < 25.0f)
                 return obj;
         }
 
         // Test the center of the object, which is necessary for objects
         // that have no sphere in the center (station).
-        float distance = Math::Distance(oPos, bulletCrashSphere.sphere.pos)-4.0f;
+        float distance = glm::distance(oPos, bulletCrashSphere.sphere.pos)-4.0f;
         if (distance < 5.0f)
             return obj;
 

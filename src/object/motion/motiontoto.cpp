@@ -427,7 +427,7 @@ bool CMotionToto::EventFrame(const Event &event)
                 if ( m_bStartAction )
                 {
                     m_bStartAction = false;
-                    m_speedAction = Math::Distance(nPos, aPos)/15.0f;
+                    m_speedAction = glm::distance(nPos, aPos)/15.0f;
                     if ( m_speedAction < 20.0f )  m_speedAction = 20.0f;
                 }
                 level = m_speedAction;

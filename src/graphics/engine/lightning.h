@@ -24,8 +24,6 @@
 
 #pragma once
 
-#include "math/vector.h"
-
 #include <glm/glm.hpp>
 
 #include <vector>

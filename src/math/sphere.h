@@ -19,14 +19,14 @@
 
 #pragma once
 
-#include "math/vector.h"
+#include <glm/glm.hpp>
 
 namespace Math
 {
 
 struct Sphere
 {
-    Sphere(const glm::vec3& pos = glm::vec3(), float radius = 0.0f)
+    Sphere(const glm::vec3& pos = glm::vec3(0, 0, 0), float radius = 0.0f)
         : pos(pos), radius(radius) {}
 
     glm::vec3 pos;
@@ -36,12 +36,12 @@ struct Sphere
 //! Compute distance between given \a point and \a sphere
 inline float DistanceToSphere(const glm::vec3& point, const Sphere& sphere)
 {
-    return Math::Distance(point, sphere.pos) - sphere.radius;
+    return glm::distance(point, sphere.pos) - sphere.radius;
 }
 
 inline float DistanceBetweenSpheres(const Sphere& sphere1, const Sphere& sphere2)
 {
-    return Math::Distance(sphere1.pos, sphere2.pos) - sphere1.radius - sphere2.radius;
+    return glm::distance(sphere1.pos, sphere2.pos) - sphere1.radius - sphere2.radius;
 }
 
 inline Sphere BoundingSphereForBox(glm::vec3 mins, glm::vec3 maxs)

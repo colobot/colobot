@@ -157,7 +157,7 @@ bool CAutoNest::SearchFree(glm::vec3 pos)
             glm::vec3 sPos = crashSphere.sphere.pos;
             float sRadius = crashSphere.sphere.radius;
 
-            float distance = Math::Distance(sPos, pos);
+            float distance = glm::distance(sPos, pos);
             distance -= sRadius;
             if ( distance < 2.0f )  return false;  // location occupied
         }

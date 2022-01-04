@@ -1486,7 +1486,7 @@ bool CMotionVehicle::EventFrame(const Event &event)
                 radius =  1.0f;
             }
 
-            if ( Math::Distance(pos, m_engine->GetEyePt()) < 50.0f )  // suspension?
+            if ( glm::distance(pos, m_engine->GetEyePt()) < 50.0f )  // suspension?
             {
                 character = m_object->GetCharacter();
                 mat = m_object->GetWorldMatrix(0);
@@ -1622,7 +1622,7 @@ bool CMotionVehicle::EventFrame(const Event &event)
                 limit[1] = -10.0f*Math::PI/180.0f;
             }
 
-            if ( Math::Distance(pos, m_engine->GetEyePt()) < 50.0f )  // suspension?
+            if ( glm::distance(pos, m_engine->GetEyePt()) < 50.0f )  // suspension?
             {
                 character = m_object->GetCharacter();
                 mat = m_object->GetWorldMatrix(0);

@@ -248,7 +248,7 @@ CObject* CAutoRepair::SearchVehicle()
         if ( obj->Implements(ObjectInterfaceType::Movable) && !dynamic_cast<CMovableObject&>(*obj).GetPhysics()->GetLand() )  continue;  // in flight?
 
         glm::vec3 oPos = obj->GetPosition();
-        float dist = Math::Distance(oPos, sPos);
+        float dist = glm::distance(oPos, sPos);
         if ( dist <= 5.0f )  return obj;
     }
 

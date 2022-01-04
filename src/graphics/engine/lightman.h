@@ -28,7 +28,7 @@
 
 #include "graphics/engine/engine.h"
 
-#include "math/vector.h"
+#include <glm/glm.hpp>
 
 
 // Graphics module namespace
