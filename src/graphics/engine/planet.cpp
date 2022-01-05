@@ -26,6 +26,8 @@
 
 #include "graphics/engine/engine.h"
 
+#include "math/func.h"
+
 
 // Graphics module namespace
 namespace Gfx

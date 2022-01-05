@@ -26,6 +26,8 @@
 #include "graphics/core/device.h"
 #include "graphics/engine/engine.h"
 
+#include "math/func.h"
+
 
 #include <stdio.h>
 #include <string.h>

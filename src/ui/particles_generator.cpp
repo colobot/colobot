@@ -21,6 +21,8 @@
 
 #include "graphics/engine/particle.h"
 
+#include "math/func.h"
+
 namespace UI
 {
     CParticlesGenerator::CParticlesGenerator()

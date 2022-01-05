@@ -28,6 +28,8 @@
 #include "level/parser/parserline.h"
 #include "level/parser/parserparam.h"
 
+#include "math/func.h"
+
 #include "object/object_create_params.h"
 
 #include "sound/sound.h"

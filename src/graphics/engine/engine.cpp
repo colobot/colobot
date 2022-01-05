@@ -232,7 +232,7 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
     m_terrainTexParams.filter = TEX_FILTER_BILINEAR;
 
     // Compute bias matrix for shadow mapping
-    Math::Matrix temp1, temp2;
+    glm::mat4 temp1, temp2;
     Math::LoadScaleMatrix(temp1, glm::vec3(0.5f, 0.5f, 0.5f));
     Math::LoadTranslationMatrix(temp2, glm::vec3(1.0f, 1.0f, 1.0f));
     m_shadowBias = temp1 * temp2;
@@ -899,8 +899,7 @@ int CEngine::CreateObject()
 
     m_objects[objRank].used = true;
 
-    Math::Matrix mat;
-    mat = glm::mat4(1.0f);
+    glm::mat4 mat = glm::mat4(1.0f);
     SetObjectTransform(objRank, mat);
 
     m_objects[objRank].drawWorld = true;
@@ -959,14 +958,14 @@ EngineObjectType CEngine::GetObjectType(int objRank)
 }
 
 
-void CEngine::SetObjectTransform(int objRank, const Math::Matrix& transform)
+void CEngine::SetObjectTransform(int objRank, const glm::mat4& transform)
 {
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
     m_objects[objRank].transform = transform;
 }
 
-void CEngine::GetObjectTransform(int objRank, Math::Matrix& transform)
+void CEngine::GetObjectTransform(int objRank, glm::mat4& transform)
 {
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
@@ -1928,7 +1927,7 @@ bool CEngine::DetectTriangle(const glm::vec2& mouse, Vertex3D* triangle, int obj
 }
 
 //! Use only after world transform already set
-bool CEngine::IsVisible(const Math::Matrix& matrix, int objRank)
+bool CEngine::IsVisible(const glm::mat4& matrix, int objRank)
 {
     assert(objRank >= 0 && objRank < static_cast<int>(m_objects.size()));
 
@@ -1949,7 +1948,7 @@ bool CEngine::IsVisible(const Math::Matrix& matrix, int objRank)
     return false;
 }
 
-int CEngine::ComputeSphereVisibility(const Math::Matrix& m, const glm::vec3& center, float radius)
+int CEngine::ComputeSphereVisibility(const glm::mat4& m, const glm::vec3& center, float radius)
 {
     glm::vec3 vec[6];
     float originPlane[6];
@@ -3225,12 +3224,12 @@ bool CEngine::GetPauseBlurEnabled()
     return m_pauseBlurEnabled;
 }
 
-const Math::Matrix& CEngine::GetMatView()
+const glm::mat4& CEngine::GetMatView()
 {
     return m_matView;
 }
 
-const Math::Matrix& CEngine::GetMatProj()
+const glm::mat4& CEngine::GetMatProj()
 {
     return m_matProj;
 }
@@ -3670,7 +3669,7 @@ void CEngine::Draw3DScene()
 
     if (m_debugGoto)
     {
-        Math::Matrix worldMatrix = glm::mat4(1.0f);
+        glm::mat4 worldMatrix = glm::mat4(1.0f);
         m_device->SetTransform(TRANSFORM_WORLD, worldMatrix);
 
         SetState(ENG_RSTATE_OPAQUE_COLOR);
@@ -3807,7 +3806,7 @@ void CEngine::Capture3DScene()
 
 void CEngine::DrawCaptured3DScene()
 {
-    Math::Matrix identity;
+    glm::mat4 identity = glm::mat4(1.0f);
 
     m_device->SetTransform(TRANSFORM_PROJECTION, identity);
     m_device->SetTransform(TRANSFORM_VIEW, identity);
@@ -3831,7 +3830,7 @@ void CEngine::DrawCaptured3DScene()
     renderer->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, 4, vertices);
 }
 
-void CEngine::RenderDebugSphere(const Math::Sphere& sphere, const Math::Matrix& transform, const Gfx::Color& color)
+void CEngine::RenderDebugSphere(const Math::Sphere& sphere, const glm::mat4& transform, const Gfx::Color& color)
 {
     static constexpr int LONGITUDE_DIVISIONS = 16;
     static constexpr int LATITUDE_DIVISIONS = 8;
@@ -3895,12 +3894,12 @@ void CEngine::RenderDebugSphere(const Math::Sphere& sphere, const Math::Matrix& 
 
     for (std::size_t i = 0; i < verticesTemplate.size(); ++i)
     {
-        auto pos = Math::MatrixVectorMultiply(transform, sphere.pos + verticesTemplate[i] * sphere.radius);
+        auto pos = Math::Transform(transform, sphere.pos + verticesTemplate[i] * sphere.radius);
         m_pendingDebugDraws.vertices[i + firstVert] = VertexCol{pos, color};
     }
 }
 
-void CEngine::RenderDebugBox(const glm::vec3& mins, const glm::vec3& maxs, const Math::Matrix& transform, const Gfx::Color& color)
+void CEngine::RenderDebugBox(const glm::vec3& mins, const glm::vec3& maxs, const glm::mat4& transform, const Gfx::Color& color)
 {
     static constexpr int NUM_LINE_STRIPS = 4;
     static constexpr int VERTS_IN_LINE_STRIP = 4;
@@ -3949,7 +3948,7 @@ void CEngine::RenderPendingDebugDraws()
 {
     if (m_pendingDebugDraws.firsts.empty()) return;
 
-    m_device->SetTransform(TRANSFORM_WORLD, Math::Matrix{});
+    m_device->SetTransform(TRANSFORM_WORLD, glm::mat4(1.0f));
 
     SetState(ENG_RSTATE_OPAQUE_COLOR);
 
@@ -4070,7 +4069,7 @@ void CEngine::RenderShadowMap()
             // To prevent 'shadow shimmering', we ensure that the position only moves in texel-sized
             // increments. To do this we transform the position to a space where the light's forward/right/up
             // axes are aligned with the x/y/z axes (not necessarily in that order, and +/- signs don't matter).
-            Math::Matrix lightRotation;
+            glm::mat4 lightRotation;
             Math::LoadViewMatrix(lightRotation, glm::vec3{0, 0, 0}, lightDir, worldUp);
             pos = Math::MatrixVectorMultiply(lightRotation, pos);
             // ...then we round to the nearest worldUnitsPerTexel:
@@ -4089,11 +4088,11 @@ void CEngine::RenderShadowMap()
         Math::LoadOrthoProjectionMatrix(m_shadowProjMat, -dist, dist, -dist, dist, -depth, depth);
         Math::LoadViewMatrix(m_shadowViewMat, pos, lookAt, worldUp);
 
-        Math::Matrix scaleMat;
+        glm::mat4 scaleMat;
         Math::LoadScaleMatrix(scaleMat, glm::vec3(1.0f, 1.0f, -1.0f));
         m_shadowViewMat = scaleMat * m_shadowViewMat;
 
-        Math::Matrix temporary = m_shadowProjMat * m_shadowViewMat;
+        glm::mat4 temporary = m_shadowProjMat * m_shadowViewMat;
         m_shadowTextureMat = m_shadowBias * temporary;
 
         m_shadowViewMat = scaleMat * m_shadowViewMat;
@@ -4719,7 +4718,7 @@ void CEngine::DrawShadowSpots()
     m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
     m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
 
-    Math::Matrix matrix = glm::mat4(1.0f);
+    glm::mat4 matrix = glm::mat4(1.0f);
     m_device->SetTransform(TRANSFORM_WORLD, matrix);
 
 
@@ -5579,7 +5578,7 @@ void CEngine::UpdateObjectShadowSpotNormal(int objRank)
     m_shadowSpots[shadowRank].normal = norm;
 }
 
-int CEngine::AddStaticMesh(const std::string& key, const CModelMesh* mesh, const Math::Matrix& worldMatrix)
+int CEngine::AddStaticMesh(const std::string& key, const CModelMesh* mesh, const glm::mat4& worldMatrix)
 {
     int baseObjRank = -1;
 
@@ -5624,7 +5623,7 @@ void CEngine::DeleteStaticMesh(int meshHandle)
     DeleteObject(objRank);
 }
 
-const Math::Matrix& CEngine::GetStaticMeshWorldMatrix(int meshHandle)
+const glm::mat4& CEngine::GetStaticMeshWorldMatrix(int meshHandle)
 {
     int objRank = meshHandle;
     return m_objects[objRank].transform;
@@ -5715,11 +5714,11 @@ void CEngine::DisablePauseBlur()
 
 void CEngine::SetWindowCoordinates()
 {
-    Math::Matrix matWorldWindow = glm::mat4(1.0f);
+    glm::mat4 matWorldWindow = glm::mat4(1.0f);
 
-    Math::Matrix matViewWindow = glm::mat4(1.0f);
+    glm::mat4 matViewWindow = glm::mat4(1.0f);
 
-    Math::Matrix matProjWindow;
+    glm::mat4 matProjWindow;
     Math::LoadOrthoProjectionMatrix(matProjWindow, 0.0f, m_size.x, m_size.y, 0.0f, -1.0f, 1.0f);
 
     m_device->SetTransform(TRANSFORM_VIEW,       matViewWindow);

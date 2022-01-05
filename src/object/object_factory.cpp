@@ -1182,11 +1182,11 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->SetRotationY(angle);
         obj->SetFloorHeight(0.0f);
 
-        Math::Matrix* mat = obj->GetWorldMatrix(0);
-        pos = Math::Transform(*mat, glm::vec3(-56.0f, 22.0f, 0.0f));
+        glm::mat4 mat = obj->GetWorldMatrix(0);
+        pos = Math::Transform(mat, glm::vec3(-56.0f, 22.0f, 0.0f));
         m_particle->CreateParticle(pos, glm::vec3(0.0f, 0.0f, 0.0f), { 20.0f, 20.0f }, Gfx::PARTISELY, 1.0f, 0.0f, 0.0f);
 
-        pos = Math::Transform(*mat, glm::vec3(-65.0f, 40.0f, 0.0f));
+        pos = Math::Transform(mat, glm::vec3(-65.0f, 40.0f, 0.0f));
         Gfx::Color color;
         color.r = 4.0f;
         color.g = 2.0f;
@@ -1444,11 +1444,11 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->SetRotationY(angle);
         obj->SetFloorHeight(0.0f);
 
-        Math::Matrix* mat = obj->GetWorldMatrix(0);
-        pos = Math::Transform(*mat, glm::vec3(0.0f, 50.0f, 0.0f));
+        glm::mat4 mat = obj->GetWorldMatrix(0);
+        pos = Math::Transform(mat, glm::vec3(0.0f, 50.0f, 0.0f));
         m_particle->CreateParticle(pos, glm::vec3(0.0f, 0.0f, 0.0f), { 100.0f, 100.0f }, Gfx::PARTISELY, 1.0f, 0.0f, 0.0f);
 
-        pos = Math::Transform(*mat, glm::vec3(0.0f, 50.0f, 0.0f));
+        pos = Math::Transform(mat, glm::vec3(0.0f, 50.0f, 0.0f));
         Gfx::Color color;
         color.r = 4.0f;
         color.g = 2.0f;

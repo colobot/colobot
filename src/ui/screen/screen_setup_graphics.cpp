@@ -29,6 +29,8 @@
 
 #include "graphics/engine/camera.h"
 
+#include "math/func.h"
+
 #include "ui/controls/button.h"
 #include "ui/controls/check.h"
 #include "ui/controls/editvalue.h"

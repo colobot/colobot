@@ -1719,7 +1719,6 @@ bool CMotionVehicle::EventFrame(const Event &event)
 
 bool CMotionVehicle::EventFrameFly(const Event &event)
 {
-    Math::Matrix*   mat;
     glm::vec3    pos, angle, paw[3];
     float       hope[3], actual, final, h, a;
     int         i;

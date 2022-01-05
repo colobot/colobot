@@ -30,6 +30,8 @@
 #include "level/parser/parserline.h"
 #include "level/parser/parserparam.h"
 
+#include "math/const.h"
+
 #include "script/scriptfunc.h"
 
 #include <stdexcept>

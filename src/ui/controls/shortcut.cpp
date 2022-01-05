@@ -27,6 +27,8 @@
 
 #include "graphics/engine/engine.h"
 
+#include "math/func.h"
+
 #include <cmath>
 
 namespace Ui

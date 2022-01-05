@@ -29,5 +29,4 @@
 #include "math/func.h"
 #include "math/geometry.h"
 #include "math/half.h"
-#include "math/matrix.h"
 

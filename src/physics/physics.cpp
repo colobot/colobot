@@ -1441,7 +1441,7 @@ void CPhysics::UpdateMotionStruct(float rTime, Motion &motion)
 bool CPhysics::EventFrame(const Event &event)
 {
     ObjectType  type;
-    Math::Matrix    objRotate, matRotate;
+    glm::mat4    objRotate, matRotate;
     glm::vec3    iPos{ 0, 0, 0 }, iAngle{ 0, 0, 0 }, tAngle{ 0, 0, 0 }, pos{ 0, 0, 0 }, newpos{ 0, 0, 0 }, angle{ 0, 0, 0 }, newangle{ 0, 0, 0 }, n{ 0, 0, 0 };
     float       h, w;
     int         i;
@@ -2288,7 +2288,7 @@ void CPhysics::FloorAdapt(float aTime, float rTime,
     Character*  character;
     ObjectType  type;
     glm::vec3    norm{ 0, 0, 0 };
-    Math::Matrix    matRotate;
+    glm::mat4    matRotate;
     float       level, h, f, a1, volume, freq, force;
     bool        bSlopingTerrain;
 
@@ -2498,7 +2498,7 @@ void CPhysics::FloorAngle(const glm::vec3 &pos, glm::vec3 &angle)
 
 int CPhysics::ObjectAdapt(const glm::vec3 &pos, const glm::vec3 &angle)
 {
-    Math::Matrix    matRotate;
+    glm::mat4    matRotate;
     glm::vec3    iPos{ 0, 0, 0 }, oAngle{ 0, 0, 0 }, oSpeed{ 0, 0, 0 };
     float           distance, force, volume;
     int             colType;

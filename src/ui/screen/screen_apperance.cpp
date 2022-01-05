@@ -706,8 +706,8 @@ void CScreenApperance::SetCamera(float x, float y, float cameraDistance)
 
     glm::vec3 p2D(x, y, cameraDistance);
     glm::vec3 p3D{};
-    Math::Matrix matView;
-    Math::Matrix matProj = engine->GetMatProj();
+    glm::mat4 matView;
+    glm::mat4 matProj = engine->GetMatProj();
 
     Math::LoadViewMatrix(matView, glm::vec3(0.0f, 0.0f, -cameraDistance),
                             glm::vec3(0.0f, 0.0f, 0.0f),

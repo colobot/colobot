@@ -339,7 +339,6 @@ Error CAutoTower::GetError()
 
 void CAutoTower::FireStopUpdate(float progress, bool bLightOn)
 {
-    Math::Matrix*   mat;
     glm::vec3    pos, speed;
     glm::vec2     dim;
     int         i;
@@ -365,7 +364,7 @@ void CAutoTower::FireStopUpdate(float progress, bool bLightOn)
         return;
     }
 
-    mat = m_object->GetWorldMatrix(0);
+    glm::mat4 mat = m_object->GetWorldMatrix(0);
 
     speed = glm::vec3(0.0f, 0.0f, 0.0f);
     dim.x = 2.0f;
@@ -388,7 +387,7 @@ void CAutoTower::FireStopUpdate(float progress, bool bLightOn)
                 pos.x = listpos[i*2+0];
                 pos.y = 18.0f;
                 pos.z = listpos[i*2+1];
-                pos = Transform(*mat, pos);
+                pos = Math::Transform(mat, pos);
 
                 m_partiStop[i] = m_particle->CreateParticle(pos, speed,
                                                               dim, Gfx::PARTISELR,

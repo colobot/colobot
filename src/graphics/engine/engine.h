@@ -32,7 +32,6 @@
 #include "graphics/core/texture.h"
 #include "graphics/core/vertex.h"
 
-#include "math/matrix.h"
 #include "math/sphere.h"
 
 #include <glm/glm.hpp>
@@ -275,7 +274,7 @@ struct EngineObject
     //! Type of object
     EngineObjectType       type = ENG_OBJTYPE_NULL;
     //! Transformation matrix
-    Math::Matrix           transform;
+    glm::mat4              transform;
     //! Distance to object from eye point
     float                  distance = 0.0f;
     //! Rank of the associated shadow
@@ -700,7 +699,7 @@ public:
      * @param key key unique per object class
      * @return mesh instance handle
      */
-    int AddStaticMesh(const std::string& key, const Gfx::CModelMesh* mesh, const Math::Matrix& worldMatrix);
+    int AddStaticMesh(const std::string& key, const Gfx::CModelMesh* mesh, const glm::mat4& worldMatrix);
 
     //! Removes given static mesh
     void DeleteStaticMesh(int meshHandle);
@@ -709,7 +708,7 @@ public:
     void AddStaticMeshShadowSpot(int meshHandle, const Gfx::ModelShadowSpot& shadowSpot);
 
     //! Returns static mesh world matrix
-    const Math::Matrix& GetStaticMeshWorldMatrix(int meshHandle);
+    const glm::mat4& GetStaticMeshWorldMatrix(int meshHandle);
 
     //! Sets transparency for static mesh
     void SetStaticMeshTransparency(int meshHandle, float value);
@@ -763,8 +762,8 @@ public:
 
     //@{
     //! Management of object transform
-    void            SetObjectTransform(int objRank, const Math::Matrix& transform);
-    void            GetObjectTransform(int objRank, Math::Matrix& transform);
+    void            SetObjectTransform(int objRank, const glm::mat4& transform);
+    void            GetObjectTransform(int objRank, glm::mat4& transform);
     //@}
 
     //! Sets drawWorld for given object
@@ -1153,9 +1152,9 @@ public:
     //@}
 
     //! Returns the view matrix
-    const Math::Matrix& GetMatView();
+    const glm::mat4& GetMatView();
     //! Returns the projection matrix
-    const Math::Matrix& GetMatProj();
+    const glm::mat4& GetMatProj();
     //! Returns the camera center point
     TEST_VIRTUAL glm::vec3 GetEyePt();
     //! Returns the camera target point
@@ -1173,8 +1172,8 @@ public:
     //! Updates the scene after a change of parameters
     void            ApplyChange();
 
-    void            RenderDebugSphere(const Math::Sphere&, const Math::Matrix& transform = Math::Matrix{}, const Color& = Color{0.0f, 0.0f, 1.0f, 1.0f});
-    void            RenderDebugBox(const glm::vec3& mins, const glm::vec3& maxs, const Math::Matrix& transform = Math::Matrix{}, const Color& = Color{0.0f, 0.0f, 1.0f, 1.0f});
+    void            RenderDebugSphere(const Math::Sphere&, const glm::mat4& transform = glm::mat4(1.0f), const Color & = Color{0.0f, 0.0f, 1.0f, 1.0f});
+    void            RenderDebugBox(const glm::vec3& mins, const glm::vec3& maxs, const glm::mat4& transform = glm::mat4(1.0f), const Color & = Color{0.0f, 0.0f, 1.0f, 1.0f});
 
     void            SetDebugLights(bool debugLights);
     bool            GetDebugLights();
@@ -1260,9 +1259,9 @@ protected:
     Texture CreateTexture(const std::string &texName, const TextureCreateParams &params, CImage* image = nullptr);
 
     //! Tests whether the given object is visible
-    bool        IsVisible(const Math::Matrix& matrix, int objRank);
+    bool        IsVisible(const glm::mat4& matrix, int objRank);
 
-    int         ComputeSphereVisibility(const Math::Matrix& m, const glm::vec3& center, float radius);
+    int         ComputeSphereVisibility(const glm::mat4& m, const glm::vec3& center, float radius);
 
     bool        InPlane(glm::vec3 normal, float originPlane, glm::vec3 center, float radius);
 
@@ -1339,32 +1338,32 @@ protected:
     bool            m_screenshotMode;
 
     //! Projection matrix for 3D scene
-    Math::Matrix    m_matProj;
+    glm::mat4       m_matProj;
     //! View matrix for 3D scene
-    Math::Matrix    m_matView;
+    glm::mat4       m_matView;
     //! Camera vertical field-of-view angle for 3D scene. A.k.a. m_vfov
     float           m_focus;
     //! Horizontal field-of-view angle, calculated from vertical FOV and aspect ratio
     float           m_hfov;
 
     //! Projection matrix for rendering shadow maps
-    Math::Matrix    m_shadowProjMat;
+    glm::mat4       m_shadowProjMat;
     //! View matrix for rendering shadow maps
-    Math::Matrix    m_shadowViewMat;
+    glm::mat4       m_shadowViewMat;
     //! Texture matrix for rendering shadow maps
-    Math::Matrix    m_shadowTextureMat;
+    glm::mat4       m_shadowTextureMat;
     //! Texture bias for sampling shadow maps
-    Math::Matrix    m_shadowBias;
+    glm::mat4       m_shadowBias;
 
     //! Vertical synchronization controll
     int m_vsync;
 
     //! World matrix for 2D interface
-    Math::Matrix    m_matWorldInterface;
+    glm::mat4       m_matWorldInterface;
     //! Projection matrix for 2D interface
-    Math::Matrix    m_matProjInterface;
+    glm::mat4       m_matProjInterface;
     //! View matrix for 2D interface
-    Math::Matrix    m_matViewInterface;
+    glm::mat4       m_matViewInterface;
 
     //! Current size of viewport window
     glm::ivec2      m_size;

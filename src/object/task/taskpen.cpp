@@ -134,7 +134,6 @@ bool CTaskPen::EventProcess(const Event &event)
 Error CTaskPen::Start(bool bDown, TraceColor color)
 {
     glm::vec3    pos;
-    Math::Matrix*   mat;
     ObjectType  type;
     int         i;
 
@@ -179,9 +178,9 @@ Error CTaskPen::Start(bool bDown, TraceColor color)
         m_timeDown = 0.0f;
     }
 
-    mat = m_object->GetWorldMatrix(0);
+    glm::mat4 mat = m_object->GetWorldMatrix(0);
     pos = glm::vec3(-3.0f, 7.0f, 0.0f);
-    pos = Math::Transform(*mat, pos);  // position of carousel
+    pos = Math::Transform(mat, pos);  // position of carousel
     m_supportPos = pos;
 
     m_phase    = TPP_UP;

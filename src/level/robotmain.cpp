@@ -6244,7 +6244,7 @@ void CRobotMain::UpdateDebugCrashSpheres()
         {
             for (const auto& crashSphere : obj->GetAllCrashSpheres())
             {
-                m_engine->RenderDebugSphere(crashSphere.sphere, Math::Matrix{}, Gfx::Color{0.0f, 0.0f, 1.0f, 1.0f});
+                m_engine->RenderDebugSphere(crashSphere.sphere, glm::mat4(1.0f), Gfx::Color{0.0f, 0.0f, 1.0f, 1.0f});
             }
         }
     }

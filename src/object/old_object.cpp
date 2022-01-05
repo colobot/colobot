@@ -1720,12 +1720,12 @@ void COldObject::SetTransporterPart(int part)
 
 // Returns matrices of an object portion.
 
-Math::Matrix COldObject::GetRotateMatrix(int part)
+glm::mat4 COldObject::GetRotateMatrix(int part)
 {
     return m_objectPart[part].matRotate;
 }
 
-Math::Matrix COldObject::GetWorldMatrix(int part)
+glm::mat4 COldObject::GetWorldMatrix(int part)
 {
     if ( m_objectPart[0].bTranslate ||
          m_objectPart[0].bRotate    )

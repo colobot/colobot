@@ -18,6 +18,8 @@
  */
 
 
+#include "math/func.h"
+
 #include "object/task/taskgungoal.h"
 
 #include "object/old_object.h"

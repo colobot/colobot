@@ -31,6 +31,8 @@
 
 #include "level/robotmain.h"
 
+#include "math/func.h"
+
 #include "sound/sound.h"
 
 #include "ui/maindialog.h"

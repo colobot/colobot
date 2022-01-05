@@ -32,6 +32,8 @@
 #include "level/player_profile.h"
 #include "level/robotmain.h"
 
+#include "math/func.h"
+
 #include "sound/sound.h"
 
 #include "ui/controls/button.h"

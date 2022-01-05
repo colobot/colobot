@@ -117,7 +117,7 @@ void CGL33Device::DebugLights()
     glDepthMask(GL_FALSE);
     glDisable(GL_BLEND);
 
-    Math::Matrix saveWorldMat = m_worldMat;
+    glm::mat4 saveWorldMat = m_worldMat;
     glm::mat4 identity = glm::mat4(1.0f);
     SetTransform(TRANSFORM_WORLD, identity);
 
@@ -577,7 +577,7 @@ void CGL33Device::Restore()
     //UpdateTextureState(2);
 }
 
-void CGL33Device::SetTransform(TransformType type, const Math::Matrix &matrix)
+void CGL33Device::SetTransform(TransformType type, const glm::mat4 &matrix)
 {
     if      (type == TRANSFORM_WORLD)
     {
@@ -588,13 +588,13 @@ void CGL33Device::SetTransform(TransformType type, const Math::Matrix &matrix)
         m_combinedMatrixOutdated = true;
 
         // normal transform
-        Math::Matrix normalMat = glm::inverse(normalMat);
+        glm::mat4 normalMat = glm::inverse(normalMat);
 
         glUniformMatrix4fv(m_uniforms.normalMatrix, 1, GL_TRUE, glm::value_ptr(normalMat));
     }
     else if (type == TRANSFORM_VIEW)
     {
-        Math::Matrix scale = glm::mat4(1.0f);
+        glm::mat4 scale = glm::mat4(1.0f);
         scale[2][2] = -1.0f;
         m_viewMat = scale * matrix;
 
@@ -619,7 +619,7 @@ void CGL33Device::SetTransform(TransformType type, const Math::Matrix &matrix)
     }
     else if (type == TRANSFORM_SHADOW)
     {
-        Math::Matrix temp = matrix;
+        glm::mat4 temp = matrix;
         glUniformMatrix4fv(m_uniforms.shadowMatrix, 1, GL_FALSE, glm::value_ptr(temp));
     }
     else

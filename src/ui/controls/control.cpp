@@ -30,6 +30,8 @@
 
 #include "graphics/core/renderers.h"
 
+#include "math/func.h"
+
 namespace Ui
 {
 // Object's constructor.

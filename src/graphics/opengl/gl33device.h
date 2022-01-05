@@ -31,8 +31,6 @@
 #include "graphics/opengl/glframebuffer.h"
 #include "graphics/opengl/glutil.h"
 
-#include "math/matrix.h"
-
 #include <map>
 #include <memory>
 #include <set>
@@ -124,7 +122,7 @@ public:
 
     void Restore() override;
 
-    void SetTransform(TransformType type, const Math::Matrix &matrix) override;
+    void SetTransform(TransformType type, const glm::mat4 &matrix) override;
 
     void SetMaterial(const Material &material) override;
 
@@ -239,15 +237,15 @@ private:
     DeviceConfig m_config;
 
     //! Current world matrix
-    Math::Matrix m_worldMat;
+    glm::mat4 m_worldMat;
     //! Current view matrix
-    Math::Matrix m_viewMat;
+    glm::mat4 m_viewMat;
     //! OpenGL modelview matrix = world matrix * view matrix
-    Math::Matrix m_modelviewMat;
+    glm::mat4 m_modelviewMat;
     //! Current projection matrix
-    Math::Matrix m_projectionMat;
+    glm::mat4 m_projectionMat;
     //! Combined world-view-projection matrix
-    Math::Matrix m_combinedMatrix;
+    glm::mat4 m_combinedMatrix;
     //! true means combined matrix is outdated
     bool m_combinedMatrixOutdated = true;
 

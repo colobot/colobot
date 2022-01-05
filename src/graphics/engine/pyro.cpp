@@ -140,8 +140,8 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
         m_power = true;
         pos = power->GetPosition();
         pos.y += 1.0f;
-        Math::Matrix* mat = obj->GetWorldMatrix(0);
-        m_posPower = Math::Transform(*mat, pos);
+        glm::mat4 mat = obj->GetWorldMatrix(0);
+        m_posPower = Math::Transform(mat, pos);
     }
 
     if ( oType == OBJECT_POWER   ||
@@ -158,15 +158,15 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
     if ( oType == OBJECT_STATION )
     {
         m_power = true;
-        Math::Matrix* mat = obj->GetWorldMatrix(0);
-        m_posPower = Math::Transform(*mat, glm::vec3(-15.0f, 7.0f, 0.0f));
+        glm::mat4 mat = obj->GetWorldMatrix(0);
+        m_posPower = Math::Transform(mat, glm::vec3(-15.0f, 7.0f, 0.0f));
         m_pos = m_posPower;
     }
     if ( oType == OBJECT_ENERGY )
     {
         m_power = true;
-        Math::Matrix* mat = obj->GetWorldMatrix(0);
-        m_posPower = Math::Transform(*mat, glm::vec3(-7.0f, 6.0f, 0.0f));
+        glm::mat4 mat = obj->GetWorldMatrix(0);
+        m_posPower = Math::Transform(mat, glm::vec3(-7.0f, 6.0f, 0.0f));
         m_pos = m_posPower;
     }
     if ( oType == OBJECT_NUCLEAR )
@@ -396,8 +396,8 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
         m_speed = 1.0f/15.0f;
 
         pos = glm::vec3(-3.0f, 2.0f, 0.0f);
-        Math::Matrix* mat = obj->GetWorldMatrix(0);
-        m_pos = Math::Transform(*mat, pos);
+        glm::mat4 mat = obj->GetWorldMatrix(0);
+        m_pos = Math::Transform(mat, pos);
 
         m_engine->DeleteShadowSpot(m_object->GetObjectRank(0));
     }
@@ -1541,8 +1541,8 @@ void CPyro::CreateTriangle(CObject* obj, ObjectType oType, int part)
         glm::vec3 speed;
         float mass;
 
-        Math::Matrix* mat = obj->GetWorldMatrix(part);
-        glm::vec3 pos = Math::Transform(*mat, offset);
+        glm::mat4 mat = obj->GetWorldMatrix(part);
+        glm::vec3 pos = Math::Transform(mat, offset);
         if ( m_type == PT_FRAGV || m_type == PT_EGG )
         {
             speed.x = (Math::Rand()-0.5f)*10.0f;

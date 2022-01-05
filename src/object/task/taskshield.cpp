@@ -70,7 +70,6 @@ CTaskShield::~CTaskShield()
 
 bool CTaskShield::EventProcess(const Event &event)
 {
-    Math::Matrix    matrix;
     glm::vec3    pos, speed, goal, angle;
     Gfx::Color      color;
     glm::vec2       dim;
@@ -178,6 +177,7 @@ bool CTaskShield::EventProcess(const Event &event)
             angle.x = (Math::Rand()-0.5f)*Math::PI*1.2f;
             angle.y = 0.0f;
             angle.z = (Math::Rand()-0.5f)*Math::PI*1.2f;
+            glm::mat4 matrix;
             Math::LoadRotationXZYMatrix(matrix, angle);
             goal = Math::Transform(matrix, glm::vec3(0.0f, GetRadius()-dim.x, 0.0f));
             goal += pos;

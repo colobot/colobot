@@ -127,8 +127,8 @@ void CAutoDerrick::Init()
 glm::vec3 CAutoDerrick::GetCargoPos()
 {
     glm::vec3 pos = glm::vec3(7.0f, 0.0f, 0.0f);
-    Math::Matrix* mat = m_object->GetWorldMatrix(0);
-    pos = Math::Transform(*mat, pos);
+    glm::mat4 mat = m_object->GetWorldMatrix(0);
+    pos = Math::Transform(mat, pos);
     m_terrain->AdjustToFloor(pos);
     return pos;
 }

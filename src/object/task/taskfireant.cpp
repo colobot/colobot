@@ -122,7 +122,6 @@ Error CTaskFireAnt::Start(glm::vec3 impact)
 
 Error CTaskFireAnt::IsEnded()
 {
-    Math::Matrix*   mat;
     glm::vec3    pos, speed;
     glm::vec2       dim;
     float       angle, dist;
@@ -169,8 +168,8 @@ Error CTaskFireAnt::IsEnded()
             for ( i=0 ; i<20 ; i++ )
             {
                 pos = glm::vec3(-2.5f, -0.7f, 0.0f);
-                mat = m_object->GetWorldMatrix(2);
-                pos = Math::Transform(*mat, pos);
+                glm::mat4 mat = m_object->GetWorldMatrix(2);
+                pos = Math::Transform(mat, pos);
                 dist = glm::distance(pos, m_impact);
                 speed = m_impact-pos;
                 speed.x += (Math::Rand()-0.5f)*dist*1.2f;

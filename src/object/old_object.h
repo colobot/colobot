@@ -64,10 +64,10 @@ struct ObjectPart
     bool         bTranslate = false;
     bool         bRotate = false;
     bool         bZoom = false;
-    Math::Matrix matTranslate;
-    Math::Matrix matRotate;
-    Math::Matrix matTransform;
-    Math::Matrix matWorld;
+    glm::mat4    matTranslate;
+    glm::mat4    matRotate;
+    glm::mat4    matTransform;
+    glm::mat4    matWorld;
 };
 
 namespace Ui

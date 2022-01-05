@@ -36,6 +36,8 @@
 
 #include "level/parser/parser.h"
 
+#include "math/func.h"
+
 #include "script/script.h"
 
 #include "ui/controls/scroll.h"

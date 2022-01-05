@@ -23,6 +23,8 @@
 #include "graphics/engine/particle.h"
 #include "graphics/engine/water.h"
 
+#include "math/func.h"
+
 #include "object/old_object.h"
 
 #include "sound/sound.h"

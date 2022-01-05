@@ -24,6 +24,8 @@
 
 #include "graphics/engine/engine.h"
 
+#include "math/func.h"
+
 #include <cassert>
 #include <cstring>
 

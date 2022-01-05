@@ -95,13 +95,13 @@ void CStaticObject::Write(CLevelParserLine* line)
 
 void CStaticObject::TransformCrashSphere(Math::Sphere& crashSphere)
 {
-    Math::Matrix worldMatrix = m_engine->GetStaticMeshWorldMatrix(m_meshHandle);
+    glm::mat4 worldMatrix = m_engine->GetStaticMeshWorldMatrix(m_meshHandle);
     Math::Transform(worldMatrix, crashSphere.pos);
 }
 
 void CStaticObject::TransformCameraCollisionSphere(Math::Sphere& collisionSphere)
 {
-    Math::Matrix worldMatrix = m_engine->GetStaticMeshWorldMatrix(m_meshHandle);
+    glm::mat4 worldMatrix = m_engine->GetStaticMeshWorldMatrix(m_meshHandle);
     Math::Transform(worldMatrix, collisionSphere.pos);
 }
 

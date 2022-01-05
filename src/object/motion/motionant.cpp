@@ -25,6 +25,8 @@
 #include "graphics/engine/oldmodelmanager.h"
 #include "graphics/engine/particle.h"
 
+#include "math/func.h"
+
 #include "object/old_object.h"
 
 #include "object/subclass/base_alien.h"
