@@ -25,7 +25,6 @@
  */
 
 #include "math/func.h"
-#include "math/matrix.h"
 
 #include <gtest/gtest.h>
 
