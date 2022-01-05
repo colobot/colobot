@@ -612,25 +612,10 @@ inline glm::vec3 Transform(const glm::mat4 &m, const glm::vec3 &p)
 }
 
 
-//! Calculates the result of multiplying m * v
-/**
-    The multiplication is performed thus:
-
-\verbatim
-[  m.m[0 ] m.m[4 ] m.m[8 ] m.m[12]  ]   [ v.x ]
-[  m.m[1 ] m.m[5 ] m.m[9 ] m.m[13]  ]   [ v.y ]
-[  m.m[2 ] m.m[6 ] m.m[10] m.m[14]  ] * [ v.z ]
-[  m.m[3 ] m.m[7 ] m.m[11] m.m[15]  ]   [  1  ]
-\endverbatim
-
-   The result, a 4x1 vector is then converted to 3x1 by dividing
-   x,y,z coords by the fourth coord (w). */
-inline glm::vec3 MatrixVectorMultiply(const glm::mat4& m, const glm::vec3& v, bool wDivide = false)
+//! Transforms a vector \v by a matrix \m with perspective divide
+inline glm::vec3 TransformDivide(const glm::mat4& m, const glm::vec3& v)
 {
     glm::vec4 result = m * glm::vec4(v, 1.0f);
-
-    if (!wDivide)
-        return result;
 
     if (IsZero(result.w))
         return glm::vec3(result);

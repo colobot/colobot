@@ -3923,25 +3923,25 @@ void CEngine::RenderDebugBox(const glm::vec3& mins, const glm::vec3& maxs, const
 
     auto vert = m_pendingDebugDraws.vertices.begin() + firstVert;
 
-    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, glm::vec3{mins.x, mins.y, mins.z}), color};
-    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, glm::vec3{maxs.x, mins.y, mins.z}), color};
-    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, glm::vec3{maxs.x, maxs.y, mins.z}), color};
-    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, glm::vec3{maxs.x, maxs.y, maxs.z}), color};
+    *vert++ = VertexCol{Math::Transform(transform, glm::vec3{mins.x, mins.y, mins.z}), color};
+    *vert++ = VertexCol{Math::Transform(transform, glm::vec3{maxs.x, mins.y, mins.z}), color};
+    *vert++ = VertexCol{Math::Transform(transform, glm::vec3{maxs.x, maxs.y, mins.z}), color};
+    *vert++ = VertexCol{Math::Transform(transform, glm::vec3{maxs.x, maxs.y, maxs.z}), color};
 
-    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, glm::vec3{mins.x, mins.y, maxs.z}), color};
-    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, glm::vec3{mins.x, mins.y, mins.z}), color};
-    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, glm::vec3{mins.x, maxs.y, mins.z}), color};
-    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, glm::vec3{maxs.x, maxs.y, mins.z}), color};
+    *vert++ = VertexCol{Math::Transform(transform, glm::vec3{mins.x, mins.y, maxs.z}), color};
+    *vert++ = VertexCol{Math::Transform(transform, glm::vec3{mins.x, mins.y, mins.z}), color};
+    *vert++ = VertexCol{Math::Transform(transform, glm::vec3{mins.x, maxs.y, mins.z}), color};
+    *vert++ = VertexCol{Math::Transform(transform, glm::vec3{maxs.x, maxs.y, mins.z}), color};
 
-    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, glm::vec3{maxs.x, mins.y, maxs.z}), color};
-    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, glm::vec3{mins.x, mins.y, maxs.z}), color};
-    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, glm::vec3{mins.x, maxs.y, maxs.z}), color};
-    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, glm::vec3{mins.x, maxs.y, mins.z}), color};
+    *vert++ = VertexCol{Math::Transform(transform, glm::vec3{maxs.x, mins.y, maxs.z}), color};
+    *vert++ = VertexCol{Math::Transform(transform, glm::vec3{mins.x, mins.y, maxs.z}), color};
+    *vert++ = VertexCol{Math::Transform(transform, glm::vec3{mins.x, maxs.y, maxs.z}), color};
+    *vert++ = VertexCol{Math::Transform(transform, glm::vec3{mins.x, maxs.y, mins.z}), color};
 
-    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, glm::vec3{maxs.x, mins.y, mins.z}), color};
-    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, glm::vec3{maxs.x, mins.y, maxs.z}), color};
-    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, glm::vec3{maxs.x, maxs.y, maxs.z}), color};
-    *vert++ = VertexCol{Math::MatrixVectorMultiply(transform, glm::vec3{mins.x, maxs.y, maxs.z}), color};
+    *vert++ = VertexCol{Math::Transform(transform, glm::vec3{maxs.x, mins.y, mins.z}), color};
+    *vert++ = VertexCol{Math::Transform(transform, glm::vec3{maxs.x, mins.y, maxs.z}), color};
+    *vert++ = VertexCol{Math::Transform(transform, glm::vec3{maxs.x, maxs.y, maxs.z}), color};
+    *vert++ = VertexCol{Math::Transform(transform, glm::vec3{mins.x, maxs.y, maxs.z}), color};
 }
 
 void CEngine::RenderPendingDebugDraws()
@@ -4071,7 +4071,7 @@ void CEngine::RenderShadowMap()
             // axes are aligned with the x/y/z axes (not necessarily in that order, and +/- signs don't matter).
             glm::mat4 lightRotation;
             Math::LoadViewMatrix(lightRotation, glm::vec3{0, 0, 0}, lightDir, worldUp);
-            pos = Math::MatrixVectorMultiply(lightRotation, pos);
+            pos = Math::Transform(lightRotation, pos);
             // ...then we round to the nearest worldUnitsPerTexel:
             const float worldUnitsPerTexel = (dist * 2.0f) / m_shadowMap.size.x;
             pos /= worldUnitsPerTexel;
@@ -4080,7 +4080,7 @@ void CEngine::RenderShadowMap()
             pos.z = round(pos.z);
             pos *= worldUnitsPerTexel;
             // ...and convert back to world space.
-            pos = Math::MatrixVectorMultiply(glm::inverse(lightRotation), pos);
+            pos = Math::Transform(glm::inverse(lightRotation), pos);
         }
 
         glm::vec3 lookAt = pos - lightDir;
