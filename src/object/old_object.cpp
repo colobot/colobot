@@ -2044,7 +2044,7 @@ void COldObject::UpdateEnergyMapping()
     if(GetTeam() == 0) teamStr = "";
     m_engine->ChangeTextureMapping(m_objectPart[0].object,
                                    mat, Gfx::ENG_RSTATE_PART3, "objects/lemt.png"+teamStr, "",
-                                   Gfx::ENG_TEX_MAPPING_1Y,
+                                   Gfx::EngineTextureMapping::ONE_Y,
                                    au, bu, 1.0f, 0.0f);
 }
 

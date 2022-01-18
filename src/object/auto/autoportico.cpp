@@ -407,10 +407,10 @@ void CAutoPortico::UpdateTrackMapping(float left, float right)
     if(m_object->GetTeam() == 0) teamStr = "";
 
     m_engine->TrackTextureMapping(rank, mat, Gfx::ENG_RSTATE_PART1, "objects/lemt.png"+teamStr, "",
-                                  Gfx::ENG_TEX_MAPPING_X,
+                                  Gfx::EngineTextureMapping::X,
                                   right, 8.0f, 8.0f, 192.0f, 256.0f);
 
     m_engine->TrackTextureMapping(rank, mat, Gfx::ENG_RSTATE_PART2, "objects/lemt.png"+teamStr, "",
-                                  Gfx::ENG_TEX_MAPPING_X,
+                                  Gfx::EngineTextureMapping::X,
                                   left, 8.0f, 8.0f, 192.0f, 256.0f);
 }

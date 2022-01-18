@@ -1991,21 +1991,21 @@ void CMotionVehicle::UpdateTrackMapping(float left, float right, ObjectType type
     if (type == OBJECT_MOBILEdr)
     {
         m_engine->TrackTextureMapping(rRank, mat, Gfx::ENG_RSTATE_PART1, "objects/drawer.png"+teamStr, "",
-                                      Gfx::ENG_TEX_MAPPING_X,
+                                      Gfx::EngineTextureMapping::X,
                                       right, 1.0f, 8.0f, 192.0f, 256.0f);
 
         m_engine->TrackTextureMapping(lRank, mat, Gfx::ENG_RSTATE_PART2, "objects/drawer.png"+teamStr, "",
-                                      Gfx::ENG_TEX_MAPPING_X,
+                                      Gfx::EngineTextureMapping::X,
                                       left, 1.0f, 8.0f, 192.0f, 256.0f);
     }
     else
     {
         m_engine->TrackTextureMapping(rRank, mat, Gfx::ENG_RSTATE_PART1, "objects/lemt.png"+teamStr, "",
-                                      Gfx::ENG_TEX_MAPPING_X,
+                                      Gfx::EngineTextureMapping::X,
                                       right, 1.0f, 8.0f, 192.0f, 256.0f);
 
         m_engine->TrackTextureMapping(lRank, mat, Gfx::ENG_RSTATE_PART2, "objects/lemt.png"+teamStr, "",
-                                      Gfx::ENG_TEX_MAPPING_X,
+                                      Gfx::EngineTextureMapping::X,
                                       left, 1.0f, 8.0f, 192.0f, 256.0f);
     }
 

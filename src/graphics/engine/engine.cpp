@@ -1181,7 +1181,7 @@ void CEngine::ChangeTextureMapping(int objRank, const Material& mat, int state,
 
     int nb = p4->vertices.size();
 
-    if (mode == ENG_TEX_MAPPING_X)
+    if (mode == EngineTextureMapping::X)
     {
         for (int i = 0; i < nb; i++)
         {
@@ -1189,7 +1189,7 @@ void CEngine::ChangeTextureMapping(int objRank, const Material& mat, int state,
             p4->vertices[i].uv.y = p4->vertices[i].position.y * av + bv;
         }
     }
-    else if (mode == ENG_TEX_MAPPING_Y)
+    else if (mode == EngineTextureMapping::Y)
     {
         for (int i = 0; i < nb; i++)
         {
@@ -1197,7 +1197,7 @@ void CEngine::ChangeTextureMapping(int objRank, const Material& mat, int state,
             p4->vertices[i].uv.y = p4->vertices[i].position.z * av + bv;
         }
     }
-    else if (mode == ENG_TEX_MAPPING_Z)
+    else if (mode == EngineTextureMapping::Z)
     {
         for (int i = 0; i < nb; i++)
         {
@@ -1205,21 +1205,21 @@ void CEngine::ChangeTextureMapping(int objRank, const Material& mat, int state,
             p4->vertices[i].uv.y = p4->vertices[i].position.y * av + bv;
         }
     }
-    else if (mode == ENG_TEX_MAPPING_1X)
+    else if (mode == EngineTextureMapping::ONE_X)
     {
         for (int i = 0; i < nb; i++)
         {
             p4->vertices[i].uv.x = p4->vertices[i].position.x * au + bu;
         }
     }
-    else if (mode == ENG_TEX_MAPPING_1Y)
+    else if (mode == EngineTextureMapping::ONE_Y)
     {
         for (int i = 0; i < nb; i++)
         {
             p4->vertices[i].uv.y = p4->vertices[i].position.y * au + bu;
         }
     }
-    else if (mode == ENG_TEX_MAPPING_1Z)
+    else if (mode == EngineTextureMapping::ONE_Z)
     {
         for (int i = 0; i < nb; i++)
         {

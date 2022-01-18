@@ -424,14 +424,14 @@ struct EngineGroundMark
  * \enum EngineTextureMapping
  * \brief Type of texture mapping
  */
-enum EngineTextureMapping
+enum class EngineTextureMapping
 {
-    ENG_TEX_MAPPING_X       = 1,
-    ENG_TEX_MAPPING_Y       = 2,
-    ENG_TEX_MAPPING_Z       = 3,
-    ENG_TEX_MAPPING_1X      = 4,
-    ENG_TEX_MAPPING_1Y      = 5,
-    ENG_TEX_MAPPING_1Z      = 6
+    X       = 1,
+    Y       = 2,
+    Z       = 3,
+    ONE_X   = 4,
+    ONE_Y   = 5,
+    ONE_Z   = 6
 };
 
 
