@@ -4811,7 +4811,7 @@ void CEngine::DrawShadowSpots()
 
         glm::vec3 corner[4];
 
-        if (m_shadowSpots[i].type == ENG_SHADOW_NORM)
+        if (m_shadowSpots[i].type == EngineShadowType::NORMAL)
         {
             corner[0].x = +radius;
             corner[0].z = +radius;
@@ -4856,7 +4856,7 @@ void CEngine::DrawShadowSpots()
             corner[3].z = rot.y;
             corner[3].y = 0.0f;
 
-            if (m_shadowSpots[i].type == ENG_SHADOW_WORM)
+            if (m_shadowSpots[i].type == EngineShadowType::WORM)
             {
                 ts.x =  96.0f/256.0f;
                 ti.x = 128.0f/256.0f;
@@ -5609,7 +5609,7 @@ void CEngine::AddStaticMeshShadowSpot(int meshHandle, const ModelShadowSpot& sha
     CreateShadowSpot(objRank);
     SetObjectShadowSpotRadius(objRank, shadowSpot.radius);
     SetObjectShadowSpotIntensity(objRank, shadowSpot.intensity);
-    SetObjectShadowSpotType(objRank, ENG_SHADOW_NORM);
+    SetObjectShadowSpotType(objRank, EngineShadowType::NORMAL);
     SetObjectShadowSpotHeight(objRank, 0.0f);
     SetObjectShadowSpotAngle(objRank, 0.0f);
     UpdateObjectShadowSpotNormal(objRank);

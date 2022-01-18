@@ -293,12 +293,12 @@ struct EngineObject
  * \struct EngineShadowType
  * \brief Type of shadow drawn by the graphics engine
  */
-enum EngineShadowType
+enum class EngineShadowType
 {
     //! Normal shadow
-    ENG_SHADOW_NORM = 0,
+    NORMAL = 0,
     //! TODO: ?
-    ENG_SHADOW_WORM = 1
+    WORM = 1
 };
 
 /**
@@ -314,7 +314,7 @@ struct EngineShadow
     //! Rank of the associated object
     int                 objRank = -1;
     //! Type of shadow
-    EngineShadowType type = ENG_SHADOW_NORM;
+    EngineShadowType type = EngineShadowType::NORMAL;
     //! Position of the shadow
     glm::vec3        pos{ 0, 0, 0 };
     //! Normal to the terrain

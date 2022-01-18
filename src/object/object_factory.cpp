@@ -530,7 +530,7 @@ CObjectUPtr CObjectFactory::CreateBarrier(const ObjectCreateParams& params)
         obj->AddCrashSphere(CrashSphere(glm::vec3( 0.0f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(glm::vec3(-3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
 
-        obj->CreateShadowCircle(6.0f, 0.5f, Gfx::ENG_SHADOW_WORM);
+        obj->CreateShadowCircle(6.0f, 0.5f, Gfx::EngineShadowType::WORM);
     }
 
     if ( type == OBJECT_BARRIER1 )
@@ -548,7 +548,7 @@ CObjectUPtr CObjectFactory::CreateBarrier(const ObjectCreateParams& params)
         obj->AddCrashSphere(CrashSphere(glm::vec3(-3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(glm::vec3(-8.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
 
-        obj->CreateShadowCircle(12.0f, 0.5f, Gfx::ENG_SHADOW_WORM);
+        obj->CreateShadowCircle(12.0f, 0.5f, Gfx::EngineShadowType::WORM);
     }
 
     if ( type == OBJECT_BARRIER2 )  // cardboard?
@@ -566,7 +566,7 @@ CObjectUPtr CObjectFactory::CreateBarrier(const ObjectCreateParams& params)
         obj->AddCrashSphere(CrashSphere(glm::vec3(-3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(glm::vec3(-8.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
 
-        obj->CreateShadowCircle(12.0f, 0.8f, Gfx::ENG_SHADOW_WORM);
+        obj->CreateShadowCircle(12.0f, 0.8f, Gfx::EngineShadowType::WORM);
     }
 
     if ( type == OBJECT_BARRIER3 )  // match + straw?
@@ -584,7 +584,7 @@ CObjectUPtr CObjectFactory::CreateBarrier(const ObjectCreateParams& params)
         obj->AddCrashSphere(CrashSphere(glm::vec3(-3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(glm::vec3(-8.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
 
-        obj->CreateShadowCircle(10.0f, 0.5f, Gfx::ENG_SHADOW_WORM);
+        obj->CreateShadowCircle(10.0f, 0.5f, Gfx::EngineShadowType::WORM);
     }
 
     if ( type == OBJECT_BARRICADE0 )
@@ -603,7 +603,7 @@ CObjectUPtr CObjectFactory::CreateBarrier(const ObjectCreateParams& params)
         obj->AddCrashSphere(CrashSphere(glm::vec3( 0.0f, 6.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(glm::vec3(-3.5f, 6.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
 
-        obj->CreateShadowCircle(6.0f, 0.5f, Gfx::ENG_SHADOW_WORM);
+        obj->CreateShadowCircle(6.0f, 0.5f, Gfx::EngineShadowType::WORM);
     }
 
     if ( type == OBJECT_BARRICADE1 )
@@ -626,7 +626,7 @@ CObjectUPtr CObjectFactory::CreateBarrier(const ObjectCreateParams& params)
         obj->AddCrashSphere(CrashSphere(glm::vec3(-3.5f, 6.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(glm::vec3(-8.5f, 6.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f));
 
-        obj->CreateShadowCircle(12.0f, 0.5f, Gfx::ENG_SHADOW_WORM);
+        obj->CreateShadowCircle(12.0f, 0.5f, Gfx::EngineShadowType::WORM);
     }
 
     pos = obj->GetPosition();
@@ -977,7 +977,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->AddCrashSphere(CrashSphere(glm::vec3(-2.5f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(glm::vec3(-5.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
 
-        obj->CreateShadowCircle(5.0f, 0.8f*fShadow, Gfx::ENG_SHADOW_WORM);
+        obj->CreateShadowCircle(5.0f, 0.8f*fShadow, Gfx::EngineShadowType::WORM);
     }
 
     if ( type == OBJECT_TEEN1 )  // blue pencil lg=14
@@ -997,7 +997,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->AddCrashSphere(CrashSphere(glm::vec3(-4.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(glm::vec3(-6.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
 
-        obj->CreateShadowCircle(6.0f, 0.8f*fShadow, Gfx::ENG_SHADOW_WORM);
+        obj->CreateShadowCircle(6.0f, 0.8f*fShadow, Gfx::EngineShadowType::WORM);
     }
 
     if ( type == OBJECT_TEEN2 )  // red pencil lg=16
@@ -1017,7 +1017,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->AddCrashSphere(CrashSphere(glm::vec3(-4.7f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(glm::vec3(-7.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
 
-        obj->CreateShadowCircle(6.0f, 0.8f*fShadow, Gfx::ENG_SHADOW_WORM);
+        obj->CreateShadowCircle(6.0f, 0.8f*fShadow, Gfx::EngineShadowType::WORM);
     }
 
     if ( type == OBJECT_TEEN3 )  // jar with pencils
@@ -1052,7 +1052,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->AddCrashSphere(CrashSphere(glm::vec3( 8.0f, 1.0f, 2.2f), 2.3f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(glm::vec3( 9.4f, 1.0f,-2.0f), 2.0f, SOUND_BOUMm, 0.45f));
 
-        obj->CreateShadowCircle(10.0f, 0.5f*fShadow, Gfx::ENG_SHADOW_WORM);
+        obj->CreateShadowCircle(10.0f, 0.5f*fShadow, Gfx::EngineShadowType::WORM);
     }
 
     if ( type == OBJECT_TEEN5 )  // CD
@@ -1403,7 +1403,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->AddCrashSphere(CrashSphere(glm::vec3( 23.0f, 2.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(glm::vec3( 23.0f, 2.0f,-7.0f), 3.0f, SOUND_BOUMm, 0.45f));
 
-        obj->CreateShadowCircle(35.0f, 0.8f*fShadow, Gfx::ENG_SHADOW_WORM);
+        obj->CreateShadowCircle(35.0f, 0.8f*fShadow, Gfx::EngineShadowType::WORM);
     }
 
     if ( type == OBJECT_TEEN24 )  // skate /
@@ -1583,7 +1583,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         obj->AddCrashSphere(CrashSphere(glm::vec3(  0.0f, 5.0f, 0.0f), 10.0f, SOUND_BOUM, 0.10f));
         obj->AddCrashSphere(CrashSphere(glm::vec3( 20.0f, 5.0f, 0.0f), 10.0f, SOUND_BOUM, 0.10f));
         obj->AddCrashSphere(CrashSphere(glm::vec3( 40.0f, 5.0f, 0.0f), 10.0f, SOUND_BOUM, 0.10f));
-        obj->CreateShadowCircle(40.0f, 0.8f*fShadow, Gfx::ENG_SHADOW_WORM);
+        obj->CreateShadowCircle(40.0f, 0.8f*fShadow, Gfx::EngineShadowType::WORM);
     }
 
     if ( type == OBJECT_TEEN36 )  // trunk?

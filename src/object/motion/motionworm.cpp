@@ -136,7 +136,7 @@ void CMotionWorm::Create(glm::vec3 pos, float angle, ObjectType type,
     modelManager->AddModelReference("worm3.mod", false, rank);
     m_object->SetPartPosition(2+WORM_PART, glm::vec3(px, 0.0f, 0.0f));
 
-    m_object->CreateShadowCircle(0.0f, 1.0f, Gfx::ENG_SHADOW_WORM);
+    m_object->CreateShadowCircle(0.0f, 1.0f, Gfx::EngineShadowType::WORM);
 
     CreatePhysics();
     m_object->SetFloorHeight(0.0f);

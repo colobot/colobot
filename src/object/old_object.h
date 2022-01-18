@@ -261,7 +261,7 @@ public:
     CMotion*    GetMotion() override;
     CAuto*      GetAuto() override;
 
-    bool        CreateShadowCircle(float radius, float intensity, Gfx::EngineShadowType type = Gfx::ENG_SHADOW_NORM);
+    bool        CreateShadowCircle(float radius, float intensity, Gfx::EngineShadowType type = Gfx::EngineShadowType::NORMAL);
     bool        CreateShadowLight(float height, Gfx::Color color);
 
     void        FlatParent() override;
