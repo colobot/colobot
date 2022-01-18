@@ -634,7 +634,7 @@ bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank,
                 EngineBaseObjDataTier buffer;
                 buffer.vertices.reserve(total);
 
-                buffer.type = ENG_TRIANGLE_TYPE_SURFACE;
+                buffer.type = EngineTriangleType::SURFACE;
                 buffer.material = mat;
 
                 buffer.state = ENG_RSTATE_WRAP;

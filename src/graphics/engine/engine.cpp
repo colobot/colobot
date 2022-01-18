@@ -750,7 +750,7 @@ void CEngine::AddBaseObjTriangles(int baseObjRank, const std::vector<VertexTex2>
 
     EngineBaseObject&      p1 = m_baseObjects[baseObjRank];
     EngineBaseObjTexTier&  p2 = AddLevel2(p1, tex1Name, tex2Name);
-    EngineBaseObjDataTier& p3 = AddLevel3(p2, ENG_TRIANGLE_TYPE_TRIANGLES, material, state);
+    EngineBaseObjDataTier& p3 = AddLevel3(p2, EngineTriangleType::TRIANGLES, material, state);
 
     p3.vertices.insert(p3.vertices.end(), vertices.begin(), vertices.end());
 
@@ -806,9 +806,9 @@ void CEngine::AddBaseObjQuick(int baseObjRank, const EngineBaseObjDataTier& buff
         p1.boundingSphere = Math::BoundingSphereForBox(p1.bboxMin, p1.bboxMax);
     }
 
-    if (p3.type == ENG_TRIANGLE_TYPE_TRIANGLES)
+    if (p3.type == EngineTriangleType::TRIANGLES)
         p1.totalTriangles += p3.vertices.size() / 3;
-    else if (p3.type == ENG_TRIANGLE_TYPE_SURFACE)
+    else if (p3.type == EngineTriangleType::SURFACE)
         p1.totalTriangles += p3.vertices.size() - 2;
 }
 
@@ -1084,7 +1084,7 @@ int CEngine::GetPartialTriangles(int objRank, float percent, int maxCount,
         {
             EngineBaseObjDataTier& p3 = p2.next[l3];
 
-            if (p3.type == ENG_TRIANGLE_TYPE_TRIANGLES)
+            if (p3.type == EngineTriangleType::TRIANGLES)
             {
                 for (int i = 0; i < static_cast<int>( p3.vertices.size() ); i += 3)
                 {
@@ -1108,7 +1108,7 @@ int CEngine::GetPartialTriangles(int objRank, float percent, int maxCount,
                     ++actualCount;
                 }
             }
-            else if (p3.type == ENG_TRIANGLE_TYPE_SURFACE)
+            else if (p3.type == EngineTriangleType::SURFACE)
             {
                 for (int i = 0; i < static_cast<int>( p3.vertices.size() ); i += 1)
                 {
@@ -1693,7 +1693,7 @@ void CEngine::UpdateGeometry()
 void CEngine::UpdateStaticBuffer(EngineBaseObjDataTier& p4)
 {
     PrimitiveType type;
-    if (p4.type == ENG_TRIANGLE_TYPE_TRIANGLES)
+    if (p4.type == EngineTriangleType::TRIANGLES)
         type = PrimitiveType::TRIANGLES;
     else
         type = PrimitiveType::TRIANGLE_STRIP;
@@ -1829,7 +1829,7 @@ int CEngine::DetectObject(const glm::vec2& mouse, glm::vec3& targetPos, bool ter
             {
                 EngineBaseObjDataTier& p3 = p2.next[l3];
 
-                if (p3.type == ENG_TRIANGLE_TYPE_TRIANGLES)
+                if (p3.type == EngineTriangleType::TRIANGLES)
                 {
                     for (int i = 0; i < static_cast<int>( p3.vertices.size() ); i += 3)
                     {
@@ -1842,7 +1842,7 @@ int CEngine::DetectObject(const glm::vec2& mouse, glm::vec3& targetPos, bool ter
                         }
                     }
                 }
-                else if (p3.type == ENG_TRIANGLE_TYPE_SURFACE)
+                else if (p3.type == EngineTriangleType::SURFACE)
                 {
                     for (int i = 0; i < static_cast<int>( p3.vertices.size() ) - 2; i += 1)
                     {
@@ -4254,14 +4254,14 @@ void CEngine::DrawObject(const EngineBaseObjDataTier& p4)
     {
         m_device->DrawVertexBuffer(p4.buffer);
 
-        if (p4.type == ENG_TRIANGLE_TYPE_TRIANGLES)
+        if (p4.type == EngineTriangleType::TRIANGLES)
             m_statisticTriangle += p4.vertices.size() / 3;
         else
             m_statisticTriangle += p4.vertices.size() - 2;
     }
     else
     {
-        if (p4.type == ENG_TRIANGLE_TYPE_TRIANGLES)
+        if (p4.type == EngineTriangleType::TRIANGLES)
         {
             m_device->DrawPrimitive(PrimitiveType::TRIANGLES, p4.vertices.data(), p4.vertices.size());
             m_statisticTriangle += p4.vertices.size() / 3;

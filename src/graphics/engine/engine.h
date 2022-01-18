@@ -137,12 +137,12 @@ enum EngineRenderState
  * \enum EngineTriangleType
  * \brief Type of triangles drawn for engine objects
  */
-enum EngineTriangleType
+enum class EngineTriangleType
 {
     //! Triangles
-    ENG_TRIANGLE_TYPE_TRIANGLES = 1,
+    TRIANGLES = 1,
     //! Surfaces
-    ENG_TRIANGLE_TYPE_SURFACE   = 2
+    SURFACE   = 2
 };
 
 /**
@@ -198,7 +198,7 @@ struct EngineBaseObjDataTier
     CVertexBuffer*          buffer;
     bool                    updateStaticBuffer;
 
-    inline EngineBaseObjDataTier(EngineTriangleType type = ENG_TRIANGLE_TYPE_TRIANGLES,
+    inline EngineBaseObjDataTier(EngineTriangleType type = EngineTriangleType::TRIANGLES,
                                  const Material& material = Material(),
                                  int state = ENG_RSTATE_NORMAL)
      : type(type)
