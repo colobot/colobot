@@ -180,9 +180,9 @@ struct OldModelTriangleV1
 {
     char used = 0;
     char selected = 0;
-    Vertex p1;
-    Vertex p2;
-    Vertex p3;
+    Vertex3D p1;
+    Vertex3D p2;
+    Vertex3D p3;
     char texName[21] = {'\0'};
     float min = 0;
     float max = 0;
@@ -198,9 +198,9 @@ struct OldModelTriangleV2
 {
     char used = 0;
     char selected = 0;
-    Vertex p1;
-    Vertex p2;
-    Vertex p3;
+    Vertex3D p1;
+    Vertex3D p2;
+    Vertex3D p3;
     char texName[21] = {'\0'};
     float min = 0.0f;
     float max = 0.0f;

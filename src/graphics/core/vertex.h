@@ -37,13 +37,6 @@
 namespace Gfx
 {
 
-enum VertexType
-{
-    VERTEX_TYPE_NORMAL,
-    VERTEX_TYPE_TEX2,
-    VERTEX_TYPE_COL,
-};
-
 /**
  * \struct Vertex
  * \brief Vertex of a primitive
@@ -57,8 +50,6 @@ enum VertexType
  */
 struct Vertex
 {
-    static constexpr VertexType VERTEX_TYPE = VERTEX_TYPE_NORMAL;
-
     glm::vec3 coord = { 0, 0, 0 };
     glm::vec3 normal = { 0, 0, 0 };
     glm::vec2 texCoord = { 0, 0 };
@@ -74,8 +65,6 @@ struct Vertex
  */
 struct VertexCol
 {
-    static constexpr VertexType VERTEX_TYPE = VERTEX_TYPE_COL;
-
     glm::vec3 coord = { 0, 0, 0 };
     Color color = Color();
 };
@@ -102,32 +91,6 @@ struct Vertex3D
     glm::vec2 uv = { 0.0f, 0.0f };
     glm::vec2 uv2 = { 0.0f, 0.0f };
     glm::vec3 normal = { 0.0f, 0.0f, 1.0f };
-
-    Vertex3D() = default;
-
-    Vertex3D(const glm::vec3& position,
-        glm::u8vec4 color = { 255, 255, 255, 255 },
-        glm::vec2 uv = { 0.0f, 0.0f },
-        glm::vec2 uv2 = { 0.0f, 0.0f },
-        glm::vec3 normal = { 0.0f, 0.0f, 1.0f })
-        : position(position)
-        , color(color)
-        , uv(uv)
-        , uv2(uv2)
-        , normal(normal) {}
-
-    Vertex3D(const Vertex& vertex)
-        : position(vertex.coord)
-        , uv(vertex.texCoord)
-        , normal(vertex.normal)
-    {
-
-    }
-
-    operator Vertex() const
-    {
-        return Vertex{ position, normal, uv };
-    }
 };
 
 } // namespace Gfx

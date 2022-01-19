@@ -56,7 +56,7 @@ namespace ModelInput
     std::vector<ModelTriangle> ReadOldModelV2(std::istream &stream, int totalTriangles);
     std::vector<ModelTriangle> ReadOldModelV3(std::istream &stream, int totalTriangles);
 
-    Vertex ReadBinaryVertex(std::istream& stream);
+    Vertex3D ReadBinaryVertex(std::istream& stream);
     Vertex3D ReadBinaryVertexTex2(std::istream& stream);
     Material ReadBinaryMaterial(std::istream& stream);
 
@@ -638,20 +638,20 @@ void ModelInput::ConvertFromOldRenderState(ModelTriangle& triangle, int state)
     triangle.doubleSided = (state & static_cast<int>(ModelRenderState::TwoFace)) != 0;
 }
 
-Vertex ModelInput::ReadBinaryVertex(std::istream& stream)
+Vertex3D ModelInput::ReadBinaryVertex(std::istream& stream)
 {
-    Vertex vertex;
+    Vertex3D vertex;
 
-    vertex.coord.x     = ReadBinaryFloat(stream);
-    vertex.coord.y     = ReadBinaryFloat(stream);
-    vertex.coord.z     = ReadBinaryFloat(stream);
+    vertex.position.x  = ReadBinaryFloat(stream);
+    vertex.position.y  = ReadBinaryFloat(stream);
+    vertex.position.z  = ReadBinaryFloat(stream);
 
     vertex.normal.x    = ReadBinaryFloat(stream);
     vertex.normal.y    = ReadBinaryFloat(stream);
     vertex.normal.z    = ReadBinaryFloat(stream);
 
-    vertex.texCoord.x  = ReadBinaryFloat(stream);
-    vertex.texCoord.y  = ReadBinaryFloat(stream);
+    vertex.uv.x        = ReadBinaryFloat(stream);
+    vertex.uv.y        = ReadBinaryFloat(stream);
 
     return vertex;
 }
