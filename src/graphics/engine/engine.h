@@ -1195,6 +1195,8 @@ public:
     /** This additionally sends EVENT_RELOAD_TEXTURES to reload all textures not maintained by CEngine **/
     void ReloadAllTextures();
 
+    int ComputeSphereVisibility(const glm::mat4& m, const glm::vec3& center, float radius);
+
 protected:
     //! Resets some states and flushes textures after device was changed (e.g. resoulution changed)
     /** Instead of calling this directly, send EVENT_RESOLUTION_CHANGED event **/
@@ -1253,8 +1255,6 @@ protected:
 
     //! Tests whether the given object is visible
     bool        IsVisible(const glm::mat4& matrix, int objRank);
-
-    int         ComputeSphereVisibility(const glm::mat4& m, const glm::vec3& center, float radius);
 
     bool        InPlane(glm::vec3 normal, float originPlane, glm::vec3 center, float radius);
 

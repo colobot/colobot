@@ -4301,23 +4301,26 @@ void CEngine::DrawInterface()
     // 3D objects drawn in front of interface
     if (m_drawFront)
     {
-        m_device->Restore();
-
-        // Display the objects
-        m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, true);
-
-        m_device->SetTransform(TRANSFORM_PROJECTION, m_matProj);
-
-        m_device->SetGlobalAmbient(m_ambientColor[m_rankView]);
-        m_device->SetRenderState(RENDER_STATE_LIGHTING, true);
-
-        m_device->SetRenderState(RENDER_STATE_FOG, true);
-
         float fogStart = m_deepView[m_rankView] * m_fogStart[m_rankView] * m_clippingDistance;
         float fogEnd = m_deepView[m_rankView] * m_clippingDistance;
-        m_device->SetFogParams(FOG_LINEAR, m_fogColor[m_rankView], fogStart, fogEnd, 1.0f);
+        Color fogColor = m_fogColor[m_rankView];
 
-        m_device->SetTransform(TRANSFORM_VIEW, m_matView);
+        auto renderer = m_device->GetObjectRenderer();
+        renderer->Begin();
+        renderer->SetProjectionMatrix(m_matProj);
+        renderer->SetViewMatrix(m_matView);
+        renderer->SetFog(fogStart, fogEnd, { fogColor.r, fogColor.g, fogColor.b });
+        renderer->SetLighting(false);
+        renderer->SetLight(glm::vec4(1.0, 1.0, -1.0, 0.0), 1.0f, glm::vec3(1.0));
+        renderer->SetTransparency(TransparencyMode::NONE);
+        renderer->SetAlphaScissor(0.0f);
+        renderer->SetShadowParams(0, nullptr);
+        renderer->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+        renderer->SetCullMode(true);
+        renderer->SetPrimaryTextureEnabled(true);
+
+        renderer->SetTriplanarMode(m_triplanarMode);
+        renderer->SetTriplanarScale(m_triplanarScale);
 
         auto projectionViewMatrix = m_matProj * m_matView;
 
@@ -4332,11 +4335,10 @@ void CEngine::DrawInterface()
             if (! m_objects[objRank].drawFront)
                 continue;
 
-            m_device->SetTransform(TRANSFORM_WORLD, m_objects[objRank].transform);
             auto combinedMatrix = projectionViewMatrix * m_objects[objRank].transform;
 
-            if (! IsVisible(combinedMatrix, objRank))
-                continue;
+            //if (! IsVisible(combinedMatrix, objRank))
+            //    continue;
 
             int baseObjRank = m_objects[objRank].baseObjRank;
             if (baseObjRank == -1)
@@ -4348,26 +4350,31 @@ void CEngine::DrawInterface()
             if (! p1.used)
                 continue;
 
-            m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
+            renderer->SetModelMatrix(m_objects[objRank].transform);
+
+            //m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
 
             for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
             {
                 EngineBaseObjTexTier& p2 = p1.next[l2];
 
-                SetTexture(p2.tex1, 0);
-                SetTexture(p2.tex2, 1);
+                renderer->SetPrimaryTexture(p2.tex1);
+                renderer->SetSecondaryTexture(p2.tex2);
 
                 for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
                 {
                     EngineBaseObjDataTier& p3 = p2.next[l3];
 
                     //SetMaterial(p3.material);
-                    SetState(p3.state);
+                    //SetState(p3.state);
 
-                    DrawObject(p3);
+                    renderer->DrawObject(p3.buffer);
+                    //DrawObject(p3);
                 }
             }
         }
+
+        renderer->End();
 
         m_particle->DrawParticle(SH_FRONT);  // draws the particles of the 3D world
 

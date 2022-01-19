@@ -156,6 +156,7 @@ void CGL33ObjectRenderer::CGL33ObjectRenderer::Begin()
     m_secondaryTexture = 0;
     m_shadowMap = 0;
 
+    glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
 }
 
