@@ -3581,14 +3581,14 @@ void CEngine::Draw3DScene()
 
     objectRenderer->Begin();
     objectRenderer->SetLighting(false);
-    objectRenderer->SetTransparency(TransparencyMode::ALPHA);
-    objectRenderer->SetAlphaScissor(0.0f);
+    objectRenderer->SetTransparency(TransparencyMode::BLACK);
+    objectRenderer->SetAlphaScissor(0.5f);
+    objectRenderer->SetCullMode(false);
 
     // Draw transparent objects
 
     if (transparent)
     {
-        int tState = ENG_RSTATE_TTEXTURE_BLACK | ENG_RSTATE_2FACE;
         Color tColor = Color(68.0f / 255.0f, 68.0f / 255.0f, 68.0f / 255.0f, 68.0f / 255.0f);
 
         for (int objRank = 0; objRank < static_cast<int>(m_objects.size()); objRank++)
@@ -3635,9 +3635,8 @@ void CEngine::Draw3DScene()
 
                     float dirty = (p3.state & ENG_RSTATE_DUAL_BLACK) && m_dirty ? 1.0 : 0.0;
                     objectRenderer->SetDirty(dirty);
-                    auto color = p3.material.diffuse;
-                    objectRenderer->SetColor({ color.r, color.g, color.b, 0.5f });// -m_objects[objRank].transparency });
-                    objectRenderer->SetCullMode((p3.state& ENG_RSTATE_2FACE) == 0);
+                    auto color = p3.material.diffuse * tColor;
+                    objectRenderer->SetColor({ color.r, color.g, color.b, 1.0f });
                     objectRenderer->DrawObject(p3.buffer);
                 }
             }

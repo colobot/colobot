@@ -90,6 +90,11 @@ struct Color
         c.a *= scale;
         return c;
     }
+
+    Color operator*(const Color& other) const
+    {
+        return Color{ r * other.r, g * other.g, b * other.b, a * other.a };
+    }
 };
 
 /**

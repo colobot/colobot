@@ -312,13 +312,13 @@ void CGL33ObjectRenderer::SetTransparency(TransparencyMode mode)
         glEnable(GL_BLEND);
         glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_COLOR);
         glBlendEquation(GL_FUNC_ADD);
-        glDepthMask(GL_TRUE);
+        glDepthMask(GL_FALSE);
         break;
     case TransparencyMode::WHITE:
         glEnable(GL_BLEND);
         glBlendFunc(GL_DST_COLOR, GL_ZERO);
         glBlendEquation(GL_FUNC_ADD);
-        glDepthMask(GL_TRUE);
+        glDepthMask(GL_FALSE);
         break;
     }
 }
