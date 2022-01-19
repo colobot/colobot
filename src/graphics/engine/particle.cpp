@@ -3368,6 +3368,15 @@ void CParticle::DrawParticleWheel(int i)
 
 void CParticle::DrawParticle(int sheet)
 {
+    Material mat;
+    mat.diffuse.r = 1.0f;
+    mat.diffuse.g = 1.0f;
+    mat.diffuse.b = 1.0f;  // white
+    mat.ambient.r = 0.5f;
+    mat.ambient.g = 0.5f;
+    mat.ambient.b = 0.5f;
+    m_engine->SetMaterial(mat);
+
     // Draw the basic particles of triangles.
     if (m_totalInterface[0][sheet] > 0)
     {
@@ -3378,20 +3387,10 @@ void CParticle::DrawParticle(int sheet)
             if (m_particle[i].type == PARTIPART)  continue;
 
             m_engine->SetTexture(!m_triangle[i].tex1Name.empty() ? "textures/"+m_triangle[i].tex1Name : "");
-            m_engine->SetMaterial(m_triangle[i].material);
             m_engine->SetState(m_triangle[i].state);
             DrawParticleTriangle(i);
         }
     }
-
-    Material mat;
-    mat.diffuse.r = 1.0f;
-    mat.diffuse.g = 1.0f;
-    mat.diffuse.b = 1.0f;  // white
-    mat.ambient.r = 0.5f;
-    mat.ambient.g = 0.5f;
-    mat.ambient.b = 0.5f;
-    m_engine->SetMaterial(mat);
 
     // Draw tire marks.
     if (m_wheelTraceTotal > 0 && sheet == SH_WORLD)

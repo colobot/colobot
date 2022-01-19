@@ -153,8 +153,6 @@ struct EngineTriangle
 {
     //! Triangle vertices
     Vertex3D     triangle[3];
-    //! Material
-    Material       material;
     //! Render state
     int            state = ENG_RSTATE_NORMAL;
     //! 1st texture
@@ -192,17 +190,14 @@ enum EngineObjectType
 struct EngineBaseObjDataTier
 {
     EngineTriangleType      type;
-    Material                material;
     int                     state;
     std::vector<Vertex3D>   vertices;
     CVertexBuffer*          buffer;
     bool                    updateStaticBuffer;
 
     inline EngineBaseObjDataTier(EngineTriangleType type = EngineTriangleType::TRIANGLES,
-                                 const Material& material = Material(),
                                  int state = ENG_RSTATE_NORMAL)
      : type(type)
-     , material(material)
      , state(state)
      , buffer(nullptr)
      , updateStaticBuffer(false)
@@ -781,8 +776,7 @@ public:
     int             GetObjectTotalTriangles(int objRank);
 
     //! Returns the first found tier 4 engine object for the given params or nullptr if not found
-    EngineBaseObjDataTier* FindTriangles(int objRank, const Material& material,
-                                         int state, std::string tex1Name, std::string tex2Name);
+    EngineBaseObjDataTier* FindTriangles(int objRank, int state, std::string tex1Name, std::string tex2Name);
 
     //! Returns a partial list of triangles for given object
     int             GetPartialTriangles(int objRank, float percent, int maxCount,
@@ -792,13 +786,13 @@ public:
     void            ChangeSecondTexture(int objRank, const std::string& tex2Name);
 
     //! Changes (recalculates) texture mapping for given object
-    void            ChangeTextureMapping(int objRank, const Material& mat, int state,
+    void            ChangeTextureMapping(int objRank, int state,
                                          const std::string& tex1Name, const std::string& tex2Name,
                                          EngineTextureMapping mode,
                                          float au, float bu, float av, float bv);
 
     //! Changes texture mapping for robot tracks
-    void            TrackTextureMapping(int objRank, const Material& mat, int state,
+    void            TrackTextureMapping(int objRank, int state,
                                         const std::string& tex1Name, const std::string& tex2Name,
                                         EngineTextureMapping mode,
                                         float pos, float factor, float tl, float ts, float tt);
@@ -1252,8 +1246,7 @@ protected:
     //! Creates a new tier 2 object (texture)
     EngineBaseObjTexTier&  AddLevel2(EngineBaseObject& p1, const std::string& tex1Name, const std::string& tex2Name);
     //! Creates a new tier 3 object (data)
-    EngineBaseObjDataTier& AddLevel3(EngineBaseObjTexTier &p3, EngineTriangleType type,
-                                     const Material& material, int state);
+    EngineBaseObjDataTier& AddLevel3(EngineBaseObjTexTier &p3, EngineTriangleType type, int state);
 
     //! Create texture and add it to cache
     Texture CreateTexture(const std::string &texName, const TextureCreateParams &params, CImage* image = nullptr);
@@ -1290,9 +1283,8 @@ protected:
     //! Updates static buffers of changed objects
     void        UpdateStaticBuffers();
 
-    void            AddBaseObjTriangles(int baseObjRank, const std::vector<VertexTex2>& vertices,
-                                        const Material& material, int state,
-                                        std::string tex1Name, std::string tex2Name);
+    void        AddBaseObjTriangles(int baseObjRank, const std::vector<Vertex3D>& vertices,
+                                    int state, std::string tex1Name, std::string tex2Name);
 
     int GetEngineState(const ModelTriangle& triangle);
 

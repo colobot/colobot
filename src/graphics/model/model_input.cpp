@@ -18,6 +18,7 @@
  */
 
 #include "graphics/model/model_input.h"
+#include "graphics/core/material.h"
 
 #include "common/ioutils.h"
 #include "common/logger.h"
@@ -157,10 +158,17 @@ void ModelInput::ReadBinaryModelV1AndV2(CModel &model, std::istream &stream)
             t.p1 = ReadBinaryVertexTex2(stream);
             t.p2 = ReadBinaryVertexTex2(stream);
             t.p3 = ReadBinaryVertexTex2(stream);
-            t.material = ReadBinaryMaterial(stream);
+            auto material = ReadBinaryMaterial(stream);
             t.tex1Name = ReadBinaryString<1>(stream);
             t.tex2Name = ReadBinaryString<1>(stream);
             t.variableTex2 = ReadBinaryBool(stream);
+
+            auto diffuse = Gfx::ColorToIntColor(material.diffuse);
+            glm::u8vec4 color = { diffuse.r, diffuse.g, diffuse.b, 255 };
+
+            t.p1.color = color;
+            t.p2.color = color;
+            t.p3.color = color;
 
             if (header.version == 1)
                 t.lodLevel = static_cast<ModelLODLevel>( ReadBinary<4, int>(stream) );
@@ -175,9 +183,6 @@ void ModelInput::ReadBinaryModelV1AndV2(CModel &model, std::istream &stream)
             triangle.p1 = t.p1;
             triangle.p2 = t.p2;
             triangle.p3 = t.p3;
-            triangle.diffuse = t.material.diffuse;
-            triangle.specular = t.material.specular;
-            triangle.ambient = t.material.ambient;
             triangle.tex1Name = t.tex1Name;
             triangle.tex2Name = t.tex2Name;
             triangle.variableTex2 = t.variableTex2;
@@ -248,7 +253,14 @@ void ModelInput::ReadTextModelV1AndV2(CModel &model, std::istream &stream)
         t.p3 = ParseVertexTex2(p3Text);
 
         std::string matText = ReadLineString(stream, "mat");
-        t.material = ParseMaterial(matText);
+        auto material = ParseMaterial(matText);
+
+        auto diffuse = Gfx::ColorToIntColor(material.diffuse);
+        glm::u8vec4 color = { diffuse.r, diffuse.g, diffuse.b, 255 };
+
+        t.p1.color = color;
+        t.p2.color = color;
+        t.p3.color = color;
 
         t.tex1Name = ReadLineString(stream, "tex1");
         t.tex2Name = ReadLineString(stream, "tex2");
@@ -268,9 +280,6 @@ void ModelInput::ReadTextModelV1AndV2(CModel &model, std::istream &stream)
         triangle.p1 = t.p1;
         triangle.p2 = t.p2;
         triangle.p3 = t.p3;
-        triangle.ambient = t.material.ambient;
-        triangle.diffuse = t.material.diffuse;
-        triangle.specular = t.material.specular;
         triangle.tex1Name = t.tex1Name;
         triangle.tex2Name = t.tex2Name;
         triangle.variableTex2 = t.variableTex2;
@@ -356,9 +365,13 @@ CModelMesh ModelInput::ReadTextMesh(std::istream& stream)
 
         std::string matText = ReadLineString(stream, "mat");
         Material mat = ParseMaterial(matText);
-        t.ambient = mat.ambient;
-        t.diffuse = mat.diffuse;
-        t.specular = mat.specular;
+
+        auto diffuse = Gfx::ColorToIntColor(mat.diffuse);
+        glm::u8vec4 color = { diffuse.r, diffuse.g, diffuse.b, 255 };
+
+        t.p1.color = color;
+        t.p2.color = color;
+        t.p3.color = color;
 
         t.tex1Name = ReadLineString(stream, "tex1");
         t.tex2Name = ReadLineString(stream, "tex2");
@@ -435,7 +448,7 @@ std::vector<ModelTriangle> ModelInput::ReadOldModelV1(std::istream &stream, int 
         t.p2 = ReadBinaryVertex(stream);
         t.p3 = ReadBinaryVertex(stream);
 
-        t.material = ReadBinaryMaterial(stream);
+        auto material = ReadBinaryMaterial(stream);
         stream.read(t.texName, 20);
         t.min = ReadBinaryFloat(stream);
         t.max = ReadBinaryFloat(stream);
@@ -450,9 +463,13 @@ std::vector<ModelTriangle> ModelInput::ReadOldModelV1(std::istream &stream, int 
         triangle.p2 = t.p2;
         triangle.p3 = t.p3;
 
-        triangle.ambient = t.material.ambient;
-        triangle.diffuse = t.material.diffuse;
-        triangle.specular = t.material.specular;
+        auto diffuse = Gfx::ColorToIntColor(material.diffuse);
+        glm::u8vec4 color = { diffuse.r, diffuse.g, diffuse.b, 255 };
+
+        triangle.p1.color = color;
+        triangle.p2.color = color;
+        triangle.p3.color = color;
+
         ConvertOldTex1Name(triangle, t.texName);
 
         triangles.push_back(triangle);
@@ -477,7 +494,7 @@ std::vector<ModelTriangle> ModelInput::ReadOldModelV2(std::istream &stream, int 
         t.p2 = ReadBinaryVertex(stream);
         t.p3 = ReadBinaryVertex(stream);
 
-        t.material = ReadBinaryMaterial(stream);
+        auto material = ReadBinaryMaterial(stream);
         stream.read(t.texName, 20);
         t.min = ReadBinaryFloat(stream);
         t.max = ReadBinaryFloat(stream);
@@ -498,9 +515,13 @@ std::vector<ModelTriangle> ModelInput::ReadOldModelV2(std::istream &stream, int 
         triangle.p2 = t.p2;
         triangle.p3 = t.p3;
 
-        triangle.ambient = t.material.ambient;
-        triangle.diffuse = t.material.diffuse;
-        triangle.specular = t.material.specular;
+        auto diffuse = Gfx::ColorToIntColor(material.diffuse);
+        glm::u8vec4 color = { diffuse.r, diffuse.g, diffuse.b, 255 };
+
+        triangle.p1.color = color;
+        triangle.p2.color = color;
+        triangle.p3.color = color;
+
         ConvertOldTex1Name(triangle, t.texName);
 
         ConvertFromOldRenderState(triangle, t.state);
@@ -527,7 +548,7 @@ std::vector<ModelTriangle> ModelInput::ReadOldModelV3(std::istream &stream, int 
         t.p2 = ReadBinaryVertexTex2(stream);
         t.p3 = ReadBinaryVertexTex2(stream);
 
-        t.material = ReadBinaryMaterial(stream);
+        auto material = ReadBinaryMaterial(stream);
         stream.read(t.texName, 20);
         t.min = ReadBinaryFloat(stream);
         t.max = ReadBinaryFloat(stream);
@@ -548,9 +569,13 @@ std::vector<ModelTriangle> ModelInput::ReadOldModelV3(std::istream &stream, int 
         triangle.p2 = t.p2;
         triangle.p3 = t.p3;
 
-        triangle.ambient = t.material.ambient;
-        triangle.diffuse = t.material.diffuse;
-        triangle.specular = t.material.specular;
+        auto diffuse = Gfx::ColorToIntColor(material.diffuse);
+        glm::u8vec4 color = { diffuse.r, diffuse.g, diffuse.b, 255 };
+
+        triangle.p1.color = color;
+        triangle.p2.color = color;
+        triangle.p3.color = color;
+
         ConvertOldTex1Name(triangle, t.texName);
 
         ConvertFromOldRenderState(triangle, t.state);

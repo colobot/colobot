@@ -572,8 +572,7 @@ VertexTex2 CTerrain::GetVertex(int x, int y, int step)
   |
   +-------------------> x
 \endverbatim */
-bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank,
-                            const Material &mat)
+bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank)
 {
     int baseObjRank = m_engine->GetObjectBaseRank(objRank);
     if (baseObjRank == -1)
@@ -635,7 +634,6 @@ bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank,
                 buffer.vertices.reserve(total);
 
                 buffer.type = EngineTriangleType::SURFACE;
-                buffer.material = mat;
 
                 buffer.state = ENG_RSTATE_WRAP;
 
@@ -1249,10 +1247,6 @@ void CTerrain::FlushMaterialPoints()
 
 bool CTerrain::CreateSquare(int x, int y)
 {
-    Material mat;
-    mat.diffuse = Color(1.0f, 1.0f, 1.0f);
-    mat.ambient = Color(0.0f, 0.0f, 0.0f);
-
     int objRank = m_engine->CreateObject();
     m_engine->SetObjectType(objRank, ENG_OBJTYPE_TERRAIN);
 
@@ -1260,7 +1254,7 @@ bool CTerrain::CreateSquare(int x, int y)
 
     for (int step = 0; step < m_depth; step++)
     {
-        CreateMosaic(x, y, 1 << step, objRank, mat);
+        CreateMosaic(x, y, 1 << step, objRank);
     }
 
     return true;

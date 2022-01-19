@@ -393,24 +393,16 @@ Error CAutoPortico::GetError()
 
 void CAutoPortico::UpdateTrackMapping(float left, float right)
 {
-    Gfx::Material mat;
-    mat.diffuse.r = 1.0f;
-    mat.diffuse.g = 1.0f;
-    mat.diffuse.b = 1.0f;  // blank
-    mat.ambient.r = 0.5f;
-    mat.ambient.g = 0.5f;
-    mat.ambient.b = 0.5f;
-
     int rank = m_object->GetObjectRank(0);
 
     std::string teamStr = StrUtils::ToString<int>(m_object->GetTeam());
     if(m_object->GetTeam() == 0) teamStr = "";
 
-    m_engine->TrackTextureMapping(rank, mat, Gfx::ENG_RSTATE_PART1, "objects/lemt.png"+teamStr, "",
+    m_engine->TrackTextureMapping(rank, Gfx::ENG_RSTATE_PART1, "objects/lemt.png"+teamStr, "",
                                   Gfx::EngineTextureMapping::X,
                                   right, 8.0f, 8.0f, 192.0f, 256.0f);
 
-    m_engine->TrackTextureMapping(rank, mat, Gfx::ENG_RSTATE_PART2, "objects/lemt.png"+teamStr, "",
+    m_engine->TrackTextureMapping(rank, Gfx::ENG_RSTATE_PART2, "objects/lemt.png"+teamStr, "",
                                   Gfx::EngineTextureMapping::X,
                                   left, 8.0f, 8.0f, 192.0f, 256.0f);
 }

@@ -1978,10 +1978,6 @@ bool CMotionVehicle::EventFrameCanoni(const Event &event)
 
 void CMotionVehicle::UpdateTrackMapping(float left, float right, ObjectType type)
 {
-    Gfx::Material mat;
-    mat.diffuse = Gfx::Color(1.0f, 1.0f, 1.0f);  // white
-    mat.ambient = Gfx::Color(0.5f, 0.5f, 0.5f);
-
     int rRank = m_object->GetObjectRank(6);
     int lRank = m_object->GetObjectRank(7);
 
@@ -1990,21 +1986,21 @@ void CMotionVehicle::UpdateTrackMapping(float left, float right, ObjectType type
 
     if (type == OBJECT_MOBILEdr)
     {
-        m_engine->TrackTextureMapping(rRank, mat, Gfx::ENG_RSTATE_PART1, "objects/drawer.png"+teamStr, "",
+        m_engine->TrackTextureMapping(rRank, Gfx::ENG_RSTATE_PART1, "objects/drawer.png"+teamStr, "",
                                       Gfx::EngineTextureMapping::X,
                                       right, 1.0f, 8.0f, 192.0f, 256.0f);
 
-        m_engine->TrackTextureMapping(lRank, mat, Gfx::ENG_RSTATE_PART2, "objects/drawer.png"+teamStr, "",
+        m_engine->TrackTextureMapping(lRank, Gfx::ENG_RSTATE_PART2, "objects/drawer.png"+teamStr, "",
                                       Gfx::EngineTextureMapping::X,
                                       left, 1.0f, 8.0f, 192.0f, 256.0f);
     }
     else
     {
-        m_engine->TrackTextureMapping(rRank, mat, Gfx::ENG_RSTATE_PART1, "objects/lemt.png"+teamStr, "",
+        m_engine->TrackTextureMapping(rRank, Gfx::ENG_RSTATE_PART1, "objects/lemt.png"+teamStr, "",
                                       Gfx::EngineTextureMapping::X,
                                       right, 1.0f, 8.0f, 192.0f, 256.0f);
 
-        m_engine->TrackTextureMapping(lRank, mat, Gfx::ENG_RSTATE_PART2, "objects/lemt.png"+teamStr, "",
+        m_engine->TrackTextureMapping(lRank, Gfx::ENG_RSTATE_PART2, "objects/lemt.png"+teamStr, "",
                                       Gfx::EngineTextureMapping::X,
                                       left, 1.0f, 8.0f, 192.0f, 256.0f);
     }

@@ -632,16 +632,15 @@ EngineBaseObjTexTier& CEngine::AddLevel2(EngineBaseObject& p1, const std::string
     return p1.next.back();
 }
 
-EngineBaseObjDataTier& CEngine::AddLevel3(EngineBaseObjTexTier& p3, EngineTriangleType type,
-                                          const Material& material, int state)
+EngineBaseObjDataTier& CEngine::AddLevel3(EngineBaseObjTexTier& p3, EngineTriangleType type, int state)
 {
     for (int i = 0; i < static_cast<int>( p3.next.size() ); i++)
     {
-        if ( (p3.next[i].type == type) && (p3.next[i].material == material) && (p3.next[i].state == state) )
+        if ( (p3.next[i].type == type) && (p3.next[i].state == state) )
             return p3.next[i];
     }
 
-    p3.next.push_back(EngineBaseObjDataTier(type, material, state));
+    p3.next.push_back(EngineBaseObjDataTier(type, state));
     return p3.next.back();
 }
 
@@ -742,15 +741,14 @@ void CEngine::CopyBaseObject(int sourceBaseObjRank, int destBaseObjRank)
     }
 }
 
-void CEngine::AddBaseObjTriangles(int baseObjRank, const std::vector<VertexTex2>& vertices,
-                                  const Material& material, int state,
-                                  std::string tex1Name, std::string tex2Name)
+void CEngine::AddBaseObjTriangles(int baseObjRank, const std::vector<Vertex3D>& vertices,
+                                  int state, std::string tex1Name, std::string tex2Name)
 {
     assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
 
     EngineBaseObject&      p1 = m_baseObjects[baseObjRank];
     EngineBaseObjTexTier&  p2 = AddLevel2(p1, tex1Name, tex2Name);
-    EngineBaseObjDataTier& p3 = AddLevel3(p2, EngineTriangleType::TRIANGLES, material, state);
+    EngineBaseObjDataTier& p3 = AddLevel3(p2, EngineTriangleType::TRIANGLES, state);
 
     p3.vertices.insert(p3.vertices.end(), vertices.begin(), vertices.end());
 
@@ -759,12 +757,12 @@ void CEngine::AddBaseObjTriangles(int baseObjRank, const std::vector<VertexTex2>
 
     for (int i = 0; i < static_cast<int>( vertices.size() ); i++)
     {
-        p1.bboxMin.x = Math::Min(vertices[i].coord.x, p1.bboxMin.x);
-        p1.bboxMin.y = Math::Min(vertices[i].coord.y, p1.bboxMin.y);
-        p1.bboxMin.z = Math::Min(vertices[i].coord.z, p1.bboxMin.z);
-        p1.bboxMax.x = Math::Max(vertices[i].coord.x, p1.bboxMax.x);
-        p1.bboxMax.y = Math::Max(vertices[i].coord.y, p1.bboxMax.y);
-        p1.bboxMax.z = Math::Max(vertices[i].coord.z, p1.bboxMax.z);
+        p1.bboxMin.x = Math::Min(vertices[i].position.x, p1.bboxMin.x);
+        p1.bboxMin.y = Math::Min(vertices[i].position.y, p1.bboxMin.y);
+        p1.bboxMin.z = Math::Min(vertices[i].position.z, p1.bboxMin.z);
+        p1.bboxMax.x = Math::Max(vertices[i].position.x, p1.bboxMax.x);
+        p1.bboxMax.y = Math::Max(vertices[i].position.y, p1.bboxMax.y);
+        p1.bboxMax.z = Math::Max(vertices[i].position.z, p1.bboxMax.z);
     }
 
     p1.boundingSphere = Math::BoundingSphereForBox(p1.bboxMin, p1.bboxMax);
@@ -1021,8 +1019,7 @@ int CEngine::GetObjectTotalTriangles(int objRank)
     return m_baseObjects[baseObjRank].totalTriangles;
 }
 
-EngineBaseObjDataTier* CEngine::FindTriangles(int objRank, const Material& material,
-                                              int state, std::string tex1Name,
+EngineBaseObjDataTier* CEngine::FindTriangles(int objRank, int state, std::string tex1Name,
                                               std::string tex2Name)
 {
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
@@ -1046,8 +1043,7 @@ EngineBaseObjDataTier* CEngine::FindTriangles(int objRank, const Material& mater
         {
             EngineBaseObjDataTier& p3 = p2.next[l3];
 
-            if ( (p3.state & (~(ENG_RSTATE_DUAL_BLACK|ENG_RSTATE_DUAL_WHITE))) != state ||
-                  p3.material != material )
+            if ( (p3.state & (~(ENG_RSTATE_DUAL_BLACK|ENG_RSTATE_DUAL_WHITE))) != state)
                 continue;
 
             return &p3;
@@ -1098,7 +1094,6 @@ int CEngine::GetPartialTriangles(int objRank, float percent, int maxCount,
                     t.triangle[0] = p3.vertices[i];
                     t.triangle[1] = p3.vertices[i+1];
                     t.triangle[2] = p3.vertices[i+2];
-                    t.material = p3.material;
                     t.state = p3.state;
                     t.tex1Name = p2.tex1Name;
                     t.tex2Name = p2.tex2Name;
@@ -1122,7 +1117,6 @@ int CEngine::GetPartialTriangles(int objRank, float percent, int maxCount,
                     t.triangle[0] = p3.vertices[i];
                     t.triangle[1] = p3.vertices[i+1];
                     t.triangle[2] = p3.vertices[i+2];
-                    t.material = p3.material;
                     t.state = p3.state;
                     t.tex1Name = p2.tex1Name;
                     t.tex2Name = p2.tex2Name;
@@ -1168,14 +1162,14 @@ void CEngine::ChangeSecondTexture(int objRank, const std::string& tex2Name)
     }
 }
 
-void CEngine::ChangeTextureMapping(int objRank, const Material& mat, int state,
+void CEngine::ChangeTextureMapping(int objRank, int state,
                                    const std::string& tex1Name, const std::string& tex2Name,
                                    EngineTextureMapping mode,
                                    float au, float bu, float av, float bv)
 {
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
-    EngineBaseObjDataTier* p4 = FindTriangles(objRank, mat, state, tex1Name, tex2Name);
+    EngineBaseObjDataTier* p4 = FindTriangles(objRank, state, tex1Name, tex2Name);
     if (p4 == nullptr)
         return;
 
@@ -1230,14 +1224,14 @@ void CEngine::ChangeTextureMapping(int objRank, const Material& mat, int state,
     UpdateStaticBuffer(*p4);
 }
 
-void CEngine::TrackTextureMapping(int objRank, const Material& mat, int state,
+void CEngine::TrackTextureMapping(int objRank, int state,
                                   const std::string& tex1Name, const std::string& tex2Name,
                                   EngineTextureMapping mode,
                                   float pos, float factor, float tl, float ts, float tt)
 {
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
-    EngineBaseObjDataTier* p4 = FindTriangles(objRank, mat, state, tex1Name, tex2Name);
+    EngineBaseObjDataTier* p4 = FindTriangles(objRank, state, tex1Name, tex2Name);
     if (p4 == nullptr)
         return;
 
@@ -3567,8 +3561,7 @@ void CEngine::Draw3DScene()
 
                 float dirty = ((p3.state & ENG_RSTATE_DUAL_BLACK) && m_dirty) ? 1.0 : 0.0;
                 objectRenderer->SetDirty(dirty);
-                auto color = p3.material.diffuse;
-                objectRenderer->SetColor({ color.r, color.g, color.b, 1.0 });
+                objectRenderer->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
                 objectRenderer->SetCullMode((p3.state& ENG_RSTATE_2FACE) == 0);
                 objectRenderer->DrawObject(p3.buffer);
             }
@@ -3589,7 +3582,7 @@ void CEngine::Draw3DScene()
 
     if (transparent)
     {
-        Color tColor = Color(68.0f / 255.0f, 68.0f / 255.0f, 68.0f / 255.0f, 68.0f / 255.0f);
+        Color tColor = Color(68.0f / 255.0f, 68.0f / 255.0f, 68.0f / 255.0f, 255.0f);
 
         for (int objRank = 0; objRank < static_cast<int>(m_objects.size()); objRank++)
         {
@@ -3635,8 +3628,7 @@ void CEngine::Draw3DScene()
 
                     float dirty = (p3.state & ENG_RSTATE_DUAL_BLACK) && m_dirty ? 1.0 : 0.0;
                     objectRenderer->SetDirty(dirty);
-                    auto color = p3.material.diffuse * tColor;
-                    objectRenderer->SetColor({ color.r, color.g, color.b, 1.0f });
+                    objectRenderer->SetColor(tColor);
                     objectRenderer->DrawObject(p3.buffer);
                 }
             }
@@ -4369,7 +4361,7 @@ void CEngine::DrawInterface()
                 {
                     EngineBaseObjDataTier& p3 = p2.next[l3];
 
-                    SetMaterial(p3.material);
+                    //SetMaterial(p3.material);
                     SetState(p3.state);
 
                     DrawObject(p3);
@@ -5412,18 +5404,13 @@ void CEngine::DrawTimer()
 
 void CEngine::AddBaseObjTriangles(int baseObjRank, const std::vector<Gfx::ModelTriangle>& triangles)
 {
-    std::vector<VertexTex2> vs(3, VertexTex2());
+    std::vector<Vertex3D> vs(3, Vertex3D{});
 
     for (const auto& triangle : triangles)
     {
         vs[0] = triangle.p1;
         vs[1] = triangle.p2;
         vs[2] = triangle.p3;
-
-        Material material;
-        material.ambient = triangle.ambient;
-        material.diffuse = triangle.diffuse;
-        material.specular = triangle.specular;
 
         int state = GetEngineState(triangle);
 
@@ -5437,7 +5424,7 @@ void CEngine::AddBaseObjTriangles(int baseObjRank, const std::vector<Gfx::ModelT
         else
             tex2Name = triangle.tex2Name;
 
-        AddBaseObjTriangles(baseObjRank, vs, material, state, tex1Name, tex2Name);
+        AddBaseObjTriangles(baseObjRank, vs, state, tex1Name, tex2Name);
     }
 }
 

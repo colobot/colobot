@@ -26,6 +26,7 @@
 
 
 #include <sstream>
+#include <glm/glm.hpp>
 
 
 // Graphics module namespace
@@ -44,6 +45,14 @@ struct Color
     //! Constructor; default values are (0,0,0,0) = black
     explicit Color(float aR = 0.0f, float aG = 0.0f, float aB = 0.0f, float aA = 0.0f)
      : r(aR), g(aG), b(aB), a(aA) {}
+
+    Color(const glm::vec4& color)
+        : r(color.r), g(color.g), b(color.b), a(color.a) {}
+
+    operator glm::vec4() const
+    {
+        return { r, g, b, a };
+    }
 
     inline Color Inverse() const
     {
@@ -111,6 +120,14 @@ struct IntColor
     //! Constructor; default values are (0,0,0,0) = black
     explicit IntColor(unsigned char aR = 0, unsigned char aG = 0, unsigned char aB = 0, unsigned char aA = 0)
         : r(aR), g(aG), b(aB), a(aA) {}
+
+    IntColor(const glm::u8vec4& color)
+        : r(color.r), g(color.g), b(color.b), a(color.a) {}
+
+    operator glm::u8vec4() const
+    {
+        return { r, g, b, a };
+    }
 };
 
 inline Color IntColorToColor(IntColor color)

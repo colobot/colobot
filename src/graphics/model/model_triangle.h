@@ -65,12 +65,6 @@ struct ModelTriangle
     Vertex3D  p2;
     //! 3rd vertex
     Vertex3D  p3;
-    //! Diffuse color
-    Color diffuse;
-    //! Ambient color
-    Color ambient;
-    //! Specular color
-    Color specular;
     //! Name of 1st texture
     std::string tex1Name;
     //! Name of 2nd texture

@@ -2011,10 +2011,6 @@ void COldObject::UpdateEnergyMapping()
 
     m_lastEnergy = GetEnergyLevel();
 
-    Gfx::Material mat;
-    mat.diffuse = Gfx::Color(1.0f, 1.0f, 1.0f);  // white
-    mat.ambient = Gfx::Color(0.5f, 0.5f, 0.5f);
-
     float a = 0.0f, b = 0.0f;
 
     if ( m_type == OBJECT_POWER  ||
@@ -2043,7 +2039,7 @@ void COldObject::UpdateEnergyMapping()
     std::string teamStr = StrUtils::ToString<int>(GetTeam());
     if(GetTeam() == 0) teamStr = "";
     m_engine->ChangeTextureMapping(m_objectPart[0].object,
-                                   mat, Gfx::ENG_RSTATE_PART3, "objects/lemt.png"+teamStr, "",
+                                   Gfx::ENG_RSTATE_PART3, "objects/lemt.png"+teamStr, "",
                                    Gfx::EngineTextureMapping::ONE_Y,
                                    au, bu, 1.0f, 0.0f);
 }

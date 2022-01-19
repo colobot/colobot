@@ -19,8 +19,6 @@
 
 #pragma once
 
-#include "graphics/core/material.h"
-
 #include "graphics/model/model_triangle.h"
 
 namespace Gfx
@@ -84,13 +82,11 @@ struct ModelHeaderV1AndV2
 struct ModelTriangleV1AndV2
 {
     //! 1st vertex
-    VertexTex2  p1;
+    Vertex3D  p1;
     //! 2nd vertex
-    VertexTex2  p2;
+    Vertex3D  p2;
     //! 3rd vertex
-    VertexTex2  p3;
-    //! Material
-    Material material;
+    Vertex3D  p3;
     //! Name of 1st texture
     std::string tex1Name;
     //! Name of 2nd texture
@@ -187,7 +183,6 @@ struct OldModelTriangleV1
     Vertex p1;
     Vertex p2;
     Vertex p3;
-    Material material;
     char texName[21] = {'\0'};
     float min = 0;
     float max = 0;
@@ -206,7 +201,6 @@ struct OldModelTriangleV2
     Vertex p1;
     Vertex p2;
     Vertex p3;
-    Material material;
     char texName[21] = {'\0'};
     float min = 0.0f;
     float max = 0.0f;
@@ -230,7 +224,6 @@ struct OldModelTriangleV3
     Vertex3D p1;
     Vertex3D p2;
     Vertex3D p3;
-    Material   material;
     char texName[21] = {'\0'};
     float min = 0.0f;
     float max = 0.0f;
