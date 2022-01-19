@@ -180,7 +180,7 @@ void COldModelManager::Mirror(std::vector<ModelTriangle>& triangles)
 {
     for (int i = 0; i < static_cast<int>( triangles.size() ); i++)
     {
-        VertexTex2  t = triangles[i].p1;
+        Vertex3D t = triangles[i].p1;
         triangles[i].p1 = triangles[i].p2;
         triangles[i].p2 = t;
 

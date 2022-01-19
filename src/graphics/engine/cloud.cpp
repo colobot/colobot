@@ -98,7 +98,7 @@ void CCloud::Draw()
     if (m_level == 0.0f) return;
     if (m_lines.empty()) return;
 
-    std::vector<VertexTex2> vertices((m_brickCount+2)*2, VertexTex2());
+    std::vector<Vertex3D> vertices((m_brickCount+2)*2, Vertex3D());
 
     float iDeep = m_engine->GetDeepView();
     float deep = (m_brickCount*m_brickSize)/2.0f;
@@ -147,17 +147,19 @@ void CCloud::Draw()
         glm::vec3 p{};
         glm::vec2 uv1, uv2;
 
+        glm::u8vec4 white(255);
+
         p.x = pos.x-size;
         p.z = pos.z+size;
         p.y = pos.y;
         AdjustLevel(p, eye, deep, uv1, uv2);
-        vertices[vertexIndex++] = VertexTex2{ p, n, uv1, uv2 };
+        vertices[vertexIndex++] = Vertex3D{ p, white, uv1, uv2, n };
 
         p.x = pos.x-size;
         p.z = pos.z-size;
         p.y = pos.y;
         AdjustLevel(p, eye, deep, uv1, uv2);
-        vertices[vertexIndex++] = VertexTex2{ p, n, uv1, uv2 };
+        vertices[vertexIndex++] = Vertex3D{ p, white, uv1, uv2, n };
 
         for (int j = 0; j < m_lines[i].len; j++)
         {
@@ -165,18 +167,18 @@ void CCloud::Draw()
             p.z = pos.z+size;
             p.y = pos.y;
             AdjustLevel(p, eye, deep, uv1, uv2);
-            vertices[vertexIndex++] = VertexTex2{ p, n, uv1, uv2 };
+            vertices[vertexIndex++] = Vertex3D{ p, white, uv1, uv2, n };
 
             p.x = pos.x+size;
             p.z = pos.z-size;
             p.y = pos.y;
             AdjustLevel(p, eye, deep, uv1, uv2);
-            vertices[vertexIndex++] = VertexTex2{ p, n, uv1, uv2 };
+            vertices[vertexIndex++] = Vertex3D{ p, white, uv1, uv2, n };
 
             pos.x += size*2.0f;
         }
 
-        device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, &vertices[0], vertexIndex);
+        device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertices.data(), vertexIndex);
         m_engine->AddStatisticTriangle(vertexIndex - 2);
     }
 

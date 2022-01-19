@@ -513,12 +513,12 @@ glm::vec3 CTerrain::GetVector(int x, int y)
   |  \|  \|
   +---f---e--> x
 \endverbatim */
-VertexTex2 CTerrain::GetVertex(int x, int y, int step)
+Vertex3D CTerrain::GetVertex(int x, int y, int step)
 {
-    VertexTex2 v;
+    Vertex3D v;
 
     glm::vec3 o = GetVector(x, y);
-    v.coord = o;
+    v.position = o;
 
     glm::vec3 a = GetVector(x-step, y     );
     glm::vec3 b = GetVector(x-step, y+step);
@@ -553,10 +553,10 @@ VertexTex2 CTerrain::GetVertex(int x, int y, int step)
     int brick = m_brickCount/m_textureSubdivCount;
     glm::vec3 oo = GetVector((x/brick)*brick, (y/brick)*brick);
     o  = GetVector(x, y);
-    v.texCoord.x =        (o.x-oo.x)*m_textureScale*m_textureSubdivCount;
-    v.texCoord.y = 1.0f - (o.z-oo.z)*m_textureScale*m_textureSubdivCount;
+    v.uv.x =        (o.x-oo.x)*m_textureScale*m_textureSubdivCount;
+    v.uv.y = 1.0f - (o.z-oo.z)*m_textureScale*m_textureSubdivCount;
 
-    v.texCoord2 = v.texCoord;
+    v.uv2 = v.uv;
 
     return v;
 }
@@ -598,7 +598,7 @@ bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank)
 
     int brick = m_brickCount/m_textureSubdivCount;
 
-    VertexTex2 o = GetVertex(ox*m_brickCount+m_brickCount/2, oy*m_brickCount+m_brickCount/2, step);
+    Vertex3D o = GetVertex(ox*m_brickCount+m_brickCount/2, oy*m_brickCount+m_brickCount/2, step);
     int total = ((brick/step)+1)*2;
 
     float pixel = 1.0f/256.0f;  // 1 pixel cover (*)
@@ -643,10 +643,10 @@ bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank)
 
                 for (int x = 0; x <= brick; x += step)
                 {
-                    VertexTex2 p1 = GetVertex(ox*m_brickCount+mx*brick+x, oy*m_brickCount+my*brick+y+0   , step);
-                    VertexTex2 p2 = GetVertex(ox*m_brickCount+mx*brick+x, oy*m_brickCount+my*brick+y+step, step);
-                    p1.coord.x -= o.coord.x;  p1.coord.z -= o.coord.z;
-                    p2.coord.x -= o.coord.x;  p2.coord.z -= o.coord.z;
+                    Vertex3D p1 = GetVertex(ox*m_brickCount+mx*brick+x, oy*m_brickCount+my*brick+y+0   , step);
+                    Vertex3D p2 = GetVertex(ox*m_brickCount+mx*brick+x, oy*m_brickCount+my*brick+y+step, step);
+                    p1.position.x -= o.position.x;  p1.position.z -= o.position.z;
+                    p2.position.x -= o.position.x;  p2.position.z -= o.position.z;
 
                     // TODO: Find portable solution
                     //float offset = 0.5f / 256.0f;      // Direct3D
@@ -654,55 +654,55 @@ bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank)
 
                     if (x == 0)
                     {
-                        p1.texCoord.x = 0.0f + offset;
-                        p2.texCoord.x = 0.0f + offset;
+                        p1.uv.x = 0.0f + offset;
+                        p2.uv.x = 0.0f + offset;
                     }
                     if (x == brick)
                     {
-                        p1.texCoord.x = 1.0f - offset;
-                        p2.texCoord.x = 1.0f - offset;
+                        p1.uv.x = 1.0f - offset;
+                        p2.uv.x = 1.0f - offset;
                     }
                     if (y == 0)
-                        p1.texCoord.y = 1.0f - offset;
+                        p1.uv.y = 1.0f - offset;
 
                     if (y == brick - step)
-                        p2.texCoord.y = 0.0f + offset;
+                        p2.uv.y = 0.0f + offset;
 
                     if (m_useMaterials)
                     {
-                        p1.texCoord.x /= m_textureSubdivCount;  // 0..1 -> 0..0.25
-                        p1.texCoord.y /= m_textureSubdivCount;
-                        p2.texCoord.x /= m_textureSubdivCount;
-                        p2.texCoord.y /= m_textureSubdivCount;
+                        p1.uv.x /= m_textureSubdivCount;  // 0..1 -> 0..0.25
+                        p1.uv.y /= m_textureSubdivCount;
+                        p2.uv.x /= m_textureSubdivCount;
+                        p2.uv.y /= m_textureSubdivCount;
 
                         if (x == 0)
                         {
-                            p1.texCoord.x = 0.0f+dp;
-                            p2.texCoord.x = 0.0f+dp;
+                            p1.uv.x = 0.0f+dp;
+                            p2.uv.x = 0.0f+dp;
                         }
                         if (x == brick)
                         {
-                            p1.texCoord.x = (1.0f/m_textureSubdivCount)-dp;
-                            p2.texCoord.x = (1.0f/m_textureSubdivCount)-dp;
+                            p1.uv.x = (1.0f/m_textureSubdivCount)-dp;
+                            p2.uv.x = (1.0f/m_textureSubdivCount)-dp;
                         }
                         if (y == 0)
-                            p1.texCoord.y = (1.0f/m_textureSubdivCount)-dp;
+                            p1.uv.y = (1.0f/m_textureSubdivCount)-dp;
 
                         if (y == brick - step)
-                            p2.texCoord.y = 0.0f+dp;
+                            p2.uv.y = 0.0f+dp;
 
-                        p1.texCoord.x += uv.x;
-                        p1.texCoord.y += uv.y;
-                        p2.texCoord.x += uv.x;
-                        p2.texCoord.y += uv.y;
+                        p1.uv.x += uv.x;
+                        p1.uv.y += uv.y;
+                        p2.uv.x += uv.x;
+                        p2.uv.y += uv.y;
                     }
 
                     int xx = mx*(m_brickCount/m_textureSubdivCount) + x;
                     int yy = my*(m_brickCount/m_textureSubdivCount) + y;
-                    p1.texCoord2.x = (static_cast<float>(ox%5)*m_brickCount+xx+0.0f)/(m_brickCount*5);
-                    p1.texCoord2.y = (static_cast<float>(oy%5)*m_brickCount+yy+0.0f)/(m_brickCount*5);
-                    p2.texCoord2.x = (static_cast<float>(ox%5)*m_brickCount+xx+0.0f)/(m_brickCount*5);
-                    p2.texCoord2.y = (static_cast<float>(oy%5)*m_brickCount+yy+1.0f)/(m_brickCount*5);
+                    p1.uv2.x = (static_cast<float>(ox%5)*m_brickCount+xx+0.0f)/(m_brickCount*5);
+                    p1.uv2.y = (static_cast<float>(oy%5)*m_brickCount+yy+0.0f)/(m_brickCount*5);
+                    p2.uv2.x = (static_cast<float>(ox%5)*m_brickCount+xx+0.0f)/(m_brickCount*5);
+                    p2.uv2.y = (static_cast<float>(oy%5)*m_brickCount+yy+1.0f)/(m_brickCount*5);
 
 // Correction for 1 pixel cover
 // There is 1 pixel cover around each of the 16 surfaces:
@@ -717,10 +717,10 @@ bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank)
 // The uv coordinates used for texturing are between min and max (instead of 0 and 1)
 // This allows to exclude the pixels situated in a margin of a pixel around the surface
 
-                    p1.texCoord2.x = (p1.texCoord2.x+pixel)*(1.0f-pixel)/(1.0f+pixel);
-                    p1.texCoord2.y = (p1.texCoord2.y+pixel)*(1.0f-pixel)/(1.0f+pixel);
-                    p2.texCoord2.x = (p2.texCoord2.x+pixel)*(1.0f-pixel)/(1.0f+pixel);
-                    p2.texCoord2.y = (p2.texCoord2.y+pixel)*(1.0f-pixel)/(1.0f+pixel);
+                    p1.uv2.x = (p1.uv2.x+pixel)*(1.0f-pixel)/(1.0f+pixel);
+                    p1.uv2.y = (p1.uv2.y+pixel)*(1.0f-pixel)/(1.0f+pixel);
+                    p2.uv2.x = (p2.uv2.x+pixel)*(1.0f-pixel)/(1.0f+pixel);
+                    p2.uv2.y = (p2.uv2.y+pixel)*(1.0f-pixel)/(1.0f+pixel);
 
 
                     buffer.vertices.push_back(p1);
@@ -733,8 +733,8 @@ bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank)
     }
 
     glm::mat4 transform = glm::mat4(1.0f);
-    transform[3][0] = o.coord.x;
-    transform[3][2] = o.coord.z;
+    transform[3][0] = o.position.x;
+    transform[3][2] = o.position.z;
     m_engine->SetObjectTransform(objRank, transform);
 
     return true;

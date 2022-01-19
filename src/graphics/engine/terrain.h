@@ -40,7 +40,6 @@ namespace Gfx
 
 class CEngine;
 class CWater;
-struct Material;
 
 
 //! Limit of slope considered a flat piece of land
@@ -254,7 +253,7 @@ protected:
     //! Calculates a vector of the terrain
     glm::vec3   GetVector(int x, int y);
     //! Calculates a vertex of the terrain
-    VertexTex2  GetVertex(int x, int y, int step);
+    Vertex3D    GetVertex(int x, int y, int step);
     //! Creates all objects of a mosaic
     bool        CreateMosaic(int ox, int oy, int step, int objRank);
     //! Creates all objects in a mesh square ground

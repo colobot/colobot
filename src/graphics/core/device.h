@@ -53,7 +53,7 @@ struct Light;
 struct Material;
 struct Vertex;
 struct VertexCol;
-struct VertexTex2;
+struct Vertex3D;
 
 /**
  * \struct DeviceConfig
@@ -492,9 +492,6 @@ public:
     //! Renders primitive composed of vertices with single texture
     virtual void DrawPrimitive(PrimitiveType type, const Vertex *vertices    , int vertexCount,
                                Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) = 0;
-    //! Renders primitive composed of vertices with multitexturing (2 textures)
-    virtual void DrawPrimitive(PrimitiveType type, const VertexTex2 *vertices, int vertexCount,
-                               Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) = 0;
     //! Renders primitive composed of vertices with solid color
     virtual void DrawPrimitive(PrimitiveType type, const VertexCol *vertices , int vertexCount) = 0;
     //! Renders 3D primitive
@@ -502,10 +499,6 @@ public:
 
     //! Renders primitives composed of lists of vertices with single texture
     virtual void DrawPrimitives(PrimitiveType type, const Vertex *vertices,
-        int first[], int count[], int drawCount,
-        Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) = 0;
-    //! Renders primitives composed of lists of vertices with multitexturing (2 textures)
-    virtual void DrawPrimitives(PrimitiveType type, const VertexTex2 *vertices,
         int first[], int count[], int drawCount,
         Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) = 0;
     //! Renders primitives composed of lists of vertices with solid color

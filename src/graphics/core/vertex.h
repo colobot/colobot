@@ -81,32 +81,6 @@ struct VertexCol
 };
 
 /**
- * \struct VertexTex2
- * \brief Vertex with secondary texture coordinates
- *
- * In addition to fields from Vector, it contains
- * secondary texture coordinates (u2, v2) as glm::vec2
- */
-struct VertexTex2
-{
-    static constexpr VertexType VERTEX_TYPE = VERTEX_TYPE_TEX2;
-
-    glm::vec3 coord = { 0, 0, 0 };
-    glm::vec3 normal = { 0, 0, 0 };
-    glm::vec2 texCoord = { 0, 0 };
-    glm::vec2 texCoord2 = { 0, 0 };
-
-    //! Sets the fields from Vertex with texCoord2 = (0,0)
-    void FromVertex(const Vertex &v)
-    {
-        coord = v.coord;
-        normal = v.normal;
-        texCoord = v.texCoord;
-        texCoord2 = { 0, 0 };
-    }
-};
-
-/**
  * \struct Vertex2D
  * \brief 2D vertex for interface rendering, contains UV and color
  */
@@ -131,6 +105,17 @@ struct Vertex3D
 
     Vertex3D() = default;
 
+    Vertex3D(const glm::vec3& position,
+        glm::u8vec4 color = { 255, 255, 255, 255 },
+        glm::vec2 uv = { 0.0f, 0.0f },
+        glm::vec2 uv2 = { 0.0f, 0.0f },
+        glm::vec3 normal = { 0.0f, 0.0f, 1.0f })
+        : position(position)
+        , color(color)
+        , uv(uv)
+        , uv2(uv2)
+        , normal(normal) {}
+
     Vertex3D(const Vertex& vertex)
         : position(vertex.coord)
         , uv(vertex.texCoord)
@@ -139,23 +124,9 @@ struct Vertex3D
 
     }
 
-    Vertex3D(const VertexTex2& vertex)
-        : position(vertex.coord)
-        , uv(vertex.texCoord)
-        , uv2(vertex.texCoord2)
-        , normal(vertex.normal)
-    {
-
-    }
-
     operator Vertex() const
     {
         return Vertex{ position, normal, uv };
-    }
-
-    operator VertexTex2() const
-    {
-        return VertexTex2{ position, normal, uv, uv2 };
     }
 };
 

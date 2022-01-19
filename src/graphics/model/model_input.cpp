@@ -57,12 +57,12 @@ namespace ModelInput
     std::vector<ModelTriangle> ReadOldModelV3(std::istream &stream, int totalTriangles);
 
     Vertex ReadBinaryVertex(std::istream& stream);
-    VertexTex2 ReadBinaryVertexTex2(std::istream& stream);
+    Vertex3D ReadBinaryVertexTex2(std::istream& stream);
     Material ReadBinaryMaterial(std::istream& stream);
 
     std::string ReadLineString(std::istream& stream, const std::string& expectedPrefix);
     void ReadValuePrefix(std::istream& stream, const std::string& expectedPrefix);
-    VertexTex2 ParseVertexTex2(const std::string& text);
+    Vertex3D ParseVertexTex2(const std::string& text);
     Material ParseMaterial(const std::string& text);
     glm::vec3 ParseVector(const std::string& text);
     ModelCrashSphere ParseCrashSphere(const std::string& text);
@@ -656,23 +656,23 @@ Vertex ModelInput::ReadBinaryVertex(std::istream& stream)
     return vertex;
 }
 
-VertexTex2 ModelInput::ReadBinaryVertexTex2(std::istream& stream)
+Vertex3D ModelInput::ReadBinaryVertexTex2(std::istream& stream)
 {
-    VertexTex2 vertex;
+    Vertex3D vertex;
 
-    vertex.coord.x     = ReadBinaryFloat(stream);
-    vertex.coord.y     = ReadBinaryFloat(stream);
-    vertex.coord.z     = ReadBinaryFloat(stream);
+    vertex.position.x  = ReadBinaryFloat(stream);
+    vertex.position.y  = ReadBinaryFloat(stream);
+    vertex.position.z  = ReadBinaryFloat(stream);
 
     vertex.normal.x    = ReadBinaryFloat(stream);
     vertex.normal.y    = ReadBinaryFloat(stream);
     vertex.normal.z    = ReadBinaryFloat(stream);
 
-    vertex.texCoord.x  = ReadBinaryFloat(stream);
-    vertex.texCoord.y  = ReadBinaryFloat(stream);
+    vertex.uv.x        = ReadBinaryFloat(stream);
+    vertex.uv.y        = ReadBinaryFloat(stream);
 
-    vertex.texCoord2.x = ReadBinaryFloat(stream);
-    vertex.texCoord2.y = ReadBinaryFloat(stream);
+    vertex.uv2.x       = ReadBinaryFloat(stream);
+    vertex.uv2.y       = ReadBinaryFloat(stream);
 
     return vertex;
 }
@@ -744,24 +744,24 @@ void ModelInput::ReadValuePrefix(std::istream& stream, const std::string& expect
         throw CModelIOException(std::string("Unexpected prefix: '") + prefix + "', expected was: '" + expectedPrefix + "'");
 }
 
-VertexTex2 ModelInput::ParseVertexTex2(const std::string& text)
+Vertex3D ModelInput::ParseVertexTex2(const std::string& text)
 {
-    VertexTex2 vertex;
+    Vertex3D vertex;
 
     std::stringstream stream;
     stream.str(text);
 
     ReadValuePrefix(stream, "c");
-    stream >> vertex.coord.x >> vertex.coord.y >> vertex.coord.z;
+    stream >> vertex.position.x >> vertex.position.y >> vertex.position.z;
 
     ReadValuePrefix(stream, "n");
     stream >> vertex.normal.x >> vertex.normal.y >> vertex.normal.z;
 
     ReadValuePrefix(stream, "t1");
-    stream >> vertex.texCoord.x >> vertex.texCoord.y;
+    stream >> vertex.uv.x >> vertex.uv.y;
 
     ReadValuePrefix(stream, "t2");
-    stream >> vertex.texCoord2.x >> vertex.texCoord2.y;
+    stream >> vertex.uv2.x >> vertex.uv2.y;
 
     return vertex;
 }
