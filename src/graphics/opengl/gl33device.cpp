@@ -33,6 +33,7 @@
 #include "graphics/opengl/glframebuffer.h"
 #include "graphics/opengl/gl33renderers.h"
 #include "graphics/opengl/gl33objectrenderer.h"
+#include "graphics/opengl/gl33particlerenderer.h"
 
 #include "math/geometry.h"
 
@@ -434,6 +435,7 @@ bool CGL33Device::Create()
     m_uiRenderer = std::make_unique<CGL33UIRenderer>(this);
     m_terrainRenderer = std::make_unique<CGL33TerrainRenderer>(this);
     m_objectRenderer = std::make_unique<CGL33ObjectRenderer>(this);
+    m_particleRenderer = std::make_unique<CGL33ParticleRenderer>(this);
     m_shadowRenderer = std::make_unique<CGL33ShadowRenderer>(this);
 
     glUseProgram(m_normalProgram);
@@ -501,6 +503,9 @@ void CGL33Device::Destroy()
 
     m_uiRenderer = nullptr;
     m_terrainRenderer = nullptr;
+    m_objectRenderer = nullptr;
+    m_particleRenderer = nullptr;
+    m_shadowRenderer = nullptr;
 }
 
 void CGL33Device::ConfigChanged(const DeviceConfig& newConfig)
@@ -559,6 +564,11 @@ CTerrainRenderer* CGL33Device::GetTerrainRenderer()
 CObjectRenderer* CGL33Device::GetObjectRenderer()
 {
     return m_objectRenderer.get();
+}
+
+CParticleRenderer* CGL33Device::GetParticleRenderer()
+{
+    return m_particleRenderer.get();
 }
 
 CShadowRenderer* CGL33Device::GetShadowRenderer()

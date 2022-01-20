@@ -3672,9 +3672,16 @@ void CEngine::Draw3DScene()
     }
     m_displayGoto.clear();
 
+    auto particleRenderer = m_device->GetParticleRenderer();
+    particleRenderer->Begin();
+    particleRenderer->SetProjectionMatrix(m_matProj);
+    particleRenderer->SetViewMatrix(m_matView);
+
     CProfiler::StartPerformanceCounter(PCNT_RENDER_PARTICLE_WORLD);
     m_particle->DrawParticle(SH_WORLD); // draws the particles of the 3D world
     CProfiler::StopPerformanceCounter(PCNT_RENDER_PARTICLE_WORLD);
+
+    particleRenderer->End();
 
     m_device->SetRenderState(RENDER_STATE_LIGHTING, true);
 
@@ -4293,9 +4300,17 @@ void CEngine::DrawInterface()
 
     if (!m_screenshotMode && m_renderInterface)
     {
+        auto particleRenderer = m_device->GetParticleRenderer();
+        particleRenderer->Begin();
+        particleRenderer->SetProjectionMatrix(m_matProjInterface);
+        particleRenderer->SetViewMatrix(m_matViewInterface);
+        particleRenderer->SetModelMatrix(m_matWorldInterface);
+
         CProfiler::StartPerformanceCounter(PCNT_RENDER_PARTICLE_IFACE);
         m_particle->DrawParticle(SH_INTERFACE);  // draws the particles of the interface
         CProfiler::StopPerformanceCounter(PCNT_RENDER_PARTICLE_IFACE);
+
+        particleRenderer->End();
     }
 
     // 3D objects drawn in front of interface
@@ -4376,7 +4391,14 @@ void CEngine::DrawInterface()
 
         renderer->End();
 
+        auto particleRenderer = m_device->GetParticleRenderer();
+        particleRenderer->Begin();
+        particleRenderer->SetProjectionMatrix(m_matProj);
+        particleRenderer->SetViewMatrix(m_matView);
+
         m_particle->DrawParticle(SH_FRONT);  // draws the particles of the 3D world
+
+        particleRenderer->End();
 
         m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, false);
         m_device->SetRenderState(RENDER_STATE_LIGHTING, false);

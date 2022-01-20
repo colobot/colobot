@@ -183,6 +183,38 @@ public:
 };
 
 /**
+ * \class CParticleRenderer
+ * \brief Abstract interface for particle renderers
+ */
+class CParticleRenderer : public CRenderer
+{
+public:
+    virtual ~CParticleRenderer() { }
+
+    virtual void Begin() = 0;
+
+    virtual void End() = 0;
+
+    //! Sets projection matrix
+    virtual void SetProjectionMatrix(const glm::mat4& matrix) = 0;
+    //! Sets view matrix
+    virtual void SetViewMatrix(const glm::mat4& matrix) = 0;
+    //! Sets model matrix
+    virtual void SetModelMatrix(const glm::mat4& matrix) = 0;
+
+    //! Sets color
+    virtual void SetColor(const glm::vec4& color) = 0;
+    //! Sets texture
+    virtual void SetTexture(const Texture& texture) = 0;
+
+    //! Sets transparency mode
+    virtual void SetTransparency(TransparencyMode mode) = 0;
+
+    //! Draws particles
+    virtual void DrawParticle(PrimitiveType type, int count, const Vertex3D* vertices) = 0;
+};
+
+/**
  * \class CShadowRenderer
  * \brief Abstract interface for shadow renderers
  */

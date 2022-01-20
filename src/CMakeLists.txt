@@ -147,6 +147,8 @@ add_library(colobotbase STATIC
     graphics/opengl/gl33renderers.h
     graphics/opengl/gl33objectrenderer.cpp
     graphics/opengl/gl33objectrenderer.h
+    graphics/opengl/gl33particlerenderer.cpp
+    graphics/opengl/gl33particlerenderer.h
     graphics/opengl/glframebuffer.cpp
     graphics/opengl/glframebuffer.h
     graphics/opengl/glutil.cpp

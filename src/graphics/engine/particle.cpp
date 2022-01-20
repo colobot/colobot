@@ -25,6 +25,7 @@
 #include "common/logger.h"
 
 #include "graphics/core/device.h"
+#include "graphics/core/renderers.h"
 
 #include "graphics/engine/engine.h"
 #include "graphics/engine/terrain.h"
@@ -84,6 +85,7 @@ CParticle::~CParticle()
 void CParticle::SetDevice(CDevice* device)
 {
     m_device = device;
+    m_renderer = device->GetParticleRenderer();
 }
 
 void CParticle::FlushParticle()
@@ -2505,7 +2507,7 @@ void CParticle::TrackDraw(int i, ParticleType type)
     }
 
     glm::mat4 mat = glm::mat4(1.0f);
-    m_device->SetTransform(TRANSFORM_WORLD, mat);
+    m_renderer->SetModelMatrix(mat);
 
     glm::vec2 texInf{ 0, 0 }, texSup{ 0, 0 };
 
@@ -2601,7 +2603,7 @@ void CParticle::TrackDraw(int i, ParticleType type)
     glm::vec3 eye = m_engine->GetEyePt();
     float a = Math::RotateAngle(eye.x-p1.x, eye.z-p1.z);
 
-    Vertex vertex[4];
+    Vertex3D vertex[4];
     glm::vec3 corner[4];
 
     for (int counter = 0; counter < m_track[i].posUsed-1; counter++)
@@ -2640,22 +2642,24 @@ void CParticle::TrackDraw(int i, ParticleType type)
         corner[3].y = p2.y;
         corner[3].z = rot.y;
 
+        glm::u8vec4 white(255);
+
         if (p2.y < p1.y)
         {
-            vertex[0] = { corner[1], n, { texSup.x, texSup.y } };
-            vertex[1] = { corner[0], n, { texInf.x, texSup.y } };
-            vertex[2] = { corner[3], n, { texSup.x, texInf.y } };
-            vertex[3] = { corner[2], n, { texInf.x, texInf.y } };
+            vertex[0] = { corner[1], white, { texSup.x, texSup.y } };
+            vertex[1] = { corner[0], white, { texInf.x, texSup.y } };
+            vertex[2] = { corner[3], white, { texSup.x, texInf.y } };
+            vertex[3] = { corner[2], white, { texInf.x, texInf.y } };
         }
         else
         {
-            vertex[0] = { corner[0], n, { texSup.x, texSup.y } };
-            vertex[1] = { corner[1], n, { texInf.x, texSup.y } };
-            vertex[2] = { corner[2], n, { texSup.x, texInf.y } };
-            vertex[3] = { corner[3], n, { texInf.x, texInf.y } };
+            vertex[0] = { corner[0], white, { texSup.x, texSup.y } };
+            vertex[1] = { corner[1], white, { texInf.x, texSup.y } };
+            vertex[2] = { corner[2], white, { texSup.x, texInf.y } };
+            vertex[3] = { corner[3], white, { texInf.x, texInf.y } };
         }
 
-        m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
+        m_renderer->DrawParticle(PrimitiveType::TRIANGLE_STRIP, 4, vertex);
         m_engine->AddStatisticTriangle(2);
 
         if (f2 < 0.0f) break;
@@ -2685,9 +2689,9 @@ void CParticle::DrawParticleTriangle(int i)
     mat[3][0] = pos.x;
     mat[3][1] = pos.y;
     mat[3][2] = pos.z;
-    m_device->SetTransform(TRANSFORM_WORLD, mat);
+    m_renderer->SetModelMatrix(mat);
 
-    m_device->DrawPrimitive(PrimitiveType::TRIANGLES, m_triangle[i].triangle, 3);
+    m_renderer->DrawParticle(PrimitiveType::TRIANGLES, 3, m_triangle[i].triangle);
     m_engine->AddStatisticTriangle(1);
 }
 
@@ -2700,7 +2704,7 @@ void CParticle::DrawParticleNorm(int i)
 
 
     glm::vec3 corner[4];
-    Vertex vertex[4];
+    Vertex3D vertex[4];
 
     if (m_particle[i].sheet == SH_INTERFACE)
     {
@@ -2728,12 +2732,14 @@ void CParticle::DrawParticleNorm(int i)
         corner[3].y = pos.y-dim.y;
         corner[3].z = 0.0f;
 
-        vertex[0] = { corner[1], n, { m_particle[i].texSup.x, m_particle[i].texSup.y } };
-        vertex[1] = { corner[0], n, { m_particle[i].texInf.x, m_particle[i].texSup.y } };
-        vertex[2] = { corner[3], n, { m_particle[i].texSup.x, m_particle[i].texInf.y } };
-        vertex[3] = { corner[2], n, { m_particle[i].texInf.x, m_particle[i].texInf.y } };
+        glm::u8vec4 white(255);
 
-        m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
+        vertex[0] = { corner[1], white, { m_particle[i].texSup.x, m_particle[i].texSup.y } };
+        vertex[1] = { corner[0], white, { m_particle[i].texInf.x, m_particle[i].texSup.y } };
+        vertex[2] = { corner[3], white, { m_particle[i].texSup.x, m_particle[i].texInf.y } };
+        vertex[3] = { corner[2], white, { m_particle[i].texInf.x, m_particle[i].texInf.y } };
+
+        m_renderer->DrawParticle(PrimitiveType::TRIANGLE_STRIP, 4, vertex);
         m_engine->AddStatisticTriangle(2);
     }
     else
@@ -2755,7 +2761,7 @@ void CParticle::DrawParticleNorm(int i)
         mat[3][0] = pos.x;
         mat[3][1] = pos.y;
         mat[3][2] = pos.z;
-        m_device->SetTransform(TRANSFORM_WORLD, mat);
+        m_renderer->SetModelMatrix(mat);
 
         glm::vec3 n(0.0f, 0.0f, -1.0f);
 
@@ -2779,12 +2785,14 @@ void CParticle::DrawParticleNorm(int i)
         corner[3].y = -dim.y;
         corner[3].z =  0.0f;
 
-        vertex[0] = { corner[1], n, { m_particle[i].texSup.x, m_particle[i].texSup.y } };
-        vertex[1] = { corner[0], n, { m_particle[i].texInf.x, m_particle[i].texSup.y } };
-        vertex[2] = { corner[3], n, { m_particle[i].texSup.x, m_particle[i].texInf.y } };
-        vertex[3] = { corner[2], n, { m_particle[i].texInf.x, m_particle[i].texInf.y } };
+        glm::u8vec4 color = ColorToIntColor(m_particle[i].color);
 
-        m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4, m_particle[i].color);
+        vertex[0] = { corner[1], color, { m_particle[i].texSup.x, m_particle[i].texSup.y } };
+        vertex[1] = { corner[0], color, { m_particle[i].texInf.x, m_particle[i].texSup.y } };
+        vertex[2] = { corner[3], color, { m_particle[i].texSup.x, m_particle[i].texInf.y } };
+        vertex[3] = { corner[2], color, { m_particle[i].texInf.x, m_particle[i].texInf.y } };
+
+        m_renderer->DrawParticle(PrimitiveType::TRIANGLE_STRIP, 4, vertex);
         m_engine->AddStatisticTriangle(2);
     }
 }
@@ -2817,7 +2825,7 @@ void CParticle::DrawParticleFlat(int i)
     mat[3][0] = pos.x;
     mat[3][1] = pos.y;
     mat[3][2] = pos.z;
-    m_device->SetTransform(TRANSFORM_WORLD, mat);
+    m_renderer->SetModelMatrix(mat);
 
     glm::vec3 n(0.0f, 0.0f, -1.0f);
 
@@ -2842,13 +2850,15 @@ void CParticle::DrawParticleFlat(int i)
     corner[3].y = -dim.y;
     corner[3].z =  0.0f;
 
-    Vertex vertex[4];
-    vertex[0] = { corner[1], n, { m_particle[i].texSup.x, m_particle[i].texSup.y } };
-    vertex[1] = { corner[0], n, { m_particle[i].texInf.x, m_particle[i].texSup.y } };
-    vertex[2] = { corner[3], n, { m_particle[i].texSup.x, m_particle[i].texInf.y } };
-    vertex[3] = { corner[2], n, { m_particle[i].texInf.x, m_particle[i].texInf.y } };
+    glm::u8vec4 white(255);
 
-    m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
+    Vertex3D vertex[4];
+    vertex[0] = { corner[1], white, { m_particle[i].texSup.x, m_particle[i].texSup.y } };
+    vertex[1] = { corner[0], white, { m_particle[i].texInf.x, m_particle[i].texSup.y } };
+    vertex[2] = { corner[3], white, { m_particle[i].texSup.x, m_particle[i].texInf.y } };
+    vertex[3] = { corner[2], white, { m_particle[i].texInf.x, m_particle[i].texInf.y } };
+
+    m_renderer->DrawParticle(PrimitiveType::TRIANGLE_STRIP, 4, vertex);
     m_engine->AddStatisticTriangle(2);
 }
 
@@ -2906,9 +2916,7 @@ void CParticle::DrawParticleFog(int i)
     mat[3][0] = pos.x;
     mat[3][1] = pos.y;
     mat[3][2] = pos.z;
-    m_device->SetTransform(TRANSFORM_WORLD, mat);
-
-    glm::vec3 n(0.0f, 0.0f, -1.0f);
+    m_renderer->SetModelMatrix(mat);
 
     glm::vec3 corner[4];
 
@@ -2928,14 +2936,16 @@ void CParticle::DrawParticleFog(int i)
     corner[3].y = -dim.y;
     corner[3].z =  0.0f;
 
-    Vertex vertex[4];
+    glm::u8vec4 white(255);
 
-    vertex[0] = { corner[1], n, { m_particle[i].texSup.x, m_particle[i].texSup.y } };
-    vertex[1] = { corner[0], n, { m_particle[i].texInf.x, m_particle[i].texSup.y } };
-    vertex[2] = { corner[3], n, { m_particle[i].texSup.x, m_particle[i].texInf.y } };
-    vertex[3] = { corner[2], n, { m_particle[i].texInf.x, m_particle[i].texInf.y } };
+    Vertex3D vertex[4];
 
-    m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
+    vertex[0] = { corner[1], white, { m_particle[i].texSup.x, m_particle[i].texSup.y } };
+    vertex[1] = { corner[0], white, { m_particle[i].texInf.x, m_particle[i].texSup.y } };
+    vertex[2] = { corner[3], white, { m_particle[i].texSup.x, m_particle[i].texInf.y } };
+    vertex[3] = { corner[2], white, { m_particle[i].texInf.x, m_particle[i].texInf.y } };
+
+    m_renderer->DrawParticle(PrimitiveType::TRIANGLE_STRIP, 4, vertex);
     m_engine->AddStatisticTriangle(2);
 }
 
@@ -2967,7 +2977,7 @@ void CParticle::DrawParticleRay(int i)
     mat[3][0] = pos.x;
     mat[3][1] = pos.y;
     mat[3][2] = pos.z;
-    m_device->SetTransform(TRANSFORM_WORLD, mat);
+    m_renderer->SetModelMatrix(mat);
 
     glm::vec3 n(0.0f, 0.0f, left ? 1.0f : -1.0f);
 
@@ -3056,7 +3066,9 @@ void CParticle::DrawParticleRay(int i)
     corner[2].z = (Math::Rand()-0.5f)*vario1;
     corner[3].z = (Math::Rand()-0.5f)*vario1;
 
-    Vertex vertex[4];
+    Vertex3D vertex[4];
+
+    glm::u8vec4 white(255);
 
     for (int rank = 0; rank < step; rank++)
     {
@@ -3084,12 +3096,12 @@ void CParticle::DrawParticleRay(int i)
             if (r % 4 < 2)
                 Math::Swap(texInf.y, texSup.y);
 
-            vertex[0] = { corner[1], n, { texSup.x, texSup.y } };
-            vertex[1] = { corner[0], n, { texInf.x, texSup.y } };
-            vertex[2] = { corner[3], n, { texSup.x, texInf.y } };
-            vertex[3] = { corner[2], n, { texInf.x, texInf.y } };
+            vertex[0] = { corner[1], white, { texSup.x, texSup.y } };
+            vertex[1] = { corner[0], white, { texInf.x, texSup.y } };
+            vertex[2] = { corner[3], white, { texSup.x, texInf.y } };
+            vertex[3] = { corner[2], white, { texInf.x, texInf.y } };
 
-            m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
+            m_renderer->DrawParticle(PrimitiveType::TRIANGLE_STRIP, 4, vertex);
             m_engine->AddStatisticTriangle(2);
         }
         adv += dim.x*2.0f;
@@ -3102,8 +3114,8 @@ void CParticle::DrawParticleSphere(int i)
 
     if (zoom == 0.0f) return;
 
-    m_engine->SetState(ENG_RSTATE_TTEXTURE_BLACK | ENG_RSTATE_2FACE | ENG_RSTATE_WRAP,
-                       IntensityToColor(m_particle[i].intensity));
+    m_renderer->SetTransparency(TransparencyMode::BLACK);
+    m_renderer->SetColor(IntensityToColor(m_particle[i].intensity));
 
     glm::mat4 mat = glm::mat4(1.0f);
     mat[0][0] = zoom;
@@ -3124,7 +3136,7 @@ void CParticle::DrawParticleSphere(int i)
         mat = mat * rot;
     }
 
-    m_device->SetTransform(TRANSFORM_WORLD, mat);
+    m_renderer->SetModelMatrix(mat);
 
     glm::vec2 ts, ti;
     ts.x = m_particle[i].texSup.x;
@@ -3151,7 +3163,9 @@ void CParticle::DrawParticleSphere(int i)
     float deltaRingAngle = Math::PI/numRings;
     float deltaSegAngle  = 2.0f*Math::PI/numSegments;
 
-    Vertex vertex[2*16*(16+1)];
+    std::vector<Vertex3D> vertex(2*16*(16+1));
+
+    glm::u8vec4 white(255);
 
     // Generate the group of rings for the sphere.
     int j = 0;
@@ -3183,15 +3197,16 @@ void CParticle::DrawParticleSphere(int i)
             tu0 = ts.x+(ti.x-ts.x)*tu0;
             float tu1 = tu0;
 
-            vertex[j++] = { v0, v0, { tu0, tv0 } };
-            vertex[j++] = { v1, v1, { tu1, tv1 } };
+            vertex[j++] = { v0, white, { tu0, tv0 } };
+            vertex[j++] = { v1, white, { tu1, tv1 } };
         }
     }
 
-    m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, j);
+    m_renderer->DrawParticle(PrimitiveType::TRIANGLE_STRIP, j, vertex.data());
     m_engine->AddStatisticTriangle(j);
 
-    m_engine->SetState(ENG_RSTATE_TTEXTURE_BLACK, IntensityToColor(m_particle[i].intensity));
+    m_renderer->SetColor(IntensityToColor(m_particle[i].intensity));
+    m_renderer->SetTransparency(TransparencyMode::BLACK);
 }
 
 //! Returns the height depending on the progress
@@ -3210,8 +3225,8 @@ void CParticle::DrawParticleCylinder(int i)
     float diam = m_particle[i].dim.y;
     if (progress >= 1.0f || zoom == 0.0f)  return;
 
-    m_engine->SetState(ENG_RSTATE_TTEXTURE_BLACK | ENG_RSTATE_2FACE | ENG_RSTATE_WRAP,
-                       IntensityToColor(m_particle[i].intensity));
+    m_renderer->SetColor(IntensityToColor(m_particle[i].intensity));
+    m_renderer->SetTransparency(TransparencyMode::BLACK);
 
     glm::mat4 mat = glm::mat4(1.0f);
     mat[0][0] = zoom;
@@ -3221,7 +3236,7 @@ void CParticle::DrawParticleCylinder(int i)
     mat[3][1] = m_particle[i].pos.y;
     mat[3][2] = m_particle[i].pos.z;
 
-    m_device->SetTransform(TRANSFORM_WORLD, mat);
+    m_renderer->SetModelMatrix(mat);
 
     glm::vec2 ts, ti;
     ts.x = m_particle[i].texSup.x;
@@ -3249,7 +3264,9 @@ void CParticle::DrawParticleCylinder(int i)
         }
     }
 
-    Vertex vertex[2*5*(10+1)];
+    std::vector<Vertex3D> vertex(2*5*(10+1));
+
+    glm::u8vec4 white(255);
 
     int j = 0;
     for (int ring = 0; ring < numRings; ring++)
@@ -3278,15 +3295,16 @@ void CParticle::DrawParticleCylinder(int i)
             tu0 = ts.x+(ti.x-ts.x)*tu0;
             float tu1 = tu0;
 
-            vertex[j++] = { v0, v0, { tu0, tv0 } };
-            vertex[j++] = { v1, v1, { tu1, tv1 } };
+            vertex[j++] = { v0, white, { tu0, tv0 } };
+            vertex[j++] = { v1, white, { tu1, tv1 } };
         }
     }
 
-    m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, j);
+    m_renderer->DrawParticle(PrimitiveType::TRIANGLE_STRIP, j, vertex.data());
     m_engine->AddStatisticTriangle(j);
 
-    m_engine->SetState(ENG_RSTATE_TTEXTURE_BLACK, IntensityToColor(m_particle[i].intensity));
+    m_renderer->SetColor(IntensityToColor(m_particle[i].intensity));
+    m_renderer->SetTransparency(TransparencyMode::BLACK);
 }
 
 void CParticle::DrawParticleText(int i)
@@ -3294,8 +3312,9 @@ void CParticle::DrawParticleText(int i)
     CharTexture tex = m_engine->GetText()->GetCharTexture(static_cast<UTF8Char>(m_particle[i].text), FONT_STUDIO, FONT_SIZE_BIG*2.0f);
     if (tex.id == 0) return;
 
-    m_device->SetTexture(0, tex.id);
-    m_engine->SetState(ENG_RSTATE_TTEXTURE_ALPHA, IntensityToColor(m_particle[i].intensity));
+    m_renderer->SetTexture({ tex.id });
+    m_renderer->SetColor(IntensityToColor(m_particle[i].intensity));
+    m_renderer->SetTransparency(TransparencyMode::ALPHA);
 
     glm::ivec2 fontTextureSize = m_engine->GetText()->GetFontTextureSize();
     m_particle[i].texSup.x = static_cast<float>(tex.charPos.x) / fontTextureSize.x;
@@ -3312,10 +3331,14 @@ void CParticle::DrawParticleWheel(int i)
     float dist = Math::DistanceProjected(m_engine->GetEyePt(), m_wheelTrace[i].pos[0]);
     if (dist > 300.0f)  return;
 
+    glm::u8vec4 white(255);
+
     if (m_wheelTrace[i].color == TraceColor::BlackArrow || m_wheelTrace[i].color == TraceColor::RedArrow)
     {
-        m_engine->SetTexture("textures/effect03.png");
-        m_engine->SetState(ENG_RSTATE_ALPHA);
+        auto texture = m_engine->LoadTexture("textures/effect03.png");
+        m_renderer->SetTexture(texture);
+        m_renderer->SetTransparency(TransparencyMode::ALPHA);
+        m_renderer->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
 
         glm::vec3 pos[4];
         pos[0] = m_wheelTrace[i].pos[0];
@@ -3334,16 +3357,16 @@ void CParticle::DrawParticleWheel(int i)
         ti.x = ti.x-dp;
         ti.y = ti.y-dp;
 
-        Vertex vertex[4];
-        vertex[0] = { pos[0], n, { ts.x, ts.y } };
-        vertex[1] = { pos[1], n, { ti.x, ts.y } };
-        vertex[2] = { pos[2], n, { ts.x, ti.y } };
-        vertex[3] = { pos[3], n, { ti.x, ti.y } };
+        auto color = ColorToIntColor(TraceColorColor(m_wheelTrace[i].color));
 
-        m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4, TraceColorColor(m_wheelTrace[i].color));
+        Vertex3D vertex[4];
+        vertex[0] = { pos[0], color, { ts.x, ts.y } };
+        vertex[1] = { pos[1], color, { ti.x, ts.y } };
+        vertex[2] = { pos[2], color, { ts.x, ti.y } };
+        vertex[3] = { pos[3], color, { ti.x, ti.y } };
+
+        m_renderer->DrawParticle(PrimitiveType::TRIANGLE_STRIP, 4, vertex);
         m_engine->AddStatisticTriangle(2);
-
-        m_engine->SetState(ENG_RSTATE_OPAQUE_COLOR);
     }
     else
     {
@@ -3353,30 +3376,21 @@ void CParticle::DrawParticleWheel(int i)
         pos[2] = m_wheelTrace[i].pos[2];
         pos[3] = m_wheelTrace[i].pos[3];
 
-        glm::vec3 n(0.0f, 1.0f, 0.0f);
+        auto color = ColorToIntColor(TraceColorColor(m_wheelTrace[i].color));
 
-        Vertex vertex[4];
-        vertex[0] = { pos[0], n };
-        vertex[1] = { pos[1], n };
-        vertex[2] = { pos[2], n };
-        vertex[3] = { pos[3], n };
+        Vertex3D vertex[4];
+        vertex[0] = { pos[0], color };
+        vertex[1] = { pos[1], color };
+        vertex[2] = { pos[2], color };
+        vertex[3] = { pos[3], color };
 
-        m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4, TraceColorColor(m_wheelTrace[i].color));
+        m_renderer->DrawParticle(PrimitiveType::TRIANGLE_STRIP, 4, vertex);
         m_engine->AddStatisticTriangle(2);
     }
 }
 
 void CParticle::DrawParticle(int sheet)
 {
-    Material mat;
-    mat.diffuse.r = 1.0f;
-    mat.diffuse.g = 1.0f;
-    mat.diffuse.b = 1.0f;  // white
-    mat.ambient.r = 0.5f;
-    mat.ambient.g = 0.5f;
-    mat.ambient.b = 0.5f;
-    m_engine->SetMaterial(mat);
-
     // Draw the basic particles of triangles.
     if (m_totalInterface[0][sheet] > 0)
     {
@@ -3386,8 +3400,11 @@ void CParticle::DrawParticle(int sheet)
             if (m_particle[i].sheet != sheet)  continue;
             if (m_particle[i].type == PARTIPART)  continue;
 
-            m_engine->SetTexture(!m_triangle[i].tex1Name.empty() ? "textures/"+m_triangle[i].tex1Name : "");
-            m_engine->SetState(m_triangle[i].state);
+            auto texture = m_engine->LoadTexture(!m_triangle[i].tex1Name.empty()
+                ? "textures/" + m_triangle[i].tex1Name : "");
+
+            m_renderer->SetTexture(texture);
+            //m_engine->SetState(m_triangle[i].state);
             DrawParticleTriangle(i);
         }
     }
@@ -3395,9 +3412,10 @@ void CParticle::DrawParticle(int sheet)
     // Draw tire marks.
     if (m_wheelTraceTotal > 0 && sheet == SH_WORLD)
     {
-        m_engine->SetState(ENG_RSTATE_OPAQUE_COLOR);
         glm::mat4 matrix = glm::mat4(1.0f);
-        m_device->SetTransform(TRANSFORM_WORLD, matrix);
+        m_renderer->SetModelMatrix(matrix);
+        m_renderer->SetTransparency(TransparencyMode::NONE);
+        m_renderer->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
 
         for (int i = 0; i < m_wheelTraceTotal; i++)
             DrawParticleWheel(i);
@@ -3409,10 +3427,15 @@ void CParticle::DrawParticle(int sheet)
 
         bool loadTexture = false;
 
-        int state;
-        if (t == 4) state = ENG_RSTATE_TTEXTURE_WHITE;  // effect03.png
-        else        state = ENG_RSTATE_TTEXTURE_BLACK;  // effect[00..02].png
-        m_engine->SetState(state);
+        TransparencyMode mode = TransparencyMode::ALPHA;
+
+        if (t == 4)
+            mode = TransparencyMode::WHITE;
+        else
+            mode = TransparencyMode::BLACK;
+
+        m_renderer->SetTransparency(mode);
+        m_renderer->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
 
         for (int j = 0; j < MAXPARTICULE; j++)
         {
@@ -3424,19 +3447,23 @@ void CParticle::DrawParticle(int sheet)
             {
                 std::string name;
                 NameParticle(name, t);
-                m_engine->SetTexture("textures/"+name);
+                auto texture = m_engine->LoadTexture("textures/" + name);
+                m_renderer->SetTexture(texture);
                 loadTexture = true;
             }
 
             int r = m_particle[i].trackRank;
             if (r != -1)
             {
-                m_engine->SetState(state);
+                m_renderer->SetTransparency(mode);
+                m_renderer->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+                //m_engine->SetState(state);
                 TrackDraw(r, m_particle[i].type);  // draws the drag
                 if (!m_track[r].drawParticle)  continue;
             }
 
-            m_engine->SetState(state, IntensityToColor(m_particle[i].intensity));
+            m_renderer->SetTransparency(mode);
+            m_renderer->SetColor(IntensityToColor(m_particle[i].intensity));
 
             if (m_particle[i].ray)  // ray?
             {

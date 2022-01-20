@@ -48,6 +48,8 @@ class CUIRenderer;
 class CTerrainRenderer;
 class CShadowRenderer;
 class CObjectRenderer;
+class CParticleRenderer;
+
 struct FramebufferParams;
 struct Light;
 struct Material;
@@ -442,6 +444,8 @@ public:
     virtual CTerrainRenderer* GetTerrainRenderer() = 0;
     //! Returns object renderer
     virtual CObjectRenderer* GetObjectRenderer() = 0;
+    //! Returns particle renderer
+    virtual CParticleRenderer* GetParticleRenderer() = 0;
     //! Returns shadow renderer
     virtual CShadowRenderer* GetShadowRenderer() = 0;
 

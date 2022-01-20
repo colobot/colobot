@@ -41,6 +41,8 @@ class CSoundInterface;
 namespace Gfx
 {
 
+class CParticleRenderer;
+
 const short MAXPARTICULE = 500;
 const short MAXPARTITYPE = 6;
 const short MAXTRACK = 100;
@@ -339,6 +341,7 @@ protected:
     CWater*      m_water = nullptr;
     CRobotMain*       m_main = nullptr;
     CSoundInterface*  m_sound = nullptr;
+    CParticleRenderer* m_renderer = nullptr;
 
     Particle       m_particle[MAXPARTICULE*MAXPARTITYPE];
     EngineTriangle m_triangle[MAXPARTICULE];  // triangle if PartiType == 0
