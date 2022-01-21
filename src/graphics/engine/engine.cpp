@@ -3651,7 +3651,24 @@ void CEngine::Draw3DScene()
     }
 
     CProfiler::StartPerformanceCounter(PCNT_RENDER_WATER);
+
+    objectRenderer->Begin();
+
+    objectRenderer->SetProjectionMatrix(m_matProj);
+    objectRenderer->SetViewMatrix(m_matView);
+    objectRenderer->SetShadowMap(m_shadowMap);
+    objectRenderer->SetLighting(true);
+    objectRenderer->SetLight(glm::vec4(1.0, 1.0, -1.0, 0.0), 1.0f, glm::vec3(1.0));
+    objectRenderer->SetTransparency(TransparencyMode::NONE);
+
+    objectRenderer->SetFog(fogStart, fogEnd, { fogColor.r, fogColor.g, fogColor.b });
+    objectRenderer->SetAlphaScissor(0.0f);
+    objectRenderer->SetShadowParams(m_shadowRegions, shadowParams);
+
     m_water->DrawSurf(); // draws water surface
+
+    objectRenderer->End();
+
     CProfiler::StopPerformanceCounter(PCNT_RENDER_WATER);
 
     m_device->SetRenderState(RENDER_STATE_LIGHTING, false);

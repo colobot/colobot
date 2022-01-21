@@ -91,6 +91,8 @@ public:
 
     //! Draws an object
     virtual void DrawObject(const CVertexBuffer* buffer) override;
+    //! Draws a primitive
+    virtual void DrawPrimitive(PrimitiveType type, int count, const Vertex3D* vertices) override;
 
 private:
     CGL33Device* const m_device;
@@ -136,6 +138,13 @@ private:
     GLuint m_secondaryTexture = 0;
     // Currently bound shadow map
     GLuint m_shadowMap = 0;
+
+    // Vertex buffer object
+    GLuint m_bufferVBO = 0;
+    // Vertex array object
+    GLuint m_bufferVAO = 0;
+    // VBO capacity
+    GLsizei m_bufferCapacity = 8 * sizeof(Vertex3D);
 };
 
 }

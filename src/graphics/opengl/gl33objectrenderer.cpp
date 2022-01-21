@@ -129,6 +129,20 @@ CGL33ObjectRenderer::CGL33ObjectRenderer(CGL33Device* device)
 
     glUseProgram(0);
 
+    // Generic buffer
+    glGenBuffers(1, &m_bufferVBO);
+    glBindBuffer(GL_COPY_WRITE_BUFFER, m_bufferVBO);
+    glBufferData(GL_COPY_WRITE_BUFFER, m_bufferCapacity, nullptr, GL_STREAM_DRAW);
+
+    glGenVertexArrays(1, &m_bufferVAO);
+    glBindVertexArray(m_bufferVAO);
+
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(2);
+    glEnableVertexAttribArray(3);
+    glEnableVertexAttribArray(4);
+
     GetLogger()->Info("CGL33ObjectRenderer created successfully\n");
 }
 
@@ -136,6 +150,8 @@ CGL33ObjectRenderer::~CGL33ObjectRenderer()
 {
     glDeleteProgram(m_program);
     glDeleteTextures(1, &m_whiteTexture);
+    glDeleteBuffers(1, &m_bufferVBO);
+    glDeleteVertexArrays(1, &m_bufferVAO);
 }
 
 void CGL33ObjectRenderer::CGL33ObjectRenderer::Begin()
@@ -358,4 +374,37 @@ void CGL33ObjectRenderer::DrawObject(const CVertexBuffer* buffer)
     glBindVertexArray(b->GetVAO());
 
     glDrawArrays(TranslateGfxPrimitive(b->GetType()), 0, b->Size());
+}
+
+void CGL33ObjectRenderer::DrawPrimitive(PrimitiveType type, int count, const Vertex3D* vertices)
+{
+    glBindVertexArray(m_bufferVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, m_bufferVBO);
+
+    size_t size = count * sizeof(Vertex3D);
+
+    if (m_bufferCapacity < size)
+        m_bufferCapacity = size;
+
+    // Send new vertices to GPU
+    glBindBuffer(GL_ARRAY_BUFFER, m_bufferVBO);
+    glBufferData(GL_ARRAY_BUFFER, m_bufferCapacity, nullptr, GL_STREAM_DRAW);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, size, vertices);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex3D),
+        reinterpret_cast<void*>(offsetof(Vertex3D, position)));
+
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex3D),
+        reinterpret_cast<void*>(offsetof(Vertex3D, normal)));
+
+    glVertexAttribPointer(2, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex3D),
+        reinterpret_cast<void*>(offsetof(Vertex3D, color)));
+
+    glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex3D),
+        reinterpret_cast<void*>(offsetof(Vertex3D, uv)));
+
+    glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex3D),
+        reinterpret_cast<void*>(offsetof(Vertex3D, uv2)));
+
+    glDrawArrays(TranslateGfxPrimitive(type), 0, count);
 }

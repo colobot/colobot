@@ -24,6 +24,7 @@
 #include "common/logger.h"
 
 #include "graphics/core/device.h"
+#include "graphics/core/renderers.h"
 
 #include "graphics/engine/engine.h"
 #include "graphics/engine/terrain.h"
@@ -255,6 +256,10 @@ void CWater::AdjustLevel(glm::vec3 &pos, glm::vec3 &norm,
 /** This surface prevents to see the sky (background) underwater! */
 void CWater::DrawBack()
 {
+    // TODO: Not currently used, needs to be rewritten
+    return;
+
+    /*
     if (! m_draw) return;
     if (m_type[0] == WATER_NULL) return;
     if (m_lines.empty()) return;
@@ -311,6 +316,7 @@ void CWater::DrawBack()
     m_engine->SetDeepView(deep, 0);
     m_engine->SetFocus(m_engine->GetFocus());
     m_engine->UpdateMatProj();  // gives the initial depth of view
+    // */
 }
 
 void CWater::DrawSurf()
@@ -319,7 +325,7 @@ void CWater::DrawSurf()
     if (m_type[0] == WATER_NULL) return;
     if (m_lines.empty()) return;
 
-    std::vector<Vertex> vertices((m_brickCount+2)*2, Vertex());
+    std::vector<Vertex3D> vertices((m_brickCount+2)*2);
 
     glm::vec3 eye = m_engine->GetEyePt();
 
@@ -327,31 +333,36 @@ void CWater::DrawSurf()
     bool under = ( rankview == 1);
 
     CDevice* device = m_engine->GetDevice();
+    auto renderer = device->GetObjectRenderer();
 
     glm::mat4 matrix = glm::mat4(1.0f);
-    device->SetTransform(TRANSFORM_WORLD, matrix);
+    renderer->SetModelMatrix(matrix);
 
-    Material material;
-    material.diffuse = m_diffuse;
-    material.ambient = m_ambient;
-    m_engine->SetMaterial(material);
+    auto texture = m_engine->LoadTexture(m_fileName);
 
-    m_engine->SetTexture(m_fileName, 0);
-    m_engine->SetTexture(m_fileName, 1);
+    renderer->SetPrimaryTexture(texture);
+    renderer->SetSecondaryTexture(Texture{});
 
     if (m_type[rankview] == WATER_TT)
-        m_engine->SetState(ENG_RSTATE_TTEXTURE_BLACK | ENG_RSTATE_DUAL_WHITE | ENG_RSTATE_WRAP, m_color);
-
+    {
+        renderer->SetTransparency(TransparencyMode::BLACK);
+        renderer->SetColor(m_color);
+    }
     else if (m_type[rankview] == WATER_TO)
-        m_engine->SetState(ENG_RSTATE_NORMAL | ENG_RSTATE_DUAL_WHITE | ENG_RSTATE_WRAP);
-
+    {
+        renderer->SetTransparency(TransparencyMode::NONE);
+        renderer->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+    }
     else if (m_type[rankview] == WATER_CT)
-        m_engine->SetState(ENG_RSTATE_TTEXTURE_BLACK);
-
+    {
+        renderer->SetTransparency(TransparencyMode::BLACK);
+        renderer->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+    }
     else if (m_type[rankview] == WATER_CO)
-        m_engine->SetState(ENG_RSTATE_NORMAL);
-
-    device->SetRenderState(RENDER_STATE_FOG, true);
+    {
+        renderer->SetTransparency(TransparencyMode::NONE);
+        renderer->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+    }
 
     float size = m_brickSize/2.0f;
     float sizez = 0.0f;
@@ -360,8 +371,6 @@ void CWater::DrawSurf()
 
     // Draws all the lines
     float deep = m_engine->GetDeepView(0)*1.5f;
-
-    device->SetTextureEnabled(1, false);
 
     for (int i = 0; i < static_cast<int>( m_lines.size() ); i++)
     {
@@ -385,20 +394,21 @@ void CWater::DrawSurf()
 
         glm::vec2 uv1, uv2;
         glm::vec3 n{};
+        glm::u8vec4 white(255);
 
         p.x = pos.x-size;
         p.z = pos.z-sizez;
         p.y = pos.y;
         AdjustLevel(p, n, uv1, uv2);
         if (under) n.y = -n.y;
-        vertices[vertexIndex++] = { p, n, uv1 };
+        vertices[vertexIndex++] = { p, white, uv1, {}, n };
 
         p.x = pos.x-size;
         p.z = pos.z+sizez;
         p.y = pos.y;
         AdjustLevel(p, n, uv1, uv2);
         if (under)  n.y = -n.y;
-        vertices[vertexIndex++] = { p, n, uv1 };
+        vertices[vertexIndex++] = { p, white, uv1, {}, n };
 
         for (int j = 0; j < m_lines[i].len; j++)
         {
@@ -407,24 +417,21 @@ void CWater::DrawSurf()
             p.y = pos.y;
             AdjustLevel(p, n, uv1, uv2);
             if (under)  n.y = -n.y;
-            vertices[vertexIndex++] = { p, n, uv1 };
+            vertices[vertexIndex++] = { p, white, uv1, {}, n };
 
             p.x = pos.x+size;
             p.z = pos.z+sizez;
             p.y = pos.y;
             AdjustLevel(p, n, uv1, uv2);
             if (under)  n.y = -n.y;
-            vertices[vertexIndex++] = { p, n, uv1 };
+            vertices[vertexIndex++] = { p, white, uv1, {}, n };
 
             pos.x += size*2.0f;
         }
 
-        device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, &vertices[0], vertexIndex);
+        renderer->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertexIndex, vertices.data());
         m_engine->AddStatisticTriangle(vertexIndex - 2);
     }
-
-    if (m_engine->GetDirty())
-        device->SetTextureEnabled(1, true);
 }
 
 bool CWater::GetWater(int x, int y)

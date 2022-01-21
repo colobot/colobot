@@ -180,6 +180,8 @@ public:
 
     //! Draws an object
     virtual void DrawObject(const CVertexBuffer* buffer) = 0;
+    //! Draws a primitive
+    virtual void DrawPrimitive(PrimitiveType type, int count, const Vertex3D* vertices) = 0;
 };
 
 /**
