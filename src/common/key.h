@@ -62,7 +62,7 @@ enum VirtualKmod
 #define VIRTUAL_KMOD(x) VIRTUAL_KMOD_ ## x
 
 //! Converts individual codes to virtual keys if needed
-unsigned int GetVirtualKey(unsigned int key);
+unsigned int GetVirtualKey(unsigned int key, unsigned int kmodState);
 
 // Virtual key code generated on joystick button presses
 // num is number of joystick button

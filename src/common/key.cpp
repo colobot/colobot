@@ -19,7 +19,7 @@
 
 #include "common/key.h"
 
-unsigned int GetVirtualKey(unsigned int key)
+unsigned int GetVirtualKey(unsigned int key, unsigned int kmodState)
 {
     if(key == KEY(LCTRL) || key == KEY(RCTRL))
         return VIRTUAL_KMOD(CTRL);
@@ -32,6 +32,27 @@ unsigned int GetVirtualKey(unsigned int key)
 
     if(key == KEY(KP_ENTER))
         return KEY(RETURN);
+
+    // Remap keypad navigation keys as a workaround for the SDL issue: https://github.com/libsdl-org/SDL/issues/1766
+    if ((kmodState & KEY_MOD(NUM)) == 0)
+    {
+        if(key == KEY(KP_7))
+            return KEY(HOME);
+        if(key == KEY(KP_1))
+            return KEY(END);
+        if(key == KEY(KP_9))
+            return KEY(PAGEUP);
+        if(key == KEY(KP_3))
+            return KEY(PAGEDOWN);
+        if(key == KEY(KP_4))
+            return KEY(LEFT);
+        if(key == KEY(KP_6))
+            return KEY(RIGHT);
+        if(key == KEY(KP_8))
+            return KEY(UP);
+        if(key == KEY(KP_2))
+            return KEY(DOWN);
+    }
 
     return key;
 }
