@@ -165,6 +165,10 @@ public:
     //! Sets alpha scissor
     virtual void SetAlphaScissor(float alpha) = 0;
 
+    //! Sets depth test
+    virtual void SetDepthTest(bool enabled) = 0;
+    //! Sets depth mask
+    virtual void SetDepthMask(bool enabled) = 0;
     //! Sets cull mode
     virtual void SetCullMode(bool enabled) = 0;
     //! Sets transparency mode

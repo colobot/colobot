@@ -3394,8 +3394,6 @@ void CEngine::Draw3DScene()
 
     //m_lightMan->UpdateDeviceLights(ENG_OBJTYPE_TERRAIN);
 
-    UseShadowMapping(true);
-
     SetState(0);
 
     Gfx::ShadowParam shadowParams[4];
@@ -3413,7 +3411,11 @@ void CEngine::Draw3DScene()
     terrainRenderer->SetViewMatrix(m_matView);
     terrainRenderer->SetShadowMap(m_shadowMap);
     terrainRenderer->SetLight(glm::vec4(1.0, 1.0, -1.0, 0.0), 1.0f, glm::vec3(1.0));
-    terrainRenderer->SetShadowParams(m_shadowRegions, shadowParams);
+    
+    if (m_shadowMapping)
+        terrainRenderer->SetShadowParams(m_shadowRegions, shadowParams);
+    else
+        terrainRenderer->SetShadowParams(0, nullptr);
 
     Color fogColor = m_fogColor[m_rankView];
 
@@ -3468,9 +3470,6 @@ void CEngine::Draw3DScene()
 
     terrainRenderer->End();
 
-    if (!m_qualityShadows)
-        UseShadowMapping(false);
-
     // Draws the old-style shadow spots, if shadow mapping disabled
     if (!m_shadowMapping)
         DrawShadowSpots();
@@ -3493,7 +3492,11 @@ void CEngine::Draw3DScene()
 
     objectRenderer->SetFog(fogStart, fogEnd, { fogColor.r, fogColor.g, fogColor.b });
     objectRenderer->SetAlphaScissor(0.0f);
-    objectRenderer->SetShadowParams(m_shadowRegions, shadowParams);
+
+    if (m_shadowMapping && m_qualityShadows)
+        objectRenderer->SetShadowParams(m_shadowRegions, shadowParams);
+    else
+        objectRenderer->SetShadowParams(0, nullptr);
 
     objectRenderer->SetTriplanarMode(m_triplanarMode);
     objectRenderer->SetTriplanarScale(m_triplanarScale);
@@ -3548,9 +3551,13 @@ void CEngine::Draw3DScene()
                 }
 
                 if (p3.state & ENG_RSTATE_ALPHA)
+                {
                     objectRenderer->SetAlphaScissor(0.2f);
+                }
                 else
+                {
                     objectRenderer->SetAlphaScissor(0.0f);
+                }
 
                 if ((p3.state & ENG_RSTATE_TCOLOR_BLACK)
                     || (p3.state & ENG_RSTATE_TCOLOR_WHITE)
@@ -3570,12 +3577,11 @@ void CEngine::Draw3DScene()
 
     objectRenderer->End();
 
-    UseShadowMapping(false);
-
     objectRenderer->Begin();
     objectRenderer->SetLighting(false);
+    objectRenderer->SetDepthMask(false);
     objectRenderer->SetTransparency(TransparencyMode::BLACK);
-    objectRenderer->SetAlphaScissor(0.5f);
+    objectRenderer->SetAlphaScissor(0.0f);
     objectRenderer->SetCullMode(false);
 
     // Draw transparent objects
@@ -4185,26 +4191,6 @@ void CEngine::RenderShadowMap()
     m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, false);
 }
 
-void CEngine::UseShadowMapping(bool enable)
-{
-    if (!m_shadowMapping) return;
-    if (m_shadowMap.id == 0) return;
-
-    if (enable)
-    {
-        m_device->SetShadowColor(m_shadowColor);
-        m_device->SetTransform(TRANSFORM_SHADOW, m_shadowTextureMat);
-        m_device->SetTexture(TEXTURE_SHADOW, m_shadowMap);
-        m_device->SetTextureStageWrap(TEXTURE_SHADOW, TEX_WRAP_CLAMP_TO_BORDER, TEX_WRAP_CLAMP_TO_BORDER);
-        m_device->SetRenderState(RENDER_STATE_SHADOW_MAPPING, true);
-    }
-    else
-    {
-        m_device->SetRenderState(RENDER_STATE_SHADOW_MAPPING, false);
-        m_device->SetTexture(TEXTURE_SHADOW, 0);
-    }
-}
-
 void CEngine::UseMSAA(bool enable)
 {
     m_multisample = Math::Min(m_device->GetMaxSamples(), m_multisample);
@@ -4259,32 +4245,6 @@ void CEngine::UseMSAA(bool enable)
             int height = screen->GetHeight();
 
             framebuffer->CopyToScreen(0, 0, width, height, 0, 0, width, height);
-        }
-    }
-}
-
-void CEngine::DrawObject(const EngineBaseObjDataTier& p4)
-{
-    if (p4.buffer != nullptr)
-    {
-        m_device->DrawVertexBuffer(p4.buffer);
-
-        if (p4.type == EngineTriangleType::TRIANGLES)
-            m_statisticTriangle += p4.vertices.size() / 3;
-        else
-            m_statisticTriangle += p4.vertices.size() - 2;
-    }
-    else
-    {
-        if (p4.type == EngineTriangleType::TRIANGLES)
-        {
-            m_device->DrawPrimitive(PrimitiveType::TRIANGLES, p4.vertices.data(), p4.vertices.size());
-            m_statisticTriangle += p4.vertices.size() / 3;
-        }
-        else
-        {
-            m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, p4.vertices.data(), p4.vertices.size() );
-            m_statisticTriangle += p4.vertices.size() - 2;
         }
     }
 }
@@ -4978,20 +4938,27 @@ void CEngine::DrawBackgroundGradient(const Color& up, const Color& down)
     glm::vec2 p1(0.0f, 0.5f);
     glm::vec2 p2(1.0f, 1.0f);
 
-    Color color[3] =
+    glm::u8vec4 color[3] =
     {
-        up,
-        down,
-        Color(0.0f, 0.0f, 0.0f, 0.0f)
+        { up.r, up.g, up.b, up.a },
+        { down.r, down.g, down.b, down.a },
+        { 0, 0, 0, 0 }
     };
 
     SetState(ENG_RSTATE_OPAQUE_COLOR);
 
-    m_device->SetTransform(TRANSFORM_VIEW, m_matViewInterface);
-    m_device->SetTransform(TRANSFORM_PROJECTION, m_matProjInterface);
-    m_device->SetTransform(TRANSFORM_WORLD, m_matWorldInterface);
+    auto renderer = m_device->GetObjectRenderer();
+    renderer->Begin();
+    renderer->SetProjectionMatrix(m_matProjInterface);
+    renderer->SetViewMatrix(m_matViewInterface);
+    renderer->SetModelMatrix(m_matWorldInterface);
+    renderer->SetLighting(false);
 
-    VertexCol vertex[4] =
+    renderer->SetPrimaryTexture(Texture{});
+    renderer->SetSecondaryTexture(Texture{});
+    renderer->SetDepthTest(false);
+
+    Vertex3D vertex[4] =
     {
         { glm::vec3(p1.x, p1.y, 0.0f), color[1] },
         { glm::vec3(p1.x, p2.y, 0.0f), color[0] },
@@ -4999,8 +4966,10 @@ void CEngine::DrawBackgroundGradient(const Color& up, const Color& down)
         { glm::vec3(p2.x, p2.y, 0.0f), color[0] }
     };
 
-    m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
+    renderer->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, 4, vertex);
     AddStatisticTriangle(2);
+
+    renderer->End();
 }
 
 void CEngine::DrawBackgroundImage()
@@ -5089,15 +5058,19 @@ void CEngine::DrawPlanet()
     if (! m_planet->PlanetExist())
         return;
 
-    m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
-    m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
-    m_device->SetRenderState(RENDER_STATE_FOG, false);
-
-    m_device->SetTransform(TRANSFORM_VIEW, m_matViewInterface);
-    m_device->SetTransform(TRANSFORM_PROJECTION, m_matProjInterface);
-    m_device->SetTransform(TRANSFORM_WORLD, m_matWorldInterface);
+    auto renderer = m_device->GetObjectRenderer();
+    renderer->Begin();
+    renderer->SetProjectionMatrix(m_matProjInterface);
+    renderer->SetViewMatrix(m_matViewInterface);
+    renderer->SetModelMatrix(m_matWorldInterface);
+    renderer->SetFog(1e+6, 1e+6, {});
+    renderer->SetLighting(false);
+    renderer->SetDepthTest(false);
+    renderer->SetDepthMask(false);
 
     m_planet->Draw();  // draws the planets
+
+    renderer->End();
 }
 
 void CEngine::DrawForegroundImage()
@@ -5147,31 +5120,43 @@ void CEngine::DrawOverColor()
     glm::vec2 p1(0.0f, 0.0f);
     glm::vec2 p2(1.0f, 1.0f);
 
-    Color color[3] =
+    auto color = Gfx::ColorToIntColor(m_overColor);
+
+    glm::u8vec4 colors[3] =
     {
-        m_overColor,
-        m_overColor,
-        Color(0.0f, 0.0f, 0.0f, 0.0f)
+        { color.r, color.g, color.b, color.a },
+        { color.r, color.g, color.b, color.a },
+        { 0, 0, 0, 0 }
     };
 
     m_device->Restore();
 
     SetState(m_overMode);
 
-    m_device->SetTransform(TRANSFORM_VIEW, m_matViewInterface);
-    m_device->SetTransform(TRANSFORM_PROJECTION, m_matProjInterface);
-    m_device->SetTransform(TRANSFORM_WORLD, m_matWorldInterface);
-    m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
+    auto renderer = m_device->GetObjectRenderer();
+    renderer->Begin();
 
-    VertexCol vertex[4] =
+    renderer->SetProjectionMatrix(m_matProjInterface);
+    renderer->SetViewMatrix(m_matViewInterface);
+    renderer->SetModelMatrix(m_matWorldInterface);
+    renderer->SetLighting(false);
+
+    if (m_overMode == ENG_RSTATE_TCOLOR_BLACK)
+        renderer->SetTransparency(TransparencyMode::BLACK);
+    else if (m_overMode == ENG_RSTATE_TCOLOR_WHITE)
+        renderer->SetTransparency(TransparencyMode::WHITE);
+
+    Vertex3D vertex[4] =
     {
-        { glm::vec3(p1.x, p1.y, 0.0f), color[1] },
-        { glm::vec3(p1.x, p2.y, 0.0f), color[0] },
-        { glm::vec3(p2.x, p1.y, 0.0f), color[1] },
-        { glm::vec3(p2.x, p2.y, 0.0f), color[0] }
+        { glm::vec3(p1.x, p1.y, 0.0f), colors[1] },
+        { glm::vec3(p1.x, p2.y, 0.0f), colors[0] },
+        { glm::vec3(p2.x, p1.y, 0.0f), colors[1] },
+        { glm::vec3(p2.x, p2.y, 0.0f), colors[0] }
     };
 
-    m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
+    renderer->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, 4, vertex);
+    renderer->End();
+
     AddStatisticTriangle(2);
 
     m_device->Restore();

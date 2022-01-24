@@ -76,6 +76,9 @@ public:
     //! Sets alpha scissor
     virtual void SetAlphaScissor(float alpha) override;
 
+    virtual void SetDepthTest(bool enabled) override;
+    virtual void SetDepthMask(bool enabled) override;
+
     //! Sets cull mode parameters
     virtual void SetCullMode(bool enabled) override;
     //! Sets transparency mode

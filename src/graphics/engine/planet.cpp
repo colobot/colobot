@@ -23,6 +23,7 @@
 #include "common/event.h"
 
 #include "graphics/core/device.h"
+#include "graphics/core/renderers.h"
 
 #include "graphics/engine/engine.h"
 
@@ -100,7 +101,8 @@ void CPlanet::Draw()
     float eyeDirH = m_engine->GetEyeDirH();
     float eyeDirV = m_engine->GetEyeDirV();
 
-    glm::vec3 n = glm::vec3(0.0f, 0.0f, -1.0f);  // normal
+    auto renderer = m_engine->GetDevice()->GetObjectRenderer();
+
     float dp = 0.5f/256.0f;
 
     for (const auto& planet : m_planets)
@@ -108,14 +110,16 @@ void CPlanet::Draw()
         if (planet.type != m_visibleType)
             continue;
 
-        m_engine->SetTexture(planet.name);
+        auto texture = m_engine->LoadTexture(planet.name);
+
+        renderer->SetPrimaryTexture(texture);
 
         if (planet.transparent)
-            m_engine->SetState(ENG_RSTATE_WRAP | ENG_RSTATE_ALPHA);
+            renderer->SetTransparency(TransparencyMode::ALPHA);
         else
-            m_engine->SetState(ENG_RSTATE_WRAP | ENG_RSTATE_TTEXTURE_BLACK);
+            renderer->SetTransparency(TransparencyMode::BLACK);
 
-        glm::vec2 p1, p2;
+        glm::vec2 p1{}, p2{};
 
         // Determine the 2D coordinates of the centre of the planet.
 
@@ -141,15 +145,19 @@ void CPlanet::Draw()
         float u2 = planet.uv2.x - dp;
         float v2 = planet.uv2.y - dp;
 
-        Vertex quad[4] =
+        glm::u8vec4 white(255);
+
+        Vertex3D quad[4] =
         {
-            { glm::vec3(p1.x, p1.y, 0.0f), n, { u1, v2 } },
-            { glm::vec3(p1.x, p2.y, 0.0f), n, { u1, v1 } },
-            { glm::vec3(p2.x, p1.y, 0.0f), n, { u2, v2 } },
-            { glm::vec3(p2.x, p2.y, 0.0f), n, { u2, v1 } }
+            { glm::vec3(p1.x, p1.y, 0.0f), white, { u1, v2 } },
+            { glm::vec3(p1.x, p2.y, 0.0f), white, { u1, v1 } },
+            { glm::vec3(p2.x, p1.y, 0.0f), white, { u2, v2 } },
+            { glm::vec3(p2.x, p2.y, 0.0f), white, { u2, v1 } }
         };
 
-        device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, quad, 4);
+        renderer->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+
+        renderer->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, 4, quad);
         m_engine->AddStatisticTriangle(2);
     }
 }

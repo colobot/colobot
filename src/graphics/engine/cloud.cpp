@@ -21,6 +21,7 @@
 #include "graphics/engine/cloud.h"
 
 #include "graphics/core/device.h"
+#include "graphics/core/renderers.h"
 
 #include "graphics/engine/engine.h"
 #include "graphics/engine/terrain.h"
@@ -110,25 +111,26 @@ void CCloud::Draw()
     float fogEnd   = deep*0.24f;
 
     CDevice* device = m_engine->GetDevice();
+    auto renderer = device->GetObjectRenderer();
+    renderer->Begin();
 
-    // TODO: do this better?
-    device->SetFogParams(FOG_LINEAR, m_engine->GetFogColor( m_engine->GetRankView() ),
-                        fogStart, fogEnd, 1.0f);
+    auto fogColor = m_engine->GetFogColor(m_engine->GetRankView());
 
-    device->SetTransform(TRANSFORM_VIEW, m_engine->GetMatView());
+    renderer->SetFog(fogStart, fogEnd, { fogColor.r, fogColor.g, fogColor.b });
 
-    Material material;
-    material.diffuse = m_diffuse;
-    material.ambient = m_ambient;
-    m_engine->SetMaterial(material);
+    renderer->SetProjectionMatrix(m_engine->GetMatProj());
+    renderer->SetViewMatrix(m_engine->GetMatView());
 
-    m_engine->SetTexture(m_fileName, 0);
-    m_engine->SetTexture(m_fileName, 1);
+    auto texture = m_engine->LoadTexture(m_fileName);
+    renderer->SetPrimaryTexture(texture);
+    renderer->SetSecondaryTexture(Texture{});
 
-    m_engine->SetState(ENG_RSTATE_TTEXTURE_BLACK | ENG_RSTATE_FOG | ENG_RSTATE_WRAP);
+    renderer->SetLighting(false);
+    renderer->SetTransparency(TransparencyMode::BLACK);
+    renderer->SetDepthMask(false);
 
     glm::mat4 matrix = glm::mat4(1.0f);
-    device->SetTransform(TRANSFORM_WORLD, matrix);
+    renderer->SetModelMatrix(matrix);
 
     float size = m_brickSize/2.0f;
     glm::vec3 eye = m_engine->GetEyePt();
@@ -178,9 +180,11 @@ void CCloud::Draw()
             pos.x += size*2.0f;
         }
 
-        device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertices.data(), vertexIndex);
+        renderer->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertexIndex, vertices.data());
         m_engine->AddStatisticTriangle(vertexIndex - 2);
     }
+
+    renderer->End();
 
     m_engine->SetDeepView(iDeep);
     m_engine->SetFocus(m_engine->GetFocus());

@@ -298,6 +298,19 @@ void CGL33ObjectRenderer::SetFog(float min, float max, const glm::vec3& color)
     glUniform3f(m_fogColor, color.r, color.g, color.b);
 }
 
+void CGL33ObjectRenderer::SetDepthTest(bool enabled)
+{
+    if (enabled)
+        glEnable(GL_DEPTH_TEST);
+    else
+        glDisable(GL_DEPTH_TEST);
+}
+
+void CGL33ObjectRenderer::SetDepthMask(bool enabled)
+{
+    glDepthMask(enabled ? GL_TRUE : GL_FALSE);
+}
+
 void CGL33ObjectRenderer::SetCullMode(bool enabled)
 {
     if (enabled)
@@ -317,25 +330,21 @@ void CGL33ObjectRenderer::SetTransparency(TransparencyMode mode)
     {
     case TransparencyMode::NONE:
         glDisable(GL_BLEND);
-        glDepthMask(GL_TRUE);
         break;
     case TransparencyMode::ALPHA:
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glBlendEquation(GL_FUNC_ADD);
-        glDepthMask(GL_TRUE);
         break;
     case TransparencyMode::BLACK:
         glEnable(GL_BLEND);
         glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_COLOR);
         glBlendEquation(GL_FUNC_ADD);
-        glDepthMask(GL_FALSE);
         break;
     case TransparencyMode::WHITE:
         glEnable(GL_BLEND);
         glBlendFunc(GL_DST_COLOR, GL_ZERO);
         glBlendEquation(GL_FUNC_ADD);
-        glDepthMask(GL_FALSE);
         break;
     }
 }
