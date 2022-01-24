@@ -33,7 +33,7 @@ struct LevelInfo
     bool    bPassed = false;
 };
 
-struct PlayerApperance
+struct PlayerAppearance
 {
     int     face = 0;           // face
     int     glasses = 0;        // glasses
@@ -108,12 +108,12 @@ public:
     //! Saves unlocked DoneResearch for free game
     void SetFreeGameResearchUnlock(int freeResearch);
 
-    //! Returns a reference to PlayerApperance structure
-    PlayerApperance& GetApperance();
-    //! Loads PlayerApperance structure
-    void LoadApperance();
-    //! Saves PlayerApperance structure
-    void SaveApperance();
+    //! Returns a reference to PlayerAppearance structure
+    PlayerAppearance& GetAppearance();
+    //! Loads PlayerAppearance structure
+    void LoadAppearance();
+    //! Saves PlayerAppearance structure
+    void SaveAppearance();
 
     //! Returns true if player has at least one saved scene
     bool HasAnySavedScene();
@@ -157,6 +157,6 @@ protected:
     //! Researches unlocked for free game
     int m_freegameResearch;
 
-    //! Player apperance
-    PlayerApperance m_apperance;
+    //! Player appearance
+    PlayerAppearance m_appearance;
 };

@@ -317,7 +317,7 @@ std::string PhaseToString(Phase phase)
     if (phase == PHASE_WELCOME2) return "PHASE_WELCOME2";
     if (phase == PHASE_WELCOME3) return "PHASE_WELCOME3";
     if (phase == PHASE_PLAYER_SELECT) return "PHASE_PLAYER_SELECT";
-    if (phase == PHASE_APPERANCE) return "PHASE_APPERANCE";
+    if (phase == PHASE_APPEARANCE) return "PHASE_APPEARANCE";
     if (phase == PHASE_MAIN_MENU) return "PHASE_MAIN_MENU";
     if (phase == PHASE_LEVEL_LIST) return "PHASE_LEVEL_LIST";
     if (phase == PHASE_MOD_LIST) return "PHASE_MOD_LIST";
@@ -352,14 +352,14 @@ bool IsPhaseWithWorld(Phase phase)
     if (phase == PHASE_SIMUL    ) return true;
     if (phase == PHASE_WIN      ) return true;
     if (phase == PHASE_LOST     ) return true;
-    if (phase == PHASE_APPERANCE) return true;
+    if (phase == PHASE_APPEARANCE) return true;
     if (IsInSimulationConfigPhase(phase)) return true;
     return false;
 }
 
 bool IsMainMenuPhase(Phase phase)
 {
-    if (phase == PHASE_APPERANCE) return true;
+    if (phase == PHASE_APPEARANCE) return true;
     return !IsPhaseWithWorld(phase);
 }
 
@@ -531,7 +531,7 @@ void CRobotMain::ChangePhase(Phase phase)
     float sx = (32.0f+2.0f)/640.0f;
     float sy = (32.0f+2.0f)/480.0f;
 
-    if (m_phase != PHASE_APPERANCE)
+    if (m_phase != PHASE_APPEARANCE)
     {
         m_engine->SetDrawWorld(true);
         m_engine->SetDrawFront(false);
@@ -1162,7 +1162,7 @@ bool CRobotMain::ProcessEvent(Event &event)
         return false;
     }
 
-    if (m_phase == PHASE_APPERANCE)
+    if (m_phase == PHASE_APPEARANCE)
         EventObject(event);
 
     if (m_phase == PHASE_WIN  ||
@@ -2080,7 +2080,7 @@ void CRobotMain::HiliteClear()
 //! Highlights the object with the mouse hovers over
 void CRobotMain::HiliteObject(Math::Point pos)
 {
-    if (m_fixScene && m_phase != PHASE_APPERANCE) return;
+    if (m_fixScene && m_phase != PHASE_APPEARANCE) return;
     if (m_movieLock) return;
     if (m_movie->IsExist()) return;
     if (m_app->GetMouseMode() == MOUSE_NONE) return;
@@ -2146,7 +2146,7 @@ void CRobotMain::HiliteObject(Math::Point pos)
 //! Highlights the object with the mouse hovers over
 void CRobotMain::HiliteFrame(float rTime)
 {
-    if (m_fixScene && m_phase != PHASE_APPERANCE) return;
+    if (m_fixScene && m_phase != PHASE_APPEARANCE) return;
     if (m_movieLock) return;
     if (m_movie->IsExist()) return;
 
@@ -2429,7 +2429,7 @@ bool CRobotMain::EventFrame(const Event &event)
         if (m_engine->GetFog())
             m_camera->SetOverBaseColor(m_particle->GetFogColor(m_engine->GetEyePt()));
     }
-    if (m_phase == PHASE_APPERANCE ||
+    if (m_phase == PHASE_APPEARANCE ||
         m_phase == PHASE_WIN   ||
         m_phase == PHASE_LOST)
     {
@@ -2702,7 +2702,7 @@ void CRobotMain::ScenePerso()
     }
     catch (const std::runtime_error& e)
     {
-        LevelLoadingError("An error occurred while trying to load apperance scene", e, PHASE_PLAYER_SELECT);
+        LevelLoadingError("An error occurred while trying to load appearance scene", e, PHASE_PLAYER_SELECT);
     }
 
     m_engine->SetDrawWorld(false);  // does not draw anything on the interface
@@ -3924,7 +3924,7 @@ void CRobotMain::ChangeColor()
         m_phase != PHASE_MOD_LIST &&
         m_phase != PHASE_WIN      &&
         m_phase != PHASE_LOST     &&
-        m_phase != PHASE_APPERANCE ) return;
+        m_phase != PHASE_APPEARANCE ) return;
 
     // Player texture
 
@@ -3939,11 +3939,11 @@ void CRobotMain::ChangeColor()
     colorRef1.r = 206.0f/256.0f;
     colorRef1.g = 206.0f/256.0f;
     colorRef1.b = 204.0f/256.0f;  // ~white
-    colorNew1 = m_playerProfile->GetApperance().colorCombi;
+    colorNew1 = m_playerProfile->GetAppearance().colorCombi;
     colorRef2.r = 255.0f/256.0f;
     colorRef2.g = 132.0f/256.0f;
     colorRef2.b =   1.0f/256.0f;  // orange
-    colorNew2 = m_playerProfile->GetApperance().colorBand;
+    colorNew2 = m_playerProfile->GetAppearance().colorBand;
 
     Math::Point exclu[6];
     exclu[0] = Math::Point(192.0f/256.0f,   0.0f/256.0f);
@@ -3985,7 +3985,7 @@ void CRobotMain::ChangeColor()
         colorRef1.b =   0.0f/256.0f;  // yellow
         tolerance = 0.20f;
     }
-    colorNew1 = m_playerProfile->GetApperance().colorHair;
+    colorNew1 = m_playerProfile->GetAppearance().colorHair;
     colorRef2.r = 0.0f;
     colorRef2.g = 0.0f;
     colorRef2.b = 0.0f;
@@ -5425,13 +5425,13 @@ MissionType CRobotMain::GetMissionType()
 //! Returns the representation to use for the player
 int CRobotMain::GetGamerFace()
 {
-    return m_playerProfile->GetApperance().face;
+    return m_playerProfile->GetAppearance().face;
 }
 
 //! Returns the representation to use for the player
 int CRobotMain::GetGamerGlasses()
 {
-    return m_playerProfile->GetApperance().glasses;
+    return m_playerProfile->GetAppearance().glasses;
 }
 
 //! Returns the mode with just the head

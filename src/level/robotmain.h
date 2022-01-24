@@ -52,7 +52,7 @@ enum Phase
     PHASE_WELCOME2,
     PHASE_WELCOME3,
     PHASE_PLAYER_SELECT,
-    PHASE_APPERANCE,
+    PHASE_APPEARANCE,
     PHASE_MAIN_MENU,
     PHASE_LEVEL_LIST,
     PHASE_MOD_LIST,
@@ -198,7 +198,7 @@ public:
     Phase       GetPhase();
     //@}
 
-    //! Load the scene for apperance customization
+    //! Load the scene for appearance customization
     void        ScenePerso();
 
     void        SetMovieLock(bool lock);

@@ -33,7 +33,7 @@
 #include "level/parser/parser.h"
 
 
-void PlayerApperance::DefPerso()
+void PlayerAppearance::DefPerso()
 {
     this->colorCombi.r = 206.0f/256.0f;
     this->colorCombi.g = 206.0f/256.0f;
@@ -76,7 +76,7 @@ void PlayerApperance::DefPerso()
     this->colorBand.a  = 0.0f;
 }
 
-void PlayerApperance::DefHairColor()
+void PlayerAppearance::DefHairColor()
 {
     if (this->face == 0)  // normal ?
     {
@@ -122,7 +122,7 @@ CPlayerProfile::CPlayerProfile(std::string playerName)
         m_levelInfoLoaded[static_cast<LevelCategory>(i)] = false;
     }
 
-    LoadApperance();
+    LoadAppearance();
 }
 
 CPlayerProfile::~CPlayerProfile()
@@ -392,17 +392,17 @@ void CPlayerProfile::SaveFreeGameUnlock()
     file.close();
 }
 
-// APPERANCE
+// APPEARANCE
 
-PlayerApperance& CPlayerProfile::GetApperance()
+PlayerAppearance& CPlayerProfile::GetAppearance()
 {
-    return m_apperance;
+    return m_appearance;
 }
 
-void CPlayerProfile::LoadApperance()
+void CPlayerProfile::LoadAppearance()
 {
-    m_apperance.face = 0;
-    m_apperance.DefPerso();
+    m_appearance.face = 0;
+    m_appearance.DefPerso();
 
     std::string filename = GetSaveFile("face.gam");
     if (!CResourceManager::Exists(filename))
@@ -410,48 +410,48 @@ void CPlayerProfile::LoadApperance()
 
     try
     {
-        CLevelParser apperanceParser(filename);
-        apperanceParser.Load();
+        CLevelParser appearanceParser(filename);
+        appearanceParser.Load();
         CLevelParserLine* line;
 
-        line = apperanceParser.Get("Head");
-        m_apperance.face = line->GetParam("face")->AsInt();
-        m_apperance.glasses = line->GetParam("glasses")->AsInt();
-        m_apperance.colorHair = line->GetParam("hair")->AsColor();
+        line = appearanceParser.Get("Head");
+        m_appearance.face = line->GetParam("face")->AsInt();
+        m_appearance.glasses = line->GetParam("glasses")->AsInt();
+        m_appearance.colorHair = line->GetParam("hair")->AsColor();
 
-        line = apperanceParser.Get("Body");
-        m_apperance.colorCombi = line->GetParam("combi")->AsColor();
-        m_apperance.colorBand = line->GetParam("band")->AsColor();
+        line = appearanceParser.Get("Body");
+        m_appearance.colorCombi = line->GetParam("combi")->AsColor();
+        m_appearance.colorBand = line->GetParam("band")->AsColor();
     }
     catch (CLevelParserException& e)
     {
-        GetLogger()->Error("Unable to read personalized player apperance: %s\n", e.what());
+        GetLogger()->Error("Unable to read personalized player appearance: %s\n", e.what());
     }
 }
 
-void CPlayerProfile::SaveApperance()
+void CPlayerProfile::SaveAppearance()
 {
     try
     {
-        CLevelParser apperanceParser(GetSaveFile("face.gam"));
+        CLevelParser appearanceParser(GetSaveFile("face.gam"));
         CLevelParserLineUPtr line;
 
         line = MakeUnique<CLevelParserLine>("Head");
-        line->AddParam("face", MakeUnique<CLevelParserParam>(m_apperance.face));
-        line->AddParam("glasses", MakeUnique<CLevelParserParam>(m_apperance.glasses));
-        line->AddParam("hair", MakeUnique<CLevelParserParam>(m_apperance.colorHair));
-        apperanceParser.AddLine(std::move(line));
+        line->AddParam("face", MakeUnique<CLevelParserParam>(m_appearance.face));
+        line->AddParam("glasses", MakeUnique<CLevelParserParam>(m_appearance.glasses));
+        line->AddParam("hair", MakeUnique<CLevelParserParam>(m_appearance.colorHair));
+        appearanceParser.AddLine(std::move(line));
 
         line = MakeUnique<CLevelParserLine>("Body");
-        line->AddParam("combi", MakeUnique<CLevelParserParam>(m_apperance.colorCombi));
-        line->AddParam("band", MakeUnique<CLevelParserParam>(m_apperance.colorBand));
-        apperanceParser.AddLine(std::move(line));
+        line->AddParam("combi", MakeUnique<CLevelParserParam>(m_appearance.colorCombi));
+        line->AddParam("band", MakeUnique<CLevelParserParam>(m_appearance.colorBand));
+        appearanceParser.AddLine(std::move(line));
 
-        apperanceParser.Save();
+        appearanceParser.Save();
     }
     catch (CLevelParserException& e)
     {
-        GetLogger()->Error("Unable to write personalized player apperance: %s\n", e.what());
+        GetLogger()->Error("Unable to write personalized player appearance: %s\n", e.what());
     }
 }
 
@@ -553,7 +553,7 @@ void CPlayerProfile::LoadScene(std::string dir)
         }
         else
         {
-            // Backwards combatibility
+            // Backwards compatibility
             chap = rank/100;
             rank = rank%100;
         }
