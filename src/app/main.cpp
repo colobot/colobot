@@ -60,14 +60,14 @@ object-oriented language, CBOT, which can be used to program the robots availabl
 
 The original version of the game was developed by [Epsitec](http://www.epsitec.ch/) and released in 2001.
 Later, in 2005 another version named Ceebot was released. In March 2012, through attempts
-by Polish Colobot fans, Epsitec agreeed to release the source code of the game on GPLv3 license.
+by Polish Colobot fans, Epsitec agreed to release the source code of the game on GPLv3 license.
 The license was given specifically to our community, <b>TerranovaTeam</b>,
 part of <b>International Colobot Community (ICC)</b> (previously known as <i>Polish Portal of Colobot (PPC)</i>;
 Polish: <i>Polski Portal Colobota</i>) with our website at http://colobot.info/.
 
 \section Intro Introduction
 
-The source code released by Epitec was sparsely documented. This documentation, written from scratch,
+The source code released by Epsitec was sparsely documented. This documentation, written from scratch,
 will aim to describe the various components of the code.
 
 Currently, the only documented classes are the ones written from scratch or the old ones rewritten
@@ -92,7 +92,7 @@ The current layout is the following:
  - src/graphics/opengl - concrete implementation of CDevice class in OpenGL: CGLDevice
  - src/graphics/d3d - in (far) future - perhaps a newer implementation in DirectX (9? 10?)
  - src/math - mathematical structures and functions
- - src/object - non-grphical game object logic, that is robots, buildings, etc.
+ - src/object - non-graphical game object logic, that is robots, buildings, etc.
  - src/level - main part of non-graphical game engine, that is loading levels etc.
  - src/level/parser - parser for loading/saving level files from format known as <i>scene files</i>
  - src/ui - 2D user interface (menu, buttons, check boxes, etc.)
