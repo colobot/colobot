@@ -830,7 +830,7 @@ void CEngine::DebugObject(int objRank)
     l->Debug(" type = %d\n", m_objects[objRank].type);
     l->Debug(" distance = %f\n", m_objects[objRank].distance);
     l->Debug(" shadowRank = %d\n", m_objects[objRank].shadowRank);
-    l->Debug(" transparency = %f\n", m_objects[objRank].transparency);
+    l->Debug(" ghost = %s\n", m_objects[objRank].ghost ? "true" : "false");
 
     l->Debug(" baseObj:\n");
     int baseObjRank = m_objects[objRank].baseObjRank;
@@ -984,11 +984,11 @@ void CEngine::SetObjectDrawFront(int objRank, bool draw)
     m_objects[objRank].drawFront = draw;
 }
 
-void CEngine::SetObjectTransparency(int objRank, float value)
+void CEngine::SetObjectGhostMode(int objRank, bool enabled)
 {
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
-    m_objects[objRank].transparency = value;
+    m_objects[objRank].ghost = enabled;
 }
 
 void CEngine::GetObjectBBox(int objRank, glm::vec3& min, glm::vec3& max)
@@ -3544,7 +3544,7 @@ void CEngine::Draw3DScene()
             {
                 EngineBaseObjDataTier& p3 = p2.next[l3];
 
-                if (m_objects[objRank].transparency != 0.0f)  // transparent ?
+                if (m_objects[objRank].ghost)  // transparent ?
                 {
                     transparent = true;
                     continue;
@@ -3629,7 +3629,7 @@ void CEngine::Draw3DScene()
                 {
                     EngineBaseObjDataTier& p3 = p2.next[l3];
 
-                    if (m_objects[objRank].transparency == 0.0f)
+                    if (!m_objects[objRank].ghost)
                         continue;
 
                     float dirty = (p3.state & ENG_RSTATE_DUAL_BLACK) && m_dirty ? 1.0 : 0.0;
@@ -5646,10 +5646,10 @@ const glm::mat4& CEngine::GetStaticMeshWorldMatrix(int meshHandle)
     return m_objects[objRank].transform;
 }
 
-void CEngine::SetStaticMeshTransparency(int meshHandle, float value)
+void CEngine::SetStaticMeshGhostMode(int meshHandle, bool enabled)
 {
     int objRank = meshHandle;
-    SetObjectTransparency(objRank, value);
+    SetObjectGhostMode(objRank, enabled);
 }
 
 void CEngine::SetDebugLights(bool debugLights)

@@ -53,7 +53,7 @@ public:
     void Read(CLevelParserLine* line) override;
     void Write(CLevelParserLine* line) override;
 
-    void SetTransparency(float value) override;
+    void SetGhostMode(bool enabled) override;
 
 public:
     static bool IsStaticObject(ObjectType type);

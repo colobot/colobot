@@ -2547,7 +2547,7 @@ float COldObject::GetReactorRange()
 
 // Management of transparency of the object.
 
-void COldObject::SetTransparency(float value)
+void COldObject::SetGhostMode(bool enabled)
 {
     int     i;
 
@@ -2560,7 +2560,7 @@ void COldObject::SetTransparency(float value)
                 if ( i != 9 )  continue;  // no central pillar?
             }
 
-            m_engine->SetObjectTransparency(m_objectPart[i].object, value);
+            m_engine->SetObjectGhostMode(m_objectPart[i].object, enabled);
         }
     }
 }

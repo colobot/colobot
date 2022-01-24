@@ -209,7 +209,7 @@ public:
     void        SetReactorRange(float reactorRange) override;
     float       GetReactorRange() override;
 
-    void        SetTransparency(float value) override;
+    void        SetGhostMode(bool enabled) override;
 
     Math::Sphere GetJostlingSphere() const override;
     bool        JostleObject(float force) override;

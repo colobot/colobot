@@ -162,8 +162,8 @@ public:
     // TODO: remove from here once no longer necessary
     void SetCameraCollisionSphere(const Math::Sphere& sphere);
 
-    //! Sets the transparency of object
-    virtual void SetTransparency(float value) = 0;
+    //! Sets object's ghost mode
+    virtual void SetGhostMode(bool enabled) = 0;
 
     //! Sets flag controlling animation effect on level reset
     void SetAnimateOnReset(bool animateOnReset);

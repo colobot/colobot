@@ -54,22 +54,22 @@ namespace Gfx
 const float MOUSE_EDGE_MARGIN = 0.01f;
 
 //! Changes the level of transparency of an object and objects transported (battery & cargo)
-static void SetTransparency(CObject* obj, float value)
+static void SetGhostMode(CObject* obj, bool enabled)
 {
-    obj->SetTransparency(value);
+    obj->SetGhostMode(enabled);
 
     if (obj->Implements(ObjectInterfaceType::Carrier))
     {
         CObject* cargo = dynamic_cast<CCarrierObject&>(*obj).GetCargo();
         if (cargo != nullptr)
-            cargo->SetTransparency(value);
+            cargo->SetGhostMode(enabled);
     }
 
     if (obj->Implements(ObjectInterfaceType::Powered))
     {
         CObject* power = dynamic_cast<CPoweredObject&>(*obj).GetPower();
         if (power != nullptr)
-            power->SetTransparency(value);
+            power->SetGhostMode(enabled);
     }
 }
 
@@ -262,7 +262,7 @@ void CCamera::SetType(CameraType type)
             if (IsObjectBeingTransported(obj))
                 continue;
 
-            SetTransparency(obj, 0.0f);  // opaque object
+            SetGhostMode(obj, false);  // opaque object
         }
     }
 
@@ -839,7 +839,7 @@ void CCamera::IsCollisionBack()
         if (IsObjectBeingTransported(obj))
             continue;
 
-        SetTransparency(obj, 0.0f);  // opaque object
+        SetGhostMode(obj, false);  // opaque object
 
         if (obj == m_cameraObj) continue;
 
@@ -899,7 +899,7 @@ void CCamera::IsCollisionBack()
         float len = glm::distance(m_actualEye, proj);
         if (len > del) continue;
 
-        SetTransparency(obj, 1.0f);  // transparent object
+        SetGhostMode(obj, true);  // ghost mode
     }
 }
 

@@ -105,9 +105,9 @@ void CStaticObject::TransformCameraCollisionSphere(Math::Sphere& collisionSphere
     Math::Transform(worldMatrix, collisionSphere.pos);
 }
 
-void CStaticObject::SetTransparency(float value)
+void CStaticObject::SetGhostMode(bool enabled)
 {
-    m_engine->SetStaticMeshTransparency(m_meshHandle, value);
+    m_engine->SetStaticMeshGhostMode(m_meshHandle, enabled);
 }
 
 bool CStaticObject::IsStaticObject(ObjectType type)

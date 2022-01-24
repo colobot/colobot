@@ -274,8 +274,8 @@ struct EngineObject
     float                  distance = 0.0f;
     //! Rank of the associated shadow
     int                    shadowRank = -1;
-    //! Transparency of the object [0, 1]
-    float                  transparency = 0.0f;
+    //! Ghost mode
+    bool                   ghost = false;
 
     //! Loads default values
     inline void LoadDefault()
@@ -706,7 +706,7 @@ public:
     const glm::mat4& GetStaticMeshWorldMatrix(int meshHandle);
 
     //! Sets transparency for static mesh
-    void SetStaticMeshTransparency(int meshHandle, float value);
+    void SetStaticMeshGhostMode(int meshHandle, bool enabled);
 
 
     /* *************** Object management *************** */
@@ -767,7 +767,7 @@ public:
     void            SetObjectDrawFront(int objRank, bool draw);
 
     //! Sets the transparency level for given object
-    void            SetObjectTransparency(int objRank, float value);
+    void            SetObjectGhostMode(int objRank, bool enabled);
 
     //! Returns the bounding box for an object
     void            GetObjectBBox(int objRank, glm::vec3& min, glm::vec3& max);
