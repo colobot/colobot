@@ -550,6 +550,13 @@ void CGL33ShadowRenderer::Begin()
 
     glEnable(GL_POLYGON_OFFSET_FILL);
     glPolygonOffset(2.0f, 8.0f);
+
+    glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE);
+
+    glDisable(GL_BLEND);
+    glDisable(GL_CULL_FACE);
 }
 
 void CGL33ShadowRenderer::End()
@@ -559,6 +566,8 @@ void CGL33ShadowRenderer::End()
 
     glDisable(GL_POLYGON_OFFSET_FILL);
     glPolygonOffset(0.0f, 0.0f);
+
+    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
     m_device->Restore();
 }

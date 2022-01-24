@@ -4015,41 +4015,14 @@ void CEngine::RenderShadowMap()
     // If no shadow map texture exists, create it
     if (m_shadowMap.id == 0)
     {
-        FramebufferParams params;
-        params.width = m_offscreenShadowRenderingResolution;
-        params.height = m_offscreenShadowRenderingResolution;
-        params.depth = 32;
-        params.colorAttachment = FramebufferParams::AttachmentType::None;
-        params.depthAttachment = FramebufferParams::AttachmentType::Texture;
+        m_shadowMap = m_device->CreateDepthTexture(
+            m_offscreenShadowRenderingResolution,
+            m_offscreenShadowRenderingResolution,
+            32);
 
-        CFramebuffer* framebuffer = m_device->CreateFramebuffer("shadow", params);
-        if (framebuffer == nullptr)
-        {
-            GetLogger()->Error("Could not create shadow mapping framebuffer, disabling dynamic shadows\n");
-            m_shadowMapping = false;
-            m_offscreenShadowRendering = false;
-            m_qualityShadows = false;
-            CProfiler::StopPerformanceCounter(PCNT_RENDER_SHADOW_MAP);
-            return;
-        }
-
-        m_shadowMap.id = framebuffer->GetDepthTexture();
-        m_shadowMap.size = { params.width, params.height };
-
-        GetLogger()->Info("Created shadow map texture: %dx%d, depth %d\n", params.width, params.height, params.depth);
+        GetLogger()->Info("Created shadow map texture: %dx%d, depth %d\n",
+            m_shadowMap.size.x, m_shadowMap.size.y, 32);
     }
-
-    // change state to rendering shadow maps
-    m_device->SetColorMask(false, false, false, false);
-    m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, true);
-    m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, true);
-    m_device->SetRenderState(RENDER_STATE_BLENDING, false);
-    m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
-    m_device->SetRenderState(RENDER_STATE_FOG, false);
-    m_device->SetRenderState(RENDER_STATE_CULLING, false);
-    m_device->SetRenderState(RENDER_STATE_ALPHA_TEST, true);
-    m_device->SetAlphaTestFunc(COMP_FUNC_GREATER, 0.5f);
-    m_device->SetViewport(0, 0, m_shadowMap.size.x, m_shadowMap.size.y);
 
     auto renderer = m_device->GetShadowRenderer();
     renderer->Begin();
@@ -4171,9 +4144,6 @@ void CEngine::RenderShadowMap()
     m_device->SetRenderState(RENDER_STATE_ALPHA_TEST, false);
     m_device->SetRenderState(RENDER_STATE_CULLING, false);
     m_device->SetCullMode(CULL_CW);
-
-    m_device->GetFramebuffer("default")->Bind();
-    //m_device->GetFramebuffer("shadow")->Unbind();
 
     // restore default state
     m_device->SetViewport(0, 0, m_size.x, m_size.y);
