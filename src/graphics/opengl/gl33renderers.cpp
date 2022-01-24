@@ -547,12 +547,18 @@ void CGL33ShadowRenderer::Begin()
     glUseProgram(m_program);
 
     glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
+
+    glEnable(GL_POLYGON_OFFSET_FILL);
+    glPolygonOffset(2.0f, 8.0f);
 }
 
 void CGL33ShadowRenderer::End()
 {
     glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, 0, 0);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    glDisable(GL_POLYGON_OFFSET_FILL);
+    glPolygonOffset(0.0f, 0.0f);
 
     m_device->Restore();
 }

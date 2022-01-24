@@ -163,7 +163,6 @@ enum RenderState
     RENDER_STATE_DEPTH_WRITE,
     RENDER_STATE_ALPHA_TEST,
     RENDER_STATE_CULLING,
-    RENDER_STATE_DEPTH_BIAS,
     RENDER_STATE_SHADOW_MAPPING,
 };
 
@@ -510,7 +509,6 @@ public:
         int first[], int count[], int drawCount) = 0;
 
     virtual CVertexBuffer* CreateVertexBuffer(PrimitiveType primitiveType, const Vertex3D* vertices, int vertexCount) = 0;
-    virtual void DrawVertexBuffer(CVertexBuffer*) = 0;
     virtual void DestroyVertexBuffer(CVertexBuffer*) = 0;
 
     //! Changes rendering viewport
@@ -521,12 +519,6 @@ public:
 
     //! Sets the color mask
     virtual void SetColorMask(bool red, bool green, bool blue, bool alpha) = 0;
-
-    //! Sets the function of depth test
-    virtual void SetDepthTestFunc(CompFunc func) = 0;
-
-    //! Sets the depth bias (constant value added to Z-coords)
-    virtual void SetDepthBias(float factor, float units) = 0;
 
     //! Sets the alpha test function and reference value
     virtual void SetAlphaTestFunc(CompFunc func, float refValue) = 0;

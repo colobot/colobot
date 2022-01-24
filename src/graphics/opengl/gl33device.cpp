@@ -1218,19 +1218,6 @@ CVertexBuffer* CGL33Device::CreateVertexBuffer(PrimitiveType primitiveType, cons
     return buffer;
 }
 
-void CGL33Device::DrawVertexBuffer(CVertexBuffer* buffer)
-{
-    if (m_updateLights) UpdateLights();
-    if (m_buffers.count(buffer) == 0) return;
-
-    auto b = dynamic_cast<CGL33VertexBuffer*>(buffer);
-
-    BindVAO(b->GetVAO());
-
-    GLenum type = TranslateGfxPrimitive(b->GetType());
-    glDrawArrays(type, 0, b->Size());
-}
-
 void CGL33Device::DestroyVertexBuffer(CVertexBuffer* buffer)
 {
     if (m_buffers.count(buffer) == 0) return;
@@ -1288,7 +1275,6 @@ void CGL33Device::SetRenderState(RenderState state, bool enabled)
         case RENDER_STATE_BLENDING:    flag = GL_BLEND; break;
         case RENDER_STATE_DEPTH_TEST:  flag = GL_DEPTH_TEST; break;
         case RENDER_STATE_CULLING:     flag = GL_CULL_FACE; break;
-        case RENDER_STATE_DEPTH_BIAS:  flag = GL_POLYGON_OFFSET_FILL; break;
         default: assert(false); break;
     }
 
@@ -1301,16 +1287,6 @@ void CGL33Device::SetRenderState(RenderState state, bool enabled)
 void CGL33Device::SetColorMask(bool red, bool green, bool blue, bool alpha)
 {
     glColorMask(red, green, blue, alpha);
-}
-
-void CGL33Device::SetDepthTestFunc(CompFunc func)
-{
-    glDepthFunc(TranslateGfxCompFunc(func));
-}
-
-void CGL33Device::SetDepthBias(float factor, float units)
-{
-    glPolygonOffset(factor, units);
 }
 
 void CGL33Device::SetAlphaTestFunc(CompFunc func, float refValue)

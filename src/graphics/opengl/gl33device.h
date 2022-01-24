@@ -161,7 +161,6 @@ public:
         int first[], int count[], int drawCount) override;
 
     CVertexBuffer* CreateVertexBuffer(PrimitiveType primitiveType, const Vertex3D* vertices, int vertexCount) override;
-    void DrawVertexBuffer(CVertexBuffer*) override;
     void DestroyVertexBuffer(CVertexBuffer*) override;
 
     void SetViewport(int x, int y, int width, int height) override;
@@ -169,10 +168,6 @@ public:
     void SetRenderState(RenderState state, bool enabled) override;
 
     void SetColorMask(bool red, bool green, bool blue, bool alpha) override;
-
-    void SetDepthTestFunc(CompFunc func) override;
-
-    void SetDepthBias(float factor, float units) override;
 
     void SetAlphaTestFunc(CompFunc func, float refValue) override;
 

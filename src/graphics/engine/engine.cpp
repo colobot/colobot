@@ -4049,8 +4049,6 @@ void CEngine::RenderShadowMap()
     m_device->SetRenderState(RENDER_STATE_CULLING, false);
     m_device->SetRenderState(RENDER_STATE_ALPHA_TEST, true);
     m_device->SetAlphaTestFunc(COMP_FUNC_GREATER, 0.5f);
-    m_device->SetRenderState(RENDER_STATE_DEPTH_BIAS, true);
-    m_device->SetDepthBias(2.0f, 8.0f);
     m_device->SetViewport(0, 0, m_shadowMap.size.x, m_shadowMap.size.y);
 
     auto renderer = m_device->GetShadowRenderer();
@@ -4170,8 +4168,6 @@ void CEngine::RenderShadowMap()
 
     renderer->End();
 
-    m_device->SetRenderState(RENDER_STATE_DEPTH_BIAS, false);
-    m_device->SetDepthBias(0.0f, 0.0f);
     m_device->SetRenderState(RENDER_STATE_ALPHA_TEST, false);
     m_device->SetRenderState(RENDER_STATE_CULLING, false);
     m_device->SetCullMode(CULL_CW);
