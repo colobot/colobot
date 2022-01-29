@@ -246,7 +246,6 @@ add_library(colobotbase STATIC
     object/implementation/programmable_impl.h
     object/implementation/task_executor_impl.cpp
     object/implementation/task_executor_impl.h
-    object/interface/carrier_object.h
     object/interface/controllable_object.h
     object/interface/damageable_object.h
     object/interface/destroyable_object.h
@@ -257,12 +256,12 @@ add_library(colobotbase STATIC
     object/interface/jostleable_object.h
     object/interface/movable_object.h
     object/interface/power_container_object.h
-    object/interface/powered_object.h
     object/interface/program_storage_object.h
     object/interface/programmable_object.h
     object/interface/ranged_object.h
     object/interface/shielded_auto_regen_object.h
     object/interface/shielded_object.h
+    object/interface/slotted_object.h
     object/interface/task_executor_object.h
     object/interface/trace_drawing_object.cpp
     object/interface/trace_drawing_object.h

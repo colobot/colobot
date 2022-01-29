@@ -26,6 +26,8 @@
 
 #include "object/old_object.h"
 
+#include "object/interface/slotted_object.h"
+
 #include "physics/physics.h"
 
 #include "sound/sound.h"
@@ -42,7 +44,7 @@ CTaskFire::CTaskFire(COldObject* object) : CForegroundTask(object)
 {
     m_soundChannel = -1;
 
-    assert(m_object->Implements(ObjectInterfaceType::Powered));
+    assert(HasPowerCellSlot(m_object));
 }
 
 // Object's destructor.
@@ -78,10 +80,8 @@ bool CTaskFire::EventProcess(const Event &event)
     m_lastSound -= event.rTime;
     m_progress += event.rTime*m_speed;
 
-    CPowerContainerObject* power = nullptr;
-    if (m_object->GetPower() != nullptr && m_object->GetPower()->Implements(ObjectInterfaceType::PowerContainer))
+    if (CPowerContainerObject* power = GetObjectPowerCell(m_object))
     {
-        power = dynamic_cast<CPowerContainerObject*>(m_object->GetPower());
         energy = power->GetEnergy();
              if ( m_bOrganic )  fire = ENERGY_FIREi;
         else if ( m_bRay     )  fire = ENERGY_FIREr;
@@ -313,11 +313,11 @@ Error CTaskFire::Start(float delay)
     }
     m_delay = delay;
 
-    assert(m_object->Implements(ObjectInterfaceType::Powered));
-    CObject* power = dynamic_cast<CPoweredObject*>(m_object)->GetPower();
-    if (power == nullptr || !power->Implements(ObjectInterfaceType::PowerContainer))  return ERR_FIRE_ENERGY;
+    assert(HasPowerCellSlot(m_object));
+    CPowerContainerObject *power = GetObjectPowerCell(m_object);
+    if (power == nullptr)  return ERR_FIRE_ENERGY;
 
-    energy = dynamic_cast<CPowerContainerObject&>(*power).GetEnergy();
+    energy = power->GetEnergy();
          if ( m_bOrganic )  fire = m_delay*ENERGY_FIREi;
     else if ( m_bRay     )  fire = m_delay*ENERGY_FIREr;
     else                    fire = m_delay*ENERGY_FIRE;

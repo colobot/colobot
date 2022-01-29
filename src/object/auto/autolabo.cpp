@@ -32,7 +32,7 @@
 #include "object/object_manager.h"
 #include "object/old_object.h"
 
-#include "object/interface/powered_object.h"
+#include "object/interface/slotted_object.h"
 
 #include "sound/sound.h"
 
@@ -59,7 +59,7 @@ CAutoLabo::CAutoLabo(COldObject* object) : CAuto(object)
     m_soundChannel = -1;
     Init();
 
-    assert(m_object->Implements(ObjectInterfaceType::Powered));
+    assert(object->GetNumSlots() == 1);
 }
 
 // Object's destructor.
@@ -131,7 +131,7 @@ Error CAutoLabo::StartAction(int param)
         return ERR_LABO_ALREADY;
     }
 
-    CObject* power = m_object->GetPower();
+    CObject* power = dynamic_cast<CSlottedObject&>(*m_object).GetSlotContainedObject(0);
     if (power == nullptr)
     {
         return ERR_LABO_NULL;
@@ -308,7 +308,7 @@ bool CAutoLabo::EventProcess(const Event &event)
     {
         if ( m_progress < 1.0f )
         {
-            power = m_object->GetPower();
+            power = dynamic_cast<CSlottedObject&>(*m_object).GetSlotContainedObject(0);
             if ( power != nullptr )
             {
                 power->SetScale(1.0f-m_progress);
@@ -366,10 +366,10 @@ bool CAutoLabo::EventProcess(const Event &event)
             m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));
             UpdateInterface();
 
-            power = m_object->GetPower();
+            power = dynamic_cast<CSlottedObject&>(*m_object).GetSlotContainedObject(0);
             if ( power != nullptr )
             {
-                m_object->SetPower(nullptr);
+                dynamic_cast<CSlottedObject&>(*m_object).SetSlotContainedObject(0, nullptr);
                 CObjectManager::GetInstancePointer()->DeleteObject(power);
             }
 
@@ -457,7 +457,7 @@ Error CAutoLabo::GetError()
         return ERR_BAT_VIRUS;
     }
 
-    CObject* obj = m_object->GetPower();
+    CObject* obj = dynamic_cast<CSlottedObject&>(*m_object).GetSlotContainedObject(0);
     if (obj == nullptr)  return ERR_LABO_NULL;
     ObjectType type = obj->GetType();
     if ( type != OBJECT_BULLET && type != OBJECT_TNT )  return ERR_LABO_BAD;

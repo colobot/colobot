@@ -28,8 +28,6 @@
 #include "object/object_manager.h"
 #include "object/old_object.h"
 
-#include "object/interface/carrier_object.h"
-
 #include "object/motion/motionhuman.h"
 
 #include "physics/physics.h"

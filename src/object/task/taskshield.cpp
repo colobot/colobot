@@ -32,7 +32,7 @@
 #include "object/object_manager.h"
 #include "object/old_object.h"
 
-#include "object/interface/powered_object.h"
+#include "object/interface/slotted_object.h"
 
 #include "object/subclass/shielder.h"
 
@@ -54,7 +54,7 @@ CTaskShield::CTaskShield(COldObject* object) : CBackgroundTask(object)
     m_soundChannel = -1;
     m_effectLight = -1;
 
-    assert(m_object->Implements(ObjectInterfaceType::Powered));
+    assert(HasPowerCellSlot(m_object));
     m_shielder = dynamic_cast<CShielder*>(object);
 }
 
@@ -118,12 +118,8 @@ bool CTaskShield::EventProcess(const Event &event)
     {
         energy = (1.0f/ENERGY_TIME)*event.rTime;
         energy *= GetRadius()/RADIUS_SHIELD_MAX;
-        CObject* powerObj = dynamic_cast<CPoweredObject*>(m_object)->GetPower();
-        if (powerObj != nullptr && powerObj->Implements(ObjectInterfaceType::PowerContainer))
-        {
-            CPowerContainerObject* power = dynamic_cast<CPowerContainerObject*>(powerObj);
+        if (CPowerContainerObject *power = GetObjectPowerCell(m_object))
             power->SetEnergy(power->GetEnergy()-energy);
-        }
         m_energyUsed += energy;
 
         if ( m_soundChannel == -1 )
@@ -307,9 +303,9 @@ Error CTaskShield::Start(TaskShieldMode mode, float delay)
     m_bError = true;  // operation impossible
     if ( !m_physics->GetLand() )  return ERR_WRONG_BOT;
 
-    CObject* power = m_object->GetPower();
-    if (power == nullptr || !power->Implements(ObjectInterfaceType::PowerContainer))  return ERR_SHIELD_ENERGY;
-    float energy = dynamic_cast<CPowerContainerObject&>(*power).GetEnergy();
+    CPowerContainerObject* power = GetObjectPowerCell(m_object);
+    if (power == nullptr)  return ERR_SHIELD_ENERGY;
+    float energy = power->GetEnergy();
     if ( energy == 0.0f )  return ERR_SHIELD_ENERGY;
 
     Math::Matrix* mat = m_object->GetWorldMatrix(0);

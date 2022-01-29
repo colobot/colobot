@@ -744,15 +744,18 @@ bool CScriptFunctions::rDelete(CBotVar* var, CBotVar* result, int& exception, vo
         }
         else
         {
-            if (obj->Implements(ObjectInterfaceType::Old))
+            if (obj->Implements(ObjectInterfaceType::Slotted))
             {
-                COldObject* oldobj = dynamic_cast<COldObject*>(obj);
-                if (oldobj->GetPower() != nullptr)
-                    CObjectManager::GetInstancePointer()->DeleteObject(oldobj->GetPower());
-                if (oldobj->GetCargo() != nullptr)
-                    CObjectManager::GetInstancePointer()->DeleteObject(oldobj->GetCargo());
-                oldobj->SetPower(nullptr);
-                oldobj->SetCargo(nullptr);
+                CSlottedObject* slotted = dynamic_cast<CSlottedObject*>(obj);
+                for (int slotNum = slotted->GetNumSlots() - 1; slotNum >= 0; slotNum--)
+                {
+                    CObject* sub = slotted->GetSlotContainedObject(slotNum);
+                    if (sub != nullptr)
+                    {
+                        slotted->SetSlotContainedObject(slotNum, nullptr);
+                        CObjectManager::GetInstancePointer()->DeleteObject(sub);
+                    }
+                }
             }
             CObjectManager::GetInstancePointer()->DeleteObject(obj);
         }
@@ -3686,9 +3689,10 @@ void CScriptFunctions::uObject(CBotVar* botThis, void* user)
 
     // Updates the type of battery.
     pVar = pVar->GetNext();  // "energyCell"
-    if (object->Implements(ObjectInterfaceType::Powered))
+    CSlottedObject *asSlotted = object->Implements(ObjectInterfaceType::Slotted) ? dynamic_cast<CSlottedObject*>(object) : nullptr;
+    if (asSlotted != nullptr && asSlotted->MapPseudoSlot(CSlottedObject::Pseudoslot::POWER) >= 0)
     {
-        CObject* power = dynamic_cast<CPoweredObject*>(object)->GetPower();
+        CObject *power = asSlotted->GetSlotContainedObjectReq(CSlottedObject::Pseudoslot::POWER);
         if (power == nullptr)
         {
             pVar->SetPointer(nullptr);
@@ -3701,9 +3705,9 @@ void CScriptFunctions::uObject(CBotVar* botThis, void* user)
 
     // Updates the transported object's type.
     pVar = pVar->GetNext();  // "load"
-    if (object->Implements(ObjectInterfaceType::Carrier))
+    if (asSlotted != nullptr && asSlotted->MapPseudoSlot(CSlottedObject::Pseudoslot::CARRYING) >= 0)
     {
-        CObject* cargo = dynamic_cast<CCarrierObject*>(object)->GetCargo();
+        CObject* cargo = asSlotted->GetSlotContainedObjectReq(CSlottedObject::Pseudoslot::CARRYING);
         if (cargo == nullptr)
         {
             pVar->SetPointer(nullptr);

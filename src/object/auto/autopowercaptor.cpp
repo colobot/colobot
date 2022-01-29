@@ -30,8 +30,7 @@
 #include "object/object_manager.h"
 #include "object/old_object.h"
 
-#include "object/interface/carrier_object.h"
-#include "object/interface/powered_object.h"
+#include "object/interface/slotted_object.h"
 #include "object/interface/transportable_object.h"
 
 #include "sound/sound.h"
@@ -267,34 +266,22 @@ void CAutoPowerCaptor::ChargeObject(float rTime)
             }
         }
 
-        if (obj->Implements(ObjectInterfaceType::Powered))
+        if (obj->Implements(ObjectInterfaceType::Slotted))
         {
-            CObject* power = dynamic_cast<CPoweredObject&>(*obj).GetPower();
-            if ( power != nullptr && power->Implements(ObjectInterfaceType::PowerContainer) )
+            CSlottedObject* slotted = dynamic_cast<CSlottedObject*>(obj);
+            for (int slot = slotted->GetNumSlots(); slot >= 0; slot--)
             {
-                CPowerContainerObject* powerContainer = dynamic_cast<CPowerContainerObject*>(power);
-                if (powerContainer->IsRechargeable())
+                CObject *held = slotted->GetSlotContainedObject(slot);
+                if (held != nullptr && held->Implements(ObjectInterfaceType::PowerContainer))
                 {
-                    float energy = powerContainer->GetEnergy();
-                    energy += rTime/2.0f;
-                    if ( energy > 1.0f )  energy = 1.0f;
-                    powerContainer->SetEnergy(energy);
-                }
-            }
-        }
-
-        if (obj->Implements(ObjectInterfaceType::Carrier))
-        {
-            CObject* power = dynamic_cast<CCarrierObject&>(*obj).GetCargo();
-            if ( power != nullptr && power->Implements(ObjectInterfaceType::PowerContainer) )
-            {
-                CPowerContainerObject* powerContainer = dynamic_cast<CPowerContainerObject*>(power);
-                if (powerContainer->IsRechargeable())
-                {
-                    float energy = powerContainer->GetEnergy();
-                    energy += rTime/2.0f;
-                    if ( energy > 1.0f )  energy = 1.0f;
-                    powerContainer->SetEnergy(energy);
+                    CPowerContainerObject* powerContainer = dynamic_cast<CPowerContainerObject*>(held);
+                    if (powerContainer->IsRechargeable())
+                    {
+                        float energy = powerContainer->GetEnergy();
+                        energy += rTime/2.0f;
+                        if ( energy > 1.0f )  energy = 1.0f;
+                        powerContainer->SetEnergy(energy);
+                    }
                 }
             }
         }
