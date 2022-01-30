@@ -134,7 +134,7 @@ bool CAutoPowerStation::EventProcess(const Event &event)
         if (vehicle != nullptr && vehicle->Implements(ObjectInterfaceType::Slotted))
         {
             CSlottedObject* slotted = dynamic_cast<CSlottedObject*>(vehicle);
-            for (int slot = slotted->GetNumSlots(); slot >= 0; slot--)
+            for (int slot = slotted->GetNumSlots() - 1; slot >= 0; slot--)
             {
                 CObject *power = slotted->GetSlotContainedObject(slot);
                 if (power != nullptr && power->Implements(ObjectInterfaceType::PowerContainer))
