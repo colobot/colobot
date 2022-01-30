@@ -269,7 +269,7 @@ void CAutoPowerCaptor::ChargeObject(float rTime)
         if (obj->Implements(ObjectInterfaceType::Slotted))
         {
             CSlottedObject* slotted = dynamic_cast<CSlottedObject*>(obj);
-            for (int slot = slotted->GetNumSlots(); slot >= 0; slot--)
+            for (int slot = slotted->GetNumSlots() - 1; slot >= 0; slot--)
             {
                 CObject *held = slotted->GetSlotContainedObject(slot);
                 if (held != nullptr && held->Implements(ObjectInterfaceType::PowerContainer))
