@@ -33,7 +33,7 @@ struct Point;
 
 class CObject;
 
-const int MAXPOINTS = 500;
+const int MAXPOINTS = 50000;
 
 
 enum TaskGotoGoal
@@ -103,8 +103,6 @@ protected:
     void        BeamStart();
     void        BeamInit();
     Error       BeamSearch(const Math::Vector &start, const Math::Vector &goal, float goalRadius);
-    Error       BeamExplore(const Math::Vector &prevPos, const Math::Vector &curPos, const Math::Vector &goalPos, float goalRadius, float angle, int nbDiv, float step, int i, int nbIter);
-    Math::Vector    BeamPoint(const Math::Vector &startPoint, const Math::Vector &goalPoint, float angle, float step);
 
     bool        BitmapTestLine(const Math::Vector &start, const Math::Vector &goal, float stepAngle, bool bSecond);
     void        BitmapObject();
@@ -117,6 +115,7 @@ protected:
     void        BitmapSetDot(int rank, int x, int y);
     void        BitmapClearDot(int rank, int x, int y);
     bool        BitmapTestDot(int rank, int x, int y);
+    bool        BitmapTestDotIsVisitable(int x, int y);
 
 protected:
     Math::Vector        m_goal;
@@ -141,10 +140,14 @@ protected:
     int             m_bmSize = 0;       // width or height of the table
     int             m_bmOffset = 0;     // m_bmSize/2
     int             m_bmLine = 0;       // increment line m_bmSize/8
-    std::unique_ptr<unsigned char[]> m_bmArray;      // bit table
+    std::unique_ptr<unsigned char[]> m_bmArray;      // Bit table
+    std::unique_ptr<int32_t[]> m_bfsDistances; // Distances to the goal for breadth-first search.
+    std::unique_ptr<uint32_t[]> m_bfsQueue;  // Nodes in the queue. Stored as indices.
+    int             m_bfsQueueBegin = 0;     // Front of the queue. This is the next node to be expanded.
+    int             m_bfsQueueEnd = 0;       // Back of the queue. This is where nodes are inserted.
     int             m_bmMinX = 0, m_bmMinY = 0;
     int             m_bmMaxX = 0, m_bmMaxY = 0;
-    int             m_bmTotal = 0;      // number of points in m_bmPoints
+    int             m_bmTotal = 0;      // index of final point in m_bmPoints
     int             m_bmIndex = 0;      // index in m_bmPoints
     Math::Vector        m_bmPoints[MAXPOINTS+2];
     signed char     m_bmIter[MAXPOINTS+2] = {};
