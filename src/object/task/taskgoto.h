@@ -99,10 +99,10 @@ protected:
     void        ComputeRepulse(Math::Point &dir);
     void        ComputeFlyingRepulse(float &dir);
 
-    int         BeamShortcut();
-    void        BeamStart();
-    void        BeamInit();
-    Error       BeamSearch(const Math::Vector &start, const Math::Vector &goal, float goalRadius);
+    int         PathFindingShortcut();
+    void        PathFindingStart();
+    void        PathFindingInit();
+    Error       PathFindingSearch(const Math::Vector &start, const Math::Vector &goal, float goalRadius);
 
     bool        BitmapTestLine(const Math::Vector &start, const Math::Vector &goal);
     void        BitmapObject();

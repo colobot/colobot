@@ -222,7 +222,7 @@ bool CTaskGoto::EventProcess(const Event &event)
             if ( m_bmCargoObject->GetType() == OBJECT_BASE )  dist = 12.0f;
         }
 
-        ret = BeamSearch(pos, goal, dist);
+        ret = PathFindingSearch(pos, goal, dist);
         if ( ret == ERR_OK )
         {
             if ( m_physics->GetLand() )  m_phase = TGP_BEAMWCOLD;
@@ -346,7 +346,7 @@ bool CTaskGoto::EventProcess(const Event &event)
         {
             m_physics->SetMotorSpeedX(0.0f);  // stops the advance
             m_physics->SetMotorSpeedZ(0.0f);  // stops the rotation
-            BeamStart();  // we start all
+            PathFindingStart();  // we start all
             return true;
         }
 
@@ -790,7 +790,7 @@ Error CTaskGoto::Start(Math::Vector goal, float altitude,
             }
         }
 
-        BeamStart();
+        PathFindingStart();
 
         if ( m_bmCargoObject == nullptr )
         {
@@ -826,7 +826,7 @@ Error CTaskGoto::IsEnded()
         {
             m_physics->SetMotorSpeedX(0.0f);  // stops the advance
             m_physics->SetMotorSpeedZ(0.0f);  // stops the rotation
-            BeamInit();
+            PathFindingInit();
             m_phase = TGP_BEAMSEARCH;  // will seek the path
         }
         return ERR_CONTINUE;
@@ -888,7 +888,7 @@ Error CTaskGoto::IsEnded()
             m_physics->SetMotorSpeedX(0.0f);  // stops the advance
             m_physics->SetMotorSpeedZ(0.0f);  // stops the rotation
 
-            m_bmIndex = BeamShortcut();
+            m_bmIndex = PathFindingShortcut();
 
             if ( m_bmIndex > m_bmTotal )
             {
@@ -1630,7 +1630,7 @@ void CTaskGoto::ComputeFlyingRepulse(float &dir)
 // Among all of the following, seek if there is one allowing to go directly to the crow flies.
 // If yes, skip all the unnecessary intermediate points.
 
-int CTaskGoto::BeamShortcut()
+int CTaskGoto::PathFindingShortcut()
 {
     int     i;
 
@@ -1647,7 +1647,7 @@ int CTaskGoto::BeamShortcut()
 
 // That's the big start.
 
-void CTaskGoto::BeamStart()
+void CTaskGoto::PathFindingStart()
 {
     Math::Vector    min, max;
 
@@ -1673,14 +1673,14 @@ void CTaskGoto::BeamStart()
     {
         m_physics->SetMotorSpeedX(0.0f);  // stops the advance
         m_physics->SetMotorSpeedZ(0.0f);  // stops the rotation
-        BeamInit();
+        PathFindingInit();
         m_phase = TGP_BEAMSEARCH;  // will seek the path
     }
 }
 
-// Initialization before the first BeamSearch.
+// Initialization before the first PathFindingSearch.
 
-void CTaskGoto::BeamInit()
+void CTaskGoto::PathFindingInit()
 {
     int     i;
 
@@ -1701,8 +1701,8 @@ void CTaskGoto::BeamInit()
 // ERR_CONTINUE if not done yet
 // goalRadius: distance at which we must approach the goal
 
-Error CTaskGoto::BeamSearch(const Math::Vector &start, const Math::Vector &goal,
-                            float goalRadius)
+Error CTaskGoto::PathFindingSearch(const Math::Vector &start, const Math::Vector &goal,
+                                   float goalRadius)
 {
     m_bmStep ++;
 
