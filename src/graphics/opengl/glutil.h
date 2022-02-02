@@ -135,30 +135,6 @@ private:
 
 std::unique_ptr<CGLFrameBufferPixels> GetGLFrameBufferPixels(const glm::ivec2& size);
 
-struct LightLocations
-{
-    //! true enables light
-    GLint enabled = -1;
-    //! Light type
-    GLint type = -1;
-    //! Position or direction vector
-    GLint position = -1;
-    //! Ambient color
-    GLint ambient = -1;
-    //! Diffuse color
-    GLint diffuse = -1;
-    //! Specular color
-    GLint specular = -1;
-    //! Attenuation
-    GLint attenuation = -1;
-    //! Spot light direction
-    GLint spotDirection = -1;
-    //! Spot light exponent
-    GLint spotExponent = -1;
-    //! Spot light cutoff
-    GLint spotCutoff = -1;
-};
-
 struct UniformLocations
 {
     // Uniforms
@@ -179,8 +155,6 @@ struct UniformLocations
     GLint primaryTexture = -1;
     //! Secondary texture sampler
     GLint secondaryTexture = -1;
-    //! Shadow texture sampler
-    GLint shadowTexture = -1;
 
     //! true enables texture
     GLint textureEnabled[3] = {};
@@ -190,29 +164,6 @@ struct UniformLocations
     GLint alphaTestEnabled = -1;
     //! Alpha test reference value
     GLint alphaReference = -1;
-
-    //! true enables fog
-    GLint fogEnabled = -1;
-    //! Fog range
-    GLint fogRange = -1;
-    //! Fog color
-    GLint fogColor = -1;
-
-    //! Shadow color
-    GLint shadowColor = -1;
-    //! Shadow texel size
-    GLint shadowTexelSize = -1;
-
-    // Number of enabled lights
-    GLint lightCount = -1;
-    //! Ambient color
-    GLint ambientColor = -1;
-    //! Diffuse color
-    GLint diffuseColor = -1;
-    //! Specular color
-    GLint specularColor = -1;
-
-    LightLocations lights[8] = {};
 };
 
 } // namespace Gfx

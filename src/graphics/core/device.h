@@ -135,7 +135,6 @@ enum TextureUnit
 {
     TEXTURE_PRIMARY = 0,
     TEXTURE_SECONDARY = 1,
-    TEXTURE_SHADOW = 2,
 };
 
 /**
@@ -147,7 +146,6 @@ enum TransformType
     TRANSFORM_WORLD,
     TRANSFORM_VIEW,
     TRANSFORM_PROJECTION,
-    TRANSFORM_SHADOW
 };
 
 /**
@@ -156,14 +154,11 @@ enum TransformType
  */
 enum RenderState
 {
-    RENDER_STATE_LIGHTING,
     RENDER_STATE_BLENDING,
-    RENDER_STATE_FOG,
     RENDER_STATE_DEPTH_TEST,
     RENDER_STATE_DEPTH_WRITE,
     RENDER_STATE_ALPHA_TEST,
     RENDER_STATE_CULLING,
-    RENDER_STATE_SHADOW_MAPPING,
 };
 
 /**
@@ -412,12 +407,6 @@ public:
         return m_capabilities;
     }
 
-    //! Provides a hook to debug graphics code (implementation-specific)
-    virtual void DebugHook() = 0;
-
-    //! Displays light positions to aid in debuggings
-    virtual void DebugLights() = 0;
-
     //! Returns a name of this device
     virtual std::string GetName() = 0;
 
@@ -453,16 +442,6 @@ public:
 
     //! Sets the transform matrix of given type
     virtual void SetTransform(TransformType type, const glm::mat4 &matrix) = 0;
-
-    //! Sets the current material
-    virtual void SetMaterial(const Material &material) = 0;
-
-    //! Returns the maximum number of lights available
-    virtual int GetMaxLightCount() = 0;
-    //! Sets the light at given index
-    virtual void SetLight(int index, const Light &light) = 0;
-    //! Enables/disables the light at given index
-    virtual void SetLightEnabled(int index, bool enabled) = 0;
 
     //! Creates a texture from image; the image can be safely removed after that
     virtual Texture CreateTexture(CImage *image, const TextureCreateParams &params) = 0;
@@ -529,17 +508,8 @@ public:
     //! Sets the clear color
     virtual void SetClearColor(const Color &color) = 0;
 
-    //! Sets the global ambient color
-    virtual void SetGlobalAmbient(const Color &color) = 0;
-
-    //! Sets the fog parameters: mode, color, start distance, end distance and density (for exp models)
-    virtual void SetFogParams(FogMode mode, const Color &color, float start, float end, float density) = 0;
-
     //! Sets the current cull mode
     virtual void SetCullMode(CullMode mode) = 0;
-
-    //! Sets shadow color
-    virtual void SetShadowColor(float value) = 0;
 
     //! Sets the current fill mode
     virtual void SetFillMode(FillMode mode) = 0;

@@ -32,36 +32,10 @@
 namespace Gfx
 {
 
-/**
- * \struct Material
- * \brief Material of a surface
- *
- * This structure was created as analog to DirectX's D3DMATERIAL.
- *
- * It contains values of 3 material colors: diffuse, ambient and specular.
- * In D3DMATERIAL there are other fields, but they are not used
- * by the graphics engine.
- */
+//! Remains of the legacy material structure, to be reused
 struct Material
 {
-    //! Diffuse color
-    Color diffuse;
-    //! Ambient color
-    Color ambient;
-    //! Specular color
-    Color specular;
-
-    bool operator==(const Material &mat) const
-    {
-        return diffuse == mat.diffuse && ambient == mat.ambient && specular == mat.specular;
-    }
-
-    bool operator!=(const Material &mat) const
-    {
-        return ! operator==(mat);
-    }
+    
 };
 
-
 } // namespace Gfx
-

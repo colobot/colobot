@@ -101,9 +101,6 @@ public:
     CGL33Device(const DeviceConfig &config);
     virtual ~CGL33Device();
 
-    void DebugHook() override;
-    void DebugLights() override;
-
     std::string GetName() override;
 
     bool Create() override;
@@ -125,12 +122,6 @@ public:
     void Restore() override;
 
     void SetTransform(TransformType type, const glm::mat4 &matrix) override;
-
-    void SetMaterial(const Material &material) override;
-
-    int GetMaxLightCount() override;
-    void SetLight(int index, const Light &light) override;
-    void SetLightEnabled(int index, bool enabled) override;
 
     Texture CreateTexture(CImage *image, const TextureCreateParams &params) override;
     Texture CreateTexture(ImageData *data, const TextureCreateParams &params) override;
@@ -175,13 +166,7 @@ public:
 
     void SetClearColor(const Color &color) override;
 
-    void SetGlobalAmbient(const Color &color) override;
-
-    void SetFogParams(FogMode mode, const Color &color, float start, float end, float density) override;
-
     void SetCullMode(CullMode mode) override;
-
-    void SetShadowColor(float value) override;
 
     void SetFillMode(FillMode mode) override;
 
@@ -211,8 +196,6 @@ private:
     void UpdateTextureParams(int index);
     //! Updates texture state
     inline void UpdateTextureState(int index);
-    //! Update light parameters
-    void UpdateLights();
 
     //! Binds VBO
     inline void BindVBO(GLuint vbo);
@@ -229,29 +212,17 @@ private:
     DeviceConfig m_config;
 
     //! Current world matrix
-    glm::mat4 m_worldMat;
+    glm::mat4 m_worldMat = glm::mat4(1.0f);
     //! Current view matrix
-    glm::mat4 m_viewMat;
+    glm::mat4 m_viewMat = glm::mat4(1.0f);
     //! OpenGL modelview matrix = world matrix * view matrix
-    glm::mat4 m_modelviewMat;
+    glm::mat4 m_modelviewMat = glm::mat4(1.0f);
     //! Current projection matrix
-    glm::mat4 m_projectionMat;
+    glm::mat4 m_projectionMat = glm::mat4(1.0f);
     //! Combined world-view-projection matrix
-    glm::mat4 m_combinedMatrix;
+    glm::mat4 m_combinedMatrix = glm::mat4(1.0f);
     //! true means combined matrix is outdated
-    bool m_combinedMatrixOutdated = true;
-
-    //! The current material
-    Material m_material;
-
-    //! Whether lighting is enabled
-    bool m_lighting = false;
-    //! true means that light update is needed
-    bool m_updateLights = false;
-    //! Current lights
-    std::vector<Light> m_lights;
-    //! Current lights enable status
-    std::vector<bool> m_lightsEnabled;
+    bool m_combinedMatrixOutdated = false;
 
     //! Current textures; \c nullptr value means unassigned
     std::vector<Texture> m_currentTextures;
@@ -286,8 +257,6 @@ private:
 
     DynamicBuffer m_dynamicBuffer;
 
-    //! Current mode
-    unsigned int m_mode = 0;
     //! Uniform locations for all modes
     UniformLocations m_uniforms;
 

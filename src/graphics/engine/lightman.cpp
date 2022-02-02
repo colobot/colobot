@@ -89,7 +89,7 @@ CLightManager::~CLightManager()
 void CLightManager::SetDevice(CDevice* device)
 {
     m_device = device;
-    m_lightMap = std::vector<int>(m_device->GetMaxLightCount(), -1);
+    m_lightMap = std::vector<int>(8, -1);
 }
 
 void CLightManager::DebugDumpLights()
@@ -484,12 +484,12 @@ void CLightManager::UpdateDeviceLights(EngineObjectType type)
         if (rank != -1)
         {
             Light light = m_dynLights[rank].light;
-            m_device->SetLight(i, light);
-            m_device->SetLightEnabled(i, true);
+            //m_device->SetLight(i, light);
+            //m_device->SetLightEnabled(i, true);
         }
         else
         {
-            m_device->SetLightEnabled(i, false);
+            //m_device->SetLightEnabled(i, false);
         }
     }
 }

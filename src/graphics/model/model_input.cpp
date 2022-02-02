@@ -18,7 +18,6 @@
  */
 
 #include "graphics/model/model_input.h"
-#include "graphics/core/material.h"
 
 #include "common/ioutils.h"
 #include "common/logger.h"
@@ -36,6 +35,27 @@
 
 namespace Gfx
 {
+
+//! Legacy material structure
+struct LegacyMaterial
+{
+    //! Diffuse color
+    Color diffuse;
+    //! Ambient color
+    Color ambient;
+    //! Specular color
+    Color specular;
+
+    bool operator==(const LegacyMaterial& mat) const
+    {
+        return diffuse == mat.diffuse && ambient == mat.ambient && specular == mat.specular;
+    }
+
+    bool operator!=(const LegacyMaterial& mat) const
+    {
+        return !operator==(mat);
+    }
+};
 
 // Private functions
 namespace ModelInput
@@ -58,12 +78,12 @@ namespace ModelInput
 
     Vertex3D ReadBinaryVertex(std::istream& stream);
     Vertex3D ReadBinaryVertexTex2(std::istream& stream);
-    Material ReadBinaryMaterial(std::istream& stream);
+    LegacyMaterial ReadBinaryMaterial(std::istream& stream);
 
     std::string ReadLineString(std::istream& stream, const std::string& expectedPrefix);
     void ReadValuePrefix(std::istream& stream, const std::string& expectedPrefix);
     Vertex3D ParseVertexTex2(const std::string& text);
-    Material ParseMaterial(const std::string& text);
+    LegacyMaterial ParseMaterial(const std::string& text);
     glm::vec3 ParseVector(const std::string& text);
     ModelCrashSphere ParseCrashSphere(const std::string& text);
     ModelShadowSpot ParseShadowSpot(const std::string& text);
@@ -364,7 +384,7 @@ CModelMesh ModelInput::ReadTextMesh(std::istream& stream)
         t.p3 = ParseVertexTex2(p3Text);
 
         std::string matText = ReadLineString(stream, "mat");
-        Material mat = ParseMaterial(matText);
+        LegacyMaterial mat = ParseMaterial(matText);
 
         auto diffuse = Gfx::ColorToIntColor(mat.diffuse);
         glm::u8vec4 color = { diffuse.r, diffuse.g, diffuse.b, 255 };
@@ -677,9 +697,9 @@ Vertex3D ModelInput::ReadBinaryVertexTex2(std::istream& stream)
     return vertex;
 }
 
-Material ModelInput::ReadBinaryMaterial(std::istream& stream)
+LegacyMaterial ModelInput::ReadBinaryMaterial(std::istream& stream)
 {
-    Material material;
+    LegacyMaterial material;
 
     material.diffuse.r =  ReadBinaryFloat(stream);
     material.diffuse.g =  ReadBinaryFloat(stream);
@@ -766,9 +786,9 @@ Vertex3D ModelInput::ParseVertexTex2(const std::string& text)
     return vertex;
 }
 
-Material ModelInput::ParseMaterial(const std::string& text)
+LegacyMaterial ModelInput::ParseMaterial(const std::string& text)
 {
-    Material material;
+    LegacyMaterial material;
 
     std::stringstream stream;
     stream.str(text);

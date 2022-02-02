@@ -1931,7 +1931,6 @@ void CEngine::SetState(int state, const Color& color)
 
     if (state & ENG_RSTATE_TTEXTURE_BLACK)  // transparent black texture?
     {
-        m_device->SetRenderState(RENDER_STATE_FOG,         false);
         m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
         m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  false);
 
@@ -1950,7 +1949,6 @@ void CEngine::SetState(int state, const Color& color)
     }
     else if (state & ENG_RSTATE_TTEXTURE_WHITE)  // transparent white texture?
     {
-        m_device->SetRenderState(RENDER_STATE_FOG,         false);
         m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
         m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  false);
 
@@ -1969,7 +1967,6 @@ void CEngine::SetState(int state, const Color& color)
     }
     else if (state & ENG_RSTATE_TCOLOR_BLACK)  // transparent black color?
     {
-        m_device->SetRenderState(RENDER_STATE_FOG,         false);
         m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
         m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  false);
 
@@ -1980,7 +1977,6 @@ void CEngine::SetState(int state, const Color& color)
     }
     else if (state & ENG_RSTATE_TCOLOR_WHITE)  // transparent white color?
     {
-        m_device->SetRenderState(RENDER_STATE_FOG,         false);
         m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
         m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  false);
 
@@ -1991,7 +1987,6 @@ void CEngine::SetState(int state, const Color& color)
     }
     else if (state & ENG_RSTATE_TDIFFUSE)  // diffuse color as transparent?
     {
-        m_device->SetRenderState(RENDER_STATE_FOG,         false);
         m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
         m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  false);
 
@@ -2008,7 +2003,6 @@ void CEngine::SetState(int state, const Color& color)
     }
     else if (state & ENG_RSTATE_OPAQUE_TEXTURE) // opaque texture ?
     {
-        m_device->SetRenderState(RENDER_STATE_FOG,         false);
         m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
         m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  false);
         m_device->SetRenderState(RENDER_STATE_BLENDING,    false);
@@ -2018,7 +2012,6 @@ void CEngine::SetState(int state, const Color& color)
     }
     else if (state & ENG_RSTATE_OPAQUE_COLOR) // opaque color ?
     {
-        m_device->SetRenderState(RENDER_STATE_FOG,         false);
         m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
         m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  false);
         m_device->SetRenderState(RENDER_STATE_BLENDING,    false);
@@ -2027,7 +2020,6 @@ void CEngine::SetState(int state, const Color& color)
     }
     else if (state & ENG_RSTATE_TEXT)  // font rendering?
     {
-        m_device->SetRenderState(RENDER_STATE_FOG,         false);
         m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
         m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  false);
 
@@ -2042,7 +2034,6 @@ void CEngine::SetState(int state, const Color& color)
         m_device->SetRenderState(RENDER_STATE_BLENDING,    true);
         m_device->SetBlendFunc(BLEND_SRC_ALPHA, BLEND_INV_SRC_ALPHA);
 
-        m_device->SetRenderState(RENDER_STATE_FOG,         true);
         m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, true);
 
         m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  true);
@@ -2062,7 +2053,6 @@ void CEngine::SetState(int state, const Color& color)
     }
     else if (state & ENG_RSTATE_TTEXTURE_ALPHA)  // texture with alpha channel?
     {
-        m_device->SetRenderState(RENDER_STATE_FOG,         false);
         m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
 
         m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  true);
@@ -2085,7 +2075,6 @@ void CEngine::SetState(int state, const Color& color)
     }
     else if (state & ENG_RSTATE_TCOLOR_ALPHA)
     {
-        m_device->SetRenderState(RENDER_STATE_FOG,         false);
         m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
         m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  false);
 
@@ -2100,7 +2089,6 @@ void CEngine::SetState(int state, const Color& color)
         m_device->SetRenderState(RENDER_STATE_BLENDING,    false);
 
         m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, true);
-        m_device->SetRenderState(RENDER_STATE_FOG,         true);
 
         TextureStageParams params;
         params.colorOperation = TEX_MIX_OPER_DEFAULT; // default modulate
@@ -2109,10 +2097,6 @@ void CEngine::SetState(int state, const Color& color)
         m_device->SetTextureEnabled(0, true);
         m_device->SetTextureStageParams(0, params);
     }
-
-    if (state & ENG_RSTATE_FOG)
-        m_device->SetRenderState(RENDER_STATE_FOG, true);
-
 
     bool second = m_dirty;
 
@@ -2164,22 +2148,11 @@ void CEngine::SetState(int state, const Color& color)
         m_device->SetRenderState(RENDER_STATE_CULLING, true);
         m_device->SetCullMode(CULL_CCW);
     }
-
-    if (state & ENG_RSTATE_LIGHT)
-        m_device->SetGlobalAmbient(Color(1.0f, 1.0f, 1.0f, 1.0f));
-    else
-        m_device->SetGlobalAmbient(m_ambientColor[m_rankView]);
-
-
-    // In interface mode, disable lighting
-    if (m_interfaceMode)
-        m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
 }
 
 void CEngine::SetMaterial(const Material& mat)
 {
     m_lastMaterial = mat;
-    m_device->SetMaterial(mat);
 }
 
 void CEngine::SetViewParams(const glm::vec3 &eyePt, const glm::vec3 &lookatPt, const glm::vec3 &upVec)
@@ -3246,7 +3219,6 @@ void CEngine::Draw3DScene()
 
     float fogStart = m_deepView[m_rankView] * m_fogStart[m_rankView] * m_clippingDistance;
     float fogEnd = m_deepView[m_rankView] * m_clippingDistance;
-    m_device->SetFogParams(FOG_LINEAR, m_fogColor[m_rankView], fogStart, fogEnd, 1.0f);
 
     m_device->SetTransform(TRANSFORM_PROJECTION, m_matProj);
     m_device->SetTransform(TRANSFORM_VIEW, m_matView);
@@ -3516,9 +3488,6 @@ void CEngine::Draw3DScene()
 
     m_lightMan->UpdateDeviceLights(ENG_OBJTYPE_TERRAIN);
 
-    if (m_debugLights)
-        m_device->DebugLights();
-
     if (m_debugDumpLights)
     {
         m_debugDumpLights = false;
@@ -3546,8 +3515,6 @@ void CEngine::Draw3DScene()
 
     CProfiler::StopPerformanceCounter(PCNT_RENDER_WATER);
 
-    m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
-
     RenderPendingDebugDraws();
 
     if (m_debugGoto)
@@ -3574,8 +3541,6 @@ void CEngine::Draw3DScene()
     CProfiler::StopPerformanceCounter(PCNT_RENDER_PARTICLE_WORLD);
 
     particleRenderer->End();
-
-    m_device->SetRenderState(RENDER_STATE_LIGHTING, true);
 
     m_lightning->Draw();                     // draws lightning
 
@@ -4089,8 +4054,6 @@ void CEngine::DrawInterface()
     m_device->Restore();
 
     m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, false);
-    m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
-    m_device->SetRenderState(RENDER_STATE_FOG, false);
 
     SetInterfaceCoordinates();
 
@@ -4213,8 +4176,6 @@ void CEngine::DrawInterface()
         particleRenderer->End();
 
         m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, false);
-        m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
-        m_device->SetRenderState(RENDER_STATE_FOG, false);
 
         m_device->Restore();
 
@@ -4548,16 +4509,9 @@ void CEngine::UpdateGroundSpotTextures()
 void CEngine::DrawShadowSpots()
 {
     m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
-    m_device->SetRenderState(RENDER_STATE_LIGHTING, false);
 
     glm::mat4 matrix = glm::mat4(1.0f);
     m_device->SetTransform(TRANSFORM_WORLD, matrix);
-
-
-    Material material;
-    material.diffuse = Color(1.0f, 1.0f, 1.0f);
-    material.ambient = Color(0.5f, 0.5f, 0.5f);
-    SetMaterial(material);
 
     // TODO: create a separate texture
     SetTexture("textures/effect03.png");
@@ -4742,7 +4696,6 @@ void CEngine::DrawShadowSpots()
     }
 
     m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, true);
-    m_device->SetRenderState(RENDER_STATE_LIGHTING, true);
 }
 
 void CEngine::DrawBackground()
@@ -5096,11 +5049,6 @@ void CEngine::DrawMouse()
 
     SetWindowCoordinates();
 
-    Material material;
-    material.diffuse = Color(1.0f, 1.0f, 1.0f);
-    material.ambient = Color(0.5f, 0.5f, 0.5f);
-
-    m_device->SetMaterial(material);
     m_device->SetTexture(0, m_miceTexture);
 
     SetUITexture(m_miceTexture);
