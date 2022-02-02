@@ -104,7 +104,7 @@ protected:
     void        BeamInit();
     Error       BeamSearch(const Math::Vector &start, const Math::Vector &goal, float goalRadius);
 
-    bool        BitmapTestLine(const Math::Vector &start, const Math::Vector &goal, float stepAngle, bool bSecond);
+    bool        BitmapTestLine(const Math::Vector &start, const Math::Vector &goal);
     void        BitmapObject();
     void        BitmapTerrain(const Math::Vector &min, const Math::Vector &max);
     void        BitmapTerrain(int minx, int miny, int maxx, int maxy);

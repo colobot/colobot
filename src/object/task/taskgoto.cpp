@@ -1636,7 +1636,7 @@ int CTaskGoto::BeamShortcut()
 
     for ( i=m_bmTotal ; i>=m_bmIndex+2 ; i-- )  // tries from the last
     {
-        if ( BitmapTestLine(m_bmPoints[m_bmIndex], m_bmPoints[i], 0.0f, false) )
+        if ( BitmapTestLine(m_bmPoints[m_bmIndex], m_bmPoints[i]) )
         {
             return i;  // bingo, found
         }
@@ -1866,62 +1866,73 @@ Error CTaskGoto::BeamSearch(const Math::Vector &start, const Math::Vector &goal,
 
 // Tests if a path along a straight line is possible.
 
-bool CTaskGoto::BitmapTestLine(const Math::Vector &start, const Math::Vector &goal,
-                               float stepAngle, bool bSecond)
+bool CTaskGoto::BitmapTestLine(const Math::Vector &start, const Math::Vector &goal)
 {
-    Math::Vector    pos, inc;
-    float       dist, step;
-    float       distNoB2;
-    int         i, max, x, y;
-
     if ( m_bmArray == nullptr )  return true;
 
-    dist = Math::DistanceProjected(start, goal);
-    if ( dist == 0.0f )  return true;
-    step = BM_DIM_STEP*0.5f;
+    const Math::Point startInGrid = Math::Point((start.x+1600.0f)/BM_DIM_STEP, (start.z+1600.0f)/BM_DIM_STEP);
+    const Math::Point goalInGrid  = Math::Point((goal.x+1600.0f)/BM_DIM_STEP, (goal.z+1600.0f)/BM_DIM_STEP);
 
-    inc.x = (goal.x-start.x)*step/dist;
-    inc.z = (goal.z-start.z)*step/dist;
+    const int startXInt = static_cast<int>(startInGrid.x);
+    const int startYInt = static_cast<int>(startInGrid.y);
+    const int goalXInt = static_cast<int>(goalInGrid.x);
+    const int goalYInt = static_cast<int>(goalInGrid.y);
 
-    pos = start;
-
-    if ( bSecond )
+    if (startXInt == goalXInt && startYInt == goalYInt)
     {
-        x = static_cast<int>((pos.x+1600.0f)/BM_DIM_STEP);
-        y = static_cast<int>((pos.z+1600.0f)/BM_DIM_STEP);
-        BitmapSetDot(1, x, y);  // puts the flag as the starting point
+        return true;
     }
 
-    max = static_cast<int>(dist/step);
-    if ( max == 0 )  max = 1;
-    distNoB2 = BM_DIM_STEP*sqrtf(2.0f)/sinf(stepAngle);
-    for ( i=0 ; i<max ; i++ )
+    // Grid traversal based on
+    // Amanatides, John, and Andrew Woo. "A fast voxel traversal algorithm for ray tracing." Eurographics. Vol. 87. No. 3. 1987.
+    // http://www.cse.yorku.ca/~amana/research/grid.pdf
+
+    Math::Point dirInGrid = goalInGrid - startInGrid;
+    dirInGrid /= std::hypot(dirInGrid.x, dirInGrid.y);
+    const int stepX = dirInGrid.x > 0.0f ? 1 : -1;
+    const int stepY = dirInGrid.y > 0.0f ? 1 : -1;
+
+    // At what t does the ray enter the next cell?
+    float tMaxX =
+        dirInGrid.x > 0.0 ? (std::floor(startInGrid.x) - startInGrid.x + 1) / dirInGrid.x :
+        dirInGrid.x < 0.0 ? (std::floor(startInGrid.x) - startInGrid.x) / dirInGrid.x :
+        std::numeric_limits<float>::infinity();
+    float tMaxY =
+        dirInGrid.y > 0.0 ? (std::floor(startInGrid.y) - startInGrid.y + 1) / dirInGrid.y :
+        dirInGrid.y < 0.0 ? (std::floor(startInGrid.y) - startInGrid.y) / dirInGrid.y :
+        std::numeric_limits<float>::infinity();
+
+    // How much t is needed to step from one column/row to another?
+    // stepX = dir.x * t
+    // stepX / dir.x = t
+    const float tDeltaX = static_cast<float>(stepX) / dirInGrid.x;
+    const float tDeltaY = static_cast<float>(stepY) / dirInGrid.y;
+
+    // Traverse the grid
+    const int numIntersections =
+        std::abs(goalXInt - startXInt) +
+        std::abs(goalYInt - startYInt);
+    int x = startXInt;
+    int y = startYInt;
+
+    for ( int i = 0; i < numIntersections; ++i )
     {
-        if ( i == max-1 )
+        if ( tMaxX < tMaxY )
         {
-            pos = goal;  // tests the point of arrival
+            tMaxX += tDeltaX;
+            x += stepX;
         }
         else
         {
-            pos.x += inc.x;
-            pos.z += inc.z;
+            tMaxY += tDeltaY;
+            y += stepY;
         }
-
-        x = static_cast<int>((pos.x+1600.0f)/BM_DIM_STEP);
-        y = static_cast<int>((pos.z+1600.0f)/BM_DIM_STEP);
-
-        if ( bSecond )
+        if ( BitmapTestDot(0, x, y) )
         {
-            if ( i > 2 && BitmapTestDot(1, x, y) )  return false;
-
-            if ( step*(i+1) > distNoB2 && i < max-2 )
-            {
-                BitmapSetDot(1, x, y);
-            }
+            return false;
         }
-
-        if ( BitmapTestDot(0, x, y) )  return false;
     }
+
     return true;
 }
 
