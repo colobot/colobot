@@ -57,7 +57,7 @@ public:
 
 protected:
     CObject*    SearchTakeObject(float &angle, float dLimit, float aLimit);
-    CObject*    SearchFriendObject(float &angle, float dLimit, float aLimit);
+    CObject*    SearchFriendObject(float &angle, float dLimit, float aLimit, int &slotNumOut);
     bool        TransporterTakeObject();
     bool        TransporterDeposeObject();
     bool        IsFreeDeposeObject(glm::vec3 pos);

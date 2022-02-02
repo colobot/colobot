@@ -445,11 +445,12 @@ endif()
 
 if(TESTS)
     # Google Test library
-    find_package(GTest 1.10.0 QUIET)
+    find_package(GTest 1.11.0 QUIET)
     if(NOT(FORCE_BUNDLED_GTEST) AND GTEST_FOUND)
         message(STATUS "Using system gtest library in ${GTEST_BOTH_LIBRARIES}")
     elseif(EXISTS "${colobot_SOURCE_DIR}/lib/googletest/googletest/CMakeLists.txt")
         message(STATUS "Using gtest git submodule")
+        set(GOOGLETEST_VERSION "1.11.0")
         add_subdirectory("${colobot_SOURCE_DIR}/lib/googletest/googletest" "lib/googletest/googletest")
         # Add aliases so target names are compatible with the find_package above
         add_library(GTest::GTest ALIAS gtest)

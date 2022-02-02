@@ -33,7 +33,6 @@
 #include "object/implementation/programmable_impl.h"
 #include "object/implementation/task_executor_impl.h"
 
-#include "object/interface/carrier_object.h"
 #include "object/interface/controllable_object.h"
 #include "object/interface/flying_object.h"
 #include "object/interface/interactive_object.h"
@@ -41,10 +40,10 @@
 #include "object/interface/jostleable_object.h"
 #include "object/interface/movable_object.h"
 #include "object/interface/power_container_object.h"
-#include "object/interface/powered_object.h"
 #include "object/interface/programmable_object.h"
 #include "object/interface/ranged_object.h"
 #include "object/interface/shielded_auto_regen_object.h"
+#include "object/interface/slotted_object.h"
 #include "object/interface/task_executor_object.h"
 #include "object/interface/trace_drawing_object.h"
 #include "object/interface/transportable_object.h"
@@ -83,8 +82,7 @@ class COldObject : public CObject,
                    public CProgramStorageObjectImpl,
                    public CProgrammableObjectImpl,
                    public CJostleableObject,
-                   public CCarrierObject,
-                   public CPoweredObject,
+                   public CSlottedObject,
                    public CJetFlyingObject,
                    public CControllableObject,
                    public CPowerContainerObjectImpl,
@@ -175,12 +173,6 @@ public:
 
     void        SetMasterParticle(int part, int parti) override;
 
-    void        SetPower(CObject* power) override;
-    CObject*    GetPower() override;
-    glm::vec3   GetPowerPosition() override;
-    void        SetPowerPosition(const glm::vec3& powerPosition) override;
-    void        SetCargo(CObject* cargo) override;
-    CObject*    GetCargo() override;
     void        SetTransporter(CObject* transporter) override;
     CObject*    GetTransporter() override;
     void        SetTransporterPart(int part) override;
@@ -295,6 +287,17 @@ public:
     void        SetBulletWall(bool bulletWall);
     bool        IsBulletWall() override;
 
+    // CSlottedObject
+    int MapPseudoSlot(Pseudoslot pseudoslot) override;
+    int GetNumSlots() override;
+    glm::vec3 GetSlotPosition(int slotNum) override;
+    float GetSlotAngle(int slotNum) override;
+    float GetSlotAcceptanceAngle(int slotNum) override;
+    CObject *GetSlotContainedObject(int slotNum) override;
+    void SetSlotContainedObject(int slotNum, CObject *object) override;
+    // Helper for CSlottedObject initialization
+    void SetPowerPosition(const glm::vec3& powerPosition);
+
 protected:
     bool        EventFrame(const Event &event);
     void        VirusFrame(float rTime);
@@ -393,4 +396,7 @@ protected:
     float       m_traceWidth;
 
     bool        m_bulletWall = false;
+
+    bool        m_hasCargoSlot;
+    bool        m_hasPowerSlot;
 };

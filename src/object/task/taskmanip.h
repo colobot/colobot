@@ -73,7 +73,7 @@ protected:
     CObject*    SearchTakeUnderObject(glm::vec3 &pos, float dLimit);
     CObject*    SearchTakeFrontObject(bool bAdvance, glm::vec3 &pos, float &distance, float &angle);
     CObject*    SearchTakeBackObject(bool bAdvance, glm::vec3 &pos, float &distance, float &angle);
-    CObject*    SearchOtherObject(bool bAdvance, glm::vec3 &pos, float &distance, float &angle, float &height);
+    CObject*    SearchOtherObject(bool bAdvance, glm::vec3 &pos, float &distance, float &angle, float &height, int &slotNumOut);
     bool        TransporterTakeObject();
     bool        TransporterDeposeObject();
     bool        IsFreeDeposeObject(glm::vec3 pos);

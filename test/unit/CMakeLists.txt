@@ -11,8 +11,9 @@ add_definitions(-DGTEST_HAS_TR1_TUPLE=0)
 add_executable(colobot_ut
     main.cpp
     app/app_test.cpp
-    CBot/CBotToken_test.cpp
     CBot/CBot_test.cpp
+    CBot/CBotFileUtils_test.cpp
+    CBot/CBotToken_test.cpp
     common/config_file_test.cpp
     common/timeutils_test.cpp
     graphics/engine/lightman_test.cpp

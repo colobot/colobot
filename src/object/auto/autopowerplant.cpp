@@ -34,7 +34,7 @@
 #include "object/object_manager.h"
 #include "object/old_object.h"
 
-#include "object/interface/powered_object.h"
+#include "object/interface/slotted_object.h"
 #include "object/interface/transportable_object.h"
 
 #include "sound/sound.h"
@@ -57,7 +57,7 @@ CAutoPowerPlant::CAutoPowerPlant(COldObject* object) : CAuto(object)
     m_partiSphere = -1;
     Init();
 
-    assert(m_object->Implements(ObjectInterfaceType::Powered));
+    assert(m_object->GetNumSlots() == 1);
 }
 
 // Object's destructor.
@@ -79,17 +79,18 @@ void CAutoPowerPlant::DeleteObject(bool all)
 
     if ( !all )
     {
+        // TODO: why are we only searching for titanium and power cells? why don't we delete any object regardless of type?
         CObject* cargo = SearchMetal();
         if ( cargo != nullptr )
         {
-            m_object->SetPower(nullptr);
+            m_object->SetSlotContainedObject(0, nullptr);
             CObjectManager::GetInstancePointer()->DeleteObject(cargo);
         }
 
         cargo = SearchPower();
         if ( cargo != nullptr )
         {
-            m_object->SetPower(nullptr);
+            m_object->SetSlotContainedObject(0, nullptr);
             CObjectManager::GetInstancePointer()->DeleteObject(cargo);
         }
     }
@@ -320,7 +321,7 @@ bool CAutoPowerPlant::EventProcess(const Event &event)
             cargo = SearchMetal();
             if ( cargo != nullptr )
             {
-                m_object->SetPower(nullptr);
+                m_object->SetSlotContainedObject(0, nullptr);
                 CObjectManager::GetInstancePointer()->DeleteObject(cargo);
             }
 
@@ -333,7 +334,7 @@ bool CAutoPowerPlant::EventProcess(const Event &event)
                 cargo->SetLock(false);  // usable battery
                 dynamic_cast<CTransportableObject&>(*cargo).SetTransporter(m_object);
                 cargo->SetPosition(glm::vec3(0.0f, 3.0f, 0.0f));
-                m_object->SetPower(cargo);
+                m_object->SetSlotContainedObject(0, cargo);
 
                 m_main->DisplayError(INFO_ENERGY, m_object);
             }
@@ -387,7 +388,7 @@ bool CAutoPowerPlant::EventProcess(const Event &event)
 
 CObject* CAutoPowerPlant::SearchMetal()
 {
-    CObject* obj = m_object->GetPower();
+    CObject* obj = m_object->GetSlotContainedObject(0);
     if ( obj == nullptr )  return nullptr;
 
     ObjectType type = obj->GetType();
@@ -512,7 +513,7 @@ Error CAutoPowerPlant::GetError()
 
     if ( m_object->GetEnergy() < POWERPLANT_POWER )  return ERR_ENERGY_LOW;
 
-    CObject* obj = m_object->GetPower();
+    CObject* obj = m_object->GetSlotContainedObject(0);
     if (obj == nullptr)  return ERR_ENERGY_EMPTY;
     ObjectType type = obj->GetType();
     if ( type == OBJECT_POWER )  return ERR_OK;

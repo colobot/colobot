@@ -26,7 +26,8 @@
 #include "object/object.h"
 #include "object/object_manager.h"
 
-#include "object/interface/powered_object.h"
+#include "object/interface/power_container_object.h"
+#include "object/interface/slotted_object.h"
 #include "object/interface/transportable_object.h"
 
 #include <limits>
@@ -80,13 +81,9 @@ bool CObjectCondition::CheckForObject(CObject* obj)
     {
         power = dynamic_cast<CPowerContainerObject*>(obj);
     }
-    else if (obj->Implements(ObjectInterfaceType::Powered))
+    else
     {
-        CObject* powerObj = dynamic_cast<CPoweredObject&>(*obj).GetPower();
-        if(powerObj != nullptr && powerObj->Implements(ObjectInterfaceType::PowerContainer))
-        {
-            power = dynamic_cast<CPowerContainerObject*>(powerObj);
-        }
+        power = GetObjectPowerCell(obj);
     }
 
     if (power != nullptr)

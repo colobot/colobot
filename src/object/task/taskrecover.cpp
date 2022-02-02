@@ -31,7 +31,7 @@
 #include "object/object_manager.h"
 #include "object/old_object.h"
 
-#include "object/interface/powered_object.h"
+#include "object/interface/slotted_object.h"
 
 #include "physics/physics.h"
 
@@ -108,11 +108,9 @@ bool CTaskRecover::EventProcess(const Event &event)
 
     if ( m_phase == TRP_OPER )
     {
-        assert(m_object->Implements(ObjectInterfaceType::Powered));
-        CObject* powerObj = dynamic_cast<CPoweredObject*>(m_object)->GetPower();
-        if (powerObj != nullptr && powerObj->Implements(ObjectInterfaceType::PowerContainer))
+        assert(HasPowerCellSlot(m_object));
+        if (CPowerContainerObject* power = GetObjectPowerCell(m_object))
         {
-            CPowerContainerObject* power = dynamic_cast<CPowerContainerObject*>(powerObj);
             energy = power->GetEnergy();
             energy -= event.rTime * ENERGY_RECOVER * m_speed;
             power->SetEnergy(energy);
@@ -190,11 +188,10 @@ Error CTaskRecover::Start()
     ObjectType type = m_object->GetType();
     if ( type != OBJECT_MOBILErr )  return ERR_WRONG_BOT;
 
-    assert(m_object->Implements(ObjectInterfaceType::Powered));
-    CObject* power = dynamic_cast<CPoweredObject*>(m_object)->GetPower();
-    if (power == nullptr || !power->Implements(ObjectInterfaceType::PowerContainer))  return ERR_RECOVER_ENERGY;
+    CPowerContainerObject *power = GetObjectPowerCell(m_object);
+    if (power == nullptr)  return ERR_RECOVER_ENERGY;
 
-    float energy = dynamic_cast<CPowerContainerObject&>(*power).GetEnergy();
+    float energy = power->GetEnergy();
     if ( energy < ENERGY_RECOVER+0.05f )  return ERR_RECOVER_ENERGY;
 
     glm::mat4 mat = m_object->GetWorldMatrix(0);

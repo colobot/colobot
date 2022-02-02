@@ -30,7 +30,7 @@
 #include "object/object_manager.h"
 #include "object/old_object.h"
 
-#include "object/interface/powered_object.h"
+#include "object/interface/slotted_object.h"
 
 #include "object/motion/motionant.h"
 #include "object/motion/motionspider.h"
@@ -54,7 +54,7 @@ CTaskTerraform::CTaskTerraform(COldObject* object) : CForegroundTask(object)
     m_lastParticle = 0.0f;
     m_soundChannel = -1;
 
-    assert(m_object->Implements(ObjectInterfaceType::Powered));
+    assert(m_object->GetNumSlots() == 1);
 }
 
 // Object's destructor.
@@ -96,7 +96,7 @@ bool CTaskTerraform::EventProcess(const Event &event)
 
         m_object->SetScale(1.0f+m_progress*0.2f);
 
-        power = m_object->GetPower();
+        power = m_object->GetSlotContainedObjectReq(CSlottedObject::Pseudoslot::POWER);
         if (power != nullptr)
         {
             power->SetScale(1.0f+m_progress*1.0f);
@@ -211,7 +211,7 @@ Error CTaskTerraform::Start()
     type = m_object->GetType();
     if ( type != OBJECT_MOBILErt )  return ERR_WRONG_BOT;
 
-    power = m_object->GetPower();
+    power = m_object->GetSlotContainedObjectReq(CSlottedObject::Pseudoslot::POWER);
     if ( power == nullptr || !power->Implements(ObjectInterfaceType::PowerContainer) )  return ERR_TERRA_ENERGY;
     energy = dynamic_cast<CPowerContainerObject&>(*power).GetEnergy();
     if ( energy < ENERGY_TERRA+0.05f )  return ERR_TERRA_ENERGY;
@@ -267,7 +267,7 @@ Error CTaskTerraform::IsEnded()
         m_object->SetCirVibration(glm::vec3(0.0f, 0.0f, 0.0f));
         m_object->SetScale(1.0f);
 
-        power = m_object->GetPower();
+        power = m_object->GetSlotContainedObjectReq(CSlottedObject::Pseudoslot::POWER);
         if (power != nullptr)
         {
             power->SetScale(1.0f);
@@ -333,7 +333,7 @@ bool CTaskTerraform::Abort()
     m_object->SetCirVibration(glm::vec3(0.0f, 0.0f, 0.0f));
     m_object->SetScale(1.0f);
 
-    power = m_object->GetPower();
+    power = m_object->GetSlotContainedObjectReq(CSlottedObject::Pseudoslot::POWER);
     if (power != nullptr)
     {
         power->SetScale(1.0f);

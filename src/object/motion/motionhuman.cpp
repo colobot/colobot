@@ -33,8 +33,6 @@
 #include "object/object_manager.h"
 #include "object/old_object.h"
 
-#include "object/interface/carrier_object.h"
-
 #include "physics/physics.h"
 
 #include "sound/sound.h"
