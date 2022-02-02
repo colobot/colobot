@@ -86,6 +86,8 @@ CGL33ObjectRenderer::CGL33ObjectRenderer(CGL33Device* device)
     m_triplanarScale = glGetUniformLocation(m_program, "uni_TriplanarScale");
     m_dirty = glGetUniformLocation(m_program, "uni_Dirty");
     m_alphaScissor = glGetUniformLocation(m_program, "uni_AlphaScissor");
+    m_uvOffset = glGetUniformLocation(m_program, "uni_UVOffset");
+    m_uvScale = glGetUniformLocation(m_program, "uni_UVScale");
 
     m_shadowRegions = glGetUniformLocation(m_program, "uni_ShadowRegions");
 
@@ -174,6 +176,8 @@ void CGL33ObjectRenderer::CGL33ObjectRenderer::Begin()
 
     glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
+
+    SetUVTransform({ 0.0f, 0.0f }, { 1.0f, 1.0f });
 }
 
 void CGL33ObjectRenderer::CGL33ObjectRenderer::End()
@@ -347,6 +351,12 @@ void CGL33ObjectRenderer::SetTransparency(TransparencyMode mode)
         glBlendEquation(GL_FUNC_ADD);
         break;
     }
+}
+
+void CGL33ObjectRenderer::SetUVTransform(const glm::vec2& offset, const glm::vec2& scale)
+{
+    glUniform2fv(m_uvOffset, 1, glm::value_ptr(offset));
+    glUniform2fv(m_uvScale, 1, glm::value_ptr(scale));
 }
 
 void CGL33ObjectRenderer::SetPrimaryTextureEnabled(bool enabled)

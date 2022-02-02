@@ -83,6 +83,10 @@ public:
     virtual void SetCullMode(bool enabled) override;
     //! Sets transparency mode
     virtual void SetTransparency(TransparencyMode mode) override;
+
+    //! Sets UV transform
+    virtual void SetUVTransform(const glm::vec2& offset, const glm::vec2& scale) override;
+
     virtual void SetPrimaryTextureEnabled(bool enabled) override;
 
     //! Sets triplanar mode
@@ -119,6 +123,8 @@ private:
     GLint m_triplanarScale = -1;
     GLint m_dirty = -1;
     GLint m_alphaScissor = -1;
+    GLint m_uvOffset = -1;
+    GLint m_uvScale = -1;
 
     struct ShadowUniforms
     {

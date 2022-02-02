@@ -174,6 +174,9 @@ public:
     //! Sets transparency mode
     virtual void SetTransparency(TransparencyMode mode) = 0;
 
+    //! Sets UV transform
+    virtual void SetUVTransform(const glm::vec2& offset, const glm::vec2& scale) = 0;
+
     virtual void SetPrimaryTextureEnabled(bool enabled) = 0;
     //! Sets triplanar mode
     virtual void SetTriplanarMode(bool enabled) = 0;

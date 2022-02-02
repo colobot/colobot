@@ -189,19 +189,13 @@ enum EngineObjectType
  */
 struct EngineBaseObjDataTier
 {
-    EngineTriangleType      type;
-    int                     state;
+    EngineTriangleType      type = EngineTriangleType::TRIANGLES;
+    int                     state = ENG_RSTATE_NORMAL;
     std::vector<Vertex3D>   vertices;
-    CVertexBuffer*          buffer;
-    bool                    updateStaticBuffer;
-
-    inline EngineBaseObjDataTier(EngineTriangleType type = EngineTriangleType::TRIANGLES,
-                                 int state = ENG_RSTATE_NORMAL)
-     : type(type)
-     , state(state)
-     , buffer(nullptr)
-     , updateStaticBuffer(false)
-    {}
+    CVertexBuffer*          buffer = nullptr;
+    bool                    updateStaticBuffer = false;
+    glm::vec2               uvOffset = { 0.0f, 0.0f };
+    glm::vec2               uvScale = { 1.0f, 1.0f };
 };
 
 /**
@@ -785,17 +779,7 @@ public:
     //! Changes the 2nd texure for given object
     void            ChangeSecondTexture(int objRank, const std::string& tex2Name);
 
-    //! Changes (recalculates) texture mapping for given object
-    void            ChangeTextureMapping(int objRank, int state,
-                                         const std::string& tex1Name, const std::string& tex2Name,
-                                         EngineTextureMapping mode,
-                                         float au, float bu, float av, float bv);
-
-    //! Changes texture mapping for robot tracks
-    void            TrackTextureMapping(int objRank, int state,
-                                        const std::string& tex1Name, const std::string& tex2Name,
-                                        EngineTextureMapping mode,
-                                        float pos, float factor, float tl, float ts, float tt);
+    void            SetUVTransform(int objRank, int state, const glm::vec2& offset, const glm::vec2& scale);
 
     //! Detects the target object that is selected with the mouse
     /** Returns the rank of the object or -1. */

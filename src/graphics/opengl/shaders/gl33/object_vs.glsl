@@ -24,6 +24,9 @@ uniform mat4 uni_ViewMatrix;
 uniform mat4 uni_ModelMatrix;
 uniform mat3 uni_NormalMatrix;
 
+uniform vec2 uni_UVOffset;
+uniform vec2 uni_UVScale;
+
 layout(location = 0) in vec4 in_VertexCoord;
 layout(location = 1) in vec3 in_Normal;
 layout(location = 2) in vec4 in_Color;
@@ -49,7 +52,7 @@ void main()
     gl_Position = uni_ProjectionMatrix * eyeSpace;
 
     data.Color = in_Color;
-    data.TexCoord0 = in_TexCoord0;
+    data.TexCoord0 = in_TexCoord0 * uni_UVScale + uni_UVOffset;
     data.TexCoord1 = in_TexCoord1;
     data.Normal = mat3(uni_NormalMatrix) * in_Normal;
     data.VertexCoord = in_VertexCoord.xyz;

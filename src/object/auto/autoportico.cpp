@@ -395,14 +395,14 @@ void CAutoPortico::UpdateTrackMapping(float left, float right)
 {
     int rank = m_object->GetObjectRank(0);
 
-    std::string teamStr = StrUtils::ToString<int>(m_object->GetTeam());
-    if(m_object->GetTeam() == 0) teamStr = "";
+    constexpr float scale = 0.25f / 8.0f;
 
-    m_engine->TrackTextureMapping(rank, Gfx::ENG_RSTATE_PART1, "objects/lemt.png"+teamStr, "",
-                                  Gfx::EngineTextureMapping::X,
-                                  right, 8.0f, 8.0f, 192.0f, 256.0f);
+    left = left - std::floor(left);
+    right = right - std::floor(right);
 
-    m_engine->TrackTextureMapping(rank, Gfx::ENG_RSTATE_PART2, "objects/lemt.png"+teamStr, "",
-                                  Gfx::EngineTextureMapping::X,
-                                  left, 8.0f, 8.0f, 192.0f, 256.0f);
+    m_engine->SetUVTransform(rank, Gfx::ENG_RSTATE_PART1,
+        { (1.0f - right) * scale, 0.0f }, { 1.0f, 1.0f });
+
+    m_engine->SetUVTransform(rank, Gfx::ENG_RSTATE_PART2,
+        { (1.0f - left) * scale, 0.0f }, { 1.0f, 1.0f });
 }

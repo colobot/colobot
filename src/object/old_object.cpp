@@ -2120,7 +2120,7 @@ void COldObject::FlatParent()
 
 void COldObject::UpdateEnergyMapping()
 {
-    if (Math::IsEqual(GetEnergyLevel(), m_lastEnergy, 0.01f))
+    if (m_lastEnergy == GetEnergyLevel())
         return;
 
     m_lastEnergy = GetEnergyLevel();
@@ -2152,10 +2152,9 @@ void COldObject::UpdateEnergyMapping()
 
     std::string teamStr = StrUtils::ToString<int>(GetTeam());
     if(GetTeam() == 0) teamStr = "";
-    m_engine->ChangeTextureMapping(m_objectPart[0].object,
-                                   Gfx::ENG_RSTATE_PART3, "objects/lemt.png"+teamStr, "",
-                                   Gfx::EngineTextureMapping::ONE_Y,
-                                   au, bu, 1.0f, 0.0f);
+
+    m_engine->SetUVTransform(m_objectPart[0].object, Gfx::ENG_RSTATE_PART3,
+        { 0.0f, 0.25f * (GetEnergyLevel() - 1.0f) }, { 1.0f, 1.0f });
 }
 
 

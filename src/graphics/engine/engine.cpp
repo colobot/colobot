@@ -640,7 +640,7 @@ EngineBaseObjDataTier& CEngine::AddLevel3(EngineBaseObjTexTier& p3, EngineTriang
             return p3.next[i];
     }
 
-    p3.next.push_back(EngineBaseObjDataTier(type, state));
+    p3.next.push_back(EngineBaseObjDataTier{ type, state });
     return p3.next.back();
 }
 
@@ -1162,167 +1162,34 @@ void CEngine::ChangeSecondTexture(int objRank, const std::string& tex2Name)
     }
 }
 
-void CEngine::ChangeTextureMapping(int objRank, int state,
-                                   const std::string& tex1Name, const std::string& tex2Name,
-                                   EngineTextureMapping mode,
-                                   float au, float bu, float av, float bv)
+void CEngine::SetUVTransform(int objRank, int state, const glm::vec2& offset, const glm::vec2& scale)
 {
-    assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
+    assert(objRank >= 0 && objRank < static_cast<int>(m_objects.size()));
 
-    EngineBaseObjDataTier* p4 = FindTriangles(objRank, state, tex1Name, tex2Name);
-    if (p4 == nullptr)
+    int baseObjRank = m_objects[objRank].baseObjRank;
+    if (baseObjRank == -1)
         return;
 
-    int nb = p4->vertices.size();
+    assert(baseObjRank >= 0 && baseObjRank < static_cast<int>(m_baseObjects.size()));
 
-    if (mode == EngineTextureMapping::X)
-    {
-        for (int i = 0; i < nb; i++)
-        {
-            p4->vertices[i].uv.x = p4->vertices[i].position.z * au + bu;
-            p4->vertices[i].uv.y = p4->vertices[i].position.y * av + bv;
-        }
-    }
-    else if (mode == EngineTextureMapping::Y)
-    {
-        for (int i = 0; i < nb; i++)
-        {
-            p4->vertices[i].uv.x = p4->vertices[i].position.x * au + bu;
-            p4->vertices[i].uv.y = p4->vertices[i].position.z * av + bv;
-        }
-    }
-    else if (mode == EngineTextureMapping::Z)
-    {
-        for (int i = 0; i < nb; i++)
-        {
-            p4->vertices[i].uv.x = p4->vertices[i].position.x * au + bu;
-            p4->vertices[i].uv.y = p4->vertices[i].position.y * av + bv;
-        }
-    }
-    else if (mode == EngineTextureMapping::ONE_X)
-    {
-        for (int i = 0; i < nb; i++)
-        {
-            p4->vertices[i].uv.x = p4->vertices[i].position.x * au + bu;
-        }
-    }
-    else if (mode == EngineTextureMapping::ONE_Y)
-    {
-        for (int i = 0; i < nb; i++)
-        {
-            p4->vertices[i].uv.y = p4->vertices[i].position.y * au + bu;
-        }
-    }
-    else if (mode == EngineTextureMapping::ONE_Z)
-    {
-        for (int i = 0; i < nb; i++)
-        {
-            p4->vertices[i].uv.x = p4->vertices[i].position.z * au + bu;
-        }
-    }
+    EngineBaseObject& p1 = m_baseObjects[baseObjRank];
 
-    UpdateStaticBuffer(*p4);
+    for (size_t l2 = 0; l2 < p1.next.size(); l2++)
+    {
+        EngineBaseObjTexTier& p2 = p1.next[l2];
+
+        for (size_t l3 = 0; l3 < p2.next.size(); l3++)
+        {
+            EngineBaseObjDataTier& p3 = p2.next[l3];
+
+            if (p3.state & state)
+            {
+                p3.uvOffset = offset;
+                p3.uvScale = scale;
+            }
+        }
+    }
 }
-
-void CEngine::TrackTextureMapping(int objRank, int state,
-                                  const std::string& tex1Name, const std::string& tex2Name,
-                                  EngineTextureMapping mode,
-                                  float pos, float factor, float tl, float ts, float tt)
-{
-    assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
-
-    EngineBaseObjDataTier* p4 = FindTriangles(objRank, state, tex1Name, tex2Name);
-    if (p4 == nullptr)
-        return;
-
-    int tNum = p4->vertices.size();
-    if (tNum < 12 || tNum % 6 != 0)
-        return;
-
-    std::vector<Gfx::Vertex3D>& vs = p4->vertices;
-
-    while (pos < 0.0f)
-        pos += 1.0f;  // never negative!
-
-    glm::vec3 current{ 0, 0, 0 };
-
-    for (int i = 0; i < 6; i++)
-    {
-        for (int j = 0; j < 6; j++)
-        {
-            if (Math::IsEqual(vs[i].position.x, vs[j+6].position.x) &&
-                Math::IsEqual(vs[i].position.y, vs[j+6].position.y))
-            {
-                current.x = vs[i].position.x;  // position end link
-                current.y = vs[i].position.y;
-                break;
-            }
-        }
-    }
-
-    float ps = 0.0f;  // start position on the periphery
-    float pe = 0.0f;
-    int is[6] = { 0 }, ie[6] = { 0 };
-
-    int tBase = 0;
-    for (int ti = 0; ti < tNum / 6; ti++)
-    {
-        int s = 0;
-        int e = 0;
-
-        for (int i = 0; i < 6; i++)
-        {
-            if (Math::IsEqual(vs[tBase + i].position.x, current.x, 0.0001f) &&
-                Math::IsEqual(vs[tBase + i].position.y, current.y, 0.0001f))
-            {
-                ie[e++] = i;
-            }
-            else
-            {
-                is[s++] = i;
-            }
-        }
-        if (s == 3 && e == 3)
-        {
-            glm::vec2 endPosition{};
-            endPosition.x = vs[tBase + is[0]].position.x - vs[tBase + ie[0]].position.x;
-            endPosition.y = vs[tBase + is[0]].position.y - vs[tBase + ie[0]].position.y;
-
-            pe = ps + glm::length(endPosition) / factor;  // end position on the periphery
-
-            float pps = ps + pos;
-            float ppe = pe + pos;
-            int offset = static_cast<int>(pps);
-            ppe -= offset;
-            pps -= offset;
-
-            for (int i = 0; i < 3; i++)
-            {
-                vs[tBase + is[i]].uv.x = ((pps * tl) + ts) / tt;
-                vs[tBase + ie[i]].uv.x = ((ppe * tl) + ts) / tt;
-            }
-        }
-
-        if (ti >= (tNum / 6) - 1)
-            break;
-
-        for (int i = 0; i < 6; i++)
-        {
-            if (!Math::IsEqual(vs[tBase + i+6].position.x, current.x, 0.0001f) ||
-                !Math::IsEqual(vs[tBase + i+6].position.y, current.y, 0.0001f))
-            {
-                current.x = vs[tBase + i+6].position.x;  // end next link
-                current.y = vs[tBase + i+6].position.y;
-                break;
-            }
-        }
-        ps = pe;  // following start position on the periphery
-        tBase += 6;
-    }
-
-    UpdateStaticBuffer(*p4);
-}
-
 
 void CEngine::CreateShadowSpot(int objRank)
 {
@@ -3570,6 +3437,7 @@ void CEngine::Draw3DScene()
                 objectRenderer->SetDirty(dirty);
                 objectRenderer->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
                 objectRenderer->SetCullMode((p3.state& ENG_RSTATE_2FACE) == 0);
+                objectRenderer->SetUVTransform(p3.uvOffset, p3.uvScale);
                 objectRenderer->DrawObject(p3.buffer);
             }
         }
@@ -3635,6 +3503,7 @@ void CEngine::Draw3DScene()
                     float dirty = (p3.state & ENG_RSTATE_DUAL_BLACK) && m_dirty ? 1.0 : 0.0;
                     objectRenderer->SetDirty(dirty);
                     objectRenderer->SetColor(tColor);
+                    objectRenderer->SetUVTransform(p3.uvOffset, p3.uvScale);
                     objectRenderer->DrawObject(p3.buffer);
                 }
             }
