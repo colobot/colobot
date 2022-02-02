@@ -405,6 +405,10 @@ protected:
     int             m_runSceneRank;
     //@}
 
+    //! Game to load on startup
+    std::string     m_loadGamePlayerName;
+    std::string     m_loadGameDirName;
+
     //! Scene test mode
     bool            m_sceneTest;
 

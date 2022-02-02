@@ -368,6 +368,9 @@ public:
     //! Enable mode where completing mission closes the game
     void        SetExitAfterMission(bool exit);
 
+    //! Load saved game (used by command line argument)
+    void        LoadGameFromDirName(const std::string& gameDir);
+
     //! Returns true if player can interact with things manually
     bool        CanPlayerInteract();
 
