@@ -75,7 +75,7 @@ bool CKey::EventProcess(const Event &event)
     if (event.type == EVENT_KEY_DOWN && m_catch)
     {
         m_catch = false;
-        unsigned int key = GetVirtualKey(event.GetData<KeyEventData>()->key);
+        unsigned int key = GetVirtualKey(event.GetData<KeyEventData>()->key, event.kmodState);
 
         if (TestKey(key)) // impossible ?
         {

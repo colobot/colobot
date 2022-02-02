@@ -1425,7 +1425,7 @@ Event CApplication::CreateVirtualEvent(const Event& sourceEvent)
     if ((sourceEvent.type == EVENT_KEY_DOWN) || (sourceEvent.type == EVENT_KEY_UP))
     {
         auto sourceData = sourceEvent.GetData<KeyEventData>();
-        auto virtualKey = GetVirtualKey(sourceData->key);
+        auto virtualKey = GetVirtualKey(sourceData->key, sourceEvent.kmodState);
 
         if (virtualKey == sourceData->key)
         {
