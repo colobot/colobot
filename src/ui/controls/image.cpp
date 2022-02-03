@@ -23,6 +23,8 @@
 #include "common/event.h"
 #include "common/restext.h"
 
+#include "graphics/core/device.h"
+#include "graphics/core/renderers.h"
 #include "graphics/engine/engine.h"
 
 
@@ -91,6 +93,8 @@ void CImage::Draw()
     glm::vec2   uv1,uv2, corner, pos, dim;
     float       dp;
 
+    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+
     if ( (m_state & STATE_VISIBLE) == 0 )  return;
 
     if ( m_state & STATE_SHADOW )
@@ -102,8 +106,9 @@ void CImage::Draw()
 
     if ( m_icon == 0 )  // hollow frame?
     {
-        m_engine->SetUITexture("textures/interface/button2.png");
-        m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+        auto texture = m_engine->LoadTexture("textures/interface/button2.png");
+        renderer->SetTexture(texture);
+        renderer->SetTransparency(Gfx::TransparencyMode::NONE);
         uv1.x = 160.0f / 256.0f;
         uv1.y = 192.0f / 256.0f;  // u-v texture
         uv2.x = 192.0f / 256.0f;
@@ -124,8 +129,8 @@ void CImage::Draw()
         params.filter = Gfx::TEX_FILTER_BILINEAR;
         params.padToNearestPowerOfTwo = true;
         Gfx::Texture tex = m_engine->LoadTexture(m_filename, params);
-        m_engine->SetUITexture(tex);
-        m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+        renderer->SetTexture(tex);
+        renderer->SetTransparency(Gfx::TransparencyMode::NONE);
         pos = m_pos;
         dim = m_dim;
         pos.x +=  5.0f / 640.0f;

@@ -373,8 +373,6 @@ void CGL33Device::BeginScene()
 
 void CGL33Device::EndScene()
 {
-    m_uiRenderer->Flush();
-
 #ifdef DEV_BUILD
     CheckGLErrors();
 #endif
@@ -413,13 +411,7 @@ CShadowRenderer* CGL33Device::GetShadowRenderer()
 
 void CGL33Device::Restore()
 {
-    m_uiRenderer->Flush();
     glUseProgram(m_normalProgram);
-
-
-    //UpdateTextureState(0);
-    //UpdateTextureState(1);
-    //UpdateTextureState(2);
 }
 
 void CGL33Device::SetTransform(TransformType type, const glm::mat4 &matrix)
@@ -678,8 +670,6 @@ void CGL33Device::SetTexture(int index, const Texture &texture)
 
     m_currentTextures[index] = texture; // remember the new value
 
-    // Params need to be updated for the new bound texture
-    UpdateTextureParams(index);
     UpdateTextureState(index);
 }
 
@@ -694,8 +684,6 @@ void CGL33Device::SetTexture(int index, unsigned int textureId)
 
     m_currentTextures[index].id = textureId;
 
-    // Params need to be updated for the new bound texture
-    UpdateTextureParams(index);
     UpdateTextureState(index);
 }
 
@@ -711,82 +699,10 @@ void CGL33Device::SetTextureEnabled(int index, bool enabled)
     UpdateTextureState(index);
 }
 
-/**
-  Sets the texture parameters for the given texture stage.
-  If the given texture was not set (bound) yet, nothing happens.
-  The settings are remembered, even if texturing is disabled at the moment. */
-void CGL33Device::SetTextureStageParams(int index, const TextureStageParams &params)
-{
-    assert(index >= 0 && index < static_cast<int>( m_currentTextures.size() ));
-
-    // Remember the settings
-    m_textureStageParams[index] = params;
-
-    UpdateTextureParams(index);
-}
-
-void CGL33Device::UpdateTextureParams(int index)
-{
-    assert(index >= 0 && index < static_cast<int>( m_currentTextures.size() ));
-
-    // Don't actually do anything if texture not set
-    if (! m_currentTextures[index].Valid())
-        return;
-
-    const TextureStageParams &params = m_textureStageParams[index];
-
-    glActiveTexture(GL_TEXTURE0 + index);
-
-    if      (params.wrapS == TEX_WRAP_CLAMP)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    else if (params.wrapS == TEX_WRAP_CLAMP_TO_BORDER)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-    else if (params.wrapS == TEX_WRAP_REPEAT)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    else  assert(false);
-
-    if      (params.wrapT == TEX_WRAP_CLAMP)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    else if (params.wrapT == TEX_WRAP_CLAMP_TO_BORDER)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-    else if (params.wrapT == TEX_WRAP_REPEAT)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    else  assert(false);
-}
-
-void CGL33Device::SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode wrapT)
-{
-    assert(index >= 0 && index < static_cast<int>( m_currentTextures.size() ));
-
-    // Remember the settings
-    m_textureStageParams[index].wrapS = wrapS;
-    m_textureStageParams[index].wrapT = wrapT;
-
-    // Don't actually do anything if texture not set
-    if (! m_currentTextures[index].Valid())
-        return;
-
-    glActiveTexture(GL_TEXTURE0 + index);
-
-    if      (wrapS == TEX_WRAP_CLAMP)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    else if (wrapS == TEX_WRAP_CLAMP_TO_BORDER)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-    else if (wrapS == TEX_WRAP_REPEAT)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    else  assert(false);
-
-    if      (wrapT == TEX_WRAP_CLAMP)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    else if (wrapT == TEX_WRAP_CLAMP_TO_BORDER)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-    else if (wrapT == TEX_WRAP_REPEAT)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    else  assert(false);
-}
-
 void CGL33Device::DrawPrimitive(PrimitiveType type, const Vertex *vertices, int vertexCount, Color color)
 {
+    return;
+
     unsigned int size = vertexCount * sizeof(Vertex);
 
     DynamicBuffer& buffer = m_dynamicBuffer;
@@ -824,6 +740,8 @@ void CGL33Device::DrawPrimitive(PrimitiveType type, const Vertex *vertices, int 
 
 void CGL33Device::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, int vertexCount)
 {
+    return;
+
     unsigned int size = vertexCount * sizeof(VertexCol);
 
     DynamicBuffer& buffer = m_dynamicBuffer;
@@ -860,6 +778,8 @@ void CGL33Device::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, i
 
 void CGL33Device::DrawPrimitive(PrimitiveType type, const Vertex3D* vertices, int vertexCount)
 {
+    return;
+
     unsigned int size = vertexCount * sizeof(Vertex3D);
 
     DynamicBuffer& buffer = m_dynamicBuffer;
@@ -900,6 +820,8 @@ void CGL33Device::DrawPrimitive(PrimitiveType type, const Vertex3D* vertices, in
 void CGL33Device::DrawPrimitives(PrimitiveType type, const Vertex *vertices,
     int first[], int count[], int drawCount, Color color)
 {
+    return;
+
     int vertexCount = 0;
 
     for (int i = 0; i < drawCount; i++)
@@ -948,6 +870,8 @@ void CGL33Device::DrawPrimitives(PrimitiveType type, const Vertex *vertices,
 void CGL33Device::DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
     int first[], int count[], int drawCount)
 {
+    return;
+
     int vertexCount = 0;
 
     for (int i = 0; i < drawCount; i++)
@@ -1066,23 +990,6 @@ void CGL33Device::SetBlendFunc(BlendFunc srcBlend, BlendFunc dstBlend)
 void CGL33Device::SetClearColor(const Color &color)
 {
     glClearColor(color.r, color.g, color.b, color.a);
-}
-
-void CGL33Device::SetCullMode(CullMode mode)
-{
-    // Cull clockwise back faces, so front face is the opposite
-    // (assuming GL_CULL_FACE is GL_BACK)
-    if      (mode == CULL_CW ) glFrontFace(GL_CCW);
-    else if (mode == CULL_CCW) glFrontFace(GL_CW);
-    else assert(false);
-}
-
-void CGL33Device::SetFillMode(FillMode mode)
-{
-    if      (mode == FillMode::POINT) glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
-    else if (mode == FillMode::LINES) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    else if (mode == FillMode::POLY)  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    else assert(false);
 }
 
 void CGL33Device::CopyFramebufferToTexture(Texture& texture, int xOffset, int yOffset, int x, int y, int width, int height)

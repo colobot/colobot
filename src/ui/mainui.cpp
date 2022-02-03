@@ -156,7 +156,7 @@ void CMainUserInterface::ChangePhase(Phase phase)
 {
     m_main->GetCamera()->SetType(Gfx::CAM_TYPE_NULL);
     m_engine->SetOverFront(false);
-    m_engine->SetOverColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f), Gfx::ENG_RSTATE_TCOLOR_BLACK); // TODO: color ok?
+    m_engine->SetOverColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f), Gfx::TransparencyMode::BLACK); // TODO: color ok?
 
     m_phase = phase;  // copy the info from CRobotMain
 

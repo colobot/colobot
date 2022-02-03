@@ -1177,7 +1177,8 @@ void CEdit::DrawImage(const glm::vec2& pos, std::string name, float width,
     glm::vec2 uv1, uv2, dim;
     float dp;
 
-    m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+    m_engine->GetDevice()->GetUIRenderer()->SetTransparency(Gfx::TransparencyMode::NONE);
+    //m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
     Gfx::TextureCreateParams params;
     params.format = Gfx::TEX_IMG_AUTO;
@@ -1185,7 +1186,7 @@ void CEdit::DrawImage(const glm::vec2& pos, std::string name, float width,
     params.padToNearestPowerOfTwo = true;
     Gfx::Texture tex = m_engine->LoadTexture(PrepareImageFilename(name), params);
 
-    m_engine->SetUITexture(tex);
+    m_engine->GetDevice()->GetUIRenderer()->SetTexture(tex);
 
     uv1.x = 0.0f;
     uv2.x = 1.0f;
@@ -1217,8 +1218,11 @@ void CEdit::DrawBack(const glm::vec2& pos, const glm::vec2& dim)
 
     if ( m_bGeneric )  return;
 
-    m_engine->SetUITexture("textures/interface/button2.png");
-    m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+    auto texture = m_engine->LoadTexture("textures/interface/button2.png");
+
+    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+    renderer->SetTexture(texture);
+    renderer->SetTransparency(Gfx::TransparencyMode::NONE);
 
     if ( m_bMulti )
     {
@@ -1262,7 +1266,8 @@ void CEdit::DrawBack(const glm::vec2& pos, const glm::vec2& dim)
 
 void CEdit::DrawHorizontalGradient(const glm::vec2& pos, const glm::vec2& dim, Gfx::Color color1, Gfx::Color color2)
 {
-    m_engine->SetState(Gfx::ENG_RSTATE_OPAQUE_COLOR);
+    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+    renderer->SetTransparency(Gfx::TransparencyMode::NONE);
 
     glm::vec2 p1, p2;
     p1.x = pos.x;
@@ -1280,8 +1285,6 @@ void CEdit::DrawHorizontalGradient(const glm::vec2& pos, const glm::vec2& dim, G
         { { p2.x, p1.y }, {}, col2 },
         { { p2.x, p2.y }, {}, col2 }
     };
-
-    auto renderer = m_engine->GetDevice()->GetUIRenderer();
 
     renderer->DrawPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, 4, quad);
     m_engine->AddStatisticTriangle(2);

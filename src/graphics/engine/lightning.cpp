@@ -226,7 +226,7 @@ void CLightning::Draw()
     device->SetTransform(TRANSFORM_WORLD, mat);
 
     m_engine->SetTexture("textures/effect00.png");
-    m_engine->SetState(ENG_RSTATE_TTEXTURE_BLACK);
+    //m_engine->SetState(ENG_RSTATE_TTEXTURE_BLACK);
 
     glm::vec2 texInf;
     texInf.x = 64.5f/256.0f;

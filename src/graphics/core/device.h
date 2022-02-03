@@ -465,12 +465,6 @@ public:
     //! Enables/disables the given texture stage
     virtual void SetTextureEnabled(int index, bool enabled) = 0;
 
-    //! Sets the params for texture stage with given index
-    virtual void SetTextureStageParams(int index, const TextureStageParams &params) = 0;
-
-    //! Sets only the texture wrap modes (for faster than thru stage params)
-    virtual void SetTextureStageWrap(int index, TexWrapMode wrapS, TexWrapMode wrapT) = 0;
-
     //! Renders primitive composed of vertices with single texture
     virtual void DrawPrimitive(PrimitiveType type, const Vertex *vertices    , int vertexCount,
                                Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) = 0;
@@ -507,12 +501,6 @@ public:
 
     //! Sets the clear color
     virtual void SetClearColor(const Color &color) = 0;
-
-    //! Sets the current cull mode
-    virtual void SetCullMode(CullMode mode) = 0;
-
-    //! Sets the current fill mode
-    virtual void SetFillMode(FillMode mode) = 0;
 
     //! Copies content of framebuffer to texture
     virtual void CopyFramebufferToTexture(Texture& texture, int xOffset, int yOffset, int x, int y, int width, int height) = 0;

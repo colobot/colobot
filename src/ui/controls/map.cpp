@@ -335,6 +335,8 @@ void CMap::Draw()
     glm::vec2 uv1, uv2;
     int i;
 
+    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+
     if ( (m_state & STATE_VISIBLE) == 0 )
         return;
 
@@ -348,23 +350,28 @@ void CMap::Draw()
 
     if (m_fixImage.empty()) // drawing of the relief?
     {
-        m_engine->SetUITexture("textures/interface/map.png");
-        m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+        auto texture = m_engine->LoadTexture("textures/interface/map.png");
+        renderer->SetTransparency(Gfx::TransparencyMode::NONE);
+        renderer->SetTexture(texture);
+
         uv1.x = 0.5f + (m_offset.x - (m_half / m_zoom)) / (m_half * 2.0f);
         uv1.y = 0.5f - (m_offset.y + (m_half / m_zoom)) / (m_half * 2.0f);
         uv2.x = 0.5f + (m_offset.x + (m_half / m_zoom)) / (m_half * 2.0f);
         uv2.y = 0.5f - (m_offset.y - (m_half / m_zoom)) / (m_half * 2.0f);
+
         DrawVertex(uv1, uv2, 0.97f);  // drawing the map
     }
     else // still image?
     {
-        m_engine->LoadTexture(m_fixImage);
-        m_engine->SetUITexture(m_fixImage);
-        m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+        auto texture = m_engine->LoadTexture(m_fixImage);
+        renderer->SetTransparency(Gfx::TransparencyMode::NONE);
+        renderer->SetTexture(texture);
+
         uv1.x = 0.0f;
         uv1.y = 0.0f;
         uv2.x = 1.0f;
         uv2.y = 1.0f;
+
         DrawVertex(uv1, uv2, 0.97f);  // drawing the map
     }
 
@@ -499,8 +506,11 @@ void CMap::DrawFocus(const glm::vec2& position, float dir, ObjectType type, MapC
     uv2.x = 126.0f/256.0f;
     uv2.y = 255.0f/256.0f;
 
-    m_engine->SetUITexture("textures/interface/button2.png");
-    m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
+    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+
+    auto texture = m_engine->LoadTexture("textures/interface/button2.png");
+    renderer->SetTransparency(Gfx::TransparencyMode::WHITE);
+    renderer->SetTexture(texture);
 
     bEnding = false;
     do
@@ -551,6 +561,8 @@ void CMap::DrawObject(const glm::vec2& position, float dir, ObjectType type, Map
     dim.x = 2.0f/128.0f*0.75f;
     dim.y = 2.0f/128.0f;
 
+    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+
     if ( bOut )  // outside the map?
     {
         if ( color == MAPCOLOR_BBOX  && !m_bRadar )  return;
@@ -561,8 +573,10 @@ void CMap::DrawObject(const glm::vec2& position, float dir, ObjectType type, Map
             return;  // flashes
         }
 
-        m_engine->SetUITexture("textures/interface/button2.png");
-        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
+        auto texture = m_engine->LoadTexture("textures/interface/button2.png");
+        renderer->SetTransparency(Gfx::TransparencyMode::BLACK);
+        renderer->SetTexture(texture);
+
         if ( bUp )
         {
             uv1.x = 160.5f/256.0f;  // yellow triangle ^
@@ -704,8 +718,10 @@ void CMap::DrawObject(const glm::vec2& position, float dir, ObjectType type, Map
     {
         if ( bSelect )
         {
-            m_engine->SetUITexture("textures/interface/button2.png");
-            m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+            auto texture = m_engine->LoadTexture("textures/interface/button2.png");
+            renderer->SetTransparency(Gfx::TransparencyMode::NONE);
+            renderer->SetTexture(texture);
+
             if ( m_bToy )
             {
                 uv1.x = 164.5f/256.0f;  // black pentagon
@@ -730,8 +746,9 @@ void CMap::DrawObject(const glm::vec2& position, float dir, ObjectType type, Map
     {
         if ( m_bRadar )
         {
-            m_engine->SetUITexture("textures/interface/button2.png");
-            m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
+            auto texture = m_engine->LoadTexture("textures/interface/button2.png");
+            renderer->SetTransparency(Gfx::TransparencyMode::WHITE);
+            renderer->SetTexture(texture);
             uv1.x =  64.5f/256.0f;  // blue triangle
             uv1.y = 240.5f/256.0f;
             uv2.x =  79.0f/256.0f;
@@ -750,8 +767,9 @@ void CMap::DrawObject(const glm::vec2& position, float dir, ObjectType type, Map
 
     if ( color == MAPCOLOR_WAYPOINTb )
     {
-        m_engine->SetUITexture("textures/interface/button2.png");
-        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
+        auto texture = m_engine->LoadTexture("textures/interface/button2.png");
+        renderer->SetTransparency(Gfx::TransparencyMode::BLACK);
+        renderer->SetTexture(texture);
         uv1.x = 192.5f/256.0f;  // blue cross
         uv1.y = 240.5f/256.0f;
         uv2.x = 207.0f/256.0f;
@@ -760,8 +778,9 @@ void CMap::DrawObject(const glm::vec2& position, float dir, ObjectType type, Map
     }
     if ( color == MAPCOLOR_WAYPOINTr )
     {
-        m_engine->SetUITexture("textures/interface/button2.png");
-        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
+        auto texture = m_engine->LoadTexture("textures/interface/button2.png");
+        renderer->SetTransparency(Gfx::TransparencyMode::BLACK);
+        renderer->SetTexture(texture);
         uv1.x = 208.5f/256.0f;  // red cross
         uv1.y = 240.5f/256.0f;
         uv2.x = 223.0f/256.0f;
@@ -770,8 +789,9 @@ void CMap::DrawObject(const glm::vec2& position, float dir, ObjectType type, Map
     }
     if ( color == MAPCOLOR_WAYPOINTg )
     {
-        m_engine->SetUITexture("textures/interface/button2.png");
-        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
+        auto texture = m_engine->LoadTexture("textures/interface/button2.png");
+        renderer->SetTransparency(Gfx::TransparencyMode::BLACK);
+        renderer->SetTexture(texture);
         uv1.x = 224.5f/256.0f;  // green cross
         uv1.y = 240.5f/256.0f;
         uv2.x = 239.0f/256.0f;
@@ -780,8 +800,9 @@ void CMap::DrawObject(const glm::vec2& position, float dir, ObjectType type, Map
     }
     if ( color == MAPCOLOR_WAYPOINTy )
     {
-        m_engine->SetUITexture("textures/interface/button2.png");
-        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
+        auto texture = m_engine->LoadTexture("textures/interface/button2.png");
+        renderer->SetTransparency(Gfx::TransparencyMode::BLACK);
+        renderer->SetTexture(texture);
         uv1.x = 240.5f/256.0f;  // yellow cross
         uv1.y = 240.5f/256.0f;
         uv2.x = 255.0f/256.0f;
@@ -790,8 +811,9 @@ void CMap::DrawObject(const glm::vec2& position, float dir, ObjectType type, Map
     }
     if ( color == MAPCOLOR_WAYPOINTv )
     {
-        m_engine->SetUITexture("textures/interface/button2.png");
-        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
+        auto texture = m_engine->LoadTexture("textures/interface/button2.png");
+        renderer->SetTransparency(Gfx::TransparencyMode::BLACK);
+        renderer->SetTexture(texture);
         uv1.x = 192.5f/256.0f;  // violet cross
         uv1.y = 224.5f/256.0f;
         uv2.x = 207.0f/256.0f;
@@ -811,8 +833,12 @@ void CMap::DrawObjectIcon(const glm::vec2& pos, const glm::vec2& dim, MapColor c
 
     dp = 0.5f/256.0f;
 
-    m_engine->SetUITexture("textures/interface/button3.png");
-    m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+
+    auto texture = m_engine->LoadTexture("textures/interface/button3.png");
+    renderer->SetTransparency(Gfx::TransparencyMode::NONE);
+    renderer->SetTexture(texture);
+
     if ( color == MAPCOLOR_MOVE )
     {
         uv1.x = 160.0f/256.0f;  // blue
@@ -915,11 +941,15 @@ void CMap::DrawObjectIcon(const glm::vec2& pos, const glm::vec2& dim, MapColor c
             case OBJECT_MOBILEit:
             case OBJECT_MOBILErp:
             case OBJECT_MOBILEst:
-                m_engine->SetUITexture("textures/interface/button4.png"); break;
+            {
+                auto texture = m_engine->LoadTexture("textures/interface/button4.png");
+                renderer->SetTexture(texture);
+                break;
+            }
             default: ; // button3.png
         }
 
-        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
+        renderer->SetTransparency(Gfx::TransparencyMode::WHITE);
         uv1.x = (32.0f/256.0f)*(icon%8);
         uv1.y = (32.0f/256.0f)*(icon/8);
         uv2.x = uv1.x+32.0f/256.0f;
@@ -952,8 +982,12 @@ void CMap::DrawHighlight(const glm::vec2& position)
     dim.x *= 2.0f+cosf(m_time*8.0f)*0.5f;
     dim.y *= 2.0f+cosf(m_time*8.0f)*0.5f;
 
-    m_engine->SetUITexture("textures/interface/button2.png");
-    m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
+    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+
+    auto texture = m_engine->LoadTexture("textures/interface/button2.png");
+    renderer->SetTransparency(Gfx::TransparencyMode::BLACK);
+    renderer->SetTexture(texture);
+
     uv1.x = 160.5f/256.0f;  // hilite
     uv1.y = 224.5f/256.0f;
     uv2.x = 175.0f/256.0f;
@@ -1090,9 +1124,13 @@ void CMap::UpdateTerrain()
         }
     }
 
+    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+
     m_engine->DeleteTexture("interface/map.png");
     m_engine->LoadTexture("textures/interface/map.png", &img);
-    m_engine->SetUITexture("textures/interface/map.png");
+
+    auto texture = m_engine->LoadTexture("textures/interface/map.png");
+    renderer->SetTexture(texture);
 }
 
 // Updates the field in the map.

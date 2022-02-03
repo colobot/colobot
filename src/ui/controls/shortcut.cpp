@@ -89,28 +89,28 @@ bool CShortcut::EventProcess(const Event &event)
 void CShortcut::Draw()
 {
     float       zoom;
-    int         icon, mode;
+    int         icon;
 
     icon = 0;
     zoom = 0.8f;
-    mode = Gfx::ENG_RSTATE_TTEXTURE_WHITE;
+    Gfx::TransparencyMode mode = Gfx::TransparencyMode::WHITE;
     if ( m_state & STATE_HILIGHT )
     {
         icon = 4;
         zoom = 0.9f;
-        mode = Gfx::ENG_RSTATE_NORMAL;
+        mode = Gfx::TransparencyMode::NONE;
     }
     if ( m_state & STATE_CHECK )
     {
         icon = 1;
         zoom = 0.8f;
-        mode = Gfx::ENG_RSTATE_NORMAL;
+        mode = Gfx::TransparencyMode::NONE;
     }
     if ( m_state & STATE_PRESS )
     {
         icon = 1;
         zoom = 1.0f;
-        mode = Gfx::ENG_RSTATE_NORMAL;
+        mode = Gfx::TransparencyMode::NONE;
     }
     if ( m_icon == 128+6 || m_icon == 128+7 || m_icon == 58 )  // pause or film?
     {
@@ -118,22 +118,25 @@ void CShortcut::Draw()
         zoom = 1.0f;
     }
 
-    m_engine->SetUITexture("textures/interface/button3.png");
+    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+
+    auto texture = m_engine->LoadTexture("textures/interface/button3.png");
+    renderer->SetTexture(texture);
 
     if ( icon != -1 )
     {
-        m_engine->SetState(mode);
+        renderer->SetTransparency(mode);
         DrawVertex(icon, 0.95f);
     }
 
     icon = SetButtonTextureForIcon(m_icon);
     if (m_icon == 58)
     {
-        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
+        renderer->SetTransparency(Gfx::TransparencyMode::WHITE);
     }
     else
     {
-        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
+        renderer->SetTransparency(Gfx::TransparencyMode::BLACK);
     }
     DrawVertex(icon, zoom);
 
@@ -142,8 +145,9 @@ void CShortcut::Draw()
         glm::vec2 p1, p2, c, uv1, uv2;
         float   dp;
 
-        m_engine->SetTexture("textures/interface/button2.png");
-        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
+        auto texture = m_engine->LoadTexture("textures/interface/button2.png");
+        renderer->SetTexture(texture);
+        renderer->SetTransparency(Gfx::TransparencyMode::WHITE);
 
         zoom = 0.9f+sinf(m_time*8.0f)*0.1f;
 
@@ -182,8 +186,9 @@ void CShortcut::Draw()
         glm::vec2 uv1, uv2;
         float   dp;
 
-        m_engine->SetTexture("textures/interface/button3.png");
-        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
+        auto texture = m_engine->LoadTexture("textures/interface/button3.png");
+        renderer->SetTexture(texture);
+        renderer->SetTransparency(Gfx::TransparencyMode::WHITE);
 
         uv1.x = 160.0f/256.0f;
         uv1.y =   0.0f/256.0f;
@@ -203,8 +208,9 @@ void CShortcut::Draw()
         glm::vec2 uv1, uv2;
         float   dp;
 
-        m_engine->SetTexture("textures/interface/button2.png");
-        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
+        auto texture = m_engine->LoadTexture("textures/interface/button2.png");
+        renderer->SetTexture(texture);
+        renderer->SetTransparency(Gfx::TransparencyMode::BLACK);
 
         uv1.x = 159.0f / 256.0f;
         uv1.y = 240.0f / 256.0f;

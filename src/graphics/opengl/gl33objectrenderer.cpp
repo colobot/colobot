@@ -177,6 +177,10 @@ void CGL33ObjectRenderer::CGL33ObjectRenderer::Begin()
     glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
 
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CW);   // Colobot issue: faces are reversed
+
     SetUVTransform({ 0.0f, 0.0f }, { 1.0f, 1.0f });
 }
 
@@ -320,7 +324,6 @@ void CGL33ObjectRenderer::SetCullMode(bool enabled)
     if (enabled)
     {
         glEnable(GL_CULL_FACE);
-        glCullFace(GL_BACK);
     }
     else
     {

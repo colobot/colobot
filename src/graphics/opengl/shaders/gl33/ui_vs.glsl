@@ -40,6 +40,6 @@ void main()
 {
     gl_Position = uni_Matrix * in_VertexCoord;
 
-    data.Color = uni_Color * in_Color;
+    data.Color = in_Color;
     data.TexCoord = in_TexCoord;
 }

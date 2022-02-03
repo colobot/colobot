@@ -24,6 +24,7 @@
 #include "common/make_unique.h"
 
 #include "graphics/core/device.h"
+#include "graphics/core/renderers.h"
 #include "graphics/engine/engine.h"
 
 #include "ui/controls/button.h"
@@ -364,11 +365,13 @@ void CScroll::DrawVertex(const glm::vec2& pos, const glm::vec2& dim, int icon)
     float       ex, dp;
 
     auto device = m_engine->GetDevice();
+    auto renderer = device->GetUIRenderer();
 
     if ( icon == 0 )
     {
-        m_engine->SetUITexture("textures/interface/button2.png");
-        m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+        auto texture = m_engine->LoadTexture("textures/interface/button2.png");
+        renderer->SetTexture(texture);
+        renderer->SetTransparency(Gfx::TransparencyMode::NONE);
         uv1.x =   0.0f/256.0f;  // yellow rectangle
         uv1.y =  32.0f/256.0f;
         uv2.x =  32.0f/256.0f;
@@ -377,8 +380,9 @@ void CScroll::DrawVertex(const glm::vec2& pos, const glm::vec2& dim, int icon)
     }
     else if ( icon == 1 )
     {
-        m_engine->SetUITexture("textures/interface/button2.png");
-        m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+        auto texture = m_engine->LoadTexture("textures/interface/button2.png");
+        renderer->SetTexture(texture);
+        renderer->SetTransparency(Gfx::TransparencyMode::NONE);
         uv1.x = 128.0f/256.0f;  // gray rectangle
         uv1.y =  32.0f/256.0f;
         uv2.x = 160.0f/256.0f;
@@ -387,8 +391,9 @@ void CScroll::DrawVertex(const glm::vec2& pos, const glm::vec2& dim, int icon)
     }
     else if ( icon == 2 )
     {
-        m_engine->SetUITexture("textures/interface/button1.png");
-        m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+        auto texture = m_engine->LoadTexture("textures/interface/button1.png");
+        renderer->SetTexture(texture);
+        renderer->SetTransparency(Gfx::TransparencyMode::NONE);
         uv1.x =  64.0f/256.0f;  // blue rectangle
         uv1.y =   0.0f/256.0f;
         uv2.x =  96.0f/256.0f;
@@ -397,8 +402,9 @@ void CScroll::DrawVertex(const glm::vec2& pos, const glm::vec2& dim, int icon)
     }
     else
     {
-        m_engine->SetUITexture("textures/interface/button2.png");
-        m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+        auto texture = m_engine->LoadTexture("textures/interface/button2.png");
+        renderer->SetTexture(texture);
+        renderer->SetTransparency(Gfx::TransparencyMode::NONE);
         uv1.x = 104.0f/256.0f;  // blue line -
         uv1.y =  32.0f/256.0f;
         uv2.x = 128.0f/256.0f;

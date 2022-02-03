@@ -451,9 +451,11 @@ void CControl::Draw()
 
     if ( (m_state & STATE_VISIBLE) == 0 )  return;
 
-    m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
-    m_engine->SetUITexture("textures/interface/button1.png");
-    auto device = m_engine->GetDevice();
+    auto texture = m_engine->LoadTexture("textures/interface/button1.png");
+
+    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+    renderer->SetTransparency(Gfx::TransparencyMode::NONE);
+    renderer->SetTexture(texture);
 
     zoomExt = 1.00f;
     zoomInt = 0.95f;
@@ -506,7 +508,8 @@ void CControl::Draw()
 
     if ( m_state & STATE_OKAY )
     {
-        m_engine->SetUITexture("textures/interface/button3.png");
+        auto texture = m_engine->LoadTexture("textures/interface/button3.png");
+        renderer->SetTexture(texture);
         icon = 3;  // yellow with green point pressed
     }
 
@@ -518,7 +521,8 @@ void CControl::Draw()
         if ( m_state & STATE_DEAD )  return;
 
         icon = SetButtonTextureForIcon(m_icon);
-        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
+        renderer->SetTransparency(Gfx::TransparencyMode::WHITE);
+        //m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
         if ( icon != -1 )
         {
             DrawPart(icon, zoomInt, 0.0f);
@@ -740,14 +744,17 @@ void CControl::DrawWarning(const glm::vec2& position, const glm::vec2& dimension
     glm::vec2   uv1, uv2;
     float       dp;
 
+    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+
     glm::vec2 pos = position;
     glm::vec2 dim = dimension;
 
     dp = 0.5f / 256.0f;
 
-    m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
-    m_engine->SetUITexture("textures/interface/button2.png");
-    auto device = m_engine->GetDevice();
+    auto texture = m_engine->LoadTexture("textures/interface/button2.png");
+
+    renderer->SetTransparency(Gfx::TransparencyMode::NONE);
+    renderer->SetTexture(texture);
 
     uv1.x =  64.0f / 256.0f;
     uv1.y = 208.0f / 256.0f;
@@ -788,14 +795,17 @@ void CControl::DrawShadow(const glm::vec2& position, const glm::vec2& dimension,
     glm::vec2   uv1, uv2, corner;
     float       dp;
 
+    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+
     glm::vec2 pos = position;
     glm::vec2 dim = dimension;
 
     dp = 0.5f/256.0f;
 
-    m_engine->SetState( Gfx::ENG_RSTATE_TTEXTURE_WHITE);
-    m_engine->SetUITexture("textures/interface/button2.png");
-    auto device = m_engine->GetDevice();
+    auto texture = m_engine->LoadTexture("textures/interface/button2.png");
+
+    renderer->SetTransparency(Gfx::TransparencyMode::WHITE);
+    renderer->SetTexture(texture);
 
     pos.x += deep * 0.010f * 0.75f;
     pos.y -= deep * 0.015f;
@@ -846,7 +856,8 @@ int CControl::SetButtonTextureForIcon(int icon)
     int iconIdx = icon%64;
     int buttonFile = (icon/64) + 1;
 
-    m_engine->SetUITexture("textures/interface/button" + StrUtils::ToString<int>(buttonFile) + ".png");
+    auto texture = m_engine->LoadTexture("textures/interface/button" + StrUtils::ToString<int>(buttonFile) + ".png");
+    m_engine->GetDevice()->GetUIRenderer()->SetTexture(texture);
 
     return iconIdx;
 }

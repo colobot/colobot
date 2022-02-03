@@ -46,10 +46,12 @@ public:
     virtual void SetProjection(float left, float right, float bottom, float top) override;
     virtual void SetTexture(const Texture& texture) override;
     virtual void SetColor(const glm::vec4& color) override;
+    virtual void SetTransparency(TransparencyMode mode) override;
 
     virtual void DrawPrimitive(PrimitiveType type, int count, const Vertex2D* vertices) override;
 
-    virtual void Flush() override;
+    virtual Vertex2D* BeginPrimitive(PrimitiveType type, int count) override;
+    virtual bool EndPrimitive() override;
 
 private:
     void UpdateUniforms();
@@ -76,12 +78,16 @@ private:
     GLuint m_bufferVAO = 0;
     // VBO capacity
     GLsizei m_bufferCapacity = 4 * 1024;
+    
+    // Buffer mapping state
+    PrimitiveType m_type = {};
+    GLuint m_offset = 0;
+    GLuint m_count = 0;
+    bool m_mapped = false;
+    bool m_backup = false;
 
     // Buffered vertex data
     std::vector<Vertex2D> m_buffer;
-    std::vector<GLenum> m_types;
-    std::vector<GLint> m_firsts;
-    std::vector<GLsizei> m_counts;
 
     // Shader program
     GLuint m_program = 0;
@@ -126,8 +132,6 @@ public:
 
     //! Draws terrain object
     virtual void DrawObject(const glm::mat4& matrix, const CVertexBuffer* buffer) override;
-
-    virtual void Flush() override;
 
 private:
     CGL33Device* const m_device;
@@ -195,8 +199,6 @@ public:
 
     //! Draws terrain object
     virtual void DrawObject(const CVertexBuffer* buffer, bool transparent) override;
-
-    virtual void Flush() override;
 
 private:
     CGL33Device* const m_device;

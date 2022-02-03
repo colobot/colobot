@@ -135,7 +135,7 @@ CCamera::CCamera()
     m_overType = CAM_OVER_EFFECT_NULL;
     m_overForce = 0.0f;
     m_overTime = 0.0f;
-    m_overMode = 0;
+    m_overMode = TransparencyMode::NONE;
     m_overFadeIn = 0.0f;
     m_overFadeOut = 0.0f;
 
@@ -611,7 +611,7 @@ void CCamera::StartOver(CameraOverEffect effect, glm::vec3 pos, float force)
     if (m_overType == CAM_OVER_EFFECT_BLOOD)
     {
         m_overColor   = Color(0.8f, 0.1f, 0.1f); // red
-        m_overMode    = ENG_RSTATE_TCOLOR_BLACK;
+        m_overMode    = TransparencyMode::BLACK;
 
         m_overFadeIn  = 0.4f;
         m_overFadeOut = 0.8f;
@@ -621,7 +621,7 @@ void CCamera::StartOver(CameraOverEffect effect, glm::vec3 pos, float force)
     if ( m_overType == CAM_OVER_EFFECT_FADEIN_WHITE )
     {
         m_overColor   = Color(1.0f, 1.0f, 1.0f); // white
-        m_overMode    = ENG_RSTATE_TCOLOR_BLACK;
+        m_overMode    = TransparencyMode::BLACK;
 
         m_overFadeIn  = 0.0f;
         m_overFadeOut = 20.0f;
@@ -631,7 +631,7 @@ void CCamera::StartOver(CameraOverEffect effect, glm::vec3 pos, float force)
     if ( m_overType == CAM_OVER_EFFECT_FADEOUT_WHITE )
     {
         m_overColor   = Color(1.0f, 1.0f, 1.0f); // white
-        m_overMode    = ENG_RSTATE_TCOLOR_BLACK;
+        m_overMode    = TransparencyMode::BLACK;
 
         m_overFadeIn  = 6.0f;
         m_overFadeOut = 100000.0f;
@@ -641,7 +641,7 @@ void CCamera::StartOver(CameraOverEffect effect, glm::vec3 pos, float force)
     if ( m_overType == CAM_OVER_EFFECT_FADEOUT_BLACK )
     {
         m_overColor   = m_engine->GetFogColor(1); // fog color underwater
-        m_overMode    = ENG_RSTATE_TTEXTURE_WHITE;
+        m_overMode    = TransparencyMode::WHITE;
 
         m_overFadeIn  = 4.0f;
         m_overFadeOut = 100000.0f;
@@ -651,7 +651,7 @@ void CCamera::StartOver(CameraOverEffect effect, glm::vec3 pos, float force)
     if ( m_overType == CAM_OVER_EFFECT_LIGHTNING )
     {
         m_overColor   = Color(0.9f, 1.0f, 1.0f);  // white-cyan
-        m_overMode    = ENG_RSTATE_TCOLOR_BLACK;
+        m_overMode    = TransparencyMode::BLACK;
 
         m_overFadeIn  = 0.0f;
         m_overFadeOut = 1.0f;
@@ -692,7 +692,7 @@ void CCamera::OverFrame(const Event &event)
             intensity *= m_overForce;
 
             Color color;
-            if (m_overMode == ENG_RSTATE_TCOLOR_WHITE)
+            if (m_overMode == TransparencyMode::WHITE)
             {
                 color.r = 1.0f - (1.0f - m_overColor.r) * intensity;
                 color.g = 1.0f - (1.0f - m_overColor.g) * intensity;
@@ -717,7 +717,7 @@ void CCamera::OverFrame(const Event &event)
             intensity *= m_overForce;
 
             Color color;
-            if (m_overMode == ENG_RSTATE_TCOLOR_WHITE)
+            if (m_overMode == TransparencyMode::WHITE)
             {
                 color.r = 1.0f-(1.0f-m_overColor.r) * intensity;
                 color.g = 1.0f-(1.0f-m_overColor.g) * intensity;

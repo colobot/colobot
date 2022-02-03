@@ -115,13 +115,13 @@ public:
 
     /// Add a quad to be rendered.
     /// This may trigger a call to Flush() if necessary.
-    void Add(Vertex2D vertices[4], unsigned int texID, EngineRenderState renderState, Color color)
+    void Add(Vertex2D vertices[4], unsigned int texID, TransparencyMode transparency, Color color)
     {
-        if (texID != m_texID || renderState != m_renderState || color != m_color)
+        if (texID != m_texID || transparency != m_transparency || color != m_color)
         {
             Flush();
             m_texID = texID;
-            m_renderState = renderState;
+            m_transparency = transparency;
             m_color = color;
         }
         m_quads.emplace_back(Quad{{vertices[0], vertices[1], vertices[2], vertices[3]}});
@@ -132,9 +132,9 @@ public:
     {
         if (m_quads.empty()) return;
 
-        m_engine.SetState(m_renderState);
-        m_engine.GetDevice()->SetTexture(0, m_texID);
-        m_engine.SetUITexture(Texture{ m_texID });
+        auto renderer = m_engine.GetDevice()->GetUIRenderer();
+        renderer->SetTexture(Texture{ m_texID });
+        renderer->SetTransparency(m_transparency);
 
         assert(m_firsts.size() == m_counts.size());
         if (m_firsts.size() < m_quads.size())
@@ -151,14 +151,10 @@ public:
             }
         }
 
-        auto renderer = m_engine.GetDevice()->GetUIRenderer();
-
         for (const auto& quad : m_quads)
         {
             renderer->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, 4, quad.vertices);
         }
-
-        m_engine.GetDevice()->GetUIRenderer()->Flush();
 
         //const Vertex* vertices = m_quads.front().vertices;
         //m_engine.GetDevice()->DrawPrimitives(PrimitiveType::TRIANGLE_STRIP, vertices, m_firsts.data(),
@@ -176,7 +172,7 @@ private:
 
     Color m_color;
     unsigned int m_texID{};
-    EngineRenderState m_renderState{};
+    TransparencyMode m_transparency = TransparencyMode::NONE;
 };
 
 
@@ -1068,7 +1064,7 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, glm::iv
             { { p2.x, p1.y }, { uv2.x, uv1.y }, col }
         };
 
-        m_quadBatch->Add(quad, texID, ENG_RSTATE_TTEXTURE_WHITE, color);
+        m_quadBatch->Add(quad, texID, TransparencyMode::WHITE, color);
 
         pos.x += width;
     }
@@ -1107,7 +1103,7 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, glm::iv
             { { p2.x, p1.y }, { texCoord2.x, texCoord1.y }, col }
         };
 
-        m_quadBatch->Add(quad, tex.id, ENG_RSTATE_TEXT, color);
+        m_quadBatch->Add(quad, tex.id, TransparencyMode::ALPHA, color);
 
         pos.x += tex.charSize.x * width;
     }

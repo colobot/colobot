@@ -22,6 +22,8 @@
 
 #include "common/make_unique.h"
 
+#include "graphics/core/device.h"
+#include "graphics/core/renderers.h"
 #include "graphics/engine/engine.h"
 
 #include "math/func.h"
@@ -366,14 +368,17 @@ void CList::Draw()
 
     dp = 0.5f / 256.0f;
 
+    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+
     if (m_icon != -1)
     {
         dim = m_dim;
 
         if (m_icon == 0)
         {
-            m_engine->SetUITexture("textures/interface/button2.png");
-            m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+            auto texture = m_engine->LoadTexture("textures/interface/button2.png");
+            renderer->SetTexture(texture);
+            renderer->SetTransparency(Gfx::TransparencyMode::NONE);
 
             uv1.x = 128.0f / 256.0f;
             uv1.y =  64.0f / 256.0f;  // u-v texture
@@ -382,8 +387,9 @@ void CList::Draw()
         }
         else
         {
-            m_engine->SetUITexture("textures/interface/button2.png");
-            m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+            auto texture = m_engine->LoadTexture("textures/interface/button2.png");
+            renderer->SetTexture(texture);
+            renderer->SetTransparency(Gfx::TransparencyMode::NONE);
 
             uv1.x = 132.0f / 256.0f;
             uv1.y =  68.0f / 256.0f;  // u-v texture
@@ -418,8 +424,9 @@ void CList::Draw()
             dim.y *= 0.4f;
             pos.y -= dim.y;
 
-            m_engine->SetUITexture("textures/interface/button2.png");
-            m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE); // was D3DSTATETTw
+            auto texture = m_engine->LoadTexture("textures/interface/button2.png");
+            renderer->SetTexture(texture);
+            renderer->SetTransparency(Gfx::TransparencyMode::WHITE);
             uv1.x = 120.0f / 256.0f;
             uv1.y =  64.0f / 256.0f;
             uv2.x = 128.0f / 256.0f;
@@ -493,8 +500,9 @@ void CList::Draw()
 
                 if (m_items[i + m_firstLine].check)
                 {
-                    m_engine->SetUITexture("textures/interface/button1.png");
-                    m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+                    auto texture = m_engine->LoadTexture("textures/interface/button1.png");
+                    renderer->SetTexture(texture);
+                    renderer->SetTransparency(Gfx::TransparencyMode::NONE);
                     uv1.x = 64.0f / 256.0f;
                     uv1.y =  0.0f / 256.0f;
                     uv2.x = 96.0f / 256.0f;
@@ -505,7 +513,7 @@ void CList::Draw()
                     uv2.y -= dp;
                     DrawIcon(pos, dim, uv1, uv2);  // square shape
 
-                    m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE); // was D3DSTATETTw
+                    renderer->SetTransparency(Gfx::TransparencyMode::WHITE);
                     uv1.x =  0.0f / 256.0f;  // v
                     uv1.y = 64.0f / 256.0f;
                     uv2.x = 32.0f / 256.0f;
@@ -518,8 +526,9 @@ void CList::Draw()
                 }
                 else
                 {
-                    m_engine->SetUITexture("textures/interface/button1.png");
-                    m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE); // was D3DSTATETTw
+                    auto texture = m_engine->LoadTexture("textures/interface/button1.png");
+                    renderer->SetTexture(texture);
+                    renderer->SetTransparency(Gfx::TransparencyMode::WHITE);
                     if ( i + m_firstLine == m_selectLine )
                     {
                         uv1.x =224.0f / 256.0f;  // <

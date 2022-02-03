@@ -58,9 +58,9 @@ void CScreenWelcome::CreateInterface()
     m_interface->CreateWindows(pos, ddim, -1, EVENT_WINDOW5);
 
     if ( m_imageIndex == 0 )
-        m_engine->SetOverColor(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f), Gfx::ENG_RSTATE_TCOLOR_BLACK);
+        m_engine->SetOverColor(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f), Gfx::TransparencyMode::BLACK);
     else
-        m_engine->SetOverColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f), Gfx::ENG_RSTATE_TCOLOR_WHITE);
+        m_engine->SetOverColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f), Gfx::TransparencyMode::WHITE);
     m_engine->SetOverFront(true);
 
     SetBackground("textures/interface/intro"+StrUtils::ToString<int>(m_imageIndex+1)+".png", true);
@@ -96,11 +96,11 @@ bool CScreenWelcome::EventProcess(const Event &event)
         if ( intensity > 1.0f )  intensity = 1.0f;
 
         // white first, others -> black fading
-        int mode = Gfx::ENG_RSTATE_TCOLOR_WHITE;
+        Gfx::TransparencyMode mode = Gfx::TransparencyMode::WHITE;
         if ((m_imageIndex == 0) && (m_time < WELCOME_LENGTH/2.0f))
         {
             intensity = 1.0f - intensity;
-            mode = Gfx::ENG_RSTATE_TCOLOR_BLACK;
+            mode = Gfx::TransparencyMode::BLACK;
         }
 
         m_engine->SetOverColor(Gfx::Color(intensity, intensity, intensity, intensity), mode);

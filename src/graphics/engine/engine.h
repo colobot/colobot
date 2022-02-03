@@ -30,6 +30,7 @@
 #include "graphics/core/color.h"
 #include "graphics/core/material.h"
 #include "graphics/core/texture.h"
+#include "graphics/core/renderers.h"
 #include "graphics/core/vertex.h"
 
 #include "math/sphere.h"
@@ -54,7 +55,6 @@ struct Event;
 // Graphics module namespace
 namespace Gfx
 {
-
 
 class CDevice;
 class COldModelManager;
@@ -90,10 +90,6 @@ enum EngineRenderState
     ENG_RSTATE_TTEXTURE_WHITE   = (1<<1),
     //! The transparent diffuse color
     ENG_RSTATE_TDIFFUSE         = (1<<2),
-    //! Texture wrap
-    ENG_RSTATE_WRAP             = (1<<3),
-    //! Texture borders with solid color
-    ENG_RSTATE_CLAMP            = (1<<4),
     //! Light texture (ambient max)
     ENG_RSTATE_LIGHT            = (1<<5),
     //! Double black texturing
@@ -837,7 +833,7 @@ public:
     /* *************** Mode setting *************** */
 
     //! Sets the current rendering state
-    void            SetState(int state, const Color& color = Color(1.0f, 1.0f, 1.0f, 1.0f));
+    //void            SetState(int state, const Color& color = Color(1.0f, 1.0f, 1.0f, 1.0f));
 
     //! Sets the current material
     void            SetMaterial(const Material& mat);
@@ -997,7 +993,7 @@ public:
     //! Specifies whether to draw the foreground
     void            SetOverFront(bool front);
     //! Sets the foreground overlay color
-    void            SetOverColor(const Color& color = Color(), int mode = ENG_RSTATE_TCOLOR_BLACK);
+    void            SetOverColor(const Color& color = Color(), TransparencyMode mode = TransparencyMode::BLACK);
 
     //@{
     //! Management of the particle density
@@ -1171,9 +1167,6 @@ public:
     void            EnablePauseBlur();
     void            DisablePauseBlur();
 
-    void            SetUITexture(const std::string& name);
-    void            SetUITexture(const Texture& texture);
-
 
     //! Reloads all textures
     /** This additionally sends EVENT_RELOAD_TEXTURES to reload all textures not maintained by CEngine **/
@@ -1218,7 +1211,7 @@ protected:
     //! Draws the mouse cursor
     void        DrawMouse();
     //! Draw part of mouse cursor sprite
-    void        DrawMouseSprite(const glm::ivec2& pos, const glm::ivec2& size, int icon);
+    void        DrawMouseSprite(const glm::ivec2& pos, const glm::ivec2& size, int icon, TransparencyMode mode);
     //! Draw statistic texts
     void        DrawStats();
     //! Draw mission timer
@@ -1380,7 +1373,7 @@ protected:
     Color           m_backgroundCloudDown;
     bool            m_overFront;
     Color           m_overColor;
-    int             m_overMode;
+    TransparencyMode m_overMode;
     std::string     m_foregroundName;
     Texture         m_foregroundTex;
     bool            m_drawWorld;

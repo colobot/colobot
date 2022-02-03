@@ -36,7 +36,7 @@ class CVertexBuffer;
 enum class PrimitiveType : unsigned char;
 struct Texture;
 
-enum class TransparencyMode
+enum class TransparencyMode : unsigned char
 {
     NONE,
     ALPHA,
@@ -59,9 +59,6 @@ class CRenderer
 {
 public:
     virtual ~CRenderer() { }
-
-    //! Flush buffered content
-    virtual void Flush() {}
 };
 
 /**
@@ -79,9 +76,14 @@ public:
     virtual void SetTexture(const Texture& texture) = 0;
     //! Sets color
     virtual void SetColor(const glm::vec4& color) = 0;
+    //! Sets transparency mode
+    virtual void SetTransparency(TransparencyMode mode) = 0;
 
     //! Draws primitive
     virtual void DrawPrimitive(PrimitiveType type, int count, const Vertex2D* vertices) = 0;
+
+    virtual Vertex2D* BeginPrimitive(PrimitiveType type, int count) = 0;
+    virtual bool EndPrimitive() = 0;
 };
 
 /**

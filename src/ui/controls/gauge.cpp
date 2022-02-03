@@ -21,6 +21,8 @@
 #include "ui/controls/gauge.h"
 
 #include "graphics/engine/engine.h"
+#include "graphics/core/device.h"
+#include "graphics/core/renderers.h"
 
 
 namespace Ui
@@ -78,8 +80,11 @@ void CGauge::Draw()
 
     if ( (m_state & STATE_VISIBLE) == 0 )  return;
 
-    m_engine->SetUITexture("textures/interface/button2.png");
-    m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+    auto texture = m_engine->LoadTexture("textures/interface/button2.png");
+
+    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+    renderer->SetTexture(texture);
+    renderer->SetTransparency(Gfx::TransparencyMode::NONE);
 
     dp = 0.5f/256.0f;
 

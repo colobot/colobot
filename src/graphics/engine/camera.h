@@ -389,7 +389,7 @@ protected:
     float       m_overTime;
     Color  m_overColorBase;
     Color  m_overColor;
-    int         m_overMode;
+    TransparencyMode m_overMode;
     float       m_overFadeIn;
     float       m_overFadeOut;
 

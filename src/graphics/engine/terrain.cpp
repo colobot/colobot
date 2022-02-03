@@ -635,7 +635,7 @@ bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank)
 
                 buffer.type = EngineTriangleType::SURFACE;
 
-                buffer.state = ENG_RSTATE_WRAP;
+                buffer.state = ENG_RSTATE_NORMAL;
 
                 buffer.state |= ENG_RSTATE_SECOND;
                 if (step == 1)

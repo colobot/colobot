@@ -25,6 +25,7 @@
 
 #include "graphics/engine/engine.h"
 #include "graphics/core/device.h"
+#include "graphics/core/renderers.h"
 
 
 namespace Ui
@@ -170,8 +171,12 @@ void CButton::Draw()
          (m_state & STATE_CARD  ) == 0 &&
          (m_state & STATE_SIMPLY) == 0 )
     {
-        m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
-        m_engine->SetUITexture("textures/interface/button2.png");
+        auto renderer = m_engine->GetDevice()->GetUIRenderer();
+
+        auto texture = m_engine->LoadTexture("textures/interface/button2.png");
+
+        renderer->SetTransparency(Gfx::TransparencyMode::NONE);
+        renderer->SetTexture(texture);
 
         dp = 0.5f / 256.0f;
 

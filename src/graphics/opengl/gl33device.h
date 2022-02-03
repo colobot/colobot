@@ -135,10 +135,6 @@ public:
     void SetTexture(int index, unsigned int textureId) override;
     void SetTextureEnabled(int index, bool enabled) override;
 
-    void SetTextureStageParams(int index, const TextureStageParams &params) override;
-
-    void SetTextureStageWrap(int index, Gfx::TexWrapMode wrapS, Gfx::TexWrapMode wrapT) override;
-
     virtual void DrawPrimitive(PrimitiveType type, const Vertex *vertices    , int vertexCount,
                                Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) override;
     virtual void DrawPrimitive(PrimitiveType type, const VertexCol *vertices , int vertexCount) override;
@@ -166,10 +162,6 @@ public:
 
     void SetClearColor(const Color &color) override;
 
-    void SetCullMode(CullMode mode) override;
-
-    void SetFillMode(FillMode mode) override;
-
     void CopyFramebufferToTexture(Texture& texture, int xOffset, int yOffset, int x, int y, int width, int height) override;
 
     std::unique_ptr<CFrameBufferPixels> GetFrameBufferPixels() const override;
@@ -192,8 +184,6 @@ public:
     bool IsFramebufferSupported() override;
 
 private:
-    //! Updates the texture params for given texture stage
-    void UpdateTextureParams(int index);
     //! Updates texture state
     inline void UpdateTextureState(int index);
 

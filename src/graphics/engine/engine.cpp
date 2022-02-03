@@ -83,17 +83,17 @@ struct EngineMouse
     //! Shadow texture part
     int iconShadow;
     //! Mode to render 1st image in
-    EngineRenderState mode1;
+    TransparencyMode mode1;
     //! Mode to render 2nd image in
-    EngineRenderState mode2;
+    TransparencyMode mode2;
     //! Hot point
     glm::ivec2 hotPoint;
 
     EngineMouse(int icon1 = -1,
                 int icon2 = -1,
                 int iconShadow = -1,
-                EngineRenderState mode1 = ENG_RSTATE_NORMAL,
-                EngineRenderState mode2 = ENG_RSTATE_NORMAL,
+                TransparencyMode mode1 = TransparencyMode::NONE,
+                TransparencyMode mode2 = TransparencyMode::NONE,
                 glm::ivec2 hotPoint = { 0, 0 })
         : icon1(icon1)
         , icon2(icon2)
@@ -106,22 +106,22 @@ struct EngineMouse
 
 constexpr glm::ivec2 MOUSE_SIZE(32, 32);
 const std::map<EngineMouseType, EngineMouse> MOUSE_TYPES = {
-    {{ENG_MOUSE_NORM},    {EngineMouse( 0,  1, 32, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, glm::ivec2( 1,  1))}},
-    {{ENG_MOUSE_WAIT},    {EngineMouse( 2,  3, 33, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, glm::ivec2( 8, 12))}},
-    {{ENG_MOUSE_HAND},    {EngineMouse( 4,  5, 34, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, glm::ivec2( 7,  2))}},
-    {{ENG_MOUSE_NO},      {EngineMouse( 6,  7, 35, ENG_RSTATE_TTEXTURE_WHITE, ENG_RSTATE_TTEXTURE_BLACK, glm::ivec2(10, 10))}},
-    {{ENG_MOUSE_EDIT},    {EngineMouse( 8,  9, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, glm::ivec2( 6, 10))}},
-    {{ENG_MOUSE_CROSS},   {EngineMouse(10, 11, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, glm::ivec2(10, 10))}},
-    {{ENG_MOUSE_MOVEV},   {EngineMouse(12, 13, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, glm::ivec2( 5, 11))}},
-    {{ENG_MOUSE_MOVEH},   {EngineMouse(14, 15, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, glm::ivec2(11,  5))}},
-    {{ENG_MOUSE_MOVED},   {EngineMouse(16, 17, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, glm::ivec2( 9,  9))}},
-    {{ENG_MOUSE_MOVEI},   {EngineMouse(18, 19, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, glm::ivec2( 9,  9))}},
-    {{ENG_MOUSE_MOVE},    {EngineMouse(20, 21, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, glm::ivec2(11, 11))}},
-    {{ENG_MOUSE_TARGET},  {EngineMouse(22, 23, -1, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, glm::ivec2(15, 15))}},
-    {{ENG_MOUSE_SCROLLL}, {EngineMouse(24, 25, 43, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, glm::ivec2( 2,  9))}},
-    {{ENG_MOUSE_SCROLLR}, {EngineMouse(26, 27, 44, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, glm::ivec2(17,  9))}},
-    {{ENG_MOUSE_SCROLLU}, {EngineMouse(28, 29, 45, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, glm::ivec2( 9,  2))}},
-    {{ENG_MOUSE_SCROLLD}, {EngineMouse(30, 31, 46, ENG_RSTATE_TTEXTURE_BLACK, ENG_RSTATE_TTEXTURE_WHITE, glm::ivec2( 9, 17))}},
+    {{ENG_MOUSE_NORM},    {EngineMouse( 0,  1, 32, TransparencyMode::WHITE, TransparencyMode::BLACK, glm::ivec2( 1,  1))}},
+    {{ENG_MOUSE_WAIT},    {EngineMouse( 2,  3, 33, TransparencyMode::WHITE, TransparencyMode::BLACK, glm::ivec2( 8, 12))}},
+    {{ENG_MOUSE_HAND},    {EngineMouse( 4,  5, 34, TransparencyMode::WHITE, TransparencyMode::BLACK, glm::ivec2( 7,  2))}},
+    {{ENG_MOUSE_NO},      {EngineMouse( 6,  7, 35, TransparencyMode::WHITE, TransparencyMode::BLACK, glm::ivec2(10, 10))}},
+    {{ENG_MOUSE_EDIT},    {EngineMouse( 8,  9, -1, TransparencyMode::BLACK, TransparencyMode::WHITE, glm::ivec2( 6, 10))}},
+    {{ENG_MOUSE_CROSS},   {EngineMouse(10, 11, -1, TransparencyMode::BLACK, TransparencyMode::WHITE, glm::ivec2(10, 10))}},
+    {{ENG_MOUSE_MOVEV},   {EngineMouse(12, 13, -1, TransparencyMode::BLACK, TransparencyMode::WHITE, glm::ivec2( 5, 11))}},
+    {{ENG_MOUSE_MOVEH},   {EngineMouse(14, 15, -1, TransparencyMode::BLACK, TransparencyMode::WHITE, glm::ivec2(11,  5))}},
+    {{ENG_MOUSE_MOVED},   {EngineMouse(16, 17, -1, TransparencyMode::BLACK, TransparencyMode::WHITE, glm::ivec2( 9,  9))}},
+    {{ENG_MOUSE_MOVEI},   {EngineMouse(18, 19, -1, TransparencyMode::BLACK, TransparencyMode::WHITE, glm::ivec2( 9,  9))}},
+    {{ENG_MOUSE_MOVE},    {EngineMouse(20, 21, -1, TransparencyMode::BLACK, TransparencyMode::WHITE, glm::ivec2(11, 11))}},
+    {{ENG_MOUSE_TARGET},  {EngineMouse(22, 23, -1, TransparencyMode::BLACK, TransparencyMode::WHITE, glm::ivec2(15, 15))}},
+    {{ENG_MOUSE_SCROLLL}, {EngineMouse(24, 25, 43, TransparencyMode::BLACK, TransparencyMode::WHITE, glm::ivec2( 2,  9))}},
+    {{ENG_MOUSE_SCROLLR}, {EngineMouse(26, 27, 44, TransparencyMode::BLACK, TransparencyMode::WHITE, glm::ivec2(17,  9))}},
+    {{ENG_MOUSE_SCROLLU}, {EngineMouse(28, 29, 45, TransparencyMode::BLACK, TransparencyMode::WHITE, glm::ivec2( 9,  2))}},
+    {{ENG_MOUSE_SCROLLD}, {EngineMouse(30, 31, 46, TransparencyMode::BLACK, TransparencyMode::WHITE, glm::ivec2( 9, 17))}},
 };
 
 CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
@@ -181,7 +181,7 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
     m_backgroundScale = false;
     m_overFront = true;
     m_overColor = Color();
-    m_overMode  = ENG_RSTATE_TCOLOR_BLACK;
+    m_overMode  = TransparencyMode::BLACK;
     m_highlight = false;
     std::fill_n(m_highlightRank, 100, -1);
     m_highlightTime = 0.0f;
@@ -346,7 +346,6 @@ bool CEngine::Create()
     }
 
     m_device->SetClearColor(Color(0.0f, 0.0f, 0.0f, 0.0f));
-    m_device->SetFillMode(FillMode::POLY);
 
     SetFocus(m_focus);
 
@@ -1918,238 +1917,6 @@ bool CEngine::TransformPoint(glm::vec3& p2D, int objRank, glm::vec3 p3D)
 
 
 
-void CEngine::SetState(int state, const Color& color)
-{
-    if (state == m_lastState && color == m_lastColor)
-        return;
-
-    m_device->GetUIRenderer()->Flush();
-    m_device->GetUIRenderer()->SetColor({ color.r, color.g, color.b, color.a });
-
-    m_lastState = state;
-    m_lastColor = color;
-
-    if (state & ENG_RSTATE_TTEXTURE_BLACK)  // transparent black texture?
-    {
-        m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
-        m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  false);
-
-        m_device->SetRenderState(RENDER_STATE_BLENDING,    true);
-        m_device->SetBlendFunc(BLEND_ONE, BLEND_INV_SRC_COLOR);
-
-        TextureStageParams params;
-        params.colorOperation = TEX_MIX_OPER_MODULATE;
-        params.colorArg1 = TEX_MIX_ARG_TEXTURE;
-        params.colorArg2 = TEX_MIX_ARG_FACTOR;
-        params.alphaOperation = TEX_MIX_OPER_DEFAULT;
-        params.factor = color;
-
-        m_device->SetTextureEnabled(0, true);
-        m_device->SetTextureStageParams(0, params);
-    }
-    else if (state & ENG_RSTATE_TTEXTURE_WHITE)  // transparent white texture?
-    {
-        m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
-        m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  false);
-
-        m_device->SetRenderState(RENDER_STATE_BLENDING,    true);
-        m_device->SetBlendFunc(BLEND_DST_COLOR, BLEND_ZERO);
-
-        TextureStageParams params;
-        params.colorOperation = TEX_MIX_OPER_ADD;
-        params.colorArg1 = TEX_MIX_ARG_TEXTURE;
-        params.colorArg2 = TEX_MIX_ARG_FACTOR;
-        params.alphaOperation = TEX_MIX_OPER_DEFAULT;
-        params.factor = color.Inverse();
-
-        m_device->SetTextureEnabled(0, true);
-        m_device->SetTextureStageParams(0, params);
-    }
-    else if (state & ENG_RSTATE_TCOLOR_BLACK)  // transparent black color?
-    {
-        m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
-        m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  false);
-
-        m_device->SetRenderState(RENDER_STATE_BLENDING,    true);
-        m_device->SetBlendFunc(BLEND_ONE, BLEND_INV_SRC_COLOR);
-
-        m_device->SetTextureEnabled(0, false);
-    }
-    else if (state & ENG_RSTATE_TCOLOR_WHITE)  // transparent white color?
-    {
-        m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
-        m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  false);
-
-        m_device->SetRenderState(RENDER_STATE_BLENDING,    true);
-        m_device->SetBlendFunc(BLEND_DST_COLOR, BLEND_ZERO);
-
-        m_device->SetTextureEnabled(0, false);
-    }
-    else if (state & ENG_RSTATE_TDIFFUSE)  // diffuse color as transparent?
-    {
-        m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
-        m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  false);
-
-        m_device->SetRenderState(RENDER_STATE_BLENDING,    true);
-        m_device->SetBlendFunc(BLEND_SRC_ALPHA, BLEND_DST_ALPHA);
-
-        TextureStageParams params;
-        params.colorOperation = TEX_MIX_OPER_REPLACE;
-        params.colorArg1 = TEX_MIX_ARG_TEXTURE;
-        params.alphaOperation = TEX_MIX_OPER_DEFAULT;
-
-        m_device->SetTextureEnabled(0, true);
-        m_device->SetTextureStageParams(0, params);
-    }
-    else if (state & ENG_RSTATE_OPAQUE_TEXTURE) // opaque texture ?
-    {
-        m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
-        m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  false);
-        m_device->SetRenderState(RENDER_STATE_BLENDING,    false);
-
-        m_device->SetTextureEnabled(0, true);
-        m_device->SetTextureStageParams(0, TextureStageParams()); // default operation
-    }
-    else if (state & ENG_RSTATE_OPAQUE_COLOR) // opaque color ?
-    {
-        m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
-        m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  false);
-        m_device->SetRenderState(RENDER_STATE_BLENDING,    false);
-
-        m_device->SetTextureEnabled(0, false);
-    }
-    else if (state & ENG_RSTATE_TEXT)  // font rendering?
-    {
-        m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
-        m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  false);
-
-        m_device->SetRenderState(RENDER_STATE_BLENDING,    true);
-        m_device->SetBlendFunc(BLEND_SRC_ALPHA, BLEND_INV_SRC_ALPHA);
-
-        m_device->SetTextureEnabled(0, true);
-        m_device->SetTextureStageParams(0, TextureStageParams()); // default operation
-    }
-    else if (state & ENG_RSTATE_ALPHA)  // image with alpha channel?
-    {
-        m_device->SetRenderState(RENDER_STATE_BLENDING,    true);
-        m_device->SetBlendFunc(BLEND_SRC_ALPHA, BLEND_INV_SRC_ALPHA);
-
-        m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, true);
-
-        m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  true);
-
-        m_device->SetAlphaTestFunc(COMP_FUNC_GREATER, 0.5f);
-
-        TextureStageParams params;
-        params.colorOperation = TEX_MIX_OPER_MODULATE;
-        params.colorArg1 = TEX_MIX_ARG_TEXTURE;
-        params.colorArg2 = TEX_MIX_ARG_SRC_COLOR;
-        params.alphaOperation = TEX_MIX_OPER_REPLACE;
-        params.alphaArg1 = TEX_MIX_ARG_TEXTURE;
-        params.factor = color;
-
-        m_device->SetTextureEnabled(0, true);
-        m_device->SetTextureStageParams(0, params);
-    }
-    else if (state & ENG_RSTATE_TTEXTURE_ALPHA)  // texture with alpha channel?
-    {
-        m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
-
-        m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  true);
-        m_device->SetAlphaTestFunc(COMP_FUNC_GREATER, 0.0f);
-
-        m_device->SetRenderState(RENDER_STATE_BLENDING,    true);
-        m_device->SetBlendFunc(BLEND_DST_COLOR, BLEND_INV_SRC_ALPHA);
-
-        TextureStageParams params;
-        params.colorOperation = TEX_MIX_OPER_MODULATE;
-        params.colorArg1 = TEX_MIX_ARG_TEXTURE;
-        params.colorArg2 = TEX_MIX_ARG_SRC_COLOR;
-        params.alphaOperation = TEX_MIX_OPER_MODULATE;
-        params.alphaArg1 = TEX_MIX_ARG_TEXTURE;
-        params.alphaArg2 = TEX_MIX_ARG_FACTOR;
-        params.factor = color;
-
-        m_device->SetTextureEnabled(0, true);
-        m_device->SetTextureStageParams(0, params);
-    }
-    else if (state & ENG_RSTATE_TCOLOR_ALPHA)
-    {
-        m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
-        m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  false);
-
-        m_device->SetRenderState(RENDER_STATE_BLENDING,    true);
-        m_device->SetBlendFunc(BLEND_DST_COLOR, BLEND_INV_SRC_ALPHA);
-
-        m_device->SetTextureEnabled(0, false);
-    }
-    else    // normal ?
-    {
-        m_device->SetRenderState(RENDER_STATE_ALPHA_TEST,  false);
-        m_device->SetRenderState(RENDER_STATE_BLENDING,    false);
-
-        m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, true);
-
-        TextureStageParams params;
-        params.colorOperation = TEX_MIX_OPER_DEFAULT; // default modulate
-        params.alphaOperation = TEX_MIX_OPER_DEFAULT;
-
-        m_device->SetTextureEnabled(0, true);
-        m_device->SetTextureStageParams(0, params);
-    }
-
-    bool second = m_dirty;
-
-    // TODO: I'm pretty sure this is reversed and should be m_dirty instead of !m_dirty ~krzys_h
-    if ( !m_dirty && (state & ENG_RSTATE_SECOND) == 0 ) second = false;
-
-    if ((state & ENG_RSTATE_DUAL_BLACK) && second)
-    {
-        TextureStageParams params;
-        params.colorOperation = TEX_MIX_OPER_MODULATE;
-        params.colorArg1 = TEX_MIX_ARG_TEXTURE;
-        params.colorArg2 = TEX_MIX_ARG_COMPUTED_COLOR;
-        params.alphaOperation = TEX_MIX_OPER_DEFAULT;
-        m_device->SetTextureEnabled(1, true);
-        m_device->SetTextureStageParams(1, params);
-    }
-    else if ((state & ENG_RSTATE_DUAL_WHITE) && second)
-    {
-        TextureStageParams params;
-        params.colorOperation = TEX_MIX_OPER_ADD;
-        params.colorArg1 = TEX_MIX_ARG_TEXTURE;
-        params.colorArg2 = TEX_MIX_ARG_COMPUTED_COLOR;
-        params.alphaOperation = TEX_MIX_OPER_DEFAULT;
-        m_device->SetTextureEnabled(1, true);
-        m_device->SetTextureStageParams(1, params);
-    }
-    else
-    {
-        m_device->SetTextureEnabled(1, false);
-    }
-
-    if (state & ENG_RSTATE_WRAP)
-    {
-        m_device->SetTextureStageWrap(0, TEX_WRAP_REPEAT, TEX_WRAP_REPEAT);
-        m_device->SetTextureStageWrap(1, TEX_WRAP_REPEAT, TEX_WRAP_REPEAT);
-    }
-    else if (state & ENG_RSTATE_CLAMP)
-    {
-        m_device->SetTextureStageWrap(0, TEX_WRAP_CLAMP, TEX_WRAP_CLAMP);
-        m_device->SetTextureStageWrap(1, TEX_WRAP_CLAMP, TEX_WRAP_CLAMP);
-    }
-
-    if (state & ENG_RSTATE_2FACE)
-    {
-        m_device->SetRenderState(RENDER_STATE_CULLING, false);
-    }
-    else
-    {
-        m_device->SetRenderState(RENDER_STATE_CULLING, true);
-        m_device->SetCullMode(CULL_CCW);
-    }
-}
-
 void CEngine::SetMaterial(const Material& mat)
 {
     m_lastMaterial = mat;
@@ -2807,7 +2574,7 @@ void CEngine::SetOverFront(bool front)
     m_overFront = front;
 }
 
-void CEngine::SetOverColor(const Color& color, int mode)
+void CEngine::SetOverColor(const Color& color, TransparencyMode mode)
 {
     m_overColor = color;
     m_overMode  = mode;
@@ -3233,8 +3000,6 @@ void CEngine::Draw3DScene()
 
     //m_lightMan->UpdateDeviceLights(ENG_OBJTYPE_TERRAIN);
 
-    SetState(0);
-
     Gfx::ShadowParam shadowParams[4];
     for (int i = 0; i < m_shadowRegions; i++)
     {
@@ -3522,7 +3287,7 @@ void CEngine::Draw3DScene()
         glm::mat4 worldMatrix = glm::mat4(1.0f);
         m_device->SetTransform(TRANSFORM_WORLD, worldMatrix);
 
-        SetState(ENG_RSTATE_OPAQUE_COLOR);
+        //SetState(ENG_RSTATE_OPAQUE_COLOR);
 
         for (const auto& line : m_displayGoto)
         {
@@ -3661,14 +3426,7 @@ void CEngine::Capture3DScene()
 
 void CEngine::DrawCaptured3DScene()
 {
-    glm::mat4 identity = glm::mat4(1.0f);
-
-    m_device->SetTransform(TRANSFORM_PROJECTION, identity);
-    m_device->SetTransform(TRANSFORM_VIEW, identity);
-    m_device->SetTransform(TRANSFORM_WORLD, identity);
-
-    m_device->SetRenderState(RENDER_STATE_BLENDING, false);
-    m_device->SetRenderState(RENDER_STATE_CULLING, false);
+    m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, false);
 
     Vertex2D vertices[4];
 
@@ -3677,11 +3435,10 @@ void CEngine::DrawCaptured3DScene()
     vertices[2] = { { 0.0f, 1.0f }, { 0.0f, 1.0f } };
     vertices[3] = { { 1.0f, 1.0f }, { 1.0f, 1.0f } };
 
-    m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, false);
-
     auto renderer = m_device->GetUIRenderer();
 
     renderer->SetTexture(m_capturedWorldTexture);
+    renderer->SetTransparency(TransparencyMode::NONE);
     renderer->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, 4, vertices);
 }
 
@@ -3805,7 +3562,7 @@ void CEngine::RenderPendingDebugDraws()
 
     m_device->SetTransform(TRANSFORM_WORLD, glm::mat4(1.0f));
 
-    SetState(ENG_RSTATE_OPAQUE_COLOR);
+    //SetState(ENG_RSTATE_OPAQUE_COLOR);
 
     m_device->DrawPrimitives(PrimitiveType::LINE_STRIP,
                              m_pendingDebugDraws.vertices.data(),
@@ -3975,10 +3732,6 @@ void CEngine::RenderShadowMap()
 
     renderer->End();
 
-    m_device->SetRenderState(RENDER_STATE_ALPHA_TEST, false);
-    m_device->SetRenderState(RENDER_STATE_CULLING, false);
-    m_device->SetCullMode(CULL_CW);
-
     // restore default state
     m_device->SetViewport(0, 0, m_size.x, m_size.y);
 
@@ -4060,7 +3813,6 @@ void CEngine::DrawInterface()
     // Force new state to disable lighting
     m_interfaceMode = true;
     m_lastState = -1;
-    SetState(Gfx::ENG_RSTATE_NORMAL);
 
     // Draw the entire interface
     Ui::CInterface* interface = CRobotMain::GetInstancePointer()->GetInterface();
@@ -4071,7 +3823,6 @@ void CEngine::DrawInterface()
 
     m_interfaceMode = false;
     m_lastState = -1;
-    SetState(Gfx::ENG_RSTATE_NORMAL);
 
     if (!m_screenshotMode && m_renderInterface)
     {
@@ -4688,7 +4439,7 @@ void CEngine::DrawShadowSpots()
         if (lastIntensity != intensity)  // intensity changed?
         {
             lastIntensity = intensity;
-            SetState(ENG_RSTATE_TTEXTURE_WHITE, Color(intensity, intensity, intensity, intensity));
+            //SetState(ENG_RSTATE_TTEXTURE_WHITE, Color(intensity, intensity, intensity, intensity));
         }
 
         m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
@@ -4732,8 +4483,6 @@ void CEngine::DrawBackgroundGradient(const Color& up, const Color& down)
         { down.r, down.g, down.b, down.a },
         { 0, 0, 0, 0 }
     };
-
-    SetState(ENG_RSTATE_OPAQUE_COLOR);
 
     auto renderer = m_device->GetObjectRenderer();
     renderer->Begin();
@@ -4826,8 +4575,6 @@ void CEngine::DrawBackgroundImage()
         v2 -= margin_v;
     }
 
-    SetUITexture(m_backgroundTex);
-
     Vertex2D vertices[4] =
     {
         { { p1.x, p1.y }, { u1, v2 } },
@@ -4837,6 +4584,7 @@ void CEngine::DrawBackgroundImage()
     };
 
     auto renderer = m_device->GetUIRenderer();
+    renderer->SetTexture(m_backgroundTex);
     renderer->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, 4, vertices);
     AddStatisticTriangle(2);
 }
@@ -4887,7 +4635,7 @@ void CEngine::DrawForegroundImage()
     };
 
     SetTexture(m_foregroundTex);
-    SetState(ENG_RSTATE_CLAMP | ENG_RSTATE_TTEXTURE_BLACK);
+    //SetState(ENG_RSTATE_TTEXTURE_BLACK);
 
     m_device->Restore();
 
@@ -4901,8 +4649,8 @@ void CEngine::DrawForegroundImage()
 
 void CEngine::DrawOverColor()
 {
-    if ((m_overColor == Color(0.0f, 0.0f, 0.0f, 0.0f) && m_overMode == ENG_RSTATE_TCOLOR_BLACK) ||
-        (m_overColor == Color(1.0f, 1.0f, 1.0f, 1.0f) && m_overMode == ENG_RSTATE_TCOLOR_WHITE))
+    if ((m_overColor == Color(0.0f, 0.0f, 0.0f, 0.0f) && m_overMode == TransparencyMode::BLACK) ||
+        (m_overColor == Color(1.0f, 1.0f, 1.0f, 1.0f) && m_overMode == TransparencyMode::WHITE))
         return;
 
     glm::vec2 p1(0.0f, 0.0f);
@@ -4917,33 +4665,19 @@ void CEngine::DrawOverColor()
         { 0, 0, 0, 0 }
     };
 
-    m_device->Restore();
+    auto renderer = m_device->GetUIRenderer();
+    renderer->SetTexture(Texture{});
+    renderer->SetTransparency(m_overMode);
 
-    SetState(m_overMode);
-
-    auto renderer = m_device->GetObjectRenderer();
-    renderer->Begin();
-
-    renderer->SetProjectionMatrix(m_matProjInterface);
-    renderer->SetViewMatrix(m_matViewInterface);
-    renderer->SetModelMatrix(m_matWorldInterface);
-    renderer->SetLighting(false);
-
-    if (m_overMode == ENG_RSTATE_TCOLOR_BLACK)
-        renderer->SetTransparency(TransparencyMode::BLACK);
-    else if (m_overMode == ENG_RSTATE_TCOLOR_WHITE)
-        renderer->SetTransparency(TransparencyMode::WHITE);
-
-    Vertex3D vertex[4] =
+    Vertex2D vertex[4] =
     {
-        { glm::vec3(p1.x, p1.y, 0.0f), colors[1] },
-        { glm::vec3(p1.x, p2.y, 0.0f), colors[0] },
-        { glm::vec3(p2.x, p1.y, 0.0f), colors[1] },
-        { glm::vec3(p2.x, p2.y, 0.0f), colors[0] }
+        { { p1.x, p1.y }, {}, colors[1] },
+        { { p1.x, p2.y }, {}, colors[0] },
+        { { p2.x, p1.y }, {}, colors[1] },
+        { { p2.x, p2.y }, {}, colors[0] }
     };
 
     renderer->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, 4, vertex);
-    renderer->End();
 
     AddStatisticTriangle(2);
 
@@ -4999,7 +4733,7 @@ void CEngine::DrawHighlight()
     if (nbOut > 2)
         return;
 
-    SetState(ENG_RSTATE_OPAQUE_COLOR);
+    //SetState(ENG_RSTATE_OPAQUE_COLOR);
 
     float d = 0.5f + sinf(m_highlightTime * 6.0f) * 0.5f;
     d *= (p2.x - p1.x) * 0.1f;
@@ -5049,10 +4783,6 @@ void CEngine::DrawMouse()
 
     SetWindowCoordinates();
 
-    m_device->SetTexture(0, m_miceTexture);
-
-    SetUITexture(m_miceTexture);
-
     glm::vec2 mousePos = CInput::GetInstancePointer()->GetMousePos();
     glm::ivec2 pos(mousePos.x * m_size.x, m_size.y - mousePos.y * m_size.y);
     pos.x -= MOUSE_TYPES.at(m_mouseType).hotPoint.x;
@@ -5060,19 +4790,17 @@ void CEngine::DrawMouse()
 
     glm::ivec2 shadowPos = { pos.x + 4, pos.y - 3 };
 
-    SetState(ENG_RSTATE_TCOLOR_WHITE);
-    DrawMouseSprite(shadowPos, MOUSE_SIZE, MOUSE_TYPES.at(m_mouseType).iconShadow);
+    auto renderer = m_device->GetUIRenderer();
+    renderer->SetTexture(m_miceTexture);
 
-    SetState(MOUSE_TYPES.at(m_mouseType).mode1);
-    DrawMouseSprite(pos, MOUSE_SIZE, MOUSE_TYPES.at(m_mouseType).icon1);
-
-    SetState(MOUSE_TYPES.at(m_mouseType).mode2);
-    DrawMouseSprite(pos, MOUSE_SIZE, MOUSE_TYPES.at(m_mouseType).icon2);
+    DrawMouseSprite(shadowPos, MOUSE_SIZE, MOUSE_TYPES.at(m_mouseType).iconShadow, TransparencyMode::WHITE);
+    DrawMouseSprite(pos, MOUSE_SIZE, MOUSE_TYPES.at(m_mouseType).icon1, MOUSE_TYPES.at(m_mouseType).mode1);
+    DrawMouseSprite(pos, MOUSE_SIZE, MOUSE_TYPES.at(m_mouseType).icon2, MOUSE_TYPES.at(m_mouseType).mode2);
 
     SetInterfaceCoordinates();
 }
 
-void CEngine::DrawMouseSprite(const glm::ivec2& pos, const glm::ivec2& size, int icon)
+void CEngine::DrawMouseSprite(const glm::ivec2& pos, const glm::ivec2& size, int icon, TransparencyMode mode)
 {
     if (icon == -1)
         return;
@@ -5100,6 +4828,7 @@ void CEngine::DrawMouseSprite(const glm::ivec2& pos, const glm::ivec2& size, int
     };
 
     auto renderer = m_device->GetUIRenderer();
+    renderer->SetTransparency(mode);
     renderer->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, 4, vertex);
     AddStatisticTriangle(2);
 }
@@ -5115,8 +4844,9 @@ void CEngine::DrawStats()
 
     glm::vec2 pos(0.05f * m_size.x/m_size.y, 0.05f + TOTAL_LINES * height);
 
-    SetState(ENG_RSTATE_TCOLOR_ALPHA);
+    //SetState(ENG_RSTATE_TCOLOR_ALPHA);
     auto renderer = m_device->GetUIRenderer();
+    renderer->SetTransparency(TransparencyMode::ALPHA);
     renderer->SetTexture(Texture{});
 
     glm::u8vec4 black = { 0, 0, 0, 192 };
@@ -5133,7 +4863,7 @@ void CEngine::DrawStats()
 
     renderer->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, 4, vertex);
 
-    SetState(ENG_RSTATE_TEXT);
+    renderer->SetTransparency(TransparencyMode::ALPHA);
 
     auto drawStatsLine = [&](const std::string& name, const std::string& value, const std::string& value2)
     {
@@ -5210,7 +4940,7 @@ void CEngine::DrawStats()
 
 void CEngine::DrawTimer()
 {
-    SetState(ENG_RSTATE_TEXT);
+    //SetState(ENG_RSTATE_TEXT);
 
     glm::vec2 pos(0.98f, 0.98f-m_text->GetAscent(FONT_COMMON, 15.0f));
     m_text->DrawText(m_timerText, FONT_COMMON, 15.0f, pos, 1.0f, TEXT_ALIGN_RIGHT, 0, Color(1.0f, 1.0f, 1.0f, 1.0f));
@@ -5527,20 +5257,6 @@ void CEngine::SetWindowCoordinates()
 
     auto renderer = m_device->GetUIRenderer();
     renderer->SetProjection(0.0f, m_size.x, m_size.y, 0.0f);
-}
-
-void CEngine::SetUITexture(const std::string& name)
-{
-    auto texture = LoadTexture(name);
-
-    SetUITexture(texture);
-}
-
-void CEngine::SetUITexture(const Texture& texture)
-{
-    auto renderer = m_device->GetUIRenderer();
-
-    renderer->SetTexture(texture);
 }
 
 } // namespace Gfx

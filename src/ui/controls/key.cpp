@@ -23,6 +23,8 @@
 #include "common/global.h"
 #include "common/stringutils.h"
 
+#include "graphics/core/device.h"
+#include "graphics/core/renderers.h"
 #include "graphics/engine/engine.h"
 
 #include "sound/sound.h"
@@ -134,9 +136,11 @@ void CKey::Draw()
     if (m_state & STATE_SHADOW)
         DrawShadow(m_pos, m_dim);
 
+    auto renderer = m_engine->GetDevice()->GetUIRenderer();
 
-    m_engine->SetUITexture("textures/interface/button1.png");
-    m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+    auto texture = m_engine->LoadTexture("textures/interface/button1.png");
+    renderer->SetTexture(texture);
+    renderer->SetTransparency(Gfx::TransparencyMode::NONE);
 
     float zoomExt = 1.00f;
     float zoomInt = 0.95f;

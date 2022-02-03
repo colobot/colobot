@@ -71,7 +71,7 @@ CGL33UIRenderer::CGL33UIRenderer(CGL33Device* device)
     // Generic buffer
     glGenBuffers(1, &m_bufferVBO);
     glBindBuffer(GL_COPY_WRITE_BUFFER, m_bufferVBO);
-    glBufferData(GL_COPY_WRITE_BUFFER, m_bufferCapacity, nullptr, GL_STREAM_DRAW);
+    glBufferData(GL_COPY_WRITE_BUFFER, m_bufferCapacity * sizeof(Vertex2D), nullptr, GL_STREAM_DRAW);
 
     glGenVertexArrays(1, &m_bufferVAO);
     glBindVertexArray(m_bufferVAO);
@@ -106,8 +106,6 @@ CGL33UIRenderer::~CGL33UIRenderer()
 
 void CGL33UIRenderer::SetProjection(float left, float right, float bottom, float top)
 {
-    Flush();
-
     m_uniforms.projectionMatrix = glm::ortho(left, right, bottom, top);
     m_uniformsDirty = true;
 }
@@ -115,8 +113,6 @@ void CGL33UIRenderer::SetProjection(float left, float right, float bottom, float
 void CGL33UIRenderer::SetTexture(const Texture& texture)
 {
     if (m_currentTexture == texture.id) return;
-
-    Flush();
 
     glActiveTexture(GL_TEXTURE8);
 
@@ -130,88 +126,129 @@ void CGL33UIRenderer::SetTexture(const Texture& texture)
 
 void CGL33UIRenderer::SetColor(const glm::vec4& color)
 {
-    Flush();
-
     m_uniforms.color = color;
     m_uniformsDirty = true;
 }
 
-void CGL33UIRenderer::DrawPrimitive(PrimitiveType type, int count, const Vertex2D* vertices)
+void CGL33UIRenderer::SetTransparency(TransparencyMode mode)
 {
-    // If too much data would be buffered, flush
-    size_t totalSize = (m_buffer.size() + count) * sizeof(Vertex2D);
-
-    if (totalSize > m_bufferCapacity)
-        Flush();
-
-    // Buffer data
-    GLint first = m_buffer.size();
-
-    m_buffer.insert(m_buffer.end(), vertices, vertices + count);
-    m_types.push_back(TranslateGfxPrimitive(type));
-    m_firsts.push_back(first);
-    m_counts.push_back(count);
+    switch (mode)
+    {
+    case TransparencyMode::NONE:
+        glDisable(GL_BLEND);
+        break;
+    case TransparencyMode::ALPHA:
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glBlendEquation(GL_FUNC_ADD);
+        break;
+    case TransparencyMode::BLACK:
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_COLOR);
+        glBlendEquation(GL_FUNC_ADD);
+        break;
+    case TransparencyMode::WHITE:
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_DST_COLOR, GL_ZERO);
+        glBlendEquation(GL_FUNC_ADD);
+        break;
+    }
 }
 
-void CGL33UIRenderer::Flush()
+void CGL33UIRenderer::DrawPrimitive(PrimitiveType type, int count, const Vertex2D* vertices)
 {
-    if (m_types.empty()) return;
+    auto ptr = BeginPrimitive(type, count);
 
-    UpdateUniforms();
+    std::copy_n(vertices, count, ptr);
+
+    EndPrimitive();
+}
+
+Vertex2D* CGL33UIRenderer::BeginPrimitive(PrimitiveType type, int count)
+{
+    ClearGLErrors();
+
+    glBindVertexArray(m_bufferVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, m_bufferVBO);
+
+    GLuint total = m_offset + count;
+
+    // Buffer full, orphan
+    if (total >= m_bufferCapacity)
+    {
+        glBufferData(GL_ARRAY_BUFFER, m_bufferCapacity * sizeof(Vertex2D), nullptr, GL_STREAM_DRAW);
+
+        m_offset = 0;
+
+        // Respecify vertex attributes
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex2D),
+            reinterpret_cast<void*>(offsetof(Vertex2D, position)));
+
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex2D),
+            reinterpret_cast<void*>(offsetof(Vertex2D, uv)));
+
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex2D),
+            reinterpret_cast<void*>(offsetof(Vertex2D, color)));
+    }
+
+    auto ptr = glMapBufferRange(GL_ARRAY_BUFFER,
+        m_offset * sizeof(Vertex2D),
+        count * sizeof(Vertex2D),
+        GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT);
+
+    m_mapped = true;
+    m_type = type;
+    m_count = count;
+
+    ClearGLErrors();
+    CheckGLErrors();
+
+    // Mapping failed, use backup buffer
+    if (ptr == nullptr)
+    {
+        m_backup = true;
+        m_buffer.resize(count);
+
+        return m_buffer.data();
+    }
+    else
+    {
+        return reinterpret_cast<Vertex2D*>(ptr);
+    }
+}
+
+bool CGL33UIRenderer::EndPrimitive()
+{
+    if (!m_mapped) return false;
+
+    if (m_backup)
+    {
+        glBufferSubData(GL_ARRAY_BUFFER, m_offset * sizeof(Vertex2D), m_count * sizeof(Vertex2D), m_buffer.data());
+    }
+    else
+    {
+        glUnmapBuffer(GL_ARRAY_BUFFER);
+    }
 
     glUseProgram(m_program);
 
     glBindBufferBase(GL_UNIFORM_BUFFER, 0, m_uniformBuffer);
 
-    // Increase buffer size if necessary
-    size_t size = m_buffer.size() * sizeof(Vertex2D);
+    UpdateUniforms();
 
-    if (m_bufferCapacity < size)
-        m_bufferCapacity = size;
+    glDrawArrays(TranslateGfxPrimitive(m_type), m_offset, m_count);
 
-    // Send new vertices to GPU
-    glBindBuffer(GL_ARRAY_BUFFER, m_bufferVBO);
-    glBufferData(GL_ARRAY_BUFFER, m_bufferCapacity, nullptr, GL_STREAM_DRAW);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, size, m_buffer.data());
+    m_offset += m_count;
 
-    // Respecify vertex attributes
-    glBindVertexArray(m_bufferVAO);
-
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex2D),
-        reinterpret_cast<void*>(offsetof(Vertex2D, position)));
-
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex2D),
-        reinterpret_cast<void*>(offsetof(Vertex2D, uv)));
-
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex2D),
-        reinterpret_cast<void*>(offsetof(Vertex2D, color)));
-
-    // Draw primitives by grouping by type
-    for (size_t i = 0; i < m_types.size(); i++)
-    {
-        size_t count = 1;
-
-        for (; i + count < m_types.size(); count++)
-        {
-            if (m_types[i] != m_types[i + count])
-                break;
-        }
-
-        glMultiDrawArrays(m_types[i], &m_firsts[i], &m_counts[i], count);
-
-        i += count;
-    }
-
-    // Clear buffers
-    m_buffer.clear();
-    m_types.clear();
-    m_firsts.clear();
-    m_counts.clear();
+    m_mapped = false;
+    m_backup = false;
 
     m_device->Restore();
+
+    return true;
 }
 
 void CGL33UIRenderer::UpdateUniforms()
@@ -336,6 +373,7 @@ void CGL33TerrainRenderer::Begin()
 
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
+    glFrontFace(GL_CW);   // Colobot issue: faces are reversed
 
     glDisable(GL_BLEND);
 
@@ -473,11 +511,6 @@ void CGL33TerrainRenderer::DrawObject(const glm::mat4& matrix, const CVertexBuff
     glBindVertexArray(b->GetVAO());
 
     glDrawArrays(TranslateGfxPrimitive(b->GetType()), 0, b->Size());
-}
-
-void CGL33TerrainRenderer::Flush()
-{
-
 }
 
 CGL33ShadowRenderer::CGL33ShadowRenderer(CGL33Device* device)
@@ -634,11 +667,6 @@ void CGL33ShadowRenderer::DrawObject(const CVertexBuffer* buffer, bool transpare
     glBindVertexArray(b->GetVAO());
 
     glDrawArrays(TranslateGfxPrimitive(b->GetType()), 0, b->Size());
-}
-
-void CGL33ShadowRenderer::Flush()
-{
-
 }
 
 } // namespace Gfx

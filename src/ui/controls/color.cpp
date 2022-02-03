@@ -136,8 +136,11 @@ void CColor::Draw()
         DrawShadow(m_pos, m_dim);
     }
 
-    m_engine->SetUITexture("textures/interface/button1.png");
-    m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+
+    auto texture = m_engine->LoadTexture("textures/interface/button1.png");
+    renderer->SetTexture(texture);
+    renderer->SetTransparency(Gfx::TransparencyMode::NONE);
     CControl::Draw();
 
     p1.x = m_pos.x + (3.0f / 640.0f);
@@ -149,15 +152,13 @@ void CColor::Draw()
 
     glm::u8vec4 col = { color.r * 255, color.g * 255, color.b * 255, color.a * 255 };
 
-    m_engine->SetUITexture(Gfx::Texture{0});  // no texture
-    m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+    renderer->SetTexture(Gfx::Texture{0});
+    renderer->SetTransparency(Gfx::TransparencyMode::NONE);
 
     vertex[0] = { { p1.x, p1.y }, {}, col };
     vertex[1] = { { p1.x, p2.y }, {}, col };
     vertex[2] = { { p2.x, p1.y }, {}, col };
     vertex[3] = { { p2.x, p2.y }, {}, col };
-
-    auto renderer = m_engine->GetDevice()->GetUIRenderer();
 
     renderer->DrawPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, 4, vertex);
     m_engine->AddStatisticTriangle(2);
