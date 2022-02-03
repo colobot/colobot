@@ -12,6 +12,8 @@
 #include <glm/ext.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <algorithm>
+
 namespace Gfx
 {
 
@@ -166,8 +168,6 @@ void CGL33UIRenderer::DrawPrimitive(PrimitiveType type, int count, const Vertex2
 
 Vertex2D* CGL33UIRenderer::BeginPrimitive(PrimitiveType type, int count)
 {
-    ClearGLErrors();
-
     glBindVertexArray(m_bufferVAO);
     glBindBuffer(GL_ARRAY_BUFFER, m_bufferVBO);
 
@@ -202,9 +202,6 @@ Vertex2D* CGL33UIRenderer::BeginPrimitive(PrimitiveType type, int count)
     m_mapped = true;
     m_type = type;
     m_count = count;
-
-    ClearGLErrors();
-    CheckGLErrors();
 
     // Mapping failed, use backup buffer
     if (ptr == nullptr)
