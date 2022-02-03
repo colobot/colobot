@@ -157,7 +157,6 @@ enum RenderState
     RENDER_STATE_BLENDING,
     RENDER_STATE_DEPTH_TEST,
     RENDER_STATE_DEPTH_WRITE,
-    RENDER_STATE_ALPHA_TEST,
     RENDER_STATE_CULLING,
 };
 
@@ -437,12 +436,6 @@ public:
     //! Returns shadow renderer
     virtual CShadowRenderer* GetShadowRenderer() = 0;
 
-    //! Restores device rendering mode
-    virtual void Restore() = 0;
-
-    //! Sets the transform matrix of given type
-    virtual void SetTransform(TransformType type, const glm::mat4 &matrix) = 0;
-
     //! Creates a texture from image; the image can be safely removed after that
     virtual Texture CreateTexture(CImage *image, const TextureCreateParams &params) = 0;
     //! Creates a texture from raw image data; image data can be freed after that
@@ -455,15 +448,6 @@ public:
     virtual void DestroyTexture(const Texture &texture) = 0;
     //! Deletes all textures created so far
     virtual void DestroyAllTextures() = 0;
-
-    //! Returns the maximum number of multitexture stages
-    virtual int GetMaxTextureStageCount() = 0;
-    //! Sets the texture at given texture stage
-    virtual void SetTexture(int index, const Texture &texture) = 0;
-    //! Sets the texture image by ID at given texture stage
-    virtual void SetTexture(int index, unsigned int textureId) = 0;
-    //! Enables/disables the given texture stage
-    virtual void SetTextureEnabled(int index, bool enabled) = 0;
 
     //! Renders primitive composed of vertices with single texture
     virtual void DrawPrimitive(PrimitiveType type, const Vertex *vertices    , int vertexCount,
@@ -492,12 +476,6 @@ public:
 
     //! Sets the color mask
     virtual void SetColorMask(bool red, bool green, bool blue, bool alpha) = 0;
-
-    //! Sets the alpha test function and reference value
-    virtual void SetAlphaTestFunc(CompFunc func, float refValue) = 0;
-
-    //! Sets the blending functions for source and destination operations
-    virtual void SetBlendFunc(BlendFunc srcBlend, BlendFunc dstBlend) = 0;
 
     //! Sets the clear color
     virtual void SetClearColor(const Color &color) = 0;

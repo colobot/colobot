@@ -199,8 +199,6 @@ void CGL33ObjectRenderer::CGL33ObjectRenderer::End()
     m_secondaryTexture = 0;
     m_shadowMap = 0;
 
-    m_device->Restore();
-
     glDepthMask(GL_TRUE);
 }
 

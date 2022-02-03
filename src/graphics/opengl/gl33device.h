@@ -119,21 +119,12 @@ public:
     CParticleRenderer* GetParticleRenderer() override;
     CShadowRenderer* GetShadowRenderer() override;
 
-    void Restore() override;
-
-    void SetTransform(TransformType type, const glm::mat4 &matrix) override;
-
     Texture CreateTexture(CImage *image, const TextureCreateParams &params) override;
     Texture CreateTexture(ImageData *data, const TextureCreateParams &params) override;
     Texture CreateDepthTexture(int width, int height, int depth) override;
     void UpdateTexture(const Texture& texture, const glm::ivec2& offset, ImageData* data, TexImgFormat format) override;
     void DestroyTexture(const Texture &texture) override;
     void DestroyAllTextures() override;
-
-    int GetMaxTextureStageCount() override;
-    void SetTexture(int index, const Texture &texture) override;
-    void SetTexture(int index, unsigned int textureId) override;
-    void SetTextureEnabled(int index, bool enabled) override;
 
     virtual void DrawPrimitive(PrimitiveType type, const Vertex *vertices    , int vertexCount,
                                Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) override;
@@ -155,10 +146,6 @@ public:
     void SetRenderState(RenderState state, bool enabled) override;
 
     void SetColorMask(bool red, bool green, bool blue, bool alpha) override;
-
-    void SetAlphaTestFunc(CompFunc func, float refValue) override;
-
-    void SetBlendFunc(BlendFunc srcBlend, BlendFunc dstBlend) override;
 
     void SetClearColor(const Color &color) override;
 
@@ -184,71 +171,21 @@ public:
     bool IsFramebufferSupported() override;
 
 private:
-    //! Updates texture state
-    inline void UpdateTextureState(int index);
-
-    //! Binds VBO
-    inline void BindVBO(GLuint vbo);
-    //! Binds VAO
-    inline void BindVAO(GLuint vao);
-    //! Binds texture
-    inline void BindTexture(int index, GLuint texture);
-
-    //! Uploads data to dynamic buffer and returns offset to it
-    unsigned int UploadVertexData(DynamicBuffer& buffer, const void* data, unsigned int size);
-
-private:
     //! Current config
     DeviceConfig m_config;
 
-    //! Current world matrix
-    glm::mat4 m_worldMat = glm::mat4(1.0f);
-    //! Current view matrix
-    glm::mat4 m_viewMat = glm::mat4(1.0f);
-    //! OpenGL modelview matrix = world matrix * view matrix
-    glm::mat4 m_modelviewMat = glm::mat4(1.0f);
-    //! Current projection matrix
-    glm::mat4 m_projectionMat = glm::mat4(1.0f);
-    //! Combined world-view-projection matrix
-    glm::mat4 m_combinedMatrix = glm::mat4(1.0f);
-    //! true means combined matrix is outdated
-    bool m_combinedMatrixOutdated = false;
-
-    //! Current textures; \c nullptr value means unassigned
-    std::vector<Texture> m_currentTextures;
-    //! Current texture stages enable status
-    std::vector<bool> m_texturesEnabled;
-    //! Current texture params
-    std::vector<TextureStageParams> m_textureStageParams;
-
     //! Set of all created textures
     std::set<Texture> m_allTextures;
-    //! Free texture unit
-    const int m_freeTexture = 3;
 
     //! Detected capabilities
     //! Set of vertex buffers
     std::unordered_set<CVertexBuffer*> m_buffers;
-    //! Last ID of VBO object
-    unsigned int m_lastVboId = 0;
-    //! Currently bound VBO
-    GLuint m_currentVBO = 0;
-    //! Currently bound VAO
-    GLuint m_currentVAO = 0;
 
     //! Total memory allocated in VBOs
     unsigned long m_vboMemory = 0;
 
     //! Map of framebuffers
     std::map<std::string, std::unique_ptr<CFramebuffer>> m_framebuffers;
-
-    //! Shader program for normal rendering
-    GLuint m_normalProgram = 0;
-
-    DynamicBuffer m_dynamicBuffer;
-
-    //! Uniform locations for all modes
-    UniformLocations m_uniforms;
 
     //! Interface renderer
     std::unique_ptr<CGL33UIRenderer> m_uiRenderer;

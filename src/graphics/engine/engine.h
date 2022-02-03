@@ -872,12 +872,6 @@ public:
                                        float shift = 0.0f, bool hsv = false);
     //@}
 
-    //! Sets texture for given stage; if not present in cache, the texture is loaded
-    /** If loading fails, returns false. */
-    bool            SetTexture(const std::string& name, int stage = 0);
-    //! Sets texture for given stage
-    void            SetTexture(const Texture& tex, int stage = 0);
-
     //! Deletes the given texture, unloading it and removing from cache
     void            DeleteTexture(const std::string& texName);
     //! Deletes the given texture, unloading it and removing from cache
@@ -1139,9 +1133,6 @@ public:
     float           GetEyeDirV();
     //! Indicates whether a point is visible
     bool            IsVisiblePoint(const glm::vec3& pos);
-
-    //! Resets the projection matrix after changes
-    void            UpdateMatProj();
 
     //! Updates the scene after a change of parameters
     void            ApplyChange();

@@ -129,8 +129,6 @@ void CGL33ParticleRenderer::End()
 
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    m_device->Restore();
 }
 
 void CGL33ParticleRenderer::SetProjectionMatrix(const glm::mat4& matrix)

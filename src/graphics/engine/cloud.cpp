@@ -105,7 +105,6 @@ void CCloud::Draw()
     float deep = (m_brickCount*m_brickSize)/2.0f;
     m_engine->SetDeepView(deep);
     m_engine->SetFocus(m_engine->GetFocus());
-    m_engine->UpdateMatProj();  // increases the depth of view
 
     float fogStart = deep*0.15f;
     float fogEnd   = deep*0.24f;
@@ -188,7 +187,6 @@ void CCloud::Draw()
 
     m_engine->SetDeepView(iDeep);
     m_engine->SetFocus(m_engine->GetFocus());
-    m_engine->UpdateMatProj();  // gives depth to initial
 }
 
 void CCloud::CreateLine(int x, int y, int len)

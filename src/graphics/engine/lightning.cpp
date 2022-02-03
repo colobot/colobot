@@ -223,9 +223,9 @@ void CLightning::Draw()
     CDevice* device = m_engine->GetDevice();
 
     glm::mat4 mat = glm::mat4(1.0f);
-    device->SetTransform(TRANSFORM_WORLD, mat);
+    //device->SetTransform(TRANSFORM_WORLD, mat);
 
-    m_engine->SetTexture("textures/effect00.png");
+    //m_engine->SetTexture("textures/effect00.png");
     //m_engine->SetState(ENG_RSTATE_TTEXTURE_BLACK);
 
     glm::vec2 texInf;

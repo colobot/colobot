@@ -2285,37 +2285,6 @@ void CEngine::FlushTextureCache()
     m_firstGroundSpot = true;
 }
 
-bool CEngine::SetTexture(const std::string& name, int stage)
-{
-    auto it = m_texNameMap.find(name);
-    if (it != m_texNameMap.end())
-    {
-        m_device->SetTexture(stage, (*it).second);
-        return true;
-    }
-
-    if (! LoadTexture(name).Valid())
-    {
-        m_device->SetTexture(stage, 0); // invalid texture
-        return false;
-    }
-
-    it = m_texNameMap.find(name);
-    if (it != m_texNameMap.end())
-    {
-        m_device->SetTexture(stage, (*it).second);
-        return true;
-    }
-
-    m_device->SetTexture(stage, 0); // invalid texture
-    return false; // should not happen normally
-}
-
-void CEngine::SetTexture(const Texture& tex, int stage)
-{
-    m_device->SetTexture(stage, tex);
-}
-
 void CEngine::SetTerrainVision(float vision)
 {
     m_terrainVision = vision;
@@ -2659,7 +2628,7 @@ int CEngine::GetTextureAnisotropyLevel()
 
 bool CEngine::IsShadowMappingSupported()
 {
-    return m_device->IsShadowMappingSupported() && m_device->GetMaxTextureStageCount() >= 3;
+    return true;
 }
 
 void CEngine::SetShadowMapping(bool value)
@@ -2718,7 +2687,7 @@ int CEngine::GetShadowMappingOffscreenResolution()
 
 bool CEngine::IsShadowMappingQualitySupported()
 {
-    return IsShadowMappingSupported() && m_device->GetMaxTextureStageCount() >= 3;
+    return true;
 }
 
 void CEngine::SetShadowMappingQuality(bool value)
@@ -2860,11 +2829,6 @@ bool CEngine::IsVisiblePoint(const glm::vec3 &pos)
     return glm::distance(m_eyePt, pos) <= (m_deepView[0] * m_clippingDistance);
 }
 
-void CEngine::UpdateMatProj()
-{
-    m_device->SetTransform(TRANSFORM_PROJECTION, m_matProj);
-}
-
 void CEngine::ApplyChange()
 {
     SetFocus(m_focus);
@@ -2986,9 +2950,6 @@ void CEngine::Draw3DScene()
 
     float fogStart = m_deepView[m_rankView] * m_fogStart[m_rankView] * m_clippingDistance;
     float fogEnd = m_deepView[m_rankView] * m_clippingDistance;
-
-    m_device->SetTransform(TRANSFORM_PROJECTION, m_matProj);
-    m_device->SetTransform(TRANSFORM_VIEW, m_matView);
 
     // TODO: This causes a rendering artifact and I can't see anything that breaks if you just comment it out
     // So I'll just leave it like that for now ~krzys_h
@@ -3285,7 +3246,7 @@ void CEngine::Draw3DScene()
     if (m_debugGoto)
     {
         glm::mat4 worldMatrix = glm::mat4(1.0f);
-        m_device->SetTransform(TRANSFORM_WORLD, worldMatrix);
+        //m_device->SetTransform(TRANSFORM_WORLD, worldMatrix);
 
         //SetState(ENG_RSTATE_OPAQUE_COLOR);
 
@@ -3560,7 +3521,7 @@ void CEngine::RenderPendingDebugDraws()
 {
     if (m_pendingDebugDraws.firsts.empty()) return;
 
-    m_device->SetTransform(TRANSFORM_WORLD, glm::mat4(1.0f));
+    //m_device->SetTransform(TRANSFORM_WORLD, glm::mat4(1.0f));
 
     //SetState(ENG_RSTATE_OPAQUE_COLOR);
 
@@ -3740,7 +3701,6 @@ void CEngine::RenderShadowMap()
 
     CProfiler::StopPerformanceCounter(PCNT_RENDER_SHADOW_MAP);
 
-    m_device->Restore();
     m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, false);
 }
 
@@ -3804,8 +3764,6 @@ void CEngine::UseMSAA(bool enable)
 
 void CEngine::DrawInterface()
 {
-    m_device->Restore();
-
     m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, false);
 
     SetInterfaceCoordinates();
@@ -3928,8 +3886,6 @@ void CEngine::DrawInterface()
 
         m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, false);
 
-        m_device->Restore();
-
         SetInterfaceCoordinates();
     }
 
@@ -3946,8 +3902,6 @@ void CEngine::DrawInterface()
 
     if (m_renderInterface)
         DrawMouse();
-
-    m_device->Restore();
 }
 
 void CEngine::UpdateGroundSpotTextures()
@@ -4262,10 +4216,10 @@ void CEngine::DrawShadowSpots()
     m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
 
     glm::mat4 matrix = glm::mat4(1.0f);
-    m_device->SetTransform(TRANSFORM_WORLD, matrix);
+    //m_device->SetTransform(TRANSFORM_WORLD, matrix);
 
     // TODO: create a separate texture
-    SetTexture("textures/effect03.png");
+    //SetTexture("textures/effect03.png");
 
     glm::vec2 ts, ti;
 
@@ -4451,8 +4405,6 @@ void CEngine::DrawShadowSpots()
 
 void CEngine::DrawBackground()
 {
-    m_device->Restore();
-
     if (m_cloud->GetLevel() != 0.0f)  // clouds ?
     {
         if (m_backgroundCloudUp != m_backgroundCloudDown)  // degraded?
@@ -4468,8 +4420,6 @@ void CEngine::DrawBackground()
     {
         DrawBackgroundImage();  // image
     }
-
-    m_device->Restore();
 }
 
 void CEngine::DrawBackgroundGradient(const Color& up, const Color& down)
@@ -4626,24 +4576,18 @@ void CEngine::DrawForegroundImage()
     float v2 = 1.0f;
 
 
-    Vertex vertex[4] =
+    Vertex2D vertex[4] =
     {
-        { glm::vec3(p1.x, p1.y, 0.0f), n, { u1, v2 } },
-        { glm::vec3(p1.x, p2.y, 0.0f), n, { u1, v1 } },
-        { glm::vec3(p2.x, p1.y, 0.0f), n, { u2, v2 } },
-        { glm::vec3(p2.x, p2.y, 0.0f), n, { u2, v1 } }
+        { { p1.x, p1.y }, { u1, v2 } },
+        { { p1.x, p2.y }, { u1, v1 } },
+        { { p2.x, p1.y }, { u2, v2 } },
+        { { p2.x, p2.y }, { u2, v1 } }
     };
 
-    SetTexture(m_foregroundTex);
-    //SetState(ENG_RSTATE_TTEXTURE_BLACK);
-
-    m_device->Restore();
-
-    m_device->SetTransform(TRANSFORM_VIEW, m_matViewInterface);
-    m_device->SetTransform(TRANSFORM_PROJECTION, m_matProjInterface);
-    m_device->SetTransform(TRANSFORM_WORLD, m_matWorldInterface);
-
-    m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
+    auto renderer = m_device->GetUIRenderer();
+    renderer->SetTexture(m_foregroundTex);
+    renderer->SetTransparency(TransparencyMode::BLACK);
+    renderer->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, 4, vertex);
     AddStatisticTriangle(2);
 }
 
@@ -4680,8 +4624,6 @@ void CEngine::DrawOverColor()
     renderer->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, 4, vertex);
 
     AddStatisticTriangle(2);
-
-    m_device->Restore();
 }
 
 void CEngine::DrawHighlight()
@@ -4733,8 +4675,6 @@ void CEngine::DrawHighlight()
     if (nbOut > 2)
         return;
 
-    //SetState(ENG_RSTATE_OPAQUE_COLOR);
-
     float d = 0.5f + sinf(m_highlightTime * 6.0f) * 0.5f;
     d *= (p2.x - p1.x) * 0.1f;
     p1.x += d;
@@ -4742,37 +4682,41 @@ void CEngine::DrawHighlight()
     p2.x -= d;
     p2.y -= d;
 
-    Color color(1.0f, 1.0f, 0.0f);  // yellow
+    glm::u8vec4 color(255, 255, 0, 255);  // yellow
 
-    VertexCol line[3] =
+    Vertex2D line[3] =
     {
-        { { 0, 0, 0 }, color },
-        { { 0, 0, 0 }, color},
-        { { 0, 0, 0 }, color}
+        { { 0, 0 }, {}, color },
+        { { 0, 0 }, {}, color },
+        { { 0, 0 }, {}, color }
     };
+
+    auto renderer = m_device->GetUIRenderer();
+    renderer->SetTransparency(TransparencyMode::NONE);
+    renderer->SetTexture(Texture{});
 
     float dx = (p2.x - p1.x) / 5.0f;
     float dy = (p2.y - p1.y) / 5.0f;
 
-    line[0].coord = glm::vec3(p1.x, p1.y + dy, 0.0f);
-    line[1].coord = glm::vec3(p1.x, p1.y, 0.0f);
-    line[2].coord = glm::vec3(p1.x + dx, p1.y, 0.0f);
-    m_device->DrawPrimitive(PrimitiveType::LINE_STRIP, line, 3);
+    line[0].position = glm::vec3(p1.x, p1.y + dy, 0.0f);
+    line[1].position = glm::vec3(p1.x, p1.y, 0.0f);
+    line[2].position = glm::vec3(p1.x + dx, p1.y, 0.0f);
+    renderer->DrawPrimitive(PrimitiveType::LINE_STRIP, 3, line);
 
-    line[0].coord = glm::vec3(p2.x - dx, p1.y, 0.0f);
-    line[1].coord = glm::vec3(p2.x, p1.y, 0.0f);
-    line[2].coord = glm::vec3(p2.x, p1.y + dy, 0.0f);
-    m_device->DrawPrimitive(PrimitiveType::LINE_STRIP, line, 3);
+    line[0].position = glm::vec3(p2.x - dx, p1.y, 0.0f);
+    line[1].position = glm::vec3(p2.x, p1.y, 0.0f);
+    line[2].position = glm::vec3(p2.x, p1.y + dy, 0.0f);
+    renderer->DrawPrimitive(PrimitiveType::LINE_STRIP, 3, line);
 
-    line[0].coord = glm::vec3(p2.x, p2.y - dy, 0.0f);
-    line[1].coord = glm::vec3(p2.x, p2.y, 0.0f);
-    line[2].coord = glm::vec3(p2.x - dx, p2.y, 0.0f);
-    m_device->DrawPrimitive(PrimitiveType::LINE_STRIP, line, 3);
+    line[0].position = glm::vec3(p2.x, p2.y - dy, 0.0f);
+    line[1].position = glm::vec3(p2.x, p2.y, 0.0f);
+    line[2].position = glm::vec3(p2.x - dx, p2.y, 0.0f);
+    renderer->DrawPrimitive(PrimitiveType::LINE_STRIP, 3, line);
 
-    line[0].coord = glm::vec3(p1.x + dx, p2.y, 0.0f);
-    line[1].coord = glm::vec3(p1.x, p2.y, 0.0f);
-    line[2].coord = glm::vec3(p1.x, p2.y - dy, 0.0f);
-    m_device->DrawPrimitive(PrimitiveType::LINE_STRIP, line, 3);
+    line[0].position = glm::vec3(p1.x + dx, p2.y, 0.0f);
+    line[1].position = glm::vec3(p1.x, p2.y, 0.0f);
+    line[2].position = glm::vec3(p1.x, p2.y - dy, 0.0f);
+    renderer->DrawPrimitive(PrimitiveType::LINE_STRIP, 3, line);
 }
 
 void CEngine::DrawMouse()
@@ -4844,7 +4788,6 @@ void CEngine::DrawStats()
 
     glm::vec2 pos(0.05f * m_size.x/m_size.y, 0.05f + TOTAL_LINES * height);
 
-    //SetState(ENG_RSTATE_TCOLOR_ALPHA);
     auto renderer = m_device->GetUIRenderer();
     renderer->SetTransparency(TransparencyMode::ALPHA);
     renderer->SetTexture(Texture{});
@@ -5220,10 +5163,6 @@ void CEngine::SetDebugGotoBitmap(std::unique_ptr<CImage> debugImage)
 
 void CEngine::SetInterfaceCoordinates()
 {
-    m_device->SetTransform(TRANSFORM_VIEW,       m_matViewInterface);
-    m_device->SetTransform(TRANSFORM_PROJECTION, m_matProjInterface);
-    m_device->SetTransform(TRANSFORM_WORLD,      m_matWorldInterface);
-
     auto renderer = m_device->GetUIRenderer();
     renderer->SetProjection(0.0f, 1.0f, 0.0f, 1.0f);
 }
@@ -5244,17 +5183,6 @@ void CEngine::DisablePauseBlur()
 
 void CEngine::SetWindowCoordinates()
 {
-    glm::mat4 matWorldWindow = glm::mat4(1.0f);
-
-    glm::mat4 matViewWindow = glm::mat4(1.0f);
-
-    glm::mat4 matProjWindow;
-    Math::LoadOrthoProjectionMatrix(matProjWindow, 0.0f, m_size.x, m_size.y, 0.0f, -1.0f, 1.0f);
-
-    m_device->SetTransform(TRANSFORM_VIEW,       matViewWindow);
-    m_device->SetTransform(TRANSFORM_PROJECTION, matProjWindow);
-    m_device->SetTransform(TRANSFORM_WORLD,      matWorldWindow);
-
     auto renderer = m_device->GetUIRenderer();
     renderer->SetProjection(0.0f, m_size.x, m_size.y, 0.0f);
 }

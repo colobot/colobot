@@ -156,9 +156,6 @@ public:
             renderer->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, 4, quad.vertices);
         }
 
-        //const Vertex* vertices = m_quads.front().vertices;
-        //m_engine.GetDevice()->DrawPrimitives(PrimitiveType::TRIANGLE_STRIP, vertices, m_firsts.data(),
-        //                                     m_counts.data(), static_cast<int>(m_quads.size()), m_color);
         m_engine.AddStatisticTriangle(static_cast<int>(m_quads.size() * 2));
         m_quads.clear();
     }
@@ -970,18 +967,17 @@ void CText::DrawString(const std::string &text, FontType font,
 void CText::DrawHighlight(FontMetaChar hl, const glm::ivec2& pos, const glm::ivec2& size)
 {
     // Gradient colors
-    Color grad[4];
+    glm::u8vec4 grad[4];
 
     // TODO: switch to alpha factors
 
     if ((hl & FONT_MASK_LINK) != 0)
     {
-        grad[0] = grad[1] = grad[2] = grad[3] = Color(0.0f, 0.0f, 1.0f, 0.5f);
+        grad[0] = grad[1] = grad[2] = grad[3] = { 0, 0, 255, 128 };
     }
     else if ((hl & FONT_MASK_HIGHLIGHT) == FONT_HIGHLIGHT_KEY)
     {
-        grad[0] = grad[1] = grad[2] = grad[3] =
-            Color(192.0f / 256.0f, 192.0f / 256.0f, 192.0f / 256.0f, 0.5f);
+        grad[0] = grad[1] = grad[2] = grad[3] = { 192, 192, 192, 128 };
     }
     else
     {
@@ -1008,20 +1004,19 @@ void CText::DrawHighlight(FontMetaChar hl, const glm::ivec2& pos, const glm::ive
         p1.y = pos.y - h;  // just emphasized
     }
 
-    m_device->SetTextureEnabled(0, false);
+    auto renderer = m_device->GetUIRenderer();
+    renderer->SetTexture(Texture{});
 
-    VertexCol quad[] =
+    Vertex2D quad[] =
     {
-        { glm::vec3(p1.x, p2.y, 0.0f), grad[3] },
-        { glm::vec3(p1.x, p1.y, 0.0f), grad[0] },
-        { glm::vec3(p2.x, p2.y, 0.0f), grad[2] },
-        { glm::vec3(p2.x, p1.y, 0.0f), grad[1] }
+        { { p1.x, p2.y }, {}, grad[3] },
+        { { p1.x, p1.y }, {}, grad[0] },
+        { { p2.x, p2.y }, {}, grad[2] },
+        { { p2.x, p1.y }, {}, grad[1] }
     };
 
-    m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, quad, 4);
+    renderer->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, 4, quad);
     m_engine->AddStatisticTriangle(2);
-
-    m_device->SetTextureEnabled(0, true);
 }
 
 void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, glm::ivec2&pos, Color color)

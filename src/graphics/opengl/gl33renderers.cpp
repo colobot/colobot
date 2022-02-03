@@ -233,6 +233,7 @@ bool CGL33UIRenderer::EndPrimitive()
     glUseProgram(m_program);
 
     glBindBufferBase(GL_UNIFORM_BUFFER, 0, m_uniformBuffer);
+    glDisable(GL_DEPTH_TEST);
 
     UpdateUniforms();
 
@@ -242,8 +243,6 @@ bool CGL33UIRenderer::EndPrimitive()
 
     m_mapped = false;
     m_backup = false;
-
-    m_device->Restore();
 
     return true;
 }
@@ -402,8 +401,6 @@ void CGL33TerrainRenderer::End()
     m_primaryTexture = 0;
     m_secondaryTexture = 0;
     m_shadowMap = 0;
-
-    m_device->Restore();
 }
 
 void CGL33TerrainRenderer::SetProjectionMatrix(const glm::mat4& matrix)
@@ -598,8 +595,6 @@ void CGL33ShadowRenderer::End()
     glPolygonOffset(0.0f, 0.0f);
 
     glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-
-    m_device->Restore();
 }
 
 void CGL33ShadowRenderer::SetProjectionMatrix(const glm::mat4& matrix)
