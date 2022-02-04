@@ -3237,8 +3237,6 @@ void CEngine::Draw3DScene()
 
     m_water->DrawSurf(); // draws water surface
 
-    objectRenderer->End();
-
     CProfiler::StopPerformanceCounter(PCNT_RENDER_WATER);
 
     RenderPendingDebugDraws();
@@ -3246,16 +3244,18 @@ void CEngine::Draw3DScene()
     if (m_debugGoto)
     {
         glm::mat4 worldMatrix = glm::mat4(1.0f);
-        //m_device->SetTransform(TRANSFORM_WORLD, worldMatrix);
-
-        //SetState(ENG_RSTATE_OPAQUE_COLOR);
+        objectRenderer->SetTransparency(TransparencyMode::NONE);
+        objectRenderer->SetLighting(false);
+        objectRenderer->SetModelMatrix(glm::mat4(1.0f));
 
         for (const auto& line : m_displayGoto)
         {
-            m_device->DrawPrimitive(PrimitiveType::LINE_STRIP, line.data(), line.size());
+            objectRenderer->DrawPrimitive(PrimitiveType::LINE_STRIP, line.size(), line.data());
         }
     }
     m_displayGoto.clear();
+
+    objectRenderer->End();
 
     auto particleRenderer = m_device->GetParticleRenderer();
     particleRenderer->Begin();
@@ -3266,9 +3266,9 @@ void CEngine::Draw3DScene()
     m_particle->DrawParticle(SH_WORLD); // draws the particles of the 3D world
     CProfiler::StopPerformanceCounter(PCNT_RENDER_PARTICLE_WORLD);
 
-    particleRenderer->End();
-
     m_lightning->Draw();                     // draws lightning
+
+    particleRenderer->End();
 
     DrawForegroundImage();   // draws the foreground
 
@@ -3448,17 +3448,11 @@ void CEngine::RenderDebugSphere(const Math::Sphere& sphere, const glm::mat4& tra
     }();
 
 
-    const int firstDraw = m_pendingDebugDraws.firsts.size();
+    const int firstDraw = m_pendingDebugDraws.counts.size();
     const int firstVert = m_pendingDebugDraws.vertices.size();
 
-    m_pendingDebugDraws.firsts.resize(m_pendingDebugDraws.firsts.size() + NUM_LINE_STRIPS);
     m_pendingDebugDraws.counts.resize(m_pendingDebugDraws.counts.size() + NUM_LINE_STRIPS);
     m_pendingDebugDraws.vertices.resize(m_pendingDebugDraws.vertices.size() + verticesTemplate.size());
-
-    for (int i = 0; i < NUM_LINE_STRIPS; ++i)
-    {
-        m_pendingDebugDraws.firsts[i + firstDraw] = firstVert + i * VERTS_IN_LINE_STRIP;
-    }
 
     for (int i = 0; i < NUM_LINE_STRIPS; ++i)
     {
@@ -3468,7 +3462,7 @@ void CEngine::RenderDebugSphere(const Math::Sphere& sphere, const glm::mat4& tra
     for (std::size_t i = 0; i < verticesTemplate.size(); ++i)
     {
         auto pos = Math::Transform(transform, sphere.pos + verticesTemplate[i] * sphere.radius);
-        m_pendingDebugDraws.vertices[i + firstVert] = VertexCol{pos, color};
+        m_pendingDebugDraws.vertices[i + firstVert] = Vertex3D{ pos, {}, color };
     }
 }
 
@@ -3477,17 +3471,11 @@ void CEngine::RenderDebugBox(const glm::vec3& mins, const glm::vec3& maxs, const
     static constexpr int NUM_LINE_STRIPS = 4;
     static constexpr int VERTS_IN_LINE_STRIP = 4;
 
-    const int firstDraw = m_pendingDebugDraws.firsts.size();
+    const int firstDraw = m_pendingDebugDraws.counts.size();
     const int firstVert = m_pendingDebugDraws.vertices.size();
 
-    m_pendingDebugDraws.firsts.resize(m_pendingDebugDraws.firsts.size() + NUM_LINE_STRIPS);
     m_pendingDebugDraws.counts.resize(m_pendingDebugDraws.counts.size() + NUM_LINE_STRIPS);
     m_pendingDebugDraws.vertices.resize(m_pendingDebugDraws.vertices.size() + NUM_LINE_STRIPS * VERTS_IN_LINE_STRIP);
-
-    for (int i = 0; i < NUM_LINE_STRIPS; ++i)
-    {
-        m_pendingDebugDraws.firsts[i + firstDraw] = firstVert + (i * VERTS_IN_LINE_STRIP);
-    }
 
     for (int i = 0; i < NUM_LINE_STRIPS; ++i)
     {
@@ -3496,42 +3484,43 @@ void CEngine::RenderDebugBox(const glm::vec3& mins, const glm::vec3& maxs, const
 
     auto vert = m_pendingDebugDraws.vertices.begin() + firstVert;
 
-    *vert++ = VertexCol{Math::Transform(transform, glm::vec3{mins.x, mins.y, mins.z}), color};
-    *vert++ = VertexCol{Math::Transform(transform, glm::vec3{maxs.x, mins.y, mins.z}), color};
-    *vert++ = VertexCol{Math::Transform(transform, glm::vec3{maxs.x, maxs.y, mins.z}), color};
-    *vert++ = VertexCol{Math::Transform(transform, glm::vec3{maxs.x, maxs.y, maxs.z}), color};
+    *vert++ = Vertex3D{ Math::Transform(transform, glm::vec3{mins.x, mins.y, mins.z}), {}, color };
+    *vert++ = Vertex3D{ Math::Transform(transform, glm::vec3{maxs.x, mins.y, mins.z}), {}, color };
+    *vert++ = Vertex3D{ Math::Transform(transform, glm::vec3{maxs.x, maxs.y, mins.z}), {}, color };
+    *vert++ = Vertex3D{ Math::Transform(transform, glm::vec3{maxs.x, maxs.y, maxs.z}), {}, color };
 
-    *vert++ = VertexCol{Math::Transform(transform, glm::vec3{mins.x, mins.y, maxs.z}), color};
-    *vert++ = VertexCol{Math::Transform(transform, glm::vec3{mins.x, mins.y, mins.z}), color};
-    *vert++ = VertexCol{Math::Transform(transform, glm::vec3{mins.x, maxs.y, mins.z}), color};
-    *vert++ = VertexCol{Math::Transform(transform, glm::vec3{maxs.x, maxs.y, mins.z}), color};
+    *vert++ = Vertex3D{ Math::Transform(transform, glm::vec3{mins.x, mins.y, maxs.z}), {}, color };
+    *vert++ = Vertex3D{ Math::Transform(transform, glm::vec3{mins.x, mins.y, mins.z}), {}, color };
+    *vert++ = Vertex3D{ Math::Transform(transform, glm::vec3{mins.x, maxs.y, mins.z}), {}, color };
+    *vert++ = Vertex3D{ Math::Transform(transform, glm::vec3{maxs.x, maxs.y, mins.z}), {}, color };
 
-    *vert++ = VertexCol{Math::Transform(transform, glm::vec3{maxs.x, mins.y, maxs.z}), color};
-    *vert++ = VertexCol{Math::Transform(transform, glm::vec3{mins.x, mins.y, maxs.z}), color};
-    *vert++ = VertexCol{Math::Transform(transform, glm::vec3{mins.x, maxs.y, maxs.z}), color};
-    *vert++ = VertexCol{Math::Transform(transform, glm::vec3{mins.x, maxs.y, mins.z}), color};
+    *vert++ = Vertex3D{ Math::Transform(transform, glm::vec3{maxs.x, mins.y, maxs.z}), {}, color };
+    *vert++ = Vertex3D{ Math::Transform(transform, glm::vec3{mins.x, mins.y, maxs.z}), {}, color };
+    *vert++ = Vertex3D{ Math::Transform(transform, glm::vec3{mins.x, maxs.y, maxs.z}), {}, color };
+    *vert++ = Vertex3D{ Math::Transform(transform, glm::vec3{mins.x, maxs.y, mins.z}), {}, color };
 
-    *vert++ = VertexCol{Math::Transform(transform, glm::vec3{maxs.x, mins.y, mins.z}), color};
-    *vert++ = VertexCol{Math::Transform(transform, glm::vec3{maxs.x, mins.y, maxs.z}), color};
-    *vert++ = VertexCol{Math::Transform(transform, glm::vec3{maxs.x, maxs.y, maxs.z}), color};
-    *vert++ = VertexCol{Math::Transform(transform, glm::vec3{mins.x, maxs.y, maxs.z}), color};
+    *vert++ = Vertex3D{ Math::Transform(transform, glm::vec3{maxs.x, mins.y, mins.z}), {}, color };
+    *vert++ = Vertex3D{ Math::Transform(transform, glm::vec3{maxs.x, mins.y, maxs.z}), {}, color };
+    *vert++ = Vertex3D{ Math::Transform(transform, glm::vec3{maxs.x, maxs.y, maxs.z}), {}, color };
+    *vert++ = Vertex3D{ Math::Transform(transform, glm::vec3{mins.x, maxs.y, maxs.z}), {}, color };
 }
 
 void CEngine::RenderPendingDebugDraws()
 {
-    if (m_pendingDebugDraws.firsts.empty()) return;
+    if (m_pendingDebugDraws.counts.empty()) return;
 
-    //m_device->SetTransform(TRANSFORM_WORLD, glm::mat4(1.0f));
+    auto renderer = m_device->GetObjectRenderer();
+    renderer->SetTransparency(TransparencyMode::NONE);
+    renderer->SetLighting(false);
+    renderer->SetModelMatrix(glm::mat4(1.0f));
+    renderer->SetPrimaryTexture(Texture{});
+    renderer->SetSecondaryTexture(Texture{});
 
-    //SetState(ENG_RSTATE_OPAQUE_COLOR);
+    renderer->DrawPrimitives(PrimitiveType::LINE_STRIP,
+        m_pendingDebugDraws.counts.size(),
+        m_pendingDebugDraws.counts.data(),
+        m_pendingDebugDraws.vertices.data());
 
-    m_device->DrawPrimitives(PrimitiveType::LINE_STRIP,
-                             m_pendingDebugDraws.vertices.data(),
-                             m_pendingDebugDraws.firsts.data(),
-                             m_pendingDebugDraws.counts.data(),
-                             m_pendingDebugDraws.firsts.size());
-
-    m_pendingDebugDraws.firsts.clear();
     m_pendingDebugDraws.counts.clear();
     m_pendingDebugDraws.vertices.clear();
 }
@@ -4396,7 +4385,7 @@ void CEngine::DrawShadowSpots()
             //SetState(ENG_RSTATE_TTEXTURE_WHITE, Color(intensity, intensity, intensity, intensity));
         }
 
-        m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
+        //m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
         AddStatisticTriangle(2);
     }
 
@@ -4424,7 +4413,7 @@ void CEngine::DrawBackground()
 
 void CEngine::DrawBackgroundGradient(const Color& up, const Color& down)
 {
-    glm::vec2 p1(0.0f, 0.5f);
+    glm::vec2 p1(0.0f, 0.0f);
     glm::vec2 p2(1.0f, 1.0f);
 
     glm::u8vec4 color[3] =
@@ -4434,29 +4423,19 @@ void CEngine::DrawBackgroundGradient(const Color& up, const Color& down)
         { 0, 0, 0, 0 }
     };
 
-    auto renderer = m_device->GetObjectRenderer();
-    renderer->Begin();
-    renderer->SetProjectionMatrix(m_matProjInterface);
-    renderer->SetViewMatrix(m_matViewInterface);
-    renderer->SetModelMatrix(m_matWorldInterface);
-    renderer->SetLighting(false);
-
-    renderer->SetPrimaryTexture(Texture{});
-    renderer->SetSecondaryTexture(Texture{});
-    renderer->SetDepthTest(false);
-
-    Vertex3D vertex[4] =
+    Vertex2D vertex[4] =
     {
-        { glm::vec3(p1.x, p1.y, 0.0f), color[1] },
-        { glm::vec3(p1.x, p2.y, 0.0f), color[0] },
-        { glm::vec3(p2.x, p1.y, 0.0f), color[1] },
-        { glm::vec3(p2.x, p2.y, 0.0f), color[0] }
+        { { p1.x, p1.y }, {}, color[1] },
+        { { p1.x, p2.y }, {}, color[0] },
+        { { p2.x, p1.y }, {}, color[1] },
+        { { p2.x, p2.y }, {}, color[0] }
     };
 
+    auto renderer = m_device->GetUIRenderer();
+    renderer->SetTexture(Texture{});
+    renderer->SetTransparency(TransparencyMode::NONE);
     renderer->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, 4, vertex);
     AddStatisticTriangle(2);
-
-    renderer->End();
 }
 
 void CEngine::DrawBackgroundImage()
@@ -4535,6 +4514,7 @@ void CEngine::DrawBackgroundImage()
 
     auto renderer = m_device->GetUIRenderer();
     renderer->SetTexture(m_backgroundTex);
+    renderer->SetTransparency(TransparencyMode::NONE);
     renderer->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, 4, vertices);
     AddStatisticTriangle(2);
 }
@@ -5149,7 +5129,7 @@ bool CEngine::GetDebugGoto()
     return m_debugGoto;
 }
 
-void CEngine::AddDebugGotoLine(std::vector<Gfx::VertexCol> line)
+void CEngine::AddDebugGotoLine(std::vector<Gfx::Vertex3D> line)
 {
     m_displayGoto.push_back(line);
 }

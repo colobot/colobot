@@ -134,7 +134,7 @@ CGL33ObjectRenderer::CGL33ObjectRenderer(CGL33Device* device)
     // Generic buffer
     glGenBuffers(1, &m_bufferVBO);
     glBindBuffer(GL_COPY_WRITE_BUFFER, m_bufferVBO);
-    glBufferData(GL_COPY_WRITE_BUFFER, m_bufferCapacity, nullptr, GL_STREAM_DRAW);
+    glBufferData(GL_COPY_WRITE_BUFFER, 8 * sizeof(Vertex3D), nullptr, GL_STREAM_DRAW);
 
     glGenVertexArrays(1, &m_bufferVAO);
     glBindVertexArray(m_bufferVAO);
@@ -398,17 +398,29 @@ void CGL33ObjectRenderer::DrawObject(const CVertexBuffer* buffer)
 
 void CGL33ObjectRenderer::DrawPrimitive(PrimitiveType type, int count, const Vertex3D* vertices)
 {
+    DrawPrimitives(type, 1, &count, vertices);
+}
+
+void CGL33ObjectRenderer::DrawPrimitives(PrimitiveType type, int drawCount, int count[], const Vertex3D* vertices)
+{
+    m_first.resize(drawCount);
+
+    GLint offset = 0;
+
+    for (size_t i = 0; i < drawCount; i++)
+    {
+        m_first[i] = offset;
+        offset += count[i];
+    }
+
     glBindVertexArray(m_bufferVAO);
     glBindBuffer(GL_ARRAY_BUFFER, m_bufferVBO);
 
-    size_t size = count * sizeof(Vertex3D);
-
-    if (m_bufferCapacity < size)
-        m_bufferCapacity = size;
+    size_t size = offset * sizeof(Vertex3D);
 
     // Send new vertices to GPU
     glBindBuffer(GL_ARRAY_BUFFER, m_bufferVBO);
-    glBufferData(GL_ARRAY_BUFFER, m_bufferCapacity, nullptr, GL_STREAM_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_STREAM_DRAW);
     glBufferSubData(GL_ARRAY_BUFFER, 0, size, vertices);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex3D),
@@ -426,5 +438,5 @@ void CGL33ObjectRenderer::DrawPrimitive(PrimitiveType type, int count, const Ver
     glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex3D),
         reinterpret_cast<void*>(offsetof(Vertex3D, uv2)));
 
-    glDrawArrays(TranslateGfxPrimitive(type), 0, count);
+    glMultiDrawArrays(TranslateGfxPrimitive(type), m_first.data(), count, drawCount);
 }

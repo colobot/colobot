@@ -221,12 +221,13 @@ void CLightning::Draw()
     if (m_phase != LightningPhase::Flash) return;
 
     CDevice* device = m_engine->GetDevice();
+    auto renderer = device->GetParticleRenderer();
 
-    glm::mat4 mat = glm::mat4(1.0f);
-    //device->SetTransform(TRANSFORM_WORLD, mat);
+    auto texture = m_engine->LoadTexture("textures/effect00.png");
 
-    //m_engine->SetTexture("textures/effect00.png");
-    //m_engine->SetState(ENG_RSTATE_TTEXTURE_BLACK);
+    renderer->SetModelMatrix(glm::mat4(1.0f));
+    renderer->SetTexture(texture);
+    renderer->SetTransparency(TransparencyMode::BLACK);
 
     glm::vec2 texInf;
     texInf.x = 64.5f/256.0f;
@@ -241,7 +242,7 @@ void CLightning::Draw()
     glm::vec3 n = glm::normalize(p1-eye);
 
     glm::vec3 corner[4];
-    Vertex vertex[4];
+    Vertex3D vertex[4];
 
     for (std::size_t i = 0; i < m_segments.size() - 1; i++)
     {
@@ -272,22 +273,24 @@ void CLightning::Draw()
         corner[3].y = p2.y;
         corner[3].z = rot.y+m_segments[i+1].shift.y;
 
+        IntColor white = IntColor(255, 255, 255, 255);
+
         if (p2.y < p1.y)
         {
-            vertex[0] = { corner[1], n, { texSup.x, texSup.y } };
-            vertex[1] = { corner[0], n, { texInf.x, texSup.y } };
-            vertex[2] = { corner[3], n, { texSup.x, texInf.y } };
-            vertex[3] = { corner[2], n, { texInf.x, texInf.y } };
+            vertex[0] = { corner[1], white, { texSup.x, texSup.y } };
+            vertex[1] = { corner[0], white, { texInf.x, texSup.y } };
+            vertex[2] = { corner[3], white, { texSup.x, texInf.y } };
+            vertex[3] = { corner[2], white, { texInf.x, texInf.y } };
         }
         else
         {
-            vertex[0] = { corner[0], n, { texSup.x, texSup.y } };
-            vertex[1] = { corner[1], n, { texInf.x, texSup.y } };
-            vertex[2] = { corner[2], n, { texSup.x, texInf.y } };
-            vertex[3] = { corner[3], n, { texInf.x, texInf.y } };
+            vertex[0] = { corner[0], white, { texSup.x, texSup.y } };
+            vertex[1] = { corner[1], white, { texInf.x, texSup.y } };
+            vertex[2] = { corner[2], white, { texSup.x, texInf.y } };
+            vertex[3] = { corner[3], white, { texInf.x, texInf.y } };
         }
 
-        device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
+        renderer->DrawParticle(PrimitiveType::TRIANGLE_STRIP, 4, vertex);
         m_engine->AddStatisticTriangle(2);
 
         p1 = p2;

@@ -1149,7 +1149,7 @@ public:
 
     void            SetDebugGoto(bool debugGoto);
     bool            GetDebugGoto();
-    void            AddDebugGotoLine(std::vector<Gfx::VertexCol> line);
+    void            AddDebugGotoLine(std::vector<Gfx::Vertex3D> line);
     void            SetDebugGotoBitmap(std::unique_ptr<CImage> debugImage);
 
     void            SetWindowCoordinates();
@@ -1398,8 +1398,7 @@ protected:
 
     struct PendingDebugDraw
     {
-        std::vector<VertexCol> vertices;
-        std::vector<int> firsts;
+        std::vector<Vertex3D> vertices;
         std::vector<int> counts;
     }
     m_pendingDebugDraws;
@@ -1477,7 +1476,7 @@ protected:
 
     std::unordered_map<std::string, int> m_staticMeshBaseObjects;
 
-    std::vector<std::vector<VertexCol>> m_displayGoto;
+    std::vector<std::vector<Vertex3D>> m_displayGoto;
     std::unique_ptr<CImage> m_displayGotoImage;
 
     //! Pause the animation updates

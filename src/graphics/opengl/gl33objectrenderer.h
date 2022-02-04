@@ -100,6 +100,8 @@ public:
     virtual void DrawObject(const CVertexBuffer* buffer) override;
     //! Draws a primitive
     virtual void DrawPrimitive(PrimitiveType type, int count, const Vertex3D* vertices) override;
+    //! Draws a set of primitives
+    virtual void DrawPrimitives(PrimitiveType type, int drawCount, int count[], const Vertex3D* vertices) override;
 
 private:
     CGL33Device* const m_device;
@@ -152,8 +154,8 @@ private:
     GLuint m_bufferVBO = 0;
     // Vertex array object
     GLuint m_bufferVAO = 0;
-    // VBO capacity
-    GLsizei m_bufferCapacity = 8 * sizeof(Vertex3D);
+    // Offsets
+    std::vector<GLint> m_first;
 };
 
 }

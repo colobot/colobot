@@ -191,6 +191,8 @@ public:
     virtual void DrawObject(const CVertexBuffer* buffer) = 0;
     //! Draws a primitive
     virtual void DrawPrimitive(PrimitiveType type, int count, const Vertex3D* vertices) = 0;
+    //! Draws a set of primitives
+    virtual void DrawPrimitives(PrimitiveType type, int drawCount, int count[], const Vertex3D* vertices) = 0;
 };
 
 /**
