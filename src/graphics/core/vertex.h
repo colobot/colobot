@@ -38,38 +38,6 @@ namespace Gfx
 {
 
 /**
- * \struct Vertex
- * \brief Vertex of a primitive
- *
- * This structure was created as analog to DirectX's D3DVERTEX.
- *
- * It contains:
- *  - vertex coordinates (x,y,z) as glm::vec3,
- *  - normal coordinates (nx,ny,nz) as glm::vec3
- *  - texture coordinates (u,v) as glm::vec2.
- */
-struct Vertex
-{
-    glm::vec3 coord = { 0, 0, 0 };
-    glm::vec3 normal = { 0, 0, 0 };
-    glm::vec2 texCoord = { 0, 0 };
-};
-
-/**
- * \struct VertexCol
- * \brief Colored vertex
- *
- * It contains:
- *  - vertex coordinates (x,y,z) as glm::vec3,
- *  - RGBA color as Color
- */
-struct VertexCol
-{
-    glm::vec3 coord = { 0, 0, 0 };
-    Color color = Color();
-};
-
-/**
  * \struct Vertex2D
  * \brief 2D vertex for interface rendering, contains UV and color
  */

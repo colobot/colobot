@@ -4361,12 +4361,14 @@ void CEngine::DrawShadowSpots()
         ts.x += dp;
         ti.x -= dp;
 
-        Vertex vertex[4] =
+        IntColor white(255, 255, 255, 255);
+
+        Vertex3D vertex[4] =
         {
-            { corner[1], n, { ts.x, ts.y } },
-            { corner[0], n, { ti.x, ts.y } },
-            { corner[3], n, { ts.x, ti.y } },
-            { corner[2], n, { ti.x, ti.y } }
+            { corner[1], white, { ts.x, ts.y } },
+            { corner[0], white, { ti.x, ts.y } },
+            { corner[3], white, { ts.x, ti.y } },
+            { corner[2], white, { ti.x, ti.y } }
         };
 
         float intensity = (0.5f+m_shadowSpots[i].intensity*0.5f)*hFactor;
