@@ -487,33 +487,6 @@ void CGL33Device::DestroyAllTextures()
     m_allTextures.clear();
 }
 
-void CGL33Device::DrawPrimitive(PrimitiveType type, const Vertex *vertices, int vertexCount, Color color)
-{
-    
-}
-
-void CGL33Device::DrawPrimitive(PrimitiveType type, const VertexCol *vertices, int vertexCount)
-{
-    
-}
-
-void CGL33Device::DrawPrimitive(PrimitiveType type, const Vertex3D* vertices, int vertexCount)
-{
-    
-}
-
-void CGL33Device::DrawPrimitives(PrimitiveType type, const Vertex *vertices,
-    int first[], int count[], int drawCount, Color color)
-{
-    
-}
-
-void CGL33Device::DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
-    int first[], int count[], int drawCount)
-{
-    
-}
-
 CVertexBuffer* CGL33Device::CreateVertexBuffer(PrimitiveType primitiveType, const Vertex3D* vertices, int vertexCount)
 {
     auto buffer = new CGL33VertexBuffer(primitiveType, vertexCount);

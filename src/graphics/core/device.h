@@ -449,22 +449,6 @@ public:
     //! Deletes all textures created so far
     virtual void DestroyAllTextures() = 0;
 
-    //! Renders primitive composed of vertices with single texture
-    virtual void DrawPrimitive(PrimitiveType type, const Vertex *vertices    , int vertexCount,
-                               Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) = 0;
-    //! Renders primitive composed of vertices with solid color
-    virtual void DrawPrimitive(PrimitiveType type, const VertexCol *vertices , int vertexCount) = 0;
-    //! Renders 3D primitive
-    virtual void DrawPrimitive(PrimitiveType type, const Vertex3D* vertices, int vertexCount) = 0;
-
-    //! Renders primitives composed of lists of vertices with single texture
-    virtual void DrawPrimitives(PrimitiveType type, const Vertex *vertices,
-        int first[], int count[], int drawCount,
-        Color color = Color(1.0f, 1.0f, 1.0f, 1.0f)) = 0;
-    //! Renders primitives composed of lists of vertices with solid color
-    virtual void DrawPrimitives(PrimitiveType type, const VertexCol *vertices,
-        int first[], int count[], int drawCount) = 0;
-
     virtual CVertexBuffer* CreateVertexBuffer(PrimitiveType primitiveType, const Vertex3D* vertices, int vertexCount) = 0;
     virtual void DestroyVertexBuffer(CVertexBuffer*) = 0;
 
