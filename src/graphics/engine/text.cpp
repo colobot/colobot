@@ -1006,16 +1006,15 @@ void CText::DrawHighlight(FontMetaChar hl, const glm::ivec2& pos, const glm::ive
 
     auto renderer = m_device->GetUIRenderer();
     renderer->SetTexture(Texture{});
+    renderer->SetTransparency(TransparencyMode::ALPHA);
+    auto vertices = renderer->BeginPrimitive(PrimitiveType::TRIANGLE_STRIP, 4);
 
-    Vertex2D quad[] =
-    {
-        { { p1.x, p2.y }, {}, grad[3] },
-        { { p1.x, p1.y }, {}, grad[0] },
-        { { p2.x, p2.y }, {}, grad[2] },
-        { { p2.x, p1.y }, {}, grad[1] }
-    };
+    vertices[0] = { { p1.x, p2.y }, {}, grad[3] };
+    vertices[1] = { { p1.x, p1.y }, {}, grad[0] };
+    vertices[2] = { { p2.x, p2.y }, {}, grad[2] };
+    vertices[3] = { { p2.x, p1.y }, {}, grad[1] };
 
-    renderer->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, 4, quad);
+    renderer->EndPrimitive();
     m_engine->AddStatisticTriangle(2);
 }
 
@@ -1049,17 +1048,20 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, glm::iv
         uv2.x -= dp;
         uv2.y -= dp;
 
-        glm::u8vec4 col = { color.r * 255, color.g * 255, color.b * 255, color.a * 255 };
+        Gfx::IntColor col = Gfx::ColorToIntColor(color);
 
-        Vertex2D quad[4] =
-        {
-            { { p1.x, p2.y }, { uv1.x, uv2.y }, col },
-            { { p1.x, p1.y }, { uv1.x, uv1.y }, col },
-            { { p2.x, p2.y }, { uv2.x, uv2.y }, col },
-            { { p2.x, p1.y }, { uv2.x, uv1.y }, col }
-        };
+        auto renderer = m_device->GetUIRenderer();
+        renderer->SetTransparency(TransparencyMode::WHITE);
+        renderer->SetTexture(Texture{ texID });
+        auto vertices = renderer->BeginPrimitive(PrimitiveType::TRIANGLE_STRIP, 4);
 
-        m_quadBatch->Add(quad, texID, TransparencyMode::WHITE, color);
+        vertices[0] = { { p1.x, p2.y }, { uv1.x, uv2.y }, col };
+        vertices[1] = { { p1.x, p1.y }, { uv1.x, uv1.y }, col };
+        vertices[2] = { { p2.x, p2.y }, { uv2.x, uv2.y }, col };
+        vertices[3] = { { p2.x, p1.y }, { uv2.x, uv1.y }, col };
+
+        //m_quadBatch->Add(quad, texID, TransparencyMode::WHITE, color);
+        renderer->EndPrimitive();
 
         pos.x += width;
     }
@@ -1088,17 +1090,20 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, glm::iv
         glm::vec2 texCoord2(static_cast<float>(tex.charPos.x + tex.charSize.x - halfPixelMargin) / FONT_TEXTURE_SIZE.x,
                             static_cast<float>(tex.charPos.y + tex.charSize.y - halfPixelMargin) / FONT_TEXTURE_SIZE.y);
 
-        glm::u8vec4 col = { color.r * 255, color.g * 255, color.b * 255, color.a * 255 };
+        Gfx::IntColor col = Gfx::ColorToIntColor(color);
 
-        Vertex2D quad[4] =
-        {
-            { { p1.x, p2.y }, { texCoord1.x, texCoord2.y }, col },
-            { { p1.x, p1.y }, { texCoord1.x, texCoord1.y }, col },
-            { { p2.x, p2.y }, { texCoord2.x, texCoord2.y }, col },
-            { { p2.x, p1.y }, { texCoord2.x, texCoord1.y }, col }
-        };
+        auto renderer = m_device->GetUIRenderer();
+        renderer->SetTransparency(TransparencyMode::ALPHA);
+        renderer->SetTexture(Texture{ tex.id });
+        auto vertices = renderer->BeginPrimitive(PrimitiveType::TRIANGLE_STRIP, 4);
 
-        m_quadBatch->Add(quad, tex.id, TransparencyMode::ALPHA, color);
+        vertices[0] = { { p1.x, p2.y }, { texCoord1.x, texCoord2.y }, col };
+        vertices[1] = { { p1.x, p1.y }, { texCoord1.x, texCoord1.y }, col };
+        vertices[2] = { { p2.x, p2.y }, { texCoord2.x, texCoord2.y }, col };
+        vertices[3] = { { p2.x, p1.y }, { texCoord2.x, texCoord1.y }, col };
+
+        //m_quadBatch->Add(quad, tex.id, TransparencyMode::ALPHA, color);
+        renderer->EndPrimitive();
 
         pos.x += tex.charSize.x * width;
     }

@@ -77,7 +77,7 @@ private:
     // Vertex array object
     GLuint m_bufferVAO = 0;
     // VBO capacity
-    GLsizei m_bufferCapacity = 4 * 1024;
+    GLsizei m_bufferCapacity = 128 * 1024;
     
     // Buffer mapping state
     PrimitiveType m_type = {};

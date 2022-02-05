@@ -24,6 +24,7 @@
 
 #pragma once
 
+#include "graphics/core/transparency.h"
 #include "graphics/core/vertex.h"
 
 #include <glm/glm.hpp>
@@ -33,16 +34,9 @@ namespace Gfx
 {
 
 class CVertexBuffer;
+enum class CullFace : unsigned char;
 enum class PrimitiveType : unsigned char;
 struct Texture;
-
-enum class TransparencyMode : unsigned char
-{
-    NONE,
-    ALPHA,
-    BLACK,
-    WHITE,
-};
 
 struct ShadowParam
 {
@@ -171,8 +165,8 @@ public:
     virtual void SetDepthTest(bool enabled) = 0;
     //! Sets depth mask
     virtual void SetDepthMask(bool enabled) = 0;
-    //! Sets cull mode
-    virtual void SetCullMode(bool enabled) = 0;
+    //! Sets cull face mode
+    virtual void SetCullFace(CullFace mode) = 0;
     //! Sets transparency mode
     virtual void SetTransparency(TransparencyMode mode) = 0;
 

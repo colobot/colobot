@@ -174,12 +174,10 @@ void CGL33ObjectRenderer::CGL33ObjectRenderer::Begin()
     m_secondaryTexture = 0;
     m_shadowMap = 0;
 
-    glEnable(GL_DEPTH_TEST);
-    glDepthMask(GL_TRUE);
-
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
-    glFrontFace(GL_CW);   // Colobot issue: faces are reversed
+    m_device->SetDepthTest(true);
+    m_device->SetDepthMask(true);
+    m_device->SetTransparency(TransparencyMode::NONE);
+    m_device->SetCullFace(CullFace::BACK);
 
     SetUVTransform({ 0.0f, 0.0f }, { 1.0f, 1.0f });
 }
@@ -198,8 +196,6 @@ void CGL33ObjectRenderer::CGL33ObjectRenderer::End()
     m_primaryTexture = 0;
     m_secondaryTexture = 0;
     m_shadowMap = 0;
-
-    glDepthMask(GL_TRUE);
 }
 
 void CGL33ObjectRenderer::SetProjectionMatrix(const glm::mat4& matrix)
@@ -306,52 +302,22 @@ void CGL33ObjectRenderer::SetFog(float min, float max, const glm::vec3& color)
 
 void CGL33ObjectRenderer::SetDepthTest(bool enabled)
 {
-    if (enabled)
-        glEnable(GL_DEPTH_TEST);
-    else
-        glDisable(GL_DEPTH_TEST);
+    m_device->SetDepthTest(enabled);
 }
 
 void CGL33ObjectRenderer::SetDepthMask(bool enabled)
 {
-    glDepthMask(enabled ? GL_TRUE : GL_FALSE);
+    m_device->SetDepthMask(enabled);
 }
 
-void CGL33ObjectRenderer::SetCullMode(bool enabled)
+void CGL33ObjectRenderer::SetCullFace(CullFace mode)
 {
-    if (enabled)
-    {
-        glEnable(GL_CULL_FACE);
-    }
-    else
-    {
-        glDisable(GL_CULL_FACE);
-    }
+    m_device->SetCullFace(mode);
 }
 
 void CGL33ObjectRenderer::SetTransparency(TransparencyMode mode)
 {
-    switch (mode)
-    {
-    case TransparencyMode::NONE:
-        glDisable(GL_BLEND);
-        break;
-    case TransparencyMode::ALPHA:
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glBlendEquation(GL_FUNC_ADD);
-        break;
-    case TransparencyMode::BLACK:
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_COLOR);
-        glBlendEquation(GL_FUNC_ADD);
-        break;
-    case TransparencyMode::WHITE:
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_DST_COLOR, GL_ZERO);
-        glBlendEquation(GL_FUNC_ADD);
-        break;
-    }
+    m_device->SetTransparency(mode);
 }
 
 void CGL33ObjectRenderer::SetUVTransform(const glm::vec2& offset, const glm::vec2& scale)

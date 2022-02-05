@@ -1001,15 +1001,15 @@ void CMap::DrawHighlight(const glm::vec2& position)
 
 void CMap::DrawTriangle(const glm::vec2& p1, const glm::vec2& p2, const glm::vec2& p3, const glm::vec2& uv1, const glm::vec2& uv2)
 {
-    Gfx::Vertex2D  vertex[3];  // 1 triangle
-
     auto renderer = m_engine->GetDevice()->GetUIRenderer();
 
-    vertex[0] = { { p1.x, p1.y }, { uv1.x, uv1.y } };
-    vertex[1] = { { p2.x, p2.y }, { uv1.x, uv2.y } };
-    vertex[2] = { { p3.x, p3.y }, { uv2.x, uv2.y } };
+    auto vertices = renderer->BeginPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, 3);
 
-    renderer->DrawPrimitive(Gfx::PrimitiveType::TRIANGLES, 3, vertex);
+    vertices[0] = { { p1.x, p1.y }, { uv1.x, uv1.y } };
+    vertices[1] = { { p2.x, p2.y }, { uv1.x, uv2.y } };
+    vertices[2] = { { p3.x, p3.y }, { uv2.x, uv2.y } };
+
+    renderer->EndPrimitive();
     m_engine->AddStatisticTriangle(1);
 }
 
@@ -1017,17 +1017,16 @@ void CMap::DrawTriangle(const glm::vec2& p1, const glm::vec2& p2, const glm::vec
 
 void CMap::DrawPenta(const glm::vec2& p1, const glm::vec2& p2, const glm::vec2& p3, const glm::vec2& p4, const glm::vec2& p5, const glm::vec2& uv1, const glm::vec2& uv2)
 {
-    Gfx::Vertex2D  vertex[5];  // 1 pentagon
-
     auto renderer = m_engine->GetDevice()->GetUIRenderer();
+    auto vertices = renderer->BeginPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, 5);
 
-    vertex[0] = { { p1.x, p1.y }, { uv1.x, uv1.y } };
-    vertex[1] = { { p2.x, p2.y }, { uv1.x, uv2.y } };
-    vertex[2] = { { p5.x, p5.y }, { uv2.x, uv2.y } };
-    vertex[3] = { { p3.x, p3.y }, { uv2.x, uv2.y } };
-    vertex[4] = { { p4.x, p4.y }, { uv2.x, uv2.y } };
+    vertices[0] = { { p1.x, p1.y }, { uv1.x, uv1.y } };
+    vertices[1] = { { p2.x, p2.y }, { uv1.x, uv2.y } };
+    vertices[2] = { { p5.x, p5.y }, { uv2.x, uv2.y } };
+    vertices[3] = { { p3.x, p3.y }, { uv2.x, uv2.y } };
+    vertices[4] = { { p4.x, p4.y }, { uv2.x, uv2.y } };
 
-    renderer->DrawPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, 5, vertex);
+    renderer->EndPrimitive();
     m_engine->AddStatisticTriangle(3);
 }
 
@@ -1035,10 +1034,7 @@ void CMap::DrawPenta(const glm::vec2& p1, const glm::vec2& p2, const glm::vec2& 
 
 void CMap::DrawVertex(const glm::vec2& uv1, const glm::vec2& uv2, float zoom)
 {
-    Gfx::Vertex2D   vertex[4];  // 2 triangles
     glm::vec2       p1, p2, c;
-
-    auto renderer = m_engine->GetDevice()->GetUIRenderer();
 
     p1.x = m_pos.x;
     p1.y = m_pos.y;
@@ -1058,12 +1054,15 @@ void CMap::DrawVertex(const glm::vec2& uv1, const glm::vec2& uv2, float zoom)
     m_mapDim.x = p2.x-p1.x;
     m_mapDim.y = p2.y-p1.y;
 
-    vertex[0] = { { p1.x, p1.y }, { uv1.x, uv2.y } };
-    vertex[1] = { { p1.x, p2.y }, { uv1.x, uv1.y } };
-    vertex[2] = { { p2.x, p1.y }, { uv2.x, uv2.y } };
-    vertex[3] = { { p2.x, p2.y }, { uv2.x, uv1.y } };
+    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+    auto vertices = renderer->BeginPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, 4);
 
-    renderer->DrawPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, 4, vertex);
+    vertices[0] = { { p1.x, p1.y }, { uv1.x, uv2.y } };
+    vertices[1] = { { p1.x, p2.y }, { uv1.x, uv1.y } };
+    vertices[2] = { { p2.x, p1.y }, { uv2.x, uv2.y } };
+    vertices[3] = { { p2.x, p2.y }, { uv2.x, uv1.y } };
+
+    renderer->EndPrimitive();
     m_engine->AddStatisticTriangle(2);
 }
 

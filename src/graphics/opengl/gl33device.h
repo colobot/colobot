@@ -131,7 +131,12 @@ public:
 
     void SetViewport(int x, int y, int width, int height) override;
 
-    void SetRenderState(RenderState state, bool enabled) override;
+    void SetDepthTest(bool enabled) override;
+    void SetDepthMask(bool enabled) override;
+
+    void SetCullFace(CullFace mode) override;
+
+    void SetTransparency(TransparencyMode mode) override;
 
     void SetColorMask(bool red, bool green, bool blue, bool alpha) override;
 
@@ -185,6 +190,15 @@ private:
     std::unique_ptr<CGL33ParticleRenderer> m_particleRenderer;
     //! Shadow renderer
     std::unique_ptr<CGL33ShadowRenderer> m_shadowRenderer;
+
+    //! Depth test
+    bool m_depthTest = false;
+    //! Depth mask
+    bool m_depthMask = true;
+    //! Cull face mode
+    CullFace m_cullFace = CullFace::NONE;
+    //! Transparency mode
+    TransparencyMode m_transparency = TransparencyMode::NONE;
 };
 
 } // namespace Gfx

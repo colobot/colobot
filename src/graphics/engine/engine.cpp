@@ -1560,12 +1560,12 @@ void CEngine::UpdateStaticBuffer(EngineBaseObjDataTier& p4)
 
     if (p4.buffer == nullptr)
     {
-        p4.buffer = m_device->CreateVertexBuffer(type, &p4.vertices[0], p4.vertices.size());
+        p4.buffer = m_device->CreateVertexBuffer(type, p4.vertices.data(), p4.vertices.size());
     }
     else
     {
         p4.buffer->SetType(type);
-        p4.buffer->SetData(&p4.vertices[0], 0, p4.vertices.size());
+        p4.buffer->SetData(p4.vertices.data(), 0, p4.vertices.size());
         p4.buffer->Update();
     }
 
@@ -2883,7 +2883,7 @@ void CEngine::Render()
     m_device->SetClearColor(color);
 
     // Begin the scene
-    m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, true);
+    m_device->SetDepthMask(true);
 
     m_device->BeginScene();
 
@@ -2935,7 +2935,7 @@ void CEngine::Draw3DScene()
         }
     }
 
-    m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, false);
+    m_device->SetDepthTest(false);
 
     UpdateGroundSpotTextures();
 
@@ -3096,7 +3096,7 @@ void CEngine::Draw3DScene()
 
         objectRenderer->SetModelMatrix(m_objects[objRank].transform);
 
-        m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
+        //m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
 
         for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
         {
@@ -3134,7 +3134,7 @@ void CEngine::Draw3DScene()
                 float dirty = ((p3.state & ENG_RSTATE_DUAL_BLACK) && m_dirty) ? 1.0 : 0.0;
                 objectRenderer->SetDirty(dirty);
                 objectRenderer->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
-                objectRenderer->SetCullMode((p3.state& ENG_RSTATE_2FACE) == 0);
+                objectRenderer->SetCullFace((p3.state& ENG_RSTATE_2FACE) > 0 ? CullFace::NONE : CullFace::BACK);
                 objectRenderer->SetUVTransform(p3.uvOffset, p3.uvScale);
                 objectRenderer->DrawObject(p3.buffer);
             }
@@ -3148,7 +3148,7 @@ void CEngine::Draw3DScene()
     objectRenderer->SetDepthMask(false);
     objectRenderer->SetTransparency(TransparencyMode::BLACK);
     objectRenderer->SetAlphaScissor(0.0f);
-    objectRenderer->SetCullMode(false);
+    objectRenderer->SetCullFace(CullFace::NONE);
 
     // Draw transparent objects
 
@@ -3387,20 +3387,19 @@ void CEngine::Capture3DScene()
 
 void CEngine::DrawCaptured3DScene()
 {
-    m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, false);
+    m_device->SetDepthTest(false);
 
-    Vertex2D vertices[4];
+    auto renderer = m_device->GetUIRenderer();
+    renderer->SetTexture(m_capturedWorldTexture);
+    renderer->SetTransparency(TransparencyMode::NONE);
+    auto vertices = renderer->BeginPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, 4);
 
     vertices[0] = { { 0.0f, 0.0f }, { 0.0f, 0.0f } };
     vertices[1] = { { 1.0f, 0.0f }, { 1.0f, 0.0f } };
     vertices[2] = { { 0.0f, 1.0f }, { 0.0f, 1.0f } };
     vertices[3] = { { 1.0f, 1.0f }, { 1.0f, 1.0f } };
 
-    auto renderer = m_device->GetUIRenderer();
-
-    renderer->SetTexture(m_capturedWorldTexture);
-    renderer->SetTransparency(TransparencyMode::NONE);
-    renderer->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, 4, vertices);
+    renderer->EndPrimitive();
 }
 
 void CEngine::RenderDebugSphere(const Math::Sphere& sphere, const glm::mat4& transform, const Gfx::Color& color)
@@ -3690,7 +3689,7 @@ void CEngine::RenderShadowMap()
 
     CProfiler::StopPerformanceCounter(PCNT_RENDER_SHADOW_MAP);
 
-    m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, false);
+    m_device->SetDepthTest(false);
 }
 
 void CEngine::UseMSAA(bool enable)
@@ -3728,8 +3727,8 @@ void CEngine::UseMSAA(bool enable)
                 framebuffer->Bind();
             }
 
-            m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, true);
-            m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, true);
+            m_device->SetDepthTest(true);
+            m_device->SetDepthMask(true);
 
             m_device->Clear();
         }
@@ -3753,7 +3752,8 @@ void CEngine::UseMSAA(bool enable)
 
 void CEngine::DrawInterface()
 {
-    m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, false);
+    m_device->SetDepthTest(false);
+    m_device->SetTransparency(TransparencyMode::NONE);
 
     SetInterfaceCoordinates();
 
@@ -3804,7 +3804,7 @@ void CEngine::DrawInterface()
         renderer->SetAlphaScissor(0.0f);
         renderer->SetShadowParams(0, nullptr);
         renderer->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
-        renderer->SetCullMode(true);
+        renderer->SetCullFace(CullFace::BACK);
         renderer->SetPrimaryTextureEnabled(true);
 
         renderer->SetTriplanarMode(m_triplanarMode);
@@ -3873,7 +3873,7 @@ void CEngine::DrawInterface()
 
         particleRenderer->End();
 
-        m_device->SetRenderState(RENDER_STATE_DEPTH_TEST, false);
+        m_device->SetDepthTest(false);
 
         SetInterfaceCoordinates();
     }
@@ -4202,7 +4202,7 @@ void CEngine::UpdateGroundSpotTextures()
 
 void CEngine::DrawShadowSpots()
 {
-    m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, false);
+    m_device->SetDepthMask(false);
 
     glm::mat4 matrix = glm::mat4(1.0f);
     //m_device->SetTransform(TRANSFORM_WORLD, matrix);
@@ -4391,7 +4391,7 @@ void CEngine::DrawShadowSpots()
         AddStatisticTriangle(2);
     }
 
-    m_device->SetRenderState(RENDER_STATE_DEPTH_WRITE, true);
+    m_device->SetDepthMask(true);
 }
 
 void CEngine::DrawBackground()
@@ -4425,18 +4425,17 @@ void CEngine::DrawBackgroundGradient(const Color& up, const Color& down)
         { 0, 0, 0, 0 }
     };
 
-    Vertex2D vertex[4] =
-    {
-        { { p1.x, p1.y }, {}, color[1] },
-        { { p1.x, p2.y }, {}, color[0] },
-        { { p2.x, p1.y }, {}, color[1] },
-        { { p2.x, p2.y }, {}, color[0] }
-    };
-
     auto renderer = m_device->GetUIRenderer();
     renderer->SetTexture(Texture{});
     renderer->SetTransparency(TransparencyMode::NONE);
-    renderer->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, 4, vertex);
+    auto vertices = renderer->BeginPrimitive(PrimitiveType::TRIANGLE_STRIP, 4);
+
+    vertices[0] = { { p1.x, p1.y }, {}, color[1] };
+    vertices[1] = { { p1.x, p2.y }, {}, color[0] };
+    vertices[2] = { { p2.x, p1.y }, {}, color[1] };
+    vertices[3] = { { p2.x, p2.y }, {}, color[0] };
+
+    renderer->EndPrimitive();
     AddStatisticTriangle(2);
 }
 
@@ -4506,18 +4505,17 @@ void CEngine::DrawBackgroundImage()
         v2 -= margin_v;
     }
 
-    Vertex2D vertices[4] =
-    {
-        { { p1.x, p1.y }, { u1, v2 } },
-        { { p1.x, p2.y }, { u1, v1 } },
-        { { p2.x, p1.y }, { u2, v2 } },
-        { { p2.x, p2.y }, { u2, v1 } }
-    };
-
     auto renderer = m_device->GetUIRenderer();
     renderer->SetTexture(m_backgroundTex);
     renderer->SetTransparency(TransparencyMode::NONE);
-    renderer->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, 4, vertices);
+    auto vertices = renderer->BeginPrimitive(PrimitiveType::TRIANGLE_STRIP, 4);
+
+    vertices[0] = { { p1.x, p1.y }, { u1, v2 } };
+    vertices[1] = { { p1.x, p2.y }, { u1, v1 } };
+    vertices[2] = { { p2.x, p1.y }, { u2, v2 } };
+    vertices[3] = { { p2.x, p2.y }, { u2, v1 } };
+
+    renderer->EndPrimitive();
     AddStatisticTriangle(2);
 }
 
@@ -4557,19 +4555,17 @@ void CEngine::DrawForegroundImage()
     float v1 = 0.2f;
     float v2 = 1.0f;
 
-
-    Vertex2D vertex[4] =
-    {
-        { { p1.x, p1.y }, { u1, v2 } },
-        { { p1.x, p2.y }, { u1, v1 } },
-        { { p2.x, p1.y }, { u2, v2 } },
-        { { p2.x, p2.y }, { u2, v1 } }
-    };
-
     auto renderer = m_device->GetUIRenderer();
     renderer->SetTexture(m_foregroundTex);
     renderer->SetTransparency(TransparencyMode::BLACK);
-    renderer->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, 4, vertex);
+    auto vertices = renderer->BeginPrimitive(PrimitiveType::TRIANGLE_STRIP, 4);
+
+    vertices[0] = { { p1.x, p1.y }, { u1, v2 } };
+    vertices[1] = { { p1.x, p2.y }, { u1, v1 } };
+    vertices[2] = { { p2.x, p1.y }, { u2, v2 } };
+    vertices[3] = { { p2.x, p2.y }, { u2, v1 } };
+
+    renderer->EndPrimitive();
     AddStatisticTriangle(2);
 }
 
@@ -4594,17 +4590,14 @@ void CEngine::DrawOverColor()
     auto renderer = m_device->GetUIRenderer();
     renderer->SetTexture(Texture{});
     renderer->SetTransparency(m_overMode);
+    auto vertices = renderer->BeginPrimitive(PrimitiveType::TRIANGLE_STRIP, 4);
 
-    Vertex2D vertex[4] =
-    {
-        { { p1.x, p1.y }, {}, colors[1] },
-        { { p1.x, p2.y }, {}, colors[0] },
-        { { p2.x, p1.y }, {}, colors[1] },
-        { { p2.x, p2.y }, {}, colors[0] }
-    };
+    vertices[0] = { { p1.x, p1.y }, {}, colors[1] };
+    vertices[1] = { { p1.x, p2.y }, {}, colors[0] };
+    vertices[2] = { { p2.x, p1.y }, {}, colors[1] };
+    vertices[3] = { { p2.x, p2.y }, {}, colors[0] };
 
-    renderer->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, 4, vertex);
-
+    renderer->EndPrimitive();
     AddStatisticTriangle(2);
 }
 
@@ -4666,13 +4659,6 @@ void CEngine::DrawHighlight()
 
     glm::u8vec4 color(255, 255, 0, 255);  // yellow
 
-    Vertex2D line[3] =
-    {
-        { { 0, 0 }, {}, color },
-        { { 0, 0 }, {}, color },
-        { { 0, 0 }, {}, color }
-    };
-
     auto renderer = m_device->GetUIRenderer();
     renderer->SetTransparency(TransparencyMode::NONE);
     renderer->SetTexture(Texture{});
@@ -4680,25 +4666,29 @@ void CEngine::DrawHighlight()
     float dx = (p2.x - p1.x) / 5.0f;
     float dy = (p2.y - p1.y) / 5.0f;
 
-    line[0].position = glm::vec3(p1.x, p1.y + dy, 0.0f);
-    line[1].position = glm::vec3(p1.x, p1.y, 0.0f);
-    line[2].position = glm::vec3(p1.x + dx, p1.y, 0.0f);
-    renderer->DrawPrimitive(PrimitiveType::LINE_STRIP, 3, line);
+    auto line = renderer->BeginPrimitive(PrimitiveType::LINE_STRIP, 3);
+    line[0] = { { p1.x, p1.y + dy }, {}, color };
+    line[1] = { { p1.x, p1.y }, {}, color };
+    line[2] = { { p1.x + dx, p1.y }, {}, color };
+    renderer->EndPrimitive();
 
-    line[0].position = glm::vec3(p2.x - dx, p1.y, 0.0f);
-    line[1].position = glm::vec3(p2.x, p1.y, 0.0f);
-    line[2].position = glm::vec3(p2.x, p1.y + dy, 0.0f);
-    renderer->DrawPrimitive(PrimitiveType::LINE_STRIP, 3, line);
+    line = renderer->BeginPrimitive(PrimitiveType::LINE_STRIP, 3);
+    line[0] = { { p2.x - dx, p1.y }, {}, color };
+    line[1] = { { p2.x, p1.y }, {}, color };
+    line[2] = { { p2.x, p1.y + dy }, {}, color };
+    renderer->EndPrimitive();
 
-    line[0].position = glm::vec3(p2.x, p2.y - dy, 0.0f);
-    line[1].position = glm::vec3(p2.x, p2.y, 0.0f);
-    line[2].position = glm::vec3(p2.x - dx, p2.y, 0.0f);
-    renderer->DrawPrimitive(PrimitiveType::LINE_STRIP, 3, line);
+    line = renderer->BeginPrimitive(PrimitiveType::LINE_STRIP, 3);
+    line[0] = { { p2.x, p2.y - dy }, {}, color };
+    line[1] = { { p2.x, p2.y }, {}, color };
+    line[2] = { { p2.x - dx, p2.y }, {}, color };
+    renderer->EndPrimitive();
 
-    line[0].position = glm::vec3(p1.x + dx, p2.y, 0.0f);
-    line[1].position = glm::vec3(p1.x, p2.y, 0.0f);
-    line[2].position = glm::vec3(p1.x, p2.y - dy, 0.0f);
-    renderer->DrawPrimitive(PrimitiveType::LINE_STRIP, 3, line);
+    line = renderer->BeginPrimitive(PrimitiveType::LINE_STRIP, 3);
+    line[0] = { { p1.x + dx, p2.y }, {}, color };
+    line[1] = { { p1.x, p2.y }, {}, color };
+    line[2] = { { p1.x, p2.y - dy }, {}, color };
+    renderer->EndPrimitive();
 }
 
 void CEngine::DrawMouse()
@@ -4745,17 +4735,16 @@ void CEngine::DrawMouseSprite(const glm::ivec2& pos, const glm::ivec2& size, int
     u2 -= dp;
     v2 -= dp;
 
-    Vertex2D vertex[4] =
-    {
-        { { p1.x, p2.y }, { u1, v2 } },
-        { { p1.x, p1.y }, { u1, v1 } },
-        { { p2.x, p2.y }, { u2, v2 } },
-        { { p2.x, p1.y }, { u2, v1 } }
-    };
-
     auto renderer = m_device->GetUIRenderer();
     renderer->SetTransparency(mode);
-    renderer->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, 4, vertex);
+    auto vertices = renderer->BeginPrimitive(PrimitiveType::TRIANGLE_STRIP, 4);
+
+    vertices[0] = { { p1.x, p2.y }, { u1, v2 } };
+    vertices[1] = { { p1.x, p1.y }, { u1, v1 } };
+    vertices[2] = { { p2.x, p2.y }, { u2, v2 } };
+    vertices[3] = { { p2.x, p1.y }, { u2, v1 } };
+
+    renderer->EndPrimitive();
     AddStatisticTriangle(2);
 }
 
@@ -4778,16 +4767,14 @@ void CEngine::DrawStats()
 
     glm::vec2 margin = { 5.f / m_size.x, 5.f / m_size.y };
 
-    Vertex2D vertex[4] =
-    {
-        { { pos.x         - margin.x, pos.y - (TOTAL_LINES + 1) * height - margin.y }, {}, black },
-        { { pos.x                             - margin.x, pos.y + height + margin.y }, {}, black },
-        { { pos.x + width + margin.x, pos.y - (TOTAL_LINES + 1) * height - margin.y }, {}, black },
-        { { pos.x + width + margin.x, pos.y                     + height + margin.y }, {}, black }
-    };
+    auto vertices = renderer->BeginPrimitive(PrimitiveType::TRIANGLE_STRIP, 4);
 
-    renderer->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, 4, vertex);
+    vertices[0] = { { pos.x - margin.x, pos.y - (TOTAL_LINES + 1) * height - margin.y }, {}, black };
+    vertices[1] = { { pos.x - margin.x, pos.y + height + margin.y }, {}, black };
+    vertices[2] = { { pos.x + width + margin.x, pos.y - (TOTAL_LINES + 1) * height - margin.y }, {}, black };
+    vertices[3] = { { pos.x + width + margin.x, pos.y + height + margin.y }, {}, black };
 
+    renderer->EndPrimitive();
     renderer->SetTransparency(TransparencyMode::ALPHA);
 
     auto drawStatsLine = [&](const std::string& name, const std::string& value, const std::string& value2)

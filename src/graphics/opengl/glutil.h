@@ -82,10 +82,6 @@ CompFunc TranslateGLCompFunc(GLenum flag);
 
 GLenum TranslateGfxCompFunc(CompFunc func);
 
-BlendFunc TranslateGLBlendFunc(GLenum flag);
-
-GLenum TranslateGfxBlendFunc(BlendFunc func);
-
 bool InPlane(glm::vec3 normal, float originPlane, glm::vec3 center, float radius);
 
 GLenum TranslateTextureCoordinate(int index);

@@ -125,7 +125,6 @@ bool CColor::EventProcess(const Event &event)
 // Draw the button.
 void CColor::Draw()
 {
-    Gfx::Vertex2D  vertex[4];  // 2 triangles
     Gfx::Color     color;
     glm::vec2      p1, p2;
 
@@ -154,13 +153,14 @@ void CColor::Draw()
 
     renderer->SetTexture(Gfx::Texture{0});
     renderer->SetTransparency(Gfx::TransparencyMode::NONE);
+    auto vertex = renderer->BeginPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, 4);
 
     vertex[0] = { { p1.x, p1.y }, {}, col };
     vertex[1] = { { p1.x, p2.y }, {}, col };
     vertex[2] = { { p2.x, p1.y }, {}, col };
     vertex[3] = { { p2.x, p2.y }, {}, col };
 
-    renderer->DrawPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, 4, vertex);
+    renderer->EndPrimitive();
     m_engine->AddStatisticTriangle(2);
 }
 

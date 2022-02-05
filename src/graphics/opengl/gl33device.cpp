@@ -258,6 +258,17 @@ void CGL33Device::ConfigChanged(const DeviceConfig& newConfig)
 void CGL33Device::BeginScene()
 {
     Clear();
+
+    glDisable(GL_BLEND);
+    m_transparency = TransparencyMode::NONE;
+
+    glDisable(GL_DEPTH_TEST);
+    m_depthTest = false;
+
+    glDepthMask(GL_TRUE);
+    m_depthMask = true;
+
+    glFrontFace(GL_CW);   // Colobot issue: faces are reversed
 }
 
 void CGL33Device::EndScene()
@@ -513,30 +524,80 @@ void CGL33Device::SetViewport(int x, int y, int width, int height)
     glViewport(x, y, width, height);
 }
 
-void CGL33Device::SetRenderState(RenderState state, bool enabled)
+void CGL33Device::SetDepthTest(bool enabled)
 {
-    return;
+    if (m_depthTest == enabled) return;
 
-    if (state == RENDER_STATE_DEPTH_WRITE)
-    {
-        glDepthMask(enabled ? GL_TRUE : GL_FALSE);
-        return;
-    }
-
-    GLenum flag = 0;
-
-    switch (state)
-    {
-        case RENDER_STATE_BLENDING:    flag = GL_BLEND; break;
-        case RENDER_STATE_DEPTH_TEST:  flag = GL_DEPTH_TEST; break;
-        case RENDER_STATE_CULLING:     flag = GL_CULL_FACE; break;
-        default: assert(false); break;
-    }
+    m_depthTest = enabled;
 
     if (enabled)
-        glEnable(flag);
+        glEnable(GL_DEPTH_TEST);
     else
-        glDisable(flag);
+        glDisable(GL_DEPTH_TEST);
+}
+
+void CGL33Device::SetDepthMask(bool enabled)
+{
+    if (m_depthMask == enabled) return;
+
+    m_depthMask = enabled;
+
+    glDepthMask(enabled ? GL_TRUE : GL_FALSE);
+}
+
+void CGL33Device::SetCullFace(CullFace mode)
+{
+    if (m_cullFace == mode) return;
+
+    m_cullFace = mode;
+
+    switch (mode)
+    {
+    case CullFace::NONE:
+        glDisable(GL_CULL_FACE);
+        break;
+    case CullFace::BACK:
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+        break;
+    case CullFace::FRONT:
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_FRONT);
+        break;
+    case CullFace::BOTH:
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_FRONT_AND_BACK);
+        break;
+    }
+}
+
+void CGL33Device::SetTransparency(TransparencyMode mode)
+{
+    if (m_transparency == mode) return;
+
+    m_transparency = mode;
+
+    switch (mode)
+    {
+    case TransparencyMode::NONE:
+        glDisable(GL_BLEND);
+        break;
+    case TransparencyMode::ALPHA:
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glBlendEquation(GL_FUNC_ADD);
+        break;
+    case TransparencyMode::BLACK:
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_COLOR);
+        glBlendEquation(GL_FUNC_ADD);
+        break;
+    case TransparencyMode::WHITE:
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_DST_COLOR, GL_ZERO);
+        glBlendEquation(GL_FUNC_ADD);
+        break;
+    }
 }
 
 void CGL33Device::SetColorMask(bool red, bool green, bool blue, bool alpha)

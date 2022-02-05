@@ -108,9 +108,9 @@ void CGL33ParticleRenderer::Begin()
 
     m_texture = 0;
 
-    glEnable(GL_DEPTH_TEST);
-    glDepthMask(GL_FALSE);
-    glDisable(GL_CULL_FACE);
+    m_device->SetDepthTest(true);
+    m_device->SetDepthMask(false);
+    m_device->SetCullFace(CullFace::NONE);
 
     glUniform4f(m_color, 1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -124,8 +124,6 @@ void CGL33ParticleRenderer::End()
     glBindTexture(GL_TEXTURE_2D, 0);
 
     m_texture = 0;
-
-    glDepthMask(GL_TRUE);
 
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -170,34 +168,9 @@ void CGL33ParticleRenderer::SetTexture(const Texture& texture)
         glBindTexture(GL_TEXTURE_2D, texture.id);
 }
 
-
 void CGL33ParticleRenderer::SetTransparency(TransparencyMode mode)
 {
-    switch (mode)
-    {
-    case TransparencyMode::NONE:
-        glDisable(GL_BLEND);
-        glDepthMask(GL_TRUE);
-        break;
-    case TransparencyMode::ALPHA:
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glBlendEquation(GL_FUNC_ADD);
-        glDepthMask(GL_TRUE);
-        break;
-    case TransparencyMode::BLACK:
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_COLOR);
-        glBlendEquation(GL_FUNC_ADD);
-        glDepthMask(GL_FALSE);
-        break;
-    case TransparencyMode::WHITE:
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_DST_COLOR, GL_ZERO);
-        glBlendEquation(GL_FUNC_ADD);
-        glDepthMask(GL_FALSE);
-        break;
-    }
+    m_device->SetTransparency(mode);
 }
 
 void CGL33ParticleRenderer::DrawParticle(PrimitiveType type, int count, const Vertex3D* vertices)

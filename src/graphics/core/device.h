@@ -26,6 +26,7 @@
 
 #include "graphics/core/color.h"
 #include "graphics/core/texture.h"
+#include "graphics/core/transparency.h"
 #include "graphics/core/vertex.h"
 
 #include <glm/glm.hpp>
@@ -126,41 +127,6 @@ struct DeviceCapabilities
 };
 
 /**
- * \enum TextureUnit
- * \brief Texture unit values for binding textures
- *
- * These enums should be used for indexing textures instead of raw integers.
- */
-enum TextureUnit
-{
-    TEXTURE_PRIMARY = 0,
-    TEXTURE_SECONDARY = 1,
-};
-
-/**
- * \enum TransformType
- * \brief Type of transformation in rendering pipeline
- */
-enum TransformType
-{
-    TRANSFORM_WORLD,
-    TRANSFORM_VIEW,
-    TRANSFORM_PROJECTION,
-};
-
-/**
- * \enum RenderState
- * \brief Render states that can be enabled/disabled
- */
-enum RenderState
-{
-    RENDER_STATE_BLENDING,
-    RENDER_STATE_DEPTH_TEST,
-    RENDER_STATE_DEPTH_WRITE,
-    RENDER_STATE_CULLING,
-};
-
-/**
  * \enum CompFunc
  * \brief Type of function used to compare values
  */
@@ -177,45 +143,15 @@ enum CompFunc
 };
 
 /**
- * \enum BlendFunc
- * \brief Type of blending function
+ * \enum CullFace
+ * \brief Specifies which faces to cull while rendering polygons
  */
-enum BlendFunc
+enum class CullFace : unsigned char
 {
-    BLEND_ZERO,
-    BLEND_ONE,
-    BLEND_SRC_COLOR,
-    BLEND_INV_SRC_COLOR,
-    BLEND_DST_COLOR,
-    BLEND_INV_DST_COLOR,
-    BLEND_SRC_ALPHA,
-    BLEND_INV_SRC_ALPHA,
-    BLEND_DST_ALPHA,
-    BLEND_INV_DST_ALPHA,
-    BLEND_SRC_ALPHA_SATURATE
-};
-
-/**
- * \enum FogMode
- * \brief Type of fog calculation function
- */
-enum FogMode
-{
-    FOG_LINEAR,
-    FOG_EXP,
-    FOG_EXP2
-};
-
-/**
- * \enum CullMode
- * \brief Culling mode for polygons
- */
-enum CullMode
-{
-    //! Cull clockwise faces
-    CULL_CW,
-    //! Cull counter-clockwise faces
-    CULL_CCW
+    NONE,
+    BACK,
+    FRONT,
+    BOTH,
 };
 
 /**
@@ -455,8 +391,16 @@ public:
     //! Changes rendering viewport
     virtual void SetViewport(int x, int y, int width, int height) = 0;
 
-    //! Enables/disables the given render state
-    virtual void SetRenderState(RenderState state, bool enabled) = 0;
+    //! Sets depth test
+    virtual void SetDepthTest(bool enabled) = 0;
+    //! Sets depth mask
+    virtual void SetDepthMask(bool enabled) = 0;
+
+    //! Sets which faces to cull
+    virtual void SetCullFace(CullFace mode) = 0;
+
+    //! Sets transparency mode
+    virtual void SetTransparency(TransparencyMode mode) = 0;
 
     //! Sets the color mask
     virtual void SetColorMask(bool red, bool green, bool blue, bool alpha) = 0;

@@ -1275,18 +1275,17 @@ void CEdit::DrawHorizontalGradient(const glm::vec2& pos, const glm::vec2& dim, G
     p2.x = pos.x + dim.x;
     p2.y = pos.y + dim.y;
 
-    glm::u8vec4 col1 = { color1.r * 255, color1.g * 255, color1.b * 255, color1.a * 255 };
-    glm::u8vec4 col2 = { color2.r * 255, color2.g * 255, color2.b * 255, color2.a * 255 };
+    Gfx::IntColor col1 = Gfx::ColorToIntColor(color1);
+    Gfx::IntColor col2 = Gfx::ColorToIntColor(color2);
 
-    Gfx::Vertex2D quad[] =
-    {
-        { { p1.x, p1.y }, {}, col1 },
-        { { p1.x, p2.y }, {}, col1 },
-        { { p2.x, p1.y }, {}, col2 },
-        { { p2.x, p2.y }, {}, col2 }
-    };
+    auto quad = renderer->BeginPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, 4);
 
-    renderer->DrawPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, 4, quad);
+    quad[0] = { { p1.x, p1.y }, {}, col1 };
+    quad[1] = { { p1.x, p2.y }, {}, col1 };
+    quad[2] = { { p2.x, p1.y }, {}, col2 };
+    quad[3] = { { p2.x, p2.y }, {}, col2 };
+
+    renderer->EndPrimitive();
     m_engine->AddStatisticTriangle(2);
 }
 

@@ -372,47 +372,6 @@ GLenum TranslateGfxCompFunc(CompFunc func)
     return 0;
 }
 
-BlendFunc TranslateGLBlendFunc(GLenum flag)
-{
-    switch (flag)
-    {
-    case GL_ZERO:                return BLEND_ZERO;
-    case GL_ONE:                 return BLEND_ONE;
-    case GL_SRC_COLOR:           return BLEND_SRC_COLOR;
-    case GL_ONE_MINUS_SRC_COLOR: return BLEND_INV_SRC_COLOR;
-    case GL_DST_COLOR:           return BLEND_DST_COLOR;
-    case GL_ONE_MINUS_DST_COLOR: return BLEND_INV_DST_COLOR;
-    case GL_SRC_ALPHA:           return BLEND_SRC_ALPHA;
-    case GL_ONE_MINUS_SRC_ALPHA: return BLEND_INV_SRC_ALPHA;
-    case GL_DST_ALPHA:           return BLEND_DST_ALPHA;
-    case GL_ONE_MINUS_DST_ALPHA: return BLEND_INV_DST_ALPHA;
-    case GL_SRC_ALPHA_SATURATE:  return BLEND_SRC_ALPHA_SATURATE;
-    default: assert(false); break;
-    }
-
-    return BLEND_ZERO;
-}
-
-GLenum TranslateGfxBlendFunc(BlendFunc func)
-{
-    switch (func)
-    {
-    case BLEND_ZERO:               return GL_ZERO;
-    case BLEND_ONE:                return GL_ONE;
-    case BLEND_SRC_COLOR:          return GL_SRC_COLOR;
-    case BLEND_INV_SRC_COLOR:      return GL_ONE_MINUS_SRC_COLOR;
-    case BLEND_DST_COLOR:          return GL_DST_COLOR;
-    case BLEND_INV_DST_COLOR:      return GL_ONE_MINUS_DST_COLOR;
-    case BLEND_SRC_ALPHA:          return GL_SRC_ALPHA;
-    case BLEND_INV_SRC_ALPHA:      return GL_ONE_MINUS_SRC_ALPHA;
-    case BLEND_DST_ALPHA:          return GL_DST_ALPHA;
-    case BLEND_INV_DST_ALPHA:      return GL_ONE_MINUS_DST_ALPHA;
-    case BLEND_SRC_ALPHA_SATURATE: return GL_SRC_ALPHA_SATURATE;
-    default: assert(false); break;
-    }
-    return 0;
-}
-
 bool InPlane(glm::vec3 normal, float originPlane, glm::vec3 center, float radius)
 {
     float distance = originPlane + glm::dot(normal, center);

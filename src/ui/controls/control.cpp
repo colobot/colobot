@@ -609,7 +609,6 @@ void CControl::DrawPart(int icon, float zoom, float ex)
 void CControl::DrawIcon(const glm::vec2& pos, const glm::vec2& dim, const glm::vec2& uv1, const glm::vec2& uv2,
                         float ex)
 {
-    Gfx::Vertex2D   vertex[8];  // 6 triangles
     glm::vec2       p1, p2, p3, p4;
 
     auto renderer = m_engine->GetDevice()->GetUIRenderer();
@@ -621,12 +620,14 @@ void CControl::DrawIcon(const glm::vec2& pos, const glm::vec2& dim, const glm::v
 
     if ( ex == 0.0f )  // one piece?
     {
-        vertex[0] = { { p1.x, p1.y }, { uv1.x, uv2.y } };
-        vertex[1] = { { p1.x, p2.y }, { uv1.x, uv1.y } };
-        vertex[2] = { { p2.x, p1.y }, { uv2.x, uv2.y } };
-        vertex[3] = { { p2.x, p2.y }, { uv2.x, uv1.y } };
+        auto vertices = renderer->BeginPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, 4);
 
-        renderer->DrawPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, 4, vertex);
+        vertices[0] = { { p1.x, p1.y }, { uv1.x, uv2.y } };
+        vertices[1] = { { p1.x, p2.y }, { uv1.x, uv1.y } };
+        vertices[2] = { { p2.x, p1.y }, { uv2.x, uv2.y } };
+        vertices[3] = { { p2.x, p2.y }, { uv2.x, uv1.y } };
+
+        renderer->EndPrimitive();
         m_engine->AddStatisticTriangle(2);
     }
     else    // 3 pieces?
@@ -636,16 +637,18 @@ void CControl::DrawIcon(const glm::vec2& pos, const glm::vec2& dim, const glm::v
             p3.x = p1.x + ex*dim.y / (uv2.y - uv1.y);
             p4.x = p2.x - ex*dim.y / (uv2.y - uv1.y);
 
-            vertex[0] = { { p1.x, p1.y }, { uv1.x,   uv2.y } };
-            vertex[1] = { { p1.x, p2.y }, { uv1.x,   uv1.y } };
-            vertex[2] = { { p3.x, p1.y }, { uv1.x+ex,uv2.y } };
-            vertex[3] = { { p3.x, p2.y }, { uv1.x+ex,uv1.y } };
-            vertex[4] = { { p4.x, p1.y }, { uv2.x-ex,uv2.y } };
-            vertex[5] = { { p4.x, p2.y }, { uv2.x-ex,uv1.y } };
-            vertex[6] = { { p2.x, p1.y }, { uv2.x,   uv2.y } };
-            vertex[7] = { { p2.x, p2.y }, { uv2.x,   uv1.y } };
+            auto vertices = renderer->BeginPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, 8);
 
-            renderer->DrawPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, 8, vertex);
+            vertices[0] = { { p1.x, p1.y }, { uv1.x,   uv2.y } };
+            vertices[1] = { { p1.x, p2.y }, { uv1.x,   uv1.y } };
+            vertices[2] = { { p3.x, p1.y }, { uv1.x+ex,uv2.y } };
+            vertices[3] = { { p3.x, p2.y }, { uv1.x+ex,uv1.y } };
+            vertices[4] = { { p4.x, p1.y }, { uv2.x-ex,uv2.y } };
+            vertices[5] = { { p4.x, p2.y }, { uv2.x-ex,uv1.y } };
+            vertices[6] = { { p2.x, p1.y }, { uv2.x,   uv2.y } };
+            vertices[7] = { { p2.x, p2.y }, { uv2.x,   uv1.y } };
+
+            renderer->EndPrimitive();
             m_engine->AddStatisticTriangle(6);
         }
         else
@@ -653,16 +656,18 @@ void CControl::DrawIcon(const glm::vec2& pos, const glm::vec2& dim, const glm::v
             p3.y = p1.y + ex*dim.x / (uv2.x - uv1.x);
             p4.y = p2.y - ex*dim.x / (uv2.x - uv1.x);
 
-            vertex[0] = { { p2.x, p1.y }, { uv2.x, uv2.y      } };
-            vertex[1] = { { p1.x, p1.y }, { uv1.x, uv2.y      } };
-            vertex[2] = { { p2.x, p3.y }, { uv2.x, uv2.y - ex } };
-            vertex[3] = { { p1.x, p3.y }, { uv1.x, uv2.y - ex } };
-            vertex[4] = { { p2.x, p4.y }, { uv2.x, uv1.y + ex } };
-            vertex[5] = { { p1.x, p4.y }, { uv1.x, uv1.y + ex } };
-            vertex[6] = { { p2.x, p2.y }, { uv2.x, uv1.y      } };
-            vertex[7] = { { p1.x, p2.y }, { uv1.x, uv1.y      } };
+            auto vertices = renderer->BeginPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, 8);
 
-            renderer->DrawPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, 8, vertex);
+            vertices[0] = { { p2.x, p1.y }, { uv2.x, uv2.y      } };
+            vertices[1] = { { p1.x, p1.y }, { uv1.x, uv2.y      } };
+            vertices[2] = { { p2.x, p3.y }, { uv2.x, uv2.y - ex } };
+            vertices[3] = { { p1.x, p3.y }, { uv1.x, uv2.y - ex } };
+            vertices[4] = { { p2.x, p4.y }, { uv2.x, uv1.y + ex } };
+            vertices[5] = { { p1.x, p4.y }, { uv1.x, uv1.y + ex } };
+            vertices[6] = { { p2.x, p2.y }, { uv2.x, uv1.y      } };
+            vertices[7] = { { p1.x, p2.y }, { uv1.x, uv1.y      } };
+
+            renderer->EndPrimitive();
             m_engine->AddStatisticTriangle(6);
         }
     }
@@ -673,7 +678,6 @@ void CControl::DrawIcon(const glm::vec2& pos, const glm::vec2& dim, const glm::v
 void CControl::DrawIcon(const glm::vec2& pos, const glm::vec2& dim, const glm::vec2& uv1, const glm::vec2& uv2,
                         const glm::vec2& cor, float ex)
 {
-    Gfx::Vertex2D   vertices[8];  // 6 triangles
     glm::vec2       p1, p2, p3, p4;
 
     glm::vec2 corner = cor;
@@ -698,6 +702,8 @@ void CControl::DrawIcon(const glm::vec2& pos, const glm::vec2& dim, const glm::v
     p4.y = p2.y - corner.y;
 
     // Bottom horizontal band.
+    auto vertices = renderer->BeginPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, 8);
+
     vertices[0] = { { p1.x, p1.y }, { uv1.x, uv2.y } };
     vertices[1] = { { p1.x, p3.y }, { uv1.x,      uv2.y - ex } };
     vertices[2] = { { p3.x, p1.y }, { uv1.x + ex, uv2.y      } };
@@ -707,10 +713,12 @@ void CControl::DrawIcon(const glm::vec2& pos, const glm::vec2& dim, const glm::v
     vertices[6] = { { p2.x, p1.y }, { uv2.x,      uv2.y      } };
     vertices[7] = { { p2.x, p3.y }, { uv2.x,      uv2.y - ex } };
 
-    renderer->DrawPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, 8, vertices);
+    renderer->EndPrimitive();
     m_engine->AddStatisticTriangle(6);
 
     // Central horizontal band.
+    vertices = renderer->BeginPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, 8);
+
     vertices[0] = { { p1.x, p3.y }, { uv1.x,      uv2.y - ex } };
     vertices[1] = { { p1.x, p4.y }, { uv1.x,      uv1.y + ex } };
     vertices[2] = { { p3.x, p3.y }, { uv1.x + ex, uv2.y - ex } };
@@ -720,10 +728,12 @@ void CControl::DrawIcon(const glm::vec2& pos, const glm::vec2& dim, const glm::v
     vertices[6] = { { p2.x, p3.y }, { uv2.x,      uv2.y - ex } };
     vertices[7] = { { p2.x, p4.y }, { uv2.x,      uv1.y + ex } };
 
-    renderer->DrawPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, 8, vertices);
+    renderer->EndPrimitive();
     m_engine->AddStatisticTriangle(6);
 
     // Top horizontal band.
+    vertices = renderer->BeginPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, 8);
+
     vertices[0] = { { p1.x, p4.y }, { uv1.x,      uv1.y + ex } };
     vertices[1] = { { p1.x, p2.y }, { uv1.x,      uv1.y    } };
     vertices[2] = { { p3.x, p4.y }, { uv1.x + ex, uv1.y + ex } };
@@ -733,7 +743,7 @@ void CControl::DrawIcon(const glm::vec2& pos, const glm::vec2& dim, const glm::v
     vertices[6] = { { p2.x, p4.y }, { uv2.x,      uv1.y + ex } };
     vertices[7] = { { p2.x, p2.y }, { uv2.x,      uv1.y    } };
 
-    renderer->DrawPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, 8, vertices);
+    renderer->EndPrimitive();
     m_engine->AddStatisticTriangle(6);
 }
 

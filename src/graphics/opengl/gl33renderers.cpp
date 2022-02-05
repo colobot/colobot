@@ -134,27 +134,7 @@ void CGL33UIRenderer::SetColor(const glm::vec4& color)
 
 void CGL33UIRenderer::SetTransparency(TransparencyMode mode)
 {
-    switch (mode)
-    {
-    case TransparencyMode::NONE:
-        glDisable(GL_BLEND);
-        break;
-    case TransparencyMode::ALPHA:
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glBlendEquation(GL_FUNC_ADD);
-        break;
-    case TransparencyMode::BLACK:
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_COLOR);
-        glBlendEquation(GL_FUNC_ADD);
-        break;
-    case TransparencyMode::WHITE:
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_DST_COLOR, GL_ZERO);
-        glBlendEquation(GL_FUNC_ADD);
-        break;
-    }
+    m_device->SetTransparency(mode);
 }
 
 void CGL33UIRenderer::DrawPrimitive(PrimitiveType type, int count, const Vertex2D* vertices)
@@ -233,9 +213,10 @@ bool CGL33UIRenderer::EndPrimitive()
     glUseProgram(m_program);
 
     glBindBufferBase(GL_UNIFORM_BUFFER, 0, m_uniformBuffer);
-    glDisable(GL_DEPTH_TEST);
 
     UpdateUniforms();
+    
+    m_device->SetDepthTest(false);
 
     glDrawArrays(TranslateGfxPrimitive(m_type), m_offset, m_count);
 
@@ -364,14 +345,11 @@ void CGL33TerrainRenderer::Begin()
 {
     glUseProgram(m_program);
 
-    glEnable(GL_DEPTH_TEST);
-    glDepthMask(GL_TRUE);
+    m_device->SetDepthTest(true);
+    m_device->SetDepthMask(true);
+    m_device->SetCullFace(CullFace::BACK);
 
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
-    glFrontFace(GL_CW);   // Colobot issue: faces are reversed
-
-    glDisable(GL_BLEND);
+    m_device->SetTransparency(TransparencyMode::NONE);
 
     glActiveTexture(GL_TEXTURE10);
     glBindTexture(GL_TEXTURE_2D, m_whiteTexture);
@@ -568,7 +546,7 @@ CGL33ShadowRenderer::~CGL33ShadowRenderer()
 void CGL33ShadowRenderer::Begin()
 {
     glViewport(0, 0, m_width, m_height);
-    glDepthMask(GL_TRUE);
+    m_device->SetDepthMask(true);
     glClear(GL_DEPTH_BUFFER_BIT);
 
     glUseProgram(m_program);
@@ -578,12 +556,12 @@ void CGL33ShadowRenderer::Begin()
     glEnable(GL_POLYGON_OFFSET_FILL);
     glPolygonOffset(2.0f, 8.0f);
 
-    glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
-    glEnable(GL_DEPTH_TEST);
-    glDepthMask(GL_TRUE);
+    m_device->SetColorMask(false, false, false, false);
+    m_device->SetDepthTest(true);
+    m_device->SetDepthMask(true);
 
-    glDisable(GL_BLEND);
-    glDisable(GL_CULL_FACE);
+    m_device->SetTransparency(TransparencyMode::NONE);
+    m_device->SetCullFace(CullFace::NONE);
 }
 
 void CGL33ShadowRenderer::End()
@@ -594,7 +572,7 @@ void CGL33ShadowRenderer::End()
     glDisable(GL_POLYGON_OFFSET_FILL);
     glPolygonOffset(0.0f, 0.0f);
 
-    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+    m_device->SetColorMask(true, true, true, true);
 }
 
 void CGL33ShadowRenderer::SetProjectionMatrix(const glm::mat4& matrix)

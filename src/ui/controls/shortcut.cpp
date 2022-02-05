@@ -231,7 +231,6 @@ void CShortcut::Draw()
 
 void CShortcut::DrawVertex(int icon, float zoom)
 {
-    Gfx::Vertex2D vertex[4];  // 2 triangles
     glm::vec2   p1, p2, c;
     float       u1, u2, v1, v2, dp;
 
@@ -260,14 +259,15 @@ void CShortcut::DrawVertex(int icon, float zoom)
     u2 -= dp;
     v2 -= dp;
 
-    vertex[0] = { { p1.x, p1.y }, { u1, v2 } };
-    vertex[1] = { { p1.x, p2.y }, { u1, v1 } };
-    vertex[2] = { { p2.x, p1.y }, { u2, v2 } };
-    vertex[3] = { { p2.x, p2.y }, { u2, v1 } };
-
     auto renderer = m_engine->GetDevice()->GetUIRenderer();
+    auto vertices = renderer->BeginPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, 4);
 
-    renderer->DrawPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, 4, vertex);
+    vertices[0] = { { p1.x, p1.y }, { u1, v2 } };
+    vertices[1] = { { p1.x, p2.y }, { u1, v1 } };
+    vertices[2] = { { p2.x, p1.y }, { u2, v2 } };
+    vertices[3] = { { p2.x, p2.y }, { u2, v1 } };
+
+    renderer->EndPrimitive();
     m_engine->AddStatisticTriangle(2);
 }
 

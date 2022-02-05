@@ -80,7 +80,7 @@ public:
     virtual void SetDepthMask(bool enabled) override;
 
     //! Sets cull mode parameters
-    virtual void SetCullMode(bool enabled) override;
+    virtual void SetCullFace(CullFace mode) override;
     //! Sets transparency mode
     virtual void SetTransparency(TransparencyMode mode) override;
 
