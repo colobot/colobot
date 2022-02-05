@@ -51,6 +51,7 @@ public:
     virtual void DrawPrimitive(PrimitiveType type, int count, const Vertex2D* vertices) override;
 
     virtual Vertex2D* BeginPrimitive(PrimitiveType type, int count) override;
+    virtual Vertex2D* BeginPrimitives(PrimitiveType type, int drawCount, const int* counts) override;
     virtual bool EndPrimitive() override;
 
 private:
@@ -78,12 +79,22 @@ private:
     GLuint m_bufferVAO = 0;
     // VBO capacity
     GLsizei m_bufferCapacity = 128 * 1024;
+    // Buffer offset
+    GLsizei m_bufferOffset = 0;
     
     // Buffer mapping state
     PrimitiveType m_type = {};
-    GLuint m_offset = 0;
-    GLuint m_count = 0;
+    // Number of drawn primitives
+    GLuint m_drawCount = 0;
+    // Total count of drawn vertices
+    GLuint m_currentCount = 0;
+    // Starting offset for each drawn primitive
+    std::vector<GLint> m_first;
+    // Numbers of vertices for each drawn primitive
+    std::vector<GLsizei> m_count;
+    // True means currently drawing
     bool m_mapped = false;
+    // True means mapping failed, using auxiliary buffer
     bool m_backup = false;
 
     // Buffered vertex data

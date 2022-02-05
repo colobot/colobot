@@ -148,17 +148,29 @@ void CGL33UIRenderer::DrawPrimitive(PrimitiveType type, int count, const Vertex2
 
 Vertex2D* CGL33UIRenderer::BeginPrimitive(PrimitiveType type, int count)
 {
+    return BeginPrimitives(type, 1, &count);
+}
+
+Vertex2D* CGL33UIRenderer::BeginPrimitives(PrimitiveType type, int drawCount, const int* counts)
+{
     glBindVertexArray(m_bufferVAO);
     glBindBuffer(GL_ARRAY_BUFFER, m_bufferVBO);
 
-    GLuint total = m_offset + count;
+    m_currentCount = 0;
+
+    for (size_t i = 0; i < drawCount; i++)
+    {
+        m_currentCount += counts[i];
+    }
+
+    GLuint total = m_bufferOffset + m_currentCount;
 
     // Buffer full, orphan
     if (total >= m_bufferCapacity)
     {
         glBufferData(GL_ARRAY_BUFFER, m_bufferCapacity * sizeof(Vertex2D), nullptr, GL_STREAM_DRAW);
 
-        m_offset = 0;
+        m_bufferOffset = 0;
 
         // Respecify vertex attributes
         glEnableVertexAttribArray(0);
@@ -174,20 +186,33 @@ Vertex2D* CGL33UIRenderer::BeginPrimitive(PrimitiveType type, int count)
             reinterpret_cast<void*>(offsetof(Vertex2D, color)));
     }
 
+    m_first.resize(drawCount);
+    m_count.resize(drawCount);
+
+    GLsizei currentOffset = m_bufferOffset;
+
+    for (size_t i = 0; i < drawCount; i++)
+    {
+        m_first[i] = currentOffset;
+        m_count[i] = counts[i];
+
+        currentOffset += counts[i];
+    }
+
     auto ptr = glMapBufferRange(GL_ARRAY_BUFFER,
-        m_offset * sizeof(Vertex2D),
-        count * sizeof(Vertex2D),
+        m_bufferOffset * sizeof(Vertex2D),
+        m_currentCount * sizeof(Vertex2D),
         GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT);
 
     m_mapped = true;
     m_type = type;
-    m_count = count;
+    m_drawCount = drawCount;
 
     // Mapping failed, use backup buffer
     if (ptr == nullptr)
     {
         m_backup = true;
-        m_buffer.resize(count);
+        m_buffer.resize(m_currentCount);
 
         return m_buffer.data();
     }
@@ -203,7 +228,10 @@ bool CGL33UIRenderer::EndPrimitive()
 
     if (m_backup)
     {
-        glBufferSubData(GL_ARRAY_BUFFER, m_offset * sizeof(Vertex2D), m_count * sizeof(Vertex2D), m_buffer.data());
+        glBufferSubData(GL_ARRAY_BUFFER,
+            m_bufferOffset * sizeof(Vertex2D),
+            m_currentCount * sizeof(Vertex2D),
+            m_buffer.data());
     }
     else
     {
@@ -218,9 +246,12 @@ bool CGL33UIRenderer::EndPrimitive()
     
     m_device->SetDepthTest(false);
 
-    glDrawArrays(TranslateGfxPrimitive(m_type), m_offset, m_count);
+    if (m_drawCount == 1)
+        glDrawArrays(TranslateGfxPrimitive(m_type), m_first.front(), m_count.front());
+    else
+        glMultiDrawArrays(TranslateGfxPrimitive(m_type), m_first.data(), m_count.data(), m_drawCount);
 
-    m_offset += m_count;
+    m_bufferOffset += m_currentCount;
 
     m_mapped = false;
     m_backup = false;
