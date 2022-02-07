@@ -31,6 +31,7 @@
 #include <boost/property_tree/ptree.hpp>
 
 #include <string>
+#include <optional>
 
 /**
 * \class CFontLoader
@@ -50,22 +51,10 @@ public:
     */
     bool Init();
 
-    /** Reads given font from file
-    * \return return path to font file
+    /** Reads given font path from file
+    * \return return path to font file if font type is configured
     */
-    std::string GetFont(Gfx::FontType type);
-
-    /** Const type method to read filenames of fonts from defaultFont map
-    * used as a fallback if it wasn't possible to read font from fonts.ini
-    * \return return filename of default path
-    */
-    std::string GetDefaultFont(Gfx::FontType type) const;
-
-    /** Const type method converting Gfx::FontType to string
-    * \return return id of font used in fonts.ini file
-    */
-
-    std::string GetFontType(Gfx::FontType type) const;
+    std::optional<std::string> GetFont(Gfx::FontType type) const;
 
 private:
     boost::property_tree::ptree m_propertyTree;
