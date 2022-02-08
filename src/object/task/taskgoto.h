@@ -23,7 +23,9 @@
 
 #include "math/vector.h"
 
+#include <array>
 #include <memory>
+#include <vector>
 
 namespace Math
 {
@@ -142,9 +144,12 @@ protected:
     int             m_bmLine = 0;       // increment line m_bmSize/8
     std::unique_ptr<unsigned char[]> m_bmArray;      // Bit table
     std::unique_ptr<int32_t[]> m_bfsDistances; // Distances to the goal for breadth-first search.
-    std::unique_ptr<uint32_t[]> m_bfsQueue;  // Nodes in the queue. Stored as indices.
-    int             m_bfsQueueBegin = 0;     // Front of the queue. This is the next node to be expanded.
-    int             m_bfsQueueEnd = 0;       // Back of the queue. This is where nodes are inserted.
+    std::array<std::vector<uint32_t>, 8> m_bfsQueue; // Priority queue with indices to nodes. Nodes are sorted into buckets.
+    int             m_bfsQueueMin = 0;  // Front of the queue. This value mod 8 is the index to the bucket with the next node to be expanded.
+    int             m_bfsQueueCountPushed = 0; // Number of nodes inserted into the queue.
+    int             m_bfsQueueCountPopped = 0; // Number of nodes extacted from the queue.
+    int             m_bfsQueueCountRepeated = 0; // Number of nodes re-inserted into the queue.
+    int             m_bfsQueueCountSkipped = 0; // Number of nodes skipped because of unexpected distance (likely re-added).
     int             m_bmMinX = 0, m_bmMinY = 0;
     int             m_bmMaxX = 0, m_bmMaxY = 0;
     int             m_bmTotal = 0;      // index of final point in m_bmPoints

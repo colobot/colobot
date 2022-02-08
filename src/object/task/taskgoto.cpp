@@ -1689,8 +1689,15 @@ void CTaskGoto::PathFindingInit()
         m_bmIter[i] = -1;
     }
     m_bmStep = 0;
-    m_bfsQueueBegin = 0;
-    m_bfsQueueEnd = 0;
+    for (auto& bucket : m_bfsQueue)
+    {
+        bucket.clear();
+    }
+    m_bfsQueueMin = 0;
+    m_bfsQueueCountPushed = 0;
+    m_bfsQueueCountPopped = 0;
+    m_bfsQueueCountRepeated = 0;
+    m_bfsQueueCountSkipped = 0;
 }
 
 // Calculates points and passes to go from start to goal.
@@ -1709,7 +1716,7 @@ Error CTaskGoto::PathFindingSearch(const Math::Vector &start, const Math::Vector
     // Relative postion and distance to neighbors.
     static const int dXs[8] = {-1, 0, 1, -1, 1, -1, 0, 1};
     static const int dYs[8] = {-1, -1, -1, 0, 0, 1, 1, 1};
-    // static const float dDist[8] = {M_SQRT2, 1.0f, M_SQRT2, 1.0f, 1.0f, M_SQRT2, 1.0f, M_SQRT2};
+    // These are the costs of the edges. They must be less than the number of buckets in the queue.
     static const int32_t dDist[8] = {7, 5, 7, 5, 5, 7, 5, 7};
 
     const int startX = static_cast<int>((start.x+1600.0f)/BM_DIM_STEP);
@@ -1717,7 +1724,7 @@ Error CTaskGoto::PathFindingSearch(const Math::Vector &start, const Math::Vector
     const int goalX = static_cast<int>((goal.x+1600.0f)/BM_DIM_STEP);
     const int goalY = static_cast<int>((goal.z+1600.0f)/BM_DIM_STEP);
 
-    if (m_bfsQueueEnd == 0) // New search
+    if (m_bfsQueueCountPushed == 0) // New search
     {
         if (startX == goalX && startY == goalY)
         {
@@ -1731,8 +1738,9 @@ Error CTaskGoto::PathFindingSearch(const Math::Vector &start, const Math::Vector
             goalY >= 0 && goalY < m_bmSize )
         {
             const int indexInMap = goalY * m_bmSize + goalX;
-            m_bfsDistances[indexInMap] = 0.0;
-            m_bfsQueue[m_bfsQueueEnd++] = indexInMap;
+            m_bfsDistances[indexInMap] = 0;
+            m_bfsQueue[0].push_back(indexInMap);
+            m_bfsQueueCountPushed += 1;
             BitmapSetDot(1, goalX, goalY); // Mark as enqueued
         }
 
@@ -1754,8 +1762,9 @@ Error CTaskGoto::PathFindingSearch(const Math::Vector &start, const Math::Vector
                         !BitmapTestDot(1, x, y))
                     {
                         const int indexInMap = y * m_bmSize + x;
-                        m_bfsDistances[indexInMap] = 0.0;
-                        m_bfsQueue[m_bfsQueueEnd++] = indexInMap;
+                        m_bfsDistances[indexInMap] = 0;
+                        m_bfsQueue[0].push_back(indexInMap);
+                        m_bfsQueueCountPushed += 1;
                         BitmapSetDot(1, x, y); // Mark as enqueued
                     }
                 }
@@ -1765,13 +1774,30 @@ Error CTaskGoto::PathFindingSearch(const Math::Vector &start, const Math::Vector
 
     m_bmIterCounter = 0;
 
-    while (m_bfsQueueBegin != m_bfsQueueEnd)
+    while (m_bfsQueueCountPushed != m_bfsQueueCountPopped)
     {
         // Pop a node from the queue
-        const uint32_t indexInMap = m_bfsQueue[m_bfsQueueBegin++];
+        while (m_bfsQueue[m_bfsQueueMin % 8].empty())
+        {
+            m_bfsQueueMin += 1;
+        }
+        auto& bucket = m_bfsQueue[m_bfsQueueMin % 8];
+        const uint32_t indexInMap = bucket.back();
+        bucket.pop_back();
+        m_bfsQueueCountPopped += 1;
+
+        const int32_t distance = m_bfsDistances[indexInMap];
+
+        if (distance != m_bfsQueueMin)
+        {
+            m_bfsQueueCountSkipped += 1;
+            GetLogger()->Debug("Skipping node with mismatched distance, distance: %d, m_bfsQueueMin: %d\n",
+                distance, m_bfsQueueMin);
+            continue;
+        }
+
         const int x = indexInMap % m_bmSize;
         const int y = indexInMap / m_bmSize;
-        const int32_t distance = m_bfsDistances[indexInMap];
 
         if (x == startX && y == startY)
         {
@@ -1800,7 +1826,7 @@ Error CTaskGoto::PathFindingSearch(const Math::Vector &start, const Math::Vector
                 }
                 if (bestX == -1)
                 {
-                    GetLogger()->Error("Failed to find node parent\n");
+                    GetLogger()->Debug("Failed to find node parent\n");
                     return ERR_GOTO_ITER;
                 }
                 btX = bestX;
@@ -1820,7 +1846,15 @@ Error CTaskGoto::PathFindingSearch(const Math::Vector &start, const Math::Vector
             }
             // std::reverse(m_bmPoints, m_bmPoints + m_bmTotal);
 
-            GetLogger()->Info("Found path to goal with %d nodes\n", m_bmTotal + 1);
+            GetLogger()->Debug("Found path to goal with %d nodes\n", m_bmTotal + 1);
+            GetLogger()->Debug("m_bmStep: %d\n", m_bmStep);
+            GetLogger()->Debug("m_bfsQueueMin: %d mod 8 = %d\n", m_bfsQueueMin, m_bfsQueueMin % 8);
+            GetLogger()->Debug("m_bfsQueueCountPushed: %d\n", m_bfsQueueCountPushed);
+            GetLogger()->Debug("m_bfsQueueCountPopped: %d\n", m_bfsQueueCountPopped);
+            GetLogger()->Debug("m_bfsQueueCountRepeated: %d\n", m_bfsQueueCountRepeated);
+            GetLogger()->Debug("m_bfsQueueCountSkipped: %d\n", m_bfsQueueCountSkipped);
+            GetLogger()->Debug("m_bfsQueue sizes:\n    0: %lu\n    1: %lu\n    2: %lu\n    3: %lu\n    4: %lu\n    5: %lu\n    6: %lu\n    7: %lu\n",
+                m_bfsQueue[0].size(), m_bfsQueue[1].size(), m_bfsQueue[2].size(), m_bfsQueue[3].size(), m_bfsQueue[4].size(), m_bfsQueue[5].size(), m_bfsQueue[6].size(), m_bfsQueue[7].size());
             return ERR_OK;
         }
 
@@ -1831,28 +1865,26 @@ Error CTaskGoto::PathFindingSearch(const Math::Vector &start, const Math::Vector
             const int nY = y + dYs[i];
             if (BitmapTestDotIsVisitable(nX, nY))
             {
+                const int neighborIndexInMap = nY * m_bmSize + nX;
+                const int32_t newDistance = distance + dDist[i];
                 if (BitmapTestDot(1, nX, nY))
                 {
                     // We have seen this node before.
-                    // Update distance without adding it to the queue.
-                    const int neighborIndexInMap = nY * m_bmSize + nX;
-                    m_bfsDistances[neighborIndexInMap] = std::min(
-                        m_bfsDistances[neighborIndexInMap],
-                        distance + dDist[i]);
-                }
-                else
-                {
-                    // Enqueue this neighbor
-                    const int neighborIndexInMap = nY * m_bmSize + nX;
-                    m_bfsDistances[neighborIndexInMap] = distance + dDist[i];
-                    m_bfsQueue[m_bfsQueueEnd++] = neighborIndexInMap;
-                    BitmapSetDot(1, nX, nY); // Mark as enqueued
-                    if (m_bfsQueueEnd > m_bmSize * m_bmSize)
+                    // Only enqueue previously seen nodes if this is a shorter path.
+                    if (newDistance < m_bfsDistances[neighborIndexInMap])
                     {
-                        GetLogger()->Error("Queue is full\n");
-                        return ERR_GOTO_ITER;
+                        m_bfsQueueCountRepeated += 1;
+                    }
+                    else
+                    {
+                        continue;
                     }
                 }
+                // Enqueue this neighbor
+                m_bfsDistances[neighborIndexInMap] = newDistance;
+                m_bfsQueue[newDistance % 8].push_back(neighborIndexInMap);
+                m_bfsQueueCountPushed += 1;
+                BitmapSetDot(1, nX, nY); // Mark as enqueued
             }
         }
 
@@ -2140,7 +2172,10 @@ bool CTaskGoto::BitmapOpen()
     if (m_bmArray.get() == nullptr) m_bmArray = MakeUniqueArray<unsigned char>(m_bmSize*m_bmSize/8*2);
     memset(m_bmArray.get(), 0, m_bmSize*m_bmSize/8*2);
     if (m_bfsDistances.get() == nullptr) m_bfsDistances = MakeUniqueArray<int32_t>(m_bmSize*m_bmSize);
-    if (m_bfsQueue.get() == nullptr) m_bfsQueue = MakeUniqueArray<uint32_t>(m_bmSize*m_bmSize);
+    for (auto& bucket : m_bfsQueue)
+    {
+        bucket.reserve(256);
+    }
     m_bmChanged = true;
 
     m_bmOffset = m_bmSize/2;
