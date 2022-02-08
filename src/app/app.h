@@ -406,8 +406,8 @@ protected:
     //@}
 
     //! Game to load on startup
-    std::string     m_loadGamePlayerName;
-    std::string     m_loadGameDirName;
+    std::string     m_loadSavePlayerName;
+    std::string     m_loadSaveDirName;
 
     //! Scene test mode
     bool            m_sceneTest;

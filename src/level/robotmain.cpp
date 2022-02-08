@@ -5839,7 +5839,7 @@ void CRobotMain::QuickLoad()
     m_playerProfile->LoadScene(dir);
 }
 
-void CRobotMain::LoadGameFromDirName(const std::string& gameDir)
+void CRobotMain::LoadSaveFromDirName(const std::string& gameDir)
 {
     std::string dir = m_playerProfile->GetSaveFile(gameDir);
     if(!CResourceManager::Exists(dir))

@@ -246,7 +246,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         OPT_DEBUG,
         OPT_RUNSCENE,
         OPT_SCENETEST,
-        OPT_LOADGAME,
+        OPT_LOADSAVE,
         OPT_LOGLEVEL,
         OPT_LANGDIR,
         OPT_DATADIR,
@@ -265,7 +265,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         { "debug", required_argument, nullptr, OPT_DEBUG },
         { "runscene", required_argument, nullptr, OPT_RUNSCENE },
         { "scenetest", no_argument, nullptr, OPT_SCENETEST },
-        { "loadgame", required_argument, nullptr, OPT_LOADGAME },
+        { "loadsave", required_argument, nullptr, OPT_LOADSAVE },
         { "loglevel", required_argument, nullptr, OPT_LOGLEVEL },
         { "langdir", required_argument, nullptr, OPT_LANGDIR },
         { "datadir", required_argument, nullptr, OPT_DATADIR },
@@ -311,7 +311,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 GetLogger()->Message("  -debug modes        enable debug modes (more info printed in logs; see code for reference of modes)\n");
                 GetLogger()->Message("  -runscene sceneNNN  run given scene on start\n");
                 GetLogger()->Message("  -scenetest          win every mission right after it's loaded\n");
-                GetLogger()->Message("  -loadgame path      load given game on start (path is <player>/<game>\n");
+                GetLogger()->Message("  -loadsave path      load given saved game on start (path is <player>/<save>\n");
                 GetLogger()->Message("  -loglevel level     set log level to level (one of: trace, debug, info, warn, error, none)\n");
                 GetLogger()->Message("  -langdir path       set custom language directory path\n");
                 GetLogger()->Message("                      environment variable: COLOBOT_LANG_DIR\n");
@@ -369,14 +369,14 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 m_sceneTest = true;
                 break;
             }
-            case OPT_LOADGAME:
+            case OPT_LOADSAVE:
             {
                 std::string playerAndPath = optarg;
                 size_t pos = playerAndPath.find_first_of("/");
                 if (pos != std::string::npos && pos > 0 && pos+1 < playerAndPath.length()) // Split player name from path
                 {
-                    m_loadGamePlayerName = playerAndPath.substr(0, pos);
-                    m_loadGameDirName = playerAndPath.substr(pos+1, playerAndPath.length()-pos-1);
+                    m_loadSavePlayerName = playerAndPath.substr(0, pos);
+                    m_loadSaveDirName = playerAndPath.substr(pos+1, playerAndPath.length()-pos-1);
                 }
                 else
                 {
@@ -717,10 +717,10 @@ bool CApplication::Create()
 
     StartLoadingMusic();
 
-    if (!m_loadGameDirName.empty())
+    if (!m_loadSaveDirName.empty())
     {
-        m_controller->GetRobotMain()->SelectPlayer(m_loadGamePlayerName);
-        m_controller->GetRobotMain()->LoadGameFromDirName(m_loadGameDirName);
+        m_controller->GetRobotMain()->SelectPlayer(m_loadSavePlayerName);
+        m_controller->GetRobotMain()->LoadSaveFromDirName(m_loadSaveDirName);
     }
     else if (m_runSceneCategory == LevelCategory::Max)
     {
