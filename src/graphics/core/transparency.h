@@ -37,4 +37,12 @@ enum class TransparencyMode : unsigned char
     WHITE,
 };
 
+//! Alpha transparency mode
+enum class AlphaMode : unsigned char
+{
+    OPAQUE,     // opaque material
+    MASK,       // alpha scissor with threshold
+    BLEND,      // alpha blending
+};
+
 }

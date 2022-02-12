@@ -20,38 +20,13 @@
 #pragma once
 
 #include "graphics/core/color.h"
+#include "graphics/core/transparency.h"
 #include "graphics/core/vertex.h"
 
 namespace Gfx
 {
 
-/**
- * \enum ModelSpecialMark
- * \brief Special marking for some models
- *
- * TODO: refactor/remove in the future
- */
-enum class ModelSpecialMark
-{
-    None,
-    Part1,
-    Part2,
-    Part3
-};
-
-/**
- * \enum ModelTransparentMode
- * \brief Describes how to deal with texture transparency
- *
- * TODO: get rid of it in the future (use only alpha channel)
- */
-enum class ModelTransparentMode
-{
-    None,            //!< no transparency
-    AlphaChannel,    //!< use alpha channel
-    MapBlackToAlpha, //!< map black color to alpha
-    MapWhiteToAlpha  //!< map white color to alpha
-};
+enum class AlphaMode : unsigned char;
 
 /**
  * \struct ModelTriangle
@@ -74,9 +49,10 @@ struct ModelTriangle
     //! Whether to render as double-sided surface
     bool doubleSided = false;
     //! How to deal with texture transparency
-    ModelTransparentMode transparentMode = ModelTransparentMode::None;
+    AlphaMode alphaMode = {};
+    float alphaThreshold = 0.5f;
     //! Special marking
-    ModelSpecialMark specialMark = ModelSpecialMark::None;
+    std::string tag = "";
 };
 
 } // namespace Gfx

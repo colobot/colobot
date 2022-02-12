@@ -50,8 +50,6 @@ enum class ModelLODLevel
  */
 enum class ModelRenderState
 {
-    TTextureBlack = 1,    //!< old ENG_RSTATE_TTEXTURE_BLACK
-    TTextureWhite = 2,    //!< old ENG_RSTATE_TTEXTURE_WHITE
     Part1         = 256,  //!< old ENG_RSTATE_PART1
     Part2         = 512,  //!< old ENG_RSTATE_PART2
     Part3         = 1024, //!< old ENG_RSTATE_PART3

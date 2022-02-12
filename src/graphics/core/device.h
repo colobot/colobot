@@ -58,6 +58,8 @@ struct Vertex;
 struct VertexCol;
 struct Vertex3D;
 
+enum class CullFace : unsigned char;
+
 /**
  * \struct DeviceConfig
  * \brief General config for graphics device
@@ -140,18 +142,6 @@ enum CompFunc
     COMP_FUNC_GREATER,
     COMP_FUNC_GEQUAL,
     COMP_FUNC_ALWAYS
-};
-
-/**
- * \enum CullFace
- * \brief Specifies which faces to cull while rendering polygons
- */
-enum class CullFace : unsigned char
-{
-    NONE,
-    BACK,
-    FRONT,
-    BOTH,
 };
 
 /**

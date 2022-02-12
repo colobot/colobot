@@ -26,16 +26,58 @@
 
 
 #include "graphics/core/color.h"
+#include "graphics/core/transparency.h"
 
 
 // Graphics module namespace
 namespace Gfx
 {
 
+/**
+ * \enum CullFace
+ * \brief Specifies which faces to cull while rendering polygons
+ */
+enum class CullFace : unsigned char
+{
+    NONE,
+    BACK,
+    FRONT,
+    BOTH,
+};
+
 //! Remains of the legacy material structure, to be reused
 struct Material
 {
-    
+    // Albedo
+    Color albedoColor = Color{ 1.0f, 1.0f, 1.0f, 1.0f };
+    std::string albedoTexture = "";
+    // Dirt
+    bool variableDetail = false;
+    std::string detailTexture = "";
+    // Alpha mode
+    AlphaMode alphaMode = AlphaMode::OPAQUE;
+    float alphaThreshold = 0.0;
+    // Cull face
+    CullFace cullFace = CullFace::BACK;
+    // Special tag
+    std::string tag = "";
+
+    bool operator==(const Material& other) const
+    {
+        return albedoColor == other.albedoColor
+            && albedoTexture == other.albedoTexture
+            && variableDetail == other.variableDetail
+            && detailTexture == other.detailTexture
+            && alphaMode == other.alphaMode
+            && alphaThreshold == other.alphaThreshold
+            && cullFace == other.cullFace
+            && tag == other.tag;
+    }
+
+    bool operator!=(const Material& other) const
+    {
+        return !operator==(other);
+    }
 };
 
 } // namespace Gfx

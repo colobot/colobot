@@ -3400,8 +3400,9 @@ void CParticle::DrawParticle(int sheet)
             if (m_particle[i].sheet != sheet)  continue;
             if (m_particle[i].type == PARTIPART)  continue;
 
-            auto texture = m_engine->LoadTexture(!m_triangle[i].tex1Name.empty()
-                ? "textures/" + m_triangle[i].tex1Name : "");
+            auto texture = m_engine->LoadTexture(!m_triangle[i].material.albedoTexture.empty()
+                ? "textures/" + m_triangle[i].material.albedoTexture
+                : "");
 
             m_renderer->SetTexture(texture);
             //m_engine->SetState(m_triangle[i].state);

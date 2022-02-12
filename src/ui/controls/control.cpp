@@ -522,7 +522,6 @@ void CControl::Draw()
 
         icon = SetButtonTextureForIcon(m_icon);
         renderer->SetTransparency(Gfx::TransparencyMode::WHITE);
-        //m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
         if ( icon != -1 )
         {
             DrawPart(icon, zoomInt, 0.0f);

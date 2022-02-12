@@ -630,16 +630,8 @@ bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank)
 
             for (int y = 0; y < brick; y += step)
             {
-                EngineBaseObjDataTier buffer;
-                buffer.vertices.reserve(total);
-
-                buffer.type = EngineTriangleType::SURFACE;
-
-                buffer.state = ENG_RSTATE_NORMAL;
-
-                buffer.state |= ENG_RSTATE_SECOND;
-                if (step == 1)
-                    buffer.state |= ENG_RSTATE_DUAL_BLACK;
+                std::vector<Gfx::Vertex3D> vertices;
+                vertices.reserve(total);
 
                 for (int x = 0; x <= brick; x += step)
                 {
@@ -723,11 +715,19 @@ bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank)
                     p2.uv2.y = (p2.uv2.y+pixel)*(1.0f-pixel)/(1.0f+pixel);
 
 
-                    buffer.vertices.push_back(p1);
-                    buffer.vertices.push_back(p2);
+                    vertices.push_back(p1);
+                    vertices.push_back(p2);
                 }
 
-                m_engine->AddBaseObjQuick(baseObjRank, buffer, texName1, texName2, true);
+                Gfx::Material material;
+                material.albedoTexture = texName1;
+                material.detailTexture = texName2;
+                material.tag = "brick_"
+                    + std::to_string(mx + 1) + "_"
+                    + std::to_string(my + 1) + "_"
+                    + std::to_string(y + 1);
+
+                m_engine->AddBaseObjTriangles(baseObjRank, vertices, material, EngineTriangleType::SURFACE);
             }
         }
     }

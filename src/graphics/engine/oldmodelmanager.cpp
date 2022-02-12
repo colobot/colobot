@@ -86,8 +86,8 @@ bool COldModelManager::LoadModel(const std::string& fileName, bool mirrored, int
     if (mirrored)
         Mirror(modelInfo.triangles);
 
-    if (variant != 0)
-        ChangeVariant(modelInfo.triangles, variant);
+    //if (variant != 0)
+    //    ChangeVariant(modelInfo.triangles, variant);
 
     FileInfo fileInfo(fileName, mirrored, variant);
     m_models[fileInfo] = modelInfo;
@@ -209,7 +209,7 @@ void COldModelManager::ChangeVariant(std::vector<ModelTriangle>& triangles, int 
             triangles[i].tex1Name == "drawer.png"  ||
             triangles[i].tex1Name == "subm.png"     )
         {
-            triangles[i].tex1Name += StrUtils::ToString<int>(variant);
+            //triangles[i].tex1Name += StrUtils::ToString<int>(variant);
         }
     }
 }

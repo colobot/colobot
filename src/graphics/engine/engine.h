@@ -74,62 +74,6 @@ struct ModelTriangle;
 
 
 /**
- * \enum EngineRenderState
- * \brief Render state of graphics engine
- *
- * States are used for settings certain modes, for instance texturing and blending.
- * The enum is a bitmask and some of the states can be OR'd together.
- */
-enum EngineRenderState
-{
-    //! Normal opaque materials
-    ENG_RSTATE_NORMAL           = 0,
-    //! The transparent texture (black = no)
-    ENG_RSTATE_TTEXTURE_BLACK   = (1<<0),
-    //! The transparent texture (white = no)
-    ENG_RSTATE_TTEXTURE_WHITE   = (1<<1),
-    //! The transparent diffuse color
-    ENG_RSTATE_TDIFFUSE         = (1<<2),
-    //! Light texture (ambient max)
-    ENG_RSTATE_LIGHT            = (1<<5),
-    //! Double black texturing
-    ENG_RSTATE_DUAL_BLACK       = (1<<6),
-    //! Double white texturing
-    ENG_RSTATE_DUAL_WHITE       = (1<<7),
-    //! Part 1 (no change in. MOD!)
-    ENG_RSTATE_PART1            = (1<<8),
-    //! Part 2
-    ENG_RSTATE_PART2            = (1<<9),
-    //! Part 3
-    ENG_RSTATE_PART3            = (1<<10),
-    //! Part 4
-    ENG_RSTATE_PART4            = (1<<11),
-    //! Double-sided face
-    ENG_RSTATE_2FACE            = (1<<12),
-    //! Image using alpha channel
-    ENG_RSTATE_ALPHA            = (1<<13),
-    //! Always use 2nd floor texturing
-    ENG_RSTATE_SECOND           = (1<<14),
-    //! Causes the fog
-    ENG_RSTATE_FOG              = (1<<15),
-    //! The transparent color (black = no)
-    ENG_RSTATE_TCOLOR_BLACK     = (1<<16),
-    //! The transparent color (white = no)
-    ENG_RSTATE_TCOLOR_WHITE     = (1<<17),
-    //! Mode for rendering text
-    ENG_RSTATE_TEXT             = (1<<18),
-    //! Only opaque texture, no blending, etc.
-    ENG_RSTATE_OPAQUE_TEXTURE   = (1<<19),
-    //! Only opaque color, no texture, blending, etc.
-    ENG_RSTATE_OPAQUE_COLOR     = (1<<20),
-    //! Texture using alpha channel
-    ENG_RSTATE_TTEXTURE_ALPHA   = (1<<21),
-    //! Color with transparency
-    ENG_RSTATE_TCOLOR_ALPHA     = (1<<22)
-};
-
-
-/**
  * \enum EngineTriangleType
  * \brief Type of triangles drawn for engine objects
  */
@@ -149,12 +93,8 @@ struct EngineTriangle
 {
     //! Triangle vertices
     Vertex3D     triangle[3];
-    //! Render state
-    int            state = ENG_RSTATE_NORMAL;
-    //! 1st texture
-    std::string    tex1Name;
-    //! 2nd texture
-    std::string    tex2Name;
+    //! Triangle material
+    Material     material;
 };
 
 /**
@@ -186,31 +126,17 @@ enum EngineObjectType
 struct EngineBaseObjDataTier
 {
     EngineTriangleType      type = EngineTriangleType::TRIANGLES;
-    int                     state = ENG_RSTATE_NORMAL;
+    Material                material = {};
+
     std::vector<Vertex3D>   vertices;
     CVertexBuffer*          buffer = nullptr;
     bool                    updateStaticBuffer = false;
+
+    Texture                 albedoTexture;
+    Texture                 detailTexture;
+
     glm::vec2               uvOffset = { 0.0f, 0.0f };
     glm::vec2               uvScale = { 1.0f, 1.0f };
-};
-
-/**
- * \struct EngineBaseObjTexTier
- * \brief Tier 2 of base object tree (textures)
- */
-struct EngineBaseObjTexTier
-{
-    std::string                        tex1Name;
-    Texture                            tex1;
-    std::string                        tex2Name;
-    Texture                            tex2;
-    std::vector<EngineBaseObjDataTier>  next;
-
-    inline EngineBaseObjTexTier(const std::string& tex1Name = "",
-                                const std::string& tex2Name = "")
-     : tex1Name(tex1Name)
-     , tex2Name(tex2Name)
-    {}
 };
 
 /**
@@ -231,8 +157,8 @@ struct EngineBaseObject
     glm::vec3           bboxMax{ 0, 0, 0 };
     //! A bounding sphere that contains all the vertices in this EngineBaseObject
     Math::Sphere           boundingSphere;
-    //! Next tier (Tex)
-    std::vector<EngineBaseObjTexTier> next;
+    //! Next tier
+    std::vector<EngineBaseObjDataTier> next;
 
     inline void LoadDefault()
     {
@@ -545,17 +471,6 @@ enum EngineMouseType
  * Shadows are drawn as circular spots on the ground, except for shadows for worms, which have
  * special mode for them.
  *
- * \section RenderStates Render States
- *
- * Almost every primitive drawn on screen is drawn in state set through EngineRenderState enum.
- * In some functions, custom modes are still set, using CDevice's SetRenderState. However, it
- * will be subject to removal in the future. Generally, setting render states should be minimized
- * to avoid unnecessary overhead.
- *
- * Some states are clearly the result of legacy drawing and texturing methods. For example, TTEXTURE
- * states should really be removed and the textures changed to ones with alpha channel. In the future,
- * the whole modesetting code will probably be refactored to something more maintainable.
- *
  * \section Textures Textures
  *
  * Textures are loaded from a texture subdir in data directory. In the old code, textures were identified
@@ -714,12 +629,10 @@ public:
     void            CopyBaseObject(int sourceBaseObjRank, int destBaseObjRank);
 
     //! Adds triangles to given object with the specified params
-    void AddBaseObjTriangles(int baseObjRank, const std::vector<Gfx::ModelTriangle>& triangles);
+    void            AddBaseObjTriangles(int baseObjRank, const std::vector<Gfx::ModelTriangle>& triangles);
 
-    //! Adds a tier 4 engine object directly
-    void            AddBaseObjQuick(int baseObjRank, const EngineBaseObjDataTier& buffer,
-                                    std::string tex1Name, std::string tex2Name,
-                                    bool globalUpdate);
+    void            AddBaseObjTriangles(int baseObjRank, const std::vector<Vertex3D>& vertices,
+                                        const Material& material, EngineTriangleType type);
 
     // Objects
 
@@ -765,9 +678,6 @@ public:
     //! Returns the total number of triangles of given object
     int             GetObjectTotalTriangles(int objRank);
 
-    //! Returns the first found tier 4 engine object for the given params or nullptr if not found
-    EngineBaseObjDataTier* FindTriangles(int objRank, int state, std::string tex1Name, std::string tex2Name);
-
     //! Returns a partial list of triangles for given object
     int             GetPartialTriangles(int objRank, float percent, int maxCount,
                                         std::vector<EngineTriangle>& triangles);
@@ -775,7 +685,7 @@ public:
     //! Changes the 2nd texure for given object
     void            ChangeSecondTexture(int objRank, const std::string& tex2Name);
 
-    void            SetUVTransform(int objRank, int state, const glm::vec2& offset, const glm::vec2& scale);
+    void            SetUVTransform(int objRank, const std::string& tag, const glm::vec2& offset, const glm::vec2& scale);
 
     //! Detects the target object that is selected with the mouse
     /** Returns the rank of the object or -1. */
@@ -1209,10 +1119,8 @@ protected:
     void        DrawTimer();
     void        RenderPendingDebugDraws();
 
-    //! Creates a new tier 2 object (texture)
-    EngineBaseObjTexTier&  AddLevel2(EngineBaseObject& p1, const std::string& tex1Name, const std::string& tex2Name);
-    //! Creates a new tier 3 object (data)
-    EngineBaseObjDataTier& AddLevel3(EngineBaseObjTexTier &p3, EngineTriangleType type, int state);
+    //! Creates a new tier
+    EngineBaseObjDataTier& AddLevel(EngineBaseObject& p3, EngineTriangleType type, const Material& material);
 
     //! Create texture and add it to cache
     Texture CreateTexture(const std::string &texName, const TextureCreateParams &params, CImage* image = nullptr);
@@ -1246,11 +1154,6 @@ protected:
 
     //! Updates static buffers of changed objects
     void        UpdateStaticBuffers();
-
-    void        AddBaseObjTriangles(int baseObjRank, const std::vector<Vertex3D>& vertices,
-                                    int state, std::string tex1Name, std::string tex2Name);
-
-    int GetEngineState(const ModelTriangle& triangle);
 
     struct WriteScreenShotData
     {

@@ -1991,18 +1991,18 @@ void CMotionVehicle::UpdateTrackMapping(float left, float right, ObjectType type
 
     if (type == OBJECT_MOBILEdr)
     {
-        m_engine->SetUVTransform(rRank, Gfx::ENG_RSTATE_PART1,
+        m_engine->SetUVTransform(rRank, "tracker_right",
             { (1.0f - right) * scale, 0.0f }, { 1.0f, 1.0f });
 
-        m_engine->SetUVTransform(lRank, Gfx::ENG_RSTATE_PART2,
+        m_engine->SetUVTransform(lRank, "tracker_left",
             { (1.0f - left) * scale, 0.0f }, { 1.0f, 1.0f });
     }
     else
     {
-        m_engine->SetUVTransform(rRank, Gfx::ENG_RSTATE_PART1,
+        m_engine->SetUVTransform(rRank, "tracker_right",
             { (1.0f - right) * scale, 0.0f }, { 1.0f, 1.0f });
 
-        m_engine->SetUVTransform(lRank, Gfx::ENG_RSTATE_PART2,
+        m_engine->SetUVTransform(lRank, "tracker_left",
             { (1.0f - left) * scale, 0.0f }, { 1.0f, 1.0f });
     }
 }

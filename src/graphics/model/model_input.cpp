@@ -88,8 +88,8 @@ namespace ModelInput
     ModelCrashSphere ParseCrashSphere(const std::string& text);
     ModelShadowSpot ParseShadowSpot(const std::string& text);
     Math::Sphere ParseCameraCollisionSphere(const std::string& text);
-    ModelTransparentMode ParseTransparentMode(const std::string& text);
-    ModelSpecialMark ParseSpecialMark(const std::string& text);
+    AlphaMode ParseTransparentMode(const std::string& text);
+    std::string ParseSpecialMark(const std::string& text);
 
     void ConvertOldTex1Name(ModelTriangle& triangle, const char* tex1Name);
     void ConvertFromOldRenderState(ModelTriangle& triangle, int state);
@@ -397,9 +397,12 @@ CModelMesh ModelInput::ReadTextMesh(std::istream& stream)
         t.tex2Name = ReadLineString(stream, "tex2");
         t.variableTex2 = ReadLineString(stream, "var_tex2") == std::string("Y");
 
-        t.transparentMode = ParseTransparentMode(ReadLineString(stream, "trans_mode"));
-        t.specialMark = ParseSpecialMark(ReadLineString(stream, "mark"));
+        t.alphaMode = ParseTransparentMode(ReadLineString(stream, "trans_mode"));
+        t.tag = ParseSpecialMark(ReadLineString(stream, "mark"));
         t.doubleSided = ReadLineString(stream, "dbl_side") == std::string("Y");
+
+        if (t.alphaMode != AlphaMode::OPAQUE)
+            t.alphaThreshold = 0.5f;
 
         mesh.AddTriangle(t);
     }
@@ -638,22 +641,21 @@ void ModelInput::ConvertOldTex1Name(ModelTriangle& triangle, const char* tex1Nam
 void ModelInput::ConvertFromOldRenderState(ModelTriangle& triangle, int state)
 {
     if (triangle.tex1Name == "plant.png" || (state & static_cast<int>(ModelRenderState::Alpha)) != 0)
-        triangle.transparentMode = ModelTransparentMode::AlphaChannel;
-    else if ((state & static_cast<int>(ModelRenderState::TTextureBlack)) != 0)
-        triangle.transparentMode = ModelTransparentMode::MapBlackToAlpha;
-    else if ((state & static_cast<int>(ModelRenderState::TTextureWhite)) != 0)
-        triangle.transparentMode = ModelTransparentMode::MapWhiteToAlpha;
+    {
+        triangle.alphaMode = AlphaMode::MASK;
+        triangle.alphaThreshold = 0.5f;
+    }
     else
-        triangle.transparentMode = ModelTransparentMode::None;
+        triangle.alphaMode = AlphaMode::OPAQUE;
 
     if ((state & static_cast<int>(ModelRenderState::Part1)) != 0)
-        triangle.specialMark = ModelSpecialMark::Part1;
+        triangle.tag = "tracker_right";
     else if ((state & static_cast<int>(ModelRenderState::Part2)) != 0)
-        triangle.specialMark = ModelSpecialMark::Part2;
+        triangle.tag = "tracker_left";
     else if ((state & static_cast<int>(ModelRenderState::Part3)) != 0)
-        triangle.specialMark = ModelSpecialMark::Part3;
+        triangle.tag = "energy";
     else
-        triangle.specialMark = ModelSpecialMark::None;
+        triangle.tag = "";
 
     triangle.doubleSided = (state & static_cast<int>(ModelRenderState::TwoFace)) != 0;
 }
@@ -884,30 +886,26 @@ Math::Sphere ModelInput::ParseCameraCollisionSphere(const std::string& text)
     return sphere;
 }
 
-ModelTransparentMode ModelInput::ParseTransparentMode(const std::string& text)
+AlphaMode ModelInput::ParseTransparentMode(const std::string& text)
 {
     if (text == "none")
-        return ModelTransparentMode::None;
+        return AlphaMode::OPAQUE;
     else if (text == "alpha")
-        return ModelTransparentMode::AlphaChannel;
-    else if (text == "map_black")
-        return ModelTransparentMode::MapBlackToAlpha;
-    else if (text == "map_white")
-        return ModelTransparentMode::MapWhiteToAlpha;
+        return AlphaMode::MASK;
     else
-        throw CModelIOException(std::string("Unexpected transparent mode: '") + text + "'");
+        return AlphaMode::OPAQUE;
 }
 
-ModelSpecialMark ModelInput::ParseSpecialMark(const std::string& text)
+std::string ModelInput::ParseSpecialMark(const std::string& text)
 {
     if (text == "none")
-        return ModelSpecialMark::None;
+        return "";
     else if (text == "part1")
-        return ModelSpecialMark::Part1;
+        return "tracker_right";
     else if (text == "part2")
-        return ModelSpecialMark::Part2;
+        return "tracker_left";
     else if (text == "part3")
-        return ModelSpecialMark::Part3;
+        return "energy";
     else
         throw CModelIOException(std::string("Unexpected special mark: '") + text + "'");
 }

@@ -2153,7 +2153,7 @@ void COldObject::UpdateEnergyMapping()
     std::string teamStr = StrUtils::ToString<int>(GetTeam());
     if(GetTeam() == 0) teamStr = "";
 
-    m_engine->SetUVTransform(m_objectPart[0].object, Gfx::ENG_RSTATE_PART3,
+    m_engine->SetUVTransform(m_objectPart[0].object, "energy",
         { 0.0f, 0.25f * (GetEnergyLevel() - 1.0f) }, { 1.0f, 1.0f });
 }
 
