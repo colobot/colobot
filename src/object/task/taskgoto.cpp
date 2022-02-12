@@ -1807,6 +1807,34 @@ Error CTaskGoto::PathFindingSearch(const Math::Vector &start, const Math::Vector
         while (m_bfsQueue[m_bfsQueueMin % NUMQUEUEBUCKETS].empty())
         {
             m_bfsQueueMin += 1;
+            if (m_bfsQueueMin % NUMQUEUEBUCKETS == 0 && !m_bfsQueue[NUMQUEUEBUCKETS].empty())
+            {
+                // Process nodes with oversized costs.
+                const size_t countBefore = m_bfsQueue[NUMQUEUEBUCKETS].size();
+                for (size_t i = 0; i < m_bfsQueue[NUMQUEUEBUCKETS].size();)
+                {
+                    const uint32_t indexInMap = m_bfsQueue[NUMQUEUEBUCKETS][i];
+                    const int x = indexInMap % m_bmSize;
+                    const int y = indexInMap / m_bmSize;
+                    const int32_t distance = m_bfsDistances[indexInMap];
+                    const int totalDistance = distance + HeuristicDistance(x, y, startX, startY);
+                    if (totalDistance < m_bfsQueueMin + NUMQUEUEBUCKETS)
+                    {
+                        // Move node to a regular bucket.
+                        m_bfsQueue[totalDistance % NUMQUEUEBUCKETS].push_back(indexInMap);
+                        m_bfsQueue[NUMQUEUEBUCKETS][i] = m_bfsQueue[NUMQUEUEBUCKETS].back();
+                        m_bfsQueue[NUMQUEUEBUCKETS].pop_back();
+                    }
+                    else
+                    {
+                        // Look at next node.
+                        i += 1;
+                    }
+                }
+                const size_t countAfter = m_bfsQueue[NUMQUEUEBUCKETS].size();
+                GetLogger()->Debug("Redistributed %lu of %lu nodes from the bucket with oversized costs.\n",
+                    countBefore - countAfter, countBefore);
+            }
         }
         auto& bucket = m_bfsQueue[m_bfsQueueMin % NUMQUEUEBUCKETS];
         const uint32_t indexInMap = bucket.back();
@@ -1820,9 +1848,32 @@ Error CTaskGoto::PathFindingSearch(const Math::Vector &start, const Math::Vector
 
         if (totalDistance != m_bfsQueueMin)
         {
-            m_bfsQueueCountSkipped += 1;
-            GetLogger()->Debug("Skipping node with mismatched distance, distance: %d, totalDistance: %d, m_bfsQueueMin: %d\n",
-                distance, totalDistance, m_bfsQueueMin);
+            if (totalDistance < m_bfsQueueMin)
+            {
+                // This node has been updated to a lower cost and has allready been processed.
+                m_bfsQueueCountSkipped += 1;
+                // GetLogger()->Debug("Skipping node with smaller distance, distance: %d, totalDistance: %d, m_bfsQueueMin: %d\n",
+                //     distance, totalDistance, m_bfsQueueMin);
+            }
+            else
+            {
+                if (totalDistance < m_bfsQueueMin + NUMQUEUEBUCKETS)
+                {
+                    // Move node to a regular bucket.
+                    m_bfsQueue[totalDistance % NUMQUEUEBUCKETS].push_back(indexInMap);
+                    m_bfsQueueCountPushed += 1;
+                    GetLogger()->Debug("Moving node with bigger distance into regular bucket, distance: %d, totalDistance: %d, m_bfsQueueMin: %d\n",
+                        distance, totalDistance, m_bfsQueueMin);
+                }
+                else
+                {
+                    // Move node to the bucket with oversized costs.
+                    m_bfsQueue[NUMQUEUEBUCKETS].push_back(indexInMap);
+                    m_bfsQueueCountPushed += 1;
+                    GetLogger()->Debug("Moving node with bigger distance into bucket with oversized costs, distance: %d, totalDistance: %d, m_bfsQueueMin: %d\n",
+                        distance, totalDistance, m_bfsQueueMin);
+                }
+            }
             continue;
         }
 

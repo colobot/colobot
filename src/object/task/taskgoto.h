@@ -144,7 +144,7 @@ protected:
     int             m_bmLine = 0;       // increment line m_bmSize/8
     std::unique_ptr<unsigned char[]> m_bmArray;      // Bit table
     std::unique_ptr<int32_t[]> m_bfsDistances; // Distances to the goal for breadth-first search.
-    std::array<std::vector<uint32_t>, NUMQUEUEBUCKETS> m_bfsQueue; // Priority queue with indices to nodes. Nodes are sorted into buckets.
+    std::array<std::vector<uint32_t>, NUMQUEUEBUCKETS + 1> m_bfsQueue; // Priority queue with indices to nodes. Nodes are sorted into buckets. The last bucket contains oversized costs.
     int             m_bfsQueueMin = 0;  // Front of the queue. This value mod 8 is the index to the bucket with the next node to be expanded.
     int             m_bfsQueueCountPushed = 0; // Number of nodes inserted into the queue.
     int             m_bfsQueueCountPopped = 0; // Number of nodes extacted from the queue.
