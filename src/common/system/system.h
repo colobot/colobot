@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2021, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,7 +25,9 @@
 #pragma once
 
 #include "common/config.h"
+#include "common/timeutils.h"
 
+#include <chrono>
 #include <memory>
 #include <string>
 #include <vector>
@@ -34,18 +36,18 @@
  * \enum SystemDialogType
  * \brief Type of system dialog
  */
-enum SystemDialogType
+enum class SystemDialogType
 {
     //! Information message
-    SDT_INFO,
+    INFO,
     //! Warning message
-    SDT_WARNING,
+    WARNING,
     //! Error message
-    SDT_ERROR,
+    ERROR_MSG, // windows.h defines ERROR which collides with the "ERROR" enum name
     //! Yes/No question
-    SDT_YES_NO,
+    YES_NO,
     //! Ok/Cancel question
-    SDT_OK_CANCEL
+    OK_CANCEL
 };
 
 /**
@@ -54,34 +56,13 @@ enum SystemDialogType
  *
  * Means which button was pressed.
  */
-enum SystemDialogResult
+enum class SystemDialogResult
 {
-    SDR_OK,
-    SDR_CANCEL,
-    SDR_YES,
-    SDR_NO
+    OK,
+    CANCEL,
+    YES,
+    NO
 };
-
-/**
- * \enum SystemTimeUnit
- * \brief Time unit
- */
-enum SystemTimeUnit
-{
-    //! seconds
-    STU_SEC,
-    //! milliseconds
-    STU_MSEC,
-    //! microseconds
-    STU_USEC
-};
-
-/*
- * Forward declaration of time stamp struct
- * SystemTimeStamp should only be used in a pointer context.
- * The implementation details are hidden because of platform dependence.
- */
-struct SystemTimeStamp;
 
 /**
  * \class CSystemUtils
@@ -107,28 +88,8 @@ public:
     //! Displays a fallback system dialog using console
     TEST_VIRTUAL SystemDialogResult ConsoleSystemDialog(SystemDialogType type, const std::string& title, const std::string& message);
 
-    //! Creates a new time stamp object
-    TEST_VIRTUAL SystemTimeStamp* CreateTimeStamp();
-
-    //! Destroys a time stamp object
-    TEST_VIRTUAL void DestroyTimeStamp(SystemTimeStamp *stamp);
-
-    //! Copies the time stamp from \a src to \a dst
-    TEST_VIRTUAL void CopyTimeStamp(SystemTimeStamp *dst, SystemTimeStamp *src);
-
-    //! Interpolates between two timestamps. If i=0 then dst=a. If i=1 then dst=b. If i=0.5 then dst is halfway between.
-    virtual void InterpolateTimeStamp(SystemTimeStamp *dst, SystemTimeStamp *a, SystemTimeStamp *b, float i) = 0;
-
     //! Returns a time stamp associated with current time
-    virtual void GetCurrentTimeStamp(SystemTimeStamp *stamp) = 0;
-
-    //! Returns a difference between two timestamps in given time unit
-    /** The difference is \a after - \a before. */
-    TEST_VIRTUAL float TimeStampDiff(SystemTimeStamp *before, SystemTimeStamp *after, SystemTimeUnit unit = STU_SEC);
-
-    //! Returns the exact (in nanosecond units) difference between two timestamps
-    /** The difference is \a after - \a before. */
-    virtual long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after) = 0;
+    TEST_VIRTUAL TimeUtils::TimeStamp GetCurrentTimeStamp();
 
     //! Returns the path where the executable binary is located (ends with the path separator)
     virtual std::string GetBasePath();
@@ -154,9 +115,8 @@ public:
     virtual bool OpenWebsite(const std::string& url);
 
     //! Sleep for given amount of microseconds
-    virtual void Usleep(int usecs) = 0;
+    void Usleep(int usecs);
 
 private:
     std::string m_basePath;
-    std::vector<std::unique_ptr<SystemTimeStamp>> m_timeStamps;
 };

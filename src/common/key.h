@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2021, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -62,7 +62,7 @@ enum VirtualKmod
 #define VIRTUAL_KMOD(x) VIRTUAL_KMOD_ ## x
 
 //! Converts individual codes to virtual keys if needed
-unsigned int GetVirtualKey(unsigned int key);
+unsigned int GetVirtualKey(unsigned int key, unsigned int kmodState);
 
 // Virtual key code generated on joystick button presses
 // num is number of joystick button

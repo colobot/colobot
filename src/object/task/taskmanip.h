@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2021, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -73,7 +73,7 @@ protected:
     CObject*    SearchTakeUnderObject(Math::Vector &pos, float dLimit);
     CObject*    SearchTakeFrontObject(bool bAdvance, Math::Vector &pos, float &distance, float &angle);
     CObject*    SearchTakeBackObject(bool bAdvance, Math::Vector &pos, float &distance, float &angle);
-    CObject*    SearchOtherObject(bool bAdvance, Math::Vector &pos, float &distance, float &angle, float &height);
+    CObject*    SearchOtherObject(bool bAdvance, Math::Vector &pos, float &distance, float &angle, float &height, int &slotNumOut);
     bool        TransporterTakeObject();
     bool        TransporterDeposeObject();
     bool        IsFreeDeposeObject(Math::Vector pos);

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2021, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -26,7 +26,8 @@
 #include "object/object.h"
 #include "object/object_manager.h"
 
-#include "object/interface/powered_object.h"
+#include "object/interface/power_container_object.h"
+#include "object/interface/slotted_object.h"
 #include "object/interface/transportable_object.h"
 
 #include <limits>
@@ -80,13 +81,9 @@ bool CObjectCondition::CheckForObject(CObject* obj)
     {
         power = dynamic_cast<CPowerContainerObject*>(obj);
     }
-    else if (obj->Implements(ObjectInterfaceType::Powered))
+    else
     {
-        CObject* powerObj = dynamic_cast<CPoweredObject&>(*obj).GetPower();
-        if(powerObj != nullptr && powerObj->Implements(ObjectInterfaceType::PowerContainer))
-        {
-            power = dynamic_cast<CPowerContainerObject*>(powerObj);
-        }
+        power = GetObjectPowerCell(obj);
     }
 
     if (power != nullptr)

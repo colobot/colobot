@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2021, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,6 +24,7 @@
 
 #include "graphics/engine/pyro_manager.h"
 
+#include "level/parser/parser.h"
 #include "level/parser/parserline.h"
 #include "level/parser/parserparam.h"
 
@@ -194,7 +195,9 @@ bool CAutoEgg::EventProcess(const Event &event)
 
             CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(alien);
             Program* program = programStorage->AddProgram();
-            programStorage->ReadProgram(program, m_alienProgramName.c_str());
+            programStorage->ReadProgram(program, InjectLevelPathsForCurrentLevel(m_alienProgramName, "ai"));
+            program->readOnly = true;
+            program->filename = m_alienProgramName;
             programmable->RunProgram(program);
         }
         Init();

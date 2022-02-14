@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2021, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -43,9 +43,8 @@
 #include "object/object_manager.h"
 #include "object/old_object.h"
 
-#include "object/interface/carrier_object.h"
 #include "object/interface/jostleable_object.h"
-#include "object/interface/powered_object.h"
+#include "object/interface/slotted_object.h"
 #include "object/interface/transportable_object.h"
 
 #include "object/motion/motion.h"
@@ -802,9 +801,9 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
         }
     }
 
-    if (m_object->Implements(ObjectInterfaceType::Powered))
+    if (HasPowerCellSlot(m_object))
     {
-        power = dynamic_cast<CPowerContainerObject*>(dynamic_cast<CPoweredObject&>(*m_object).GetPower());  // searches for the object battery uses
+        power = GetObjectPowerCell(m_object); // searches for the object battery uses
         if ( GetObjectEnergy(m_object) == 0.0f )  // no battery or flat?
         {
             motorSpeed.x =  0.0f;
@@ -2966,10 +2965,11 @@ void CPhysics::PowerParticle(float factor, bool bBreak)
     Math::Point     dim;
     bool        bCarryPower;
 
+    // TODO: it should be all slots that contain a power cell that can get recharged. Not just the carrying slot.
     bCarryPower = false;
-    if (m_object->Implements(ObjectInterfaceType::Carrier))
+    if (m_object->Implements(ObjectInterfaceType::Slotted))
     {
-        CObject* cargo = dynamic_cast<CCarrierObject&>(*m_object).GetCargo();
+        CObject* cargo = dynamic_cast<CSlottedObject&>(*m_object).GetSlotContainedObjectOpt(CSlottedObject::Pseudoslot::CARRYING);
         if ( cargo != nullptr && cargo->Implements(ObjectInterfaceType::PowerContainer) &&
             dynamic_cast<CPowerContainerObject&>(*cargo).IsRechargeable() &&
             m_object->GetPartRotationZ(1) == ARM_STOCK_ANGLE1 )
@@ -2980,7 +2980,7 @@ void CPhysics::PowerParticle(float factor, bool bBreak)
 
     mat = m_object->GetWorldMatrix(0);
 
-    pos = m_object->GetPowerPosition();
+    pos = m_object->GetSlotPosition(m_object->MapPseudoSlot(CSlottedObject::Pseudoslot::POWER));
     pos.x -= 0.3f;
     pos.y += 1.0f;  // battery center position
     pos = Transform(*mat, pos);
@@ -3784,16 +3784,16 @@ Error CPhysics::GetError()
         }
     }
 
-    if (m_object->Implements(ObjectInterfaceType::Powered))
+    if (HasPowerCellSlot(m_object))
     {
-        CObject* power = dynamic_cast<CPoweredObject&>(*m_object).GetPower();  // searches for the object battery used
-        if (power == nullptr || !power->Implements(ObjectInterfaceType::PowerContainer))
+        CPowerContainerObject* power = GetObjectPowerCell(m_object);  // searches for the object battery used
+        if (power == nullptr)
         {
             return ERR_VEH_POWER;
         }
         else
         {
-            if ( dynamic_cast<CPowerContainerObject&>(*power).GetEnergy() == 0.0f )  return ERR_VEH_ENERGY;
+            if ( power->GetEnergy() == 0.0f )  return ERR_VEH_ENERGY;
         }
     }
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2021, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -35,6 +35,7 @@
 #include <cassert>
 #include <iostream>
 #include <algorithm>
+#include <thread>
 
 #include <SDL2/SDL.h>
 
@@ -60,17 +61,17 @@ SystemDialogResult CSystemUtils::ConsoleSystemDialog(SystemDialogType type, cons
 {
     switch (type)
     {
-        case SDT_INFO:
+        case SystemDialogType::INFO:
             std::cout << "INFO: ";
             break;
-        case SDT_WARNING:
+        case SystemDialogType::WARNING:
             std::cout << "WARNING:";
             break;
-        case SDT_ERROR:
+        case SystemDialogType::ERROR_MSG:
             std::cout << "ERROR: ";
             break;
-        case SDT_YES_NO:
-        case SDT_OK_CANCEL:
+        case SystemDialogType::YES_NO:
+        case SystemDialogType::OK_CANCEL:
             std::cout << "QUESTION: ";
             break;
     }
@@ -79,24 +80,24 @@ SystemDialogResult CSystemUtils::ConsoleSystemDialog(SystemDialogType type, cons
 
     std::string line;
 
-    SystemDialogResult result = SDR_OK;
+    auto result = SystemDialogResult::OK;
 
     bool done = false;
     while (!done)
     {
         switch (type)
         {
-            case SDT_INFO:
-            case SDT_WARNING:
-            case SDT_ERROR:
+            case SystemDialogType::INFO:
+            case SystemDialogType::WARNING:
+            case SystemDialogType::ERROR_MSG:
                 std::cout << "Press ENTER to continue";
                 break;
 
-            case SDT_YES_NO:
+            case SystemDialogType::YES_NO:
                 std::cout << "Type 'Y' for Yes or 'N' for No";
                 break;
 
-            case SDT_OK_CANCEL:
+            case SystemDialogType::OK_CANCEL:
                 std::cout << "Type 'O' for OK or 'C' for Cancel";
                 break;
         }
@@ -105,35 +106,35 @@ SystemDialogResult CSystemUtils::ConsoleSystemDialog(SystemDialogType type, cons
 
         switch (type)
         {
-            case SDT_INFO:
-            case SDT_WARNING:
-            case SDT_ERROR:
+            case SystemDialogType::INFO:
+            case SystemDialogType::WARNING:
+            case SystemDialogType::ERROR_MSG:
                 done = true;
                 break;
 
-            case SDT_YES_NO:
+            case SystemDialogType::YES_NO:
                 if (line == "Y" || line == "y")
                 {
-                    result = SDR_YES;
+                    result = SystemDialogResult::YES;
                     done = true;
                 }
                 else if (line == "N" || line == "n")
                 {
-                    result = SDR_NO;
+                    result = SystemDialogResult::NO;
                     done = true;
                 }
                 break;
 
-            case SDT_OK_CANCEL:
+            case SystemDialogType::OK_CANCEL:
                 if (line == "O" || line == "o")
                 {
                     done = true;
-                    result = SDR_OK;
+                    result = SystemDialogResult::OK;
                 }
                 else if (line == "C" || line == "c")
                 {
                     done = true;
-                    result = SDR_CANCEL;
+                    result = SystemDialogResult::CANCEL;
                 }
                 break;
         }
@@ -142,39 +143,9 @@ SystemDialogResult CSystemUtils::ConsoleSystemDialog(SystemDialogType type, cons
     return result;
 }
 
-SystemTimeStamp* CSystemUtils::CreateTimeStamp()
+TimeUtils::TimeStamp CSystemUtils::GetCurrentTimeStamp()
 {
-    auto timeStamp = MakeUnique<SystemTimeStamp>();
-    SystemTimeStamp* timeStampPtr = timeStamp.get();
-    m_timeStamps.push_back(std::move(timeStamp));
-    return timeStampPtr;
-}
-
-void CSystemUtils::DestroyTimeStamp(SystemTimeStamp *stamp)
-{
-    m_timeStamps.erase(std::remove_if(m_timeStamps.begin(), m_timeStamps.end(), [&](const std::unique_ptr<SystemTimeStamp>& timeStamp) { return timeStamp.get() == stamp; }));
-}
-
-void CSystemUtils::CopyTimeStamp(SystemTimeStamp *dst, SystemTimeStamp *src)
-{
-    *dst = *src;
-}
-
-float CSystemUtils::TimeStampDiff(SystemTimeStamp *before, SystemTimeStamp *after, SystemTimeUnit unit)
-{
-    long long exact = TimeStampExactDiff(before, after);
-
-    float result = 0.0f;
-    if (unit == STU_SEC)
-        result = exact * 1e-9;
-    else if (unit == STU_MSEC)
-        result = exact * 1e-6;
-    else if (unit == STU_USEC)
-        result = exact * 1e-3;
-    else
-        assert(false);
-
-    return result;
+    return std::chrono::high_resolution_clock::now();
 }
 
 std::string CSystemUtils::GetBasePath()
@@ -224,4 +195,9 @@ bool CSystemUtils::OpenPath(const std::string& path)
 bool CSystemUtils::OpenWebsite(const std::string& url)
 {
     return false;
+}
+
+void CSystemUtils::Usleep(int usecs)
+{
+    std::this_thread::sleep_for(std::chrono::microseconds{usecs});
 }

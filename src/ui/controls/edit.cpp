@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2021, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -959,7 +959,7 @@ void CEdit::Draw()
 
         if ( i >= m_lineFirst+m_lineVisible )  break;
 
-        pos.x = m_pos.x+(7.5f/640.0f)*(m_fontSize/Gfx::FONT_SIZE_SMALL);
+        pos.x = m_pos.x+(7.5f/640.0f);
         if ( m_bAutoIndent )
         {
             const char *s = "\t";  // line | dotted
@@ -1121,7 +1121,7 @@ void CEdit::Draw()
         {
             if ( i == m_lineTotal-1 || m_cursor1 < m_lineOffset[i+1] )
             {
-                pos.x = m_pos.x+(7.5f/640.0f)*(m_fontSize/Gfx::FONT_SIZE_SMALL);
+                pos.x = m_pos.x+(7.5f/640.0f);
                 if ( m_bAutoIndent )
                 {
                     pos.x += indentLength*m_lineIndent[i];

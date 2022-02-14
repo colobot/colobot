@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2021, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -177,7 +177,7 @@ int main(int argc, char *argv[])
     ParseArgsStatus status = app.ParseArguments(argc, argv);
     if (status == PARSE_ARGS_FAIL)
     {
-        systemUtils->SystemDialog(SDT_ERROR, "COLOBOT - Fatal Error", "Invalid commandline arguments!\n");
+        systemUtils->SystemDialog(SystemDialogType::ERROR_MSG, "COLOBOT - Fatal Error", "Invalid commandline arguments!\n");
         return app.GetExitCode();
     }
     else if (status == PARSE_ARGS_HELP)
@@ -190,7 +190,7 @@ int main(int argc, char *argv[])
         code = app.GetExitCode();
         if (code != 0 && !app.GetErrorMessage().empty())
         {
-            systemUtils->SystemDialog(SDT_ERROR, "COLOBOT - Fatal Error", app.GetErrorMessage());
+            systemUtils->SystemDialog(SystemDialogType::ERROR_MSG, "COLOBOT - Fatal Error", app.GetErrorMessage());
         }
         logger.Info("Didn't run main loop. Exiting with code %d\n", code);
         return code;

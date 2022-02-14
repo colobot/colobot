@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2021, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -26,21 +26,12 @@
 
 //@colobot-lint-exclude UndefinedFunctionRule
 
-struct SystemTimeStamp
-{
-    long long counterValue = 0;
-};
-
 class CSystemUtilsWindows : public CSystemUtils
 {
 public:
     void Init() override;
 
     SystemDialogResult SystemDialog(SystemDialogType type, const std::string& title, const std::string& message) override;
-
-    void InterpolateTimeStamp(SystemTimeStamp *dst, SystemTimeStamp *a, SystemTimeStamp *b, float i) override;
-    void GetCurrentTimeStamp(SystemTimeStamp *stamp) override;
-    long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after) override;
 
     std::string GetSaveDir() override;
 
@@ -49,14 +40,9 @@ public:
     bool OpenPath(const std::string& path) override;
     bool OpenWebsite(const std::string& url) override;
 
-    void Usleep(int usec) override;
-
 public:
     static std::string UTF8_Encode(const std::wstring &wstr);
     static std::wstring UTF8_Decode(const std::string &str);
-
-protected:
-    long long m_counterFrequency = 0;
 };
 
 //@end-colobot-lint-exclude

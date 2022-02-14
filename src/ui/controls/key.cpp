@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2021, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -75,7 +75,7 @@ bool CKey::EventProcess(const Event &event)
     if (event.type == EVENT_KEY_DOWN && m_catch)
     {
         m_catch = false;
-        unsigned int key = GetVirtualKey(event.GetData<KeyEventData>()->key);
+        unsigned int key = GetVirtualKey(event.GetData<KeyEventData>()->key, event.kmodState);
 
         if (TestKey(key)) // impossible ?
         {

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2021, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -1090,7 +1090,7 @@ std::string CFileDialog::SearchDirectory(bool bCreate)
 
     if (bCreate && !CResourceManager::DirectoryExists(dir))
     {
-        CResourceManager::CreateDirectory(dir);
+        CResourceManager::CreateNewDirectory(dir);
     }
 
     if (!m_subDirPath.empty())
@@ -1098,7 +1098,7 @@ std::string CFileDialog::SearchDirectory(bool bCreate)
         dir += "/" + m_subDirPath;
         if (bCreate && !CResourceManager::DirectoryExists(dir))
         {
-            CResourceManager::CreateDirectory(dir);
+            CResourceManager::CreateNewDirectory(dir);
         }
     }
 

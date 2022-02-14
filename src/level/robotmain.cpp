@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2021, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -68,6 +68,8 @@
 #include "object/object_manager.h"
 
 #include "object/auto/auto.h"
+
+#include "object/interface/slotted_object.h"
 
 #include "object/motion/motion.h"
 #include "object/motion/motionhuman.h"
@@ -504,12 +506,12 @@ void CRobotMain::ChangePhase(Phase phase)
                     GetLogger()->Info("Trying to restore pre-crash state...\n");
                     assert(m_playerProfile != nullptr);
                     m_playerProfile->LoadScene("../../crashsave");
-                    CResourceManager::RemoveDirectory("crashsave");
+                    CResourceManager::RemoveExistingDirectory("crashsave");
                 },
                 [&]()
                 {
                     GetLogger()->Info("Not restoring pre-crash state\n");
-                    CResourceManager::RemoveDirectory("crashsave");
+                    CResourceManager::RemoveExistingDirectory("crashsave");
                 }
             );
         }
@@ -1392,12 +1394,8 @@ void CRobotMain::ExecuteCmd(const std::string& cmd)
             CObject* object = GetSelect();
             if (object != nullptr)
             {
-                if (object->Implements(ObjectInterfaceType::Powered))
-                {
-                    CObject* power = dynamic_cast<CPoweredObject&>(*object).GetPower();
-                    if (power != nullptr && power->Implements(ObjectInterfaceType::PowerContainer))
-                        dynamic_cast<CPowerContainerObject&>(*power).SetEnergyLevel(1.0f);
-                }
+                if (CPowerContainerObject *power = GetObjectPowerCell(object))
+                    power->SetEnergyLevel(1.0f);
 
                 if (object->Implements(ObjectInterfaceType::Shielded))
                     dynamic_cast<CShieldedObject&>(*object).SetShield(1.0f);
@@ -1414,12 +1412,8 @@ void CRobotMain::ExecuteCmd(const std::string& cmd)
 
             if (object != nullptr)
             {
-                if (object->Implements(ObjectInterfaceType::Powered))
-                {
-                    CObject* power = dynamic_cast<CPoweredObject&>(*object).GetPower();
-                    if (power != nullptr && power->Implements(ObjectInterfaceType::PowerContainer))
-                        dynamic_cast<CPowerContainerObject&>(*power).SetEnergyLevel(1.0f);
-                }
+                if (CPowerContainerObject *power = GetObjectPowerCell(object))
+                    power->SetEnergyLevel(1.0f);
             }
             return;
         }
@@ -2007,21 +2001,12 @@ CObject* CRobotMain::DetectObject(Math::Point pos)
         if (obj->GetProxyActivate()) continue;
 
         CObject* target = obj;
+        // TODO: should this also apply to slots other than power cell slots?
         if (obj->Implements(ObjectInterfaceType::PowerContainer) && obj->Implements(ObjectInterfaceType::Transportable))
         {
-            target = dynamic_cast<CTransportableObject&>(*obj).GetTransporter();  // battery connected
-            if (target == nullptr)
-            {
-                target = obj; // standalone battery
-            }
-            else
-            {
-                if (!target->Implements(ObjectInterfaceType::Powered) || dynamic_cast<CPoweredObject&>(*target).GetPower() != obj)
-                {
-                    // transported, but not in the power slot
-                    target = obj;
-                }
-            }
+            CObject *transporter = dynamic_cast<CTransportableObject&>(*obj).GetTransporter();  // battery connected
+            if (transporter != nullptr && obj == GetObjectInPowerCellSlot(transporter))
+                target = transporter;
         }
 
         if (!obj->Implements(ObjectInterfaceType::Old)) continue;
@@ -4716,28 +4701,25 @@ bool CRobotMain::IOWriteScene(std::string filename, std::string filecbot, std::s
         if (IsObjectBeingTransported(obj)) continue;
         if (obj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject&>(*obj).IsDying()) continue;
 
-        if (obj->Implements(ObjectInterfaceType::Carrier))
+        if (obj->Implements(ObjectInterfaceType::Slotted))
         {
-            CObject* cargo = dynamic_cast<CCarrierObject&>(*obj).GetCargo();
-            if (cargo != nullptr)  // object transported?
+            CSlottedObject* slotted = dynamic_cast<CSlottedObject*>(obj);
+            for (int slot = slotted->GetNumSlots() - 1; slot >= 0; slot--)
             {
-                line = MakeUnique<CLevelParserLine>("CreateFret");
-                IOWriteObject(line.get(), cargo, dirname, objRank++);
-                levelParser.AddLine(std::move(line));
+                if (CObject *sub = slotted->GetSlotContainedObject(slot))
+                {
+                    if (slot == slotted->MapPseudoSlot(CSlottedObject::Pseudoslot::POWER))
+                        line = MakeUnique<CLevelParserLine>("CreatePower");
+                    else if (slot == slotted->MapPseudoSlot(CSlottedObject::Pseudoslot::CARRYING))
+                        line = MakeUnique<CLevelParserLine>("CreateFret");
+                    else
+                        line = MakeUnique<CLevelParserLine>("CreateSlotObject");
+                    line->AddParam("slotNum", MakeUnique<CLevelParserParam>(slot));
+                    IOWriteObject(line.get(), sub, dirname, objRank++);
+                    levelParser.AddLine(std::move(line));
+                }
             }
         }
-
-        if (obj->Implements(ObjectInterfaceType::Powered))
-        {
-            CObject* power = dynamic_cast<CPoweredObject&>(*obj).GetPower();
-            if (power != nullptr) // battery transported?
-            {
-                line = MakeUnique<CLevelParserLine>("CreatePower");
-                IOWriteObject(line.get(), power, dirname, objRank++);
-                levelParser.AddLine(std::move(line));
-            }
-        }
-
 
         line = MakeUnique<CLevelParserLine>("CreateObject");
         IOWriteObject(line.get(), obj, dirname, objRank++);
@@ -4867,7 +4849,7 @@ CObject* CRobotMain::IOReadScene(std::string filename, std::string filecbot)
     CLevelParser levelParser(filename);
     levelParser.SetLevelPaths(m_levelCategory, m_levelChap, m_levelRank);
     levelParser.Load();
-    int numObjects = levelParser.CountLines("CreateObject") + levelParser.CountLines("CreatePower") + levelParser.CountLines("CreateFret");
+    int numObjects = levelParser.CountLines("CreateObject") + levelParser.CountLines("CreatePower") + levelParser.CountLines("CreateFret") + levelParser.CountLines("CreateSlotObject");
 
     m_base = nullptr;
 
@@ -4876,6 +4858,7 @@ CObject* CRobotMain::IOReadScene(std::string filename, std::string filecbot)
     CObject* sel    = nullptr;
     int objRank = 0;
     int objCounter = 0;
+    std::map<int, CObject*> slots;
     for (auto& line : levelParser.GetLines())
     {
         if (line->GetCommand() == "Mission")
@@ -4908,6 +4891,16 @@ CObject* CRobotMain::IOReadScene(std::string filename, std::string filecbot)
             objCounter++;
         }
 
+        if (line->GetCommand() == "CreateSlotObject")
+        {
+            int slotNum = line->GetParam("slotNum")->AsInt();
+            CObject *slotObject = IOReadObject(line.get(), dirname, StrUtils::ToString<int>(objCounter+1)+" / "+StrUtils::ToString<int>(numObjects), static_cast<float>(objCounter) / static_cast<float>(numObjects));
+            objCounter++;
+
+            assert(slots.find(slotNum) == slots.end());
+            slots.emplace(slotNum, slotObject);
+        }
+
         if (line->GetCommand() == "CreateObject")
         {
             CObject* obj = IOReadObject(line.get(), dirname, StrUtils::ToString<int>(objCounter+1)+" / "+StrUtils::ToString<int>(numObjects), static_cast<float>(objCounter) / static_cast<float>(numObjects), objRank++);
@@ -4915,20 +4908,50 @@ CObject* CRobotMain::IOReadScene(std::string filename, std::string filecbot)
             if (line->GetParam("select")->AsBool(false))
                 sel = obj;
 
-            if (cargo != nullptr)
+            if (obj->Implements(ObjectInterfaceType::Slotted))
             {
-                assert(obj->Implements(ObjectInterfaceType::Carrier)); // TODO: exception?
-                assert(obj->Implements(ObjectInterfaceType::Old));
-                dynamic_cast<CCarrierObject&>(*obj).SetCargo(cargo);
-                auto task = MakeUnique<CTaskManip>(dynamic_cast<COldObject*>(obj));
-                task->Start(TMO_AUTO, TMA_GRAB);  // holds the object!
+                CSlottedObject* asSlotted = dynamic_cast<CSlottedObject*>(obj);
+                if (cargo != nullptr)
+                {
+                    int slotNum = asSlotted->MapPseudoSlot(CSlottedObject::Pseudoslot::CARRYING);
+                    assert(slotNum >= 0);
+                    assert(slots.find(slotNum) == slots.end());
+                    asSlotted->SetSlotContainedObject(slotNum, cargo);
+
+                    // TODO: eww!
+                    assert(obj->Implements(ObjectInterfaceType::Old));
+                    auto task = MakeUnique<CTaskManip>(dynamic_cast<COldObject*>(obj));
+                    task->Start(TMO_AUTO, TMA_GRAB);  // holds the object!
+                }
+
+                if (power != nullptr)
+                {
+                    int slotNum = asSlotted->MapPseudoSlot(CSlottedObject::Pseudoslot::POWER);
+                    assert(slotNum >= 0);
+                    assert(slots.find(slotNum) == slots.end());
+                    asSlotted->SetSlotContainedObject(slotNum, power);
+                }
+
+                for (std::pair<const int, CObject*>& slot : slots)
+                {
+                    asSlotted->SetSlotContainedObject(slot.first, slot.second);
+                }
+
+                cargo = nullptr;
+                power = nullptr;
+                slots.clear();
+            }
+            else
+            {
+                // TODO: exception?
+                assert(slots.empty());
+                assert(power == nullptr);
+                assert(cargo == nullptr);
             }
 
             if (power != nullptr)
             {
-                assert(obj->Implements(ObjectInterfaceType::Powered));
-                dynamic_cast<CPoweredObject&>(*obj).SetPower(power);
-                assert(power->Implements(ObjectInterfaceType::Transportable));
+                dynamic_cast<CSlottedObject&>(*obj).SetSlotContainedObjectReq(CSlottedObject::Pseudoslot::POWER, power);
                 dynamic_cast<CTransportableObject&>(*power).SetTransporter(obj);
             }
             cargo = nullptr;
@@ -4937,6 +4960,11 @@ CObject* CRobotMain::IOReadScene(std::string filename, std::string filecbot)
             objCounter++;
         }
     }
+
+    // all slot objects assigned to parent objects
+    assert(slots.empty());
+    assert(power == nullptr);
+    assert(cargo == nullptr);
 
     m_ui->GetLoadingScreen()->SetProgress(0.95f, RT_LOADING_CBOT_SAVE);
 
@@ -5766,7 +5794,7 @@ void CRobotMain::AutosaveRotate()
     std::sort(autosaves.begin(), autosaves.end(), std::less<std::string>());
     for (int i = 0; i < static_cast<int>(autosaves.size()) - m_autosaveSlots + 1; i++)
     {
-        CResourceManager::RemoveDirectory(m_playerProfile->GetSaveDir() + "/" + autosaves[i]);
+        CResourceManager::RemoveExistingDirectory(m_playerProfile->GetSaveDir() + "/" + autosaves[i]);
     }
 }
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2021, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -156,7 +156,7 @@ bool CResourceManager::DirectoryExists(const std::string& directory)
     return false;
 }
 
-bool CResourceManager::CreateDirectory(const std::string& directory)
+bool CResourceManager::CreateNewDirectory(const std::string& directory)
 {
     if (PHYSFS_isInit())
     {
@@ -165,7 +165,7 @@ bool CResourceManager::CreateDirectory(const std::string& directory)
     return false;
 }
 
-bool CResourceManager::RemoveDirectory(const std::string& directory)
+bool CResourceManager::RemoveExistingDirectory(const std::string& directory)
 {
     if (PHYSFS_isInit())
     {

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2021, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -27,9 +27,6 @@
 
 #include "object/object_manager.h"
 #include "object/old_object.h"
-
-#include "object/interface/carrier_object.h"
-#include "object/interface/powered_object.h"
 
 #include "sound/sound.h"
 
@@ -134,32 +131,13 @@ bool CAutoPowerStation::EventProcess(const Event &event)
     if (big > 0.0f)
     {
         CObject* vehicle = SearchVehicle();
-        if (vehicle != nullptr)
+        if (vehicle != nullptr && vehicle->Implements(ObjectInterfaceType::Slotted))
         {
-            if (vehicle->Implements(ObjectInterfaceType::Powered))
+            CSlottedObject* slotted = dynamic_cast<CSlottedObject*>(vehicle);
+            for (int slot = slotted->GetNumSlots() - 1; slot >= 0; slot--)
             {
-                CObject* power = dynamic_cast<CPoweredObject&>(*vehicle).GetPower();
-                if ( power != nullptr && power->Implements(ObjectInterfaceType::PowerContainer) )
-                {
-                    CPowerContainerObject* powerContainer = dynamic_cast<CPowerContainerObject*>(power);
-                    if (powerContainer->IsRechargeable())
-                    {
-                        float energy = powerContainer->GetEnergy();
-                        float add = event.rTime*0.2f;
-                        if ( add > big*4.0f )  add = big*4.0f;
-                        if ( add > 1.0f-energy )  add = 1.0f-energy;
-                        energy += add;  // Charging the battery
-                        powerContainer->SetEnergy(energy);
-                        if ( energy < freq )  freq = energy;
-                        big -= add/4.0f;  // discharge the large battery
-                    }
-                }
-            }
-
-            if (vehicle->Implements(ObjectInterfaceType::Carrier))
-            {
-                CObject* power = dynamic_cast<CCarrierObject&>(*vehicle).GetCargo();
-                if ( power != nullptr && power->Implements(ObjectInterfaceType::PowerContainer) )
+                CObject *power = slotted->GetSlotContainedObject(slot);
+                if (power != nullptr && power->Implements(ObjectInterfaceType::PowerContainer))
                 {
                     CPowerContainerObject* powerContainer = dynamic_cast<CPowerContainerObject*>(power);
                     if (powerContainer->IsRechargeable())

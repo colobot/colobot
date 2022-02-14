@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2021, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -35,9 +35,8 @@
 
 #include "object/old_object.h"
 
-#include "object/interface/carrier_object.h"
-#include "object/interface/powered_object.h"
 #include "object/interface/programmable_object.h"
+#include "object/interface/slotted_object.h"
 #include "object/interface/task_executor_object.h"
 
 #include "object/motion/motion.h"
@@ -1373,7 +1372,7 @@ bool CObjectInterface::CreateInterface(bool bSelect)
         pw->CreateButton(pos, dim, 10, EVENT_OBJECT_DESELECT);
     }
 
-    if ( m_object->Implements(ObjectInterfaceType::Powered) )  // vehicle?
+    if ( HasPowerCellSlot(m_object) )  // vehicle?
     {
         pos.x = ox+sx*14.5f;
         pos.y = oy+sy*0;
@@ -1576,15 +1575,10 @@ void CObjectInterface::UpdateInterface(float rTime)
         float energy = 0.0f;
         float limit = 0.0f;
 
-        if (m_object->Implements(ObjectInterfaceType::Powered))
+        if (CPowerContainerObject* powerContainer = GetObjectPowerCell(m_object))
         {
-            CObject* power = dynamic_cast<CPoweredObject*>(m_object)->GetPower();
-            if (power != nullptr && power->Implements(ObjectInterfaceType::PowerContainer))
-            {
-                CPowerContainerObject* powerContainer = dynamic_cast<CPowerContainerObject*>(power);
-                energy = powerContainer->GetEnergyLevel();
-                limit = powerContainer->GetEnergy();
-            }
+            energy = powerContainer->GetEnergyLevel();
+            limit = powerContainer->GetEnergy();
         }
         icon = 0;  // red/green
 
@@ -1909,7 +1903,7 @@ void CObjectInterface::UpdateInterface()
     bFly = bEnable;
     if ( bFly && (type == OBJECT_HUMAN || type == OBJECT_TECH) )
     {
-        if (m_object->Implements(ObjectInterfaceType::Carrier) && dynamic_cast<CCarrierObject*>(m_object)->IsCarryingCargo())
+        if (dynamic_cast<CSlottedObject&>(*m_object).GetSlotContainedObjectOpt(CSlottedObject::Pseudoslot::CARRYING) != nullptr)
             bFly = false;
     }
     EnableInterface(pw, EVENT_OBJECT_GASUP,   bFly && m_main->CanPlayerInteract());

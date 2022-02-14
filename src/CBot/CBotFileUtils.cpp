@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2021, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -59,7 +59,7 @@ static bool ReadBinary(std::istream &istr, T &value)
     while (true)        // unsigned LEB128
     {
         if (!istr.read(reinterpret_cast<char*>(&chr), 1)) return false;
-        if (shift < sizeof(T) * 8 - 1)
+        if (shift < sizeof(T) * 8)
             value |= static_cast<T>(chr & 0x7F) << shift;
         shift += 7;
         if ((chr & 0x80) == 0) break;
@@ -186,7 +186,7 @@ bool WriteFloat(std::ostream &ostr, float f)
     union TypeConverter
     {
         float fValue;
-        unsigned int iValue;
+        uint32_t iValue;
     };
 
     TypeConverter u;
@@ -194,7 +194,7 @@ bool WriteFloat(std::ostream &ostr, float f)
     u.iValue = 0;
 
     u.fValue = f;
-    return WriteBinary<unsigned int>(ostr, u.iValue);
+    return WriteBinary<uint32_t>(ostr, u.iValue);
 }
 
 bool ReadFloat(std::istream &istr, float &f)
@@ -202,14 +202,14 @@ bool ReadFloat(std::istream &istr, float &f)
     union TypeConverter
     {
         float fValue;
-        unsigned int iValue;
+        uint32_t iValue;
     };
 
     TypeConverter u;
     u.fValue = 0.0f;
     u.iValue = 0;
 
-    if (!ReadBinary<unsigned int>(istr, u.iValue)) return false;
+    if (!ReadBinary<uint32_t>(istr, u.iValue)) return false;
     f = u.fValue;
     return true;
 }
@@ -219,7 +219,7 @@ bool WriteDouble(std::ostream &ostr, double d)
     union TypeConverter
     {
         double dValue;
-        unsigned long iValue;
+        uint64_t iValue;
     };
 
     TypeConverter u;
@@ -227,7 +227,7 @@ bool WriteDouble(std::ostream &ostr, double d)
     u.iValue = 0;
 
     u.dValue = d;
-    return WriteBinary<unsigned long>(ostr, u.iValue);
+    return WriteBinary<uint64_t>(ostr, u.iValue);
 }
 
 bool ReadDouble(std::istream &istr, double &d)
@@ -235,14 +235,14 @@ bool ReadDouble(std::istream &istr, double &d)
     union TypeConverter
     {
         double dValue;
-        unsigned long iValue;
+        uint64_t iValue;
     };
 
     TypeConverter u;
     u.dValue = 0.0;
     u.iValue = 0;
 
-    if (!ReadBinary<unsigned long>(istr, u.iValue)) return false;
+    if (!ReadBinary<uint64_t>(istr, u.iValue)) return false;
     d = u.dValue;
     return true;
 }
@@ -342,7 +342,11 @@ bool WriteStream(std::ostream &ostr, std::istream& istr)
     if (!WriteLong(ostr, size)) return false;
 
     if (!istr.seekg(0, istr.beg)) return false;
-    if (!(ostr << istr.rdbuf())) return false;
+    while (size > 0)
+    {
+        size -= 1;
+        if (!ostr.put(istr.get())) return false;
+    }
 
     return true;
 }
@@ -355,7 +359,7 @@ bool ReadStream(std::istream& istr, std::ostream &ostr)
 
     while (length-- > 0)
     {
-        if (!(ostr << istr.get())) return false;
+        if (!ostr.put(istr.get())) return false;
     }
     return true;
 }

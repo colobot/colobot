@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2021, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -33,8 +33,8 @@
 #include "object/object_manager.h"
 #include "object/old_object.h"
 
-#include "object/interface/powered_object.h"
 #include "object/interface/programmable_object.h"
+#include "object/interface/slotted_object.h"
 #include "object/interface/transportable_object.h"
 
 #include "physics/physics.h"
@@ -1061,7 +1061,8 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         type != OBJECT_APOLLO2)
     {
         CObject* powerCell = nullptr;
-        Math::Vector powerCellPos = m_object->GetPowerPosition();
+        int powerSlotIndex = m_object->MapPseudoSlot(CSlottedObject::Pseudoslot::POWER);
+        Math::Vector powerCellPos = m_object->GetSlotPosition(powerSlotIndex);
         float powerCellAngle = 0.0f;
         if (power <= 1.0f)
         {
@@ -1076,8 +1077,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         powerCell->SetPosition(powerCellPos);
         powerCell->SetRotation(Math::Vector(0.0f, powerCellAngle, 0.0f));
         dynamic_cast<CTransportableObject&>(*powerCell).SetTransporter(m_object);
-        assert(m_object->Implements(ObjectInterfaceType::Powered));
-        m_object->SetPower(powerCell);
+        m_object->SetSlotContainedObjectReq(CSlottedObject::Pseudoslot::POWER, powerCell);
     }
 
     pos = m_object->GetPosition();

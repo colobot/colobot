@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2021, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@
 
 #include "object/old_object.h"
 
-#include "object/interface/powered_object.h"
+#include "object/interface/slotted_object.h"
 
 #include "sound/sound.h"
 
@@ -57,7 +57,7 @@ CAutoResearch::CAutoResearch(COldObject* object) : CAuto(object)
 
     Init();
 
-    assert(m_object->Implements(ObjectInterfaceType::Powered));
+    assert(m_object->GetNumSlots() == 1);
 }
 
 // Object's destructor.
@@ -114,11 +114,11 @@ Error CAutoResearch::StartAction(int param)
         return ERR_RESEARCH_ALREADY;
     }
 
-    if (m_object->GetPower() == nullptr || !m_object->GetPower()->Implements(ObjectInterfaceType::PowerContainer))
+    if (m_object->GetSlotContainedObject(0) == nullptr || !m_object->GetSlotContainedObject(0)->Implements(ObjectInterfaceType::PowerContainer))
     {
         return ERR_RESEARCH_POWER;
     }
-    CPowerContainerObject* power = dynamic_cast<CPowerContainerObject*>(m_object->GetPower());
+    CPowerContainerObject* power = dynamic_cast<CPowerContainerObject*>(m_object->GetSlotContainedObject(0));
     if ( power->GetCapacity() > 1.0f )
     {
         return ERR_RESEARCH_TYPE;
@@ -222,7 +222,9 @@ bool CAutoResearch::EventProcess(const Event &event)
         FireStopUpdate(m_progress, true);  // flashes
         if ( m_progress < 1.0f )
         {
-            if ( m_object->GetPower() == nullptr || !m_object->GetPower()->Implements(ObjectInterfaceType::PowerContainer) )  // more battery?
+            CObject* batteryObj = dynamic_cast<CSlottedObject&>(*m_object).GetSlotContainedObject(0);
+
+            if ( batteryObj == nullptr || !batteryObj->Implements(ObjectInterfaceType::PowerContainer) )  // more battery?
             {
                 SetBusy(false);
                 UpdateInterface();
@@ -232,7 +234,7 @@ bool CAutoResearch::EventProcess(const Event &event)
                 m_speed    = 1.0f/1.0f;
                 return true;
             }
-            power = dynamic_cast<CPowerContainerObject*>(m_object->GetPower());
+            power = dynamic_cast<CPowerContainerObject*>(batteryObj);
             power->SetEnergyLevel(1.0f-m_progress);
 
             if ( m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
@@ -302,11 +304,11 @@ Error CAutoResearch::GetError()
         return ERR_BAT_VIRUS;
     }
 
-    if (m_object->GetPower() == nullptr || !m_object->GetPower()->Implements(ObjectInterfaceType::PowerContainer))
+    if (m_object->GetSlotContainedObject(0) == nullptr || !m_object->GetSlotContainedObject(0)->Implements(ObjectInterfaceType::PowerContainer))
     {
         return ERR_RESEARCH_POWER;
     }
-    CPowerContainerObject* power = dynamic_cast<CPowerContainerObject*>(m_object->GetPower());
+    CPowerContainerObject* power = dynamic_cast<CPowerContainerObject*>(m_object->GetSlotContainedObject(0));
     if ( power->GetCapacity() > 1.0f )
     {
         return ERR_RESEARCH_TYPE;

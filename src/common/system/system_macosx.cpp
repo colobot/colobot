@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2021, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -135,13 +135,8 @@ bool CSystemUtilsMacOSX::OpenWebsite(const std::string& url)
     int result = system(("open \"" + url + "\"").c_str()); // TODO: Test on macOS
     if (result != 0)
     {
-        GetLogger()->Error("Failed to open website: %s, error code: %i\n", website.c_str(), result);
+        GetLogger()->Error("Failed to open url: %s, error code: %i\n", url.c_str(), result);
         return false;
     }
     return true;
-}
-
-void CSystemUtilsMacOSX::Usleep(int usec)
-{
-    usleep(usec);
 }

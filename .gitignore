@@ -11,6 +11,8 @@ Makefile
 /src/libcolobotbase.a
 
 # Ignore the generated documentation
+CMakeDoxyfile.in
+CMakeDoxygenDefaults.cmake
 /doc
 /Doxyfile
 

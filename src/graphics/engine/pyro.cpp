@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2021, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -34,6 +34,8 @@
 
 #include "object/object_manager.h"
 #include "object/old_object.h"
+
+#include "object/interface/slotted_object.h"
 
 #include "object/motion/motionhuman.h"
 
@@ -127,9 +129,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
 
     // Seeking the position of the battery.
 
-    CObject* power = nullptr;
-    if (obj->Implements(ObjectInterfaceType::Powered))
-        power = dynamic_cast<CPoweredObject&>(*obj).GetPower();
+    CObject* power = GetObjectInPowerCellSlot(obj);
 
     if (power == nullptr)
     {
@@ -1385,25 +1385,16 @@ void CPyro::DeleteObject(bool primary, bool secondary)
          type != OBJECT_NUCLEAR &&
          type != OBJECT_ENERGY )
     {
-        if (m_object->Implements(ObjectInterfaceType::Powered))
+        if (m_object->Implements(ObjectInterfaceType::Slotted))
         {
-            CPoweredObject* poweredObject = dynamic_cast<CPoweredObject*>(m_object);
-            CObject* sub = poweredObject->GetPower();
-            if (sub != nullptr)
+            CSlottedObject* asSlotted = dynamic_cast<CSlottedObject*>(m_object);
+            for (int slot = asSlotted->GetNumSlots() - 1; slot >= 0; slot--)
             {
-                CObjectManager::GetInstancePointer()->DeleteObject(sub);
-                poweredObject->SetPower(nullptr);
-            }
-        }
-
-        if (m_object->Implements(ObjectInterfaceType::Carrier))
-        {
-            CCarrierObject* carrierObject = dynamic_cast<CCarrierObject*>(m_object);
-            CObject* sub = carrierObject->GetCargo();
-            if (sub != nullptr)
-            {
-                CObjectManager::GetInstancePointer()->DeleteObject(sub);
-                carrierObject->SetCargo(nullptr);
+                if (CObject* sub = asSlotted->GetSlotContainedObject(slot))
+                {
+                    CObjectManager::GetInstancePointer()->DeleteObject(sub);
+                    asSlotted->SetSlotContainedObject(slot, nullptr);
+                }
             }
         }
     }
@@ -1416,18 +1407,15 @@ void CPyro::DeleteObject(bool primary, bool secondary)
             CObject* transporter = dynamic_cast<CTransportableObject&>(*m_object).GetTransporter();
             if (transporter != nullptr)
             {
-                if (transporter->Implements(ObjectInterfaceType::Powered))
+                assert(transporter->Implements(ObjectInterfaceType::Slotted));
+                CSlottedObject* asSlotted = dynamic_cast<CSlottedObject*>(transporter);
+                for (int slotNum = asSlotted->GetNumSlots() - 1; slotNum >= 0; slotNum--)
                 {
-                    CPoweredObject* powered = dynamic_cast<CPoweredObject*>(transporter);
-                    if (powered->GetPower() == m_object)
-                        powered->SetPower(nullptr);
-                }
-
-                if (transporter->Implements(ObjectInterfaceType::Carrier))
-                {
-                    CCarrierObject* carrier = dynamic_cast<CCarrierObject*>(transporter);
-                    if (carrier->GetCargo() == m_object)
-                        carrier->SetCargo(nullptr);
+                    if (asSlotted->GetSlotContainedObject(slotNum) == m_object)
+                    {
+                        asSlotted->SetSlotContainedObject(slotNum, nullptr);
+                        break;
+                    }
                 }
             }
         }
@@ -2196,11 +2184,10 @@ void CPyro::BurnProgress()
         oldObj->SetPartRotation(m_burnPart[i].part, pos);
     }
 
-    if (m_object->Implements(ObjectInterfaceType::Powered))
+    // TODO: should this apply to every slot?
+    if (CObject* sub = GetObjectInPowerCellSlot(m_object)) // is there a battery?
     {
-        CObject* sub = dynamic_cast<CPoweredObject&>(*m_object).GetPower();
-        if (sub != nullptr)  // is there a battery?
-            sub->SetScaleY(1.0f - m_progress);  // complete flattening
+        sub->SetScaleY(1.0f - m_progress);  // complete flattening
     }
 }
 

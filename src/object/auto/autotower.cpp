@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2021, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@
 #include "object/object_manager.h"
 #include "object/old_object.h"
 
-#include "object/interface/powered_object.h"
+#include "object/interface/slotted_object.h"
 
 #include "physics/physics.h"
 
@@ -61,7 +61,7 @@ CAutoTower::CAutoTower(COldObject* object) : CAuto(object)
     m_time = 0.0f;
     m_lastUpdateTime = 0.0f;
 
-    assert(m_object->Implements(ObjectInterfaceType::Powered));
+    assert(m_object->GetNumSlots() == 1);
 }
 
 // Object's destructor.
@@ -125,13 +125,8 @@ bool CAutoTower::EventProcess(const Event &event)
         return true;
     }
 
-    CPowerContainerObject* power = nullptr;
-    float energy = 0.0f;
-    if ( m_object->GetPower() != nullptr && m_object->GetPower()->Implements(ObjectInterfaceType::PowerContainer) )
-    {
-        power = dynamic_cast<CPowerContainerObject*>(m_object->GetPower());
-        energy = power->GetEnergy();
-    }
+    CPowerContainerObject* power = GetObjectPowerCell(m_object);
+    float energy = power == nullptr ? 0.0f : power->GetEnergy();
 
     UpdateInterface(event.rTime);
 
@@ -321,12 +316,13 @@ Error CAutoTower::GetError()
         return ERR_BAT_VIRUS;
     }
 
-    if ( m_object->GetPower() == nullptr || !m_object->GetPower()->Implements(ObjectInterfaceType::PowerContainer) )
+    CPowerContainerObject *power = GetObjectPowerCell(m_object);
+    if ( power == nullptr )
     {
         return ERR_TOWER_POWER;  // no battery
     }
 
-    if ( dynamic_cast<CPowerContainerObject&>(*m_object->GetPower()).GetEnergy() < ENERGY_FIRE )
+    if ( power->GetEnergy() < ENERGY_FIRE )
     {
         return ERR_TOWER_ENERGY;  // not enough energy
     }

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2021, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -37,10 +37,9 @@
 #include "object/object.h"
 #include "object/object_manager.h"
 
-#include "object/interface/carrier_object.h"
 #include "object/interface/controllable_object.h"
 #include "object/interface/movable_object.h"
-#include "object/interface/powered_object.h"
+#include "object/interface/slotted_object.h"
 #include "object/interface/transportable_object.h"
 
 #include "physics/physics.h"
@@ -57,18 +56,15 @@ static void SetTransparency(CObject* obj, float value)
 {
     obj->SetTransparency(value);
 
-    if (obj->Implements(ObjectInterfaceType::Carrier))
+    if (obj->Implements(ObjectInterfaceType::Slotted))
     {
-        CObject* cargo = dynamic_cast<CCarrierObject&>(*obj).GetCargo();
-        if (cargo != nullptr)
-            cargo->SetTransparency(value);
-    }
-
-    if (obj->Implements(ObjectInterfaceType::Powered))
-    {
-        CObject* power = dynamic_cast<CPoweredObject&>(*obj).GetPower();
-        if (power != nullptr)
-            power->SetTransparency(value);
+        CSlottedObject *slotted = dynamic_cast<CSlottedObject*>(obj);
+        for(int slot = slotted->GetNumSlots()-1; slot >= 0; slot--)
+        {
+            CObject *contained = slotted->GetSlotContainedObject(slot);
+            if (contained != nullptr)
+                SetTransparency(contained, value);
+        }
     }
 }
 

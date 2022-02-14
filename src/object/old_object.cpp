@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2021, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -81,8 +81,7 @@ COldObject::COldObject(int id)
       CProgramStorageObjectImpl(m_implementedInterfaces, this),
       CProgrammableObjectImpl(m_implementedInterfaces, this),
       CJostleableObject(m_implementedInterfaces),
-      CCarrierObject(m_implementedInterfaces),
-      CPoweredObject(m_implementedInterfaces),
+      CSlottedObject(m_implementedInterfaces),
       CJetFlyingObject(m_implementedInterfaces),
       CControllableObject(m_implementedInterfaces),
       CPowerContainerObjectImpl(m_implementedInterfaces),
@@ -145,6 +144,8 @@ COldObject::COldObject(int id)
     m_gunGoalH = 0.0f;
     m_shieldRadius = 0.0f;
     m_magnifyDamage = 1.0f;
+    m_hasPowerSlot = false;
+    m_hasCargoSlot = false;
 
     m_character = Character();
     m_character.wheelFront = 1.0f;
@@ -774,16 +775,33 @@ void COldObject::SetType(ObjectType type)
         m_type == OBJECT_MOBILEst ||
         m_type == OBJECT_TOWER    ||
         m_type == OBJECT_RESEARCH ||
-        m_type == OBJECT_ENERGY   ||
-        m_type == OBJECT_LABO     ||
-        m_type == OBJECT_NUCLEAR   )
+        m_type == OBJECT_ENERGY   || // TODO not actually a power cell slot
+        m_type == OBJECT_LABO     || // TODO not actually a power cell slot
+        m_type == OBJECT_NUCLEAR  ) // TODO not actually a power cell slot
     {
-        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Powered)] = true;
+        m_hasPowerSlot = true;
     }
     else
     {
-        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Powered)] = false;
+        m_hasPowerSlot = false;
     }
+
+    if ( m_type == OBJECT_HUMAN ||
+         m_type == OBJECT_TECH ||
+         m_type == OBJECT_MOBILEfa || // Grabbers
+         m_type == OBJECT_MOBILEta ||
+         m_type == OBJECT_MOBILEwa ||
+         m_type == OBJECT_MOBILEia ||
+         m_type == OBJECT_MOBILEsa) // subber
+    {
+        m_hasCargoSlot = true;
+    }
+    else
+    {
+        m_hasCargoSlot = false;
+    }
+
+    m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Slotted)] = (m_hasPowerSlot || m_hasCargoSlot);
 
     // TODO: Hacking some more
     if ( m_type == OBJECT_MOBILEtg ||
@@ -1226,7 +1244,7 @@ void COldObject::Read(CLevelParserLine* line)
             std::string op = "autoValue" + boost::lexical_cast<std::string>(i+1); // autoValue1..autoValue5
             m_auto->SetValue(i, line->GetParam(op)->AsFloat(0.0f));
         }
-        m_auto->SetString(const_cast<char*>(line->GetParam("autoString")->AsPath("ai", "").c_str()));
+        m_auto->SetString(const_cast<char*>(line->GetParam("autoString")->AsString("").c_str()));
 
         int i = line->GetParam("run")->AsInt(-1);
         if (i != -1)
@@ -1662,38 +1680,134 @@ void COldObject::SetMasterParticle(int part, int parti)
 
 // Management of the stack transport.
 
-void COldObject::SetPower(CObject* power)
-{
-    m_power = power;
-}
 
-CObject* COldObject::GetPower()
+int COldObject::GetNumSlots()
 {
-    return m_power;
+    assert(m_hasPowerSlot || m_hasCargoSlot); // otherwise implemented[CSlottedObject] is false
+    return (m_hasPowerSlot ? 1 : 0) + (m_hasCargoSlot ? 1 : 0);
 }
+int COldObject::MapPseudoSlot(Pseudoslot pseudoslot)
+{
+    switch (pseudoslot)
+    {
+    case Pseudoslot::POWER:
+        return m_hasPowerSlot ? 0 : -1;
+    case Pseudoslot::CARRYING:
+        return m_hasCargoSlot ? (m_hasPowerSlot ? 1 : 0) : -1;
+    default:
+        return -1;
+    }
+}
+Math::Vector COldObject::GetSlotPosition(int slotNum)
+{
+    if (slotNum == 0 && m_hasPowerSlot)
+        return m_powerPosition;
+    else
+    {
+        assert(m_hasCargoSlot && slotNum == (m_hasPowerSlot ? 1 : 0));
+        int grabPartNum;
+        Math::Vector grabRelPos;
+        // See CTaskManip::TransporterTakeObject call to SetTransporterPart and SetPosition
+        switch (m_type)
+        {
+        case OBJECT_HUMAN:
+        case OBJECT_TECH:
+            grabPartNum = 4;
+            grabRelPos = Math::Vector(1.7f, -0.5f, 1.1f);
+            break;
+        case OBJECT_MOBILEsa: // subber
+            grabPartNum = 2;
+            grabRelPos = Math::Vector(1.1f, -1.0f, 1.0f);
+            break;
+        case OBJECT_MOBILEfa: // Grabbers
+        case OBJECT_MOBILEta:
+        case OBJECT_MOBILEwa:
+        case OBJECT_MOBILEia:
+            grabPartNum = 3;
+            grabRelPos = Math::Vector(4.7f, 0.0f, 0.0f);
+            break;
+        default: // unreachable, only the above objects have cargo slots
+            assert(!m_hasCargoSlot);
+            return m_powerPosition;
+        }
 
+        return Math::Transform(GetWorldMatrix(0)->Inverse(), Math::Transform(*GetWorldMatrix(grabPartNum), grabRelPos));
+    }
+}
+float COldObject::GetSlotAngle(int slotNum)
+{
+    if (slotNum == 0 && m_hasPowerSlot)
+    {
+        switch (m_type)
+        {
+        case OBJECT_TOWER:
+        case OBJECT_RESEARCH:
+        case OBJECT_ENERGY:
+        case OBJECT_LABO:
+        case OBJECT_NUCLEAR:
+            return 0;
+        default: // robots
+            return Math::PI;
+        }
+    }
+    else
+    {
+        assert(m_hasCargoSlot && slotNum == (m_hasPowerSlot ? 1 : 0));
+        return 0;
+    }
+}
+float COldObject::GetSlotAcceptanceAngle(int slotNum)
+{
+    if (slotNum == 0 && m_hasPowerSlot)
+    {
+        switch (m_type)
+        {
+        case OBJECT_TOWER:
+        case OBJECT_RESEARCH:
+            return 45.0f*Math::PI/180.0f;
+        case OBJECT_ENERGY:
+            return 90.0f*Math::PI/180.0f;
+        case OBJECT_LABO:
+            return 120.0f*Math::PI/180.0f;
+        case OBJECT_NUCLEAR:
+            return 45.0f*Math::PI/180.0f;
+        default:
+            return 45.0f*Math::PI/180.0f;
+        }
+    }
+    else
+    {
+        assert(m_hasCargoSlot && slotNum == (m_hasPowerSlot ? 1 : 0));
+        return 0; // no acceptance angle for cargo slot
+    }
+}
+CObject *COldObject::GetSlotContainedObject(int slotNum)
+{
+    if (slotNum == 0 && m_hasPowerSlot)
+        return m_power;
+    else
+    {
+        assert(m_hasCargoSlot && slotNum == (m_hasPowerSlot ? 1 : 0));
+        return m_cargo;
+    }
+}
+void COldObject::SetSlotContainedObject(int slotNum, CObject *object)
+{
+    if (slotNum == 0 && m_hasPowerSlot)
+        m_power = object;
+    else
+    {
+        assert(m_hasCargoSlot && slotNum == (m_hasPowerSlot ? 1 : 0));
+        m_cargo = object;
+    }
+}
+// not part of CSlottedObject; just used for initialization
 void COldObject::SetPowerPosition(const Math::Vector& powerPosition)
 {
     m_powerPosition = powerPosition;
 }
 
-Math::Vector COldObject::GetPowerPosition()
-{
-    return m_powerPosition;
-}
 
-
-// Management of the object transport.
-
-void COldObject::SetCargo(CObject* cargo)
-{
-    m_cargo = cargo;
-}
-
-CObject* COldObject::GetCargo()
-{
-    return m_cargo;
-}
 
 // Management of the object "transporter" that transports it.
 

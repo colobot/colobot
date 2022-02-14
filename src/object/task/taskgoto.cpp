@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2021, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -33,6 +33,7 @@
 #include "object/object_manager.h"
 #include "object/old_object.h"
 
+#include "object/interface/slotted_object.h"
 #include "object/interface/transportable_object.h"
 
 #include "object/subclass/base_alien.h"
@@ -1201,8 +1202,11 @@ bool CTaskGoto::AdjustTarget(CObject* pObj, Math::Vector &pos, float &distance)
          type == OBJECT_MOBILEst ||
          type == OBJECT_MOBILEdr )
     {
-        assert(pObj->Implements(ObjectInterfaceType::Powered));
-        pos = dynamic_cast<CPoweredObject&>(*pObj).GetPowerPosition();
+        CSlottedObject *asSlotted = dynamic_cast<CSlottedObject*>(pObj);
+        int powerSlotIndex = asSlotted->MapPseudoSlot(CSlottedObject::Pseudoslot::POWER);
+        assert(powerSlotIndex >= 0);
+        pos = asSlotted->GetSlotPosition(powerSlotIndex);
+        // TODO: this only works for a certain slot angle
         pos.x -= TAKE_DIST+TAKE_DIST_OTHER+distance;
         mat = pObj->GetWorldMatrix(0);
         pos = Transform(*mat, pos);

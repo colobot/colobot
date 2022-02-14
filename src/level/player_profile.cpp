@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2020, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2021, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -148,14 +148,14 @@ bool CPlayerProfile::Create()
 {
     if (!CResourceManager::DirectoryExists(GetSaveDir()))
     {
-        return CResourceManager::CreateDirectory(GetSaveDir());
+        return CResourceManager::CreateNewDirectory(GetSaveDir());
     }
     return true;
 }
 
 bool CPlayerProfile::Delete()
 {
-    return CResourceManager::RemoveDirectory(GetSaveDir());
+    return CResourceManager::RemoveExistingDirectory(GetSaveDir());
 }
 
 std::string CPlayerProfile::GetName()
@@ -507,7 +507,7 @@ void CPlayerProfile::SaveScene(std::string dir, std::string info)
 {
     if (!CResourceManager::DirectoryExists(dir))
     {
-        CResourceManager::CreateDirectory(dir);
+        CResourceManager::CreateNewDirectory(dir);
     }
 
     CRobotMain::GetInstancePointer()->IOWriteScene(dir + "/data.sav", dir + "/cbot.run", dir + "/screen.png", info.c_str());
@@ -568,7 +568,7 @@ bool CPlayerProfile::DeleteScene(std::string dir)
 {
     if (CResourceManager::DirectoryExists(dir))
     {
-        return CResourceManager::RemoveDirectory(dir);
+        return CResourceManager::RemoveExistingDirectory(dir);
     }
     return false;
 }
