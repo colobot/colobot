@@ -184,7 +184,12 @@ int StrUtils::Utf8CharSizeAt(const std::string &str, unsigned int pos)
     if((c & 0b1111'1000) == 0b1111'0000)
         return 4;
 
-    return 1;
+    // Invalid char - unexpected continuation byte
+    if (isUtf8ContinuationByte(c))
+        throw std::invalid_argument("Unexpected UTF-8 continuation byte");
+
+    // (c & 0b1111'1000) == 0b1111'1000 is true here
+    throw std::invalid_argument("Byte value has no sense in UTF-8");
 }
 
 std::size_t StrUtils::Utf8StringLength(const std::string &str)
