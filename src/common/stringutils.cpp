@@ -156,11 +156,17 @@ std::wstring StrUtils::Utf8StringToUnicode(const std::string &str)
 {
     std::wstring result;
     unsigned int pos = 0;
+    int len;
     while (pos < str.size())
     {
-        int len = StrUtils::Utf8CharSizeAt(str, pos);
-        if (len == 0)
+        try
+        {
+            len = StrUtils::Utf8CharSizeAt(str, pos);
+        }
+        catch (std::out_of_range &e)
+        {
             break;
+        }
 
         std::string ch = str.substr(pos, len);
         result += static_cast<wchar_t>(StrUtils::Utf8CharToUnicode(ch));
@@ -172,7 +178,7 @@ std::wstring StrUtils::Utf8StringToUnicode(const std::string &str)
 int StrUtils::Utf8CharSizeAt(const std::string &str, unsigned int pos)
 {
     if (pos >= str.size())
-        return 0;
+        throw std::out_of_range("Index is greater than size");
 
     const char c = str[pos];
     if((c & 0b1000'0000) == 0b0000'0000)
