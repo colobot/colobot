@@ -1912,18 +1912,42 @@ Error CTaskGoto::PathFindingSearch(const Math::Vector &start, const Math::Vector
                 if (btX == goalX && btY == goalY)
                 {
                     m_bmPoints[m_bmTotal] = goal;
-                    break;
                 }
-                m_bmPoints[m_bmTotal].x = (btX + 0.5f) * BM_DIM_STEP - 1600.f;
-                m_bmPoints[m_bmTotal].z = (btY + 0.5f) * BM_DIM_STEP - 1600.f;
+                else
+                {
+                    m_bmPoints[m_bmTotal].x = (btX + 0.5f) * BM_DIM_STEP - 1600.f;
+                    m_bmPoints[m_bmTotal].z = (btY + 0.5f) * BM_DIM_STEP - 1600.f;
+                }
 
                 if (bestDistance == 0)
                 {
+                    if (goalRadius > 0.0f)
+                    {
+                        // Find a more exact position by repeatedly bisecting the interval.
+                        const float r2 = goalRadius * goalRadius;
+                        Math::Vector inside = m_bmPoints[m_bmTotal] - goal;
+                        Math::Vector outside = m_bmPoints[m_bmTotal-1] - goal;
+                        Math::Vector mid = (inside + outside) * 0.5f;
+                        for (int i = 0; i < 10; ++i)
+                        {
+                            if (mid.x*mid.x + mid.z*mid.z < r2)
+                            {
+                                inside = mid;
+                            }
+                            else
+                            {
+                                outside = mid;
+                            }
+                            mid = (inside + outside) * 0.5f;
+                        }
+                        m_bmPoints[m_bmTotal] = mid + goal;
+                    }
                     break;
                 }
             }
 
-            GetLogger()->Debug("Found path to goal with %d nodes and %d cost\n", m_bmTotal + 1, totalDistance);
+            const float distanceToGoal = DistanceProjected(m_bmPoints[m_bmTotal], goal);
+            GetLogger()->Debug("Found path to goal with %d nodes and %d cost. Final distance to goal: %f\n", m_bmTotal + 1, totalDistance, distanceToGoal);
             GetLogger()->Debug("m_bmStep: %d\n", m_bmStep);
             GetLogger()->Debug("m_bfsQueueMin: %d mod %d = %d\n", m_bfsQueueMin, NUMQUEUEBUCKETS, m_bfsQueueMin % NUMQUEUEBUCKETS);
             GetLogger()->Debug("m_bfsQueueCountPushed: %d\n", m_bfsQueueCountPushed);
