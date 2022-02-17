@@ -48,7 +48,6 @@ const float FLY_DEF_HEIGHT  = 50.0f;    // default flying height
 
 // Settings that define goto() accuracy:
 const float BM_DIM_STEP     = 5.0f;     // Size of one pixel on the bitmap. Setting 5 means that 5x5 square (in game units) will be represented by 1 px on the bitmap. Decreasing this value will make a bigger bitmap, and may increase accuracy. TODO: Check how it actually impacts goto() accuracy
-const float BEAM_ACCURACY   = 5.0f;    // higher value = more accurate, but slower
 const float SAFETY_MARGIN   = 1.5f;     // Smallest distance between two objects. Smaller = less "no route to destination", but higher probability of collisions between objects.
 // Changing SAFETY_MARGIN (old value was 4.0f) seems to have fixed many issues with goto(). TODO: maybe we could make it even smaller? Did changing it introduce any new bugs?
 
