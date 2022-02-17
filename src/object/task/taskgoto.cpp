@@ -52,7 +52,7 @@ const float BEAM_ACCURACY   = 5.0f;    // higher value = more accurate, but slow
 const float SAFETY_MARGIN   = 1.5f;     // Smallest distance between two objects. Smaller = less "no route to destination", but higher probability of collisions between objects.
 // Changing SAFETY_MARGIN (old value was 4.0f) seems to have fixed many issues with goto(). TODO: maybe we could make it even smaller? Did changing it introduce any new bugs?
 
-const int NB_ITER = 2000;  // Maximum number of iterations you have the right to make before temporarily interrupt in order not to lower the framerate.
+const int NB_ITER = 200;  // Maximum number of iterations you have the right to make before temporarily interrupt in order not to lower the framerate.
 
 
 
