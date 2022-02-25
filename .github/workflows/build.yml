@@ -14,7 +14,7 @@ jobs:
       fail-fast: false
     steps:
     - name: Install Colobot dependencies
-      run: sudo apt-get update && sudo apt-get install -y --no-install-recommends build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-regex-dev libphysfs-dev gettext git po4a vorbis-tools librsvg2-bin xmlstarlet libglm-dev
+      run: sudo apt-get update && sudo apt-get install -y --no-install-recommends build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-regex-dev libphysfs-dev gettext git po4a vorbis-tools librsvg2-bin xmlstarlet libglm-dev nlohmann-json-dev
       if: matrix.container == ''
     - uses: actions/checkout@v2
     - name: Checkout the Google Test submodule
@@ -100,9 +100,9 @@ jobs:
       with:
         vcpkgGitCommitId: '210240b399fbc2f1363f4103b6a93629c207d7e3'
         vcpkgTriplet: ${{ matrix.vcpkg_triplet }}
-        vcpkgArguments: 'boost-system boost-filesystem boost-regex boost-lexical-cast boost-bimap boost-algorithm boost-property-tree boost-optional boost-range sdl2 sdl2-ttf sdl2-image glew libpng libwebp tiff gettext libsndfile libvorbis libogg openal-soft physfs glm'
+        vcpkgArguments: 'boost-system boost-filesystem boost-regex boost-lexical-cast boost-bimap boost-algorithm boost-property-tree boost-optional boost-range sdl2 sdl2-ttf sdl2-image glew libpng libwebp tiff gettext libsndfile libvorbis libogg openal-soft physfs glm nlohmann_json'
         # SHA-256 hash of the list of packages above, for caching purposes
-        appendedCacheKey: '83b5e9a4328552da34acd5a2fb62a8c000261fd04755ff2368f967774e0db7cd'
+        appendedCacheKey: '24c7d08753da8e3fcfe2ceec90d4c7ba0aff3f9ad9068f43573b47b10cb9490b'
     - name: Install external tools
       working-directory: ${{ github.workspace }}
       run: |
@@ -158,7 +158,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Install Colobot dependencies
-      run: sudo apt-get update && sudo apt-get install -y --no-install-recommends build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-regex-dev libphysfs-dev gettext git po4a vorbis-tools librsvg2-bin xmlstarlet doxygen graphviz libglm-dev
+      run: sudo apt-get update && sudo apt-get install -y --no-install-recommends build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-regex-dev libphysfs-dev gettext git po4a vorbis-tools librsvg2-bin xmlstarlet doxygen graphviz libglm-dev nlohmann-json-dev
     - uses: actions/checkout@v2
     - name: Create build directory
       run: cmake -E make_directory build

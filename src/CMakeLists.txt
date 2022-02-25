@@ -490,6 +490,7 @@ target_link_libraries(colobotbase PUBLIC
     Boost::regex
     PhysFS::PhysFS
     SndFile::sndfile
+    nlohmann_json::nlohmann_json
 )
 
 # Optional libraries

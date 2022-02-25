@@ -314,6 +314,7 @@ find_package(PNG 1.2 REQUIRED)
 find_package(Gettext REQUIRED)
 find_package(PhysFS REQUIRED)
 find_package(glm CONFIG REQUIRED)
+find_package(nlohmann_json CONFIG REQUIRED)
 
 # Add target alias glm::glm for older versions of the library
 if(NOT TARGET glm::glm)
