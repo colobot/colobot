@@ -86,9 +86,6 @@ bool COldModelManager::LoadModel(const std::string& fileName, bool mirrored, int
     if (mirrored)
         Mirror(modelInfo.triangles);
 
-    //if (variant != 0)
-    //    ChangeVariant(modelInfo.triangles, variant);
-
     FileInfo fileInfo(fileName, mirrored, variant);
     m_models[fileInfo] = modelInfo;
 
@@ -191,26 +188,6 @@ void COldModelManager::Mirror(std::vector<ModelTriangle>& triangles)
         triangles[i].p1.normal.z = -triangles[i].p1.normal.z;
         triangles[i].p2.normal.z = -triangles[i].p2.normal.z;
         triangles[i].p3.normal.z = -triangles[i].p3.normal.z;
-    }
-}
-
-void COldModelManager::ChangeVariant(std::vector<ModelTriangle>& triangles, int variant)
-{
-    for (int i = 0; i < static_cast<int>( triangles.size() ); i++)
-    {
-        if (triangles[i].tex1Name == "base1.png"   ||
-            triangles[i].tex1Name == "convert.png" ||
-            triangles[i].tex1Name == "derrick.png" ||
-            triangles[i].tex1Name == "factory.png" ||
-            triangles[i].tex1Name == "lemt.png"    ||
-            triangles[i].tex1Name == "roller.png"  ||
-            triangles[i].tex1Name == "rollert.png" ||
-            triangles[i].tex1Name == "search.png"  ||
-            triangles[i].tex1Name == "drawer.png"  ||
-            triangles[i].tex1Name == "subm.png"     )
-        {
-            //triangles[i].tex1Name += StrUtils::ToString<int>(variant);
-        }
     }
 }
 

@@ -83,8 +83,6 @@ public:
 protected:
     //! Mirrors the model along the Z axis
     void Mirror(std::vector<ModelTriangle>& triangles);
-    //! Changes variant
-    void ChangeVariant(std::vector<ModelTriangle>& triangles, int variant);
 
 private:
     struct ModelInfo

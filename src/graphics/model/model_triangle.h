@@ -19,14 +19,11 @@
 
 #pragma once
 
-#include "graphics/core/color.h"
-#include "graphics/core/transparency.h"
+#include "graphics/core/material.h"
 #include "graphics/core/vertex.h"
 
 namespace Gfx
 {
-
-enum class AlphaMode : unsigned char;
 
 /**
  * \struct ModelTriangle
@@ -40,19 +37,8 @@ struct ModelTriangle
     Vertex3D  p2;
     //! 3rd vertex
     Vertex3D  p3;
-    //! Name of 1st texture
-    std::string tex1Name;
-    //! Name of 2nd texture
-    std::string tex2Name;
-    //! If true, 2nd texture will be taken from current engine setting
-    bool variableTex2 = false;
-    //! Whether to render as double-sided surface
-    bool doubleSided = false;
-    //! How to deal with texture transparency
-    AlphaMode alphaMode = {};
-    float alphaThreshold = 0.5f;
-    //! Special marking
-    std::string tag = "";
+    //! Material
+    Material material;
 };
 
 } // namespace Gfx

@@ -188,10 +188,10 @@ void DumpInfo(const CModel& model)
         bboxMax.y = Math::Max(t.p1.position.y, t.p2.position.y, t.p3.position.y, bboxMax.y);
         bboxMax.z = Math::Max(t.p1.position.z, t.p2.position.z, t.p3.position.z, bboxMax.z);
 
-        texs1[t.tex1Name] += 1;
-        if (! t.tex2Name.empty())
-            texs2[t.tex2Name] += 1;
-        if (t.variableTex2)
+        texs1[t.material.albedoTexture] += 1;
+        if (! t.material.detailTexture.empty())
+            texs2[t.material.detailTexture] += 1;
+        if (t.material.variableDetail)
             variableTexs2 += 1;
     }
 

@@ -4685,29 +4685,17 @@ void CEngine::AddBaseObjTriangles(int baseObjRank, const std::vector<Gfx::ModelT
         vertices[1] = triangle.p2;
         vertices[2] = triangle.p3;
 
-        Material material;
+        Material material = triangle.material;
+        material.albedoTexture = "objects/" + material.albedoTexture;
 
-        std::string tex1Name;
-        if (!triangle.tex1Name.empty())
-            material.albedoTexture = "objects/" + triangle.tex1Name;
-
-        std::string tex2Name;
-        if (triangle.variableTex2)
+        if (material.variableDetail)
             material.detailTexture = GetSecondTexture();
-        else
-            material.detailTexture = triangle.tex2Name;
-
-        material.alphaMode = triangle.alphaMode;
-        material.alphaThreshold = triangle.alphaThreshold;
-        material.cullFace = triangle.doubleSided ? CullFace::NONE : CullFace::BACK;
-        material.tag = triangle.tag;
 
         EngineBaseObjDataTier& data = AddLevel(p1, EngineTriangleType::TRIANGLES, material);
 
         data.vertices.insert(data.vertices.end(), vertices.begin(), vertices.end());
 
         data.updateStaticBuffer = true;
-        m_updateStaticBuffers = true;
 
         for (size_t i = 0; i < vertices.size(); i++)
         {
@@ -4723,6 +4711,8 @@ void CEngine::AddBaseObjTriangles(int baseObjRank, const std::vector<Gfx::ModelT
 
         p1.totalTriangles += vertices.size() / 3;
     }
+
+    m_updateStaticBuffers = true;
 }
 
 void CEngine::UpdateObjectShadowSpotNormal(int objRank)

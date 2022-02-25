@@ -203,9 +203,9 @@ void ModelInput::ReadBinaryModelV1AndV2(CModel &model, std::istream &stream)
             triangle.p1 = t.p1;
             triangle.p2 = t.p2;
             triangle.p3 = t.p3;
-            triangle.tex1Name = t.tex1Name;
-            triangle.tex2Name = t.tex2Name;
-            triangle.variableTex2 = t.variableTex2;
+            triangle.material.albedoTexture = t.tex1Name;
+            triangle.material.detailTexture = t.tex2Name;
+            triangle.material.variableDetail = t.variableTex2;
             ConvertFromOldRenderState(triangle, t.state);
 
             mesh.AddTriangle(triangle);
@@ -300,9 +300,9 @@ void ModelInput::ReadTextModelV1AndV2(CModel &model, std::istream &stream)
         triangle.p1 = t.p1;
         triangle.p2 = t.p2;
         triangle.p3 = t.p3;
-        triangle.tex1Name = t.tex1Name;
-        triangle.tex2Name = t.tex2Name;
-        triangle.variableTex2 = t.variableTex2;
+        triangle.material.albedoTexture = t.tex1Name;
+        triangle.material.detailTexture = t.tex2Name;
+        triangle.material.variableDetail = t.variableTex2;
         ConvertFromOldRenderState(triangle, t.state);
 
         mesh.AddTriangle(triangle);
@@ -393,16 +393,17 @@ CModelMesh ModelInput::ReadTextMesh(std::istream& stream)
         t.p2.color = color;
         t.p3.color = color;
 
-        t.tex1Name = ReadLineString(stream, "tex1");
-        t.tex2Name = ReadLineString(stream, "tex2");
-        t.variableTex2 = ReadLineString(stream, "var_tex2") == std::string("Y");
+        t.material.albedoTexture = ReadLineString(stream, "tex1");
+        t.material.detailTexture = ReadLineString(stream, "tex2");
+        t.material.variableDetail = ReadLineString(stream, "var_tex2") == std::string("Y");
 
-        t.alphaMode = ParseTransparentMode(ReadLineString(stream, "trans_mode"));
-        t.tag = ParseSpecialMark(ReadLineString(stream, "mark"));
-        t.doubleSided = ReadLineString(stream, "dbl_side") == std::string("Y");
+        t.material.alphaMode = ParseTransparentMode(ReadLineString(stream, "trans_mode"));
+        t.material.tag = ParseSpecialMark(ReadLineString(stream, "mark"));
+        bool doubleSided = ReadLineString(stream, "dbl_side") == std::string("Y");
+        t.material.cullFace = doubleSided ? CullFace::NONE : CullFace::BACK;
 
-        if (t.alphaMode != AlphaMode::OPAQUE)
-            t.alphaThreshold = 0.5f;
+        if (t.material.alphaMode != AlphaMode::OPAQUE)
+            t.material.alphaThreshold = 0.5f;
 
         mesh.AddTriangle(t);
     }
@@ -602,13 +603,13 @@ std::vector<ModelTriangle> ModelInput::ReadOldModelV3(std::istream &stream, int 
         ConvertOldTex1Name(triangle, t.texName);
 
         ConvertFromOldRenderState(triangle, t.state);
-        triangle.variableTex2 = t.texNum2 == 1;
+        triangle.material.variableDetail = t.texNum2 == 1;
 
-        if (!triangle.variableTex2 && t.texNum2 != 0)
+        if (!triangle.material.variableDetail && t.texNum2 != 0)
         {
             char tex2Name[20] = { 0 };
             std::sprintf(tex2Name, "dirty%.2d.png", t.texNum2);
-            triangle.tex2Name = tex2Name;
+            triangle.material.detailTexture = tex2Name;
         }
 
         triangles.push_back(triangle);
@@ -633,31 +634,32 @@ ModelLODLevel ModelInput::MinMaxToLodLevel(float min, float max)
 
 void ModelInput::ConvertOldTex1Name(ModelTriangle& triangle, const char* tex1Name)
 {
-    triangle.tex1Name = tex1Name;
-    boost::replace_all(triangle.tex1Name, "bmp", "png");
-    boost::replace_all(triangle.tex1Name, "tga", "png");
+    triangle.material.albedoTexture = tex1Name;
+    boost::replace_all(triangle.material.albedoTexture, "bmp", "png");
+    boost::replace_all(triangle.material.albedoTexture, "tga", "png");
 }
 
 void ModelInput::ConvertFromOldRenderState(ModelTriangle& triangle, int state)
 {
-    if (triangle.tex1Name == "plant.png" || (state & static_cast<int>(ModelRenderState::Alpha)) != 0)
+    if (triangle.material.albedoTexture == "plant.png" || (state & static_cast<int>(ModelRenderState::Alpha)) != 0)
     {
-        triangle.alphaMode = AlphaMode::MASK;
-        triangle.alphaThreshold = 0.5f;
+        triangle.material.alphaMode = AlphaMode::MASK;
+        triangle.material.alphaThreshold = 0.5f;
     }
     else
-        triangle.alphaMode = AlphaMode::OPAQUE;
+        triangle.material.alphaMode = AlphaMode::OPAQUE;
 
     if ((state & static_cast<int>(ModelRenderState::Part1)) != 0)
-        triangle.tag = "tracker_right";
+        triangle.material.tag = "tracker_right";
     else if ((state & static_cast<int>(ModelRenderState::Part2)) != 0)
-        triangle.tag = "tracker_left";
+        triangle.material.tag = "tracker_left";
     else if ((state & static_cast<int>(ModelRenderState::Part3)) != 0)
-        triangle.tag = "energy";
+        triangle.material.tag = "energy";
     else
-        triangle.tag = "";
+        triangle.material.tag = "";
 
-    triangle.doubleSided = (state & static_cast<int>(ModelRenderState::TwoFace)) != 0;
+    bool doubleSided = (state & static_cast<int>(ModelRenderState::TwoFace)) != 0;
+    triangle.material.cullFace = doubleSided ? CullFace::NONE : CullFace::BACK;
 }
 
 Vertex3D ModelInput::ReadBinaryVertex(std::istream& stream)
