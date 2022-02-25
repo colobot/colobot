@@ -1112,7 +1112,14 @@ int CText::GetCharSizeAt(Gfx::FontType font, const std::string& text, unsigned i
     }
     else
     {
-        len = StrUtils::Utf8CharSizeAt(text, index);
+        try
+        {
+            len = StrUtils::Utf8CharSizeAt(text, index);
+        }
+        catch (std::invalid_argument &e)
+        {
+            len = 1;
+        }
     }
     return len;
 }

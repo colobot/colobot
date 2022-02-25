@@ -27,6 +27,7 @@
 
 #include "common/logger.h"
 #include "common/make_unique.h"
+#include "common/stringutils.h"
 
 #include "common/resources/inputstream.h"
 #include "common/resources/outputstream.h"
@@ -492,7 +493,10 @@ bool CEdit::EventProcess(const Event &event)
     if ( event.type == EVENT_TEXT_INPUT && !bControl && m_bFocus )
     {
         auto data = event.GetData<TextInputData>();
-        Insert(data->text[0]); // TODO: insert utf-8 char
+        for ( char c : data->text )
+        {
+            Insert(c);
+        }
         SendModifEvent();
         return true;
     }
@@ -2258,7 +2262,7 @@ void CEdit::MoveChar(int move, bool bWord, bool bSelect)
 {
     int     character;
 
-    if ( move == -1 )  // back?
+    if ( move == -1 )  // back
     {
         if ( bWord )
         {
@@ -2303,12 +2307,18 @@ void CEdit::MoveChar(int move, bool bWord, bool bSelect)
         }
         else
         {
-            m_cursor1 --;
-            if ( m_cursor1 < 0 )  m_cursor1 = 0;
+            if ( m_cursor1 > 0 )
+            {
+                m_cursor1 --;
+                while ( m_cursor1 > 0 && StrUtils::isUtf8ContinuationByte(m_text[m_cursor1]) )
+                {
+                    m_cursor1 --;
+                }
+            }
         }
     }
 
-    if ( move == 1 )  // advance?
+    if ( move == 1 )  // advance
     {
         if ( bWord )
         {
@@ -2353,8 +2363,14 @@ void CEdit::MoveChar(int move, bool bWord, bool bSelect)
         }
         else
         {
-            m_cursor1 ++;
-            if ( m_cursor1 > m_len )  m_cursor1 = m_len;
+            if ( m_cursor1 < m_len )
+            {
+                m_cursor1 ++;
+                while ( m_cursor1 < m_len && StrUtils::isUtf8ContinuationByte(m_text[m_cursor1]) )
+                {
+                    m_cursor1 ++;
+                }
+            }
         }
     }
 
@@ -2784,6 +2800,11 @@ void CEdit::DeleteOne(int dir)
     }
 
     if ( m_cursor1 > m_cursor2 )  Math::Swap(m_cursor1, m_cursor2);
+
+    // Expands selection to delete integer number of UTF-8 symbols
+    while ( m_cursor1 > 0     && StrUtils::isUtf8ContinuationByte(m_text[m_cursor1]) )  m_cursor1 --;
+    while ( m_cursor2 < m_len && StrUtils::isUtf8ContinuationByte(m_text[m_cursor2]) )  m_cursor2 ++;
+
     hole = m_cursor2-m_cursor1;
     end = m_len-hole;
     for ( i=m_cursor1 ; i<end ; i++ )
