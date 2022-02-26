@@ -320,8 +320,13 @@ if(NOT TARGET glm::glm)
     add_library(glm::glm ALIAS glm)
 endif()
 
-add_subdirectory(lib/json)
-find_package(nlohmann_json CONFIG REQUIRED)
+find_package(nlohmann_json 3.10 QUIET)
+
+if(NOT nlohmann_json_FOUND)
+    message(STATUS "Using nlohmann_json git submodule")
+    set(JSON_BuildTests OFF CACHE INTERNAL "")
+    add_subdirectory(lib/json)
+endif()
 
 set(Boost_USE_STATIC_LIBS ${BOOST_STATIC})
 set(Boost_USE_MULTITHREADED ON)
