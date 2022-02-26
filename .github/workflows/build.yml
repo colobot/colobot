@@ -19,6 +19,8 @@ jobs:
     - uses: actions/checkout@v2
     - name: Checkout the Google Test submodule
       run: git submodule update --init -- lib/googletest
+    - name: Checkout the nlohmann json submodule
+      run: git submodule update --init -- lib/json
     - name: Create build directory
       run: cmake -E make_directory build
     - name: Run CMake (for Linux)
@@ -89,6 +91,8 @@ jobs:
     - uses: actions/checkout@v2
     - name: Checkout the Google Test submodule
       run: git submodule update --init -- lib/googletest
+    - name: Checkout the nlohmann json submodule
+      run: git submodule update --init -- lib/json
     - name: Install Ninja
       uses: seanmiddleditch/gha-setup-ninja@master
     - name: Setup VS Environment
