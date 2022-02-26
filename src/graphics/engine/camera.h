@@ -45,7 +45,7 @@ enum class TransparencyMode : unsigned char;
 /**
   \enum CameraType
   \brief Type of camera */
-enum CameraType
+enum CameraType : unsigned char
 {
     //! Undefined
     CAM_TYPE_NULL = 0,

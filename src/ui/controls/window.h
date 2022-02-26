@@ -27,7 +27,7 @@
 
 namespace Gfx
 {
-enum EngineMouseType;
+enum EngineMouseType : unsigned char;
 }
 
 namespace Ui

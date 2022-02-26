@@ -81,7 +81,7 @@ enum class TransparencyMode : unsigned char;
  * \enum EngineTriangleType
  * \brief Type of triangles drawn for engine objects
  */
-enum class EngineTriangleType
+enum class EngineTriangleType : unsigned char
 {
     //! Triangles
     TRIANGLES = 1,
@@ -92,7 +92,7 @@ enum class EngineTriangleType
 /**
   \enum EngineObjectType
   \brief Class of graphics engine object */
-enum EngineObjectType
+enum EngineObjectType : unsigned char
 {
     //! Object doesn't exist
     ENG_OBJTYPE_NULL        = 0,
@@ -224,7 +224,7 @@ struct EngineGroundSpot
  * \enum EngineGroundMarkPhase
  * \brief Phase of life of an EngineGroundMark
  */
-enum EngineGroundMarkPhase
+enum EngineGroundMarkPhase : unsigned char
 {
     //! Null phase
     ENG_GR_MARK_PHASE_NULL = 0,
@@ -279,7 +279,7 @@ struct EngineGroundMark
  * \enum EngineTextureMapping
  * \brief Type of texture mapping
  */
-enum class EngineTextureMapping
+enum class EngineTextureMapping : unsigned char
 {
     X       = 1,
     Y       = 2,
@@ -294,7 +294,7 @@ enum class EngineTextureMapping
  * \enum EngineMouseType
  * \brief Type of mouse cursor displayed in-game
  */
-enum EngineMouseType
+enum EngineMouseType : unsigned char
 {
     //! Normal cursor (arrow)
     ENG_MOUSE_NORM      = 0,

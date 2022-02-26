@@ -54,7 +54,7 @@ namespace Gfx
 {
 class CEngine;
 
-enum EngineObjectType;
+enum EngineObjectType : unsigned char;
 }
 
 class CLevelParserParam

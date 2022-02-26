@@ -42,7 +42,7 @@ namespace Gfx
 class CCamera;
 class CEngine;
 
-enum CameraType;
+enum CameraType : unsigned char;
 }
 
 namespace Ui

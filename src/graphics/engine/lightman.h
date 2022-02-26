@@ -40,7 +40,7 @@ class CEngine;
 
 struct Color;
 
-enum EngineObjectType;
+enum EngineObjectType : unsigned char;
 
 /**
  * \struct LightProgression
