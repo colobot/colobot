@@ -24,8 +24,6 @@
 
 #pragma once
 
-#include "common/make_unique.h"
-
 #include "level/level_category.h"
 #include "level/robotmain.h"
 
@@ -106,7 +104,7 @@ private:
 inline std::string InjectLevelPathsForCurrentLevel(const std::string& path, const std::string& defaultDir = "")
 {
     CRobotMain* main = CRobotMain::GetInstancePointer();
-    auto levelParser = MakeUnique<CLevelParser>();
+    auto levelParser = std::make_unique<CLevelParser>();
     levelParser->SetLevelPaths(main->GetLevelCategory(), main->GetLevelChap(), main->GetLevelRank());
     return levelParser->InjectLevelPaths(path, defaultDir);
 }

@@ -49,7 +49,6 @@ add_library(colobotbase STATIC
     common/language.h
     common/logger.cpp
     common/logger.h
-    common/make_unique.h
     common/profiler.cpp
     common/profiler.h
     common/regex_utils.cpp

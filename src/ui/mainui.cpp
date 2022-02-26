@@ -24,7 +24,6 @@
 
 #include "common/event.h"
 #include "common/logger.h"
-#include "common/make_unique.h"
 #include "common/settings.h"
 
 #include "common/resources/resourcemanager.h"
@@ -80,24 +79,24 @@ CMainUserInterface::CMainUserInterface()
     m_sound      = m_app->GetSound();
     m_settings   = CSettings::GetInstancePointer();
 
-    m_dialog     = MakeUnique<CMainDialog>();
+    m_dialog     = std::make_unique<CMainDialog>();
 
-    m_screenAppearance = MakeUnique<CScreenApperance>();
-    m_screenLevelList = MakeUnique<CScreenLevelList>(m_dialog.get());
-    m_screenIORead = MakeUnique<CScreenIORead>(m_screenLevelList.get());
-    m_screenIOWrite = MakeUnique<CScreenIOWrite>(m_screenLevelList.get());
-    m_screenLoading = MakeUnique<CScreenLoading>();
-    m_screenModList = MakeUnique<CScreenModList>(m_dialog.get(), m_app->GetModManager());
-    m_screenSetupControls = MakeUnique<CScreenSetupControls>();
-    m_screenSetupDisplay = MakeUnique<CScreenSetupDisplay>();
-    m_screenSetupGame = MakeUnique<CScreenSetupGame>();
-    m_screenSetupGraphics = MakeUnique<CScreenSetupGraphics>();
-    m_screenSetupSound = MakeUnique<CScreenSetupSound>();
-    m_screenMainMenu = MakeUnique<CScreenMainMenu>();
-    m_screenPlayerSelect = MakeUnique<CScreenPlayerSelect>(m_dialog.get());
-    m_screenQuit = MakeUnique<CScreenQuit>();
-    m_screenWelcome = MakeUnique<CScreenWelcome>();
-    m_mouseParticlesGenerator = MakeUnique<UI::CParticlesGenerator>();
+    m_screenAppearance = std::make_unique<CScreenApperance>();
+    m_screenLevelList = std::make_unique<CScreenLevelList>(m_dialog.get());
+    m_screenIORead = std::make_unique<CScreenIORead>(m_screenLevelList.get());
+    m_screenIOWrite = std::make_unique<CScreenIOWrite>(m_screenLevelList.get());
+    m_screenLoading = std::make_unique<CScreenLoading>();
+    m_screenModList = std::make_unique<CScreenModList>(m_dialog.get(), m_app->GetModManager());
+    m_screenSetupControls = std::make_unique<CScreenSetupControls>();
+    m_screenSetupDisplay = std::make_unique<CScreenSetupDisplay>();
+    m_screenSetupGame = std::make_unique<CScreenSetupGame>();
+    m_screenSetupGraphics = std::make_unique<CScreenSetupGraphics>();
+    m_screenSetupSound = std::make_unique<CScreenSetupSound>();
+    m_screenMainMenu = std::make_unique<CScreenMainMenu>();
+    m_screenPlayerSelect = std::make_unique<CScreenPlayerSelect>(m_dialog.get());
+    m_screenQuit = std::make_unique<CScreenQuit>();
+    m_screenWelcome = std::make_unique<CScreenWelcome>();
+    m_mouseParticlesGenerator = std::make_unique<UI::CParticlesGenerator>();
 
     m_currentScreen = nullptr;
 

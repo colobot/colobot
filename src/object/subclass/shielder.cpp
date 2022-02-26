@@ -19,8 +19,6 @@
 
 #include "object/subclass/shielder.h"
 
-#include "common/make_unique.h"
-
 #include "graphics/engine/oldmodelmanager.h"
 
 #include "level/parser/parserline.h"
@@ -49,14 +47,14 @@ std::unique_ptr<CShielder> CShielder::Create(
     Gfx::CEngine* engine)
 {
     assert(params.type == OBJECT_MOBILErs);
-    auto obj = MakeUnique<CShielder>(params.id);
+    auto obj = std::make_unique<CShielder>(params.id);
 
     obj->SetTeam(params.team);
     obj->SetTrainer(params.trainer || obj->GetPlusTrainer());
     obj->SetToy(params.toy);
 
-    auto physics = MakeUnique<CPhysics>(obj.get());
-    auto motion = MakeUnique<CMotionVehicle>(obj.get());
+    auto physics = std::make_unique<CPhysics>(obj.get());
+    auto motion = std::make_unique<CMotionVehicle>(obj.get());
 
     motion->SetPhysics(physics.get());
     physics->SetMotion(motion.get());
@@ -109,5 +107,5 @@ void CShielder::Write(CLevelParserLine* line)
 {
     COldObject::Write(line);
 
-    line->AddParam("bShieldActive", MakeUnique<CLevelParserParam>(IsBackgroundTask()));
+    line->AddParam("bShieldActive", std::make_unique<CLevelParserParam>(IsBackgroundTask()));
 }

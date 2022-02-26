@@ -28,7 +28,6 @@
 #include "app/signal_handlers.h"
 
 #include "common/logger.h"
-#include "common/make_unique.h"
 #include "common/profiler.h"
 #include "common/restext.h"
 #include "common/version.h"
@@ -150,7 +149,7 @@ int main(int argc, char *argv[])
         windowsArgs.push_back(std::move(argVec));
     }
 
-    auto windowsArgvPtrs = MakeUniqueArray<char*>(wargc);
+    auto windowsArgvPtrs = std::make_unique<char*[]>(wargc);
     for (int i = 0; i < wargc; i++)
         windowsArgvPtrs[i] = windowsArgs[i].data();
 

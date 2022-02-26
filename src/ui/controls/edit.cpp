@@ -26,7 +26,6 @@
 #include "app/input.h"
 
 #include "common/logger.h"
-#include "common/make_unique.h"
 #include "common/stringutils.h"
 
 #include "common/resources/inputstream.h"
@@ -186,7 +185,7 @@ bool CEdit::Create(const glm::vec2& pos, const glm::vec2& dim, int icon, EventTy
     {
         m_bMulti = true;
         MoveAdjust();  // readjusts multi-line mode
-        m_scroll = MakeUnique<Ui::CScroll>();
+        m_scroll = std::make_unique<Ui::CScroll>();
         m_scroll->Create(pos, dim, -1, EVENT_NULL);
         MoveAdjust();
     }

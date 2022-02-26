@@ -19,8 +19,6 @@
 
 #include "app/app.h"
 
-#include "common/make_unique.h"
-
 #include "common/system/system_other.h"
 
 #include <functional>
@@ -40,7 +38,7 @@ public:
         : CApplication(systemUtils)
     {
         SDL_Init(0);
-        m_eventQueue = MakeUnique<CEventQueue>();
+        m_eventQueue = std::make_unique<CEventQueue>();
     }
 
     ~CApplicationWrapper()
@@ -95,7 +93,7 @@ void CApplicationUT::SetUp()
 
     m_mocks.OnCall(m_systemUtils, CSystemUtils::GetCurrentTimeStamp).Do(std::bind(&CApplicationUT::GetCurrentTimeStamp, this));
 
-    m_app = MakeUnique<CApplicationWrapper>(m_systemUtils);
+    m_app = std::make_unique<CApplicationWrapper>(m_systemUtils);
 }
 
 void CApplicationUT::TearDown()

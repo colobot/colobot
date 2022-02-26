@@ -142,7 +142,7 @@ Error CTaskExecutorObjectImpl::StartForegroundTask(Args&&... args)
     StopForegroundTask();
 
     assert(m_object->Implements(ObjectInterfaceType::Old)); //TODO
-    std::unique_ptr<TaskType> task = MakeUnique<TaskType>(dynamic_cast<COldObject*>(m_object));
+    std::unique_ptr<TaskType> task = std::make_unique<TaskType>(dynamic_cast<COldObject*>(m_object));
     Error err = task->Start(std::forward<Args>(args)...);
     if (err == ERR_OK)
         m_foregroundTask = std::move(task);
@@ -168,7 +168,7 @@ Error CTaskExecutorObjectImpl::StartBackgroundTask(Args&&... args)
         m_backgroundTask.reset(); // In case the old task was of a different type
 
         assert(m_object->Implements(ObjectInterfaceType::Old)); //TODO
-        std::unique_ptr<TaskType> newTask = MakeUnique<TaskType>(dynamic_cast<COldObject*>(m_object));
+        std::unique_ptr<TaskType> newTask = std::make_unique<TaskType>(dynamic_cast<COldObject*>(m_object));
         err = newTask->Start(std::forward<Args>(args)...);
         if (err == ERR_OK)
             m_backgroundTask = std::move(newTask);

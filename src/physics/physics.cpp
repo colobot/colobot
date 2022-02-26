@@ -24,7 +24,6 @@
 
 #include "common/event.h"
 #include "common/global.h"
-#include "common/make_unique.h"
 
 #include "graphics/engine/camera.h"
 #include "graphics/engine/engine.h"
@@ -162,15 +161,15 @@ void CPhysics::SetMotion(CMotion* motion)
 
 bool CPhysics::Write(CLevelParserLine* line)
 {
-    line->AddParam("motor", MakeUnique<CLevelParserParam>(m_motorSpeed));
+    line->AddParam("motor", std::make_unique<CLevelParserParam>(m_motorSpeed));
 
     if ( m_object->Implements(ObjectInterfaceType::Flying) )
     {
         if ( m_object->Implements(ObjectInterfaceType::JetFlying) )
         {
-            line->AddParam("reactorRange", MakeUnique<CLevelParserParam>(m_object->GetReactorRange()));
+            line->AddParam("reactorRange", std::make_unique<CLevelParserParam>(m_object->GetReactorRange()));
         }
-        line->AddParam("land", MakeUnique<CLevelParserParam>(GetLand()));
+        line->AddParam("land", std::make_unique<CLevelParserParam>(GetLand()));
     }
 
     return true;

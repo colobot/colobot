@@ -28,7 +28,6 @@
 #include "common/config_file.h"
 #include "common/event.h"
 #include "common/logger.h"
-#include "common/make_unique.h"
 #include "common/restext.h"
 #include "common/settings.h"
 #include "common/stringutils.h"
@@ -152,26 +151,26 @@ CRobotMain::CRobotMain()
     m_planet     = m_engine->GetPlanet();
     m_input      = CInput::GetInstancePointer();
 
-    m_modelManager = MakeUnique<Gfx::CModelManager>();
-    m_settings    = MakeUnique<CSettings>();
-    m_pause       = MakeUnique<CPauseManager>();
-    m_interface   = MakeUnique<Ui::CInterface>();
-    m_terrain     = MakeUnique<Gfx::CTerrain>();
-    m_camera      = MakeUnique<Gfx::CCamera>();
-    m_displayText = MakeUnique<Ui::CDisplayText>();
-    m_movie       = MakeUnique<CMainMovie>();
-    m_ui          = MakeUnique<Ui::CMainUserInterface>();
-    m_short       = MakeUnique<Ui::CMainShort>();
-    m_map         = MakeUnique<Ui::CMainMap>();
+    m_modelManager = std::make_unique<Gfx::CModelManager>();
+    m_settings    = std::make_unique<CSettings>();
+    m_pause       = std::make_unique<CPauseManager>();
+    m_interface   = std::make_unique<Ui::CInterface>();
+    m_terrain     = std::make_unique<Gfx::CTerrain>();
+    m_camera      = std::make_unique<Gfx::CCamera>();
+    m_displayText = std::make_unique<Ui::CDisplayText>();
+    m_movie       = std::make_unique<CMainMovie>();
+    m_ui          = std::make_unique<Ui::CMainUserInterface>();
+    m_short       = std::make_unique<Ui::CMainShort>();
+    m_map         = std::make_unique<Ui::CMainMap>();
 
-    m_objMan = MakeUnique<CObjectManager>(
+    m_objMan = std::make_unique<CObjectManager>(
         m_engine,
         m_terrain.get(),
         m_oldModelManager,
         m_modelManager.get(),
         m_particle);
 
-    m_debugMenu   = MakeUnique<Ui::CDebugMenu>(this, m_engine, m_objMan.get(), m_sound);
+    m_debugMenu   = std::make_unique<Ui::CDebugMenu>(this, m_engine, m_objMan.get(), m_sound);
 
     m_time = 0.0f;
     m_gameTime = 0.0f;
@@ -1045,14 +1044,14 @@ bool CRobotMain::ProcessEvent(Event &event)
                     if (obj != nullptr)
                     {
                         CLevelParserLine line("CreateObject");
-                        line.AddParam("type", MakeUnique<CLevelParserParam>(obj->GetType()));
+                        line.AddParam("type", std::make_unique<CLevelParserParam>(obj->GetType()));
 
                         glm::vec3 pos = obj->GetPosition()/g_unit;
                         pos.y = 0.0f;
-                        line.AddParam("pos", MakeUnique<CLevelParserParam>(pos));
+                        line.AddParam("pos", std::make_unique<CLevelParserParam>(pos));
 
                         float dir = Math::NormAngle(obj->GetRotationY()) / Math::PI;
-                        line.AddParam("dir", MakeUnique<CLevelParserParam>(dir));
+                        line.AddParam("dir", std::make_unique<CLevelParserParam>(dir));
 
                         std::stringstream ss;
                         ss << line;
@@ -1608,7 +1607,7 @@ void CRobotMain::StartDisplayInfo(const std::string& filename, int index)
 
     bool soluce = m_ui->GetSceneSoluce();
 
-    m_displayInfo = MakeUnique<Ui::CDisplayInfo>();
+    m_displayInfo = std::make_unique<Ui::CDisplayInfo>();
     m_displayInfo->StartDisplayInfo(filename, index, soluce);
     m_displayInfo->SetPosition(0);
 }
@@ -2980,7 +2979,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "AudioChange" && !resetObject)
             {
-                auto audioChange = MakeUnique<CAudioChangeCondition>();
+                auto audioChange = std::make_unique<CAudioChangeCondition>();
                 audioChange->Read(line.get());
                 m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, audioChange->music);
                 m_sound->CacheMusic(audioChange->music);
@@ -3638,7 +3637,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "EndMissionTake" && !resetObject)
             {
-                auto endTake = MakeUnique<CSceneEndCondition>();
+                auto endTake = std::make_unique<CSceneEndCondition>();
                 endTake->Read(line.get());
                 if (endTake->immediat)
                     m_endTakeImmediat = true;
@@ -3677,7 +3676,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 if (line->GetParam("enable")->AsBool(false))
                 {
                     // Create the scoreboard
-                    m_scoreboard = MakeUnique<CScoreboard>();
+                    m_scoreboard = std::make_unique<CScoreboard>();
                     m_scoreboard->SetSortType(line->GetParam("sort")->AsSortType(CScoreboard::SortType::SORT_ID));
                 }
                 continue;
@@ -3687,7 +3686,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             {
                 if (!m_scoreboard)
                     throw CLevelParserException("ScoreboardKillRule encountered but scoreboard is not enabled");
-                auto rule = MakeUnique<CScoreboard::CScoreboardKillRule>();
+                auto rule = std::make_unique<CScoreboard::CScoreboardKillRule>();
                 rule->Read(line.get());
                 m_scoreboard->AddKillRule(std::move(rule));
                 continue;
@@ -3696,7 +3695,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             {
                 if (!m_scoreboard)
                     throw CLevelParserException("ScoreboardObjectRule encountered but scoreboard is not enabled");
-                auto rule = MakeUnique<CScoreboard::CScoreboardObjectRule>();
+                auto rule = std::make_unique<CScoreboard::CScoreboardObjectRule>();
                 rule->Read(line.get());
                 m_scoreboard->AddObjectRule(std::move(rule));
                 continue;
@@ -3705,7 +3704,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             {
                 if (!m_scoreboard)
                     throw CLevelParserException("ScoreboardEndTakeRule encountered but scoreboard is not enabled");
-                auto rule = MakeUnique<CScoreboard::CScoreboardEndTakeRule>();
+                auto rule = std::make_unique<CScoreboard::CScoreboardEndTakeRule>();
                 rule->Read(line.get());
                 m_scoreboard->AddEndTakeRule(std::move(rule));
                 continue;
@@ -4619,29 +4618,29 @@ bool CRobotMain::IOIsBusy()
 //! Writes an object into the backup file
 void CRobotMain::IOWriteObject(CLevelParserLine* line, CObject* obj, const std::string& programDir, int objRank)
 {
-    line->AddParam("type", MakeUnique<CLevelParserParam>(obj->GetType()));
-    line->AddParam("id", MakeUnique<CLevelParserParam>(obj->GetID()));
-    line->AddParam("pos", MakeUnique<CLevelParserParam>(obj->GetPosition()/g_unit));
-    line->AddParam("angle", MakeUnique<CLevelParserParam>(obj->GetRotation() * Math::RAD_TO_DEG));
-    line->AddParam("zoom", MakeUnique<CLevelParserParam>(obj->GetScale()));
+    line->AddParam("type", std::make_unique<CLevelParserParam>(obj->GetType()));
+    line->AddParam("id", std::make_unique<CLevelParserParam>(obj->GetID()));
+    line->AddParam("pos", std::make_unique<CLevelParserParam>(obj->GetPosition()/g_unit));
+    line->AddParam("angle", std::make_unique<CLevelParserParam>(obj->GetRotation() * Math::RAD_TO_DEG));
+    line->AddParam("zoom", std::make_unique<CLevelParserParam>(obj->GetScale()));
 
     if (obj->Implements(ObjectInterfaceType::Old))
     {
-        line->AddParam("option", MakeUnique<CLevelParserParam>(obj->GetOption()));
+        line->AddParam("option", std::make_unique<CLevelParserParam>(obj->GetOption()));
     }
 
     if (obj->Implements(ObjectInterfaceType::Controllable))
     {
         auto controllableObj = dynamic_cast<CControllableObject*>(obj);
-        line->AddParam("trainer", MakeUnique<CLevelParserParam>(controllableObj->GetTrainer()));
+        line->AddParam("trainer", std::make_unique<CLevelParserParam>(controllableObj->GetTrainer()));
         if (controllableObj->GetSelect())
-            line->AddParam("select", MakeUnique<CLevelParserParam>(true));
+            line->AddParam("select", std::make_unique<CLevelParserParam>(true));
     }
 
     obj->Write(line);
 
     if (obj->GetType() == OBJECT_BASE)
-        line->AddParam("run", MakeUnique<CLevelParserParam>(3));  // stops and open (PARAM_FIXSCENE)
+        line->AddParam("run", std::make_unique<CLevelParserParam>(3));  // stops and open (PARAM_FIXSCENE)
 
 
     if (obj->Implements(ObjectInterfaceType::ProgramStorage))
@@ -4665,7 +4664,7 @@ void CRobotMain::IOWriteObject(CLevelParserLine* line, CObject* obj, const std::
             int run = dynamic_cast<CProgramStorageObject&>(*obj).GetProgramIndex(dynamic_cast<CProgrammableObject&>(*obj).GetCurrentProgram());
             if (run != -1)
             {
-                line->AddParam("run", MakeUnique<CLevelParserParam>(run+1));
+                line->AddParam("run", std::make_unique<CLevelParserParam>(run+1));
             }
         }
     }
@@ -4686,48 +4685,48 @@ bool CRobotMain::IOWriteScene(std::string filename, std::string filecbot, std::s
     CLevelParser levelParser(filename);
     CLevelParserLineUPtr line;
 
-    line = MakeUnique<CLevelParserLine>("Title");
-    line->AddParam("text", MakeUnique<CLevelParserParam>(std::string(info)));
+    line = std::make_unique<CLevelParserLine>("Title");
+    line->AddParam("text", std::make_unique<CLevelParserParam>(std::string(info)));
     levelParser.AddLine(std::move(line));
 
 
     //TODO: Do we need that? It's not used anyway
-    line = MakeUnique<CLevelParserLine>("Version");
-    line->AddParam("maj", MakeUnique<CLevelParserParam>(0));
-    line->AddParam("min", MakeUnique<CLevelParserParam>(1));
+    line = std::make_unique<CLevelParserLine>("Version");
+    line->AddParam("maj", std::make_unique<CLevelParserParam>(0));
+    line->AddParam("min", std::make_unique<CLevelParserParam>(1));
     levelParser.AddLine(std::move(line));
 
 
-    line = MakeUnique<CLevelParserLine>("Created");
-    line->AddParam("date", MakeUnique<CLevelParserParam>(static_cast<int>(time(nullptr))));
+    line = std::make_unique<CLevelParserLine>("Created");
+    line->AddParam("date", std::make_unique<CLevelParserParam>(static_cast<int>(time(nullptr))));
     levelParser.AddLine(std::move(line));
 
-    line = MakeUnique<CLevelParserLine>("Mission");
-    line->AddParam("base", MakeUnique<CLevelParserParam>(GetLevelCategoryDir(m_levelCategory)));
+    line = std::make_unique<CLevelParserLine>("Mission");
+    line->AddParam("base", std::make_unique<CLevelParserParam>(GetLevelCategoryDir(m_levelCategory)));
     if (m_levelCategory == LevelCategory::CustomLevels)
-        line->AddParam("dir", MakeUnique<CLevelParserParam>(GetCustomLevelDir()));
+        line->AddParam("dir", std::make_unique<CLevelParserParam>(GetCustomLevelDir()));
     else
-        line->AddParam("chap", MakeUnique<CLevelParserParam>(m_levelChap));
-    line->AddParam("rank", MakeUnique<CLevelParserParam>(m_levelRank));
-    line->AddParam("gametime", MakeUnique<CLevelParserParam>(GetGameTime()));
+        line->AddParam("chap", std::make_unique<CLevelParserParam>(m_levelChap));
+    line->AddParam("rank", std::make_unique<CLevelParserParam>(m_levelRank));
+    line->AddParam("gametime", std::make_unique<CLevelParserParam>(GetGameTime()));
     levelParser.AddLine(std::move(line));
 
-    line = MakeUnique<CLevelParserLine>("Map");
-    line->AddParam("zoom", MakeUnique<CLevelParserParam>(m_map->GetZoomMap()));
+    line = std::make_unique<CLevelParserLine>("Map");
+    line->AddParam("zoom", std::make_unique<CLevelParserParam>(m_map->GetZoomMap()));
     levelParser.AddLine(std::move(line));
 
-    line = MakeUnique<CLevelParserLine>("DoneResearch");
-    line->AddParam("bits", MakeUnique<CLevelParserParam>(static_cast<int>(m_researchDone[0])));
+    line = std::make_unique<CLevelParserLine>("DoneResearch");
+    line->AddParam("bits", std::make_unique<CLevelParserParam>(static_cast<int>(m_researchDone[0])));
     levelParser.AddLine(std::move(line));
 
     float sleep, delay, magnetic, progress;
     if (m_lightning->GetStatus(sleep, delay, magnetic, progress))
     {
-        line = MakeUnique<CLevelParserLine>("BlitzMode");
-        line->AddParam("sleep", MakeUnique<CLevelParserParam>(sleep));
-        line->AddParam("delay", MakeUnique<CLevelParserParam>(delay));
-        line->AddParam("magnetic", MakeUnique<CLevelParserParam>(magnetic/g_unit));
-        line->AddParam("progress", MakeUnique<CLevelParserParam>(progress));
+        line = std::make_unique<CLevelParserLine>("BlitzMode");
+        line->AddParam("sleep", std::make_unique<CLevelParserParam>(sleep));
+        line->AddParam("delay", std::make_unique<CLevelParserParam>(delay));
+        line->AddParam("magnetic", std::make_unique<CLevelParserParam>(magnetic/g_unit));
+        line->AddParam("progress", std::make_unique<CLevelParserParam>(progress));
         levelParser.AddLine(std::move(line));
     }
 
@@ -4747,19 +4746,19 @@ bool CRobotMain::IOWriteScene(std::string filename, std::string filecbot, std::s
                 if (CObject *sub = slotted->GetSlotContainedObject(slot))
                 {
                     if (slot == slotted->MapPseudoSlot(CSlottedObject::Pseudoslot::POWER))
-                        line = MakeUnique<CLevelParserLine>("CreatePower");
+                        line = std::make_unique<CLevelParserLine>("CreatePower");
                     else if (slot == slotted->MapPseudoSlot(CSlottedObject::Pseudoslot::CARRYING))
-                        line = MakeUnique<CLevelParserLine>("CreateFret");
+                        line = std::make_unique<CLevelParserLine>("CreateFret");
                     else
-                        line = MakeUnique<CLevelParserLine>("CreateSlotObject");
-                    line->AddParam("slotNum", MakeUnique<CLevelParserParam>(slot));
+                        line = std::make_unique<CLevelParserLine>("CreateSlotObject");
+                    line->AddParam("slotNum", std::make_unique<CLevelParserParam>(slot));
                     IOWriteObject(line.get(), sub, dirname, objRank++);
                     levelParser.AddLine(std::move(line));
                 }
             }
         }
 
-        line = MakeUnique<CLevelParserLine>("CreateObject");
+        line = std::make_unique<CLevelParserLine>("CreateObject");
         IOWriteObject(line.get(), obj, dirname, objRank++);
         levelParser.AddLine(std::move(line));
     }
@@ -4958,7 +4957,7 @@ CObject* CRobotMain::IOReadScene(std::string filename, std::string filecbot)
 
                     // TODO: eww!
                     assert(obj->Implements(ObjectInterfaceType::Old));
-                    auto task = MakeUnique<CTaskManip>(dynamic_cast<COldObject*>(obj));
+                    auto task = std::make_unique<CTaskManip>(dynamic_cast<COldObject*>(obj));
                     task->Start(TMO_AUTO, TMA_GRAB);  // holds the object!
                 }
 
@@ -5062,7 +5061,7 @@ void CRobotMain::SelectPlayer(std::string playerName)
 {
     assert(!playerName.empty());
 
-    m_playerProfile = MakeUnique<CPlayerProfile>(playerName);
+    m_playerProfile = std::make_unique<CPlayerProfile>(playerName);
     SetGlobalGamerName(playerName);
 }
 

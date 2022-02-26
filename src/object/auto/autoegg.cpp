@@ -20,8 +20,6 @@
 
 #include "object/auto/autoegg.h"
 
-#include "common/make_unique.h"
-
 #include "graphics/engine/engine.h"
 #include "graphics/engine/pyro_manager.h"
 
@@ -320,14 +318,14 @@ bool CAutoEgg::Write(CLevelParserLine* line)
 {
     if ( m_phase == AEP_NULL )  return false;
 
-    line->AddParam("aExist", MakeUnique<CLevelParserParam>(true));
+    line->AddParam("aExist", std::make_unique<CLevelParserParam>(true));
     CAuto::Write(line);
-    line->AddParam("aPhase", MakeUnique<CLevelParserParam>(static_cast<int>(m_phase)));
-    line->AddParam("aProgress", MakeUnique<CLevelParserParam>(m_progress));
-    line->AddParam("aSpeed", MakeUnique<CLevelParserParam>(m_speed));
-    line->AddParam("aParamType", MakeUnique<CLevelParserParam>(m_type));
-    line->AddParam("aParamValue1", MakeUnique<CLevelParserParam>(m_value));
-    line->AddParam("aParamString", MakeUnique<CLevelParserParam>(m_alienProgramName));
+    line->AddParam("aPhase", std::make_unique<CLevelParserParam>(static_cast<int>(m_phase)));
+    line->AddParam("aProgress", std::make_unique<CLevelParserParam>(m_progress));
+    line->AddParam("aSpeed", std::make_unique<CLevelParserParam>(m_speed));
+    line->AddParam("aParamType", std::make_unique<CLevelParserParam>(m_type));
+    line->AddParam("aParamValue1", std::make_unique<CLevelParserParam>(m_value));
+    line->AddParam("aParamString", std::make_unique<CLevelParserParam>(m_alienProgramName));
 
     return true;
 }

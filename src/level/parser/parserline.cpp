@@ -20,7 +20,6 @@
 #include "level/parser/parserline.h"
 
 #include "common/logger.h"
-#include "common/make_unique.h"
 
 #include "level/parser/parser.h"
 
@@ -82,7 +81,7 @@ CLevelParserParam* CLevelParserLine::GetParam(std::string name)
         return it->second.get();
     }
 
-    auto paramUPtr = MakeUnique<CLevelParserParam>(name, true);
+    auto paramUPtr = std::make_unique<CLevelParserParam>(name, true);
     paramUPtr->SetLine(this);
     CLevelParserParam* paramPtr = paramUPtr.get();
     m_params.insert(std::make_pair(name, std::move(paramUPtr)));

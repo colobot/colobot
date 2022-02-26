@@ -19,8 +19,6 @@
 
 #include "object/object_factory.h"
 
-#include "common/make_unique.h"
-
 #include "graphics/engine/engine.h"
 #include "graphics/engine/lightning.h"
 #include "graphics/engine/oldmodelmanager.h"
@@ -335,7 +333,7 @@ CObjectUPtr CObjectFactory::CreateResource(const ObjectCreateParams& params)
     ObjectType type = params.type;
     float power = params.power;
 
-    auto obj = MakeUnique<COldObject>(params.id);
+    auto obj = std::make_unique<COldObject>(params.id);
 
     obj->SetType(type);
     obj->SetTeam(params.team);
@@ -450,7 +448,7 @@ CObjectUPtr CObjectFactory::CreateFlag(const ObjectCreateParams& params)
     float angle = params.angle;
     ObjectType type = params.type;
 
-    auto obj = MakeUnique<COldObject>(params.id);
+    auto obj = std::make_unique<COldObject>(params.id);
 
     obj->SetType(type);
     obj->SetTeam(params.team);
@@ -512,7 +510,7 @@ CObjectUPtr CObjectFactory::CreateBarrier(const ObjectCreateParams& params)
     float height = params.height;
     ObjectType type = params.type;
 
-    auto obj = MakeUnique<COldObject>(params.id);
+    auto obj = std::make_unique<COldObject>(params.id);
 
     obj->SetType(type);
     obj->SetTeam(params.team);
@@ -652,7 +650,7 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
     float height = params.height;
     ObjectType type = params.type;
 
-    auto obj = MakeUnique<COldObject>(params.id);
+    auto obj = std::make_unique<COldObject>(params.id);
 
     obj->SetType(type);
     obj->SetTeam(params.team);
@@ -894,7 +892,7 @@ CObjectUPtr CObjectFactory::CreateMushroom(const ObjectCreateParams& params)
     float height = params.height;
     ObjectType type = params.type;
 
-    auto obj = MakeUnique<COldObject>(params.id);
+    auto obj = std::make_unique<COldObject>(params.id);
 
     obj->SetType(type);
     obj->SetTeam(params.team);
@@ -954,7 +952,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
     ObjectType type = params.type;
     int option = params.option;
 
-    COldObjectUPtr obj = MakeUnique<COldObject>(params.id);
+    COldObjectUPtr obj = std::make_unique<COldObject>(params.id);
 
     obj->SetType(type);
     obj->SetOption(option);
@@ -1741,7 +1739,7 @@ CObjectUPtr CObjectFactory::CreateQuartz(const ObjectCreateParams& params)
     float height = params.height;
     ObjectType type = params.type;
 
-    auto obj = MakeUnique<COldObject>(params.id);
+    auto obj = std::make_unique<COldObject>(params.id);
 
     obj->SetType(type);
     obj->SetTeam(params.team);
@@ -1848,7 +1846,7 @@ CObjectUPtr CObjectFactory::CreateRoot(const ObjectCreateParams& params)
     float height = params.height;
     ObjectType type = params.type;
 
-    auto obj = MakeUnique<COldObject>(params.id);
+    auto obj = std::make_unique<COldObject>(params.id);
 
     obj->SetType(type);
 
@@ -2015,7 +2013,7 @@ CObjectUPtr CObjectFactory::CreateHome(const ObjectCreateParams& params)
     float height = params.height;
     ObjectType type = params.type;
 
-    auto obj = MakeUnique<COldObject>(params.id);
+    auto obj = std::make_unique<COldObject>(params.id);
 
     obj->SetType(type);
     obj->SetTeam(params.team);
@@ -2056,7 +2054,7 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
     float height = params.height;
     ObjectType type = params.type;
 
-    auto obj = MakeUnique<COldObject>(params.id);
+    auto obj = std::make_unique<COldObject>(params.id);
 
     obj->SetType(type);
     obj->SetTeam(params.team);
@@ -2472,7 +2470,7 @@ CObjectUPtr CObjectFactory::CreateApollo(const ObjectCreateParams& params)
     float angle = params.angle;
     ObjectType type = params.type;
 
-    auto obj = MakeUnique<COldObject>(params.id);
+    auto obj = std::make_unique<COldObject>(params.id);
 
     obj->SetType(type);
     obj->SetTeam(params.team);
@@ -2588,15 +2586,15 @@ void CObjectFactory::AddObjectAuto(COldObject* obj)
 
     if ( type == OBJECT_EGG )
     {
-        objAuto = MakeUnique<CAutoEgg>(obj);
+        objAuto = std::make_unique<CAutoEgg>(obj);
     }
     if ( type == OBJECT_ROOT5 )
     {
-        objAuto = MakeUnique<CAutoRoot>(obj);
+        objAuto = std::make_unique<CAutoRoot>(obj);
     }
     if ( type == OBJECT_MUSHROOM2 )
     {
-        objAuto = MakeUnique<CAutoMush>(obj);
+        objAuto = std::make_unique<CAutoMush>(obj);
     }
     if ( type == OBJECT_FLAGb ||
          type == OBJECT_FLAGr ||
@@ -2604,13 +2602,13 @@ void CObjectFactory::AddObjectAuto(COldObject* obj)
          type == OBJECT_FLAGy ||
          type == OBJECT_FLAGv )
     {
-        objAuto = MakeUnique<CAutoFlag>(obj);
+        objAuto = std::make_unique<CAutoFlag>(obj);
     }
     if ( type == OBJECT_TEEN36 ||  // trunk?
          type == OBJECT_TEEN37 ||  // boat?
          type == OBJECT_TEEN38 )   // fan?
     {
-        objAuto = MakeUnique<CAutoKid>(obj);
+        objAuto = std::make_unique<CAutoKid>(obj);
     }
 
     if (objAuto != nullptr)

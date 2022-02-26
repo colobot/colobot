@@ -23,7 +23,6 @@
 #include "app/app.h"
 
 #include "common/event.h"
-#include "common/make_unique.h"
 
 #include "graphics/engine/engine.h"
 
@@ -408,11 +407,11 @@ void CAuto::SetMotor(bool bMotor)
 
 bool CAuto::Write(CLevelParserLine* line)
 {
-    line->AddParam("aType", MakeUnique<CLevelParserParam>(m_type));
-    line->AddParam("aBusy", MakeUnique<CLevelParserParam>(m_bBusy));
-    line->AddParam("aTime", MakeUnique<CLevelParserParam>(m_time));
-    line->AddParam("aProgressTime", MakeUnique<CLevelParserParam>(m_progressTime));
-    line->AddParam("aProgressTotal", MakeUnique<CLevelParserParam>(m_progressTotal));
+    line->AddParam("aType", std::make_unique<CLevelParserParam>(m_type));
+    line->AddParam("aBusy", std::make_unique<CLevelParserParam>(m_bBusy));
+    line->AddParam("aTime", std::make_unique<CLevelParserParam>(m_time));
+    line->AddParam("aProgressTime", std::make_unique<CLevelParserParam>(m_progressTime));
+    line->AddParam("aProgressTotal", std::make_unique<CLevelParserParam>(m_progressTotal));
 
     return false;
 }

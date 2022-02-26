@@ -20,8 +20,6 @@
 
 #include "common/image.h"
 
-#include "common/make_unique.h"
-
 #include "common/resources/outputstream.h"
 #include "common/resources/resourcemanager.h"
 
@@ -147,7 +145,7 @@ bool PNGSaveSurface(const char *filename, SDL_Surface *surf)
     png_write_info(pngPtr, infoPtr);
     png_set_packing(pngPtr);
 
-    auto rowPointers = MakeUniqueArray<png_bytep>(surf->h);
+    auto rowPointers = std::make_unique<png_bytep[]>(surf->h);
     for (int i = 0; i < surf->h; i++)
         rowPointers[i] = static_cast<png_bytep>( static_cast<Uint8 *>(surf->pixels) ) + i*surf->pitch;
     png_write_image(pngPtr, rowPointers.get());
@@ -171,7 +169,7 @@ CImage::CImage()
 
 CImage::CImage(const glm::ivec2& size)
 {
-    m_data = MakeUnique<ImageData>();
+    m_data = std::make_unique<ImageData>();
     m_data->surface = SDL_CreateRGBSurface(0, size.x, size.y, 32,
                                            0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
 }
@@ -395,7 +393,7 @@ bool CImage::Load(const std::string& fileName)
     if (! IsEmpty() )
         Free();
 
-    m_data = MakeUnique<ImageData>();
+    m_data = std::make_unique<ImageData>();
 
     m_error = "";
 

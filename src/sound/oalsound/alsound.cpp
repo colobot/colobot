@@ -20,8 +20,6 @@
 
 #include "sound/oalsound/alsound.h"
 
-#include "common/make_unique.h"
-
 #include <algorithm>
 #include <iomanip>
 
@@ -138,7 +136,7 @@ int CALSound::GetMusicVolume()
 
 bool CALSound::Cache(SoundType sound, const std::string &filename)
 {
-    auto buffer = MakeUnique<CBuffer>();
+    auto buffer = std::make_unique<CBuffer>();
     if (buffer->LoadFromFile(filename, sound))
     {
         m_sounds[sound] = std::move(buffer);
@@ -153,7 +151,7 @@ void CALSound::CacheMusic(const std::string &filename)
     {
         if (m_music.find(filename) == m_music.end())
         {
-            auto buffer = MakeUnique<CBuffer>();
+            auto buffer = std::make_unique<CBuffer>();
             if (buffer->LoadFromFile(filename, static_cast<SoundType>(-1)))
             {
                 m_music[filename] = std::move(buffer);
@@ -246,7 +244,7 @@ bool CALSound::SearchFreeBuffer(SoundType sound, int &channel, bool &alreadyLoad
     // just add a new channel if we dont have any
     if (m_channels.size() == 0)
     {
-        auto chn = MakeUnique<CChannel>();
+        auto chn = std::make_unique<CChannel>();
         // check if we channel ready to play music, if not report error
         if (chn->IsReady())
         {
@@ -271,7 +269,7 @@ bool CALSound::SearchFreeBuffer(SoundType sound, int &channel, bool &alreadyLoad
         {
             if (m_channels.find(i) == m_channels.end())
             {
-                auto chn = MakeUnique<CChannel>();
+                auto chn = std::make_unique<CChannel>();
                 // check if channel is ready to play music, if not destroy it and seek free one
                 if (chn->IsReady())
                 {
@@ -597,7 +595,7 @@ void CALSound::PlayMusic(const std::string &filename, bool repeat, float fadeTim
         {
             GetLogger()->Debug("Music %s was not cached!\n", filename.c_str());
 
-            auto newBuffer = MakeUnique<CBuffer>();
+            auto newBuffer = std::make_unique<CBuffer>();
             buffer = newBuffer.get();
             if (!newBuffer->LoadFromFile(filename, static_cast<SoundType>(-1)))
             {
@@ -620,7 +618,7 @@ void CALSound::PlayMusic(const std::string &filename, bool repeat, float fadeTim
             m_oldMusic.push_back(std::move(old));
         }
 
-        m_currentMusic = MakeUnique<CChannel>();
+        m_currentMusic = std::make_unique<CChannel>();
         m_currentMusic->SetBuffer(buffer);
         m_currentMusic->SetVolume(m_musicVolume);
         m_currentMusic->SetLoop(repeat);

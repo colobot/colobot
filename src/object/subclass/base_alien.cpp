@@ -19,8 +19,6 @@
 
 #include "object/subclass/base_alien.h"
 
-#include "common/make_unique.h"
-
 #include "level/parser/parserline.h"
 #include "level/parser/parserparam.h"
 
@@ -48,32 +46,32 @@ std::unique_ptr<CBaseAlien> CBaseAlien::Create(
     Gfx::COldModelManager* modelManager,
     Gfx::CEngine* engine)
 {
-    auto obj = MakeUnique<CBaseAlien>(params.id, params.type);
+    auto obj = std::make_unique<CBaseAlien>(params.id, params.type);
 
     obj->SetTeam(params.team);
 
-    std::unique_ptr<CPhysics> physics = MakeUnique<CPhysics>(obj.get());
+    std::unique_ptr<CPhysics> physics = std::make_unique<CPhysics>(obj.get());
 
     std::unique_ptr<CMotion> motion;
     if ( params.type == OBJECT_MOTHER )
     {
-        motion = MakeUnique<CMotionQueen>(obj.get());
+        motion = std::make_unique<CMotionQueen>(obj.get());
     }
     if ( params.type == OBJECT_ANT )
     {
-        motion = MakeUnique<CMotionAnt>(obj.get());
+        motion = std::make_unique<CMotionAnt>(obj.get());
     }
     if ( params.type == OBJECT_SPIDER )
     {
-        motion = MakeUnique<CMotionSpider>(obj.get());
+        motion = std::make_unique<CMotionSpider>(obj.get());
     }
     if ( params.type == OBJECT_BEE )
     {
-        motion = MakeUnique<CMotionBee>(obj.get());
+        motion = std::make_unique<CMotionBee>(obj.get());
     }
     if ( params.type == OBJECT_WORM )
     {
-        motion = MakeUnique<CMotionWorm>(obj.get());
+        motion = std::make_unique<CMotionWorm>(obj.get());
     }
     assert(motion != nullptr);
 
@@ -110,5 +108,5 @@ void CBaseAlien::Write(CLevelParserLine* line)
     COldObject::Write(line);
 
     if (GetFixed())
-        line->AddParam("fixed", MakeUnique<CLevelParserParam>(GetFixed()));
+        line->AddParam("fixed", std::make_unique<CLevelParserParam>(GetFixed()));
 }

@@ -26,7 +26,6 @@
 #include "common/image.h"
 #include "common/key.h"
 #include "common/logger.h"
-#include "common/make_unique.h"
 #include "common/profiler.h"
 #include "common/stringutils.h"
 
@@ -375,15 +374,15 @@ bool CEngine::Create()
     SetMultiSample(m_multisample);
     SetVSync(m_vsync);
 
-    m_modelManager = MakeUnique<COldModelManager>(this);
-    m_pyroManager = MakeUnique<CPyroManager>();
-    m_lightMan   = MakeUnique<CLightManager>(this);
-    m_text       = MakeUnique<CText>(this);
-    m_particle   = MakeUnique<CParticle>(this);
-    m_water      = MakeUnique<CWater>(this);
-    m_cloud      = MakeUnique<CCloud>(this);
-    m_lightning  = MakeUnique<CLightning>(this);
-    m_planet     = MakeUnique<CPlanet>(this);
+    m_modelManager = std::make_unique<COldModelManager>(this);
+    m_pyroManager = std::make_unique<CPyroManager>();
+    m_lightMan   = std::make_unique<CLightManager>(this);
+    m_text       = std::make_unique<CText>(this);
+    m_particle   = std::make_unique<CParticle>(this);
+    m_water      = std::make_unique<CWater>(this);
+    m_cloud      = std::make_unique<CCloud>(this);
+    m_lightning  = std::make_unique<CLightning>(this);
+    m_planet     = std::make_unique<CPlanet>(this);
 
     m_lightMan->SetDevice(m_device);
     m_particle->SetDevice(m_device);
@@ -544,8 +543,8 @@ void CEngine::FrameUpdate()
 
 void CEngine::WriteScreenShot(const std::string& fileName)
 {
-    auto data = MakeUnique<WriteScreenShotData>();
-    data->img = MakeUnique<CImage>(glm::ivec2(m_size.x, m_size.y));
+    auto data = std::make_unique<WriteScreenShotData>();
+    data->img = std::make_unique<CImage>(glm::ivec2(m_size.x, m_size.y));
 
     auto pixels = m_device->GetFrameBufferPixels();
     data->img->SetDataPixels(pixels->GetPixelsData());
@@ -3040,7 +3039,7 @@ void CEngine::Capture3DScene()
     // calculate 2nd mipmap
     int newWidth = width / 4;
     int newHeight = height / 4;
-    std::unique_ptr<unsigned char[]> mipmap = MakeUniqueArray<unsigned char>(4 * newWidth * newHeight);
+    std::unique_ptr<unsigned char[]> mipmap = std::make_unique<unsigned char[]>(4 * newWidth * newHeight);
 
     for (int x = 0; x < newWidth; x++)
     {
@@ -3069,7 +3068,7 @@ void CEngine::Capture3DScene()
     }
 
     // calculate Gaussian blur
-    std::unique_ptr<unsigned char[]> blured = MakeUniqueArray<unsigned char>(4 * newWidth * newHeight);
+    std::unique_ptr<unsigned char[]> blured = std::make_unique<unsigned char[]>(4 * newWidth * newHeight);
 
     float matrix[7][7] =
         {

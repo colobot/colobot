@@ -21,7 +21,6 @@
 
 #include "app/app.h"
 
-#include "common/make_unique.h"
 #include "common/stringutils.h"
 
 #include "common/resources/inputstream.h"
@@ -209,7 +208,7 @@ void CLevelParser::Load()
         if (command.empty())
             continue;
 
-        auto parserLine = MakeUnique<CLevelParserLine>(lineNumber, command);
+        auto parserLine = std::make_unique<CLevelParserLine>(lineNumber, command);
         parserLine->SetLevel(this);
 
         if (command.length() > 2 && command[command.length() - 2] == '.')
@@ -281,7 +280,7 @@ void CLevelParser::Load()
             std::string paramValue = line.substr(0, pos + 1);
             boost::algorithm::trim(paramValue);
 
-            parserLine->AddParam(paramName, MakeUnique<CLevelParserParam>(paramName, paramValue));
+            parserLine->AddParam(paramName, std::make_unique<CLevelParserParam>(paramName, paramValue));
 
             if (pos == std::string::npos)
                 break;
@@ -294,7 +293,7 @@ void CLevelParser::Load()
             std::string cmd = parserLine->GetCommand().substr(1, std::string::npos);
             if(cmd == "Include")
             {
-                std::unique_ptr<CLevelParser> includeParser = MakeUnique<CLevelParser>(parserLine->GetParam("file")->AsPath(""));
+                std::unique_ptr<CLevelParser> includeParser = std::make_unique<CLevelParser>(parserLine->GetParam("file")->AsPath(""));
                 includeParser->Load();
                 for(CLevelParserLineUPtr& line : includeParser->m_lines)
                 {

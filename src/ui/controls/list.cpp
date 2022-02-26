@@ -20,8 +20,6 @@
 
 #include "ui/controls/list.h"
 
-#include "common/make_unique.h"
-
 #include "graphics/core/device.h"
 #include "graphics/core/renderers.h"
 #include "graphics/core/transparency.h"
@@ -82,7 +80,7 @@ bool CList::Create(const glm::vec2& pos, const glm::vec2& dim, int icon, EventTy
 
     CControl::Create(pos, dim, icon, eventMsg);
 
-    m_scroll = MakeUnique<CScroll>();
+    m_scroll = std::make_unique<CScroll>();
     m_scroll->Create(pos, dim, 0, EVENT_NULL);
 
     return MoveAdjust();
@@ -140,7 +138,7 @@ bool CList::MoveAdjust()
     ddim.y = h;
     for (int i = 0; i < m_displayLine; i++)
     {
-        auto button = MakeUnique<CButton>();
+        auto button = std::make_unique<CButton>();
         button->Create(ppos, ddim, -1, EVENT_NULL);
         button->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
         button->SetState(STATE_SIMPLY);

@@ -23,7 +23,6 @@
 #include "common/event.h"
 #include "common/global.h"
 #include "common/image.h"
-#include "common/make_unique.h"
 
 #include "graphics/engine/engine.h"
 #include "graphics/engine/terrain.h"
@@ -120,7 +119,7 @@ bool CTaskGoto::EventProcess(const Event &event)
         {
             if (m_bmArray != nullptr)
             {
-                std::unique_ptr<CImage> debugImage = MakeUnique<CImage>(glm::ivec2(m_bmSize, m_bmSize));
+                std::unique_ptr<CImage> debugImage = std::make_unique<CImage>(glm::ivec2(m_bmSize, m_bmSize));
                 debugImage->Fill(Gfx::IntColor(255, 255, 255, 255));
                 for (int x = 0; x < m_bmSize; x++)
                 {
@@ -2100,7 +2099,7 @@ bool CTaskGoto::BitmapOpen()
     BitmapClose();
 
     m_bmSize = static_cast<int>(3200.0f/BM_DIM_STEP);
-    m_bmArray = MakeUniqueArray<unsigned char>(m_bmSize*m_bmSize/8*2);
+    m_bmArray = std::make_unique<unsigned char[]>(m_bmSize * m_bmSize / 8 * 2);
     m_bmChanged = true;
 
     m_bmOffset = m_bmSize/2;

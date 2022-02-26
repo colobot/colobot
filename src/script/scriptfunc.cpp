@@ -25,7 +25,6 @@
 
 #include "common/global.h"
 #include "common/logger.h"
-#include "common/make_unique.h"
 
 #include "common/resources/inputstream.h"
 #include "common/resources/outputstream.h"
@@ -3317,7 +3316,7 @@ public:
     {
         if (mode == CBotFileAccessHandler::OpenMode::Read)
         {
-            auto is = MakeUnique<CInputStream>(filename);
+            auto is = std::make_unique<CInputStream>(filename);
             if (is->is_open())
             {
                 m_file = std::move(is);
@@ -3325,7 +3324,7 @@ public:
         }
         else if (mode == CBotFileAccessHandler::OpenMode::Write)
         {
-            auto os = MakeUnique<COutputStream>(filename);
+            auto os = std::make_unique<COutputStream>(filename);
             if (os->is_open())
             {
                 m_file = std::move(os);
@@ -3333,7 +3332,7 @@ public:
         }
         else if (mode == CBotFileAccessHandler::OpenMode::Append)
         {
-            auto os = MakeUnique<COutputStream>(filename, std::ios_base::app);
+            auto os = std::make_unique<COutputStream>(filename, std::ios_base::app);
             if (os->is_open())
             {
                 m_file = std::move(os);
@@ -3405,7 +3404,7 @@ class CBotFileAccessHandlerColobot : public CBotFileAccessHandler
 public:
     virtual std::unique_ptr<CBotFile> OpenFile(const std::string& filename, OpenMode mode) override
     {
-        return MakeUnique<CBotFileColobot>(PrepareFilename(filename), mode);
+        return std::make_unique<CBotFileColobot>(PrepareFilename(filename), mode);
     }
 
     virtual bool DeleteFile(const std::string& filename) override
@@ -3613,7 +3612,7 @@ void CScriptFunctions::Init()
     CBotProgram::AddFunction("research",  rResearch,  cResearch);
     CBotProgram::AddFunction("destroy",   rDestroy,   cOneObject);
 
-    SetFileAccessHandler(MakeUnique<CBotFileAccessHandlerColobot>());
+    SetFileAccessHandler(std::make_unique<CBotFileAccessHandlerColobot>());
 }
 
 

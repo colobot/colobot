@@ -108,7 +108,7 @@ void CSlider::MoveAdjust()
     {
         if (m_buttonLeft == nullptr)
         {
-            m_buttonLeft = MakeUnique<CButton>();
+            m_buttonLeft = std::make_unique<CButton>();
             m_buttonLeft->Create({ 0.0f, 0.0f }, { 0.0f, 0.0f }, m_bHoriz ? 55 : 49, EVENT_NULL);  // </^
             m_buttonLeft->SetRepeat(true);
             if ( m_state & STATE_SHADOW )  m_buttonLeft->SetState(STATE_SHADOW);
@@ -116,7 +116,7 @@ void CSlider::MoveAdjust()
 
         if (m_buttonRight == nullptr)
         {
-            m_buttonRight = MakeUnique<CButton>();
+            m_buttonRight = std::make_unique<CButton>();
             m_buttonRight->Create({ 0.0f, 0.0f }, { 0.0f, 0.0f }, m_bHoriz ? 48 : 50, EVENT_NULL);  // >/v
             m_buttonRight->SetRepeat(true);
             if ( m_state & STATE_SHADOW )  m_buttonRight->SetState(STATE_SHADOW);

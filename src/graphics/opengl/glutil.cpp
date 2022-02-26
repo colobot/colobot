@@ -21,7 +21,6 @@
 
 #include "common/image.h"
 #include "common/logger.h"
-#include "common/make_unique.h"
 
 #include "graphics/opengl/gl33device.h"
 
@@ -69,14 +68,14 @@ FramebufferSupport DetectFramebufferSupport()
 
 std::unique_ptr<CDevice> CreateDevice(const DeviceConfig &config, const std::string& name)
 {
-    if      (name == "default") return MakeUnique<CGL33Device>(config);
-    else if (name == "opengl")  return MakeUnique<CGL33Device>(config);
-    else if (name == "gl33")    return MakeUnique<CGL33Device>(config);
+    if      (name == "default") return std::make_unique<CGL33Device>(config);
+    else if (name == "opengl")  return std::make_unique<CGL33Device>(config);
+    else if (name == "gl33")    return std::make_unique<CGL33Device>(config);
     else if (name == "auto")
     {
         int version = GetOpenGLVersion();
 
-        if (version >= 33) return MakeUnique<CGL33Device>(config);
+        if (version >= 33) return std::make_unique<CGL33Device>(config);
     }
 
     return nullptr;
@@ -462,7 +461,7 @@ GLint CreateShader(GLint type, const std::vector<std::string>& sources)
         GLint len;
         glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &len);
 
-        auto message = MakeUniqueArray<GLchar>(len + 1);
+        auto message = std::make_unique<GLchar[]>(len + 1);
         glGetShaderInfoLog(shader, len + 1, nullptr, message.get());
 
         GetLogger()->Error("Shader compilation error occurred!\n%s\n", message.get());
@@ -507,7 +506,7 @@ GLint LoadShader(GLint type, const char* filename)
         GLint len;
         glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &len);
 
-        auto message = MakeUniqueArray<GLchar>(len + 1);
+        auto message = std::make_unique<GLchar[]>(len + 1);
         glGetShaderInfoLog(shader, len + 1, nullptr, message.get());
 
         GetLogger()->Error("Shader compilation error occurred!\n%s\n", message.get());
@@ -540,7 +539,7 @@ GLint LinkProgram(int count, const GLint* shaders)
         GLint len;
         glGetProgramiv(program, GL_INFO_LOG_LENGTH, &len);
 
-        auto message = MakeUniqueArray<GLchar>(len + 1);
+        auto message = std::make_unique<GLchar[]>(len + 1);
         glGetProgramInfoLog(program, len + 1, nullptr, message.get());
 
         GetLogger()->Error("Shader program linking error occurred!\n%s\n", message.get());
@@ -590,7 +589,7 @@ GLint LinkProgram(const std::vector<GLint>& shaders)
 
 std::unique_ptr<CGLFrameBufferPixels> GetGLFrameBufferPixels(const glm::ivec2& size)
 {
-    auto pixels = MakeUnique<CGLFrameBufferPixels>(4 * size.x * size.y);
+    auto pixels = std::make_unique<CGLFrameBufferPixels>(4 * size.x * size.y);
 
     glReadPixels(0, 0, size.x, size.y, GL_RGBA, GL_UNSIGNED_BYTE, pixels->GetPixelsData());
 

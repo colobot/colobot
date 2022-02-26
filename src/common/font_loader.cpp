@@ -20,7 +20,6 @@
 #include "common/font_loader.h"
 
 #include "common/logger.h"
-#include "common/make_unique.h"
 
 #include "common/resources/inputstream.h"
 #include "common/resources/outputstream.h"
@@ -52,7 +51,7 @@ bool CFontLoader::Init()
     try
     {
         std::unique_ptr<std::istream> stream;
-        auto inputStream = MakeUnique<CInputStream>("/fonts/fonts.ini");
+        auto inputStream = std::make_unique<CInputStream>("/fonts/fonts.ini");
         bool good = inputStream->is_open();
         stream = std::move(inputStream);
 

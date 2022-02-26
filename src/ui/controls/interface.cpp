@@ -95,7 +95,7 @@ ControlClass* CInterface::CreateControl(const glm::vec2& pos, const glm::vec2& d
     if (index < 0)
         return nullptr;
 
-    auto control = MakeUnique<ControlClass>();
+    auto control = std::make_unique<ControlClass>();
     control->Create(pos, dim, icon, eventMsg);
     auto* controlPtr = control.get();
     m_controls[index] = std::move(control);
@@ -130,7 +130,7 @@ CWindow* CInterface::CreateWindows(const glm::vec2& pos, const glm::vec2& dim, i
     if (index < 0)
         return nullptr;
 
-    auto window = MakeUnique<CWindow>();
+    auto window = std::make_unique<CWindow>();
     window->Create(pos, dim, icon, eventMsg);
     auto* windowPtr = window.get();
     m_controls[index] = std::move(window);
@@ -237,7 +237,7 @@ CList* CInterface::CreateList(const glm::vec2& pos, const glm::vec2& dim, int ic
     if (index < 0)
         return nullptr;
 
-    auto list = MakeUnique<CList>();
+    auto list = std::make_unique<CList>();
     list->Create(pos, dim, icon, eventMsg, expand);
     auto* listPtr = list.get();
     m_controls[index] = std::move(list);

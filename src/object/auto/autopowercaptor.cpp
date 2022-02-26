@@ -20,8 +20,6 @@
 
 #include "object/auto/autopowercaptor.h"
 
-#include "common/make_unique.h"
-
 #include "graphics/engine/engine.h"
 
 #include "level/parser/parserline.h"
@@ -295,11 +293,11 @@ bool CAutoPowerCaptor::Write(CLevelParserLine* line)
 {
     if ( m_phase == APAP_WAIT )  return false;
 
-    line->AddParam("aExist", MakeUnique<CLevelParserParam>(true));
+    line->AddParam("aExist", std::make_unique<CLevelParserParam>(true));
     CAuto::Write(line);
-    line->AddParam("aPhase", MakeUnique<CLevelParserParam>(static_cast<int>(m_phase)));
-    line->AddParam("aProgress", MakeUnique<CLevelParserParam>(m_progress));
-    line->AddParam("aSpeed", MakeUnique<CLevelParserParam>(m_speed));
+    line->AddParam("aPhase", std::make_unique<CLevelParserParam>(static_cast<int>(m_phase)));
+    line->AddParam("aProgress", std::make_unique<CLevelParserParam>(m_progress));
+    line->AddParam("aSpeed", std::make_unique<CLevelParserParam>(m_speed));
 
     return true;
 }

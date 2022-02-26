@@ -21,7 +21,6 @@
 #include "common/config_file.h"
 
 #include "common/logger.h"
-#include "common/make_unique.h"
 
 #include "common/resources/inputstream.h"
 #include "common/resources/outputstream.h"
@@ -66,13 +65,13 @@ bool CConfigFile::Init()
         bool good;
         if (m_useCurrentDirectory)
         {
-            auto inputStream = MakeUnique<std::ifstream>("./colobot.ini");
+            auto inputStream = std::make_unique<std::ifstream>("./colobot.ini");
             good = inputStream->good();
             stream = std::move(inputStream);
         }
         else
         {
-            auto inputStream = MakeUnique<CInputStream>("colobot.ini");
+            auto inputStream = std::make_unique<CInputStream>("colobot.ini");
             good = inputStream->is_open();
             stream = std::move(inputStream);
         }
@@ -106,13 +105,13 @@ bool CConfigFile::Save()
             bool good;
             if (m_useCurrentDirectory)
             {
-                auto outputStream = MakeUnique<std::ofstream>("./colobot.ini");
+                auto outputStream = std::make_unique<std::ofstream>("./colobot.ini");
                 good = outputStream->good();
                 stream = std::move(outputStream);
             }
             else
             {
-                auto outputStream = MakeUnique<COutputStream>("colobot.ini");
+                auto outputStream = std::make_unique<COutputStream>("colobot.ini");
                 good = outputStream->is_open();
                 stream = std::move(outputStream);
             }

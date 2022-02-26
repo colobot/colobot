@@ -22,8 +22,6 @@
 // config.h must be included first
 #include "common/config.h"
 
-#include "common/make_unique.h"
-
 #include "graphics/core/device.h"
 
 #include <GL/glew.h>
@@ -117,7 +115,7 @@ class CGLFrameBufferPixels : public CFrameBufferPixels
 {
 public:
     CGLFrameBufferPixels(std::size_t size)
-        : m_pixels(MakeUniqueArray<GLubyte>(size))
+        : m_pixels(std::make_unique<GLubyte[]>(size))
     {}
 
     void* GetPixelsData() override

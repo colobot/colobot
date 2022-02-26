@@ -361,7 +361,7 @@ bool CTerrain::RandomizeRelief()
     for(int i = 0; i < octaveCount; i++)
     {
         int pxCount = static_cast<int>(pow(2, (i+1)*2));
-        octaves[i] = MakeUniqueArray<float>(pxCount);
+        octaves[i] = std::make_unique<float[]>(pxCount);
         for(int j = 0; j < pxCount; j++)
         {
             octaves[i][j] = Math::Rand();

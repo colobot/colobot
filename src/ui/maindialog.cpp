@@ -26,7 +26,6 @@
 
 #include "common/event.h"
 #include "common/logger.h"
-#include "common/make_unique.h"
 #include "common/settings.h"
 
 #include "graphics/engine/engine.h"

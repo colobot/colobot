@@ -21,7 +21,6 @@
 #include "ui/controls/editvalue.h"
 
 #include "common/event.h"
-#include "common/make_unique.h"
 
 #include "level/robotmain.h"
 
@@ -63,15 +62,15 @@ bool CEditValue::Create(const glm::vec2& pos, const glm::vec2& dim, int icon, Ev
 
     GlintDelete();
 
-    m_edit = MakeUnique<Ui::CEdit>();
+    m_edit = std::make_unique<Ui::CEdit>();
     m_edit->Create(pos, dim, 0, EVENT_NULL);
     m_edit->SetMaxChar(4);
 
-    m_buttonUp = MakeUnique<Ui::CButton>();
+    m_buttonUp = std::make_unique<Ui::CButton>();
     m_buttonUp->Create(pos, dim, 49, EVENT_NULL);  // ^
     m_buttonUp->SetRepeat(true);
 
-    m_buttonDown = MakeUnique<Ui::CButton>();
+    m_buttonDown = std::make_unique<Ui::CButton>();
     m_buttonDown->Create(pos, dim, 50, EVENT_NULL);  // v
     m_buttonDown->SetRepeat(true);
 

@@ -65,7 +65,7 @@ CPauseManager::~CPauseManager()
 ActivePause* CPauseManager::ActivatePause(PauseType type, PauseMusic music)
 {
     GetLogger()->Debug("Activated pause mode - %s\n", GetPauseName(type).c_str());
-    auto pause = MakeUnique<ActivePause>(type, music);
+    auto pause = std::make_unique<ActivePause>(type, music);
     ActivePause* ptr = pause.get();
     m_activePause.push_back(std::move(pause));
     Update();

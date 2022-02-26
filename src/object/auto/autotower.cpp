@@ -20,8 +20,6 @@
 
 #include "object/auto/autotower.h"
 
-#include "common/make_unique.h"
-
 #include "graphics/engine/engine.h"
 
 #include "level/robotmain.h"
@@ -467,16 +465,16 @@ bool CAutoTower::Write(CLevelParserLine* line)
 {
     if ( m_phase == ATP_WAIT )  return false;
 
-    line->AddParam("aExist", MakeUnique<CLevelParserParam>(true));
+    line->AddParam("aExist", std::make_unique<CLevelParserParam>(true));
     CAuto::Write(line);
-    line->AddParam("aPhase", MakeUnique<CLevelParserParam>(static_cast<int>(m_phase)));
-    line->AddParam("aProgress", MakeUnique<CLevelParserParam>(m_progress));
-    line->AddParam("aSpeed", MakeUnique<CLevelParserParam>(m_speed));
-    line->AddParam("aTargetPos", MakeUnique<CLevelParserParam>(m_targetPos));
-    line->AddParam("aAngleYactual", MakeUnique<CLevelParserParam>(m_angleYactual));
-    line->AddParam("aAngleZactual", MakeUnique<CLevelParserParam>(m_angleZactual));
-    line->AddParam("aAngleYfinal", MakeUnique<CLevelParserParam>(m_angleYfinal));
-    line->AddParam("aAngleZfinal", MakeUnique<CLevelParserParam>(m_angleZfinal));
+    line->AddParam("aPhase", std::make_unique<CLevelParserParam>(static_cast<int>(m_phase)));
+    line->AddParam("aProgress", std::make_unique<CLevelParserParam>(m_progress));
+    line->AddParam("aSpeed", std::make_unique<CLevelParserParam>(m_speed));
+    line->AddParam("aTargetPos", std::make_unique<CLevelParserParam>(m_targetPos));
+    line->AddParam("aAngleYactual", std::make_unique<CLevelParserParam>(m_angleYactual));
+    line->AddParam("aAngleZactual", std::make_unique<CLevelParserParam>(m_angleZactual));
+    line->AddParam("aAngleYfinal", std::make_unique<CLevelParserParam>(m_angleYfinal));
+    line->AddParam("aAngleZfinal", std::make_unique<CLevelParserParam>(m_angleZfinal));
 
     return true;
 }

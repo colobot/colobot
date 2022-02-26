@@ -19,8 +19,6 @@
 
 #include "object/subclass/base_building.h"
 
-#include "common/make_unique.h"
-
 #include "graphics/engine/engine.h"
 #include "graphics/engine/oldmodelmanager.h"
 #include "graphics/engine/terrain.h"
@@ -63,7 +61,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
     Gfx::COldModelManager* modelManager,
     Gfx::CEngine* engine)
 {
-    auto obj = MakeUnique<CBaseBuilding>(params.id, params.type);
+    auto obj = std::make_unique<CBaseBuilding>(params.id, params.type);
 
     obj->SetTrainer(params.trainer || obj->GetPlusTrainer());
     obj->SetTeam(params.team);
@@ -810,75 +808,75 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
     std::unique_ptr<CAuto> objAuto;
     if ( params.type == OBJECT_BASE )
     {
-        objAuto = MakeUnique<CAutoBase>(obj.get());
+        objAuto = std::make_unique<CAutoBase>(obj.get());
     }
     if ( params.type == OBJECT_PORTICO )
     {
-        objAuto = MakeUnique<CAutoPortico>(obj.get());
+        objAuto = std::make_unique<CAutoPortico>(obj.get());
     }
     if ( params.type == OBJECT_DERRICK )
     {
-        objAuto = MakeUnique<CAutoDerrick>(obj.get());
+        objAuto = std::make_unique<CAutoDerrick>(obj.get());
     }
     if ( params.type == OBJECT_FACTORY )
     {
-        objAuto = MakeUnique<CAutoFactory>(obj.get());
+        objAuto = std::make_unique<CAutoFactory>(obj.get());
     }
     if ( params.type == OBJECT_REPAIR )
     {
-        objAuto = MakeUnique<CAutoRepair>(obj.get());
+        objAuto = std::make_unique<CAutoRepair>(obj.get());
     }
     if ( params.type == OBJECT_DESTROYER )
     {
-        objAuto = MakeUnique<CAutoDestroyer>(obj.get());
+        objAuto = std::make_unique<CAutoDestroyer>(obj.get());
     }
     if ( params.type == OBJECT_STATION )
     {
-        objAuto = MakeUnique<CAutoPowerStation>(obj.get());
+        objAuto = std::make_unique<CAutoPowerStation>(obj.get());
     }
     if ( params.type == OBJECT_CONVERT )
     {
-        objAuto = MakeUnique<CAutoConvert>(obj.get());
+        objAuto = std::make_unique<CAutoConvert>(obj.get());
     }
     if ( params.type == OBJECT_TOWER )
     {
-        objAuto = MakeUnique<CAutoTower>(obj.get());
+        objAuto = std::make_unique<CAutoTower>(obj.get());
     }
     if ( params.type == OBJECT_RESEARCH )
     {
-        objAuto = MakeUnique<CAutoResearch>(obj.get());
+        objAuto = std::make_unique<CAutoResearch>(obj.get());
     }
     if ( params.type == OBJECT_RADAR )
     {
-        objAuto = MakeUnique<CAutoRadar>(obj.get());
+        objAuto = std::make_unique<CAutoRadar>(obj.get());
     }
     if ( params.type == OBJECT_ENERGY )
     {
-        objAuto = MakeUnique<CAutoPowerPlant>(obj.get());
+        objAuto = std::make_unique<CAutoPowerPlant>(obj.get());
     }
     if ( params.type == OBJECT_LABO )
     {
-        objAuto = MakeUnique<CAutoLabo>(obj.get());
+        objAuto = std::make_unique<CAutoLabo>(obj.get());
     }
     if ( params.type == OBJECT_NUCLEAR )
     {
-        objAuto = MakeUnique<CAutoNuclearPlant>(obj.get());
+        objAuto = std::make_unique<CAutoNuclearPlant>(obj.get());
     }
     if ( params.type == OBJECT_PARA )
     {
-        objAuto = MakeUnique<CAutoPowerCaptor>(obj.get());
+        objAuto = std::make_unique<CAutoPowerCaptor>(obj.get());
     }
     if ( params.type == OBJECT_SAFE )
     {
-        objAuto = MakeUnique<CAutoVault>(obj.get());
+        objAuto = std::make_unique<CAutoVault>(obj.get());
     }
     if ( params.type == OBJECT_HUSTON )
     {
-        objAuto = MakeUnique<CAutoHouston>(obj.get());
+        objAuto = std::make_unique<CAutoHouston>(obj.get());
     }
     if ( params.type == OBJECT_NEST )
     {
-        objAuto = MakeUnique<CAutoNest>(obj.get());
+        objAuto = std::make_unique<CAutoNest>(obj.get());
     }
 
     if (objAuto != nullptr)

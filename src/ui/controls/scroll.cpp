@@ -21,7 +21,6 @@
 #include "ui/controls/scroll.h"
 
 #include "common/event.h"
-#include "common/make_unique.h"
 
 #include "graphics/core/device.h"
 #include "graphics/core/renderers.h"
@@ -94,14 +93,14 @@ void CScroll::MoveAdjust()
     {
         if (m_buttonUp == nullptr)
         {
-            m_buttonUp = MakeUnique<CButton>();
+            m_buttonUp = std::make_unique<CButton>();
             m_buttonUp->Create({ 0.0f, 0.0f }, { 0.0f, 0.0f }, 49, EVENT_NULL);
             m_buttonUp->SetRepeat(true);
         }
 
         if (m_buttonDown == nullptr)
         {
-            m_buttonDown = MakeUnique<CButton>();
+            m_buttonDown = std::make_unique<CButton>();
             m_buttonDown->Create({ 0.0f, 0.0f }, { 0.0f, 0.0f }, 50, EVENT_NULL);
             m_buttonDown->SetRepeat(true);
         }

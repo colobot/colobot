@@ -21,7 +21,6 @@
 
 #include "common/config_file.h"
 #include "common/logger.h"
-#include "common/make_unique.h"
 #include "common/restext.h"
 
 #include "common/resources/inputstream.h"
@@ -436,15 +435,15 @@ void CPlayerProfile::SaveApperance()
         CLevelParser apperanceParser(GetSaveFile("face.gam"));
         CLevelParserLineUPtr line;
 
-        line = MakeUnique<CLevelParserLine>("Head");
-        line->AddParam("face", MakeUnique<CLevelParserParam>(m_apperance.face));
-        line->AddParam("glasses", MakeUnique<CLevelParserParam>(m_apperance.glasses));
-        line->AddParam("hair", MakeUnique<CLevelParserParam>(m_apperance.colorHair));
+        line = std::make_unique<CLevelParserLine>("Head");
+        line->AddParam("face", std::make_unique<CLevelParserParam>(m_apperance.face));
+        line->AddParam("glasses", std::make_unique<CLevelParserParam>(m_apperance.glasses));
+        line->AddParam("hair", std::make_unique<CLevelParserParam>(m_apperance.colorHair));
         apperanceParser.AddLine(std::move(line));
 
-        line = MakeUnique<CLevelParserLine>("Body");
-        line->AddParam("combi", MakeUnique<CLevelParserParam>(m_apperance.colorCombi));
-        line->AddParam("band", MakeUnique<CLevelParserParam>(m_apperance.colorBand));
+        line = std::make_unique<CLevelParserLine>("Body");
+        line->AddParam("combi", std::make_unique<CLevelParserParam>(m_apperance.colorCombi));
+        line->AddParam("band", std::make_unique<CLevelParserParam>(m_apperance.colorBand));
         apperanceParser.AddLine(std::move(line));
 
         apperanceParser.Save();

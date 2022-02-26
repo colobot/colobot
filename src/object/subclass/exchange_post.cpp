@@ -19,7 +19,6 @@
 
 #include "object/subclass/exchange_post.h"
 
-#include "common/make_unique.h"
 #include "common/regex_utils.h"
 
 #include "graphics/engine/engine.h"
@@ -52,7 +51,7 @@ std::unique_ptr<CExchangePost> CExchangePost::Create(
     Gfx::COldModelManager* modelManager,
     Gfx::CEngine* engine)
 {
-    auto obj = MakeUnique<CExchangePost>(params.id);
+    auto obj = std::make_unique<CExchangePost>(params.id);
 
     obj->SetTeam(params.team);
 
@@ -101,7 +100,7 @@ std::unique_ptr<CExchangePost> CExchangePost::Create(
     pos.y += params.height;
     obj->SetPosition(pos);  // to display the shadows immediately
 
-    auto objAuto = MakeUnique<CAutoInfo>(obj.get());
+    auto objAuto = std::make_unique<CAutoInfo>(obj.get());
     objAuto->Init();
     obj->SetAuto(std::move(objAuto));
 
@@ -205,7 +204,7 @@ void CExchangePost::Write(CLevelParserLine* line)
         {
             auto key = "info" + boost::lexical_cast<std::string>(i);
             auto paramValue = info.name + "=" + boost::lexical_cast<std::string>(info.value);
-            line->AddParam(key, MakeUnique<CLevelParserParam>(paramValue));
+            line->AddParam(key, std::make_unique<CLevelParserParam>(paramValue));
         }
     }
 }
@@ -670,11 +669,11 @@ bool CAutoInfo::Write(CLevelParserLine* line)
     if (m_phase == Phase::Wait)
         return false;
 
-    line->AddParam("aExist", MakeUnique<CLevelParserParam>(true));
+    line->AddParam("aExist", std::make_unique<CLevelParserParam>(true));
     CAuto::Write(line);
-    line->AddParam("aPhase", MakeUnique<CLevelParserParam>(static_cast<int>(m_phase)));
-    line->AddParam("aProgress", MakeUnique<CLevelParserParam>(m_progress));
-    line->AddParam("aSpeed", MakeUnique<CLevelParserParam>(m_speed));
+    line->AddParam("aPhase", std::make_unique<CLevelParserParam>(static_cast<int>(m_phase)));
+    line->AddParam("aProgress", std::make_unique<CLevelParserParam>(m_progress));
+    line->AddParam("aSpeed", std::make_unique<CLevelParserParam>(m_speed));
 
     return true;
 }

@@ -19,16 +19,13 @@
 
 #include "app/controller.h"
 
-
-#include "common/make_unique.h"
-
 #include "level/robotmain.h"
 
 
 
 CController::CController()
 {
-    m_main = MakeUnique<CRobotMain>();
+    m_main = std::make_unique<CRobotMain>();
 }
 
 CController::~CController()

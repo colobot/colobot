@@ -103,7 +103,7 @@ bool CWindow::Create(const glm::vec2& pos, const glm::vec2& dim, int icon, Event
 template<typename ControlClass>
 ControlClass* CWindow::CreateControl(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg)
 {
-    auto control = MakeUnique<ControlClass>();
+    auto control = std::make_unique<ControlClass>();
     control->Create(pos, dim, icon, eventMsg);
     auto* controlPtr = control.get();
     m_controls.push_back(std::move(control));
@@ -220,7 +220,7 @@ CList* CWindow::CreateList(const glm::vec2& pos, const glm::vec2& dim, int icon,
     if (eventMsg == EVENT_NULL)
         eventMsg = GetUniqueEventType();
 
-    auto list = MakeUnique<CList>();
+    auto list = std::make_unique<CList>();
     list->Create(pos, dim, icon, eventMsg, expand);
     auto* listPtr = list.get();
     m_controls.push_back(std::move(list));
@@ -351,10 +351,10 @@ void CWindow::SetName(std::string name, bool tooltip)
 
     if ( m_name.length() > 0 && m_bRedim )  // title bar exists?
     {
-        m_buttonReduce = MakeUnique<CButton>();
+        m_buttonReduce = std::make_unique<CButton>();
         m_buttonReduce->Create(m_pos, m_dim, 0, EVENT_NULL);
 
-        m_buttonFull = MakeUnique<CButton>();
+        m_buttonFull = std::make_unique<CButton>();
         m_buttonFull->Create(m_pos, m_dim, 0, EVENT_NULL);
 
         bAdjust = true;
@@ -362,7 +362,7 @@ void CWindow::SetName(std::string name, bool tooltip)
 
     if ( m_name.length() > 0 && m_bClosable )  // title bar exists?
     {
-        m_buttonClose = MakeUnique<CButton>();
+        m_buttonClose = std::make_unique<CButton>();
         m_buttonClose->Create(m_pos, m_dim, 0, EVENT_NULL);
 
         bAdjust = true;

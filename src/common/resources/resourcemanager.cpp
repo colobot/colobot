@@ -27,7 +27,6 @@
 #endif
 
 #include "common/logger.h"
-#include "common/make_unique.h"
 
 #include <physfs.h>
 
@@ -124,17 +123,17 @@ std::string CResourceManager::GetSaveLocation()
 
 std::unique_ptr<CSDLFileWrapper> CResourceManager::GetSDLFileHandler(const std::string &filename)
 {
-    return MakeUnique<CSDLFileWrapper>(CleanPath(filename));
+    return std::make_unique<CSDLFileWrapper>(CleanPath(filename));
 }
 
 std::unique_ptr<CSDLMemoryWrapper> CResourceManager::GetSDLMemoryHandler(const std::string &filename)
 {
-    return MakeUnique<CSDLMemoryWrapper>(CleanPath(filename));
+    return std::make_unique<CSDLMemoryWrapper>(CleanPath(filename));
 }
 
 std::unique_ptr<CSNDFileWrapper> CResourceManager::GetSNDFileHandler(const std::string &filename)
 {
-    return MakeUnique<CSNDFileWrapper>(CleanPath(filename));
+    return std::make_unique<CSNDFileWrapper>(CleanPath(filename));
 }
 
 

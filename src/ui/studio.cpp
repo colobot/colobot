@@ -984,12 +984,12 @@ void CStudio::StartDialog(const Event &event)
 {
     if ( event.type == EVENT_STUDIO_OPEN )
     {
-        m_fileDialog = MakeUnique<CFileDialog>();
+        m_fileDialog = std::make_unique<CFileDialog>();
         m_fileDialog->SetDialogType(CFileDialog::Type::Open);
     }
     if ( event.type == EVENT_STUDIO_SAVE )
     {
-        m_fileDialog = MakeUnique<CFileDialog>();
+        m_fileDialog = std::make_unique<CFileDialog>();
         m_fileDialog->SetDialogType(CFileDialog::Type::Save);
     }
 

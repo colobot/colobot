@@ -385,7 +385,7 @@ CText::CText(CEngine* engine)
 
     m_fontsCache = std::make_unique<FontsCache>();
 
-    m_quadBatch = MakeUnique<CQuadBatch>(*engine);
+    m_quadBatch = std::make_unique<CQuadBatch>(*engine);
 }
 
 CText::~CText()

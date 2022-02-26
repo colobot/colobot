@@ -28,7 +28,6 @@
 #include "common/image.h"
 #include "common/key.h"
 #include "common/logger.h"
-#include "common/make_unique.h"
 #include "common/profiler.h"
 #include "common/stringutils.h"
 #include "common/version.h"
@@ -111,11 +110,11 @@ struct ApplicationPrivate
 
 CApplication::CApplication(CSystemUtils* systemUtils)
     : m_systemUtils(systemUtils),
-      m_private(MakeUnique<ApplicationPrivate>()),
-      m_configFile(MakeUnique<CConfigFile>()),
-      m_input(MakeUnique<CInput>()),
-      m_pathManager(MakeUnique<CPathManager>(systemUtils)),
-      m_modManager(MakeUnique<CModManager>(this, m_pathManager.get()))
+      m_private(std::make_unique<ApplicationPrivate>()),
+      m_configFile(std::make_unique<CConfigFile>()),
+      m_input(std::make_unique<CInput>()),
+      m_pathManager(std::make_unique<CPathManager>(systemUtils)),
+      m_modManager(std::make_unique<CModManager>(this, m_pathManager.get()))
 {
     m_exitCode      = 0;
     m_active        = false;
@@ -514,11 +513,11 @@ bool CApplication::Create()
     #ifdef OPENAL_SOUND
     if (!m_headless)
     {
-        m_sound = MakeUnique<CALSound>();
+        m_sound = std::make_unique<CALSound>();
     }
     else
     {
-        m_sound = MakeUnique<CSoundInterface>();
+        m_sound = std::make_unique<CSoundInterface>();
     }
     #else
     GetLogger()->Info("No sound support.\n");
@@ -536,7 +535,7 @@ bool CApplication::Create()
     /* SDL initialization sequence */
 
     // Creating the m_engine now because it holds the vsync flag
-    m_engine = MakeUnique<Gfx::CEngine>(this, m_systemUtils);
+    m_engine = std::make_unique<Gfx::CEngine>(this, m_systemUtils);
 
     Uint32 initFlags = SDL_INIT_VIDEO | SDL_INIT_TIMER;
 
@@ -689,10 +688,10 @@ bool CApplication::Create()
         return false;
     }
 
-    m_eventQueue = MakeUnique<CEventQueue>();
+    m_eventQueue = std::make_unique<CEventQueue>();
 
     // Create the robot application.
-    m_controller = MakeUnique<CController>();
+    m_controller = std::make_unique<CController>();
 
     StartLoadingMusic();
 
@@ -1247,7 +1246,7 @@ Event CApplication::ProcessSystemEvent()
         else
             event.type = EVENT_KEY_UP;
 
-        auto data = MakeUnique<KeyEventData>();
+        auto data = std::make_unique<KeyEventData>();
 
         data->virt = false;
         data->key = m_private->currentEvent.key.keysym.sym;
@@ -1270,7 +1269,7 @@ Event CApplication::ProcessSystemEvent()
     else if (m_private->currentEvent.type == SDL_TEXTINPUT)
     {
         event.type = EVENT_TEXT_INPUT;
-        auto data = MakeUnique<TextInputData>();
+        auto data = std::make_unique<TextInputData>();
         data->text = m_private->currentEvent.text.text;
         event.data = std::move(data);
     }
@@ -1278,7 +1277,7 @@ Event CApplication::ProcessSystemEvent()
     {
         event.type = EVENT_MOUSE_WHEEL;
 
-        auto data = MakeUnique<MouseWheelEventData>();
+        auto data = std::make_unique<MouseWheelEventData>();
         data->y = m_private->currentEvent.wheel.y;
         data->x = m_private->currentEvent.wheel.x;
 
@@ -1287,7 +1286,7 @@ Event CApplication::ProcessSystemEvent()
     else if ( (m_private->currentEvent.type == SDL_MOUSEBUTTONDOWN) ||
          (m_private->currentEvent.type == SDL_MOUSEBUTTONUP) )
     {
-        auto data = MakeUnique<MouseButtonEventData>();
+        auto data = std::make_unique<MouseButtonEventData>();
 
         if (m_private->currentEvent.type == SDL_MOUSEBUTTONDOWN)
             event.type = EVENT_MOUSE_BUTTON_DOWN;
@@ -1308,7 +1307,7 @@ Event CApplication::ProcessSystemEvent()
     {
         event.type = EVENT_JOY_AXIS;
 
-        auto data = MakeUnique<JoyAxisEventData>();
+        auto data = std::make_unique<JoyAxisEventData>();
         data->axis = m_private->currentEvent.jaxis.axis;
         data->value = m_private->currentEvent.jaxis.value;
         event.data = std::move(data);
@@ -1321,7 +1320,7 @@ Event CApplication::ProcessSystemEvent()
         else
             event.type = EVENT_JOY_BUTTON_UP;
 
-        auto data = MakeUnique<JoyButtonEventData>();
+        auto data = std::make_unique<JoyButtonEventData>();
         data->button = m_private->currentEvent.jbutton.button;
         event.data = std::move(data);
     }
@@ -1449,7 +1448,7 @@ Event CApplication::CreateVirtualEvent(const Event& sourceEvent)
 
         auto sourceData = sourceEvent.GetData<JoyButtonEventData>();
 
-        auto data = MakeUnique<KeyEventData>();
+        auto data = std::make_unique<KeyEventData>();
         data->virt = true;
         data->key = VIRTUAL_JOY(sourceData->button);
         virtualEvent.data = std::move(data);

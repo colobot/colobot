@@ -101,8 +101,8 @@ bool CProgramStorageObjectImpl::GetActiveVirus()
 Program* CProgramStorageObjectImpl::AddProgram()
 {
     assert(m_object->Implements(ObjectInterfaceType::Old)); //TODO
-    auto program = MakeUnique<Program>();
-    program->script = MakeUnique<CScript>(dynamic_cast<COldObject*>(this));
+    auto program = std::make_unique<Program>();
+    program->script = std::make_unique<CScript>(dynamic_cast<COldObject*>(this));
 
     Program* prog = program.get();
     AddProgram(std::move(program));
@@ -130,7 +130,7 @@ Program* CProgramStorageObjectImpl::CloneProgram(Program* program)
     Program* newprog = AddProgram();
 
     // TODO: Is there any reason CScript doesn't have a function to get the program code directly?
-    auto edit = MakeUnique<Ui::CEdit>();
+    auto edit = std::make_unique<Ui::CEdit>();
     program->script->PutScript(edit.get(), "");
     newprog->script->GetScript(edit.get());
 
@@ -314,15 +314,15 @@ void CProgramStorageObjectImpl::LoadAllProgramsForLevel(CLevelParserLine* levelS
 
 void CProgramStorageObjectImpl::SaveAllProgramsForSavedScene(CLevelParserLine* levelSourceLine, const std::string& levelSource)
 {
-    levelSourceLine->AddParam("programStorageIndex", MakeUnique<CLevelParserParam>(m_programStorageIndex));
+    levelSourceLine->AddParam("programStorageIndex", std::make_unique<CLevelParserParam>(m_programStorageIndex));
 
     for (unsigned int i = 0; i < m_program.size(); i++)
     {
         if (!m_program[i]->filename.empty() && m_program[i]->readOnly)
         {
-            levelSourceLine->AddParam("script" + StrUtils::ToString<int>(i+1), MakeUnique<CLevelParserParam>(m_program[i]->filename));
-            levelSourceLine->AddParam("scriptReadOnly" + StrUtils::ToString<int>(i+1), MakeUnique<CLevelParserParam>(m_program[i]->readOnly));
-            levelSourceLine->AddParam("scriptRunnable" + StrUtils::ToString<int>(i+1), MakeUnique<CLevelParserParam>(m_program[i]->runnable));
+            levelSourceLine->AddParam("script" + StrUtils::ToString<int>(i+1), std::make_unique<CLevelParserParam>(m_program[i]->filename));
+            levelSourceLine->AddParam("scriptReadOnly" + StrUtils::ToString<int>(i+1), std::make_unique<CLevelParserParam>(m_program[i]->readOnly));
+            levelSourceLine->AddParam("scriptRunnable" + StrUtils::ToString<int>(i+1), std::make_unique<CLevelParserParam>(m_program[i]->runnable));
         }
     }
 
@@ -337,8 +337,8 @@ void CProgramStorageObjectImpl::SaveAllProgramsForSavedScene(CLevelParserLine* l
 
         GetLogger()->Trace("Saving program '%s' to saved scene\n", filename.c_str());
         WriteProgram(m_program[i].get(), filename);
-        levelSourceLine->AddParam("scriptReadOnly" + StrUtils::ToString<int>(i+1), MakeUnique<CLevelParserParam>(m_program[i]->readOnly));
-        levelSourceLine->AddParam("scriptRunnable" + StrUtils::ToString<int>(i+1), MakeUnique<CLevelParserParam>(m_program[i]->runnable));
+        levelSourceLine->AddParam("scriptReadOnly" + StrUtils::ToString<int>(i+1), std::make_unique<CLevelParserParam>(m_program[i]->readOnly));
+        levelSourceLine->AddParam("scriptRunnable" + StrUtils::ToString<int>(i+1), std::make_unique<CLevelParserParam>(m_program[i]->runnable));
     }
 
     boost::regex regex(StrUtils::Format("prog%.3d([0-9]{3})\\.txt", m_programStorageIndex));

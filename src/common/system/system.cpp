@@ -20,8 +20,6 @@
 
 #include "common/system/system.h"
 
-#include "common/make_unique.h"
-
 #if defined(PLATFORM_WINDOWS)
     #include "common/system/system_windows.h"
 #elif defined(PLATFORM_LINUX)
@@ -43,13 +41,13 @@ std::unique_ptr<CSystemUtils> CSystemUtils::Create()
 {
     std::unique_ptr<CSystemUtils> instance;
 #if defined(PLATFORM_WINDOWS)
-    instance = MakeUnique<CSystemUtilsWindows>();
+    instance = std::make_unique<CSystemUtilsWindows>();
 #elif defined(PLATFORM_LINUX)
-    instance = MakeUnique<CSystemUtilsLinux>();
+    instance = std::make_unique<CSystemUtilsLinux>();
 #elif defined(PLATFORM_MACOSX)
-    instance = MakeUnique<CSystemUtilsMacOSX>();
+    instance = std::make_unique<CSystemUtilsMacOSX>();
 #else
-    instance = MakeUnique<CSystemUtilsOther>();
+    instance = std::make_unique<CSystemUtilsOther>();
 #endif
     return instance;
 }

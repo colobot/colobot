@@ -19,8 +19,6 @@
 
 #include "object/subclass/base_robot.h"
 
-#include "common/make_unique.h"
-
 #include "graphics/engine/oldmodelmanager.h"
 
 #include "object/object_create_params.h"
@@ -45,14 +43,14 @@ std::unique_ptr<CBaseRobot> CBaseRobot::Create(
     Gfx::COldModelManager* modelManager,
     Gfx::CEngine* engine)
 {
-    auto obj = MakeUnique<CBaseRobot>(params.id, params.type);
+    auto obj = std::make_unique<CBaseRobot>(params.id, params.type);
 
     obj->SetOption(params.option);
     obj->SetTeam(params.team);
 
     if ( params.type == OBJECT_TOTO )
     {
-        auto motion = MakeUnique<CMotionToto>(obj.get());
+        auto motion = std::make_unique<CMotionToto>(obj.get());
         motion->Create(params.pos, params.angle, params.type, 1.0f, modelManager);
         obj->SetMovable(std::move(motion), nullptr);
         return obj;
@@ -70,21 +68,21 @@ std::unique_ptr<CBaseRobot> CBaseRobot::Create(
 
     obj->SetToy(params.toy);
 
-    auto physics = MakeUnique<CPhysics>(obj.get());
+    auto physics = std::make_unique<CPhysics>(obj.get());
 
     std::unique_ptr<CMotion> motion;
     if ( params.type == OBJECT_HUMAN ||
          params.type == OBJECT_TECH  )
     {
-        motion = MakeUnique<CMotionHuman>(obj.get());
+        motion = std::make_unique<CMotionHuman>(obj.get());
     }
     else if ( params.type == OBJECT_CONTROLLER )
     {
-        motion = MakeUnique<CMotionLevelController>(obj.get());
+        motion = std::make_unique<CMotionLevelController>(obj.get());
     }
     else
     {
-        motion = MakeUnique<CMotionVehicle>(obj.get());
+        motion = std::make_unique<CMotionVehicle>(obj.get());
     }
 
     motion->SetPhysics(physics.get());

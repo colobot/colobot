@@ -105,7 +105,7 @@ void CScript::PutScript(Ui::CEdit* edit, const char* name)
 bool CScript::GetScript(Ui::CEdit* edit)
 {
     int len = edit->GetTextLength();
-    m_script = MakeUniqueArray<char>(len+2);
+    m_script = std::make_unique<char[]>(len + 2);
 
     std::string tmp = edit->GetText(len+1);
     strncpy(m_script.get(), tmp.c_str(), len+1);
@@ -237,7 +237,7 @@ bool CScript::Compile()
 
     if (m_botProg == nullptr)
     {
-        m_botProg = MakeUnique<CBot::CBotProgram>(m_object->GetBotVar());
+        m_botProg = std::make_unique<CBot::CBotProgram>(m_object->GetBotVar());
     }
 
     if ( m_botProg->Compile(m_script.get(), functionList, this) )
@@ -804,7 +804,7 @@ bool CScript::IntroduceVirus()
     int start = found[i+1];
     i     = found[i+0];
 
-    auto newScript = MakeUniqueArray<char>(m_len + strlen(names[i+1]) + 1);
+    auto newScript = std::make_unique<char[]>(m_len + strlen(names[i + 1]) + 1);
     strcpy(newScript.get(), m_script.get());
     m_script = std::move(newScript);
 

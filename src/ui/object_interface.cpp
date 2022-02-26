@@ -740,7 +740,7 @@ void CObjectInterface::StartEditScript(Program* program, std::string name)
 {
     CreateInterface(false);  // removes the control buttons
 
-    m_studio = MakeUnique<CStudio>();
+    m_studio = std::make_unique<CStudio>();
     m_studio->StartEditScript(program->script.get(), name, program);
 }
 

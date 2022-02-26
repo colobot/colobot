@@ -23,7 +23,6 @@
 #include "app/app.h"
 
 #include "common/global.h"
-#include "common/make_unique.h"
 #include "common/settings.h"
 #include "common/stringutils.h"
 
@@ -1071,74 +1070,74 @@ void COldObject::Write(CLevelParserLine* line)
 {
     glm::vec3    pos;
 
-    line->AddParam("camera", MakeUnique<CLevelParserParam>(GetCameraType()));
+    line->AddParam("camera", std::make_unique<CLevelParserParam>(GetCameraType()));
 
     if ( GetCameraLock() )
-        line->AddParam("cameraLock", MakeUnique<CLevelParserParam>(GetCameraLock()));
+        line->AddParam("cameraLock", std::make_unique<CLevelParserParam>(GetCameraLock()));
 
     if ( IsBulletWall() )
-        line->AddParam("bulletWall", MakeUnique<CLevelParserParam>(IsBulletWall()));
+        line->AddParam("bulletWall", std::make_unique<CLevelParserParam>(IsBulletWall()));
 
     if ( GetEnergyLevel() != 0.0f )
-        line->AddParam("energy", MakeUnique<CLevelParserParam>(GetEnergyLevel()));
+        line->AddParam("energy", std::make_unique<CLevelParserParam>(GetEnergyLevel()));
 
     if ( GetShield() != 1.0f )
-        line->AddParam("shield", MakeUnique<CLevelParserParam>(GetShield()));
+        line->AddParam("shield", std::make_unique<CLevelParserParam>(GetShield()));
 
     if ( GetRange() != 1.0f )
-        line->AddParam("range", MakeUnique<CLevelParserParam>(GetRange()));
+        line->AddParam("range", std::make_unique<CLevelParserParam>(GetRange()));
 
     if ( !GetSelectable() )
-        line->AddParam("selectable", MakeUnique<CLevelParserParam>(GetSelectable()));
+        line->AddParam("selectable", std::make_unique<CLevelParserParam>(GetSelectable()));
 
     if ( !GetCollisions() )
-        line->AddParam("clip", MakeUnique<CLevelParserParam>(GetCollisions()));
+        line->AddParam("clip", std::make_unique<CLevelParserParam>(GetCollisions()));
 
     if ( GetLock() )
-        line->AddParam("lock", MakeUnique<CLevelParserParam>(GetLock()));
+        line->AddParam("lock", std::make_unique<CLevelParserParam>(GetLock()));
 
     if ( !GetActivity() )
-        line->AddParam("activity", MakeUnique<CLevelParserParam>(GetActivity()));
+        line->AddParam("activity", std::make_unique<CLevelParserParam>(GetActivity()));
 
     if ( GetProxyActivate() )
     {
-        line->AddParam("proxyActivate", MakeUnique<CLevelParserParam>(GetProxyActivate()));
-        line->AddParam("proxyDistance", MakeUnique<CLevelParserParam>(GetProxyDistance()/g_unit));
+        line->AddParam("proxyActivate", std::make_unique<CLevelParserParam>(GetProxyActivate()));
+        line->AddParam("proxyDistance", std::make_unique<CLevelParserParam>(GetProxyDistance()/g_unit));
     }
 
     if ( GetMagnifyDamage() != 1.0f )
-        line->AddParam("magnifyDamage", MakeUnique<CLevelParserParam>(GetMagnifyDamage()));
+        line->AddParam("magnifyDamage", std::make_unique<CLevelParserParam>(GetMagnifyDamage()));
 
     if ( GetTeam() != 0 )
-        line->AddParam("team", MakeUnique<CLevelParserParam>(GetTeam()));
+        line->AddParam("team", std::make_unique<CLevelParserParam>(GetTeam()));
 
     if ( GetGunGoalV() != 0.0f )
-        line->AddParam("aimV", MakeUnique<CLevelParserParam>(GetGunGoalV()));
+        line->AddParam("aimV", std::make_unique<CLevelParserParam>(GetGunGoalV()));
 
     if ( GetGunGoalH() != 0.0f )
-        line->AddParam("aimH", MakeUnique<CLevelParserParam>(GetGunGoalH()));
+        line->AddParam("aimH", std::make_unique<CLevelParserParam>(GetGunGoalH()));
 
     if ( GetAnimateOnReset() )
     {
-        line->AddParam("reset", MakeUnique<CLevelParserParam>(GetAnimateOnReset()));
+        line->AddParam("reset", std::make_unique<CLevelParserParam>(GetAnimateOnReset()));
     }
 
     if ( m_bVirusMode )
-        line->AddParam("virusMode", MakeUnique<CLevelParserParam>(m_bVirusMode));
+        line->AddParam("virusMode", std::make_unique<CLevelParserParam>(m_bVirusMode));
 
     if ( m_virusTime != 0.0f )
-        line->AddParam("virusTime", MakeUnique<CLevelParserParam>(m_virusTime));
+        line->AddParam("virusTime", std::make_unique<CLevelParserParam>(m_virusTime));
 
-    line->AddParam("lifetime", MakeUnique<CLevelParserParam>(m_aTime));
+    line->AddParam("lifetime", std::make_unique<CLevelParserParam>(m_aTime));
 
     // Sets the parameters of the command line.
     CLevelParserParamVec cmdline;
     for(float value : GetCmdLine())
     {
-        cmdline.push_back(MakeUnique<CLevelParserParam>(value));
+        cmdline.push_back(std::make_unique<CLevelParserParam>(value));
     }
     if (cmdline.size() > 0)
-        line->AddParam("cmdline", MakeUnique<CLevelParserParam>(std::move(cmdline)));
+        line->AddParam("cmdline", std::make_unique<CLevelParserParam>(std::move(cmdline)));
 
     if ( m_motion != nullptr )
     {
@@ -1147,7 +1146,7 @@ void COldObject::Write(CLevelParserLine* line)
 
     if ( Implements(ObjectInterfaceType::Programmable) )
     {
-        line->AddParam("bVirusActive", MakeUnique<CLevelParserParam>(GetActiveVirus()));
+        line->AddParam("bVirusActive", std::make_unique<CLevelParserParam>(GetActiveVirus()));
     }
 
     if ( m_physics != nullptr )
@@ -2698,7 +2697,7 @@ bool COldObject::JostleObject(float force)
     {
         if ( m_auto != nullptr )  return false;
 
-        auto autoJostle = MakeUnique<CAutoJostle>(this);
+        auto autoJostle = std::make_unique<CAutoJostle>(this);
         autoJostle->Start(0, force);
         m_auto = std::move(autoJostle);
     }
@@ -2789,7 +2788,7 @@ void COldObject::SetSelect(bool select, bool bDisplayError)
     {
         if ( m_objectInterface == nullptr )
         {
-            m_objectInterface = MakeUnique<Ui::CObjectInterface>(this);
+            m_objectInterface = std::make_unique<Ui::CObjectInterface>(this);
         }
         m_objectInterface->CreateInterface(m_bSelect);
     }

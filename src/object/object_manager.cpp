@@ -20,7 +20,6 @@
 #include "object/object_manager.h"
 
 #include "common/global.h"
-#include "common/make_unique.h"
 
 #include "math/all.h"
 
@@ -41,7 +40,7 @@ CObjectManager::CObjectManager(Gfx::CEngine* engine,
                                Gfx::COldModelManager* oldModelManager,
                                Gfx::CModelManager* modelManager,
                                Gfx::CParticle* particle)
-  : m_objectFactory(MakeUnique<CObjectFactory>(engine,
+  : m_objectFactory(std::make_unique<CObjectFactory>(engine,
                                                terrain,
                                                oldModelManager,
                                                modelManager,

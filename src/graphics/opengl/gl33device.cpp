@@ -24,7 +24,6 @@
 #include "common/config_file.h"
 #include "common/image.h"
 #include "common/logger.h"
-#include "common/make_unique.h"
 
 #include "graphics/core/light.h"
 #include "graphics/core/material.h"
@@ -206,7 +205,7 @@ bool CGL33Device::Create()
     framebufferParams.height = m_config.size.y;
     framebufferParams.depth = m_config.depthSize;
 
-    m_framebuffers["default"] = MakeUnique<CDefaultFramebuffer>(framebufferParams);
+    m_framebuffers["default"] = std::make_unique<CDefaultFramebuffer>(framebufferParams);
 
     GetLogger()->Info("CDevice created successfully\n");
 
@@ -254,7 +253,7 @@ void CGL33Device::ConfigChanged(const DeviceConfig& newConfig)
     framebufferParams.height = m_config.size.y;
     framebufferParams.depth = m_config.depthSize;
 
-    m_framebuffers["default"] = MakeUnique<CDefaultFramebuffer>(framebufferParams);
+    m_framebuffers["default"] = std::make_unique<CDefaultFramebuffer>(framebufferParams);
 }
 
 void CGL33Device::BeginScene()
@@ -644,7 +643,7 @@ CFramebuffer* CGL33Device::CreateFramebuffer(std::string name, const Framebuffer
         return nullptr;
     }
 
-    auto framebuffer = MakeUnique<CGLFramebuffer>(params);
+    auto framebuffer = std::make_unique<CGLFramebuffer>(params);
     if (!framebuffer->Create()) return nullptr;
 
     CFramebuffer* framebufferPtr = framebuffer.get();

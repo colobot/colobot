@@ -251,7 +251,7 @@ void CProgrammableObjectImpl::TraceRecordStart()
         m_traceColor = TraceColor::Default;
     }
 
-    m_traceRecordBuffer = MakeUniqueArray<TraceRecord>(MAXTRACERECORD);
+    m_traceRecordBuffer = std::make_unique<TraceRecord[]>(MAXTRACERECORD);
     m_traceRecordIndex = 0;
 }
 

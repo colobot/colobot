@@ -21,7 +21,6 @@
 #include "common/resources/sdl_memory_wrapper.h"
 
 #include "common/logger.h"
-#include "common/make_unique.h"
 
 #include <physfs.h>
 
@@ -45,7 +44,7 @@ CSDLMemoryWrapper::CSDLMemoryWrapper(const std::string& filename)
     }
 
     PHYSFS_sint64 length = PHYSFS_fileLength(file);
-    m_buffer = MakeUniqueArray<char>(length);
+    m_buffer = std::make_unique<char[]>(length);
     if (PHYSFS_read(file, m_buffer.get(), 1, length) != length)
     {
         GetLogger()->Error("Unable to read data for \"%s\"\n", filename.c_str());
