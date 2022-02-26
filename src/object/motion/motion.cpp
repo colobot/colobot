@@ -24,6 +24,8 @@
 
 #include "common/make_unique.h"
 
+#include "graphics/engine/engine.h"
+
 #include "level/robotmain.h"
 
 #include "level/parser/parserline.h"

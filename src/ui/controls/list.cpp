@@ -24,6 +24,7 @@
 
 #include "graphics/core/device.h"
 #include "graphics/core/renderers.h"
+#include "graphics/core/transparency.h"
 #include "graphics/engine/engine.h"
 
 #include "math/func.h"

@@ -22,6 +22,8 @@
 
 #include "object/old_object.h"
 
+#include "graphics/engine/engine.h"
+
 
 // Object's constructor.
 

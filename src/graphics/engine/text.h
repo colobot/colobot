@@ -68,37 +68,39 @@ typedef short FontMetaChar;
  *
  * Bitmask in lower 4 bits (mask 0x00f)
  */
-enum FontType
+enum FontType : unsigned char
 {
     //! Flag for bold font subtype
-    FONT_BOLD       = 0x04,
+    FONT_BOLD       = 0b0000'01'00,
     //! Flag for italic font subtype
-    FONT_ITALIC     = 0x08,
+    FONT_ITALIC     = 0b0000'10'00,
 
     //! Default colobot font used for interface
-    FONT_COMMON    = 0x00,
+    FONT_COMMON    = 0b0000'00'00,
     //! Alias for bold colobot font
     FONT_COMMON_BOLD = FONT_COMMON | FONT_BOLD,
     //! Alias for italic colobot font
     FONT_COMMON_ITALIC = FONT_COMMON | FONT_ITALIC,
 
     //! Studio font used mainly in code editor
-    FONT_STUDIO    = 0x01,
+    FONT_STUDIO    = 0b0000'00'01,
     //! Alias for bold studio font
     FONT_STUDIO_BOLD = FONT_STUDIO | FONT_BOLD,
     //! Alias for italic studio font (at this point not used anywhere)
     FONT_STUDIO_ITALIC = FONT_STUDIO | FONT_ITALIC,
 
     //! SatCom font used for interface (currently bold and italic wariants aren't used anywhere)
-    FONT_SATCOM = 0x02,
+    FONT_SATCOM = 0b0000'00'10,
     //! Alias for bold satcom font
     FONT_SATCOM_BOLD = FONT_SATCOM | FONT_BOLD,
     //! Alias for italic satcom font
     FONT_SATCOM_ITALIC = FONT_SATCOM | FONT_ITALIC,
 
     //! Pseudo-font loaded from textures for buttons, icons, etc.
-    FONT_BUTTON     = 0x03,
+    FONT_BUTTON     = 0b0000'00'11,
 };
+
+std::string ToString(FontType);
 
 /**
  * \enum FontTitle
@@ -203,6 +205,7 @@ struct CharTexture
 };
 
 // Definition is private - in text.cpp
+class FontsCache;
 struct CachedFont;
 struct MultisizeFont;
 struct FontTexture;
@@ -322,7 +325,8 @@ public:
     glm::ivec2 GetFontTextureSize();
 
 protected:
-    CachedFont* GetOrOpenFont(FontType font, float size);
+    int GetFontPointSize(float size) const;
+    CachedFont* GetOrOpenFont(FontType type, float size);
     CharTexture CreateCharTexture(UTF8Char ch, CachedFont* font);
     FontTexture* GetOrCreateFontTexture(const glm::ivec2& tileSize);
     FontTexture CreateFontTexture(const glm::ivec2& tileSize);
@@ -348,12 +352,8 @@ protected:
     float        m_defaultSize;
     int          m_tabSize;
 
-    std::map<FontType, std::unique_ptr<MultisizeFont>> m_fonts;
+    std::unique_ptr<FontsCache> m_fontsCache;
     std::vector<FontTexture> m_fontTextures;
-
-    FontType     m_lastFontType;
-    int          m_lastFontSize;
-    CachedFont*  m_lastCachedFont;
 
     class CQuadBatch;
     std::unique_ptr<CQuadBatch> m_quadBatch;

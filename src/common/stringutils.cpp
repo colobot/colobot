@@ -156,11 +156,17 @@ std::wstring StrUtils::Utf8StringToUnicode(const std::string &str)
 {
     std::wstring result;
     unsigned int pos = 0;
+    int len;
     while (pos < str.size())
     {
-        int len = StrUtils::Utf8CharSizeAt(str, pos);
-        if (len == 0)
+        try
+        {
+            len = StrUtils::Utf8CharSizeAt(str, pos);
+        }
+        catch (std::out_of_range &e)
+        {
             break;
+        }
 
         std::string ch = str.substr(pos, len);
         result += static_cast<wchar_t>(StrUtils::Utf8CharToUnicode(ch));
@@ -172,21 +178,24 @@ std::wstring StrUtils::Utf8StringToUnicode(const std::string &str)
 int StrUtils::Utf8CharSizeAt(const std::string &str, unsigned int pos)
 {
     if (pos >= str.size())
-        return 0;
+        throw std::out_of_range("Index is greater than size");
 
     const char c = str[pos];
-    if((c & 0xF8) == 0xF0)
-        return 4;
-    if((c & 0xF0) == 0xE0)
-        return 3;
-    if((c & 0xE0) == 0xC0)
+    if((c & 0b1000'0000) == 0b0000'0000)
+        return 1;
+    if((c & 0b1110'0000) == 0b1100'0000)
         return 2;
+    if((c & 0b1111'0000) == 0b1110'0000)
+        return 3;
+    if((c & 0b1111'1000) == 0b1111'0000)
+        return 4;
 
     // Invalid char - unexpected continuation byte
-    if((c & 0xC0) == 0x80)
+    if (isUtf8ContinuationByte(c))
         throw std::invalid_argument("Unexpected UTF-8 continuation byte");
 
-    return 1;
+    // (c & 0b1111'1000) == 0b1111'1000 is true here
+    throw std::invalid_argument("Byte value has no sense in UTF-8");
 }
 
 std::size_t StrUtils::Utf8StringLength(const std::string &str)
@@ -201,3 +210,7 @@ std::size_t StrUtils::Utf8StringLength(const std::string &str)
     return result;
 }
 
+bool StrUtils::isUtf8ContinuationByte(char c)
+{
+    return (c & 0b1100'0000) == 0b1000'0000;
+}

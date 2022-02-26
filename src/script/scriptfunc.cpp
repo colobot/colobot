@@ -1544,7 +1544,7 @@ bool CScriptFunctions::rDeflag(CBotVar* var, CBotVar* result, int& exception, vo
     return WaitForForegroundTask(script, result, exception);
 }
 
-// Compilation of the instruction "produce(pos, angle, type[, scriptName[, power]])"
+// Compilation of the instruction "produce(pos, angle, type[, scriptName[, power[, team]]])"
 // or "produce(type[, power])".
 
 CBotTypResult CScriptFunctions::cProduce(CBotVar* &var, void* user)
@@ -1584,6 +1584,12 @@ CBotTypResult CScriptFunctions::cProduce(CBotVar* &var, void* user)
             {
                 if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
                 var = var->GetNext();
+
+                if ( var != nullptr )
+                {
+                    if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+                    var = var->GetNext();
+                }
             }
         }
     }
@@ -1593,7 +1599,7 @@ CBotTypResult CScriptFunctions::cProduce(CBotVar* &var, void* user)
     return CBotTypResult(CBotTypFloat);
 }
 
-// Instruction "produce(pos, angle, type[, scriptName[, power]])"
+// Instruction "produce(pos, angle, type[, scriptName[, power[, team]]])"
 // or "produce(type[, power])".
 
 bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, void* user)
@@ -1601,34 +1607,36 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
     CScript*    script = static_cast<CScript*>(user);
     CObject*    me = script->m_object;
     std::string name = "";
-    glm::vec3 pos;
-    float       angle = 0.0f;
-    ObjectType  type = OBJECT_NULL;
-    float       power = 0.0f;
+
+    ObjectCreateParams params;
+    params.angle = 0.0f;
+    params.type = OBJECT_NULL;
+    params.power = 0.0f;
+    params.team = 0;
 
     if ( var->GetType() <= CBotTypDouble )
     {
-        type = static_cast<ObjectType>(var->GetValInt());
+        params.type = static_cast<ObjectType>(var->GetValInt());
         var = var->GetNext();
 
-        pos = me->GetPosition();
+        params.pos = me->GetPosition();
 
         glm::vec3 rotation = me->GetRotation() + me->GetTilt();
-        angle = rotation.y;
+        params.angle = rotation.y;
 
         if ( var != nullptr )
-            power = var->GetValFloat();
+            params.power = var->GetValFloat();
         else
-            power = -1.0f;
+            params.power = -1.0f;
     }
     else
     {
-        if ( !GetPoint(var, exception, pos) )  return true;
+        if ( !GetPoint(var, exception, params.pos) )  return true;
 
-        angle = var->GetValFloat()*Math::PI/180.0f;
+        params.angle = var->GetValFloat()*Math::PI/180.0f;
         var = var->GetNext();
 
-        type = static_cast<ObjectType>(var->GetValInt());
+        params.type = static_cast<ObjectType>(var->GetValInt());
         var = var->GetNext();
 
         if ( var != nullptr )
@@ -1637,28 +1645,34 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
             var = var->GetNext();
             if ( var != nullptr )
             {
-                power = var->GetValFloat();
+                params.power = var->GetValFloat();
+                var = var->GetNext();
+                if ( var != nullptr )
+                {
+                    params.team = var->GetValInt();
+                }
             }
             else
             {
-                power = -1.0f;
+                params.power = -1.0f;
             }
         }
         else
         {
-            power = -1.0f;
+            params.power = -1.0f;
         }
     }
 
     CObject* object = nullptr;
 
-    if ( type == OBJECT_ANT    ||
-        type == OBJECT_SPIDER ||
-        type == OBJECT_BEE    ||
-        type == OBJECT_WORM   )
+    if ( params.type == OBJECT_ANT    ||
+        params.type == OBJECT_SPIDER ||
+        params.type == OBJECT_BEE    ||
+        params.type == OBJECT_WORM   )
     {
-        object = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, type);
-        CObjectManager::GetInstancePointer()->CreateObject(pos, angle, OBJECT_EGG);
+        object = CObjectManager::GetInstancePointer()->CreateObject(params);
+        params.type = OBJECT_EGG;
+        CObjectManager::GetInstancePointer()->CreateObject(params);
         if (object->Implements(ObjectInterfaceType::Programmable))
         {
             dynamic_cast<CProgrammableObject&>(*object).SetActivity(false);
@@ -1666,21 +1680,21 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
     }
     else
     {
-        if ((type == OBJECT_POWER || type == OBJECT_ATOMIC) && power == -1.0f)
+        if ((params.type == OBJECT_POWER || params.type == OBJECT_ATOMIC) && params.power == -1.0f)
         {
-            power = 1.0f;
+            params.power = 1.0f;
         }
-        bool exists = IsValidObjectTypeId(type) && type != OBJECT_NULL && type != OBJECT_MAX && type != OBJECT_MOBILEpr;
+        bool exists = IsValidObjectTypeId(params.type) && params.type != OBJECT_NULL && params.type != OBJECT_MAX && params.type != OBJECT_MOBILEpr;
         if (exists)
         {
-            object = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, type, power);
+            object = CObjectManager::GetInstancePointer()->CreateObject(params);
         }
         if (object == nullptr)
         {
             result->SetValInt(1);  // error
             return true;
         }
-        if (type == OBJECT_MOBILEdr)
+        if (params.type == OBJECT_MOBILEdr)
         {
             assert(object->Implements(ObjectInterfaceType::Old)); // TODO: temporary hack
             dynamic_cast<COldObject&>(*object).SetManual(true);

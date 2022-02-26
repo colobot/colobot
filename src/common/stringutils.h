@@ -87,5 +87,8 @@ int Utf8CharSizeAt(const std::string &str, unsigned int pos);
 //! Returns the length in characters of UTF-8 string \a str
 std::size_t Utf8StringLength(const std::string &str);
 
+//! Returns true if char is continuation UTF-8 byte
+bool isUtf8ContinuationByte(char c);
+
 } // namespace StrUtil
 

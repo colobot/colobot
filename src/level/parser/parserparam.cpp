@@ -27,6 +27,8 @@
 
 #include "common/resources/resourcemanager.h"
 
+#include "graphics/engine/engine.h"
+
 #include "level/robotmain.h"
 #include "level/scoreboard.h"
 
