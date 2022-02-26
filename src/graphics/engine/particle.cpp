@@ -26,6 +26,7 @@
 
 #include "graphics/core/device.h"
 #include "graphics/core/renderers.h"
+#include "graphics/core/triangle.h"
 
 #include "graphics/engine/engine.h"
 #include "graphics/engine/terrain.h"
@@ -73,7 +74,7 @@ static bool IsAlien(ObjectType type)
 }
 
 CParticle::CParticle(CEngine* engine)
-    : m_engine(engine)
+    : m_engine(engine), m_triangle(MAXPARTICULE)
 {
     std::fill_n(m_frameUpdate, SH_MAX, true);
 }

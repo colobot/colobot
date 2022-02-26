@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2022, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2021, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,31 +18,29 @@
  */
 
  /**
-  * \file graphics/core/transparency.h
-  * \brief Structures and functions related to transparency
+  * \file graphics/core/triangle.h
+  * \brief Triangle struct
   */
 
 #pragma once
+
+#include "graphics/core/material.h"
+#include "graphics/core/vertex.h"
 
 // Graphics module namespace
 namespace Gfx
 {
 
-//! Transparency mode
-enum class TransparencyMode : unsigned char
+/**
+ * \struct EngineTriangle
+ * \brief A triangle drawn by the graphics engine
+ */
+struct EngineTriangle
 {
-    NONE,
-    ALPHA,
-    BLACK,
-    WHITE,
+    //! Triangle vertices
+    Vertex3D     triangle[3];
+    //! Triangle material
+    Material     material;
 };
 
-//! Alpha transparency mode
-enum class AlphaMode : unsigned char
-{
-    NONE,       // opaque material
-    MASK,       // alpha scissor with threshold
-    BLEND,      // alpha blending
-};
-
-}
+} // namespace Gfx

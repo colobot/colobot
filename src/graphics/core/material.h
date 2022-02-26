@@ -65,7 +65,7 @@ struct Material
     //! Normal map
     std::string normalTexture = "";
     //! Alpha mode
-    AlphaMode alphaMode = AlphaMode::OPAQUE;
+    AlphaMode alphaMode = AlphaMode::NONE;
     //! Alpha threshold
     float alphaThreshold = 0.0;
     // Cull face

@@ -28,7 +28,6 @@
 #include "common/system/system.h"
 
 #include "graphics/core/color.h"
-#include "graphics/core/material.h"
 #include "graphics/core/texture.h"
 #include "graphics/core/renderers.h"
 #include "graphics/core/vertex.h"
@@ -69,9 +68,14 @@ class CTerrain;
 class CPyroManager;
 class CModelMesh;
 class CVertexBuffer;
+struct EngineBaseObjDataTier;
+struct EngineBaseObject;
+struct EngineTriangle;
+struct Material;
 struct ModelShadowSpot;
 struct ModelTriangle;
 
+enum class TransparencyMode : unsigned char;
 
 /**
  * \enum EngineTriangleType
@@ -83,18 +87,6 @@ enum class EngineTriangleType
     TRIANGLES = 1,
     //! Surfaces
     SURFACE   = 2
-};
-
-/**
- * \struct EngineTriangle
- * \brief A triangle drawn by the graphics engine
- */
-struct EngineTriangle
-{
-    //! Triangle vertices
-    Vertex3D     triangle[3];
-    //! Triangle material
-    Material     material;
 };
 
 /**
@@ -116,57 +108,6 @@ enum EngineObjectType
     ENG_OBJTYPE_QUARTZ      = 5,
     //! Fixed object type metal
     ENG_OBJTYPE_METAL       = 6
-};
-
-
-/**
- * \struct EngineBaseObjDataTier
- * \brief Tier 3 of object tree (data)
- */
-struct EngineBaseObjDataTier
-{
-    EngineTriangleType      type = EngineTriangleType::TRIANGLES;
-    Material                material = {};
-
-    std::vector<Vertex3D>   vertices;
-    CVertexBuffer*          buffer = nullptr;
-    bool                    updateStaticBuffer = false;
-
-    Texture                 albedoTexture;
-    Texture                 emissiveTexture;
-    Texture                 materialTexture;
-    Texture                 normalTexture;
-    Texture                 detailTexture;
-
-    glm::vec2               uvOffset = { 0.0f, 0.0f };
-    glm::vec2               uvScale = { 1.0f, 1.0f };
-};
-
-/**
- * \struct BaseEngineObject
- * \brief Base (template) object - geometry for engine objects
- *
- * This is also the tier 1 of base object tree.
- */
-struct EngineBaseObject
-{
-    //! If true, base object is valid in objects vector
-    bool used = false;
-    //! Number of triangles
-    int                    totalTriangles = 0;
-    //! Bounding box min (origin 0,0,0 always included)
-    glm::vec3           bboxMin{ 0, 0, 0 };
-    //! bounding box max (origin 0,0,0 always included)
-    glm::vec3           bboxMax{ 0, 0, 0 };
-    //! A bounding sphere that contains all the vertices in this EngineBaseObject
-    Math::Sphere           boundingSphere;
-    //! Next tier
-    std::vector<EngineBaseObjDataTier> next;
-
-    inline void LoadDefault()
-    {
-        *this = EngineBaseObject();
-    }
 };
 
 /**
@@ -875,7 +816,7 @@ public:
     //! Specifies whether to draw the foreground
     void            SetOverFront(bool front);
     //! Sets the foreground overlay color
-    void            SetOverColor(const Color& color = Color(), TransparencyMode mode = TransparencyMode::BLACK);
+    void            SetOverColor(const Color& color, TransparencyMode mode);
 
     //@{
     //! Management of the particle density
@@ -1334,15 +1275,6 @@ protected:
     Texture         m_miceTexture;
     //! Type of mouse cursor
     EngineMouseType m_mouseType;
-
-    //! Last engine render state (-1 at the beginning of frame)
-    int             m_lastState;
-    //! Last color set with render state
-    Color           m_lastColor;
-    //! Last texture names for 2 used texture stages
-    std::string     m_lastTexture[2];
-    //! Last material
-    Material        m_lastMaterial;
 
     //! True when drawing 2D UI
     bool            m_interfaceMode;

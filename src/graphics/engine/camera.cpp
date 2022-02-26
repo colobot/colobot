@@ -25,6 +25,8 @@
 
 #include "common/event.h"
 
+#include "graphics/core/transparency.h"
+
 #include "graphics/engine/engine.h"
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/water.h"
@@ -582,7 +584,7 @@ void CCamera::FlushOver()
 {
     m_overType = CAM_OVER_EFFECT_NULL;
     m_overColorBase = Color(0.0f, 0.0f, 0.0f, 0.0f);  // black
-    m_engine->SetOverColor();  // nothing
+    m_engine->SetOverColor(Color(), TransparencyMode::BLACK);  // nothing
 }
 
 void CCamera::SetOverBaseColor(Color color)

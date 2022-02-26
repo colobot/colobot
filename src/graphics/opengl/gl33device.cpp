@@ -27,6 +27,8 @@
 #include "common/make_unique.h"
 
 #include "graphics/core/light.h"
+#include "graphics/core/material.h"
+#include "graphics/core/transparency.h"
 
 #include "graphics/engine/engine.h"
 

@@ -61,6 +61,8 @@
 #include "ui/screen/screen_setup_sound.h"
 #include "ui/screen/screen_welcome.h"
 
+#include "graphics/core/transparency.h"
+
 namespace Ui
 {
 

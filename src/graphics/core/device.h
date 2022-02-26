@@ -26,7 +26,6 @@
 
 #include "graphics/core/color.h"
 #include "graphics/core/texture.h"
-#include "graphics/core/transparency.h"
 #include "graphics/core/vertex.h"
 
 #include <glm/glm.hpp>
@@ -59,6 +58,7 @@ struct VertexCol;
 struct Vertex3D;
 
 enum class CullFace : unsigned char;
+enum class TransparencyMode : unsigned char;
 
 /**
  * \struct DeviceConfig

@@ -24,7 +24,6 @@
 
 #pragma once
 
-#include "graphics/core/transparency.h"
 #include "graphics/core/vertex.h"
 
 #include <glm/glm.hpp>
@@ -36,6 +35,7 @@ namespace Gfx
 class CVertexBuffer;
 enum class CullFace : unsigned char;
 enum class PrimitiveType : unsigned char;
+enum class TransparencyMode : unsigned char;
 struct Texture;
 
 struct ShadowParam

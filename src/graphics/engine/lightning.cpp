@@ -24,6 +24,7 @@
 #include "common/logger.h"
 
 #include "graphics/core/device.h"
+#include "graphics/core/transparency.h"
 
 #include "graphics/engine/camera.h"
 #include "graphics/engine/terrain.h"

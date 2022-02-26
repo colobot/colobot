@@ -17,13 +17,14 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-
 #include "graphics/engine/terrain.h"
 
 #include "app/app.h"
 
 #include "common/image.h"
 #include "common/logger.h"
+
+#include "graphics/core/triangle.h"
 
 #include "graphics/engine/engine.h"
 #include "graphics/engine/water.h"

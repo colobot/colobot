@@ -37,6 +37,8 @@
 #include "common/resources/outputstream.h"
 #include "common/resources/resourcemanager.h"
 
+#include "graphics/core/material.h"
+
 #include "graphics/engine/camera.h"
 #include "graphics/engine/cloud.h"
 #include "graphics/engine/engine.h"
@@ -446,7 +448,7 @@ void CRobotMain::ChangePhase(Phase phase)
         m_engine->SetBackground("");
         m_engine->SetBackForce(false);
         m_engine->SetForegroundName("");
-        m_engine->SetOverColor();
+        m_engine->SetOverColor(Gfx::Color(), Gfx::TransparencyMode::BLACK);
         m_engine->DeleteGroundMark(0);
         SetSpeed(1.0f);
         m_terrain->SetWind(glm::vec3(0.0f, 0.0f, 0.0f));

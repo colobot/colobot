@@ -23,6 +23,8 @@
 
 #include "common/stringutils.h"
 
+#include "graphics/core/material.h"
+
 #include "graphics/engine/engine.h"
 
 #include "level/robotmain.h"

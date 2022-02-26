@@ -29,6 +29,7 @@
 #include "level/robotmain.h"
 
 #include "graphics/core/renderers.h"
+#include "graphics/core/transparency.h"
 
 #include "math/func.h"
 

@@ -31,6 +31,7 @@
 
 #include "sound/sound_type.h"
 
+#include <vector>
 
 class CRobotMain;
 class CObject;
@@ -42,6 +43,7 @@ namespace Gfx
 {
 
 class CParticleRenderer;
+struct EngineTriangle;
 
 const short MAXPARTICULE = 500;
 const short MAXPARTITYPE = 6;
@@ -344,7 +346,7 @@ protected:
     CParticleRenderer* m_renderer = nullptr;
 
     Particle       m_particle[MAXPARTICULE*MAXPARTITYPE];
-    EngineTriangle m_triangle[MAXPARTICULE];  // triangle if PartiType == 0
+    std::vector<EngineTriangle> m_triangle;  // triangle if PartiType == 0
     Track          m_track[MAXTRACK];
     int           m_wheelTraceTotal = 0;
     int           m_wheelTraceIndex = 0;

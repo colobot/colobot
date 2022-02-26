@@ -402,7 +402,7 @@ CModelMesh ModelInput::ReadTextMesh(std::istream& stream)
         bool doubleSided = ReadLineString(stream, "dbl_side") == std::string("Y");
         t.material.cullFace = doubleSided ? CullFace::NONE : CullFace::BACK;
 
-        if (t.material.alphaMode != AlphaMode::OPAQUE)
+        if (t.material.alphaMode != AlphaMode::NONE)
             t.material.alphaThreshold = 0.5f;
 
         mesh.AddTriangle(t);
@@ -647,7 +647,7 @@ void ModelInput::ConvertFromOldRenderState(ModelTriangle& triangle, int state)
         triangle.material.alphaThreshold = 0.5f;
     }
     else
-        triangle.material.alphaMode = AlphaMode::OPAQUE;
+        triangle.material.alphaMode = AlphaMode::NONE;
 
     if ((state & static_cast<int>(ModelRenderState::Part1)) != 0)
         triangle.material.tag = "tracker_right";
@@ -891,11 +891,11 @@ Math::Sphere ModelInput::ParseCameraCollisionSphere(const std::string& text)
 AlphaMode ModelInput::ParseTransparentMode(const std::string& text)
 {
     if (text == "none")
-        return AlphaMode::OPAQUE;
+        return AlphaMode::NONE;
     else if (text == "alpha")
         return AlphaMode::MASK;
     else
-        return AlphaMode::OPAQUE;
+        return AlphaMode::NONE;
 }
 
 std::string ModelInput::ParseSpecialMark(const std::string& text)

@@ -26,8 +26,6 @@
 
 #include "graphics/core/device.h"
 
-#include "graphics/core/material.h"
-
 #include "graphics/opengl/glframebuffer.h"
 #include "graphics/opengl/glutil.h"
 
@@ -42,6 +40,9 @@
 // Graphics module namespace
 namespace Gfx
 {
+
+enum class CullFace : unsigned char;
+enum class TransparencyMode : unsigned char;
 
 //! Struct for dynamic buffers
 struct DynamicBuffer
@@ -196,9 +197,9 @@ private:
     //! Depth mask
     bool m_depthMask = true;
     //! Cull face mode
-    CullFace m_cullFace = CullFace::NONE;
+    CullFace m_cullFace = {};
     //! Transparency mode
-    TransparencyMode m_transparency = TransparencyMode::NONE;
+    TransparencyMode m_transparency = {};
 };
 
 } // namespace Gfx

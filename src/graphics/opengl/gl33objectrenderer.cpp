@@ -22,6 +22,8 @@
 #include "graphics/opengl/gl33device.h"
 #include "graphics/opengl/glutil.h"
 
+#include "graphics/core/material.h"
+#include "graphics/core/transparency.h"
 #include "graphics/core/vertex.h"
 
 #include "common/logger.h"

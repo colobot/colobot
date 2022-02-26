@@ -37,6 +37,7 @@ struct Event;
 namespace Gfx
 {
 
+enum class TransparencyMode : unsigned char;
 
 /**
   \enum CameraType

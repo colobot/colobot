@@ -32,6 +32,8 @@
 #include "common/resources/outputstream.h"
 
 #include "graphics/core/renderers.h"
+#include "graphics/core/transparency.h"
+
 #include "graphics/engine/engine.h"
 
 #include "level/parser/parser.h"

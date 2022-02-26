@@ -24,6 +24,8 @@
 
 #include "common/logger.h"
 
+#include "graphics/core/triangle.h"
+
 #include "graphics/engine/lightman.h"
 #include "graphics/engine/particle.h"
 #include "graphics/engine/terrain.h"

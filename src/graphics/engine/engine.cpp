@@ -34,7 +34,9 @@
 
 #include "graphics/core/device.h"
 #include "graphics/core/framebuffer.h"
+#include "graphics/core/material.h"
 #include "graphics/core/renderers.h"
+#include "graphics/core/triangle.h"
 
 #include "graphics/engine/camera.h"
 #include "graphics/engine/cloud.h"
@@ -69,6 +71,56 @@ using TimeUtils::TimeUnit;
 // Graphics module namespace
 namespace Gfx
 {
+
+/**
+ * \struct EngineBaseObjDataTier
+ * \brief Tier 3 of object tree (data)
+ */
+struct EngineBaseObjDataTier
+{
+    EngineTriangleType      type = EngineTriangleType::TRIANGLES;
+    Material                material = {};
+
+    std::vector<Vertex3D>   vertices;
+    CVertexBuffer* buffer = nullptr;
+    bool                    updateStaticBuffer = false;
+
+    Texture                 albedoTexture;
+    Texture                 emissiveTexture;
+    Texture                 materialTexture;
+    Texture                 normalTexture;
+    Texture                 detailTexture;
+
+    glm::vec2               uvOffset = { 0.0f, 0.0f };
+    glm::vec2               uvScale = { 1.0f, 1.0f };
+};
+
+/**
+ * \struct BaseEngineObject
+ * \brief Base (template) object - geometry for engine objects
+ *
+ * This is also the tier 1 of base object tree.
+ */
+struct EngineBaseObject
+{
+    //! If true, base object is valid in objects vector
+    bool used = false;
+    //! Number of triangles
+    int                    totalTriangles = 0;
+    //! Bounding box min (origin 0,0,0 always included)
+    glm::vec3           bboxMin{ 0, 0, 0 };
+    //! bounding box max (origin 0,0,0 always included)
+    glm::vec3           bboxMax{ 0, 0, 0 };
+    //! A bounding sphere that contains all the vertices in this EngineBaseObject
+    Math::Sphere           boundingSphere;
+    //! Next tier
+    std::vector<EngineBaseObjDataTier> next;
+
+    inline void LoadDefault()
+    {
+        *this = EngineBaseObject();
+    }
+};
 
 /**
  * \struct EngineMouse
@@ -237,7 +289,6 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
     Math::LoadTranslationMatrix(temp2, glm::vec3(1.0f, 1.0f, 1.0f));
     m_shadowBias = temp1 * temp2;
 
-    m_lastState = -1;
     m_statisticTriangle = 0;
     m_fps = 0.0f;
     m_firstGroundSpot = false;
@@ -2592,9 +2643,6 @@ void CEngine::Render()
         return;
 
     m_statisticTriangle = 0;
-    m_lastState = -1;
-    m_lastColor = Color(-1.0f);
-    m_lastMaterial = Material();
 
     m_lightMan->UpdateLights();
 
@@ -2824,7 +2872,7 @@ void CEngine::Draw3DScene()
                 continue;
             }
 
-            if (data.material.alphaMode != AlphaMode::OPAQUE)
+            if (data.material.alphaMode != AlphaMode::NONE)
             {
                 objectRenderer->SetAlphaScissor(data.material.alphaThreshold);
             }
@@ -3450,7 +3498,6 @@ void CEngine::DrawInterface()
 
     // Force new state to disable lighting
     m_interfaceMode = true;
-    m_lastState = -1;
 
     // Draw the entire interface
     Ui::CInterface* interface = CRobotMain::GetInstancePointer()->GetInterface();
@@ -3460,7 +3507,6 @@ void CEngine::DrawInterface()
     }
 
     m_interfaceMode = false;
-    m_lastState = -1;
 
     if (!m_screenshotMode && m_renderInterface)
     {

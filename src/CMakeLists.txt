@@ -95,6 +95,7 @@ add_library(colobotbase STATIC
     graphics/core/material.h
     graphics/core/texture.h
     graphics/core/transparency.h
+    graphics/core/triangle.h
     graphics/core/type.cpp
     graphics/core/type.h
     graphics/core/renderers.h
