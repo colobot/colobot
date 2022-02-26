@@ -166,6 +166,8 @@ jobs:
     - uses: actions/checkout@v2
     - name: Create build directory
       run: cmake -E make_directory build
+    - name: Checkout the nlohmann json submodule
+      run: git submodule update --init -- lib/json
     - name: Run CMake
       working-directory: build
       run: cmake ..
