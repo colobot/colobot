@@ -24,8 +24,7 @@
 
 #pragma once
 
-#include "graphics/engine/engine.h"
-
+#include "graphics/core/color.h"
 
 class CObject;
 class CRobotMain;
@@ -36,6 +35,10 @@ struct Event;
 // Graphics module namespace
 namespace Gfx
 {
+
+class CEngine;
+class CTerrain;
+class CWater;
 
 enum class TransparencyMode : unsigned char;
 

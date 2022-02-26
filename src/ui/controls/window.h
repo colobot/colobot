@@ -21,11 +21,14 @@
 
 #include "ui/controls/control.h"
 
-#include "graphics/engine/engine.h" // TODO: only needed for EngineMouseType
-
 #include <memory>
 #include <string>
 #include <vector>
+
+namespace Gfx
+{
+enum EngineMouseType;
+}
 
 namespace Ui
 {
@@ -147,7 +150,7 @@ protected:
     bool        m_bCapture;
     glm::vec2   m_pressPos;
     int         m_pressFlags;
-    Gfx::EngineMouseType    m_pressMouse;
+    Gfx::EngineMouseType m_pressMouse;
 };
 
 

@@ -22,6 +22,7 @@
 
 #include "app/app.h"
 
+#include "graphics/engine/engine.h"
 #include "graphics/engine/oldmodelmanager.h"
 
 #include "math/func.h"

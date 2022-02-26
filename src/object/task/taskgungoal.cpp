@@ -20,6 +20,8 @@
 
 #include "math/func.h"
 
+#include "graphics/engine/engine.h"
+
 #include "object/task/taskgungoal.h"
 
 #include "object/old_object.h"

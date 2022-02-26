@@ -28,6 +28,7 @@
 #include "common/stringutils.h"
 
 #include "graphics/engine/camera.h"
+#include "graphics/engine/engine.h"
 
 #include "math/func.h"
 

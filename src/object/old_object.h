@@ -74,6 +74,11 @@ namespace Ui
 class CObjectInterface;
 }
 
+namespace Gfx
+{
+enum class EngineShadowType : unsigned char;
+}
+
 
 class COldObject : public CObject,
                    public CInteractiveObject,
@@ -253,7 +258,7 @@ public:
     CMotion*    GetMotion() override;
     CAuto*      GetAuto() override;
 
-    bool        CreateShadowCircle(float radius, float intensity, Gfx::EngineShadowType type = Gfx::EngineShadowType::NORMAL);
+    bool        CreateShadowCircle(float radius, float intensity, Gfx::EngineShadowType type = {});
     bool        CreateShadowLight(float height, Gfx::Color color);
 
     void        FlatParent() override;

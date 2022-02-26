@@ -20,6 +20,7 @@
 
 #include "object/task/taskfire.h"
 
+#include "graphics/engine/engine.h"
 #include "graphics/engine/particle.h"
 
 #include "math/geometry.h"

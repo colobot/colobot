@@ -24,8 +24,7 @@
 
 #pragma once
 
-
-#include "graphics/engine/engine.h"
+#include "graphics/core/color.h"
 
 #include "object/interface/trace_drawing_object.h"
 
@@ -42,7 +41,12 @@ class CSoundInterface;
 namespace Gfx
 {
 
+class CDevice;
+class CEngine;
 class CParticleRenderer;
+class CTerrain;
+class CWater;
+
 struct EngineTriangle;
 
 const short MAXPARTICULE = 500;

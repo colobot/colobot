@@ -20,6 +20,7 @@
 
 #include "object/task/taskturn.h"
 
+#include "graphics/engine/engine.h"
 #include "graphics/engine/terrain.h"
 
 #include "level/robotmain.h"

@@ -19,6 +19,8 @@
 
 #include "object/auto/autohouston.h"
 
+#include "graphics/engine/engine.h"
+
 #include "math/geometry.h"
 
 #include "object/old_object.h"

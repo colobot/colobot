@@ -25,6 +25,7 @@
 #include "common/image.h"
 #include "common/make_unique.h"
 
+#include "graphics/engine/engine.h"
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/water.h"
 

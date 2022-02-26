@@ -28,6 +28,7 @@
 #include "common/stringutils.h"
 
 #include "graphics/engine/camera.h"
+#include "graphics/engine/engine.h"
 
 #include "ui/controls/button.h"
 #include "ui/controls/check.h"

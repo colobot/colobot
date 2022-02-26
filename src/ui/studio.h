@@ -19,18 +19,31 @@
 
 #pragma once
 
-#include "graphics/engine/camera.h"
-
+#include <memory>
 #include <string>
 
+#include <glm/glm.hpp>
+
+class CApplication;
 class CEventQueue;
+class CFileDialog;
+class CRobotMain;
 class CScript;
-class CSoundInterface;
 class CSettings;
-struct Program;
+class CSoundInterface;
 class CPauseManager;
+
 struct ActivePause;
 struct Event;
+struct Program;
+
+namespace Gfx
+{
+class CCamera;
+class CEngine;
+
+enum CameraType;
+}
 
 namespace Ui
 {

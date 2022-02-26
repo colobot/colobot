@@ -22,6 +22,7 @@
 
 #include "graphics/core/light.h"
 
+#include "graphics/engine/engine.h"
 #include "graphics/engine/lightman.h"
 #include "graphics/engine/particle.h"
 

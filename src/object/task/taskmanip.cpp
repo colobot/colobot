@@ -20,6 +20,7 @@
 
 #include "object/task/taskmanip.h"
 
+#include "graphics/engine/engine.h"
 #include "graphics/engine/pyro_manager.h"
 #include "graphics/engine/terrain.h"
 

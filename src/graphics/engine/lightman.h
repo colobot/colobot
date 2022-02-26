@@ -26,7 +26,7 @@
 
 #include "graphics/core/light.h"
 
-#include "graphics/engine/engine.h"
+#include <vector>
 
 #include <glm/glm.hpp>
 
@@ -35,7 +35,12 @@
 namespace Gfx
 {
 
+class CDevice;
+class CEngine;
+
 struct Color;
+
+enum EngineObjectType;
 
 /**
  * \struct LightProgression
@@ -125,8 +130,8 @@ struct DynamicLight
      , used(false)
      , enabled(false)
      , priority(LIGHT_PRI_LOW)
-     , includeType(ENG_OBJTYPE_NULL)
-     , excludeType(ENG_OBJTYPE_NULL)
+     , includeType{}
+     , excludeType{}
     {}
 };
 

@@ -22,6 +22,7 @@
 
 #include "common/global.h"
 
+#include "graphics/engine/engine.h"
 #include "graphics/engine/particle.h"
 #include "graphics/engine/pyro_manager.h"
 #include "graphics/engine/terrain.h"

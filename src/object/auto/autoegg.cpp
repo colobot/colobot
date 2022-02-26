@@ -22,6 +22,7 @@
 
 #include "common/make_unique.h"
 
+#include "graphics/engine/engine.h"
 #include "graphics/engine/pyro_manager.h"
 
 #include "level/parser/parser.h"

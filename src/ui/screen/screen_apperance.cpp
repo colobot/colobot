@@ -24,6 +24,7 @@
 #include "common/restext.h"
 
 #include "graphics/engine/camera.h"
+#include "graphics/engine/engine.h"
 
 #include "level/player_profile.h"
 #include "level/robotmain.h"

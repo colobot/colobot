@@ -29,6 +29,8 @@
 #include "common/make_unique.h"
 #include "common/settings.h"
 
+#include "graphics/engine/engine.h"
+
 #include "level/player_profile.h"
 #include "level/robotmain.h"
 

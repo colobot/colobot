@@ -22,6 +22,7 @@
 
 #include "common/global.h"
 
+#include "graphics/engine/engine.h"
 #include "graphics/engine/particle.h"
 
 #include "object/object_manager.h"

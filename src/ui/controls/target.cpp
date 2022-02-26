@@ -20,6 +20,8 @@
 
 #include "ui/controls/target.h"
 
+#include "graphics/engine/engine.h"
+
 #include "level/robotmain.h"
 
 #include "object/object_manager.h"

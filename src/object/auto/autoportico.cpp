@@ -20,6 +20,8 @@
 
 #include "object/auto/autoportico.h"
 
+#include "graphics/engine/engine.h"
+
 #include "common/stringutils.h"
 
 #include "level/robotmain.h"

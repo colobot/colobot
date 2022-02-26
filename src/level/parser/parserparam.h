@@ -50,6 +50,13 @@ class CLevelParserParam;
 using CLevelParserParamUPtr = std::unique_ptr<CLevelParserParam>;
 using CLevelParserParamVec = std::vector<CLevelParserParamUPtr>;
 
+namespace Gfx
+{
+class CEngine;
+
+enum EngineObjectType;
+}
+
 class CLevelParserParam
 {
 public:

@@ -22,6 +22,7 @@
 #include "common/make_unique.h"
 #include "common/regex_utils.h"
 
+#include "graphics/engine/engine.h"
 #include "graphics/engine/oldmodelmanager.h"
 
 #include "level/parser/parserexceptions.h"

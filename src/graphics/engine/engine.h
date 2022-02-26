@@ -148,7 +148,7 @@ struct EngineObject
  * \struct EngineShadowType
  * \brief Type of shadow drawn by the graphics engine
  */
-enum class EngineShadowType
+enum class EngineShadowType : unsigned char
 {
     //! Normal shadow
     NORMAL = 0,

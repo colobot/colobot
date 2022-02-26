@@ -21,6 +21,7 @@
 #include "object/auto/autobase.h"
 
 #include "graphics/engine/cloud.h"
+#include "graphics/engine/engine.h"
 #include "graphics/engine/lightning.h"
 #include "graphics/engine/planet.h"
 #include "graphics/engine/terrain.h"

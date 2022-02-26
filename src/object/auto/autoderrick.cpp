@@ -22,6 +22,7 @@
 
 #include "common/make_unique.h"
 
+#include "graphics/engine/engine.h"
 #include "graphics/engine/terrain.h"
 
 #include "level/parser/parserline.h"

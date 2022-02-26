@@ -29,6 +29,8 @@
 #include "ui/controls/label.h"
 #include "ui/controls/window.h"
 
+#include "graphics/engine/engine.h"
+
 namespace Ui
 {
 

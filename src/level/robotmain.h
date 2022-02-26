@@ -44,6 +44,8 @@
 #include "object/tool_type.h"
 
 #include <deque>
+#include <map>
+#include <set>
 #include <stdexcept>
 
 #include <glm/glm.hpp>
@@ -82,7 +84,7 @@ bool IsInSimulationConfigPhase(Phase phase);
 bool IsPhaseWithWorld(Phase phase);
 bool IsMainMenuPhase(Phase phase);
 
-
+class CApplication;
 class CEventQueue;
 class CSoundInterface;
 class CLevelParserLine;
@@ -104,6 +106,7 @@ class CLightManager;
 class CWater;
 class CCloud;
 class CLightning;
+class COldModelManager;
 class CPlanet;
 class CTerrain;
 class CModelManager;

@@ -31,6 +31,7 @@
 #include "common/resources/outputstream.h"
 #include "common/resources/resourcemanager.h"
 
+#include "graphics/engine/engine.h"
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/water.h"
 

@@ -20,6 +20,8 @@
 
 #include "object/auto/autoradar.h"
 
+#include "graphics/engine/engine.h"
+
 #include "math/geometry.h"
 
 #include "object/object_manager.h"

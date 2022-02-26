@@ -20,6 +20,8 @@
 
 #include "object/motion/motionlevelcontroller.h"
 
+#include "graphics/engine/engine.h"
+
 #include "object/old_object.h"
 
 #include "physics/physics.h"

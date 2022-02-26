@@ -19,6 +19,7 @@
 
 #include "ui/particles_generator.h"
 
+#include "graphics/engine/engine.h"
 #include "graphics/engine/particle.h"
 
 #include "math/func.h"
