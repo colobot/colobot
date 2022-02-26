@@ -112,7 +112,7 @@ void CPlanet::Draw()
 
         auto texture = m_engine->LoadTexture(planet.name);
 
-        renderer->SetPrimaryTexture(texture);
+        renderer->SetAlbedoTexture(texture);
 
         if (planet.transparent)
             renderer->SetTransparency(TransparencyMode::ALPHA);
@@ -155,7 +155,7 @@ void CPlanet::Draw()
             { glm::vec3(p2.x, p2.y, 0.0f), white, { u2, v1 } }
         };
 
-        renderer->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+        renderer->SetAlbedoColor(Color{ 1.0f, 1.0f, 1.0f, 1.0f });
 
         renderer->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, 4, quad);
         m_engine->AddStatisticTriangle(2);

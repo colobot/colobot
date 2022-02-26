@@ -1777,12 +1777,6 @@ bool CEngine::TransformPoint(glm::vec3& p2D, int objRank, glm::vec3 p3D)
  *******************************************************/
 
 
-
-void CEngine::SetMaterial(const Material& mat)
-{
-    m_lastMaterial = mat;
-}
-
 void CEngine::SetViewParams(const glm::vec3 &eyePt, const glm::vec3 &lookatPt, const glm::vec3 &upVec)
 {
     m_eyePt = eyePt;
@@ -1955,135 +1949,6 @@ static bool IsExcludeColor(glm::vec2* exclude, int x, int y)
     }
 
     return false;  // point to include
-}
-
-
-bool CEngine::ChangeTextureColor(const std::string& texName,
-                                 const std::string& srcName,
-                                 Color colorRef1, Color colorNew1,
-                                 Color colorRef2, Color colorNew2,
-                                 float tolerance1, float tolerance2,
-                                 const glm::vec2& ts, const glm::vec2& ti,
-                                 glm::vec2* exclude, float shift, bool hsv)
-{
-    CImage img;
-    if (!img.Load(srcName))
-    {
-        std::string error = img.GetError();
-        GetLogger()->Error("Couldn't load texture '%s': %s, blacklisting\n", srcName.c_str(), error.c_str());
-        m_texBlacklist.insert(srcName);
-        return false;
-    }
-
-    bool changeColorsNeeded = true;
-
-    if (colorRef1.r == colorNew1.r &&
-        colorRef1.g == colorNew1.g &&
-        colorRef1.b == colorNew1.b &&
-        colorRef2.r == colorNew2.r &&
-        colorRef2.g == colorNew2.g &&
-        colorRef2.b == colorNew2.b)
-    {
-        changeColorsNeeded = false;
-    }
-
-
-    int dx = img.GetSize().x;
-    int dy = img.GetSize().y;
-
-    int sx = static_cast<int>(Math::Max(ts.x*dx, 0));
-    int sy = static_cast<int>(Math::Max(ts.y*dy, 0));
-
-    int ex = static_cast<int>(Math::Min(ti.x*dx, dx));
-    int ey = static_cast<int>(Math::Min(ti.y*dy, dy));
-
-
-    ColorHSV cr1 = RGB2HSV(colorRef1);
-    ColorHSV cn1 = RGB2HSV(colorNew1);
-    ColorHSV cr2 = RGB2HSV(colorRef2);
-    ColorHSV cn2 = RGB2HSV(colorNew2);
-
-    if (changeColorsNeeded)
-    {
-        for (int y = sy; y < ey; y++)
-        {
-            for (int x = sx; x < ex; x++)
-            {
-                if (exclude != nullptr && IsExcludeColor(exclude, x,y) )
-                    continue;
-
-                Color color = img.GetPixel({ x, y });
-
-                if (hsv)
-                {
-                    ColorHSV c = RGB2HSV(color);
-                    if (c.s > 0.01f && fabs(c.h - cr1.h) < tolerance1)
-                    {
-                        c.h += cn1.h - cr1.h;
-                        c.s += cn1.s - cr1.s;
-                        c.v += cn1.v - cr1.v;
-                        if (c.h < 0.0f) c.h -= 1.0f;
-                        if (c.h > 1.0f) c.h += 1.0f;
-                        color = HSV2RGB(c);
-                        color.r = Math::Norm(color.r + shift);
-                        color.g = Math::Norm(color.g + shift);
-                        color.b = Math::Norm(color.b + shift);
-                        img.SetPixel({ x, y }, color);
-                    }
-                    else if (tolerance2 != -1.0f &&
-                            c.s > 0.01f && fabs(c.h - cr2.h) < tolerance2)
-                    {
-                        c.h += cn2.h - cr2.h;
-                        c.s += cn2.s - cr2.s;
-                        c.v += cn2.v - cr2.v;
-                        if (c.h < 0.0f) c.h -= 1.0f;
-                        if (c.h > 1.0f) c.h += 1.0f;
-                        color = HSV2RGB(c);
-                        color.r = Math::Norm(color.r + shift);
-                        color.g = Math::Norm(color.g + shift);
-                        color.b = Math::Norm(color.b + shift);
-                        img.SetPixel({ x, y }, color);
-                    }
-                }
-                else
-                {
-                    if ( fabs(color.r - colorRef1.r) +
-                        fabs(color.g - colorRef1.g) +
-                        fabs(color.b - colorRef1.b) < tolerance1 * 3.0f)
-                    {
-                        color.r = Math::Norm(colorNew1.r + color.r - colorRef1.r + shift);
-                        color.g = Math::Norm(colorNew1.g + color.g - colorRef1.g + shift);
-                        color.b = Math::Norm(colorNew1.b + color.b - colorRef1.b + shift);
-                        img.SetPixel({ x, y }, color);
-                    }
-                    else if (tolerance2 != -1 &&
-                            fabs(color.r - colorRef2.r) +
-                            fabs(color.g - colorRef2.g) +
-                            fabs(color.b - colorRef2.b) < tolerance2 * 3.0f)
-                    {
-                        color.r = Math::Norm(colorNew2.r + color.r - colorRef2.r + shift);
-                        color.g = Math::Norm(colorNew2.g + color.g - colorRef2.g + shift);
-                        color.b = Math::Norm(colorNew2.b + color.b - colorRef2.b + shift);
-                        img.SetPixel({ x, y }, color);
-                    }
-                }
-            }
-        }
-    }
-
-    CreateOrUpdateTexture(texName, &img);
-
-    return true;
-}
-
-bool CEngine::ChangeTextureColor(const std::string& texName,
-                                 Color colorRef1, Color colorNew1,
-                                 Color colorRef2, Color colorNew2,
-                                 float tolerance1, float tolerance2,
-                                 const glm::vec2& ts, const glm::vec2& ti,
-                                 glm::vec2* exclude, float shift, bool hsv)
-{
-    return ChangeTextureColor(texName, texName, colorRef1, colorNew1, colorRef2, colorNew2, tolerance1, tolerance2, ts, ti, exclude, shift, hsv);
 }
 
 void CEngine::DeleteTexture(const std::string& texName)
@@ -2904,7 +2769,8 @@ void CEngine::Draw3DScene()
     objectRenderer->SetViewMatrix(m_matView);
     objectRenderer->SetShadowMap(m_shadowMap);
     objectRenderer->SetLighting(true);
-    objectRenderer->SetLight(glm::vec4(1.0, 1.0, -1.0, 0.0), 1.0f, glm::vec3(1.0));
+    objectRenderer->SetLight(glm::vec4(1.0, 1.0, -1.0, 0.0), 0.8f, glm::vec3(1.0));
+    objectRenderer->SetSky(Color(1.0, 1.0, 1.0), 0.5f);
     objectRenderer->SetTransparency(TransparencyMode::NONE);
 
     objectRenderer->SetFog(fogStart, fogEnd, { fogColor.r, fogColor.g, fogColor.b });
@@ -2958,9 +2824,6 @@ void CEngine::Draw3DScene()
                 continue;
             }
 
-            objectRenderer->SetPrimaryTexture(data.albedoTexture);
-            objectRenderer->SetSecondaryTexture(data.detailTexture);
-
             if (data.material.alphaMode != AlphaMode::OPAQUE)
             {
                 objectRenderer->SetAlphaScissor(data.material.alphaThreshold);
@@ -2970,13 +2833,16 @@ void CEngine::Draw3DScene()
                 objectRenderer->SetAlphaScissor(0.0f);
             }
 
-            objectRenderer->SetPrimaryTextureEnabled(true);
+            objectRenderer->SetAlbedoColor(data.material.albedoColor);
+            objectRenderer->SetAlbedoTexture(data.albedoTexture);
+            objectRenderer->SetDetailTexture(data.detailTexture);
 
-            float dirty = ((data.material.variableDetail
-                || !data.material.detailTexture.empty()) && m_dirty)
-                ? 1.0 : 0.0;
-            objectRenderer->SetDirty(dirty);
-            objectRenderer->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+            objectRenderer->SetEmissiveColor(data.material.emissiveColor);
+            objectRenderer->SetEmissiveTexture(data.emissiveTexture);
+
+            objectRenderer->SetMaterialParams(data.material.roughness, data.material.metalness);
+            objectRenderer->SetMaterialTexture(data.materialTexture);
+
             objectRenderer->SetCullFace(data.material.cullFace);
             objectRenderer->SetUVTransform(data.uvOffset, data.uvScale);
             objectRenderer->DrawObject(data.buffer);
@@ -3009,6 +2875,9 @@ void CEngine::Draw3DScene()
             if (! m_objects[objRank].drawWorld)
                 continue;
 
+            if (!m_objects[objRank].ghost)
+                continue;
+
             auto combinedMatrix = projectionViewMatrix * m_objects[objRank].transform;
 
             if (! IsVisible(combinedMatrix, objRank))
@@ -3028,15 +2897,9 @@ void CEngine::Draw3DScene()
 
             for (auto& data : p1.next)
             {
-                objectRenderer->SetPrimaryTexture(data.albedoTexture);
-                objectRenderer->SetSecondaryTexture(data.detailTexture);
-
-                if (!m_objects[objRank].ghost)
-                    continue;
-
-                float dirty = 1.0f;// (data.state& ENG_RSTATE_DUAL_BLACK) && m_dirty ? 1.0 : 0.0;
-                objectRenderer->SetDirty(dirty);
-                objectRenderer->SetColor(tColor);
+                objectRenderer->SetAlbedoColor(tColor);
+                objectRenderer->SetAlbedoTexture(data.albedoTexture);
+                objectRenderer->SetDetailTexture(data.detailTexture);
                 objectRenderer->SetUVTransform(data.uvOffset, data.uvScale);
                 objectRenderer->DrawObject(data.buffer);
             }
@@ -3347,8 +3210,8 @@ void CEngine::RenderPendingDebugDraws()
     renderer->SetTransparency(TransparencyMode::NONE);
     renderer->SetLighting(false);
     renderer->SetModelMatrix(glm::mat4(1.0f));
-    renderer->SetPrimaryTexture(Texture{});
-    renderer->SetSecondaryTexture(Texture{});
+    renderer->SetAlbedoTexture(Texture{});
+    renderer->SetDetailTexture(Texture{});
 
     renderer->DrawPrimitives(PrimitiveType::LINE_STRIP,
         m_pendingDebugDraws.counts.size(),
@@ -3631,9 +3494,8 @@ void CEngine::DrawInterface()
         renderer->SetTransparency(TransparencyMode::NONE);
         renderer->SetAlphaScissor(0.0f);
         renderer->SetShadowParams(0, nullptr);
-        renderer->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+        renderer->SetAlbedoColor(Color{ 1.0f, 1.0f, 1.0f, 1.0f });
         renderer->SetCullFace(CullFace::BACK);
-        renderer->SetPrimaryTextureEnabled(true);
 
         renderer->SetTriplanarMode(m_triplanarMode);
         renderer->SetTriplanarScale(m_triplanarScale);
@@ -3672,8 +3534,8 @@ void CEngine::DrawInterface()
 
             for (auto& data : p1.next)
             {
-                renderer->SetPrimaryTexture(data.albedoTexture);
-                renderer->SetSecondaryTexture(data.detailTexture);
+                renderer->SetAlbedoTexture(data.albedoTexture);
+                renderer->SetDetailTexture(data.detailTexture);
 
                 renderer->DrawObject(data.buffer);
             }

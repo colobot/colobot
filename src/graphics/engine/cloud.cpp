@@ -121,8 +121,8 @@ void CCloud::Draw()
     renderer->SetViewMatrix(m_engine->GetMatView());
 
     auto texture = m_engine->LoadTexture(m_fileName);
-    renderer->SetPrimaryTexture(texture);
-    renderer->SetSecondaryTexture(Texture{});
+    renderer->SetAlbedoTexture(texture);
+    renderer->SetDetailTexture(Texture{});
 
     renderer->SetLighting(false);
     renderer->SetTransparency(TransparencyMode::BLACK);

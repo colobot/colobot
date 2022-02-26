@@ -340,28 +340,28 @@ void CWater::DrawSurf()
 
     auto texture = m_engine->LoadTexture(m_fileName);
 
-    renderer->SetPrimaryTexture(texture);
-    renderer->SetSecondaryTexture(Texture{});
+    renderer->SetAlbedoTexture(texture);
+    renderer->SetDetailTexture(Texture{});
 
     if (m_type[rankview] == WATER_TT)
     {
         renderer->SetTransparency(TransparencyMode::BLACK);
-        renderer->SetColor(m_color);
+        renderer->SetAlbedoColor(m_color);
     }
     else if (m_type[rankview] == WATER_TO)
     {
         renderer->SetTransparency(TransparencyMode::NONE);
-        renderer->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+        renderer->SetAlbedoColor(Color{ 1.0f, 1.0f, 1.0f, 1.0f });
     }
     else if (m_type[rankview] == WATER_CT)
     {
         renderer->SetTransparency(TransparencyMode::BLACK);
-        renderer->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+        renderer->SetAlbedoColor(Color{ 1.0f, 1.0f, 1.0f, 1.0f });
     }
     else if (m_type[rankview] == WATER_CO)
     {
         renderer->SetTransparency(TransparencyMode::NONE);
-        renderer->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+        renderer->SetAlbedoColor(Color{ 1.0f, 1.0f, 1.0f, 1.0f });
     }
 
     float size = m_brickSize/2.0f;

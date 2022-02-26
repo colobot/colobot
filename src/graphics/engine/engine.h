@@ -133,6 +133,9 @@ struct EngineBaseObjDataTier
     bool                    updateStaticBuffer = false;
 
     Texture                 albedoTexture;
+    Texture                 emissiveTexture;
+    Texture                 materialTexture;
+    Texture                 normalTexture;
     Texture                 detailTexture;
 
     glm::vec2               uvOffset = { 0.0f, 0.0f };
@@ -742,17 +745,11 @@ public:
 
     /* *************** Mode setting *************** */
 
-    //! Sets the current rendering state
-    //void            SetState(int state, const Color& color = Color(1.0f, 1.0f, 1.0f, 1.0f));
-
-    //! Sets the current material
-    void            SetMaterial(const Material& mat);
-
     //! Specifies the location and direction of view
-    void SetViewParams(const glm::vec3 &eyePt, const glm::vec3 &lookatPt, const glm::vec3 &upVec);
+    void            SetViewParams(const glm::vec3 &eyePt, const glm::vec3 &lookatPt, const glm::vec3 &upVec);
 
     //! Updates the textures used for drawing ground spot
-    void        UpdateGroundSpotTextures();
+    void            UpdateGroundSpotTextures();
 
     //! Loads texture, creating it if not already present
     Texture         LoadTexture(const std::string& name);
@@ -762,25 +759,6 @@ public:
     Texture         LoadTexture(const std::string& name, const TextureCreateParams& params);
     //! Loads all necessary textures
     bool            LoadAllTextures();
-
-    //! Changes colors in a texture
-    //@{
-    bool            ChangeTextureColor(const std::string& texName,
-                                       const std::string& srcName,
-                                       Color colorRef1, Color colorNew1,
-                                       Color colorRef2, Color colorNew2,
-                                       float tolerance1, float tolerance2,
-                                       const glm::vec2& ts, const glm::vec2& ti,
-                                       glm::vec2* exclude = nullptr,
-                                       float shift = 0.0f, bool hsv = false);
-    bool            ChangeTextureColor(const std::string& texName,
-                                       Color colorRef1, Color colorNew1,
-                                       Color colorRef2, Color colorNew2,
-                                       float tolerance1, float tolerance2,
-                                       const glm::vec2& ts, const glm::vec2& ti,
-                                       glm::vec2* exclude = nullptr,
-                                       float shift = 0.0f, bool hsv = false);
-    //@}
 
     //! Deletes the given texture, unloading it and removing from cache
     void            DeleteTexture(const std::string& texName);

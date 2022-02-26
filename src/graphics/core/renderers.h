@@ -140,13 +140,21 @@ public:
     //! Sets model matrix
     virtual void SetModelMatrix(const glm::mat4& matrix) = 0;
 
-    //! Sets color
-    virtual void SetColor(const glm::vec4& color) = 0;
+    //! Sets albedo color
+    virtual void SetAlbedoColor(const Color& color) = 0;
+    //! Sets albedo texture
+    virtual void SetAlbedoTexture(const Texture& texture) = 0;
+    //! Sets emissive color
+    virtual void SetEmissiveColor(const Color& color) = 0;
+    //! Sets emissive texture
+    virtual void SetEmissiveTexture(const Texture& texture) = 0;
+    //! Sets material parameters
+    virtual void SetMaterialParams(float roughness, float metalness) = 0;
+    //! Sets material texture
+    virtual void SetMaterialTexture(const Texture& texture) = 0;
 
-    //! Sets primary texture
-    virtual void SetPrimaryTexture(const Texture& texture) = 0;
-    //! Sets secondary texture
-    virtual void SetSecondaryTexture(const Texture& texture) = 0;
+    //! Sets detail texture
+    virtual void SetDetailTexture(const Texture& texture) = 0;
     //! Sets shadow map
     virtual void SetShadowMap(const Texture& texture) = 0;
 
@@ -154,6 +162,8 @@ public:
     virtual void SetLighting(bool enabled) = 0;
     //! Sets light parameters
     virtual void SetLight(const glm::vec4& position, const float& intensity, const glm::vec3& color) = 0;
+    //! Sets sky parameters
+    virtual void SetSky(const Color& color, float intensity) = 0;
     //! Sets shadow parameters
     virtual void SetShadowParams(int count, const ShadowParam* params) = 0;
 
@@ -174,13 +184,10 @@ public:
     //! Sets UV transform
     virtual void SetUVTransform(const glm::vec2& offset, const glm::vec2& scale) = 0;
 
-    virtual void SetPrimaryTextureEnabled(bool enabled) = 0;
     //! Sets triplanar mode
     virtual void SetTriplanarMode(bool enabled) = 0;
     //! Sets triplanar scale
     virtual void SetTriplanarScale(float scale) = 0;
-    //! Sets amount of dirt (second texture) to apply
-    virtual void SetDirty(float amount) = 0;
 
     //! Draws an object
     virtual void DrawObject(const CVertexBuffer* buffer) = 0;

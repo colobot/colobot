@@ -45,33 +45,56 @@ enum class CullFace : unsigned char
     BOTH,
 };
 
-//! Remains of the legacy material structure, to be reused
+//! PBR material
 struct Material
 {
-    // Albedo
+    //! Albedo color
     Color albedoColor = Color{ 1.0f, 1.0f, 1.0f, 1.0f };
+    //! Albedo texture
     std::string albedoTexture = "";
-    // Dirt
-    bool variableDetail = false;
-    std::string detailTexture = "";
-    // Alpha mode
+    //! Roughness
+    float roughness = 1.0;
+    //! Metalness
+    float metalness = 0.0;
+    //! AO-roughness-metalness texture
+    std::string materialTexture = "";
+    //! Emissive color
+    Color emissiveColor = Color{ 0.0f, 0.0f, 0.0f, 0.0f };
+    //! Emissive texture
+    std::string emissiveTexture = "";
+    //! Normal map
+    std::string normalTexture = "";
+    //! Alpha mode
     AlphaMode alphaMode = AlphaMode::OPAQUE;
+    //! Alpha threshold
     float alphaThreshold = 0.0;
     // Cull face
     CullFace cullFace = CullFace::BACK;
     // Special tag
     std::string tag = "";
 
+    // Legacy functionality
+    //! Variable detail texture
+    bool variableDetail = false;
+    //! Detail texture
+    std::string detailTexture = "";
+
     bool operator==(const Material& other) const
     {
         return albedoColor == other.albedoColor
             && albedoTexture == other.albedoTexture
-            && variableDetail == other.variableDetail
-            && detailTexture == other.detailTexture
+            && roughness == other.roughness
+            && metalness == other.metalness
+            && materialTexture == other.materialTexture
+            && emissiveColor == other.emissiveColor
+            && emissiveTexture == other.emissiveTexture
+            && normalTexture == other.normalTexture
             && alphaMode == other.alphaMode
             && alphaThreshold == other.alphaThreshold
             && cullFace == other.cullFace
-            && tag == other.tag;
+            && tag == other.tag
+            && variableDetail == other.variableDetail
+            && detailTexture == other.detailTexture;
     }
 
     bool operator!=(const Material& other) const

@@ -38,20 +38,20 @@ CGL33ObjectRenderer::CGL33ObjectRenderer(CGL33Device* device)
 {
     GetLogger()->Info("Creating CGL33ObjectRenderer\n");
 
-
     std::string preamble = LoadSource("shaders/gl33/preamble.glsl");
     std::string shadowSource = LoadSource("shaders/gl33/shadow.glsl");
+    std::string lightingSource = LoadSource("shaders/gl33/lighting.glsl");
     std::string vsSource = LoadSource("shaders/gl33/object_vs.glsl");
     std::string fsSource = LoadSource("shaders/gl33/object_fs.glsl");
 
-    GLint vsShader = CreateShader(GL_VERTEX_SHADER, { preamble, shadowSource, vsSource });
+    GLint vsShader = CreateShader(GL_VERTEX_SHADER, { preamble, lightingSource, shadowSource, vsSource });
     if (vsShader == 0)
     {
         GetLogger()->Error("Cound not create vertex shader from file 'object_vs.glsl'\n");
         return;
     }
 
-    GLint fsShader = CreateShader(GL_FRAGMENT_SHADER, { preamble, shadowSource, fsSource });
+    GLint fsShader = CreateShader(GL_FRAGMENT_SHADER, { preamble, lightingSource, shadowSource, fsSource });
     if (fsShader == 0)
     {
         GetLogger()->Error("Cound not create fragment shader from file 'object_fs.glsl'\n");
@@ -70,21 +70,29 @@ CGL33ObjectRenderer::CGL33ObjectRenderer(CGL33Device* device)
 
     m_projectionMatrix = glGetUniformLocation(m_program, "uni_ProjectionMatrix");
     m_viewMatrix = glGetUniformLocation(m_program, "uni_ViewMatrix");
-    m_cameraMatrix = glGetUniformLocation(m_program, "uni_CameraMatrix");
     m_shadowMatrix = glGetUniformLocation(m_program, "uni_ShadowMatrix");
     m_modelMatrix = glGetUniformLocation(m_program, "uni_ModelMatrix");
     m_normalMatrix = glGetUniformLocation(m_program, "uni_NormalMatrix");
+
     m_lighting = glGetUniformLocation(m_program, "uni_Lighting");
+    m_cameraPosition = glGetUniformLocation(m_program, "uni_CameraPosition");
     m_lightPosition = glGetUniformLocation(m_program, "uni_LightPosition");
     m_lightIntensity = glGetUniformLocation(m_program, "uni_LightIntensity");
     m_lightColor = glGetUniformLocation(m_program, "uni_LightColor");
+
+    m_skyColor = glGetUniformLocation(m_program, "uni_SkyColor");
+    m_skyIntensity = glGetUniformLocation(m_program, "uni_SkyIntensity");
+
     m_fogRange = glGetUniformLocation(m_program, "uni_FogRange");
     m_fogColor = glGetUniformLocation(m_program, "uni_FogColor");
-    m_color = glGetUniformLocation(m_program, "uni_Color");
-    m_primaryEnabled = glGetUniformLocation(m_program, "uni_PrimaryEnabled");
+
+    m_albedoColor = glGetUniformLocation(m_program, "uni_AlbedoColor");
+    m_emissiveColor = glGetUniformLocation(m_program, "uni_EmissiveColor");
+    m_roughness = glGetUniformLocation(m_program, "uni_Roughness");
+    m_metalness = glGetUniformLocation(m_program, "uni_Metalness");
+
     m_triplanarMode = glGetUniformLocation(m_program, "uni_TriplanarMode");
     m_triplanarScale = glGetUniformLocation(m_program, "uni_TriplanarScale");
-    m_dirty = glGetUniformLocation(m_program, "uni_Dirty");
     m_alphaScissor = glGetUniformLocation(m_program, "uni_AlphaScissor");
     m_uvOffset = glGetUniformLocation(m_program, "uni_UVOffset");
     m_uvScale = glGetUniformLocation(m_program, "uni_UVScale");
@@ -106,14 +114,20 @@ CGL33ObjectRenderer::CGL33ObjectRenderer(CGL33Device* device)
     }
 
     // Set texture units
-    auto texture = glGetUniformLocation(m_program, "uni_PrimaryTexture");
-    glUniform1i(texture, 10);
+    auto texture = glGetUniformLocation(m_program, "uni_AlbedoTexture");
+    glUniform1i(texture, m_albedoIndex);
 
-    texture = glGetUniformLocation(m_program, "uni_SecondaryTexture");
-    glUniform1i(texture, 11);
+    texture = glGetUniformLocation(m_program, "uni_DetailTexture");
+    glUniform1i(texture, m_detailIndex);
+
+    texture = glGetUniformLocation(m_program, "uni_EmissiveTexture");
+    glUniform1i(texture, m_emissiveIndex);
+
+    texture = glGetUniformLocation(m_program, "uni_MaterialTexture");
+    glUniform1i(texture, m_materialIndex);
 
     texture = glGetUniformLocation(m_program, "uni_ShadowMap");
-    glUniform1i(texture, 12);
+    glUniform1i(texture, m_shadowIndex);
 
     // White texture
     glActiveTexture(GL_TEXTURE0);
@@ -128,6 +142,7 @@ CGL33ObjectRenderer::CGL33ObjectRenderer(CGL33Device* device)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_G, GL_ONE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_B, GL_ONE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_A, GL_ONE);
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     glUseProgram(0);
 
@@ -161,17 +176,25 @@ void CGL33ObjectRenderer::CGL33ObjectRenderer::Begin()
     glUseProgram(m_program);
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    glActiveTexture(GL_TEXTURE10);
+    glActiveTexture(GL_TEXTURE0 + m_albedoIndex);
     glBindTexture(GL_TEXTURE_2D, m_whiteTexture);
 
-    glActiveTexture(GL_TEXTURE11);
+    glActiveTexture(GL_TEXTURE0 + m_detailIndex);
     glBindTexture(GL_TEXTURE_2D, m_whiteTexture);
 
-    glActiveTexture(GL_TEXTURE12);
+    glActiveTexture(GL_TEXTURE0 + m_emissiveIndex);
+    glBindTexture(GL_TEXTURE_2D, m_whiteTexture);
+
+    glActiveTexture(GL_TEXTURE0 + m_materialIndex);
+    glBindTexture(GL_TEXTURE_2D, m_whiteTexture);
+
+    glActiveTexture(GL_TEXTURE0 + m_shadowIndex);
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    m_primaryTexture = 0;
-    m_secondaryTexture = 0;
+    m_albedoTexture = 0;
+    m_detailTexture = 0;
+    m_emissiveTexture = 0;
+    m_materialTexture = 0;
     m_shadowMap = 0;
 
     m_device->SetDepthTest(true);
@@ -184,17 +207,25 @@ void CGL33ObjectRenderer::CGL33ObjectRenderer::Begin()
 
 void CGL33ObjectRenderer::CGL33ObjectRenderer::End()
 {
-    glActiveTexture(GL_TEXTURE10);
+    glActiveTexture(GL_TEXTURE0 + m_albedoIndex);
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    glActiveTexture(GL_TEXTURE11);
+    glActiveTexture(GL_TEXTURE0 + m_detailIndex);
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    glActiveTexture(GL_TEXTURE12);
+    glActiveTexture(GL_TEXTURE0 + m_emissiveIndex);
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    m_primaryTexture = 0;
-    m_secondaryTexture = 0;
+    glActiveTexture(GL_TEXTURE0 + m_materialIndex);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glActiveTexture(GL_TEXTURE0 + m_shadowIndex);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    m_albedoTexture = 0;
+    m_detailTexture = 0;
+    m_emissiveTexture = 0;
+    m_materialTexture = 0;
     m_shadowMap = 0;
 }
 
@@ -210,9 +241,10 @@ void CGL33ObjectRenderer::SetViewMatrix(const glm::mat4& matrix)
 
     auto viewMatrix = scale * matrix;
     auto cameraMatrix = glm::inverse(viewMatrix);
+    auto cameraPos = cameraMatrix[3];
 
     glUniformMatrix4fv(m_viewMatrix, 1, GL_FALSE, value_ptr(viewMatrix));
-    glUniformMatrix4fv(m_cameraMatrix, 1, GL_FALSE, value_ptr(cameraMatrix));
+    glUniform3f(m_cameraPosition, cameraPos.x, cameraPos.y, cameraPos.z);
 }
 
 void CGL33ObjectRenderer::SetModelMatrix(const glm::mat4& matrix)
@@ -223,18 +255,18 @@ void CGL33ObjectRenderer::SetModelMatrix(const glm::mat4& matrix)
     glUniformMatrix3fv(m_normalMatrix, 1, GL_FALSE, value_ptr(normalMatrix));
 }
 
-void CGL33ObjectRenderer::SetColor(const glm::vec4& color)
+void CGL33ObjectRenderer::SetAlbedoColor(const Color& color)
 {
-    glUniform4fv(m_color, 1, glm::value_ptr(color));
+    glUniform4f(m_albedoColor, color.r, color.g, color.b, color.a);
 }
 
-void CGL33ObjectRenderer::SetPrimaryTexture(const Texture& texture)
+void CGL33ObjectRenderer::SetAlbedoTexture(const Texture& texture)
 {
-    if (m_primaryTexture == texture.id) return;
+    if (m_albedoTexture == texture.id) return;
 
-    m_primaryTexture = texture.id;
+    m_albedoTexture = texture.id;
 
-    glActiveTexture(GL_TEXTURE10);
+    glActiveTexture(GL_TEXTURE0 + m_albedoIndex);
 
     if (texture.id == 0)
         glBindTexture(GL_TEXTURE_2D, m_whiteTexture);
@@ -242,13 +274,52 @@ void CGL33ObjectRenderer::SetPrimaryTexture(const Texture& texture)
         glBindTexture(GL_TEXTURE_2D, texture.id);
 }
 
-void CGL33ObjectRenderer::SetSecondaryTexture(const Texture& texture)
+void CGL33ObjectRenderer::SetEmissiveColor(const Color& color)
 {
-    if (m_secondaryTexture == texture.id) return;
+    glUniform3f(m_emissiveColor, color.r, color.g, color.b);
+}
 
-    m_secondaryTexture = texture.id;
+void CGL33ObjectRenderer::SetEmissiveTexture(const Texture& texture)
+{
+    if (m_emissiveTexture == texture.id) return;
 
-    glActiveTexture(GL_TEXTURE11);
+    m_emissiveTexture = texture.id;
+
+    glActiveTexture(GL_TEXTURE0 + m_emissiveIndex);
+
+    if (texture.id == 0)
+        glBindTexture(GL_TEXTURE_2D, m_whiteTexture);
+    else
+        glBindTexture(GL_TEXTURE_2D, texture.id);
+}
+
+void CGL33ObjectRenderer::SetMaterialParams(float roughness, float metalness)
+{
+    glUniform1f(m_roughness, roughness);
+    glUniform1f(m_metalness, metalness);
+}
+
+void CGL33ObjectRenderer::SetMaterialTexture(const Texture& texture)
+{
+    if (m_materialTexture == texture.id) return;
+
+    m_materialTexture = texture.id;
+
+    glActiveTexture(GL_TEXTURE0 + m_materialIndex);
+
+    if (texture.id == 0)
+        glBindTexture(GL_TEXTURE_2D, m_whiteTexture);
+    else
+        glBindTexture(GL_TEXTURE_2D, texture.id);
+}
+
+void CGL33ObjectRenderer::SetDetailTexture(const Texture& texture)
+{
+    if (m_detailTexture == texture.id) return;
+
+    m_detailTexture = texture.id;
+
+    glActiveTexture(GL_TEXTURE0 + m_detailIndex);
 
     if (texture.id == 0)
         glBindTexture(GL_TEXTURE_2D, m_whiteTexture);
@@ -262,10 +333,10 @@ void CGL33ObjectRenderer::SetShadowMap(const Texture& texture)
 
     m_shadowMap = texture.id;
 
-    glActiveTexture(GL_TEXTURE12);
+    glActiveTexture(GL_TEXTURE0 + m_shadowIndex);
 
     if (texture.id == 0)
-        glBindTexture(GL_TEXTURE_2D, m_whiteTexture);
+        glBindTexture(GL_TEXTURE_2D, 0);
     else
         glBindTexture(GL_TEXTURE_2D, texture.id);
 }
@@ -279,7 +350,13 @@ void CGL33ObjectRenderer::SetLight(const glm::vec4& position, const float& inten
 {
     glUniform4fv(m_lightPosition, 1, glm::value_ptr(position));
     glUniform1f(m_lightIntensity, intensity);
-    glUniform3fv(m_lightColor, 1, glm::value_ptr(color));
+    glUniform3f(m_lightColor, color.r, color.g, color.b);
+}
+
+void CGL33ObjectRenderer::SetSky(const Color& color, float intensity)
+{
+    glUniform3f(m_skyColor, color.r, color.g, color.b);
+    glUniform1f(m_skyIntensity, intensity);
 }
 
 void CGL33ObjectRenderer::SetShadowParams(int count, const ShadowParam* params)
@@ -326,11 +403,6 @@ void CGL33ObjectRenderer::SetUVTransform(const glm::vec2& offset, const glm::vec
     glUniform2fv(m_uvScale, 1, glm::value_ptr(scale));
 }
 
-void CGL33ObjectRenderer::SetPrimaryTextureEnabled(bool enabled)
-{
-    glUniform1f(m_primaryEnabled, enabled ? 1.0f : 0.0f);
-}
-
 void CGL33ObjectRenderer::SetTriplanarMode(bool enabled)
 {
     glUniform1i(m_triplanarMode, enabled ? 1 : 0);
@@ -339,11 +411,6 @@ void CGL33ObjectRenderer::SetTriplanarMode(bool enabled)
 void CGL33ObjectRenderer::SetTriplanarScale(float scale)
 {
     glUniform1f(m_triplanarScale, scale);
-}
-
-void CGL33ObjectRenderer::SetDirty(float amount)
-{
-    glUniform1f(m_dirty, amount);
 }
 
 void CGL33ObjectRenderer::SetAlphaScissor(float alpha)
