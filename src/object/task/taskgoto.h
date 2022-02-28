@@ -23,7 +23,9 @@
 
 #include "math/vector.h"
 
+#include <array>
 #include <memory>
+#include <vector>
 
 namespace Math
 {
@@ -33,8 +35,8 @@ struct Point;
 
 class CObject;
 
-const int MAXPOINTS = 500;
-
+const int MAXPOINTS = 50000;
+const int NUMQUEUEBUCKETS = 32;
 
 enum TaskGotoGoal
 {
@@ -99,14 +101,12 @@ protected:
     void        ComputeRepulse(Math::Point &dir);
     void        ComputeFlyingRepulse(float &dir);
 
-    int         BeamShortcut();
-    void        BeamStart();
-    void        BeamInit();
-    Error       BeamSearch(const Math::Vector &start, const Math::Vector &goal, float goalRadius);
-    Error       BeamExplore(const Math::Vector &prevPos, const Math::Vector &curPos, const Math::Vector &goalPos, float goalRadius, float angle, int nbDiv, float step, int i, int nbIter);
-    Math::Vector    BeamPoint(const Math::Vector &startPoint, const Math::Vector &goalPoint, float angle, float step);
+    int         PathFindingShortcut();
+    void        PathFindingStart();
+    void        PathFindingInit();
+    Error       PathFindingSearch(const Math::Vector &start, const Math::Vector &goal, float goalRadius);
 
-    bool        BitmapTestLine(const Math::Vector &start, const Math::Vector &goal, float stepAngle, bool bSecond);
+    bool        BitmapTestLine(const Math::Vector &start, const Math::Vector &goal);
     void        BitmapObject();
     void        BitmapTerrain(const Math::Vector &min, const Math::Vector &max);
     void        BitmapTerrain(int minx, int miny, int maxx, int maxy);
@@ -117,6 +117,7 @@ protected:
     void        BitmapSetDot(int rank, int x, int y);
     void        BitmapClearDot(int rank, int x, int y);
     bool        BitmapTestDot(int rank, int x, int y);
+    bool        BitmapTestDotIsVisitable(int x, int y);
 
 protected:
     Math::Vector        m_goal;
@@ -141,10 +142,17 @@ protected:
     int             m_bmSize = 0;       // width or height of the table
     int             m_bmOffset = 0;     // m_bmSize/2
     int             m_bmLine = 0;       // increment line m_bmSize/8
-    std::unique_ptr<unsigned char[]> m_bmArray;      // bit table
+    std::unique_ptr<unsigned char[]> m_bmArray;      // Bit table
+    std::unique_ptr<int32_t[]> m_bfsDistances; // Distances to the goal for breadth-first search.
+    std::array<std::vector<uint32_t>, NUMQUEUEBUCKETS + 1> m_bfsQueue; // Priority queue with indices to nodes. Nodes are sorted into buckets. The last bucket contains oversized costs.
+    int             m_bfsQueueMin = 0;  // Front of the queue. This value mod 8 is the index to the bucket with the next node to be expanded.
+    int             m_bfsQueueCountPushed = 0; // Number of nodes inserted into the queue.
+    int             m_bfsQueueCountPopped = 0; // Number of nodes extacted from the queue.
+    int             m_bfsQueueCountRepeated = 0; // Number of nodes re-inserted into the queue.
+    int             m_bfsQueueCountSkipped = 0; // Number of nodes skipped because of unexpected distance (likely re-added).
     int             m_bmMinX = 0, m_bmMinY = 0;
     int             m_bmMaxX = 0, m_bmMaxY = 0;
-    int             m_bmTotal = 0;      // number of points in m_bmPoints
+    int             m_bmTotal = 0;      // index of final point in m_bmPoints
     int             m_bmIndex = 0;      // index in m_bmPoints
     Math::Vector        m_bmPoints[MAXPOINTS+2];
     signed char     m_bmIter[MAXPOINTS+2] = {};

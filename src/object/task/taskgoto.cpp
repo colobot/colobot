@@ -48,10 +48,10 @@ const float FLY_DEF_HEIGHT  = 50.0f;    // default flying height
 
 // Settings that define goto() accuracy:
 const float BM_DIM_STEP     = 5.0f;     // Size of one pixel on the bitmap. Setting 5 means that 5x5 square (in game units) will be represented by 1 px on the bitmap. Decreasing this value will make a bigger bitmap, and may increase accuracy. TODO: Check how it actually impacts goto() accuracy
-const float BEAM_ACCURACY   = 5.0f;    // higher value = more accurate, but slower
-const float SAFETY_MARGIN   = 0.5f;     // Smallest distance between two objects. Smaller = less "no route to destination", but higher probability of collisions between objects.
+const float SAFETY_MARGIN   = 1.5f;     // Smallest distance between two objects. Smaller = less "no route to destination", but higher probability of collisions between objects.
 // Changing SAFETY_MARGIN (old value was 4.0f) seems to have fixed many issues with goto(). TODO: maybe we could make it even smaller? Did changing it introduce any new bugs?
 
+const int NB_ITER = 200;  // Maximum number of iterations you have the right to make before temporarily interrupt in order not to lower the framerate.
 
 
 
@@ -126,7 +126,7 @@ bool CTaskGoto::EventProcess(const Event &event)
                         if (a || b)
                         {
                             Gfx::Color c = Gfx::Color(0.0f, 0.0f, 0.0f, 1.0f);
-                            if (b) c = Gfx::Color(0.0f, 0.0f, 1.0f, 1.0f);
+                            if (b) c = Gfx::Color(0.0f, 1.0f, 1.0f, 1.0f);
                             debugImage->SetPixel(Math::IntPoint(x, y), c);
                         }
                     }
@@ -221,7 +221,7 @@ bool CTaskGoto::EventProcess(const Event &event)
             if ( m_bmCargoObject->GetType() == OBJECT_BASE )  dist = 12.0f;
         }
 
-        ret = BeamSearch(pos, goal, dist);
+        ret = PathFindingSearch(pos, goal, dist);
         if ( ret == ERR_OK )
         {
             if ( m_physics->GetLand() )  m_phase = TGP_BEAMWCOLD;
@@ -345,7 +345,7 @@ bool CTaskGoto::EventProcess(const Event &event)
         {
             m_physics->SetMotorSpeedX(0.0f);  // stops the advance
             m_physics->SetMotorSpeedZ(0.0f);  // stops the rotation
-            BeamStart();  // we start all
+            PathFindingStart();  // we start all
             return true;
         }
 
@@ -789,7 +789,7 @@ Error CTaskGoto::Start(Math::Vector goal, float altitude,
             }
         }
 
-        BeamStart();
+        PathFindingStart();
 
         if ( m_bmCargoObject == nullptr )
         {
@@ -825,7 +825,7 @@ Error CTaskGoto::IsEnded()
         {
             m_physics->SetMotorSpeedX(0.0f);  // stops the advance
             m_physics->SetMotorSpeedZ(0.0f);  // stops the rotation
-            BeamInit();
+            PathFindingInit();
             m_phase = TGP_BEAMSEARCH;  // will seek the path
         }
         return ERR_CONTINUE;
@@ -887,7 +887,7 @@ Error CTaskGoto::IsEnded()
             m_physics->SetMotorSpeedX(0.0f);  // stops the advance
             m_physics->SetMotorSpeedZ(0.0f);  // stops the rotation
 
-            m_bmIndex = BeamShortcut();
+            m_bmIndex = PathFindingShortcut();
 
             if ( m_bmIndex > m_bmTotal )
             {
@@ -1629,13 +1629,13 @@ void CTaskGoto::ComputeFlyingRepulse(float &dir)
 // Among all of the following, seek if there is one allowing to go directly to the crow flies.
 // If yes, skip all the unnecessary intermediate points.
 
-int CTaskGoto::BeamShortcut()
+int CTaskGoto::PathFindingShortcut()
 {
     int     i;
 
     for ( i=m_bmTotal ; i>=m_bmIndex+2 ; i-- )  // tries from the last
     {
-        if ( BitmapTestLine(m_bmPoints[m_bmIndex], m_bmPoints[i], 0.0f, false) )
+        if ( BitmapTestLine(m_bmPoints[m_bmIndex], m_bmPoints[i]) )
         {
             return i;  // bingo, found
         }
@@ -1646,7 +1646,7 @@ int CTaskGoto::BeamShortcut()
 
 // That's the big start.
 
-void CTaskGoto::BeamStart()
+void CTaskGoto::PathFindingStart()
 {
     Math::Vector    min, max;
 
@@ -1672,14 +1672,14 @@ void CTaskGoto::BeamStart()
     {
         m_physics->SetMotorSpeedX(0.0f);  // stops the advance
         m_physics->SetMotorSpeedZ(0.0f);  // stops the rotation
-        BeamInit();
+        PathFindingInit();
         m_phase = TGP_BEAMSEARCH;  // will seek the path
     }
 }
 
-// Initialization before the first BeamSearch.
+// Initialization before the first PathFindingSearch.
 
-void CTaskGoto::BeamInit()
+void CTaskGoto::PathFindingInit()
 {
     int     i;
 
@@ -1688,6 +1688,34 @@ void CTaskGoto::BeamInit()
         m_bmIter[i] = -1;
     }
     m_bmStep = 0;
+    for (auto& bucket : m_bfsQueue)
+    {
+        bucket.clear();
+    }
+    m_bfsQueueMin = 0;
+    m_bfsQueueCountPushed = 0;
+    m_bfsQueueCountPopped = 0;
+    m_bfsQueueCountRepeated = 0;
+    m_bfsQueueCountSkipped = 0;
+}
+
+static int HeuristicDistance(int nX, int nY, int startX, int startY)
+{
+    // 8-way connectivity yields a shortest path that
+    // consists of a diagonal and a non-diagonal part.
+    //      ...+
+    //      :  |
+    //      :..|
+    //      : /:
+    //      :/ :
+    //      +..:
+    const int distX = std::abs(nX - startX);
+    const int distY = std::abs(nY - startY);
+    const int smaller = std::min(distX, distY);
+    const int bigger = std::max(distX, distY);
+    // diagonal number of steps: smaller
+    // non-diagonal number of steps: bigger - smaller
+    return smaller * (7 - 5) + bigger * 5;
 }
 
 // Calculates points and passes to go from start to goal.
@@ -1698,199 +1726,350 @@ void CTaskGoto::BeamInit()
 // ERR_CONTINUE if not done yet
 // goalRadius: distance at which we must approach the goal
 
-Error CTaskGoto::BeamSearch(const Math::Vector &start, const Math::Vector &goal,
-                            float goalRadius)
+Error CTaskGoto::PathFindingSearch(const Math::Vector &start, const Math::Vector &goal,
+                                   float goalRadius)
 {
-    float     step, len;
-    int       nbIter;
-
     m_bmStep ++;
 
-    len = Math::DistanceProjected(start, goal);
-    step = len/BEAM_ACCURACY;
-    if ( step < BM_DIM_STEP*2.1f )  step = BM_DIM_STEP*2.1f;
-    if ( step > 20.0f            )  step = 20.0f;
-    nbIter = 200;  // in order not to lower the framerate
-    m_bmIterCounter = 0;
-    return BeamExplore(start, start, goal, goalRadius, 165.0f*Math::PI/180.0f, 22, step, 0, nbIter);
-}
+    // Relative postion and distance to neighbors.
+    static const int dXs[8] = {-1, 0, 1, -1, 1, -1, 0, 1};
+    static const int dYs[8] = {-1, -1, -1, 0, 0, 1, 1, 1};
+    // These are the costs of the edges. They must be less than the number of buckets in the queue.
+    static const int32_t dDist[8] = {7, 5, 7, 5, 5, 7, 5, 7};
 
-// prevPos: previous position
-// curPos:  current position
-// goalPos: position that seeks to achieve
-// angle:   angle to the goal we explores
-// nbDiv:   number of subdivisions being done with angle
-// step     length of a step
-// i        number of recursions made
-// nbIter   maximum number of iterations you have the right to make before temporarily interrupt
+    const int startX = static_cast<int>((start.x+1600.0f)/BM_DIM_STEP);
+    const int startY = static_cast<int>((start.z+1600.0f)/BM_DIM_STEP);
+    const int goalX = static_cast<int>((goal.x+1600.0f)/BM_DIM_STEP);
+    const int goalY = static_cast<int>((goal.z+1600.0f)/BM_DIM_STEP);
 
-Error CTaskGoto::BeamExplore(const Math::Vector &prevPos, const Math::Vector &curPos,
-                             const Math::Vector &goalPos, float goalRadius,
-                             float angle, int nbDiv, float step,
-                             int i, int nbIter)
-{
-    Math::Vector    newPos;
-    Error       ret;
-    int         iDiv, iClear, iLar;
-
-    iLar = 0;
-    if ( i >= MAXPOINTS )  return ERR_GOTO_ITER;  // too many recursions
-
-    m_bmTotal = i;
-
-    if ( m_bmIter[i] == -1 )
+    if (m_bfsQueueCountPushed == 0) // New search
     {
-        m_bmIter[i] = 0;
-
-        if ( i == 0 )
+        if (startX == goalX && startY == goalY)
         {
-            m_bmPoints[i] = curPos;
+            m_bmPoints[0] = start;
+            m_bmPoints[1] = goal;
+            m_bmTotal = 1;
+            return ERR_OK;
+        }
+        // Enqueue the goal node
+        if ( goalX >= 0 && goalX < m_bmSize &&
+            goalY >= 0 && goalY < m_bmSize )
+        {
+            const int indexInMap = goalY * m_bmSize + goalX;
+            const int totalDistance = HeuristicDistance(goalX, goalY, startX, startY);
+            m_bfsQueueMin = totalDistance;
+            m_bfsDistances[indexInMap] = 0;
+            m_bfsQueue[totalDistance % NUMQUEUEBUCKETS].push_back(indexInMap);
+            m_bfsQueueCountPushed += 1;
+            BitmapSetDot(1, goalX, goalY); // Mark as enqueued
         }
         else
         {
-            if ( !BitmapTestLine(prevPos, curPos, angle/nbDiv, true) )  return ERR_GOTO_IMPOSSIBLE;
+            m_bfsQueueMin = std::numeric_limits<int>::max();
+        }
 
-            m_bmPoints[i] = curPos;
-
-            if ( Math::DistanceProjected(curPos, goalPos)-goalRadius <= step )
+        // Enqueue nodes around the goal
+        if (goalRadius > 0.0f)
+        {
+            const int minX = std::max(0, static_cast<int>((goal.x-goalRadius+1600.0f)/BM_DIM_STEP));
+            const int minY = std::max(0, static_cast<int>((goal.z-goalRadius+1600.0f)/BM_DIM_STEP));
+            const int maxX = std::min(m_bmSize-1, static_cast<int>((goal.x+goalRadius+1600.0f)/BM_DIM_STEP));
+            const int maxY = std::min(m_bmSize-1, static_cast<int>((goal.z+goalRadius+1600.0f)/BM_DIM_STEP));
+            for (int y = minY; y <= maxY; ++y)
             {
-                if ( goalRadius == 0.0f )
+                for (int x = minX; x <= maxX; ++x)
                 {
-                    newPos = goalPos;
-                }
-                else
-                {
-                    newPos = BeamPoint(curPos, goalPos, 0, Math::DistanceProjected(curPos, goalPos)-goalRadius);
-                }
-                if ( BitmapTestLine(curPos, newPos, angle/nbDiv, false) )
-                {
-                    m_bmPoints[i+1] = newPos;
-                    m_bmTotal = i+1;
-                    return ERR_OK;
+                    float floatX = (x + 0.5f) * BM_DIM_STEP - 1600.0f;
+                    float floatY = (y + 0.5f) * BM_DIM_STEP - 1600.0f;
+                    if (std::hypot(floatX-goal.x, floatY-goal.z) <= goalRadius &&
+                        BitmapTestDotIsVisitable(x, y) &&
+                        !BitmapTestDot(1, x, y))
+                    {
+                        const int indexInMap = y * m_bmSize + x;
+                        const int totalDistance = HeuristicDistance(x, y, startX, startY);
+                        m_bfsQueueMin = std::min(m_bfsQueueMin, totalDistance);
+                        m_bfsDistances[indexInMap] = 0;
+                        m_bfsQueue[totalDistance % NUMQUEUEBUCKETS].push_back(indexInMap);
+                        m_bfsQueueCountPushed += 1;
+                        BitmapSetDot(1, x, y); // Mark as enqueued
+                    }
                 }
             }
         }
     }
 
-    if ( iLar >= m_bmIter[i] )
+    m_bmIterCounter = 0;
+
+    while (m_bfsQueueCountPushed != m_bfsQueueCountPopped)
     {
-        newPos = BeamPoint(curPos, goalPos, 0, step);
-        ret = BeamExplore(curPos, newPos, goalPos, goalRadius, angle, nbDiv, step, i+1, nbIter);
-        if ( ret != ERR_GOTO_IMPOSSIBLE )  return ret;
-        m_bmIter[i] = iLar+1;
-        for ( iClear=i+1 ; iClear<=MAXPOINTS ; iClear++ )  m_bmIter[iClear] = -1;
+        // Pop a node from the queue
+        while (m_bfsQueue[m_bfsQueueMin % NUMQUEUEBUCKETS].empty())
+        {
+            m_bfsQueueMin += 1;
+            if (m_bfsQueueMin % NUMQUEUEBUCKETS == 0 && !m_bfsQueue[NUMQUEUEBUCKETS].empty())
+            {
+                // Process nodes with oversized costs.
+                const size_t countBefore = m_bfsQueue[NUMQUEUEBUCKETS].size();
+                for (size_t i = 0; i < m_bfsQueue[NUMQUEUEBUCKETS].size();)
+                {
+                    const uint32_t indexInMap = m_bfsQueue[NUMQUEUEBUCKETS][i];
+                    const int x = indexInMap % m_bmSize;
+                    const int y = indexInMap / m_bmSize;
+                    const int32_t distance = m_bfsDistances[indexInMap];
+                    const int totalDistance = distance + HeuristicDistance(x, y, startX, startY);
+                    if (totalDistance < m_bfsQueueMin + NUMQUEUEBUCKETS)
+                    {
+                        // Move node to a regular bucket.
+                        m_bfsQueue[totalDistance % NUMQUEUEBUCKETS].push_back(indexInMap);
+                        m_bfsQueue[NUMQUEUEBUCKETS][i] = m_bfsQueue[NUMQUEUEBUCKETS].back();
+                        m_bfsQueue[NUMQUEUEBUCKETS].pop_back();
+                    }
+                    else
+                    {
+                        // Look at next node.
+                        i += 1;
+                    }
+                }
+                const size_t countAfter = m_bfsQueue[NUMQUEUEBUCKETS].size();
+                GetLogger()->Debug("Redistributed %lu of %lu nodes from the bucket with oversized costs.\n",
+                    countBefore - countAfter, countBefore);
+            }
+        }
+        auto& bucket = m_bfsQueue[m_bfsQueueMin % NUMQUEUEBUCKETS];
+        const uint32_t indexInMap = bucket.back();
+        bucket.pop_back();
+        m_bfsQueueCountPopped += 1;
+
+        const int x = indexInMap % m_bmSize;
+        const int y = indexInMap / m_bmSize;
+        const int32_t distance = m_bfsDistances[indexInMap];
+        const int totalDistance = distance + HeuristicDistance(x, y, startX, startY);
+
+        if (totalDistance != m_bfsQueueMin)
+        {
+            if (totalDistance < m_bfsQueueMin)
+            {
+                // This node has been updated to a lower cost and has allready been processed.
+                m_bfsQueueCountSkipped += 1;
+                // GetLogger()->Debug("Skipping node with smaller distance, distance: %d, totalDistance: %d, m_bfsQueueMin: %d\n",
+                //     distance, totalDistance, m_bfsQueueMin);
+            }
+            else
+            {
+                if (totalDistance < m_bfsQueueMin + NUMQUEUEBUCKETS)
+                {
+                    // Move node to a regular bucket.
+                    m_bfsQueue[totalDistance % NUMQUEUEBUCKETS].push_back(indexInMap);
+                    m_bfsQueueCountPushed += 1;
+                    GetLogger()->Debug("Moving node with bigger distance into regular bucket, distance: %d, totalDistance: %d, m_bfsQueueMin: %d\n",
+                        distance, totalDistance, m_bfsQueueMin);
+                }
+                else
+                {
+                    // Move node to the bucket with oversized costs.
+                    m_bfsQueue[NUMQUEUEBUCKETS].push_back(indexInMap);
+                    m_bfsQueueCountPushed += 1;
+                    GetLogger()->Debug("Moving node with bigger distance into bucket with oversized costs, distance: %d, totalDistance: %d, m_bfsQueueMin: %d\n",
+                        distance, totalDistance, m_bfsQueueMin);
+                }
+            }
+            continue;
+        }
+
+        if (x == startX && y == startY)
+        {
+            // We have reached the start.
+            // Follow decreasing distances to find the path.
+            m_bmPoints[0] = start;
+            int btX = x;
+            int btY = y;
+            for (m_bmTotal = 1; m_bmTotal < MAXPOINTS; ++m_bmTotal)
+            {
+                int bestX = -1;
+                int bestY = -1;
+                int32_t bestDistance = std::numeric_limits<int32_t>::max();
+                for (int i = 0; i < 8; ++i)
+                {
+                    const int nX = btX + dXs[i];
+                    const int nY = btY + dYs[i];
+                    if (!BitmapTestDot(1, nX, nY)) continue;
+                    const int32_t nDistance = m_bfsDistances[nY * m_bmSize + nX];
+                    if (nDistance < bestDistance)
+                    {
+                        bestX = nX;
+                        bestY = nY;
+                        bestDistance = nDistance;
+                    }
+                }
+                if (bestX == -1)
+                {
+                    GetLogger()->Debug("Failed to find node parent\n");
+                    return ERR_GOTO_ITER;
+                }
+                btX = bestX;
+                btY = bestY;
+                if (btX == goalX && btY == goalY)
+                {
+                    m_bmPoints[m_bmTotal] = goal;
+                }
+                else
+                {
+                    m_bmPoints[m_bmTotal].x = (btX + 0.5f) * BM_DIM_STEP - 1600.f;
+                    m_bmPoints[m_bmTotal].z = (btY + 0.5f) * BM_DIM_STEP - 1600.f;
+                }
+
+                if (bestDistance == 0)
+                {
+                    if (goalRadius > 0.0f)
+                    {
+                        // Find a more exact position by repeatedly bisecting the interval.
+                        const float r2 = goalRadius * goalRadius;
+                        Math::Vector inside = m_bmPoints[m_bmTotal] - goal;
+                        Math::Vector outside = m_bmPoints[m_bmTotal-1] - goal;
+                        Math::Vector mid = (inside + outside) * 0.5f;
+                        for (int i = 0; i < 10; ++i)
+                        {
+                            if (mid.x*mid.x + mid.z*mid.z < r2)
+                            {
+                                inside = mid;
+                            }
+                            else
+                            {
+                                outside = mid;
+                            }
+                            mid = (inside + outside) * 0.5f;
+                        }
+                        m_bmPoints[m_bmTotal] = mid + goal;
+                    }
+                    break;
+                }
+            }
+
+            const float distanceToGoal = DistanceProjected(m_bmPoints[m_bmTotal], goal);
+            GetLogger()->Debug("Found path to goal with %d nodes and %d cost. Final distance to goal: %f\n", m_bmTotal + 1, totalDistance, distanceToGoal);
+            GetLogger()->Debug("m_bmStep: %d\n", m_bmStep);
+            GetLogger()->Debug("m_bfsQueueMin: %d mod %d = %d\n", m_bfsQueueMin, NUMQUEUEBUCKETS, m_bfsQueueMin % NUMQUEUEBUCKETS);
+            GetLogger()->Debug("m_bfsQueueCountPushed: %d\n", m_bfsQueueCountPushed);
+            GetLogger()->Debug("m_bfsQueueCountPopped: %d\n", m_bfsQueueCountPopped);
+            GetLogger()->Debug("m_bfsQueueCountRepeated: %d\n", m_bfsQueueCountRepeated);
+            GetLogger()->Debug("m_bfsQueueCountSkipped: %d\n", m_bfsQueueCountSkipped);
+            GetLogger()->Debug("m_bfsQueue sizes:\n");
+            for (size_t i = 0; i < m_bfsQueue.size(); ++i)
+            {
+                if (!m_bfsQueue[i].empty()) GetLogger()->Debug("    %lu: %lu\n", i, m_bfsQueue[i].size());
+            }
+            return ERR_OK;
+        }
+
+        // Expand the node
+        for (int i = 0; i < 8; ++i)
+        {
+            const int nX = x + dXs[i];
+            const int nY = y + dYs[i];
+            if (BitmapTestDotIsVisitable(nX, nY))
+            {
+                const int neighborIndexInMap = nY * m_bmSize + nX;
+                const int32_t newDistance = distance + dDist[i];
+                if (BitmapTestDot(1, nX, nY))
+                {
+                    // We have seen this node before.
+                    // Only enqueue previously seen nodes if this is a shorter path.
+                    if (newDistance < m_bfsDistances[neighborIndexInMap])
+                    {
+                        m_bfsQueueCountRepeated += 1;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+
+                // Enqueue this neighbor
+                const int32_t newTotalDistance = newDistance + HeuristicDistance(nX, nY, startX, startY);
+                m_bfsDistances[neighborIndexInMap] = newDistance;
+                m_bfsQueue[newTotalDistance % NUMQUEUEBUCKETS].push_back(neighborIndexInMap);
+                m_bfsQueueCountPushed += 1;
+                BitmapSetDot(1, nX, nY); // Mark as enqueued
+            }
+        }
+
+        // Limit the number of iterations per frame.
         m_bmIterCounter ++;
-        if ( m_bmIterCounter >= nbIter )  return ERR_CONTINUE;
-    }
-    iLar ++;
-
-    for ( iDiv=1 ; iDiv<=nbDiv ; iDiv++ )
-    {
-        if ( iLar >= m_bmIter[i] )
-        {
-            newPos = BeamPoint(curPos, goalPos, angle*iDiv/nbDiv, step);
-            ret = BeamExplore(curPos, newPos, goalPos, goalRadius, angle, nbDiv, step, i+1, nbIter);
-            if ( ret != ERR_GOTO_IMPOSSIBLE )  return ret;
-            m_bmIter[i] = iLar+1;
-            for ( iClear=i+1 ; iClear<=MAXPOINTS ; iClear++ )  m_bmIter[iClear] = -1;
-            m_bmIterCounter ++;
-            if ( m_bmIterCounter >= nbIter )  return ERR_CONTINUE;
-        }
-        iLar ++;
-
-        if ( iLar >= m_bmIter[i] )
-        {
-            newPos = BeamPoint(curPos, goalPos, -angle*iDiv/nbDiv, step);
-            ret = BeamExplore(curPos, newPos, goalPos, goalRadius, angle, nbDiv, step, i+1, nbIter);
-            if ( ret != ERR_GOTO_IMPOSSIBLE )  return ret;
-            m_bmIter[i] = iLar+1;
-            for ( iClear=i+1 ; iClear<=MAXPOINTS ; iClear++ )  m_bmIter[iClear] = -1;
-            m_bmIterCounter ++;
-            if ( m_bmIterCounter >= nbIter )  return ERR_CONTINUE;
-        }
-        iLar ++;
+        if ( m_bmIterCounter >= NB_ITER )  return ERR_CONTINUE;
     }
 
     return ERR_GOTO_IMPOSSIBLE;
 }
 
-// Is a right "start-goal". Calculates the point located at the distance "step"
-// from the point "start" and an angle "angle" with the right.
-
-Math::Vector CTaskGoto::BeamPoint(const Math::Vector &startPoint,
-                               const Math::Vector &goalPoint,
-                               float angle, float step)
-{
-    Math::Vector    resPoint;
-    float       goalAngle;
-
-    goalAngle = Math::RotateAngle(goalPoint.x-startPoint.x, goalPoint.z-startPoint.z);
-
-    resPoint.x = startPoint.x + cosf(goalAngle+angle)*step;
-    resPoint.z = startPoint.z + sinf(goalAngle+angle)*step;
-    resPoint.y = 0.0f;
-
-    return resPoint;
-}
-
 // Tests if a path along a straight line is possible.
 
-bool CTaskGoto::BitmapTestLine(const Math::Vector &start, const Math::Vector &goal,
-                               float stepAngle, bool bSecond)
+bool CTaskGoto::BitmapTestLine(const Math::Vector &start, const Math::Vector &goal)
 {
-    Math::Vector    pos, inc;
-    float       dist, step;
-    float       distNoB2;
-    int         i, max, x, y;
-
     if ( m_bmArray == nullptr )  return true;
 
-    dist = Math::DistanceProjected(start, goal);
-    if ( dist == 0.0f )  return true;
-    step = BM_DIM_STEP*0.5f;
+    const Math::Point startInGrid = Math::Point((start.x+1600.0f)/BM_DIM_STEP, (start.z+1600.0f)/BM_DIM_STEP);
+    const Math::Point goalInGrid  = Math::Point((goal.x+1600.0f)/BM_DIM_STEP, (goal.z+1600.0f)/BM_DIM_STEP);
 
-    inc.x = (goal.x-start.x)*step/dist;
-    inc.z = (goal.z-start.z)*step/dist;
+    const int startXInt = static_cast<int>(startInGrid.x);
+    const int startYInt = static_cast<int>(startInGrid.y);
+    const int goalXInt = static_cast<int>(goalInGrid.x);
+    const int goalYInt = static_cast<int>(goalInGrid.y);
 
-    pos = start;
-
-    if ( bSecond )
+    if (startXInt == goalXInt && startYInt == goalYInt)
     {
-        x = static_cast<int>((pos.x+1600.0f)/BM_DIM_STEP);
-        y = static_cast<int>((pos.z+1600.0f)/BM_DIM_STEP);
-        BitmapSetDot(1, x, y);  // puts the flag as the starting point
+        return true;
     }
 
-    max = static_cast<int>(dist/step);
-    if ( max == 0 )  max = 1;
-    distNoB2 = BM_DIM_STEP*sqrtf(2.0f)/sinf(stepAngle);
-    for ( i=0 ; i<max ; i++ )
+    // Grid traversal based on
+    // Amanatides, John, and Andrew Woo. "A fast voxel traversal algorithm for ray tracing." Eurographics. Vol. 87. No. 3. 1987.
+    // http://www.cse.yorku.ca/~amana/research/grid.pdf
+
+    Math::Point dirInGrid = goalInGrid - startInGrid;
+    dirInGrid /= std::hypot(dirInGrid.x, dirInGrid.y);
+    const int stepX = dirInGrid.x > 0.0f ? 1 : -1;
+    const int stepY = dirInGrid.y > 0.0f ? 1 : -1;
+
+    // At what t does the ray enter the next cell?
+    float tMaxX =
+        dirInGrid.x > 0.0 ? (std::floor(startInGrid.x) - startInGrid.x + 1) / dirInGrid.x :
+        dirInGrid.x < 0.0 ? (std::floor(startInGrid.x) - startInGrid.x) / dirInGrid.x :
+        std::numeric_limits<float>::infinity();
+    float tMaxY =
+        dirInGrid.y > 0.0 ? (std::floor(startInGrid.y) - startInGrid.y + 1) / dirInGrid.y :
+        dirInGrid.y < 0.0 ? (std::floor(startInGrid.y) - startInGrid.y) / dirInGrid.y :
+        std::numeric_limits<float>::infinity();
+
+    // How much t is needed to step from one column/row to another?
+    // stepX = dir.x * t
+    // stepX / dir.x = t
+    const float tDeltaX = static_cast<float>(stepX) / dirInGrid.x;
+    const float tDeltaY = static_cast<float>(stepY) / dirInGrid.y;
+
+    // Traverse the grid
+    const int numIntersections =
+        std::abs(goalXInt - startXInt) +
+        std::abs(goalYInt - startYInt);
+    int x = startXInt;
+    int y = startYInt;
+
+    for ( int i = 0; i < numIntersections; ++i )
     {
-        if ( i == max-1 )
+        if ( tMaxX < tMaxY )
         {
-            pos = goal;  // tests the point of arrival
+            tMaxX += tDeltaX;
+            x += stepX;
         }
         else
         {
-            pos.x += inc.x;
-            pos.z += inc.z;
+            tMaxY += tDeltaY;
+            y += stepY;
         }
-
-        x = static_cast<int>((pos.x+1600.0f)/BM_DIM_STEP);
-        y = static_cast<int>((pos.z+1600.0f)/BM_DIM_STEP);
-
-        if ( bSecond )
+        if ( BitmapTestDot(0, x, y) )
         {
-            if ( i > 2 && BitmapTestDot(1, x, y) )  return false;
-
-            if ( step*(i+1) > distNoB2 && i < max-2 )
-            {
-                BitmapSetDot(1, x, y);
-            }
+            return false;
         }
-
-        if ( BitmapTestDot(0, x, y) )  return false;
     }
+
     return true;
 }
 
@@ -2094,10 +2273,14 @@ void CTaskGoto::BitmapTerrain(int minx, int miny, int maxx, int maxy)
 
 bool CTaskGoto::BitmapOpen()
 {
-    BitmapClose();
-
     m_bmSize = static_cast<int>(3200.0f/BM_DIM_STEP);
-    m_bmArray = MakeUniqueArray<unsigned char>(m_bmSize*m_bmSize/8*2);
+    if (m_bmArray.get() == nullptr) m_bmArray = MakeUniqueArray<unsigned char>(m_bmSize*m_bmSize/8*2);
+    memset(m_bmArray.get(), 0, m_bmSize*m_bmSize/8*2);
+    if (m_bfsDistances.get() == nullptr) m_bfsDistances = MakeUniqueArray<int32_t>(m_bmSize*m_bmSize);
+    for (auto& bucket : m_bfsQueue)
+    {
+        bucket.reserve(256);
+    }
     m_bmChanged = true;
 
     m_bmOffset = m_bmSize/2;
@@ -2203,4 +2386,18 @@ bool CTaskGoto::BitmapTestDot(int rank, int x, int y)
     }
 
     return m_bmArray[rank*m_bmLine*m_bmSize + m_bmLine*y + x/8] & (1<<x%8);
+}
+
+bool CTaskGoto::BitmapTestDotIsVisitable(int x, int y)
+{
+    if ( x < 0 || x >= m_bmSize ||
+         y < 0 || y >= m_bmSize )  return false;
+
+    if ( x < m_bmMinX || x > m_bmMaxX ||
+         y < m_bmMinY || y > m_bmMaxY )
+    {
+        BitmapTerrain(x-10,y-10, x+10,y+10);  // remade a layer
+    }
+
+    return !(m_bmArray[m_bmLine*y + x/8] & (1<<x%8));
 }
