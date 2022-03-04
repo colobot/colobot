@@ -593,7 +593,7 @@ bool CApplication::Create()
                 h = atoi(hs.c_str());
             }
 
-            // Why not just set m_deviceConfig.size to w,h? Because this way if the resolution is no longer supported (e.g. changimg monitor) defaults will be used instead
+            // Why not just set m_deviceConfig.size to w,h? Because this way if the resolution is no longer supported (e.g. changing monitor) defaults will be used instead
             for (auto it = modes.begin(); it != modes.end(); ++it)
             {
                 if (it->x == w && it->y == h)
@@ -1866,7 +1866,7 @@ void CApplication::SetLanguage(Language language)
             }
             else
             {
-                GetLogger()->Warn("Enviromnent locale ('%s') is not supported, setting default language\n", envLang);
+                GetLogger()->Warn("Environment locale ('%s') is not supported, setting default language\n", envLang);
                 m_language = LANGUAGE_ENGLISH;
             }
         }
@@ -1935,7 +1935,7 @@ void CApplication::SetLanguage(Language language)
     }
     catch (...)
     {
-        GetLogger()->Warn("Failed to update locale, possibly incorect system configuration. Will fallback to classic locale.\n");
+        GetLogger()->Warn("Failed to update locale, possibly incorrect system configuration. Will fallback to classic locale.\n");
         try
         {
             std::locale::global(std::locale::classic());

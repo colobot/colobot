@@ -44,7 +44,7 @@ class CInterface;
 class CMainDialog;
 
 class CScreen;
-class CScreenApperance;
+class CScreenAppearance;
 class CScreenIORead;
 class CScreenIOWrite;
 class CScreenLevelList;
@@ -112,7 +112,7 @@ protected:
     std::unique_ptr<CMainDialog> m_dialog;
 
     CScreen* m_currentScreen;
-    std::unique_ptr<CScreenApperance> m_screenAppearance;
+    std::unique_ptr<CScreenAppearance> m_screenAppearance;
     std::unique_ptr<CScreenIORead> m_screenIORead;
     std::unique_ptr<CScreenIOWrite> m_screenIOWrite;
     std::unique_ptr<CScreenLevelList> m_screenLevelList;

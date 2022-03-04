@@ -218,7 +218,7 @@ public:
 
     //! Returns the relative time since last update [seconds]
     float       GetRelTime() const;
-    //! Returns the exact realative time since last update [nanoseconds]
+    //! Returns the exact relative time since last update [nanoseconds]
     long long   GetExactRelTime() const;
 
     //! Returns the exact relative time since last update disregarding speed setting [nanoseconds]
@@ -411,7 +411,7 @@ protected:
     //! Application language
     Language        m_language;
 
-    //! Screen resoultion overriden by commandline
+    //! Screen resolution overriden by commandline
     bool            m_resolutionOverride;
 
     //! Headles mode
