@@ -40,7 +40,7 @@ namespace Gfx
 struct Color : glm::vec4
 {
     //! Constructor; default values are (0,0,0,0) = black
-    explicit Color(float aR = 0.0f, float aG = 0.0f, float aB = 0.0f, float aA = 0.0f)
+    Color(float aR = 0.0f, float aG = 0.0f, float aB = 0.0f, float aA = 0.0f)
      : glm::vec4(aR, aG, aB, aA) {}
 
     inline Color Inverse() const
