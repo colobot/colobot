@@ -126,16 +126,29 @@ public:
     //! Sets model matrix
     virtual void SetModelMatrix(const glm::mat4& matrix) override;
 
-    //! Sets primary texture, setting texture 0 means using white texture
-    virtual void SetPrimaryTexture(const Texture& texture) override;
-    //! Sets secondary texture
-    virtual void SetSecondaryTexture(const Texture& texture) override;
+    //! Sets albedo color
+    virtual void SetAlbedoColor(const Color& color) override;
+    //! Sets albedo texture
+    virtual void SetAlbedoTexture(const Texture& texture) override;
+    //! Sets emissive color
+    virtual void SetEmissiveColor(const Color& color) override;
+    //! Sets emissive texture
+    virtual void SetEmissiveTexture(const Texture& texture) override;
+    //! Sets material parameters
+    virtual void SetMaterialParams(float roughness, float metalness) override;
+    //! Sets material texture
+    virtual void SetMaterialTexture(const Texture& texture) override;
+
+    //! Sets detail texture
+    virtual void SetDetailTexture(const Texture& texture) override;
     //! Sets shadow map
     virtual void SetShadowMap(const Texture& texture) override;
 
     //! Sets light parameters
     virtual void SetLight(const glm::vec4& position, const float& intensity, const glm::vec3& color) override;
-
+    //! Sets sky parameters
+    virtual void SetSky(const Color& color, float intensity) override;
+    //! Sets shadow parameters
     virtual void SetShadowParams(int count, const ShadowParam* params) override;
 
     //! Sets fog parameters
@@ -148,17 +161,27 @@ private:
     CGL33Device* const m_device;
 
     // Uniform data
-    GLint m_projectionMatrix;
-    GLint m_viewMatrix;
-    GLint m_cameraMatrix;
-    GLint m_shadowMatrix;
-    GLint m_modelMatrix;
-    GLint m_normalMatrix;
-    GLint m_lightPosition;
-    GLint m_lightIntensity;
-    GLint m_lightColor;
-    GLint m_fogRange;
-    GLint m_fogColor;
+    GLint m_projectionMatrix = -1;
+    GLint m_viewMatrix = -1;
+    GLint m_shadowMatrix = -1;
+    GLint m_modelMatrix = -1;
+    GLint m_normalMatrix = -1;
+
+    GLint m_cameraPosition = -1;
+    GLint m_lightPosition = -1;
+    GLint m_lightIntensity = -1;
+    GLint m_lightColor = -1;
+
+    GLint m_skyColor = -1;
+    GLint m_skyIntensity = -1;
+
+    GLint m_fogRange = -1;
+    GLint m_fogColor = -1;
+
+    GLint m_albedoColor = -1;
+    GLint m_emissiveColor = -1;
+    GLint m_roughness = -1;
+    GLint m_metalness = -1;
 
     struct ShadowUniforms
     {
@@ -167,18 +190,29 @@ private:
         GLint scale;
     };
 
-    GLint m_shadowRegions;
-    ShadowUniforms m_shadows[4];
+    GLint m_shadowRegions = 0;
+    ShadowUniforms m_shadows[4] = {};
 
     // Shader program
     GLuint m_program = 0;
 
+    // Texture unit bindings
+    const int m_albedoIndex = 4;
+    const int m_detailIndex = 5;
+    const int m_emissiveIndex = 6;
+    const int m_materialIndex = 7;
+    const int m_shadowIndex = 8;
+
     // 1x1 white texture
     GLuint m_whiteTexture = 0;
-    // Currently bound primary texture
-    GLuint m_primaryTexture = 0;
-    // Currently bound secondary texture
-    GLuint m_secondaryTexture = 0;
+    // Currently bound albedo texture
+    GLuint m_albedoTexture = 0;
+    // Currently bound detail texture
+    GLuint m_detailTexture = 0;
+    // Currently bound emissive texture
+    GLuint m_emissiveTexture = 0;
+    // Currently bound material texture
+    GLuint m_materialTexture = 0;
     // Currently bound shadow map
     GLuint m_shadowMap = 0;
 };

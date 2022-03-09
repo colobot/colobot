@@ -2747,6 +2747,7 @@ void CEngine::Draw3DScene()
     terrainRenderer->SetViewMatrix(m_matView);
     terrainRenderer->SetShadowMap(m_shadowMap);
     terrainRenderer->SetLight(glm::vec4(1.0, 1.0, -1.0, 0.0), 1.0f, glm::vec3(1.0));
+    terrainRenderer->SetSky(Color(1.0, 1.0, 1.0), 0.2f);
     
     if (m_shadowMapping)
         terrainRenderer->SetShadowParams(m_shadowRegions, shadowParams);
@@ -2790,8 +2791,15 @@ void CEngine::Draw3DScene()
 
         for (auto& data : p1.next)
         {
-            terrainRenderer->SetPrimaryTexture(data.albedoTexture);
-            terrainRenderer->SetSecondaryTexture(data.detailTexture);
+            terrainRenderer->SetAlbedoColor(data.material.albedoColor);
+            terrainRenderer->SetAlbedoTexture(data.albedoTexture);
+            terrainRenderer->SetDetailTexture(data.detailTexture);
+
+            terrainRenderer->SetEmissiveColor(data.material.emissiveColor);
+            terrainRenderer->SetEmissiveTexture(data.emissiveTexture);
+
+            terrainRenderer->SetMaterialParams(data.material.roughness, data.material.metalness);
+            terrainRenderer->SetMaterialTexture(data.materialTexture);
 
             terrainRenderer->DrawObject(m_objects[objRank].transform, data.buffer);
         }
@@ -2817,7 +2825,7 @@ void CEngine::Draw3DScene()
     objectRenderer->SetShadowMap(m_shadowMap);
     objectRenderer->SetLighting(true);
     objectRenderer->SetLight(glm::vec4(1.0, 1.0, -1.0, 0.0), 0.8f, glm::vec3(1.0));
-    objectRenderer->SetSky(Color(1.0, 1.0, 1.0), 0.5f);
+    objectRenderer->SetSky(Color(1.0, 1.0, 1.0), 0.2f);
     objectRenderer->SetTransparency(TransparencyMode::NONE);
 
     objectRenderer->SetFog(fogStart, fogEnd, { fogColor.r, fogColor.g, fogColor.b });
