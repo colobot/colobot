@@ -76,6 +76,7 @@ CGL33UIRenderer::CGL33UIRenderer(CGL33Device* device)
     glGenBuffers(1, &m_bufferVBO);
     glBindBuffer(GL_COPY_WRITE_BUFFER, m_bufferVBO);
     glBufferData(GL_COPY_WRITE_BUFFER, m_bufferCapacity * sizeof(Vertex2D), nullptr, GL_STREAM_DRAW);
+    m_bufferOffset = m_bufferCapacity;
 
     glGenVertexArrays(1, &m_bufferVAO);
     glBindVertexArray(m_bufferVAO);
