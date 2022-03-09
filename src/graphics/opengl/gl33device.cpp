@@ -270,6 +270,8 @@ void CGL33Device::BeginScene()
     m_depthMask = true;
 
     glFrontFace(GL_CW);   // Colobot issue: faces are reversed
+    m_cullFace = CullFace::NONE;
+    glDisable(GL_CULL_FACE);
 }
 
 void CGL33Device::EndScene()

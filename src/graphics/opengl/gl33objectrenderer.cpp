@@ -205,6 +205,8 @@ void CGL33ObjectRenderer::CGL33ObjectRenderer::Begin()
     m_device->SetCullFace(CullFace::BACK);
 
     SetUVTransform({ 0.0f, 0.0f }, { 1.0f, 1.0f });
+    SetAlphaScissor(0.0f);
+    SetFog(1e+6f, 1e+6, {});
 }
 
 void CGL33ObjectRenderer::CGL33ObjectRenderer::End()

@@ -248,6 +248,7 @@ bool CGL33UIRenderer::EndPrimitive()
     UpdateUniforms();
     
     m_device->SetDepthTest(false);
+    m_device->SetCullFace(CullFace::NONE);
 
     if (m_drawCount == 1)
         glDrawArrays(TranslateGfxPrimitive(m_type), m_first.front(), m_count.front());

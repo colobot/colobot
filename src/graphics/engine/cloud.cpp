@@ -21,6 +21,7 @@
 #include "graphics/engine/cloud.h"
 
 #include "graphics/core/device.h"
+#include "graphics/core/material.h"
 #include "graphics/core/renderers.h"
 #include "graphics/core/transparency.h"
 
@@ -123,9 +124,7 @@ void CCloud::Draw()
 
     auto texture = m_engine->LoadTexture(m_fileName);
     renderer->SetAlbedoTexture(texture);
-    renderer->SetDetailTexture(Texture{});
 
-    renderer->SetLighting(false);
     renderer->SetTransparency(TransparencyMode::BLACK);
     renderer->SetDepthMask(false);
 

@@ -3598,9 +3598,9 @@ void CEngine::DrawInterface()
         particleRenderer->End();
 
         m_device->SetDepthTest(false);
-
-        SetInterfaceCoordinates();
     }
+
+    SetInterfaceCoordinates();
 
     // Draw foreground color
     if (m_overFront)
@@ -4257,6 +4257,7 @@ void CEngine::DrawPlanet()
     renderer->SetLighting(false);
     renderer->SetDepthTest(false);
     renderer->SetDepthMask(false);
+    renderer->SetCullFace(CullFace::NONE);
 
     m_planet->Draw();  // draws the planets
 
