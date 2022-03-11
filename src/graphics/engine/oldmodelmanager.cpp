@@ -52,23 +52,9 @@ bool COldModelManager::LoadModel(const std::string& fileName, bool mirrored, int
     CModel model;
     try
     {
-        CInputStream stream;
-        stream.open("models/" + fileName);
-        if (!stream.is_open())
-            throw CModelIOException(std::string("Could not open file '") + fileName + "'");
+        std::filesystem::path path = "models/" + fileName;
 
-        std::string::size_type extension_index = fileName.find_last_of('.');
-        if (extension_index == std::string::npos)
-            throw CModelIOException(std::string("Filename '") + fileName + "' has no extension");
-
-        std::string extension = fileName.substr(extension_index + 1);
-
-        if (extension == "mod")
-            model = ModelInput::Read(stream, ModelFormat::Old);
-        else if (extension == "txt")
-            model = ModelInput::Read(stream, ModelFormat::Text);
-        else
-            throw CModelIOException(std::string("Filename '") + fileName + "' has unknown extension");
+        ModelInput::Read(model, path);
     }
     catch (const CModelIOException& e)
     {

@@ -47,8 +47,10 @@ void ConvertOldTex1Name(ModelTriangle& triangle, const char* tex1Name);
 void ConvertFromOldRenderState(ModelTriangle& triangle, int state);
 ModelLODLevel MinMaxToLodLevel(float min, float max);
 
-void ReadOldModel(CModel& model, std::istream& stream)
+void ReadOldModel(CModel& model, const std::filesystem::path& path)
 {
+    CInputStream stream(path);
+
     OldModelHeader header;
 
     try

@@ -27,37 +27,22 @@
 namespace Gfx
 {
 
-CModel ModelInput::Read(std::istream &stream, ModelFormat format)
+void ModelInput::Read(CModel& model, const std::filesystem::path& path)
 {
-    stream.exceptions(std::ios_base::failbit | std::ios_base::badbit);
+    auto extension = path.extension();
 
-    CModel model;
-
-    try
+    if (extension == ".mod")
     {
-        switch (format)
-        {
-            case ModelFormat::Text:
-                ModelIO::ReadTextModel(model, stream);
-                break;
-
-            case ModelFormat::Old:
-                ModelIO::ReadOldModel(model, stream);
-                break;
-        }
+        ModelIO::ReadOldModel(model, path);
     }
-    catch (const CModelIOException& e)
+    else if (extension == ".txt")
     {
-        throw;
+        ModelIO::ReadTextModel(model, path);
     }
-    catch (const std::exception& e)
+    else
     {
-        throw CModelIOException(std::string("Other error while reading model data: ") + e.what());
+        throw CModelIOException(std::string("Unknown model format: ") + extension.string());
     }
-
-    return model;
 }
-
-
 
 } // namespace Gfx

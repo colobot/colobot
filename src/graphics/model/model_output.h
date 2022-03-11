@@ -19,10 +19,9 @@
 
 #pragma once
 
-#include "graphics/model/model_format.h"
+#include "graphics/model/model.h"
 
-#include <ostream>
-#include <string>
+#include <filesystem>
 
 namespace Gfx
 {
@@ -35,7 +34,7 @@ namespace ModelOutput
     /**
      * @throws CModelIOException on read/write error
      */
-    void Write(const CModel& model, std::ostream& stream, ModelFormat format);
+    void Write(const CModel& model, const std::filesystem::path& path);
 }
 
 } // namespace Gfx

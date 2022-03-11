@@ -20,8 +20,8 @@
 #pragma once
 
 #include "graphics/model/model.h"
-#include "graphics/model/model_format.h"
 
+#include <filesystem>
 #include <istream>
 
 namespace Gfx
@@ -33,11 +33,7 @@ namespace Gfx
  */
 namespace ModelInput
 {
-    //! Reads model from \a stream in given \a format
-    /**
-     * @throws CModelIOException on read/write error
-     */
-    CModel Read(std::istream &stream, ModelFormat format);
+    void Read(CModel& model, const std::filesystem::path& path);
 }
 
 } // namespace Gfx

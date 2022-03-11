@@ -51,8 +51,10 @@ std::string ParseSpecialMark(const std::string& text);
 
 void ConvertFromOldRenderState(ModelTriangle& triangle, int state);
 
-void ReadTextModel(CModel& model, std::istream& stream)
+void ReadTextModel(CModel& model, const std::filesystem::path& path)
 {
+    CInputStream stream(path);
+
     int version = 0;
     try
     {

@@ -19,19 +19,12 @@
 
 #include "graphics/model/model_output.h"
 
-#include "common/ioutils.h"
-
-#include "graphics/model/model.h"
-#include "graphics/model/model_io_exception.h"
-#include "graphics/model/model_io_structs.h"
-
 #include <stdexcept>
-#include <fstream>
 
 namespace Gfx
 {
 
-void ModelOutput::Write(const CModel& model, std::ostream &stream, ModelFormat format)
+void ModelOutput::Write(const CModel& model, const std::filesystem::path& path)
 {
     throw std::logic_error("Not implemented");
 }

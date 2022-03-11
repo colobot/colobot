@@ -129,7 +129,6 @@ add_library(colobotbase STATIC
     graphics/model/model.cpp
     graphics/model/model.h
     graphics/model/model_crash_sphere.h
-    graphics/model/model_format.h
     graphics/model/model_input.cpp
     graphics/model/model_input.h
     graphics/model/model_io_exception.h

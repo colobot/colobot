@@ -35,16 +35,12 @@ CModel& CModelManager::GetModel(const std::string& modelName)
     if (it != m_models.end())
         return it->second;
 
-    std::string modelFile = "models-new/" + modelName + ".txt";
+    std::filesystem::path modelFile = "models-new/" + modelName + ".txt";
 
     GetLogger()->Debug("Loading new model: %s\n", modelFile.c_str());
 
-    CInputStream stream;
-    stream.open(modelFile.c_str());
-    if (!stream.is_open())
-        throw CModelIOException(std::string("Could not open file '") + modelName + "'");
-
-    CModel model = ModelInput::Read(stream, ModelFormat::Text);
+    CModel model;
+    ModelInput::Read(model, modelFile);
     m_models[modelName] = model;
 
     return m_models[modelName];

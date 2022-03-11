@@ -20,8 +20,8 @@
 #pragma once
 
 #include "graphics/model/model.h"
-#include "graphics/model/model_format.h"
 
+#include <filesystem>
 #include <istream>
 
 /**
@@ -31,6 +31,6 @@
 namespace Gfx::ModelIO
 {
 
-void ReadTextModel(CModel& model, std::istream& stream);
+void ReadTextModel(CModel& model, const std::filesystem::path& path);
 
 }
