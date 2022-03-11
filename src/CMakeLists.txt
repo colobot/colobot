@@ -7,7 +7,7 @@ set(CMAKE_CXX_FLAGS_DEBUG ${COLOBOT_CXX_FLAGS_DEBUG})
 add_subdirectory(CBot)
 
 if(TOOLS)
-    add_subdirectory(tools)
+    #add_subdirectory(tools)
 endif()
 
 add_subdirectory(graphics/opengl/shaders)
