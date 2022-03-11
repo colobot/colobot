@@ -138,10 +138,14 @@ add_library(colobotbase STATIC
     graphics/model/model_manager.h
     graphics/model/model_mesh.cpp
     graphics/model/model_mesh.h
+    graphics/model/model_mod.cpp
+    graphics/model/model_mod.h
     graphics/model/model_output.cpp
     graphics/model/model_output.h
     graphics/model/model_shadow_spot.h
     graphics/model/model_triangle.h
+    graphics/model/model_txt.cpp
+    graphics/model/model_txt.h
     graphics/opengl/gl33device.cpp
     graphics/opengl/gl33device.h
     graphics/opengl/gl33renderers.cpp

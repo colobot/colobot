@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2021, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2022, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,17 +19,18 @@
 
 #pragma once
 
-namespace Gfx
-{
+#include "graphics/model/model.h"
+#include "graphics/model/model_format.h"
+
+#include <istream>
 
 /**
- * \enum ModelFormat
- * \brief Describes model format to use
+ * \namespace ModelInput
+ * \brief Namespace with functions to read model files
  */
-enum class ModelFormat
+namespace Gfx::ModelIO
 {
-    Text,   //!< new text format
-    Old        //!< old binary format, deprecated
-};
 
-} // namespace Gfx
+void ReadOldModel(CModel& model, std::istream& stream);
+
+}

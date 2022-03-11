@@ -57,6 +57,27 @@ enum class ModelRenderState
     Alpha         = 8192  //!< old ENG_RSTATE_ALPHA
 };
 
+//! Legacy material structure
+struct LegacyMaterial
+{
+    //! Diffuse color
+    Color diffuse;
+    //! Ambient color
+    Color ambient;
+    //! Specular color
+    Color specular;
+
+    bool operator==(const LegacyMaterial& mat) const
+    {
+        return diffuse == mat.diffuse && ambient == mat.ambient && specular == mat.specular;
+    }
+
+    bool operator!=(const LegacyMaterial& mat) const
+    {
+        return !operator==(mat);
+    }
+};
+
 /*******************************************************
                      New model formats
  *******************************************************/
