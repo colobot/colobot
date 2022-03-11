@@ -20,6 +20,7 @@
 #pragma once
 
 #include <cstddef>
+#include <filesystem>
 #include <memory>
 #include <streambuf>
 #include <string>
@@ -37,11 +38,11 @@ public:
 
     /** Open Stream Buffer for writing
      *
-     * \param filename
+     * \param path
      * \param mode one of: std::ios_base::out - Open for writing, std::ios_base::app - Append to file
      *
      */
-    void open(const std::string &filename, std::ios_base::openmode mode);
+    void open(const std::filesystem::path &path, std::ios_base::openmode mode);
     void close();
     bool is_open();
 

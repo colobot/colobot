@@ -43,10 +43,10 @@ CInputStreamBuffer::~CInputStreamBuffer()
 }
 
 
-void CInputStreamBuffer::open(const std::string &filename)
+void CInputStreamBuffer::open(const std::filesystem::path& path)
 {
     if (PHYSFS_isInit())
-        m_file = PHYSFS_openRead(CResourceManager::CleanPath(filename).c_str());
+        m_file = PHYSFS_openRead(CResourceManager::CleanPath(path.generic_u8string()).c_str());
 }
 
 

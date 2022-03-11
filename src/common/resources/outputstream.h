@@ -21,6 +21,7 @@
 
 #include "common/resources/outputstreambuffer.h"
 
+#include <filesystem>
 #include <ostream>
 #include <string>
 
@@ -38,20 +39,20 @@ public:
 
     /** Construct and Open Stream for writing
      *
-     * \param filename
+     * \param path
      * \param mode one of: std::ios_base::out - Open for writing, std::ios_base::app - Append to file
      *
      */
-    COutputStream(const std::string& filename, std::ios_base::openmode mode = std::ios_base::out);
+    COutputStream(const std::filesystem::path& path, std::ios_base::openmode mode = std::ios_base::out);
     virtual ~COutputStream();
 
     /** Open Stream for writing
      *
-     * \param filename
+     * \param path
      * \param mode one of: std::ios_base::out - Open for writing, std::ios_base::app - Append to file
      *
      */
-    void open(const std::string& filename, std::ios_base::openmode mode = std::ios_base::out);
+    void open(const std::filesystem::path& path, std::ios_base::openmode mode = std::ios_base::out);
     void close();
     bool is_open();
 };

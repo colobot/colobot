@@ -20,6 +20,7 @@
 #pragma once
 
 #include <cstddef>
+#include <filesystem>
 #include <memory>
 #include <streambuf>
 #include <string>
@@ -35,7 +36,7 @@ public:
     CInputStreamBuffer(const CInputStreamBuffer &) = delete;
     CInputStreamBuffer &operator= (const CInputStreamBuffer &) = delete;
 
-    void open(const std::string &filename);
+    void open(const std::filesystem::path &filename);
     void close();
     bool is_open();
     std::size_t size();

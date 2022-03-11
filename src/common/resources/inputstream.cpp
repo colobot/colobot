@@ -28,20 +28,20 @@ CInputStream::CInputStream()
 {
 }
 
-CInputStream::CInputStream(const std::string& filename)
+CInputStream::CInputStream(const std::filesystem::path& path)
     : CInputStreamBufferContainer(),
       std::istream(&m_buffer)
 {
-    open(filename);
+    open(path);
 }
 
 CInputStream::~CInputStream()
 {
 }
 
-void CInputStream::open(const std::string& filename)
+void CInputStream::open(const std::filesystem::path& path)
 {
-    m_buffer.open(filename);
+    m_buffer.open(path);
 }
 
 void CInputStream::close()

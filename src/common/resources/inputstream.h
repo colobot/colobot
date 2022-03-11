@@ -22,6 +22,7 @@
 #include "common/resources/inputstreambuffer.h"
 
 #include <cstddef>
+#include <filesystem>
 #include <istream>
 #include <string>
 
@@ -37,10 +38,10 @@ class CInputStream : public CInputStreamBufferContainer, public std::istream
 {
 public:
     CInputStream();
-    CInputStream(const std::string& filename);
+    CInputStream(const std::filesystem::path& path);
     virtual ~CInputStream();
 
-    void open(const std::string& filename);
+    void open(const std::filesystem::path& path);
     void close();
     bool is_open();
     std::size_t size();

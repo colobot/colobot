@@ -43,12 +43,14 @@ COutputStreamBuffer::~COutputStreamBuffer()
 }
 
 
-void COutputStreamBuffer::open(const std::string &filename, std::ios_base::openmode mode)
+void COutputStreamBuffer::open(const std::filesystem::path& path, std::ios_base::openmode mode)
 {
     if (PHYSFS_isInit())
     {
-        if ( mode == std::ios_base::out ) m_file = PHYSFS_openWrite(CResourceManager::CleanPath(filename).c_str());
-        else if ( mode == std::ios_base::app ) m_file = PHYSFS_openAppend(CResourceManager::CleanPath(filename).c_str());
+        if ( mode == std::ios_base::out )
+            m_file = PHYSFS_openWrite(CResourceManager::CleanPath(path.generic_u8string()).c_str());
+        else if ( mode == std::ios_base::app )
+            m_file = PHYSFS_openAppend(CResourceManager::CleanPath(path.generic_u8string()).c_str());
     }
 }
 
