@@ -22,24 +22,101 @@
 namespace Gfx
 {
 
+CModelPart::CModelPart(const Material& material)
+    : m_material(material) {}
+
+const Material& CModelPart::GetMaterial() const
+{
+    return m_material;
+}
+
+bool CModelPart::IsIndexed() const
+{
+    return !m_indices.empty();
+}
+
+size_t CModelPart::GetVertexCount() const
+{
+    return m_vertices.size();
+}
+
+const std::vector<Vertex3D>& CModelPart::GetVertices() const
+{
+    return m_vertices;
+}
+
+size_t CModelPart::GetIndexCount() const
+{
+    return m_indices.size();
+}
+
+const std::vector<unsigned int>& CModelPart::GetIndices() const
+{
+    return m_indices;
+}
+
+void CModelPart::AddVertex(const Vertex3D& vertex)
+{
+    m_vertices.push_back(vertex);
+}
+
+void CModelPart::AddIndex(unsigned int index)
+{
+    m_indices.push_back(index);
+}
+
 void CModelMesh::AddTriangle(const ModelTriangle& triangle)
 {
-    m_triangles.push_back(triangle);
+    for (auto& part : m_parts)
+    {
+        if (part.GetMaterial() == triangle.material)
+        {
+            part.AddVertex(triangle.p1);
+            part.AddVertex(triangle.p2);
+            part.AddVertex(triangle.p3);
+            return;
+        }
+    }
+
+    CModelPart part(triangle.material);
+
+    part.AddVertex(triangle.p1);
+    part.AddVertex(triangle.p2);
+    part.AddVertex(triangle.p3);
+
+    m_parts.emplace_back(part);
 }
 
-void CModelMesh::SetTriangles(std::vector<ModelTriangle>&& triangles)
+void CModelMesh::AddTriangle(const Triangle& triangle, const Material& material)
 {
-    m_triangles = triangles;
+    for (auto& part : m_parts)
+    {
+        if (part.GetMaterial() == material)
+        {
+            part.AddVertex(triangle.p1);
+            part.AddVertex(triangle.p2);
+            part.AddVertex(triangle.p3);
+            return;
+        }
+    }
+
+    CModelPart part(material);
+
+    part.AddVertex(triangle.p1);
+    part.AddVertex(triangle.p2);
+    part.AddVertex(triangle.p3);
+
+    m_parts.emplace_back(part);
 }
 
-const std::vector<ModelTriangle>& CModelMesh::GetTriangles() const
+size_t CModelMesh::GetPartCount() const
 {
-    return m_triangles;
+    return m_parts.size();
 }
 
-int CModelMesh::GetTriangleCount() const
+const CModelPart& CModelMesh::GetPart(size_t index) const
 {
-    return m_triangles.size();
+    return m_parts[index];
 }
 
 const glm::vec3& CModelMesh::GetPosition() const
@@ -80,6 +157,46 @@ const std::string& CModelMesh::GetParent() const
 void CModelMesh::SetParent(const std::string& parent)
 {
     m_parent = parent;
+}
+
+std::vector<ModelTriangle> CModelMesh::GetTriangles() const
+{
+    std::vector<ModelTriangle> triangles;
+
+    for (const auto& part : m_parts)
+    {
+        if (part.IsIndexed())
+        {
+            const auto& vertices = part.GetVertices();
+            const auto& indices = part.GetIndices();
+
+            for (size_t i = 0; i < indices.size() - 2; i += 3)
+            {
+                triangles.push_back({
+                    vertices[indices[i]],
+                    vertices[indices[i + 1]],
+                    vertices[indices[i + 2]],
+                    part.GetMaterial()
+                });
+            }
+        }
+        else
+        {
+            const auto& vertices = part.GetVertices();
+
+            for (size_t i = 0; i < vertices.size() - 2; i += 3)
+            {
+                triangles.push_back({
+                    vertices[i],
+                    vertices[i + 1],
+                    vertices[i + 2],
+                    part.GetMaterial()
+                });
+            }
+        }
+    }
+
+    return triangles;
 }
 
 } // namespace Gfx

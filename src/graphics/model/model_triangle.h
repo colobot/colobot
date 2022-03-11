@@ -26,10 +26,24 @@ namespace Gfx
 {
 
 /**
+ * \struct Triangle
+ * \brief A single triangle
+ */
+struct Triangle
+{
+    //! 1st vertex
+    Vertex3D  p1;
+    //! 2nd vertex
+    Vertex3D  p2;
+    //! 3rd vertex
+    Vertex3D  p3;
+};
+
+/**
  * \struct ModelTriangle
  * \brief A single triangle in mesh as saved in model file
  */
-struct ModelTriangle
+struct [[deprecated]] ModelTriangle
 {
     //! 1st vertex
     Vertex3D  p1;

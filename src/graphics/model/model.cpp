@@ -79,7 +79,7 @@ void CModel::SetShadowSpot(const ModelShadowSpot& shadowSpot)
 
 bool CModel::HasShadowSpot() const
 {
-    return m_shadowSpot.is_initialized();
+    return m_shadowSpot.has_value();
 }
 
 const std::vector<ModelCrashSphere>& CModel::GetCrashSpheres() const
@@ -109,7 +109,7 @@ void CModel::SetCameraCollisionSphere(const Math::Sphere& sphere)
 
 bool CModel::HasCameraCollisionSphere() const
 {
-    return m_cameraCollisionSphere.is_initialized();
+    return m_cameraCollisionSphere.has_value();
 }
 
 } // namespace Gfx

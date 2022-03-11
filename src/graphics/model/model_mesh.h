@@ -27,6 +27,44 @@ namespace Gfx
 {
 
 /**
+ * \class CModelPart
+ * \brief Part of mesh with a common material
+ */
+class CModelPart
+{
+public:
+    //! Creates new part for given material
+    CModelPart(const Material& material);
+
+    //! Returns this part's material
+    const Material& GetMaterial() const;
+
+    //! Returns true if this part is indexed
+    bool IsIndexed() const;
+    //! Returns the number of vertices in this part
+    size_t GetVertexCount() const;
+    //! Returns the vertices in this part
+    const std::vector<Vertex3D>& GetVertices() const;
+    //! Returns the number of indices in this part
+    size_t GetIndexCount() const;
+    //! Returns the indices in this part
+    const std::vector<unsigned int>& GetIndices() const;
+
+    //! Adds a vertex
+    void AddVertex(const Vertex3D& vertex);
+    //! Adds an index
+    void AddIndex(unsigned int index);
+
+private:
+    //! Material
+    Material m_material;
+    //! Vertices
+    std::vector<Vertex3D> m_vertices;
+    //! Indices
+    std::vector<unsigned int> m_indices;
+};
+
+/**
  * \class CModelMesh
  * \brief Mesh data saved in model file
  */
@@ -35,12 +73,13 @@ class CModelMesh
 public:
     //! Adds a new triangle
     void AddTriangle(const ModelTriangle& triangle);
-    //! Sets the list of triangles
-    void SetTriangles(std::vector<ModelTriangle> &&triangles);
-    //! Returns the list of triangles
-    const std::vector<ModelTriangle>& GetTriangles() const;
-    //! Returns number of triangles
-    int GetTriangleCount() const;
+    //! Adds a new triangle
+    void AddTriangle(const Triangle& triangle, const Material& material);
+
+    //! Returns the number of parts
+    size_t GetPartCount() const;
+    //! Returns a part with given index
+    const CModelPart& GetPart(size_t index) const;
 
     //! Returns the mesh position
     const glm::vec3& GetPosition() const;
@@ -62,8 +101,11 @@ public:
     //! Sets the name of parent mesh
     void SetParent(const std::string& parent);
 
+    //! Returns all model triangles of this mesh
+    std::vector<ModelTriangle> GetTriangles() const;
+
 private:
-    std::vector<ModelTriangle> m_triangles;
+    std::vector<CModelPart> m_parts;
     glm::vec3 m_position;
     glm::vec3 m_rotation;
     glm::vec3 m_scale;

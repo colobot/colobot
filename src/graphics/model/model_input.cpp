@@ -451,7 +451,9 @@ void ModelInput::ReadOldModel(CModel &model, std::istream &stream)
     }
 
     CModelMesh mesh;
-    mesh.SetTriangles(std::move(triangles));
+
+    for (const auto& triangle : triangles)
+        mesh.AddTriangle(triangle);
 
     model.AddMesh("main", std::move(mesh));
 }
