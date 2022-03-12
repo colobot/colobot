@@ -55,9 +55,9 @@ CResourceManager::~CResourceManager()
     }
 }
 
-std::string CResourceManager::CleanPath(const std::string& path)
+std::string CResourceManager::CleanPath(const std::filesystem::path& path)
 {
-    return boost::regex_replace(path, boost::regex("(.*)/\\.\\./"), "");
+    return boost::regex_replace(path.generic_u8string(), boost::regex("(.*)/\\.\\./"), "");
 }
 
 
@@ -137,7 +137,7 @@ std::unique_ptr<CSNDFileWrapper> CResourceManager::GetSNDFileHandler(const std::
 }
 
 
-bool CResourceManager::Exists(const std::string &filename)
+bool CResourceManager::Exists(const std::filesystem::path& filename)
 {
     if (PHYSFS_isInit())
     {

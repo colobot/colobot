@@ -23,6 +23,7 @@
 #include "common/resources/sdl_memory_wrapper.h"
 #include "common/resources/sndfile_wrapper.h"
 
+#include <filesystem>
 #include <memory>
 #include <string>
 #include <vector>
@@ -33,7 +34,7 @@ public:
     CResourceManager(const char *argv0);
     ~CResourceManager();
 
-    static std::string CleanPath(const std::string &path);
+    static std::string CleanPath(const std::filesystem::path& path);
 
     //! Add a location to the search path
     static bool AddLocation(const std::string &location, bool prepend = true, const std::string &mountPoint = "");
@@ -52,7 +53,7 @@ public:
     static std::unique_ptr<CSNDFileWrapper> GetSNDFileHandler(const std::string &filename);
 
     //! Check if file exists
-    static bool Exists(const std::string &filename);
+    static bool Exists(const std::filesystem::path& filename);
     //! Check if file exists and is a directory
     static bool DirectoryExists(const std::string& directory);
 

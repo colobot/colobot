@@ -19,6 +19,7 @@
 
 #include "graphics/model/model_input.h"
 
+#include "graphics/model/model_gltf.h"
 #include "graphics/model/model_mod.h"
 #include "graphics/model/model_txt.h"
 
@@ -38,6 +39,10 @@ void ModelInput::Read(CModel& model, const std::filesystem::path& path)
     else if (extension == ".txt")
     {
         ModelIO::ReadTextModel(model, path);
+    }
+    else if (extension == ".gltf")
+    {
+        ModelIO::ReadGLTFModel(model, path);
     }
     else
     {

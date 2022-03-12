@@ -67,7 +67,7 @@ struct Material
     //! Alpha mode
     AlphaMode alphaMode = AlphaMode::NONE;
     //! Alpha threshold
-    float alphaThreshold = 0.0;
+    float alphaThreshold = 0.5;
     // Cull face
     CullFace cullFace = CullFace::BACK;
     // Special tag

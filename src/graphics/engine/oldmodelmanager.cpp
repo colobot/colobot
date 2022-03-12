@@ -25,6 +25,7 @@
 #include "common/stringutils.h"
 
 #include "common/resources/inputstream.h"
+#include "common/resources/resourcemanager.h"
 
 #include "graphics/engine/engine.h"
 
@@ -45,24 +46,59 @@ COldModelManager::~COldModelManager()
 {
 }
 
-bool COldModelManager::LoadModel(const std::string& fileName, bool mirrored, int variant)
+bool COldModelManager::LoadModel(const std::string& name, bool mirrored, int variant)
 {
-    GetLogger()->Debug("Loading model '%s'\n", fileName.c_str());
-
     CModel model;
     try
     {
-        std::filesystem::path path = "models/" + fileName;
+        auto extension = std::filesystem::path(name).extension().string();
 
-        ModelInput::Read(model, path);
+        if (!extension.empty())
+        {
+            GetLogger()->Debug("Loading model '%s'\n", name.c_str());
+
+            ModelInput::Read(model, "models/" + name);
+
+            if (model.GetMeshCount() == 0)
+                return false;
+
+            goto skip;
+        }
+
+        auto gltf_path = "models/" + name + ".gltf";
+
+        if (CResourceManager::Exists(gltf_path))
+        {
+            GetLogger()->Debug("Loading model '%s'\n", (name + ".gltf").c_str());
+
+            ModelInput::Read(model, gltf_path);
+
+            if (model.GetMeshCount() > 0)
+                goto skip;
+        }
+
+        auto mod_path = "models/" + name + ".mod";
+
+        if (CResourceManager::Exists(mod_path))
+        {
+            GetLogger()->Debug("Loading model '%s'\n", (name + ".mod").c_str());
+
+            ModelInput::Read(model, mod_path);
+
+            if (model.GetMeshCount() > 0)
+                goto skip;
+        }
+
+        return false;
     }
     catch (const CModelIOException& e)
     {
-        GetLogger()->Error("Loading model '%s' failed: %s\n", fileName.c_str(), e.what());
+        GetLogger()->Error("Loading model '%s' failed: %s\n", name.c_str(), e.what());
         return false;
     }
 
-    CModelMesh* mesh = model.GetMesh("main");
+skip:
+    CModelMesh* mesh = model.GetMesh();
     assert(mesh != nullptr);
 
     ModelInfo modelInfo;
@@ -72,7 +108,7 @@ bool COldModelManager::LoadModel(const std::string& fileName, bool mirrored, int
     if (mirrored)
         Mirror(modelInfo.triangles);
 
-    FileInfo fileInfo(fileName, mirrored, variant);
+    FileInfo fileInfo(name, mirrored, variant);
     m_models[fileInfo] = modelInfo;
 
     m_engine->AddBaseObjTriangles(modelInfo.baseObjRank, modelInfo.triangles);

@@ -133,6 +133,8 @@ add_library(colobotbase STATIC
     graphics/model/model_input.h
     graphics/model/model_io_exception.h
     graphics/model/model_io_structs.h
+    graphics/model/model_gltf.cpp
+    graphics/model/model_gltf.h
     graphics/model/model_manager.cpp
     graphics/model/model_manager.h
     graphics/model/model_mesh.cpp

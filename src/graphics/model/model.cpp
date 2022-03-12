@@ -30,6 +30,18 @@ int CModel::GetMeshCount() const
     return m_meshes.size();
 }
 
+CModelMesh* CModel::GetMesh()
+{
+    if (m_meshes.size() == 1)
+    {
+        return &m_meshes.begin()->second;
+    }
+    else
+    {
+        return GetMesh("main");
+    }
+}
+
 CModelMesh* CModel::GetMesh(const std::string& name)
 {
     auto it = m_meshes.find(name);

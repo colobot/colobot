@@ -80,6 +80,8 @@ public:
     size_t GetPartCount() const;
     //! Returns a part with given index
     const CModelPart& GetPart(size_t index) const;
+    //! Adds a new part with given material or returns an existing one
+    CModelPart& AddPart(const Material& material);
 
     //! Returns the mesh position
     const glm::vec3& GetPosition() const;

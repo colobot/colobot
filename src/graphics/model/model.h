@@ -42,6 +42,8 @@ class CModel
 public:
     //! Returns mesh count
     int GetMeshCount() const;
+    //! Returns the only mesh or mesh with name "main"
+    CModelMesh* GetMesh();
     //! Return a mesh with given \a name
     CModelMesh* GetMesh(const std::string& name);
     //! Return a mesh with given \a name

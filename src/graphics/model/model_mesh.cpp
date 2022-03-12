@@ -119,6 +119,21 @@ const CModelPart& CModelMesh::GetPart(size_t index) const
     return m_parts[index];
 }
 
+CModelPart& CModelMesh::AddPart(const Material& material)
+{
+    for (auto& part : m_parts)
+    {
+        if (part.GetMaterial() == material)
+        {
+            return part;
+        }
+    }
+
+    m_parts.push_back(CModelPart(material));
+
+    return m_parts.back();
+}
+
 const glm::vec3& CModelMesh::GetPosition() const
 {
     return m_position;
