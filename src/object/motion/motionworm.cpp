@@ -113,7 +113,7 @@ void CMotionWorm::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(1, rank);
     m_object->SetObjectParent(1, 0);
-    modelManager->AddModelReference("worm1.mod", false, rank);
+    modelManager->AddModelReference("worm1", false, rank);
     m_object->SetPartPosition(1, glm::vec3(px, 0.0f, 0.0f));
     px -= 1.0f;
 
@@ -124,7 +124,7 @@ void CMotionWorm::Create(glm::vec3 pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(2+i, rank);
         m_object->SetObjectParent(2+i, 0);
-        modelManager->AddModelReference("worm2.mod", false, rank);
+        modelManager->AddModelReference("worm2", false, rank);
         m_object->SetPartPosition(2+i, glm::vec3(px, 0.0f, 0.0f));
         px -= 1.0f;
     }
@@ -134,7 +134,7 @@ void CMotionWorm::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(2+WORM_PART, rank);
     m_object->SetObjectParent(2+WORM_PART, 0);
-    modelManager->AddModelReference("worm3.mod", false, rank);
+    modelManager->AddModelReference("worm3", false, rank);
     m_object->SetPartPosition(2+WORM_PART, glm::vec3(px, 0.0f, 0.0f));
 
     m_object->CreateShadowCircle(0.0f, 1.0f, Gfx::EngineShadowType::WORM);

@@ -119,7 +119,7 @@ void CMotionHuman::Create(glm::vec3 pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICLE);  // this is a moving object
         m_object->SetObjectRank(0, rank);
         face = m_main->GetGamerFace();
-        sprintf(filename, "human2h%d.mod", face+1);
+        sprintf(filename, "human2h%d", face+1);
         modelManager->AddModelReference(filename, false, rank);
 
         glasses = m_main->GetGamerGlasses();
@@ -129,7 +129,7 @@ void CMotionHuman::Create(glm::vec3 pos, float angle, ObjectType type,
             m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
             m_object->SetObjectRank(1, rank);
             m_object->SetObjectParent(1, 0);
-            sprintf(filename, "human2g%d.mod", glasses);
+            sprintf(filename, "human2g%d", glasses);
             modelManager->AddModelReference(filename, false, rank);
         }
 
@@ -147,11 +147,11 @@ void CMotionHuman::Create(glm::vec3 pos, float angle, ObjectType type,
     m_object->SetObjectRank(0, rank);
 
     if (option == 0)  // head in helmet?
-        modelManager->AddModelReference("human1c.mod", false, rank);
+        modelManager->AddModelReference("human1c", false, rank);
     else if (option == 1)  // head without helmet?
-        modelManager->AddModelReference("human1h.mod", false, rank);
+        modelManager->AddModelReference("human1h", false, rank);
     else if (option == 2)  // without a backpack?
-        modelManager->AddModelReference("human1v.mod", false, rank);
+        modelManager->AddModelReference("human1v", false, rank);
 
     m_object->SetPosition(pos);
     m_object->SetRotationY(angle);
@@ -171,20 +171,20 @@ void CMotionHuman::Create(glm::vec3 pos, float angle, ObjectType type,
         if (option == 0)  // head in helmet?
         {
             face = m_main->GetGamerFace();
-            sprintf(filename, "human2c%d.mod", face+1);
+            sprintf(filename, "human2c%d", face+1);
             modelManager->AddModelReference(filename, false, rank);
         }
         else if (option == 1 ||  // head without helmet?
                  option == 2)    // without a backpack?
         {
             face = m_main->GetGamerFace();
-            sprintf(filename, "human2h%d.mod", face+1);
+            sprintf(filename, "human2h%d", face+1);
             modelManager->AddModelReference(filename, false, rank);
         }
     }
     else if (type == OBJECT_TECH)
     {
-        modelManager->AddModelReference("human2t.mod", false, rank);
+        modelManager->AddModelReference("human2t", false, rank);
     }
 
     m_object->SetPartPosition(1, glm::vec3(0.0f, 2.7f, 0.0f));
@@ -202,7 +202,7 @@ void CMotionHuman::Create(glm::vec3 pos, float angle, ObjectType type,
         m_engine->SetObjectType(m_glassesRank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(15, m_glassesRank);
         m_object->SetObjectParent(15, 1);
-        sprintf(filename, "human2g%d.mod", glasses);
+        sprintf(filename, "human2g%d", glasses);
         modelManager->AddModelReference(filename, false, m_glassesRank);
     }
 
@@ -211,7 +211,7 @@ void CMotionHuman::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(2, rank);
     m_object->SetObjectParent(2, 0);
-    modelManager->AddModelReference("human3.mod", false, rank);
+    modelManager->AddModelReference("human3", false, rank);
     m_object->SetPartPosition(2, glm::vec3(0.0f, 2.3f, -1.2f));
     m_object->SetPartRotation(2, glm::vec3(90.0f*Math::PI/180.0f, 90.0f*Math::PI/180.0f, -50.0f*Math::PI/180.0f));
 
@@ -220,7 +220,7 @@ void CMotionHuman::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(3, rank);
     m_object->SetObjectParent(3, 2);
-    modelManager->AddModelReference("human4r.mod", false, rank);
+    modelManager->AddModelReference("human4r", false, rank);
     m_object->SetPartPosition(3, glm::vec3(1.3f, 0.0f, 0.0f));
     m_object->SetPartRotation(3, glm::vec3(0.0f*Math::PI/180.0f, -20.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f));
 
@@ -229,7 +229,7 @@ void CMotionHuman::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(4, rank);
     m_object->SetObjectParent(4, 3);
-    modelManager->AddModelReference("human5.mod", false, rank);
+    modelManager->AddModelReference("human5", false, rank);
     m_object->SetPartPosition(4, glm::vec3(1.2f, 0.0f, 0.0f));
 
     // Creates the right thigh.
@@ -237,7 +237,7 @@ void CMotionHuman::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(5, rank);
     m_object->SetObjectParent(5, 0);
-    modelManager->AddModelReference("human6.mod", false, rank);
+    modelManager->AddModelReference("human6", false, rank);
     m_object->SetPartPosition(5, glm::vec3(0.0f, 0.0f, -0.7f));
     m_object->SetPartRotation(5, glm::vec3(10.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f));
 
@@ -246,7 +246,7 @@ void CMotionHuman::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(6, rank);
     m_object->SetObjectParent(6, 5);
-    modelManager->AddModelReference("human7.mod", false, rank);
+    modelManager->AddModelReference("human7", false, rank);
     m_object->SetPartPosition(6, glm::vec3(0.0f, -1.5f, 0.0f));
     m_object->SetPartRotation(6, glm::vec3(0.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f, -10.0f*Math::PI/180.0f));
 
@@ -255,7 +255,7 @@ void CMotionHuman::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(7, rank);
     m_object->SetObjectParent(7, 6);
-    modelManager->AddModelReference("human8.mod", false, rank);
+    modelManager->AddModelReference("human8", false, rank);
     m_object->SetPartPosition(7, glm::vec3(0.0f, -1.5f, 0.0f));
     m_object->SetPartRotation(7, glm::vec3(-10.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f));
 
@@ -264,7 +264,7 @@ void CMotionHuman::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(8, rank);
     m_object->SetObjectParent(8, 0);
-    modelManager->AddModelReference("human3.mod", true, rank);
+    modelManager->AddModelReference("human3", true, rank);
     m_object->SetPartPosition(8, glm::vec3(0.0f, 2.3f, 1.2f));
     m_object->SetPartRotation(8, glm::vec3(-90.0f*Math::PI/180.0f, -90.0f*Math::PI/180.0f, -50.0f*Math::PI/180.0f));
 
@@ -273,7 +273,7 @@ void CMotionHuman::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(9, rank);
     m_object->SetObjectParent(9, 8);
-    modelManager->AddModelReference("human4l.mod", true, rank);
+    modelManager->AddModelReference("human4l", true, rank);
     m_object->SetPartPosition(9, glm::vec3(1.3f, 0.0f, 0.0f));
     m_object->SetPartRotation(9, glm::vec3(0.0f*Math::PI/180.0f, 20.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f));
 
@@ -282,7 +282,7 @@ void CMotionHuman::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(10, rank);
     m_object->SetObjectParent(10, 9);
-    modelManager->AddModelReference("human5.mod", true, rank);
+    modelManager->AddModelReference("human5", true, rank);
     m_object->SetPartPosition(10, glm::vec3(1.2f, 0.0f, 0.0f));
 
     // Creates the left thigh.
@@ -290,7 +290,7 @@ void CMotionHuman::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(11, rank);
     m_object->SetObjectParent(11, 0);
-    modelManager->AddModelReference("human6.mod", true, rank);
+    modelManager->AddModelReference("human6", true, rank);
     m_object->SetPartPosition(11, glm::vec3(0.0f, 0.0f, 0.7f));
     m_object->SetPartRotation(11, glm::vec3(-10.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f));
 
@@ -299,7 +299,7 @@ void CMotionHuman::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(12, rank);
     m_object->SetObjectParent(12, 11);
-    modelManager->AddModelReference("human7.mod", true, rank);
+    modelManager->AddModelReference("human7", true, rank);
     m_object->SetPartPosition(12, glm::vec3(0.0f, -1.5f, 0.0f));
     m_object->SetPartRotation(12, glm::vec3(0.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f, -10.0f*Math::PI/180.0f));
 
@@ -308,7 +308,7 @@ void CMotionHuman::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(13, rank);
     m_object->SetObjectParent(13, 12);
-    modelManager->AddModelReference("human8.mod", true, rank);
+    modelManager->AddModelReference("human8", true, rank);
     m_object->SetPartPosition(13, glm::vec3(0.0f, -1.5f, 0.0f));
     m_object->SetPartRotation(13, glm::vec3(10.0f*Math::PI/180.0f, -5.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f));
 
@@ -319,7 +319,7 @@ void CMotionHuman::Create(glm::vec3 pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(14, rank);
         m_object->SetObjectParent(14, 0);
-        modelManager->AddModelReference("human9.mod", false, rank);
+        modelManager->AddModelReference("human9", false, rank);
         m_object->SetPartPosition(14, glm::vec3(-1.5f, 0.3f, -1.35f));
         m_object->SetPartRotationZ(14, Math::PI);
     }

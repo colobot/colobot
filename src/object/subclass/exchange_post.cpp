@@ -59,7 +59,7 @@ std::unique_ptr<CExchangePost> CExchangePost::Create(
     engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);  // it is a stationary object
     obj->SetObjectRank(0, rank);
 
-    modelManager->AddModelReference("info1.mod", false, rank);
+    modelManager->AddModelReference("info1", false, rank);
     obj->SetPosition(params.pos);
     obj->SetRotationY(params.angle);
     obj->SetFloorHeight(0.0f);
@@ -68,7 +68,7 @@ std::unique_ptr<CExchangePost> CExchangePost::Create(
     engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     obj->SetObjectRank(1, rank);
     obj->SetObjectParent(1, 0);
-    modelManager->AddModelReference("info2.mod", false, rank);
+    modelManager->AddModelReference("info2", false, rank);
     obj->SetPartPosition(1, glm::vec3(0.0f, 5.0f, 0.0f));
 
     for (int i = 0; i < 3; ++i)
@@ -77,14 +77,14 @@ std::unique_ptr<CExchangePost> CExchangePost::Create(
         engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(2+i*2, rank);
         obj->SetObjectParent(2+i*2, 1);
-        modelManager->AddModelReference("info3.mod", false, rank);
+        modelManager->AddModelReference("info3", false, rank);
         obj->SetPartPosition(2+i*2, glm::vec3(0.0f, 4.5f, 0.0f));
 
         rank = engine->CreateObject();
         engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(3+i*2, rank);
         obj->SetObjectParent(3+i*2, 2+i*2);
-        modelManager->AddModelReference("radar4.mod", false, rank);
+        modelManager->AddModelReference("radar4", false, rank);
         obj->SetPartPosition(3+i*2, glm::vec3(0.0f, 0.0f, -4.0f));
 
         obj->SetPartRotationY(2+i*2, 2.0f*Math::PI/3.0f*i);

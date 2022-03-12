@@ -74,7 +74,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
 
     if ( params.type == OBJECT_PORTICO )
     {
-        modelManager->AddModelReference("portico1.mod", false, rank, params.team);
+        modelManager->AddModelReference("portico1", false, rank, params.team);
         obj->SetPosition(params.pos);
         obj->SetRotationY(params.angle);
         obj->SetFloorHeight(0.0f);
@@ -83,14 +83,14 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
         engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(1, rank);
         obj->SetObjectParent(1, 0);
-        modelManager->AddModelReference("portico2.mod", false, rank, params.team);
+        modelManager->AddModelReference("portico2", false, rank, params.team);
         obj->SetPartPosition(1, glm::vec3(0.0f, 67.0f, 0.0f));
 
         rank = engine->CreateObject();
         engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(2, rank);
         obj->SetObjectParent(2, 1);
-        modelManager->AddModelReference("portico3.mod", false, rank, params.team);
+        modelManager->AddModelReference("portico3", false, rank, params.team);
         obj->SetPartPosition(2, glm::vec3(0.0f, 0.0f, -33.0f));
         obj->SetPartRotationY(2, 45.0f*Math::PI/180.0f);
 
@@ -98,7 +98,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
         engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(3, rank);
         obj->SetObjectParent(3, 2);
-        modelManager->AddModelReference("portico4.mod", false, rank, params.team);
+        modelManager->AddModelReference("portico4", false, rank, params.team);
         obj->SetPartPosition(3, glm::vec3(50.0f, 0.0f, 0.0f));
         obj->SetPartRotationY(3, -60.0f*Math::PI/180.0f);
 
@@ -106,7 +106,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
         engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(4, rank);
         obj->SetObjectParent(4, 3);
-        modelManager->AddModelReference("portico5.mod", false, rank, params.team);
+        modelManager->AddModelReference("portico5", false, rank, params.team);
         obj->SetPartPosition(4, glm::vec3(35.0f, 0.0f, 0.0f));
         obj->SetPartRotationY(4, -55.0f*Math::PI/180.0f);
 
@@ -114,7 +114,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
         engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(5, rank);
         obj->SetObjectParent(5, 1);
-        modelManager->AddModelReference("portico3.mod", false, rank, params.team);
+        modelManager->AddModelReference("portico3", false, rank, params.team);
         obj->SetPartPosition(5, glm::vec3(0.0f, 0.0f, 33.0f));
         obj->SetPartRotationY(5, -45.0f*Math::PI/180.0f);
 
@@ -122,7 +122,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
         engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(6, rank);
         obj->SetObjectParent(6, 5);
-        modelManager->AddModelReference("portico4.mod", false, rank, params.team);
+        modelManager->AddModelReference("portico4", false, rank, params.team);
         obj->SetPartPosition(6, glm::vec3(50.0f, 0.0f, 0.0f));
         obj->SetPartRotationY(6, 60.0f*Math::PI/180.0f);
 
@@ -130,7 +130,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
         engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(7, rank);
         obj->SetObjectParent(7, 6);
-        modelManager->AddModelReference("portico5.mod", false, rank, params.team);
+        modelManager->AddModelReference("portico5", false, rank, params.team);
         obj->SetPartPosition(7, glm::vec3(35.0f, 0.0f, 0.0f));
         obj->SetPartRotationY(7, 55.0f*Math::PI/180.0f);
 
@@ -138,7 +138,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
         engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(8, rank);
         obj->SetObjectParent(8, 0);
-        modelManager->AddModelReference("portico6.mod", false, rank, params.team);
+        modelManager->AddModelReference("portico6", false, rank, params.team);
         obj->SetPartPosition(8, glm::vec3(-35.0f, 50.0f, -35.0f));
         obj->SetPartRotationY(8, -Math::PI/2.0f);
         obj->SetPartScale(8, 2.0f);
@@ -147,14 +147,14 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
         engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(9, rank);
         obj->SetObjectParent(9, 8);
-        modelManager->AddModelReference("portico7.mod", false, rank, params.team);
+        modelManager->AddModelReference("portico7", false, rank, params.team);
         obj->SetPartPosition(9, glm::vec3(0.0f, 4.5f, 1.9f));
 
         rank = engine->CreateObject();
         engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(10, rank);
         obj->SetObjectParent(10, 0);
-        modelManager->AddModelReference("portico6.mod", false, rank, params.team);
+        modelManager->AddModelReference("portico6", false, rank, params.team);
         obj->SetPartPosition(10, glm::vec3(-35.0f, 50.0f, 35.0f));
         obj->SetPartRotationY(10, -Math::PI/2.0f);
         obj->SetPartScale(10, 2.0f);
@@ -163,7 +163,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
         engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(11, rank);
         obj->SetObjectParent(11, 10);
-        modelManager->AddModelReference("portico7.mod", false, rank, params.team);
+        modelManager->AddModelReference("portico7", false, rank, params.team);
         obj->SetPartPosition(11, glm::vec3(0.0f, 4.5f, 1.9f));
 
         obj->AddCrashSphere(CrashSphere(glm::vec3(  0.0f, 28.0f,   0.0f), 45.5f, SOUND_BOUMm, 0.45f));
@@ -184,7 +184,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
 
     if ( params.type == OBJECT_BASE )
     {
-        modelManager->AddModelReference("base1.mod", false, rank, params.team);
+        modelManager->AddModelReference("base1", false, rank, params.team);
         obj->SetPosition(params.pos);
         obj->SetRotationY(params.angle);
         obj->SetFloorHeight(0.0f);
@@ -195,7 +195,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
             engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
             obj->SetObjectRank(1+i, rank);
             obj->SetObjectParent(1+i, 0);
-            modelManager->AddModelReference("base2.mod", false, rank, params.team);
+            modelManager->AddModelReference("base2", false, rank, params.team);
             glm::vec2 p = Math::RotatePoint(-Math::PI/4.0f*i, 27.8f);
             obj->SetPartPosition(1+i, glm::vec3(p.x, 30.0f, p.y));
             obj->SetPartRotationY(1+i, Math::PI/4.0f*i);
@@ -205,14 +205,14 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
             engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
             obj->SetObjectRank(10+i, rank);
             obj->SetObjectParent(10+i, 1+i);
-            modelManager->AddModelReference("base4.mod", false, rank, params.team);
+            modelManager->AddModelReference("base4", false, rank, params.team);
             obj->SetPartPosition(10+i, glm::vec3(23.5f, 0.0f, 7.0f));
 
             rank = engine->CreateObject();
             engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
             obj->SetObjectRank(18+i, rank);
             obj->SetObjectParent(18+i, 1+i);
-            modelManager->AddModelReference("base4.mod", true, rank, params.team);
+            modelManager->AddModelReference("base4", true, rank, params.team);
             obj->SetPartPosition(18+i, glm::vec3(23.5f, 0.0f, -7.0f));
         }
 
@@ -220,7 +220,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
         engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(9, rank);
         obj->SetObjectParent(9, 0);
-        modelManager->AddModelReference("base3.mod", false, rank, params.team); // central pillar
+        modelManager->AddModelReference("base3", false, rank, params.team); // central pillar
 
         obj->AddCrashSphere(CrashSphere(glm::vec3(  0.0f, 33.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(glm::vec3(  0.0f, 39.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f));
@@ -249,7 +249,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
 
     if ( params.type == OBJECT_DERRICK )
     {
-        modelManager->AddModelReference("derrick1.mod", false, rank, params.team);
+        modelManager->AddModelReference("derrick1", false, rank, params.team);
         obj->SetPosition(params.pos);
         obj->SetRotationY(params.angle);
         obj->SetFloorHeight(0.0f);
@@ -258,7 +258,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
         engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(1, rank);
         obj->SetObjectParent(1, 0);
-        modelManager->AddModelReference("derrick2.mod", false, rank, params.team);
+        modelManager->AddModelReference("derrick2", false, rank, params.team);
 
         obj->AddCrashSphere(CrashSphere(glm::vec3(0.0f,  0.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(glm::vec3(0.0f, 10.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f));
@@ -272,7 +272,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
 
     if ( params.type == OBJECT_RESEARCH )
     {
-        modelManager->AddModelReference("search1.mod", false, rank, params.team);
+        modelManager->AddModelReference("search1", false, rank, params.team);
         obj->SetPosition(params.pos);
         obj->SetRotationY(params.angle);
         obj->SetFloorHeight(0.0f);
@@ -281,14 +281,14 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
         engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(1, rank);
         obj->SetObjectParent(1, 0);
-        modelManager->AddModelReference("search2.mod", false, rank, params.team);
+        modelManager->AddModelReference("search2", false, rank, params.team);
         obj->SetPartPosition(1, glm::vec3(0.0f, 13.0f, 0.0f));
 
         rank = engine->CreateObject();
         engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(2, rank);
         obj->SetObjectParent(2, 1);
-        modelManager->AddModelReference("search3.mod", false, rank, params.team);
+        modelManager->AddModelReference("search3", false, rank, params.team);
         obj->SetPartPosition(2, glm::vec3(0.0f, 4.0f, 0.0f));
         obj->SetPartRotationZ(2, 35.0f*Math::PI/180.0f);
 
@@ -304,7 +304,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
 
     if ( params.type == OBJECT_RADAR )
     {
-        modelManager->AddModelReference("radar1.mod", false, rank, params.team);
+        modelManager->AddModelReference("radar1", false, rank, params.team);
         obj->SetPosition(params.pos);
         obj->SetRotationY(params.angle);
         obj->SetFloorHeight(0.0f);
@@ -313,14 +313,14 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
         engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(1, rank);
         obj->SetObjectParent(1, 0);
-        modelManager->AddModelReference("radar2.mod", false, rank, params.team);
+        modelManager->AddModelReference("radar2", false, rank, params.team);
         obj->SetPartPosition(1, glm::vec3(0.0f, 5.0f, 0.0f));
 
         rank = engine->CreateObject();
         engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(2, rank);
         obj->SetObjectParent(2, 0);
-        modelManager->AddModelReference("radar3.mod", false, rank, params.team);
+        modelManager->AddModelReference("radar3", false, rank, params.team);
         obj->SetPartPosition(2, glm::vec3(0.0f, 11.0f, 0.0f));
         obj->SetPartRotationY(2, -Math::PI/2.0f);
 
@@ -328,7 +328,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
         engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(3, rank);
         obj->SetObjectParent(3, 2);
-        modelManager->AddModelReference("radar4.mod", false, rank, params.team);
+        modelManager->AddModelReference("radar4", false, rank, params.team);
         obj->SetPartPosition(3, glm::vec3(0.0f, 4.5f, 1.9f));
 
         obj->AddCrashSphere(CrashSphere(glm::vec3(0.0f,  3.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f));
@@ -340,7 +340,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
 
     if ( params.type == OBJECT_ENERGY )
     {
-        modelManager->AddModelCopy("energy.mod", false, rank, params.team);
+        modelManager->AddModelCopy("energy", false, rank, params.team);
         obj->SetPosition(params.pos);
         obj->SetRotationY(params.angle);
         obj->SetFloorHeight(0.0f);
@@ -358,7 +358,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
 
     if ( params.type == OBJECT_LABO )
     {
-        modelManager->AddModelReference("labo1.mod", false, rank, params.team);
+        modelManager->AddModelReference("labo1", false, rank, params.team);
         obj->SetPosition(params.pos);
         obj->SetRotationY(params.angle);
         obj->SetFloorHeight(0.0f);
@@ -367,7 +367,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
         engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(1, rank);
         obj->SetObjectParent(1, 0);
-        modelManager->AddModelReference("labo2.mod", false, rank, params.team);
+        modelManager->AddModelReference("labo2", false, rank, params.team);
         obj->SetPartPosition(1, glm::vec3(-9.0f, 3.0f, 0.0f));
         obj->SetPartRotationZ(1, Math::PI/2.0f);
 
@@ -375,14 +375,14 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
         engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(2, rank);
         obj->SetObjectParent(2, 1);
-        modelManager->AddModelReference("labo3.mod", false, rank, params.team);
+        modelManager->AddModelReference("labo3", false, rank, params.team);
         obj->SetPartPosition(2, glm::vec3(9.0f, -1.0f, 0.0f));
 
         rank = engine->CreateObject();
         engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(3, rank);
         obj->SetObjectParent(3, 2);
-        modelManager->AddModelReference("labo4.mod", false, rank, params.team);
+        modelManager->AddModelReference("labo4", false, rank, params.team);
         obj->SetPartPosition(3, glm::vec3(0.0f, 0.0f, 0.0f));
         obj->SetPartRotationZ(3, 80.0f*Math::PI/180.0f);
 
@@ -390,7 +390,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
         engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(4, rank);
         obj->SetObjectParent(4, 2);
-        modelManager->AddModelReference("labo4.mod", false, rank, params.team);
+        modelManager->AddModelReference("labo4", false, rank, params.team);
         obj->SetPartPosition(4, glm::vec3(0.0f, 0.0f, 0.0f));
         obj->SetPartRotationZ(4, 80.0f*Math::PI/180.0f);
         obj->SetPartRotationY(4, Math::PI*2.0f/3.0f);
@@ -399,7 +399,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
         engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(5, rank);
         obj->SetObjectParent(5, 2);
-        modelManager->AddModelReference("labo4.mod", false, rank, params.team);
+        modelManager->AddModelReference("labo4", false, rank, params.team);
         obj->SetPartPosition(5, glm::vec3(0.0f, 0.0f, 0.0f));
         obj->SetPartRotationZ(5, 80.0f*Math::PI/180.0f);
         obj->SetPartRotationY(5, -Math::PI*2.0f/3.0f);
@@ -418,7 +418,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
 
     if ( params.type == OBJECT_FACTORY )
     {
-        modelManager->AddModelReference("factory1.mod", false, rank, params.team);
+        modelManager->AddModelReference("factory1", false, rank, params.team);
         obj->SetPosition(params.pos);
         obj->SetRotationY(params.angle);
         obj->SetFloorHeight(0.0f);
@@ -429,7 +429,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
             engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
             obj->SetObjectRank(1+i, rank);
             obj->SetObjectParent(1+i, 0);
-            modelManager->AddModelReference("factory2.mod", false, rank, params.team);
+            modelManager->AddModelReference("factory2", false, rank, params.team);
             obj->SetPartPosition(1+i, glm::vec3(10.0f, 2.0f*i, 10.0f));
             obj->SetPartRotationZ(1+i, Math::PI/2.0f);
             obj->SetPartScaleZ(1+i, 0.30f);
@@ -438,7 +438,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
             engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
             obj->SetObjectRank(10+i, rank);
             obj->SetObjectParent(10+i, 0);
-            modelManager->AddModelReference("factory2.mod", false, rank, params.team);
+            modelManager->AddModelReference("factory2", false, rank, params.team);
             obj->SetPartPosition(10+i, glm::vec3(10.0f, 2.0f*i, -10.0f));
             obj->SetPartRotationZ(10+i, -Math::PI/2.0f);
             obj->SetPartRotationY(10+i, Math::PI);
@@ -475,7 +475,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
 
     if ( params.type == OBJECT_REPAIR )
     {
-        modelManager->AddModelReference("repair1.mod", false, rank, params.team);
+        modelManager->AddModelReference("repair1", false, rank, params.team);
         obj->SetPosition(params.pos);
         obj->SetRotationY(params.angle);
         obj->SetFloorHeight(0.0f);
@@ -484,7 +484,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
         engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(1, rank);
         obj->SetObjectParent(1, 0);
-        modelManager->AddModelReference("repair2.mod", false, rank, params.team);
+        modelManager->AddModelReference("repair2", false, rank, params.team);
         obj->SetPartPosition(1, glm::vec3(-11.0f, 13.5f, 0.0f));
         obj->SetPartRotationZ(1, Math::PI/2.0f);
 
@@ -499,7 +499,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
 
     if ( params.type == OBJECT_DESTROYER )
     {
-        modelManager->AddModelReference("destroy1.mod", false, rank, params.team);
+        modelManager->AddModelReference("destroy1", false, rank, params.team);
         obj->SetPosition(params.pos);
         obj->SetRotationY(params.angle);
         obj->SetFloorHeight(0.0f);
@@ -508,7 +508,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
         engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(1, rank);
         obj->SetObjectParent(1, 0);
-        modelManager->AddModelReference("destroy2.mod", false, rank, params.team);
+        modelManager->AddModelReference("destroy2", false, rank, params.team);
         obj->SetPartPosition(1, glm::vec3(0.0f, 0.0f, 0.0f));
 
         engine->GetTerrain()->AddBuildingLevel(params.pos, 7.0f, 9.0f, 1.0f, 0.5f);
@@ -523,7 +523,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
 
     if ( params.type == OBJECT_STATION )
     {
-        modelManager->AddModelCopy("station.mod", false, rank, params.team);
+        modelManager->AddModelCopy("station", false, rank, params.team);
         obj->SetPosition(params.pos);
         obj->SetRotationY(params.angle);
         obj->SetFloorHeight(0.0f);
@@ -539,7 +539,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
 
     if ( params.type == OBJECT_CONVERT )
     {
-        modelManager->AddModelReference("convert1.mod", false, rank, params.team);
+        modelManager->AddModelReference("convert1", false, rank, params.team);
         obj->SetPosition(params.pos);
         obj->SetRotationY(params.angle);
         obj->SetFloorHeight(0.0f);
@@ -548,14 +548,14 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
         engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(1, rank);
         obj->SetObjectParent(1, 0);
-        modelManager->AddModelReference("convert2.mod", false, rank, params.team);
+        modelManager->AddModelReference("convert2", false, rank, params.team);
         obj->SetPartPosition(1, glm::vec3(0.0f, 14.0f, 0.0f));
 
         rank = engine->CreateObject();
         engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(2, rank);
         obj->SetObjectParent(2, 0);
-        modelManager->AddModelReference("convert3.mod", false, rank, params.team);
+        modelManager->AddModelReference("convert3", false, rank, params.team);
         obj->SetPartPosition(2, glm::vec3(0.0f, 11.5f, 0.0f));
         obj->SetPartRotationX(2, -Math::PI*0.35f);
 
@@ -563,7 +563,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
         engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(3, rank);
         obj->SetObjectParent(3, 0);
-        modelManager->AddModelReference("convert3.mod", false, rank, params.team);
+        modelManager->AddModelReference("convert3", false, rank, params.team);
         obj->SetPartPosition(3, glm::vec3(0.0f, 11.5f, 0.0f));
         obj->SetPartRotationY(3, Math::PI);
         obj->SetPartRotationX(3, -Math::PI*0.35f);
@@ -579,7 +579,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
 
     if ( params.type == OBJECT_TOWER )
     {
-        modelManager->AddModelReference("tower.mod", false, rank, params.team);
+        modelManager->AddModelReference("tower", false, rank, params.team);
         obj->SetPosition(params.pos);
         obj->SetRotationY(params.angle);
         obj->SetFloorHeight(0.0f);
@@ -588,7 +588,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
         engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(1, rank);
         obj->SetObjectParent(1, 0);
-        modelManager->AddModelReference("roller2c.mod", false, rank, params.team);
+        modelManager->AddModelReference("roller2c", false, rank, params.team);
         obj->SetPartPosition(1, glm::vec3(0.0f, 20.0f, 0.0f));
         obj->SetPartRotationZ(1, Math::PI/2.0f);
 
@@ -596,7 +596,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
         engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(2, rank);
         obj->SetObjectParent(2, 1);
-        modelManager->AddModelReference("roller3c.mod", false, rank, params.team);
+        modelManager->AddModelReference("roller3c", false, rank, params.team);
         obj->SetPartPosition(2, glm::vec3(4.5f, 0.0f, 0.0f));
         obj->SetPartRotationZ(2, 0.0f);
 
@@ -613,7 +613,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
 
     if ( params.type == OBJECT_NUCLEAR )
     {
-        modelManager->AddModelReference("nuclear1.mod", false, rank, params.team);
+        modelManager->AddModelReference("nuclear1", false, rank, params.team);
         obj->SetPosition(params.pos);
         obj->SetRotationY(params.angle);
         obj->SetFloorHeight(0.0f);
@@ -622,7 +622,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
         engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(1, rank);
         obj->SetObjectParent(1, 0);
-        modelManager->AddModelReference("nuclear2.mod", false, rank, params.team);
+        modelManager->AddModelReference("nuclear2", false, rank, params.team);
         obj->SetPartPosition(1, glm::vec3(20.0f, 10.0f, 0.0f));
         obj->SetPartRotationZ(1, 135.0f*Math::PI/180.0f);
 
@@ -638,7 +638,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
 
     if ( params.type == OBJECT_PARA )
     {
-        modelManager->AddModelReference("para.mod", false, rank, params.team);
+        modelManager->AddModelReference("para", false, rank, params.team);
         obj->SetPosition(params.pos);
         obj->SetRotationY(params.angle);
         obj->SetFloorHeight(0.0f);
@@ -662,7 +662,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
 
     if ( params.type == OBJECT_SAFE )
     {
-        modelManager->AddModelReference("safe1.mod", false, rank, params.team);
+        modelManager->AddModelReference("safe1", false, rank, params.team);
         obj->SetPosition(params.pos);
         obj->SetRotationY(params.angle);
         obj->SetFloorHeight(0.0f);
@@ -671,14 +671,14 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
         engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(1, rank);
         obj->SetObjectParent(1, 0);
-        modelManager->AddModelReference("safe2.mod", false, rank, params.team);
+        modelManager->AddModelReference("safe2", false, rank, params.team);
         obj->SetPartScale(1, 1.05f);
 
         rank = engine->CreateObject();
         engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(2, rank);
         obj->SetObjectParent(2, 0);
-        modelManager->AddModelReference("safe3.mod", false, rank, params.team);
+        modelManager->AddModelReference("safe3", false, rank, params.team);
         obj->SetPartScale(2, 1.05f);
 
         engine->GetTerrain()->AddBuildingLevel(params.pos, 18.0f, 20.0f, 1.0f, 0.5f);
@@ -691,7 +691,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
 
     if ( params.type == OBJECT_HUSTON )
     {
-        modelManager->AddModelReference("huston1.mod", false, rank, params.team);
+        modelManager->AddModelReference("huston1", false, rank, params.team);
         obj->SetPosition(params.pos);
         obj->SetRotationY(params.angle);
         obj->SetFloorHeight(0.0f);
@@ -700,7 +700,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
         engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(1, rank);
         obj->SetObjectParent(1, 0);
-        modelManager->AddModelReference("huston2.mod", false, rank, params.team);
+        modelManager->AddModelReference("huston2", false, rank, params.team);
         obj->SetPartPosition(1, glm::vec3(0.0f, 39.0f, 30.0f));
         obj->SetPartRotationY(1, -Math::PI/2.0f);
         obj->SetPartScale(1, 3.0f);
@@ -709,7 +709,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
         engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(2, rank);
         obj->SetObjectParent(2, 1);
-        modelManager->AddModelReference("huston3.mod", false, rank, params.team);
+        modelManager->AddModelReference("huston3", false, rank, params.team);
         obj->SetPartPosition(2, glm::vec3(0.0f, 4.5f, 1.9f));
 
         obj->AddCrashSphere(CrashSphere(glm::vec3( 15.0f,  6.0f, -53.0f), 16.0f, SOUND_BOUMm, 0.45f));
@@ -732,7 +732,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
 
     if ( params.type == OBJECT_TARGET1 )
     {
-        modelManager->AddModelReference("target1.mod", false, rank, params.team);
+        modelManager->AddModelReference("target1", false, rank, params.team);
         obj->SetPosition(params.pos);
         obj->SetRotationY(params.angle);
         obj->SetScale(1.5f);
@@ -761,7 +761,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
 
     if ( params.type == OBJECT_TARGET2 )
     {
-        modelManager->AddModelReference("target2.mod", false, rank, params.team);
+        modelManager->AddModelReference("target2", false, rank, params.team);
         obj->SetPosition(params.pos);
         obj->SetRotationY(params.angle);
         obj->SetFloorHeight(0.0f);
@@ -771,7 +771,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
 
     if ( params.type == OBJECT_NEST )
     {
-        modelManager->AddModelReference("nest.mod", false, rank, params.team);
+        modelManager->AddModelReference("nest", false, rank, params.team);
         obj->SetPosition(params.pos);
         obj->SetRotationY(params.angle);
         obj->SetFloorHeight(0.0f);
@@ -783,7 +783,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
 
     if ( params.type == OBJECT_START )
     {
-        modelManager->AddModelReference("start.mod", false, rank, params.team);
+        modelManager->AddModelReference("start", false, rank, params.team);
         obj->SetPosition(params.pos);
         obj->SetRotationY(params.angle);
         obj->SetFloorHeight(0.0f);
@@ -793,7 +793,7 @@ std::unique_ptr<CBaseBuilding> CBaseBuilding::Create(
 
     if ( params.type == OBJECT_END )
     {
-        modelManager->AddModelReference("end.mod", false, rank, params.team);
+        modelManager->AddModelReference("end", false, rank, params.team);
         obj->SetPosition(params.pos);
         obj->SetRotationY(params.angle);
         obj->SetFloorHeight(0.0f);

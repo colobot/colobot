@@ -94,7 +94,7 @@ void CMotionToto::Create(glm::vec3 pos, float angle, ObjectType type,
     rank = m_engine->CreateObject();
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICLE);  // this is a moving object
     m_object->SetObjectRank(0, rank);
-    modelManager->AddModelReference("toto1.mod", false, rank);
+    modelManager->AddModelReference("toto1", false, rank);
     m_object->SetPosition(pos);
     m_object->SetRotationY(angle);
 
@@ -103,7 +103,7 @@ void CMotionToto::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(1, rank);
     m_object->SetObjectParent(1, 0);
-    modelManager->AddModelReference("toto2.mod", false, rank);
+    modelManager->AddModelReference("toto2", false, rank);
     m_object->SetPartPosition(1, glm::vec3(1.00f, 0.17f, 0.00f));
 
     // Creates the left eye.
@@ -111,7 +111,7 @@ void CMotionToto::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(2, rank);
     m_object->SetObjectParent(2, 0);
-    modelManager->AddModelReference("toto3.mod", true, rank);
+    modelManager->AddModelReference("toto3", true, rank);
     m_object->SetPartPosition(2, glm::vec3(0.85f, 1.04f, 0.25f));
     m_object->SetPartRotationY(2, -20.0f*Math::PI/180.0f);
 
@@ -120,7 +120,7 @@ void CMotionToto::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(3, rank);
     m_object->SetObjectParent(3, 0);
-    modelManager->AddModelReference("toto3.mod", false, rank);
+    modelManager->AddModelReference("toto3", false, rank);
     m_object->SetPartPosition(3, glm::vec3(0.85f, 1.04f, -0.25f));
     m_object->SetPartRotationY(3, 20.0f*Math::PI/180.0f);
 
@@ -129,7 +129,7 @@ void CMotionToto::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(4, rank);
     m_object->SetObjectParent(4, 0);
-    modelManager->AddModelReference("toto4.mod", false, rank);
+    modelManager->AddModelReference("toto4", false, rank);
     m_object->SetPartPosition(4, glm::vec3(0.0f, 1.9f, 0.3f));
     m_object->SetPartRotationX(4, 30.0f*Math::PI/180.0f);
 
@@ -137,7 +137,7 @@ void CMotionToto::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(5, rank);
     m_object->SetObjectParent(5, 4);
-    modelManager->AddModelReference("toto4.mod", false, rank);
+    modelManager->AddModelReference("toto4", false, rank);
     m_object->SetPartPosition(5, glm::vec3(0.0f, 0.67f, 0.0f));
     m_object->SetPartRotationX(5, 30.0f*Math::PI/180.0f);
 
@@ -145,7 +145,7 @@ void CMotionToto::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(6, rank);
     m_object->SetObjectParent(6, 5);
-    modelManager->AddModelReference("toto5.mod", false, rank);
+    modelManager->AddModelReference("toto5", false, rank);
     m_object->SetPartPosition(6, glm::vec3(0.0f, 0.70f, 0.0f));
     m_object->SetPartRotationX(6, 30.0f*Math::PI/180.0f);
 
@@ -154,7 +154,7 @@ void CMotionToto::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(7, rank);
     m_object->SetObjectParent(7, 0);
-    modelManager->AddModelReference("toto4.mod", false, rank);
+    modelManager->AddModelReference("toto4", false, rank);
     m_object->SetPartPosition(7, glm::vec3(0.0f, 1.9f, -0.3f));
     m_object->SetPartRotationX(7, -30.0f*Math::PI/180.0f);
 
@@ -162,7 +162,7 @@ void CMotionToto::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(8, rank);
     m_object->SetObjectParent(8, 7);
-    modelManager->AddModelReference("toto4.mod", false, rank);
+    modelManager->AddModelReference("toto4", false, rank);
     m_object->SetPartPosition(8, glm::vec3(0.0f, 0.67f, 0.0f));
     m_object->SetPartRotationX(8, -30.0f*Math::PI/180.0f);
 
@@ -170,7 +170,7 @@ void CMotionToto::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(9, rank);
     m_object->SetObjectParent(9, 8);
-    modelManager->AddModelReference("toto5.mod", false, rank);
+    modelManager->AddModelReference("toto5", false, rank);
     m_object->SetPartPosition(9, glm::vec3(0.0f, 0.70f, 0.0f));
     m_object->SetPartRotationX(9, -30.0f*Math::PI/180.0f);
 

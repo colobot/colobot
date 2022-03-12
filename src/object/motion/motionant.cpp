@@ -82,7 +82,7 @@ void CMotionAnt::Create(glm::vec3 pos, float angle, ObjectType type,
     rank = m_engine->CreateObject();
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICLE);  // this is a moving object
     m_object->SetObjectRank(0, rank);
-    modelManager->AddModelReference("ant1.mod", false, rank);
+    modelManager->AddModelReference("ant1", false, rank);
     m_object->SetPosition(pos);
     m_object->SetRotationY(angle);
 
@@ -96,7 +96,7 @@ void CMotionAnt::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(1, rank);
     m_object->SetObjectParent(1, 0);
-    modelManager->AddModelReference("ant2.mod", false, rank);
+    modelManager->AddModelReference("ant2", false, rank);
     m_object->SetPartPosition(1, glm::vec3(2.0f, 0.0f, 0.0f));
 
     // Creates the tail.
@@ -104,7 +104,7 @@ void CMotionAnt::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(2, rank);
     m_object->SetObjectParent(2, 0);
-    modelManager->AddModelReference("ant3.mod", false, rank);
+    modelManager->AddModelReference("ant3", false, rank);
     m_object->SetPartPosition(2, glm::vec3(-1.0f, 0.0f, 0.0f));
 
     // Creates a right-back thigh.
@@ -112,7 +112,7 @@ void CMotionAnt::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(3, rank);
     m_object->SetObjectParent(3, 0);
-    modelManager->AddModelReference("ant4.mod", false, rank);
+    modelManager->AddModelReference("ant4", false, rank);
     m_object->SetPartPosition(3, glm::vec3(-0.4f, -0.1f, -0.3f));
 
     // Creates a right-back leg.
@@ -120,7 +120,7 @@ void CMotionAnt::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank,Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(4, rank);
     m_object->SetObjectParent(4, 3);
-    modelManager->AddModelReference("ant5.mod", false, rank);
+    modelManager->AddModelReference("ant5", false, rank);
     m_object->SetPartPosition(4, glm::vec3(0.0f, 0.0f, -1.0f));
 
     // Creates a right-back foot.
@@ -128,7 +128,7 @@ void CMotionAnt::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(5, rank);
     m_object->SetObjectParent(5, 4);
-    modelManager->AddModelReference("ant6.mod", false, rank);
+    modelManager->AddModelReference("ant6", false, rank);
     m_object->SetPartPosition(5, glm::vec3(0.0f, 0.0f, -2.0f));
 
     // Creates two middle-right thighs.
@@ -136,7 +136,7 @@ void CMotionAnt::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(6, rank);
     m_object->SetObjectParent(6, 0);
-    modelManager->AddModelReference("ant4.mod", false, rank);
+    modelManager->AddModelReference("ant4", false, rank);
     m_object->SetPartPosition(6, glm::vec3(0.1f, -0.1f, -0.4f));
 
     // Creates two middle-right legs.
@@ -144,7 +144,7 @@ void CMotionAnt::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(7, rank);
     m_object->SetObjectParent(7, 6);
-    modelManager->AddModelReference("ant5.mod", false, rank);
+    modelManager->AddModelReference("ant5", false, rank);
     m_object->SetPartPosition(7, glm::vec3(0.0f, 0.0f, -1.0f));
 
     // Creates two middle-right foots.
@@ -152,7 +152,7 @@ void CMotionAnt::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(8, rank);
     m_object->SetObjectParent(8, 7);
-    modelManager->AddModelReference("ant6.mod", false, rank);
+    modelManager->AddModelReference("ant6", false, rank);
     m_object->SetPartPosition(8, glm::vec3(0.0f, 0.0f, -2.0f));
 
     // Creates the right front thigh.
@@ -160,7 +160,7 @@ void CMotionAnt::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(9, rank);
     m_object->SetObjectParent(9, 0);
-    modelManager->AddModelReference("ant4.mod", false, rank);
+    modelManager->AddModelReference("ant4", false, rank);
     m_object->SetPartPosition(9, glm::vec3(1.4f, -0.1f, -0.6f));
 
     // Creates the right front leg.
@@ -168,7 +168,7 @@ void CMotionAnt::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(10, rank);
     m_object->SetObjectParent(10, 9);
-    modelManager->AddModelReference("ant5.mod", false, rank);
+    modelManager->AddModelReference("ant5", false, rank);
     m_object->SetPartPosition(10, glm::vec3(0.0f, 0.0f, -1.0f));
 
     // Creates the right front foot.
@@ -176,7 +176,7 @@ void CMotionAnt::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(11, rank);
     m_object->SetObjectParent(11, 10);
-    modelManager->AddModelReference("ant6.mod", false, rank);
+    modelManager->AddModelReference("ant6", false, rank);
     m_object->SetPartPosition(11, glm::vec3(0.0f, 0.0f, -2.0f));
 
     // Creates a left-back thigh.
@@ -184,7 +184,7 @@ void CMotionAnt::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(12, rank);
     m_object->SetObjectParent(12, 0);
-    modelManager->AddModelReference("ant4.mod", true, rank);
+    modelManager->AddModelReference("ant4", true, rank);
     m_object->SetPartPosition(12, glm::vec3(-0.4f, -0.1f, 0.3f));
 
     // Creates a left-back leg.
@@ -192,7 +192,7 @@ void CMotionAnt::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(13, rank);
     m_object->SetObjectParent(13, 12);
-    modelManager->AddModelReference("ant5.mod", true, rank);
+    modelManager->AddModelReference("ant5", true, rank);
     m_object->SetPartPosition(13, glm::vec3(0.0f, 0.0f, 1.0f));
 
     // Creates a left-back foot.
@@ -200,7 +200,7 @@ void CMotionAnt::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(14, rank);
     m_object->SetObjectParent(14, 13);
-    modelManager->AddModelReference("ant6.mod", true, rank);
+    modelManager->AddModelReference("ant6", true, rank);
     m_object->SetPartPosition(14, glm::vec3(0.0f, 0.0f, 2.0f));
 
     // Creates two middle-left thighs.
@@ -208,7 +208,7 @@ void CMotionAnt::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(15, rank);
     m_object->SetObjectParent(15, 0);
-    modelManager->AddModelReference("ant4.mod", true, rank);
+    modelManager->AddModelReference("ant4", true, rank);
     m_object->SetPartPosition(15, glm::vec3(0.1f, -0.1f, 0.4f));
 
     // Creates two middle-left legs.
@@ -216,7 +216,7 @@ void CMotionAnt::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(16, rank);
     m_object->SetObjectParent(16, 15);
-    modelManager->AddModelReference("ant5.mod", true, rank);
+    modelManager->AddModelReference("ant5", true, rank);
     m_object->SetPartPosition(16, glm::vec3(0.0f, 0.0f, 1.0f));
 
     // Creates two middle-left foot.
@@ -224,7 +224,7 @@ void CMotionAnt::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(17, rank);
     m_object->SetObjectParent(17, 16);
-    modelManager->AddModelReference("ant6.mod", true, rank);
+    modelManager->AddModelReference("ant6", true, rank);
     m_object->SetPartPosition(17, glm::vec3(0.0f, 0.0f, 2.0f));
 
     // Creates the left front thigh.
@@ -232,7 +232,7 @@ void CMotionAnt::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(18, rank);
     m_object->SetObjectParent(18, 0);
-    modelManager->AddModelReference("ant4.mod", true, rank);
+    modelManager->AddModelReference("ant4", true, rank);
     m_object->SetPartPosition(18, glm::vec3(1.4f, -0.1f, 0.6f));
 
     // Creates the left front leg.
@@ -240,7 +240,7 @@ void CMotionAnt::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(19, rank);
     m_object->SetObjectParent(19, 18);
-    modelManager->AddModelReference("ant5.mod", true, rank);
+    modelManager->AddModelReference("ant5", true, rank);
     m_object->SetPartPosition(19, glm::vec3(0.0f, 0.0f, 1.0f));
 
     // Creates the left front foot.
@@ -248,7 +248,7 @@ void CMotionAnt::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(20, rank);
     m_object->SetObjectParent(20, 19);
-    modelManager->AddModelReference("ant6.mod", true, rank);
+    modelManager->AddModelReference("ant6", true, rank);
     m_object->SetPartPosition(20, glm::vec3(0.0f, 0.0f, 2.0f));
 
     m_object->CreateShadowCircle(4.0f, 0.5f);

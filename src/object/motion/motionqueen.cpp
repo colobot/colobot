@@ -77,7 +77,7 @@ void CMotionQueen::Create(glm::vec3 pos, float angle, ObjectType type,
     rank = m_engine->CreateObject();
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICLE);  // this is a moving object
     m_object->SetObjectRank(0, rank);
-    modelManager->AddModelReference("mother1.mod", false, rank);
+    modelManager->AddModelReference("mother1", false, rank);
     m_object->SetPosition(pos);
     m_object->SetRotationY(angle);
 
@@ -91,7 +91,7 @@ void CMotionQueen::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(1, rank);
     m_object->SetObjectParent(1, 0);
-    modelManager->AddModelReference("mother2.mod", false, rank);
+    modelManager->AddModelReference("mother2", false, rank);
     m_object->SetPartPosition(1, glm::vec3(16.0f, 3.0f, 0.0f));
 
     // Creates a right-back leg.
@@ -99,7 +99,7 @@ void CMotionQueen::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(2, rank);
     m_object->SetObjectParent(2, 0);
-    modelManager->AddModelReference("mother3.mod", false, rank);
+    modelManager->AddModelReference("mother3", false, rank);
     m_object->SetPartPosition(2, glm::vec3(-5.0f, -1.0f, -12.0f));
 
     // Creates a right-back foot.
@@ -107,7 +107,7 @@ void CMotionQueen::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(3, rank);
     m_object->SetObjectParent(3, 2);
-    modelManager->AddModelReference("mother4.mod", false, rank);
+    modelManager->AddModelReference("mother4", false, rank);
     m_object->SetPartPosition(3, glm::vec3(0.0f, 0.0f, -8.5f));
 
     // Creates a middle-right leg.
@@ -115,7 +115,7 @@ void CMotionQueen::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(4, rank);
     m_object->SetObjectParent(4, 0);
-    modelManager->AddModelReference("mother3.mod", false, rank);
+    modelManager->AddModelReference("mother3", false, rank);
     m_object->SetPartPosition(4, glm::vec3(3.5f, -1.0f, -12.0f));
 
     // Creates a middle-right foot.
@@ -123,7 +123,7 @@ void CMotionQueen::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(5, rank);
     m_object->SetObjectParent(5, 4);
-    modelManager->AddModelReference("mother4.mod", false, rank);
+    modelManager->AddModelReference("mother4", false, rank);
     m_object->SetPartPosition(5, glm::vec3(0.0f, 0.0f, -8.5f));
 
     // Creates a right-front leg.
@@ -131,7 +131,7 @@ void CMotionQueen::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(6, rank);
     m_object->SetObjectParent(6, 0);
-    modelManager->AddModelReference("mother3.mod", false, rank);
+    modelManager->AddModelReference("mother3", false, rank);
     m_object->SetPartPosition(6, glm::vec3(10.0f, -1.0f, -10.0f));
 
     // Creates a right-front foot.
@@ -139,7 +139,7 @@ void CMotionQueen::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(7, rank);
     m_object->SetObjectParent(7, 6);
-    modelManager->AddModelReference("mother4.mod", false, rank);
+    modelManager->AddModelReference("mother4", false, rank);
     m_object->SetPartPosition(7, glm::vec3(0.0f, 0.0f, -8.5f));
 
     // Creates a left-back leg.
@@ -147,7 +147,7 @@ void CMotionQueen::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(8, rank);
     m_object->SetObjectParent(8, 0);
-    modelManager->AddModelReference("mother3.mod", false, rank);
+    modelManager->AddModelReference("mother3", false, rank);
     m_object->SetPartPosition(8, glm::vec3(-5.0f, -1.0f, 12.0f));
     m_object->SetPartRotationY(8, Math::PI);
 
@@ -156,7 +156,7 @@ void CMotionQueen::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(9, rank);
     m_object->SetObjectParent(9, 8);
-    modelManager->AddModelReference("mother4.mod", false, rank);
+    modelManager->AddModelReference("mother4", false, rank);
     m_object->SetPartPosition(9, glm::vec3(0.0f, 0.0f, -8.5f));
 
     // Creates a middle-left leg.
@@ -164,7 +164,7 @@ void CMotionQueen::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(10, rank);
     m_object->SetObjectParent(10, 0);
-    modelManager->AddModelReference("mother3.mod", false, rank);
+    modelManager->AddModelReference("mother3", false, rank);
     m_object->SetPartPosition(10, glm::vec3(3.5f, -1.0f, 12.0f));
     m_object->SetPartRotationY(10, Math::PI);
 
@@ -173,7 +173,7 @@ void CMotionQueen::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(11, rank);
     m_object->SetObjectParent(11, 10);
-    modelManager->AddModelReference("mother4.mod", false, rank);
+    modelManager->AddModelReference("mother4", false, rank);
     m_object->SetPartPosition(11, glm::vec3(0.0f, 0.0f, -8.5f));
 
     // Creates a left-front leg.
@@ -181,7 +181,7 @@ void CMotionQueen::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(12, rank);
     m_object->SetObjectParent(12, 0);
-    modelManager->AddModelReference("mother3.mod", false, rank);
+    modelManager->AddModelReference("mother3", false, rank);
     m_object->SetPartPosition(12, glm::vec3(10.0f, -1.0f, 10.0f));
     m_object->SetPartRotationY(12, Math::PI);
 
@@ -190,7 +190,7 @@ void CMotionQueen::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(13, rank);
     m_object->SetObjectParent(13, 12);
-    modelManager->AddModelReference("mother4.mod", false, rank);
+    modelManager->AddModelReference("mother4", false, rank);
     m_object->SetPartPosition(13, glm::vec3(0.0f, 0.0f, -8.5f));
 
     // Creates the right antenna.
@@ -198,14 +198,14 @@ void CMotionQueen::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(14, rank);
     m_object->SetObjectParent(14, 1);
-    modelManager->AddModelReference("mother5.mod", false, rank);
+    modelManager->AddModelReference("mother5", false, rank);
     m_object->SetPartPosition(14, glm::vec3(6.0f, 1.0f, -2.5f));
 
     rank = m_engine->CreateObject();
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(15, rank);
     m_object->SetObjectParent(15, 14);
-    modelManager->AddModelReference("mother6.mod", false, rank);
+    modelManager->AddModelReference("mother6", false, rank);
     m_object->SetPartPosition(15, glm::vec3(8.0f, 0.0f, 0.0f));
 
     // Creates the left antenna.
@@ -213,14 +213,14 @@ void CMotionQueen::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(16, rank);
     m_object->SetObjectParent(16, 1);
-    modelManager->AddModelReference("mother5.mod", false, rank);
+    modelManager->AddModelReference("mother5", false, rank);
     m_object->SetPartPosition(16, glm::vec3(6.0f, 1.0f, 2.5f));
 
     rank = m_engine->CreateObject();
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(17, rank);
     m_object->SetObjectParent(17, 16);
-    modelManager->AddModelReference("mother6.mod", false, rank);
+    modelManager->AddModelReference("mother6", false, rank);
     m_object->SetPartPosition(17, glm::vec3(8.0f, 0.0f, 0.0f));
 
     // Creates the right claw.
@@ -228,7 +228,7 @@ void CMotionQueen::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(18, rank);
     m_object->SetObjectParent(18, 1);
-    modelManager->AddModelReference("mother7.mod", false, rank);
+    modelManager->AddModelReference("mother7", false, rank);
     m_object->SetPartPosition(18, glm::vec3(-4.0f, -3.5f, -8.0f));
     m_object->SetPartScaleX(18, 1.2f);
 
@@ -237,7 +237,7 @@ void CMotionQueen::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(19, rank);
     m_object->SetObjectParent(19, 1);
-    modelManager->AddModelReference("mother7.mod", true, rank);
+    modelManager->AddModelReference("mother7", true, rank);
     m_object->SetPartPosition(19, glm::vec3(-4.0f, -3.5f, 8.0f));
     m_object->SetPartScaleX(19, 1.2f);
 

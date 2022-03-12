@@ -344,31 +344,31 @@ CObjectUPtr CObjectFactory::CreateResource(const ObjectCreateParams& params)
     obj->SetEnergyLevel(power);
 
     std::string name;
-    if ( type == OBJECT_STONE       )  name = "stone.mod";
-    if ( type == OBJECT_URANIUM     )  name = "uranium.mod";
-    if ( type == OBJECT_METAL       )  name = "metal.mod";
-    if ( type == OBJECT_POWER       )  name = "power.mod";
-    if ( type == OBJECT_ATOMIC      )  name = "atomic.mod";
-    if ( type == OBJECT_BULLET      )  name = "bullet.mod";
-    if ( type == OBJECT_BBOX        )  name = "bbox.mod";
-    if ( type == OBJECT_KEYa        )  name = "keya.mod";
-    if ( type == OBJECT_KEYb        )  name = "keyb.mod";
-    if ( type == OBJECT_KEYc        )  name = "keyc.mod";
-    if ( type == OBJECT_KEYd        )  name = "keyd.mod";
-    if ( type == OBJECT_TNT         )  name = "tnt.mod";
-    if ( type == OBJECT_BOMB        )  name = "bomb.mod";
-    if ( type == OBJECT_WAYPOINT    )  name = "waypoint.mod";
-    if ( type == OBJECT_SHOW        )  name = "show.mod";
-    if ( type == OBJECT_WINFIRE     )  name = "winfire.mod";
-    if ( type == OBJECT_BAG         )  name = "bag.mod";
-    if ( type == OBJECT_MARKSTONE   )  name = "cross1.mod";
-    if ( type == OBJECT_MARKURANIUM )  name = "cross3.mod";
-    if ( type == OBJECT_MARKPOWER   )  name = "cross2.mod";
-    if ( type == OBJECT_MARKKEYa    )  name = "crossa.mod";
-    if ( type == OBJECT_MARKKEYb    )  name = "crossb.mod";
-    if ( type == OBJECT_MARKKEYc    )  name = "crossc.mod";
-    if ( type == OBJECT_MARKKEYd    )  name = "crossd.mod";
-    if ( type == OBJECT_EGG         )  name = "egg.mod";
+    if ( type == OBJECT_STONE       )  name = "stone";
+    if ( type == OBJECT_URANIUM     )  name = "uranium";
+    if ( type == OBJECT_METAL       )  name = "metal";
+    if ( type == OBJECT_POWER       )  name = "power";
+    if ( type == OBJECT_ATOMIC      )  name = "atomic";
+    if ( type == OBJECT_BULLET      )  name = "bullet";
+    if ( type == OBJECT_BBOX        )  name = "bbox";
+    if ( type == OBJECT_KEYa        )  name = "keya";
+    if ( type == OBJECT_KEYb        )  name = "keyb";
+    if ( type == OBJECT_KEYc        )  name = "keyc";
+    if ( type == OBJECT_KEYd        )  name = "keyd";
+    if ( type == OBJECT_TNT         )  name = "tnt";
+    if ( type == OBJECT_BOMB        )  name = "bomb";
+    if ( type == OBJECT_WAYPOINT    )  name = "waypoint";
+    if ( type == OBJECT_SHOW        )  name = "show";
+    if ( type == OBJECT_WINFIRE     )  name = "winfire";
+    if ( type == OBJECT_BAG         )  name = "bag";
+    if ( type == OBJECT_MARKSTONE   )  name = "cross1";
+    if ( type == OBJECT_MARKURANIUM )  name = "cross3";
+    if ( type == OBJECT_MARKPOWER   )  name = "cross2";
+    if ( type == OBJECT_MARKKEYa    )  name = "crossa";
+    if ( type == OBJECT_MARKKEYb    )  name = "crossb";
+    if ( type == OBJECT_MARKKEYc    )  name = "crossc";
+    if ( type == OBJECT_MARKKEYd    )  name = "crossd";
+    if ( type == OBJECT_EGG         )  name = "egg";
 
     if (type == OBJECT_POWER || type == OBJECT_ATOMIC)
     {
@@ -456,11 +456,11 @@ CObjectUPtr CObjectFactory::CreateFlag(const ObjectCreateParams& params)
     std::string name;
 
     name = "";
-    if ( type == OBJECT_FLAGb )  name = "flag1b.mod";
-    if ( type == OBJECT_FLAGr )  name = "flag1r.mod";
-    if ( type == OBJECT_FLAGg )  name = "flag1g.mod";
-    if ( type == OBJECT_FLAGy )  name = "flag1y.mod";
-    if ( type == OBJECT_FLAGv )  name = "flag1v.mod";
+    if ( type == OBJECT_FLAGb )  name = "flag1b";
+    if ( type == OBJECT_FLAGr )  name = "flag1r";
+    if ( type == OBJECT_FLAGg )  name = "flag1g";
+    if ( type == OBJECT_FLAGy )  name = "flag1y";
+    if ( type == OBJECT_FLAGv )  name = "flag1v";
 
     int rank = m_engine->CreateObject();
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);  // it is a stationary object
@@ -470,11 +470,11 @@ CObjectUPtr CObjectFactory::CreateFlag(const ObjectCreateParams& params)
     obj->SetRotationY(angle);
 
     name = "";
-    if ( type == OBJECT_FLAGb )  name = "flag2b.mod";
-    if ( type == OBJECT_FLAGr )  name = "flag2r.mod";
-    if ( type == OBJECT_FLAGg )  name = "flag2g.mod";
-    if ( type == OBJECT_FLAGy )  name = "flag2y.mod";
-    if ( type == OBJECT_FLAGv )  name = "flag2v.mod";
+    if ( type == OBJECT_FLAGb )  name = "flag2b";
+    if ( type == OBJECT_FLAGr )  name = "flag2r";
+    if ( type == OBJECT_FLAGg )  name = "flag2g";
+    if ( type == OBJECT_FLAGy )  name = "flag2y";
+    if ( type == OBJECT_FLAGv )  name = "flag2v";
 
     for (int i=0 ; i<4 ; i++ )
     {
@@ -520,7 +520,7 @@ CObjectUPtr CObjectFactory::CreateBarrier(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("barrier0.mod", false, rank, obj->GetTeam());
+        m_oldModelManager->AddModelReference("barrier0", false, rank, obj->GetTeam());
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -536,7 +536,7 @@ CObjectUPtr CObjectFactory::CreateBarrier(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("barrier1.mod", false, rank, obj->GetTeam());
+        m_oldModelManager->AddModelReference("barrier1", false, rank, obj->GetTeam());
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -554,7 +554,7 @@ CObjectUPtr CObjectFactory::CreateBarrier(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("barrier2.mod", false, rank, obj->GetTeam());
+        m_oldModelManager->AddModelReference("barrier2", false, rank, obj->GetTeam());
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -572,7 +572,7 @@ CObjectUPtr CObjectFactory::CreateBarrier(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("barrier3.mod", false, rank, obj->GetTeam());
+        m_oldModelManager->AddModelReference("barrier3", false, rank, obj->GetTeam());
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -590,7 +590,7 @@ CObjectUPtr CObjectFactory::CreateBarrier(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("barricade0.mod", false, rank, obj->GetTeam());
+        m_oldModelManager->AddModelReference("barricade0", false, rank, obj->GetTeam());
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -609,7 +609,7 @@ CObjectUPtr CObjectFactory::CreateBarrier(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("barricade1.mod", false, rank, obj->GetTeam());
+        m_oldModelManager->AddModelReference("barricade1", false, rank, obj->GetTeam());
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -664,11 +664,11 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        if ( type == OBJECT_PLANT0 )  m_oldModelManager->AddModelReference("plant0.mod", false, rank, obj->GetTeam());
-        if ( type == OBJECT_PLANT1 )  m_oldModelManager->AddModelReference("plant1.mod", false, rank, obj->GetTeam());
-        if ( type == OBJECT_PLANT2 )  m_oldModelManager->AddModelReference("plant2.mod", false, rank, obj->GetTeam());
-        if ( type == OBJECT_PLANT3 )  m_oldModelManager->AddModelReference("plant3.mod", false, rank, obj->GetTeam());
-        if ( type == OBJECT_PLANT4 )  m_oldModelManager->AddModelReference("plant4.mod", false, rank, obj->GetTeam());
+        if ( type == OBJECT_PLANT0 )  m_oldModelManager->AddModelReference("plant0", false, rank, obj->GetTeam());
+        if ( type == OBJECT_PLANT1 )  m_oldModelManager->AddModelReference("plant1", false, rank, obj->GetTeam());
+        if ( type == OBJECT_PLANT2 )  m_oldModelManager->AddModelReference("plant2", false, rank, obj->GetTeam());
+        if ( type == OBJECT_PLANT3 )  m_oldModelManager->AddModelReference("plant3", false, rank, obj->GetTeam());
+        if ( type == OBJECT_PLANT4 )  m_oldModelManager->AddModelReference("plant4", false, rank, obj->GetTeam());
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -688,9 +688,9 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        if ( type == OBJECT_PLANT5 )  m_oldModelManager->AddModelReference("plant5.mod", false, rank, obj->GetTeam());
-        if ( type == OBJECT_PLANT6 )  m_oldModelManager->AddModelReference("plant6.mod", false, rank, obj->GetTeam());
-        if ( type == OBJECT_PLANT7 )  m_oldModelManager->AddModelReference("plant7.mod", false, rank, obj->GetTeam());
+        if ( type == OBJECT_PLANT5 )  m_oldModelManager->AddModelReference("plant5", false, rank, obj->GetTeam());
+        if ( type == OBJECT_PLANT6 )  m_oldModelManager->AddModelReference("plant6", false, rank, obj->GetTeam());
+        if ( type == OBJECT_PLANT7 )  m_oldModelManager->AddModelReference("plant7", false, rank, obj->GetTeam());
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -706,8 +706,8 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        if ( type == OBJECT_PLANT8 )  m_oldModelManager->AddModelReference("plant8.mod", false, rank, obj->GetTeam());
-        if ( type == OBJECT_PLANT9 )  m_oldModelManager->AddModelReference("plant9.mod", false, rank, obj->GetTeam());
+        if ( type == OBJECT_PLANT8 )  m_oldModelManager->AddModelReference("plant8", false, rank, obj->GetTeam());
+        if ( type == OBJECT_PLANT9 )  m_oldModelManager->AddModelReference("plant9", false, rank, obj->GetTeam());
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -726,11 +726,11 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        if ( type == OBJECT_PLANT10 )  m_oldModelManager->AddModelReference("plant10.mod", false, rank, obj->GetTeam());
-        if ( type == OBJECT_PLANT11 )  m_oldModelManager->AddModelReference("plant11.mod", false, rank, obj->GetTeam());
-        if ( type == OBJECT_PLANT12 )  m_oldModelManager->AddModelReference("plant12.mod", false, rank, obj->GetTeam());
-        if ( type == OBJECT_PLANT13 )  m_oldModelManager->AddModelReference("plant13.mod", false, rank, obj->GetTeam());
-        if ( type == OBJECT_PLANT14 )  m_oldModelManager->AddModelReference("plant14.mod", false, rank, obj->GetTeam());
+        if ( type == OBJECT_PLANT10 )  m_oldModelManager->AddModelReference("plant10", false, rank, obj->GetTeam());
+        if ( type == OBJECT_PLANT11 )  m_oldModelManager->AddModelReference("plant11", false, rank, obj->GetTeam());
+        if ( type == OBJECT_PLANT12 )  m_oldModelManager->AddModelReference("plant12", false, rank, obj->GetTeam());
+        if ( type == OBJECT_PLANT13 )  m_oldModelManager->AddModelReference("plant13", false, rank, obj->GetTeam());
+        if ( type == OBJECT_PLANT14 )  m_oldModelManager->AddModelReference("plant14", false, rank, obj->GetTeam());
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -750,11 +750,11 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        if ( type == OBJECT_PLANT15 )  m_oldModelManager->AddModelReference("plant15.mod", false, rank, obj->GetTeam());
-        if ( type == OBJECT_PLANT16 )  m_oldModelManager->AddModelReference("plant16.mod", false, rank, obj->GetTeam());
-        if ( type == OBJECT_PLANT17 )  m_oldModelManager->AddModelReference("plant17.mod", false, rank, obj->GetTeam());
-        if ( type == OBJECT_PLANT18 )  m_oldModelManager->AddModelReference("plant18.mod", false, rank, obj->GetTeam());
-        if ( type == OBJECT_PLANT19 )  m_oldModelManager->AddModelReference("plant19.mod", false, rank, obj->GetTeam());
+        if ( type == OBJECT_PLANT15 )  m_oldModelManager->AddModelReference("plant15", false, rank, obj->GetTeam());
+        if ( type == OBJECT_PLANT16 )  m_oldModelManager->AddModelReference("plant16", false, rank, obj->GetTeam());
+        if ( type == OBJECT_PLANT17 )  m_oldModelManager->AddModelReference("plant17", false, rank, obj->GetTeam());
+        if ( type == OBJECT_PLANT18 )  m_oldModelManager->AddModelReference("plant18", false, rank, obj->GetTeam());
+        if ( type == OBJECT_PLANT19 )  m_oldModelManager->AddModelReference("plant19", false, rank, obj->GetTeam());
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -773,7 +773,7 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("tree0.mod", false, rank, obj->GetTeam());
+        m_oldModelManager->AddModelReference("tree0", false, rank, obj->GetTeam());
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -790,7 +790,7 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("tree1.mod", false, rank, obj->GetTeam());
+        m_oldModelManager->AddModelReference("tree1", false, rank, obj->GetTeam());
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -808,7 +808,7 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("tree2.mod", false, rank, obj->GetTeam());
+        m_oldModelManager->AddModelReference("tree2", false, rank, obj->GetTeam());
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -826,7 +826,7 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("tree3.mod", false, rank, obj->GetTeam());
+        m_oldModelManager->AddModelReference("tree3", false, rank, obj->GetTeam());
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -843,7 +843,7 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("tree4.mod", false, rank, obj->GetTeam());
+        m_oldModelManager->AddModelReference("tree4", false, rank, obj->GetTeam());
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -859,7 +859,7 @@ CObjectUPtr CObjectFactory::CreatePlant(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("tree5.mod", false, rank, obj->GetTeam());
+        m_oldModelManager->AddModelReference("tree5", false, rank, obj->GetTeam());
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -902,7 +902,7 @@ CObjectUPtr CObjectFactory::CreateMushroom(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("mush1.mod", false, rank, obj->GetTeam());
+        m_oldModelManager->AddModelReference("mush1", false, rank, obj->GetTeam());
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -918,7 +918,7 @@ CObjectUPtr CObjectFactory::CreateMushroom(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("mush2.mod", false, rank, obj->GetTeam());
+        m_oldModelManager->AddModelReference("mush2", false, rank, obj->GetTeam());
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -965,7 +965,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen0.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen0", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -983,7 +983,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen1.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen1", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -1003,7 +1003,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen2.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen2", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -1024,7 +1024,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
 //?     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_METAL);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen3.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen3", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -1038,7 +1038,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen4.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen4", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -1058,7 +1058,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen5.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen5", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
         obj->SetFloorHeight(0.0f);
@@ -1073,7 +1073,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen6.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen6", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -1092,7 +1092,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen7.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen7", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -1111,7 +1111,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen8.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen8", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -1131,7 +1131,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen9.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen9", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -1151,7 +1151,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen10.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen10", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -1175,7 +1175,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen11.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen11", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
         obj->SetFloorHeight(0.0f);
@@ -1199,7 +1199,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
 //?     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_METAL);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen12.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen12", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -1213,7 +1213,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen13.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen13", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -1236,7 +1236,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen14.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen14", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -1259,7 +1259,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen15.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen15", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -1282,7 +1282,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen16.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen16", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -1298,7 +1298,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen17.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen17", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -1312,7 +1312,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen18.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen18", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -1326,7 +1326,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen19.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen19", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -1340,7 +1340,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen20.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen20", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -1359,7 +1359,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen21.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen21", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
     }
@@ -1369,7 +1369,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen22.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen22", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -1384,7 +1384,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen23.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen23", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -1409,7 +1409,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen24.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen24", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -1423,7 +1423,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen25.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen25", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -1437,7 +1437,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen26.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen26", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
         obj->SetFloorHeight(0.0f);
@@ -1460,7 +1460,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen27.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen27", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -1474,7 +1474,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
 //?     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_METAL);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen28.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen28", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -1487,7 +1487,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen29.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen29", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
         floorAdjust = false;
@@ -1498,7 +1498,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen30.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen30", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -1512,7 +1512,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen31.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen31", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -1529,7 +1529,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen32.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen32", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -1546,7 +1546,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen33.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen33", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -1559,7 +1559,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen34.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen34", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -1572,7 +1572,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen35.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen35", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -1589,7 +1589,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen36.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen36", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
         floorAdjust = false;
@@ -1600,7 +1600,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen37.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen37", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
         floorAdjust = false;
@@ -1611,7 +1611,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen38a.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen38a", false, rank);
         obj->SetPartPosition(0, pos);
         obj->SetPartRotationY(0, angle);
 
@@ -1619,14 +1619,14 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(1, rank);
         obj->SetObjectParent(1, 0);
-        m_oldModelManager->AddModelReference("teen38b.mod", false, rank);  // engine
+        m_oldModelManager->AddModelReference("teen38b", false, rank);  // engine
         obj->SetPartPosition(1, glm::vec3(0.0f, 30.0f, 0.0f));
 
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(2, rank);
         obj->SetObjectParent(2, 1);
-        m_oldModelManager->AddModelReference("teen38c.mod", false, rank);  // propeller
+        m_oldModelManager->AddModelReference("teen38c", false, rank);  // propeller
         obj->SetPartPosition(2, glm::vec3(0.0f, 0.0f, 0.0f));
 
         obj->AddCrashSphere(CrashSphere(glm::vec3(0.0f, 2.0f, 0.0f), 10.0f, SOUND_BOUM, 0.10f));
@@ -1639,7 +1639,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen39.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen39", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -1653,7 +1653,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen40.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen40", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -1667,7 +1667,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen41.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen41", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
     }
@@ -1677,7 +1677,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen42.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen42", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -1690,7 +1690,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen43.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen43", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -1703,7 +1703,7 @@ CObjectUPtr CObjectFactory::CreateTeen(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("teen44.mod", false, rank);
+        m_oldModelManager->AddModelReference("teen44", false, rank);
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -1749,7 +1749,7 @@ CObjectUPtr CObjectFactory::CreateQuartz(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_QUARTZ);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("quartz0.mod", false, rank, obj->GetTeam());
+        m_oldModelManager->AddModelReference("quartz0", false, rank, obj->GetTeam());
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -1763,7 +1763,7 @@ CObjectUPtr CObjectFactory::CreateQuartz(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_QUARTZ);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("quartz1.mod", false, rank, obj->GetTeam());
+        m_oldModelManager->AddModelReference("quartz1", false, rank, obj->GetTeam());
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -1777,7 +1777,7 @@ CObjectUPtr CObjectFactory::CreateQuartz(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_QUARTZ);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("quartz2.mod", false, rank, obj->GetTeam());
+        m_oldModelManager->AddModelReference("quartz2", false, rank, obj->GetTeam());
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -1791,7 +1791,7 @@ CObjectUPtr CObjectFactory::CreateQuartz(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_QUARTZ);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("quartz3.mod", false, rank, obj->GetTeam());
+        m_oldModelManager->AddModelReference("quartz3", false, rank, obj->GetTeam());
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
 
@@ -1855,7 +1855,7 @@ CObjectUPtr CObjectFactory::CreateRoot(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("root0.mod", false, rank, obj->GetTeam());
+        m_oldModelManager->AddModelReference("root0", false, rank, obj->GetTeam());
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
         obj->SetScale(2.0f);
@@ -1876,7 +1876,7 @@ CObjectUPtr CObjectFactory::CreateRoot(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("root1.mod", false, rank, obj->GetTeam());
+        m_oldModelManager->AddModelReference("root1", false, rank, obj->GetTeam());
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
         obj->SetScale(2.0f);
@@ -1897,7 +1897,7 @@ CObjectUPtr CObjectFactory::CreateRoot(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("root2.mod", false, rank, obj->GetTeam());
+        m_oldModelManager->AddModelReference("root2", false, rank, obj->GetTeam());
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
         obj->SetScale(2.0f);
@@ -1917,7 +1917,7 @@ CObjectUPtr CObjectFactory::CreateRoot(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("root3.mod", false, rank, obj->GetTeam());
+        m_oldModelManager->AddModelReference("root3", false, rank, obj->GetTeam());
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
         obj->SetScale(2.0f);
@@ -1939,7 +1939,7 @@ CObjectUPtr CObjectFactory::CreateRoot(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("root4.mod", false, rank, obj->GetTeam());
+        m_oldModelManager->AddModelReference("root4", false, rank, obj->GetTeam());
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
         obj->SetScale(2.0f);
@@ -1963,7 +1963,7 @@ CObjectUPtr CObjectFactory::CreateRoot(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("root4.mod", false, rank, obj->GetTeam());
+        m_oldModelManager->AddModelReference("root4", false, rank, obj->GetTeam());
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
         obj->SetScale(2.0f);
@@ -1972,7 +1972,7 @@ CObjectUPtr CObjectFactory::CreateRoot(const ObjectCreateParams& params)
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(1, rank);
         obj->SetObjectParent(1, 0);
-        m_oldModelManager->AddModelReference("root5.mod", false, rank, obj->GetTeam());
+        m_oldModelManager->AddModelReference("root5", false, rank, obj->GetTeam());
         obj->SetPartPosition(1, glm::vec3(-5.0f, 28.0f, -4.0f));
         obj->SetPartRotationX(1, -30.0f*Math::PI/180.0f);
         obj->SetPartRotationZ(1,  20.0f*Math::PI/180.0f);
@@ -2023,7 +2023,7 @@ CObjectUPtr CObjectFactory::CreateHome(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("home1.mod", false, rank, obj->GetTeam());
+        m_oldModelManager->AddModelReference("home1", false, rank, obj->GetTeam());
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
         obj->SetScale(1.3f);
@@ -2064,19 +2064,19 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
     obj->SetObjectRank(0, rank);
 
     std::string name;
-    if ( type == OBJECT_RUINmobilew1 )  name = "ruin1.mod";
-    if ( type == OBJECT_RUINmobilew2 )  name = "ruin1.mod";
-    if ( type == OBJECT_RUINmobilet1 )  name = "ruin2.mod";
-    if ( type == OBJECT_RUINmobilet2 )  name = "ruin2.mod";
-    if ( type == OBJECT_RUINmobiler1 )  name = "ruin3.mod";
-    if ( type == OBJECT_RUINmobiler2 )  name = "ruin3.mod";
-    if ( type == OBJECT_RUINfactory  )  name = "ruin4.mod";
-    if ( type == OBJECT_RUINdoor     )  name = "ruin5.mod";
-    if ( type == OBJECT_RUINsupport  )  name = "ruin6.mod";
-    if ( type == OBJECT_RUINradar    )  name = "ruin7.mod";
-    if ( type == OBJECT_RUINconvert  )  name = "ruin8.mod";
-    if ( type == OBJECT_RUINbase     )  name = "ruin9.mod";
-    if ( type == OBJECT_RUINhead     )  name = "ruin10.mod";
+    if ( type == OBJECT_RUINmobilew1 )  name = "ruin1";
+    if ( type == OBJECT_RUINmobilew2 )  name = "ruin1";
+    if ( type == OBJECT_RUINmobilet1 )  name = "ruin2";
+    if ( type == OBJECT_RUINmobilet2 )  name = "ruin2";
+    if ( type == OBJECT_RUINmobiler1 )  name = "ruin3";
+    if ( type == OBJECT_RUINmobiler2 )  name = "ruin3";
+    if ( type == OBJECT_RUINfactory  )  name = "ruin4";
+    if ( type == OBJECT_RUINdoor     )  name = "ruin5";
+    if ( type == OBJECT_RUINsupport  )  name = "ruin6";
+    if ( type == OBJECT_RUINradar    )  name = "ruin7";
+    if ( type == OBJECT_RUINconvert  )  name = "ruin8";
+    if ( type == OBJECT_RUINbase     )  name = "ruin9";
+    if ( type == OBJECT_RUINhead     )  name = "ruin10";
 
     m_oldModelManager->AddModelReference(name, false, rank, obj->GetTeam());
 
@@ -2091,7 +2091,7 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
         obj->SetObjectRank(6, rank);
         obj->SetObjectParent(6, 0);
 
-        m_oldModelManager->AddModelReference("ruin1w.mod", false, rank, obj->GetTeam());
+        m_oldModelManager->AddModelReference("ruin1w", false, rank, obj->GetTeam());
 
         obj->SetPartPosition(6, glm::vec3(-3.0f, 1.8f, -4.0f));
         obj->SetPartRotationX(6, -Math::PI/2.0f);
@@ -2102,7 +2102,7 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
         obj->SetObjectRank(7, rank);
         obj->SetObjectParent(7, 0);
 
-        m_oldModelManager->AddModelReference("ruin1w.mod", false, rank, obj->GetTeam());
+        m_oldModelManager->AddModelReference("ruin1w", false, rank, obj->GetTeam());
 
         obj->SetPartPosition(7, glm::vec3(-3.0f, 1.0f, 3.0f));
         obj->SetPartRotationY(7, Math::PI-0.3f);
@@ -2114,7 +2114,7 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
         obj->SetObjectRank(8, rank);
         obj->SetObjectParent(8, 0);
 
-        m_oldModelManager->AddModelReference("ruin1w.mod", false, rank, obj->GetTeam());
+        m_oldModelManager->AddModelReference("ruin1w", false, rank, obj->GetTeam());
 
         obj->SetPartPosition(8, glm::vec3(2.0f, 1.6f, -3.0f));
         obj->SetPartRotationY(8, 0.3f);
@@ -2125,7 +2125,7 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
         obj->SetObjectRank(9, rank);
         obj->SetObjectParent(9, 0);
 
-        m_oldModelManager->AddModelReference("ruin1w.mod", false, rank, obj->GetTeam());
+        m_oldModelManager->AddModelReference("ruin1w", false, rank, obj->GetTeam());
 
         obj->SetPartPosition(9, glm::vec3(2.0f, 1.0f, 3.0f));
         obj->SetPartRotationY(9, Math::PI-0.2f);
@@ -2145,7 +2145,7 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
         obj->SetObjectRank(7, rank);
         obj->SetObjectParent(7, 0);
 
-        m_oldModelManager->AddModelReference("ruin1w.mod", false, rank, obj->GetTeam());
+        m_oldModelManager->AddModelReference("ruin1w", false, rank, obj->GetTeam());
 
         obj->SetPartPosition(7, glm::vec3(-3.0f, 1.0f, 3.0f));
         obj->SetPartRotationY(7, Math::PI+0.3f);
@@ -2157,7 +2157,7 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
         obj->SetObjectRank(9, rank);
         obj->SetObjectParent(9, 0);
 
-        m_oldModelManager->AddModelReference("ruin1w.mod", false, rank, obj->GetTeam());
+        m_oldModelManager->AddModelReference("ruin1w", false, rank, obj->GetTeam());
 
         obj->SetPartPosition(9, glm::vec3(2.0f, 1.0f, 3.0f));
         obj->SetPartRotationY(9, Math::PI+0.3f);
@@ -2177,7 +2177,7 @@ CObjectUPtr CObjectFactory::CreateRuin(const ObjectCreateParams& params)
         obj->SetObjectRank(1, rank);
         obj->SetObjectParent(1, 0);
 
-        m_oldModelManager->AddModelReference("ruin2c.mod", false, rank, obj->GetTeam());
+        m_oldModelManager->AddModelReference("ruin2c", false, rank, obj->GetTeam());
 
         obj->SetPartPosition(1, glm::vec3(3.0f, 5.0f, -2.5f));
         obj->SetPartRotationX(1, -Math::PI*0.85f);
@@ -2480,7 +2480,7 @@ CObjectUPtr CObjectFactory::CreateApollo(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);  // it is a stationary object
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("apollol1.mod", false, rank, obj->GetTeam());
+        m_oldModelManager->AddModelReference("apollol1", false, rank, obj->GetTeam());
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
         obj->SetScale(1.2f);
@@ -2492,7 +2492,7 @@ CObjectUPtr CObjectFactory::CreateApollo(const ObjectCreateParams& params)
             m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
             obj->SetObjectRank(i+1, rank);
             obj->SetObjectParent(i+1, 0);
-            m_oldModelManager->AddModelReference("apollol2.mod", false, rank, obj->GetTeam());
+            m_oldModelManager->AddModelReference("apollol2", false, rank, obj->GetTeam());
             obj->SetPartRotationY(i+1, Math::PI/2.0f*i);
         }
 
@@ -2500,7 +2500,7 @@ CObjectUPtr CObjectFactory::CreateApollo(const ObjectCreateParams& params)
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(5, rank);
         obj->SetObjectParent(5, 0);
-        m_oldModelManager->AddModelReference("apollol3.mod", false, rank, obj->GetTeam());  // ladder
+        m_oldModelManager->AddModelReference("apollol3", false, rank, obj->GetTeam());  // ladder
 
 //?     m_terrain->AddBuildingLevel(pos, 10.0f, 13.0f, 12.0f, 0.0f);
 
@@ -2520,7 +2520,7 @@ CObjectUPtr CObjectFactory::CreateApollo(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);  // it is a stationary object
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("apollof.mod", false, rank, obj->GetTeam());
+        m_oldModelManager->AddModelReference("apollof", false, rank, obj->GetTeam());
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
         obj->SetFloorHeight(0.0f);
@@ -2534,7 +2534,7 @@ CObjectUPtr CObjectFactory::CreateApollo(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);  // it is a stationary object
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("apollom.mod", false, rank, obj->GetTeam());
+        m_oldModelManager->AddModelReference("apollom", false, rank, obj->GetTeam());
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
         obj->SetFloorHeight(0.0f);
@@ -2550,7 +2550,7 @@ CObjectUPtr CObjectFactory::CreateApollo(const ObjectCreateParams& params)
         int rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);  // it is a stationary object
         obj->SetObjectRank(0, rank);
-        m_oldModelManager->AddModelReference("apolloa.mod", false, rank, obj->GetTeam());
+        m_oldModelManager->AddModelReference("apolloa", false, rank, obj->GetTeam());
         obj->SetPosition(pos);
         obj->SetRotationY(angle);
         obj->SetFloorHeight(0.0f);
@@ -2559,7 +2559,7 @@ CObjectUPtr CObjectFactory::CreateApollo(const ObjectCreateParams& params)
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         obj->SetObjectRank(1, rank);
         obj->SetObjectParent(1, 0);
-        m_oldModelManager->AddModelReference("apolloj2.mod", false, rank, obj->GetTeam());  // antenna
+        m_oldModelManager->AddModelReference("apolloj2", false, rank, obj->GetTeam());  // antenna
         obj->SetPartPosition(1, glm::vec3(0.0f, 5.0f, 0.0f));
         obj->SetPartRotationY(1, -120.0f*Math::PI/180.0f);
         obj->SetPartRotationZ(1,   45.0f*Math::PI/180.0f);

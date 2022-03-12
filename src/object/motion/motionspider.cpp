@@ -120,7 +120,7 @@ void CMotionSpider::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(1, rank);
     m_object->SetObjectParent(1, 0);
-    modelManager->AddModelReference("spider1.mod", false, rank);
+    modelManager->AddModelReference("spider1", false, rank);
     m_object->SetPartPosition(1, glm::vec3(1.0f, 0.0f, 0.0f));
 
     // Creates the head.
@@ -128,7 +128,7 @@ void CMotionSpider::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(2, rank);
     m_object->SetObjectParent(2, 0);
-    modelManager->AddModelReference("spider2.mod", false, rank);
+    modelManager->AddModelReference("spider2", false, rank);
     m_object->SetPartPosition(2, glm::vec3(1.0f, 0.0f, 0.0f));
 
     // Creates legs.
@@ -136,7 +136,7 @@ void CMotionSpider::Create(glm::vec3 pos, float angle, ObjectType type,
     {
         for ( j=0 ; j<4 ; j++ )
         {
-            sprintf(name, "spider%d.mod", j+3);  // 3..6
+            sprintf(name, "spider%d", j+3);  // 3..6
 
             // Creates the right leg.
             rank = m_engine->CreateObject();
@@ -171,7 +171,7 @@ void CMotionSpider::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(35, rank);
     m_object->SetObjectParent(35, 1);
-    modelManager->AddModelReference("spider7.mod", false, rank);
+    modelManager->AddModelReference("spider7", false, rank);
     m_object->SetPartPosition(35, glm::vec3(0.0f, 0.0f, -0.3f));
 
     // Creates the left mandible.
@@ -179,7 +179,7 @@ void CMotionSpider::Create(glm::vec3 pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(36, rank);
     m_object->SetObjectParent(36, 1);
-    modelManager->AddModelReference("spider7.mod", true, rank);
+    modelManager->AddModelReference("spider7", true, rank);
     m_object->SetPartPosition(36, glm::vec3(0.0f, 0.0f, 0.3f));
 
     m_object->CreateShadowCircle(4.0f, 0.5f);
