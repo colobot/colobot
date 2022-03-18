@@ -86,7 +86,7 @@ msgid "Access to solution\\Shows the solution (detailed instructions for mission
 msgstr "Dostęp do rozwiązania\\Pokazuje rozwiązanie (szczegółowe instrukcje dotyczące misji)"
 
 msgid "Access to solutions\\Show program \"4: Solution\" in the exercises"
-msgstr "Accčs aux solutions\\Programme \"4: Solution\" dans les exercices"
+msgstr "Dostęp do rozwiązań\\Pokaż program \"4: Rozwiązanie\" w ćwiczeniach"Brak cudzysłowu
 
 msgid "Add new program"
 msgstr "Dodaj nowy program"
