@@ -136,6 +136,8 @@ struct EngineObject
     int                    shadowRank = -1;
     //! Ghost mode
     bool                   ghost = false;
+    //! Team
+    int                    team = 0;
 
     //! Loads default values
     inline void LoadDefault()
@@ -615,6 +617,8 @@ public:
 
     //! Sets the transparency level for given object
     void            SetObjectGhostMode(int objRank, bool enabled);
+    //! Sets team for given object
+    void            SetObjectTeam(int objRank, int team);
 
     //! Returns the bounding box for an object
     void            GetObjectBBox(int objRank, glm::vec3& min, glm::vec3& max);
@@ -817,6 +821,8 @@ public:
     void            SetOverFront(bool front);
     //! Sets the foreground overlay color
     void            SetOverColor(const Color& color, TransparencyMode mode);
+    //! Sets color for a team
+    void            SetTeamColor(int team, const Color& color);
 
     //@{
     //! Management of the particle density
@@ -1156,6 +1162,8 @@ protected:
     std::vector<EngineGroundSpot> m_groundSpots;
     //! Ground mark
     EngineGroundMark              m_groundMark;
+    //! Team colors
+    std::map<int, Color> m_teamColors;
 
     //! Location of camera
     glm::vec3       m_eyePt{ 0, 0, 0 };

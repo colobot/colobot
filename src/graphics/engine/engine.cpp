@@ -963,6 +963,13 @@ void CEngine::SetObjectDrawWorld(int objRank, bool draw)
     m_objects[objRank].drawWorld = draw;
 }
 
+void CEngine::SetObjectTeam(int objRank, int team)
+{
+    assert(objRank >= 0 && objRank < static_cast<int>(m_objects.size()));
+
+    m_objects[objRank].team = team;
+}
+
 void CEngine::SetObjectDrawFront(int objRank, bool draw)
 {
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
@@ -1977,6 +1984,28 @@ bool CEngine::LoadAllTextures()
                 if (!data.detailTexture.Valid())
                     ok = false;
             }
+
+            if (!data.material.materialTexture.empty())
+            {
+                if (terrain)
+                    data.materialTexture = LoadTexture("textures/" + data.material.materialTexture, m_terrainTexParams);
+                else
+                    data.materialTexture = LoadTexture("textures/" + data.material.materialTexture);
+
+                if (!data.materialTexture.Valid())
+                    ok = false;
+            }
+
+            if (!data.material.emissiveTexture.empty())
+            {
+                if (terrain)
+                    data.emissiveTexture = LoadTexture("textures/" + data.material.emissiveTexture, m_terrainTexParams);
+                else
+                    data.emissiveTexture = LoadTexture("textures/" + data.material.emissiveTexture);
+
+                if (!data.emissiveTexture.Valid())
+                    ok = false;
+            }
         }
     }
 
@@ -2321,6 +2350,11 @@ void CEngine::SetOverColor(const Color& color, TransparencyMode mode)
 {
     m_overColor = color;
     m_overMode  = mode;
+}
+
+void CEngine::SetTeamColor(int team, const Color& color)
+{
+    m_teamColors[team] = color;
 }
 
 void CEngine::SetParticleDensity(float value)
@@ -2798,7 +2832,7 @@ void CEngine::Draw3DScene()
             terrainRenderer->SetEmissiveColor(data.material.emissiveColor);
             terrainRenderer->SetEmissiveTexture(data.emissiveTexture);
 
-            terrainRenderer->SetMaterialParams(data.material.roughness, data.material.metalness);
+            terrainRenderer->SetMaterialParams(data.material.roughness, data.material.metalness, data.material.aoStrength);
             terrainRenderer->SetMaterialTexture(data.materialTexture);
 
             terrainRenderer->DrawObject(m_objects[objRank].transform, data.buffer);
@@ -2888,14 +2922,21 @@ void CEngine::Draw3DScene()
                 objectRenderer->SetAlphaScissor(0.0f);
             }
 
-            objectRenderer->SetAlbedoColor(data.material.albedoColor);
+            Color recolor = Color(1.0, 1.0, 1.0, 1.0);
+
+            if (data.material.tag == "team")
+            {
+                recolor = m_teamColors[m_objects[objRank].team];
+            }
+
+            objectRenderer->SetAlbedoColor(data.material.albedoColor * recolor);
             objectRenderer->SetAlbedoTexture(data.albedoTexture);
             objectRenderer->SetDetailTexture(data.detailTexture);
 
             objectRenderer->SetEmissiveColor(data.material.emissiveColor);
             objectRenderer->SetEmissiveTexture(data.emissiveTexture);
 
-            objectRenderer->SetMaterialParams(data.material.roughness, data.material.metalness);
+            objectRenderer->SetMaterialParams(data.material.roughness, data.material.metalness, data.material.aoStrength);
             objectRenderer->SetMaterialTexture(data.materialTexture);
 
             objectRenderer->SetCullFace(data.material.cullFace);
@@ -3289,11 +3330,11 @@ void CEngine::RenderShadowMap()
 
     m_shadowRegions = 4;
 
-    m_shadowParams[0].range = 32.0;
+    m_shadowParams[0].range = 16.0;
     m_shadowParams[0].offset = { 0.0, 0.0 };
     m_shadowParams[0].scale = { 0.5, 0.5 };
 
-    m_shadowParams[1].range = 96.0;
+    m_shadowParams[1].range = 64.0;
     m_shadowParams[1].offset = { 0.5, 0.0 };
     m_shadowParams[1].scale = { 0.5, 0.5 };
 
@@ -4150,22 +4191,19 @@ void CEngine::DrawBackgroundGradient(const Color& up, const Color& down)
     glm::vec2 p1(0.0f, 0.0f);
     glm::vec2 p2(1.0f, 1.0f);
 
-    glm::u8vec4 color[3] =
-    {
-        { up.r, up.g, up.b, up.a },
-        { down.r, down.g, down.b, down.a },
-        { 0, 0, 0, 0 }
-    };
+    auto up_int = ColorToIntColor(up);
+    auto down_int = ColorToIntColor(down);
 
     auto renderer = m_device->GetUIRenderer();
     renderer->SetTexture(Texture{});
+    renderer->SetColor({ 1, 1, 1, 1 });
     renderer->SetTransparency(TransparencyMode::NONE);
     auto vertices = renderer->BeginPrimitive(PrimitiveType::TRIANGLE_STRIP, 4);
 
-    vertices[0] = { { p1.x, p1.y }, {}, color[1] };
-    vertices[1] = { { p1.x, p2.y }, {}, color[0] };
-    vertices[2] = { { p2.x, p1.y }, {}, color[1] };
-    vertices[3] = { { p2.x, p2.y }, {}, color[0] };
+    vertices[0] = { { p1.x, p1.y }, {}, down_int };
+    vertices[1] = { { p1.x, p2.y }, {}, up_int };
+    vertices[2] = { { p2.x, p1.y }, {}, down_int };
+    vertices[3] = { { p2.x, p2.y }, {}, up_int };
 
     renderer->EndPrimitive();
     AddStatisticTriangle(2);
@@ -4238,6 +4276,7 @@ void CEngine::DrawBackgroundImage()
     }
 
     auto renderer = m_device->GetUIRenderer();
+    renderer->SetColor({ 1, 1, 1, 1 });
     renderer->SetTexture(m_backgroundTex);
     renderer->SetTransparency(TransparencyMode::NONE);
     auto vertices = renderer->BeginPrimitive(PrimitiveType::TRIANGLE_STRIP, 4);
@@ -4602,7 +4641,15 @@ void CEngine::AddBaseObjTriangles(int baseObjRank, const std::vector<Gfx::ModelT
         vertices[2] = triangle.p3;
 
         Material material = triangle.material;
-        material.albedoTexture = "objects/" + material.albedoTexture;
+
+        if (!material.albedoTexture.empty())
+            material.albedoTexture = "objects/" + material.albedoTexture;
+
+        if (!material.materialTexture.empty())
+            material.materialTexture = "objects/" + material.materialTexture;
+
+        if (!material.emissiveTexture.empty())
+            material.emissiveTexture = "objects/" + material.emissiveTexture;
 
         if (material.variableDetail)
             material.detailTexture = GetSecondTexture();

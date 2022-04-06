@@ -56,6 +56,8 @@ struct Material
     float roughness = 1.0;
     //! Metalness
     float metalness = 0.0;
+    //! AO strength
+    float aoStrength = 0.0;
     //! AO-roughness-metalness texture
     std::string materialTexture = "";
     //! Emissive color

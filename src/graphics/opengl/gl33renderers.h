@@ -135,7 +135,7 @@ public:
     //! Sets emissive texture
     virtual void SetEmissiveTexture(const Texture& texture) override;
     //! Sets material parameters
-    virtual void SetMaterialParams(float roughness, float metalness) override;
+    virtual void SetMaterialParams(float roughness, float metalness, float aoStrength) override;
     //! Sets material texture
     virtual void SetMaterialTexture(const Texture& texture) override;
 
@@ -182,6 +182,7 @@ private:
     GLint m_emissiveColor = -1;
     GLint m_roughness = -1;
     GLint m_metalness = -1;
+    GLint m_aoStrength = -1;
 
     struct ShadowUniforms
     {

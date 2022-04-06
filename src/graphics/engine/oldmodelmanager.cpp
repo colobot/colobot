@@ -46,7 +46,7 @@ COldModelManager::~COldModelManager()
 {
 }
 
-bool COldModelManager::LoadModel(const std::string& name, bool mirrored, int variant)
+bool COldModelManager::LoadModel(const std::string& name, bool mirrored, int team)
 {
     CModel model;
     try
@@ -108,7 +108,7 @@ skip:
     if (mirrored)
         Mirror(modelInfo.triangles);
 
-    FileInfo fileInfo(name, mirrored, variant);
+    FileInfo fileInfo(name, mirrored, team);
     m_models[fileInfo] = modelInfo;
 
     m_engine->AddBaseObjTriangles(modelInfo.baseObjRank, modelInfo.triangles);
@@ -116,50 +116,52 @@ skip:
     return true;
 }
 
-bool COldModelManager::AddModelReference(const std::string& fileName, bool mirrored, int objRank, int variant)
+bool COldModelManager::AddModelReference(const std::string& fileName, bool mirrored, int objRank, int team)
 {
-    auto it = m_models.find(FileInfo(fileName, mirrored, variant));
+    auto it = m_models.find(FileInfo(fileName, mirrored, team));
     if (it == m_models.end())
     {
-        if (!LoadModel(fileName, mirrored, variant))
+        if (!LoadModel(fileName, mirrored, team))
             return false;
 
-        it = m_models.find(FileInfo(fileName, mirrored, variant));
+        it = m_models.find(FileInfo(fileName, mirrored, team));
     }
 
     m_engine->SetObjectBaseRank(objRank, (*it).second.baseObjRank);
+    m_engine->SetObjectTeam(objRank, team);
 
     return true;
 }
 
-bool COldModelManager::AddModelCopy(const std::string& fileName, bool mirrored, int objRank, int variant)
+bool COldModelManager::AddModelCopy(const std::string& fileName, bool mirrored, int objRank, int team)
 {
-    auto it = m_models.find(FileInfo(fileName, mirrored, variant));
+    auto it = m_models.find(FileInfo(fileName, mirrored, team));
     if (it == m_models.end())
     {
-        if (!LoadModel(fileName, mirrored, variant))
+        if (!LoadModel(fileName, mirrored, team))
             return false;
 
-        it = m_models.find(FileInfo(fileName, mirrored, variant));
+        it = m_models.find(FileInfo(fileName, mirrored, team));
     }
 
     int copyBaseObjRank = m_engine->CreateBaseObject();
     m_engine->CopyBaseObject((*it).second.baseObjRank, copyBaseObjRank);
     m_engine->SetObjectBaseRank(objRank, copyBaseObjRank);
+    m_engine->SetObjectTeam(objRank, team);
 
     m_copiesBaseRanks.push_back(copyBaseObjRank);
 
     return true;
 }
 
-bool COldModelManager::IsModelLoaded(const std::string& fileName, bool mirrored, int variant)
+bool COldModelManager::IsModelLoaded(const std::string& fileName, bool mirrored, int team)
 {
-    return m_models.count(FileInfo(fileName, mirrored, variant)) > 0;
+    return m_models.count(FileInfo(fileName, mirrored, team)) > 0;
 }
 
-int COldModelManager::GetModelBaseObjRank(const std::string& fileName, bool mirrored, int variant)
+int COldModelManager::GetModelBaseObjRank(const std::string& fileName, bool mirrored, int team)
 {
-    auto it = m_models.find(FileInfo(fileName, mirrored, variant));
+    auto it = m_models.find(FileInfo(fileName, mirrored, team));
     if (it == m_models.end())
         return -1;
 
@@ -176,9 +178,9 @@ void COldModelManager::DeleteAllModelCopies()
     m_copiesBaseRanks.clear();
 }
 
-void COldModelManager::UnloadModel(const std::string& fileName, bool mirrored, int variant)
+void COldModelManager::UnloadModel(const std::string& fileName, bool mirrored, int team)
 {
-    auto it = m_models.find(FileInfo(fileName, mirrored, variant));
+    auto it = m_models.find(FileInfo(fileName, mirrored, team));
     if (it == m_models.end())
         return;
 

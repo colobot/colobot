@@ -335,6 +335,7 @@ CGL33TerrainRenderer::CGL33TerrainRenderer(CGL33Device* device)
     m_emissiveColor = glGetUniformLocation(m_program, "uni_EmissiveColor");
     m_roughness = glGetUniformLocation(m_program, "uni_Roughness");
     m_metalness = glGetUniformLocation(m_program, "uni_Metalness");
+    m_aoStrength = glGetUniformLocation(m_program, "uni_AOStrength");
 
     m_shadowRegions = glGetUniformLocation(m_program, "uni_ShadowRegions");
 
@@ -520,10 +521,11 @@ void CGL33TerrainRenderer::SetEmissiveTexture(const Texture& texture)
         glBindTexture(GL_TEXTURE_2D, texture.id);
 }
 
-void CGL33TerrainRenderer::SetMaterialParams(float roughness, float metalness)
+void CGL33TerrainRenderer::SetMaterialParams(float roughness, float metalness, float aoStrength)
 {
     glUniform1f(m_roughness, roughness);
     glUniform1f(m_metalness, metalness);
+    glUniform1f(m_aoStrength, aoStrength);
 }
 
 void CGL33TerrainRenderer::SetMaterialTexture(const Texture& texture)

@@ -237,6 +237,38 @@ void GLTFLoader::ReadMaterials()
             }
         }
 
+        if (material.contains("emissiveFactor"))
+        {
+            const auto& color = material["emissiveFactor"];
+
+            mat.emissiveColor = {
+                color[0].get<float>(),
+                color[1].get<float>(),
+                color[2].get<float>(),
+                0.0
+            };
+        }
+        else
+        {
+            mat.emissiveColor = { 0.0, 0.0, 0.0, 0.0 };
+        }
+
+        if (material.contains("emissiveTexture"))
+        {
+            const auto& tex = material["emissiveTexture"];
+
+            if (tex.contains("index"))
+            {
+                int index = tex["index"].get<int>();
+
+                const auto& texture = m_textures[index];
+
+                const auto& image = m_images[texture.source];
+
+                mat.emissiveTexture = image.uri;
+            }
+        }
+
         if (material.contains("pbrMetallicRoughness"))
         {
             const auto& pbr = material["pbrMetallicRoughness"];
@@ -251,6 +283,10 @@ void GLTFLoader::ReadMaterials()
                     color[2].get<float>(),
                     color[3].get<float>()
                 };
+            }
+            else
+            {
+                mat.albedoColor = { 1.0, 1.0, 1.0, 1.0 };
             }
 
             if (pbr.contains("baseColorTexture"))
@@ -273,27 +309,23 @@ void GLTFLoader::ReadMaterials()
             {
                 mat.metalness = pbr["metallicFactor"].get<float>();
             }
+            else
+            {
+                mat.metalness = 1.0;
+            }
 
             if (pbr.contains("roughnessFactor"))
             {
                 mat.roughness = pbr["roughnessFactor"].get<float>();
             }
-
-            if (pbr.contains("emissiveFactor"))
+            else
             {
-                const auto& color = pbr["emissiveFactor"];
-
-                mat.emissiveColor = {
-                    color[0].get<float>(),
-                    color[1].get<float>(),
-                    color[2].get<float>(),
-                    0.0
-                };
+                mat.roughness = 1.0;
             }
 
-            if (pbr.contains("emissiveTextue"))
+            if (pbr.contains("metallicRoughnessTexture"))
             {
-                const auto& tex = pbr["emissiveTextue"];
+                const auto& tex = pbr["metallicRoughnessTexture"];
 
                 if (tex.contains("index"))
                 {
@@ -303,8 +335,47 @@ void GLTFLoader::ReadMaterials()
 
                     const auto& image = m_images[texture.source];
 
-                    mat.emissiveTexture = image.uri;
+                    mat.materialTexture = image.uri;
                 }
+            }
+
+            if (pbr.contains("occlusionTexture"))
+            {
+                const auto& tex = pbr["occlusionTexture"];
+
+                if (tex.contains("index"))
+                {
+                    int index = tex["index"].get<int>();
+
+                    const auto& texture = m_textures[index];
+
+                    const auto& image = m_images[texture.source];
+
+                    if (tex.contains("strength"))
+                    {
+                        mat.aoStrength = tex["strength"].get<float>();
+                    }
+                    else
+                    {
+                        mat.aoStrength = 1.0f;
+                    }
+                }
+            }
+        }
+
+        if (material.contains("normalTexture"))
+        {
+            const auto& tex = material["normalTexture"];
+
+            if (tex.contains("index"))
+            {
+                int index = tex["index"].get<int>();
+
+                const auto& texture = m_textures[index];
+
+                const auto& image = m_images[texture.source];
+
+                mat.normalTexture = image.uri;
             }
         }
 

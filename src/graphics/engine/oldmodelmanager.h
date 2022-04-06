@@ -58,19 +58,19 @@ public:
     ~COldModelManager();
 
     //! Loads a model from given file
-    bool LoadModel(const std::string& fileName, bool mirrored, int variant = 0);
+    bool LoadModel(const std::string& fileName, bool mirrored, int team = 0);
 
     //! Adds an instance of model to the given object rank as a reference to base object
-    bool AddModelReference(const std::string& fileName, bool mirrored, int objRank, int variant = 0);
+    bool AddModelReference(const std::string& fileName, bool mirrored, int objRank, int team = 0);
 
     //! Adds an instance of model to the given object rank as a copy (copied base object)
-    bool AddModelCopy(const std::string& fileName, bool mirrored, int objRank, int variant = 0);
+    bool AddModelCopy(const std::string& fileName, bool mirrored, int objRank, int team = 0);
 
     //! Returns true if given model is loaded
-    bool IsModelLoaded(const std::string& fileName, bool mirrored, int variant = 0);
+    bool IsModelLoaded(const std::string& fileName, bool mirrored, int team = 0);
 
     //! Returns the rank of base engine object of given loaded model
-    int GetModelBaseObjRank(const std::string& fileName, bool mirrored, int variant = 0);
+    int GetModelBaseObjRank(const std::string& fileName, bool mirrored, int team = 0);
 
     //! Deletes all copied objects
     void DeleteAllModelCopies();

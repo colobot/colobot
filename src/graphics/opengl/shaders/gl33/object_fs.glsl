@@ -28,6 +28,7 @@ uniform sampler2D uni_DetailTexture;
 
 uniform float uni_Roughness;
 uniform float uni_Metalness;
+uniform float uni_AOStrength;
 uniform sampler2D uni_MaterialTexture;
 
 uniform vec3 uni_EmissiveColor;
@@ -97,7 +98,7 @@ void main()
 
         vec3 params = texture(uni_MaterialTexture, data.TexCoord0).xyz;
 
-        float ambientOcclusion = params.r;
+        float ambientOcclusion = 1.0 + uni_AOStrength * (params.r - 1.0);
         float roughness = uni_Roughness * params.g;
         float metalness = uni_Metalness * params.b;
 

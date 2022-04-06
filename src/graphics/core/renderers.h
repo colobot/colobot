@@ -110,7 +110,7 @@ public:
     //! Sets emissive texture
     virtual void SetEmissiveTexture(const Texture& texture) = 0;
     //! Sets material parameters
-    virtual void SetMaterialParams(float roughness, float metalness) = 0;
+    virtual void SetMaterialParams(float roughness, float metalness, float aoStrength) = 0;
     //! Sets material texture
     virtual void SetMaterialTexture(const Texture& texture) = 0;
 
@@ -162,7 +162,7 @@ public:
     //! Sets emissive texture
     virtual void SetEmissiveTexture(const Texture& texture) = 0;
     //! Sets material parameters
-    virtual void SetMaterialParams(float roughness, float metalness) = 0;
+    virtual void SetMaterialParams(float roughness, float metalness, float aoStrength) = 0;
     //! Sets material texture
     virtual void SetMaterialTexture(const Texture& texture) = 0;
 

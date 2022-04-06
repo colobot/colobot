@@ -54,7 +54,7 @@ void main()
     data.Color = in_Color;
     data.TexCoord0 = in_TexCoord0 * uni_UVScale + uni_UVOffset;
     data.TexCoord1 = in_TexCoord1;
-    data.Normal = mat3(uni_NormalMatrix) * in_Normal;
+    data.Normal = normalize(mat3(uni_NormalMatrix) * in_Normal);
     data.VertexCoord = in_VertexCoord.xyz;
     data.VertexNormal = in_Normal;
     data.Position = position.xyz;

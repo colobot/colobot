@@ -49,7 +49,7 @@ void main()
     data.Color = in_Color;
     data.TexCoord0 = in_TexCoord0;
     data.TexCoord1 = in_TexCoord1;
-    data.Normal = mat3(uni_NormalMatrix) * in_Normal;
+    data.Normal = normalize(mat3(uni_NormalMatrix) * in_Normal);
     //data.Distance = abs(eyeSpace.z);
     data.Position = position.xyz;
     data.ShadowCoords = ProjectShadows(position.xyz);

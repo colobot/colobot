@@ -4039,6 +4039,8 @@ void CRobotMain::ChangeColor()
         std::string teamStr = StrUtils::ToString<int>(team);
         if(team == 0) teamStr = "";
 
+        m_engine->SetTeamColor(team, newColor);
+
         //m_engine->ChangeTextureColor("textures/objects/base1.png"+teamStr,   "textures/objects/base1.png",   COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
         //m_engine->ChangeTextureColor("textures/objects/convert.png"+teamStr, "textures/objects/convert.png", COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
         //m_engine->ChangeTextureColor("textures/objects/derrick.png"+teamStr, "textures/objects/derrick.png", COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
