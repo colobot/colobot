@@ -327,12 +327,11 @@ find_package(GLEW REQUIRED)
 if (OPENAL_SOUND)
     find_package(OpenAL REQUIRED)
 endif()
+
 find_package(SndFile REQUIRED)
 
-if (WIN32)
-    find_package(mpg123 REQUIRED)
-    find_package(mp3lame REQUIRED)
-endif()
+find_package(mpg123 QUIET)
+find_package(mp3lame QUIET)
 
 if(NOT ASSERTS)
     add_definitions(-DNDEBUG)
