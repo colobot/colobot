@@ -44,7 +44,7 @@
 #include "ui/controls/window.h"
 
 #include "ui/screen/screen.h"
-#include "ui/screen/screen_apperance.h"
+#include "ui/screen/screen_appearance.h"
 #include "ui/screen/screen_io_read.h"
 #include "ui/screen/screen_io_write.h"
 #include "ui/screen/screen_level_list.h"
@@ -81,7 +81,7 @@ CMainUserInterface::CMainUserInterface()
 
     m_dialog     = std::make_unique<CMainDialog>();
 
-    m_screenAppearance = std::make_unique<CScreenApperance>();
+    m_screenAppearance = std::make_unique<CScreenAppearance>();
     m_screenLevelList = std::make_unique<CScreenLevelList>(m_dialog.get());
     m_screenIORead = std::make_unique<CScreenIORead>(m_screenLevelList.get());
     m_screenIOWrite = std::make_unique<CScreenIOWrite>(m_screenLevelList.get());
@@ -178,7 +178,7 @@ void CMainUserInterface::ChangePhase(Phase phase)
     {
         m_currentScreen = m_screenPlayerSelect.get();
     }
-    if (m_phase == PHASE_APPERANCE)
+    if (m_phase == PHASE_APPEARANCE)
     {
         m_currentScreen = m_screenAppearance.get();
     }
@@ -791,7 +791,7 @@ bool CMainUserInterface::GetPlusExplorer()
 
 bool CMainUserInterface::GetGamerOnlyHead()
 {
-    if (m_phase == PHASE_APPERANCE)
+    if (m_phase == PHASE_APPEARANCE)
         return m_screenAppearance->GetGamerOnlyHead();
 
     return false;
@@ -799,7 +799,7 @@ bool CMainUserInterface::GetGamerOnlyHead()
 
 float CMainUserInterface::GetPersoAngle()
 {
-    if (m_phase == PHASE_APPERANCE)
+    if (m_phase == PHASE_APPEARANCE)
         return m_screenAppearance->GetPersoAngle();
 
     return 0.0f;

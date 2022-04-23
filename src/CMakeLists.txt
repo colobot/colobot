@@ -435,8 +435,8 @@ add_library(colobotbase STATIC
     ui/particles_generator.h
     ui/screen/screen.cpp
     ui/screen/screen.h
-    ui/screen/screen_apperance.cpp
-    ui/screen/screen_apperance.h
+    ui/screen/screen_appearance.cpp
+    ui/screen/screen_appearance.h
     ui/screen/screen_io.cpp
     ui/screen/screen_io.h
     ui/screen/screen_io_read.cpp
@@ -525,7 +525,7 @@ if(PLATFORM_WINDOWS)
         # This should be treated as a temporary workaround
         if(USE_STATIC_RUNTIME) # Since we're using static runtime, assume every external library is static too
             find_package(Intl REQUIRED)
-            
+
             find_library(BZ2_LIBRARY NAMES bz2)
             find_library(JPEG_LIBRARY NAMES jpeg)
             find_library(TIFF_LIBRARY NAMES tiff)

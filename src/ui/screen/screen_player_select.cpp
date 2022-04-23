@@ -183,7 +183,7 @@ bool CScreenPlayerSelect::EventProcess(const Event &event)
 
         case EVENT_INTERFACE_PERSO:
             NameSelect();
-            m_main->ChangePhase(PHASE_APPERANCE);
+            m_main->ChangePhase(PHASE_APPEARANCE);
             break;
 
         case EVENT_INTERFACE_NDELETE:

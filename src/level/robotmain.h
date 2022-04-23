@@ -56,7 +56,7 @@ enum Phase
     PHASE_WELCOME2,
     PHASE_WELCOME3,
     PHASE_PLAYER_SELECT,
-    PHASE_APPERANCE,
+    PHASE_APPEARANCE,
     PHASE_MAIN_MENU,
     PHASE_LEVEL_LIST,
     PHASE_MOD_LIST,
@@ -203,7 +203,7 @@ public:
     Phase       GetPhase();
     //@}
 
-    //! Load the scene for apperance customization
+    //! Load the scene for appearance customization
     void        ScenePerso();
 
     void        SetMovieLock(bool lock);
@@ -372,6 +372,9 @@ public:
 
     //! Enable mode where completing mission closes the game
     void        SetExitAfterMission(bool exit);
+
+    //! Load saved game (used by command line argument)
+    void        LoadSaveFromDirName(const std::string& gameDir);
 
     //! Returns true if player can interact with things manually
     bool        CanPlayerInteract();

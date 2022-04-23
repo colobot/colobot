@@ -24,10 +24,10 @@
 namespace Ui
 {
 
-class CScreenApperance : public CScreen
+class CScreenAppearance : public CScreen
 {
 public:
-    CScreenApperance();
+    CScreenAppearance();
     void CreateInterface() override;
     bool EventProcess(const Event &event) override;
 
@@ -44,8 +44,8 @@ protected:
     void SetCamera(float x, float y, float cameraDistance);
 
 protected:
-    int             m_apperanceTab;         // perso: tab selected
-    float           m_apperanceAngle;           // perso: angle of presentation
+    int             m_appearanceTab;         // perso: tab selected
+    float           m_appearanceAngle;           // perso: angle of presentation
 };
 
 } // namespace Ui

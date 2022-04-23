@@ -17,7 +17,7 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#include "ui/screen/screen_apperance.h"
+#include "ui/screen/screen_appearance.h"
 
 #include "app/app.h"
 
@@ -78,13 +78,13 @@ const int PERSO_COLOR[3*10*3] =
       0,   0,   0,  //
 };
 
-CScreenApperance::CScreenApperance()
-    : m_apperanceTab(0),
-      m_apperanceAngle(0.0f)
+CScreenAppearance::CScreenAppearance()
+    : m_appearanceTab(0),
+      m_appearanceAngle(0.0f)
 {
 }
 
-void CScreenApperance::CreateInterface()
+void CScreenAppearance::CreateInterface()
 {
     CWindow*        pw;
     CLabel*         pl;
@@ -306,17 +306,17 @@ void CScreenApperance::CreateInterface()
     pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_PDEF);
     pb->SetState(STATE_SHADOW);
 
-    m_apperanceTab = 0;
-    m_apperanceAngle = -0.6f;
-    m_main->GetPlayerProfile()->LoadApperance();
+    m_appearanceTab = 0;
+    m_appearanceAngle = -0.6f;
+    m_main->GetPlayerProfile()->LoadAppearance();
     UpdatePerso();
     m_main->ScenePerso();
     CameraPerso();
 }
 
-bool CScreenApperance::EventProcess(const Event &event)
+bool CScreenAppearance::EventProcess(const Event &event)
 {
-    PlayerApperance& apperance = m_main->GetPlayerProfile()->GetApperance();
+    PlayerAppearance& appearance = m_main->GetPlayerProfile()->GetAppearance();
     switch( event.type )
     {
         case EVENT_KEY_DOWN:
@@ -339,13 +339,13 @@ bool CScreenApperance::EventProcess(const Event &event)
             break;
 
         case EVENT_INTERFACE_PHEAD:
-            m_apperanceTab = 0;
+            m_appearanceTab = 0;
             UpdatePerso();
             m_main->ScenePerso();
             CameraPerso();
             break;
         case EVENT_INTERFACE_PBODY:
-            m_apperanceTab = 1;
+            m_appearanceTab = 1;
             UpdatePerso();
             m_main->ScenePerso();
             CameraPerso();
@@ -355,8 +355,8 @@ bool CScreenApperance::EventProcess(const Event &event)
         case EVENT_INTERFACE_PFACE2:
         case EVENT_INTERFACE_PFACE3:
         case EVENT_INTERFACE_PFACE4:
-            apperance.face = event.type-EVENT_INTERFACE_PFACE1;
-            apperance.DefHairColor();
+            appearance.face = event.type-EVENT_INTERFACE_PFACE1;
+            appearance.DefHairColor();
             UpdatePerso();
             m_main->ScenePerso();
             break;
@@ -371,7 +371,7 @@ bool CScreenApperance::EventProcess(const Event &event)
         case EVENT_INTERFACE_PGLASS7:
         case EVENT_INTERFACE_PGLASS8:
         case EVENT_INTERFACE_PGLASS9:
-            apperance.glasses = event.type-EVENT_INTERFACE_PGLASS0;
+            appearance.glasses = event.type-EVENT_INTERFACE_PGLASS0;
             UpdatePerso();
             m_main->ScenePerso();
             break;
@@ -418,25 +418,25 @@ bool CScreenApperance::EventProcess(const Event &event)
             break;
 
         case EVENT_INTERFACE_PDEF:
-            apperance.DefPerso();
+            appearance.DefPerso();
             UpdatePerso();
             m_main->ScenePerso();
             break;
 
         case EVENT_INTERFACE_PLROT:
-            m_apperanceAngle += 0.2f;
+            m_appearanceAngle += 0.2f;
             break;
         case EVENT_INTERFACE_PRROT:
-            m_apperanceAngle -= 0.2f;
+            m_appearanceAngle -= 0.2f;
             break;
 
         case EVENT_INTERFACE_POK:
-            m_main->GetPlayerProfile()->SaveApperance();
+            m_main->GetPlayerProfile()->SaveAppearance();
             m_main->ChangePhase(PHASE_MAIN_MENU);
             break;
 
         case EVENT_INTERFACE_PCANCEL:
-            m_main->GetPlayerProfile()->LoadApperance(); // reload apperance from file
+            m_main->GetPlayerProfile()->LoadAppearance(); // reload appearance from file
             m_main->ChangePhase(PHASE_PLAYER_SELECT);
             break;
 
@@ -446,14 +446,14 @@ bool CScreenApperance::EventProcess(const Event &event)
     return false;
 }
 
-bool CScreenApperance::GetGamerOnlyHead()
+bool CScreenAppearance::GetGamerOnlyHead()
 {
-    return m_apperanceTab == 0;
+    return m_appearanceTab == 0;
 }
 
-float CScreenApperance::GetPersoAngle()
+float CScreenAppearance::GetPersoAngle()
 {
-    return m_apperanceAngle;
+    return m_appearanceAngle;
 }
 
 // Tests whether two colors are equal or nearly are.
@@ -467,7 +467,7 @@ static bool EqColor(const Gfx::Color &c1, const Gfx::Color &c2)
 
 // Updates all the buttons for the character.
 
-void CScreenApperance::UpdatePerso()
+void CScreenAppearance::UpdatePerso()
 {
     CWindow*        pw;
     CLabel*         pl;
@@ -478,7 +478,7 @@ void CScreenApperance::UpdatePerso()
     std::string  name;
     int             i;
 
-    PlayerApperance& apperance = m_main->GetPlayerProfile()->GetApperance();
+    PlayerAppearance& appearance = m_main->GetPlayerProfile()->GetAppearance();
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == nullptr )  return;
@@ -486,18 +486,18 @@ void CScreenApperance::UpdatePerso()
     pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_PHEAD));
     if ( pb != nullptr )
     {
-        pb->SetState(STATE_CHECK, m_apperanceTab==0);
+        pb->SetState(STATE_CHECK, m_appearanceTab==0);
     }
     pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_PBODY));
     if ( pb != nullptr )
     {
-        pb->SetState(STATE_CHECK, m_apperanceTab==1);
+        pb->SetState(STATE_CHECK, m_appearanceTab==1);
     }
 
     pl = static_cast<CLabel*>(pw->SearchControl(EVENT_LABEL11));
     if ( pl != nullptr )
     {
-        if ( m_apperanceTab == 0 )
+        if ( m_appearanceTab == 0 )
         {
             pl->SetState(STATE_VISIBLE);
             GetResource(RES_TEXT, RT_PERSO_FACE, name);
@@ -512,7 +512,7 @@ void CScreenApperance::UpdatePerso()
     pl = static_cast<CLabel*>(pw->SearchControl(EVENT_LABEL12));
     if ( pl != nullptr )
     {
-        if ( m_apperanceTab == 0 )
+        if ( m_appearanceTab == 0 )
         {
             pl->SetState(STATE_VISIBLE);
             GetResource(RES_TEXT, RT_PERSO_GLASSES, name);
@@ -527,7 +527,7 @@ void CScreenApperance::UpdatePerso()
     pl = static_cast<CLabel*>(pw->SearchControl(EVENT_LABEL13));
     if ( pl != nullptr )
     {
-        if ( m_apperanceTab == 0 )  GetResource(RES_TEXT, RT_PERSO_HAIR, name);
+        if ( m_appearanceTab == 0 )  GetResource(RES_TEXT, RT_PERSO_HAIR, name);
         else                    GetResource(RES_TEXT, RT_PERSO_BAND, name);
         pl->SetName(name);
     }
@@ -535,7 +535,7 @@ void CScreenApperance::UpdatePerso()
     pl = static_cast<CLabel*>(pw->SearchControl(EVENT_LABEL14));
     if ( pl != nullptr )
     {
-        if ( m_apperanceTab == 0 )
+        if ( m_appearanceTab == 0 )
         {
             pl->ClearState(STATE_VISIBLE);
         }
@@ -551,23 +551,23 @@ void CScreenApperance::UpdatePerso()
     {
         pb = static_cast<CButton*>(pw->SearchControl(static_cast<EventType>(EVENT_INTERFACE_PFACE1+i)));
         if ( pb == nullptr )  break;
-        pb->SetState(STATE_VISIBLE, m_apperanceTab==0);
-        pb->SetState(STATE_CHECK, i==apperance.face);
+        pb->SetState(STATE_VISIBLE, m_appearanceTab==0);
+        pb->SetState(STATE_CHECK, i==appearance.face);
     }
 
     for ( i=0 ; i<10 ; i++ )
     {
         pb = static_cast<CButton*>(pw->SearchControl(static_cast<EventType>(EVENT_INTERFACE_PGLASS0+i)));
         if ( pb == nullptr )  break;
-        pb->SetState(STATE_VISIBLE, m_apperanceTab==0);
-        pb->SetState(STATE_CHECK, i==apperance.glasses);
+        pb->SetState(STATE_VISIBLE, m_appearanceTab==0);
+        pb->SetState(STATE_CHECK, i==appearance.glasses);
     }
 
     for ( i=0 ; i<3*3 ; i++ )
     {
         pc = static_cast<CColor*>(pw->SearchControl(static_cast<EventType>(EVENT_INTERFACE_PC0a+i)));
         if ( pc == nullptr )  break;
-        if ( m_apperanceTab == 0 )
+        if ( m_appearanceTab == 0 )
         {
             pc->ClearState(STATE_VISIBLE);
         }
@@ -579,29 +579,29 @@ void CScreenApperance::UpdatePerso()
             color.b = PERSO_COLOR[3*10*1+3*i+2]/255.0f;
             color.a = 0.0f;
             pc->SetColor(color);
-            pc->SetState(STATE_CHECK, EqColor(color, apperance.colorCombi));
+            pc->SetState(STATE_CHECK, EqColor(color, appearance.colorCombi));
         }
 
         pc = static_cast<CColor*>(pw->SearchControl(static_cast<EventType>(EVENT_INTERFACE_PC0b+i)));
         if ( pc == nullptr )  break;
-        color.r = PERSO_COLOR[3*10*2*m_apperanceTab+3*i+0]/255.0f;
-        color.g = PERSO_COLOR[3*10*2*m_apperanceTab+3*i+1]/255.0f;
-        color.b = PERSO_COLOR[3*10*2*m_apperanceTab+3*i+2]/255.0f;
+        color.r = PERSO_COLOR[3*10*2*m_appearanceTab+3*i+0]/255.0f;
+        color.g = PERSO_COLOR[3*10*2*m_appearanceTab+3*i+1]/255.0f;
+        color.b = PERSO_COLOR[3*10*2*m_appearanceTab+3*i+2]/255.0f;
         color.a = 0.0f;
         pc->SetColor(color);
-        pc->SetState(STATE_CHECK, EqColor(color, m_apperanceTab?apperance.colorBand:apperance.colorHair));
+        pc->SetState(STATE_CHECK, EqColor(color, m_appearanceTab?appearance.colorBand:appearance.colorHair));
     }
 
     for ( i=0 ; i<3 ; i++ )
     {
         ps = static_cast<CSlider*>(pw->SearchControl(static_cast<EventType>(EVENT_INTERFACE_PCRa+i)));
         if ( ps == nullptr )  break;
-        ps->SetState(STATE_VISIBLE, m_apperanceTab==1);
+        ps->SetState(STATE_VISIBLE, m_appearanceTab==1);
     }
 
-    if ( m_apperanceTab == 1 )
+    if ( m_appearanceTab == 1 )
     {
-        color = apperance.colorCombi;
+        color = appearance.colorCombi;
         ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCRa));
         if ( ps != nullptr )  ps->SetVisibleValue(color.r*255.0f);
         ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCGa));
@@ -610,8 +610,8 @@ void CScreenApperance::UpdatePerso()
         if ( ps != nullptr )  ps->SetVisibleValue(color.b*255.0f);
     }
 
-    if ( m_apperanceTab == 0 )  color = apperance.colorHair;
-    else                    color = apperance.colorBand;
+    if ( m_appearanceTab == 0 )  color = appearance.colorHair;
+    else                    color = appearance.colorBand;
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCRb));
     if ( ps != nullptr )  ps->SetVisibleValue(color.r*255.0f);
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCGb));
@@ -622,9 +622,9 @@ void CScreenApperance::UpdatePerso()
 
 // Updates the camera for the character.
 
-void CScreenApperance::CameraPerso()
+void CScreenAppearance::CameraPerso()
 {
-    if ( m_apperanceTab == 0 )
+    if ( m_appearanceTab == 0 )
     {
         SetCamera(0.325f, -0.15f, 5.0f);
     }
@@ -636,44 +636,44 @@ void CScreenApperance::CameraPerso()
 
 // Sets a fixed color.
 
-void CScreenApperance::FixPerso(int rank, int index)
+void CScreenAppearance::FixPerso(int rank, int index)
 {
-    PlayerApperance& apperance = m_main->GetPlayerProfile()->GetApperance();
-    if ( m_apperanceTab == 0 )
+    PlayerAppearance& appearance = m_main->GetPlayerProfile()->GetAppearance();
+    if ( m_appearanceTab == 0 )
     {
         if ( index == 1 )
         {
-            apperance.colorHair.r = PERSO_COLOR[3*10*0+rank*3+0]/255.0f;
-            apperance.colorHair.g = PERSO_COLOR[3*10*0+rank*3+1]/255.0f;
-            apperance.colorHair.b = PERSO_COLOR[3*10*0+rank*3+2]/255.0f;
+            appearance.colorHair.r = PERSO_COLOR[3*10*0+rank*3+0]/255.0f;
+            appearance.colorHair.g = PERSO_COLOR[3*10*0+rank*3+1]/255.0f;
+            appearance.colorHair.b = PERSO_COLOR[3*10*0+rank*3+2]/255.0f;
         }
     }
-    if ( m_apperanceTab == 1 )
+    if ( m_appearanceTab == 1 )
     {
         if ( index == 0 )
         {
-            apperance.colorCombi.r = PERSO_COLOR[3*10*1+rank*3+0]/255.0f;
-            apperance.colorCombi.g = PERSO_COLOR[3*10*1+rank*3+1]/255.0f;
-            apperance.colorCombi.b = PERSO_COLOR[3*10*1+rank*3+2]/255.0f;
+            appearance.colorCombi.r = PERSO_COLOR[3*10*1+rank*3+0]/255.0f;
+            appearance.colorCombi.g = PERSO_COLOR[3*10*1+rank*3+1]/255.0f;
+            appearance.colorCombi.b = PERSO_COLOR[3*10*1+rank*3+2]/255.0f;
         }
         if ( index == 1 )
         {
-            apperance.colorBand.r = PERSO_COLOR[3*10*2+rank*3+0]/255.0f;
-            apperance.colorBand.g = PERSO_COLOR[3*10*2+rank*3+1]/255.0f;
-            apperance.colorBand.b = PERSO_COLOR[3*10*2+rank*3+2]/255.0f;
+            appearance.colorBand.r = PERSO_COLOR[3*10*2+rank*3+0]/255.0f;
+            appearance.colorBand.g = PERSO_COLOR[3*10*2+rank*3+1]/255.0f;
+            appearance.colorBand.b = PERSO_COLOR[3*10*2+rank*3+2]/255.0f;
         }
     }
 }
 
 // Updates the color of the character.
 
-void CScreenApperance::ColorPerso()
+void CScreenAppearance::ColorPerso()
 {
     CWindow*        pw;
     CSlider*        ps;
     Gfx::Color   color;
 
-    PlayerApperance& apperance = m_main->GetPlayerProfile()->GetApperance();
+    PlayerAppearance& appearance = m_main->GetPlayerProfile()->GetAppearance();
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == nullptr )  return;
@@ -686,7 +686,7 @@ void CScreenApperance::ColorPerso()
     if ( ps != nullptr )  color.g = ps->GetVisibleValue()/255.0f;
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCBa));
     if ( ps != nullptr )  color.b = ps->GetVisibleValue()/255.0f;
-    if ( m_apperanceTab == 1 )  apperance.colorCombi = color;
+    if ( m_appearanceTab == 1 )  appearance.colorCombi = color;
 
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCRb));
     if ( ps != nullptr )  color.r = ps->GetVisibleValue()/255.0f;
@@ -694,11 +694,11 @@ void CScreenApperance::ColorPerso()
     if ( ps != nullptr )  color.g = ps->GetVisibleValue()/255.0f;
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCBb));
     if ( ps != nullptr )  color.b = ps->GetVisibleValue()/255.0f;
-    if ( m_apperanceTab == 0 )  apperance.colorHair = color;
-    else                        apperance.colorBand = color;
+    if ( m_appearanceTab == 0 )  appearance.colorHair = color;
+    else                        appearance.colorBand = color;
 }
 
-void CScreenApperance::SetCamera(float x, float y, float cameraDistance)
+void CScreenAppearance::SetCamera(float x, float y, float cameraDistance)
 {
     Gfx::CCamera* camera = m_main->GetCamera();
     Gfx::CEngine* engine = Gfx::CEngine::GetInstancePointer();
