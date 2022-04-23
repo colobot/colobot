@@ -106,6 +106,9 @@ struct IntColor : glm::u8vec4
     //! Constructor; default values are (0,0,0,0) = black
     explicit IntColor(unsigned char aR = 0, unsigned char aG = 0, unsigned char aB = 0, unsigned char aA = 0)
         : glm::u8vec4(aR, aG, aB, aA) {}
+
+    explicit IntColor(const glm::u8vec4& color)
+        : glm::u8vec4(color) {}
 };
 
 inline Color IntColorToColor(IntColor color)
@@ -156,6 +159,29 @@ ColorHSV RGB2HSV(Color color);
 //! Converts a HSV color to RGB color
 Color HSV2RGB(ColorHSV color);
 
+inline Color ToSRGB(const Color& color)
+{
+    Color result;
+
+    result.r = pow(color.r, 2.2);
+    result.g = pow(color.g, 2.2);
+    result.b = pow(color.b, 2.2);
+    result.a = color.a;
+
+    return result;
+}
+
+inline Color ToLinear(const Color& color)
+{
+    Color result;
+
+    result.r = pow(color.r, 1.0 / 2.2);
+    result.g = pow(color.g, 1.0 / 2.2);
+    result.b = pow(color.b, 1.0 / 2.2);
+    result.a = color.a;
+
+    return result;
+}
 
 } // namespace Gfx
 
