@@ -247,6 +247,8 @@ void GLTFLoader::ReadMaterials()
                 color[2].get<float>(),
                 0.0
             };
+
+            mat.emissiveColor = Gfx::ToLinear(mat.emissiveColor);
         }
         else
         {
@@ -283,6 +285,8 @@ void GLTFLoader::ReadMaterials()
                     color[2].get<float>(),
                     color[3].get<float>()
                 };
+
+                mat.albedoColor = Gfx::ToLinear(mat.albedoColor);
             }
             else
             {
@@ -678,6 +682,16 @@ std::vector<glm::u8vec4> GLTFLoader::ReadColors(int index)
     else
     {
         GetLogger()->Error("Invalid color type: %d\n", accessor.componentType);
+    }
+
+    // Fix for bug in Blender where it exports vertex colors in sRGB instead of linear space
+    for (size_t i = 0; i < colors.size(); i++)
+    {
+        auto color = Gfx::IntColorToColor(Gfx::IntColor(colors[i]));
+
+        color = Gfx::ToLinear(color);
+
+        colors[i] = Gfx::ColorToIntColor(color);
     }
 
     return colors;
