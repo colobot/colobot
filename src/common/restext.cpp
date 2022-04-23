@@ -31,9 +31,10 @@
 
 #include "object/object_type.h"
 
-#include <libintl.h>
 #include <SDL_keyboard.h>
 #include <boost/regex.hpp>
+
+#include <libintl.h>
 
 const char* stringsText[RT_MAX]         = { nullptr };
 const char* stringsEvent[EVENT_STD_MAX] = { nullptr };
