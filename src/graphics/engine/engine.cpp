@@ -2922,14 +2922,14 @@ void CEngine::Draw3DScene()
                 objectRenderer->SetAlphaScissor(0.0f);
             }
 
-            Color recolor = Color(1.0, 1.0, 1.0, 1.0);
+            Color color = data.material.albedoColor;
 
             if (data.material.tag == "team")
             {
-                recolor = m_teamColors[m_objects[objRank].team];
+                color = m_teamColors[m_objects[objRank].team];
             }
 
-            objectRenderer->SetAlbedoColor(data.material.albedoColor * recolor);
+            objectRenderer->SetAlbedoColor(color);
             objectRenderer->SetAlbedoTexture(data.albedoTexture);
             objectRenderer->SetDetailTexture(data.detailTexture);
 
