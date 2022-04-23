@@ -328,7 +328,11 @@ if (OPENAL_SOUND)
     find_package(OpenAL REQUIRED)
 endif()
 find_package(SndFile REQUIRED)
-find_package(mpg123 REQUIRED)
+
+if (WIN32)
+    find_package(mpg123 REQUIRED)
+    find_package(mp3lame REQUIRED)
+endif()
 
 if(NOT ASSERTS)
     add_definitions(-DNDEBUG)

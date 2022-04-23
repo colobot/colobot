@@ -491,8 +491,16 @@ target_link_libraries(colobotbase PUBLIC
     Boost::regex
     PhysFS::PhysFS
     SndFile::sndfile
-    MPG123::libmpg123
 )
+
+if(WIN32)
+    target_link_libraries(colobotbase PUBLIC
+        MPG123::libmpg123
+        MPG123::libout123
+        MPG123::libsyn123
+        mp3lame::mp3lame
+    )
+endif()
 
 # Optional libraries
 if(OPENAL_SOUND)
