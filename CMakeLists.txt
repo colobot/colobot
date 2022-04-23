@@ -327,8 +327,8 @@ find_package(GLEW REQUIRED)
 if (OPENAL_SOUND)
     find_package(OpenAL REQUIRED)
 endif()
-find_package(SndFile REQUIRED)
-
+find_package(SndFile CONFIG REQUIRED)
+find_package(mpg123 CONFIG REQUIRED)
 
 if(NOT ASSERTS)
     add_definitions(-DNDEBUG)

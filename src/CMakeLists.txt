@@ -491,6 +491,7 @@ target_link_libraries(colobotbase PUBLIC
     Boost::regex
     PhysFS::PhysFS
     SndFile::sndfile
+    MPG123::libmpg123
 )
 
 # Optional libraries
