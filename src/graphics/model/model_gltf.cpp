@@ -20,12 +20,12 @@
 #include "graphics/model/model_mod.h"
 
 #include "common/ioutils.h"
+#include "common/logger.h"
 #include "common/resources/inputstream.h"
 
 #include "graphics/model/model_io_exception.h"
 #include "graphics/model/model_io_structs.h"
 
-#include <iostream>
 #include <vector>
 #include <nlohmann/json.hpp>
 
@@ -155,7 +155,7 @@ void GLTFLoader::ReadBuffers()
         }
         else
         {
-            std::cerr << "Base64 not yet supported";
+            GetLogger()->Error("Base64 not yet supported\n");
         }
 
         m_buffers.emplace_back(std::move(buffer));
@@ -638,7 +638,7 @@ std::vector<glm::vec2> GLTFLoader::ReadUVs(int index)
     }
     else
     {
-        std::cerr << "Invalid UV type: " << accessor.componentType << '\n';
+        GetLogger()->Error("Invalid UV type: %d\n", accessor.componentType);
     }
 
     return uvs;
@@ -677,7 +677,7 @@ std::vector<glm::u8vec4> GLTFLoader::ReadColors(int index)
     }
     else
     {
-        std::cerr << "Invalid color type: " << accessor.componentType << '\n';
+        GetLogger()->Error("Invalid color type: %d\n", accessor.componentType);
     }
 
     return colors;
