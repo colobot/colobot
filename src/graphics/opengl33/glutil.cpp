@@ -35,9 +35,6 @@
 namespace Gfx
 {
 
-GLuint textureCoordinates[] = { GL_S, GL_T, GL_R, GL_Q };
-GLuint textureCoordGen[] = { GL_TEXTURE_GEN_S, GL_TEXTURE_GEN_T, GL_TEXTURE_GEN_R, GL_TEXTURE_GEN_Q };
-
 bool InitializeGLEW()
 {
     static bool glewInited = false;
@@ -56,14 +53,6 @@ bool InitializeGLEW()
     }
 
     return true;
-}
-
-FramebufferSupport DetectFramebufferSupport()
-{
-    if (GetOpenGLVersion() >= 30) return FBS_ARB;
-    if (glewIsSupported("GL_ARB_framebuffer_object")) return FBS_ARB;
-    if (glewIsSupported("GL_EXT_framebuffer_object")) return FBS_EXT;
-    return FBS_NONE;
 }
 
 std::unique_ptr<CDevice> CreateDevice(const DeviceConfig &config, const std::string& name)
@@ -228,61 +217,22 @@ std::string GetHardwareInfo(bool full)
     }
 
     // FBO support
-    FramebufferSupport framebuffer = DetectFramebufferSupport();
+    result << "Framebuffer Object:\t\tsupported\n";
+    result << "    Type:\t\t\tCore/ARB\n";
 
-    if (framebuffer == FBS_ARB)
-    {
-        result << "Framebuffer Object:\t\tsupported\n";
-        result << "    Type:\t\t\tCore/ARB\n";
+    glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE, &value);
+    result << "    Max Renderbuffer Size:\t" << value << '\n';
 
-        glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE, &value);
-        result << "    Max Renderbuffer Size:\t" << value << '\n';
+    glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS, &value);
+    result << "    Max Color Attachments:\t" << value << '\n';
 
-        glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS, &value);
-        result << "    Max Color Attachments:\t" << value << '\n';
+    result << "Multisampling:\t\tsupported\n";
 
-        result << "Multisampling:\t\tsupported\n";
-
-        glGetIntegerv(GL_MAX_SAMPLES, &value);
-        result << "    Max Framebuffer Samples:\t" << value << '\n';
-    }
-    else if (framebuffer == FBS_EXT)
-    {
-        result << "Framebuffer Object:\tsupported\n";
-        result << "    Type:\tEXT\n";
-
-        glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE_EXT, &value);
-        result << "    Max Renderbuffer Size:\t" << value << '\n';
-
-        glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS_EXT, &value);
-        result << "    Max Color Attachments:\t" << value << '\n';
-
-        if (glewIsSupported("GL_EXT_framebuffer_multisample"))
-        {
-            result << "Multisampling:\tsupported\n";
-
-            glGetIntegerv(GL_MAX_SAMPLES_EXT, &value);
-            result << "    Max Framebuffer Samples:\t" << value << '\n';
-        }
-    }
-    else
-    {
-        result << "Framebuffer Object:\tunsupported\n";
-    }
+    glGetIntegerv(GL_MAX_SAMPLES, &value);
+    result << "    Max Framebuffer Samples:\t" << value << '\n';
 
     // VBO support
-    if (glversion >= 15)
-    {
-        result << "VBO:\t\t\tsupported (core)\n";
-    }
-    else if (glewIsSupported("GL_ARB_vertex_buffer_object"))
-    {
-        result << "VBO:\t\t\tsupported (ARB)\n";
-    }
-    else
-    {
-        result << "VBO:\t\t\tunsupported\n";
-    }
+    result << "VBO:\t\t\tsupported (core)\n";
 
     return result.str();
 }
@@ -381,20 +331,6 @@ bool InPlane(glm::vec3 normal, float originPlane, glm::vec3 center, float radius
     return true;
 }
 
-GLenum TranslateTextureCoordinate(int index)
-{
-    assert(index >= 0 && index < 4);
-
-    return textureCoordinates[index];
-}
-
-GLenum TranslateTextureCoordinateGen(int index)
-{
-    assert(index >= 0 && index < 4);
-
-    return textureCoordGen[index];
-}
-
 GLenum TranslateType(Type type)
 {
     switch (type)
@@ -424,9 +360,9 @@ std::string LoadSource(const std::string& path)
     PHYSFS_file* file = PHYSFS_openRead(path.c_str());
     if (file == nullptr)
     {
-        CLogger::GetInstance().Error("Cannot read shader source file\n");
-        CLogger::GetInstance().Error("Missing file \"%s\"\n", path);
-        return 0;
+        GetLogger()->Error("Cannot read shader source file\n");
+        GetLogger()->Error("Missing file \"%s\"\n", path);
+        return {};
     }
 
     size_t len = PHYSFS_fileLength(file);
@@ -479,8 +415,8 @@ GLint LoadShader(GLint type, const char* filename)
     PHYSFS_file *file = PHYSFS_openRead(filename);
     if (file == nullptr)
     {
-        CLogger::GetInstance().Error("Cannot read shader source file\n");
-        CLogger::GetInstance().Error("Missing file \"%s\"\n", filename);
+        GetLogger()->Error("Cannot read shader source file\n");
+        GetLogger()->Error("Missing file \"%s\"\n", filename);
         return 0;
     }
 

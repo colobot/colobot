@@ -38,16 +38,7 @@ struct SDL_Surface;
 namespace Gfx
 {
 
-enum FramebufferSupport
-{
-    FBS_NONE,
-    FBS_EXT,
-    FBS_ARB,
-};
-
 bool InitializeGLEW();
-
-FramebufferSupport DetectFramebufferSupport();
 
 //! Creates OpenGL device
 std::unique_ptr<CDevice> CreateDevice(const DeviceConfig &config, const std::string& name);
@@ -81,10 +72,6 @@ CompFunc TranslateGLCompFunc(GLenum flag);
 GLenum TranslateGfxCompFunc(CompFunc func);
 
 bool InPlane(glm::vec3 normal, float originPlane, glm::vec3 center, float radius);
-
-GLenum TranslateTextureCoordinate(int index);
-
-GLenum TranslateTextureCoordinateGen(int index);
 
 GLenum TranslateType(Type type);
 
@@ -128,36 +115,5 @@ private:
 };
 
 std::unique_ptr<CGLFrameBufferPixels> GetGLFrameBufferPixels(const glm::ivec2& size);
-
-struct UniformLocations
-{
-    // Uniforms
-    //! Projection matrix
-    GLint projectionMatrix = -1;
-    //! View matrix
-    GLint viewMatrix = -1;
-    //! Model matrix
-    GLint modelMatrix = -1;
-    //! Shadow matrix
-    GLint shadowMatrix = -1;
-    //! Normal matrix
-    GLint normalMatrix = -1;
-    //! Camera position
-    GLint cameraPosition = -1;
-
-    //! Primary texture sampler
-    GLint primaryTexture = -1;
-    //! Secondary texture sampler
-    GLint secondaryTexture = -1;
-
-    //! true enables texture
-    GLint textureEnabled[3] = {};
-
-    // Alpha test parameters
-    //! true enables alpha test
-    GLint alphaTestEnabled = -1;
-    //! Alpha test reference value
-    GLint alphaReference = -1;
-};
 
 } // namespace Gfx

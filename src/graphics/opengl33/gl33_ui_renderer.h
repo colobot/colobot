@@ -48,8 +48,6 @@ public:
     virtual void SetColor(const glm::vec4& color) override;
     virtual void SetTransparency(TransparencyMode mode) override;
 
-    virtual void DrawPrimitive(PrimitiveType type, int count, const Vertex2D* vertices) override;
-
     virtual Vertex2D* BeginPrimitive(PrimitiveType type, int count) override;
     virtual Vertex2D* BeginPrimitives(PrimitiveType type, int drawCount, const int* counts) override;
     virtual bool EndPrimitive() override;

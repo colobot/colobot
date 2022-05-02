@@ -44,19 +44,6 @@ namespace Gfx
 enum class CullFace : unsigned char;
 enum class TransparencyMode : unsigned char;
 
-//! Struct for dynamic buffers
-struct DynamicBuffer
-{
-    //! Auxiliary VAO for rendering primitives with DrawPrimitive*
-    GLuint vao = 0;
-    //! Dynamic buffer
-    GLuint vbo = 0;
-    //! Dynamic buffer size
-    unsigned int size = 0;
-    //! Dynamic buffer offset
-    unsigned int offset = 0;
-};
-
 class CGL33VertexBuffer : public CVertexBuffer
 {
     GLuint m_vao = 0;

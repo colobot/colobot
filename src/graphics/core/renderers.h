@@ -73,9 +73,6 @@ public:
     //! Sets transparency mode
     virtual void SetTransparency(TransparencyMode mode) = 0;
 
-    //! Draws primitive
-    virtual void DrawPrimitive(PrimitiveType type, int count, const Vertex2D* vertices) = 0;
-
     virtual Vertex2D* BeginPrimitive(PrimitiveType type, int count) = 0;
     virtual Vertex2D* BeginPrimitives(PrimitiveType type, int drawCount, const int* counts) = 0;
     virtual bool EndPrimitive() = 0;

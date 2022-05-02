@@ -161,15 +161,6 @@ void CGL33UIRenderer::SetTransparency(TransparencyMode mode)
     m_device->SetTransparency(mode);
 }
 
-void CGL33UIRenderer::DrawPrimitive(PrimitiveType type, int count, const Vertex2D* vertices)
-{
-    auto ptr = BeginPrimitive(type, count);
-
-    std::copy_n(vertices, count, ptr);
-
-    EndPrimitive();
-}
-
 Vertex2D* CGL33UIRenderer::BeginPrimitive(PrimitiveType type, int count)
 {
     return BeginPrimitives(type, 1, &count);

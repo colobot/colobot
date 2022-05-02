@@ -192,17 +192,6 @@ enum FrustumPlane
                         FRUSTUM_PLANE_FRONT  | FRUSTUM_PLANE_BACK
 };
 
-/**
- * \enum RenderTarget
- * \brief Render targets for rendering to textures
- */
-enum RenderTarget
-{
-    RENDER_TARGET_COLOR,
-    RENDER_TARGET_DEPTH,
-    RENDER_TARGET_STENCIL
-};
-
 class CFrameBufferPixels
 {
 public:
