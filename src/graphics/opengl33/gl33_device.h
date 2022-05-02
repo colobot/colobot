@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2021, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2022, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
  */
 
 /**
- * \file graphics/opengl/gl33device.h
+ * \file graphics/opengl33/gl33_device.h
  * \brief OpenGL 3.3 implementation - CGL33Device class
  */
 
@@ -26,8 +26,8 @@
 
 #include "graphics/core/device.h"
 
-#include "graphics/opengl/glframebuffer.h"
-#include "graphics/opengl/glutil.h"
+#include "graphics/opengl33/glframebuffer.h"
+#include "graphics/opengl33/glutil.h"
 
 #include <map>
 #include <memory>

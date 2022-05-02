@@ -17,12 +17,12 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#include "graphics/opengl/glutil.h"
+#include "graphics/opengl33/glutil.h"
+
+#include "graphics/opengl33/gl33_device.h"
 
 #include "common/image.h"
 #include "common/logger.h"
-
-#include "graphics/opengl/gl33device.h"
 
 #include <SDL.h>
 #include <physfs.h>

@@ -37,7 +37,7 @@
 #include "common/system/system.h"
 
 #include "graphics/engine/engine.h"
-#include "graphics/opengl/glutil.h"
+#include "graphics/opengl33/glutil.h"
 
 #include "level/robotmain.h"
 

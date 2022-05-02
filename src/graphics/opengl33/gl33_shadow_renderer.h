@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2021, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2022, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,8 +18,8 @@
  */
 
  /**
-  * \file graphics/opengl/gl33objectrenderer.h
-  * \brief OpenGL 3.3 object renderer
+  * \file graphics/opengl33/gl33_shadow_renderer.h
+  * \brief OpenGL 3.3 shadow renderer
   */
 
 #pragma once
@@ -31,17 +31,17 @@
 #include <array>
 #include <vector>
 
-  // Graphics module namespace
+// Graphics module namespace
 namespace Gfx
 {
 
 class CGL33Device;
 
-class CGL33ParticleRenderer : public CParticleRenderer
+class CGL33ShadowRenderer : public CShadowRenderer
 {
 public:
-    CGL33ParticleRenderer(CGL33Device* device);
-    virtual ~CGL33ParticleRenderer();
+    CGL33ShadowRenderer(CGL33Device* device);
+    virtual ~CGL33ShadowRenderer();
 
     virtual void Begin() override;
 
@@ -54,16 +54,16 @@ public:
     //! Sets model matrix
     virtual void SetModelMatrix(const glm::mat4& matrix) override;
 
-    //! Sets color
-    virtual void SetColor(const glm::vec4& color) override;
     //! Sets texture
     virtual void SetTexture(const Texture& texture) override;
 
-    //! Sets transparency mode
-    virtual void SetTransparency(TransparencyMode mode) override;
+    //! Sets shadow map
+    virtual void SetShadowMap(const Texture& texture) override;
+    //! Sets shadow region
+    virtual void SetShadowRegion(const glm::vec2& offset, const glm::vec2& scale) override;
 
-    //! Draws particles
-    virtual void DrawParticle(PrimitiveType type, int count, const Vertex3D* vertices) override;
+    //! Draws terrain object
+    virtual void DrawObject(const CVertexBuffer* buffer, bool transparent) override;
 
 private:
     CGL33Device* const m_device;
@@ -72,25 +72,15 @@ private:
     GLint m_projectionMatrix = -1;
     GLint m_viewMatrix = -1;
     GLint m_modelMatrix = -1;
-    GLint m_fogRange = -1;
-    GLint m_fogColor = -1;
-    GLint m_color = -1;
     GLint m_alphaScissor = -1;
 
     // Shader program
     GLuint m_program = 0;
 
-    // 1x1 white texture
-    GLuint m_whiteTexture = 0;
-    // Currently bound primary texture
-    GLuint m_texture = 0;
-
-    // Vertex buffer object
-    GLuint m_bufferVBO = 0;
-    // Vertex array object
-    GLuint m_bufferVAO = 0;
-    // VBO capacity
-    GLsizei m_bufferCapacity = 8 * sizeof(Vertex3D);
+    // Framebuffer 
+    GLuint m_framebuffer = 0;
+    int m_width = 0;
+    int m_height = 0;
 };
 
-}
+} // namespace Gfx

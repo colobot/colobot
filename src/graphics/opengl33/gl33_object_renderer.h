@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2021, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2022, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,8 +18,8 @@
  */
 
  /**
-  * \file graphics/opengl/gl33renderers.h
-  * \brief OpenGL 3.3 renderers
+  * \file graphics/opengl33/gl33_object_renderer.h
+  * \brief OpenGL 3.3 object renderer
   */
 
 #pragma once
@@ -37,83 +37,11 @@ namespace Gfx
 
 class CGL33Device;
 
-class CGL33UIRenderer : public CUIRenderer
+class CGL33ObjectRenderer : public CObjectRenderer
 {
 public:
-    CGL33UIRenderer(CGL33Device* device);
-    virtual ~CGL33UIRenderer();
-
-    virtual void SetProjection(float left, float right, float bottom, float top) override;
-    virtual void SetTexture(const Texture& texture) override;
-    virtual void SetColor(const glm::vec4& color) override;
-    virtual void SetTransparency(TransparencyMode mode) override;
-
-    virtual void DrawPrimitive(PrimitiveType type, int count, const Vertex2D* vertices) override;
-
-    virtual Vertex2D* BeginPrimitive(PrimitiveType type, int count) override;
-    virtual Vertex2D* BeginPrimitives(PrimitiveType type, int drawCount, const int* counts) override;
-    virtual bool EndPrimitive() override;
-
-private:
-    void UpdateUniforms();
-
-    CGL33Device* const m_device;
-
-    // Uniform data
-    struct Uniforms
-    {
-        glm::mat4 projectionMatrix;
-        glm::vec4 color;
-    };
-    Uniforms m_uniforms = {};
-
-    // true means uniforms need to be updated
-    bool m_uniformsDirty = false;
-
-    // Uniform buffer object
-    GLuint m_uniformBuffer = 0;
-
-    // Vertex buffer object
-    GLuint m_bufferVBO = 0;
-    // Vertex array object
-    GLuint m_bufferVAO = 0;
-    // VBO capacity
-    GLsizei m_bufferCapacity = 128 * 1024;
-    // Buffer offset
-    GLsizei m_bufferOffset = 0;
-    
-    // Buffer mapping state
-    PrimitiveType m_type = {};
-    // Number of drawn primitives
-    GLuint m_drawCount = 0;
-    // Total count of drawn vertices
-    GLuint m_currentCount = 0;
-    // Starting offset for each drawn primitive
-    std::vector<GLint> m_first;
-    // Numbers of vertices for each drawn primitive
-    std::vector<GLsizei> m_count;
-    // True means currently drawing
-    bool m_mapped = false;
-    // True means mapping failed, using auxiliary buffer
-    bool m_backup = false;
-
-    // Buffered vertex data
-    std::vector<Vertex2D> m_buffer;
-
-    // Shader program
-    GLuint m_program = 0;
-
-    // 1x1 white texture
-    GLuint m_whiteTexture = 0;
-    // Currently bound texture
-    GLuint m_currentTexture = 0;
-};
-
-class CGL33TerrainRenderer : public CTerrainRenderer
-{
-public:
-    CGL33TerrainRenderer(CGL33Device* device);
-    virtual ~CGL33TerrainRenderer();
+    CGL33ObjectRenderer(CGL33Device* device);
+    virtual ~CGL33ObjectRenderer();
 
     virtual void Begin() override;
 
@@ -144,6 +72,8 @@ public:
     //! Sets shadow map
     virtual void SetShadowMap(const Texture& texture) override;
 
+    //! Enables lighting
+    virtual void SetLighting(bool enabled) override;
     //! Sets light parameters
     virtual void SetLight(const glm::vec4& position, const float& intensity, const glm::vec3& color) override;
     //! Sets sky parameters
@@ -153,9 +83,31 @@ public:
 
     //! Sets fog parameters
     virtual void SetFog(float min, float max, const glm::vec3& color) override;
+    //! Sets alpha scissor
+    virtual void SetAlphaScissor(float alpha) override;
 
-    //! Draws terrain object
-    virtual void DrawObject(const glm::mat4& matrix, const CVertexBuffer* buffer) override;
+    virtual void SetDepthTest(bool enabled) override;
+    virtual void SetDepthMask(bool enabled) override;
+
+    //! Sets cull mode parameters
+    virtual void SetCullFace(CullFace mode) override;
+    //! Sets transparency mode
+    virtual void SetTransparency(TransparencyMode mode) override;
+
+    //! Sets UV transform
+    virtual void SetUVTransform(const glm::vec2& offset, const glm::vec2& scale) override;
+
+    //! Sets triplanar mode
+    virtual void SetTriplanarMode(bool enabled) override;
+    //! Sets triplanar scale
+    virtual void SetTriplanarScale(float scale) override;
+
+    //! Draws an object
+    virtual void DrawObject(const CVertexBuffer* buffer) override;
+    //! Draws a primitive
+    virtual void DrawPrimitive(PrimitiveType type, int count, const Vertex3D* vertices) override;
+    //! Draws a set of primitives
+    virtual void DrawPrimitives(PrimitiveType type, int drawCount, int count[], const Vertex3D* vertices) override;
 
 private:
     CGL33Device* const m_device;
@@ -167,6 +119,7 @@ private:
     GLint m_modelMatrix = -1;
     GLint m_normalMatrix = -1;
 
+    GLint m_lighting = -1;
     GLint m_cameraPosition = -1;
     GLint m_lightPosition = -1;
     GLint m_lightIntensity = -1;
@@ -183,6 +136,13 @@ private:
     GLint m_roughness = -1;
     GLint m_metalness = -1;
     GLint m_aoStrength = -1;
+
+    GLint m_triplanarMode = -1;
+    GLint m_triplanarScale = -1;
+    GLint m_alphaScissor = -1;
+
+    GLint m_uvOffset = -1;
+    GLint m_uvScale = -1;
 
     struct ShadowUniforms
     {
@@ -216,52 +176,13 @@ private:
     GLuint m_materialTexture = 0;
     // Currently bound shadow map
     GLuint m_shadowMap = 0;
+
+    // Vertex buffer object
+    GLuint m_bufferVBO = 0;
+    // Vertex array object
+    GLuint m_bufferVAO = 0;
+    // Offsets
+    std::vector<GLint> m_first;
 };
 
-class CGL33ShadowRenderer : public CShadowRenderer
-{
-public:
-    CGL33ShadowRenderer(CGL33Device* device);
-    virtual ~CGL33ShadowRenderer();
-
-    virtual void Begin() override;
-
-    virtual void End() override;
-
-    //! Sets projection matrix
-    virtual void SetProjectionMatrix(const glm::mat4& matrix) override;
-    //! Sets view matrix
-    virtual void SetViewMatrix(const glm::mat4& matrix) override;
-    //! Sets model matrix
-    virtual void SetModelMatrix(const glm::mat4& matrix) override;
-
-    //! Sets texture
-    virtual void SetTexture(const Texture& texture) override;
-
-    //! Sets shadow map
-    virtual void SetShadowMap(const Texture& texture) override;
-    //! Sets shadow region
-    virtual void SetShadowRegion(const glm::vec2& offset, const glm::vec2& scale) override;
-
-    //! Draws terrain object
-    virtual void DrawObject(const CVertexBuffer* buffer, bool transparent) override;
-
-private:
-    CGL33Device* const m_device;
-
-    // Uniform data
-    GLint m_projectionMatrix = -1;
-    GLint m_viewMatrix = -1;
-    GLint m_modelMatrix = -1;
-    GLint m_alphaScissor = -1;
-
-    // Shader program
-    GLuint m_program = 0;
-
-    // Framebuffer 
-    GLuint m_framebuffer = 0;
-    int m_width = 0;
-    int m_height = 0;
-};
-
-} // namespace Gfx
+}

@@ -10,7 +10,7 @@ if(TOOLS)
     #add_subdirectory(tools)
 endif()
 
-add_subdirectory(graphics/opengl/shaders)
+add_subdirectory(graphics/opengl33/shaders)
 
 # Configure file
 configure_file(common/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/common/config.h)
@@ -147,18 +147,22 @@ add_library(colobotbase STATIC
     graphics/model/model_triangle.h
     graphics/model/model_txt.cpp
     graphics/model/model_txt.h
-    graphics/opengl/gl33device.cpp
-    graphics/opengl/gl33device.h
-    graphics/opengl/gl33renderers.cpp
-    graphics/opengl/gl33renderers.h
-    graphics/opengl/gl33objectrenderer.cpp
-    graphics/opengl/gl33objectrenderer.h
-    graphics/opengl/gl33particlerenderer.cpp
-    graphics/opengl/gl33particlerenderer.h
-    graphics/opengl/glframebuffer.cpp
-    graphics/opengl/glframebuffer.h
-    graphics/opengl/glutil.cpp
-    graphics/opengl/glutil.h
+    graphics/opengl33/gl33_device.cpp
+    graphics/opengl33/gl33_device.h
+    graphics/opengl33/gl33_object_renderer.cpp
+    graphics/opengl33/gl33_object_renderer.h
+    graphics/opengl33/gl33_particle_renderer.cpp
+    graphics/opengl33/gl33_particle_renderer.h
+    graphics/opengl33/gl33_terrain_renderer.cpp
+    graphics/opengl33/gl33_terrain_renderer.h
+    graphics/opengl33/gl33_shadow_renderer.cpp
+    graphics/opengl33/gl33_shadow_renderer.h
+    graphics/opengl33/gl33_ui_renderer.cpp
+    graphics/opengl33/gl33_ui_renderer.h
+    graphics/opengl33/glframebuffer.cpp
+    graphics/opengl33/glframebuffer.h
+    graphics/opengl33/glutil.cpp
+    graphics/opengl33/glutil.h
     level/build_type.h
     level/level_category.cpp
     level/level_category.h

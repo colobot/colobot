@@ -1,6 +1,6 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2021, Daniel Roux, EPSITEC SA & TerranovaTeam
+ * Copyright (C) 2001-2022, Daniel Roux, EPSITEC SA & TerranovaTeam
  * http://epsitec.ch; http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,7 +17,14 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#include "graphics/opengl/gl33device.h"
+#include "graphics/opengl33/gl33_device.h"
+
+#include "graphics/opengl33/gl33_object_renderer.h"
+#include "graphics/opengl33/gl33_particle_renderer.h"
+#include "graphics/opengl33/gl33_shadow_renderer.h"
+#include "graphics/opengl33/gl33_terrain_renderer.h"
+#include "graphics/opengl33/gl33_ui_renderer.h"
+#include "graphics/opengl33/glframebuffer.h"
 
 #include "common/config.h"
 
@@ -31,13 +38,7 @@
 
 #include "graphics/engine/engine.h"
 
-#include "graphics/opengl/glframebuffer.h"
-#include "graphics/opengl/gl33renderers.h"
-#include "graphics/opengl/gl33objectrenderer.h"
-#include "graphics/opengl/gl33particlerenderer.h"
-
 #include "math/geometry.h"
-
 
 #include <SDL.h>
 #include <physfs.h>
