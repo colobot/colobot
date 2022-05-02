@@ -56,6 +56,8 @@ namespace Gfx
 {
 
 class CDevice;
+class CUIRenderer;
+class CObjectRenderer;
 class COldModelManager;
 class CLightManager;
 class CText;
@@ -436,6 +438,10 @@ public:
     void            SetDevice(CDevice* device);
     //! Returns the current device
     CDevice*        GetDevice();
+    //! Returns the UI renderer
+    CUIRenderer*    GetUIRenderer();
+    //! Returns the object renderer
+    CObjectRenderer* GetObjectRenderer();
 
     //! Returns the text rendering engine
     CText*          GetText();

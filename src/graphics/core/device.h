@@ -58,6 +58,7 @@ struct VertexCol;
 struct Vertex3D;
 
 enum class CullFace : unsigned char;
+enum class PrimitiveType : unsigned char;
 enum class TransparencyMode : unsigned char;
 
 /**
@@ -140,21 +141,6 @@ enum class FillMode : unsigned char
     LINES,
     //! Draw full polygons
     POLY
-};
-
-/**
- * \enum PrimitiveType
- * \brief Type of primitive to render
- */
-enum class PrimitiveType : unsigned char
-{
-    POINTS,
-    LINES,
-    LINE_STRIP,
-    LINE_LOOP,
-    TRIANGLES,
-    TRIANGLE_STRIP,
-    TRIANGLE_FAN
 };
 
 /**

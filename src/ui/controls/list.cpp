@@ -20,7 +20,6 @@
 
 #include "ui/controls/list.h"
 
-#include "graphics/core/device.h"
 #include "graphics/core/renderers.h"
 #include "graphics/core/transparency.h"
 #include "graphics/engine/engine.h"
@@ -367,7 +366,7 @@ void CList::Draw()
 
     dp = 0.5f / 256.0f;
 
-    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+    auto renderer = m_engine->GetUIRenderer();
 
     if (m_icon != -1)
     {

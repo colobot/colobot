@@ -22,8 +22,6 @@
 // config.h must be included first
 #include "common/config.h"
 
-#include "graphics/core/device.h"
-
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 
@@ -33,10 +31,19 @@
 
 struct SDL_Surface;
 
+class CImage;
+struct ImageData;
 
 // Graphics module namespace
 namespace Gfx
 {
+
+class CDevice;
+class CFrameBufferPixels;
+struct DeviceConfig;
+enum class PrimitiveType : unsigned char;
+enum class Type : unsigned char;
+enum class TexImgFormat : unsigned char;
 
 bool InitializeGLEW();
 
@@ -94,22 +101,6 @@ struct PreparedTextureData
 
 PreparedTextureData PrepareTextureData(ImageData* imageData, TexImgFormat format);
 
-class CGLFrameBufferPixels : public CFrameBufferPixels
-{
-public:
-    CGLFrameBufferPixels(std::size_t size)
-        : m_pixels(std::make_unique<GLubyte[]>(size))
-    {}
-
-    void* GetPixelsData() override
-    {
-        return static_cast<void*>(m_pixels.get());
-    }
-
-private:
-    std::unique_ptr<GLubyte[]> m_pixels;
-};
-
-std::unique_ptr<CGLFrameBufferPixels> GetGLFrameBufferPixels(const glm::ivec2& size);
+std::unique_ptr<CFrameBufferPixels> GetGLFrameBufferPixels(const glm::ivec2& size);
 
 } // namespace Gfx

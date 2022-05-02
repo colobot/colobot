@@ -1182,16 +1182,16 @@ void CEdit::DrawImage(const glm::vec2& pos, std::string name, float width,
     glm::vec2 uv1, uv2, dim;
     float dp;
 
-    m_engine->GetDevice()->GetUIRenderer()->SetTransparency(Gfx::TransparencyMode::NONE);
+    m_engine->GetUIRenderer()->SetTransparency(Gfx::TransparencyMode::NONE);
     //m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
     Gfx::TextureCreateParams params;
-    params.format = Gfx::TEX_IMG_AUTO;
+    params.format = Gfx::TexImgFormat::AUTO;
     params.filter = Gfx::TEX_FILTER_BILINEAR;
     params.padToNearestPowerOfTwo = true;
     Gfx::Texture tex = m_engine->LoadTexture(PrepareImageFilename(name), params);
 
-    m_engine->GetDevice()->GetUIRenderer()->SetTexture(tex);
+    m_engine->GetUIRenderer()->SetTexture(tex);
 
     uv1.x = 0.0f;
     uv2.x = 1.0f;
@@ -1225,7 +1225,7 @@ void CEdit::DrawBack(const glm::vec2& pos, const glm::vec2& dim)
 
     auto texture = m_engine->LoadTexture("textures/interface/button2.png");
 
-    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+    auto renderer = m_engine->GetUIRenderer();
     renderer->SetTexture(texture);
     renderer->SetTransparency(Gfx::TransparencyMode::NONE);
 
@@ -1271,7 +1271,7 @@ void CEdit::DrawBack(const glm::vec2& pos, const glm::vec2& dim)
 
 void CEdit::DrawHorizontalGradient(const glm::vec2& pos, const glm::vec2& dim, Gfx::Color color1, Gfx::Color color2)
 {
-    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+    auto renderer = m_engine->GetUIRenderer();
     renderer->SetTransparency(Gfx::TransparencyMode::NONE);
 
     glm::vec2 p1, p2;

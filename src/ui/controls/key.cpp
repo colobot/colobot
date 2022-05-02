@@ -23,7 +23,6 @@
 #include "common/global.h"
 #include "common/stringutils.h"
 
-#include "graphics/core/device.h"
 #include "graphics/core/renderers.h"
 #include "graphics/core/transparency.h"
 
@@ -138,7 +137,7 @@ void CKey::Draw()
     if (m_state & STATE_SHADOW)
         DrawShadow(m_pos, m_dim);
 
-    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+    auto renderer = m_engine->GetUIRenderer();
 
     auto texture = m_engine->LoadTexture("textures/interface/button1.png");
     renderer->SetTexture(texture);

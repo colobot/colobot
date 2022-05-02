@@ -276,10 +276,10 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
 
     m_shadowColor = 0.5f;
 
-    m_defaultTexParams.format = TEX_IMG_AUTO;
+    m_defaultTexParams.format = TexImgFormat::AUTO;
     m_defaultTexParams.filter = TEX_FILTER_BILINEAR;
 
-    m_terrainTexParams.format = TEX_IMG_AUTO;
+    m_terrainTexParams.format = TexImgFormat::AUTO;
     m_terrainTexParams.filter = TEX_FILTER_BILINEAR;
 
     // Compute bias matrix for shadow mapping
@@ -305,6 +305,16 @@ void CEngine::SetDevice(CDevice *device)
 CDevice* CEngine::GetDevice()
 {
     return m_device;
+}
+
+CUIRenderer* CEngine::GetUIRenderer()
+{
+    return m_device->GetUIRenderer();
+}
+
+CObjectRenderer* CEngine::GetObjectRenderer()
+{
+    return m_device->GetObjectRenderer();
 }
 
 COldModelManager* CEngine::GetModelManager()
@@ -408,7 +418,7 @@ bool CEngine::Create()
     Math::LoadOrthoProjectionMatrix(m_matProjInterface, 0.0f, 1.0f, 0.0f, 1.0f, -1.0f, 1.0f);
 
     TextureCreateParams params;
-    params.format = TEX_IMG_AUTO;
+    params.format = TexImgFormat::AUTO;
     params.filter = TEX_FILTER_NEAREST;
     params.mipmap = false;
     m_miceTexture = LoadTexture("textures/interface/mouse.png", params);
@@ -3168,7 +3178,7 @@ void CEngine::Capture3DScene()
 
     TextureCreateParams params;
     params.filter = TEX_FILTER_BILINEAR;
-    params.format = TEX_IMG_RGBA;
+    params.format = TexImgFormat::RGBA;
     params.mipmap = false;
 
     m_capturedWorldTexture = m_device->CreateTexture(&image, params);

@@ -36,6 +36,7 @@
 
 #include "common/system/system.h"
 
+#include "graphics/core/device.h"
 #include "graphics/engine/engine.h"
 #include "graphics/opengl33/glutil.h"
 
@@ -115,7 +116,8 @@ CApplication::CApplication(CSystemUtils* systemUtils)
       m_configFile(std::make_unique<CConfigFile>()),
       m_input(std::make_unique<CInput>()),
       m_pathManager(std::make_unique<CPathManager>(systemUtils)),
-      m_modManager(std::make_unique<CModManager>(this, m_pathManager.get()))
+      m_modManager(std::make_unique<CModManager>(this, m_pathManager.get())),
+      m_deviceConfig(std::make_unique<Gfx::DeviceConfig>())
 {
     m_exitCode      = 0;
     m_active        = false;
@@ -427,8 +429,8 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 std::getline(resolution, w, 'x');
                 std::getline(resolution, h, 'x');
 
-                m_deviceConfig.size.x = atoi(w.c_str());
-                m_deviceConfig.size.y = atoi(h.c_str());
+                m_deviceConfig->size.x = atoi(w.c_str());
+                m_deviceConfig->size.y = atoi(h.c_str());
                 m_resolutionOverride = true;
                 break;
             }
@@ -615,7 +617,7 @@ bool CApplication::Create()
             {
                 if (it->x == w && it->y == h)
                 {
-                    m_deviceConfig.size = *it;
+                    m_deviceConfig->size = *it;
                     break;
                 }
             }
@@ -623,7 +625,7 @@ bool CApplication::Create()
 
         if ( GetConfigFile().GetIntProperty("Setup", "Fullscreen", iValue) && !m_resolutionOverride )
         {
-            m_deviceConfig.fullScreen = (iValue == 1);
+            m_deviceConfig->fullScreen = (iValue == 1);
         }
 
         if (! CreateVideoSurface())
@@ -673,14 +675,14 @@ bool CApplication::Create()
             graphics = value;
         }
 
-        m_device = Gfx::CreateDevice(m_deviceConfig, graphics.c_str());
+        m_device = Gfx::CreateDevice(*m_deviceConfig, graphics.c_str());
 
         if (m_device == nullptr)
         {
             GetLogger()->Error("Unknown graphics device: %s\n", graphics.c_str());
             GetLogger()->Info("Changing to default device\n");
             m_systemUtils->SystemDialog(SystemDialogType::ERROR_MSG, "Graphics initialization error", "You have selected invalid graphics device with -graphics switch. Game will use default OpenGL device instead.");
-            m_device = Gfx::CreateDevice(m_deviceConfig, "opengl");
+            m_device = Gfx::CreateDevice(*m_deviceConfig, "opengl");
         }
     }
     //else
@@ -747,23 +749,23 @@ bool CApplication::CreateVideoSurface()
 {
     Uint32 videoFlags = SDL_WINDOW_OPENGL;
 
-    if (m_deviceConfig.fullScreen)
+    if (m_deviceConfig->fullScreen)
         videoFlags |= SDL_WINDOW_FULLSCREEN;
 
-    if (m_deviceConfig.resizeable)
+    if (m_deviceConfig->resizeable)
         videoFlags |= SDL_WINDOW_RESIZABLE;
 
     // Set OpenGL attributes
 
-    SDL_GL_SetAttribute(SDL_GL_RED_SIZE,   m_deviceConfig.redSize);
-    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, m_deviceConfig.greenSize);
-    SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,  m_deviceConfig.blueSize);
-    SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, m_deviceConfig.alphaSize);
+    SDL_GL_SetAttribute(SDL_GL_RED_SIZE,   m_deviceConfig->redSize);
+    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, m_deviceConfig->greenSize);
+    SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,  m_deviceConfig->blueSize);
+    SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, m_deviceConfig->alphaSize);
 
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, m_deviceConfig.depthSize);
-    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, m_deviceConfig.stencilSize);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, m_deviceConfig->depthSize);
+    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, m_deviceConfig->stencilSize);
 
-    if (m_deviceConfig.doubleBuf)
+    if (m_deviceConfig->doubleBuf)
         SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
     std::string value;
@@ -848,12 +850,12 @@ bool CApplication::CreateVideoSurface()
 
     /* If hardware acceleration specifically requested, this will force the hw accel
        and fail with error if not available */
-    if (m_deviceConfig.hardwareAccel)
+    if (m_deviceConfig->hardwareAccel)
         SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
     m_private->window = SDL_CreateWindow(m_windowTitle.c_str(),
                                          SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-                                         m_deviceConfig.size.x, m_deviceConfig.size.y,
+                                         m_deviceConfig->size.x, m_deviceConfig->size.y,
                                          videoFlags);
 
     m_private->glcontext = SDL_GL_CreateContext(m_private->window);
@@ -900,15 +902,15 @@ void CApplication::TryToSetVSync()
 
 bool CApplication::ChangeVideoConfig(const Gfx::DeviceConfig &newConfig)
 {
-    m_deviceConfig = newConfig;
+    *m_deviceConfig = newConfig;
 
     // TODO: Somehow this doesn't work for maximized windows (at least on Ubuntu)
-    SDL_SetWindowSize(m_private->window, m_deviceConfig.size.x, m_deviceConfig.size.y);
-    SDL_SetWindowFullscreen(m_private->window, m_deviceConfig.fullScreen ? SDL_WINDOW_FULLSCREEN : 0);
+    SDL_SetWindowSize(m_private->window, m_deviceConfig->size.x, m_deviceConfig->size.y);
+    SDL_SetWindowFullscreen(m_private->window, m_deviceConfig->fullScreen ? SDL_WINDOW_FULLSCREEN : 0);
 
     TryToSetVSync();
 
-    m_device->ConfigChanged(m_deviceConfig);
+    m_device->ConfigChanged(*m_deviceConfig);
 
     m_eventQueue->AddEvent(Event(EVENT_RESOLUTION_CHANGED));
 
@@ -1238,10 +1240,10 @@ Event CApplication::ProcessSystemEvent()
     {
         if (m_private->currentEvent.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
         {
-            Gfx::DeviceConfig newConfig = m_deviceConfig;
+            Gfx::DeviceConfig newConfig = *m_deviceConfig;
             newConfig.size.x = m_private->currentEvent.window.data1;
             newConfig.size.y = m_private->currentEvent.window.data2;
-            if (newConfig.size != m_deviceConfig.size)
+            if (newConfig.size != m_deviceConfig->size)
                 ChangeVideoConfig(newConfig);
         }
 
@@ -1496,7 +1498,7 @@ void CApplication::Render()
     CProfiler::StopPerformanceCounter(PCNT_RENDER_ALL);
 
     CProfiler::StartPerformanceCounter(PCNT_SWAP_BUFFERS);
-    if (m_deviceConfig.doubleBuf)
+    if (m_deviceConfig->doubleBuf)
         SDL_GL_SwapWindow(m_private->window);
     CProfiler::StopPerformanceCounter(PCNT_SWAP_BUFFERS);
 }
@@ -1648,9 +1650,9 @@ long long CApplication::GetRealRelTime() const
     return m_realRelTime;
 }
 
-Gfx::DeviceConfig CApplication::GetVideoConfig() const
+const Gfx::DeviceConfig& CApplication::GetVideoConfig() const
 {
-    return m_deviceConfig;
+    return *m_deviceConfig;
 }
 
 std::vector<glm::ivec2> CApplication::GetVideoResolutionList(int display) const

@@ -22,7 +22,6 @@
 
 #include "common/event.h"
 
-#include "graphics/core/device.h"
 #include "graphics/core/renderers.h"
 #include "graphics/core/transparency.h"
 
@@ -119,7 +118,7 @@ void CShortcut::Draw()
         zoom = 1.0f;
     }
 
-    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+    auto renderer = m_engine->GetUIRenderer();
 
     auto texture = m_engine->LoadTexture("textures/interface/button3.png");
     renderer->SetTexture(texture);
@@ -260,7 +259,7 @@ void CShortcut::DrawVertex(int icon, float zoom)
     u2 -= dp;
     v2 -= dp;
 
-    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+    auto renderer = m_engine->GetUIRenderer();
     auto vertices = renderer->BeginPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, 4);
 
     vertices[0] = { { p1.x, p1.y }, { u1, v2 } };

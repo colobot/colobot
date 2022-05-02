@@ -19,6 +19,8 @@
 
 #include "graphics/opengl33/glutil.h"
 
+#include "graphics/core/renderers.h"
+
 #include "graphics/opengl33/gl33_device.h"
 
 #include "common/image.h"
@@ -489,7 +491,24 @@ GLint LinkProgram(const std::vector<GLint>& shaders)
     return program;
 }
 
-std::unique_ptr<CGLFrameBufferPixels> GetGLFrameBufferPixels(const glm::ivec2& size)
+
+class CGLFrameBufferPixels : public CFrameBufferPixels
+{
+public:
+    CGLFrameBufferPixels(std::size_t size)
+        : m_pixels(std::make_unique<GLubyte[]>(size))
+    {}
+
+    void* GetPixelsData() override
+    {
+        return static_cast<void*>(m_pixels.get());
+    }
+
+private:
+    std::unique_ptr<GLubyte[]> m_pixels;
+};
+
+std::unique_ptr<CFrameBufferPixels> GetGLFrameBufferPixels(const glm::ivec2& size)
 {
     auto pixels = std::make_unique<CGLFrameBufferPixels>(4 * size.x * size.y);
 
@@ -511,27 +530,27 @@ PreparedTextureData PrepareTextureData(ImageData* imageData, TexImgFormat format
 
     texData.sourceFormat = 0;
 
-    if (format == TEX_IMG_RGB)
+    if (format == TexImgFormat::RGB)
     {
         texData.sourceFormat = GL_RGB;
         texData.alpha = false;
     }
-    else if (format == TEX_IMG_BGR)
+    else if (format == TexImgFormat::BGR)
     {
         texData.sourceFormat = GL_BGR;
         texData.alpha = false;
     }
-    else if (format == TEX_IMG_RGBA)
+    else if (format == TexImgFormat::RGBA)
     {
         texData.sourceFormat = GL_RGBA;
         texData.alpha = true;
     }
-    else if (format == TEX_IMG_BGRA)
+    else if (format == TexImgFormat::BGRA)
     {
         texData.sourceFormat = GL_BGRA;
         texData.alpha = true;
     }
-    else if (format == TEX_IMG_AUTO)
+    else if (format == TexImgFormat::AUTO)
     {
         if (imageData->surface->format->BytesPerPixel == 4)
         {

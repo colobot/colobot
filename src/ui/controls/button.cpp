@@ -23,10 +23,9 @@
 #include "common/event.h"
 #include "common/restext.h"
 
-#include "graphics/engine/engine.h"
-#include "graphics/core/device.h"
 #include "graphics/core/renderers.h"
 #include "graphics/core/transparency.h"
+#include "graphics/engine/engine.h"
 
 
 namespace Ui
@@ -144,8 +143,6 @@ void CButton::Draw()
     glm::vec2 pos, dim, uv1, uv2;
     float   dp;
 
-    auto device = m_engine->GetDevice();
-
     if ( (m_state & STATE_VISIBLE) == 0 )  return;
 
     if ( m_state & STATE_WARNING )  // shading yellow-black?
@@ -172,7 +169,7 @@ void CButton::Draw()
          (m_state & STATE_CARD  ) == 0 &&
          (m_state & STATE_SIMPLY) == 0 )
     {
-        auto renderer = m_engine->GetDevice()->GetUIRenderer();
+        auto renderer = m_engine->GetUIRenderer();
 
         auto texture = m_engine->LoadTexture("textures/interface/button2.png");
 

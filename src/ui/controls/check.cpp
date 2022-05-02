@@ -23,7 +23,6 @@
 #include "common/event.h"
 #include "common/restext.h"
 
-#include "graphics/core/device.h"
 #include "graphics/core/renderers.h"
 #include "graphics/core/transparency.h"
 
@@ -96,8 +95,7 @@ void CCheck::Draw()
     float       zoomExt, zoomInt;
     int         icon;
 
-    auto device = m_engine->GetDevice();
-    auto renderer = device->GetUIRenderer();
+    auto renderer = m_engine->GetUIRenderer();
 
     if ( (m_state & STATE_VISIBLE) == 0 )  return;
 

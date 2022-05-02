@@ -22,7 +22,6 @@
 
 #include "common/event.h"
 
-#include "graphics/core/device.h"
 #include "graphics/core/renderers.h"
 #include "graphics/core/transparency.h"
 
@@ -309,8 +308,6 @@ void CScroll::Draw()
     float   hButton;
     int     icon, n, i;
 
-    auto device = m_engine->GetDevice();
-
     hButton = m_buttonUp?m_dim.x/0.75f:0.0f;
 
     // Draws the bottom.
@@ -365,8 +362,7 @@ void CScroll::DrawVertex(const glm::vec2& pos, const glm::vec2& dim, int icon)
     glm::vec2   uv1, uv2;
     float       ex, dp;
 
-    auto device = m_engine->GetDevice();
-    auto renderer = device->GetUIRenderer();
+    auto renderer = m_engine->GetUIRenderer();
 
     if ( icon == 0 )
     {

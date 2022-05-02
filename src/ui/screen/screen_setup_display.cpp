@@ -27,6 +27,7 @@
 #include "common/settings.h"
 #include "common/stringutils.h"
 
+#include "graphics/core/device.h"
 #include "graphics/engine/camera.h"
 #include "graphics/engine/engine.h"
 

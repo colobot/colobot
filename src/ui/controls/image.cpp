@@ -23,7 +23,6 @@
 #include "common/event.h"
 #include "common/restext.h"
 
-#include "graphics/core/device.h"
 #include "graphics/core/renderers.h"
 #include "graphics/core/transparency.h"
 
@@ -95,7 +94,7 @@ void CImage::Draw()
     glm::vec2   uv1,uv2, corner, pos, dim;
     float       dp;
 
-    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+    auto renderer = m_engine->GetUIRenderer();
 
     if ( (m_state & STATE_VISIBLE) == 0 )  return;
 
@@ -127,7 +126,7 @@ void CImage::Draw()
     if ( m_filename[0] != 0 )  // displays an image?
     {
         Gfx::TextureCreateParams params;
-        params.format = Gfx::TEX_IMG_AUTO;
+        params.format = Gfx::TexImgFormat::AUTO;
         params.filter = Gfx::TEX_FILTER_BILINEAR;
         params.padToNearestPowerOfTwo = true;
         Gfx::Texture tex = m_engine->LoadTexture(m_filename, params);

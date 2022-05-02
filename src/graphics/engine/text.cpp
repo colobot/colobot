@@ -29,6 +29,7 @@
 
 #include "common/resources/resourcemanager.h"
 
+#include "graphics/core/device.h"
 #include "graphics/core/renderers.h"
 #include "graphics/core/transparency.h"
 
@@ -178,7 +179,7 @@ public:
     {
         if (m_quads.empty()) return;
 
-        auto renderer = m_engine.GetDevice()->GetUIRenderer();
+        auto renderer = m_engine.GetUIRenderer();
         renderer->SetTexture(Texture{ m_texID });
         renderer->SetTransparency(m_transparency);
 
@@ -1363,7 +1364,7 @@ CharTexture CText::CreateCharTexture(UTF8Char ch, CachedFont* font)
 
         Texture tex;
         tex.id = texture.id;
-        m_device->UpdateTexture(tex, texture.charPos, &imageData, TEX_IMG_RGBA);
+        m_device->UpdateTexture(tex, texture.charPos, &imageData, TexImgFormat::RGBA);
 
         imageData.surface = nullptr;
 
@@ -1401,7 +1402,7 @@ FontTexture CText::CreateFontTexture(const glm::ivec2& tileSize)
     data.surface = textureSurface;
 
     TextureCreateParams createParams;
-    createParams.format = TEX_IMG_RGBA;
+    createParams.format = TexImgFormat::RGBA;
     createParams.filter = TEX_FILTER_NEAREST;
     createParams.mipmap = false;
 

@@ -38,7 +38,6 @@
 #include "ui/controls/slider.h"
 #include "ui/controls/target.h"
 
-#include "graphics/core/device.h"
 #include "graphics/core/renderers.h"
 #include "graphics/core/transparency.h"
 
@@ -824,8 +823,6 @@ void CWindow::Draw()
 {
     if ( (m_state & STATE_VISIBLE) == 0 )  return;
 
-    auto device = m_engine->GetDevice();
-
     if ( m_state & STATE_SHADOW )
     {
         DrawShadow(m_pos, m_dim);
@@ -909,8 +906,7 @@ void CWindow::DrawVertex(const glm::vec2& position, const glm::vec2& dimension, 
     glm::vec2 pos = position;
     glm::vec2 dim = dimension;
 
-    auto device = m_engine->GetDevice();
-    auto renderer = device->GetUIRenderer();
+    auto renderer = m_engine->GetUIRenderer();
 
     dp = 0.5f/256.0f;
 
@@ -1300,8 +1296,7 @@ void CWindow::DrawHach(const glm::vec2& pos, const glm::vec2& dim)
     float       dp, max, ndim;
     bool        bStop;
 
-    auto device = m_engine->GetDevice();
-    auto renderer = device->GetUIRenderer();
+    auto renderer = m_engine->GetUIRenderer();
 
     dp = 0.5f/256.0f;
     auto texture = m_engine->LoadTexture("textures/interface/button2.png");

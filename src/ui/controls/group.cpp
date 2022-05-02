@@ -23,7 +23,6 @@
 #include "common/event.h"
 #include "common/restext.h"
 
-#include "graphics/core/device.h"
 #include "graphics/core/renderers.h"
 #include "graphics/core/transparency.h"
 
@@ -85,8 +84,6 @@ void CGroup::Draw()
     float       dp;
     int         icon;
 
-    auto device = m_engine->GetDevice();
-
     if ( (m_state & STATE_VISIBLE) == 0 )  return;
 
     if ( m_state & STATE_SHADOW )
@@ -96,7 +93,7 @@ void CGroup::Draw()
 
     dp = 0.5f / 256.0f;
 
-    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+    auto renderer = m_engine->GetUIRenderer();
 
     if ( m_icon == 0 )  // hollow frame?
     {

@@ -456,7 +456,7 @@ void CControl::Draw()
 
     auto texture = m_engine->LoadTexture("textures/interface/button1.png");
 
-    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+    auto renderer = m_engine->GetUIRenderer();
     renderer->SetTransparency(Gfx::TransparencyMode::NONE);
     renderer->SetTexture(texture);
 
@@ -613,7 +613,7 @@ void CControl::DrawIcon(const glm::vec2& pos, const glm::vec2& dim, const glm::v
 {
     glm::vec2       p1, p2, p3, p4;
 
-    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+    auto renderer = m_engine->GetUIRenderer();
 
     p1.x = pos.x;
     p1.y = pos.y;
@@ -684,7 +684,7 @@ void CControl::DrawIcon(const glm::vec2& pos, const glm::vec2& dim, const glm::v
 
     glm::vec2 corner = cor;
 
-    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+    auto renderer = m_engine->GetUIRenderer();
 
     p1.x = pos.x;
     p1.y = pos.y;
@@ -756,7 +756,7 @@ void CControl::DrawWarning(const glm::vec2& position, const glm::vec2& dimension
     glm::vec2   uv1, uv2;
     float       dp;
 
-    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+    auto renderer = m_engine->GetUIRenderer();
 
     glm::vec2 pos = position;
     glm::vec2 dim = dimension;
@@ -807,7 +807,7 @@ void CControl::DrawShadow(const glm::vec2& position, const glm::vec2& dimension,
     glm::vec2   uv1, uv2, corner;
     float       dp;
 
-    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+    auto renderer = m_engine->GetUIRenderer();
 
     glm::vec2 pos = position;
     glm::vec2 dim = dimension;
@@ -869,7 +869,7 @@ int CControl::SetButtonTextureForIcon(int icon)
     int buttonFile = (icon/64) + 1;
 
     auto texture = m_engine->LoadTexture("textures/interface/button" + StrUtils::ToString<int>(buttonFile) + ".png");
-    m_engine->GetDevice()->GetUIRenderer()->SetTexture(texture);
+    m_engine->GetUIRenderer()->SetTexture(texture);
 
     return iconIdx;
 }

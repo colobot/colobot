@@ -25,6 +25,7 @@
 #include "common/config_file.h"
 #include "common/logger.h"
 
+#include "graphics/core/device.h"
 #include "graphics/engine/camera.h"
 #include "graphics/engine/engine.h"
 

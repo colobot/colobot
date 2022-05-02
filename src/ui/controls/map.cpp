@@ -22,7 +22,6 @@
 
 #include "common/image.h"
 
-#include "graphics/core/device.h"
 #include "graphics/core/renderers.h"
 #include "graphics/core/transparency.h"
 
@@ -337,7 +336,7 @@ void CMap::Draw()
     glm::vec2 uv1, uv2;
     int i;
 
-    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+    auto renderer = m_engine->GetUIRenderer();
 
     if ( (m_state & STATE_VISIBLE) == 0 )
         return;
@@ -508,7 +507,7 @@ void CMap::DrawFocus(const glm::vec2& position, float dir, ObjectType type, MapC
     uv2.x = 126.0f/256.0f;
     uv2.y = 255.0f/256.0f;
 
-    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+    auto renderer = m_engine->GetUIRenderer();
 
     auto texture = m_engine->LoadTexture("textures/interface/button2.png");
     renderer->SetTransparency(Gfx::TransparencyMode::WHITE);
@@ -563,7 +562,7 @@ void CMap::DrawObject(const glm::vec2& position, float dir, ObjectType type, Map
     dim.x = 2.0f/128.0f*0.75f;
     dim.y = 2.0f/128.0f;
 
-    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+    auto renderer = m_engine->GetUIRenderer();
 
     if ( bOut )  // outside the map?
     {
@@ -835,7 +834,7 @@ void CMap::DrawObjectIcon(const glm::vec2& pos, const glm::vec2& dim, MapColor c
 
     dp = 0.5f/256.0f;
 
-    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+    auto renderer = m_engine->GetUIRenderer();
 
     auto texture = m_engine->LoadTexture("textures/interface/button3.png");
     renderer->SetTransparency(Gfx::TransparencyMode::NONE);
@@ -984,7 +983,7 @@ void CMap::DrawHighlight(const glm::vec2& position)
     dim.x *= 2.0f+cosf(m_time*8.0f)*0.5f;
     dim.y *= 2.0f+cosf(m_time*8.0f)*0.5f;
 
-    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+    auto renderer = m_engine->GetUIRenderer();
 
     auto texture = m_engine->LoadTexture("textures/interface/button2.png");
     renderer->SetTransparency(Gfx::TransparencyMode::BLACK);
@@ -1003,7 +1002,7 @@ void CMap::DrawHighlight(const glm::vec2& position)
 
 void CMap::DrawTriangle(const glm::vec2& p1, const glm::vec2& p2, const glm::vec2& p3, const glm::vec2& uv1, const glm::vec2& uv2)
 {
-    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+    auto renderer = m_engine->GetUIRenderer();
 
     auto vertices = renderer->BeginPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, 3);
 
@@ -1019,7 +1018,7 @@ void CMap::DrawTriangle(const glm::vec2& p1, const glm::vec2& p2, const glm::vec
 
 void CMap::DrawPenta(const glm::vec2& p1, const glm::vec2& p2, const glm::vec2& p3, const glm::vec2& p4, const glm::vec2& p5, const glm::vec2& uv1, const glm::vec2& uv2)
 {
-    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+    auto renderer = m_engine->GetUIRenderer();
     auto vertices = renderer->BeginPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, 5);
 
     vertices[0] = { { p1.x, p1.y }, { uv1.x, uv1.y } };
@@ -1056,7 +1055,7 @@ void CMap::DrawVertex(const glm::vec2& uv1, const glm::vec2& uv2, float zoom)
     m_mapDim.x = p2.x-p1.x;
     m_mapDim.y = p2.y-p1.y;
 
-    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+    auto renderer = m_engine->GetUIRenderer();
     auto vertices = renderer->BeginPrimitive(Gfx::PrimitiveType::TRIANGLE_STRIP, 4);
 
     vertices[0] = { { p1.x, p1.y }, { uv1.x, uv2.y } };
@@ -1125,7 +1124,7 @@ void CMap::UpdateTerrain()
         }
     }
 
-    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+    auto renderer = m_engine->GetUIRenderer();
 
     m_engine->DeleteTexture("interface/map.png");
     m_engine->LoadTexture("textures/interface/map.png", &img);

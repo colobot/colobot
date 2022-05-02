@@ -29,8 +29,6 @@
 #include "common/singleton.h"
 #include "common/system/system.h"
 
-#include "graphics/core/device.h"
-
 #include "level/level_category.h"
 
 #include <glm/glm.hpp>
@@ -51,6 +49,7 @@ class CSystemUtils;
 
 namespace Gfx
 {
+class CDevice;
 class CEngine;
 struct DeviceConfig;
 }
@@ -188,7 +187,7 @@ public:
     std::vector<glm::ivec2> GetVideoResolutionList(int display = 0) const;
 
     //! Returns the current video mode
-    Gfx::DeviceConfig GetVideoConfig() const;
+    const Gfx::DeviceConfig& GetVideoConfig() const;
 
     //! Change the video mode to given mode
     bool        ChangeVideoConfig(const Gfx::DeviceConfig &newConfig);
@@ -348,7 +347,7 @@ protected:
     std::string     m_errorMessage;
 
     //! Current configuration of OpenGL display device
-    Gfx::DeviceConfig m_deviceConfig;
+    std::unique_ptr<Gfx::DeviceConfig> m_deviceConfig;
 
     //! Text set as window title
     std::string     m_windowTitle;

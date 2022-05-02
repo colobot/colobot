@@ -23,7 +23,6 @@
 #include "common/event.h"
 #include "common/stringutils.h"
 
-#include "graphics/core/device.h"
 #include "graphics/core/renderers.h"
 #include "graphics/core/transparency.h"
 
@@ -375,8 +374,6 @@ void CSlider::Draw()
     int     icon;
     float   h;
 
-    auto device = m_engine->GetDevice();
-
     if ( (m_state & STATE_VISIBLE) == 0 )  return;
 
     if (m_buttonLeft != nullptr)
@@ -492,8 +489,7 @@ void CSlider::DrawVertex(const glm::vec2& pos, const glm::vec2& dim, int icon)
     glm::vec2   uv1, uv2, corner;
     float       ex, dp;
 
-    auto device = m_engine->GetDevice();
-    auto renderer = device->GetUIRenderer();
+    auto renderer = m_engine->GetUIRenderer();
 
     if ( icon == 0 )
     {

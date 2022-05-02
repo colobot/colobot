@@ -20,7 +20,6 @@
 
 #include "graphics/engine/cloud.h"
 
-#include "graphics/core/device.h"
 #include "graphics/core/material.h"
 #include "graphics/core/renderers.h"
 #include "graphics/core/transparency.h"
@@ -111,8 +110,7 @@ void CCloud::Draw()
     float fogStart = deep*0.15f;
     float fogEnd   = deep*0.24f;
 
-    CDevice* device = m_engine->GetDevice();
-    auto renderer = device->GetObjectRenderer();
+    auto renderer = m_engine->GetObjectRenderer();
     renderer->Begin();
 
     auto fogColor = m_engine->GetFogColor(m_engine->GetRankView());

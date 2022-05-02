@@ -22,7 +22,6 @@
 
 #include "graphics/engine/engine.h"
 
-#include "graphics/core/device.h"
 #include "graphics/core/renderers.h"
 #include "graphics/core/transparency.h"
 
@@ -84,7 +83,7 @@ void CGauge::Draw()
 
     auto texture = m_engine->LoadTexture("textures/interface/button2.png");
 
-    auto renderer = m_engine->GetDevice()->GetUIRenderer();
+    auto renderer = m_engine->GetUIRenderer();
     renderer->SetTexture(texture);
     renderer->SetTransparency(Gfx::TransparencyMode::NONE);
 

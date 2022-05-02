@@ -39,18 +39,18 @@ namespace Gfx
  * \enum TexImgFormat
  * \brief Format of image data
  */
-enum TexImgFormat
+enum class TexImgFormat : unsigned char
 {
     //! Try to determine automatically (may not work)
-    TEX_IMG_AUTO,
+    AUTO,
     //! RGB triplet, 3 bytes
-    TEX_IMG_RGB,
+    RGB,
     //! BGR triplet, 3 bytes
-    TEX_IMG_BGR,
+    BGR,
     //! RGBA triplet, 4 bytes
-    TEX_IMG_RGBA,
+    RGBA,
     //! BGRA triplet, 4 bytes
-    TEX_IMG_BGRA
+    BGRA,
 };
 
 /**
@@ -157,7 +157,7 @@ struct TextureCreateParams
     //! Whether to generate mipmaps
     bool mipmap = false;
     //! Format of source image data
-    TexImgFormat format = TEX_IMG_RGB;
+    TexImgFormat format = TexImgFormat::RGB;
     //! General texture filtering mode
     TexFilter filter = TEX_FILTER_NEAREST;
     //! Pad the image to nearest power of 2 dimensions
