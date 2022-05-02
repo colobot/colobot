@@ -498,6 +498,20 @@ target_link_libraries(colobotbase PUBLIC
     nlohmann_json::nlohmann_json
 )
 
+if(mpg123_FOUND)
+    target_link_libraries(colobotbase PUBLIC
+        MPG123::libmpg123
+        MPG123::libout123
+        MPG123::libsyn123
+    )
+endif()
+
+if(mp3lame_FOUND)
+    target_link_libraries(colobotbase PUBLIC
+        mp3lame::mp3lame
+    )
+endif()
+
 # Optional libraries
 if(OPENAL_SOUND)
     target_sources(colobotbase PRIVATE

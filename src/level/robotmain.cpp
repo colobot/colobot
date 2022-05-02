@@ -4969,6 +4969,7 @@ CObject* CRobotMain::IOReadScene(std::string filename, std::string filecbot)
                     assert(slotNum >= 0);
                     assert(slots.find(slotNum) == slots.end());
                     asSlotted->SetSlotContainedObject(slotNum, power);
+                    dynamic_cast<CTransportableObject&>(*power).SetTransporter(obj);
                 }
 
                 for (std::pair<const int, CObject*>& slot : slots)
@@ -4987,14 +4988,6 @@ CObject* CRobotMain::IOReadScene(std::string filename, std::string filecbot)
                 assert(power == nullptr);
                 assert(cargo == nullptr);
             }
-
-            if (power != nullptr)
-            {
-                dynamic_cast<CSlottedObject&>(*obj).SetSlotContainedObjectReq(CSlottedObject::Pseudoslot::POWER, power);
-                dynamic_cast<CTransportableObject&>(*power).SetTransporter(obj);
-            }
-            cargo = nullptr;
-            power = nullptr;
 
             objCounter++;
         }

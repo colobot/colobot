@@ -54,10 +54,11 @@
 #include <SDL_image.h>
 
 #include <stdlib.h>
-#include <libintl.h>
 #include <getopt.h>
 #include <localename.h>
 #include <thread>
+
+#include <libintl.h>
 
 using TimeUtils::TimeStamp;
 using TimeUtils::TimeUnit;
