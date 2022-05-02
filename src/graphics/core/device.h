@@ -129,22 +129,6 @@ struct DeviceCapabilities
 };
 
 /**
- * \enum CompFunc
- * \brief Type of function used to compare values
- */
-enum CompFunc
-{
-    COMP_FUNC_NEVER,
-    COMP_FUNC_LESS,
-    COMP_FUNC_EQUAL,
-    COMP_FUNC_NOTEQUAL,
-    COMP_FUNC_LEQUAL,
-    COMP_FUNC_GREATER,
-    COMP_FUNC_GEQUAL,
-    COMP_FUNC_ALWAYS
-};
-
-/**
  * \enum FillMode
  * \brief Polygon fill mode
  */

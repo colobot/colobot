@@ -67,10 +67,6 @@ bool CheckGLErrors();
 //! Translate Gfx primitive type to OpenGL primitive type
 GLenum TranslateGfxPrimitive(PrimitiveType type);
 
-CompFunc TranslateGLCompFunc(GLenum flag);
-
-GLenum TranslateGfxCompFunc(CompFunc func);
-
 bool InPlane(glm::vec3 normal, float originPlane, glm::vec3 center, float radius);
 
 GLenum TranslateType(Type type);

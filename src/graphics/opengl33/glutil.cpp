@@ -287,40 +287,6 @@ GLenum TranslateGfxPrimitive(PrimitiveType type)
     return flag;
 }
 
-CompFunc TranslateGLCompFunc(GLenum flag)
-{
-    switch (flag)
-    {
-    case GL_NEVER:    return COMP_FUNC_NEVER;
-    case GL_LESS:     return COMP_FUNC_LESS;
-    case GL_EQUAL:    return COMP_FUNC_EQUAL;
-    case GL_NOTEQUAL: return COMP_FUNC_NOTEQUAL;
-    case GL_LEQUAL:   return COMP_FUNC_LEQUAL;
-    case GL_GREATER:  return COMP_FUNC_GREATER;
-    case GL_GEQUAL:   return COMP_FUNC_GEQUAL;
-    case GL_ALWAYS:   return COMP_FUNC_ALWAYS;
-    default: assert(false); break;
-    }
-    return COMP_FUNC_NEVER;
-}
-
-GLenum TranslateGfxCompFunc(CompFunc func)
-{
-    switch (func)
-    {
-    case COMP_FUNC_NEVER:    return GL_NEVER;
-    case COMP_FUNC_LESS:     return GL_LESS;
-    case COMP_FUNC_EQUAL:    return GL_EQUAL;
-    case COMP_FUNC_NOTEQUAL: return GL_NOTEQUAL;
-    case COMP_FUNC_LEQUAL:   return GL_LEQUAL;
-    case COMP_FUNC_GREATER:  return GL_GREATER;
-    case COMP_FUNC_GEQUAL:   return GL_GEQUAL;
-    case COMP_FUNC_ALWAYS:   return GL_ALWAYS;
-    default: assert(false); break;
-    }
-    return 0;
-}
-
 bool InPlane(glm::vec3 normal, float originPlane, glm::vec3 center, float radius)
 {
     float distance = originPlane + glm::dot(normal, center);
