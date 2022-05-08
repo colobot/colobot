@@ -43,7 +43,7 @@ class CFrameBufferPixels;
 struct DeviceConfig;
 enum class PrimitiveType : unsigned char;
 enum class Type : unsigned char;
-enum class TexImgFormat : unsigned char;
+enum class TextureFormat : unsigned char;
 
 bool InitializeGLEW();
 
@@ -99,7 +99,7 @@ struct PreparedTextureData
     bool alpha = false;
 };
 
-PreparedTextureData PrepareTextureData(ImageData* imageData, TexImgFormat format);
+PreparedTextureData PrepareTextureData(ImageData* imageData, TextureFormat format);
 
 std::unique_ptr<CFrameBufferPixels> GetGLFrameBufferPixels(const glm::ivec2& size);
 

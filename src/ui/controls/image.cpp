@@ -126,8 +126,8 @@ void CImage::Draw()
     if ( m_filename[0] != 0 )  // displays an image?
     {
         Gfx::TextureCreateParams params;
-        params.format = Gfx::TexImgFormat::AUTO;
-        params.filter = Gfx::TEX_FILTER_BILINEAR;
+        params.format = Gfx::TextureFormat::AUTO;
+        params.filter = Gfx::TextureFilter::BILINEAR;
         params.padToNearestPowerOfTwo = true;
         Gfx::Texture tex = m_engine->LoadTexture(m_filename, params);
         renderer->SetTexture(tex);

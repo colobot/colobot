@@ -850,8 +850,8 @@ public:
     //@{
     //! Management the texture filter mode
     // NOTE: This is an user configuration setting
-    void            SetTextureFilterMode(TexFilter value);
-    TexFilter       GetTextureFilterMode();
+    void            SetTextureFilterMode(TextureFilter value);
+    TextureFilter   GetTextureFilterMode();
     //@}
 
     //@{

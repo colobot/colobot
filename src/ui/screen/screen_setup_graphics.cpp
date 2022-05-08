@@ -186,9 +186,9 @@ void CScreenSetupGraphics::CreateInterface()
     pes = pw->CreateEnumSlider(pos, ddim, 0, EVENT_INTERFACE_TEXTURE_FILTER);
     pes->SetState(STATE_SHADOW);
     pes->SetPossibleValues({
-        { Gfx::TEX_FILTER_NEAREST,   "Nearest"   },
-        { Gfx::TEX_FILTER_BILINEAR,  "Bilinear"  },
-        { Gfx::TEX_FILTER_TRILINEAR, "Trilinear" }
+        { static_cast<int>(Gfx::TextureFilter::NEAREST),   "Nearest"   },
+        { static_cast<int>(Gfx::TextureFilter::BILINEAR),  "Bilinear"  },
+        { static_cast<int>(Gfx::TextureFilter::TRILINEAR), "Trilinear" }
     });
     pos.y += ddim.y/2;
     pos.x += 0.005f;
@@ -418,13 +418,13 @@ void CScreenSetupGraphics::UpdateSetupButtons()
     pes = static_cast<CEnumSlider*>(pw->SearchControl(EVENT_INTERFACE_TEXTURE_FILTER));
     if ( pes != nullptr )
     {
-        pes->SetVisibleValue(m_engine->GetTextureFilterMode());
+        pes->SetVisibleValue(static_cast<int>(m_engine->GetTextureFilterMode()));
     }
 
     pes = static_cast<CEnumSlider*>(pw->SearchControl(EVENT_INTERFACE_TEXTURE_MIPMAP));
     if ( pes != nullptr )
     {
-        pes->SetState(STATE_ENABLE, m_engine->GetTextureFilterMode() == Gfx::TEX_FILTER_TRILINEAR);
+        pes->SetState(STATE_ENABLE, m_engine->GetTextureFilterMode() == Gfx::TextureFilter::TRILINEAR);
         pes->SetVisibleValue(m_engine->GetTextureMipmapLevel());
     }
 
@@ -471,7 +471,7 @@ void CScreenSetupGraphics::ChangeSetupButtons()
     if ( pes != nullptr )
     {
         int valueIndex = pes->GetVisibleValueIndex();
-        m_engine->SetTextureFilterMode(static_cast<Gfx::TexFilter>(valueIndex));
+        m_engine->SetTextureFilterMode(static_cast<Gfx::TextureFilter>(valueIndex));
     }
 
     pes = static_cast<CEnumSlider*>(pw->SearchControl(EVENT_INTERFACE_TEXTURE_MIPMAP));
@@ -543,9 +543,9 @@ void CScreenSetupGraphics::ChangeSetupQuality(int quality)
     if ( quality == 0 ) m_engine->SetTextureAnisotropyLevel(2);
     if ( quality >  0 ) m_engine->SetTextureAnisotropyLevel(8);
 
-    if ( quality <  0 ) { m_engine->SetTextureFilterMode(Gfx::TEX_FILTER_BILINEAR); }
-    if ( quality == 0 ) { m_engine->SetTextureFilterMode(Gfx::TEX_FILTER_TRILINEAR); m_engine->SetTextureMipmapLevel(4); m_engine->SetTextureAnisotropyLevel(4); }
-    if ( quality >  0 ) { m_engine->SetTextureFilterMode(Gfx::TEX_FILTER_TRILINEAR); m_engine->SetTextureMipmapLevel(8); m_engine->SetTextureAnisotropyLevel(8); }
+    if ( quality <  0 ) { m_engine->SetTextureFilterMode(Gfx::TextureFilter::BILINEAR); }
+    if ( quality == 0 ) { m_engine->SetTextureFilterMode(Gfx::TextureFilter::TRILINEAR); m_engine->SetTextureMipmapLevel(4); m_engine->SetTextureAnisotropyLevel(4); }
+    if ( quality >  0 ) { m_engine->SetTextureFilterMode(Gfx::TextureFilter::TRILINEAR); m_engine->SetTextureMipmapLevel(8); m_engine->SetTextureAnisotropyLevel(8); }
 
     if ( quality <  0 ) { m_engine->SetShadowMapping(false); m_engine->SetShadowMappingQuality(false); }
     else { m_engine->SetShadowMapping(true); m_engine->SetShadowMappingQuality(true); m_engine->SetShadowMappingOffscreen(true); }

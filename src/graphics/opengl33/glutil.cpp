@@ -522,7 +522,7 @@ std::unique_ptr<CFrameBufferPixels> GetGLFrameBufferPixels(const glm::ivec2& siz
     return pixels;
 }
 
-PreparedTextureData PrepareTextureData(ImageData* imageData, TexImgFormat format)
+PreparedTextureData PrepareTextureData(ImageData* imageData, TextureFormat format)
 {
     PreparedTextureData texData;
 
@@ -530,27 +530,27 @@ PreparedTextureData PrepareTextureData(ImageData* imageData, TexImgFormat format
 
     texData.sourceFormat = 0;
 
-    if (format == TexImgFormat::RGB)
+    if (format == TextureFormat::RGB)
     {
         texData.sourceFormat = GL_RGB;
         texData.alpha = false;
     }
-    else if (format == TexImgFormat::BGR)
+    else if (format == TextureFormat::BGR)
     {
         texData.sourceFormat = GL_BGR;
         texData.alpha = false;
     }
-    else if (format == TexImgFormat::RGBA)
+    else if (format == TextureFormat::RGBA)
     {
         texData.sourceFormat = GL_RGBA;
         texData.alpha = true;
     }
-    else if (format == TexImgFormat::BGRA)
+    else if (format == TextureFormat::BGRA)
     {
         texData.sourceFormat = GL_BGRA;
         texData.alpha = true;
     }
-    else if (format == TexImgFormat::AUTO)
+    else if (format == TextureFormat::AUTO)
     {
         if (imageData->surface->format->BytesPerPixel == 4)
         {

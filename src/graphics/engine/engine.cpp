@@ -276,11 +276,11 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
 
     m_shadowColor = 0.5f;
 
-    m_defaultTexParams.format = TexImgFormat::AUTO;
-    m_defaultTexParams.filter = TEX_FILTER_BILINEAR;
+    m_defaultTexParams.format = TextureFormat::AUTO;
+    m_defaultTexParams.filter = TextureFilter::BILINEAR;
 
-    m_terrainTexParams.format = TexImgFormat::AUTO;
-    m_terrainTexParams.filter = TEX_FILTER_BILINEAR;
+    m_terrainTexParams.format = TextureFormat::AUTO;
+    m_terrainTexParams.filter = TextureFilter::BILINEAR;
 
     // Compute bias matrix for shadow mapping
     glm::mat4 temp1, temp2;
@@ -418,8 +418,8 @@ bool CEngine::Create()
     Math::LoadOrthoProjectionMatrix(m_matProjInterface, 0.0f, 1.0f, 0.0f, 1.0f, -1.0f, 1.0f);
 
     TextureCreateParams params;
-    params.format = TexImgFormat::AUTO;
-    params.filter = TEX_FILTER_NEAREST;
+    params.format = TextureFormat::AUTO;
+    params.filter = TextureFilter::NEAREST;
     params.mipmap = false;
     m_miceTexture = LoadTexture("textures/interface/mouse.png", params);
 
@@ -1943,8 +1943,14 @@ bool CEngine::LoadAllTextures()
     else
         m_backgroundTex.SetInvalid();
 
-    if (! m_foregroundName.empty())
-        m_foregroundTex = LoadTexture(m_foregroundName);
+    if (!m_foregroundName.empty())
+    {
+        TextureCreateParams params = m_defaultTexParams;
+        params.wrap = TextureWrapMode::CLAMP;
+        params.filter = TextureFilter::BILINEAR;
+        params.mipmap = false;
+        m_foregroundTex = LoadTexture(m_foregroundName, params);
+    }
     else
         m_foregroundTex.SetInvalid();
 
@@ -2347,8 +2353,14 @@ void CEngine::SetForegroundName(const std::string& name)
 
     m_foregroundName = name;
 
-    if (! m_foregroundName.empty() && !m_foregroundTex.Valid())
-        m_foregroundTex = LoadTexture(m_foregroundName);
+    if (!m_foregroundName.empty() && !m_foregroundTex.Valid())
+    {
+        TextureCreateParams params;
+        params.wrap = TextureWrapMode::CLAMP;
+        params.filter = TextureFilter::BILINEAR;
+        params.mipmap = false;
+        m_foregroundTex = LoadTexture(m_foregroundName, params);
+    }
 }
 
 void CEngine::SetOverFront(bool front)
@@ -2399,16 +2411,16 @@ float CEngine::GetClippingDistance()
     return m_clippingDistance;
 }
 
-void CEngine::SetTextureFilterMode(TexFilter value)
+void CEngine::SetTextureFilterMode(TextureFilter value)
 {
     if(m_defaultTexParams.filter == value && m_terrainTexParams.filter == value) return;
 
     m_defaultTexParams.filter = m_terrainTexParams.filter = value;
-    m_defaultTexParams.mipmap = m_terrainTexParams.mipmap = (value == TEX_FILTER_TRILINEAR);
+    m_defaultTexParams.mipmap = m_terrainTexParams.mipmap = (value == TextureFilter::TRILINEAR);
     ReloadAllTextures();
 }
 
-TexFilter CEngine::GetTextureFilterMode()
+TextureFilter CEngine::GetTextureFilterMode()
 {
     return m_terrainTexParams.filter;
 }
@@ -3177,8 +3189,8 @@ void CEngine::Capture3DScene()
     image.surface = SDL_CreateRGBSurfaceFrom(blured.get(), newWidth, newHeight, 32, 0, 0, 0, 0, 0xFF000000);
 
     TextureCreateParams params;
-    params.filter = TEX_FILTER_BILINEAR;
-    params.format = TexImgFormat::RGBA;
+    params.filter = TextureFilter::BILINEAR;
+    params.format = TextureFormat::RGBA;
     params.mipmap = false;
 
     m_capturedWorldTexture = m_device->CreateTexture(&image, params);

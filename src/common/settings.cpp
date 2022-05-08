@@ -103,7 +103,7 @@ void CSettings::SaveSettings()
     GetConfigFile().SetFloatProperty("Setup", "ShadowColor", engine->GetShadowColor());
     GetConfigFile().SetFloatProperty("Setup", "ShadowRange", engine->GetShadowRange());
     GetConfigFile().SetIntProperty("Setup", "MSAA", engine->GetMultiSample());
-    GetConfigFile().SetIntProperty("Setup", "FilterMode", engine->GetTextureFilterMode());
+    GetConfigFile().SetIntProperty("Setup", "FilterMode", static_cast<int>(engine->GetTextureFilterMode()));
     GetConfigFile().SetBoolProperty("Setup", "ShadowMapping", engine->GetShadowMapping());
     GetConfigFile().SetBoolProperty("Setup", "ShadowMappingQuality", engine->GetShadowMappingQuality());
     GetConfigFile().SetIntProperty("Setup", "ShadowMappingResolution",
@@ -265,7 +265,7 @@ void CSettings::LoadSettings()
         engine->SetMultiSample(iValue);
 
     if (GetConfigFile().GetIntProperty("Setup", "FilterMode", iValue))
-        engine->SetTextureFilterMode(static_cast<Gfx::TexFilter>(iValue));
+        engine->SetTextureFilterMode(static_cast<Gfx::TextureFilter>(iValue));
 
     if (GetConfigFile().GetBoolProperty("Setup", "ShadowMapping", bValue))
         engine->SetShadowMapping(bValue);

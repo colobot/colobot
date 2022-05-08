@@ -1364,7 +1364,7 @@ CharTexture CText::CreateCharTexture(UTF8Char ch, CachedFont* font)
 
         Texture tex;
         tex.id = texture.id;
-        m_device->UpdateTexture(tex, texture.charPos, &imageData, TexImgFormat::RGBA);
+        m_device->UpdateTexture(tex, texture.charPos, &imageData, TextureFormat::RGBA);
 
         imageData.surface = nullptr;
 
@@ -1402,8 +1402,8 @@ FontTexture CText::CreateFontTexture(const glm::ivec2& tileSize)
     data.surface = textureSurface;
 
     TextureCreateParams createParams;
-    createParams.format = TexImgFormat::RGBA;
-    createParams.filter = TEX_FILTER_NEAREST;
+    createParams.format = TextureFormat::RGBA;
+    createParams.filter = TextureFilter::NEAREST;
     createParams.mipmap = false;
 
     Texture tex = m_device->CreateTexture(&data, createParams);

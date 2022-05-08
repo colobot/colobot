@@ -356,15 +356,15 @@ Texture CGL33Device::CreateTexture(ImageData *data, const TextureCreateParams &p
 
     switch (params.filter)
     {
-    case TEX_FILTER_NEAREST:
+    case TextureFilter::NEAREST:
         minF = GL_NEAREST;
         magF = GL_NEAREST;
         break;
-    case TEX_FILTER_BILINEAR:
+    case TextureFilter::BILINEAR:
         minF = GL_LINEAR;
         magF = GL_LINEAR;
         break;
-    case TEX_FILTER_TRILINEAR:
+    case TextureFilter::TRILINEAR:
         minF = GL_LINEAR_MIPMAP_LINEAR;
         magF = GL_LINEAR;
         mipmapLevel = CEngine::GetInstance().GetTextureMipmapLevel();
@@ -373,6 +373,21 @@ Texture CGL33Device::CreateTexture(ImageData *data, const TextureCreateParams &p
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minF);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magF);
+
+    GLint wrap = GL_REPEAT;
+
+    switch (params.wrap)
+    {
+    case TextureWrapMode::REPEAT:
+        wrap = GL_REPEAT;
+        break;
+    case TextureWrapMode::CLAMP:
+        wrap = GL_CLAMP;
+        break;
+    }
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
 
     // Set mipmap level and automatic mipmap generation if neccesary
     if (params.mipmap)
@@ -457,7 +472,7 @@ Texture CGL33Device::CreateDepthTexture(int width, int height, int depth)
     return result;
 }
 
-void CGL33Device::UpdateTexture(const Texture& texture, const glm::ivec2& offset, ImageData* data, TexImgFormat format)
+void CGL33Device::UpdateTexture(const Texture& texture, const glm::ivec2& offset, ImageData* data, TextureFormat format)
 {
     if (texture.id == 0) return;
 

@@ -24,9 +24,6 @@
 
 #pragma once
 
-
-#include "graphics/core/color.h"
-
 #include <glm/glm.hpp>
 
 
@@ -36,10 +33,10 @@ namespace Gfx
 
 
 /**
- * \enum TexImgFormat
+ * \enum TextureFormat
  * \brief Format of image data
  */
-enum class TexImgFormat : unsigned char
+enum class TextureFormat : unsigned char
 {
     //! Try to determine automatically (may not work)
     AUTO,
@@ -54,95 +51,31 @@ enum class TexImgFormat : unsigned char
 };
 
 /**
- * \enum TexFilter
+ * \enum TextureFilter
  * \brief General texture filtering mode
  *
  * Corresponds to typical options in game graphics settings.
  */
-enum TexFilter
+enum class TextureFilter : unsigned char
 {
-    TEX_FILTER_NEAREST,
-    TEX_FILTER_BILINEAR,
-    TEX_FILTER_TRILINEAR
-};
-
-/**
- * \enum TexMinFilter
- * \brief Texture minification filter
- *
- * Corresponds to OpenGL modes but should translate to DirectX too.
- */
-enum TexMinFilter
-{
-    TEX_MIN_FILTER_NEAREST,
-    TEX_MIN_FILTER_LINEAR,
-    TEX_MIN_FILTER_NEAREST_MIPMAP_NEAREST,
-    TEX_MIN_FILTER_LINEAR_MIPMAP_NEAREST,
-    TEX_MIN_FILTER_NEAREST_MIPMAP_LINEAR,
-    TEX_MIN_FILTER_LINEAR_MIPMAP_LINEAR
-};
-
-/**
- * \enum TexMagFilter
- * \brief Texture magnification filter
- */
-enum TexMagFilter
-{
-    TEX_MAG_FILTER_NEAREST,
-    TEX_MAG_FILTER_LINEAR
+    //! Nearest-neighbor filtering
+    NEAREST,
+    //! Linear filtering
+    BILINEAR,
+    //! Linear filtering with mipmapping
+    TRILINEAR,
 };
 
 /**
  * \enum TexWrapMode
  * \brief Wrapping mode for texture coords
  */
-enum TexWrapMode
+enum class TextureWrapMode : unsigned char
 {
-    TEX_WRAP_CLAMP,
-    TEX_WRAP_CLAMP_TO_BORDER,
-    TEX_WRAP_REPEAT
-};
-
-/**
- * \enum TexMixOperation
- * \brief Multitexture mixing operation
- */
-enum TexMixOperation
-{
-    //! Default operation on default params (modulate on computed & texture)
-    TEX_MIX_OPER_DEFAULT,
-    //! = Arg1
-    TEX_MIX_OPER_REPLACE,
-    //! = Arg1 * Arg2
-    TEX_MIX_OPER_MODULATE,
-    //! = Arg1 + Arg2
-    TEX_MIX_OPER_ADD,
-    //! = Arg1 - Arg2
-    TEX_MIX_OPER_SUBTRACT
-};
-
-/**
- * \enum TexMixArgument
- * \brief Multitexture mixing argument
- */
-enum TexMixArgument
-{
-    //! Color from current texture
-    TEX_MIX_ARG_TEXTURE,
-    //! Color from texture unit 0
-    TEX_MIX_ARG_TEXTURE_0,
-    //! Color from texture unit 1
-    TEX_MIX_ARG_TEXTURE_1,
-    //! Color from texture unit 2
-    TEX_MIX_ARG_TEXTURE_2,
-    //! Color from texture unit 3
-    TEX_MIX_ARG_TEXTURE_3,
-    //! Color computed by previous texture unit (current in DirectX; previous in OpenGL)
-    TEX_MIX_ARG_COMPUTED_COLOR,
-    //! (Source) color of textured fragment (diffuse in DirectX; primary color in OpenGL)
-    TEX_MIX_ARG_SRC_COLOR,
-    //! Constant color (texture factor in DirectX; texture env color in OpenGL)
-    TEX_MIX_ARG_FACTOR
+    //! UVs are clamped to edges
+    CLAMP,
+    //! UVs are repeated
+    REPEAT,
 };
 
 /**
@@ -157,52 +90,13 @@ struct TextureCreateParams
     //! Whether to generate mipmaps
     bool mipmap = false;
     //! Format of source image data
-    TexImgFormat format = TexImgFormat::RGB;
+    TextureFormat format = TextureFormat::RGB;
     //! General texture filtering mode
-    TexFilter filter = TEX_FILTER_NEAREST;
+    TextureFilter filter = TextureFilter::NEAREST;
+    //! Wrap mode for texture coordinates
+    TextureWrapMode wrap = TextureWrapMode::REPEAT;
     //! Pad the image to nearest power of 2 dimensions
     bool padToNearestPowerOfTwo = false;
-
-    //! Loads the default values
-    void LoadDefault()
-    {
-        *this = TextureCreateParams();
-    }
-};
-
-/**
- * \struct TextureStageParams
- * \brief Parameters for a texture unit
- *
- * These params define the behavior of texturing units (stages).
- * They can be changed freely and are features of graphics engine, not any particular texture.
- */
-struct TextureStageParams
-{
-    //! Mixing operation done on color values
-    TexMixOperation colorOperation = TEX_MIX_OPER_DEFAULT;
-    //! 1st argument of color operations
-    TexMixArgument colorArg1 = TEX_MIX_ARG_COMPUTED_COLOR;
-    //! 2nd argument of color operations
-    TexMixArgument colorArg2 = TEX_MIX_ARG_TEXTURE;
-    //! Mixing operation done on alpha values
-    TexMixOperation alphaOperation = TEX_MIX_OPER_DEFAULT;
-    //! 1st argument of alpha operations
-    TexMixArgument alphaArg1 = TEX_MIX_ARG_COMPUTED_COLOR;
-    //! 2nd argument of alpha operations
-    TexMixArgument alphaArg2 = TEX_MIX_ARG_TEXTURE;
-    //! Wrap mode for 1st tex coord
-    TexWrapMode    wrapS = TEX_WRAP_REPEAT;
-    //! Wrap mode for 2nd tex coord
-    TexWrapMode    wrapT = TEX_WRAP_REPEAT;
-    //! Constant color factor (for TEX_MIX_ARG_FACTOR)
-    Color          factor;
-
-    //! Loads the default values
-    void LoadDefault()
-    {
-        *this = TextureStageParams();
-    }
 };
 
 /**
@@ -217,9 +111,9 @@ struct Texture
     //! ID of the texture in graphics engine; 0 = invalid texture
     unsigned int id = 0;
     //! Size of texture
-    glm::ivec2 size;
+    glm::ivec2 size = { 0, 0 };
     //! Original size of texture (as loaded from image)
-    glm::ivec2 originalSize;
+    glm::ivec2 originalSize = { 0, 0 };
     //! Whether the texture has alpha channel
     bool alpha = false;
 

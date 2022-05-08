@@ -328,7 +328,7 @@ public:
     //! Creates a depth texture with specific dimensions and depth
     virtual Texture CreateDepthTexture(int width, int height, int depth) = 0;
     //! Updates a part of texture from raw image data
-    virtual void UpdateTexture(const Texture& texture, const glm::ivec2& offset, ImageData* data, TexImgFormat format) = 0;
+    virtual void UpdateTexture(const Texture& texture, const glm::ivec2& offset, ImageData* data, TextureFormat format) = 0;
     //! Deletes a given texture, freeing it from video memory
     virtual void DestroyTexture(const Texture &texture) = 0;
     //! Deletes all textures created so far
