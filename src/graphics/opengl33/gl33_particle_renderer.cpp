@@ -67,8 +67,6 @@ CGL33ParticleRenderer::CGL33ParticleRenderer(CGL33Device* device)
     glUseProgram(m_program);
 
     // Setup uniforms
-    glm::mat4 identity(1.0f);
-
     m_projectionMatrix = glGetUniformLocation(m_program, "uni_ProjectionMatrix");
     m_viewMatrix = glGetUniformLocation(m_program, "uni_ViewMatrix");
     m_modelMatrix = glGetUniformLocation(m_program, "uni_ModelMatrix");
@@ -102,7 +100,8 @@ CGL33ParticleRenderer::CGL33ParticleRenderer(CGL33Device* device)
     // Generic buffer
     glGenBuffers(1, &m_bufferVBO);
     glBindBuffer(GL_COPY_WRITE_BUFFER, m_bufferVBO);
-    glBufferData(GL_COPY_WRITE_BUFFER, m_bufferCapacity, nullptr, GL_STREAM_DRAW);
+    glBufferData(GL_COPY_WRITE_BUFFER, m_bufferCapacity * sizeof(VertexParticle), nullptr, GL_STREAM_DRAW);
+    m_bufferOffset = m_bufferCapacity;
 
     glGenVertexArrays(1, &m_bufferVAO);
     glBindVertexArray(m_bufferVAO);
@@ -194,26 +193,52 @@ void CGL33ParticleRenderer::SetTransparency(TransparencyMode mode)
     m_device->SetTransparency(mode);
 }
 
-void CGL33ParticleRenderer::DrawParticle(PrimitiveType type, int count, const Vertex3D* vertices)
+void CGL33ParticleRenderer::DrawParticle(PrimitiveType type, int count, const VertexParticle* vertices)
 {
-    size_t size = count * sizeof(Vertex3D);
+    GLuint total = m_bufferOffset + count;
 
-    if (m_bufferCapacity < size)
-        m_bufferCapacity = size;
+    // Buffer full, orphan
+    if (total >= m_bufferCapacity)
+    {
+        glBufferData(GL_ARRAY_BUFFER, m_bufferCapacity * sizeof(VertexParticle), nullptr, GL_STREAM_DRAW);
 
-    // Send new vertices to GPU
-    glBindBuffer(GL_ARRAY_BUFFER, m_bufferVBO);
-    glBufferData(GL_ARRAY_BUFFER, m_bufferCapacity, nullptr, GL_STREAM_DRAW);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, size, vertices);
+        m_bufferOffset = 0;
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex3D),
-        reinterpret_cast<void*>(offsetof(Vertex3D, position)));
+        // Respecify vertex attributes
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexParticle),
+            reinterpret_cast<void*>(offsetof(VertexParticle, position)));
 
-    glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex3D),
-        reinterpret_cast<void*>(offsetof(Vertex3D, color)));
+        glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(VertexParticle),
+            reinterpret_cast<void*>(offsetof(VertexParticle, color)));
 
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex3D),
-        reinterpret_cast<void*>(offsetof(Vertex3D, uv)));
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(VertexParticle),
+            reinterpret_cast<void*>(offsetof(VertexParticle, uv)));
+    }
 
-    glDrawArrays(TranslateGfxPrimitive(type), 0, count);
+    void* ptr = glMapBufferRange(GL_ARRAY_BUFFER,
+        m_bufferOffset * sizeof(VertexParticle),
+        count * sizeof(VertexParticle),
+        GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT);
+
+    if (ptr)
+    {
+        auto buffer = reinterpret_cast<VertexParticle*>(ptr);
+
+        std::copy_n(vertices, count, buffer);
+
+        glUnmapBuffer(GL_ARRAY_BUFFER);
+    }
+    else
+    {
+        glBufferSubData(GL_ARRAY_BUFFER,
+            m_bufferOffset * sizeof(VertexParticle),
+            count * sizeof(VertexParticle),
+            vertices);
+    }
+
+    glDrawArrays(TranslateGfxPrimitive(type),
+        m_bufferOffset,
+        count);
+
+    m_bufferOffset += count;
 }

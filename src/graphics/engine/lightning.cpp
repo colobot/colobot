@@ -244,7 +244,7 @@ void CLightning::Draw()
     glm::vec3 n = glm::normalize(p1-eye);
 
     glm::vec3 corner[4];
-    Vertex3D vertex[4];
+    VertexParticle vertex[4];
 
     for (std::size_t i = 0; i < m_segments.size() - 1; i++)
     {

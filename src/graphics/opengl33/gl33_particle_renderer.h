@@ -63,7 +63,7 @@ public:
     virtual void SetTransparency(TransparencyMode mode) override;
 
     //! Draws particles
-    virtual void DrawParticle(PrimitiveType type, int count, const Vertex3D* vertices) override;
+    virtual void DrawParticle(PrimitiveType type, int count, const VertexParticle* vertices) override;
 
 private:
     CGL33Device* const m_device;
@@ -90,7 +90,9 @@ private:
     // Vertex array object
     GLuint m_bufferVAO = 0;
     // VBO capacity
-    GLsizei m_bufferCapacity = 8 * sizeof(Vertex3D);
+    GLsizei m_bufferCapacity = 64 * 1024;
+    // Buffer offset
+    GLsizei m_bufferOffset = 0;
 };
 
 }

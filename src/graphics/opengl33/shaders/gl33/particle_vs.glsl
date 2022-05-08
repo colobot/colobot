@@ -27,6 +27,8 @@ uniform mat4 uni_ProjectionMatrix;
 uniform mat4 uni_ViewMatrix;
 uniform mat4 uni_ModelMatrix;
 
+uniform vec4 uni_Color;
+
 out VertexData
 {
     vec4 Color;
@@ -37,6 +39,6 @@ void main()
 {
     gl_Position = uni_ProjectionMatrix * uni_ViewMatrix * uni_ModelMatrix * in_VertexCoord;
 
-    data.Color = in_Color;
+    data.Color = in_Color * uni_Color;
     data.TexCoord = in_TexCoord;
 }

@@ -24,8 +24,6 @@
 
 #pragma once
 
-#include "graphics/core/vertex.h"
-
 #include <glm/glm.hpp>
 
 // Graphics module namespace
@@ -35,7 +33,11 @@ namespace Gfx
 class CVertexBuffer;
 enum class CullFace : unsigned char;
 enum class TransparencyMode : unsigned char;
+struct Color;
 struct Texture;
+struct Vertex2D;
+struct Vertex3D;
+struct VertexParticle;
 
 /**
  * \enum PrimitiveType
@@ -250,7 +252,7 @@ public:
     virtual void SetTransparency(TransparencyMode mode) = 0;
 
     //! Draws particles
-    virtual void DrawParticle(PrimitiveType type, int count, const Vertex3D* vertices) = 0;
+    virtual void DrawParticle(PrimitiveType type, int count, const VertexParticle* vertices) = 0;
 };
 
 /**

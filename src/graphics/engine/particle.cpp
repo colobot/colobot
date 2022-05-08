@@ -2604,7 +2604,7 @@ void CParticle::TrackDraw(int i, ParticleType type)
     glm::vec3 eye = m_engine->GetEyePt();
     float a = Math::RotateAngle(eye.x-p1.x, eye.z-p1.z);
 
-    Vertex3D vertex[4];
+    VertexParticle vertex[4];
     glm::vec3 corner[4];
 
     for (int counter = 0; counter < m_track[i].posUsed-1; counter++)
@@ -2692,7 +2692,16 @@ void CParticle::DrawParticleTriangle(int i)
     mat[3][2] = pos.z;
     m_renderer->SetModelMatrix(mat);
 
-    m_renderer->DrawParticle(PrimitiveType::TRIANGLES, 3, m_triangle[i].triangle);
+    VertexParticle vertices[3];
+
+    for (size_t j = 0; j < 3; j++)
+    {
+        vertices[j].position = m_triangle[i].triangle[j].position;
+        vertices[j].color = m_triangle[i].triangle[j].color;
+        vertices[j].uv = m_triangle[i].triangle[j].uv;
+    }
+
+    m_renderer->DrawParticle(PrimitiveType::TRIANGLES, 3, vertices);
     m_engine->AddStatisticTriangle(1);
 }
 
@@ -2705,7 +2714,7 @@ void CParticle::DrawParticleNorm(int i)
 
 
     glm::vec3 corner[4];
-    Vertex3D vertex[4];
+    VertexParticle vertex[4];
 
     if (m_particle[i].sheet == SH_INTERFACE)
     {
@@ -2853,7 +2862,7 @@ void CParticle::DrawParticleFlat(int i)
 
     glm::u8vec4 white(255);
 
-    Vertex3D vertex[4];
+    VertexParticle vertex[4];
     vertex[0] = { corner[1], white, { m_particle[i].texSup.x, m_particle[i].texSup.y } };
     vertex[1] = { corner[0], white, { m_particle[i].texInf.x, m_particle[i].texSup.y } };
     vertex[2] = { corner[3], white, { m_particle[i].texSup.x, m_particle[i].texInf.y } };
@@ -2939,7 +2948,7 @@ void CParticle::DrawParticleFog(int i)
 
     glm::u8vec4 white(255);
 
-    Vertex3D vertex[4];
+    VertexParticle vertex[4];
 
     vertex[0] = { corner[1], white, { m_particle[i].texSup.x, m_particle[i].texSup.y } };
     vertex[1] = { corner[0], white, { m_particle[i].texInf.x, m_particle[i].texSup.y } };
@@ -3067,7 +3076,7 @@ void CParticle::DrawParticleRay(int i)
     corner[2].z = (Math::Rand()-0.5f)*vario1;
     corner[3].z = (Math::Rand()-0.5f)*vario1;
 
-    Vertex3D vertex[4];
+    VertexParticle vertex[4];
 
     glm::u8vec4 white(255);
 
@@ -3164,7 +3173,7 @@ void CParticle::DrawParticleSphere(int i)
     float deltaRingAngle = Math::PI/numRings;
     float deltaSegAngle  = 2.0f*Math::PI/numSegments;
 
-    std::vector<Vertex3D> vertex(2*16*(16+1));
+    std::vector<VertexParticle> vertex(2*16*(16+1));
 
     glm::u8vec4 white(255);
 
@@ -3265,7 +3274,7 @@ void CParticle::DrawParticleCylinder(int i)
         }
     }
 
-    std::vector<Vertex3D> vertex(2*5*(10+1));
+    std::vector<VertexParticle> vertex(2*5*(10+1));
 
     glm::u8vec4 white(255);
 
@@ -3360,7 +3369,7 @@ void CParticle::DrawParticleWheel(int i)
 
         auto color = ColorToIntColor(TraceColorColor(m_wheelTrace[i].color));
 
-        Vertex3D vertex[4];
+        VertexParticle vertex[4];
         vertex[0] = { pos[0], color, { ts.x, ts.y } };
         vertex[1] = { pos[1], color, { ti.x, ts.y } };
         vertex[2] = { pos[2], color, { ts.x, ti.y } };
@@ -3379,7 +3388,7 @@ void CParticle::DrawParticleWheel(int i)
 
         auto color = ColorToIntColor(TraceColorColor(m_wheelTrace[i].color));
 
-        Vertex3D vertex[4];
+        VertexParticle vertex[4];
         vertex[0] = { pos[0], color };
         vertex[1] = { pos[1], color };
         vertex[2] = { pos[2], color };

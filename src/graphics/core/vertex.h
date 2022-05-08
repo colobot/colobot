@@ -61,4 +61,15 @@ struct Vertex3D
     glm::vec3 normal = { 0.0f, 0.0f, 1.0f };
 };
 
+/**
+ * \struct VertexParticle
+ * \brief 3D vertex for particle rendering, contains color and UV coordinates
+ */
+struct VertexParticle
+{
+    glm::vec3 position = { 0.0f, 0.0f, 0.0f };
+    glm::u8vec4 color = { 255, 255, 255, 255 };
+    glm::vec2 uv = { 0.0f, 0.0f };
+};
+
 } // namespace Gfx
