@@ -33,6 +33,8 @@
 #include <glm/ext.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <algorithm>
+
 using namespace Gfx;
 
 CGL33ParticleRenderer::CGL33ParticleRenderer(CGL33Device* device)
