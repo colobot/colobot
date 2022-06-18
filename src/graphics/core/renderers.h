@@ -198,6 +198,9 @@ public:
     //! Sets alpha scissor
     virtual void SetAlphaScissor(float alpha) = 0;
 
+    //! Sets recolor parameters
+    virtual void SetRecolor(bool enabled, const glm::vec3& from = {}, const glm::vec3& to = {}, float threshold = {}) = 0;
+
     //! Sets depth test
     virtual void SetDepthTest(bool enabled) = 0;
     //! Sets depth mask

@@ -17,7 +17,7 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-// VERTEX SHADER - TERRAIN RENDERER
+// VERTEX SHADER - OBJECT RENDERER
 
 uniform mat4 uni_ProjectionMatrix;
 uniform mat4 uni_ViewMatrix;

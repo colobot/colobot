@@ -86,6 +86,9 @@ public:
     //! Sets alpha scissor
     virtual void SetAlphaScissor(float alpha) override;
 
+    //! Sets recolor parameters
+    virtual void SetRecolor(bool enabled, const glm::vec3& from = {}, const glm::vec3& to = {}, float threshold = {}) override;
+
     virtual void SetDepthTest(bool enabled) override;
     virtual void SetDepthMask(bool enabled) override;
 
@@ -140,6 +143,11 @@ private:
     GLint m_triplanarMode = -1;
     GLint m_triplanarScale = -1;
     GLint m_alphaScissor = -1;
+
+    GLint m_recolor = -1;
+    GLint m_recolorFrom = -1;
+    GLint m_recolorTo = -1;
+    GLint m_recolorThreshold = -1;
 
     GLint m_uvOffset = -1;
     GLint m_uvScale = -1;

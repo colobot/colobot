@@ -97,6 +97,12 @@ CGL33ObjectRenderer::CGL33ObjectRenderer(CGL33Device* device)
     m_triplanarMode = glGetUniformLocation(m_program, "uni_TriplanarMode");
     m_triplanarScale = glGetUniformLocation(m_program, "uni_TriplanarScale");
     m_alphaScissor = glGetUniformLocation(m_program, "uni_AlphaScissor");
+
+    m_recolor = glGetUniformLocation(m_program, "uni_Recolor");
+    m_recolorFrom = glGetUniformLocation(m_program, "uni_RecolorFrom");
+    m_recolorTo = glGetUniformLocation(m_program, "uni_RecolorTo");
+    m_recolorThreshold = glGetUniformLocation(m_program, "uni_RecolorThreshold");
+
     m_uvOffset = glGetUniformLocation(m_program, "uni_UVOffset");
     m_uvScale = glGetUniformLocation(m_program, "uni_UVScale");
 
@@ -211,6 +217,7 @@ void CGL33ObjectRenderer::CGL33ObjectRenderer::Begin()
     SetEmissiveColor({ 0, 0, 0, 0 });
     SetAlbedoColor({ 1, 1, 1, 1 });
     SetMaterialParams(1.0, 0.0, 0.0);
+    SetRecolor(false);
 }
 
 void CGL33ObjectRenderer::CGL33ObjectRenderer::End()
@@ -425,6 +432,21 @@ void CGL33ObjectRenderer::SetTriplanarScale(float scale)
 void CGL33ObjectRenderer::SetAlphaScissor(float alpha)
 {
     glUniform1f(m_alphaScissor, alpha);
+}
+
+void CGL33ObjectRenderer::SetRecolor(bool enabled, const glm::vec3& from, const glm::vec3& to, float threshold)
+{
+    glUniform1i(m_recolor, enabled ? 1 : 0);
+
+    if (enabled)
+    {
+        auto fromHSV = RGB2HSV(Color(from.r, from.g, from.b, 1.0));
+        auto toHSV = RGB2HSV(Color(to.r, to.g, to.b, 1.0));
+
+        glUniform3f(m_recolorFrom, fromHSV.h, fromHSV.s, fromHSV.v);
+        glUniform3f(m_recolorTo, toHSV.h, toHSV.s, toHSV.v);
+        glUniform1f(m_recolorThreshold, threshold);
+    }
 }
 
 void CGL33ObjectRenderer::DrawObject(const CVertexBuffer* buffer)

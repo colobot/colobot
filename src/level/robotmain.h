@@ -440,6 +440,17 @@ public:
     //! \brief Mark given research as done
     void        MarkResearchDone(ResearchType type, int team);
 
+    //! \brief Returns a color associated with a team or vehicle color if none defined
+    const Gfx::Color& GetTeamColor(int team);
+    //! \brief Returns vehicle color
+    const Gfx::Color& GetVehicleColor();
+    //! \brief Returns alien color
+    const Gfx::Color& GetAlienColor();
+    //! \brief Returns plant color
+    const Gfx::Color& GetGreeneryColor();
+    //! \brief Returns water color
+    const Gfx::Color& GetWaterColor();
+
     /**
      * \brief Check if all requirements to build this object are met (EnableBuild + DoneResearch)
      * \return true if the building can be built, false otherwise

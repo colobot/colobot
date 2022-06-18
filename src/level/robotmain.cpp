@@ -4036,10 +4036,6 @@ void CRobotMain::ChangeColor()
     {
         int team = it.first;
         Gfx::Color newColor = it.second;
-        std::string teamStr = StrUtils::ToString<int>(team);
-        if(team == 0) teamStr = "";
-
-        m_engine->SetTeamColor(team, newColor);
 
         //m_engine->ChangeTextureColor("textures/objects/base1.png"+teamStr,   "textures/objects/base1.png",   COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
         //m_engine->ChangeTextureColor("textures/objects/convert.png"+teamStr, "textures/objects/convert.png", COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
@@ -5998,6 +5994,34 @@ void CRobotMain::MarkResearchDone(ResearchType type, int team)
     {
         m_playerProfile->SetFreeGameResearchUnlock(m_playerProfile->GetFreeGameResearchUnlock() | m_researchDone[0]);
     }
+}
+
+const Gfx::Color& CRobotMain::GetTeamColor(int team)
+{
+    if (m_colorNewBot.count(team) > 0)
+        return m_colorNewBot.at(team);
+    else
+        return m_colorNewBot.at(0);
+}
+
+const Gfx::Color& CRobotMain::GetVehicleColor()
+{
+    return m_colorNewBot.at(0);
+}
+
+const Gfx::Color& CRobotMain::GetAlienColor()
+{
+    return m_colorNewAlien;
+}
+
+const Gfx::Color& CRobotMain::GetGreeneryColor()
+{
+    return m_colorNewGreen;
+}
+
+const Gfx::Color& CRobotMain::GetWaterColor()
+{
+    return m_colorNewWater;
 }
 
 Error CRobotMain::CanBuildError(ObjectType type, int team)

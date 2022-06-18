@@ -2374,11 +2374,6 @@ void CEngine::SetOverColor(const Color& color, TransparencyMode mode)
     m_overMode  = mode;
 }
 
-void CEngine::SetTeamColor(int team, const Color& color)
-{
-    m_teamColors[team] = color;
-}
-
 void CEngine::SetParticleDensity(float value)
 {
     if (value < 0.0f) value = 0.0f;
@@ -2946,9 +2941,54 @@ void CEngine::Draw3DScene()
 
             Color color = data.material.albedoColor;
 
+            bool recolor = false;
+            Color recolorFrom = {};
+            Color recolorTo = {};
+            float recolorTreshold = 0.0;
+
             if (data.material.tag == "team")
             {
-                color = m_teamColors[m_objects[objRank].team];
+                color = CRobotMain::GetInstance().GetTeamColor(m_objects[objRank].team);
+            }
+            else if (data.material.tag == "vehicle")
+            {
+                color = CRobotMain::GetInstance().GetVehicleColor();
+            }
+            else if (data.material.tag == "plant")
+            {
+                color = CRobotMain::GetInstance().GetGreeneryColor();
+            }
+            else if (data.material.tag == "alien")
+            {
+                color = CRobotMain::GetInstance().GetAlienColor();
+            }
+            else if (data.material.tag == "recolor_team")
+            {
+                recolor = true;
+                recolorFrom = data.material.recolorReference;
+                recolorTo = CRobotMain::GetInstance().GetTeamColor(m_objects[objRank].team);
+                recolorTreshold = 0.1;
+            }
+            else if (data.material.tag == "recolor_vehicle")
+            {
+                recolor = true;
+                recolorFrom = data.material.recolorReference;
+                recolorTo = CRobotMain::GetInstance().GetVehicleColor();
+                recolorTreshold = 0.1;
+            }
+            else if (data.material.tag == "recolor_plant")
+            {
+                recolor = true;
+                recolorFrom = data.material.recolorReference;
+                recolorTo = CRobotMain::GetInstance().GetGreeneryColor();
+                recolorTreshold = 0.1;
+            }
+            else if (data.material.tag == "recolor_alien")
+            {
+                recolor = true;
+                recolorFrom = data.material.recolorReference;
+                recolorTo = CRobotMain::GetInstance().GetAlienColor();
+                recolorTreshold = 0.1;
             }
 
             objectRenderer->SetAlbedoColor(color);
@@ -2960,6 +3000,8 @@ void CEngine::Draw3DScene()
 
             objectRenderer->SetMaterialParams(data.material.roughness, data.material.metalness, data.material.aoStrength);
             objectRenderer->SetMaterialTexture(data.materialTexture);
+
+            objectRenderer->SetRecolor(recolor, recolorFrom, recolorTo, recolorTreshold);
 
             objectRenderer->SetCullFace(data.material.cullFace);
             objectRenderer->SetUVTransform(data.uvOffset, data.uvScale);

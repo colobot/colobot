@@ -827,8 +827,6 @@ public:
     void            SetOverFront(bool front);
     //! Sets the foreground overlay color
     void            SetOverColor(const Color& color, TransparencyMode mode);
-    //! Sets color for a team
-    void            SetTeamColor(int team, const Color& color);
 
     //@{
     //! Management of the particle density
