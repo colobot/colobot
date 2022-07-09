@@ -4154,6 +4154,11 @@ bool CRobotMain::FreeSpace(Math::Vector &center, float minRadius, float maxRadiu
             }
         }
     }
+
+    float nan = std::nanf("");
+
+    center = Math::Vector{ nan, nan, nan };
+
     return false;
 }
 
