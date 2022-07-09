@@ -4142,7 +4142,7 @@ bool CRobotMain::FreeSpace(Math::Vector &center, float minRadius, float maxRadiu
             pos.x = p.x;
             pos.z = p.y;
             pos.y = 0.0f;
-            m_terrain->AdjustToFloor(pos, true);
+            pos.y = m_terrain->GetFloorLevel(pos);
             if (!BlockedByObject(m_objMan.get(), pos, space, exclu))
             {
                 float flat = m_terrain->GetFlatZoneRadius(pos, space);
