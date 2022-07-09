@@ -209,6 +209,11 @@ void GLTFLoader::ReadMaterials()
                 mat.tag = extras["tag"].get<std::string>();
             }
 
+            if (extras.contains("recolor"))
+            {
+                mat.recolor = extras["recolor"].get<std::string>();
+            }
+
             if (extras.contains("recolor_ref"))
             {
                 const auto& color = extras["recolor_ref"];
@@ -218,33 +223,7 @@ void GLTFLoader::ReadMaterials()
                 float b = color[2];
 
                 mat.recolorReference = Color(r, g, b);
-            }
 
-            if (extras.contains("energy"))
-            {
-                if (extras["energy"].get<int>() != 0)
-                    mat.tag = "energy";
-            }
-
-            if (extras.contains("tracker_1"))
-            {
-                if (extras["tracker_1"].get<int>() != 0)
-                    mat.tag = "tracker_right";
-            }
-
-            if (extras.contains("tracker_2"))
-            {
-                if (extras["tracker_2"].get<int>() != 0)
-                    mat.tag = "tracker_left";
-            }
-
-            if (extras.contains("transparency"))
-            {
-                if (extras["transparency"].get<int>() != 0)
-                {
-                    mat.alphaMode = AlphaMode::MASK;
-                    mat.alphaThreshold = 0.5f;
-                }
             }
         }
 

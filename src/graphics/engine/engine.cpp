@@ -53,6 +53,7 @@
 #include "graphics/model/model_shadow_spot.h"
 
 #include "level/robotmain.h"
+#include "level/player_profile.h"
 
 #include "math/geometry.h"
 
@@ -882,7 +883,7 @@ int CEngine::CreateObject()
     {
         if (! m_objects[objRank].used)
         {
-            m_objects[objRank].LoadDefault();
+            m_objects[objRank] = {};
             break;
         }
     }
@@ -1150,7 +1151,7 @@ void CEngine::CreateShadowSpot(int objRank)
     {
         if (! m_shadowSpots[index].used)
         {
-            m_shadowSpots[index].LoadDefault();
+            m_shadowSpots[index] = {};
             break;
         }
     }
@@ -1361,7 +1362,7 @@ int CEngine::CreateGroundSpot()
     {
         if (! m_groundSpots[index].used)
         {
-            m_groundSpots[index].LoadDefault();
+            m_groundSpots[index] = {};
             break;
         }
     }
@@ -1422,7 +1423,7 @@ void CEngine::CreateGroundMark(glm::vec3 pos, float radius,
                                    float delay1, float delay2, float delay3,
                                    int dx, int dy, char* table)
 {
-    m_groundMark.LoadDefault();
+    m_groundMark = {};
 
     m_groundMark.draw      = true;
     m_groundMark.phase     = ENG_GR_MARK_PHASE_INC;
@@ -1439,7 +1440,7 @@ void CEngine::CreateGroundMark(glm::vec3 pos, float radius,
 
 void CEngine::DeleteGroundMark(int rank)
 {
-    m_groundMark.LoadDefault();
+    m_groundMark = {};
 }
 
 void CEngine::ComputeDistance()
@@ -2654,6 +2655,48 @@ bool CEngine::IsVisiblePoint(const glm::vec3 &pos)
     return glm::distance(m_eyePt, pos) <= (m_deepView[0] * m_clippingDistance);
 }
 
+Color CEngine::GetObjectColor(int object, const std::string& name)
+{
+    if (name == "team")
+    {
+        return CRobotMain::GetInstance().GetTeamColor(m_objects[object].team);
+    }
+    else if (name == "vehicle")
+    {
+        return CRobotMain::GetInstance().GetVehicleColor();
+    }
+    else if (name == "plant")
+    {
+        return CRobotMain::GetInstance().GetGreeneryColor();
+    }
+    else if (name == "alien")
+    {
+        return CRobotMain::GetInstance().GetAlienColor();
+    }
+    else if (name == "hair")
+    {
+        const auto& appearance = CRobotMain::GetInstance().GetPlayerProfile()->GetAppearance();
+
+        return appearance.colorHair;
+    }
+    else if (name == "suit")
+    {
+        const auto& appearance = CRobotMain::GetInstance().GetPlayerProfile()->GetAppearance();
+
+        return appearance.colorCombi;
+    }
+    else if (name == "band")
+    {
+        const auto& appearance = CRobotMain::GetInstance().GetPlayerProfile()->GetAppearance();
+
+        return appearance.colorBand;
+    }
+    else
+    {
+        return Color(1.0, 1.0, 1.0, 1.0);
+    }
+}
+
 void CEngine::ApplyChange()
 {
     SetFocus(m_focus);
@@ -2941,54 +2984,27 @@ void CEngine::Draw3DScene()
 
             Color color = data.material.albedoColor;
 
-            bool recolor = false;
-            Color recolorFrom = {};
-            Color recolorTo = {};
-            float recolorTreshold = 0.0;
+            if (!data.material.tag.empty())
+            {
+                Color c = GetObjectColor(objRank, data.material.tag);
 
-            if (data.material.tag == "team")
-            {
-                color = CRobotMain::GetInstance().GetTeamColor(m_objects[objRank].team);
+                if (c != Color(1.0, 1.0, 1.0, 1.0))
+                {
+                    color = c;
+                }
             }
-            else if (data.material.tag == "vehicle")
+
+            if (data.material.recolor.empty())
             {
-                color = CRobotMain::GetInstance().GetVehicleColor();
+                objectRenderer->SetRecolor(false);
             }
-            else if (data.material.tag == "plant")
+            else
             {
-                color = CRobotMain::GetInstance().GetGreeneryColor();
-            }
-            else if (data.material.tag == "alien")
-            {
-                color = CRobotMain::GetInstance().GetAlienColor();
-            }
-            else if (data.material.tag == "recolor_team")
-            {
-                recolor = true;
-                recolorFrom = data.material.recolorReference;
-                recolorTo = CRobotMain::GetInstance().GetTeamColor(m_objects[objRank].team);
-                recolorTreshold = 0.1;
-            }
-            else if (data.material.tag == "recolor_vehicle")
-            {
-                recolor = true;
-                recolorFrom = data.material.recolorReference;
-                recolorTo = CRobotMain::GetInstance().GetVehicleColor();
-                recolorTreshold = 0.1;
-            }
-            else if (data.material.tag == "recolor_plant")
-            {
-                recolor = true;
-                recolorFrom = data.material.recolorReference;
-                recolorTo = CRobotMain::GetInstance().GetGreeneryColor();
-                recolorTreshold = 0.1;
-            }
-            else if (data.material.tag == "recolor_alien")
-            {
-                recolor = true;
-                recolorFrom = data.material.recolorReference;
-                recolorTo = CRobotMain::GetInstance().GetAlienColor();
-                recolorTreshold = 0.1;
+                Color recolorFrom = data.material.recolorReference;
+                Color recolorTo = GetObjectColor(objRank, data.material.recolor);
+                float recolorThreshold = 0.1;
+
+                objectRenderer->SetRecolor(true, recolorFrom, recolorTo, recolorThreshold);
             }
 
             objectRenderer->SetAlbedoColor(color);
@@ -3000,8 +3016,6 @@ void CEngine::Draw3DScene()
 
             objectRenderer->SetMaterialParams(data.material.roughness, data.material.metalness, data.material.aoStrength);
             objectRenderer->SetMaterialTexture(data.materialTexture);
-
-            objectRenderer->SetRecolor(recolor, recolorFrom, recolorTo, recolorTreshold);
 
             objectRenderer->SetCullFace(data.material.cullFace);
             objectRenderer->SetUVTransform(data.uvOffset, data.uvScale);
@@ -3647,8 +3661,9 @@ void CEngine::DrawInterface()
         renderer->SetProjectionMatrix(m_matProj);
         renderer->SetViewMatrix(m_matView);
         renderer->SetFog(fogStart, fogEnd, { fogColor.r, fogColor.g, fogColor.b });
-        renderer->SetLighting(false);
-        renderer->SetLight(glm::vec4(1.0, 1.0, -1.0, 0.0), 1.0f, glm::vec3(1.0));
+        renderer->SetLighting(true);
+        renderer->SetLight(glm::vec4(1.0, 1.0, -1.0, 0.0), 0.8f, glm::vec3(1.0));
+        renderer->SetSky(Color(1.0, 1.0, 1.0), 0.2f);
         renderer->SetTransparency(TransparencyMode::NONE);
         renderer->SetAlphaScissor(0.0f);
         renderer->SetShadowParams(0, nullptr);
@@ -3692,6 +3707,32 @@ void CEngine::DrawInterface()
 
             for (auto& data : p1.next)
             {
+                Color color = data.material.albedoColor;
+
+                if (!data.material.tag.empty())
+                {
+                    Color c = GetObjectColor(objRank, data.material.tag);
+
+                    if (c != Color(1.0, 1.0, 1.0, 1.0))
+                    {
+                        color = c;
+                    }
+                }
+
+                if (data.material.recolor.empty())
+                {
+                    renderer->SetRecolor(false);
+                }
+                else
+                {
+                    Color recolorFrom = data.material.recolorReference;
+                    Color recolorTo = GetObjectColor(objRank, data.material.recolor);
+                    float recolorThreshold = 0.3;
+
+                    renderer->SetRecolor(true, recolorFrom, recolorTo, recolorThreshold);
+                }
+
+                renderer->SetAlbedoColor(color);
                 renderer->SetAlbedoTexture(data.albedoTexture);
                 renderer->SetDetailTexture(data.detailTexture);
 

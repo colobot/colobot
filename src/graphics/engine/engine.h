@@ -131,7 +131,7 @@ struct EngineObject
     //! Type of object
     EngineObjectType       type = ENG_OBJTYPE_NULL;
     //! Transformation matrix
-    glm::mat4              transform;
+    glm::mat4              transform = {};
     //! Distance to object from eye point
     float                  distance = 0.0f;
     //! Rank of the associated shadow
@@ -140,12 +140,6 @@ struct EngineObject
     bool                   ghost = false;
     //! Team
     int                    team = 0;
-
-    //! Loads default values
-    inline void LoadDefault()
-    {
-        *this = EngineObject();
-    }
 };
 
 /**
@@ -186,11 +180,6 @@ struct EngineShadow
     float               intensity = 0.0f;
     //! Height from the ground
     float               height = 0.0f;
-
-    void LoadDefault()
-    {
-        *this = EngineShadow();
-    }
 };
 
 /**
@@ -202,7 +191,7 @@ struct EngineGroundSpot
     //! If true, ground spot is valid
     bool            used = false;
     //! Color of the shadow
-    Color      color;
+    Color           color = {};
     //! Min altitude
     float           min = 0.0f;
     //! Max altitude
@@ -210,18 +199,13 @@ struct EngineGroundSpot
     //! Transition area
     float           smooth = 0.0f;
     //! Position for the shadow
-    glm::vec3    pos{ 0, 0, 0 };
+    glm::vec3       pos = { 0, 0, 0 };
     //! Radius of the shadow
     float           radius = 0.0f;
     //! Position of the shadow drawn
-    glm::vec3    drawPos{ 0, 0, 0 };
+    glm::vec3       drawPos = { 0, 0, 0 };
     //! Radius of the shadow drawn
     float           drawRadius = 0.0f;
-
-    void LoadDefault()
-    {
-        *this = EngineGroundSpot();
-    }
 };
 
 /**
@@ -249,7 +233,7 @@ struct EngineGroundMark
     //! If true, draw mark
     bool                        draw = false;
     //! Phase of life
-    EngineGroundMarkPhase  phase = ENG_GR_MARK_PHASE_NULL;
+    EngineGroundMarkPhase       phase = ENG_GR_MARK_PHASE_NULL;
     //! Times for 3 life phases
     float                       delay[3] = {};
     //! Fixed time
@@ -272,11 +256,6 @@ struct EngineGroundMark
     int                         dy = 0;
     //! Pointer to the table
     char*                       table = nullptr;
-
-    void LoadDefault()
-    {
-        *this = EngineGroundMark();
-    }
 };
 
 /**
@@ -972,6 +951,9 @@ public:
     float           GetEyeDirV();
     //! Indicates whether a point is visible
     bool            IsVisiblePoint(const glm::vec3& pos);
+
+    //! Returns object material color
+    Color           GetObjectColor(int object, const std::string& name);
 
     //! Updates the scene after a change of parameters
     void            ApplyChange();
