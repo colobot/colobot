@@ -70,7 +70,7 @@ public:
             return LoadString(TX_NAN);
 
         std::ostringstream s;
-        s << m_val;
+        s << std::boolalpha << m_val;
         return s.str();
     }
 

@@ -2859,6 +2859,7 @@ CBotTypResult CScriptFunctions::cMessage(CBotVar* &var, void* user)
 {
     if ( var == nullptr )  return CBotTypResult(CBotErrLowParam);
     if ( var->GetType() != CBotTypString &&
+        var->GetType() != CBotTypBoolean &&
         var->GetType() >  CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GetNext();
 
