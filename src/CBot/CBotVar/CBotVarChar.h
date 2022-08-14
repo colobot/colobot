@@ -32,7 +32,7 @@ class CBotVarChar : public CBotVarInteger<uint32_t, CBotTypChar>
 public:
     CBotVarChar(const CBotToken &name) : CBotVarInteger(name) {}
 
-    std::string GetValString() override
+    std::string GetValString() const override
     {
         if (m_binit == CBotVar::InitType::UNDEF)
             return LoadString(TX_UNDEF);

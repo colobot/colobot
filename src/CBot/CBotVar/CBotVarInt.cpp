@@ -35,7 +35,7 @@ void CBotVarInt::SetValInt(int val, const std::string& defnum)
     m_defnum = defnum;
 }
 
-std::string CBotVarInt::GetValString()
+std::string CBotVarInt::GetValString() const
 {
     if (!m_defnum.empty()) return m_defnum;
     return CBotVarValue::GetValString();

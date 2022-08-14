@@ -355,7 +355,7 @@ CBotTypResult CBotVar::GetTypResult(GetTypeMode mode)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotType CBotVar::GetType(GetTypeMode mode)
+CBotType CBotVar::GetType(GetTypeMode mode) const
 {
     if ( mode == GetTypeMode::CLASS_AS_POINTER && m_type.Eq(CBotTypClass) )
         return CBotTypPointer;
@@ -584,43 +584,43 @@ CBotVarClass* CBotVar::GetPointer()
 // All these functions must be defined in the subclasses
 // derived from class CBotVar
 
-signed char CBotVar::GetValByte()
+signed char CBotVar::GetValByte() const
 {
     assert(0);
     return 0;
 }
 
-short CBotVar::GetValShort()
+short CBotVar::GetValShort() const
 {
     assert(0);
     return 0;
 }
 
-uint32_t CBotVar::GetValChar()
+uint32_t CBotVar::GetValChar() const
 {
     assert(0);
     return 0;
 }
 
-int CBotVar::GetValInt()
+int CBotVar::GetValInt() const
 {
     assert(0);
     return 0;
 }
 
-long CBotVar::GetValLong()
+long CBotVar::GetValLong() const
 {
     assert(0);
     return 0;
 }
 
-float CBotVar::GetValFloat()
+float CBotVar::GetValFloat() const
 {
     assert(0);
     return 0;
 }
 
-double CBotVar::GetValDouble()
+double CBotVar::GetValDouble() const
 {
     assert(0);
     return 0;
@@ -822,7 +822,7 @@ void CBotVar::SetValString(const std::string& val)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string CBotVar::GetValString()
+std::string CBotVar::GetValString() const
 {
     assert(0);
     return std::string();

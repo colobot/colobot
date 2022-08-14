@@ -199,7 +199,7 @@ public:
      * \brief GetType Returns the base type of the variable (::CBotType)
      * \param mode Mode, see GetTypeMode enum
      */
-    CBotType GetType(GetTypeMode mode = GetTypeMode::NORMAL);
+    CBotType GetType(GetTypeMode mode = GetTypeMode::NORMAL) const;
 
     /**
      * \brief Returns the complete type of the variable (CBotTypResult)
@@ -508,27 +508,27 @@ public:
      */
     virtual void SetValString(const std::string& val);
 
-    virtual signed char GetValByte();
+    virtual signed char GetValByte() const;
 
-    virtual short GetValShort();
+    virtual short GetValShort() const;
 
-    virtual uint32_t GetValChar();
+    virtual uint32_t GetValChar() const;
 
     /**
      * \brief Get value as integer
      * \return Current value
      */
-    virtual int GetValInt();
+    virtual int GetValInt() const;
 
-    virtual long GetValLong();
+    virtual long GetValLong() const;
 
     /**
      * \brief Get value as float
      * \return Current value
      */
-    virtual float GetValFloat();
+    virtual float GetValFloat() const;
 
-    virtual double GetValDouble();
+    virtual double GetValDouble() const;
 
     /**
      * \brief Get value as string
@@ -539,7 +539,7 @@ public:
      *
      * \return Current value
      */
-    virtual std::string GetValString();
+    virtual std::string GetValString() const;
 
     /**
      * \brief Set value for pointer types
