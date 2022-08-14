@@ -243,7 +243,6 @@ public:
         UNDEF = 0,      //!< the variable value is currently not defined
         DEF = 1,        //!< the variable value is defined
         IS_POINTER = 2, //!< the variable value is as a pointer
-        IS_NAN = 999    //!< the variable value is NAN
     };
 
     /**
@@ -268,12 +267,6 @@ public:
      * \see InitType::DEF
      */
     bool IsDefined() const { return GetInit() == InitType::DEF; }
-
-    /**
-     * \brief Checks if the variable is currently NAN
-     * \return InitType::NAN
-     */
-    bool IsNAN() const { return GetInit() == InitType::IS_NAN; }
 
     //@}
 

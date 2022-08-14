@@ -66,8 +66,6 @@ public:
     {
         if (m_binit == CBotVar::InitType::UNDEF)
             return LoadString(TX_UNDEF);
-        if (m_binit == CBotVar::InitType::IS_NAN)
-            return LoadString(TX_NAN);
 
         std::ostringstream s;
         s << std::boolalpha << m_val;

@@ -36,8 +36,6 @@ public:
     {
         if (m_binit == CBotVar::InitType::UNDEF)
             return LoadString(TX_UNDEF);
-        if (m_binit == CBotVar::InitType::IS_NAN)
-            return LoadString(TX_NAN);
 
         if (0x10FFFF < m_val || (0xD7FF < m_val && m_val < 0xE000))
             return "\xEF\xBF\xBD"; // replacement character U+FFFD

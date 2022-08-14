@@ -218,6 +218,37 @@ bool rTrunc(CBotVar* var, CBotVar* result, int& exception, void* user)
     return true;
 }
 
+// Instruction "isnan()"
+
+CBotTypResult cIsNAN(CBotVar*& var, void* user)
+{
+    if (var == nullptr)  return CBotTypResult(CBotErrLowParam);
+
+    if (var->GetType() > CBotTypDouble)  return CBotTypResult(CBotErrBadNum);
+
+    var = var->GetNext();
+    if (var != nullptr)  return CBotTypResult(CBotErrOverParam);
+
+    return CBotTypResult(CBotTypBoolean);
+}
+
+bool rIsNAN(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    bool isnan = false;
+
+    if (var->GetType() == CBotTypFloat)
+    {
+        if (std::isnan(var->GetValFloat())) isnan = true;
+    }
+    else if (var->GetType() == CBotTypDouble)
+    {
+        if (std::isnan(var->GetValDouble())) isnan = true;
+    }
+
+    result->SetValInt(isnan);
+    return true;
+}
+
 } // namespace
 
 void InitMathFunctions()
@@ -237,6 +268,7 @@ void InitMathFunctions()
     CBotProgram::AddFunction("ceil",  rCeil,  cOneFloat);
     CBotProgram::AddFunction("round", rRound, cOneFloat);
     CBotProgram::AddFunction("trunc", rTrunc, cOneFloat);
+    CBotProgram::AddFunction("isnan", rIsNAN, cIsNAN);
 }
 
 } // namespace CBot

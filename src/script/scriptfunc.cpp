@@ -1836,18 +1836,30 @@ bool CScriptFunctions::rSpace(CBotVar* var, CBotVar* result, int& exception, voi
             }
         }
     }
-    script->m_main->FreeSpace(center, rMin, rMax, dist, pThis);
+
+    bool success = script->m_main->FreeSpace(center, rMin, rMax, dist, pThis);
 
     if ( result != nullptr )
     {
         pSub = result->GetItemList();
         if ( pSub != nullptr )
         {
-            pSub->SetValFloat(center.x/g_unit);
-            pSub = pSub->GetNext();  // "y"
-            pSub->SetValFloat(center.z/g_unit);
-            pSub = pSub->GetNext();  // "z"
-            pSub->SetValFloat(center.y/g_unit);
+            if (success)
+            {
+                pSub->SetValFloat(center.x / g_unit);
+                pSub = pSub->GetNext();  // "y"
+                pSub->SetValFloat(center.z / g_unit);
+                pSub = pSub->GetNext();  // "z"
+                pSub->SetValFloat(center.y / g_unit);
+            }
+            else
+            {
+                pSub->SetValFloat(center.x);
+                pSub = pSub->GetNext();  // "y"
+                pSub->SetValFloat(center.y);
+                pSub = pSub->GetNext();  // "z"
+                pSub->SetValFloat(center.z);
+            }
         }
     }
     return true;
@@ -2313,7 +2325,7 @@ bool CScriptFunctions::rReceive(CBotVar* var, CBotVar* result, int& exception, v
         if ( err != ERR_OK )
         {
             script->m_taskExecutor->StopForegroundTask();
-            result->SetInit(CBotVar::InitType::IS_NAN);
+            result->SetValFloat(std::nanf(""));
             return true;
         }
 
@@ -2324,7 +2336,7 @@ bool CScriptFunctions::rReceive(CBotVar* var, CBotVar* result, int& exception, v
 
     if ( script->m_returnValue == boost::none )
     {
-        result->SetInit(CBotVar::InitType::IS_NAN);
+        result->SetValFloat(std::nanf(""));
     }
     else
     {
@@ -3645,11 +3657,11 @@ void CScriptFunctions::uObject(CBotVar* botThis, void* user)
     if (IsObjectBeingTransported(object))
     {
         pSub = pVar->GetItemList();  // "x"
-        pSub->SetInit(CBotVar::InitType::IS_NAN);
+        pSub->SetValFloat(std::nanf(""));
         pSub = pSub->GetNext();  // "y"
-        pSub->SetInit(CBotVar::InitType::IS_NAN);
+        pSub->SetValFloat(std::nanf(""));
         pSub = pSub->GetNext();  // "z"
-        pSub->SetInit(CBotVar::InitType::IS_NAN);
+        pSub->SetValFloat(std::nanf(""));
     }
     else
     {
@@ -3750,11 +3762,11 @@ void CScriptFunctions::uObject(CBotVar* botThis, void* user)
     if (IsObjectBeingTransported(object) || physics == nullptr)
     {
         pSub = pVar->GetItemList();  // "x"
-        pSub->SetInit(CBotVar::InitType::IS_NAN);
+        pSub->SetValFloat(std::nanf(""));
         pSub = pSub->GetNext();  // "y"
-        pSub->SetInit(CBotVar::InitType::IS_NAN);
+        pSub->SetValFloat(std::nanf(""));
         pSub = pSub->GetNext();  // "z"
-        pSub->SetInit(CBotVar::InitType::IS_NAN);
+        pSub->SetValFloat(std::nanf(""));
     }
     else
     {
