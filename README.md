@@ -32,6 +32,7 @@ On some Linux distributions there are also distribution packages available:
  * openSUSE: http://software.opensuse.org/download.html?project=games&package=colobot
  * Fedora: https://src.fedoraproject.org/rpms/colobot
  * Guix https://guix.gnu.org/en/packages/colobot-0.1.12-alpha/
+ * Void Linux: https://github.com/void-linux/void-packages/tree/master/srcpkgs/colobot
 
 
 ## Compiling and running the game
