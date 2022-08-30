@@ -462,6 +462,12 @@ void InitializeRestext()
     stringsEvent[EVENT_OBJECT_PEN8]         = TR("\\Use the brown pencil");
     stringsEvent[EVENT_OBJECT_REC]          = TR("\\Start recording");
     stringsEvent[EVENT_OBJECT_STOP]         = TR("\\Stop recording");
+    stringsEvent[EVENT_OBJECT_PRODUCE]      = TR("Produce an object (\\key action;)");
+    stringsEvent[EVENT_OBJECT_PANT]         = TR("..an Ant");
+    stringsEvent[EVENT_OBJECT_PBEE]         = TR("..a Wasp");
+    stringsEvent[EVENT_OBJECT_PSPIDER]      = TR("..a Spider");
+    stringsEvent[EVENT_OBJECT_PWORM]        = TR("..a Worm");
+    stringsEvent[EVENT_OBJECT_PNEST]        = TR("..a Nest");
     stringsEvent[EVENT_DT_VISIT0]           = TR("Show the place");
     stringsEvent[EVENT_DT_VISIT1]           = TR("Show the place");
     stringsEvent[EVENT_DT_VISIT2]           = TR("Show the place");

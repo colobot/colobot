@@ -113,6 +113,7 @@ protected:
     int                 m_selScript;        // rank of the selected script
 
     EventType           m_manipStyle;
+    EventType           m_produceStyle;
     EventType           m_defaultEnter;
 
     float               m_time;

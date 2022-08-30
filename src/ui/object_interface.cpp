@@ -33,6 +33,7 @@
 
 #include "math/geometry.h"
 
+#include "object/object_manager.h"
 #include "object/old_object.h"
 
 #include "object/interface/programmable_object.h"
@@ -97,6 +98,7 @@ CObjectInterface::CObjectInterface(COldObject* object)
 
     m_defaultEnter = EVENT_NULL;
     m_manipStyle   = EVENT_OBJECT_MFRONT;
+    m_produceStyle = EVENT_OBJECT_PANT;
 
     m_selScript = 0;
 
@@ -480,6 +482,40 @@ bool CObjectInterface::EventProcess(const Event &event)
                     m_manipStyle = EVENT_OBJECT_MFRONT;
                     UpdateInterface();
                 }
+            }
+        }
+
+        if ( action == EVENT_OBJECT_PANT ||
+             action == EVENT_OBJECT_PBEE ||
+             action == EVENT_OBJECT_PSPIDER ||
+             action == EVENT_OBJECT_PWORM ||
+             action == EVENT_OBJECT_PNEST )
+        {
+            m_produceStyle = action;
+            UpdateInterface();
+        }
+
+        if ( action == EVENT_OBJECT_PRODUCE )
+        {
+            if ( m_produceStyle == EVENT_OBJECT_PANT )
+            {
+                err = m_taskExecutor->StartTaskProduce(OBJECT_ANT);
+            }
+            if ( m_produceStyle == EVENT_OBJECT_PBEE )
+            {
+                err = m_taskExecutor->StartTaskProduce(OBJECT_BEE);
+            }
+            if ( m_produceStyle == EVENT_OBJECT_PSPIDER )
+            {
+                err = m_taskExecutor->StartTaskProduce(OBJECT_SPIDER);
+            }
+            if ( m_produceStyle == EVENT_OBJECT_PWORM )
+            {
+                err = m_taskExecutor->StartTaskProduce(OBJECT_WORM);
+            }
+            if ( m_produceStyle == EVENT_OBJECT_PNEST )
+            {
+                err = m_taskExecutor->StartTaskProduce(OBJECT_NEST);
             }
         }
 
@@ -1230,6 +1266,30 @@ bool CObjectInterface::CreateInterface(bool bSelect)
         DefaultEnter(pw, EVENT_OBJECT_SPIDEREXPLO);
     }
 
+    if ( type == OBJECT_MOTHER )
+    {
+        pos.x = ox+sx*7.7f;
+        pos.y = oy+sy*0.5f;
+        pb = pw->CreateButton(pos, dim, 192 + 4, EVENT_OBJECT_PRODUCE);
+        DefaultEnter(pw, EVENT_OBJECT_PRODUCE);
+
+        pos.x = ox+sx*8.9f;
+        pos.y = oy+sy*1.0f;
+        pb = pw->CreateButton(pos, dim, 128 + 28, EVENT_OBJECT_PANT);
+        pos.x = ox+sx*9.9f;
+        pos.y = oy+sy*1.0f;
+        pb = pw->CreateButton(pos, dim, 128 + 11, EVENT_OBJECT_PBEE);
+        pos.x = ox+sx*8.9f;
+        pos.y = oy+sy*0.0f;
+        pb = pw->CreateButton(pos, dim, 128 + 45, EVENT_OBJECT_PSPIDER);
+        pos.x = ox+sx*9.9f;
+        pos.y = oy+sy*0.0f;
+        pb = pw->CreateButton(pos, dim, 128 + 48, EVENT_OBJECT_PWORM);
+        pos.x = ox+sx*10.9f;
+        pos.y = oy+sy*0.5f;
+        pb = pw->CreateButton(pos, dim, 128 + 33, EVENT_OBJECT_PNEST);
+    }
+
     if ( type == OBJECT_MOBILEdr &&
          m_object->GetManual() )  // scribbler in manual mode?
     {
@@ -1785,6 +1845,12 @@ void CObjectInterface::UpdateInterface()
     EnableInterface(pw, EVENT_OBJECT_FIRE,        bEnable);
     EnableInterface(pw, EVENT_OBJECT_BUILD,       bEnable);
     EnableInterface(pw, EVENT_OBJECT_SPIDEREXPLO, bEnable);
+    EnableInterface(pw, EVENT_OBJECT_PRODUCE,     bEnable);
+    EnableInterface(pw, EVENT_OBJECT_PANT,        bEnable);
+    EnableInterface(pw, EVENT_OBJECT_PBEE,        bEnable);
+    EnableInterface(pw, EVENT_OBJECT_PSPIDER,     bEnable);
+    EnableInterface(pw, EVENT_OBJECT_PWORM,       bEnable);
+    EnableInterface(pw, EVENT_OBJECT_PNEST,       bEnable);
     EnableInterface(pw, EVENT_OBJECT_RESET,       bEnable);
     EnableInterface(pw, EVENT_OBJECT_PEN0,        bEnable);
     EnableInterface(pw, EVENT_OBJECT_PEN1,        bEnable);
@@ -2004,6 +2070,15 @@ void CObjectInterface::UpdateInterface()
         CheckInterface(pw, EVENT_OBJECT_MPOWER, m_manipStyle==EVENT_OBJECT_MPOWER);
         CheckInterface(pw, EVENT_OBJECT_MBACK,  m_manipStyle==EVENT_OBJECT_MBACK);
         CheckInterface(pw, EVENT_OBJECT_MFRONT, m_manipStyle==EVENT_OBJECT_MFRONT);
+    }
+
+    if ( type == OBJECT_MOTHER )
+    {
+        CheckInterface(pw, EVENT_OBJECT_PANT, m_produceStyle==EVENT_OBJECT_PANT);
+        CheckInterface(pw, EVENT_OBJECT_PBEE, m_produceStyle==EVENT_OBJECT_PBEE);
+        CheckInterface(pw, EVENT_OBJECT_PSPIDER, m_produceStyle==EVENT_OBJECT_PSPIDER);
+        CheckInterface(pw, EVENT_OBJECT_PWORM, m_produceStyle==EVENT_OBJECT_PWORM);
+        CheckInterface(pw, EVENT_OBJECT_PNEST, m_produceStyle==EVENT_OBJECT_PNEST);
     }
 
     CTraceDrawingObject* traceDrawing = nullptr;
