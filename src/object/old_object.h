@@ -298,6 +298,12 @@ public:
     // Helper for CSlottedObject initialization
     void SetPowerPosition(const Math::Vector& powerPosition);
 
+    /**
+     * \brief Check if given object type should be selectable by default
+     * \note This is a default value for the selectable= parameter and can still be overriden in the scene file or using the \a selectinsect cheat
+     */
+    static bool IsSelectableByDefault(ObjectType type);
+
 protected:
     bool        EventFrame(const Event &event);
     void        VirusFrame(float rTime);
@@ -311,12 +317,6 @@ protected:
     void        UpdateSelectParticle();
     void        TransformCrashSphere(Math::Sphere &crashSphere) override;
     void TransformCameraCollisionSphere(Math::Sphere& collisionSphere) override;
-
-    /**
-     * \brief Check if given object type should be selectable by default
-     * \note This is a default value for the selectable= parameter and can still be overriden in the scene file or using the \a selectinsect cheat
-     */
-    static bool IsSelectableByDefault(ObjectType type);
 
     /**
      * \brief Check if given object type should have bulletWall enabled by default

@@ -4585,6 +4585,8 @@ void CRobotMain::IOWriteObject(CLevelParserLine* line, CObject* obj, const std::
     {
         auto controllableObj = dynamic_cast<CControllableObject*>(obj);
         line->AddParam("trainer", MakeUnique<CLevelParserParam>(controllableObj->GetTrainer()));
+        if (controllableObj->GetSelectable() != COldObject::IsSelectableByDefault(obj->GetType()))
+            line->AddParam("selectable", MakeUnique<CLevelParserParam>(controllableObj->GetSelectable()));
         if (controllableObj->GetSelect())
             line->AddParam("select", MakeUnique<CLevelParserParam>(true));
     }
