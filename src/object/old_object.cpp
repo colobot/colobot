@@ -788,6 +788,7 @@ void COldObject::SetType(ObjectType type)
 
     if ( m_type == OBJECT_HUMAN ||
          m_type == OBJECT_TECH ||
+         m_type == OBJECT_BEE ||
          m_type == OBJECT_MOBILEfa || // Grabbers
          m_type == OBJECT_MOBILEta ||
          m_type == OBJECT_MOBILEwa ||
@@ -1715,6 +1716,7 @@ Math::Vector COldObject::GetSlotPosition(int slotNum)
             grabPartNum = 4;
             grabRelPos = Math::Vector(1.7f, -0.5f, 1.1f);
             break;
+        case OBJECT_BEE: // alien wasp
         case OBJECT_MOBILEsa: // subber
             grabPartNum = 2;
             grabRelPos = Math::Vector(1.1f, -1.0f, 1.0f);
