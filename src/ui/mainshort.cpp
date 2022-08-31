@@ -201,6 +201,7 @@ int CMainShort::GetShortcutIcon(ObjectType type)
             case OBJECT_SAFE:       icon = 47; break;
             case OBJECT_HUSTON:     icon = 48; break;
             case OBJECT_BASE:       icon = 43; break;
+            case OBJECT_NEST:       icon = 31; break;
             default:                return -1;
         }
     }
@@ -243,6 +244,11 @@ int CMainShort::GetShortcutIcon(ObjectType type)
             case OBJECT_MOBILEtg:   icon = 45; break;
             case OBJECT_MOBILEdr:   icon = 48; break;
             case OBJECT_APOLLO2:    icon = 49; break;
+            case OBJECT_MOTHER:     icon = 31; break;
+            case OBJECT_ANT:        icon = 31; break;
+            case OBJECT_SPIDER:     icon = 31; break;
+            case OBJECT_BEE:        icon = 31; break;
+            case OBJECT_WORM:       icon = 31; break;
             default:                return -1;
         }
     }
