@@ -648,11 +648,6 @@ bool CObjectInterface::EventProcess(const Event &event)
             err = m_taskExecutor->StartTaskGunGoal((event.mousePos.y-0.50f)*1.3f, (event.mousePos.x-0.50f)*2.0f);
         }
 
-        if ( action == EVENT_OBJECT_FIREANT )
-        {
-//?         err = m_taskExecutor->StartTaskFireAnt();
-        }
-
         if ( action == EVENT_OBJECT_SPIDEREXPLO && !m_taskExecutor->IsForegroundTask() )
         {
             err = m_taskExecutor->StartTaskSpiderExplo();
