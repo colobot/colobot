@@ -2229,6 +2229,10 @@ void CRobotMain::ChangeCamera()
 
     if ( oType != OBJECT_HUMAN &&
          oType != OBJECT_TECH &&
+         oType != OBJECT_ANT &&
+         oType != OBJECT_BEE &&
+         oType != OBJECT_SPIDER &&
+         oType != OBJECT_WORM &&
          oType != OBJECT_MOBILEfa &&
          oType != OBJECT_MOBILEta &&
          oType != OBJECT_MOBILEwa &&

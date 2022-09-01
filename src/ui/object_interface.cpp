@@ -1470,7 +1470,11 @@ bool CObjectInterface::CreateInterface(bool bSelect)
     }
 
     if (type != OBJECT_HUMAN &&
-        type != OBJECT_TECH)
+        type != OBJECT_TECH &&
+        type != OBJECT_ANT &&
+        type != OBJECT_BEE &&
+        type != OBJECT_SPIDER &&
+        type != OBJECT_WORM )
     {
         ddim.x = 64.0f / 640.0f;
         ddim.y = 64.0f / 480.0f;
