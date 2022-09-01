@@ -1662,44 +1662,19 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
         }
     }
 
-    CObject* object = nullptr;
+    if ((params.type == OBJECT_POWER || params.type == OBJECT_ATOMIC) && params.power == -1.0f)
+    {
+        params.power = 1.0f;
+    }
 
-    if ( params.type == OBJECT_ANT    ||
-        params.type == OBJECT_SPIDER ||
-        params.type == OBJECT_BEE    ||
-        params.type == OBJECT_WORM   )
+    CObject* object = CObjectManager::GetInstancePointer()->Produce(params);
+    if (object == nullptr)
     {
-        object = CObjectManager::GetInstancePointer()->CreateObject(params);
-        params.type = OBJECT_EGG;
-        CObjectManager::GetInstancePointer()->CreateObject(params);
-        if (object->Implements(ObjectInterfaceType::Programmable))
-        {
-            dynamic_cast<CProgrammableObject&>(*object).SetActivity(false);
-        }
+        result->SetValInt(1); // error
+        return true;
     }
-    else
-    {
-        if ((params.type == OBJECT_POWER || params.type == OBJECT_ATOMIC) && params.power == -1.0f)
-        {
-            params.power = 1.0f;
-        }
-        bool exists = IsValidObjectTypeId(params.type) && params.type != OBJECT_NULL && params.type != OBJECT_MAX && params.type != OBJECT_MOBILEpr;
-        if (exists)
-        {
-            object = CObjectManager::GetInstancePointer()->CreateObject(params);
-        }
-        if (object == nullptr)
-        {
-            result->SetValInt(1);  // error
-            return true;
-        }
-        if (params.type == OBJECT_MOBILEdr)
-        {
-            assert(object->Implements(ObjectInterfaceType::Old)); // TODO: temporary hack
-            dynamic_cast<COldObject&>(*object).SetManual(true);
-        }
-        script->m_main->CreateShortcuts();
-    }
+
+    script->m_main->CreateShortcuts();
 
     if (!name.empty())
     {

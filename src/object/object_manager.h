@@ -194,6 +194,9 @@ public:
         return CObjectContainerProxy(m_objects, m_activeObjectIterators);
     }
 
+    //! Creates an object, like produce() in CBot
+    CObject* Produce(ObjectCreateParams params);
+
     //! Finds an object, like radar() in CBot
     //@{
     std::vector<CObject*> RadarAll(CObject* pThis,

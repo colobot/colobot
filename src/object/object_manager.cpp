@@ -463,3 +463,36 @@ CObject*  CObjectManager::FindNearest(CObject* pThis, Math::Vector thisPosition,
 {
     return Radar(pThis, thisPosition, 0.0f, type, 0.0f, Math::PI*2.0f, 0.0f, maxDist, false, FILTER_NONE, cbotTypes);
 }
+
+CObject*  CObjectManager::Produce(ObjectCreateParams params)
+{
+    CObject* object = nullptr;
+    if ( !IsValidObjectTypeId(params.type) ||
+         params.type == OBJECT_NULL ||
+         params.type == OBJECT_MAX ||
+         params.type == OBJECT_MOBILEpr ||
+         (object = CreateObject(params)) == nullptr )
+    {
+        return nullptr;
+    }
+
+    if ( params.type == OBJECT_ANT   ||
+        params.type == OBJECT_SPIDER ||
+        params.type == OBJECT_BEE    ||
+        params.type == OBJECT_WORM   )
+    {
+        params.type = OBJECT_EGG;
+        CreateObject(params);
+
+        assert(object->Implements(ObjectInterfaceType::Programmable));
+        dynamic_cast<CProgrammableObject&>(*object).SetActivity(false);
+    }
+
+    if (params.type == OBJECT_MOBILEdr)
+    {
+        assert(object->Implements(ObjectInterfaceType::Old)); // TODO: temporary hack
+        dynamic_cast<COldObject&>(*object).SetManual(true);
+    }
+
+    return object;
+}
