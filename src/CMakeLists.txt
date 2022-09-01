@@ -340,6 +340,8 @@ add_library(colobotbase STATIC
     object/task/taskmanip.h
     object/task/taskpen.cpp
     object/task/taskpen.h
+    object/task/taskproduce.cpp
+    object/task/taskproduce.h
     object/task/taskrecover.cpp
     object/task/taskrecover.h
     object/task/tasksearch.cpp

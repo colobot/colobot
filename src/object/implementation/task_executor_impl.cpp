@@ -30,6 +30,7 @@
 #include "object/task/taskgungoal.h"
 #include "object/task/taskinfo.h"
 #include "object/task/taskpen.h"
+#include "object/task/taskproduce.h"
 #include "object/task/taskrecover.h"
 #include "object/task/tasksearch.h"
 #include "object/task/taskspiderexplo.h"
@@ -195,6 +196,11 @@ Error CTaskExecutorObjectImpl::StartTaskFlag(TaskFlagOrder order, int rank)
 Error CTaskExecutorObjectImpl::StartTaskBuild(ObjectType type)
 {
     return StartForegroundTask<CTaskBuild>(type);
+}
+
+Error CTaskExecutorObjectImpl::StartTaskProduce(ObjectType type)
+{
+    return StartForegroundTask<CTaskProduce>(type);
 }
 
 Error CTaskExecutorObjectImpl::StartTaskSearch()

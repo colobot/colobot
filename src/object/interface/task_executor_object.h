@@ -49,6 +49,7 @@ public:
     virtual Error StartTaskManip(TaskManipOrder order, TaskManipArm arm) = 0;
     virtual Error StartTaskFlag(TaskFlagOrder order, int rank) = 0;
     virtual Error StartTaskBuild(ObjectType type) = 0;
+    virtual Error StartTaskProduce(ObjectType type) = 0;
     virtual Error StartTaskSearch() = 0;
     virtual Error StartTaskDeleteMark() = 0;
     virtual Error StartTaskTerraform() = 0;
