@@ -637,11 +637,29 @@ bool CObjectInterface::EventProcess(const Event &event)
 
         if ( action == EVENT_OBJECT_FIRE && !m_taskExecutor->IsForegroundTask() && !m_object->GetTrainer() )
         {
+            if ( m_object->GetType() == OBJECT_ANT )
+            {
+                Math::Point mousePos = event.mousePos;
+                if ( m_camera->GetType() == Gfx::CAM_TYPE_ONBOARD )
+                {
+                    CGroup* pgr = static_cast< CGroup* >(pw->SearchControl(EVENT_OBJECT_CROSSHAIR));
+                    mousePos = pgr->GetPos();
+                }
+
+                Math::Vector taskPos;
+                err = m_engine->DetectObject(mousePos, taskPos, true) != -1 ?
+                    m_taskExecutor->StartTaskFireAnt(taskPos) :
+                    ERR_DESTROY_NOTFOUND;
+            }
+            else
+            {
+                err = m_taskExecutor->StartTaskFire(0.0f);
+            }
+
             if ( m_camera->GetType() != Gfx::CAM_TYPE_ONBOARD )
             {
                 m_camera->SetType(Gfx::CAM_TYPE_ONBOARD);
             }
-            err = m_taskExecutor->StartTaskFire(0.0f);
         }
         if ( action == EVENT_OBJECT_TARGET && !m_object->GetTrainer() )
         {
