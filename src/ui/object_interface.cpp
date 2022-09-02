@@ -1238,6 +1238,7 @@ bool CObjectInterface::CreateInterface(bool bSelect)
           type == OBJECT_MOBILEti ||
           type == OBJECT_MOBILEwi ||
           type == OBJECT_MOBILEii ||
+          type == OBJECT_ANT ||
           type == OBJECT_MOBILErc ) &&  // cannon?
          !m_object->GetTrainer() )
     {
@@ -1453,6 +1454,7 @@ bool CObjectInterface::CreateInterface(bool bSelect)
          type == OBJECT_MOBILEti ||
          type == OBJECT_MOBILEwi ||
          type == OBJECT_MOBILEii ||
+         type == OBJECT_ANT ||
          type == OBJECT_MOBILErc )  // cannon?
     {
         ddim.x = 64.0f/640.0f;

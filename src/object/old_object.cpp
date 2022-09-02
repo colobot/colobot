@@ -1034,7 +1034,8 @@ void COldObject::SetType(ObjectType type)
     }
 
 
-    if ( m_type == OBJECT_MOBILEwc ||
+    if ( m_type == OBJECT_ANT      ||
+         m_type == OBJECT_MOBILEwc ||
          m_type == OBJECT_MOBILEtc ||
          m_type == OBJECT_MOBILEfc ||
          m_type == OBJECT_MOBILEic ||
@@ -2967,6 +2968,12 @@ void COldObject::SetGunGoalV(float gunGoal)
         if ( gunGoal < -20.0f*Math::PI/180.0f )  gunGoal = -20.0f*Math::PI/180.0f;
         SetPartRotationZ(2, gunGoal);
     }
+    else if ( m_type == OBJECT_ANT )  // ant?
+    {
+        if ( gunGoal >  90.0f*Math::PI/180.0f )  gunGoal =  90.0f*Math::PI/180.0f;
+        if ( gunGoal < -20.0f*Math::PI/180.0f )  gunGoal = -20.0f*Math::PI/180.0f;
+        SetPartRotationZ(1, gunGoal);
+    }
     else
     {
         gunGoal = 0.0f;
@@ -3004,6 +3011,12 @@ void COldObject::SetGunGoalH(float gunGoal)
         if ( gunGoal >  40.0f*Math::PI/180.0f )  gunGoal =  40.0f*Math::PI/180.0f;
         if ( gunGoal < -40.0f*Math::PI/180.0f )  gunGoal = -40.0f*Math::PI/180.0f;
         SetPartRotationY(2, gunGoal);
+    }
+    else if ( m_type == OBJECT_ANT )  // ant?
+    {
+        if ( gunGoal >  40.0f*Math::PI/180.0f )  gunGoal =  40.0f*Math::PI/180.0f;
+        if ( gunGoal < -40.0f*Math::PI/180.0f )  gunGoal = -40.0f*Math::PI/180.0f;
+        SetPartRotationY(1, gunGoal);
     }
     else
     {
