@@ -117,7 +117,7 @@ void CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(1, rank);
     m_object->SetObjectParent(1, 0);
-    modelManager->AddModelReference("spider1.mod", false, rank);
+    modelManager->AddModelReference("spider1.mod", false, rank, m_object->GetTeam());
     m_object->SetPartPosition(1, Math::Vector(1.0f, 0.0f, 0.0f));
 
     // Creates the head.
@@ -125,7 +125,7 @@ void CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(2, rank);
     m_object->SetObjectParent(2, 0);
-    modelManager->AddModelReference("spider2.mod", false, rank);
+    modelManager->AddModelReference("spider2.mod", false, rank, m_object->GetTeam());
     m_object->SetPartPosition(2, Math::Vector(1.0f, 0.0f, 0.0f));
 
     // Creates legs.
@@ -142,7 +142,7 @@ void CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
             if ( j == 0 )  parent = 0;
             else           parent = 3+i*4+j-1;
             m_object->SetObjectParent(3+i*4+j, parent);
-            modelManager->AddModelReference(name, false, rank);
+            modelManager->AddModelReference(name, false, rank, m_object->GetTeam());
             pos.x = table[i*12+j*3+0];
             pos.y = table[i*12+j*3+1];
             pos.z = table[i*12+j*3+2];
@@ -155,7 +155,7 @@ void CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
             if ( j == 0 )  parent = 0;
             else           parent = 19+i*4+j-1;
             m_object->SetObjectParent(19+i*4+j, parent);
-            modelManager->AddModelReference(name, true, rank);
+            modelManager->AddModelReference(name, true, rank, m_object->GetTeam());
             pos.x =  table[i*12+j*3+0];
             pos.y =  table[i*12+j*3+1];
             pos.z = -table[i*12+j*3+2];
@@ -168,7 +168,7 @@ void CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(35, rank);
     m_object->SetObjectParent(35, 1);
-    modelManager->AddModelReference("spider7.mod", false, rank);
+    modelManager->AddModelReference("spider7.mod", false, rank, m_object->GetTeam());
     m_object->SetPartPosition(35, Math::Vector(0.0f, 0.0f, -0.3f));
 
     // Creates the left mandible.
@@ -176,7 +176,7 @@ void CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(36, rank);
     m_object->SetObjectParent(36, 1);
-    modelManager->AddModelReference("spider7.mod", true, rank);
+    modelManager->AddModelReference("spider7.mod", true, rank, m_object->GetTeam());
     m_object->SetPartPosition(36, Math::Vector(0.0f, 0.0f, 0.3f));
 
     m_object->CreateShadowCircle(4.0f, 0.5f);

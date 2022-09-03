@@ -199,6 +199,8 @@ void COldModelManager::ChangeVariant(std::vector<ModelTriangle>& triangles, int 
     for (int i = 0; i < static_cast<int>( triangles.size() ); i++)
     {
         if (triangles[i].tex1Name == "base1.png"   ||
+            triangles[i].tex1Name == "ant.png"     ||
+            triangles[i].tex1Name == "mother.png"  ||
             triangles[i].tex1Name == "convert.png" ||
             triangles[i].tex1Name == "derrick.png" ||
             triangles[i].tex1Name == "factory.png" ||

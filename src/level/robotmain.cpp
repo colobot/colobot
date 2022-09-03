@@ -2758,7 +2758,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
         m_colorNewBot.clear();
         m_colorNewBot[0] = COLOR_REF_BOT;
-        m_colorNewAlien = COLOR_REF_ALIEN;
+        m_colorNewAlien.clear();
+        m_colorNewAlien[0] = COLOR_REF_ALIEN;
         m_colorNewGreen = COLOR_REF_GREEN;
         m_colorNewWater = COLOR_REF_WATER;
 
@@ -3056,7 +3057,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "InsectColor" && !resetObject)
             {
-                m_colorNewAlien = line->GetParam("color")->AsColor(Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f));
+                m_colorNewAlien[line->GetParam("team")->AsInt(0)] = line->GetParam("color")->AsColor(Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f));
                 continue;
             }
 
@@ -4033,12 +4034,20 @@ void CRobotMain::ChangeColor()
 
     // AlienColor
 
-    exclu[0] = Math::Point(128.0f/256.0f, 160.0f/256.0f);
-    exclu[1] = Math::Point(256.0f/256.0f, 256.0f/256.0f);  // SatCom
-    exclu[2] = Math::Point(0.0f, 0.0f);
-    exclu[3] = Math::Point(0.0f, 0.0f);  // terminator
-    m_engine->ChangeTextureColor("textures/objects/ant.png",     COLOR_REF_ALIEN, m_colorNewAlien, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti, exclu);
-    m_engine->ChangeTextureColor("textures/objects/mother.png",  COLOR_REF_ALIEN, m_colorNewAlien, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti);
+    for (auto it : m_colorNewAlien)
+    {
+        int team = it.first;
+        Gfx::Color newColor = it.second;
+        std::string teamStr = StrUtils::ToString<int>(team);
+        if(team == 0) teamStr = "";
+
+        exclu[0] = Math::Point(128.0f/256.0f, 160.0f/256.0f);
+        exclu[1] = Math::Point(256.0f/256.0f, 256.0f/256.0f);  // SatCom
+        exclu[2] = Math::Point(0.0f, 0.0f);
+        exclu[3] = Math::Point(0.0f, 0.0f);  // terminator
+        m_engine->ChangeTextureColor("textures/objects/ant.png"+teamStr,     "textures/objects/ant.png",    COLOR_REF_ALIEN, newColor, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti, exclu, 0, true);
+        m_engine->ChangeTextureColor("textures/objects/mother.png"+teamStr,  "textures/objects/mother.png", COLOR_REF_ALIEN, newColor, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti, nullptr, 0, true);
+    }
 
     // GreeneryColor
     m_engine->ChangeTextureColor("textures/objects/plant.png",   COLOR_REF_GREEN, m_colorNewGreen, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti);

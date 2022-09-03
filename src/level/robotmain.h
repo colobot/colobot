@@ -716,7 +716,7 @@ protected:
     ShowLimit       m_showLimit[MAXSHOWLIMIT];
 
     std::map<int, Gfx::Color> m_colorNewBot;
-    Gfx::Color      m_colorNewAlien;
+    std::map<int, Gfx::Color> m_colorNewAlien;
     Gfx::Color      m_colorNewGreen;
     Gfx::Color      m_colorNewWater;
     float           m_colorShiftWater = 0.0f;
