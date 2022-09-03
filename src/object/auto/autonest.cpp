@@ -170,7 +170,12 @@ bool CAutoNest::SearchFree(Math::Vector pos)
 
 void CAutoNest::CreateCargo(Math::Vector pos, float angle, ObjectType type)
 {
-    CObject* cargo = CObjectManager::GetInstancePointer()->CreateObject(pos, angle, type);
+    ObjectCreateParams params;
+    params.pos = pos;
+    params.angle = angle;
+    params.type = type;
+    params.team = m_object->GetTeam();
+    CObject* cargo = CObjectManager::GetInstancePointer()->CreateObject(params);
     cargo->SetLock(true);  // not usable
     cargo->SetScale(0.0f);
 }
