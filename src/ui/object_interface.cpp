@@ -1151,6 +1151,21 @@ bool CObjectInterface::CreateInterface(bool bSelect)
         }
     }
 
+    if ( type == OBJECT_APOLLO2 &&  // ApolloJeep
+         !m_object->GetTrainer() )
+    {
+        if ( m_main->IsBuildingEnabled(BUILD_FLAG) )
+        {
+            pos.x = ox+sx*10.1f;
+            pos.y = oy+sy*0.5f;
+            pw->CreateButton(pos, dim, 64+54, EVENT_OBJECT_FCREATE);
+
+            pos.x = ox+sx*11.1f;
+            pos.y = oy+sy*0.5f;
+            pw->CreateButton(pos, dim, 64+55, EVENT_OBJECT_FDELETE);
+        }
+    }
+
     if ( type == OBJECT_MOBILErt &&  // Terraformer?
          !m_object->GetTrainer() )
     {
