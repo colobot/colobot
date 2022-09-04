@@ -131,6 +131,7 @@ Error CTaskFlag::Start(TaskFlagOrder order, int rank)
         case OBJECT_MOBILEts:
         case OBJECT_MOBILEfs:
         case OBJECT_MOBILEis:
+        case OBJECT_APOLLO2:
         {
             int i = m_sound->Play(SOUND_MANIP, m_object->GetPosition(), 0.0f, 0.3f, true);
             m_sound->AddEnvelope(i, 0.5f, 1.0f, 0.1f, SOPER_CONTINUE);
@@ -198,7 +199,7 @@ CObject* CTaskFlag::SearchNearest(Math::Vector pos, ObjectType type)
     std::vector<ObjectType> types;
     if(type == OBJECT_NULL)
     {
-        types = {OBJECT_FLAGb, OBJECT_FLAGr, OBJECT_FLAGg, OBJECT_FLAGy, OBJECT_FLAGv};
+        types = {OBJECT_FLAGb, OBJECT_FLAGr, OBJECT_FLAGg, OBJECT_FLAGy, OBJECT_FLAGv, OBJECT_APOLLO3};
     }
     else
     {
@@ -221,7 +222,8 @@ int CTaskFlag::CountObject(ObjectType type)
                  oType != OBJECT_FLAGr &&
                  oType != OBJECT_FLAGg &&
                  oType != OBJECT_FLAGy &&
-                 oType != OBJECT_FLAGv )  continue;
+                 oType != OBJECT_FLAGv &&
+                 oType != OBJECT_APOLLO3 )  continue;
         }
         else
         {
@@ -255,6 +257,10 @@ Error CTaskFlag::CreateFlag(int rank)
             pos = Transform(*mat, Math::Vector(4.0f, 0.0f, 0.0f));
             break;
 
+        case OBJECT_APOLLO2:
+            pos = Transform(*mat, Math::Vector(9.5f, 0.0f, 0.0f));
+            break;
+
         default:
             pos = Transform(*mat, Math::Vector(6.0f, 0.0f, 0.0f));
             break;
@@ -271,6 +277,11 @@ Error CTaskFlag::CreateFlag(int rank)
     }
 
     ObjectType type = table[rank];
+    if ( m_object->GetType() == OBJECT_APOLLO2 )
+    {
+        type = OBJECT_APOLLO3;
+    }
+
     if ( CountObject(type) >= 5 )
     {
         return ERR_FLAG_CREATE;
