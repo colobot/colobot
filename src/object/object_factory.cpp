@@ -2504,9 +2504,9 @@ CObjectUPtr CObjectFactory::CreateApollo(const ObjectCreateParams& params)
         obj->SetObjectParent(5, 0);
         m_oldModelManager->AddModelReference("apollol3.mod", false, rank, obj->GetTeam());  // ladder
 
-//?     m_terrain->AddBuildingLevel(pos, 10.0f, 13.0f, 12.0f, 0.0f);
+        m_terrain->AddBuildingLevel(pos, 10.0f, 13.0f, 12.0f, 0.0f);
 
-        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 4.0f,   0.0f), 9.0f, SOUND_BOUMm, 0.45f));
+        obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 2.0f,   0.0f), 9.0f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(Math::Vector( 11.0f, 5.0f,   0.0f), 3.0f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(Math::Vector(-11.0f, 5.0f,   0.0f), 3.0f, SOUND_BOUMm, 0.45f));
         obj->AddCrashSphere(CrashSphere(Math::Vector(  0.0f, 5.0f, -11.0f), 3.0f, SOUND_BOUMm, 0.45f));
