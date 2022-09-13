@@ -103,7 +103,7 @@ jobs:
       run: make -j `nproc`
     - name: Install
       working-directory: build
-      run: DESTDIR=. make package
+      run: DESTDIR=. sudo make package
     - name: Upload build
       uses: actions/upload-artifact@v2
       with:
