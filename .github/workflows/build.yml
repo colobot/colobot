@@ -96,7 +96,7 @@ jobs:
       run: cmake -E make_directory build
     - name: Run CMake (for Mac)
       working-directory: build
-      run: cmake -DCMAKE_INSTALL_PREFIX=/install -DCMAKE_SKIP_INSTALL_RPATH=ON -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDEV_BUILD=1 -DPORTABLE=1 -DTOOLS=1 -DTESTS=1 -DDESKTOP=1 -DOPENAL_LIBRARY=/Library/Developer/CommandLineTools/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/OpenAL.framework/OpenAL.tbd ..
+      run: cmake -DCMAKE_INSTALL_PREFIX=/install -DCMAKE_SKIP_INSTALL_RPATH=ON -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDEV_BUILD=1 -DPORTABLE=1 -DDESKTOP=1 -DOPENAL_LIBRARY=/Library/Developer/CommandLineTools/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/OpenAL.framework/OpenAL.tbd ..
       if: matrix.target_os == 'macos'
     - name: Build
       working-directory: build
@@ -110,12 +110,6 @@ jobs:
         name: ${{matrix.target_os}}-debug
         path: build/install
       if: matrix.host_os == 'macos-11'
-    - name: Upload test results
-      uses: actions/upload-artifact@v2
-      with:
-        name: Test results (${{ matrix.target_os }}, ${{ matrix.host_os }})
-        path: build/gtestresults.xml
-      if: matrix.target_os == 'macos'
   build-windows:
     runs-on: windows-2019
     strategy:
