@@ -101,15 +101,17 @@ jobs:
     - name: Build
       working-directory: build
       run: make -j `nproc`
-    - name: Install
+    - name: Run tests
+      # TODO: Maybe run Windows tests using wine as well?
       working-directory: build
-      run: make -j `nproc` install
-    - name: Upload build
+      run: ./colobot_ut --gtest_output=xml:gtestresults.xml
+      if: matrix.target_os == 'macos'
+    - name: Upload test results
       uses: actions/upload-artifact@v2
       with:
-        name: ${{matrix.target_os}}-debug
-        path: build/install
-      if: matrix.host_os == 'macos-11'
+        name: Test results (${{ matrix.target_os }}, ${{ matrix.host_os }})
+        path: build/gtestresults.xml
+      if: matrix.target_os == 'macos'
   build-windows:
     runs-on: windows-2019
     strategy:
