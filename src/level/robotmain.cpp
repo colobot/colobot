@@ -112,6 +112,7 @@
 #include <algorithm>
 #include <iomanip>
 #include <stdexcept>
+#include <cmath>
 #include <ctime>
 
 #include <boost/lexical_cast.hpp>
@@ -4155,7 +4156,7 @@ bool CRobotMain::FreeSpace(Math::Vector &center, float minRadius, float maxRadiu
         }
     }
 
-    float nan = std::nanf("");
+    float nan = nanf("");
 
     center = Math::Vector{ nan, nan, nan };
 

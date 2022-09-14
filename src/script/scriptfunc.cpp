@@ -67,6 +67,8 @@
 
 #include "ui/displaytext.h"
 
+#include <cmath>
+
 using namespace CBot;
 
 CBotTypResult CScriptFunctions::cClassNull(CBotVar* thisclass, CBotVar* &var)
@@ -2325,7 +2327,7 @@ bool CScriptFunctions::rReceive(CBotVar* var, CBotVar* result, int& exception, v
         if ( err != ERR_OK )
         {
             script->m_taskExecutor->StopForegroundTask();
-            result->SetValFloat(std::nanf(""));
+            result->SetValFloat(nanf(""));
             return true;
         }
 
@@ -2336,7 +2338,7 @@ bool CScriptFunctions::rReceive(CBotVar* var, CBotVar* result, int& exception, v
 
     if ( script->m_returnValue == boost::none )
     {
-        result->SetValFloat(std::nanf(""));
+        result->SetValFloat(nanf(""));
     }
     else
     {
@@ -3657,11 +3659,11 @@ void CScriptFunctions::uObject(CBotVar* botThis, void* user)
     if (IsObjectBeingTransported(object))
     {
         pSub = pVar->GetItemList();  // "x"
-        pSub->SetValFloat(std::nanf(""));
+        pSub->SetValFloat(nanf(""));
         pSub = pSub->GetNext();  // "y"
-        pSub->SetValFloat(std::nanf(""));
+        pSub->SetValFloat(nanf(""));
         pSub = pSub->GetNext();  // "z"
-        pSub->SetValFloat(std::nanf(""));
+        pSub->SetValFloat(nanf(""));
     }
     else
     {
@@ -3762,11 +3764,11 @@ void CScriptFunctions::uObject(CBotVar* botThis, void* user)
     if (IsObjectBeingTransported(object) || physics == nullptr)
     {
         pSub = pVar->GetItemList();  // "x"
-        pSub->SetValFloat(std::nanf(""));
+        pSub->SetValFloat(nanf(""));
         pSub = pSub->GetNext();  // "y"
-        pSub->SetValFloat(std::nanf(""));
+        pSub->SetValFloat(nanf(""));
         pSub = pSub->GetNext();  // "z"
-        pSub->SetValFloat(std::nanf(""));
+        pSub->SetValFloat(nanf(""));
     }
     else
     {
