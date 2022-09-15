@@ -23,6 +23,8 @@
 
 #include "CBot/CBotVar/CBotVar.h"
 
+#include <cmath>
+
 namespace CBot
 {
 
@@ -41,9 +43,9 @@ bool CBotExprLitNan::Execute(CBotStack* &pj)
     CBotStack*    pile = pj->AddStack(this);
 
     if (pile->IfStep()) return false;
-    CBotVar*    var = CBotVar::Create("", CBotTypInt);
+    CBotVar*    var = CBotVar::Create("", CBotTypFloat);
 
-    var->SetInit(CBotVar::InitType::IS_NAN);       // nan
+    var->SetValFloat(nanf(""));
     pile->SetVar(var);          // put on the stack
     return pj->Return(pile);    // forward below
 }

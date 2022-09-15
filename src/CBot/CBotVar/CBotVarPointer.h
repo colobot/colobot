@@ -47,7 +47,7 @@ public:
     CBotVar* GetItem(const std::string& name) override;
     CBotVar* GetItemRef(int nIdent) override;
     CBotVar* GetItemList() override;
-    std::string GetValString() override;
+    std::string GetValString() const override;
 
     void SetPointer(CBotVar* p) override;
     CBotVarClass* GetPointer() override;

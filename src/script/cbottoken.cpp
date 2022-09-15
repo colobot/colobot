@@ -301,6 +301,7 @@ std::string GetHelpFilename(const char *token)
     if ( strcmp(token, "ceil"          ) == 0 )  helpfile = "cbot/ceil";
     if ( strcmp(token, "round"         ) == 0 )  helpfile = "cbot/round";
     if ( strcmp(token, "trunc"         ) == 0 )  helpfile = "cbot/trunc";
+    if ( strcmp(token, "isnan"         ) == 0 )  helpfile = "cbot/isnan";
     if ( strcmp(token, "retobject"     ) == 0 )  helpfile = "cbot/retobj";
     if ( strcmp(token, "errmode"       ) == 0 )  helpfile = "cbot/errmode";
     if ( strcmp(token, "isbusy"          ) == 0 )  helpfile = "cbot/isbusy";
@@ -463,9 +464,10 @@ bool IsFunction(const char *token)
     if ( strcmp(token, "ceil"         ) == 0 )  return true;
     if ( strcmp(token, "round"        ) == 0 )  return true;
     if ( strcmp(token, "trunc"        ) == 0 )  return true;
+    if ( strcmp(token, "isnan"        ) == 0 )  return true;
     if ( strcmp(token, "retobjectbyid") == 0 )  return true;
     if ( strcmp(token, "retobject"    ) == 0 )  return true;
-    if ( strcmp(token, "isbusy"         ) == 0 )  return true;
+    if ( strcmp(token, "isbusy"       ) == 0 )  return true;
     if ( strcmp(token, "factory"      ) == 0 )  return true;
     if ( strcmp(token, "research"     ) == 0 )  return true;
     if ( strcmp(token, "takeoff"      ) == 0 )  return true;
@@ -571,6 +573,7 @@ const char* GetHelpText(const char *token)
     if ( strcmp(token, "ceil"      ) == 0 )  return "ceil ( value );";
     if ( strcmp(token, "round"     ) == 0 )  return "round ( value );";
     if ( strcmp(token, "trunc"     ) == 0 )  return "trunc ( value );";
+    if ( strcmp(token, "isnan"     ) == 0 )  return "isnan ( value );";
     if ( strcmp(token, "retobject"    ) == 0 )  return "retobject ( rank );";
     if ( strcmp(token, "retobjectbyid") == 0 )  return "retobjectbyid ( rank );";
     if ( strcmp(token, "progfunc"  ) == 0 )  return "progfunc ( funcname );";

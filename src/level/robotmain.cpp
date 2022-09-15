@@ -112,6 +112,7 @@
 #include <algorithm>
 #include <iomanip>
 #include <stdexcept>
+#include <cmath>
 #include <ctime>
 
 #include <boost/lexical_cast.hpp>
@@ -4142,7 +4143,7 @@ bool CRobotMain::FreeSpace(Math::Vector &center, float minRadius, float maxRadiu
             pos.x = p.x;
             pos.z = p.y;
             pos.y = 0.0f;
-            m_terrain->AdjustToFloor(pos, true);
+            pos.y = m_terrain->GetFloorLevel(pos);
             if (!BlockedByObject(m_objMan.get(), pos, space, exclu))
             {
                 float flat = m_terrain->GetFlatZoneRadius(pos, space);
@@ -4154,6 +4155,11 @@ bool CRobotMain::FreeSpace(Math::Vector &center, float minRadius, float maxRadiu
             }
         }
     }
+
+    float nan = nanf("");
+
+    center = Math::Vector{ nan, nan, nan };
+
     return false;
 }
 

@@ -233,7 +233,7 @@ bool rStrFind( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
     }
     else
     {
-        pResult->SetInit(CBotVar::InitType::IS_NAN);
+        pResult->SetValInt(-1);
     }
     return true;
 }

@@ -33,7 +33,7 @@ public:
     CBotVarInt(const CBotToken &name) : CBotVarInteger(name) {}
 
     void SetValInt(int val, const std::string& s = "") override;
-    std::string GetValString() override;
+    std::string GetValString() const override;
 
     void Copy(CBotVar* pSrc, bool bName = true) override;
 

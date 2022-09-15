@@ -38,6 +38,8 @@
 
 #include "CBot/CBotCStack.h"
 
+#include <cmath>
+
 namespace CBot
 {
 
@@ -217,8 +219,8 @@ CBotInstr* CBotParExpr::CompileLitExpr(CBotToken* &p, CBotCStack* pStack)
     {
         CBotInstr* inst = new CBotExprLitNan();
         inst->SetToken(pp);
-        CBotVar* var = CBotVar::Create("", CBotTypInt);
-        var->SetInit(CBotVar::InitType::IS_NAN);
+        CBotVar* var = CBotVar::Create("", CBotTypFloat);
+        var->SetValFloat(nanf(""));
         pStk->SetVar(var);
         return pStack->Return(inst, pStk);
     }

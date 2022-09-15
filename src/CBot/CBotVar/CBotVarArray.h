@@ -49,7 +49,7 @@ public:
     CBotVar* GetItem(int n, bool grow = false) override;
     CBotVar* GetItemList() override;
 
-    std::string GetValString() override;
+    std::string GetValString() const override;
 
     bool Save1State(std::ostream &ostr) override;
 

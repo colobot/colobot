@@ -55,12 +55,6 @@ bool CBotPreIncExpr::Execute(CBotStack* &pj)
         // pile2 is modified on return
         if (!(static_cast<CBotExprVar*>(m_instr))->ExecuteVar(var1, pile2, nullptr, true)) return false;
 
-        if (var1->IsNAN())
-        {
-            pile->SetError(CBotErrNan, &m_token);
-            return pj->Return(pile);    // operation performed
-        }
-
         if (!var1->IsDefined())
         {
             pile->SetError(CBotErrNotInit, &m_token);
