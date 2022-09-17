@@ -292,7 +292,7 @@ void InitMathFunctions()
     CBotProgram::AddFunction("trunc", rTrunc, cOneFloat);
     CBotProgram::AddFunction("isnan", rIsNAN, cIsNAN);
     CBotProgram::AddFunction("log",   rLog,   cOneFloat);
-    CBotProgram::AddFunction("log10",   rLog10,   cOneFloat);
+    CBotProgram::AddFunction("log10", rLog10,   cOneFloat);
 }
 
 } // namespace CBot
