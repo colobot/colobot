@@ -249,6 +249,28 @@ bool rIsNAN(CBotVar* var, CBotVar* result, int& exception, void* user)
     return true;
 }
 
+// Instruction "log(number)"
+
+bool rLog(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    float   value;
+
+    value = var->GetValFloat();
+    result->SetValFloat(log(value));
+    return true;
+}
+
+// Instruction "log10(number)".
+
+bool rLog10(CBotVar* var, CBotVar* result, int& exception, void* user)
+{
+    float   value;
+
+    value = var->GetValFloat();
+    result->SetValFloat(log10(value));
+    return true;
+}
+
 } // namespace
 
 void InitMathFunctions()
@@ -269,6 +291,8 @@ void InitMathFunctions()
     CBotProgram::AddFunction("round", rRound, cOneFloat);
     CBotProgram::AddFunction("trunc", rTrunc, cOneFloat);
     CBotProgram::AddFunction("isnan", rIsNAN, cIsNAN);
+    CBotProgram::AddFunction("log",   rLog,   cOneFloat);
+    CBotProgram::AddFunction("log10",   rLog10,   cOneFloat);
 }
 
 } // namespace CBot
