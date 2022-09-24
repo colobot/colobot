@@ -253,10 +253,16 @@ bool rIsNAN(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 bool rLog(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    float   value;
-
-    value = var->GetValFloat();
-    result->SetValFloat(log(value));
+    switch (var->GetType())
+    {
+        case CBotTypDouble:
+            *result = log(var->GetValDouble());
+            break;
+        case CBotTypFloat:
+            *result = log(var->GetValFloat());
+            break;
+    }
+    
     return true;
 }
 
@@ -264,12 +270,30 @@ bool rLog(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 bool rLog10(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    float   value;
-
-    value = var->GetValFloat();
-    result->SetValFloat(log10(value));
+    switch (var->GetType())
+    {
+        case CBotTypDouble:
+            *result = log10(var->GetValDouble());
+            break;
+        case CBotTypFloat:
+            *result = log10(var->GetValFloat());
+            break;
+    }
+    
     return true;
 }
+
+CBotTypResult cLog(CBotVar* &var, void* user)
+{
+    if ( var == nullptr ) return CBotTypResult(CBotErrLowParam);
+    if ( var->GetType() != CBotTypFloat || var->GetType() != CBotTypDouble ) return CBotTypResult(CBotErrBadNum);
+
+    CBotTypResult returnType(var->GetType());
+    var = var->GetNext();
+    if ( var != nullptr ) return CBotTypResult(CBotErrOverParam);
+    return returnType;
+}
+
 
 } // namespace
 
@@ -291,8 +315,8 @@ void InitMathFunctions()
     CBotProgram::AddFunction("round", rRound, cOneFloat);
     CBotProgram::AddFunction("trunc", rTrunc, cOneFloat);
     CBotProgram::AddFunction("isnan", rIsNAN, cIsNAN);
-    CBotProgram::AddFunction("log",   rLog,   cOneFloat);
-    CBotProgram::AddFunction("log10", rLog10,   cOneFloat);
+    CBotProgram::AddFunction("log",   rLog,   cLog);
+    CBotProgram::AddFunction("log10", rLog10, cLog);
 }
 
 } // namespace CBot
