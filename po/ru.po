@@ -32,7 +32,7 @@ msgid "%s: %d pts"
 msgstr ""
 
 msgid "+\\Missions with bonus content and optional challenges"
-msgstr ""
+msgstr "Миссии с бонусным контентом и дополнительными испытаниями"
 
 msgid "..behind"
 msgstr "Сзади"
@@ -57,15 +57,15 @@ msgstr "<<< Миссия провалена >>>"
 
 #, c-format
 msgid "<<< Team %s finished! >>>"
-msgstr ""
+msgstr "<<< Команда %s финишировала! >>>"
 
 #, c-format
 msgid "<<< Team %s lost! >>>"
-msgstr ""
+msgstr "<<< Команда %s проиграла! >>>"
 
 #, c-format
 msgid "<<< Team %s recieved %d points >>>"
-msgstr ""
+msgstr "<<< Команда %s получила %d оч. >>>"
 
 msgid "<<< Well done; mission accomplished >>>"
 msgstr "<<< Отлично, миссия выполнена >>>"
@@ -128,7 +128,7 @@ msgid "Apply changes\\Activates the changed settings"
 msgstr "Принять\\Принять изменения настроек"
 
 msgid "Apply\\Apply the current mod configuration"
-msgstr ""
+msgstr "Применить\\Применить текущий список модов"
 
 msgid "Appropriate constructor missing"
 msgstr "Соответствующий конструктор отсутствует"
@@ -143,10 +143,10 @@ msgid "Automatic indent\\When program editing"
 msgstr "Автоматический отступ\\При редактировании программы"
 
 msgid "Autosave interval\\How often your game will autosave"
-msgstr "Интервал автосохр.\\Как часно ваша игра будет сохраняться автоматически"
+msgstr "Интервал автосохр.\\Как часто ваша игра будет сохраняться автоматически"
 
 msgid "Autosave slots\\How many autosave slots you'll have"
-msgstr "Кол-во автосохр.\\Как много мест для автосохранений у вас есть"
+msgstr "Кол-во автосохр.\\Как много слотов автосохранения у вас есть"
 
 msgid "Autosave\\Enables autosave"
 msgstr "Автосохранение\\Включает автоматическое сохранение"
@@ -156,7 +156,7 @@ msgstr "Назад"
 
 #, fuzzy
 msgid "Background sound:\\Volume of audio tracks"
-msgstr "Фоновый звук:\\Громкость звуковых дорожек на CD"
+msgstr "Музыка:\\Громкость музыки"
 
 msgid "Backward (\\key down;)"
 msgstr "Назад (\\key down;)"
@@ -189,7 +189,7 @@ msgid "Bot factory"
 msgstr "Завод ботов"
 
 msgid "Build (\\key action;)"
-msgstr ""
+msgstr "Построить (\\key action;)"
 
 msgid "Build a bot factory"
 msgstr "Построить завод ботов"
@@ -207,7 +207,7 @@ msgid "Build a exchange post"
 msgstr "Построить пост по обмену сообщениями"
 
 msgid "Build a legged builder"
-msgstr ""
+msgstr "Собрать шагающего строителя"
 
 msgid "Build a legged grabber"
 msgstr "Собрать шагающего сборщика"
@@ -255,13 +255,13 @@ msgid "Build a subber"
 msgstr "Собрать саббера"
 
 msgid "Build a target bot"
-msgstr ""
+msgstr "Собрать бота-мишень"
 
 msgid "Build a thumper"
 msgstr "Собрать ударника"
 
 msgid "Build a tracked builder"
-msgstr ""
+msgstr "Собрать гусенечного строителя"
 
 msgid "Build a tracked grabber"
 msgstr "Собрать гусеничного сборщика"
@@ -276,10 +276,10 @@ msgid "Build a tracked sniffer"
 msgstr "Собрать гусеничного искателя"
 
 msgid "Build a vault"
-msgstr ""
+msgstr "Построить убежище"
 
 msgid "Build a wheeled builder"
-msgstr ""
+msgstr "Собрать колесного строителя"
 
 msgid "Build a wheeled grabber"
 msgstr "Собрать колесного сборщика"
@@ -294,7 +294,7 @@ msgid "Build a wheeled sniffer"
 msgstr "Собрать колесного искателя"
 
 msgid "Build a winged builder"
-msgstr ""
+msgstr "Собрать летающего строителя"
 
 msgid "Build a winged grabber"
 msgstr "Собрать летающего сборщика"
@@ -382,7 +382,7 @@ msgid "Change player\\Change player"
 msgstr "Новый игрок\\Выберите имя для игрока"
 
 msgid "Changes"
-msgstr ""
+msgstr "Изменения:"
 
 msgid "Chapters:"
 msgstr "Разделы:"
@@ -394,7 +394,7 @@ msgid "Checkpoint"
 msgstr "Контрольная точка"
 
 msgid "Class name expected"
-msgstr ""
+msgstr "Ожидается название класса"
 
 msgid "Climb\\Increases the power of the jet"
 msgstr "Взлет и подъем\\Увеличивает мощность реактивного двигателя"
@@ -456,10 +456,10 @@ msgid "Copy (Ctrl+C)"
 msgstr "Копировать (Ctrl+C)"
 
 msgid "Could not open the file explorer!"
-msgstr ""
+msgstr "Не могу открыть проводник!"
 
 msgid "Could not open the web browser!"
-msgstr ""
+msgstr "Не могу открыть браузер!"
 
 msgid "Current mission saved"
 msgstr "Текущая миссия сохранена"
@@ -496,7 +496,7 @@ msgid "Descend\\Reduces the power of the jet"
 msgstr "Снижение и посадка\\Понижение мощности реактивного двигателя"
 
 msgid "Description:"
-msgstr ""
+msgstr "Описание:"
 
 msgid "Destroy"
 msgstr "Уничтожить"
@@ -511,7 +511,7 @@ msgid "Device\\Driver and resolution settings"
 msgstr "Устройство\\Драйвер и настройки разрешения"
 
 msgid "Disable\\Disable the selected mod"
-msgstr ""
+msgstr "Отключить\\Отключить выборанный мод"
 
 msgid "Dividing by zero"
 msgstr "Деление на ноль (запрещено!)"
@@ -530,13 +530,13 @@ msgid "Down (\\key gdown;)"
 msgstr "Вниз (\\key gdown;)"
 
 msgid "Down\\Move the selected mod down so it's loaded later (mods may overwrite files from the mods above them)"
-msgstr ""
+msgstr "Вниз\\Переместить мод вниз в списке загрузки, он будет загружен позже(мод может переписать файлы после модов загруженных перед ним)"
 
 msgid "Drawer bot"
 msgstr "Рисовальщик"
 
 msgid "Duplicate label in switch"
-msgstr ""
+msgstr "Дублировать метку на переключателе"
 
 msgid "Dust\\Dust and dirt on bots and buildings"
 msgstr "Пыль\\Пыль и грязь на ботах и зданиях"
@@ -560,7 +560,7 @@ msgid "Empty character constant"
 msgstr ""
 
 msgid "Enable\\Enable the selected mod"
-msgstr ""
+msgstr "Включить\\Включить выбранный мод"
 
 msgid "End of block missing"
 msgstr "Отсутствует конец блока"
@@ -684,7 +684,7 @@ msgid "Function name missing"
 msgstr "Имя функции отсутствует"
 
 msgid "Function needs return type \"void\""
-msgstr ""
+msgstr "Функция требует вернуть тип \"void\""
 
 msgid "Game speed"
 msgstr "Скорость игры"
@@ -735,7 +735,7 @@ msgid "Help balloons\\Explain the function of the buttons"
 msgstr "Подсказки\\Объяснение функций кнопок"
 
 msgid "Hex value out of range"
-msgstr ""
+msgstr "Шестнадцатеричное значение вне допустимого диапазона"
 
 #, fuzzy
 msgid "Higher speed\\Doubles speed"
@@ -778,7 +778,7 @@ msgid "Inappropriate object"
 msgstr "Неподходящий объект"
 
 msgid "Inappropriate sample"
-msgstr ""
+msgstr "Неподходящий образец"
 
 msgid "Incorrect index type"
 msgstr "Неверный тип индекса"
@@ -790,7 +790,7 @@ msgid "Information exchange post"
 msgstr "Пост обмена информацией"
 
 msgid "Information:"
-msgstr ""
+msgstr "Информация:"
 
 msgid "Instruction \"break\" outside a loop"
 msgstr "Инструкция \"break\" вне цикла"
@@ -853,7 +853,7 @@ msgid "LOADING"
 msgstr "ЗАГРУЗКА"
 
 msgid "Legged builder"
-msgstr ""
+msgstr "Шагающий строитель"
 
 msgid "Legged grabber"
 msgstr "Шагающий сборщик"
@@ -904,21 +904,21 @@ msgid "Loading terrain"
 msgstr "Загрузка местности"
 
 # msgid "Speed 0.5x\\Half speed"
-# msgstr ""
+# msgstr "Скорость 0.5x\\В два раза медленее"
 # msgid "Speed 1.0x\\Normal speed"
-# msgstr ""
+# msgstr "Скорость 1.0x\\Обычная скорость"
 # msgid "Speed 1.5x\\1.5 times faster"
-# msgstr ""
+# msgstr "Скорость 1.5x\\В полтора раза быстрее"
 # msgid "Speed 2.0x\\Double speed"
-# msgstr ""
+# msgstr "Скорость 2.0x\\В два раза быстрее"
 # msgid "Speed 3.0x\\Triple speed"
-# msgstr ""
+# msgstr "Скорость  3.0x\\В три раза быстрее"
 # msgid "Speed 4.0x\\Quadruple speed"
-# msgstr ""
+# msgstr "Скорость 4.0x\\В четыре раза быстрее"
 # msgid "Speed 6.0x\\Sextuple speed"
-# msgstr ""
+# msgstr "Скорость 6.0x\\В шесть раз быстрее"
 msgid "Lower speed\\Decrease speed by half"
-msgstr ""
+msgstr "Уменьшить скорость\\Уменьшить скорость вдвое"
 
 msgid "Lowest\\Minimum graphic quality (highest frame rate)"
 msgstr "Низкое\\Минимальное качество графики (быстро)"
@@ -939,7 +939,7 @@ msgid "Mipmap level\\Mipmap level"
 msgstr "Уровень уменьшающей фильтрации\\Уровень уменьшающей фильтрации"
 
 msgid "Missing end quote"
-msgstr ""
+msgstr "Нет закрывающих кавычек"
 
 msgid "Missing hex digits after escape sequence"
 msgstr ""
@@ -960,13 +960,13 @@ msgid "Missions\\Select mission"
 msgstr "Миссии\\Выбор миссии"
 
 msgid "Mods"
-msgstr ""
+msgstr "Моды"
 
 msgid "Mods:"
-msgstr ""
+msgstr "Моды:"
 
 msgid "Mods\\Mod manager"
-msgstr ""
+msgstr "Моды\\Управление модами"
 
 msgid "Mouse inversion X\\Inversion of the scrolling direction on the X axis"
 msgstr "Инверсия мыши по оси X\\Инверсия прокрутки по оси Х"
@@ -983,7 +983,7 @@ msgid "Move selected program up"
 msgstr "Изменить выбранную программу"
 
 msgid "Mute sounds in background\\Mute all game sounds when the window is unfocused"
-msgstr ""
+msgstr "Отключить звук в фоне\\Отключает все звуки когда игра свернута"
 
 msgid "Mute\\No sound"
 msgstr "Без звука\\Без звука"
@@ -1004,7 +1004,7 @@ msgid "New ..."
 msgstr "Новый ..."
 
 msgid "New Folder"
-msgstr ""
+msgstr "Новая папка"
 
 msgid "New bot available"
 msgstr "Доступен новый бот"
@@ -1019,10 +1019,10 @@ msgid "No"
 msgstr "Нет"
 
 msgid "No changes."
-msgstr ""
+msgstr "Нет изменений."
 
 msgid "No description."
-msgstr ""
+msgstr "Нет описания."
 
 msgid "No energy in the subsoil"
 msgstr "Под землей нет запасов энергии"
@@ -1133,7 +1133,7 @@ msgid "Object too close"
 msgstr "Объект слишком близок"
 
 msgid "Octal value out of range"
-msgstr ""
+msgstr "Восьмеричное значение вне допустимого диапазона"
 
 msgid "One step"
 msgstr "Один шаг"
@@ -1145,7 +1145,7 @@ msgid "Open (Ctrl+O)"
 msgstr "Открыть (Ctrl+O)"
 
 msgid "Open Directory\\Open the mods directory"
-msgstr ""
+msgstr "Открыть папку\\Открыть папку с модами"
 
 msgid "Opening brace missing"
 msgstr "Открывающая скобка отсутствует"
@@ -1172,7 +1172,7 @@ msgid "Original game developed by:"
 msgstr "Оригинальная игра была разработана:"
 
 msgid "Overwrite existing file?"
-msgstr ""
+msgstr "Перезаписать существующий файл"
 
 msgid "Parameters missing"
 msgstr "Отсутствуют параметры"
@@ -1208,7 +1208,7 @@ msgid "Planets:"
 msgstr "Планеты:"
 
 msgid "Plans for builder available"
-msgstr ""
+msgstr "Доступны схемы для строителя"
 
 msgid "Plans for defense tower available"
 msgstr "Доступны схемы защитной башни"
@@ -1320,10 +1320,10 @@ msgid "Quake at explosions\\The screen shakes at explosions"
 msgstr "Землетряс. при взрывах\\Тряска экрана при взрывах"
 
 msgid "Quick load\\Immediately load game"
-msgstr ""
+msgstr "Быстрая загрузка\\Быстрыа загрузка сохраненной игры"
 
 msgid "Quick save\\Immediately save game"
-msgstr ""
+msgstr "Быстрое сохранение\\Быстро сохранить игру"
 
 #, fuzzy
 msgid "Quicksave slot not found"
@@ -1360,7 +1360,7 @@ msgid "Reflections on the buttons \\Shiny buttons"
 msgstr "Отражения на кнопках \\Блестящие кнопки"
 
 msgid "Refresh\\Refresh the list of currently installed mods"
-msgstr ""
+msgstr "Обновить\\Обновить список установленных модов"
 
 msgid "Remains of Apollo mission"
 msgstr "Остатки миссии Аполлон"
@@ -1410,7 +1410,7 @@ msgid "Restoring saved objects"
 msgstr "Восстановить сохранённые объекты"
 
 msgid "Results"
-msgstr ""
+msgstr "Результаты"
 
 msgid "Return to start"
 msgstr "Вернуться в начало"
@@ -1422,7 +1422,7 @@ msgid "Ruin"
 msgstr "Руины"
 
 msgid "Run research program for builder"
-msgstr ""
+msgstr "Начать исследование программы для строителя"
 
 msgid "Run research program for defense tower"
 msgstr "Начать исследование программы для защитной башни"
@@ -1446,7 +1446,7 @@ msgid "Run research program for shooter"
 msgstr "Начать исследование программы для стрелка"
 
 msgid "Run research program for target bot"
-msgstr ""
+msgstr "Начать исследование программы для мишени"
 
 msgid "Run research program for thumper"
 msgstr "Начать исследование программы для ударника"
@@ -1479,10 +1479,10 @@ msgid "Save\\Saves the current mission"
 msgstr "Сохранить\\Сохранить текущую миссию"
 
 msgid "Select Folder"
-msgstr ""
+msgstr "Выбрать папку"
 
 msgid "Select the astronaut\\Selects the astronaut"
-msgstr "Выбор астронавта\\Выбор астронавта"
+msgstr "Выбор астронавта\\Выбрать астронавта"
 
 msgid "Semicolon terminator missing"
 msgstr "Отсутствует точка с запятой"
@@ -1549,13 +1549,13 @@ msgid "Sound\\Music and game sound volume"
 msgstr "Звук\\Громкость музыки и звуков"
 
 msgid "Space Explorer\\Disables astronaut abilities"
-msgstr ""
+msgstr "Исследователь на борту\\Отключает способности астронавта"
 
 msgid "Space Programmer\\Disables radio-control"
-msgstr ""
+msgstr "Программист на борту\\Отключает дистанционное управление"
 
 msgid "Space Researcher\\Disables using all previously researched technologies"
-msgstr ""
+msgstr "Учёный на борту\\Сбрасывает все ранее исследованные технологии"
 
 msgid "Spaceship"
 msgstr "Космический корабль"
@@ -1579,7 +1579,7 @@ msgid "Standard controls\\Standard key functions"
 msgstr "Стандартное управление\\Сделать управление по умолчанию"
 
 msgid "Standard speed\\Reset speed to normal"
-msgstr ""
+msgstr "Обычная скорость\\Вернуть нормальную скорость"
 
 msgid "Standard\\Standard appearance settings"
 msgstr "По умолчанию\\Настройки внешнего вида по умолчанию"
@@ -1638,10 +1638,10 @@ msgstr "Текстуры"
 
 #, c-format
 msgid "The address %s could not be opened in a web browser."
-msgstr ""
+msgstr "Адрес %s не может быть открыть в браузере"
 
 msgid "The battle has ended"
-msgstr ""
+msgstr "Битва окончена"
 
 msgid "The expression must return a boolean value"
 msgstr "Выражение должно возвращать логическое значение"
@@ -1654,13 +1654,13 @@ msgstr "Миссия еще не выполнена (нажмите \\key help; 
 
 #, c-format
 msgid "The path %s could not be opened in a file explorer."
-msgstr ""
+msgstr "Путь /% не может быть открыт в проводнике"
 
 msgid "The types of the two operands are incompatible"
 msgstr "Типы операндов несовместимы"
 
 msgid "There are unsaved changes. Do you want to save them before leaving?"
-msgstr ""
+msgstr "Есть несохранённые изменения. Сохранить перед выходом?"
 
 msgid "This class already exists"
 msgstr "Этот класс уже существует"
@@ -1681,13 +1681,13 @@ msgid "This menu is for userlevels from mods, but you didn't install any"
 msgstr "Это меню для пользовательских уровней из модов, но вы ни одного не уставили"
 
 msgid "This object is currently busy"
-msgstr ""
+msgstr "Этот объект сейчас занят"
 
 msgid "This object is not a member of a class"
 msgstr "Этот объект не член класса"
 
 msgid "This parameter needs a default value"
-msgstr ""
+msgstr "Этому параметру требуется значение по умолчанию"
 
 msgid "This program is read-only, clone it to edit"
 msgstr "Эта программа только для чтения, для редактирования клонируйте её"
@@ -1700,7 +1700,7 @@ msgstr "Ударник"
 
 #, c-format
 msgid "Time: %s"
-msgstr ""
+msgstr "Время: %s"
 
 msgid "Titanium"
 msgstr "Титан"
@@ -1736,7 +1736,7 @@ msgid "Too many parameters"
 msgstr "Слишком много параметров"
 
 msgid "Tracked builder"
-msgstr ""
+msgstr "Гусенечный строитель"
 
 msgid "Tracked grabber"
 msgstr "Гусеничный сборщик"
@@ -1787,7 +1787,7 @@ msgid "Unknown Object"
 msgstr "Неизвестный объект"
 
 msgid "Unknown author"
-msgstr ""
+msgstr "Неизвестный автор"
 
 msgid "Unknown command"
 msgstr "Неизвестная команда"
@@ -1802,7 +1802,7 @@ msgid "Up (\\key gup;)"
 msgstr "Вверх (\\key gup;)"
 
 msgid "Up\\Move the selected mod up so it's loaded sooner (mods may overwrite files from the mods above them)"
-msgstr ""
+msgstr "Вверх\\Переместить мод вверх в списке загрузки, он будет загружен раньше(моды ниже могут переписать файлы после модов загруженных ранее)"
 
 msgid "Uranium deposit (site for derrick)"
 msgstr "Запасы урана (место для буровой вышки)"
@@ -1826,10 +1826,10 @@ msgid "Vault"
 msgstr "Хранилище"
 
 msgid "Version"
-msgstr ""
+msgstr "Версия"
 
 msgid "Vertical Synchronization\\Limits the number of frames per second to display frequency"
-msgstr ""
+msgstr "Вертикальная синхронизация\\Ограничивает число кадров в секунду частотой экрана"
 
 msgid "Violet flag"
 msgstr "Фиолетовый флаг"
@@ -1847,10 +1847,10 @@ msgid "Waste"
 msgstr "Мусор"
 
 msgid "Website"
-msgstr ""
+msgstr "Сайт"
 
 msgid "Wheeled builder"
-msgstr ""
+msgstr "Колесный строитель"
 
 msgid "Wheeled grabber"
 msgstr "Колесный сборщик"
@@ -1865,7 +1865,7 @@ msgid "Wheeled sniffer"
 msgstr "Колесный искатель"
 
 msgid "Winged builder"
-msgstr ""
+msgstr "Летающий строитель"
 
 msgid "Winged grabber"
 msgstr "Летающий сборщик"
@@ -1883,7 +1883,7 @@ msgid "Withdraw shield (\\key action;)"
 msgstr "Снять щит (\\key action;)"
 
 msgid "Workshop\\Open the workshop to search for mods"
-msgstr ""
+msgstr "Хранилище\\Откройте хранилище для поиска модов"
 
 msgid "Worm"
 msgstr "Червь"
@@ -2034,7 +2034,7 @@ msgid "\\Yellow flags"
 msgstr "\\Желтый флаг"
 
 msgid "by"
-msgstr ""
+msgstr "от"
 
 msgid "colobot.info"
 msgstr "colobot.info"
