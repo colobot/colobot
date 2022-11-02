@@ -156,7 +156,7 @@ msgstr "Назад"
 
 #, fuzzy
 msgid "Background sound:\\Volume of audio tracks"
-msgstr "Музыка:\\Громкость музыки"
+msgstr "Фоновая музыка:\\Громкость фоновой музыки"
 
 msgid "Backward (\\key down;)"
 msgstr "Назад (\\key down;)"
@@ -261,7 +261,7 @@ msgid "Build a thumper"
 msgstr "Собрать ударника"
 
 msgid "Build a tracked builder"
-msgstr "Собрать гусенечного строителя"
+msgstr "Собрать гусеничного строителя"
 
 msgid "Build a tracked grabber"
 msgstr "Собрать гусеничного сборщика"
@@ -276,7 +276,7 @@ msgid "Build a tracked sniffer"
 msgstr "Собрать гусеничного искателя"
 
 msgid "Build a vault"
-msgstr "Построить убежище"
+msgstr "Построить погреб"
 
 msgid "Build a wheeled builder"
 msgstr "Собрать колесного строителя"
@@ -382,7 +382,7 @@ msgid "Change player\\Change player"
 msgstr "Новый игрок\\Выберите имя для игрока"
 
 msgid "Changes"
-msgstr "Изменения:"
+msgstr "Изменения"
 
 msgid "Chapters:"
 msgstr "Разделы:"
@@ -511,7 +511,7 @@ msgid "Device\\Driver and resolution settings"
 msgstr "Устройство\\Драйвер и настройки разрешения"
 
 msgid "Disable\\Disable the selected mod"
-msgstr "Отключить\\Отключить выборанный мод"
+msgstr "Отключить\\Отключить выбранный мод"
 
 msgid "Dividing by zero"
 msgstr "Деление на ноль (запрещено!)"
@@ -530,13 +530,13 @@ msgid "Down (\\key gdown;)"
 msgstr "Вниз (\\key gdown;)"
 
 msgid "Down\\Move the selected mod down so it's loaded later (mods may overwrite files from the mods above them)"
-msgstr "Вниз\\Переместить мод вниз в списке загрузки, он будет загружен позже(мод может переписать файлы после модов загруженных перед ним)"
+msgstr "Вниз\\Переместить мод вниз в списке загрузки, он будет загружен позже (моды могут переписать файлы модов, расположенных в списке выше них)"
 
 msgid "Drawer bot"
 msgstr "Рисовальщик"
 
 msgid "Duplicate label in switch"
-msgstr "Дублировать метку на переключателе"
+msgstr "Повторная метка в switch"
 
 msgid "Dust\\Dust and dirt on bots and buildings"
 msgstr "Пыль\\Пыль и грязь на ботах и зданиях"
@@ -684,7 +684,7 @@ msgid "Function name missing"
 msgstr "Имя функции отсутствует"
 
 msgid "Function needs return type \"void\""
-msgstr "Функция требует вернуть тип \"void\""
+msgstr "Функция должна возвращать тип \"void\""
 
 msgid "Game speed"
 msgstr "Скорость игры"
@@ -939,7 +939,7 @@ msgid "Mipmap level\\Mipmap level"
 msgstr "Уровень уменьшающей фильтрации\\Уровень уменьшающей фильтрации"
 
 msgid "Missing end quote"
-msgstr "Нет закрывающих кавычек"
+msgstr "Пропущена закрывающая кавычка"
 
 msgid "Missing hex digits after escape sequence"
 msgstr ""
@@ -1320,7 +1320,7 @@ msgid "Quake at explosions\\The screen shakes at explosions"
 msgstr "Землетряс. при взрывах\\Тряска экрана при взрывах"
 
 msgid "Quick load\\Immediately load game"
-msgstr "Быстрая загрузка\\Быстрыа загрузка сохраненной игры"
+msgstr "Быстрая загрузка\\Быстрая загрузка сохраненной игры"
 
 msgid "Quick save\\Immediately save game"
 msgstr "Быстрое сохранение\\Быстро сохранить игру"
@@ -1446,7 +1446,7 @@ msgid "Run research program for shooter"
 msgstr "Начать исследование программы для стрелка"
 
 msgid "Run research program for target bot"
-msgstr "Начать исследование программы для мишени"
+msgstr "Начать исследование программы для бота-мишени"
 
 msgid "Run research program for thumper"
 msgstr "Начать исследование программы для ударника"
@@ -1654,7 +1654,7 @@ msgstr "Миссия еще не выполнена (нажмите \\key help; 
 
 #, c-format
 msgid "The path %s could not be opened in a file explorer."
-msgstr "Путь /% не может быть открыт в проводнике"
+msgstr "Путь %s не может быть открыть в проводнике."
 
 msgid "The types of the two operands are incompatible"
 msgstr "Типы операндов несовместимы"
@@ -1736,7 +1736,7 @@ msgid "Too many parameters"
 msgstr "Слишком много параметров"
 
 msgid "Tracked builder"
-msgstr "Гусенечный строитель"
+msgstr "Гусеничный строитель"
 
 msgid "Tracked grabber"
 msgstr "Гусеничный сборщик"
@@ -1802,7 +1802,7 @@ msgid "Up (\\key gup;)"
 msgstr "Вверх (\\key gup;)"
 
 msgid "Up\\Move the selected mod up so it's loaded sooner (mods may overwrite files from the mods above them)"
-msgstr "Вверх\\Переместить мод вверх в списке загрузки, он будет загружен раньше(моды ниже могут переписать файлы после модов загруженных ранее)"
+msgstr "Вверх\\Переместить мод вверх в списке загрузки, он будет загружен раньше (моды могут переписать файлы модов, расположенных в списке выше них)"
 
 msgid "Uranium deposit (site for derrick)"
 msgstr "Запасы урана (место для буровой вышки)"
@@ -1883,7 +1883,7 @@ msgid "Withdraw shield (\\key action;)"
 msgstr "Снять щит (\\key action;)"
 
 msgid "Workshop\\Open the workshop to search for mods"
-msgstr "Хранилище\\Откройте хранилище для поиска модов"
+msgstr "Мастерская\\Откройте мастерскую для поиска модов"
 
 msgid "Worm"
 msgstr "Червь"
