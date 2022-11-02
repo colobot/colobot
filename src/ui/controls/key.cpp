@@ -139,7 +139,6 @@ void CKey::Draw()
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
     float zoomExt = 1.00f;
-    float zoomInt = 0.95f;
 
     int icon = 2;
     if (m_binding.primary == KEY_INVALID && m_binding.secondary == KEY_INVALID)  // no shortcut?
@@ -150,7 +149,6 @@ void CKey::Draw()
         DrawPart(23, 1.3f, 0.0f);
 
         zoomExt *= 1.15f;
-        zoomInt *= 1.15f;
     }
 
     if (m_state & STATE_HILIGHT)
@@ -162,7 +160,6 @@ void CKey::Draw()
     if (m_state & STATE_PRESS)
     {
         icon = 3;
-        zoomInt *= 0.9f;
     }
 
     if ((m_state & STATE_ENABLE) == 0)
