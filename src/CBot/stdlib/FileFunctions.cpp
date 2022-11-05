@@ -133,7 +133,7 @@ bool rfdestruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception
     if (!pVar->IsDefined()) return true; // file not opened
     g_files.erase(pVar->GetValInt());
 
-    pVar->SetInit(CBotVar::InitType::IS_NAN);
+    pVar->SetInit(CBotVar::InitType::UNDEF);
     return true;
 }
 
@@ -203,7 +203,7 @@ bool rfclose (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception, v
 
     g_files.erase(handleIter);
 
-    pVar->SetInit(CBotVar::InitType::IS_NAN);
+    pVar->SetInit(CBotVar::InitType::UNDEF);
     return true;
 }
 

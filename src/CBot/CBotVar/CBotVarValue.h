@@ -62,15 +62,13 @@ public:
         m_binit = CBotVar::InitType::DEF;
     }
 
-    std::string GetValString() override
+    std::string GetValString() const override
     {
         if (m_binit == CBotVar::InitType::UNDEF)
             return LoadString(TX_UNDEF);
-        if (m_binit == CBotVar::InitType::IS_NAN)
-            return LoadString(TX_NAN);
 
         std::ostringstream s;
-        s << m_val;
+        s << std::boolalpha << m_val;
         return s.str();
     }
 
@@ -133,37 +131,37 @@ public:
         this->SetValue(static_cast<T>(val));
     }
 
-    signed char GetValByte() override
+    signed char GetValByte() const override
     {
         return static_cast<signed char>(this->m_val);
     }
 
-    short GetValShort() override
+    short GetValShort() const override
     {
         return static_cast<short>(this->m_val);
     }
 
-    uint32_t GetValChar() override
+    uint32_t GetValChar() const override
     {
         return static_cast<uint32_t>(this->m_val);
     }
 
-    int GetValInt() override
+    int GetValInt() const override
     {
         return static_cast<int>(this->m_val);
     }
 
-    long GetValLong() override
+    long GetValLong() const override
     {
         return static_cast<long>(this->m_val);
     }
 
-    float GetValFloat() override
+    float GetValFloat() const override
     {
         return static_cast<float>(this->m_val);
     }
 
-    double GetValDouble() override
+    double GetValDouble() const override
     {
         return static_cast<double>(this->m_val);
     }

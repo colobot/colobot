@@ -273,6 +273,14 @@ inline float Distance(const Math::Vector &a, const Math::Vector &b)
                   (a.z-b.z)*(a.z-b.z) );
 }
 
+//! Returns the squared distance between the ends of two vectors
+inline float DistanceSquared(const Math::Vector &a, const Math::Vector &b)
+{
+    return (a.x-b.x)*(a.x-b.x) +
+           (a.y-b.y)*(a.y-b.y) +
+           (a.z-b.z)*(a.z-b.z);
+}
+
 //! Clamps the vector \a vec to range between \a min and \a max
 inline Vector Clamp(const Vector &vec, const Vector &min, const Vector &max)
 {
@@ -285,4 +293,3 @@ inline Vector Clamp(const Vector &vec, const Vector &min, const Vector &max)
 
 
 } // namespace Math
-

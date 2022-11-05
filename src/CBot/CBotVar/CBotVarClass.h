@@ -52,7 +52,7 @@ public:
     CBotVar* GetItemRef(int nIdent) override;
     CBotVar* GetItem(int n, bool bExtend) override;
     CBotVar* GetItemList() override;
-    std::string GetValString() override;
+    std::string GetValString() const override;
 
     bool Save1State(std::ostream &ostr) override;
 
