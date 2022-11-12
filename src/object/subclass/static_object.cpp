@@ -44,12 +44,12 @@ CStaticObject::CStaticObject(int id,
                              const std::string& key,
                              const glm::vec3& position,
                              float angleY,
-                             const Gfx::CModel& model,
+                             const Gfx::CModel* model,
                              Gfx::CEngine* engine)
     : CObject(id, type)
     , m_engine(engine)
 {
-    const Gfx::CModelMesh* mesh = model.GetMesh("main");
+    const Gfx::CModelMesh* mesh = model->GetMesh("main");
     assert(mesh != nullptr);
 
     m_position = position;
@@ -58,13 +58,13 @@ CStaticObject::CStaticObject(int id,
     glm::mat4 worldMatrix = ComputeWorldMatrix(position, angleY);
     m_meshHandle = m_engine->AddStaticMesh(key, mesh, worldMatrix);
 
-    if (model.HasShadowSpot())
-        m_engine->AddStaticMeshShadowSpot(m_meshHandle, model.GetShadowSpot());
+    if (model->HasShadowSpot())
+        m_engine->AddStaticMeshShadowSpot(m_meshHandle, model->GetShadowSpot());
 
-    SetCrashSpheres(model.GetCrashSpheres());
+    SetCrashSpheres(model->GetCrashSpheres());
 
-    if (model.HasCameraCollisionSphere())
-        SetCameraCollisionSphere(model.GetCameraCollisionSphere());
+    if (model->HasCameraCollisionSphere())
+        SetCameraCollisionSphere(model->GetCameraCollisionSphere());
 }
 
 CStaticObject::~CStaticObject()
@@ -134,9 +134,9 @@ CStaticObjectUPtr CStaticObject::Create(int id,
 
     try
     {
-        Gfx::CModel& model = modelManager->GetModel(modelFile);
+        auto model = modelManager->GetModel(modelFile);
 
-        if (model.GetMeshCount() != 1 || model.GetMesh("main") == nullptr)
+        if (model->GetMeshCount() != 1 || model->GetMesh("main") == nullptr)
             throw CObjectCreateException("Unexpected mesh configuration", type, modelFile);
 
         return std::make_unique<CStaticObject>(id, type, modelFile, adjustedPosition, angleY, model, engine);

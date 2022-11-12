@@ -47,7 +47,7 @@ void ConvertOldTex1Name(ModelTriangle& triangle, const char* tex1Name);
 void ConvertFromOldRenderState(ModelTriangle& triangle, int state);
 ModelLODLevel MinMaxToLodLevel(float min, float max);
 
-void ReadOldModel(CModel& model, const std::filesystem::path& path)
+std::unique_ptr<CModel> ReadOldModel(const std::filesystem::path& path)
 {
     CInputStream stream(path);
 
@@ -88,12 +88,16 @@ void ReadOldModel(CModel& model, const std::filesystem::path& path)
         throw CModelIOException(std::string("Error reading model triangles: ") + e.what());
     }
 
-    CModelMesh mesh;
+    auto mesh = std::make_unique<CModelMesh>();
 
     for (const auto& triangle : triangles)
-        mesh.AddTriangle(triangle);
+        mesh->AddTriangle(triangle);
 
-    model.AddMesh("main", std::move(mesh));
+    auto model = std::make_unique<CModel>();
+
+    model->AddMesh("main", std::move(mesh));
+
+    return model;
 }
 
 std::vector<ModelTriangle> ReadOldModelV1(std::istream& stream, int totalTriangles)

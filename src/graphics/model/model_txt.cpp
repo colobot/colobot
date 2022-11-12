@@ -36,7 +36,7 @@ namespace Gfx::ModelIO
 void ReadTextModelV1AndV2(CModel& model, std::istream& stream);
 void ReadTextModelV3(CModel& model, std::istream& stream);
 ModelHeaderV3 ReadTextHeader(std::istream& stream);
-CModelMesh ReadTextMesh(std::istream& stream);
+std::unique_ptr<CModelMesh> ReadTextMesh(std::istream& stream);
 
 std::string ReadLineString(std::istream& stream, const std::string& expectedPrefix);
 void ReadValuePrefix(std::istream& stream, const std::string& expectedPrefix);
@@ -51,7 +51,7 @@ std::string ParseSpecialMark(const std::string& text);
 
 void ConvertFromOldRenderState(ModelTriangle& triangle, int state);
 
-void ReadTextModel(CModel& model, const std::filesystem::path& path)
+std::unique_ptr<CModel> ReadTextModel(const std::filesystem::path& path)
 {
     CInputStream stream(path);
 
@@ -66,12 +66,16 @@ void ReadTextModel(CModel& model, const std::filesystem::path& path)
         throw CModelIOException(std::string("Error reading version number: ") + e.what());
     }
 
+    auto model = std::make_unique<CModel>();
+
     if (version == 1 || version == 2)
-        ReadTextModelV1AndV2(model, stream);
+        ReadTextModelV1AndV2(*model, stream);
     else if (version == 3)
-        ReadTextModelV3(model, stream);
+        ReadTextModelV3(*model, stream);
     else
         throw CModelIOException(std::string("Unexpected version number: ") + boost::lexical_cast<std::string>(version));
+
+    return model;
 }
 
 void ReadTextModelV1AndV2(CModel& model, std::istream& stream)
@@ -88,7 +92,7 @@ void ReadTextModelV1AndV2(CModel& model, std::istream& stream)
         throw CModelIOException(std::string("Error reading model header: ") + e.what());
     }
 
-    CModelMesh mesh;
+    auto mesh = std::make_unique<CModelMesh>();
 
     for (int i = 0; i < header.totalTriangles; ++i)
     {
@@ -134,7 +138,7 @@ void ReadTextModelV1AndV2(CModel& model, std::istream& stream)
         triangle.material.variableDetail = t.variableTex2;
         ConvertFromOldRenderState(triangle, t.state);
 
-        mesh.AddTriangle(triangle);
+        mesh->AddTriangle(triangle);
     }
 
     model.AddMesh("main", std::move(mesh));
@@ -174,7 +178,7 @@ void ReadTextModelV3(CModel& model, std::istream& stream)
     for (int i = 0; i < header.totalMeshes; ++i)
     {
         std::string meshName = ReadLineString(stream, "mesh");
-        CModelMesh mesh = ReadTextMesh(stream);
+        auto mesh = ReadTextMesh(stream);
         model.AddMesh(meshName, std::move(mesh));
     }
 }
@@ -190,14 +194,14 @@ ModelHeaderV3 ReadTextHeader(std::istream& stream)
     return header;
 }
 
-CModelMesh ReadTextMesh(std::istream& stream)
+std::unique_ptr<CModelMesh> ReadTextMesh(std::istream& stream)
 {
-    CModelMesh mesh;
+    auto mesh = std::make_unique<CModelMesh>();
 
-    mesh.SetPosition(ParseVector(ReadLineString(stream, "position")));
-    mesh.SetRotation(ParseVector(ReadLineString(stream, "rotation")));
-    mesh.SetScale(ParseVector(ReadLineString(stream, "scale")));
-    mesh.SetParent(ReadLineString(stream, "parent"));
+    mesh->SetPosition(ParseVector(ReadLineString(stream, "position")));
+    mesh->SetRotation(ParseVector(ReadLineString(stream, "rotation")));
+    mesh->SetScale(ParseVector(ReadLineString(stream, "scale")));
+    mesh->SetParent(ReadLineString(stream, "parent"));
 
     int totalTriangles = boost::lexical_cast<int>(ReadLineString(stream, "total_triangles"));
 
@@ -234,7 +238,7 @@ CModelMesh ReadTextMesh(std::istream& stream)
         if (t.material.alphaMode != AlphaMode::NONE)
             t.material.alphaThreshold = 0.5f;
 
-        mesh.AddTriangle(t);
+        mesh->AddTriangle(t);
     }
 
     return mesh;

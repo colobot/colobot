@@ -71,12 +71,7 @@ struct Sampler
 class GLTFLoader
 {
 public:
-    void Load(const std::filesystem::path& path);
-
-    CModel GetModel()
-    {
-        return m_model;
-    }
+    std::unique_ptr<CModel> Load(const std::filesystem::path& path);
 
 private:
     void ReadBuffers();
@@ -94,7 +89,7 @@ private:
     std::vector<glm::u8vec4> ReadColors(int index);
     std::vector<unsigned> ReadIndices(int index);
 
-    CModel m_model;
+    std::unique_ptr<CModel> m_model;
 
     std::filesystem::path m_directory;
     json m_root;
@@ -108,22 +103,22 @@ private:
     std::vector<Sampler> m_samplers;
 };
 
-void ReadGLTFModel(CModel& model, const std::filesystem::path& path)
+std::unique_ptr<CModel> ReadGLTFModel(const std::filesystem::path& path)
 {
     GLTFLoader loader;
 
-    loader.Load(path);
-
-    model = loader.GetModel();
+    return loader.Load(path);
 }
 
-void GLTFLoader::Load(const std::filesystem::path& path)
+std::unique_ptr<CModel> GLTFLoader::Load(const std::filesystem::path& path)
 {
     m_directory = path.parent_path();
 
     CInputStream stream(path);
 
     stream >> m_root;
+
+    m_model = std::make_unique<CModel>();
 
     ReadBuffers();
     ReadBufferViews();
@@ -133,6 +128,8 @@ void GLTFLoader::Load(const std::filesystem::path& path)
     ReadTextures();
     ReadMaterials();
     ReadMeshes();
+
+    return std::move(m_model);
 }
 
 void GLTFLoader::ReadBuffers()
@@ -470,13 +467,13 @@ void GLTFLoader::ReadMeshes()
     {
         auto name = node["name"].get<std::string>();
 
-        CModelMesh mesh;
+        auto mesh = std::make_unique<CModelMesh>();
 
         for (const auto& primitive : node["primitives"])
         {
             const auto& material = m_materials[primitive["material"].get<int>()];
 
-            auto& part = mesh.AddPart(material);
+            auto part = mesh->AddPart(material);
 
             std::vector<glm::vec3> positions;
             std::vector<glm::vec3> normals;
@@ -565,15 +562,15 @@ void GLTFLoader::ReadMeshes()
                 }
 
                 for (const auto& vertex : vertices)
-                    part.AddVertex(vertex);
+                    part->AddVertex(vertex);
 
                 for (const auto& index : indices)
-                    part.AddIndex(index);
+                    part->AddIndex(index);
             }
         }
 
-        if (mesh.GetPartCount() > 0)
-            m_model.AddMesh(name, std::move(mesh));
+        if (mesh->GetPartCount() > 0)
+            m_model->AddMesh(name, std::move(mesh));
     }
 }
 

@@ -19,94 +19,350 @@
 
 #include "graphics/model/model_mesh.h"
 
+#include <array>
+
 namespace Gfx
 {
 
-CModelPart::CModelPart(const Material& material)
-    : m_material(material) {}
+CVertexProxy::CVertexProxy(CModelPart* part, size_t index)
+    : m_part(part), m_index(index)
+{
+
+}
+
+const glm::vec3& CVertexProxy::GetPosition() const
+{
+    return m_part->m_positions.array[m_index];
+}
+
+void CVertexProxy::SetPosition(const glm::vec3& position) const
+{
+    m_part->m_positions.array[m_index] = position;
+}
+
+const glm::u8vec4& CVertexProxy::GetColor() const
+{
+    return m_part->m_colors.array[m_index];
+}
+
+void CVertexProxy::SetColor(const glm::u8vec4& color) const
+{
+    m_part->m_colors.array[m_index] = color;
+}
+
+const glm::vec2& CVertexProxy::GetUV1() const
+{
+    return m_part->m_uvs1.array[m_index];
+}
+
+void CVertexProxy::SetUV1(const glm::vec2& uv) const
+{
+    m_part->m_uvs1.array[m_index] = uv;
+}
+
+const glm::vec2& CVertexProxy::GetUV2() const
+{
+    return m_part->m_uvs2.array[m_index];
+}
+
+void CVertexProxy::SetUV2(const glm::vec2& uv) const
+{
+    m_part->m_uvs2.array[m_index] = uv;
+}
+
+const glm::vec3& CVertexProxy::GetNormal() const
+{
+    return m_part->m_normals.array[m_index];
+}
+
+void CVertexProxy::SetNormal(const glm::vec3& normal) const
+{
+    m_part->m_normals.array[m_index] = normal;
+}
+
+const glm::vec4& CVertexProxy::GetTangent() const
+{
+    return m_part->m_tangents.array[m_index];
+}
+
+void CVertexProxy::SetTangent(const glm::vec4& tangent) const
+{
+    m_part->m_tangents.array[m_index] = tangent;
+}
+
+const glm::u8vec4& CVertexProxy::GetBoneIndices() const
+{
+    return m_part->m_boneIndices.array[m_index];
+}
+
+void CVertexProxy::SetBoneIndices(const glm::u8vec4& indices) const
+{
+    m_part->m_boneIndices.array[m_index] = indices;
+}
+
+const glm::vec4& CVertexProxy::GetBoneWeights() const
+{
+    return m_part->m_boneWeights.array[m_index];
+}
+
+void CVertexProxy::SetBoneWeights(const glm::vec4& weights) const
+{
+    m_part->m_boneWeights.array[m_index] = weights;
+}
+
+
+CModelPart::CModelPart(const Material& material, size_t vertices, size_t indices)
+    : m_material(material) {
+    m_positions.array.resize(vertices);
+    m_indices.array.resize(indices);
+}
 
 const Material& CModelPart::GetMaterial() const
 {
     return m_material;
 }
 
+void CModelPart::SetVertices(size_t count)
+{
+    m_positions.array.resize(count);
+
+    if (m_colors.enabled) m_colors.array.resize(count);
+    if (m_uvs1.enabled) m_uvs1.array.resize(count);
+    if (m_uvs2.enabled) m_uvs2.array.resize(count);
+    if (m_normals.enabled) m_normals.array.resize(count);
+    if (m_tangents.enabled) m_tangents.array.resize(count);
+    if (m_boneIndices.enabled) m_boneIndices.array.resize(count);
+    if (m_boneWeights.enabled) m_boneWeights.array.resize(count);
+}
+
+void CModelPart::SetIndices(size_t count)
+{
+    m_indices.array.resize(count);
+}
+
+bool CModelPart::Has(VertexAttribute array) const
+{
+    switch (array)
+    {
+    case VertexAttribute::POSITION:
+        return true;
+    case VertexAttribute::COLOR:
+        return m_colors.enabled;
+    case VertexAttribute::UV1:
+        return m_uvs1.enabled;
+    case VertexAttribute::UV2:
+        return m_uvs2.enabled;
+    case VertexAttribute::NORMAL:
+        return m_normals.enabled;
+    case VertexAttribute::TANGENT:
+        return m_tangents.enabled;
+    case VertexAttribute::BONE_INDICES:
+        return m_boneIndices.enabled;
+    case VertexAttribute::BONE_WEIGHTS:
+        return m_boneWeights.enabled;
+    default:
+        return false;
+    }
+}
+
+void CModelPart::Add(VertexAttribute attribute)
+{
+    switch (attribute)
+    {
+    case VertexAttribute::COLOR:
+        m_colors.enabled = true;
+        m_colors.array.resize(m_positions.array.size());
+        break;
+    case VertexAttribute::UV1:
+        m_uvs1.enabled = true;
+        m_uvs1.array.resize(m_positions.array.size());
+        break;
+    case VertexAttribute::UV2:
+        m_uvs2.enabled = true;
+        m_uvs2.array.resize(m_positions.array.size());
+        break;
+    case VertexAttribute::NORMAL:
+        m_normals.enabled = true;
+        m_normals.array.resize(m_positions.array.size());
+        break;
+    case VertexAttribute::TANGENT:
+        m_tangents.enabled = true;
+        m_tangents.array.resize(m_positions.array.size());
+        break;
+    case VertexAttribute::BONE_INDICES:
+        m_boneIndices.enabled = true;
+        m_boneIndices.array.resize(m_positions.array.size());
+        break;
+    case VertexAttribute::BONE_WEIGHTS:
+        m_boneWeights.enabled = true;
+        m_boneWeights.array.resize(m_positions.array.size());
+        break;
+    }
+}
+
+void CModelPart::Remove(VertexAttribute attribute)
+{
+    switch (attribute)
+    {
+    case VertexAttribute::COLOR:
+        m_colors.enabled = false;
+        m_colors.array.resize(0);
+        return;
+    case VertexAttribute::UV1:
+        m_uvs1.enabled = false;
+        m_uvs1.array.resize(0);
+        return;
+    case VertexAttribute::UV2:
+        m_uvs2.enabled = false;
+        m_uvs2.array.resize(0);
+        return;
+    case VertexAttribute::NORMAL:
+        m_normals.enabled = false;
+        m_normals.array.resize(0);
+        return;
+    case VertexAttribute::TANGENT:
+        m_tangents.enabled = false;
+        m_tangents.array.resize(0);
+        return;
+    case VertexAttribute::BONE_INDICES:
+        m_boneIndices.enabled = false;
+        m_boneIndices.array.resize(0);
+        return;
+    case VertexAttribute::BONE_WEIGHTS:
+        m_boneWeights.enabled = false;
+        m_boneWeights.array.resize(0);
+        return;
+    }
+}
+
 bool CModelPart::IsIndexed() const
 {
-    return !m_indices.empty();
+    return m_indices.enabled;
 }
 
 size_t CModelPart::GetVertexCount() const
 {
-    return m_vertices.size();
-}
-
-const std::vector<Vertex3D>& CModelPart::GetVertices() const
-{
-    return m_vertices;
+    return m_positions.array.size();
 }
 
 size_t CModelPart::GetIndexCount() const
 {
-    return m_indices.size();
+    return m_indices.array.size();
 }
 
 const std::vector<unsigned int>& CModelPart::GetIndices() const
 {
-    return m_indices;
+    return m_indices.array;
+}
+
+CVertexProxy CModelPart::GetVertex(size_t index)
+{
+    return CVertexProxy(this, index);
+}
+
+std::uint32_t CModelPart::GetIndex(size_t index)
+{
+    return m_indices.array[index];
 }
 
 void CModelPart::AddVertex(const Vertex3D& vertex)
 {
-    m_vertices.push_back(vertex);
+    m_positions.array.push_back(vertex.position);
+
+    if (m_colors.enabled) m_colors.array.push_back(vertex.color);
+    if (m_uvs1.enabled) m_uvs1.array.push_back(vertex.uv);
+    if (m_uvs2.enabled) m_uvs2.array.push_back(vertex.uv2);
+    if (m_normals.enabled) m_normals.array.push_back(vertex.normal);
+    if (m_tangents.enabled) m_tangents.array.push_back({ 1.0f, 0.0f, 0.0f, 1.0f });
+    if (m_boneIndices.enabled) m_boneIndices.array.push_back({ 0, 0, 0, 0 });
+    if (m_boneWeights.enabled) m_boneWeights.array.push_back({ 1.0f, 0.0f, 0.0f, 0.0f });
 }
 
 void CModelPart::AddIndex(unsigned int index)
 {
-    m_indices.push_back(index);
+    if (m_indices.enabled) m_indices.array.push_back(index);
+}
+
+void CModelPart::GetTriangles(std::vector<Gfx::ModelTriangle>& triangles)
+{
+    size_t n = IsIndexed()
+        ? GetIndexCount()
+        : GetVertexCount();
+
+    for (size_t i = 0; i < n - 2; i += 3)
+    {
+        std::array<Gfx::Vertex3D, 3> verts;
+
+        for (size_t j = 0; j < 3; j++)
+        {
+            size_t index = IsIndexed()
+                ? GetIndex(i + j)
+                : i + j;
+            auto vertex = GetVertex(index);
+
+            verts[j].position = vertex.GetPosition();
+            verts[j].color = vertex.GetColor();
+            verts[j].uv = vertex.GetUV1();
+            verts[j].uv2 = vertex.GetUV2();
+            verts[j].normal = vertex.GetNormal();
+        }
+
+        triangles.push_back({ verts[0], verts[1], verts[2], GetMaterial() });
+    }
 }
 
 void CModelMesh::AddTriangle(const ModelTriangle& triangle)
 {
     for (auto& part : m_parts)
     {
-        if (part.GetMaterial() == triangle.material)
+        if (part->GetMaterial() == triangle.material)
         {
-            part.AddVertex(triangle.p1);
-            part.AddVertex(triangle.p2);
-            part.AddVertex(triangle.p3);
+            part->AddVertex(triangle.p1);
+            part->AddVertex(triangle.p2);
+            part->AddVertex(triangle.p3);
             return;
         }
     }
 
-    CModelPart part(triangle.material);
+    auto part = std::make_unique<CModelPart>(triangle.material, 0, 0);
 
-    part.AddVertex(triangle.p1);
-    part.AddVertex(triangle.p2);
-    part.AddVertex(triangle.p3);
+    part->Add(VertexAttribute::COLOR);
+    part->Add(VertexAttribute::UV1);
+    part->Add(VertexAttribute::UV2);
+    part->Add(VertexAttribute::NORMAL);
 
-    m_parts.emplace_back(part);
+    part->AddVertex(triangle.p1);
+    part->AddVertex(triangle.p2);
+    part->AddVertex(triangle.p3);
+
+    m_parts.push_back(std::move(part));
 }
 
 void CModelMesh::AddTriangle(const Triangle& triangle, const Material& material)
 {
     for (auto& part : m_parts)
     {
-        if (part.GetMaterial() == material)
+        if (part->GetMaterial() == material)
         {
-            part.AddVertex(triangle.p1);
-            part.AddVertex(triangle.p2);
-            part.AddVertex(triangle.p3);
+            part->AddVertex(triangle.p1);
+            part->AddVertex(triangle.p2);
+            part->AddVertex(triangle.p3);
             return;
         }
     }
 
-    CModelPart part(material);
+    auto part = std::make_unique<CModelPart>(material, 0, 0);
 
-    part.AddVertex(triangle.p1);
-    part.AddVertex(triangle.p2);
-    part.AddVertex(triangle.p3);
+    part->Add(VertexAttribute::COLOR);
+    part->Add(VertexAttribute::UV1);
+    part->Add(VertexAttribute::UV2);
+    part->Add(VertexAttribute::NORMAL);
 
-    m_parts.emplace_back(part);
+    part->AddVertex(triangle.p1);
+    part->AddVertex(triangle.p2);
+    part->AddVertex(triangle.p3);
+
+    m_parts.push_back(std::move(part));
 }
 
 size_t CModelMesh::GetPartCount() const
@@ -114,24 +370,26 @@ size_t CModelMesh::GetPartCount() const
     return m_parts.size();
 }
 
-const CModelPart& CModelMesh::GetPart(size_t index) const
+CModelPart* CModelMesh::GetPart(size_t index) const
 {
-    return m_parts[index];
+    return m_parts[index].get();
 }
 
-CModelPart& CModelMesh::AddPart(const Material& material)
+CModelPart* CModelMesh::AddPart(const Material& material)
 {
     for (auto& part : m_parts)
     {
-        if (part.GetMaterial() == material)
+        if (part->GetMaterial() == material)
         {
-            return part;
+            return part.get();
         }
     }
 
-    m_parts.push_back(CModelPart(material));
+    auto part = std::make_unique<CModelPart>(material, 0, 0);
 
-    return m_parts.back();
+    m_parts.push_back(std::move(part));
+
+    return m_parts.back().get();
 }
 
 const glm::vec3& CModelMesh::GetPosition() const
@@ -180,35 +438,7 @@ std::vector<ModelTriangle> CModelMesh::GetTriangles() const
 
     for (const auto& part : m_parts)
     {
-        if (part.IsIndexed())
-        {
-            const auto& vertices = part.GetVertices();
-            const auto& indices = part.GetIndices();
-
-            for (size_t i = 0; i < indices.size() - 2; i += 3)
-            {
-                triangles.push_back({
-                    vertices[indices[i]],
-                    vertices[indices[i + 1]],
-                    vertices[indices[i + 2]],
-                    part.GetMaterial()
-                });
-            }
-        }
-        else
-        {
-            const auto& vertices = part.GetVertices();
-
-            for (size_t i = 0; i < vertices.size() - 2; i += 3)
-            {
-                triangles.push_back({
-                    vertices[i],
-                    vertices[i + 1],
-                    vertices[i + 2],
-                    part.GetMaterial()
-                });
-            }
-        }
+        part->GetTriangles(triangles);
     }
 
     return triangles;

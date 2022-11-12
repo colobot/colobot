@@ -31,6 +31,6 @@
 namespace Gfx::ModelIO
 {
 
-void ReadOldModel(CModel& model, const std::filesystem::path& path);
+std::unique_ptr<CModel> ReadOldModel(const std::filesystem::path& path);
 
 }

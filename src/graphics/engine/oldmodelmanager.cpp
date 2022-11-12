@@ -48,7 +48,7 @@ COldModelManager::~COldModelManager()
 
 bool COldModelManager::LoadModel(const std::string& name, bool mirrored, int team)
 {
-    CModel model;
+    std::unique_ptr<CModel> model;
     try
     {
         auto extension = std::filesystem::path(name).extension().string();
@@ -57,9 +57,9 @@ bool COldModelManager::LoadModel(const std::string& name, bool mirrored, int tea
         {
             GetLogger()->Debug("Loading model '%s'\n", name.c_str());
 
-            ModelInput::Read(model, "models/" + name);
+            model = ModelInput::Read("models/" + name);
 
-            if (model.GetMeshCount() == 0)
+            if (model->GetMeshCount() == 0)
                 return false;
 
             goto skip;
@@ -71,9 +71,9 @@ bool COldModelManager::LoadModel(const std::string& name, bool mirrored, int tea
         {
             GetLogger()->Debug("Loading model '%s'\n", (name + ".gltf").c_str());
 
-            ModelInput::Read(model, gltf_path);
+            model = ModelInput::Read(gltf_path);
 
-            if (model.GetMeshCount() > 0)
+            if (model->GetMeshCount() > 0)
                 goto skip;
         }
 
@@ -83,9 +83,9 @@ bool COldModelManager::LoadModel(const std::string& name, bool mirrored, int tea
         {
             GetLogger()->Debug("Loading model '%s'\n", (name + ".mod").c_str());
 
-            ModelInput::Read(model, mod_path);
+            model = ModelInput::Read(mod_path);
 
-            if (model.GetMeshCount() > 0)
+            if (model->GetMeshCount() > 0)
                 goto skip;
         }
 
@@ -98,7 +98,7 @@ bool COldModelManager::LoadModel(const std::string& name, bool mirrored, int tea
     }
 
 skip:
-    CModelMesh* mesh = model.GetMesh();
+    CModelMesh* mesh = model->GetMesh();
     assert(mesh != nullptr);
 
     ModelInfo modelInfo;

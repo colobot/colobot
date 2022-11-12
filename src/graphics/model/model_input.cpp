@@ -28,21 +28,21 @@
 namespace Gfx
 {
 
-void ModelInput::Read(CModel& model, const std::filesystem::path& path)
+std::unique_ptr<CModel> ModelInput::Read(const std::filesystem::path& path)
 {
     auto extension = path.extension();
 
     if (extension == ".mod")
     {
-        ModelIO::ReadOldModel(model, path);
+        return ModelIO::ReadOldModel(path);
     }
     else if (extension == ".txt")
     {
-        ModelIO::ReadTextModel(model, path);
+        return ModelIO::ReadTextModel(path);
     }
     else if (extension == ".gltf")
     {
-        ModelIO::ReadGLTFModel(model, path);
+        return ModelIO::ReadGLTFModel(path);
     }
     else
     {

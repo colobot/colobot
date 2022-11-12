@@ -29,21 +29,19 @@
 namespace Gfx
 {
 
-CModel& CModelManager::GetModel(const std::string& modelName)
+CModel* CModelManager::GetModel(const std::string& modelName)
 {
     auto it = m_models.find(modelName);
     if (it != m_models.end())
-        return it->second;
+        return it->second.get();
 
     std::filesystem::path modelFile = "models-new/" + modelName + ".txt";
 
     GetLogger()->Debug("Loading new model: %s\n", modelFile.c_str());
 
-    CModel model;
-    ModelInput::Read(model, modelFile);
-    m_models[modelName] = model;
+    m_models[modelName] = ModelInput::Read(modelFile);
 
-    return m_models[modelName];
+    return m_models[modelName].get();
 }
 
 void CModelManager::ClearCache()

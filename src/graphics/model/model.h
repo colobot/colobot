@@ -26,9 +26,10 @@
 #include "math/sphere.h"
 
 #include <map>
+#include <memory>
+#include <optional>
 #include <string>
 #include <vector>
-#include <optional>
 
 namespace Gfx
 {
@@ -49,7 +50,7 @@ public:
     //! Return a mesh with given \a name
     const CModelMesh* GetMesh(const std::string& name) const;
     //! Add new \a mesh with given \a name
-    void AddMesh(const std::string& name, CModelMesh&& mesh);
+    void AddMesh(const std::string& name, std::unique_ptr<CModelMesh> mesh);
     //! Returns list of mesh names
     std::vector<std::string> GetMeshNames() const;
 
@@ -75,7 +76,7 @@ public:
     bool HasCameraCollisionSphere() const;
 
 private:
-    std::map<std::string, CModelMesh> m_meshes;
+    std::map<std::string, std::unique_ptr<CModelMesh>> m_meshes;
     std::vector<ModelCrashSphere> m_crashSpheres;
     std::optional<ModelShadowSpot> m_shadowSpot;
     std::optional<Math::Sphere> m_cameraCollisionSphere;

@@ -45,7 +45,7 @@ public:
                   const std::string& key,
                   const glm::vec3& position,
                   float angleY,
-                  const Gfx::CModel& model,
+                  const Gfx::CModel* model,
                   Gfx::CEngine* engine);
 
     virtual ~CStaticObject();

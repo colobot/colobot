@@ -33,7 +33,7 @@ namespace Gfx
  */
 namespace ModelInput
 {
-    void Read(CModel& model, const std::filesystem::path& path);
+    std::unique_ptr<CModel> Read(const std::filesystem::path& path);
 }
 
 } // namespace Gfx

@@ -31,6 +31,6 @@
 namespace Gfx::ModelIO
 {
 
-void ReadTextModel(CModel& model, const std::filesystem::path& path);
+std::unique_ptr<CModel> ReadTextModel(const std::filesystem::path& path);
 
 }

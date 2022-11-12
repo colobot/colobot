@@ -34,7 +34,7 @@ CModelMesh* CModel::GetMesh()
 {
     if (m_meshes.size() == 1)
     {
-        return &m_meshes.begin()->second;
+        return m_meshes.begin()->second.get();
     }
     else
     {
@@ -50,7 +50,7 @@ CModelMesh* CModel::GetMesh(const std::string& name)
         GetLogger()->Error("Mesh named '%s' not found in model!\n", name.c_str());
         return nullptr;
     }
-    return &(it->second);
+    return it->second.get();
 }
 
 const CModelMesh* CModel::GetMesh(const std::string& name) const
@@ -61,12 +61,12 @@ const CModelMesh* CModel::GetMesh(const std::string& name) const
         GetLogger()->Error("Mesh named '%s' not found in model!\n", name.c_str());
         return nullptr;
     }
-    return &(it->second);
+    return it->second.get();
 }
 
-void CModel::AddMesh(const std::string& name, CModelMesh&& mesh)
+void CModel::AddMesh(const std::string& name, std::unique_ptr<CModelMesh> mesh)
 {
-    m_meshes[name] = mesh;
+    m_meshes[name] = std::move(mesh);
 }
 
 std::vector<std::string> CModel::GetMeshNames() const

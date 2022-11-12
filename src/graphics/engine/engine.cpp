@@ -4883,7 +4883,10 @@ int CEngine::AddStaticMesh(const std::string& key, const CModelMesh* mesh, const
         {
             const auto& part = mesh->GetPart(i);
 
-            AddBaseObjTriangles(baseObjRank, part.GetVertices(), part.GetMaterial(), EngineTriangleType::TRIANGLES);
+            std::vector<Gfx::ModelTriangle> triangles;
+            part->GetTriangles(triangles);
+
+            AddBaseObjTriangles(baseObjRank, triangles);
         }
         m_staticMeshBaseObjects[key] = baseObjRank;
     }
