@@ -13,8 +13,8 @@ endif()
 add_subdirectory(graphics/opengl33/shaders)
 
 # Configure file
-configure_file(common/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/common/config.h)
-configure_file(common/version.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/common/version.h)
+configure_file(common/config.h.cmake "${CMAKE_CURRENT_BINARY_DIR}/common/config.h")
+configure_file(common/version.h.cmake "${CMAKE_CURRENT_BINARY_DIR}/common/version.h")
 
 # Todo: split this monstrosity into smaller libraries (graphics, math, ui, etc.)
 add_library(colobotbase STATIC
