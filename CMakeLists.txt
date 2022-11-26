@@ -307,13 +307,20 @@ include("${colobot_SOURCE_DIR}/cmake/colobot-lint.cmake")
 ##
 
 find_package(OpenGL 1.4 REQUIRED)
-find_package(SDL2 CONFIG REQUIRED)
-find_package(SDL2_image CONFIG REQUIRED)
-find_package(SDL2_ttf CONFIG REQUIRED)
 find_package(PNG 1.2 REQUIRED)
 find_package(Gettext REQUIRED)
 find_package(PhysFS REQUIRED)
 find_package(glm CONFIG REQUIRED)
+
+if(PLATFORM_WINDOWS)
+    find_package(SDL2 CONFIG REQUIRED)
+    find_package(SDL2_image CONFIG REQUIRED)
+    find_package(SDL2_ttf CONFIG REQUIRED)
+else()
+    find_package(SDL2 REQUIRED)
+    find_package(SDL2_image REQUIRED)
+    find_package(SDL2_ttf REQUIRED)
+endif()
 
 # Add target alias glm::glm for older versions of the library
 if(NOT TARGET glm::glm)
