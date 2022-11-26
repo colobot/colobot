@@ -480,9 +480,6 @@ target_include_directories(colobotbase PUBLIC
 target_link_libraries(colobotbase PUBLIC
     CBot
     localename
-    SDL2::Core
-    SDL2::Image
-    SDL2::TTF
     OpenGL::GL
     PNG::PNG
     GLEW::GLEW
@@ -504,6 +501,20 @@ endif()
 if(mp3lame_FOUND)
     target_link_libraries(colobotbase PUBLIC
         mp3lame::mp3lame
+    )
+endif()
+
+if(PLATFORM_WINDOWS)
+    target_link_libraries(colobotbase PUBLIC
+        $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
+        $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>
+        $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>
+    )
+elseif()
+    target_link_libraries(colobotbase PUBLIC
+        SDL2::Core
+        SDL2::Image
+        SDL2::TTF
     )
 endif()
 
@@ -601,7 +612,12 @@ endif()
 if(PLATFORM_WINDOWS)
     target_sources(colobot PRIVATE ../desktop/colobot.rc)
 endif()
-target_link_libraries(colobot colobotbase SDL2::Main)
+
+if(PLATFORM_WINDOWS)
+    target_link_libraries(colobot colobotbase SDL2::SDL2main)
+elseif()
+    target_link_libraries(colobot colobotbase SDL2::Main)
+endif()
 
 # Install
 install(TARGETS colobot RUNTIME DESTINATION ${COLOBOT_INSTALL_BIN_DIR})
