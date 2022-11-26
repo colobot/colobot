@@ -487,9 +487,9 @@ target_include_directories(colobotbase PUBLIC
 target_link_libraries(colobotbase PUBLIC
     CBot
     localename
-    SDL2::Core
-    SDL2::Image
-    SDL2::TTF
+    $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
+    $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>
+    $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>
     OpenGL::GL
     PNG::PNG
     GLEW::GLEW
@@ -610,7 +610,7 @@ endif()
 if(PLATFORM_WINDOWS)
     target_sources(colobot PRIVATE ../desktop/colobot.rc)
 endif()
-target_link_libraries(colobot colobotbase SDL2::Main)
+target_link_libraries(colobot colobotbase SDL2::SDL2main)
 
 # Install
 install(TARGETS colobot RUNTIME DESTINATION ${COLOBOT_INSTALL_BIN_DIR})
