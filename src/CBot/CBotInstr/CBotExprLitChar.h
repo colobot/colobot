@@ -21,6 +21,8 @@
 
 #include "CBot/CBotInstr/CBotInstr.h"
 
+#include <cstdint>
+
 namespace CBot
 {
 
