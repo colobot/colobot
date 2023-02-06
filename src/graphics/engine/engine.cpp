@@ -3599,7 +3599,8 @@ void CEngine::Capture3DScene()
 
     // create SDL surface and final texture
     ImageData image;
-    image.surface = SDL_CreateRGBSurfaceFrom(blured.get(), newWidth, newHeight, 32, 0, 0, 0, 0, 0xFF000000);
+    image.surface = SDL_CreateRGBSurfaceFrom(blured.get(), newWidth, newHeight,
+        32, 4 * newWidth, 0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000);
 
     TextureCreateParams params;
     params.filter = TEX_FILTER_BILINEAR;
