@@ -24,6 +24,7 @@
 #include "CBot/CBotEnums.h"
 #include "CBot/CBotUtils.h"
 
+#include <cstdint>
 #include <string>
 
 namespace CBot
