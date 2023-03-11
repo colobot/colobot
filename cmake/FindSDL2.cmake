@@ -186,7 +186,7 @@ endif()
 # SDL-2.0 is the name used by FreeBSD ports...
 # don't confuse it for the version number.
 find_library(SDL2_LIBRARY
-  NAMES SDL2 SDL-2.0
+  NAMES SDL2 SDL-2.0 SDL2-static
   HINTS
     ENV SDL2DIR
     ${SDL2_NO_DEFAULT_PATH_CMD}
@@ -223,7 +223,7 @@ if(NOT SDL2_BUILDING_LIBRARY)
       HINTS
         ENV SDL2DIR
         ${SDL2_NO_DEFAULT_PATH_CMD}
-      PATH_SUFFIXES lib ${VC_LIB_PATH_SUFFIX}
+      PATH_SUFFIXES lib lib/manual-link ${VC_LIB_PATH_SUFFIX}
       PATHS ${SDL2MAIN_LIBRARY_PATHS}
       DOC "Where the SDL2main library can be found"
     )
