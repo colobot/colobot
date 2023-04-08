@@ -1,0 +1,48 @@
+{
+    "name": "colobot",
+    "version-string": "0.1.0",
+    "builtin-baseline": "e809a42f87565e803b2178a0c11263f462d1800a",
+    "dependencies": [
+        "boost-system",
+        "boost-filesystem",
+        "boost-regex",
+        "boost-lexical-cast",
+        "boost-bimap",
+        "boost-algorithm",
+        "boost-property-tree",
+        "boost-optional",
+        "boost-range",
+        "sdl2",
+        {
+            "name": "sdl2-image",
+            "default-features": false
+        },
+        {
+            "name": "sdl2-ttf",
+            "default-features": false
+        },
+        "glew",
+        "libpng",
+        "gettext",
+        {
+            "name": "libsndfile",
+            "default-features": false,
+            "features": [ "external-libs" ]
+        },
+        {
+            "name": "freetype",
+            "default-features": false
+        },
+        "libvorbis",
+        "libogg",
+        "opus",
+        "openal-soft",
+        "physfs",
+        "zlib"
+    ],
+    "overrides": [
+        {
+            "name": "zlib", "version": "1.2.13"
+        }
+    ]
+}
