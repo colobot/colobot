@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         target_os: [linux]
-        host_os: [ubuntu-18.04, ubuntu-20.04]
+        host_os: [ubuntu-20.04]
         container: ['']
       fail-fast: false
     steps:
@@ -40,7 +40,7 @@ jobs:
       with:
         name: ${{matrix.target_os}}-debug
         path: build/install
-      if: matrix.host_os == 'ubuntu-18.04'
+      if: matrix.host_os == 'ubuntu-20.04'
     - name: Create AppImage
       working-directory: build
       run: |
@@ -64,7 +64,7 @@ jobs:
       with:
         name: ${{matrix.target_os}}-debug-AppImage
         path: build/appimage
-      if: matrix.target_os == 'linux' && matrix.host_os == 'ubuntu-18.04'
+      if: matrix.target_os == 'linux' && matrix.host_os == 'ubuntu-20.04'
     - name: Run tests
       # TODO: Maybe run Windows tests using wine as well?
       working-directory: build
