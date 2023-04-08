@@ -106,6 +106,8 @@ elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
     # Platform-dependent implementation of system.h
     set(SYSTEM_CPP_MODULE "system_macosx.cpp")
     set(SYSTEM_H_MODULE "system_macosx.h")
+    # Fix compilation errors in MacOS SDK files
+    set(CMAKE_CXX_FLAGS "${NORMAL_CXX_FLAGS} -Wno-nullability-extension -Wno-nullability-completeness -Wno-expansion-to-defined -Wno-four-char-constants -Wno-gnu-zero-variadic-macro-arguments -Wno-variadic-macros -Wno-zero-length-array")
     # To avoid CMake warning
     set(CMAKE_MACOSX_RPATH 1)
 elseif("${CMAKE_SYSTEM_NAME}" MATCHES "FreeBSD")

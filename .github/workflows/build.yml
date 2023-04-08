@@ -76,6 +76,42 @@ jobs:
         name: Test results (${{ matrix.target_os }}, ${{ matrix.host_os }})
         path: build/gtestresults.xml
       if: matrix.target_os == 'linux'
+  build-macos:
+    runs-on: ${{ matrix.host_os }}
+    container: ${{ matrix.container }}
+    strategy:
+      matrix:
+        target_os: [macos]
+        host_os: [macos-11, macos-12]
+        container: ['']
+      fail-fast: false
+    steps:
+    - name: Install Colobot dependencies
+      run: brew install cmake sdl2 sdl2_image sdl2_ttf boost glew physfs flac libsndfile libvorbis vorbis-tools gettext libicns librsvg wget xmlstarlet
+      if: matrix.container == ''
+    - uses: actions/checkout@v2
+    - name: Checkout the Google Test submodule
+      run: git submodule update --init -- lib/googletest
+    - name: Create build directory
+      run: cmake -E make_directory build
+    - name: Run CMake (for Mac)
+      working-directory: build
+      run: cmake -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_SKIP_INSTALL_RPATH=ON -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDEV_BUILD=1 -DPORTABLE=1 -DTESTS=1 -DDESKTOP=1 -DOPENAL_LIBRARY=/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/OpenAL.framework/OpenAL.tbd ..
+      if: matrix.target_os == 'macos'
+    - name: Build
+      working-directory: build
+      run: make -j `nproc`
+    - name: Run tests
+      # TODO: Maybe run Windows tests using wine as well?
+      working-directory: build
+      run: ./colobot_ut --gtest_output=xml:gtestresults.xml
+      if: matrix.target_os == 'macos'
+    - name: Upload test results
+      uses: actions/upload-artifact@v2
+      with:
+        name: Test results (${{ matrix.target_os }}, ${{ matrix.host_os }})
+        path: build/gtestresults.xml
+      if: matrix.target_os == 'macos'
   build-windows:
     runs-on: windows-2019
     strategy:

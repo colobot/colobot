@@ -4,7 +4,7 @@ To compile Colobot on MacOS X, you need to first get Developer Command Line Tool
 
 After installing Developer Command Line Tools, you should have basic tools like clang and git installed. After that, you can grab other required packages with Homebrew. So as in instructions on [the project page](http://brew.sh/):
 ```bash
-  ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 And then:
 ```bash
@@ -20,7 +20,7 @@ If you've installed everything correctly, the simple way of compiling Colobot wi
   git clone --recursive https://github.com/colobot/colobot.git
   mkdir colobot/build
   cd colobot/build
-  cmake ../
+  cmake -DOPENAL_LIBRARY=/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/OpenAL.framework/OpenAL.tbd ../
   make
 ```
 
