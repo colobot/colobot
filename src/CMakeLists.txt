@@ -1,5 +1,5 @@
 # Compile flags as defined in global CMakeLists
-set(CMAKE_CXX_FLAGS "${COLOBOT_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS ${COLOBOT_CXX_FLAGS})
 set(CMAKE_CXX_FLAGS_RELEASE ${COLOBOT_CXX_FLAGS_RELEASE})
 set(CMAKE_CXX_FLAGS_DEBUG ${COLOBOT_CXX_FLAGS_DEBUG})
 
@@ -493,20 +493,6 @@ target_link_libraries(colobotbase PUBLIC
     SndFile::sndfile
 )
 
-if(mpg123_FOUND)
-    target_link_libraries(colobotbase PUBLIC
-        MPG123::libmpg123
-        MPG123::libout123
-        MPG123::libsyn123
-    )
-endif()
-
-if(mp3lame_FOUND)
-    target_link_libraries(colobotbase PUBLIC
-        mp3lame::mp3lame
-    )
-endif()
-
 # Optional libraries
 if(OPENAL_SOUND)
     target_sources(colobotbase PRIVATE
@@ -536,9 +522,6 @@ if(PLATFORM_WINDOWS)
             find_package(Intl REQUIRED)
 
             find_library(BZ2_LIBRARY NAMES bz2)
-            find_library(JPEG_LIBRARY NAMES jpeg)
-            find_library(TIFF_LIBRARY NAMES tiff)
-            find_library(LZMA_LIBRARY NAMES lzma)
             find_library(FREETYPE_LIBRARY NAMES freetype)
             find_library(ICONV_LIBRARY NAMES iconv)
             find_library(CHARSET_LIBRARY NAMES charset)
@@ -548,10 +531,7 @@ if(PLATFORM_WINDOWS)
 
             target_link_libraries(colobotbase PUBLIC
                 Gettext::Intl
-                ${JPEG_LIBRARY}
-                ${TIFF_LIBRARY}
                 ${BZ2_LIBRARY}
-                ${LZMA_LIBRARY}
                 ${FREETYPE_LIBRARY}
                 ${ICONV_LIBRARY}
                 ${CHARSET_LIBRARY}

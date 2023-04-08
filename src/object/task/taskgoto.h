@@ -24,6 +24,7 @@
 #include "math/vector.h"
 
 #include <array>
+#include <cstdint>
 #include <memory>
 #include <vector>
 
