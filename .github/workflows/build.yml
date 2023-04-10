@@ -139,7 +139,7 @@ jobs:
         vcpkgTriplet: ${{ matrix.vcpkg_triplet }}
         # SHA-256 hash of the vcpkg.json file, recalculated automatically when it changes
         appendedCacheKey: ${{ hashFiles( '**/vcpkg.json' ) }}
-        additionalCachedPaths: ${{ env.buildDir }}/vcpkg_installed
+        additionalCachedPaths: ${{ github.workspace }}/build/vcpkg_installed
     - name: Install external tools
       working-directory: ${{ github.workspace }}
       run: |

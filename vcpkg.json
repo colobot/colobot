@@ -3,15 +3,32 @@
     "version-string": "0.1.0",
     "builtin-baseline": "e809a42f87565e803b2178a0c11263f462d1800a",
     "dependencies": [
-        "boost-system",
-        "boost-filesystem",
-        "boost-regex",
-        "boost-lexical-cast",
-        "boost-bimap",
         "boost-algorithm",
-        "boost-property-tree",
+        "boost-bimap",
+        "boost-filesystem",
+        "boost-lexical-cast",
         "boost-optional",
+        "boost-property-tree",
         "boost-range",
+        "boost-regex",
+        "boost-system",
+        {
+            "name": "freetype",
+            "default-features": false
+        },
+        "glew",
+        "gettext",
+        "libogg",
+        "libpng",
+        {
+            "name": "libsndfile",
+            "default-features": false,
+            "features": [ "external-libs" ]
+        },
+        "libvorbis",
+        "openal-soft",
+        "opus",
+        "physfs",
         "sdl2",
         {
             "name": "sdl2-image",
@@ -21,23 +38,6 @@
             "name": "sdl2-ttf",
             "default-features": false
         },
-        "glew",
-        "libpng",
-        "gettext",
-        {
-            "name": "libsndfile",
-            "default-features": false,
-            "features": [ "external-libs" ]
-        },
-        {
-            "name": "freetype",
-            "default-features": false
-        },
-        "libvorbis",
-        "libogg",
-        "opus",
-        "openal-soft",
-        "physfs",
         "zlib"
     ],
     "overrides": [
