@@ -49,4 +49,5 @@ CMakeLists.txt.user.*
 /.vs
 /out
 
+# Ignore CMakeUserPresets.json
 CMakeUserPresets.json
