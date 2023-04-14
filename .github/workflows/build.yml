@@ -92,7 +92,7 @@ jobs:
       fail-fast: false
     steps:
     - name: Install Colobot dependencies
-      run: brew install cmake sdl2 sdl2_image sdl2_ttf boost glew physfs flac libsndfile libvorbis vorbis-tools gettext libicns librsvg wget xmlstarlet
+      run: brew install cmake sdl2 sdl2_image sdl2_ttf boost glew physfs flac libsndfile libvorbis vorbis-tools gettext libicns librsvg wget xmlstarlet glm
       if: matrix.container == ''
     - uses: actions/checkout@v2
     - name: Checkout the Google Test submodule
