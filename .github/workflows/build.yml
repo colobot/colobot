@@ -134,11 +134,12 @@ jobs:
     - name: Install Colobot dependencies
       uses: lukka/run-vcpkg@v7
       with:
+        setupOnly: true
         vcpkgGitCommitId: '69efe9cc2df0015f0bb2d37d55acde4a75c9a25b'
         vcpkgTriplet: ${{ matrix.vcpkg_triplet }}
-        setupOnly: true
-        # SHA-256 hash of the list of packages above, for caching purposes
-        appendedCacheKey: '56a81d2ed18a506e5ce5cf4dc4e6ed9874bba3905ed5e9b073ea717a0663db0a'
+        # SHA-256 hash of the vcpkg.json file, recalculated automatically when it changes
+        appendedCacheKey: ${{ hashFiles( '**/vcpkg.json' ) }}
+        additionalCachedPaths: ${{ github.workspace }}/build/vcpkg_installed
     - name: Install external tools
       working-directory: ${{ github.workspace }}
       run: |
