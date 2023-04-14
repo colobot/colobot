@@ -329,7 +329,7 @@ std::string LoadSource(const std::string& path)
     if (file == nullptr)
     {
         GetLogger()->Error("Cannot read shader source file\n");
-        GetLogger()->Error("Missing file \"%s\"\n", path);
+        GetLogger()->Error("Missing file \"%s\"\n", path.c_str());
         return {};
     }
 
