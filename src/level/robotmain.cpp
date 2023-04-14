@@ -113,6 +113,7 @@
 #include <algorithm>
 #include <iomanip>
 #include <stdexcept>
+#include <cmath>
 #include <ctime>
 
 #include <boost/lexical_cast.hpp>
@@ -4136,70 +4137,66 @@ float SearchNearestObject(CObjectManager* objMan, glm::vec3 center, CObject* exc
     }
     return min;
 }
+
+bool BlockedByObject(CObjectManager* objMan, const glm::vec3& center, float space, CObject* exclu)
+{
+    for (CObject* obj : objMan->GetAllObjects())
+    {
+        if (!obj->GetDetectable()) continue;  // inactive?
+        if (IsObjectBeingTransported(obj)) continue;
+
+        if (obj == exclu) continue;
+
+        for (const auto &crashSphere : obj->GetAllCrashSpheres())
+        {
+            const glm::vec3 oPos = crashSphere.sphere.pos;
+            const float oRadius = crashSphere.sphere.radius;
+            const float minDist = oRadius + space;
+
+            if (glm::distance(center, oPos) < minDist)
+                return true;
+        }
+    }
+    return false;
+}
 }
 
 //! Calculates a free space
 bool CRobotMain::FreeSpace(glm::vec3 &center, float minRadius, float maxRadius,
                            float space, CObject *exclu)
 {
-    if (minRadius < maxRadius)  // from internal to external?
+    for (float radius = minRadius; radius <= maxRadius; radius += space)
     {
-        for (float radius = minRadius; radius <= maxRadius; radius += space)
+        float ia = space/radius;
+        for (float angle = 0.0f; angle < Math::PI*2.0f; angle += ia)
         {
-            float ia = space/radius;
-            for (float angle = 0.0f; angle < Math::PI*2.0f; angle += ia)
+            glm::vec2 p;
+            p.x = center.x+radius;
+            p.y = center.z;
+            p = Math::RotatePoint(glm::vec2(center.x, center.z), angle, p);
+
+            glm::vec3 pos;
+            pos.x = p.x;
+            pos.z = p.y;
+            pos.y = 0.0f;
+            pos.y = m_terrain->GetFloorLevel(pos);
+
+            if (!BlockedByObject(m_objMan.get(), pos, space, exclu))
             {
-                glm::vec2 p;
-                p.x = center.x+radius;
-                p.y = center.z;
-                p = Math::RotatePoint({ center.x, center.z }, angle, p);
-                glm::vec3 pos;
-                pos.x = p.x;
-                pos.z = p.y;
-                pos.y = 0.0f;
-                m_terrain->AdjustToFloor(pos, true);
-                float dist = SearchNearestObject(m_objMan.get(), pos, exclu);
-                if (dist >= space)
+                float flat = m_terrain->GetFlatZoneRadius(pos, space);
+                if (flat >= space)
                 {
-                    float flat = m_terrain->GetFlatZoneRadius(pos, dist/2.0f);
-                    if (flat >= dist/2.0f)
-                    {
-                        center = pos;
-                        return true;
-                    }
+                    center = pos;
+                    return true;
                 }
             }
         }
     }
-    else    // from external to internal?
-    {
-        for (float radius=maxRadius; radius >= minRadius; radius -= space)
-        {
-            float ia = space/radius;
-            for (float angle=0.0f ; angle<Math::PI*2.0f ; angle+=ia )
-            {
-                glm::vec2 p;
-                p.x = center.x+radius;
-                p.y = center.z;
-                p = Math::RotatePoint({ center.x, center.z }, angle, p);
-                glm::vec3 pos;
-                pos.x = p.x;
-                pos.z = p.y;
-                pos.y = 0.0f;
-                m_terrain->AdjustToFloor(pos, true);
-                float dist = SearchNearestObject(m_objMan.get(), pos, exclu);
-                if (dist >= space)
-                {
-                    float flat = m_terrain->GetFlatZoneRadius(pos, dist/2.0f);
-                    if (flat >= dist/2.0f)
-                    {
-                        center = pos;
-                        return true;
-                    }
-                }
-            }
-        }
-    }
+
+    float nan = nanf("");
+
+    center = glm::vec3{ nan, nan, nan };
+
     return false;
 }
 

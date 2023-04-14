@@ -33,6 +33,8 @@
 
 #include <glm/glm.hpp>
 
+#include <string>
+
 class CLevelParserLine;
 class CObject;
 

@@ -291,7 +291,7 @@ CBotVar* CBotVarClass::GetItemList()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string CBotVarClass::GetValString()
+std::string CBotVarClass::GetValString() const
 {
     std::string    res;
 

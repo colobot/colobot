@@ -56,11 +56,6 @@ bool CBotPostIncExpr::Execute(CBotStack* &pj)
     CBotStack* pile3 = pile2->AddStack(this);
     if (pile3->IfStep()) return false;
 
-    if (var1->IsNAN())
-    {
-        pile1->SetError(CBotErrNan, &m_token);
-    }
-
     if (!var1->IsDefined())
     {
         pile1->SetError(CBotErrNotInit, &m_token);

@@ -90,7 +90,7 @@ CBotVar* CBotVarPointer::GetItemList()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string CBotVarPointer::GetValString()
+std::string CBotVarPointer::GetValString() const
 {
     std::string    s = "Pointer to ";
     if ( m_pVarClass == nullptr ) s = "Null pointer" ;

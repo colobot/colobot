@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         target_os: [linux]
-        host_os: [ubuntu-18.04, ubuntu-20.04]
+        host_os: [ubuntu-20.04]
         container: ['']
       fail-fast: false
     steps:
@@ -45,7 +45,7 @@ jobs:
       with:
         name: ${{matrix.target_os}}-debug
         path: build/install
-      if: matrix.host_os == 'ubuntu-18.04'
+      if: matrix.host_os == 'ubuntu-20.04'
     - name: Create AppImage
       working-directory: build
       run: |
@@ -69,7 +69,7 @@ jobs:
       with:
         name: ${{matrix.target_os}}-debug-AppImage
         path: build/appimage
-      if: matrix.target_os == 'linux' && matrix.host_os == 'ubuntu-18.04'
+      if: matrix.target_os == 'linux' && matrix.host_os == 'ubuntu-20.04'
     - name: Run tests
       # TODO: Maybe run Windows tests using wine as well?
       working-directory: build
@@ -81,6 +81,42 @@ jobs:
         name: Test results (${{ matrix.target_os }}, ${{ matrix.host_os }})
         path: build/gtestresults.xml
       if: matrix.target_os == 'linux'
+  build-macos:
+    runs-on: ${{ matrix.host_os }}
+    container: ${{ matrix.container }}
+    strategy:
+      matrix:
+        target_os: [macos]
+        host_os: [macos-11, macos-12]
+        container: ['']
+      fail-fast: false
+    steps:
+    - name: Install Colobot dependencies
+      run: brew install cmake sdl2 sdl2_image sdl2_ttf boost glew physfs flac libsndfile libvorbis vorbis-tools gettext libicns librsvg wget xmlstarlet
+      if: matrix.container == ''
+    - uses: actions/checkout@v2
+    - name: Checkout the Google Test submodule
+      run: git submodule update --init -- lib/googletest
+    - name: Create build directory
+      run: cmake -E make_directory build
+    - name: Run CMake (for Mac)
+      working-directory: build
+      run: cmake -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_SKIP_INSTALL_RPATH=ON -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDEV_BUILD=1 -DPORTABLE=1 -DTESTS=1 -DDESKTOP=1 -DOPENAL_LIBRARY=/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/OpenAL.framework/OpenAL.tbd ..
+      if: matrix.target_os == 'macos'
+    - name: Build
+      working-directory: build
+      run: make -j `nproc`
+    - name: Run tests
+      # TODO: Maybe run Windows tests using wine as well?
+      working-directory: build
+      run: ./colobot_ut --gtest_output=xml:gtestresults.xml
+      if: matrix.target_os == 'macos'
+    - name: Upload test results
+      uses: actions/upload-artifact@v2
+      with:
+        name: Test results (${{ matrix.target_os }}, ${{ matrix.host_os }})
+        path: build/gtestresults.xml
+      if: matrix.target_os == 'macos'
   build-windows:
     runs-on: windows-2019
     strategy:
@@ -105,11 +141,12 @@ jobs:
     - name: Install Colobot dependencies
       uses: lukka/run-vcpkg@v7
       with:
-        vcpkgGitCommitId: '6f7ffeb18f99796233b958aaaf14ec7bd4fb64b2'
+        setupOnly: true
+        vcpkgGitCommitId: '69efe9cc2df0015f0bb2d37d55acde4a75c9a25b'
         vcpkgTriplet: ${{ matrix.vcpkg_triplet }}
-        vcpkgArguments: 'boost-system boost-filesystem boost-regex boost-lexical-cast boost-bimap boost-algorithm boost-property-tree boost-optional boost-range sdl2 sdl2-ttf sdl2-image glew libpng libwebp tiff gettext libsndfile libvorbis libogg openal-soft physfs glm mpg123'
-        # SHA-256 hash of the list of packages above, for caching purposes
-        appendedCacheKey: '79bfe00dc99b9da12e57ab30397ba444a8d68e7030c247cf813121111e37cabf'
+        # SHA-256 hash of the vcpkg.json file, recalculated automatically when it changes
+        appendedCacheKey: ${{ hashFiles( '**/vcpkg.json' ) }}
+        additionalCachedPaths: ${{ github.workspace }}/build/vcpkg_installed
     - name: Install external tools
       working-directory: ${{ github.workspace }}
       run: |

@@ -112,6 +112,8 @@ private:
 
             if (variant < other.variant)
                 return true;
+            if (variant > other.variant)
+                return false;
 
             return !mirrored && mirrored != other.mirrored;
         }

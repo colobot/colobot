@@ -32,12 +32,10 @@ class CBotVarChar : public CBotVarInteger<uint32_t, CBotTypChar>
 public:
     CBotVarChar(const CBotToken &name) : CBotVarInteger(name) {}
 
-    std::string GetValString() override
+    std::string GetValString() const override
     {
         if (m_binit == CBotVar::InitType::UNDEF)
             return LoadString(TX_UNDEF);
-        if (m_binit == CBotVar::InitType::IS_NAN)
-            return LoadString(TX_NAN);
 
         if (0x10FFFF < m_val || (0xD7FF < m_val && m_val < 0xE000))
             return "\xEF\xBF\xBD"; // replacement character U+FFFD

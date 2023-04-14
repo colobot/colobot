@@ -1,5 +1,5 @@
 # Compile flags as defined in global CMakeLists
-set(CMAKE_CXX_FLAGS "${COLOBOT_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS ${COLOBOT_CXX_FLAGS})
 set(CMAKE_CXX_FLAGS_RELEASE ${COLOBOT_CXX_FLAGS_RELEASE})
 set(CMAKE_CXX_FLAGS_DEBUG ${COLOBOT_CXX_FLAGS_DEBUG})
 
@@ -487,6 +487,9 @@ target_include_directories(colobotbase PUBLIC
 target_link_libraries(colobotbase PUBLIC
     CBot
     localename
+    SDL2::Core
+    SDL2::Image
+    SDL2::TTF
     OpenGL::GL
     PNG::PNG
     GLEW::GLEW
@@ -498,34 +501,6 @@ target_link_libraries(colobotbase PUBLIC
     SndFile::sndfile
     nlohmann_json::nlohmann_json
 )
-
-if(PLATFORM_WINDOWS)
-    target_link_libraries(colobotbase PUBLIC
-        $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
-        $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>
-        $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>
-    )
-elseif()
-    target_link_libraries(colobotbase PUBLIC
-        SDL2::Core
-        SDL2::Image
-        SDL2::TTF
-    )
-endif()
-
-if(mpg123_FOUND)
-    target_link_libraries(colobotbase PUBLIC
-        MPG123::libmpg123
-        MPG123::libout123
-        MPG123::libsyn123
-    )
-endif()
-
-if(mp3lame_FOUND)
-    target_link_libraries(colobotbase PUBLIC
-        mp3lame::mp3lame
-    )
-endif()
 
 # Optional libraries
 if(OPENAL_SOUND)
@@ -556,9 +531,6 @@ if(PLATFORM_WINDOWS)
             find_package(Intl REQUIRED)
 
             find_library(BZ2_LIBRARY NAMES bz2)
-            find_library(JPEG_LIBRARY NAMES jpeg)
-            find_library(TIFF_LIBRARY NAMES tiff)
-            find_library(LZMA_LIBRARY NAMES lzma)
             find_library(FREETYPE_LIBRARY NAMES freetype)
             find_library(ICONV_LIBRARY NAMES iconv)
             find_library(CHARSET_LIBRARY NAMES charset)
@@ -568,10 +540,7 @@ if(PLATFORM_WINDOWS)
 
             target_link_libraries(colobotbase PUBLIC
                 Gettext::Intl
-                ${JPEG_LIBRARY}
-                ${TIFF_LIBRARY}
                 ${BZ2_LIBRARY}
-                ${LZMA_LIBRARY}
                 ${FREETYPE_LIBRARY}
                 ${ICONV_LIBRARY}
                 ${CHARSET_LIBRARY}
@@ -622,11 +591,7 @@ if(PLATFORM_WINDOWS)
     target_sources(colobot PRIVATE ../desktop/colobot.rc)
 endif()
 
-if(PLATFORM_WINDOWS)
-    target_link_libraries(colobot colobotbase SDL2::SDL2main)
-elseif()
-    target_link_libraries(colobot colobotbase SDL2::Main)
-endif()
+target_link_libraries(colobot colobotbase SDL2::Main)
 
 # Install
 install(TARGETS colobot RUNTIME DESTINATION ${COLOBOT_INSTALL_BIN_DIR})

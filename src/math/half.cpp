@@ -100,7 +100,7 @@ float HaltToFloat(uint16_t value)
     // NaN
     else if ((exponent == 31) && (mantissa != 0))
     {
-        result = std::nanf("");
+        result = nanf("");
     }
     // Normal number
     else

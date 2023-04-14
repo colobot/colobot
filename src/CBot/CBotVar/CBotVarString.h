@@ -48,12 +48,12 @@ public:
         SetValString(ToString(val));
     }
 
-    int GetValInt() override
+    int GetValInt() const override
     {
         return FromString<int>(GetValString());
     }
 
-    float GetValFloat() override
+    float GetValFloat() const override
     {
         return FromString<float>(GetValString());
     }

@@ -106,6 +106,8 @@ elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
     # Platform-dependent implementation of system.h
     set(SYSTEM_CPP_MODULE "system_macosx.cpp")
     set(SYSTEM_H_MODULE "system_macosx.h")
+    # Fix compilation errors in MacOS SDK files
+    set(CMAKE_CXX_FLAGS "${NORMAL_CXX_FLAGS} -Wno-nullability-extension -Wno-nullability-completeness -Wno-expansion-to-defined -Wno-four-char-constants -Wno-gnu-zero-variadic-macro-arguments -Wno-variadic-macros -Wno-zero-length-array")
     # To avoid CMake warning
     set(CMAKE_MACOSX_RPATH 1)
 elseif("${CMAKE_SYSTEM_NAME}" MATCHES "FreeBSD")
@@ -307,20 +309,13 @@ include("${colobot_SOURCE_DIR}/cmake/colobot-lint.cmake")
 ##
 
 find_package(OpenGL 1.4 REQUIRED)
+find_package(SDL2 REQUIRED)
+find_package(SDL2_image REQUIRED)
+find_package(SDL2_ttf REQUIRED)
 find_package(PNG 1.2 REQUIRED)
 find_package(Gettext REQUIRED)
 find_package(PhysFS REQUIRED)
 find_package(glm CONFIG REQUIRED)
-
-if(PLATFORM_WINDOWS)
-    find_package(SDL2 CONFIG REQUIRED)
-    find_package(SDL2_image CONFIG REQUIRED)
-    find_package(SDL2_ttf CONFIG REQUIRED)
-else()
-    find_package(SDL2 REQUIRED)
-    find_package(SDL2_image REQUIRED)
-    find_package(SDL2_ttf REQUIRED)
-endif()
 
 # Add target alias glm::glm for older versions of the library
 if(NOT TARGET glm::glm)
@@ -350,9 +345,6 @@ if (OPENAL_SOUND)
 endif()
 
 find_package(SndFile REQUIRED)
-
-find_package(mpg123 QUIET)
-find_package(mp3lame QUIET)
 
 if(NOT ASSERTS)
     add_definitions(-DNDEBUG)
