@@ -605,7 +605,7 @@ bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank)
     float pixel = 1.0f/256.0f;  // 1 pixel cover (*)
     float dp = 1.0f/512.0f;
 
-    glm::vec2 uv;
+    glm::vec2 uv = { 0.0f, 0.0f };
 
     for (int my = 0; my < m_textureSubdivCount; my++)
     {

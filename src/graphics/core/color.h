@@ -63,10 +63,10 @@ struct Color : glm::vec4
     //! Returns a string (r, g, b, a)
     inline std::string ToString() const
     {
-        std::stringstream s;
-        s.precision(3);
-        s << "(" << r << ", " << g << ", " << b << ", " << a << ")";
-        return s.str();
+        std::stringstream stream;
+        stream.precision(3);
+        stream << "(" << r << ", " << g << ", " << b << ", " << a << ")";
+        return stream.str();
     }
 
     inline bool operator==(const Color &other) const

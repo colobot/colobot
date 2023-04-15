@@ -366,8 +366,8 @@ void CLightning::StrikeAtPos(glm::vec3 pos)
 
     if (dist < deep)
     {
-        glm::vec3 pos = eye+((m_pos-eye)*0.2f);  // like so close!
-        m_sound->Play(SOUND_BLITZ, pos);
+        glm::vec3 position = eye+((m_pos-eye)*0.2f);  // like so close!
+        m_sound->Play(SOUND_BLITZ, position);
 
         m_camera->StartOver(CAM_OVER_EFFECT_LIGHTNING, m_pos, 1.0f);
 

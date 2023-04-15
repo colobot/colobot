@@ -98,7 +98,6 @@ void CPlanet::LoadTexture()
 
 void CPlanet::Draw()
 {
-    CDevice* device = m_engine->GetDevice();
     float eyeDirH = m_engine->GetEyeDirH();
     float eyeDirV = m_engine->GetEyeDirV();
 

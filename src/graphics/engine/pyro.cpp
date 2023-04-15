@@ -826,7 +826,8 @@ bool CPyro::EventProcess(const Event &event)
         ParticleType type;
         int r = rand()%2;
         if (r == 0) type = PARTISMOKE1;
-        if (r == 1) type = PARTISMOKE2;
+        else type = PARTISMOKE2;
+        
         m_particle->CreateParticle(pos, speed, dim, type, 6.0f);
     }
 
