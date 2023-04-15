@@ -74,7 +74,7 @@ void CMotionSpider::Create(glm::vec3 pos, float angle, ObjectType type,
                            float power, Gfx::COldModelManager* modelManager)
 {
     int         rank, i, j, parent;
-    char        name[50];
+    std::array<char, 50> name;
 
     float           table[] =
     {
@@ -136,7 +136,7 @@ void CMotionSpider::Create(glm::vec3 pos, float angle, ObjectType type,
     {
         for ( j=0 ; j<4 ; j++ )
         {
-            sprintf(name, "spider%d", j+3);  // 3..6
+            snprintf(name.data(), name.size(), "spider%d", j+3);  // 3..6
 
             // Creates the right leg.
             rank = m_engine->CreateObject();
@@ -145,7 +145,7 @@ void CMotionSpider::Create(glm::vec3 pos, float angle, ObjectType type,
             if ( j == 0 )  parent = 0;
             else           parent = 3+i*4+j-1;
             m_object->SetObjectParent(3+i*4+j, parent);
-            modelManager->AddModelReference(name, false, rank);
+            modelManager->AddModelReference(name.data(), false, rank);
             pos.x = table[i*12+j*3+0];
             pos.y = table[i*12+j*3+1];
             pos.z = table[i*12+j*3+2];
@@ -158,7 +158,7 @@ void CMotionSpider::Create(glm::vec3 pos, float angle, ObjectType type,
             if ( j == 0 )  parent = 0;
             else           parent = 19+i*4+j-1;
             m_object->SetObjectParent(19+i*4+j, parent);
-            modelManager->AddModelReference(name, true, rank);
+            modelManager->AddModelReference(name.data(), true, rank);
             pos.x =  table[i*12+j*3+0];
             pos.y =  table[i*12+j*3+1];
             pos.z = -table[i*12+j*3+2];

@@ -626,9 +626,9 @@ void CAutoInfo::UpdateList()
 
         for (int i = 0; i < static_cast<int>(infoList.size()); i++)
         {
-            char text[100];
-            sprintf(text, "%s = %.2f", infoList[i].name.c_str(), infoList[i].value);
-            pl->SetItemName(i, text);
+            std::array<char, 100> text;
+            snprintf(text.data(), text.size(), "%s = %.2f", infoList[i].name.c_str(), infoList[i].value);
+            pl->SetItemName(i, text.data());
         }
     }
 

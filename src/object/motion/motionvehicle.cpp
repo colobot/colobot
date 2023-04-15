@@ -92,7 +92,7 @@ void CMotionVehicle::Create(glm::vec3 pos, float angle, ObjectType type,
 {
     int             rank, i, j, parent;
     Gfx::Color      color;
-    char            name[50];
+    std::array<char, 50> name;
 
     m_object->SetType(type);
 
@@ -684,7 +684,7 @@ void CMotionVehicle::Create(glm::vec3 pos, float angle, ObjectType type,
         {
             for ( j=0 ; j<3 ; j++ )
             {
-                sprintf(name, "ant%d", j+4);  // 4..6
+                snprintf(name.data(), name.size(), "ant%d", j+4);  // 4..6
 
                 // Creates the right leg.
                 rank = m_engine->CreateObject();
@@ -693,7 +693,7 @@ void CMotionVehicle::Create(glm::vec3 pos, float angle, ObjectType type,
                 if ( j == 0 )  parent = 0;
                 else           parent = 6+i*3+j-1;
                 m_object->SetObjectParent(6+i*3+j, parent);
-                modelManager->AddModelReference(name, false, rank, m_object->GetTeam());
+                modelManager->AddModelReference(name.data(), false, rank, m_object->GetTeam());
                 pos.x = table[i*9+j*3+0];
                 pos.y = table[i*9+j*3+1];
                 pos.z = table[i*9+j*3+2];
@@ -706,7 +706,7 @@ void CMotionVehicle::Create(glm::vec3 pos, float angle, ObjectType type,
                 if ( j == 0 )  parent = 0;
                 else           parent = 15+i*3+j-1;
                 m_object->SetObjectParent(15+i*3+j, parent);
-                modelManager->AddModelReference(name, true, rank, m_object->GetTeam());
+                modelManager->AddModelReference(name.data(), true, rank, m_object->GetTeam());
                 pos.x =  table[i*9+j*3+0];
                 pos.y =  table[i*9+j*3+1];
                 pos.z = -table[i*9+j*3+2];
@@ -900,8 +900,8 @@ void CMotionVehicle::Create(glm::vec3 pos, float angle, ObjectType type,
             m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
             m_object->SetObjectRank(10+i, rank);
             m_object->SetObjectParent(10+i, 1);
-            sprintf(name, "drawer%d", 10+i);
-            modelManager->AddModelReference(name, false, rank, m_object->GetTeam());
+            snprintf(name.data(), name.size(), "drawer%d", 10+i);
+            modelManager->AddModelReference(name.data(), false, rank, m_object->GetTeam());
             m_object->SetPartPosition(10+i, glm::vec3(0.0f, 0.0f, 0.0f));
             m_object->SetPartRotationY(10+i, 45.0f*Math::PI/180.0f*i);
         }

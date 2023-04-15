@@ -873,7 +873,7 @@ void CScript::New(Ui::CEdit* edit, const char* name)
 {
     char    res[100];
     char    text[100];
-    char    script[500];
+    std::array<char, 500> script;
     char    buffer[500];
     int     cursor1, cursor2, len, i, j;
 
@@ -883,8 +883,8 @@ void CScript::New(Ui::CEdit* edit, const char* name)
     if ( name[0] == 0 )  strcpy(text, res);
     else                 strcpy(text, name);
 
-    sprintf(script, "extern void object::%s()\n{\n\t\n\t\n\t\n}\n", text);
-    edit->SetText(script, false);
+    snprintf(script.data(), script.size(), "extern void object::%s()\n{\n\t\n\t\n\t\n}\n", text);
+    edit->SetText(script.data(), false);
 
     if ( strcmp(text, res) == 0 )
     {
@@ -946,7 +946,7 @@ void CScript::New(Ui::CEdit* edit, const char* name)
                 if ( buffer[i+0] == '%' &&
                      buffer[i+1] == 's' )
                 {
-                    strcpy(script+j, text);
+                    strcpy(script.data()+j, text);
                     j += strlen(text);
                     i += 2;
                     continue;
@@ -962,7 +962,7 @@ void CScript::New(Ui::CEdit* edit, const char* name)
                 script[j++] = buffer[i++];
             }
             script[j] = 0;
-            edit->SetText(script, false);
+            edit->SetText(script.data(), false);
 
             cursor2 = cursor1;
             edit->SetCursor(cursor2, cursor1);

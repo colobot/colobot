@@ -2116,7 +2116,7 @@ void CObjectInterface::UpdateInterface()
 void CObjectInterface::UpdateScript(CWindow *pw)
 {
     CList*      pl;
-    char        name[100];
+    std::array<char, 100> name;
 
     pl = static_cast< CList* >(pw->SearchControl(EVENT_OBJECT_PROGLIST));
     if ( pl == nullptr )  return;
@@ -2124,22 +2124,22 @@ void CObjectInterface::UpdateScript(CWindow *pw)
     pl->Flush();
     for ( int i = 0 ; i < m_programStorage->GetProgramCount() ; i++ )
     {
-        sprintf(name, "%d", i+1);
+        snprintf(name.data(), name.size(), "%d", i+1);
 
         std::string title = m_programStorage->GetProgram(i)->script->GetTitle();
         if ( !title.empty() )
         {
             if(!m_programStorage->GetProgram(i)->readOnly)
             {
-                sprintf(name, "%d: %s", i+1, title.c_str());
+                snprintf(name.data(), name.size(), "%d: %s", i+1, title.c_str());
             }
             else
             {
-                sprintf(name, "*%d: %s", i+1, title.c_str());
+                snprintf(name.data(), name.size(), "*%d: %s", i+1, title.c_str());
             }
         }
 
-        pl->SetItemName(i, name);
+        pl->SetItemName(i, name.data());
     }
 
     pl->SetSelect(m_selScript);

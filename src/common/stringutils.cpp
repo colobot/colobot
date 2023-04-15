@@ -20,6 +20,7 @@
 
 #include "common/stringutils.h"
 
+#include <array>
 #include <cstdarg>
 #include <cstdio>
 #include <stdexcept>
@@ -40,12 +41,12 @@ namespace
 
 std::string VFormat(const char *fmt, va_list ap)
 {
-    std::size_t size = 1024;
-    char stackbuf[1024];
+    std::array<char, 1024> stackbuf;
     std::vector<char> dynamicbuf;
-    char *buf = &stackbuf[0];
+    char *buf = stackbuf.data();
+    size_t size = stackbuf.size();
 
-    while (1)
+    while (true)
     {
         int needed = vsnprintf (buf, size, fmt, ap);
 
@@ -56,7 +57,7 @@ std::string VFormat(const char *fmt, va_list ap)
 
         size = (needed > 0) ? (needed+1) : (size*2);
         dynamicbuf.resize(size);
-        buf = &dynamicbuf[0];
+        buf = dynamicbuf.data();
     }
 }
 

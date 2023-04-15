@@ -264,7 +264,7 @@ EditValueType CEditValue::GetType()
 
 void CEditValue::SetValue(float value, bool bSendMessage)
 {
-    char    text[100];
+    std::array<char, 100> text;
 
     if ( m_edit == nullptr )  return;
 
@@ -272,20 +272,20 @@ void CEditValue::SetValue(float value, bool bSendMessage)
 
     if ( m_type == EVT_INT )
     {
-        sprintf(text, "%d", static_cast<int>(value));
+        snprintf(text.data(), text.size(), "%d", static_cast<int>(value));
     }
 
     if ( m_type == EVT_FLOAT )
     {
-        sprintf(text, "%.2f", value);
+        snprintf(text.data(), text.size(), "%.2f", value);
     }
 
     if ( m_type == EVT_100 )
     {
-        sprintf(text, "%d%%", static_cast<int>(value*100.0f));
+        snprintf(text.data(), text.size(), "%d%%", static_cast<int>(value*100.0f));
     }
 
-    m_edit->SetText(text);
+    m_edit->SetText(text.data());
 
     if ( bSendMessage )
     {

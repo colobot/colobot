@@ -107,7 +107,7 @@ Error CMotionHuman::SetAction(int action, float time)
 void CMotionHuman::Create(glm::vec3 pos, float angle, ObjectType type,
                           float power, Gfx::COldModelManager* modelManager)
 {
-    char        filename[100];
+    std::array<char, 1000> filename;
     int         rank, option, face, glasses;
 
     m_object->SetType(type);
@@ -119,8 +119,8 @@ void CMotionHuman::Create(glm::vec3 pos, float angle, ObjectType type,
         m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICLE);  // this is a moving object
         m_object->SetObjectRank(0, rank);
         face = m_main->GetGamerFace();
-        sprintf(filename, "human2h%d", face+1);
-        modelManager->AddModelReference(filename, false, rank);
+        snprintf(filename.data(), filename.size(), "human2h%d", face+1);
+        modelManager->AddModelReference(filename.data(), false, rank);
 
         glasses = m_main->GetGamerGlasses();
         if ( glasses != 0 )
@@ -129,8 +129,8 @@ void CMotionHuman::Create(glm::vec3 pos, float angle, ObjectType type,
             m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
             m_object->SetObjectRank(1, rank);
             m_object->SetObjectParent(1, 0);
-            sprintf(filename, "human2g%d", glasses);
-            modelManager->AddModelReference(filename, false, rank);
+            snprintf(filename.data(), filename.size(), "human2g%d", glasses);
+            modelManager->AddModelReference(filename.data(), false, rank);
         }
 
         CreatePhysics(type);
@@ -171,15 +171,15 @@ void CMotionHuman::Create(glm::vec3 pos, float angle, ObjectType type,
         if (option == 0)  // head in helmet?
         {
             face = m_main->GetGamerFace();
-            sprintf(filename, "human2c%d", face+1);
-            modelManager->AddModelReference(filename, false, rank);
+            snprintf(filename.data(), filename.size(), "human2c%d", face+1);
+            modelManager->AddModelReference(filename.data(), false, rank);
         }
         else if (option == 1 ||  // head without helmet?
                  option == 2)    // without a backpack?
         {
             face = m_main->GetGamerFace();
-            sprintf(filename, "human2h%d", face+1);
-            modelManager->AddModelReference(filename, false, rank);
+            snprintf(filename.data(), filename.size(), "human2h%d", face+1);
+            modelManager->AddModelReference(filename.data(), false, rank);
         }
     }
     else if (type == OBJECT_TECH)
@@ -202,8 +202,8 @@ void CMotionHuman::Create(glm::vec3 pos, float angle, ObjectType type,
         m_engine->SetObjectType(m_glassesRank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(15, m_glassesRank);
         m_object->SetObjectParent(15, 1);
-        sprintf(filename, "human2g%d", glasses);
-        modelManager->AddModelReference(filename, false, m_glassesRank);
+        snprintf(filename.data(), filename.size(), "human2g%d", glasses);
+        modelManager->AddModelReference(filename.data(), false, m_glassesRank);
     }
 
     // Creates the right arm.

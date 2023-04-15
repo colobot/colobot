@@ -408,7 +408,7 @@ void CScreenLevelList::UpdateSceneChap(int &chap)
     CList*      pl;
 
     std::string fileName;
-    char        line[500] = {0};
+    std::array<char, 500> line = { 0 };
     bool        bPassed;
 
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
@@ -449,15 +449,15 @@ void CScreenLevelList::UpdateSceneChap(int &chap)
             try
             {
                 levelParser.Load();
-                sprintf(line, "%d: %s", j+1, levelParser.Get("Title")->GetParam("text")->AsString().c_str());
+                snprintf(line.data(), line.size(), "%d: %s", j+1, levelParser.Get("Title")->GetParam("text")->AsString().c_str());
             }
             catch (CLevelParserException& e)
             {
-                sprintf(line, "%s", (std::string("[ERROR]: ")+e.what()).c_str());
+                snprintf(line.data(), line.size(), "%s", (std::string("[ERROR]: ")+e.what()).c_str());
             }
 
             bPassed = m_main->GetPlayerProfile()->GetLevelPassed(m_category, j+1, 0);
-            pl->SetItemName(j, line);
+            pl->SetItemName(j, line.data());
             pl->SetCheck(j, bPassed);
             pl->SetEnable(j, true);
 
@@ -488,7 +488,7 @@ void CScreenLevelList::UpdateSceneList(int chap, int &sel)
     CWindow*    pw;
     CList*      pl;
     std::string fileName;
-    char        line[500] = {0};
+    std::array<char, 500> line = {0};
     int         j;
     bool        bPassed;
 
@@ -516,15 +516,15 @@ void CScreenLevelList::UpdateSceneList(int chap, int &sel)
         try
         {
             levelParser.Load();
-            sprintf(line, "%d: %s", j+1, levelParser.Get("Title")->GetParam("text")->AsString().c_str());
+            snprintf(line.data(), line.size(), "%d: %s", j+1, levelParser.Get("Title")->GetParam("text")->AsString().c_str());
         }
         catch (CLevelParserException& e)
         {
-            sprintf(line, "%s", (std::string("[ERROR]: ")+e.what()).c_str());
+            snprintf(line.data(), line.size(), "%s", (std::string("[ERROR]: ")+e.what()).c_str());
         }
 
         bPassed = m_main->GetPlayerProfile()->GetLevelPassed(m_category, chap+1, j+1);
-        pl->SetItemName(j, line);
+        pl->SetItemName(j, line.data());
         pl->SetCheck(j, bPassed);
         pl->SetEnable(j, true);
 

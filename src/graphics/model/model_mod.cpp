@@ -251,9 +251,9 @@ std::vector<ModelTriangle> ReadOldModelV3(std::istream& stream, int totalTriangl
 
         if (!triangle.material.variableDetail && t.texNum2 != 0)
         {
-            char tex2Name[20] = { 0 };
-            std::sprintf(tex2Name, "dirty%.2d.png", t.texNum2);
-            triangle.material.detailTexture = tex2Name;
+            std::array<char, 20> tex2Name = {0};
+            std::snprintf(tex2Name.data(), tex2Name.size(), "dirty%.2d.png", t.texNum2);
+            triangle.material.detailTexture = tex2Name.data();
         }
 
         triangles.push_back(triangle);

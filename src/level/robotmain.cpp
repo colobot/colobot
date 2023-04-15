@@ -3117,9 +3117,9 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             {
                 if (line->GetParam("rank")->IsDefined())
                 {
-                    char tex[20] = { 0 };
-                    sprintf(tex, "dirty%.2d.png", line->GetParam("rank")->AsInt());
-                    m_engine->SetSecondTexture(tex);
+                    std::array<char, 20> tex = { 0 };
+                    snprintf(tex.data(), tex.size(), "dirty%.2d.png", line->GetParam("rank")->AsInt());
+                    m_engine->SetSecondTexture(tex.data());
                 }
                 else
                 {
@@ -4016,8 +4016,8 @@ void CRobotMain::ChangeColor()
     colorNew2.g = 0.0f;
     colorNew2.b = 0.0f;
 
-    char name[100];
-    sprintf(name, "textures/objects/face%.2d.png", face+1);
+    std::array<char, 100> name;
+    snprintf(name.data(), name.size(), "textures/objects/face%.2d.png", face+1);
     exclu[0] = { 105.0f / 256.0f, 47.0f / 166.0f };
     exclu[1] = { 153.0f / 256.0f, 79.0f / 166.0f };  // blue canister
     exclu[2] = { 0.0f, 0.0f };
@@ -5567,9 +5567,9 @@ void CRobotMain::UpdateSpeedLabel()
         }
         else
         {
-            char text[10];
-            sprintf(text, "x%.1f", speed);
-            pb->SetName(text);
+            std::array<char, 10> text;
+            snprintf(text.data(), text.size(), "x%.1f", speed);
+            pb->SetName(text.data());
             pb->SetState(Ui::STATE_VISIBLE);
         }
     }

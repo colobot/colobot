@@ -102,18 +102,18 @@ CGL33TerrainRenderer::CGL33TerrainRenderer(CGL33Device* device)
 
     m_shadowRegions = glGetUniformLocation(m_program, "uni_ShadowRegions");
 
-    GLchar name[64];
+    std::array<GLchar, 256> name;
 
     for (int i = 0; i < 4; i++)
     {
-        sprintf(name, "uni_ShadowParam[%d].transform", i);
-        m_shadows[i].transform = glGetUniformLocation(m_program, name);
+        snprintf(name.data(), name.size(), "uni_ShadowParam[%d].transform", i);
+        m_shadows[i].transform = glGetUniformLocation(m_program, name.data());
 
-        sprintf(name, "uni_ShadowParam[%d].uv_offset", i);
-        m_shadows[i].offset = glGetUniformLocation(m_program, name);
+        snprintf(name.data(), name.size(), "uni_ShadowParam[%d].uv_offset", i);
+        m_shadows[i].offset = glGetUniformLocation(m_program, name.data());
 
-        sprintf(name, "uni_ShadowParam[%d].uv_scale", i);
-        m_shadows[i].scale = glGetUniformLocation(m_program, name);
+        snprintf(name.data(), name.size(), "uni_ShadowParam[%d].uv_scale", i);
+        m_shadows[i].scale = glGetUniformLocation(m_program, name.data());
     }
 
     // Set texture units
@@ -373,5 +373,5 @@ void CGL33TerrainRenderer::DrawObject(const glm::mat4& matrix, const CVertexBuff
     SetModelMatrix(matrix);
     glBindVertexArray(b->GetVAO());
 
-    glDrawArrays(TranslateGfxPrimitive(b->GetType()), 0, b->Size());
+    glDrawArrays(TranslateGfxPrimitive(b->GetType()), 0, static_cast<GLsizei>(b->Size()));
 }

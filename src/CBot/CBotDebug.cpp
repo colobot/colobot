@@ -23,6 +23,7 @@
 #include "CBot/CBotInstr/CBotFunction.h"
 #include "CBot/CBotInstr/CBotInstrCall.h"
 
+#include <array>
 #include <functional>
 #include <sstream>
 #include <iostream>
@@ -53,9 +54,9 @@ void CBotDebug::DumpCompiledProgram(CBotProgram* program)
             instructions[ptr] = instructionsNextId++;
         }
 
-        char buffer[20];
-        sprintf(buffer, "instr%d", instructions[ptr]);
-        return std::string(buffer);
+        std::array<char, 20> buffer;
+        snprintf(buffer.data(), buffer.size(), "instr%d", instructions[ptr]);
+        return std::string(buffer.data());
     };
     std::function<void(CBotInstr*)> DumpInstr = [&](CBotInstr* instr)
     {
