@@ -3814,6 +3814,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             m_build |= m_playerProfile->GetFreeGameBuildUnlock();
         }
 
+        m_researchEnable |= m_researchDone[0];
+
         if (!resetObject)
         {
             m_short->SetMode(false);  // vehicles?
