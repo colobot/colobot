@@ -3777,6 +3777,14 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             m_build |= m_playerProfile->GetFreeGameBuildUnlock();
         }
 
+        if (~m_researchDone[0] & RESEARCH_PHAZER && (m_levelCategory == LevelCategory::FreeGame || m_levelCategory == LevelCategory::GamePlus) && m_playerProfile->GetLevelPassed(LevelCategory::Missions, 9, 0))
+        {
+            m_build |= BUILD_RESEARCH;
+            m_researchEnable |= RESEARCH_PHAZER;
+        }
+
+        m_researchEnable |= m_researchDone[0];
+
         if (!resetObject)
         {
             m_short->SetMode(false);  // vehicles?
