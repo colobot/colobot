@@ -792,7 +792,8 @@ void COldObject::SetType(ObjectType type)
          m_type == OBJECT_MOBILEta ||
          m_type == OBJECT_MOBILEwa ||
          m_type == OBJECT_MOBILEia ||
-         m_type == OBJECT_MOBILEsa) // subber
+         m_type == OBJECT_MOBILEsa || // subber
+         m_type == OBJECT_BEE)
     {
         m_hasCargoSlot = true;
     }
