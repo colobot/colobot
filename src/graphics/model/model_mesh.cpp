@@ -137,6 +137,7 @@ void CModelPart::SetVertices(size_t count)
 
 void CModelPart::SetIndices(size_t count)
 {
+    m_indices.enabled = count > 0;
     m_indices.array.resize(count);
 }
 
@@ -196,7 +197,7 @@ void CModelPart::Add(VertexAttribute attribute)
     case VertexAttribute::BONE_WEIGHTS:
         m_boneWeights.enabled = true;
         m_boneWeights.array.resize(m_positions.array.size());
-        break;
+        return;
     }
 }
 
@@ -283,6 +284,11 @@ void CModelPart::AddIndex(unsigned int index)
     if (m_indices.enabled) m_indices.array.push_back(index);
 }
 
+void CModelPart::SetIndex(size_t index, unsigned int value)
+{
+    m_indices.array[index] = value;
+}
+
 void CModelPart::GetTriangles(std::vector<Gfx::ModelTriangle>& triangles)
 {
     size_t n = IsIndexed()
@@ -301,10 +307,18 @@ void CModelPart::GetTriangles(std::vector<Gfx::ModelTriangle>& triangles)
             auto vertex = GetVertex(index);
 
             verts[j].position = vertex.GetPosition();
-            verts[j].color = vertex.GetColor();
-            verts[j].uv = vertex.GetUV1();
-            verts[j].uv2 = vertex.GetUV2();
-            verts[j].normal = vertex.GetNormal();
+
+            if (Has(VertexAttribute::COLOR)) verts[j].color = vertex.GetColor();
+            else verts[j].color = { 255, 255, 255, 255 };
+
+            if (Has(VertexAttribute::UV1)) verts[j].uv = vertex.GetUV1();
+            else verts[j].uv = { 0, 0 };
+
+            if (Has(VertexAttribute::UV2)) verts[j].uv2 = vertex.GetUV2();
+            else verts[j].uv2 = { 0, 0 };
+
+            if (Has(VertexAttribute::NORMAL)) verts[j].normal = vertex.GetNormal();
+            else verts[j].normal = { 0, 0, 1 };
         }
 
         triangles.push_back({ verts[0], verts[1], verts[2], GetMaterial() });

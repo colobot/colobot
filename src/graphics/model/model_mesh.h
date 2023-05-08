@@ -150,6 +150,9 @@ public:
     //! Adds an index
     void AddIndex(unsigned int index);
 
+    //! Set index
+    void SetIndex(size_t index, unsigned int value);
+
     //! Fills the array with converted model triangles
     void GetTriangles(std::vector<Gfx::ModelTriangle>& triangles);
 

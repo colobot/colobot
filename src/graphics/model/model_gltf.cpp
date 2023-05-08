@@ -461,7 +461,7 @@ void GLTFLoader::ReadTextures()
 
 void GLTFLoader::ReadMeshes()
 {
-    m_model = {};
+    m_model = std::make_unique<CModel>();
 
     for (const auto& node : m_root["meshes"])
     {
@@ -475,97 +475,72 @@ void GLTFLoader::ReadMeshes()
 
             auto part = mesh->AddPart(material);
 
-            std::vector<glm::vec3> positions;
-            std::vector<glm::vec3> normals;
-            std::vector<glm::vec2> uvs;
-            std::vector<glm::vec2> uvs2;
-            std::vector<glm::u8vec4> colors;
-
-            std::vector<unsigned> indices;
-
             if (primitive.contains("attributes"))
             {
                 const auto& attributes = primitive["attributes"];
 
-                positions = ReadPositions(attributes["POSITION"].get<int>());
+                auto positions = ReadPositions(attributes["POSITION"].get<int>());
 
                 if (positions.empty()) continue;
 
+                part->SetVertices(positions.size());
+
+                for (size_t i = 0; i < positions.size(); i++)
+                    part->GetVertex(i).SetPosition(positions[i]);
+
                 if (attributes.contains("NORMAL"))
                 {
-                    normals = ReadNormals(attributes["NORMAL"].get<int>());
-                }
-                else
-                {
-                    normals.resize(positions.size());
-                    std::fill(normals.begin(), normals.end(), glm::vec3(0.0, 1.0, 0.0));
+                    part->Add(VertexAttribute::NORMAL);
+
+                    auto normals = ReadNormals(attributes["NORMAL"].get<int>());
+
+                    for (size_t i = 0; i < normals.size(); i++)
+                        part->GetVertex(i).SetNormal(normals[i]);
                 }
 
                 if (attributes.contains("TEXCOORD_0"))
                 {
-                    uvs = ReadUVs(attributes["TEXCOORD_0"].get<int>());
-                }
-                else
-                {
-                    uvs.resize(positions.size());
-                    std::fill(uvs.begin(), uvs.end(), glm::vec2(0.0, 0.0));
+                    part->Add(VertexAttribute::UV1);
+
+                    auto uvs = ReadUVs(attributes["TEXCOORD_0"].get<int>());
+
+                    for (size_t i = 0; i < uvs.size(); i++)
+                        part->GetVertex(i).SetUV1(uvs[i]);
                 }
 
                 if (attributes.contains("TEXCOORD_1"))
                 {
-                    uvs2 = ReadUVs(attributes["TEXCOORD_1"].get<int>());
-                }
-                else
-                {
-                    uvs2.resize(positions.size());
-                    std::fill(uvs2.begin(), uvs2.end(), glm::vec2(0.0, 0.0));
+                    part->Add(VertexAttribute::UV2);
+
+                    auto uvs = ReadUVs(attributes["TEXCOORD_1"].get<int>());
+
+                    for (size_t i = 0; i < uvs.size(); i++)
+                        part->GetVertex(i).SetUV2(uvs[i]);
                 }
 
                 if (attributes.contains("COLOR_0"))
                 {
-                    colors = ReadColors(attributes["COLOR_0"].get<int>());
+                    part->Add(VertexAttribute::COLOR);
+
+                    auto colors = ReadColors(attributes["COLOR_0"].get<int>());
+
+                    for (size_t i = 0; i < colors.size(); i++)
+                        part->GetVertex(i).SetColor(colors[i]);
                 }
-                else
+            }
+
+            if (primitive.contains("indices"))
+            {
+                auto indices = ReadIndices(primitive["indices"].get<int>());
+
+                part->SetIndices(indices.size());
+
+                for (size_t i = 0; i < indices.size(); i += 3)
                 {
-                    colors.resize(positions.size());
-                    std::fill(colors.begin(), colors.end(), glm::u8vec4(255, 255, 255, 255));
+                    part->SetIndex(i + 0, indices[i + 0]);
+                    part->SetIndex(i + 1, indices[i + 1]);
+                    part->SetIndex(i + 2, indices[i + 2]);
                 }
-
-                if (primitive.contains("indices"))
-                {
-                    indices = ReadIndices(primitive["indices"].get<int>());
-                }
-
-                // Combine vertex attributes into vertices
-                std::vector<Vertex3D> vertices(positions.size());
-
-                for (size_t i = 0; i < positions.size(); i++)
-                {
-                    vertices[i].position = positions[i] * glm::vec3(1.0, 1.0, -1.0);
-                    vertices[i].normal = normals[i] * glm::vec3(1.0, 1.0, -1.0);
-                    vertices[i].uv = uvs[i];
-                    vertices[i].uv2 = uvs2[i];
-                    vertices[i].color = colors[i];
-                }
-
-                // No indices, reverse triangle vertices
-                if (indices.empty())
-                {
-                    for (size_t i = 0; i < vertices.size() - 2; i += 3)
-                        std::swap(vertices[i], vertices[i + 1]);
-                }
-                // Indices present, reverse triangle indices order
-                else
-                {
-                    for (size_t i = 0; i < indices.size() - 2; i += 3)
-                        std::swap(indices[i], indices[i + 1]);
-                }
-
-                for (const auto& vertex : vertices)
-                    part->AddVertex(vertex);
-
-                for (const auto& index : indices)
-                    part->AddIndex(index);
             }
         }
 
