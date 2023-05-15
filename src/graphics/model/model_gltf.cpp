@@ -340,7 +340,7 @@ void GLTFLoader::ReadMaterials()
 
                     const auto& texture = m_textures[index];
 
-                    const auto& image = m_images[texture.source];
+                    [[maybe_unused]] const auto& image = m_images[texture.source];
 
                     if (tex.contains("strength"))
                     {
@@ -417,7 +417,7 @@ void GLTFLoader::ReadSamplers()
 {
     m_samplers.clear();
 
-    for (const auto& node : m_root["samplers"])
+    for ([[maybe_unused]] const auto& node : m_root["samplers"])
     {
         Sampler sampler{};
 
@@ -486,7 +486,7 @@ void GLTFLoader::ReadMeshes()
                 part->SetVertices(positions.size());
 
                 for (size_t i = 0; i < positions.size(); i++)
-                    part->GetVertex(i).SetPosition(positions[i]);
+                    part->GetVertex(i).SetPosition(positions[i] * glm::vec3(1.0f, 1.0f, -1.0f));
 
                 if (attributes.contains("NORMAL"))
                 {
@@ -495,7 +495,7 @@ void GLTFLoader::ReadMeshes()
                     auto normals = ReadNormals(attributes["NORMAL"].get<int>());
 
                     for (size_t i = 0; i < normals.size(); i++)
-                        part->GetVertex(i).SetNormal(normals[i]);
+                        part->GetVertex(i).SetNormal(normals[i] * glm::vec3(1.0f, 1.0f, -1.0f));
                 }
 
                 if (attributes.contains("TEXCOORD_0"))
@@ -535,11 +535,24 @@ void GLTFLoader::ReadMeshes()
 
                 part->SetIndices(indices.size());
 
-                for (size_t i = 0; i < indices.size(); i += 3)
+                for (unsigned i = 0; i < indices.size(); i += 3)
                 {
                     part->SetIndex(i + 0, indices[i + 0]);
-                    part->SetIndex(i + 1, indices[i + 1]);
-                    part->SetIndex(i + 2, indices[i + 2]);
+                    part->SetIndex(i + 1, indices[i + 2]);
+                    part->SetIndex(i + 2, indices[i + 1]);
+                }
+            }
+            else
+            {
+                size_t vertices = part->GetVertexCount();
+
+                part->SetIndices(vertices);
+
+                for (unsigned i = 0; i < vertices; i += 3)
+                {
+                    part->SetIndex(i + 0, i + 0);
+                    part->SetIndex(i + 1, i + 2);
+                    part->SetIndex(i + 2, i + 1);
                 }
             }
         }
