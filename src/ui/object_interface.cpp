@@ -1278,7 +1278,7 @@ bool CObjectInterface::CreateInterface(bool bSelect)
         pos.x = ox+sx*9.40f;
         pos.y = oy+sy*0.75f;
         pc = pw->CreateColor(pos, ddim, -1, EVENT_OBJECT_PEN7);  // green
-        pc->SetColor(Gfx::Color(0.0f, 0.0f, 0.8f, 0.0f));
+        pc->SetColor(Gfx::Color(0.0f, 0.8f, 0.0f, 0.0f));
         pos.x = ox+sx*9.65f;
         pos.y = oy+sy*1.25f;
         pc = pw->CreateColor(pos, ddim, -1, EVENT_OBJECT_PEN8);  // brown
