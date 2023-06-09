@@ -32,6 +32,7 @@
 #include <iterator>
 #include <string>
 #include <sstream>
+#include <type_traits>
 #include <vector>
 #include <stdexcept>
 #include <memory>
@@ -138,7 +139,20 @@ public:
     }
 
 private:
-    template<typename T>
+    template<typename T, std::enable_if_t<std::is_same_v<T, std::string>, bool> = true>
+    std::vector<T> StringToArray(const std::string& s)
+    {
+        std::vector<T> result;
+        std::stringstream ss(s);
+        std::string item;
+        while (std::getline(ss, item, ','))
+        {
+            result.push_back(item);
+        }
+        return result;
+    }
+
+    template<typename T, std::enable_if_t<!std::is_same_v<T, std::string>, bool> = true>
     std::vector<T> StringToArray(const std::string& s)
     {
         std::vector<T> result;
