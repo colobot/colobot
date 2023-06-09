@@ -14,7 +14,7 @@ jobs:
       fail-fast: false
     steps:
     - name: Install Colobot dependencies
-      run: sudo apt-get update && sudo apt-get install -y --no-install-recommends build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-regex-dev libphysfs-dev gettext git po4a vorbis-tools librsvg2-bin xmlstarlet libmpg123-dev
+      run: sudo apt-get update && sudo apt-get install -y --no-install-recommends build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libicu-dev libphysfs-dev gettext git po4a vorbis-tools librsvg2-bin xmlstarlet libmpg123-dev
       if: matrix.container == ''
     - uses: actions/checkout@v2
     - name: Checkout the Google Test submodule
@@ -48,11 +48,11 @@ jobs:
         wget -N https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
         chmod +x linuxdeploy-x86_64.AppImage
         ./linuxdeploy-x86_64.AppImage --appimage-extract
-        
+
         # Create AppImage
         NO_STRIP=1 ./squashfs-root/AppRun -e colobot --output appimage --appdir colobot.AppDir -d desktop/colobot.desktop -i ../desktop/colobot.svg
         chmod +x Colobot-*-x86_64.AppImage
-        
+
         # Prepare folder for zip
         mkdir -p appimage
         cp -rp install/data appimage/data
@@ -87,7 +87,7 @@ jobs:
       fail-fast: false
     steps:
     - name: Install Colobot dependencies
-      run: brew install cmake sdl2 sdl2_image sdl2_ttf boost glew physfs flac libsndfile libvorbis vorbis-tools gettext libicns librsvg wget xmlstarlet
+      run: brew install cmake sdl2 sdl2_image sdl2_ttf icu4c glew physfs flac libsndfile libvorbis vorbis-tools gettext libicns librsvg wget xmlstarlet
       if: matrix.container == ''
     - uses: actions/checkout@v2
     - name: Checkout the Google Test submodule
@@ -168,7 +168,7 @@ jobs:
       run: cmake -E make_directory build
     - name: Run CMake (for Windows)
       working-directory: build
-      run: cmake -G "Ninja" -DCMAKE_C_COMPILER=cl.exe -DCMAKE_CXX_COMPILER=cl.exe -DVCPKG_TARGET_TRIPLET=${{ matrix.vcpkg_triplet }} -DCMAKE_TOOLCHAIN_FILE=${{ env.VCPKG_ROOT }}\scripts\buildsystems\vcpkg.cmake -DUSE_STATIC_RUNTIME=1 -DCBOT_STATIC=1 -DBOOST_STATIC=1 -DGLEW_STATIC=1 -DSNDFILE_STATIC=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}\build\install -DDEV_BUILD=1 -DPORTABLE=1 -DTOOLS=1 -DTESTS=1 -DDESKTOP=1 ..
+      run: cmake -G "Ninja" -DCMAKE_C_COMPILER=cl.exe -DCMAKE_CXX_COMPILER=cl.exe -DVCPKG_TARGET_TRIPLET=${{ matrix.vcpkg_triplet }} -DCMAKE_TOOLCHAIN_FILE=${{ env.VCPKG_ROOT }}\scripts\buildsystems\vcpkg.cmake -DUSE_STATIC_RUNTIME=1 -DCBOT_STATIC=1 -DCOLOBOT_CORE_STATIC=1 -DGLEW_STATIC=1 -DSNDFILE_STATIC=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}\build\install -DDEV_BUILD=1 -DPORTABLE=1 -DTOOLS=1 -DTESTS=1 -DDESKTOP=1 ..
     - name: Build
       working-directory: build
       run: |
@@ -195,7 +195,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Install Colobot dependencies
-      run: sudo apt-get update && sudo apt-get install -y --no-install-recommends build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-regex-dev libphysfs-dev gettext git po4a vorbis-tools librsvg2-bin xmlstarlet doxygen graphviz libmpg123-dev
+      run: sudo apt-get update && sudo apt-get install -y --no-install-recommends build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libicu-dev libphysfs-dev gettext git po4a vorbis-tools librsvg2-bin xmlstarlet doxygen graphviz libmpg123-dev
     - uses: actions/checkout@v2
     - name: Create build directory
       run: cmake -E make_directory build
