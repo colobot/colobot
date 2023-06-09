@@ -22,7 +22,7 @@
 #include "app/app.h"
 
 #include "common/logger.h"
-#include "common/stringutils.h"
+#include "core/stringutils.h"
 
 #include "common/resources/inputstream.h"
 

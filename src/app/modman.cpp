@@ -33,10 +33,7 @@
 
 #include <algorithm>
 #include <map>
-#include <boost/filesystem.hpp>
-#include <boost/algorithm/string.hpp>
-
-using namespace boost::filesystem;
+#include <filesystem>
 
 CModManager::CModManager(CApplication* app, CPathManager* pathManager)
     : m_app{app},
@@ -74,7 +71,7 @@ void CModManager::FindMods()
     std::map<std::string, std::string> modPaths;
     for (const auto& path : rawPaths)
     {
-        auto modName = boost::filesystem::path(path).stem().string();
+        auto modName = std::filesystem::path(path).stem().string();
         modPaths.insert(std::make_pair(modName, path));
     }
 
@@ -277,10 +274,13 @@ void CModManager::LoadModData(Mod& mod)
                 }
                 else if (line->GetParam("major")->IsDefined() && line->GetParam("minor")->IsDefined() &&  line->GetParam("patch")->IsDefined())
                 {
-                    auto major = boost::lexical_cast<std::string>(line->GetParam("major")->AsInt());
-                    auto minor = boost::lexical_cast<std::string>(line->GetParam("minor")->AsInt());
-                    auto patch = boost::lexical_cast<std::string>(line->GetParam("patch")->AsInt());
-                    data.version = boost::algorithm::join(std::vector<std::string>{ major, minor, patch }, ".");
+                    auto major = StrUtils::ToString(line->GetParam("major")->AsInt());
+                    auto minor = StrUtils::ToString(line->GetParam("minor")->AsInt());
+                    auto patch = StrUtils::ToString(line->GetParam("patch")->AsInt());
+
+                    std::ostringstream strStream;
+                    strStream << major << "." << minor << "." << patch;
+                    data.version = strStream.str();
                 }
             }
 

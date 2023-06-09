@@ -30,7 +30,7 @@
 #include "common/logger.h"
 #include "common/make_unique.h"
 #include "common/profiler.h"
-#include "common/stringutils.h"
+#include "core/stringutils.h"
 #include "common/version.h"
 
 #include "common/resources/resourcemanager.h"
@@ -49,8 +49,6 @@
 #ifdef OPENAL_SOUND
     #include "sound/oalsound/alsound.h"
 #endif
-
-#include <boost/tokenizer.hpp>
 
 #include <SDL.h>
 #include <SDL_image.h>
@@ -1688,9 +1686,10 @@ bool CApplication::ParseDebugModes(const std::string& str, int& debugModes)
 {
     debugModes = 0;
 
-    boost::char_separator<char> sep(",");
-    boost::tokenizer<boost::char_separator<char>> tokens(str, sep);
-    for (const auto& modeToken : tokens)
+    std::istringstream iss(str);
+    std::string modeToken;
+
+    while (std::getline(iss, modeToken, ','))
     {
         if (modeToken == "sys_events")
         {

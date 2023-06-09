@@ -20,7 +20,7 @@
 
 #include "object/auto/autoportico.h"
 
-#include "common/stringutils.h"
+#include "core/stringutils.h"
 
 #include "level/robotmain.h"
 

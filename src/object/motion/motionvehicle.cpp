@@ -22,7 +22,7 @@
 
 #include "app/app.h"
 
-#include "common/stringutils.h"
+#include "core/stringutils.h"
 
 #include "graphics/engine/oldmodelmanager.h"
 #include "graphics/engine/particle.h"

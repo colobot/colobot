@@ -46,7 +46,7 @@ you will need to compile colobot.
 You will need:
  * C++17 compiler
  * CMake >= 3.16
- * Boost
+ * ICU
  * SDL2
  * SDL2_image
  * SDL2_ttf
@@ -62,7 +62,7 @@ You will need:
 
 On Ubuntu (and probably any other Debian-based system), you can use the following command to install all required packages:
 ```
-  $ apt-get install build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-regex-dev libphysfs-dev gettext git po4a vorbis-tools
+  $ apt-get install build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libicu-dev libphysfs-dev gettext git po4a vorbis-tools
 ```
 
 Make sure you install the packages along with header files (often distributed in separate *-dev packages). If you miss any requirements,

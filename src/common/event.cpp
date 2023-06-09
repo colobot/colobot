@@ -21,8 +21,7 @@
 #include "common/event.h"
 
 #include "common/logger.h"
-
-#include <boost/lexical_cast.hpp>
+#include "core/stringutils.h"
 
 namespace
 {
@@ -580,12 +579,12 @@ std::string ParseEventType(EventType eventType)
     {
         if(eventType >= EVENT_INTERFACE_KEY && eventType <= EVENT_INTERFACE_KEY_END)
         {
-            return "EVENT_INTERFACE_KEY"+boost::lexical_cast<std::string>(eventType-EVENT_INTERFACE_KEY);
+            return "EVENT_INTERFACE_KEY"+StrUtils::ToString<int>(eventType-EVENT_INTERFACE_KEY);
         }
 
         if(eventType >= EVENT_OBJECT_SHORTCUT && eventType <= EVENT_OBJECT_SHORTCUT_MAX)
         {
-            return "EVENT_OBJECT_SHORTCUT"+boost::lexical_cast<std::string>(eventType-EVENT_OBJECT_SHORTCUT);
+            return "EVENT_OBJECT_SHORTCUT"+StrUtils::ToString<int>(eventType-EVENT_OBJECT_SHORTCUT);
         }
 
         const char* stdEvent = EVENT_TYPE_TEXT[eventType];

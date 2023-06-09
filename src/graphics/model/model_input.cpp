@@ -17,6 +17,8 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
+#include "core/stringutils.h"
+
 #include "graphics/model/model_input.h"
 
 #include "common/ioutils.h"
@@ -29,9 +31,6 @@
 
 #include <fstream>
 #include <cstdio>
-
-#include <boost/algorithm/string.hpp>
-#include <boost/lexical_cast.hpp>
 
 namespace Gfx
 {
@@ -130,7 +129,7 @@ void ModelInput::ReadBinaryModel(CModel &model, std::istream &stream)
     else if (version == 3)
         ReadBinaryModelV3(model, stream);
     else
-        throw CModelIOException(std::string("Unexpected version number: ") + boost::lexical_cast<std::string>(version));
+        throw CModelIOException(std::string("Unexpected version number: ") + StrUtils::ToString(version));
 }
 
 void ModelInput::ReadBinaryModelV1AndV2(CModel &model, std::istream &stream)
@@ -204,7 +203,7 @@ void ModelInput::ReadTextModel(CModel &model, std::istream &stream)
     int version = 0;
     try
     {
-        version = boost::lexical_cast<int>(ReadLineString(stream, "version"));
+        version = StrUtils::FromString<int>(ReadLineString(stream, "version"));
         stream.seekg(std::ios_base::beg);
     }
     catch (const std::exception& e)
@@ -217,7 +216,7 @@ void ModelInput::ReadTextModel(CModel &model, std::istream &stream)
     else if (version == 3)
         ReadTextModelV3(model, stream);
     else
-        throw CModelIOException(std::string("Unexpected version number: ") + boost::lexical_cast<std::string>(version));
+        throw CModelIOException(std::string("Unexpected version number: ") + StrUtils::ToString(version));
 }
 
 void ModelInput::ReadTextModelV1AndV2(CModel &model, std::istream &stream)
@@ -226,8 +225,8 @@ void ModelInput::ReadTextModelV1AndV2(CModel &model, std::istream &stream)
 
     try
     {
-        header.version = boost::lexical_cast<int>(ReadLineString(stream, "version"));
-        header.totalTriangles = boost::lexical_cast<int>(ReadLineString(stream, "total_triangles"));
+        header.version = StrUtils::FromString<int>(ReadLineString(stream, "version"));
+        header.totalTriangles = StrUtils::FromString<int>(ReadLineString(stream, "total_triangles"));
     }
     catch (const std::exception& e)
     {
@@ -256,9 +255,9 @@ void ModelInput::ReadTextModelV1AndV2(CModel &model, std::istream &stream)
         t.variableTex2 = varTex2Ch == "Y";
 
         if (header.version == 1)
-            t.lodLevel = static_cast<ModelLODLevel>( boost::lexical_cast<int>(ReadLineString(stream, "lod_level")) );
+            t.lodLevel = static_cast<ModelLODLevel>( StrUtils::FromString<int>(ReadLineString(stream, "lod_level")) );
 
-        t.state = boost::lexical_cast<int>(ReadLineString(stream, "state"));
+        t.state = StrUtils::FromString<int>(ReadLineString(stream, "state"));
 
         if (t.lodLevel == ModelLODLevel::Low ||
             t.lodLevel == ModelLODLevel::Medium)
@@ -324,11 +323,11 @@ void ModelInput::ReadTextModelV3(CModel &model, std::istream &stream)
 ModelHeaderV3 ModelInput::ReadTextHeader(std::istream &stream)
 {
     ModelHeaderV3 header;
-    header.version = boost::lexical_cast<int>(ReadLineString(stream, "version"));
-    header.totalCrashSpheres = boost::lexical_cast<int>(ReadLineString(stream, "total_crash_spheres"));
+    header.version = StrUtils::FromString<int>(ReadLineString(stream, "version"));
+    header.totalCrashSpheres = StrUtils::FromString<int>(ReadLineString(stream, "total_crash_spheres"));
     header.hasShadowSpot = ReadLineString(stream, "has_shadow_spot") == std::string("Y");
     header.hasCameraCollisionSphere = ReadLineString(stream, "has_camera_collision_sphere") == std::string("Y");
-    header.totalMeshes = boost::lexical_cast<int>(ReadLineString(stream, "total_meshes"));
+    header.totalMeshes = StrUtils::FromString<int>(ReadLineString(stream, "total_meshes"));
     return header;
 }
 
@@ -341,7 +340,7 @@ CModelMesh ModelInput::ReadTextMesh(std::istream& stream)
     mesh.SetScale(ParseVector(ReadLineString(stream, "scale")));
     mesh.SetParent(ReadLineString(stream, "parent"));
 
-    int totalTriangles = boost::lexical_cast<int>(ReadLineString(stream, "total_triangles"));
+    int totalTriangles = StrUtils::FromString<int>(ReadLineString(stream, "total_triangles"));
 
     for (int i = 0; i < totalTriangles; ++i)
     {
@@ -586,8 +585,8 @@ ModelLODLevel ModelInput::MinMaxToLodLevel(float min, float max)
 void ModelInput::ConvertOldTex1Name(ModelTriangle& triangle, const char* tex1Name)
 {
     triangle.tex1Name = tex1Name;
-    boost::replace_all(triangle.tex1Name, "bmp", "png");
-    boost::replace_all(triangle.tex1Name, "tga", "png");
+    triangle.tex1Name = StrUtils::Replace(triangle.tex1Name, "bmp", "png");
+    triangle.tex1Name = StrUtils::Replace(triangle.tex1Name, "tga", "png");
 }
 
 void ModelInput::ConvertFromOldRenderState(ModelTriangle& triangle, int state)
@@ -691,7 +690,7 @@ std::string ModelInput::ReadLineString(std::istream& stream, const std::string& 
             throw CModelIOException("Unexpected EOF");
 
         std::getline(stream, line);
-        boost::trim_right(line);
+        StrUtils::TrimRight(line);
         if (!line.empty() && line[0] != '#')
             break;
     }
@@ -706,7 +705,7 @@ std::string ModelInput::ReadLineString(std::istream& stream, const std::string& 
 
     std::string value;
     std::getline(s, value);
-    boost::trim_left(value);
+    StrUtils::TrimLeft(value);
 
     return value;
 }

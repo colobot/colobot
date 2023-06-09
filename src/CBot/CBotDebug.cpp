@@ -23,11 +23,12 @@
 #include "CBot/CBotInstr/CBotFunction.h"
 #include "CBot/CBotInstr/CBotInstrCall.h"
 
+#include "core/stringutils.h"
+
 #include <functional>
 #include <sstream>
 #include <iostream>
 #include <iomanip>
-#include <boost/algorithm/string/replace.hpp>
 
 namespace CBot
 {
@@ -64,11 +65,11 @@ void CBotDebug::DumpCompiledProgram(CBotProgram* program)
 
         std::string label = "<b>"+instr->GetDebugName()+"</b>\n";
         std::string data = instr->GetDebugData();
-        boost::algorithm::replace_all(data, "&", "&amp;");
-        boost::algorithm::replace_all(data, "<", "&lt;");
-        boost::algorithm::replace_all(data, ">", "&gt;");
+        data = StrUtils::Replace(data, "&", "&amp;");
+        data = StrUtils::Replace(data, "<", "&lt;");
+        data = StrUtils::Replace(data, ">", "&gt;");
         label += data;
-        boost::algorithm::replace_all(label, "\n", "<br/>");
+        label = StrUtils::Replace(label, "\n", "<br/>");
 
         std::string additional = "";
         if (instr->GetDebugName() == "CBotFunction")

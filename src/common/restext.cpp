@@ -27,12 +27,11 @@
 #include "common/error.h"
 #include "common/event.h"
 #include "common/logger.h"
-#include "common/stringutils.h"
+#include "core/stringutils.h"
 
 #include "object/object_type.h"
 
 #include <SDL_keyboard.h>
-#include <boost/regex.hpp>
 
 #include <libintl.h>
 

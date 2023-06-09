@@ -27,7 +27,7 @@
 
 #include "common/logger.h"
 #include "common/make_unique.h"
-#include "common/stringutils.h"
+#include "core/stringutils.h"
 
 #include "common/resources/inputstream.h"
 #include "common/resources/outputstream.h"
@@ -41,7 +41,6 @@
 #include "ui/controls/scroll.h"
 
 #include <SDL.h>
-#include <boost/algorithm/string.hpp>
 
 #include <cstring>
 
@@ -816,7 +815,7 @@ void CEdit::HyperJump(std::string name, std::string marker)
 
     std::string filename = name + std::string(".txt");
     filename = InjectLevelPathsForCurrentLevel(filename, "help/%lng%");
-    boost::replace_all(filename, "\\", "/"); //TODO: Fix this in files
+    filename = StrUtils::Replace(filename, "\\", "/"); //TODO: Fix this in files
 
     if ( ReadText(filename) )
     {
@@ -1168,7 +1167,7 @@ static std::string PrepareImageFilename(std::string name)
     std::string filename;
     filename = name + ".png";
     filename = InjectLevelPathsForCurrentLevel(filename, "icons");
-    boost::replace_all(filename, "\\", "/"); // TODO: Fix this in files
+    filename = StrUtils::Replace(filename, "\\", "/"); // TODO: Fix this in files
     return filename;
 }
 
@@ -1410,7 +1409,7 @@ int CEdit::GetTextLength()
 static std::string GetNameParam(std::string cmd, int rank)
 {
     std::vector<std::string> results;
-    boost::split(results, cmd, boost::is_any_of(" ;"));
+    StrUtils::Split(results, cmd, [](char c) { return c == ' ' || c == ';'; });
 
     if (results.size() > static_cast<unsigned int>(rank))
     {
@@ -1426,7 +1425,7 @@ static std::string GetNameParam(std::string cmd, int rank)
 static int GetValueParam(std::string cmd, int rank)
 {
     std::vector<std::string> results;
-    boost::split(results, cmd, boost::is_any_of(" ;"));
+    StrUtils::Split(results, cmd, [](char c) { return c == ' ' || c == ';'; });
     int return_value = 0;
 
     if (results.size() > static_cast<unsigned int>(rank))

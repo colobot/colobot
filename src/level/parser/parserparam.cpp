@@ -23,7 +23,7 @@
 
 #include "common/logger.h"
 #include "common/make_unique.h"
-#include "common/stringutils.h"
+#include "core/stringutils.h"
 
 #include "common/resources/resourcemanager.h"
 
@@ -32,8 +32,8 @@
 
 #include "level/parser/parser.h"
 
-#include <boost/lexical_cast.hpp>
-#include <boost/algorithm/string.hpp>
+#include <type_traits>
+#include <algorithm>
 
 CLevelParserParam::CLevelParserParam(std::string name, std::string value)
   : m_name(name)
@@ -48,11 +48,11 @@ CLevelParserParam::CLevelParserParam(std::string name, bool empty)
 }
 
 CLevelParserParam::CLevelParserParam(int value)
-  : m_value(boost::lexical_cast<std::string>(value))
+  : m_value(StrUtils::ToString(value))
 {}
 
 CLevelParserParam::CLevelParserParam(float value)
-  : m_value(boost::lexical_cast<std::string>(value))
+  : m_value(StrUtils::ToString(value))
 {}
 
 CLevelParserParam::CLevelParserParam(std::string value)
@@ -131,12 +131,18 @@ bool CLevelParserParam::IsDefined()
     return !m_empty;
 }
 
-template<typename T>
+template<typename T, std::enable_if_t<std::is_same_v<T, std::string>, bool>>
+T CLevelParserParam::Cast(std::string value, std::string requestedType)
+{
+    return std::move(value);
+}
+
+template<typename T, std::enable_if_t<!std::is_same_v<T, std::string>, bool>>
 T CLevelParserParam::Cast(std::string value, std::string requestedType)
 {
     try
     {
-        return boost::lexical_cast<T>(value);
+        return StrUtils::FromString<T>(value);
     }
     catch(...)
     {
@@ -209,7 +215,8 @@ bool CLevelParserParam::AsBool()
     if (m_empty)
         throw CLevelParserExceptionMissingParam(this);
     std::string value = m_value;
-    boost::to_lower(value);
+    // Will not handle utf-8 correctly, but we should not care, as we only need to check if this is 'true' or 'false'
+    std::transform(value.begin(), value.end(), value.begin(), [](auto c){ return std::tolower(c); });
     if (value == "true") return true;
     if (value == "false") return false;
     return Cast<bool>("bool");
@@ -749,7 +756,7 @@ const std::string CLevelParserParam::FromObjectType(ObjectType value)
     if (value == OBJECT_HUMAN       ) return "Me";
     if (value == OBJECT_TECH        ) return "Tech";
     if (value == OBJECT_CONTROLLER  ) return "MissionController";
-    return boost::lexical_cast<std::string>(static_cast<int>(value));
+    return StrUtils::ToString(static_cast<int>(value));
 }
 
 ObjectType CLevelParserParam::AsObjectType()
@@ -1051,7 +1058,7 @@ const std::string CLevelParserParam::FromCameraType(Gfx::CameraType value)
 {
     if (value == Gfx::CAM_TYPE_ONBOARD) return "ONBOARD";
     if (value == Gfx::CAM_TYPE_FIX    ) return "FIX";
-    return boost::lexical_cast<std::string>(static_cast<int>(value));
+    return StrUtils::ToString(static_cast<int>(value));
 }
 
 Gfx::CameraType CLevelParserParam::AsCameraType()
@@ -1108,13 +1115,13 @@ void CLevelParserParam::ParseArray()
         return;
 
     std::vector<std::string> values;
-    boost::split(values, m_value, boost::is_any_of(";"));
+    StrUtils::Split(values, m_value, [](char c) { return c == ';'; });
     int i = 0;
     for (auto& value : values)
     {
-        boost::algorithm::trim(value);
+        StrUtils::Trim(value);
         if (value.empty()) continue;
-        auto param = MakeUnique<CLevelParserParam>(m_name + "[" + boost::lexical_cast<std::string>(i) + "]", value);
+        auto param = MakeUnique<CLevelParserParam>(m_name + "[" + StrUtils::ToString(i) + "]", value);
         param->SetLine(m_line);
         m_array.push_back(std::move(param));
         i++;

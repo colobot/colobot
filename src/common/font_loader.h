@@ -28,10 +28,10 @@
 
 #include "graphics/engine/text.h"
 
-#include <boost/property_tree/ptree.hpp>
-
 #include <string>
 #include <optional>
+
+namespace si { class SimpleIni; }
 
 /**
 * \class CFontLoader
@@ -39,7 +39,6 @@
 * \brief Class for loading config file
 *
 */
-
 class CFontLoader
 {
 public:
@@ -57,5 +56,5 @@ public:
     std::optional<std::string> GetFont(Gfx::FontType type) const;
 
 private:
-    boost::property_tree::ptree m_propertyTree;
+    std::unique_ptr<si::SimpleIni> m_reader;
 };

@@ -21,7 +21,7 @@
 
 #include "common/global.h"
 #include "common/restext.h"
-#include "common/stringutils.h"
+#include "core/stringutils.h"
 
 #include "graphics/model/model_crash_sphere.h"
 

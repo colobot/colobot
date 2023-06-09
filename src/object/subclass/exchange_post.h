@@ -27,7 +27,7 @@
 #include <string>
 #include <vector>
 
-#include <boost/optional.hpp>
+#include <optional>
 
 struct ExchangePostInfo
 {
@@ -57,7 +57,7 @@ public:
 
     bool SetInfo(const std::string& name, float value);
     const std::vector<ExchangePostInfo>& GetInfoList();
-    boost::optional<float> GetInfoValue(const std::string& name);
+    std::optional<float> GetInfoValue(const std::string& name);
     bool HasInfo(const std::string& name);
     bool DeleteInfo(const std::string& name);
 

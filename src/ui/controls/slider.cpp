@@ -21,7 +21,7 @@
 #include "ui/controls/slider.h"
 
 #include "common/event.h"
-#include "common/stringutils.h"
+#include "core/stringutils.h"
 
 #include "graphics/engine/engine.h"
 #include "graphics/engine/text.h"

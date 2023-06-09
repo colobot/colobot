@@ -21,7 +21,7 @@
 
 #include "common/logger.h"
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 #include <windows.h>
 
 
@@ -132,7 +132,7 @@ std::string CSystemUtilsWindows::GetEnvVar(const std::string& name)
 
 bool CSystemUtilsWindows::OpenPath(const std::string& path)
 {
-    int result = system(("start explorer \"" + boost::filesystem::path(path).make_preferred().string() + "\"").c_str());
+    int result = system(("start explorer \"" + std::filesystem::path(path).make_preferred().string() + "\"").c_str());
     if (result != 0)
     {
         GetLogger()->Error("Failed to open path: %s, error code: %i\n", path.c_str(), result);

@@ -20,7 +20,7 @@
 #include "level/scoreboard.h"
 
 #include "common/restext.h"
-#include "common/stringutils.h"
+#include "core/stringutils.h"
 
 #include "level/robotmain.h"
 
@@ -30,7 +30,7 @@
 
 #include "ui/displaytext.h"
 
-#include <boost/lexical_cast.hpp>
+#include <algorithm>
 
 void CScoreboard::CScoreboardRule::Read(CLevelParserLine* line)
 {

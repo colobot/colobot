@@ -2336,7 +2336,7 @@ bool CScriptFunctions::rReceive(CBotVar* var, CBotVar* result, int& exception, v
     }
     if ( !WaitForForegroundTask(script, result, exception) )  return false;  // not finished
 
-    if ( script->m_returnValue == boost::none )
+    if ( !script->m_returnValue )
     {
         result->SetValFloat(nanf(""));
     }

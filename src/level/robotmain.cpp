@@ -31,7 +31,7 @@
 #include "common/make_unique.h"
 #include "common/restext.h"
 #include "common/settings.h"
-#include "common/stringutils.h"
+#include "core/stringutils.h"
 
 #include "common/resources/inputstream.h"
 #include "common/resources/outputstream.h"
@@ -114,8 +114,6 @@
 #include <stdexcept>
 #include <cmath>
 #include <ctime>
-
-#include <boost/lexical_cast.hpp>
 
 
 // Global variables.
@@ -2878,28 +2876,27 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 {
                     if (line->GetParam(type)->IsDefined())
                     {
-                        try
-                        {
-                            int rank = boost::lexical_cast<int>(line->GetParam(type)->GetValue());
-                            if (rank >= 0)
-                            {
-                                // TODO: Fix default levels and add a future removal warning
-                                GetLogger()->Warn("This level is using deprecated way of defining %1$s scene. Please change the %1$s= parameter in EndingFile from %2$d to \"levels/other/%1$s%2$03d.txt\".\n", type.c_str(), rank);
-                                std::stringstream ss;
-                                ss << "levels/other/" << type << std::setfill('0') << std::setw(3) << rank << ".txt";
-                                return ss.str();
-                            }
-                            else
-                            {
-                                // TODO: Fix default levels and add a future removal warning
-                                GetLogger()->Warn("This level is using deprecated way of defining %1$s scene. Please remove the %1$s= parameter in EndingFile.\n", type.c_str());
-                                return "";
-                            }
+                        bool parseOk = false;
+                        int rank = StrUtils::FromString<int>(line->GetParam(type)->GetValue(), &parseOk);
 
-                        }
-                        catch (boost::bad_lexical_cast &e)
+                        if (!parseOk)
                         {
                             return line->GetParam(type)->AsPath("levels");
+                        }
+
+                        if (rank >= 0)
+                        {
+                            // TODO: Fix default levels and add a future removal warning
+                            GetLogger()->Warn("This level is using deprecated way of defining %1$s scene. Please change the %1$s= parameter in EndingFile from %2$d to \"levels/other/%1$s%2$03d.txt\".\n", type.c_str(), rank);
+                            std::stringstream ss;
+                            ss << "levels/other/" << type << std::setfill('0') << std::setw(3) << rank << ".txt";
+                            return ss.str();
+                        }
+                        else
+                        {
+                            // TODO: Fix default levels and add a future removal warning
+                            GetLogger()->Warn("This level is using deprecated way of defining %1$s scene. Please remove the %1$s= parameter in EndingFile.\n", type.c_str());
+                            return "";
                         }
                     }
                     return "";
@@ -3730,7 +3727,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             if (!m_sceneReadPath.empty()) continue; // ignore errors when loading saved game (TODO: don't report ones that are just not loaded when loading saved game)
             if (resetObject) continue; // ignore when reseting just objects (TODO: see above)
 
-            throw CLevelParserException("Unknown command: '" + line->GetCommand() + "' in " + line->GetLevelFilename() + ":" + boost::lexical_cast<std::string>(line->GetLineNumber()));
+            throw CLevelParserException("Unknown command: '" + line->GetCommand() + "' in " + line->GetLevelFilename() + ":" + StrUtils::ToString(line->GetLineNumber()));
         }
 
         // Do this here to prevent the first frame from taking a long time to render
@@ -5248,7 +5245,7 @@ Error CRobotMain::ProcessEndMissionTake()
                     {
                         GetLogger()->Info("Team %d won\n", team);
 
-                        m_displayText->DisplayText(("<<< Team "+boost::lexical_cast<std::string>(team)+" won the game >>>").c_str(), Math::Vector(0.0f,0.0f,0.0f));
+                        m_displayText->DisplayText(("<<< Team "+StrUtils::ToString(team)+" won the game >>>").c_str(), Math::Vector(0.0f,0.0f,0.0f));
                         if (m_missionTimerEnabled && m_missionTimerStarted)
                         {
                             GetLogger()->Info("Mission time: %s\n", TimeFormat(m_missionTimer).c_str());

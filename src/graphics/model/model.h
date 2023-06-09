@@ -28,7 +28,7 @@
 #include <map>
 #include <string>
 #include <vector>
-#include <boost/optional.hpp>
+#include <optional>
 
 namespace Gfx
 {
@@ -75,8 +75,8 @@ public:
 private:
     std::map<std::string, CModelMesh> m_meshes;
     std::vector<ModelCrashSphere> m_crashSpheres;
-    boost::optional<ModelShadowSpot> m_shadowSpot;
-    boost::optional<Math::Sphere> m_cameraCollisionSphere;
+    std::optional<ModelShadowSpot> m_shadowSpot;
+    std::optional<Math::Sphere> m_cameraCollisionSphere;
 };
 
 } // namespace Gfx

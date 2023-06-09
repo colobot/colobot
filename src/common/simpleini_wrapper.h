@@ -17,23 +17,21 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
+/**
+ * \file common/simpleini_wrapper.h
+ * \brief Class extending CSimpleIniA from simpleini library. Do not include in header files to speed up the compilation.
+ */
+
 #pragma once
 
-#include "core/stringutils.h"
+#define SI_SUPPORT_IOSTREAMS
+#define SI_NO_CONVERSION
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#pragma GCC diagnostic ignored "-Wsuggest-override"
+#include <SimpleIni.h>
+#pragma GCC diagnostic pop
 
-#include "object/object_type.h"
-
-#include <stdexcept>
-
-class CObjectCreateException : public std::runtime_error
-{
-public:
-    explicit CObjectCreateException(const std::string& error, ObjectType type)
-        : std::runtime_error("Error creating object type " + StrUtils::ToString(type))
-    {}
-    explicit CObjectCreateException(const std::string& error, ObjectType type, const std::string& modelName)
-        : std::runtime_error("Error creating object type " +
-                              StrUtils::ToString(type) +
-                              " from model " + modelName + ": " + error)
-    {}
-};
+namespace si {
+    class SimpleIni : public CSimpleIniA {};
+}

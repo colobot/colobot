@@ -25,7 +25,7 @@
 #include "common/font_loader.h"
 #include "common/image.h"
 #include "common/logger.h"
-#include "common/stringutils.h"
+#include "core/stringutils.h"
 
 #include "common/resources/resourcemanager.h"
 

@@ -22,8 +22,7 @@
 #include "CBot/CBot.h"
 
 #include "CBot/CBotUtils.h"
-
-#include <boost/algorithm/string.hpp>
+#include "core/stringutils.h"
 
 namespace CBot
 {
@@ -248,13 +247,12 @@ bool rStrUpper( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
     if ( pVar->GetType() != CBotTypString ) { ex = CBotErrBadString ; return true; }
 
     // get the contents of the string
-    std::string  s = pVar->GetValString();
+    std::string s = pVar->GetValString();
 
     // but no second parameter
     if ( pVar->GetNext() != nullptr ){ ex = CBotErrOverParam ; return true; }
 
-
-    boost::to_upper(s);
+    StrUtils::ToUpper(s);
 
     // puts the value on the stack
     pResult->SetValString( s );
@@ -271,13 +269,12 @@ bool rStrLower( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
     if ( pVar->GetType() != CBotTypString ) { ex = CBotErrBadString ; return true; }
 
     // get the contents of the string
-    std::string  s = pVar->GetValString();
+    std::string s = pVar->GetValString();
 
     // but no second parameter
     if ( pVar->GetNext() != nullptr ){ ex = CBotErrOverParam ; return true; }
 
-
-    boost::to_lower(s);
+    StrUtils::ToLower(s);
 
     // puts the value on the stack
     pResult->SetValString( s );

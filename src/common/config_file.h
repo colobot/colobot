@@ -24,18 +24,19 @@
 
 #pragma once
 
-#include "common/singleton.h"
+#include "core/stringutils.h"
 
+#include "common/singleton.h"
 #include "common/logger.h"
 
-#include <boost/property_tree/ptree.hpp>
-#include <boost/lexical_cast.hpp>
-
+#include <iterator>
 #include <string>
 #include <sstream>
 #include <vector>
 #include <stdexcept>
+#include <memory>
 
+namespace si { class SimpleIni; }
 
 /**
 * \class CConfigFile
@@ -114,18 +115,8 @@ public:
     template<typename T>
     bool SetArrayProperty(std::string section, std::string key, const std::vector<T>& array)
     {
-        try
-        {
-            std::string convertedValue = ArrayToString(array);
-            m_propertyTree.put(section + "." + key, convertedValue);
-            m_needsSave = true;
-        }
-        catch (std::exception & e)
-        {
-            GetLogger()->Error("Error on editing config file: %s\n", e.what());
-            return false;
-        }
-        return true;
+        std::string convertedValue = ArrayToString(array);
+        return SetStringProperty(std::move(section), std::move(key), ArrayToString(array));
     }
 
     /** Sets an array of values of type T in section under specified key.
@@ -136,18 +127,14 @@ public:
     template<typename T>
     bool GetArrayProperty(std::string section, std::string key, std::vector<T>& array)
     {
-        try
-        {
-            std::string readValue = m_propertyTree.get<std::string>(section + "." + key);
-            std::vector<T> convertedValue = StringToArray<T>(readValue);
-            array = std::move(convertedValue);
+        std::string readValue;
+        auto success = GetStringProperty(std::move(section), std::move(key), readValue);
+
+        if (success) {
+            array = StringToArray<T>(readValue);
         }
-        catch (std::exception & e)
-        {
-            GetLogger()->Log(m_loaded ? LOG_INFO : LOG_TRACE, "Error on parsing config file: %s\n", e.what());
-            return false;
-        }
-        return true;
+
+        return success;
     }
 
 private:
@@ -159,7 +146,7 @@ private:
         std::string item;
         while (std::getline(ss, item, ','))
         {
-            result.push_back(boost::lexical_cast<T>(item));
+            result.push_back(StrUtils::FromString<T>(item));
         }
         return result;
     }
@@ -177,7 +164,7 @@ private:
     }
 
 private:
-    boost::property_tree::ptree m_propertyTree;
+    std::unique_ptr<si::SimpleIni> m_reader;
     bool m_needsSave;
     bool m_useCurrentDirectory;
     bool m_loaded;

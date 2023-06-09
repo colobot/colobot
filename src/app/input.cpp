@@ -19,6 +19,8 @@
 
 #include "app/input.h"
 
+#include "core/stringutils.h"
+
 #include "common/config_file.h"
 #include "common/logger.h"
 #include "common/restext.h"
@@ -29,7 +31,6 @@
 
 
 #include <sstream>
-#include <boost/lexical_cast.hpp>
 #include <SDL_system.h>
 
 CInput::CInput()
@@ -354,8 +355,8 @@ void CInput::SaveKeyBindings()
     {
         JoyAxisBinding b = GetJoyAxisBinding(static_cast<JoyAxisSlot>(i));
 
-        GetConfigFile().SetIntProperty("Setup", "JoystickAxisBinding"+boost::lexical_cast<std::string>(i), b.axis);
-        GetConfigFile().SetIntProperty("Setup", "JoystickAxisInvert"+boost::lexical_cast<std::string>(i), b.invert);
+        GetConfigFile().SetIntProperty("Setup", "JoystickAxisBinding"+StrUtils::ToString(i), b.axis);
+        GetConfigFile().SetIntProperty("Setup", "JoystickAxisInvert"+StrUtils::ToString(i), b.invert);
     }
     GetConfigFile().SetFloatProperty("Setup", "JoystickDeadzone", GetJoystickDeadzone());
 }
@@ -386,11 +387,11 @@ void CInput::LoadKeyBindings()
     {
         JoyAxisBinding b;
 
-        if (!GetConfigFile().GetIntProperty("Setup", "JoystickAxisBinding"+boost::lexical_cast<std::string>(i), b.axis))
+        if (!GetConfigFile().GetIntProperty("Setup", "JoystickAxisBinding"+StrUtils::ToString(i), b.axis))
             continue;
 
         int x = 0;
-        GetConfigFile().GetIntProperty("Setup", "JoystickAxisInvert"+boost::lexical_cast<std::string>(i), x); // If doesn't exist, use default (0)
+        GetConfigFile().GetIntProperty("Setup", "JoystickAxisInvert"+StrUtils::ToString(i), x); // If doesn't exist, use default (0)
         b.invert = (x != 0);
 
         SetJoyAxisBinding(static_cast<JoyAxisSlot>(i), b);

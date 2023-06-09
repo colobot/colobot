@@ -19,7 +19,7 @@
 
 #include "ui/controls/enumslider.h"
 
-#include "common/stringutils.h"
+#include "core/stringutils.h"
 
 namespace Ui
 {

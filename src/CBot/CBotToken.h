@@ -242,10 +242,13 @@ extern bool IsOfType(CBotToken* &p, int type1, int type2 = -1);
 extern bool IsOfTypeList(CBotToken* &p, int type1, ...);
 
 /**
- * \brief Maps given ID to its string equivalent
- * \param id Token type identifier
- * \return String if found, empty string otherwise
+ * \brief Return the value associated with TX_UNDEF TokenId
+ *
+ * Mapping other TokenIds to its string values was not used and does not seem useful
+ * so the only supported mapping is TX_UNDEF -> value.
+ *
+ * \return String associated with TX_UNDEF TokenId
  */
-const std::string& LoadString(TokenId id);
+const std::string& UndefinedTokenString();
 
 } // namespace CBot

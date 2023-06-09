@@ -26,7 +26,7 @@
 
 #include "common/logger.h"
 #include "common/restext.h"
-#include "common/stringutils.h"
+#include "core/stringutils.h"
 
 #include "common/resources/resourcemanager.h"
 

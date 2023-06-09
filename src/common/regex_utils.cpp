@@ -31,11 +31,11 @@ RegexUtils::CAssertRegexMatchError::CAssertRegexMatchError(
 {
 }
 
-boost::smatch RegexUtils::AssertRegexMatch(const std::string& text, const std::string& pattern)
+std::smatch RegexUtils::AssertRegexMatch(const std::string& text, const std::string& pattern)
 {
-    boost::regex regex(pattern);
-    boost::smatch matches;
-    bool ok = boost::regex_match(text, matches, regex);
+    std::regex regex(pattern);
+    std::smatch matches;
+    bool ok = std::regex_match(text, matches, regex);
     if (!ok)
         throw CAssertRegexMatchError(text, pattern);
 

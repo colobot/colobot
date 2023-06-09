@@ -19,7 +19,7 @@
 
 #include "app/signal_handlers.h"
 
-#include "common/stringutils.h"
+#include "core/stringutils.h"
 #include "common/version.h"
 
 #include "common/resources/resourcemanager.h"

@@ -34,8 +34,7 @@
     #include "common/system/system_windows.h"
 #endif
 
-#include <boost/algorithm/string.hpp>
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 CPathManager::CPathManager(CSystemUtils* systemUtils)
     : m_dataPath(systemUtils->GetDataPath())
@@ -82,11 +81,11 @@ const std::string& CPathManager::GetSavePath()
 std::string CPathManager::VerifyPaths()
 {
     #if PLATFORM_WINDOWS
-    boost::filesystem::path dataPath(CSystemUtilsWindows::UTF8_Decode(m_dataPath));
+    std::filesystem::path dataPath(CSystemUtilsWindows::UTF8_Decode(m_dataPath));
     #else
-    boost::filesystem::path dataPath(m_dataPath);
+    std::filesystem::path dataPath(m_dataPath);
     #endif
-    if (! (boost::filesystem::exists(dataPath) && boost::filesystem::is_directory(dataPath)) )
+    if (! (std::filesystem::exists(dataPath) && std::filesystem::is_directory(dataPath)) )
     {
         GetLogger()->Error("Data directory '%s' doesn't exist or is not a directory\n", m_dataPath.c_str());
         return std::string("Could not read from data directory:\n") +
@@ -95,21 +94,21 @@ std::string CPathManager::VerifyPaths()
     }
 
     #if PLATFORM_WINDOWS
-    boost::filesystem::path langPath(CSystemUtilsWindows::UTF8_Decode(m_langPath));
+    std::filesystem::path langPath(CSystemUtilsWindows::UTF8_Decode(m_langPath));
     #else
-    boost::filesystem::path langPath(m_langPath);
+    std::filesystem::path langPath(m_langPath);
     #endif
-    if (! (boost::filesystem::exists(langPath) && boost::filesystem::is_directory(langPath)) )
+    if (! (std::filesystem::exists(langPath) && std::filesystem::is_directory(langPath)) )
     {
         GetLogger()->Warn("Language path '%s' is invalid, assuming translation files not installed\n", m_langPath.c_str());
     }
 
     #if PLATFORM_WINDOWS
-    boost::filesystem::create_directories(CSystemUtilsWindows::UTF8_Decode(m_savePath));
-    boost::filesystem::create_directories(CSystemUtilsWindows::UTF8_Decode(m_savePath+"/mods"));
+    std::filesystem::create_directories(CSystemUtilsWindows::UTF8_Decode(m_savePath));
+    std::filesystem::create_directories(CSystemUtilsWindows::UTF8_Decode(m_savePath+"/mods"));
     #else
-    boost::filesystem::create_directories(m_savePath);
-    boost::filesystem::create_directories(m_savePath+"/mods");
+    std::filesystem::create_directories(m_savePath);
+    std::filesystem::create_directories(m_savePath+"/mods");
     #endif
 
     return "";
@@ -161,7 +160,7 @@ std::vector<std::string> CPathManager::FindMods() const
     GetLogger()->Info("Additional mod paths:\n");
     for (const auto& modPath : m_mods)
     {
-        if (boost::filesystem::exists(modPath))
+        if (std::filesystem::exists(modPath))
         {
             GetLogger()->Info("  * %s\n", modPath.c_str());
             mods.push_back(modPath);
@@ -185,11 +184,11 @@ std::vector<std::string> CPathManager::FindModsInDir(const std::string &dir) con
     try
     {
         #if PLATFORM_WINDOWS
-        boost::filesystem::directory_iterator iterator(CSystemUtilsWindows::UTF8_Decode(dir));
+        std::filesystem::directory_iterator iterator(CSystemUtilsWindows::UTF8_Decode(dir));
         #else
-        boost::filesystem::directory_iterator iterator(dir);
+        std::filesystem::directory_iterator iterator(dir);
         #endif
-        for(; iterator != boost::filesystem::directory_iterator(); ++iterator)
+        for(; iterator != std::filesystem::directory_iterator(); ++iterator)
         {
             #if PLATFORM_WINDOWS
             ret.push_back(CSystemUtilsWindows::UTF8_Encode(iterator->path().wstring()));

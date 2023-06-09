@@ -19,9 +19,8 @@
 
 #pragma once
 
+#include <regex>
 #include <stdexcept>
-
-#include <boost/regex.hpp>
 
 namespace RegexUtils
 {
@@ -34,6 +33,6 @@ public:
 };
 
 //! Match string with regex and return list of matches; throw exception on mismatch
-boost::smatch AssertRegexMatch(const std::string& text, const std::string& pattern);
+std::smatch AssertRegexMatch(const std::string& text, const std::string& pattern);
 
 } // namespace RegexUtils

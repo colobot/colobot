@@ -18,7 +18,7 @@
  */
 
 /**
- * \file common/stringutils.h
+ * \file core/stringutils.h
  * \brief Some useful string operations
  */
 
@@ -27,6 +27,7 @@
 #include <cstddef>
 #include <string>
 #include <sstream>
+#include <functional>
 
 namespace StrUtils
 {
@@ -68,6 +69,24 @@ std::string Format(const char *fmt, ...);
 //! Returns a string with every occurence of \a oldStr in \a str replaced to \a newStr
 std::string Replace(const std::string &str, const std::string &oldStr, const std::string &newStr);
 
+//! Remove whitespace from the beginning of the given string (in place)
+void TrimLeft(std::string& str);
+
+//! Remove whitespace from the end of the given string (in place)
+void TrimRight(std::string& str);
+
+//! Remove whitespace from both ends of the given string (in place)
+void Trim(std::string& str);
+
+//! Split string by the given predicate predicate (similar to boost::split)
+// TODO c++20 predicate instead of std::function ?
+void Split(std::vector<std::string>& out, const std::string& str, std::function<bool(char)> should_split);
+
+//! Convert utf-8 string to lower case (in place)
+void ToLower(std::string& str);
+
+//! Convert utf-8 string to upper case (in place)
+void ToUpper(std::string& str);
 
 //! Converts a wide Unicode char to a single UTF-8 encoded char
 std::string UnicodeCharToUtf8(unsigned int ch);

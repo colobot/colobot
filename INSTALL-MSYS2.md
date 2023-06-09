@@ -110,7 +110,7 @@ Easy, isn't it?
 If you are lazy, you can just use this one-line command, although there is no guarantee it will work or install everything (might be out of date):
 
 ```sh
-pacman -S mingw-w64-i686-boost mingw-w64-i686-glew mingw-w64-i686-libpng gettext mingw-w64-i686-gettext mingw-w64-i686-libpng mingw-w64-i686-libsndfile mingw-w64-i686-libvorbis mingw-w64-i686-libogg mingw-w64-i686-openal mingw-w64_i686-physfs mingw-w64-i686-SDL2 mingw-w64-i686-SDL2_image mingw-w64-i686-SDL2_ttf
+pacman -S mingw-w64-i686-icu mingw-w64-i686-glew mingw-w64-i686-libpng gettext mingw-w64-i686-gettext mingw-w64-i686-libpng mingw-w64-i686-libsndfile mingw-w64-i686-libvorbis mingw-w64-i686-libogg mingw-w64-i686-openal mingw-w64_i686-physfs mingw-w64-i686-SDL2 mingw-w64-i686-SDL2_image mingw-w64-i686-SDL2_ttf
 ```
 
 You should now have everything set up and working. You can close all instances of MSYS2 and autorebase to ensure everything installed properly.

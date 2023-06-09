@@ -25,7 +25,7 @@
 #include "common/global.h"
 #include "common/make_unique.h"
 #include "common/settings.h"
-#include "common/stringutils.h"
+#include "core/stringutils.h"
 
 #include "graphics/engine/lightman.h"
 #include "graphics/engine/lightning.h"
@@ -65,7 +65,6 @@
 
 #include "ui/controls/edit.h"
 
-#include <boost/lexical_cast.hpp>
 #include <iomanip>
 
 
@@ -1242,7 +1241,7 @@ void COldObject::Read(CLevelParserLine* line)
         m_auto->SetType(line->GetParam("autoType")->AsObjectType(OBJECT_NULL));
         for (int i = 0; i < 5; i++)
         {
-            std::string op = "autoValue" + boost::lexical_cast<std::string>(i+1); // autoValue1..autoValue5
+            std::string op = "autoValue" + StrUtils::ToString(i+1); // autoValue1..autoValue5
             m_auto->SetValue(i, line->GetParam(op)->AsFloat(0.0f));
         }
         m_auto->SetString(const_cast<char*>(line->GetParam("autoString")->AsString("").c_str()));

@@ -25,7 +25,7 @@
 
 #include "common/restext.h"
 #include "common/settings.h"
-#include "common/stringutils.h"
+#include "core/stringutils.h"
 
 #include "graphics/engine/camera.h"
 

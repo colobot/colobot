@@ -22,7 +22,7 @@
 #include "app/app.h"
 
 #include "common/event.h"
-#include "common/stringutils.h"
+#include "core/stringutils.h"
 
 #include "graphics/engine/lightning.h"
 #include "graphics/engine/terrain.h"

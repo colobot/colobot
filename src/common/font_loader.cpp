@@ -18,6 +18,7 @@
  */
 
 #include "common/font_loader.h"
+#include "common/simpleini_wrapper.h"
 
 #include "common/logger.h"
 #include "common/make_unique.h"
@@ -33,13 +34,9 @@
 #include <memory>
 #include <utility>
 #include <cstring>
-#include <boost/property_tree/ini_parser.hpp>
-#include <boost/regex.hpp>
-
-namespace bp = boost::property_tree;
-
 
 CFontLoader::CFontLoader()
+   : m_reader(std::make_unique<si::SimpleIni>())
 {
 }
 
@@ -49,35 +46,34 @@ CFontLoader::~CFontLoader()
 
 bool CFontLoader::Init()
 {
-    try
-    {
-        std::unique_ptr<std::istream> stream;
-        auto inputStream = MakeUnique<CInputStream>("/fonts/fonts.ini");
-        bool good = inputStream->is_open();
-        stream = std::move(inputStream);
+    auto inputStream = std::make_unique<CInputStream>("/fonts/fonts.ini");
 
-        if (good)
-        {
-            bp::ini_parser::read_ini(*stream, m_propertyTree);
-            GetLogger()->Debug("Fonts config file loaded correctly. \n");
-        }
-        else
-        {
-            return false;
-        }
-    }
-    catch (std::exception & e)
+    if (!inputStream->is_open())
     {
-        GetLogger()->Error("Error on parsing config file: %s\n", e.what());
         return false;
     }
+
+    m_reader->SetUnicode();
+
+    auto err = m_reader->LoadData(*inputStream);
+
+    if (err < 0) {
+        GetLogger()->Error("Error on parsing config file: %d\n", err);
+        return false;
+    }
+
+    GetLogger()->Debug("Fonts config file loaded correctly. \n");
+
     return true;
 }
 
 std::optional<std::string> CFontLoader::GetFont(Gfx::FontType type) const
 {
-    auto font = m_propertyTree.get_optional<std::string>(ToString(type));
-    if (font)
-        return std::string("/fonts/") + *font;
+    auto strType = ToString(type);
+    std::string font = m_reader->GetValue("", strType.c_str(), "");
+
+    if (!font.empty())
+        return std::string("/fonts/") + font;
+
     return std::nullopt;
 }

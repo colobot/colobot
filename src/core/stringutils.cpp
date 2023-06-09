@@ -18,13 +18,15 @@
  */
 
 
-#include "common/stringutils.h"
+#include "core/stringutils.h"
 
+#include <algorithm>
 #include <cstdarg>
 #include <cstdio>
 #include <stdexcept>
 #include <vector>
 
+#include <unicode/unistr.h>
 
 unsigned int StrUtils::HexStringToInt(const std::string& str)
 {
@@ -75,12 +77,59 @@ std::string StrUtils::Replace(const std::string &str, const std::string &oldStr,
 {
     std::string result = str;
     std::size_t pos = 0;
-    while ((pos = str.find(oldStr, pos)) != std::string::npos)
+    while ((pos = result.find(oldStr, pos)) != std::string::npos)
     {
         result.replace(pos, oldStr.length(), newStr);
         pos += newStr.length();
     }
     return result;
+}
+
+void StrUtils::TrimLeft(std::string& s)
+{
+    s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) {
+        return !std::isspace(ch);
+    }));
+}
+
+void StrUtils::TrimRight(std::string& s)
+{
+    s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) {
+        return !std::isspace(ch);
+    }).base(), s.end());
+}
+
+void StrUtils::Trim(std::string& str)
+{
+    TrimLeft(str);
+    TrimRight(str);
+}
+
+void StrUtils::Split(std::vector<std::string>& out, const std::string& str, std::function<bool(char)> should_split)
+{
+    int start_pos = 0;
+    for (std::string::size_type end_pos = 0; end_pos < str.size(); end_pos++) {
+        if (should_split(str[end_pos])) {
+            out.push_back(str.substr(start_pos, end_pos - start_pos));
+            start_pos = end_pos + 1;
+        }
+    }
+
+    out.push_back(str.substr(start_pos, str.size() - start_pos));
+}
+
+void StrUtils::ToLower(std::string& str)
+{
+    auto uStr = icu::UnicodeString::fromUTF8(str).toLower();
+    str.clear();
+    uStr.toUTF8String(str);
+}
+
+void StrUtils::ToUpper(std::string& str)
+{
+    auto uStr = icu::UnicodeString::fromUTF8(str).toUpper();
+    str.clear();
+    uStr.toUTF8String(str);
 }
 
 std::string StrUtils::UnicodeCharToUtf8(unsigned int ch)

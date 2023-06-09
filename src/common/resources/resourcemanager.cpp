@@ -31,7 +31,7 @@
 
 #include <physfs.h>
 
-#include <boost/regex.hpp>
+#include <regex>
 
 
 CResourceManager::CResourceManager(const char *argv0)
@@ -58,7 +58,7 @@ CResourceManager::~CResourceManager()
 
 std::string CResourceManager::CleanPath(const std::string& path)
 {
-    return boost::regex_replace(path, boost::regex("(.*)/\\.\\./"), "");
+    return std::regex_replace(path, std::regex("(.*)/\\.\\./"), "");
 }
 
 

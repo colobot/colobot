@@ -28,7 +28,7 @@
 #include "common/logger.h"
 #include "common/make_unique.h"
 #include "common/profiler.h"
-#include "common/stringutils.h"
+#include "core/stringutils.h"
 
 #include "common/system/system.h"
 

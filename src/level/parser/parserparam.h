@@ -132,7 +132,10 @@ private:
     void ParseArray();
     void LoadArray();
 
-    template<typename T> T Cast(std::string value, std::string requestedType);
+    template<typename T, std::enable_if_t<std::is_same_v<T, std::string>, bool> = true>
+    T Cast(std::string value, std::string requestedType);
+    template<typename T, std::enable_if_t<!std::is_same_v<T, std::string>, bool> = true>
+    T Cast(std::string value, std::string requestedType);
     template<typename T> T Cast(std::string requestedType);
 
     std::string ToPath(std::string path, const std::string defaultDir);

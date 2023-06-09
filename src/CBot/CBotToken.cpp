@@ -21,133 +21,120 @@
 
 #include <cstdarg>
 #include <cassert>
-#include <boost/bimap.hpp>
+#include <map>
 
 namespace CBot
 {
-
-namespace
-{
-    template <typename L, typename R>
-    boost::bimap<L, R> makeBimap(std::initializer_list<typename boost::bimap<L, R>::value_type> list)
-    {
-        return boost::bimap<L, R>(list.begin(), list.end());
-    }
+namespace {
+    static const std::string TX_UNDEF_VALUE = "undefined";
 }
 
 //! \brief Keeps the string corresponding to keyword ID
 //! Map is filled with id-string pars that are needed for CBot language parsing
-static const boost::bimap<TokenId, std::string> KEYWORDS = makeBimap<TokenId, std::string>({
-    {ID_IF,         "if"},
-    {ID_ELSE,       "else"},
-    {ID_WHILE,      "while"},
-    {ID_DO,         "do"},
-    {ID_FOR,        "for"},
-    {ID_BREAK,      "break"},
-    {ID_CONTINUE,   "continue"},
-    {ID_SWITCH,     "switch"},
-    {ID_CASE,       "case"},
-    {ID_DEFAULT,    "default"},
-    {ID_TRY,        "try"},
-    {ID_THROW,      "throw"},
-    {ID_CATCH,      "catch"},
-    {ID_FINALLY,    "finally"},
-    {ID_TXT_AND,    "and"},
-    {ID_TXT_OR,     "or"},
-    {ID_TXT_NOT,    "not"},
-    {ID_RETURN,     "return"},
-    {ID_CLASS,      "class"},
-    {ID_EXTENDS,    "extends"},
-    {ID_SYNCHO,     "synchronized"},
-    {ID_NEW,        "new"},
-    {ID_PUBLIC,     "public"},
-    {ID_EXTERN,     "extern"},
-    {ID_STATIC,     "static"},
-    {ID_PROTECTED,  "protected"},
-    {ID_PRIVATE,    "private"},
-    {ID_REPEAT,     "repeat"},
-    {ID_INT,        "int"},
-    {ID_FLOAT,      "float"},
-    {ID_BOOLEAN,    "boolean"},
-    {ID_STRING,     "string"},
-    {ID_VOID,       "void"},
-    {ID_BOOL,       "bool"},
-    {ID_BYTE,       "byte"},
-    {ID_SHORT,      "short"},
-    {ID_CHAR,       "char"},
-    {ID_LONG,       "long"},
-    {ID_DOUBLE,     "double"},
-    {ID_TRUE,       "true"},
-    {ID_FALSE,      "false"},
-    {ID_NULL,       "null"},
-    {ID_NAN,        "nan"},
-    {ID_OPENPAR,    "("},
-    {ID_CLOSEPAR,   ")"},
-    {ID_OPBLK,      "{"},
-    {ID_CLBLK,      "}"},
-    {ID_SEP,        ";"},
-    {ID_COMMA,      ","},
-    {ID_DOTS,       ":"},
-    {ID_DOT,        "."},
-    {ID_OPBRK,      "["},
-    {ID_CLBRK,      "]"},
-    {ID_DBLDOTS,    "::"},
-    {ID_LOGIC,      "?"},
-    {ID_ADD,        "+"},
-    {ID_SUB,        "-"},
-    {ID_MUL,        "*"},
-    {ID_DIV,        "/"},
-    {ID_ASS,        "="},
-    {ID_ASSADD,     "+="},
-    {ID_ASSSUB,     "-="},
-    {ID_ASSMUL,     "*="},
-    {ID_ASSDIV,     "/="},
-    {ID_ASSOR,      "|="},
-    {ID_ASSAND,     "&="},
-    {ID_ASSXOR,     "^="},
-    {ID_ASSSL,      "<<="},
-    {ID_ASSSR,      ">>>="},
-    {ID_ASSASR,     ">>="},
-    {ID_SL,         "<<"},
-    {ID_SR,         ">>>"},
-    {ID_ASR,        ">>"},
-    {ID_INC,        "++"},
-    {ID_DEC,        "--"},
-    {ID_LO,         "<"},
-    {ID_HI,         ">"},
-    {ID_LS,         "<="},
-    {ID_HS,         ">="},
-    {ID_EQ,         "=="},
-    {ID_NE,         "!="},
-    {ID_AND,        "&"},
-    {ID_XOR,        "^"},
-    {ID_OR,         "|"},
-    {ID_LOG_AND,    "&&"},
-    {ID_LOG_OR,     "||"},
-    {ID_LOG_NOT,    "!"},
-    {ID_NOT,        "~"},
-    {ID_MODULO,     "%"},
-    {ID_POWER,      "**"},
-    {ID_ASSMODULO,  "%="},
-    {TX_UNDEF,      "undefined"},
-    {TX_NAN,        "not a number"}
-});
+static const std::map<std::string, TokenId> KEYWORDS{
+    {"if",           ID_IF},
+    {"else",         ID_ELSE},
+    {"while",        ID_WHILE},
+    {"do",           ID_DO},
+    {"for",          ID_FOR},
+    {"break",        ID_BREAK},
+    {"continue",     ID_CONTINUE},
+    {"switch",       ID_SWITCH},
+    {"case",         ID_CASE},
+    {"default",      ID_DEFAULT},
+    {"try",          ID_TRY},
+    {"throw",        ID_THROW},
+    {"catch",        ID_CATCH},
+    {"finally",      ID_FINALLY},
+    {"and",          ID_TXT_AND},
+    {"or",           ID_TXT_OR},
+    {"not",          ID_TXT_NOT},
+    {"return",       ID_RETURN},
+    {"class",        ID_CLASS},
+    {"extends",      ID_EXTENDS},
+    {"synchronized", ID_SYNCHO},
+    {"new",          ID_NEW},
+    {"public",       ID_PUBLIC},
+    {"extern",       ID_EXTERN},
+    {"static",       ID_STATIC},
+    {"protected",    ID_PROTECTED},
+    {"private",      ID_PRIVATE},
+    {"repeat",       ID_REPEAT},
+    {"int",          ID_INT},
+    {"float",        ID_FLOAT},
+    {"boolean",      ID_BOOLEAN},
+    {"string",       ID_STRING},
+    {"void",         ID_VOID},
+    {"bool",         ID_BOOL},
+    {"byte",         ID_BYTE},
+    {"short",        ID_SHORT},
+    {"char",         ID_CHAR},
+    {"long",         ID_LONG},
+    {"double",       ID_DOUBLE},
+    {"true",         ID_TRUE},
+    {"false",        ID_FALSE},
+    {"null",         ID_NULL},
+    {"nan",          ID_NAN},
+    {"(",            ID_OPENPAR},
+    {")",            ID_CLOSEPAR},
+    {"{",            ID_OPBLK},
+    {"}",            ID_CLBLK},
+    {";",            ID_SEP},
+    {",",            ID_COMMA},
+    {":",            ID_DOTS},
+    {".",            ID_DOT},
+    {"[",            ID_OPBRK},
+    {"]",            ID_CLBRK},
+    {"::",           ID_DBLDOTS},
+    {"?",            ID_LOGIC},
+    {"+",            ID_ADD},
+    {"-",            ID_SUB},
+    {"*",            ID_MUL},
+    {"/",            ID_DIV},
+    {"=",            ID_ASS},
+    {"+=",           ID_ASSADD},
+    {"-=",           ID_ASSSUB},
+    {"*=",           ID_ASSMUL},
+    {"/=",           ID_ASSDIV},
+    {"|=",           ID_ASSOR},
+    {"&=",           ID_ASSAND},
+    {"^=",           ID_ASSXOR},
+    {"<<=",          ID_ASSSL},
+    {">>>=",         ID_ASSSR},
+    {">>=",          ID_ASSASR},
+    {"<<",           ID_SL},
+    {">>>",          ID_SR},
+    {">>",           ID_ASR},
+    {"++",           ID_INC},
+    {"--",           ID_DEC},
+    {"<",            ID_LO},
+    {">",            ID_HI},
+    {"<=",           ID_LS},
+    {">=",           ID_HS},
+    {"==",           ID_EQ},
+    {"!=",           ID_NE},
+    {"&",            ID_AND},
+    {"^",            ID_XOR},
+    {"|",            ID_OR},
+    {"&&",           ID_LOG_AND},
+    {"||",           ID_LOG_OR},
+    {"!",            ID_LOG_NOT},
+    {"~",            ID_NOT},
+    {"%",            ID_MODULO},
+    {"**",           ID_POWER},
+    {"%=",           ID_ASSMODULO},
+    {TX_UNDEF_VALUE, TX_UNDEF},
+    {"not a number", TX_NAN}
+};
 
 namespace
 {
 static const std::string emptyString = "";
 }
-const std::string& LoadString(TokenId id)
+
+const std::string& UndefinedTokenString()
 {
-    auto it = KEYWORDS.left.find(id);
-    if (it != KEYWORDS.left.end())
-    {
-        return it->second;
-    }
-    else
-    {
-        return emptyString;
-    }
+    return TX_UNDEF_VALUE;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -504,8 +491,8 @@ std::unique_ptr<CBotToken> CBotToken::CompileTokens(const std::string& program)
 ////////////////////////////////////////////////////////////////////////////////
 int CBotToken::GetKeyWord(const std::string& w)
 {
-    auto it = KEYWORDS.right.find(w);
-    if (it != KEYWORDS.right.end())
+    auto it = KEYWORDS.find(w);
+    if (it != KEYWORDS.end())
     {
         return it->second;
     }

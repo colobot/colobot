@@ -22,7 +22,7 @@
 #include "app/app.h"
 
 #include "common/make_unique.h"
-#include "common/stringutils.h"
+#include "core/stringutils.h"
 
 #include "common/resources/inputstream.h"
 #include "common/resources/outputstream.h"
@@ -37,11 +37,7 @@
 #include <sstream>
 #include <iomanip>
 #include <set>
-
-#include <boost/algorithm/string/trim.hpp>
-#include <boost/algorithm/string/replace.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/regex.hpp>
+#include <regex>
 
 CLevelParser::CLevelParser()
 {
@@ -170,14 +166,14 @@ void CLevelParser::Load()
     {
         lineNumber++;
 
-        boost::replace_all(line, "\t", " "); // replace tab by space
+        line = StrUtils::Replace(line, "\t", " "); // replace tab by space
 
         // ignore comments
         size_t pos = 0;
         std::string linesuffix = line;
-        boost::regex commentRegex{ R"(("[^"]*")|('[^']*')|(//.*$))" };
-        boost::smatch matches;
-        while (boost::regex_search(linesuffix, matches, commentRegex))
+        std::regex commentRegex{ R"(("[^"]*")|('[^']*')|(//.*$))" };
+        std::smatch matches;
+        while (std::regex_search(linesuffix, matches, commentRegex))
         {
             if (matches[3].matched)
             {
@@ -192,14 +188,14 @@ void CLevelParser::Load()
             }
         }
 
-        boost::algorithm::trim(line);
+        StrUtils::Trim(line);
 
         pos = line.find_first_of(" \t\n");
         std::string command = line.substr(0, pos);
         if (pos != std::string::npos)
         {
             line = line.substr(pos + 1);
-            boost::algorithm::trim(line);
+            StrUtils::Trim(line);
         }
         else
         {
@@ -248,21 +244,21 @@ void CLevelParser::Load()
         {
             pos = line.find_first_of("=");
             std::string paramName = line.substr(0, pos);
-            boost::algorithm::trim(paramName);
+            StrUtils::Trim(paramName);
             line = line.substr(pos + 1);
-            boost::algorithm::trim(line);
+            StrUtils::Trim(line);
 
             if (line[0] == '\"')
             {
                 pos = line.find_first_of("\"", 1);
                 if (pos == std::string::npos)
-                    throw CLevelParserException("Unclosed \" in " + m_filename + ":" + boost::lexical_cast<std::string>(lineNumber));
+                    throw CLevelParserException("Unclosed \" in " + m_filename + ":" + StrUtils::ToString(lineNumber));
             }
             else if (line[0] == '\'')
             {
                 pos = line.find_first_of("'", 1);
                 if (pos == std::string::npos)
-                    throw CLevelParserException("Unclosed ' in " + m_filename + ":" + boost::lexical_cast<std::string>(lineNumber));
+                    throw CLevelParserException("Unclosed ' in " + m_filename + ":" + StrUtils::ToString(lineNumber));
             }
             else
             {
@@ -279,14 +275,14 @@ void CLevelParser::Load()
                 }
             }
             std::string paramValue = line.substr(0, pos + 1);
-            boost::algorithm::trim(paramValue);
+            StrUtils::Trim(paramValue);
 
             parserLine->AddParam(paramName, MakeUnique<CLevelParserParam>(paramName, paramValue));
 
             if (pos == std::string::npos)
                 break;
             line = line.substr(pos + 1);
-            boost::algorithm::trim(line);
+            StrUtils::Trim(line);
         }
 
         if (parserLine->GetCommand().length() > 1 && parserLine->GetCommand()[0] == '#')
@@ -340,9 +336,9 @@ void CLevelParser::SetLevelPaths(LevelCategory category, int chapter, int rank)
 std::string CLevelParser::InjectLevelPaths(const std::string& path, const std::string& defaultDir)
 {
     std::string newPath = path;
-    if(!m_pathLvl.empty() ) boost::replace_all(newPath, "%lvl%",  m_pathLvl);
-    if(!m_pathChap.empty()) boost::replace_all(newPath, "%chap%", m_pathChap);
-    if(!m_pathCat.empty() ) boost::replace_all(newPath, "%cat%",  m_pathCat);
+    if(!m_pathLvl.empty() ) newPath = StrUtils::Replace(newPath, "%lvl%",  m_pathLvl);
+    if(!m_pathChap.empty()) newPath = StrUtils::Replace(newPath, "%chap%", m_pathChap);
+    if(!m_pathCat.empty() ) newPath = StrUtils::Replace(newPath, "%cat%",  m_pathCat);
     if(newPath == path && !path.empty())
     {
         newPath = defaultDir + (!defaultDir.empty() ? "/" : "") + newPath;
@@ -350,12 +346,12 @@ std::string CLevelParser::InjectLevelPaths(const std::string& path, const std::s
 
     std::string langPath = newPath;
     std::string langStr(1, CApplication::GetInstancePointer()->GetLanguageChar());
-    boost::replace_all(langPath, "%lng%", langStr);
+    langPath = StrUtils::Replace(langPath, "%lng%", langStr);
     if(CResourceManager::Exists(langPath))
         return langPath;
 
     // Fallback to English if file doesn't exist
-    boost::replace_all(newPath, "%lng%", "E");
+    newPath = StrUtils::Replace(newPath, "%lng%", "E");
     if(CResourceManager::Exists(newPath))
         return newPath;
 
