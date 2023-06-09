@@ -96,7 +96,7 @@ jobs:
       run: cmake -E make_directory build
     - name: Run CMake (for Mac)
       working-directory: build
-      run: cmake -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_SKIP_INSTALL_RPATH=ON -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDEV_BUILD=1 -DPORTABLE=1 -DTESTS=1 -DDESKTOP=1 -DOPENAL_LIBRARY=/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/OpenAL.framework/OpenAL.tbd ..
+      run: cmake -DICU_ROOT=/usr/local/opt/icu4c -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_SKIP_INSTALL_RPATH=ON -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDEV_BUILD=1 -DPORTABLE=1 -DTESTS=1 -DDESKTOP=1 -DOPENAL_LIBRARY=/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/OpenAL.framework/OpenAL.tbd ..
       if: matrix.target_os == 'macos'
     - name: Build
       working-directory: build
