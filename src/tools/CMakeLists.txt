@@ -6,3 +6,4 @@ add_executable(convert_model
   ../graphics/model/model_output.cpp
   convert_model.cpp)
 target_include_directories(convert_model PRIVATE . ..)
+target_link_libraries(convert_model PRIVATE colobot_core)
