@@ -54,6 +54,7 @@ bool CFontLoader::Init()
     }
 
     m_reader->SetUnicode();
+    m_reader->SetSpaces();
 
     auto err = m_reader->LoadData(*inputStream);
 
