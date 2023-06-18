@@ -1727,6 +1727,9 @@ glm::vec3 COldObject::GetSlotPosition(int slotNum)
             grabPartNum = 3;
             grabRelPos = glm::vec3(4.7f, 0.0f, 0.0f);
             break;
+        case OBJECT_BEE:
+            grabPartNum = 7;
+            break;
         default: // unreachable, only the above objects have cargo slots
             assert(!m_hasCargoSlot);
             return m_powerPosition;
