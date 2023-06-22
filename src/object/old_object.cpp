@@ -1728,7 +1728,8 @@ Math::Vector COldObject::GetSlotPosition(int slotNum)
             grabRelPos = Math::Vector(4.7f, 0.0f, 0.0f);
             break;
         case OBJECT_BEE:
-            grabPartNum = 7;
+            grabPartNum = 0;
+            grabRelPos = Math::Vector(0.0f, -3.0f, 0.0f);
             break;
         default: // unreachable, only the above objects have cargo slots
             assert(!m_hasCargoSlot);
