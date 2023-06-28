@@ -18,6 +18,7 @@
         },
         "glew",
         "gettext",
+        "libiconv",
         "libogg",
         "libpng",
         {
@@ -43,6 +44,9 @@
     "overrides": [
         {
             "name": "zlib", "version": "1.2.13"
+        },
+        {
+            "name": "libiconv", "version": "1.17"
         }
     ]
 }
