@@ -105,6 +105,9 @@ void CPlanet::Draw()
 
     float dp = 0.5f/256.0f;
 
+    Math::IntPoint windowSize = m_engine->GetWindowSize();
+    float inverseAspectRatio = static_cast<float>(windowSize.y) / static_cast<float>(windowSize.x);
+
     for (const auto& planet : m_planets)
     {
         if (planet.type != m_visibleType)
@@ -135,9 +138,14 @@ void CPlanet::Draw()
         a = eyeDirV + planet.angle.y;
         p1.y = 0.4f+(Math::Mod(a+Math::PI, Math::PI*2.0f)-Math::PI)*(2.0f/Math::PI);
 
-        p1.x -= planet.dim/2.0f*0.75f;
+        // planet.dim is what percentage of the screen height the planet takes up (e.g. 0.333 = 1/3 of screen height)
+        // and then the width is calculated to make it square. (0.333 = 1/4 of screen width assuming 4:3)
+        // This matches the behaviour of the 3D scene - the vertical FOV is fixed, and the horizontal FOV changes
+        // to match the aspect ratio.
+
+        p1.x -= planet.dim/2.0f*inverseAspectRatio;
         p1.y -= planet.dim/2.0f;
-        p2.x = p1.x+planet.dim*0.75f;
+        p2.x = p1.x+planet.dim*inverseAspectRatio;
         p2.y = p1.y+planet.dim;
 
         float u1 = planet.uv1.x + dp;
