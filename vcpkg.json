@@ -1,7 +1,7 @@
 {
     "name": "colobot",
     "version-string": "0.1.0",
-    "builtin-baseline": "e809a42f87565e803b2178a0c11263f462d1800a",
+    "builtin-baseline": "f6a5d4e8eb7476b8d7fc12a56dff300c1c986131",
     "dependencies": [
         "boost-algorithm",
         "boost-bimap",
@@ -18,6 +18,7 @@
         },
         "glew",
         "gettext",
+        "libiconv",
         "libogg",
         "libpng",
         {
@@ -43,6 +44,12 @@
     "overrides": [
         {
             "name": "zlib", "version": "1.2.13"
+        },
+        {
+            "name": "libiconv", "version": "1.17"
+        },
+        {
+            "name": "physfs", "version": "3.0.2"
         }
     ]
 }
