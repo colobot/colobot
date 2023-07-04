@@ -105,7 +105,7 @@ void CPlanet::Draw()
 
     float dp = 0.5f/256.0f;
 
-    Math::IntPoint windowSize = m_engine->GetWindowSize();
+    auto windowSize = m_engine->GetWindowSize();
     float inverseAspectRatio = static_cast<float>(windowSize.y) / static_cast<float>(windowSize.x);
 
     for (const auto& planet : m_planets)

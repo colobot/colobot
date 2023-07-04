@@ -1729,7 +1729,7 @@ glm::vec3 COldObject::GetSlotPosition(int slotNum)
             break;
         case OBJECT_BEE:
             grabPartNum = 0;
-            grabRelPos = Math::Vector(0.0f, -3.0f, 0.0f);
+            grabRelPos = glm::vec3(0.0f, -3.0f, 0.0f);
             break;
         default: // unreachable, only the above objects have cargo slots
             assert(!m_hasCargoSlot);
