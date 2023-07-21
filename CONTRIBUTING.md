@@ -3,24 +3,30 @@
 So you want to contribute to Colobot: Gold Edition? That's awesome! Before you start, read this page, it contains a lot of useful information on how to do so.
 
 ## General information
+
 Before you start, read more about technical details of the project. They can be found in:
 
 * [Developer README](README-dev.md)
-* [Doxygen documentation](http://compiled.colobot.info/job/colobot/job/colobot/job/dev/Doxygen/)
-* [Game Design Document](http://compiled.colobot.info/job/colobot/job/colobot-misc/job/master/lastSuccessfulBuild/artifact/Colobot_Gold_Edition-Game_Design_Document.pdf)
+* [Doxygen documentation (doc)](https://github.com/colobot/colobot/actions)
+* [Working with translations](https://github.com/colobot/colobot/wiki/Working-with-translations)
+* [Working with models](https://github.com/colobot/colobot/wiki/Working-with-Colobot:-Gold-Edition-models)
+* [Common issues](https://github.com/colobot/colobot/wiki/Common-Issues)
 
 ## Before you start coding
+
 * If you want to fix a bug, please first check the related [issue on GitHub's bug tracker](https://github.com/colobot/colobot/issues). If there isn't one, make it.
-* If you want to add a new feature or make any change to gameplay, please first discuss it either [on the forums](http://colobot.info/forum) or in the related issue on GitHub. When your issue gets *accepted* label, that means that your suggestion got accepted and is waiting for somebody to work on it. Always wait for your suggestion to be accepted before you start writing any code.
+* If you want to add a new feature or make any change to gameplay, please first discuss it either [on Discord](https://discord.gg/56Fm9kb) or in the related issue on GitHub. When your issue gets *accepted* label, that means that your suggestion got accepted and is waiting for somebody to work on it. Always wait for your suggestion to be accepted before you start writing any code.
 * Before you start, check *"Assignee"* field in the issue and read the comments to see if nobody else is working on the same issue. If somebody is assigned to it, but there was no activity for a long time, you can take it over. Also, please post a comment on the issue that you want to help us, so other people don't waste time working at that issue in the same time.
 
 ## Coding style
+
 When writing code, please adhere to the following rules:
 
 * Indent with spaces, 1 indentation level = 4 spaces. Unix line endings. And don't leave whitespace at the end of lines. Thank you.
 * Put braces in new lines.
 
 Like that:
+
 ```c++
    if (a == b)
    {
@@ -31,7 +37,9 @@ Like that:
       // ...
    }
 ```
+
 NOT like that:
+
 ```c++
    if (a == b) {
       // ...
@@ -39,11 +47,14 @@ NOT like that:
       // ...
    }
 ```
+
 You may omit braces if there is only one line in block:
+
 ```c++
     if (a == b)
       doStuff();
 ```
+
 * Name functions beginning with upper case, e.g. `FooBar()`
 * Name classes beginning with C, e.g. `class CSomeClass`
 * Name accessors like so: `SetValue()` and `GetValue()`
@@ -70,6 +81,7 @@ We also have an automated tool for checking the code style. See [colobot-lint re
 If your pull request breaks the coding style, you will have to fix it before it gets merged.
 
 ## Commiting rules
+
 Please adhere to the following rules:
 * Commits should have meaningful descriptions.
 * Commits should not break the build nor tests.
@@ -77,9 +89,11 @@ Please adhere to the following rules:
 * Merges to *master* branch must be discussed beforehand and should include fully finished features if possible.
 
 ## Submitting pull requests
+
 After you finish working on your issue and want your code to be merged into the main repository, you should submit a **pull request**. Go to [this page](https://github.com/colobot/colobot/pulls) and select "New pull request". All pull requests should ALWAYS be submitted to the *dev* branch. After your PR gets reviewed by our development team, it will be merged to *dev* branch, and on the next release - to the *master* branch.
 
 If you need more help, see [GitHub's help page on Pull Requests](https://help.github.com/articles/using-pull-requests/).
 
 ## Need help?
-Ask on our official Freenode channel (#colobot @ irc.freenode.net) or on our [forums](http://colobot.info/forum/). We're here to help :)
+
+Ask on our [Discord server](https://discord.gg/56Fm9kb) or [GitHub Discussions](https://github.com/colobot/colobot/discussions). We're here to help :)
