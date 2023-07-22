@@ -57,7 +57,7 @@ jobs:
         mkdir -p appimage
         cp -rp install/data appimage/data
         cp -rp install/lang appimage/lang
-        cp -p Colobot-*-x86_64.AppImage appimage/colobot
+        cp -p Colobot-x86_64.AppImage appimage/colobot
       if: matrix.target_os == 'linux'
     - name: Upload AppImage
       uses: actions/upload-artifact@v2
