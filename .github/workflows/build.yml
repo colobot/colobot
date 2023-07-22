@@ -51,13 +51,13 @@ jobs:
         
         # Create AppImage
         NO_STRIP=1 ./squashfs-root/AppRun -e colobot --output appimage --appdir colobot.AppDir -d desktop/colobot.desktop -i ../desktop/colobot.svg
-        chmod +x Colobot-*-x86_64.AppImage
+        chmod +x Colobot-x86_64.AppImage
         
         # Prepare folder for zip
         mkdir -p appimage
         cp -rp install/data appimage/data
         cp -rp install/lang appimage/lang
-        cp -p Colobot-*-x86_64.AppImage appimage/colobot
+        cp -p Colobot-x86_64.AppImage appimage/colobot
       if: matrix.target_os == 'linux'
     - name: Upload AppImage
       uses: actions/upload-artifact@v2
