@@ -1,47 +1,56 @@
-# Colobot: Gold Edition
+<img src="https://raw.githubusercontent.com/colobot/colobot-misc/master/logos/ColobotGE-logo.svg" align="center">
 
-Welcome to the Colobot: Gold Edition project code repository
+<div align="center">
+  <a href="https://colobot.info/"><img src="https://img.shields.io/badge/colobot.info-F5C700.svg?logo=wordpress&logoColor=white" alt="colobot.info"></a>
+  <a href="https://discord.gg/56Fm9kb"><img src="https://img.shields.io/badge/Discord-5865F2.svg?logo=discord&logoColor=white" alt="Discord"></a>
+  <a href="https://github.com/colobot/colobot/discussions"><img src="https://img.shields.io/badge/Discussions-24292F.svg?logo=github" alt="GitHub Discussions"></a>
+  <a href="https://www.moddb.com/games/colobot-gold-edition"><img src="https://img.shields.io/badge/ModDB-CC0000.svg?logo=modrinth&logoColor=white" alt="ModDB"></a>
+  <a href="https://www.youtube.com/@Colobot"><img src="https://img.shields.io/badge/YouTube-EA3223.svg?logo=youtube" alt="YouTube"></a>
+  <a href="https://www.reddit.com/r/Colobot"><img src="https://img.shields.io/badge/Reddit-FF4300.svg?logo=reddit&logoColor=white" alt="Reddit"></a>
+  <a href="https://twitter.com/ColobotGame"><img src="https://img.shields.io/badge/Twitter-009EF7.svg?logo=twitter&logoColor=white" alt="Twitter"></a>
+  <a href="https://www.facebook.com/colobotgame"><img src="https://img.shields.io/badge/Facebook-1877F2.svg?logo=facebook&logoColor=white" alt="Facebook"></a>
+</div>
 
-This is official repository for the open-source Colobot: Gold Edition project developed by TerranovaTeam, part of International Colobot Community (ICC, previously known as Polish Portal of Colobot/PPC) with the official site at: [colobot.info](http://colobot.info/).
+This is the main repository for the open-source _Colobot: Gold Edition_ project developed by [TerranovaTeam](https://github.com/orgs/colobot/people) and community contributors, based on the original game by [Epsitec](https://www.epsitec.ch).
 
-The source code contained here was released by Epsitec -- the original creator of the game -- on open source (GPLv3) license. The code was given and the rights granted specifically to ICC community in March 2012. Since then, we have been developing the game further.
+This repository contains only the source code of the project. The game also requires data files which are provided as a git submodule and are hosted in a [separate repository](https://github.com/colobot/colobot-data).
 
-More information for developers (in English) can be found on [our forum](http://colobot.info/forum/). However, the freshest source of information is our IRC channels (see below).
+## Features
 
-This repository contains only the source code of the project. The game requires also data files which are now provided as git submodule and are hosted in [separate repository](https://github.com/colobot/colobot-data).
+- Multiplatform - play the game on any modern OS.
+- New game modes - challenge yourself in _Missions+_ or challenge your friends in _CodeBattles_.
+- Mod support - download custom levels and assets from [our ModDB page](https://www.moddb.com/games/colobot-gold-edition).
+- Improved visuals, QoL additions, bug fixes, and [other improvements](https://colobot.info/category/news/updates).
 
+## Download
 
-## Status
+### Stable releases
 
-The original version of the game, as released to us by Epsitec, is available as download at [our download site](http://colobot.info/files/) along with original source code and related data files. However, we will not develop this version further, as we focused our efforts on new versions of the game. The original version is also known as Colobot Classic.
+Official builds for Windows, Linux, MacOS are available here:\
+[![Latest release](https://img.shields.io/github/v/release/colobot/colobot.svg?color=F5C700)](https://colobot.info/download-colobot-gold)
 
-We are now working on refreshed and updated version of original game, codename Colobot Gold and this is the version currently hosted in this repository. The goal is to rewrite the game engine to be multi-platform, refresh the graphics, include some enhancements and refactor the code to make the game easier to modify.
+Linux packages:\
+[![latest packaged version(s)](https://repology.org/badge/latest-versions/colobot.svg)](https://repology.org/project/colobot/versions)\
+[![Debian Unstable package](https://repology.org/badge/version-for-repo/debian_unstable/colobot.svg)](http://packages.debian.org/sid/colobot)\
+[![AUR package](https://repology.org/badge/version-for-repo/aur/colobot-gold.svg)](https://aur.archlinux.org/packages/colobot-gold)\
+[![openSUSE games Tumbleweed package](https://repology.org/badge/version-for-repo/opensuse_games_tumbleweed/colobot.svg)](http://software.opensuse.org/download.html?project=games&package=colobot)\
+[![Fedora Rawhide package](https://repology.org/badge/version-for-repo/fedora_rawhide/colobot.svg)](https://src.fedoraproject.org/rpms/colobot)\
+[![GNU Guix package](https://repology.org/badge/version-for-repo/gnuguix/colobot.svg)](https://packages.guix.gnu.org/packages/colobot)\
+[![Void Linux x86_64 package](https://repology.org/badge/version-for-repo/void_x86_64/colobot.svg)](https://github.com/void-linux/void-packages/tree/master/srcpkgs/colobot)
 
-The project at this point is in alpha stage - the game is mostly playable, both on Windows and Linux, and most major bugs have been corrected. We are now working steadily towards subsequent beta releases, correcting other bugs and introducing enhancements and new features. There is a lot of work ahead and we will gladly accept any and all help.
+### Development builds
 
-In the future, we will begin development on a new installment in the Colobot series, codename Colobot 2. We have many ideas for the new game and we are still discussing them. Generally, the development of this version will begin only after finishing Colobot Gold (it will be probably hosted in another repository, forked off the Colobot Gold code).
+Development builds are compiled every push to the repository by GitHub Actions:\
+[![Workflows](https://img.shields.io/github/last-commit/colobot/colobot/dev.svg)](https://github.com/colobot/colobot/actions)
 
+## Compiling from source
 
-## Download packages
-
-We provide compiled packages of most recent versions using an [automated build bot service](http://compiled.colobot.info/). Available versions include packages for Windows and Linux in both Release and Debug configurations.
-
-On some Linux distributions there are also distribution packages available:
- * Debian Sid (unstable): http://packages.debian.org/sid/colobot
- * Arch Linux (AUR): https://aur.archlinux.org/packages/colobot-gold
- * openSUSE: http://software.opensuse.org/download.html?project=games&package=colobot
- * Fedora: https://src.fedoraproject.org/rpms/colobot
- * Guix https://guix.gnu.org/en/packages/colobot-0.1.12-alpha/
-
-
-## Compiling and running the game
-
-If you want to compile colobot yourself, see [INSTALL.md](INSTALL.md) file.
+Instructions on how to build the game from sources are available for the following environments:
+- [Linux](https://github.com/colobot/colobot/blob/dev/INSTALL.md)
+- [Windows (MSYS2)](https://github.com/colobot/colobot/blob/dev/INSTALL-MSYS2.md)
+- [Windows (MSVC)](https://github.com/colobot/colobot/wiki/How-to-Build-Colobot%3A-Gold-Edition-Using-MSVC)
+- [MacOS](https://github.com/colobot/colobot/blob/dev/INSTALL-MacOSX.md)
 
 ## Contributing
 
-If you want to contribute to the project, see [CONTRIBUTING.md](CONTRIBUTING.md) file. It contains a lot of useful information on how to get started.
-
-## Contact
-
-If you want to help in the project, please contact us on our [Discord server](https://discord.gg/56Fm9kb).
+If you want to contribute to the project, see [CONTRIBUTING.md](CONTRIBUTING.md).
