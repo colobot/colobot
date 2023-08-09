@@ -15,6 +15,12 @@ else()
     set(OFFICIAL_COLOBOT_BUILD "false")
 endif()
 
+if(DEV_BUILD)
+    set(DEVELOPMENT_COLOBOT_BUILD "true")
+else()
+    set(DEVELOPMENT_COLOBOT_BUILD "false")
+endif()
+
 # Configure file
 configure_file(common/config.h.cmake "${CMAKE_CURRENT_BINARY_DIR}/common/config.h")
 configure_file(common/version.h.cmake "${CMAKE_CURRENT_BINARY_DIR}/common/version.h")

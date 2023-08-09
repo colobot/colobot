@@ -31,6 +31,7 @@
 #include "common/config_file.h"
 #include "common/image.h"
 #include "common/logger.h"
+#include "common/version.h"
 
 #include "graphics/core/light.h"
 #include "graphics/core/material.h"
@@ -277,9 +278,8 @@ void CGL33Device::BeginScene()
 
 void CGL33Device::EndScene()
 {
-#ifdef DEV_BUILD
-    CheckGLErrors();
-#endif
+    if constexpr (Version::DEVELOPMENT_BUILD)
+        CheckGLErrors();
 }
 
 void CGL33Device::Clear()

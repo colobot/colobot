@@ -31,6 +31,7 @@
 #include "common/restext.h"
 #include "common/settings.h"
 #include "common/stringutils.h"
+#include "common/version.h"
 
 #include "common/resources/inputstream.h"
 #include "common/resources/outputstream.h"
@@ -217,11 +218,7 @@ CRobotMain::CRobotMain()
 
     m_teamNames.clear();
 
-    #if DEV_BUILD
-    m_cheatAllMission      = true; // for development
-    #else
-    m_cheatAllMission      = false;
-    #endif
+    m_cheatAllMission = Version::DEVELOPMENT_BUILD; // for development
 
     m_cheatRadar   = false;
     m_fixScene     = false;
@@ -3425,10 +3422,13 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
                 float objectProgress = static_cast<float>(rankObj) / static_cast<float>(numObjects);
                 std::string details = StrUtils::ToString<int>(rankObj+1)+" / "+StrUtils::ToString<int>(numObjects);
-                #if DEV_BUILD
+
                 // Object categories may spoil the level a bit, so hide them in release builds
-                details += ": "+CLevelParserParam::FromObjectType(params.type);
-                #endif
+                if constexpr (Version::DEVELOPMENT_BUILD)
+                {
+                    details += ": " + CLevelParserParam::FromObjectType(params.type);
+                }
+
                 m_ui->GetLoadingScreen()->SetProgress(0.25f+objectProgress*0.75f, RT_LOADING_OBJECTS, details);
 
                 try
@@ -4843,10 +4843,13 @@ CObject* CRobotMain::IOReadObject(CLevelParserLine *line, const std::string& pro
     params.id = line->GetParam("id")->AsInt();
 
     std::string details = objCounterText;
-    #if DEV_BUILD
+
     // Object categories may spoil the level a bit, so hide them in release builds
-    details += ": "+CLevelParserParam::FromObjectType(params.type);
-    #endif
+    if constexpr (Version::DEVELOPMENT_BUILD)
+    {
+        details += ": " + CLevelParserParam::FromObjectType(params.type);
+    }
+
     m_ui->GetLoadingScreen()->SetProgress(0.25f+objectProgress*0.7f, RT_LOADING_OBJECTS_SAVED, details);
 
     CObject* obj = m_objMan->CreateObject(params);

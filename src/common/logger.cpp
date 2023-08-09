@@ -19,16 +19,15 @@
 
 
 #include "common/logger.h"
+#include "common/version.h"
 
 #include <stdio.h>
 
 CLogger::CLogger()
 {
-    #if DEV_BUILD
-    m_logLevel = LOG_DEBUG;
-    #else
-    m_logLevel = LOG_INFO;
-    #endif
+    m_logLevel = Version::DEVELOPMENT_BUILD
+        ? LOG_DEBUG
+        : LOG_INFO;
 }
 
 CLogger::~CLogger()

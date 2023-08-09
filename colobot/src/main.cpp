@@ -43,9 +43,9 @@
     #include <windows.h>
 #endif
 
+#include <filesystem>
 #include <memory>
 #include <vector>
-#include <boost/filesystem.hpp>
 
 /**
 \mainpage
@@ -116,12 +116,17 @@ int main(int argc, char *argv[])
 
     // Add file output to the logger
     std::string logFileName;
-    #if DEV_BUILD
+    
+    if constexpr (Version::DEVELOPMENT_BUILD)
+    {
         logFileName = "log.txt";
-    #else
-        boost::filesystem::create_directories(systemUtils->GetSaveDir());
+    }
+    else
+    {
+        std::filesystem::create_directories(systemUtils->GetSaveDir());
         logFileName = systemUtils->GetSaveDir() + "/log.txt";
-    #endif
+    }
+
     FILE* logFile = fopen(logFileName.c_str(), "w");
     if (logFile)
         logger.AddOutput(logFile);
