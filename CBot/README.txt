@@ -1,5 +1,5 @@
 /**
- * \dir src/CBot
+ * \dir CBot
  * \brief CBot library
  */
 
@@ -7,3 +7,4 @@
  * \namespace CBot
  * \brief CBot engine
  */
+ 

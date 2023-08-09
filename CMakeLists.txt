@@ -444,6 +444,9 @@ else()
     set(COLOBOT_I18N_DIR ${COLOBOT_INSTALL_I18N_DIR})
 endif()
 
+# Add CBot
+add_subdirectory(CBot)
+
 # Subdirectory with sources
 add_subdirectory(src)
 

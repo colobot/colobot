@@ -3,9 +3,6 @@ set(CMAKE_CXX_FLAGS ${COLOBOT_CXX_FLAGS})
 set(CMAKE_CXX_FLAGS_RELEASE ${COLOBOT_CXX_FLAGS_RELEASE})
 set(CMAKE_CXX_FLAGS_DEBUG ${COLOBOT_CXX_FLAGS_DEBUG})
 
-# Subdirectories
-add_subdirectory(CBot)
-
 if(TOOLS)
     #add_subdirectory(tools)
 endif()
