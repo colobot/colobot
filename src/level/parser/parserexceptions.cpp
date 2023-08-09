@@ -21,13 +21,13 @@
 
 #include "level/parser/parser.h"
 
-#include <boost/lexical_cast.hpp>
+#include "common/stringutils.h"
 
 
 static std::string FormatMissingParamError(CLevelParserParam* thisParam) NOEXCEPT
 {
     auto paramName = thisParam->GetName();
-    auto lineNumber = boost::lexical_cast<std::string>(thisParam->GetLine()->GetLineNumber());
+    auto lineNumber = StrUtils::ToString(thisParam->GetLine()->GetLineNumber());
     auto fileName = thisParam->GetLine()->GetLevelFilename();
     return "Missing required param '" + paramName + "' (in " + fileName + ":" + lineNumber + ")";
 }
@@ -41,7 +41,7 @@ static std::string FormatBadParamError(CLevelParserParam* thisParam, std::string
 {
     auto paramName = thisParam->GetName();
     auto paramValue = thisParam->GetValue();
-    auto lineNumber = boost::lexical_cast<std::string>(thisParam->GetLine()->GetLineNumber());
+    auto lineNumber = StrUtils::ToString(thisParam->GetLine()->GetLineNumber());
     auto fileName = thisParam->GetLine()->GetLevelFilename();
     return "Unable to parse '" + paramValue + "' as " + requestedType + " (param '" + paramName + "' in " + fileName + ":" + lineNumber + ")";
 }

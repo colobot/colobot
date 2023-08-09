@@ -33,7 +33,6 @@
 
 #include "level/parser/parser.h"
 
-#include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
 
 CLevelParserParam::CLevelParserParam(std::string name, std::string value)
@@ -49,11 +48,11 @@ CLevelParserParam::CLevelParserParam(std::string name, bool empty)
 }
 
 CLevelParserParam::CLevelParserParam(int value)
-  : m_value(boost::lexical_cast<std::string>(value))
+  : m_value(StrUtils::ToString(value))
 {}
 
 CLevelParserParam::CLevelParserParam(float value)
-  : m_value(boost::lexical_cast<std::string>(value))
+  : m_value(StrUtils::ToString(value))
 {}
 
 CLevelParserParam::CLevelParserParam(std::string value)
@@ -133,11 +132,14 @@ bool CLevelParserParam::IsDefined()
 }
 
 template<typename T>
-T CLevelParserParam::Cast(std::string value, std::string requestedType)
+T CLevelParserParam::Cast(const std::string& value, const std::string& requestedType)
 {
     try
     {
-        return boost::lexical_cast<T>(value);
+        std::stringstream stream(value);
+        T result;
+        stream >> result;
+        return result;
     }
     catch(...)
     {
@@ -146,7 +148,7 @@ T CLevelParserParam::Cast(std::string value, std::string requestedType)
 }
 
 template<typename T>
-T CLevelParserParam::Cast(std::string requestedType)
+T CLevelParserParam::Cast(const std::string& requestedType)
 {
     return Cast<T>(m_value, requestedType);
 }
@@ -750,7 +752,7 @@ const std::string CLevelParserParam::FromObjectType(ObjectType value)
     if (value == OBJECT_HUMAN       ) return "Me";
     if (value == OBJECT_TECH        ) return "Tech";
     if (value == OBJECT_CONTROLLER  ) return "MissionController";
-    return boost::lexical_cast<std::string>(static_cast<int>(value));
+    return StrUtils::ToString(static_cast<int>(value));
 }
 
 ObjectType CLevelParserParam::AsObjectType()
@@ -1052,7 +1054,7 @@ const std::string CLevelParserParam::FromCameraType(Gfx::CameraType value)
 {
     if (value == Gfx::CAM_TYPE_ONBOARD) return "ONBOARD";
     if (value == Gfx::CAM_TYPE_FIX    ) return "FIX";
-    return boost::lexical_cast<std::string>(static_cast<int>(value));
+    return StrUtils::ToString(static_cast<int>(value));
 }
 
 Gfx::CameraType CLevelParserParam::AsCameraType()
@@ -1115,7 +1117,7 @@ void CLevelParserParam::ParseArray()
     {
         boost::algorithm::trim(value);
         if (value.empty()) continue;
-        auto param = std::make_unique<CLevelParserParam>(m_name + "[" + boost::lexical_cast<std::string>(i) + "]", value);
+        auto param = std::make_unique<CLevelParserParam>(m_name + "[" + StrUtils::ToString(i) + "]", value);
         param->SetLine(m_line);
         m_array.push_back(std::move(param));
         i++;

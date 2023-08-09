@@ -26,8 +26,8 @@
 #include "graphics/model/model_io_structs.h"
 
 #include <boost/algorithm/string.hpp>
-#include <boost/lexical_cast.hpp>
 
+#include <array>
 #include <iostream>
 
 using namespace IOUtils;

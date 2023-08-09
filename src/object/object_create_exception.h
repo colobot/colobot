@@ -21,18 +21,19 @@
 
 #include "object/object_type.h"
 
+#include "common/stringutils.h"
+
 #include <stdexcept>
-#include <boost/lexical_cast.hpp>
 
 class CObjectCreateException : public std::runtime_error
 {
 public:
     explicit CObjectCreateException(const std::string& error, ObjectType type)
-        : std::runtime_error("Error creating object type " + boost::lexical_cast<std::string>(type))
+        : std::runtime_error("Error creating object type " + StrUtils::ToString(type))
     {}
     explicit CObjectCreateException(const std::string& error, ObjectType type, const std::string& modelName)
         : std::runtime_error("Error creating object type " +
-                              boost::lexical_cast<std::string>(type) +
+                              StrUtils::ToString(type) +
                               " from model " + modelName + ": " + error)
     {}
 };

@@ -46,8 +46,6 @@
 
 #include "ui/controls/edit.h"
 
-#include <boost/lexical_cast.hpp>
-
 #include <algorithm>
 #include <iomanip>
 #include <regex>
@@ -240,7 +238,7 @@ void CProgramStorageObjectImpl::SaveAllUserPrograms(const std::string& userSourc
         std::smatch matches;
         if (std::regex_match(filename, matches, regex))
         {
-            unsigned int id = boost::lexical_cast<unsigned int>(matches[1]);
+            unsigned int id = std::stoul(matches[1]);
             if (id >= m_program.size() || !m_program[id]->filename.empty())
             {
                 GetLogger()->Trace("Removing old program '%s/%s'\n", dir.c_str(), filename.c_str());
@@ -303,7 +301,7 @@ void CProgramStorageObjectImpl::LoadAllProgramsForLevel(CLevelParserLine* levelS
             std::smatch matches;
             if (std::regex_match(filename, matches, regex))
             {
-                unsigned int i = boost::lexical_cast<unsigned int>(matches[1]);
+                unsigned int i = std::stoul(matches[1]);
                 Program* program = GetOrAddProgram(i);
                 if(GetCompile(program)) program = AddProgram(); // If original slot is already used, get a new one
                 GetLogger()->Trace("Loading program '%s/%s' from user directory\n", dir.c_str(), filename.c_str());
@@ -348,7 +346,7 @@ void CProgramStorageObjectImpl::SaveAllProgramsForSavedScene(CLevelParserLine* l
         std::smatch matches;
         if (std::regex_match(filename, matches, regex))
         {
-            unsigned int id = boost::lexical_cast<unsigned int>(matches[1]);
+            unsigned int id = std::stoul(matches[1]);
             if (id >= m_program.size() || !m_program[id]->filename.empty())
             {
                 GetLogger()->Trace("Removing old program '%s/%s' from saved scene\n", levelSource.c_str(), filename.c_str());

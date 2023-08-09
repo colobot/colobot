@@ -26,6 +26,7 @@
 
 #include "common/config_file.h"
 #include "common/logger.h"
+#include "common/stringutils.h"
 
 #include "common/resources/resourcemanager.h"
 
@@ -275,9 +276,9 @@ void CModManager::LoadModData(Mod& mod)
                 }
                 else if (line->GetParam("major")->IsDefined() && line->GetParam("minor")->IsDefined() &&  line->GetParam("patch")->IsDefined())
                 {
-                    auto major = boost::lexical_cast<std::string>(line->GetParam("major")->AsInt());
-                    auto minor = boost::lexical_cast<std::string>(line->GetParam("minor")->AsInt());
-                    auto patch = boost::lexical_cast<std::string>(line->GetParam("patch")->AsInt());
+                    auto major = StrUtils::ToString(line->GetParam("major")->AsInt());
+                    auto minor = StrUtils::ToString(line->GetParam("minor")->AsInt());
+                    auto patch = StrUtils::ToString(line->GetParam("patch")->AsInt());
                     data.version = boost::algorithm::join(std::vector<std::string>{ major, minor, patch }, ".");
                 }
             }

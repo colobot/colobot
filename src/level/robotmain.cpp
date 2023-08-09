@@ -117,8 +117,6 @@
 #include <cmath>
 #include <ctime>
 
-#include <boost/lexical_cast.hpp>
-
 
 // Global variables.
 
@@ -2914,7 +2912,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     {
                         try
                         {
-                            int rank = boost::lexical_cast<int>(line->GetParam(type)->GetValue());
+                            int rank = std::stoi(line->GetParam(type)->GetValue());
                             if (rank >= 0)
                             {
                                 // TODO: Fix default levels and add a future removal warning
@@ -2931,7 +2929,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                             }
 
                         }
-                        catch (boost::bad_lexical_cast &e)
+                        catch (std::invalid_argument &e)
                         {
                             return line->GetParam(type)->AsPath("levels");
                         }
@@ -3767,7 +3765,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             if (!m_sceneReadPath.empty()) continue; // ignore errors when loading saved game (TODO: don't report ones that are just not loaded when loading saved game)
             if (resetObject) continue; // ignore when reseting just objects (TODO: see above)
 
-            throw CLevelParserException("Unknown command: '" + line->GetCommand() + "' in " + line->GetLevelFilename() + ":" + boost::lexical_cast<std::string>(line->GetLineNumber()));
+            throw CLevelParserException("Unknown command: '" + line->GetCommand() + "' in " + line->GetLevelFilename() + ":" + StrUtils::ToString(line->GetLineNumber()));
         }
 
         // Do this here to prevent the first frame from taking a long time to render

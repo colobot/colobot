@@ -29,7 +29,6 @@
 #include "common/logger.h"
 
 #include <boost/property_tree/ptree.hpp>
-#include <boost/lexical_cast.hpp>
 
 #include <string>
 #include <sstream>
@@ -157,9 +156,22 @@ private:
         std::vector<T> result;
         std::stringstream ss(s);
         std::string item;
+
         while (std::getline(ss, item, ','))
         {
-            result.push_back(boost::lexical_cast<T>(item));
+            if constexpr (std::is_same_v<T, std::string>)
+            {
+                result.push_back(item);
+            }
+            else
+            {
+                std::stringstream stream(item);
+
+                T value;
+                stream >> value;
+
+                result.push_back(value);
+            }
         }
         return result;
     }

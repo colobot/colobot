@@ -139,8 +139,8 @@ private:
     void ParseArray();
     void LoadArray();
 
-    template<typename T> T Cast(std::string value, std::string requestedType);
-    template<typename T> T Cast(std::string requestedType);
+    template<typename T> T Cast(const std::string& value, const std::string& requestedType);
+    template<typename T> T Cast(const std::string& requestedType);
 
     std::string ToPath(std::string path, const std::string defaultDir);
     ObjectType ToObjectType(std::string value);

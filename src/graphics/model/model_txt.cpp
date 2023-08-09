@@ -26,7 +26,6 @@
 #include "graphics/model/model_io_structs.h"
 
 #include <boost/algorithm/string.hpp>
-#include <boost/lexical_cast.hpp>
 
 using namespace IOUtils;
 
@@ -58,7 +57,7 @@ std::unique_ptr<CModel> ReadTextModel(const std::filesystem::path& path)
     int version = 0;
     try
     {
-        version = boost::lexical_cast<int>(ReadLineString(stream, "version"));
+        version = std::stoi(ReadLineString(stream, "version"));
         stream.seekg(std::ios_base::beg);
     }
     catch (const std::exception& e)
@@ -73,7 +72,7 @@ std::unique_ptr<CModel> ReadTextModel(const std::filesystem::path& path)
     else if (version == 3)
         ReadTextModelV3(*model, stream);
     else
-        throw CModelIOException(std::string("Unexpected version number: ") + boost::lexical_cast<std::string>(version));
+        throw CModelIOException(std::string("Unexpected version number: ") + std::to_string(version));
 
     return model;
 }
@@ -84,8 +83,8 @@ void ReadTextModelV1AndV2(CModel& model, std::istream& stream)
 
     try
     {
-        header.version = boost::lexical_cast<int>(ReadLineString(stream, "version"));
-        header.totalTriangles = boost::lexical_cast<int>(ReadLineString(stream, "total_triangles"));
+        header.version = std::stoi(ReadLineString(stream, "version"));
+        header.totalTriangles = std::stoi(ReadLineString(stream, "total_triangles"));
     }
     catch (const std::exception& e)
     {
@@ -121,9 +120,9 @@ void ReadTextModelV1AndV2(CModel& model, std::istream& stream)
         t.variableTex2 = varTex2Ch == "Y";
 
         if (header.version == 1)
-            t.lodLevel = static_cast<ModelLODLevel>(boost::lexical_cast<int>(ReadLineString(stream, "lod_level")));
+            t.lodLevel = static_cast<ModelLODLevel>(std::stoi(ReadLineString(stream, "lod_level")));
 
-        t.state = boost::lexical_cast<int>(ReadLineString(stream, "state"));
+        t.state = std::stoi(ReadLineString(stream, "state"));
 
         if (t.lodLevel == ModelLODLevel::Low ||
             t.lodLevel == ModelLODLevel::Medium)
@@ -186,11 +185,11 @@ void ReadTextModelV3(CModel& model, std::istream& stream)
 ModelHeaderV3 ReadTextHeader(std::istream& stream)
 {
     ModelHeaderV3 header;
-    header.version = boost::lexical_cast<int>(ReadLineString(stream, "version"));
-    header.totalCrashSpheres = boost::lexical_cast<int>(ReadLineString(stream, "total_crash_spheres"));
+    header.version = std::stoi(ReadLineString(stream, "version"));
+    header.totalCrashSpheres = std::stoi(ReadLineString(stream, "total_crash_spheres"));
     header.hasShadowSpot = ReadLineString(stream, "has_shadow_spot") == std::string("Y");
     header.hasCameraCollisionSphere = ReadLineString(stream, "has_camera_collision_sphere") == std::string("Y");
-    header.totalMeshes = boost::lexical_cast<int>(ReadLineString(stream, "total_meshes"));
+    header.totalMeshes = std::stoi(ReadLineString(stream, "total_meshes"));
     return header;
 }
 
@@ -203,7 +202,7 @@ std::unique_ptr<CModelMesh> ReadTextMesh(std::istream& stream)
     mesh->SetScale(ParseVector(ReadLineString(stream, "scale")));
     mesh->SetParent(ReadLineString(stream, "parent"));
 
-    int totalTriangles = boost::lexical_cast<int>(ReadLineString(stream, "total_triangles"));
+    int totalTriangles = std::stoi(ReadLineString(stream, "total_triangles"));
 
     for (int i = 0; i < totalTriangles; ++i)
     {
