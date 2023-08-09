@@ -49,8 +49,6 @@
     #include "sound/oalsound/alsound.h"
 #endif
 
-#include <boost/tokenizer.hpp>
-
 #include <SDL.h>
 #include <SDL_image.h>
 
@@ -1689,9 +1687,10 @@ bool CApplication::ParseDebugModes(const std::string& str, int& debugModes)
 {
     debugModes = 0;
 
-    boost::char_separator<char> sep(",");
-    boost::tokenizer<boost::char_separator<char>> tokens(str, sep);
-    for (const auto& modeToken : tokens)
+    std::istringstream stream(str);
+    std::string modeToken;
+
+    while (std::getline(stream, modeToken, ','))
     {
         if (modeToken == "sys_events")
         {
