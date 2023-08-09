@@ -158,7 +158,7 @@ int main(int argc, char *argv[])
     LocalFree(wargv);
     #endif
 
-    logger.Info("%s starting\n", COLOBOT_FULLNAME);
+    logger.Info("%s starting\n", Version::FULL_NAME);
 
     CSignalHandlers::Init(systemUtils.get());
 

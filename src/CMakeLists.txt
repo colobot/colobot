@@ -9,6 +9,12 @@ endif()
 
 add_subdirectory(graphics/opengl33/shaders)
 
+if(COLOBOT_OFFICIAL_BUILD)
+    set(OFFICIAL_COLOBOT_BUILD "true")
+else()
+    set(OFFICIAL_COLOBOT_BUILD "false")
+endif()
+
 # Configure file
 configure_file(common/config.h.cmake "${CMAKE_CURRENT_BINARY_DIR}/common/config.h")
 configure_file(common/version.h.cmake "${CMAKE_CURRENT_BINARY_DIR}/common/version.h")

@@ -148,7 +148,9 @@ endif()
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
 # Include cmake directory with some additional scripts
-set(CMAKE_MODULE_PATH "${colobot_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
+list(PREPEND CMAKE_MODULE_PATH 
+    ${PROJECT_SOURCE_DIR}/cmake
+)
 
 # Compiler detection
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
@@ -233,7 +235,7 @@ option(DEV_BUILD "Enable development build (enables some debugging tools, local 
 
 # Official build - changes text on the crash screen
 # PLEASE DO NOT USE ON UNOFFICIAL BUILDS. Thanks.
-option(OFFICIAL_COLOBOT_BUILD "Official build (changes crash screen text)" OFF)
+option(COLOBOT_OFFICIAL_BUILD "Official build (changes crash screen text)" OFF)
 
 # Hardcode relative paths instead of absolute paths
 option(USE_RELATIVE_PATHS "Generate relative paths from absolute paths" OFF)

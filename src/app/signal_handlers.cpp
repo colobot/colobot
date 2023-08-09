@@ -132,16 +132,23 @@ void CSignalHandlers::ReportError(const std::string& errorMessage)
     msg << "This is usually caused by a bug. Please report this on http://github.com/colobot/colobot/issues" << std::endl;
     msg << "including information on what you were doing before this happened and all the information below." << std::endl;
     msg << "==============================" << std::endl;
-    #if BUILD_NUMBER == 0
-        #ifdef OFFICIAL_COLOBOT_BUILD
-            msg << "You are running official " << COLOBOT_VERSION_DISPLAY << " build." << std::endl;
-        #else
-            // COLOBOT_VERSION_DISPLAY doesn't update if you don't run CMake after "git pull"
-            msg << "You seem to be running a custom compilation of version " << COLOBOT_VERSION_DISPLAY << ", but please verify that." << std::endl;
-        #endif
-    #else
-        msg << "You are running version " << COLOBOT_VERSION_DISPLAY << " from CI build #" << BUILD_NUMBER << std::endl;
-    #endif
+
+    if constexpr (Version::BUILD_NUMBER == 0)
+    {
+        if constexpr (Version::OFFICIAL_BUILD)
+        {
+            msg << "You are running official " << Version::VERSION_DISPLAY << " build." << std::endl;
+        }
+        else
+        {
+            msg << "You seem to be running a custom compilation of version " << Version::VERSION_DISPLAY << ", but please verify that." << std::endl;
+        }
+    }
+    else
+    {
+        msg << "You are running version " << Version::VERSION_DISPLAY << " from CI build #" << Version::BUILD_NUMBER << std::endl;
+    }
+
     msg << std::endl;
     bool canSave = false;
     CRobotMain* robotMain = nullptr;
