@@ -144,7 +144,7 @@ const std::vector<ExchangePostInfo>& CExchangePost::GetInfoList()
     return m_infoList;
 }
 
-boost::optional<float> CExchangePost::GetInfoValue(const std::string& name)
+std::optional<float> CExchangePost::GetInfoValue(const std::string& name)
 {
     for (auto& info : m_infoList)
     {
@@ -153,7 +153,7 @@ boost::optional<float> CExchangePost::GetInfoValue(const std::string& name)
             return info.value;
         }
     }
-    return boost::none;
+    return std::nullopt;
 }
 
 bool CExchangePost::HasInfo(const std::string& name)

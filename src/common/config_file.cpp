@@ -27,11 +27,11 @@
 
 #include "common/system/system.h"
 
+#include <boost/property_tree/ini_parser.hpp>
+
 #include <memory>
 #include <utility>
 #include <cstring>
-#include <boost/property_tree/ini_parser.hpp>
-#include <boost/regex.hpp>
 
 namespace bp = boost::property_tree;
 

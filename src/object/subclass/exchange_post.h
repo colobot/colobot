@@ -24,10 +24,9 @@
 
 #include "object/auto/auto.h"
 
+#include <optional>
 #include <string>
 #include <vector>
-
-#include <boost/optional.hpp>
 
 struct ExchangePostInfo
 {
@@ -57,7 +56,7 @@ public:
 
     bool SetInfo(const std::string& name, float value);
     const std::vector<ExchangePostInfo>& GetInfoList();
-    boost::optional<float> GetInfoValue(const std::string& name);
+    std::optional<float> GetInfoValue(const std::string& name);
     bool HasInfo(const std::string& name);
     bool DeleteInfo(const std::string& name);
 

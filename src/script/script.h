@@ -26,11 +26,10 @@
 
 #include "CBot/CBot.h"
 
-#include <memory>
 #include <limits>
+#include <memory>
+#include <optional>
 #include <string>
-#include <boost/optional.hpp>
-
 
 class COldObject;
 class CTaskExecutorObject;
@@ -128,5 +127,5 @@ protected:
     CBot::CBotError m_error = CBot::CBotNoErr;        // error (0=ok)
     int     m_cursor1 = 0;
     int     m_cursor2 = 0;
-    boost::optional<float> m_returnValue = boost::none;
+    std::optional<float> m_returnValue = std::nullopt;
 };

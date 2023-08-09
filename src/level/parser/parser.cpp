@@ -36,11 +36,11 @@
 #include <sstream>
 #include <iomanip>
 #include <set>
+#include <regex>
 
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/lexical_cast.hpp>
-#include <boost/regex.hpp>
 
 CLevelParser::CLevelParser()
 {
@@ -174,9 +174,9 @@ void CLevelParser::Load()
         // ignore comments
         size_t pos = 0;
         std::string linesuffix = line;
-        boost::regex commentRegex{ R"(("[^"]*")|('[^']*')|(//.*$))" };
-        boost::smatch matches;
-        while (boost::regex_search(linesuffix, matches, commentRegex))
+        std::regex commentRegex{ R"(("[^"]*")|('[^']*')|(//.*$))" };
+        std::smatch matches;
+        while (std::regex_search(linesuffix, matches, commentRegex))
         {
             if (matches[3].matched)
             {

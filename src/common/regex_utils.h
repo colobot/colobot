@@ -20,8 +20,7 @@
 #pragma once
 
 #include <stdexcept>
-
-#include <boost/regex.hpp>
+#include <regex>
 
 namespace RegexUtils
 {
@@ -30,10 +29,10 @@ class CAssertRegexMatchError : public std::runtime_error
 {
 public:
     explicit CAssertRegexMatchError(const std::string& text,
-                                    const std::string& pattern) NOEXCEPT;
+                                    const std::string& pattern) noexcept;
 };
 
 //! Match string with regex and return list of matches; throw exception on mismatch
-boost::smatch AssertRegexMatch(const std::string& text, const std::string& pattern);
+std::smatch AssertRegexMatch(const std::string& text, const std::string& pattern);
 
 } // namespace RegexUtils

@@ -46,10 +46,11 @@
 
 #include "ui/controls/edit.h"
 
+#include <boost/lexical_cast.hpp>
+
 #include <algorithm>
 #include <iomanip>
-#include <boost/regex.hpp>
-#include <boost/lexical_cast.hpp>
+#include <regex>
 
 CProgramStorageObjectImpl::CProgramStorageObjectImpl(ObjectInterfaceTypes& types, CObject* object)
     : CProgramStorageObject(types),
@@ -233,11 +234,11 @@ void CProgramStorageObjectImpl::SaveAllUserPrograms(const std::string& userSourc
 
     std::string dir = userSource.substr(0, userSource.find_last_of("/"));
     std::string file = userSource.substr(userSource.find_last_of("/")+1) + StrUtils::Format("%.3d([0-9]{3})\\.txt", m_programStorageIndex);
-    boost::regex regex(file);
+    std::regex regex(file);
     for (const std::string& filename : CResourceManager::ListFiles(dir))
     {
-        boost::smatch matches;
-        if (boost::regex_match(filename, matches, regex))
+        std::smatch matches;
+        if (std::regex_match(filename, matches, regex))
         {
             unsigned int id = boost::lexical_cast<unsigned int>(matches[1]);
             if (id >= m_program.size() || !m_program[id]->filename.empty())
@@ -296,11 +297,11 @@ void CProgramStorageObjectImpl::LoadAllProgramsForLevel(CLevelParserLine* levelS
 
         std::string dir = userSource.substr(0, userSource.find_last_of("/"));
         std::string file = userSource.substr(userSource.find_last_of("/")+1) + StrUtils::Format("%.3d([0-9]{3})\\.txt", m_programStorageIndex);
-        boost::regex regex(file);
+        std::regex regex(file);
         for (const std::string& filename : CResourceManager::ListFiles(dir))
         {
-            boost::smatch matches;
-            if (boost::regex_match(filename, matches, regex))
+            std::smatch matches;
+            if (std::regex_match(filename, matches, regex))
             {
                 unsigned int i = boost::lexical_cast<unsigned int>(matches[1]);
                 Program* program = GetOrAddProgram(i);
@@ -341,11 +342,11 @@ void CProgramStorageObjectImpl::SaveAllProgramsForSavedScene(CLevelParserLine* l
         levelSourceLine->AddParam("scriptRunnable" + StrUtils::ToString<int>(i+1), std::make_unique<CLevelParserParam>(m_program[i]->runnable));
     }
 
-    boost::regex regex(StrUtils::Format("prog%.3d([0-9]{3})\\.txt", m_programStorageIndex));
+    std::regex regex(StrUtils::Format("prog%.3d([0-9]{3})\\.txt", m_programStorageIndex));
     for (const std::string& filename : CResourceManager::ListFiles(levelSource))
     {
-        boost::smatch matches;
-        if (boost::regex_match(filename, matches, regex))
+        std::smatch matches;
+        if (std::regex_match(filename, matches, regex))
         {
             unsigned int id = boost::lexical_cast<unsigned int>(matches[1]);
             if (id >= m_program.size() || !m_program[id]->filename.empty())

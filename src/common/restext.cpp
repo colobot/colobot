@@ -32,7 +32,6 @@
 #include "object/object_type.h"
 
 #include <SDL_keyboard.h>
-#include <boost/regex.hpp>
 
 #include <libintl.h>
 
