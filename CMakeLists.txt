@@ -235,9 +235,6 @@ option(DEV_BUILD "Enable development build (enables some debugging tools, local 
 # PLEASE DO NOT USE ON UNOFFICIAL BUILDS. Thanks.
 option(OFFICIAL_COLOBOT_BUILD "Official build (changes crash screen text)" OFF)
 
-# Hide console on Windows (useful for release builds)
-option(HIDE_CONSOLE "Hide console" OFF)
-
 # Hardcode relative paths instead of absolute paths
 option(USE_RELATIVE_PATHS "Generate relative paths from absolute paths" OFF)
 
@@ -449,6 +446,9 @@ add_subdirectory(CBot)
 
 # Subdirectory with sources
 add_subdirectory(src)
+
+# Add Colobot executable
+add_subdirectory(colobot)
 
 add_subdirectory(po)
 

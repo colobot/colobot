@@ -576,31 +576,7 @@ endif()
 
 set(COLOBOT_LIBS ${LIBS} PARENT_SCOPE)
 
-
-# Targets
-if(HIDE_CONSOLE)
-    add_executable(colobot WIN32 app/main.cpp)
-else()
-    add_executable(colobot app/main.cpp)
-endif()
-
-if(PLATFORM_WINDOWS)
-    target_sources(colobot PRIVATE ../desktop/colobot.rc)
-endif()
-
-target_link_libraries(colobot colobotbase SDL2::Main)
-
-# Install
-install(TARGETS colobot RUNTIME DESTINATION ${COLOBOT_INSTALL_BIN_DIR})
-if(MSVC)
-    install(FILES $<TARGET_PDB_FILE:colobot> CONFIGURATIONS Debug RelWithDebInfo DESTINATION ${COLOBOT_INSTALL_BIN_DIR} OPTIONAL)
-endif()
-if(NOT CBOT_STATIC)
-    set_target_properties(colobot PROPERTIES INSTALL_RPATH ${COLOBOT_INSTALL_LIB_DIR})
-endif()
-
 # Linter-specific
 if(COLOBOT_LINT_BUILD)
     add_fake_header_sources("src" colobotbase)
-    add_fake_header_sources("src" colobot)
 endif()
