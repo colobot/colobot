@@ -65,7 +65,7 @@ public:
     std::string GetValString() const override
     {
         if (m_binit == CBotVar::InitType::UNDEF)
-            return LoadString(TX_UNDEF);
+            return UndefinedTokenString();
 
         std::ostringstream s;
         s << std::boolalpha << m_val;
