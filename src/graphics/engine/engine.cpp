@@ -248,7 +248,7 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
     m_textureAnisotropy = 1;
     m_shadowMapping = true;
     m_offscreenShadowRendering = true;
-    m_offscreenShadowRenderingResolution = 1024;
+    m_offscreenShadowRenderingResolution = 2048;
     m_qualityShadows = true;
     m_terrainShadows = false;
     m_shadowRange = 0.0f;
@@ -2925,7 +2925,7 @@ void CEngine::Draw3DScene()
     objectRenderer->SetFog(fogStart, fogEnd, { fogColor.r, fogColor.g, fogColor.b });
     objectRenderer->SetAlphaScissor(0.0f);
 
-    if (m_shadowMapping && m_qualityShadows)
+    if (m_shadowMapping)
         objectRenderer->SetShadowParams(m_shadowRegions, shadowParams);
     else
         objectRenderer->SetShadowParams(0, nullptr);
@@ -3407,23 +3407,34 @@ void CEngine::RenderShadowMap()
 
     CProfiler::StartPerformanceCounter(PCNT_RENDER_SHADOW_MAP);
 
-    m_shadowRegions = 4;
+    if (m_qualityShadows)
+    {
+        m_shadowRegions = 4;
 
-    m_shadowParams[0].range = 16.0;
-    m_shadowParams[0].offset = { 0.0, 0.0 };
-    m_shadowParams[0].scale = { 0.5, 0.5 };
+        m_shadowParams[0].range = 16.0;
+        m_shadowParams[0].offset = { 0.0, 0.0 };
+        m_shadowParams[0].scale = { 0.5, 0.5 };
 
-    m_shadowParams[1].range = 64.0;
-    m_shadowParams[1].offset = { 0.5, 0.0 };
-    m_shadowParams[1].scale = { 0.5, 0.5 };
+        m_shadowParams[1].range = 64.0;
+        m_shadowParams[1].offset = { 0.5, 0.0 };
+        m_shadowParams[1].scale = { 0.5, 0.5 };
 
-    m_shadowParams[2].range = 256.0;
-    m_shadowParams[2].offset = { 0.0, 0.5 };
-    m_shadowParams[2].scale = { 0.5, 0.5 };
+        m_shadowParams[2].range = 256.0;
+        m_shadowParams[2].offset = { 0.0, 0.5 };
+        m_shadowParams[2].scale = { 0.5, 0.5 };
 
-    m_shadowParams[3].range = 1024.0;
-    m_shadowParams[3].offset = { 0.5, 0.5 };
-    m_shadowParams[3].scale = { 0.5, 0.5 };
+        m_shadowParams[3].range = 1024.0;
+        m_shadowParams[3].offset = { 0.5, 0.5 };
+        m_shadowParams[3].scale = { 0.5, 0.5 };
+    }
+    else
+    {
+        m_shadowRegions = 1;
+
+        m_shadowParams[0].range = 256.0;
+        m_shadowParams[0].offset = { 0.0, 0.0 };
+        m_shadowParams[0].scale = { 1.0, 1.0 };
+    }
 
     // If no shadow map texture exists, create it
     if (m_shadowMap.id == 0)
