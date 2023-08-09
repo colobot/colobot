@@ -20,6 +20,7 @@
 #include "graphics/model/model_mod.h"
 
 #include "common/ioutils.h"
+#include "common/stringutils.h"
 #include "common/resources/inputstream.h"
 
 #include "graphics/model/model_io_exception.h"
@@ -255,7 +256,7 @@ std::string ReadLineString(std::istream& stream, const std::string& expectedPref
             throw CModelIOException("Unexpected EOF");
 
         std::getline(stream, line);
-        boost::trim_right(line);
+        StrUtils::TrimRight(line);
         if (!line.empty() && line[0] != '#')
             break;
     }
@@ -270,7 +271,7 @@ std::string ReadLineString(std::istream& stream, const std::string& expectedPref
 
     std::string value;
     std::getline(s, value);
-    boost::trim_left(value);
+    StrUtils::TrimLeft(value);
 
     return value;
 }

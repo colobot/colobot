@@ -1115,7 +1115,7 @@ void CLevelParserParam::ParseArray()
     int i = 0;
     for (auto& value : values)
     {
-        boost::algorithm::trim(value);
+        StrUtils::Trim(value);
         if (value.empty()) continue;
         auto param = std::make_unique<CLevelParserParam>(m_name + "[" + StrUtils::ToString(i) + "]", value);
         param->SetLine(m_line);

@@ -38,7 +38,6 @@
 #include <set>
 #include <regex>
 
-#include <boost/algorithm/string/trim.hpp>
 #include <boost/algorithm/string/replace.hpp>
 
 CLevelParser::CLevelParser()
@@ -190,14 +189,14 @@ void CLevelParser::Load()
             }
         }
 
-        boost::algorithm::trim(line);
+        StrUtils::Trim(line);
 
         pos = line.find_first_of(" \t\n");
         std::string command = line.substr(0, pos);
         if (pos != std::string::npos)
         {
             line = line.substr(pos + 1);
-            boost::algorithm::trim(line);
+            StrUtils::Trim(line);
         }
         else
         {
@@ -246,9 +245,9 @@ void CLevelParser::Load()
         {
             pos = line.find_first_of("=");
             std::string paramName = line.substr(0, pos);
-            boost::algorithm::trim(paramName);
+            StrUtils::Trim(paramName);
             line = line.substr(pos + 1);
-            boost::algorithm::trim(line);
+            StrUtils::Trim(line);
 
             if (line[0] == '\"')
             {
@@ -277,14 +276,14 @@ void CLevelParser::Load()
                 }
             }
             std::string paramValue = line.substr(0, pos + 1);
-            boost::algorithm::trim(paramValue);
+            StrUtils::Trim(paramValue);
 
             parserLine->AddParam(paramName, std::make_unique<CLevelParserParam>(paramName, paramValue));
 
             if (pos == std::string::npos)
                 break;
             line = line.substr(pos + 1);
-            boost::algorithm::trim(line);
+            StrUtils::Trim(line);
         }
 
         if (parserLine->GetCommand().length() > 1 && parserLine->GetCommand()[0] == '#')

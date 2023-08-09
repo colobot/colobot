@@ -20,12 +20,11 @@
 #include "graphics/model/model_mod.h"
 
 #include "common/ioutils.h"
+#include "common/stringutils.h"
 #include "common/resources/inputstream.h"
 
 #include "graphics/model/model_io_exception.h"
 #include "graphics/model/model_io_structs.h"
-
-#include <boost/algorithm/string.hpp>
 
 #include <array>
 #include <iostream>
@@ -279,8 +278,10 @@ ModelLODLevel MinMaxToLodLevel(float min, float max)
 void ConvertOldTex1Name(ModelTriangle& triangle, const char* tex1Name)
 {
     triangle.material.albedoTexture = tex1Name;
-    boost::replace_all(triangle.material.albedoTexture, "bmp", "png");
-    boost::replace_all(triangle.material.albedoTexture, "tga", "png");
+    triangle.material.albedoTexture = StrUtils::Replace(
+        triangle.material.albedoTexture, "bmp", "png");
+    triangle.material.albedoTexture = StrUtils::Replace(
+        triangle.material.albedoTexture, "tga", "png");
 }
 
 void ConvertFromOldRenderState(ModelTriangle& triangle, int state)

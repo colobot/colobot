@@ -68,6 +68,14 @@ std::string Format(const char *fmt, ...);
 //! Returns a string with every occurence of \a oldStr in \a str replaced to \a newStr
 std::string Replace(const std::string &str, const std::string &oldStr, const std::string &newStr);
 
+//! Remove whitespace from the beginning of the given string (in place)
+void TrimLeft(std::string& str);
+
+//! Remove whitespace from the end of the given string (in place)
+void TrimRight(std::string& str);
+
+//! Remove whitespace from both ends of the given string (in place)
+void Trim(std::string& str);
 
 //! Converts a wide Unicode char to a single UTF-8 encoded char
 std::string UnicodeCharToUtf8(unsigned int ch);

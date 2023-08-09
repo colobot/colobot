@@ -84,6 +84,26 @@ std::string StrUtils::Replace(const std::string &str, const std::string &oldStr,
     return result;
 }
 
+void StrUtils::TrimLeft(std::string& s)
+{
+    s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) {
+        return !std::isspace(ch);
+    }));
+}
+
+void StrUtils::TrimRight(std::string& s)
+{
+    s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) {
+        return !std::isspace(ch);
+    }).base(), s.end());
+}
+
+void StrUtils::Trim(std::string& str)
+{
+    TrimLeft(str);
+    TrimRight(str);
+}
+
 std::string StrUtils::UnicodeCharToUtf8(unsigned int ch)
 {
     std::string result;

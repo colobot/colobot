@@ -35,7 +35,6 @@
 #include <algorithm>
 #include <filesystem>
 #include <map>
-#include <boost/algorithm/string.hpp>
 
 CModManager::CModManager(CApplication* app, CPathManager* pathManager)
     : m_app{app},

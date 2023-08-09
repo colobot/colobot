@@ -32,8 +32,6 @@
     #include "common/system/system_windows.h"
 #endif
 
-#include <boost/algorithm/string.hpp>
-
 #include <filesystem>
 
 CPathManager::CPathManager(CSystemUtils* systemUtils)
