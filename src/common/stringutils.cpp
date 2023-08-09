@@ -76,7 +76,7 @@ std::string StrUtils::Replace(const std::string &str, const std::string &oldStr,
 {
     std::string result = str;
     std::size_t pos = 0;
-    while ((pos = str.find(oldStr, pos)) != std::string::npos)
+    while ((pos = result.find(oldStr, pos)) != std::string::npos)
     {
         result.replace(pos, oldStr.length(), newStr);
         pos += newStr.length();

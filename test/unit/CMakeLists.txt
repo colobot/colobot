@@ -15,6 +15,7 @@ add_executable(colobot_ut
     CBot/CBotFileUtils_test.cpp
     CBot/CBotToken_test.cpp
     common/config_file_test.cpp
+    common/stringutils_test.cpp
     common/timeutils_test.cpp
     #graphics/engine/lightman_test.cpp
     math/func_test.cpp

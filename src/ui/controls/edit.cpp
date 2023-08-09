@@ -820,7 +820,7 @@ void CEdit::HyperJump(std::string name, std::string marker)
 
     std::string filename = name + std::string(".txt");
     filename = InjectLevelPathsForCurrentLevel(filename, "help/%lng%");
-    boost::replace_all(filename, "\\", "/"); //TODO: Fix this in files
+    filename = StrUtils::Replace(filename, "\\", "/"); //TODO: Fix this in files
 
     if ( ReadText(filename) )
     {
@@ -1172,7 +1172,7 @@ static std::string PrepareImageFilename(std::string name)
     std::string filename;
     filename = name + ".png";
     filename = InjectLevelPathsForCurrentLevel(filename, "icons");
-    boost::replace_all(filename, "\\", "/"); // TODO: Fix this in files
+    filename = StrUtils::Replace(filename, "\\", "/"); // TODO: Fix this in files
     return filename;
 }
 

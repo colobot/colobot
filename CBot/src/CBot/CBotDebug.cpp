@@ -63,13 +63,25 @@ void CBotDebug::DumpCompiledProgram(CBotProgram* program)
         if (finished.find(instr) != finished.end()) return;
         finished.insert(instr);
 
-        std::string label = "<b>"+instr->GetDebugName()+"</b>\n";
+        auto replaceAll = [](std::string& text, const std::string& from, const std::string& to)
+        {
+            std::size_t pos = 0;
+
+            while ((pos = text.find(from, pos)) != std::string::npos)
+            {
+                text.replace(pos, from.length(), to);
+                pos += to.length();
+            }
+        };
+
         std::string data = instr->GetDebugData();
-        boost::algorithm::replace_all(data, "&", "&amp;");
-        boost::algorithm::replace_all(data, "<", "&lt;");
-        boost::algorithm::replace_all(data, ">", "&gt;");
+        replaceAll(data, "&", "&amp;");
+        replaceAll(data, "<", "&lt;");
+        replaceAll(data, ">", "&gt;");
+
+        std::string label = "<b>"+instr->GetDebugName()+"</b>\n";
         label += data;
-        boost::algorithm::replace_all(label, "\n", "<br/>");
+        replaceAll(label, "\n", "<br/>");
 
         std::string additional = "";
         if (instr->GetDebugName() == "CBotFunction")

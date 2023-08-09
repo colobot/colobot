@@ -167,7 +167,7 @@ void CLevelParser::Load()
     {
         lineNumber++;
 
-        boost::replace_all(line, "\t", " "); // replace tab by space
+        line = StrUtils::Replace(line, "\t", " "); // replace tab by space
 
         // ignore comments
         size_t pos = 0;
@@ -337,9 +337,9 @@ void CLevelParser::SetLevelPaths(LevelCategory category, int chapter, int rank)
 std::string CLevelParser::InjectLevelPaths(const std::string& path, const std::string& defaultDir)
 {
     std::string newPath = path;
-    if(!m_pathLvl.empty() ) boost::replace_all(newPath, "%lvl%",  m_pathLvl);
-    if(!m_pathChap.empty()) boost::replace_all(newPath, "%chap%", m_pathChap);
-    if(!m_pathCat.empty() ) boost::replace_all(newPath, "%cat%",  m_pathCat);
+    if(!m_pathLvl.empty() ) newPath = StrUtils::Replace(newPath, "%lvl%",  m_pathLvl);
+    if(!m_pathChap.empty()) newPath = StrUtils::Replace(newPath, "%chap%", m_pathChap);
+    if(!m_pathCat.empty() ) newPath = StrUtils::Replace(newPath, "%cat%",  m_pathCat);
     if(newPath == path && !path.empty())
     {
         newPath = defaultDir + (!defaultDir.empty() ? "/" : "") + newPath;
@@ -347,12 +347,12 @@ std::string CLevelParser::InjectLevelPaths(const std::string& path, const std::s
 
     std::string langPath = newPath;
     std::string langStr(1, CApplication::GetInstancePointer()->GetLanguageChar());
-    boost::replace_all(langPath, "%lng%", langStr);
+    langPath = StrUtils::Replace(langPath, "%lng%", langStr);
     if(CResourceManager::Exists(langPath))
         return langPath;
 
     // Fallback to English if file doesn't exist
-    boost::replace_all(newPath, "%lng%", "E");
+    newPath = StrUtils::Replace(newPath, "%lng%", "E");
     if(CResourceManager::Exists(newPath))
         return newPath;
 
