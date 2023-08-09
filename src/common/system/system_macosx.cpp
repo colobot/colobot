@@ -28,7 +28,7 @@
 #include <CoreFoundation/CFBundle.h>
 #include <CoreServices/CoreServices.h>
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 inline std::string CFStringRefToStdString(CFStringRef str) {
 
@@ -78,7 +78,7 @@ void CSystemUtilsMacOSX::Init()
     m_ASPath.append("/colobot/");
 
     // Make sure the directory exists
-    boost::filesystem::create_directories(m_ASPath.c_str());
+    std::filesystem::create_directories(m_ASPath.c_str());
 
     // Get the Resources bundle URL
     CFBundleRef mainBundle = CFBundleGetMainBundle();

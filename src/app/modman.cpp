@@ -32,11 +32,9 @@
 #include "level/parser/parser.h"
 
 #include <algorithm>
+#include <filesystem>
 #include <map>
-#include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
-
-using namespace boost::filesystem;
 
 CModManager::CModManager(CApplication* app, CPathManager* pathManager)
     : m_app{app},
@@ -74,7 +72,7 @@ void CModManager::FindMods()
     std::map<std::string, std::string> modPaths;
     for (const auto& path : rawPaths)
     {
-        auto modName = boost::filesystem::path(path).stem().string();
+        auto modName = std::filesystem::path(path).stem().string();
         modPaths.insert(std::make_pair(modName, path));
     }
 

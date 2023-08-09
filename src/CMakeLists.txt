@@ -504,7 +504,6 @@ target_link_libraries(colobotbase PUBLIC
     GLEW::GLEW
     glm::glm
     Boost::headers
-    Boost::filesystem
     Boost::regex
     PhysFS::PhysFS
     SndFile::sndfile

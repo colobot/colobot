@@ -334,7 +334,7 @@ set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME ${USE_STATIC_RUNTIME})
 
 set(Boost_ADDITIONALVERSION "1.51" "1.51.0")
-find_package(Boost COMPONENTS system filesystem regex REQUIRED)
+find_package(Boost COMPONENTS system regex REQUIRED)
 
 set(GLEW_USE_STATIC_LIBS ${GLEW_STATIC})
 find_package(GLEW REQUIRED)
