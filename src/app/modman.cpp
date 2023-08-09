@@ -279,7 +279,10 @@ void CModManager::LoadModData(Mod& mod)
                     auto major = StrUtils::ToString(line->GetParam("major")->AsInt());
                     auto minor = StrUtils::ToString(line->GetParam("minor")->AsInt());
                     auto patch = StrUtils::ToString(line->GetParam("patch")->AsInt());
-                    data.version = boost::algorithm::join(std::vector<std::string>{ major, minor, patch }, ".");
+
+                    std::ostringstream stream;
+                    stream << major << "." << minor << "." << patch;
+                    data.version = stream.str();
                 }
             }
 
