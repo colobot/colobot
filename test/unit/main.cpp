@@ -21,6 +21,8 @@
 
 #include <gtest/gtest.h>
 
+#include <clocale>
+
 extern bool g_cbotTestSaveState;
 
 int main(int argc, char* argv[])
@@ -29,7 +31,7 @@ int main(int argc, char* argv[])
 
     ::testing::InitGoogleTest(&argc, argv);
 
-    std::setlocale(LC_ALL, "en_US.UTF-8");
+    setlocale(LC_ALL, "en_US.UTF-8");
 
     // parse arguments not removed by InitGoogleTest
     for (int i = 1; i < argc; ++i)
