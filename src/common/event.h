@@ -30,6 +30,7 @@
 
 #include <memory>
 #include <mutex>
+#include <string>
 
 /**
   \enum EventType
