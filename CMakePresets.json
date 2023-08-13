@@ -54,6 +54,11 @@
             "name": "Windows-CI",
             "configurePreset": "Windows-CI",
             "configuration": "RelWithDebInfo"
+        },
+        {
+            "name": "Linux-CI",
+            "configurePreset": "Linux-CI",
+            "configuration": "RelWithDebInfo"
         }
     ]
 }
