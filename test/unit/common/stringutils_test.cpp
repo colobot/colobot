@@ -32,7 +32,7 @@ TEST(StringUtilTests, ReplaceShortToLong)
 
     std::string expected = "Test [0987654], [0987654], [0987654][0987654] Test";
 
-    EXPECT_TRUE(result == expected);
+    EXPECT_EQ(result, expected);
 }
 
 TEST(StringUtilTests, ReplaceLongToShort)
@@ -43,7 +43,7 @@ TEST(StringUtilTests, ReplaceLongToShort)
 
     std::string expected = "Test [64], [64], [64][64] Test";
 
-    EXPECT_TRUE(result == expected);
+    EXPECT_EQ(result, expected);
 }
 
 TEST(StringUtilTests, ReplaceSameLength)
@@ -54,7 +54,29 @@ TEST(StringUtilTests, ReplaceSameLength)
 
     std::string expected = "Test [432], [432], [432][432] Test";
 
-    EXPECT_TRUE(result == expected);
+    EXPECT_EQ(result, expected);
+}
+
+TEST(StringUtilTests, ToLowerTest)
+{
+    std::string text = u8",./;AaBbĄąĘę";
+
+    auto result = StrUtils::ToLower(text);
+
+    std::string expected = u8",./;aabbąąęę";
+
+    EXPECT_EQ(result, expected);
+}
+
+TEST(StringUtilTests, ToUpperTest)
+{
+    std::string text = u8",./;AaBbĄąĘę";
+
+    auto result = StrUtils::ToUpper(text);
+
+    std::string expected = u8",./;AABBĄĄĘĘ";
+
+    EXPECT_EQ(result, expected);
 }
 
 } // namespace StringUtils

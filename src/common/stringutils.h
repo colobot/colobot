@@ -98,5 +98,10 @@ std::size_t Utf8StringLength(const std::string &str);
 //! Returns true if char is continuation UTF-8 byte
 bool isUtf8ContinuationByte(char c);
 
-} // namespace StrUtil
+//! Returns the string with characters converted to lower case when possible
+std::string ToLower(const std::string& text);
 
+//! Returns the string with characters converted to upper case when possible
+std::string ToUpper(const std::string& text);
+
+} // namespace StrUtil

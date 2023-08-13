@@ -31,10 +31,16 @@ target_include_directories(colobot_ut PRIVATE
     ${COLOBOT_LOCAL_INCLUDES}
 )
 
+if(MSVC)
+    target_compile_options(colobot_ut PRIVATE /utf-8)
+endif()
+
 target_link_libraries(colobot_ut PRIVATE GTest::GTest hippomocks colobotbase)
 
 gtest_discover_tests(colobot_ut
-    WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+    WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+    DISCOVERY_MODE PRE_TEST
+)
 
 # GoogleTest isn't compatible with -Wsuggest-override -Werror:
 # see https://github.com/google/googletest/issues/1063

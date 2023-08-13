@@ -236,3 +236,71 @@ bool StrUtils::isUtf8ContinuationByte(char c)
 {
     return (c & 0b1100'0000) == 0b1000'0000;
 }
+
+std::string StrUtils::ToLower(const std::string& text)
+{
+    std::string result;
+
+    for (size_t i = 0; i < text.size();)
+    {
+        std::mbstate_t state = {};
+        wchar_t ch;
+
+        int len = std::mbrtowc(&ch, text.data() + i, text.size() - i, &state);
+
+        if (len == -1) throw std::invalid_argument("Invalid character");
+
+        if (len == 0) len = 1;
+
+        ch = std::towlower(ch);
+
+        char buffer[8];
+
+        state = {};
+        size_t count = std::wcrtomb(buffer, ch, &state);
+
+        if (count == -1) throw std::invalid_argument("Invalid character");
+
+        if (count == 0) count = 1;
+
+        result.append(buffer, count);
+
+        i += len;
+    }
+
+    return result;
+}
+
+std::string StrUtils::ToUpper(const std::string& text)
+{
+    std::string result;
+
+    for (size_t i = 0; i < text.size();)
+    {
+        std::mbstate_t state = {};
+        wchar_t ch;
+
+        size_t len = std::mbrtowc(&ch, text.data() + i, text.size() - i, &state);
+
+        if (len == -1) throw std::invalid_argument("Invalid character");
+
+        if (len == 0) len = 1;
+
+        ch = std::towupper(ch);
+
+        char buffer[8];
+
+        state = {};
+        size_t count = std::wcrtomb(buffer, ch, &state);
+
+        if (count == -1) throw std::invalid_argument("Invalid character");
+        
+        if (count == 0) count = 1;
+
+        result.append(buffer, count);
+
+        i += len;
+    }
+
+    return result;
+}
