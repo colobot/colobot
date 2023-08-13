@@ -450,7 +450,7 @@ add_subdirectory(CBot)
 add_subdirectory(src)
 
 # Add Colobot executable
-add_subdirectory(colobot)
+add_subdirectory(colobot-app)
 
 add_subdirectory(po)
 
