@@ -27,24 +27,20 @@ jobs:
     - name: Create build directory
       run: cmake -E make_directory build
     - name: Run CMake (for Linux)
-      working-directory: build
-      run: cmake -DCMAKE_INSTALL_PREFIX=/install -DCMAKE_SKIP_INSTALL_RPATH=ON -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDEV_BUILD=1 -DPORTABLE=1 -DTOOLS=1 -DTESTS=1 -DDESKTOP=1 ..
+      run: cmake --preset Linux-CI
       if: matrix.target_os == 'linux'
     - name: Build
-      working-directory: build
-      run: make -j `nproc`
+      run: cmake --build --preset Linux-CI
     - name: Install
-      working-directory: build
-      run: DESTDIR=. make install
+      run: cmake --build --preset Linux-CI --target install
     - name: Patch library path
-      working-directory: build
       run: patchelf --set-rpath '.' install/colobot
       if: matrix.target_os == 'linux'
     - name: Upload build
       uses: actions/upload-artifact@v2
       with:
         name: ${{matrix.target_os}}-debug
-        path: build/install
+        path: install
       if: matrix.host_os == 'ubuntu-20.04'
     - name: Create AppImage
       working-directory: build
@@ -60,8 +56,8 @@ jobs:
         
         # Prepare folder for zip
         mkdir -p appimage
-        cp -rp install/data appimage/data
-        cp -rp install/lang appimage/lang
+        cp -rp ../install/data appimage/data
+        cp -rp ../install/lang appimage/lang
         cp -p Colobot-x86_64.AppImage appimage/colobot
       if: matrix.target_os == 'linux'
     - name: Upload AppImage

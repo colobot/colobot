@@ -33,6 +33,20 @@
                 "TESTS": true,
                 "DESKTOP": true
             }
+        },
+        {
+            "name": "Linux-CI",
+            "description": "Linux configuration for CI pipeline",
+            "inherits": ["CI"],
+            "cacheVariables": {
+                "CMAKE_SKIP_INSTALL_RPATH": true,
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+                "DEV_BUILD": true,
+                "PORTABLE": true,
+                "TOOLS": true,
+                "TESTS": true,
+                "DESKTOP": true
+            }
         }
     ],
     "buildPresets": [
