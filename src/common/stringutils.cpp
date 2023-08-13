@@ -20,6 +20,7 @@
 
 #include "common/stringutils.h"
 
+#include <algorithm>
 #include <array>
 #include <cstdarg>
 #include <cstdio>
