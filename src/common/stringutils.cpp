@@ -24,9 +24,11 @@
 #include <array>
 #include <cstdarg>
 #include <cstdio>
+#include <cstdlib>
+#include <cuchar>
+#include <cwctype>
 #include <stdexcept>
 #include <vector>
-
 
 unsigned int StrUtils::HexStringToInt(const std::string& str)
 {
