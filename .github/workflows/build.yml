@@ -176,22 +176,19 @@ jobs:
     - name: Create build directory
       run: cmake -E make_directory build
     - name: Run CMake (for Windows)
-      working-directory: build
-      run: cmake -G "Ninja" -DCMAKE_C_COMPILER=cl.exe -DCMAKE_CXX_COMPILER=cl.exe -DVCPKG_TARGET_TRIPLET=${{ matrix.vcpkg_triplet }} -DCMAKE_TOOLCHAIN_FILE=${{ env.VCPKG_ROOT }}\scripts\buildsystems\vcpkg.cmake -DUSE_STATIC_RUNTIME=1 -DCBOT_STATIC=1 -DBOOST_STATIC=1 -DGLEW_STATIC=1 -DSNDFILE_STATIC=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}\build\install -DDEV_BUILD=1 -DPORTABLE=1 -DTOOLS=1 -DTESTS=1 -DDESKTOP=1 ..
+      run: cmake --preset Windows-CI -DVCPKG_TARGET_TRIPLET=${{ matrix.vcpkg_triplet }} -DCMAKE_TOOLCHAIN_FILE=${{ env.VCPKG_ROOT }}\scripts\buildsystems\vcpkg.cmake
     - name: Build
-      working-directory: build
       run: |
         $nproc = (Get-CIMInstance -Class 'CIM_Processor').NumberOfLogicalProcessors
-        cmake --build . -j $nproc
+        cmake --build --preset Windows-CI -j $nproc
       shell: pwsh
     - name: Install
-      working-directory: build
-      run: cmake --install .
+      run: cmake --build --preset Windows-CI --target install
     - name: Upload build
       uses: actions/upload-artifact@v2
       with:
         name: windows-msvc-debug-${{ matrix.arch }}
-        path: build/install
+        path: install
     - name: Run tests
       working-directory: build
       run: ./colobot_ut --gtest_output=xml:gtestresults.xml

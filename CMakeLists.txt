@@ -3,7 +3,7 @@
 # Contains global options and definitions
 ##
 
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.21)
 
 project(colobot
     VERSION 0.2.1.0

@@ -1,0 +1,45 @@
+{
+    "version": 3,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 21,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "CI",
+            "description": "Base configuration for CI pipeline",
+            "hidden": true,
+            "binaryDir": "${sourceDir}/build",
+            "installDir": "${sourceDir}/install"
+        },
+        {
+            "name": "Windows-CI",
+            "description": "Windows configuration for CI pipeline",
+            "generator": "Ninja",
+            "inherits": ["CI"],
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "cl.exe",
+                "CMAKE_CXX_COMPILER": "cl.exe",
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+                "USE_STATIC_RUNTIME": true,
+                "CBOT_STATIC": true,
+                "BOOST_STATIC": true,
+                "GLEW_STATIC": true,
+                "SNDFILE_STATIC": true,
+                "DEV_BUILD": true,
+                "PORTABLE": true,
+                "TOOLS": true,
+                "TESTS": true,
+                "DESKTOP": true
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "Windows-CI",
+            "configurePreset": "Windows-CI",
+            "configuration": "RelWithDebInfo"
+        }
+    ]
+}
