@@ -541,7 +541,7 @@ bool CApplication::Create()
     }
     #else
     GetLogger()->Info("No sound support.\n");
-    m_sound = MakeUnique<CSoundInterface>();
+    m_sound = std::make_unique<CSoundInterface>();
     #endif
 
     m_sound->Create();
@@ -685,7 +685,7 @@ bool CApplication::Create()
     }
     //else
     //{
-    //    m_device = MakeUnique<Gfx::CNullDevice>();
+    //    m_device = std::make_unique<Gfx::CNullDevice>();
     //}
 
     if (! m_device->Create() )

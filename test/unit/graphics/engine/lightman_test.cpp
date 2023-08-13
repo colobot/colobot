@@ -69,7 +69,7 @@ void CLightManagerUT::SetUp()
     m_engine = m_mocks.Mock<CEngine>();
     m_device = m_mocks.Mock<CDevice>();
 
-    m_lightManager = MakeUnique<CLightManager>(m_engine);
+    m_lightManager = std::make_unique<CLightManager>(m_engine);
 }
 
 void CLightManagerUT::PrepareLightTesting(int maxLights, glm::vec3 eyePos)
