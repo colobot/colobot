@@ -25,7 +25,7 @@
 #include <cstdarg>
 #include <cstdio>
 #include <cstdlib>
-#include <cuchar>
+#include <cwchar>
 #include <cwctype>
 #include <stdexcept>
 #include <vector>
