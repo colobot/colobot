@@ -47,6 +47,20 @@
                 "TESTS": true,
                 "DESKTOP": true
             }
+        },
+        {
+            "name": "MacOS-CI",
+            "description": "MacOS configuration for CI pipeline",
+            "inherits": ["CI"],
+            "cacheVariables": {
+                "CMAKE_SKIP_INSTALL_RPATH": true,
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+                "DEV_BUILD": true,
+                "PORTABLE": true,
+                "TESTS": true,
+                "DESKTOP": true,
+                "OPENAL_LIBRARY": "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/OpenAL.framework/OpenAL.tbd"
+            }
         }
     ],
     "buildPresets": [
@@ -58,6 +72,11 @@
         {
             "name": "Linux-CI",
             "configurePreset": "Linux-CI",
+            "configuration": "RelWithDebInfo"
+        },
+        {
+            "name": "MacOS-CI",
+            "configurePreset": "MacOS-CI",
             "configuration": "RelWithDebInfo"
         }
     ]

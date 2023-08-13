@@ -98,12 +98,10 @@ jobs:
     - name: Create build directory
       run: cmake -E make_directory build
     - name: Run CMake (for Mac)
-      working-directory: build
-      run: cmake -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_SKIP_INSTALL_RPATH=ON -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDEV_BUILD=1 -DPORTABLE=1 -DTESTS=1 -DDESKTOP=1 -DOPENAL_LIBRARY=/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/OpenAL.framework/OpenAL.tbd ..
+      run: cmake --preset MacOS-CI
       if: matrix.target_os == 'macos'
     - name: Build
-      working-directory: build
-      run: make -j `nproc`
+      run: cmake --build --preset MacOS-CI
     - name: Run tests
       # TODO: Maybe run Windows tests using wine as well?
       working-directory: build
