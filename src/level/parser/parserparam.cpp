@@ -212,7 +212,7 @@ bool CLevelParserParam::AsBool()
     if (m_empty)
         throw CLevelParserExceptionMissingParam(this);
     std::string value = m_value;
-    boost::to_lower(value);
+    value = StrUtils::ToLower(value);
     if (value == "true") return true;
     if (value == "false") return false;
     return Cast<bool>("bool");

@@ -27,10 +27,9 @@ namespace StringUtilsTesta
 TEST(StringUtilTests, ReplaceShortToLong)
 {
     std::string text = "Test {123}, {123}, {123}{123} Test";
+    std::string expected = "Test [0987654], [0987654], [0987654][0987654] Test";
 
     auto result = StrUtils::Replace(text, "{123}", "[0987654]");
-
-    std::string expected = "Test [0987654], [0987654], [0987654][0987654] Test";
 
     EXPECT_EQ(result, expected);
 }
@@ -38,10 +37,9 @@ TEST(StringUtilTests, ReplaceShortToLong)
 TEST(StringUtilTests, ReplaceLongToShort)
 {
     std::string text = "Test {1234567}, {1234567}, {1234567}{1234567} Test";
+    std::string expected = "Test [64], [64], [64][64] Test";
 
     auto result = StrUtils::Replace(text, "{1234567}", "[64]");
-
-    std::string expected = "Test [64], [64], [64][64] Test";
 
     EXPECT_EQ(result, expected);
 }
@@ -49,32 +47,48 @@ TEST(StringUtilTests, ReplaceLongToShort)
 TEST(StringUtilTests, ReplaceSameLength)
 {
     std::string text = "Test {123}, {123}, {123}{123} Test";
+    std::string expected = "Test [432], [432], [432][432] Test";
 
     auto result = StrUtils::Replace(text, "{123}", "[432]");
-
-    std::string expected = "Test [432], [432], [432][432] Test";
 
     EXPECT_EQ(result, expected);
 }
 
+TEST(StringUtilTests, StringCodePointCounts)
+{
+    EXPECT_EQ(StrUtils::Utf8CharSizeAt("a", 0), 1);
+    EXPECT_EQ(StrUtils::Utf8CharSizeAt("ą", 0), 2);
+    EXPECT_EQ(StrUtils::Utf8CharSizeAt("中", 0), 3);
+}
+
+TEST(StringUtilTests, StringConversion)
+{
+    std::string text = u8",./;AaZzĄąĘę中";
+    std::wstring expected = L",./;AaZzĄąĘę中";
+
+    std::wstring unicode = StrUtils::Utf8StringToUnicode(text);
+    std::string result = StrUtils::UnicodeStringToUtf8(unicode);
+
+    EXPECT_EQ(result, text);
+    EXPECT_EQ(unicode, expected);
+}
+
 TEST(StringUtilTests, ToLowerTest)
 {
-    std::string text = u8",./;AaBbĄąĘę";
+    std::string text = u8",./;AaBbĄąĘę中";
+    std::string expected = u8",./;aabbąąęę中";
 
     auto result = StrUtils::ToLower(text);
-
-    std::string expected = u8",./;aabbąąęę";
 
     EXPECT_EQ(result, expected);
 }
 
 TEST(StringUtilTests, ToUpperTest)
 {
-    std::string text = u8",./;AaBbĄąĘę";
+    std::string text = u8",./;AaBbĄąĘę中";
+    std::string expected = u8",./;AABBĄĄĘĘ中";
 
     auto result = StrUtils::ToUpper(text);
-
-    std::string expected = u8",./;AABBĄĄĘĘ";
 
     EXPECT_EQ(result, expected);
 }

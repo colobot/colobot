@@ -109,28 +109,16 @@ void StrUtils::Trim(std::string& str)
 
 std::string StrUtils::UnicodeCharToUtf8(unsigned int ch)
 {
-    std::string result;
-    if (ch < 0x0080)
-    {
-        result += static_cast<char>(ch);
-    }
-    else if (ch < 0x0800)
-    {
-        char ch1 = 0xC0 | ((ch & 0x07C0) >> 6);
-        char ch2 = 0x80 | (ch & 0x3F);
-        result += ch1;
-        result += ch2;
-    }
-    else
-    {
-        char ch1 = 0xE0 | ((ch & 0xF000) >> 12);
-        char ch2 = 0x80 | ((ch & 0x07C0) >> 6);
-        char ch3 = 0x80 | (ch & 0x3F);
-        result += ch1;
-        result += ch2;
-        result += ch3;
-    }
-    return result;
+    std::array<char, 4> buffer;
+
+    std::mbstate_t state = {};
+
+    int count = wcrtomb(buffer.data(), static_cast<wchar_t>(ch), &state);
+
+    if (count == 0) count = 1;
+    else if (count == -1) throw std::invalid_argument("Invalid character");
+
+    return std::string(buffer.data(), count);
 }
 
 std::string StrUtils::UnicodeStringToUtf8(const std::wstring &str)
@@ -147,55 +135,40 @@ unsigned int StrUtils::Utf8CharToUnicode(const std::string &ch)
     if (ch.empty())
         return 0;
 
-    unsigned int result = 0;
-    if ((ch[0] & 0x80) == 0)
-    {
-        if (ch.size() == 1)
-        result = static_cast<unsigned int>(ch[0]);
-    }
-    else if ((ch[0] & 0xC0) == 0xC0)
-    {
-        if (ch.size() == 2)
-        {
-            unsigned int ch1 = (ch[0] & 0x1F) << 6;
-            unsigned int ch2 = (ch[1] & 0x3F);
-            result = ch1 | ch2;
-        }
-    }
-    else
-    {
-        if (ch.size() == 3)
-        {
-            unsigned int ch1 = (ch[0] & 0xF0) << 12;
-            unsigned int ch2 = (ch[1] & 0xC0) << 6;
-            unsigned int ch3 = (ch[2] & 0xC0);
-            result = ch1 | ch2 | ch3;
-        }
-    }
+    std::mbstate_t state = {};
 
-    return result;
+    wchar_t c = 0;
+
+    int len = mbrtowc(&c, ch.data(), ch.size(), &state);
+
+    if (len == 0) return L'\0';
+    else if (len == -1) throw std::invalid_argument("Invalid character");
+    else if (len == -2) throw std::invalid_argument("Invalid character");
+
+    return c;
 }
 
 std::wstring StrUtils::Utf8StringToUnicode(const std::string &str)
 {
     std::wstring result;
-    unsigned int pos = 0;
-    int len;
-    while (pos < str.size())
-    {
-        try
-        {
-            len = StrUtils::Utf8CharSizeAt(str, pos);
-        }
-        catch (std::out_of_range &e)
-        {
-            break;
-        }
+    result.reserve(str.size());
 
-        std::string ch = str.substr(pos, len);
-        result += static_cast<wchar_t>(StrUtils::Utf8CharToUnicode(ch));
-        pos += len;
+    for (size_t i = 0; i < str.size();)
+    {
+        std::mbstate_t state = {};
+        wchar_t ch;
+
+        int len = std::mbrtowc(&ch, str.data() + i, str.size() - i, &state);
+
+        if (len == 0) len = 1;
+        else if (len == -1) throw std::invalid_argument("Invalid character");
+        else if (len == -2) throw std::invalid_argument("Invalid character");
+
+        i += len;
+
+        result += ch;
     }
+
     return result;
 }
 
@@ -204,33 +177,36 @@ int StrUtils::Utf8CharSizeAt(const std::string &str, unsigned int pos)
     if (pos >= str.size())
         throw std::out_of_range("Index is greater than size");
 
-    const char c = str[pos];
-    if((c & 0b1000'0000) == 0b0000'0000)
-        return 1;
-    if((c & 0b1110'0000) == 0b1100'0000)
-        return 2;
-    if((c & 0b1111'0000) == 0b1110'0000)
-        return 3;
-    if((c & 0b1111'1000) == 0b1111'0000)
-        return 4;
+    std::mbstate_t state = {};
 
-    // Invalid char - unexpected continuation byte
-    if (isUtf8ContinuationByte(c))
-        throw std::invalid_argument("Unexpected UTF-8 continuation byte");
+    int len = std::mbrlen(str.data() + pos, str.size() - pos, &state);
 
-    // (c & 0b1111'1000) == 0b1111'1000 is true here
-    throw std::invalid_argument("Byte value has no sense in UTF-8");
+    if (len == 0) len = 1;
+    else if (len == -1) throw std::invalid_argument("Invalid character");
+    else if (len == -2) throw std::invalid_argument("Invalid character");
+
+    return len;
 }
 
 std::size_t StrUtils::Utf8StringLength(const std::string &str)
 {
     std::size_t result = 0;
-    unsigned int i = 0;
-    while (i < str.size())
+
+    for (size_t i = 0; i < str.size();)
     {
-        i += Utf8CharSizeAt(str, i);
+        std::mbstate_t state = {};
+
+        size_t count = std::mbrlen(str.data() + i, str.size() - i, &state);
+
+        if (count == 0) count = 1;
+        else if (count == -1) throw std::invalid_argument("Invalid character");
+        else if (count == -2) throw std::invalid_argument("Invalid character");
+
+        i += count;
+
         ++result;
     }
+
     return result;
 }
 
@@ -242,6 +218,9 @@ bool StrUtils::isUtf8ContinuationByte(char c)
 std::string StrUtils::ToLower(const std::string& text)
 {
     std::string result;
+    result.reserve(text.size());
+
+    std::array<char, 4> buffer;
 
     for (size_t i = 0; i < text.size();)
     {
@@ -250,24 +229,21 @@ std::string StrUtils::ToLower(const std::string& text)
 
         int len = std::mbrtowc(&ch, text.data() + i, text.size() - i, &state);
 
-        if (len == -1) throw std::invalid_argument("Invalid character");
-
         if (len == 0) len = 1;
+        else if (len == -1) throw std::invalid_argument("Invalid character");
+        else if (len == -2) throw std::invalid_argument("Invalid character");
+
+        i += len;
 
         ch = std::towlower(ch);
 
-        char buffer[8];
-
         state = {};
-        size_t count = std::wcrtomb(buffer, ch, &state);
-
-        if (count == -1) throw std::invalid_argument("Invalid character");
+        size_t count = std::wcrtomb(buffer.data(), ch, &state);
 
         if (count == 0) count = 1;
+        else if (count == -1) throw std::invalid_argument("Invalid character");
 
-        result.append(buffer, count);
-
-        i += len;
+        result.append(buffer.data(), count);
     }
 
     return result;
@@ -276,6 +252,9 @@ std::string StrUtils::ToLower(const std::string& text)
 std::string StrUtils::ToUpper(const std::string& text)
 {
     std::string result;
+    result.reserve(text.size());
+
+    std::array<char, 4> buffer;
 
     for (size_t i = 0; i < text.size();)
     {
@@ -284,24 +263,21 @@ std::string StrUtils::ToUpper(const std::string& text)
 
         size_t len = std::mbrtowc(&ch, text.data() + i, text.size() - i, &state);
 
-        if (len == -1) throw std::invalid_argument("Invalid character");
-
         if (len == 0) len = 1;
+        else if (len == -1) throw std::invalid_argument("Invalid character");
+        else if (len == -2) throw std::invalid_argument("Invalid character");
+
+        i += len;
 
         ch = std::towupper(ch);
 
-        char buffer[8];
-
         state = {};
-        size_t count = std::wcrtomb(buffer, ch, &state);
+        size_t count = std::wcrtomb(buffer.data(), ch, &state);
 
-        if (count == -1) throw std::invalid_argument("Invalid character");
-        
         if (count == 0) count = 1;
+        else if (count == -1) throw std::invalid_argument("Invalid character");
 
-        result.append(buffer, count);
-
-        i += len;
+        result.append(buffer.data(), count);
     }
 
     return result;

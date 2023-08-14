@@ -529,6 +529,10 @@ if(WINGETOPT)
     target_link_libraries(colobotbase PUBLIC wingetopt)
 endif()
 
+if(MSVC)
+    target_compile_options(colobotbase PRIVATE /utf-8)
+endif()
+
 # Additional libraries per platform
 if(PLATFORM_WINDOWS)
     # because it isn't included in standard linking libraries

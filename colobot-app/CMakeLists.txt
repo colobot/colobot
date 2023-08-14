@@ -7,6 +7,10 @@ target_sources(colobot PRIVATE
     src/main.cpp
 )
 
+if(MSVC)
+    target_compile_options(colobotbase PRIVATE /utf-8)
+endif()
+
 if(PLATFORM_WINDOWS)
     target_sources(colobot PRIVATE ${PROJECT_BINARY_DIR}/desktop/colobot.rc)
 endif()
