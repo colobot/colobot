@@ -64,6 +64,8 @@ std::string VFormat(const char *fmt, va_list ap)
     }
 }
 
+using UTF8Buffer = std::array<char, 8>;
+
 } // anonymous namespace
 
 std::string StrUtils::Format(const char *fmt, ...)
@@ -109,7 +111,7 @@ void StrUtils::Trim(std::string& str)
 
 std::string StrUtils::UnicodeCharToUtf8(unsigned int ch)
 {
-    std::array<char, 4> buffer;
+    UTF8Buffer buffer;
 
     std::mbstate_t state = {};
 
@@ -124,8 +126,21 @@ std::string StrUtils::UnicodeCharToUtf8(unsigned int ch)
 std::string StrUtils::UnicodeStringToUtf8(const std::wstring &str)
 {
     std::string result;
-    for (unsigned int i = 0; i < str.size(); ++i)
-        result += StrUtils::UnicodeCharToUtf8(static_cast<unsigned int>(str[i]));
+    result.reserve(str.size());
+
+    UTF8Buffer buffer;
+
+    for (const auto& ch : str)
+    {
+        std::mbstate_t state = {};
+
+        size_t len = std::wcrtomb(buffer.data(), ch, &state);
+
+        if (len == 0) len = 1;
+        else if (len == -1) throw std::invalid_argument("Invalid character");
+
+        result.append(buffer.data(), len);
+    }
 
     return result;
 }
@@ -220,7 +235,7 @@ std::string StrUtils::ToLower(const std::string& text)
     std::string result;
     result.reserve(text.size());
 
-    std::array<char, 4> buffer;
+    UTF8Buffer buffer;
 
     for (size_t i = 0; i < text.size();)
     {
@@ -254,7 +269,7 @@ std::string StrUtils::ToUpper(const std::string& text)
     std::string result;
     result.reserve(text.size());
 
-    std::array<char, 4> buffer;
+    UTF8Buffer buffer;
 
     for (size_t i = 0; i < text.size();)
     {
