@@ -45,7 +45,6 @@
 #include "ui/controls/scroll.h"
 
 #include <SDL.h>
-#include <boost/algorithm/string.hpp>
 
 #include <cstring>
 

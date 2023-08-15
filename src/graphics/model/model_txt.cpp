@@ -26,8 +26,6 @@
 #include "graphics/model/model_io_exception.h"
 #include "graphics/model/model_io_structs.h"
 
-#include <boost/algorithm/string.hpp>
-
 using namespace IOUtils;
 
 namespace Gfx::ModelIO

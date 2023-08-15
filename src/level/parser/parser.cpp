@@ -38,8 +38,6 @@
 #include <set>
 #include <regex>
 
-#include <boost/algorithm/string/replace.hpp>
-
 CLevelParser::CLevelParser()
 {
     m_filename = "";

@@ -28,7 +28,6 @@
 #include <sstream>
 #include <iostream>
 #include <iomanip>
-#include <boost/algorithm/string/replace.hpp>
 
 namespace CBot
 {

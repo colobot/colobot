@@ -33,8 +33,6 @@
 
 #include "level/parser/parser.h"
 
-#include <boost/algorithm/string.hpp>
-
 CLevelParserParam::CLevelParserParam(std::string name, std::string value)
   : m_name(name)
   , m_value(value)
