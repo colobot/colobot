@@ -45,8 +45,6 @@
 #include "ui/controls/target.h"
 #include "ui/controls/window.h"
 
-#include <boost/range/adaptor/reversed.hpp>
-
 
 namespace Ui
 {
@@ -305,8 +303,10 @@ bool CInterface::EventProcess(const Event &event)
         m_engine->SetMouseType(Gfx::ENG_MOUSE_NORM);
     }
 
-    for (auto& control : boost::adaptors::reverse(m_controls))
+    for (auto it = m_controls.rbegin(); it != m_controls.rend(); ++it)
     {
+        auto& control = *it;
+
         if (control != nullptr && control->TestState(STATE_ENABLE))
         {
             if (! control->EventProcess(event))
@@ -322,8 +322,10 @@ bool CInterface::EventProcess(const Event &event)
 
 bool CInterface::GetTooltip(const glm::vec2& pos, std::string &name)
 {
-    for (auto& control : boost::adaptors::reverse(m_controls))
+    for (auto it = m_controls.rbegin(); it != m_controls.rend(); ++it)
     {
+        auto& control = *it;
+
         if (control != nullptr)
         {
             if (control->GetTooltip(pos, name))
