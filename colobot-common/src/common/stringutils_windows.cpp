@@ -96,9 +96,12 @@ int StrUtils::Utf8CharSizeAt(const std::string &str, unsigned int pos)
         throw std::out_of_range("Index is greater than size");
 
     std::array<wchar_t, 4> buffer;
+
+    int remaining = str.size() - pos;
+    if (remaining > 4) remaining = 4;
     
     int length = MultiByteToWideChar(CP_UTF8, 0,
-        str.data() + pos, min(4, str.size() - pos),
+        str.data() + pos, remaining,
         buffer.data(), buffer.size());
 
     if (length == 0) throw std::invalid_argument("Invalid character");
