@@ -1271,6 +1271,7 @@ void CEdit::DrawBack(const glm::vec2& pos, const glm::vec2& dim)
 void CEdit::DrawHorizontalGradient(const glm::vec2& pos, const glm::vec2& dim, Gfx::Color color1, Gfx::Color color2)
 {
     auto renderer = m_engine->GetUIRenderer();
+    renderer->SetTexture({});
     renderer->SetTransparency(Gfx::TransparencyMode::NONE);
 
     glm::vec2 p1, p2;
