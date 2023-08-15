@@ -37,10 +37,11 @@
 
 #include "math/func.h"
 
-#include <algorithm>
 #include <SDL.h>
 #include <SDL_ttf.h>
 
+#include <algorithm>
+#include <utility>
 
 // Graphics module namespace
 namespace Gfx
