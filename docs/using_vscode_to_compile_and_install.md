@@ -37,7 +37,6 @@ Create folder .vscode if there is none. Inside that folder create a file setting
             "inheritEnvironments": ["msvc_x64_x64"],
             "CMAKE_TOOLCHAIN_FILE": "input your path to the toolchain file",
             "VCPKG_TARGET_TRIPLET": "x64-windows-static",
-            "BOOST_STATIC": "1",
             "GLEW_STATIC": "1",
             "MSVC_STATIC": "1"
         },

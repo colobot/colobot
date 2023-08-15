@@ -24,7 +24,6 @@
                 "CMAKE_BUILD_TYPE": "RelWithDebInfo",
                 "USE_STATIC_RUNTIME": true,
                 "CBOT_STATIC": true,
-                "BOOST_STATIC": true,
                 "GLEW_STATIC": true,
                 "SNDFILE_STATIC": true,
                 "DEV_BUILD": true,

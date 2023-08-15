@@ -502,8 +502,6 @@ target_link_libraries(colobotbase PUBLIC
     PNG::PNG
     GLEW::GLEW
     glm::glm
-    Boost::headers
-    Boost::regex
     PhysFS::PhysFS
     SndFile::sndfile
     nlohmann_json::nlohmann_json
