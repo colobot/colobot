@@ -1110,8 +1110,7 @@ void CLevelParserParam::ParseArray()
     if (m_array.size() != 0)
         return;
 
-    std::vector<std::string> values;
-    boost::split(values, m_value, boost::is_any_of(";"));
+    std::vector<std::string> values = StrUtils::Split(m_value, ";");
     int i = 0;
     for (auto& value : values)
     {

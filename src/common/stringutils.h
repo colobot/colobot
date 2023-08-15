@@ -25,8 +25,10 @@
 #pragma once
 
 #include <cstddef>
-#include <string>
 #include <sstream>
+#include <string>
+#include <string_view>
+#include <vector>
 
 namespace StrUtils
 {
@@ -67,6 +69,9 @@ std::string Format(const char *fmt, ...);
 
 //! Returns a string with every occurence of \a oldStr in \a str replaced to \a newStr
 std::string Replace(const std::string &str, const std::string &oldStr, const std::string &newStr);
+
+//! Splits a string into parts using character separators
+std::vector<std::string> Split(const std::string& text, std::string_view separators);
 
 //! Remove whitespace from the beginning of the given string (in place)
 void TrimLeft(std::string& str);

@@ -5286,7 +5286,7 @@ Error CRobotMain::ProcessEndMissionTake()
                     {
                         GetLogger()->Info("Team %d won\n", team);
 
-                        m_displayText->DisplayText(("<<< Team "+boost::lexical_cast<std::string>(team)+" won the game >>>").c_str(), glm::vec3(0.0f,0.0f,0.0f));
+                        m_displayText->DisplayText(("<<< Team "+std::to_string(team)+" won the game >>>").c_str(), glm::vec3(0.0f,0.0f,0.0f));
                         if (m_missionTimerEnabled && m_missionTimerStarted)
                         {
                             GetLogger()->Info("Mission time: %s\n", TimeFormat(m_missionTimer).c_str());

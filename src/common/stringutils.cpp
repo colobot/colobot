@@ -89,6 +89,36 @@ std::string StrUtils::Replace(const std::string &str, const std::string &oldStr,
     return result;
 }
 
+std::vector<std::string> StrUtils::Split(const std::string& text, std::string_view separators)
+{
+    std::string_view stream = text;
+
+    std::vector<std::string> result;
+    std::string part;
+
+    while (!stream.empty())
+    {
+        char c = stream.front();
+        stream.remove_prefix(1);
+
+        if (separators.find(c) != std::string::npos)
+        {
+            if (!part.empty())
+            {
+                result.push_back(part);
+                part.clear();
+            }
+            continue;
+        }
+
+        part += c;
+    }
+
+    if (!part.empty()) result.push_back(part);
+
+    return result;
+}
+
 void StrUtils::TrimLeft(std::string& s)
 {
     s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) {

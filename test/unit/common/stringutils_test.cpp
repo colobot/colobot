@@ -54,6 +54,34 @@ TEST(StringUtilTests, ReplaceSameLength)
     EXPECT_EQ(result, expected);
 }
 
+TEST(StringUtilTests, SplitSingle)
+{
+    std::string text = "CreateObject test value  123";
+
+    auto result = StrUtils::Split(text, " ");
+
+    ASSERT_EQ(result.size(), 4);
+
+    EXPECT_EQ(result[0], "CreateObject");
+    EXPECT_EQ(result[1], "test");
+    EXPECT_EQ(result[2], "value");
+    EXPECT_EQ(result[3], "123");
+}
+
+TEST(StringUtilTests, SplitMultiple)
+{
+    std::string text = "id=123, value=123,test=#45 no=yes";
+
+    auto result = StrUtils::Split(text, " ,");
+
+    ASSERT_EQ(result.size(), 4);
+
+    EXPECT_EQ(result[0], "id=123");
+    EXPECT_EQ(result[1], "value=123");
+    EXPECT_EQ(result[2], "test=#45");
+    EXPECT_EQ(result[3], "no=yes");
+}
+
 TEST(StringUtilTests, StringCodePointCounts)
 {
     EXPECT_EQ(StrUtils::Utf8CharSizeAt("a", 0), 1);

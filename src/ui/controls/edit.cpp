@@ -1420,8 +1420,7 @@ int CEdit::GetTextLength()
 
 static std::string GetNameParam(std::string cmd, int rank)
 {
-    std::vector<std::string> results;
-    boost::split(results, cmd, boost::is_any_of(" ;"));
+    std::vector<std::string> results = StrUtils::Split(cmd, " ;");
 
     if (results.size() > static_cast<unsigned int>(rank))
     {
@@ -1436,8 +1435,8 @@ static std::string GetNameParam(std::string cmd, int rank)
 
 static int GetValueParam(std::string cmd, int rank)
 {
-    std::vector<std::string> results;
-    boost::split(results, cmd, boost::is_any_of(" ;"));
+    std::vector<std::string> results = StrUtils::Split(cmd, " ;");
+
     int return_value = 0;
 
     if (results.size() > static_cast<unsigned int>(rank))
