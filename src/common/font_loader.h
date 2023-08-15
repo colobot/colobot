@@ -28,10 +28,9 @@
 
 #include "graphics/engine/text.h"
 
-#include <boost/property_tree/ptree.hpp>
-
 #include <string>
 #include <optional>
+#include <unordered_map>
 
 /**
 * \class CFontLoader
@@ -57,5 +56,5 @@ public:
     std::optional<std::string> GetFont(Gfx::FontType type) const;
 
 private:
-    boost::property_tree::ptree m_propertyTree;
+    std::unordered_map<std::string, std::string> m_fonts;
 };

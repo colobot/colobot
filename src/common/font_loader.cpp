@@ -20,6 +20,7 @@
 #include "common/font_loader.h"
 
 #include "common/logger.h"
+#include "common/stringutils.h"
 
 #include "common/resources/inputstream.h"
 #include "common/resources/outputstream.h"
@@ -32,9 +33,6 @@
 #include <memory>
 #include <utility>
 #include <cstring>
-#include <boost/property_tree/ini_parser.hpp>
-
-namespace bp = boost::property_tree;
 
 
 CFontLoader::CFontLoader()
@@ -56,7 +54,15 @@ bool CFontLoader::Init()
 
         if (good)
         {
-            bp::ini_parser::read_ini(*stream, m_propertyTree);
+            std::string line;
+
+            while (std::getline(*stream, line))
+            {
+                auto parts = StrUtils::Split(line, " =");
+
+                m_fonts[parts[0]] = parts[1];
+            }
+
             GetLogger()->Debug("Fonts config file loaded correctly. \n");
         }
         else
@@ -74,8 +80,10 @@ bool CFontLoader::Init()
 
 std::optional<std::string> CFontLoader::GetFont(Gfx::FontType type) const
 {
-    auto font = m_propertyTree.get_optional<std::string>(ToString(type));
-    if (font)
-        return std::string("/fonts/") + *font;
-    return std::nullopt;
+    auto iterator = m_fonts.find(ToString(type));
+
+    if (iterator == m_fonts.end())
+        return std::nullopt;
+    else
+        return std::string("/fonts/") + iterator->second;
 }
