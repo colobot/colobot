@@ -23,7 +23,7 @@
 
 #include "CBot/CBotUtils.h"
 
-#include <boost/algorithm/string.hpp>
+#include <common/stringutils.h>
 
 namespace CBot
 {
@@ -253,8 +253,7 @@ bool rStrUpper( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
     // but no second parameter
     if ( pVar->GetNext() != nullptr ){ ex = CBotErrOverParam ; return true; }
 
-
-    boost::to_upper(s);
+    s = StrUtils::ToUpper(s);
 
     // puts the value on the stack
     pResult->SetValString( s );
@@ -276,8 +275,7 @@ bool rStrLower( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
     // but no second parameter
     if ( pVar->GetNext() != nullptr ){ ex = CBotErrOverParam ; return true; }
 
-
-    boost::to_lower(s);
+    s = StrUtils::ToLower(s);
 
     // puts the value on the stack
     pResult->SetValString( s );

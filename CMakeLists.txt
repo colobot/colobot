@@ -443,6 +443,9 @@ else()
     set(COLOBOT_I18N_DIR ${COLOBOT_INSTALL_I18N_DIR})
 endif()
 
+# Subdirectory with common implementation
+add_subdirectory(colobot-common)
+
 # Add CBot
 add_subdirectory(CBot)
 

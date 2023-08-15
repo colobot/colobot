@@ -166,7 +166,9 @@ target_sources(CBot PRIVATE
 )
 
 target_include_directories(CBot PUBLIC src)
-target_link_libraries(CBot PRIVATE Boost::headers)
+target_link_libraries(CBot PRIVATE
+    Colobot-Common
+)
 
 if(COLOBOT_LINT_BUILD)
     add_fake_header_sources("src/CBot" CBot)

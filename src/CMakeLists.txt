@@ -89,8 +89,6 @@ add_library(colobotbase STATIC
     common/settings.cpp
     common/settings.h
     common/singleton.h
-    common/stringutils.cpp
-    common/stringutils.h
     common/timeutils.cpp
     common/timeutils.h
     common/thread/worker_thread.h
@@ -495,6 +493,7 @@ target_include_directories(colobotbase PUBLIC
 # Main libraries
 target_link_libraries(colobotbase PUBLIC
     CBot
+    Colobot-Common
     localename
     SDL2::Core
     SDL2::Image
