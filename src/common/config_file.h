@@ -115,14 +115,7 @@ public:
     {
         try
         {
-            auto property = nlohmann::json::array();
-
-            for (const auto& value : array)
-            {
-                property.push_back(value);
-            }
-
-            m_properties[section][key] = property;
+            m_properties[section][key] = nlohmann::json(array);
             m_needsSave = true;
         }
         catch (std::exception & e)
