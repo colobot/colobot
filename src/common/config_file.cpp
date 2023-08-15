@@ -27,13 +27,10 @@
 
 #include "common/system/system.h"
 
-#include <boost/property_tree/ini_parser.hpp>
-
 #include <memory>
 #include <utility>
 #include <cstring>
-
-namespace bp = boost::property_tree;
+#include <fstream>
 
 CConfigFile::CConfigFile()
    : m_needsSave(false)
@@ -65,20 +62,20 @@ bool CConfigFile::Init()
         bool good;
         if (m_useCurrentDirectory)
         {
-            auto inputStream = std::make_unique<std::ifstream>("./colobot.ini");
+            auto inputStream = std::make_unique<std::ifstream>("./colobot.json");
             good = inputStream->good();
             stream = std::move(inputStream);
         }
         else
         {
-            auto inputStream = std::make_unique<CInputStream>("colobot.ini");
+            auto inputStream = std::make_unique<CInputStream>("colobot.json");
             good = inputStream->is_open();
             stream = std::move(inputStream);
         }
 
         if (good)
         {
-            bp::ini_parser::read_ini(*stream, m_propertyTree);
+            m_properties = nlohmann::json::parse(*stream);
             m_loaded = true;
         }
         else
@@ -105,20 +102,20 @@ bool CConfigFile::Save()
             bool good;
             if (m_useCurrentDirectory)
             {
-                auto outputStream = std::make_unique<std::ofstream>("./colobot.ini");
+                auto outputStream = std::make_unique<std::ofstream>("./colobot.json");
                 good = outputStream->good();
                 stream = std::move(outputStream);
             }
             else
             {
-                auto outputStream = std::make_unique<COutputStream>("colobot.ini");
+                auto outputStream = std::make_unique<COutputStream>("colobot.json");
                 good = outputStream->is_open();
                 stream = std::move(outputStream);
             }
 
             if (good)
             {
-                bp::ini_parser::write_ini(*stream, m_propertyTree);
+                *stream << m_properties.dump(4);
                 m_needsSave = false;
             }
             else
@@ -138,119 +135,68 @@ bool CConfigFile::Save()
 
 bool CConfigFile::SetStringProperty(std::string section, std::string key, std::string value)
 {
-    try
-    {
-        m_propertyTree.put(section + "." + key, value);
-        m_needsSave = true;
-    }
-    catch (std::exception & e)
-    {
-        GetLogger()->Error("Error on editing config file: %s\n", e.what());
-        return false;
-    }
+    m_properties[section][key] = value;
+    m_needsSave = true;
     return true;
 }
 
 bool CConfigFile::GetStringProperty(std::string section, std::string key, std::string &value)
 {
-    try
-    {
-        std::string readValue = m_propertyTree.get<std::string>(section + "." + key);
-        value = std::move(readValue);
-    }
-    catch (std::exception & e)
-    {
-        GetLogger()->Log(m_loaded ? LOG_INFO : LOG_TRACE, "Error on parsing config file: %s\n", e.what());
-        return false;
-    }
+    auto element = m_properties[section][key];
+
+    if (!element.is_string()) return false;
+
+    value = element.get<std::string>();
     return true;
 }
 
 bool CConfigFile::SetIntProperty(std::string section, std::string key, int value)
 {
-    try
-    {
-        m_propertyTree.put(section + "." + key, value);
-        m_needsSave = true;
-    }
-    catch (std::exception & e)
-    {
-        GetLogger()->Error("Error on editing config file: %s\n", e.what());
-        return false;
-    }
+    m_properties[section][key] = value;
+    m_needsSave = true;
     return true;
 }
 
 bool CConfigFile::GetIntProperty(std::string section, std::string key, int &value)
 {
-    try
-    {
-        int readValue = m_propertyTree.get<int>(section + "." + key);
-        value = readValue;
-    }
-    catch (std::exception & e)
-    {
-        GetLogger()->Log(m_loaded ? LOG_INFO : LOG_TRACE, "Error on parsing config file: %s\n", e.what());
-        return false;
-    }
+    auto element = m_properties[section][key];
+
+    if (!element.is_number()) return false;
+
+    value = element.get<int>();
     return true;
 }
 
 bool CConfigFile::SetBoolProperty(std::string section, std::string key, bool value)
 {
-    return SetIntProperty(section, key, value ? 1 : 0);
+    m_properties[section][key] = value;
+    m_needsSave = true;
+    return true;
 }
 
 bool CConfigFile::GetBoolProperty(std::string section, std::string key, bool& value)
 {
-    int intValue = 0;
-    bool result = GetIntProperty(section, key, intValue);
-    if (result)
-    {
-        if (intValue == 0)
-        {
-            value = false;
-        }
-        else if (intValue == 1)
-        {
-            value = true;
-        }
-        else
-        {
-            GetLogger()->Log(m_loaded ? LOG_INFO : LOG_TRACE, "Error on parsing bool property %s.%s (expected 0 or 1, not %d)\n",
-                             section.c_str(), key.c_str(), intValue);
-            return false;
-        }
-    }
-    return result;
+    auto element = m_properties[section][key];
+
+    if (!element.is_boolean()) return false;
+
+    value = element.get<bool>();
+    return true;
 }
 
 bool CConfigFile::SetFloatProperty(std::string section, std::string key, float value)
 {
-    try
-    {
-        m_propertyTree.put(section + "." + key, value);
-        m_needsSave = true;
-    }
-    catch (std::exception & e)
-    {
-        GetLogger()->Error("Error on editing config file: %s\n", e.what());
-        return false;
-    }
+    m_properties[section][key] = value;
+    m_needsSave = true;
     return true;
 }
 
 bool CConfigFile::GetFloatProperty(std::string section, std::string key, float &value)
 {
-    try
-    {
-        float readValue = m_propertyTree.get<float>(section + "." + key);
-        value = readValue;
-    }
-    catch (std::exception & e)
-    {
-        GetLogger()->Log(m_loaded ? LOG_INFO : LOG_TRACE, "Error on parsing config file: %s\n", e.what());
-        return false;
-    }
+    auto element = m_properties[section][key];
+
+    if (!element.is_number()) return false;
+
+    value = element.get<float>();
     return true;
 }

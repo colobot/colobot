@@ -1,0 +1,24 @@
+{
+    "test_float": {
+        "float_value": 1.5
+    },
+    "test_string": {
+        "string_value": "Hello world"
+    },
+    "test_int": {
+        "int_value": 42
+    },
+    "test_array": {
+        "string_array": [
+            "AAA",
+            "Hello world",
+            "Gold Edition"
+        ],
+        "int_array": [
+            2, 3, 1
+        ],
+        "bool_array": [
+            true, false, true
+        ]
+    }
+}

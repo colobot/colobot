@@ -28,7 +28,7 @@
 
 #include "common/logger.h"
 
-#include <boost/property_tree/ptree.hpp>
+#include <nlohmann/json.hpp>
 
 #include <string>
 #include <sstream>
@@ -115,8 +115,14 @@ public:
     {
         try
         {
-            std::string convertedValue = ArrayToString(array);
-            m_propertyTree.put(section + "." + key, convertedValue);
+            auto property = nlohmann::json::array();
+
+            for (const auto& value : array)
+            {
+                property.push_back(value);
+            }
+
+            m_properties[section][key] = property;
             m_needsSave = true;
         }
         catch (std::exception & e)
@@ -137,9 +143,12 @@ public:
     {
         try
         {
-            std::string readValue = m_propertyTree.get<std::string>(section + "." + key);
-            std::vector<T> convertedValue = StringToArray<T>(readValue);
-            array = std::move(convertedValue);
+            array.clear();
+
+            for (auto& value : m_properties[section][key])
+            {
+                array.push_back(value.get<T>());
+            }
         }
         catch (std::exception & e)
         {
@@ -189,7 +198,7 @@ private:
     }
 
 private:
-    boost::property_tree::ptree m_propertyTree;
+    nlohmann::json m_properties;
     bool m_needsSave;
     bool m_useCurrentDirectory;
     bool m_loaded;

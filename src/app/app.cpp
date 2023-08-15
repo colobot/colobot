@@ -597,17 +597,16 @@ bool CApplication::Create()
         // for list of resolutions in options menu, not calling it results in empty list
         auto modes = GetVideoResolutionList();
 
-        if ( GetConfigFile().GetStringProperty("Setup", "Resolution", sValue) && !m_resolutionOverride )
+        std::vector<int> values;
+
+        if ( GetConfigFile().GetArrayProperty("Setup", "Resolution", values) && !m_resolutionOverride )
         {
-            std::istringstream resolution(sValue);
-            std::string ws, hs;
-            std::getline(resolution, ws, 'x');
-            std::getline(resolution, hs, 'x');
             int w = 800, h = 600;
-            if (!ws.empty() && !hs.empty())
+
+            if (values.size() >= 2)
             {
-                w = atoi(ws.c_str());
-                h = atoi(hs.c_str());
+                w = values[0];
+                h = values[1];
             }
 
             // Why not just set m_deviceConfig.size to w,h? Because this way if the resolution is no longer supported (e.g. changing monitor) defaults will be used instead

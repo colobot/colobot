@@ -1,5 +1,5 @@
 set(TEST_FILES
-    common/colobot.ini
+    common/colobot.json
 )
 
 file(COPY ${TEST_FILES} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})

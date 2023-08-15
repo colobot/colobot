@@ -38,7 +38,7 @@ TEST_F(CConfigFileTest, ReadTest)
 {
     m_configFile.SetUseCurrentDirectory(true);
 
-    ASSERT_TRUE(m_configFile.Init()); // load colobot.ini file
+    ASSERT_TRUE(m_configFile.Init()); // load colobot.json file
 
     std::string result;
     ASSERT_TRUE(m_configFile.GetStringProperty("test_string", "string_value", result));
@@ -57,7 +57,7 @@ TEST_F(CConfigFileTest, ReadArrayTest)
 {
     m_configFile.SetUseCurrentDirectory(true);
 
-    ASSERT_TRUE(m_configFile.Init()); // load colobot.ini file
+    ASSERT_TRUE(m_configFile.Init()); // load colobot.json file
 
     std::vector<std::string> expected_string_values = { "AAA", "Hello world", "Gold Edition" };
     std::vector<std::string> string_values;

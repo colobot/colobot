@@ -338,17 +338,19 @@ InputSlot CInput::FindBinding(unsigned int key)
 
 void CInput::SaveKeyBindings()
 {
-    std::stringstream key;
+    std::vector<int> key;
     GetConfigFile().SetStringProperty("Keybindings", "_Version", "SDL2");
+
     for (int i = 0; i < INPUT_SLOT_MAX; i++)
     {
         InputBinding b = GetInputBinding(static_cast<InputSlot>(i));
 
         key.clear();
-        key.str("");
-        key << b.primary << " " << b.secondary;
 
-        GetConfigFile().SetStringProperty("Keybindings", m_keyTable[static_cast<InputSlot>(i)], key.str());
+        if (b.primary != KEY_INVALID) key.push_back(b.primary);
+        if (b.secondary != KEY_INVALID) key.push_back(b.secondary);
+
+        GetConfigFile().SetArrayProperty("Keybindings", m_keyTable[static_cast<InputSlot>(i)], key);
     }
 
     for (int i = 0; i < JOY_AXIS_SLOT_MAX; i++)
@@ -363,21 +365,22 @@ void CInput::SaveKeyBindings()
 
 void CInput::LoadKeyBindings()
 {
-    std::stringstream skey;
-    std::string keys;
-    if (GetConfigFile().GetStringProperty("Keybindings", "_Version", keys) && keys == "SDL2") // Keybindings from SDL1.2 are incompatible with SDL2 !!
+    std::string version;
+
+     // Keybindings from SDL1.2 are incompatible with SDL2 !!
+    if (GetConfigFile().GetStringProperty("Keybindings", "_Version", version) && version == "SDL2")
     {
+        std::vector<int> keys;
+
         for (int i = 0; i < INPUT_SLOT_MAX; i++)
         {
             InputBinding b;
 
-            if (!GetConfigFile().GetStringProperty("Keybindings", m_keyTable[static_cast<InputSlot>(i)], keys))
+            if (!GetConfigFile().GetArrayProperty("Keybindings", m_keyTable[static_cast<InputSlot>(i)], keys))
                 continue;
-            skey.clear();
-            skey.str(keys);
-
-            skey >> b.primary;
-            skey >> b.secondary;
+            
+            if (keys.size() >= 1) b.primary = keys[0];
+            if (keys.size() >= 2) b.secondary = keys[1];
 
             SetInputBinding(static_cast<InputSlot>(i), b);
         }

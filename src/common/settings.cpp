@@ -58,11 +58,8 @@ CSettings::CSettings()
 
 void CSettings::SaveResolutionSettings(const Gfx::DeviceConfig& config)
 {
-    // NOTE: These settings are loaded in CApplication
-
-    std::ostringstream ss;
-    ss << config.size.x << "x" << config.size.y;
-    GetConfigFile().SetStringProperty("Setup", "Resolution", ss.str());
+    std::vector<int> values = { config.size.x, config.size.y };
+    GetConfigFile().SetArrayProperty("Setup", "Resolution", values);
     GetConfigFile().SetBoolProperty("Setup", "Fullscreen", config.fullScreen);
     GetConfigFile().Save();
 }
