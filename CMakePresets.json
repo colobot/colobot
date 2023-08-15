@@ -40,6 +40,7 @@
             "cacheVariables": {
                 "CMAKE_SKIP_INSTALL_RPATH": true,
                 "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+                "CBOT_STATIC": true,
                 "DEV_BUILD": true,
                 "PORTABLE": true,
                 "TOOLS": true,
