@@ -46,7 +46,7 @@ CSDLMemoryWrapper::CSDLMemoryWrapper(const std::string& filename)
 
     PHYSFS_sint64 length = PHYSFS_fileLength(file);
     m_buffer = MakeUniqueArray<char>(length);
-    if (PHYSFS_read(file, m_buffer.get(), 1, length) != length)
+    if (PHYSFS_readBytes(file, m_buffer.get(), length) != length)
     {
         GetLogger()->Error("Unable to read data for \"%s\"\n", filename.c_str());
         PHYSFS_close(file);
