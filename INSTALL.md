@@ -31,7 +31,7 @@ You can also compile directly on Windows with MSYS2/MinGW-w64 or Visual Studio s
 
 #### Compiling with MSYS2/MinGW-w64
 
-See the [INSTALL-MSYS2.md](INSTALL-MSYS2.md) file for details.
+See the [INSTALL-MSYS2.md](docs/INSTALL-MSYS2.md) file for details.
 
 #### Compiling with MSVC (Visual Studio)
 
@@ -115,7 +115,7 @@ So if you provided prefix "/some/prefix", you can run:
 
 ### Compiling on MacOS X
 
-As of 0.1.2-alpha, we have added MacOS X support. See [INSTALL-MacOSX.md](INSTALL-MacOSX.md)
+As of 0.1.2-alpha, we have added MacOS X support. See [INSTALL-MacOSX.md](docs/INSTALL-MacOSX.md)
 file for details.
 
 
