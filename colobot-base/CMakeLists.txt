@@ -3,10 +3,6 @@ set(CMAKE_CXX_FLAGS ${COLOBOT_CXX_FLAGS})
 set(CMAKE_CXX_FLAGS_RELEASE ${COLOBOT_CXX_FLAGS_RELEASE})
 set(CMAKE_CXX_FLAGS_DEBUG ${COLOBOT_CXX_FLAGS_DEBUG})
 
-if(TOOLS)
-    #add_subdirectory(tools)
-endif()
-
 add_subdirectory(graphics/opengl33/shaders)
 
 if(COLOBOT_OFFICIAL_BUILD)
