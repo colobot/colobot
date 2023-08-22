@@ -47,7 +47,8 @@ CSNDFileWrapper::CSNDFileWrapper(const std::string& filename)
     }
     else
     {
-        m_last_error = std::string(PHYSFS_getLastError());
+        PHYSFS_ErrorCode errorCode = PHYSFS_getLastErrorCode();
+        m_last_error = std::string(PHYSFS_getErrorByCode(errorCode));
     }
 }
 
@@ -97,7 +98,7 @@ sf_count_t CSNDFileWrapper::SNDLength(void *data)
 
 sf_count_t CSNDFileWrapper::SNDRead(void *ptr, sf_count_t count, void *data)
 {
-    return PHYSFS_read(static_cast<PHYSFS_File *>(data), ptr, 1, count);
+    return PHYSFS_readBytes(static_cast<PHYSFS_File *>(data), ptr, count);
 }
 
 
@@ -129,5 +130,5 @@ sf_count_t CSNDFileWrapper::SNDTell(void *data)
 
 sf_count_t CSNDFileWrapper::SNDWrite(const void *ptr, sf_count_t count, void *data)
 {
-    return PHYSFS_write(static_cast<PHYSFS_File *>(data), ptr, 1, count);
+    return PHYSFS_writeBytes(static_cast<PHYSFS_File *>(data), ptr, count);
 }

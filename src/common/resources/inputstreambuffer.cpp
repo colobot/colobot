@@ -79,7 +79,7 @@ std::streambuf::int_type CInputStreamBuffer::underflow()
     if (PHYSFS_eof(m_file))
         return traits_type::eof();
 
-    PHYSFS_sint64 read_count = PHYSFS_read(m_file, m_buffer.get(), sizeof(char), m_bufferSize);
+    PHYSFS_sint64 read_count = PHYSFS_readBytes(m_file, m_buffer.get(), sizeof(char) * m_bufferSize);
     if (read_count <= 0)
         return traits_type::eof();
 
