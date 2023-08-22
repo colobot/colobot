@@ -436,8 +436,8 @@ add_subdirectory(colobot-common)
 # Add CBot
 add_subdirectory(CBot)
 
-# Subdirectory with sources
-add_subdirectory(src)
+# Add base Colobot implementation
+add_subdirectory(colobot-base)
 
 # Add Colobot executable
 add_subdirectory(colobot-app)

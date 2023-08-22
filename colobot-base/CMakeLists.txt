@@ -26,7 +26,7 @@ configure_file(common/config.h.cmake "${CMAKE_CURRENT_BINARY_DIR}/common/config.
 configure_file(common/version.h.cmake "${CMAKE_CURRENT_BINARY_DIR}/common/version.h")
 
 # Todo: split this monstrosity into smaller libraries (graphics, math, ui, etc.)
-add_library(colobotbase STATIC
+add_library(Colobot-Base STATIC
     app/app.cpp
     app/app.h
     app/controller.cpp
@@ -484,14 +484,14 @@ add_library(colobotbase STATIC
     ui/studio.h
 )
 
-target_include_directories(colobotbase PUBLIC
+target_include_directories(Colobot-Base PUBLIC
     ${CMAKE_CURRENT_LIST_DIR}
     ${CMAKE_CURRENT_LIST_DIR}/..
     ${CMAKE_CURRENT_BINARY_DIR}
 )
 
 # Main libraries
-target_link_libraries(colobotbase PUBLIC
+target_link_libraries(Colobot-Base PUBLIC
     CBot
     Colobot-Common
     localename
@@ -509,7 +509,7 @@ target_link_libraries(colobotbase PUBLIC
 
 # Optional libraries
 if(OPENAL_SOUND)
-    target_sources(colobotbase PRIVATE
+    target_sources(Colobot-Base PRIVATE
         sound/oalsound/alsound.cpp
         sound/oalsound/buffer.cpp
         sound/oalsound/channel.cpp
@@ -519,15 +519,15 @@ if(OPENAL_SOUND)
         sound/oalsound/channel.h
         sound/oalsound/check.h
     )
-    target_link_libraries(colobotbase PUBLIC OpenAL::OpenAL)
+    target_link_libraries(Colobot-Base PUBLIC OpenAL::OpenAL)
 endif()
 
 if(WINGETOPT)
-    target_link_libraries(colobotbase PUBLIC wingetopt)
+    target_link_libraries(Colobot-Base PUBLIC wingetopt)
 endif()
 
 if(MSVC)
-    target_compile_options(colobotbase PRIVATE /utf-8)
+    target_compile_options(Colobot-Base PRIVATE /utf-8)
 endif()
 
 # Additional libraries per platform
@@ -547,7 +547,7 @@ if(PLATFORM_WINDOWS)
             find_library(BROTLIENC_LIBRARY NAMES brotlienc-static)
             find_library(BROTLIDEC_LIBRARY NAMES brotlidec-static)
 
-            target_link_libraries(colobotbase PUBLIC
+            target_link_libraries(Colobot-Base PUBLIC
                 Gettext::Intl
                 ${BZ2_LIBRARY}
                 ${FREETYPE_LIBRARY}
@@ -570,19 +570,19 @@ if(PLATFORM_WINDOWS)
             )
         endif()
     else()
-        target_link_libraries(colobotbase PUBLIC -lintl)
+        target_link_libraries(Colobot-Base PUBLIC -lintl)
     endif()
 elseif(PLATFORM_GNU)
     # nothing
 elseif(PLATFORM_LINUX)
     # for clock_gettime
-    target_link_libraries(colobotbase PUBLIC -lrt)
+    target_link_libraries(Colobot-Base PUBLIC -lrt)
 elseif(PLATFORM_MACOSX)
     find_package(Intl REQUIRED)
-    target_link_libraries(colobotbase PUBLIC Gettext::Intl)
+    target_link_libraries(Colobot-Base PUBLIC Gettext::Intl)
 elseif(PLATFORM_FREEBSD)
     find_package(Intl REQUIRED)
-    target_link_libraries(colobotbase PUBLIC Gettext::Intl)
+    target_link_libraries(Colobot-Base PUBLIC Gettext::Intl)
 endif()
 
 
@@ -590,5 +590,5 @@ set(COLOBOT_LIBS ${LIBS} PARENT_SCOPE)
 
 # Linter-specific
 if(COLOBOT_LINT_BUILD)
-    add_fake_header_sources("src" colobotbase)
+    add_fake_header_sources("src" Colobot-Base)
 endif()

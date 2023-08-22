@@ -8,14 +8,14 @@ target_sources(colobot PRIVATE
 )
 
 if(MSVC)
-    target_compile_options(colobotbase PRIVATE /utf-8)
+    target_compile_options(colobot PRIVATE /utf-8)
 endif()
 
 if(PLATFORM_WINDOWS)
     target_sources(colobot PRIVATE ${PROJECT_BINARY_DIR}/desktop/colobot.rc)
 endif()
 
-target_link_libraries(colobot colobotbase SDL2::Main)
+target_link_libraries(colobot Colobot-Base SDL2::Main)
 
 if(COLOBOT_HIDE_CONSOLE)
     set_target_properties(colobot PROPERTIES WIN32_EXECUTABLE TRUE)

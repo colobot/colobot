@@ -5,7 +5,7 @@ target_link_directories(CBot_console PRIVATE
 )
 target_link_libraries(CBot_console PRIVATE
     CBot
-    colobotbase # Needed for error strings (TODO: why are they on Colobot side? :/)
+    Colobot-Base # Needed for error strings (TODO: why are they on Colobot side? :/)
 )
 
 add_executable(CBot_compile_graph compile_graph.cpp)

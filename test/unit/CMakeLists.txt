@@ -35,7 +35,7 @@ if(MSVC)
     target_compile_options(colobot_ut PRIVATE /utf-8)
 endif()
 
-target_link_libraries(colobot_ut PRIVATE GTest::GTest hippomocks colobotbase)
+target_link_libraries(colobot_ut PRIVATE GTest::GTest hippomocks Colobot-Base)
 
 gtest_discover_tests(colobot_ut
     WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
