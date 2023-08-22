@@ -37,7 +37,8 @@ CResourceManager::CResourceManager(const char *argv0)
 {
     if (!PHYSFS_init(argv0))
     {
-        GetLogger()->Error("Error while initializing physfs: %s\n", PHYSFS_getLastError());
+        PHYSFS_ErrorCode errorCode = PHYSFS_getLastErrorCode();
+        GetLogger()->Error("Error while initializing physfs: %s\n", PHYSFS_getErrorByCode(errorCode));
         assert(false);
     }
     PHYSFS_permitSymbolicLinks(1);
@@ -50,7 +51,8 @@ CResourceManager::~CResourceManager()
     {
         if (!PHYSFS_deinit())
         {
-            GetLogger()->Error("Error while deinitializing physfs: %s\n", PHYSFS_getLastError());
+            PHYSFS_ErrorCode errorCode = PHYSFS_getLastErrorCode();
+            GetLogger()->Error("Error while deinitializing physfs: %s\n", PHYSFS_getErrorByCode(errorCode));
         }
     }
 }
@@ -65,7 +67,8 @@ bool CResourceManager::AddLocation(const std::string &location, bool prepend, co
 {
     if (!PHYSFS_mount(location.c_str(), mountPoint.c_str(), prepend ? 0 : 1))
     {
-        GetLogger()->Error("Error while mounting \"%s\": %s\n", location.c_str(), PHYSFS_getLastError());
+        PHYSFS_ErrorCode errorCode = PHYSFS_getLastErrorCode();
+        GetLogger()->Error("Error while mounting \"%s\": %s\n", location.c_str(), PHYSFS_getErrorByCode(errorCode));
         return false;
     }
 
@@ -75,9 +78,10 @@ bool CResourceManager::AddLocation(const std::string &location, bool prepend, co
 
 bool CResourceManager::RemoveLocation(const std::string &location)
 {
-    if (!PHYSFS_removeFromSearchPath(location.c_str()))
+    if (!PHYSFS_unmount(location.c_str()))
     {
-        GetLogger()->Error("Error while unmounting \"%s\": %s\n", location.c_str(), PHYSFS_getLastError());
+        PHYSFS_ErrorCode errorCode = PHYSFS_getLastErrorCode();
+        GetLogger()->Error("Error while unmounting \"%s\": %s\n", location.c_str(), PHYSFS_getErrorByCode(errorCode));
         return false;
     }
 
@@ -105,7 +109,8 @@ bool CResourceManager::SetSaveLocation(const std::string &location)
 {
     if (!PHYSFS_setWriteDir(location.c_str()))
     {
-        GetLogger()->Error("Error while setting save location to \"%s\": %s\n", location.c_str(), PHYSFS_getLastError());
+        PHYSFS_ErrorCode errorCode = PHYSFS_getLastErrorCode();
+        GetLogger()->Error("Error while setting save location to \"%s\": %s\n", location.c_str(), PHYSFS_getErrorByCode(errorCode));
         return false;
     }
 
@@ -150,7 +155,9 @@ bool CResourceManager::DirectoryExists(const std::string& directory)
 {
     if (PHYSFS_isInit())
     {
-        return PHYSFS_exists(CleanPath(directory).c_str()) && PHYSFS_isDirectory(CleanPath(directory).c_str());
+        PHYSFS_Stat statbuf;
+        PHYSFS_stat(CleanPath(directory).c_str(), &statbuf);
+        return (PHYSFS_exists(CleanPath(directory).c_str()) && (statbuf.filetype == PHYSFS_FILETYPE_DIRECTORY));
     }
     return false;
 }
@@ -191,8 +198,10 @@ std::vector<std::string> CResourceManager::ListFiles(const std::string &director
         {
             if (excludeDirs)
             {
+                PHYSFS_Stat statbuf;
                 std::string path = CleanPath(directory) + "/" + (*i);
-                if (PHYSFS_isDirectory(path.c_str())) continue;
+                PHYSFS_stat(path.c_str(), &statbuf);
+                if (statbuf.filetype == PHYSFS_FILETYPE_DIRECTORY) continue;
             }
             result.push_back(*i);
         }
@@ -213,8 +222,10 @@ std::vector<std::string> CResourceManager::ListDirectories(const std::string &di
 
         for (char **i = files; *i != nullptr; i++)
         {
+            PHYSFS_Stat statbuf;
             std::string path = CleanPath(directory) + "/" + (*i);
-            if (PHYSFS_isDirectory(path.c_str()))
+            PHYSFS_stat(path.c_str(), &statbuf);
+            if (statbuf.filetype == PHYSFS_FILETYPE_DIRECTORY)
             {
                 result.push_back(*i);
             }
@@ -243,7 +254,9 @@ long long CResourceManager::GetLastModificationTime(const std::string& filename)
 {
     if (PHYSFS_isInit())
     {
-        return PHYSFS_getLastModTime(CleanPath(filename).c_str());
+        PHYSFS_Stat statbuf;
+        PHYSFS_stat(CleanPath(filename).c_str(), &statbuf);
+        return statbuf.modtime;
     }
     return -1;
 }

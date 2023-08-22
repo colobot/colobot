@@ -393,7 +393,7 @@ GLint LoadShader(GLint type, const char* filename)
     std::vector<GLchar> source(len + 1);
 
     GLchar *sources[] = { source.data() };
-    size_t length = PHYSFS_read(file, source.data(), 1, len);
+    size_t length = PHYSFS_readBytes(file, source.data(), len);
     source[length] = '\0';
 
     PHYSFS_close(file);
