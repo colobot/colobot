@@ -69,7 +69,7 @@ jobs:
     - name: Run tests
       # TODO: Maybe run Windows tests using wine as well?
       working-directory: build
-      run: ./colobot_ut --gtest_output=xml:gtestresults.xml
+      run: ./Colobot-UnitTests --gtest_output=xml:gtestresults.xml
       if: matrix.target_os == 'linux'
     - name: Upload test results
       uses: actions/upload-artifact@v2
@@ -105,7 +105,7 @@ jobs:
     - name: Run tests
       # TODO: Maybe run Windows tests using wine as well?
       working-directory: build
-      run: ./colobot_ut --gtest_output=xml:gtestresults.xml
+      run: ./Colobot-UnitTests --gtest_output=xml:gtestresults.xml
       if: matrix.target_os == 'macos'
     - name: Upload test results
       uses: actions/upload-artifact@v2
@@ -185,7 +185,7 @@ jobs:
         path: install
     - name: Run tests
       working-directory: build
-      run: ./colobot_ut --gtest_output=xml:gtestresults.xml
+      run: ./Colobot-UnitTests --gtest_output=xml:gtestresults.xml
     - name: Upload test results
       uses: actions/upload-artifact@v2
       with:

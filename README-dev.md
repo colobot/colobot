@@ -77,7 +77,7 @@ Each test directory contains own `CMakeLists.txt` specifying targets. Note howev
 Tests can be enabled or disabled using CMake option TESTS (OFF by default). To run the automated tests (you must be in the build directory):
 
 ```
-  ./colobot_ut
+  ./Colobot-UnitTests
   # or:
   make test
   # or:

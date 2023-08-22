@@ -8,7 +8,7 @@ file(COPY ${TEST_FILES} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
 add_definitions(-DGTEST_HAS_TR1_TUPLE=0)
 
-add_executable(colobot_ut
+add_executable(Colobot-UnitTests
     main.cpp
     app/app_test.cpp
     CBot/CBot_test.cpp
@@ -23,7 +23,7 @@ add_executable(colobot_ut
     math/matrix_test.cpp
     math/vector_test.cpp)
 
-target_include_directories(colobot_ut PRIVATE
+target_include_directories(Colobot-UnitTests PRIVATE
     common
     math
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -32,12 +32,12 @@ target_include_directories(colobot_ut PRIVATE
 )
 
 if(MSVC)
-    target_compile_options(colobot_ut PRIVATE /utf-8)
+    target_compile_options(Colobot-UnitTests PRIVATE /utf-8)
 endif()
 
-target_link_libraries(colobot_ut PRIVATE GTest::GTest hippomocks Colobot-Base)
+target_link_libraries(Colobot-UnitTests PRIVATE GTest::GTest hippomocks Colobot-Base)
 
-gtest_discover_tests(colobot_ut
+gtest_discover_tests(Colobot-UnitTests
     WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
     DISCOVERY_MODE PRE_TEST
 )
@@ -45,9 +45,9 @@ gtest_discover_tests(colobot_ut
 # GoogleTest isn't compatible with -Wsuggest-override -Werror:
 # see https://github.com/google/googletest/issues/1063
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU" AND NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5.0)
-    target_compile_options(colobot_ut PRIVATE "-Wno-suggest-override")
+    target_compile_options(Colobot-UnitTests PRIVATE "-Wno-suggest-override")
 endif()
 
 if(COLOBOT_LINT_BUILD)
-    add_fake_header_sources("test/unit" colobot_ut)
+    add_fake_header_sources("test/unit" Colobot-UnitTests)
 endif()
