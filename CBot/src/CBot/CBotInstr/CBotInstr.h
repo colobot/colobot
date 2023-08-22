@@ -38,7 +38,7 @@ class CBotDebug;
  * \endcode
  * the following structure is generated:
  * \dot
- * # Generated using the CBot_compile_graph tool
+ * # Generated using the CBot-CompileGraph tool
  * # and slightly modified
  * digraph {
  * start [label=<START> shape=box3d color=cyan]

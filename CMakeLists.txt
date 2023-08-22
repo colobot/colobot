@@ -444,6 +444,10 @@ add_subdirectory(colobot-app)
 
 add_subdirectory(po)
 
+if(TOOLS)
+    add_subdirectory(tools)
+endif()
+
 if(DESKTOP)
     add_subdirectory(desktop)
 endif()

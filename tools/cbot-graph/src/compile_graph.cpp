@@ -29,13 +29,13 @@
  *
  * To generate the graph, pass the output to GraphViz:
  * \code{.sh}
- * ./CBot_compile_graph < input_file.txt | dot -Tx11
+ * ./CBot-CompileGraph < input_file.txt | dot -Tx11
  * \endcode
  *
  * or for output to file:
  *
  * \code{.sh}
- * ./CBot_compile_graph < input_file.txt | dot -Tpng -o output.png
+ * ./CBot-CompileGraph < input_file.txt | dot -Tpng -o output.png
  * \endcode
  */
 
