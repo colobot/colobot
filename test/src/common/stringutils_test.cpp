@@ -54,6 +54,29 @@ TEST(StringUtilTests, ReplaceSameLength)
     EXPECT_EQ(result, expected);
 }
 
+TEST(StringUtilTests, RemoveComments)
+{
+    std::string text = "qwerty";
+    StrUtils::RemoveComments(text);
+    EXPECT_EQ(text, "qwerty");
+
+    text = "qwerty // comment";
+    StrUtils::RemoveComments(text);
+    EXPECT_EQ(text, "qwerty ");
+
+    text = "qwerty 'test' // comment";
+    StrUtils::RemoveComments(text);
+    EXPECT_EQ(text, "qwerty 'test' ");
+
+    text = "qwerty \"test\" // comment";
+    StrUtils::RemoveComments(text);
+    EXPECT_EQ(text, "qwerty \"test\" ");
+
+    text = "qwerty 'test // test'";
+    StrUtils::RemoveComments(text);
+    EXPECT_EQ(text, "qwerty 'test // test'");
+}
+
 TEST(StringUtilTests, SplitSingle)
 {
     std::string text = "CreateObject test value  123";

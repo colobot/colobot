@@ -36,7 +36,6 @@
 #include <sstream>
 #include <iomanip>
 #include <set>
-#include <regex>
 
 CLevelParser::CLevelParser()
 {
@@ -167,29 +166,11 @@ void CLevelParser::Load()
 
         line = StrUtils::Replace(line, "\t", " "); // replace tab by space
 
-        // ignore comments
-        size_t pos = 0;
-        std::string linesuffix = line;
-        std::regex commentRegex{ R"(("[^"]*")|('[^']*')|(//.*$))" };
-        std::smatch matches;
-        while (std::regex_search(linesuffix, matches, commentRegex))
-        {
-            if (matches[3].matched)
-            {
-                pos += std::distance(linesuffix.cbegin(), matches.prefix().second);
-                line = line.substr(0, pos);
-                linesuffix = "";
-            }
-            else
-            {
-                pos += std::distance(linesuffix.cbegin(), matches.suffix().first);
-                linesuffix = matches.suffix().str();
-            }
-        }
+        StrUtils::RemoveComments(line);
 
         StrUtils::Trim(line);
 
-        pos = line.find_first_of(" \t\n");
+        size_t pos = line.find_first_of(" \t\n");
         std::string command = line.substr(0, pos);
         if (pos != std::string::npos)
         {

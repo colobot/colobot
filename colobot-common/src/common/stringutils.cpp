@@ -136,3 +136,40 @@ void StrUtils::Trim(std::string& str)
     TrimLeft(str);
     TrimRight(str);
 }
+
+void StrUtils::RemoveComments(std::string& text)
+{
+    for (size_t i = 0; i < text.size();)
+    {
+        // Skip string literal of form "text"
+        if (size_t start = text.find_first_of('"', i); start != std::string::npos)
+        {
+            size_t end = text.find_first_of('"', start + 1);
+
+            if (end == std::string::npos) break;
+
+            i = end + 1;
+            continue;
+        }
+
+        // Skip string literal of form 'text'
+        if (size_t start = text.find_first_of('\'', i); start != std::string::npos)
+        {
+            size_t end = text.find_first_of('\'', start + 1);
+
+            if (end == std::string::npos) break;
+
+            i = end + 1;
+            continue;
+        }
+
+        // Find and remove comment of form // comment
+        if (size_t start = text.find_first_of("//", i); start != std::string::npos)
+        {
+            text.erase(std::next(text.begin(), start), text.end());
+        }
+
+        // Nothing else to skip or remove
+        break;
+    }
+}
