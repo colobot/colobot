@@ -82,6 +82,9 @@ void TrimRight(std::string& str);
 //! Remove whitespace from both ends of the given string (in place)
 void Trim(std::string& str);
 
+//! Removes comments of form // comment
+void RemoveComments(std::string& text);
+
 //! Converts a wide Unicode char to a single UTF-8 encoded char
 std::string UnicodeCharToUtf8(unsigned int ch);
 
