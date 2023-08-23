@@ -3,20 +3,12 @@
     "version-string": "0.1.0",
     "builtin-baseline": "f6a5d4e8eb7476b8d7fc12a56dff300c1c986131",
     "dependencies": [
-        "boost-algorithm",
-        "boost-bimap",
-        "boost-filesystem",
-        "boost-lexical-cast",
-        "boost-optional",
-        "boost-property-tree",
-        "boost-range",
-        "boost-regex",
-        "boost-system",
         {
             "name": "freetype",
             "default-features": false
         },
         "glew",
+        "glm",
         "gettext",
         "libiconv",
         "libogg",

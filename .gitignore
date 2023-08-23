@@ -17,7 +17,6 @@ CMakeDoxygenDefaults.cmake
 /Doxyfile
 
 # Ignore targets
-/colobot
 /src/CBot/libCBot.so
 
 # Ignore local data

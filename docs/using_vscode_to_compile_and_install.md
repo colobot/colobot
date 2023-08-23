@@ -37,7 +37,6 @@ Create folder .vscode if there is none. Inside that folder create a file setting
             "inheritEnvironments": ["msvc_x64_x64"],
             "CMAKE_TOOLCHAIN_FILE": "input your path to the toolchain file",
             "VCPKG_TARGET_TRIPLET": "x64-windows-static",
-            "BOOST_STATIC": "1",
             "GLEW_STATIC": "1",
             "MSVC_STATIC": "1"
         },
@@ -51,12 +50,12 @@ Create folder .vscode if there is none. Inside that folder create a file setting
 
 1. Open cmake extension in the left menu and click on `build all projects`
     
-    ![alt text](../docimg/cmake-build-all.png "cmake build all screenshot")
+    ![alt text](images/cmake-build-all.png "cmake build all screenshot")
 2. On the status line at the bottom change the compilation target to `install`.
 3. Click `build` to build the project.
 4. After the project is built, click on `launch` to run a game.
 
-    ![alt text](../docimg/vscode-screenshot.png "compilation and installation screenshot")
+    ![alt text](images/vscode-screenshot.png "compilation and installation screenshot")
 
 
 If you have any problems create an issue or talk to us on our [Discord channel](https://discord.gg/56Fm9kb).

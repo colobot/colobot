@@ -6,7 +6,7 @@ So you want to contribute to Colobot: Gold Edition? That's awesome! Before you s
 
 Before you start, read more about technical details of the project. They can be found in:
 
-* [Developer README](README-dev.md)
+* [Developer README](docs/README-dev.md)
 * [Doxygen documentation (doc)](https://github.com/colobot/colobot/actions)
 * [Working with translations](https://github.com/colobot/colobot/wiki/Working-with-translations)
 * [Working with models](https://github.com/colobot/colobot/wiki/Working-with-Colobot:-Gold-Edition-models)

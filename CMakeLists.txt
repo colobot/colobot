@@ -3,9 +3,12 @@
 # Contains global options and definitions
 ##
 
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.21)
 
-project(colobot C CXX)
+project(colobot
+    VERSION 0.2.1.0
+    LANGUAGES C CXX
+)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
@@ -15,9 +18,6 @@ set(CMAKE_CXX_EXTENSIONS NO)
 # Project version
 ##
 set(COLOBOT_VERSION_CODENAME "Gold")
-set(COLOBOT_VERSION_MAJOR    0)
-set(COLOBOT_VERSION_MINOR    2)
-set(COLOBOT_VERSION_REVISION 1)
 
 # Used on official releases
 #set(COLOBOT_VERSION_RELEASE_CODENAME "-alpha")
@@ -42,10 +42,10 @@ if(DEFINED COLOBOT_VERSION_UNRELEASED)
         set(COLOBOT_VERSION_DISPLAY "${COLOBOT_VERSION_CODENAME}-${COLOBOT_VERSION_UNRELEASED}")
     endif()
 else()
-    set(COLOBOT_VERSION_DISPLAY "${COLOBOT_VERSION_MAJOR}.${COLOBOT_VERSION_MINOR}.${COLOBOT_VERSION_REVISION}${COLOBOT_VERSION_RELEASE_CODENAME}")
+    set(COLOBOT_VERSION_DISPLAY "${CMAKE_PROJECT_VERSION}${COLOBOT_VERSION_RELEASE_CODENAME}")
 endif()
 
-set(COLOBOT_VERSION_FULL "${COLOBOT_VERSION_MAJOR}.${COLOBOT_VERSION_MINOR}.${COLOBOT_VERSION_REVISION}${COLOBOT_VERSION_UNRELEASED}${COLOBOT_VERSION_RELEASE_CODENAME}")
+set(COLOBOT_VERSION_FULL "${CMAKE_PROJECT_VERSION}${COLOBOT_VERSION_UNRELEASED}${COLOBOT_VERSION_RELEASE_CODENAME}")
 message(STATUS "Building Colobot \"${COLOBOT_VERSION_CODENAME}\" (${COLOBOT_VERSION_FULL})")
 
 set(BUILD_NUMBER 0)
@@ -148,7 +148,9 @@ endif()
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
 # Include cmake directory with some additional scripts
-set(CMAKE_MODULE_PATH "${colobot_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
+list(PREPEND CMAKE_MODULE_PATH 
+    ${PROJECT_SOURCE_DIR}/cmake
+)
 
 # Compiler detection
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
@@ -158,7 +160,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 
     message(STATUS "Detected GCC version 4.7+")
 
-    set(NORMAL_CXX_FLAGS "-Wall -Wold-style-cast -pedantic-errors -Wmissing-declarations")
+    set(NORMAL_CXX_FLAGS "-Wall -Wold-style-cast -pedantic-errors -Wmissing-declarations -lstdc++fs -fPIC")
     set(NORMAL_CXX_FLAGS "${NORMAL_CXX_FLAGS} -Wno-error=deprecated-declarations") # updated version of physfs is not available on some platforms so we keep using deprecated functions, see #958
 
     if(NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5.0)
@@ -214,9 +216,6 @@ endif()
 # These are specific to GCC/MinGW/clang; for other compilers, change as necessary
 # The flags are used throughout src/ and test/ subdirs
 
-# Special flags for boost
-add_definitions(-DBOOST_NO_SCOPED_ENUMS -DBOOST_NO_CXX11_SCOPED_ENUMS)
-
 set(COLOBOT_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${NORMAL_CXX_FLAGS}")
 set(COLOBOT_CXX_FLAGS_RELEASE "${RELEASE_CXX_FLAGS}")
 set(COLOBOT_CXX_FLAGS_DEBUG "${DEBUG_CXX_FLAGS}")
@@ -233,10 +232,7 @@ option(DEV_BUILD "Enable development build (enables some debugging tools, local 
 
 # Official build - changes text on the crash screen
 # PLEASE DO NOT USE ON UNOFFICIAL BUILDS. Thanks.
-option(OFFICIAL_COLOBOT_BUILD "Official build (changes crash screen text)" OFF)
-
-# Hide console on Windows (useful for release builds)
-option(HIDE_CONSOLE "Hide console" OFF)
+option(COLOBOT_OFFICIAL_BUILD "Official build (changes crash screen text)" OFF)
 
 # Hardcode relative paths instead of absolute paths
 option(USE_RELATIVE_PATHS "Generate relative paths from absolute paths" OFF)
@@ -267,9 +263,6 @@ option(USE_STATIC_RUNTIME "Link the runtime library statically" OFF)
 
 # CBot can also be a static library
 option(CBOT_STATIC "Build CBot as static libary" OFF)
-
-# This is useful in case you want to use static boost libraries
-option(BOOST_STATIC "Link with static boost libraries" OFF)
 
 # This is useful on Windows, if linking against standard GLEW dll fails
 option(GLEW_STATIC "Link statically with GLEW" OFF)
@@ -315,13 +308,20 @@ find_package(SDL2_ttf REQUIRED)
 find_package(PNG 1.2 REQUIRED)
 find_package(Gettext REQUIRED)
 find_package(PhysFS REQUIRED)
+find_package(glm CONFIG REQUIRED)
 
-set(Boost_USE_STATIC_LIBS ${BOOST_STATIC})
-set(Boost_USE_MULTITHREADED ON)
-set(Boost_USE_STATIC_RUNTIME ${USE_STATIC_RUNTIME})
+# Add target alias glm::glm for older versions of the library
+if(NOT TARGET glm::glm)
+    add_library(glm::glm ALIAS glm)
+endif()
 
-set(Boost_ADDITIONALVERSION "1.51" "1.51.0")
-find_package(Boost COMPONENTS system filesystem regex REQUIRED)
+find_package(nlohmann_json 3.10 QUIET)
+
+if(NOT nlohmann_json_FOUND)
+    message(STATUS "Using nlohmann_json git submodule")
+    set(JSON_BuildTests OFF CACHE INTERNAL "")
+    add_subdirectory(lib/json)
+endif()
 
 set(GLEW_USE_STATIC_LIBS ${GLEW_STATIC})
 find_package(GLEW REQUIRED)
@@ -430,10 +430,23 @@ else()
     set(COLOBOT_I18N_DIR ${COLOBOT_INSTALL_I18N_DIR})
 endif()
 
-# Subdirectory with sources
-add_subdirectory(src)
+# Subdirectory with common implementation
+add_subdirectory(colobot-common)
+
+# Add CBot
+add_subdirectory(CBot)
+
+# Add base Colobot implementation
+add_subdirectory(colobot-base)
+
+# Add Colobot executable
+add_subdirectory(colobot-app)
 
 add_subdirectory(po)
+
+if(TOOLS)
+    add_subdirectory(tools)
+endif()
 
 if(DESKTOP)
     add_subdirectory(desktop)

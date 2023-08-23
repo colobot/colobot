@@ -31,7 +31,7 @@ You can also compile directly on Windows with MSYS2/MinGW-w64 or Visual Studio s
 
 #### Compiling with MSYS2/MinGW-w64
 
-See the [INSTALL-MSYS2.md](INSTALL-MSYS2.md) file for details.
+See the [INSTALL-MSYS2.md](docs/INSTALL-MSYS2.md) file for details.
 
 #### Compiling with MSVC (Visual Studio)
 
@@ -46,7 +46,6 @@ you will need to compile colobot.
 You will need:
  * C++17 compiler
  * CMake >= 3.16
- * Boost
  * SDL2
  * SDL2_image
  * SDL2_ttf
@@ -62,7 +61,7 @@ You will need:
 
 On Ubuntu (and probably any other Debian-based system), you can use the following command to install all required packages:
 ```
-  $ apt-get install build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-regex-dev libphysfs-dev gettext git po4a vorbis-tools
+  $ apt-get install build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libphysfs-dev gettext git po4a vorbis-tools
 ```
 
 Make sure you install the packages along with header files (often distributed in separate *-dev packages). If you miss any requirements,
@@ -116,7 +115,7 @@ So if you provided prefix "/some/prefix", you can run:
 
 ### Compiling on MacOS X
 
-As of 0.1.2-alpha, we have added MacOS X support. See [INSTALL-MacOSX.md](INSTALL-MacOSX.md)
+As of 0.1.2-alpha, we have added MacOS X support. See [INSTALL-MacOSX.md](docs/INSTALL-MacOSX.md)
 file for details.
 
 
