@@ -19,7 +19,7 @@ jobs:
     - name: Install Colobot dependencies
       run: sudo apt-get update && sudo apt-get install -y --no-install-recommends build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libphysfs-dev gettext git po4a vorbis-tools librsvg2-bin xmlstarlet libglm-dev libmpg123-dev
       if: matrix.container == ''
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Checkout the Google Test submodule
       run: git submodule update --init -- lib/googletest
     - name: Checkout the nlohmann json submodule
@@ -90,7 +90,7 @@ jobs:
     - name: Install Colobot dependencies
       run: brew install cmake sdl2 sdl2_image sdl2_ttf glew physfs flac libsndfile libvorbis vorbis-tools gettext libicns librsvg wget xmlstarlet glm
       if: matrix.container == ''
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Checkout the Google Test submodule
       run: git submodule update --init -- lib/googletest
     - name: Checkout the nlohmann json submodule
@@ -123,7 +123,7 @@ jobs:
           - arch: x86
             vcpkg_triplet: 'x86-windows-static'
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Checkout the Google Test submodule
       run: git submodule update --init -- lib/googletest
     - name: Checkout the nlohmann json submodule
@@ -196,7 +196,7 @@ jobs:
     steps:
     - name: Install Colobot dependencies
       run: sudo apt-get update && sudo apt-get install -y --no-install-recommends build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libphysfs-dev gettext git po4a vorbis-tools librsvg2-bin xmlstarlet doxygen graphviz libglm-dev libmpg123-dev
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Create build directory
       run: cmake -E make_directory build
     - name: Checkout the nlohmann json submodule
