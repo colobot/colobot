@@ -13,13 +13,10 @@ jobs:
         container: ['']
       fail-fast: false
     steps:
-    - name: Switch to gcc-9
-      run: sudo apt install gcc-9 g++-9 && sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 100 --slave /usr/bin/g++ g++ /usr/bin/g++-9 --slave /usr/bin/gcov gcov /usr/bin/gcov-9 && sudo update-alternatives --set gcc /usr/bin/gcc-9
-      if: matrix.host_os == 'ubuntu-18.04'
     - name: Install Colobot dependencies
       run: sudo apt-get update && sudo apt-get install -y --no-install-recommends build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libphysfs-dev gettext git po4a vorbis-tools librsvg2-bin xmlstarlet libglm-dev libmpg123-dev
       if: matrix.container == ''
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Checkout the Google Test submodule
       run: git submodule update --init -- lib/googletest
     - name: Checkout the nlohmann json submodule
@@ -37,7 +34,7 @@ jobs:
       run: patchelf --set-rpath '.' install/colobot
       if: matrix.target_os == 'linux'
     - name: Upload build
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{matrix.target_os}}-debug
         path: install
@@ -61,7 +58,7 @@ jobs:
         cp -p Colobot-x86_64.AppImage appimage/colobot
       if: matrix.target_os == 'linux'
     - name: Upload AppImage
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{matrix.target_os}}-debug-AppImage
         path: build/appimage
@@ -72,7 +69,7 @@ jobs:
       run: ./Colobot-UnitTests --gtest_output=xml:gtestresults.xml
       if: matrix.target_os == 'linux'
     - name: Upload test results
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: Test results (${{ matrix.target_os }}, ${{ matrix.host_os }})
         path: build/gtestresults.xml
@@ -90,7 +87,7 @@ jobs:
     - name: Install Colobot dependencies
       run: brew install cmake sdl2 sdl2_image sdl2_ttf glew physfs flac libsndfile libvorbis vorbis-tools gettext libicns librsvg wget xmlstarlet glm
       if: matrix.container == ''
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Checkout the Google Test submodule
       run: git submodule update --init -- lib/googletest
     - name: Checkout the nlohmann json submodule
@@ -108,7 +105,7 @@ jobs:
       run: ./Colobot-UnitTests --gtest_output=xml:gtestresults.xml
       if: matrix.target_os == 'macos'
     - name: Upload test results
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: Test results (${{ matrix.target_os }}, ${{ matrix.host_os }})
         path: build/gtestresults.xml
@@ -123,7 +120,7 @@ jobs:
           - arch: x86
             vcpkg_triplet: 'x86-windows-static'
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Checkout the Google Test submodule
       run: git submodule update --init -- lib/googletest
     - name: Checkout the nlohmann json submodule
@@ -179,7 +176,7 @@ jobs:
     - name: Install
       run: cmake --build --preset Windows-CI --target install
     - name: Upload build
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: windows-msvc-debug-${{ matrix.arch }}
         path: install
@@ -187,7 +184,7 @@ jobs:
       working-directory: build
       run: ./Colobot-UnitTests --gtest_output=xml:gtestresults.xml
     - name: Upload test results
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: 'Test results (windows, MSVC, ${{ matrix.arch }})'
         path: build/gtestresults.xml
@@ -196,7 +193,7 @@ jobs:
     steps:
     - name: Install Colobot dependencies
       run: sudo apt-get update && sudo apt-get install -y --no-install-recommends build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libphysfs-dev gettext git po4a vorbis-tools librsvg2-bin xmlstarlet doxygen graphviz libglm-dev libmpg123-dev
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Create build directory
       run: cmake -E make_directory build
     - name: Checkout the nlohmann json submodule
@@ -208,7 +205,7 @@ jobs:
       working-directory: build
       run: make doc
     - name: Upload docs
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: doc
         path: build/doc
