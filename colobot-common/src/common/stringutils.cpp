@@ -139,37 +139,29 @@ void StrUtils::Trim(std::string& str)
 
 void StrUtils::RemoveComments(std::string& text)
 {
-    for (size_t i = 0; i < text.size();)
+    for (size_t i = 0; i < text.size(); i++)
     {
-        // Skip string literal of form "text"
-        if (size_t start = text.find_first_of('"', i); start != std::string::npos)
+        char c = text[i];
+
+        // If a string literal of form "text" or 'text', skip
+        if (c == '"' || c == '\'')
         {
-            size_t end = text.find_first_of('"', start + 1);
+            size_t j = i + 1;
 
-            if (end == std::string::npos) break;
+            while (j < text.size())
+            {
+                if (text[j] == c) break;
 
-            i = end + 1;
-            continue;
+                j++;
+            }
+
+            i = j;
         }
-
-        // Skip string literal of form 'text'
-        if (size_t start = text.find_first_of('\'', i); start != std::string::npos)
+        // If a comment of form // comment, remove and end processing
+        else if (text[i] == '/' && text[i + 1] == '/')
         {
-            size_t end = text.find_first_of('\'', start + 1);
-
-            if (end == std::string::npos) break;
-
-            i = end + 1;
-            continue;
+            text.erase(std::next(text.begin(), i), text.end());
+            break;
         }
-
-        // Find and remove comment of form // comment
-        if (size_t start = text.find_first_of("//", i); start != std::string::npos)
-        {
-            text.erase(std::next(text.begin(), start), text.end());
-        }
-
-        // Nothing else to skip or remove
-        break;
     }
 }
