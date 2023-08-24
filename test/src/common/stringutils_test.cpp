@@ -60,21 +60,41 @@ TEST(StringUtilTests, RemoveComments)
     StrUtils::RemoveComments(text);
     EXPECT_EQ(text, "qwerty");
 
-    text = "qwerty // comment";
+    text = R"(qwerty // comment)";
     StrUtils::RemoveComments(text);
-    EXPECT_EQ(text, "qwerty ");
+    EXPECT_EQ(text, R"(qwerty )");
 
-    text = "qwerty 'test' // comment";
+    text = R"(qwerty 'test' // comment)";
     StrUtils::RemoveComments(text);
-    EXPECT_EQ(text, "qwerty 'test' ");
+    EXPECT_EQ(text, R"(qwerty 'test' )");
 
-    text = "qwerty \"test\" // comment";
+    text = R"(qwerty "test" // comment)";
     StrUtils::RemoveComments(text);
-    EXPECT_EQ(text, "qwerty \"test\" ");
+    EXPECT_EQ(text, R"(qwerty "test" )");
 
-    text = "qwerty 'test // test'";
+    text = R"(qwerty 'test // test')";
     StrUtils::RemoveComments(text);
-    EXPECT_EQ(text, "qwerty 'test // test'");
+    EXPECT_EQ(text, R"(qwerty 'test // test')");
+
+    text = R"(qwerty "test // test")";
+    StrUtils::RemoveComments(text);
+    EXPECT_EQ(text, R"(qwerty "test // test")");
+
+    text = R"(// comment "text")";
+    StrUtils::RemoveComments(text);
+    EXPECT_EQ(text, "");
+
+    text = R"(// comment 'text')";
+    StrUtils::RemoveComments(text);
+    EXPECT_EQ(text, "");
+
+    text = R"("qwerty"//comment)";
+    StrUtils::RemoveComments(text);
+    EXPECT_EQ(text, R"("qwerty")");
+
+    text = R"('qwerty'//comment)";
+    StrUtils::RemoveComments(text);
+    EXPECT_EQ(text, R"('qwerty')");
 }
 
 TEST(StringUtilTests, SplitSingle)
