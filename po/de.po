@@ -31,10 +31,10 @@ msgstr "Es fehlt eine geschlossene eckige Klammer \" ] \""
 
 #, c-format
 msgid "%s: %d pts"
-msgstr ""
+msgstr "%s: %d Punkte"
 
 msgid "+\\Missions with bonus content and optional challenges"
-msgstr ""
+msgstr "+\\Missionen mit zusätzlichen Inhalten und Herausforderungen"
 
 msgid "..behind"
 msgstr "..hinten"
@@ -59,15 +59,15 @@ msgstr "<<< Mission gescheitert >>>"
 
 #, c-format
 msgid "<<< Team %s finished! >>>"
-msgstr ""
+msgstr "<<< Team %s am Ziel! >>>"
 
 #, c-format
 msgid "<<< Team %s lost! >>>"
-msgstr ""
+msgstr "<<< Team %s hat verloren! >>>"
 
 #, c-format
 msgid "<<< Team %s recieved %d points >>>"
-msgstr ""
+msgstr "<<< Team %s hat %d Punkte erhalten >>>"
 
 msgid "<<< Well done; mission accomplished >>>"
 msgstr "<<< Bravo, Mission vollendet >>>"
@@ -106,7 +106,7 @@ msgid "Alternative camera mode\\Move sideways instead of rotating (in free camer
 msgstr "Alternativer Kameramodus\\Seitwärts bewegen statt rotieren (bei freier Kamera)"
 
 msgid "Ambiguous call to overloaded function"
-msgstr ""
+msgstr "Mehrdeutiger Aufrug einer überladenen Funktion"
 
 msgid "Analysis already performed"
 msgstr "Analyse schon durchgeführt"
@@ -127,10 +127,10 @@ msgid "Appearance\\Choose your appearance"
 msgstr "Aussehen\\Erscheinungsbild des Astronauten einstellen"
 
 msgid "Apply changes\\Activates the changed settings"
-msgstr "Änderungen anwenden\\Getätigte Einstellungen anwenden"
+msgstr "Änderungen übernehmen\\Getätigte Einstellungen übernehmen"
 
 msgid "Apply\\Apply the current mod configuration"
-msgstr ""
+msgstr "Änderungen übernehmen\\Die aktuellen Mod-Einstellungen übernehmen"
 
 msgid "Appropriate constructor missing"
 msgstr "Es gibt keinen geeigneten Konstruktor"
@@ -154,7 +154,7 @@ msgid "Autosave\\Enables autosave"
 msgstr "Auto-Speichern\\Aktiviert die automatische Speicherung"
 
 msgid "Back"
-msgstr "Vorherg. Seite"
+msgstr "Zurück"
 
 msgid "Background sound:\\Volume of audio tracks"
 msgstr "Hintergrundgeräusche:\\Lautstärke der Soundtracks"
@@ -166,7 +166,7 @@ msgid "Backward\\Moves backward"
 msgstr "Rückwärts\\Bewegung nach hinten"
 
 msgid "Bad argument for \"new\""
-msgstr "Falsche Argumente für \"new\""
+msgstr "Falsches Argument für \"new\""
 
 msgid "Big indent\\Indent 2 or 4 spaces per level defined by braces"
 msgstr "Einrücken mit 4 Leerstellen\\Einrücken mit 2 oder 4 Leerstellen"
@@ -190,7 +190,7 @@ msgid "Bot factory"
 msgstr "Roboterfabrik"
 
 msgid "Build (\\key action;)"
-msgstr ""
+msgstr "Bauen (\\key action;)"
 
 msgid "Build a bot factory"
 msgstr "Baut eine Roboterfabrik"
@@ -208,7 +208,7 @@ msgid "Build a exchange post"
 msgstr "Baut einen Infoserver"
 
 msgid "Build a legged builder"
-msgstr ""
+msgstr "Baut einen Krabbelkonstrukteur"
 
 msgid "Build a legged grabber"
 msgstr "Baut einen Krabbeltransporter"
@@ -256,13 +256,13 @@ msgid "Build a subber"
 msgstr "Baut einen Kettentaucher"
 
 msgid "Build a target bot"
-msgstr ""
+msgstr "Baut einen mobile Zielscheibe"
 
 msgid "Build a thumper"
 msgstr "Baut einen Stampfer"
 
 msgid "Build a tracked builder"
-msgstr ""
+msgstr "Baut einen Kettenkonstrukteur"
 
 msgid "Build a tracked grabber"
 msgstr "Baut einen Kettentransporter"
@@ -277,10 +277,10 @@ msgid "Build a tracked sniffer"
 msgstr "Baut einen Kettenschnüffler"
 
 msgid "Build a vault"
-msgstr ""
+msgstr "Baut einen Bunker"
 
 msgid "Build a wheeled builder"
-msgstr ""
+msgstr "Baut einen Radkonstrukteur"
 
 msgid "Build a wheeled grabber"
 msgstr "Baut einen Radtransporter"
@@ -295,7 +295,7 @@ msgid "Build a wheeled sniffer"
 msgstr "Baut einen Radschnüffler"
 
 msgid "Build a winged builder"
-msgstr ""
+msgstr "Baut einen Jetkonstrukteur"
 
 msgid "Build a winged grabber"
 msgstr "Baut einen Jettransporter"
@@ -379,7 +379,7 @@ msgid "Change player\\Change player"
 msgstr "Anderer Spieler\\Spielername ändern"
 
 msgid "Changes"
-msgstr ""
+msgstr "Änderungen"
 
 msgid "Chapters:"
 msgstr "Liste der Kapitel:"
@@ -391,7 +391,7 @@ msgid "Checkpoint"
 msgstr "Kontrollstelle"
 
 msgid "Class name expected"
-msgstr ""
+msgstr "Klassenbezeichner erwartet"
 
 msgid "Climb\\Increases the power of the jet"
 msgstr "Steigen\\Leistung des Triebwerks steigern"
@@ -409,10 +409,10 @@ msgid "Closing bracket missing"
 msgstr "Es fehlt eine geschlossene Klammer \")\""
 
 msgid "Code battle"
-msgstr ""
+msgstr "Programmierschlacht"
 
 msgid "Code battles"
-msgstr "Programmierschlacht"
+msgstr "Programmierschlachten"
 
 msgid "Code battles\\Program your robot to be the best of them all!"
 msgstr "Programmierschlacht\\Schreibe das Programm für den besten Roboter!"
@@ -451,10 +451,10 @@ msgid "Copy (Ctrl+C)"
 msgstr "Kopieren (Ctrl+C)"
 
 msgid "Could not open the file explorer!"
-msgstr ""
+msgstr "Konnte den Datei-Explorer nicht öffnen!"
 
 msgid "Could not open the web browser!"
-msgstr ""
+msgstr "Konnte den Web-Browser nicht öffnen!"
 
 msgid "Current mission saved"
 msgstr "Mission gespeichert"
@@ -490,7 +490,7 @@ msgid "Descend\\Reduces the power of the jet"
 msgstr "Sinken\\Leistung des Triebwerks drosseln"
 
 msgid "Description:"
-msgstr ""
+msgstr "Beschreibung:"
 
 msgid "Destroy"
 msgstr "Zerstören"
@@ -505,7 +505,7 @@ msgid "Device\\Driver and resolution settings"
 msgstr "Bildschirm\\Driver und Bildschirmauflösung"
 
 msgid "Disable\\Disable the selected mod"
-msgstr ""
+msgstr "Deaktivieren\\Deaktiviert das ausgewählte Mod"
 
 msgid "Dividing by zero"
 msgstr "Division durch Null"
@@ -521,16 +521,16 @@ msgid "Doors blocked by a robot or another object"
 msgstr "Die Türen werden von einem Gegenstand blockiert"
 
 msgid "Down (\\key gdown;)"
-msgstr "Sinkt (\\key gdown;)"
+msgstr "Abwärts (\\key gdown;)"
 
 msgid "Down\\Move the selected mod down so it's loaded later (mods may overwrite files from the mods above them)"
-msgstr ""
+msgstr "Abwärts\\Das ausgewählte Mod nach unten verschieben, um es später zu laden (Dateien vorangehender Mods können überschrieben werden)"
 
 msgid "Drawer bot"
 msgstr "Zeichner"
 
 msgid "Duplicate label in switch"
-msgstr ""
+msgstr "Doppelter Bezeichner in Mehrfachauswahl"
 
 msgid "Dust\\Dust and dirt on bots and buildings"
 msgstr "Schmutz\\Schmutz auf Robotern und Bauten"
@@ -551,10 +551,10 @@ msgid "Egg"
 msgstr "Ei"
 
 msgid "Empty character constant"
-msgstr ""
+msgstr "Leere Zeichenkonstante"
 
 msgid "Enable\\Enable the selected mod"
-msgstr ""
+msgstr "Aktivieren\\Aktiviert das ausgewählte Mod"
 
 msgid "End of block missing"
 msgstr "Es fehlt eine geschlossene geschweifte Klammer \"}\" (Ende des Blocks)"
@@ -678,7 +678,7 @@ msgid "Function name missing"
 msgstr "Hier muss der Name der Funktion stehen"
 
 msgid "Function needs return type \"void\""
-msgstr ""
+msgstr "Funktion erfordert Rückgabetyp \"void\""
 
 msgid "Game speed"
 msgstr "Spielgeschwindigkeit"
@@ -729,7 +729,7 @@ msgid "Help balloons\\Explain the function of the buttons"
 msgstr "Hilfeblasen\\Hilfeblasen"
 
 msgid "Hex value out of range"
-msgstr ""
+msgstr "Hexwert außerhalb des Definitionsbereiches"
 
 #, fuzzy
 msgid "Higher speed\\Doubles speed"
@@ -772,7 +772,7 @@ msgid "Inappropriate object"
 msgstr "Objekt ungeeignet"
 
 msgid "Inappropriate sample"
-msgstr ""
+msgstr "Probe ungeeignet"
 
 msgid "Incorrect index type"
 msgstr "Falscher Typ für einen Index"
@@ -817,7 +817,7 @@ msgid "Internal error - tell the developers"
 msgstr "Interner Fehler - Benachrichtige bitte die Entwickler"
 
 msgid "Invalid universal character name"
-msgstr ""
+msgstr "Ungültiger universeller Zeichenname"
 
 msgid "Invert\\Invert values on this axis"
 msgstr "Invertieren\\Die Werte dieser Achse invertieren"
@@ -847,7 +847,7 @@ msgid "LOADING"
 msgstr "LADEN"
 
 msgid "Legged builder"
-msgstr ""
+msgstr "Krabbelkonstrukteur"
 
 msgid "Legged grabber"
 msgstr "Transporter"
@@ -912,7 +912,7 @@ msgstr "Lade Gelände"
 # msgid "Speed 6.0x\\Sextuple speed"
 # msgstr ""
 msgid "Lower speed\\Decrease speed by half"
-msgstr ""
+msgstr "Langsamer\\Geschwindigkeit um die Hälfte reduzieren"
 
 msgid "Lowest\\Minimum graphic quality (highest frame rate)"
 msgstr "Min.\\Minimale Qualität (großes Framerate)"
@@ -933,10 +933,10 @@ msgid "Mipmap level\\Mipmap level"
 msgstr "Mipmap-Level\\Mipmap-Level"
 
 msgid "Missing end quote"
-msgstr ""
+msgstr "Schließendes Anführungszeichen fehlt"
 
 msgid "Missing hex digits after escape sequence"
-msgstr ""
+msgstr "Fehlende Hexadezimalziffern nach Escape-Sequenz"
 
 msgid "Mission name"
 msgstr "Name der Mission"
@@ -975,7 +975,7 @@ msgid "Move selected program up"
 msgstr "Gewähltes Programm nach oben"
 
 msgid "Mute sounds in background\\Mute all game sounds when the window is unfocused"
-msgstr ""
+msgstr "Im Hintergrund stummschalten\\Alle Audioausgaben stummschalten, wenn das Fenster den Fokus verliert"
 
 msgid "Mute\\No sound"
 msgstr "Kein Ton\\Keine Geräusche und Geräuschkulisse"
@@ -996,7 +996,7 @@ msgid "New ..."
 msgstr "Neu ..."
 
 msgid "New Folder"
-msgstr ""
+msgstr "Neuer Ordner"
 
 msgid "New bot available"
 msgstr "Neuer Roboter verfügbar"
@@ -1011,10 +1011,10 @@ msgid "No"
 msgstr "Nein"
 
 msgid "No changes."
-msgstr ""
+msgstr "Keine Änderungen"
 
 msgid "No description."
-msgstr ""
+msgstr "Keine Beschreibung"
 
 msgid "No energy in the subsoil"
 msgstr "Kein unterirdisches Energievorkommen"
@@ -1062,7 +1062,7 @@ msgid "No userlevels installed!"
 msgstr "Keine benutzerdefinierten Level vorhanden"
 
 msgid "Non-void function needs \"return;\""
-msgstr ""
+msgstr "Funktion mit Rückgabetyp benötigt \"return;\""
 
 msgid "Normal size"
 msgstr "Normale Größe"
@@ -1125,7 +1125,7 @@ msgid "Object too close"
 msgstr "Gegenstand zu nahe"
 
 msgid "Octal value out of range"
-msgstr ""
+msgstr "Oktalzahl außerhalb des Definitionsbereiches"
 
 msgid "One step"
 msgstr "Ein Schritt"
@@ -1137,7 +1137,7 @@ msgid "Open (Ctrl+O)"
 msgstr "Öffnen (Ctrl+O)"
 
 msgid "Open Directory\\Open the mods directory"
-msgstr ""
+msgstr "Verzeichnis öffnen\\Das Verzeichnis für Mods öffnen"
 
 msgid "Opening brace missing"
 msgstr "Es fehlt eine offene geschweifte Klammer\"{\""
@@ -1164,7 +1164,7 @@ msgid "Original game developed by:"
 msgstr "Ursprünglichen Spiel entwickelt von:"
 
 msgid "Overwrite existing file?"
-msgstr ""
+msgstr "Bestehende Datei überschreiben?"
 
 msgid "Parameters missing"
 msgstr "Nicht genug Parameter"
@@ -1200,7 +1200,7 @@ msgid "Planets:"
 msgstr "Liste der Planeten:"
 
 msgid "Plans for builder available"
-msgstr ""
+msgstr "Herstellung eines Konstrukteurs möglich"
 
 msgid "Plans for defense tower available"
 msgstr "Errichtung eines Geschützturms möglich"
@@ -1254,7 +1254,7 @@ msgid "Practice bot"
 msgstr "Übungsroboter"
 
 msgid "Press \\key help; to read instructions on your SatCom"
-msgstr "Beziehen Sie sich auf Ihren SatCom, indem Sie auf \\key help; drücken"
+msgstr "Erhalten Sie Anweisungen per SatCom, indem Sie auf \\key help; drücken"
 
 msgid "Previous"
 msgstr "Vorherg."
@@ -1311,10 +1311,10 @@ msgid "Quake at explosions\\The screen shakes at explosions"
 msgstr "Beben bei Explosionen\\Die Kamera bebt bei Explosionen"
 
 msgid "Quick load\\Immediately load game"
-msgstr ""
+msgstr "Schnellladen\\Lädt ein Spiel sofort"
 
 msgid "Quick save\\Immediately save game"
-msgstr ""
+msgstr "Schnellspeichern\\Speichert ein Spiel sofort"
 
 #, fuzzy
 msgid "Quicksave slot not found"
@@ -1351,7 +1351,7 @@ msgid "Reflections on the buttons \\Shiny buttons"
 msgstr "Glänzende Tasten\\Glänzende Tasten in den Menüs"
 
 msgid "Refresh\\Refresh the list of currently installed mods"
-msgstr ""
+msgstr "Aktualisieren\\Aktualisiere die Liste aktuell installierter Mods"
 
 msgid "Remains of Apollo mission"
 msgstr "Überreste einer Apollo-Mission"
@@ -1399,19 +1399,19 @@ msgid "Restoring saved objects"
 msgstr "Gespeicherte Objekte wiederherstellen"
 
 msgid "Results"
-msgstr ""
+msgstr "Ergebnisse"
 
 msgid "Return to start"
 msgstr "Alles zurücksetzen"
 
 msgid "Robbie"
-msgstr "Robby"
+msgstr "Robbie"
 
 msgid "Ruin"
 msgstr "Gebäuderuine"
 
 msgid "Run research program for builder"
-msgstr ""
+msgstr "Forschungsprogramm Konstrukteur"
 
 msgid "Run research program for defense tower"
 msgstr "Forschungsprogramm Geschützturm"
@@ -1435,7 +1435,7 @@ msgid "Run research program for shooter"
 msgstr "Forschungsprogramm Shooterkanone"
 
 msgid "Run research program for target bot"
-msgstr ""
+msgstr "Forschungsprogramm mobile Zielscheibe"
 
 msgid "Run research program for thumper"
 msgstr "Forschungsprogramm Stampfer"
@@ -1468,7 +1468,7 @@ msgid "Save\\Saves the current mission"
 msgstr "Speichern\\Speichert die Mission"
 
 msgid "Select Folder"
-msgstr ""
+msgstr "Ordner auswählen"
 
 msgid "Select the astronaut\\Selects the astronaut"
 msgstr "Astronauten auswählen\\Astronauten auswählen"
@@ -1537,13 +1537,13 @@ msgid "Sound\\Music and game sound volume"
 msgstr "Geräusche\\Lautstärke Geräusche und Musik"
 
 msgid "Space Explorer\\Disables astronaut abilities"
-msgstr ""
+msgstr "Weltraumforscher\\Deaktiviert Fähigkeiten des Astronauten"
 
 msgid "Space Programmer\\Disables radio-control"
-msgstr ""
+msgstr "Weltraumprogrammierer\\Deaktiviert Funkfernsteuerung"
 
 msgid "Space Researcher\\Disables using all previously researched technologies"
-msgstr ""
+msgstr "Weltraumwissenschaftler\\Deaktiviert alle zuvor erforschten Technologien"
 
 msgid "Spaceship"
 msgstr "Raumschiff"
@@ -1625,10 +1625,10 @@ msgstr "Texturen"
 
 #, c-format
 msgid "The address %s could not be opened in a web browser."
-msgstr ""
+msgstr "URL %s konnte nicht im Web-Browser geöffnet werden."
 
 msgid "The battle has ended"
-msgstr ""
+msgstr "Die Schlacht ist beendet"
 
 msgid "The expression must return a boolean value"
 msgstr "Der Ausdruck muss einen boolschen Wert ergeben"
@@ -1641,13 +1641,13 @@ msgstr "Mission noch nicht beendet (Drücken Sie auf \\key help; für weitere In
 
 #, c-format
 msgid "The path %s could not be opened in a file explorer."
-msgstr ""
+msgstr "Pfad %s konnte nicht im Datei-Explorer geöffnet werden."
 
 msgid "The types of the two operands are incompatible"
 msgstr "Die zwei Operanden sind nicht kompatibel"
 
 msgid "There are unsaved changes. Do you want to save them before leaving?"
-msgstr ""
+msgstr "Ungesicherte Änderungen. Möchten Sie vor dem Beenden speichern?"
 
 msgid "This class already exists"
 msgstr "Diese Klasse gibt es schon"
@@ -1668,13 +1668,13 @@ msgid "This menu is for userlevels from mods, but you didn't install any"
 msgstr "Dieses Menü ist für nachinstallierte Benutzer-Level, aber Du hast keine installiert"
 
 msgid "This object is currently busy"
-msgstr ""
+msgstr "Das Objekt ist derzeit beschäftigt"
 
 msgid "This object is not a member of a class"
 msgstr "Das Objekt ist nicht eine Instanz einer Klasse"
 
 msgid "This parameter needs a default value"
-msgstr ""
+msgstr "Dieser Parameter braucht einen Vorgabewert"
 
 msgid "This program is read-only, clone it to edit"
 msgstr "Dieses Programm ist schreibgeschützt. Dupliziere es zum Bearbeiten"
@@ -1687,7 +1687,7 @@ msgstr "Stampfer"
 
 #, c-format
 msgid "Time: %s"
-msgstr ""
+msgstr "Zeit: %s"
 
 msgid "Titanium"
 msgstr "Titan"
@@ -1723,7 +1723,7 @@ msgid "Too many parameters"
 msgstr "Zu viele Parameter"
 
 msgid "Tracked builder"
-msgstr ""
+msgstr "Kettenkonstrukteur"
 
 msgid "Tracked grabber"
 msgstr "Transporter"
@@ -1774,13 +1774,13 @@ msgid "Unknown Object"
 msgstr "Das Objekt existiert nicht"
 
 msgid "Unknown author"
-msgstr ""
+msgstr "Unbekannter Autor"
 
 msgid "Unknown command"
 msgstr "Befehl unbekannt"
 
 msgid "Unknown escape sequence"
-msgstr ""
+msgstr "Unbekannte Escape-Sequenz"
 
 msgid "Unknown function"
 msgstr "Unbekannte Funktion"
@@ -1789,7 +1789,7 @@ msgid "Up (\\key gup;)"
 msgstr "Steigt (\\key gup;)"
 
 msgid "Up\\Move the selected mod up so it's loaded sooner (mods may overwrite files from the mods above them)"
-msgstr ""
+msgstr "Aufwärts\\Das gewählte Mod nach oben verschieben, um es früher zu laden (nachfolgende Mods können Dateien überschreiben)"
 
 msgid "Uranium deposit (site for derrick)"
 msgstr "Markierung für unterirdisches Platinvorkommen"
@@ -1816,7 +1816,7 @@ msgid "Version"
 msgstr ""
 
 msgid "Vertical Synchronization\\Limits the number of frames per second to display frequency"
-msgstr ""
+msgstr "Vertikale Synchronisation\\Bildschirmwiederholrate ist die Vorgabe für Bilder pro Sekunde"
 
 msgid "Violet flag"
 msgstr "Violette Fahne"
@@ -1834,10 +1834,10 @@ msgid "Waste"
 msgstr "Abfall"
 
 msgid "Website"
-msgstr ""
+msgstr "Internetseite"
 
 msgid "Wheeled builder"
-msgstr ""
+msgstr "Radkonstrukteur"
 
 msgid "Wheeled grabber"
 msgstr "Transporter"
@@ -1852,7 +1852,7 @@ msgid "Wheeled sniffer"
 msgstr "Schnüffler"
 
 msgid "Winged builder"
-msgstr ""
+msgstr "Jetkonstrukteur"
 
 msgid "Winged grabber"
 msgstr "Transporter"
@@ -1870,7 +1870,7 @@ msgid "Withdraw shield (\\key action;)"
 msgstr "Schutzschild einholen (\\key action;)"
 
 msgid "Workshop\\Open the workshop to search for mods"
-msgstr ""
+msgstr "Werkstatt\\Die Werkstatt betreten um nach Mods zu suchen"
 
 msgid "Worm"
 msgstr "Wurm"
@@ -2021,7 +2021,7 @@ msgid "\\Yellow flags"
 msgstr "\\Gelbe Fahne"
 
 msgid "by"
-msgstr ""
+msgstr "von"
 
 msgid "colobot.info"
 msgstr "colobot.info"
