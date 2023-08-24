@@ -277,7 +277,7 @@ msgid "Build a tracked sniffer"
 msgstr "Baut einen Kettenschnüffler"
 
 msgid "Build a vault"
-msgstr "Baut einen Speicher"
+msgstr "Baut einen Bunker"
 
 msgid "Build a wheeled builder"
 msgstr "Baut einen Radkonstrukteur"
