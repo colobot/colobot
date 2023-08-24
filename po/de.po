@@ -256,7 +256,7 @@ msgid "Build a subber"
 msgstr "Baut einen Kettentaucher"
 
 msgid "Build a target bot"
-msgstr "Baut einen Zielroboter"
+msgstr "Baut einen mobile Zielscheibe"
 
 msgid "Build a thumper"
 msgstr "Baut einen Stampfer"
@@ -280,7 +280,7 @@ msgid "Build a vault"
 msgstr "Baut einen Speicher"
 
 msgid "Build a wheeled builder"
-msgstr "Baut einen Radtransporter"
+msgstr "Baut einen Radkonstrukteur"
 
 msgid "Build a wheeled grabber"
 msgstr "Baut einen Radtransporter"
@@ -1435,7 +1435,7 @@ msgid "Run research program for shooter"
 msgstr "Forschungsprogramm Shooterkanone"
 
 msgid "Run research program for target bot"
-msgstr "Forschungsprogramm Ziel-Roboter"
+msgstr "Forschungsprogramm mobile Zielscheibe"
 
 msgid "Run research program for thumper"
 msgstr "Forschungsprogramm Stampfer"
@@ -1543,7 +1543,7 @@ msgid "Space Programmer\\Disables radio-control"
 msgstr "Weltraumprogrammierer\\Deaktiviert Funkfernsteuerung"
 
 msgid "Space Researcher\\Disables using all previously researched technologies"
-msgstr "Weltraumwissenschaftler\\"
+msgstr "Weltraumwissenschaftler\\Deaktiviert alle zuvor erforschten Technologien"
 
 msgid "Spaceship"
 msgstr "Raumschiff"
