@@ -37,7 +37,7 @@ jobs:
       run: patchelf --set-rpath '.' install/colobot
       if: matrix.target_os == 'linux'
     - name: Upload build
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{matrix.target_os}}-debug
         path: install
@@ -61,7 +61,7 @@ jobs:
         cp -p Colobot-x86_64.AppImage appimage/colobot
       if: matrix.target_os == 'linux'
     - name: Upload AppImage
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{matrix.target_os}}-debug-AppImage
         path: build/appimage
@@ -72,7 +72,7 @@ jobs:
       run: ./Colobot-UnitTests --gtest_output=xml:gtestresults.xml
       if: matrix.target_os == 'linux'
     - name: Upload test results
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: Test results (${{ matrix.target_os }}, ${{ matrix.host_os }})
         path: build/gtestresults.xml
@@ -108,7 +108,7 @@ jobs:
       run: ./Colobot-UnitTests --gtest_output=xml:gtestresults.xml
       if: matrix.target_os == 'macos'
     - name: Upload test results
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: Test results (${{ matrix.target_os }}, ${{ matrix.host_os }})
         path: build/gtestresults.xml
@@ -179,7 +179,7 @@ jobs:
     - name: Install
       run: cmake --build --preset Windows-CI --target install
     - name: Upload build
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: windows-msvc-debug-${{ matrix.arch }}
         path: install
@@ -187,7 +187,7 @@ jobs:
       working-directory: build
       run: ./Colobot-UnitTests --gtest_output=xml:gtestresults.xml
     - name: Upload test results
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: 'Test results (windows, MSVC, ${{ matrix.arch }})'
         path: build/gtestresults.xml
@@ -208,7 +208,7 @@ jobs:
       working-directory: build
       run: make doc
     - name: Upload docs
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: doc
         path: build/doc
