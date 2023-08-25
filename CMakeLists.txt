@@ -307,6 +307,7 @@ find_package(SDL2_image REQUIRED)
 find_package(SDL2_ttf REQUIRED)
 find_package(PNG 1.2 REQUIRED)
 find_package(Gettext REQUIRED)
+find_package(Intl REQUIRED)
 find_package(PhysFS REQUIRED)
 find_package(glm CONFIG REQUIRED)
 

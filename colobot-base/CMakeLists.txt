@@ -501,6 +501,7 @@ target_link_libraries(Colobot-Base PUBLIC
     PhysFS::PhysFS
     SndFile::sndfile
     nlohmann_json::nlohmann_json
+    Intl::Intl
 )
 
 # Optional libraries
@@ -533,8 +534,6 @@ if(PLATFORM_WINDOWS)
         # TODO: this shouldn't be needed, the libraries targets should care of those transitive dependencies
         # This should be treated as a temporary workaround
         if(USE_STATIC_RUNTIME) # Since we're using static runtime, assume every external library is static too
-            find_package(Intl REQUIRED)
-
             find_library(BZ2_LIBRARY NAMES bz2)
             find_library(FREETYPE_LIBRARY NAMES freetype)
             find_library(ICONV_LIBRARY NAMES iconv)
@@ -544,7 +543,6 @@ if(PLATFORM_WINDOWS)
             find_library(BROTLIDEC_LIBRARY NAMES brotlidec-static)
 
             target_link_libraries(Colobot-Base PUBLIC
-                Gettext::Intl
                 ${BZ2_LIBRARY}
                 ${FREETYPE_LIBRARY}
                 ${ICONV_LIBRARY}
@@ -565,8 +563,6 @@ if(PLATFORM_WINDOWS)
                 setupapi.lib
             )
         endif()
-    else()
-        target_link_libraries(Colobot-Base PUBLIC -lintl)
     endif()
 elseif(PLATFORM_GNU)
     # nothing
@@ -574,11 +570,9 @@ elseif(PLATFORM_LINUX)
     # for clock_gettime
     target_link_libraries(Colobot-Base PUBLIC -lrt)
 elseif(PLATFORM_MACOSX)
-    find_package(Intl REQUIRED)
-    target_link_libraries(Colobot-Base PUBLIC Gettext::Intl)
+    # nothing
 elseif(PLATFORM_FREEBSD)
-    find_package(Intl REQUIRED)
-    target_link_libraries(Colobot-Base PUBLIC Gettext::Intl)
+    # nothing
 endif()
 
 
