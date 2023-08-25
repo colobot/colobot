@@ -1,0 +1,23 @@
+target_sources(Colobot-Base PRIVATE
+    model.cpp
+    model.h
+    model_crash_sphere.h
+    model_input.cpp
+    model_input.h
+    model_io_exception.h
+    model_io_structs.h
+    model_gltf.cpp
+    model_gltf.h
+    model_manager.cpp
+    model_manager.h
+    model_mesh.cpp
+    model_mesh.h
+    model_mod.cpp
+    model_mod.h
+    model_output.cpp
+    model_output.h
+    model_shadow_spot.h
+    model_triangle.h
+    model_txt.cpp
+    model_txt.h
+)

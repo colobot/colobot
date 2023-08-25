@@ -10,6 +10,11 @@ Makefile
 /CPackSourceConfig.cmake
 /src/libcolobotbase.a
 
+# Ignore executable
+colobot.exe
+colobot
+log.txt
+
 # Ignore the generated documentation
 CMakeDoxyfile.in
 CMakeDoxygenDefaults.cmake
