@@ -35,6 +35,30 @@
             }
         },
         {
+            "name": "Windows-CI-release",
+            "description": "Windows configuration for CI release pipeline",
+            "generator": "Ninja",
+            "inherits": ["CI"],
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "cl.exe",
+                "CMAKE_CXX_COMPILER": "cl.exe",
+                "CMAKE_BUILD_TYPE": "Release",
+                "CBOT_STATIC": true,
+                "DEV_BUILD": false,
+                "DESKTOP": true,
+                "GLEW_STATIC": true,
+                "OFFICIAL_COLOBOT_BUILD": true,
+                "MUSIC": true,
+                "PORTABLE": true,
+                "SNDFILE_STATIC": true,
+                "TOOLS": false,
+                "TESTS": false,
+                "TRANSLATIONS": true,
+                "USE_RELATIVE_PATHS": true,
+                "USE_STATIC_RUNTIME": true
+            }
+        },
+        {
             "name": "Linux-CI-base",
             "description": "Linux configuration for CI pipeline",
             "inherits": ["CI"],
@@ -68,6 +92,25 @@
             }
         },
         {
+            "name": "Linux-CI-release",
+            "description": "Linux configuration for CI release pipeline",
+            "inherits": ["CI"],
+            "cacheVariables": {
+                "CMAKE_SKIP_INSTALL_RPATH": true,
+                "CMAKE_BUILD_TYPE": "Release",
+                "CBOT_STATIC": true,
+                "DESKTOP": true,
+                "DEV_BUILD": false,
+                "MUSIC": true,
+                "OFFICIAL_COLOBOT_BUILD": true,
+                "PORTABLE": true,
+                "TESTS": false,
+                "TOOLS": false,
+                "TRANSLATIONS": true,
+                "USE_RELATIVE_PATHS": true
+            }
+        },
+        {
             "name": "MacOS-CI",
             "description": "MacOS configuration for CI pipeline",
             "inherits": ["CI"],
@@ -80,6 +123,24 @@
                 "DESKTOP": true,
                 "OPENAL_LIBRARY": "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/OpenAL.framework/OpenAL.tbd"
             }
+        },
+        {
+            "name": "MacOS-CI-release",
+            "description": "MacOS configuration for CI release pipeline",
+            "inherits": ["CI"],
+            "cacheVariables": {
+                "CMAKE_SKIP_INSTALL_RPATH": true,
+                "CMAKE_BUILD_TYPE": "Release",
+                "DESKTOP": true,
+                "DEV_BUILD": false,
+                "MUSIC": true,
+                "OFFICIAL_COLOBOT_BUILD": true,
+                "PORTABLE": true,
+                "TESTS": false,
+                "TRANSLATIONS": true,
+                "USE_RELATIVE_PATHS": true,
+                "OPENAL_LIBRARY": "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/OpenAL.framework/OpenAL.tbd"
+            }
         }
     ],
     "buildPresets": [
@@ -88,6 +149,11 @@
             "jobs": 4,
             "configurePreset": "Windows-CI",
             "configuration": "RelWithDebInfo"
+        },
+        {
+            "name": "Windows-CI-release",
+            "configurePreset": "Windows-CI-release",
+            "configuration": "Release"
         },
         {
             "name": "Linux-CI-gcc",
@@ -102,10 +168,20 @@
             "configuration": "RelWithDebInfo"
         },
         {
+            "name": "Linux-CI-release",
+            "configurePreset": "Linux-CI-release",
+            "configuration": "Release"
+        },
+        {
             "name": "MacOS-CI",
             "jobs": 4,
             "configurePreset": "MacOS-CI",
             "configuration": "RelWithDebInfo"
+        },
+        {
+            "name": "MacOS-CI-release",
+            "configurePreset": "MacOS-CI-release",
+            "configuration": "Release"
         }
     ]
 }

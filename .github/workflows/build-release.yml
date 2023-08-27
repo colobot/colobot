@@ -1,0 +1,187 @@
+name: Build
+on: 
+  push:
+    branches:
+      -dev-release-ci-builds
+
+  pull_request:
+    branches:
+      -dev-release-ci-builds
+
+jobs:
+  build-linux:
+    runs-on: ${{ matrix.host_os }}
+    container: ${{ matrix.container }}
+    strategy:
+      matrix:
+        target_os: [linux]
+        host_os: [ubuntu-20.04]
+        container: ['']
+      fail-fast: false
+    steps:
+    - name: Install Colobot dependencies
+      run: sudo apt-get update && sudo apt-get install -y --no-install-recommends build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libphysfs-dev gettext git po4a vorbis-tools librsvg2-bin xmlstarlet libglm-dev libmpg123-dev
+      if: matrix.container == ''
+    - uses: actions/checkout@v3
+    - name: Checkout the data submodule
+      run: git submodule update --init -- data
+    - name: Checkout the nlohmann json submodule
+      run: git submodule update --init -- lib/json
+    - name: Create build directory
+      run: cmake -E make_directory build-release
+    - name: Run CMake (for Linux)
+      run: cmake --preset Linux-CI-release
+      if: matrix.target_os == 'linux'
+    - name: Build
+      run: cmake --build --preset Linux-CI-release
+    - name: Install
+      run: cmake --build --preset Linux-CI-release --target install
+    - name: Patch library path
+      run: patchelf --set-rpath '.' install/colobot
+      if: matrix.target_os == 'linux'
+    - name: Upload build
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{matrix.target_os}}-release
+        path: install
+      if: matrix.host_os == 'ubuntu-20.04'
+    - name: Create AppImage
+      working-directory: build
+      run: |
+        # Download app image tool
+        wget -N https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+        chmod +x linuxdeploy-x86_64.AppImage
+        ./linuxdeploy-x86_64.AppImage --appimage-extract
+        
+        # Create AppImage
+        NO_STRIP=1 ./squashfs-root/AppRun -e colobot --output appimage --appdir colobot.AppDir -d desktop/colobot.desktop -i ../desktop/colobot.svg
+        chmod +x Colobot-x86_64.AppImage
+        
+        # Prepare folder for zip
+        mkdir -p appimage
+        cp -rp ../install/data appimage/data
+        cp -rp ../install/lang appimage/lang
+        cp -p Colobot-x86_64.AppImage appimage/colobot
+      if: matrix.target_os == 'linux'
+    - name: Upload AppImage
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{matrix.target_os}}-release-AppImage
+        path: build/appimage
+      if: matrix.target_os == 'linux' && matrix.host_os == 'ubuntu-20.04'
+  build-macos:
+    runs-on: ${{ matrix.host_os }}
+    container: ${{ matrix.container }}
+    strategy:
+      matrix:
+        target_os: [macos]
+        host_os: [macos-11, macos-12]
+        container: ['']
+      fail-fast: false
+    steps:
+    - name: Install Colobot dependencies
+      run: brew install cmake sdl2 sdl2_image sdl2_ttf glew physfs flac libsndfile libvorbis vorbis-tools gettext libicns librsvg wget xmlstarlet glm
+      if: matrix.container == ''
+    - uses: actions/checkout@v3
+    - name: Checkout the data submodule
+      run: git submodule update --init -- data
+    - name: Checkout the nlohmann json submodule
+      run: git submodule update --init -- lib/json
+    - name: Create build directory
+      run: cmake -E make_directory build
+    - name: Run CMake (for Mac)
+      run: cmake --preset MacOS-CI-release
+      if: matrix.target_os == 'macos'
+    - name: Build
+      run: cmake --build --preset MacOS-CI-release
+  build-windows:
+    runs-on: windows-2019
+    strategy:
+      matrix:
+        include:
+          - arch: amd64
+            vcpkg_triplet: 'x64-windows-static'
+          - arch: x86
+            vcpkg_triplet: 'x86-windows-static'
+    steps:
+    - uses: actions/checkout@v3
+    - name: Checkout the data submodule
+      run: git submodule update --init -- data
+    - name: Checkout the nlohmann json submodule
+      run: git submodule update --init -- lib/json
+    - name: Install Ninja
+      uses: seanmiddleditch/gha-setup-ninja@master
+    - name: Setup VS Environment
+      uses: seanmiddleditch/gha-setup-vsdevenv@master
+      with:
+        arch: ${{ matrix.arch }}
+    - name: Install Colobot dependencies
+      uses: lukka/run-vcpkg@v7
+      with:
+        setupOnly: true
+        vcpkgGitCommitId: 'f6a5d4e8eb7476b8d7fc12a56dff300c1c986131'
+        vcpkgTriplet: ${{ matrix.vcpkg_triplet }}
+        # SHA-256 hash of the vcpkg.json file, recalculated automatically when it changes
+        appendedCacheKey: ${{ hashFiles( '**/vcpkg.json' ) }}
+        additionalCachedPaths: ${{ github.workspace }}/build/vcpkg_installed
+    - name: Install external tools
+      working-directory: ${{ github.workspace }}
+      run: |
+        echo "Downloading gettext..."
+        (New-Object System.Net.WebClient).DownloadFile("https://github.com/mlocati/gettext-iconv-windows/releases/download/v0.20.2-v1.16/gettext0.20.2-iconv1.16-static-64.zip", "gettext.zip");
+        echo "Unpacking gettext..."
+        7z x -ogettext gettext.zip;
+        echo "Adding gettext to PATH..."
+        echo "${{ github.workspace }}\gettext\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+        echo "Downloading xmlstarlet..."
+        (New-Object System.Net.WebClient).DownloadFile("https://downloads.sourceforge.net/project/xmlstar/xmlstarlet/1.6.1/xmlstarlet-1.6.1-win32.zip", "xmlstarlet.zip");
+        echo "Unpacking xmlstarlet..."
+        7z x -oxmlstarlet xmlstarlet.zip;
+        echo "Renaming xml.exe to xmlstarlet.exe"
+        Rename-Item -Path "${{ github.workspace }}\xmlstarlet\xmlstarlet-1.6.1\xml.exe" -NewName "xmlstarlet.exe"
+        echo "Adding xmlstarlet to PATH..."
+        echo "${{ github.workspace }}\xmlstarlet\xmlstarlet-1.6.1" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+        echo "Downloading rsvg-convert..."
+        (New-Object System.Net.WebClient).DownloadFile("https://downloads.sourceforge.net/project/tumagcc/rsvg-convert-2.40.20.7z", "rsvg-convert.zip");
+        echo "Unpacking xmlstarlet..."
+        7z x -orsvg-convert rsvg-convert.zip;
+        echo "Adding rsvg-convert to PATH..."
+        echo "${{ github.workspace }}\rsvg-convert" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+      shell: pwsh
+    - name: Create build directory
+      run: cmake -E make_directory build
+    - name: Run CMake (for Windows)
+      run: cmake --preset Windows-CI-release -DVCPKG_TARGET_TRIPLET=${{ matrix.vcpkg_triplet }} -DCMAKE_TOOLCHAIN_FILE=${{ env.VCPKG_ROOT }}\scripts\buildsystems\vcpkg.cmake
+    - name: Build
+      run: |
+        $nproc = (Get-CIMInstance -Class 'CIM_Processor').NumberOfLogicalProcessors
+        cmake --build --preset Windows-CI-release -j $nproc
+      shell: pwsh
+    - name: Install
+      run: cmake --build --preset Windows-CI-release --target install
+    - name: Upload build
+      uses: actions/upload-artifact@v3
+      with:
+        name: windows-msvc-release-${{ matrix.arch }}
+        path: install
+  doc:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install Colobot dependencies
+      run: sudo apt-get update && sudo apt-get install -y --no-install-recommends build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libphysfs-dev gettext git po4a vorbis-tools librsvg2-bin xmlstarlet doxygen graphviz libglm-dev libmpg123-dev
+    - uses: actions/checkout@v3
+    - name: Create build directory
+      run: cmake -E make_directory build
+    - name: Checkout the nlohmann json submodule
+      run: git submodule update --init -- lib/json
+    - name: Run CMake
+      working-directory: build
+      run: cmake ..
+    - name: Build docs
+      working-directory: build
+      run: make doc
+    - name: Upload docs
+      uses: actions/upload-artifact@v3
+      with:
+        name: doc
+        path: build/doc
