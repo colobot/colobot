@@ -2,11 +2,11 @@ name: Build
 on: 
   push:
     branches:
-      - test
-      
+      -!dev-release-ci-builds
+
   pull_request:
     branches:
-      -test
+      -!dev-release-ci-builds
 
 jobs:
   build-linux:
