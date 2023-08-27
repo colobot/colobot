@@ -93,6 +93,14 @@ jobs:
       if: matrix.target_os == 'macos'
     - name: Build
       run: cmake --build --preset MacOS-CI-release
+    - name: Create package
+      run: cmake --preset -MacOS-CI-release package
+    - name: Upload package
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{matrix.target_os}}-release
+        path: install
+      if: matrix.target_os == 'macos' && matrix.host_os == 'macos-11'
   build-windows:
     runs-on: windows-2019
     strategy:
