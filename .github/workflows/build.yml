@@ -1,9 +1,11 @@
 name: Build
 on: 
   push:
-    - '!dev-release-ci-builds'
+    branches:
+      - '!dev-release-ci-builds'
   pull_request:
-    - '!dev-release-ci-builds'
+    branches:
+      - '!dev-release-ci-builds'
 jobs:
   build-linux:
     runs-on: ${{ matrix.host_os }}
