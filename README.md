@@ -46,10 +46,10 @@ Development builds are compiled every push to the repository by GitHub Actions:\
 ## Compiling from source
 
 Instructions on how to build the game from sources are available for the following environments:
-- [Linux](https://github.com/colobot/colobot/blob/dev/INSTALL.md)
-- [Windows (MSYS2)](https://github.com/colobot/colobot/blob/dev/INSTALL-MSYS2.md)
+- [Linux](INSTALL.md)
+- [Windows (MSYS2)](docs/INSTALL-MSYS2.md)
 - [Windows (MSVC)](https://github.com/colobot/colobot/wiki/How-to-Build-Colobot%3A-Gold-Edition-Using-MSVC)
-- [MacOS](https://github.com/colobot/colobot/blob/dev/INSTALL-MacOSX.md)
+- [MacOS](docs/INSTALL-MacOSX.md)
 
 ## Contributing
 
