@@ -94,7 +94,7 @@ jobs:
     - name: Build
       run: cmake --build --preset MacOS-CI-release
     - name: Create package
-      run: cmake --build --preset MacOS-CI-release package
+      run: cmake --build --preset MacOS-CI-release --target package
     - name: Upload package
       uses: actions/upload-artifact@v3
       with:

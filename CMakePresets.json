@@ -110,16 +110,13 @@
             "description": "MacOS configuration for CI release pipeline",
             "inherits": ["CI"],
             "cacheVariables": {
-                "CMAKE_SKIP_INSTALL_RPATH": true,
                 "CMAKE_BUILD_TYPE": "Release",
                 "DESKTOP": true,
                 "DEV_BUILD": false,
                 "MUSIC": true,
                 "OFFICIAL_COLOBOT_BUILD": true,
-                "PORTABLE": true,
                 "TESTS": false,
                 "TRANSLATIONS": true,
-                "USE_RELATIVE_PATHS": true,
                 "OPENAL_LIBRARY": "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/OpenAL.framework/OpenAL.tbd"
             }
         }
