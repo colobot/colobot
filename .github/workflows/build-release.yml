@@ -98,7 +98,7 @@ jobs:
     - name: Temporary step - list load commands
       run: otool -l ./build/colobot
     - name: Temporary step - add library paths
-      run: install_name_tool -change "@rpath/libFLAC.dylib" "$(brew --prefix)/lib/libFLAC.dylib ./build/colobot"
+      run: install_name_tool -change "@rpath/libFLAC.dylib" "$(brew --prefix)/lib/libFLAC.dylib" "./build/colobot"
     - name: Create package
       run: cmake --build --preset MacOS-CI-release --target package
     - name: Upload package
