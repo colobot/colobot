@@ -93,6 +93,10 @@ jobs:
       if: matrix.target_os == 'macos'
     - name: Build
       run: cmake --build --preset MacOS-CI-release
+    - name: Temporary step - list libraries
+      run: otool -L ./build/colobot
+    - name: Temporary step - list load commands
+      run: otool -l ./build/colobot
     - name: Create package
       run: cmake --build --preset MacOS-CI-release --target package
     - name: Upload package
