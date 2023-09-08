@@ -21,11 +21,13 @@ if(COLOBOT_HIDE_CONSOLE)
     set_target_properties(colobot PROPERTIES WIN32_EXECUTABLE TRUE)
 endif()
 
-# Copy to root directory for direct execution
-add_custom_command(TARGET colobot POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy
-        $<TARGET_FILE:colobot> ${CMAKE_SOURCE_DIR}
-)
+# Copy to build directory for direct execution
+if(COLOBOT_DEVELOPMENT_MODE)
+    add_custom_command(TARGET colobot POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+            $<TARGET_FILE:colobot> ${CMAKE_BINARY_DIR}
+    )
+endif()
 
 # Install
 install(TARGETS colobot RUNTIME DESTINATION ${COLOBOT_INSTALL_BIN_DIR})

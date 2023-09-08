@@ -227,6 +227,9 @@ set(COLOBOT_GTEST_CXX_FLAGS "${TEST_CXX_FLAGS}")
 # Asserts can be enabled/disabled regardless of build type
 option(ASSERTS "Enable assert()s" ON)
 
+# Enables development mode
+option(COLOBOT_DEVELOPMENT_MODE "Setup project for development (e.g. copies data content to build directory for execution)" OFF)
+
 # Development build can be enabled/disabled regardless of build type
 option(DEV_BUILD "Enable development build (enables some debugging tools, local setting paths, etc.)" OFF)
 

@@ -9,12 +9,6 @@ else()
     set(OFFICIAL_COLOBOT_BUILD "false")
 endif()
 
-if(DEV_BUILD)
-    set(DEVELOPMENT_COLOBOT_BUILD "true")
-else()
-    set(DEVELOPMENT_COLOBOT_BUILD "false")
-endif()
-
 # Todo: split this monstrosity into smaller libraries (graphics, math, ui, etc.)
 add_library(Colobot-Base STATIC)
 

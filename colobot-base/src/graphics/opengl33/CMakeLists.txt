@@ -17,10 +17,10 @@ target_sources(Colobot-Base PRIVATE
     glutil.h
 )
 
-add_custom_target(CopyShaders ALL
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_CURRENT_SOURCE_DIR}/shaders/gl33
-        ${CMAKE_SOURCE_DIR}/data/shaders/gl33
-)
+if(COLOBOT_DEVELOPMENT_MODE)
+    file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/shaders/gl33
+        DESTINATION ${PROJECT_BINARY_DIR}/data/shaders
+    )
+endif()
 
 install(DIRECTORY shaders/gl33 DESTINATION ${COLOBOT_INSTALL_DATA_DIR}/shaders)
