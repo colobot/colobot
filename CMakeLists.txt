@@ -66,10 +66,6 @@ if("${CMAKE_SYSTEM_NAME}" MATCHES "Windows")
     set(PLATFORM_MACOSX  0)
     set(PLATFORM_FREEBSD 0)
     set(PLATFORM_OTHER   0)
-
-    # Platform-dependent implementation of system.h
-    set(SYSTEM_CPP_MODULE "system_windows.cpp")
-    set(SYSTEM_H_MODULE "system_windows.h")
 elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
     message(STATUS "Build for Linux system")
     set(PLATFORM_WINDOWS 0)
@@ -78,10 +74,6 @@ elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
     set(PLATFORM_MACOSX  0)
     set(PLATFORM_FREEBSD 0)
     set(PLATFORM_OTHER   0)
-
-    # Platform-dependent implementation of system.h
-    set(SYSTEM_CPP_MODULE "system_linux.cpp")
-    set(SYSTEM_H_MODULE "system_linux.h")
 elseif("${CMAKE_SYSTEM_NAME}" MATCHES "kFreeBSD" OR "${CMAKE_SYSTEM_NAME}" STREQUAL "GNU")
     message(STATUS "Build for kFreeBSD system")
     set(PLATFORM_WINDOWS 0)
@@ -90,10 +82,6 @@ elseif("${CMAKE_SYSTEM_NAME}" MATCHES "kFreeBSD" OR "${CMAKE_SYSTEM_NAME}" STREQ
     set(PLATFORM_MACOSX  0)
     set(PLATFORM_FREEBSD 0)
     set(PLATFORM_OTHER   0)
-
-    # Platform-dependent implementation of system.h
-    set(SYSTEM_CPP_MODULE "system_other.cpp")
-    set(SYSTEM_H_MODULE "system_other.h")
 elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
     message(STATUS "Build for Mac OSX system")
     set(PLATFORM_WINDOWS 0)
@@ -103,9 +91,6 @@ elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
     set(PLATFORM_OTHER   0)
     set(PLATFORM_FREEBSD 0)
 
-    # Platform-dependent implementation of system.h
-    set(SYSTEM_CPP_MODULE "system_macosx.cpp")
-    set(SYSTEM_H_MODULE "system_macosx.h")
     # Fix compilation errors in MacOS SDK files
     set(CMAKE_CXX_FLAGS "${NORMAL_CXX_FLAGS} -Wno-nullability-extension -Wno-nullability-completeness -Wno-expansion-to-defined -Wno-four-char-constants -Wno-gnu-zero-variadic-macro-arguments -Wno-variadic-macros -Wno-zero-length-array")
     # To avoid CMake warning
@@ -119,10 +104,6 @@ elseif("${CMAKE_SYSTEM_NAME}" MATCHES "FreeBSD")
     set(PLATFORM_FREEBSD 1)
     set(PLATFORM_OTHER   0)
 
-    # Platform-dependent implementation of system.h
-    # On FreeBSD we can use *_other
-    set(SYSTEM_CPP_MODULE "system_other.cpp")
-    set(SYSTEM_H_MODULE "system_other.h")
     # To avoid CMake warning
     set(CMAKE_MACOSX_RPATH 1)
 else()
@@ -133,10 +114,6 @@ else()
     set(PLATFORM_MACOSX  0)
     set(PLATFORM_FREEBSD 0)
     set(PLATFORM_OTHER   1)
-
-    # Platform-dependent implementation of system.h
-    set(SYSTEM_CPP_MODULE "system_other.cpp")
-    set(SYSTEM_H_MODULE "system_other.h")
 endif()
 
 

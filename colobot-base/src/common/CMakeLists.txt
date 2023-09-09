@@ -47,13 +47,33 @@ target_sources(Colobot-Base PRIVATE
 
     system/system.cpp
     system/system.h
-    system/system_other.cpp
-    system/system_other.h
-    system/${SYSTEM_CPP_MODULE}
-    system/${SYSTEM_H_MODULE}
 
     thread/worker_thread.h
 )
+
+if(PLATFORM_WINDOWS)
+    target_sources(Colobot-Base PRIVATE
+        system/system_windows.cpp
+        system/system_windows.h
+    )
+elseif(PLATFORM_LINUX)
+    target_sources(Colobot-Base PRIVATE
+        system/system_linux.cpp
+        system/system_linux.h
+    )
+elseif(PLATFORM_MACOSX)
+    target_sources(Colobot-Base PRIVATE
+        system/system_macosx.cpp
+        system/system_macosx.h
+        system/system_other.cpp
+        system/system_other.h
+    )
+else()
+    target_sources(Colobot-Base PRIVATE
+        system/system_other.cpp
+        system/system_other.h
+    )
+endif()
 
 # Configure files
 if(COLOBOT_OFFICIAL_BUILD)
@@ -70,3 +90,8 @@ endif()
 
 configure_file(config.h.cmake "${CMAKE_CURRENT_BINARY_DIR}/config.h")
 configure_file(version.h.cmake "${CMAKE_CURRENT_BINARY_DIR}/version.h")
+
+target_sources(Colobot-Base PRIVATE
+    ${CMAKE_CURRENT_BINARY_DIR}/config.h
+    ${CMAKE_CURRENT_BINARY_DIR}/version.h
+)
