@@ -3,12 +3,6 @@ set(CMAKE_CXX_FLAGS ${COLOBOT_CXX_FLAGS})
 set(CMAKE_CXX_FLAGS_RELEASE ${COLOBOT_CXX_FLAGS_RELEASE})
 set(CMAKE_CXX_FLAGS_DEBUG ${COLOBOT_CXX_FLAGS_DEBUG})
 
-if(COLOBOT_OFFICIAL_BUILD)
-    set(OFFICIAL_COLOBOT_BUILD "true")
-else()
-    set(OFFICIAL_COLOBOT_BUILD "false")
-endif()
-
 # Todo: split this monstrosity into smaller libraries (graphics, math, ui, etc.)
 add_library(Colobot-Base STATIC)
 

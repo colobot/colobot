@@ -55,6 +55,18 @@ target_sources(Colobot-Base PRIVATE
     thread/worker_thread.h
 )
 
-# Configure file
+# Configure files
+if(COLOBOT_OFFICIAL_BUILD)
+    set(OFFICIAL_COLOBOT_BUILD "true")
+else()
+    set(OFFICIAL_COLOBOT_BUILD "false")
+endif()
+
+if(COLOBOT_DEVELOPMENT_MODE)
+    set(DEVELOPMENT_BUILD "true")
+else()
+    set(DEVELOPMENT_BUILD "false")
+endif()
+
 configure_file(config.h.cmake "${CMAKE_CURRENT_BINARY_DIR}/config.h")
 configure_file(version.h.cmake "${CMAKE_CURRENT_BINARY_DIR}/version.h")
