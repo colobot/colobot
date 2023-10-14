@@ -60,7 +60,7 @@ protected:
         m_currentTime(0)
     {}
 
-    ~CApplicationUT() NOEXCEPT
+    ~CApplicationUT() noexcept
     {}
 
     void SetUp() override;

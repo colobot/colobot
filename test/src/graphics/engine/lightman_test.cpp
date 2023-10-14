@@ -41,7 +41,7 @@ protected:
         m_device(nullptr),
         m_maxLightsCount(0)
     {}
-    ~CLightManagerUT() NOEXCEPT
+    ~CLightManagerUT() noexcept
     {}
 
     void SetUp() override;

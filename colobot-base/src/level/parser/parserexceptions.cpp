@@ -24,7 +24,7 @@
 #include "common/stringutils.h"
 
 
-static std::string FormatMissingParamError(CLevelParserParam* thisParam) NOEXCEPT
+static std::string FormatMissingParamError(CLevelParserParam* thisParam) noexcept
 {
     auto paramName = thisParam->GetName();
     auto lineNumber = StrUtils::ToString(thisParam->GetLine()->GetLineNumber());
@@ -32,12 +32,12 @@ static std::string FormatMissingParamError(CLevelParserParam* thisParam) NOEXCEP
     return "Missing required param '" + paramName + "' (in " + fileName + ":" + lineNumber + ")";
 }
 
-CLevelParserExceptionMissingParam::CLevelParserExceptionMissingParam(CLevelParserParam* thisParam) NOEXCEPT
+CLevelParserExceptionMissingParam::CLevelParserExceptionMissingParam(CLevelParserParam* thisParam) noexcept
 : CLevelParserException(FormatMissingParamError(thisParam))
 {
 }
 
-static std::string FormatBadParamError(CLevelParserParam* thisParam, std::string requestedType) NOEXCEPT
+static std::string FormatBadParamError(CLevelParserParam* thisParam, std::string requestedType) noexcept
 {
     auto paramName = thisParam->GetName();
     auto paramValue = thisParam->GetValue();
@@ -46,7 +46,7 @@ static std::string FormatBadParamError(CLevelParserParam* thisParam, std::string
     return "Unable to parse '" + paramValue + "' as " + requestedType + " (param '" + paramName + "' in " + fileName + ":" + lineNumber + ")";
 }
 
-CLevelParserExceptionBadParam::CLevelParserExceptionBadParam(CLevelParserParam* thisParam, std::string requestedType) NOEXCEPT
+CLevelParserExceptionBadParam::CLevelParserExceptionBadParam(CLevelParserParam* thisParam, std::string requestedType) noexcept
 : CLevelParserException(FormatBadParamError(thisParam, requestedType))
 {
 }
