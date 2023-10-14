@@ -6,6 +6,10 @@ set(CMAKE_CXX_FLAGS_DEBUG ${COLOBOT_CXX_FLAGS_DEBUG})
 # Todo: split this monstrosity into smaller libraries (graphics, math, ui, etc.)
 add_library(Colobot-Base STATIC)
 
+set_target_properties(Colobot-Base PROPERTIES
+    POSITION_INDEPENDENT_CODE ON
+)
+
 add_subdirectory(src)
 
 target_include_directories(Colobot-Base PUBLIC

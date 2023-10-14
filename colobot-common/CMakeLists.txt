@@ -1,5 +1,9 @@
 add_library(Colobot-Common STATIC)
 
+set_target_properties(Colobot-Common PROPERTIES
+    POSITION_INDEPENDENT_CODE ON
+)
+
 target_sources(Colobot-Common PRIVATE
     src/common/stringutils.cpp
     src/common/stringutils.h
