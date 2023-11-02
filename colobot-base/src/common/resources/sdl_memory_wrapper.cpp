@@ -28,18 +28,18 @@
 CSDLMemoryWrapper::CSDLMemoryWrapper(const std::string& filename)
     : m_rwops(nullptr)
 {
-    GetLogger()->Trace("Opening SDL memory wrapper for file '%s'\n", filename.c_str());
+    GetLogger()->Trace("Opening SDL memory wrapper for file '%%'\n", filename);
 
     if (!PHYSFS_isInit())
     {
-        GetLogger()->Error("PHYSFS not initialized!\n");
+        GetLogger()->Error("PHYSFS not initialized!");
         return;
     }
 
     PHYSFS_File *file = PHYSFS_openRead(filename.c_str());
     if (file == nullptr)
     {
-        GetLogger()->Error("Error opening file with PHYSFS: \"%s\"\n", filename.c_str());
+        GetLogger()->Error("Error opening file with PHYSFS: \"%%\"", filename);
         return;
     }
 
@@ -47,7 +47,7 @@ CSDLMemoryWrapper::CSDLMemoryWrapper(const std::string& filename)
     m_buffer = std::make_unique<char[]>(length);
     if (PHYSFS_readBytes(file, m_buffer.get(), length) != length)
     {
-        GetLogger()->Error("Unable to read data for \"%s\"\n", filename.c_str());
+        GetLogger()->Error("Unable to read data for \"%%\"", filename);
         PHYSFS_close(file);
         return;
     }
@@ -56,7 +56,7 @@ CSDLMemoryWrapper::CSDLMemoryWrapper(const std::string& filename)
 
     if (m_rwops == nullptr)
     {
-        GetLogger()->Error("Unable to allocate SDL_RWops for \"%s\"\n", filename.c_str());
+        GetLogger()->Error("Unable to allocate SDL_RWops for \"%%\"\n", filename);
         return;
     }
 }

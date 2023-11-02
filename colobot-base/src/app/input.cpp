@@ -219,7 +219,7 @@ bool CInput::GetMouseButtonState(int index) const
 
 void CInput::ResetKeyStates()
 {
-    GetLogger()->Trace("Reset key states\n");
+    GetLogger()->Trace("Reset key states");
     m_keyMotion = glm::vec3(0.0f, 0.0f, 0.0f);
     m_joyMotion = glm::vec3(0.0f, 0.0f, 0.0f);
     m_cameraKeyMotion = glm::vec3(0.0f, 0.0f, 0.0f);

@@ -63,7 +63,7 @@ bool CFontLoader::Init()
                 m_fonts[parts[0]] = parts[1];
             }
 
-            GetLogger()->Debug("Fonts config file loaded correctly. \n");
+            GetLogger()->Debug("Fonts config file loaded correctly.");
         }
         else
         {
@@ -72,7 +72,7 @@ bool CFontLoader::Init()
     }
     catch (std::exception & e)
     {
-        GetLogger()->Error("Error on parsing config file: %s\n", e.what());
+        GetLogger()->Error("Error on parsing config file: %%", e.what());
         return false;
     }
     return true;

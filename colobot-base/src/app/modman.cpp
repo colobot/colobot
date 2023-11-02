@@ -90,7 +90,7 @@ void CModManager::FindMods()
         }
         else
         {
-            GetLogger()->Warn("Could not find mod %s, removing it from the list\n", mod.name.c_str());
+            GetLogger()->Warn("Could not find mod %%, removing it from the list", mod.name);
             it = m_mods.erase(it);
         }
     }
@@ -301,12 +301,12 @@ void CModManager::LoadModData(Mod& mod)
         }
         else
         {
-            GetLogger()->Warn("No manifest file for mod %s\n", mod.name.c_str());
+            GetLogger()->Warn("No manifest file for mod %%", mod.name);
         }
     }
     catch (CLevelParserException& e)
     {
-        GetLogger()->Warn("Failed parsing manifest for mod %s: %s\n", mod.name.c_str(), e.what());
+        GetLogger()->Warn("Failed parsing manifest for mod %%: %%", mod.name, e.what());
     }
 
     // Changes
@@ -331,7 +331,7 @@ void CModManager::MountMod(const Mod& mod, const std::string& mountPoint)
 
 void CModManager::MountMod(const std::string& path, const std::string& mountPoint)
 {
-    GetLogger()->Debug("Mounting mod: '%s' at path %s\n", path.c_str(), mountPoint.c_str());
+    GetLogger()->Debug("Mounting mod: '%%' at path %%", path, mountPoint);
     CResourceManager::AddLocation(path, true, mountPoint);
 }
 
@@ -344,7 +344,7 @@ void CModManager::UnmountMod(const std::string& path)
 {
     if (CResourceManager::LocationExists(path))
     {
-        GetLogger()->Debug("Unmounting mod: '%s'\n", path.c_str());
+        GetLogger()->Debug("Unmounting mod: '%%'", path);
         CResourceManager::RemoveLocation(path);
     }
 }

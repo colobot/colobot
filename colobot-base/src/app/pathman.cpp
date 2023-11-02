@@ -82,7 +82,7 @@ std::string CPathManager::VerifyPaths()
 
     if (! (std::filesystem::exists(dataPath) && std::filesystem::is_directory(dataPath)) )
     {
-        GetLogger()->Error("Data directory '%s' doesn't exist or is not a directory\n", m_dataPath.c_str());
+        GetLogger()->Error("Data directory '%%' doesn't exist or is not a directory", m_dataPath);
         return std::string("Could not read from data directory:\n") +
             std::string("'") + m_dataPath + std::string("'\n") +
             std::string("Please check your installation, or supply a valid data directory by -datadir option.");
@@ -92,7 +92,7 @@ std::string CPathManager::VerifyPaths()
 
     if (! (std::filesystem::exists(langPath) && std::filesystem::is_directory(langPath)) )
     {
-        GetLogger()->Warn("Language path '%s' is invalid, assuming translation files not installed\n", m_langPath.c_str());
+        GetLogger()->Warn("Language path '%%' is invalid, assuming translation files not installed", m_langPath);
     }
 
     std::filesystem::create_directories(std::filesystem::u8path(m_savePath));
@@ -103,17 +103,17 @@ std::string CPathManager::VerifyPaths()
 
 void CPathManager::InitPaths()
 {
-    GetLogger()->Info("Data path: %s\n", m_dataPath.c_str());
-    GetLogger()->Info("Save path: %s\n", m_savePath.c_str());
+    GetLogger()->Info("Data path: %%", m_dataPath);
+    GetLogger()->Info("Save path: %%", m_savePath);
 
     m_modSearchDirs.push_back(m_dataPath + "/mods");
     m_modSearchDirs.push_back(m_savePath + "/mods");
 
     if (!m_modSearchDirs.empty())
     {
-        GetLogger()->Info("Mod search dirs:\n");
+        GetLogger()->Info("Mod search dirs:");
         for(const std::string& modSearchDir : m_modSearchDirs)
-            GetLogger()->Info("  * %s\n", modSearchDir.c_str());
+            GetLogger()->Info("  * %%", modSearchDir);
     }
 
     CResourceManager::AddLocation(m_dataPath);
@@ -121,10 +121,10 @@ void CPathManager::InitPaths()
     CResourceManager::SetSaveLocation(m_savePath);
     CResourceManager::AddLocation(m_savePath);
 
-    GetLogger()->Debug("Finished initalizing data paths\n");
-    GetLogger()->Debug("PHYSFS search path is:\n");
+    GetLogger()->Debug("Finished initializing data paths");
+    GetLogger()->Debug("PHYSFS search path is:");
     for (const std::string& path : CResourceManager::GetLocations())
-        GetLogger()->Debug("  * %s\n", path.c_str());
+        GetLogger()->Debug("  * %%", path);
 }
 
 void CPathManager::AddMod(const std::string &path)
@@ -135,27 +135,27 @@ void CPathManager::AddMod(const std::string &path)
 std::vector<std::string> CPathManager::FindMods() const
 {
     std::vector<std::string> mods;
-    GetLogger()->Info("Found mods:\n");
+    GetLogger()->Info("Found mods:");
     for (const auto &searchPath : m_modSearchDirs)
     {
         for (const auto &modPath : FindModsInDir(searchPath))
         {
-            GetLogger()->Info("  * %s\n", modPath.c_str());
+            GetLogger()->Info("  * %%", modPath);
             mods.push_back(modPath);
         }
     }
-    GetLogger()->Info("Additional mod paths:\n");
+    GetLogger()->Info("Additional mod paths:");
 
     for (const auto& modPath : m_mods)
     {
         if (std::filesystem::exists(modPath))
         {
-            GetLogger()->Info("  * %s\n", modPath.c_str());
+            GetLogger()->Info("  * %%", modPath);
             mods.push_back(modPath);
         }
         else
         {
-            GetLogger()->Warn("Mod does not exist: %s\n", modPath.c_str());
+            GetLogger()->Warn("Mod does not exist: %%", modPath);
         }
     }
     return mods;
@@ -180,7 +180,7 @@ std::vector<std::string> CPathManager::FindModsInDir(const std::string &dir) con
     }
     catch (std::exception &e)
     {
-        GetLogger()->Warn("Unable to load mods from directory '%s': %s\n", dir.c_str(), e.what());
+        GetLogger()->Warn("Unable to load mods from directory '%%': %%", dir, e.what());
     }
     return ret;
 }

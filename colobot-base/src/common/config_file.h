@@ -120,7 +120,7 @@ public:
         }
         catch (std::exception & e)
         {
-            GetLogger()->Error("Error on editing config file: %s\n", e.what());
+            GetLogger()->Error("Error on editing config file: %%", e.what());
             return false;
         }
         return true;
@@ -145,7 +145,7 @@ public:
         }
         catch (std::exception & e)
         {
-            GetLogger()->Log(m_loaded ? LOG_INFO : LOG_TRACE, "Error on parsing config file: %s\n", e.what());
+            GetLogger()->Log(m_loaded ? LOG_INFO : LOG_TRACE, "Error on parsing config file: %%", e.what());
             return false;
         }
         return true;

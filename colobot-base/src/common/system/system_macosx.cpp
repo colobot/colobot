@@ -107,7 +107,7 @@ std::string CSystemUtilsMacOSX::GetSaveDir()
     return "./saves";
 #else
     std::string savegameDir = m_ASPath;
-    GetLogger()->Trace("Saved game files are going to %s\n", savegameDir.c_str());
+    GetLogger()->Trace("Saved game files are going to %%", savegameDir);
 
     return savegameDir;
 #endif
@@ -124,7 +124,7 @@ bool CSystemUtilsMacOSX::OpenPath(const std::string& path)
     int result = system(("open \"" + path + "\"").c_str()); // TODO: Test on macOS
     if (result != 0)
     {
-        GetLogger()->Error("Failed to open path: %s, error code: %i\n", path.c_str(), result);
+        GetLogger()->Error("Failed to open path: %%, error code: %%", path, result);
         return false;
     }
     return true;
@@ -135,7 +135,7 @@ bool CSystemUtilsMacOSX::OpenWebsite(const std::string& url)
     int result = system(("open \"" + url + "\"").c_str()); // TODO: Test on macOS
     if (result != 0)
     {
-        GetLogger()->Error("Failed to open url: %s, error code: %i\n", url.c_str(), result);
+        GetLogger()->Error("Failed to open url: %%, error code: %%", url, result);
         return false;
     }
     return true;

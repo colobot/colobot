@@ -44,7 +44,7 @@ CConfigFile::~CConfigFile()
 {
     if (m_needsSave)
     {
-        GetLogger()->Warn("Config file was not properly saved! Saving now...\n");
+        GetLogger()->Warn("Config file was not properly saved! Saving now...");
         Save();
     }
 }
@@ -80,13 +80,13 @@ bool CConfigFile::Init()
         }
         else
         {
-            GetLogger()->Error("Error on parsing config file: failed to open file\n");
+            GetLogger()->Error("Error on parsing config file: failed to open file");
             return false;
         }
     }
     catch (std::exception & e)
     {
-        GetLogger()->Error("Error on parsing config file: %s\n", e.what());
+        GetLogger()->Error("Error on parsing config file: %%", e.what());
         return false;
     }
     return true;
@@ -120,13 +120,13 @@ bool CConfigFile::Save()
             }
             else
             {
-                GetLogger()->Error("Error on storing config file: failed to open file\n");
+                GetLogger()->Error("Error on storing config file: failed to open file");
                 return false;
             }
         }
         catch (std::exception & e)
         {
-            GetLogger()->Error("Error on storing config file: %s\n", e.what());
+            GetLogger()->Error("Error on storing config file: %%", e.what());
             return false;
         }
     }

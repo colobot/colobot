@@ -402,7 +402,7 @@ bool CEngine::Create()
     if (! m_text->Create())
     {
         std::string error = m_text->GetError();
-        GetLogger()->Error("Error creating CText: %s\n", error.c_str());
+        GetLogger()->Error("Error creating CText: %%", error);
         return false;
     }
 
@@ -570,11 +570,11 @@ void CEngine::WriteScreenShotThread(std::unique_ptr<WriteScreenShotData> data)
 {
     if ( data->img->SavePNG(data->fileName.c_str()) )
     {
-       GetLogger()->Debug("Save screenshot saved successfully\n");
+       GetLogger()->Debug("Save screenshot saved successfully");
     }
     else
     {
-       GetLogger()->Error("%s!\n", data->img->GetError().c_str());
+       GetLogger()->Error("%%!", data->img->GetError());
     }
 
     CApplication::GetInstancePointer()->GetEventQueue()->AddEvent(Event(EVENT_WRITE_SCENE_FINISHED));
@@ -1877,7 +1877,7 @@ Texture CEngine::CreateTexture(const std::string& texName, const TextureCreatePa
         if (!img.Load(texName))
         {
             std::string error = img.GetError();
-            GetLogger()->Error("Couldn't load texture '%s': %s, blacklisting\n", texName.c_str(), error.c_str());
+            GetLogger()->Error("Couldn't load texture '%%': %%, blacklisting", texName, error);
             m_texBlacklist.insert(texName);
             return Texture(); // invalid texture
         }
@@ -1889,7 +1889,7 @@ Texture CEngine::CreateTexture(const std::string& texName, const TextureCreatePa
 
     if (! tex.Valid())
     {
-        GetLogger()->Error("Couldn't load texture '%s', blacklisting\n", texName.c_str());
+        GetLogger()->Error("Couldn't load texture '%%', blacklisting", texName);
         m_texBlacklist.insert(texName);
         return tex;
     }
@@ -3444,7 +3444,7 @@ void CEngine::RenderShadowMap()
             m_offscreenShadowRenderingResolution,
             32);
 
-        GetLogger()->Info("Created shadow map texture: %dx%d, depth %d\n",
+        GetLogger()->Info("Created shadow map texture: %%x%%, depth %%\n",
             m_shadowMap.size.x, m_shadowMap.size.y, 32);
     }
 
@@ -3594,7 +3594,7 @@ void CEngine::UseMSAA(bool enable)
 
                 if (framebuffer == nullptr)
                 {
-                    GetLogger()->Error("Could not create MSAA framebuffer, disabling MSAA\n");
+                    GetLogger()->Error("Could not create MSAA framebuffer, disabling MSAA");
                     m_multisample = 1;
                 }
             }

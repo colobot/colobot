@@ -38,7 +38,7 @@ CResourceManager::CResourceManager(const char *argv0)
     if (!PHYSFS_init(argv0))
     {
         PHYSFS_ErrorCode errorCode = PHYSFS_getLastErrorCode();
-        GetLogger()->Error("Error while initializing physfs: %s\n", PHYSFS_getErrorByCode(errorCode));
+        GetLogger()->Error("Error while initializing physfs: %%", PHYSFS_getErrorByCode(errorCode));
         assert(false);
     }
     PHYSFS_permitSymbolicLinks(1);
@@ -52,7 +52,7 @@ CResourceManager::~CResourceManager()
         if (!PHYSFS_deinit())
         {
             PHYSFS_ErrorCode errorCode = PHYSFS_getLastErrorCode();
-            GetLogger()->Error("Error while deinitializing physfs: %s\n", PHYSFS_getErrorByCode(errorCode));
+            GetLogger()->Error("Error while deinitializing physfs: %%", PHYSFS_getErrorByCode(errorCode));
         }
     }
 }
@@ -68,7 +68,7 @@ bool CResourceManager::AddLocation(const std::string &location, bool prepend, co
     if (!PHYSFS_mount(location.c_str(), mountPoint.c_str(), prepend ? 0 : 1))
     {
         PHYSFS_ErrorCode errorCode = PHYSFS_getLastErrorCode();
-        GetLogger()->Error("Error while mounting \"%s\": %s\n", location.c_str(), PHYSFS_getErrorByCode(errorCode));
+        GetLogger()->Error("Error while mounting \"%%\": %%\n", location, PHYSFS_getErrorByCode(errorCode));
         return false;
     }
 
@@ -81,7 +81,7 @@ bool CResourceManager::RemoveLocation(const std::string &location)
     if (!PHYSFS_unmount(location.c_str()))
     {
         PHYSFS_ErrorCode errorCode = PHYSFS_getLastErrorCode();
-        GetLogger()->Error("Error while unmounting \"%s\": %s\n", location.c_str(), PHYSFS_getErrorByCode(errorCode));
+        GetLogger()->Error("Error while unmounting \"%%\": %%\n", location, PHYSFS_getErrorByCode(errorCode));
         return false;
     }
 
@@ -110,7 +110,7 @@ bool CResourceManager::SetSaveLocation(const std::string &location)
     if (!PHYSFS_setWriteDir(location.c_str()))
     {
         PHYSFS_ErrorCode errorCode = PHYSFS_getLastErrorCode();
-        GetLogger()->Error("Error while setting save location to \"%s\": %s\n", location.c_str(), PHYSFS_getErrorByCode(errorCode));
+        GetLogger()->Error("Error while setting save location to \"%%\": %%\n", location, PHYSFS_getErrorByCode(errorCode));
         return false;
     }
 

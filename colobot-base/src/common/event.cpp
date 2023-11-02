@@ -629,7 +629,7 @@ bool CEventQueue::AddEvent(Event&& event)
 
     if (m_total >= MAX_EVENT_QUEUE)
     {
-        GetLogger()->Warn("Event queue flood!\n");
+        GetLogger()->Warn("Event queue flood!");
 
         return false;
     }

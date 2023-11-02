@@ -70,7 +70,7 @@ CPauseManager::~CPauseManager()
 
 ActivePause* CPauseManager::ActivatePause(PauseType type, PauseMusic music)
 {
-    GetLogger()->Debug("Activated pause mode - %s\n", GetPauseName(type).c_str());
+    GetLogger()->Debug("Activated pause mode - %%", GetPauseName(type));
     auto pause = std::make_unique<ActivePause>(type, music);
     ActivePause* ptr = pause.get();
     m_activePause.push_back(std::move(pause));
@@ -81,14 +81,14 @@ ActivePause* CPauseManager::ActivatePause(PauseType type, PauseMusic music)
 void CPauseManager::DeactivatePause(ActivePause* pause)
 {
     if (pause == nullptr) return;
-    GetLogger()->Debug("Deactivated pause mode - %s\n", GetPauseName(pause->type).c_str());
+    GetLogger()->Debug("Deactivated pause mode - %%", GetPauseName(pause->type));
     auto it = std::remove_if(
         m_activePause.begin(), m_activePause.end(),
         [&](const std::unique_ptr<ActivePause>& x) { return x.get() == pause; }
     );
     if (it == m_activePause.end())
     {
-        GetLogger()->Warn("Releasing previously not deactivated pause now!\n");
+        GetLogger()->Warn("Releasing previously not deactivated pause now!");
         std::free(pause);
     }
     m_activePause.erase(it);
@@ -99,7 +99,7 @@ void CPauseManager::FlushPause()
 {
     for (auto& pause : m_activePause)
     {
-        GetLogger()->Warn("Pause not deactivated before phase change!\n");
+        GetLogger()->Warn("Pause not deactivated before phase change!");
         pause.release();
     }
     m_activePause.clear();

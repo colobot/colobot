@@ -108,7 +108,7 @@ std::string CSystemUtilsWindows::GetSaveDir()
     {
         savegameDir = envUSERPROFILE + "\\colobot";
     }
-    GetLogger()->Trace("Saved game files are going to %s\n", savegameDir.c_str());
+    GetLogger()->Trace("Saved game files are going to %%", savegameDir);
 
     return savegameDir;
 #endif
@@ -125,7 +125,7 @@ std::string CSystemUtilsWindows::GetEnvVar(const std::string& name)
     else
     {
         std::string var = UTF8_Encode(std::wstring(envVar));
-        GetLogger()->Trace("Detected environment variable %s = %s\n", name.c_str(), var.c_str());
+        GetLogger()->Trace("Detected environment variable %% = %%", name, var);
         return var;
     }
 }
@@ -135,7 +135,7 @@ bool CSystemUtilsWindows::OpenPath(const std::string& path)
     int result = system(("start explorer \"" + std::filesystem::u8path(path).make_preferred().string() + "\"").c_str());
     if (result != 0)
     {
-        GetLogger()->Error("Failed to open path: %s, error code: %i\n", path.c_str(), result);
+        GetLogger()->Error("Failed to open path: %%, error code: %%", path, result);
         return false;
     }
     return true;
@@ -146,7 +146,7 @@ bool CSystemUtilsWindows::OpenWebsite(const std::string& url)
     int result = system(("rundll32 url.dll,FileProtocolHandler \"" + url + "\"").c_str());
     if (result != 0)
     {
-        GetLogger()->Error("Failed to open website: %s, error code: %i\n", url.c_str(), result);
+        GetLogger()->Error("Failed to open website: %%, error code: %%", url, result);
         return false;
     }
     return true;

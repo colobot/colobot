@@ -312,8 +312,7 @@ void CSettings::LoadSettings()
     {
         if (!sValue.empty() && !ParseLanguage(sValue, m_language))
         {
-            GetLogger()->Error("Failed to parse language '%s' from config file. Default language will be used.\n",
-                sValue.c_str());
+            GetLogger()->Error("Failed to parse language '%%' from config file. Default language will be used.", sValue);
         }
     }
     app->SetLanguage(m_language);

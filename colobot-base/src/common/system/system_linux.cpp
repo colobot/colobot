@@ -32,7 +32,7 @@ void CSystemUtilsLinux::Init()
     if (system("zenity --version 1> /dev/null 2> /dev/null") != 0)
     {
         m_zenityAvailable = false;
-        GetLogger()->Warn("Zenity not available, will fallback to console users dialogs.\n");
+        GetLogger()->Warn("Zenity not available, will fallback to console users dialogs.");
     }
 }
 
@@ -109,7 +109,7 @@ std::string CSystemUtilsLinux::GetSaveDir()
     {
         savegameDir = envXDG_DATA_HOME + "/colobot";
     }
-    GetLogger()->Trace("Saved game files are going to %s\n", savegameDir.c_str());
+    GetLogger()->Trace("Saved game files are going to %%", savegameDir);
 
     return savegameDir;
 #endif
@@ -120,7 +120,7 @@ std::string CSystemUtilsLinux::GetEnvVar(const std::string& name)
     char* envVar = getenv(name.c_str());
     if (envVar != nullptr)
     {
-        GetLogger()->Trace("Detected environment variable %s = %s\n", name.c_str(), envVar);
+        GetLogger()->Trace("Detected environment variable %% = %%", name, envVar);
         return std::string(envVar);
     }
     return "";
@@ -131,7 +131,7 @@ bool CSystemUtilsLinux::OpenPath(const std::string& path)
     int result = system(("xdg-open \"" + path + "\"").c_str());
     if (result != 0)
     {
-        GetLogger()->Error("Failed to open path: %s, error code: %i\n", path.c_str(), result);
+        GetLogger()->Error("Failed to open path: %%, error code: %%", path, result);
         return false;
     }
     return true;
@@ -142,7 +142,7 @@ bool CSystemUtilsLinux::OpenWebsite(const std::string& url)
     int result = system(("xdg-open \"" + url + "\"").c_str());
     if (result != 0)
     {
-        GetLogger()->Error("Failed to open website: %s, error code: %i\n", url.c_str(), result);
+        GetLogger()->Error("Failed to open website: %%, error code: %%", url, result);
         return false;
     }
     return true;
