@@ -154,28 +154,28 @@ bool CGLFramebuffer::Create()
     GLuint result = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     if (result != GL_FRAMEBUFFER_COMPLETE)
     {
-        GetLogger()->Error("Framebuffer incomplete: ");
+        std::string_view reason;
 
         switch (result)
         {
         case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
-            GetLogger()->Error("attachment point incomplete");
+            reason = "attachment point incomplete";
             break;
         case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
-            GetLogger()->Error("missing attachment");
+            reason = "missing attachment";
             break;
         case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
-            GetLogger()->Error("draw buffer has missing color attachments");
+            reason = "draw buffer has missing color attachments";
             break;
         case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
-            GetLogger()->Error("read buffer has missing color attachments");
+            reason = "read buffer has missing color attachments";
             break;
         case GL_FRAMEBUFFER_UNSUPPORTED:
-            GetLogger()->Error("unsupported attachment format");
+            reason = "unsupported attachment format";
             break;
         }
 
-        GetLogger()->Error("\n");
+        GetLogger()->Error("Framebuffer incomplete: %%", reason);
 
         Destroy();
 
@@ -428,29 +428,31 @@ bool CGLFramebufferEXT::Create()
     GLuint result = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
     if (result != GL_FRAMEBUFFER_COMPLETE_EXT)
     {
-        GetLogger()->Error("Framebuffer incomplete: ");
+        std::string_view reason;
 
         switch (result)
         {
         case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_EXT:
-            GetLogger()->Error("attachment point incomplete");
+            reason = "attachment point incomplete";
             break;
         case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT:
-            GetLogger()->Error("missing attachment");
+            reason = "missing attachment";
             break;
         case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT:
-            GetLogger()->Error("incompatible attachment dimensions");
+            reason = "incompatible attachment dimensions";
             break;
         case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT:
-            GetLogger()->Error("draw buffer has missing color attachments");
+            reason = "draw buffer has missing color attachments";
             break;
         case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT:
-            GetLogger()->Error("read buffer has missing color attachments");
+            reason = "read buffer has missing color attachments";
             break;
         case GL_FRAMEBUFFER_UNSUPPORTED_EXT:
-            GetLogger()->Error("unsupported attachment format");
+            reason = "unsupported attachment format";
             break;
         }
+
+        GetLogger()->Error("Framebuffer incomplete: %%", reason);
 
         Destroy();
 

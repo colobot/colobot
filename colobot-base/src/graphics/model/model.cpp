@@ -47,7 +47,7 @@ CModelMesh* CModel::GetMesh(const std::string& name)
     auto it = m_meshes.find(name);
     if (it == m_meshes.end())
     {
-        GetLogger()->Error("Mesh named '%s' not found in model!\n", name.c_str());
+        GetLogger()->Error("Mesh named '%%' not found in model!", name);
         return nullptr;
     }
     return it->second.get();
@@ -58,7 +58,7 @@ const CModelMesh* CModel::GetMesh(const std::string& name) const
     auto it = m_meshes.find(name);
     if (it == m_meshes.end())
     {
-        GetLogger()->Error("Mesh named '%s' not found in model!\n", name.c_str());
+        GetLogger()->Error("Mesh named '%%' not found in model!", name);
         return nullptr;
     }
     return it->second.get();

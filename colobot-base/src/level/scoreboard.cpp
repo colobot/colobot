@@ -121,7 +121,7 @@ void CScoreboard::ProcessEndTake(int team)
 
 void CScoreboard::AddPoints(int team, int points)
 {
-    GetLogger()->Info("Team %d earned %d points\n", team, points);
+    GetLogger()->Info("Team %% earned %% points", team, points);
 
     CRobotMain* main = CRobotMain::GetInstancePointer();
     std::string text;

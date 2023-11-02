@@ -43,28 +43,28 @@ using namespace Gfx;
 CGL33UIRenderer::CGL33UIRenderer(CGL33Device* device)
     : m_device(device)
 {
-    GetLogger()->Info("Creating CGL33UIRenderer\n");
+    GetLogger()->Info("Creating CGL33UIRenderer");
 
     GLint shaders[2] = {};
 
     shaders[0] = LoadShader(GL_VERTEX_SHADER, "shaders/gl33/ui_vs.glsl");
     if (shaders[0] == 0)
     {
-        GetLogger()->Error("Cound not create vertex shader from file 'ui_vs.glsl'\n");
+        GetLogger()->Error("Cound not create vertex shader from file 'ui_vs.glsl'");
         return;
     }
 
     shaders[1] = LoadShader(GL_FRAGMENT_SHADER, "shaders/gl33/ui_fs.glsl");
     if (shaders[1] == 0)
     {
-        GetLogger()->Error("Cound not create fragment shader from file 'ui_fs.glsl'\n");
+        GetLogger()->Error("Cound not create fragment shader from file 'ui_fs.glsl'");
         return;
     }
 
     m_program = LinkProgram(2, shaders);
     if (m_program == 0)
     {
-        GetLogger()->Error("Cound not link shader program for interface renderer\n");
+        GetLogger()->Error("Cound not link shader program for interface renderer");
         return;
     }
 
@@ -118,7 +118,7 @@ CGL33UIRenderer::CGL33UIRenderer(CGL33Device* device)
 
     glUseProgram(0);
 
-    GetLogger()->Info("CGL33UIRenderer created successfully\n");
+    GetLogger()->Info("CGL33UIRenderer created successfully");
 }
 
 CGL33UIRenderer::~CGL33UIRenderer()

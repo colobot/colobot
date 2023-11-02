@@ -649,13 +649,13 @@ bool CParticle::CheckChannel(int &channel)
 
     if (!m_particle[channel].used)
     {
-        GetLogger()->Trace("Particle %d:%d doesn't exist anymore (used=false)\n", channel, uniqueStamp);
+        GetLogger()->Trace("Particle %%:%% doesn't exist anymore (used=false)", channel, uniqueStamp);
         return false;
     }
 
     if (m_particle[channel].uniqueStamp != uniqueStamp)
     {
-        GetLogger()->Trace("Particle %d:%d doesn't exist anymore (uniqueStamp changed)\n", channel, uniqueStamp);
+        GetLogger()->Trace("Particle %%:%% doesn't exist anymore (uniqueStamp changed)", channel, uniqueStamp);
         return false;
     }
 

@@ -370,12 +370,12 @@ void CRobotMain::ChangePhase(Phase phase)
     {
         if (IsPhaseWithWorld(m_phase) && !IsPhaseWithWorld(phase) && m_exitAfterMission)
         {
-            GetLogger()->Info("Mission finished in single mission mode, exiting\n");
+            GetLogger()->Info("Mission finished in single mission mode, exiting");
             m_eventQueue->AddEvent(Event(EVENT_QUIT));
             return;
         }
 
-        GetLogger()->Info("Reseting world on phase change...\n");
+        GetLogger()->Info("Reseting world on phase change...");
         resetWorld = true;
     }
 
@@ -495,19 +495,19 @@ void CRobotMain::ChangePhase(Phase phase)
     {
         if (CResourceManager::DirectoryExists("crashsave"))
         {
-            GetLogger()->Info("Pre-crash save found!\n");
+            GetLogger()->Info("Pre-crash save found!");
             m_ui->GetDialog()->StartQuestion(
                 "Your game seems to have crashed. Do you want to restore pre-crash state?", false, false, false,
                 [&]()
                 {
-                    GetLogger()->Info("Trying to restore pre-crash state...\n");
+                    GetLogger()->Info("Trying to restore pre-crash state...");
                     assert(m_playerProfile != nullptr);
                     m_playerProfile->LoadScene("../../crashsave");
                     CResourceManager::RemoveExistingDirectory("crashsave");
                 },
                 [&]()
                 {
-                    GetLogger()->Info("Not restoring pre-crash state\n");
+                    GetLogger()->Info("Not restoring pre-crash state");
                     CResourceManager::RemoveExistingDirectory("crashsave");
                 }
             );
@@ -709,7 +709,7 @@ bool CRobotMain::ProcessEvent(Event &event)
 
     if (event.type == EVENT_FOCUS_LOST)
     {
-        GetLogger()->Trace("Window unfocused\n");
+        GetLogger()->Trace("Window unfocused");
         if (m_settings->GetFocusLostPause())
         {
             m_focusPause = m_pause->ActivatePause(PAUSE_ENGINE);
@@ -725,7 +725,7 @@ bool CRobotMain::ProcessEvent(Event &event)
 
     if (event.type == EVENT_FOCUS_GAINED)
     {
-        GetLogger()->Trace("Window focused\n");
+        GetLogger()->Trace("Window focused");
         if (m_focusPause != nullptr)
         {
             m_pause->DeactivatePause(m_focusPause);
@@ -1266,7 +1266,7 @@ void CRobotMain::ExecuteCmd(const std::string& cmd)
         {
             if (m_controller == nullptr)
             {
-                GetLogger()->Error("No LevelController on the map to select\n");
+                GetLogger()->Error("No LevelController on the map to select");
                 return;
             }
 
@@ -1376,14 +1376,14 @@ void CRobotMain::ExecuteCmd(const std::string& cmd)
         {
             // VGhpcyBpcyBlYXN0ZXItZWdnIGFuZCBzbyBpdCBzaG91bGQgYmUgb2JmdXNjYXRlZCEgRG8gbm90
             // IGNsZWFuLXVwIHRoaXMgY29kZSEK
-            GetLogger()->Info(" _________________________\n");
-            GetLogger()->Info("< \x50\x6F\x6C\x73\x6B\x69 \x50\x6F\x72\x74\x61\x6C C\x6F\x6C\x6F\x62\x6F\x74\x61! \x3E\n");
-            GetLogger()->Info(" -------------------------\n");
-            GetLogger()->Info("        \x5C\x20\x20\x20\x5E\x5F\x5F\x5E\n");
-            GetLogger()->Info("        \x20\x5C\x20\x20\x28\x6F\x6F\x29\x5C\x5F\x5F\x5F\x5F\x5F\x5F\x5F\n");
-            GetLogger()->Info("            \x28\x5F\x5F\x29\x5C   \x20\x20\x20\x20\x29\x5C\x2F\x5C\n");
-            GetLogger()->Info("            \x20\x20\x20\x20\x7C|\x2D\x2D\x2D\x2D\x77\x20\x7C\n");
-            GetLogger()->Info("          \x20\x20    \x7C\x7C\x20\x20\x20\x20 ||\n");
+            GetLogger()->Info(" _________________________");
+            GetLogger()->Info("< \x50\x6F\x6C\x73\x6B\x69 \x50\x6F\x72\x74\x61\x6C C\x6F\x6C\x6F\x62\x6F\x74\x61! \x3E");
+            GetLogger()->Info(" -------------------------");
+            GetLogger()->Info("        \x5C\x20\x20\x20\x5E\x5F\x5F\x5E");
+            GetLogger()->Info("        \x20\x5C\x20\x20\x28\x6F\x6F\x29\x5C\x5F\x5F\x5F\x5F\x5F\x5F\x5F");
+            GetLogger()->Info("            \x28\x5F\x5F\x29\x5C   \x20\x20\x20\x20\x29\x5C\x2F\x5C");
+            GetLogger()->Info("            \x20\x20\x20\x20\x7C|\x2D\x2D\x2D\x2D\x77\x20\x7C");
+            GetLogger()->Info("          \x20\x20    \x7C\x7C\x20\x20\x20\x20 ||");
         }
 
         if (cmd == "fullpower")
@@ -1645,7 +1645,7 @@ void CRobotMain::StartSuspend()
 {
     if (m_suspend != nullptr) return; // already suspended
     if (!IsPhaseWithWorld(m_phase)) return;
-    GetLogger()->Info("Start suspend\n");
+    GetLogger()->Info("Start suspend");
 
     m_sound->MuteAll(true);
     ClearInterface();
@@ -1664,7 +1664,7 @@ void CRobotMain::StartSuspend()
 void CRobotMain::StopSuspend()
 {
     if (m_suspend == nullptr) return; // not suspended
-    GetLogger()->Info("Stop suspend\n");
+    GetLogger()->Info("Stop suspend");
 
     m_sound->MuteAll(false);
     ClearInterface();
@@ -2828,14 +2828,14 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
     auto LoadingWarning = [&](const std::string& message)
     {
-        GetLogger()->Warn("%s\n", message.c_str());
+        GetLogger()->Warn("%%", message);
         m_ui->GetDialog()->StartInformation("Level loading warning", "This level contains problems. It may stop working in future versions of the game.", message);
     };
 
     try
     {
         m_ui->GetLoadingScreen()->SetProgress(0.05f, RT_LOADING_PROCESSING);
-        GetLogger()->Info("Loading level: %s\n", m_levelFile.c_str());
+        GetLogger()->Info("Loading level: %%", m_levelFile);
         CLevelParser levelParser(m_levelFile);
         levelParser.SetLevelPaths(m_levelCategory, m_levelChap, m_levelRank);
         levelParser.Load();
@@ -2916,7 +2916,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                             if (rank >= 0)
                             {
                                 // TODO: Fix default levels and add a future removal warning
-                                GetLogger()->Warn("This level is using deprecated way of defining %1$s scene. Please change the %1$s= parameter in EndingFile from %2$d to \"levels/other/%1$s%2$03d.txt\".\n", type.c_str(), rank);
+                                GetLogger()->Warn("This level is using deprecated way of defining %% scene. Please change the %%= parameter in EndingFile from %% to \"levels/other/%1$s%2$03d.txt\".\n", type, rank);
                                 std::stringstream ss;
                                 ss << "levels/other/" << type << std::setfill('0') << std::setw(3) << rank << ".txt";
                                 return ss.str();
@@ -2924,7 +2924,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                             else
                             {
                                 // TODO: Fix default levels and add a future removal warning
-                                GetLogger()->Warn("This level is using deprecated way of defining %1$s scene. Please remove the %1$s= parameter in EndingFile.\n", type.c_str());
+                                GetLogger()->Warn("This level is using deprecated way of defining %% scene. Please remove the %%= parameter in EndingFile.\n", type, type);
                                 return "";
                             }
 
@@ -2995,7 +2995,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     if (line->GetParam("filename")->IsDefined())
                         throw CLevelParserException("You can't use track and filename at the same time");
 
-                    GetLogger()->Warn("Using track= is deprecated. Please replace this with filename=\n");
+                    GetLogger()->Warn("Using track= is deprecated. Please replace this with filename=");
                     int trackid = line->GetParam("track")->AsInt();
                     if (trackid != 0)
                     {
@@ -3467,7 +3467,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 }
                 catch (const CObjectCreateException& e)
                 {
-                    GetLogger()->Error("Error loading level object: %s\n", e.what());
+                    GetLogger()->Error("Error loading level object: %%", e.what());
                     throw;
                 }
 
@@ -3623,7 +3623,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             {
                 if(m_viewpoints.size() == 10)
                 {
-                    GetLogger()->Warn("Reached limit of 10 viewpoints, next ones will be ommited.\n");
+                    GetLogger()->Warn("Reached limit of 10 viewpoints, next ones will be ommited.");
                     continue;
                 }
                 Viewpoint tmp;
@@ -3713,7 +3713,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             {
                 std::string token = line->GetParam("text")->AsString();
                 if (!line->GetParam("min")->IsDefined() && !line->GetParam("max")->IsDefined())
-                    GetLogger()->Warn("ObligatoryToken without specifying min/max is provided only for backwards compatibility - instead, do this: ObligatoryToken text=\"%s\" min=1\n", token.c_str());
+                    GetLogger()->Warn("ObligatoryToken without specifying min/max is provided only for backwards compatibility - instead, do this: ObligatoryToken text=\"%%\" min=1\n", token);
                 if (m_obligatoryTokens.count(token))
                     throw CLevelParserException("Incorrect ObligatoryToken specification - you cannot define a token twice");
 
@@ -3729,7 +3729,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             if (line->GetCommand() == "ProhibitedToken" && !resetObject) // NOTE: Kept only for backwards compatibility
             {
                 std::string token = line->GetParam("text")->AsString();
-                GetLogger()->Warn("ProhibitedToken is only provided for backwards compatibility - instead, do this: ObligatoryToken text=\"%s\" max=0\n", token.c_str());
+                GetLogger()->Warn("ProhibitedToken is only provided for backwards compatibility - instead, do this: ObligatoryToken text=\"%%\" max=0\n", token);
                 if (m_obligatoryTokens.count(token))
                     throw CLevelParserException("Incorrect ObligatoryToken specification - you cannot define a token twice");
 
@@ -3889,8 +3889,8 @@ void CRobotMain::LevelLoadingError(const std::string& error, const std::runtime_
 {
     m_ui->ShowLoadingScreen(false);
 
-    GetLogger()->Error("%s\n", error.c_str());
-    GetLogger()->Error("%s\n", exception.what());
+    GetLogger()->Error("%%", error);
+    GetLogger()->Error("%%", exception.what());
     ChangePhase(exitPhase);
     m_ui->GetDialog()->StartInformation("Loading error", error, exception.what(), true, false);
 }
@@ -4540,7 +4540,7 @@ bool CRobotMain::SaveFileStack(CObject *obj, std::ostream &ostr)
 
     if (!programmable->WriteStack(sstr))
     {
-        GetLogger()->Error("WriteStack failed at object id = %i\n", obj->GetID());
+        GetLogger()->Error("WriteStack failed at object id = %%", obj->GetID());
         status = 100; // marked bad
     }
 
@@ -4577,7 +4577,7 @@ bool CRobotMain::ReadFileStack(CObject *obj, std::istream &istr)
 
         if (!programmable->ReadStack(sstr))
         {
-            GetLogger()->Error("ReadStack failed at object id = %i\n", obj->GetID());
+            GetLogger()->Error("ReadStack failed at object id = %%", obj->GetID());
         }
         return true; // next program
     }
@@ -4769,7 +4769,7 @@ bool CRobotMain::IOWriteScene(std::string filename, std::string filecbot, std::s
     }
     catch (CLevelParserException& e)
     {
-        GetLogger()->Error("Failed to save level state - %s\n", e.what()); // TODO add visual error to notify user that save failed
+        GetLogger()->Error("Failed to save level state - %%", e.what()); // TODO add visual error to notify user that save failed
         return false;
     }
 
@@ -4792,7 +4792,7 @@ bool CRobotMain::IOWriteScene(std::string filename, std::string filecbot, std::s
 
         if (!SaveFileStack(obj, ostr))
         {
-            GetLogger()->Error("SaveFileStack failed at object id = %i\n", obj->GetID());
+            GetLogger()->Error("SaveFileStack failed at object id = %%", obj->GetID());
             bError = true;
             break;
         }
@@ -4800,7 +4800,7 @@ bool CRobotMain::IOWriteScene(std::string filename, std::string filecbot, std::s
 
     if (!bError && !CBot::CBotClass::SaveStaticState(ostr))
     {
-        GetLogger()->Error("CBotClass save static state failed\n");
+        GetLogger()->Error("CBotClass save static state failed");
     }
 
     ostr.close();
@@ -5027,7 +5027,7 @@ CObject* CRobotMain::IOReadScene(std::string filename, std::string filecbot)
 
                     if (!ReadFileStack(obj, istr))
                     {
-                        GetLogger()->Error("ReadFileStack failed at object id = %i\n", obj->GetID());
+                        GetLogger()->Error("ReadFileStack failed at object id = %%", obj->GetID());
                         bError = true;
                         break;
                     }
@@ -5035,12 +5035,12 @@ CObject* CRobotMain::IOReadScene(std::string filename, std::string filecbot)
 
                 if (!bError && !CBot::CBotClass::RestoreStaticState(istr))
                 {
-                    GetLogger()->Error("CBotClass restore static state failed\n");
+                    GetLogger()->Error("CBotClass restore static state failed");
                     bError = true;
                 }
             }
             else
-                GetLogger()->Error("cbot.run file is wrong version: %i\n", version);
+                GetLogger()->Error("cbot.run file is wrong version: %%", version);
         }
 
         if (bError) GetLogger()->Error("Restoring CBOT state failed at stream position: %%",
@@ -5122,7 +5122,7 @@ void CRobotMain::UpdateAudio(bool frame)
 
         if (audioChange->Check())
         {
-            GetLogger()->Info("Changing music to \"%s\"\n", audioChange->music.c_str());
+            GetLogger()->Info("Changing music to \"%%\"", audioChange->music);
             m_sound->PlayMusic(audioChange->music, audioChange->repeat);
             audioChange->changed = true;
         }
@@ -5218,7 +5218,7 @@ Error CRobotMain::ProcessEndMissionTake()
 
         if (GetAllActiveTeams().empty() || timeout)
         {
-            GetLogger()->Info("All teams died, mission ended\n");
+            GetLogger()->Info("All teams died, mission ended");
             if (m_scoreboard)
             {
                 std::string title, text, details_line;
@@ -5269,7 +5269,7 @@ Error CRobotMain::ProcessEndMissionTake()
                 Error result = ProcessEndMissionTakeForGroup(it.second);
                 if (result == INFO_LOST || result == INFO_LOSTq)
                 {
-                    GetLogger()->Info("Team %d lost\n", team);
+                    GetLogger()->Info("Team %% lost", team);
                     std::string text;
                     GetResource(RES_ERR, INFO_TEAM_DEAD, text);
                     text = StrUtils::Format(text.c_str(), GetTeamName(team).c_str());
@@ -5285,12 +5285,12 @@ Error CRobotMain::ProcessEndMissionTake()
                 {
                     /*if (m_winDelay == 0.0f)
                     {
-                        GetLogger()->Info("Team %d won\n", team);
+                        GetLogger()->Info("Team %% won", team);
 
                         m_displayText->DisplayText(("<<< Team "+std::to_string(team)+" won the game >>>").c_str(), glm::vec3(0.0f,0.0f,0.0f));
                         if (m_missionTimerEnabled && m_missionTimerStarted)
                         {
-                            GetLogger()->Info("Mission time: %s\n", TimeFormat(m_missionTimer).c_str());
+                            GetLogger()->Info("Mission time: %%", TimeFormat(m_missionTimer));
                             m_displayText->DisplayText(("Time: " + TimeFormat(m_missionTimer)).c_str(), glm::vec3(0.0f,0.0f,0.0f));
                         }
                         m_missionTimerEnabled = m_missionTimerStarted = false;
@@ -5300,7 +5300,7 @@ Error CRobotMain::ProcessEndMissionTake()
                     }
                     m_missionResult = ERR_OK;
                     return ERR_OK;*/
-                    GetLogger()->Info("Team %d finished\n", team);
+                    GetLogger()->Info("Team %% finished", team);
                     std::string text;
                     GetResource(RES_ERR, INFO_TEAM_FINISH, text);
                     text = StrUtils::Format(text.c_str(), GetTeamName(team).c_str());
@@ -5391,7 +5391,7 @@ Error CRobotMain::CheckEndMission(bool frame)
             m_displayText->DisplayError(INFO_WIN, glm::vec3(0.0f,0.0f,0.0f));
             if (m_missionTimerEnabled && m_missionTimerStarted)
             {
-                GetLogger()->Info("Mission time: %s\n", TimeFormat(m_missionTimer).c_str());
+                GetLogger()->Info("Mission time: %%", TimeFormat(m_missionTimer));
                 m_displayText->DisplayText(("Time: " + TimeFormat(m_missionTimer)).c_str(), glm::vec3(0.0f,0.0f,0.0f));
             }
             m_missionTimerEnabled = m_missionTimerStarted = false;
@@ -5511,7 +5511,7 @@ float CRobotMain::GetPersoAngle()
 
 void CRobotMain::SetLevel(LevelCategory cat, int chap, int rank)
 {
-    GetLogger()->Debug("Change level to %s %d %d\n", GetLevelCategoryDir(cat).c_str(), chap, rank);
+    GetLogger()->Debug("Change level to %% %% %%", GetLevelCategoryDir(cat), chap, rank);
     m_levelCategory = cat;
     m_levelChap = chap;
     m_levelRank = rank;
@@ -5691,7 +5691,7 @@ bool CRobotMain::GetFriendAim()
 //! Starts music with a mission
 void CRobotMain::StartMusic()
 {
-    GetLogger()->Debug("Starting music...\n");
+    GetLogger()->Debug("Starting music...");
     if (m_audioTrack != "")
     {
         m_sound->PlayMusic(m_audioTrack, m_audioRepeat, 0.0f);
@@ -5768,7 +5768,7 @@ void CRobotMain::StartMissionTimer()
 {
     if (m_missionTimerEnabled && !m_missionTimerStarted)
     {
-        GetLogger()->Info("Starting mission timer...\n");
+        GetLogger()->Info("Starting mission timer...");
         m_missionTimerStarted = true;
     }
 }
@@ -5817,7 +5817,7 @@ void CRobotMain::AutosaveRotate()
     if (m_playerProfile == nullptr)
         return;
 
-    GetLogger()->Debug("Rotate autosaves...\n");
+    GetLogger()->Debug("Rotate autosaves...");
     auto saveDirs = CResourceManager::ListDirectories(m_playerProfile->GetSaveDir());
     const std::string autosavePrefix = "autosave";
     std::vector<std::string> autosaves;
@@ -5836,7 +5836,7 @@ void CRobotMain::AutosaveRotate()
 void CRobotMain::Autosave()
 {
     AutosaveRotate();
-    GetLogger()->Info("Autosave!\n");
+    GetLogger()->Info("Autosave!");
 
     char timestr[100];
     char infostr[100];
@@ -5851,7 +5851,7 @@ void CRobotMain::Autosave()
 
 void CRobotMain::QuickSave()
 {
-    GetLogger()->Info("Quicksave!\n");
+    GetLogger()->Info("Quicksave!");
 
     char infostr[100];
     time_t now = time(nullptr);
@@ -5868,7 +5868,7 @@ void CRobotMain::QuickLoad()
     if(!CResourceManager::Exists(dir))
     {
         m_displayText->DisplayError(ERR_NO_QUICK_SLOT, glm::vec3(0.0f,0.0f,0.0f), 15.0f, 60.0f, 1000.0f);
-        GetLogger()->Debug("Quicksave slot not found\n");
+        GetLogger()->Debug("Quicksave slot not found");
         return;
     }
     m_playerProfile->LoadScene(dir);
@@ -5879,7 +5879,7 @@ void CRobotMain::LoadSaveFromDirName(const std::string& gameDir)
     std::string dir = m_playerProfile->GetSaveFile(gameDir);
     if(!CResourceManager::Exists(dir))
     {
-        GetLogger()->Error("Save slot not found\n");
+        GetLogger()->Error("Save slot not found");
         return;
     }
     m_playerProfile->LoadScene(dir);

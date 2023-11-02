@@ -1833,7 +1833,7 @@ Error CTaskGoto::PathFindingSearch(const glm::vec3 &start, const glm::vec3 &goal
                     }
                 }
                 const size_t countAfter = m_bfsQueue[NUMQUEUEBUCKETS].size();
-                GetLogger()->Debug("Redistributed %lu of %lu nodes from the bucket with oversized costs.\n",
+                GetLogger()->Debug("Redistributed %% of %% nodes from the bucket with oversized costs.",
                     countBefore - countAfter, countBefore);
             }
         }
@@ -1853,7 +1853,7 @@ Error CTaskGoto::PathFindingSearch(const glm::vec3 &start, const glm::vec3 &goal
             {
                 // This node has been updated to a lower cost and has allready been processed.
                 m_bfsQueueCountSkipped += 1;
-                // GetLogger()->Debug("Skipping node with smaller distance, distance: %d, totalDistance: %d, m_bfsQueueMin: %d\n",
+                // GetLogger()->Debug("Skipping node with smaller distance, distance: %%, totalDistance: %%, m_bfsQueueMin: %%",
                 //     distance, totalDistance, m_bfsQueueMin);
             }
             else
@@ -1863,7 +1863,7 @@ Error CTaskGoto::PathFindingSearch(const glm::vec3 &start, const glm::vec3 &goal
                     // Move node to a regular bucket.
                     m_bfsQueue[totalDistance % NUMQUEUEBUCKETS].push_back(indexInMap);
                     m_bfsQueueCountPushed += 1;
-                    GetLogger()->Debug("Moving node with bigger distance into regular bucket, distance: %d, totalDistance: %d, m_bfsQueueMin: %d\n",
+                    GetLogger()->Debug("Moving node with bigger distance into regular bucket, distance: %%, totalDistance: %%, m_bfsQueueMin: %%",
                         distance, totalDistance, m_bfsQueueMin);
                 }
                 else
@@ -1871,7 +1871,7 @@ Error CTaskGoto::PathFindingSearch(const glm::vec3 &start, const glm::vec3 &goal
                     // Move node to the bucket with oversized costs.
                     m_bfsQueue[NUMQUEUEBUCKETS].push_back(indexInMap);
                     m_bfsQueueCountPushed += 1;
-                    GetLogger()->Debug("Moving node with bigger distance into bucket with oversized costs, distance: %d, totalDistance: %d, m_bfsQueueMin: %d\n",
+                    GetLogger()->Debug("Moving node with bigger distance into bucket with oversized costs, distance: %%, totalDistance: %%, m_bfsQueueMin: %%",
                         distance, totalDistance, m_bfsQueueMin);
                 }
             }
@@ -1905,7 +1905,7 @@ Error CTaskGoto::PathFindingSearch(const glm::vec3 &start, const glm::vec3 &goal
                 }
                 if (bestX == -1)
                 {
-                    GetLogger()->Debug("Failed to find node parent\n");
+                    GetLogger()->Debug("Failed to find node parent");
                     return ERR_GOTO_ITER;
                 }
                 btX = bestX;
@@ -1948,17 +1948,17 @@ Error CTaskGoto::PathFindingSearch(const glm::vec3 &start, const glm::vec3 &goal
             }
 
             const float distanceToGoal = Math::DistanceProjected(m_bmPoints[m_bmTotal], goal);
-            GetLogger()->Debug("Found path to goal with %d nodes and %d cost. Final distance to goal: %f\n", m_bmTotal + 1, totalDistance, distanceToGoal);
-            GetLogger()->Debug("m_bmStep: %d\n", m_bmStep);
-            GetLogger()->Debug("m_bfsQueueMin: %d mod %d = %d\n", m_bfsQueueMin, NUMQUEUEBUCKETS, m_bfsQueueMin % NUMQUEUEBUCKETS);
-            GetLogger()->Debug("m_bfsQueueCountPushed: %d\n", m_bfsQueueCountPushed);
-            GetLogger()->Debug("m_bfsQueueCountPopped: %d\n", m_bfsQueueCountPopped);
-            GetLogger()->Debug("m_bfsQueueCountRepeated: %d\n", m_bfsQueueCountRepeated);
-            GetLogger()->Debug("m_bfsQueueCountSkipped: %d\n", m_bfsQueueCountSkipped);
+            GetLogger()->Debug("Found path to goal with %% nodes and %% cost. Final distance to goal: %%", m_bmTotal + 1, totalDistance, distanceToGoal);
+            GetLogger()->Debug("m_bmStep: %%", m_bmStep);
+            GetLogger()->Debug("m_bfsQueueMin: %% mod %% = %%", m_bfsQueueMin, NUMQUEUEBUCKETS, m_bfsQueueMin % NUMQUEUEBUCKETS);
+            GetLogger()->Debug("m_bfsQueueCountPushed: %%", m_bfsQueueCountPushed);
+            GetLogger()->Debug("m_bfsQueueCountPopped: %%", m_bfsQueueCountPopped);
+            GetLogger()->Debug("m_bfsQueueCountRepeated: %%", m_bfsQueueCountRepeated);
+            GetLogger()->Debug("m_bfsQueueCountSkipped: %%", m_bfsQueueCountSkipped);
             GetLogger()->Debug("m_bfsQueue sizes:\n");
             for (size_t i = 0; i < m_bfsQueue.size(); ++i)
             {
-                if (!m_bfsQueue[i].empty()) GetLogger()->Debug("    %lu: %lu\n", i, m_bfsQueue[i].size());
+                if (!m_bfsQueue[i].empty()) GetLogger()->Debug("    %%: %%", i, m_bfsQueue[i].size());
             }
             return ERR_OK;
         }

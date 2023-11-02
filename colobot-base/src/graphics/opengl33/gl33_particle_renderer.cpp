@@ -40,7 +40,7 @@ using namespace Gfx;
 CGL33ParticleRenderer::CGL33ParticleRenderer(CGL33Device* device)
     : m_device(device)
 {
-    GetLogger()->Info("Creating CGL33ParticleRenderer\n");
+    GetLogger()->Info("Creating CGL33ParticleRenderer");
 
     std::string preamble = LoadSource("shaders/gl33/preamble.glsl");
     std::string shadowSource = LoadSource("shaders/gl33/shadow.glsl");
@@ -50,14 +50,14 @@ CGL33ParticleRenderer::CGL33ParticleRenderer(CGL33Device* device)
     GLint vsShader = CreateShader(GL_VERTEX_SHADER, { preamble, shadowSource, vsSource });
     if (vsShader == 0)
     {
-        GetLogger()->Error("Cound not create vertex shader from file 'particle_vs.glsl'\n");
+        GetLogger()->Error("Cound not create vertex shader from file 'particle_vs.glsl'");
         return;
     }
 
     GLint fsShader = CreateShader(GL_FRAGMENT_SHADER, { preamble, shadowSource, fsSource });
     if (fsShader == 0)
     {
-        GetLogger()->Error("Cound not create fragment shader from file 'particle_fs.glsl'\n");
+        GetLogger()->Error("Cound not create fragment shader from file 'particle_fs.glsl'");
         return;
     }
 
@@ -112,7 +112,7 @@ CGL33ParticleRenderer::CGL33ParticleRenderer(CGL33Device* device)
     glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
 
-    GetLogger()->Info("CGL33ParticleRenderer created successfully\n");
+    GetLogger()->Info("CGL33ParticleRenderer created successfully");
 }
 
 CGL33ParticleRenderer::~CGL33ParticleRenderer()

@@ -37,7 +37,7 @@ CModel* CModelManager::GetModel(const std::string& modelName)
 
     std::filesystem::path modelFile = "models-new/" + modelName + ".txt";
 
-    GetLogger()->Debug("Loading new model: %s\n", modelFile.c_str());
+    GetLogger()->Debug("Loading new model: %%", modelFile.string());
 
     m_models[modelName] = ModelInput::Read(modelFile);
 

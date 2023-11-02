@@ -158,28 +158,28 @@ bool CProgrammableObjectImpl::ReadStack(std::istream &istr)
                 int count = static_cast<int>(dynamic_cast<CProgramStorageObject&>(*m_object).GetProgramCount());
                 if (!(op < count))
                 {
-                    GetLogger()->Info("Object program count: %i\n", count);
-                    GetLogger()->Error("Error in file: program index out of range: %i\n", op);
+                    GetLogger()->Info("Object program count: %%", count);
+                    GetLogger()->Error("Error in file: program index out of range: %%", op);
                     return false;
                 }
 
                 m_currentProgram = dynamic_cast<CProgramStorageObject&>(*m_object).GetProgram(op);
                 if (!m_currentProgram->script->ReadStack(istr))
                 {
-                    GetLogger()->Error("Restore state failed at program index: %i\n", op);
+                    GetLogger()->Error("Restore state failed at program index: %%", op);
                     int errNum = m_currentProgram->script->GetError();
                     if (errNum != 0)
                     {
                         std::string errStr;
                         m_currentProgram->script->GetError(errStr);
-                        GetLogger()->Error("Program reports error: %i:(%s)\n", errNum, errStr.c_str());
+                        GetLogger()->Error("Program reports error: %%:(%%)", errNum, errStr);
                     }
                     return false;
                 }
             }
             else
             {
-                GetLogger()->Error("Object is not a program storage object\n");
+                GetLogger()->Error("Object is not a program storage object");
                 return false;
             }
         }
@@ -209,7 +209,7 @@ bool CProgrammableObjectImpl::WriteStack(std::ostream &ostr)
 
         if (!m_currentProgram->script->WriteStack(ostr))
         {
-            GetLogger()->Error("Save state failed at program index: %i\n", op);
+            GetLogger()->Error("Save state failed at program index: %%", op);
             return false;
         }
         return true;

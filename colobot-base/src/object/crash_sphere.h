@@ -41,7 +41,7 @@ struct CrashSphere
     {
         if (sound == SOUND_CLICK)
         {
-            GetLogger()->Warn("Crash sphere using SOUND_CLICK, using SOUND_NONE instead.\n"); // TODO: Make sure v3 model files don't use this ~krzys_h
+            GetLogger()->Warn("Crash sphere using SOUND_CLICK, using SOUND_NONE instead."); // TODO: Make sure v3 model files don't use this ~krzys_h
             sound = SOUND_NONE;
         }
     }

@@ -152,7 +152,7 @@ void GLTFLoader::ReadBuffers()
         }
         else
         {
-            GetLogger()->Error("Base64 not yet supported\n");
+            GetLogger()->Error("Base64 not yet supported");
         }
 
         m_buffers.emplace_back(std::move(buffer));
@@ -617,7 +617,7 @@ std::vector<glm::vec2> GLTFLoader::ReadUVs(int index)
     }
     else
     {
-        GetLogger()->Error("Invalid UV type: %d\n", accessor.componentType);
+        GetLogger()->Error("Invalid UV type: %%", accessor.componentType);
     }
 
     return uvs;
@@ -656,7 +656,7 @@ std::vector<glm::u8vec4> GLTFLoader::ReadColors(int index)
     }
     else
     {
-        GetLogger()->Error("Invalid color type: %d\n", accessor.componentType);
+        GetLogger()->Error("Invalid color type: %%", accessor.componentType);
     }
 
     // Fix for bug in Blender where it exports vertex colors in sRGB instead of linear space

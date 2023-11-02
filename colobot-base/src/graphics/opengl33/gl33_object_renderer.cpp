@@ -38,7 +38,7 @@ using namespace Gfx;
 CGL33ObjectRenderer::CGL33ObjectRenderer(CGL33Device* device)
     :m_device(device)
 {
-    GetLogger()->Info("Creating CGL33ObjectRenderer\n");
+    GetLogger()->Info("Creating CGL33ObjectRenderer");
 
     std::string preamble = LoadSource("shaders/gl33/preamble.glsl");
     std::string shadowSource = LoadSource("shaders/gl33/shadow.glsl");
@@ -49,14 +49,14 @@ CGL33ObjectRenderer::CGL33ObjectRenderer(CGL33Device* device)
     GLint vsShader = CreateShader(GL_VERTEX_SHADER, { preamble, lightingSource, shadowSource, vsSource });
     if (vsShader == 0)
     {
-        GetLogger()->Error("Cound not create vertex shader from file 'object_vs.glsl'\n");
+        GetLogger()->Error("Cound not create vertex shader from file 'object_vs.glsl'");
         return;
     }
 
     GLint fsShader = CreateShader(GL_FRAGMENT_SHADER, { preamble, lightingSource, shadowSource, fsSource });
     if (fsShader == 0)
     {
-        GetLogger()->Error("Cound not create fragment shader from file 'object_fs.glsl'\n");
+        GetLogger()->Error("Cound not create fragment shader from file 'object_fs.glsl'");
         return;
     }
 
@@ -169,7 +169,7 @@ CGL33ObjectRenderer::CGL33ObjectRenderer(CGL33Device* device)
     glEnableVertexAttribArray(3);
     glEnableVertexAttribArray(4);
 
-    GetLogger()->Info("CGL33ObjectRenderer created successfully\n");
+    GetLogger()->Info("CGL33ObjectRenderer created successfully");
 }
 
 CGL33ObjectRenderer::~CGL33ObjectRenderer()

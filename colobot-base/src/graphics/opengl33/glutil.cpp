@@ -47,7 +47,7 @@ bool InitializeGLEW()
 
         if (glewInit() != GLEW_OK)
         {
-            GetLogger()->Error("GLEW initialization failed\n");
+            GetLogger()->Error("GLEW initialization failed");
             return false;
         }
 
@@ -262,7 +262,7 @@ bool CheckGLErrors()
 
     while (error != GL_NO_ERROR)
     {
-        GetLogger()->Error("OpenGL error: %d\n", error);
+        GetLogger()->Error("OpenGL error: %%", error);
 
         result = true;
 
@@ -328,8 +328,8 @@ std::string LoadSource(const std::string& path)
     PHYSFS_file* file = PHYSFS_openRead(path.c_str());
     if (file == nullptr)
     {
-        GetLogger()->Error("Cannot read shader source file\n");
-        GetLogger()->Error("Missing file \"%s\"\n", path.c_str());
+        GetLogger()->Error("Cannot read shader source file");
+        GetLogger()->Error("Missing file '%%'\n", path);
         return {};
     }
 
@@ -368,7 +368,7 @@ GLint CreateShader(GLint type, const std::vector<std::string>& sources)
         auto message = std::make_unique<GLchar[]>(len + 1);
         glGetShaderInfoLog(shader, len + 1, nullptr, message.get());
 
-        GetLogger()->Error("Shader compilation error occurred!\n%s\n", message.get());
+        GetLogger()->Error("Shader compilation error occurred!\n%%", message.get());
         lastShaderError = std::string("Shader compilation error occurred!\n\n") + std::string(message.get());
 
         glDeleteShader(shader);
@@ -383,8 +383,8 @@ GLint LoadShader(GLint type, const char* filename)
     PHYSFS_file *file = PHYSFS_openRead(filename);
     if (file == nullptr)
     {
-        GetLogger()->Error("Cannot read shader source file\n");
-        GetLogger()->Error("Missing file \"%s\"\n", filename);
+        GetLogger()->Error("Cannot read shader source file");
+        GetLogger()->Error("Missing file '%%'", filename);
         return 0;
     }
 
@@ -413,7 +413,7 @@ GLint LoadShader(GLint type, const char* filename)
         auto message = std::make_unique<GLchar[]>(len + 1);
         glGetShaderInfoLog(shader, len + 1, nullptr, message.get());
 
-        GetLogger()->Error("Shader compilation error occurred!\n%s\n", message.get());
+        GetLogger()->Error("Shader compilation error occurred!\n%%", message.get());
         lastShaderError = std::string("Shader compilation error occurred!\n\n") + std::string(message.get());
 
         glDeleteShader(shader);
@@ -446,7 +446,7 @@ GLint LinkProgram(int count, const GLint* shaders)
         auto message = std::make_unique<GLchar[]>(len + 1);
         glGetProgramInfoLog(program, len + 1, nullptr, message.get());
 
-        GetLogger()->Error("Shader program linking error occurred!\n%s\n", message.get());
+        GetLogger()->Error("Shader program linking error occurred!\n%%", message.get());
         lastShaderError = std::string("Shader program linking error occurred!\n\n") + std::string(message.get());
 
         glDeleteProgram(program);
@@ -480,7 +480,7 @@ GLint LinkProgram(const std::vector<GLint>& shaders)
         std::string message(len, ' ');
         glGetProgramInfoLog(program, len + 1, nullptr, message.data());
 
-        GetLogger()->Error("Shader program linking error occurred!\n%s\n", message.c_str());
+        GetLogger()->Error("Shader program linking error occurred!\n%%", message);
         lastShaderError = std::string("Shader program linking error occurred!\n\n") + std::string(message.c_str());
 
         glDeleteProgram(program);

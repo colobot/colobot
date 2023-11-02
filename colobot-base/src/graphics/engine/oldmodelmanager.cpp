@@ -55,7 +55,7 @@ bool COldModelManager::LoadModel(const std::string& name, bool mirrored, int tea
 
         if (!extension.empty())
         {
-            GetLogger()->Debug("Loading model '%s'\n", name.c_str());
+            GetLogger()->Debug("Loading model '%%'", name);
 
             model = ModelInput::Read("models/" + name);
 
@@ -69,7 +69,7 @@ bool COldModelManager::LoadModel(const std::string& name, bool mirrored, int tea
 
         if (CResourceManager::Exists(gltf_path))
         {
-            GetLogger()->Debug("Loading model '%s'\n", (name + ".gltf").c_str());
+            GetLogger()->Debug("Loading model '%%'", (name + ".gltf"));
 
             model = ModelInput::Read(gltf_path);
 
@@ -81,7 +81,7 @@ bool COldModelManager::LoadModel(const std::string& name, bool mirrored, int tea
 
         if (CResourceManager::Exists(mod_path))
         {
-            GetLogger()->Debug("Loading model '%s'\n", (name + ".mod").c_str());
+            GetLogger()->Debug("Loading model '%%'", (name + ".mod"));
 
             model = ModelInput::Read(mod_path);
 
@@ -93,7 +93,7 @@ bool COldModelManager::LoadModel(const std::string& name, bool mirrored, int tea
     }
     catch (const CModelIOException& e)
     {
-        GetLogger()->Error("Loading model '%s' failed: %s\n", name.c_str(), e.what());
+        GetLogger()->Error("Loading model '%%' failed: %%", name, e.what());
         return false;
     }
 

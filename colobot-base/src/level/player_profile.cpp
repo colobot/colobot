@@ -260,7 +260,7 @@ void CPlayerProfile::LoadFinishedLevels(LevelCategory category)
     file.open(filename);
     if (!file.is_open())
     {
-        GetLogger()->Error("Unable to read list of finished levels from '%s'\n", filename.c_str());
+        GetLogger()->Error("Unable to read list of finished levels from '%%'", filename);
         return;
     }
 
@@ -298,7 +298,7 @@ void CPlayerProfile::SaveFinishedLevels(LevelCategory category)
     file.open(filename);
     if (!file.is_open())
     {
-        GetLogger()->Error("Unable to read list of finished missions from '%s'\n", filename.c_str());
+        GetLogger()->Error("Unable to read list of finished missions from '%%'", filename);
         return;
     }
 
@@ -362,7 +362,7 @@ void CPlayerProfile::LoadFreeGameUnlock()
     file.open(filename);
     if (!file.is_open())
     {
-        GetLogger()->Error("Unable to read free game unlock state from '%s'\n", filename.c_str());
+        GetLogger()->Error("Unable to read free game unlock state from '%%'", filename);
         return;
     }
 
@@ -382,7 +382,7 @@ void CPlayerProfile::SaveFreeGameUnlock()
     file.open(filename);
     if (!file.is_open())
     {
-        GetLogger()->Error("Unable to write free game unlock state to '%s'\n", filename.c_str());
+        GetLogger()->Error("Unable to write free game unlock state to '%%'", filename);
         return;
     }
 
@@ -424,7 +424,7 @@ void CPlayerProfile::LoadAppearance()
     }
     catch (CLevelParserException& e)
     {
-        GetLogger()->Error("Unable to read personalized player appearance: %s\n", e.what());
+        GetLogger()->Error("Unable to read personalized player appearance: %%", e.what());
     }
 }
 
@@ -450,7 +450,7 @@ void CPlayerProfile::SaveAppearance()
     }
     catch (CLevelParserException& e)
     {
-        GetLogger()->Error("Unable to write personalized player appearance: %s\n", e.what());
+        GetLogger()->Error("Unable to write personalized player appearance: %%", e.what());
     }
 }
 
@@ -489,7 +489,7 @@ std::vector<SavedScene> CPlayerProfile::GetSavedSceneList()
             }
             catch (CLevelParserException &e)
             {
-                GetLogger()->Error("Error trying to load savegame title: %s\n", e.what());
+                GetLogger()->Error("Error trying to load savegame title: %%", e.what());
             }
         }
     }

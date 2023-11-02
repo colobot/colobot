@@ -112,7 +112,7 @@ std::string CGL33Device::GetName()
 
 bool CGL33Device::Create()
 {
-    GetLogger()->Info("Creating CDevice - OpenGL 3.3\n");
+    GetLogger()->Info("Creating CDevice - OpenGL 3.3");
 
     if (!InitializeGLEW())
     {
@@ -126,27 +126,27 @@ bool CGL33Device::Create()
 
     if (glVersion < 32)
     {
-        GetLogger()->Error("Unsupported OpenGL version: %d.%d\n", glMajor, glMinor);
-        GetLogger()->Error("OpenGL 3.2 or newer is required to use this engine.\n");
-        m_errorMessage = "It seems your graphics card does not support OpenGL 3.2.\n";
-        m_errorMessage += "Please make sure you have appropriate hardware and newest drivers installed.\n";
-        m_errorMessage += "(OpenGL 3.2 is roughly equivalent to Direct3D 10)\n\n";
+        GetLogger()->Error("Unsupported OpenGL version: %%.%%", glMajor, glMinor);
+        GetLogger()->Error("OpenGL 3.2 or newer is required to use this engine.");
+        m_errorMessage = "It seems your graphics card does not support OpenGL 3.2.";
+        m_errorMessage += "Please make sure you have appropriate hardware and newest drivers installed.";
+        m_errorMessage += "(OpenGL 3.2 is roughly equivalent to Direct3D 10)";
         m_errorMessage += GetHardwareInfo();
         return false;
     }
     else if (glVersion < 33)
     {
-        GetLogger()->Warn("Partially supported OpenGL version: %d.%d\n", glMajor, glMinor);
-        GetLogger()->Warn("You may experience problems while running the game on this engine.\n");
-        GetLogger()->Warn("OpenGL 3.3 or newer is recommended.\n");
+        GetLogger()->Warn("Partially supported OpenGL version: %%.%%", glMajor, glMinor);
+        GetLogger()->Warn("You may experience problems while running the game on this engine.");
+        GetLogger()->Warn("OpenGL 3.3 or newer is recommended.");
     }
     else
     {
         const char* version = reinterpret_cast<const char*>(glGetString(GL_VERSION));
         const char* renderer = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
 
-        GetLogger()->Info("OpenGL %s\n", version);
-        GetLogger()->Info("%s\n", renderer);
+        GetLogger()->Info("OpenGL %%", version);
+        GetLogger()->Info("%%", renderer);
     }
 
     // Detect support of anisotropic filtering
@@ -158,17 +158,17 @@ bool CGL33Device::Create()
         glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &level);
         m_capabilities.maxAnisotropy = static_cast<int>(level);
 
-        GetLogger()->Info("Anisotropic filtering available\n");
-        GetLogger()->Info("Maximum anisotropy: %d\n", m_capabilities.maxAnisotropy);
+        GetLogger()->Info("Anisotropic filtering available");
+        GetLogger()->Info("Maximum anisotropy: %%", m_capabilities.maxAnisotropy);
     }
     else
     {
-        GetLogger()->Info("Anisotropic filtering not available\n");
+        GetLogger()->Info("Anisotropic filtering not available");
     }
 
     m_capabilities.multisamplingSupported = true;
     glGetIntegerv(GL_MAX_SAMPLES, &m_capabilities.maxSamples);
-    GetLogger()->Info("Multisampling supported, max samples: %d\n", m_capabilities.maxSamples);
+    GetLogger()->Info("Multisampling supported, max samples: %%", m_capabilities.maxSamples);
 
     // Set just to be sure
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -180,10 +180,10 @@ bool CGL33Device::Create()
 
     int maxTextures = 0;
     glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &maxTextures);
-    GetLogger()->Info("Maximum texture image units: %d\n", maxTextures);
+    GetLogger()->Info("Maximum texture image units: %%", maxTextures);
 
     glGetIntegerv(GL_MAX_TEXTURE_SIZE, &m_capabilities.maxTextureSize);
-    GetLogger()->Info("Maximum texture size: %d\n", m_capabilities.maxTextureSize);
+    GetLogger()->Info("Maximum texture size: %%", m_capabilities.maxTextureSize);
 
     m_capabilities.multitexturingSupported = true;
     m_capabilities.maxTextures = maxTextures;
@@ -192,7 +192,7 @@ bool CGL33Device::Create()
 
     m_capabilities.framebufferSupported = true;
     glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE, &m_capabilities.maxRenderbufferSize);
-    GetLogger()->Info("Maximum renderbuffer size: %d\n", m_capabilities.maxRenderbufferSize);
+    GetLogger()->Info("Maximum renderbuffer size: %%", m_capabilities.maxRenderbufferSize);
 
     m_uiRenderer = std::make_unique<CGL33UIRenderer>(this);
     m_terrainRenderer = std::make_unique<CGL33TerrainRenderer>(this);
@@ -209,7 +209,7 @@ bool CGL33Device::Create()
 
     m_framebuffers["default"] = std::make_unique<CDefaultFramebuffer>(framebufferParams);
 
-    GetLogger()->Info("CDevice created successfully\n");
+    GetLogger()->Info("CDevice created successfully");
 
     return true;
 }
@@ -321,7 +321,7 @@ Texture CGL33Device::CreateTexture(CImage *image, const TextureCreateParams &par
     ImageData *data = image->GetData();
     if (data == nullptr)
     {
-        GetLogger()->Error("Invalid texture data\n");
+        GetLogger()->Error("Invalid texture data");
         return Texture(); // invalid texture
     }
 

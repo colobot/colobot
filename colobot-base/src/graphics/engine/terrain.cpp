@@ -218,7 +218,7 @@ bool CTerrain::LoadResources(const std::string& fileName)
 
     if (! img.Load(fileName))
     {
-        GetLogger()->Error("Cannot load resource file: '%s'\n", fileName.c_str());
+        GetLogger()->Error("Cannot load resource file: '%%'", fileName);
         return false;
     }
 
@@ -230,7 +230,7 @@ bool CTerrain::LoadResources(const std::string& fileName)
 
     if ( (data->surface->w != size) || (data->surface->h != size) )
     {
-        GetLogger()->Error("Invalid resource file! Expected %dx%d\n", size, size);
+        GetLogger()->Error("Invalid resource file! Expected %%x%%", size, size);
         return false;
     }
 
@@ -305,18 +305,18 @@ bool CTerrain::LoadRelief(const std::string &fileName, float scaleRelief,
 
     if (! img.Load(fileName))
     {
-        GetLogger()->Error("Could not load relief file: '%s'!\n", fileName.c_str());
+        GetLogger()->Error("Could not load relief file: '%%'!", fileName);
         return false;
     }
 
     ImageData *data = img.GetData();
 
     int size = (m_mosaicCount*m_brickCount)+1;
-    GetLogger()->Debug("Expected relief size for current terrain configuration is %dx%d\n", size, size);
+    GetLogger()->Debug("Expected relief size for current terrain configuration is %%x%%", size, size);
 
     if ( (data->surface->w != size) || (data->surface->h != size) )
     {
-        GetLogger()->Error("Invalid relief file! Expected %dx%d\n", size, size);
+        GetLogger()->Error("Invalid relief file! Expected %%x%%", size, size);
         return false;
     }
 
@@ -1126,7 +1126,7 @@ bool CTerrain::ChangeMaterialPoint(int x, int y, int id)
         }
     }
 
-    GetLogger()->Error("AddMaterialPoint error\n");
+    GetLogger()->Error("AddMaterialPoint error");
     return false;
 }
 

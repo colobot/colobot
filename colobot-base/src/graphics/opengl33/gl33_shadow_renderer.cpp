@@ -40,28 +40,28 @@ using namespace Gfx;
 CGL33ShadowRenderer::CGL33ShadowRenderer(CGL33Device* device)
     : m_device(device)
 {
-    GetLogger()->Info("Creating CGL33ShadowRenderer\n");
+    GetLogger()->Info("Creating CGL33ShadowRenderer");
 
     GLint shaders[2] = {};
 
     shaders[0] = LoadShader(GL_VERTEX_SHADER, "shaders/gl33/shadow_vs.glsl");
     if (shaders[0] == 0)
     {
-        GetLogger()->Error("Cound not create vertex shader from file 'shadow_vs.glsl'\n");
+        GetLogger()->Error("Cound not create vertex shader from file 'shadow_vs.glsl'");
         return;
     }
 
     shaders[1] = LoadShader(GL_FRAGMENT_SHADER, "shaders/gl33/shadow_fs.glsl");
     if (shaders[1] == 0)
     {
-        GetLogger()->Error("Cound not create fragment shader from file 'shadow_fs.glsl'\n");
+        GetLogger()->Error("Cound not create fragment shader from file 'shadow_fs.glsl'");
         return;
     }
 
     m_program = LinkProgram(2, shaders);
     if (m_program == 0)
     {
-        GetLogger()->Error("Cound not link shader program for terrain renderer\n");
+        GetLogger()->Error("Cound not link shader program for terrain renderer");
         return;
     }
 
@@ -85,7 +85,7 @@ CGL33ShadowRenderer::CGL33ShadowRenderer(CGL33Device* device)
 
     glGenFramebuffers(1, &m_framebuffer);
 
-    GetLogger()->Info("CGL33ShadowRenderer created successfully\n");
+    GetLogger()->Info("CGL33ShadowRenderer created successfully");
 }
 
 CGL33ShadowRenderer::~CGL33ShadowRenderer()
@@ -164,7 +164,7 @@ void CGL33ShadowRenderer::SetShadowMap(const Texture& texture)
 
     if (status != GL_FRAMEBUFFER_COMPLETE)
     {
-        GetLogger()->Error("Framebuffer incomplete: %d\n", status);
+        GetLogger()->Error("Framebuffer incomplete: %%", status);
     }
 }
 

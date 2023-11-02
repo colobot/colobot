@@ -322,7 +322,7 @@ private:
             m_error = "Unable to open file '" + multisizeFont->fileName + "' (font size = " + std::to_string(pointSize) + ")";
             return nullptr;
         }
-        GetLogger()->Debug("Loaded font file %s (font size = %d)\n", multisizeFont->fileName.c_str(), pointSize);
+        GetLogger()->Debug("Loaded font file %% (font size = %%)", multisizeFont->fileName, pointSize);
         auto newFont = std::make_unique<CachedFont>(std::move(file), pointSize);
         if (newFont->font == nullptr)
         {

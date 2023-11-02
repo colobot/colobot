@@ -40,7 +40,7 @@ using namespace Gfx;
 CGL33TerrainRenderer::CGL33TerrainRenderer(CGL33Device* device)
     : m_device(device)
 {
-    GetLogger()->Info("Creating CGL33TerrainRenderer\n");
+    GetLogger()->Info("Creating CGL33TerrainRenderer");
 
     std::string preamble = LoadSource("shaders/gl33/preamble.glsl");
     std::string shadowSource = LoadSource("shaders/gl33/shadow.glsl");
@@ -51,21 +51,21 @@ CGL33TerrainRenderer::CGL33TerrainRenderer(CGL33Device* device)
     GLint vsShader = CreateShader(GL_VERTEX_SHADER, { preamble, lightingSource, shadowSource, vsSource });
     if (vsShader == 0)
     {
-        GetLogger()->Error("Cound not create vertex shader from file 'terrain_vs.glsl'\n");
+        GetLogger()->Error("Cound not create vertex shader from file 'terrain_vs.glsl'");
         return;
     }
 
     GLint fsShader = CreateShader(GL_FRAGMENT_SHADER, { preamble, lightingSource, shadowSource, fsSource });
     if (fsShader == 0)
     {
-        GetLogger()->Error("Cound not create fragment shader from file 'terrain_vs.glsl'\n");
+        GetLogger()->Error("Cound not create fragment shader from file 'terrain_vs.glsl'");
         return;
     }
 
     m_program = LinkProgram({ vsShader, fsShader });
     if (m_program == 0)
     {
-        GetLogger()->Error("Cound not link shader program for terrain renderer\n");
+        GetLogger()->Error("Cound not link shader program for terrain renderer");
         return;
     }
 
@@ -148,7 +148,7 @@ CGL33TerrainRenderer::CGL33TerrainRenderer(CGL33Device* device)
 
     glUseProgram(0);
 
-    GetLogger()->Info("CGL33TerrainRenderer created successfully\n");
+    GetLogger()->Info("CGL33TerrainRenderer created successfully");
 }
 
 CGL33TerrainRenderer::~CGL33TerrainRenderer()
