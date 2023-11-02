@@ -28,6 +28,7 @@
 #include "common/singleton.h"
 
 #include <string>
+#include <string_view>
 #include <cstdarg>
 #include <cstdio>
 #include <vector>
@@ -62,47 +63,75 @@ public:
     ~CLogger();
 
     /** Write message to console or file
-    * \param str - message to write
-    * \param ... - additional arguments
+    * \param message - message to write
+    * \param args - additional arguments
     */
-    void Message(const char *str, ...);
+    template<typename... Args>
+    void Message(std::string_view message, Args&&... args)
+    {
+        Log(LogLevel::LOG_NONE, message, std::forward<Args>(args)...);
+    }
 
     /** Write message to console or file with LOG_TRACE level
-    * \param str - message to write
-    * \param ... - additional arguments
+    * \param message - message to write
+    * \param args - additional arguments
     */
-    void Trace(const char *str, ...);
+    template<typename... Args>
+    void Trace(std::string_view message, Args&&... args)
+    {
+        Log(LogLevel::LOG_TRACE, message, std::forward<Args>(args)...);
+    }
 
     /** Write message to console or file with LOG_DEBUG level
-    * \param str - message to write
-    * \param ... - additional arguments
+    * \param message - message to write
+    * \param args - additional arguments
     */
-    void Debug(const char *str, ...);
+    template<typename... Args>
+    void Debug(std::string_view message, Args&&... args)
+    {
+        Log(LogLevel::LOG_DEBUG, message, std::forward<Args>(args)...);
+    }
 
     /** Write message to console or file with LOG_INFO level
-    * \param str - message to write
-    * \param ... - additional arguments
+    * \param message - message to write
+    * \param args - additional arguments
     */
-    void Info(const char *str, ...);
+    template<typename... Args>
+    void Info(std::string_view message, Args&&... args)
+    {
+        Log(LogLevel::LOG_INFO, message, std::forward<Args>(args)...);
+    }
 
     /** Write message to console or file with LOG_WARN level
-    * \param str - message to write
-    * \param ... - additional arguments
+    * \param message - message to write
+    * \param args - additional arguments
     */
-    void Warn(const char *str, ...);
+    template<typename... Args>
+    void Warn(std::string_view message, Args&&... args)
+    {
+        Log(LogLevel::LOG_WARN, message, std::forward<Args>(args)...);
+    }
 
     /** Write message to console or file with LOG_ERROR level
-    * \param str - message to write
-    * \param ... - additional arguments
+    * \param message - message to write
+    * \param args - additional arguments
     */
-    void Error(const char *str, ...);
+    template<typename... Args>
+    void Error(std::string_view message, Args&&... args)
+    {
+        Log(LogLevel::LOG_ERROR, message, std::forward<Args>(args)...);
+    }
 
     /** Write message to console or file with given log level
     * \param logLevel - log level
-    * \param str - message to write
-    * \param ... - additional arguments
+    * \param message - message to write
+    * \param args - additional arguments
     */
-    void Log(LogLevel logLevel, const char *str, ...);
+    template<typename... Args>
+    void Log(LogLevel logLevel, std::string_view message, Args&&... args)
+    {
+        LogMessage(logLevel, FormatMessage(message, std::forward<Args>(args)...));
+    }
 
     /** Set output file to write logs to
     * The given file will be automatically closed when the logger exits
@@ -125,9 +154,114 @@ public:
     static bool ParseLogLevel(const std::string& str, LogLevel& logLevel);
 
 private:
+    /** Write message to console or file with given log level
+    * \param logLevel - log level
+    * \param message - message to write
+    */
+    void LogMessage(LogLevel type, std::string_view message);
+
+    template<typename... Args>
+    std::string FormatMessage(std::string_view format, Args&&... args)
+    {
+        std::string result;
+
+        PrintMessage(result, format, std::forward<Args>(args)...);
+
+        return result;
+    }
+
+    void PrintMessage(std::string& string, std::string_view format)
+    {
+        string.append(format);
+    }
+
+    template<typename Arg, typename... Args>
+    void PrintMessage(std::string& string, std::string_view format, Arg&& arg, Args&&... args)
+    {
+        std::size_t index = format.find("%%");
+
+        if (index == std::string_view::npos)
+        {
+            string.append(format);
+            return;
+        }
+
+        std::string_view raw = format.substr(0, index);
+
+        string.append(raw);
+
+        PrintValue(string, arg);
+
+        format.remove_prefix(index + 2);
+
+        return PrintMessage(string, format, std::forward<Args>(args)...);
+    }
+    
+    void PrintValue(std::string& string, char value)
+    {
+        string += value;
+    }
+    
+    void PrintValue(std::string& string, signed char value)
+    {
+        string += value;
+    }
+    
+    void PrintValue(std::string& string, unsigned char value)
+    {
+        string += value;
+    }
+
+    void PrintValue(std::string& string, bool value)
+    {
+        if (value)
+            string += "true";
+        else
+            string += "false";
+    }
+    
+    void PrintValue(std::string& string, int value)
+    {
+        string += std::to_string(value);
+    }
+    
+    void PrintValue(std::string& string, unsigned int value)
+    {
+        string += std::to_string(value);
+    }
+    
+    void PrintValue(std::string& string, long long value)
+    {
+        string += std::to_string(value);
+    }
+    
+    void PrintValue(std::string& string, unsigned long long value)
+    {
+        string += std::to_string(value);
+    }
+    
+    void PrintValue(std::string& string, float value)
+    {
+        string += std::to_string(value);
+    }
+    
+    void PrintValue(std::string& string, double value)
+    {
+        string += std::to_string(value);
+    }
+
+    void PrintValue(std::string& string, std::string_view value)
+    {
+        string.append(value);
+    }
+
+    void PrintValue(std::string& string, const char* value)
+    {
+        string.append(value);
+    }
+
     std::vector<FILE*> m_outputs;
     LogLevel m_logLevel;
-    void Log(LogLevel type, const char* str, va_list args);
 };
 
 

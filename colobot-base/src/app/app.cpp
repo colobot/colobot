@@ -219,21 +219,21 @@ void CApplication::LoadEnvironmentVariables()
     if (!dataDir.empty())
     {
         m_pathManager->SetDataPath(dataDir);
-        GetLogger()->Info("Using data dir (based on environment variable): '%s'\n", dataDir.c_str());
+        GetLogger()->Info("Using data dir (based on environment variable): '%%'", dataDir);
     }
 
     auto langDir = m_systemUtils->GetEnvVar("COLOBOT_LANG_DIR");
     if (!langDir.empty())
     {
         m_pathManager->SetLangPath(langDir);
-        GetLogger()->Info("Using lang dir (based on environment variable): '%s'\n", langDir.c_str());
+        GetLogger()->Info("Using lang dir (based on environment variable): '%%'", langDir);
     }
 
     auto saveDir = m_systemUtils->GetEnvVar("COLOBOT_SAVE_DIR");
     if (!saveDir.empty())
     {
         m_pathManager->SetSavePath(saveDir);
-        GetLogger()->Info("Using save dir (based on environment variable): '%s'\n", saveDir.c_str());
+        GetLogger()->Info("Using save dir (based on environment variable): '%%'", saveDir);
     }
 }
 
@@ -288,9 +288,9 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         if (c == '?')
         {
             if (optopt == 0)
-                GetLogger()->Error("Invalid argument: %s\n", argv[optind-1]);
+                GetLogger()->Error("Invalid argument: %%", argv[optind-1]);
             else
-                GetLogger()->Error("Expected argument for option: %s\n", argv[optind-1]);
+                GetLogger()->Error("Expected argument for option: %%", argv[optind-1]);
 
             m_exitCode = 1;
             return PARSE_ARGS_FAIL;
@@ -302,28 +302,28 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
         {
             case OPT_HELP:
             {
-                GetLogger()->Message("\n");
-                GetLogger()->Message("%s\n", Version::FULL_NAME);
-                GetLogger()->Message("\n");
-                GetLogger()->Message("List of available options and environment variables:\n");
-                GetLogger()->Message("  -help               this help\n");
-                GetLogger()->Message("  -debug modes        enable debug modes (more info printed in logs; see code for reference of modes)\n");
-                GetLogger()->Message("  -runscene sceneNNN  run given scene on start\n");
-                GetLogger()->Message("  -scenetest          win every mission right after it's loaded\n");
-                GetLogger()->Message("  -loadsave path      load given saved game on start (path is <player>/<save>\n");
-                GetLogger()->Message("  -loglevel level     set log level to level (one of: trace, debug, info, warn, error, none)\n");
-                GetLogger()->Message("  -langdir path       set custom language directory path\n");
-                GetLogger()->Message("                      environment variable: COLOBOT_LANG_DIR\n");
-                GetLogger()->Message("  -datadir path       set custom data directory path\n");
-                GetLogger()->Message("                      environment variable: COLOBOT_DATA_DIR\n");
-                GetLogger()->Message("  -savedir path       set custom save directory path (must be writable)\n");
-                GetLogger()->Message("                      environment variable: COLOBOT_SAVE_DIR\n");
-                GetLogger()->Message("  -mod path           load datadir mod from given path\n");
-                GetLogger()->Message("  -resolution WxH     set resolution\n");
-                GetLogger()->Message("  -headless           headless mode - disables graphics, sound and user interaction\n");
-                GetLogger()->Message("  -graphics           changes graphics device (one of: default, auto, opengl, gl14, gl21, gl33\n");
-                GetLogger()->Message("  -glversion          sets OpenGL context version to use (either default or version in format #.#)\n");
-                GetLogger()->Message("  -glprofile          sets OpenGL context profile to use (one of: default, core, compatibility, opengles)\n");
+                GetLogger()->Message("");
+                GetLogger()->Message("%%", Version::FULL_NAME);
+                GetLogger()->Message("");
+                GetLogger()->Message("List of available options and environment variables:");
+                GetLogger()->Message("  -help               this help");
+                GetLogger()->Message("  -debug modes        enable debug modes (more info printed in logs; see code for reference of modes)");
+                GetLogger()->Message("  -runscene sceneNNN  run given scene on start");
+                GetLogger()->Message("  -scenetest          win every mission right after it's loaded");
+                GetLogger()->Message("  -loadsave path      load given saved game on start (path is <player>/<save>");
+                GetLogger()->Message("  -loglevel level     set log level to level (one of: trace, debug, info, warn, error, none)");
+                GetLogger()->Message("  -langdir path       set custom language directory path");
+                GetLogger()->Message("                      environment variable: COLOBOT_LANG_DIR");
+                GetLogger()->Message("  -datadir path       set custom data directory path");
+                GetLogger()->Message("                      environment variable: COLOBOT_DATA_DIR");
+                GetLogger()->Message("  -savedir path       set custom save directory path (must be writable)");
+                GetLogger()->Message("                      environment variable: COLOBOT_SAVE_DIR");
+                GetLogger()->Message("  -mod path           load datadir mod from given path");
+                GetLogger()->Message("  -resolution WxH     set resolution");
+                GetLogger()->Message("  -headless           headless mode - disables graphics, sound and user interaction");
+                GetLogger()->Message("  -graphics           changes graphics device (one of: default, auto, opengl, gl14, gl21, gl33");
+                GetLogger()->Message("  -glversion          sets OpenGL context version to use (either default or version in format #.#)");
+                GetLogger()->Message("  -glprofile          sets OpenGL context profile to use (one of: default, core, compatibility, opengles)");
                 return PARSE_ARGS_HELP;
             }
             case OPT_DEBUG:
@@ -331,7 +331,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 if (optarg == nullptr)
                 {
                     m_debugModes = DEBUG_ALL;
-                    GetLogger()->Info("All debug modes active\n");
+                    GetLogger()->Info("All debug modes active");
                 }
                 else
                 {
@@ -342,7 +342,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                     }
 
                     m_debugModes = debugModes;
-                    GetLogger()->Info("Active debug modes: %s\n", optarg);
+                    GetLogger()->Info("Active debug modes: %%", optarg);
                 }
                 break;
             }
@@ -354,11 +354,11 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 m_runSceneRank = StrUtils::FromString<int>(file.substr(file.size()-3, 3));
                 if(m_runSceneCategory != LevelCategory::Max)
                 {
-                    GetLogger()->Info("Running scene '%s%d' on start\n", cat.c_str(), m_runSceneRank);
+                    GetLogger()->Info("Running scene '%%%%' on start", cat, m_runSceneRank);
                 }
                 else
                 {
-                    GetLogger()->Error("Requested to run scene from unknown category '%s'\n", cat.c_str());
+                    GetLogger()->Error("Requested to run scene from unknown category '%%'", cat);
                     return PARSE_ARGS_FAIL;
                 }
                 break;
@@ -379,7 +379,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 }
                 else
                 {
-                    GetLogger()->Error("Invalid path: '%s'\n", optarg);
+                    GetLogger()->Error("Invalid path: '%%'", optarg);
                     return PARSE_ARGS_FAIL;
                 }
                 break;
@@ -389,30 +389,30 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 LogLevel logLevel;
                 if (! CLogger::ParseLogLevel(optarg, logLevel))
                 {
-                    GetLogger()->Error("Invalid log level: '%s'\n", optarg);
+                    GetLogger()->Error("Invalid log level: '%%'", optarg);
                     return PARSE_ARGS_FAIL;
                 }
 
-                GetLogger()->Message("[*****] Log level changed to %s\n", optarg);
+                GetLogger()->Message("[*****] Log level changed to %%", optarg);
                 GetLogger()->SetLogLevel(logLevel);
                 break;
             }
             case OPT_DATADIR:
             {
                 m_pathManager->SetDataPath(optarg);
-                GetLogger()->Info("Using data dir: '%s'\n", optarg);
+                GetLogger()->Info("Using data dir: '%%'", optarg);
                 break;
             }
             case OPT_LANGDIR:
             {
                 m_pathManager->SetLangPath(optarg);
-                GetLogger()->Info("Using language dir: '%s'\n", optarg);
+                GetLogger()->Info("Using language dir: '%%'", optarg);
                 break;
             }
             case OPT_SAVEDIR:
             {
                 m_pathManager->SetSavePath(optarg);
-                GetLogger()->Info("Using save dir: '%s'\n", optarg);
+                GetLogger()->Info("Using save dir: '%%'", optarg);
                 break;
             }
             case OPT_MOD:
@@ -459,7 +459,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
 
                     if (parsed < 2)
                     {
-                        GetLogger()->Error("Invalid OpenGL version: %s\n", optarg);
+                        GetLogger()->Error("Invalid OpenGL version: %%", optarg);
                         return PARSE_ARGS_FAIL;
                     }
 
@@ -493,7 +493,7 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
                 }
                 else
                 {
-                    GetLogger()->Error("Invalid OpenGL profile: %s\n", optarg);
+                    GetLogger()->Error("Invalid OpenGL profile: %%", optarg);
                     return PARSE_ARGS_FAIL;
                 }
                 break;
@@ -510,7 +510,7 @@ bool CApplication::Create()
 {
     std::string path;
 
-    GetLogger()->Info("Creating CApplication\n");
+    GetLogger()->Info("Creating CApplication");
 
     m_errorMessage = m_pathManager->VerifyPaths();
     if (!m_errorMessage.empty())
@@ -522,7 +522,7 @@ bool CApplication::Create()
 
     if (!GetConfigFile().Init())
     {
-        GetLogger()->Warn("Config could not be loaded. Default values will be used!\n");
+        GetLogger()->Warn("Config could not be loaded. Default values will be used!");
     }
 
     m_modManager->FindMods();
@@ -540,13 +540,13 @@ bool CApplication::Create()
         m_sound = std::make_unique<CSoundInterface>();
     }
     #else
-    GetLogger()->Info("No sound support.\n");
+    GetLogger()->Info("No sound support.");
     m_sound = std::make_unique<CSoundInterface>();
     #endif
 
     m_sound->Create();
 
-    GetLogger()->Info("CApplication created successfully\n");
+    GetLogger()->Info("CApplication created successfully");
 
     std::string standardInfoMessage =
       "\nPlease see the console output or log file\n"
@@ -561,7 +561,7 @@ bool CApplication::Create()
 
     if (SDL_Init(initFlags) < 0)
     {
-        m_errorMessage = std::string("SDL initialization error:\n") +
+        m_errorMessage = std::string("SDL initialization error:") +
                          std::string(SDL_GetError());
         GetLogger()->Error(m_errorMessage.c_str());
         m_exitCode = 2;
@@ -571,18 +571,18 @@ bool CApplication::Create()
     // This is non-fatal and besides seems to fix some memory leaks
     if (SDL_InitSubSystem(SDL_INIT_JOYSTICK) < 0)
     {
-        GetLogger()->Warn("Joystick subsystem init failed\nJoystick(s) will not be available\n");
+        GetLogger()->Warn("Joystick subsystem init failed\nJoystick(s) will not be available");
     }
     if (SDL_InitSubSystem(SDL_INIT_HAPTIC) < 0)
     {
-        GetLogger()->Warn("Joystick haptic subsystem init failed\nForce feedback will not be available\n");
+        GetLogger()->Warn("Joystick haptic subsystem init failed\nForce feedback will not be available");
     }
 
     if ((IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG) == 0)
     {
-        m_errorMessage = std::string("SDL_Image initialization error:\n") +
+        m_errorMessage = std::string("SDL_Image initialization error:") +
                          std::string(IMG_GetError());
-        GetLogger()->Error(m_errorMessage.c_str());
+        GetLogger()->Error(m_errorMessage);
         m_exitCode = 3;
         return false;
     }
@@ -632,7 +632,7 @@ bool CApplication::Create()
         {
             m_errorMessage = std::string("SDL error while setting video mode:\n") +
                             std::string(SDL_GetError());
-            GetLogger()->Error(m_errorMessage.c_str());
+            GetLogger()->Error(m_errorMessage);
             m_exitCode = 4;
             return false;
         }
@@ -651,11 +651,11 @@ bool CApplication::Create()
             ChangeJoystick(joystick);
             first = false;
         }
-        GetLogger()->Info("Detected joystick: %s [ID %d]\n", joystick.name.c_str(), joystick.index);
+        GetLogger()->Info("Detected joystick: %% [ID %%]", joystick.name, joystick.index);
     }
     if (first)
     {
-        GetLogger()->Info("No joysticks detected\n");
+        GetLogger()->Info("No joysticks detected");
     }
 
     //if (!m_headless)
@@ -676,8 +676,8 @@ bool CApplication::Create()
 
         if (m_device == nullptr)
         {
-            GetLogger()->Error("Unknown graphics device: %s\n", graphics.c_str());
-            GetLogger()->Info("Changing to default device\n");
+            GetLogger()->Error("Unknown graphics device: %%", graphics);
+            GetLogger()->Info("Changing to default device");
             m_systemUtils->SystemDialog(SystemDialogType::ERROR_MSG, "Graphics initialization error", "You have selected invalid graphics device with -graphics switch. Game will use default OpenGL device instead.");
             m_device = Gfx::CreateDevice(*m_deviceConfig, "opengl");
         }
@@ -689,7 +689,7 @@ bool CApplication::Create()
 
     if (! m_device->Create() )
     {
-        m_errorMessage = std::string("Error in CDevice::Create()\n")
+        m_errorMessage = std::string("Error in CDevice::Create()")
             + "\n\n"
             + m_device->GetError()
             + standardInfoMessage;
@@ -702,7 +702,7 @@ bool CApplication::Create()
 
     if (! m_engine->Create() )
     {
-        m_errorMessage = std::string("Error in CEngine::Init()\n") + standardInfoMessage;
+        m_errorMessage = std::string("Error in CEngine::Init()") + standardInfoMessage;
         m_exitCode = 6;
         return false;
     }
@@ -735,7 +735,7 @@ bool CApplication::Create()
 
 void CApplication::ReloadResources()
 {
-    GetLogger()->Info("Reloading resources\n");
+    GetLogger()->Info("Reloading resources");
     m_engine->ReloadAllTextures();
     StartLoadingMusic();
     m_controller->GetRobotMain()->UpdateCustomLevelList();
@@ -776,7 +776,7 @@ bool CApplication::CreateVideoSurface()
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, m_glMajor);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, m_glMinor);
 
-            GetLogger()->Info("Requesting OpenGL context version %d.%d\n", m_glMajor, m_glMinor);
+            GetLogger()->Info("Requesting OpenGL context version %%.%%", m_glMajor, m_glMinor);
         }
     }
     else if (GetConfigFile().GetStringProperty("Experimental", "OpenGLVersion", value))
@@ -788,7 +788,7 @@ bool CApplication::CreateVideoSurface()
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, major);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, minor);
 
-        GetLogger()->Info("Requesting OpenGL context version %d.%d\n", major, minor);
+        GetLogger()->Info("Requesting OpenGL context version %%.%%", major, minor);
     }
 
     // set OpenGL context profile
@@ -822,13 +822,13 @@ bool CApplication::CreateVideoSurface()
         switch (profile)
         {
         case SDL_GL_CONTEXT_PROFILE_CORE:
-            GetLogger()->Info("Requesting OpenGL core profile\n");
+            GetLogger()->Info("Requesting OpenGL core profile");
             break;
         case SDL_GL_CONTEXT_PROFILE_COMPATIBILITY:
-            GetLogger()->Info("Requesting OpenGL compatibility profile\n");
+            GetLogger()->Info("Requesting OpenGL compatibility profile");
             break;
         case SDL_GL_CONTEXT_PROFILE_ES:
-            GetLogger()->Info("Requesting OpenGL ES profile\n");
+            GetLogger()->Info("Requesting OpenGL ES profile");
             break;
         }
     }
@@ -841,7 +841,7 @@ bool CApplication::CreateVideoSurface()
             SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
             SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, msaa);
 
-            GetLogger()->Info("Using MSAA on default framebuffer (%d samples)\n", msaa);
+            GetLogger()->Info("Using MSAA on default framebuffer (%% samples)", msaa);
         }
     }
 
@@ -880,17 +880,17 @@ void CApplication::TryToSetVSync()
         switch (vsync)
         {
         case -1:
-            GetLogger()->Warn("Adaptive sync not supported: %s\n", SDL_GetError());
+            GetLogger()->Warn("Adaptive sync not supported: %%", SDL_GetError());
             m_engine->SetVSync(1);
             TryToSetVSync();
             break;
         case 1:
-            GetLogger()->Warn("Couldn't enable VSync: %s\n", SDL_GetError());
+            GetLogger()->Warn("Couldn't enable VSync: %%", SDL_GetError());
             m_engine->SetVSync(0);
             TryToSetVSync();
             break;
         case 0:
-            GetLogger()->Warn("Couldn't disable VSync: %s\n", SDL_GetError());
+            GetLogger()->Warn("Couldn't disable VSync: %%", SDL_GetError());
             m_engine->SetVSync(SDL_GL_GetSwapInterval());
             break;
         }
@@ -920,7 +920,7 @@ bool CApplication::OpenJoystick()
         return false;
 
     assert(m_private->joystick == nullptr);
-    GetLogger()->Info("Opening joystick %d\n", m_joystick.index);
+    GetLogger()->Info("Opening joystick %%", m_joystick.index);
 
     m_private->joystick = SDL_JoystickOpen(m_joystick.index);
     if (m_private->joystick == nullptr)
@@ -940,13 +940,13 @@ bool CApplication::OpenJoystick()
     m_private->haptic = SDL_HapticOpenFromJoystick(m_private->joystick);
     if (m_private->haptic == nullptr)
     {
-        GetLogger()->Warn("Haptic subsystem open failed: %s\n", SDL_GetError());
+        GetLogger()->Warn("Haptic subsystem open failed: %%", SDL_GetError());
         return true;
     }
 
     if (SDL_HapticRumbleInit(m_private->haptic) != 0)
     {
-        GetLogger()->Warn("Haptic rumble effect init failed: %s\n", SDL_GetError());
+        GetLogger()->Warn("Haptic rumble effect init failed: %%", SDL_GetError());
         return true;
     }
 
@@ -957,7 +957,7 @@ void CApplication::CloseJoystick()
 {
     // Timer will remove itself automatically
 
-    GetLogger()->Info("Closing joystick\n");
+    GetLogger()->Info("Closing joystick");
 
     StopForceFeedbackEffect();
 
@@ -1285,7 +1285,7 @@ Event CApplication::ProcessSystemEvent()
 
         if (data->key == KEY(TAB) && ((event.kmodState & KEY_MOD(ALT)) != 0))
         {
-            GetLogger()->Debug("Minimize to taskbar\n");
+            GetLogger()->Debug("Minimize to taskbar");
             SDL_MinimizeWindow(m_private->window);
             event.type = EVENT_NULL;
         }
@@ -1387,7 +1387,7 @@ void CApplication::LogEvent(const Event &event)
                 case EVENT_KEY_UP:
                 {
                     auto data = event.GetData<KeyEventData>();
-                    l->Trace(" virt    = %s\n", data->virt ? "true" : "false");
+                    l->Trace(" virt    = %s\n", data->virt);
                     l->Trace(" key     = %d\n", data->key);
                     break;
                 }
@@ -1516,7 +1516,7 @@ void CApplication::RenderIfNeeded(int updateRate)
 void CApplication::SuspendSimulation()
 {
     m_simulationSuspended = true;
-    GetLogger()->Info("Suspend simulation\n");
+    GetLogger()->Info("Suspend simulation");
 }
 
 void CApplication::ResumeSimulation()
@@ -1524,14 +1524,14 @@ void CApplication::ResumeSimulation()
     m_simulationSuspended = false;
     InternalResumeSimulation();
 
-    GetLogger()->Info("Resume simulation\n");
+    GetLogger()->Info("Resume simulation");
 }
 
 void CApplication::ResetTimeAfterLoading()
 {
     InternalResumeSimulation();
 
-    GetLogger()->Trace("Resume simulation on loading\n");
+    GetLogger()->Trace("Resume simulation on loading");
 }
 
 void CApplication::InternalResumeSimulation()
@@ -1546,7 +1546,7 @@ void CApplication::StartLoadingMusic()
 {
     std::thread{[this]()
     {
-        GetLogger()->Debug("Cache sounds...\n");
+        GetLogger()->Debug("Cache sounds...");
         TimeStamp musicLoadStart{m_systemUtils->GetCurrentTimeStamp()};
 
         m_sound->Reset();
@@ -1554,7 +1554,7 @@ void CApplication::StartLoadingMusic()
 
         TimeStamp musicLoadEnd{m_systemUtils->GetCurrentTimeStamp()};
         float musicLoadTime = TimeUtils::Diff(musicLoadStart, musicLoadEnd, TimeUnit::MILLISECONDS);
-        GetLogger()->Debug("Sound loading took %.2f ms\n", musicLoadTime);
+        GetLogger()->Debug("Sound loading took %% ms", musicLoadTime);
     }}.detach();
 }
 
@@ -1571,7 +1571,7 @@ void CApplication::SetSimulationSpeed(float speed)
     m_realAbsTimeBase = m_realAbsTime;
     m_absTimeBase = m_exactAbsTime;
 
-    GetLogger()->Info("Simulation speed = %.2f\n", speed);
+    GetLogger()->Info("Simulation speed = %%", speed);
 }
 
 Event CApplication::CreateUpdateEvent(TimeStamp newTimeStamp)
@@ -1588,8 +1588,8 @@ Event CApplication::CreateUpdateEvent(TimeStamp newTimeStamp)
 
     if (newRealAbsTime < m_realAbsTime || newRealRelTime < 0)
     {
-        GetLogger()->Error("Fatal error: got negative system counter difference!\n");
-        GetLogger()->Error("This should never happen. Please report this error.\n");
+        GetLogger()->Error("Fatal error: got negative system counter difference!");
+        GetLogger()->Error("This should never happen. Please report this error.");
         m_eventQueue->AddEvent(Event(EVENT_SYS_QUIT));
         return Event(EVENT_NULL);
     }
@@ -1717,7 +1717,7 @@ bool CApplication::ParseDebugModes(const std::string& str, int& debugModes)
         }
         else
         {
-            GetLogger()->Error("Invalid debug mode: '%s'\n", modeToken.c_str());
+            GetLogger()->Error("Invalid debug mode: '%%'", modeToken);
             return false;
         }
     }
@@ -1855,12 +1855,12 @@ void CApplication::SetLanguage(Language language)
     {
         if (envLang[0] == 0)
         {
-            GetLogger()->Error("Failed to get language from environment, setting default language\n");
+            GetLogger()->Error("Failed to get language from environment, setting default language");
             m_language = LANGUAGE_ENGLISH;
         }
         else
         {
-            GetLogger()->Trace("gl_locale_name: '%s'\n", envLang);
+            GetLogger()->Trace("gl_locale_name: '%%'", envLang);
 
             if (strncmp(envLang,"en",2) == 0)
             {
@@ -1892,7 +1892,7 @@ void CApplication::SetLanguage(Language language)
             }
             else
             {
-                GetLogger()->Warn("Environment locale ('%s') is not supported, setting default language\n", envLang);
+                GetLogger()->Warn("Environment locale ('%%') is not supported, setting default language", envLang);
                 m_language = LANGUAGE_ENGLISH;
             }
         }
@@ -1938,17 +1938,17 @@ void CApplication::SetLanguage(Language language)
     langStr += locale;
     strcpy(m_languageLocale, langStr.c_str());
     putenv(m_languageLocale);
-    GetLogger()->Trace("SetLanguage: Set LANGUAGE=%s in environment\n", locale.c_str());
+    GetLogger()->Trace("SetLanguage: Set LANGUAGE=%% in environment", locale);
 
     char* defaultLocale = setlocale(LC_ALL, ""); // Load system locale
-    GetLogger()->Debug("Default system locale: %s\n", defaultLocale);
+    GetLogger()->Debug("Default system locale: %%", defaultLocale);
     if (!locale.empty()) // Override system locale?
     {
         setlocale(LC_ALL, locale.c_str());
     }
     setlocale(LC_NUMERIC, "C"); // Force numeric locale to "C" (fixes decimal point problems)
     std::string systemLocale = setlocale(LC_ALL, nullptr); // Get current locale configuration
-    GetLogger()->Debug("Setting locale: %s\n", systemLocale.c_str());
+    GetLogger()->Debug("Setting locale: %%", systemLocale);
     // Update C++ locale
     try
     {
@@ -1961,14 +1961,14 @@ void CApplication::SetLanguage(Language language)
     }
     catch (...)
     {
-        GetLogger()->Warn("Failed to update locale, possibly incorrect system configuration. Will fallback to classic locale.\n");
+        GetLogger()->Warn("Failed to update locale, possibly incorrect system configuration. Will fallback to classic locale.");
         try
         {
             std::locale::global(std::locale::classic());
         }
         catch (...)
         {
-            GetLogger()->Warn("Failed to set classic locale. Something is really messed up in your system configuration. Translations might not work.\n");
+            GetLogger()->Warn("Failed to set classic locale. Something is really messed up in your system configuration. Translations might not work.");
         }
 
         // C locale might still work correctly
@@ -1980,7 +1980,7 @@ void CApplication::SetLanguage(Language language)
     bind_textdomain_codeset("colobot", "UTF-8");
     textdomain("colobot");
 
-    GetLogger()->Debug("SetLanguage: Test gettext translation: '%s'\n", gettext("Colobot rules!"));
+    GetLogger()->Debug("SetLanguage: Test gettext translation: '%%'", gettext("Colobot rules!"));
 }
 
 bool CApplication::GetSceneTestMode()
@@ -2005,10 +2005,10 @@ void CApplication::PlayForceFeedbackEffect(float strength, int length)
 {
     if (m_private->haptic == nullptr) return;
 
-    GetLogger()->Trace("Force feedback! length = %d ms, strength = %.2f\n", length, strength);
+    GetLogger()->Trace("Force feedback! length = %% ms, strength = %%", length, strength);
     if (SDL_HapticRumblePlay(m_private->haptic, strength, length) != 0)
     {
-        GetLogger()->Debug("Failed to play haptic effect: %s\n", SDL_GetError());
+        GetLogger()->Debug("Failed to play haptic effect: %%", SDL_GetError());
     }
 }
 

@@ -38,95 +38,43 @@ CLogger::~CLogger()
     }
 }
 
-void CLogger::Log(LogLevel type, const char* str, va_list args)
+void CLogger::LogMessage(LogLevel type, std::string_view message)
 {
     if (type < m_logLevel)
         return;
 
+    std::string line;
+
+    switch (type)
+    {
+        case LOG_TRACE:
+            line += "[TRACE]: ";
+            break;
+        case LOG_DEBUG:
+            line += "[DEBUG]: ";
+            break;
+        case LOG_WARN:
+            line += "[WARN]: ";
+            break;
+        case LOG_INFO:
+            line += "[INFO]: ";
+            break;
+        case LOG_ERROR:
+            line += "[ERROR]: ";
+            break;
+        default:
+            break;
+    }
+
+    line += message;
+
+    if (line.empty() || line.back() != '\n')
+        line += '\n';
+
     for (FILE* out : m_outputs)
     {
-        switch (type)
-        {
-            case LOG_TRACE:
-                fprintf(out, "[TRACE]: ");
-                break;
-            case LOG_DEBUG:
-                fprintf(out, "[DEBUG]: ");
-                break;
-            case LOG_WARN:
-                fprintf(out, "[WARN]: ");
-                break;
-            case LOG_INFO:
-                fprintf(out, "[INFO]: ");
-                break;
-            case LOG_ERROR:
-                fprintf(out, "[ERROR]: ");
-                break;
-            default:
-                break;
-        }
-
-        va_list args2;
-        va_copy(args2, args);
-        vfprintf(out, str, args2);
-        va_end(args2);
+        fputs(line.c_str(), out);
     }
-}
-
-void CLogger::Trace(const char* str, ...)
-{
-    va_list args;
-    va_start(args, str);
-    Log(LOG_TRACE, str, args);
-    va_end(args);
-}
-
-void CLogger::Debug(const char* str, ...)
-{
-    va_list args;
-    va_start(args, str);
-    Log(LOG_DEBUG, str, args);
-    va_end(args);
-}
-
-void CLogger::Info(const char* str, ...)
-{
-    va_list args;
-    va_start(args, str);
-    Log(LOG_INFO, str, args);
-    va_end(args);
-}
-
-void CLogger::Warn(const char* str, ...)
-{
-    va_list args;
-    va_start(args, str);
-    Log(LOG_WARN, str, args);
-    va_end(args);
-}
-
-void CLogger::Error(const char* str, ...)
-{
-    va_list args;
-    va_start(args, str);
-    Log(LOG_ERROR, str, args);
-    va_end(args);
-}
-
-void CLogger::Message(const char* str, ...)
-{
-    va_list args;
-    va_start(args, str);
-    Log(LOG_NONE, str, args);
-    va_end(args);
-}
-
-void CLogger::Log(LogLevel logLevel, const char* str, ...)
-{
-    va_list args;
-    va_start(args, str);
-    Log(logLevel, str, args);
-    va_end(args);
 }
 
 void CLogger::AddOutput(FILE* file)

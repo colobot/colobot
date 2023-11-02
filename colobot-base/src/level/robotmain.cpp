@@ -5043,7 +5043,8 @@ CObject* CRobotMain::IOReadScene(std::string filename, std::string filecbot)
                 GetLogger()->Error("cbot.run file is wrong version: %i\n", version);
         }
 
-        if (bError) GetLogger()->Error("Restoring CBOT state failed at stream position: %li\n", istr.tellg());
+        if (bError) GetLogger()->Error("Restoring CBOT state failed at stream position: %%",
+            static_cast<long>(istr.tellg()));
         istr.close();
     }
 

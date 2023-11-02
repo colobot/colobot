@@ -163,7 +163,7 @@ int main(int argc, char *argv[])
     LocalFree(wargv);
     #endif
 
-    logger.Info("%s starting\n", Version::FULL_NAME);
+    logger.Info("%% starting\n", Version::FULL_NAME);
 
     CSignalHandlers::Init(systemUtils.get());
 
@@ -196,13 +196,13 @@ int main(int argc, char *argv[])
         {
             systemUtils->SystemDialog(SystemDialogType::ERROR_MSG, "COLOBOT - Fatal Error", app.GetErrorMessage());
         }
-        logger.Info("Didn't run main loop. Exiting with code %d\n", code);
+        logger.Info("Didn't run main loop. Exiting with code %%", code);
         return code;
     }
 
     code = app.Run();
 
-    logger.Info("Exiting with code %d\n", code);
+    logger.Info("Exiting with code %%", code);
 
     return code;
 }
