@@ -1474,7 +1474,7 @@ bool CEdit::ReadText(std::string filename)
 
     if (!stream.is_open())
     {
-        GetLogger()->Error("Failed to load text file %s\n", filename.c_str());
+        GetLogger()->Error("Failed to load text file %%", filename);
         return false;
     }
 
@@ -1879,7 +1879,7 @@ bool CEdit::WriteText(std::string filename)
 
     if (!stream.is_open())
     {
-        GetLogger()->Error("Failed to open output file: '%s'", filename.c_str());
+        GetLogger()->Error("Failed to open output file: '%%'", filename);
         return false;
     }
 

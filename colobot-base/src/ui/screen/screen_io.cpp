@@ -78,7 +78,7 @@ void CScreenIO::IOReadName()
     }
     catch (CLevelParserException& e)
     {
-        GetLogger()->Warn("%s\n", e.what());
+        GetLogger()->Warn("%%", e.what());
     }
 
     time(&now);

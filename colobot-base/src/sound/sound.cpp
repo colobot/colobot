@@ -48,7 +48,7 @@ void CSoundInterface::CacheAll()
         std::stringstream filename;
         filename << "sounds/sound" << std::setfill('0') << std::setw(3) << i << ".wav";
         if ( !Cache(static_cast<SoundType>(i), filename.str()) )
-            GetLogger()->Warn("Unable to load audio: %s\n", filename.str().c_str());
+            GetLogger()->Warn("Unable to load audio: %%", filename.str());
     }
 }
 

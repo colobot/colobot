@@ -141,7 +141,7 @@ void CScreenMainMenu::CreateInterface()
     }
     catch (CLevelParserException& e)
     {
-        GetLogger()->Error("Failed loading userlevel button name: %s\n", e.what());
+        GetLogger()->Error("Failed loading userlevel button name: %%", e.what());
     }
 
     ddim.y = dim.y*0.5f;

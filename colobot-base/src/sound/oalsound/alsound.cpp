@@ -43,7 +43,7 @@ void CALSound::CleanUp()
 {
     if (m_enabled)
     {
-        GetLogger()->Info("Unloading files and closing device...\n");
+        GetLogger()->Info("Unloading files and closing device...");
         Reset();
 
         alcDestroyContext(m_context);
@@ -58,25 +58,25 @@ bool CALSound::Create()
     if (m_enabled)
         return true;
 
-    GetLogger()->Info("Opening audio device...\n");
+    GetLogger()->Info("Opening audio device...");
     m_device = alcOpenDevice(nullptr);
     if (!m_device)
     {
-        GetLogger()->Error("Could not open audio device!\n");
+        GetLogger()->Error("Could not open audio device!");
         return false;
     }
 
     m_context = alcCreateContext(m_device, nullptr);
     if (!m_context)
     {
-        GetLogger()->Error("Could not create audio context!\n");
+        GetLogger()->Error("Could not create audio context!");
         return false;
     }
     alcMakeContextCurrent(m_context);
     alListenerf(AL_GAIN, m_audioVolume);
     alDistanceModel(AL_LINEAR_DISTANCE_CLAMPED);
 
-    GetLogger()->Info("Done.\n");
+    GetLogger()->Info("Done.");
     m_enabled = true;
     return true;
 }
@@ -255,7 +255,7 @@ bool CALSound::SearchFreeBuffer(SoundType sound, int &channel, bool &alreadyLoad
             alreadyLoaded = false;
             return true;
         }
-        GetLogger()->Error("Could not open channel to play sound!\n");
+        GetLogger()->Error("Could not open channel to play sound!");
         return false;
     }
 
@@ -280,7 +280,7 @@ bool CALSound::SearchFreeBuffer(SoundType sound, int &channel, bool &alreadyLoad
                     alreadyLoaded = false;
                     return true;
                 }
-                GetLogger()->Debug("Could not open additional channel to play sound!\n");
+                GetLogger()->Debug("Could not open additional channel to play sound!");
                 break;
             }
         }
@@ -291,7 +291,7 @@ bool CALSound::SearchFreeBuffer(SoundType sound, int &channel, bool &alreadyLoad
     {
         if (it.second->GetPriority() < priority)
         {
-            GetLogger()->Debug("Sound channel with lower priority will be reused.\n");
+            GetLogger()->Debug("Sound channel with lower priority will be reused.");
             channel = it.first;
             it.second->Reset();
             return true;
@@ -304,11 +304,11 @@ bool CALSound::SearchFreeBuffer(SoundType sound, int &channel, bool &alreadyLoad
     {
         channel = lowerOrEqual;
         m_channels[channel]->Reset();
-        GetLogger()->Debug("Sound channel with lower or equal priority will be reused.\n");
+        GetLogger()->Debug("Sound channel with lower or equal priority will be reused.");
         return true;
     }
 
-    GetLogger()->Debug("Could not find free buffer to use.\n");
+    GetLogger()->Debug("Could not find free buffer to use.");
     return false;
 }
 
@@ -330,7 +330,7 @@ int CALSound::Play(SoundType sound, const glm::vec3 &pos, bool relativeToListene
     }
     if (m_sounds.find(sound) == m_sounds.end())
     {
-        GetLogger()->Debug("Sound %d was not loaded!\n", sound);
+        GetLogger()->Debug("Sound %% was not loaded!", sound);
         return -1;
     }
 
@@ -368,7 +368,7 @@ int CALSound::Play(SoundType sound, const glm::vec3 &pos, bool relativeToListene
     if (!chn->Play())
     {
         m_channelsLimit = m_channels.size() - 1;
-        GetLogger()->Debug("Changing channel limit to %u.\n", m_channelsLimit);
+        GetLogger()->Debug("Changing channel limit to %%.", m_channelsLimit);
         m_channels.erase(channel);
 
         return -1;
@@ -593,7 +593,7 @@ void CALSound::PlayMusic(const std::string &filename, bool repeat, float fadeTim
         // check if we have music in cache
         if (m_music.find(filename) == m_music.end())
         {
-            GetLogger()->Debug("Music %s was not cached!\n", filename.c_str());
+            GetLogger()->Debug("Music %% was not cached!", filename);
 
             auto newBuffer = std::make_unique<CBuffer>();
             buffer = newBuffer.get();
@@ -605,7 +605,7 @@ void CALSound::PlayMusic(const std::string &filename, bool repeat, float fadeTim
         }
         else
         {
-            GetLogger()->Debug("Music loaded from cache\n");
+            GetLogger()->Debug("Music loaded from cache");
             buffer = m_music[filename].get();
         }
 

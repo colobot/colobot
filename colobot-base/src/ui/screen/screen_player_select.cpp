@@ -372,7 +372,7 @@ bool CScreenPlayerSelect::NameCreate()
     CWindow*    pw;
     CEdit*      pe;
 
-    GetLogger()->Info("Creating new player\n");
+    GetLogger()->Info("Creating new player");
     pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == nullptr )  return false;
     pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_NEDIT));

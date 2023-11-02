@@ -120,7 +120,7 @@ SoundType ParseSoundType(const std::string& str)
     auto it = SOUND_STRINGS.find(str);
     if (it == SOUND_STRINGS.end())
     {
-        GetLogger()->Error("Could not parse sound string: %s\n", str.c_str());
+        GetLogger()->Error("Could not parse sound string: %%", str);
         return SOUND_NONE;
     }
 

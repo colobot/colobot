@@ -41,26 +41,26 @@ CBuffer::~CBuffer()
     {
         alDeleteBuffers(1, &m_buffer);
         if (CheckOpenALError())
-            GetLogger()->Debug("Failed to unload buffer. Code %d\n", GetOpenALErrorCode());
+            GetLogger()->Debug("Failed to unload buffer. Code %%", GetOpenALErrorCode());
     }
 }
 
 bool CBuffer::LoadFromFile(std::string filename, SoundType sound)
 {
     m_sound = sound;
-    GetLogger()->Debug("Loading audio file: %s\n", filename.c_str());
+    GetLogger()->Debug("Loading audio file: %%", filename);
 
     auto file = CResourceManager::GetSNDFileHandler(filename);
 
-    GetLogger()->Trace("  channels %d\n", file->GetFileInfo().channels);
-    GetLogger()->Trace("  format %d\n", file->GetFileInfo().format);
-    GetLogger()->Trace("  frames %d\n", file->GetFileInfo().frames);
-    GetLogger()->Trace("  samplerate %d\n", file->GetFileInfo().samplerate);
-    GetLogger()->Trace("  sections %d\n", file->GetFileInfo().sections);
+    GetLogger()->Trace("  channels %%", file->GetFileInfo().channels);
+    GetLogger()->Trace("  format %%", file->GetFileInfo().format);
+    GetLogger()->Trace("  frames %%", file->GetFileInfo().frames);
+    GetLogger()->Trace("  samplerate %%", file->GetFileInfo().samplerate);
+    GetLogger()->Trace("  sections %%", file->GetFileInfo().sections);
 
     if (!file->IsOpen())
     {
-        GetLogger()->Warn("Could not load file %s. Reason: %s\n", filename.c_str(), file->GetLastError().c_str());
+        GetLogger()->Warn("Could not load file %%. Reason: %%", filename, file->GetLastError());
         m_loaded = false;
         return false;
     }
@@ -68,7 +68,7 @@ bool CBuffer::LoadFromFile(std::string filename, SoundType sound)
     alGenBuffers(1, &m_buffer);
     if (CheckOpenALError())
     {
-        GetLogger()->Warn("Could not create audio buffer. Code: %d\n", GetOpenALErrorCode());
+        GetLogger()->Warn("Could not create audio buffer. Code: %%", GetOpenALErrorCode());
         m_loaded = false;
         return false;
     }

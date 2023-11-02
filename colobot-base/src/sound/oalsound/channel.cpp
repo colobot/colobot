@@ -40,7 +40,7 @@ CChannel::CChannel()
 
     if (CheckOpenALError())
     {
-        GetLogger()->Debug("Failed to create sound source. Code: %d\n", GetOpenALErrorCode());
+        GetLogger()->Debug("Failed to create sound source. Code: %%", GetOpenALErrorCode());
         m_ready = false;
     }
     else
@@ -57,7 +57,7 @@ CChannel::~CChannel()
         alSourcei(m_source, AL_BUFFER, 0);
         alDeleteSources(1, &m_source);
         if (CheckOpenALError())
-            GetLogger()->Debug("Failed to delete sound source. Code: %d\n", GetOpenALErrorCode());
+            GetLogger()->Debug("Failed to delete sound source. Code: %%", GetOpenALErrorCode());
     }
 }
 
@@ -74,7 +74,7 @@ bool CChannel::Play()
     alSourcePlay(m_source);
     if (CheckOpenALError())
     {
-        GetLogger()->Debug("Could not play audio sound source. Code: %d\n", GetOpenALErrorCode());
+        GetLogger()->Debug("Could not play audio sound source. Code: %%", GetOpenALErrorCode());
     }
     return true;
 }
@@ -89,7 +89,7 @@ bool CChannel::Pause()
     alSourcePause(m_source);
     if (CheckOpenALError())
     {
-        GetLogger()->Debug("Could not pause audio sound source. Code: %d\n", GetOpenALErrorCode());
+        GetLogger()->Debug("Could not pause audio sound source. Code: %%", GetOpenALErrorCode());
     }
     return true;
 }
@@ -105,7 +105,7 @@ bool CChannel::SetPosition(const glm::vec3 &pos, bool relativeToListener)
     alSourcei(m_source, AL_SOURCE_RELATIVE, relativeToListener);
     if (CheckOpenALError())
     {
-        GetLogger()->Debug("Could not set sound position. Code: %d\n", GetOpenALErrorCode());
+        GetLogger()->Debug("Could not set sound position. Code: %%", GetOpenALErrorCode());
         return false;
     }
     return true;
@@ -121,7 +121,7 @@ bool CChannel::SetFrequency(float freq)
     alSourcef(m_source, AL_PITCH, freq);
     if (CheckOpenALError())
     {
-        GetLogger()->Debug("Could not set sound pitch to '%f'. Code: %d\n", freq, GetOpenALErrorCode());
+        GetLogger()->Debug("Could not set sound pitch to '%%'. Code: %%", freq, GetOpenALErrorCode());
         return false;
     }
     return true;
@@ -138,7 +138,7 @@ float CChannel::GetFrequency()
     alGetSourcef(m_source, AL_PITCH, &freq);
     if (CheckOpenALError())
     {
-        GetLogger()->Debug("Could not get sound pitch. Code: %d\n", GetOpenALErrorCode());
+        GetLogger()->Debug("Could not get sound pitch. Code: %%", GetOpenALErrorCode());
         return 0;
     }
 
@@ -155,7 +155,7 @@ bool CChannel::SetVolume(float vol)
     alSourcef(m_source, AL_GAIN, vol);
     if (CheckOpenALError())
     {
-        GetLogger()->Debug("Could not set sound volume to '%f'. Code: %d\n", vol, GetOpenALErrorCode());
+        GetLogger()->Debug("Could not set sound volume to '%%'. Code: %%", vol, GetOpenALErrorCode());
         return false;
     }
     return true;
@@ -172,7 +172,7 @@ float CChannel::GetVolume()
     alGetSourcef(m_source, AL_GAIN, &vol);
     if (CheckOpenALError())
     {
-        GetLogger()->Debug("Could not get sound volume. Code: %d\n", GetOpenALErrorCode());
+        GetLogger()->Debug("Could not get sound volume. Code: %%", GetOpenALErrorCode());
         return 0;
     }
 
@@ -270,7 +270,7 @@ bool CChannel::SetBuffer(CBuffer *buffer)
     alSourcei(m_source, AL_BUFFER, buffer->GetBuffer());
     if (CheckOpenALError())
     {
-        GetLogger()->Warn("Could not set sound buffer. Code: %d\n", GetOpenALErrorCode());
+        GetLogger()->Warn("Could not set sound buffer. Code: %%", GetOpenALErrorCode());
         return false;
     }
     m_initFrequency = GetFrequency();
@@ -288,7 +288,7 @@ bool CChannel::IsPlaying()
     alGetSourcei(m_source, AL_SOURCE_STATE, &status);
     if (CheckOpenALError())
     {
-        GetLogger()->Warn("Could not get sound status. Code: %d\n", GetOpenALErrorCode());
+        GetLogger()->Warn("Could not get sound status. Code: %%", GetOpenALErrorCode());
         return false;
     }
 
@@ -315,7 +315,7 @@ bool CChannel::Stop()
     alSourceStop(m_source);
     if (CheckOpenALError())
     {
-        GetLogger()->Warn("Could not stop sound. Code: %d\n", GetOpenALErrorCode());
+        GetLogger()->Warn("Could not stop sound. Code: %%", GetOpenALErrorCode());
         return false;
     }
     return true;
@@ -332,7 +332,7 @@ float CChannel::GetCurrentTime()
     alGetSourcef(m_source, AL_SEC_OFFSET, &current);
     if (CheckOpenALError())
     {
-        GetLogger()->Warn("Could not get source current play time. Code: %d\n", GetOpenALErrorCode());
+        GetLogger()->Warn("Could not get source current play time. Code: %%", GetOpenALErrorCode());
         return 0.0f;
     }
     return current;
@@ -348,7 +348,7 @@ void CChannel::SetCurrentTime(float current)
     alSourcef(m_source, AL_SEC_OFFSET, current);
     if (CheckOpenALError())
     {
-        GetLogger()->Warn("Could not get source current play time. Code: %d\n", GetOpenALErrorCode());
+        GetLogger()->Warn("Could not get source current play time. Code: %%", GetOpenALErrorCode());
     }
 }
 

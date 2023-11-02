@@ -390,7 +390,7 @@ void CProgramStorageObjectImpl::LoadAllProgramsForSavedScene(CLevelParserLine* l
     if(m_programStorageIndex < 0) return;
 
     GetLogger()->Debug("Loading saved scene programs from '%%'",
-        StrUtils::Format("%s/prog%.3d___.txt", levelSource, m_programStorageIndex));
+        StrUtils::Format("%s/prog%.3d___.txt", levelSource.c_str(), m_programStorageIndex));
 
     for (int i = 0; i <= 999; i++)
     {

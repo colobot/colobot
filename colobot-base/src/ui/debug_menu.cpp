@@ -477,7 +477,7 @@ bool CDebugMenu::HandleCopy(const glm::vec2& mousePos)
 
     std::string str = StrUtils::Format("pos=%.2f;%.2f", pos.x, pos.z);
 
-    GetLogger()->Debug("%s\n", str.c_str());
+    GetLogger()->Debug(str);
     SDL_SetClipboardText(str.c_str());
     return true;
 }

@@ -343,7 +343,7 @@ void CFileDialog::SetFilenameField(CEdit* edit, const std::string& filename)
             name = name.substr(0, name.length()-4);
         if (name.length() > static_cast<unsigned int>(edit->GetMaxChar()))
         {
-            GetLogger()->Warn("Tried to load too long filename!\n");
+            GetLogger()->Warn("Tried to load too long filename!");
             name = name.substr(0, edit->GetMaxChar());  // truncates according to max length
         }
     }
