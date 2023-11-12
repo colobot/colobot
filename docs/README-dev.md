@@ -60,9 +60,10 @@ Note that the recommended way of building the project is to use separate build d
 ```sh
   cd <colobot_repository>
   mkdir build
+  cd build
   cmake ../
   make
-  bin/colobot -datadir ../data
+  ./colobot -datadir ../data
 ```
 
 ## Tests organization
