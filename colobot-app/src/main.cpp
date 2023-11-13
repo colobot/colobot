@@ -163,7 +163,7 @@ int main(int argc, char *argv[])
     LocalFree(wargv);
     #endif
 
-    logger.Info("%s starting\n", Version::FULL_NAME);
+    logger.Info("%s starting\n", std::string(Version::FULL_NAME).data());
 
     CSignalHandlers::Init(systemUtils.get());
 
