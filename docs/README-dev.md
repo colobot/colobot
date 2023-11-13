@@ -58,10 +58,14 @@ Because of the above, include paths in source should always feature the full pat
 Note that the recommended way of building the project is to use separate build directory, where CMake will generate all targets. In this way, you can keep a clean source directory. The following shell commands illustrate this usage:
 
 ```sh
-  cd <colobot_repository>
+  git clone https://github.com/colobot/colobot.git
+  cd colobot
+  git switch master  # or dev (see above)
+  git submodule update --init
+  ln --symbolic ../src/graphics/opengl/shaders/ data/  # ON BRANCH dev RUN THIS INSTEAD: ln --symbolic ../colobot-base/graphics/opengl33/shaders/ data/  
   mkdir build
   cd build
-  cmake ../
+  cmake -D TRANSLATIONS=OFF ../  # You can't compile translations unless you have python2
   make
   ./colobot -datadir ../data
 ```
