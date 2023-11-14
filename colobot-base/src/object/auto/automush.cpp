@@ -144,9 +144,9 @@ bool CAutoMush::EventProcess(const Event &event)
             factor = 1.0f-m_progress;
             size = 1.0f+(1.0f-m_progress)*0.3f;
 
-            if ( m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
+            if ( m_lastParticle <= m_time )
             {
-                m_lastParticle = m_time;
+                m_lastParticle += 0.05;
 
                 for ( i=0 ; i<10 ; i++ )
                 {
