@@ -36,6 +36,9 @@ public:
         CBotProgram::Init();
         CBotProgram::AddFunction("FAIL", rFail, cFail);
         CBotProgram::AddFunction("ASSERT", rAssert, cAssert);
+        CBotProgram::AddFunction("SUSPEND", rSuspend, cSuspend);
+        CBotProgram::AddFunction("ASSERT_NOT_SUSPENDED", rAssertNotSuspended, cSuspend);
+        CBotProgram::SetCancelExternal(Cancel);
     }
 
     ~CBotUT()
@@ -99,6 +102,34 @@ private:
             throw CBotTestFail("CBot assertion failed");
         }
         return true;
+    }
+
+    static CBotTypResult cSuspend(CBotVar* &var, void* user)
+    {
+        return CBotTypResult(CBotTypVoid);
+    }
+
+    static bool rSuspend(CBotVar* var, CBotVar* result, int& exception, void* user)
+    {
+        bool *suspended = static_cast<bool*>(user);
+        *suspended = true;
+        return false;
+    }
+
+    static bool rAssertNotSuspended(CBotVar* var, CBotVar* result, int& exception, void* user)
+    {
+        bool *suspended = static_cast<bool*>(user);
+        if (*suspended)
+        {
+            throw CBotTestFail("CBot assertion failed");
+        }
+        return true;
+    }
+
+    static void Cancel(void* user)
+    {
+        bool *suspended = static_cast<bool*>(user);
+        *suspended = false;
     }
 
     // Modified version of PutList from src/script/script.cpp
@@ -219,7 +250,7 @@ private:
     }
 
 protected:
-    std::unique_ptr<CBotProgram> ExecuteTest(const std::string& code, CBotError expectedError = CBotNoErr)
+    std::unique_ptr<CBotProgram> ExecuteTest(const std::string& code, CBotError expectedError = CBotNoErr, bool stepMode=true)
     {
         CBotError expectedCompileError = expectedError < 6000 ? expectedError : CBotNoErr;
         CBotError expectedRuntimeError = expectedError >= 6000 ? expectedError : CBotNoErr;
@@ -251,17 +282,20 @@ protected:
         {
             try
             {
+                bool suspended = false;
+                void *user = static_cast<void*>(&suspended);
+                int timer = stepMode ? 0 : -1;
                 program->Start(test);
                 if (g_cbotTestSaveState)
                 {
-                    while (!program->Run(nullptr, 0)) // save/restore at each step
+                    while (!program->Run(user, timer)) // save/restore at each step
                     {
                         TestSaveAndRestore(program.get());
                     }
                 }
                 else
                 {
-                    while (!program->Run(nullptr, 0)); // execute in step mode
+                    while (!program->Run(user, timer)); // execute in step mode
                 }
                 program->GetError(error, cursor1, cursor2);
                 if (error != expectedRuntimeError)
@@ -3325,5 +3359,21 @@ TEST_F(CBotUT, ClassTestSaveInheritedMembers)
         "    ASSERT(789 == t.a);\n"
         "    ASSERT(1011 == t.b);\n"
         "}\n"
+    );
+}
+
+TEST_F(CBotUT, CatchShouldCancelExternalCalls)
+{
+    ExecuteTest(
+        "extern void CatchShouldCancelExternalCalls()\n"
+        "{\n"
+        "    try {\n"
+        "        SUSPEND();\n"
+        "    } catch(true) {\n"
+        "        ASSERT_NOT_SUSPENDED();\n"
+        "    }\n"
+        "}\n",
+        CBotNoErr,
+        false
     );
 }

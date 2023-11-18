@@ -331,9 +331,14 @@ public:
      */
     static const std::unique_ptr<CBotExternalCallList>& GetExternalCalls();
 
+    static void SetCancelExternal(void cancel(void* pUser));
+
+    static void CancelExternal(CBotStack*);
+
 private:
     //! All external calls
     static std::unique_ptr<CBotExternalCallList> m_externalCalls;
+    static void (*m_cancelExternal) (void* pUser);
     //! All user-defined functions
     std::list<CBotFunction*> m_functions{};
     //! The entry point function
