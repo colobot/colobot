@@ -37,7 +37,7 @@ public:
         CBotProgram::AddFunction("FAIL", rFail, cFail);
         CBotProgram::AddFunction("ASSERT", rAssert, cAssert);
         CBotProgram::AddFunction("SUSPEND", rSuspend, cSuspend);
-        CBotProgram::AddFunction("ASSERT_NOT_SUSPENDED", rAssertNotSuspended, cSuspend);
+        CBotProgram::AddFunction("ASSERT_EXTERNAL_NOT_RUNNING", rAssertExternalNotRunning, cSuspend);
         CBotProgram::SetCancelExternal(Cancel);
     }
 
@@ -111,15 +111,15 @@ private:
 
     static bool rSuspend(CBotVar* var, CBotVar* result, int& exception, void* user)
     {
-        bool *suspended = static_cast<bool*>(user);
-        *suspended = true;
+        bool *is_external_running = static_cast<bool*>(user);
+        *is_external_running = true;
         return false;
     }
 
-    static bool rAssertNotSuspended(CBotVar* var, CBotVar* result, int& exception, void* user)
+    static bool rAssertExternalNotRunning(CBotVar* var, CBotVar* result, int& exception, void* user)
     {
-        bool *suspended = static_cast<bool*>(user);
-        if (*suspended)
+        bool *is_external_running = static_cast<bool*>(user);
+        if (*is_external_running)
         {
             throw CBotTestFail("CBot assertion failed");
         }
@@ -128,8 +128,8 @@ private:
 
     static void Cancel(void* user)
     {
-        bool *suspended = static_cast<bool*>(user);
-        *suspended = false;
+        bool *is_external_running = static_cast<bool*>(user);
+        *is_external_running = false;
     }
 
     // Modified version of PutList from src/script/script.cpp
@@ -3370,7 +3370,7 @@ TEST_F(CBotUT, CatchShouldCancelExternalCalls)
         "    try {\n"
         "        SUSPEND();\n"
         "    } catch(true) {\n"
-        "        ASSERT_NOT_SUSPENDED();\n"
+        "        ASSERT_EXTERNAL_NOT_RUNNING();\n"
         "    }\n"
         "}\n",
         CBotNoErr,
