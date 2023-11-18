@@ -158,6 +158,7 @@ bool CBotExternalCallDefault::Run(CBotVar* thisVar, CBotStack* pStack)
 
     int exception = CBotNoErr; // TODO: Change to CBotError
     bool res = m_rExec(args, result, exception, pStack->GetUserPtr());
+    pStack->SetExternalCallSuspended(!res && exception == CBotNoErr);
 
     if (!res)
     {

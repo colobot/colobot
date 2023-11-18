@@ -126,7 +126,7 @@ bool CBotTry::Execute(CBotStack* &pj)
         {
             // ask to the catch block if it feels concerned
             if ( !pc->TestCatch(pile2, val) ) return false;     // suspend !
-            if (pile2->GetVal() != 0)
+            if (pile2->GetVal() != 0 && pile1->IsChildSuspended())
             {
                 CBotProgram::CancelExternal(pj);
             }

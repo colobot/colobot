@@ -144,6 +144,7 @@ CBotStack* CBotStack::AddStack(CBotInstr* instr, BlockVisibilityType bBlock)
     p->m_call   = nullptr;
     p->m_func   = IsFunction::NO;
     p->m_callFinished = false;
+    p->m_externalCallSuspended = false;
     return p;
 }
 
@@ -183,6 +184,7 @@ CBotStack* CBotStack::AddStack2(BlockVisibilityType bBlock)
     p->m_block = bBlock;
     p->m_prog = m_prog;
     p->m_step = 0;
+    p->m_externalCallSuspended = false;
     return    p;
 }
 
@@ -1014,6 +1016,19 @@ bool CBotVar::RestoreState(std::istream &istr, CBotVar* &pVar)
 bool CBotStack::IsCallFinished()
 {
     return m_callFinished;
+}
+
+void CBotStack::SetExternalCallSuspended(bool val)
+{
+    m_externalCallSuspended = val;
+}
+
+bool CBotStack::IsChildSuspended()
+{
+    if ( m_externalCallSuspended ) return true;
+    if ( m_next && m_next->IsChildSuspended() ) return true;
+    if ( m_next2 && m_next2->IsChildSuspended() ) return true;
+    return false;
 }
 
 } // namespace CBot

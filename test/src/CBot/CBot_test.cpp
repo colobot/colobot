@@ -37,7 +37,7 @@ public:
         CBotProgram::AddFunction("FAIL", rFail, cFail);
         CBotProgram::AddFunction("ASSERT", rAssert, cAssert);
         CBotProgram::AddFunction("SUSPEND", rSuspend, cSuspend);
-        CBotProgram::AddFunction("ASSERT_EXTERNAL_NOT_RUNNING", rAssertExternalNotRunning, cSuspend);
+        CBotProgram::AddFunction("IS_EXTERNAL_RUNNING", rIsExternalRunning, cIsExternalRunning);
         CBotProgram::SetCancelExternal(Cancel);
     }
 
@@ -116,13 +116,15 @@ private:
         return false;
     }
 
-    static bool rAssertExternalNotRunning(CBotVar* var, CBotVar* result, int& exception, void* user)
+    static CBotTypResult cIsExternalRunning(CBotVar* &var, void* user)
+    {
+        return CBotTypResult(CBotTypBoolean);
+    }
+
+    static bool rIsExternalRunning(CBotVar* var, CBotVar* result, int& exception, void* user)
     {
         bool *is_external_running = static_cast<bool*>(user);
-        if (*is_external_running)
-        {
-            throw CBotTestFail("CBot assertion failed");
-        }
+        result->SetValInt(*is_external_running);
         return true;
     }
 
@@ -282,8 +284,8 @@ protected:
         {
             try
             {
-                bool suspended = false;
-                void *user = static_cast<void*>(&suspended);
+                bool is_external_running = false;
+                void *user = static_cast<void*>(&is_external_running);
                 int timer = stepMode ? 0 : -1;
                 program->Start(test);
                 if (g_cbotTestSaveState)
@@ -3370,8 +3372,34 @@ TEST_F(CBotUT, CatchShouldCancelExternalCalls)
         "    try {\n"
         "        SUSPEND();\n"
         "    } catch(true) {\n"
-        "        ASSERT_EXTERNAL_NOT_RUNNING();\n"
+        "        ASSERT(not IS_EXTERNAL_RUNNING());\n"
         "    }\n"
+        "}\n",
+        CBotNoErr,
+        false
+    );
+}
+
+TEST_F(CBotUT, CatchShouldNotCancelExternalCallsMadeOutsideTry)
+{
+    ExecuteTest(
+        "extern void CatchShouldNotCancelExternalCallsMadeOutsideTry()\n"
+        "{\n"
+        "    try {\n"
+        "        SUSPEND();\n"
+        "    } catch(Inner()) {\n"
+        "    } catch(true) {\n"  // to terminate SUSPEND() (otherwise the test hangs)
+        "    }\n"
+        "}\n"
+        "\n"
+        "bool Inner()\n"
+        "{\n"
+        "    try {\n"
+        "        throw 10;\n"
+        "    } catch(10) {\n" // this catch should not cancel SUSPEND()
+        "    }\n"
+        "    ASSERT(IS_EXTERNAL_RUNNING());\n"
+        "    return false;\n"
         "}\n",
         CBotNoErr,
         false
