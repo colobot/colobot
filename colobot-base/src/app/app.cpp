@@ -563,7 +563,7 @@ bool CApplication::Create()
     {
         m_errorMessage = std::string("SDL initialization error:") +
                          std::string(SDL_GetError());
-        GetLogger()->Error(m_errorMessage.c_str());
+        GetLogger()->Error(m_errorMessage);
         m_exitCode = 2;
         return false;
     }
@@ -672,7 +672,7 @@ bool CApplication::Create()
             graphics = value;
         }
 
-        m_device = Gfx::CreateDevice(*m_deviceConfig, graphics.c_str());
+        m_device = Gfx::CreateDevice(*m_deviceConfig, graphics);
 
         if (m_device == nullptr)
         {
@@ -1360,11 +1360,11 @@ void CApplication::LogEvent(const Event &event)
 
     auto PrintEventDetails = [&]()
     {
-        l->Trace(" rTime = %f\n", event.rTime);
-        l->Trace(" kmodState = %04x\n", event.kmodState);
-        l->Trace(" mousePos = %f, %f\n", event.mousePos.x, event.mousePos.y);
-        l->Trace(" mouseButtonsState = %02x\n", event.mouseButtonsState);
-        l->Trace(" customParam = %d\n", event.customParam);
+        l->Trace(" rTime = %%", event.rTime);
+        l->Trace(" kmodState = %%", event.kmodState);
+        l->Trace(" mousePos = %%, %%", event.mousePos.x, event.mousePos.y);
+        l->Trace(" mouseButtonsState = %%", event.mouseButtonsState);
+        l->Trace(" customParam = %%", event.customParam);
     };
 
     // Print the events in debug mode to test the code
@@ -1374,55 +1374,55 @@ void CApplication::LogEvent(const Event &event)
 
         if (IsDebugModeActive(DEBUG_UPDATE_EVENTS) && event.type == EVENT_FRAME)
         {
-            l->Trace("Update event: %s\n", eventType.c_str());
+            l->Trace("Update event: %%", eventType);
             PrintEventDetails();
         }
 
         if (IsDebugModeActive(DEBUG_SYS_EVENTS) && (event.type <= EVENT_SYS_MAX && event.type != EVENT_FRAME))
         {
-            l->Trace("System event %s:\n", eventType.c_str());
+            l->Trace("System event %%:", eventType);
             switch (event.type)
             {
                 case EVENT_KEY_DOWN:
                 case EVENT_KEY_UP:
                 {
                     auto data = event.GetData<KeyEventData>();
-                    l->Trace(" virt    = %s\n", data->virt);
-                    l->Trace(" key     = %d\n", data->key);
+                    l->Trace(" virt    = %%", data->virt);
+                    l->Trace(" key     = %%", data->key);
                     break;
                 }
                 case EVENT_TEXT_INPUT:
                 {
                     auto data = event.GetData<TextInputData>();
-                    l->Trace(" text = %s\n", data->text.c_str());
+                    l->Trace(" text = %%", data->text);
                     break;
                 }
                 case EVENT_MOUSE_BUTTON_DOWN:
                 case EVENT_MOUSE_BUTTON_UP:
                 {
                     auto data = event.GetData<MouseButtonEventData>();
-                    l->Trace(" button = %d\n", data->button);
+                    l->Trace(" button = %%", data->button);
                     break;
                 }
                 case EVENT_MOUSE_WHEEL:
                 {
                     auto data = event.GetData<MouseWheelEventData>();
-                    l->Trace(" y = %d\n", data->y);
-                    l->Trace(" x = %d\n", data->x);
+                    l->Trace(" y = %%", data->y);
+                    l->Trace(" x = %%", data->x);
                     break;
                 }
                 case EVENT_JOY_AXIS:
                 {
                     auto data = event.GetData<JoyAxisEventData>();
-                    l->Trace(" axis  = %d\n", data->axis);
-                    l->Trace(" value = %d\n", data->value);
+                    l->Trace(" axis  = %%", data->axis);
+                    l->Trace(" value = %%", data->value);
                     break;
                 }
                 case EVENT_JOY_BUTTON_DOWN:
                 case EVENT_JOY_BUTTON_UP:
                 {
                     auto data = event.GetData<JoyButtonEventData>();
-                    l->Trace(" button = %d\n", data->button);
+                    l->Trace(" button = %%", data->button);
                     break;
                 }
                 default:
@@ -1434,7 +1434,7 @@ void CApplication::LogEvent(const Event &event)
 
         if (IsDebugModeActive(DEBUG_APP_EVENTS) && event.type > EVENT_SYS_MAX)
         {
-            l->Trace("App event %s:\n", eventType.c_str());
+            l->Trace("App event %%:", eventType);
             PrintEventDetails();
         }
     }
