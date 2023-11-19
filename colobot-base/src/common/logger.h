@@ -220,12 +220,32 @@ private:
             string += "false";
     }
     
+    void PrintValue(std::string& string, short value)
+    {
+        string += std::to_string(value);
+    }
+    
+    void PrintValue(std::string& string, unsigned short value)
+    {
+        string += std::to_string(value);
+    }
+    
     void PrintValue(std::string& string, int value)
     {
         string += std::to_string(value);
     }
     
     void PrintValue(std::string& string, unsigned int value)
+    {
+        string += std::to_string(value);
+    }
+    
+    void PrintValue(std::string& string, long value)
+    {
+        string += std::to_string(value);
+    }
+    
+    void PrintValue(std::string& string, unsigned long value)
     {
         string += std::to_string(value);
     }
