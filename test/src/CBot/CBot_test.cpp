@@ -252,7 +252,7 @@ private:
     }
 
 protected:
-    std::unique_ptr<CBotProgram> ExecuteTest(const std::string& code, CBotError expectedError = CBotNoErr, bool stepMode=true)
+    std::unique_ptr<CBotProgram> ExecuteTest(const std::string& code, CBotError expectedError = CBotNoErr)
     {
         CBotError expectedCompileError = expectedError < 6000 ? expectedError : CBotNoErr;
         CBotError expectedRuntimeError = expectedError >= 6000 ? expectedError : CBotNoErr;
@@ -286,18 +286,17 @@ protected:
             {
                 bool is_external_running = false;
                 void *user = static_cast<void*>(&is_external_running);
-                int timer = stepMode ? 0 : -1;
                 program->Start(test);
                 if (g_cbotTestSaveState)
                 {
-                    while (!program->Run(user, timer)) // save/restore at each step
+                    while (!program->Run(user, 0)) // save/restore at each step
                     {
                         TestSaveAndRestore(program.get());
                     }
                 }
                 else
                 {
-                    while (!program->Run(user, timer)); // execute in step mode
+                    while (!program->Run(user, 0)); // execute in step mode
                 }
                 program->GetError(error, cursor1, cursor2);
                 if (error != expectedRuntimeError)
@@ -3371,12 +3370,10 @@ TEST_F(CBotUT, CatchShouldCancelExternalCalls)
         "{\n"
         "    try {\n"
         "        SUSPEND();\n"
-        "    } catch(true) {\n"
+        "    } catch(IS_EXTERNAL_RUNNING()) {\n"
         "        ASSERT(not IS_EXTERNAL_RUNNING());\n"
         "    }\n"
-        "}\n",
-        CBotNoErr,
-        false
+        "}\n"
     );
 }
 
@@ -3394,14 +3391,13 @@ TEST_F(CBotUT, CatchShouldNotCancelExternalCallsMadeOutsideTry)
         "\n"
         "bool Inner()\n"
         "{\n"
+        "    if(not IS_EXTERNAL_RUNNING()) return false;\n"
         "    try {\n"
         "        throw 10;\n"
         "    } catch(10) {\n" // this catch should not cancel SUSPEND()
         "    }\n"
         "    ASSERT(IS_EXTERNAL_RUNNING());\n"
         "    return false;\n"
-        "}\n",
-        CBotNoErr,
-        false
+        "}\n"
     );
 }
