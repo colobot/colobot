@@ -4225,11 +4225,8 @@ bool CRobotMain::FlatFreeSpace(glm::vec3 &center, float minFlat, float minRadius
             pos.y = 0.0f;
             m_terrain->AdjustToFloor(pos, true);
 	    
-            float dist = SearchNearestObject(m_objMan.get(), pos, exclu);
-	    if (dist < space) continue;
-            float flat = m_terrain->GetFlatZoneRadius(pos, minFlat);
-            if (flat < minFlat) continue;
-
+            if (SearchNearestObject(m_objMan.get(), pos, exclu) < space) continue;
+            if (m_terrain->GetFlatZoneRadius(pos, minFlat) < minFlat) continue;
             center = pos;
             return true;
         }
