@@ -30,15 +30,6 @@
 #include <stdexcept>
 #include <vector>
 
-unsigned int StrUtils::HexStringToInt(const std::string& str)
-{
-    std::stringstream ss;
-    ss << std::hex << str;
-    unsigned int x;
-    ss >> x;
-    return x;
-}
-
 namespace
 {
 
@@ -65,6 +56,29 @@ std::string VFormat(const char *fmt, va_list ap)
 }
 
 } // anonymous namespace
+
+using namespace StrUtils;
+
+unsigned int StrUtils::HexStringToInt(std::string_view str)
+{
+    auto parse = [](char c) -> unsigned
+    {
+        if ('0' <= c && c <= '9') return static_cast<unsigned>(c - '0');
+        if ('A' <= c && c <= 'F') return static_cast<unsigned>(c - 'A' + 10);
+        if ('a' <= c && c <= 'f') return static_cast<unsigned>(c - 'a' + 10);
+        
+        throw std::invalid_argument(std::string("Invalid character: ") + c);
+    };
+
+    unsigned result = 0;
+
+    for (char c : str)
+    {
+        result = (result << 4) | parse(c);
+    }
+
+    return result;
+}
 
 std::string StrUtils::Format(const char *fmt, ...)
 {

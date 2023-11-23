@@ -62,7 +62,7 @@ T FromString(const std::string &str, bool *ok = nullptr)
 }
 
 //! Converts string of hex characters to int
-unsigned int HexStringToInt(const std::string& str);
+unsigned int HexStringToInt(std::string_view str);
 
 //! Replacement for sprintf()
 std::string Format(const char *fmt, ...);

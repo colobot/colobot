@@ -24,6 +24,13 @@
 namespace StringUtilsTesta
 {
 
+TEST(StringUtilTests, HexStringToInt)
+{
+    EXPECT_EQ(StrUtils::HexStringToInt("0"), 0);
+    EXPECT_EQ(StrUtils::HexStringToInt("1234"), 0x1234);
+    EXPECT_EQ(StrUtils::HexStringToInt("abFC"), 0xABFC);
+}
+
 TEST(StringUtilTests, ReplaceShortToLong)
 {
     std::string text = "Test {123}, {123}, {123}{123} Test";
