@@ -139,7 +139,9 @@ void StrUtils::Trim(std::string& str)
 
 void StrUtils::RemoveComments(std::string& text)
 {
-    for (size_t i = 0; i < text.size(); i++)
+    if (text.empty()) return;
+
+    for (std::size_t i = 0; i < text.size() - 1; i++)
     {
         char c = text[i];
 
