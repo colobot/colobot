@@ -234,7 +234,7 @@ CodePoint StrUtils::ReadUTF8(std::string_view text)
 
     int len = utf32.length(state, text.data(), text.data() + text.size(), 1);
 
-    if (len == 0) return 0;
+    if (len == 0) return {};
 
     return text.substr(0, len);
 }
