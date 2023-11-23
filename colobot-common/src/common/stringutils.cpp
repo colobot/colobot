@@ -20,6 +20,8 @@
 
 #include "common/stringutils.h"
 
+#include "common/codepoint.h"
+
 #include <algorithm>
 #include <array>
 #include <cstdarg>
@@ -27,11 +29,17 @@
 #include <cstdlib>
 #include <cwchar>
 #include <cwctype>
+#include <locale>
 #include <stdexcept>
 #include <vector>
 
 namespace
 {
+
+std::locale convertion_locale("C");
+
+const auto& wchar = std::use_facet<std::ctype<wchar_t>>(convertion_locale);
+const auto& utf32 = std::use_facet<std::codecvt<char32_t, char, std::mbstate_t>>(convertion_locale);
 
 std::string VFormat(const char *fmt, va_list ap)
 {
@@ -180,4 +188,186 @@ void StrUtils::RemoveComments(std::string& text)
             break;
         }
     }
+}
+
+int StrUtils::UTF8CharLength(std::string_view string)
+{
+    if (string.empty()) return 0;
+
+    std::mbstate_t state = {};
+
+    return utf32.length(state, string.data(), string.data() + string.size(), 1);
+}
+
+int StrUtils::UTF8StringLength(std::string_view string)
+{
+    int length = 0;
+
+    while (!string.empty())
+    {
+        std::mbstate_t state = {};
+
+        auto count = utf32.length(state,
+            string.data(), string.data() + string.size(), 1);
+
+        if (count == 0)
+            throw std::invalid_argument("Invalid character");
+
+        length += count;
+
+        string.remove_prefix(count);
+    }
+
+    return length;
+}
+
+bool StrUtils::IsUTF8ContinuationByte(char c)
+{
+    return (c & 0b1100'0000) == 0b1000'0000;
+}
+
+CodePoint StrUtils::ReadUTF8(std::string_view text)
+{
+    if (text.empty()) return {};
+
+    std::mbstate_t state = {};
+
+    int len = utf32.length(state, text.data(), text.data() + text.size(), 1);
+
+    if (len == 0) return 0;
+
+    return text.substr(0, len);
+}
+
+CodePoint StrUtils::ToUTF8(char32_t code)
+{
+    std::mbstate_t state = {};
+    std::array<char, 4> buffer;
+
+    const char32_t* read = nullptr;
+    char* written = nullptr;
+
+    auto result = utf32.out(state, &code, &code + 1, read,
+        buffer.data(), buffer.data() + buffer.size(), written);
+
+    if (result != std::codecvt_base::ok)
+        return {};
+    
+    return CodePoint(std::string_view(buffer.data(), written - buffer.data()));
+}
+
+char32_t StrUtils::ToUTF32(CodePoint code)
+{
+    std::mbstate_t state = {};
+    char32_t ch = {};
+
+    const char* read = nullptr;
+    char32_t* written = nullptr;
+
+    auto result = utf32.in(state,
+        code.Data(), code.Data() + code.Size(), read,
+        &ch, &ch + 1, written);
+
+    if (result != std::codecvt_base::ok)
+        throw std::invalid_argument("Invalid code point");
+    
+    return ch;
+}
+
+std::string StrUtils::ToUTF8(std::u32string_view text)
+{
+    std::string result;
+
+    for (auto c : text)
+    {
+        CodePoint code = ToUTF8(c);
+
+        if (code.Size() == 0)
+            throw std::invalid_argument("Invalid character");
+
+        result.append(code.Data(), code.Size());
+    }
+
+    return result;
+}
+
+std::u32string StrUtils::ToUTF32(std::string_view text)
+{
+    std::u32string result;
+
+    while (!text.empty())
+    {
+        CodePoint code = ReadUTF8(text);
+
+        if (code.Size() == 0)
+            throw std::invalid_argument("Invalid character");
+
+        result.push_back(ToUTF32(code));
+
+        text.remove_prefix(code.Size());
+    }
+
+    return result;
+}
+
+char32_t StrUtils::ToLower(char32_t ch)
+{
+    if (ch > std::numeric_limits<unsigned short>::max()) return ch;
+
+    return static_cast<char32_t>(wchar.tolower(static_cast<wchar_t>(ch)));
+}
+
+char32_t StrUtils::ToUpper(char32_t ch)
+{
+    if (ch > std::numeric_limits<unsigned short>::max()) return ch;
+
+    return static_cast<char32_t>(wchar.toupper(static_cast<wchar_t>(ch)));
+}
+
+std::string StrUtils::ToLower(std::string_view text)
+{
+    std::string result;
+    result.reserve(text.size());
+
+    while (!text.empty())
+    {
+        CodePoint code = ReadUTF8(text);
+        if (code.Size() == 0) throw std::invalid_argument("Invalid character");
+
+        text.remove_prefix(code.Size());
+
+        char32_t ch = ToUTF32(code);
+        ch = ToLower(ch);
+
+        code = ToUTF8(ch);
+        if (code.Size() == 0) throw std::invalid_argument("Invalid character");
+
+        result.append(code.Data(), code.Size());
+    }
+
+    return result;
+}
+
+std::string StrUtils::ToUpper(std::string_view text)
+{
+    std::string result;
+    result.reserve(text.size());
+
+    while (!text.empty())
+    {
+        CodePoint code = ReadUTF8(text);
+        if (code.Size() == 0) throw std::invalid_argument("Invalid character");
+
+        text.remove_prefix(code.Size());
+
+        char32_t ch = ToUTF32(code);
+        ch = ToUpper(ch);
+
+        code = ToUTF8(ch);
+        if (code.Size() == 0) throw std::invalid_argument("Invalid character");
+
+        result.append(code.Data(), code.Size());
+    }
+
+    return result;
 }

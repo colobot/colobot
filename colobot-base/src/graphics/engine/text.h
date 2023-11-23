@@ -29,6 +29,7 @@
 
 #include <map>
 #include <memory>
+#include <string_view>
 #include <vector>
 
 #include <glm/glm.hpp>
@@ -339,10 +340,10 @@ protected:
                            float size, const glm::ivec2& pos, int width, int eol, Color color);
     void        DrawHighlight(FontMetaChar hl, const glm::ivec2& pos, const glm::ivec2& size);
     void        DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, glm::ivec2&pos, Color color);
-    void        StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &chars);
-    void        StringToUTFCharList(const std::string &text, std::vector<UTF8Char> &chars, std::vector<FontMetaChar>::iterator format, std::vector<FontMetaChar>::iterator end);
+    void        StringToUTFCharList(std::string_view text, std::vector<UTF8Char> &chars);
+    void        StringToUTFCharList(std::string_view text, std::vector<UTF8Char> &chars, std::vector<FontMetaChar>::iterator format, std::vector<FontMetaChar>::iterator end);
 
-    int GetCharSizeAt(Gfx::FontType font, const std::string& text, unsigned int index) const;
+    int         GetCharSizeAt(Gfx::FontType font, std::string_view text) const;
 
 protected:
     CEngine*       m_engine;

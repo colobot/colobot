@@ -134,18 +134,18 @@ TEST(StringUtilTests, SplitMultiple)
 
 TEST(StringUtilTests, StringCodePointCounts)
 {
-    EXPECT_EQ(StrUtils::Utf8CharSizeAt("a", 0), 1);
-    EXPECT_EQ(StrUtils::Utf8CharSizeAt("ą", 0), 2);
-    EXPECT_EQ(StrUtils::Utf8CharSizeAt("中", 0), 3);
+    EXPECT_EQ(StrUtils::UTF8CharLength(u8"a"), 1);
+    EXPECT_EQ(StrUtils::UTF8CharLength(u8"ą"), 2);
+    EXPECT_EQ(StrUtils::UTF8CharLength(u8"中"), 3);
 }
 
 TEST(StringUtilTests, StringConversion)
 {
     std::string text = u8",./;AaZzĄąĘę中";
-    std::wstring expected = L",./;AaZzĄąĘę中";
+    std::u32string expected = U",./;AaZzĄąĘę中";
 
-    std::wstring unicode = StrUtils::Utf8StringToUnicode(text);
-    std::string result = StrUtils::UnicodeStringToUtf8(unicode);
+    std::u32string unicode = StrUtils::ToUTF32(text);
+    std::string result = StrUtils::ToUTF8(unicode);
 
     EXPECT_EQ(result, text);
     EXPECT_EQ(unicode, expected);

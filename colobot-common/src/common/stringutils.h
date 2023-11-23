@@ -33,6 +33,8 @@
 namespace StrUtils
 {
 
+class CodePoint;
+
 //! Converts a value to string
 /** If given, \a ok is set to true/false on success/failure.
     Warning: To avoid unnecessary problems, *always* give full template qualifier e.g. ToString\<int\> */
@@ -85,31 +87,40 @@ void Trim(std::string& str);
 //! Removes comments of form // comment
 void RemoveComments(std::string& text);
 
-//! Converts a wide Unicode char to a single UTF-8 encoded char
-std::string UnicodeCharToUtf8(unsigned int ch);
+//! Returns the length in characters of first UTF-8 code point in \a string
+int UTF8CharLength(std::string_view string);
 
-//! Converts a wide Unicode string to a UTF-8 encoded string
-std::string UnicodeStringToUtf8(const std::wstring &str);
-
-//! Converts a UTF-8 encoded single character to wide Unicode char
-unsigned int Utf8CharToUnicode(const std::string &ch);
-
-//! Converts a UTF-8 encoded string to wide Unicode string
-std::wstring Utf8StringToUnicode(const std::string &str);
-
-//! Returns the size in bytes of UTF-8 character at given \a pos in a UTF-8 \a str
-int Utf8CharSizeAt(const std::string &str, unsigned int pos);
-
-//! Returns the length in characters of UTF-8 string \a str
-std::size_t Utf8StringLength(const std::string &str);
+//! Returns the length in characters of UTF-8 string \a string
+int UTF8StringLength(std::string_view string);
 
 //! Returns true if char is continuation UTF-8 byte
-bool isUtf8ContinuationByte(char c);
+bool IsUTF8ContinuationByte(char c);
+
+//! Reads UTF-8 character
+CodePoint ReadUTF8(std::string_view text);
+
+//! Converts UTF-32 code point to UTF-8
+CodePoint ToUTF8(char32_t code);
+
+//! Converts UTF-8 code point to UTF-32
+char32_t ToUTF32(CodePoint code);
+
+//! Converts UTF-32 string to UTF-8
+std::string ToUTF8(std::u32string_view text);
+
+//! Converts UTF-8 string to UTF-32
+std::u32string ToUTF32(std::string_view text);
+
+//! Returns the character converted to lower case when possible
+char32_t ToLower(char32_t ch);
+
+//! Returns the character converted to upper case when possible
+char32_t ToUpper(char32_t ch);
 
 //! Returns the string with characters converted to lower case when possible
-std::string ToLower(const std::string& text);
+std::string ToLower(std::string_view text);
 
 //! Returns the string with characters converted to upper case when possible
-std::string ToUpper(const std::string& text);
+std::string ToUpper(std::string_view text);
 
 } // namespace StrUtil
