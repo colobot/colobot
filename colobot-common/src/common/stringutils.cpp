@@ -36,7 +36,7 @@
 namespace
 {
 
-std::locale convertion_locale("C");
+std::locale convertion_locale("C.UTF-8");
 
 const auto& wchar = std::use_facet<std::ctype<wchar_t>>(convertion_locale);
 const auto& utf32 = std::use_facet<std::codecvt<char32_t, char, std::mbstate_t>>(convertion_locale);
