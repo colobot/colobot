@@ -262,10 +262,12 @@ Gfx::Color CLevelParserParam::AsColor()
 
         try
         {
-            red = StrUtils::HexStringToInt(m_value.substr(1, 2));
-            green = StrUtils::HexStringToInt(m_value.substr(3, 2));
-            blue = StrUtils::HexStringToInt(m_value.substr(5, 2));
-            alpha = (m_value.length() == 9) ? StrUtils::HexStringToInt(m_value.substr(7, 2)) : 1.0f;
+            std::string_view value = m_value;
+
+            red = StrUtils::HexStringToInt(value.substr(1, 2));
+            green = StrUtils::HexStringToInt(value.substr(3, 2));
+            blue = StrUtils::HexStringToInt(value.substr(5, 2));
+            alpha = (value.length() == 9) ? StrUtils::HexStringToInt(value.substr(7, 2)) : 1.0f;
         }
         catch (...)
         {
