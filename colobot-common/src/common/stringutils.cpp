@@ -30,13 +30,40 @@
 #include <cwchar>
 #include <cwctype>
 #include <locale>
+#include <optional>
 #include <stdexcept>
 #include <vector>
 
 namespace
 {
 
-std::locale convertion_locale("C.UTF-8");
+std::optional<std::locale> GetLocale(const char* name)
+try
+{
+    return std::locale(name);
+}
+catch(...)
+{
+    return std::nullopt;
+}
+
+std::locale GetConversionLocale()
+{
+    if (auto locale = GetLocale("en_US.UTF-8"))
+    {
+        return *locale;
+    }
+    else if (auto locale = GetLocale("C.UTF-8"))
+    {
+        return *locale;
+    }
+    else
+    {
+        return std::locale("");
+    }
+}
+
+const std::locale convertion_locale = GetConversionLocale();
 
 const auto& wchar = std::use_facet<std::ctype<wchar_t>>(convertion_locale);
 const auto& utf32 = std::use_facet<std::codecvt<char32_t, char, std::mbstate_t>>(convertion_locale);
