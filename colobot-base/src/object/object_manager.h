@@ -97,14 +97,9 @@ public:
         while (m_currentIt != m_endIt && m_currentIt->second == nullptr);
     }
 
-    bool operator==(const CObjectIteratorProxy& other)
+    bool operator==(const CObjectIteratorProxy& other) const
     {
         return m_currentIt == other.m_currentIt;
-    }
-
-    bool operator!=(const CObjectIteratorProxy& other)
-    {
-        return m_currentIt != other.m_currentIt;
     }
 
 private:
