@@ -134,14 +134,14 @@ TEST(StringUtilTests, SplitMultiple)
 
 TEST(StringUtilTests, StringCodePointCounts)
 {
-    EXPECT_EQ(StrUtils::UTF8CharLength(u8"a"), 1);
-    EXPECT_EQ(StrUtils::UTF8CharLength(u8"ą"), 2);
-    EXPECT_EQ(StrUtils::UTF8CharLength(u8"中"), 3);
+    EXPECT_EQ(StrUtils::UTF8CharLength("a"), 1);
+    EXPECT_EQ(StrUtils::UTF8CharLength("ą"), 2);
+    EXPECT_EQ(StrUtils::UTF8CharLength("中"), 3);
 }
 
 TEST(StringUtilTests, StringConversion)
 {
-    std::string text = u8",./;AaZzĄąĘę中";
+    std::string text = ",./;AaZzĄąĘę中";
     std::u32string expected = U",./;AaZzĄąĘę中";
 
     std::u32string unicode = StrUtils::ToUTF32(text);
@@ -153,8 +153,8 @@ TEST(StringUtilTests, StringConversion)
 
 TEST(StringUtilTests, ToLowerTest)
 {
-    std::string text = u8",./;AaBbĄąĘę中";
-    std::string expected = u8",./;aabbąąęę中";
+    std::string text = ",./;AaBbĄąĘę中";
+    std::string expected = ",./;aabbąąęę中";
 
     auto result = StrUtils::ToLower(text);
 
@@ -163,8 +163,8 @@ TEST(StringUtilTests, ToLowerTest)
 
 TEST(StringUtilTests, ToUpperTest)
 {
-    std::string text = u8",./;AaBbĄąĘę中";
-    std::string expected = u8",./;AABBĄĄĘĘ中";
+    std::string text = ",./;AaBbĄąĘę中";
+    std::string expected = ",./;AABBĄĄĘĘ中";
 
     auto result = StrUtils::ToUpper(text);
 

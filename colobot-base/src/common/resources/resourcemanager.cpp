@@ -27,6 +27,7 @@
 #endif
 
 #include "common/logger.h"
+#include "common/stringutils.h"
 
 #include <physfs.h>
 
@@ -59,9 +60,9 @@ CResourceManager::~CResourceManager()
 
 std::string CResourceManager::CleanPath(const std::filesystem::path& path)
 {
-    return std::regex_replace(path.generic_u8string(), std::regex("(.*)/\\.\\./"), "");
+    return std::regex_replace(StrUtils::Convert(path.generic_u8string()),
+        std::regex("(.*)/\\.\\./"), "");
 }
-
 
 bool CResourceManager::AddLocation(const std::string &location, bool prepend, const std::string &mountPoint)
 {

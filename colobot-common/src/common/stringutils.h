@@ -123,4 +123,10 @@ std::string ToLower(std::string_view text);
 //! Returns the string with characters converted to upper case when possible
 std::string ToUpper(std::string_view text);
 
+//! Converts type of UTF-8 string to std::string
+std::string Convert(std::u8string_view text);
+
+//! Converts type of UTF-8 string to std::u8string
+std::u8string Convert(std::string_view text);
+
 } // namespace StrUtil

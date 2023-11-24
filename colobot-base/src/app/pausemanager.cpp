@@ -44,20 +44,23 @@ struct ActivePause
 
 static std::string GetPauseName(PauseType type)
 {
-    std::vector<std::string> x;
+    std::string result;
 
-    if ((type & PAUSE_ENGINE) != 0) x.push_back("engine");
-    if ((type & PAUSE_HIDE_SHORTCUTS) != 0) x.push_back("hide_shortcuts");
-    if ((type & PAUSE_PHOTO) != 0) x.push_back("photo");
-    if ((type & PAUSE_OBJECT_UPDATES) != 0) x.push_back("object_updates");
-    if ((type & PAUSE_MUTE_SOUND) != 0) x.push_back("mute_sound");
-    if ((type & PAUSE_CAMERA) != 0) x.push_back("camera");
+    auto append = [&](std::string_view text)
+    {
+        if (!result.empty()) result.push_back('|');
 
-    return std::accumulate(x.cbegin(), x.cend(), std::string(),
-        [](auto& acc, auto& value)
-        {
-            return acc.empty() ? value : acc + "|" + value;
-        });
+        result.append(text);
+    };
+
+    if ((type & PAUSE_ENGINE) != 0) append("engine");
+    if ((type & PAUSE_HIDE_SHORTCUTS) != 0) append("hide_shortcuts");
+    if ((type & PAUSE_PHOTO) != 0) append("photo");
+    if ((type & PAUSE_OBJECT_UPDATES) != 0) append("object_updates");
+    if ((type & PAUSE_MUTE_SOUND) != 0) append("mute_sound");
+    if ((type & PAUSE_CAMERA) != 0) append("camera");
+
+    return result;
 }
 
 CPauseManager::CPauseManager()

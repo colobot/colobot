@@ -398,3 +398,23 @@ std::string StrUtils::ToUpper(std::string_view text)
 
     return result;
 }
+
+std::string StrUtils::Convert(std::u8string_view text)
+{
+    std::string result(text.size(), '\0');
+
+    for (std::size_t i = 0; i < text.size(); i++)
+        result[i] = static_cast<char>(text[i]);
+
+    return result;
+}
+
+std::u8string StrUtils::Convert(std::string_view text)
+{
+    std::u8string result(text.size(), u8'\0');
+
+    for (std::size_t i = 0; i < text.size(); i++)
+        result[i] = static_cast<char8_t>(text[i]);
+
+    return result;
+}
