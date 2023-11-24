@@ -29,6 +29,7 @@
 #include <cstdlib>
 #include <cwchar>
 #include <cwctype>
+#include <limits>
 #include <locale>
 #include <optional>
 #include <stdexcept>
