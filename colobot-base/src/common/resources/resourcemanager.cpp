@@ -60,7 +60,7 @@ CResourceManager::~CResourceManager()
 
 std::string CResourceManager::CleanPath(const std::filesystem::path& path)
 {
-    return std::regex_replace(StrUtils::Convert(path.generic_u8string()),
+    return std::regex_replace(StrUtils::Cast<std::string>(path.generic_u8string()),
         std::regex("(.*)/\\.\\./"), "");
 }
 

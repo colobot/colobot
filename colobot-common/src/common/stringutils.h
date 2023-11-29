@@ -63,6 +63,27 @@ T FromString(const std::string &str, bool *ok = nullptr)
     return value;
 }
 
+//! Converts the string into another type by casting code units individually
+template<typename To, typename From>
+To Cast(const From& text)
+{
+    if constexpr (std::is_same_v<From, To>)
+    {
+        return text;
+    }
+    else
+    {
+        using Char = typename To::value_type;
+
+        To result;
+
+        for (auto ch : text)
+            result.push_back(static_cast<Char>(ch));
+
+        return result;
+    }
+}
+
 //! Converts string of hex characters to int
 unsigned int HexStringToInt(std::string_view str);
 
@@ -122,11 +143,5 @@ std::string ToLower(std::string_view text);
 
 //! Returns the string with characters converted to upper case when possible
 std::string ToUpper(std::string_view text);
-
-//! Converts type of UTF-8 string to std::string
-std::string Convert(std::u8string_view text);
-
-//! Converts type of UTF-8 string to std::u8string
-std::u8string Convert(std::string_view text);
 
 } // namespace StrUtil

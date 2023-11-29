@@ -176,7 +176,7 @@ std::vector<std::string> CPathManager::FindModsInDir(const std::string &dir) con
 
         for(; iterator != std::filesystem::directory_iterator(); ++iterator)
         {
-            ret.push_back(StrUtils::Convert(iterator->path().u8string()));
+            ret.push_back(StrUtils::Cast<std::string>(iterator->path().u8string()));
         }
     }
     catch (std::exception &e)
