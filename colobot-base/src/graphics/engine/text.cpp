@@ -41,6 +41,7 @@
 #include <SDL_ttf.h>
 
 #include <algorithm>
+#include <array>
 #include <utility>
 
 // Graphics module namespace
@@ -183,6 +184,7 @@ public:
         auto renderer = m_engine.GetUIRenderer();
         renderer->SetTexture(Texture{ m_texID });
         renderer->SetTransparency(m_transparency);
+        renderer->SetColor(m_color);
 
         if (m_counts.size() < m_quads.size())
         {
@@ -693,9 +695,14 @@ float CText::GetCharWidth(UTF8Char ch, FontType font, float size, float offset)
     else
     {
         glm::ivec2 wndSize{};
-        std::string text;
-        text.append({ch.c1, ch.c2, ch.c3});
-        TTF_SizeUTF8(cf->font, text.c_str(), &wndSize.x, &wndSize.y);
+        std::array<char, 4> text = {
+            static_cast<char>(ch.c1),
+            static_cast<char>(ch.c2),
+            static_cast<char>(ch.c3),
+            '\0'
+        };
+
+        TTF_SizeUTF8(cf->font, text.data(), &wndSize.x, &wndSize.y);
         charSize = m_engine->WindowToInterfaceSize(wndSize);
     }
 
@@ -734,9 +741,14 @@ int CText::GetCharWidthInt(UTF8Char ch, FontType font, float size, float offset)
     }
     else
     {
-        std::string text;
-        text.append({ch.c1, ch.c2, ch.c3});
-        TTF_SizeUTF8(cf->font, text.c_str(), &charSize.x, &charSize.y);
+        std::array<char, 4> text = {
+            static_cast<char>(ch.c1),
+            static_cast<char>(ch.c2),
+            static_cast<char>(ch.c3),
+            '\0'
+        };
+
+        TTF_SizeUTF8(cf->font, text.data(), &charSize.x, &charSize.y);
     }
 
     return charSize.x * width;
@@ -1201,21 +1213,24 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, glm::iv
     {
         glm::ivec2 windowSize = m_engine->GetWindowSize();
         int height = GetHeightInt(FONT_COMMON, size);
-        int width = height * (static_cast<float>(windowSize.y)/windowSize.x);
+        int width = height;// * (static_cast<float>(windowSize.y)/windowSize.x);
 
         glm::ivec2 p1(pos.x, pos.y - height);
         glm::ivec2 p2(pos.x + width, pos.y);
 
         // For whatever reason ch.c1 is a SIGNED char, we need to fix that
-        unsigned char icon = static_cast<unsigned char>(ch.c1);
+        const unsigned icon = static_cast<unsigned>(ch.c1) & 0xFF;
+
+        const unsigned texIndex = 1 + icon / 64;
+        const unsigned iconIndex = icon % 64;
 
         // TODO: A bit of code duplication, see CControl::SetButtonTextureForIcon()
-        unsigned int texID = m_engine->LoadTexture("textures/interface/button" + StrUtils::ToString<int>((icon/64) + 1) + ".png").id;
-        icon = icon%64;
+        const unsigned int texID = m_engine->LoadTexture(
+            "textures/interface/button" + StrUtils::ToString<int>(texIndex) + ".png").id;
 
         glm::vec2 uv1, uv2;
-        uv1.x = (32.0f / 256.0f) * (icon%8);
-        uv1.y = (32.0f / 256.0f) * (icon/8);
+        uv1.x = (32.0f / 256.0f) * (iconIndex % 8);
+        uv1.y = (32.0f / 256.0f) * (iconIndex / 8);
         uv2.x = (32.0f / 256.0f) + uv1.x;
         uv2.y = (32.0f / 256.0f) + uv1.y;
 
@@ -1229,12 +1244,12 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, glm::iv
 
         Gfx::Vertex2D vertices[4];
 
-        vertices[0] = { { p1.x, p2.y }, { uv1.x, uv2.y }, col };
-        vertices[1] = { { p1.x, p1.y }, { uv1.x, uv1.y }, col };
-        vertices[2] = { { p2.x, p2.y }, { uv2.x, uv2.y }, col };
-        vertices[3] = { { p2.x, p1.y }, { uv2.x, uv1.y }, col };
+        vertices[0] = { { p1.x, p2.y }, { uv1.x, uv2.y } };
+        vertices[1] = { { p1.x, p1.y }, { uv1.x, uv1.y } };
+        vertices[2] = { { p2.x, p2.y }, { uv2.x, uv2.y } };
+        vertices[3] = { { p2.x, p1.y }, { uv2.x, uv1.y } };
 
-        m_quadBatch->Add(vertices, texID, TransparencyMode::WHITE, color);
+        m_quadBatch->Add(vertices, texID, TransparencyMode::NONE, color);
 
         pos.x += width;
     }
@@ -1331,8 +1346,14 @@ CharTexture CText::CreateCharTexture(UTF8Char ch, CachedFont* font)
 
     SDL_Surface* textSurface = nullptr;
     SDL_Color white = {255, 255, 255, 0};
-    char str[] = { ch.c1, ch.c2, ch.c3, '\0' };
-    textSurface = TTF_RenderUTF8_Blended(font->font, str, white);
+    std::array<char, 4> str = {
+        static_cast<char>(ch.c1),
+        static_cast<char>(ch.c2),
+        static_cast<char>(ch.c3),
+        '\0'
+    };
+
+    textSurface = TTF_RenderUTF8_Blended(font->font, str.data(), white);
 
     if (textSurface == nullptr)
     {

@@ -163,15 +163,12 @@ enum FontMask
  *
  * Only 3-byte chars are supported
  */
-struct UTF8Char
+struct alignas(4) UTF8Char
 {
-    char c1, c2, c3;
-    // Padding for 4-byte alignment
-    // It also seems to fix some problems reported by valgrind
-    char pad;
+    char8_t c1, c2, c3;
 
-    explicit UTF8Char(char ch1 = '\0', char ch2 = '\0', char ch3 = '\0')
-        : c1(ch1), c2(ch2), c3(ch3), pad('\0') {}
+    explicit UTF8Char(char8_t ch1 = '\0', char8_t ch2 = '\0', char8_t ch3 = '\0')
+        : c1(ch1), c2(ch2), c3(ch3) {}
 
     inline bool operator<(const UTF8Char &other) const
     {
@@ -188,10 +185,7 @@ struct UTF8Char
         return c3 < other.c3;
     }
 
-    inline bool operator==(const UTF8Char &other) const
-    {
-        return c1 == other.c1 && c2 == other.c2 && c3 == other.c3;
-    }
+    inline bool operator==(const UTF8Char &other) const = default;
 };
 
 /**
