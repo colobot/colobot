@@ -5,12 +5,12 @@ set(COLOBOT_ICON_FILE ${CMAKE_CURRENT_SOURCE_DIR}/colobot.svg)
 # Render SVG icon in various sizes
 find_program(RSVG_CONVERT rsvg-convert)
 if(NOT RSVG_CONVERT)
-    message(WARNING "rsvg-convert not found; desktop icons will not be generated")
+    message(STATUS "rsvg-convert not found; desktop icons will not be generated")
 endif()
 
 find_program(XMLSTARLET xmlstarlet)
 if(NOT XMLSTARLET)
-    message(WARNING "xmlstarlet not found; desktop icons will not be generated")
+    message(STATUS "xmlstarlet not found; desktop icons will not be generated")
 endif()
 
 if(RSVG_CONVERT AND XMLSTARLET AND (PLATFORM_GNU OR PLATFORM_MACOSX))
