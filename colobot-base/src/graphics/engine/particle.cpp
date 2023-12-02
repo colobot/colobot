@@ -3331,7 +3331,7 @@ void CParticle::DrawParticleText(int i)
     m_particle[i].texSup.y = static_cast<float>(tex.charPos.y) / fontTextureSize.y;
     m_particle[i].texInf.x = static_cast<float>(tex.charPos.x + tex.charSize.x) / fontTextureSize.x;
     m_particle[i].texInf.y = static_cast<float>(tex.charPos.y + tex.charSize.y) / fontTextureSize.y;
-    m_particle[i].color = Color(0.0f, 0.0f, 0.0f);
+    m_particle[i].color = Color(0.0f, 0.0f, 0.0f, 1.0f);
 
     DrawParticleNorm(i);
 }
