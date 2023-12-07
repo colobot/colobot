@@ -98,7 +98,7 @@ void CLightManager::DebugDumpLights()
 {
     CLogger* l = GetLogger();
 
-    l->Debug("Dynamic lights:\n");
+    l->Debug("Dynamic lights:");
 
     for (int i = 0; i < static_cast<int>( m_dynLights.size() ); ++i)
     {
@@ -116,36 +116,36 @@ void CLightManager::DebugDumpLights()
             }
         }
 
-        l->Debug(" light %d\n", i);
-        l->Debug("  enabled = %s\n", dynLight.enabled ? "true" : "false");
-        l->Debug("  priority = %d\n", dynLight.priority);
-        l->Debug("  device light = %d\n", deviceLight);
-        l->Debug("  light:\n");
+        l->Debug(" light %%", i);
+        l->Debug("  enabled = %%", dynLight.enabled);
+        l->Debug("  priority = %%", dynLight.priority);
+        l->Debug("  device light = %%", deviceLight);
+        l->Debug("  light:");
 
         const Light& light = dynLight.light;
         std::string str;
 
-        l->Debug("   type = %d\n", light.type);
+        l->Debug("   type = %%", light.type);
         str = light.ambient.ToString();
-        l->Debug("   ambient = %s\n", str.c_str());
+        l->Debug("   ambient = %%", str);
         str = light.diffuse.ToString();
-        l->Debug("   diffuse = %s\n", str.c_str());
+        l->Debug("   diffuse = %%", str);
         str = light.specular.ToString();
-        l->Debug("   specular = %s\n", str.c_str());
+        l->Debug("   specular = %%", str);
         str = Math::ToString(light.position);
-        l->Debug("   position = %s\n", str.c_str());
+        l->Debug("   position = %%", str);
         str = Math::ToString(light.direction);
-        l->Debug("   direction = %s\n", str.c_str());
-        l->Debug("   attenuation0 = %f\n", light.attenuation0);
-        l->Debug("   attenuation1 = %f\n", light.attenuation1);
-        l->Debug("   attenuation2 = %f\n", light.attenuation2);
-        l->Debug("   spotAngle = %f\n", light.spotAngle);
-        l->Debug("   spotIntensity = %f\n", light.spotIntensity);
+        l->Debug("   direction = %%", str);
+        l->Debug("   attenuation0 = %%", light.attenuation0);
+        l->Debug("   attenuation1 = %%", light.attenuation1);
+        l->Debug("   attenuation2 = %%", light.attenuation2);
+        l->Debug("   spotAngle = %%", light.spotAngle);
+        l->Debug("   spotIntensity = %%", light.spotIntensity);
 
-        l->Debug(" intensity: %f\n", dynLight.intensity.current);
-        l->Debug(" color: %f %f %f\n", dynLight.colorRed.current, dynLight.colorGreen.current, dynLight.colorBlue.current);
-        l->Debug(" includeType: %d\n", dynLight.includeType);
-        l->Debug(" excludeType: %d\n", dynLight.excludeType);
+        l->Debug(" intensity: %%", dynLight.intensity.current);
+        l->Debug(" color: %% %% %%", dynLight.colorRed.current, dynLight.colorGreen.current, dynLight.colorBlue.current);
+        l->Debug(" includeType: %%", dynLight.includeType);
+        l->Debug(" excludeType: %%", dynLight.excludeType);
     }
 }
 

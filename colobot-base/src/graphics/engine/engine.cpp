@@ -811,27 +811,27 @@ void CEngine::DebugObject(int objRank)
 
     CLogger* l = GetLogger();
 
-    l->Debug("Debug object: %d\n", objRank);
+    l->Debug("Debug object: %%", objRank);
     if (! m_objects[objRank].used)
     {
         l->Debug(" not used\n");
         return;
     }
 
-    l->Debug(" baseObjRank = %d\n", m_objects[objRank].baseObjRank);
-    l->Debug(" visible = %s\n", m_objects[objRank].visible ? "true" : "false");
-    l->Debug(" drawWorld = %s\n", m_objects[objRank].drawWorld ? "true" : "false");
-    l->Debug(" drawFront = %s\n", m_objects[objRank].drawFront ? "true" : "false");
-    l->Debug(" type = %d\n", m_objects[objRank].type);
-    l->Debug(" distance = %f\n", m_objects[objRank].distance);
-    l->Debug(" shadowRank = %d\n", m_objects[objRank].shadowRank);
-    l->Debug(" ghost = %s\n", m_objects[objRank].ghost ? "true" : "false");
+    l->Debug(" baseObjRank = %%", m_objects[objRank].baseObjRank);
+    l->Debug(" visible = %%", m_objects[objRank].visible);
+    l->Debug(" drawWorld = %%", m_objects[objRank].drawWorld);
+    l->Debug(" drawFront = %%", m_objects[objRank].drawFront);
+    l->Debug(" type = %%", m_objects[objRank].type);
+    l->Debug(" distance = %%", m_objects[objRank].distance);
+    l->Debug(" shadowRank = %%", m_objects[objRank].shadowRank);
+    l->Debug(" ghost = %%", m_objects[objRank].ghost);
 
-    l->Debug(" baseObj:\n");
+    l->Debug(" baseObj:");
     int baseObjRank = m_objects[objRank].baseObjRank;
     if (baseObjRank == -1)
     {
-        l->Debug("  null\n");
+        l->Debug("  null");
         return;
     }
 
@@ -840,23 +840,23 @@ void CEngine::DebugObject(int objRank)
     EngineBaseObject& p1 = m_baseObjects[baseObjRank];
     if (!p1.used)
     {
-        l->Debug("  not used\n");
+        l->Debug("  not used");
         return;
     }
 
     std::string vecStr;
 
     vecStr = Math::ToString(p1.bboxMin);
-    l->Debug("  bboxMin: %s\n", vecStr.c_str());
+    l->Debug("  bboxMin: %%", vecStr);
     vecStr = Math::ToString(p1.bboxMax);
-    l->Debug("  bboxMax: %s\n", vecStr.c_str());
-    l->Debug("  totalTriangles: %d\n", p1.totalTriangles);
-    l->Debug("  radius: %f\n", p1.boundingSphere.radius);
+    l->Debug("  bboxMax: %%", vecStr);
+    l->Debug("  totalTriangles: %%", p1.totalTriangles);
+    l->Debug("  radius: %%", p1.boundingSphere.radius);
 
     for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
     {
         EngineBaseObjDataTier& p2 = p1.next[l2];
-        l->Debug("  l2:\n");
+        l->Debug("  l2:");
 
         /*
         l->Debug("   tex1: %s (id: %u)\n", p2.tex1Name.c_str(), p2.tex1.id);

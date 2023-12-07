@@ -865,7 +865,7 @@ bool CApplication::CreateVideoSurface()
         vsync = m_engine->GetVSync();
         GetConfigFile().SetIntProperty("Setup", "VSync", vsync);
 
-        GetLogger()->Info("Using Vsync: %s\n", (vsync == -1 ? "adaptive" : (vsync ? "true" : "false")));
+        GetLogger()->Info("Using Vsync: %%", (vsync == -1 ? "adaptive" : (vsync ? "true" : "false")));
     }
 
     return true;
