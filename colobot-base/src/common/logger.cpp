@@ -19,6 +19,7 @@
 
 
 #include "common/logger.h"
+#include "common/stringutils.h"
 #include "common/version.h"
 
 #include <stdio.h>
@@ -124,3 +125,95 @@ bool CLogger::ParseLogLevel(const std::string& str, LogLevel& logLevel)
     return false;
 }
 
+void CLogger::PrintValue(std::string& string, char value)
+{
+    string += value;
+}
+
+void CLogger::PrintValue(std::string& string, signed char value)
+{
+    string += value;
+}
+
+void CLogger::PrintValue(std::string& string, unsigned char value)
+{
+    string += value;
+}
+
+void CLogger::PrintValue(std::string& string, bool value)
+{
+    if (value)
+        string += "true";
+    else
+        string += "false";
+}
+
+void CLogger::PrintValue(std::string& string, short value)
+{
+    string += std::to_string(value);
+}
+
+void CLogger::PrintValue(std::string& string, unsigned short value)
+{
+    string += std::to_string(value);
+}
+
+void CLogger::PrintValue(std::string& string, int value)
+{
+    string += std::to_string(value);
+}
+
+void CLogger::PrintValue(std::string& string, unsigned int value)
+{
+    string += std::to_string(value);
+}
+
+void CLogger::PrintValue(std::string& string, long value)
+{
+    string += std::to_string(value);
+}
+
+void CLogger::PrintValue(std::string& string, unsigned long value)
+{
+    string += std::to_string(value);
+}
+
+void CLogger::PrintValue(std::string& string, long long value)
+{
+    string += std::to_string(value);
+}
+
+void CLogger::PrintValue(std::string& string, unsigned long long value)
+{
+    string += std::to_string(value);
+}
+
+void CLogger::PrintValue(std::string& string, float value)
+{
+    string += std::to_string(value);
+}
+
+void CLogger::PrintValue(std::string& string, double value)
+{
+    string += std::to_string(value);
+}
+
+void CLogger::PrintValue(std::string& string, const char* value)
+{
+    string.append(value);
+}
+
+void CLogger::PrintValue(std::string& string, std::string_view value)
+{
+    string.append(value);
+}
+
+void CLogger::PrintValue(std::string& string, const std::string& value)
+{
+    string.append(value);
+}
+
+void CLogger::PrintValue(std::string& string, const std::filesystem::path& value)
+{
+    string.append(StrUtils::Cast<std::string>(value.u8string()));
+}

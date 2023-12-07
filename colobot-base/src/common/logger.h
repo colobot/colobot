@@ -31,6 +31,7 @@
 #include <string_view>
 #include <cstdarg>
 #include <cstdio>
+#include <filesystem>
 #include <vector>
 
 
@@ -196,89 +197,29 @@ private:
 
         return PrintMessage(string, format, std::forward<Args>(args)...);
     }
-    
-    void PrintValue(std::string& string, char value)
-    {
-        string += value;
-    }
-    
-    void PrintValue(std::string& string, signed char value)
-    {
-        string += value;
-    }
-    
-    void PrintValue(std::string& string, unsigned char value)
-    {
-        string += value;
-    }
 
-    void PrintValue(std::string& string, bool value)
-    {
-        if (value)
-            string += "true";
-        else
-            string += "false";
-    }
-    
-    void PrintValue(std::string& string, short value)
-    {
-        string += std::to_string(value);
-    }
-    
-    void PrintValue(std::string& string, unsigned short value)
-    {
-        string += std::to_string(value);
-    }
-    
-    void PrintValue(std::string& string, int value)
-    {
-        string += std::to_string(value);
-    }
-    
-    void PrintValue(std::string& string, unsigned int value)
-    {
-        string += std::to_string(value);
-    }
-    
-    void PrintValue(std::string& string, long value)
-    {
-        string += std::to_string(value);
-    }
-    
-    void PrintValue(std::string& string, unsigned long value)
-    {
-        string += std::to_string(value);
-    }
-    
-    void PrintValue(std::string& string, long long value)
-    {
-        string += std::to_string(value);
-    }
-    
-    void PrintValue(std::string& string, unsigned long long value)
-    {
-        string += std::to_string(value);
-    }
-    
-    void PrintValue(std::string& string, float value)
-    {
-        string += std::to_string(value);
-    }
-    
-    void PrintValue(std::string& string, double value)
-    {
-        string += std::to_string(value);
-    }
+    static void PrintValue(std::string& string, char value);
+    static void PrintValue(std::string& string, signed char value);
+    static void PrintValue(std::string& string, unsigned char value);
 
-    void PrintValue(std::string& string, std::string_view value)
-    {
-        string.append(value);
-    }
+    static void PrintValue(std::string& string, bool value);
 
-    void PrintValue(std::string& string, const char* value)
-    {
-        string.append(value);
-    }
+    static void PrintValue(std::string& string, short value);
+    static void PrintValue(std::string& string, unsigned short value);
+    static void PrintValue(std::string& string, int value);
+    static void PrintValue(std::string& string, unsigned int value);
+    static void PrintValue(std::string& string, long value);
+    static void PrintValue(std::string& string, unsigned long value);
+    static void PrintValue(std::string& string, long long value);
+    static void PrintValue(std::string& string, unsigned long long value);
+
+    static void PrintValue(std::string& string, float value);
+    static void PrintValue(std::string& string, double value);
+    
+    static void PrintValue(std::string& string, const char* value);
+    static void PrintValue(std::string& string, std::string_view value);
+    static void PrintValue(std::string& string, const std::string& value);
+    static void PrintValue(std::string& string, const std::filesystem::path& value);
 
     std::vector<FILE*> m_outputs;
     LogLevel m_logLevel;
