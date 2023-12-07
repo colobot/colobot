@@ -166,36 +166,32 @@ private:
     {
         std::string result;
 
-        PrintMessage(result, format, std::forward<Args>(args)...);
+        auto print = [&](auto&& arg)
+        {
+            if (format.empty()) return;
+
+            std::size_t index = format.find("%%");
+
+            if (index == std::string_view::npos)
+            {
+                result.append(format);
+                format = {};
+                return;
+            }
+
+            result.append(format.substr(0, index));
+
+            PrintValue(result, arg);
+
+            format.remove_prefix(index + 2);
+        };
+
+        (print(args), ...);
+
+        if (!format.empty())
+            result.append(format);
 
         return result;
-    }
-
-    void PrintMessage(std::string& string, std::string_view format)
-    {
-        string.append(format);
-    }
-
-    template<typename Arg, typename... Args>
-    void PrintMessage(std::string& string, std::string_view format, Arg&& arg, Args&&... args)
-    {
-        std::size_t index = format.find("%%");
-
-        if (index == std::string_view::npos)
-        {
-            string.append(format);
-            return;
-        }
-
-        std::string_view raw = format.substr(0, index);
-
-        string.append(raw);
-
-        PrintValue(string, arg);
-
-        format.remove_prefix(index + 2);
-
-        return PrintMessage(string, format, std::forward<Args>(args)...);
     }
 
     static void PrintValue(std::string& string, char value);
