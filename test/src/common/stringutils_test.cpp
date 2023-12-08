@@ -24,6 +24,13 @@
 namespace StringUtilsTesta
 {
 
+TEST(StringUtilTests, HexStringToInt)
+{
+    EXPECT_EQ(StrUtils::HexStringToInt("0"), 0);
+    EXPECT_EQ(StrUtils::HexStringToInt("1234"), 0x1234);
+    EXPECT_EQ(StrUtils::HexStringToInt("abFC"), 0xABFC);
+}
+
 TEST(StringUtilTests, ReplaceShortToLong)
 {
     std::string text = "Test {123}, {123}, {123}{123} Test";
@@ -127,18 +134,18 @@ TEST(StringUtilTests, SplitMultiple)
 
 TEST(StringUtilTests, StringCodePointCounts)
 {
-    EXPECT_EQ(StrUtils::Utf8CharSizeAt("a", 0), 1);
-    EXPECT_EQ(StrUtils::Utf8CharSizeAt("ą", 0), 2);
-    EXPECT_EQ(StrUtils::Utf8CharSizeAt("中", 0), 3);
+    EXPECT_EQ(StrUtils::UTF8CharLength("a"), 1);
+    EXPECT_EQ(StrUtils::UTF8CharLength("ą"), 2);
+    EXPECT_EQ(StrUtils::UTF8CharLength("中"), 3);
 }
 
 TEST(StringUtilTests, StringConversion)
 {
-    std::string text = u8",./;AaZzĄąĘę中";
-    std::wstring expected = L",./;AaZzĄąĘę中";
+    std::string text = ",./;AaZzĄąĘę中";
+    std::u32string expected = U",./;AaZzĄąĘę中";
 
-    std::wstring unicode = StrUtils::Utf8StringToUnicode(text);
-    std::string result = StrUtils::UnicodeStringToUtf8(unicode);
+    std::u32string unicode = StrUtils::ToUTF32(text);
+    std::string result = StrUtils::ToUTF8(unicode);
 
     EXPECT_EQ(result, text);
     EXPECT_EQ(unicode, expected);
@@ -146,8 +153,8 @@ TEST(StringUtilTests, StringConversion)
 
 TEST(StringUtilTests, ToLowerTest)
 {
-    std::string text = u8",./;AaBbĄąĘę中";
-    std::string expected = u8",./;aabbąąęę中";
+    std::string text = ",./;AaBbĄąĘę中";
+    std::string expected = ",./;aabbąąęę中";
 
     auto result = StrUtils::ToLower(text);
 
@@ -156,8 +163,8 @@ TEST(StringUtilTests, ToLowerTest)
 
 TEST(StringUtilTests, ToUpperTest)
 {
-    std::string text = u8",./;AaBbĄąĘę中";
-    std::string expected = u8",./;AABBĄĄĘĘ中";
+    std::string text = ",./;AaBbĄąĘę中";
+    std::string expected = ",./;AABBĄĄĘĘ中";
 
     auto result = StrUtils::ToUpper(text);
 

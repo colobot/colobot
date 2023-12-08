@@ -2,11 +2,18 @@ if(CBOT_STATIC)
     add_library(CBot STATIC)
 else()
     add_library(CBot SHARED)
+
     install(TARGETS CBot
             LIBRARY DESTINATION ${COLOBOT_INSTALL_LIB_DIR}
             ARCHIVE DESTINATION ${COLOBOT_INSTALL_LIB_DIR}
             RUNTIME DESTINATION ${COLOBOT_INSTALL_BIN_DIR})
 endif()
+
+set_target_properties(CBot PROPERTIES
+    POSITION_INDEPENDENT_CODE ON
+    VISIBILITY_INLINES_HIDDEN ON
+    WINDOWS_EXPORT_ALL_SYMBOLS ON
+)
 
 target_sources(CBot PRIVATE
     src/CBot/CBot.h

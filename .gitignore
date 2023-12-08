@@ -10,6 +10,11 @@ Makefile
 /CPackSourceConfig.cmake
 /src/libcolobotbase.a
 
+# Ignore executable
+colobot.exe
+colobot
+log.txt
+
 # Ignore the generated documentation
 CMakeDoxyfile.in
 CMakeDoxygenDefaults.cmake
@@ -39,6 +44,7 @@ CMakeLists.txt.user.*
 
 # Ignore Visual Studio Code files
 /.vscode
+*.code-workspace
 
 # Ignore CLion files
 /.idea

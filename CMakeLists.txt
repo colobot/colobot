@@ -10,7 +10,7 @@ project(colobot
     LANGUAGES C CXX
 )
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
 set(CMAKE_CXX_EXTENSIONS NO)
 
@@ -66,10 +66,6 @@ if("${CMAKE_SYSTEM_NAME}" MATCHES "Windows")
     set(PLATFORM_MACOSX  0)
     set(PLATFORM_FREEBSD 0)
     set(PLATFORM_OTHER   0)
-
-    # Platform-dependent implementation of system.h
-    set(SYSTEM_CPP_MODULE "system_windows.cpp")
-    set(SYSTEM_H_MODULE "system_windows.h")
 elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
     message(STATUS "Build for Linux system")
     set(PLATFORM_WINDOWS 0)
@@ -78,10 +74,6 @@ elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
     set(PLATFORM_MACOSX  0)
     set(PLATFORM_FREEBSD 0)
     set(PLATFORM_OTHER   0)
-
-    # Platform-dependent implementation of system.h
-    set(SYSTEM_CPP_MODULE "system_linux.cpp")
-    set(SYSTEM_H_MODULE "system_linux.h")
 elseif("${CMAKE_SYSTEM_NAME}" MATCHES "kFreeBSD" OR "${CMAKE_SYSTEM_NAME}" STREQUAL "GNU")
     message(STATUS "Build for kFreeBSD system")
     set(PLATFORM_WINDOWS 0)
@@ -90,10 +82,6 @@ elseif("${CMAKE_SYSTEM_NAME}" MATCHES "kFreeBSD" OR "${CMAKE_SYSTEM_NAME}" STREQ
     set(PLATFORM_MACOSX  0)
     set(PLATFORM_FREEBSD 0)
     set(PLATFORM_OTHER   0)
-
-    # Platform-dependent implementation of system.h
-    set(SYSTEM_CPP_MODULE "system_other.cpp")
-    set(SYSTEM_H_MODULE "system_other.h")
 elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
     message(STATUS "Build for Mac OSX system")
     set(PLATFORM_WINDOWS 0)
@@ -103,9 +91,6 @@ elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
     set(PLATFORM_OTHER   0)
     set(PLATFORM_FREEBSD 0)
 
-    # Platform-dependent implementation of system.h
-    set(SYSTEM_CPP_MODULE "system_macosx.cpp")
-    set(SYSTEM_H_MODULE "system_macosx.h")
     # Fix compilation errors in MacOS SDK files
     set(CMAKE_CXX_FLAGS "${NORMAL_CXX_FLAGS} -Wno-nullability-extension -Wno-nullability-completeness -Wno-expansion-to-defined -Wno-four-char-constants -Wno-gnu-zero-variadic-macro-arguments -Wno-variadic-macros -Wno-zero-length-array")
     # To avoid CMake warning
@@ -119,10 +104,6 @@ elseif("${CMAKE_SYSTEM_NAME}" MATCHES "FreeBSD")
     set(PLATFORM_FREEBSD 1)
     set(PLATFORM_OTHER   0)
 
-    # Platform-dependent implementation of system.h
-    # On FreeBSD we can use *_other
-    set(SYSTEM_CPP_MODULE "system_other.cpp")
-    set(SYSTEM_H_MODULE "system_other.h")
     # To avoid CMake warning
     set(CMAKE_MACOSX_RPATH 1)
 else()
@@ -133,10 +114,6 @@ else()
     set(PLATFORM_MACOSX  0)
     set(PLATFORM_FREEBSD 0)
     set(PLATFORM_OTHER   1)
-
-    # Platform-dependent implementation of system.h
-    set(SYSTEM_CPP_MODULE "system_other.cpp")
-    set(SYSTEM_H_MODULE "system_other.h")
 endif()
 
 
@@ -170,7 +147,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     set(RELEASE_CXX_FLAGS "-O2")
     set(DEBUG_CXX_FLAGS "-g -O0")
     set(TEST_CXX_FLAGS "-pthread")
-    add_definitions(-DNOEXCEPT=noexcept -DHAVE_DEMANGLE)
+    add_definitions(-DHAVE_DEMANGLE)
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.1)
         message(FATAL_ERROR "${PROJECT_NAME} requires Clang 3.1 or greater.")
@@ -187,7 +164,7 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     set(RELEASE_CXX_FLAGS "-O2")
     set(DEBUG_CXX_FLAGS "-g -O0")
     set(TEST_CXX_FLAGS "-pthread")
-    add_definitions(-DNOEXCEPT=noexcept -DHAVE_DEMANGLE)
+    add_definitions(-DHAVE_DEMANGLE)
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     message(STATUS "Detected MSVC compiler")
 
@@ -199,7 +176,7 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
         set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
     endif()
     set(TEST_CXX_FLAGS "")
-    add_definitions(-DNOEXCEPT= -DHAS_MSVC_EXCEPTION_BUG)
+    add_definitions(-DHAS_MSVC_EXCEPTION_BUG)
 
     # Increase the stack size to 8 MB (the default is 1 MB), needed for CBOT
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /STACK:8388608")
@@ -226,6 +203,9 @@ set(COLOBOT_GTEST_CXX_FLAGS "${TEST_CXX_FLAGS}")
 
 # Asserts can be enabled/disabled regardless of build type
 option(ASSERTS "Enable assert()s" ON)
+
+# Enables development mode
+option(COLOBOT_DEVELOPMENT_MODE "Setup project for development (e.g. copies data content to build directory for execution)" OFF)
 
 # Development build can be enabled/disabled regardless of build type
 option(DEV_BUILD "Enable development build (enables some debugging tools, local setting paths, etc.)" OFF)
@@ -307,6 +287,7 @@ find_package(SDL2_image REQUIRED)
 find_package(SDL2_ttf REQUIRED)
 find_package(PNG 1.2 REQUIRED)
 find_package(Gettext REQUIRED)
+find_package(Intl REQUIRED)
 find_package(PhysFS REQUIRED)
 find_package(glm CONFIG REQUIRED)
 
