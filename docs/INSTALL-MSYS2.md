@@ -32,10 +32,10 @@ When you face any problems during this guide or anywhere in the future, the firs
 Now you need to install `MinGW-w64 toolchain`. Open `MSYS2 Shell` and enter the following command:
 
 ```sh
-pacman -S mingw-w64-i686-toolchain
+pacman -S mingw-w64-x86_64-toolchain
 ```
 
-**Warning:** Commands shown in this guide are for 32-bit operating system. If you have 64-bit OS, you must replace all `i686` occurrences with `x86_64`.
+**Warning:** Commands shown in this guide are for 64-bit operating system. If you have 32-bit OS, you must replace all `x86_64` occurrences with `i686`.
 
 MSYS2 creates a new environment (with all the "system" variables set properly) during this installation. You have done that from default `MSYS2 Shell`. To work with GOLD, you need to switch. There are two ways of "opening" an environment you can work in:
 
@@ -63,11 +63,11 @@ Windows Registry Editor Version 5.00
 [HKEY_CLASSES_ROOT\Directory\Background\shell\open_msys2]
 @="Open MSYS2 here"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\open_msys2\command]
-@="c:\\msys32\\usr\\bin\\mintty.exe /bin/sh -lc 'cd \"$(cygpath \"%V\")\"; export PATH=\"/mingw32/bin:$PATH\"; exec bash'"
+@="c:\\msys64\\usr\\bin\\mintty.exe /bin/sh -lc 'cd \"$(cygpath \"%V\")\"; export PATH=\"/mingw64/bin:$PATH\"; exec bash'"
 [HKEY_CLASSES_ROOT\Folder\shell\open_msys2]
 @="Open MSYS2 here"
 [HKEY_CLASSES_ROOT\Folder\shell\open_msys2\command]
-@="c:\\msys32\\usr\\bin\\mintty.exe /bin/sh -lc 'cd \"$(cygpath \"%V\")\"; export PATH=\"/mingw32/bin:$PATH\"; exec bash'"
+@="c:\\msys64\\usr\\bin\\mintty.exe /bin/sh -lc 'cd \"$(cygpath \"%V\")\"; export PATH=\"/mingw64/bin:$PATH\"; exec bash'"
 ```
 
 Remember to modify the paths before you use it so they fit in your installation.
@@ -84,7 +84,7 @@ To compile Colobot you need:
 Install them:
 
 ```sh
-pacman -S msys2-devel git make mingw-w64-i686-cmake mingw-w64-i686-gcc
+pacman -S msys2-devel git make mingw-w64-x86_64-cmake mingw-w64-x86_64-gcc
 ```
 
 It's a good time to configure git or even ssh if you plan to push to the remote repository.
@@ -110,7 +110,7 @@ Easy, isn't it?
 If you are lazy, you can just use this one-line command, although there is no guarantee it will work or install everything (might be out of date):
 
 ```sh
-pacman -S mingw-w64-i686-glew mingw-w64-i686-libpng gettext mingw-w64-i686-gettext mingw-w64-i686-libpng mingw-w64-i686-libsndfile mingw-w64-i686-libvorbis mingw-w64-i686-libogg mingw-w64-i686-openal mingw-w64_i686-physfs mingw-w64-i686-SDL2 mingw-w64-i686-SDL2_image mingw-w64-i686-SDL2_ttf mingw-w64-i686-glm
+pacman -S mingw-w64-x86_64-glew mingw-w64-x86_64-libpng gettext mingw-w64-x86_64-gettext mingw-w64-x86_64-libpng mingw-w64-x86_64-libsndfile mingw-w64-x86_64-libvorbis mingw-w64-x86_64-libogg mingw-w64-x86_64-openal mingw-w64-x86_64-physfs mingw-w64-x86_64-SDL2 mingw-w64-x86_64-SDL2_image mingw-w64-x86_64-SDL2_ttf mingw-w64-x86_64-glm
 ```
 
 You should now have everything set up and working. You can close all instances of MSYS2 and autorebase to ensure everything installed properly.
@@ -131,17 +131,17 @@ Your executable should run fine if you run it from the shell (like `./colobot` i
 
 #### PATH
 
-Add `C:\msys32\mingw32\bin` to your environment variable `PATH`.
+Add `C:\msys64\mingw64\bin` to your environment variable `PATH`.
 
 RMB on Computer -&gt; Click Properties -&gt; Advanced system settings -&gt; Environment Variables -&gt; Edit Path
 
 Be careful though. If you have any other installation of MinGW or other tools like FPC, git and so on, this might result in conflicts (for example two `gcc.exe` files) and the effects are unpredictable.
 
-You can use `PATH` also in other way: just copy all the dlls from `C:\msys32\mingw32\bin` to a place that's already in the `PATH`. This might result in a mess though, because you will mix files for GOLD with something else.
+You can use `PATH` also in other way: just copy all the dlls from `C:\msys64\mingw64\bin` to a place that's already in the `PATH`. This might result in a mess though, because you will mix files for GOLD with something else.
 
 #### Copy
 
-It's the way how it's done in most applications distributed for Windows. Just copy all the needed dlls to a folder with the game. All of them are in `C:\msys32\mingw32\bin`.
+It's the way how it's done in most applications distributed for Windows. Just copy all the needed dlls to a folder with the game. All of them are in `C:\msys64\mingw64\bin`.
 
 You can simply try to run a game and each time it gives you an error copy a missing dll to folder with an executable (like `C:\Program Files\colobot`). Or, you can use this smart command (thanks @krzys-h!):
 
