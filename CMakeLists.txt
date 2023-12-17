@@ -309,6 +309,15 @@ find_package(GLEW REQUIRED)
 
 if (OPENAL_SOUND)
     find_package(OpenAL REQUIRED)
+
+    if (NOT TARGET OpenAL::OpenAL)
+        add_library(OpenAL::OpenAL UNKNOWN IMPORTED)
+
+        set_target_properties(OpenAL::OpenAL PROPERTIES
+            IMPORTED_LOCATION "${OPENAL_LIBRARY}")
+        set_target_properties(OpenAL::OpenAL PROPERTIES
+            INTERFACE_INCLUDE_DIRECTORIES "${OPENAL_INCLUDE_DIR}")
+    endif()
 endif()
 
 find_package(SndFile REQUIRED)
