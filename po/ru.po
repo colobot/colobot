@@ -32,7 +32,7 @@ msgid "%s: %d pts"
 msgstr ""
 
 msgid "+\\Missions with bonus content and optional challenges"
-msgstr "Миссии с бонусным контентом и дополнительными испытаниями"
+msgstr "+\\Миссии с бонусным контентом и дополнительными испытаниями"
 
 msgid "..behind"
 msgstr "Сзади"
