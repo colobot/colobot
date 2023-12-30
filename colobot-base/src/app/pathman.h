@@ -19,6 +19,7 @@
 
 #pragma once
 
+#include <filesystem>
 #include <string>
 #include <vector>
 
@@ -34,38 +35,38 @@ public:
     CPathManager(CSystemUtils* systemUtils);
     ~CPathManager();
 
-    void SetDataPath(const std::string &dataPath);
-    void SetLangPath(const std::string &langPath);
-    void SetSavePath(const std::string &savePath);
+    void SetDataPath(const std::filesystem::path& dataPath);
+    void SetLangPath(const std::filesystem::path& langPath);
+    void SetSavePath(const std::filesystem::path& savePath);
 
-    const std::string& GetDataPath();
-    const std::string& GetLangPath();
-    const std::string& GetSavePath();
+    const std::filesystem::path& GetDataPath() const;
+    const std::filesystem::path& GetLangPath() const;
+    const std::filesystem::path& GetSavePath() const;
 
     //! Checks if paths are configured correctly
-    std::string VerifyPaths();
+    std::string VerifyPaths() const;
     //! Loads configured paths
     void InitPaths();
 
     //! Adds a path to a mod
-    void AddMod(const std::string& path);
+    void AddMod(const std::filesystem::path& path);
     //! Find paths to mods in mod search directories
-    std::vector<std::string> FindMods() const;
+    std::vector<std::filesystem::path> FindMods() const;
     //! Adds a mod search directory
-    void AddModSearchDir(const std::string &modSearchDirPath);
+    void AddModSearchDir(const std::filesystem::path& modSearchDirPath);
 
 private:
-    std::vector<std::string> FindModsInDir(const std::string &dir) const;
+    std::vector<std::filesystem::path> FindModsInDir(const std::filesystem::path& dir) const;
 
 private:
     //! Data path
-    std::string m_dataPath;
+    std::filesystem::path m_dataPath;
     //! Lang path
-    std::string m_langPath;
+    std::filesystem::path m_langPath;
     //! Save path
-    std::string m_savePath;
+    std::filesystem::path m_savePath;
     //! Mod search paths
-    std::vector<std::string> m_modSearchDirs;
+    std::vector<std::filesystem::path> m_modSearchDirs;
     //! Additional mod paths
-    std::vector<std::string> m_mods;
+    std::vector<std::filesystem::path> m_mods;
 };

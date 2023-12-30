@@ -218,21 +218,21 @@ void CApplication::LoadEnvironmentVariables()
     auto dataDir = m_systemUtils->GetEnvVar("COLOBOT_DATA_DIR");
     if (!dataDir.empty())
     {
-        m_pathManager->SetDataPath(dataDir);
+        m_pathManager->SetDataPath(std::filesystem::u8path(dataDir));
         GetLogger()->Info("Using data dir (based on environment variable): '%%'", dataDir);
     }
 
     auto langDir = m_systemUtils->GetEnvVar("COLOBOT_LANG_DIR");
     if (!langDir.empty())
     {
-        m_pathManager->SetLangPath(langDir);
+        m_pathManager->SetLangPath(std::filesystem::u8path(langDir));
         GetLogger()->Info("Using lang dir (based on environment variable): '%%'", langDir);
     }
 
     auto saveDir = m_systemUtils->GetEnvVar("COLOBOT_SAVE_DIR");
     if (!saveDir.empty())
     {
-        m_pathManager->SetSavePath(saveDir);
+        m_pathManager->SetSavePath(std::filesystem::u8path(saveDir));
         GetLogger()->Info("Using save dir (based on environment variable): '%%'", saveDir);
     }
 }
@@ -399,25 +399,25 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
             }
             case OPT_DATADIR:
             {
-                m_pathManager->SetDataPath(optarg);
+                m_pathManager->SetDataPath(std::filesystem::u8path(optarg));
                 GetLogger()->Info("Using data dir: '%%'", optarg);
                 break;
             }
             case OPT_LANGDIR:
             {
-                m_pathManager->SetLangPath(optarg);
+                m_pathManager->SetLangPath(std::filesystem::u8path(optarg));
                 GetLogger()->Info("Using language dir: '%%'", optarg);
                 break;
             }
             case OPT_SAVEDIR:
             {
-                m_pathManager->SetSavePath(optarg);
+                m_pathManager->SetSavePath(std::filesystem::u8path(optarg));
                 GetLogger()->Info("Using save dir: '%%'", optarg);
                 break;
             }
             case OPT_MOD:
             {
-                m_pathManager->AddMod(optarg);
+                m_pathManager->AddMod(std::filesystem::u8path(optarg));
                 break;
             }
             case OPT_RESOLUTION:
@@ -1976,7 +1976,7 @@ void CApplication::SetLanguage(Language language)
         setlocale(LC_NUMERIC, "C");
     }
 
-    bindtextdomain("colobot", m_pathManager->GetLangPath().c_str());
+    bindtextdomain("colobot", StrUtils::ToString(m_pathManager->GetLangPath()).c_str());
     bind_textdomain_codeset("colobot", "UTF-8");
     textdomain("colobot");
 

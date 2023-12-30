@@ -73,7 +73,7 @@ void CModManager::FindMods()
     for (const auto& path : rawPaths)
     {
         auto modName = std::filesystem::path(path).stem().string();
-        modPaths.insert(std::make_pair(modName, path));
+        modPaths.insert(std::make_pair(modName, StrUtils::ToString(path)));
     }
 
     // Find paths for already saved mods
