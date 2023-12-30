@@ -25,6 +25,7 @@
 #pragma once
 
 #include <cstddef>
+#include <filesystem>
 #include <sstream>
 #include <string>
 #include <string_view>
@@ -39,7 +40,7 @@ class CodePoint;
 /** If given, \a ok is set to true/false on success/failure.
     Warning: To avoid unnecessary problems, *always* give full template qualifier e.g. ToString\<int\> */
 template<class T>
-std::string ToString(T value, bool *ok = nullptr)
+std::string ToString(const T& value, bool *ok = nullptr)
 {
     std::ostringstream s;
     s << value;
@@ -82,6 +83,24 @@ To Cast(const From& text)
 
         return result;
     }
+}
+
+template<>
+inline std::string ToString(const std::filesystem::path& path, bool *ok)
+{
+    if (ok != nullptr)
+        *ok = true;
+
+    return Cast<std::string>(path.u8string());
+}
+
+template<>
+inline std::filesystem::path FromString(const std::string& path, bool *ok)
+{
+    if (ok != nullptr)
+        *ok = true;
+
+    return std::filesystem::u8path(path);
 }
 
 //! Converts string of hex characters to int
