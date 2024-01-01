@@ -95,6 +95,24 @@ std::string VFormat(const char *fmt, va_list ap)
 
 using namespace StrUtils;
 
+template<>
+std::string StrUtils::ToString(const std::filesystem::path& path, bool *ok)
+{
+    if (ok != nullptr)
+        *ok = true;
+
+    return Cast<std::string>(path.u8string());
+}
+
+template<>
+std::filesystem::path StrUtils::FromString(const std::string& path, bool *ok)
+{
+    if (ok != nullptr)
+        *ok = true;
+
+    return ToPath(path);
+}
+
 unsigned int StrUtils::HexStringToInt(std::string_view str)
 {
     auto parse = [](char c) -> unsigned

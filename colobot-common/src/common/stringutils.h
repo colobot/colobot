@@ -86,22 +86,10 @@ To Cast(const From& text)
 }
 
 template<>
-inline std::string ToString(const std::filesystem::path& path, bool *ok)
-{
-    if (ok != nullptr)
-        *ok = true;
-
-    return Cast<std::string>(path.u8string());
-}
+std::string ToString(const std::filesystem::path& path, bool *ok);
 
 template<>
-inline std::filesystem::path FromString(const std::string& path, bool *ok)
-{
-    if (ok != nullptr)
-        *ok = true;
-
-    return std::filesystem::u8path(path);
-}
+std::filesystem::path FromString(const std::string& path, bool *ok);
 
 //! Converts string of hex characters to int
 unsigned int HexStringToInt(std::string_view str);
