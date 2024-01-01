@@ -97,6 +97,11 @@ void CSystemUtilsMacOSX::Init(const std::vector<std::string>& args)
     m_dataPath /= "Contents/Resources";
 }
 
+SystemDialogResult CSystemUtilsMacOSX::SystemDialog(SystemDialogType type, const std::string& title, const std::string& message)
+{
+    return ConsoleSystemDialog(type, title, message);
+}
+
 std::filesystem::path CSystemUtilsMacOSX::GetDataPath()
 {
     return m_dataPath;

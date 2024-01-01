@@ -23,14 +23,15 @@
  */
 
 #include "common/system/system.h"
-#include "common/system/system_other.h"
 
 //@colobot-lint-exclude UndefinedFunctionRule
 
-class CSystemUtilsMacOSX : public CSystemUtilsOther
+class CSystemUtilsMacOSX : public CSystemUtils
 {
 public:
     void Init(const std::vector<std::string>& args) override;
+
+    SystemDialogResult SystemDialog(SystemDialogType type, const std::string& title, const std::string& message) override;
 
     std::filesystem::path GetDataPath() override;
     std::filesystem::path GetLangPath() override;

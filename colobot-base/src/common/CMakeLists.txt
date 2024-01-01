@@ -65,8 +65,6 @@ elseif(PLATFORM_MACOSX)
     target_sources(Colobot-Base PRIVATE
         system/system_macosx.cpp
         system/system_macosx.h
-        system/system_other.cpp
-        system/system_other.h
     )
 else()
     target_sources(Colobot-Base PRIVATE
