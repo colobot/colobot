@@ -21,17 +21,10 @@
 #include "common/resources/resourcemanager.h"
 
 #include "common/config.h"
-
-#if PLATFORM_WINDOWS
-    #include "common/system/system_windows.h"
-#endif
-
 #include "common/logger.h"
 #include "common/stringutils.h"
 
 #include <physfs.h>
-
-#include <regex>
 
 
 CResourceManager::CResourceManager(const char *argv0)
