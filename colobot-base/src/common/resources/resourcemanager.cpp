@@ -60,8 +60,7 @@ CResourceManager::~CResourceManager()
 
 std::string CResourceManager::CleanPath(const std::filesystem::path& path)
 {
-    return std::regex_replace(StrUtils::Cast<std::string>(path.generic_u8string()),
-        std::regex("(.*)/\\.\\./"), "");
+    return StrUtils::Cast<std::string>(path.lexically_normal().generic_u8string());
 }
 
 bool CResourceManager::AddLocation(const std::string &location, bool prepend, const std::string &mountPoint)
