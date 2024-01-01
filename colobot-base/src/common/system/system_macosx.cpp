@@ -65,6 +65,11 @@ inline std::string CFStringRefToStdString(CFStringRef str) {
     return stdstr;
 }
 
+std::unique_ptr<CSystemUtils> CSystemUtils::Create()
+{
+    return std::make_unique<CSystemUtilsMacOSX>();
+}
+
 void CSystemUtilsMacOSX::Init(const std::vector<std::string>& args)
 {
     m_arguments = args;
@@ -103,15 +108,18 @@ std::filesystem::path CSystemUtilsMacOSX::GetLangPath()
 
 std::filesystem::path CSystemUtilsMacOSX::GetSaveDir()
 {
-#if PORTABLE_SAVES || DEV_BUILD
-    // TODO: I have no idea if this actually works on Mac OS
-    return "./saves";
-#else
-    std::filesystem::path savegameDir = m_ASPath;
-    GetLogger()->Trace("Saved game files are going to %%", savegameDir);
+    if constexpr (Version::PORTABLE_SAVES || Version::DEVELOPMENT_BUILD)
+    {
+        // TODO: I have no idea if this actually works on Mac OS
+        return "./saves";
+    }
+    else
+    {
+        std::filesystem::path savegameDir = m_ASPath;
+        GetLogger()->Trace("Saved game files are going to %%", savegameDir);
 
-    return savegameDir;
-#endif
+        return savegameDir;
+    }
 }
 
 std::string CSystemUtilsMacOSX::GetEnvVar(const std::string& str)

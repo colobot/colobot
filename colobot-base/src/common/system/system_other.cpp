@@ -20,6 +20,11 @@
 #include "common/system/system_other.h"
 
 
+std::unique_ptr<CSystemUtils> CSystemUtils::Create()
+{
+    return std::make_unique<CSystemUtilsOther>();
+}
+
 void CSystemUtilsOther::Init(const std::vector<std::string>& args)
 {
     m_arguments = args;

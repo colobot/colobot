@@ -20,15 +20,7 @@
 
 #include "common/system/system.h"
 
-#if defined(PLATFORM_WINDOWS)
-    #include "common/system/system_windows.h"
-#elif defined(PLATFORM_LINUX)
-    #include "common/system/system_linux.h"
-#elif defined(PLATFORM_MACOSX)
-    #include "common/system/system_macosx.h"
-#else
-    #include "common/system/system_other.h"
-#endif
+#include "common/version.h"
 
 #include <cassert>
 #include <iostream>
@@ -36,21 +28,6 @@
 #include <thread>
 
 #include <SDL2/SDL.h>
-
-std::unique_ptr<CSystemUtils> CSystemUtils::Create()
-{
-    std::unique_ptr<CSystemUtils> instance;
-#if defined(PLATFORM_WINDOWS)
-    instance = std::make_unique<CSystemUtilsWindows>();
-#elif defined(PLATFORM_LINUX)
-    instance = std::make_unique<CSystemUtilsLinux>();
-#elif defined(PLATFORM_MACOSX)
-    instance = std::make_unique<CSystemUtilsMacOSX>();
-#else
-    instance = std::make_unique<CSystemUtilsOther>();
-#endif
-    return instance;
-}
 
 CSystemUtils::~CSystemUtils()
 {}
@@ -177,20 +154,18 @@ std::filesystem::path CSystemUtils::GetBasePath()
 
 std::filesystem::path CSystemUtils::GetDataPath()
 {
-#ifdef USE_RELATIVE_PATHS
-    return GetBasePath() / COLOBOT_DEFAULT_DATADIR;
-#else
-    return COLOBOT_DEFAULT_DATADIR;
-#endif
+    if constexpr (Version::RELATIVE_PATHS)
+        return GetBasePath() / COLOBOT_DEFAULT_DATADIR;
+    else
+        return COLOBOT_DEFAULT_DATADIR;
 }
 
 std::filesystem::path CSystemUtils::GetLangPath()
 {
-#ifdef USE_RELATIVE_PATHS
-    return GetBasePath() / COLOBOT_I18N_DIR;
-#else
-    return COLOBOT_I18N_DIR;
-#endif
+    if constexpr (Version::RELATIVE_PATHS)
+        return GetBasePath() / COLOBOT_I18N_DIR;
+    else
+        return COLOBOT_I18N_DIR;
 }
 
 std::filesystem::path CSystemUtils::GetSaveDir()

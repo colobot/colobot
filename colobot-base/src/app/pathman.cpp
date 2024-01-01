@@ -29,10 +29,6 @@
 
 #include "common/system/system.h"
 
-#ifdef PLATFORM_WINDOWS
-    #include "common/system/system_windows.h"
-#endif
-
 #include <filesystem>
 
 CPathManager::CPathManager(CSystemUtils* systemUtils)

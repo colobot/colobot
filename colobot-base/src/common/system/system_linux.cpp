@@ -20,11 +20,17 @@
 #include "common/system/system_linux.h"
 
 #include "common/logger.h"
+#include "common/version.h"
 
 #include <stdlib.h>
 #include <unistd.h>
 #include <time.h>
 
+
+std::unique_ptr<CSystemUtils> CSystemUtils::Create()
+{
+    return std::make_unique<CSystemUtilsLinux>();
+}
 
 void CSystemUtilsLinux::Init(const std::vector<std::string>& args)
 {
@@ -87,34 +93,37 @@ SystemDialogResult CSystemUtilsLinux::SystemDialog(SystemDialogType type, const 
 
 std::filesystem::path CSystemUtilsLinux::GetSaveDir()
 {
-#if PORTABLE_SAVES || DEV_BUILD
-    return CSystemUtils::GetSaveDir();
-#else
-    std::filesystem::path savegameDir;
-
-    // Determine savegame dir according to XDG Base Directory Specification
-    auto envXDG_DATA_HOME = GetEnvVar("XDG_DATA_HOME");
-    if (envXDG_DATA_HOME.empty())
+    if constexpr (Version::PORTABLE_SAVES || Version::DEVELOPMENT_BUILD)
     {
-        auto envHOME = GetEnvVar("HOME");
-        if (envHOME.empty())
-        {
-            GetLogger()->Warn("Unable to find directory for saves - using default directory");
-            savegameDir = CSystemUtils::GetSaveDir();
-        }
-        else
-        {
-            savegameDir = std::filesystem::u8path(envHOME) / ".local/share/colobot";
-        }
+        return CSystemUtils::GetSaveDir();
     }
     else
     {
-        savegameDir = std::filesystem::u8path(envXDG_DATA_HOME) / "colobot";
-    }
-    GetLogger()->Trace("Saved game files are going to %%", savegameDir);
+        std::filesystem::path savegameDir;
 
-    return savegameDir;
-#endif
+        // Determine savegame dir according to XDG Base Directory Specification
+        auto envXDG_DATA_HOME = GetEnvVar("XDG_DATA_HOME");
+        if (envXDG_DATA_HOME.empty())
+        {
+            auto envHOME = GetEnvVar("HOME");
+            if (envHOME.empty())
+            {
+                GetLogger()->Warn("Unable to find directory for saves - using default directory");
+                savegameDir = CSystemUtils::GetSaveDir();
+            }
+            else
+            {
+                savegameDir = std::filesystem::u8path(envHOME) / ".local/share/colobot";
+            }
+        }
+        else
+        {
+            savegameDir = std::filesystem::u8path(envXDG_DATA_HOME) / "colobot";
+        }
+        GetLogger()->Trace("Saved game files are going to %%", savegameDir);
+
+        return savegameDir;
+    }
 }
 
 std::string CSystemUtilsLinux::GetEnvVar(const std::string& name)
