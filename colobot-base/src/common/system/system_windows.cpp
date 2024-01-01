@@ -108,12 +108,12 @@ std::wstring CSystemUtilsWindows::UTF8_Decode(const std::string& str)
 
 }
 
-std::string CSystemUtilsWindows::GetSaveDir()
+std::filesystem::path CSystemUtilsWindows::GetSaveDir()
 {
 #if PORTABLE_SAVES || DEV_BUILD
     return CSystemUtils::GetSaveDir();
 #else
-    std::string savegameDir;
+    std::filesystem::path savegameDir;
 
     auto envUSERPROFILE = GetEnvVar("USERPROFILE");
     if (envUSERPROFILE.empty())
@@ -123,7 +123,7 @@ std::string CSystemUtilsWindows::GetSaveDir()
     }
     else
     {
-        savegameDir = envUSERPROFILE + "\\colobot";
+        savegameDir = std::filesystem::u8path(envUSERPROFILE) / "colobot";
     }
     GetLogger()->Trace("Saved game files are going to %%", savegameDir);
 

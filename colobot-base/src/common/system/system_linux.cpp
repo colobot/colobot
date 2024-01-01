@@ -85,12 +85,12 @@ SystemDialogResult CSystemUtilsLinux::SystemDialog(SystemDialogType type, const 
     return result;
 }
 
-std::string CSystemUtilsLinux::GetSaveDir()
+std::filesystem::path CSystemUtilsLinux::GetSaveDir()
 {
 #if PORTABLE_SAVES || DEV_BUILD
     return CSystemUtils::GetSaveDir();
 #else
-    std::string savegameDir;
+    std::filesystem::path savegameDir;
 
     // Determine savegame dir according to XDG Base Directory Specification
     auto envXDG_DATA_HOME = GetEnvVar("XDG_DATA_HOME");
@@ -104,12 +104,12 @@ std::string CSystemUtilsLinux::GetSaveDir()
         }
         else
         {
-            savegameDir = envHOME + "/.local/share/colobot";
+            savegameDir = std::filesystem::u8path(envHOME) / ".local/share/colobot";
         }
     }
     else
     {
-        savegameDir = envXDG_DATA_HOME + "/colobot";
+        savegameDir = std::filesystem::u8path(envXDG_DATA_HOME) / "colobot";
     }
     GetLogger()->Trace("Saved game files are going to %%", savegameDir);
 

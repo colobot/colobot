@@ -28,6 +28,7 @@
 #include "common/timeutils.h"
 
 #include <chrono>
+#include <filesystem>
 #include <memory>
 #include <string>
 #include <vector>
@@ -101,16 +102,16 @@ public:
     TEST_VIRTUAL TimeUtils::TimeStamp GetCurrentTimeStamp();
 
     //! Returns the path where the executable binary is located (ends with the path separator)
-    virtual std::string GetBasePath();
+    virtual std::filesystem::path GetBasePath();
 
     //! Returns the data path (containing textures, levels, helpfiles, etc)
-    virtual std::string GetDataPath();
+    virtual std::filesystem::path GetDataPath();
 
     //! Returns the translations path
-    virtual std::string GetLangPath();
+    virtual std::filesystem::path GetLangPath();
 
     //! Returns the save dir location
-    virtual std::string GetSaveDir();
+    virtual std::filesystem::path GetSaveDir();
 
     //! Returns the environment variable with the given name or an empty string if it does not exist
     virtual std::string GetEnvVar(const std::string &name);
@@ -130,5 +131,5 @@ protected:
     std::vector<std::string> m_arguments;
 
 private:
-    std::string m_basePath;
+    std::filesystem::path m_basePath;
 };

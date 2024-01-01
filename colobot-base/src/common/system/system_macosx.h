@@ -32,9 +32,9 @@ class CSystemUtilsMacOSX : public CSystemUtilsOther
 public:
     void Init(const std::vector<std::string>& args) override;
 
-    std::string GetDataPath() override;
-    std::string GetLangPath() override;
-    std::string GetSaveDir() override;
+    std::filesystem::path GetDataPath() override;
+    std::filesystem::path GetLangPath() override;
+    std::filesystem::path GetSaveDir() override;
 
     std::string GetEnvVar(const std::string& name) override;
 
@@ -42,8 +42,8 @@ public:
     bool OpenWebsite(const std::string& url) override;
 
 private:
-    std::string m_ASPath;
-    std::string m_dataPath;
+    std::filesystem::path m_ASPath;
+    std::filesystem::path m_dataPath;
 };
 
 //@end-colobot-lint-exclude

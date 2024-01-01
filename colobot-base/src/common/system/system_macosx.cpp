@@ -76,11 +76,10 @@ void CSystemUtilsMacOSX::Init(const std::vector<std::string>& args)
     FSFindFolder( kUserDomain, folderType, kCreateFolder, &ref );
     FSRefMakePath( &ref, reinterpret_cast<UInt8*>(&path), PATH_MAX );
 
-    m_ASPath = path;
-    m_ASPath.append("/colobot/");
+    m_ASPath = std::filesystem::u8path(path) / "colobot";
 
     // Make sure the directory exists
-    std::filesystem::create_directories(m_ASPath.c_str());
+    std::filesystem::create_directories(m_ASPath);
 
     // Get the Resources bundle URL
     CFBundleRef mainBundle = CFBundleGetMainBundle();
@@ -88,27 +87,27 @@ void CSystemUtilsMacOSX::Init(const std::vector<std::string>& args)
     CFStringRef str = CFURLCopyFileSystemPath( resourcesURL, kCFURLPOSIXPathStyle );
     CFRelease(resourcesURL);
 
-    m_dataPath = CFStringRefToStdString(str);
-    m_dataPath += "/Contents/Resources";
+    m_dataPath = std::filesystem::u8path(CFStringRefToStdString(str));
+    m_dataPath /= "Contents/Resources";
 }
 
-std::string CSystemUtilsMacOSX::GetDataPath()
+std::filesystem::path CSystemUtilsMacOSX::GetDataPath()
 {
     return m_dataPath;
 }
 
-std::string CSystemUtilsMacOSX::GetLangPath()
+std::filesystem::path CSystemUtilsMacOSX::GetLangPath()
 {
-    return m_dataPath + "/i18n";
+    return m_dataPath / "i18n";
 }
 
-std::string CSystemUtilsMacOSX::GetSaveDir()
+std::filesystem::path CSystemUtilsMacOSX::GetSaveDir()
 {
 #if PORTABLE_SAVES || DEV_BUILD
     // TODO: I have no idea if this actually works on Mac OS
     return "./saves";
 #else
-    std::string savegameDir = m_ASPath;
+    std::filesystem::path savegameDir = m_ASPath;
     GetLogger()->Trace("Saved game files are going to %%", savegameDir);
 
     return savegameDir;

@@ -33,7 +33,7 @@ public:
 
     SystemDialogResult SystemDialog(SystemDialogType type, const std::string& title, const std::string& message) override;
 
-    std::string GetSaveDir() override;
+    std::filesystem::path GetSaveDir() override;
 
     std::string GetEnvVar(const std::string& name) override;
 

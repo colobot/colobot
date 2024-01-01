@@ -124,7 +124,7 @@ int main(int argc, char *argv[])
     else
     {
         std::filesystem::create_directories(systemUtils->GetSaveDir());
-        logFileName = systemUtils->GetSaveDir() + "/log.txt";
+        logFileName = systemUtils->GetSaveDir() / "log.txt";
     }
 
     std::ofstream logFile(logFileName);
