@@ -31,13 +31,7 @@ CLogger::CLogger()
         : LOG_INFO;
 }
 
-CLogger::~CLogger()
-{
-    for (FILE* out : m_outputs)
-    {
-        fclose(out);
-    }
-}
+CLogger::~CLogger() = default;
 
 void CLogger::LogMessage(LogLevel type, std::string_view message)
 {
@@ -69,19 +63,19 @@ void CLogger::LogMessage(LogLevel type, std::string_view message)
 
     line += message;
 
-    if (line.empty() || line.back() != '\n')
-        line += '\n';
+    if (!line.empty() && line.back() == '\n')
+        line.pop_back();
 
-    for (FILE* out : m_outputs)
+    for (auto& out : m_outputs)
     {
-        fputs(line.c_str(), out);
+        out->write(line.data(), line.size());
+        out->put('\n');
     }
 }
 
-void CLogger::AddOutput(FILE* file)
+void CLogger::AddOutput(std::ostream& stream)
 {
-    assert(file != nullptr);
-    m_outputs.push_back(file);
+    m_outputs.push_back(&stream);
 }
 
 void CLogger::SetLogLevel(LogLevel level)

@@ -37,6 +37,8 @@
 #include "common/system/system.h"
 
 #include <filesystem>
+#include <fstream>
+#include <iostream>
 #include <memory>
 #include <vector>
 
@@ -100,7 +102,7 @@ extern "C"
 int main(int argc, char *argv[])
 {
     CLogger logger; // single instance of logger
-    logger.AddOutput(stderr);
+    logger.AddOutput(std::cerr);
 
     std::vector<std::string> args;
 
@@ -113,7 +115,7 @@ int main(int argc, char *argv[])
     CProfiler::SetSystemUtils(systemUtils.get());
 
     // Add file output to the logger
-    std::string logFileName;
+    std::filesystem::path logFileName;
     
     if constexpr (Version::DEVELOPMENT_BUILD)
     {
@@ -125,13 +127,13 @@ int main(int argc, char *argv[])
         logFileName = systemUtils->GetSaveDir() + "/log.txt";
     }
 
-    FILE* logFile = fopen(logFileName.c_str(), "w");
+    std::ofstream logFile(logFileName);
     if (logFile)
         logger.AddOutput(logFile);
     else
-        logger.Error("Failed to create log file, writing log to file disabled\n");
+        logger.Error("Failed to create log file, writing log to file disabled");
 
-    logger.Info("%% starting\n", Version::FULL_NAME);
+    logger.Info("%% starting", Version::FULL_NAME);
 
     CSignalHandlers::Init(systemUtils.get());
 
@@ -149,7 +151,7 @@ int main(int argc, char *argv[])
     ParseArgsStatus status = app.ParseArguments(systemUtils->GetArguments());
     if (status == PARSE_ARGS_FAIL)
     {
-        systemUtils->SystemDialog(SystemDialogType::ERROR_MSG, "COLOBOT - Fatal Error", "Invalid commandline arguments!\n");
+        systemUtils->SystemDialog(SystemDialogType::ERROR_MSG, "COLOBOT - Fatal Error", "Invalid commandline arguments!");
         return app.GetExitCode();
     }
     else if (status == PARSE_ARGS_HELP)
