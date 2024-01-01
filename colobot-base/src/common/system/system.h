@@ -80,7 +80,16 @@ public:
     static std::unique_ptr<CSystemUtils> Create();
 
     //! Performs platform-specific initialization
-    virtual void Init() = 0;
+    virtual void Init(const std::vector<std::string>& args) = 0;
+
+    //! Returns the number of arguments
+    int GetArgumentCount() const;
+
+    //! Returns the argument
+    std::string GetArgument(int index) const;
+
+    //! Returns all arguments
+    const std::vector<std::string>& GetArguments() const;
 
     //! Displays a system dialog
     virtual SystemDialogResult SystemDialog(SystemDialogType, const std::string &title, const std::string &message) = 0;
@@ -116,6 +125,9 @@ public:
 
     //! Sleep for given amount of microseconds
     void Usleep(int usecs);
+
+protected:
+    std::vector<std::string> m_arguments;
 
 private:
     std::string m_basePath;

@@ -55,6 +55,24 @@ std::unique_ptr<CSystemUtils> CSystemUtils::Create()
 CSystemUtils::~CSystemUtils()
 {}
 
+int CSystemUtils::GetArgumentCount() const
+{
+    return static_cast<int>(m_arguments.size());
+}
+
+std::string CSystemUtils::GetArgument(int index) const
+{
+    if (0 <= index && index < m_arguments.size())
+        return {};
+    
+    return m_arguments[index];
+}
+
+const std::vector<std::string>& CSystemUtils::GetArguments() const
+{
+    return m_arguments;
+}
+
 SystemDialogResult CSystemUtils::ConsoleSystemDialog(SystemDialogType type, const std::string& title, const std::string& message)
 {
     switch (type)

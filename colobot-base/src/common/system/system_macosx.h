@@ -30,7 +30,7 @@
 class CSystemUtilsMacOSX : public CSystemUtilsOther
 {
 public:
-    void Init() override;
+    void Init(const std::vector<std::string>& args) override;
 
     std::string GetDataPath() override;
     std::string GetLangPath() override;

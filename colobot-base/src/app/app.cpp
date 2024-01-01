@@ -237,7 +237,7 @@ void CApplication::LoadEnvironmentVariables()
     }
 }
 
-ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
+ParseArgsStatus CApplication::ParseArguments(const std::vector<std::string>& args)
 {
     enum OptionType
     {
@@ -283,14 +283,21 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
 
     int c = 0;
     int index = -1;
-    while ((c = getopt_long_only(argc, argv, "", options, &index)) != -1)
+
+    std::vector<std::string> copy = args;
+    std::vector<char*> arguments;
+
+    for (auto& arg : copy)
+        arguments.push_back(arg.data());
+
+    while ((c = getopt_long_only(arguments.size(), arguments.data(), "", options, &index)) != -1)
     {
         if (c == '?')
         {
             if (optopt == 0)
-                GetLogger()->Error("Invalid argument: %%", argv[optind-1]);
+                GetLogger()->Error("Invalid argument: %%", args[optind-1]);
             else
-                GetLogger()->Error("Expected argument for option: %%", argv[optind-1]);
+                GetLogger()->Error("Expected argument for option: %%", args[optind-1]);
 
             m_exitCode = 1;
             return PARSE_ARGS_FAIL;

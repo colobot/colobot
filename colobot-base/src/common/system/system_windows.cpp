@@ -25,8 +25,25 @@
 
 #include <filesystem>
 
-void CSystemUtilsWindows::Init()
+void CSystemUtilsWindows::Init([[maybe_unused]] const std::vector<std::string>& args)
 {
+    m_arguments.clear();
+
+    int wargc = 0;
+    wchar_t** wargv = CommandLineToArgvW(GetCommandLineW(), &wargc);
+    if (wargv == nullptr)
+    {
+        GetLogger()->Error("CommandLineToArgvW failed\n");
+        return;
+    }
+
+    for (int i = 0; i < wargc; i++)
+    {
+        std::wstring warg = wargv[i];
+        m_arguments.push_back(CSystemUtilsWindows::UTF8_Encode(warg));
+    }
+
+    LocalFree(wargv);
 }
 
 SystemDialogResult CSystemUtilsWindows::SystemDialog(SystemDialogType type, const std::string& title, const std::string& message)

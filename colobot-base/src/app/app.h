@@ -170,7 +170,7 @@ public:
     //! Loads some data from environment variables
     void LoadEnvironmentVariables();
     //! Parses commandline arguments (they take priority)
-    ParseArgsStatus ParseArguments(int argc, char *argv[]);
+    ParseArgsStatus ParseArguments(const std::vector<std::string>& args);
     //! Initializes the application
     bool        Create();
     //! Reloads the application resources, e.g. mods

@@ -20,8 +20,9 @@
 #include "common/system/system_other.h"
 
 
-void CSystemUtilsOther::Init()
+void CSystemUtilsOther::Init(const std::vector<std::string>& args)
 {
+    m_arguments = args;
 }
 
 SystemDialogResult CSystemUtilsOther::SystemDialog(SystemDialogType type, const std::string& title, const std::string& message)

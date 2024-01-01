@@ -26,8 +26,10 @@
 #include <time.h>
 
 
-void CSystemUtilsLinux::Init()
+void CSystemUtilsLinux::Init(const std::vector<std::string>& args)
 {
+    m_arguments = args;
+
     m_zenityAvailable = true;
     if (system("zenity --version 1> /dev/null 2> /dev/null") != 0)
     {

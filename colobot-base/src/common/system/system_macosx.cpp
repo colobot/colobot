@@ -65,8 +65,10 @@ inline std::string CFStringRefToStdString(CFStringRef str) {
     return stdstr;
 }
 
-void CSystemUtilsMacOSX::Init()
+void CSystemUtilsMacOSX::Init(const std::vector<std::string>& args)
 {
+    m_arguments = args;
+
     // These functions are a deprecated way to get the 'Application Support' folder, but they do work, in plain C++
     FSRef ref;
     OSType folderType = kApplicationSupportFolderType;
