@@ -20,6 +20,7 @@
 #include "common/system/system_macosx.h"
 
 #include "common/logger.h"
+#include "common/version.h"
 
 #include <stdlib.h>
 #include <unistd.h>
