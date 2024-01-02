@@ -66,8 +66,14 @@ std::locale GetConversionLocale()
 
 const std::locale convertion_locale = GetConversionLocale();
 
+#ifdef __cpp_char8_t
+using UTF8Char = char8_t;
+#else
+using UTF8Char = char;
+#endif
+
 const auto& wchar = std::use_facet<std::ctype<wchar_t>>(convertion_locale);
-const auto& utf32 = std::use_facet<std::codecvt<char32_t, char, std::mbstate_t>>(convertion_locale);
+const auto& utf32 = std::use_facet<std::codecvt<char32_t, UTF8Char, std::mbstate_t>>(convertion_locale);
 
 std::string VFormat(const char *fmt, va_list ap)
 {
@@ -253,7 +259,9 @@ int StrUtils::UTF8CharLength(std::string_view string)
 
     std::mbstate_t state = {};
 
-    return utf32.length(state, string.data(), string.data() + string.size(), 1);
+    auto data = reinterpret_cast<const UTF8Char*>(string.data());
+
+    return utf32.length(state, data, data + string.size(), 1);
 }
 
 int StrUtils::UTF8StringLength(std::string_view string)
@@ -264,8 +272,9 @@ int StrUtils::UTF8StringLength(std::string_view string)
     {
         std::mbstate_t state = {};
 
-        auto count = utf32.length(state,
-            string.data(), string.data() + string.size(), 1);
+        auto data = reinterpret_cast<const UTF8Char*>(string.data());
+
+        auto count = utf32.length(state, data, data + string.size(), 1);
 
         if (count == 0)
             throw std::invalid_argument("Invalid character");
@@ -289,7 +298,9 @@ CodePoint StrUtils::ReadUTF8(std::string_view text)
 
     std::mbstate_t state = {};
 
-    int len = utf32.length(state, text.data(), text.data() + text.size(), 1);
+    auto data = reinterpret_cast<const UTF8Char*>(text.data());
+
+    int len = utf32.length(state, data, data + text.size(), 1);
 
     if (len == 0) return {};
 
@@ -299,18 +310,20 @@ CodePoint StrUtils::ReadUTF8(std::string_view text)
 CodePoint StrUtils::ToUTF8(char32_t code)
 {
     std::mbstate_t state = {};
-    std::array<char, 4> buffer;
+    std::array<UTF8Char, 4> buffer;
 
     const char32_t* read = nullptr;
-    char* written = nullptr;
+    UTF8Char* written = nullptr;
 
     auto result = utf32.out(state, &code, &code + 1, read,
         buffer.data(), buffer.data() + buffer.size(), written);
 
     if (result != std::codecvt_base::ok)
         return {};
-    
-    return CodePoint(std::string_view(buffer.data(), written - buffer.data()));
+
+    auto data = reinterpret_cast<const char*>(buffer.data());
+
+    return CodePoint(std::string_view(data, written - buffer.data()));
 }
 
 char32_t StrUtils::ToUTF32(CodePoint code)
@@ -318,11 +331,13 @@ char32_t StrUtils::ToUTF32(CodePoint code)
     std::mbstate_t state = {};
     char32_t ch = {};
 
-    const char* read = nullptr;
+    const UTF8Char* read = nullptr;
     char32_t* written = nullptr;
 
+    auto data = reinterpret_cast<const UTF8Char*>(code.Data());
+
     auto result = utf32.in(state,
-        code.Data(), code.Data() + code.Size(), read,
+        data, data + code.Size(), read,
         &ch, &ch + 1, written);
 
     if (result != std::codecvt_base::ok)
