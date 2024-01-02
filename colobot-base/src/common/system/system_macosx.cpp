@@ -20,6 +20,7 @@
 #include "common/system/system_macosx.h"
 
 #include "common/logger.h"
+#include "common/stringutils.h"
 #include "common/version.h"
 
 #include <stdlib.h>
@@ -82,7 +83,7 @@ void CSystemUtilsMacOSX::Init(const std::vector<std::string>& args)
     FSFindFolder( kUserDomain, folderType, kCreateFolder, &ref );
     FSRefMakePath( &ref, reinterpret_cast<UInt8*>(&path), PATH_MAX );
 
-    m_ASPath = std::filesystem::u8path(path) / "colobot";
+    m_ASPath = StrUtils::ToPath(path) / "colobot";
 
     // Make sure the directory exists
     std::filesystem::create_directories(m_ASPath);
@@ -93,7 +94,7 @@ void CSystemUtilsMacOSX::Init(const std::vector<std::string>& args)
     CFStringRef str = CFURLCopyFileSystemPath( resourcesURL, kCFURLPOSIXPathStyle );
     CFRelease(resourcesURL);
 
-    m_dataPath = std::filesystem::u8path(CFStringRefToStdString(str));
+    m_dataPath = StrUtils::ToPath(CFStringRefToStdString(str));
     m_dataPath /= "Contents/Resources";
 }
 

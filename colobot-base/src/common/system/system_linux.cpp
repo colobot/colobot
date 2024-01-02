@@ -20,6 +20,7 @@
 #include "common/system/system_linux.h"
 
 #include "common/logger.h"
+#include "common/stringutils.h"
 #include "common/version.h"
 
 #include <stdlib.h>
@@ -113,12 +114,12 @@ std::filesystem::path CSystemUtilsLinux::GetSaveDir()
             }
             else
             {
-                savegameDir = std::filesystem::u8path(envHOME) / ".local/share/colobot";
+                savegameDir = StrUtils::ToPath(envHOME) / ".local/share/colobot";
             }
         }
         else
         {
-            savegameDir = std::filesystem::u8path(envXDG_DATA_HOME) / "colobot";
+            savegameDir = StrUtils::ToPath(envXDG_DATA_HOME) / "colobot";
         }
         GetLogger()->Trace("Saved game files are going to %%", savegameDir);
 

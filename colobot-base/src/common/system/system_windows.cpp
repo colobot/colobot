@@ -20,6 +20,7 @@
 #include "common/system/system_windows.h"
 
 #include "common/logger.h"
+#include "common/stringutils.h"
 #include "common/version.h"
 
 #include <windows.h>
@@ -133,7 +134,7 @@ std::filesystem::path CSystemUtilsWindows::GetSaveDir()
         }
         else
         {
-            savegameDir = std::filesystem::u8path(envUSERPROFILE) / "colobot";
+            savegameDir = StrUtils::ToPath(envUSERPROFILE) / "colobot";
         }
         GetLogger()->Trace("Saved game files are going to %%", savegameDir);
 
@@ -159,7 +160,7 @@ std::string CSystemUtilsWindows::GetEnvVar(const std::string& name)
 
 bool CSystemUtilsWindows::OpenPath(const std::string& path)
 {
-    int result = system(("start explorer \"" + std::filesystem::u8path(path).make_preferred().string() + "\"").c_str());
+    int result = system(("start explorer \"" + StrUtils::ToPath(path).make_preferred().string() + "\"").c_str());
     if (result != 0)
     {
         GetLogger()->Error("Failed to open path: %%, error code: %%", path, result);

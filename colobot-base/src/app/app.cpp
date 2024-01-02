@@ -218,21 +218,21 @@ void CApplication::LoadEnvironmentVariables()
     auto dataDir = m_systemUtils->GetEnvVar("COLOBOT_DATA_DIR");
     if (!dataDir.empty())
     {
-        m_pathManager->SetDataPath(std::filesystem::u8path(dataDir));
+        m_pathManager->SetDataPath(StrUtils::ToPath(dataDir));
         GetLogger()->Info("Using data dir (based on environment variable): '%%'", dataDir);
     }
 
     auto langDir = m_systemUtils->GetEnvVar("COLOBOT_LANG_DIR");
     if (!langDir.empty())
     {
-        m_pathManager->SetLangPath(std::filesystem::u8path(langDir));
+        m_pathManager->SetLangPath(StrUtils::ToPath(langDir));
         GetLogger()->Info("Using lang dir (based on environment variable): '%%'", langDir);
     }
 
     auto saveDir = m_systemUtils->GetEnvVar("COLOBOT_SAVE_DIR");
     if (!saveDir.empty())
     {
-        m_pathManager->SetSavePath(std::filesystem::u8path(saveDir));
+        m_pathManager->SetSavePath(StrUtils::ToPath(saveDir));
         GetLogger()->Info("Using save dir (based on environment variable): '%%'", saveDir);
     }
 }
@@ -406,25 +406,25 @@ ParseArgsStatus CApplication::ParseArguments(const std::vector<std::string>& arg
             }
             case OPT_DATADIR:
             {
-                m_pathManager->SetDataPath(std::filesystem::u8path(optarg));
+                m_pathManager->SetDataPath(StrUtils::ToPath(optarg));
                 GetLogger()->Info("Using data dir: '%%'", optarg);
                 break;
             }
             case OPT_LANGDIR:
             {
-                m_pathManager->SetLangPath(std::filesystem::u8path(optarg));
+                m_pathManager->SetLangPath(StrUtils::ToPath(optarg));
                 GetLogger()->Info("Using language dir: '%%'", optarg);
                 break;
             }
             case OPT_SAVEDIR:
             {
-                m_pathManager->SetSavePath(std::filesystem::u8path(optarg));
+                m_pathManager->SetSavePath(StrUtils::ToPath(optarg));
                 GetLogger()->Info("Using save dir: '%%'", optarg);
                 break;
             }
             case OPT_MOD:
             {
-                m_pathManager->AddMod(std::filesystem::u8path(optarg));
+                m_pathManager->AddMod(StrUtils::ToPath(optarg));
                 break;
             }
             case OPT_RESOLUTION:

@@ -20,6 +20,7 @@
 
 #include "common/system/system.h"
 
+#include "common/stringutils.h"
 #include "common/version.h"
 
 #include <cassert>
@@ -146,7 +147,7 @@ std::filesystem::path CSystemUtils::GetBasePath()
     if (m_basePath.empty())
     {
         auto* path = SDL_GetBasePath();
-        m_basePath = std::filesystem::u8path(path);
+        m_basePath = StrUtils::ToPath(path);
         SDL_free(path);
     }
     return m_basePath;
