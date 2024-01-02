@@ -113,6 +113,17 @@ std::filesystem::path StrUtils::FromString(const std::string& path, bool *ok)
     return ToPath(path);
 }
 
+std::filesystem::path StrUtils::ToPath(std::string_view path)
+{
+#ifdef __cpp_char8_t
+    auto data = reinterpret_cast<const char8_t*>(path.data());
+
+    return std::filesystem::path(data, data + path.size());
+#else
+    return std::filesystem::u8path(path.begin(), path.end());
+#endif
+}
+
 unsigned int StrUtils::HexStringToInt(std::string_view str)
 {
     auto parse = [](char c) -> unsigned

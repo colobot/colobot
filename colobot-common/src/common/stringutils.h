@@ -91,6 +91,9 @@ std::string ToString(const std::filesystem::path& path, bool *ok);
 template<>
 std::filesystem::path FromString(const std::string& path, bool *ok);
 
+// Converts UTF-8 encoded string to std::filesystem::path
+std::filesystem::path ToPath(std::string_view path);
+
 //! Converts string of hex characters to int
 unsigned int HexStringToInt(std::string_view str);
 
