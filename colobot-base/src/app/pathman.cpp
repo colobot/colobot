@@ -109,14 +109,13 @@ void CPathManager::InitPaths()
             GetLogger()->Info("  * %%", modSearchDir);
     }
 
-    CResourceManager::AddLocation(StrUtils::ToString(m_dataPath));
-
-    CResourceManager::SetSaveLocation(StrUtils::ToString(m_savePath));
-    CResourceManager::AddLocation(StrUtils::ToString(m_savePath));
+    CResourceManager::AddLocation(m_dataPath);
+    CResourceManager::SetSaveLocation(m_savePath);
+    CResourceManager::AddLocation(m_savePath);
 
     GetLogger()->Debug("Finished initializing data paths");
     GetLogger()->Debug("PHYSFS search path is:");
-    for (const std::string& path : CResourceManager::GetLocations())
+    for (const auto& path : CResourceManager::GetLocations())
         GetLogger()->Debug("  * %%", path);
 }
 

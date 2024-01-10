@@ -56,9 +56,9 @@ std::string CResourceManager::CleanPath(const std::filesystem::path& path)
     return StrUtils::Cast<std::string>(path.lexically_normal().generic_u8string());
 }
 
-bool CResourceManager::AddLocation(const std::string &location, bool prepend, const std::string &mountPoint)
+bool CResourceManager::AddLocation(const std::filesystem::path& location, bool prepend, const std::string &mountPoint)
 {
-    if (!PHYSFS_mount(location.c_str(), mountPoint.c_str(), prepend ? 0 : 1))
+    if (!PHYSFS_mount(StrUtils::ToString(location).c_str(), mountPoint.c_str(), prepend ? 0 : 1))
     {
         PHYSFS_ErrorCode errorCode = PHYSFS_getLastErrorCode();
         GetLogger()->Error("Error while mounting \"%%\": %%\n", location, PHYSFS_getErrorByCode(errorCode));
@@ -69,9 +69,9 @@ bool CResourceManager::AddLocation(const std::string &location, bool prepend, co
 }
 
 
-bool CResourceManager::RemoveLocation(const std::string &location)
+bool CResourceManager::RemoveLocation(const std::filesystem::path& location)
 {
-    if (!PHYSFS_unmount(location.c_str()))
+    if (!PHYSFS_unmount(StrUtils::ToString(location).c_str()))
     {
         PHYSFS_ErrorCode errorCode = PHYSFS_getLastErrorCode();
         GetLogger()->Error("Error while unmounting \"%%\": %%\n", location, PHYSFS_getErrorByCode(errorCode));
@@ -81,26 +81,26 @@ bool CResourceManager::RemoveLocation(const std::string &location)
     return true;
 }
 
-std::vector<std::string> CResourceManager::GetLocations()
+std::vector<std::filesystem::path> CResourceManager::GetLocations()
 {
-    std::vector<std::string> ret;
+    std::vector<std::filesystem::path> ret;
     char **list = PHYSFS_getSearchPath();
     for (char **it = list; *it != nullptr; ++it)
-        ret.push_back(*it);
+        ret.push_back(StrUtils::ToPath(*it));
     PHYSFS_freeList(list);
     return ret;
 }
 
-bool CResourceManager::LocationExists(const std::string& location)
+bool CResourceManager::LocationExists(const std::filesystem::path& location)
 {
     auto locations = GetLocations();
     auto it = std::find(locations.cbegin(), locations.cend(), location);
     return it != locations.cend();
 }
 
-bool CResourceManager::SetSaveLocation(const std::string &location)
+bool CResourceManager::SetSaveLocation(const std::filesystem::path& location)
 {
-    if (!PHYSFS_setWriteDir(location.c_str()))
+    if (!PHYSFS_setWriteDir(StrUtils::ToString(location).c_str()))
     {
         PHYSFS_ErrorCode errorCode = PHYSFS_getLastErrorCode();
         GetLogger()->Error("Error while setting save location to \"%%\": %%\n", location, PHYSFS_getErrorByCode(errorCode));
@@ -110,11 +110,11 @@ bool CResourceManager::SetSaveLocation(const std::string &location)
     return true;
 }
 
-std::string CResourceManager::GetSaveLocation()
+std::filesystem::path CResourceManager::GetSaveLocation()
 {
     if (PHYSFS_isInit())
     {
-        return PHYSFS_getWriteDir();
+        return StrUtils::ToPath(PHYSFS_getWriteDir());
     }
     return "";
 }
@@ -144,7 +144,7 @@ bool CResourceManager::Exists(const std::filesystem::path& filename)
     return false;
 }
 
-bool CResourceManager::DirectoryExists(const std::string& directory)
+bool CResourceManager::DirectoryExists(const std::filesystem::path& directory)
 {
     if (PHYSFS_isInit())
     {
@@ -155,7 +155,7 @@ bool CResourceManager::DirectoryExists(const std::string& directory)
     return false;
 }
 
-bool CResourceManager::CreateNewDirectory(const std::string& directory)
+bool CResourceManager::CreateNewDirectory(const std::filesystem::path& directory)
 {
     if (PHYSFS_isInit())
     {
@@ -164,7 +164,7 @@ bool CResourceManager::CreateNewDirectory(const std::string& directory)
     return false;
 }
 
-bool CResourceManager::RemoveExistingDirectory(const std::string& directory)
+bool CResourceManager::RemoveExistingDirectory(const std::filesystem::path& directory)
 {
     if (PHYSFS_isInit())
     {

@@ -37,16 +37,16 @@ public:
     static std::string CleanPath(const std::filesystem::path& path);
 
     //! Add a location to the search path
-    static bool AddLocation(const std::string &location, bool prepend = true, const std::string &mountPoint = "");
+    static bool AddLocation(const std::filesystem::path& location, bool prepend = true, const std::string &mountPoint = "");
     //! Remove a location from the search path
-    static bool RemoveLocation(const std::string &location);
+    static bool RemoveLocation(const std::filesystem::path& location);
     //! List all locations in the search path
-    static std::vector<std::string> GetLocations();
+    static std::vector<std::filesystem::path> GetLocations();
     //! Check if given location is in the search path
-    static bool LocationExists(const std::string &location);
+    static bool LocationExists(const std::filesystem::path& location);
 
-    static bool SetSaveLocation(const std::string &location);
-    static std::string GetSaveLocation();
+    static bool SetSaveLocation(const std::filesystem::path& location);
+    static std::filesystem::path GetSaveLocation();
 
     static std::unique_ptr<CSDLFileWrapper> GetSDLFileHandler(const std::filesystem::path& filename);
     static std::unique_ptr<CSDLMemoryWrapper> GetSDLMemoryHandler(const std::filesystem::path& filename);
@@ -55,12 +55,12 @@ public:
     //! Check if file exists
     static bool Exists(const std::filesystem::path& filename);
     //! Check if file exists and is a directory
-    static bool DirectoryExists(const std::string& directory);
+    static bool DirectoryExists(const std::filesystem::path& directory);
 
     //! Create directory in write directory
-    static bool CreateNewDirectory(const std::string& directory);
+    static bool CreateNewDirectory(const std::filesystem::path& directory);
     //! Remove directory in write directory, recursively
-    static bool RemoveExistingDirectory(const std::string& directory);
+    static bool RemoveExistingDirectory(const std::filesystem::path& directory);
 
     //! List files contained in directory
     static std::vector<std::string> ListFiles(const std::string &directory, bool excludeDirs = false);

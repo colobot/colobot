@@ -332,7 +332,7 @@ void CModManager::MountMod(const Mod& mod, const std::string& mountPoint)
 void CModManager::MountMod(const std::string& path, const std::string& mountPoint)
 {
     GetLogger()->Debug("Mounting mod: '%%' at path %%", path, mountPoint);
-    CResourceManager::AddLocation(path, true, mountPoint);
+    CResourceManager::AddLocation(StrUtils::ToPath(path), true, mountPoint);
 }
 
 void CModManager::UnmountMod(const Mod& mod)
@@ -342,10 +342,10 @@ void CModManager::UnmountMod(const Mod& mod)
 
 void CModManager::UnmountMod(const std::string& path)
 {
-    if (CResourceManager::LocationExists(path))
+    if (CResourceManager::LocationExists(StrUtils::ToPath(path)))
     {
         GetLogger()->Debug("Unmounting mod: '%%'", path);
-        CResourceManager::RemoveLocation(path);
+        CResourceManager::RemoveLocation(StrUtils::ToPath(path));
     }
 }
 
