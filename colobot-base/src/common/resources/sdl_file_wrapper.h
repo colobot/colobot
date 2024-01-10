@@ -20,32 +20,25 @@
 
 #pragma once
 
-#include <string>
+#include <filesystem>
 
 #include <SDL.h>
 
-class CSDLFileWrapper
+class CSDLFileWrapper final
 {
 public:
-    CSDLFileWrapper(const std::string& filename);
+    CSDLFileWrapper(const std::filesystem::path& filename);
     ~CSDLFileWrapper();
 
     CSDLFileWrapper(const CSDLFileWrapper&) = delete;
     CSDLFileWrapper& operator=(const CSDLFileWrapper&) = delete;
 
+    CSDLFileWrapper(CSDLFileWrapper&&) = delete;
+    CSDLFileWrapper& operator=(CSDLFileWrapper&&) = delete;
+
     bool IsOpen() const;
     SDL_RWops* GetHandler();
 
 private:
-    static Sint64 SDLSeek(SDL_RWops *context, Sint64 offset, int whence);
-    static Sint64 SDLSize(SDL_RWops *context);
-    static size_t SDLRead(SDL_RWops *context, void *ptr, size_t size, size_t maxnum);
-    static size_t SDLWrite(SDL_RWops *context, const void *ptr, size_t size, size_t num);
-    static int SDLClose(SDL_RWops *context, bool freeRW);
-    static int SDLCloseWithoutFreeRW(SDL_RWops *context);
-    static int SDLCloseWithFreeRW(SDL_RWops *context);
-    static bool CheckSDLContext(SDL_RWops *context);
-
-private:
-    SDL_RWops* m_rwops;
+    SDL_RWops* m_rwops = nullptr;
 };

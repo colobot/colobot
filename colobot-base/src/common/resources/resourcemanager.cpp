@@ -119,9 +119,9 @@ std::string CResourceManager::GetSaveLocation()
     return "";
 }
 
-std::unique_ptr<CSDLFileWrapper> CResourceManager::GetSDLFileHandler(const std::string &filename)
+std::unique_ptr<CSDLFileWrapper> CResourceManager::GetSDLFileHandler(const std::filesystem::path& filename)
 {
-    return std::make_unique<CSDLFileWrapper>(CleanPath(filename));
+    return std::make_unique<CSDLFileWrapper>(filename);
 }
 
 std::unique_ptr<CSDLMemoryWrapper> CResourceManager::GetSDLMemoryHandler(const std::string &filename)

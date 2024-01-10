@@ -20,6 +20,8 @@
 
 #include "common/image.h"
 
+#include "common/stringutils.h"
+
 #include "common/resources/outputstream.h"
 #include "common/resources/resourcemanager.h"
 
@@ -397,7 +399,7 @@ bool CImage::Load(const std::string& fileName)
 
     m_error = "";
 
-    auto file = CResourceManager::GetSDLFileHandler(fileName.c_str());
+    auto file = CResourceManager::GetSDLFileHandler(StrUtils::ToPath(fileName));
     if (!file->IsOpen())
     {
         m_data.reset();

@@ -48,7 +48,7 @@ public:
     static bool SetSaveLocation(const std::string &location);
     static std::string GetSaveLocation();
 
-    static std::unique_ptr<CSDLFileWrapper> GetSDLFileHandler(const std::string &filename);
+    static std::unique_ptr<CSDLFileWrapper> GetSDLFileHandler(const std::filesystem::path& filename);
     static std::unique_ptr<CSDLMemoryWrapper> GetSDLMemoryHandler(const std::string &filename);
     static std::unique_ptr<CSNDFileWrapper> GetSNDFileHandler(const std::filesystem::path& filename);
 
