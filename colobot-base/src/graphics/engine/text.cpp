@@ -318,7 +318,7 @@ private:
 
     std::unique_ptr<CachedFont> LoadFont(MultisizeFont* multisizeFont, int pointSize)
     {
-        auto file = CResourceManager::GetSDLMemoryHandler(multisizeFont->fileName);
+        auto file = CResourceManager::GetSDLMemoryHandler(StrUtils::ToPath(multisizeFont->fileName));
         if (!file->IsOpen())
         {
             m_error = "Unable to open file '" + multisizeFont->fileName + "' (font size = " + std::to_string(pointSize) + ")";

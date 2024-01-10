@@ -20,19 +20,22 @@
 
 #pragma once
 
-#include <string>
+#include <filesystem>
 #include <memory>
 
 #include <SDL.h>
 
-class CSDLMemoryWrapper
+class CSDLMemoryWrapper final
 {
 public:
-    CSDLMemoryWrapper(const std::string& filename);
+    CSDLMemoryWrapper(const std::filesystem::path& filename);
     ~CSDLMemoryWrapper();
 
     CSDLMemoryWrapper(const CSDLMemoryWrapper&) = delete;
     CSDLMemoryWrapper& operator=(const CSDLMemoryWrapper&) = delete;
+
+    CSDLMemoryWrapper(CSDLMemoryWrapper&&) = delete;
+    CSDLMemoryWrapper& operator=(CSDLMemoryWrapper&&) = delete;
 
     bool IsOpen() const;
     SDL_RWops* GetHandler();

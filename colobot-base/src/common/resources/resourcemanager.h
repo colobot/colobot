@@ -49,7 +49,7 @@ public:
     static std::string GetSaveLocation();
 
     static std::unique_ptr<CSDLFileWrapper> GetSDLFileHandler(const std::filesystem::path& filename);
-    static std::unique_ptr<CSDLMemoryWrapper> GetSDLMemoryHandler(const std::string &filename);
+    static std::unique_ptr<CSDLMemoryWrapper> GetSDLMemoryHandler(const std::filesystem::path& filename);
     static std::unique_ptr<CSNDFileWrapper> GetSNDFileHandler(const std::filesystem::path& filename);
 
     //! Check if file exists
