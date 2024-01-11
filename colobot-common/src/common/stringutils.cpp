@@ -107,7 +107,7 @@ std::string StrUtils::ToString(const std::filesystem::path& path, bool *ok)
     if (ok != nullptr)
         *ok = true;
 
-    return Cast<std::string>(path.u8string());
+    return Cast<std::string>(path.generic_u8string());
 }
 
 template<>
