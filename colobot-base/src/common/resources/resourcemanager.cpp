@@ -168,20 +168,19 @@ bool CResourceManager::RemoveExistingDirectory(const std::filesystem::path& dire
 {
     if (PHYSFS_isInit())
     {
-        std::string path = CleanPath(directory);
-        for (auto file : ListFiles(path))
+        for (const auto& file : ListFiles(directory))
         {
-            if (PHYSFS_delete((path + "/" + file).c_str()) == 0)
+            if (PHYSFS_delete(CleanPath(directory / file).c_str()) == 0)
                 return false;
         }
-        return PHYSFS_delete(path.c_str()) != 0;
+        return PHYSFS_delete(CleanPath(directory).c_str()) != 0;
     }
     return false;
 }
 
-std::vector<std::string> CResourceManager::ListFiles(const std::string &directory, bool excludeDirs)
+std::vector<std::filesystem::path> CResourceManager::ListFiles(const std::filesystem::path& directory, bool excludeDirs)
 {
-    std::vector<std::string> result;
+    std::vector<std::filesystem::path> result;
 
     if (PHYSFS_isInit())
     {
@@ -192,11 +191,10 @@ std::vector<std::string> CResourceManager::ListFiles(const std::string &director
             if (excludeDirs)
             {
                 PHYSFS_Stat statbuf;
-                std::string path = CleanPath(directory) + "/" + (*i);
-                PHYSFS_stat(path.c_str(), &statbuf);
+                PHYSFS_stat(CleanPath(directory / StrUtils::ToPath(*i)).c_str(), &statbuf);
                 if (statbuf.filetype == PHYSFS_FILETYPE_DIRECTORY) continue;
             }
-            result.push_back(*i);
+            result.push_back(StrUtils::ToPath(*i));
         }
 
         PHYSFS_freeList(files);
@@ -205,9 +203,9 @@ std::vector<std::string> CResourceManager::ListFiles(const std::string &director
     return result;
 }
 
-std::vector<std::string> CResourceManager::ListDirectories(const std::string &directory)
+std::vector<std::filesystem::path> CResourceManager::ListDirectories(const std::filesystem::path& directory)
 {
-    std::vector<std::string> result;
+    std::vector<std::filesystem::path> result;
 
     if (PHYSFS_isInit())
     {
@@ -220,7 +218,7 @@ std::vector<std::string> CResourceManager::ListDirectories(const std::string &di
             PHYSFS_stat(path.c_str(), &statbuf);
             if (statbuf.filetype == PHYSFS_FILETYPE_DIRECTORY)
             {
-                result.push_back(*i);
+                result.push_back(StrUtils::ToPath(*i));
             }
         }
 
@@ -230,7 +228,7 @@ std::vector<std::string> CResourceManager::ListDirectories(const std::string &di
     return result;
 }
 
-long long CResourceManager::GetFileSize(const std::string& filename)
+long long CResourceManager::GetFileSize(const std::filesystem::path& filename)
 {
     if (PHYSFS_isInit())
     {
@@ -243,7 +241,7 @@ long long CResourceManager::GetFileSize(const std::string& filename)
     return -1;
 }
 
-long long CResourceManager::GetLastModificationTime(const std::string& filename)
+long long CResourceManager::GetLastModificationTime(const std::filesystem::path& filename)
 {
     if (PHYSFS_isInit())
     {
@@ -254,11 +252,11 @@ long long CResourceManager::GetLastModificationTime(const std::string& filename)
     return -1;
 }
 
-bool CResourceManager::Remove(const std::string& filename)
+bool CResourceManager::Remove(const std::filesystem::path& filename)
 {
     if (PHYSFS_isInit())
     {
-        return PHYSFS_delete(filename.c_str()) != 0;
+        return PHYSFS_delete(CleanPath(filename).c_str()) != 0;
     }
     return false;
 }

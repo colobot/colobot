@@ -22,6 +22,7 @@
 #include "common/config_file.h"
 #include "common/logger.h"
 #include "common/restext.h"
+#include "common/stringutils.h"
 
 #include "common/resources/inputstream.h"
 #include "common/resources/outputstream.h"
@@ -140,7 +141,12 @@ std::string CPlayerProfile::GetLastName()
 
 std::vector<std::string> CPlayerProfile::GetPlayerList()
 {
-    return CResourceManager::ListDirectories("savegame");
+    std::vector<std::string> players;
+
+    for (const auto& path : CResourceManager::ListDirectories("savegame"))
+        players.push_back(StrUtils::ToString(path));
+
+    return players;
 }
 
 bool CPlayerProfile::Create()
@@ -162,14 +168,14 @@ std::string CPlayerProfile::GetName()
     return m_playerName;
 }
 
-std::string CPlayerProfile::GetSaveDir()
+std::filesystem::path CPlayerProfile::GetSaveDir()
 {
     return "savegame/" + m_playerName;
 }
 
-std::string CPlayerProfile::GetSaveFile(std::string filename)
+std::filesystem::path CPlayerProfile::GetSaveFile(const std::filesystem::path& filename)
 {
-    return GetSaveDir() + "/" + filename;
+    return GetSaveDir() / filename;
 }
 
 // FINISHED LEVELS
@@ -251,7 +257,7 @@ int CPlayerProfile::GetSelectedRank(LevelCategory category)
 void CPlayerProfile::LoadFinishedLevels(LevelCategory category)
 {
     m_levelInfo[category].clear();
-    std::string filename = GetSaveFile(GetLevelCategoryDir(category)+".gam");
+    std::filesystem::path filename = GetSaveFile(GetLevelCategoryDir(category) + ".gam");
 
     if (!CResourceManager::Exists(filename))
         return;
@@ -293,7 +299,7 @@ void CPlayerProfile::LoadFinishedLevels(LevelCategory category)
 
 void CPlayerProfile::SaveFinishedLevels(LevelCategory category)
 {
-    std::string filename = GetSaveFile(GetLevelCategoryDir(category)+".gam");
+    std::filesystem::path filename = GetSaveFile(GetLevelCategoryDir(category) + ".gam");
     COutputStream file;
     file.open(filename);
     if (!file.is_open())
@@ -353,7 +359,7 @@ void CPlayerProfile::LoadFreeGameUnlock()
     m_freegameResearch = 0;
     m_freegameBuild    = 0;
 
-    std::string filename = GetSaveFile("research.gam");
+    std::filesystem::path filename = GetSaveFile("research.gam");
 
     if (!CResourceManager::Exists(filename))
         return;
@@ -377,7 +383,7 @@ void CPlayerProfile::LoadFreeGameUnlock()
 
 void CPlayerProfile::SaveFreeGameUnlock()
 {
-    std::string filename = GetSaveFile("research.gam");
+    std::filesystem::path filename = GetSaveFile("research.gam");
     COutputStream file;
     file.open(filename);
     if (!file.is_open())
@@ -403,13 +409,13 @@ void CPlayerProfile::LoadAppearance()
     m_appearance.face = 0;
     m_appearance.DefPerso();
 
-    std::string filename = GetSaveFile("face.gam");
+    std::filesystem::path filename = GetSaveFile("face.gam");
     if (!CResourceManager::Exists(filename))
         return;
 
     try
     {
-        CLevelParser appearanceParser(filename);
+        CLevelParser appearanceParser(StrUtils::ToString(filename));
         appearanceParser.Load();
         CLevelParserLine* line;
 
@@ -432,7 +438,7 @@ void CPlayerProfile::SaveAppearance()
 {
     try
     {
-        CLevelParser appearanceParser(GetSaveFile("face.gam"));
+        CLevelParser appearanceParser(StrUtils::ToString(GetSaveFile("face.gam")));
         CLevelParserLineUPtr line;
 
         line = std::make_unique<CLevelParserLine>("Head");
@@ -461,7 +467,7 @@ bool CPlayerProfile::HasAnySavedScene()
     auto saveDirs = CResourceManager::ListDirectories(GetSaveDir());
     for (auto dir : saveDirs)
     {
-        if (CResourceManager::Exists(GetSaveFile(dir + "/data.sav")))
+        if (CResourceManager::Exists(GetSaveFile(StrUtils::ToString(dir / "data.sav"))))
         {
             return true;
         }
@@ -476,16 +482,17 @@ std::vector<SavedScene> CPlayerProfile::GetSavedSceneList()
 
     for (auto dir : saveDirs)
     {
-        std::string savegameFile = GetSaveFile(dir+"/data.sav");
+        std::filesystem::path savegameFile = GetSaveFile(dir / "data.sav");
         if (CResourceManager::Exists(savegameFile) && CResourceManager::GetFileSize(savegameFile) > 0)
         {
-            CLevelParser levelParser(savegameFile);
+            CLevelParser levelParser(StrUtils::ToString(savegameFile));
             levelParser.Load();
             CLevelParserLine* line = levelParser.GetIfDefined("Created");
             int time = line != nullptr ? line->GetParam("date")->AsInt() : 0;
             try
             {
-                sortedSaveDirs[time] = SavedScene(GetSaveFile(dir), levelParser.Get("Title")->GetParam("text")->AsString());
+                sortedSaveDirs[time] = SavedScene(StrUtils::ToString(GetSaveFile(dir)),
+                    levelParser.Get("Title")->GetParam("text")->AsString());
             }
             catch (CLevelParserException &e)
             {

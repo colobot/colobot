@@ -24,6 +24,7 @@
 
 #include "common/logger.h"
 #include "common/restext.h"
+#include "common/stringutils.h"
 
 #include "common/resources/resourcemanager.h"
 
@@ -1053,31 +1054,34 @@ void CFileDialog::PopulateList()
     char timestr[100];
 
     // list all folders
-    std::vector<std::string> folders = CResourceManager::ListDirectories(SearchDirectory(false));
+    std::vector<std::filesystem::path> folders = CResourceManager::ListDirectories(SearchDirectory(false));
     if (!m_subDirPath.empty()) folders.insert(folders.begin(), std::string(".."));
     for (auto& dir : folders)
     {
         std::ostringstream temp;
-        time_t now = CResourceManager::GetLastModificationTime(SearchDirectory(false) + dir);
+        time_t now = CResourceManager::GetLastModificationTime(StrUtils::ToPath(SearchDirectory(false)) / dir);
         strftime(timestr, 99, "%x %X", localtime(&now));
         temp << dir << '\t' << "** DIR **" << "  \t" << timestr;
         pl->SetItemName(i++, temp.str().c_str());
     }
 
     // list all files
-    std::vector<std::string> files = CResourceManager::ListFiles(SearchDirectory(false), true);
-    auto it = std::remove_if(files.begin(), files.end(), [this](const std::string& name)
+    std::vector<std::filesystem::path> files = CResourceManager::ListFiles(
+        StrUtils::ToPath(SearchDirectory(false)), true);
+
+    auto it = std::remove_if(files.begin(), files.end(), [this](const std::filesystem::path& name)
     {
-        return !CheckFilename(name);
+        return !CheckFilename(StrUtils::ToString(name));
     });
     files.erase(it, files.end()); // remove invalid file names
 
-    for (auto& filename : files)
+    for (const auto& filename : files)
     {
+        auto path = StrUtils::ToPath(SearchDirectory(false)) / filename;
         std::ostringstream temp;
-        time_t now = CResourceManager::GetLastModificationTime(SearchDirectory(false) + filename);
+        time_t now = CResourceManager::GetLastModificationTime(path);
         strftime(timestr, 99, "%x %X", localtime(&now));
-        temp << filename << '\t' << CResourceManager::GetFileSize(SearchDirectory(false) + filename) << "  \t" << timestr;
+        temp << filename << '\t' << CResourceManager::GetFileSize(path) << "  \t" << timestr;
         pl->SetItemName(i++, temp.str().c_str());
     }
 }
@@ -1086,7 +1090,7 @@ void CFileDialog::PopulateList()
 // If the folder does not exist, it can be created.
 std::string CFileDialog::SearchDirectory(bool bCreate)
 {
-    std::string dir = m_basePath;
+    std::filesystem::path dir = StrUtils::ToPath(m_basePath);
 
     if (bCreate && !CResourceManager::DirectoryExists(dir))
     {
@@ -1095,14 +1099,15 @@ std::string CFileDialog::SearchDirectory(bool bCreate)
 
     if (!m_subDirPath.empty())
     {
-        dir += "/" + m_subDirPath;
+        dir /= m_subDirPath;
+
         if (bCreate && !CResourceManager::DirectoryExists(dir))
         {
             CResourceManager::CreateNewDirectory(dir);
         }
     }
 
-    return dir + "/";
+    return StrUtils::ToString(dir) + "/";
 }
 
 bool CFileDialog::DirectoryExists(const std::string &name)
@@ -1111,7 +1116,7 @@ bool CFileDialog::DirectoryExists(const std::string &name)
 
     if ( name == ".." ) return !m_subDirPath.empty();
 
-    return CResourceManager::DirectoryExists(SearchDirectory(false)+name);
+    return CResourceManager::DirectoryExists(StrUtils::ToPath(SearchDirectory(false)) / name);
 }
 
 // Make folder

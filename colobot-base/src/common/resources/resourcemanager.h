@@ -63,16 +63,16 @@ public:
     static bool RemoveExistingDirectory(const std::filesystem::path& directory);
 
     //! List files contained in directory
-    static std::vector<std::string> ListFiles(const std::string &directory, bool excludeDirs = false);
+    static std::vector<std::filesystem::path> ListFiles(const std::filesystem::path& directory, bool excludeDirs = false);
     //! List directories contained in directory
-    static std::vector<std::string> ListDirectories(const std::string &directory);
+    static std::vector<std::filesystem::path> ListDirectories(const std::filesystem::path& directory);
 
 
     //! Returns file size in bytes
-    static long long GetFileSize(const std::string &filename);
+    static long long GetFileSize(const std::filesystem::path& filename);
     //! Returns last modification date as timestamp
-    static long long GetLastModificationTime(const std::string &filename);
+    static long long GetLastModificationTime(const std::filesystem::path& filename);
 
     //! Remove file
-    static bool Remove(const std::string& filename);
+    static bool Remove(const std::filesystem::path& filename);
 };

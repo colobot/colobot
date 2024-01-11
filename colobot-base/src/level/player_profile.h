@@ -23,6 +23,7 @@
 
 #include "level/level_category.h"
 
+#include <filesystem>
 #include <string>
 #include <map>
 #include <vector>
@@ -75,9 +76,9 @@ public:
     std::string GetName();
 
     //! Returns player's save directory path
-    std::string GetSaveDir();
+    std::filesystem::path GetSaveDir();
     //! Returns path to file inside player's save directory
-    std::string GetSaveFile(std::string filename);
+    std::filesystem::path GetSaveFile(const std::filesystem::path& filename);
 
     //! Increments level try count
     void IncrementLevelTryCount(LevelCategory cat, int chap, int rank);

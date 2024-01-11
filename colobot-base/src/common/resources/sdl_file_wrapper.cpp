@@ -138,7 +138,9 @@ CSDLFileWrapper::CSDLFileWrapper(const std::filesystem::path& filename)
         return;
     }
 
-    PHYSFS_File *file = PHYSFS_openRead(StrUtils::ToString(filename).c_str());
+    auto path = StrUtils::ToString(filename.lexically_normal());
+
+    PHYSFS_File *file = PHYSFS_openRead(path.c_str());
     if (file == nullptr)
     {
         GetLogger()->Error("Error opening file with PHYSFS: \"%%\"", filename);

@@ -3460,7 +3460,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                         char categoryChar = GetLevelCategoryDir(m_levelCategory)[0];
                         programStorage->LoadAllProgramsForLevel(
                             line.get(),
-                            m_playerProfile->GetSaveFile(StrUtils::Format("%c%.3d%.3d", categoryChar, m_levelChap, m_levelRank)),
+                            StrUtils::ToString(m_playerProfile->GetSaveFile(StrUtils::Format("%c%.3d%.3d", categoryChar, m_levelChap, m_levelRank))),
                             soluce
                         );
                     }
@@ -4522,7 +4522,7 @@ void CRobotMain::SaveOneScript(CObject *obj)
     CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(obj);
 
     char categoryChar = GetLevelCategoryDir(m_levelCategory)[0];
-    programStorage->SaveAllUserPrograms(m_playerProfile->GetSaveFile(StrUtils::Format("%c%.3d%.3d", categoryChar, m_levelChap, m_levelRank)));
+    programStorage->SaveAllUserPrograms(StrUtils::ToString(m_playerProfile->GetSaveFile(StrUtils::Format("%c%.3d%.3d", categoryChar, m_levelChap, m_levelRank))));
 }
 
 //! Saves the stack of the program in execution of a robot
@@ -5820,16 +5820,21 @@ void CRobotMain::AutosaveRotate()
     GetLogger()->Debug("Rotate autosaves...");
     auto saveDirs = CResourceManager::ListDirectories(m_playerProfile->GetSaveDir());
     const std::string autosavePrefix = "autosave";
-    std::vector<std::string> autosaves;
-    std::copy_if(saveDirs.begin(), saveDirs.end(), std::back_inserter(autosaves), [&](const std::string &save)
-    {
-        return save.substr(0, autosavePrefix.length()) == autosavePrefix;
-    });
 
-    std::sort(autosaves.begin(), autosaves.end(), std::less<std::string>());
+    std::vector<std::filesystem::path> autosaves;
+
+    for (const auto& path : saveDirs)
+    {
+        std::string name = StrUtils::ToString(path);
+
+        if (name.starts_with(autosavePrefix))
+            autosaves.push_back(path);
+    }
+
+    std::sort(autosaves.begin(), autosaves.end(), std::less<std::filesystem::path>());
     for (int i = 0; i < static_cast<int>(autosaves.size()) - m_autosaveSlots + 1; i++)
     {
-        CResourceManager::RemoveExistingDirectory(m_playerProfile->GetSaveDir() + "/" + autosaves[i]);
+        CResourceManager::RemoveExistingDirectory(m_playerProfile->GetSaveDir() / autosaves[i]);
     }
 }
 
@@ -5844,9 +5849,9 @@ void CRobotMain::Autosave()
     strftime(timestr, 99, "%y%m%d%H%M%S", localtime(&now));
     strftime(infostr, 99, "%y.%m.%d %H:%M", localtime(&now));
     std::string info = std::string("[AUTOSAVE] ") + infostr;
-    std::string dir = m_playerProfile->GetSaveFile(std::string("autosave") + timestr);
+    std::filesystem::path dir = m_playerProfile->GetSaveFile(std::string("autosave") + timestr);
 
-    m_playerProfile->SaveScene(dir, info);
+    m_playerProfile->SaveScene(StrUtils::ToString(dir), info);
 }
 
 void CRobotMain::QuickSave()
@@ -5857,32 +5862,32 @@ void CRobotMain::QuickSave()
     time_t now = time(nullptr);
     strftime(infostr, 99, "%y.%m.%d %H:%M", localtime(&now));
     std::string info = std::string("[QUICKSAVE]") + infostr;
-    std::string dir = m_playerProfile->GetSaveFile(std::string("quicksave"));
+    std::filesystem::path dir = m_playerProfile->GetSaveFile(std::string("quicksave"));
 
-    m_playerProfile->SaveScene(dir, info);
+    m_playerProfile->SaveScene(StrUtils::ToString(dir), info);
 }
 
 void CRobotMain::QuickLoad()
 {
-    std::string dir = m_playerProfile->GetSaveFile(std::string("quicksave"));
+    std::filesystem::path dir = m_playerProfile->GetSaveFile(std::string("quicksave"));
     if(!CResourceManager::Exists(dir))
     {
         m_displayText->DisplayError(ERR_NO_QUICK_SLOT, glm::vec3(0.0f,0.0f,0.0f), 15.0f, 60.0f, 1000.0f);
         GetLogger()->Debug("Quicksave slot not found");
         return;
     }
-    m_playerProfile->LoadScene(dir);
+    m_playerProfile->LoadScene(StrUtils::ToString(dir));
 }
 
 void CRobotMain::LoadSaveFromDirName(const std::string& gameDir)
 {
-    std::string dir = m_playerProfile->GetSaveFile(gameDir);
+    std::filesystem::path dir = m_playerProfile->GetSaveFile(gameDir);
     if(!CResourceManager::Exists(dir))
     {
         GetLogger()->Error("Save slot not found");
         return;
     }
-    m_playerProfile->LoadScene(dir);
+    m_playerProfile->LoadScene(StrUtils::ToString(dir));
 }
 
 void CRobotMain::SetExitAfterMission(bool exit)

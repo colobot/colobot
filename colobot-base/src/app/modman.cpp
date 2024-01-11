@@ -310,16 +310,25 @@ void CModManager::LoadModData(Mod& mod)
     }
 
     // Changes
-    data.changes = CResourceManager::ListDirectories("temp/mod");
+    data.changes.clear();
+
+    for (const auto& path : CResourceManager::ListDirectories("temp/mod"))
+        data.changes.push_back(StrUtils::ToString(path));
+
     auto levelsIt = std::find(data.changes.begin(), data.changes.end(), "levels");
     if (levelsIt != data.changes.end())
     {
         auto levelsDirs = CResourceManager::ListDirectories("temp/mod/levels");
+
         if (!levelsDirs.empty())
         {
-            std::transform(levelsDirs.begin(), levelsDirs.end(), levelsDirs.begin(), [](const std::string& dir) { return "levels/" + dir; });
             levelsIt = data.changes.erase(levelsIt);
-            data.changes.insert(levelsIt, levelsDirs.begin(), levelsDirs.end());
+
+            for (const auto& path : levelsDirs)
+            {
+                data.changes.insert(levelsIt, StrUtils::ToString(
+                    std::filesystem::path("levels") / path));
+            }
         }
     }
 }

@@ -237,7 +237,7 @@ void CScreenIO::IOWriteScene()
 
     m_interface->DeleteControl(EVENT_WINDOW5);
 
-    std::string dir;
+    std::filesystem::path dir;
     if (static_cast<unsigned int>(sel) >= m_saveList.size())
     {
         dir = m_main->GetPlayerProfile()->GetSaveFile("save"+clearName(info));
@@ -247,7 +247,7 @@ void CScreenIO::IOWriteScene()
         dir = m_saveList.at(sel);
     }
 
-    m_main->GetPlayerProfile()->SaveScene(dir, info);
+    m_main->GetPlayerProfile()->SaveScene(StrUtils::ToString(dir), info);
 }
 
 // Reads the scene.

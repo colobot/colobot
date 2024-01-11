@@ -26,6 +26,7 @@
 #include "common/event.h"
 #include "common/logger.h"
 #include "common/settings.h"
+#include "common/stringutils.h"
 
 #include "common/resources/resourcemanager.h"
 
@@ -1007,7 +1008,7 @@ void CStudio::StartDialog(const Event &event)
         m_fileDialog->SetUsePublicPrivate(true);
         m_fileDialog->SetPublic(m_settings->GetIOPublic());
         m_fileDialog->SetPublicFolder("program");
-        m_fileDialog->SetPrivateFolder(m_main->GetPlayerProfile()->GetSaveFile("program"));
+        m_fileDialog->SetPrivateFolder(StrUtils::ToString(m_main->GetPlayerProfile()->GetSaveFile("program")));
 
         if ( event.type == EVENT_STUDIO_SAVE )
         {
