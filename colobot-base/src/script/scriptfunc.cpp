@@ -25,6 +25,7 @@
 
 #include "common/global.h"
 #include "common/logger.h"
+#include "common/stringutils.h"
 
 #include "common/resources/inputstream.h"
 #include "common/resources/outputstream.h"
@@ -1705,7 +1706,7 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
 
     if (!name.empty())
     {
-        std::string name2 = InjectLevelPathsForCurrentLevel(name, "ai");
+        std::string name2 = StrUtils::ToString(InjectLevelPathsForCurrentLevel(name, "ai"));
         if (object->Implements(ObjectInterfaceType::Programmable))
         {
             CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(object);

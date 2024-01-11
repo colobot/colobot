@@ -20,6 +20,8 @@
 
 #include "object/auto/autoegg.h"
 
+#include "common/stringutils.h"
+
 #include "graphics/engine/engine.h"
 #include "graphics/engine/pyro_manager.h"
 
@@ -194,7 +196,7 @@ bool CAutoEgg::EventProcess(const Event &event)
 
             CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(alien);
             Program* program = programStorage->AddProgram();
-            programStorage->ReadProgram(program, InjectLevelPathsForCurrentLevel(m_alienProgramName, "ai"));
+            programStorage->ReadProgram(program, StrUtils::ToString(InjectLevelPathsForCurrentLevel(m_alienProgramName, "ai")));
             program->readOnly = true;
             program->filename = m_alienProgramName;
             programmable->RunProgram(program);

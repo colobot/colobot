@@ -20,6 +20,8 @@
 
 #include "object/auto/autofactory.h"
 
+#include "common/stringutils.h"
+
 #include "graphics/engine/engine.h"
 
 #include "level/robotmain.h"
@@ -676,7 +678,7 @@ bool CAutoFactory::CreateVehicle()
         for (const std::string& name : m_main->GetNewScriptNames(m_type))
         {
             Program* prog = programStorage->AddProgram();
-            programStorage->ReadProgram(prog, InjectLevelPathsForCurrentLevel(name, "ai"));
+            programStorage->ReadProgram(prog, StrUtils::ToString(InjectLevelPathsForCurrentLevel(name, "ai")));
             prog->readOnly = true;
             prog->filename = name;
         }

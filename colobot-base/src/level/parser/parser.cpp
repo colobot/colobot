@@ -46,13 +46,13 @@ CLevelParser::CLevelParser()
     m_pathLvl  = "";
 }
 
-CLevelParser::CLevelParser(std::string filename)
+CLevelParser::CLevelParser(const std::filesystem::path& filename)
 : CLevelParser()
 {
     m_filename = filename;
 }
 
-CLevelParser::CLevelParser(std::string category, int chapter, int rank)
+CLevelParser::CLevelParser(std::string_view category, int chapter, int rank)
 : CLevelParser(BuildScenePath(category, chapter, rank))
 {}
 
@@ -62,46 +62,49 @@ CLevelParser::CLevelParser(LevelCategory category, int chapter, int rank)
     SetLevelPaths(category, chapter, rank);
 }
 
-std::string CLevelParser::BuildCategoryPath(std::string category)
+std::filesystem::path CLevelParser::BuildCategoryPath(std::string_view category)
 {
-    std::ostringstream outstream;
-    outstream << "levels/";
+    std::filesystem::path path = "levels";
+
     if (category == "perso" || category == "win" || category == "lost")
     {
-        outstream << "other/";
+        path /= "other";
     }
     else
     {
-        outstream << category << "/";
+        path /= category;
     }
-    return outstream.str();
+
+    return path;
 }
 
-std::string CLevelParser::BuildCategoryPath(LevelCategory category)
+std::filesystem::path CLevelParser::BuildCategoryPath(LevelCategory category)
 {
     return BuildCategoryPath(GetLevelCategoryDir(category));
 }
 
-std::string CLevelParser::BuildScenePath(std::string category, int chapter, int rank, bool sceneFile)
+std::filesystem::path CLevelParser::BuildScenePath(std::string_view category, int chapter, int rank, bool sceneFile)
 {
-    std::ostringstream outstream;
-    outstream << BuildCategoryPath(category);
+    std::filesystem::path path = BuildCategoryPath(category);
+
     if (category == "custom")
     {
-        outstream << CRobotMain::GetInstancePointer()->GetCustomLevelName(chapter);
+        path /= CRobotMain::GetInstancePointer()->GetCustomLevelName(chapter);
+
         if (rank == 0)
         {
             if (sceneFile)
             {
-                outstream << "/chaptertitle.txt";
+                path /= "chaptertitle.txt";
             }
         }
         else
         {
-            outstream << "/level" << std::setfill('0') << std::setw(3) << rank;
+            path /= StrUtils::Format("level%03d", rank);
+
             if (sceneFile)
             {
-                outstream << "/scene.txt";
+                path /= "scene.txt";
             }
         }
     }
@@ -109,41 +112,41 @@ std::string CLevelParser::BuildScenePath(std::string category, int chapter, int 
     {
         assert(chapter == 0);
         assert(rank == 0);
-        outstream << "perso.txt";
+        path /= "perso.txt";
     }
     else if (category == "win" || category == "lost")
     {
         assert(chapter == 0);
-        outstream << category << std::setfill('0') << std::setw(3) << rank << ".txt";
+        path /= StrUtils::Format("%s%03d.txt", category, rank);
     }
     else
     {
-        outstream << "chapter" << std::setfill('0') << std::setw(3) << chapter;
+        path /= StrUtils::Format("chapter%03d", chapter);
         if (rank == 000)
         {
             if (sceneFile)
             {
-                outstream << "/chaptertitle.txt";
+                path /= "chaptertitle.txt";
             }
         }
         else
         {
-            outstream << "/level" << std::setfill('0') << std::setw(3) << rank;
+            path /= StrUtils::Format("level%03d", rank);
             if (sceneFile)
             {
-                outstream << "/scene.txt";
+                path /= "scene.txt";
             }
         }
     }
-    return outstream.str();
+    return path;
 }
 
-std::string CLevelParser::BuildScenePath(LevelCategory category, int chapter, int rank, bool sceneFile)
+std::filesystem::path CLevelParser::BuildScenePath(LevelCategory category, int chapter, int rank, bool sceneFile)
 {
     return BuildScenePath(GetLevelCategoryDir(category), chapter, rank, sceneFile);
 }
 
-bool CLevelParser::Exists()
+bool CLevelParser::Exists() const
 {
     return CResourceManager::Exists(m_filename);
 }
@@ -153,7 +156,7 @@ void CLevelParser::Load()
     CInputStream file;
     file.open(m_filename);
     if (!file.is_open())
-        throw CLevelParserException("Failed to open file: " + m_filename);
+        throw CLevelParserException("Failed to open file: " + StrUtils::ToString(m_filename));
 
     char lang = CApplication::GetInstancePointer()->GetLanguageChar();
 
@@ -232,13 +235,13 @@ void CLevelParser::Load()
             {
                 pos = line.find_first_of("\"", 1);
                 if (pos == std::string::npos)
-                    throw CLevelParserException("Unclosed \" in " + m_filename + ":" + StrUtils::ToString(lineNumber));
+                    throw CLevelParserException("Unclosed \" in " + StrUtils::ToString(m_filename) + ":" + StrUtils::ToString(lineNumber));
             }
             else if (line[0] == '\'')
             {
                 pos = line.find_first_of("'", 1);
                 if (pos == std::string::npos)
-                    throw CLevelParserException("Unclosed ' in " + m_filename + ":" + StrUtils::ToString(lineNumber));
+                    throw CLevelParserException("Unclosed ' in " + StrUtils::ToString(m_filename) + ":" + StrUtils::ToString(lineNumber));
             }
             else
             {
@@ -279,7 +282,7 @@ void CLevelParser::Load()
             }
             else
             {
-                throw CLevelParserException("Unknown preprocessor command '#" + cmd + "' (in " + m_filename + ":" + StrUtils::ToString<int>(lineNumber) + ")");
+                throw CLevelParserException("Unknown preprocessor command '#" + cmd + "' (in " + StrUtils::ToString(m_filename) + ":" + StrUtils::ToString<int>(lineNumber) + ")");
             }
         }
         else
@@ -296,7 +299,7 @@ void CLevelParser::Save()
     COutputStream file;
     file.open(m_filename);
     if (!file.is_open())
-        throw CLevelParserException("Failed to open file: " + m_filename);
+        throw CLevelParserException("Failed to open file: " + StrUtils::ToString(m_filename));
 
     for (auto& line : m_lines)
     {
@@ -313,32 +316,32 @@ void CLevelParser::SetLevelPaths(LevelCategory category, int chapter, int rank)
     m_pathLvl  = chapter != 0 && rank != 0 ? BuildScenePath(category, chapter, rank, false) : "";
 }
 
-std::string CLevelParser::InjectLevelPaths(const std::string& path, const std::string& defaultDir)
+std::filesystem::path CLevelParser::InjectLevelPaths(const std::filesystem::path& path, const std::filesystem::path& defaultDir)
 {
-    std::string newPath = path;
-    if(!m_pathLvl.empty() ) newPath = StrUtils::Replace(newPath, "%lvl%",  m_pathLvl);
-    if(!m_pathChap.empty()) newPath = StrUtils::Replace(newPath, "%chap%", m_pathChap);
-    if(!m_pathCat.empty() ) newPath = StrUtils::Replace(newPath, "%cat%",  m_pathCat);
+    std::string newPath = StrUtils::ToString(path);
+    if(!m_pathLvl.empty() ) newPath = StrUtils::Replace(newPath, "%lvl%",  StrUtils::ToString(m_pathLvl));
+    if(!m_pathChap.empty()) newPath = StrUtils::Replace(newPath, "%chap%", StrUtils::ToString(m_pathChap));
+    if(!m_pathCat.empty() ) newPath = StrUtils::Replace(newPath, "%cat%",  StrUtils::ToString(m_pathCat));
     if(newPath == path && !path.empty())
     {
-        newPath = defaultDir + (!defaultDir.empty() ? "/" : "") + newPath;
+        newPath = StrUtils::ToString(defaultDir) + (!defaultDir.empty() ? "/" : "") + newPath;
     }
 
     std::string langPath = newPath;
     std::string langStr(1, CApplication::GetInstancePointer()->GetLanguageChar());
     langPath = StrUtils::Replace(langPath, "%lng%", langStr);
-    if(CResourceManager::Exists(langPath))
-        return langPath;
+    if(CResourceManager::Exists(StrUtils::ToPath(langPath)))
+        return StrUtils::ToPath(langPath);
 
     // Fallback to English if file doesn't exist
     newPath = StrUtils::Replace(newPath, "%lng%", "E");
-    if(CResourceManager::Exists(newPath))
-        return newPath;
+    if(CResourceManager::Exists(StrUtils::ToPath(newPath)))
+        return StrUtils::ToPath(newPath);
 
-    return langPath; // Return current language file if none of the files exist
+    return StrUtils::ToPath(langPath); // Return current language file if none of the files exist
 }
 
-const std::string& CLevelParser::GetFilename()
+const std::filesystem::path& CLevelParser::GetFilename() const
 {
     return m_filename;
 }

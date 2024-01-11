@@ -518,7 +518,7 @@ void CRobotMain::ChangePhase(Phase phase)
     if (m_phase == PHASE_SATCOM)
     {
         m_interface->DeleteControl(EVENT_WINDOW5);
-        StartDisplayInfo(InjectLevelPathsForCurrentLevel("cbot.txt", "help/%lng%"), 0);
+        StartDisplayInfo(StrUtils::ToString(InjectLevelPathsForCurrentLevel("cbot.txt", "help/%lng%")), 0);
     }
 
     if (!resetWorld) return;
@@ -5515,7 +5515,7 @@ void CRobotMain::SetLevel(LevelCategory cat, int chap, int rank)
     m_levelCategory = cat;
     m_levelChap = chap;
     m_levelRank = rank;
-    m_levelFile = CLevelParser::BuildScenePath(m_levelCategory, m_levelChap, m_levelRank);
+    m_levelFile = StrUtils::ToString(CLevelParser::BuildScenePath(m_levelCategory, m_levelChap, m_levelRank));
 }
 
 LevelCategory CRobotMain::GetLevelCategory()
