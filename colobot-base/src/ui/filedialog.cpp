@@ -1081,7 +1081,7 @@ void CFileDialog::PopulateList()
         std::ostringstream temp;
         time_t now = CResourceManager::GetLastModificationTime(path);
         strftime(timestr, 99, "%x %X", localtime(&now));
-        temp << filename << '\t' << CResourceManager::GetFileSize(path) << "  \t" << timestr;
+        temp << StrUtils::ToString(filename) << '\t' << CResourceManager::GetFileSize(path) << "  \t" << timestr;
         pl->SetItemName(i++, temp.str().c_str());
     }
 }
