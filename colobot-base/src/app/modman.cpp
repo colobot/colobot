@@ -176,7 +176,7 @@ size_t CModManager::MoveDown(size_t i)
 
 bool CModManager::Changes()
 {
-    std::vector<std::string> paths;
+    std::vector<std::filesystem::path> paths;
     for (const auto& mod : m_mods)
     {
         if (mod.enabled)
@@ -338,10 +338,10 @@ void CModManager::MountMod(const Mod& mod, const std::string& mountPoint)
     MountMod(mod.path, mountPoint);
 }
 
-void CModManager::MountMod(const std::string& path, const std::string& mountPoint)
+void CModManager::MountMod(const std::filesystem::path& path, const std::string& mountPoint)
 {
     GetLogger()->Debug("Mounting mod: '%%' at path %%", path, mountPoint);
-    CResourceManager::AddLocation(StrUtils::ToPath(path), true, mountPoint);
+    CResourceManager::AddLocation(path, true, mountPoint);
 }
 
 void CModManager::UnmountMod(const Mod& mod)
@@ -349,12 +349,12 @@ void CModManager::UnmountMod(const Mod& mod)
     UnmountMod(mod.path);
 }
 
-void CModManager::UnmountMod(const std::string& path)
+void CModManager::UnmountMod(const std::filesystem::path& path)
 {
-    if (CResourceManager::LocationExists(StrUtils::ToPath(path)))
+    if (CResourceManager::LocationExists(path))
     {
         GetLogger()->Debug("Unmounting mod: '%%'", path);
-        CResourceManager::RemoveLocation(StrUtils::ToPath(path));
+        CResourceManager::RemoveLocation(path);
     }
 }
 
