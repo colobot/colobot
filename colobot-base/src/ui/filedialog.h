@@ -23,6 +23,7 @@
 
 #include <glm/glm.hpp>
 
+#include <filesystem>
 #include <string>
 #include <vector>
 
@@ -197,13 +198,13 @@ public:
      * \brief Set the path for the folder associated with the Public check box.
      * \param dir Path to 'Public' folder.
      */
-    void        SetPublicFolder(const std::string& dir);
+    void        SetPublicFolder(const std::filesystem::path& dir);
 
     /**
      * \brief Set the path for the folder associated with the Private check box.
      * \param dir Path to 'Private' folder.
      */
-    void        SetPrivateFolder(const std::string& dir);
+    void        SetPrivateFolder(const std::filesystem::path& dir);
 
     //@}
 
@@ -213,25 +214,25 @@ public:
      * \brief Set the initial path for the folder whose contents are displayed.
      * This setting is overridden by Public/Private settings.
      */
-    void        SetBasePath(const std::string& dir);
+    void        SetBasePath(const std::filesystem::path& dir);
 
     /**
      * \brief Get the initial path or Public/Private folder path
      */
-    std::string GetBasePath();
+    const std::filesystem::path& GetBasePath() const;
 
     /**
      * \brief Set the initial subfolder whose contents are displayed.
      * \param dir Name of a subfolder. Ex. "subfolder/anotherFolder/oneMoreFolder"
      */
-    void        SetSubFolderPath(const std::string& dir);
+    void        SetSubFolderPath(const std::filesystem::path& dir);
 
     /**
      * \brief Get the current subfolder shown by the dialog.
      * \return A string with a folder name and subsequent folders separated by forward slash.
      * <p>Returns empty string if the dialog is showing GetBasePath().
      */
-    std::string GetSubFolderPath();
+    const std::filesystem::path& GetSubFolderPath() const;
 
     //@}
 
@@ -254,13 +255,13 @@ public:
     /**
      * \brief Set the filename that appears in the edit box when the dialog opens.
      */
-    void        SetFilename(const std::string& filename);
+    void        SetFilename(const std::filesystem::path& filename);
 
     /**
      * \brief Get the filename that was selected or typed.
      * \return The filename that was typed in the edit box.
      */
-    std::string GetFilename();
+    const std::filesystem::path& GetFilename() const;
 
     /**
      * \brief Set whether to check if a file exists when the 'Save' button is pressed,
@@ -311,7 +312,7 @@ private:
      * \param edit Pointer to the edit box.
      * \param filename Text to put in the edit box.
     */
-    void        SetFilenameField(CEdit* edit, const std::string& filename);
+    void        SetFilenameField(CEdit* edit, const std::filesystem::path& filename);
 
     /*!
      * \brief Get the current directory with the current sub-directory appended.
@@ -319,7 +320,7 @@ private:
      * \return A string with the path of current directory, plus the
      * current sub-directory if any.
      */
-    std::string SearchDirectory(bool bCreate);
+    std::filesystem::path SearchDirectory(bool bCreate);
 
 private:
 
@@ -346,14 +347,14 @@ private:
     bool         m_confirmOverwrite = false;
 
     bool         m_public = false;
-    std::string  m_pathPublic  = "";
-    std::string  m_pathPrivate = "";
+    std::filesystem::path m_pathPublic  = "";
+    std::filesystem::path m_pathPrivate = "";
     bool         m_usePublicPrivate = false;
 
-    std::string  m_basePath   = "";
-    std::string  m_subDirPath = "";
+    std::filesystem::path m_basePath   = "";
+    std::filesystem::path  m_subDirPath = "";
 
-    std::string  m_filename = "";
+    std::filesystem::path  m_filename = "";
 
     //! The extension to add to a filename if needed
     std::string  m_extension = "";

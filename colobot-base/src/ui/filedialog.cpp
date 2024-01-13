@@ -157,42 +157,42 @@ bool CFileDialog::GetPublic()
     return m_public;
 }
 
-void CFileDialog::SetPublicFolder(const std::string& dir)
+void CFileDialog::SetPublicFolder(const std::filesystem::path& dir)
 {
     m_pathPublic = dir;
 }
 
-void CFileDialog::SetPrivateFolder(const std::string& dir)
+void CFileDialog::SetPrivateFolder(const std::filesystem::path& dir)
 {
     m_pathPrivate = dir;
 }
 
-void CFileDialog::SetBasePath(const std::string& dir)
+void CFileDialog::SetBasePath(const std::filesystem::path& dir)
 {
     m_basePath = dir;
 }
 
-std::string CFileDialog::GetBasePath()
+const std::filesystem::path& CFileDialog::GetBasePath() const
 {
     return m_basePath;
 }
 
-void CFileDialog::SetSubFolderPath(const std::string& dir)
+void CFileDialog::SetSubFolderPath(const std::filesystem::path& dir)
 {
     m_subDirPath = dir;
 }
 
-std::string CFileDialog::GetSubFolderPath()
+const std::filesystem::path& CFileDialog::GetSubFolderPath() const
 {
     return m_subDirPath;
 }
 
-void CFileDialog::SetFilename(const std::string& filename)
+void CFileDialog::SetFilename(const std::filesystem::path& filename)
 {
     m_filename = filename;
 }
 
-std::string CFileDialog::GetFilename()
+const std::filesystem::path& CFileDialog::GetFilename() const
 {
     return m_filename;
 }
@@ -320,7 +320,7 @@ void CFileDialog::StartFileDialog()
 
     AdjustDialog();
 
-    SetFilenameField(pe, m_filename);
+    SetFilenameField(pe, StrUtils::ToString(m_filename));
     SetFilename("");
 
     UpdatePublic(m_public);
@@ -333,9 +333,9 @@ void CFileDialog::StartFileDialog()
     m_interface->SetFocus(pe);
 }
 
-void CFileDialog::SetFilenameField(CEdit* edit, const std::string& filename)
+void CFileDialog::SetFilenameField(CEdit* edit, const std::filesystem::path& filename)
 {
-    std::string name = filename;
+    std::string name = StrUtils::ToString(filename);
     if (name.length() > static_cast<unsigned int>(edit->GetMaxChar()))
     {
         if (name.substr(name.length()-5) == ".cbot")
@@ -1028,7 +1028,7 @@ void CFileDialog::UpdatePathLabel()
     {
         glm::vec2 dim = pl->GetDim();
         size_t nch = static_cast< size_t >((dim.x*640.0f)/5.75f);
-        std::string text = SearchDirectory(false);
+        std::string text = StrUtils::ToString(SearchDirectory(false));
         if (text.length() > nch)
         {
             text = "..." + text.substr(text.length()-nch, nch);
@@ -1058,16 +1058,15 @@ void CFileDialog::PopulateList()
     if (!m_subDirPath.empty()) folders.insert(folders.begin(), std::string(".."));
     for (auto& dir : folders)
     {
-        std::ostringstream temp;
-        time_t now = CResourceManager::GetLastModificationTime(StrUtils::ToPath(SearchDirectory(false)) / dir);
+        time_t now = CResourceManager::GetLastModificationTime(SearchDirectory(false) / dir);
         strftime(timestr, 99, "%x %X", localtime(&now));
+        std::ostringstream temp;
         temp << dir << '\t' << "** DIR **" << "  \t" << timestr;
         pl->SetItemName(i++, temp.str().c_str());
     }
 
     // list all files
-    std::vector<std::filesystem::path> files = CResourceManager::ListFiles(
-        StrUtils::ToPath(SearchDirectory(false)), true);
+    std::vector<std::filesystem::path> files = CResourceManager::ListFiles(SearchDirectory(false), true);
 
     auto it = std::remove_if(files.begin(), files.end(), [this](const std::filesystem::path& name)
     {
@@ -1077,10 +1076,10 @@ void CFileDialog::PopulateList()
 
     for (const auto& filename : files)
     {
-        auto path = StrUtils::ToPath(SearchDirectory(false)) / filename;
-        std::ostringstream temp;
+        auto path = SearchDirectory(false) / filename;
         time_t now = CResourceManager::GetLastModificationTime(path);
         strftime(timestr, 99, "%x %X", localtime(&now));
+        std::ostringstream temp;
         temp << StrUtils::ToString(filename) << '\t' << CResourceManager::GetFileSize(path) << "  \t" << timestr;
         pl->SetItemName(i++, temp.str().c_str());
     }
@@ -1088,9 +1087,9 @@ void CFileDialog::PopulateList()
 
 // Constructs the name of the folder for open/save.
 // If the folder does not exist, it can be created.
-std::string CFileDialog::SearchDirectory(bool bCreate)
+std::filesystem::path CFileDialog::SearchDirectory(bool bCreate)
 {
-    std::filesystem::path dir = StrUtils::ToPath(m_basePath);
+    std::filesystem::path dir = m_basePath;
 
     if (bCreate && !CResourceManager::DirectoryExists(dir))
     {
@@ -1107,7 +1106,7 @@ std::string CFileDialog::SearchDirectory(bool bCreate)
         }
     }
 
-    return StrUtils::ToString(dir) + "/";
+    return dir;
 }
 
 bool CFileDialog::DirectoryExists(const std::string &name)
@@ -1116,7 +1115,7 @@ bool CFileDialog::DirectoryExists(const std::string &name)
 
     if ( name == ".." ) return !m_subDirPath.empty();
 
-    return CResourceManager::DirectoryExists(StrUtils::ToPath(SearchDirectory(false)) / name);
+    return CResourceManager::DirectoryExists(SearchDirectory(false) / name);
 }
 
 // Make folder
@@ -1131,19 +1130,11 @@ void CFileDialog::CreateNewFolder()
     std::string name = pe->GetText(999);
     if ( name.empty() ) return;
 
-    if ( !m_subDirPath.empty() ) m_subDirPath += "/";
-
-    m_subDirPath += name;   // add to current path
+    m_subDirPath /= name;   // add to current path
 
     SearchDirectory(true);  // make the new folder
 
-    size_t pos = m_subDirPath.find_last_of("/");
-
-    // keep the current folder as current path
-    if (pos == std::string::npos)
-        m_subDirPath.clear();
-    else
-        m_subDirPath.resize(pos);
+    m_subDirPath = m_subDirPath.parent_path();
 
     PopulateList();         // redraw the list
     SearchList(name, true); // highlight the new folder in list box
@@ -1166,16 +1157,11 @@ void CFileDialog::OpenFolder()
 
     if ( name == ".." ) // parent folder
     {
-        size_t pos = m_subDirPath.find_last_of("/");
-        if (pos == std::string::npos)
-            m_subDirPath.clear();
-        else
-            m_subDirPath.resize(pos);
+        m_subDirPath = m_subDirPath.parent_path();
     }
     else if ( DirectoryExists(name) )
     {
-        if (!m_subDirPath.empty()) m_subDirPath += "/";
-        m_subDirPath += name;
+        m_subDirPath /= name;
     }
 
     PopulateList();
@@ -1257,7 +1243,7 @@ bool CFileDialog::ActionSave(bool checkFileExist)
 
     if ( checkFileExist )
     {
-        if (CResourceManager::Exists(SearchDirectory(false)+filename))
+        if (CResourceManager::Exists(SearchDirectory(false) / filename))
         {
             if ( !StartAskOverwrite(filename) ) StopAskOverwrite();
             return false;
