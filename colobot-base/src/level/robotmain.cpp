@@ -3765,7 +3765,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             if (!m_sceneReadPath.empty()) continue; // ignore errors when loading saved game (TODO: don't report ones that are just not loaded when loading saved game)
             if (resetObject) continue; // ignore when reseting just objects (TODO: see above)
 
-            throw CLevelParserException("Unknown command: '" + line->GetCommand() + "' in " + line->GetLevelFilename() + ":" + StrUtils::ToString(line->GetLineNumber()));
+            throw CLevelParserException("Unknown command: '" + line->GetCommand() + "' in " + StrUtils::ToString(line->GetLevelFilename()) + ":" + StrUtils::ToString(line->GetLineNumber()));
         }
 
         // Do this here to prevent the first frame from taking a long time to render

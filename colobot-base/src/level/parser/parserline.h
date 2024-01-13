@@ -26,6 +26,7 @@
 
 #include "level/parser/parserparam.h"
 
+#include <filesystem>
 #include <string>
 #include <map>
 #include <memory>
@@ -37,31 +38,31 @@ using CLevelParserLineUPtr = std::unique_ptr<CLevelParserLine>;
 class CLevelParserLine
 {
 public:
-    CLevelParserLine(int lineNumber, std::string command);
-    CLevelParserLine(std::string command);
+    CLevelParserLine(int lineNumber, const std::string& command);
+    CLevelParserLine(const std::string& command);
 
     //! Get line number
-    int GetLineNumber();
+    int GetLineNumber() const;
 
     //! Get CLevelParser this line is part of
-    CLevelParser* GetLevel();
+    CLevelParser* GetLevel() const;
     //! Set CLevelParser this line is part of
     void SetLevel(CLevelParser* level);
 
-    const std::string& GetLevelFilename();
+    const std::filesystem::path& GetLevelFilename() const;
 
-    std::string GetCommand();
-    void SetCommand(std::string command);
+    std::string GetCommand() const;
+    void SetCommand(const std::string& command);
 
-    CLevelParserParam* GetParam(std::string name);
-    void AddParam(std::string name, CLevelParserParamUPtr value);
+    CLevelParserParam* GetParam(const std::string& name);
+    void AddParam(const std::string& name, CLevelParserParamUPtr value);
 
     friend std::ostream& operator<<(std::ostream& str, const CLevelParserLine& line);
 
 private:
-    CLevelParser* m_level;
-    std::string m_levelFilename;
-    int m_lineNumber;
-    std::string m_command;
+    CLevelParser* m_level = nullptr;
+    std::filesystem::path m_levelFilename = {};
+    int m_lineNumber = 0;
+    std::string m_command = {};
     std::map<std::string, CLevelParserParamUPtr> m_params;
 };
