@@ -1015,7 +1015,7 @@ void CStudio::StartDialog(const Event &event)
             m_fileDialog->SetConfirmOverwrite(true);
 
             // filename in CScript may include sub-folder
-            std::string filename = m_script->GetFilename();
+            std::string filename = StrUtils::ToString(m_script->GetFilename());
             if (!filename.empty())
             {
                 size_t pos = filename.find_last_of("/");

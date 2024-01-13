@@ -996,7 +996,7 @@ bool CScript::SendScript(const char* text)
 
 // Reads a script as a text file.
 
-bool CScript::ReadScript(const char* filename)
+bool CScript::ReadScript(const std::filesystem::path& filename)
 {
     Ui::CEdit*  edit;
 
@@ -1014,7 +1014,7 @@ bool CScript::ReadScript(const char* filename)
 
 // Writes a script as a text file.
 
-bool CScript::WriteScript(const char* filename)
+bool CScript::WriteScript(const std::filesystem::path& filename)
 {
     if ( m_script == nullptr )
     {
@@ -1076,12 +1076,12 @@ bool CScript::Compare(CScript* other)
 
 // Management of the file name when the script is saved.
 
-void CScript::SetFilename(const std::string& filename)
+void CScript::SetFilename(const std::filesystem::path& filename)
 {
     m_filename = filename;
 }
 
-const std::string& CScript::GetFilename()
+const std::filesystem::path& CScript::GetFilename() const
 {
     return m_filename;
 }

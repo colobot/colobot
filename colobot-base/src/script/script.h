@@ -26,6 +26,7 @@
 
 #include "CBot/CBot.h"
 
+#include <filesystem>
 #include <limits>
 #include <memory>
 #include <optional>
@@ -86,14 +87,14 @@ public:
 
     void        New(Ui::CEdit* edit, const char* name);
     bool        SendScript(const char* text);
-    bool        ReadScript(const char* filename);
-    bool        WriteScript(const char* filename);
+    bool        ReadScript(const std::filesystem::path& filename);
+    bool        WriteScript(const std::filesystem::path& filename);
     bool        ReadStack(std::istream &istr);
     bool        WriteStack(std::ostream &ostr);
     bool        Compare(CScript* other);
 
-    void        SetFilename(const std::string &filename);
-    const std::string& GetFilename();
+    void        SetFilename(const std::filesystem::path& filename);
+    const std::filesystem::path& GetFilename() const;
 
 protected:
     bool        IsEmpty();
@@ -121,7 +122,7 @@ protected:
     bool    m_bCompile = false;     // compilation ok?
     std::string m_title = "";        // script title
     std::string m_mainFunction = "";
-    std::string m_filename = "";     // file name
+    std::filesystem::path m_filename = "";     // file name
     std::string m_token = "";        // missing instruction
     int m_tokenUsed = 0, m_tokenAllowed = 0;
     CBot::CBotError m_error = CBot::CBotNoErr;        // error (0=ok)

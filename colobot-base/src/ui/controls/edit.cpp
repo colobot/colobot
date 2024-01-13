@@ -1459,7 +1459,7 @@ void CEdit::FreeImage()
 
 // Read from a text file.
 
-bool CEdit::ReadText(std::string filename)
+bool CEdit::ReadText(const std::filesystem::path& filename)
 {
     int         len, len2, i, j, n, font, iLines, iCount;
     char        iName[50];
@@ -1870,7 +1870,7 @@ bool CEdit::ReadText(std::string filename)
 
 // Writes all the text in a file.
 
-bool CEdit::WriteText(std::string filename)
+bool CEdit::WriteText(const std::filesystem::path& filename)
 {
     if (filename.empty())  return false;
 
