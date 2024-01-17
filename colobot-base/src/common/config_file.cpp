@@ -32,13 +32,7 @@
 #include <cstring>
 #include <fstream>
 
-CConfigFile::CConfigFile()
-   : m_needsSave(false)
-   , m_useCurrentDirectory(false)
-   , m_loaded(false)
-{
-}
-
+CConfigFile::CConfigFile() = default;
 
 CConfigFile::~CConfigFile()
 {
