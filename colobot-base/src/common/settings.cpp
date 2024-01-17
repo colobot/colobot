@@ -33,29 +33,6 @@
 
 #include "sound/sound.h"
 
-CSettings::CSettings()
-{
-    m_tooltips = true;
-    m_interfaceGlint = true;
-    m_mouseParticlesEnabled = true;
-    m_soluce4 = true;
-    m_movies = true;
-    m_focusLostPause = true;
-    m_focusLostMute = true;
-
-    m_fontSize = 19.0f;
-    m_windowPos = { 0.15f, 0.17f };
-    m_windowDim = { 0.70f, 0.66f };
-    m_windowMax = false;
-
-    m_IOPublic = false;
-    m_IODim = { 320.0f / 640.0f, (121.0f + 18.0f * 8) / 480.0f };
-    m_IOPos.x = (1.0f - m_IODim.x) / 2.0f;  // in the middle
-    m_IOPos.y = (1.0f - m_IODim.y) / 2.0f;
-
-    m_language = LANGUAGE_ENV;
-}
-
 void CSettings::SaveResolutionSettings(const Gfx::DeviceConfig& config)
 {
     std::vector<int> values = { config.size.x, config.size.y };
@@ -322,7 +299,7 @@ void CSettings::SetTooltips(bool tooltips)
 {
     m_tooltips = tooltips;
 }
-bool CSettings::GetTooltips()
+bool CSettings::GetTooltips() const
 {
     return m_tooltips;
 }
@@ -331,7 +308,7 @@ void CSettings::SetInterfaceGlint(bool interfaceGlint)
 {
     m_interfaceGlint = interfaceGlint;
 }
-bool CSettings::GetInterfaceGlint()
+bool CSettings::GetInterfaceGlint() const
 {
     return m_interfaceGlint;
 }
@@ -340,7 +317,7 @@ void CSettings::SetMouseParticlesEnabled(bool mouseParticlesEnabled)
 {
     m_mouseParticlesEnabled = mouseParticlesEnabled;
 }
-bool CSettings::GetMouseParticlesEnabled()
+bool CSettings::GetMouseParticlesEnabled() const
 {
     return m_mouseParticlesEnabled;
 }
@@ -349,7 +326,7 @@ void CSettings::SetSoluce4(bool soluce4)
 {
     m_soluce4 = soluce4;
 }
-bool CSettings::GetSoluce4()
+bool CSettings::GetSoluce4() const
 {
     return m_soluce4;
 }
@@ -358,7 +335,7 @@ void CSettings::SetMovies(bool movies)
 {
     m_movies = movies;
 }
-bool CSettings::GetMovies()
+bool CSettings::GetMovies() const
 {
     return m_movies;
 }
@@ -367,7 +344,7 @@ void CSettings::SetFocusLostPause(bool focusLostPause)
 {
     m_focusLostPause = focusLostPause;
 }
-bool CSettings::GetFocusLostPause()
+bool CSettings::GetFocusLostPause() const
 {
     return m_focusLostPause;
 }
@@ -376,7 +353,7 @@ void CSettings::SetFocusLostMute(bool focusLostMute)
 {
     m_focusLostMute = focusLostMute;
 }
-bool CSettings::GetFocusLostMute()
+bool CSettings::GetFocusLostMute() const
 {
     return m_focusLostMute;
 }
@@ -388,7 +365,7 @@ void CSettings::SetFontSize(float size)
     GetConfigFile().Save();
 }
 
-float CSettings::GetFontSize()
+float CSettings::GetFontSize() const
 {
     return m_fontSize;
 }
@@ -401,7 +378,7 @@ void CSettings::SetWindowPos(const glm::vec2& pos)
     GetConfigFile().Save();
 }
 
-glm::vec2 CSettings::GetWindowPos()
+glm::vec2 CSettings::GetWindowPos() const
 {
     return m_windowPos;
 }
@@ -414,7 +391,7 @@ void CSettings::SetWindowDim(const glm::vec2& dim)
     GetConfigFile().Save();
 }
 
-glm::vec2 CSettings::GetWindowDim()
+glm::vec2 CSettings::GetWindowDim() const
 {
     return m_windowDim;
 }
@@ -426,7 +403,7 @@ void CSettings::SetWindowMax(bool max)
     GetConfigFile().Save();
 }
 
-bool CSettings::GetWindowMax()
+bool CSettings::GetWindowMax() const
 {
     return m_windowMax;
 }
@@ -438,7 +415,7 @@ void CSettings::SetIOPublic(bool mode)
     GetConfigFile().Save();
 }
 
-bool CSettings::GetIOPublic()
+bool CSettings::GetIOPublic() const
 {
     return m_IOPublic;
 }
@@ -451,7 +428,7 @@ void CSettings::SetIOPos(const glm::vec2& pos)
     GetConfigFile().Save();
 }
 
-glm::vec2 CSettings::GetIOPos()
+glm::vec2 CSettings::GetIOPos() const
 {
     return m_IOPos;
 }
@@ -464,7 +441,7 @@ void CSettings::SetIODim(const glm::vec2& dim)
     GetConfigFile().Save();
 }
 
-glm::vec2 CSettings::GetIODim()
+glm::vec2 CSettings::GetIODim() const
 {
     return m_IODim;
 }
@@ -475,7 +452,7 @@ void CSettings::SetLanguage(Language language)
     CApplication::GetInstancePointer()->SetLanguage(m_language);
 }
 
-Language CSettings::GetLanguage()
+Language CSettings::GetLanguage() const
 {
     return m_language;
 }
