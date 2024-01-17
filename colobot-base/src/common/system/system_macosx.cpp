@@ -135,9 +135,9 @@ std::string CSystemUtilsMacOSX::GetEnvVar(const std::string& str)
     return std::string();
 }
 
-bool CSystemUtilsMacOSX::OpenPath(const std::string& path)
+bool CSystemUtilsMacOSX::OpenPath(const std::filesystem::path& path)
 {
-    int result = system(("open \"" + path + "\"").c_str()); // TODO: Test on macOS
+    int result = system(("open \"" + StrUtils::ToString(path) + "\"").c_str()); // TODO: Test on macOS
     if (result != 0)
     {
         GetLogger()->Error("Failed to open path: %%, error code: %%", path, result);

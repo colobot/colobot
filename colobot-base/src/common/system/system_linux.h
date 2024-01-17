@@ -37,7 +37,7 @@ public:
 
     std::string GetEnvVar(const std::string& name) override;
 
-    bool OpenPath(const std::string& path) override;
+    bool OpenPath(const std::filesystem::path& path) override;
     bool OpenWebsite(const std::string& url) override;
 
 private:

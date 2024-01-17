@@ -138,9 +138,9 @@ std::string CSystemUtilsLinux::GetEnvVar(const std::string& name)
     return "";
 }
 
-bool CSystemUtilsLinux::OpenPath(const std::string& path)
+bool CSystemUtilsLinux::OpenPath(const std::filesystem::path& path)
 {
-    int result = system(("xdg-open \"" + path + "\"").c_str());
+    int result = system(("xdg-open \"" + StrUtils::ToString(path) + "\"").c_str());
     if (result != 0)
     {
         GetLogger()->Error("Failed to open path: %%, error code: %%", path, result);

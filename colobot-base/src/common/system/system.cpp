@@ -179,7 +179,7 @@ std::string CSystemUtils::GetEnvVar(const std::string& name)
     return "";
 }
 
-bool CSystemUtils::OpenPath(const std::string& path)
+bool CSystemUtils::OpenPath(const std::filesystem::path& path)
 {
     return false;
 }

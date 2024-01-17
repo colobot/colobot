@@ -158,9 +158,9 @@ std::string CSystemUtilsWindows::GetEnvVar(const std::string& name)
     }
 }
 
-bool CSystemUtilsWindows::OpenPath(const std::string& path)
+bool CSystemUtilsWindows::OpenPath(const std::filesystem::path& path)
 {
-    int result = system(("start explorer \"" + StrUtils::ToPath(path).make_preferred().string() + "\"").c_str());
+    int result = system(("start explorer \"" + std::filesystem::path{path}.make_preferred().string() + "\"").c_str());
     if (result != 0)
     {
         GetLogger()->Error("Failed to open path: %%, error code: %%", path, result);

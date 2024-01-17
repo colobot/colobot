@@ -118,7 +118,7 @@ public:
 
     //! Opens a path with default file browser
     /** \returns true if successful */
-    virtual bool OpenPath(const std::string& path);
+    virtual bool OpenPath(const std::filesystem::path& path);
 
     //! Opens a website with default web browser
     /** \returns true if successful */
