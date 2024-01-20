@@ -5,6 +5,8 @@
 
 cmake_minimum_required(VERSION 3.21)
 
+cmake_policy(SET CMP0025 NEW)
+
 project(colobot
     VERSION 0.2.1.0
     LANGUAGES C CXX
@@ -156,7 +158,31 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     message(STATUS "Detected Clang version 3.1+")
 
     if (${PLATFORM_FREEBSD})
-	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=bfd")
+       set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=bfd")
+    endif()
+
+    set(NORMAL_CXX_FLAGS "-Wall -Wold-style-cast -pedantic-errors -Wmissing-prototypes")
+    set(NORMAL_CXX_FLAGS "${NORMAL_CXX_FLAGS} -Wno-error=deprecated-declarations") # updated version of physfs is not available on some platforms so we keep using deprecated functions, see #958
+    set(RELEASE_CXX_FLAGS "-O2")
+    set(DEBUG_CXX_FLAGS "-g -O0")
+    set(TEST_CXX_FLAGS "-pthread")
+    add_definitions(-DHAVE_DEMANGLE)
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "AppleClang")
+    if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 12.0)
+        message(FATAL_ERROR "${PROJECT_NAME} requires AppleClang 12.0 or greater.")
+    endif()
+
+    message(STATUS "Detected AppleClang version 12.0+")
+
+    # Use override for char8_t on AppleClang before 14.0
+    if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 14.0)
+        if(NOT DEFINED COLOBOT_CHAR8_T_OVERRIDE)
+            set(COLOBOT_CHAR8_T_OVERRIDE ON CACHE BOOL "Override char8_t usage for compatibility reasons" FORCE)
+        endif()
+    endif()
+
+    if (${PLATFORM_FREEBSD})
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=bfd")
     endif()
 
     set(NORMAL_CXX_FLAGS "-Wall -Wold-style-cast -pedantic-errors -Wmissing-prototypes")
@@ -255,6 +281,9 @@ option(FORCE_BUNDLED_GTEST "Force the use of bundled gtest" OFF)
 
 # This is for use with colobot-lint tool
 option(COLOBOT_LINT_BUILD "Generate some additional CMake targets for use with colobot-lint" OFF)
+
+# Enable this if your compiler has issues using char8_t
+option(COLOBOT_CHAR8_T_OVERRIDE "Override char8_t usage for compatibility reasons" OFF)
 
 # Default build type if not given is debug
 if(NOT CMAKE_BUILD_TYPE)

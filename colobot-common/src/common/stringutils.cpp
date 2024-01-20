@@ -66,7 +66,7 @@ std::locale GetConversionLocale()
 
 const std::locale convertion_locale = GetConversionLocale();
 
-#ifdef __cpp_char8_t
+#ifndef COLOBOT_CHAR8_T_OVERRIDE
 using UTF8Char = char8_t;
 #else
 using UTF8Char = char;
@@ -121,7 +121,7 @@ std::filesystem::path StrUtils::FromString(const std::string& path, bool *ok)
 
 std::filesystem::path StrUtils::ToPath(std::string_view path)
 {
-#ifdef __cpp_char8_t
+#ifndef COLOBOT_CHAR8_T_OVERRIDE
     auto data = reinterpret_cast<const char8_t*>(path.data());
 
     return std::filesystem::path(data, data + path.size());

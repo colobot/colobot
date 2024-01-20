@@ -13,3 +13,9 @@ target_sources(Colobot-Common PRIVATE
 target_include_directories(Colobot-Common PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
 )
+
+if(COLOBOT_CHAR8_T_OVERRIDE)
+    target_compile_definitions(Colobot-Common PRIVATE
+        COLOBOT_CHAR8_T_OVERRIDE=1
+    )
+endif()
