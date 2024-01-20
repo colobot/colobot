@@ -390,7 +390,7 @@ std::string CImage::GetError()
     return m_error;
 }
 
-bool CImage::Load(const std::string& fileName)
+bool CImage::Load(const std::filesystem::path& fileName)
 {
     if (! IsEmpty() )
         Free();
@@ -399,7 +399,7 @@ bool CImage::Load(const std::string& fileName)
 
     m_error = "";
 
-    auto file = CResourceManager::GetSDLFileHandler(StrUtils::ToPath(fileName));
+    auto file = CResourceManager::GetSDLFileHandler(fileName);
     if (!file->IsOpen())
     {
         m_data.reset();
@@ -424,7 +424,7 @@ bool CImage::Load(const std::string& fileName)
     return true;
 }
 
-bool CImage::SavePNG(const std::string& fileName)
+bool CImage::SavePNG(const std::filesystem::path& fileName)
 {
     if (IsEmpty())
     {
@@ -434,7 +434,7 @@ bool CImage::SavePNG(const std::string& fileName)
 
     m_error = "";
 
-    if (! PNGSaveSurface(fileName.c_str(), m_data->surface) )
+    if (! PNGSaveSurface(StrUtils::ToString(fileName).c_str(), m_data->surface) )
     {
         m_error = PNG_ERROR;
         return false;
