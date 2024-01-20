@@ -170,7 +170,7 @@ std::string CPlayerProfile::GetName()
 
 std::filesystem::path CPlayerProfile::GetSaveDir()
 {
-    return "savegame/" + m_playerName;
+    return std::filesystem::path("savegame") / StrUtils::ToPath(m_playerName);
 }
 
 std::filesystem::path CPlayerProfile::GetSaveFile(const std::filesystem::path& filename)
@@ -491,7 +491,7 @@ std::vector<SavedScene> CPlayerProfile::GetSavedSceneList()
             int time = line != nullptr ? line->GetParam("date")->AsInt() : 0;
             try
             {
-                sortedSaveDirs[time] = SavedScene(StrUtils::ToString(GetSaveFile(dir)),
+                sortedSaveDirs[time] = SavedScene(GetSaveFile(dir),
                     levelParser.Get("Title")->GetParam("text")->AsString());
             }
             catch (CLevelParserException &e)

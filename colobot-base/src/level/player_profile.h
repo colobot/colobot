@@ -48,12 +48,8 @@ struct PlayerAppearance
 
 struct SavedScene
 {
-    std::string path;
+    std::filesystem::path path;
     std::string name;
-
-    SavedScene(std::string path = "", std::string name = "")
-        : path(path), name(name)
-    {}
 };
 
 class CPlayerProfile

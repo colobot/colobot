@@ -121,7 +121,7 @@ void CScreenIO::IOReadList(bool isWrite)
 
     for (unsigned int i = 0; i < m_saveList.size(); i++)
     {
-        m_engine->DeleteTexture(m_saveList.at(i) + "/screen.png");
+        m_engine->DeleteTexture(TempToString(m_saveList.at(i) / "screen.png"));
     }
 }
 
@@ -164,7 +164,7 @@ void CScreenIO::IOUpdateList(bool isWrite)
         return;
     }
 
-    std::filesystem::path filename = StrUtils::ToPath(m_saveList.at(sel)) / "screen.png";
+    std::filesystem::path filename = m_saveList.at(sel) / "screen.png";
     if ( isWrite )
     {
         if ( sel < max-1 )
@@ -193,7 +193,7 @@ void CScreenIO::IODeleteScene()
     int sel = pl->GetSelect();
     if (sel < 0 || sel >= static_cast<int>(m_saveList.size())) return;
 
-    if (!m_main->GetPlayerProfile()->DeleteScene(StrUtils::ToPath(m_saveList.at(sel))))
+    if (!m_main->GetPlayerProfile()->DeleteScene(m_saveList.at(sel)))
     {
         m_sound->Play(SOUND_TZOING);
         return;
@@ -244,7 +244,7 @@ void CScreenIO::IOWriteScene()
     }
     else
     {
-        dir = StrUtils::ToPath(m_saveList.at(sel));
+        dir = m_saveList.at(sel);
     }
 
     m_main->GetPlayerProfile()->SaveScene(dir, info);
@@ -265,7 +265,7 @@ bool CScreenIO::IOReadScene()
     int sel = pl->GetSelect();
     if (sel < 0 || sel >= static_cast<int>(m_saveList.size())) return false;
 
-    m_main->GetPlayerProfile()->LoadScene(StrUtils::ToPath(m_saveList.at(sel)));
+    m_main->GetPlayerProfile()->LoadScene(m_saveList.at(sel));
 
     m_screenLevelList->SetSelection(m_main->GetLevelCategory(), m_main->GetLevelChap()-1, m_main->GetLevelRank()-1);
 
