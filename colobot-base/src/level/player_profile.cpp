@@ -509,19 +509,20 @@ std::vector<SavedScene> CPlayerProfile::GetSavedSceneList()
     return result;
 }
 
-void CPlayerProfile::SaveScene(std::string dir, std::string info)
+void CPlayerProfile::SaveScene(const std::filesystem::path& dir, std::string info)
 {
     if (!CResourceManager::DirectoryExists(dir))
     {
         CResourceManager::CreateNewDirectory(dir);
     }
 
-    CRobotMain::GetInstancePointer()->IOWriteScene(dir + "/data.sav", dir + "/cbot.run", dir + "/screen.png", info.c_str());
+    CRobotMain::GetInstancePointer()->IOWriteScene(
+        dir / "data.sav", dir / "cbot.run", dir / "screen.png", info);
 }
 
-void CPlayerProfile::LoadScene(std::string dir)
+void CPlayerProfile::LoadScene(const std::filesystem::path& dir)
 {
-    CLevelParser levelParser(dir + "/data.sav");
+    CLevelParser levelParser(dir / "data.sav");
     levelParser.Load();
 
     LevelCategory cat;
@@ -566,11 +567,11 @@ void CPlayerProfile::LoadScene(std::string dir)
     }
 
     CRobotMain::GetInstancePointer()->SetLevel(cat, chap, rank);
-    CRobotMain::GetInstancePointer()->SetReadScene(dir);
+    CRobotMain::GetInstancePointer()->SetReadScene(TempToString(dir));
     CRobotMain::GetInstancePointer()->ChangePhase(PHASE_SIMUL);
 }
 
-bool CPlayerProfile::DeleteScene(std::string dir)
+bool CPlayerProfile::DeleteScene(const std::filesystem::path& dir)
 {
     if (CResourceManager::DirectoryExists(dir))
     {

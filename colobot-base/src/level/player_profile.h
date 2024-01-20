@@ -121,11 +121,11 @@ public:
     //! Returns list of all saved scenes
     std::vector<SavedScene> GetSavedSceneList();
     //! Saves current scene status
-    void SaveScene(std::string dir, std::string info);
+    void SaveScene(const std::filesystem::path& dir, std::string info);
     //! Loads scene
-    void LoadScene(std::string dir);
+    void LoadScene(const std::filesystem::path& dir);
     //! Delete saved scene
-    bool DeleteScene(std::string dir);
+    bool DeleteScene(const std::filesystem::path& dir);
 
 protected:
     //! Loads LevelInfo data for given category

@@ -193,7 +193,7 @@ void CScreenIO::IODeleteScene()
     int sel = pl->GetSelect();
     if (sel < 0 || sel >= static_cast<int>(m_saveList.size())) return;
 
-    if (!m_main->GetPlayerProfile()->DeleteScene(m_saveList.at(sel)))
+    if (!m_main->GetPlayerProfile()->DeleteScene(StrUtils::ToPath(m_saveList.at(sel))))
     {
         m_sound->Play(SOUND_TZOING);
         return;
@@ -240,14 +240,14 @@ void CScreenIO::IOWriteScene()
     std::filesystem::path dir;
     if (static_cast<unsigned int>(sel) >= m_saveList.size())
     {
-        dir = m_main->GetPlayerProfile()->GetSaveFile("save"+clearName(info));
+        dir = m_main->GetPlayerProfile()->GetSaveFile("save" + clearName(info));
     }
     else
     {
-        dir = m_saveList.at(sel);
+        dir = StrUtils::ToPath(m_saveList.at(sel));
     }
 
-    m_main->GetPlayerProfile()->SaveScene(StrUtils::ToString(dir), info);
+    m_main->GetPlayerProfile()->SaveScene(dir, info);
 }
 
 // Reads the scene.
@@ -265,7 +265,7 @@ bool CScreenIO::IOReadScene()
     int sel = pl->GetSelect();
     if (sel < 0 || sel >= static_cast<int>(m_saveList.size())) return false;
 
-    m_main->GetPlayerProfile()->LoadScene(m_saveList.at(sel));
+    m_main->GetPlayerProfile()->LoadScene(StrUtils::ToPath(m_saveList.at(sel)));
 
     m_screenLevelList->SetSelection(m_main->GetLevelCategory(), m_main->GetLevelChap()-1, m_main->GetLevelRank()-1);
 

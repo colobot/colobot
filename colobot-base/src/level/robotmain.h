@@ -43,6 +43,7 @@
 #include "object/object_type.h"
 #include "object/tool_type.h"
 
+#include <filesystem>
 #include <deque>
 #include <map>
 #include <set>
@@ -334,11 +335,19 @@ public:
      */
     //@{
     bool        IOIsBusy();
-    bool        IOWriteScene(std::string filename, std::string filecbot, std::string filescreenshot, const std::string& info, bool emergencySave = false);
+    bool        IOWriteScene(const std::filesystem::path& filename,
+                    const std::filesystem::path& filecbot,
+                    const std::filesystem::path& filescreenshot,
+                    const std::string& info, bool emergencySave = false);
     void        IOWriteSceneFinished();
-    CObject*    IOReadScene(std::string filename, std::string filecbot);
-    void        IOWriteObject(CLevelParserLine *line, CObject* obj, const std::string& programDir, int objRank);
-    CObject*    IOReadObject(CLevelParserLine *line, const std::string& programDir, const std::string& objCounterText, float objectProgress, int objRank = -1);
+    CObject*    IOReadScene(const std::filesystem::path& filename,
+                    const std::filesystem::path& filecbot);
+    void        IOWriteObject(CLevelParserLine *line, CObject* obj,
+                    const std::filesystem::path& programDir, int objRank);
+    CObject*    IOReadObject(CLevelParserLine *line,
+                    const std::filesystem::path& programDir,
+                    const std::string& objCounterText,
+                    float objectProgress, int objRank = -1);
     //@}
 
     int         CreateSpot(glm::vec3 pos, Gfx::Color color);
