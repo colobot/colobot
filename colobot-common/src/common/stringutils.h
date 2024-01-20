@@ -155,3 +155,15 @@ std::string ToLower(std::string_view text);
 std::string ToUpper(std::string_view text);
 
 } // namespace StrUtil
+
+[[deprecated("Temporary conversion")]]
+inline std::string TempToString(const std::filesystem::path& path)
+{
+    return StrUtils::ToString(path);
+}
+
+[[deprecated("Temporary conversion")]]
+inline std::filesystem::path TempToPath(std::string_view path)
+{
+    return StrUtils::ToPath(path);
+}
