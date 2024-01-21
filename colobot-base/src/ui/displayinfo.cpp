@@ -337,7 +337,7 @@ void CDisplayInfo::HyperUpdate()
 
 // Beginning of the display of information.
 
-void CDisplayInfo::StartDisplayInfo(std::string filename, int index, bool bSoluce)
+void CDisplayInfo::StartDisplayInfo(const std::filesystem::path& filename, int index, bool bSoluce)
 {
     Gfx::Light          light;
     glm::vec2           pos, dim;
@@ -385,8 +385,8 @@ void CDisplayInfo::StartDisplayInfo(std::string filename, int index, bool bSoluc
     edit->SetMaxChar(10000);
     edit->SetFontType(Gfx::FONT_SATCOM);
     edit->SetSoluceMode(bSoluce);
-    edit->ReadText(filename.c_str());
-    edit->HyperHome(filename.c_str());
+    edit->ReadText(filename);
+    edit->HyperHome(StrUtils::ToString(filename));
     edit->SetEditCap(false);  // just to see!
     edit->SetHighlightCap(false);
     m_interface->SetFocus(edit);
@@ -655,7 +655,6 @@ void CDisplayInfo::ChangeIndexButton(int index)
 {
     Ui::CWindow*    pw;
     Ui::CEdit*      edit;
-    char*       filename;
 
     pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW4));
     if ( pw == nullptr )  return;
@@ -665,9 +664,9 @@ void CDisplayInfo::ChangeIndexButton(int index)
     edit = static_cast<Ui::CEdit*>(pw->SearchControl(EVENT_EDIT1));
     if ( edit != nullptr )
     {
-        filename = m_main->GetDisplayInfoName(m_index);
+        const auto& filename = m_main->GetDisplayInfoName(m_index);
         edit->ReadText(filename);
-        edit->HyperHome(std::string(filename));
+        edit->HyperHome(StrUtils::ToString(filename));
         SetPosition(0);
     }
 
@@ -683,7 +682,6 @@ void CDisplayInfo::UpdateIndexButton()
     Ui::CGroup*     group;
     Ui::CEdit*      edit;
     glm::vec2       pos, dim;
-    char*       filename;
 
     static int table[SATCOM_MAX] =
     {
@@ -702,16 +700,16 @@ void CDisplayInfo::UpdateIndexButton()
     if ( button != nullptr )
     {
         button->SetState(STATE_CHECK, m_index==SATCOM_HUSTON);
-        filename = m_main->GetDisplayInfoName(SATCOM_HUSTON);
-        button->SetState(STATE_VISIBLE, filename[0]!=0);
+        const auto& filename = m_main->GetDisplayInfoName(SATCOM_HUSTON);
+        button->SetState(STATE_VISIBLE, !filename.empty());
     }
 
     button = static_cast<Ui::CButton*>(pw->SearchControl(EVENT_SATCOM_SAT));
     if ( button != nullptr )
     {
         button->SetState(STATE_CHECK, m_index==SATCOM_SAT);
-        filename = m_main->GetDisplayInfoName(SATCOM_SAT);
-        button->SetState(STATE_VISIBLE, filename[0]!=0);
+        const auto& filename = m_main->GetDisplayInfoName(SATCOM_SAT);
+        button->SetState(STATE_VISIBLE, !filename.empty());
     }
 
 //? button = (CButton*)pw->SearchControl(EVENT_SATCOM_OBJECT);
@@ -719,31 +717,31 @@ void CDisplayInfo::UpdateIndexButton()
 //? {
 //?     button->SetState(STATE_CHECK, m_index==SATCOM_OBJECT);
 //?     filename = m_main->GetDisplayInfoName(SATCOM_OBJECT);
-//?     button->SetState(STATE_VISIBLE, filename[0]!=0);
+//?     button->SetState(STATE_VISIBLE, !filename.empty());
 //? }
 
     button = static_cast<Ui::CButton*>(pw->SearchControl(EVENT_SATCOM_LOADING));
     if ( button != nullptr )
     {
         button->SetState(STATE_CHECK, m_index==SATCOM_LOADING);
-        filename = m_main->GetDisplayInfoName(SATCOM_LOADING);
-        button->SetState(STATE_VISIBLE, filename[0]!=0);
+        const auto& filename = m_main->GetDisplayInfoName(SATCOM_LOADING);
+        button->SetState(STATE_VISIBLE, !filename.empty());
     }
 
     button = static_cast<Ui::CButton*>(pw->SearchControl(EVENT_SATCOM_PROG));
     if ( button != nullptr )
     {
         button->SetState(STATE_CHECK, m_index==SATCOM_PROG);
-        filename = m_main->GetDisplayInfoName(SATCOM_PROG);
-        button->SetState(STATE_VISIBLE, filename[0]!=0);
+        const auto& filename = m_main->GetDisplayInfoName(SATCOM_PROG);
+        button->SetState(STATE_VISIBLE, !filename.empty());
     }
 
     button = static_cast<Ui::CButton*>(pw->SearchControl(EVENT_SATCOM_SOLUCE));
     if ( button != nullptr )
     {
         button->SetState(STATE_CHECK, m_index==SATCOM_SOLUCE);
-        filename = m_main->GetDisplayInfoName(SATCOM_SOLUCE);
-        button->SetState(STATE_VISIBLE, filename[0]!=0 && m_bSoluce);
+        const auto& filename = m_main->GetDisplayInfoName(SATCOM_SOLUCE);
+        button->SetState(STATE_VISIBLE, !filename.empty() && m_bSoluce);
     }
 
     group = static_cast<Ui::CGroup*>(pw->SearchControl(EVENT_LABEL1));

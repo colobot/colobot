@@ -23,6 +23,8 @@
 
 #include <glm/glm.hpp>
 
+#include <filesystem>
+
 class CObject;
 class CEventQueue;
 
@@ -44,7 +46,7 @@ public:
 
     void        UpdateMap();
     void        CreateMap();
-    void        SetFixImage(const char *filename);
+    void        SetFixImage(const std::filesystem::path& filename);
     void        FloorColorMap(Gfx::Color floor, Gfx::Color water);
     void        ShowMap(bool bShow);
     void        DimMap();

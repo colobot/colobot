@@ -25,6 +25,8 @@
 
 #include "object/object_type.h"
 
+#include <filesystem>
+
 class CObject;
 
 namespace Gfx
@@ -79,7 +81,7 @@ public:
     void        UpdateTerrain();
     void        UpdateTerrain(int bx, int by, int ex, int ey);
 
-    void        SetFixImage(const std::string& filename);
+    void        SetFixImage(const std::filesystem::path& filename);
     bool        GetFixImage();
 
     void        SetOffset(float ox, float oy);
@@ -135,7 +137,7 @@ protected:
     glm::vec2       m_mapPos;
     glm::vec2       m_mapDim;
     bool            m_bRadar;
-    std::string     m_fixImage;
+    std::filesystem::path m_fixImage;
     int             m_mode;
     bool            m_bToy;
     bool            m_bDebug;

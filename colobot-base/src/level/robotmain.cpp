@@ -518,7 +518,7 @@ void CRobotMain::ChangePhase(Phase phase)
     if (m_phase == PHASE_SATCOM)
     {
         m_interface->DeleteControl(EVENT_WINDOW5);
-        StartDisplayInfo(StrUtils::ToString(InjectLevelPathsForCurrentLevel("cbot.txt", "help/%lng%")), 0);
+        StartDisplayInfo(InjectLevelPathsForCurrentLevel("cbot.txt", "help/%lng%"), 0);
     }
 
     if (!resetWorld) return;
@@ -559,7 +559,7 @@ void CRobotMain::ChangePhase(Phase phase)
             if (m_base == nullptr || loading) StartMusic();
 
             if (m_immediatSatCom && !loading  &&
-                m_infoFilename[SATCOM_HUSTON][0] != 0)
+                !m_infoFilename[SATCOM_HUSTON].empty())
                 StartDisplayInfo(SATCOM_HUSTON, false);  // shows the instructions
         }
         catch (const std::runtime_error& e)
@@ -577,7 +577,7 @@ void CRobotMain::ChangePhase(Phase phase)
         }
         else
         {
-            m_winTerminate = (m_endingWin.substr(m_endingWin.find_last_of("/")+1) == "win904.txt");
+            m_winTerminate = (m_endingWin.filename() == "win904.txt");
             m_levelFile = m_endingWin;
             try
             {
@@ -1546,9 +1546,9 @@ void CRobotMain::FlushDisplayInfo()
 {
     for (int i = 0; i < SATCOM_MAX; i++)
     {
-        m_infoFilename[i][0] = 0;
+        m_infoFilename[i] = "";
     }
-    strcpy(m_infoFilename[SATCOM_OBJECT], "objects.txt");
+    m_infoFilename[SATCOM_OBJECT] = "objects.txt";
 }
 
 //! Beginning of the displaying of instructions.
@@ -1587,7 +1587,7 @@ void CRobotMain::StartDisplayInfo(int index, bool movie)
 }
 
 //! Beginning of the displaying of instructions
-void CRobotMain::StartDisplayInfo(const std::string& filename, int index)
+void CRobotMain::StartDisplayInfo(const std::filesystem::path& filename, int index)
 {
     if (m_cmdEdit) return;
 
@@ -1634,7 +1634,7 @@ void CRobotMain::StopDisplayInfo()
 }
 
 //! Returns the name of the text display
-char* CRobotMain::GetDisplayInfoName(int index)
+const std::filesystem::path& CRobotMain::GetDisplayInfoName(int index)
 {
     return m_infoFilename[index];
 }
@@ -2780,7 +2780,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_obligatoryTokens.clear();
         m_mapShow = true;
         m_mapImage = false;
-        m_mapFilename[0] = 0;
+        m_mapFilename = "";
 
         m_controller = nullptr;
 
@@ -2873,7 +2873,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "Instructions" && !resetObject)
             {
-                strcpy(m_infoFilename[SATCOM_HUSTON], line->GetParam("name")->AsPath("help/%lng%").c_str());
+                m_infoFilename[SATCOM_HUSTON] = TempToPath(line->GetParam("name")->AsPath("help/%lng%"));
 
                 m_immediatSatCom = line->GetParam("immediat")->AsBool(false);
                 m_beginSatCom = m_lockedSatCom = line->GetParam("lock")->AsBool(false);
@@ -2883,30 +2883,30 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "Satellite" && !resetObject)
             {
-                strcpy(m_infoFilename[SATCOM_SAT], line->GetParam("name")->AsPath("help/%lng%").c_str());
+                m_infoFilename[SATCOM_SAT] = TempToPath(line->GetParam("name")->AsPath("help/%lng%"));
                 continue;
             }
 
             if (line->GetCommand() == "Loading" && !resetObject)
             {
-                strcpy(m_infoFilename[SATCOM_LOADING], line->GetParam("name")->AsPath("help/%lng%").c_str());
+                m_infoFilename[SATCOM_LOADING] = TempToPath(line->GetParam("name")->AsPath("help/%lng%"));
                 continue;
             }
 
             if (line->GetCommand() == "HelpFile" && !resetObject)
             {
-                strcpy(m_infoFilename[SATCOM_PROG], line->GetParam("name")->AsPath("help/%lng%").c_str());
+                m_infoFilename[SATCOM_PROG] = TempToPath(line->GetParam("name")->AsPath("help/%lng%"));
                 continue;
             }
             if (line->GetCommand() == "SoluceFile" && !resetObject)
             {
-                strcpy(m_infoFilename[SATCOM_SOLUCE], line->GetParam("name")->AsPath("help/%lng%").c_str());
+                m_infoFilename[SATCOM_SOLUCE] = TempToPath(line->GetParam("name")->AsPath("help/%lng%"));
                 continue;
             }
 
             if (line->GetCommand() == "EndingFile" && !resetObject)
             {
-                auto Process = [&](const std::string& type) -> std::string
+                auto Process = [&](const std::string& type) -> std::filesystem::path
                 {
                     if (line->GetParam(type)->IsDefined())
                     {
@@ -2919,7 +2919,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                                 GetLogger()->Warn("This level is using deprecated way of defining %% scene. Please change the %%= parameter in EndingFile from %% to \"levels/other/%1$s%2$03d.txt\".\n", type, type, rank);
                                 std::stringstream ss;
                                 ss << "levels/other/" << type << std::setfill('0') << std::setw(3) << rank << ".txt";
-                                return ss.str();
+                                return TempToPath(ss.str());
                             }
                             else
                             {
@@ -2931,7 +2931,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                         }
                         catch (std::invalid_argument &e)
                         {
-                            return line->GetParam(type)->AsPath("levels");
+                            return TempToPath(line->GetParam(type)->AsPath("levels"));
                         }
                     }
                     return "";
@@ -3379,7 +3379,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 if (!m_sceneReadPath.empty())  // loading file ?
                 {
                     m_ui->GetLoadingScreen()->SetProgress(0.25f, RT_LOADING_OBJECTS_SAVED);
-                    sel = IOReadScene(m_sceneReadPath + "/data.sav", m_sceneReadPath + "/cbot.run");
+                    sel = IOReadScene(m_sceneReadPath / "data.sav", m_sceneReadPath / "cbot.run");
                 }
                 else
                 {
@@ -3571,7 +3571,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 if (m_mapImage)
                 {
                     glm::vec3 offset;
-                    strcpy(m_mapFilename, line->GetParam("filename")->AsPath("textures").c_str());
+                    m_mapFilename = StrUtils::ToPath(line->GetParam("filename")->AsPath("textures"));
                     offset = line->GetParam("offset")->AsPoint(glm::vec3(0.0f, 0.0f, 0.0f));
                     m_map->SetFixParam(line->GetParam("zoom")->AsFloat(1.0f),
                                     offset.x, offset.z,
@@ -5451,7 +5451,7 @@ const std::string& CRobotMain::GetScriptName()
     return m_scriptName;
 }
 
-const std::string& CRobotMain::GetScriptFile()
+const std::filesystem::path& CRobotMain::GetScriptFile()
 {
     return m_scriptFile;
 }
@@ -5464,7 +5464,7 @@ bool CRobotMain::GetShowSoluce()
 
 bool CRobotMain::GetSceneSoluce()
 {
-    if (m_infoFilename[SATCOM_SOLUCE][0] == 0) return false;
+    if (m_infoFilename[SATCOM_SOLUCE].empty()) return false;
     return m_ui->GetSceneSoluce();
 }
 
@@ -5548,7 +5548,7 @@ std::string CRobotMain::GetCustomLevelDir()
     return m_ui->GetCustomLevelName(m_levelChap);
 }
 
-void CRobotMain::SetReadScene(std::string path)
+void CRobotMain::SetReadScene(const std::filesystem::path& path)
 {
     m_sceneReadPath = path;
 }

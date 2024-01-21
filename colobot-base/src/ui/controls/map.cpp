@@ -21,6 +21,7 @@
 #include "ui/controls/map.h"
 
 #include "common/image.h"
+#include "common/stringutils.h"
 
 #include "graphics/core/renderers.h"
 #include "graphics/core/transparency.h"
@@ -180,7 +181,7 @@ void CMap::SetWaterColor(Gfx::Color color)
 
 // Specifies a fixed image in place of the drawing of the relief.
 
-void CMap::SetFixImage(const std::string& filename)
+void CMap::SetFixImage(const std::filesystem::path& filename)
 {
     m_fixImage = filename;
 }
@@ -364,7 +365,7 @@ void CMap::Draw()
     }
     else // still image?
     {
-        auto texture = m_engine->LoadTexture(m_fixImage);
+        auto texture = m_engine->LoadTexture(TempToString(m_fixImage));
         renderer->SetTransparency(Gfx::TransparencyMode::NONE);
         renderer->SetTexture(texture);
 

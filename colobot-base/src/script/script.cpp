@@ -909,7 +909,7 @@ void CScript::New(Ui::CEdit* edit, const char* name)
     edit->ShowSelect();
     m_interface->SetFocus(edit);
 
-    std::string sf = m_main->GetScriptFile();
+    std::filesystem::path sf = m_main->GetScriptFile();
     if ( !sf.empty() )  // Load an empty program specific?
     {
         CInputStream stream;
