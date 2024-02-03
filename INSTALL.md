@@ -61,7 +61,7 @@ You will need:
 
 On Ubuntu (and probably any other Debian-based system), you can use the following command to install all required packages:
 ```
-  $ apt-get install build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libphysfs-dev gettext git po4a vorbis-tools
+  $ apt-get install build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libphysfs-dev gettext git po4a vorbis-tools libglm-dev
 ```
 
 Make sure you install the packages along with header files (often distributed in separate *-dev packages). If you miss any requirements,
