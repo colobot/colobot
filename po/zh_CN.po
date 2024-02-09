@@ -1,0 +1,2026 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: DATE\n"
+"PO-Revision-Date: 2024-02-09 22:02+0800\n"
+"Last-Translator: CloneWith <clonewith@qq.com>\n"
+"Language-Team: Colobot: Gold Edition freelancer\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 3.4.2\n"
+
+msgid "Colobot rules!"
+msgstr ""
+
+msgid "Maximize"
+msgstr "最大化"
+
+msgid "Minimize"
+msgstr "最小化"
+
+msgid "Normal size"
+msgstr ""
+
+msgid "Close"
+msgstr "关闭"
+
+msgid "Program editor"
+msgstr "程序编辑器"
+
+msgid "New"
+msgstr ""
+
+msgid "Player"
+msgstr "玩家"
+
+msgid "New ..."
+msgstr ""
+
+msgid " or "
+msgstr ""
+
+msgid "Colobot: Gold Edition"
+msgstr ""
+
+msgid "Programming exercises"
+msgstr ""
+
+msgid "Challenges"
+msgstr ""
+
+msgid "Missions"
+msgstr ""
+
+msgid "Free game"
+msgstr ""
+
+msgid "User levels"
+msgstr ""
+
+msgid "Code battles"
+msgstr ""
+
+msgid "Options"
+msgstr "设置"
+
+msgid "Player's name"
+msgstr ""
+
+msgid "Customize your appearance"
+msgstr ""
+
+msgid "Save the current mission"
+msgstr ""
+
+msgid "Load a saved mission"
+msgstr ""
+
+msgid "Missions+"
+msgstr ""
+
+msgid "Mods"
+msgstr ""
+
+msgid "Chapters:"
+msgstr ""
+
+msgid "Planets:"
+msgstr ""
+
+msgid "Custom levels:"
+msgstr ""
+
+msgid "Levels in this chapter:"
+msgstr ""
+
+msgid "Exercises in the chapter:"
+msgstr ""
+
+msgid "Challenges in the chapter:"
+msgstr ""
+
+msgid "Missions on this planet:"
+msgstr ""
+
+msgid "Free game on this planet:"
+msgstr ""
+
+msgid "Summary:"
+msgstr ""
+
+msgid "Resolution:"
+msgstr ""
+
+msgid "1) First click on the key you want to redefine."
+msgstr ""
+
+msgid "2) Then press the key you want to use instead."
+msgstr ""
+
+msgid "Face type:"
+msgstr ""
+
+msgid "Eyeglasses:"
+msgstr ""
+
+msgid "Hair color:"
+msgstr ""
+
+msgid "Suit color:"
+msgstr ""
+
+msgid "Strip color:"
+msgstr ""
+
+msgid "Abort\\Abort the current mission"
+msgstr ""
+
+msgid "Continue\\Continue the current mission"
+msgstr ""
+
+msgid "Do you really want to destroy the selected building?"
+msgstr ""
+
+#, c-format
+msgid "Do you want to delete %s's saved games?"
+msgstr ""
+
+msgid "Yes"
+msgstr ""
+
+msgid "No"
+msgstr ""
+
+msgid "LOADING"
+msgstr ""
+
+msgid "OK"
+msgstr ""
+
+msgid "No userlevels installed!"
+msgstr ""
+
+msgid "This menu is for userlevels from mods, but you didn't install any"
+msgstr ""
+
+msgid "Could not open the file explorer!"
+msgstr ""
+
+#, c-format
+msgid "The path %s could not be opened in a file explorer."
+msgstr ""
+
+msgid "Could not open the web browser!"
+msgstr ""
+
+#, c-format
+msgid "The address %s could not be opened in a web browser."
+msgstr ""
+
+msgid "There are unsaved changes. Do you want to save them before leaving?"
+msgstr ""
+
+msgid "Keyword help(\\key cbot;)"
+msgstr ""
+
+msgid "Compilation ok (0 errors)"
+msgstr ""
+
+msgid "Program finished"
+msgstr ""
+
+msgid "Program cloned"
+msgstr ""
+
+msgid "This program is read-only, clone it to edit"
+msgstr ""
+
+msgid "This is example code that cannot be run directly"
+msgstr ""
+
+msgid "Open"
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+#, c-format
+msgid "Folder: %s"
+msgstr ""
+
+msgid "Name:"
+msgstr ""
+
+msgid "Folder:"
+msgstr ""
+
+msgid "Private\\Private folder"
+msgstr ""
+
+msgid "Public\\Common folder"
+msgstr ""
+
+msgid "Overwrite existing file?"
+msgstr ""
+
+msgid "Select Folder"
+msgstr ""
+
+msgid "Original game developed by:"
+msgstr ""
+
+msgid "epsitec.com"
+msgstr ""
+
+msgid "Gold Edition development by:"
+msgstr ""
+
+msgid "colobot.info"
+msgstr ""
+
+msgid "Recorder"
+msgstr ""
+
+msgid "Starting..."
+msgstr ""
+
+msgid "Processing level file"
+msgstr ""
+
+msgid "Loading basic level settings"
+msgstr ""
+
+msgid "Loading music"
+msgstr ""
+
+msgid "Loading terrain"
+msgstr ""
+
+msgid "Loading objects"
+msgstr ""
+
+msgid "Restoring saved objects"
+msgstr ""
+
+msgid "Restoring CBot execution state"
+msgstr ""
+
+msgid "Loading finished!"
+msgstr ""
+
+msgid "Terrain relief"
+msgstr ""
+
+msgid "Resources"
+msgstr ""
+
+msgid "Textures"
+msgstr ""
+
+msgid "Generating"
+msgstr ""
+
+msgid "Results"
+msgstr ""
+
+msgid "The battle has ended"
+msgstr ""
+
+#, c-format
+msgid "Time: %s"
+msgstr ""
+
+#, c-format
+msgid "%s: %d pts"
+msgstr ""
+
+msgid "Mods:"
+msgstr ""
+
+msgid "Information:"
+msgstr ""
+
+msgid "Description:"
+msgstr ""
+
+msgid "Enable\\Enable the selected mod"
+msgstr ""
+
+msgid "Disable\\Disable the selected mod"
+msgstr ""
+
+msgid "Unknown author"
+msgstr ""
+
+msgid "by"
+msgstr ""
+
+msgid "Version"
+msgstr ""
+
+msgid "Website"
+msgstr ""
+
+msgid "Changes"
+msgstr ""
+
+msgid "No description."
+msgstr ""
+
+msgid "No changes."
+msgstr ""
+
+msgid "Code battle"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Next"
+msgstr ""
+
+msgid "Previous"
+msgstr ""
+
+msgid "New Folder"
+msgstr ""
+
+msgid "Exercises\\Programming exercises"
+msgstr ""
+
+msgid "Challenges\\Programming challenges"
+msgstr ""
+
+msgid "Missions\\Select mission"
+msgstr ""
+
+msgid "Free game\\Free game without a specific goal"
+msgstr ""
+
+msgid "Code battles\\Program your robot to be the best of them all!"
+msgstr ""
+
+msgid "Custom levels\\Levels from mods created by the users"
+msgstr ""
+
+msgid "SatCom"
+msgstr ""
+
+msgid "Mods\\Mod manager"
+msgstr ""
+
+msgid "Change player\\Change player"
+msgstr ""
+
+msgid "Options\\Preferences"
+msgstr ""
+
+msgid "Restart\\Restart the mission from the beginning"
+msgstr ""
+
+msgid "Save\\Save the current mission"
+msgstr ""
+
+msgid "Load\\Load a saved mission"
+msgstr ""
+
+msgid "\\Return to Colobot: Gold Edition"
+msgstr ""
+
+msgid "Quit\\Quit Colobot: Gold Edition"
+msgstr ""
+
+msgid "<<  Back  \\Back to the previous screen"
+msgstr ""
+
+msgid "+\\Missions with bonus content and optional challenges"
+msgstr ""
+
+msgid "Play\\Start mission!"
+msgstr ""
+
+msgid "Workshop\\Open the workshop to search for mods"
+msgstr ""
+
+msgid "Open Directory\\Open the mods directory"
+msgstr ""
+
+msgid "Apply\\Apply the current mod configuration"
+msgstr ""
+
+msgid ""
+"Up\\Move the selected mod up so it's loaded sooner (mods may overwrite files "
+"from the mods above them)"
+msgstr ""
+
+msgid ""
+"Down\\Move the selected mod down so it's loaded later (mods may overwrite "
+"files from the mods above them)"
+msgstr ""
+
+msgid "Refresh\\Refresh the list of currently installed mods"
+msgstr ""
+
+msgid "Device\\Driver and resolution settings"
+msgstr ""
+
+msgid "Graphics\\Graphics settings"
+msgstr ""
+
+msgid "Game\\Game settings"
+msgstr ""
+
+msgid "Controls\\Keyboard, joystick and mouse settings"
+msgstr ""
+
+msgid "Sound\\Music and game sound volume"
+msgstr ""
+
+msgid "Unit"
+msgstr ""
+
+msgid "Resolution"
+msgstr ""
+
+msgid "Full screen\\Full screen or window mode"
+msgstr ""
+
+msgid "Apply changes\\Activates the changed settings"
+msgstr ""
+
+msgid "Dust\\Dust and dirt on bots and buildings"
+msgstr ""
+
+msgid "Fog\\Fog"
+msgstr ""
+
+msgid "Dynamic lighting\\Mobile light sources"
+msgstr ""
+
+msgid "Number of particles\\Explosions, dust, reflections, etc."
+msgstr ""
+
+msgid "Render distance\\Maximum visibility"
+msgstr ""
+
+msgid "Pause blur\\Blur the background on the pause screen"
+msgstr ""
+
+msgid "Particles in the interface\\Steam clouds and sparks in the interface"
+msgstr ""
+
+msgid "Reflections on the buttons \\Shiny buttons"
+msgstr ""
+
+msgid "Help balloons\\Explain the function of the buttons"
+msgstr ""
+
+msgid "Film sequences\\Films before and after the missions"
+msgstr ""
+
+msgid ""
+"Camera border scrolling\\Scrolling when the mouse touches right or left "
+"border"
+msgstr ""
+
+msgid "Mouse inversion X\\Inversion of the scrolling direction on the X axis"
+msgstr ""
+
+msgid "Mouse inversion Y\\Inversion of the scrolling direction on the Y axis"
+msgstr ""
+
+msgid "Quake at explosions\\The screen shakes at explosions"
+msgstr ""
+
+msgid "Pause in background\\Pause the game when the window is unfocused"
+msgstr ""
+
+msgid ""
+"Mute sounds in background\\Mute all game sounds when the window is unfocused"
+msgstr ""
+
+msgid "Automatic indent\\When program editing"
+msgstr ""
+
+msgid "Big indent\\Indent 2 or 4 spaces per level defined by braces"
+msgstr ""
+
+msgid "Access to solutions\\Show program \"4: Solution\" in the exercises"
+msgstr ""
+
+msgid "Blood\\Display blood when the astronaut is hit"
+msgstr ""
+
+msgid "Autosave\\Enables autosave"
+msgstr ""
+
+msgid "Autosave interval\\How often your game will autosave"
+msgstr ""
+
+msgid "Autosave slots\\How many autosave slots you'll have"
+msgstr ""
+
+msgid "Texture filtering\\Texture filtering"
+msgstr ""
+
+msgid "Mipmap level\\Mipmap level"
+msgstr ""
+
+msgid "Anisotropy level\\Anisotropy level"
+msgstr ""
+
+msgid "MSAA\\Multisample anti-aliasing"
+msgstr ""
+
+msgid "Simple shadows\\Shadows spots on the ground"
+msgstr ""
+
+msgid "Dynamic shadows\\Beautiful shadows!"
+msgstr ""
+
+msgid "Dynamic shadows ++\\Dynamic shadows + self shadowing"
+msgstr ""
+
+msgid "Shadow resolution\\Higher means better range and quality, but slower"
+msgstr ""
+
+msgid ""
+"Vertical Synchronization\\Limits the number of frames per second to display "
+"frequency"
+msgstr ""
+
+msgid "Standard controls\\Standard key functions"
+msgstr ""
+
+msgid "Turn left\\turns the bot to the left"
+msgstr ""
+
+msgid "Turn right\\turns the bot to the right"
+msgstr ""
+
+msgid "Forward\\Moves forward"
+msgstr ""
+
+msgid "Backward\\Moves backward"
+msgstr ""
+
+msgid "Climb\\Increases the power of the jet"
+msgstr ""
+
+msgid "Descend\\Reduces the power of the jet"
+msgstr ""
+
+msgid "Change camera\\Switches between onboard camera and following camera"
+msgstr ""
+
+msgid "Previous object\\Selects the previous object"
+msgstr ""
+
+msgid ""
+"Standard action\\Standard action of the bot (take/grab, shoot, sniff, etc)"
+msgstr ""
+
+msgid "Camera left\\Turns the camera left"
+msgstr ""
+
+msgid "Camera right\\Turns the camera right"
+msgstr ""
+
+msgid "Camera up\\Turns the camera up"
+msgstr ""
+
+msgid "Camera down\\Turns the camera down"
+msgstr ""
+
+msgid "Camera closer\\Moves the camera forward"
+msgstr ""
+
+msgid "Camera back\\Moves the camera backward"
+msgstr ""
+
+msgid ""
+"Alternative camera mode\\Move sideways instead of rotating (in free camera)"
+msgstr ""
+
+msgid "Next object\\Selects the next object"
+msgstr ""
+
+msgid "Select the astronaut\\Selects the astronaut"
+msgstr ""
+
+msgid "Quit\\Quit the current mission or exercise"
+msgstr ""
+
+msgid "Instructions\\Shows the instructions for the current mission"
+msgstr ""
+
+msgid "Programming help\\Gives more detailed help with programming"
+msgstr ""
+
+msgid "Origin of last message\\Shows where the last message was sent from"
+msgstr ""
+
+msgid "Lower speed\\Decrease speed by half"
+msgstr ""
+
+msgid "Standard speed\\Reset speed to normal"
+msgstr ""
+
+msgid "Higher speed\\Doubles speed"
+msgstr ""
+
+msgid "Quick save\\Immediately save game"
+msgstr ""
+
+msgid "Quick load\\Immediately load game"
+msgstr ""
+
+msgid "Pause\\Pause the game without opening menu"
+msgstr ""
+
+msgid "Cheat console\\Show cheat console"
+msgstr ""
+
+msgid "Sound effects:\\Volume of engines, voice, shooting, etc."
+msgstr ""
+
+msgid "Background sound:\\Volume of audio tracks"
+msgstr ""
+
+msgid "Lowest\\Minimum graphic quality (highest frame rate)"
+msgstr ""
+
+msgid "Normal\\Normal graphic quality"
+msgstr ""
+
+msgid "Highest\\Highest graphic quality (lowest frame rate)"
+msgstr ""
+
+msgid "Mute\\No sound"
+msgstr ""
+
+msgid "Normal\\Normal sound volume"
+msgstr ""
+
+msgid ""
+"Access to solution\\Shows the solution (detailed instructions for missions)"
+msgstr ""
+
+msgid "Invert\\Invert values on this axis"
+msgstr ""
+
+msgid "Space Programmer\\Disables radio-control"
+msgstr ""
+
+msgid "Space Researcher\\Disables using all previously researched technologies"
+msgstr ""
+
+msgid "Space Explorer\\Disables astronaut abilities"
+msgstr ""
+
+msgid "\\New player name"
+msgstr ""
+
+msgid "OK\\Choose the selected player"
+msgstr ""
+
+msgid "Delete player\\Deletes the player from the list"
+msgstr ""
+
+msgid "Player name"
+msgstr ""
+
+msgid "Save\\Saves the current mission"
+msgstr ""
+
+msgid "Load\\Loads the selected mission"
+msgstr ""
+
+msgid "List of saved missions"
+msgstr ""
+
+msgid "Filename:"
+msgstr ""
+
+msgid "Mission name"
+msgstr ""
+
+msgid "Photography"
+msgstr ""
+
+msgid "Delete\\Deletes the selected file"
+msgstr ""
+
+msgid "Appearance\\Choose your appearance"
+msgstr ""
+
+msgid "Standard\\Standard appearance settings"
+msgstr ""
+
+msgid "Head\\Face and hair"
+msgstr ""
+
+msgid "Suit\\Astronaut suit"
+msgstr ""
+
+msgid "\\Turn left"
+msgstr ""
+
+msgid "\\Turn right"
+msgstr ""
+
+msgid "Red"
+msgstr ""
+
+msgid "Green"
+msgstr ""
+
+msgid "Blue"
+msgstr ""
+
+msgid "\\Face 1"
+msgstr ""
+
+msgid "\\Face 2"
+msgstr ""
+
+msgid "\\Face 3"
+msgstr ""
+
+msgid "\\Face 4"
+msgstr ""
+
+msgid "\\No eyeglasses"
+msgstr ""
+
+msgid "\\Eyeglasses 1"
+msgstr ""
+
+msgid "\\Eyeglasses 2"
+msgstr ""
+
+msgid "\\Eyeglasses 3"
+msgstr ""
+
+msgid "\\Eyeglasses 4"
+msgstr ""
+
+msgid "\\Eyeglasses 5"
+msgstr ""
+
+msgid "Previous selection (\\key desel;)"
+msgstr ""
+
+msgid "Turn left (\\key left;)"
+msgstr ""
+
+msgid "Turn right (\\key right;)"
+msgstr ""
+
+msgid "Forward (\\key up;)"
+msgstr ""
+
+msgid "Backward (\\key down;)"
+msgstr ""
+
+msgid "Up (\\key gup;)"
+msgstr ""
+
+msgid "Down (\\key gdown;)"
+msgstr ""
+
+msgid "Grab or drop (\\key action;)"
+msgstr ""
+
+msgid "..in front"
+msgstr ""
+
+msgid "..behind"
+msgstr ""
+
+msgid "..power cell"
+msgstr ""
+
+msgid "Instructions for the mission (\\key help;)"
+msgstr ""
+
+msgid "Take off to finish the mission"
+msgstr ""
+
+msgid "Destroy"
+msgstr ""
+
+msgid "Build a derrick"
+msgstr ""
+
+msgid "Build a power station"
+msgstr ""
+
+msgid "Build a bot factory"
+msgstr ""
+
+msgid "Build a repair center"
+msgstr ""
+
+msgid "Build a converter"
+msgstr ""
+
+msgid "Build a defense tower"
+msgstr ""
+
+msgid "Build a research center"
+msgstr ""
+
+msgid "Build a radar station"
+msgstr ""
+
+msgid "Build a power cell factory"
+msgstr ""
+
+msgid "Build an autolab"
+msgstr ""
+
+msgid "Build a nuclear power plant"
+msgstr ""
+
+msgid "Build a lightning conductor"
+msgstr ""
+
+msgid "Build a exchange post"
+msgstr ""
+
+msgid "Build a vault"
+msgstr ""
+
+msgid "Show if the ground is flat"
+msgstr ""
+
+msgid "Plant a flag"
+msgstr ""
+
+msgid "Remove a flag"
+msgstr ""
+
+msgid "\\Blue flags"
+msgstr ""
+
+msgid "\\Red flags"
+msgstr ""
+
+msgid "\\Green flags"
+msgstr ""
+
+msgid "\\Yellow flags"
+msgstr ""
+
+msgid "\\Violet flags"
+msgstr ""
+
+msgid "Build a winged grabber"
+msgstr ""
+
+msgid "Build a tracked grabber"
+msgstr ""
+
+msgid "Build a wheeled grabber"
+msgstr ""
+
+msgid "Build a legged grabber"
+msgstr ""
+
+msgid "Build a winged shooter"
+msgstr ""
+
+msgid "Build a tracked shooter"
+msgstr ""
+
+msgid "Build a wheeled shooter"
+msgstr ""
+
+msgid "Build a legged shooter"
+msgstr ""
+
+msgid "Build a winged orga shooter"
+msgstr ""
+
+msgid "Build a tracked orga shooter"
+msgstr ""
+
+msgid "Build a wheeled orga shooter"
+msgstr ""
+
+msgid "Build a legged orga shooter"
+msgstr ""
+
+msgid "Build a winged sniffer"
+msgstr ""
+
+msgid "Build a tracked sniffer"
+msgstr ""
+
+msgid "Build a wheeled sniffer"
+msgstr ""
+
+msgid "Build a legged sniffer"
+msgstr ""
+
+msgid "Build a winged builder"
+msgstr ""
+
+msgid "Build a tracked builder"
+msgstr ""
+
+msgid "Build a wheeled builder"
+msgstr ""
+
+msgid "Build a legged builder"
+msgstr ""
+
+msgid "Build a thumper"
+msgstr ""
+
+msgid "Build a phazer shooter"
+msgstr ""
+
+msgid "Build a recycler"
+msgstr ""
+
+msgid "Build a shielder"
+msgstr ""
+
+msgid "Build a subber"
+msgstr ""
+
+msgid "Build a target bot"
+msgstr ""
+
+msgid "Run research program for tracked bots"
+msgstr ""
+
+msgid "Run research program for winged bots"
+msgstr ""
+
+msgid "Run research program for thumper"
+msgstr ""
+
+msgid "Run research program for shooter"
+msgstr ""
+
+msgid "Run research program for defense tower"
+msgstr ""
+
+msgid "Run research program for phazer shooter"
+msgstr ""
+
+msgid "Run research program for shielder"
+msgstr ""
+
+msgid "Run research program for nuclear power"
+msgstr ""
+
+msgid "Run research program for legged bots"
+msgstr ""
+
+msgid "Run research program for orga shooter"
+msgstr ""
+
+msgid "Run research program for builder"
+msgstr ""
+
+msgid "Run research program for target bot"
+msgstr ""
+
+msgid "Return to start"
+msgstr ""
+
+msgid "Sniff (\\key action;)"
+msgstr ""
+
+msgid "Thump (\\key action;)"
+msgstr ""
+
+msgid "Shoot (\\key action;)"
+msgstr ""
+
+msgid "Explode (\\key action;)"
+msgstr ""
+
+msgid "Build (\\key action;)"
+msgstr ""
+
+msgid "Recycle (\\key action;)"
+msgstr ""
+
+msgid "Extend shield (\\key action;)"
+msgstr ""
+
+msgid "Withdraw shield (\\key action;)"
+msgstr ""
+
+msgid "Shield radius"
+msgstr ""
+
+msgid "Delete mark"
+msgstr ""
+
+msgid "Execute the selected program"
+msgstr ""
+
+msgid "Edit the selected program"
+msgstr ""
+
+msgid "Add new program"
+msgstr ""
+
+msgid "Remove selected program"
+msgstr ""
+
+msgid "Clone selected program"
+msgstr ""
+
+msgid "Move selected program up"
+msgstr ""
+
+msgid "Move selected program down"
+msgstr ""
+
+msgid "\\SatCom on standby"
+msgstr ""
+
+msgid "Destroy the building"
+msgstr ""
+
+msgid "Energy level"
+msgstr ""
+
+msgid "Shield level"
+msgstr ""
+
+msgid "Jet temperature"
+msgstr ""
+
+msgid "Still working ..."
+msgstr ""
+
+msgid "Number of insects detected"
+msgstr ""
+
+msgid "Transmitted information"
+msgstr ""
+
+msgid "Zoom mini-map"
+msgstr ""
+
+msgid "Camera (\\key camera;)"
+msgstr ""
+
+msgid "Help about selected object"
+msgstr ""
+
+msgid "Show the solution"
+msgstr ""
+
+msgid "Switch bots <-> buildings"
+msgstr ""
+
+msgid "Show the range"
+msgstr ""
+
+msgid "\\Raise the pencil"
+msgstr ""
+
+msgid "\\Use the black pencil"
+msgstr ""
+
+msgid "\\Use the yellow pencil"
+msgstr ""
+
+msgid "\\Use the orange pencil"
+msgstr ""
+
+msgid "\\Use the red pencil"
+msgstr ""
+
+msgid "\\Use the purple pencil"
+msgstr ""
+
+msgid "\\Use the blue pencil"
+msgstr ""
+
+msgid "\\Use the green pencil"
+msgstr ""
+
+msgid "\\Use the brown pencil"
+msgstr ""
+
+msgid "\\Start recording"
+msgstr ""
+
+msgid "\\Stop recording"
+msgstr ""
+
+msgid "Show the place"
+msgstr ""
+
+msgid "Continue"
+msgstr ""
+
+msgid "Command line"
+msgstr ""
+
+msgid "Game speed"
+msgstr ""
+
+msgid "Back"
+msgstr ""
+
+msgid "Forward"
+msgstr ""
+
+msgid "Home"
+msgstr ""
+
+msgid "Copy"
+msgstr ""
+
+msgid "Size 1"
+msgstr ""
+
+msgid "Size 2"
+msgstr ""
+
+msgid "Size 3"
+msgstr ""
+
+msgid "Size 4"
+msgstr ""
+
+msgid "Size 5"
+msgstr ""
+
+msgid "Instructions from Houston"
+msgstr ""
+
+msgid "Satellite report"
+msgstr ""
+
+msgid "Programs dispatched by Houston"
+msgstr ""
+
+msgid "List of objects"
+msgstr ""
+
+msgid "Programming help"
+msgstr ""
+
+msgid "Solution"
+msgstr ""
+
+msgid "OK\\Close program editor and return to game"
+msgstr ""
+
+msgid "Cancel\\Cancel all changes"
+msgstr ""
+
+msgid "Clone program"
+msgstr ""
+
+msgid "Open (Ctrl+O)"
+msgstr ""
+
+msgid "Save (Ctrl+S)"
+msgstr ""
+
+msgid "Undo (Ctrl+Z)"
+msgstr ""
+
+msgid "Cut (Ctrl+X)"
+msgstr ""
+
+msgid "Copy (Ctrl+C)"
+msgstr ""
+
+msgid "Paste (Ctrl+V)"
+msgstr ""
+
+msgid "Font size"
+msgstr ""
+
+msgid "Instructions (\\key help;)"
+msgstr ""
+
+msgid "Programming help (\\key prog;)"
+msgstr ""
+
+msgid "Compile"
+msgstr ""
+
+msgid "Execute/stop"
+msgstr ""
+
+msgid "Pause/continue"
+msgstr ""
+
+msgid "One step"
+msgstr ""
+
+msgid "Gantry crane"
+msgstr ""
+
+msgid "Spaceship"
+msgstr ""
+
+msgid "Derrick"
+msgstr ""
+
+msgid "Bot factory"
+msgstr ""
+
+msgid "Repair center"
+msgstr ""
+
+msgid "Destroyer"
+msgstr ""
+
+msgid "Power station"
+msgstr ""
+
+msgid "Converts ore to titanium"
+msgstr ""
+
+msgid "Defense tower"
+msgstr ""
+
+msgid "Nest"
+msgstr ""
+
+msgid "Research center"
+msgstr ""
+
+msgid "Radar station"
+msgstr ""
+
+msgid "Information exchange post"
+msgstr ""
+
+msgid "Power cell factory"
+msgstr ""
+
+msgid "Autolab"
+msgstr ""
+
+msgid "Nuclear power station"
+msgstr ""
+
+msgid "Lightning conductor"
+msgstr ""
+
+msgid "Vault"
+msgstr ""
+
+msgid "Houston Mission Control"
+msgstr ""
+
+msgid "Target"
+msgstr ""
+
+msgid "Start"
+msgstr ""
+
+msgid "Finish"
+msgstr ""
+
+msgid "Titanium ore"
+msgstr ""
+
+msgid "Uranium ore"
+msgstr ""
+
+msgid "Organic matter"
+msgstr ""
+
+msgid "Titanium"
+msgstr ""
+
+msgid "Power cell"
+msgstr ""
+
+msgid "Nuclear power cell"
+msgstr ""
+
+msgid "Black box"
+msgstr ""
+
+msgid "Key A"
+msgstr ""
+
+msgid "Key B"
+msgstr ""
+
+msgid "Key C"
+msgstr ""
+
+msgid "Key D"
+msgstr ""
+
+msgid "Explosive"
+msgstr ""
+
+msgid "Fixed mine"
+msgstr ""
+
+msgid "Survival kit"
+msgstr ""
+
+msgid "Checkpoint"
+msgstr ""
+
+msgid "Blue flag"
+msgstr ""
+
+msgid "Red flag"
+msgstr ""
+
+msgid "Green flag"
+msgstr ""
+
+msgid "Yellow flag"
+msgstr ""
+
+msgid "Violet flag"
+msgstr ""
+
+msgid "Energy deposit (site for power station)"
+msgstr ""
+
+msgid "Uranium deposit (site for derrick)"
+msgstr ""
+
+msgid "Found key A (site for derrick)"
+msgstr ""
+
+msgid "Found key B (site for derrick)"
+msgstr ""
+
+msgid "Found key C (site for derrick)"
+msgstr ""
+
+msgid "Found key D (site for derrick)"
+msgstr ""
+
+msgid "Titanium deposit (site for derrick)"
+msgstr ""
+
+msgid "Practice bot"
+msgstr ""
+
+msgid "Winged grabber"
+msgstr ""
+
+msgid "Tracked grabber"
+msgstr ""
+
+msgid "Wheeled grabber"
+msgstr ""
+
+msgid "Legged grabber"
+msgstr ""
+
+msgid "Winged builder"
+msgstr ""
+
+msgid "Tracked builder"
+msgstr ""
+
+msgid "Wheeled builder"
+msgstr ""
+
+msgid "Legged builder"
+msgstr ""
+
+msgid "Winged shooter"
+msgstr ""
+
+msgid "Tracked shooter"
+msgstr ""
+
+msgid "Wheeled shooter"
+msgstr ""
+
+msgid "Legged shooter"
+msgstr ""
+
+msgid "Winged orga shooter"
+msgstr ""
+
+msgid "Tracked orga shooter"
+msgstr ""
+
+msgid "Wheeled orga shooter"
+msgstr ""
+
+msgid "Legged orga shooter"
+msgstr ""
+
+msgid "Winged sniffer"
+msgstr ""
+
+msgid "Tracked sniffer"
+msgstr ""
+
+msgid "Wheeled sniffer"
+msgstr ""
+
+msgid "Legged sniffer"
+msgstr ""
+
+msgid "Thumper"
+msgstr ""
+
+msgid "Phazer shooter"
+msgstr ""
+
+msgid "Recycler"
+msgstr ""
+
+msgid "Shielder"
+msgstr ""
+
+msgid "Subber"
+msgstr ""
+
+msgid "Target bot"
+msgstr ""
+
+msgid "Drawer bot"
+msgstr ""
+
+msgid "Engineer"
+msgstr ""
+
+msgid "Robbie"
+msgstr ""
+
+msgid "Alien Queen"
+msgstr ""
+
+msgid "Ant"
+msgstr ""
+
+msgid "Spider"
+msgstr ""
+
+msgid "Wasp"
+msgstr ""
+
+msgid "Worm"
+msgstr ""
+
+msgid "Egg"
+msgstr ""
+
+msgid "Wreckage"
+msgstr ""
+
+msgid "Ruin"
+msgstr ""
+
+msgid "Waste"
+msgstr ""
+
+msgid "Spaceship ruin"
+msgstr ""
+
+msgid "Remains of Apollo mission"
+msgstr ""
+
+msgid "Lunar Roving Vehicle"
+msgstr ""
+
+msgid "Internal error - tell the developers"
+msgstr ""
+
+msgid "Unknown command"
+msgstr ""
+
+msgid "This object is currently busy"
+msgstr ""
+
+msgid "Impossible when flying"
+msgstr ""
+
+msgid "Already carrying something"
+msgstr ""
+
+msgid "Nothing to grab"
+msgstr ""
+
+msgid "Impossible when moving"
+msgstr ""
+
+msgid "Place occupied"
+msgstr ""
+
+msgid "You can not carry a radioactive object"
+msgstr ""
+
+msgid "You can not carry an object under water"
+msgstr ""
+
+msgid "Nothing to drop"
+msgstr ""
+
+msgid "Impossible under water"
+msgstr ""
+
+msgid "Titanium too far away"
+msgstr ""
+
+msgid "Titanium too close"
+msgstr ""
+
+msgid "No titanium around"
+msgstr ""
+
+msgid "Ground not flat enough"
+msgstr ""
+
+msgid "Flat ground not large enough"
+msgstr ""
+
+msgid "Too close to space ship"
+msgstr ""
+
+msgid "Too close to a building"
+msgstr ""
+
+msgid "Can not produce this object in this mission"
+msgstr ""
+
+msgid "Can not produce not researched object"
+msgstr ""
+
+msgid "Not enough energy"
+msgstr ""
+
+msgid "Nothing to recycle"
+msgstr ""
+
+msgid "No more energy"
+msgstr ""
+
+msgid "Error in instruction move"
+msgstr ""
+
+msgid "Goto: inaccessible destination"
+msgstr ""
+
+msgid "Goto: destination occupied"
+msgstr ""
+
+msgid "No titanium ore to convert"
+msgstr ""
+
+msgid "No ore in the subsoil"
+msgstr ""
+
+msgid "No energy in the subsoil"
+msgstr ""
+
+msgid "No power cell"
+msgstr ""
+
+msgid "Inappropriate cell type"
+msgstr ""
+
+msgid "Research program already performed"
+msgstr ""
+
+msgid "Not enough energy yet"
+msgstr ""
+
+msgid "No titanium to transform"
+msgstr ""
+
+msgid "Transforms only titanium"
+msgstr ""
+
+msgid "Doors blocked by a robot or another object"
+msgstr ""
+
+msgid "You must get on the spaceship to take off"
+msgstr ""
+
+msgid "Nothing to analyze"
+msgstr ""
+
+msgid "Inappropriate sample"
+msgstr ""
+
+msgid "Analysis already performed"
+msgstr ""
+
+msgid "No uranium to transform"
+msgstr ""
+
+msgid "Transforms only uranium"
+msgstr ""
+
+msgid "No titanium"
+msgstr ""
+
+msgid "Object too close"
+msgstr ""
+
+msgid "No information exchange post within range"
+msgstr ""
+
+msgid "Program infected by a virus"
+msgstr ""
+
+msgid "Infected by a virus; temporarily out of order"
+msgstr ""
+
+msgid "Impossible when swimming"
+msgstr ""
+
+msgid "Impossible when carrying an object"
+msgstr ""
+
+msgid "Too many flags of this color (maximum 5)"
+msgstr ""
+
+msgid "Too close to an existing flag"
+msgstr ""
+
+msgid "No flag nearby"
+msgstr ""
+
+msgid "Not found anything to destroy"
+msgstr ""
+
+msgid "Inappropriate object"
+msgstr ""
+
+msgid ""
+"The mission is not accomplished yet (press \\key help; for more details)"
+msgstr ""
+
+msgid "Bot destroyed"
+msgstr ""
+
+msgid "Building destroyed"
+msgstr ""
+
+msgid "Unable to control enemy objects"
+msgstr ""
+
+msgid "Inappropriate bot"
+msgstr ""
+
+msgid "Quicksave slot not found"
+msgstr ""
+
+msgid "Building completed"
+msgstr ""
+
+msgid "Titanium available"
+msgstr ""
+
+msgid "Research program completed"
+msgstr ""
+
+msgid "Plans for tracked robots available"
+msgstr ""
+
+msgid "You can fly with the keys (\\key gup;) and (\\key gdown;)"
+msgstr ""
+
+msgid "Plans for thumper available"
+msgstr ""
+
+msgid "Plans for shooter available"
+msgstr ""
+
+msgid "Plans for defense tower available"
+msgstr ""
+
+msgid "Plans for phazer shooter available"
+msgstr ""
+
+msgid "Plans for shielder available"
+msgstr ""
+
+msgid "Plans for nuclear power plant available"
+msgstr ""
+
+msgid "Plans for builder available"
+msgstr ""
+
+msgid "New bot available"
+msgstr ""
+
+msgid "Analysis performed"
+msgstr ""
+
+msgid "Power cell available"
+msgstr ""
+
+msgid "Nuclear power cell available"
+msgstr ""
+
+msgid "You found a usable object"
+msgstr ""
+
+msgid "Found a site for power station"
+msgstr ""
+
+msgid "Found a site for a derrick"
+msgstr ""
+
+msgid "<<< Well done; mission accomplished >>>"
+msgstr ""
+
+msgid "<<< Sorry; mission failed >>>"
+msgstr ""
+
+msgid "Current mission saved"
+msgstr ""
+
+msgid "Alien Queen killed"
+msgstr ""
+
+msgid "Ant fatally wounded"
+msgstr ""
+
+msgid "Wasp fatally wounded"
+msgstr ""
+
+msgid "Worm fatally wounded"
+msgstr ""
+
+msgid "Spider fatally wounded"
+msgstr ""
+
+msgid "Press \\key help; to read instructions on your SatCom"
+msgstr ""
+
+#, c-format
+msgid "<<< Team %s finished! >>>"
+msgstr ""
+
+#, c-format
+msgid "<<< Team %s lost! >>>"
+msgstr ""
+
+#, c-format
+msgid "<<< Team %s recieved %d points >>>"
+msgstr ""
+
+msgid "Opening bracket missing"
+msgstr ""
+
+msgid "Closing bracket missing"
+msgstr ""
+
+msgid "The expression must return a boolean value"
+msgstr ""
+
+msgid "Variable not declared"
+msgstr ""
+
+msgid "Assignment impossible"
+msgstr ""
+
+msgid "Semicolon terminator missing"
+msgstr ""
+
+msgid "Instruction \"case\" outside a block \"switch\""
+msgstr ""
+
+msgid "Instructions after the final closing brace"
+msgstr ""
+
+msgid "End of block missing"
+msgstr ""
+
+msgid "Instruction \"else\" without corresponding \"if\""
+msgstr ""
+
+msgid "Opening brace missing"
+msgstr ""
+
+msgid "Wrong type for the assignment"
+msgstr ""
+
+msgid "A variable can not be declared twice"
+msgstr ""
+
+msgid "The types of the two operands are incompatible"
+msgstr ""
+
+msgid "Unknown function"
+msgstr ""
+
+msgid "Sign \" : \" missing"
+msgstr ""
+
+msgid "Keyword \"while\" missing"
+msgstr ""
+
+msgid "Instruction \"break\" outside a loop"
+msgstr ""
+
+msgid "A label must be followed by \"for\"; \"while\"; \"do\" or \"switch\""
+msgstr ""
+
+msgid "This label does not exist"
+msgstr ""
+
+msgid "Instruction \"case\" missing"
+msgstr ""
+
+msgid "Number missing"
+msgstr ""
+
+msgid "Void parameter"
+msgstr ""
+
+msgid "Type declaration missing"
+msgstr ""
+
+msgid "Variable name missing"
+msgstr ""
+
+msgid "Function name missing"
+msgstr ""
+
+msgid "Too many parameters"
+msgstr ""
+
+msgid "Function already exists"
+msgstr ""
+
+msgid "Parameters missing"
+msgstr ""
+
+msgid "No function with this name accepts this kind of parameter"
+msgstr ""
+
+msgid "No function with this name accepts this number of parameters"
+msgstr ""
+
+msgid "This is not a member of this class"
+msgstr ""
+
+msgid "This object is not a member of a class"
+msgstr ""
+
+msgid "Appropriate constructor missing"
+msgstr ""
+
+msgid "This class already exists"
+msgstr ""
+
+msgid "\" ] \" missing"
+msgstr ""
+
+msgid "Reserved keyword of CBOT language"
+msgstr ""
+
+msgid "Bad argument for \"new\""
+msgstr ""
+
+msgid "\" [ \" expected"
+msgstr ""
+
+msgid "String missing"
+msgstr ""
+
+msgid "Incorrect index type"
+msgstr ""
+
+msgid "Private element"
+msgstr ""
+
+msgid "Public required"
+msgstr ""
+
+msgid "Expression expected after ="
+msgstr ""
+
+msgid "Ambiguous call to overloaded function"
+msgstr ""
+
+msgid "Function needs return type \"void\""
+msgstr ""
+
+msgid "Class name expected"
+msgstr ""
+
+msgid "Non-void function needs \"return;\""
+msgstr ""
+
+msgid "This parameter needs a default value"
+msgstr ""
+
+msgid "Missing end quote"
+msgstr ""
+
+msgid "Unknown escape sequence"
+msgstr ""
+
+msgid "Octal value out of range"
+msgstr ""
+
+msgid "Missing hex digits after escape sequence"
+msgstr ""
+
+msgid "Hex value out of range"
+msgstr ""
+
+msgid "Invalid universal character name"
+msgstr ""
+
+msgid "Empty character constant"
+msgstr ""
+
+msgid "Duplicate label in switch"
+msgstr "switch 标签重复"
+
+msgid "Dividing by zero"
+msgstr "不可除以零"
+
+msgid "Variable not initialized"
+msgstr ""
+
+msgid "Negative value rejected by \"throw\""
+msgstr ""
+
+msgid "The function returned no value"
+msgstr "此函数无返回值"
+
+msgid "No function running"
+msgstr ""
+
+msgid "Calling an unknown function"
+msgstr ""
+
+msgid "This class does not exist"
+msgstr ""
+
+msgid "Unknown Object"
+msgstr "未知对象"
+
+msgid "Operation impossible with value \"nan\""
+msgstr ""
+
+msgid "Access beyond array limit"
+msgstr "数组访问超限"
+
+msgid "Stack overflow"
+msgstr "栈上溢"
+
+msgid "Illegal object"
+msgstr "非法对象"
+
+msgid "Can't open file"
+msgstr "无法打开文件"
+
+msgid "File not open"
+msgstr "文件未打开"
+
+msgid "Read error"
+msgstr "读错误"
+
+msgid "Write error"
+msgstr "写错误"
+
+msgid "Button %1"
+msgstr "按钮 %1"
+
+#, c-format
+msgid "You have to use \"%1$s\" at least once in this exercise (used: %2$d)"
+msgid_plural ""
+"You have to use \"%1$s\" at least %3$d times in this exercise (used: %2$d)"
+msgstr[0] ""
+
+#, c-format
+msgid "You cannot use \"%s\" in this exercise (used: %d)"
+msgstr ""
+
+#, c-format
+msgid "You have to use \"%1$s\" at most once in this exercise (used: %2$d)"
+msgid_plural ""
+"You have to use \"%1$s\" at most %3$d times in this exercise (used: %2$d)"
+msgstr[0] ""
