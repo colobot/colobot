@@ -45,6 +45,7 @@
 #include "object/object_manager.h"
 
 #include "sound/sound.h"
+#include <cstddef>
 #ifdef OPENAL_SOUND
     #include "sound/oalsound/alsound.h"
 #endif
@@ -1830,6 +1831,10 @@ char CApplication::GetLanguageChar() const
             langChar = 'B';
             break;
 
+        case LANGUAGE_SIMPLIFIED_CHINESE:
+            langChar = 'S';
+            break;
+
     }
     return langChar;
 }
@@ -1890,6 +1895,10 @@ void CApplication::SetLanguage(Language language)
             {
                 m_language = LANGUAGE_PORTUGUESE_BRAZILIAN;
             }
+            else if (strncmp(envLang,"zh_CN",2) == 0)
+            {
+                m_language = LANGUAGE_SIMPLIFIED_CHINESE;
+            }
             else
             {
                 GetLogger()->Warn("Environment locale ('%%') is not supported, setting default language", envLang);
@@ -1931,6 +1940,10 @@ void CApplication::SetLanguage(Language language)
 
         case LANGUAGE_PORTUGUESE_BRAZILIAN:
             locale = "pt_BR.utf8";
+            break;
+
+        case LANGUAGE_SIMPLIFIED_CHINESE:
+            locale = "zh_CN.utf8";
             break;
     }
 

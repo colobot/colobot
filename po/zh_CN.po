@@ -17,107 +17,30 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Poedit 3.4.2\n"
 
-msgid "Colobot rules!"
-msgstr "Colobot 统治一切！"
-
-msgid "Maximize"
-msgstr "最大化"
-
-msgid "Minimize"
-msgstr "最小化"
-
-msgid "Normal size"
-msgstr "正常大小"
-
-msgid "Close"
-msgstr "关闭"
-
-msgid "Program editor"
-msgstr "程序编辑器"
-
-msgid "New"
-msgstr "新建"
-
-msgid "Player"
-msgstr "玩家"
-
-msgid "New ..."
-msgstr "新建..."
-
 msgid " or "
 msgstr "或"
 
-msgid "Colobot: Gold Edition"
-msgstr "Colobot: 黄金版"
+msgid "\" [ \" expected"
+msgstr "需要 \" [ \""
 
-msgid "Programming exercises"
-msgstr "编程练习"
+msgid "\" ] \" missing"
+msgstr "缺少 \" ] \""
 
-msgid "Challenges"
-msgstr "挑战"
+#, c-format
+msgid "%s: %d pts"
+msgstr "%s: %d 分"
 
-msgid "Missions"
-msgstr "任务"
+msgid "+\\Missions with bonus content and optional challenges"
+msgstr "+\\有附加内容与可选挑战的任务"
 
-msgid "Free game"
-msgstr "自由游玩"
+msgid "..behind"
+msgstr "..后方"
 
-msgid "User levels"
-msgstr "用户关卡"
+msgid "..in front"
+msgstr "..前方"
 
-msgid "Code battles"
-msgstr "代码之战"
-
-msgid "Options"
-msgstr "设置"
-
-msgid "Player's name"
-msgstr "玩家名称"
-
-msgid "Customize your appearance"
-msgstr "自定义你的外观"
-
-msgid "Save the current mission"
-msgstr "保存当前任务"
-
-msgid "Load a saved mission"
-msgstr "加载已保存任务"
-
-msgid "Missions+"
-msgstr "任务+"
-
-msgid "Mods"
-msgstr "模组"
-
-msgid "Chapters:"
-msgstr "章节："
-
-msgid "Planets:"
-msgstr "星球："
-
-msgid "Custom levels:"
-msgstr "自定义关卡："
-
-msgid "Levels in this chapter:"
-msgstr "此章节中的关卡："
-
-msgid "Exercises in the chapter:"
-msgstr "此章节中的练习："
-
-msgid "Challenges in the chapter:"
-msgstr "此章节中的挑战："
-
-msgid "Missions on this planet:"
-msgstr "此章节中的任务："
-
-msgid "Free game on this planet:"
-msgstr "此章节中的自由游戏："
-
-msgid "Summary:"
-msgstr "总计："
-
-msgid "Resolution:"
-msgstr "分辨率："
+msgid "..power cell"
+msgstr "..动力电池"
 
 msgid "1) First click on the key you want to redefine."
 msgstr "1) 首先点击要重新定义的按键。"
@@ -125,402 +48,98 @@ msgstr "1) 首先点击要重新定义的按键。"
 msgid "2) Then press the key you want to use instead."
 msgstr "2) 然后按下你想要使用的按键。"
 
-msgid "Face type:"
-msgstr "脸型："
+msgid "<<  Back  \\Back to the previous screen"
+msgstr "<<  返回  \\返回上一界面"
 
-msgid "Eyeglasses:"
-msgstr "眼镜："
+msgid "<<< Sorry; mission failed >>>"
+msgstr "<<< 抱歉；任务失败 >>>"
 
-msgid "Hair color:"
-msgstr "发色："
+#, c-format
+msgid "<<< Team %s finished! >>>"
+msgstr "<<< 队伍 %s 已完成！ >>>"
 
-msgid "Suit color:"
-msgstr "套装色："
+#, c-format
+msgid "<<< Team %s lost! >>>"
+msgstr "<<< 队伍 %s 输了！ >>>"
 
-msgid "Strip color:"
-msgstr "条纹色："
+#, c-format
+msgid "<<< Team %s recieved %d points >>>"
+msgstr "<<< 队伍 %s 获得 %d 分 >>>"
+
+msgid "<<< Well done; mission accomplished >>>"
+msgstr "<<< 干得好；任务完成 >>>"
+
+msgid "A label must be followed by \"for\"; \"while\"; \"do\" or \"switch\""
+msgstr "标签后必须有 \"for\" \"while\" \"do\" 或 \"switch\""
+
+msgid "A variable can not be declared twice"
+msgstr "不可重复声明变量"
 
 msgid "Abort\\Abort the current mission"
 msgstr "放弃\\放弃当前任务"
 
-msgid "Continue\\Continue the current mission"
-msgstr "继续\\继续当前任务"
-
-msgid "Do you really want to destroy the selected building?"
-msgstr "真的要摧毁所选建筑吗？"
-
-#, c-format
-msgid "Do you want to delete %s's saved games?"
-msgstr "要删除 %s 的已保存游戏吗？"
-
-msgid "Yes"
-msgstr "是"
-
-msgid "No"
-msgstr "否"
-
-msgid "LOADING"
-msgstr "加载中"
-
-msgid "OK"
-msgstr "完成"
-
-msgid "No userlevels installed!"
-msgstr "未安装用户关卡！"
-
-msgid "This menu is for userlevels from mods, but you didn't install any"
-msgstr "此菜单列出来自模组的用户关卡，但你还未安装"
-
-msgid "Could not open the file explorer!"
-msgstr "无法打开文件浏览器！"
-
-#, c-format
-msgid "The path %s could not be opened in a file explorer."
-msgstr "无法在文件浏览器中打开路径 %s。"
-
-msgid "Could not open the web browser!"
-msgstr "无法打开网页浏览器！"
-
-#, c-format
-msgid "The address %s could not be opened in a web browser."
-msgstr "无法在网页浏览器中打开地址 %s。"
-
-msgid "There are unsaved changes. Do you want to save them before leaving?"
-msgstr "有未保存的更改。要在离开前保存吗？"
-
-msgid "Keyword help(\\key cbot;)"
-msgstr "关键词帮助(\\key cbot;)"
-
-msgid "Compilation ok (0 errors)"
-msgstr "编译完成（无错误）"
-
-msgid "Program finished"
-msgstr "程序执行结束"
-
-msgid "Program cloned"
-msgstr "程序已复制"
-
-msgid "This program is read-only, clone it to edit"
-msgstr "此程序是只读的，复制以编辑"
-
-msgid "This is example code that cannot be run directly"
-msgstr "这是示例代码，不可直接运行"
-
-msgid "Open"
-msgstr "打开"
-
-msgid "Save"
-msgstr "保存"
-
-#, c-format
-msgid "Folder: %s"
-msgstr "文件夹：%s"
-
-msgid "Name:"
-msgstr "名称："
-
-msgid "Folder:"
-msgstr "文件夹："
-
-msgid "Private\\Private folder"
-msgstr "私有\\私有文件夹"
-
-msgid "Public\\Common folder"
-msgstr "公开\\公共文件夹"
-
-msgid "Overwrite existing file?"
-msgstr "覆盖现有文件吗？"
-
-msgid "Select Folder"
-msgstr "选择文件夹"
-
-msgid "Original game developed by:"
-msgstr "原游戏开发者："
-
-msgid "epsitec.com"
-msgstr "epsitec.com"
-
-msgid "Gold Edition development by:"
-msgstr "黄金版开发者："
-
-msgid "colobot.info"
-msgstr "colobot.info"
-
-msgid "Recorder"
-msgstr "记录器"
-
-msgid "Starting..."
-msgstr "启动中..."
-
-msgid "Processing level file"
-msgstr "正在处理关卡文件"
-
-msgid "Loading basic level settings"
-msgstr "正在加载基本关卡设置"
-
-msgid "Loading music"
-msgstr "正在加载音乐"
-
-msgid "Loading terrain"
-msgstr "正在加载地形"
-
-msgid "Loading objects"
-msgstr "正在加载物品"
-
-msgid "Restoring saved objects"
-msgstr "正在恢复已保存物品"
-
-msgid "Restoring CBot execution state"
-msgstr "正在恢复 CBot 执行状态"
-
-msgid "Loading finished!"
-msgstr "加载完毕！"
-
-msgid "Terrain relief"
-msgstr "地形起伏"
-
-msgid "Resources"
-msgstr "资源"
-
-msgid "Textures"
-msgstr "材质"
-
-msgid "Generating"
-msgstr "生成中"
-
-msgid "Results"
-msgstr "结果"
-
-msgid "The battle has ended"
-msgstr "战斗已结束"
-
-#, c-format
-msgid "Time: %s"
-msgstr "时间：%s"
-
-#, c-format
-msgid "%s: %d pts"
-msgstr "%s: %d 分"
-
-msgid "Mods:"
-msgstr "模组："
-
-msgid "Information:"
-msgstr "信息："
-
-msgid "Description:"
-msgstr "描述："
-
-msgid "Enable\\Enable the selected mod"
-msgstr "启用\\启用选中模组"
-
-msgid "Disable\\Disable the selected mod"
-msgstr "禁用\\禁用选中模组"
-
-msgid "Unknown author"
-msgstr "未知作者"
-
-msgid "by"
-msgstr "作者"
-
-msgid "Version"
-msgstr "版本"
-
-msgid "Website"
-msgstr "网站"
-
-msgid "Changes"
-msgstr "更改"
-
-msgid "No description."
-msgstr "没有描述。"
-
-msgid "No changes."
-msgstr "没有更改。"
-
-msgid "Code battle"
-msgstr "代码之战"
-
-msgid "Cancel"
-msgstr "取消"
-
-msgid "Next"
-msgstr "下一个"
-
-msgid "Previous"
-msgstr "上一个"
-
-msgid "New Folder"
-msgstr "新建文件夹"
-
-msgid "Exercises\\Programming exercises"
-msgstr "练习\\编程练习"
-
-msgid "Challenges\\Programming challenges"
-msgstr "挑战\\编程挑战"
-
-msgid "Missions\\Select mission"
-msgstr "任务\\选择人物"
-
-msgid "Free game\\Free game without a specific goal"
-msgstr "自由游玩\\无目标自由游玩"
-
-msgid "Code battles\\Program your robot to be the best of them all!"
-msgstr "代码之战\\给机器人编程，获得头筹！"
-
-msgid "Custom levels\\Levels from mods created by the users"
-msgstr "自定义关卡\\来自用户模组的关卡"
-
-msgid "SatCom"
-msgstr "SatCom"
-
-msgid "Mods\\Mod manager"
-msgstr "模组\\模组管理器"
-
-msgid "Change player\\Change player"
-msgstr "更改玩家\\更改玩家"
-
-msgid "Options\\Preferences"
-msgstr "设置\\偏好设置"
-
-msgid "Restart\\Restart the mission from the beginning"
-msgstr "重试\\从头开始完成任务"
-
-msgid "Save\\Save the current mission"
-msgstr "保存\\保存当前任务"
-
-msgid "Load\\Load a saved mission"
-msgstr "加载\\加载已保存任务"
-
-msgid "\\Return to Colobot: Gold Edition"
-msgstr "\\回到 Colobot: 黄金版"
-
-msgid "Quit\\Quit Colobot: Gold Edition"
-msgstr "退出\\退出 Colobot: 黄金版"
-
-msgid "<<  Back  \\Back to the previous screen"
-msgstr "<<  返回  \\返回上一界面"
-
-msgid "+\\Missions with bonus content and optional challenges"
-msgstr "+\\有附加内容与可选挑战的任务"
-
-msgid "Play\\Start mission!"
-msgstr "开始\\开始执行任务！"
-
-msgid "Workshop\\Open the workshop to search for mods"
-msgstr "工坊\\打开工坊搜索模组"
-
-msgid "Open Directory\\Open the mods directory"
-msgstr "打开目录\\打开模组目录"
-
-msgid "Apply\\Apply the current mod configuration"
-msgstr "应用\\应用当前模组配置"
-
-msgid ""
-"Up\\Move the selected mod up so it's loaded sooner (mods may overwrite files "
-"from the mods above them)"
-msgstr "上移\\上移所选模组使其优先加载（可能会覆盖上层模组的文件）"
-
-msgid ""
-"Down\\Move the selected mod down so it's loaded later (mods may overwrite "
-"files from the mods above them)"
-msgstr "下移\\下移所选模组使其延后加载（可能会覆盖上层模组的文件）"
-
-msgid "Refresh\\Refresh the list of currently installed mods"
-msgstr "刷新\\刷新已安装模组列表"
-
-msgid "Device\\Driver and resolution settings"
-msgstr "设备\\驱动与分辨率设置"
-
-msgid "Graphics\\Graphics settings"
-msgstr "图形\\图形设置"
-
-msgid "Game\\Game settings"
-msgstr "游戏\\游戏设置"
-
-msgid "Controls\\Keyboard, joystick and mouse settings"
-msgstr "控制\\键盘、手柄与鼠标设置"
-
-msgid "Sound\\Music and game sound volume"
-msgstr "声音\\音乐与游戏音效音量"
-
-msgid "Unit"
-msgstr "单位"
-
-msgid "Resolution"
-msgstr "分辨率"
-
-msgid "Full screen\\Full screen or window mode"
-msgstr "全屏\\全屏或窗口模式"
-
-msgid "Apply changes\\Activates the changed settings"
-msgstr "应用\\激活更改的设置"
-
-msgid "Dust\\Dust and dirt on bots and buildings"
-msgstr "尘土\\机器人与建筑物表面的尘土"
-
-msgid "Fog\\Fog"
-msgstr "雾\\雾"
-
-msgid "Dynamic lighting\\Mobile light sources"
-msgstr "动态光源\\移动的光源"
-
-msgid "Number of particles\\Explosions, dust, reflections, etc."
-msgstr "粒子数目\\爆炸、尘土、反光等等。"
-
-msgid "Render distance\\Maximum visibility"
-msgstr "渲染距离\\最大可见性"
-
-msgid "Pause blur\\Blur the background on the pause screen"
-msgstr "暂停时模糊\\暂停时模糊背景"
-
-msgid "Particles in the interface\\Steam clouds and sparks in the interface"
-msgstr "界面粒子\\界面的蒸汽云与闪电"
-
-msgid "Reflections on the buttons \\Shiny buttons"
-msgstr "按钮反光\\亮闪闪的按钮"
-
-msgid "Help balloons\\Explain the function of the buttons"
-msgstr "帮助气泡\\解释按钮功能"
-
-msgid "Film sequences\\Films before and after the missions"
-msgstr "动画片段\\任务前后的动画"
-
-msgid ""
-"Camera border scrolling\\Scrolling when the mouse touches right or left "
-"border"
-msgstr "相机边界滚动\\鼠标位于左右边界时滚动"
-
-msgid "Mouse inversion X\\Inversion of the scrolling direction on the X axis"
-msgstr "鼠标 X 轴反转\\反转 X 轴滚动方向"
-
-msgid "Mouse inversion Y\\Inversion of the scrolling direction on the Y axis"
-msgstr "鼠标 Y 轴反转\\反转 Y 轴滚动方向"
-
-msgid "Quake at explosions\\The screen shakes at explosions"
-msgstr "爆炸时晃动\\爆炸时晃动屏幕"
-
-msgid "Pause in background\\Pause the game when the window is unfocused"
-msgstr "位于后台时暂停\\窗口失去焦点时暂停游戏"
-
-msgid ""
-"Mute sounds in background\\Mute all game sounds when the window is unfocused"
-msgstr "位于后台时静音\\窗口失去焦点时关闭游戏声音"
-
-msgid "Automatic indent\\When program editing"
-msgstr "自动缩进\\在编辑程序时"
-
-msgid "Big indent\\Indent 2 or 4 spaces per level defined by braces"
-msgstr "较大缩进\\每层括号缩进 2 或 4 个空格"
+msgid "Access beyond array limit"
+msgstr "数组访问超限"
+
+msgid "Access to solution\\Shows the solution (detailed instructions for missions)"
+msgstr "题解\\显示题解（详细任务指示）"
 
 msgid "Access to solutions\\Show program \"4: Solution\" in the exercises"
 msgstr "显示题解\\在练习中显示“4: 题解”程序"
 
-msgid "Blood\\Display blood when the astronaut is hit"
-msgstr "血液\\宇航员受击时显示血液"
+msgid "Add new program"
+msgstr "添加新程序"
 
-msgid "Autosave\\Enables autosave"
-msgstr "自动保存\\启用自动保存"
+msgid "Alien Queen"
+msgstr "外星人皇后"
+
+msgid "Alien Queen killed"
+msgstr "已击杀外星人皇后"
+
+msgid "Already carrying something"
+msgstr "已有携带物品"
+
+msgid "Alternative camera mode\\Move sideways instead of rotating (in free camera)"
+msgstr "备用相机模式\\向两边移动而不是旋转（自由相机模式）"
+
+msgid "Ambiguous call to overloaded function"
+msgstr "重载函数调用不明确"
+
+msgid "Analysis already performed"
+msgstr "已进行分析"
+
+msgid "Analysis performed"
+msgstr "已进行分析"
+
+msgid "Anisotropy level\\Anisotropy level"
+msgstr "各向异性过滤级别\\各向异性过滤级别"
+
+msgid "Ant"
+msgstr "蚂蚁"
+
+msgid "Ant fatally wounded"
+msgstr "蚂蚁受到致命伤"
+
+msgid "Appearance\\Choose your appearance"
+msgstr "外观\\选择外观"
+
+msgid "Apply changes\\Activates the changed settings"
+msgstr "应用\\激活更改的设置"
+
+msgid "Apply\\Apply the current mod configuration"
+msgstr "应用\\应用当前模组配置"
+
+msgid "Appropriate constructor missing"
+msgstr "缺失适当构造函数"
+
+msgid "Assignment impossible"
+msgstr "无法完成目标"
+
+msgid "Autolab"
+msgstr "自动实验室"
+
+msgid "Automatic indent\\When program editing"
+msgstr "自动缩进\\在编辑程序时"
 
 msgid "Autosave interval\\How often your game will autosave"
 msgstr "自动保存间隔\\隔多长时间自动保存"
@@ -528,307 +147,50 @@ msgstr "自动保存间隔\\隔多长时间自动保存"
 msgid "Autosave slots\\How many autosave slots you'll have"
 msgstr "自动保存档数\\自动保存用的存档数"
 
-msgid "Texture filtering\\Texture filtering"
-msgstr "纹理过滤\\纹理过滤"
+msgid "Autosave\\Enables autosave"
+msgstr "自动保存\\启用自动保存"
 
-msgid "Mipmap level\\Mipmap level"
-msgstr "Mipmap 级别\\Mipmap 级别"
-
-msgid "Anisotropy level\\Anisotropy level"
-msgstr "各向异性过滤级别\\各向异性过滤级别"
-
-msgid "MSAA\\Multisample anti-aliasing"
-msgstr "MSAA\\多重取样抗锯齿"
-
-msgid "Simple shadows\\Shadows spots on the ground"
-msgstr "简单投影\\在地面上显示投影点"
-
-msgid "Dynamic shadows\\Beautiful shadows!"
-msgstr "动态投影\\漂亮的影子！"
-
-msgid "Dynamic shadows ++\\Dynamic shadows + self shadowing"
-msgstr "动态投影++\\动态投影+物体投影"
-
-msgid "Shadow resolution\\Higher means better range and quality, but slower"
-msgstr "阴影分辨率\\数值越高，阴影范围与质量越好，但速度越慢"
-
-msgid ""
-"Vertical Synchronization\\Limits the number of frames per second to display "
-"frequency"
-msgstr "垂直同步\\将每秒帧数限制为显示频率"
-
-msgid "Standard controls\\Standard key functions"
-msgstr "标准控制\\标准按键功能"
-
-msgid "Turn left\\turns the bot to the left"
-msgstr "左转\\让机器人左转"
-
-msgid "Turn right\\turns the bot to the right"
-msgstr "右转\\让机器人右转"
-
-msgid "Forward\\Moves forward"
-msgstr "前进\\向前移动"
-
-msgid "Backward\\Moves backward"
-msgstr "后退\\向后移动"
-
-msgid "Climb\\Increases the power of the jet"
-msgstr "爬升\\增大喷气功率"
-
-msgid "Descend\\Reduces the power of the jet"
-msgstr "下降\\减小喷气功率"
-
-msgid "Change camera\\Switches between onboard camera and following camera"
-msgstr "切换相机\\切换车载相机与跟拍相机"
-
-msgid "Previous object\\Selects the previous object"
-msgstr "前一项\\选中前一个物品"
-
-msgid ""
-"Standard action\\Standard action of the bot (take/grab, shoot, sniff, etc)"
-msgstr "标准操作\\机器人的标准操作（拿取或抓取、设计、探测等等）"
-
-msgid "Camera left\\Turns the camera left"
-msgstr "相机左转\\相机向左转动"
-
-msgid "Camera right\\Turns the camera right"
-msgstr "相机右转\\相机向右转动"
-
-msgid "Camera up\\Turns the camera up"
-msgstr "相机上移\\相机向上转动"
-
-msgid "Camera down\\Turns the camera down"
-msgstr "相机下移\\相机向下转动"
-
-msgid "Camera closer\\Moves the camera forward"
-msgstr "相机前移\\相机向前移动"
-
-msgid "Camera back\\Moves the camera backward"
-msgstr "相机后移\\相机向后移动"
-
-msgid ""
-"Alternative camera mode\\Move sideways instead of rotating (in free camera)"
-msgstr "备用相机模式\\向两边移动而不是旋转（自由相机模式）"
-
-msgid "Next object\\Selects the next object"
-msgstr "后一项\\选中后一个物品"
-
-msgid "Select the astronaut\\Selects the astronaut"
-msgstr "选中宇航员\\选中宇航员"
-
-msgid "Quit\\Quit the current mission or exercise"
-msgstr "退出\\退出当前任务或练习"
-
-msgid "Instructions\\Shows the instructions for the current mission"
-msgstr "说明\\显示当前任务的说明"
-
-msgid "Programming help\\Gives more detailed help with programming"
-msgstr "编程指南\\提供编程细节上的帮助"
-
-msgid "Origin of last message\\Shows where the last message was sent from"
-msgstr "上一条信息来源\\显示上一条信息的发送者"
-
-msgid "Lower speed\\Decrease speed by half"
-msgstr "低速\\速度减半"
-
-msgid "Standard speed\\Reset speed to normal"
-msgstr "标准速度\\重置正常速度"
-
-msgid "Higher speed\\Doubles speed"
-msgstr "高速\\速度加倍"
-
-msgid "Quick save\\Immediately save game"
-msgstr "快速保存\\立即保存游戏"
-
-msgid "Quick load\\Immediately load game"
-msgstr "快速加载\\立即加载游戏"
-
-msgid "Pause\\Pause the game without opening menu"
-msgstr "暂停\\暂停游戏而不打开菜单"
-
-msgid "Cheat console\\Show cheat console"
-msgstr "作弊控制台\\显示作弊控制台"
-
-msgid "Sound effects:\\Volume of engines, voice, shooting, etc."
-msgstr "音效：\\引擎、人声、射击等音效音量。"
+msgid "Back"
+msgstr "返回"
 
 msgid "Background sound:\\Volume of audio tracks"
 msgstr "背景声：\\音乐音量"
 
-msgid "Lowest\\Minimum graphic quality (highest frame rate)"
-msgstr "最低\\最低图形质量（最高帧率）"
+msgid "Backward (\\key down;)"
+msgstr "后退 (\\key down;)"
 
-msgid "Normal\\Normal graphic quality"
-msgstr "正常\\常规图形质量"
+msgid "Backward\\Moves backward"
+msgstr "后退\\向后移动"
 
-msgid "Highest\\Highest graphic quality (lowest frame rate)"
-msgstr "最高\\最高图形质量（最低帧率）"
+msgid "Bad argument for \"new\""
+msgstr "\"new\" 参数错误"
 
-msgid "Mute\\No sound"
-msgstr "静音\\无声音"
+msgid "Big indent\\Indent 2 or 4 spaces per level defined by braces"
+msgstr "较大缩进\\每层括号缩进 2 或 4 个空格"
 
-msgid "Normal\\Normal sound volume"
-msgstr "正常\\常规音量"
+msgid "Black box"
+msgstr "黑箱"
 
-msgid ""
-"Access to solution\\Shows the solution (detailed instructions for missions)"
-msgstr "题解\\显示题解（详细任务指示）"
-
-msgid "Invert\\Invert values on this axis"
-msgstr "反转\\反转此轴数值"
-
-msgid "Space Programmer\\Disables radio-control"
-msgstr "太空程序员\\禁用无线控制"
-
-msgid "Space Researcher\\Disables using all previously researched technologies"
-msgstr "太空研究员\\禁用已研究技术"
-
-msgid "Space Explorer\\Disables astronaut abilities"
-msgstr "太空探索者\\禁用宇航员能力"
-
-msgid "\\New player name"
-msgstr "\\新玩家名称"
-
-msgid "OK\\Choose the selected player"
-msgstr "确定\\选择此玩家"
-
-msgid "Delete player\\Deletes the player from the list"
-msgstr "删除玩家\\从列表中删除玩家"
-
-msgid "Player name"
-msgstr "玩家名称"
-
-msgid "Save\\Saves the current mission"
-msgstr "保存\\保存当前任务"
-
-msgid "Load\\Loads the selected mission"
-msgstr "加载\\加载所选任务"
-
-msgid "List of saved missions"
-msgstr "已保存任务列表"
-
-msgid "Filename:"
-msgstr "文件名："
-
-msgid "Mission name"
-msgstr "任务名称"
-
-msgid "Photography"
-msgstr "照片"
-
-msgid "Delete\\Deletes the selected file"
-msgstr "删除\\删除选中文件"
-
-msgid "Appearance\\Choose your appearance"
-msgstr "外观\\选择外观"
-
-msgid "Standard\\Standard appearance settings"
-msgstr "标准\\标准外观设置"
-
-msgid "Head\\Face and hair"
-msgstr "头\\脸与头发"
-
-msgid "Suit\\Astronaut suit"
-msgstr "套装\\宇航员套装"
-
-msgid "\\Turn left"
-msgstr "\\左转"
-
-msgid "\\Turn right"
-msgstr "\\右转"
-
-msgid "Red"
-msgstr "红色"
-
-msgid "Green"
-msgstr "绿色"
+msgid "Blood\\Display blood when the astronaut is hit"
+msgstr "血液\\宇航员受击时显示血液"
 
 msgid "Blue"
 msgstr "蓝色"
 
-msgid "\\Face 1"
-msgstr "\\脸型 1"
+msgid "Blue flag"
+msgstr "蓝色旗子"
 
-msgid "\\Face 2"
-msgstr "\\脸型 2"
+msgid "Bot destroyed"
+msgstr "机器人已摧毁"
 
-msgid "\\Face 3"
-msgstr "\\脸型 3"
+msgid "Bot factory"
+msgstr "机器人工厂"
 
-msgid "\\Face 4"
-msgstr "\\脸型 4"
-
-msgid "\\No eyeglasses"
-msgstr "\\无眼镜"
-
-msgid "\\Eyeglasses 1"
-msgstr "\\眼镜 1"
-
-msgid "\\Eyeglasses 2"
-msgstr "\\眼镜 2"
-
-msgid "\\Eyeglasses 3"
-msgstr "\\眼镜 3"
-
-msgid "\\Eyeglasses 4"
-msgstr "\\眼镜 4"
-
-msgid "\\Eyeglasses 5"
-msgstr "\\眼镜 5"
-
-msgid "Previous selection (\\key desel;)"
-msgstr "上个选中项 (\\key desel;)"
-
-msgid "Turn left (\\key left;)"
-msgstr "左转 (\\key left;)"
-
-msgid "Turn right (\\key right;)"
-msgstr "右转 (\\key right;)"
-
-msgid "Forward (\\key up;)"
-msgstr "前进 (\\key up;)"
-
-msgid "Backward (\\key down;)"
-msgstr "后退 (\\key down;)"
-
-msgid "Up (\\key gup;)"
-msgstr "向上 (\\key gup;)"
-
-msgid "Down (\\key gdown;)"
-msgstr "向下 (\\key gdown;)"
-
-msgid "Grab or drop (\\key action;)"
-msgstr "抓取或放下 (\\key action;)"
-
-msgid "..in front"
-msgstr "..前方"
-
-msgid "..behind"
-msgstr "..后方"
-
-msgid "..power cell"
-msgstr "..动力电池"
-
-msgid "Instructions for the mission (\\key help;)"
-msgstr "任务说明 (\\key help;)"
-
-msgid "Take off to finish the mission"
-msgstr "起飞以完成任务"
-
-msgid "Destroy"
-msgstr "摧毁"
-
-msgid "Build a derrick"
-msgstr "建造井架"
-
-msgid "Build a power station"
-msgstr "建造能源站"
+msgid "Build (\\key action;)"
+msgstr "建造 (\\key action;)"
 
 msgid "Build a bot factory"
 msgstr "建造机器人工厂"
-
-msgid "Build a repair center"
-msgstr "建造维修中心"
 
 msgid "Build a converter"
 msgstr "建造转化器"
@@ -836,122 +198,53 @@ msgstr "建造转化器"
 msgid "Build a defense tower"
 msgstr "建造防御塔"
 
-msgid "Build a research center"
-msgstr "建造研究中心"
-
-msgid "Build a radar station"
-msgstr "建造雷达站"
-
-msgid "Build a power cell factory"
-msgstr "建造电池工厂"
-
-msgid "Build an autolab"
-msgstr "建造自动实验室"
-
-msgid "Build a nuclear power plant"
-msgstr "建造核能发电机"
-
-msgid "Build a lightning conductor"
-msgstr "建造避雷针"
+msgid "Build a derrick"
+msgstr "建造井架"
 
 msgid "Build a exchange post"
 msgstr "建造交换桩"
 
-msgid "Build a vault"
-msgstr "建造保护拱"
-
-msgid "Show if the ground is flat"
-msgstr "显示地面平坦度"
-
-msgid "Plant a flag"
-msgstr "放置旗子"
-
-msgid "Remove a flag"
-msgstr "移除旗子"
-
-msgid "\\Blue flags"
-msgstr "\\蓝色旗子"
-
-msgid "\\Red flags"
-msgstr "\\红色旗子"
-
-msgid "\\Green flags"
-msgstr "\\绿色旗子"
-
-msgid "\\Yellow flags"
-msgstr "\\黄色旗子"
-
-msgid "\\Violet flags"
-msgstr "\\紫色旗子"
-
-msgid "Build a winged grabber"
-msgstr "建造带翼抓取机器人"
-
-msgid "Build a tracked grabber"
-msgstr "建造跟踪抓取机器人"
-
-msgid "Build a wheeled grabber"
-msgstr "建造滚轮抓取机器人"
+msgid "Build a legged builder"
+msgstr "建造带腿建造机器人"
 
 msgid "Build a legged grabber"
 msgstr "建造带腿抓取机器人"
 
-msgid "Build a winged shooter"
-msgstr "建造带翼射击机器人"
-
-msgid "Build a tracked shooter"
-msgstr "建造跟踪射击机器人"
-
-msgid "Build a wheeled shooter"
-msgstr "建造滚轮射击机器人"
+msgid "Build a legged orga shooter"
+msgstr "建造带腿有机弹射击机器人"
 
 msgid "Build a legged shooter"
 msgstr "建造带腿射击机器人"
 
-msgid "Build a winged orga shooter"
-msgstr "建造带翼有机弹射击机器人"
-
-msgid "Build a tracked orga shooter"
-msgstr "建造跟踪有机弹射击机器人"
-
-msgid "Build a wheeled orga shooter"
-msgstr "建造滚轮有机弹射击机器人"
-
-msgid "Build a legged orga shooter"
-msgstr "建造带腿有机弹射击机器人"
-
-msgid "Build a winged sniffer"
-msgstr "建造带翼探测机器人"
-
-msgid "Build a tracked sniffer"
-msgstr "建造跟踪探测机器人"
-
-msgid "Build a wheeled sniffer"
-msgstr "建造滚轮探测机器人"
-
 msgid "Build a legged sniffer"
 msgstr "建造带腿探测机器人"
 
-msgid "Build a winged builder"
-msgstr "建造带翼建造机器人"
+msgid "Build a lightning conductor"
+msgstr "建造避雷针"
 
-msgid "Build a tracked builder"
-msgstr "建造跟踪建造机器人"
-
-msgid "Build a wheeled builder"
-msgstr "建造滚轮建造机器人"
-
-msgid "Build a legged builder"
-msgstr "建造带腿建造机器人"
-
-msgid "Build a thumper"
-msgstr "建造打桩机器人"
+msgid "Build a nuclear power plant"
+msgstr "建造核能发电机"
 
 msgid "Build a phazer shooter"
 msgstr "建造霰弹射击机器人"
 
+msgid "Build a power cell factory"
+msgstr "建造电池工厂"
+
+msgid "Build a power station"
+msgstr "建造能源站"
+
+msgid "Build a radar station"
+msgstr "建造雷达站"
+
 msgid "Build a recycler"
 msgstr "建造回收机器人"
+
+msgid "Build a repair center"
+msgstr "建造维修中心"
+
+msgid "Build a research center"
+msgstr "建造研究中心"
 
 msgid "Build a shielder"
 msgstr "建造防御机器人"
@@ -962,20 +255,1156 @@ msgstr "建造水下操作机器人"
 msgid "Build a target bot"
 msgstr "建造靶子机器人"
 
-msgid "Run research program for tracked bots"
-msgstr "运行跟踪机器人研究程序"
+msgid "Build a thumper"
+msgstr "建造打桩机器人"
 
-msgid "Run research program for winged bots"
-msgstr "运行带翼机器人研究程序"
+msgid "Build a tracked builder"
+msgstr "建造跟踪建造机器人"
 
-msgid "Run research program for thumper"
-msgstr "运行打桩机器人研究程序"
+msgid "Build a tracked grabber"
+msgstr "建造跟踪抓取机器人"
 
-msgid "Run research program for shooter"
-msgstr "运行射击机器人研究程序"
+msgid "Build a tracked orga shooter"
+msgstr "建造跟踪有机弹射击机器人"
+
+msgid "Build a tracked shooter"
+msgstr "建造跟踪射击机器人"
+
+msgid "Build a tracked sniffer"
+msgstr "建造跟踪探测机器人"
+
+msgid "Build a vault"
+msgstr "建造保护拱"
+
+msgid "Build a wheeled builder"
+msgstr "建造滚轮建造机器人"
+
+msgid "Build a wheeled grabber"
+msgstr "建造滚轮抓取机器人"
+
+msgid "Build a wheeled orga shooter"
+msgstr "建造滚轮有机弹射击机器人"
+
+msgid "Build a wheeled shooter"
+msgstr "建造滚轮射击机器人"
+
+msgid "Build a wheeled sniffer"
+msgstr "建造滚轮探测机器人"
+
+msgid "Build a winged builder"
+msgstr "建造带翼建造机器人"
+
+msgid "Build a winged grabber"
+msgstr "建造带翼抓取机器人"
+
+msgid "Build a winged orga shooter"
+msgstr "建造带翼有机弹射击机器人"
+
+msgid "Build a winged shooter"
+msgstr "建造带翼射击机器人"
+
+msgid "Build a winged sniffer"
+msgstr "建造带翼探测机器人"
+
+msgid "Build an autolab"
+msgstr "建造自动实验室"
+
+msgid "Building completed"
+msgstr "建造完成"
+
+msgid "Building destroyed"
+msgstr "建筑物已摧毁"
+
+msgid "Button %1"
+msgstr "按钮 %1"
+
+msgid "Calling an unknown function"
+msgstr "调用未知函数"
+
+msgid "Camera (\\key camera;)"
+msgstr "相机 (\\key camera;)"
+
+msgid "Camera back\\Moves the camera backward"
+msgstr "相机后移\\相机向后移动"
+
+msgid "Camera border scrolling\\Scrolling when the mouse touches right or left border"
+msgstr "相机边界滚动\\鼠标位于左右边界时滚动"
+
+msgid "Camera closer\\Moves the camera forward"
+msgstr "相机前移\\相机向前移动"
+
+msgid "Camera down\\Turns the camera down"
+msgstr "相机下移\\相机向下转动"
+
+msgid "Camera left\\Turns the camera left"
+msgstr "相机左转\\相机向左转动"
+
+msgid "Camera right\\Turns the camera right"
+msgstr "相机右转\\相机向右转动"
+
+msgid "Camera up\\Turns the camera up"
+msgstr "相机上移\\相机向上转动"
+
+msgid "Can not produce not researched object"
+msgstr "无法生产未研究的物品"
+
+msgid "Can not produce this object in this mission"
+msgstr "此任务中无法生产此物品"
+
+msgid "Can't open file"
+msgstr "无法打开文件"
+
+msgid "Cancel"
+msgstr "取消"
+
+msgid "Cancel\\Cancel all changes"
+msgstr "取消\\取消所有更改"
+
+msgid "Challenges"
+msgstr "挑战"
+
+msgid "Challenges in the chapter:"
+msgstr "此章节中的挑战："
+
+msgid "Challenges\\Programming challenges"
+msgstr "挑战\\编程挑战"
+
+msgid "Change camera\\Switches between onboard camera and following camera"
+msgstr "切换相机\\切换车载相机与跟拍相机"
+
+msgid "Change player\\Change player"
+msgstr "更改玩家\\更改玩家"
+
+msgid "Changes"
+msgstr "更改"
+
+msgid "Chapters:"
+msgstr "章节："
+
+msgid "Cheat console\\Show cheat console"
+msgstr "作弊控制台\\显示作弊控制台"
+
+msgid "Checkpoint"
+msgstr "存档点"
+
+msgid "Class name expected"
+msgstr "需要类名称"
+
+msgid "Climb\\Increases the power of the jet"
+msgstr "爬升\\增大喷气功率"
+
+msgid "Clone program"
+msgstr "复制程序"
+
+msgid "Clone selected program"
+msgstr "复制选中程序"
+
+msgid "Close"
+msgstr "关闭"
+
+msgid "Closing bracket missing"
+msgstr "缺失右括号"
+
+msgid "Code battle"
+msgstr "代码之战"
+
+msgid "Code battles"
+msgstr "代码之战"
+
+msgid "Code battles\\Program your robot to be the best of them all!"
+msgstr "代码之战\\给机器人编程，获得头筹！"
+
+msgid "Colobot rules!"
+msgstr "Colobot 统治一切！"
+
+msgid "Colobot: Gold Edition"
+msgstr "Colobot: 黄金版"
+
+msgid "Command line"
+msgstr "命令行"
+
+msgid "Compilation ok (0 errors)"
+msgstr "编译完成（无错误）"
+
+msgid "Compile"
+msgstr "编译"
+
+msgid "Continue"
+msgstr "继续"
+
+msgid "Continue\\Continue the current mission"
+msgstr "继续\\继续当前任务"
+
+msgid "Controls\\Keyboard, joystick and mouse settings"
+msgstr "控制\\键盘、手柄与鼠标设置"
+
+msgid "Converts ore to titanium"
+msgstr "将钛矿转化为钛金属"
+
+msgid "Copy"
+msgstr "复制"
+
+msgid "Copy (Ctrl+C)"
+msgstr "复制 (Ctrl+C)"
+
+msgid "Could not open the file explorer!"
+msgstr "无法打开文件浏览器！"
+
+msgid "Could not open the web browser!"
+msgstr "无法打开网页浏览器！"
+
+msgid "Current mission saved"
+msgstr "当前任务已保存"
+
+msgid "Custom levels:"
+msgstr "自定义关卡："
+
+msgid "Custom levels\\Levels from mods created by the users"
+msgstr "自定义关卡\\来自用户模组的关卡"
+
+msgid "Customize your appearance"
+msgstr "自定义你的外观"
+
+msgid "Cut (Ctrl+X)"
+msgstr "剪切 (Ctrl+X)"
+
+msgid "Defense tower"
+msgstr "防御塔"
+
+msgid "Delete mark"
+msgstr "删除标记"
+
+msgid "Delete player\\Deletes the player from the list"
+msgstr "删除玩家\\从列表中删除玩家"
+
+msgid "Delete\\Deletes the selected file"
+msgstr "删除\\删除选中文件"
+
+msgid "Derrick"
+msgstr "井架"
+
+msgid "Descend\\Reduces the power of the jet"
+msgstr "下降\\减小喷气功率"
+
+msgid "Description:"
+msgstr "描述："
+
+msgid "Destroy"
+msgstr "摧毁"
+
+msgid "Destroy the building"
+msgstr "摧毁建筑"
+
+msgid "Destroyer"
+msgstr "摧毁器"
+
+msgid "Device\\Driver and resolution settings"
+msgstr "设备\\驱动与分辨率设置"
+
+msgid "Disable\\Disable the selected mod"
+msgstr "禁用\\禁用选中模组"
+
+msgid "Dividing by zero"
+msgstr "不可除以零"
+
+msgid "Do you really want to destroy the selected building?"
+msgstr "真的要摧毁所选建筑吗？"
+
+#, c-format
+msgid "Do you want to delete %s's saved games?"
+msgstr "要删除 %s 的已保存游戏吗？"
+
+msgid "Doors blocked by a robot or another object"
+msgstr "机器人或其他物体挡住了门"
+
+msgid "Down (\\key gdown;)"
+msgstr "向下 (\\key gdown;)"
+
+msgid "Down\\Move the selected mod down so it's loaded later (mods may overwrite files from the mods above them)"
+msgstr "下移\\下移所选模组使其延后加载（可能会覆盖上层模组的文件）"
+
+msgid "Drawer bot"
+msgstr "抽屉机器人"
+
+msgid "Duplicate label in switch"
+msgstr "switch 标签重复"
+
+msgid "Dust\\Dust and dirt on bots and buildings"
+msgstr "尘土\\机器人与建筑物表面的尘土"
+
+msgid "Dynamic lighting\\Mobile light sources"
+msgstr "动态光源\\移动的光源"
+
+msgid "Dynamic shadows ++\\Dynamic shadows + self shadowing"
+msgstr "动态投影++\\动态投影+物体投影"
+
+msgid "Dynamic shadows\\Beautiful shadows!"
+msgstr "动态投影\\漂亮的影子！"
+
+msgid "Edit the selected program"
+msgstr "编辑选中程序"
+
+msgid "Egg"
+msgstr "虫卵"
+
+msgid "Empty character constant"
+msgstr "字符常量为空"
+
+msgid "Enable\\Enable the selected mod"
+msgstr "启用\\启用选中模组"
+
+msgid "End of block missing"
+msgstr "缺失程序块结束符"
+
+msgid "Energy deposit (site for power station)"
+msgstr "能源存放点（能源站所需点）"
+
+msgid "Energy level"
+msgstr "能源等级"
+
+msgid "Engineer"
+msgstr "工程师"
+
+msgid "Error in instruction move"
+msgstr "移动指令出错"
+
+msgid "Execute the selected program"
+msgstr "执行选中程序"
+
+msgid "Execute/stop"
+msgstr "运行\\停止"
+
+msgid "Exercises in the chapter:"
+msgstr "此章节中的练习："
+
+msgid "Exercises\\Programming exercises"
+msgstr "练习\\编程练习"
+
+msgid "Explode (\\key action;)"
+msgstr "爆炸 (\\key action;)"
+
+msgid "Explosive"
+msgstr "爆炸物"
+
+msgid "Expression expected after ="
+msgstr "= 后需要表达式"
+
+msgid "Extend shield (\\key action;)"
+msgstr "展开防护板 (\\key action;)"
+
+msgid "Eyeglasses:"
+msgstr "眼镜："
+
+msgid "Face type:"
+msgstr "脸型："
+
+msgid "File not open"
+msgstr "文件未打开"
+
+msgid "Filename:"
+msgstr "文件名："
+
+msgid "Film sequences\\Films before and after the missions"
+msgstr "动画片段\\任务前后的动画"
+
+msgid "Finish"
+msgstr "完成"
+
+msgid "Fixed mine"
+msgstr "已固定地雷"
+
+msgid "Flat ground not large enough"
+msgstr "平坦地面太小"
+
+msgid "Fog\\Fog"
+msgstr "雾\\雾"
+
+msgid "Folder:"
+msgstr "文件夹："
+
+#, c-format
+msgid "Folder: %s"
+msgstr "文件夹：%s"
+
+msgid "Font size"
+msgstr "字体大小"
+
+msgid "Forward"
+msgstr "下一步"
+
+msgid "Forward (\\key up;)"
+msgstr "前进 (\\key up;)"
+
+msgid "Forward\\Moves forward"
+msgstr "前进\\向前移动"
+
+msgid "Found a site for a derrick"
+msgstr "找到可建造井架的地点"
+
+msgid "Found a site for power station"
+msgstr "找到可建造能源站的地点"
+
+msgid "Found key A (site for derrick)"
+msgstr "已找到钥匙 A（井架所需点）"
+
+msgid "Found key B (site for derrick)"
+msgstr "已找到钥匙 B（井架所需点）"
+
+msgid "Found key C (site for derrick)"
+msgstr "已找到钥匙 C（井架所需点）"
+
+msgid "Found key D (site for derrick)"
+msgstr "已找到钥匙 D（井架所需点）"
+
+msgid "Free game"
+msgstr "自由游玩"
+
+msgid "Free game on this planet:"
+msgstr "此章节中的自由游戏："
+
+msgid "Free game\\Free game without a specific goal"
+msgstr "自由游玩\\无目标自由游玩"
+
+msgid "Full screen\\Full screen or window mode"
+msgstr "全屏\\全屏或窗口模式"
+
+msgid "Function already exists"
+msgstr "函数已存在"
+
+msgid "Function name missing"
+msgstr "缺少函数名"
+
+msgid "Function needs return type \"void\""
+msgstr "函数需要 \"void\" 返回类型"
+
+msgid "Game speed"
+msgstr "游戏速度"
+
+msgid "Game\\Game settings"
+msgstr "游戏\\游戏设置"
+
+msgid "Gantry crane"
+msgstr "龙门吊"
+
+msgid "Generating"
+msgstr "生成中"
+
+msgid "Gold Edition development by:"
+msgstr "黄金版开发者："
+
+msgid "Goto: destination occupied"
+msgstr "Goto: 目的地已被占用"
+
+msgid "Goto: inaccessible destination"
+msgstr "Goto: 无法到达目的地"
+
+msgid "Grab or drop (\\key action;)"
+msgstr "抓取或放下 (\\key action;)"
+
+msgid "Graphics\\Graphics settings"
+msgstr "图形\\图形设置"
+
+msgid "Green"
+msgstr "绿色"
+
+msgid "Green flag"
+msgstr "绿色旗子"
+
+msgid "Ground not flat enough"
+msgstr "地面不够平坦"
+
+msgid "Hair color:"
+msgstr "发色："
+
+msgid "Head\\Face and hair"
+msgstr "头\\脸与头发"
+
+msgid "Help about selected object"
+msgstr "选中物品的帮助"
+
+msgid "Help balloons\\Explain the function of the buttons"
+msgstr "帮助气泡\\解释按钮功能"
+
+msgid "Hex value out of range"
+msgstr "十六进制数值越界"
+
+msgid "Higher speed\\Doubles speed"
+msgstr "高速\\速度加倍"
+
+msgid "Highest\\Highest graphic quality (lowest frame rate)"
+msgstr "最高\\最高图形质量（最低帧率）"
+
+msgid "Home"
+msgstr "主页"
+
+msgid "Houston Mission Control"
+msgstr "休斯敦任务指挥中心"
+
+msgid "Illegal object"
+msgstr "非法对象"
+
+msgid "Impossible under water"
+msgstr "在水下无法进行"
+
+msgid "Impossible when carrying an object"
+msgstr "携带物品时无法做到"
+
+msgid "Impossible when flying"
+msgstr "飞行时无法进行"
+
+msgid "Impossible when moving"
+msgstr "移动时无法进行"
+
+msgid "Impossible when swimming"
+msgstr "游泳时无法做到"
+
+msgid "Inappropriate bot"
+msgstr "机器人不当"
+
+msgid "Inappropriate cell type"
+msgstr "电池类型不当"
+
+msgid "Inappropriate object"
+msgstr "物体不当"
+
+msgid "Inappropriate sample"
+msgstr "样品不当"
+
+msgid "Incorrect index type"
+msgstr "索引类型错误"
+
+msgid "Infected by a virus; temporarily out of order"
+msgstr "已被病毒感染；暂时崩溃中"
+
+msgid "Information exchange post"
+msgstr "信息交换桩"
+
+msgid "Information:"
+msgstr "信息："
+
+msgid "Instruction \"break\" outside a loop"
+msgstr "循环外出现 \"break\" 语句"
+
+msgid "Instruction \"case\" missing"
+msgstr "缺失 \"case\" 语句"
+
+msgid "Instruction \"case\" outside a block \"switch\""
+msgstr "\"switch\" 程序块外出现 \"case\" 语句"
+
+msgid "Instruction \"else\" without corresponding \"if\""
+msgstr "\"else\" 语句没有对应的 \"if\""
+
+msgid "Instructions (\\key help;)"
+msgstr "说明 (\\key help;)"
+
+msgid "Instructions after the final closing brace"
+msgstr "最后一个右括号外出现语句"
+
+msgid "Instructions for the mission (\\key help;)"
+msgstr "任务说明 (\\key help;)"
+
+msgid "Instructions from Houston"
+msgstr "休斯敦中心的指示"
+
+msgid "Instructions\\Shows the instructions for the current mission"
+msgstr "说明\\显示当前任务的说明"
+
+msgid "Internal error - tell the developers"
+msgstr "内部错误 - 请联系开发者"
+
+msgid "Invalid universal character name"
+msgstr "通用字符名无效"
+
+msgid "Invert\\Invert values on this axis"
+msgstr "反转\\反转此轴数值"
+
+msgid "Jet temperature"
+msgstr "喷气机温度"
+
+msgid "Key A"
+msgstr "钥匙 A"
+
+msgid "Key B"
+msgstr "钥匙 B"
+
+msgid "Key C"
+msgstr "钥匙 C"
+
+msgid "Key D"
+msgstr "钥匙 D"
+
+msgid "Keyword \"while\" missing"
+msgstr "缺失关键词 \"while\""
+
+msgid "Keyword help(\\key cbot;)"
+msgstr "关键词帮助(\\key cbot;)"
+
+msgid "LOADING"
+msgstr "加载中"
+
+msgid "Legged builder"
+msgstr "带腿建造机器人"
+
+msgid "Legged grabber"
+msgstr "带腿抓取机器人"
+
+msgid "Legged orga shooter"
+msgstr "带腿有机弹射击机器人"
+
+msgid "Legged shooter"
+msgstr "带腿射击机器人"
+
+msgid "Legged sniffer"
+msgstr "带腿探测机器人"
+
+msgid "Levels in this chapter:"
+msgstr "此章节中的关卡："
+
+msgid "Lightning conductor"
+msgstr "避雷针"
+
+msgid "List of objects"
+msgstr "物品列表"
+
+msgid "List of saved missions"
+msgstr "已保存任务列表"
+
+msgid "Load a saved mission"
+msgstr "加载已保存任务"
+
+msgid "Load\\Load a saved mission"
+msgstr "加载\\加载已保存任务"
+
+msgid "Load\\Loads the selected mission"
+msgstr "加载\\加载所选任务"
+
+msgid "Loading basic level settings"
+msgstr "正在加载基本关卡设置"
+
+msgid "Loading finished!"
+msgstr "加载完毕！"
+
+msgid "Loading music"
+msgstr "正在加载音乐"
+
+msgid "Loading objects"
+msgstr "正在加载物品"
+
+msgid "Loading terrain"
+msgstr "正在加载地形"
+
+msgid "Lower speed\\Decrease speed by half"
+msgstr "低速\\速度减半"
+
+msgid "Lowest\\Minimum graphic quality (highest frame rate)"
+msgstr "最低\\最低图形质量（最高帧率）"
+
+msgid "Lunar Roving Vehicle"
+msgstr "月球车"
+
+msgid "MSAA\\Multisample anti-aliasing"
+msgstr "MSAA\\多重取样抗锯齿"
+
+msgid "Maximize"
+msgstr "最大化"
+
+msgid "Minimize"
+msgstr "最小化"
+
+msgid "Mipmap level\\Mipmap level"
+msgstr "Mipmap 级别\\Mipmap 级别"
+
+msgid "Missing end quote"
+msgstr "末尾缺少引号"
+
+msgid "Missing hex digits after escape sequence"
+msgstr "Esc 序列后缺少十六进制数字"
+
+msgid "Mission name"
+msgstr "任务名称"
+
+msgid "Missions"
+msgstr "任务"
+
+msgid "Missions on this planet:"
+msgstr "此章节中的任务："
+
+msgid "Missions+"
+msgstr "任务+"
+
+msgid "Missions\\Select mission"
+msgstr "任务\\选择人物"
+
+msgid "Mods"
+msgstr "模组"
+
+msgid "Mods:"
+msgstr "模组："
+
+msgid "Mods\\Mod manager"
+msgstr "模组\\模组管理器"
+
+msgid "Mouse inversion X\\Inversion of the scrolling direction on the X axis"
+msgstr "鼠标 X 轴反转\\反转 X 轴滚动方向"
+
+msgid "Mouse inversion Y\\Inversion of the scrolling direction on the Y axis"
+msgstr "鼠标 Y 轴反转\\反转 Y 轴滚动方向"
+
+msgid "Move selected program down"
+msgstr "将选中程序下移"
+
+msgid "Move selected program up"
+msgstr "将选中程序上移"
+
+msgid "Mute sounds in background\\Mute all game sounds when the window is unfocused"
+msgstr "位于后台时静音\\窗口失去焦点时关闭游戏声音"
+
+msgid "Mute\\No sound"
+msgstr "静音\\无声音"
+
+msgid "Name:"
+msgstr "名称："
+
+msgid "Negative value rejected by \"throw\""
+msgstr "\"throw\" 拒绝了负值"
+
+msgid "Nest"
+msgstr "巢"
+
+msgid "New"
+msgstr "新建"
+
+msgid "New ..."
+msgstr "新建..."
+
+msgid "New Folder"
+msgstr "新建文件夹"
+
+msgid "New bot available"
+msgstr "新机器人可用"
+
+msgid "Next"
+msgstr "下一个"
+
+msgid "Next object\\Selects the next object"
+msgstr "后一项\\选中后一个物品"
+
+msgid "No"
+msgstr "否"
+
+msgid "No changes."
+msgstr "没有更改。"
+
+msgid "No description."
+msgstr "没有描述。"
+
+msgid "No energy in the subsoil"
+msgstr "基层土中没有能源"
+
+msgid "No flag nearby"
+msgstr "附近没有旗子"
+
+msgid "No function running"
+msgstr "没有运行中的函数"
+
+msgid "No function with this name accepts this kind of parameter"
+msgstr "没有接受此类参数的函数"
+
+msgid "No function with this name accepts this number of parameters"
+msgstr "没有接受此数目参数的函数"
+
+msgid "No information exchange post within range"
+msgstr "范围内没有信息交换桩"
+
+msgid "No more energy"
+msgstr "无更多能量"
+
+msgid "No ore in the subsoil"
+msgstr "基层土中没有矿物"
+
+msgid "No power cell"
+msgstr "没有动力电池"
+
+msgid "No titanium"
+msgstr "没有钛金属"
+
+msgid "No titanium around"
+msgstr "周围没有钛金属"
+
+msgid "No titanium ore to convert"
+msgstr "没有钛矿可转化"
+
+msgid "No titanium to transform"
+msgstr "没有钛金属可转化"
+
+msgid "No uranium to transform"
+msgstr "没有铀金属可转化"
+
+msgid "No userlevels installed!"
+msgstr "未安装用户关卡！"
+
+msgid "Non-void function needs \"return;\""
+msgstr "非 void 函数需要 \"return;\""
+
+msgid "Normal size"
+msgstr "正常大小"
+
+msgid "Normal\\Normal graphic quality"
+msgstr "正常\\常规图形质量"
+
+msgid "Normal\\Normal sound volume"
+msgstr "正常\\常规音量"
+
+msgid "Not enough energy"
+msgstr "能量不足"
+
+msgid "Not enough energy yet"
+msgstr "能量不足"
+
+msgid "Not found anything to destroy"
+msgstr "未找到可摧毁物体"
+
+msgid "Nothing to analyze"
+msgstr "没有东西可分析"
+
+msgid "Nothing to drop"
+msgstr "没有东西可放下"
+
+msgid "Nothing to grab"
+msgstr "没有东西可抓取"
+
+msgid "Nothing to recycle"
+msgstr "没有东西可回收"
+
+msgid "Nuclear power cell"
+msgstr "核电池"
+
+msgid "Nuclear power cell available"
+msgstr "核电池可用"
+
+msgid "Nuclear power station"
+msgstr "核能发电站"
+
+msgid "Number missing"
+msgstr "缺少数字"
+
+msgid "Number of insects detected"
+msgstr "探测到的昆虫数目"
+
+msgid "Number of particles\\Explosions, dust, reflections, etc."
+msgstr "粒子数目\\爆炸、尘土、反光等等。"
+
+msgid "OK"
+msgstr "完成"
+
+msgid "OK\\Choose the selected player"
+msgstr "确定\\选择此玩家"
+
+msgid "OK\\Close program editor and return to game"
+msgstr "确定\\关闭程序编辑器并回到游戏"
+
+msgid "Object too close"
+msgstr "距离物体太近"
+
+msgid "Octal value out of range"
+msgstr "八进制数值越界"
+
+msgid "One step"
+msgstr "单步执行"
+
+msgid "Open"
+msgstr "打开"
+
+msgid "Open (Ctrl+O)"
+msgstr "打开 (Ctrl+O)"
+
+msgid "Open Directory\\Open the mods directory"
+msgstr "打开目录\\打开模组目录"
+
+msgid "Opening brace missing"
+msgstr "缺少上括号"
+
+msgid "Opening bracket missing"
+msgstr "缺失左括号"
+
+msgid "Operation impossible with value \"nan\""
+msgstr "无法不带值 \"nan\" 执行操作"
+
+msgid "Options"
+msgstr "设置"
+
+msgid "Options\\Preferences"
+msgstr "设置\\偏好设置"
+
+msgid "Organic matter"
+msgstr "有机物"
+
+msgid "Origin of last message\\Shows where the last message was sent from"
+msgstr "上一条信息来源\\显示上一条信息的发送者"
+
+msgid "Original game developed by:"
+msgstr "原游戏开发者："
+
+msgid "Overwrite existing file?"
+msgstr "覆盖现有文件吗？"
+
+msgid "Parameters missing"
+msgstr "缺少参数"
+
+msgid "Particles in the interface\\Steam clouds and sparks in the interface"
+msgstr "界面粒子\\界面的蒸汽云与闪电"
+
+msgid "Paste (Ctrl+V)"
+msgstr "粘贴 (Ctrl+V)"
+
+msgid "Pause blur\\Blur the background on the pause screen"
+msgstr "暂停时模糊\\暂停时模糊背景"
+
+msgid "Pause in background\\Pause the game when the window is unfocused"
+msgstr "位于后台时暂停\\窗口失去焦点时暂停游戏"
+
+msgid "Pause/continue"
+msgstr "暂停\\继续"
+
+msgid "Pause\\Pause the game without opening menu"
+msgstr "暂停\\暂停游戏而不打开菜单"
+
+msgid "Phazer shooter"
+msgstr "榴弹炮射击机器人"
+
+msgid "Photography"
+msgstr "照片"
+
+msgid "Place occupied"
+msgstr "位置已被占用"
+
+msgid "Planets:"
+msgstr "星球："
+
+msgid "Plans for builder available"
+msgstr "建造机器人计划可用"
+
+msgid "Plans for defense tower available"
+msgstr "防御塔计划可用"
+
+msgid "Plans for nuclear power plant available"
+msgstr "核能发电站计划可用"
+
+msgid "Plans for phazer shooter available"
+msgstr "霰弹射击机器人计划可用"
+
+msgid "Plans for shielder available"
+msgstr "防御机器人计划可用"
+
+msgid "Plans for shooter available"
+msgstr "射击机器人计划可用"
+
+msgid "Plans for thumper available"
+msgstr "打桩机器人计划可用"
+
+msgid "Plans for tracked robots available"
+msgstr "跟踪机器人计划可用"
+
+msgid "Plant a flag"
+msgstr "放置旗子"
+
+msgid "Play\\Start mission!"
+msgstr "开始\\开始执行任务！"
+
+msgid "Player"
+msgstr "玩家"
+
+msgid "Player name"
+msgstr "玩家名称"
+
+msgid "Player's name"
+msgstr "玩家名称"
+
+msgid "Power cell"
+msgstr "电池"
+
+msgid "Power cell available"
+msgstr "电池可用"
+
+msgid "Power cell factory"
+msgstr "电池工厂"
+
+msgid "Power station"
+msgstr "能源站"
+
+msgid "Practice bot"
+msgstr "训练机器人"
+
+msgid "Press \\key help; to read instructions on your SatCom"
+msgstr "按下 \\key help; 阅读 SatCom 上的说明"
+
+msgid "Previous"
+msgstr "上一个"
+
+msgid "Previous object\\Selects the previous object"
+msgstr "前一项\\选中前一个物品"
+
+msgid "Previous selection (\\key desel;)"
+msgstr "上个选中项 (\\key desel;)"
+
+msgid "Private element"
+msgstr "私有元素"
+
+msgid "Private\\Private folder"
+msgstr "私有\\私有文件夹"
+
+msgid "Processing level file"
+msgstr "正在处理关卡文件"
+
+msgid "Program cloned"
+msgstr "程序已复制"
+
+msgid "Program editor"
+msgstr "程序编辑器"
+
+msgid "Program finished"
+msgstr "程序执行结束"
+
+msgid "Program infected by a virus"
+msgstr "程序被病毒感染"
+
+msgid "Programming exercises"
+msgstr "编程练习"
+
+msgid "Programming help"
+msgstr "编程指南"
+
+msgid "Programming help (\\key prog;)"
+msgstr "编程指南 (\\key prog;)"
+
+msgid "Programming help\\Gives more detailed help with programming"
+msgstr "编程指南\\提供编程细节上的帮助"
+
+msgid "Programs dispatched by Houston"
+msgstr "休斯敦中心发送的程序"
+
+msgid "Public required"
+msgstr "需要公开"
+
+msgid "Public\\Common folder"
+msgstr "公开\\公共文件夹"
+
+msgid "Quake at explosions\\The screen shakes at explosions"
+msgstr "爆炸时晃动\\爆炸时晃动屏幕"
+
+msgid "Quick load\\Immediately load game"
+msgstr "快速加载\\立即加载游戏"
+
+msgid "Quick save\\Immediately save game"
+msgstr "快速保存\\立即保存游戏"
+
+msgid "Quicksave slot not found"
+msgstr "未找到快速保存档"
+
+msgid "Quit\\Quit Colobot: Gold Edition"
+msgstr "退出\\退出 Colobot: 黄金版"
+
+msgid "Quit\\Quit the current mission or exercise"
+msgstr "退出\\退出当前任务或练习"
+
+msgid "Radar station"
+msgstr "雷达站"
+
+msgid "Read error"
+msgstr "读错误"
+
+msgid "Recorder"
+msgstr "记录器"
+
+msgid "Recycle (\\key action;)"
+msgstr "回收 (\\key action;)"
+
+msgid "Recycler"
+msgstr "回收机器人"
+
+msgid "Red"
+msgstr "红色"
+
+msgid "Red flag"
+msgstr "红色旗子"
+
+msgid "Reflections on the buttons \\Shiny buttons"
+msgstr "按钮反光\\亮闪闪的按钮"
+
+msgid "Refresh\\Refresh the list of currently installed mods"
+msgstr "刷新\\刷新已安装模组列表"
+
+msgid "Remains of Apollo mission"
+msgstr "阿波罗任务的遗迹"
+
+msgid "Remove a flag"
+msgstr "移除旗子"
+
+msgid "Remove selected program"
+msgstr "删除选中程序"
+
+msgid "Render distance\\Maximum visibility"
+msgstr "渲染距离\\最大可见性"
+
+msgid "Repair center"
+msgstr "维修中心"
+
+msgid "Research center"
+msgstr "研究中心"
+
+msgid "Research program already performed"
+msgstr "已进行研究"
+
+msgid "Research program completed"
+msgstr "研究项目完成"
+
+msgid "Reserved keyword of CBOT language"
+msgstr "CBOT 语言的受保护关键词"
+
+msgid "Resolution"
+msgstr "分辨率"
+
+msgid "Resolution:"
+msgstr "分辨率："
+
+msgid "Resources"
+msgstr "资源"
+
+msgid "Restart\\Restart the mission from the beginning"
+msgstr "重试\\从头开始完成任务"
+
+msgid "Restoring CBot execution state"
+msgstr "正在恢复 CBot 执行状态"
+
+msgid "Restoring saved objects"
+msgstr "正在恢复已保存物品"
+
+msgid "Results"
+msgstr "结果"
+
+msgid "Return to start"
+msgstr "重置至初始状态"
+
+msgid "Robbie"
+msgstr "窃贼"
+
+msgid "Ruin"
+msgstr "废墟"
+
+msgid "Run research program for builder"
+msgstr "运行建造机器人研究程序"
 
 msgid "Run research program for defense tower"
 msgstr "运行防御塔研究程序"
+
+msgid "Run research program for legged bots"
+msgstr "运行带腿机器人研究程序"
+
+msgid "Run research program for nuclear power"
+msgstr "运行核能研究程序"
+
+msgid "Run research program for orga shooter"
+msgstr "运行有机弹射击机器人研究程序"
 
 msgid "Run research program for phazer shooter"
 msgstr "运行霰弹射击机器人研究程序"
@@ -983,173 +1412,83 @@ msgstr "运行霰弹射击机器人研究程序"
 msgid "Run research program for shielder"
 msgstr "运行防御机器人研究程序"
 
-msgid "Run research program for nuclear power"
-msgstr "运行核能研究程序"
-
-msgid "Run research program for legged bots"
-msgstr "运行带腿机器人研究程序"
-
-msgid "Run research program for orga shooter"
-msgstr "运行有机弹射击机器人研究程序"
-
-msgid "Run research program for builder"
-msgstr "运行建造机器人研究程序"
+msgid "Run research program for shooter"
+msgstr "运行射击机器人研究程序"
 
 msgid "Run research program for target bot"
 msgstr "运行靶子机器人研究程序"
 
-msgid "Return to start"
-msgstr "重置至初始状态"
+msgid "Run research program for thumper"
+msgstr "运行打桩机器人研究程序"
 
-msgid "Sniff (\\key action;)"
-msgstr "探索 (\\key action;)"
+msgid "Run research program for tracked bots"
+msgstr "运行跟踪机器人研究程序"
 
-msgid "Thump (\\key action;)"
-msgstr "打桩 (\\key action;)"
+msgid "Run research program for winged bots"
+msgstr "运行带翼机器人研究程序"
 
-msgid "Shoot (\\key action;)"
-msgstr "射击 (\\key action;)"
+msgid "SatCom"
+msgstr "SatCom"
 
-msgid "Explode (\\key action;)"
-msgstr "爆炸 (\\key action;)"
+msgid "Satellite report"
+msgstr "卫星报告"
 
-msgid "Build (\\key action;)"
-msgstr "建造 (\\key action;)"
+msgid "Save"
+msgstr "保存"
 
-msgid "Recycle (\\key action;)"
-msgstr "回收 (\\key action;)"
+msgid "Save (Ctrl+S)"
+msgstr "保存 (Ctrl+S)"
 
-msgid "Extend shield (\\key action;)"
-msgstr "展开防护板 (\\key action;)"
+msgid "Save the current mission"
+msgstr "保存当前任务"
 
-msgid "Withdraw shield (\\key action;)"
-msgstr "收起防护板 (\\key action;)"
+msgid "Save\\Save the current mission"
+msgstr "保存\\保存当前任务"
 
-msgid "Shield radius"
-msgstr "防护板半径"
+msgid "Save\\Saves the current mission"
+msgstr "保存\\保存当前任务"
 
-msgid "Delete mark"
-msgstr "删除标记"
+msgid "Select Folder"
+msgstr "选择文件夹"
 
-msgid "Execute the selected program"
-msgstr "执行选中程序"
+msgid "Select the astronaut\\Selects the astronaut"
+msgstr "选中宇航员\\选中宇航员"
 
-msgid "Edit the selected program"
-msgstr "编辑选中程序"
+msgid "Semicolon terminator missing"
+msgstr "缺失分号结束符"
 
-msgid "Add new program"
-msgstr "添加新程序"
-
-msgid "Remove selected program"
-msgstr "删除选中程序"
-
-msgid "Clone selected program"
-msgstr "复制选中程序"
-
-msgid "Move selected program up"
-msgstr "将选中程序上移"
-
-msgid "Move selected program down"
-msgstr "将选中程序下移"
-
-msgid "\\SatCom on standby"
-msgstr "\\SatCom 待机中"
-
-msgid "Destroy the building"
-msgstr "摧毁建筑"
-
-msgid "Energy level"
-msgstr "能源等级"
+msgid "Shadow resolution\\Higher means better range and quality, but slower"
+msgstr "阴影分辨率\\数值越高，阴影范围与质量越好，但速度越慢"
 
 msgid "Shield level"
 msgstr "防护等级"
 
-msgid "Jet temperature"
-msgstr "喷气机温度"
+msgid "Shield radius"
+msgstr "防护板半径"
 
-msgid "Still working ..."
-msgstr "正在工作中..."
+msgid "Shielder"
+msgstr "防御机器人"
 
-msgid "Number of insects detected"
-msgstr "探测到的昆虫数目"
+msgid "Shoot (\\key action;)"
+msgstr "射击 (\\key action;)"
 
-msgid "Transmitted information"
-msgstr "已传输信息"
-
-msgid "Zoom mini-map"
-msgstr "缩放小地图"
-
-msgid "Camera (\\key camera;)"
-msgstr "相机 (\\key camera;)"
-
-msgid "Help about selected object"
-msgstr "选中物品的帮助"
-
-msgid "Show the solution"
-msgstr "显示题解"
-
-msgid "Switch bots <-> buildings"
-msgstr "切换机器人 <-> 建筑物"
-
-msgid "Show the range"
-msgstr "显示射程"
-
-msgid "\\Raise the pencil"
-msgstr "\\提笔"
-
-msgid "\\Use the black pencil"
-msgstr "\\使用黑色铅笔"
-
-msgid "\\Use the yellow pencil"
-msgstr "\\使用黄色铅笔"
-
-msgid "\\Use the orange pencil"
-msgstr "\\使用橙色铅笔"
-
-msgid "\\Use the red pencil"
-msgstr "\\使用红色铅笔"
-
-msgid "\\Use the purple pencil"
-msgstr "\\使用紫色铅笔"
-
-msgid "\\Use the blue pencil"
-msgstr "\\使用蓝色铅笔"
-
-msgid "\\Use the green pencil"
-msgstr "\\使用绿色铅笔"
-
-msgid "\\Use the brown pencil"
-msgstr "\\使用棕色铅笔"
-
-msgid "\\Start recording"
-msgstr "\\开始录制"
-
-msgid "\\Stop recording"
-msgstr "\\停止录制"
+msgid "Show if the ground is flat"
+msgstr "显示地面平坦度"
 
 msgid "Show the place"
 msgstr "显示位置"
 
-msgid "Continue"
-msgstr "继续"
+msgid "Show the range"
+msgstr "显示射程"
 
-msgid "Command line"
-msgstr "命令行"
+msgid "Show the solution"
+msgstr "显示题解"
 
-msgid "Game speed"
-msgstr "游戏速度"
+msgid "Sign \" : \" missing"
+msgstr "缺失 \" : \" 符号"
 
-msgid "Back"
-msgstr "返回"
-
-msgid "Forward"
-msgstr "下一步"
-
-msgid "Home"
-msgstr "主页"
-
-msgid "Copy"
-msgstr "复制"
+msgid "Simple shadows\\Shadows spots on the ground"
+msgstr "简单投影\\在地面上显示投影点"
 
 msgid "Size 1"
 msgstr "大小 1"
@@ -1166,368 +1505,377 @@ msgstr "大小 4"
 msgid "Size 5"
 msgstr "大小 4"
 
-msgid "Instructions from Houston"
-msgstr "休斯敦中心的指示"
-
-msgid "Satellite report"
-msgstr "卫星报告"
-
-msgid "Programs dispatched by Houston"
-msgstr "休斯敦中心发送的程序"
-
-msgid "List of objects"
-msgstr "物品列表"
-
-msgid "Programming help"
-msgstr "编程指南"
+msgid "Sniff (\\key action;)"
+msgstr "探索 (\\key action;)"
 
 msgid "Solution"
 msgstr "题解"
 
-msgid "OK\\Close program editor and return to game"
-msgstr "确定\\关闭程序编辑器并回到游戏"
+msgid "Sound effects:\\Volume of engines, voice, shooting, etc."
+msgstr "音效：\\引擎、人声、射击等音效音量。"
 
-msgid "Cancel\\Cancel all changes"
-msgstr "取消\\取消所有更改"
+msgid "Sound\\Music and game sound volume"
+msgstr "声音\\音乐与游戏音效音量"
 
-msgid "Clone program"
-msgstr "复制程序"
+msgid "Space Explorer\\Disables astronaut abilities"
+msgstr "太空探索者\\禁用宇航员能力"
 
-msgid "Open (Ctrl+O)"
-msgstr "打开 (Ctrl+O)"
+msgid "Space Programmer\\Disables radio-control"
+msgstr "太空程序员\\禁用无线控制"
 
-msgid "Save (Ctrl+S)"
-msgstr "保存 (Ctrl+S)"
-
-msgid "Undo (Ctrl+Z)"
-msgstr "撤销 (Ctrl+Z)"
-
-msgid "Cut (Ctrl+X)"
-msgstr "剪切 (Ctrl+X)"
-
-msgid "Copy (Ctrl+C)"
-msgstr "复制 (Ctrl+C)"
-
-msgid "Paste (Ctrl+V)"
-msgstr "粘贴 (Ctrl+V)"
-
-msgid "Font size"
-msgstr "字体大小"
-
-msgid "Instructions (\\key help;)"
-msgstr "说明 (\\key help;)"
-
-msgid "Programming help (\\key prog;)"
-msgstr "编程指南 (\\key prog;)"
-
-msgid "Compile"
-msgstr "编译"
-
-msgid "Execute/stop"
-msgstr "运行\\停止"
-
-msgid "Pause/continue"
-msgstr "暂停\\继续"
-
-msgid "One step"
-msgstr "单步执行"
-
-msgid "Gantry crane"
-msgstr "龙门吊"
+msgid "Space Researcher\\Disables using all previously researched technologies"
+msgstr "太空研究员\\禁用已研究技术"
 
 msgid "Spaceship"
 msgstr "飞船"
 
-msgid "Derrick"
-msgstr "井架"
-
-msgid "Bot factory"
-msgstr "机器人工厂"
-
-msgid "Repair center"
-msgstr "维修中心"
-
-msgid "Destroyer"
-msgstr "摧毁器"
-
-msgid "Power station"
-msgstr "能源站"
-
-msgid "Converts ore to titanium"
-msgstr "将钛矿转化为钛金属"
-
-msgid "Defense tower"
-msgstr "防御塔"
-
-msgid "Nest"
-msgstr "巢"
-
-msgid "Research center"
-msgstr "研究中心"
-
-msgid "Radar station"
-msgstr "雷达站"
-
-msgid "Information exchange post"
-msgstr "信息交换桩"
-
-msgid "Power cell factory"
-msgstr "电池工厂"
-
-msgid "Autolab"
-msgstr "自动实验室"
-
-msgid "Nuclear power station"
-msgstr "核能发电站"
-
-msgid "Lightning conductor"
-msgstr "避雷针"
-
-msgid "Vault"
-msgstr "保护拱"
-
-msgid "Houston Mission Control"
-msgstr "休斯敦任务指挥中心"
-
-msgid "Target"
-msgstr "目标"
-
-msgid "Start"
-msgstr "开始"
-
-msgid "Finish"
-msgstr "完成"
-
-msgid "Titanium ore"
-msgstr "钛矿"
-
-msgid "Uranium ore"
-msgstr "铀矿"
-
-msgid "Organic matter"
-msgstr "有机物"
-
-msgid "Titanium"
-msgstr "钛金属"
-
-msgid "Power cell"
-msgstr "电池"
-
-msgid "Nuclear power cell"
-msgstr "核电池"
-
-msgid "Black box"
-msgstr "黑箱"
-
-msgid "Key A"
-msgstr "钥匙 A"
-
-msgid "Key B"
-msgstr "钥匙 B"
-
-msgid "Key C"
-msgstr "钥匙 C"
-
-msgid "Key D"
-msgstr "钥匙 D"
-
-msgid "Explosive"
-msgstr "爆炸物"
-
-msgid "Fixed mine"
-msgstr "已固定地雷"
-
-msgid "Survival kit"
-msgstr "生存套装"
-
-msgid "Checkpoint"
-msgstr "存档点"
-
-msgid "Blue flag"
-msgstr "蓝色旗子"
-
-msgid "Red flag"
-msgstr "红色旗子"
-
-msgid "Green flag"
-msgstr "绿色旗子"
-
-msgid "Yellow flag"
-msgstr "黄色旗子"
-
-msgid "Violet flag"
-msgstr "紫色旗子"
-
-msgid "Energy deposit (site for power station)"
-msgstr "能源存放点（能源站所需点）"
-
-msgid "Uranium deposit (site for derrick)"
-msgstr "铀金属存放点（井架所需点）"
-
-msgid "Found key A (site for derrick)"
-msgstr "已找到钥匙 A（井架所需点）"
-
-msgid "Found key B (site for derrick)"
-msgstr "已找到钥匙 B（井架所需点）"
-
-msgid "Found key C (site for derrick)"
-msgstr "已找到钥匙 C（井架所需点）"
-
-msgid "Found key D (site for derrick)"
-msgstr "已找到钥匙 D（井架所需点）"
-
-msgid "Titanium deposit (site for derrick)"
-msgstr "钛金属存放点（井架所需点）"
-
-msgid "Practice bot"
-msgstr "训练机器人"
-
-msgid "Winged grabber"
-msgstr "带翼抓取机器人"
-
-msgid "Tracked grabber"
-msgstr "跟踪抓取机器人"
-
-msgid "Wheeled grabber"
-msgstr "滚轮抓取机器人"
-
-msgid "Legged grabber"
-msgstr "带腿抓取机器人"
-
-msgid "Winged builder"
-msgstr "带翼建造机器人"
-
-msgid "Tracked builder"
-msgstr "跟踪建造机器人"
-
-msgid "Wheeled builder"
-msgstr "滚轮建造机器人"
-
-msgid "Legged builder"
-msgstr "带腿建造机器人"
-
-msgid "Winged shooter"
-msgstr "带翼射击机器人"
-
-msgid "Tracked shooter"
-msgstr "跟踪射击机器人"
-
-msgid "Wheeled shooter"
-msgstr "滚轮射击机器人"
-
-msgid "Legged shooter"
-msgstr "带腿射击机器人"
-
-msgid "Winged orga shooter"
-msgstr "带翼有机弹射击机器人"
-
-msgid "Tracked orga shooter"
-msgstr "跟踪有机弹射击机器人"
-
-msgid "Wheeled orga shooter"
-msgstr "滚轮有机弹射击机器人"
-
-msgid "Legged orga shooter"
-msgstr "带腿有机弹射击机器人"
-
-msgid "Winged sniffer"
-msgstr "带翼探测机器人"
-
-msgid "Tracked sniffer"
-msgstr "跟踪探测机器人"
-
-msgid "Wheeled sniffer"
-msgstr "滚轮探测机器人"
-
-msgid "Legged sniffer"
-msgstr "带腿探测机器人"
-
-msgid "Thumper"
-msgstr "打桩机器人"
-
-msgid "Phazer shooter"
-msgstr "榴弹炮射击机器人"
-
-msgid "Recycler"
-msgstr "回收机器人"
-
-msgid "Shielder"
-msgstr "防御机器人"
-
-msgid "Subber"
-msgstr "水下操作机器人"
-
-msgid "Target bot"
-msgstr "靶子机器人"
-
-msgid "Drawer bot"
-msgstr "抽屉机器人"
-
-msgid "Engineer"
-msgstr "工程师"
-
-msgid "Robbie"
-msgstr "窃贼"
-
-msgid "Alien Queen"
-msgstr "外星人皇后"
-
-msgid "Ant"
-msgstr "蚂蚁"
+msgid "Spaceship ruin"
+msgstr "飞船残骸"
 
 msgid "Spider"
 msgstr "蜘蛛"
 
-msgid "Wasp"
-msgstr "黄蜂"
+msgid "Spider fatally wounded"
+msgstr "蜘蛛受到致命伤"
 
-msgid "Worm"
-msgstr "蠕虫"
+msgid "Stack overflow"
+msgstr "栈上溢"
 
-msgid "Egg"
-msgstr "虫卵"
+msgid "Standard action\\Standard action of the bot (take/grab, shoot, sniff, etc)"
+msgstr "标准操作\\机器人的标准操作（拿取或抓取、设计、探测等等）"
 
-msgid "Wreckage"
-msgstr "残骸"
+msgid "Standard controls\\Standard key functions"
+msgstr "标准控制\\标准按键功能"
 
-msgid "Ruin"
-msgstr "废墟"
+msgid "Standard speed\\Reset speed to normal"
+msgstr "标准速度\\重置正常速度"
 
-msgid "Waste"
-msgstr "废物"
+msgid "Standard\\Standard appearance settings"
+msgstr "标准\\标准外观设置"
 
-msgid "Spaceship ruin"
-msgstr "飞船残骸"
+msgid "Start"
+msgstr "开始"
 
-msgid "Remains of Apollo mission"
-msgstr "阿波罗任务的遗迹"
+msgid "Starting..."
+msgstr "启动中..."
 
-msgid "Lunar Roving Vehicle"
-msgstr "月球车"
+msgid "Still working ..."
+msgstr "正在工作中..."
 
-msgid "Internal error - tell the developers"
-msgstr "内部错误 - 请联系开发者"
+msgid "String missing"
+msgstr "缺少字符串"
 
-msgid "Unknown command"
-msgstr "未知命令"
+msgid "Strip color:"
+msgstr "条纹色："
+
+msgid "Subber"
+msgstr "水下操作机器人"
+
+msgid "Suit color:"
+msgstr "套装色："
+
+msgid "Suit\\Astronaut suit"
+msgstr "套装\\宇航员套装"
+
+msgid "Summary:"
+msgstr "总计："
+
+msgid "Survival kit"
+msgstr "生存套装"
+
+msgid "Switch bots <-> buildings"
+msgstr "切换机器人 <-> 建筑物"
+
+msgid "Take off to finish the mission"
+msgstr "起飞以完成任务"
+
+msgid "Target"
+msgstr "目标"
+
+msgid "Target bot"
+msgstr "靶子机器人"
+
+msgid "Terrain relief"
+msgstr "地形起伏"
+
+msgid "Texture filtering\\Texture filtering"
+msgstr "纹理过滤\\纹理过滤"
+
+msgid "Textures"
+msgstr "材质"
+
+#, c-format
+msgid "The address %s could not be opened in a web browser."
+msgstr "无法在网页浏览器中打开地址 %s。"
+
+msgid "The battle has ended"
+msgstr "战斗已结束"
+
+msgid "The expression must return a boolean value"
+msgstr "表达式必须返回布尔值"
+
+msgid "The function returned no value"
+msgstr "此函数无返回值"
+
+msgid "The mission is not accomplished yet (press \\key help; for more details)"
+msgstr "任务还没完成（按下 \\key help; 了解更多）"
+
+#, c-format
+msgid "The path %s could not be opened in a file explorer."
+msgstr "无法在文件浏览器中打开路径 %s。"
+
+msgid "The types of the two operands are incompatible"
+msgstr "两操作符类型不兼容"
+
+msgid "There are unsaved changes. Do you want to save them before leaving?"
+msgstr "有未保存的更改。要在离开前保存吗？"
+
+msgid "This class already exists"
+msgstr "这个类已存在"
+
+msgid "This class does not exist"
+msgstr "类不存在"
+
+msgid "This is example code that cannot be run directly"
+msgstr "这是示例代码，不可直接运行"
+
+msgid "This is not a member of this class"
+msgstr "不是这个类的成员"
+
+msgid "This label does not exist"
+msgstr "标签不存在"
+
+msgid "This menu is for userlevels from mods, but you didn't install any"
+msgstr "此菜单列出来自模组的用户关卡，但你还未安装"
 
 msgid "This object is currently busy"
 msgstr "物品当前正忙"
 
-msgid "Impossible when flying"
-msgstr "飞行时无法进行"
+msgid "This object is not a member of a class"
+msgstr "此对象不是任何类的成员"
 
-msgid "Already carrying something"
-msgstr "已有携带物品"
+msgid "This parameter needs a default value"
+msgstr "此参数需要默认值"
 
-msgid "Nothing to grab"
-msgstr "没有东西可抓取"
+msgid "This program is read-only, clone it to edit"
+msgstr "此程序是只读的，复制以编辑"
 
-msgid "Impossible when moving"
-msgstr "移动时无法进行"
+msgid "Thump (\\key action;)"
+msgstr "打桩 (\\key action;)"
 
-msgid "Place occupied"
-msgstr "位置已被占用"
+msgid "Thumper"
+msgstr "打桩机器人"
+
+#, c-format
+msgid "Time: %s"
+msgstr "时间：%s"
+
+msgid "Titanium"
+msgstr "钛金属"
+
+msgid "Titanium available"
+msgstr "钛金属可用"
+
+msgid "Titanium deposit (site for derrick)"
+msgstr "钛金属存放点（井架所需点）"
+
+msgid "Titanium ore"
+msgstr "钛矿"
+
+msgid "Titanium too close"
+msgstr "钛金属太近了"
+
+msgid "Titanium too far away"
+msgstr "钛金属太远了"
+
+msgid "Too close to a building"
+msgstr "距离建筑物太近"
+
+msgid "Too close to an existing flag"
+msgstr "距离已有旗子太近"
+
+msgid "Too close to space ship"
+msgstr "距离飞船太近"
+
+msgid "Too many flags of this color (maximum 5)"
+msgstr "同色旗子太多（最多 5 个）"
+
+msgid "Too many parameters"
+msgstr "参数过多"
+
+msgid "Tracked builder"
+msgstr "跟踪建造机器人"
+
+msgid "Tracked grabber"
+msgstr "跟踪抓取机器人"
+
+msgid "Tracked orga shooter"
+msgstr "跟踪有机弹射击机器人"
+
+msgid "Tracked shooter"
+msgstr "跟踪射击机器人"
+
+msgid "Tracked sniffer"
+msgstr "跟踪探测机器人"
+
+msgid "Transforms only titanium"
+msgstr "仅可转化钛金属"
+
+msgid "Transforms only uranium"
+msgstr "仅可转化铀金属"
+
+msgid "Transmitted information"
+msgstr "已传输信息"
+
+msgid "Turn left (\\key left;)"
+msgstr "左转 (\\key left;)"
+
+msgid "Turn left\\turns the bot to the left"
+msgstr "左转\\让机器人左转"
+
+msgid "Turn right (\\key right;)"
+msgstr "右转 (\\key right;)"
+
+msgid "Turn right\\turns the bot to the right"
+msgstr "右转\\让机器人右转"
+
+msgid "Type declaration missing"
+msgstr "缺少类型定义"
+
+msgid "Unable to control enemy objects"
+msgstr "无法控制敌方物体"
+
+msgid "Undo (Ctrl+Z)"
+msgstr "撤销 (Ctrl+Z)"
+
+msgid "Unit"
+msgstr "单位"
+
+msgid "Unknown Object"
+msgstr "未知对象"
+
+msgid "Unknown author"
+msgstr "未知作者"
+
+msgid "Unknown command"
+msgstr "未知命令"
+
+msgid "Unknown escape sequence"
+msgstr "未知 Esc 序列"
+
+msgid "Unknown function"
+msgstr "未知函数"
+
+msgid "Up (\\key gup;)"
+msgstr "向上 (\\key gup;)"
+
+msgid "Up\\Move the selected mod up so it's loaded sooner (mods may overwrite files from the mods above them)"
+msgstr "上移\\上移所选模组使其优先加载（可能会覆盖上层模组的文件）"
+
+msgid "Uranium deposit (site for derrick)"
+msgstr "铀金属存放点（井架所需点）"
+
+msgid "Uranium ore"
+msgstr "铀矿"
+
+msgid "User levels"
+msgstr "用户关卡"
+
+msgid "Variable name missing"
+msgstr "缺少变量名"
+
+msgid "Variable not declared"
+msgstr "变量未定义"
+
+msgid "Variable not initialized"
+msgstr "变量未初始化"
+
+msgid "Vault"
+msgstr "保护拱"
+
+msgid "Version"
+msgstr "版本"
+
+msgid "Vertical Synchronization\\Limits the number of frames per second to display frequency"
+msgstr "垂直同步\\将每秒帧数限制为显示频率"
+
+msgid "Violet flag"
+msgstr "紫色旗子"
+
+msgid "Void parameter"
+msgstr "无效参数"
+
+msgid "Wasp"
+msgstr "黄蜂"
+
+msgid "Wasp fatally wounded"
+msgstr "黄蜂受到致命伤"
+
+msgid "Waste"
+msgstr "废物"
+
+msgid "Website"
+msgstr "网站"
+
+msgid "Wheeled builder"
+msgstr "滚轮建造机器人"
+
+msgid "Wheeled grabber"
+msgstr "滚轮抓取机器人"
+
+msgid "Wheeled orga shooter"
+msgstr "滚轮有机弹射击机器人"
+
+msgid "Wheeled shooter"
+msgstr "滚轮射击机器人"
+
+msgid "Wheeled sniffer"
+msgstr "滚轮探测机器人"
+
+msgid "Winged builder"
+msgstr "带翼建造机器人"
+
+msgid "Winged grabber"
+msgstr "带翼抓取机器人"
+
+msgid "Winged orga shooter"
+msgstr "带翼有机弹射击机器人"
+
+msgid "Winged shooter"
+msgstr "带翼射击机器人"
+
+msgid "Winged sniffer"
+msgstr "带翼探测机器人"
+
+msgid "Withdraw shield (\\key action;)"
+msgstr "收起防护板 (\\key action;)"
+
+msgid "Workshop\\Open the workshop to search for mods"
+msgstr "工坊\\打开工坊搜索模组"
+
+msgid "Worm"
+msgstr "蠕虫"
+
+msgid "Worm fatally wounded"
+msgstr "蠕虫受到致命伤"
+
+msgid "Wreckage"
+msgstr "残骸"
+
+msgid "Write error"
+msgstr "写错误"
+
+msgid "Wrong type for the assignment"
+msgstr "分配类型错误"
+
+msgid "Yellow flag"
+msgstr "黄色旗子"
+
+msgid "Yes"
+msgstr "是"
+
+msgid "You can fly with the keys (\\key gup;) and (\\key gdown;)"
+msgstr "你可以用 (\\key gup;) 与 (\\key gdown;) 键飞行"
 
 msgid "You can not carry a radioactive object"
 msgstr "不可携带放射性物品"
@@ -1535,490 +1883,127 @@ msgstr "不可携带放射性物品"
 msgid "You can not carry an object under water"
 msgstr "不可在水下携带物品"
 
-msgid "Nothing to drop"
-msgstr "没有东西可放下"
-
-msgid "Impossible under water"
-msgstr "在水下无法进行"
-
-msgid "Titanium too far away"
-msgstr "钛金属太远了"
-
-msgid "Titanium too close"
-msgstr "钛金属太近了"
-
-msgid "No titanium around"
-msgstr "周围没有钛金属"
-
-msgid "Ground not flat enough"
-msgstr "地面不够平坦"
-
-msgid "Flat ground not large enough"
-msgstr "平坦地面太小"
-
-msgid "Too close to space ship"
-msgstr "距离飞船太近"
-
-msgid "Too close to a building"
-msgstr "距离建筑物太近"
-
-msgid "Can not produce this object in this mission"
-msgstr "此任务中无法生产此物品"
-
-msgid "Can not produce not researched object"
-msgstr "无法生产未研究的物品"
-
-msgid "Not enough energy"
-msgstr "能量不足"
-
-msgid "Nothing to recycle"
-msgstr "没有东西可回收"
-
-msgid "No more energy"
-msgstr "无更多能量"
-
-msgid "Error in instruction move"
-msgstr "移动指令出错"
-
-msgid "Goto: inaccessible destination"
-msgstr "Goto: 无法到达目的地"
-
-msgid "Goto: destination occupied"
-msgstr "Goto: 目的地已被占用"
-
-msgid "No titanium ore to convert"
-msgstr "没有钛矿可转化"
-
-msgid "No ore in the subsoil"
-msgstr "基层土中没有矿物"
-
-msgid "No energy in the subsoil"
-msgstr "基层土中没有能源"
-
-msgid "No power cell"
-msgstr "没有动力电池"
-
-msgid "Inappropriate cell type"
-msgstr "电池类型不当"
-
-msgid "Research program already performed"
-msgstr "已进行研究"
-
-msgid "Not enough energy yet"
-msgstr "能量不足"
-
-msgid "No titanium to transform"
-msgstr "没有钛金属可转化"
-
-msgid "Transforms only titanium"
-msgstr "仅可转化钛金属"
-
-msgid "Doors blocked by a robot or another object"
-msgstr "机器人或其他物体挡住了门"
-
-msgid "You must get on the spaceship to take off"
-msgstr "必须登上飞船才能起飞"
-
-msgid "Nothing to analyze"
-msgstr "没有东西可分析"
-
-msgid "Inappropriate sample"
-msgstr "样品不当"
-
-msgid "Analysis already performed"
-msgstr "已进行分析"
-
-msgid "No uranium to transform"
-msgstr "没有铀金属可转化"
-
-msgid "Transforms only uranium"
-msgstr "仅可转化铀金属"
-
-msgid "No titanium"
-msgstr "没有钛金属"
-
-msgid "Object too close"
-msgstr "距离物体太近"
-
-msgid "No information exchange post within range"
-msgstr "范围内没有信息交换桩"
-
-msgid "Program infected by a virus"
-msgstr "程序被病毒感染"
-
-msgid "Infected by a virus; temporarily out of order"
-msgstr "已被病毒感染；暂时崩溃中"
-
-msgid "Impossible when swimming"
-msgstr "游泳时无法做到"
-
-msgid "Impossible when carrying an object"
-msgstr "携带物品时无法做到"
-
-msgid "Too many flags of this color (maximum 5)"
-msgstr "同色旗子太多（最多 5 个）"
-
-msgid "Too close to an existing flag"
-msgstr "距离已有旗子太近"
-
-msgid "No flag nearby"
-msgstr "附近没有旗子"
-
-msgid "Not found anything to destroy"
-msgstr "未找到可摧毁物体"
-
-msgid "Inappropriate object"
-msgstr "物体不当"
-
-msgid ""
-"The mission is not accomplished yet (press \\key help; for more details)"
-msgstr "任务还没完成（按下 \\key help; 了解更多）"
-
-msgid "Bot destroyed"
-msgstr "机器人已摧毁"
-
-msgid "Building destroyed"
-msgstr "建筑物已摧毁"
-
-msgid "Unable to control enemy objects"
-msgstr "无法控制敌方物体"
-
-msgid "Inappropriate bot"
-msgstr "机器人不当"
-
-msgid "Quicksave slot not found"
-msgstr "未找到快速保存档"
-
-msgid "Building completed"
-msgstr "建造完成"
-
-msgid "Titanium available"
-msgstr "钛金属可用"
-
-msgid "Research program completed"
-msgstr "研究项目完成"
-
-msgid "Plans for tracked robots available"
-msgstr "跟踪机器人计划可用"
-
-msgid "You can fly with the keys (\\key gup;) and (\\key gdown;)"
-msgstr "你可以用 (\\key gup;) 与 (\\key gdown;) 键飞行"
-
-msgid "Plans for thumper available"
-msgstr "打桩机器人计划可用"
-
-msgid "Plans for shooter available"
-msgstr "射击机器人计划可用"
-
-msgid "Plans for defense tower available"
-msgstr "防御塔计划可用"
-
-msgid "Plans for phazer shooter available"
-msgstr "霰弹射击机器人计划可用"
-
-msgid "Plans for shielder available"
-msgstr "防御机器人计划可用"
-
-msgid "Plans for nuclear power plant available"
-msgstr "核能发电站计划可用"
-
-msgid "Plans for builder available"
-msgstr "建造机器人计划可用"
-
-msgid "New bot available"
-msgstr "新机器人可用"
-
-msgid "Analysis performed"
-msgstr "已进行分析"
-
-msgid "Power cell available"
-msgstr "电池可用"
-
-msgid "Nuclear power cell available"
-msgstr "核电池可用"
-
-msgid "You found a usable object"
-msgstr "你找到了可用物品"
-
-msgid "Found a site for power station"
-msgstr "找到可建造能源站的地点"
-
-msgid "Found a site for a derrick"
-msgstr "找到可建造井架的地点"
-
-msgid "<<< Well done; mission accomplished >>>"
-msgstr "<<< 干得好；任务完成 >>>"
-
-msgid "<<< Sorry; mission failed >>>"
-msgstr "<<< 抱歉；任务失败 >>>"
-
-msgid "Current mission saved"
-msgstr "当前任务已保存"
-
-msgid "Alien Queen killed"
-msgstr "已击杀外星人皇后"
-
-msgid "Ant fatally wounded"
-msgstr "蚂蚁受到致命伤"
-
-msgid "Wasp fatally wounded"
-msgstr "黄蜂受到致命伤"
-
-msgid "Worm fatally wounded"
-msgstr "蠕虫受到致命伤"
-
-msgid "Spider fatally wounded"
-msgstr "蜘蛛受到致命伤"
-
-msgid "Press \\key help; to read instructions on your SatCom"
-msgstr "按下 \\key help; 阅读 SatCom 上的说明"
-
-#, c-format
-msgid "<<< Team %s finished! >>>"
-msgstr "<<< 队伍 %s 已完成！ >>>"
-
-#, c-format
-msgid "<<< Team %s lost! >>>"
-msgstr "<<< 队伍 %s 输了！ >>>"
-
-#, c-format
-msgid "<<< Team %s recieved %d points >>>"
-msgstr "<<< 队伍 %s 获得 %d 分 >>>"
-
-msgid "Opening bracket missing"
-msgstr "缺失左括号"
-
-msgid "Closing bracket missing"
-msgstr "缺失右括号"
-
-msgid "The expression must return a boolean value"
-msgstr "表达式必须返回布尔值"
-
-msgid "Variable not declared"
-msgstr "变量未定义"
-
-msgid "Assignment impossible"
-msgstr "无法完成目标"
-
-msgid "Semicolon terminator missing"
-msgstr "缺失分号结束符"
-
-msgid "Instruction \"case\" outside a block \"switch\""
-msgstr "\"switch\" 程序块外出现 \"case\" 语句"
-
-msgid "Instructions after the final closing brace"
-msgstr "最后一个右括号外出现语句"
-
-msgid "End of block missing"
-msgstr "缺失程序块结束符"
-
-msgid "Instruction \"else\" without corresponding \"if\""
-msgstr "\"else\" 语句没有对应的 \"if\""
-
-msgid "Opening brace missing"
-msgstr "缺少上括号"
-
-msgid "Wrong type for the assignment"
-msgstr "分配类型错误"
-
-msgid "A variable can not be declared twice"
-msgstr "不可重复声明变量"
-
-msgid "The types of the two operands are incompatible"
-msgstr "两操作符类型不兼容"
-
-msgid "Unknown function"
-msgstr "未知函数"
-
-msgid "Sign \" : \" missing"
-msgstr "缺失 \" : \" 符号"
-
-msgid "Keyword \"while\" missing"
-msgstr "缺失关键词 \"while\""
-
-msgid "Instruction \"break\" outside a loop"
-msgstr "循环外出现 \"break\" 语句"
-
-msgid "A label must be followed by \"for\"; \"while\"; \"do\" or \"switch\""
-msgstr "标签后必须有 \"for\" \"while\" \"do\" 或 \"switch\""
-
-msgid "This label does not exist"
-msgstr "标签不存在"
-
-msgid "Instruction \"case\" missing"
-msgstr "缺失 \"case\" 语句"
-
-msgid "Number missing"
-msgstr "缺少数字"
-
-msgid "Void parameter"
-msgstr "无效参数"
-
-msgid "Type declaration missing"
-msgstr "缺少类型定义"
-
-msgid "Variable name missing"
-msgstr "缺少变量名"
-
-msgid "Function name missing"
-msgstr "缺少函数名"
-
-msgid "Too many parameters"
-msgstr "参数过多"
-
-msgid "Function already exists"
-msgstr "函数已存在"
-
-msgid "Parameters missing"
-msgstr "缺少参数"
-
-msgid "No function with this name accepts this kind of parameter"
-msgstr "没有接受此类参数的函数"
-
-msgid "No function with this name accepts this number of parameters"
-msgstr "没有接受此数目参数的函数"
-
-msgid "This is not a member of this class"
-msgstr "不是这个类的成员"
-
-msgid "This object is not a member of a class"
-msgstr "此对象不是任何类的成员"
-
-msgid "Appropriate constructor missing"
-msgstr "缺失适当构造函数"
-
-msgid "This class already exists"
-msgstr "这个类已存在"
-
-msgid "\" ] \" missing"
-msgstr "缺少 \" ] \""
-
-msgid "Reserved keyword of CBOT language"
-msgstr "CBOT 语言的受保护关键词"
-
-msgid "Bad argument for \"new\""
-msgstr "\"new\" 参数错误"
-
-msgid "\" [ \" expected"
-msgstr "需要 \" [ \""
-
-msgid "String missing"
-msgstr "缺少字符串"
-
-msgid "Incorrect index type"
-msgstr "索引类型错误"
-
-msgid "Private element"
-msgstr "私有元素"
-
-msgid "Public required"
-msgstr "需要公开"
-
-msgid "Expression expected after ="
-msgstr "= 后需要表达式"
-
-msgid "Ambiguous call to overloaded function"
-msgstr "重载函数调用不明确"
-
-msgid "Function needs return type \"void\""
-msgstr "函数需要 \"void\" 返回类型"
-
-msgid "Class name expected"
-msgstr "需要类名称"
-
-msgid "Non-void function needs \"return;\""
-msgstr "非 void 函数需要 \"return;\""
-
-msgid "This parameter needs a default value"
-msgstr "此参数需要默认值"
-
-msgid "Missing end quote"
-msgstr "末尾缺少引号"
-
-msgid "Unknown escape sequence"
-msgstr "未知 Esc 序列"
-
-msgid "Octal value out of range"
-msgstr "八进制数值越界"
-
-msgid "Missing hex digits after escape sequence"
-msgstr "Esc 序列后缺少十六进制数字"
-
-msgid "Hex value out of range"
-msgstr "十六进制数值越界"
-
-msgid "Invalid universal character name"
-msgstr "通用字符名无效"
-
-msgid "Empty character constant"
-msgstr "字符常量为空"
-
-msgid "Duplicate label in switch"
-msgstr "switch 标签重复"
-
-msgid "Dividing by zero"
-msgstr "不可除以零"
-
-msgid "Variable not initialized"
-msgstr "变量未初始化"
-
-msgid "Negative value rejected by \"throw\""
-msgstr "\"throw\" 拒绝了负值"
-
-msgid "The function returned no value"
-msgstr "此函数无返回值"
-
-msgid "No function running"
-msgstr "没有运行中的函数"
-
-msgid "Calling an unknown function"
-msgstr "调用未知函数"
-
-msgid "This class does not exist"
-msgstr "类不存在"
-
-msgid "Unknown Object"
-msgstr "未知对象"
-
-msgid "Operation impossible with value \"nan\""
-msgstr "无法不带值 \"nan\" 执行操作"
-
-msgid "Access beyond array limit"
-msgstr "数组访问超限"
-
-msgid "Stack overflow"
-msgstr "栈上溢"
-
-msgid "Illegal object"
-msgstr "非法对象"
-
-msgid "Can't open file"
-msgstr "无法打开文件"
-
-msgid "File not open"
-msgstr "文件未打开"
-
-msgid "Read error"
-msgstr "读错误"
-
-msgid "Write error"
-msgstr "写错误"
-
-msgid "Button %1"
-msgstr "按钮 %1"
-
-#, c-format
-msgid "You have to use \"%1$s\" at least once in this exercise (used: %2$d)"
-msgid_plural ""
-"You have to use \"%1$s\" at least %3$d times in this exercise (used: %2$d)"
-msgstr[0] "在此练习中至少使用 \"%1$s\" %3$d 次（已使用 %2$d 次）"
-
 #, c-format
 msgid "You cannot use \"%s\" in this exercise (used: %d)"
 msgstr "不能在此练习中使用 \"%s\"（已使用 %d 次）"
 
+msgid "You found a usable object"
+msgstr "你找到了可用物品"
+
+#, c-format
+msgid "You have to use \"%1$s\" at least once in this exercise (used: %2$d)"
+msgid_plural "You have to use \"%1$s\" at least %3$d times in this exercise (used: %2$d)"
+msgstr[0] "在此练习中至少使用 \"%1$s\" %3$d 次（已使用 %2$d 次）"
+
 #, c-format
 msgid "You have to use \"%1$s\" at most once in this exercise (used: %2$d)"
-msgid_plural ""
-"You have to use \"%1$s\" at most %3$d times in this exercise (used: %2$d)"
+msgid_plural "You have to use \"%1$s\" at most %3$d times in this exercise (used: %2$d)"
 msgstr[0] "在此练习中至多使用 \"%1$s\" %3$d 次（已使用 %2$d 次）"
+
+msgid "You must get on the spaceship to take off"
+msgstr "必须登上飞船才能起飞"
+
+msgid "Zoom mini-map"
+msgstr "缩放小地图"
+
+msgid "\\Blue flags"
+msgstr "\\蓝色旗子"
+
+msgid "\\Eyeglasses 1"
+msgstr "\\眼镜 1"
+
+msgid "\\Eyeglasses 2"
+msgstr "\\眼镜 2"
+
+msgid "\\Eyeglasses 3"
+msgstr "\\眼镜 3"
+
+msgid "\\Eyeglasses 4"
+msgstr "\\眼镜 4"
+
+msgid "\\Eyeglasses 5"
+msgstr "\\眼镜 5"
+
+msgid "\\Face 1"
+msgstr "\\脸型 1"
+
+msgid "\\Face 2"
+msgstr "\\脸型 2"
+
+msgid "\\Face 3"
+msgstr "\\脸型 3"
+
+msgid "\\Face 4"
+msgstr "\\脸型 4"
+
+msgid "\\Green flags"
+msgstr "\\绿色旗子"
+
+msgid "\\New player name"
+msgstr "\\新玩家名称"
+
+msgid "\\No eyeglasses"
+msgstr "\\无眼镜"
+
+msgid "\\Raise the pencil"
+msgstr "\\提笔"
+
+msgid "\\Red flags"
+msgstr "\\红色旗子"
+
+msgid "\\Return to Colobot: Gold Edition"
+msgstr "\\回到 Colobot: 黄金版"
+
+msgid "\\SatCom on standby"
+msgstr "\\SatCom 待机中"
+
+msgid "\\Start recording"
+msgstr "\\开始录制"
+
+msgid "\\Stop recording"
+msgstr "\\停止录制"
+
+msgid "\\Turn left"
+msgstr "\\左转"
+
+msgid "\\Turn right"
+msgstr "\\右转"
+
+msgid "\\Use the black pencil"
+msgstr "\\使用黑色铅笔"
+
+msgid "\\Use the blue pencil"
+msgstr "\\使用蓝色铅笔"
+
+msgid "\\Use the brown pencil"
+msgstr "\\使用棕色铅笔"
+
+msgid "\\Use the green pencil"
+msgstr "\\使用绿色铅笔"
+
+msgid "\\Use the orange pencil"
+msgstr "\\使用橙色铅笔"
+
+msgid "\\Use the purple pencil"
+msgstr "\\使用紫色铅笔"
+
+msgid "\\Use the red pencil"
+msgstr "\\使用红色铅笔"
+
+msgid "\\Use the yellow pencil"
+msgstr "\\使用黄色铅笔"
+
+msgid "\\Violet flags"
+msgstr "\\紫色旗子"
+
+msgid "\\Yellow flags"
+msgstr "\\黄色旗子"
+
+msgid "by"
+msgstr "作者"
+
+msgid "colobot.info"
+msgstr "colobot.info"
+
+msgid "epsitec.com"
+msgstr "epsitec.com"
