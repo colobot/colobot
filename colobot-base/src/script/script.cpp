@@ -850,7 +850,7 @@ void CScript::New(Ui::CEdit* edit, const std::string& name)
     if ( name.empty() )  text = res;
     else                 text = name;
 
-    std::string script = StrUtils::Format("extern void object::%s()\n{\n\t\n\t\n\t\n}\n", text);
+    std::string script = StrUtils::Format("extern void object::%s()\n{\n\t\n\t\n\t\n}\n", text.c_str());
     edit->SetText(script, false);
 
     if ( text == res )
