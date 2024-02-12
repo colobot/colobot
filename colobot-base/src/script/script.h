@@ -63,7 +63,7 @@ public:
     CScript(COldObject* object);
     ~CScript();
 
-    void        PutScript(Ui::CEdit* edit, const char* name);
+    void        PutScript(Ui::CEdit* edit, const std::string& name);
     bool        GetScript(Ui::CEdit* edit);
     bool        GetCompile();
 
@@ -85,8 +85,8 @@ public:
     int         GetError();
     void        GetError(std::string& error);
 
-    void        New(Ui::CEdit* edit, const char* name);
-    bool        SendScript(const char* text);
+    void        New(Ui::CEdit* edit, const std::string& name);
+    bool        SendScript(const std::string& text);
     bool        ReadScript(const std::filesystem::path& filename);
     bool        WriteScript(const std::filesystem::path& filename);
     bool        ReadStack(std::istream &istr);
@@ -114,8 +114,7 @@ protected:
 
     int     m_ipf = 0;          // number of instructions/second
     int     m_errMode = 0;      // what to do in case of error
-    int     m_len = 0;          // length of the script (without <0>)
-    std::unique_ptr<char[]> m_script;       // script ends with <0>
+    std::string m_script;       // script ends with <0>
     bool    m_bRun = false;         // program during execution?
     bool    m_bStepMode = false;        // step by step
     bool    m_bContinue = false;        // external function to continue

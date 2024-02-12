@@ -67,7 +67,7 @@ CScript::CScript(COldObject* object)
 
     m_ipf = CBOT_IPF;
     m_errMode = ERM_STOP;
-    m_len = 0;
+    m_script = "";
     m_bRun = false;
     m_bStepMode = false;
     m_bCompile = false;
@@ -79,21 +79,21 @@ CScript::CScript(COldObject* object)
 
 CScript::~CScript()
 {
-    m_len = 0;
+    
 }
 
 
 // Gives the script editable block of text.
 
-void CScript::PutScript(Ui::CEdit* edit, const char* name)
+void CScript::PutScript(Ui::CEdit* edit, const std::string& name)
 {
-    if ( m_script == nullptr )
+    if ( m_script.empty() )
     {
         New(edit, name);
     }
     else
     {
-        edit->SetText(m_script.get());
+        edit->SetText(m_script);
         edit->SetCursor(m_cursor2, m_cursor1);
         edit->ShowSelect();
     }
@@ -105,13 +105,9 @@ void CScript::PutScript(Ui::CEdit* edit, const char* name)
 bool CScript::GetScript(Ui::CEdit* edit)
 {
     int len = edit->GetTextLength();
-    m_script = std::make_unique<char[]>(len + 2);
-
-    std::string tmp = edit->GetText(len+1);
-    strncpy(m_script.get(), tmp.c_str(), len+1);
+    m_script = edit->GetText(len + 1);
 
     edit->GetCursor(m_cursor2, m_cursor1);
-    m_len = strlen(m_script.get());
 
     if ( !CheckToken() )
     {
@@ -143,7 +139,7 @@ bool CScript::GetCompile()
 
 bool CScript::IsEmpty()
 {
-    for (int i = 0; i < m_len; i++)
+    for (std::size_t i = 0; i < m_script.size(); i++)
     {
         if ( m_script[i] != ' '  &&
              m_script[i] != '\n' )  return false;
@@ -168,7 +164,7 @@ bool CScript::CheckToken()
     std::map<std::string, int> cursor1;
     std::map<std::string, int> cursor2;
 
-    auto tokens = CBot::CBotToken::CompileTokens(m_script.get());
+    auto tokens = CBot::CBotToken::CompileTokens(m_script);
     CBot::CBotToken* bt = tokens.get();
     while ( bt != nullptr )
     {
@@ -240,7 +236,7 @@ bool CScript::Compile()
         m_botProg = std::make_unique<CBot::CBotProgram>(m_object->GetBotVar());
     }
 
-    if ( m_botProg->Compile(m_script.get(), functionList, this) )
+    if ( m_botProg->Compile(m_script, functionList, this) )
     {
         if (functionList.empty())
         {
@@ -262,8 +258,8 @@ bool CScript::Compile()
     else
     {
         m_botProg->GetError(m_error, m_cursor1, m_cursor2);
-        if ( m_cursor1 < 0 || m_cursor1 > m_len ||
-             m_cursor2 < 0 || m_cursor2 > m_len )
+        if ( m_cursor1 < 0 || m_cursor1 > m_script.size() ||
+             m_cursor2 < 0 || m_cursor2 > m_script.size() )
         {
             m_cursor1 = 0;
             m_cursor2 = 0;
@@ -305,7 +301,7 @@ bool CScript::GetStepMode()
 bool CScript::Run()
 {
     if (m_botProg == nullptr)  return false;
-    if ( m_script == nullptr || m_len == 0 )  return false;
+    if ( m_script.empty() )  return false;
     if ( m_mainFunction.empty() ) return false;
 
     if ( !m_botProg->Start(m_mainFunction.c_str()) )  return false;
@@ -338,8 +334,8 @@ bool CScript::Continue()
             if ( m_botProg->Run(this, 0) )
             {
                 m_botProg->GetError(m_error, m_cursor1, m_cursor2);
-                if ( m_cursor1 < 0 || m_cursor1 > m_len ||
-                     m_cursor2 < 0 || m_cursor2 > m_len )
+                if ( m_cursor1 < 0 || m_cursor1 > m_script.size() ||
+                     m_cursor2 < 0 || m_cursor2 > m_script.size() )
                 {
                     m_cursor1 = 0;
                     m_cursor2 = 0;
@@ -366,8 +362,8 @@ bool CScript::Continue()
     if ( m_botProg->Run(this, m_ipf) )
     {
         m_botProg->GetError(m_error, m_cursor1, m_cursor2);
-        if ( m_cursor1 < 0 || m_cursor1 > m_len ||
-             m_cursor2 < 0 || m_cursor2 > m_len )
+        if ( m_cursor1 < 0 || m_cursor1 > m_script.size() ||
+             m_cursor2 < 0 || m_cursor2 > m_script.size() )
         {
             m_cursor1 = 0;
             m_cursor2 = 0;
@@ -402,8 +398,8 @@ bool CScript::Step()
     if ( m_botProg->Run(this, 0) )  // step mode
     {
         m_botProg->GetError(m_error, m_cursor1, m_cursor2);
-        if ( m_cursor1 < 0 || m_cursor1 > m_len ||
-             m_cursor2 < 0 || m_cursor2 > m_len )
+        if ( m_cursor1 < 0 || m_cursor1 > m_script.size() ||
+             m_cursor2 < 0 || m_cursor2 > m_script.size() )
         {
             m_cursor1 = 0;
             m_cursor2 = 0;
@@ -467,8 +463,8 @@ bool CScript::GetCursor(int &cursor1, int &cursor2)
     if ( !m_bRun )  return false;
 
     m_botProg->GetRunPos(funcName, cursor1, cursor2);
-    if ( cursor1 < 0 || cursor1 > m_len ||
-         cursor2 < 0 || cursor2 > m_len )
+    if ( cursor1 < 0 || cursor1 > m_script.size() ||
+         cursor2 < 0 || cursor2 > m_script.size() )
     {
         cursor1 = 0;
         cursor2 = 0;
@@ -717,100 +713,72 @@ void CScript::ColorizeScript(Ui::CEdit* edit, int rangeStart, int rangeEnd)
 // Returns the index of the start of the token found, or -1.
 
 
-static int SearchToken(char* script, const char* token)
+static int SearchToken(std::string_view script, std::string_view token)
 {
-    int     lScript, lToken, i, iFound;
-    int     found[100];
-    char*   p;
+    std::array<int, 100> found;
 
-    lScript = strlen(script);
-    lToken  = strlen(token);
-    iFound  = 0;
-    for ( i=0 ; i<lScript-lToken ; i++ )
+    int count = 0;
+
+    for (std::size_t offset = 0; offset < script.size();)
     {
-        p = strstr(script+i, token);
-        if ( p != nullptr )
-        {
-            found[iFound++] = p-script;
-            if ( iFound >= 100 )  break;
-        }
+        std::size_t index = script.find(token, offset);
+
+        if (index == std::string::npos) break;
+
+        found[count++] = index;
+
+        offset = index + 1;
     }
 
-    if ( iFound == 0 )  return -1;
-    return found[rand()%iFound];
-}
-
-// Removes a token in a script.
-
-static void DeleteToken(char* script, int pos, int len)
-{
-    while ( true )
-    {
-        script[pos] = script[pos+len];
-        if ( script[pos++] == 0 )  break;
-    }
-}
-
-// Inserts a token in a script.
-
-static void InsertToken(char* script, int pos, const char* token)
-{
-    int     lScript, lToken, i;
-
-    lScript = strlen(script);
-    lToken  = strlen(token);
-    for ( i=lScript ; i>=pos ; i-- )
-    {
-        script[i+lToken] = script[i];
-    }
-    memcpy(script+pos, token, lToken);
+    if ( count == 0 )  return -1;
+    return found[rand() % count];
 }
 
 // Introduces a virus into a program.
 
 bool CScript::IntroduceVirus()
 {
-    if (m_script == nullptr) return false;
+    if (m_script.empty()) return false;
 
-    const char*   names[11*2] =
+    using Pair = std::pair<std::string_view, std::string_view>;
+
+    constexpr std::array<Pair, 11> names =
     {
-        "==",           "!=",
-        "!=",           "==",
-        ">",            "<",
-        "<",            ">",
-        "true",         "false",
-        "false",        "true",
-        "grab",         "drop",
-        "drop",         "grab",
-        "InFront",      "Behind",
-        "Behind",       "EnergyCell",
-        "EnergyCell",   "InFront",
+        Pair { "==",         "!=" },
+        Pair { "!=",         "==" },
+        Pair { ">",          "<" },
+        Pair { "<",          ">" },
+        Pair { "true",       "false" },
+        Pair { "false",      "true" },
+        Pair { "grab",       "drop" },
+        Pair { "drop",       "grab" },
+        Pair { "InFront",    "Behind" },
+        Pair { "Behind",     "EnergyCell" },
+        Pair { "EnergyCell", "InFront" },
     };
 
-    int iFound = 0;
-    int     found[11*2];
-    for ( int i=0 ; i<11 ; i++ )
+    std::array<std::pair<int, int>, 11> found;
+    int count = 0;
+
+    for (int i = 0; i < names.size(); i++)
     {
-        int start = SearchToken(m_script.get(), names[i*2]);
-        if ( start != -1 )
+        int start = SearchToken(m_script, names[i].first);
+
+        if (start != -1)
         {
-            found[iFound++] = i*2;
-            found[iFound++] = start;
+            found[count++] = std::make_pair(i, start);
         }
     }
-    if ( iFound == 0 )  return false;
 
-    int i = (rand()%(iFound/2))*2;
-    int start = found[i+1];
-    i     = found[i+0];
+    if (count == 0) return false;
 
-    auto newScript = std::make_unique<char[]>(m_len + strlen(names[i + 1]) + 1);
-    strcpy(newScript.get(), m_script.get());
-    m_script = std::move(newScript);
+    int i = rand() % count;
+    int start = found[i].second;
 
-    DeleteToken(m_script.get(), start, strlen(names[i]));
-    InsertToken(m_script.get(), start, names[i+1]);
-    m_len = strlen(m_script.get());
+    int j = found[i].first;
+
+    m_script.replace(start, names[j].first.size(), names[j].second);
+
     Compile();  // recompile with the virus
 
     return true;
@@ -869,38 +837,37 @@ void CScript::GetError(std::string& error)
 
 // New program.
 
-void CScript::New(Ui::CEdit* edit, const char* name)
+void CScript::New(Ui::CEdit* edit, const std::string& name)
 {
-    char    res[100];
-    char    text[100];
-    std::array<char, 500> script;
-    char    buffer[500];
-    int     cursor1, cursor2, len, i, j;
+    int     cursor1, cursor2, len, i;
 
     std::string resStr;
     GetResource(RES_TEXT, RT_SCRIPT_NEW, resStr);
-    strcpy(res, resStr.c_str());
-    if ( name[0] == 0 )  strcpy(text, res);
-    else                 strcpy(text, name);
+    std::string res = resStr;
 
-    snprintf(script.data(), script.size(), "extern void object::%s()\n{\n\t\n\t\n\t\n}\n", text);
-    edit->SetText(script.data(), false);
+    std::string text;
 
-    if ( strcmp(text, res) == 0 )
+    if ( name.empty() )  text = res;
+    else                 text = name;
+
+    std::string script = StrUtils::Format("extern void object::%s()\n{\n\t\n\t\n\t\n}\n", text);
+    edit->SetText(script, false);
+
+    if ( text == res )
     {
         cursor1 = 20;
-        cursor2 = 20+strlen(text);  // update "New"
+        cursor2 = 20 + text.size();  // update "New"
     }
     else
     {
         if ( edit->GetAutoIndent() )
         {
-            cursor1 = 20+strlen(text)+6;
+            cursor1 = 20 + text.size() + 6;
             cursor2 = cursor1;  // cursor in { }
         }
         else
         {
-            cursor1 = 20+strlen(text)+8;
+            cursor1 = 20 + text.size() + 8;
             cursor2 = cursor1;  // cursor in { }
         }
     }
@@ -917,16 +884,19 @@ void CScript::New(Ui::CEdit* edit, const char* name)
 
         if (stream.is_open())
         {
-            len = stream.size();
+            std::size_t len = stream.size();
 
-            if ( len > 500-1 )  len = 500-1;
-            stream.read(buffer, len);
+            std::vector<char> buffer(len + 1, '\0');
+
+            stream.read(buffer.data(), len);
             buffer[len] = 0;
             stream.close();
 
             cursor1 = 0;
             i = 0;
-            j = 0;
+
+            script.clear();
+
             while ( true )
             {
                 if ( buffer[i] == 0 )  break;
@@ -946,23 +916,21 @@ void CScript::New(Ui::CEdit* edit, const char* name)
                 if ( buffer[i+0] == '%' &&
                      buffer[i+1] == 's' )
                 {
-                    strcpy(script.data()+j, text);
-                    j += strlen(text);
+                    script += text;
                     i += 2;
                     continue;
                 }
 
                 if ( buffer[i] == '#' )
                 {
-                    cursor1 = j;
+                    cursor1 = script.size();
                     i ++;
                     continue;
                 }
 
-                script[j++] = buffer[i++];
+                script += buffer[i++];
             }
-            script[j] = 0;
-            edit->SetText(script.data(), false);
+            edit->SetText(script, false);
 
             cursor2 = cursor1;
             edit->SetCursor(cursor2, cursor1);
@@ -977,7 +945,7 @@ void CScript::New(Ui::CEdit* edit, const char* name)
 
 // Provided a script for all parts.
 
-bool CScript::SendScript(const char* text)
+bool CScript::SendScript(const std::string& text)
 {
     /*m_len = strlen(text);
     m_script = new char[m_len+1];
@@ -1002,7 +970,7 @@ bool CScript::ReadScript(const std::filesystem::path& filename)
 
     if (!CResourceManager::Exists(filename))  return false;
 
-    m_script.reset();
+    m_script.clear();
 
     edit = m_interface->CreateEdit({ 0.0f, 0.0f }, { 0.0f, 0.0f }, 0, EVENT_EDIT9);
     edit->SetAutoIndent(m_engine->GetEditIndentMode());
@@ -1016,7 +984,7 @@ bool CScript::ReadScript(const std::filesystem::path& filename)
 
 bool CScript::WriteScript(const std::filesystem::path& filename)
 {
-    if ( m_script == nullptr )
+    if ( m_script.empty() )
     {
         CResourceManager::Remove(filename);
         return false;
@@ -1024,7 +992,7 @@ bool CScript::WriteScript(const std::filesystem::path& filename)
 
     Ui::CEdit* edit = m_interface->CreateEdit({ 0.0f, 0.0f }, { 0.0f, 0.0f }, 0, EVENT_EDIT9);
     edit->SetAutoIndent(m_engine->GetEditIndentMode());
-    edit->SetText(m_script.get());
+    edit->SetText(m_script);
     edit->WriteText(filename);
     m_interface->DeleteControl(EVENT_EDIT9);
     return true;
@@ -1068,9 +1036,7 @@ bool CScript::WriteStack(std::ostream &ostr)
 
 bool CScript::Compare(CScript* other)
 {
-    if ( m_len != other->m_len )  return false;
-
-    return ( strcmp(m_script.get(), other->m_script.get()) == 0 );
+    return m_script == other->m_script;
 }
 
 
