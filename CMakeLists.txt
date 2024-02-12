@@ -94,7 +94,7 @@ elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
     set(PLATFORM_FREEBSD 0)
 
     # Fix compilation errors in MacOS SDK files
-    set(CMAKE_CXX_FLAGS "${NORMAL_CXX_FLAGS} -Wno-nullability-extension -Wno-nullability-completeness -Wno-expansion-to-defined -Wno-four-char-constants -Wno-gnu-zero-variadic-macro-arguments -Wno-variadic-macros -Wno-zero-length-array -Wno-missing-declarations")
+    set(CMAKE_CXX_FLAGS "${NORMAL_CXX_FLAGS} -Wno-nullability-extension -Wno-nullability-completeness -Wno-expansion-to-defined -Wno-four-char-constants -Wno-gnu-zero-variadic-macro-arguments -Wno-variadic-macros -Wno-zero-length-array -Wno-missing-declarations -Wno-invalid-utf8")
     # To avoid CMake warning
     set(CMAKE_MACOSX_RPATH 1)
 elseif("${CMAKE_SYSTEM_NAME}" MATCHES "FreeBSD")
