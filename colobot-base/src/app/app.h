@@ -422,7 +422,7 @@ protected:
     bool            m_headless;
 
     //! Static buffer for putenv locale
-    static char m_languageLocale[50];
+    inline static std::string m_languageLocale = "";
 
     std::map<int, bool> m_textInputEnabled;
 };

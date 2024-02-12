@@ -62,8 +62,6 @@
 using TimeUtils::TimeStamp;
 using TimeUtils::TimeUnit;
 
-char CApplication::m_languageLocale[] = { 0 };
-
 
 //! Interval of timer called to update joystick state
 const int JOYSTICK_TIMER_INTERVAL = 1000/30;
@@ -1847,20 +1845,21 @@ void CApplication::SetLanguage(Language language)
 
     /* Gettext initialization */
 
-    static char envLang[50] = { 0 };
-    if (envLang[0] == 0)
+    static std::string envLang = "";
+
+    if (envLang.empty())
     {
         // Get this only at the first call, since this code modifies it
         const char* currentEnvLang = gl_locale_name(LC_MESSAGES, "LC_MESSAGES");
         if (currentEnvLang != nullptr)
         {
-            strcpy(envLang, currentEnvLang);
+            envLang = std::string(currentEnvLang);
         }
     }
 
     if (language == LANGUAGE_ENV)
     {
-        if (envLang[0] == 0)
+        if (envLang.empty())
         {
             GetLogger()->Error("Failed to get language from environment, setting default language");
             m_language = LANGUAGE_ENGLISH;
@@ -1869,31 +1868,31 @@ void CApplication::SetLanguage(Language language)
         {
             GetLogger()->Trace("gl_locale_name: '%%'", envLang);
 
-            if (strncmp(envLang,"en",2) == 0)
+            if (envLang == "en")
             {
                 m_language = LANGUAGE_ENGLISH;
             }
-            else if (strncmp(envLang,"cs",2) == 0)
+            else if (envLang == "cs")
             {
                 m_language = LANGUAGE_CZECH;
             }
-            else if (strncmp(envLang,"de",2) == 0)
+            else if (envLang == "de")
             {
                 m_language = LANGUAGE_GERMAN;
             }
-            else if (strncmp(envLang,"fr",2) == 0)
+            else if (envLang == "fr")
             {
                 m_language = LANGUAGE_FRENCH;
             }
-            else if (strncmp(envLang,"pl",2) == 0)
+            else if (envLang == "pl")
             {
                 m_language = LANGUAGE_POLISH;
             }
-            else if (strncmp(envLang,"ru",2) == 0)
+            else if (envLang == "ru")
             {
                 m_language = LANGUAGE_RUSSIAN;
             }
-            else if (strncmp(envLang,"pt",2) == 0)
+            else if (envLang == "pt")
             {
                 m_language = LANGUAGE_PORTUGUESE_BRAZILIAN;
             }
@@ -1943,8 +1942,10 @@ void CApplication::SetLanguage(Language language)
 
     std::string langStr = "LANGUAGE=";
     langStr += locale;
-    strcpy(m_languageLocale, langStr.c_str());
-    putenv(m_languageLocale);
+
+    m_languageLocale = langStr;
+    putenv(m_languageLocale.c_str());
+
     GetLogger()->Trace("SetLanguage: Set LANGUAGE=%% in environment", locale);
 
     char* defaultLocale = setlocale(LC_ALL, ""); // Load system locale
