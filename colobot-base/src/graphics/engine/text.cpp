@@ -42,6 +42,7 @@
 
 #include <algorithm>
 #include <array>
+#include <filesystem>
 #include <utility>
 
 // Graphics module namespace
@@ -54,10 +55,10 @@ namespace Gfx
  */
 struct MultisizeFont
 {
-    std::string fileName;
+    std::filesystem::path fileName;
     std::map<int, std::unique_ptr<CachedFont>> fonts;
 
-    explicit MultisizeFont(const std::string &fn)
+    explicit MultisizeFont(const std::filesystem::path &fn)
         : fileName(fn) {}
 };
 
@@ -297,7 +298,7 @@ private:
     {
         if (auto font = fontLoader.GetFont(type))
         {
-            m_fonts[type] = std::make_unique<MultisizeFont>(std::move(*font));
+            m_fonts[type] = std::make_unique<MultisizeFont>(font);
             return true;
         }
         m_error = "Error on loading fonts: font type " + ToString(type) + " is not configured";
@@ -318,10 +319,10 @@ private:
 
     std::unique_ptr<CachedFont> LoadFont(MultisizeFont* multisizeFont, int pointSize)
     {
-        auto file = CResourceManager::GetSDLMemoryHandler(StrUtils::ToPath(multisizeFont->fileName));
+        auto file = CResourceManager::GetSDLMemoryHandler(multisizeFont->fileName);
         if (!file->IsOpen())
         {
-            m_error = "Unable to open file '" + multisizeFont->fileName + "' (font size = " + std::to_string(pointSize) + ")";
+            m_error = "Unable to open file '" + StrUtils::ToString(multisizeFont->fileName) + "' (font size = " + std::to_string(pointSize) + ")";
             return nullptr;
         }
         GetLogger()->Debug("Loaded font file %% (font size = %%)", multisizeFont->fileName, pointSize);
