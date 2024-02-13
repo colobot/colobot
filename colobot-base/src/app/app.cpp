@@ -513,8 +513,6 @@ ParseArgsStatus CApplication::ParseArguments(const std::vector<std::string>& arg
 
 bool CApplication::Create()
 {
-    std::string path;
-
     GetLogger()->Info("Creating CApplication");
 
     m_errorMessage = m_pathManager->VerifyPaths();
