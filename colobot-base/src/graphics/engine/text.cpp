@@ -298,7 +298,7 @@ private:
     {
         if (auto font = fontLoader.GetFont(type))
         {
-            m_fonts[type] = std::make_unique<MultisizeFont>(font);
+            m_fonts[type] = std::make_unique<MultisizeFont>(*font);
             return true;
         }
         m_error = "Error on loading fonts: font type " + ToString(type) + " is not configured";
