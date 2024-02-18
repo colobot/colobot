@@ -24,6 +24,7 @@
 #include "common/logger.h"
 #include "common/stringutils.h"
 
+#include <algorithm>
 #include <physfs.h>
 
 
