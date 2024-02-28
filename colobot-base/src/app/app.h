@@ -33,6 +33,7 @@
 
 #include <glm/glm.hpp>
 
+#include <array>
 #include <string>
 #include <vector>
 #include <map>
@@ -422,7 +423,7 @@ protected:
     bool            m_headless;
 
     //! Static buffer for putenv locale
-    inline static std::string m_languageLocale = "";
+    inline static std::array<char, 64> m_languageLocale = { '\0' };
 
     std::map<int, bool> m_textInputEnabled;
 };

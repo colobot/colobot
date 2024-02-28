@@ -1941,8 +1941,9 @@ void CApplication::SetLanguage(Language language)
     std::string langStr = "LANGUAGE=";
     langStr += locale;
 
-    m_languageLocale = langStr;
-    putenv(m_languageLocale.c_str());
+    std::copy_n(langStr.data(), langStr.size() + 1, m_languageLocale.data());
+
+    putenv(m_languageLocale.data());
 
     GetLogger()->Trace("SetLanguage: Set LANGUAGE=%% in environment", locale);
 
