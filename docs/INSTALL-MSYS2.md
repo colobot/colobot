@@ -29,13 +29,13 @@ When you face any problems during this guide or anywhere in the future, the firs
 
 #### Running
 
+**Warning:** Commands shown in this guide are for 64-bit operating system. Due to absence (at the day of writing this) of i686 version of `glm` library in MSYS2/MINGW32 repositories, building 32-bit version of Colobot might be unavailable. If you still want to try to build 32-bit Colobot binary, you must replace all `x86_64` occurrences with `i686`.
+
 Now you need to install `MinGW-w64 toolchain`. Open `MSYS2 Shell` and enter the following command:
 
 ```sh
 pacman -S mingw-w64-x86_64-toolchain
 ```
-
-**Warning:** Commands shown in this guide are for 64-bit operating system. If you have 32-bit OS, you must replace all `x86_64` occurrences with `i686`.
 
 MSYS2 creates a new environment (with all the "system" variables set properly) during this installation. You have done that from default `MSYS2 Shell`. To work with GOLD, you need to switch. There are two ways of "opening" an environment you can work in:
 
@@ -119,7 +119,7 @@ You should now have everything set up and working. You can close all instances o
 
 You could say that you have a small Linux inside of your Windows right now. To compile GOLD just follow the instructions for Linux that are available in the repository (https://github.com/colobot/colobot/blob/dev/INSTALL.md\#compiling-on-linux).
 
-**Warning:** You must add `-G"MSYS Makefiles"` argument to `cmake`. For example, when you want to build a developer version:
+**Warning:** You must add `-G"MSYS Makefiles"` argument to `cmake`, otherwise you'll get a message about makefile missing. For example, when you want to build a developer version:
 
 ```sh
 cmake -DCMAKE_BUILD_TYPE=Debug -DDEV_BUILD=1 -G"MSYS Makefiles" ..
@@ -127,7 +127,7 @@ cmake -DCMAKE_BUILD_TYPE=Debug -DDEV_BUILD=1 -G"MSYS Makefiles" ..
 
 ### Dlls
 
-Your executable should run fine if you run it from the shell (like `./colobot` in a folder with a compiled binary). However, it will rather not run if you run it "from Windows", like by double clicking the shortcut. You will get error telling you that some dlls are missing. It's normal on Windows, so don't panic. Linker do dynamic linking by default, so binary must be distributed with the libraries stored in binary dll files. You can provide them in a few ways.
+Your executable should run fine if you run it from the MSYS2 shell (like `./colobot` in a folder with a compiled binary). However, it will rather not run if you run it "from Windows", like by double clicking the shortcut. You will get error telling you that some dlls are missing. It's normal on Windows, so don't panic. Linker do dynamic linking by default, so binary must be distributed with the libraries stored in binary dll files. You can provide them in a few ways.
 
 #### PATH
 
