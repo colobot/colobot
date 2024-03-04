@@ -4210,70 +4210,26 @@ bool CRobotMain::FreeSpace(glm::vec3 &center, float minRadius, float maxRadius,
 bool CRobotMain::FlatFreeSpace(glm::vec3 &center, float minFlat, float minRadius, float maxRadius,
                            float space, CObject *exclu)
 {
-    if (minRadius < maxRadius)  // from internal to external?
+    for (float radius = minRadius; radius <= maxRadius; radius += space)
     {
-        for (float radius = minRadius; radius <= maxRadius; radius += space)
+        float ia = space/radius;
+        for (float angle = 0.0f; angle < Math::PI*2.0f; angle += ia)
         {
-            float ia = space/radius;
-            for (float angle = 0.0f; angle < Math::PI*2.0f; angle += ia)
-            {
-                glm::vec2 p;
-                p.x = center.x+radius;
-                p.y = center.z;
-                p = Math::RotatePoint({ center.x, center.z }, angle, p);
-                glm::vec3 pos;
-                pos.x = p.x;
-                pos.z = p.y;
-                pos.y = 0.0f;
-                m_terrain->AdjustToFloor(pos, true);
-                float dist = SearchNearestObject(m_objMan.get(), pos, exclu);
-                if (dist >= space)
-                {
-                    float flat = m_terrain->GetFlatZoneRadius(pos, dist/2.0f);
-                    if (flat >= dist/2.0f)
-                    {
-                        flat = m_terrain->GetFlatZoneRadius(pos, minFlat);
-                        if(flat >= minFlat)
-                        {
-                            center = pos;
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-    }
-    else    // from external to internal?
-    {
-        for (float radius=maxRadius; radius >= minRadius; radius -= space)
-        {
-            float ia = space/radius;
-            for (float angle=0.0f ; angle<Math::PI*2.0f ; angle+=ia )
-            {
-                glm::vec2 p;
-                p.x = center.x+radius;
-                p.y = center.z;
-                p = Math::RotatePoint({ center.x, center.z }, angle, p);
-                glm::vec3 pos;
-                pos.x = p.x;
-                pos.z = p.y;
-                pos.y = 0.0f;
-                m_terrain->AdjustToFloor(pos, true);
-                float dist = SearchNearestObject(m_objMan.get(), pos, exclu);
-                if (dist >= space)
-                {
-                    float flat = m_terrain->GetFlatZoneRadius(pos, dist/2.0f);
-                    if (flat >= dist/2.0f)
-                    {
-                        flat = m_terrain->GetFlatZoneRadius(pos, minFlat);
-                        if(flat >= minFlat)
-                        {
-                            center = pos;
-                            return true;
-                        }
-                    }
-                }
-            }
+            glm::vec2 p;
+            p.x = center.x+radius;
+            p.y = center.z;
+            p = Math::RotatePoint({ center.x, center.z }, angle, p);
+            glm::vec3 pos;
+            pos.x = p.x;
+            pos.z = p.y;
+            pos.y = 0.0f;
+            m_terrain->AdjustToFloor(pos, true);
+	    
+            if (SearchNearestObject(m_objMan.get(), pos, exclu) < space) continue;
+            if (m_terrain->GetFlatZoneRadius(pos, minFlat) < minFlat) continue;
+            if (m_terrain->GetFloorLevel(pos) < m_water->GetLevel()) continue;
+            center = pos;
+            return true;
         }
     }
     return false;
