@@ -57,8 +57,9 @@ You will need:
  * libogg
  * OpenAL (OpenAL-Soft)
  * PhysFS
- * oggenc (to generate music files)
- * libglm
+ * glm
+ * wget (to download music files)
+ * oggenc (to transcode music files)
 
 On Ubuntu (and probably any other Debian-based system), you can use the following command to install all required packages:
 ```
