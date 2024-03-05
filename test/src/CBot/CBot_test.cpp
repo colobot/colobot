@@ -3327,3 +3327,175 @@ TEST_F(CBotUT, ClassTestSaveInheritedMembers)
         "}\n"
     );
 }
+
+TEST_F(CBotUT, TestTryCatch) {
+    ExecuteTest(
+        "extern void TestCatchNotExecutedNormally() {\n"
+        "    bool caught = false;\n"
+        "    bool tried = false;\n"
+        "    try {\n"
+        "        tried = true;\n"
+        "    } catch(CBotErrZeroDiv) {\n"
+        "        caught = true;\n"
+        "    }\n"
+        "    ASSERT(caught == false);\n"
+        "    ASSERT(tried == true);\n"
+        "}\n"
+    );
+    ExecuteTest(
+        "extern void TestCatchExecutedOnError() {\n"
+        "    bool caught = false;\n"
+        "    bool tried = false;\n"
+        "    try {\n"
+        "        tried = true;"
+        "        5/0;"
+        "        ASSERT(false);\n"
+        "    } catch(CBotErrZeroDiv) {\n"
+        "        caught = true;\n"
+        "    }\n"
+        "    ASSERT(caught == true);\n"
+        "    ASSERT(tried == true);\n"
+        "}\n"
+    );
+    ExecuteTest(
+        "extern void TestCatchOnlyOneErrorType() {\n"
+        "    try {\n"
+        "        5/0;"
+        "        ASSERT(false);\n"
+        "    } catch(CBotErrNull) {\n"
+        "        ASSERT(false);\n"
+        "    }\n"
+        "    ASSERT(false);\n"
+        "}\n",
+        CBotErrZeroDiv
+    );
+    ExecuteTest(
+        "void divzero() {5/0;}\n"
+        "extern void TestCatchFromOtherFunction() {\n"
+        "    bool caught = false;\n"
+        "    bool tried = false;\n"
+        "    try {\n"
+        "        tried = true;"
+        "        divzero();"
+        "        ASSERT(false);\n"
+        "    } catch(CBotErrZeroDiv) {\n"
+        "        caught = true;\n"
+        "    }\n"
+        "    ASSERT(caught == true);\n"
+        "    ASSERT(tried == true);\n"
+        "}\n"
+    );
+    ExecuteTest(
+        "void divzero() {5/0;}\n"
+        "extern void TestCatchOnlyOneErrorTypeFromOtherFunction() {\n"
+        "    try {\n"
+        "        divzero();"
+        "        ASSERT(false);\n"
+        "    } catch(CBotErrNull) {\n"
+        "        ASSERT(false);\n"
+        "    }\n"
+        "    ASSERT(false);\n"
+        "}\n",
+        CBotErrZeroDiv
+    );
+    ExecuteTest(
+        "void thrownull() {throw CBotErrNull;}\n"
+        "extern void TestThrowCaught() {\n"
+        "    bool caught = false;\n"
+        "    bool tried = false;\n"
+        "    try {\n"
+        "        tried = true;"
+        "        thrownull();"
+        "        ASSERT(false);\n"
+        "    } catch(CBotErrNull) {\n"
+        "        caught = true;\n"
+        "    }\n"
+        "    ASSERT(caught == true);\n"
+        "    ASSERT(tried == true);\n"
+        "}\n"
+    );
+    ExecuteTest(
+        "void thrownull() {throw CBotErrNull;}\n"
+        "extern void TestThrowUncaught() {\n"
+        "    try {\n"
+        "        thrownull();"
+        "        ASSERT(false);\n"
+        "    } catch(CBotErrZeroDiv) {\n"
+        "        ASSERT(false);\n"
+        "    }\n"
+        "    ASSERT(false);\n"
+        "}\n",
+        CBotErrNull
+    );
+
+    ExecuteTest(
+        "extern void TestThrowWrongType() {\n"
+        "    throw true;"
+        "}\n",
+        CBotErrBadType1
+    );
+}
+
+TEST_F(CBotUT, TestFinally) {
+    ExecuteTest(
+        "extern void TestFinallyExecutedNormally() {\n"
+        "    bool caught = false;\n"
+        "    bool tried = false;\n"
+        "    bool finally_ran = false;\n"
+        "    try {\n"
+        "        tried = true;\n"
+        "    } catch(CBotErrZeroDiv) {\n"
+        "        caught = true;\n"
+        "    } finally {\n"
+        "        finally_ran = true;\n"
+        "    }\n"
+        "    ASSERT(caught == false);\n"
+        "    ASSERT(tried == true);\n"
+        "    ASSERT(finally_ran == true);\n"
+        "}\n"
+    );
+    ExecuteTest(
+        "extern void TestFinallyExecutedOnError() {\n"
+        "    bool caught = false;\n"
+        "    bool tried = false;\n"
+        "    bool finally_ran = false;\n"
+        "    try {\n"
+        "        tried = true;"
+        "        5/0;"
+        "        ASSERT(false);\n"
+        "    } catch(CBotErrZeroDiv) {\n"
+        "        caught = true;\n"
+        "    } finally {\n"
+        "        finally_ran = true;\n"
+        "    }\n"
+        "    ASSERT(caught == true);\n"
+        "    ASSERT(tried == true);\n"
+        "    ASSERT(finally_ran == true);\n"
+        "}\n"
+    );
+    ExecuteTest(
+        "extern void TestFinallyOverrideError() {\n"
+        "    try {\n"
+        "        5/0;"
+        "        ASSERT(false);\n"
+        "    } catch(CBotErrZeroDiv) {\n"
+        "        throw CBotErrNull;\n"
+        "    }\n"
+        "    ASSERT(false);\n"
+        "}\n",
+        CBotErrNull
+    );
+
+    // code coverage
+    ExecuteTest(
+        "extern void TestCompileErrorInFinally() {\n"
+        "    try {\n"
+        "        5/0;"
+        "    } finally {\n"
+        "        1 - \"hello\";"
+        "    }\n"
+        "    ASSERT(false);\n"
+        "}\n",
+        CBotErrBadType2
+    );
+}
