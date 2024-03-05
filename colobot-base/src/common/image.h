@@ -28,6 +28,7 @@
 
 #include <glm/glm.hpp>
 
+#include <filesystem>
 #include <memory>
 #include <string>
 
@@ -98,10 +99,10 @@ public:
     void ConvertToRGBA();
 
     //! Loads an image from the specified file
-    bool Load(const std::string &fileName);
+    bool Load(const std::filesystem::path& fileName);
 
     //! Saves the image to the specified file in PNG format
-    bool SavePNG(const std::string &fileName);
+    bool SavePNG(const std::filesystem::path& fileName);
 
     //! Returns the last error
     std::string GetError();

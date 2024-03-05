@@ -20,13 +20,38 @@
 #include "common/system/system_windows.h"
 
 #include "common/logger.h"
+#include "common/stringutils.h"
+#include "common/version.h"
 
 #include <windows.h>
 
 #include <filesystem>
 
-void CSystemUtilsWindows::Init()
+
+std::unique_ptr<CSystemUtils> CSystemUtils::Create()
 {
+    return std::make_unique<CSystemUtilsWindows>();
+}
+
+void CSystemUtilsWindows::Init([[maybe_unused]] const std::vector<std::string>& args)
+{
+    m_arguments.clear();
+
+    int wargc = 0;
+    wchar_t** wargv = CommandLineToArgvW(GetCommandLineW(), &wargc);
+    if (wargv == nullptr)
+    {
+        GetLogger()->Error("CommandLineToArgvW failed\n");
+        return;
+    }
+
+    for (int i = 0; i < wargc; i++)
+    {
+        std::wstring warg = wargv[i];
+        m_arguments.push_back(CSystemUtilsWindows::UTF8_Encode(warg));
+    }
+
+    LocalFree(wargv);
 }
 
 SystemDialogResult CSystemUtilsWindows::SystemDialog(SystemDialogType type, const std::string& title, const std::string& message)
@@ -91,27 +116,30 @@ std::wstring CSystemUtilsWindows::UTF8_Decode(const std::string& str)
 
 }
 
-std::string CSystemUtilsWindows::GetSaveDir()
+std::filesystem::path CSystemUtilsWindows::GetSaveDir()
 {
-#if PORTABLE_SAVES || DEV_BUILD
-    return CSystemUtils::GetSaveDir();
-#else
-    std::string savegameDir;
-
-    auto envUSERPROFILE = GetEnvVar("USERPROFILE");
-    if (envUSERPROFILE.empty())
+    if constexpr (Version::PORTABLE_SAVES || Version::DEVELOPMENT_BUILD)
     {
-        GetLogger()->Warn("Unable to find directory for saves - using default directory");
-        savegameDir = CSystemUtils::GetSaveDir();
+        return CSystemUtils::GetSaveDir();
     }
     else
     {
-        savegameDir = envUSERPROFILE + "\\colobot";
-    }
-    GetLogger()->Trace("Saved game files are going to %%", savegameDir);
+        std::filesystem::path savegameDir;
 
-    return savegameDir;
-#endif
+        auto envUSERPROFILE = GetEnvVar("USERPROFILE");
+        if (envUSERPROFILE.empty())
+        {
+            GetLogger()->Warn("Unable to find directory for saves - using default directory");
+            savegameDir = CSystemUtils::GetSaveDir();
+        }
+        else
+        {
+            savegameDir = StrUtils::ToPath(envUSERPROFILE) / "colobot";
+        }
+        GetLogger()->Trace("Saved game files are going to %%", savegameDir);
+
+        return savegameDir;
+    }
 }
 
 std::string CSystemUtilsWindows::GetEnvVar(const std::string& name)
@@ -130,9 +158,9 @@ std::string CSystemUtilsWindows::GetEnvVar(const std::string& name)
     }
 }
 
-bool CSystemUtilsWindows::OpenPath(const std::string& path)
+bool CSystemUtilsWindows::OpenPath(const std::filesystem::path& path)
 {
-    int result = system(("start explorer \"" + std::filesystem::u8path(path).make_preferred().string() + "\"").c_str());
+    int result = system(("start explorer \"" + std::filesystem::path{path}.make_preferred().string() + "\"").c_str());
     if (result != 0)
     {
         GetLogger()->Error("Failed to open path: %%, error code: %%", path, result);

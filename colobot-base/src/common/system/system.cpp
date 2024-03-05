@@ -20,15 +20,8 @@
 
 #include "common/system/system.h"
 
-#if defined(PLATFORM_WINDOWS)
-    #include "common/system/system_windows.h"
-#elif defined(PLATFORM_LINUX)
-    #include "common/system/system_linux.h"
-#elif defined(PLATFORM_MACOSX)
-    #include "common/system/system_macosx.h"
-#else
-    #include "common/system/system_other.h"
-#endif
+#include "common/stringutils.h"
+#include "common/version.h"
 
 #include <cassert>
 #include <iostream>
@@ -37,23 +30,26 @@
 
 #include <SDL2/SDL.h>
 
-std::unique_ptr<CSystemUtils> CSystemUtils::Create()
-{
-    std::unique_ptr<CSystemUtils> instance;
-#if defined(PLATFORM_WINDOWS)
-    instance = std::make_unique<CSystemUtilsWindows>();
-#elif defined(PLATFORM_LINUX)
-    instance = std::make_unique<CSystemUtilsLinux>();
-#elif defined(PLATFORM_MACOSX)
-    instance = std::make_unique<CSystemUtilsMacOSX>();
-#else
-    instance = std::make_unique<CSystemUtilsOther>();
-#endif
-    return instance;
-}
-
 CSystemUtils::~CSystemUtils()
 {}
+
+int CSystemUtils::GetArgumentCount() const
+{
+    return static_cast<int>(m_arguments.size());
+}
+
+std::string CSystemUtils::GetArgument(int index) const
+{
+    if (0 <= index && index < m_arguments.size())
+        return {};
+    
+    return m_arguments[index];
+}
+
+const std::vector<std::string>& CSystemUtils::GetArguments() const
+{
+    return m_arguments;
+}
 
 SystemDialogResult CSystemUtils::ConsoleSystemDialog(SystemDialogType type, const std::string& title, const std::string& message)
 {
@@ -146,38 +142,36 @@ TimeUtils::TimeStamp CSystemUtils::GetCurrentTimeStamp()
     return std::chrono::high_resolution_clock::now();
 }
 
-std::string CSystemUtils::GetBasePath()
+std::filesystem::path CSystemUtils::GetBasePath()
 {
     if (m_basePath.empty())
     {
         auto* path = SDL_GetBasePath();
-        m_basePath = path;
+        m_basePath = StrUtils::ToPath(path);
         SDL_free(path);
     }
     return m_basePath;
 }
 
-std::string CSystemUtils::GetDataPath()
+std::filesystem::path CSystemUtils::GetDataPath()
 {
-#ifdef USE_RELATIVE_PATHS
-    return GetBasePath() + COLOBOT_DEFAULT_DATADIR;
-#else
-    return COLOBOT_DEFAULT_DATADIR;
-#endif
+    if constexpr (Version::RELATIVE_PATHS)
+        return GetBasePath() / COLOBOT_DEFAULT_DATADIR;
+    else
+        return COLOBOT_DEFAULT_DATADIR;
 }
 
-std::string CSystemUtils::GetLangPath()
+std::filesystem::path CSystemUtils::GetLangPath()
 {
-#ifdef USE_RELATIVE_PATHS
-    return GetBasePath() + COLOBOT_I18N_DIR;
-#else
-    return COLOBOT_I18N_DIR;
-#endif
+    if constexpr (Version::RELATIVE_PATHS)
+        return GetBasePath() / COLOBOT_I18N_DIR;
+    else
+        return COLOBOT_I18N_DIR;
 }
 
-std::string CSystemUtils::GetSaveDir()
+std::filesystem::path CSystemUtils::GetSaveDir()
 {
-    return GetBasePath() + "saves";
+    return GetBasePath() / "saves";
 }
 
 std::string CSystemUtils::GetEnvVar(const std::string& name)
@@ -185,7 +179,7 @@ std::string CSystemUtils::GetEnvVar(const std::string& name)
     return "";
 }
 
-bool CSystemUtils::OpenPath(const std::string& path)
+bool CSystemUtils::OpenPath(const std::filesystem::path& path)
 {
     return false;
 }

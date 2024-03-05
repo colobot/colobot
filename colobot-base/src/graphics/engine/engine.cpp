@@ -552,7 +552,7 @@ void CEngine::FrameUpdate()
     }
 }
 
-void CEngine::WriteScreenShot(const std::string& fileName)
+void CEngine::WriteScreenShot(const std::filesystem::path& fileName)
 {
     auto data = std::make_unique<WriteScreenShotData>();
     data->img = std::make_unique<CImage>(glm::ivec2(m_size.x, m_size.y));
@@ -568,7 +568,7 @@ void CEngine::WriteScreenShot(const std::string& fileName)
 
 void CEngine::WriteScreenShotThread(std::unique_ptr<WriteScreenShotData> data)
 {
-    if ( data->img->SavePNG(data->fileName.c_str()) )
+    if ( data->img->SavePNG(data->fileName) )
     {
        GetLogger()->Debug("Save screenshot saved successfully");
     }

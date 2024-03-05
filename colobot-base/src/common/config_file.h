@@ -30,6 +30,7 @@
 
 #include <nlohmann/json.hpp>
 
+#include <optional>
 #include <string>
 #include <sstream>
 #include <vector>
@@ -152,49 +153,11 @@ public:
     }
 
 private:
-    template<typename T>
-    std::vector<T> StringToArray(const std::string& s)
-    {
-        std::vector<T> result;
-        std::stringstream ss(s);
-        std::string item;
-
-        while (std::getline(ss, item, ','))
-        {
-            if constexpr (std::is_same_v<T, std::string>)
-            {
-                result.push_back(item);
-            }
-            else
-            {
-                std::stringstream stream(item);
-
-                T value;
-                stream >> value;
-
-                result.push_back(value);
-            }
-        }
-        return result;
-    }
-
-    template<typename T>
-    std::string ArrayToString(const std::vector<T> &array)
-    {
-        std::ostringstream oss;
-        if (!array.empty())
-        {
-            std::copy(array.begin(), array.end() - 1, std::ostream_iterator<T>(oss, ","));
-            oss << array.back();
-        }
-        return oss.str();
-    }
-
-private:
     nlohmann::json m_properties;
-    bool m_needsSave;
-    bool m_useCurrentDirectory;
-    bool m_loaded;
+
+    bool m_needsSave = false;
+    bool m_useCurrentDirectory = false;
+    bool m_loaded = false;
 };
 
 //! Global function to get config file instance

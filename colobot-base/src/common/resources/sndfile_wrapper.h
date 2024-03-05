@@ -19,35 +19,35 @@
 
 #pragma once
 
+#include <filesystem>
 #include <string>
 
 #include <physfs.h>
 #include <sndfile.h>
 
 
-class CSNDFileWrapper
+class CSNDFileWrapper final
 {
 public:
-    CSNDFileWrapper(const std::string &filename);
-    virtual ~CSNDFileWrapper();
+    CSNDFileWrapper(const std::filesystem::path& filename);
+    ~CSNDFileWrapper();
 
     CSNDFileWrapper(const CSNDFileWrapper&) = delete;
     CSNDFileWrapper& operator=(const CSNDFileWrapper&) = delete;
 
-    SF_INFO &GetFileInfo();
-    bool IsOpen();
-    std::string &GetLastError();
+    CSNDFileWrapper(CSNDFileWrapper&&) = delete;
+    CSNDFileWrapper& operator=(CSNDFileWrapper&&) = delete;
+
+    const SF_INFO& GetFileInfo() const;
+    bool IsOpen() const;
+    const std::string& GetLastError() const;
+
     sf_count_t Read(short int *ptr, sf_count_t items);
 
 private:
-    static sf_count_t SNDLength(void *data);
-    static sf_count_t SNDSeek(sf_count_t offset, int whence, void *data);
-    static sf_count_t SNDRead(void *ptr, sf_count_t count, void *data);
-    static sf_count_t SNDWrite(const void *ptr, sf_count_t count, void *data);
-    static sf_count_t SNDTell(void *data);
-    SF_INFO m_file_info;
-    SNDFILE *m_snd_file;
-    PHYSFS_File *m_file;
-    std::string m_last_error;
-    SF_VIRTUAL_IO m_snd_callbacks;
+    SF_INFO m_file_info = {};
+    SNDFILE *m_snd_file = nullptr;
+    PHYSFS_File *m_file = nullptr;
+    std::string m_last_error = {};
+    SF_VIRTUAL_IO m_snd_callbacks = {};
 };

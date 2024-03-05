@@ -19,6 +19,7 @@
 
 #pragma once
 
+#include <filesystem>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -39,7 +40,7 @@ struct ModData
 struct Mod
 {
     std::string name{};
-    std::string path{};
+    std::filesystem::path path{};
     bool enabled = false;
     ModData data{};
 };
@@ -105,9 +106,9 @@ private:
     void MountAllMods();
 
     void MountMod(const Mod& mod, const std::string& mountPoint = "");
-    void MountMod(const std::string& path, const std::string& mountPoint = "");
+    void MountMod(const std::filesystem::path& path, const std::string& mountPoint = "");
     void UnmountMod(const Mod& mod);
-    void UnmountMod(const std::string& path);
+    void UnmountMod(const std::filesystem::path& path);
     void UnmountAllMountedMods();
 
 private:
@@ -115,7 +116,7 @@ private:
     CPathManager* m_pathManager;
 
     //! Paths to mods already in the virtual filesystem
-    std::vector<std::string> m_mountedModPaths;
+    std::vector<std::filesystem::path> m_mountedModPaths;
 
     //! List of mods
     std::vector<Mod> m_mods;

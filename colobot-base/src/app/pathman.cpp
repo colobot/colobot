@@ -29,10 +29,6 @@
 
 #include "common/system/system.h"
 
-#ifdef PLATFORM_WINDOWS
-    #include "common/system/system_windows.h"
-#endif
-
 #include <filesystem>
 
 CPathManager::CPathManager(CSystemUtils* systemUtils)
@@ -47,57 +43,53 @@ CPathManager::~CPathManager()
 {
 }
 
-void CPathManager::SetDataPath(const std::string &dataPath)
+void CPathManager::SetDataPath(const std::filesystem::path& dataPath)
 {
     m_dataPath = dataPath;
 }
 
-void CPathManager::SetLangPath(const std::string &langPath)
+void CPathManager::SetLangPath(const std::filesystem::path& langPath)
 {
     m_langPath = langPath;
 }
 
-void CPathManager::SetSavePath(const std::string &savePath)
+void CPathManager::SetSavePath(const std::filesystem::path& savePath)
 {
     m_savePath = savePath;
 }
 
-const std::string& CPathManager::GetDataPath()
+const std::filesystem::path& CPathManager::GetDataPath() const
 {
     return m_dataPath;
 }
 
-const std::string& CPathManager::GetLangPath()
+const std::filesystem::path& CPathManager::GetLangPath() const
 {
     return m_langPath;
 }
 
-const std::string& CPathManager::GetSavePath()
+const std::filesystem::path& CPathManager::GetSavePath() const
 {
     return m_savePath;
 }
 
-std::string CPathManager::VerifyPaths()
+std::string CPathManager::VerifyPaths() const
 {
-    std::filesystem::path dataPath = std::filesystem::u8path(m_dataPath);
-
-    if (! (std::filesystem::exists(dataPath) && std::filesystem::is_directory(dataPath)) )
+    if (! (std::filesystem::exists(m_dataPath) && std::filesystem::is_directory(m_dataPath)) )
     {
         GetLogger()->Error("Data directory '%%' doesn't exist or is not a directory", m_dataPath);
         return std::string("Could not read from data directory:\n") +
-            std::string("'") + m_dataPath + std::string("'\n") +
+            std::string("'") + StrUtils::ToString(m_dataPath) + std::string("'\n") +
             std::string("Please check your installation, or supply a valid data directory by -datadir option.");
     }
 
-    std::filesystem::path langPath = std::filesystem::u8path(m_langPath);
-
-    if (! (std::filesystem::exists(langPath) && std::filesystem::is_directory(langPath)) )
+    if (! (std::filesystem::exists(m_langPath) && std::filesystem::is_directory(m_langPath)) )
     {
         GetLogger()->Warn("Language path '%%' is invalid, assuming translation files not installed", m_langPath);
     }
 
-    std::filesystem::create_directories(std::filesystem::u8path(m_savePath));
-    std::filesystem::create_directories(std::filesystem::u8path(m_savePath + "/mods"));
+    std::filesystem::create_directories(m_savePath);
+    std::filesystem::create_directories(m_savePath / "mods");
 
     return "";
 }
@@ -107,35 +99,34 @@ void CPathManager::InitPaths()
     GetLogger()->Info("Data path: %%", m_dataPath);
     GetLogger()->Info("Save path: %%", m_savePath);
 
-    m_modSearchDirs.push_back(m_dataPath + "/mods");
-    m_modSearchDirs.push_back(m_savePath + "/mods");
+    m_modSearchDirs.push_back(m_dataPath / "mods");
+    m_modSearchDirs.push_back(m_savePath / "mods");
 
     if (!m_modSearchDirs.empty())
     {
         GetLogger()->Info("Mod search dirs:");
-        for(const std::string& modSearchDir : m_modSearchDirs)
+        for(const auto& modSearchDir : m_modSearchDirs)
             GetLogger()->Info("  * %%", modSearchDir);
     }
 
     CResourceManager::AddLocation(m_dataPath);
-
     CResourceManager::SetSaveLocation(m_savePath);
     CResourceManager::AddLocation(m_savePath);
 
     GetLogger()->Debug("Finished initializing data paths");
     GetLogger()->Debug("PHYSFS search path is:");
-    for (const std::string& path : CResourceManager::GetLocations())
+    for (const auto& path : CResourceManager::GetLocations())
         GetLogger()->Debug("  * %%", path);
 }
 
-void CPathManager::AddMod(const std::string &path)
+void CPathManager::AddMod(const std::filesystem::path& path)
 {
     m_mods.push_back(path);
 }
 
-std::vector<std::string> CPathManager::FindMods() const
+std::vector<std::filesystem::path> CPathManager::FindMods() const
 {
-    std::vector<std::string> mods;
+    std::vector<std::filesystem::path> mods;
     GetLogger()->Info("Found mods:");
     for (const auto &searchPath : m_modSearchDirs)
     {
@@ -162,21 +153,21 @@ std::vector<std::string> CPathManager::FindMods() const
     return mods;
 }
 
-void CPathManager::AddModSearchDir(const std::string &modSearchDirPath)
+void CPathManager::AddModSearchDir(const std::filesystem::path& modSearchDirPath)
 {
     m_modSearchDirs.push_back(modSearchDirPath);
 }
 
-std::vector<std::string> CPathManager::FindModsInDir(const std::string &dir) const
+std::vector<std::filesystem::path> CPathManager::FindModsInDir(const std::filesystem::path& dir) const
 {
-    std::vector<std::string> ret;
+    std::vector<std::filesystem::path> ret;
     try
     {
-        std::filesystem::directory_iterator iterator(std::filesystem::u8path(dir));
+        std::filesystem::directory_iterator iterator(dir);
 
         for(; iterator != std::filesystem::directory_iterator(); ++iterator)
         {
-            ret.push_back(StrUtils::Cast<std::string>(iterator->path().u8string()));
+            ret.push_back(iterator->path());
         }
     }
     catch (std::exception &e)

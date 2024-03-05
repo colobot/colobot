@@ -35,15 +35,10 @@
 #include "common/resources/resourcemanager.h"
 
 #include "common/system/system.h"
-#if PLATFORM_WINDOWS
-    #include "common/system/system_windows.h"
-#endif
-
-#if PLATFORM_WINDOWS
-    #include <windows.h>
-#endif
 
 #include <filesystem>
+#include <fstream>
+#include <iostream>
 #include <memory>
 #include <vector>
 
@@ -107,15 +102,20 @@ extern "C"
 int main(int argc, char *argv[])
 {
     CLogger logger; // single instance of logger
-    logger.AddOutput(stderr);
+    logger.AddOutput(std::cerr);
+
+    std::vector<std::string> args;
+
+    for (int i = 0; i < argc; i++)
+        args.push_back(argv[i]);
 
     auto systemUtils = CSystemUtils::Create(); // platform-specific utils
-    systemUtils->Init();
+    systemUtils->Init(args);
 
     CProfiler::SetSystemUtils(systemUtils.get());
 
     // Add file output to the logger
-    std::string logFileName;
+    std::filesystem::path logFileName;
     
     if constexpr (Version::DEVELOPMENT_BUILD)
     {
@@ -124,46 +124,16 @@ int main(int argc, char *argv[])
     else
     {
         std::filesystem::create_directories(systemUtils->GetSaveDir());
-        logFileName = systemUtils->GetSaveDir() + "/log.txt";
+        logFileName = systemUtils->GetSaveDir() / "log.txt";
     }
 
-    FILE* logFile = fopen(logFileName.c_str(), "w");
+    std::ofstream logFile(logFileName);
     if (logFile)
         logger.AddOutput(logFile);
     else
-        logger.Error("Failed to create log file, writing log to file disabled\n");
+        logger.Error("Failed to create log file, writing log to file disabled");
 
-
-    // Workaround for character encoding in argv on Windows
-    #if PLATFORM_WINDOWS
-    int wargc = 0;
-    wchar_t** wargv = CommandLineToArgvW(GetCommandLineW(), &wargc);
-    if (wargv == nullptr)
-    {
-        logger.Error("CommandLineToArgvW failed\n");
-        return 1;
-    }
-
-    std::vector<std::vector<char>> windowsArgs;
-    for (int i = 0; i < wargc; i++)
-    {
-        std::wstring warg = wargv[i];
-        std::string arg = CSystemUtilsWindows::UTF8_Encode(warg);
-        std::vector<char> argVec(arg.begin(), arg.end());
-        argVec.push_back('\0');
-        windowsArgs.push_back(std::move(argVec));
-    }
-
-    auto windowsArgvPtrs = std::make_unique<char*[]>(wargc);
-    for (int i = 0; i < wargc; i++)
-        windowsArgvPtrs[i] = windowsArgs[i].data();
-
-    argv = windowsArgvPtrs.get();
-
-    LocalFree(wargv);
-    #endif
-
-    logger.Info("%% starting\n", Version::FULL_NAME);
+    logger.Info("%% starting", Version::FULL_NAME);
 
     CSignalHandlers::Init(systemUtils.get());
 
@@ -178,10 +148,10 @@ int main(int argc, char *argv[])
 
     app.LoadEnvironmentVariables();
 
-    ParseArgsStatus status = app.ParseArguments(argc, argv);
+    ParseArgsStatus status = app.ParseArguments(systemUtils->GetArguments());
     if (status == PARSE_ARGS_FAIL)
     {
-        systemUtils->SystemDialog(SystemDialogType::ERROR_MSG, "COLOBOT - Fatal Error", "Invalid commandline arguments!\n");
+        systemUtils->SystemDialog(SystemDialogType::ERROR_MSG, "COLOBOT - Fatal Error", "Invalid commandline arguments!");
         return app.GetExitCode();
     }
     else if (status == PARSE_ARGS_HELP)

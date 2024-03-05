@@ -33,6 +33,7 @@
 
 #include <glm/glm.hpp>
 
+#include <array>
 #include <string>
 #include <vector>
 #include <map>
@@ -170,7 +171,7 @@ public:
     //! Loads some data from environment variables
     void LoadEnvironmentVariables();
     //! Parses commandline arguments (they take priority)
-    ParseArgsStatus ParseArguments(int argc, char *argv[]);
+    ParseArgsStatus ParseArguments(const std::vector<std::string>& args);
     //! Initializes the application
     bool        Create();
     //! Reloads the application resources, e.g. mods
@@ -422,7 +423,7 @@ protected:
     bool            m_headless;
 
     //! Static buffer for putenv locale
-    static char m_languageLocale[50];
+    inline static std::array<char, 64> m_languageLocale = { '\0' };
 
     std::map<int, bool> m_textInputEnabled;
 };

@@ -121,7 +121,7 @@ void CScreenIO::IOReadList(bool isWrite)
 
     for (unsigned int i = 0; i < m_saveList.size(); i++)
     {
-        m_engine->DeleteTexture(m_saveList.at(i) + "/screen.png");
+        m_engine->DeleteTexture(TempToString(m_saveList.at(i) / "screen.png"));
     }
 }
 
@@ -160,21 +160,21 @@ void CScreenIO::IOUpdateList(bool isWrite)
 
     if (m_saveList.size() <= static_cast<unsigned int>(sel))
     {
-        pi->SetFilenameImage(""); // clear screenshot, nothing selected or New save selected
+        pi->SetFilename(""); // clear screenshot, nothing selected or New save selected
         return;
     }
 
-    std::string filename = m_saveList.at(sel) + "/screen.png";
+    std::filesystem::path filename = m_saveList.at(sel) / "screen.png";
     if ( isWrite )
     {
         if ( sel < max-1 )
         {
-            pi->SetFilenameImage(filename.c_str());
+            pi->SetFilename(filename);
         }
     }
     else
     {
-        pi->SetFilenameImage(filename.c_str());
+        pi->SetFilename(filename);
     }
 }
 
@@ -237,10 +237,10 @@ void CScreenIO::IOWriteScene()
 
     m_interface->DeleteControl(EVENT_WINDOW5);
 
-    std::string dir;
+    std::filesystem::path dir;
     if (static_cast<unsigned int>(sel) >= m_saveList.size())
     {
-        dir = m_main->GetPlayerProfile()->GetSaveFile("save"+clearName(info));
+        dir = m_main->GetPlayerProfile()->GetSaveFile("save" + clearName(info));
     }
     else
     {

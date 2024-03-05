@@ -19,19 +19,60 @@
 
 #include "common/resources/sndfile_wrapper.h"
 
+#include "common/stringutils.h"
+
 #include <cstring>
 
+namespace
+{
 
-CSNDFileWrapper::CSNDFileWrapper(const std::string& filename)
-    : m_file_info{}
-    , m_snd_file{nullptr}
-    , m_file{nullptr}
-    , m_last_error{}
+sf_count_t SNDLength(void *data)
+{
+    return PHYSFS_fileLength(static_cast<PHYSFS_File *>(data));
+}
+
+sf_count_t SNDRead(void *ptr, sf_count_t count, void *data)
+{
+    return PHYSFS_readBytes(static_cast<PHYSFS_File *>(data), ptr, count);
+}
+
+sf_count_t SNDSeek(sf_count_t offset, int whence, void *data)
+{
+    PHYSFS_File *file = static_cast<PHYSFS_File *>(data);
+    switch(whence)
+    {
+        case SEEK_CUR:
+            PHYSFS_seek(file, PHYSFS_tell(file) + offset);
+            break;
+        case SEEK_SET:
+            PHYSFS_seek(file, offset);
+            break;
+        case SEEK_END:
+            PHYSFS_seek(file, PHYSFS_fileLength(file) + offset);
+            break;
+    }
+
+    return PHYSFS_tell(file);
+}
+
+sf_count_t SNDTell(void *data)
+{
+    return PHYSFS_tell(static_cast<PHYSFS_File *>(data));
+}
+
+sf_count_t SNDWrite(const void *ptr, sf_count_t count, void *data)
+{
+    return PHYSFS_writeBytes(static_cast<PHYSFS_File *>(data), ptr, count);
+}
+
+} // namespace
+
+CSNDFileWrapper::CSNDFileWrapper(const std::filesystem::path& filename)
 {
     m_snd_callbacks = { SNDLength, SNDSeek, SNDRead, SNDWrite, SNDTell };
     if (PHYSFS_isInit())
     {
-        m_file = PHYSFS_openRead(filename.c_str());
+        m_file = PHYSFS_openRead(StrUtils::ToString(filename).c_str());
     }
     else
     {
@@ -52,7 +93,6 @@ CSNDFileWrapper::CSNDFileWrapper(const std::string& filename)
     }
 }
 
-
 CSNDFileWrapper::~CSNDFileWrapper()
 {
     if (m_file)
@@ -65,70 +105,22 @@ CSNDFileWrapper::~CSNDFileWrapper()
     }
 }
 
-
-bool CSNDFileWrapper::IsOpen()
+bool CSNDFileWrapper::IsOpen() const
 {
     return m_file && m_snd_file;
 }
 
-
-SF_INFO &CSNDFileWrapper::GetFileInfo()
+const SF_INFO& CSNDFileWrapper::GetFileInfo() const
 {
     return m_file_info;
 }
 
-
-std::string& CSNDFileWrapper::GetLastError()
+const std::string& CSNDFileWrapper::GetLastError() const
 {
     return m_last_error;
 }
 
-
 sf_count_t CSNDFileWrapper::Read(short int *ptr, sf_count_t items)
 {
     return sf_read_short(m_snd_file, ptr, items);
-}
-
-
-sf_count_t CSNDFileWrapper::SNDLength(void *data)
-{
-    return PHYSFS_fileLength(static_cast<PHYSFS_File *>(data));
-}
-
-
-sf_count_t CSNDFileWrapper::SNDRead(void *ptr, sf_count_t count, void *data)
-{
-    return PHYSFS_readBytes(static_cast<PHYSFS_File *>(data), ptr, count);
-}
-
-
-sf_count_t CSNDFileWrapper::SNDSeek(sf_count_t offset, int whence, void *data)
-{
-    PHYSFS_File *file = static_cast<PHYSFS_File *>(data);
-    switch(whence)
-    {
-        case SEEK_CUR:
-            PHYSFS_seek(file, PHYSFS_tell(file) + offset);
-            break;
-        case SEEK_SET:
-            PHYSFS_seek(file, offset);
-            break;
-        case SEEK_END:
-            PHYSFS_seek(file, PHYSFS_fileLength(file) + offset);
-            break;
-    }
-
-    return PHYSFS_tell(file);
-}
-
-
-sf_count_t CSNDFileWrapper::SNDTell(void *data)
-{
-    return PHYSFS_tell(static_cast<PHYSFS_File *>(data));
-}
-
-
-sf_count_t CSNDFileWrapper::SNDWrite(const void *ptr, sf_count_t count, void *data)
-{
-    return PHYSFS_writeBytes(static_cast<PHYSFS_File *>(data), ptr, count);
 }

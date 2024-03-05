@@ -20,8 +20,14 @@
 #include "common/system/system_other.h"
 
 
-void CSystemUtilsOther::Init()
+std::unique_ptr<CSystemUtils> CSystemUtils::Create()
 {
+    return std::make_unique<CSystemUtilsOther>();
+}
+
+void CSystemUtilsOther::Init(const std::vector<std::string>& args)
+{
+    m_arguments = args;
 }
 
 SystemDialogResult CSystemUtilsOther::SystemDialog(SystemDialogType type, const std::string& title, const std::string& message)

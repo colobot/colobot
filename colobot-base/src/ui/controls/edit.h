@@ -28,6 +28,7 @@
 #include "ui/controls/control.h"
 
 #include <array>
+#include <filesystem>
 #include <memory>
 
 namespace Ui
@@ -124,8 +125,8 @@ public:
     const std::string& GetText();
     int                GetTextLength();
 
-    bool        ReadText(std::string filename);
-    bool        WriteText(std::string filename);
+    bool        ReadText(const std::filesystem::path& filename);
+    bool        WriteText(const std::filesystem::path& filename);
 
     void        SetMaxChar(int max);
     int         GetMaxChar();

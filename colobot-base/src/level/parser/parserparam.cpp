@@ -229,7 +229,8 @@ std::string CLevelParserParam::ToPath(std::string path, const std::string defaul
     if (defaultDir == "" && path.find("%lvl%") != std::string::npos)
         throw CLevelParserException("TODO: Param "+m_name+" does not yet support %lvl%! :(");
 
-    return GetLine()->GetLevel()->InjectLevelPaths(path, defaultDir);
+    return StrUtils::ToString(GetLine()->GetLevel()->InjectLevelPaths(
+        StrUtils::ToPath(path), StrUtils::ToPath(defaultDir)));
 }
 
 std::string CLevelParserParam::AsPath(const std::string defaultDir)
@@ -243,7 +244,8 @@ std::string CLevelParserParam::AsPath(const std::string defaultDir)
 std::string CLevelParserParam::AsPath(const std::string defaultDir, std::string def)
 {
     if (m_empty)
-        return GetLine()->GetLevel()->InjectLevelPaths(def, defaultDir);
+        return StrUtils::ToString(GetLine()->GetLevel()->InjectLevelPaths(
+            StrUtils::ToPath(def), StrUtils::ToPath(defaultDir)));
 
     return ToPath(AsString(def), defaultDir);
 }

@@ -26,6 +26,7 @@
 #include "common/event.h"
 #include "common/logger.h"
 #include "common/settings.h"
+#include "common/stringutils.h"
 
 #include "common/resources/resourcemanager.h"
 
@@ -1014,15 +1015,10 @@ void CStudio::StartDialog(const Event &event)
             m_fileDialog->SetConfirmOverwrite(true);
 
             // filename in CScript may include sub-folder
-            std::string filename = m_script->GetFilename();
-            if (!filename.empty())
+            std::filesystem::path filename = m_script->GetFilename();
+            if (filename.has_parent_path())
             {
-                size_t pos = filename.find_last_of("/");
-                if (pos != std::string::npos)    // split subfolder from filename
-                {
-                    m_fileDialog->SetSubFolderPath(filename.substr(0, pos));
-                    filename = filename.substr(pos+1, filename.length()-pos-1);
-                }
+                m_fileDialog->SetSubFolderPath(filename.parent_path());
             }
             m_fileDialog->SetFilename(filename);
         }
@@ -1066,17 +1062,16 @@ bool CStudio::EventDialog(const Event &event)
             CEdit* pe = static_cast< CEdit* >(pw->SearchControl(EVENT_STUDIO_EDIT));
             if ( pe == nullptr ) return false;
 
-            std::string path = m_fileDialog->GetBasePath() + "/";  // public/private folder
-            std::string subpath = m_fileDialog->GetSubFolderPath();// sub-folder
+            std::filesystem::path path = m_fileDialog->GetBasePath();  // public/private folder
+            std::filesystem::path subpath = m_fileDialog->GetSubFolderPath();// sub-folder
 
             // filename in CScript may include sub-folder
-            std::string filename = subpath.empty() ? "" : subpath + "/";
-            filename += m_fileDialog->GetFilename();
+            std::filesystem::path filename = subpath / m_fileDialog->GetFilename();
             CFileDialog::Type type = m_fileDialog->GetDialogType();
 
             if ( type == CFileDialog::Type::Save )
             {
-                if (!pe->WriteText(path + filename))
+                if (!pe->WriteText(path / filename))
                 {
                     m_sound->Play(SOUND_TZOING);
                     return true;
@@ -1086,7 +1081,7 @@ bool CStudio::EventDialog(const Event &event)
             }
             else if ( type == CFileDialog::Type::Open )
             {
-                if (!pe->ReadText(path + filename))
+                if (!pe->ReadText(path / filename))
                 {
                     m_sound->Play(SOUND_TZOING);
                     return true;

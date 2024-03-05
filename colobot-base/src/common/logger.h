@@ -27,11 +27,10 @@
 
 #include "common/singleton.h"
 
+#include <filesystem>
+#include <ostream>
 #include <string>
 #include <string_view>
-#include <cstdarg>
-#include <cstdio>
-#include <filesystem>
 #include <vector>
 
 
@@ -134,11 +133,10 @@ public:
         LogMessage(logLevel, FormatMessage(message, std::forward<Args>(args)...));
     }
 
-    /** Set output file to write logs to
-    * The given file will be automatically closed when the logger exits
-    * \param file - file pointer to write to
+    /** Adds output stream to write logs to
+    * \param stream - stream to write to
     */
-    void AddOutput(FILE* file);
+    void AddOutput(std::ostream& stream);
 
     /** Set log level. Logs with level below will not be shown
     * \param level - minimum log level to write
@@ -217,7 +215,7 @@ private:
     static void PrintValue(std::string& string, const std::string& value);
     static void PrintValue(std::string& string, const std::filesystem::path& value);
 
-    std::vector<FILE*> m_outputs;
+    std::vector<std::ostream*> m_outputs;
     LogLevel m_logLevel;
 };
 

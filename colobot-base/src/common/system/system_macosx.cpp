@@ -20,6 +20,8 @@
 #include "common/system/system_macosx.h"
 
 #include "common/logger.h"
+#include "common/stringutils.h"
+#include "common/version.h"
 
 #include <stdlib.h>
 #include <unistd.h>
@@ -65,8 +67,15 @@ inline std::string CFStringRefToStdString(CFStringRef str) {
     return stdstr;
 }
 
-void CSystemUtilsMacOSX::Init()
+std::unique_ptr<CSystemUtils> CSystemUtils::Create()
 {
+    return std::make_unique<CSystemUtilsMacOSX>();
+}
+
+void CSystemUtilsMacOSX::Init(const std::vector<std::string>& args)
+{
+    m_arguments = args;
+
     // These functions are a deprecated way to get the 'Application Support' folder, but they do work, in plain C++
     FSRef ref;
     OSType folderType = kApplicationSupportFolderType;
@@ -74,11 +83,10 @@ void CSystemUtilsMacOSX::Init()
     FSFindFolder( kUserDomain, folderType, kCreateFolder, &ref );
     FSRefMakePath( &ref, reinterpret_cast<UInt8*>(&path), PATH_MAX );
 
-    m_ASPath = path;
-    m_ASPath.append("/colobot/");
+    m_ASPath = StrUtils::ToPath(path) / "colobot";
 
     // Make sure the directory exists
-    std::filesystem::create_directories(m_ASPath.c_str());
+    std::filesystem::create_directories(m_ASPath);
 
     // Get the Resources bundle URL
     CFBundleRef mainBundle = CFBundleGetMainBundle();
@@ -86,31 +94,39 @@ void CSystemUtilsMacOSX::Init()
     CFStringRef str = CFURLCopyFileSystemPath( resourcesURL, kCFURLPOSIXPathStyle );
     CFRelease(resourcesURL);
 
-    m_dataPath = CFStringRefToStdString(str);
-    m_dataPath += "/Contents/Resources";
+    m_dataPath = StrUtils::ToPath(CFStringRefToStdString(str));
+    m_dataPath /= "Contents/Resources";
 }
 
-std::string CSystemUtilsMacOSX::GetDataPath()
+SystemDialogResult CSystemUtilsMacOSX::SystemDialog(SystemDialogType type, const std::string& title, const std::string& message)
+{
+    return ConsoleSystemDialog(type, title, message);
+}
+
+std::filesystem::path CSystemUtilsMacOSX::GetDataPath()
 {
     return m_dataPath;
 }
 
-std::string CSystemUtilsMacOSX::GetLangPath()
+std::filesystem::path CSystemUtilsMacOSX::GetLangPath()
 {
-    return m_dataPath + "/i18n";
+    return m_dataPath / "i18n";
 }
 
-std::string CSystemUtilsMacOSX::GetSaveDir()
+std::filesystem::path CSystemUtilsMacOSX::GetSaveDir()
 {
-#if PORTABLE_SAVES || DEV_BUILD
-    // TODO: I have no idea if this actually works on Mac OS
-    return "./saves";
-#else
-    std::string savegameDir = m_ASPath;
-    GetLogger()->Trace("Saved game files are going to %%", savegameDir);
+    if constexpr (Version::PORTABLE_SAVES || Version::DEVELOPMENT_BUILD)
+    {
+        // TODO: I have no idea if this actually works on Mac OS
+        return "./saves";
+    }
+    else
+    {
+        std::filesystem::path savegameDir = m_ASPath;
+        GetLogger()->Trace("Saved game files are going to %%", savegameDir);
 
-    return savegameDir;
-#endif
+        return savegameDir;
+    }
 }
 
 std::string CSystemUtilsMacOSX::GetEnvVar(const std::string& str)
@@ -119,9 +135,9 @@ std::string CSystemUtilsMacOSX::GetEnvVar(const std::string& str)
     return std::string();
 }
 
-bool CSystemUtilsMacOSX::OpenPath(const std::string& path)
+bool CSystemUtilsMacOSX::OpenPath(const std::filesystem::path& path)
 {
-    int result = system(("open \"" + path + "\"").c_str()); // TODO: Test on macOS
+    int result = system(("open \"" + StrUtils::ToString(path) + "\"").c_str()); // TODO: Test on macOS
     if (result != 0)
     {
         GetLogger()->Error("Failed to open path: %%, error code: %%", path, result);

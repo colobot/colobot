@@ -48,7 +48,7 @@ bool CFontLoader::Init()
     try
     {
         std::unique_ptr<std::istream> stream;
-        auto inputStream = std::make_unique<CInputStream>("/fonts/fonts.ini");
+        auto inputStream = std::make_unique<CInputStream>("fonts/fonts.ini");
         bool good = inputStream->is_open();
         stream = std::move(inputStream);
 
@@ -78,12 +78,12 @@ bool CFontLoader::Init()
     return true;
 }
 
-std::optional<std::string> CFontLoader::GetFont(Gfx::FontType type) const
+std::optional<std::filesystem::path> CFontLoader::GetFont(Gfx::FontType type) const
 {
     auto iterator = m_fonts.find(ToString(type));
 
     if (iterator == m_fonts.end())
         return std::nullopt;
     else
-        return std::string("/fonts/") + iterator->second;
+        return std::filesystem::path("fonts") / iterator->second;
 }

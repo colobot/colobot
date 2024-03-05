@@ -65,8 +65,6 @@ elseif(PLATFORM_MACOSX)
     target_sources(Colobot-Base PRIVATE
         system/system_macosx.cpp
         system/system_macosx.h
-        system/system_other.cpp
-        system/system_other.h
     )
 else()
     target_sources(Colobot-Base PRIVATE
@@ -76,17 +74,18 @@ else()
 endif()
 
 # Configure files
-if(COLOBOT_OFFICIAL_BUILD)
-    set(OFFICIAL_COLOBOT_BUILD "true")
-else()
-    set(OFFICIAL_COLOBOT_BUILD "false")
-endif()
+macro(SetFlag var name)
+    if(${var})
+        set(${name} "true")
+    else()
+        set(${name} "false")
+    endif()
+endmacro()
 
-if(COLOBOT_DEVELOPMENT_MODE)
-    set(DEVELOPMENT_BUILD "true")
-else()
-    set(DEVELOPMENT_BUILD "false")
-endif()
+SetFlag(COLOBOT_OFFICIAL_BUILD CONFIG_OFFICIAL_BUILD)
+SetFlag(COLOBOT_DEVELOPMENT_MODE CONFIG_DEVELOPMENT_BUILD)
+SetFlag(PORTABLE_SAVES CONFIG_PORTABLE_SAVES)
+SetFlag(USE_RELATIVE_PATHS CONFIG_RELATIVE_PATHS)
 
 configure_file(config.h.cmake "${CMAKE_CURRENT_BINARY_DIR}/config.h")
 configure_file(version.h.cmake "${CMAKE_CURRENT_BINARY_DIR}/version.h")

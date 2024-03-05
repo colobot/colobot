@@ -818,7 +818,7 @@ void CEdit::HyperJump(std::string name, std::string marker)
     }
 
     std::string filename = name + std::string(".txt");
-    filename = InjectLevelPathsForCurrentLevel(filename, "help/%lng%");
+    filename = StrUtils::ToString(InjectLevelPathsForCurrentLevel(filename, "help/%lng%"));
     filename = StrUtils::Replace(filename, "\\", "/"); //TODO: Fix this in files
 
     if ( ReadText(filename) )
@@ -1170,7 +1170,7 @@ static std::string PrepareImageFilename(std::string name)
 {
     std::string filename;
     filename = name + ".png";
-    filename = InjectLevelPathsForCurrentLevel(filename, "icons");
+    filename = StrUtils::ToString(InjectLevelPathsForCurrentLevel(filename, "icons"));
     filename = StrUtils::Replace(filename, "\\", "/"); // TODO: Fix this in files
     return filename;
 }
@@ -1459,7 +1459,7 @@ void CEdit::FreeImage()
 
 // Read from a text file.
 
-bool CEdit::ReadText(std::string filename)
+bool CEdit::ReadText(const std::filesystem::path& filename)
 {
     int         len, len2, i, j, n, font, iLines, iCount;
     char        iName[50];
@@ -1870,7 +1870,7 @@ bool CEdit::ReadText(std::string filename)
 
 // Writes all the text in a file.
 
-bool CEdit::WriteText(std::string filename)
+bool CEdit::WriteText(const std::filesystem::path& filename)
 {
     if (filename.empty())  return false;
 

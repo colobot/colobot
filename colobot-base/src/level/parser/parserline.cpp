@@ -20,29 +20,25 @@
 #include "level/parser/parserline.h"
 
 #include "common/logger.h"
+#include "common/stringutils.h"
 
 #include "level/parser/parser.h"
 
-CLevelParserLine::CLevelParserLine(std::string command)
-    : m_level(nullptr),
-      m_levelFilename(""),
-      m_lineNumber(0),
+CLevelParserLine::CLevelParserLine(const std::string& command)
+    : m_command(command)
+{}
+
+CLevelParserLine::CLevelParserLine(int lineNumber, const std::string& command)
+    : m_lineNumber(lineNumber),
       m_command(command)
 {}
 
-CLevelParserLine::CLevelParserLine(int lineNumber, std::string command)
-    : m_level(nullptr),
-      m_levelFilename(""),
-      m_lineNumber(lineNumber),
-      m_command(command)
-{}
-
-int CLevelParserLine::GetLineNumber()
+int CLevelParserLine::GetLineNumber() const
 {
     return m_lineNumber;
 }
 
-CLevelParser* CLevelParserLine::GetLevel()
+CLevelParser* CLevelParserLine::GetLevel() const
 {
     return m_level;
 }
@@ -54,26 +50,26 @@ void CLevelParserLine::SetLevel(CLevelParser* level)
     // Only on the first call - this makes sure the level name doesn't change if the file is loaded using #Include
     if (m_levelFilename.empty())
     {
-        m_levelFilename = m_level->GetFilename();
+        m_levelFilename = StrUtils::ToString(m_level->GetFilename());
     }
 }
 
-const std::string& CLevelParserLine::GetLevelFilename()
+const std::filesystem::path& CLevelParserLine::GetLevelFilename() const
 {
     return m_levelFilename;
 }
 
-std::string CLevelParserLine::GetCommand()
+std::string CLevelParserLine::GetCommand() const
 {
     return m_command;
 }
 
-void CLevelParserLine::SetCommand(std::string command)
+void CLevelParserLine::SetCommand(const std::string& command)
 {
     m_command = command;
 }
 
-CLevelParserParam* CLevelParserLine::GetParam(std::string name)
+CLevelParserParam* CLevelParserLine::GetParam(const std::string& name)
 {
     auto it = m_params.find(name);
     if (it != m_params.end())
@@ -88,7 +84,7 @@ CLevelParserParam* CLevelParserLine::GetParam(std::string name)
     return paramPtr;
 }
 
-void CLevelParserLine::AddParam(std::string name, CLevelParserParamUPtr value)
+void CLevelParserLine::AddParam(const std::string& name, CLevelParserParamUPtr value)
 {
     value->SetLine(this);
     m_params.insert(std::make_pair(name, std::move(value)));

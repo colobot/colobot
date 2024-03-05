@@ -21,17 +21,11 @@
 #include "common/resources/resourcemanager.h"
 
 #include "common/config.h"
-
-#if PLATFORM_WINDOWS
-    #include "common/system/system_windows.h"
-#endif
-
 #include "common/logger.h"
 #include "common/stringutils.h"
 
+#include <algorithm>
 #include <physfs.h>
-
-#include <regex>
 
 
 CResourceManager::CResourceManager(const char *argv0)
@@ -60,13 +54,12 @@ CResourceManager::~CResourceManager()
 
 std::string CResourceManager::CleanPath(const std::filesystem::path& path)
 {
-    return std::regex_replace(StrUtils::Cast<std::string>(path.generic_u8string()),
-        std::regex("(.*)/\\.\\./"), "");
+    return StrUtils::Cast<std::string>(path.lexically_normal().generic_u8string());
 }
 
-bool CResourceManager::AddLocation(const std::string &location, bool prepend, const std::string &mountPoint)
+bool CResourceManager::AddLocation(const std::filesystem::path& location, bool prepend, const std::string &mountPoint)
 {
-    if (!PHYSFS_mount(location.c_str(), mountPoint.c_str(), prepend ? 0 : 1))
+    if (!PHYSFS_mount(StrUtils::ToString(location).c_str(), mountPoint.c_str(), prepend ? 0 : 1))
     {
         PHYSFS_ErrorCode errorCode = PHYSFS_getLastErrorCode();
         GetLogger()->Error("Error while mounting \"%%\": %%\n", location, PHYSFS_getErrorByCode(errorCode));
@@ -77,9 +70,9 @@ bool CResourceManager::AddLocation(const std::string &location, bool prepend, co
 }
 
 
-bool CResourceManager::RemoveLocation(const std::string &location)
+bool CResourceManager::RemoveLocation(const std::filesystem::path& location)
 {
-    if (!PHYSFS_unmount(location.c_str()))
+    if (!PHYSFS_unmount(StrUtils::ToString(location).c_str()))
     {
         PHYSFS_ErrorCode errorCode = PHYSFS_getLastErrorCode();
         GetLogger()->Error("Error while unmounting \"%%\": %%\n", location, PHYSFS_getErrorByCode(errorCode));
@@ -89,26 +82,26 @@ bool CResourceManager::RemoveLocation(const std::string &location)
     return true;
 }
 
-std::vector<std::string> CResourceManager::GetLocations()
+std::vector<std::filesystem::path> CResourceManager::GetLocations()
 {
-    std::vector<std::string> ret;
+    std::vector<std::filesystem::path> ret;
     char **list = PHYSFS_getSearchPath();
     for (char **it = list; *it != nullptr; ++it)
-        ret.push_back(*it);
+        ret.push_back(StrUtils::ToPath(*it));
     PHYSFS_freeList(list);
     return ret;
 }
 
-bool CResourceManager::LocationExists(const std::string& location)
+bool CResourceManager::LocationExists(const std::filesystem::path& location)
 {
     auto locations = GetLocations();
     auto it = std::find(locations.cbegin(), locations.cend(), location);
     return it != locations.cend();
 }
 
-bool CResourceManager::SetSaveLocation(const std::string &location)
+bool CResourceManager::SetSaveLocation(const std::filesystem::path& location)
 {
-    if (!PHYSFS_setWriteDir(location.c_str()))
+    if (!PHYSFS_setWriteDir(StrUtils::ToString(location).c_str()))
     {
         PHYSFS_ErrorCode errorCode = PHYSFS_getLastErrorCode();
         GetLogger()->Error("Error while setting save location to \"%%\": %%\n", location, PHYSFS_getErrorByCode(errorCode));
@@ -118,28 +111,28 @@ bool CResourceManager::SetSaveLocation(const std::string &location)
     return true;
 }
 
-std::string CResourceManager::GetSaveLocation()
+std::filesystem::path CResourceManager::GetSaveLocation()
 {
     if (PHYSFS_isInit())
     {
-        return PHYSFS_getWriteDir();
+        return StrUtils::ToPath(PHYSFS_getWriteDir());
     }
     return "";
 }
 
-std::unique_ptr<CSDLFileWrapper> CResourceManager::GetSDLFileHandler(const std::string &filename)
+std::unique_ptr<CSDLFileWrapper> CResourceManager::GetSDLFileHandler(const std::filesystem::path& filename)
 {
-    return std::make_unique<CSDLFileWrapper>(CleanPath(filename));
+    return std::make_unique<CSDLFileWrapper>(filename);
 }
 
-std::unique_ptr<CSDLMemoryWrapper> CResourceManager::GetSDLMemoryHandler(const std::string &filename)
+std::unique_ptr<CSDLMemoryWrapper> CResourceManager::GetSDLMemoryHandler(const std::filesystem::path& filename)
 {
-    return std::make_unique<CSDLMemoryWrapper>(CleanPath(filename));
+    return std::make_unique<CSDLMemoryWrapper>(filename);
 }
 
-std::unique_ptr<CSNDFileWrapper> CResourceManager::GetSNDFileHandler(const std::string &filename)
+std::unique_ptr<CSNDFileWrapper> CResourceManager::GetSNDFileHandler(const std::filesystem::path& filename)
 {
-    return std::make_unique<CSNDFileWrapper>(CleanPath(filename));
+    return std::make_unique<CSNDFileWrapper>(filename);
 }
 
 
@@ -152,7 +145,7 @@ bool CResourceManager::Exists(const std::filesystem::path& filename)
     return false;
 }
 
-bool CResourceManager::DirectoryExists(const std::string& directory)
+bool CResourceManager::DirectoryExists(const std::filesystem::path& directory)
 {
     if (PHYSFS_isInit())
     {
@@ -163,7 +156,7 @@ bool CResourceManager::DirectoryExists(const std::string& directory)
     return false;
 }
 
-bool CResourceManager::CreateNewDirectory(const std::string& directory)
+bool CResourceManager::CreateNewDirectory(const std::filesystem::path& directory)
 {
     if (PHYSFS_isInit())
     {
@@ -172,24 +165,23 @@ bool CResourceManager::CreateNewDirectory(const std::string& directory)
     return false;
 }
 
-bool CResourceManager::RemoveExistingDirectory(const std::string& directory)
+bool CResourceManager::RemoveExistingDirectory(const std::filesystem::path& directory)
 {
     if (PHYSFS_isInit())
     {
-        std::string path = CleanPath(directory);
-        for (auto file : ListFiles(path))
+        for (const auto& file : ListFiles(directory))
         {
-            if (PHYSFS_delete((path + "/" + file).c_str()) == 0)
+            if (PHYSFS_delete(CleanPath(directory / file).c_str()) == 0)
                 return false;
         }
-        return PHYSFS_delete(path.c_str()) != 0;
+        return PHYSFS_delete(CleanPath(directory).c_str()) != 0;
     }
     return false;
 }
 
-std::vector<std::string> CResourceManager::ListFiles(const std::string &directory, bool excludeDirs)
+std::vector<std::filesystem::path> CResourceManager::ListFiles(const std::filesystem::path& directory, bool excludeDirs)
 {
-    std::vector<std::string> result;
+    std::vector<std::filesystem::path> result;
 
     if (PHYSFS_isInit())
     {
@@ -200,11 +192,10 @@ std::vector<std::string> CResourceManager::ListFiles(const std::string &director
             if (excludeDirs)
             {
                 PHYSFS_Stat statbuf;
-                std::string path = CleanPath(directory) + "/" + (*i);
-                PHYSFS_stat(path.c_str(), &statbuf);
+                PHYSFS_stat(CleanPath(directory / StrUtils::ToPath(*i)).c_str(), &statbuf);
                 if (statbuf.filetype == PHYSFS_FILETYPE_DIRECTORY) continue;
             }
-            result.push_back(*i);
+            result.push_back(StrUtils::ToPath(*i));
         }
 
         PHYSFS_freeList(files);
@@ -213,9 +204,9 @@ std::vector<std::string> CResourceManager::ListFiles(const std::string &director
     return result;
 }
 
-std::vector<std::string> CResourceManager::ListDirectories(const std::string &directory)
+std::vector<std::filesystem::path> CResourceManager::ListDirectories(const std::filesystem::path& directory)
 {
-    std::vector<std::string> result;
+    std::vector<std::filesystem::path> result;
 
     if (PHYSFS_isInit())
     {
@@ -228,7 +219,7 @@ std::vector<std::string> CResourceManager::ListDirectories(const std::string &di
             PHYSFS_stat(path.c_str(), &statbuf);
             if (statbuf.filetype == PHYSFS_FILETYPE_DIRECTORY)
             {
-                result.push_back(*i);
+                result.push_back(StrUtils::ToPath(*i));
             }
         }
 
@@ -238,7 +229,7 @@ std::vector<std::string> CResourceManager::ListDirectories(const std::string &di
     return result;
 }
 
-long long CResourceManager::GetFileSize(const std::string& filename)
+long long CResourceManager::GetFileSize(const std::filesystem::path& filename)
 {
     if (PHYSFS_isInit())
     {
@@ -251,7 +242,7 @@ long long CResourceManager::GetFileSize(const std::string& filename)
     return -1;
 }
 
-long long CResourceManager::GetLastModificationTime(const std::string& filename)
+long long CResourceManager::GetLastModificationTime(const std::filesystem::path& filename)
 {
     if (PHYSFS_isInit())
     {
@@ -262,11 +253,11 @@ long long CResourceManager::GetLastModificationTime(const std::string& filename)
     return -1;
 }
 
-bool CResourceManager::Remove(const std::string& filename)
+bool CResourceManager::Remove(const std::filesystem::path& filename)
 {
     if (PHYSFS_isInit())
     {
-        return PHYSFS_delete(filename.c_str()) != 0;
+        return PHYSFS_delete(CleanPath(filename).c_str()) != 0;
     }
     return false;
 }

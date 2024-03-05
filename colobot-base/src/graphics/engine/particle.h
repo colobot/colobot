@@ -209,7 +209,7 @@ struct Track
     float           last = 0.0f;       // increase last not memorized
     float           intensity = 0.0f;  // intensity at starting (0..1)
     float           width = 0.0f;      // tail width
-    int             posUsed = 0.0f;    // number of positions in "pos"
+    int             posUsed = 0;    // number of positions in "pos"
     int             head = 0;       // head to write index
     glm::vec3    pos[MAXTRACKLEN];
     float           len[MAXTRACKLEN] = {};
