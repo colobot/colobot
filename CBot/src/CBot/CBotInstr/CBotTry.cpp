@@ -101,8 +101,6 @@ bool CBotTry::Execute(CBotStack* &pj)
         }
 
         val = pile1->GetError();
-        if ( val == CBotNoErr && pile1->GetTimer() == 0 )           // mode step?
-            return false;                   // don't jump to the catch
 
         pile1->IncState();
         pile2->SetState(val);                                   // stores the error number
@@ -126,6 +124,10 @@ bool CBotTry::Execute(CBotStack* &pj)
         {
             // ask to the catch block if it feels concerned
             if ( !pc->TestCatch(pile2, val) ) return false;     // suspend !
+            if (pile2->GetVal() != 0 && pile1->IsChildSuspended())
+            {
+                CBotProgram::CancelExternal(pj);
+            }
             pile1->IncState();
         }
         if ( --state <= 0 )

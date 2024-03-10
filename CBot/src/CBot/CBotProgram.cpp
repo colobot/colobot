@@ -35,6 +35,7 @@ namespace CBot
 {
 
 std::unique_ptr<CBotExternalCallList> CBotProgram::m_externalCalls;
+void (*CBotProgram::m_cancelExternal) (void* pUser) = 0;
 
 CBotProgram::CBotProgram()
 {
@@ -421,6 +422,17 @@ void CBotProgram::Free()
 const std::unique_ptr<CBotExternalCallList>& CBotProgram::GetExternalCalls()
 {
     return m_externalCalls;
+}
+
+void CBotProgram::SetCancelExternal(void cancel(void* pUser)) {
+    m_cancelExternal = cancel;
+}
+
+void CBotProgram::CancelExternal(CBotStack* s)
+{
+    if(m_cancelExternal) {
+        m_cancelExternal(s->GetUserPtr());
+    }
 }
 
 } // namespace CBot

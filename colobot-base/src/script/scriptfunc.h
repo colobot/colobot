@@ -52,6 +52,8 @@ public:
     static bool CheckOpenFiles();
 
 private:
+    static void Cancel (void* user);
+
     static CBot::CBotTypResult cEndMission(CBot::CBotVar* &var, void* user);
     static CBot::CBotTypResult cPlayMusic(CBot::CBotVar* &var, void* user);
     static CBot::CBotTypResult cGetObject(CBot::CBotVar* &var, void* user);

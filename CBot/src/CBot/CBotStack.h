@@ -463,6 +463,9 @@ public:
 
     bool            IsCallFinished();
 
+    void SetExternalCallSuspended(bool);
+    bool IsChildSuspended();
+
 private:
     CBotStack*        m_next;
     CBotStack*        m_next2;
@@ -491,6 +494,7 @@ private:
     CBotExternalCall* m_call;
 
     bool m_callFinished;
+    bool m_externalCallSuspended;
 };
 
 } // namespace CBot

@@ -36,6 +36,9 @@ public:
         CBotProgram::Init();
         CBotProgram::AddFunction("FAIL", rFail, cFail);
         CBotProgram::AddFunction("ASSERT", rAssert, cAssert);
+        CBotProgram::AddFunction("SUSPEND", rSuspend, cSuspend);
+        CBotProgram::AddFunction("IS_EXTERNAL_RUNNING", rIsExternalRunning, cIsExternalRunning);
+        CBotProgram::SetCancelExternal(Cancel);
     }
 
     ~CBotUT()
@@ -99,6 +102,36 @@ private:
             throw CBotTestFail("CBot assertion failed");
         }
         return true;
+    }
+
+    static CBotTypResult cSuspend(CBotVar* &var, void* user)
+    {
+        return CBotTypResult(CBotTypVoid);
+    }
+
+    static bool rSuspend(CBotVar* var, CBotVar* result, int& exception, void* user)
+    {
+        bool *is_external_running = static_cast<bool*>(user);
+        *is_external_running = true;
+        return false;
+    }
+
+    static CBotTypResult cIsExternalRunning(CBotVar* &var, void* user)
+    {
+        return CBotTypResult(CBotTypBoolean);
+    }
+
+    static bool rIsExternalRunning(CBotVar* var, CBotVar* result, int& exception, void* user)
+    {
+        bool *is_external_running = static_cast<bool*>(user);
+        result->SetValInt(*is_external_running);
+        return true;
+    }
+
+    static void Cancel(void* user)
+    {
+        bool *is_external_running = static_cast<bool*>(user);
+        *is_external_running = false;
     }
 
     // Modified version of PutList from src/script/script.cpp
@@ -251,17 +284,19 @@ protected:
         {
             try
             {
+                bool is_external_running = false;
+                void *user = static_cast<void*>(&is_external_running);
                 program->Start(test);
                 if (g_cbotTestSaveState)
                 {
-                    while (!program->Run(nullptr, 0)) // save/restore at each step
+                    while (!program->Run(user, 0)) // save/restore at each step
                     {
                         TestSaveAndRestore(program.get());
                     }
                 }
                 else
                 {
-                    while (!program->Run(nullptr, 0)); // execute in step mode
+                    while (!program->Run(user, 0)); // execute in step mode
                 }
                 program->GetError(error, cursor1, cursor2);
                 if (error != expectedRuntimeError)
@@ -3324,6 +3359,45 @@ TEST_F(CBotUT, ClassTestSaveInheritedMembers)
         "    ASSERT(t.b == 1011);\n"
         "    ASSERT(789 == t.a);\n"
         "    ASSERT(1011 == t.b);\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, CatchShouldCancelExternalCalls)
+{
+    ExecuteTest(
+        "extern void CatchShouldCancelExternalCalls()\n"
+        "{\n"
+        "    try {\n"
+        "        SUSPEND();\n"
+        "    } catch(IS_EXTERNAL_RUNNING()) {\n"
+        "        ASSERT(not IS_EXTERNAL_RUNNING());\n"
+        "    }\n"
+        "}\n"
+    );
+}
+
+TEST_F(CBotUT, CatchShouldNotCancelExternalCallsMadeOutsideTry)
+{
+    ExecuteTest(
+        "extern void CatchShouldNotCancelExternalCallsMadeOutsideTry()\n"
+        "{\n"
+        "    try {\n"
+        "        SUSPEND();\n"
+        "    } catch(Inner()) {\n"
+        "    } catch(true) {\n"  // to terminate SUSPEND() (otherwise the test hangs)
+        "    }\n"
+        "}\n"
+        "\n"
+        "bool Inner()\n"
+        "{\n"
+        "    if(not IS_EXTERNAL_RUNNING()) return false;\n"
+        "    try {\n"
+        "        throw 10;\n"
+        "    } catch(10) {\n" // this catch should not cancel SUSPEND()
+        "    }\n"
+        "    ASSERT(IS_EXTERNAL_RUNNING());\n"
+        "    return false;\n"
         "}\n"
     );
 }
