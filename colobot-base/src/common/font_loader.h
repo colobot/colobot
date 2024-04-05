@@ -28,8 +28,9 @@
 
 #include "graphics/engine/text.h"
 
-#include <string>
+#include <filesystem>
 #include <optional>
+#include <string>
 #include <unordered_map>
 
 /**
@@ -53,7 +54,7 @@ public:
     /** Reads given font path from file
     * \return return path to font file if font type is configured
     */
-    std::optional<std::string> GetFont(Gfx::FontType type) const;
+    std::optional<std::filesystem::path> GetFont(Gfx::FontType type) const;
 
 private:
     std::unordered_map<std::string, std::string> m_fonts;

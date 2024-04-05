@@ -73,7 +73,7 @@ void CModManager::FindMods()
     for (const auto& path : rawPaths)
     {
         auto modName = std::filesystem::path(path).stem().string();
-        modPaths.insert(std::make_pair(modName, path));
+        modPaths.insert(std::make_pair(modName, StrUtils::ToString(path)));
     }
 
     // Find paths for already saved mods
@@ -176,7 +176,7 @@ size_t CModManager::MoveDown(size_t i)
 
 bool CModManager::Changes()
 {
-    std::vector<std::string> paths;
+    std::vector<std::filesystem::path> paths;
     for (const auto& mod : m_mods)
     {
         if (mod.enabled)
@@ -310,16 +310,25 @@ void CModManager::LoadModData(Mod& mod)
     }
 
     // Changes
-    data.changes = CResourceManager::ListDirectories("temp/mod");
+    data.changes.clear();
+
+    for (const auto& path : CResourceManager::ListDirectories("temp/mod"))
+        data.changes.push_back(StrUtils::ToString(path));
+
     auto levelsIt = std::find(data.changes.begin(), data.changes.end(), "levels");
     if (levelsIt != data.changes.end())
     {
         auto levelsDirs = CResourceManager::ListDirectories("temp/mod/levels");
+
         if (!levelsDirs.empty())
         {
-            std::transform(levelsDirs.begin(), levelsDirs.end(), levelsDirs.begin(), [](const std::string& dir) { return "levels/" + dir; });
             levelsIt = data.changes.erase(levelsIt);
-            data.changes.insert(levelsIt, levelsDirs.begin(), levelsDirs.end());
+
+            for (const auto& path : levelsDirs)
+            {
+                data.changes.insert(levelsIt, StrUtils::ToString(
+                    std::filesystem::path("levels") / path));
+            }
         }
     }
 }
@@ -329,7 +338,7 @@ void CModManager::MountMod(const Mod& mod, const std::string& mountPoint)
     MountMod(mod.path, mountPoint);
 }
 
-void CModManager::MountMod(const std::string& path, const std::string& mountPoint)
+void CModManager::MountMod(const std::filesystem::path& path, const std::string& mountPoint)
 {
     GetLogger()->Debug("Mounting mod: '%%' at path %%", path, mountPoint);
     CResourceManager::AddLocation(path, true, mountPoint);
@@ -340,7 +349,7 @@ void CModManager::UnmountMod(const Mod& mod)
     UnmountMod(mod.path);
 }
 
-void CModManager::UnmountMod(const std::string& path)
+void CModManager::UnmountMod(const std::filesystem::path& path)
 {
     if (CResourceManager::LocationExists(path))
     {

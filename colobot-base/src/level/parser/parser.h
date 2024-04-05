@@ -31,7 +31,9 @@
 #include "level/parser/parserline.h"
 #include "level/parser/parserparam.h"
 
+#include <filesystem>
 #include <string>
+#include <string_view>
 #include <vector>
 #include <memory>
 
@@ -41,26 +43,26 @@ public:
     //! Create an empty level file
     CLevelParser();
     //! Load level from file
-    CLevelParser(std::string filename);
+    CLevelParser(const std::filesystem::path& filename);
     //! Load given level
     //@{
     CLevelParser(LevelCategory category, int chapter, int rank);
-    CLevelParser(std::string category, int chapter, int rank);
+    CLevelParser(std::string_view category, int chapter, int rank);
     //@}
 
     //! Build category path
     //@{
-    static std::string BuildCategoryPath(LevelCategory category);
-    static std::string BuildCategoryPath(std::string category);
+    static std::filesystem::path BuildCategoryPath(LevelCategory category);
+    static std::filesystem::path BuildCategoryPath(std::string_view category);
     //@}
     //! Build level filename
     //@{
-    static std::string BuildScenePath(LevelCategory category, int chapter, int rank, bool sceneFile = true);
-    static std::string BuildScenePath(std::string category, int chapter, int rank, bool sceneFile = true);
+    static std::filesystem::path BuildScenePath(LevelCategory category, int chapter, int rank, bool sceneFile = true);
+    static std::filesystem::path BuildScenePath(std::string_view category, int chapter, int rank, bool sceneFile = true);
     //@}
 
     //! Check if level file exists
-    bool Exists();
+    bool Exists() const;
     //! Load file
     void Load();
     //! Save file
@@ -69,10 +71,10 @@ public:
     //! Configure level paths for the given level
     void SetLevelPaths(LevelCategory category, int chapter = 0, int rank = 0);
     //! Inject %something% paths
-    std::string InjectLevelPaths(const std::string& path, const std::string& defaultDir = "");
+    std::filesystem::path InjectLevelPaths(const std::filesystem::path& path, const std::filesystem::path& defaultDir = "");
 
     //! Get filename
-    const std::string& GetFilename();
+    const std::filesystem::path& GetFilename() const;
 
     //! Get all lines from file
     inline const std::vector<CLevelParserLineUPtr>& GetLines()
@@ -93,15 +95,15 @@ public:
     int CountLines(const std::string& command);
 
 private:
-    std::string m_filename;
+    std::filesystem::path m_filename;
     std::vector<CLevelParserLineUPtr> m_lines;
 
-    std::string m_pathCat;
-    std::string m_pathChap;
-    std::string m_pathLvl;
+    std::filesystem::path m_pathCat;
+    std::filesystem::path m_pathChap;
+    std::filesystem::path m_pathLvl;
 };
 
-inline std::string InjectLevelPathsForCurrentLevel(const std::string& path, const std::string& defaultDir = "")
+inline std::filesystem::path InjectLevelPathsForCurrentLevel(const std::filesystem::path& path, const std::filesystem::path& defaultDir = "")
 {
     CRobotMain* main = CRobotMain::GetInstancePointer();
     auto levelParser = std::make_unique<CLevelParser>();

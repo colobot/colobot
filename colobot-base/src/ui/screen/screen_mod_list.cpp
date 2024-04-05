@@ -204,17 +204,12 @@ void CScreenModList::CreateInterface()
 
 bool CScreenModList::EventProcess(const Event &event)
 {
-    CWindow* pw;
-    CList* pl;
-
     const std::string workshopUrl = "https://www.moddb.com/games/colobot-gold-edition";
-    const std::string modDir = CResourceManager::GetSaveLocation() + "/mods";
+    const std::filesystem::path modDir = CResourceManager::GetSaveLocation() / "mods";
 
     auto systemUtils = CSystemUtils::Create(); // platform-specific utils
 
-    Mod const * mod;
-
-    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
+    auto pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if (pw == nullptr) return false;
 
     if (event.type == pw->GetEventTypeClose() ||
@@ -244,7 +239,8 @@ bool CScreenModList::EventProcess(const Event &event)
     switch( event.type )
     {
     case EVENT_INTERFACE_MOD_LIST:
-        pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_MOD_LIST));
+    {
+        auto pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_MOD_LIST));
         if (pl == nullptr) break;
         m_modSelectedIndex = pl->GetSelect();
         UpdateModSummary();
@@ -252,9 +248,11 @@ bool CScreenModList::EventProcess(const Event &event)
         UpdateEnableDisableButton();
         UpdateUpDownButtons();
         break;
+    }
 
     case EVENT_INTERFACE_MOD_ENABLE_OR_DISABLE:
-        mod = &m_modManager->GetMod(m_modSelectedIndex);
+    {
+        auto mod = &m_modManager->GetMod(m_modSelectedIndex);
         if (mod->enabled)
         {
             m_modManager->DisableMod(m_modSelectedIndex);
@@ -267,6 +265,7 @@ bool CScreenModList::EventProcess(const Event &event)
         UpdateEnableDisableButton();
         UpdateApplyButton();
         break;
+    }
 
     case EVENT_INTERFACE_MOD_MOVE_UP:
         m_modSelectedIndex = m_modManager->MoveUp(m_modSelectedIndex);
@@ -297,15 +296,14 @@ bool CScreenModList::EventProcess(const Event &event)
         break;
 
     case EVENT_INTERFACE_MODS_DIR:
-        if (!systemUtils->OpenPath(modDir))
+        if (!systemUtils->OpenPath(StrUtils::ToString(modDir)))
         {
             std::string title, text;
             GetResource(RES_TEXT, RT_DIALOG_OPEN_PATH_FAILED_TITLE, title);
             GetResource(RES_TEXT, RT_DIALOG_OPEN_PATH_FAILED_TEXT, text);
 
             // Workaround for Windows: the label skips everything after the first \\ character
-            std::string modDirWithoutBackSlashes = modDir;
-            std::replace(modDirWithoutBackSlashes.begin(), modDirWithoutBackSlashes.end(), '\\', '/');
+            std::string modDirWithoutBackSlashes = StrUtils::Cast<std::string>(modDir.generic_u8string());
 
             m_dialog->StartInformation(title, title, StrUtils::Format(text.c_str(), modDirWithoutBackSlashes.c_str()));
         }

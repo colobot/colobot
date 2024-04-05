@@ -32,7 +32,6 @@ namespace Gfx
 class CSettings : public CSingleton<CSettings>
 {
 public:
-    CSettings();
     void SaveResolutionSettings(const Gfx::DeviceConfig& config);
     void SaveSettings();
     void LoadSettings();
@@ -40,76 +39,76 @@ public:
     void SaveAudioSettings();
 
     void SetTooltips(bool tooltips);
-    bool GetTooltips();
+    bool GetTooltips() const;
 
     void SetInterfaceGlint(bool interfaceGlint);
-    bool GetInterfaceGlint();
+    bool GetInterfaceGlint() const;
 
     void SetMouseParticlesEnabled(bool mouseParticlesEnabled);
-    bool GetMouseParticlesEnabled();
+    bool GetMouseParticlesEnabled() const;
 
     void SetSoluce4(bool soluce4);
-    bool GetSoluce4();
+    bool GetSoluce4() const;
 
     void SetMovies(bool movies);
-    bool GetMovies();
+    bool GetMovies() const;
 
     void SetFocusLostPause(bool focusLostPause);
-    bool GetFocusLostPause();
+    bool GetFocusLostPause() const;
 
     void SetFocusLostMute(bool focusLostMute);
-    bool GetFocusLostMute();
+    bool GetFocusLostMute() const;
 
     //! Managing the size of the default fonts
     //@{
     void        SetFontSize(float size);
-    float       GetFontSize();
+    float       GetFontSize() const;
     //@}
 
     //! Managing the size of the default window
     //@{
     void        SetWindowPos(const glm::vec2& pos);
-    glm::vec2   GetWindowPos();
+    glm::vec2   GetWindowPos() const;
 
     void        SetWindowDim(const glm::vec2& dim);
-    glm::vec2   GetWindowDim();
+    glm::vec2   GetWindowDim() const;
 
     void        SetWindowMax(bool max);
-    bool        GetWindowMax();
+    bool        GetWindowMax() const;
     //@}
 
     //! Managing windows open/save
     //@{
     void        SetIOPublic(bool mode);
-    bool        GetIOPublic();
+    bool        GetIOPublic() const;
 
     void        SetIOPos(const glm::vec2& pos);
-    glm::vec2   GetIOPos();
+    glm::vec2   GetIOPos() const;
 
     void        SetIODim(const glm::vec2& dim);
-    glm::vec2   GetIODim();
+    glm::vec2   GetIODim() const;
     //@}
 
     void SetLanguage(Language language);
-    Language GetLanguage();
+    Language GetLanguage() const;
 
 protected:
-    bool m_tooltips;
-    bool m_interfaceGlint;
-    bool m_mouseParticlesEnabled;
-    bool m_soluce4;
-    bool m_movies;
-    bool m_focusLostPause;
-    bool m_focusLostMute;
+    bool m_tooltips = true;
+    bool m_interfaceGlint = true;
+    bool m_mouseParticlesEnabled = true;
+    bool m_soluce4 = true;
+    bool m_movies = true;
+    bool m_focusLostPause = true;
+    bool m_focusLostMute = true;
 
-    float           m_fontSize;
-    glm::vec2       m_windowPos;
-    glm::vec2       m_windowDim;
-    bool            m_windowMax;
+    float m_fontSize = 19.0f;
+    glm::vec2 m_windowPos = { 0.15f, 0.17f };
+    glm::vec2 m_windowDim = { 0.70f, 0.66f };
+    bool m_windowMax = false;
 
-    bool            m_IOPublic;
-    glm::vec2       m_IOPos;
-    glm::vec2       m_IODim;
+    bool m_IOPublic = false;
+    glm::vec2 m_IOPos = { (1.0f - m_IODim.x) / 2.0f, (1.0f - m_IODim.y) / 2.0f };
+    glm::vec2 m_IODim = { 320.0f / 640.0f, (121.0f + 18.0f * 8) / 480.0f };
 
-    Language m_language;
+    Language m_language = LANGUAGE_ENV;
 };

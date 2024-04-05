@@ -21,6 +21,8 @@
 
 #include "ui/controls/control.h"
 
+#include <filesystem>
+
 namespace Ui
 {
 
@@ -36,10 +38,10 @@ public:
 
     void    Draw() override;
 
-    void    SetFilenameImage(const std::string& name);
+    void    SetFilename(const std::filesystem::path& name);
 
 protected:
-    std::string m_filename;
+    std::filesystem::path m_filename;
 };
 
 } // namespace Ui

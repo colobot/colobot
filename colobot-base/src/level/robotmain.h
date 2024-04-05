@@ -43,6 +43,7 @@
 #include "object/object_type.h"
 #include "object/tool_type.h"
 
+#include <filesystem>
 #include <deque>
 #include <map>
 #include <set>
@@ -260,9 +261,9 @@ public:
 
     void        FlushDisplayInfo();
     void        StartDisplayInfo(int index, bool movie);
-    void        StartDisplayInfo(const std::string& filename, int index);
+    void        StartDisplayInfo(const std::filesystem::path& filename, int index);
     void        StopDisplayInfo();
-    char*       GetDisplayInfoName(int index);
+    const std::filesystem::path& GetDisplayInfoName(int index);
 
     void        StartSuspend();
     void        StopSuspend();
@@ -270,7 +271,7 @@ public:
     float       GetGameTime();
 
     const std::string& GetScriptName();
-    const std::string& GetScriptFile();
+    const std::filesystem::path& GetScriptFile();
     bool        GetTrainerPilot();
     bool        GetPlusTrainer();
     bool        GetPlusExplorer();
@@ -291,7 +292,7 @@ public:
     int         GetLevelChap();
     int         GetLevelRank();
     std::string GetCustomLevelDir();
-    void        SetReadScene(std::string path);
+    void        SetReadScene(const std::filesystem::path& path);
     void        UpdateChapterPassed();
 
     void        StartMusic();
@@ -334,11 +335,19 @@ public:
      */
     //@{
     bool        IOIsBusy();
-    bool        IOWriteScene(std::string filename, std::string filecbot, std::string filescreenshot, const std::string& info, bool emergencySave = false);
+    bool        IOWriteScene(const std::filesystem::path& filename,
+                    const std::filesystem::path& filecbot,
+                    const std::filesystem::path& filescreenshot,
+                    const std::string& info, bool emergencySave = false);
     void        IOWriteSceneFinished();
-    CObject*    IOReadScene(std::string filename, std::string filecbot);
-    void        IOWriteObject(CLevelParserLine *line, CObject* obj, const std::string& programDir, int objRank);
-    CObject*    IOReadObject(CLevelParserLine *line, const std::string& programDir, const std::string& objCounterText, float objectProgress, int objRank = -1);
+    CObject*    IOReadScene(const std::filesystem::path& filename,
+                    const std::filesystem::path& filecbot);
+    void        IOWriteObject(CLevelParserLine *line, CObject* obj,
+                    const std::filesystem::path& programDir, int objRank);
+    CObject*    IOReadObject(CLevelParserLine *line,
+                    const std::filesystem::path& programDir,
+                    const std::string& objCounterText,
+                    float objectProgress, int objRank = -1);
     //@}
 
     int         CreateSpot(glm::vec3 pos, Gfx::Color color);
@@ -611,8 +620,8 @@ protected:
     int             m_levelChap = 0;
     int             m_levelRank = 0;
     //! if set, loads this file instead of building from category/chap/rank
-    std::string     m_levelFile = "";
-    std::string     m_sceneReadPath;
+    std::filesystem::path m_levelFile = "";
+    std::filesystem::path m_sceneReadPath = "";
 
     float           m_winDelay = 0.0f;
     float           m_lostDelay = 0.0f;
@@ -655,7 +664,7 @@ protected:
     bool            m_resetCreate = false;
     bool            m_mapShow = false;
     bool            m_mapImage = false;
-    char            m_mapFilename[100] = {};
+    std::filesystem::path m_mapFilename;
 
     ActivePause*    m_suspend = nullptr;
 
@@ -663,15 +672,15 @@ protected:
     std::string     m_tooltipName;
     float           m_tooltipTime = 0.0f;
 
-    char            m_infoFilename[SATCOM_MAX][100] = {}; // names of text files
+    std::array<std::filesystem::path, SATCOM_MAX> m_infoFilename; // names of text files
     CObject*        m_infoObject = nullptr;
     int             m_infoUsed = 0;
     ActivePause*    m_satcomMoviePause = nullptr;
 
     std::string     m_scriptName = "";
-    std::string     m_scriptFile = "";
-    std::string     m_endingWin = "";
-    std::string     m_endingLost = "";
+    std::filesystem::path m_scriptFile = "";
+    std::filesystem::path m_endingWin = "";
+    std::filesystem::path m_endingLost = "";
     bool            m_winTerminate = false;
 
     float           m_globalMagnifyDamage = 0.0f;

@@ -21,6 +21,7 @@
 
 #include "ui/screen/screen.h"
 
+#include <filesystem>
 #include <string>
 #include <vector>
 
@@ -43,7 +44,7 @@ protected:
 
 protected:
     CScreenLevelList* m_screenLevelList;
-    std::vector<std::string> m_saveList;
+    std::vector<std::filesystem::path> m_saveList;
 };
 
 } // namespace Ui

@@ -36,6 +36,7 @@
 
 #include <glm/glm.hpp>
 
+#include <filesystem>
 #include <string>
 #include <vector>
 #include <map>
@@ -463,7 +464,7 @@ public:
 
 
     //! Writes a screenshot containing the current frame
-    void            WriteScreenShot(const std::string& fileName);
+    void            WriteScreenShot(const std::filesystem::path& fileName);
 
 
     //@{
@@ -1069,7 +1070,7 @@ protected:
     struct WriteScreenShotData
     {
         std::unique_ptr<CImage> img;
-        std::string fileName;
+        std::filesystem::path fileName;
     };
     static void WriteScreenShotThread(std::unique_ptr<WriteScreenShotData> data);
 

@@ -62,8 +62,6 @@
 using TimeUtils::TimeStamp;
 using TimeUtils::TimeUnit;
 
-char CApplication::m_languageLocale[] = { 0 };
-
 
 //! Interval of timer called to update joystick state
 const int JOYSTICK_TIMER_INTERVAL = 1000/30;
@@ -218,26 +216,26 @@ void CApplication::LoadEnvironmentVariables()
     auto dataDir = m_systemUtils->GetEnvVar("COLOBOT_DATA_DIR");
     if (!dataDir.empty())
     {
-        m_pathManager->SetDataPath(dataDir);
+        m_pathManager->SetDataPath(StrUtils::ToPath(dataDir));
         GetLogger()->Info("Using data dir (based on environment variable): '%%'", dataDir);
     }
 
     auto langDir = m_systemUtils->GetEnvVar("COLOBOT_LANG_DIR");
     if (!langDir.empty())
     {
-        m_pathManager->SetLangPath(langDir);
+        m_pathManager->SetLangPath(StrUtils::ToPath(langDir));
         GetLogger()->Info("Using lang dir (based on environment variable): '%%'", langDir);
     }
 
     auto saveDir = m_systemUtils->GetEnvVar("COLOBOT_SAVE_DIR");
     if (!saveDir.empty())
     {
-        m_pathManager->SetSavePath(saveDir);
+        m_pathManager->SetSavePath(StrUtils::ToPath(saveDir));
         GetLogger()->Info("Using save dir (based on environment variable): '%%'", saveDir);
     }
 }
 
-ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
+ParseArgsStatus CApplication::ParseArguments(const std::vector<std::string>& args)
 {
     enum OptionType
     {
@@ -283,14 +281,21 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
 
     int c = 0;
     int index = -1;
-    while ((c = getopt_long_only(argc, argv, "", options, &index)) != -1)
+
+    std::vector<std::string> copy = args;
+    std::vector<char*> arguments;
+
+    for (auto& arg : copy)
+        arguments.push_back(arg.data());
+
+    while ((c = getopt_long_only(arguments.size(), arguments.data(), "", options, &index)) != -1)
     {
         if (c == '?')
         {
             if (optopt == 0)
-                GetLogger()->Error("Invalid argument: %%", argv[optind-1]);
+                GetLogger()->Error("Invalid argument: %%", args[optind-1]);
             else
-                GetLogger()->Error("Expected argument for option: %%", argv[optind-1]);
+                GetLogger()->Error("Expected argument for option: %%", args[optind-1]);
 
             m_exitCode = 1;
             return PARSE_ARGS_FAIL;
@@ -399,25 +404,25 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
             }
             case OPT_DATADIR:
             {
-                m_pathManager->SetDataPath(optarg);
+                m_pathManager->SetDataPath(StrUtils::ToPath(optarg));
                 GetLogger()->Info("Using data dir: '%%'", optarg);
                 break;
             }
             case OPT_LANGDIR:
             {
-                m_pathManager->SetLangPath(optarg);
+                m_pathManager->SetLangPath(StrUtils::ToPath(optarg));
                 GetLogger()->Info("Using language dir: '%%'", optarg);
                 break;
             }
             case OPT_SAVEDIR:
             {
-                m_pathManager->SetSavePath(optarg);
+                m_pathManager->SetSavePath(StrUtils::ToPath(optarg));
                 GetLogger()->Info("Using save dir: '%%'", optarg);
                 break;
             }
             case OPT_MOD:
             {
-                m_pathManager->AddMod(optarg);
+                m_pathManager->AddMod(StrUtils::ToPath(optarg));
                 break;
             }
             case OPT_RESOLUTION:
@@ -508,8 +513,6 @@ ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
 
 bool CApplication::Create()
 {
-    std::string path;
-
     GetLogger()->Info("Creating CApplication");
 
     m_errorMessage = m_pathManager->VerifyPaths();
@@ -1840,20 +1843,21 @@ void CApplication::SetLanguage(Language language)
 
     /* Gettext initialization */
 
-    static char envLang[50] = { 0 };
-    if (envLang[0] == 0)
+    static std::string envLang = "";
+
+    if (envLang.empty())
     {
         // Get this only at the first call, since this code modifies it
         const char* currentEnvLang = gl_locale_name(LC_MESSAGES, "LC_MESSAGES");
         if (currentEnvLang != nullptr)
         {
-            strcpy(envLang, currentEnvLang);
+            envLang = std::string(currentEnvLang);
         }
     }
 
     if (language == LANGUAGE_ENV)
     {
-        if (envLang[0] == 0)
+        if (envLang.empty())
         {
             GetLogger()->Error("Failed to get language from environment, setting default language");
             m_language = LANGUAGE_ENGLISH;
@@ -1862,31 +1866,31 @@ void CApplication::SetLanguage(Language language)
         {
             GetLogger()->Trace("gl_locale_name: '%%'", envLang);
 
-            if (strncmp(envLang,"en",2) == 0)
+            if (envLang == "en")
             {
                 m_language = LANGUAGE_ENGLISH;
             }
-            else if (strncmp(envLang,"cs",2) == 0)
+            else if (envLang == "cs")
             {
                 m_language = LANGUAGE_CZECH;
             }
-            else if (strncmp(envLang,"de",2) == 0)
+            else if (envLang == "de")
             {
                 m_language = LANGUAGE_GERMAN;
             }
-            else if (strncmp(envLang,"fr",2) == 0)
+            else if (envLang == "fr")
             {
                 m_language = LANGUAGE_FRENCH;
             }
-            else if (strncmp(envLang,"pl",2) == 0)
+            else if (envLang == "pl")
             {
                 m_language = LANGUAGE_POLISH;
             }
-            else if (strncmp(envLang,"ru",2) == 0)
+            else if (envLang == "ru")
             {
                 m_language = LANGUAGE_RUSSIAN;
             }
-            else if (strncmp(envLang,"pt",2) == 0)
+            else if (envLang == "pt")
             {
                 m_language = LANGUAGE_PORTUGUESE_BRAZILIAN;
             }
@@ -1936,8 +1940,11 @@ void CApplication::SetLanguage(Language language)
 
     std::string langStr = "LANGUAGE=";
     langStr += locale;
-    strcpy(m_languageLocale, langStr.c_str());
-    putenv(m_languageLocale);
+
+    std::copy_n(langStr.data(), langStr.size() + 1, m_languageLocale.data());
+
+    putenv(m_languageLocale.data());
+
     GetLogger()->Trace("SetLanguage: Set LANGUAGE=%% in environment", locale);
 
     char* defaultLocale = setlocale(LC_ALL, ""); // Load system locale
@@ -1976,7 +1983,7 @@ void CApplication::SetLanguage(Language language)
         setlocale(LC_NUMERIC, "C");
     }
 
-    bindtextdomain("colobot", m_pathManager->GetLangPath().c_str());
+    bindtextdomain("colobot", StrUtils::ToString(m_pathManager->GetLangPath()).c_str());
     bind_textdomain_codeset("colobot", "UTF-8");
     textdomain("colobot");
 

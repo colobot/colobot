@@ -88,7 +88,7 @@ void CMainMap::CreateMap()
 
 // Indicates whether the mini-map should display a still image.
 
-void CMainMap::SetFixImage(const char *filename)
+void CMainMap::SetFixImage(const std::filesystem::path& filename)
 {
     CWindow*    pw;
     CMap*       pm;

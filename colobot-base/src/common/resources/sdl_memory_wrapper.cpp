@@ -21,11 +21,12 @@
 #include "common/resources/sdl_memory_wrapper.h"
 
 #include "common/logger.h"
+#include "common/stringutils.h"
 
 #include <physfs.h>
 
 
-CSDLMemoryWrapper::CSDLMemoryWrapper(const std::string& filename)
+CSDLMemoryWrapper::CSDLMemoryWrapper(const std::filesystem::path& filename)
     : m_rwops(nullptr)
 {
     GetLogger()->Trace("Opening SDL memory wrapper for file '%%'\n", filename);
@@ -36,7 +37,7 @@ CSDLMemoryWrapper::CSDLMemoryWrapper(const std::string& filename)
         return;
     }
 
-    PHYSFS_File *file = PHYSFS_openRead(filename.c_str());
+    PHYSFS_File *file = PHYSFS_openRead(StrUtils::ToString(filename.lexically_normal()).c_str());
     if (file == nullptr)
     {
         GetLogger()->Error("Error opening file with PHYSFS: \"%%\"", filename);

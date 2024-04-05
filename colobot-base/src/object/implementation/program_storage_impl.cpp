@@ -231,19 +231,21 @@ void CProgramStorageObjectImpl::SaveAllUserPrograms(const std::string& userSourc
         }
     }
 
-    std::string dir = userSource.substr(0, userSource.find_last_of("/"));
+    std::filesystem::path dir = StrUtils::ToPath(userSource.substr(0, userSource.find_last_of("/")));
     std::string file = userSource.substr(userSource.find_last_of("/")+1) + StrUtils::Format("%.3d([0-9]{3})\\.txt", m_programStorageIndex);
     std::regex regex(file);
-    for (const std::string& filename : CResourceManager::ListFiles(dir))
+    for (const auto& path : CResourceManager::ListFiles(dir))
     {
+        std::string filename = StrUtils::ToString(path);
+
         std::smatch matches;
         if (std::regex_match(filename, matches, regex))
         {
             unsigned int id = std::stoul(matches[1]);
             if (id >= m_program.size() || !m_program[id]->filename.empty())
             {
-                GetLogger()->Trace("Removing old program '%%/%%'\n", dir, filename);
-                CResourceManager::Remove(dir+"/"+filename);
+                GetLogger()->Trace("Removing old program '%%/%%'\n", dir, path);
+                CResourceManager::Remove(dir / path);
             }
         }
     }
@@ -295,19 +297,20 @@ void CProgramStorageObjectImpl::LoadAllProgramsForLevel(CLevelParserLine* levelS
         GetLogger()->Debug("Loading user programs from '%%'",
             StrUtils::Format("%s%.3d___.txt", userSource.c_str(), m_programStorageIndex));
 
-        std::string dir = userSource.substr(0, userSource.find_last_of("/"));
+        std::filesystem::path dir = StrUtils::ToPath(userSource.substr(0, userSource.find_last_of("/")));
         std::string file = userSource.substr(userSource.find_last_of("/")+1) + StrUtils::Format("%.3d([0-9]{3})\\.txt", m_programStorageIndex);
         std::regex regex(file);
-        for (const std::string& filename : CResourceManager::ListFiles(dir))
+        for (const std::filesystem::path& path : CResourceManager::ListFiles(dir))
         {
+            std::string filename = StrUtils::ToString(path);
             std::smatch matches;
             if (std::regex_match(filename, matches, regex))
             {
                 unsigned int i = std::stoul(matches[1]);
                 Program* program = GetOrAddProgram(i);
                 if(GetCompile(program)) program = AddProgram(); // If original slot is already used, get a new one
-                GetLogger()->Trace("Loading program '%%/%%' from user directory", dir, filename);
-                ReadProgram(program, dir+"/"+filename);
+                GetLogger()->Trace("Loading program '%%/%%' from user directory", dir, path);
+                ReadProgram(program, StrUtils::ToString(dir / path));
             }
         }
     }
@@ -345,16 +348,17 @@ void CProgramStorageObjectImpl::SaveAllProgramsForSavedScene(CLevelParserLine* l
     }
 
     std::regex regex(StrUtils::Format("prog%.3d([0-9]{3})\\.txt", m_programStorageIndex));
-    for (const std::string& filename : CResourceManager::ListFiles(levelSource))
+    for (const std::filesystem::path& path : CResourceManager::ListFiles(StrUtils::ToPath(levelSource)))
     {
+        std::string filename = StrUtils::ToString(path);
         std::smatch matches;
         if (std::regex_match(filename, matches, regex))
         {
             unsigned int id = std::stoul(matches[1]);
             if (id >= m_program.size() || !m_program[id]->filename.empty())
             {
-                GetLogger()->Trace("Removing old program '%%/%%' from saved scene", levelSource, filename);
-                CResourceManager::Remove(levelSource+"/"+filename);
+                GetLogger()->Trace("Removing old program '%%/%%' from saved scene", levelSource, path);
+                CResourceManager::Remove(StrUtils::ToPath(levelSource) / path);
             }
         }
     }

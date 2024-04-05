@@ -163,9 +163,9 @@ inline Color ToSRGB(const Color& color)
 {
     Color result;
 
-    result.r = pow(color.r, 2.2);
-    result.g = pow(color.g, 2.2);
-    result.b = pow(color.b, 2.2);
+    result.r = pow(color.r, 2.2f);
+    result.g = pow(color.g, 2.2f);
+    result.b = pow(color.b, 2.2f);
     result.a = color.a;
 
     return result;
@@ -175,9 +175,9 @@ inline Color ToLinear(const Color& color)
 {
     Color result;
 
-    result.r = pow(color.r, 1.0 / 2.2);
-    result.g = pow(color.g, 1.0 / 2.2);
-    result.b = pow(color.b, 1.0 / 2.2);
+    result.r = pow(color.r, 1.0f / 2.2f);
+    result.g = pow(color.g, 1.0f / 2.2f);
+    result.b = pow(color.b, 1.0f / 2.2f);
     result.a = color.a;
 
     return result;

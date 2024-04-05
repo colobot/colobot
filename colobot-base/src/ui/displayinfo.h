@@ -21,6 +21,7 @@
 
 #include <glm/glm.hpp>
 
+#include <filesystem>
 #include <string>
 
 class CRobotMain;
@@ -51,7 +52,7 @@ public:
 
     bool        EventProcess(const Event &event);
 
-    void        StartDisplayInfo(std::string filename, int index, bool bSoluce);
+    void        StartDisplayInfo(const std::filesystem::path& filename, int index, bool bSoluce);
     void        StopDisplayInfo();
 
     void        SetPosition(int pos);

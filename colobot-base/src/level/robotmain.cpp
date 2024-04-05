@@ -559,7 +559,7 @@ void CRobotMain::ChangePhase(Phase phase)
             if (m_base == nullptr || loading) StartMusic();
 
             if (m_immediatSatCom && !loading  &&
-                m_infoFilename[SATCOM_HUSTON][0] != 0)
+                !m_infoFilename[SATCOM_HUSTON].empty())
                 StartDisplayInfo(SATCOM_HUSTON, false);  // shows the instructions
         }
         catch (const std::runtime_error& e)
@@ -577,7 +577,7 @@ void CRobotMain::ChangePhase(Phase phase)
         }
         else
         {
-            m_winTerminate = (m_endingWin.substr(m_endingWin.find_last_of("/")+1) == "win904.txt");
+            m_winTerminate = (m_endingWin.filename() == "win904.txt");
             m_levelFile = m_endingWin;
             try
             {
@@ -1546,9 +1546,9 @@ void CRobotMain::FlushDisplayInfo()
 {
     for (int i = 0; i < SATCOM_MAX; i++)
     {
-        m_infoFilename[i][0] = 0;
+        m_infoFilename[i] = "";
     }
-    strcpy(m_infoFilename[SATCOM_OBJECT], "objects.txt");
+    m_infoFilename[SATCOM_OBJECT] = "objects.txt";
 }
 
 //! Beginning of the displaying of instructions.
@@ -1587,7 +1587,7 @@ void CRobotMain::StartDisplayInfo(int index, bool movie)
 }
 
 //! Beginning of the displaying of instructions
-void CRobotMain::StartDisplayInfo(const std::string& filename, int index)
+void CRobotMain::StartDisplayInfo(const std::filesystem::path& filename, int index)
 {
     if (m_cmdEdit) return;
 
@@ -1634,7 +1634,7 @@ void CRobotMain::StopDisplayInfo()
 }
 
 //! Returns the name of the text display
-char* CRobotMain::GetDisplayInfoName(int index)
+const std::filesystem::path& CRobotMain::GetDisplayInfoName(int index)
 {
     return m_infoFilename[index];
 }
@@ -2780,7 +2780,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_obligatoryTokens.clear();
         m_mapShow = true;
         m_mapImage = false;
-        m_mapFilename[0] = 0;
+        m_mapFilename = "";
 
         m_controller = nullptr;
 
@@ -2873,7 +2873,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "Instructions" && !resetObject)
             {
-                strcpy(m_infoFilename[SATCOM_HUSTON], line->GetParam("name")->AsPath("help/%lng%").c_str());
+                m_infoFilename[SATCOM_HUSTON] = TempToPath(line->GetParam("name")->AsPath("help/%lng%"));
 
                 m_immediatSatCom = line->GetParam("immediat")->AsBool(false);
                 m_beginSatCom = m_lockedSatCom = line->GetParam("lock")->AsBool(false);
@@ -2883,30 +2883,30 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "Satellite" && !resetObject)
             {
-                strcpy(m_infoFilename[SATCOM_SAT], line->GetParam("name")->AsPath("help/%lng%").c_str());
+                m_infoFilename[SATCOM_SAT] = TempToPath(line->GetParam("name")->AsPath("help/%lng%"));
                 continue;
             }
 
             if (line->GetCommand() == "Loading" && !resetObject)
             {
-                strcpy(m_infoFilename[SATCOM_LOADING], line->GetParam("name")->AsPath("help/%lng%").c_str());
+                m_infoFilename[SATCOM_LOADING] = TempToPath(line->GetParam("name")->AsPath("help/%lng%"));
                 continue;
             }
 
             if (line->GetCommand() == "HelpFile" && !resetObject)
             {
-                strcpy(m_infoFilename[SATCOM_PROG], line->GetParam("name")->AsPath("help/%lng%").c_str());
+                m_infoFilename[SATCOM_PROG] = TempToPath(line->GetParam("name")->AsPath("help/%lng%"));
                 continue;
             }
             if (line->GetCommand() == "SoluceFile" && !resetObject)
             {
-                strcpy(m_infoFilename[SATCOM_SOLUCE], line->GetParam("name")->AsPath("help/%lng%").c_str());
+                m_infoFilename[SATCOM_SOLUCE] = TempToPath(line->GetParam("name")->AsPath("help/%lng%"));
                 continue;
             }
 
             if (line->GetCommand() == "EndingFile" && !resetObject)
             {
-                auto Process = [&](const std::string& type) -> std::string
+                auto Process = [&](const std::string& type) -> std::filesystem::path
                 {
                     if (line->GetParam(type)->IsDefined())
                     {
@@ -2919,7 +2919,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                                 GetLogger()->Warn("This level is using deprecated way of defining %% scene. Please change the %%= parameter in EndingFile from %% to \"levels/other/%1$s%2$03d.txt\".\n", type, type, rank);
                                 std::stringstream ss;
                                 ss << "levels/other/" << type << std::setfill('0') << std::setw(3) << rank << ".txt";
-                                return ss.str();
+                                return TempToPath(ss.str());
                             }
                             else
                             {
@@ -2931,7 +2931,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                         }
                         catch (std::invalid_argument &e)
                         {
-                            return line->GetParam(type)->AsPath("levels");
+                            return TempToPath(line->GetParam(type)->AsPath("levels"));
                         }
                     }
                     return "";
@@ -3379,7 +3379,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 if (!m_sceneReadPath.empty())  // loading file ?
                 {
                     m_ui->GetLoadingScreen()->SetProgress(0.25f, RT_LOADING_OBJECTS_SAVED);
-                    sel = IOReadScene(m_sceneReadPath + "/data.sav", m_sceneReadPath + "/cbot.run");
+                    sel = IOReadScene(m_sceneReadPath / "data.sav", m_sceneReadPath / "cbot.run");
                 }
                 else
                 {
@@ -3460,7 +3460,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                         char categoryChar = GetLevelCategoryDir(m_levelCategory)[0];
                         programStorage->LoadAllProgramsForLevel(
                             line.get(),
-                            m_playerProfile->GetSaveFile(StrUtils::Format("%c%.3d%.3d", categoryChar, m_levelChap, m_levelRank)),
+                            StrUtils::ToString(m_playerProfile->GetSaveFile(StrUtils::Format("%c%.3d%.3d", categoryChar, m_levelChap, m_levelRank))),
                             soluce
                         );
                     }
@@ -3571,7 +3571,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 if (m_mapImage)
                 {
                     glm::vec3 offset;
-                    strcpy(m_mapFilename, line->GetParam("filename")->AsPath("textures").c_str());
+                    m_mapFilename = StrUtils::ToPath(line->GetParam("filename")->AsPath("textures"));
                     offset = line->GetParam("offset")->AsPoint(glm::vec3(0.0f, 0.0f, 0.0f));
                     m_map->SetFixParam(line->GetParam("zoom")->AsFloat(1.0f),
                                     offset.x, offset.z,
@@ -3765,7 +3765,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             if (!m_sceneReadPath.empty()) continue; // ignore errors when loading saved game (TODO: don't report ones that are just not loaded when loading saved game)
             if (resetObject) continue; // ignore when reseting just objects (TODO: see above)
 
-            throw CLevelParserException("Unknown command: '" + line->GetCommand() + "' in " + line->GetLevelFilename() + ":" + StrUtils::ToString(line->GetLineNumber()));
+            throw CLevelParserException("Unknown command: '" + line->GetCommand() + "' in " + StrUtils::ToString(line->GetLevelFilename()) + ":" + StrUtils::ToString(line->GetLineNumber()));
         }
 
         // Do this here to prevent the first frame from taking a long time to render
@@ -4522,7 +4522,7 @@ void CRobotMain::SaveOneScript(CObject *obj)
     CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(obj);
 
     char categoryChar = GetLevelCategoryDir(m_levelCategory)[0];
-    programStorage->SaveAllUserPrograms(m_playerProfile->GetSaveFile(StrUtils::Format("%c%.3d%.3d", categoryChar, m_levelChap, m_levelRank)));
+    programStorage->SaveAllUserPrograms(StrUtils::ToString(m_playerProfile->GetSaveFile(StrUtils::Format("%c%.3d%.3d", categoryChar, m_levelChap, m_levelRank))));
 }
 
 //! Saves the stack of the program in execution of a robot
@@ -4617,7 +4617,8 @@ bool CRobotMain::IOIsBusy()
 }
 
 //! Writes an object into the backup file
-void CRobotMain::IOWriteObject(CLevelParserLine* line, CObject* obj, const std::string& programDir, int objRank)
+void CRobotMain::IOWriteObject(CLevelParserLine* line, CObject* obj,
+    const std::filesystem::path& programDir, int objRank)
 {
     line->AddParam("type", std::make_unique<CLevelParserParam>(obj->GetType()));
     line->AddParam("id", std::make_unique<CLevelParserParam>(obj->GetID()));
@@ -4649,14 +4650,14 @@ void CRobotMain::IOWriteObject(CLevelParserLine* line, CObject* obj, const std::
         CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(obj);
         if (programStorage->GetProgramStorageIndex() >= 0)
         {
-            programStorage->SaveAllProgramsForSavedScene(line, programDir);
+            programStorage->SaveAllProgramsForSavedScene(line, TempToString(programDir));
         }
         else
         {
             // Probably an object created after the scene started, not loaded from level file
             // This means it doesn't normally store programs so it doesn't have program storage id assigned
             programStorage->SetProgramStorageIndex(999-objRank); // Set something that won't collide with normal programs
-            programStorage->SaveAllProgramsForSavedScene(line, programDir);
+            programStorage->SaveAllProgramsForSavedScene(line, TempToString(programDir));
             programStorage->SetProgramStorageIndex(-1); // Disable again
         }
 
@@ -4672,7 +4673,10 @@ void CRobotMain::IOWriteObject(CLevelParserLine* line, CObject* obj, const std::
 }
 
 //! Saves the current game
-bool CRobotMain::IOWriteScene(std::string filename, std::string filecbot, std::string filescreenshot, const std::string& info, bool emergencySave)
+bool CRobotMain::IOWriteScene(const std::filesystem::path& filename,
+        const std::filesystem::path& filecbot,
+        const std::filesystem::path& filescreenshot,
+        const std::string& info, bool emergencySave)
 {
     if (!emergencySave)
     {
@@ -4681,7 +4685,7 @@ bool CRobotMain::IOWriteScene(std::string filename, std::string filecbot, std::s
         m_app->Render(); // update
     }
 
-    std::string dirname = filename.substr(0, filename.find_last_of("/"));
+    std::filesystem::path dirname = filename.parent_path();
 
     CLevelParser levelParser(filename);
     CLevelParserLineUPtr line;
@@ -4834,7 +4838,10 @@ void CRobotMain::IOWriteSceneFinished()
 }
 
 //! Resumes the game
-CObject* CRobotMain::IOReadObject(CLevelParserLine *line, const std::string& programDir, const std::string& objCounterText, float objectProgress, int objRank)
+CObject* CRobotMain::IOReadObject(CLevelParserLine *line,
+    const std::filesystem::path& programDir,
+    const std::string& objCounterText,
+    float objectProgress, int objRank)
 {
     ObjectCreateParams params = CObject::ReadCreateParams(line);
     params.power = -1.0f;
@@ -4876,16 +4883,17 @@ CObject* CRobotMain::IOReadObject(CLevelParserLine *line, const std::string& pro
         CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(obj);
         if (!line->GetParam("programStorageIndex")->IsDefined()) // Backwards compatibility
             programStorage->SetProgramStorageIndex(objRank);
-        programStorage->LoadAllProgramsForSavedScene(line, programDir);
+        programStorage->LoadAllProgramsForSavedScene(line, TempToString(programDir));
     }
 
     return obj;
 }
 
 //! Resumes some part of the game
-CObject* CRobotMain::IOReadScene(std::string filename, std::string filecbot)
+CObject* CRobotMain::IOReadScene(const std::filesystem::path& filename,
+    const std::filesystem::path& filecbot)
 {
-    std::string dirname = filename.substr(0, filename.find_last_of("/"));
+    std::filesystem::path dirname = filename.parent_path();
 
     CLevelParser levelParser(filename);
     levelParser.SetLevelPaths(m_levelCategory, m_levelChap, m_levelRank);
@@ -5443,7 +5451,7 @@ const std::string& CRobotMain::GetScriptName()
     return m_scriptName;
 }
 
-const std::string& CRobotMain::GetScriptFile()
+const std::filesystem::path& CRobotMain::GetScriptFile()
 {
     return m_scriptFile;
 }
@@ -5456,7 +5464,7 @@ bool CRobotMain::GetShowSoluce()
 
 bool CRobotMain::GetSceneSoluce()
 {
-    if (m_infoFilename[SATCOM_SOLUCE][0] == 0) return false;
+    if (m_infoFilename[SATCOM_SOLUCE].empty()) return false;
     return m_ui->GetSceneSoluce();
 }
 
@@ -5515,7 +5523,7 @@ void CRobotMain::SetLevel(LevelCategory cat, int chap, int rank)
     m_levelCategory = cat;
     m_levelChap = chap;
     m_levelRank = rank;
-    m_levelFile = CLevelParser::BuildScenePath(m_levelCategory, m_levelChap, m_levelRank);
+    m_levelFile = StrUtils::ToString(CLevelParser::BuildScenePath(m_levelCategory, m_levelChap, m_levelRank));
 }
 
 LevelCategory CRobotMain::GetLevelCategory()
@@ -5540,7 +5548,7 @@ std::string CRobotMain::GetCustomLevelDir()
     return m_ui->GetCustomLevelName(m_levelChap);
 }
 
-void CRobotMain::SetReadScene(std::string path)
+void CRobotMain::SetReadScene(const std::filesystem::path& path)
 {
     m_sceneReadPath = path;
 }
@@ -5820,16 +5828,21 @@ void CRobotMain::AutosaveRotate()
     GetLogger()->Debug("Rotate autosaves...");
     auto saveDirs = CResourceManager::ListDirectories(m_playerProfile->GetSaveDir());
     const std::string autosavePrefix = "autosave";
-    std::vector<std::string> autosaves;
-    std::copy_if(saveDirs.begin(), saveDirs.end(), std::back_inserter(autosaves), [&](const std::string &save)
-    {
-        return save.substr(0, autosavePrefix.length()) == autosavePrefix;
-    });
 
-    std::sort(autosaves.begin(), autosaves.end(), std::less<std::string>());
+    std::vector<std::filesystem::path> autosaves;
+
+    for (const auto& path : saveDirs)
+    {
+        std::string name = StrUtils::ToString(path);
+
+        if (name.starts_with(autosavePrefix))
+            autosaves.push_back(path);
+    }
+
+    std::sort(autosaves.begin(), autosaves.end(), std::less<std::filesystem::path>());
     for (int i = 0; i < static_cast<int>(autosaves.size()) - m_autosaveSlots + 1; i++)
     {
-        CResourceManager::RemoveExistingDirectory(m_playerProfile->GetSaveDir() + "/" + autosaves[i]);
+        CResourceManager::RemoveExistingDirectory(m_playerProfile->GetSaveDir() / autosaves[i]);
     }
 }
 
@@ -5844,7 +5857,7 @@ void CRobotMain::Autosave()
     strftime(timestr, 99, "%y%m%d%H%M%S", localtime(&now));
     strftime(infostr, 99, "%y.%m.%d %H:%M", localtime(&now));
     std::string info = std::string("[AUTOSAVE] ") + infostr;
-    std::string dir = m_playerProfile->GetSaveFile(std::string("autosave") + timestr);
+    std::filesystem::path dir = m_playerProfile->GetSaveFile(std::string("autosave") + timestr);
 
     m_playerProfile->SaveScene(dir, info);
 }
@@ -5857,14 +5870,14 @@ void CRobotMain::QuickSave()
     time_t now = time(nullptr);
     strftime(infostr, 99, "%y.%m.%d %H:%M", localtime(&now));
     std::string info = std::string("[QUICKSAVE]") + infostr;
-    std::string dir = m_playerProfile->GetSaveFile(std::string("quicksave"));
+    std::filesystem::path dir = m_playerProfile->GetSaveFile("quicksave");
 
     m_playerProfile->SaveScene(dir, info);
 }
 
 void CRobotMain::QuickLoad()
 {
-    std::string dir = m_playerProfile->GetSaveFile(std::string("quicksave"));
+    std::filesystem::path dir = m_playerProfile->GetSaveFile("quicksave");
     if(!CResourceManager::Exists(dir))
     {
         m_displayText->DisplayError(ERR_NO_QUICK_SLOT, glm::vec3(0.0f,0.0f,0.0f), 15.0f, 60.0f, 1000.0f);
@@ -5876,7 +5889,7 @@ void CRobotMain::QuickLoad()
 
 void CRobotMain::LoadSaveFromDirName(const std::string& gameDir)
 {
-    std::string dir = m_playerProfile->GetSaveFile(gameDir);
+    std::filesystem::path dir = m_playerProfile->GetSaveFile(gameDir);
     if(!CResourceManager::Exists(dir))
     {
         GetLogger()->Error("Save slot not found");

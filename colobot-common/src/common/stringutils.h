@@ -25,6 +25,7 @@
 #pragma once
 
 #include <cstddef>
+#include <filesystem>
 #include <sstream>
 #include <string>
 #include <string_view>
@@ -39,7 +40,7 @@ class CodePoint;
 /** If given, \a ok is set to true/false on success/failure.
     Warning: To avoid unnecessary problems, *always* give full template qualifier e.g. ToString\<int\> */
 template<class T>
-std::string ToString(T value, bool *ok = nullptr)
+std::string ToString(const T& value, bool *ok = nullptr)
 {
     std::ostringstream s;
     s << value;
@@ -83,6 +84,15 @@ To Cast(const From& text)
         return result;
     }
 }
+
+template<>
+std::string ToString(const std::filesystem::path& path, bool *ok);
+
+template<>
+std::filesystem::path FromString(const std::string& path, bool *ok);
+
+// Converts UTF-8 encoded string to std::filesystem::path
+std::filesystem::path ToPath(std::string_view path);
 
 //! Converts string of hex characters to int
 unsigned int HexStringToInt(std::string_view str);
@@ -145,3 +155,15 @@ std::string ToLower(std::string_view text);
 std::string ToUpper(std::string_view text);
 
 } // namespace StrUtil
+
+[[deprecated("Temporary conversion")]]
+inline std::string TempToString(const std::filesystem::path& path)
+{
+    return StrUtils::ToString(path);
+}
+
+[[deprecated("Temporary conversion")]]
+inline std::filesystem::path TempToPath(std::string_view path)
+{
+    return StrUtils::ToPath(path);
+}

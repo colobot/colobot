@@ -26,6 +26,7 @@
 
 #include "CBot/CBot.h"
 
+#include <filesystem>
 #include <limits>
 #include <memory>
 #include <optional>
@@ -62,7 +63,7 @@ public:
     CScript(COldObject* object);
     ~CScript();
 
-    void        PutScript(Ui::CEdit* edit, const char* name);
+    void        PutScript(Ui::CEdit* edit, const std::string& name);
     bool        GetScript(Ui::CEdit* edit);
     bool        GetCompile();
 
@@ -84,16 +85,16 @@ public:
     int         GetError();
     void        GetError(std::string& error);
 
-    void        New(Ui::CEdit* edit, const char* name);
-    bool        SendScript(const char* text);
-    bool        ReadScript(const char* filename);
-    bool        WriteScript(const char* filename);
+    void        New(Ui::CEdit* edit, const std::string& name);
+    bool        SendScript(const std::string& text);
+    bool        ReadScript(const std::filesystem::path& filename);
+    bool        WriteScript(const std::filesystem::path& filename);
     bool        ReadStack(std::istream &istr);
     bool        WriteStack(std::ostream &ostr);
     bool        Compare(CScript* other);
 
-    void        SetFilename(const std::string &filename);
-    const std::string& GetFilename();
+    void        SetFilename(const std::filesystem::path& filename);
+    const std::filesystem::path& GetFilename() const;
 
 protected:
     bool        IsEmpty();
@@ -113,15 +114,14 @@ protected:
 
     int     m_ipf = 0;          // number of instructions/second
     int     m_errMode = 0;      // what to do in case of error
-    int     m_len = 0;          // length of the script (without <0>)
-    std::unique_ptr<char[]> m_script;       // script ends with <0>
+    std::string m_script;       // script ends with <0>
     bool    m_bRun = false;         // program during execution?
     bool    m_bStepMode = false;        // step by step
     bool    m_bContinue = false;        // external function to continue
     bool    m_bCompile = false;     // compilation ok?
     std::string m_title = "";        // script title
     std::string m_mainFunction = "";
-    std::string m_filename = "";     // file name
+    std::filesystem::path m_filename = "";     // file name
     std::string m_token = "";        // missing instruction
     int m_tokenUsed = 0, m_tokenAllowed = 0;
     CBot::CBotError m_error = CBot::CBotNoErr;        // error (0=ok)

@@ -22,6 +22,7 @@
 #include "app/app.h"
 
 #include "common/settings.h"
+#include "common/stringutils.h"
 
 #include "common/resources/resourcemanager.h"
 
@@ -667,7 +668,11 @@ void CScreenLevelList::UpdateCustomLevelList()
 {
     auto userLevelDirs = CResourceManager::ListDirectories("levels/custom/");
     std::sort(userLevelDirs.begin(), userLevelDirs.end());
-    m_customLevelList = userLevelDirs;
+
+    m_customLevelList.clear();
+
+    for (const auto& path : userLevelDirs)
+        m_customLevelList.push_back(StrUtils::ToString(path));
 }
 
 std::string CScreenLevelList::GetCustomLevelName(int id)

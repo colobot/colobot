@@ -28,6 +28,7 @@
 #include "common/timeutils.h"
 
 #include <chrono>
+#include <filesystem>
 #include <memory>
 #include <string>
 #include <vector>
@@ -80,7 +81,16 @@ public:
     static std::unique_ptr<CSystemUtils> Create();
 
     //! Performs platform-specific initialization
-    virtual void Init() = 0;
+    virtual void Init(const std::vector<std::string>& args) = 0;
+
+    //! Returns the number of arguments
+    int GetArgumentCount() const;
+
+    //! Returns the argument
+    std::string GetArgument(int index) const;
+
+    //! Returns all arguments
+    const std::vector<std::string>& GetArguments() const;
 
     //! Displays a system dialog
     virtual SystemDialogResult SystemDialog(SystemDialogType, const std::string &title, const std::string &message) = 0;
@@ -92,23 +102,23 @@ public:
     TEST_VIRTUAL TimeUtils::TimeStamp GetCurrentTimeStamp();
 
     //! Returns the path where the executable binary is located (ends with the path separator)
-    virtual std::string GetBasePath();
+    virtual std::filesystem::path GetBasePath();
 
     //! Returns the data path (containing textures, levels, helpfiles, etc)
-    virtual std::string GetDataPath();
+    virtual std::filesystem::path GetDataPath();
 
     //! Returns the translations path
-    virtual std::string GetLangPath();
+    virtual std::filesystem::path GetLangPath();
 
     //! Returns the save dir location
-    virtual std::string GetSaveDir();
+    virtual std::filesystem::path GetSaveDir();
 
     //! Returns the environment variable with the given name or an empty string if it does not exist
     virtual std::string GetEnvVar(const std::string &name);
 
     //! Opens a path with default file browser
     /** \returns true if successful */
-    virtual bool OpenPath(const std::string& path);
+    virtual bool OpenPath(const std::filesystem::path& path);
 
     //! Opens a website with default web browser
     /** \returns true if successful */
@@ -117,6 +127,9 @@ public:
     //! Sleep for given amount of microseconds
     void Usleep(int usecs);
 
+protected:
+    std::vector<std::string> m_arguments;
+
 private:
-    std::string m_basePath;
+    std::filesystem::path m_basePath;
 };
