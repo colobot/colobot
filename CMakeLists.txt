@@ -207,9 +207,6 @@ option(ASSERTS "Enable assert()s" ON)
 # Enables development mode
 option(COLOBOT_DEVELOPMENT_MODE "Setup project for development (e.g. copies data content to build directory for execution)" OFF)
 
-# Development build can be enabled/disabled regardless of build type
-option(DEV_BUILD "Enable development build (enables some debugging tools, local setting paths, etc.)" OFF)
-
 # Official build - changes text on the crash screen
 # PLEASE DO NOT USE ON UNOFFICIAL BUILDS. Thanks.
 option(COLOBOT_OFFICIAL_BUILD "Official build (changes crash screen text)" OFF)
@@ -260,11 +257,6 @@ option(COLOBOT_LINT_BUILD "Generate some additional CMake targets for use with c
 if(NOT CMAKE_BUILD_TYPE)
     message(STATUS "Build type not specified - assuming debug")
     set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel." FORCE)
-endif()
-
-# Warn about development build
-if(DEV_BUILD)
-    message(STATUS "Building with development extensions")
 endif()
 
 ##
@@ -331,11 +323,6 @@ if(TESTS)
 else()
     add_definitions(-DTEST_VIRTUAL=)
 endif()
-
-if(DEV_BUILD)
-    add_definitions(-DDEV_BUILD)
-endif()
-
 
 ##
 # MSVC specific settings

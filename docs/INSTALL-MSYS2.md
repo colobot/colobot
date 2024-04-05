@@ -122,7 +122,7 @@ You could say that you have a small Linux inside of your Windows right now. To c
 **Warning:** You must add `-G"MSYS Makefiles"` argument to `cmake`. For example, when you want to build a developer version:
 
 ```sh
-cmake -DCMAKE_BUILD_TYPE=Debug -DDEV_BUILD=1 -G"MSYS Makefiles" ..
+cmake -DCMAKE_BUILD_TYPE=Debug -G"MSYS Makefiles" ..
 ```
 
 ### Dlls

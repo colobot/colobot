@@ -85,7 +85,7 @@ SystemDialogResult CSystemUtilsLinux::SystemDialog(SystemDialogType type, const 
 
 std::string CSystemUtilsLinux::GetSaveDir()
 {
-#if PORTABLE_SAVES || DEV_BUILD
+#if PORTABLE_SAVES
     return CSystemUtils::GetSaveDir();
 #else
     std::string savegameDir;

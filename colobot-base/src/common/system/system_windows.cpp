@@ -93,7 +93,7 @@ std::wstring CSystemUtilsWindows::UTF8_Decode(const std::string& str)
 
 std::string CSystemUtilsWindows::GetSaveDir()
 {
-#if PORTABLE_SAVES || DEV_BUILD
+#if PORTABLE_SAVES
     return CSystemUtils::GetSaveDir();
 #else
     std::string savegameDir;
