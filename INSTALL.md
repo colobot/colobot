@@ -133,7 +133,7 @@ If you can, please try to compile the code on your platform and let us know how 
 Before reporting errors, please make sure you compile the dev branch to make sure that the issue is not yet fixed there. Also, search the
 existing issues (https://github.com/colobot/colobot/issues) to check if a similar error has not been already reported.
 
-If you want to submit error reports, please use special Debug and Dev builds (add `-DDEV_BUILD=1 -DCMAKE_BUILD_TYPE=Debug` to CMake arguments)
+If you want to submit error reports, please use special Debug and Dev builds (add `-DCMAKE_BUILD_TYPE=Debug` to CMake arguments)
 and run the game in debug mode and with logging on higher level (commandline arguments: `-loglevel debug`).
 
 
