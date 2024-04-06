@@ -154,15 +154,22 @@ CImage* CWindow::CreateImage(const glm::vec2& pos, const glm::vec2& dim, int ico
 
 // Creates a new label.
 
-CLabel* CWindow::CreateLabel(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg, std::string name)
+CLabel* CWindow::CreateLabel(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg, std::string name, bool removeTooltip)
 {
     CLabel* label = CreateControl<CLabel>(pos, dim, icon, eventMsg);
 
-    auto p = name.find("\\");
-    if (p == std::string::npos)
-        label->SetName(name);
+    if (removeTooltip)
+    {
+        auto p = name.find("\\");
+        if (p == std::string::npos)
+            label->SetName(name, false);
+        else
+            label->SetName(name.substr(0, p), false);
+    }
     else
-        label->SetName(name.substr(0, p));
+    {
+        label->SetName(name, false);
+    }
 
     return label;
 }
