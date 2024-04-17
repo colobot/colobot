@@ -22,6 +22,8 @@
  * \brief Some useful cross-platform operations on timestamps
  */
 
+#pragma once
+
 #include <chrono>
 
 namespace TimeUtils
