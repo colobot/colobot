@@ -25,7 +25,6 @@ target_sources(Colobot-Base PRIVATE
     settings.cpp
     settings.h
     singleton.h
-    timeutils.cpp
     timeutils.h
 
     resources/inputstream.cpp
