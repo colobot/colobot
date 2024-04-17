@@ -57,7 +57,7 @@ class CApplicationUT : public testing::Test
 protected:
     CApplicationUT() = default;
 
-    ~CApplicationUT() = default;
+    ~CApplicationUT() noexcept = default;
 
     void SetUp() override;
     void TearDown() override;
