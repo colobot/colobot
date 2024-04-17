@@ -1556,7 +1556,7 @@ void CApplication::StartLoadingMusic()
         m_sound->CacheAll();
 
         TimeStamp musicLoadEnd{TimeUtils::GetCurrentTimeStamp()};
-        float musicLoadTime = TimeUtils::Diff(musicLoadStart, musicLoadEnd, TimeUnit::MILLISECONDS);
+        float musicLoadTime = TimeUtils::Diff<TimeUnit::MILLISECONDS>(musicLoadStart, musicLoadEnd);
         GetLogger()->Debug("Sound loading took %% ms", static_cast<int>(musicLoadTime));
     }}.detach();
 }

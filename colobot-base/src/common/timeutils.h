@@ -60,19 +60,21 @@ inline constexpr long long ExactDiff(TimeStamp before, TimeStamp after)
 
 //! Returns a difference between two timestamps in given time unit
 /** The difference is \a after - \a before. */
-inline constexpr float Diff(TimeStamp before, TimeStamp after, TimeUnit unit)
+template<TimeUnit unit>
+constexpr float Diff(TimeStamp before, TimeStamp after)
 {
+    static_assert(unit <= TimeUnit::MICROSECONDS);
+
     long long exact = ExactDiff(before, after);
 
     float result = 0.0f;
-    if (unit == TimeUnit::SECONDS)
+
+    if constexpr (unit == TimeUnit::SECONDS)
         result = exact * 1e-9;
-    else if (unit == TimeUnit::MILLISECONDS)
+    else if constexpr (unit == TimeUnit::MILLISECONDS)
         result = exact * 1e-6;
-    else if (unit == TimeUnit::MICROSECONDS)
+    else if constexpr (unit == TimeUnit::MICROSECONDS)
         result = exact * 1e-3;
-    else
-        assert(false);
 
     return result;
 }

@@ -2723,7 +2723,8 @@ void CEngine::Render()
     m_fpsCounter++;
 
     m_currentFrameTime = TimeUtils::GetCurrentTimeStamp();
-    float diff = TimeUtils::Diff(m_lastFrameTime, m_currentFrameTime, TimeUnit::SECONDS);
+    float diff = TimeUtils::Diff<TimeUnit::SECONDS>(m_lastFrameTime, m_currentFrameTime);
+
     if (diff > 1.0f)
     {
         m_lastFrameTime = m_currentFrameTime;
