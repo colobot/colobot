@@ -19,10 +19,11 @@
 
 #pragma once
 
-class CSystemUtils;
+#include "common/timeutils.h"
 
-#include "common/system/system.h"
 #include <stack>
+
+class CSystemUtils;
 
 /**
  * \enum PerformanceCounter

@@ -27,7 +27,7 @@
 #include "common/event.h"
 #include "common/language.h"
 #include "common/singleton.h"
-#include "common/system/system.h"
+#include "common/timeutils.h"
 
 #include "level/level_category.h"
 
