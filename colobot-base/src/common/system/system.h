@@ -98,9 +98,6 @@ public:
     //! Displays a fallback system dialog using console
     TEST_VIRTUAL SystemDialogResult ConsoleSystemDialog(SystemDialogType type, const std::string& title, const std::string& message);
 
-    //! Returns a time stamp associated with current time
-    TEST_VIRTUAL TimeUtils::TimeStamp GetCurrentTimeStamp();
-
     //! Returns the path where the executable binary is located (ends with the path separator)
     virtual std::filesystem::path GetBasePath();
 

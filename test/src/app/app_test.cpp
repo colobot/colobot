@@ -68,8 +68,6 @@ protected:
 
     void NextInstant(long long diff);
 
-    TimeStamp GetCurrentTimeStamp();
-
     void TestCreateUpdateEvent(long long relTimeExact, long long absTimeExact,
                                float relTime, float absTime,
                                long long relTimeReal, long long absTimeReal);
@@ -91,20 +89,12 @@ void CApplicationUT::SetUp()
     m_mocks.OnCall(m_systemUtils, CSystemUtils::GetLangPath).Return("");
     m_mocks.OnCall(m_systemUtils, CSystemUtils::GetSaveDir).Return("");
 
-    m_mocks.OnCall(m_systemUtils, CSystemUtils::GetCurrentTimeStamp).Do(std::bind(&CApplicationUT::GetCurrentTimeStamp, this));
-
     m_app = std::make_unique<CApplicationWrapper>(m_systemUtils);
 }
 
 void CApplicationUT::TearDown()
 {
     m_app.reset();
-}
-
-
-TimeStamp CApplicationUT::GetCurrentTimeStamp()
-{
-    return TimeStamp{ TimeStamp::duration{m_currentTime}};
 }
 
 void CApplicationUT::NextInstant(long long diff)
@@ -116,7 +106,7 @@ void CApplicationUT::TestCreateUpdateEvent(long long relTimeExact, long long abs
                                            float relTime, float absTime,
                                            long long relTimeReal, long long absTimeReal)
 {
-    TimeStamp now = GetCurrentTimeStamp();
+    TimeStamp now = TimeUtils::GetCurrentTimeStamp();
     Event event = m_app->CreateUpdateEvent(now);
     EXPECT_EQ(EVENT_FRAME, event.type);
     EXPECT_FLOAT_EQ(relTime, event.rTime);
@@ -133,7 +123,7 @@ TEST_F(CApplicationUT, UpdateEventTimeCalculation_SimulationSuspended)
 {
     m_app->SuspendSimulation();
 
-    Event event = m_app->CreateUpdateEvent(GetCurrentTimeStamp());
+    Event event = m_app->CreateUpdateEvent(TimeUtils::GetCurrentTimeStamp());
 
     EXPECT_EQ(EVENT_NULL, event.type);
 }
@@ -186,7 +176,7 @@ TEST_F(CApplicationUT, UpdateEventTimeCalculation_NegativeTimeOperation)
 
     NextInstant(-1111);
 
-    Event event = m_app->CreateUpdateEvent(GetCurrentTimeStamp());
+    Event event = m_app->CreateUpdateEvent(TimeUtils::GetCurrentTimeStamp());
     EXPECT_EQ(EVENT_NULL, event.type);
 }
 

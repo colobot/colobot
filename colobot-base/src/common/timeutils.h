@@ -39,6 +39,12 @@ enum class TimeUnit
 
 using TimeStamp = std::chrono::time_point<std::chrono::steady_clock>;
 
+//! Returns a time stamp associated with current time
+inline TimeUtils::TimeStamp GetCurrentTimeStamp()
+{
+    return std::chrono::steady_clock::now();
+}
+
 //! Linearly interpolates between two timestamps.
 inline constexpr TimeStamp Lerp(TimeStamp a, TimeStamp b, float t)
 {

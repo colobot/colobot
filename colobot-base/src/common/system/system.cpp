@@ -147,11 +147,6 @@ SystemDialogResult CSystemUtils::ConsoleSystemDialog(SystemDialogType type, cons
     return result;
 }
 
-TimeUtils::TimeStamp CSystemUtils::GetCurrentTimeStamp()
-{
-    return std::chrono::steady_clock::now();
-}
-
 std::filesystem::path CSystemUtils::GetBasePath()
 {
     if (m_basePath.empty())

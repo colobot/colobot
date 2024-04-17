@@ -424,8 +424,8 @@ bool CEngine::Create()
     params.mipmap = false;
     m_miceTexture = LoadTexture("textures/interface/mouse.png", params);
 
-    m_currentFrameTime = m_systemUtils->GetCurrentTimeStamp();
-    m_lastFrameTime = m_systemUtils->GetCurrentTimeStamp();
+    m_currentFrameTime = TimeUtils::GetCurrentTimeStamp();
+    m_lastFrameTime = m_currentFrameTime;
 
     return true;
 }
@@ -2722,7 +2722,7 @@ void CEngine::Render()
 {
     m_fpsCounter++;
 
-    m_currentFrameTime = m_systemUtils->GetCurrentTimeStamp();
+    m_currentFrameTime = TimeUtils::GetCurrentTimeStamp();
     float diff = TimeUtils::Diff(m_lastFrameTime, m_currentFrameTime, TimeUnit::SECONDS);
     if (diff > 1.0f)
     {

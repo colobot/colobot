@@ -1065,9 +1065,9 @@ int CApplication::Run()
 {
     m_active = true;
 
-    m_baseTimeStamp = m_systemUtils->GetCurrentTimeStamp();
-    m_lastTimeStamp = m_systemUtils->GetCurrentTimeStamp();
-    m_curTimeStamp = m_systemUtils->GetCurrentTimeStamp();
+    m_baseTimeStamp = TimeUtils::GetCurrentTimeStamp();
+    m_lastTimeStamp = m_baseTimeStamp;
+    m_curTimeStamp = m_baseTimeStamp;
 
     MoveMouse({ 0.5f, 0.5f }); // center mouse on start
 
@@ -1178,7 +1178,7 @@ int CApplication::Run()
             int numTickSlices = static_cast<int>(GetSimulationSpeed());
             if(numTickSlices < 1) numTickSlices = 1;
             previousTimeStamp = m_curTimeStamp;
-            currentTimeStamp = m_systemUtils->GetCurrentTimeStamp();
+            currentTimeStamp = TimeUtils::GetCurrentTimeStamp();
             for(int tickSlice = 0; tickSlice < numTickSlices; tickSlice++)
             {
                 interpolatedTimeStamp = TimeUtils::Lerp(previousTimeStamp, currentTimeStamp, (tickSlice+1)/static_cast<float>(numTickSlices));
@@ -1505,7 +1505,7 @@ void CApplication::Render()
 
 void CApplication::RenderIfNeeded(int updateRate)
 {
-    m_manualFrameTime = m_systemUtils->GetCurrentTimeStamp();
+    m_manualFrameTime = TimeUtils::GetCurrentTimeStamp();
     long long diff = TimeUtils::ExactDiff(m_manualFrameLast, m_manualFrameTime);
     if (diff < 1e9f / updateRate)
     {
@@ -1539,7 +1539,7 @@ void CApplication::ResetTimeAfterLoading()
 
 void CApplication::InternalResumeSimulation()
 {
-    m_baseTimeStamp = m_systemUtils->GetCurrentTimeStamp();
+    m_baseTimeStamp = TimeUtils::GetCurrentTimeStamp();
     m_curTimeStamp = m_baseTimeStamp;
     m_realAbsTimeBase = m_realAbsTime;
     m_absTimeBase = m_exactAbsTime;
@@ -1550,12 +1550,12 @@ void CApplication::StartLoadingMusic()
     std::thread{[this]()
     {
         GetLogger()->Debug("Cache sounds...");
-        TimeStamp musicLoadStart{m_systemUtils->GetCurrentTimeStamp()};
+        TimeStamp musicLoadStart{TimeUtils::GetCurrentTimeStamp()};
 
         m_sound->Reset();
         m_sound->CacheAll();
 
-        TimeStamp musicLoadEnd{m_systemUtils->GetCurrentTimeStamp()};
+        TimeStamp musicLoadEnd{TimeUtils::GetCurrentTimeStamp()};
         float musicLoadTime = TimeUtils::Diff(musicLoadStart, musicLoadEnd, TimeUnit::MILLISECONDS);
         GetLogger()->Debug("Sound loading took %% ms", static_cast<int>(musicLoadTime));
     }}.detach();
