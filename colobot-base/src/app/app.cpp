@@ -515,6 +515,10 @@ bool CApplication::Create()
 {
     GetLogger()->Info("Creating CApplication");
 
+    m_baseTimeStamp = TimeUtils::GetCurrentTimeStamp();
+    m_lastTimeStamp = m_baseTimeStamp;
+    m_curTimeStamp = m_baseTimeStamp;
+
     m_errorMessage = m_pathManager->VerifyPaths();
     if (!m_errorMessage.empty())
     {
@@ -1618,6 +1622,16 @@ Event CApplication::CreateUpdateEvent(TimeStamp newTimeStamp)
 float CApplication::GetSimulationSpeed() const
 {
     return m_simulationSpeed;
+}
+
+TimeUtils::TimeStamp CApplication::GetBaseTimeStamp() const
+{
+    return m_baseTimeStamp;
+}
+
+TimeUtils::TimeStamp CApplication::GetLastTimeStamp() const
+{
+    return m_lastTimeStamp;
 }
 
 float CApplication::GetAbsTime() const

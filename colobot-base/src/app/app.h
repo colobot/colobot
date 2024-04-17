@@ -209,6 +209,11 @@ public:
     float           GetSimulationSpeed() const;
     //@}
 
+    //! Returns base timestamp
+    TimeUtils::TimeStamp GetBaseTimeStamp() const;
+    //! Returns last timestamp
+    TimeUtils::TimeStamp GetLastTimeStamp() const;
+
     //! Returns the absolute time counter [seconds]
     float       GetAbsTime() const;
     //! Returns the exact absolute time counter [nanoseconds]
