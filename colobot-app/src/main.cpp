@@ -109,10 +109,10 @@ int main(int argc, char *argv[])
     for (int i = 0; i < argc; i++)
         args.push_back(argv[i]);
 
-    auto systemUtils = CSystemUtils::Create(); // platform-specific utils
-    systemUtils->Init(args);
+    auto& systemUtils = CSystemUtils::GetInstance(); // platform-specific utils
+    systemUtils.Init(args);
 
-    CProfiler::SetSystemUtils(systemUtils.get());
+    CProfiler::SetSystemUtils(&systemUtils);
 
     // Add file output to the logger
     std::filesystem::path logFileName;
@@ -123,8 +123,8 @@ int main(int argc, char *argv[])
     }
     else
     {
-        std::filesystem::create_directories(systemUtils->GetSaveDir());
-        logFileName = systemUtils->GetSaveDir() / "log.txt";
+        std::filesystem::create_directories(systemUtils.GetSaveDir());
+        logFileName = systemUtils.GetSaveDir() / "log.txt";
     }
 
     std::ofstream logFile(logFileName);
@@ -135,7 +135,7 @@ int main(int argc, char *argv[])
 
     logger.Info("%% starting", Version::FULL_NAME);
 
-    CSignalHandlers::Init(systemUtils.get());
+    CSignalHandlers::Init(&systemUtils);
 
     CResourceManager manager(argv[0]);
 
@@ -144,14 +144,14 @@ int main(int argc, char *argv[])
     InitializeEventTypeTexts();
 
     int code = 0;
-    CApplication app(systemUtils.get()); // single instance of the application
+    CApplication app(&systemUtils); // single instance of the application
 
     app.LoadEnvironmentVariables();
 
-    ParseArgsStatus status = app.ParseArguments(systemUtils->GetArguments());
+    ParseArgsStatus status = app.ParseArguments(systemUtils.GetArguments());
     if (status == PARSE_ARGS_FAIL)
     {
-        systemUtils->SystemDialog(SystemDialogType::ERROR_MSG, "COLOBOT - Fatal Error", "Invalid commandline arguments!");
+        systemUtils.SystemDialog(SystemDialogType::ERROR_MSG, "COLOBOT - Fatal Error", "Invalid commandline arguments!");
         return app.GetExitCode();
     }
     else if (status == PARSE_ARGS_HELP)
@@ -164,7 +164,7 @@ int main(int argc, char *argv[])
         code = app.GetExitCode();
         if (code != 0 && !app.GetErrorMessage().empty())
         {
-            systemUtils->SystemDialog(SystemDialogType::ERROR_MSG, "COLOBOT - Fatal Error", app.GetErrorMessage());
+            systemUtils.SystemDialog(SystemDialogType::ERROR_MSG, "COLOBOT - Fatal Error", app.GetErrorMessage());
         }
         logger.Info("Didn't run main loop. Exiting with code %%", code);
         return code;

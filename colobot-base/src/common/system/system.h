@@ -77,8 +77,8 @@ class CSystemUtils
 public:
     virtual ~CSystemUtils();
 
-    //! Creates system utils for specific platform
-    static std::unique_ptr<CSystemUtils> Create();
+    //! Returns unique instance of system utilities
+    static CSystemUtils& GetInstance();
 
     //! Performs platform-specific initialization
     virtual void Init(const std::vector<std::string>& args) = 0;
@@ -128,7 +128,12 @@ public:
     void Usleep(int usecs);
 
 protected:
+    //! Creates system utils for specific platform
+    static std::unique_ptr<CSystemUtils> Create();
+
     std::vector<std::string> m_arguments;
+
+    inline static std::unique_ptr<CSystemUtils> m_instance = nullptr;
 
 private:
     std::filesystem::path m_basePath;

@@ -33,6 +33,16 @@
 CSystemUtils::~CSystemUtils()
 {}
 
+CSystemUtils& CSystemUtils::GetInstance()
+{
+    if (m_instance == nullptr)
+    {
+        m_instance = Create();
+    }
+
+    return *m_instance;
+}
+
 int CSystemUtils::GetArgumentCount() const
 {
     return static_cast<int>(m_arguments.size());
