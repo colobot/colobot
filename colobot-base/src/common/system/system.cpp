@@ -28,10 +28,7 @@
 #include <algorithm>
 #include <thread>
 
-#include <SDL2/SDL.h>
-
-CSystemUtils::~CSystemUtils()
-{}
+CSystemUtils::~CSystemUtils() = default;
 
 CSystemUtils& CSystemUtils::GetInstance()
 {
@@ -149,13 +146,7 @@ SystemDialogResult CSystemUtils::ConsoleSystemDialog(SystemDialogType type, cons
 
 std::filesystem::path CSystemUtils::GetBasePath()
 {
-    if (m_basePath.empty())
-    {
-        auto* path = SDL_GetBasePath();
-        m_basePath = StrUtils::ToPath(path);
-        SDL_free(path);
-    }
-    return m_basePath;
+    return std::filesystem::current_path();
 }
 
 std::filesystem::path CSystemUtils::GetDataPath()

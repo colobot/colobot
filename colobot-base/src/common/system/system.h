@@ -130,7 +130,4 @@ protected:
     std::vector<std::string> m_arguments;
 
     inline static std::unique_ptr<CSystemUtils> m_instance = nullptr;
-
-private:
-    std::filesystem::path m_basePath;
 };
