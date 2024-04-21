@@ -62,7 +62,7 @@ endif()
 ##
 include("${PROJECT_SOURCE_DIR}/cmake/systems/${CMAKE_SYSTEM_NAME}.cmake" OPTIONAL RESULT_VARIABLE SYSTEM_INCLUDE)
 
-if ("${SYSTEM_INCLUDE}" EQUAL NOTFOUND)
+if ("${SYSTEM_INCLUDE}" STREQUAL NOTFOUND)
     include("${PROJECT_SOURCE_DIR}/cmake/systems/Other.cmake")
 endif()
 
@@ -81,21 +81,9 @@ list(PREPEND CMAKE_MODULE_PATH
 # Compiler detection
 include("${PROJECT_SOURCE_DIR}/cmake/compilers/${CMAKE_CXX_COMPILER_ID}.cmake" OPTIONAL RESULT_VARIABLE COMPILER_INCLUDE)
 
-if ("${COMPILER_INCLUDE}" EQUAL NOTFOUND)
+if ("${COMPILER_INCLUDE}" STREQUAL NOTFOUND)
     message(WARNING "Your C++ compiler doesn't seem to be supported.")
 endif()
-
-
-# Global compile flags
-# These are specific to GCC/MinGW/clang; for other compilers, change as necessary
-# The flags are used throughout src/ and test/ subdirs
-
-set(COLOBOT_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${NORMAL_CXX_FLAGS}")
-set(COLOBOT_CXX_FLAGS_RELEASE "${RELEASE_CXX_FLAGS}")
-set(COLOBOT_CXX_FLAGS_DEBUG "${DEBUG_CXX_FLAGS}")
-
-# Flags for gtest
-set(COLOBOT_GTEST_CXX_FLAGS "${TEST_CXX_FLAGS}")
 
 
 # Asserts can be enabled/disabled regardless of build type
@@ -131,9 +119,6 @@ option(INSTALL_DOCS "Install Doxygen-generated documentation" OFF)
 
 # Build OpenAL sound support
 option(OPENAL_SOUND "Build OpenAL sound support" ON)
-
-# Link runtime library statically (currently only works for MSVC)
-option(USE_STATIC_RUNTIME "Link the runtime library statically" OFF)
 
 # CBot can also be a static library
 option(CBOT_STATIC "Build CBot as static libary" OFF)

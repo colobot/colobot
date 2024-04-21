@@ -1,8 +1,3 @@
-# Compile flags as defined in global CMakeLists
-set(CMAKE_CXX_FLAGS "${COLOBOT_CXX_FLAGS} ${COLOBOT_GTEST_CXX_FLAGS}")
-set(CMAKE_CXX_FLAGS_RELEASE ${COLOBOT_CXX_FLAGS_RELEASE})
-set(CMAKE_CXX_FLAGS_DEBUG ${COLOBOT_CXX_FLAGS_DEBUG})
-
 # Unit test data
 set(TEST_FILES
     data/colobot.json
@@ -41,10 +36,6 @@ target_include_directories(Colobot-UnitTests PRIVATE
     ${CMAKE_CURRENT_BINARY_DIR}
     ${COLOBOT_LOCAL_INCLUDES}
 )
-
-if(MSVC)
-    target_compile_options(Colobot-UnitTests PRIVATE /utf-8)
-endif()
 
 target_link_libraries(Colobot-UnitTests PRIVATE
     GTest::GTest

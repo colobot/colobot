@@ -22,7 +22,7 @@
                 "CMAKE_C_COMPILER": "cl.exe",
                 "CMAKE_CXX_COMPILER": "cl.exe",
                 "CMAKE_BUILD_TYPE": "RelWithDebInfo",
-                "USE_STATIC_RUNTIME": true,
+                "COLOBOT_MSVC_STATIC_RUNTIME": true,
                 "CBOT_STATIC": true,
                 "GLEW_STATIC": true,
                 "SNDFILE_STATIC": true,
