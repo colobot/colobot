@@ -86,13 +86,7 @@ void CSignalHandlers::UnhandledExceptionHandler()
     std::exception_ptr exptr = std::current_exception();
     if (!exptr)
     {
-        std::stringstream ss;
-        ss << "std::terminate called without an exception";
-        #ifdef HAS_MSVC_EXCEPTION_BUG
-        ss << " [this is a known bug in MSVC]";
-        // see https://connect.microsoft.com/VisualStudio/feedback/details/988432/std-current-exception-returns-null-when-called-from-terminate-handler
-        #endif
-        ReportError(ss.str());
+        ReportError("std::terminate called without an exception");
         return;
     }
 
