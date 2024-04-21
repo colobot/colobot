@@ -132,7 +132,10 @@ if(PLATFORM_GNU)
 
             set(PO4A_OUTPUTS)
             foreach(LOCALE ${LINGUAS})
-                list(APPEND PO4A_OUTPUTS ${CMAKE_CURRENT_SOURCE_DIR}/lang/${LOCALE}/colobot.pod)
+                list(APPEND PO4A_OUTPUTS
+                        ${CMAKE_CURRENT_SOURCE_DIR}/lang/${LOCALE}/colobot.pod
+                        ${CMAKE_CURRENT_SOURCE_DIR}/lang/${LOCALE}/colobot.ini
+                    )
             endforeach()
             add_custom_command(
                 OUTPUT ${PO4A_OUTPUTS}
