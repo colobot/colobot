@@ -138,10 +138,10 @@ option(COLOBOT_LINT_BUILD "Generate some additional CMake targets for use with c
 # Enable this if your compiler has issues using char8_t
 option(COLOBOT_CHAR8_T_OVERRIDE "Override char8_t usage for compatibility reasons" OFF)
 
-# Default build type if not given is debug
+# Default build type if not given is RelWithDebInfo
 if(NOT CMAKE_BUILD_TYPE)
-    message(STATUS "Build type not specified - assuming debug")
-    set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel." FORCE)
+    message(STATUS "Build type not specified - assuming RelWithDebInfo")
+    set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel." FORCE)
 endif()
 
 ##
