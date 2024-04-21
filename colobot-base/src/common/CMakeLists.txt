@@ -50,7 +50,7 @@ target_sources(Colobot-Base PRIVATE
     thread/worker_thread.h
 )
 
-if(PLATFORM_WINDOWS)
+if(WIN32)
     target_sources(Colobot-Base PRIVATE
         system/system_windows.cpp
         system/system_windows.h

@@ -49,7 +49,7 @@ if(MSVC)
 endif()
 
 # Additional libraries per platform
-if(PLATFORM_WINDOWS)
+if(WIN32)
     # because it isn't included in standard linking libraries
     if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
         # TODO: this shouldn't be needed, the libraries targets should care of those transitive dependencies

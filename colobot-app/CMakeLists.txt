@@ -11,7 +11,7 @@ if(MSVC)
     target_compile_options(colobot PRIVATE /utf-8)
 endif()
 
-if(PLATFORM_WINDOWS)
+if(WIN32)
     target_sources(colobot PRIVATE ${PROJECT_BINARY_DIR}/desktop/colobot.rc)
 endif()
 

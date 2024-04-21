@@ -1,6 +1,5 @@
 message(STATUS "Build for Windows system")
 
-set(PLATFORM_WINDOWS 1)
 set(PLATFORM_GNU     0)
 set(PLATFORM_LINUX   0)
 set(PLATFORM_MACOSX  0)
