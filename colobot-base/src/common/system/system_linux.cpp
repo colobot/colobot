@@ -92,7 +92,7 @@ SystemDialogResult CSystemUtilsLinux::SystemDialog(SystemDialogType type, const 
     return result;
 }
 
-std::filesystem::path CSystemUtilsLinux::GetSaveDir()
+std::filesystem::path CSystemUtilsLinux::GetSaveDir() const
 {
     if constexpr (Version::PORTABLE_SAVES || Version::DEVELOPMENT_BUILD)
     {
@@ -127,7 +127,7 @@ std::filesystem::path CSystemUtilsLinux::GetSaveDir()
     }
 }
 
-std::string CSystemUtilsLinux::GetEnvVar(const std::string& name)
+std::string CSystemUtilsLinux::GetEnvVar(const std::string& name) const
 {
     char* envVar = getenv(name.c_str());
     if (envVar != nullptr)

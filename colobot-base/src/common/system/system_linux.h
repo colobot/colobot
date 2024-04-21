@@ -33,9 +33,9 @@ public:
 
     SystemDialogResult SystemDialog(SystemDialogType type, const std::string& title, const std::string& message) override;
 
-    std::filesystem::path GetSaveDir() override;
+    std::filesystem::path GetSaveDir() const override;
 
-    std::string GetEnvVar(const std::string& name) override;
+    std::string GetEnvVar(const std::string& name) const override;
 
     bool OpenPath(const std::filesystem::path& path) override;
     bool OpenWebsite(const std::string& url) override;

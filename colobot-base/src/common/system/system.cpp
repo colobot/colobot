@@ -144,12 +144,12 @@ SystemDialogResult CSystemUtils::ConsoleSystemDialog(SystemDialogType type, cons
     return result;
 }
 
-std::filesystem::path CSystemUtils::GetBasePath()
+std::filesystem::path CSystemUtils::GetBasePath() const
 {
     return std::filesystem::current_path();
 }
 
-std::filesystem::path CSystemUtils::GetDataPath()
+std::filesystem::path CSystemUtils::GetDataPath() const
 {
     if constexpr (Version::RELATIVE_PATHS)
         return GetBasePath() / COLOBOT_DEFAULT_DATADIR;
@@ -157,7 +157,7 @@ std::filesystem::path CSystemUtils::GetDataPath()
         return COLOBOT_DEFAULT_DATADIR;
 }
 
-std::filesystem::path CSystemUtils::GetLangPath()
+std::filesystem::path CSystemUtils::GetLangPath() const
 {
     if constexpr (Version::RELATIVE_PATHS)
         return GetBasePath() / COLOBOT_I18N_DIR;
@@ -165,12 +165,12 @@ std::filesystem::path CSystemUtils::GetLangPath()
         return COLOBOT_I18N_DIR;
 }
 
-std::filesystem::path CSystemUtils::GetSaveDir()
+std::filesystem::path CSystemUtils::GetSaveDir() const
 {
     return GetBasePath() / "saves";
 }
 
-std::string CSystemUtils::GetEnvVar(const std::string& name)
+std::string CSystemUtils::GetEnvVar(const std::string& name) const
 {
     return "";
 }

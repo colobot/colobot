@@ -98,19 +98,19 @@ public:
     TEST_VIRTUAL SystemDialogResult ConsoleSystemDialog(SystemDialogType type, const std::string& title, const std::string& message);
 
     //! Returns the path where the executable binary is located (ends with the path separator)
-    virtual std::filesystem::path GetBasePath();
+    virtual std::filesystem::path GetBasePath() const;
 
     //! Returns the data path (containing textures, levels, helpfiles, etc)
-    virtual std::filesystem::path GetDataPath();
+    virtual std::filesystem::path GetDataPath() const;
 
     //! Returns the translations path
-    virtual std::filesystem::path GetLangPath();
+    virtual std::filesystem::path GetLangPath() const;
 
     //! Returns the save dir location
-    virtual std::filesystem::path GetSaveDir();
+    virtual std::filesystem::path GetSaveDir() const;
 
     //! Returns the environment variable with the given name or an empty string if it does not exist
-    virtual std::string GetEnvVar(const std::string &name);
+    virtual std::string GetEnvVar(const std::string &name) const;
 
     //! Opens a path with default file browser
     /** \returns true if successful */

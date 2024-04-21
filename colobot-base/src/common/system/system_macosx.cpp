@@ -103,17 +103,17 @@ SystemDialogResult CSystemUtilsMacOSX::SystemDialog(SystemDialogType type, const
     return ConsoleSystemDialog(type, title, message);
 }
 
-std::filesystem::path CSystemUtilsMacOSX::GetDataPath()
+std::filesystem::path CSystemUtilsMacOSX::GetDataPath() const
 {
     return m_dataPath;
 }
 
-std::filesystem::path CSystemUtilsMacOSX::GetLangPath()
+std::filesystem::path CSystemUtilsMacOSX::GetLangPath() const
 {
     return m_dataPath / "i18n";
 }
 
-std::filesystem::path CSystemUtilsMacOSX::GetSaveDir()
+std::filesystem::path CSystemUtilsMacOSX::GetSaveDir() const
 {
     if constexpr (Version::PORTABLE_SAVES || Version::DEVELOPMENT_BUILD)
     {
@@ -129,7 +129,7 @@ std::filesystem::path CSystemUtilsMacOSX::GetSaveDir()
     }
 }
 
-std::string CSystemUtilsMacOSX::GetEnvVar(const std::string& str)
+std::string CSystemUtilsMacOSX::GetEnvVar(const std::string& str) const
 {
     // TODO: I have no Mac
     return std::string();

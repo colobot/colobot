@@ -116,7 +116,7 @@ std::wstring CSystemUtilsWindows::UTF8_Decode(const std::string& str)
 
 }
 
-std::filesystem::path CSystemUtilsWindows::GetSaveDir()
+std::filesystem::path CSystemUtilsWindows::GetSaveDir() const
 {
     if constexpr (Version::PORTABLE_SAVES || Version::DEVELOPMENT_BUILD)
     {
@@ -142,7 +142,7 @@ std::filesystem::path CSystemUtilsWindows::GetSaveDir()
     }
 }
 
-std::string CSystemUtilsWindows::GetEnvVar(const std::string& name)
+std::string CSystemUtilsWindows::GetEnvVar(const std::string& name) const
 {
     std::wstring wname(name.begin(), name.end());
     wchar_t* envVar = _wgetenv(wname.c_str());
