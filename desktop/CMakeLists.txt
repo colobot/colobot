@@ -128,7 +128,7 @@ if(PLATFORM_GNU)
         if(PO4A)
             # Translate the manpage to other languages
             file(GLOB LINGUAS_PO RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/po/ ${CMAKE_CURRENT_SOURCE_DIR}/po/*.po)
-            string(REGEX REPLACE ".po$" "" LINGUAS ${LINGUAS_PO})
+            string(REGEX REPLACE ".po" ";" LINGUAS ${LINGUAS_PO})
 
             set(PO4A_OUTPUTS)
             foreach(LOCALE ${LINGUAS})
