@@ -21,6 +21,7 @@ add_compile_options(
     -pedantic-errors
     -Wmissing-prototypes
     -Wno-error=deprecated-declarations  # updated version of physfs is not available on some platforms so we keep using deprecated functions, see #958
+    -Wno-error=nullability-extension
     -pthread
 )
 
