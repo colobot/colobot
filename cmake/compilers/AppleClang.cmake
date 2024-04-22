@@ -15,14 +15,4 @@ if (${PLATFORM_FREEBSD})
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=bfd")
 endif()
 
-add_compile_options(
-    -Wall
-    -Wold-style-cast
-    -pedantic-errors
-    -Wmissing-prototypes
-    -Wno-error=deprecated-declarations  # updated version of physfs is not available on some platforms so we keep using deprecated functions, see #958
-    -Wno-error=nullability-extension
-    -pthread
-)
-
 add_definitions(-DHAVE_DEMANGLE)

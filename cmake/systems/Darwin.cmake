@@ -6,8 +6,26 @@ set(PLATFORM_MACOSX  1)
 set(PLATFORM_OTHER   0)
 set(PLATFORM_FREEBSD 0)
 
-# Fix compilation errors in MacOS SDK files
-set(CMAKE_CXX_FLAGS "${NORMAL_CXX_FLAGS} -Wno-nullability-extension -Wno-nullability-completeness -Wno-expansion-to-defined -Wno-four-char-constants -Wno-gnu-zero-variadic-macro-arguments -Wno-variadic-macros -Wno-zero-length-array -Wno-missing-declarations -Wno-invalid-utf8")
+add_compile_options(
+    -Wall
+    -Wold-style-cast
+    -Wmissing-prototypes
+    -pedantic-errors
+    -Wno-error=deprecated-declarations
+
+    # Fix compilation errors in MacOS SDK files
+    -Wno-nullability-extension
+    -Wno-nullability-completeness
+    -Wno-expansion-to-defined
+    -Wno-four-char-constants
+    -Wno-gnu-zero-variadic-macro-arguments
+    -Wno-variadic-macros
+    -Wno-zero-length-array
+    -Wno-missing-declarations
+    -Wno-invalid-utf8
+    -pthread
+)
+
 # To avoid CMake warning
 set(CMAKE_MACOSX_RPATH 1)
 
