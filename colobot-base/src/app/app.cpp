@@ -1851,7 +1851,8 @@ void CApplication::SetLanguage(Language language)
         const char* currentEnvLang = gl_locale_name(LC_MESSAGES, "LC_MESSAGES");
         if (currentEnvLang != nullptr)
         {
-            envLang = std::string(currentEnvLang);
+            // Take only the two first chars; to support "fr_CH" or "en_US;en"
+            envLang = std::string(currentEnvLang).substr(0,2);
         }
     }
 
