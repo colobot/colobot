@@ -11,17 +11,23 @@ jobs:
         target_os: [linux]
         host_os: [ubuntu-20.04, ubuntu-22.04]
         container: ['']
+        include:
+          - host_os: ubuntu-22.04
+            container: 'debian:unstable-slim'
+          - host_os: ubuntu-22.04
+            container: 'debian:testing-slim'
       fail-fast: false
+    env:
+      SUDO: ${{ matrix.container == '' && 'sudo' || '' }}
     steps:
     - name: Switch to gcc-11
-      run: sudo apt install gcc-11 g++-11 && sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 100 --slave /usr/bin/g++ g++ /usr/bin/g++-11 --slave /usr/bin/gcov gcov /usr/bin/gcov-11 && sudo update-alternatives --set gcc /usr/bin/gcc-11
+      run: $SUDO apt-get install gcc-11 g++-11 && $SUDO update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 100 --slave /usr/bin/g++ g++ /usr/bin/g++-11 --slave /usr/bin/gcov gcov /usr/bin/gcov-11 && $SUDO update-alternatives --set gcc /usr/bin/gcc-11
       if: matrix.host_os == 'ubuntu-20.04'
     - name: Install Colobot dependencies
-      run: sudo apt-get update && sudo apt-get install -y --no-install-recommends build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libphysfs-dev gettext git po4a vorbis-tools librsvg2-bin xmlstarlet libglm-dev libmpg123-dev
-      if: matrix.container == ''
+      run: $SUDO apt-get update && $SUDO apt-get install -y --no-install-recommends build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libphysfs-dev gettext git po4a vorbis-tools librsvg2-bin xmlstarlet libglm-dev libmpg123-dev
     - name: Install recent libgtest-dev and nlohmann-json3-dev
-      run: sudo apt-get update && sudo apt-get install -y --no-install-recommends libgtest-dev nlohmann-json3-dev
-      if: matrix.container == '' && matrix.host_os == 'ubuntu-22.04'
+      run: $SUDO apt-get update && $SUDO apt-get install -y --no-install-recommends libgtest-dev nlohmann-json3-dev
+      if: matrix.container != '' || matrix.host_os == 'ubuntu-22.04'
     - uses: actions/checkout@v3
     - name: Checkout the Google Test submodule
       run: git submodule update --init -- lib/googletest
