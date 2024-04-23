@@ -35,12 +35,8 @@ jobs:
       run: $SUDO apt-get update && $SUDO apt-get install -y --no-install-recommends libgtest-dev nlohmann-json3-dev
       if: matrix.container != '' || matrix.host_os == 'ubuntu-22.04'
     - uses: actions/checkout@v3
-    - name: Checkout the Google Test submodule
-      run: git submodule update --init -- lib/googletest
-      if: matrix.host_os != 'ubuntu-22.04'
-    - name: Checkout the nlohmann json submodule
-      run: git submodule update --init -- lib/json
-      if: matrix.host_os != 'ubuntu-22.04'
+      with:
+        submodules: recursive
     - name: Create build directory
       run: cmake -E make_directory build
     - name: Run CMake (for Linux)
