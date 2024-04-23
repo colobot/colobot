@@ -41,14 +41,12 @@ jobs:
       run: cmake -E make_directory build
     - name: Run CMake (for Linux)
       run: cmake --preset Linux-CI
-      if: matrix.target_os == 'linux'
     - name: Build
       run: cmake --build --preset Linux-CI
     - name: Install
       run: cmake --build --preset Linux-CI --target install
     - name: Patch library path
       run: patchelf --set-rpath '.' install/colobot
-      if: matrix.target_os == 'linux'
     - name: Upload build
       uses: actions/upload-artifact@v3
       with:
@@ -72,24 +70,21 @@ jobs:
         cp -rp ../install/data appimage/data
         cp -rp ../install/lang appimage/lang
         cp -p Colobot-x86_64.AppImage appimage/colobot
-      if: matrix.target_os == 'linux'
     - name: Upload AppImage
       uses: actions/upload-artifact@v3
       with:
         name: ${{matrix.target_os}}-debug-AppImage
         path: build/appimage
-      if: matrix.target_os == 'linux' && matrix.host_os == 'ubuntu-20.04'
+      if: matrix.host_os == 'ubuntu-20.04'
     - name: Run tests
       # TODO: Maybe run Windows tests using wine as well?
       working-directory: build
       run: ./Colobot-UnitTests --gtest_output=xml:gtestresults.xml
-      if: matrix.target_os == 'linux'
     - name: Upload test results
       uses: actions/upload-artifact@v3
       with:
         name: Test results (${{ matrix.target_os }}, ${{ matrix.host_os }})
         path: build/gtestresults.xml
-      if: matrix.target_os == 'linux'
   build-macos:
     runs-on: ${{ matrix.host_os }}
     container: ${{ matrix.container }}
