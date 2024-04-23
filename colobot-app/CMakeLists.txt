@@ -15,7 +15,7 @@ if(PLATFORM_WINDOWS)
     target_sources(colobot PRIVATE ${PROJECT_BINARY_DIR}/desktop/colobot.rc)
 endif()
 
-target_link_libraries(colobot Colobot-Base SDL2::Main)
+target_link_libraries(colobot Colobot-Base SDL2::SDL2)
 
 if(COLOBOT_HIDE_CONSOLE)
     set_target_properties(colobot PROPERTIES WIN32_EXECUTABLE TRUE)

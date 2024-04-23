@@ -22,7 +22,7 @@ target_link_libraries(Colobot-Base PUBLIC
     CBot
     Colobot-Common
     localename
-    SDL2::Core
+    SDL2::SDL2
     SDL2::Image
     SDL2::TTF
     OpenGL::GL
