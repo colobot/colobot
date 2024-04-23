@@ -18,7 +18,10 @@ jobs:
             container: 'debian:testing-slim'
       fail-fast: false
     env:
+      # Actions run as root in-container, as normal user outside
       SUDO: ${{ matrix.container == '' && 'sudo' || '' }}
+      # Shortcuts the autodetection
+      DEBIAN_FRONTEND: noninteractive
     steps:
     - name: Install git tools
       run: $SUDO apt-get update && $SUDO apt-get install -y --no-install-recommends git ca-certificates
