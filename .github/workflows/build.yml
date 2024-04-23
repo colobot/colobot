@@ -22,6 +22,8 @@ jobs:
       SUDO: ${{ matrix.container == '' && 'sudo' || '' }}
       # Shortcuts the autodetection
       DEBIAN_FRONTEND: noninteractive
+      # Only build the appImage
+      APPIMAGE: ${{ matrix.host_os == 'ubuntu-20.04' }}
     steps:
     - name: Install various indirect dependencies in slim containers
       run: $SUDO apt-get update && $SUDO apt-get install -y --no-install-recommends git ca-certificates wget
@@ -45,14 +47,15 @@ jobs:
       run: cmake --build --preset Linux-CI
     - name: Install
       run: cmake --build --preset Linux-CI --target install
-    - name: Patch library path
+    - name: Patch library path to prepare for appimage
       run: patchelf --set-rpath '.' install/colobot
+      if: ${{ env.APPIMAGE == true }}
     - name: Upload build
       uses: actions/upload-artifact@v3
       with:
         name: ${{matrix.target_os}}-debug
         path: install
-      if: matrix.host_os == 'ubuntu-20.04'
+      if: ${{ env.APPIMAGE == true }}
     - name: Create AppImage
       working-directory: build
       run: |
@@ -70,12 +73,13 @@ jobs:
         cp -rp ../install/data appimage/data
         cp -rp ../install/lang appimage/lang
         cp -p Colobot-x86_64.AppImage appimage/colobot
+      if: ${{ env.APPIMAGE == true }}
     - name: Upload AppImage
       uses: actions/upload-artifact@v3
       with:
         name: ${{matrix.target_os}}-debug-AppImage
         path: build/appimage
-      if: matrix.host_os == 'ubuntu-20.04'
+      if: ${{ env.APPIMAGE == true }}
     - name: Run tests
       # TODO: Maybe run Windows tests using wine as well?
       working-directory: build
