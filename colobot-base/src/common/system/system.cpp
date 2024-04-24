@@ -28,6 +28,11 @@
 #include <algorithm>
 #include <thread>
 
+CSystemUtils::CSystemUtils()
+{
+    m_basePath = std::filesystem::current_path();
+}
+
 CSystemUtils::~CSystemUtils() = default;
 
 CSystemUtils& CSystemUtils::GetInstance()
@@ -146,7 +151,7 @@ SystemDialogResult CSystemUtils::ConsoleSystemDialog(SystemDialogType type, cons
 
 std::filesystem::path CSystemUtils::GetBasePath() const
 {
-    return std::filesystem::current_path();
+    return m_basePath;
 }
 
 std::filesystem::path CSystemUtils::GetDataPath() const

@@ -74,6 +74,8 @@ enum class SystemDialogResult
 class CSystemUtils
 {
 public:
+    CSystemUtils();
+
     virtual ~CSystemUtils();
 
     //! Returns unique instance of system utilities
@@ -127,6 +129,7 @@ protected:
     //! Creates system utils for specific platform
     static std::unique_ptr<CSystemUtils> Create();
 
+    std::filesystem::path m_basePath;
     std::vector<std::string> m_arguments;
 
     inline static std::unique_ptr<CSystemUtils> m_instance = nullptr;
