@@ -40,6 +40,7 @@
             "cacheVariables": {
                 "CMAKE_SKIP_INSTALL_RPATH": true,
                 "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+                "COLOBOT_APPIMAGE_BASEPATH_OVERRIDE": true,
                 "CBOT_STATIC": true,
                 "PORTABLE_SAVES": true,
                 "PORTABLE": true,

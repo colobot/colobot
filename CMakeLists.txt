@@ -138,6 +138,9 @@ option(COLOBOT_LINT_BUILD "Generate some additional CMake targets for use with c
 # Enable this if your compiler has issues using char8_t
 option(COLOBOT_CHAR8_T_OVERRIDE "Override char8_t usage for compatibility reasons" OFF)
 
+# Enable this if you're building for AppImage to get correct paths
+option(COLOBOT_APPIMAGE_BASEPATH_OVERRIDE "Override base path specification so it uses executable's directory instead of current directory" OFF)
+
 # Default build type if not given is RelWithDebInfo
 if(NOT CMAKE_BUILD_TYPE)
     message(STATUS "Build type not specified - assuming RelWithDebInfo")
