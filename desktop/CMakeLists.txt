@@ -98,6 +98,7 @@ if(PLATFORM_GNU)
                 set(SLASHLOCALE /${PM_LOCALE})
             endif()
             file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}${SLASHLOCALE})
+            # Depending on coverage, colobot.pod (PM_PODFILE) might not exist, bear with its inexistance
             add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}${SLASHLOCALE}/colobot.${COLOBOT_MANPAGE_SECTION}
                        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${PM_PODFILE}
                        COMMAND ${POD2MAN} ARGS --section=${COLOBOT_MANPAGE_SECTION}
@@ -105,13 +106,16 @@ if(PLATFORM_GNU)
                                           --release="${COLOBOT_VERSION_FULL}"
                                           ${CMAKE_CURRENT_SOURCE_DIR}/${PM_PODFILE}
                                           ${CMAKE_CURRENT_BINARY_DIR}${SLASHLOCALE}/colobot.${COLOBOT_MANPAGE_SECTION}
-               COMMENT "Create ${SLASHLOCALE}/colobot.${COLOBOT_MANPAGE_SECTION} manpage"
+                                          || rm -f ${CMAKE_CURRENT_BINARY_DIR}${SLASHLOCALE}/colobot.${COLOBOT_MANPAGE_SECTION}
+                        COMMENT "Create ${SLASHLOCALE}/colobot.${COLOBOT_MANPAGE_SECTION} manpage"
                       )
             add_custom_target(man${PM_LOCALE} ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}${SLASHLOCALE}/colobot.${COLOBOT_MANPAGE_SECTION})
 
             install(
                 FILES ${CMAKE_CURRENT_BINARY_DIR}${SLASHLOCALE}/colobot.${COLOBOT_MANPAGE_SECTION}
-                    DESTINATION ${CMAKE_INSTALL_PREFIX}/share/man${SLASHLOCALE}/man${COLOBOT_MANPAGE_SECTION}/ )
+                DESTINATION ${CMAKE_INSTALL_PREFIX}/share/man${SLASHLOCALE}/man${COLOBOT_MANPAGE_SECTION}/
+                OPTIONAL
+            )
 
             add_dependencies(man man${PM_LOCALE})
         endmacro()
@@ -128,11 +132,14 @@ if(PLATFORM_GNU)
         if(PO4A)
             # Translate the manpage to other languages
             file(GLOB LINGUAS_PO RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/po/ ${CMAKE_CURRENT_SOURCE_DIR}/po/*.po)
-            string(REGEX REPLACE ".po$" "" LINGUAS ${LINGUAS_PO})
+            string(REGEX REPLACE ".po" ";" LINGUAS ${LINGUAS_PO})
 
             set(PO4A_OUTPUTS)
             foreach(LOCALE ${LINGUAS})
-                list(APPEND PO4A_OUTPUTS ${CMAKE_CURRENT_SOURCE_DIR}/lang/${LOCALE}/colobot.pod)
+                list(APPEND PO4A_OUTPUTS
+                        ${CMAKE_CURRENT_SOURCE_DIR}/lang/${LOCALE}/colobot.pod
+                        ${CMAKE_CURRENT_SOURCE_DIR}/lang/${LOCALE}/colobot.ini
+                    )
             endforeach()
             add_custom_command(
                 OUTPUT ${PO4A_OUTPUTS}
