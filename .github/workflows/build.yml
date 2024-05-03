@@ -11,42 +11,51 @@ jobs:
         target_os: [linux]
         host_os: [ubuntu-20.04, ubuntu-22.04]
         container: ['']
+        include:
+          - host_os: ubuntu-22.04
+            container: 'debian:unstable-slim'
+          - host_os: ubuntu-22.04
+            container: 'debian:testing-slim'
       fail-fast: false
+    env:
+      # Actions run as root in-container, as normal user outside
+      SUDO: ${{ matrix.container == '' && 'sudo' || '' }}
+      # Shortcuts the autodetection
+      DEBIAN_FRONTEND: noninteractive
+      # Only build the appImage
+      APPIMAGE: ${{ matrix.host_os == 'ubuntu-20.04' }}
     steps:
+    - name: Install various indirect dependencies in slim containers
+      run: $SUDO apt-get update && $SUDO apt-get install -y --no-install-recommends git ca-certificates wget
+      if: matrix.container != ''
     - name: Switch to gcc-11
-      run: sudo apt install gcc-11 g++-11 && sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 100 --slave /usr/bin/g++ g++ /usr/bin/g++-11 --slave /usr/bin/gcov gcov /usr/bin/gcov-11 && sudo update-alternatives --set gcc /usr/bin/gcc-11
+      run: $SUDO apt-get install gcc-11 g++-11 && $SUDO update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 100 --slave /usr/bin/g++ g++ /usr/bin/g++-11 --slave /usr/bin/gcov gcov /usr/bin/gcov-11 && $SUDO update-alternatives --set gcc /usr/bin/gcc-11
       if: matrix.host_os == 'ubuntu-20.04'
     - name: Install Colobot dependencies
-      run: sudo apt-get update && sudo apt-get install -y --no-install-recommends build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libphysfs-dev gettext git po4a vorbis-tools librsvg2-bin xmlstarlet libglm-dev libmpg123-dev
-      if: matrix.container == ''
+      run: $SUDO apt-get update && $SUDO apt-get install -y --no-install-recommends build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libphysfs-dev gettext po4a vorbis-tools librsvg2-bin xmlstarlet libglm-dev libmpg123-dev
     - name: Install recent libgtest-dev and nlohmann-json3-dev
-      run: sudo apt-get update && sudo apt-get install -y --no-install-recommends libgtest-dev nlohmann-json3-dev
-      if: matrix.container == '' && matrix.host_os == 'ubuntu-22.04'
+      run: $SUDO apt-get update && $SUDO apt-get install -y --no-install-recommends libgtest-dev nlohmann-json3-dev
+      if: matrix.container != '' || matrix.host_os == 'ubuntu-22.04'
     - uses: actions/checkout@v3
-    - name: Checkout the Google Test submodule
-      run: git submodule update --init -- lib/googletest
-      if: matrix.host_os != 'ubuntu-22.04'
-    - name: Checkout the nlohmann json submodule
-      run: git submodule update --init -- lib/json
-      if: matrix.host_os != 'ubuntu-22.04'
+      with:
+        submodules: recursive
     - name: Create build directory
       run: cmake -E make_directory build
     - name: Run CMake (for Linux)
       run: cmake --preset Linux-CI
-      if: matrix.target_os == 'linux'
     - name: Build
       run: cmake --build --preset Linux-CI
     - name: Install
       run: cmake --build --preset Linux-CI --target install
-    - name: Patch library path
+    - name: Patch library path to prepare for appimage
       run: patchelf --set-rpath '.' install/colobot
-      if: matrix.target_os == 'linux'
+      if: ${{ env.APPIMAGE == true }}
     - name: Upload build
       uses: actions/upload-artifact@v3
       with:
         name: ${{matrix.target_os}}-debug
         path: install
-      if: matrix.host_os == 'ubuntu-20.04'
+      if: ${{ env.APPIMAGE == true }}
     - name: Create AppImage
       working-directory: build
       run: |
@@ -64,24 +73,22 @@ jobs:
         cp -rp ../install/data appimage/data
         cp -rp ../install/lang appimage/lang
         cp -p Colobot-x86_64.AppImage appimage/colobot
-      if: matrix.target_os == 'linux'
+      if: ${{ env.APPIMAGE == true }}
     - name: Upload AppImage
       uses: actions/upload-artifact@v3
       with:
         name: ${{matrix.target_os}}-debug-AppImage
         path: build/appimage
-      if: matrix.target_os == 'linux' && matrix.host_os == 'ubuntu-20.04'
+      if: ${{ env.APPIMAGE == true }}
     - name: Run tests
       # TODO: Maybe run Windows tests using wine as well?
       working-directory: build
       run: ./Colobot-UnitTests --gtest_output=xml:gtestresults.xml
-      if: matrix.target_os == 'linux'
     - name: Upload test results
       uses: actions/upload-artifact@v3
       with:
         name: Test results (${{ matrix.target_os }}, ${{ matrix.host_os }})
         path: build/gtestresults.xml
-      if: matrix.target_os == 'linux'
   build-macos:
     runs-on: ${{ matrix.host_os }}
     container: ${{ matrix.container }}
