@@ -33,12 +33,12 @@ jobs:
       if: matrix.host_os == 'ubuntu-20.04'
     - name: Install Colobot dependencies
       run: $SUDO apt-get update && $SUDO apt-get install -y --no-install-recommends build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libphysfs-dev gettext po4a vorbis-tools librsvg2-bin xmlstarlet libglm-dev libmpg123-dev
-    - name: Install recent libgtest-dev and nlohmann-json3-dev
-      run: $SUDO apt-get update && $SUDO apt-get install -y --no-install-recommends libgtest-dev nlohmann-json3-dev
-      if: matrix.container != '' || matrix.host_os == 'ubuntu-22.04'
     - uses: actions/checkout@v3
       with:
         submodules: recursive
+    - name: Install recent libgtest-dev and nlohmann-json3-dev to replace the local submodules
+      run: $SUDO apt-get update && $SUDO apt-get install -y --no-install-recommends libgtest-dev nlohmann-json3-dev && rm -Rf lib/googletest lib/json
+      if: matrix.container != '' || matrix.host_os == 'ubuntu-22.04'
     - name: Create build directory
       run: cmake -E make_directory build
     - name: Run CMake (for Linux)
