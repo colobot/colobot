@@ -65,7 +65,8 @@ public:
     CKey*       CreateKey(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg);
     CGroup*     CreateGroup(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg);
     CImage*     CreateImage(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg);
-    CLabel*     CreateLabel(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg, std::string name, bool removeTooltip = true);
+    CLabel*     CreateLabel(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg, std::string name);
+    CLabel*     CreateLabelRaw(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg, std::string name);
     CEdit*      CreateEdit(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg);
     CEditValue* CreateEditValue(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg);
     CScroll*    CreateScroll(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg);

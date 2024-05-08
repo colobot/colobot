@@ -229,7 +229,7 @@ void CDisplayText::DisplayText(const char *text, glm::vec3 goal, float height,
 
     ppos = pos;
     ppos.y -= hLine/2.0f;
-    label = pw->CreateLabel(ppos, dim, -1, EventType(EVENT_DT_LABEL0+nLine), text, false);
+    label = pw->CreateLabelRaw(ppos, dim, -1, EventType(EVENT_DT_LABEL0+nLine), text);
     if ( label != nullptr )
     {
         label->SetFontSize(FONTSIZE);
