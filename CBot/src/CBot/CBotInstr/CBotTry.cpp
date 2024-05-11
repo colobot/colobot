@@ -101,8 +101,6 @@ bool CBotTry::Execute(CBotStack* &pj)
         }
 
         val = pile1->GetError();
-        if ( val == CBotNoErr && pile1->GetTimer() == 0 )           // mode step?
-            return false;                   // don't jump to the catch
 
         pile1->IncState();
         pile2->SetState(val);                                   // stores the error number

@@ -3434,6 +3434,27 @@ TEST_F(CBotUT, TestTryCatch) {
         "}\n",
         CBotErrBadType1
     );
+
+    ExecuteTest(
+        "extern void TestTryCatchCondition() {\n"
+        "    int foo = 0;\n"
+        "    try {\n"
+        "        foo = 1;\n"
+        "        for(int i = 0; i < 20; ++i);  // Should give try an opportunity to check condition\n"
+        "        foo = 2;  // Should not get here\n"
+        "    } catch(foo == 1);\n"
+        "    ASSERT(foo == 1);\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "extern void TestExcetionInCatchCondition() {\n"
+        "    try {\n"
+        "        for(int i = 0; i < 20; ++i); // Should give try an opportunity to check condition\n"
+        "    } catch(1/0 == 0);\n"
+        "}\n",
+        CBotErrZeroDiv
+    );
 }
 
 TEST_F(CBotUT, TestFinally) {
