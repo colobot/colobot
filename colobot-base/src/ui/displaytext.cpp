@@ -390,7 +390,7 @@ bool CDisplayText::ClearLastText()
 
         pb1->SetState(STATE_ENABLE, pb2->TestState(STATE_ENABLE));
         pg1->SetIcon(pg2->GetIcon());
-        pl1->SetName(pl2->GetName());
+        pl1->SetName(pl2->GetName(), false);
 
         m_textLines[i] = m_textLines[i+1];
     }
