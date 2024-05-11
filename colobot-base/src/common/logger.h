@@ -184,6 +184,7 @@ private:
             format.remove_prefix(index + 2);
         };
 
+        (void)print;
         (print(args), ...);
 
         if (!format.empty())
