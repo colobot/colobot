@@ -73,7 +73,6 @@ bool CProgramStorageObjectImpl::IntroduceVirus()
         int programIndex = rand() % m_program.size();
         if ( m_program[programIndex]->script->IntroduceVirus() )  // tries to introduce
         {
-            m_program[programIndex]->filename = ""; // The program is changed, so force it to save instead of just the filename
             m_activeVirus = true;  // active virus
             return true;
         }
@@ -224,7 +223,7 @@ void CProgramStorageObjectImpl::SaveAllUserPrograms(const std::string& userSourc
     {
         std::string filename = userSource + StrUtils::Format("%.3d%.3d.txt", m_programStorageIndex, i);
 
-        if (m_program[i]->filename.empty())
+        if (!m_program[i]->readOnly)
         {
             GetLogger()->Trace("Saving program '%%' into user directory", filename);
             WriteProgram(m_program[i].get(), filename);
@@ -242,7 +241,7 @@ void CProgramStorageObjectImpl::SaveAllUserPrograms(const std::string& userSourc
         if (std::regex_match(filename, matches, regex))
         {
             unsigned int id = std::stoul(matches[1]);
-            if (id >= m_program.size() || !m_program[id]->filename.empty())
+            if (id >= m_program.size() || m_program[id]->readOnly)
             {
                 GetLogger()->Trace("Removing old program '%%/%%'\n", dir, path);
                 CResourceManager::Remove(dir / path);
@@ -268,7 +267,6 @@ void CProgramStorageObjectImpl::LoadAllProgramsForLevel(CLevelParserLine* levelS
             ReadProgram(program, filename);
             program->readOnly = levelSource->GetParam(opReadOnly)->AsBool(true);
             program->runnable = levelSource->GetParam(opRunnable)->AsBool(true);
-            program->filename = levelSource->GetParam(op)->AsString();
 
             if (m_object->Implements(ObjectInterfaceType::Programmable) && i == run)
             {
@@ -289,7 +287,6 @@ void CProgramStorageObjectImpl::LoadAllProgramsForLevel(CLevelParserLine* levelS
         ReadProgram(program, filename);
         program->readOnly = true;
         program->runnable = false;
-        program->filename = levelSource->GetParam("soluce")->AsString();
     }
 
     if (m_programStorageIndex >= 0)
@@ -320,18 +317,7 @@ void CProgramStorageObjectImpl::SaveAllProgramsForSavedScene(CLevelParserLine* l
 {
     levelSourceLine->AddParam("programStorageIndex", std::make_unique<CLevelParserParam>(m_programStorageIndex));
 
-    for (unsigned int i = 0; i < m_program.size(); i++)
-    {
-        if (!m_program[i]->filename.empty() && m_program[i]->readOnly)
-        {
-            levelSourceLine->AddParam("script" + StrUtils::ToString<int>(i+1), std::make_unique<CLevelParserParam>(m_program[i]->filename));
-            levelSourceLine->AddParam("scriptReadOnly" + StrUtils::ToString<int>(i+1), std::make_unique<CLevelParserParam>(m_program[i]->readOnly));
-            levelSourceLine->AddParam("scriptRunnable" + StrUtils::ToString<int>(i+1), std::make_unique<CLevelParserParam>(m_program[i]->runnable));
-        }
-    }
-
     if (m_programStorageIndex < 0) return;
-    if (!m_object->Implements(ObjectInterfaceType::Controllable) || !dynamic_cast<CControllableObject&>(*m_object).GetSelectable() || m_object->GetType() == OBJECT_HUMAN) return;
 
     GetLogger()->Debug("Saving saved scene programs to '%%'",
         StrUtils::Format("%s/prog%.3d___.txt", levelSource.c_str(), m_programStorageIndex));
@@ -339,7 +325,6 @@ void CProgramStorageObjectImpl::SaveAllProgramsForSavedScene(CLevelParserLine* l
     for (unsigned int i = 0; i < m_program.size(); i++)
     {
         std::string filename = levelSource + StrUtils::Format("/prog%.3d%.3d.txt", m_programStorageIndex, i);
-        if (!m_program[i]->filename.empty() && m_program[i]->readOnly) continue;
 
         GetLogger()->Trace("Saving program '%%' to saved scene\n", filename);
         WriteProgram(m_program[i].get(), filename);
@@ -355,7 +340,7 @@ void CProgramStorageObjectImpl::SaveAllProgramsForSavedScene(CLevelParserLine* l
         if (std::regex_match(filename, matches, regex))
         {
             unsigned int id = std::stoul(matches[1]);
-            if (id >= m_program.size() || !m_program[id]->filename.empty())
+            if (id >= m_program.size())
             {
                 GetLogger()->Trace("Removing old program '%%/%%' from saved scene", levelSource, path);
                 CResourceManager::Remove(StrUtils::ToPath(levelSource) / path);
@@ -369,6 +354,7 @@ void CProgramStorageObjectImpl::LoadAllProgramsForSavedScene(CLevelParserLine* l
     int run = levelSourceLine->GetParam("run")->AsInt(0)-1;
     m_programStorageIndex = levelSourceLine->GetParam("programStorageIndex")->AsInt(-1);
 
+    // For loading legacy saves
     for (int i = 0; i <= 999; i++)
     {
         std::string op = "script" + StrUtils::ToString<int>(i+1); // script1..script10
@@ -382,7 +368,6 @@ void CProgramStorageObjectImpl::LoadAllProgramsForSavedScene(CLevelParserLine* l
             ReadProgram(program, filename);
             program->readOnly = levelSourceLine->GetParam(opReadOnly)->AsBool(true);
             program->runnable = levelSourceLine->GetParam(opRunnable)->AsBool(true);
-            program->filename = levelSourceLine->GetParam(op)->AsString();
 
             if (m_object->Implements(ObjectInterfaceType::Programmable) && i == run)
             {

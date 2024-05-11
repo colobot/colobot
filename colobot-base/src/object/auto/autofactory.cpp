@@ -680,7 +680,6 @@ bool CAutoFactory::CreateVehicle()
             Program* prog = programStorage->AddProgram();
             programStorage->ReadProgram(prog, StrUtils::ToString(InjectLevelPathsForCurrentLevel(name, "ai")));
             prog->readOnly = true;
-            prog->filename = name;
         }
     }
 

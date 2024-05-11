@@ -198,7 +198,6 @@ bool CAutoEgg::EventProcess(const Event &event)
             Program* program = programStorage->AddProgram();
             programStorage->ReadProgram(program, StrUtils::ToString(InjectLevelPathsForCurrentLevel(m_alienProgramName, "ai")));
             program->readOnly = true;
-            program->filename = m_alienProgramName;
             programmable->RunProgram(program);
         }
         Init();
