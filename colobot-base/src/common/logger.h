@@ -164,7 +164,7 @@ private:
     {
         std::string result;
 
-        auto print = [&](auto&& arg)
+        [[maybe_unused]] auto print = [&](auto&& arg)
         {
             if (format.empty()) return;
 
@@ -184,7 +184,6 @@ private:
             format.remove_prefix(index + 2);
         };
 
-        (void)print;
         (print(args), ...);
 
         if (!format.empty())
