@@ -29,7 +29,12 @@
 class CSystemUtilsWindows : public CSystemUtils
 {
 public:
+    CSystemUtilsWindows();
+    ~CSystemUtilsWindows();
+
     void Init(const std::vector<std::string>& args) override;
+
+    void InitErrorHandling() override;
 
     SystemDialogResult SystemDialog(SystemDialogType type, const std::string& title, const std::string& message) override;
 
