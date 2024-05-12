@@ -31,7 +31,6 @@ public:
 private:
     static void SignalHandler(int sig);
     static void UnhandledExceptionHandler();
-    static void ReportError(const std::string& errorMessage);
 
 private:
     static CSystemUtils* m_systemUtils;

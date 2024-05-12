@@ -30,6 +30,7 @@
 #include <filesystem>
 #include <memory>
 #include <string>
+#include <string_view>
 #include <vector>
 
 /**
@@ -128,6 +129,9 @@ public:
 
     //! Sleep for given amount of microseconds
     void Usleep(int usecs);
+
+    //! Reports a critical error using system dialog and closes the game
+    [[noreturn]] void CriticalError(std::string_view message);
 
 protected:
     //! Creates system utils for specific platform

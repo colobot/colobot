@@ -54,7 +54,7 @@ void CSignalHandlers::SignalHandler(int sig)
         case SIGFPE:  signalStr = "SIGFPE, arithmetic exception"; break;
         case SIGILL:  signalStr = "SIGILL, illegal instruction"; break;
     }
-    ReportError(signalStr);
+    m_systemUtils->CriticalError(signalStr);
 }
 
 #if HAVE_DEMANGLE
@@ -86,7 +86,7 @@ void CSignalHandlers::UnhandledExceptionHandler()
     std::exception_ptr exptr = std::current_exception();
     if (!exptr)
     {
-        ReportError("std::terminate called without an exception");
+        m_systemUtils->CriticalError("std::terminate called without an exception");
         return;
     }
 
@@ -99,89 +99,10 @@ void CSignalHandlers::UnhandledExceptionHandler()
         std::stringstream ss;
         ss << "Type: " << demangle(typeid(e).name()) << std::endl;
         ss << "Message: " << e.what();
-        ReportError(ss.str());
+        m_systemUtils->CriticalError(ss.str());
     }
     catch (...)
     {
-        ReportError("Unknown unhandled exception (not inherited from std::exception)");
+        m_systemUtils->CriticalError("Unknown unhandled exception (not inherited from std::exception)");
     }
-}
-
-void CSignalHandlers::ReportError(const std::string& errorMessage)
-{
-    static bool triedSaving = false;
-
-    if (SDL_WasInit(SDL_INIT_VIDEO))
-    {
-        // Close the SDL window on crash, because otherwise the error doesn't show on in fullscreen mode and the game appears to freeze
-        SDL_Quit();
-    }
-
-    std::stringstream msg;
-    msg << "Unhandled exception occurred!" << std::endl;
-    msg << "==============================" << std::endl;
-    msg << errorMessage << std::endl;
-    msg << "==============================" << std::endl;
-    msg << std::endl;
-    msg << "This is usually caused by a bug. Please report this on http://github.com/colobot/colobot/issues" << std::endl;
-    msg << "including information on what you were doing before this happened and all the information below." << std::endl;
-    msg << "==============================" << std::endl;
-
-    if constexpr (Version::BUILD_NUMBER == 0)
-    {
-        if constexpr (Version::OFFICIAL_BUILD)
-        {
-            msg << "You are running official " << Version::VERSION_DISPLAY << " build." << std::endl;
-        }
-        else
-        {
-            msg << "You seem to be running a custom compilation of version " << Version::VERSION_DISPLAY << ", but please verify that." << std::endl;
-        }
-    }
-    else
-    {
-        msg << "You are running version " << Version::VERSION_DISPLAY << " from CI build #" << Version::BUILD_NUMBER << std::endl;
-    }
-
-    msg << std::endl;
-    bool canSave = false;
-    CRobotMain* robotMain = nullptr;
-    if (!CRobotMain::IsCreated())
-    {
-        msg << "CRobotMain instance does not seem to exist" << std::endl;
-    }
-    else
-    {
-        robotMain = CRobotMain::GetInstancePointer();
-        msg << "The game was in phase " << PhaseToString(robotMain->GetPhase()) << " (ID=" << robotMain->GetPhase() << ")" << std::endl;
-        msg << "Last started level was: category=" << GetLevelCategoryDir(robotMain->GetLevelCategory()) << " chap=" << robotMain->GetLevelChap() << " rank=" << robotMain->GetLevelRank() << std::endl;
-        canSave = (robotMain->GetPhase() == PHASE_SIMUL || IsInSimulationConfigPhase(robotMain->GetPhase())) && !robotMain->IsLoading();
-    }
-    msg << "==============================" << std::endl;
-    msg << std::endl;
-    msg << "Sorry for inconvenience!";
-
-    std::cerr << std::endl << msg.str() << std::endl;
-
-    m_systemUtils->SystemDialog(SystemDialogType::ERROR_MSG, "Unhandled exception occurred!", msg.str());
-
-    if (canSave && !triedSaving)
-    {
-        msg.str("");
-        msg << "You can try saving the game at the moment of a crash. Keep in mind, the game engine is in" << std::endl;
-        msg << "an unstable state so the saved game may be corrupted or even cause another crash." << std::endl;
-        msg << std::endl;
-        msg << "Do you want to try saving now?";
-
-        SystemDialogResult result = m_systemUtils->SystemDialog(SystemDialogType::YES_NO, "Try to save?", msg.str());
-        if (result == SystemDialogResult::YES)
-        {
-            triedSaving = true;
-            CResourceManager::CreateNewDirectory("crashsave");
-            robotMain->IOWriteScene("crashsave/data.sav", "crashsave/cbot.run", "crashsave/screen.png", "Backup at the moment of a crash", true);
-            m_systemUtils->SystemDialog(SystemDialogType::INFO, "Try to save?", "Saving finished.\nPlease restart the game now");
-        }
-    }
-
-    exit(1);
 }
