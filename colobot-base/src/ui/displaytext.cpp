@@ -229,7 +229,7 @@ void CDisplayText::DisplayText(const char *text, glm::vec3 goal, float height,
 
     ppos = pos;
     ppos.y -= hLine/2.0f;
-    label = pw->CreateLabel(ppos, dim, -1, EventType(EVENT_DT_LABEL0+nLine), text);
+    label = pw->CreateLabelRaw(ppos, dim, -1, EventType(EVENT_DT_LABEL0+nLine), text);
     if ( label != nullptr )
     {
         label->SetFontSize(FONTSIZE);
@@ -390,7 +390,7 @@ bool CDisplayText::ClearLastText()
 
         pb1->SetState(STATE_ENABLE, pb2->TestState(STATE_ENABLE));
         pg1->SetIcon(pg2->GetIcon());
-        pl1->SetName(pl2->GetName());
+        pl1->SetName(pl2->GetName(), false);
 
         m_textLines[i] = m_textLines[i+1];
     }

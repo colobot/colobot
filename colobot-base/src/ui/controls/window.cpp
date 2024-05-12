@@ -160,9 +160,18 @@ CLabel* CWindow::CreateLabel(const glm::vec2& pos, const glm::vec2& dim, int ico
 
     auto p = name.find("\\");
     if (p == std::string::npos)
-        label->SetName(name);
+        label->SetName(name, false);
     else
-        label->SetName(name.substr(0, p));
+        label->SetName(name.substr(0, p), false);
+
+    return label;
+}
+
+CLabel* CWindow::CreateLabelRaw(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg, std::string name)
+{
+    CLabel* label = CreateControl<CLabel>(pos, dim, icon, eventMsg);
+
+    label->SetName(name, false);
 
     return label;
 }
