@@ -25,7 +25,6 @@
 #include "common/config.h"
 
 #include "app/app.h"
-#include "app/signal_handlers.h"
 
 #include "common/logger.h"
 #include "common/profiler.h"
@@ -135,7 +134,7 @@ int main(int argc, char *argv[])
 
     logger.Info("%% starting", Version::FULL_NAME);
 
-    CSignalHandlers::Init(&systemUtils);
+    systemUtils.InitErrorHandling();
 
     CResourceManager manager(argv[0]);
 

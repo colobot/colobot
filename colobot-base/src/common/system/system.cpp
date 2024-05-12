@@ -29,10 +29,36 @@
 
 #include <SDL.h>
 
-#include <cassert>
-#include <iostream>
 #include <algorithm>
+#include <cassert>
+#include <csignal>
+#include <iostream>
 #include <thread>
+
+// Symbol demangler
+#if HAVE_DEMANGLE
+// For gcc and clang
+#include <cstdlib>
+#include <memory>
+#include <cxxabi.h>
+static std::string demangle(const char* name)
+{
+    int status;
+    std::unique_ptr<char[], void(*)(void*)> result {
+        abi::__cxa_demangle(name, nullptr, nullptr, &status),
+        std::free
+    };
+
+    return (result != nullptr && status == 0) ? result.get() : name;
+}
+#else
+// For MSVC and others
+// In MSVC typeinfo(e).name() should be already demangled
+static std::string demangle(const char* name)
+{
+    return name;
+}
+#endif
 
 CSystemUtils::CSystemUtils()
 {
@@ -49,6 +75,16 @@ CSystemUtils& CSystemUtils::GetInstance()
     }
 
     return *m_instance;
+}
+
+void CSystemUtils::InitErrorHandling()
+{
+    signal(SIGSEGV, DefaultSignalHandler);
+    signal(SIGABRT, DefaultSignalHandler);
+    signal(SIGFPE,  DefaultSignalHandler);
+    signal(SIGILL,  DefaultSignalHandler);
+
+    std::set_terminate(DefaultUnhandledExceptionHandler);
 }
 
 int CSystemUtils::GetArgumentCount() const
@@ -283,4 +319,43 @@ void CSystemUtils::CriticalError(std::string_view message)
     }
 
     exit(1);
+}
+
+void CSystemUtils::DefaultSignalHandler(int sig)
+{
+    std::string signalStr = StrUtils::ToString(sig);
+    switch(sig)
+    {
+        case SIGSEGV: signalStr = "SIGSEGV, segmentation fault"; break;
+        case SIGABRT: signalStr = "SIGABRT, abort"; break;
+        case SIGFPE:  signalStr = "SIGFPE, arithmetic exception"; break;
+        case SIGILL:  signalStr = "SIGILL, illegal instruction"; break;
+    }
+    m_instance->CriticalError(signalStr);
+}
+
+void CSystemUtils::DefaultUnhandledExceptionHandler()
+{
+    std::exception_ptr exptr = std::current_exception();
+    if (!exptr)
+    {
+        m_instance->CriticalError("std::terminate called without an exception");
+        return;
+    }
+
+    try
+    {
+        std::rethrow_exception(exptr);
+    }
+    catch (const std::exception& e)
+    {
+        std::stringstream ss;
+        ss << "Type: " << demangle(typeid(e).name()) << std::endl;
+        ss << "Message: " << e.what();
+        m_instance->CriticalError(ss.str());
+    }
+    catch (...)
+    {
+        m_instance->CriticalError("Unknown unhandled exception (not inherited from std::exception)");
+    }
 }

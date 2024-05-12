@@ -85,6 +85,9 @@ public:
     //! Performs platform-specific initialization
     virtual void Init(const std::vector<std::string>& args) = 0;
 
+    //! Initializes error handling
+    virtual void InitErrorHandling();
+
     //! Returns the number of arguments
     int GetArgumentCount() const;
 
@@ -136,6 +139,12 @@ public:
 protected:
     //! Creates system utils for specific platform
     static std::unique_ptr<CSystemUtils> Create();
+    
+    //! Default signal handler for std::signal()
+    static void DefaultSignalHandler(int sig);
+
+    //! Default unhandled exception handler for std::terminate()
+    static void DefaultUnhandledExceptionHandler();
 
     std::filesystem::path m_basePath;
     std::vector<std::string> m_arguments;
