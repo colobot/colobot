@@ -122,6 +122,10 @@ public:
     /** \returns true if successful */
     virtual bool OpenWebsite(const std::string& url);
 
+    //! Checks if the game is running with a debugger
+    /** \returns true if debugger is present */
+    virtual bool IsDebuggerPresent() const;
+
     //! Sleep for given amount of microseconds
     void Usleep(int usecs);
 

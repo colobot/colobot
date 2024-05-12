@@ -190,6 +190,11 @@ bool CSystemUtils::OpenWebsite(const std::string& url)
     return false;
 }
 
+bool CSystemUtils::IsDebuggerPresent() const
+{
+    return false;
+}
+
 void CSystemUtils::Usleep(int usecs)
 {
     std::this_thread::sleep_for(std::chrono::microseconds{usecs});
