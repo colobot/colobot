@@ -20,6 +20,7 @@
 
 #include "common/system/system.h"
 
+#include "common/logger.h"
 #include "common/stringutils.h"
 #include "common/version.h"
 
@@ -296,7 +297,8 @@ void CSystemUtils::CriticalError(std::string_view message)
     msg << std::endl;
     msg << "Sorry for inconvenience!";
 
-    std::cerr << std::endl << msg.str() << std::endl;
+    GetLogger()->Log(LogLevel::LOG_NONE, "\n%%", msg.str());
+    GetLogger()->Flush();
 
     SystemDialog(SystemDialogType::ERROR_MSG, "Unhandled exception occurred!", msg.str());
 
