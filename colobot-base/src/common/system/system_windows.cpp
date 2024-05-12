@@ -32,7 +32,7 @@
 #include <DbgHelp.h>
 #include <process.h>
 
-LONG StackTraceExceptionFilter(LPEXCEPTION_POINTERS exception);
+LONG WINAPI StackTraceExceptionFilter(LPEXCEPTION_POINTERS exception);
 
 std::unique_ptr<CSystemUtils> CSystemUtils::Create()
 {
@@ -217,7 +217,7 @@ constexpr DWORD MACHINE = IMAGE_FILE_MACHINE_I386;
 
 }
 
-LONG StackTraceExceptionFilter(LPEXCEPTION_POINTERS exception)
+LONG WINAPI StackTraceExceptionFilter(LPEXCEPTION_POINTERS exception)
 {
     auto ctx = exception->ContextRecord;
 
