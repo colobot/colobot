@@ -40,6 +40,8 @@ public:
     bool OpenPath(const std::filesystem::path& path) override;
     bool OpenWebsite(const std::string& url) override;
 
+    bool IsDebuggerPresent() const override;
+
 public:
     static std::string UTF8_Encode(const std::wstring &wstr);
     static std::wstring UTF8_Decode(const std::string &str);

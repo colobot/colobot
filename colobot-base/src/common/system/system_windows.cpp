@@ -23,10 +23,9 @@
 #include "common/stringutils.h"
 #include "common/version.h"
 
-#include <windows.h>
-
 #include <filesystem>
 
+#include <Windows.h>
 
 std::unique_ptr<CSystemUtils> CSystemUtils::Create()
 {
@@ -180,3 +179,7 @@ bool CSystemUtilsWindows::OpenWebsite(const std::string& url)
     return true;
 }
 
+bool CSystemUtilsWindows::IsDebuggerPresent() const
+{
+    return ::IsDebuggerPresent();
+}
