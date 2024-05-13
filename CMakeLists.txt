@@ -57,6 +57,13 @@ if(NOT "$ENV{BUILD_NUMBER}" STREQUAL "")
 endif()
 
 
+# Compiler detection
+include("${PROJECT_SOURCE_DIR}/cmake/compilers/${CMAKE_CXX_COMPILER_ID}.cmake" OPTIONAL RESULT_VARIABLE COMPILER_INCLUDE)
+
+if ("${COMPILER_INCLUDE}" STREQUAL NOTFOUND)
+    message(WARNING "Your C++ compiler doesn't seem to be supported.")
+endif()
+
 ##
 # Platform detection and some related checks
 ##
@@ -77,14 +84,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 list(PREPEND CMAKE_MODULE_PATH 
     ${PROJECT_SOURCE_DIR}/cmake
 )
-
-# Compiler detection
-include("${PROJECT_SOURCE_DIR}/cmake/compilers/${CMAKE_CXX_COMPILER_ID}.cmake" OPTIONAL RESULT_VARIABLE COMPILER_INCLUDE)
-
-if ("${COMPILER_INCLUDE}" STREQUAL NOTFOUND)
-    message(WARNING "Your C++ compiler doesn't seem to be supported.")
-endif()
-
 
 # Asserts can be enabled/disabled regardless of build type
 option(ASSERTS "Enable assert()s" ON)
