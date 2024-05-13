@@ -1,6 +1,5 @@
 message(STATUS "Build for FreeBSD system")
 
-set(PLATFORM_LINUX   0)
 set(PLATFORM_GNU     0)
 set(PLATFORM_MACOSX  0)
 set(PLATFORM_FREEBSD 1)

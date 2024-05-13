@@ -1,6 +1,5 @@
 message(STATUS "Build for Linux system")
 
-set(PLATFORM_LINUX   1)
 set(PLATFORM_GNU     1)
 set(PLATFORM_MACOSX  0)
 set(PLATFORM_FREEBSD 0)
