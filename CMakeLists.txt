@@ -212,28 +212,11 @@ else()
     add_definitions(-DTEST_VIRTUAL=)
 endif()
 
-##
-# MSVC specific settings
-##
-set(WINGETOPT 0)
-if(MSVC)
-    message(STATUS "Adding MSVC-specific options")
-
-    set(WINGETOPT 1) # use wingetopt library
-endif()
 
 ##
 # Localename
 ##
 add_subdirectory(lib/localename)
-
-
-##
-# Wingetopt
-##
-if(WINGETOPT)
-    add_subdirectory(lib/wingetopt)
-endif()
 
 
 ##
