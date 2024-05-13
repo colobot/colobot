@@ -72,11 +72,6 @@ if(COLOBOT_MSVC_STATIC_RUNTIME)
     )
 endif()
 
-if(PLATFORM_LINUX)
-    # for clock_gettime
-    target_link_libraries(Colobot-Base PUBLIC -lrt)
-endif()
-
 # Linter-specific
 if(COLOBOT_LINT_BUILD)
     add_fake_header_sources("src" Colobot-Base)
