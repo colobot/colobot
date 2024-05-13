@@ -77,9 +77,6 @@ if(PLATFORM_LINUX)
     target_link_libraries(Colobot-Base PUBLIC -lrt)
 endif()
 
-
-set(COLOBOT_LIBS ${LIBS} PARENT_SCOPE)
-
 # Linter-specific
 if(COLOBOT_LINT_BUILD)
     add_fake_header_sources("src" Colobot-Base)
