@@ -44,33 +44,10 @@ target_sources(Colobot-Base PRIVATE
     resources/sndfile_wrapper.cpp
     resources/sndfile_wrapper.h
 
-    system/system.cpp
-    system/system.h
-
     thread/worker_thread.h
-)
 
-if(WIN32)
-    target_sources(Colobot-Base PRIVATE
-        system/system_windows.cpp
-        system/system_windows.h
-    )
-elseif(PLATFORM_LINUX)
-    target_sources(Colobot-Base PRIVATE
-        system/system_linux.cpp
-        system/system_linux.h
-    )
-elseif(PLATFORM_MACOSX)
-    target_sources(Colobot-Base PRIVATE
-        system/system_macosx.cpp
-        system/system_macosx.h
-    )
-else()
-    target_sources(Colobot-Base PRIVATE
-        system/system_other.cpp
-        system/system_other.h
-    )
-endif()
+    ${PLATFORM_SYSTEM_SOURCES}
+)
 
 # Configure files
 macro(SetFlag var name)

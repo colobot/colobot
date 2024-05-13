@@ -54,3 +54,13 @@ set(PLATFORM_ADDITIONAL_LIBRARIES
     ${WINDOWS_ADDITIONAL_LIBRARIES}
     CACHE INTERNAL "Additional libraries"
 )
+
+set(PLATFORM_SYSTEM_SOURCES
+    system/system.cpp
+    system/system.h
+
+    system/system_windows.cpp
+    system/system_windows.h
+
+    CACHE INTERNAL "System sources"
+)

@@ -33,3 +33,13 @@ set(PLATFORM_INSTALL_LIB_DIR "../MacOS")
 set(PLATFORM_INSTALL_DATA_DIR ".")
 set(PLATFORM_INSTALL_I18N_DIR "i18n")
 set(PLATFORM_INSTALL_DOC_DIR "doc")
+
+set(PLATFORM_SYSTEM_SOURCES
+    system/system.cpp
+    system/system.h
+
+    system/system_macosx.cpp
+    system/system_macosx.h
+
+    CACHE INTERNAL "System sources"
+)
