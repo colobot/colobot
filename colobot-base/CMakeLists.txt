@@ -1,8 +1,3 @@
-# Compile flags as defined in global CMakeLists
-set(CMAKE_CXX_FLAGS ${COLOBOT_CXX_FLAGS})
-set(CMAKE_CXX_FLAGS_RELEASE ${COLOBOT_CXX_FLAGS_RELEASE})
-set(CMAKE_CXX_FLAGS_DEBUG ${COLOBOT_CXX_FLAGS_DEBUG})
-
 # Todo: split this monstrosity into smaller libraries (graphics, math, ui, etc.)
 add_library(Colobot-Base STATIC)
 
