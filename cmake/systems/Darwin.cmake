@@ -3,7 +3,6 @@ message(STATUS "Build for Mac OSX system")
 set(PLATFORM_LINUX   0)
 set(PLATFORM_GNU     0)
 set(PLATFORM_MACOSX  1)
-set(PLATFORM_OTHER   0)
 set(PLATFORM_FREEBSD 0)
 
 add_compile_options(
