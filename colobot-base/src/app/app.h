@@ -62,16 +62,13 @@ struct DeviceConfig;
 struct JoystickDevice
 {
     //! Device index (-1 = invalid device)
-    int index;
+    int index = -1;
     //! Device name
     std::string name;
     //! Number of axes (only available after joystick opened)
-    int axisCount;
+    int axisCount = 0;
     //! Number of buttons (only available after joystick opened)
-    int buttonCount;
-
-    JoystickDevice()
-        : index(-1), axisCount(0), buttonCount(0) {}
+    int buttonCount = 0;
 };
 
 /**
@@ -320,7 +317,7 @@ protected:
 
 protected:
     //! System utils instance
-    CSystemUtils* m_systemUtils;
+    CSystemUtils* m_systemUtils = nullptr;
     //! Private (SDL-dependent data)
     std::unique_ptr<ApplicationPrivate> m_private;
     //! Global event queue
@@ -343,11 +340,11 @@ protected:
     std::unique_ptr<CModManager> m_modManager;
 
     //! Code to return at exit
-    int             m_exitCode;
+    int             m_exitCode = 0;
     //! Whether application window is active
-    bool            m_active;
+    bool            m_active = false;
     //! Bit array of active debug modes
-    long            m_debugModes;
+    long            m_debugModes = 0;
 
     //! Message to be displayed as error to the user
     std::string     m_errorMessage;
@@ -356,7 +353,7 @@ protected:
     std::unique_ptr<Gfx::DeviceConfig> m_deviceConfig;
 
     //! Text set as window title
-    std::string     m_windowTitle;
+    std::string     m_windowTitle = "Colobot: Gold Edition";
 
     //! Animation time stamps, etc.
     //@{
@@ -364,19 +361,19 @@ protected:
     TimeUtils::TimeStamp m_lastTimeStamp;
     TimeUtils::TimeStamp m_curTimeStamp;
 
-    long long       m_realAbsTimeBase;
-    long long       m_realAbsTime;
-    long long       m_realRelTime;
+    long long       m_realAbsTimeBase = 0;
+    long long       m_realAbsTime = 0;
+    long long       m_realRelTime = 0;
 
-    long long       m_absTimeBase;
-    long long       m_exactAbsTime;
-    long long       m_exactRelTime;
+    long long       m_absTimeBase = 0;
+    long long       m_exactAbsTime = 0;
+    long long       m_exactRelTime = 0;
 
-    float           m_absTime;
-    float           m_relTime;
+    float           m_absTime = 0.0f;
+    float           m_relTime = 0.0f;
 
-    float           m_simulationSpeed;
-    bool            m_simulationSuspended;
+    float           m_simulationSpeed = 1.0f;
+    bool            m_simulationSuspended = false;
     //@}
 
     TimeUtils::TimeStamp m_manualFrameLast;
@@ -394,12 +391,12 @@ protected:
     int             m_glProfile = 0;
 
     //! Current mode of mouse
-    MouseMode       m_mouseMode;
+    MouseMode       m_mouseMode = MOUSE_SYSTEM;
 
     //! Info about current joystick device
-    JoystickDevice  m_joystick;
+    JoystickDevice  m_joystick = {};
     //! Whether joystick is enabled
-    bool            m_joystickEnabled;
+    bool            m_joystickEnabled = false;
     //! Current state of joystick axes; may be updated from another thread
     std::vector<int> m_joyAxeState;
     //! Current state of joystick buttons; may be updated from another thread
@@ -407,8 +404,8 @@ protected:
 
     //@{
     //! Scene to run on startup
-    LevelCategory   m_runSceneCategory;
-    int             m_runSceneRank;
+    LevelCategory   m_runSceneCategory = LevelCategory::Max;
+    int             m_runSceneRank = 0;
     //@}
 
     //! Game to load on startup
@@ -416,16 +413,16 @@ protected:
     std::string     m_loadSaveDirName;
 
     //! Scene test mode
-    bool            m_sceneTest;
+    bool            m_sceneTest = false;
 
     //! Application language
-    Language        m_language;
+    Language        m_language = LANGUAGE_ENV;
 
     //! Screen resolution overriden by commandline
-    bool            m_resolutionOverride;
+    bool            m_resolutionOverride = false;
 
     //! Headles mode
-    bool            m_headless;
+    bool            m_headless = false;
 
     //! Static buffer for putenv locale
     inline static std::array<char, 64> m_languageLocale = { '\0' };

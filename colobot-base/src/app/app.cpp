@@ -115,40 +115,6 @@ CApplication::CApplication(CSystemUtils* systemUtils)
       m_modManager(std::make_unique<CModManager>(this, m_pathManager.get())),
       m_deviceConfig(std::make_unique<Gfx::DeviceConfig>())
 {
-    m_exitCode      = 0;
-    m_active        = false;
-    m_debugModes    = 0;
-
-    m_windowTitle = "Colobot: Gold Edition";
-
-    m_simulationSuspended = false;
-
-    m_simulationSpeed = 1.0f;
-
-    m_realAbsTimeBase = 0LL;
-    m_realAbsTime = 0LL;
-    m_realRelTime = 0LL;
-
-    m_absTimeBase = 0LL;
-    m_exactAbsTime = 0LL;
-    m_exactRelTime = 0LL;
-
-    m_absTime = 0.0f;
-    m_relTime = 0.0f;
-
-
-    m_joystickEnabled = false;
-
-    m_mouseMode = MOUSE_SYSTEM;
-
-    m_runSceneCategory = LevelCategory::Max;
-    m_runSceneRank = 0;
-
-    m_sceneTest = false;
-    m_headless = false;
-    m_resolutionOverride = false;
-
-    m_language = LANGUAGE_ENV;
 }
 
 CApplication::~CApplication()
