@@ -67,16 +67,19 @@
     "buildPresets": [
         {
             "name": "Windows-CI",
+            "jobs": 4,
             "configurePreset": "Windows-CI",
             "configuration": "RelWithDebInfo"
         },
         {
             "name": "Linux-CI",
+            "jobs": 4,
             "configurePreset": "Linux-CI",
             "configuration": "RelWithDebInfo"
         },
         {
             "name": "MacOS-CI",
+            "jobs": 4,
             "configurePreset": "MacOS-CI",
             "configuration": "RelWithDebInfo"
         }
