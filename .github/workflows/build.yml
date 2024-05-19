@@ -25,6 +25,9 @@ jobs:
       # Only build the appImage
       APPIMAGE: ${{ matrix.host_os == 'ubuntu-20.04' }}
     steps:
+    - name: Install back toolchain with gcc-11 available
+      run: $SUDO add-apt-repository ppa:ubuntu-toolchain-r/test -y && $SUDO apt-get update -y
+      if: matrix.host_os == 'ubuntu-20.04'
     - name: Install various indirect dependencies in slim containers
       run: $SUDO apt-get update && $SUDO apt-get install -y --no-install-recommends git ca-certificates wget
       if: matrix.container != ''
