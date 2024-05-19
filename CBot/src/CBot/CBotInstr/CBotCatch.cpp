@@ -57,6 +57,7 @@ CBotCatch* CBotCatch::Compile(CBotToken* &p, CBotCStack* pStack)
     if (IsOfType(p, ID_OPENPAR))
     {
         inst->m_cond = CBotExpression::Compile(p, pStack);
+        inst->m_is_conditional = pStack->GetTypResult().Eq(CBotTypBoolean);
         if (( pStack->GetType() < CBotTypLong ||
               pStack->GetTypResult().Eq(CBotTypBoolean) )&& pStack->IsOk() )
         {
@@ -97,16 +98,27 @@ void CBotCatch :: RestoreCondState(CBotStack* &pj, bool bMain)
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotCatch :: TestCatch(CBotStack* &pile, int val)
 {
-    if ( !m_cond->Execute(pile) ) return false;
-
-    if ( val > 0 || pile->GetVar() == nullptr || pile->GetVar()->GetType() != CBotTypBoolean )
+    if ( m_is_conditional )  // catch(bool)
     {
-        CBotVar* var = CBotVar::Create("", CBotTypBoolean);
-        var->SetValInt( pile->GetVal() == val );
-        pile->SetVar(var);                          // calls on the stack
+        return m_cond->Execute(pile);
     }
-
-    return true;
+    else  // catch(int)
+    {
+        CBotVar *result;
+        if (val == CBotNoErr)
+        {
+            result = CBotVar::Create("", CBotTypBoolean);
+            result->SetValInt( 0 );
+        }
+        else
+        {
+            if ( !m_cond->Execute(pile) ) return false;
+            result = CBotVar::Create("", CBotTypBoolean);
+            result->SetValInt( pile->GetVal() == val );
+        }
+        pile->SetVar(result);
+        return true;
+    }
 }
 
 std::map<std::string, CBotInstr*> CBotCatch::GetDebugLinks()

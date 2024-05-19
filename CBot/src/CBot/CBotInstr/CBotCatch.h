@@ -83,6 +83,7 @@ private:
     CBotInstr* m_cond;
     //! Following catch
     CBotCatch* m_next;
+    bool m_is_conditional;
 
     friend class CBotTry;
 };
