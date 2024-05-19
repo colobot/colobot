@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         target_os: [linux]
-        host_os: [ubuntu-20.04, ubuntu-22.04]
+        host_os: [ubuntu-20.04, ubuntu-22.04, ubuntu-24.04]
         container: ['']
         include:
           - host_os: ubuntu-22.04
@@ -98,7 +98,7 @@ jobs:
     strategy:
       matrix:
         target_os: [macos]
-        host_os: [macos-12, macos-13]
+        host_os: [macos-12, macos-13, macos-14]
         container: ['']
       fail-fast: false
     steps:
