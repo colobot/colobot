@@ -28,6 +28,12 @@ bool g_cbotTestSaveState = false;
 
 using namespace CBot;
 
+struct UserData
+{
+    int count = 0;
+    bool isCancelled = false;
+};
+
 class CBotUT : public testing::Test
 {
 public:
@@ -36,6 +42,10 @@ public:
         CBotProgram::Init();
         CBotProgram::AddFunction("FAIL", rFail, cFail);
         CBotProgram::AddFunction("ASSERT", rAssert, cAssert);
+        CBotProgram::AddFunction("INIT_COUNT", rInitCount, cVoidInt);
+        CBotProgram::AddFunction("COUNT_TO", rRunCount, cVoidInt, cancelRunCount);
+        CBotProgram::AddFunction("GET_COUNT", rGetCount, cGetCount);
+        CBotProgram::AddFunction("IS_CANCELLED", rIsCancelled, cIsCancelled);
     }
 
     ~CBotUT()
@@ -98,6 +108,70 @@ private:
         {
             throw CBotTestFail("CBot assertion failed");
         }
+        return true;
+    }
+
+    static CBotTypResult cVoidInt(CBotVar* &var, void* user)
+    {
+        if (var == nullptr) return CBotTypResult(CBotErrLowParam);
+        if ( var->GetType() != CBotTypInt )  return CBotTypResult(CBotErrBadNum);
+        var = var->GetNext();
+        if (var != nullptr) return CBotTypResult(CBotErrOverParam);
+        return CBotTypResult(CBotTypVoid);
+    }
+
+    static CBotTypResult cGetCount(CBotVar* &var, void* user)
+    {
+        if (var != nullptr) return CBotTypResult(CBotErrOverParam);
+        return CBotTypResult(CBotTypInt);
+    }
+
+    static CBotTypResult cIsCancelled(CBotVar* &var, void* user)
+    {
+        if (var != nullptr) return CBotTypResult(CBotErrOverParam);
+        return CBotTypResult(CBotTypBoolean);
+    }
+
+    static bool rInitCount(CBotVar* var, CBotVar* result, int& exception, void* user)
+    {
+        UserData* userData = static_cast<UserData*>(user);
+        userData->count = var->GetValInt();
+        userData->isCancelled = false;
+        return true;
+    }
+
+    static bool rGetCount(CBotVar* var, CBotVar* result, int& exception, void* user)
+    {
+        UserData* userData = static_cast<UserData*>(user);
+        result->SetValInt(userData->count);
+        return true;
+    }
+
+    static bool rRunCount(CBotVar* var, CBotVar* result, int& exception, void* user)
+    {
+        UserData* userData = static_cast<UserData*>(user);
+        int max = var->GetValInt();
+        if (userData->count < max)
+        {
+            userData->count++;
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    static void cancelRunCount(void* user)
+    {
+        UserData* userData = static_cast<UserData*>(user);
+        userData->isCancelled = true;
+    }
+
+    static bool rIsCancelled(CBotVar* var, CBotVar* result, int& exception, void* user)
+    {
+        UserData* userData = static_cast<UserData*>(user);
+        result->SetValInt(userData->isCancelled);
         return true;
     }
 
@@ -251,17 +325,18 @@ protected:
         {
             try
             {
+                UserData userData;
                 program->Start(test);
                 if (g_cbotTestSaveState)
                 {
-                    while (!program->Run(nullptr, 0)) // save/restore at each step
+                    while (!program->Run(&userData, 0)) // save/restore at each step
                     {
                         TestSaveAndRestore(program.get());
                     }
                 }
                 else
                 {
-                    while (!program->Run(nullptr, 0)); // execute in step mode
+                    while (!program->Run(&userData, 0)); // execute in step mode
                 }
                 program->GetError(error, cursor1, cursor2);
                 if (error != expectedRuntimeError)
@@ -3540,5 +3615,23 @@ TEST_F(CBotUT, TestFinally) {
         "    ASSERT(false);\n"
         "}\n",
         CBotErrBadType2
+    );
+}
+
+TEST_F(CBotUT, CatchShouldCancelExternalCalls)
+{
+    ExecuteTest(
+        "extern void CatchShouldCancelExternalCalls()\n"
+        "{\n"
+        "    INIT_COUNT(0);\n"
+        "    bool isCatchExecuted = false;"
+        "    try {\n"
+        "        COUNT_TO(10);\n"
+        "    } catch(GET_COUNT() > 0) {\n"
+        "        ASSERT(IS_CANCELLED());\n"
+        "        isCatchExecuted = true;\n"
+        "    }\n"
+        "    ASSERT(isCatchExecuted);\n"
+        "}\n"
     );
 }

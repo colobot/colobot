@@ -1013,4 +1013,11 @@ bool CBotStack::IsCallFinished()
     return m_callFinished;
 }
 
+void CBotStack::CancelExternal()
+{
+    if (m_next != nullptr) m_next->CancelExternal();
+    if (m_next2 != nullptr) m_next2->CancelExternal();
+    if (m_call != nullptr) m_call->Cancel(this);
+}
+
 } // namespace CBot

@@ -3438,7 +3438,10 @@ private:
     }
 };
 
-
+void CScriptFunctions::cancelForeground(void* user) {
+	CScript* script = static_cast<CScript*>(user);
+	script->m_taskExecutor->StopForegroundTask();
+}
 
 // Initializes all functions for module CBOT.
 
@@ -3573,9 +3576,9 @@ void CScriptFunctions::Init()
     CBotProgram::AddFunction("researched",      rResearched,      cOneIntReturnBool);
     CBotProgram::AddFunction("buildingenabled", rBuildingEnabled, cOneIntReturnBool);
 
-    CBotProgram::AddFunction("build",           rBuild,           cOneInt);
-    CBotProgram::AddFunction("flag",            rFlag,            cGrabDrop);
-    CBotProgram::AddFunction("deflag",          rDeflag,          cNull);
+    CBotProgram::AddFunction("build",           rBuild,           cOneInt,   cancelForeground);
+    CBotProgram::AddFunction("flag",            rFlag,            cGrabDrop, cancelForeground);
+    CBotProgram::AddFunction("deflag",          rDeflag,          cNull,     cancelForeground);
 
     CBotProgram::AddFunction("retobject", rGetObject, cGetObject);
     CBotProgram::AddFunction("retobjectbyid", rGetObjectById, cGetObject);
@@ -3584,7 +3587,7 @@ void CScriptFunctions::Init()
     CBotProgram::AddFunction("searchall", rSearchAll, cSearchAll);
     CBotProgram::AddFunction("radar",     rRadar,     cRadar);
     CBotProgram::AddFunction("radarall",  rRadarAll,  cRadarAll);
-    CBotProgram::AddFunction("detect",    rDetect,    cDetect);
+    CBotProgram::AddFunction("detect",    rDetect,    cDetect,   cancelForeground);
     CBotProgram::AddFunction("direction", rDirection, cDirection);
     CBotProgram::AddFunction("produce",   rProduce,   cProduce);
     CBotProgram::AddFunction("distance",  rDistance,  cDistance);
@@ -3592,21 +3595,21 @@ void CScriptFunctions::Init()
     CBotProgram::AddFunction("space",     rSpace,     cSpace);
     CBotProgram::AddFunction("flatspace", rFlatSpace, cFlatSpace);
     CBotProgram::AddFunction("flatground",rFlatGround,cFlatGround);
-    CBotProgram::AddFunction("wait",      rWait,      cOneFloat);
-    CBotProgram::AddFunction("move",      rMove,      cOneFloat);
-    CBotProgram::AddFunction("turn",      rTurn,      cOneFloat);
-    CBotProgram::AddFunction("goto",      rGoto,      cGoto);
-    CBotProgram::AddFunction("grab",      rGrab,      cGrabDrop);
-    CBotProgram::AddFunction("drop",      rDrop,      cGrabDrop);
-    CBotProgram::AddFunction("sniff",     rSniff,     cNull);
-    CBotProgram::AddFunction("receive",   rReceive,   cReceive);
-    CBotProgram::AddFunction("send",      rSend,      cSend);
+    CBotProgram::AddFunction("wait",      rWait,      cOneFloat, cancelForeground);
+    CBotProgram::AddFunction("move",      rMove,      cOneFloat, cancelForeground);
+    CBotProgram::AddFunction("turn",      rTurn,      cOneFloat, cancelForeground);
+    CBotProgram::AddFunction("goto",      rGoto,      cGoto,     cancelForeground);
+    CBotProgram::AddFunction("grab",      rGrab,      cGrabDrop, cancelForeground);
+    CBotProgram::AddFunction("drop",      rDrop,      cGrabDrop, cancelForeground);
+    CBotProgram::AddFunction("sniff",     rSniff,     cNull,     cancelForeground);
+    CBotProgram::AddFunction("receive",   rReceive,   cReceive,  cancelForeground);
+    CBotProgram::AddFunction("send",      rSend,      cSend,     cancelForeground);
     CBotProgram::AddFunction("deleteinfo",rDeleteInfo,cDeleteInfo);
     CBotProgram::AddFunction("testinfo",  rTestInfo,  cTestInfo);
-    CBotProgram::AddFunction("thump",     rThump,     cNull);
-    CBotProgram::AddFunction("recycle",   rRecycle,   cNull);
+    CBotProgram::AddFunction("thump",     rThump,     cNull,     cancelForeground);
+    CBotProgram::AddFunction("recycle",   rRecycle,   cNull,     cancelForeground);
     CBotProgram::AddFunction("shield",    rShield,    cShield);
-    CBotProgram::AddFunction("fire",      rFire,      cFire);
+    CBotProgram::AddFunction("fire",      rFire,      cFire,     cancelForeground);
     CBotProgram::AddFunction("aim",       rAim,       cAim);
     CBotProgram::AddFunction("motor",     rMotor,     cMotor);
     CBotProgram::AddFunction("jet",       rJet,       cOneFloat);
@@ -3617,9 +3620,9 @@ void CScriptFunctions::Init()
     CBotProgram::AddFunction("errmode",   rErrMode,   cOneFloat);
     CBotProgram::AddFunction("ipf",       rIPF,       cOneFloat);
     CBotProgram::AddFunction("abstime",   rAbsTime,   cNull);
-    CBotProgram::AddFunction("pendown",   rPenDown,   cPenDown);
-    CBotProgram::AddFunction("penup",     rPenUp,     cNull);
-    CBotProgram::AddFunction("pencolor",  rPenColor,  cOneFloat);
+    CBotProgram::AddFunction("pendown",   rPenDown,   cPenDown,  cancelForeground);
+    CBotProgram::AddFunction("penup",     rPenUp,     cNull,     cancelForeground);
+    CBotProgram::AddFunction("pencolor",  rPenColor,  cOneFloat, cancelForeground);
     CBotProgram::AddFunction("penwidth",  rPenWidth,  cOneFloat);
     CBotProgram::AddFunction("factory",   rFactory,   cFactory);
     CBotProgram::AddFunction("camerafocus", rCameraFocus, cOneObject);

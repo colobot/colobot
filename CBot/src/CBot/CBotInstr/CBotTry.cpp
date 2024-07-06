@@ -132,6 +132,8 @@ bool CBotTry::Execute(CBotStack* &pj)
             {
 //              pile0->SetState(1);
 
+                pile1->CancelExternal();
+
                 if ( !pc->Execute(pile2) ) return false;        // performs the operation
                 if (m_finallyBlock == nullptr )
                     return pj->Return(pile2);                   // ends the try
