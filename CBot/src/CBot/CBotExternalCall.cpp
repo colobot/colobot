@@ -165,6 +165,7 @@ bool CBotExternalCallDefault::Run(CBotVar* thisVar, CBotStack* pStack)
         if (exception != CBotNoErr)
         {
             pStack->SetError(static_cast<CBotError>(exception));
+            pile->Delete();
         }
         return false;
     }

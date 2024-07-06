@@ -43,9 +43,10 @@ public:
         CBotProgram::AddFunction("FAIL", rFail, cFail);
         CBotProgram::AddFunction("ASSERT", rAssert, cAssert);
         CBotProgram::AddFunction("INIT_COUNT", rInitCount, cVoidInt);
-        CBotProgram::AddFunction("COUNT_TO", rRunCount, cVoidInt, cancelRunCount);
+        CBotProgram::AddFunction("COUNT_TO", rRunCount, cVoidInt, cancel);
         CBotProgram::AddFunction("GET_COUNT", rGetCount, cGetCount);
         CBotProgram::AddFunction("IS_CANCELLED", rIsCancelled, cIsCancelled);
+        CBotProgram::AddFunction("THROW", rThrow, cVoidInt, cancel);
     }
 
     ~CBotUT()
@@ -162,7 +163,7 @@ private:
         }
     }
 
-    static void cancelRunCount(void* user)
+    static void cancel(void* user)
     {
         UserData* userData = static_cast<UserData*>(user);
         userData->isCancelled = true;
@@ -173,6 +174,14 @@ private:
         UserData* userData = static_cast<UserData*>(user);
         result->SetValInt(userData->isCancelled);
         return true;
+    }
+
+    static bool rThrow(CBotVar* var, CBotVar* result, int& exception, void* user)
+    {
+        UserData* userData = static_cast<UserData*>(user);
+        userData->isCancelled = false;
+        exception = var->GetValInt();
+        return false;
     }
 
     // Modified version of PutList from src/script/script.cpp
@@ -3632,6 +3641,17 @@ TEST_F(CBotUT, CatchShouldCancelExternalCalls)
         "        isCatchExecuted = true;\n"
         "    }\n"
         "    ASSERT(isCatchExecuted);\n"
+        "}\n"
+    );
+
+    ExecuteTest(
+        "extern void DoNotCancelCallsThatThrew()\n"
+        "{\n"
+        "    try {\n"
+        "        THROW(10);\n"
+        "    } catch(10) {\n"
+        "    }\n"
+        "    ASSERT(not IS_CANCELLED());\n"
         "}\n"
     );
 }
