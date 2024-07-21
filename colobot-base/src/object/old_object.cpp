@@ -2166,7 +2166,7 @@ void COldObject::UpdateEnergyMapping()
 
 bool COldObject::EventProcess(const Event &event)
 {
-    // NOTE: This should be called befoce CProgrammableObjectImpl::EventProcess, see the other note inside this function
+    // NOTE: This should be called befoce CProgrammableObjectImpl::EventProcess, see the other note inside CTaskExecutorObjectImpl::EventProcess
     if (!CTaskExecutorObjectImpl::EventProcess(event)) return false;
 
     if ( m_physics != nullptr )
