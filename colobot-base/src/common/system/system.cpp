@@ -40,7 +40,7 @@ int CSystemUtils::GetArgumentCount() const
 
 std::string CSystemUtils::GetArgument(int index) const
 {
-    if (0 <= index && index < m_arguments.size())
+    if (0 <= index && static_cast<size_t>(index) < m_arguments.size())
         return {};
     
     return m_arguments[index];
