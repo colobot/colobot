@@ -72,6 +72,13 @@
 
 using namespace CBot;
 
+enum CameraView
+{
+    DefaultView,
+    FirstPersonView,
+    ThirdPersonView,
+};
+
 CBotTypResult CScriptFunctions::cClassNull(CBotVar* thisclass, CBotVar* &var)
 {
     return cNull(var, nullptr);
@@ -3213,18 +3220,54 @@ CBotTypResult CScriptFunctions::cOneObject(CBotVar* &var, void* user)
 
 }
 
-// Instruction "camerafocus(object)".
+// Instruction "camerafocus([object, view])".
+
+CBotTypResult CScriptFunctions::cCameraFocus(CBotVar* &var, void* user)
+{
+    if ( var == nullptr )  return CBotTypResult(CBotTypFloat);
+    if ( var->GetType() != CBotTypPointer )  return CBotTypResult(CBotErrBadParam);
+    var = var->GetNext();
+    if ( var == nullptr )  return CBotTypResult(CBotTypFloat);
+    if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+    var = var->GetNext();
+    if ( var == nullptr )  return CBotTypResult(CBotTypFloat);
+    return CBotTypResult(CBotErrOverParam);
+}
 
 bool CScriptFunctions::rCameraFocus(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     CScript*    script = static_cast<CScript*>(user);
 
     CObject* object;
+    CameraView view = DefaultView;
     if (var == nullptr)
+    {
         object = script->m_object;
+    }
     else
+    {
         object = static_cast<CObject*>(var->GetUserPtr());
+        var = var->GetNext();
+    }
+    if (var != nullptr)
+    {
+        view = static_cast<CameraView>(var->GetValInt());
+    }
 
+    if (object && object->Implements(ObjectInterfaceType::Controllable))
+    {
+        switch (view)
+        {
+            case DefaultView:
+                break;
+            case FirstPersonView:
+                dynamic_cast<CControllableObject&>(*object).SetCameraType(Gfx::CAM_TYPE_ONBOARD);
+                break;
+            case ThirdPersonView:
+                dynamic_cast<CControllableObject&>(*object).SetCameraType(Gfx::CAM_TYPE_BACK);
+                break;
+        }
+    }
     script->m_main->SelectObject(object, false);
 
     result->SetValInt(ERR_OK);
@@ -3527,6 +3570,10 @@ void CScriptFunctions::Init()
     CBotProgram::DefineNum("ResearchBuilder",       RESEARCH_BUILDER);
     CBotProgram::DefineNum("ResearchTarget",        RESEARCH_TARGET);
 
+    CBotProgram::DefineNum("DefaultView",           DefaultView);
+    CBotProgram::DefineNum("FirstPersonView",       FirstPersonView);
+    CBotProgram::DefineNum("ThirdPersonView",       ThirdPersonView);
+
     CBotProgram::DefineNum("PolskiPortalColobota", 1337);
 
     CBotClass* bc;
@@ -3622,7 +3669,7 @@ void CScriptFunctions::Init()
     CBotProgram::AddFunction("pencolor",  rPenColor,  cOneFloat);
     CBotProgram::AddFunction("penwidth",  rPenWidth,  cOneFloat);
     CBotProgram::AddFunction("factory",   rFactory,   cFactory);
-    CBotProgram::AddFunction("camerafocus", rCameraFocus, cOneObject);
+    CBotProgram::AddFunction("camerafocus", rCameraFocus, cCameraFocus);
     CBotProgram::AddFunction("takeoff",   rTakeOff,   cOneObject);
     CBotProgram::AddFunction("isbusy",    rIsBusy,    cIsBusy);
     CBotProgram::AddFunction("research",  rResearch,  cResearch);
