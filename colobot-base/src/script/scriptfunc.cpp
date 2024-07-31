@@ -72,11 +72,11 @@
 
 using namespace CBot;
 
-enum CameraView
+enum class CameraView
 {
-    DefaultView,
-    FirstPersonView,
-    ThirdPersonView,
+    DEFAULT,
+    ONBOARD,
+    BACK,
 };
 
 CBotTypResult CScriptFunctions::cClassNull(CBotVar* thisclass, CBotVar* &var)
@@ -3239,7 +3239,7 @@ bool CScriptFunctions::rCameraFocus(CBotVar* var, CBotVar* result, int& exceptio
     CScript*    script = static_cast<CScript*>(user);
 
     CObject* object;
-    CameraView view = DefaultView;
+    CameraView view = CameraView::DEFAULT;
     if (var == nullptr)
     {
         object = script->m_object;
@@ -3258,12 +3258,12 @@ bool CScriptFunctions::rCameraFocus(CBotVar* var, CBotVar* result, int& exceptio
     {
         switch (view)
         {
-            case DefaultView:
+            case CameraView::DEFAULT:
                 break;
-            case FirstPersonView:
+            case CameraView::ONBOARD:
                 dynamic_cast<CControllableObject&>(*object).SetCameraType(Gfx::CAM_TYPE_ONBOARD);
                 break;
-            case ThirdPersonView:
+            case CameraView::BACK:
                 dynamic_cast<CControllableObject&>(*object).SetCameraType(Gfx::CAM_TYPE_BACK);
                 break;
         }
@@ -3570,9 +3570,9 @@ void CScriptFunctions::Init()
     CBotProgram::DefineNum("ResearchBuilder",       RESEARCH_BUILDER);
     CBotProgram::DefineNum("ResearchTarget",        RESEARCH_TARGET);
 
-    CBotProgram::DefineNum("DefaultView",           DefaultView);
-    CBotProgram::DefineNum("FirstPersonView",       FirstPersonView);
-    CBotProgram::DefineNum("ThirdPersonView",       ThirdPersonView);
+    CBotProgram::DefineNum("CameraDefault",         static_cast<int>(CameraView::DEFAULT));
+    CBotProgram::DefineNum("CameraOnboard",         static_cast<int>(CameraView::ONBOARD));
+    CBotProgram::DefineNum("CameraBack",            static_cast<int>(CameraView::BACK));
 
     CBotProgram::DefineNum("PolskiPortalColobota", 1337);
 
