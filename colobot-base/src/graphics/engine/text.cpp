@@ -1212,9 +1212,8 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, glm::iv
 {
     if (font == FONT_BUTTON)
     {
-        glm::ivec2 windowSize = m_engine->GetWindowSize();
         int height = GetHeightInt(FONT_COMMON, size);
-        int width = height;// * (static_cast<float>(windowSize.y)/windowSize.x);
+        int width = height;
 
         glm::ivec2 p1(pos.x, pos.y - height);
         glm::ivec2 p2(pos.x + width, pos.y);
@@ -1240,8 +1239,6 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, glm::iv
         uv1.y += dp;
         uv2.x -= dp;
         uv2.y -= dp;
-
-        Gfx::IntColor col = Gfx::ColorToIntColor(color);
 
         Gfx::Vertex2D vertices[4];
 
