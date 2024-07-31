@@ -480,20 +480,22 @@ void CLightManager::UpdateDeviceLights(EngineObjectType type)
             break;
     }
 
+    /*
     for (int i = 0; i < static_cast<int>( m_lightMap.size() ); ++i)
     {
         int rank = m_lightMap[i];
         if (rank != -1)
         {
             Light light = m_dynLights[rank].light;
-            //m_device->SetLight(i, light);
-            //m_device->SetLightEnabled(i, true);
+            m_device->SetLight(i, light);
+            m_device->SetLightEnabled(i, true);
         }
         else
         {
-            //m_device->SetLightEnabled(i, false);
+            m_device->SetLightEnabled(i, false);
         }
     }
+    */
 }
 
 // -----------

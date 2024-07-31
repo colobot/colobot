@@ -855,10 +855,10 @@ void CEngine::DebugObject(int objRank)
 
     for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
     {
+        /*
         EngineBaseObjDataTier& p2 = p1.next[l2];
         l->Debug("  l2:");
 
-        /*
         l->Debug("   tex1: %s (id: %u)\n", p2.tex1Name.c_str(), p2.tex1.id);
         l->Debug("   tex2: %s (id: %u)\n", p2.tex2Name.c_str(), p2.tex2.id);
 
@@ -2029,24 +2029,6 @@ bool CEngine::LoadAllTextures()
     return ok;
 }
 
-static bool IsExcludeColor(glm::vec2* exclude, int x, int y)
-{
-    int i = 0;
-    while ( exclude[i+0].x != 0.0f || exclude[i+0].y != 0.0f ||
-            exclude[i+1].y != 0.0f || exclude[i+1].y != 0.0f )
-    {
-        if ( x >= static_cast<int>(exclude[i+0].x*256.0f) &&
-             x <  static_cast<int>(exclude[i+1].x*256.0f) &&
-             y >= static_cast<int>(exclude[i+0].y*256.0f) &&
-             y <  static_cast<int>(exclude[i+1].y*256.0f) )
-            return true;  // exclude
-
-        i += 2;
-    }
-
-    return false;  // point to include
-}
-
 void CEngine::DeleteTexture(const std::string& texName)
 {
     auto it = m_texNameMap.find(texName);
@@ -3115,7 +3097,6 @@ void CEngine::Draw3DScene()
 
     if (m_debugGoto)
     {
-        glm::mat4 worldMatrix = glm::mat4(1.0f);
         objectRenderer->SetTransparency(TransparencyMode::NONE);
         objectRenderer->SetLighting(false);
         objectRenderer->SetModelMatrix(glm::mat4(1.0f));
@@ -3685,8 +3666,6 @@ void CEngine::DrawInterface()
         renderer->SetTriplanarMode(m_triplanarMode);
         renderer->SetTriplanarScale(m_triplanarScale);
 
-        auto projectionViewMatrix = m_matProj * m_matView;
-
         for (int objRank = 0; objRank < static_cast<int>(m_objects.size()); objRank++)
         {
             if (! m_objects[objRank].used)
@@ -3698,8 +3677,8 @@ void CEngine::DrawInterface()
             if (! m_objects[objRank].drawFront)
                 continue;
 
-            auto combinedMatrix = projectionViewMatrix * m_objects[objRank].transform;
-
+            //auto projectionViewMatrix = m_matProj * m_matView;
+            //auto combinedMatrix = projectionViewMatrix * m_objects[objRank].transform;
             //if (! IsVisible(combinedMatrix, objRank))
             //    continue;
 
@@ -4094,7 +4073,7 @@ void CEngine::DrawShadowSpots()
 {
     m_device->SetDepthMask(false);
 
-    glm::mat4 matrix = glm::mat4(1.0f);
+    //glm::mat4 matrix = glm::mat4(1.0f);
     //m_device->SetTransform(TRANSFORM_WORLD, matrix);
 
     // TODO: create a separate texture
@@ -4253,13 +4232,6 @@ void CEngine::DrawShadowSpots()
 
         IntColor white(255, 255, 255, 255);
 
-        Vertex3D vertex[4] =
-        {
-            { corner[1], white, { ts.x, ts.y } },
-            { corner[0], white, { ti.x, ts.y } },
-            { corner[3], white, { ts.x, ti.y } },
-            { corner[2], white, { ti.x, ti.y } }
-        };
 
         float intensity = (0.5f+m_shadowSpots[i].intensity*0.5f)*hFactor;
 
@@ -4277,6 +4249,13 @@ void CEngine::DrawShadowSpots()
             //SetState(ENG_RSTATE_TTEXTURE_WHITE, Color(intensity, intensity, intensity, intensity));
         }
 
+        //Vertex3D vertex[4] =
+        //{
+        //    { corner[1], white, { ts.x, ts.y } },
+        //    { corner[0], white, { ti.x, ts.y } },
+        //    { corner[3], white, { ts.x, ti.y } },
+        //    { corner[2], white, { ti.x, ti.y } }
+        //};
         //m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
         AddStatisticTriangle(2);
     }
@@ -4333,8 +4312,6 @@ void CEngine::DrawBackgroundImage()
     p1.y = 0.0f;
     p2.x = 1.0f;
     p2.y = 1.0f;
-
-    glm::vec3 n = glm::vec3(0.0f, 0.0f, -1.0f);  // normal
 
     float u1, u2, v1, v2;
     if (m_backgroundFull)
@@ -4432,8 +4409,6 @@ void CEngine::DrawForegroundImage()
 {
     if (m_foregroundName.empty())
         return;
-
-    glm::vec3 n = glm::vec3(0.0f, 0.0f, -1.0f);  // normal
 
     glm::vec2 p1(0.0f, 0.0f);
     glm::vec2 p2(1.0f, 1.0f);
