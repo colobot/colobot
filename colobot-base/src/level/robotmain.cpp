@@ -127,7 +127,7 @@ float   g_unit;             // conversion factor
 const float MIN_SPEED = 1/8.0f;
 const float MAX_SPEED = 256.0f;
 
-// Reference colors used when recoloring textures, see ChangeColor()
+// Reference colors used when recoloring textures
 const Gfx::Color COLOR_REF_BOT   = Gfx::Color( 10.0f/256.0f, 166.0f/256.0f, 254.0f/256.0f);  // blue
 const Gfx::Color COLOR_REF_ALIEN = Gfx::Color(135.0f/256.0f, 170.0f/256.0f,  13.0f/256.0f);  // green
 const Gfx::Color COLOR_REF_GREEN = Gfx::Color(135.0f/256.0f, 170.0f/256.0f,  13.0f/256.0f);  // green
@@ -693,7 +693,6 @@ bool CRobotMain::ProcessEvent(Event &event)
     {
         if (IsPhaseWithWorld(m_phase))
         {
-            ChangeColor();
             UpdateMap();
         }
         m_engine->LoadAllTextures();
@@ -3373,9 +3372,6 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 InitEye();
                 SetMovieLock(false);
 
-                if (!resetObject)
-                    ChangeColor();  // changes the colors of texture
-
                 if (!m_sceneReadPath.empty())  // loading file ?
                 {
                     m_ui->GetLoadingScreen()->SetProgress(0.25f, RT_LOADING_OBJECTS_SAVED);
@@ -3940,158 +3936,6 @@ int CRobotMain::CreateSpot(glm::vec3 pos, Gfx::Color color)
     return obj;
 }
 
-
-//! Change the colors and textures
-void CRobotMain::ChangeColor()
-{
-    if (m_phase != PHASE_SIMUL    &&
-        m_phase != PHASE_SETUPds  &&
-        m_phase != PHASE_SETUPgs  &&
-        m_phase != PHASE_SETUPps  &&
-        m_phase != PHASE_SETUPcs  &&
-        m_phase != PHASE_SETUPss  &&
-        m_phase != PHASE_MOD_LIST &&
-        m_phase != PHASE_WIN      &&
-        m_phase != PHASE_LOST     &&
-        m_phase != PHASE_APPEARANCE ) return;
-
-    // Player texture
-
-    glm::vec2 ts = { 0.0f, 0.0f };
-    glm::vec2 ti = { 1.0f, 1.0f };  // the entire image
-
-    Gfx::Color colorRef1, colorNew1, colorRef2, colorNew2;
-
-    colorRef1.a = 0.0f;
-    colorRef2.a = 0.0f;
-
-    colorRef1.r = 206.0f/256.0f;
-    colorRef1.g = 206.0f/256.0f;
-    colorRef1.b = 204.0f/256.0f;  // ~white
-    colorNew1 = m_playerProfile->GetAppearance().colorCombi;
-    colorRef2.r = 255.0f/256.0f;
-    colorRef2.g = 132.0f/256.0f;
-    colorRef2.b =   1.0f/256.0f;  // orange
-    colorNew2 = m_playerProfile->GetAppearance().colorBand;
-
-    glm::vec2 exclu[6];
-    exclu[0] = { 192.0f / 256.0f,   0.0f / 256.0f };
-    exclu[1] = { 256.0f / 256.0f,  64.0f / 256.0f };  // crystals + cylinders
-    exclu[2] = { 208.0f / 256.0f, 224.0f / 256.0f };
-    exclu[3] = { 256.0f / 256.0f, 256.0f / 256.0f };  // SatCom screen
-    exclu[4] = { 0.0f, 0.0f };
-    exclu[5] = { 0.0f, 0.0f };  // terminator
-    //m_engine->ChangeTextureColor("textures/objects/human.png", colorRef1, colorNew1, colorRef2, colorNew2, 0.30f, 0.01f, ts, ti, exclu);
-
-    float tolerance;
-
-    int face = GetGamerFace();
-    if (face == 0)  // normal?
-    {
-        colorRef1.r =  90.0f/256.0f;
-        colorRef1.g =  95.0f/256.0f;
-        colorRef1.b =  85.0f/256.0f;  // black
-        tolerance = 0.15f;
-    }
-    if (face == 1)  // bald?
-    {
-        colorRef1.r =  74.0f/256.0f;
-        colorRef1.g =  58.0f/256.0f;
-        colorRef1.b =  46.0f/256.0f;  // brown
-        tolerance = 0.20f;
-    }
-    if (face == 2)  // carlos?
-    {
-        colorRef1.r =  70.0f/256.0f;
-        colorRef1.g =  40.0f/256.0f;
-        colorRef1.b =   8.0f/256.0f;  // brown
-        tolerance = 0.30f;
-    }
-    if (face == 3)  // blonde?
-    {
-        colorRef1.r =  74.0f/256.0f;
-        colorRef1.g =  16.0f/256.0f;
-        colorRef1.b =   0.0f/256.0f;  // yellow
-        tolerance = 0.20f;
-    }
-    colorNew1 = m_playerProfile->GetAppearance().colorHair;
-    colorRef2.r = 0.0f;
-    colorRef2.g = 0.0f;
-    colorRef2.b = 0.0f;
-    colorNew2.r = 0.0f;
-    colorNew2.g = 0.0f;
-    colorNew2.b = 0.0f;
-
-    std::array<char, 100> name;
-    snprintf(name.data(), name.size(), "textures/objects/face%.2d.png", face+1);
-    exclu[0] = { 105.0f / 256.0f, 47.0f / 166.0f };
-    exclu[1] = { 153.0f / 256.0f, 79.0f / 166.0f };  // blue canister
-    exclu[2] = { 0.0f, 0.0f };
-    exclu[3] = { 0.0f, 0.0f };  // terminator
-    //m_engine->ChangeTextureColor(name, colorRef1, colorNew1, colorRef2, colorNew2, tolerance, 0.00f, ts, ti, exclu);
-
-    colorRef2.r = 0.0f;
-    colorRef2.g = 0.0f;
-    colorRef2.b = 0.0f;
-    colorNew2.r = 0.0f;
-    colorNew2.g = 0.0f;
-    colorNew2.b = 0.0f;
-
-    // VehicleColor
-
-    for (const auto& it : m_colorNewBot)
-    {
-        int team = it.first;
-        Gfx::Color newColor = it.second;
-
-        //m_engine->ChangeTextureColor("textures/objects/base1.png"+teamStr,   "textures/objects/base1.png",   COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
-        //m_engine->ChangeTextureColor("textures/objects/convert.png"+teamStr, "textures/objects/convert.png", COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
-        //m_engine->ChangeTextureColor("textures/objects/derrick.png"+teamStr, "textures/objects/derrick.png", COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
-        //m_engine->ChangeTextureColor("textures/objects/factory.png"+teamStr, "textures/objects/factory.png", COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
-        //m_engine->ChangeTextureColor("textures/objects/lemt.png"+teamStr,    "textures/objects/lemt.png",    COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
-        //m_engine->ChangeTextureColor("textures/objects/roller.png"+teamStr,  "textures/objects/roller.png",  COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
-        //m_engine->ChangeTextureColor("textures/objects/search.png"+teamStr,  "textures/objects/search.png",  COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
-        //m_engine->ChangeTextureColor("textures/objects/rollert.png"+teamStr, "textures/objects/rollert.png", COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
-
-        exclu[0] = { 0.0f / 256.0f, 160.0f / 256.0f };
-        exclu[1] = { 256.0f / 256.0f, 256.0f / 256.0f };  // pencils
-        exclu[2] = { 0.0f, 0.0f };
-        exclu[3] = { 0.0f, 0.0f };  // terminator
-        //m_engine->ChangeTextureColor("textures/objects/drawer.png"+teamStr, "textures/objects/drawer.png",  COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, exclu, 0, true);
-
-        exclu[0] = { 237.0f / 256.0f, 176.0f / 256.0f };
-        exclu[1] = { 256.0f / 256.0f, 220.0f / 256.0f };  // blue canister
-        exclu[2] = { 106.0f / 256.0f, 150.0f / 256.0f };
-        exclu[3] = { 130.0f / 256.0f, 214.0f / 256.0f };  // safe location
-        exclu[4] = { 0.0f, 0.0f };
-        exclu[5] = { 0.0f, 0.0f };  // terminator
-        //m_engine->ChangeTextureColor("textures/objects/subm.png"+teamStr,   "textures/objects/subm.png",    COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, exclu, 0, true);
-    }
-
-    // AlienColor
-
-    exclu[0] = { 128.0f / 256.0f, 160.0f / 256.0f };
-    exclu[1] = { 256.0f / 256.0f, 256.0f / 256.0f };  // SatCom
-    exclu[2] = { 0.0f, 0.0f };
-    exclu[3] = { 0.0f, 0.0f };  // terminator
-    //m_engine->ChangeTextureColor("textures/objects/ant.png",     COLOR_REF_ALIEN, m_colorNewAlien, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti, exclu);
-    //m_engine->ChangeTextureColor("textures/objects/mother.png",  COLOR_REF_ALIEN, m_colorNewAlien, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti);
-
-    // GreeneryColor
-    //m_engine->ChangeTextureColor("textures/objects/plant.png",   COLOR_REF_GREEN, m_colorNewGreen, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti);
-
-    // water color
-
-    // PARTIPLOUF0 and PARTIDROP :
-    ts = { 0.500f, 0.500f };
-    ti = { 0.875f, 0.750f };
-    //m_engine->ChangeTextureColor("textures/effect00.png", COLOR_REF_WATER, m_colorNewWater, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, nullptr, m_colorShiftWater, true);
-
-    // PARTIFLIC :
-    ts = { 0.00f, 0.75f };
-    ti = { 0.25f, 1.00f };
-    //m_engine->ChangeTextureColor("textures/effect02.png", COLOR_REF_WATER, m_colorNewWater, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, nullptr, m_colorShiftWater, true);
-}
 
 //! Calculates the distance to the nearest object
 namespace

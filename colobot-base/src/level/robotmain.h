@@ -299,7 +299,6 @@ public:
     void        UpdatePause(PauseType pause);
     void        UpdatePauseMusic(PauseMusic music);
     void        ClearInterface();
-    void        ChangeColor();
 
     bool        FreeSpace(glm::vec3 &center, float minRadius, float maxRadius, float space, CObject *exclu);
     bool        FlatFreeSpace(glm::vec3 &center, float minFlat, float minRadius, float maxRadius, float space, CObject *exclu);

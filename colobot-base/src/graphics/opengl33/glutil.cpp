@@ -337,7 +337,7 @@ std::string LoadSource(const std::string& path)
 
     std::string source(len, ' ');
 
-    size_t length = PHYSFS_read(file, source.data(), 1, len);
+    PHYSFS_readBytes(file, source.data(), len);
 
     PHYSFS_close(file);
 

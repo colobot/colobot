@@ -118,8 +118,7 @@ Error CAutoDestroyer::StartAction(int param)
 bool CAutoDestroyer::EventProcess(const Event &event)
 {
     CObject*        scrap;
-    glm::vec3    pos, speed;
-    glm::vec2     dim;
+    glm::vec3    pos;
     Ui::CWindow*    pw;
 
     CAuto::EventProcess(event);
