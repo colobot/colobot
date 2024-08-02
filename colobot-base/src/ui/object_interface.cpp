@@ -1546,7 +1546,6 @@ void CObjectInterface::UpdateInterface(float rTime)
     CButton*    pb;
     CGroup*     pgr;
     CTarget*    ptg;
-    glm::vec3    pos, hPos;
     glm::vec2     ppos;
     float       range;
     int         icon;

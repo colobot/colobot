@@ -829,7 +829,7 @@ void CMap::DrawObject(const glm::vec2& position, float dir, ObjectType type, Map
 void CMap::DrawObjectIcon(const glm::vec2& pos, const glm::vec2& dim, MapColor color,
                           ObjectType type, bool bHilite)
 {
-    glm::vec2 ppos, ddim, uv1, uv2;
+    glm::vec2 uv1, uv2;
     float   dp;
     int     icon;
 
