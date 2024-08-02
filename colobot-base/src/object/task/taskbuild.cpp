@@ -665,8 +665,7 @@ bool CTaskBuild::Abort()
 Error CTaskBuild::FlatFloor()
 {
     ObjectType  type;
-    glm::vec3    center, pos, bPos;
-    glm::vec2       c, p;
+    glm::vec3    center, bPos;
     float       radius, max, bRadius = 0.0f, angle, dist;
     bool        bLittleFlat, bBase;
 

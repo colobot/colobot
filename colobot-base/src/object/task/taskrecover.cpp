@@ -226,8 +226,7 @@ Error CTaskRecover::Start()
 
 Error CTaskRecover::IsEnded()
 {
-    glm::vec3    pos, speed, goal;
-    glm::vec2       dim;
+    glm::vec3    pos, goal;
     float       angle, dist, time;
     int         i;
 
