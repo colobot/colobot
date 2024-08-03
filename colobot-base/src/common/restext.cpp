@@ -41,6 +41,12 @@ const char* stringsObject[OBJECT_MAX]   = { nullptr };
 const char* stringsErr[ERR_MAX]         = { nullptr };
 const char* stringsCbot[CBot::CBotErrMAX]         = { nullptr };
 
+static int InputSlot2EventType(InputSlot s)
+{
+    static_assert(EVENT_INTERFACE_KEY + static_cast<int>(INPUT_SLOT_MAX) < EVENT_INTERFACE_KEY_END);
+    return EVENT_INTERFACE_KEY + static_cast<int>(s);
+}
+
 /* Macro to mark which texts are translatable by gettext
  * It doesn't do anything at compile-time, as all texts represented here are used later
  * in explicit call to gettext(), but it is used by xgettext executable to filter extracted
@@ -252,36 +258,35 @@ void InitializeRestext()
     stringsEvent[EVENT_INTERFACE_VSYNC]     = TR("Vertical Synchronization\\Limits the number of frames per second to display frequency");
 
     stringsEvent[EVENT_INTERFACE_KDEF]      = TR("Standard controls\\Standard key functions");
-    assert(INPUT_SLOT_MAX < EVENT_INTERFACE_KEY_END-EVENT_INTERFACE_KEY);
-    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_LEFT]        = TR("Turn left\\turns the bot to the left");
-    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_RIGHT]       = TR("Turn right\\turns the bot to the right");
-    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_UP]          = TR("Forward\\Moves forward");
-    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_DOWN]        = TR("Backward\\Moves backward");
-    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_GUP]         = TR("Climb\\Increases the power of the jet");
-    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_GDOWN]       = TR("Descend\\Reduces the power of the jet");
-    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_CAMERA]      = TR("Change camera\\Switches between onboard camera and following camera");
-    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_DESEL]       = TR("Previous object\\Selects the previous object");
-    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_ACTION]      = TR("Standard action\\Standard action of the bot (take/grab, shoot, sniff, etc)");
-    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_CAM_LEFT]    = TR("Camera left\\Turns the camera left");
-    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_CAM_RIGHT]   = TR("Camera right\\Turns the camera right");
-    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_CAM_UP]      = TR("Camera up\\Turns the camera up");
-    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_CAM_DOWN]    = TR("Camera down\\Turns the camera down");
-    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_CAM_NEAR]    = TR("Camera closer\\Moves the camera forward");
-    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_CAM_AWAY]    = TR("Camera back\\Moves the camera backward");
-    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_CAM_ALT]     = TR("Alternative camera mode\\Move sideways instead of rotating (in free camera)");
-    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_NEXT]        = TR("Next object\\Selects the next object");
-    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_HUMAN]       = TR("Select the astronaut\\Selects the astronaut");
-    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_QUIT]        = TR("Quit\\Quit the current mission or exercise");
-    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_HELP]        = TR("Instructions\\Shows the instructions for the current mission");
-    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_PROG]        = TR("Programming help\\Gives more detailed help with programming");
-    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_VISIT]       = TR("Origin of last message\\Shows where the last message was sent from");
-    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_SPEED_DEC]   = TR("Lower speed\\Decrease speed by half");
-    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_SPEED_RESET] = TR("Standard speed\\Reset speed to normal");
-    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_SPEED_INC]   = TR("Higher speed\\Doubles speed");
-    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_QUICKSAVE]   = TR("Quick save\\Immediately save game");
-    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_QUICKLOAD]   = TR("Quick load\\Immediately load game");
-    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_PAUSE]       = TR("Pause\\Pause the game without opening menu");
-    stringsEvent[EVENT_INTERFACE_KEY+INPUT_SLOT_CMDLINE]     = TR("Cheat console\\Show cheat console");
+    stringsEvent[InputSlot2EventType(INPUT_SLOT_LEFT)]        = TR("Turn left\\turns the bot to the left");
+    stringsEvent[InputSlot2EventType(INPUT_SLOT_RIGHT)]       = TR("Turn right\\turns the bot to the right");
+    stringsEvent[InputSlot2EventType(INPUT_SLOT_UP)]          = TR("Forward\\Moves forward");
+    stringsEvent[InputSlot2EventType(INPUT_SLOT_DOWN)]        = TR("Backward\\Moves backward");
+    stringsEvent[InputSlot2EventType(INPUT_SLOT_GUP)]         = TR("Climb\\Increases the power of the jet");
+    stringsEvent[InputSlot2EventType(INPUT_SLOT_GDOWN)]       = TR("Descend\\Reduces the power of the jet");
+    stringsEvent[InputSlot2EventType(INPUT_SLOT_CAMERA)]      = TR("Change camera\\Switches between onboard camera and following camera");
+    stringsEvent[InputSlot2EventType(INPUT_SLOT_DESEL)]       = TR("Previous object\\Selects the previous object");
+    stringsEvent[InputSlot2EventType(INPUT_SLOT_ACTION)]      = TR("Standard action\\Standard action of the bot (take/grab, shoot, sniff, etc)");
+    stringsEvent[InputSlot2EventType(INPUT_SLOT_CAM_LEFT)]    = TR("Camera left\\Turns the camera left");
+    stringsEvent[InputSlot2EventType(INPUT_SLOT_CAM_RIGHT)]   = TR("Camera right\\Turns the camera right");
+    stringsEvent[InputSlot2EventType(INPUT_SLOT_CAM_UP)]      = TR("Camera up\\Turns the camera up");
+    stringsEvent[InputSlot2EventType(INPUT_SLOT_CAM_DOWN)]    = TR("Camera down\\Turns the camera down");
+    stringsEvent[InputSlot2EventType(INPUT_SLOT_CAM_NEAR)]    = TR("Camera closer\\Moves the camera forward");
+    stringsEvent[InputSlot2EventType(INPUT_SLOT_CAM_AWAY)]    = TR("Camera back\\Moves the camera backward");
+    stringsEvent[InputSlot2EventType(INPUT_SLOT_CAM_ALT)]     = TR("Alternative camera mode\\Move sideways instead of rotating (in free camera)");
+    stringsEvent[InputSlot2EventType(INPUT_SLOT_NEXT)]        = TR("Next object\\Selects the next object");
+    stringsEvent[InputSlot2EventType(INPUT_SLOT_HUMAN)]       = TR("Select the astronaut\\Selects the astronaut");
+    stringsEvent[InputSlot2EventType(INPUT_SLOT_QUIT)]        = TR("Quit\\Quit the current mission or exercise");
+    stringsEvent[InputSlot2EventType(INPUT_SLOT_HELP)]        = TR("Instructions\\Shows the instructions for the current mission");
+    stringsEvent[InputSlot2EventType(INPUT_SLOT_PROG)]        = TR("Programming help\\Gives more detailed help with programming");
+    stringsEvent[InputSlot2EventType(INPUT_SLOT_VISIT)]       = TR("Origin of last message\\Shows where the last message was sent from");
+    stringsEvent[InputSlot2EventType(INPUT_SLOT_SPEED_DEC)]   = TR("Lower speed\\Decrease speed by half");
+    stringsEvent[InputSlot2EventType(INPUT_SLOT_SPEED_RESET)] = TR("Standard speed\\Reset speed to normal");
+    stringsEvent[InputSlot2EventType(INPUT_SLOT_SPEED_INC)]   = TR("Higher speed\\Doubles speed");
+    stringsEvent[InputSlot2EventType(INPUT_SLOT_QUICKSAVE)]   = TR("Quick save\\Immediately save game");
+    stringsEvent[InputSlot2EventType(INPUT_SLOT_QUICKLOAD)]   = TR("Quick load\\Immediately load game");
+    stringsEvent[InputSlot2EventType(INPUT_SLOT_PAUSE)]       = TR("Pause\\Pause the game without opening menu");
+    stringsEvent[InputSlot2EventType(INPUT_SLOT_CMDLINE)]     = TR("Cheat console\\Show cheat console");
 
     stringsEvent[EVENT_INTERFACE_VOLSOUND]  = TR("Sound effects:\\Volume of engines, voice, shooting, etc.");
     stringsEvent[EVENT_INTERFACE_VOLMUSIC]  = TR("Background sound:\\Volume of audio tracks");

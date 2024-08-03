@@ -596,9 +596,6 @@ bool CBotStack::ExecuteCall(long& nIdent, CBotToken* token, CBotVar** ppVar, con
 
     // first looks by the identifier
 
-    res = m_prog->GetExternalCalls()->DoCall(nullptr, nullptr, ppVar, this, rettype);
-    if (res >= 0) return res;
-
     res = CBotFunction::DoCall(m_prog, m_prog->GetFunctions(), nIdent, "", ppVar, this, token);
     if (res >= 0) return res;
 

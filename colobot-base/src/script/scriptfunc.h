@@ -80,6 +80,7 @@ private:
     static CBot::CBotTypResult cTopo(CBot::CBotVar* &var, void* user);
     static CBot::CBotTypResult cMessage(CBot::CBotVar* &var, void* user);
     static CBot::CBotTypResult cPenDown(CBot::CBotVar* &var, void* user);
+    static CBot::CBotTypResult cCameraFocus(CBot::CBotVar* &var, void* user);
     static CBot::CBotTypResult cIsBusy(CBot::CBotVar* &var, void* user);
     static CBot::CBotTypResult cFactory(CBot::CBotVar* &var, void* user);
     static CBot::CBotTypResult cResearch(CBot::CBotVar* &var, void* user);
