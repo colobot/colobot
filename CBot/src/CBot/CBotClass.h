@@ -86,7 +86,7 @@ class CBotExternalCallList;
  *
  *  Create instance of the "robot" class:
  *  \code
- *  CBotVar* var = new CBotVar("variableName", classRobot);
+ *  CBotVar* var = CBotVar::Create("variableName", classRobot);
  *  \endcode
  *
  *  Access members of the "point" class:
