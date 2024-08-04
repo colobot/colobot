@@ -323,11 +323,7 @@ CodePoint StrUtils::ReadUTF8(std::string_view text)
 {
     if (text.empty()) return {};
 
-    std::mbstate_t state = {};
-
-    auto data = reinterpret_cast<const UTF8Char*>(text.data());
-
-    int len = utf32.length(state, data, data + text.size(), 1);
+    int len = UTF8CharLength(text);
 
     if (len == 0) return {};
 
