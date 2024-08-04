@@ -73,7 +73,6 @@ using UTF8Char = char;
 #endif
 
 const auto& wchar = std::use_facet<std::ctype<wchar_t>>(convertion_locale);
-const auto& utf32 = std::use_facet<std::codecvt<char32_t, UTF8Char, std::mbstate_t>>(convertion_locale);
 
 std::string VFormat(const char *fmt, va_list ap)
 {
