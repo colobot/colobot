@@ -159,6 +159,34 @@ constexpr StrUtils::CodePoint UTF8Encode(char32_t ch)
     return std::string_view(result.data(), len);
 }
 
+constexpr char32_t UTF8Decode(StrUtils::CodePoint code)
+{
+    char32_t result = 0;
+
+    if (code.Size() == 1)
+        result = static_cast<char32_t>(code[0]);
+    else if (code.Size() == 2)
+    {
+        result |= static_cast<char32_t>(code[0] & 0b0001'1111) << 6;
+        result |= static_cast<char32_t>(code[1] & 0b0011'1111);
+    }
+    else if (code.Size() == 3)
+    {
+        result |= static_cast<char32_t>(code[0] & 0b0000'1111) << 12;
+        result |= static_cast<char32_t>(code[1] & 0b0011'1111) << 6;
+        result |= static_cast<char32_t>(code[2] & 0b0011'1111);
+    }
+    else if (code.Size() == 4)
+    {
+        result |= static_cast<char32_t>(code[0] & 0b0000'1111) << 18;
+        result |= static_cast<char32_t>(code[1] & 0b0011'1111) << 12;
+        result |= static_cast<char32_t>(code[2] & 0b0011'1111) << 6;
+        result |= static_cast<char32_t>(code[3] & 0b0011'1111);
+    }
+
+    return result;
+}
+
 } // anonymous namespace
 
 using namespace StrUtils;
@@ -378,22 +406,7 @@ CodePoint StrUtils::ToUTF8(char32_t code)
 
 char32_t StrUtils::ToUTF32(CodePoint code)
 {
-    std::mbstate_t state = {};
-    char32_t ch = {};
-
-    const UTF8Char* read = nullptr;
-    char32_t* written = nullptr;
-
-    auto data = reinterpret_cast<const UTF8Char*>(code.Data());
-
-    auto result = utf32.in(state,
-        data, data + code.Size(), read,
-        &ch, &ch + 1, written);
-
-    if (result != std::codecvt_base::ok)
-        throw std::invalid_argument("Invalid code point");
-    
-    return ch;
+    return UTF8Decode(code);
 }
 
 std::string StrUtils::ToUTF8(std::u32string_view text)
@@ -424,7 +437,7 @@ std::u32string StrUtils::ToUTF32(std::string_view text)
         if (code.Size() == 0)
             throw std::invalid_argument("Invalid character");
 
-        result.push_back(ToUTF32(code));
+        result.push_back(UTF8Decode(code));
 
         text.remove_prefix(code.Size());
     }
