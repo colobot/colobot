@@ -102,6 +102,22 @@ constexpr bool UTF8IsContinuationByte(char8_t ch)
     return (ch & 0b1100'0000) == 0b1000'0000;
 }
 
+constexpr int UTF8SequenceLength(char8_t ch)
+{
+    if (ch < 0b1000'0000)           // 1-byte sequence
+        return 1;
+    else if (ch < 0b1100'0000)      // Continuation byte
+        return 0;
+    else if (ch < 0b1110'0000)      // 2-byte sequence
+        return 2;
+    else if (ch < 0b1111'0000)      // 3-byte sequence
+        return 3;
+    else if (ch < 0b1111'1000)      // 4-byte sequence
+        return 4;
+    else                            // Invalid sequence
+        return 0;
+}
+
 } // anonymous namespace
 
 using namespace StrUtils;
@@ -262,11 +278,17 @@ int StrUtils::UTF8CharLength(std::string_view string)
 {
     if (string.empty()) return 0;
 
-    std::mbstate_t state = {};
+    int len = UTF8SequenceLength(static_cast<char8_t>(string.front()));
 
-    auto data = reinterpret_cast<const UTF8Char*>(string.data());
+    // UTF-8 sequence is not long enough
+    if (string.size() < len) return 0;
 
-    return utf32.length(state, data, data + string.size(), 1);
+    // Check continuation bytes
+    for (int i = 1; i < len; i++)
+        if (!UTF8IsContinuationByte(static_cast<char8_t>(string[i])))
+            return 0;
+
+    return len;
 }
 
 int StrUtils::UTF8StringLength(std::string_view string)
