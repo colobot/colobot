@@ -77,7 +77,7 @@ class CSystemUtils
 public:
     CSystemUtils();
 
-    virtual ~CSystemUtils();
+    virtual ~CSystemUtils() = 0;
 
     //! Returns unique instance of system utilities
     static CSystemUtils& GetInstance();
