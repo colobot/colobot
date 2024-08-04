@@ -139,6 +139,14 @@ TEST(StringUtilTests, StringCodePointCounts)
     EXPECT_EQ(StrUtils::UTF8CharLength("中"), 3);
 }
 
+TEST(StringUtilTests, StringCodeUnitCounts)
+{
+    EXPECT_EQ(StrUtils::UTF8StringLength("a"), 1);
+    EXPECT_EQ(StrUtils::UTF8StringLength("ą"), 1);
+    EXPECT_EQ(StrUtils::UTF8StringLength("中"), 1);
+    EXPECT_EQ(StrUtils::UTF8StringLength("aą中"), 3);
+}
+
 TEST(StringUtilTests, StringConversion)
 {
     std::string text = ",./;AaZzĄąĘę中";

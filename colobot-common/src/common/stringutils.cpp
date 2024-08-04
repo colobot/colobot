@@ -279,7 +279,7 @@ int StrUtils::UTF8StringLength(std::string_view string)
         if (count == 0)
             throw std::invalid_argument("Invalid character");
 
-        length += count;
+        length++;
 
         string.remove_prefix(count);
     }
