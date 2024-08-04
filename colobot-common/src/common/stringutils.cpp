@@ -297,14 +297,14 @@ int StrUtils::UTF8StringLength(std::string_view string)
 
     while (!string.empty())
     {
-        std::mbstate_t state = {};
-
-        auto data = reinterpret_cast<const UTF8Char*>(string.data());
-
-        auto count = utf32.length(state, data, data + string.size(), 1);
+        auto count = UTF8SequenceLength(static_cast<char8_t>(string.front()));
 
         if (count == 0)
             throw std::invalid_argument("Invalid character");
+        
+        for (int i = 1; i < count; i++)
+            if (!UTF8IsContinuationByte(static_cast<char8_t>(string[i])))
+                throw std::invalid_argument("Invalid character");
 
         length++;
 
