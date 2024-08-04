@@ -97,6 +97,11 @@ std::string VFormat(const char *fmt, va_list ap)
     }
 }
 
+constexpr bool UTF8IsContinuationByte(char8_t ch)
+{
+    return (ch & 0b1100'0000) == 0b1000'0000;
+}
+
 } // anonymous namespace
 
 using namespace StrUtils;
@@ -289,7 +294,7 @@ int StrUtils::UTF8StringLength(std::string_view string)
 
 bool StrUtils::IsUTF8ContinuationByte(char c)
 {
-    return (c & 0b1100'0000) == 0b1000'0000;
+    return UTF8IsContinuationByte(static_cast<char8_t>(c));
 }
 
 CodePoint StrUtils::ReadUTF8(std::string_view text)
