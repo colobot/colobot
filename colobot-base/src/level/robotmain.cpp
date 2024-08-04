@@ -33,6 +33,8 @@
 #include "common/stringutils.h"
 #include "common/version.h"
 
+#include "common/system/system.h"
+
 #include "common/resources/inputstream.h"
 #include "common/resources/outputstream.h"
 #include "common/resources/resourcemanager.h"
@@ -1518,6 +1520,11 @@ void CRobotMain::ExecuteCmd(const std::string& cmd)
                 return;
             }
         }
+    }
+
+    if (cmd == "gamecrash")
+    {
+        CSystemUtils::GetInstance().CriticalError("Intentional game crash");
     }
 
     float speed;

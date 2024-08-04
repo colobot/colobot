@@ -43,7 +43,7 @@ struct Triangle
  * \struct ModelTriangle
  * \brief A single triangle in mesh as saved in model file
  */
-struct [[deprecated]] ModelTriangle
+struct ModelTriangle
 {
     //! 1st vertex
     Vertex3D  p1;

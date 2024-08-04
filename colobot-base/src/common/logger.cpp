@@ -83,6 +83,12 @@ void CLogger::SetLogLevel(LogLevel level)
     m_logLevel = level;
 }
 
+void CLogger::Flush()
+{
+    for (auto& out : m_outputs)
+        out->flush();
+}
+
 bool CLogger::ParseLogLevel(const std::string& str, LogLevel& logLevel)
 {
     if (str == "trace")

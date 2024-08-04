@@ -11,6 +11,4 @@ target_sources(Colobot-Base PRIVATE
     pathman.h
     pausemanager.cpp
     pausemanager.h
-    signal_handlers.cpp
-    signal_handlers.h
 )

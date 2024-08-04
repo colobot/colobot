@@ -143,6 +143,9 @@ public:
     */
     void SetLogLevel(LogLevel level);
 
+    //! Flushes logging output streams
+    void Flush();
+
     /** Parses string as a log level
      * \param str string to parse
      * \param logLevel result log level

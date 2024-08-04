@@ -57,67 +57,21 @@ if(NOT "$ENV{BUILD_NUMBER}" STREQUAL "")
 endif()
 
 
+# Compiler detection
+include("${PROJECT_SOURCE_DIR}/cmake/compilers/${CMAKE_CXX_COMPILER_ID}.cmake" OPTIONAL RESULT_VARIABLE COMPILER_INCLUDE)
+
+if ("${COMPILER_INCLUDE}" STREQUAL NOTFOUND)
+    message(WARNING "Your C++ compiler doesn't seem to be supported.")
+endif()
+
 ##
 # Platform detection and some related checks
 ##
-if("${CMAKE_SYSTEM_NAME}" MATCHES "Windows")
-    message(STATUS "Build for Windows system")
-    set(PLATFORM_WINDOWS 1)
-    set(PLATFORM_GNU     0)
-    set(PLATFORM_LINUX   0)
-    set(PLATFORM_MACOSX  0)
-    set(PLATFORM_FREEBSD 0)
-    set(PLATFORM_OTHER   0)
-elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
-    message(STATUS "Build for Linux system")
-    set(PLATFORM_WINDOWS 0)
-    set(PLATFORM_LINUX   1)
-    set(PLATFORM_GNU     1)
-    set(PLATFORM_MACOSX  0)
-    set(PLATFORM_FREEBSD 0)
-    set(PLATFORM_OTHER   0)
-elseif("${CMAKE_SYSTEM_NAME}" MATCHES "kFreeBSD" OR "${CMAKE_SYSTEM_NAME}" STREQUAL "GNU")
-    message(STATUS "Build for kFreeBSD system")
-    set(PLATFORM_WINDOWS 0)
-    set(PLATFORM_LINUX   0)
-    set(PLATFORM_GNU     1)
-    set(PLATFORM_MACOSX  0)
-    set(PLATFORM_FREEBSD 0)
-    set(PLATFORM_OTHER   0)
-elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
-    message(STATUS "Build for Mac OSX system")
-    set(PLATFORM_WINDOWS 0)
-    set(PLATFORM_LINUX   0)
-    set(PLATFORM_GNU     0)
-    set(PLATFORM_MACOSX  1)
-    set(PLATFORM_OTHER   0)
-    set(PLATFORM_FREEBSD 0)
+include("${PROJECT_SOURCE_DIR}/cmake/systems/${CMAKE_SYSTEM_NAME}.cmake" OPTIONAL RESULT_VARIABLE SYSTEM_INCLUDE)
 
-    # Fix compilation errors in MacOS SDK files
-    set(CMAKE_CXX_FLAGS "${NORMAL_CXX_FLAGS} -Wno-nullability-extension -Wno-nullability-completeness -Wno-expansion-to-defined -Wno-four-char-constants -Wno-gnu-zero-variadic-macro-arguments -Wno-variadic-macros -Wno-zero-length-array -Wno-missing-declarations -Wno-invalid-utf8")
-    # To avoid CMake warning
-    set(CMAKE_MACOSX_RPATH 1)
-elseif("${CMAKE_SYSTEM_NAME}" MATCHES "FreeBSD")
-    message(STATUS "Build for FreeBSD system")
-    set(PLATFORM_WINDOWS 0)
-    set(PLATFORM_LINUX   0)
-    set(PLATFORM_GNU     0)
-    set(PLATFORM_MACOSX  0)
-    set(PLATFORM_FREEBSD 1)
-    set(PLATFORM_OTHER   0)
-
-    # To avoid CMake warning
-    set(CMAKE_MACOSX_RPATH 1)
-else()
-    message(STATUS "Build for other system")
-    set(PLATFORM_WINDOWS 0)
-    set(PLATFORM_LINUX   0)
-    set(PLATFORM_GNU     0)
-    set(PLATFORM_MACOSX  0)
-    set(PLATFORM_FREEBSD 0)
-    set(PLATFORM_OTHER   1)
+if ("${SYSTEM_INCLUDE}" STREQUAL NOTFOUND)
+    include("${PROJECT_SOURCE_DIR}/cmake/systems/Other.cmake")
 endif()
-
 
 ##
 # Build options
@@ -131,110 +85,11 @@ list(PREPEND CMAKE_MODULE_PATH
     ${PROJECT_SOURCE_DIR}/cmake
 )
 
-# Compiler detection
-if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-    if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.7)
-        message(FATAL_ERROR "${PROJECT_NAME} requires GCC 4.7 or greater.")
-    endif()
-
-    message(STATUS "Detected GCC version 4.7+")
-
-    set(NORMAL_CXX_FLAGS "-Wall -Wold-style-cast -pedantic-errors -Wmissing-declarations -lstdc++fs -fPIC")
-    set(NORMAL_CXX_FLAGS "${NORMAL_CXX_FLAGS} -Wno-error=deprecated-declarations") # updated version of physfs is not available on some platforms so we keep using deprecated functions, see #958
-
-    if(NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5.0)
-        set(NORMAL_CXX_FLAGS "${NORMAL_CXX_FLAGS} -Wsuggest-override")
-    endif()
-
-    set(RELEASE_CXX_FLAGS "-O2")
-    set(DEBUG_CXX_FLAGS "-g -O0")
-    set(TEST_CXX_FLAGS "-pthread")
-    add_definitions(-DHAVE_DEMANGLE)
-elseif(CMAKE_CXX_COMPILER_ID MATCHES "AppleClang")
-    if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 12.0)
-        message(FATAL_ERROR "${PROJECT_NAME} requires AppleClang 12.0 or greater.")
-    endif()
-
-    message(STATUS "Detected AppleClang version 12.0+")
-
-    # Use override for char8_t on AppleClang before 14.0
-    if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 14.0)
-        if(NOT DEFINED COLOBOT_CHAR8_T_OVERRIDE)
-            set(COLOBOT_CHAR8_T_OVERRIDE ON CACHE BOOL "Override char8_t usage for compatibility reasons" FORCE)
-        endif()
-    endif()
-
-    if (${PLATFORM_FREEBSD})
-        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=bfd")
-    endif()
-
-    set(NORMAL_CXX_FLAGS "-Wall -Wold-style-cast -pedantic-errors -Wmissing-prototypes")
-    set(NORMAL_CXX_FLAGS "${NORMAL_CXX_FLAGS} -Wno-error=deprecated-declarations") # updated version of physfs is not available on some platforms so we keep using deprecated functions, see #958
-    set(RELEASE_CXX_FLAGS "-O2")
-    set(DEBUG_CXX_FLAGS "-g -O0")
-    set(TEST_CXX_FLAGS "-pthread")
-    add_definitions(-DHAVE_DEMANGLE)
-elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.1)
-        message(FATAL_ERROR "${PROJECT_NAME} requires Clang 3.1 or greater.")
-    endif()
-
-    message(STATUS "Detected Clang version 3.1+")
-
-    if (${PLATFORM_FREEBSD})
-       set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=bfd")
-    endif()
-
-    set(NORMAL_CXX_FLAGS "-Wall -Wold-style-cast -pedantic-errors -Wmissing-prototypes")
-    set(NORMAL_CXX_FLAGS "${NORMAL_CXX_FLAGS} -Wno-error=deprecated-declarations") # updated version of physfs is not available on some platforms so we keep using deprecated functions, see #958
-    set(RELEASE_CXX_FLAGS "-O2")
-    set(DEBUG_CXX_FLAGS "-g -O0")
-    set(TEST_CXX_FLAGS "-pthread")
-    add_definitions(-DHAVE_DEMANGLE)
-elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-    message(STATUS "Detected MSVC compiler")
-
-    # Disable some useless warnings
-    set(NORMAL_CXX_FLAGS "/wd\"4244\" /wd\"4309\" /wd\"4800\" /wd\"4996\" /wd\"4351\"")
-    if(USE_STATIC_RUNTIME)
-        set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-    else()
-        set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
-    endif()
-    set(TEST_CXX_FLAGS "")
-    add_definitions(-DHAS_MSVC_EXCEPTION_BUG)
-
-    # Increase the stack size to 8 MB (the default is 1 MB), needed for CBOT
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /STACK:8388608")
-
-    # Needed for Debug information (it's set to "No" by default for some reason)
-    set(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS} /DEBUG /NODEFAULTLIB:MSVCRTD /NODEFAULTLIB:LIBCMT")
-    set(CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO "${CMAKE_EXE_LINKER_FLAGS} /DEBUG")
-else()
-    message(FATAL_ERROR "Your C++ compiler doesn't seem to be supported.")
-endif()
-
-
-# Global compile flags
-# These are specific to GCC/MinGW/clang; for other compilers, change as necessary
-# The flags are used throughout src/ and test/ subdirs
-
-set(COLOBOT_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${NORMAL_CXX_FLAGS}")
-set(COLOBOT_CXX_FLAGS_RELEASE "${RELEASE_CXX_FLAGS}")
-set(COLOBOT_CXX_FLAGS_DEBUG "${DEBUG_CXX_FLAGS}")
-
-# Flags for gtest
-set(COLOBOT_GTEST_CXX_FLAGS "${TEST_CXX_FLAGS}")
-
-
 # Asserts can be enabled/disabled regardless of build type
 option(ASSERTS "Enable assert()s" ON)
 
 # Enables development mode
 option(COLOBOT_DEVELOPMENT_MODE "Setup project for development (e.g. copies data content to build directory for execution)" OFF)
-
-# Development build can be enabled/disabled regardless of build type
-option(DEV_BUILD "Enable development build (enables some debugging tools, local setting paths, etc.)" OFF)
 
 # Official build - changes text on the crash screen
 # PLEASE DO NOT USE ON UNOFFICIAL BUILDS. Thanks.
@@ -264,9 +119,6 @@ option(INSTALL_DOCS "Install Doxygen-generated documentation" OFF)
 # Build OpenAL sound support
 option(OPENAL_SOUND "Build OpenAL sound support" ON)
 
-# Link runtime library statically (currently only works for MSVC)
-option(USE_STATIC_RUNTIME "Link the runtime library statically" OFF)
-
 # CBot can also be a static library
 option(CBOT_STATIC "Build CBot as static libary" OFF)
 
@@ -285,15 +137,13 @@ option(COLOBOT_LINT_BUILD "Generate some additional CMake targets for use with c
 # Enable this if your compiler has issues using char8_t
 option(COLOBOT_CHAR8_T_OVERRIDE "Override char8_t usage for compatibility reasons" OFF)
 
-# Default build type if not given is debug
-if(NOT CMAKE_BUILD_TYPE)
-    message(STATUS "Build type not specified - assuming debug")
-    set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel." FORCE)
-endif()
+# Enable this if you're building for AppImage to get correct paths
+option(COLOBOT_APPIMAGE_BASEPATH_OVERRIDE "Override base path specification so it uses executable's directory instead of current directory" OFF)
 
-# Warn about development build
-if(DEV_BUILD)
-    message(STATUS "Building with development extensions")
+# Default build type if not given is RelWithDebInfo
+if(NOT CMAKE_BUILD_TYPE)
+    message(STATUS "Build type not specified - assuming RelWithDebInfo")
+    set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel." FORCE)
 endif()
 
 ##
@@ -361,33 +211,11 @@ else()
     add_definitions(-DTEST_VIRTUAL=)
 endif()
 
-if(DEV_BUILD)
-    add_definitions(-DDEV_BUILD)
-endif()
-
-
-##
-# MSVC specific settings
-##
-set(WINGETOPT 0)
-if(MSVC)
-    message(STATUS "Adding MSVC-specific options")
-
-    set(WINGETOPT 1) # use wingetopt library
-endif()
 
 ##
 # Localename
 ##
 add_subdirectory(lib/localename)
-
-
-##
-# Wingetopt
-##
-if(WINGETOPT)
-    add_subdirectory(lib/wingetopt)
-endif()
 
 
 ##
@@ -410,31 +238,20 @@ endif()
 ##
 
 # Installation paths defined before compiling sources
-if(PORTABLE)
-    set(COLOBOT_INSTALL_BIN_DIR ${CMAKE_INSTALL_PREFIX}/ CACHE PATH "Colobot binary directory")
-    set(COLOBOT_INSTALL_LIB_DIR ${CMAKE_INSTALL_PREFIX}/ CACHE PATH "Colobot libraries directory")
-    set(COLOBOT_INSTALL_DATA_DIR ${CMAKE_INSTALL_PREFIX}/data CACHE PATH "Colobot shared data directory")
-    set(COLOBOT_INSTALL_I18N_DIR ${CMAKE_INSTALL_PREFIX}/lang CACHE PATH "Colobot translations directory")
-    set(COLOBOT_INSTALL_DOC_DIR ${CMAKE_INSTALL_PREFIX}/doc CACHE PATH "Colobot documentation directory")
+if (PORTABLE)
+    set(COLOBOT_INSTALL_BIN_DIR ${CMAKE_INSTALL_PREFIX}/)
+    set(COLOBOT_INSTALL_LIB_DIR ${CMAKE_INSTALL_PREFIX}/)
+    set(COLOBOT_INSTALL_DATA_DIR ${CMAKE_INSTALL_PREFIX}/data)
+    set(COLOBOT_INSTALL_I18N_DIR ${CMAKE_INSTALL_PREFIX}/lang)
+    set(COLOBOT_INSTALL_DOC_DIR ${CMAKE_INSTALL_PREFIX}/doc)
+
     set(USE_RELATIVE_PATHS ON)
-elseif(PLATFORM_WINDOWS)
-    set(COLOBOT_INSTALL_BIN_DIR ${CMAKE_INSTALL_PREFIX}/ CACHE PATH "Colobot binary directory")
-    set(COLOBOT_INSTALL_LIB_DIR ${CMAKE_INSTALL_PREFIX}/ CACHE PATH "Colobot libraries directory")
-    set(COLOBOT_INSTALL_DATA_DIR ${CMAKE_INSTALL_PREFIX}/data CACHE PATH "Colobot shared data directory")
-    set(COLOBOT_INSTALL_I18N_DIR ${CMAKE_INSTALL_PREFIX}/lang CACHE PATH "Colobot translations directory")
-    set(COLOBOT_INSTALL_DOC_DIR ${CMAKE_INSTALL_PREFIX}/doc CACHE PATH "Colobot documentation directory")
-elseif(PLATFORM_MACOSX)
-    set(COLOBOT_INSTALL_BIN_DIR ../MacOS CACHE STRING "Colobot binary directory")
-    set(COLOBOT_INSTALL_LIB_DIR ../MacOS CACHE STRING "Colobot libraries directory")
-    set(COLOBOT_INSTALL_DATA_DIR . CACHE STRING "Colobot shared data directory")
-    set(COLOBOT_INSTALL_I18N_DIR i18n CACHE SRING "Colobot translations directory")
-    set(COLOBOT_INSTALL_DOC_DIR doc CACHE STRING "Colobot documentation directory")
 else()
-    set(COLOBOT_INSTALL_BIN_DIR ${CMAKE_INSTALL_PREFIX}/games CACHE PATH "Colobot binary directory")
-    set(COLOBOT_INSTALL_LIB_DIR ${CMAKE_INSTALL_PREFIX}/lib/colobot CACHE PATH "Colobot libraries directory")
-    set(COLOBOT_INSTALL_DATA_DIR ${CMAKE_INSTALL_PREFIX}/share/games/colobot CACHE PATH "Colobot shared data directory")
-    set(COLOBOT_INSTALL_I18N_DIR ${CMAKE_INSTALL_PREFIX}/share/locale CACHE PATH "Colobot translations directory")
-    set(COLOBOT_INSTALL_DOC_DIR ${CMAKE_INSTALL_PREFIX}/share/doc/colobot CACHE PATH "Colobot documentation directory")
+    set(COLOBOT_INSTALL_BIN_DIR ${CMAKE_INSTALL_PREFIX}/${PLATFORM_INSTALL_BIN_DIR})
+    set(COLOBOT_INSTALL_LIB_DIR ${CMAKE_INSTALL_PREFIX}/${PLATFORM_INSTALL_LIB_DIR})
+    set(COLOBOT_INSTALL_DATA_DIR ${CMAKE_INSTALL_PREFIX}/${PLATFORM_INSTALL_DATA_DIR})
+    set(COLOBOT_INSTALL_I18N_DIR ${CMAKE_INSTALL_PREFIX}/${PLATFORM_INSTALL_I18N_DIR})
+    set(COLOBOT_INSTALL_DOC_DIR ${CMAKE_INSTALL_PREFIX}/${PLATFORM_INSTALL_DOC_DIR})
 endif()
 
 # Generate relative paths from absolute paths

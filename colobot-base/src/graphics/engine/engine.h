@@ -25,7 +25,7 @@
 #pragma once
 
 #include "common/singleton.h"
-#include "common/system/system.h"
+#include "common/timeutils.h"
 
 #include "graphics/core/color.h"
 #include "graphics/core/texture.h"

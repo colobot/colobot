@@ -30,7 +30,7 @@ TEST(TimeUtilsExactDiffTest, ExactDiff)
     EXPECT_EQ(ExactDiff(epoch, epoch), 0);
 
     auto duration = std::chrono::microseconds{123456789L};
-    auto before = std::chrono::high_resolution_clock::now();
+    auto before = std::chrono::steady_clock::now();
     auto after = before + duration;
     EXPECT_EQ(ExactDiff(before, after), std::chrono::nanoseconds{duration}.count());
     EXPECT_EQ(ExactDiff(after, before), -std::chrono::nanoseconds{duration}.count());

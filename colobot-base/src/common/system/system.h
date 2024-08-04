@@ -25,12 +25,12 @@
 #pragma once
 
 #include "common/config.h"
-#include "common/timeutils.h"
 
 #include <chrono>
 #include <filesystem>
 #include <memory>
 #include <string>
+#include <string_view>
 #include <vector>
 
 /**
@@ -75,13 +75,18 @@ enum class SystemDialogResult
 class CSystemUtils
 {
 public:
-    virtual ~CSystemUtils();
+    CSystemUtils();
 
-    //! Creates system utils for specific platform
-    static std::unique_ptr<CSystemUtils> Create();
+    virtual ~CSystemUtils() = 0;
+
+    //! Returns unique instance of system utilities
+    static CSystemUtils& GetInstance();
 
     //! Performs platform-specific initialization
     virtual void Init(const std::vector<std::string>& args) = 0;
+
+    //! Initializes error handling
+    virtual void InitErrorHandling();
 
     //! Returns the number of arguments
     int GetArgumentCount() const;
@@ -98,23 +103,20 @@ public:
     //! Displays a fallback system dialog using console
     TEST_VIRTUAL SystemDialogResult ConsoleSystemDialog(SystemDialogType type, const std::string& title, const std::string& message);
 
-    //! Returns a time stamp associated with current time
-    TEST_VIRTUAL TimeUtils::TimeStamp GetCurrentTimeStamp();
-
     //! Returns the path where the executable binary is located (ends with the path separator)
-    virtual std::filesystem::path GetBasePath();
+    virtual std::filesystem::path GetBasePath() const;
 
     //! Returns the data path (containing textures, levels, helpfiles, etc)
-    virtual std::filesystem::path GetDataPath();
+    virtual std::filesystem::path GetDataPath() const;
 
     //! Returns the translations path
-    virtual std::filesystem::path GetLangPath();
+    virtual std::filesystem::path GetLangPath() const;
 
     //! Returns the save dir location
-    virtual std::filesystem::path GetSaveDir();
+    virtual std::filesystem::path GetSaveDir() const;
 
     //! Returns the environment variable with the given name or an empty string if it does not exist
-    virtual std::string GetEnvVar(const std::string &name);
+    virtual std::string GetEnvVar(const std::string &name) const;
 
     //! Opens a path with default file browser
     /** \returns true if successful */
@@ -124,12 +126,28 @@ public:
     /** \returns true if successful */
     virtual bool OpenWebsite(const std::string& url);
 
+    //! Checks if the game is running with a debugger
+    /** \returns true if debugger is present */
+    virtual bool IsDebuggerPresent() const;
+
     //! Sleep for given amount of microseconds
     void Usleep(int usecs);
 
+    //! Reports a critical error using system dialog and closes the game
+    [[noreturn]] void CriticalError(std::string_view message);
+
 protected:
+    //! Creates system utils for specific platform
+    static std::unique_ptr<CSystemUtils> Create();
+    
+    //! Default signal handler for std::signal()
+    static void DefaultSignalHandler(int sig);
+
+    //! Default unhandled exception handler for std::terminate()
+    static void DefaultUnhandledExceptionHandler();
+
+    std::filesystem::path m_basePath;
     std::vector<std::string> m_arguments;
 
-private:
-    std::filesystem::path m_basePath;
+    inline static std::unique_ptr<CSystemUtils> m_instance = nullptr;
 };
