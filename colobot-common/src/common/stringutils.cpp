@@ -118,6 +118,47 @@ constexpr int UTF8SequenceLength(char8_t ch)
         return 0;
 }
 
+template<unsigned Count, unsigned Offset>
+constexpr char8_t Extract(char32_t ch)
+{
+    return static_cast<char8_t>((ch >> Offset) & ((1 << Count) - 1));
+}
+
+constexpr StrUtils::CodePoint UTF8Encode(char32_t ch)
+{
+    std::array<char, 4> result = { 0, 0, 0, 0 };
+    int len = 0;
+
+    if (ch < 0x80)
+    {
+        result[0] = static_cast<char>(ch);
+        len = 1;
+    }
+    else if (ch < 0x800)
+    {
+        result[0] = static_cast<char>(0b1100'0000 | Extract<5, 6>(ch));
+        result[1] = static_cast<char>(0b1000'0000 | Extract<6, 0>(ch));
+        len = 2;
+    }
+    else if (ch < 0x01'0000)
+    {
+        result[0] = static_cast<char>(0b1110'0000 | Extract<4, 12>(ch));
+        result[1] = static_cast<char>(0b1000'0000 | Extract<6, 6>(ch));
+        result[2] = static_cast<char>(0b1000'0000 | Extract<6, 0>(ch));
+        len = 3;
+    }
+    else if (ch < 0x11'0000)
+    {
+        result[0] = static_cast<char>(0b1111'0000 | Extract<3, 18>(ch));
+        result[1] = static_cast<char>(0b1000'0000 | Extract<6, 12>(ch));
+        result[2] = static_cast<char>(0b1000'0000 | Extract<6, 6>(ch));
+        result[3] = static_cast<char>(0b1000'0000 | Extract<6, 0>(ch));
+        len = 4;
+    }
+
+    return std::string_view(result.data(), len);
+}
+
 } // anonymous namespace
 
 using namespace StrUtils;
@@ -332,21 +373,7 @@ CodePoint StrUtils::ReadUTF8(std::string_view text)
 
 CodePoint StrUtils::ToUTF8(char32_t code)
 {
-    std::mbstate_t state = {};
-    std::array<UTF8Char, 4> buffer;
-
-    const char32_t* read = nullptr;
-    UTF8Char* written = nullptr;
-
-    auto result = utf32.out(state, &code, &code + 1, read,
-        buffer.data(), buffer.data() + buffer.size(), written);
-
-    if (result != std::codecvt_base::ok)
-        return {};
-
-    auto data = reinterpret_cast<const char*>(buffer.data());
-
-    return CodePoint(std::string_view(data, written - buffer.data()));
+    return UTF8Encode(code);
 }
 
 char32_t StrUtils::ToUTF32(CodePoint code)
@@ -375,7 +402,7 @@ std::string StrUtils::ToUTF8(std::u32string_view text)
 
     for (auto c : text)
     {
-        CodePoint code = ToUTF8(c);
+        CodePoint code = UTF8Encode(c);
 
         if (code.Size() == 0)
             throw std::invalid_argument("Invalid character");
