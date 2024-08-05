@@ -444,20 +444,6 @@ std::u32string StrUtils::ToUTF32(std::string_view text)
     return result;
 }
 
-char32_t StrUtils::ToLower(char32_t ch)
-{
-    if (ch > std::numeric_limits<char16_t>::max()) return ch;
-
-    return static_cast<char32_t>(wchar.tolower(static_cast<wchar_t>(ch)));
-}
-
-char32_t StrUtils::ToUpper(char32_t ch)
-{
-    if (ch > std::numeric_limits<char16_t>::max()) return ch;
-
-    return static_cast<char32_t>(wchar.toupper(static_cast<wchar_t>(ch)));
-}
-
 std::string StrUtils::ToLower(std::string_view text)
 {
     std::string result;

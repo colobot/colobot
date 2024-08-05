@@ -7,6 +7,7 @@ set_target_properties(Colobot-Common PROPERTIES
 target_sources(Colobot-Common PRIVATE
     src/common/codepoint.h
     src/common/stringutils.cpp
+    src/common/stringutils_case.cpp
     src/common/stringutils.h
 )
 
