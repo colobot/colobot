@@ -72,8 +72,6 @@ using UTF8Char = char8_t;
 using UTF8Char = char;
 #endif
 
-const auto& wchar = std::use_facet<std::ctype<wchar_t>>(convertion_locale);
-
 std::string VFormat(const char *fmt, va_list ap)
 {
     std::array<char, 1024> stackbuf;
