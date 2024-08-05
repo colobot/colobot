@@ -23,6 +23,7 @@
 #include "app/app.h"
 
 #include "common/logger.h"
+#include "common/codepoint.h"
 
 #include "graphics/core/device.h"
 #include "graphics/core/renderers.h"
@@ -3319,7 +3320,9 @@ void CParticle::DrawParticleCylinder(int i)
 
 void CParticle::DrawParticleText(int i)
 {
-    CharTexture tex = m_engine->GetText()->GetCharTexture(static_cast<UTF8Char>(m_particle[i].text), FONT_STUDIO, FONT_SIZE_BIG*2.0f);
+    StrUtils::CodePoint ch = std::string_view(&m_particle[i].text, 1);
+
+    CharTexture tex = m_engine->GetText()->GetCharTexture(ch, FONT_STUDIO, FONT_SIZE_BIG*2.0f);
     if (tex.id == 0) return;
 
     m_renderer->SetTexture({ tex.id });

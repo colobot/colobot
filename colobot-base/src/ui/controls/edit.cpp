@@ -25,6 +25,7 @@
 #include "app/app.h"
 #include "app/input.h"
 
+#include "common/codepoint.h"
 #include "common/logger.h"
 #include "common/stringutils.h"
 
@@ -736,7 +737,7 @@ int CEdit::MouseDetect(const glm::vec2& mouse)
 
     if ( m_bAutoIndent )
     {
-        indentLength = m_engine->GetText()->GetCharWidth(static_cast<Gfx::UTF8Char>(' '), m_fontType, m_fontSize, 0.0f)
+        indentLength = m_engine->GetText()->GetCharWidth(std::string_view(" "), m_fontType, m_fontSize, 0.0f)
                         * m_engine->GetEditIndentValue();
     }
 
@@ -946,7 +947,7 @@ void CEdit::Draw()
 
     if ( m_bAutoIndent )
     {
-        indentLength = m_engine->GetText()->GetCharWidth(static_cast<Gfx::UTF8Char>(' '), m_fontType, m_fontSize, 0.0f)
+        indentLength = m_engine->GetText()->GetCharWidth(std::string_view(" "), m_fontType, m_fontSize, 0.0f)
                         * m_engine->GetEditIndentValue();
     }
 
@@ -2436,7 +2437,7 @@ void CEdit::MoveLine(int move, bool bWord, bool bSelect)
     column = m_column;
     if ( m_bAutoIndent )
     {
-        indentLength = m_engine->GetText()->GetCharWidth(static_cast<Gfx::UTF8Char>(' '), m_fontType, m_fontSize, 0.0f)
+        indentLength = m_engine->GetText()->GetCharWidth(std::string_view(" "), m_fontType, m_fontSize, 0.0f)
                         * m_engine->GetEditIndentValue();
         column -= indentLength*m_lineIndent[line];
     }
@@ -2490,7 +2491,7 @@ void CEdit::ColumnFix()
 
     if ( m_bAutoIndent )
     {
-        indentLength = m_engine->GetText()->GetCharWidth(static_cast<Gfx::UTF8Char>(' '), m_fontType, m_fontSize, 0.0f)
+        indentLength = m_engine->GetText()->GetCharWidth(std::string_view(" "), m_fontType, m_fontSize, 0.0f)
                         * m_engine->GetEditIndentValue();
         m_column += indentLength*m_lineIndent[line];
     }
@@ -3054,7 +3055,7 @@ void CEdit::Justif()
 
     if ( m_bAutoIndent )
     {
-        indentLength = m_engine->GetText()->GetCharWidth(static_cast<Gfx::UTF8Char>(' '), m_fontType, m_fontSize, 0.0f)
+        indentLength = m_engine->GetText()->GetCharWidth(std::string_view(" "), m_fontType, m_fontSize, 0.0f)
                         * m_engine->GetEditIndentValue();
     }
 

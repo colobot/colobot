@@ -34,6 +34,10 @@
 
 #include <glm/glm.hpp>
 
+namespace StrUtils
+{
+class CodePoint;
+}
 
 // Graphics module namespace
 namespace Gfx
@@ -156,38 +160,6 @@ enum FontMask
     FONT_MASK_IMAGE = 0x800
 };
 
-
-/**
- * \struct UTF8Char
- * \brief UTF-8 character in font cache
- *
- * Only 3-byte chars are supported
- */
-struct alignas(4) UTF8Char
-{
-    char8_t c1, c2, c3;
-
-    explicit UTF8Char(char8_t ch1 = '\0', char8_t ch2 = '\0', char8_t ch3 = '\0')
-        : c1(ch1), c2(ch2), c3(ch3) {}
-
-    inline bool operator<(const UTF8Char &other) const
-    {
-        if (c1 < other.c1)
-            return true;
-        else if (c1 > other.c1)
-            return false;
-
-        if (c2 < other.c2)
-            return true;
-        else if (c2 > other.c2)
-            return false;
-
-        return c3 < other.c3;
-    }
-
-    inline bool operator==(const UTF8Char &other) const = default;
-};
-
 /**
  * \struct CharTexture
  * \brief Texture of font character
@@ -297,8 +269,8 @@ public:
     //! Returns width of string (single font)
     TEST_VIRTUAL float GetStringWidth(std::string text, FontType font, float size);
     //! Returns width of single character
-    TEST_VIRTUAL float GetCharWidth(UTF8Char ch, FontType font, float size, float offset);
-    int GetCharWidthInt(UTF8Char ch, FontType font, float size, float offset);
+    TEST_VIRTUAL float GetCharWidth(StrUtils::CodePoint ch, FontType font, float size, float offset);
+    int GetCharWidthInt(StrUtils::CodePoint ch, FontType font, float size, float offset);
 
     //! Justifies a line of text (multi-format)
     int         Justify(const std::string &text, std::vector<FontMetaChar>::iterator format,
@@ -314,15 +286,15 @@ public:
     //! Returns the most suitable position to a given offset (one font)
     int         Detect(const std::string &text, FontType font, float size, float offset);
 
-    UTF8Char    TranslateSpecialChar(int specialChar);
+    StrUtils::CodePoint TranslateSpecialChar(int specialChar);
 
-    CharTexture GetCharTexture(UTF8Char ch, FontType font, float size);
+    CharTexture GetCharTexture(StrUtils::CodePoint ch, FontType font, float size);
     glm::ivec2 GetFontTextureSize();
 
 protected:
     int GetFontPointSize(float size) const;
     CachedFont* GetOrOpenFont(FontType type, float size);
-    CharTexture CreateCharTexture(UTF8Char ch, CachedFont* font);
+    CharTexture CreateCharTexture(StrUtils::CodePoint ch, CachedFont* font);
     FontTexture* GetOrCreateFontTexture(const glm::ivec2& tileSize);
     FontTexture CreateFontTexture(const glm::ivec2& tileSize);
     glm::ivec2 GetNextTilePos(const FontTexture& fontTexture);
@@ -333,9 +305,9 @@ protected:
     void        DrawString(const std::string &text, FontType font,
                            float size, const glm::ivec2& pos, int width, int eol, Color color);
     void        DrawHighlight(FontMetaChar hl, const glm::ivec2& pos, const glm::ivec2& size);
-    void        DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, glm::ivec2&pos, Color color);
-    void        StringToUTFCharList(std::string_view text, std::vector<UTF8Char> &chars);
-    void        StringToUTFCharList(std::string_view text, std::vector<UTF8Char> &chars, std::vector<FontMetaChar>::iterator format, std::vector<FontMetaChar>::iterator end);
+    void        DrawCharAndAdjustPos(StrUtils::CodePoint ch, FontType font, float size, glm::ivec2&pos, Color color);
+    void        StringToUTFCharList(std::string_view text, std::vector<StrUtils::CodePoint> &chars);
+    void        StringToUTFCharList(std::string_view text, std::vector<StrUtils::CodePoint> &chars, std::vector<FontMetaChar>::iterator format, std::vector<FontMetaChar>::iterator end);
 
     int         GetCharSizeAt(Gfx::FontType font, std::string_view text) const;
 
