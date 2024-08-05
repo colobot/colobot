@@ -124,6 +124,7 @@ bool CBotTry::Execute(CBotStack* &pj)
         {
             // ask to the catch block if it feels concerned
             if ( !pc->TestCatch(pile2, val) ) return false;     // suspend !
+            if (pile2->GetVal() != 0) pile1->CancelExternal();
             pile1->IncState();
         }
         if ( --state <= 0 )
@@ -131,8 +132,6 @@ bool CBotTry::Execute(CBotStack* &pj)
             if (pile2->GetVal() != 0)
             {
 //              pile0->SetState(1);
-
-                pile1->CancelExternal();
 
                 if ( !pc->Execute(pile2) ) return false;        // performs the operation
                 if (m_finallyBlock == nullptr )
