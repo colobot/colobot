@@ -208,13 +208,9 @@ std::filesystem::path StrUtils::FromString(const std::string& path, bool *ok)
 
 std::filesystem::path StrUtils::ToPath(std::string_view path)
 {
-#ifndef COLOBOT_CHAR8_T_OVERRIDE
     auto data = reinterpret_cast<const char8_t*>(path.data());
 
     return std::filesystem::path(data, data + path.size());
-#else
-    return std::filesystem::u8path(path.begin(), path.end());
-#endif
 }
 
 unsigned int StrUtils::HexStringToInt(std::string_view str)
