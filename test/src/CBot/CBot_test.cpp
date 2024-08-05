@@ -165,9 +165,6 @@ private:
     static void cancelCount(void* user)
     {
         UserData* userData = static_cast<UserData*>(user);
-        userData->isCountRunning = false;
-        userData->cancelMessage = "count cancelled";
-        /*
         if ( userData->isCountRunning )
         {
             userData->isCountRunning = false;
@@ -177,7 +174,6 @@ private:
         {
             userData->cancelMessage = "count unexpectedly cancelled";
         }
-        */
     }
 
     static CBotTypResult cThrow(CBotVar* &var, void* user)
