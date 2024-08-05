@@ -66,12 +66,6 @@ std::locale GetConversionLocale()
 
 const std::locale convertion_locale = GetConversionLocale();
 
-#ifndef COLOBOT_CHAR8_T_OVERRIDE
-using UTF8Char = char8_t;
-#else
-using UTF8Char = char;
-#endif
-
 std::string VFormat(const char *fmt, va_list ap)
 {
     std::array<char, 1024> stackbuf;

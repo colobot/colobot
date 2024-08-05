@@ -134,9 +134,6 @@ option(FORCE_BUNDLED_GTEST "Force the use of bundled gtest" OFF)
 # This is for use with colobot-lint tool
 option(COLOBOT_LINT_BUILD "Generate some additional CMake targets for use with colobot-lint" OFF)
 
-# Enable this if your compiler has issues using char8_t
-option(COLOBOT_CHAR8_T_OVERRIDE "Override char8_t usage for compatibility reasons" OFF)
-
 # Enable this if you're building for AppImage to get correct paths
 option(COLOBOT_APPIMAGE_BASEPATH_OVERRIDE "Override base path specification so it uses executable's directory instead of current directory" OFF)
 
