@@ -27,44 +27,13 @@
 #include <cstdarg>
 #include <cstdio>
 #include <cstdlib>
-#include <cwchar>
-#include <cwctype>
 #include <limits>
-#include <locale>
 #include <optional>
 #include <stdexcept>
 #include <vector>
 
 namespace
 {
-
-std::optional<std::locale> GetLocale(const char* name)
-try
-{
-    return std::locale(name);
-}
-catch(...)
-{
-    return std::nullopt;
-}
-
-std::locale GetConversionLocale()
-{
-    if (auto locale = GetLocale("en_US.UTF-8"))
-    {
-        return *locale;
-    }
-    else if (auto locale = GetLocale("C.UTF-8"))
-    {
-        return *locale;
-    }
-    else
-    {
-        return std::locale("");
-    }
-}
-
-const std::locale convertion_locale = GetConversionLocale();
 
 std::string VFormat(const char *fmt, va_list ap)
 {
