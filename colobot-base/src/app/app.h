@@ -288,6 +288,8 @@ public:
     //! Stops a force feedback effect on the joystick
     void        StopForceFeedbackEffect();
 
+    void        SetMsPerFrame(Uint32 ms);
+
 protected:
     //! Creates the window's SDL_Surface
     bool CreateVideoSurface();
@@ -428,4 +430,6 @@ protected:
     inline static std::array<char, 64> m_languageLocale = { '\0' };
 
     std::map<int, bool> m_textInputEnabled;
+
+    Uint32 m_msPerFrame = 0;
 };
