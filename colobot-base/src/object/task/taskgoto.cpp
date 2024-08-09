@@ -409,8 +409,9 @@ bool CTaskGoto::EventProcess(const Event &event)
         if ( cirSpeed >  1.0f )  cirSpeed =  1.0f;
         if ( cirSpeed < -1.0f )  cirSpeed = -1.0f;
 
+        float linSpeed = 1.0f-(1.0f-0.3f)*fabs(cirSpeed);
         m_physics->SetMotorSpeedZ(cirSpeed);  // turns left / right
-        m_physics->SetMotorSpeedX(1.0f);  // advance
+        m_physics->SetMotorSpeedX(linSpeed);  // advance
         return true;
     }
 
