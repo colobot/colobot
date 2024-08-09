@@ -816,7 +816,7 @@ Error CTaskGoto::IsEnded()
 {
     glm::vec3    pos;
     float       limit, angle = 0.0f, h, level;
-    volatile float dist; //fix for issue #844
+    float dist;
 
     if ( m_engine->GetPause() )  return ERR_CONTINUE;
     if ( m_error != ERR_OK )  return m_error;
@@ -929,9 +929,7 @@ Error CTaskGoto::IsEnded()
     if ( m_goalMode == TGG_EXPRESS )
     {
         dist = Math::DistanceProjected(m_goal, pos);
-        float margin = 10.0f;
-        if ( m_object->Implements(ObjectInterfaceType::Flying) ) margin = 20.0f;
-        if ( dist < margin && dist > m_lastDistance )
+        if ( dist < 10.0f && dist > m_lastDistance )
         {
             return ERR_STOP;
         }
