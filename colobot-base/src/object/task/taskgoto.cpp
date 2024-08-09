@@ -364,12 +364,6 @@ bool CTaskGoto::EventProcess(const Event &event)
         return true;
     }
 
-    if ( m_phase == TGP_LAND )  // landed?
-    {
-        m_physics->SetMotorSpeedY(-0.5f);  // tomb
-        return true;
-    }
-
     if ( m_goalMode == TGG_EXPRESS )
     {
         if ( m_crashMode == TGC_HALT )
@@ -383,6 +377,14 @@ bool CTaskGoto::EventProcess(const Event &event)
         }
 
         pos = m_object->GetPosition();
+
+        float dist = Math::DistanceProjected(m_goal, pos);
+        if ( dist < 10.0f && dist > m_lastDistance )
+        {
+            m_error = ERR_STOP;
+            return true;
+        }
+        m_lastDistance = dist;
 
         if ( m_altitude > 0.0f )
         {
@@ -409,6 +411,12 @@ bool CTaskGoto::EventProcess(const Event &event)
 
         m_physics->SetMotorSpeedZ(cirSpeed);  // turns left / right
         m_physics->SetMotorSpeedX(1.0f);  // advance
+        return true;
+    }
+
+    if ( m_phase == TGP_LAND )  // landed?
+    {
+        m_physics->SetMotorSpeedY(-0.5f);  // tomb
         return true;
     }
 
@@ -924,16 +932,6 @@ Error CTaskGoto::IsEnded()
             m_physics->SetMotorSpeedZ(0.0f);  // stops the rotation
             return ERR_STOP;
         }
-    }
-
-    if ( m_goalMode == TGG_EXPRESS )
-    {
-        dist = Math::DistanceProjected(m_goal, pos);
-        if ( dist < 10.0f && dist > m_lastDistance )
-        {
-            return ERR_STOP;
-        }
-        m_lastDistance = dist;
     }
 
     if ( m_phase == TGP_ADVANCE )  // going towards the goal?
