@@ -38,7 +38,6 @@
 CTaskInfo::CTaskInfo(COldObject* object) : CForegroundTask(object)
     , m_progress(0.0f)
     , m_speed(0.0f)
-    , m_time(0.0f)
     , m_error(false)
 {
 }
@@ -59,7 +58,6 @@ bool CTaskInfo::EventProcess(const Event &event)
     if (m_error)  return false;
 
     m_progress += event.rTime*m_speed;  // other advance
-    m_time += event.rTime;
 
     return true;
 }
@@ -116,7 +114,6 @@ Error CTaskInfo::Start(const char *name, float value, float power, bool send)
 
     m_progress = 0.0f;
     m_speed    = 1.0f;
-    m_time     = 0.0f;
 
     m_error = false;  // ok
 
