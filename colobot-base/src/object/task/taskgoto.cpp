@@ -378,8 +378,10 @@ bool CTaskGoto::EventProcess(const Event &event)
 
         pos = m_object->GetPosition();
 
+        float margin = 10.0f;
+        if ( m_object->Implements(ObjectInterfaceType::Flying) ) margin = 20.0f;
         float dist = Math::DistanceProjected(m_goal, pos);
-        if ( dist < 10.0f && dist > m_lastDistance )
+        if ( dist < margin && dist > m_lastDistance )
         {
             m_error = ERR_STOP;
             return true;
