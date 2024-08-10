@@ -40,6 +40,5 @@ public:
 
 protected:
     float           m_progress = 0.0f;
-    float           m_speed = 0.0f;
     bool            m_error = false;
 };
