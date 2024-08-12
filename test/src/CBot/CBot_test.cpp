@@ -224,7 +224,7 @@ protected:
         CBotError expectedCompileError = expectedError < 6000 ? expectedError : CBotNoErr;
         CBotError expectedRuntimeError = expectedError >= 6000 ? expectedError : CBotNoErr;
 
-        auto program = std::unique_ptr<CBotProgram>(new CBotProgram());
+        auto program = m_progGroup.AddProgram(nullptr);
         std::vector<std::string> tests;
         program->Compile(code, tests);
 
@@ -318,6 +318,9 @@ protected:
         }
         return program; // Take it if you want, destroy on exit otherwise
     }
+
+private:
+    CBotProgramGroup m_progGroup;
 };
 
 TEST_F(CBotUT, EmptyTest)

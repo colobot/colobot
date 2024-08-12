@@ -6353,3 +6353,13 @@ std::set<int> CRobotMain::GetAllActiveTeams()
     }
     return teams;
 }
+
+CBot::CBotProgramGroup& CRobotMain::GetRefereeGroup()
+{
+    return m_refereeGroup;
+}
+
+CBot::CBotProgramGroup& CRobotMain::GetTeamGroup(int team)
+{
+    return m_progGroups[team];
+}

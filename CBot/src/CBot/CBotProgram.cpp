@@ -36,10 +36,6 @@ namespace CBot
 
 std::unique_ptr<CBotExternalCallList> CBotProgram::m_externalCalls;
 
-CBotProgram::CBotProgram()
-{
-}
-
 CBotProgram::CBotProgram(CBotVar* thisVar)
 : m_thisVar(thisVar)
 {

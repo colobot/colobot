@@ -1,7 +1,7 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2023, Daniel Roux, EPSITEC SA & TerranovaTeam
- * http://epsitec.ch; http://colobot.info; http://github.com/colobot
+ * Copyright (C) 2024 TerranovaTeam
+ * http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,19 +17,16 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-/*!
- * \file CBot.h
- * \brief Public interface of CBot language interpreter. CBot.h is the only file
- * that should be included by any Colobot files outside of the CBot module.
- */
-
-#include "CBot/CBotFileUtils.h"
-#include "CBot/CBotClass.h"
-#include "CBot/CBotToken.h"
-#include "CBot/CBotProgram.h"
 #include "CBot/CBotProgramGroup.h"
-#include "CBot/CBotTypResult.h"
+#include "CBot/CBotProgram.h"
 
-#include "CBot/CBotVar/CBotVar.h"
+namespace CBot
+{
 
-#include "CBot/stdlib/stdlib_public.h"
+std::unique_ptr<CBotProgram> CBotProgramGroup::AddProgram(CBotVar* thisVar)
+{
+    return std::unique_ptr<CBotProgram>(new CBotProgram(thisVar));
+}
+
+} // namespace CBot
+

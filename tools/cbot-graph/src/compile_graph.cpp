@@ -55,9 +55,11 @@ int main(int argc, char* argv[])
     // Initialize the CBot engine
     CBotProgram::Init();
 
+    CBotProgramGroup progGroup;
+
     // Compile the program
     std::vector<std::string> externFunctions;
-    std::unique_ptr<CBotProgram> program{new CBotProgram(nullptr)};
+    std::unique_ptr<CBotProgram> program = progGroup.AddProgram(nullptr);
     if (!program->Compile(code.c_str(), externFunctions, nullptr))
     {
         CBotError error;

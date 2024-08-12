@@ -24,6 +24,8 @@
 
 #pragma once
 
+#include "CBot/CBot.h"
+
 #include "app/pausemanager.h"
 
 #include "common/error.h"
@@ -515,6 +517,9 @@ public:
     //! Returns a set of all team IDs in the current level that are still active
     std::set<int> GetAllActiveTeams();
 
+    CBot::CBotProgramGroup& GetRefereeGroup();
+    CBot::CBotProgramGroup& GetTeamGroup(int team);
+
 protected:
     bool        EventFrame(const Event &event);
     bool        EventObject(const Event &event);
@@ -767,4 +772,7 @@ protected:
 
     //! Vector of available viewpoints
     std::vector<Viewpoint> m_viewpoints;
+
+    CBot::CBotProgramGroup m_refereeGroup;
+    std::map<int, CBot::CBotProgramGroup>  m_progGroups;
 };

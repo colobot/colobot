@@ -86,16 +86,6 @@ class CBotExternalCallList;
 class CBotProgram
 {
 public:
-    /**
-     * \brief Constructor
-     */
-    CBotProgram();
-
-    /**
-     * \brief Constructor
-     * \param thisVar Variable to pass to the program as "this"
-     */
-    CBotProgram(CBotVar* thisVar);
 
     /**
      * \brief Destructor
@@ -332,6 +322,13 @@ public:
     static const std::unique_ptr<CBotExternalCallList>& GetExternalCalls();
 
 private:
+    /**
+     * \brief Constructor
+     * \param thisVar Variable to pass to the program as "this"
+     */
+    CBotProgram(CBotVar* thisVar);
+private:
+
     //! All external calls
     static std::unique_ptr<CBotExternalCallList> m_externalCalls;
     //! All user-defined functions
@@ -346,6 +343,7 @@ private:
     CBotVar* m_thisVar = nullptr;
     friend class CBotFunction;
     friend class CBotDebug;
+    friend class CBotProgramGroup;
 
     CBotError m_error = CBotNoErr;
     int m_errorStart = 0;

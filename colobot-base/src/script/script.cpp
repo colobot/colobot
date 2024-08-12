@@ -233,7 +233,14 @@ bool CScript::Compile()
 
     if (m_botProg == nullptr)
     {
-        m_botProg = std::make_unique<CBot::CBotProgram>(m_object->GetBotVar());
+        if (m_object->GetSelectable())
+        {
+            m_botProg = m_main->GetTeamGroup(m_object->GetTeam()).AddProgram(m_object->GetBotVar());
+        }
+        else
+        {
+            m_botProg = m_main->GetRefereeGroup().AddProgram(m_object->GetBotVar());
+        }
     }
 
     if ( m_botProg->Compile(m_script, functionList, this) )
