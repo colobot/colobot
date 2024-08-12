@@ -47,12 +47,11 @@ CBotProgram::CBotProgram(CBotVar* thisVar)
 
 CBotProgram::~CBotProgram()
 {
-//  delete  m_classes;
+    Stop();
+
     for (CBotClass* c : m_classes)
         c->Purge();
     m_classes.clear();
-
-    CBotClass::FreeLock(this);
 
     for (CBotFunction* f : m_functions) delete f;
     m_functions.clear();
