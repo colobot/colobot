@@ -3479,7 +3479,8 @@ bool COldObject::IsSelectableByDefault(ObjectType type)
          type == OBJECT_ANT      ||
          type == OBJECT_SPIDER   ||
          type == OBJECT_BEE      ||
-         type == OBJECT_WORM     )
+         type == OBJECT_WORM     ||
+         type == OBJECT_CONTROLLER )
     {
         return false;
     }
