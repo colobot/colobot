@@ -42,14 +42,13 @@ namespace CBot
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotFunction::CBotFunction()
+CBotFunction::CBotFunction(CBotProgram& prog):
+    m_prog(prog)
 {
     m_param = nullptr;            // empty parameter list
     m_block = nullptr;            // the instruction block
     m_bPublic    = false;           // function not public
     m_bExtern    = false;           // function not extern
-    m_pProg      = nullptr;
-//  m_nThisIdent = 0;
     m_nFuncIdent = 0;
     m_bSynchro    = false;
 }
@@ -254,7 +253,8 @@ bad:
 ////////////////////////////////////////////////////////////////////////////////
 CBotFunction* CBotFunction::Compile1(CBotToken* &p, CBotCStack* pStack, CBotClass*  pClass)
 {
-    CBotFunction* func = new CBotFunction();
+    assert(pStack->GetProgram());
+    CBotFunction* func = new CBotFunction(*pStack->GetProgram());
     func->m_nFuncIdent = CBotVar::NextUniqNum();
 
     CBotCStack* pStk = pStack->TokenStack(p, true);
@@ -398,7 +398,7 @@ bool CBotFunction::Execute(CBotVar** ppVars, CBotStack* &pj, CBotVar* pInstance)
     CBotStack*  pile = pj->AddStack(this, CBotStack::BlockVisibilityType::FUNCTION);               // one end of stack local to this function
 //  if ( pile == EOX ) return true;
 
-    pile->SetProgram(m_pProg);                              // bases for routines
+    pile->SetProgram(&m_prog);                              // bases for routines
 
     if ( pile->IfStep() ) return false;
 
@@ -438,7 +438,6 @@ bool CBotFunction::Execute(CBotVar** ppVars, CBotStack* &pj, CBotVar* pInstance)
         assert(pThis != nullptr);
         pThis->SetInit(CBotVar::InitType::IS_POINTER);
 
-//      pThis->SetUniqNum(m_nThisIdent);
         pThis->SetUniqNum(-2);
         pile->AddVar(pThis);
 
@@ -463,7 +462,7 @@ void CBotFunction::RestoreState(CBotVar** ppVars, CBotStack* &pj, CBotVar* pInst
     if ( pile == nullptr ) return;
     CBotStack*  pile2 = pile;
 
-    pile->SetProgram(m_pProg);                          // bases for routines
+    pile->SetProgram(&m_prog);                          // bases for routines
 
     if ( pile->GetBlock() != CBotStack::BlockVisibilityType::FUNCTION)
     {
@@ -759,7 +758,7 @@ int CBotFunction::DoCall(CBotProgram* program, const std::list<CBotFunction*>& l
         CBotStack*  pStk1 = pStack->AddStack(pt, CBotStack::BlockVisibilityType::FUNCTION);    // to put "this"
 //      if ( pStk1 == EOX ) return true;
 
-        pStk1->SetProgram(pt->m_pProg);                 // it may have changed module
+        pStk1->SetProgram(&pt->m_prog);                 // it may have changed module
 
         if ( pStk1->IfStep() ) return false;
 
@@ -805,7 +804,7 @@ int CBotFunction::DoCall(CBotProgram* program, const std::list<CBotFunction*>& l
             {
                 if (!pt->m_param->Execute(ppVars, pStk3)) // interupt here
                 {
-                    if (!pStk3->IsOk() && pt->m_pProg != program)
+                    if (!pStk3->IsOk() && &pt->m_prog != program)
                     {
                         pStk3->SetPosError(pToken);       // indicates the error on the procedure call
                     }
@@ -821,7 +820,7 @@ int CBotFunction::DoCall(CBotProgram* program, const std::list<CBotFunction*>& l
         if ( !pStk3->GetRetVar(                     // puts the result on the stack
             pt->m_block->Execute(pStk3) ))          // GetRetVar said if it is interrupted
         {
-            if ( !pStk3->IsOk() && pt->m_pProg != program )
+            if ( !pStk3->IsOk() && &pt->m_prog != program )
             {
                 pStk3->SetPosError(pToken);         // indicates the error on the procedure call
             }
@@ -850,7 +849,7 @@ void CBotFunction::RestoreCall(const std::list<CBotFunction*>& localFunctionList
         pStk1 = pStack->RestoreStack(pt);
         if ( pStk1 == nullptr ) return;
 
-        pStk1->SetProgram(pt->m_pProg);                 // it may have changed module
+        pStk1->SetProgram(&pt->m_prog);                 // it may have changed module
 
         if ( pStk1->GetBlock() != CBotStack::BlockVisibilityType::FUNCTION)
         {
@@ -1024,7 +1023,7 @@ int CBotFunction::DoCall(long &nIdent, const std::string &name, CBotVar* pThis,
         CBotStack*  pStk = pStack->AddStack(pt, CBotStack::BlockVisibilityType::FUNCTION);
 //      if ( pStk == EOX ) return true;
 
-        pStk->SetProgram(pt->m_pProg);                  // it may have changed module
+        pStk->SetProgram(&pt->m_prog);                  // it may have changed module
         CBotStack*  pStk3 = pStk->AddStack(nullptr, CBotStack::BlockVisibilityType::BLOCK); // to set parameters passed
 
         // preparing parameters on the stack
@@ -1059,7 +1058,7 @@ int CBotFunction::DoCall(long &nIdent, const std::string &name, CBotVar* pThis,
             {
                 if (!pt->m_param->Execute(ppVars, pStk3)) // interupt here
                 {
-                    if (!pStk3->IsOk() && pt->m_pProg != pProgCurrent)
+                    if (!pStk3->IsOk() && &pt->m_prog != pProgCurrent)
                     {
                         pStk3->SetPosError(pToken);       // indicates the error on the procedure call
                     }
@@ -1091,7 +1090,7 @@ int CBotFunction::DoCall(long &nIdent, const std::string &name, CBotVar* pThis,
                     pClass->Unlock();                   // release function
                 }
 
-                if ( pt->m_pProg != pProgCurrent )
+                if ( &pt->m_prog != pProgCurrent )
                 {
                     pStk3->SetPosError(pToken);         // indicates the error on the procedure call
                 }
@@ -1120,7 +1119,7 @@ bool CBotFunction::RestoreCall(long &nIdent, const std::string &name, CBotVar* p
     {
         CBotStack*  pStk = pStack->RestoreStack(pt);
         if ( pStk == nullptr ) return true;
-        pStk->SetProgram(pt->m_pProg);                  // it may have changed module
+        pStk->SetProgram(&pt->m_prog);                  // it may have changed module
 
         CBotVar*    pthis = pStk->FindVar("this");
         pthis->SetUniqNum(-2);

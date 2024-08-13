@@ -42,7 +42,7 @@ namespace CBot
 class CBotFunction : public CBotInstr
 {
 public:
-    CBotFunction();
+    CBotFunction(CBotProgram& prog);
     ~CBotFunction();
 
     /*!
@@ -350,7 +350,7 @@ private:
     std::string m_MasterClass;
     //! Token of the class we are part of
     CBotToken m_classToken;
-    CBotProgram* m_pProg;
+    CBotProgram& m_prog;
     //! For the position of the word "extern".
     CBotToken m_extern;
     CBotToken m_openpar;
