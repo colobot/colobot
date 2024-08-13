@@ -25,6 +25,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <set>
 
 namespace CBot
 {
@@ -35,6 +36,7 @@ class CBotStack;
 class CBotTypResult;
 class CBotVar;
 class CBotExternalCallList;
+class CBotProgramGroup;
 
 /**
  * \brief Class that manages a CBot program. This is the main entry point into the CBot engine.
@@ -326,8 +328,14 @@ private:
      * \brief Constructor
      * \param thisVar Variable to pass to the program as "this"
      */
-    CBotProgram(CBotVar* thisVar);
-private:
+    CBotProgram(CBotVar* thisVar, CBotProgramGroup& group);
+
+    /**
+     * \brief Returns all public functions in the program group that contains this program
+     */
+    const std::set<CBotFunction*>& GetPublicFunctions() const;
+
+    void RemovePublic(CBotFunction* func);
 
     //! All external calls
     static std::unique_ptr<CBotExternalCallList> m_externalCalls;
@@ -344,10 +352,12 @@ private:
     friend class CBotFunction;
     friend class CBotDebug;
     friend class CBotProgramGroup;
+    friend class CBotCStack;
 
     CBotError m_error = CBotNoErr;
     int m_errorStart = 0;
     int m_errorEnd = 0;
+    CBotProgramGroup& m_group;
 };
 
 } // namespace CBot

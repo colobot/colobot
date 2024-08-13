@@ -406,7 +406,7 @@ bool CBotCStack::CheckCall(CBotToken* &pToken, CBotDefParam* pParam, const std::
         }
     }
 
-    for (CBotFunction* pp : CBotFunction::m_publicFunctions)
+    for (CBotFunction* pp : GetProgram()->GetPublicFunctions())
     {
         if ( name == pp->GetName() )
         {

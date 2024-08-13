@@ -146,17 +146,6 @@ public:
                            std::map<CBotFunction*, int>& funcMap, CBotClass* pClass = nullptr);
 
     /*!
-     * \brief Find all public functions that match the name and arguments.
-     * \param name Name of the function to find.
-     * \param ppVars Arguments to compare with parameters.
-     * \param TypeOrError Contains a CBotError when no useable function has been found.
-     * \param funcMap Container for suitable functions and their signature values.
-     * \param pClass Pointer to class when searching for methods.
-     */
-    static void SearchPublic(const std::string& name, CBotVar** ppVars, CBotTypResult& TypeOrError,
-                             std::map<CBotFunction*, int>& funcMap, CBotClass* pClass = nullptr);
-
-    /*!
      * \brief Find the function with the lowest signature value. If there is more
      * than one of the same signature value, TypeOrError is set to CBotErrAmbiguousCall.
      * \param funcMap List of functions and their signature values, can be empty.
@@ -254,12 +243,6 @@ public:
     bool CheckParam(CBotDefParam* pParam);
 
     /*!
-     * \brief AddPublic
-     * \param pfunc
-     */
-    static void AddPublic(CBotFunction* pfunc);
-
-    /*!
      * \brief GetName
      * \return
      */
@@ -325,6 +308,17 @@ protected:
     virtual std::map<std::string, CBotInstr*> GetDebugLinks() override;
 
 private:
+    /*!
+     * \brief Find all public functions that match the name and arguments.
+     * \param name Name of the function to find.
+     * \param ppVars Arguments to compare with parameters.
+     * \param TypeOrError Contains a CBotError when no useable function has been found.
+     * \param funcMap Container for suitable functions and their signature values.
+     * \param pClass Pointer to class when searching for methods.
+     */
+    static void SearchPublic(const std::string& name, CBotVar** ppVars, CBotTypResult& TypeOrError,
+                             std::map<CBotFunction*, int>& funcMap, CBotClass* pClass, CBotProgram* program);
+
     friend class CBotDebug;
     long m_nFuncIdent;
     //! Synchronized method.
@@ -357,9 +351,6 @@ private:
     CBotToken m_closepar;
     CBotToken m_openblk;
     CBotToken m_closeblk;
-
-    //! List of public functions
-    static std::set<CBotFunction*> m_publicFunctions;
 
     friend class CBotProgram;
     friend class CBotClass;

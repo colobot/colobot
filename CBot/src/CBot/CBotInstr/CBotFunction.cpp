@@ -54,19 +54,12 @@ CBotFunction::CBotFunction(CBotProgram& prog):
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::set<CBotFunction*> CBotFunction::m_publicFunctions{};
-
-////////////////////////////////////////////////////////////////////////////////
 CBotFunction::~CBotFunction()
 {
     delete m_param;                // empty parameter list
     delete m_block;                // the instruction block
 
-    // remove public list if there is
-    if (m_bPublic)
-    {
-        m_publicFunctions.erase(this);
-    }
+    m_prog.RemovePublic(this);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -503,6 +496,7 @@ void CBotFunction::RestoreState(CBotVar** ppVars, CBotStack* &pj, CBotVar* pInst
 ////////////////////////////////////////////////////////////////////////////////
 CBotTypResult CBotFunction::CompileCall(const std::string &name, CBotVar** ppVars, long &nIdent, CBotProgram* program)
 {
+    assert(program);
     CBotTypResult type;
     if (!FindLocalOrPublic(program->GetFunctions(), nIdent, name, ppVars, type, program))
     {
@@ -516,6 +510,7 @@ CBotTypResult CBotFunction::CompileCall(const std::string &name, CBotVar** ppVar
 CBotFunction* CBotFunction::FindLocalOrPublic(const std::list<CBotFunction*>& localFunctionList, long &nIdent, const std::string &name,
                                               CBotVar** ppVars, CBotTypResult &TypeOrError, CBotProgram* baseProg)
 {
+    assert(baseProg);
     TypeOrError.SetType(CBotErrUndefCall);      // no routine of the name
 
     if ( nIdent )
@@ -530,7 +525,7 @@ CBotFunction* CBotFunction::FindLocalOrPublic(const std::list<CBotFunction*>& lo
         }
 
         // search the list of public functions
-        for (CBotFunction* pt : m_publicFunctions)
+        for (CBotFunction* pt : baseProg->GetPublicFunctions())
         {
             if (pt->m_nFuncIdent == nIdent)
             {
@@ -546,14 +541,14 @@ CBotFunction* CBotFunction::FindLocalOrPublic(const std::list<CBotFunction*>& lo
 
     CBotFunction::SearchList(localFunctionList, name, ppVars, TypeOrError, funcMap);
 
-    CBotFunction::SearchPublic(name, ppVars, TypeOrError, funcMap);
+    CBotFunction::SearchPublic(name, ppVars, TypeOrError, funcMap, nullptr, baseProg);
 
-    if (baseProg != nullptr && baseProg->m_thisVar != nullptr)
+    if (baseProg->m_thisVar != nullptr)
     {
         // find object:: functions
         CBotClass* pClass = baseProg->m_thisVar->GetClass();
         CBotFunction::SearchList(localFunctionList, name, ppVars, TypeOrError, funcMap, pClass);
-        CBotFunction::SearchPublic(name, ppVars, TypeOrError, funcMap, pClass);
+        CBotFunction::SearchPublic(name, ppVars, TypeOrError, funcMap, pClass, baseProg);
     }
 
     return CBotFunction::BestFunction(funcMap, nIdent, TypeOrError);
@@ -637,10 +632,11 @@ void CBotFunction::SearchList(const std::list<CBotFunction*>& functionList,
 
 ////////////////////////////////////////////////////////////////////////////////
 void CBotFunction::SearchPublic(const std::string& name, CBotVar** ppVars, CBotTypResult& TypeOrError,
-                                std::map<CBotFunction*, int>& funcMap, CBotClass* pClass)
+                                std::map<CBotFunction*, int>& funcMap, CBotClass* pClass, CBotProgram* program)
 {
+    assert(program);
     {
-        for (CBotFunction* pt : m_publicFunctions)
+        for (CBotFunction* pt : program->GetPublicFunctions())
         {
             if ( pt->m_token.GetString() == name )
             {
@@ -750,6 +746,7 @@ int CBotFunction::DoCall(CBotProgram* program, const std::list<CBotFunction*>& l
     CBotTypResult   type;
     CBotFunction*   pt = nullptr;
     CBotProgram*    baseProg = pStack->GetProgram(true);
+    assert(baseProg);
 
     pt = FindLocalOrPublic(localFunctionList, nIdent, name, ppVars, type, baseProg);
 
@@ -841,6 +838,7 @@ void CBotFunction::RestoreCall(const std::list<CBotFunction*>& localFunctionList
     CBotStack*      pStk1;
     CBotStack*      pStk3;
     CBotProgram*    baseProg = pStack->GetProgram(true);
+    assert(baseProg);
 
     pt = FindLocalOrPublic(localFunctionList, nIdent, name, ppVars, type, baseProg);
 
@@ -973,19 +971,19 @@ CBotFunction* CBotFunction::FindMethod(long& nIdent, const std::string& name,
                     return pt;
                 }
             }
-        }
 
-        // search the list of public functions
-        if (!skipPublic)
-        {
-            for (CBotFunction* pt : m_publicFunctions)
+            // search the list of public functions
+            if (!skipPublic)
             {
-                if (pt->m_nFuncIdent == nIdent)
+                for (CBotFunction* pt : program->GetPublicFunctions())
                 {
-                    // check if the method is inherited, break in case there is an override
-                    if ( pt->GetClassName() != pClass->GetName() ) break;
-                    TypeOrError = pt->m_retTyp;
-                    return pt;
+                    if (pt->m_nFuncIdent == nIdent)
+                    {
+                        // check if the method is inherited, break in case there is an override
+                        if ( pt->GetClassName() != pClass->GetName() ) break;
+                        TypeOrError = pt->m_retTyp;
+                        return pt;
+                    }
                 }
             }
         }
@@ -1000,9 +998,10 @@ CBotFunction* CBotFunction::FindMethod(long& nIdent, const std::string& name,
 
     // search the current program for methods
     if (program != nullptr)
+    {
         CBotFunction::SearchList(program->GetFunctions(), name, ppVars, TypeOrError, funcMap, pClass);
-
-    CBotFunction::SearchPublic(name, ppVars, TypeOrError, funcMap, pClass);
+        CBotFunction::SearchPublic(name, ppVars, TypeOrError, funcMap, pClass, program);
+    }
 
     return CBotFunction::BestFunction(funcMap, nIdent, TypeOrError);
 }
@@ -1211,11 +1210,6 @@ const std::string& CBotFunction::GetClassName() const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotFunction::AddPublic(CBotFunction* func)
-{
-    m_publicFunctions.insert(func);
-}
-
 bool CBotFunction::HasReturn()
 {
     if (m_block != nullptr) return m_block->HasReturn();

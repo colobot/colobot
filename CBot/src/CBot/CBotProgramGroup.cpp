@@ -25,7 +25,22 @@ namespace CBot
 
 std::unique_ptr<CBotProgram> CBotProgramGroup::AddProgram(CBotVar* thisVar)
 {
-    return std::unique_ptr<CBotProgram>(new CBotProgram(thisVar));
+    return std::unique_ptr<CBotProgram>(new CBotProgram(thisVar, *this));
+}
+
+const std::set<CBotFunction*>& CBotProgramGroup::GetPublicFunctions() const
+{
+    return m_publicFunctions;
+}
+
+void CBotProgramGroup::AddPublic(CBotFunction* func)
+{
+    m_publicFunctions.insert(func);
+}
+
+void CBotProgramGroup::RemovePublic(CBotFunction* func)
+{
+    m_publicFunctions.erase(func);
 }
 
 } // namespace CBot

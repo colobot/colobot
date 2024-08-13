@@ -595,6 +595,8 @@ protected:
     Gfx::CLightManager* m_lightMan = nullptr;
     CSoundInterface*    m_sound = nullptr;
     CInput*             m_input = nullptr;
+    CBot::CBotProgramGroup m_refereeGroup;  // CBotProgramGroup must outlive CObjectManager
+    std::map<int, CBot::CBotProgramGroup>  m_progGroups;  // CBotProgramGroup must outlive CObjectManager
     std::unique_ptr<CObjectManager> m_objMan;
     std::unique_ptr<CMainMovie> m_movie;
     std::unique_ptr<CPauseManager> m_pause;
@@ -772,7 +774,4 @@ protected:
 
     //! Vector of available viewpoints
     std::vector<Viewpoint> m_viewpoints;
-
-    CBot::CBotProgramGroup m_refereeGroup;
-    std::map<int, CBot::CBotProgramGroup>  m_progGroups;
 };

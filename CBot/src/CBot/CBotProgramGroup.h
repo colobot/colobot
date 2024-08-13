@@ -21,17 +21,27 @@
 
 #include <memory>
 #include <string>
+#include <set>
 
 namespace CBot
 {
 
 class CBotProgram;
 class CBotVar;
+class CBotFunction;
 
 class CBotProgramGroup
 {
 public:
     std::unique_ptr<CBotProgram> AddProgram(CBotVar* thisVar);
+
+private:
+    const std::set<CBotFunction*>& GetPublicFunctions() const;
+    void AddPublic(CBotFunction* func);
+    void RemovePublic(CBotFunction* func);
+    friend class CBotProgram;
+
+    std::set<CBotFunction*> m_publicFunctions;
 };
 
 } // namespace CBot
