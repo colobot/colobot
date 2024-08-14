@@ -113,7 +113,7 @@ public:
      * \see FindLocalOrPublic
      */
     static CBotTypResult CompileCall(const std::string &name, CBotVar** ppVars,
-                                     long &nIdent, CBotProgram* program);
+                                     long &nIdent, CBotProgram& program);
 
     /*!
      * \brief Finds a local or public function
@@ -130,7 +130,7 @@ public:
      * \return Pointer to found CBotFunction instance, or nullptr in case of no match or ambiguity (see TypeOrError for error code)
      */
     static CBotFunction* FindLocalOrPublic(const std::list<CBotFunction*>& localFunctionList, long &nIdent, const std::string &name,
-                                           CBotVar** ppVars, CBotTypResult &TypeOrError, CBotProgram* baseProg);
+                                           CBotVar** ppVars, CBotTypResult &TypeOrError, CBotProgram& baseProg);
 
     /*!
      * \brief Find all functions that match the name and arguments.
@@ -317,7 +317,7 @@ private:
      * \param pClass Pointer to class when searching for methods.
      */
     static void SearchPublic(const std::string& name, CBotVar** ppVars, CBotTypResult& TypeOrError,
-                             std::map<CBotFunction*, int>& funcMap, CBotClass* pClass, CBotProgram* program);
+                             std::map<CBotFunction*, int>& funcMap, CBotClass* pClass, CBotProgram& program);
 
     friend class CBotDebug;
     long m_nFuncIdent;
