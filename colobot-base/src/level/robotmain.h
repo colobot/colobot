@@ -517,8 +517,8 @@ public:
     //! Returns a set of all team IDs in the current level that are still active
     std::set<int> GetAllActiveTeams();
 
-    CBot::CBotProgramGroup& GetRefereeGroup();
-    CBot::CBotProgramGroup& GetTeamGroup(int team);
+    CBot::CBotNamespace& GetRefereeNamespace();
+    CBot::CBotNamespace& GetTeamNamespace(int team);
 
 protected:
     bool        EventFrame(const Event &event);
@@ -595,8 +595,8 @@ protected:
     Gfx::CLightManager* m_lightMan = nullptr;
     CSoundInterface*    m_sound = nullptr;
     CInput*             m_input = nullptr;
-    CBot::CBotProgramGroup m_refereeGroup;  // CBotProgramGroup must outlive CObjectManager
-    std::map<int, CBot::CBotProgramGroup>  m_progGroups;  // CBotProgramGroup must outlive CObjectManager
+    CBot::CBotNamespace m_refereeNamespace;  // CBotNamespace must outlive CObjectManager
+    std::map<int, CBot::CBotNamespace>  m_namespaces;  // CBotNamespace must outlive CObjectManager
     std::unique_ptr<CObjectManager> m_objMan;
     std::unique_ptr<CMainMovie> m_movie;
     std::unique_ptr<CPauseManager> m_pause;

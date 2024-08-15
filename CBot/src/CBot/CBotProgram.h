@@ -36,7 +36,7 @@ class CBotStack;
 class CBotTypResult;
 class CBotVar;
 class CBotExternalCallList;
-class CBotProgramGroup;
+class CBotNamespace;
 
 /**
  * \brief Class that manages a CBot program. This is the main entry point into the CBot engine.
@@ -328,10 +328,10 @@ private:
      * \brief Constructor
      * \param thisVar Variable to pass to the program as "this"
      */
-    CBotProgram(CBotVar* thisVar, CBotProgramGroup& group);
+    CBotProgram(CBotVar* thisVar, CBotNamespace& namespace_);
 
     /**
-     * \brief Returns all public functions in the program group that contains this program
+     * \brief Returns all public functions in the namespace that contains this program
      */
     const std::set<CBotFunction*>& GetPublicFunctions() const;
 
@@ -351,13 +351,13 @@ private:
     CBotVar* m_thisVar = nullptr;
     friend class CBotFunction;
     friend class CBotDebug;
-    friend class CBotProgramGroup;
+    friend class CBotNamespace;
     friend class CBotCStack;
 
     CBotError m_error = CBotNoErr;
     int m_errorStart = 0;
     int m_errorEnd = 0;
-    CBotProgramGroup& m_group;
+    CBotNamespace& m_namespace;
 };
 
 } // namespace CBot

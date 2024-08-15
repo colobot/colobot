@@ -24,7 +24,7 @@
 #include "CBot/CBotCStack.h"
 #include "CBot/CBotClass.h"
 #include "CBot/CBotUtils.h"
-#include "CBot/CBotProgramGroup.h"
+#include "CBot/CBotNamespace.h"
 
 #include "CBot/CBotInstr/CBotFunction.h"
 
@@ -37,8 +37,8 @@ namespace CBot
 
 std::unique_ptr<CBotExternalCallList> CBotProgram::m_externalCalls;
 
-CBotProgram::CBotProgram(CBotVar* thisVar, CBotProgramGroup& group)
-: m_thisVar(thisVar), m_group(group)
+CBotProgram::CBotProgram(CBotVar* thisVar, CBotNamespace& namespace_)
+: m_thisVar(thisVar), m_namespace(namespace_)
 {
 }
 
@@ -127,7 +127,7 @@ bool CBotProgram::Compile(const std::string& program, std::vector<std::string>& 
         {
             CBotFunction::Compile(p, pStack.get(), *next);
             if ((*next)->IsExtern()) externFunctions.push_back((*next)->GetName()/* + next->GetParams()*/);
-            if ((*next)->IsPublic()) m_group.AddPublic(*next);
+            if ((*next)->IsPublic()) m_namespace.AddPublic(*next);
             ++next;
         }
     }
@@ -421,12 +421,12 @@ const std::unique_ptr<CBotExternalCallList>& CBotProgram::GetExternalCalls()
 
 const std::set<CBotFunction*>& CBotProgram::GetPublicFunctions() const
 {
-    return m_group.GetPublicFunctions();
+    return m_namespace.GetPublicFunctions();
 }
 
 void CBotProgram::RemovePublic(CBotFunction* func)
 {
-    m_group.RemovePublic(func);
+    m_namespace.RemovePublic(func);
 }
 
 } // namespace CBot

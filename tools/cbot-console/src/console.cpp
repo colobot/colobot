@@ -69,11 +69,11 @@ int main(int argc, char* argv[])
     // Error message strings are stored on Colobot side (meh!) so let's initialize that
     InitializeRestext();
 
-    CBotProgramGroup progGroup;
+    CBotNamespace namespace_;
 
     // Compile the program
     std::vector<std::string> externFunctions;
-    std::unique_ptr<CBotProgram> program = progGroup.AddProgram(nullptr);
+    std::unique_ptr<CBotProgram> program = namespace_.AddProgram(nullptr);
     if (!program->Compile(code.c_str(), externFunctions, nullptr))
     {
         CBotError error;

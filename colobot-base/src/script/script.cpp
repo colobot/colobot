@@ -235,11 +235,11 @@ bool CScript::Compile()
     {
         if (m_object->GetSelectable())
         {
-            m_botProg = m_main->GetTeamGroup(m_object->GetTeam()).AddProgram(m_object->GetBotVar());
+            m_botProg = m_main->GetTeamNamespace(m_object->GetTeam()).AddProgram(m_object->GetBotVar());
         }
         else
         {
-            m_botProg = m_main->GetRefereeGroup().AddProgram(m_object->GetBotVar());
+            m_botProg = m_main->GetRefereeNamespace().AddProgram(m_object->GetBotVar());
         }
     }
 

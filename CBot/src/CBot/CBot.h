@@ -27,7 +27,7 @@
 #include "CBot/CBotClass.h"
 #include "CBot/CBotToken.h"
 #include "CBot/CBotProgram.h"
-#include "CBot/CBotProgramGroup.h"
+#include "CBot/CBotNamespace.h"
 #include "CBot/CBotTypResult.h"
 
 #include "CBot/CBotVar/CBotVar.h"

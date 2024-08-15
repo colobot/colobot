@@ -17,31 +17,31 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#include "CBot/CBotProgramGroup.h"
-#include "CBot/CBotProgram.h"
+#pragma once
+
+#include <memory>
+#include <string>
+#include <set>
 
 namespace CBot
 {
 
-std::unique_ptr<CBotProgram> CBotProgramGroup::AddProgram(CBotVar* thisVar)
-{
-    return std::unique_ptr<CBotProgram>(new CBotProgram(thisVar, *this));
-}
+class CBotProgram;
+class CBotVar;
+class CBotFunction;
 
-const std::set<CBotFunction*>& CBotProgramGroup::GetPublicFunctions() const
+class CBotNamespace
 {
-    return m_publicFunctions;
-}
+public:
+    std::unique_ptr<CBotProgram> AddProgram(CBotVar* thisVar);
 
-void CBotProgramGroup::AddPublic(CBotFunction* func)
-{
-    m_publicFunctions.insert(func);
-}
+private:
+    const std::set<CBotFunction*>& GetPublicFunctions() const;
+    void AddPublic(CBotFunction* func);
+    void RemovePublic(CBotFunction* func);
+    friend class CBotProgram;
 
-void CBotProgramGroup::RemovePublic(CBotFunction* func)
-{
-    m_publicFunctions.erase(func);
-}
+    std::set<CBotFunction*> m_publicFunctions;
+};
 
 } // namespace CBot
-

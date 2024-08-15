@@ -133,8 +133,8 @@ target_sources(CBot PRIVATE
     src/CBot/CBotInstr/CBotWhile.h
     src/CBot/CBotProgram.cpp
     src/CBot/CBotProgram.h
-    src/CBot/CBotProgramGroup.cpp
-    src/CBot/CBotProgramGroup.h
+    src/CBot/CBotNamespace.cpp
+    src/CBot/CBotNamespace.h
     src/CBot/CBotStack.cpp
     src/CBot/CBotStack.h
     src/CBot/CBotToken.cpp

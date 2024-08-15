@@ -6354,12 +6354,12 @@ std::set<int> CRobotMain::GetAllActiveTeams()
     return teams;
 }
 
-CBot::CBotProgramGroup& CRobotMain::GetRefereeGroup()
+CBot::CBotNamespace& CRobotMain::GetRefereeNamespace()
 {
-    return m_refereeGroup;
+    return m_refereeNamespace;
 }
 
-CBot::CBotProgramGroup& CRobotMain::GetTeamGroup(int team)
+CBot::CBotNamespace& CRobotMain::GetTeamNamespace(int team)
 {
-    return m_progGroups[team];
+    return m_namespaces[team];
 }
