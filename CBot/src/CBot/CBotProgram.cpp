@@ -25,6 +25,7 @@
 #include "CBot/CBotClass.h"
 #include "CBot/CBotUtils.h"
 #include "CBot/CBotNamespace.h"
+#include "CBot/CBotToken.h"
 
 #include "CBot/CBotInstr/CBotFunction.h"
 
@@ -427,6 +428,16 @@ const std::set<CBotFunction*>& CBotProgram::GetPublicFunctions() const
 void CBotProgram::RemovePublic(CBotFunction* func)
 {
     m_namespace.RemovePublic(func);
+}
+
+CBotClass* CBotProgram::FindPublicClass(const std::string& name)
+{
+    return m_namespace.FindPublicClass(name);
+}
+
+CBotClass* CBotProgram::FindPublicClass(const CBotToken* pToken)
+{
+    return FindPublicClass(pToken->GetString());
 }
 
 } // namespace CBot

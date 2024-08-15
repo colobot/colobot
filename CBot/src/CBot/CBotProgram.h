@@ -37,6 +37,7 @@ class CBotTypResult;
 class CBotVar;
 class CBotExternalCallList;
 class CBotNamespace;
+class CBotToken;
 
 /**
  * \brief Class that manages a CBot program. This is the main entry point into the CBot engine.
@@ -322,6 +323,12 @@ public:
      * \brief Returns static list of all registered external calls
      */
     static const std::unique_ptr<CBotExternalCallList>& GetExternalCalls();
+
+    /**
+     * \brief Search for a class in the namespace that contains this program
+     */
+    CBotClass* FindPublicClass(const std::string& name);
+    CBotClass* FindPublicClass(const CBotToken* pToken);
 
 private:
     /**

@@ -19,6 +19,7 @@
 
 #include "CBot/CBotNamespace.h"
 #include "CBot/CBotProgram.h"
+#include "CBot/CBotClass.h"
 
 namespace CBot
 {
@@ -41,6 +42,15 @@ void CBotNamespace::AddPublic(CBotFunction* func)
 void CBotNamespace::RemovePublic(CBotFunction* func)
 {
     m_publicFunctions.erase(func);
+}
+
+CBotClass* CBotNamespace::FindPublicClass(const std::string& name)
+{
+    for (CBotClass* p : m_publicClasses)
+    {
+        if ( p->GetName() == name ) return p;
+    }
+    return nullptr;
 }
 
 } // namespace CBot

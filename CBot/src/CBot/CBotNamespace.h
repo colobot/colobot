@@ -29,6 +29,7 @@ namespace CBot
 class CBotProgram;
 class CBotVar;
 class CBotFunction;
+class CBotClass;
 
 class CBotNamespace
 {
@@ -39,9 +40,13 @@ private:
     const std::set<CBotFunction*>& GetPublicFunctions() const;
     void AddPublic(CBotFunction* func);
     void RemovePublic(CBotFunction* func);
+
+    CBotClass* FindPublicClass(const std::string& name);
+
     friend class CBotProgram;
 
     std::set<CBotFunction*> m_publicFunctions;
+    std::set<CBotClass*> m_publicClasses;
 };
 
 } // namespace CBot
