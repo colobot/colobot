@@ -50,6 +50,8 @@
 #include <map>
 #include <set>
 #include <stdexcept>
+#include <istream>
+#include <ostream>
 
 #include <glm/glm.hpp>
 
@@ -581,6 +583,9 @@ protected:
     std::string    GetNextFromCommandHistory();
     std::string    GetPreviousFromCommandHistory();
     //@}
+
+    void WriteCBot(std::ostream& ostr);
+    bool ReadCBot(std::istream& istr);
 
 protected:
     CApplication*       m_app = nullptr;
