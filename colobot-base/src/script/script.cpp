@@ -839,7 +839,7 @@ void CScript::GetError(std::string& error)
 
 void CScript::New(Ui::CEdit* edit, const std::string& name)
 {
-    int     cursor1, cursor2, len, i;
+    int     cursor1, cursor2, i;
 
     std::string resStr;
     GetResource(RES_TEXT, RT_SCRIPT_NEW, resStr);

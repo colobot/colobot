@@ -76,7 +76,7 @@ bool CGauge::EventProcess(const Event &event)
 
 void CGauge::Draw()
 {
-    glm::vec2   pos, dim, ddim, uv1, uv2, corner;
+    glm::vec2   pos, dim, uv1, uv2, corner;
     float       dp;
 
     if ( (m_state & STATE_VISIBLE) == 0 )  return;

@@ -846,8 +846,6 @@ void CWindow::Draw()
         glm::vec2 pos, dim;
         // Draws the shadow under the title bar.
         {
-            glm::vec2 sPos, sDim;
-
             pos.x = m_pos.x+0.01f;
             dim.x = m_dim.x-0.02f;
             pos.y = m_pos.y+m_dim.y-0.01f-h*1.2f;
@@ -908,7 +906,7 @@ void CWindow::Draw()
 
 void CWindow::DrawVertex(const glm::vec2& position, const glm::vec2& dimension, int icon)
 {
-    glm::vec2   p1, p2, uv1, uv2, corner;
+    glm::vec2   uv1, uv2, corner;
     float       dp;
     int         i;
 

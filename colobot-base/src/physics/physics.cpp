@@ -1439,7 +1439,7 @@ void CPhysics::UpdateMotionStruct(float rTime, Motion &motion)
 bool CPhysics::EventFrame(const Event &event)
 {
     ObjectType  type;
-    glm::mat4    objRotate, matRotate;
+    glm::mat4   matRotate;
     glm::vec3    iPos{ 0, 0, 0 }, iAngle{ 0, 0, 0 }, tAngle{ 0, 0, 0 }, pos{ 0, 0, 0 }, newpos{ 0, 0, 0 }, angle{ 0, 0, 0 }, newangle{ 0, 0, 0 }, n{ 0, 0, 0 };
     float       h, w;
     int         i;
@@ -3055,7 +3055,7 @@ void CPhysics::MotorParticle(float aTime, float rTime)
     glm::vec3    pos{ 0, 0, 0 }, speed{ 0, 0, 0 };
     glm::vec2       dim;
     ObjectType  type;
-    glm::vec2   c, p;
+    glm::vec2   p;
     float       h, a, delay, level;
     int         r, i, nb;
 
