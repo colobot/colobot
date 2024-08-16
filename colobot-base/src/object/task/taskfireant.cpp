@@ -54,7 +54,6 @@ CTaskFireAnt::~CTaskFireAnt()
 
 bool CTaskFireAnt::EventProcess(const Event &event)
 {
-    glm::vec3    dir, vib;
     float       a, g, cirSpeed;
 
     if ( m_engine->GetPause() )  return true;
