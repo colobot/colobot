@@ -1384,7 +1384,7 @@ bool CMotionVehicle::EventProcess(const Event &event)
 bool CMotionVehicle::EventFrame(const Event &event)
 {
     Character*  character;
-    glm::vec3    pos, angle, floor;
+    glm::vec3    pos, angle;
     ObjectType  type;
     float       s, a, speedBL, speedBR, speedFL, speedFR, h, a1, a2;
     float       back, front, dist, radius, limit[2];
@@ -1932,8 +1932,6 @@ bool CMotionVehicle::EventFrameInsect(const Event &event)
 
 bool CMotionVehicle::EventFrameCanoni(const Event &event)
 {
-    glm::vec3    pos, speed;
-    glm::vec2     dim;
     float       zoom, angle, factor;
     bool        bOnBoard = false;
 
