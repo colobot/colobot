@@ -328,7 +328,6 @@ bool CTaskGoto::EventProcess(const Event &event)
 
         linSpeed *= 1.0f-(1.0f-0.3f)*fabs(cirSpeed);
 
-//?     if ( dist < 20.0f && fabs(cirSpeed) >= 0.5f )
         if ( fabs(cirSpeed) >= 0.2f )
         {
             linSpeed = 0.0f;  // turns first, then advance
@@ -463,21 +462,11 @@ bool CTaskGoto::EventProcess(const Event &event)
         a = m_object->GetRotationY();
         g = Math::RotateAngle(rot.x, -rot.y);  // CW !
         cirSpeed = Math::Direction(a, g)*1.0f;
-//?     if ( m_object->Implements(ObjectInterfaceType::Flying) &&
-//?          m_physics->GetLand()                )  // flying on the ground?
-//?     {
-//?         cirSpeed *= 4.0f;  // more fishing
-//?     }
         if ( cirSpeed >  1.0f )  cirSpeed =  1.0f;
         if ( cirSpeed < -1.0f )  cirSpeed = -1.0f;
 
         dist = Math::DistanceProjected(m_goal, pos);
         linSpeed = dist/(m_physics->GetLinStopLength()*1.5f);
-//?     if ( m_object->Implements(ObjectInterfaceType::Flying) &&
-//?          m_physics->GetLand()                )  // flying on the ground?
-//?     {
-//?         linSpeed *= 8.0f;  // more fishing
-//?     }
         if ( linSpeed > 1.0f )  linSpeed =  1.0f;
 
         linSpeed *= 1.0f-(1.0f-0.3f)*fabs(cirSpeed);
