@@ -86,7 +86,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
     m_engine->GetObjectBBox(objRank, min, max);
     Math::Vector pos = obj->GetPosition();
 
-    DisplayError(type, obj);  // displays eventual messages
+    if (!obj->GetProxyActivate()) DisplayError(type, obj);  // displays eventual messages
 
     for (const auto& crashSphere : obj->GetAllCrashSpheres())
     {
