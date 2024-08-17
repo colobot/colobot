@@ -2421,7 +2421,8 @@ bool CRobotMain::EventFrame(const Event &event)
             {
                 glm::vec3 eye = m_engine->GetLookatPt();
                 float dist = glm::distance(eye, obj->GetPosition());
-                if ( dist < obj->GetProxyDistance() )
+                bool isDying = obj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject&>(*obj).IsDying();
+                if ( dist < obj->GetProxyDistance() && !isDying )
                 {
                     obj->SetProxyActivate(false);
                     CreateShortcuts();
