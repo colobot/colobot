@@ -5434,7 +5434,7 @@ bool CRobotMain::GetRadar()
     for (CObject* obj : m_objMan->GetAllObjects())
     {
         ObjectType type = obj->GetType();
-        if (type == OBJECT_RADAR && !obj->GetLock())
+        if (type == OBJECT_RADAR && !obj->GetLock() && !obj->GetProxyActivate())
             return true;
     }
     return false;
