@@ -492,7 +492,7 @@ public:
     Error       CanFactoryError(ObjectType type, int team);
     //@}
 
-    void        RemoveFromSelectionHistory(CObject* object);
+    void        CutObjectLink(CObject* object);
 
     //! Returns global magnifyDamage setting
     float       GetGlobalMagnifyDamage();
