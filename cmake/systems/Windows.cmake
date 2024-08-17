@@ -14,6 +14,7 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/lib/wingetopt)
 
 list(APPEND WINDOWS_ADDITIONAL_LIBRARIES
     wingetopt
+    Dbghelp
 )
 
 # Additional libraries for static runtime
@@ -45,7 +46,6 @@ if(COLOBOT_MSVC_STATIC_RUNTIME)
         wsock32.lib
         ws2_32.lib
         setupapi.lib
-        Dbghelp
     )
 endif()
 
