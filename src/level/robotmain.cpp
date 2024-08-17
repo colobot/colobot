@@ -1993,13 +1993,14 @@ CObject* CRobotMain::DetectObject(Math::Point pos)
     for (CObject* obj : m_objMan->GetAllObjects())
     {
         if (!obj->GetDetectable()) continue;
+        if (obj->GetProxyActivate()) continue;
 
         CObject* transporter = nullptr;
         if (obj->Implements(ObjectInterfaceType::Transportable))
             transporter = dynamic_cast<CTransportableObject&>(*obj).GetTransporter();
 
         if (transporter != nullptr && !transporter->GetDetectable()) continue;
-        if (obj->GetProxyActivate()) continue;
+        if (transporter != nullptr && transporter->GetProxyActivate()) continue;
 
         CObject* target = obj;
         // TODO: should this also apply to slots other than power cell slots?
