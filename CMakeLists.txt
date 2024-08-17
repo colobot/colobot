@@ -147,11 +147,6 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 ##
-# Additional settings for MSYS
-##
-include("${colobot_SOURCE_DIR}/cmake/msys.cmake")
-
-##
 # Additional functions for colobot-lint
 ##
 include("${colobot_SOURCE_DIR}/cmake/colobot-lint.cmake")
