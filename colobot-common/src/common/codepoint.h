@@ -63,6 +63,12 @@ public:
         return _size;
     }
 
+    // Returns a string view representing this code point
+    constexpr std::string_view ToStringView() const
+    {
+        return std::string_view(_chars.data(), _chars.data() + _size);
+    }
+
     //! Returns the code unit under given index
     constexpr const char& operator[](unsigned index) const
     {
