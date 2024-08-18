@@ -137,6 +137,8 @@ TEST(StringUtilTests, StringCodePointCounts)
     EXPECT_EQ(StrUtils::UTF8CharLength("a"), 1);
     EXPECT_EQ(StrUtils::UTF8CharLength("ą"), 2);
     EXPECT_EQ(StrUtils::UTF8CharLength("中"), 3);
+
+    EXPECT_EQ(StrUtils::UTF8CharLength("\xFF"), 0);
 }
 
 TEST(StringUtilTests, StringCodeUnitCounts)
@@ -145,6 +147,8 @@ TEST(StringUtilTests, StringCodeUnitCounts)
     EXPECT_EQ(StrUtils::UTF8StringLength("ą"), 1);
     EXPECT_EQ(StrUtils::UTF8StringLength("中"), 1);
     EXPECT_EQ(StrUtils::UTF8StringLength("aą中"), 3);
+
+    EXPECT_THROW({ StrUtils::UTF8StringLength("\xFF"); }, std::invalid_argument);
 }
 
 TEST(StringUtilTests, StringConversion)
