@@ -612,6 +612,11 @@ begin:
 
     if ( m_phase == ABP_CLOSE2 )
     {
+        // Undo the camera->SetType() call made by CStudio::StopEditScript()
+        if ( m_camera->GetType() != Gfx::CAM_TYPE_SCRIPT )
+        {
+            m_camera->SetType(Gfx::CAM_TYPE_SCRIPT);
+        }
         if ( m_progress < 1.0f )
         {
             len = 7.0f-(1.0f-m_progress)*(7.0f+11.5f);
@@ -1381,6 +1386,7 @@ Error CAutoBase::TakeOff(bool printMsg)
     m_main->SetMovieLock(true);  // blocks everything until the end
     m_main->DeselectAll();
 
+    m_eventQueue->AddEvent(Event(EVENT_TAKE_OFF));
     m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));
 
     m_camera->SetType(Gfx::CAM_TYPE_SCRIPT);

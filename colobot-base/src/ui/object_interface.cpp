@@ -234,6 +234,12 @@ bool CObjectInterface::EventProcess(const Event &event)
         EventFrame(event);
     }
 
+    if ( action == EVENT_TAKE_OFF && m_studio != nullptr )
+    {
+        StopEditScript(true);
+        m_main->SaveOneScript(m_object);
+    }
+
     if ( m_object->GetSelect() &&  // robot selected?
          m_studio != nullptr    )   // current issue?
     {
