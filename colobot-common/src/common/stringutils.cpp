@@ -327,6 +327,9 @@ int StrUtils::UTF8StringLength(std::string_view string)
         if (count == 0)
             throw std::invalid_argument("Invalid character");
         
+        if (string.size() < count)
+            throw std::invalid_argument("Invalid character");
+        
         for (int i = 1; i < count; i++)
             if (!UTF8IsContinuationByte(static_cast<char8_t>(string[i])))
                 throw std::invalid_argument("Invalid character");
