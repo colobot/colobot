@@ -996,7 +996,7 @@ constinit std::array<char16_t, 65536> lowercase = {};
 constinit std::array<char16_t, 65536> uppercase = {};
 
 // true if lookup tables are initialized
-constinit bool initialized = false;
+constinit std::atomic_flag initialized;
 
 // Flag to make sure only one thread initializes the lookup tables
 constinit std::once_flag flag = {};
@@ -1016,14 +1016,14 @@ void Initialize()
         uppercase[mapping[i]] = mapping[i + 2];
     }
 
-    initialized = true;
+    initialized.test_and_set();
 }
 
 } // namespace
 
 char32_t StrUtils::ToLower(char32_t ch)
 {
-    if (!initialized) std::call_once(flag, Initialize);
+    if (!initialized.test()) std::call_once(flag, Initialize);
 
     if (ch < std::size(lowercase))
         return lowercase[ch];
@@ -1033,7 +1033,7 @@ char32_t StrUtils::ToLower(char32_t ch)
 
 char32_t StrUtils::ToUpper(char32_t ch)
 {
-    if (!initialized) std::call_once(flag, Initialize);
+    if (!initialized.test()) std::call_once(flag, Initialize);
 
     if (ch < std::size(uppercase))
         return uppercase[ch];
