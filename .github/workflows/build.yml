@@ -102,11 +102,8 @@ jobs:
         container: ['']
       fail-fast: false
     steps:
-    - name: Overwrite Python library version
-      run: brew link --overwrite python@3.12
-      if: matrix.host_os == 'macos-13'
     - name: Install Colobot dependencies
-      run: brew install cmake sdl2 sdl2_image sdl2_ttf glew physfs flac libsndfile libvorbis vorbis-tools gettext libicns librsvg wget xmlstarlet glm
+      run: brew install --overwrite cmake sdl2 sdl2_image sdl2_ttf glew physfs flac libsndfile libvorbis vorbis-tools gettext libicns librsvg wget xmlstarlet glm
       if: matrix.container == ''
     - uses: actions/checkout@v3
     - name: Checkout the Google Test submodule
