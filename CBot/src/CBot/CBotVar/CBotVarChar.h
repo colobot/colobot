@@ -21,6 +21,9 @@
 
 #include "CBot/CBotVar/CBotVarValue.h"
 
+#include <common/codepoint.h>
+#include <common/stringutils.h>
+
 namespace CBot
 {
 
@@ -40,7 +43,7 @@ public:
         if (0x10FFFF < m_val || (0xD7FF < m_val && m_val < 0xE000))
             return "\xEF\xBF\xBD"; // replacement character U+FFFD
 
-        return CodePointToUTF8(m_val);
+        return StrUtils::ToUTF8(m_val).Data();
     }
 
     void SR(CBotVar* left, CBotVar* right) override
