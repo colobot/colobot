@@ -103,7 +103,7 @@ jobs:
       fail-fast: false
     steps:
     - name: Remove 2to3 library
-      run: brew remove 2to3
+      run: rm '/usr/local/bin/2to3'
       if: matrix.host_os == 'macos-13'
     - name: Install Colobot dependencies
       run: brew install cmake sdl2 sdl2_image sdl2_ttf glew physfs flac libsndfile libvorbis vorbis-tools gettext libicns librsvg wget xmlstarlet glm
