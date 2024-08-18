@@ -20,6 +20,7 @@
 #include "common/stringutils.h"
 
 #include <array>
+#include <atomic>
 #include <cstddef>
 #include <mutex>
 
