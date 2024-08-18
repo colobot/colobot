@@ -43,7 +43,7 @@ public:
         if (0x10FFFF < m_val || (0xD7FF < m_val && m_val < 0xE000))
             return "\xEF\xBF\xBD"; // replacement character U+FFFD
 
-        return StrUtils::ToUTF8(m_val).Data();
+        return std::string(StrUtils::ToUTF8(m_val).ToStringView());
     }
 
     void SR(CBotVar* left, CBotVar* right) override

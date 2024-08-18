@@ -141,7 +141,7 @@ CBotInstr* CBotExprLitString::Compile(CBotToken* &p, CBotCStack* pStack)
                                 {
                                     if (val < 0xD800 || (0xDFFF < val && val < 0x110000))
                                     {
-                                        valstring += StrUtils::ToUTF8(val).Data();
+                                        valstring += StrUtils::ToUTF8(val).ToStringView();
                                         continue;
                                     }
                                     pStk->SetError(CBotErrUnicodeName, pos + 1);
