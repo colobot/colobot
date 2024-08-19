@@ -1720,7 +1720,6 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
             Program* program = programStorage->AddProgram();
             programStorage->ReadProgram(program, name2.c_str());
             program->readOnly = true;
-            program->filename = name;
             dynamic_cast<CProgrammableObject&>(*object).RunProgram(program);
         }
     }

@@ -4589,7 +4589,7 @@ bool CRobotMain::IOWriteScene(const std::filesystem::path& filename,
     if (!ostr.is_open()) return false;
 
     bool bError = false;
-    long version = 1;
+    long version = 2;
     CBot::WriteLong(ostr, version);                 // version of COLOBOT
     version = CBot::CBotProgram::GetVersion();
     CBot::WriteLong(ostr, version);                 // version of CBOT
@@ -4825,7 +4825,7 @@ CObject* CRobotMain::IOReadScene(const std::filesystem::path& filename,
         bool bError = false;
         long version = 0;
         CBot::ReadLong(istr, version);             // version of COLOBOT
-        if (version == 1)
+        if (version == 2)
         {
             CBot::ReadLong(istr, version);         // version of CBOT
             if (version == CBot::CBotProgram::GetVersion())
