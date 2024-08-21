@@ -692,7 +692,7 @@ public:
     bool            LoadAllTextures();
 
     //! Deletes the given texture, unloading it and removing from cache
-    void            DeleteTexture(const std::string& texName);
+    void            DeleteTexture(const std::filesystem::path& texName);
     //! Deletes the given texture, unloading it and removing from cache
     void            DeleteTexture(const Texture& tex);
 

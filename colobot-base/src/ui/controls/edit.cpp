@@ -1453,7 +1453,7 @@ void CEdit::FreeImage()
 {
     for (auto& image : m_image)
     {
-        m_engine->DeleteTexture(PrepareImageFilename(image.name));
+        m_engine->DeleteTexture(TempToPath(PrepareImageFilename(image.name)));
     }
 }
 

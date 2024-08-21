@@ -2029,9 +2029,9 @@ bool CEngine::LoadAllTextures()
     return ok;
 }
 
-void CEngine::DeleteTexture(const std::string& texName)
+void CEngine::DeleteTexture(const std::filesystem::path& texName)
 {
-    auto it = m_texNameMap.find(TempToPath(texName));
+    auto it = m_texNameMap.find(texName);
     if (it == m_texNameMap.end())
         return;
 

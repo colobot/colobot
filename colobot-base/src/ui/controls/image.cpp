@@ -44,7 +44,7 @@ CImage::~CImage()
 {
     if (!m_filename.empty())
     {
-        m_engine->DeleteTexture(StrUtils::ToString(m_filename));
+        m_engine->DeleteTexture(m_filename);
     }
 }
 
@@ -73,7 +73,7 @@ void CImage::SetFilename(const std::filesystem::path& name)
 {
     if (!m_filename.empty())
     {
-        m_engine->DeleteTexture(StrUtils::ToString(m_filename));
+        m_engine->DeleteTexture(m_filename);
     }
 
     m_filename = name;

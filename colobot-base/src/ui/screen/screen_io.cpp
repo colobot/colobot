@@ -121,7 +121,7 @@ void CScreenIO::IOReadList(bool isWrite)
 
     for (unsigned int i = 0; i < m_saveList.size(); i++)
     {
-        m_engine->DeleteTexture(TempToString(m_saveList.at(i) / "screen.png"));
+        m_engine->DeleteTexture(m_saveList.at(i) / "screen.png");
     }
 }
 
