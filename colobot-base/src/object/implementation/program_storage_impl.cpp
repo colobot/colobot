@@ -262,7 +262,7 @@ void CProgramStorageObjectImpl::LoadAllProgramsForLevel(CLevelParserLine* levelS
         std::string opRunnable = "scriptRunnable" + StrUtils::ToString<int>(i+1); // scriptRunnable1..scriptRunnable10
         if (levelSource->GetParam(op)->IsDefined())
         {
-            std::string filename = levelSource->GetParam(op)->AsPath("ai");
+            std::string filename = TempToString(levelSource->GetParam(op)->AsPath("ai"));
             GetLogger()->Trace("Loading program '%%' from level file", filename);
             Program* program = AddProgram();
             ReadProgram(program, filename);
@@ -283,7 +283,7 @@ void CProgramStorageObjectImpl::LoadAllProgramsForLevel(CLevelParserLine* levelS
 
     if (loadSoluce && levelSource->GetParam("soluce")->IsDefined())
     {
-        std::string filename = levelSource->GetParam("soluce")->AsPath("ai");
+        std::string filename = TempToString(levelSource->GetParam("soluce")->AsPath("ai"));
         GetLogger()->Trace("Loading program '%%' as soluce file", filename);
         Program* program = AddProgram();
         ReadProgram(program, filename);
@@ -376,7 +376,7 @@ void CProgramStorageObjectImpl::LoadAllProgramsForSavedScene(CLevelParserLine* l
         std::string opRunnable = "scriptRunnable" + StrUtils::ToString<int>(i+1); // scriptRunnable1..scriptRunnable10
         if (levelSourceLine->GetParam(op)->IsDefined())
         {
-            std::string filename = levelSourceLine->GetParam(op)->AsPath("ai");
+            std::string filename = TempToString(levelSourceLine->GetParam(op)->AsPath("ai"));
             GetLogger()->Trace("Loading program '%%' from saved scene", filename);
             Program* program = GetOrAddProgram(i);
             ReadProgram(program, filename);

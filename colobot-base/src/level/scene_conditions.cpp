@@ -30,6 +30,8 @@
 #include "object/interface/slotted_object.h"
 #include "object/interface/transportable_object.h"
 
+#include "common/stringutils.h"
+
 #include <limits>
 
 
@@ -175,6 +177,6 @@ Error CSceneEndCondition::GetMissionResult()
 void CAudioChangeCondition::Read(CLevelParserLine* line)
 {
     CSceneCondition::Read(line);
-    this->music    = line->GetParam("filename")->AsPath("music");
+    this->music    = TempToString(line->GetParam("filename")->AsPath("music"));
     this->repeat   = line->GetParam("repeat")->AsBool(true);
 }

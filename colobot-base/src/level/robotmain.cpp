@@ -2879,7 +2879,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "Instructions" && !resetObject)
             {
-                m_infoFilename[SATCOM_HUSTON] = TempToPath(line->GetParam("name")->AsPath("help/%lng%"));
+                m_infoFilename[SATCOM_HUSTON] = line->GetParam("name")->AsPath("help/%lng%");
 
                 m_immediatSatCom = line->GetParam("immediat")->AsBool(false);
                 m_beginSatCom = m_lockedSatCom = line->GetParam("lock")->AsBool(false);
@@ -2889,24 +2889,24 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "Satellite" && !resetObject)
             {
-                m_infoFilename[SATCOM_SAT] = TempToPath(line->GetParam("name")->AsPath("help/%lng%"));
+                m_infoFilename[SATCOM_SAT] = line->GetParam("name")->AsPath("help/%lng%");
                 continue;
             }
 
             if (line->GetCommand() == "Loading" && !resetObject)
             {
-                m_infoFilename[SATCOM_LOADING] = TempToPath(line->GetParam("name")->AsPath("help/%lng%"));
+                m_infoFilename[SATCOM_LOADING] = line->GetParam("name")->AsPath("help/%lng%");
                 continue;
             }
 
             if (line->GetCommand() == "HelpFile" && !resetObject)
             {
-                m_infoFilename[SATCOM_PROG] = TempToPath(line->GetParam("name")->AsPath("help/%lng%"));
+                m_infoFilename[SATCOM_PROG] = line->GetParam("name")->AsPath("help/%lng%");
                 continue;
             }
             if (line->GetCommand() == "SoluceFile" && !resetObject)
             {
-                m_infoFilename[SATCOM_SOLUCE] = TempToPath(line->GetParam("name")->AsPath("help/%lng%"));
+                m_infoFilename[SATCOM_SOLUCE] = line->GetParam("name")->AsPath("help/%lng%");
                 continue;
             }
 
@@ -2937,7 +2937,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                         }
                         catch (std::invalid_argument &e)
                         {
-                            return TempToPath(line->GetParam(type)->AsPath("levels"));
+                            return line->GetParam(type)->AsPath("levels");
                         }
                     }
                     return "";
@@ -2973,7 +2973,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "CacheAudio" && !resetObject)
             {
-                std::string filename = line->GetParam("filename")->AsPath("music");
+                std::string filename = TempToString(line->GetParam("filename")->AsPath("music"));
                 m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, filename);
                 m_sound->CacheMusic(filename);
                 continue;
@@ -3018,7 +3018,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 {
                     if (line->GetParam("filename")->IsDefined())
                     {
-                        m_audioTrack = line->GetParam("filename")->AsPath("music");
+                        m_audioTrack = TempToString(line->GetParam("filename")->AsPath("music"));
                     }
                     else
                     {
@@ -3032,7 +3032,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
                 if (line->GetParam("satcom")->IsDefined())
                 {
-                    m_satcomTrack = line->GetParam("satcom")->AsPath("music");
+                    m_satcomTrack = TempToString(line->GetParam("satcom")->AsPath("music"));
                     m_satcomRepeat = line->GetParam("satcomRepeat")->AsBool(true);
                 }
                 else
@@ -3042,7 +3042,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
                 if (line->GetParam("editor")->IsDefined())
                 {
-                    m_editorTrack = line->GetParam("editor")->AsPath("music");
+                    m_editorTrack = TempToString(line->GetParam("editor")->AsPath("music"));
                     m_editorRepeat = line->GetParam("editorRepeat")->AsBool(true);
                 }
                 else
@@ -3124,7 +3124,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 }
                 else
                 {
-                    m_engine->SetSecondTexture("../" + line->GetParam("texture")->AsPath("textures"));
+                    m_engine->SetSecondTexture("../" + TempToString(line->GetParam("texture")->AsPath("textures")));
                 }
                 continue;
             }
@@ -3132,7 +3132,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             if (line->GetCommand() == "Background" && !resetObject)
             {
                 if (line->GetParam("image")->IsDefined())
-                    backgroundPath = line->GetParam("image")->AsPath("textures");
+                    backgroundPath = TempToString(line->GetParam("image")->AsPath("textures"));
                 backgroundUp = line->GetParam("up")->AsColor(backgroundUp);
                 backgroundDown = line->GetParam("down")->AsColor(backgroundDown);
                 backgroundCloudUp = line->GetParam("cloudUp")->AsColor(backgroundCloudUp);
@@ -3153,10 +3153,10 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                                 line->GetParam("dim")->AsFloat(0.2f),
                                 line->GetParam("speed")->AsFloat(0.0f),
                                 line->GetParam("dir")->AsFloat(0.0f),
-                                line->GetParam("image")->AsPath("textures"),
+                                TempToString(line->GetParam("image")->AsPath("textures")),
                                 { uv1.x, uv1.z },
                                 { uv2.x, uv2.z },
-                                line->GetParam("image")->AsPath("textures").find("planet") != std::string::npos // TODO: add transparent op or modify textures
+                                TempToString(line->GetParam("image")->AsPath("textures")).find("planet") != std::string::npos // TODO: add transparent op or modify textures
                 );
                 continue;
             }
@@ -3203,7 +3203,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             {
                 m_ui->GetLoadingScreen()->SetProgress(0.2f+(1.f/5.f)*0.05f, RT_LOADING_TERRAIN, RT_LOADING_TERRAIN_RELIEF);
                 m_terrain->LoadRelief(
-                    line->GetParam("image")->AsPath("textures"),
+                    TempToString(line->GetParam("image")->AsPath("textures")),
                     line->GetParam("factor")->AsFloat(1.0f),
                     line->GetParam("border")->AsBool(true));
                 continue;
@@ -3219,7 +3219,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             if (line->GetCommand() == "TerrainResource" && !resetObject)
             {
                 m_ui->GetLoadingScreen()->SetProgress(0.2f+(2.f/5.f)*0.05f, RT_LOADING_TERRAIN, RT_LOADING_TERRAIN_RES);
-                m_terrain->LoadResources(line->GetParam("image")->AsPath("textures"));
+                m_terrain->LoadResources(TempToString(line->GetParam("image")->AsPath("textures")));
                 continue;
             }
 
@@ -3231,7 +3231,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 pos.z = pos.x;
                 m_water->Create(line->GetParam("air")->AsWaterType(Gfx::WATER_TT),
                                 line->GetParam("water")->AsWaterType(Gfx::WATER_TT),
-                                line->GetParam("image")->AsPath("textures"),
+                                TempToString(line->GetParam("image")->AsPath("textures")),
                                 line->GetParam("diffuse")->AsColor(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
                                 line->GetParam("ambient")->AsColor(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
                                 line->GetParam("level")->AsFloat(100.0f)*g_unit,
@@ -3252,7 +3252,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             {
                 std::string path = "";
                 if (line->GetParam("image")->IsDefined())
-                    path = line->GetParam("image")->AsPath("textures");
+                    path = TempToString(line->GetParam("image")->AsPath("textures"));
                 m_cloud->Create(path,
                                 line->GetParam("diffuse")->AsColor(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
                                 line->GetParam("ambient")->AsColor(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
@@ -3271,7 +3271,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             if (line->GetCommand() == "TerrainInitTextures" && !resetObject)
             {
                 m_ui->GetLoadingScreen()->SetProgress(0.2f+(3.f/5.f)*0.05f, RT_LOADING_TERRAIN, RT_LOADING_TERRAIN_TEX);
-                std::string name = "../" + line->GetParam("image")->AsPath("textures");
+                std::string name = "../" + TempToString(line->GetParam("image")->AsPath("textures"));
                 if (name.find(".") == std::string::npos)
                     name += ".png";
                 unsigned int dx = line->GetParam("dx")->AsInt(1);
@@ -3319,7 +3319,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "TerrainMaterial" && !resetObject)
             {
-                std::string name = line->GetParam("image")->AsPath("textures");
+                std::string name = TempToString(line->GetParam("image")->AsPath("textures"));
                 if (name.find(".") == std::string::npos)
                     name += ".png";
                 name = "../" + name;
@@ -3410,7 +3410,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 {
                     CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(m_controller);
                     Program* program = programStorage->AddProgram();
-                    programStorage->ReadProgram(program, line->GetParam("script")->AsPath("ai"));
+                    programStorage->ReadProgram(program, TempToString(line->GetParam("script")->AsPath("ai")));
                     program->readOnly = true;
                     dynamic_cast<CProgrammableObject&>(*m_controller).RunProgram(program);
                 }
@@ -3574,7 +3574,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 if (m_mapImage)
                 {
                     glm::vec3 offset;
-                    m_mapFilename = StrUtils::ToPath(line->GetParam("filename")->AsPath("textures"));
+                    m_mapFilename = line->GetParam("filename")->AsPath("textures");
                     offset = line->GetParam("offset")->AsPoint(glm::vec3(0.0f, 0.0f, 0.0f));
                     m_map->SetFixParam(line->GetParam("zoom")->AsFloat(1.0f),
                                     offset.x, offset.z,
