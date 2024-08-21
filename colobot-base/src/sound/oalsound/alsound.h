@@ -110,7 +110,7 @@ public:
     bool StopAll() override;
     bool MuteAll(bool mute) override;
 
-    void PlayMusic(const std::string &filename, bool repeat, float fadeTime = 2.0f) override;
+    void PlayMusic(const std::filesystem::path& filename, bool repeat, float fadeTime = 2.0f) override;
     void StopMusic(float fadeTime=2.0f) override;
     bool IsPlayingMusic() override;
     void PlayPauseMusic(const std::string &filename, bool repeat) override;

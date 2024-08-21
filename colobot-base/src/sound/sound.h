@@ -209,7 +209,7 @@ public:
      * \param repeat - repeat playing
      * \param fadeTime - time of transition between music, 0 to disable
      */
-    virtual void PlayMusic(const std::string &filename, bool repeat, float fadeTime = 2.0f);
+    virtual void PlayMusic(const std::filesystem::path& filename, bool repeat, float fadeTime = 2.0f);
 
     /** Stop playing music
      * \return nothing

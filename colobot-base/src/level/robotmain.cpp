@@ -3004,9 +3004,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     int trackid = line->GetParam("track")->AsInt();
                     if (trackid != 0)
                     {
-                        std::stringstream filenameStr;
-                        filenameStr << "music/music" << std::setfill('0') << std::setw(3) << trackid << ".ogg";
-                        m_audioTrack = filenameStr.str();
+                        m_audioTrack = StrUtils::ToPath(std::format("music/music{:03}.ogg", trackid));
                     }
                     else
                     {
@@ -3017,7 +3015,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 {
                     if (line->GetParam("filename")->IsDefined())
                     {
-                        m_audioTrack = TempToString(line->GetParam("filename")->AsPath("music"));
+                        m_audioTrack = line->GetParam("filename")->AsPath("music");
                     }
                     else
                     {
@@ -3051,8 +3049,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
                 if (!m_audioTrack.empty())
                 {
-                    m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, m_audioTrack);
-                    m_sound->CacheMusic(TempToPath(m_audioTrack));
+                    m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, StrUtils::ToString(m_audioTrack));
+                    m_sound->CacheMusic(m_audioTrack);
                 }
                 if (!m_satcomTrack.empty())
                 {
@@ -4937,7 +4935,7 @@ void CRobotMain::UpdateAudio(bool frame)
         if (audioChange->Check())
         {
             GetLogger()->Info("Changing music to \"%%\"", audioChange->music);
-            m_sound->PlayMusic(TempToString(audioChange->music), audioChange->repeat);
+            m_sound->PlayMusic(audioChange->music, audioChange->repeat);
             audioChange->changed = true;
         }
     }
@@ -5506,7 +5504,7 @@ bool CRobotMain::GetFriendAim()
 void CRobotMain::StartMusic()
 {
     GetLogger()->Debug("Starting music...");
-    if (m_audioTrack != "")
+    if (!m_audioTrack.empty())
     {
         m_sound->PlayMusic(m_audioTrack, m_audioRepeat, 0.0f);
     }

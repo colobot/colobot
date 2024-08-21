@@ -151,7 +151,7 @@ bool CSoundInterface::MuteAll(bool mute)
     return true;
 }
 
-void CSoundInterface::PlayMusic(const std::string &filename, bool repeat, float fadeTime)
+void CSoundInterface::PlayMusic(const std::filesystem::path& filename, bool repeat, float fadeTime)
 {
 }
 

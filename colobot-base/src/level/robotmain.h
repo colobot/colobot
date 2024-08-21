@@ -639,7 +639,7 @@ protected:
     bool            m_cheatAllMission = false;
     bool            m_cheatRadar = false;
     bool            m_shortCut = false;
-    std::string     m_audioTrack;
+    std::filesystem::path  m_audioTrack;
     bool            m_audioRepeat = false;
     std::string     m_satcomTrack;
     bool            m_satcomRepeat = false;

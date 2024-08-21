@@ -580,7 +580,7 @@ void CALSound::SetListener(const glm::vec3 &eye, const glm::vec3 &lookat)
     alListenerfv(AL_ORIENTATION, orientation);
 }
 
-void CALSound::PlayMusic(const std::string &filename, bool repeat, float fadeTime)
+void CALSound::PlayMusic(const std::filesystem::path& filename, bool repeat, float fadeTime)
 {
     if (!m_enabled)
     {
@@ -592,22 +592,22 @@ void CALSound::PlayMusic(const std::string &filename, bool repeat, float fadeTim
         CBuffer* buffer = nullptr;
 
         // check if we have music in cache
-        if (m_music.find(TempToPath(filename)) == m_music.end())
+        if (m_music.find(filename) == m_music.end())
         {
             GetLogger()->Debug("Music %% was not cached!", filename);
 
             auto newBuffer = std::make_unique<CBuffer>();
             buffer = newBuffer.get();
-            if (!newBuffer->LoadFromFile(TempToPath(filename), static_cast<SoundType>(-1)))
+            if (!newBuffer->LoadFromFile(filename, static_cast<SoundType>(-1)))
             {
                 return;
             }
-            m_music[TempToPath(filename)] = std::move(newBuffer);
+            m_music[filename] = std::move(newBuffer);
         }
         else
         {
             GetLogger()->Debug("Music loaded from cache");
-            buffer = m_music[TempToPath(filename)].get();
+            buffer = m_music[filename].get();
         }
 
         if (m_currentMusic)
@@ -649,7 +649,7 @@ void CALSound::PlayPauseMusic(const std::string &filename, bool repeat)
             m_previousMusic.currentTime = 0.0f;
         }
     }
-    PlayMusic(filename, repeat);
+    PlayMusic(TempToPath(filename), repeat);
 }
 
 void CALSound::StopPauseMusic()
