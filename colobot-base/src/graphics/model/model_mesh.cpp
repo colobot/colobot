@@ -145,8 +145,6 @@ bool CModelPart::Has(VertexAttribute array) const
 {
     switch (array)
     {
-    case VertexAttribute::POSITION:
-        return true;
     case VertexAttribute::COLOR:
         return m_colors.enabled;
     case VertexAttribute::UV1:

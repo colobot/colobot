@@ -519,7 +519,7 @@ float CLightManager::CLightsComparator::GetLightWeight(const DynamicLight& dynLi
     else if (dynLight.excludeType != ENG_OBJTYPE_NULL)
         enabled = dynLight.excludeType != m_objectType;
 
-    return enabled ? ( glm::length(dynLight.light.position - m_eyePos) * dynLight.priority ) : 10000.0f;
+    return enabled ? ( glm::length(dynLight.light.position - m_eyePos) * static_cast<float>(dynLight.priority) ) : 10000.0f;
 }
 
 bool CLightManager::CLightsComparator::operator()(const DynamicLight& left, const DynamicLight& right)
