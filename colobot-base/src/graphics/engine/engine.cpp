@@ -1105,14 +1105,15 @@ void CEngine::ChangeSecondTexture(int objRank, const std::string& tex2Name)
 
     EngineBaseObject& p1 = m_baseObjects[baseObjRank];
 
+    std::filesystem::path tex2Path = "textures" / TempToPath(tex2Name);
     for (auto& data : p1.next)
     {
-        if (data.material.detailTexture == tex2Name)
+        if (data.material.detailTexture == tex2Path)
             continue;  // already new
 
-        data.material.detailTexture = tex2Name;
+        data.material.detailTexture = tex2Path;
 
-        data.detailTexture = LoadTexture(TempToPath("textures/" + tex2Name));
+        data.detailTexture = LoadTexture(tex2Path);
     }
 }
 
@@ -1993,9 +1994,9 @@ bool CEngine::LoadAllTextures()
             if (!data.material.detailTexture.empty())
             {
                 if (terrain)
-                    data.detailTexture = LoadTexture(TempToPath("textures/" + data.material.detailTexture), m_terrainTexParams);
+                    data.detailTexture = LoadTexture(data.material.detailTexture, m_terrainTexParams);
                 else
-                    data.detailTexture = LoadTexture(TempToPath("textures/" + data.material.detailTexture));
+                    data.detailTexture = LoadTexture(data.material.detailTexture);
 
                 if (!data.detailTexture.Valid())
                     ok = false;
@@ -2193,12 +2194,12 @@ bool CEngine::GetFog()
     return m_fog;
 }
 
-void CEngine::SetSecondTexture(const std::string& texNum)
+void CEngine::SetSecondTexture(const std::filesystem::path& texNum)
 {
     m_secondTex = texNum;
 }
 
-const std::string& CEngine::GetSecondTexture()
+const std::filesystem::path& CEngine::GetSecondTexture()
 {
     return m_secondTex;
 }

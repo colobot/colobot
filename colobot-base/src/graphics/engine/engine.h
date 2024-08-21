@@ -740,8 +740,8 @@ public:
 
     //@{
     //! Management of the global mode of secondary texturing
-    void            SetSecondTexture(const std::string& texNum);
-    const std::string& GetSecondTexture();
+    void            SetSecondTexture(const std::filesystem::path& texNum);
+    const std::filesystem::path& GetSecondTexture();
     //@}
 
     //@{
@@ -1170,7 +1170,7 @@ protected:
     bool            m_updateGeometry;
     bool            m_updateStaticBuffers;
     bool            m_firstGroundSpot;
-    std::string     m_secondTex;
+    std::filesystem::path m_secondTex;
     bool            m_backgroundFull;
     bool            m_backgroundScale;
     std::string     m_backgroundName;

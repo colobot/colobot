@@ -23,6 +23,7 @@
 
 #include "common/image.h"
 #include "common/logger.h"
+#include "common/stringutils.h"
 
 #include "graphics/core/triangle.h"
 
@@ -722,7 +723,7 @@ bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank)
 
                 Gfx::Material material;
                 material.albedoTexture = texName1;
-                material.detailTexture = texName2;
+                material.detailTexture = "textures" / StrUtils::ToPath(texName2);
                 material.tag = "brick_"
                     + std::to_string(mx + 1) + "_"
                     + std::to_string(my + 1) + "_"

@@ -3118,13 +3118,13 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             {
                 if (line->GetParam("rank")->IsDefined())
                 {
-                    std::array<char, 20> tex = { 0 };
-                    snprintf(tex.data(), tex.size(), "dirty%.2d.png", line->GetParam("rank")->AsInt());
-                    m_engine->SetSecondTexture(tex.data());
+                    std::stringstream ss;
+                    ss << "dirty" << std::setw(2) << std::setfill('0') << line->GetParam("rank")->AsInt() << ".png";
+                    m_engine->SetSecondTexture("textures" / StrUtils::ToPath(ss.str()));
                 }
                 else
                 {
-                    m_engine->SetSecondTexture("../" + TempToString(line->GetParam("texture")->AsPath("textures")));
+                    m_engine->SetSecondTexture(line->GetParam("texture")->AsPath("textures"));
                 }
                 continue;
             }
