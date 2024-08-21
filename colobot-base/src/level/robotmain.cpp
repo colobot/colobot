@@ -3163,7 +3163,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "ForegroundName" && !resetObject)
             {
-                m_engine->SetForegroundName(line->GetParam("image")->AsPath("textures"));
+                m_engine->SetForegroundName(TempToString(line->GetParam("image")->AsPath("textures")));
                 continue;
             }
 
