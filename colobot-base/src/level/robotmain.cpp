@@ -2982,8 +2982,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             {
                 auto audioChange = std::make_unique<CAudioChangeCondition>();
                 audioChange->Read(line.get());
-                m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, audioChange->music);
-                m_sound->CacheMusic(audioChange->music);
+                m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, TempToString(audioChange->music));
+                m_sound->CacheMusic(TempToString(audioChange->music));
                 m_audioChange.push_back(std::move(audioChange));
 
                 if (!line->GetParam("pos")->IsDefined() || !line->GetParam("dist")->IsDefined())
@@ -4937,7 +4937,7 @@ void CRobotMain::UpdateAudio(bool frame)
         if (audioChange->Check())
         {
             GetLogger()->Info("Changing music to \"%%\"", audioChange->music);
-            m_sound->PlayMusic(audioChange->music, audioChange->repeat);
+            m_sound->PlayMusic(TempToString(audioChange->music), audioChange->repeat);
             audioChange->changed = true;
         }
     }
