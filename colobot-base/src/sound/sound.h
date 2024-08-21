@@ -227,7 +227,7 @@ public:
      * \param repeat - repeat playing
      * \return return true on success
      */
-     virtual void PlayPauseMusic(const std::string &filename, bool repeat);
+     virtual void PlayPauseMusic(const std::filesystem::path& filename, bool repeat);
 
      /** Stop playing pause music and return to the mission music
       * \return nothing

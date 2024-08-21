@@ -627,7 +627,7 @@ void CALSound::PlayMusic(const std::filesystem::path& filename, bool repeat, flo
     });
 }
 
-void CALSound::PlayPauseMusic(const std::string &filename, bool repeat)
+void CALSound::PlayPauseMusic(const std::filesystem::path& filename, bool repeat)
 {
     if (m_previousMusic.fadeTime > 0.0f)
     {
@@ -649,7 +649,7 @@ void CALSound::PlayPauseMusic(const std::string &filename, bool repeat)
             m_previousMusic.currentTime = 0.0f;
         }
     }
-    PlayMusic(TempToPath(filename), repeat);
+    PlayMusic(filename, repeat);
 }
 
 void CALSound::StopPauseMusic()

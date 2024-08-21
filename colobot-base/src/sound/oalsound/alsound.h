@@ -113,7 +113,7 @@ public:
     void PlayMusic(const std::filesystem::path& filename, bool repeat, float fadeTime = 2.0f) override;
     void StopMusic(float fadeTime=2.0f) override;
     bool IsPlayingMusic() override;
-    void PlayPauseMusic(const std::string &filename, bool repeat) override;
+    void PlayPauseMusic(const std::filesystem::path& filename, bool repeat) override;
     void StopPauseMusic() override;
 
 private:

@@ -164,7 +164,7 @@ bool CSoundInterface::IsPlayingMusic()
     return false;
 }
 
-void CSoundInterface::PlayPauseMusic(const std::string &filename, bool repeat)
+void CSoundInterface::PlayPauseMusic(const std::filesystem::path& filename, bool repeat)
 {
 }
 

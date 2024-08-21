@@ -3042,7 +3042,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
                 if (line->GetParam("editor")->IsDefined())
                 {
-                    m_editorTrack = TempToString(line->GetParam("editor")->AsPath("music"));
+                    m_editorTrack = line->GetParam("editor")->AsPath("music");
                     m_editorRepeat = line->GetParam("editorRepeat")->AsBool(true);
                 }
                 else
@@ -3062,8 +3062,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 }
                 if (!m_editorTrack.empty())
                 {
-                    m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, m_editorTrack);
-                    m_sound->CacheMusic(TempToPath(m_editorTrack));
+                    m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, StrUtils::ToString(m_editorTrack));
+                    m_sound->CacheMusic(m_editorTrack);
                 }
                 continue;
             }
@@ -5531,13 +5531,13 @@ void CRobotMain::UpdatePauseMusic(PauseMusic music)
             break;
 
         case PAUSE_MUSIC_EDITOR:
-            if (m_editorTrack != "")
+            if (!m_editorTrack.empty())
                 m_sound->PlayPauseMusic(m_editorTrack, m_editorRepeat);
             break;
 
         case PAUSE_MUSIC_SATCOM:
             if (!m_satcomTrack.empty())
-                m_sound->PlayPauseMusic(TempToString(m_satcomTrack), m_satcomRepeat);
+                m_sound->PlayPauseMusic(m_satcomTrack, m_satcomRepeat);
             break;
     }
 }

@@ -643,7 +643,7 @@ protected:
     bool            m_audioRepeat = false;
     std::filesystem::path m_satcomTrack;
     bool            m_satcomRepeat = false;
-    std::string     m_editorTrack;
+    std::filesystem::path m_editorTrack;
     bool            m_editorRepeat = false;
     int             m_movieInfoIndex = 0;
 
