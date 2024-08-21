@@ -67,7 +67,7 @@ public:
     //! Read program from a given file
     virtual bool ReadProgram(Program* program, const std::filesystem::path& filename) = 0;
     //! Write program to a given file
-    virtual bool WriteProgram(Program* program, const std::string& filename) = 0;
+    virtual bool WriteProgram(Program* program, const std::filesystem::path& filename) = 0;
     //! Check if program was compiled successfully
     virtual bool GetCompile(Program* program) = 0;
 

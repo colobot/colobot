@@ -187,11 +187,9 @@ bool CProgramStorageObjectImpl::ReadProgram(Program* program, const std::filesys
     return program->script->ReadScript(filename);
 }
 
-bool CProgramStorageObjectImpl::WriteProgram(Program* program, const std::string& filename)
+bool CProgramStorageObjectImpl::WriteProgram(Program* program, const std::filesystem::path& filename)
 {
-    if ( program->script->WriteScript(filename.c_str()) )  return true;
-
-    return false;
+    return program->script->WriteScript(filename);
 }
 
 bool CProgramStorageObjectImpl::GetCompile(Program* program)
@@ -220,7 +218,7 @@ void CProgramStorageObjectImpl::SaveAllUserPrograms(const std::string& userSourc
 
     for (unsigned int i = 0; i < m_program.size(); i++)
     {
-        std::string filename = userSource + StrUtils::Format("%.3d%.3d.txt", m_programStorageIndex, i);
+        std::filesystem::path filename = TempToPath(userSource + StrUtils::Format("%.3d%.3d.txt", m_programStorageIndex, i));
 
         if (m_program[i]->filename.empty())
         {
@@ -336,7 +334,7 @@ void CProgramStorageObjectImpl::SaveAllProgramsForSavedScene(CLevelParserLine* l
 
     for (unsigned int i = 0; i < m_program.size(); i++)
     {
-        std::string filename = levelSource + StrUtils::Format("/prog%.3d%.3d.txt", m_programStorageIndex, i);
+        std::filesystem::path filename = TempToPath(levelSource + StrUtils::Format("/prog%.3d%.3d.txt", m_programStorageIndex, i));
         if (!m_program[i]->filename.empty() && m_program[i]->readOnly) continue;
 
         GetLogger()->Trace("Saving program '%%' to saved scene\n", filename);
