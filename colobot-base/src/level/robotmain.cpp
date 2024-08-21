@@ -2982,7 +2982,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             {
                 auto audioChange = std::make_unique<CAudioChangeCondition>();
                 audioChange->Read(line.get());
-                m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, TempToString(audioChange->music));
+                m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, StrUtils::ToString(audioChange->music));
                 m_sound->CacheMusic(audioChange->music);
                 m_audioChange.push_back(std::move(audioChange));
 
