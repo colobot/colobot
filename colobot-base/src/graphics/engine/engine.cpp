@@ -1939,7 +1939,7 @@ bool CEngine::LoadAllTextures()
     {
         TextureCreateParams params = m_defaultTexParams;
         params.padToNearestPowerOfTwo = true;
-        m_backgroundTex = LoadTexture(TempToPath(m_backgroundName), params);
+        m_backgroundTex = LoadTexture(m_backgroundName, params);
     }
     else
         m_backgroundTex.SetInvalid();
@@ -2289,7 +2289,7 @@ float CEngine::GetFogStart(int rank)
     return m_fogStart[rank];
 }
 
-void CEngine::SetBackground(const std::string& name, Color up, Color down,
+void CEngine::SetBackground(const std::filesystem::path& name, Color up, Color down,
                             Color cloudUp, Color cloudDown, bool full, bool scale)
 {
     if (m_backgroundTex.Valid() && name != m_backgroundName)
@@ -2310,11 +2310,11 @@ void CEngine::SetBackground(const std::string& name, Color up, Color down,
     {
         TextureCreateParams params = m_defaultTexParams;
         params.padToNearestPowerOfTwo = true;
-        m_backgroundTex = LoadTexture(TempToPath(m_backgroundName), params);
+        m_backgroundTex = LoadTexture(m_backgroundName, params);
     }
 }
 
-void CEngine::GetBackground(std::string& name, Color& up, Color& down,
+void CEngine::GetBackground(std::filesystem::path& name, Color& up, Color& down,
                             Color& cloudUp, Color& cloudDown, bool &full, bool &scale)
 {
     name      = m_backgroundName;

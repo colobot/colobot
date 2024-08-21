@@ -793,10 +793,10 @@ public:
 
     //@{
     //! Management of the background image to use
-    void            SetBackground(const std::string& name, Color up = Color(), Color down = Color(),
+    void            SetBackground(const std::filesystem::path& name, Color up = Color(), Color down = Color(),
                                   Color cloudUp = Color(), Color cloudDown = Color(),
                                   bool full = false, bool scale = false);
-    void            GetBackground(std::string& name, Color& up, Color& down,
+    void            GetBackground(std::filesystem::path& name, Color& up, Color& down,
                                   Color& cloudUp, Color& cloudDown,
                                   bool& full, bool& scale);
     //@}
@@ -1173,7 +1173,7 @@ protected:
     std::filesystem::path m_secondTex;
     bool            m_backgroundFull;
     bool            m_backgroundScale;
-    std::string     m_backgroundName;
+    std::filesystem::path m_backgroundName;
     Texture         m_backgroundTex;
     Color           m_backgroundColorUp;
     Color           m_backgroundColorDown;

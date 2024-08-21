@@ -2825,7 +2825,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
     m_missionTimerStarted = false;
     m_missionTimer = 0.0f;
 
-    std::string backgroundPath = "";
+    std::filesystem::path backgroundPath = "";
     Gfx::Color backgroundUp = Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f);
     Gfx::Color backgroundDown = Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f);
     Gfx::Color backgroundCloudUp = Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f);
@@ -3132,7 +3132,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             if (line->GetCommand() == "Background" && !resetObject)
             {
                 if (line->GetParam("image")->IsDefined())
-                    backgroundPath = TempToString(line->GetParam("image")->AsPath("textures"));
+                    backgroundPath = line->GetParam("image")->AsPath("textures");
                 backgroundUp = line->GetParam("up")->AsColor(backgroundUp);
                 backgroundDown = line->GetParam("down")->AsColor(backgroundDown);
                 backgroundCloudUp = line->GetParam("cloudUp")->AsColor(backgroundCloudUp);
