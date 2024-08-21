@@ -118,6 +118,7 @@
 #include <stdexcept>
 #include <cmath>
 #include <ctime>
+#include <format>
 
 
 // Global variables.
@@ -2923,9 +2924,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                             {
                                 // TODO: Fix default levels and add a future removal warning
                                 GetLogger()->Warn("This level is using deprecated way of defining %% scene. Please change the %%= parameter in EndingFile from %% to \"levels/other/%1$s%2$03d.txt\".\n", type, type, rank);
-                                std::stringstream ss;
-                                ss << "levels/other/" << type << std::setfill('0') << std::setw(3) << rank << ".txt";
-                                return TempToPath(ss.str());
+                                return std::filesystem::path("levels/other") / type / std::format("{:03}.txt", rank);
                             }
                             else
                             {
