@@ -3809,7 +3809,7 @@ void CScriptFunctions::uObject(CBotVar* botThis, void* user)
 
     // Updates the velocity of the object.
     pVar = pVar->GetNext();  // "velocity"
-    if (IsObjectBeingTransported(object) || physics == nullptr)
+    if (IsObjectBeingTransported(object))
     {
         pSub = pVar->GetItemList();  // "x"
         pSub->SetValFloat(nanf(""));
@@ -3817,6 +3817,15 @@ void CScriptFunctions::uObject(CBotVar* botThis, void* user)
         pSub->SetValFloat(nanf(""));
         pSub = pSub->GetNext();  // "z"
         pSub->SetValFloat(nanf(""));
+    }
+    else if (physics == nullptr)
+    {
+        pSub = pVar->GetItemList();  // "x"
+        pSub->SetValFloat(0);
+        pSub = pSub->GetNext();  // "y"
+        pSub->SetValFloat(0);
+        pSub = pSub->GetNext();  // "z"
+        pSub->SetValFloat(0);
     }
     else
     {
