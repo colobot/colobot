@@ -138,7 +138,7 @@ int CALSound::GetMusicVolume()
 bool CALSound::Cache(SoundType sound, const std::string &filename)
 {
     auto buffer = std::make_unique<CBuffer>();
-    if (buffer->LoadFromFile(filename, sound))
+    if (buffer->LoadFromFile(TempToPath(filename), sound))
     {
         m_sounds[sound] = std::move(buffer);
         return true;
@@ -153,7 +153,7 @@ void CALSound::CacheMusic(const std::filesystem::path &filename)
         if (m_music.find(filename) == m_music.end())
         {
             auto buffer = std::make_unique<CBuffer>();
-            if (buffer->LoadFromFile(TempToString(filename), static_cast<SoundType>(-1)))
+            if (buffer->LoadFromFile(filename, static_cast<SoundType>(-1)))
             {
                 m_music[filename] = std::move(buffer);
             }
@@ -598,7 +598,7 @@ void CALSound::PlayMusic(const std::string &filename, bool repeat, float fadeTim
 
             auto newBuffer = std::make_unique<CBuffer>();
             buffer = newBuffer.get();
-            if (!newBuffer->LoadFromFile(filename, static_cast<SoundType>(-1)))
+            if (!newBuffer->LoadFromFile(TempToPath(filename), static_cast<SoundType>(-1)))
             {
                 return;
             }

@@ -47,12 +47,12 @@ CBuffer::~CBuffer()
     }
 }
 
-bool CBuffer::LoadFromFile(std::string filename, SoundType sound)
+bool CBuffer::LoadFromFile(const std::filesystem::path& filename, SoundType sound)
 {
     m_sound = sound;
     GetLogger()->Debug("Loading audio file: %%", filename);
 
-    auto file = CResourceManager::GetSNDFileHandler(StrUtils::ToPath(filename));
+    auto file = CResourceManager::GetSNDFileHandler(filename);
 
     GetLogger()->Trace("  channels %%", file->GetFileInfo().channels);
     GetLogger()->Trace("  format %%", file->GetFileInfo().format);
