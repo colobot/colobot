@@ -1258,9 +1258,9 @@ protected:
     int m_multisample;
 
     //! Map of loaded textures (by name)
-    std::map<std::string, Texture> m_texNameMap;
+    std::map<std::filesystem::path, Texture> m_texNameMap;
     //! Reverse map of loaded textures (by texture)
-    std::map<Texture, std::string> m_revTexNameMap;
+    std::map<Texture, std::filesystem::path> m_revTexNameMap;
     //! Blacklist map of textures
     /** Textures on this list were not successful in first loading,
      *  so are disabled for subsequent load calls. */

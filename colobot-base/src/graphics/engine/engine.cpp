@@ -1894,8 +1894,8 @@ Texture CEngine::CreateTexture(const std::filesystem::path& texName, const Textu
         return tex;
     }
 
-    m_texNameMap[TempToString(texName)] = tex;
-    m_revTexNameMap[tex] = TempToString(texName);
+    m_texNameMap[texName] = tex;
+    m_revTexNameMap[tex] = texName;
 
     return tex;
 }
@@ -1916,7 +1916,7 @@ Texture CEngine::LoadTexture(const std::string& name, const TextureCreateParams&
     if (m_texBlacklist.find(TempToPath(name)) != m_texBlacklist.end())
         return Texture();
 
-    std::map<std::string, Texture>::iterator it = m_texNameMap.find(name);
+    auto it = m_texNameMap.find(TempToPath(name));
     if (it != m_texNameMap.end())
         return (*it).second;
 
@@ -2031,7 +2031,7 @@ bool CEngine::LoadAllTextures()
 
 void CEngine::DeleteTexture(const std::string& texName)
 {
-    auto it = m_texNameMap.find(texName);
+    auto it = m_texNameMap.find(TempToPath(texName));
     if (it == m_texNameMap.end())
         return;
 
@@ -2062,7 +2062,7 @@ void CEngine::DeleteTexture(const Texture& tex)
 
 void CEngine::CreateOrUpdateTexture(const std::string& texName, CImage* img)
 {
-    auto it = m_texNameMap.find(texName);
+    auto it = m_texNameMap.find(TempToPath(texName));
     if (it == m_texNameMap.end())
     {
         LoadTexture(texName, img);
