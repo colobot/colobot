@@ -22,6 +22,7 @@
 #include "app/app.h"
 
 #include "common/logger.h"
+#include "common/stringutils.h"
 
 #include "graphics/core/device.h"
 #include "graphics/core/renderers.h"
@@ -339,7 +340,7 @@ void CWater::DrawSurf()
     glm::mat4 matrix = glm::mat4(1.0f);
     renderer->SetModelMatrix(matrix);
 
-    auto texture = m_engine->LoadTexture(m_fileName);
+    auto texture = m_engine->LoadTexture(TempToPath(m_fileName));
 
     renderer->SetAlbedoTexture(texture);
     renderer->SetDetailTexture(Texture{});
@@ -494,7 +495,7 @@ void CWater::Create(WaterType type1, WaterType type2, const std::string& fileNam
     VaporFlush();
 
     if (! m_fileName.empty())
-        m_engine->LoadTexture(m_fileName);
+        m_engine->LoadTexture(TempToPath(m_fileName));
 
     if (m_terrain == nullptr)
         m_terrain = CRobotMain::GetInstancePointer()->GetTerrain();

@@ -130,7 +130,7 @@ void CImage::Draw()
         params.format = Gfx::TextureFormat::AUTO;
         params.filter = Gfx::TextureFilter::BILINEAR;
         params.padToNearestPowerOfTwo = true;
-        Gfx::Texture tex = m_engine->LoadTexture(StrUtils::ToString(m_filename), params);
+        Gfx::Texture tex = m_engine->LoadTexture(m_filename, params);
         renderer->SetTexture(tex);
         renderer->SetTransparency(Gfx::TransparencyMode::NONE);
         pos = m_pos;

@@ -21,6 +21,7 @@
 #include "graphics/engine/planet.h"
 
 #include "common/event.h"
+#include "common/stringutils.h"
 
 #include "graphics/core/device.h"
 #include "graphics/core/renderers.h"
@@ -92,7 +93,7 @@ void CPlanet::LoadTexture()
 {
     for (const auto& planet : m_planets)
     {
-        m_engine->LoadTexture(planet.name);
+        m_engine->LoadTexture(TempToPath(planet.name));
     }
 }
 
@@ -113,7 +114,7 @@ void CPlanet::Draw()
         if (planet.type != m_visibleType)
             continue;
 
-        auto texture = m_engine->LoadTexture(planet.name);
+        auto texture = m_engine->LoadTexture(TempToPath(planet.name));
 
         renderer->SetAlbedoTexture(texture);
 

@@ -1188,7 +1188,7 @@ void CEdit::DrawImage(const glm::vec2& pos, std::string name, float width,
     params.format = Gfx::TextureFormat::AUTO;
     params.filter = Gfx::TextureFilter::BILINEAR;
     params.padToNearestPowerOfTwo = true;
-    Gfx::Texture tex = m_engine->LoadTexture(PrepareImageFilename(name), params);
+    Gfx::Texture tex = m_engine->LoadTexture(TempToPath(PrepareImageFilename(name)), params);
 
     m_engine->GetUIRenderer()->SetTexture(tex);
 

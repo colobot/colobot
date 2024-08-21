@@ -1226,7 +1226,7 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, glm::iv
 
         // TODO: A bit of code duplication, see CControl::SetButtonTextureForIcon()
         const unsigned int texID = m_engine->LoadTexture(
-            "textures/interface/button" + StrUtils::ToString<int>(texIndex) + ".png").id;
+            StrUtils::ToPath("textures/interface/button" + StrUtils::ToString<int>(texIndex) + ".png")).id;
 
         glm::vec2 uv1, uv2;
         uv1.x = (32.0f / 256.0f) * (iconIndex % 8);

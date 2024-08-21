@@ -683,11 +683,11 @@ public:
     void            UpdateGroundSpotTextures();
 
     //! Loads texture, creating it if not already present
-    Texture         LoadTexture(const std::string& name);
+    Texture         LoadTexture(const std::filesystem::path& name);
     //! Loads texture from existing image
-    Texture         LoadTexture(const std::string& name, CImage* image);
+    Texture         LoadTexture(const std::filesystem::path& name, CImage* image);
     //! Loads texture, creating it with given params if not already present
-    Texture         LoadTexture(const std::string& name, const TextureCreateParams& params);
+    Texture         LoadTexture(const std::filesystem::path& name, const TextureCreateParams& params);
     //! Loads all necessary textures
     bool            LoadAllTextures();
 

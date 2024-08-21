@@ -1112,7 +1112,7 @@ void CEngine::ChangeSecondTexture(int objRank, const std::string& tex2Name)
 
         data.material.detailTexture = tex2Name;
 
-        data.detailTexture = LoadTexture("textures/" + tex2Name);
+        data.detailTexture = LoadTexture(TempToPath("textures/" + tex2Name));
     }
 }
 
@@ -1900,27 +1900,26 @@ Texture CEngine::CreateTexture(const std::filesystem::path& texName, const Textu
     return tex;
 }
 
-Texture CEngine::LoadTexture(const std::string& name)
+Texture CEngine::LoadTexture(const std::filesystem::path& name)
 {
     return LoadTexture(name, m_defaultTexParams);
 }
 
-Texture CEngine::LoadTexture(const std::string& name, CImage* image)
+Texture CEngine::LoadTexture(const std::filesystem::path& name, CImage* image)
 {
-    Texture tex = CreateTexture(TempToPath(name), m_defaultTexParams, image);
-    return tex;
+    return CreateTexture(name, m_defaultTexParams, image);
 }
 
-Texture CEngine::LoadTexture(const std::string& name, const TextureCreateParams& params)
+Texture CEngine::LoadTexture(const std::filesystem::path& name, const TextureCreateParams& params)
 {
-    if (m_texBlacklist.find(TempToPath(name)) != m_texBlacklist.end())
+    if (m_texBlacklist.find(name) != m_texBlacklist.end())
         return Texture();
 
-    auto it = m_texNameMap.find(TempToPath(name));
+    auto it = m_texNameMap.find(name);
     if (it != m_texNameMap.end())
         return (*it).second;
 
-    return CreateTexture(TempToPath(name), params);
+    return CreateTexture(name, params);
 }
 
 bool CEngine::LoadAllTextures()
@@ -1939,7 +1938,7 @@ bool CEngine::LoadAllTextures()
     {
         TextureCreateParams params = m_defaultTexParams;
         params.padToNearestPowerOfTwo = true;
-        m_backgroundTex = LoadTexture(m_backgroundName, params);
+        m_backgroundTex = LoadTexture(TempToPath(m_backgroundName), params);
     }
     else
         m_backgroundTex.SetInvalid();
@@ -1950,7 +1949,7 @@ bool CEngine::LoadAllTextures()
         params.wrap = TextureWrapMode::CLAMP;
         params.filter = TextureFilter::BILINEAR;
         params.mipmap = false;
-        m_foregroundTex = LoadTexture(m_foregroundName, params);
+        m_foregroundTex = LoadTexture(TempToPath(m_foregroundName), params);
     }
     else
         m_foregroundTex.SetInvalid();
@@ -1983,9 +1982,9 @@ bool CEngine::LoadAllTextures()
             if (!data.material.albedoTexture.empty())
             {
                 if (terrain)
-                    data.albedoTexture = LoadTexture("textures/" + data.material.albedoTexture, m_terrainTexParams);
+                    data.albedoTexture = LoadTexture(TempToPath("textures/" + data.material.albedoTexture), m_terrainTexParams);
                 else
-                    data.albedoTexture = LoadTexture("textures/" + data.material.albedoTexture);
+                    data.albedoTexture = LoadTexture(TempToPath("textures/" + data.material.albedoTexture));
 
                 if (!data.albedoTexture.Valid())
                     ok = false;
@@ -1994,9 +1993,9 @@ bool CEngine::LoadAllTextures()
             if (!data.material.detailTexture.empty())
             {
                 if (terrain)
-                    data.detailTexture = LoadTexture("textures/" + data.material.detailTexture, m_terrainTexParams);
+                    data.detailTexture = LoadTexture(TempToPath("textures/" + data.material.detailTexture), m_terrainTexParams);
                 else
-                    data.detailTexture = LoadTexture("textures/" + data.material.detailTexture);
+                    data.detailTexture = LoadTexture(TempToPath("textures/" + data.material.detailTexture));
 
                 if (!data.detailTexture.Valid())
                     ok = false;
@@ -2005,9 +2004,9 @@ bool CEngine::LoadAllTextures()
             if (!data.material.materialTexture.empty())
             {
                 if (terrain)
-                    data.materialTexture = LoadTexture("textures/" + data.material.materialTexture, m_terrainTexParams);
+                    data.materialTexture = LoadTexture(TempToPath("textures/" + data.material.materialTexture), m_terrainTexParams);
                 else
-                    data.materialTexture = LoadTexture("textures/" + data.material.materialTexture);
+                    data.materialTexture = LoadTexture(TempToPath("textures/" + data.material.materialTexture));
 
                 if (!data.materialTexture.Valid())
                     ok = false;
@@ -2016,9 +2015,9 @@ bool CEngine::LoadAllTextures()
             if (!data.material.emissiveTexture.empty())
             {
                 if (terrain)
-                    data.emissiveTexture = LoadTexture("textures/" + data.material.emissiveTexture, m_terrainTexParams);
+                    data.emissiveTexture = LoadTexture(TempToPath("textures/" + data.material.emissiveTexture), m_terrainTexParams);
                 else
-                    data.emissiveTexture = LoadTexture("textures/" + data.material.emissiveTexture);
+                    data.emissiveTexture = LoadTexture(TempToPath("textures/" + data.material.emissiveTexture));
 
                 if (!data.emissiveTexture.Valid())
                     ok = false;
@@ -2065,7 +2064,7 @@ void CEngine::CreateOrUpdateTexture(const std::string& texName, CImage* img)
     auto it = m_texNameMap.find(TempToPath(texName));
     if (it == m_texNameMap.end())
     {
-        LoadTexture(texName, img);
+        LoadTexture(TempToPath(texName), img);
     }
     else
     {
@@ -2310,7 +2309,7 @@ void CEngine::SetBackground(const std::string& name, Color up, Color down,
     {
         TextureCreateParams params = m_defaultTexParams;
         params.padToNearestPowerOfTwo = true;
-        m_backgroundTex = LoadTexture(m_backgroundName, params);
+        m_backgroundTex = LoadTexture(TempToPath(m_backgroundName), params);
     }
 }
 
@@ -2342,7 +2341,7 @@ void CEngine::SetForegroundName(const std::string& name)
         params.wrap = TextureWrapMode::CLAMP;
         params.filter = TextureFilter::BILINEAR;
         params.mipmap = false;
-        m_foregroundTex = LoadTexture(m_foregroundName, params);
+        m_foregroundTex = LoadTexture(TempToPath(m_foregroundName), params);
     }
 }
 

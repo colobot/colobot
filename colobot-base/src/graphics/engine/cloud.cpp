@@ -30,7 +30,7 @@
 #include "level/robotmain.h"
 
 #include "math/geometry.h"
-
+#include "common/stringutils.h"
 
 // Graphics module namespace
 namespace Gfx
@@ -120,7 +120,7 @@ void CCloud::Draw()
     renderer->SetProjectionMatrix(m_engine->GetMatProj());
     renderer->SetViewMatrix(m_engine->GetMatView());
 
-    auto texture = m_engine->LoadTexture(m_fileName);
+    auto texture = m_engine->LoadTexture(TempToPath(m_fileName));
     renderer->SetAlbedoTexture(texture);
 
     renderer->SetTransparency(TransparencyMode::BLACK);
@@ -216,7 +216,7 @@ void CCloud::Create(const std::string& fileName,
     m_fileName = fileName;
 
     if (! m_fileName.empty())
-        m_engine->LoadTexture(m_fileName);
+        m_engine->LoadTexture(TempToPath(m_fileName));
 
     if (m_terrain == nullptr)
         m_terrain = CRobotMain::GetInstancePointer()->GetTerrain();
