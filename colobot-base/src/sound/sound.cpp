@@ -61,7 +61,7 @@ bool CSoundInterface::Cache(SoundType sound, const std::string &file)
     return true;
 }
 
-void CSoundInterface::CacheMusic(const std::string &file)
+void CSoundInterface::CacheMusic(const std::filesystem::path& file)
 {
 }
 

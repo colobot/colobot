@@ -29,6 +29,7 @@
 #include <glm/glm.hpp>
 
 #include <string>
+#include <filesystem>
 
 /*!
  * Maximum possible audio volume
@@ -86,7 +87,7 @@ public:
      *  This function is executed asynchronously
      * \param file - file to load
      */
-    virtual void CacheMusic(const std::string &file);
+    virtual void CacheMusic(const std::filesystem::path &file);
 
     /** Function to check if sound effect file was cached.
      * \param sound - id of a sound effect file

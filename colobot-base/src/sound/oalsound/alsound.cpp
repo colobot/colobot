@@ -19,6 +19,7 @@
 
 
 #include "sound/oalsound/alsound.h"
+#include "common/stringutils.h"
 
 #include <algorithm>
 #include <iomanip>
@@ -145,14 +146,14 @@ bool CALSound::Cache(SoundType sound, const std::string &filename)
     return false;
 }
 
-void CALSound::CacheMusic(const std::string &filename)
+void CALSound::CacheMusic(const std::filesystem::path &filename)
 {
     m_thread.Start([this, filename]()
     {
         if (m_music.find(filename) == m_music.end())
         {
             auto buffer = std::make_unique<CBuffer>();
-            if (buffer->LoadFromFile(filename, static_cast<SoundType>(-1)))
+            if (buffer->LoadFromFile(TempToString(filename), static_cast<SoundType>(-1)))
             {
                 m_music[filename] = std::move(buffer);
             }
@@ -167,7 +168,7 @@ bool CALSound::IsCached(SoundType sound)
 
 bool CALSound::IsCachedMusic(const std::string &filename)
 {
-    return m_music.find(filename) != m_music.end();
+    return m_music.find(TempToPath(filename)) != m_music.end();
 }
 
 int CALSound::GetPriority(SoundType sound)
@@ -591,7 +592,7 @@ void CALSound::PlayMusic(const std::string &filename, bool repeat, float fadeTim
         CBuffer* buffer = nullptr;
 
         // check if we have music in cache
-        if (m_music.find(filename) == m_music.end())
+        if (m_music.find(TempToPath(filename)) == m_music.end())
         {
             GetLogger()->Debug("Music %% was not cached!", filename);
 
@@ -601,12 +602,12 @@ void CALSound::PlayMusic(const std::string &filename, bool repeat, float fadeTim
             {
                 return;
             }
-            m_music[filename] = std::move(newBuffer);
+            m_music[TempToPath(filename)] = std::move(newBuffer);
         }
         else
         {
             GetLogger()->Debug("Music loaded from cache");
-            buffer = m_music[filename].get();
+            buffer = m_music[TempToPath(filename)].get();
         }
 
         if (m_currentMusic)

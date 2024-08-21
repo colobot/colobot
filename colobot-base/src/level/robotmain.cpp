@@ -2972,8 +2972,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "CacheAudio" && !resetObject)
             {
-                std::string filename = TempToString(line->GetParam("filename")->AsPath("music"));
-                m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, filename);
+                std::filesystem::path filename = line->GetParam("filename")->AsPath("music");
+                m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, StrUtils::ToString(filename));
                 m_sound->CacheMusic(filename);
                 continue;
             }
@@ -2983,7 +2983,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 auto audioChange = std::make_unique<CAudioChangeCondition>();
                 audioChange->Read(line.get());
                 m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, TempToString(audioChange->music));
-                m_sound->CacheMusic(TempToString(audioChange->music));
+                m_sound->CacheMusic(audioChange->music);
                 m_audioChange.push_back(std::move(audioChange));
 
                 if (!line->GetParam("pos")->IsDefined() || !line->GetParam("dist")->IsDefined())
@@ -3052,17 +3052,17 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 if (!m_audioTrack.empty())
                 {
                     m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, m_audioTrack);
-                    m_sound->CacheMusic(m_audioTrack);
+                    m_sound->CacheMusic(TempToPath(m_audioTrack));
                 }
                 if (!m_satcomTrack.empty())
                 {
                     m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, m_satcomTrack);
-                    m_sound->CacheMusic(m_satcomTrack);
+                    m_sound->CacheMusic(TempToPath(m_satcomTrack));
                 }
                 if (!m_editorTrack.empty())
                 {
                     m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, m_editorTrack);
-                    m_sound->CacheMusic(m_editorTrack);
+                    m_sound->CacheMusic(TempToPath(m_editorTrack));
                 }
                 continue;
             }

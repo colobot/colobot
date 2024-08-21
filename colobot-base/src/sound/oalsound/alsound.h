@@ -36,6 +36,7 @@
 #include <memory>
 #include <string>
 #include <list>
+#include <filesystem>
 
 #include <al.h>
 
@@ -86,7 +87,7 @@ public:
     bool Create() override;
     void Reset() override;
     bool Cache(SoundType, const std::string &) override;
-    void CacheMusic(const std::string &) override;
+    void CacheMusic(const std::filesystem::path &) override;
     bool IsCached(SoundType) override;
     bool IsCachedMusic(const std::string &) override;
 
@@ -129,7 +130,7 @@ private:
     ALCdevice* m_device;
     ALCcontext* m_context;
     std::map<SoundType, std::unique_ptr<CBuffer>> m_sounds;
-    std::map<std::string, std::unique_ptr<CBuffer>> m_music;
+    std::map<std::filesystem::path, std::unique_ptr<CBuffer>> m_music;
     std::map<int, std::unique_ptr<CChannel>> m_channels;
     std::unique_ptr<CChannel> m_currentMusic;
     std::list<OldMusic> m_oldMusic;
