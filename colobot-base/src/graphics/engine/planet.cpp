@@ -93,7 +93,7 @@ void CPlanet::LoadTexture()
 {
     for (const auto& planet : m_planets)
     {
-        m_engine->LoadTexture(TempToPath(planet.name));
+        m_engine->LoadTexture(planet.name);
     }
 }
 
@@ -114,7 +114,7 @@ void CPlanet::Draw()
         if (planet.type != m_visibleType)
             continue;
 
-        auto texture = m_engine->LoadTexture(TempToPath(planet.name));
+        auto texture = m_engine->LoadTexture(planet.name);
 
         renderer->SetAlbedoTexture(texture);
 
@@ -172,7 +172,7 @@ void CPlanet::Draw()
 }
 
 void CPlanet::Create(PlanetType type, const glm::vec2& start, float dim, float speed,
-                     float dir, const std::string& name, const glm::vec2& uv1, const glm::vec2& uv2,
+                     float dir, const std::filesystem::path& name, const glm::vec2& uv1, const glm::vec2& uv2,
                      bool transparent)
 {
     Planet planet;

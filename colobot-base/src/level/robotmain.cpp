@@ -3153,10 +3153,10 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                                 line->GetParam("dim")->AsFloat(0.2f),
                                 line->GetParam("speed")->AsFloat(0.0f),
                                 line->GetParam("dir")->AsFloat(0.0f),
-                                TempToString(line->GetParam("image")->AsPath("textures")),
+                                line->GetParam("image")->AsPath("textures"),
                                 { uv1.x, uv1.z },
                                 { uv2.x, uv2.z },
-                                TempToString(line->GetParam("image")->AsPath("textures")).find("planet") != std::string::npos // TODO: add transparent op or modify textures
+                                StrUtils::ToString(line->GetParam("image")->AsPath("textures")).find("planet") != std::string::npos // TODO: add transparent op or modify textures
                 );
                 continue;
             }

@@ -30,6 +30,7 @@
 
 #include <string>
 #include <vector>
+#include <filesystem>
 
 struct Event;
 
@@ -59,7 +60,7 @@ public:
     bool        EventProcess(const Event &event);
     //! Creates a new planet
     void        Create(PlanetType type, const glm::vec2& start, float dim, float speed, float dir,
-                       const std::string& name, const glm::vec2& uv1, const glm::vec2& uv2,
+                       const std::filesystem::path& name, const glm::vec2& uv1, const glm::vec2& uv2,
                        bool transparent);
     //! Indicates if there is at least one planet
     bool        PlanetExist();
@@ -99,7 +100,7 @@ protected:
         //! Direction in the sky
         float           dir = 0.0f;
         //! Name of the texture
-        std::string     name;
+        std::filesystem::path name;
         //! Texture mapping
         glm::vec2       uv1, uv2;
 
