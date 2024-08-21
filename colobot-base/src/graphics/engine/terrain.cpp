@@ -297,7 +297,7 @@ void CTerrain::FlushRelief()
 /**
  * The image must be 24 bits/pixel and dx x dy in size
  * with dx = dy = (mosaic*brick)+1 */
-bool CTerrain::LoadRelief(const std::string &fileName, float scaleRelief,
+bool CTerrain::LoadRelief(const std::filesystem::path &fileName, float scaleRelief,
                           bool adjustBorder)
 {
     m_scaleRelief = scaleRelief;
