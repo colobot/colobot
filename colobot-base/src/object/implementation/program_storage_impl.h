@@ -37,7 +37,7 @@ public:
     void SetActiveVirus(bool bActive) override;
     bool GetActiveVirus() override;
 
-    bool ReadProgram(Program* program, const std::string& filename) override;
+    bool ReadProgram(Program* program, const std::filesystem::path& filename) override;
     bool WriteProgram(Program* program, const std::string& filename) override;
     bool GetCompile(Program* program) override;
 

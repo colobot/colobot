@@ -182,11 +182,9 @@ Program* CProgramStorageObjectImpl::GetOrAddProgram(int index)
 }
 
 
-bool CProgramStorageObjectImpl::ReadProgram(Program* program, const std::string& filename)
+bool CProgramStorageObjectImpl::ReadProgram(Program* program, const std::filesystem::path& filename)
 {
-    if ( program->script->ReadScript(filename.c_str()) )  return true;
-
-    return false;
+    return program->script->ReadScript(filename);
 }
 
 bool CProgramStorageObjectImpl::WriteProgram(Program* program, const std::string& filename)
@@ -262,7 +260,7 @@ void CProgramStorageObjectImpl::LoadAllProgramsForLevel(CLevelParserLine* levelS
         std::string opRunnable = "scriptRunnable" + StrUtils::ToString<int>(i+1); // scriptRunnable1..scriptRunnable10
         if (levelSource->GetParam(op)->IsDefined())
         {
-            std::string filename = TempToString(levelSource->GetParam(op)->AsPath("ai"));
+            std::filesystem::path filename = levelSource->GetParam(op)->AsPath("ai");
             GetLogger()->Trace("Loading program '%%' from level file", filename);
             Program* program = AddProgram();
             ReadProgram(program, filename);
@@ -283,7 +281,7 @@ void CProgramStorageObjectImpl::LoadAllProgramsForLevel(CLevelParserLine* levelS
 
     if (loadSoluce && levelSource->GetParam("soluce")->IsDefined())
     {
-        std::string filename = TempToString(levelSource->GetParam("soluce")->AsPath("ai"));
+        std::filesystem::path filename = levelSource->GetParam("soluce")->AsPath("ai");
         GetLogger()->Trace("Loading program '%%' as soluce file", filename);
         Program* program = AddProgram();
         ReadProgram(program, filename);
@@ -310,7 +308,7 @@ void CProgramStorageObjectImpl::LoadAllProgramsForLevel(CLevelParserLine* levelS
                 Program* program = GetOrAddProgram(i);
                 if(GetCompile(program)) program = AddProgram(); // If original slot is already used, get a new one
                 GetLogger()->Trace("Loading program '%%/%%' from user directory", dir, path);
-                ReadProgram(program, StrUtils::ToString(dir / path));
+                ReadProgram(program, dir / path);
             }
         }
     }
@@ -376,7 +374,7 @@ void CProgramStorageObjectImpl::LoadAllProgramsForSavedScene(CLevelParserLine* l
         std::string opRunnable = "scriptRunnable" + StrUtils::ToString<int>(i+1); // scriptRunnable1..scriptRunnable10
         if (levelSourceLine->GetParam(op)->IsDefined())
         {
-            std::string filename = TempToString(levelSourceLine->GetParam(op)->AsPath("ai"));
+            std::filesystem::path filename = levelSourceLine->GetParam(op)->AsPath("ai");
             GetLogger()->Trace("Loading program '%%' from saved scene", filename);
             Program* program = GetOrAddProgram(i);
             ReadProgram(program, filename);
@@ -401,7 +399,7 @@ void CProgramStorageObjectImpl::LoadAllProgramsForSavedScene(CLevelParserLine* l
         std::string opReadOnly = "scriptReadOnly" + StrUtils::ToString<int>(i+1); // scriptReadOnly1..scriptReadOnly10
         std::string opRunnable = "scriptRunnable" + StrUtils::ToString<int>(i+1); // scriptRunnable1..scriptRunnable10
 
-        std::string filename = levelSource + StrUtils::Format("/prog%.3d%.3d.txt", m_programStorageIndex, i);
+        std::filesystem::path filename = TempToPath(levelSource + StrUtils::Format("/prog%.3d%.3d.txt", m_programStorageIndex, i));
         if (CResourceManager::Exists(filename))
         {
             GetLogger()->Trace("Loading program '%%' from saved scene", filename);

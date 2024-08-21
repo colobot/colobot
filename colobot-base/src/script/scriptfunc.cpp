@@ -1713,12 +1713,12 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
 
     if (!name.empty())
     {
-        std::string name2 = StrUtils::ToString(InjectLevelPathsForCurrentLevel(name, "ai"));
+        std::filesystem::path name2 = InjectLevelPathsForCurrentLevel(name, "ai");
         if (object->Implements(ObjectInterfaceType::Programmable))
         {
             CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(object);
             Program* program = programStorage->AddProgram();
-            programStorage->ReadProgram(program, name2.c_str());
+            programStorage->ReadProgram(program, name2);
             program->readOnly = true;
             program->filename = name;
             dynamic_cast<CProgrammableObject&>(*object).RunProgram(program);

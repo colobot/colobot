@@ -3409,7 +3409,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 {
                     CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(m_controller);
                     Program* program = programStorage->AddProgram();
-                    programStorage->ReadProgram(program, TempToString(line->GetParam("script")->AsPath("ai")));
+                    programStorage->ReadProgram(program, line->GetParam("script")->AsPath("ai"));
                     program->readOnly = true;
                     dynamic_cast<CProgrammableObject&>(*m_controller).RunProgram(program);
                 }
