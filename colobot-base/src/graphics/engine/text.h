@@ -238,11 +238,11 @@ public:
     void        DrawText(const std::string &text, std::vector<FontMetaChar>::iterator format,
                          std::vector<FontMetaChar>::iterator end,
                          float size, glm::vec2 pos, float width, TextAlign align,
-                         int eol, Color color = Color(0.0f, 0.0f, 0.0f, 1.0f));
+                         char32_t eol, Color color = Color(0.0f, 0.0f, 0.0f, 1.0f));
     //! Draws text (one font)
     void        DrawText(const std::string &text, FontType font,
                          float size, glm::vec2 pos, float width, TextAlign align,
-                         int eol, Color color = Color(0.0f, 0.0f, 0.0f, 1.0f));
+                         char32_t eol, Color color = Color(0.0f, 0.0f, 0.0f, 1.0f));
 
     //! Calculates dimensions for text (multi-format)
     void        SizeText(const std::string &text, std::vector<FontMetaChar>::iterator format,
@@ -286,7 +286,7 @@ public:
     //! Returns the most suitable position to a given offset (one font)
     int         Detect(const std::string &text, FontType font, float size, float offset);
 
-    StrUtils::CodePoint TranslateSpecialChar(int specialChar);
+    StrUtils::CodePoint TranslateSpecialChar(char32_t specialChar);
 
     CharTexture GetCharTexture(StrUtils::CodePoint ch, FontType font, float size);
     glm::ivec2 GetFontTextureSize();
@@ -301,9 +301,9 @@ protected:
 
     void        DrawString(const std::string &text, std::vector<FontMetaChar>::iterator format,
                            std::vector<FontMetaChar>::iterator end,
-                           float size, const glm::ivec2& pos, int width, int eol, Color color);
+                           float size, const glm::ivec2& pos, int width, char32_t eol, Color color);
     void        DrawString(const std::string &text, FontType font,
-                           float size, const glm::ivec2& pos, int width, int eol, Color color);
+                           float size, const glm::ivec2& pos, int width, char32_t eol, Color color);
     void        DrawHighlight(FontMetaChar hl, const glm::ivec2& pos, const glm::ivec2& size);
     void        DrawCharAndAdjustPos(StrUtils::CodePoint ch, FontType font, float size, glm::ivec2&pos, Color color);
     void        StringToUTFCharList(std::string_view text, std::vector<StrUtils::CodePoint> &chars);

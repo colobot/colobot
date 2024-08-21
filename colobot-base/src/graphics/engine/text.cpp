@@ -494,7 +494,7 @@ void CText::SetTabSize(int tabSize)
 void CText::DrawText(const std::string &text, std::vector<FontMetaChar>::iterator format,
                      std::vector<FontMetaChar>::iterator end,
                      float size, glm::vec2 pos, float width, TextAlign align,
-                     int eol, Color color)
+                     char32_t eol, Color color)
 {
     float sw = 0.0f;
 
@@ -518,7 +518,7 @@ void CText::DrawText(const std::string &text, std::vector<FontMetaChar>::iterato
 
 void CText::DrawText(const std::string &text, FontType font,
                      float size, glm::vec2 pos, float width, TextAlign align,
-                     int eol, Color color)
+                     char32_t eol, Color color)
 {
     float sw = 0.0f;
 
@@ -888,7 +888,7 @@ int CText::Detect(const std::string &text, FontType font, float size, float offs
     return index;
 }
 
-StrUtils::CodePoint CText::TranslateSpecialChar(int specialChar)
+StrUtils::CodePoint CText::TranslateSpecialChar(char32_t specialChar)
 {
     StrUtils::CodePoint ch;
 
@@ -899,28 +899,28 @@ StrUtils::CodePoint CText::TranslateSpecialChar(int specialChar)
             break;
 
         case CHAR_NEWLINE:
-            // Unicode: U+21B2
-            ch = "\xE2\x86\xB2"sv;
+            // "↲"
+            ch = "\u21B2"sv;
             break;
 
         case CHAR_DOT:
-            // Unicode: U+23C5
-            ch = "\xE2\x8F\x85"sv;
+            // "•"
+            ch = "\u2022"sv;
             break;
 
         case CHAR_SQUARE:
-            // Unicode: U+25FD
-            ch = "\xE2\x97\xBD"sv;
+            // "□"
+            ch = "\u25A1"sv;
             break;
 
         case CHAR_SKIP_RIGHT:
-            // Unicode: U+25B6
-            ch = "\xE2\x96\xB6"sv;
+            // "▶"
+            ch = "\u25B6"sv;
             break;
 
         case CHAR_SKIP_LEFT:
-            // Unicode: U+25C0
-            ch = "\x52\x97\x80"sv;
+            // "◀"
+            ch = "\u25C0"sv;
             break;
 
         default:
@@ -933,7 +933,7 @@ StrUtils::CodePoint CText::TranslateSpecialChar(int specialChar)
 
 void CText::DrawString(const std::string &text, std::vector<FontMetaChar>::iterator format,
                        std::vector<FontMetaChar>::iterator end,
-                       float size, const glm::ivec2& position, int width, int eol, Color color)
+                       float size, const glm::ivec2& position, int width, char32_t eol, Color color)
 {
     m_engine->SetWindowCoordinates();
 
@@ -1085,7 +1085,7 @@ int CText::GetCharSizeAt(Gfx::FontType font, std::string_view text) const
 }
 
 void CText::DrawString(const std::string &text, FontType font,
-                       float size, const glm::ivec2& position, int width, int eol, Color color)
+                       float size, const glm::ivec2& position, int width, char32_t eol, Color color)
 {
     assert(font != FONT_BUTTON);
 
