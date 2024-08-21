@@ -18,6 +18,7 @@
  */
 
 #include "graphics/model/model_mod.h"
+#include "graphics/model/model_gltf.h"
 
 #include "common/ioutils.h"
 #include "common/logger.h"

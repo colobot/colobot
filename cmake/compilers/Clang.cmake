@@ -10,7 +10,7 @@ endif()
 
 add_compile_options(
     -Wall
-    -Wold-style-cast
+    $<$<COMPILE_LANGUAGE:CXX>:-Wold-style-cast>
     -pedantic-errors
     -Wmissing-prototypes
     -Wno-error=deprecated-declarations      # updated version of physfs is not available on some platforms so we keep using deprecated functions, see #958
