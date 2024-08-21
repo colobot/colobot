@@ -1950,7 +1950,7 @@ bool CEngine::LoadAllTextures()
         params.wrap = TextureWrapMode::CLAMP;
         params.filter = TextureFilter::BILINEAR;
         params.mipmap = false;
-        m_foregroundTex = LoadTexture(TempToPath(m_foregroundName), params);
+        m_foregroundTex = LoadTexture(m_foregroundName, params);
     }
     else
         m_foregroundTex.SetInvalid();
@@ -2326,7 +2326,7 @@ void CEngine::GetBackground(std::filesystem::path& name, Color& up, Color& down,
     scale     = m_backgroundScale;
 }
 
-void CEngine::SetForegroundName(const std::string& name)
+void CEngine::SetForegroundName(const std::filesystem::path& name)
 {
     if (m_foregroundTex.Valid() && name != m_foregroundName)
     {
@@ -2342,7 +2342,7 @@ void CEngine::SetForegroundName(const std::string& name)
         params.wrap = TextureWrapMode::CLAMP;
         params.filter = TextureFilter::BILINEAR;
         params.mipmap = false;
-        m_foregroundTex = LoadTexture(TempToPath(m_foregroundName), params);
+        m_foregroundTex = LoadTexture(m_foregroundName, params);
     }
 }
 

@@ -802,7 +802,7 @@ public:
     //@}
 
     //! Specifies the name of foreground texture
-    void            SetForegroundName(const std::string& name);
+    void            SetForegroundName(const std::filesystem::path& name);
     //! Specifies whether to draw the foreground
     void            SetOverFront(bool front);
     //! Sets the foreground overlay color
@@ -1182,7 +1182,7 @@ protected:
     bool            m_overFront;
     Color           m_overColor;
     TransparencyMode m_overMode;
-    std::string     m_foregroundName;
+    std::filesystem::path m_foregroundName;
     Texture         m_foregroundTex;
     bool            m_drawWorld;
     bool            m_drawFront;
