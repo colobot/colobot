@@ -118,7 +118,6 @@
 #include <stdexcept>
 #include <cmath>
 #include <ctime>
-#include <format>
 
 
 // Global variables.
@@ -2924,7 +2923,9 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                             {
                                 // TODO: Fix default levels and add a future removal warning
                                 GetLogger()->Warn("This level is using deprecated way of defining %% scene. Please change the %%= parameter in EndingFile from %% to \"levels/other/%1$s%2$03d.txt\".\n", type, type, rank);
-                                return std::filesystem::path("levels/other") / type / std::format("{:03}.txt", rank);
+                                std::stringstream ss;
+                                ss << std::setfill('0') << std::setw(3) << rank << ".txt";
+                                return std::filesystem::path("levels/other") / type / ss.str();
                             }
                             else
                             {
@@ -3004,7 +3005,9 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     int trackid = line->GetParam("track")->AsInt();
                     if (trackid != 0)
                     {
-                        m_audioTrack = StrUtils::ToPath(std::format("music/music{:03}.ogg", trackid));
+                        std::stringstream filenameStr;
+                        filenameStr << "music/music" << std::setfill('0') << std::setw(3) << trackid << ".ogg";
+                        m_audioTrack = StrUtils::ToPath(filenameStr.str());
                     }
                     else
                     {
