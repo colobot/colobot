@@ -1861,7 +1861,7 @@ void CEngine::SetViewParams(const glm::vec3 &eyePt, const glm::vec3 &lookatPt, c
         m_sound->SetListener(eyePt, lookatPt);
 }
 
-Texture CEngine::CreateTexture(const std::string& texName, const TextureCreateParams& params, CImage* image)
+Texture CEngine::CreateTexture(const std::filesystem::path& texName, const TextureCreateParams& params, CImage* image)
 {
     if (texName.empty())
         return Texture(); // invalid texture
@@ -1894,8 +1894,8 @@ Texture CEngine::CreateTexture(const std::string& texName, const TextureCreatePa
         return tex;
     }
 
-    m_texNameMap[texName] = tex;
-    m_revTexNameMap[tex] = texName;
+    m_texNameMap[TempToString(texName)] = tex;
+    m_revTexNameMap[tex] = TempToString(texName);
 
     return tex;
 }
@@ -1907,20 +1907,20 @@ Texture CEngine::LoadTexture(const std::string& name)
 
 Texture CEngine::LoadTexture(const std::string& name, CImage* image)
 {
-    Texture tex = CreateTexture(name, m_defaultTexParams, image);
+    Texture tex = CreateTexture(TempToPath(name), m_defaultTexParams, image);
     return tex;
 }
 
 Texture CEngine::LoadTexture(const std::string& name, const TextureCreateParams& params)
 {
-    if (m_texBlacklist.find(name) != m_texBlacklist.end())
+    if (m_texBlacklist.find(TempToPath(name)) != m_texBlacklist.end())
         return Texture();
 
     std::map<std::string, Texture>::iterator it = m_texNameMap.find(name);
     if (it != m_texNameMap.end())
         return (*it).second;
 
-    return CreateTexture(name, params);
+    return CreateTexture(TempToPath(name), params);
 }
 
 bool CEngine::LoadAllTextures()

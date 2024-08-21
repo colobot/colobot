@@ -1035,7 +1035,7 @@ protected:
     EngineBaseObjDataTier& AddLevel(EngineBaseObject& p3, EngineTriangleType type, const Material& material);
 
     //! Create texture and add it to cache
-    Texture CreateTexture(const std::string &texName, const TextureCreateParams &params, CImage* image = nullptr);
+    Texture CreateTexture(const std::filesystem::path &texName, const TextureCreateParams &params, CImage* image = nullptr);
 
     //! Tests whether the given object is visible
     bool        IsVisible(const glm::mat4& matrix, int objRank);
@@ -1264,7 +1264,7 @@ protected:
     //! Blacklist map of textures
     /** Textures on this list were not successful in first loading,
      *  so are disabled for subsequent load calls. */
-    std::set<std::string> m_texBlacklist;
+    std::set<std::filesystem::path> m_texBlacklist;
 
     //! Texture with mouse cursors
     Texture         m_miceTexture;
