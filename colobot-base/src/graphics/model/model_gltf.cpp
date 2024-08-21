@@ -575,7 +575,7 @@ std::vector<glm::vec3> GLTFLoader::ReadPositions(int index)
 
     auto data = reinterpret_cast<const glm::vec3*>(buffer.data() + bufferView.offset);
 
-    for (size_t i = 0; i < accessor.count; i++)
+    for (int i = 0; i < accessor.count; i++)
         positions[i] = data[i];
 
     return positions;
@@ -593,7 +593,7 @@ std::vector<glm::vec3> GLTFLoader::ReadNormals(int index)
 
     auto data = reinterpret_cast<const glm::vec3*>(buffer.data() + bufferView.offset);
 
-    for (size_t i = 0; i < accessor.count; i++)
+    for (int i = 0; i < accessor.count; i++)
         normals[i] = data[i];
 
     return normals;
@@ -613,7 +613,7 @@ std::vector<glm::vec2> GLTFLoader::ReadUVs(int index)
     {
         auto data = reinterpret_cast<const glm::vec2*>(buffer.data() + bufferView.offset);
 
-        for (size_t i = 0; i < accessor.count; i++)
+        for (int i = 0; i < accessor.count; i++)
             uvs[i] = data[i];
     }
     else
@@ -638,21 +638,21 @@ std::vector<glm::u8vec4> GLTFLoader::ReadColors(int index)
     {
         auto data = reinterpret_cast<const glm::u8vec4*>(buffer.data() + bufferView.offset);
 
-        for (size_t i = 0; i < accessor.count; i++)
+        for (int i = 0; i < accessor.count; i++)
             colors[i] = data[i];
     }
     else if (accessor.componentType == 5123)
     {
         auto data = reinterpret_cast<const glm::u16vec4*>(buffer.data() + bufferView.offset);
 
-        for (size_t i = 0; i < accessor.count; i++)
+        for (int i = 0; i < accessor.count; i++)
             colors[i] = glm::u8vec4(data[i] / glm::u16vec4(256));
     }
     else if (accessor.componentType == 5126)
     {
         auto data = reinterpret_cast<const glm::vec4*>(buffer.data() + bufferView.offset);
 
-        for (size_t i = 0; i < accessor.count; i++)
+        for (int i = 0; i < accessor.count; i++)
             colors[i] = glm::u8vec4(data[i] * 255.0f);
     }
     else
@@ -688,7 +688,7 @@ std::vector<unsigned> GLTFLoader::ReadIndices(int index)
     {
         auto data = reinterpret_cast<const uint8_t*>(buffer.data() + bufferView.offset);
 
-        for (size_t i = 0; i < accessor.count; i++)
+        for (int i = 0; i < accessor.count; i++)
             indices[i] = data[i];
     }
     // Unsigned short components
@@ -696,7 +696,7 @@ std::vector<unsigned> GLTFLoader::ReadIndices(int index)
     {
         auto data = reinterpret_cast<const uint16_t*>(buffer.data() + bufferView.offset);
 
-        for (size_t i = 0; i < accessor.count; i++)
+        for (int i = 0; i < accessor.count; i++)
             indices[i] = data[i];
     }
     // Unsigned int components
@@ -704,7 +704,7 @@ std::vector<unsigned> GLTFLoader::ReadIndices(int index)
     {
         auto data = reinterpret_cast<const uint32_t*>(buffer.data() + bufferView.offset);
 
-        for (size_t i = 0; i < accessor.count; i++)
+        for (int i = 0; i < accessor.count; i++)
             indices[i] = data[i];
     }
 

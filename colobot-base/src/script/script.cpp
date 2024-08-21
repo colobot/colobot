@@ -213,6 +213,14 @@ bool CScript::CheckToken()
 
 // Compile the script of a paved text.
 
+static bool isValidRange(const std::string& script, int cursor1, int cursor2)
+{
+    return 0 <= cursor1
+        && static_cast<size_t>(cursor1) <= script.size()
+        && 0 <= cursor2
+        && static_cast<size_t>(cursor2) <= script.size();
+}
+
 bool CScript::Compile()
 {
     std::vector<std::string> functionList;
@@ -258,8 +266,7 @@ bool CScript::Compile()
     else
     {
         m_botProg->GetError(m_error, m_cursor1, m_cursor2);
-        if ( m_cursor1 < 0 || m_cursor1 > m_script.size() ||
-             m_cursor2 < 0 || m_cursor2 > m_script.size() )
+        if ( !isValidRange(m_script, m_cursor1, m_cursor2) )
         {
             m_cursor1 = 0;
             m_cursor2 = 0;
@@ -334,8 +341,7 @@ bool CScript::Continue()
             if ( m_botProg->Run(this, 0) )
             {
                 m_botProg->GetError(m_error, m_cursor1, m_cursor2);
-                if ( m_cursor1 < 0 || m_cursor1 > m_script.size() ||
-                     m_cursor2 < 0 || m_cursor2 > m_script.size() )
+                if ( !isValidRange(m_script, m_cursor1, m_cursor2) )
                 {
                     m_cursor1 = 0;
                     m_cursor2 = 0;
@@ -362,8 +368,7 @@ bool CScript::Continue()
     if ( m_botProg->Run(this, m_ipf) )
     {
         m_botProg->GetError(m_error, m_cursor1, m_cursor2);
-        if ( m_cursor1 < 0 || m_cursor1 > m_script.size() ||
-             m_cursor2 < 0 || m_cursor2 > m_script.size() )
+        if ( !isValidRange(m_script, m_cursor1, m_cursor2) )
         {
             m_cursor1 = 0;
             m_cursor2 = 0;
@@ -398,8 +403,7 @@ bool CScript::Step()
     if ( m_botProg->Run(this, 0) )  // step mode
     {
         m_botProg->GetError(m_error, m_cursor1, m_cursor2);
-        if ( m_cursor1 < 0 || m_cursor1 > m_script.size() ||
-             m_cursor2 < 0 || m_cursor2 > m_script.size() )
+        if ( !isValidRange(m_script, m_cursor1, m_cursor2) )
         {
             m_cursor1 = 0;
             m_cursor2 = 0;
@@ -463,8 +467,8 @@ bool CScript::GetCursor(int &cursor1, int &cursor2)
     if ( !m_bRun )  return false;
 
     m_botProg->GetRunPos(funcName, cursor1, cursor2);
-    if ( cursor1 < 0 || cursor1 > m_script.size() ||
-         cursor2 < 0 || cursor2 > m_script.size() )
+
+    if ( !isValidRange(m_script, cursor1, cursor2) )
     {
         cursor1 = 0;
         cursor2 = 0;
@@ -760,7 +764,7 @@ bool CScript::IntroduceVirus()
     std::array<std::pair<int, int>, 11> found;
     int count = 0;
 
-    for (int i = 0; i < names.size(); i++)
+    for (size_t i = 0; i < names.size(); i++)
     {
         int start = SearchToken(m_script, names[i].first);
 

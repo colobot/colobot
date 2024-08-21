@@ -197,7 +197,7 @@ void CGL33ParticleRenderer::SetTransparency(TransparencyMode mode)
 
 void CGL33ParticleRenderer::DrawParticle(PrimitiveType type, int count, const VertexParticle* vertices)
 {
-    GLuint total = m_bufferOffset + count;
+    GLsizei total = m_bufferOffset + count;
 
     // Buffer full, orphan
     if (total >= m_bufferCapacity)
