@@ -223,8 +223,13 @@ CBotTypResult CScriptFunctions::cPlayMusic(CBotVar* &var, void* user)
 
 bool CScriptFunctions::rPlayMusic(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    // TODO: I do not know whehter var->GetValString() can return invalid utf-8
-    std::filesystem::path filename = StrUtils::ToPath(var->GetValString());
+    std::filesystem::path filename;
+    try {
+        std::filesystem::path filename = StrUtils::ToPath(var->GetValString());
+    } catch(...) {
+        exception = ERR_UNKNOWN;
+        return false;
+    }
     var = var->GetNext();
 
     bool repeat = var->GetValInt();
