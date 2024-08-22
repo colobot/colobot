@@ -3231,7 +3231,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 pos.z = pos.x;
                 m_water->Create(line->GetParam("air")->AsWaterType(Gfx::WATER_TT),
                                 line->GetParam("water")->AsWaterType(Gfx::WATER_TT),
-                                TempToString(line->GetParam("image")->AsPath("textures")),
+                                line->GetParam("image")->AsPath("textures"),
                                 line->GetParam("diffuse")->AsColor(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
                                 line->GetParam("ambient")->AsColor(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
                                 line->GetParam("level")->AsFloat(100.0f)*g_unit,

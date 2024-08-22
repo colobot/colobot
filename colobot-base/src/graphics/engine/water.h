@@ -25,6 +25,7 @@
 #pragma once
 
 #include "graphics/engine/particle.h"
+#include <filesystem>
 
 
 class CSoundInterface;
@@ -79,7 +80,7 @@ public:
     //! Removes all the water
     void        Flush();
     //! Creates all expanses of water
-    void        Create(WaterType type1, WaterType type2, const std::string& fileName,
+    void        Create(WaterType type1, WaterType type2, const std::filesystem::path& fileName,
                        Color diffuse, Color ambient, float level, float glint, glm::vec3 eddy);
     //! Draw the back surface of the water
     void        DrawBack();
@@ -129,7 +130,7 @@ protected:
     CSoundInterface*  m_sound = nullptr;
 
     WaterType       m_type[2] = {};
-    std::string     m_fileName;
+    std::filesystem::path m_fileName;
     //! Overall level
     float           m_level = 0.0f;
     //! Amplitude of reflections
