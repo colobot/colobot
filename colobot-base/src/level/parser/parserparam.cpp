@@ -230,7 +230,7 @@ std::filesystem::path CLevelParserParam::ToPath(std::string path, const std::str
         throw CLevelParserException("TODO: Param "+m_name+" does not yet support %lvl%! :(");
 
     return GetLine()->GetLevel()->InjectLevelPaths(
-        StrUtils::ToPath(path), StrUtils::ToPath(defaultDir));
+        TempToPath(path), TempToPath(defaultDir));
 }
 
 std::filesystem::path CLevelParserParam::AsPath(const std::string defaultDir)
@@ -245,7 +245,7 @@ std::filesystem::path CLevelParserParam::AsPath(const std::string defaultDir, st
 {
     if (m_empty)
         return GetLine()->GetLevel()->InjectLevelPaths(
-            StrUtils::ToPath(def), StrUtils::ToPath(defaultDir));
+            TempToPath(def), TempToPath(defaultDir));
 
     return ToPath(AsString(def), defaultDir);
 }
