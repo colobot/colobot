@@ -174,7 +174,7 @@ public:
     bool        RandomizeRelief();
 
     //! Load resources from image
-    bool        LoadResources(const std::string& fileName);
+    bool        LoadResources(const std::filesystem::path& fileName);
 
     //! Creates all objects of the terrain within the 3D engine
     bool        CreateObjects();

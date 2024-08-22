@@ -213,7 +213,7 @@ Gfx::IntColor ResourceToColor(TerrainRes res)
 /**
  * The image must be 24 bits/pixel and grayscale and dx x dy in size
  * with dx = dy = (mosaic*brick)+1 */
-bool CTerrain::LoadResources(const std::string& fileName)
+bool CTerrain::LoadResources(const std::filesystem::path& fileName)
 {
     CImage img;
 

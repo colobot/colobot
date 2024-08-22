@@ -3219,7 +3219,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             if (line->GetCommand() == "TerrainResource" && !resetObject)
             {
                 m_ui->GetLoadingScreen()->SetProgress(0.2f+(2.f/5.f)*0.05f, RT_LOADING_TERRAIN, RT_LOADING_TERRAIN_RES);
-                m_terrain->LoadResources(TempToString(line->GetParam("image")->AsPath("textures")));
+                m_terrain->LoadResources(line->GetParam("image")->AsPath("textures"));
                 continue;
             }
 
