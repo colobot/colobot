@@ -3458,7 +3458,7 @@ void CParticle::DrawParticle(int sheet)
             {
                 std::string name;
                 NameParticle(name, t);
-                auto texture = m_engine->LoadTexture(std::filesystem::path("textures") / name);
+                auto texture = m_engine->LoadTexture("textures" / TempToPath(name));
                 m_renderer->SetTexture(texture);
                 loadTexture = true;
             }

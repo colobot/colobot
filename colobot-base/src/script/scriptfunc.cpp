@@ -1709,7 +1709,7 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
 
     if (!name.empty())
     {
-        std::filesystem::path name2 = InjectLevelPathsForCurrentLevel(name, "ai");
+        std::filesystem::path name2 = InjectLevelPathsForCurrentLevel(TempToPath(name), "ai");
         if (object->Implements(ObjectInterfaceType::Programmable))
         {
             CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(object);
@@ -3466,7 +3466,7 @@ public:
     {
         std::string fname = PrepareFilename(filename);
         GetLogger()->Info("CBot delete file '%%'", fname);
-        return CResourceManager::Remove(fname);
+        return CResourceManager::Remove(TempToPath(fname));
     }
 
 private:

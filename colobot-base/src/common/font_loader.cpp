@@ -85,5 +85,5 @@ std::optional<std::filesystem::path> CFontLoader::GetFont(Gfx::FontType type) co
     if (iterator == m_fonts.end())
         return std::nullopt;
     else
-        return std::filesystem::path("fonts") / iterator->second;
+        return "fonts" / TempToPath(iterator->second);
 }

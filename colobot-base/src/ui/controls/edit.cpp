@@ -818,10 +818,10 @@ void CEdit::HyperJump(std::string name, std::string marker)
     }
 
     std::string filename = name + std::string(".txt");
-    filename = StrUtils::ToString(InjectLevelPathsForCurrentLevel(filename, "help/%lng%"));
+    filename = StrUtils::ToString(InjectLevelPathsForCurrentLevel(TempToPath(filename), "help/%lng%"));
     filename = StrUtils::Replace(filename, "\\", "/"); //TODO: Fix this in files
 
-    if ( ReadText(filename) )
+    if ( ReadText(TempToPath(filename)) )
     {
         Justif();
 
@@ -903,7 +903,7 @@ bool CEdit::HyperGo(EventType event)
         m_historyCurrent ++;
     }
 
-    ReadText(m_history[m_historyCurrent].filename);
+    ReadText(TempToPath(m_history[m_historyCurrent].filename));
     Justif();
     SetFirstLine(m_history[m_historyCurrent].firstLine);
     return true;
@@ -1170,7 +1170,7 @@ static std::string PrepareImageFilename(std::string name)
 {
     std::string filename;
     filename = name + ".png";
-    filename = StrUtils::ToString(InjectLevelPathsForCurrentLevel(filename, "icons"));
+    filename = StrUtils::ToString(InjectLevelPathsForCurrentLevel(TempToPath(filename), "icons"));
     filename = StrUtils::Replace(filename, "\\", "/"); // TODO: Fix this in files
     return filename;
 }

@@ -51,13 +51,13 @@ bool COldModelManager::LoadModel(const std::string& name, bool mirrored, int tea
     std::unique_ptr<CModel> model;
     try
     {
-        auto extension = std::filesystem::path(name).extension().string();
+        auto extension = TempToPath(name).extension().string();
 
         if (!extension.empty())
         {
             GetLogger()->Debug("Loading model '%%'", name);
 
-            model = ModelInput::Read("models/" + name);
+            model = ModelInput::Read(TempToPath("models/" + name));
 
             if (model->GetMeshCount() == 0)
                 return false;
@@ -67,11 +67,11 @@ bool COldModelManager::LoadModel(const std::string& name, bool mirrored, int tea
 
         auto gltf_path = "models/" + name + ".gltf";
 
-        if (CResourceManager::Exists(gltf_path))
+        if (CResourceManager::Exists(TempToPath(gltf_path)))
         {
             GetLogger()->Debug("Loading model '%%'", (name + ".gltf"));
 
-            model = ModelInput::Read(gltf_path);
+            model = ModelInput::Read(TempToPath(gltf_path));
 
             if (model->GetMeshCount() > 0)
                 goto skip;
@@ -79,11 +79,11 @@ bool COldModelManager::LoadModel(const std::string& name, bool mirrored, int tea
 
         auto mod_path = "models/" + name + ".mod";
 
-        if (CResourceManager::Exists(mod_path))
+        if (CResourceManager::Exists(TempToPath(mod_path)))
         {
             GetLogger()->Debug("Loading model '%%'", (name + ".mod"));
 
-            model = ModelInput::Read(mod_path);
+            model = ModelInput::Read(TempToPath(mod_path));
 
             if (model->GetMeshCount() > 0)
                 goto skip;

@@ -145,7 +145,7 @@ void GLTFLoader::ReadBuffers()
 
         if (node.contains("uri"))
         {
-            auto uri = m_directory / node["uri"].get<std::string>();
+            auto uri = m_directory / StrUtils::ToPath(node["uri"].get<std::string>());
 
             CInputStream stream(uri);
 

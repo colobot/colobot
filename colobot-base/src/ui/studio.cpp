@@ -143,7 +143,7 @@ bool CStudio::EventProcess(const Event &event)
 
     if ( event.type == EVENT_STUDIO_LIST )  // list clicked?
     {
-        m_main->StartDisplayInfo(m_helpFilename, -1);
+        m_main->StartDisplayInfo(TempToPath(m_helpFilename), -1);
     }
 
     if ( event.type == EVENT_STUDIO_NEW )  // new?

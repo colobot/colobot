@@ -599,7 +599,7 @@ void CRobotMain::ChangePhase(Phase phase)
                     pe->SetFontType(Gfx::FONT_COMMON);
                     pe->SetEditCap(false);
                     pe->SetHighlightCap(false);
-                    pe->ReadText(std::string("help/") + m_app->GetLanguageChar() + std::string("/win.txt"));
+                    pe->ReadText(TempToPath(std::string("help/") + m_app->GetLanguageChar() + std::string("/win.txt")));
                 }
                 else
                 {
@@ -2249,7 +2249,7 @@ void CRobotMain::HelpObject()
     std::string filename = GetHelpFilename(obj->GetType());
     if (filename.empty()) return;
 
-    StartDisplayInfo(filename, -1);
+    StartDisplayInfo(TempToPath(filename), -1);
 }
 
 
@@ -2873,7 +2873,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "ScriptFile" && !resetObject)
             {
-                m_scriptFile = line->GetParam("name")->AsString();
+                m_scriptFile = TempToPath(line->GetParam("name")->AsString());
                 continue;
             }
 
@@ -2925,7 +2925,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                                 GetLogger()->Warn("This level is using deprecated way of defining %% scene. Please change the %%= parameter in EndingFile from %% to \"levels/other/%1$s%2$03d.txt\".\n", type, type, rank);
                                 std::stringstream ss;
                                 ss << std::setfill('0') << std::setw(3) << rank << ".txt";
-                                return std::filesystem::path("levels/other") / type / ss.str();
+                                return "levels/other" / StrUtils::ToPath(type) / StrUtils::ToPath(ss.str());
                             }
                             else
                             {
@@ -3463,7 +3463,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                         char categoryChar = GetLevelCategoryDir(m_levelCategory)[0];
                         programStorage->LoadAllProgramsForLevel(
                             line.get(),
-                            StrUtils::ToString(m_playerProfile->GetSaveFile(StrUtils::Format("%c%.3d%.3d", categoryChar, m_levelChap, m_levelRank))),
+                            StrUtils::ToString(m_playerProfile->GetSaveFile(StrUtils::ToPath(StrUtils::Format("%c%.3d%.3d", categoryChar, m_levelChap, m_levelRank)))),
                             soluce
                         );
                     }
@@ -4329,7 +4329,7 @@ void CRobotMain::SaveOneScript(CObject *obj)
     CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(obj);
 
     char categoryChar = GetLevelCategoryDir(m_levelCategory)[0];
-    programStorage->SaveAllUserPrograms(StrUtils::ToString(m_playerProfile->GetSaveFile(StrUtils::Format("%c%.3d%.3d", categoryChar, m_levelChap, m_levelRank))));
+    programStorage->SaveAllUserPrograms(StrUtils::ToString(m_playerProfile->GetSaveFile(StrUtils::ToPath(StrUtils::Format("%c%.3d%.3d", categoryChar, m_levelChap, m_levelRank)))));
 }
 
 //! Saves the stack of the program in execution of a robot
@@ -5330,7 +5330,7 @@ void CRobotMain::SetLevel(LevelCategory cat, int chap, int rank)
     m_levelCategory = cat;
     m_levelChap = chap;
     m_levelRank = rank;
-    m_levelFile = StrUtils::ToString(CLevelParser::BuildScenePath(m_levelCategory, m_levelChap, m_levelRank));
+    m_levelFile = CLevelParser::BuildScenePath(m_levelCategory, m_levelChap, m_levelRank);
 }
 
 LevelCategory CRobotMain::GetLevelCategory()
@@ -5664,7 +5664,7 @@ void CRobotMain::Autosave()
     strftime(timestr, 99, "%y%m%d%H%M%S", localtime(&now));
     strftime(infostr, 99, "%y.%m.%d %H:%M", localtime(&now));
     std::string info = std::string("[AUTOSAVE] ") + infostr;
-    std::filesystem::path dir = m_playerProfile->GetSaveFile(std::string("autosave") + timestr);
+    std::filesystem::path dir = m_playerProfile->GetSaveFile(StrUtils::ToPath(std::string("autosave") + timestr));
 
     m_playerProfile->SaveScene(dir, info);
 }
@@ -5696,7 +5696,7 @@ void CRobotMain::QuickLoad()
 
 void CRobotMain::LoadSaveFromDirName(const std::string& gameDir)
 {
-    std::filesystem::path dir = m_playerProfile->GetSaveFile(gameDir);
+    std::filesystem::path dir = m_playerProfile->GetSaveFile(TempToPath(gameDir));
     if(!CResourceManager::Exists(dir))
     {
         GetLogger()->Error("Save slot not found");

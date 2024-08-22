@@ -89,7 +89,7 @@ std::filesystem::path CLevelParser::BuildScenePath(std::string_view category, in
 
     if (category == "custom")
     {
-        path /= CRobotMain::GetInstancePointer()->GetCustomLevelName(chapter);
+        path /= TempToPath(CRobotMain::GetInstancePointer()->GetCustomLevelName(chapter));
 
         if (rank == 0)
         {
@@ -100,7 +100,7 @@ std::filesystem::path CLevelParser::BuildScenePath(std::string_view category, in
         }
         else
         {
-            path /= StrUtils::Format("level%03d", rank);
+            path /= StrUtils::ToPath(StrUtils::Format("level%03d", rank));
 
             if (sceneFile)
             {
@@ -117,11 +117,11 @@ std::filesystem::path CLevelParser::BuildScenePath(std::string_view category, in
     else if (category == "win" || category == "lost")
     {
         assert(chapter == 0);
-        path /= StrUtils::Format("%s%03d.txt", category, rank);
+        path /= StrUtils::ToPath(StrUtils::Format("%s%03d.txt", category, rank));
     }
     else
     {
-        path /= StrUtils::Format("chapter%03d", chapter);
+        path /= StrUtils::ToPath(StrUtils::Format("chapter%03d", chapter));
         if (rank == 000)
         {
             if (sceneFile)
@@ -131,7 +131,7 @@ std::filesystem::path CLevelParser::BuildScenePath(std::string_view category, in
         }
         else
         {
-            path /= StrUtils::Format("level%03d", rank);
+            path /= StrUtils::ToPath(StrUtils::Format("level%03d", rank));
             if (sceneFile)
             {
                 path /= "scene.txt";
@@ -322,7 +322,7 @@ std::filesystem::path CLevelParser::InjectLevelPaths(const std::filesystem::path
     if(!m_pathLvl.empty() ) newPath = StrUtils::Replace(newPath, "%lvl%",  StrUtils::ToString(m_pathLvl));
     if(!m_pathChap.empty()) newPath = StrUtils::Replace(newPath, "%chap%", StrUtils::ToString(m_pathChap));
     if(!m_pathCat.empty() ) newPath = StrUtils::Replace(newPath, "%cat%",  StrUtils::ToString(m_pathCat));
-    if(newPath == path && !path.empty())
+    if(newPath == StrUtils::ToString(path) && !path.empty())
     {
         newPath = StrUtils::ToString(defaultDir) + (!defaultDir.empty() ? "/" : "") + newPath;
     }

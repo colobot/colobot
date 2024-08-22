@@ -257,7 +257,7 @@ int CPlayerProfile::GetSelectedRank(LevelCategory category)
 void CPlayerProfile::LoadFinishedLevels(LevelCategory category)
 {
     m_levelInfo[category].clear();
-    std::filesystem::path filename = GetSaveFile(GetLevelCategoryDir(category) + ".gam");
+    std::filesystem::path filename = GetSaveFile(TempToPath(GetLevelCategoryDir(category) + ".gam"));
 
     if (!CResourceManager::Exists(filename))
         return;
@@ -299,7 +299,7 @@ void CPlayerProfile::LoadFinishedLevels(LevelCategory category)
 
 void CPlayerProfile::SaveFinishedLevels(LevelCategory category)
 {
-    std::filesystem::path filename = GetSaveFile(GetLevelCategoryDir(category) + ".gam");
+    std::filesystem::path filename = GetSaveFile(TempToPath(GetLevelCategoryDir(category) + ".gam"));
     COutputStream file;
     file.open(filename);
     if (!file.is_open())
@@ -415,7 +415,7 @@ void CPlayerProfile::LoadAppearance()
 
     try
     {
-        CLevelParser appearanceParser(StrUtils::ToString(filename));
+        CLevelParser appearanceParser(filename);
         appearanceParser.Load();
         CLevelParserLine* line;
 
@@ -438,7 +438,7 @@ void CPlayerProfile::SaveAppearance()
 {
     try
     {
-        CLevelParser appearanceParser(StrUtils::ToString(GetSaveFile("face.gam")));
+        CLevelParser appearanceParser(GetSaveFile("face.gam"));
         CLevelParserLineUPtr line;
 
         line = std::make_unique<CLevelParserLine>("Head");
@@ -467,7 +467,7 @@ bool CPlayerProfile::HasAnySavedScene()
     auto saveDirs = CResourceManager::ListDirectories(GetSaveDir());
     for (auto dir : saveDirs)
     {
-        if (CResourceManager::Exists(GetSaveFile(StrUtils::ToString(dir / "data.sav"))))
+        if (CResourceManager::Exists(GetSaveFile(dir / "data.sav")))
         {
             return true;
         }
@@ -485,7 +485,7 @@ std::vector<SavedScene> CPlayerProfile::GetSavedSceneList()
         std::filesystem::path savegameFile = GetSaveFile(dir / "data.sav");
         if (CResourceManager::Exists(savegameFile) && CResourceManager::GetFileSize(savegameFile) > 0)
         {
-            CLevelParser levelParser(StrUtils::ToString(savegameFile));
+            CLevelParser levelParser(savegameFile);
             levelParser.Load();
             CLevelParserLine* line = levelParser.GetIfDefined("Created");
             int time = line != nullptr ? line->GetParam("date")->AsInt() : 0;
