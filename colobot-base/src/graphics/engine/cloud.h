@@ -30,6 +30,7 @@
 
 #include <vector>
 #include <string>
+#include <filesystem>
 
 
 struct Event;
@@ -61,7 +62,7 @@ public:
     void        Flush();
 
     //! Creates all areas of cloud
-    void        Create(const std::string& fileName, const Color& diffuse, const Color& ambient, float level);
+    void        Create(const std::filesystem::path& fileName, const Color& diffuse, const Color& ambient, float level);
     //! Draw the clouds
     void        Draw();
 
@@ -94,7 +95,7 @@ protected:
     //! Overall level
     float           m_level = 0.0f;
     //! Texture
-    std::string     m_fileName;
+    std::filesystem::path m_fileName;
     //! Feedrate (wind)
     glm::vec2       m_speed;
     //! Diffuse color

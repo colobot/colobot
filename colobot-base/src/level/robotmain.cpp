@@ -3250,9 +3250,9 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "TerrainCloud" && !resetObject)
             {
-                std::string path = "";
+                std::filesystem::path path = "";
                 if (line->GetParam("image")->IsDefined())
-                    path = TempToString(line->GetParam("image")->AsPath("textures"));
+                    path = line->GetParam("image")->AsPath("textures");
                 m_cloud->Create(path,
                                 line->GetParam("diffuse")->AsColor(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
                                 line->GetParam("ambient")->AsColor(Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
