@@ -225,9 +225,9 @@ bool CScriptFunctions::rPlayMusic(CBotVar* var, CBotVar* result, int& exception,
 {
     std::filesystem::path filename;
     try {
-        std::filesystem::path filename = StrUtils::ToPath(var->GetValString());
+        filename = StrUtils::ToPath(var->GetValString());
     } catch(...) {
-        exception = ERR_UNKNOWN;
+        exception = CBotErrFileOpen;
         return false;
     }
     var = var->GetNext();
