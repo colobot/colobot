@@ -379,6 +379,16 @@ bool CAutoVault::Read(CLevelParserLine* line)
 
     m_lastParticle = 0.0f;
 
+    if (m_phase == ASAP_FINISH)
+    {
+        m_object->DeleteAllCrashSpheres();
+        m_object->SetCameraCollisionSphere(Math::Sphere(glm::vec3(0.0f, 0.0f, 0.0f), 0.0f));
+
+        float finalAngle = 120.0f*Math::PI/180.0f;
+        m_object->SetPartRotationZ(1,  finalAngle);
+        m_object->SetPartRotationZ(2, -finalAngle);
+    }
+
     return true;
 }
 
