@@ -2985,7 +2985,7 @@ void CEngine::Draw3DScene()
             {
                 Color recolorFrom = data.material.recolorReference;
                 Color recolorTo = GetObjectColor(objRank, data.material.recolor);
-                float recolorThreshold = 0.1;
+                float recolorThreshold = data.material.recolorThreshold;
 
                 objectRenderer->SetRecolor(true, recolorFrom, recolorTo, recolorThreshold);
             }
