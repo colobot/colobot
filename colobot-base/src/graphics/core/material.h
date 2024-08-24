@@ -78,6 +78,8 @@ struct Material
     std::string recolor = "";
     // Recolor reference color
     Color recolorReference = { 0.0f, 0.0f, 0.0f, 0.0f };
+    // Recolor threshold
+    float recolorThreshold = 0.1f;
 
     // Legacy functionality
     //! Variable detail texture
