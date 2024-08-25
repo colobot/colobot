@@ -314,6 +314,9 @@ void COldObject::Simplify()
     }
     m_main->SaveOneScript(this);
 
+    StopForegroundTask();
+    StopBackgroundTask();
+
     m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::ProgramStorage)] = false;
     m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Programmable)] = false;
 
