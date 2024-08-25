@@ -282,6 +282,8 @@ bool CTaskBuild::EventProcess(const Event &event)
         return true;
     }
 
+    assert(m_phase == TBP_BUILD);
+
     if ( !m_bBuild )  // building to build?
     {
         m_bBuild = true;
@@ -646,6 +648,18 @@ Error CTaskBuild::IsEnded()
 
 bool CTaskBuild::Abort()
 {
+    // If the metal still exists, then we did not finish the building
+    if ( m_metal )
+    {
+        m_metal->SetScale(1.0f);
+        m_metal->SetLock(false);
+        if (m_building)
+        {
+            CObjectManager::GetInstancePointer()->DeleteObject(m_building);
+            m_building = nullptr;
+        }
+    }
+
     if ( m_soundChannel != -1 )
     {
         m_sound->FlushEnvelope(m_soundChannel);
