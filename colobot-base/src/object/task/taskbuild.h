@@ -70,7 +70,6 @@ protected:
 protected:
     ObjectType      m_type = OBJECT_NULL;                  // type of construction
     CObject*        m_metal = nullptr;                 // transforms metal object
-    CObject*        m_power = nullptr;                 // the vehicle battery
     CObject*        m_building = nullptr;              // building built
     TaskBuildPhase  m_phase = TBP_STOP;                 // phase of the operation
     bool            m_bError = false;                // true -> operation impossible
