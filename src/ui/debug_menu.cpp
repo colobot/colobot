@@ -23,6 +23,7 @@
 
 #include "common/event.h"
 #include "common/stringutils.h"
+#include "common/global.h"
 
 #include "graphics/engine/lightning.h"
 #include "graphics/engine/terrain.h"
@@ -458,7 +459,7 @@ void CDebugMenu::HandleFrameUpdate(const Event &event)
     Math::Vector pos;
     int obj;
     if ((obj = m_engine->DetectObject(event.mousePos, pos, true)) != -1)
-        str = StrUtils::Format("pos=% 3.2f; % 3.2f    height=% 3.2f    objId=% 4d", pos.x, pos.z, pos.y, obj);
+        str = StrUtils::Format("pos=% 3.2f; % 3.2f    height=% 3.2f    objId=% 4d", pos.x / g_unit, pos.z / g_unit, pos.y / g_unit, obj);
 
     CLabel* pl = static_cast<CLabel*>(m_interface->SearchControl(EVENT_LABEL19));
     if (pl == nullptr) return;
