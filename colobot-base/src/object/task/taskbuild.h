@@ -24,6 +24,8 @@
 
 #include "object/object_type.h"
 
+#include <optional>
+
 #include <glm/glm.hpp>
 
 
@@ -66,11 +68,13 @@ protected:
     void        BlackLight();
     CObject*    SearchMetalObject(float &angle, float dMin, float dMax, float aLimit, Error &err);
     void        DeleteMark(glm::vec3 pos, float radius);
+    CObject*    GetMetal();
+    CObject*    GetBuilding();
 
 protected:
     ObjectType      m_type = OBJECT_NULL;                  // type of construction
-    CObject*        m_metal = nullptr;                 // transforms metal object
-    CObject*        m_building = nullptr;              // building built
+    std::optional<unsigned int> m_metal_id;  // transforms metal object
+    std::optional<unsigned int> m_building_id;  // building built
     TaskBuildPhase  m_phase = TBP_STOP;                 // phase of the operation
     bool            m_bError = false;                // true -> operation impossible
     bool            m_bBuild = false;                // true -> building built

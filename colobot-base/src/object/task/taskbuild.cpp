@@ -95,8 +95,9 @@ void CTaskBuild::CreateBuilding(glm::vec3 pos, float angle, bool trainer)
     params.power = 0.0f;
     params.team = m_object->GetTeam();
     params.trainer = trainer;
-    m_building = CObjectManager::GetInstancePointer()->CreateObject(params);
-    m_building->SetLock(true);  // not yet usable
+    CObject* building = CObjectManager::GetInstancePointer()->CreateObject(params);
+    m_building_id = building->GetID();
+    building->SetLock(true);  // not yet usable
 
     if ( m_type == OBJECT_DERRICK  )  m_buildingHeight = 35.0f;
     if ( m_type == OBJECT_FACTORY  )  m_buildingHeight = 28.0f;
@@ -116,9 +117,9 @@ void CTaskBuild::CreateBuilding(glm::vec3 pos, float angle, bool trainer)
     if ( m_type == OBJECT_HUSTON   )  m_buildingHeight = 45.0f;
     m_buildingHeight *= 0.25f;
 
-    m_buildingPos = m_building->GetPosition();
+    m_buildingPos = building->GetPosition();
     m_buildingPos.y -= m_buildingHeight;
-    m_building->SetPosition(m_buildingPos);
+    building->SetPosition(m_buildingPos);
 }
 
 // Creates lights for the effects.
@@ -133,7 +134,9 @@ void CTaskBuild::CreateLight()
 
     if ( !m_engine->GetLightMode() )  return;
 
-    center = m_metal->GetPosition();
+    CObject* metal = GetMetal();
+    if (!metal) return;
+    center = metal->GetPosition();
 
     angle = 0;
     for ( i=0 ; i<TBMAXLIGHT ; i++ )
@@ -245,7 +248,10 @@ bool CTaskBuild::EventProcess(const Event &event)
 
     if ( m_phase == TBP_MOVE )  // preliminary forward/backward?
     {
-        dist = glm::distance(m_object->GetPosition(), m_metal->GetPosition());
+        CObject* metal = GetMetal();
+        if ( !metal ) return false;
+
+        dist = glm::distance(m_object->GetPosition(), metal->GetPosition());
         linSpeed = 0.0f;
         if ( m_physics->GetLand() )
         {
@@ -284,29 +290,48 @@ bool CTaskBuild::EventProcess(const Event &event)
 
     assert(m_phase == TBP_BUILD);
 
+    CObject* metal = GetMetal();
+    if ( !metal )
+    {
+        // Metal was destroyed before the building was finished
+        if (CObject* building = GetBuilding())
+        {
+            CObjectManager::GetInstancePointer()->DeleteObject(building);
+        }
+        return false;
+    }
+
     if ( !m_bBuild )  // building to build?
     {
         m_bBuild = true;
 
-        pos = m_metal->GetPosition();
+        pos = metal->GetPosition();
         a   = m_object->GetRotationY();
         CreateBuilding(pos, a+Math::PI, m_object->GetTrainer());
         CreateLight();
     }
 
+    CObject* building = GetBuilding();
+    if ( !building )
+    {
+        // A partially built building was destroyed
+        CObjectManager::GetInstancePointer()->DeleteObject(metal);
+        return false;
+    }
+
     pos = m_buildingPos;
     pos.y += m_buildingHeight*m_progress;
-    m_building->SetPosition(pos);  // the building rises
+    building->SetPosition(pos);  // the building rises
 
-    m_building->SetScale(m_progress*0.75f+0.25f);
-    m_metal->SetScale(1.0f-m_progress);
+    metal->SetScale(1.0f-m_progress);
+    building->SetScale(m_progress*0.75f+0.25f);
 
     a = (2.0f-2.0f*m_progress);
     if ( a > 1.0f )  a = 1.0f;
     dir.x = (Math::Rand()-0.5f)*a*0.1f;
     dir.z = (Math::Rand()-0.5f)*a*0.1f;
     dir.y = (Math::Rand()-0.5f)*a*0.1f;
-    m_building->SetCirVibration(dir);
+    building->SetCirVibration(dir);
 
     if ( !m_bBlack && m_progress >= 0.25f )
     {
@@ -317,7 +342,7 @@ bool CTaskBuild::EventProcess(const Event &event)
     {
         m_lastParticle = m_time;
 
-        pos = m_metal->GetPosition();
+        pos = metal->GetPosition();
         speed.x = (Math::Rand()-0.5f)*20.0f;
         speed.z = (Math::Rand()-0.5f)*20.0f;
         speed.y = Math::Rand()*10.0f;
@@ -347,7 +372,7 @@ bool CTaskBuild::EventProcess(const Event &event)
                 break;
         }
         pos = Math::Transform(mat, pos);
-        speed = m_metal->GetPosition();
+        speed = metal->GetPosition();
         speed.x += (Math::Rand()-0.5f)*5.0f;
         speed.z += (Math::Rand()-0.5f)*5.0f;
         speed -= pos;
@@ -364,7 +389,7 @@ bool CTaskBuild::EventProcess(const Event &event)
     if(m_object->GetType() == OBJECT_MOBILEfb && m_object->GetReactorRange()<0.2f && m_phase != TBP_MOVE)
     {
         pv = m_object->GetPosition();
-        pm = m_metal->GetPosition();
+        pm = metal->GetPosition();
         dist = glm::distance(pv, pm);
         diff = pm.y - 8.0f - pv.y;
         tilt = m_object->GetRotation();
@@ -404,8 +429,9 @@ Error CTaskBuild::Start(ObjectType type)
 
     if (IsObjectCarryingCargo(m_object))  return ERR_MANIP_BUSY;
 
-    m_metal = SearchMetalObject(oAngle, 2.0f, 100.0f, Math::PI*0.25f, err);
-    if ( err == ERR_BUILD_METALNEAR && m_metal != nullptr )
+    CObject* metal = SearchMetalObject(oAngle, 2.0f, 100.0f, Math::PI*0.25f, err);
+    m_metal_id = metal->GetID();
+    if ( err == ERR_BUILD_METALNEAR && metal != nullptr )
     {
         err = FlatFloor();
         if ( err != ERR_OK )  return err;
@@ -417,10 +443,10 @@ Error CTaskBuild::Start(ObjectType type)
     if ( err != ERR_OK )  return err;
 
     pv = m_object->GetPosition();
-    pm = m_metal->GetPosition();
+    pm = metal->GetPosition();
     if(!m_physics->GetLand() && fabs(pm.y-pv.y)>8.0f) return ERR_BUILD_METALAWAY;
 
-    m_metal->SetLock(true);  // not usable
+    metal->SetLock(true);  // not usable
     m_camera->StartCentering(m_object, Math::PI*0.15f, 99.9f, 0.0f, 1.0f);
 
     m_phase = TBP_TURN;  // rotation necessary preliminary
@@ -440,7 +466,6 @@ Error CTaskBuild::Start(ObjectType type)
 
 Error CTaskBuild::IsEnded()
 {
-    CAuto*      automat;
     float       angle, dist, time, diff;
     glm::vec3       pv,   pm,   tilt;
 
@@ -449,6 +474,9 @@ Error CTaskBuild::IsEnded()
 
     if ( m_phase == TBP_TURN )  // preliminary rotation?
     {
+        CObject* metal = GetMetal();
+        if ( !metal ) return ERR_STOP;
+
         angle = m_object->GetRotationY();
         angle = Math::NormAngle(angle);  // 0..2*Math::PI
 
@@ -456,7 +484,7 @@ Error CTaskBuild::IsEnded()
         {
             m_physics->SetMotorSpeedZ(0.0f);
 
-            dist = glm::distance(m_object->GetPosition(), m_metal->GetPosition());
+            dist = glm::distance(m_object->GetPosition(), metal->GetPosition());
             if ( dist > 30.0f )
             {
                 time = m_physics->GetLinTimeLength(dist-30.0f, 1.0f);
@@ -475,7 +503,10 @@ Error CTaskBuild::IsEnded()
 
     if ( m_phase == TBP_MOVE )  // preliminary forward/backward?
     {
-        dist = glm::distance(m_object->GetPosition(), m_metal->GetPosition());
+        CObject* metal = GetMetal();
+        if ( !metal ) return ERR_STOP;
+
+        dist = glm::distance(m_object->GetPosition(), metal->GetPosition());
 
         if ( !m_physics->GetLand())
         {
@@ -502,7 +533,7 @@ Error CTaskBuild::IsEnded()
         {
             if ( m_progress > 1.0f )  // timeout?
             {
-                m_metal->SetLock(false);  // usable again
+                metal->SetLock(false);  // usable again
                 if ( dist < 30.0f )  return ERR_BUILD_METALNEAR;
                 else                 return ERR_BUILD_METALAWAY;
             }
@@ -512,6 +543,9 @@ Error CTaskBuild::IsEnded()
 
     if ( m_phase == TBP_TAKE )  // takes gun
     {
+        CObject* metal = GetMetal();
+        if ( !metal ) return ERR_STOP;
+
         if ( m_progress < 1.0f )  return ERR_CONTINUE;
 
         m_motion->SetAction(MHS_FIRE);  // shooting position
@@ -528,7 +562,7 @@ Error CTaskBuild::IsEnded()
         {
             m_object->SetObjectParent(1, 0);
             pv = m_object->GetPosition();
-            pm = m_metal->GetPosition();
+            pm = metal->GetPosition();
             dist = glm::distance(pv, pm);
             diff = pm.y - 8.0f - pv.y;
             tilt = m_object->GetRotation();
@@ -542,6 +576,9 @@ Error CTaskBuild::IsEnded()
 
     if ( m_phase == TBP_PREP )  // prepares?
     {
+        CObject* metal = GetMetal();
+        if ( !metal ) return ERR_STOP;
+
         if ( m_progress < 1.0f )  return ERR_CONTINUE;
 
         m_soundChannel = m_sound->Play(SOUND_TREMBLE, m_object->GetPosition(), 0.0f, 1.0f, true);
@@ -549,7 +586,7 @@ Error CTaskBuild::IsEnded()
         m_sound->AddEnvelope(m_soundChannel, 0.7f, 1.5f, 7.0f, SOPER_CONTINUE);
         m_sound->AddEnvelope(m_soundChannel, 0.0f, 1.5f, 2.0f, SOPER_STOP);
 
-        m_camera->StartEffect(Gfx::CAM_EFFECT_VIBRATION, m_metal->GetPosition(), 1.0f);
+        m_camera->StartEffect(Gfx::CAM_EFFECT_VIBRATION, metal->GetPosition(), 1.0f);
 
         m_phase = TBP_BUILD;
         m_speed = 1.0f/10.f;  // duration of 10s
@@ -558,24 +595,23 @@ Error CTaskBuild::IsEnded()
 
     if ( m_phase == TBP_BUILD )  // construction?
     {
+        CObject* metal = GetMetal();
+        if ( !metal ) return ERR_STOP;
         if ( m_progress < 1.0f )  return ERR_CONTINUE;
+        CObject* building = GetBuilding();
+        if ( ! building ) return ERR_STOP;
 
-        DeleteMark(m_metal->GetPosition(), 20.0f);
+        DeleteMark(metal->GetPosition(), 20.0f);
 
-        CObjectManager::GetInstancePointer()->DeleteObject(m_metal);
-        m_metal = nullptr;
+        CObjectManager::GetInstancePointer()->DeleteObject(metal);
 
-        m_building->SetScale(1.0f);
-        m_building->SetCirVibration(glm::vec3(0.0f, 0.0f, 0.0f));
-        m_building->SetLock(false);  // building usable
+        building->SetScale(1.0f);
+        building->SetCirVibration(glm::vec3(0.0f, 0.0f, 0.0f));
+        building->SetLock(false);  // building usable
         m_main->CreateShortcuts();
         m_main->DisplayError(INFO_BUILD, m_buildingPos, 10.0f, 50.0f);
 
-        automat = m_building->GetAuto();
-        if ( automat != nullptr )
-        {
-            automat->Init();
-        }
+        if (CAuto* automat = building->GetAuto()) automat->Init();
 
         m_motion->SetAction(MHS_GUN);  // hands gun
         m_phase = TBP_TERM;
@@ -637,7 +673,7 @@ Error CTaskBuild::IsEnded()
         m_physics->SetMotorSpeedX(0.0f);
         m_physics->SetMotorSpeedZ(0.0f);
 
-        m_metal->SetLock(false); // make titanium usable
+        if ( CObject* metal = GetMetal() ) metal->SetLock(false); // make titanium usable
     }
 
     Abort();
@@ -649,14 +685,13 @@ Error CTaskBuild::IsEnded()
 bool CTaskBuild::Abort()
 {
     // If the metal still exists, then we did not finish the building
-    if ( m_metal )
+    if ( CObject* metal = GetMetal() )
     {
-        m_metal->SetScale(1.0f);
-        m_metal->SetLock(false);
-        if (m_building)
+        metal->SetScale(1.0f);
+        metal->SetLock(false);
+        if (CObject* building = GetBuilding())
         {
-            CObjectManager::GetInstancePointer()->DeleteObject(m_building);
-            m_building = nullptr;
+            CObjectManager::GetInstancePointer()->DeleteObject(building);
         }
     }
 
@@ -683,6 +718,9 @@ Error CTaskBuild::FlatFloor()
     float       radius, max, bRadius = 0.0f, angle, dist;
     bool        bLittleFlat, bBase;
 
+    CObject* metal = GetMetal();
+    if (!metal) return ERR_BUILD_METALINEX;
+
     radius = 0.0f;
     if ( m_type == OBJECT_DERRICK  )  radius =  5.0f;
     if ( m_type == OBJECT_FACTORY  )  radius = 15.0f;
@@ -701,7 +739,7 @@ Error CTaskBuild::FlatFloor()
     if ( m_type == OBJECT_DESTROYER)  radius = 20.0f;
     //if ( radius == 0.0f )  return ERR_UNKNOWN;
 
-    center = m_metal->GetPosition();
+    center = metal->GetPosition();
     angle = m_terrain->GetFineSlope(center);
     bLittleFlat = ( angle < Gfx::TERRAIN_FLATLIMIT);
 
@@ -710,7 +748,7 @@ Error CTaskBuild::FlatFloor()
     {
         if ( bLittleFlat )
         {
-            m_main->SetShowLimit(1, Gfx::PARTILIMIT3, m_metal, center, max, 10.0f);
+            m_main->SetShowLimit(1, Gfx::PARTILIMIT3, metal, center, max, 10.0f);
         }
         return bLittleFlat?ERR_BUILD_FLATLIT:ERR_BUILD_FLAT;
     }
@@ -721,7 +759,7 @@ Error CTaskBuild::FlatFloor()
     {
         if ( !pObj->GetActive() )  continue;  // inactive?
         if (IsObjectBeingTransported(pObj))  continue;
-        if ( pObj == m_metal )  continue;
+        if ( pObj == metal )  continue;
         if ( pObj == m_object )  continue;
 
         type = pObj->GetType();
@@ -757,9 +795,9 @@ Error CTaskBuild::FlatFloor()
     }
     if ( max < radius )
     {
-        m_main->SetShowLimit(1, Gfx::PARTILIMIT2, m_metal, center, max, 10.0f);
+        m_main->SetShowLimit(1, Gfx::PARTILIMIT2, metal, center, max, 10.0f);
         if ( bRadius < 2.0f )  bRadius = 2.0f;
-        m_main->SetShowLimit(2, Gfx::PARTILIMIT3, m_metal, bPos, bRadius, 10.0f);
+        m_main->SetShowLimit(2, Gfx::PARTILIMIT3, metal, bPos, bRadius, 10.0f);
         return bBase?ERR_BUILD_BASE:ERR_BUILD_BUSY;
     }
 
@@ -768,7 +806,7 @@ Error CTaskBuild::FlatFloor()
     {
         if ( !pObj->GetActive() )  continue;  // inactive?
         if (IsObjectBeingTransported(pObj))  continue;
-        if ( pObj == m_metal )  continue;
+        if ( pObj == metal )  continue;
         if ( pObj == m_object )  continue;
 
         type = pObj->GetType();
@@ -808,8 +846,8 @@ Error CTaskBuild::FlatFloor()
     }
     if ( max-BUILDMARGIN < radius )
     {
-        m_main->SetShowLimit(1, Gfx::PARTILIMIT2, m_metal, center, max-BUILDMARGIN, 10.0f);
-        m_main->SetShowLimit(2, Gfx::PARTILIMIT3, m_metal, bPos, bRadius+BUILDMARGIN, 10.0f);
+        m_main->SetShowLimit(1, Gfx::PARTILIMIT2, metal, center, max-BUILDMARGIN, 10.0f);
+        m_main->SetShowLimit(2, Gfx::PARTILIMIT3, metal, bPos, bRadius+BUILDMARGIN, 10.0f);
         return bBase?ERR_BUILD_BASE:ERR_BUILD_NARROW;
     }
 
@@ -911,4 +949,21 @@ void CTaskBuild::DeleteMark(glm::vec3 pos, float radius)
     {
         CObjectManager::GetInstancePointer()->DeleteObject(obj);
     }
+}
+
+
+CObject* CTaskBuild::GetMetal()
+{
+    if ( !m_metal_id.has_value() ) return nullptr;
+    CObject* metal = CObjectManager::GetInstancePointer()->GetObjectById(m_metal_id.value());
+    if ( metal && metal->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject&>(*metal).IsDying() ) return nullptr;
+    return metal;
+}
+
+CObject* CTaskBuild::GetBuilding()
+{
+    if ( !m_building_id.has_value() ) return nullptr;
+    CObject* building = CObjectManager::GetInstancePointer()->GetObjectById(m_building_id.value());
+    if ( building && building->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject&>(*building).IsDying() ) return nullptr;
+    return building;
 }
