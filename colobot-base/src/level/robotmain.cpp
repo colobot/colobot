@@ -4479,6 +4479,13 @@ void CRobotMain::IOWriteObject(CLevelParserLine* line, CObject* obj,
     }
 }
 
+static bool IsSkip( const CObject* obj )
+{
+    return obj->GetType() == OBJECT_TOTO
+        || IsObjectBeingTransported(obj)
+        || obj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<const CDestroyableObject&>(*obj).IsDying();
+}
+
 //! Saves the current game
 bool CRobotMain::IOWriteScene(const std::filesystem::path& filename,
         const std::filesystem::path& filecbot,
@@ -4546,9 +4553,7 @@ bool CRobotMain::IOWriteScene(const std::filesystem::path& filename,
     int objRank = 0;
     for (CObject* obj : m_objMan->GetAllObjects())
     {
-        if (obj->GetType() == OBJECT_TOTO) continue;
-        if (IsObjectBeingTransported(obj)) continue;
-        if (obj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject&>(*obj).IsDying()) continue;
+        if (IsSkip(obj)) continue;
 
         if (obj->Implements(ObjectInterfaceType::Slotted))
         {
@@ -4597,9 +4602,7 @@ bool CRobotMain::IOWriteScene(const std::filesystem::path& filename,
 
     for (CObject* obj : m_objMan->GetAllObjects())
     {
-        if (obj->GetType() == OBJECT_TOTO) continue;
-        if (IsObjectBeingTransported(obj)) continue;
-        if (obj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject&>(*obj).IsDying()) continue;
+        if (IsSkip(obj)) continue;
 
         if (!SaveFileStack(obj, ostr))
         {

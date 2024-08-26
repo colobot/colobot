@@ -1824,7 +1824,7 @@ void COldObject::SetTransporter(CObject* transporter)
     m_engine->SetObjectShadowSpotHide(m_objectPart[0].object, (m_transporter != nullptr));
 }
 
-CObject* COldObject::GetTransporter()
+CObject* COldObject::GetTransporter() const
 {
     return m_transporter;
 }
@@ -2879,7 +2879,7 @@ DeathType COldObject::GetDying()
     return m_dying;
 }
 
-bool COldObject::IsDying()
+bool COldObject::IsDying() const
 {
     return m_dying != DeathType::Alive;
 }
