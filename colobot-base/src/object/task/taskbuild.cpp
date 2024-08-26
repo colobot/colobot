@@ -430,7 +430,7 @@ Error CTaskBuild::Start(ObjectType type)
     if (IsObjectCarryingCargo(m_object))  return ERR_MANIP_BUSY;
 
     CObject* metal = SearchMetalObject(oAngle, 2.0f, 100.0f, Math::PI*0.25f, err);
-    m_metal_id = metal->GetID();
+    if ( metal ) m_metal_id = metal->GetID();
     if ( err == ERR_BUILD_METALNEAR && metal != nullptr )
     {
         err = FlatFloor();
