@@ -4483,7 +4483,7 @@ static bool IsSkip( const CObject* obj )
 {
     return obj->GetType() == OBJECT_TOTO
         || IsObjectBeingTransported(obj)
-        || obj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<const CDestroyableObject&>(*obj).IsDying();
+        || (obj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<const CDestroyableObject&>(*obj).IsDying());
 }
 
 //! Saves the current game
