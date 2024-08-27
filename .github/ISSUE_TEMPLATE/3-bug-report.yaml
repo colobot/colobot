@@ -41,6 +41,9 @@ body:
     required: true
 - type: textarea
   attributes:
+    label: Video card (if the bug is graphics-related)
+- type: textarea
+  attributes:
     label: Steps to reproduce the bug
     placeholder: |
       1. Make a recycler
