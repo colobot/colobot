@@ -44,6 +44,12 @@ body:
     label: Operating system (e.g. Windows 11)
   validations:
     required: true
+- type: markdown
+  attributes:
+    value: Posting information about your video card makes it more likely we would be able to troubleshoot the issue
+- type: textarea
+  attributes:
+    label: Video card
 - type: textarea
   attributes:
     label: Steps to reproduce the crash
