@@ -1,0 +1,69 @@
+name: Report a crash or hang
+description: The game has crashed or hanged
+labels: bug,crash,needs-triage
+
+body:
+- type: markdown
+  attributes:
+    value: Please **do not use** external websites (such as drop box or google drive) to upload screenshots, save files etc. External links have a tendency to become dead. Upload the files to github insted by using one of the below fields.
+- type: textarea
+  attributes:
+    label: Error message
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: log.txt
+  validations:
+    required: true
+- type: markdown
+  attributes:
+    value: |
+      Uploading a save file makes it more likely we would be able to troubleshoot the issue
+      1. Find the save dirrectory
+      2. Make a zip archive from it
+      3. Upload it to github by using the field below
+- type: textarea
+  attributes:
+    label: Save file
+- type: markdown
+  attributes:
+    value: |
+      Uploading a colobot.ini or colobot.json file makes it more likely we would be able to troubleshoot the issue
+- type: textarea
+  attributes:
+    label: colobot.ini or colobot.json
+- type: input
+  attributes:
+    label: Game version (e.g. 0.2.1-alpha)
+    description: You can find this information in the bottom right corner of the main menu
+  validations:
+    required: true
+- type: input
+  attributes:
+    label: Operating system (e.g. Windows 11)
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Steps to reproduce the crash
+    placeholder: |
+      1. Start the "Alien Queen" mission from the "On Terranova" chapter
+      2. Fly the astronaut tovards the vault and smash into it
+      3. The game crashes
+  validations:
+    required: true
+- type: input
+  attributes:
+    label: Are you able to reproduce the crsah?
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Please, post a stack trace if you know how
+- type: textarea
+  attributes:
+    label: Installed mods (if any)
+- type: textarea
+  attributes:
+    label: Additional information
