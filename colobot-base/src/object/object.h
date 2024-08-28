@@ -221,9 +221,9 @@ protected:
     const int m_id; //!< unique identifier
     ObjectType m_type; //!< object type
     ObjectInterfaceTypes m_implementedInterfaces; //!< interfaces that the object implements
-    glm::vec3 m_position{ 0, 0, 0 };
-    glm::vec3 m_rotation{ 0, 0, 0 };
-    glm::vec3 m_scale{ 0, 0, 0 };
+    glm::vec3 m_position;
+    glm::vec3 m_rotation;
+    glm::vec3 m_scale;
     std::vector<CrashSphere> m_crashSpheres; //!< crash spheres
     Math::Sphere m_cameraCollisionSphere;
     bool m_animateOnReset;
