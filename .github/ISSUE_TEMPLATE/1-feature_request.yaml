@@ -5,7 +5,7 @@ labels: enhancement,needs-triage
 body:
 - type: markdown
   attributes:
-    value: Please **do not use** external websites (such as Dropbox or Google Drive) to upload screenshots, save files etc. External links have a tendency to become dead. Upload the files to GitHub insted by using one of the below fields.
+    value: Please **do not use** external websites (such as Dropbox or Google Drive) to upload screenshots, save files etc. External links have a tendency to become dead. Upload the files to GitHub instead by using one of the fields below.
 - type: textarea
   attributes:
     label: Describe the feature
