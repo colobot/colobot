@@ -233,118 +233,131 @@ Error CTaskRecover::IsEnded()
     if ( m_engine->GetPause() )  return ERR_CONTINUE;
     if ( m_bError )  return ERR_STOP;
 
-    if ( m_phase == TRP_TURN )  // preliminary rotation?
+    switch ( m_phase )
     {
-        angle = m_object->GetRotationY();
-        angle = Math::NormAngle(angle);  // 0..2*Math::PI
-
-        if ( Math::TestAngle(angle, m_angle-Math::PI*0.01f, m_angle+Math::PI*0.01f) )
+        case TRP_TURN:  // preliminary rotation?
         {
-            m_physics->SetMotorSpeedZ(0.0f);
+            angle = m_object->GetRotationY();
+            angle = Math::NormAngle(angle);  // 0..2*Math::PI
 
-            dist = glm::distance(m_object->GetPosition(), m_ruin->GetPosition());
-            if ( dist > RECOVER_DIST )
+            if ( Math::TestAngle(angle, m_angle-Math::PI*0.01f, m_angle+Math::PI*0.01f) )
             {
-                time = m_physics->GetLinTimeLength(dist-RECOVER_DIST, 1.0f);
-                m_speed = 1.0f/time;
+                m_physics->SetMotorSpeedZ(0.0f);
+
+                dist = glm::distance(m_object->GetPosition(), m_ruin->GetPosition());
+                if ( dist > RECOVER_DIST )
+                {
+                    time = m_physics->GetLinTimeLength(dist-RECOVER_DIST, 1.0f);
+                    m_speed = 1.0f/time;
+                }
+                else
+                {
+                    time = m_physics->GetLinTimeLength(RECOVER_DIST-dist, -1.0f);
+                    m_speed = 1.0f/time;
+                }
+                m_phase = TRP_MOVE;
+                m_progress = 0.0f;
+            }
+            return ERR_CONTINUE;
+        }
+
+        case TRP_MOVE:  // preliminary advance?
+        {
+            dist = glm::distance(m_object->GetPosition(), m_ruin->GetPosition());
+
+            if ( dist >= RECOVER_DIST-1.0f &&
+                 dist <= RECOVER_DIST+1.0f )
+            {
+                m_physics->SetMotorSpeedX(0.0f);
+
+                glm::mat4 mat = m_object->GetWorldMatrix(0);
+                pos = glm::vec3(RECOVER_DIST, 3.3f, 0.0f);
+                pos = Math::Transform(mat, pos);  // position in front
+                m_recoverPos = pos;
+
+                i = m_sound->Play(SOUND_MANIP, m_object->GetPosition(), 0.0f, 0.9f, true);
+                m_sound->AddEnvelope(i, 1.0f, 1.5f, 0.3f, SOPER_CONTINUE);
+                m_sound->AddEnvelope(i, 1.0f, 1.5f, 1.0f, SOPER_CONTINUE);
+                m_sound->AddEnvelope(i, 0.0f, 0.9f, 0.3f, SOPER_STOP);
+
+                m_phase    = TRP_DOWN;
+                m_progress = 0.0f;
+                m_speed    = 1.0f/1.5f;
+                m_time     = 0.0f;
             }
             else
             {
-                time = m_physics->GetLinTimeLength(RECOVER_DIST-dist, -1.0f);
-                m_speed = 1.0f/time;
+                if ( m_progress > 1.0f )  // timeout?
+                {
+                    m_ruin->SetLock(false);  // usable again
+                    m_camera->StopCentering(m_object, 2.0f);
+                    return ERR_RECOVER_NULL;
+                }
             }
-            m_phase = TRP_MOVE;
-            m_progress = 0.0f;
+            return ERR_CONTINUE;
         }
-        return ERR_CONTINUE;
-    }
 
-    if ( m_phase == TRP_MOVE )  // preliminary advance?
-    {
-        dist = glm::distance(m_object->GetPosition(), m_ruin->GetPosition());
-
-        if ( dist >= RECOVER_DIST-1.0f &&
-             dist <= RECOVER_DIST+1.0f )
+        case TRP_DOWN:
         {
-            m_physics->SetMotorSpeedX(0.0f);
+            if ( m_progress < 1.0f )  return ERR_CONTINUE;
+
+            m_metal = CObjectManager::GetInstancePointer()->CreateObject(m_recoverPos, 0.0f, OBJECT_METAL);
+            m_metal->SetLock(true);  // metal not yet usable
+            m_metal->SetScale(0.0f);
 
             glm::mat4 mat = m_object->GetWorldMatrix(0);
-            pos = glm::vec3(RECOVER_DIST, 3.3f, 0.0f);
-            pos = Math::Transform(mat, pos);  // position in front
-            m_recoverPos = pos;
+            pos = glm::vec3(RECOVER_DIST, 3.1f, 3.9f);
+            pos = Math::Transform(mat, pos);
+            goal = glm::vec3(RECOVER_DIST, 3.1f, -3.9f);
+            goal = Math::Transform(mat, goal);
+            m_particle->CreateRay(pos, goal, Gfx::PARTIRAY2,
+                                  { 2.0f, 2.0f }, 8.0f);
+
+            m_soundChannel = m_sound->Play(SOUND_RECOVER, m_ruin->GetPosition(), 0.0f, 1.0f, true);
+            m_sound->AddEnvelope(m_soundChannel, 0.6f, 1.0f, 2.0f, SOPER_CONTINUE);
+            m_sound->AddEnvelope(m_soundChannel, 0.6f, 1.0f, 4.0f, SOPER_CONTINUE);
+            m_sound->AddEnvelope(m_soundChannel, 0.0f, 0.7f, 2.0f, SOPER_STOP);
+
+            m_phase = TRP_OPER;
+            m_progress = 0.0f;
+            m_speed = 1.0f/8.0f;
+            return ERR_CONTINUE;
+        }
+
+        case TRP_OPER:
+        {
+            if ( m_progress < 1.0f )  return ERR_CONTINUE;
+
+            m_metal->SetScale(1.0f);
+
+            CObjectManager::GetInstancePointer()->DeleteObject(m_ruin);
+            m_ruin = nullptr;
+
+            m_soundChannel = -1;
 
             i = m_sound->Play(SOUND_MANIP, m_object->GetPosition(), 0.0f, 0.9f, true);
             m_sound->AddEnvelope(i, 1.0f, 1.5f, 0.3f, SOPER_CONTINUE);
             m_sound->AddEnvelope(i, 1.0f, 1.5f, 1.0f, SOPER_CONTINUE);
             m_sound->AddEnvelope(i, 0.0f, 0.9f, 0.3f, SOPER_STOP);
 
-            m_phase    = TRP_DOWN;
+            m_phase = TRP_UP;
             m_progress = 0.0f;
-            m_speed    = 1.0f/1.5f;
-            m_time     = 0.0f;
+            m_speed = 1.0f/1.5f;
+            return ERR_CONTINUE;
         }
-        else
+
+        case TRP_UP:
         {
-            if ( m_progress > 1.0f )  // timeout?
-            {
-                m_ruin->SetLock(false);  // usable again
-                m_camera->StopCentering(m_object, 2.0f);
-                return ERR_RECOVER_NULL;
-            }
+            if ( m_progress < 1.0f )  return ERR_CONTINUE;
+
+            m_metal->SetLock(false);  // metal usable
+
+            Abort();
+            return ERR_STOP;
         }
-        return ERR_CONTINUE;
     }
 
-    if ( m_progress < 1.0f )  return ERR_CONTINUE;
-    m_progress = 0.0f;
-
-    if ( m_phase == TRP_DOWN )
-    {
-        m_metal = CObjectManager::GetInstancePointer()->CreateObject(m_recoverPos, 0.0f, OBJECT_METAL);
-        m_metal->SetLock(true);  // metal not yet usable
-        m_metal->SetScale(0.0f);
-
-        glm::mat4 mat = m_object->GetWorldMatrix(0);
-        pos = glm::vec3(RECOVER_DIST, 3.1f, 3.9f);
-        pos = Math::Transform(mat, pos);
-        goal = glm::vec3(RECOVER_DIST, 3.1f, -3.9f);
-        goal = Math::Transform(mat, goal);
-        m_particle->CreateRay(pos, goal, Gfx::PARTIRAY2,
-                              { 2.0f, 2.0f }, 8.0f);
-
-        m_soundChannel = m_sound->Play(SOUND_RECOVER, m_ruin->GetPosition(), 0.0f, 1.0f, true);
-        m_sound->AddEnvelope(m_soundChannel, 0.6f, 1.0f, 2.0f, SOPER_CONTINUE);
-        m_sound->AddEnvelope(m_soundChannel, 0.6f, 1.0f, 4.0f, SOPER_CONTINUE);
-        m_sound->AddEnvelope(m_soundChannel, 0.0f, 0.7f, 2.0f, SOPER_STOP);
-
-        m_phase = TRP_OPER;
-        m_speed = 1.0f/8.0f;
-        return ERR_CONTINUE;
-    }
-
-    if ( m_phase == TRP_OPER )
-    {
-        m_metal->SetScale(1.0f);
-
-        CObjectManager::GetInstancePointer()->DeleteObject(m_ruin);
-        m_ruin = nullptr;
-
-        m_soundChannel = -1;
-
-        i = m_sound->Play(SOUND_MANIP, m_object->GetPosition(), 0.0f, 0.9f, true);
-        m_sound->AddEnvelope(i, 1.0f, 1.5f, 0.3f, SOPER_CONTINUE);
-        m_sound->AddEnvelope(i, 1.0f, 1.5f, 1.0f, SOPER_CONTINUE);
-        m_sound->AddEnvelope(i, 0.0f, 0.9f, 0.3f, SOPER_STOP);
-
-        m_phase = TRP_UP;
-        m_speed = 1.0f/1.5f;
-        return ERR_CONTINUE;
-    }
-
-    m_metal->SetLock(false);  // metal usable
-
-    Abort();
-    return ERR_STOP;
+    assert(0);
 }
 
 // Suddenly ends the current action.
