@@ -1094,8 +1094,8 @@ void COldObject::Write(CLevelParserLine* line)
     if ( !GetCollisions() )
         line->AddParam("clip", std::make_unique<CLevelParserParam>(GetCollisions()));
 
-    if ( GetLock() )
-        line->AddParam("lock", std::make_unique<CLevelParserParam>(GetLock()));
+    if ( GetLockForSave() )
+        line->AddParam("lock", std::make_unique<CLevelParserParam>(true));
 
     if ( !GetActivity() )
         line->AddParam("activity", std::make_unique<CLevelParserParam>(GetActivity()));

@@ -4431,7 +4431,7 @@ void CRobotMain::IOWriteObject(CLevelParserLine* line, CObject* obj,
     line->AddParam("id", std::make_unique<CLevelParserParam>(obj->GetID()));
     line->AddParam("pos", std::make_unique<CLevelParserParam>(obj->GetPosition()/g_unit));
     line->AddParam("angle", std::make_unique<CLevelParserParam>(obj->GetRotation() * Math::RAD_TO_DEG));
-    line->AddParam("zoom", std::make_unique<CLevelParserParam>(obj->GetScale()));
+    line->AddParam("zoom", std::make_unique<CLevelParserParam>(obj->GetScaleForSave()));
 
     if (obj->Implements(ObjectInterfaceType::Old))
     {
@@ -4482,6 +4482,7 @@ void CRobotMain::IOWriteObject(CLevelParserLine* line, CObject* obj,
 static bool IsSkip( const CObject* obj )
 {
     return obj->GetType() == OBJECT_TOTO
+        || !obj->GetPersistent()
         || IsObjectBeingTransported(obj)
         || (obj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<const CDestroyableObject&>(*obj).IsDying());
 }

@@ -30,6 +30,7 @@
 #include "object/old_object_interface.h"
 
 #include <vector>
+#include <optional>
 
 namespace Gfx
 {
@@ -128,6 +129,11 @@ public:
     //! Sets objects's scale (uniform value)
     void SetScale(float scale);
 
+    //! Overrides objects's scale that is saved when saving the game
+    void SetScaleOverride(std::optional<glm::vec3> scale);
+    //! Return objects's scale that should be written to a save file
+    glm::vec3 GetScaleForSave() const;
+
     //!@{
     //! Shortcuts for scale components
     void SetScaleX(float angle);
@@ -199,7 +205,11 @@ public:
     //! Set "lock" mode of an object (for example, a robot while it's being factored, or a building while it's built)
     void SetLock(bool lock);
     //! Return "lock" mode of an object
-    bool GetLock();
+    bool GetLock() const;
+    //! Overrides the "lock" mode of an object that is saved when saving the game
+    void SetLockOverride(std::optional<bool> lock);
+    //! Return "lock" mode of an object that should be written to a save file
+    bool GetLockForSave() const;
 
     //! Is this object active (not dead)?
     virtual bool GetActive() { return true; }
@@ -210,6 +220,10 @@ public:
     //! This is useful to make Barriers protect from bullets
     //! \todo It will work like this for now but later I'd like to refactor this to something more manageable ~krzys_h
     virtual bool IsBulletWall() { return false; }
+
+    //! Set whether the object is saved when creating a save file
+    void SetPersistent(bool);
+    bool GetPersistent() const;
 
 protected:
     //! Transform crash sphere by object's world matrix
@@ -224,6 +238,7 @@ protected:
     glm::vec3 m_position;
     glm::vec3 m_rotation;
     glm::vec3 m_scale;
+    std::optional<glm::vec3> m_scaleOverride;
     std::vector<CrashSphere> m_crashSpheres; //!< crash spheres
     Math::Sphere m_cameraCollisionSphere;
     bool m_animateOnReset;
@@ -233,4 +248,6 @@ protected:
     float m_proxyDistance;
     CBot::CBotVar* m_botVar;
     bool m_lock;
+    std::optional<bool> m_lockOverride;
+    bool m_persistent;
 };

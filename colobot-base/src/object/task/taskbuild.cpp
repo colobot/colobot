@@ -98,6 +98,8 @@ void CTaskBuild::CreateBuilding(glm::vec3 pos, float angle, bool trainer)
     CObject* building = CObjectManager::GetInstancePointer()->CreateObject(params);
     m_building_id = building->GetID();
     building->SetLock(true);  // not yet usable
+    // If the game is saved and loaded while the task is in progress, it'll be as if the task have not started yet
+    building->SetPersistent(false);
 
     if ( m_type == OBJECT_DERRICK  )  m_buildingHeight = 35.0f;
     if ( m_type == OBJECT_FACTORY  )  m_buildingHeight = 28.0f;
@@ -447,6 +449,8 @@ Error CTaskBuild::Start(ObjectType type)
     if(!m_physics->GetLand() && fabs(pm.y-pv.y)>8.0f) return ERR_BUILD_METALAWAY;
 
     metal->SetLock(true);  // not usable
+    metal->SetLockOverride(false);
+    metal->SetScaleOverride(glm::vec3(1.0f, 1.0f, 1.0f));
     m_camera->StartCentering(m_object, Math::PI*0.15f, 99.9f, 0.0f, 1.0f);
 
     m_phase = TBP_TURN;  // rotation necessary preliminary
@@ -534,6 +538,8 @@ Error CTaskBuild::IsEnded()
             if ( m_progress > 1.0f )  // timeout?
             {
                 metal->SetLock(false);  // usable again
+                metal->SetLockOverride({});
+                metal->SetScaleOverride({});
                 if ( dist < 30.0f )  return ERR_BUILD_METALNEAR;
                 else                 return ERR_BUILD_METALAWAY;
             }
@@ -608,6 +614,7 @@ Error CTaskBuild::IsEnded()
         building->SetScale(1.0f);
         building->SetCirVibration(glm::vec3(0.0f, 0.0f, 0.0f));
         building->SetLock(false);  // building usable
+        building->SetPersistent(true);
         m_main->CreateShortcuts();
         m_main->DisplayError(INFO_BUILD, m_buildingPos, 10.0f, 50.0f);
 
@@ -673,7 +680,12 @@ Error CTaskBuild::IsEnded()
         m_physics->SetMotorSpeedX(0.0f);
         m_physics->SetMotorSpeedZ(0.0f);
 
-        if ( CObject* metal = GetMetal() ) metal->SetLock(false); // make titanium usable
+        if ( CObject* metal = GetMetal() )
+        {
+            metal->SetLock(false); // make titanium usable
+            metal->SetLockOverride({});
+            metal->SetScaleOverride({});
+        }
     }
 
     Abort();
@@ -689,6 +701,8 @@ bool CTaskBuild::Abort()
     {
         metal->SetScale(1.0f);
         metal->SetLock(false);
+        metal->SetLockOverride({});
+        metal->SetScaleOverride({});
         if (CObject* building = GetBuilding())
         {
             CObjectManager::GetInstancePointer()->DeleteObject(building);
