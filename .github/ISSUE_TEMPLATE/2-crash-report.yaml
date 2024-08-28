@@ -5,7 +5,7 @@ labels: bug,crash,needs-triage
 body:
 - type: markdown
   attributes:
-    value: Please **do not use** external websites (such as Dropbox or Google Drive) to upload screenshots, save files etc. External links have a tendency to become dead. Upload the files to GitHub insted by using one of the below fields.
+    value: Please **do not use** external websites (such as Dropbox or Google Drive) to upload screenshots, save files etc. External links have a tendency to become dead. Upload the files to GitHub instead using one of the fields below.
 - type: textarea
   attributes:
     label: Error message
@@ -19,17 +19,17 @@ body:
 - type: markdown
   attributes:
     value: |
-      Uploading a save file makes it more likely we would be able to troubleshoot the issue
+      Uploading a save file makes it more likely we will be able to troubleshoot the issue
       1. Find the save dirrectory
       2. Make a zip archive from it
-      3. Upload it to Github by using the field below
+      3. Upload it to GitHub using the field below
 - type: textarea
   attributes:
     label: Save file
 - type: markdown
   attributes:
     value: |
-      Uploading a colobot.ini or colobot.json file makes it more likely we would be able to troubleshoot the issue
+      Uploading a colobot.ini or colobot.json file makes it more likely we will be able to troubleshoot the issue
 - type: textarea
   attributes:
     label: colobot.ini or colobot.json
@@ -46,7 +46,7 @@ body:
     required: true
 - type: markdown
   attributes:
-    value: Posting information about your video card makes it more likely we would be able to troubleshoot the issue
+    value: Posting information about your video card makes it more likely we will be able to troubleshoot the issue
 - type: textarea
   attributes:
     label: Video card
@@ -66,7 +66,7 @@ body:
     required: true
 - type: textarea
   attributes:
-    label: Please, post a stack trace if you know how
+    label: Please post a stack trace if you know how
 - type: textarea
   attributes:
     label: Installed mods (if any)
