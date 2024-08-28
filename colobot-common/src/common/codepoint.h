@@ -45,7 +45,7 @@ public:
     //! Creates a code point from a string view, up to 4 characters
     constexpr CodePoint(std::string_view chars)
     {
-        _size = std::min(4u, static_cast<unsigned>(chars.size()));
+        _size = static_cast<unsigned char>(std::min(4u, static_cast<unsigned>(chars.size())));
 
         for (unsigned i = 0; i < _size; i++)
             _chars[i] = chars[i];
@@ -63,6 +63,12 @@ public:
         return _size;
     }
 
+    // Returns a string view representing this code point
+    constexpr std::string_view ToStringView() const
+    {
+        return std::string_view(_chars.data(), _size);
+    }
+
     //! Returns the code unit under given index
     constexpr const char& operator[](unsigned index) const
     {
@@ -70,8 +76,8 @@ public:
     }
 
 private:
-    std::array<char, 4> _chars = { '\0' };
-    unsigned _size = 0;
+    std::array<char, 5> _chars = { '\0' };
+    unsigned char _size = 0;
 };
 
 } // namespace StrUtil

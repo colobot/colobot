@@ -27,53 +27,13 @@
 #include <cstdarg>
 #include <cstdio>
 #include <cstdlib>
-#include <cwchar>
-#include <cwctype>
 #include <limits>
-#include <locale>
 #include <optional>
 #include <stdexcept>
 #include <vector>
 
 namespace
 {
-
-std::optional<std::locale> GetLocale(const char* name)
-try
-{
-    return std::locale(name);
-}
-catch(...)
-{
-    return std::nullopt;
-}
-
-std::locale GetConversionLocale()
-{
-    if (auto locale = GetLocale("en_US.UTF-8"))
-    {
-        return *locale;
-    }
-    else if (auto locale = GetLocale("C.UTF-8"))
-    {
-        return *locale;
-    }
-    else
-    {
-        return std::locale("");
-    }
-}
-
-const std::locale convertion_locale = GetConversionLocale();
-
-#ifndef COLOBOT_CHAR8_T_OVERRIDE
-using UTF8Char = char8_t;
-#else
-using UTF8Char = char;
-#endif
-
-const auto& wchar = std::use_facet<std::ctype<wchar_t>>(convertion_locale);
-const auto& utf32 = std::use_facet<std::codecvt<char32_t, UTF8Char, std::mbstate_t>>(convertion_locale);
 
 std::string VFormat(const char *fmt, va_list ap)
 {
@@ -95,6 +55,96 @@ std::string VFormat(const char *fmt, va_list ap)
         dynamicbuf.resize(size);
         buf = dynamicbuf.data();
     }
+}
+
+constexpr bool UTF8IsContinuationByte(char8_t ch)
+{
+    return (ch & 0b1100'0000) == 0b1000'0000;
+}
+
+constexpr int UTF8SequenceLength(char8_t ch)
+{
+    if (ch < 0b1000'0000)           // 1-byte sequence
+        return 1;
+    else if (ch < 0b1100'0000)      // Continuation byte
+        return 0;
+    else if (ch < 0b1110'0000)      // 2-byte sequence
+        return 2;
+    else if (ch < 0b1111'0000)      // 3-byte sequence
+        return 3;
+    else if (ch < 0b1111'1000)      // 4-byte sequence
+        return 4;
+    else                            // Invalid sequence
+        return 0;
+}
+
+template<unsigned Count, unsigned Offset>
+constexpr char8_t Extract(char32_t ch)
+{
+    return static_cast<char8_t>((ch >> Offset) & ((1 << Count) - 1));
+}
+
+constexpr StrUtils::CodePoint UTF8Encode(char32_t ch)
+{
+    std::array<char, 4> result = { 0, 0, 0, 0 };
+    int len = 0;
+
+    if (ch < 0x80)
+    {
+        result[0] = static_cast<char>(ch);
+        len = 1;
+    }
+    else if (ch < 0x800)
+    {
+        result[0] = static_cast<char>(0b1100'0000 | Extract<5, 6>(ch));
+        result[1] = static_cast<char>(0b1000'0000 | Extract<6, 0>(ch));
+        len = 2;
+    }
+    else if (ch < 0x01'0000)
+    {
+        result[0] = static_cast<char>(0b1110'0000 | Extract<4, 12>(ch));
+        result[1] = static_cast<char>(0b1000'0000 | Extract<6, 6>(ch));
+        result[2] = static_cast<char>(0b1000'0000 | Extract<6, 0>(ch));
+        len = 3;
+    }
+    else if (ch < 0x11'0000)
+    {
+        result[0] = static_cast<char>(0b1111'0000 | Extract<3, 18>(ch));
+        result[1] = static_cast<char>(0b1000'0000 | Extract<6, 12>(ch));
+        result[2] = static_cast<char>(0b1000'0000 | Extract<6, 6>(ch));
+        result[3] = static_cast<char>(0b1000'0000 | Extract<6, 0>(ch));
+        len = 4;
+    }
+
+    return std::string_view(result.data(), len);
+}
+
+constexpr char32_t UTF8Decode(StrUtils::CodePoint code)
+{
+    char32_t result = 0;
+
+    if (code.Size() == 1)
+        result = static_cast<char32_t>(code[0]);
+    else if (code.Size() == 2)
+    {
+        result |= static_cast<char32_t>(code[0] & 0b0001'1111) << 6;
+        result |= static_cast<char32_t>(code[1] & 0b0011'1111);
+    }
+    else if (code.Size() == 3)
+    {
+        result |= static_cast<char32_t>(code[0] & 0b0000'1111) << 12;
+        result |= static_cast<char32_t>(code[1] & 0b0011'1111) << 6;
+        result |= static_cast<char32_t>(code[2] & 0b0011'1111);
+    }
+    else if (code.Size() == 4)
+    {
+        result |= static_cast<char32_t>(code[0] & 0b0000'1111) << 18;
+        result |= static_cast<char32_t>(code[1] & 0b0011'1111) << 12;
+        result |= static_cast<char32_t>(code[2] & 0b0011'1111) << 6;
+        result |= static_cast<char32_t>(code[3] & 0b0011'1111);
+    }
+
+    return result;
 }
 
 } // anonymous namespace
@@ -121,13 +171,9 @@ std::filesystem::path StrUtils::FromString(const std::string& path, bool *ok)
 
 std::filesystem::path StrUtils::ToPath(std::string_view path)
 {
-#ifndef COLOBOT_CHAR8_T_OVERRIDE
     auto data = reinterpret_cast<const char8_t*>(path.data());
 
     return std::filesystem::path(data, data + path.size());
-#else
-    return std::filesystem::u8path(path.begin(), path.end());
-#endif
 }
 
 unsigned int StrUtils::HexStringToInt(std::string_view str)
@@ -257,11 +303,17 @@ int StrUtils::UTF8CharLength(std::string_view string)
 {
     if (string.empty()) return 0;
 
-    std::mbstate_t state = {};
+    int len = UTF8SequenceLength(static_cast<char8_t>(string.front()));
 
-    auto data = reinterpret_cast<const UTF8Char*>(string.data());
+    // UTF-8 sequence is not long enough
+    if (string.size() < len) return 0;
 
-    return utf32.length(state, data, data + string.size(), 1);
+    // Check continuation bytes
+    for (int i = 1; i < len; i++)
+        if (!UTF8IsContinuationByte(static_cast<char8_t>(string[i])))
+            return 0;
+
+    return len;
 }
 
 int StrUtils::UTF8StringLength(std::string_view string)
@@ -270,16 +322,19 @@ int StrUtils::UTF8StringLength(std::string_view string)
 
     while (!string.empty())
     {
-        std::mbstate_t state = {};
-
-        auto data = reinterpret_cast<const UTF8Char*>(string.data());
-
-        auto count = utf32.length(state, data, data + string.size(), 1);
+        auto count = UTF8SequenceLength(static_cast<char8_t>(string.front()));
 
         if (count == 0)
             throw std::invalid_argument("Invalid character");
+        
+        if (string.size() < count)
+            throw std::invalid_argument("Invalid character");
+        
+        for (int i = 1; i < count; i++)
+            if (!UTF8IsContinuationByte(static_cast<char8_t>(string[i])))
+                throw std::invalid_argument("Invalid character");
 
-        length += count;
+        length++;
 
         string.remove_prefix(count);
     }
@@ -289,18 +344,14 @@ int StrUtils::UTF8StringLength(std::string_view string)
 
 bool StrUtils::IsUTF8ContinuationByte(char c)
 {
-    return (c & 0b1100'0000) == 0b1000'0000;
+    return UTF8IsContinuationByte(static_cast<char8_t>(c));
 }
 
 CodePoint StrUtils::ReadUTF8(std::string_view text)
 {
     if (text.empty()) return {};
 
-    std::mbstate_t state = {};
-
-    auto data = reinterpret_cast<const UTF8Char*>(text.data());
-
-    int len = utf32.length(state, data, data + text.size(), 1);
+    int len = UTF8CharLength(text);
 
     if (len == 0) return {};
 
@@ -309,41 +360,12 @@ CodePoint StrUtils::ReadUTF8(std::string_view text)
 
 CodePoint StrUtils::ToUTF8(char32_t code)
 {
-    std::mbstate_t state = {};
-    std::array<UTF8Char, 4> buffer;
-
-    const char32_t* read = nullptr;
-    UTF8Char* written = nullptr;
-
-    auto result = utf32.out(state, &code, &code + 1, read,
-        buffer.data(), buffer.data() + buffer.size(), written);
-
-    if (result != std::codecvt_base::ok)
-        return {};
-
-    auto data = reinterpret_cast<const char*>(buffer.data());
-
-    return CodePoint(std::string_view(data, written - buffer.data()));
+    return UTF8Encode(code);
 }
 
 char32_t StrUtils::ToUTF32(CodePoint code)
 {
-    std::mbstate_t state = {};
-    char32_t ch = {};
-
-    const UTF8Char* read = nullptr;
-    char32_t* written = nullptr;
-
-    auto data = reinterpret_cast<const UTF8Char*>(code.Data());
-
-    auto result = utf32.in(state,
-        data, data + code.Size(), read,
-        &ch, &ch + 1, written);
-
-    if (result != std::codecvt_base::ok)
-        throw std::invalid_argument("Invalid code point");
-    
-    return ch;
+    return UTF8Decode(code);
 }
 
 std::string StrUtils::ToUTF8(std::u32string_view text)
@@ -352,7 +374,7 @@ std::string StrUtils::ToUTF8(std::u32string_view text)
 
     for (auto c : text)
     {
-        CodePoint code = ToUTF8(c);
+        CodePoint code = UTF8Encode(c);
 
         if (code.Size() == 0)
             throw std::invalid_argument("Invalid character");
@@ -374,26 +396,12 @@ std::u32string StrUtils::ToUTF32(std::string_view text)
         if (code.Size() == 0)
             throw std::invalid_argument("Invalid character");
 
-        result.push_back(ToUTF32(code));
+        result.push_back(UTF8Decode(code));
 
         text.remove_prefix(code.Size());
     }
 
     return result;
-}
-
-char32_t StrUtils::ToLower(char32_t ch)
-{
-    if (ch > std::numeric_limits<char16_t>::max()) return ch;
-
-    return static_cast<char32_t>(wchar.tolower(static_cast<wchar_t>(ch)));
-}
-
-char32_t StrUtils::ToUpper(char32_t ch)
-{
-    if (ch > std::numeric_limits<char16_t>::max()) return ch;
-
-    return static_cast<char32_t>(wchar.toupper(static_cast<wchar_t>(ch)));
 }
 
 std::string StrUtils::ToLower(std::string_view text)
