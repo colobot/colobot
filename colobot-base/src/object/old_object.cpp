@@ -791,6 +791,10 @@ void COldObject::SetType(ObjectType type)
          m_type == OBJECT_MOBILEta ||
          m_type == OBJECT_MOBILEwa ||
          m_type == OBJECT_MOBILEia ||
+         m_type == OBJECT_MOBILEfb || // Builders
+         m_type == OBJECT_MOBILEtb ||
+         m_type == OBJECT_MOBILEwb ||
+         m_type == OBJECT_MOBILEib ||
          m_type == OBJECT_MOBILEsa || // subber
          m_type == OBJECT_BEE)
     {
@@ -1715,6 +1719,13 @@ glm::vec3 COldObject::GetSlotPosition(int slotNum)
             break;
         case OBJECT_MOBILEsa: // subber
             grabPartNum = 2;
+            grabRelPos = glm::vec3(1.1f, -1.0f, 1.0f);
+            break;
+        case OBJECT_MOBILEfb: // Builders
+        case OBJECT_MOBILEtb:
+        case OBJECT_MOBILEwb:
+        case OBJECT_MOBILEib:
+            grabPartNum = 3;
             grabRelPos = glm::vec3(1.1f, -1.0f, 1.0f);
             break;
         case OBJECT_MOBILEfa: // Grabbers

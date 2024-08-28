@@ -394,13 +394,18 @@ Error CTaskBuild::Start(ObjectType type)
     pos = m_object->GetPosition();
     if ( pos.y < m_water->GetLevel() )  return ERR_BUILD_WATER;
 
-    if ( !m_physics->GetLand() && m_object->GetType()!=OBJECT_MOBILEfb)  return ERR_BUILD_FLY;
+    ObjectType botType = m_object->GetType();
+
+    if (botType != OBJECT_MOBILEfb && !m_physics->GetLand()) return ERR_BUILD_FLY;
 
     speed = m_physics->GetMotorSpeed();
     if ( speed.x != 0.0f ||
          speed.z != 0.0f )  return ERR_BUILD_MOTOR;
 
-    if (IsObjectCarryingCargo(m_object))  return ERR_MANIP_BUSY;
+    if ( botType == OBJECT_HUMAN || botType == OBJECT_TECH )
+    {
+        if (IsObjectCarryingCargo(m_object)) return ERR_MANIP_BUSY;
+    }
 
     m_metal = SearchMetalObject(oAngle, 2.0f, 100.0f, Math::PI*0.25f, err);
     if ( err == ERR_BUILD_METALNEAR && m_metal != nullptr )

@@ -444,6 +444,53 @@ void CMotionVehicle::Create(glm::vec3 pos, float angle, ObjectType type,
 //?     m_object->SetPartPosition(1, glm::vec3(0.0f, 5.3f, 0.0f));
         m_object->SetPartPosition(1, glm::vec3(0.0f, 5.3f, 0.0f));
         m_object->SetPartRotationZ(1, 0.0f);
+
+        // Builders claw
+        // Creates the vertical support.
+        // TODO: needs a single model for the vertical support
+        rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+        m_object->SetObjectRank(5, rank);
+        m_object->SetObjectParent(5, 0);
+        modelManager->AddModelReference("subm3.mod", false, rank, m_object->GetTeam());
+        m_object->SetPartPosition(5, glm::vec3(4.2f, 2.25f, 0.0f));
+        m_object->SetPartRotationX(5, 1.57f);
+        m_object->SetPartRotationZ(5, 1.57f);
+
+        // TODO: remove this one(see above)
+        // lower support
+        rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+        m_object->SetObjectRank(24, rank);
+        m_object->SetObjectParent(24, 5);
+        modelManager->AddModelReference("subm3.mod", true, rank, m_object->GetTeam());
+        m_object->SetPartPosition(24, glm::vec3(0.0f, 0.0f, 0.0f));
+        m_object->SetPartRotationX(24, Math::PI);
+        m_object->SetPartRotationZ(24, Math::PI);
+
+        // Creates the holder.
+        rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+        m_object->SetObjectRank(2, rank);
+        m_object->SetObjectParent(2, 0);
+        modelManager->AddModelReference("subm2.mod", false, rank, m_object->GetTeam());
+        m_object->SetPartPosition(2, glm::vec3(4.2f, 3.5f, 0.0f));
+
+        // Creates the right tong.
+        rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+        m_object->SetObjectRank(3, rank);
+        m_object->SetObjectParent(3, 2);
+        modelManager->AddModelReference("subm3.mod", false, rank, m_object->GetTeam());
+        m_object->SetPartPosition(3, glm::vec3(0.5f, 0.0f, -1.5f));
+
+        // Creates the left tong.
+        rank = m_engine->CreateObject();
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
+        m_object->SetObjectRank(4, rank);
+        m_object->SetObjectParent(4, 2);
+        modelManager->AddModelReference("subm3.mod", true, rank, m_object->GetTeam());
+        m_object->SetPartPosition(4, glm::vec3(0.5f, 0.0f, 1.5f));
     }
 
     if (type == OBJECT_MOBILEwa ||

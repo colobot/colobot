@@ -113,7 +113,7 @@ bool CTaskManip::EventProcess(const Event &event)
     progress = m_progress;
     if ( progress > 1.0f )  progress = 1.0f;
 
-    if ( m_bSubm )  // submarine?
+    if ( m_isSubber )  // submarine?
     {
         if ( m_order == TMO_GRAB )
         {
@@ -166,6 +166,59 @@ bool CTaskManip::EventProcess(const Event &event)
             }
         }
     }
+    else if ( m_isBuilder )  // builder?
+    {
+        if ( m_order == TMO_GRAB )  // grab
+        {
+            if ( m_step == 0 )      // down
+            {
+                pos = m_object->GetPartPosition(2);
+                pos.y = 3.5f-progress*2.5f;
+                m_object->SetPartPosition(2, pos);
+            }
+            if ( m_step == 1 ) // close
+            {
+                pos = m_object->GetPartPosition(3);
+                pos.z = -1.5f+progress*0.5f;
+                m_object->SetPartPosition(3, pos);
+
+                pos = m_object->GetPartPosition(4);
+                pos.z = 1.5f-progress*0.5f;
+                m_object->SetPartPosition(4, pos);
+            }
+            if ( m_step == 2 ) // up
+            {
+                pos = m_object->GetPartPosition(2);
+                pos.y = 3.5f-(1.0f-progress)*2.5f;
+                m_object->SetPartPosition(2, pos);
+            }
+        }
+        else                        // drop
+        {
+            if ( m_step == 0 )      // down
+            {
+                pos = m_object->GetPartPosition(2);
+                pos.y = 3.5f-progress*2.5f;
+                m_object->SetPartPosition(2, pos);
+            }
+            if ( m_step == 1 ) // open
+            {
+                pos = m_object->GetPartPosition(3);
+                pos.z = -1.5f+(1.0f-progress)*0.5f;
+                m_object->SetPartPosition(3, pos);
+
+                pos = m_object->GetPartPosition(4);
+                pos.z = 1.5f-(1.0f-progress)*0.5f;
+                m_object->SetPartPosition(4, pos);
+            }
+            if ( m_step == 2 ) // up
+            {
+                pos = m_object->GetPartPosition(2);
+                pos.y = 3.5f-(1.0f-progress)*2.5f;
+                m_object->SetPartPosition(2, pos);
+            }
+        }
+    }
     else
     {
         for ( i=0 ; i<5 ; i++ )
@@ -184,7 +237,7 @@ bool CTaskManip::EventProcess(const Event &event)
 
 void CTaskManip::InitAngle()
 {
-    if ( m_bSubm || m_bBee )  return;
+    if ( m_isSubber || m_bBee || m_isBuilder ) return;
 
     if ( m_arm == TMA_NEUTRAL ||
          m_arm == TMA_GRAB    )
@@ -333,7 +386,15 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
     }
     m_bBee = false;
 
-    m_bSubm = ( type == OBJECT_MOBILEsa );  // submarine?
+    if (type == OBJECT_MOBILEfb ||
+        type == OBJECT_MOBILEtb ||
+        type == OBJECT_MOBILEwb ||
+        type == OBJECT_MOBILEib ) // builder?
+    {
+        m_isBuilder = true;
+    }
+
+    m_isSubber = ( type == OBJECT_MOBILEsa );  // submarine?
 
     if ( m_arm == TMA_GRAB )  // takes immediately?
     {
@@ -350,9 +411,13 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
          type != OBJECT_MOBILEta &&
          type != OBJECT_MOBILEwa &&
          type != OBJECT_MOBILEia &&
+         type != OBJECT_MOBILEfb &&
+         type != OBJECT_MOBILEtb &&
+         type != OBJECT_MOBILEwb &&
+         type != OBJECT_MOBILEib &&
          type != OBJECT_MOBILEsa )  return ERR_WRONG_BOT;
 
-    if ( m_bSubm )  // submarine?
+    if ( m_isSubber || m_isBuilder )  // submarine or builder?
     {
         m_arm = TMA_FFRONT;  // only possible in front!
     }
@@ -501,7 +566,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
         m_bTurn = true;  // preliminary rotation necessary
     }
 
-    if ( m_bSubm )
+    if ( m_isSubber || m_isBuilder )
     {
         m_camera->StartCentering(m_object, Math::PI*0.8f, 99.9f, 0.0f, 0.5f);
     }
@@ -581,7 +646,7 @@ Error CTaskManip::IsEnded()
     if ( m_progress < 1.0f )  return ERR_CONTINUE;
     m_progress = 0.0f;
 
-    if ( !m_bSubm )
+    if ( !m_isSubber && !m_isBuilder )
     {
         for ( i=0 ; i<5 ; i++ )
         {
@@ -594,7 +659,7 @@ Error CTaskManip::IsEnded()
     {
         if ( m_step == 1 )
         {
-            if ( m_bSubm )  m_speed = 1.0f/0.7f;
+            if (m_isSubber || m_isBuilder) m_speed = 1.0f/0.7f;
             m_hand = TMH_CLOSE;  // closes the clamp to take
             InitAngle();
             SoundManip(1.0f/m_speed, 0.8f, 1.5f);
@@ -602,7 +667,7 @@ Error CTaskManip::IsEnded()
         }
         if ( m_step == 2 )
         {
-            if ( m_bSubm )  m_speed = 1.0f/1.5f;
+            if (m_isSubber || m_isBuilder) m_speed = 1.0f/1.5f;
             if ( !TransporterTakeObject() &&
                  m_object->GetSlotContainedObjectReq(CSlottedObject::Pseudoslot::CARRYING) == nullptr)
             {
@@ -631,7 +696,7 @@ Error CTaskManip::IsEnded()
     {
         if ( m_step == 1 )
         {
-            if ( m_bSubm )  m_speed = 1.0f/0.7f;
+            if (m_isSubber || m_isBuilder) m_speed = 1.0f/0.7f;
             cargo = m_object->GetSlotContainedObjectReq(CSlottedObject::Pseudoslot::CARRYING);
             if (TransporterDeposeObject())
             {
@@ -653,7 +718,7 @@ Error CTaskManip::IsEnded()
         }
         if ( m_step == 2 )
         {
-            if ( m_bSubm )  m_speed = 1.0f/1.5f;
+            if (m_isSubber || m_isBuilder) m_speed = 1.0f/1.5f;
             m_arm = TMA_NEUTRAL;
             InitAngle();
             SoundManip(1.0f/m_speed);
@@ -681,7 +746,15 @@ bool CTaskManip::Abort()
     }
     InitAngle();
 
-    if ( !m_bSubm )
+    if ( m_isSubber )
+    {
+        m_object->SetPartPosition(1, glm::vec3(4.2f, 3.0f, 0.0f));
+    }
+    else if ( m_isBuilder )
+    {
+        m_object->SetPartPosition(2, glm::vec3(4.2f, 3.5f, 0.0f));
+    }
+    else
     {
         for (int i = 0; i < 5; i++)
         {
@@ -880,7 +953,7 @@ CObject* CTaskManip::SearchOtherObject(bool bAdvance, glm::vec3 &pos,
     distance = 1000000.0f;
     angle = 0.0f;
 
-    if ( m_bSubm )  return nullptr;  // impossible with the submarine
+    if ( m_isSubber || m_isBuilder )  return nullptr;  // impossible with the submarine and builders
 
     if (m_object->GetCrashSphereCount() == 0) return nullptr;
 
@@ -975,10 +1048,13 @@ bool CTaskManip::TransporterTakeObject()
             cargo->SetRotationX(0.0f);
             cargo->SetRotationZ(0.8f);
         }
-        else if ( m_bSubm )
+        else if ( m_isSubber || m_isBuilder )
         {
             dynamic_cast<CTransportableObject&>(*cargo).SetTransporter(m_object);
-            dynamic_cast<CTransportableObject&>(*cargo).SetTransporterPart(2);  // takes with the right claw
+            if ( m_isBuilder )
+                dynamic_cast<CTransportableObject&>(*cargo).SetTransporterPart(3);
+            else
+                dynamic_cast<CTransportableObject&>(*cargo).SetTransporterPart(2);  // takes with the right claw
 
             glm::vec3 pos = glm::vec3(1.1f, -1.0f, 1.0f);  // relative
             cargo->SetPosition(pos);
@@ -1011,10 +1087,13 @@ bool CTaskManip::TransporterTakeObject()
 
         m_cargoType = cargo->GetType();
 
-        if ( m_bSubm )
+        if ( m_isSubber || m_isBuilder )
         {
             dynamic_cast<CTransportableObject&>(*cargo).SetTransporter(m_object);
-            dynamic_cast<CTransportableObject&>(*cargo).SetTransporterPart(2);  // takes with the right claw
+            if ( m_isBuilder )
+                dynamic_cast<CTransportableObject&>(*cargo).SetTransporterPart(3);
+            else
+                dynamic_cast<CTransportableObject&>(*cargo).SetTransporterPart(2);  // takes with the right claw
 
             pos = glm::vec3(1.1f, -1.0f, 1.0f);  // relative
             cargo->SetPosition(pos);

@@ -93,7 +93,8 @@ protected:
     float           m_energy = 0.0f;
     bool            m_bError = false;
     bool            m_bTurn = false;
-    bool            m_bSubm = false;
+    bool            m_isSubber = false;
+    bool            m_isBuilder = false;
     bool            m_bBee = false;
     float           m_angle = 0.0f;
     float           m_move = 0.0f;
