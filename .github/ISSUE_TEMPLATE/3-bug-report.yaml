@@ -17,7 +17,7 @@ body:
       Uploading a save file makes it more likely we will be able to troubleshoot the issue
       1. Find the save dirrectory
       2. Make a zip archive from it
-      3. Upload it to GitHub by using the field below
+      3. Upload it to GitHub using the field below
 - type: textarea
   attributes:
     label: Save file
