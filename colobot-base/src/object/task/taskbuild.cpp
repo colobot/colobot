@@ -479,7 +479,7 @@ Error CTaskBuild::IsEnded()
     if ( m_phase == TBP_TURN )  // preliminary rotation?
     {
         CObject* metal = GetMetal();
-        if ( !metal ) return ERR_STOP;
+        if ( !metal ) return ERR_BUILD_METALINEX;
 
         angle = m_object->GetRotationY();
         angle = Math::NormAngle(angle);  // 0..2*Math::PI
@@ -508,7 +508,7 @@ Error CTaskBuild::IsEnded()
     if ( m_phase == TBP_MOVE )  // preliminary forward/backward?
     {
         CObject* metal = GetMetal();
-        if ( !metal ) return ERR_STOP;
+        if ( !metal ) return ERR_BUILD_METALINEX;
 
         dist = glm::distance(m_object->GetPosition(), metal->GetPosition());
 
@@ -550,7 +550,7 @@ Error CTaskBuild::IsEnded()
     if ( m_phase == TBP_TAKE )  // takes gun
     {
         CObject* metal = GetMetal();
-        if ( !metal ) return ERR_STOP;
+        if ( !metal ) return ERR_BUILD_METALINEX;
 
         if ( m_progress < 1.0f )  return ERR_CONTINUE;
 
@@ -583,7 +583,7 @@ Error CTaskBuild::IsEnded()
     if ( m_phase == TBP_PREP )  // prepares?
     {
         CObject* metal = GetMetal();
-        if ( !metal ) return ERR_STOP;
+        if ( !metal ) return ERR_BUILD_METALINEX;
 
         if ( m_progress < 1.0f )  return ERR_CONTINUE;
 
@@ -602,10 +602,10 @@ Error CTaskBuild::IsEnded()
     if ( m_phase == TBP_BUILD )  // construction?
     {
         CObject* metal = GetMetal();
-        if ( !metal ) return ERR_STOP;
+        if ( !metal ) return ERR_BUILD_METALINEX;
         if ( m_progress < 1.0f )  return ERR_CONTINUE;
         CObject* building = GetBuilding();
-        if ( ! building ) return ERR_STOP;
+        if ( ! building ) return ERR_BUILD_METALINEX;
 
         DeleteMark(metal->GetPosition(), 20.0f);
 
