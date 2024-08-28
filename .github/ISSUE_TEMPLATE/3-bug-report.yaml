@@ -5,7 +5,7 @@ labels: bug,needs-triage
 body:
 - type: markdown
   attributes:
-    value: Please **do not use** external websites (such as Dropbox or Google Drive) to upload screenshots, save files etc. External links have a tendency to become dead. Upload the files to GitHub instead by using one of the fields below.
+    value: Please **do not use** external websites (such as Dropbox or Google Drive) to upload screenshots, save files etc. External links have a tendency to become dead. Upload the files to GitHub instead using one of the fields below.
 - type: textarea
   attributes:
     label: log.txt
@@ -14,7 +14,7 @@ body:
 - type: markdown
   attributes:
     value: |
-      Uploading a save file makes it more likely we would be able to troubleshoot the issue
+      Uploading a save file makes it more likely we will be able to troubleshoot the issue
       1. Find the save dirrectory
       2. Make a zip archive from it
       3. Upload it to GitHub by using the field below
@@ -24,7 +24,7 @@ body:
 - type: markdown
   attributes:
     value: |
-      Uploading a colobot.ini or colobot.json file makes it more likely we would be able to troubleshoot the issue
+      Uploading a colobot.ini or colobot.json file makes it more likely we will be able to troubleshoot the issue
 - type: textarea
   attributes:
     label: colobot.ini or colobot.json
