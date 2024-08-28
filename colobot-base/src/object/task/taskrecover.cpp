@@ -189,11 +189,7 @@ Error CTaskRecover::Start()
     ObjectType type = m_object->GetType();
     if ( type != OBJECT_MOBILErr )  return ERR_WRONG_BOT;
 
-    CPowerContainerObject *power = GetObjectPowerCell(m_object);
-    if (power == nullptr)  return ERR_RECOVER_ENERGY;
-
-    float energy = power->GetEnergy();
-    if ( energy < ENERGY_RECOVER+0.05f )  return ERR_RECOVER_ENERGY;
+    if ( GetObjectEnergy(m_object) < ENERGY_RECOVER+0.05f )  return ERR_RECOVER_ENERGY;
 
     glm::mat4 mat = m_object->GetWorldMatrix(0);
     glm::vec3 pos = glm::vec3(RECOVER_DIST, 3.3f, 0.0f);
