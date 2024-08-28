@@ -71,111 +71,115 @@ bool CTaskRecover::EventProcess(const Event &event)
     if ( event.type != EVENT_FRAME )  return true;
     if ( m_bError )  return false;
 
-    if ( m_phase == TRP_TURN )  // preliminary rotation?
-    {
-        a = m_object->GetRotationY();
-        g = m_angle;
-        cirSpeed = Math::Direction(a, g)*1.0f;
-        if ( cirSpeed >  1.0f )  cirSpeed =  1.0f;
-        if ( cirSpeed < -1.0f )  cirSpeed = -1.0f;
-
-        m_physics->SetMotorSpeedZ(cirSpeed);  // turns left / right
-        return true;
-    }
-
     m_progress += event.rTime*m_speed;  // others advance
     m_time += event.rTime;
 
-    if ( m_phase == TRP_DOWN )
+    switch ( m_phase )
     {
-        angle = Math::PropAngle(126, -10, m_progress);
-        m_object->SetPartRotationZ(2, angle);
-        m_object->SetPartRotationZ(4, angle);
+        case TRP_TURN:  // preliminary rotation?
+        {
+            a = m_object->GetRotationY();
+            g = m_angle;
+            cirSpeed = Math::Direction(a, g)*1.0f;
+            if ( cirSpeed >  1.0f )  cirSpeed =  1.0f;
+            if ( cirSpeed < -1.0f )  cirSpeed = -1.0f;
 
-        angle = Math::PropAngle(-144, 0, m_progress);
-        m_object->SetPartRotationZ(3, angle);
-        m_object->SetPartRotationZ(5, angle);
+            m_physics->SetMotorSpeedZ(cirSpeed);  // turns left / right
+            return true;
+        }
+
+        case TRP_MOVE:  // preliminary forward/backward?
+        {
+            dist = glm::distance(m_object->GetPosition(), m_ruin->GetPosition());
+            linSpeed = 0.0f;
+            if ( dist > RECOVER_DIST )  linSpeed =  1.0f;
+            if ( dist < RECOVER_DIST )  linSpeed = -1.0f;
+            m_physics->SetMotorSpeedX(linSpeed);  // forward/backward
+            return true;
+        }
+
+        case TRP_DOWN:
+        {
+            angle = Math::PropAngle(126, -10, m_progress);
+            m_object->SetPartRotationZ(2, angle);
+            m_object->SetPartRotationZ(4, angle);
+
+            angle = Math::PropAngle(-144, 0, m_progress);
+            m_object->SetPartRotationZ(3, angle);
+            m_object->SetPartRotationZ(5, angle);
+            return true;
+        }
+
+        case TRP_OPER:
+        {
+            assert(HasPowerCellSlot(m_object));
+            if (CPowerContainerObject* power = GetObjectPowerCell(m_object))
+            {
+                energy = power->GetEnergy();
+                energy -= event.rTime * ENERGY_RECOVER * m_speed;
+                power->SetEnergy(energy);
+            }
+
+            speed.x = (Math::Rand()-0.5f)*0.1f*m_progress;
+            speed.y = (Math::Rand()-0.5f)*0.1f*m_progress;
+            speed.z = (Math::Rand()-0.5f)*0.1f*m_progress;
+            m_ruin->SetCirVibration(speed);
+
+            if ( m_progress >= 0.75f )
+            {
+                m_ruin->SetScale(1.0f-(m_progress-0.75f)/0.25f);
+            }
+
+            if ( m_progress > 0.5f && m_progress < 0.8f )
+            {
+                m_metal->SetScale((m_progress-0.5f)/0.3f);
+            }
+
+            if ( m_lastParticle+m_engine->ParticleAdapt(0.02f) <= m_time )
+            {
+                m_lastParticle = m_time;
+
+                pos = m_recoverPos;
+                pos.x += (Math::Rand()-0.5f)*8.0f*(1.0f-m_progress);
+                pos.z += (Math::Rand()-0.5f)*8.0f*(1.0f-m_progress);
+                pos.y -= 4.0f;
+                speed.x = (Math::Rand()-0.5f)*0.0f;
+                speed.z = (Math::Rand()-0.5f)*0.0f;
+                speed.y = Math::Rand()*15.0f;
+                dim.x = Math::Rand()*2.0f+1.5f;
+                dim.y = dim.x;
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIRECOVER, 1.0f, 0.0f, 0.0f);
+            }
+            return true;
+        }
+
+        case TRP_UP:
+        {
+            angle = Math::PropAngle(-10, 126, m_progress);
+            m_object->SetPartRotationZ(2, angle);
+            m_object->SetPartRotationZ(4, angle);
+
+            angle = Math::PropAngle(0, -144, m_progress);
+            m_object->SetPartRotationZ(3, angle);
+            m_object->SetPartRotationZ(5, angle);
+
+            if ( m_lastParticle+m_engine->ParticleAdapt(0.02f) <= m_time )
+            {
+                m_lastParticle = m_time;
+
+                pos = m_recoverPos;
+                pos.y -= 4.0f;
+                speed.x = (Math::Rand()-0.5f)*0.0f;
+                speed.z = (Math::Rand()-0.5f)*0.0f;
+                speed.y = Math::Rand()*15.0f;
+                dim.x = Math::Rand()*2.0f+1.5f;
+                dim.y = dim.x;
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIRECOVER, 1.0f, 0.0f, 0.0f);
+            }
+            return true;
+        }
     }
-
-    if ( m_phase == TRP_MOVE )  // preliminary forward/backward?
-    {
-        dist = glm::distance(m_object->GetPosition(), m_ruin->GetPosition());
-        linSpeed = 0.0f;
-        if ( dist > RECOVER_DIST )  linSpeed =  1.0f;
-        if ( dist < RECOVER_DIST )  linSpeed = -1.0f;
-        m_physics->SetMotorSpeedX(linSpeed);  // forward/backward
-        return true;
-    }
-
-    if ( m_phase == TRP_OPER )
-    {
-        assert(HasPowerCellSlot(m_object));
-        if (CPowerContainerObject* power = GetObjectPowerCell(m_object))
-        {
-            energy = power->GetEnergy();
-            energy -= event.rTime * ENERGY_RECOVER * m_speed;
-            power->SetEnergy(energy);
-        }
-
-
-        speed.x = (Math::Rand()-0.5f)*0.1f*m_progress;
-        speed.y = (Math::Rand()-0.5f)*0.1f*m_progress;
-        speed.z = (Math::Rand()-0.5f)*0.1f*m_progress;
-        m_ruin->SetCirVibration(speed);
-
-        if ( m_progress >= 0.75f )
-        {
-            m_ruin->SetScale(1.0f-(m_progress-0.75f)/0.25f);
-        }
-
-        if ( m_progress > 0.5f && m_progress < 0.8f )
-        {
-            m_metal->SetScale((m_progress-0.5f)/0.3f);
-        }
-
-        if ( m_lastParticle+m_engine->ParticleAdapt(0.02f) <= m_time )
-        {
-            m_lastParticle = m_time;
-
-            pos = m_recoverPos;
-            pos.x += (Math::Rand()-0.5f)*8.0f*(1.0f-m_progress);
-            pos.z += (Math::Rand()-0.5f)*8.0f*(1.0f-m_progress);
-            pos.y -= 4.0f;
-            speed.x = (Math::Rand()-0.5f)*0.0f;
-            speed.z = (Math::Rand()-0.5f)*0.0f;
-            speed.y = Math::Rand()*15.0f;
-            dim.x = Math::Rand()*2.0f+1.5f;
-            dim.y = dim.x;
-            m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIRECOVER, 1.0f, 0.0f, 0.0f);
-        }
-    }
-
-    if ( m_phase == TRP_UP )
-    {
-        angle = Math::PropAngle(-10, 126, m_progress);
-        m_object->SetPartRotationZ(2, angle);
-        m_object->SetPartRotationZ(4, angle);
-
-        angle = Math::PropAngle(0, -144, m_progress);
-        m_object->SetPartRotationZ(3, angle);
-        m_object->SetPartRotationZ(5, angle);
-
-        if ( m_lastParticle+m_engine->ParticleAdapt(0.02f) <= m_time )
-        {
-            m_lastParticle = m_time;
-
-            pos = m_recoverPos;
-            pos.y -= 4.0f;
-            speed.x = (Math::Rand()-0.5f)*0.0f;
-            speed.z = (Math::Rand()-0.5f)*0.0f;
-            speed.y = Math::Rand()*15.0f;
-            dim.x = Math::Rand()*2.0f+1.5f;
-            dim.y = dim.x;
-            m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIRECOVER, 1.0f, 0.0f, 0.0f);
-        }
-    }
-
-    return true;
+    assert(0);
 }
 
 
