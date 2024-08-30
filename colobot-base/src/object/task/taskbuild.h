@@ -73,8 +73,8 @@ protected:
 
 protected:
     ObjectType      m_type = OBJECT_NULL;                  // type of construction
-    std::optional<unsigned int> m_metal_id;  // transforms metal object
-    std::optional<unsigned int> m_building_id;  // building built
+    int             m_metal_id = -1;  // transforms metal object
+    std::optional<int> m_building_id;  // building built
     TaskBuildPhase  m_phase = TBP_STOP;                 // phase of the operation
     bool            m_bError = false;                // true -> operation impossible
     bool            m_bBuild = false;                // true -> building built

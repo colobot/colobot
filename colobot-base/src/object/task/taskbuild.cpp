@@ -968,8 +968,8 @@ void CTaskBuild::DeleteMark(glm::vec3 pos, float radius)
 
 CObject* CTaskBuild::GetMetal()
 {
-    if ( !m_metal_id.has_value() ) return nullptr;
-    CObject* metal = CObjectManager::GetInstancePointer()->GetObjectById(m_metal_id.value());
+    assert(m_metal_id != -1);
+    CObject* metal = CObjectManager::GetInstancePointer()->GetObjectById(m_metal_id);
     if ( metal && metal->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject&>(*metal).IsDying() ) return nullptr;
     return metal;
 }
