@@ -320,7 +320,7 @@ Error CTaskRecover::IsEnded()
             pos = Math::Transform(mat, pos);
             goal = glm::vec3(RECOVER_DIST, 3.1f, -3.9f);
             goal = Math::Transform(mat, goal);
-            m_particle->CreateRay(pos, goal, Gfx::PARTIRAY2,
+            m_rayChannel = m_particle->CreateRay(pos, goal, Gfx::PARTIRAY2,
                                   { 2.0f, 2.0f }, 8.0f);
 
             m_soundChannel = m_sound->Play(SOUND_RECOVER, ruin->GetPosition(), 0.0f, 1.0f, true);
@@ -405,6 +405,8 @@ bool CTaskRecover::Abort()
             metal->SetScale(1.0f);
         }
     }
+
+    if ( m_rayChannel.has_value() ) m_particle->DeleteParticle(m_rayChannel.value());
 
     m_object->SetPartRotationZ(2,  126.0f*Math::PI/180.0f);
     m_object->SetPartRotationZ(4,  126.0f*Math::PI/180.0f);

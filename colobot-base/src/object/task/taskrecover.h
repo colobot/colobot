@@ -67,4 +67,5 @@ protected:
     std::optional<int> m_metal_id;
     glm::vec3       m_recoverPos = { 0, 0, 0 };
     int             m_soundChannel = -1;
+    std::optional<int> m_rayChannel;
 };
