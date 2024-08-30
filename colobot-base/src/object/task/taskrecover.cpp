@@ -345,6 +345,11 @@ Error CTaskRecover::IsEnded()
                 Abort();
                 return ERR_RECOVER_NULL;
             }
+            if ( GetObjectEnergy(m_object) == 0.0f )
+            {
+                Abort();
+                return ERR_RECOVER_ENERGY;
+            }
 
             if ( m_progress < 1.0f )  return ERR_CONTINUE;
 
