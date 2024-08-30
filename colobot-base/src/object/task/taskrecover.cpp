@@ -48,16 +48,7 @@ const float RECOVER_DIST    = 11.8f;
 
 CTaskRecover::CTaskRecover(COldObject* object) : CForegroundTask(object)
 {
-    m_ruin = nullptr;
-    m_soundChannel = -1;
 }
-
-// Object's constructor.
-
-CTaskRecover::~CTaskRecover()
-{
-}
-
 
 // Management of an event.
 
@@ -90,7 +81,9 @@ bool CTaskRecover::EventProcess(const Event &event)
 
         case TRP_MOVE:  // preliminary forward/backward?
         {
-            dist = glm::distance(m_object->GetPosition(), m_ruin->GetPosition());
+            CObject* ruin = GetRuin();
+            if ( !ruin ) return false;
+            dist = glm::distance(m_object->GetPosition(), ruin->GetPosition());
             linSpeed = 0.0f;
             if ( dist > RECOVER_DIST )  linSpeed =  1.0f;
             if ( dist < RECOVER_DIST )  linSpeed = -1.0f;
@@ -112,6 +105,10 @@ bool CTaskRecover::EventProcess(const Event &event)
 
         case TRP_OPER:
         {
+            CObject* ruin = GetRuin();
+            CObject* metal = GetMetal();
+            if ( !ruin || !metal ) return false;
+
             assert(HasPowerCellSlot(m_object));
             if (CPowerContainerObject* power = GetObjectPowerCell(m_object))
             {
@@ -123,16 +120,16 @@ bool CTaskRecover::EventProcess(const Event &event)
             speed.x = (Math::Rand()-0.5f)*0.1f*m_progress;
             speed.y = (Math::Rand()-0.5f)*0.1f*m_progress;
             speed.z = (Math::Rand()-0.5f)*0.1f*m_progress;
-            m_ruin->SetCirVibration(speed);
+            ruin->SetCirVibration(speed);
 
             if ( m_progress >= 0.75f )
             {
-                m_ruin->SetScale(1.0f-(m_progress-0.75f)/0.25f);
+                ruin->SetScale(1.0f-(m_progress-0.75f)/0.25f);
             }
 
             if ( m_progress > 0.5f && m_progress < 0.8f )
             {
-                m_metal->SetScale((m_progress-0.5f)/0.3f);
+                metal->SetScale((m_progress-0.5f)/0.3f);
             }
 
             if ( m_lastParticle+m_engine->ParticleAdapt(0.02f) <= m_time )
@@ -200,15 +197,14 @@ Error CTaskRecover::Start()
     pos = Math::Transform(mat, pos);  // position in front
     m_recoverPos = pos;
 
-    m_ruin = SearchRuin();
-    if ( m_ruin == nullptr )  return ERR_RECOVER_NULL;
-    m_ruin->SetLock(true);  // ruin no longer usable
+    CObject* ruin = SearchRuin();
+    if ( ruin == nullptr )  return ERR_RECOVER_NULL;
+    m_ruin_id = ruin->GetID();
+    ruin->SetLock(true);  // ruin no longer usable
 
     glm::vec3 iPos = m_object->GetPosition();
-    glm::vec3 oPos = m_ruin->GetPosition();
+    glm::vec3 oPos = ruin->GetPosition();
     m_angle = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
-
-    m_metal = nullptr;
 
     m_phase    = TRP_TURN;
     m_progress = 0.0f;
@@ -237,6 +233,9 @@ Error CTaskRecover::IsEnded()
     {
         case TRP_TURN:  // preliminary rotation?
         {
+            CObject* ruin = GetRuin();
+            if ( !ruin ) return ERR_RECOVER_NULL;
+
             angle = m_object->GetRotationY();
             angle = Math::NormAngle(angle);  // 0..2*Math::PI
 
@@ -244,7 +243,7 @@ Error CTaskRecover::IsEnded()
             {
                 m_physics->SetMotorSpeedZ(0.0f);
 
-                dist = glm::distance(m_object->GetPosition(), m_ruin->GetPosition());
+                dist = glm::distance(m_object->GetPosition(), ruin->GetPosition());
                 if ( dist > RECOVER_DIST )
                 {
                     time = m_physics->GetLinTimeLength(dist-RECOVER_DIST, 1.0f);
@@ -263,7 +262,10 @@ Error CTaskRecover::IsEnded()
 
         case TRP_MOVE:  // preliminary advance?
         {
-            dist = glm::distance(m_object->GetPosition(), m_ruin->GetPosition());
+            CObject* ruin = GetRuin();
+            if ( !ruin ) return ERR_RECOVER_NULL;
+
+            dist = glm::distance(m_object->GetPosition(), ruin->GetPosition());
 
             if ( dist >= RECOVER_DIST-1.0f &&
                  dist <= RECOVER_DIST+1.0f )
@@ -289,7 +291,7 @@ Error CTaskRecover::IsEnded()
             {
                 if ( m_progress > 1.0f )  // timeout?
                 {
-                    m_ruin->SetLock(false);  // usable again
+                    ruin->SetLock(false);  // usable again
                     m_camera->StopCentering(m_object, 2.0f);
                     return ERR_RECOVER_NULL;
                 }
@@ -299,11 +301,15 @@ Error CTaskRecover::IsEnded()
 
         case TRP_DOWN:
         {
+            CObject* ruin = GetRuin();
+            if ( !ruin ) return ERR_RECOVER_NULL;
+
             if ( m_progress < 1.0f )  return ERR_CONTINUE;
 
-            m_metal = CObjectManager::GetInstancePointer()->CreateObject(m_recoverPos, 0.0f, OBJECT_METAL);
-            m_metal->SetLock(true);  // metal not yet usable
-            m_metal->SetScale(0.0f);
+            CObject* metal = CObjectManager::GetInstancePointer()->CreateObject(m_recoverPos, 0.0f, OBJECT_METAL);
+            m_metal_id = metal->GetID();
+            metal->SetLock(true);  // metal not yet usable
+            metal->SetScale(0.0f);
 
             glm::mat4 mat = m_object->GetWorldMatrix(0);
             pos = glm::vec3(RECOVER_DIST, 3.1f, 3.9f);
@@ -313,7 +319,7 @@ Error CTaskRecover::IsEnded()
             m_particle->CreateRay(pos, goal, Gfx::PARTIRAY2,
                                   { 2.0f, 2.0f }, 8.0f);
 
-            m_soundChannel = m_sound->Play(SOUND_RECOVER, m_ruin->GetPosition(), 0.0f, 1.0f, true);
+            m_soundChannel = m_sound->Play(SOUND_RECOVER, ruin->GetPosition(), 0.0f, 1.0f, true);
             m_sound->AddEnvelope(m_soundChannel, 0.6f, 1.0f, 2.0f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 0.6f, 1.0f, 4.0f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 0.0f, 0.7f, 2.0f, SOPER_STOP);
@@ -326,12 +332,20 @@ Error CTaskRecover::IsEnded()
 
         case TRP_OPER:
         {
+            CObject* ruin = GetRuin();
+            CObject* metal = GetMetal();
+            if ( !ruin || !metal )
+            {
+                if ( metal ) CObjectManager::GetInstancePointer()->DeleteObject(metal);
+                if ( ruin ) CObjectManager::GetInstancePointer()->DeleteObject(ruin);
+                return ERR_RECOVER_NULL;
+            }
+
             if ( m_progress < 1.0f )  return ERR_CONTINUE;
 
-            m_metal->SetScale(1.0f);
+            metal->SetScale(1.0f);
 
-            CObjectManager::GetInstancePointer()->DeleteObject(m_ruin);
-            m_ruin = nullptr;
+            CObjectManager::GetInstancePointer()->DeleteObject(ruin);
 
             m_soundChannel = -1;
 
@@ -348,9 +362,12 @@ Error CTaskRecover::IsEnded()
 
         case TRP_UP:
         {
+            CObject* metal = GetMetal();
+            if ( !metal ) return ERR_RECOVER_NULL;
+
             if ( m_progress < 1.0f )  return ERR_CONTINUE;
 
-            m_metal->SetLock(false);  // metal usable
+            metal->SetLock(false);  // metal usable
 
             Abort();
             return ERR_STOP;
@@ -386,4 +403,20 @@ bool CTaskRecover::Abort()
 CObject* CTaskRecover::SearchRuin()
 {
     return CObjectManager::GetInstancePointer()->FindNearest(nullptr, m_recoverPos, {OBJECT_RUINmobilew1, OBJECT_RUINmobilew2, OBJECT_RUINmobilet1, OBJECT_RUINmobilet2, OBJECT_RUINmobiler1, OBJECT_RUINmobiler2}, 40.0f/g_unit);
+}
+
+CObject* CTaskRecover::GetRuin()
+{
+    assert(m_ruin_id != -1);
+    CObject* ruin = CObjectManager::GetInstancePointer()->GetObjectById(m_ruin_id);
+    if ( ruin && ruin->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject&>(*ruin).IsDying() ) return nullptr;
+    return ruin;
+}
+
+CObject* CTaskRecover::GetMetal()
+{
+    if ( !m_metal_id.has_value() ) return nullptr;
+    CObject* metal = CObjectManager::GetInstancePointer()->GetObjectById(m_metal_id.value());
+    if ( metal && metal->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject&>(*metal).IsDying() ) return nullptr;
+    return metal;
 }

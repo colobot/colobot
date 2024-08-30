@@ -22,6 +22,8 @@
 
 #include "object/task/task.h"
 
+#include <optional>
+
 #include <glm/glm.hpp>
 
 class CObject;
@@ -41,7 +43,6 @@ class CTaskRecover : public CForegroundTask
 {
 public:
     CTaskRecover(COldObject* object);
-    ~CTaskRecover();
 
     bool        EventProcess(const Event &event) override;
 
@@ -51,6 +52,8 @@ public:
 
 protected:
     CObject*    SearchRuin();
+    CObject*    GetRuin();
+    CObject*    GetMetal();
 
 protected:
     TaskRecoverPhase m_phase = TRP_TURN;
@@ -60,8 +63,8 @@ protected:
     float           m_angle = 0.0f;
     float           m_lastParticle = 0.0f;
     bool            m_bError = false;
-    CObject*        m_ruin = nullptr;
-    CObject*        m_metal = nullptr;
+    int             m_ruin_id = -1;
+    std::optional<int> m_metal_id;
     glm::vec3       m_recoverPos = { 0, 0, 0 };
-    int             m_soundChannel = 0;
+    int             m_soundChannel = -1;
 };
