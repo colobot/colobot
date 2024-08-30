@@ -302,7 +302,11 @@ Error CTaskRecover::IsEnded()
         case TRP_DOWN:
         {
             CObject* ruin = GetRuin();
-            if ( !ruin ) return ERR_RECOVER_NULL;
+            if ( !ruin )
+            {
+                Abort();
+                return ERR_RECOVER_NULL;
+            }
 
             if ( m_progress < 1.0f )  return ERR_CONTINUE;
 
@@ -338,6 +342,7 @@ Error CTaskRecover::IsEnded()
             {
                 if ( metal ) CObjectManager::GetInstancePointer()->DeleteObject(metal);
                 if ( ruin ) CObjectManager::GetInstancePointer()->DeleteObject(ruin);
+                Abort();
                 return ERR_RECOVER_NULL;
             }
 
@@ -363,7 +368,11 @@ Error CTaskRecover::IsEnded()
         case TRP_UP:
         {
             CObject* metal = GetMetal();
-            if ( !metal ) return ERR_RECOVER_NULL;
+            if ( !metal )
+            {
+                Abort();
+                return ERR_RECOVER_NULL;
+            }
 
             if ( m_progress < 1.0f )  return ERR_CONTINUE;
 
@@ -381,6 +390,22 @@ Error CTaskRecover::IsEnded()
 
 bool CTaskRecover::Abort()
 {
+    if ( CObject* ruin = GetRuin() )
+    {
+        ruin->SetLock(false);
+        ruin->SetCirVibration(glm::vec3(0.0f));
+        ruin->SetScale(1.0f);
+        if (CObject* metal = GetMetal()) CObjectManager::GetInstancePointer()->DeleteObject(metal);
+    }
+    else
+    {
+        if (CObject* metal = GetMetal())
+        {
+            metal->SetLock(false);
+            metal->SetScale(1.0f);
+        }
+    }
+
     m_object->SetPartRotationZ(2,  126.0f*Math::PI/180.0f);
     m_object->SetPartRotationZ(4,  126.0f*Math::PI/180.0f);
     m_object->SetPartRotationZ(3, -144.0f*Math::PI/180.0f);
