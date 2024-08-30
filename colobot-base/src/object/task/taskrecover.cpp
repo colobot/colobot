@@ -201,6 +201,8 @@ Error CTaskRecover::Start()
     if ( ruin == nullptr )  return ERR_RECOVER_NULL;
     m_ruin_id = ruin->GetID();
     ruin->SetLock(true);  // ruin no longer usable
+    ruin->SetLockOverride(false);
+    ruin->SetScaleOverride(glm::vec3(1.0f));
 
     glm::vec3 iPos = m_object->GetPosition();
     glm::vec3 oPos = ruin->GetPosition();
@@ -321,6 +323,7 @@ Error CTaskRecover::IsEnded()
             m_metal_id = metal->GetID();
             metal->SetLock(true);  // metal not yet usable
             metal->SetScale(0.0f);
+            metal->SetPersistent(false);
 
             glm::mat4 mat = m_object->GetWorldMatrix(0);
             pos = glm::vec3(RECOVER_DIST, 3.1f, 3.9f);
@@ -361,6 +364,8 @@ Error CTaskRecover::IsEnded()
             if ( m_progress < 1.0f )  return ERR_CONTINUE;
 
             metal->SetScale(1.0f);
+            metal->SetPersistent(true);
+            metal->SetLockOverride(false);
 
             CObjectManager::GetInstancePointer()->DeleteObject(ruin);
 
@@ -389,6 +394,7 @@ Error CTaskRecover::IsEnded()
             if ( m_progress < 1.0f )  return ERR_CONTINUE;
 
             metal->SetLock(false);  // metal usable
+            metal->SetLockOverride({});
 
             Abort();
             return ERR_STOP;
@@ -404,17 +410,21 @@ bool CTaskRecover::Abort()
 {
     if ( CObject* ruin = GetRuin() )
     {
-        ruin->SetLock(false);
         ruin->SetCirVibration(glm::vec3(0.0f));
+        ruin->SetLock(false);
         ruin->SetScale(1.0f);
+        ruin->SetLockOverride({});
+        ruin->SetScaleOverride({});
         if (CObject* metal = GetMetal()) CObjectManager::GetInstancePointer()->DeleteObject(metal);
     }
     else
     {
         if (CObject* metal = GetMetal())
         {
-            metal->SetLock(false);
             metal->SetScale(1.0f);
+            metal->SetPersistent(true);
+            metal->SetLock(false);
+            metal->SetLockOverride({});
         }
     }
 
