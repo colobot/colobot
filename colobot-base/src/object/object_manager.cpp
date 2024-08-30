@@ -111,7 +111,7 @@ void CObjectManager::DeleteAllObjects()
     m_nextId = 0;
 }
 
-CObject* CObjectManager::GetObjectById(unsigned int id)
+CObject* CObjectManager::GetObjectById(int id)
 {
     if (m_objects.count(id) == 0) return nullptr;
     return m_objects[id].get();
