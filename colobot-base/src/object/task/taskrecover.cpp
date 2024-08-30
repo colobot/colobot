@@ -234,7 +234,11 @@ Error CTaskRecover::IsEnded()
         case TRP_TURN:  // preliminary rotation?
         {
             CObject* ruin = GetRuin();
-            if ( !ruin ) return ERR_RECOVER_NULL;
+            if ( !ruin )
+            {
+                Abort();
+                return ERR_RECOVER_NULL;
+            }
 
             angle = m_object->GetRotationY();
             angle = Math::NormAngle(angle);  // 0..2*Math::PI
@@ -263,7 +267,11 @@ Error CTaskRecover::IsEnded()
         case TRP_MOVE:  // preliminary advance?
         {
             CObject* ruin = GetRuin();
-            if ( !ruin ) return ERR_RECOVER_NULL;
+            if ( !ruin )
+            {
+                Abort();
+                return ERR_RECOVER_NULL;
+            }
 
             dist = glm::distance(m_object->GetPosition(), ruin->GetPosition());
 
@@ -291,8 +299,7 @@ Error CTaskRecover::IsEnded()
             {
                 if ( m_progress > 1.0f )  // timeout?
                 {
-                    ruin->SetLock(false);  // usable again
-                    m_camera->StopCentering(m_object, 2.0f);
+                    Abort();
                     return ERR_RECOVER_NULL;
                 }
             }
@@ -439,8 +446,8 @@ CObject* CTaskRecover::SearchRuin()
 
 CObject* CTaskRecover::GetRuin()
 {
-    assert(m_ruin_id != -1);
-    CObject* ruin = CObjectManager::GetInstancePointer()->GetObjectById(m_ruin_id);
+    if ( !m_ruin_id.has_value() ) return nullptr;
+    CObject* ruin = CObjectManager::GetInstancePointer()->GetObjectById(m_ruin_id.value());
     if ( ruin && ruin->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject&>(*ruin).IsDying() ) return nullptr;
     return ruin;
 }

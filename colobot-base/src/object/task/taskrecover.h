@@ -63,7 +63,7 @@ protected:
     float           m_angle = 0.0f;
     float           m_lastParticle = 0.0f;
     bool            m_bError = false;
-    int             m_ruin_id = -1;
+    std::optional<int> m_ruin_id;
     std::optional<int> m_metal_id;
     glm::vec3       m_recoverPos = { 0, 0, 0 };
     int             m_soundChannel = -1;
