@@ -225,7 +225,7 @@ protected:
     void        SetFocus(CControl* control) override;
     void        UpdateFocus();      // Start/stop text input mode, this toggles the on-screen keyboard
 
-    void        GetIndentedText(std::ostream& stream, unsigned int start, unsigned int end);
+    void        GetIndentedText(std::ostream& stream, int start, int end);
 
 protected:
     std::unique_ptr<CScroll> m_scroll;           // vertical scrollbar on the right
