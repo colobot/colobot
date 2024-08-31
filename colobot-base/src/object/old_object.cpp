@@ -1156,6 +1156,17 @@ void COldObject::Write(CLevelParserLine* line)
     {
         m_auto->Write(line);
     }
+
+    // AlienWorm time up/down
+    if (m_type == OBJECT_WORM)
+    {
+        assert(Implements(ObjectInterfaceType::Movable));
+        CMotion* motion = GetMotion();
+        CLevelParserParamVec param;
+        param.push_back(std::make_unique<CLevelParserParam>(motion->GetParam(0)));
+        param.push_back(std::make_unique<CLevelParserParam>(motion->GetParam(1)));
+        line->AddParam("param", std::make_unique<CLevelParserParam>(std::move(param)));
+    }
 }
 
 // Returns all parameters of the object.
