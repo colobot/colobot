@@ -479,7 +479,11 @@ Error CTaskBuild::IsEnded()
     if ( m_phase == TBP_TURN )  // preliminary rotation?
     {
         CObject* metal = GetMetal();
-        if ( !metal ) return ERR_BUILD_METALINEX;
+        if ( !metal )
+        {
+            Abort();
+            return ERR_BUILD_METALINEX;
+        }
 
         angle = m_object->GetRotationY();
         angle = Math::NormAngle(angle);  // 0..2*Math::PI
@@ -508,7 +512,11 @@ Error CTaskBuild::IsEnded()
     if ( m_phase == TBP_MOVE )  // preliminary forward/backward?
     {
         CObject* metal = GetMetal();
-        if ( !metal ) return ERR_BUILD_METALINEX;
+        if ( !metal )
+        {
+            Abort();
+            return ERR_BUILD_METALINEX;
+        }
 
         dist = glm::distance(m_object->GetPosition(), metal->GetPosition());
 
@@ -537,9 +545,7 @@ Error CTaskBuild::IsEnded()
         {
             if ( m_progress > 1.0f )  // timeout?
             {
-                metal->SetLock(false);  // usable again
-                metal->SetLockOverride({});
-                metal->SetScaleOverride({});
+                Abort();
                 if ( dist < 30.0f )  return ERR_BUILD_METALNEAR;
                 else                 return ERR_BUILD_METALAWAY;
             }
@@ -550,7 +556,11 @@ Error CTaskBuild::IsEnded()
     if ( m_phase == TBP_TAKE )  // takes gun
     {
         CObject* metal = GetMetal();
-        if ( !metal ) return ERR_BUILD_METALINEX;
+        if ( !metal )
+        {
+            Abort();
+            return ERR_BUILD_METALINEX;
+        }
 
         if ( m_progress < 1.0f )  return ERR_CONTINUE;
 
@@ -583,7 +593,11 @@ Error CTaskBuild::IsEnded()
     if ( m_phase == TBP_PREP )  // prepares?
     {
         CObject* metal = GetMetal();
-        if ( !metal ) return ERR_BUILD_METALINEX;
+        if ( !metal )
+        {
+            Abort();
+            return ERR_BUILD_METALINEX;
+        }
 
         if ( m_progress < 1.0f )  return ERR_CONTINUE;
 
@@ -602,10 +616,18 @@ Error CTaskBuild::IsEnded()
     if ( m_phase == TBP_BUILD )  // construction?
     {
         CObject* metal = GetMetal();
-        if ( !metal ) return ERR_BUILD_METALINEX;
+        if ( !metal )
+        {
+            Abort();
+            return ERR_BUILD_METALINEX;
+        }
         if ( m_progress < 1.0f )  return ERR_CONTINUE;
         CObject* building = GetBuilding();
-        if ( ! building ) return ERR_BUILD_METALINEX;
+        if ( !building )
+        {
+            Abort();
+            return ERR_BUILD_METALINEX;
+        }
 
         DeleteMark(metal->GetPosition(), 20.0f);
 
@@ -679,13 +701,6 @@ Error CTaskBuild::IsEnded()
 
         m_physics->SetMotorSpeedX(0.0f);
         m_physics->SetMotorSpeedZ(0.0f);
-
-        if ( CObject* metal = GetMetal() )
-        {
-            metal->SetLock(false); // make titanium usable
-            metal->SetLockOverride({});
-            metal->SetScaleOverride({});
-        }
     }
 
     Abort();
@@ -707,6 +722,10 @@ bool CTaskBuild::Abort()
         {
             CObjectManager::GetInstancePointer()->DeleteObject(building);
         }
+    }
+    else
+    {
+        if (CObject* building = GetBuilding()) building->SetPersistent(true);
     }
 
     if ( m_soundChannel != -1 )
@@ -968,8 +987,8 @@ void CTaskBuild::DeleteMark(glm::vec3 pos, float radius)
 
 CObject* CTaskBuild::GetMetal()
 {
-    assert(m_metal_id != -1);
-    CObject* metal = CObjectManager::GetInstancePointer()->GetObjectById(m_metal_id);
+    if ( !m_metal_id.has_value() ) return nullptr;
+    CObject* metal = CObjectManager::GetInstancePointer()->GetObjectById(m_metal_id.value());
     if ( metal && metal->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject&>(*metal).IsDying() ) return nullptr;
     return metal;
 }
