@@ -61,7 +61,6 @@ Note that the recommended way of building the project is to use separate build d
   git clone https://github.com/colobot/colobot.git
   cd colobot
   git submodule update --init
-  ln --symbolic ../colobot-base/src/graphics/opengl33/shaders/ data/  # ON BRANCH master RUN THIS INSTEAD: ln --symbolic ../src/graphics/opengl/shaders/ data/
   mkdir build
   cd build
   cmake -D TRANSLATIONS=OFF ../  # You can't compile translations unless you have python2
