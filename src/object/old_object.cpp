@@ -2309,7 +2309,7 @@ bool COldObject::EventProcess(const Event &event)
                     axeY *= 0.5f;
                 }
 
-                if ( !m_main->IsResearchDone(RESEARCH_FLY, GetTeam()) )
+                if ( m_type == OBJECT_HUMAN && !m_main->IsResearchDone(RESEARCH_FLY, GetTeam()) )
                 {
                     axeZ = -1.0f;  // tomb
                 }
