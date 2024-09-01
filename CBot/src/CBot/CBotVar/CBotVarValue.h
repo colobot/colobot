@@ -290,6 +290,13 @@ public:
     {
         this->m_val = ~(this->m_val);
     }
+
+    std::string GetValString() const override
+    {
+        std::ostringstream s;
+        s << +this->m_val;
+        return s.str();
+    }
 };
 
 } // namespace CBot

@@ -3542,3 +3542,12 @@ TEST_F(CBotUT, TestFinally) {
         CBotErrBadType2
     );
 }
+
+TEST_F(CBotUT, TestByteToString) {
+    ExecuteTest(
+        "extern void TestByteToString() {\n"
+        "    byte c = 90;\n"
+        "    ASSERT(c + \"\" == \"90\");\n"
+        "}\n"
+    );
+}
