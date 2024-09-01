@@ -1349,7 +1349,7 @@ void CEngine::DeleteAllGroundSpots()
         shadowImg.Fill(Gfx::IntColor(255, 255, 255, 255));
 
         std::stringstream str;
-        str << "shadow" << std::setfill('0') << std::setw(2) << s << ".png";
+        str << "textures/shadow" << std::setfill('0') << std::setw(2) << s << ".png";
         std::string texName = str.str();
 
         CreateOrUpdateTexture(texName, &shadowImg);

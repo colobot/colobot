@@ -986,7 +986,7 @@ void CWindow::DrawVertex(const glm::vec2& position, const glm::vec2& dimension, 
         dim.x += 100.0f/640.0f;
         dim.y +=  60.0f/480.0f;
 
-        auto texture = m_engine->LoadTexture("textures/interface/human.png");
+        auto texture = m_engine->LoadTexture("textures/objects/human.png");
         renderer->SetTexture(texture);
         renderer->SetTransparency(Gfx::TransparencyMode::NONE);
         uv1.x = 140.0f/256.0f;

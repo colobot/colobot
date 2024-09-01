@@ -25,6 +25,7 @@
 #include "app/app.h"
 #include "app/input.h"
 
+#include "common/codepoint.h"
 #include "common/logger.h"
 #include "common/stringutils.h"
 
@@ -736,7 +737,7 @@ int CEdit::MouseDetect(const glm::vec2& mouse)
 
     if ( m_bAutoIndent )
     {
-        indentLength = m_engine->GetText()->GetCharWidth(static_cast<Gfx::UTF8Char>(' '), m_fontType, m_fontSize, 0.0f)
+        indentLength = m_engine->GetText()->GetCharWidth(std::string_view(" "), m_fontType, m_fontSize, 0.0f)
                         * m_engine->GetEditIndentValue();
     }
 
@@ -946,7 +947,7 @@ void CEdit::Draw()
 
     if ( m_bAutoIndent )
     {
-        indentLength = m_engine->GetText()->GetCharWidth(static_cast<Gfx::UTF8Char>(' '), m_fontType, m_fontSize, 0.0f)
+        indentLength = m_engine->GetText()->GetCharWidth(std::string_view(" "), m_fontType, m_fontSize, 0.0f)
                         * m_engine->GetEditIndentValue();
     }
 
@@ -1890,7 +1891,7 @@ bool CEdit::WriteText(const std::filesystem::path& filename)
     return true;
 }
 
-void CEdit::GetIndentedText(std::ostream& stream, unsigned int start, unsigned int end)
+void CEdit::GetIndentedText(std::ostream& stream, int start, int end)
 {
     float iDim = 0.0f;
 
@@ -1901,10 +1902,21 @@ void CEdit::GetIndentedText(std::ostream& stream, unsigned int start, unsigned i
         Justif();
     }
 
-    unsigned int i = 0, line = 0;
-    while ( m_text[i] != 0 && i < end && i < static_cast<unsigned int>(m_len) ) // TODO: fix this (un)signed comparation
+    if ( end > m_len ) end = m_len;
+    if ( start > end ) start = end;
+
+    int line = 0;
+    for ( int i = 0; i < start; ++i )
     {
-        if ( m_bAutoIndent && i == static_cast<unsigned int>(m_lineOffset[line]) ) // TODO: fix this (un)signed comparation
+        if ( m_bAutoIndent && i == m_lineOffset[line] )
+        {
+            line++;
+        }
+    }
+
+    for ( int i = start; m_text[i] != 0 && i < end; ++i )
+    {
+        if ( m_bAutoIndent && i == m_lineOffset[line] )
         {
             for (int n = 0; n < m_lineIndent[line]; n++)
             {
@@ -1915,13 +1927,7 @@ void CEdit::GetIndentedText(std::ostream& stream, unsigned int start, unsigned i
             }
             line++;
         }
-
-        if (i >= start)
-        {
-            stream << m_text[i];
-        }
-
-        i ++;
+        stream << m_text[i];
     }
 
     if ( m_bAutoIndent )
@@ -2436,7 +2442,7 @@ void CEdit::MoveLine(int move, bool bWord, bool bSelect)
     column = m_column;
     if ( m_bAutoIndent )
     {
-        indentLength = m_engine->GetText()->GetCharWidth(static_cast<Gfx::UTF8Char>(' '), m_fontType, m_fontSize, 0.0f)
+        indentLength = m_engine->GetText()->GetCharWidth(std::string_view(" "), m_fontType, m_fontSize, 0.0f)
                         * m_engine->GetEditIndentValue();
         column -= indentLength*m_lineIndent[line];
     }
@@ -2490,7 +2496,7 @@ void CEdit::ColumnFix()
 
     if ( m_bAutoIndent )
     {
-        indentLength = m_engine->GetText()->GetCharWidth(static_cast<Gfx::UTF8Char>(' '), m_fontType, m_fontSize, 0.0f)
+        indentLength = m_engine->GetText()->GetCharWidth(std::string_view(" "), m_fontType, m_fontSize, 0.0f)
                         * m_engine->GetEditIndentValue();
         m_column += indentLength*m_lineIndent[line];
     }
@@ -3054,7 +3060,7 @@ void CEdit::Justif()
 
     if ( m_bAutoIndent )
     {
-        indentLength = m_engine->GetText()->GetCharWidth(static_cast<Gfx::UTF8Char>(' '), m_fontType, m_fontSize, 0.0f)
+        indentLength = m_engine->GetText()->GetCharWidth(std::string_view(" "), m_fontType, m_fontSize, 0.0f)
                         * m_engine->GetEditIndentValue();
     }
 

@@ -6,7 +6,7 @@ set(PLATFORM_FREEBSD 0)
 
 add_compile_options(
     -Wall
-    -Wold-style-cast
+    $<$<COMPILE_LANGUAGE:CXX>:-Wold-style-cast>
     -Wmissing-prototypes
     -pedantic-errors
     -Wno-error=deprecated-declarations

@@ -4,13 +4,6 @@ endif()
 
 message(STATUS "Detected AppleClang version 12.0+")
 
-# Use override for char8_t on AppleClang before 14.0
-if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 14.0)
-    if(NOT DEFINED COLOBOT_CHAR8_T_OVERRIDE)
-        set(COLOBOT_CHAR8_T_OVERRIDE ON CACHE BOOL "Override char8_t usage for compatibility reasons" FORCE)
-    endif()
-endif()
-
 if (${PLATFORM_FREEBSD})
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=bfd")
 endif()

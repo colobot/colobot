@@ -24,6 +24,9 @@
 
 #include "CBot/CBotVar/CBotVar.h"
 
+#include <common/codepoint.h>
+#include <common/stringutils.h>
+
 #include <stdexcept>
 
 namespace CBot
@@ -138,7 +141,7 @@ CBotInstr* CBotExprLitString::Compile(CBotToken* &p, CBotCStack* pStack)
                                 {
                                     if (val < 0xD800 || (0xDFFF < val && val < 0x110000))
                                     {
-                                        valstring += CodePointToUTF8(val);
+                                        valstring += StrUtils::ToUTF8(val).ToStringView();
                                         continue;
                                     }
                                     pStk->SetError(CBotErrUnicodeName, pos + 1);

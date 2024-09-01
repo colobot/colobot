@@ -2580,7 +2580,7 @@ int CPhysics::ObjectAdapt(const glm::vec3 &pos, const glm::vec3 &angle)
 
                     if (crashSphere.sound != SOUND_NONE)
                     {
-                        force = fabs(m_linMotion.realSpeed.x);
+                        force = glm::length(m_linMotion.realSpeed);
                         force *= crashSphere.hardness*2.0f;
                         if ( ExploOther(iType, pObj, oType, force) )  continue;
                         colType = ExploHimself(iType, oType, force);

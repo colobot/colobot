@@ -24,6 +24,7 @@
 
 #include "common/logger.h"
 #include "common/stringutils.h"
+#include "common/codepoint.h"
 
 #include "graphics/core/device.h"
 #include "graphics/core/renderers.h"
@@ -796,11 +797,11 @@ void CParticle::FrameParticle(float rTime)
     glm::vec3 wind = m_terrain->GetWind();
     glm::vec3 eye = m_engine->GetEyePt();
 
-    glm::vec2 ts, ti;
     glm::vec3 pos = { 0, 0, 0 };
 
     for (int i = 0; i < MAXPARTICULE*MAXPARTITYPE; i++)
     {
+        glm::vec2 ts(0), ti(0);
         if (!m_particle[i].used) continue;
         if (!m_frameUpdate[m_particle[i].sheet]) continue;
 
@@ -2878,32 +2879,25 @@ void CParticle::DrawParticleFog(int i)
     if (m_particle[i].intensity == 0.0f) return;
 
     glm::vec3 pos = m_particle[i].pos;
-
-    glm::vec2 dim;
-    dim.x = m_particle[i].dim.x;
-    dim.y = m_particle[i].dim.y;
-
-    glm::vec2 zoom;
+    glm::vec2 dim = m_particle[i].dim;
 
     if ( m_particle[i].type == PARTIFOG0 ||
          m_particle[i].type == PARTIFOG2 ||
          m_particle[i].type == PARTIFOG4 ||
          m_particle[i].type == PARTIFOG6 )
     {
-        zoom.x = 1.0f+sinf(m_particle[i].zoom*2.0f)/6.0f;
-        zoom.y = 1.0f+cosf(m_particle[i].zoom*2.7f)/6.0f;
+        dim.x *= 1.0f+sinf(m_particle[i].zoom*2.0f)/6.0f;
+        dim.y *= 1.0f+cosf(m_particle[i].zoom*2.7f)/6.0f;
     }
     if ( m_particle[i].type == PARTIFOG1 ||
          m_particle[i].type == PARTIFOG3 ||
          m_particle[i].type == PARTIFOG5 ||
          m_particle[i].type == PARTIFOG7 )
     {
-        zoom.x = 1.0f+sinf(m_particle[i].zoom*3.0f)/6.0f;
-        zoom.y = 1.0f+cosf(m_particle[i].zoom*3.7f)/6.0f;
+        dim.x *= 1.0f+sinf(m_particle[i].zoom*3.0f)/6.0f;
+        dim.y *= 1.0f+cosf(m_particle[i].zoom*3.7f)/6.0f;
     }
 
-    dim.x *= zoom.x;
-    dim.y *= zoom.y;
 
     CObject* object = m_particle[i].objLink;
     if (object != nullptr)
@@ -3319,7 +3313,9 @@ void CParticle::DrawParticleCylinder(int i)
 
 void CParticle::DrawParticleText(int i)
 {
-    CharTexture tex = m_engine->GetText()->GetCharTexture(static_cast<UTF8Char>(m_particle[i].text), FONT_STUDIO, FONT_SIZE_BIG*2.0f);
+    StrUtils::CodePoint ch = std::string_view(&m_particle[i].text, 1);
+
+    CharTexture tex = m_engine->GetText()->GetCharTexture(ch, FONT_STUDIO, FONT_SIZE_BIG*2.0f);
     if (tex.id == 0) return;
 
     m_renderer->SetTexture({ tex.id });

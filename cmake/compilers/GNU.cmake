@@ -6,7 +6,7 @@ message(STATUS "Detected GCC version 4.7+")
 
 add_compile_options(
     -Wall
-    -Wold-style-cast
+    $<$<COMPILE_LANGUAGE:CXX>:-Wold-style-cast>
     -pedantic-errors
     -Wmissing-declarations
     -lstdc++fs

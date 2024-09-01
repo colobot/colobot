@@ -200,7 +200,7 @@ void COldObject::DeleteObject(bool bAll)
     {
         m_camera->SetControllingObject(nullptr);
     }
-    m_main->RemoveFromSelectionHistory(this);
+    m_main->CutObjectLink(this);
 
     if ( !bAll )
     {
@@ -596,7 +596,7 @@ void COldObject::DestroyObject(DestructionType type, CObject* killer)
         m_camera->SetType(Gfx::CAM_TYPE_EXPLO);
         m_main->DeselectAll();
     }
-    m_main->RemoveFromSelectionHistory(this);
+    m_main->CutObjectLink(this);
 
     CScoreboard* scoreboard = m_main->GetScoreboard();
     if (scoreboard)
@@ -2256,7 +2256,7 @@ bool COldObject::EventProcess(const Event &event)
                     axeY *= 0.5f;
                 }
 
-                if ( !m_main->IsResearchDone(RESEARCH_FLY, GetTeam()) )
+                if ( m_type == OBJECT_HUMAN && !m_main->IsResearchDone(RESEARCH_FLY, GetTeam()) )
                 {
                     axeZ = -1.0f;  // tomb
                 }

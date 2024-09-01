@@ -453,7 +453,7 @@ void CAutoTower::UpdateInterface(float rTime)
     Ui::CGauge* pg = static_cast< Ui::CGauge* >(pw->SearchControl(EVENT_OBJECT_GENERGY));
     if ( pg != nullptr )
     {
-        float energy = GetObjectEnergy(m_object);
+        float energy = GetObjectEnergyLevel(m_object);
         pg->SetLevel(energy);
     }
 }

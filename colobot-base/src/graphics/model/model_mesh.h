@@ -33,7 +33,6 @@ namespace Gfx
  */
 enum class VertexAttribute
 {
-    POSITION,
     COLOR,
     UV1,
     UV2,
