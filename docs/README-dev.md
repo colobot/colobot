@@ -66,7 +66,7 @@ Note that the recommended way of building the project is to use separate build d
   # You can't compile translations unless you have python2
   cmake -D TRANSLATIONS=OFF -D COLOBOT_DEVELOPMENT_MODE=ON ..
   make
-  ./colobot -datadir ../data
+  ./colobot -datadir data/
 ```
 
 ## Tests organization
