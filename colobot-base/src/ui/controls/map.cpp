@@ -365,7 +365,7 @@ void CMap::Draw()
     }
     else // still image?
     {
-        auto texture = m_engine->LoadTexture(TempToString(m_fixImage));
+        auto texture = m_engine->LoadTexture(m_fixImage);
         renderer->SetTransparency(Gfx::TransparencyMode::NONE);
         renderer->SetTexture(texture);
 

@@ -32,6 +32,7 @@
 
 #include <string>
 #include <vector>
+#include <filesystem>
 
 
 // Graphics module namespace
@@ -168,12 +169,12 @@ public:
     //! Clears the relief, resources and all other associated data
     void        FlushRelief();
     //! Load relief from image
-    bool        LoadRelief(const std::string& fileName, float scaleRelief, bool adjustBorder);
+    bool        LoadRelief(const std::filesystem::path& fileName, float scaleRelief, bool adjustBorder);
     //! Load ramdomized relief
     bool        RandomizeRelief();
 
     //! Load resources from image
-    bool        LoadResources(const std::string& fileName);
+    bool        LoadResources(const std::filesystem::path& fileName);
 
     //! Creates all objects of the terrain within the 3D engine
     bool        CreateObjects();

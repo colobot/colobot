@@ -296,7 +296,7 @@ bool CScreenModList::EventProcess(const Event &event)
         break;
 
     case EVENT_INTERFACE_MODS_DIR:
-        if (!systemUtils.OpenPath(StrUtils::ToString(modDir)))
+        if (!systemUtils.OpenPath(modDir))
         {
             std::string title, text;
             GetResource(RES_TEXT, RT_DIALOG_OPEN_PATH_FAILED_TITLE, title);

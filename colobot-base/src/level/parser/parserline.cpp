@@ -50,7 +50,7 @@ void CLevelParserLine::SetLevel(CLevelParser* level)
     // Only on the first call - this makes sure the level name doesn't change if the file is loaded using #Include
     if (m_levelFilename.empty())
     {
-        m_levelFilename = StrUtils::ToString(m_level->GetFilename());
+        m_levelFilename = m_level->GetFilename();
     }
 }
 

@@ -639,11 +639,11 @@ protected:
     bool            m_cheatAllMission = false;
     bool            m_cheatRadar = false;
     bool            m_shortCut = false;
-    std::string     m_audioTrack;
+    std::filesystem::path m_audioTrack;
     bool            m_audioRepeat = false;
-    std::string     m_satcomTrack;
+    std::filesystem::path m_satcomTrack;
     bool            m_satcomRepeat = false;
-    std::string     m_editorTrack;
+    std::filesystem::path m_editorTrack;
     bool            m_editorRepeat = false;
     int             m_movieInfoIndex = 0;
 

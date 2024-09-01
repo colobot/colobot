@@ -28,6 +28,7 @@
 #include "graphics/core/color.h"
 #include "graphics/core/transparency.h"
 
+#include <filesystem>
 
 // Graphics module namespace
 namespace Gfx
@@ -83,7 +84,7 @@ struct Material
     //! Variable detail texture
     bool variableDetail = false;
     //! Detail texture
-    std::string detailTexture = "";
+    std::filesystem::path detailTexture = "";
 
     bool operator==(const Material& other) const
     {

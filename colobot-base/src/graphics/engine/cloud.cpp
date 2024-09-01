@@ -30,7 +30,7 @@
 #include "level/robotmain.h"
 
 #include "math/geometry.h"
-
+#include "common/stringutils.h"
 
 // Graphics module namespace
 namespace Gfx
@@ -204,7 +204,7 @@ void CCloud::CreateLine(int x, int y, int len)
     m_lines.push_back(line);
 }
 
-void CCloud::Create(const std::string& fileName,
+void CCloud::Create(const std::filesystem::path& fileName,
                     const Color& diffuse, const Color& ambient,
                     float level)
 {

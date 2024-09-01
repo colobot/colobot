@@ -22,6 +22,7 @@
 
 #include "common/ioutils.h"
 #include "common/logger.h"
+#include "common/stringutils.h"
 #include "common/resources/inputstream.h"
 
 #include "graphics/model/model_io_exception.h"
@@ -145,7 +146,7 @@ void GLTFLoader::ReadBuffers()
 
         if (node.contains("uri"))
         {
-            auto uri = m_directory / node["uri"].get<std::string>();
+            auto uri = m_directory / StrUtils::ToPath(node["uri"].get<std::string>());
 
             CInputStream stream(uri);
 
@@ -197,9 +198,9 @@ void GLTFLoader::ReadMaterials()
             {
                 int dirt = extras["dirt"].get<int>();
 
-                std::string texName = std::string("dirty0") + char('0' + dirt) + ".png";
-
-                mat.detailTexture = texName;
+                std::stringstream ss;
+                ss << "dirty" << std::setw(2) << std::setfill('0') << dirt << ".png";
+                mat.detailTexture = "textures" / StrUtils::ToPath(ss.str());
             }
 
             if (extras.contains("tag"))

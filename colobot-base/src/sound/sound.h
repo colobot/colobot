@@ -29,6 +29,7 @@
 #include <glm/glm.hpp>
 
 #include <string>
+#include <filesystem>
 
 /*!
  * Maximum possible audio volume
@@ -86,7 +87,7 @@ public:
      *  This function is executed asynchronously
      * \param file - file to load
      */
-    virtual void CacheMusic(const std::string &file);
+    virtual void CacheMusic(const std::filesystem::path &file);
 
     /** Function to check if sound effect file was cached.
      * \param sound - id of a sound effect file
@@ -208,7 +209,7 @@ public:
      * \param repeat - repeat playing
      * \param fadeTime - time of transition between music, 0 to disable
      */
-    virtual void PlayMusic(const std::string &filename, bool repeat, float fadeTime = 2.0f);
+    virtual void PlayMusic(const std::filesystem::path& filename, bool repeat, float fadeTime = 2.0f);
 
     /** Stop playing music
      * \return nothing
@@ -226,7 +227,7 @@ public:
      * \param repeat - repeat playing
      * \return return true on success
      */
-     virtual void PlayPauseMusic(const std::string &filename, bool repeat);
+     virtual void PlayPauseMusic(const std::filesystem::path& filename, bool repeat);
 
      /** Stop playing pause music and return to the mission music
       * \return nothing

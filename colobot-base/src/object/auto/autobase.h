@@ -25,6 +25,7 @@
 #include "graphics/core/color.h"
 
 #include <set>
+#include <filesystem>
 
 class CObject;
 
@@ -110,7 +111,7 @@ protected:
     int             m_partiChannel[8] = {};
 
     std::string     m_bgBack;
-    std::string     m_bgName;
+    std::filesystem::path m_bgName;
     Gfx::Color      m_bgUp;
     Gfx::Color      m_bgDown;
     Gfx::Color      m_bgCloudUp;

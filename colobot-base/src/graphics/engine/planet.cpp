@@ -21,6 +21,7 @@
 #include "graphics/engine/planet.h"
 
 #include "common/event.h"
+#include "common/stringutils.h"
 
 #include "graphics/core/device.h"
 #include "graphics/core/renderers.h"
@@ -171,7 +172,7 @@ void CPlanet::Draw()
 }
 
 void CPlanet::Create(PlanetType type, const glm::vec2& start, float dim, float speed,
-                     float dir, const std::string& name, const glm::vec2& uv1, const glm::vec2& uv2,
+                     float dir, const std::filesystem::path& name, const glm::vec2& uv1, const glm::vec2& uv2,
                      bool transparent)
 {
     Planet planet;

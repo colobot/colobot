@@ -42,6 +42,8 @@
 #include "ui/controls/interface.h"
 #include "ui/controls/window.h"
 
+#include "common/stringutils.h"
+
 
 
 const float BASE_LAND_TIME          = 7.5f;     // hard landing
@@ -1339,7 +1341,7 @@ void CAutoBase::BeginTransit()
     bool full, scale;
     m_engine->GetBackground(m_bgName, m_bgUp, m_bgDown, m_bgCloudUp, m_bgCloudDown, full, scale);
 
-    m_engine->SetBackground(m_bgBack, Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+    m_engine->SetBackground(TempToPath(m_bgBack), Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
             Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
             Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
             Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f));

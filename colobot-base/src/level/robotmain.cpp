@@ -599,7 +599,7 @@ void CRobotMain::ChangePhase(Phase phase)
                     pe->SetFontType(Gfx::FONT_COMMON);
                     pe->SetEditCap(false);
                     pe->SetHighlightCap(false);
-                    pe->ReadText(std::string("help/") + m_app->GetLanguageChar() + std::string("/win.txt"));
+                    pe->ReadText(TempToPath(std::string("help/") + m_app->GetLanguageChar() + std::string("/win.txt")));
                 }
                 else
                 {
@@ -2249,7 +2249,7 @@ void CRobotMain::HelpObject()
     std::string filename = GetHelpFilename(obj->GetType());
     if (filename.empty()) return;
 
-    StartDisplayInfo(filename, -1);
+    StartDisplayInfo(TempToPath(filename), -1);
 }
 
 
@@ -2825,7 +2825,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
     m_missionTimerStarted = false;
     m_missionTimer = 0.0f;
 
-    std::string backgroundPath = "";
+    std::filesystem::path backgroundPath = "";
     Gfx::Color backgroundUp = Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f);
     Gfx::Color backgroundDown = Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f);
     Gfx::Color backgroundCloudUp = Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f);
@@ -2873,13 +2873,13 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "ScriptFile" && !resetObject)
             {
-                m_scriptFile = line->GetParam("name")->AsString();
+                m_scriptFile = TempToPath(line->GetParam("name")->AsString());
                 continue;
             }
 
             if (line->GetCommand() == "Instructions" && !resetObject)
             {
-                m_infoFilename[SATCOM_HUSTON] = TempToPath(line->GetParam("name")->AsPath("help/%lng%"));
+                m_infoFilename[SATCOM_HUSTON] = line->GetParam("name")->AsPath("help/%lng%");
 
                 m_immediatSatCom = line->GetParam("immediat")->AsBool(false);
                 m_beginSatCom = m_lockedSatCom = line->GetParam("lock")->AsBool(false);
@@ -2889,24 +2889,24 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "Satellite" && !resetObject)
             {
-                m_infoFilename[SATCOM_SAT] = TempToPath(line->GetParam("name")->AsPath("help/%lng%"));
+                m_infoFilename[SATCOM_SAT] = line->GetParam("name")->AsPath("help/%lng%");
                 continue;
             }
 
             if (line->GetCommand() == "Loading" && !resetObject)
             {
-                m_infoFilename[SATCOM_LOADING] = TempToPath(line->GetParam("name")->AsPath("help/%lng%"));
+                m_infoFilename[SATCOM_LOADING] = line->GetParam("name")->AsPath("help/%lng%");
                 continue;
             }
 
             if (line->GetCommand() == "HelpFile" && !resetObject)
             {
-                m_infoFilename[SATCOM_PROG] = TempToPath(line->GetParam("name")->AsPath("help/%lng%"));
+                m_infoFilename[SATCOM_PROG] = line->GetParam("name")->AsPath("help/%lng%");
                 continue;
             }
             if (line->GetCommand() == "SoluceFile" && !resetObject)
             {
-                m_infoFilename[SATCOM_SOLUCE] = TempToPath(line->GetParam("name")->AsPath("help/%lng%"));
+                m_infoFilename[SATCOM_SOLUCE] = line->GetParam("name")->AsPath("help/%lng%");
                 continue;
             }
 
@@ -2924,8 +2924,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                                 // TODO: Fix default levels and add a future removal warning
                                 GetLogger()->Warn("This level is using deprecated way of defining %% scene. Please change the %%= parameter in EndingFile from %% to \"levels/other/%1$s%2$03d.txt\".\n", type, type, rank);
                                 std::stringstream ss;
-                                ss << "levels/other/" << type << std::setfill('0') << std::setw(3) << rank << ".txt";
-                                return TempToPath(ss.str());
+                                ss << std::setfill('0') << std::setw(3) << rank << ".txt";
+                                return "levels/other" / StrUtils::ToPath(type) / StrUtils::ToPath(ss.str());
                             }
                             else
                             {
@@ -2937,7 +2937,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                         }
                         catch (std::invalid_argument &e)
                         {
-                            return TempToPath(line->GetParam(type)->AsPath("levels"));
+                            return line->GetParam(type)->AsPath("levels");
                         }
                     }
                     return "";
@@ -2973,8 +2973,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "CacheAudio" && !resetObject)
             {
-                std::string filename = line->GetParam("filename")->AsPath("music");
-                m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, filename);
+                std::filesystem::path filename = line->GetParam("filename")->AsPath("music");
+                m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, StrUtils::ToString(filename));
                 m_sound->CacheMusic(filename);
                 continue;
             }
@@ -2983,7 +2983,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             {
                 auto audioChange = std::make_unique<CAudioChangeCondition>();
                 audioChange->Read(line.get());
-                m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, audioChange->music);
+                m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, StrUtils::ToString(audioChange->music));
                 m_sound->CacheMusic(audioChange->music);
                 m_audioChange.push_back(std::move(audioChange));
 
@@ -3007,7 +3007,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     {
                         std::stringstream filenameStr;
                         filenameStr << "music/music" << std::setfill('0') << std::setw(3) << trackid << ".ogg";
-                        m_audioTrack = filenameStr.str();
+                        m_audioTrack = StrUtils::ToPath(filenameStr.str());
                     }
                     else
                     {
@@ -3052,17 +3052,17 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
                 if (!m_audioTrack.empty())
                 {
-                    m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, m_audioTrack);
+                    m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, StrUtils::ToString(m_audioTrack));
                     m_sound->CacheMusic(m_audioTrack);
                 }
                 if (!m_satcomTrack.empty())
                 {
-                    m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, m_satcomTrack);
+                    m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, StrUtils::ToString(m_satcomTrack));
                     m_sound->CacheMusic(m_satcomTrack);
                 }
                 if (!m_editorTrack.empty())
                 {
-                    m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, m_editorTrack);
+                    m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, StrUtils::ToString(m_editorTrack));
                     m_sound->CacheMusic(m_editorTrack);
                 }
                 continue;
@@ -3118,13 +3118,13 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             {
                 if (line->GetParam("rank")->IsDefined())
                 {
-                    std::array<char, 20> tex = { 0 };
-                    snprintf(tex.data(), tex.size(), "dirty%.2d.png", line->GetParam("rank")->AsInt());
-                    m_engine->SetSecondTexture(tex.data());
+                    std::stringstream ss;
+                    ss << "dirty" << std::setw(2) << std::setfill('0') << line->GetParam("rank")->AsInt() << ".png";
+                    m_engine->SetSecondTexture("textures" / StrUtils::ToPath(ss.str()));
                 }
                 else
                 {
-                    m_engine->SetSecondTexture("../" + line->GetParam("texture")->AsPath("textures"));
+                    m_engine->SetSecondTexture(line->GetParam("texture")->AsPath("textures"));
                 }
                 continue;
             }
@@ -3156,7 +3156,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                                 line->GetParam("image")->AsPath("textures"),
                                 { uv1.x, uv1.z },
                                 { uv2.x, uv2.z },
-                                line->GetParam("image")->AsPath("textures").find("planet") != std::string::npos // TODO: add transparent op or modify textures
+                                StrUtils::ToString(line->GetParam("image")->AsPath("textures")).find("planet") != std::string::npos // TODO: add transparent op or modify textures
                 );
                 continue;
             }
@@ -3250,7 +3250,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "TerrainCloud" && !resetObject)
             {
-                std::string path = "";
+                std::filesystem::path path = "";
                 if (line->GetParam("image")->IsDefined())
                     path = line->GetParam("image")->AsPath("textures");
                 m_cloud->Create(path,
@@ -3271,7 +3271,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             if (line->GetCommand() == "TerrainInitTextures" && !resetObject)
             {
                 m_ui->GetLoadingScreen()->SetProgress(0.2f+(3.f/5.f)*0.05f, RT_LOADING_TERRAIN, RT_LOADING_TERRAIN_TEX);
-                std::string name = "../" + line->GetParam("image")->AsPath("textures");
+                std::string name = "../" + TempToString(line->GetParam("image")->AsPath("textures"));
                 if (name.find(".") == std::string::npos)
                     name += ".png";
                 unsigned int dx = line->GetParam("dx")->AsInt(1);
@@ -3319,7 +3319,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "TerrainMaterial" && !resetObject)
             {
-                std::string name = line->GetParam("image")->AsPath("textures");
+                std::string name = TempToString(line->GetParam("image")->AsPath("textures"));
                 if (name.find(".") == std::string::npos)
                     name += ".png";
                 name = "../" + name;
@@ -3463,7 +3463,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                         char categoryChar = GetLevelCategoryDir(m_levelCategory)[0];
                         programStorage->LoadAllProgramsForLevel(
                             line.get(),
-                            StrUtils::ToString(m_playerProfile->GetSaveFile(StrUtils::Format("%c%.3d%.3d", categoryChar, m_levelChap, m_levelRank))),
+                            StrUtils::ToString(m_playerProfile->GetSaveFile(StrUtils::ToPath(StrUtils::Format("%c%.3d%.3d", categoryChar, m_levelChap, m_levelRank)))),
                             soluce
                         );
                     }
@@ -3574,7 +3574,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 if (m_mapImage)
                 {
                     glm::vec3 offset;
-                    m_mapFilename = StrUtils::ToPath(line->GetParam("filename")->AsPath("textures"));
+                    m_mapFilename = line->GetParam("filename")->AsPath("textures");
                     offset = line->GetParam("offset")->AsPoint(glm::vec3(0.0f, 0.0f, 0.0f));
                     m_map->SetFixParam(line->GetParam("zoom")->AsFloat(1.0f),
                                     offset.x, offset.z,
@@ -4329,7 +4329,7 @@ void CRobotMain::SaveOneScript(CObject *obj)
     CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(obj);
 
     char categoryChar = GetLevelCategoryDir(m_levelCategory)[0];
-    programStorage->SaveAllUserPrograms(StrUtils::ToString(m_playerProfile->GetSaveFile(StrUtils::Format("%c%.3d%.3d", categoryChar, m_levelChap, m_levelRank))));
+    programStorage->SaveAllUserPrograms(StrUtils::ToString(m_playerProfile->GetSaveFile(StrUtils::ToPath(StrUtils::Format("%c%.3d%.3d", categoryChar, m_levelChap, m_levelRank)))));
 }
 
 //! Saves the stack of the program in execution of a robot
@@ -5330,7 +5330,7 @@ void CRobotMain::SetLevel(LevelCategory cat, int chap, int rank)
     m_levelCategory = cat;
     m_levelChap = chap;
     m_levelRank = rank;
-    m_levelFile = StrUtils::ToString(CLevelParser::BuildScenePath(m_levelCategory, m_levelChap, m_levelRank));
+    m_levelFile = CLevelParser::BuildScenePath(m_levelCategory, m_levelChap, m_levelRank);
 }
 
 LevelCategory CRobotMain::GetLevelCategory()
@@ -5507,7 +5507,7 @@ bool CRobotMain::GetFriendAim()
 void CRobotMain::StartMusic()
 {
     GetLogger()->Debug("Starting music...");
-    if (m_audioTrack != "")
+    if (!m_audioTrack.empty())
     {
         m_sound->PlayMusic(m_audioTrack, m_audioRepeat, 0.0f);
     }
@@ -5531,12 +5531,12 @@ void CRobotMain::UpdatePauseMusic(PauseMusic music)
             break;
 
         case PAUSE_MUSIC_EDITOR:
-            if (m_editorTrack != "")
+            if (!m_editorTrack.empty())
                 m_sound->PlayPauseMusic(m_editorTrack, m_editorRepeat);
             break;
 
         case PAUSE_MUSIC_SATCOM:
-            if (m_satcomTrack != "")
+            if (!m_satcomTrack.empty())
                 m_sound->PlayPauseMusic(m_satcomTrack, m_satcomRepeat);
             break;
     }
@@ -5664,7 +5664,7 @@ void CRobotMain::Autosave()
     strftime(timestr, 99, "%y%m%d%H%M%S", localtime(&now));
     strftime(infostr, 99, "%y.%m.%d %H:%M", localtime(&now));
     std::string info = std::string("[AUTOSAVE] ") + infostr;
-    std::filesystem::path dir = m_playerProfile->GetSaveFile(std::string("autosave") + timestr);
+    std::filesystem::path dir = m_playerProfile->GetSaveFile(StrUtils::ToPath(std::string("autosave") + timestr));
 
     m_playerProfile->SaveScene(dir, info);
 }
@@ -5696,7 +5696,7 @@ void CRobotMain::QuickLoad()
 
 void CRobotMain::LoadSaveFromDirName(const std::string& gameDir)
 {
-    std::filesystem::path dir = m_playerProfile->GetSaveFile(gameDir);
+    std::filesystem::path dir = m_playerProfile->GetSaveFile(TempToPath(gameDir));
     if(!CResourceManager::Exists(dir))
     {
         GetLogger()->Error("Save slot not found");

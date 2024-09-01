@@ -1105,14 +1105,15 @@ void CEngine::ChangeSecondTexture(int objRank, const std::string& tex2Name)
 
     EngineBaseObject& p1 = m_baseObjects[baseObjRank];
 
+    std::filesystem::path tex2Path = "textures" / TempToPath(tex2Name);
     for (auto& data : p1.next)
     {
-        if (data.material.detailTexture == tex2Name)
+        if (data.material.detailTexture == tex2Path)
             continue;  // already new
 
-        data.material.detailTexture = tex2Name;
+        data.material.detailTexture = tex2Path;
 
-        data.detailTexture = LoadTexture("textures/" + tex2Name);
+        data.detailTexture = LoadTexture(tex2Path);
     }
 }
 
@@ -1861,7 +1862,7 @@ void CEngine::SetViewParams(const glm::vec3 &eyePt, const glm::vec3 &lookatPt, c
         m_sound->SetListener(eyePt, lookatPt);
 }
 
-Texture CEngine::CreateTexture(const std::string& texName, const TextureCreateParams& params, CImage* image)
+Texture CEngine::CreateTexture(const std::filesystem::path& texName, const TextureCreateParams& params, CImage* image)
 {
     if (texName.empty())
         return Texture(); // invalid texture
@@ -1900,23 +1901,22 @@ Texture CEngine::CreateTexture(const std::string& texName, const TextureCreatePa
     return tex;
 }
 
-Texture CEngine::LoadTexture(const std::string& name)
+Texture CEngine::LoadTexture(const std::filesystem::path& name)
 {
     return LoadTexture(name, m_defaultTexParams);
 }
 
-Texture CEngine::LoadTexture(const std::string& name, CImage* image)
+Texture CEngine::LoadTexture(const std::filesystem::path& name, CImage* image)
 {
-    Texture tex = CreateTexture(name, m_defaultTexParams, image);
-    return tex;
+    return CreateTexture(name, m_defaultTexParams, image);
 }
 
-Texture CEngine::LoadTexture(const std::string& name, const TextureCreateParams& params)
+Texture CEngine::LoadTexture(const std::filesystem::path& name, const TextureCreateParams& params)
 {
     if (m_texBlacklist.find(name) != m_texBlacklist.end())
         return Texture();
 
-    std::map<std::string, Texture>::iterator it = m_texNameMap.find(name);
+    auto it = m_texNameMap.find(name);
     if (it != m_texNameMap.end())
         return (*it).second;
 
@@ -1983,9 +1983,9 @@ bool CEngine::LoadAllTextures()
             if (!data.material.albedoTexture.empty())
             {
                 if (terrain)
-                    data.albedoTexture = LoadTexture("textures/" + data.material.albedoTexture, m_terrainTexParams);
+                    data.albedoTexture = LoadTexture(TempToPath("textures/" + data.material.albedoTexture), m_terrainTexParams);
                 else
-                    data.albedoTexture = LoadTexture("textures/" + data.material.albedoTexture);
+                    data.albedoTexture = LoadTexture(TempToPath("textures/" + data.material.albedoTexture));
 
                 if (!data.albedoTexture.Valid())
                     ok = false;
@@ -1994,9 +1994,9 @@ bool CEngine::LoadAllTextures()
             if (!data.material.detailTexture.empty())
             {
                 if (terrain)
-                    data.detailTexture = LoadTexture("textures/" + data.material.detailTexture, m_terrainTexParams);
+                    data.detailTexture = LoadTexture(data.material.detailTexture, m_terrainTexParams);
                 else
-                    data.detailTexture = LoadTexture("textures/" + data.material.detailTexture);
+                    data.detailTexture = LoadTexture(data.material.detailTexture);
 
                 if (!data.detailTexture.Valid())
                     ok = false;
@@ -2005,9 +2005,9 @@ bool CEngine::LoadAllTextures()
             if (!data.material.materialTexture.empty())
             {
                 if (terrain)
-                    data.materialTexture = LoadTexture("textures/" + data.material.materialTexture, m_terrainTexParams);
+                    data.materialTexture = LoadTexture(TempToPath("textures/" + data.material.materialTexture), m_terrainTexParams);
                 else
-                    data.materialTexture = LoadTexture("textures/" + data.material.materialTexture);
+                    data.materialTexture = LoadTexture(TempToPath("textures/" + data.material.materialTexture));
 
                 if (!data.materialTexture.Valid())
                     ok = false;
@@ -2016,9 +2016,9 @@ bool CEngine::LoadAllTextures()
             if (!data.material.emissiveTexture.empty())
             {
                 if (terrain)
-                    data.emissiveTexture = LoadTexture("textures/" + data.material.emissiveTexture, m_terrainTexParams);
+                    data.emissiveTexture = LoadTexture(TempToPath("textures/" + data.material.emissiveTexture), m_terrainTexParams);
                 else
-                    data.emissiveTexture = LoadTexture("textures/" + data.material.emissiveTexture);
+                    data.emissiveTexture = LoadTexture(TempToPath("textures/" + data.material.emissiveTexture));
 
                 if (!data.emissiveTexture.Valid())
                     ok = false;
@@ -2029,7 +2029,7 @@ bool CEngine::LoadAllTextures()
     return ok;
 }
 
-void CEngine::DeleteTexture(const std::string& texName)
+void CEngine::DeleteTexture(const std::filesystem::path& texName)
 {
     auto it = m_texNameMap.find(texName);
     if (it == m_texNameMap.end())
@@ -2062,10 +2062,10 @@ void CEngine::DeleteTexture(const Texture& tex)
 
 void CEngine::CreateOrUpdateTexture(const std::string& texName, CImage* img)
 {
-    auto it = m_texNameMap.find(texName);
+    auto it = m_texNameMap.find(TempToPath(texName));
     if (it == m_texNameMap.end())
     {
-        LoadTexture(texName, img);
+        LoadTexture(TempToPath(texName), img);
     }
     else
     {
@@ -2194,12 +2194,12 @@ bool CEngine::GetFog()
     return m_fog;
 }
 
-void CEngine::SetSecondTexture(const std::string& texNum)
+void CEngine::SetSecondTexture(const std::filesystem::path& texNum)
 {
     m_secondTex = texNum;
 }
 
-const std::string& CEngine::GetSecondTexture()
+const std::filesystem::path& CEngine::GetSecondTexture()
 {
     return m_secondTex;
 }
@@ -2289,7 +2289,7 @@ float CEngine::GetFogStart(int rank)
     return m_fogStart[rank];
 }
 
-void CEngine::SetBackground(const std::string& name, Color up, Color down,
+void CEngine::SetBackground(const std::filesystem::path& name, Color up, Color down,
                             Color cloudUp, Color cloudDown, bool full, bool scale)
 {
     if (m_backgroundTex.Valid() && name != m_backgroundName)
@@ -2314,7 +2314,7 @@ void CEngine::SetBackground(const std::string& name, Color up, Color down,
     }
 }
 
-void CEngine::GetBackground(std::string& name, Color& up, Color& down,
+void CEngine::GetBackground(std::filesystem::path& name, Color& up, Color& down,
                             Color& cloudUp, Color& cloudDown, bool &full, bool &scale)
 {
     name      = m_backgroundName;
@@ -2326,7 +2326,7 @@ void CEngine::GetBackground(std::string& name, Color& up, Color& down,
     scale     = m_backgroundScale;
 }
 
-void CEngine::SetForegroundName(const std::string& name)
+void CEngine::SetForegroundName(const std::filesystem::path& name)
 {
     if (m_foregroundTex.Valid() && name != m_foregroundName)
     {

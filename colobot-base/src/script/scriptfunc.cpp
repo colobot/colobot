@@ -223,15 +223,16 @@ CBotTypResult CScriptFunctions::cPlayMusic(CBotVar* &var, void* user)
 
 bool CScriptFunctions::rPlayMusic(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    std::string filename;
-    std::string cbs;
-    bool repeat;
-
-    cbs = var->GetValString();
-    filename = std::string(cbs);
+    std::filesystem::path filename;
+    try {
+        filename = StrUtils::ToPath(var->GetValString());
+    } catch(...) {
+        exception = CBotErrFileOpen;
+        return false;
+    }
     var = var->GetNext();
 
-    repeat = var->GetValInt();
+    bool repeat = var->GetValInt();
 
     CApplication::GetInstancePointer()->GetSound()->StopMusic();
     CApplication::GetInstancePointer()->GetSound()->PlayMusic(filename, repeat);
@@ -1713,12 +1714,12 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
 
     if (!name.empty())
     {
-        std::string name2 = StrUtils::ToString(InjectLevelPathsForCurrentLevel(name, "ai"));
+        std::filesystem::path name2 = InjectLevelPathsForCurrentLevel(TempToPath(name), "ai");
         if (object->Implements(ObjectInterfaceType::Programmable))
         {
             CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(object);
             Program* program = programStorage->AddProgram();
-            programStorage->ReadProgram(program, name2.c_str());
+            programStorage->ReadProgram(program, name2);
             program->readOnly = true;
             program->filename = name;
             dynamic_cast<CProgrammableObject&>(*object).RunProgram(program);
@@ -3470,7 +3471,7 @@ public:
     {
         std::string fname = PrepareFilename(filename);
         GetLogger()->Info("CBot delete file '%%'", fname);
-        return CResourceManager::Remove(fname);
+        return CResourceManager::Remove(TempToPath(fname));
     }
 
 private:

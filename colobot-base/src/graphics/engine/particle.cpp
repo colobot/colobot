@@ -23,6 +23,7 @@
 #include "app/app.h"
 
 #include "common/logger.h"
+#include "common/stringutils.h"
 #include "common/codepoint.h"
 
 #include "graphics/core/device.h"
@@ -48,6 +49,7 @@
 #include "sound/sound.h"
 
 #include <cstring>
+#include <filesystem>
 
 
 // Graphics module namespace
@@ -3405,7 +3407,7 @@ void CParticle::DrawParticle(int sheet)
             if (m_particle[i].type == PARTIPART)  continue;
 
             auto texture = m_engine->LoadTexture(!m_triangle[i].material.albedoTexture.empty()
-                ? "textures/" + m_triangle[i].material.albedoTexture
+                ? TempToPath("textures/" + m_triangle[i].material.albedoTexture)
                 : "");
 
             m_renderer->SetTexture(texture);
@@ -3452,7 +3454,7 @@ void CParticle::DrawParticle(int sheet)
             {
                 std::string name;
                 NameParticle(name, t);
-                auto texture = m_engine->LoadTexture("textures/" + name);
+                auto texture = m_engine->LoadTexture("textures" / TempToPath(name));
                 m_renderer->SetTexture(texture);
                 loadTexture = true;
             }

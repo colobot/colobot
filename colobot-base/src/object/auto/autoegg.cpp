@@ -196,7 +196,7 @@ bool CAutoEgg::EventProcess(const Event &event)
 
             CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(alien);
             Program* program = programStorage->AddProgram();
-            programStorage->ReadProgram(program, StrUtils::ToString(InjectLevelPathsForCurrentLevel(m_alienProgramName, "ai")));
+            programStorage->ReadProgram(program, InjectLevelPathsForCurrentLevel(TempToPath(m_alienProgramName), "ai"));
             program->readOnly = true;
             program->filename = m_alienProgramName;
             programmable->RunProgram(program);

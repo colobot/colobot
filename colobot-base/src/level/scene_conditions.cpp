@@ -30,6 +30,8 @@
 #include "object/interface/slotted_object.h"
 #include "object/interface/transportable_object.h"
 
+#include "common/stringutils.h"
+
 #include <limits>
 
 
