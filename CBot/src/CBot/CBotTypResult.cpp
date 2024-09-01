@@ -30,20 +30,13 @@ namespace CBot
 {
 
 CBotTypResult::CBotTypResult(int type)
+    : m_type(type)
 {
-    m_type        = type;
-    m_next = nullptr;
-    m_class = nullptr;
-    m_limite    = -1;
 }
 
 CBotTypResult::CBotTypResult(int type, const std::string& name)
+    : m_type(type)
 {
-    m_type        = type;
-    m_next = nullptr;
-    m_class = nullptr;
-    m_limite    = -1;
-
     if ( type == CBotTypPointer ||
          type == CBotTypClass   ||
          type == CBotTypIntrinsic )
@@ -54,49 +47,28 @@ CBotTypResult::CBotTypResult(int type, const std::string& name)
 }
 
 CBotTypResult::CBotTypResult(int type, CBotClass* pClass)
+    : m_type(type),
+      m_class(pClass)
 {
-    m_type        = type;
-    m_next = nullptr;
-    m_class = pClass;
-    m_limite    = -1;
-
     if (m_class && m_class->IsIntrinsic() ) m_type = CBotTypIntrinsic;
 }
 
-CBotTypResult::CBotTypResult(int type, CBotTypResult elem)
+CBotTypResult::CBotTypResult(int type, const CBotTypResult &elem)
+    : m_type(type)
 {
-    m_type        = type;
-    m_next = nullptr;
-    m_class = nullptr;
-    m_limite    = -1;
-
     if ( type == CBotTypArrayPointer ||
          type == CBotTypArrayBody )
-        m_next = new CBotTypResult(elem );
+        m_elementType = std::make_unique<CBotTypResult>(elem);
 }
 
 CBotTypResult::CBotTypResult(const CBotTypResult& typ)
+    : m_type(typ.m_type),
+      m_class(typ.m_class),
+      m_limite(typ.m_limite)
 {
-    m_type        = typ.m_type;
-    m_class = typ.m_class;
-    m_next = nullptr;
-    m_limite    = typ.m_limite;
 
-    if ( typ.m_next)
-        m_next = new CBotTypResult(*typ.m_next);
-}
-
-CBotTypResult::CBotTypResult()
-{
-    m_type        = 0;
-    m_limite    = -1;
-    m_next = nullptr;
-    m_class = nullptr;
-}
-
-CBotTypResult::~CBotTypResult()
-{
-    delete m_next;
+    if ( typ.m_elementType )
+        m_elementType = std::make_unique<CBotTypResult>(*typ.m_elementType);
 }
 
 int CBotTypResult::GetType(GetTypeMode mode) const
@@ -115,9 +87,9 @@ CBotClass* CBotTypResult::GetClass() const
     return m_class;
 }
 
-CBotTypResult& CBotTypResult::GetTypElem() const
+const CBotTypResult& CBotTypResult::GetTypElem() const
 {
-    return *m_next;
+    return *m_elementType;
 }
 
 int CBotTypResult::GetLimite() const
@@ -133,11 +105,11 @@ void CBotTypResult::SetLimite(int n)
 void CBotTypResult::SetArray(int max[])
 {
     m_limite = *max;
-    if (m_limite < 1) m_limite = -1;
+    if ( m_limite < 1 ) m_limite = -1;
 
-    if (m_next != nullptr)
+    if ( m_elementType )
     {
-        m_next->SetArray(max+1); // next element
+        m_elementType->SetArray(max+1); // next element
     }
 }
 
@@ -145,7 +117,7 @@ bool CBotTypResult::Compare(const CBotTypResult& typ) const
 {
     if ( m_type != typ.m_type ) return false;
 
-    if ( m_type == CBotTypArrayPointer ) return m_next->Compare(*typ.m_next);
+    if ( m_type == CBotTypArrayPointer ) return m_elementType->Compare(*typ.m_elementType);
 
     if ( m_type == CBotTypPointer ||
          m_type == CBotTypClass   ||
@@ -167,20 +139,18 @@ CBotTypResult& CBotTypResult::operator=(const CBotTypResult& src)
     m_type = src.m_type;
     m_limite = src.m_limite;
     m_class = src.m_class;
-    if (src.m_next != nullptr )
+    if ( src.m_elementType )
     {
-        delete m_next;
-        m_next = new CBotTypResult(*src.m_next);
+        m_elementType = std::make_unique<CBotTypResult>(*src.m_elementType);
     }
     else
     {
-        delete m_next;
-        m_next = nullptr;
+        m_elementType.reset();
     }
     return *this;
 }
 
-std::string CBotTypResult::ToString()
+std::string CBotTypResult::ToString() const
 {
     switch (m_type)
     {
@@ -194,8 +164,8 @@ std::string CBotTypResult::ToString()
         case CBotTypDouble: return "double";
         case CBotTypBoolean: return "bool";
         case CBotTypString: return "string";
-        case CBotTypArrayPointer: return m_next->ToString() + "[]";
-        case CBotTypArrayBody: return m_next->ToString() + "[] (by value)";
+        case CBotTypArrayPointer: return m_elementType->ToString() + "[]";
+        case CBotTypArrayBody: return m_elementType->ToString() + "[] (by value)";
         case CBotTypPointer: return m_class->GetName();
         case CBotTypNullPointer: return m_class->GetName() + " (null)";
         case CBotTypClass: return m_class->GetName() + " (by value)";
