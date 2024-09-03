@@ -44,8 +44,8 @@ Since there are so many Linux flavors, it is difficult to write generic instruct
 you will need to compile colobot.
 
 You will need:
- * C++17 compiler
- * CMake >= 3.16
+ * C++20 compiler
+ * CMake >= 3.21
  * SDL2
  * SDL2_image
  * SDL2_ttf
@@ -65,6 +65,11 @@ On Ubuntu (and probably any other Debian-based system), you can use the followin
 ```
   $ apt-get install build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libphysfs-dev gettext git po4a vorbis-tools libglm-dev
 ```
+
+Ubuntu 20.04 users have to also get gcc-11 and cmake >= 3.21, which might not be available in default repositories. To install them you need to:
+1. Add ubuntu-toolchain PPA to your system `sudo add-apt-repository ppa:ubuntu-toolchain-r/test`
+2. Install gcc-11 and set it as default compiler `sudo apt install gcc-11 g++-11 && sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 100 --slave /usr/bin/g++ g++ /usr/bin/g++-11 --slave /usr/bin/gcov gcov /usr/bin/gcov-11 && sudo update-alternatives --set gcc /usr/bin/gcc-11`
+3. Install cmake snap package `sudo snap install cmake`
 
 Make sure you install the packages along with header files (often distributed in separate *-dev packages). If you miss any requirements,
 CMake should warn you.
@@ -91,6 +96,8 @@ It is recommended that you create a build directory:
 Now to configure CMake:
 ```
    $ cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/some/prefix ..
+   ## Ubuntu 20.04 users with both apt and snap version of CMake needs to pass path to snap version, like this:
+   $ /snap/cmake/current/bin/cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/some/prefix ..
 ```
 where `/some/prefix` is installation prefix where you want to put the game files. It could be a proper installation directory
 if you want to install colobot in the system or simply temporary directory like `/tmp/colobot-temporary-install` if you just want to try it.
