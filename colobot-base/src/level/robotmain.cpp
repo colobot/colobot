@@ -2922,10 +2922,17 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                             if (rank >= 0)
                             {
                                 // TODO: Fix default levels and add a future removal warning
-                                GetLogger()->Warn("This level is using deprecated way of defining %% scene. Please change the %%= parameter in EndingFile from %% to \"levels/other/%1$s%2$03d.txt\".\n", type, type, rank);
                                 std::stringstream ss;
                                 ss << std::setfill('0') << std::setw(3) << rank << ".txt";
-                                return "levels/other" / StrUtils::ToPath(type) / StrUtils::ToPath(ss.str());
+                                auto result = "levels/other" / StrUtils::ToPath(type) / StrUtils::ToPath(ss.str());
+                                GetLogger()->Warn(
+                                        "This level is using deprecated way of defining %% scene. Please change the %%= parameter in EndingFile from %% to \"%%\".\n",
+                                        type,
+                                        type,
+                                        rank,
+                                        StrUtils::ToString(result)
+                                        );
+                                return result;
                             }
                             else
                             {
