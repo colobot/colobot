@@ -3054,6 +3054,19 @@ void CEngine::Draw3DScene()
 
             for (auto& data : p1.next)
             {
+                if (data.material.recolor.empty())
+                {
+                    objectRenderer->SetRecolor(false);
+                }
+                else
+                {
+                    Color recolorFrom = data.material.recolorReference;
+                    Color recolorTo = GetObjectColor(objRank, data.material.recolor);
+                    float recolorThreshold = data.material.recolorThreshold;
+
+                    objectRenderer->SetRecolor(true, recolorFrom, recolorTo, recolorThreshold);
+                }
+
                 objectRenderer->SetAlbedoColor(tColor);
                 objectRenderer->SetAlbedoTexture(data.albedoTexture);
                 objectRenderer->SetDetailTexture(data.detailTexture);
