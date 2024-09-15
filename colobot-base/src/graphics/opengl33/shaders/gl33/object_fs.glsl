@@ -101,10 +101,13 @@ void main()
 
         if (abs(hsv.x - uni_RecolorFrom.x) < uni_RecolorThreshold)
         {
-            hsv += (uni_RecolorTo - uni_RecolorFrom);
+            hsv.x += (uni_RecolorTo.x - uni_RecolorFrom.x);
+            hsv.y += (uni_RecolorTo.y - uni_RecolorFrom.y);
 
             if (hsv.x < 0.0) hsv.x += 1.0;
             if (hsv.x > 1.0) hsv.x -= 1.0;
+
+            hsv.y = clamp(hsv.y, 0.0, 1.0);
         }
 
         texColor.rgb = hsv2rgb(hsv);
