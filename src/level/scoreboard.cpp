@@ -31,6 +31,7 @@
 #include "ui/displaytext.h"
 
 #include <boost/lexical_cast.hpp>
+#include <algorithm>
 
 void CScoreboard::CScoreboardRule::Read(CLevelParserLine* line)
 {
