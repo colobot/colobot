@@ -506,7 +506,7 @@ void CStudio::SearchToken(CEdit* edit)
     }
     token[i] = 0;
 
-    m_helpFilename = GetHelpFilename(token.c_str());
+    m_helpFilename = TempToString(GetHelpFilename(token.c_str()));
     if ( m_helpFilename.length() == 0 )
     {
         for ( i=0 ; i<OBJECT_MAX ; i++ )
@@ -517,7 +517,7 @@ void CStudio::SearchToken(CEdit* edit)
             {
                 if ( token == text )
                 {
-                    m_helpFilename = GetHelpFilename(type);
+                    m_helpFilename = TempToString(GetHelpFilename(type));
                     SetInfoText(token, true);
                     return;
                 }
@@ -527,7 +527,7 @@ void CStudio::SearchToken(CEdit* edit)
             {
                 if ( token == text )
                 {
-                    m_helpFilename = GetHelpFilename(type);
+                    m_helpFilename = TempToString(GetHelpFilename(type));
                     SetInfoText(token, true);
                     return;
                 }
