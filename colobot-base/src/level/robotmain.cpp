@@ -5360,7 +5360,7 @@ int CRobotMain::GetLevelRank()
 std::string CRobotMain::GetCustomLevelDir()
 {
     assert(m_levelCategory == LevelCategory::CustomLevels);
-    return m_ui->GetCustomLevelName(m_levelChap);
+    return TempToString(m_ui->GetCustomLevelName(m_levelChap));
 }
 
 void CRobotMain::SetReadScene(const std::filesystem::path& path)
@@ -5572,7 +5572,7 @@ void CRobotMain::UpdateCustomLevelList()
     m_ui->UpdateCustomLevelList();
 }
 
-std::string CRobotMain::GetCustomLevelName(int id)
+std::filesystem::path CRobotMain::GetCustomLevelName(int id)
 {
     return m_ui->GetCustomLevelName(id);
 }

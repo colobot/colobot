@@ -358,7 +358,7 @@ public:
     void        DisplayError(Error err, glm::vec3 goal, float height=15.0f, float dist=60.0f, float time=10.0f);
 
     void        UpdateCustomLevelList();
-    std::string GetCustomLevelName(int id);
+    std::filesystem::path GetCustomLevelName(int id);
     const std::vector<std::string>& GetCustomLevelList();
 
     //! Returns true if the game is on the loading screen

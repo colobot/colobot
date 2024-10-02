@@ -25,7 +25,7 @@
 #include "common/event.h"
 #include "common/logger.h"
 #include "common/settings.h"
-
+#include "common/stringutils.h"
 #include "common/resources/resourcemanager.h"
 
 #include "level/robotmain.h"
@@ -820,9 +820,9 @@ void CMainUserInterface::UpdateCustomLevelList()
     m_screenLevelList->UpdateCustomLevelList();
 }
 
-std::string CMainUserInterface::GetCustomLevelName(int id)
+std::filesystem::path CMainUserInterface::GetCustomLevelName(int id)
 {
-    return m_screenLevelList->GetCustomLevelName(id);
+    return TempToPath(m_screenLevelList->GetCustomLevelName(id));
 }
 
 const std::vector<std::string>& CMainUserInterface::GetCustomLevelList()

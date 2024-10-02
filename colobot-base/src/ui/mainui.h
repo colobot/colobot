@@ -28,6 +28,7 @@
 #include <array>
 #include <string>
 #include <vector>
+#include <filesystem>
 
 
 class CApplication;
@@ -93,7 +94,7 @@ public:
     void    ShowSoluceUpdate();
 
     void    UpdateCustomLevelList();
-    std::string GetCustomLevelName(int id);
+    std::filesystem::path GetCustomLevelName(int id);
     const std::vector<std::string>& GetCustomLevelList();
 
 protected:
