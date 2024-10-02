@@ -5702,9 +5702,9 @@ void CRobotMain::QuickLoad()
     m_playerProfile->LoadScene(dir);
 }
 
-void CRobotMain::LoadSaveFromDirName(const std::string& gameDir)
+void CRobotMain::LoadSaveFromDirName(const std::filesystem::path& gameDir)
 {
-    std::filesystem::path dir = m_playerProfile->GetSaveFile(TempToPath(gameDir));
+    std::filesystem::path dir = m_playerProfile->GetSaveFile(gameDir);
     if(!CResourceManager::Exists(dir))
     {
         GetLogger()->Error("Save slot not found");

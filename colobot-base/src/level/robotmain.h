@@ -382,7 +382,7 @@ public:
     void        SetExitAfterMission(bool exit);
 
     //! Load saved game (used by command line argument)
-    void        LoadSaveFromDirName(const std::string& gameDir);
+    void        LoadSaveFromDirName(const std::filesystem::path& gameDir);
 
     //! Returns true if player can interact with things manually
     bool        CanPlayerInteract();

@@ -690,7 +690,7 @@ bool CApplication::Create()
     if (!m_loadSaveDirName.empty())
     {
         m_controller->GetRobotMain()->SelectPlayer(m_loadSavePlayerName);
-        m_controller->GetRobotMain()->LoadSaveFromDirName(m_loadSaveDirName);
+        m_controller->GetRobotMain()->LoadSaveFromDirName(TempToPath(m_loadSaveDirName));
     }
     else if (m_runSceneCategory == LevelCategory::Max)
     {
