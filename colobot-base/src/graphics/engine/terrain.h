@@ -159,7 +159,7 @@ public:
     //! Clears all terrain materials
     void        FlushMaterials();
     //! Adds a terrain material the names of textures to use for the land
-    void        AddMaterial(int id, const std::string& texName, const glm::vec2& uv,
+    void        AddMaterial(int id, const std::filesystem::path& texName, const glm::vec2& uv,
                             int up, int right, int down, int left, float hardness);
     //! Initializes all the ground with one material
     bool        InitMaterials(int id);

@@ -3328,13 +3328,12 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "TerrainMaterial" && !resetObject)
             {
-                std::string name = TempToString(line->GetParam("image")->AsPath("textures"));
-                if (name.find(".") == std::string::npos)
+                std::filesystem::path name = ".." / line->GetParam("image")->AsPath("textures");
+                if (name.extension().empty())
                     name += ".png";
-                name = "../" + name;
 
                 m_terrain->AddMaterial(line->GetParam("id")->AsInt(0),
-                                    name.c_str(),
+                                    name,
                                     { line->GetParam("u")->AsFloat(),
                                       line->GetParam("v")->AsFloat() },
                                     line->GetParam("up")->AsInt(),

@@ -159,7 +159,7 @@ void CTerrain::FlushMaterials()
     FlushMaterialPoints();
 }
 
-void CTerrain::AddMaterial(int id, const std::string& texName, const glm::vec2& uv,
+void CTerrain::AddMaterial(int id, const std::filesystem::path& texName, const glm::vec2& uv,
                            int up, int right, int down, int left,
                            float hardness)
 {
@@ -169,7 +169,7 @@ void CTerrain::AddMaterial(int id, const std::string& texName, const glm::vec2& 
         id = m_materialAutoID++;
 
     TerrainMaterial tm;
-    tm.texName  = texName;
+    tm.texName  = TempToString(texName);
     tm.id       = id;
     tm.uv       = uv;
     tm.mat[0]   = up;
