@@ -130,14 +130,13 @@ bool CTerrain::InitTextures(const std::filesystem::path& baseName, int* table, i
 {
     m_useMaterials = false;
 
-    std::filesystem::path texBaseName = baseName;
-    texBaseName.replace_extension();
-    m_texBaseName = TempToString(texBaseName);
+    m_texBaseName = baseName;
+    m_texBaseName.replace_extension();
 
-    m_texBaseExt = TempToString(baseName.extension());
+    m_texBaseExt = baseName.extension();
     if (m_texBaseExt.empty())
     {
-        m_texBaseExt = ".png";
+        m_texBaseExt = "png";
     }
 
     for (int y = 0; y < m_mosaicCount*m_textureSubdivCount; y++)
@@ -617,13 +616,15 @@ bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank)
             else
             {
                 int i = (ox*m_textureSubdivCount+mx)+(oy*m_textureSubdivCount+my)*m_mosaicCount;
+
                 std::stringstream s;
-                s << m_texBaseName;
                 s.width(3);
                 s.fill('0');
                 s << m_textures[i];
-                s << m_texBaseExt;
-                texName1 = TempToPath(s.str());
+
+                texName1 = m_texBaseName;
+                texName1 += StrUtils::ToPath(s.str());
+                texName1.replace_extension(m_texBaseExt);
             }
 
             for (int y = 0; y < brick; y += step)

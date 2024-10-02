@@ -318,9 +318,9 @@ protected:
     float           m_vision;
 
     //! Base name for single texture
-    std::string     m_texBaseName;
+    std::filesystem::path m_texBaseName;
     //! Extension for single texture
-    std::string     m_texBaseExt;
+    std::filesystem::path m_texBaseExt;
     //! Default hardness for level material
     float           m_defaultHardness;
     /**
