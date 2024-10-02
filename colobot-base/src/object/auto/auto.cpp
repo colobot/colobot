@@ -131,7 +131,7 @@ bool CAuto::SetValue(int rank, float value)
 
 // Getes the string.
 
-bool CAuto::SetString(char *string)
+bool CAuto::SetString(const std::string& string)
 {
     return false;
 }

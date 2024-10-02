@@ -24,6 +24,7 @@
 
 #include "object/object_type.h"
 
+#include <string>
 
 class CRobotMain;
 class CSoundInterface;
@@ -68,7 +69,7 @@ public:
 
     virtual bool    SetType(ObjectType type);
     virtual bool    SetValue(int rank, float value);
-    virtual bool    SetString(char *string);
+    virtual bool    SetString(const std::string& string);
 
     virtual bool    CreateInterface(bool bSelect);
     virtual Error   GetError();
