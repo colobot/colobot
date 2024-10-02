@@ -617,7 +617,7 @@ public:
                                         std::vector<EngineTriangle>& triangles);
 
     //! Changes the 2nd texure for given object
-    void            ChangeSecondTexture(int objRank, const std::string& tex2Name);
+    void            ChangeSecondTexture(int objRank, const std::filesystem::path& tex2Name);
 
     void            SetUVTransform(int objRank, const std::string& tag, const glm::vec2& offset, const glm::vec2& scale);
 

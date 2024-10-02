@@ -1093,7 +1093,7 @@ int CEngine::GetPartialTriangles(int objRank, float percent, int maxCount,
     return actualCount;
 }
 
-void CEngine::ChangeSecondTexture(int objRank, const std::string& tex2Name)
+void CEngine::ChangeSecondTexture(int objRank, const std::filesystem::path& tex2Name)
 {
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
@@ -1105,7 +1105,7 @@ void CEngine::ChangeSecondTexture(int objRank, const std::string& tex2Name)
 
     EngineBaseObject& p1 = m_baseObjects[baseObjRank];
 
-    std::filesystem::path tex2Path = "textures" / TempToPath(tex2Name);
+    std::filesystem::path tex2Path = "textures" / tex2Name;
     for (auto& data : p1.next)
     {
         if (data.material.detailTexture == tex2Path)
