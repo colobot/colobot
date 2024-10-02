@@ -2875,7 +2875,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "ScriptFile" && !resetObject)
             {
-                m_scriptFile = TempToPath(line->GetParam("name")->AsString());
+                m_scriptFile = line->GetParam("name")->AsPath("/");
                 continue;
             }
 
