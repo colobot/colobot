@@ -142,7 +142,7 @@ CStaticObjectUPtr CStaticObject::Create(int id,
         if (model->GetMeshCount() != 1 || model->GetMesh("main") == nullptr)
             throw CObjectCreateException("Unexpected mesh configuration", type, StrUtils::ToString(modelFile));
 
-        return std::make_unique<CStaticObject>(id, type, modelFile, adjustedPosition, angleY, model, engine);
+        return std::make_unique<CStaticObject>(id, type, TempToString(modelFile), adjustedPosition, angleY, model, engine);
     }
     catch (const Gfx::CModelIOException& e)
     {
