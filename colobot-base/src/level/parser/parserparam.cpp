@@ -97,6 +97,10 @@ CLevelParserParam::CLevelParserParam(Gfx::CameraType value)
   : m_value(FromCameraType(value))
 {}
 
+CLevelParserParam::CLevelParserParam(const std::filesystem::path& value)
+  : m_value(StrUtils::ToString(value))
+{}
+
 CLevelParserParam::CLevelParserParam(CLevelParserParamVec&& array)
 {
     m_array.swap(array);

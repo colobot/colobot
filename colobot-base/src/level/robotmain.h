@@ -291,7 +291,7 @@ public:
     LevelCategory GetLevelCategory();
     int         GetLevelChap();
     int         GetLevelRank();
-    std::string GetCustomLevelDir();
+    std::filesystem::path GetCustomLevelDir();
     void        SetReadScene(const std::filesystem::path& path);
     void        UpdateChapterPassed();
 

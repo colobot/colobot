@@ -5357,10 +5357,10 @@ int CRobotMain::GetLevelRank()
 }
 
 //! Returns folder name of the scene that user selected to play.
-std::string CRobotMain::GetCustomLevelDir()
+std::filesystem::path CRobotMain::GetCustomLevelDir()
 {
     assert(m_levelCategory == LevelCategory::CustomLevels);
-    return TempToString(m_ui->GetCustomLevelName(m_levelChap));
+    return m_ui->GetCustomLevelName(m_levelChap);
 }
 
 void CRobotMain::SetReadScene(const std::filesystem::path& path)

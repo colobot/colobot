@@ -72,6 +72,7 @@ public:
     CLevelParserParam(glm::vec3 value);
     CLevelParserParam(ObjectType value);
     CLevelParserParam(Gfx::CameraType value);
+    CLevelParserParam(const std::filesystem::path& value);
     CLevelParserParam(CLevelParserParamVec&& array);
     //@}
     //! Create param from string
