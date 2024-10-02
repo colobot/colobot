@@ -763,7 +763,7 @@ void CTerrain::GetTexture(int x, int y, std::filesystem::path& name, glm::vec2&u
     }
     else
     {
-        name = TempToPath(tm->texName);
+        name = StrUtils::ToPath(tm->texName);
         uv = tm->uv;
     }
 }
