@@ -228,16 +228,15 @@ bool CLevelParserParam::AsBool(bool def)
 }
 
 
-std::filesystem::path CLevelParserParam::ToPath(std::string path, const std::string defaultDir)
+std::filesystem::path CLevelParserParam::ToPath(const std::string& path, const std::filesystem::path& defaultDir)
 {
     if (defaultDir == "" && path.find("%lvl%") != std::string::npos)
         throw CLevelParserException("TODO: Param "+m_name+" does not yet support %lvl%! :(");
 
-    return GetLine()->GetLevel()->InjectLevelPaths(
-        TempToPath(path), TempToPath(defaultDir));
+    return GetLine()->GetLevel()->InjectLevelPaths(StrUtils::ToPath(path), defaultDir);
 }
 
-std::filesystem::path CLevelParserParam::AsPath(const std::string defaultDir)
+std::filesystem::path CLevelParserParam::AsPath(const std::filesystem::path& defaultDir)
 {
     if (m_empty)
         throw CLevelParserExceptionMissingParam(this);
@@ -245,13 +244,12 @@ std::filesystem::path CLevelParserParam::AsPath(const std::string defaultDir)
     return ToPath(AsString(), defaultDir);
 }
 
-std::filesystem::path CLevelParserParam::AsPath(const std::string defaultDir, std::string def)
+std::filesystem::path CLevelParserParam::AsPath(const std::filesystem::path& defaultDir, const std::filesystem::path& def)
 {
     if (m_empty)
-        return GetLine()->GetLevel()->InjectLevelPaths(
-            TempToPath(def), TempToPath(defaultDir));
+        return GetLine()->GetLevel()->InjectLevelPaths(def, defaultDir);
 
-    return ToPath(AsString(def), defaultDir);
+    return ToPath(AsString(), defaultDir);
 }
 
 

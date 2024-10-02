@@ -86,7 +86,7 @@ public:
     float AsFloat();
     std::string AsString();
     bool AsBool();
-    std::filesystem::path AsPath(const std::string defaultDir);
+    std::filesystem::path AsPath(const std::filesystem::path& defaultDir);
     Gfx::Color AsColor();
     glm::vec3 AsPoint();
     ObjectType AsObjectType();
@@ -110,7 +110,7 @@ public:
     float AsFloat(float def);
     std::string AsString(std::string def);
     bool AsBool(bool def);
-    std::filesystem::path AsPath(const std::string defaultDir, std::string def);
+    std::filesystem::path AsPath(const std::filesystem::path& defaultDir, const std::filesystem::path& def);
     Gfx::Color AsColor(Gfx::Color def);
     glm::vec3 AsPoint(glm::vec3 def);
     ObjectType AsObjectType(ObjectType def);
@@ -144,7 +144,7 @@ private:
     template<typename T> T Cast(const std::string& value, const std::string& requestedType);
     template<typename T> T Cast(const std::string& requestedType);
 
-    std::filesystem::path ToPath(std::string path, const std::string defaultDir);
+    std::filesystem::path ToPath(const std::string& path, const std::filesystem::path& defaultDir);
     ObjectType ToObjectType(std::string value);
     DriveType ToDriveType(std::string value);
     ToolType ToToolType(std::string value);
