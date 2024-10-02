@@ -126,22 +126,18 @@ float CTerrain::GetReliefScale()
     return m_scaleRelief;
 }
 
-bool CTerrain::InitTextures(const std::string& baseName, int* table, int dx, int dy)
+bool CTerrain::InitTextures(const std::filesystem::path& baseName, int* table, int dx, int dy)
 {
     m_useMaterials = false;
 
-    m_texBaseName = baseName;
-    auto pos = baseName.rfind('.');
-    if(pos < baseName.find_last_of('/')) pos = std::string::npos; // If last . is not a part of filename (some directory, possibly . or ..)
+    std::filesystem::path texBaseName = baseName;
+    texBaseName.replace_extension();
+    m_texBaseName = TempToString(texBaseName);
 
-    if (pos == std::string::npos)
+    m_texBaseExt = TempToString(baseName.extension());
+    if (m_texBaseExt.empty())
     {
         m_texBaseExt = ".png";
-    }
-    else
-    {
-        m_texBaseExt = m_texBaseName.substr(pos);
-        m_texBaseName = m_texBaseName.substr(0, pos);
     }
 
     for (int y = 0; y < m_mosaicCount*m_textureSubdivCount; y++)

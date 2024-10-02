@@ -3280,8 +3280,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             if (line->GetCommand() == "TerrainInitTextures" && !resetObject)
             {
                 m_ui->GetLoadingScreen()->SetProgress(0.2f+(3.f/5.f)*0.05f, RT_LOADING_TERRAIN, RT_LOADING_TERRAIN_TEX);
-                std::string name = "../" + TempToString(line->GetParam("image")->AsPath("textures"));
-                if (name.find(".") == std::string::npos)
+                std::filesystem::path name = ".." / line->GetParam("image")->AsPath("textures");
+                if (name.extension().empty())
                     name += ".png";
                 unsigned int dx = line->GetParam("dx")->AsInt(1);
                 unsigned int dy = line->GetParam("dy")->AsInt(1);
@@ -3316,7 +3316,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     }
                 }
 
-                m_terrain->InitTextures(name.c_str(), tt, dx, dy);
+                m_terrain->InitTextures(name, tt, dx, dy);
                 continue;
             }
 

@@ -154,7 +154,7 @@ public:
     bool        Generate(int mosaicCount, int brickCountPow2, float brickSize, float vision, int depth, float hardness);
 
     //! Initializes the names of textures to use for the land
-    bool        InitTextures(const std::string& baseName, int* table, int dx, int dy);
+    bool        InitTextures(const std::filesystem::path& baseName, int* table, int dx, int dy);
 
     //! Clears all terrain materials
     void        FlushMaterials();
