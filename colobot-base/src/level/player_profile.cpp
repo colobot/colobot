@@ -257,7 +257,7 @@ int CPlayerProfile::GetSelectedRank(LevelCategory category)
 void CPlayerProfile::LoadFinishedLevels(LevelCategory category)
 {
     m_levelInfo[category].clear();
-    std::filesystem::path filename = GetSaveFile(TempToPath(GetLevelCategoryDir(category) + ".gam"));
+    std::filesystem::path filename = GetSaveFile(StrUtils::ToPath(GetLevelCategoryDir(category) + ".gam"));
 
     if (!CResourceManager::Exists(filename))
         return;
@@ -299,7 +299,7 @@ void CPlayerProfile::LoadFinishedLevels(LevelCategory category)
 
 void CPlayerProfile::SaveFinishedLevels(LevelCategory category)
 {
-    std::filesystem::path filename = GetSaveFile(TempToPath(GetLevelCategoryDir(category) + ".gam"));
+    std::filesystem::path filename = GetSaveFile(StrUtils::ToPath(GetLevelCategoryDir(category) + ".gam"));
     COutputStream file;
     file.open(filename);
     if (!file.is_open())
