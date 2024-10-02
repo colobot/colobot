@@ -4465,14 +4465,14 @@ void CRobotMain::IOWriteObject(CLevelParserLine* line, CObject* obj,
         CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(obj);
         if (programStorage->GetProgramStorageIndex() >= 0)
         {
-            programStorage->SaveAllProgramsForSavedScene(line, TempToString(programDir));
+            programStorage->SaveAllProgramsForSavedScene(line, programDir);
         }
         else
         {
             // Probably an object created after the scene started, not loaded from level file
             // This means it doesn't normally store programs so it doesn't have program storage id assigned
             programStorage->SetProgramStorageIndex(999-objRank); // Set something that won't collide with normal programs
-            programStorage->SaveAllProgramsForSavedScene(line, TempToString(programDir));
+            programStorage->SaveAllProgramsForSavedScene(line, programDir);
             programStorage->SetProgramStorageIndex(-1); // Disable again
         }
 

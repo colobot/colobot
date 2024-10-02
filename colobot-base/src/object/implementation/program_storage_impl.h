@@ -58,7 +58,7 @@ public:
     void SaveAllUserPrograms(const std::string& userSource) override;
     void LoadAllProgramsForLevel(CLevelParserLine* levelSource, const std::string& userSource, bool loadSoluce) override;
 
-    void SaveAllProgramsForSavedScene(CLevelParserLine* levelSourceLine, const std::string& levelSource) override;
+    void SaveAllProgramsForSavedScene(CLevelParserLine* levelSourceLine, const std::filesystem::path& levelSource) override;
     void LoadAllProgramsForSavedScene(CLevelParserLine* levelSourceLine, const std::string& levelSource) override;
 
 private:
