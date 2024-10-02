@@ -24,6 +24,7 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include <filesystem>
 
 namespace Gfx
 {
@@ -37,13 +38,13 @@ class CModelManager
 public:
     //! Returns a model named \a modelName
     /** @throws CModelIOException on read error */
-    CModel* GetModel(const std::string& modelName);
+    CModel* GetModel(const std::filesystem::path& modelName);
 
     //! Clears cached models
     void ClearCache();
 
 private:
-    std::unordered_map<std::string, std::unique_ptr<CModel>> m_models;
+    std::unordered_map<std::filesystem::path, std::unique_ptr<CModel>> m_models;
 };
 
 } // namespace Gfx

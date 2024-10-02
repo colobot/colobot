@@ -30,13 +30,14 @@
 namespace Gfx
 {
 
-CModel* CModelManager::GetModel(const std::string& modelName)
+CModel* CModelManager::GetModel(const std::filesystem::path& modelName)
 {
     auto it = m_models.find(modelName);
     if (it != m_models.end())
         return it->second.get();
 
-    std::filesystem::path modelFile = TempToPath("models-new/" + modelName + ".txt");
+    std::filesystem::path modelFile = "models-new" / modelName;
+    modelFile.replace_extension("txt");
 
     GetLogger()->Debug("Loading new model: %%", modelFile);
 
