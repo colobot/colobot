@@ -1983,9 +1983,9 @@ bool CEngine::LoadAllTextures()
             if (!data.material.albedoTexture.empty())
             {
                 if (terrain)
-                    data.albedoTexture = LoadTexture(TempToPath("textures/" + data.material.albedoTexture), m_terrainTexParams);
+                    data.albedoTexture = LoadTexture("textures" / data.material.albedoTexture, m_terrainTexParams);
                 else
-                    data.albedoTexture = LoadTexture(TempToPath("textures/" + data.material.albedoTexture));
+                    data.albedoTexture = LoadTexture("textures" / data.material.albedoTexture);
 
                 if (!data.albedoTexture.Valid())
                     ok = false;
@@ -4736,7 +4736,7 @@ void CEngine::AddBaseObjTriangles(int baseObjRank, const std::vector<Gfx::ModelT
         Material material = triangle.material;
 
         if (!material.albedoTexture.empty())
-            material.albedoTexture = "objects/" + material.albedoTexture;
+            material.albedoTexture = "objects" / material.albedoTexture;
 
         if (!material.materialTexture.empty())
             material.materialTexture = "objects/" + material.materialTexture;

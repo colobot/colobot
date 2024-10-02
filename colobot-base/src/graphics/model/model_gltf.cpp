@@ -294,7 +294,7 @@ void GLTFLoader::ReadMaterials()
 
                     const auto& image = m_images[texture.source];
 
-                    mat.albedoTexture = image.uri;
+                    mat.albedoTexture = StrUtils::ToPath(image.uri);
                 }
             }
 

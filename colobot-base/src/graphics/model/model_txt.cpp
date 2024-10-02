@@ -132,7 +132,7 @@ void ReadTextModelV1AndV2(CModel& model, std::istream& stream)
         triangle.p1 = t.p1;
         triangle.p2 = t.p2;
         triangle.p3 = t.p3;
-        triangle.material.albedoTexture = t.tex1Name;
+        triangle.material.albedoTexture = TempToPath(t.tex1Name);
         triangle.material.detailTexture = "textures" / TempToPath(t.tex2Name);
         triangle.material.variableDetail = t.variableTex2;
         ConvertFromOldRenderState(triangle, t.state);
@@ -225,7 +225,7 @@ std::unique_ptr<CModelMesh> ReadTextMesh(std::istream& stream)
         t.p2.color = color;
         t.p3.color = color;
 
-        t.material.albedoTexture = ReadLineString(stream, "tex1");
+        t.material.albedoTexture = StrUtils::ToPath(ReadLineString(stream, "tex1"));
         t.material.detailTexture = StrUtils::ToPath(ReadLineString(stream, "tex2"));
         t.material.variableDetail = ReadLineString(stream, "var_tex2") == std::string("Y");
 

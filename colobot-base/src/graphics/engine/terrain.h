@@ -266,7 +266,7 @@ protected:
     //! Seeks a material based on neighbor values
     int         FindMaterialByNeighbors(char *mat);
     //! Returns the texture name and UV coords to use for a given square
-    void        GetTexture(int x, int y, std::string& name, glm::vec2& uv);
+    void        GetTexture(int x, int y, std::filesystem::path& name, glm::vec2& uv);
     //! Returns the height of the terrain
     float       GetHeight(int x, int y);
     //! Decide whether a point is using the materials

@@ -52,7 +52,7 @@ struct Material
     //! Albedo color
     Color albedoColor = Color{ 1.0f, 1.0f, 1.0f, 1.0f };
     //! Albedo texture
-    std::string albedoTexture = "";
+    std::filesystem::path albedoTexture = "";
     //! Roughness
     float roughness = 1.0;
     //! Metalness
