@@ -25,6 +25,8 @@
 
 #include "graphics/model/model_io_exception.h"
 
+#include "common/stringutils.h"
+
 namespace Gfx
 {
 
@@ -46,7 +48,7 @@ std::unique_ptr<CModel> ModelInput::Read(const std::filesystem::path& path)
     }
     else
     {
-        throw CModelIOException(std::string("Unknown model format: ") + extension.string());
+        throw CModelIOException(std::string("Unknown model format: ") + StrUtils::ToString(extension));
     }
 }
 

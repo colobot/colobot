@@ -51,7 +51,7 @@ bool COldModelManager::LoadModel(const std::string& name, bool mirrored, int tea
     std::unique_ptr<CModel> model;
     try
     {
-        auto extension = TempToPath(name).extension().string();
+        auto extension = TempToPath(name).extension();
 
         if (!extension.empty())
         {

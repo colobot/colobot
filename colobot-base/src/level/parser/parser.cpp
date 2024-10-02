@@ -72,7 +72,7 @@ std::filesystem::path CLevelParser::BuildCategoryPath(std::string_view category)
     }
     else
     {
-        path /= category;
+        path /= StrUtils::ToPath(category);
     }
 
     return path;
