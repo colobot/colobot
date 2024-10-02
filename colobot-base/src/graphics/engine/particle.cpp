@@ -143,13 +143,16 @@ void CParticle::FlushParticle(int sheet)
 
 
 //! Returns file name of the effect effectNN.png, with NN = number
-static void NameParticle(std::string &name, int num)
+std::filesystem::path NameParticle(int num)
 {
-         if (num == 1)  name = "effect00.png";
-    else if (num == 2)  name = "effect01.png";
-    else if (num == 3)  name = "effect02.png";
-    else if (num == 4)  name = "effect03.png";
-    else                name = "";
+    switch(num)
+    {
+        case 1: return "effect00.png";
+        case 2: return "effect01.png";
+        case 3: return "effect02.png";
+        case 4: return "effect03.png";
+        default: return "";
+    }
 }
 
 //! Returns random letter for use as virus particle
@@ -3452,9 +3455,7 @@ void CParticle::DrawParticle(int sheet)
 
             if (!loadTexture && t != 5)
             {
-                std::string name;
-                NameParticle(name, t);
-                auto texture = m_engine->LoadTexture("textures" / TempToPath(name));
+                auto texture = m_engine->LoadTexture("textures" / NameParticle(t));
                 m_renderer->SetTexture(texture);
                 loadTexture = true;
             }
