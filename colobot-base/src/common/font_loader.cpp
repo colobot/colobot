@@ -60,7 +60,7 @@ bool CFontLoader::Init()
             {
                 auto parts = StrUtils::Split(line, " =");
 
-                m_fonts[parts[0]] = parts[1];
+                m_fonts[parts[0]] = StrUtils::ToPath(parts[1]);
             }
 
             GetLogger()->Debug("Fonts config file loaded correctly.");
@@ -85,5 +85,5 @@ std::optional<std::filesystem::path> CFontLoader::GetFont(Gfx::FontType type) co
     if (iterator == m_fonts.end())
         return std::nullopt;
     else
-        return "fonts" / TempToPath(iterator->second);
+        return "fonts" / iterator->second;
 }
