@@ -104,5 +104,5 @@ public:
     //! Save all programs when saving the saved scene
     virtual void SaveAllProgramsForSavedScene(CLevelParserLine* levelSourceLine, const std::filesystem::path& levelSource) = 0;
     //! Load all programs when loading the saved scene
-    virtual void LoadAllProgramsForSavedScene(CLevelParserLine* levelSourceLine, const std::string& levelSource) = 0;
+    virtual void LoadAllProgramsForSavedScene(CLevelParserLine* levelSourceLine, const std::filesystem::path& levelSource) = 0;
 };

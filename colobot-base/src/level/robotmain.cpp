@@ -4698,7 +4698,7 @@ CObject* CRobotMain::IOReadObject(CLevelParserLine *line,
         CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(obj);
         if (!line->GetParam("programStorageIndex")->IsDefined()) // Backwards compatibility
             programStorage->SetProgramStorageIndex(objRank);
-        programStorage->LoadAllProgramsForSavedScene(line, TempToString(programDir));
+        programStorage->LoadAllProgramsForSavedScene(line, programDir);
     }
 
     return obj;
