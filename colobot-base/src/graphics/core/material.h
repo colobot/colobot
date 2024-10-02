@@ -64,7 +64,7 @@ struct Material
     //! Emissive color
     Color emissiveColor = Color{ 0.0f, 0.0f, 0.0f, 0.0f };
     //! Emissive texture
-    std::string emissiveTexture = "";
+    std::filesystem::path emissiveTexture = "";
     //! Normal map
     std::string normalTexture = "";
     //! Alpha mode

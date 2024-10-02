@@ -256,7 +256,7 @@ void GLTFLoader::ReadMaterials()
 
                 const auto& image = m_images[texture.source];
 
-                mat.emissiveTexture = image.uri;
+                mat.emissiveTexture = StrUtils::ToPath(image.uri);
             }
         }
 

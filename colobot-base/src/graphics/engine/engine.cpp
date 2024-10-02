@@ -2016,9 +2016,9 @@ bool CEngine::LoadAllTextures()
             if (!data.material.emissiveTexture.empty())
             {
                 if (terrain)
-                    data.emissiveTexture = LoadTexture(TempToPath("textures/" + data.material.emissiveTexture), m_terrainTexParams);
+                    data.emissiveTexture = LoadTexture("textures" / data.material.emissiveTexture, m_terrainTexParams);
                 else
-                    data.emissiveTexture = LoadTexture(TempToPath("textures/" + data.material.emissiveTexture));
+                    data.emissiveTexture = LoadTexture("textures" / data.material.emissiveTexture);
 
                 if (!data.emissiveTexture.Valid())
                     ok = false;
@@ -4742,7 +4742,7 @@ void CEngine::AddBaseObjTriangles(int baseObjRank, const std::vector<Gfx::ModelT
             material.materialTexture = "objects" / material.materialTexture;
 
         if (!material.emissiveTexture.empty())
-            material.emissiveTexture = "objects/" + material.emissiveTexture;
+            material.emissiveTexture = "objects" / material.emissiveTexture;
 
         if (material.variableDetail)
             material.detailTexture = GetSecondTexture();
