@@ -132,8 +132,8 @@ void ReadTextModelV1AndV2(CModel& model, std::istream& stream)
         triangle.p1 = t.p1;
         triangle.p2 = t.p2;
         triangle.p3 = t.p3;
-        triangle.material.albedoTexture = TempToPath(t.tex1Name);
-        triangle.material.detailTexture = "textures" / TempToPath(t.tex2Name);
+        triangle.material.albedoTexture = StrUtils::ToPath(t.tex1Name);
+        triangle.material.detailTexture = "textures" / StrUtils::ToPath(t.tex2Name);
         triangle.material.variableDetail = t.variableTex2;
         ConvertFromOldRenderState(triangle, t.state);
 

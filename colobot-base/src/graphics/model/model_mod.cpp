@@ -277,7 +277,7 @@ ModelLODLevel MinMaxToLodLevel(float min, float max)
 
 void ConvertOldTex1Name(ModelTriangle& triangle, const char* tex1Name)
 {
-    triangle.material.albedoTexture = TempToPath(tex1Name);
+    triangle.material.albedoTexture = StrUtils::ToPath(tex1Name);
     if (triangle.material.albedoTexture.extension() == "bmp" || triangle.material.albedoTexture.extension() == "tga")
     {
         triangle.material.albedoTexture.replace_extension("png");
