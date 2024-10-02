@@ -328,7 +328,7 @@ void GLTFLoader::ReadMaterials()
 
                     const auto& image = m_images[texture.source];
 
-                    mat.materialTexture = image.uri;
+                    mat.materialTexture = StrUtils::ToPath(image.uri);
                 }
             }
 
