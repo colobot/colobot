@@ -1817,6 +1817,11 @@ char CApplication::GetLanguageChar() const
     return langChar;
 }
 
+std::filesystem::path CApplication::GetLanguageDir() const
+{
+    return StrUtils::ToPath(std::string(1, GetLanguageChar()));
+}
+
 void CApplication::SetLanguage(Language language)
 {
     m_language = language;

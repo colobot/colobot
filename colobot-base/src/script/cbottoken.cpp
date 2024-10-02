@@ -251,7 +251,7 @@ std::filesystem::path GetHelpFilename(ObjectType type)
     if (helpfile.empty())
         return "";
 
-    return ("help" / StrUtils::ToPath(std::string(1, CApplication::GetInstancePointer()->GetLanguageChar())) / helpfile).replace_extension("txt");
+    return ("help" / CApplication::GetInstancePointer()->GetLanguageDir() / helpfile).replace_extension("txt");
 }
 
 
@@ -423,7 +423,7 @@ std::filesystem::path GetHelpFilename(const char *token)
     if (helpfile.empty())
         return "";
 
-    return ("help" / StrUtils::ToPath(std::string(1, CApplication::GetInstancePointer()->GetLanguageChar())) / helpfile).replace_extension("txt");
+    return ("help" / CApplication::GetInstancePointer()->GetLanguageDir() / helpfile).replace_extension("txt");
 }
 
 

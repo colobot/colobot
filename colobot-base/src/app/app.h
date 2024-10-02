@@ -37,6 +37,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <filesystem>
 
 
 class CEventQueue;
@@ -272,6 +273,7 @@ public:
     //@{
     Language    GetLanguage() const;
     char        GetLanguageChar() const;
+    std::filesystem::path GetLanguageDir() const;
     void        SetLanguage(Language language);
     //@}
 

@@ -599,7 +599,7 @@ void CRobotMain::ChangePhase(Phase phase)
                     pe->SetFontType(Gfx::FONT_COMMON);
                     pe->SetEditCap(false);
                     pe->SetHighlightCap(false);
-                    pe->ReadText(std::filesystem::path("help") / StrUtils::ToPath(std::string(1, m_app->GetLanguageChar())) / "win.txt");
+                    pe->ReadText("help" / m_app->GetLanguageDir() / "win.txt");
                 }
                 else
                 {
