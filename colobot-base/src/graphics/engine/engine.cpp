@@ -1350,9 +1350,8 @@ void CEngine::DeleteAllGroundSpots()
 
         std::stringstream str;
         str << "textures/shadow" << std::setfill('0') << std::setw(2) << s << ".png";
-        std::string texName = str.str();
 
-        CreateOrUpdateTexture(texName, &shadowImg);
+        CreateOrUpdateTexture(StrUtils::ToPath(str.str()), &shadowImg);
     }
 }
 
@@ -2060,12 +2059,12 @@ void CEngine::DeleteTexture(const Texture& tex)
     m_texNameMap.erase(it);
 }
 
-void CEngine::CreateOrUpdateTexture(const std::string& texName, CImage* img)
+void CEngine::CreateOrUpdateTexture(const std::filesystem::path& texName, CImage* img)
 {
-    auto it = m_texNameMap.find(TempToPath(texName));
+    auto it = m_texNameMap.find(texName);
     if (it == m_texNameMap.end())
     {
-        LoadTexture(TempToPath(texName), img);
+        LoadTexture(texName, img);
     }
     else
     {
@@ -4045,7 +4044,7 @@ void CEngine::UpdateGroundSpotTextures()
             str << "textures/shadow" << std::setfill('0') << std::setw(2) << s << ".png";
             std::string texName = str.str();
 
-            CreateOrUpdateTexture(texName, &shadowImg);
+            CreateOrUpdateTexture(StrUtils::ToPath(str.str()), &shadowImg);
         }
     }
 
