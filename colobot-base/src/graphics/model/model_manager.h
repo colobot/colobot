@@ -23,7 +23,7 @@
 
 #include <memory>
 #include <string>
-#include <unordered_map>
+#include <map>
 #include <filesystem>
 
 namespace Gfx
@@ -44,7 +44,7 @@ public:
     void ClearCache();
 
 private:
-    std::unordered_map<std::filesystem::path, std::unique_ptr<CModel>> m_models;
+    std::map<std::filesystem::path, std::unique_ptr<CModel>> m_models;
 };
 
 } // namespace Gfx
