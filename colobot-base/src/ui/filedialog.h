@@ -244,7 +244,7 @@ public:
      * with those extensions.
      * \param ext A string with an extension. Ex. ".txt"
      */
-    void        SetAutoExtension(const std::string& ext) { m_extension = ext; }
+    void        SetAutoExtension(const std::filesystem::path& ext) { m_extension = ext; }
 
     /**
      * \brief Define extensions that will be accepted as part of a valid file name.
@@ -357,7 +357,7 @@ private:
     std::filesystem::path  m_filename = "";
 
     //! The extension to add to a filename if needed
-    std::string  m_extension = "";
+    std::filesystem::path  m_extension = "";
     //! List of extensions accepted as part of a valid file name
     std::vector<std::string> m_extlist = {};
 };

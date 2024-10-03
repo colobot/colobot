@@ -946,7 +946,7 @@ void CFileDialog::UpdateAction()
             bError = DirectoryExists(text);
 
         if (!bError && !CheckFilename(TempToPath(text)))
-            bError = !CheckFilename(TempToPath(text+m_extension));
+            bError = !CheckFilename(TempToPath(text + TempToString(m_extension)));
     }
 
     pb->SetState(STATE_ENABLE, !bError);
@@ -1194,7 +1194,7 @@ bool CFileDialog::CheckFilename(const std::filesystem::path& name)
 
     if ( !m_extension.empty() ) // default extension?
     {
-        if ( TempToPath(m_extension) == name.extension() ) return true;
+        if ( m_extension == name.extension() ) return true;
     }
     return false;
 }
@@ -1211,7 +1211,7 @@ bool CFileDialog::ActionOpen()
 
     if ( !CheckFilename(TempToPath(filename)) ) // add default extension ?
     {
-        if ( !m_extension.empty() ) filename += m_extension;
+        if ( !m_extension.empty() ) filename += TempToString(m_extension);
         if ( !CheckFilename(TempToPath(filename)) ) return false; // file name is ok ?
     }
 
@@ -1236,7 +1236,7 @@ bool CFileDialog::ActionSave(bool checkFileExist)
 
     if ( !CheckFilename(filename) ) // add default extension ?
     {
-        if ( !m_extension.empty() ) filename.replace_extension(TempToPath(m_extension));
+        if ( !m_extension.empty() ) filename.replace_extension(m_extension);
         if ( !CheckFilename(filename) ) return false; // file name is ok ?
     }
 
