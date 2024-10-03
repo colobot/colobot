@@ -240,7 +240,7 @@ void CScreenIO::IOWriteScene()
     std::filesystem::path dir;
     if (static_cast<unsigned int>(sel) >= m_saveList.size())
     {
-        dir = m_main->GetPlayerProfile()->GetSaveFile(TempToPath("save" + clearName(info)));
+        dir = m_main->GetPlayerProfile()->GetSaveFile(StrUtils::ToPath("save" + clearName(info)));
     }
     else
     {
