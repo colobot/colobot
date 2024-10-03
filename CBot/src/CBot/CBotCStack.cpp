@@ -371,10 +371,11 @@ CBotTypResult CBotCStack::CompileCall(CBotToken* &p, CBotVar** ppVars, long& nId
     nIdent = 0;
     CBotTypResult val(-1);
 
+    assert(GetProgram());
     val = GetProgram()->GetExternalCalls()->CompileCall(p, nullptr, ppVars, this);
     if (val.GetType() < 0)
     {
-        val = CBotFunction::CompileCall(p->GetString(), ppVars, nIdent, GetProgram());
+        val = CBotFunction::CompileCall(p->GetString(), ppVars, nIdent, *GetProgram());
         if ( val.GetType() < 0 )
         {
     //        pVar = nullptr;                    // the error is not on a particular parameter
@@ -406,7 +407,7 @@ bool CBotCStack::CheckCall(CBotToken* &pToken, CBotDefParam* pParam, const std::
         }
     }
 
-    for (CBotFunction* pp : CBotFunction::m_publicFunctions)
+    for (CBotFunction* pp : GetProgram()->GetPublicFunctions())
     {
         if ( name == pp->GetName() )
         {

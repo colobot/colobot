@@ -1,7 +1,7 @@
 /*
  * This file is part of the Colobot: Gold Edition source code
- * Copyright (C) 2001-2023, Daniel Roux, EPSITEC SA & TerranovaTeam
- * http://epsitec.ch; http://colobot.info; http://github.com/colobot
+ * Copyright (C) 2024 TerranovaTeam
+ * http://colobot.info; http://github.com/colobot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,19 +17,36 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-/*!
- * \file CBot.h
- * \brief Public interface of CBot language interpreter. CBot.h is the only file
- * that should be included by any Colobot files outside of the CBot module.
- */
+#pragma once
 
-#include "CBot/CBotFileUtils.h"
-#include "CBot/CBotClass.h"
-#include "CBot/CBotToken.h"
-#include "CBot/CBotProgram.h"
-#include "CBot/CBotNamespace.h"
-#include "CBot/CBotTypResult.h"
+#include <memory>
+#include <string>
+#include <set>
 
-#include "CBot/CBotVar/CBotVar.h"
+namespace CBot
+{
 
-#include "CBot/stdlib/stdlib_public.h"
+class CBotProgram;
+class CBotVar;
+class CBotFunction;
+class CBotClass;
+
+class CBotNamespace
+{
+public:
+    std::unique_ptr<CBotProgram> AddProgram(CBotVar* thisVar);
+
+private:
+    const std::set<CBotFunction*>& GetPublicFunctions() const;
+    void AddPublic(CBotFunction* func);
+    void RemovePublic(CBotFunction* func);
+
+    CBotClass* FindPublicClass(const std::string& name);
+
+    friend class CBotProgram;
+
+    std::set<CBotFunction*> m_publicFunctions;
+    std::set<CBotClass*> m_publicClasses;
+};
+
+} // namespace CBot

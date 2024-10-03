@@ -24,6 +24,8 @@
 
 #pragma once
 
+#include "CBot/CBot.h"
+
 #include "app/pausemanager.h"
 
 #include "common/error.h"
@@ -48,6 +50,8 @@
 #include <map>
 #include <set>
 #include <stdexcept>
+#include <istream>
+#include <ostream>
 
 #include <glm/glm.hpp>
 
@@ -514,6 +518,9 @@ public:
     //! Returns a set of all team IDs in the current level that are still active
     std::set<int> GetAllActiveTeams();
 
+    CBot::CBotNamespace& GetRefereeNamespace();
+    CBot::CBotNamespace& GetTeamNamespace(int team);
+
 protected:
     bool        EventFrame(const Event &event);
     bool        EventObject(const Event &event);
@@ -576,6 +583,9 @@ protected:
     std::string    GetPreviousFromCommandHistory();
     //@}
 
+    void WriteCBot(std::ostream& ostr);
+    bool ReadCBot(std::istream& istr);
+
 protected:
     CApplication*       m_app = nullptr;
     CEventQueue*        m_eventQueue = nullptr;
@@ -589,6 +599,8 @@ protected:
     Gfx::CLightManager* m_lightMan = nullptr;
     CSoundInterface*    m_sound = nullptr;
     CInput*             m_input = nullptr;
+    CBot::CBotNamespace m_refereeNamespace;  // CBotNamespace must outlive CObjectManager
+    std::map<int, CBot::CBotNamespace>  m_namespaces;  // CBotNamespace must outlive CObjectManager
     std::unique_ptr<CObjectManager> m_objMan;
     std::unique_ptr<CMainMovie> m_movie;
     std::unique_ptr<CPauseManager> m_pause;
