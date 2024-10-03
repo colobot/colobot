@@ -1166,13 +1166,10 @@ void CEdit::Draw()
 
 // Draw an image part.
 
-static std::string PrepareImageFilename(std::string name)
+static std::filesystem::path PrepareImageFilename(std::filesystem::path name)
 {
-    std::string filename;
-    filename = name + ".png";
-    filename = StrUtils::ToString(InjectLevelPathsForCurrentLevel(TempToPath(filename), "icons"));
-    filename = StrUtils::Replace(filename, "\\", "/"); // TODO: Fix this in files
-    return filename;
+    name.replace_extension("png");
+    return InjectLevelPathsForCurrentLevel(name, "icons");
 }
 
 void CEdit::DrawImage(const glm::vec2& pos, std::string name, float width,
@@ -1188,7 +1185,7 @@ void CEdit::DrawImage(const glm::vec2& pos, std::string name, float width,
     params.format = Gfx::TextureFormat::AUTO;
     params.filter = Gfx::TextureFilter::BILINEAR;
     params.padToNearestPowerOfTwo = true;
-    Gfx::Texture tex = m_engine->LoadTexture(TempToPath(PrepareImageFilename(name)), params);
+    Gfx::Texture tex = m_engine->LoadTexture(PrepareImageFilename(TempToPath(name)), params);
 
     m_engine->GetUIRenderer()->SetTexture(tex);
 
@@ -1453,7 +1450,7 @@ void CEdit::FreeImage()
 {
     for (auto& image : m_image)
     {
-        m_engine->DeleteTexture(TempToPath(PrepareImageFilename(image.name)));
+        m_engine->DeleteTexture(PrepareImageFilename(TempToPath(image.name)));
     }
 }
 
