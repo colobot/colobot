@@ -55,7 +55,7 @@ public:
     void SetProgramStorageIndex(int programStorageIndex) override;
     int GetProgramStorageIndex() override;
 
-    void SaveAllUserPrograms(const std::string& userSource) override;
+    void SaveAllUserPrograms(const std::filesystem::path& userSource) override;
     void LoadAllProgramsForLevel(CLevelParserLine* levelSource, const std::string& userSource, bool loadSoluce) override;
 
     void SaveAllProgramsForSavedScene(CLevelParserLine* levelSourceLine, const std::filesystem::path& levelSource) override;

@@ -97,7 +97,7 @@ public:
     virtual int GetProgramStorageIndex() = 0;
 
     //! Save all user programs
-    virtual void SaveAllUserPrograms(const std::string& userSource) = 0;
+    virtual void SaveAllUserPrograms(const std::filesystem::path& userSource) = 0;
     //! Load all programs when loading the level including previously saved user programs
     virtual void LoadAllProgramsForLevel(CLevelParserLine* levelSource, const std::string& userSource, bool loadSoluce) = 0;
 

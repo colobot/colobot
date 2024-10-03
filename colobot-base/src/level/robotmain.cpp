@@ -4337,7 +4337,7 @@ void CRobotMain::SaveOneScript(CObject *obj)
     CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(obj);
 
     char categoryChar = GetLevelCategoryDir(m_levelCategory)[0];
-    programStorage->SaveAllUserPrograms(StrUtils::ToString(m_playerProfile->GetSaveFile(StrUtils::ToPath(StrUtils::Format("%c%.3d%.3d", categoryChar, m_levelChap, m_levelRank)))));
+    programStorage->SaveAllUserPrograms(m_playerProfile->GetSaveFile(StrUtils::ToPath(StrUtils::Format("%c%.3d%.3d", categoryChar, m_levelChap, m_levelRank))));
 }
 
 //! Saves the stack of the program in execution of a robot

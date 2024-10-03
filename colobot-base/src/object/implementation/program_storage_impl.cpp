@@ -209,16 +209,18 @@ int CProgramStorageObjectImpl::GetProgramStorageIndex()
     return m_programStorageIndex;
 }
 
-void CProgramStorageObjectImpl::SaveAllUserPrograms(const std::string& userSource)
+void CProgramStorageObjectImpl::SaveAllUserPrograms(const std::filesystem::path& userSource)
 {
     if (!m_allowProgramSave) return;
     if (m_programStorageIndex < 0) return;
-    GetLogger()->Debug("Saving user programs to '%%'",
-        StrUtils::Format("%s%.3d___.txt", userSource.c_str(), m_programStorageIndex));
+    std::filesystem::path filename = userSource;
+    filename += StrUtils::ToPath(StrUtils::Format("%.3d___.txt", m_programStorageIndex));
+    GetLogger()->Debug("Saving user programs to '%%'", filename);
 
     for (unsigned int i = 0; i < m_program.size(); i++)
     {
-        std::filesystem::path filename = TempToPath(userSource + StrUtils::Format("%.3d%.3d.txt", m_programStorageIndex, i));
+        std::filesystem::path filename = userSource;
+        filename += StrUtils::ToPath(StrUtils::Format("%.3d%.3d.txt", m_programStorageIndex, i));
 
         if (m_program[i]->filename.empty())
         {
@@ -227,9 +229,8 @@ void CProgramStorageObjectImpl::SaveAllUserPrograms(const std::string& userSourc
         }
     }
 
-    std::filesystem::path dir = StrUtils::ToPath(userSource.substr(0, userSource.find_last_of("/")));
-    std::string file = userSource.substr(userSource.find_last_of("/")+1) + StrUtils::Format("%.3d([0-9]{3})\\.txt", m_programStorageIndex);
-    std::regex regex(file);
+    std::filesystem::path dir = userSource.parent_path();
+    std::regex regex(StrUtils::ToString(userSource.filename()) + StrUtils::Format("%.3d([0-9]{3})\\.txt", m_programStorageIndex));
     for (const auto& path : CResourceManager::ListFiles(dir))
     {
         std::string filename = StrUtils::ToString(path);
