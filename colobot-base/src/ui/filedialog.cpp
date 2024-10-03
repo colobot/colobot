@@ -895,7 +895,7 @@ bool CFileDialog::ListItemIsFolder()
 
     if (name.find_first_of(".*?:<>\"|/\\") != std::string::npos) return false;
 
-    return DirectoryExists(name);
+    return DirectoryExists(TempToPath(name));
 }
 
 // Updates the list after a change in name.
@@ -948,7 +948,7 @@ void CFileDialog::UpdateAction()
         return;
     }
     std::filesystem::path filename = StrUtils::ToPath(text);
-    if (DirectoryExists(TempToString(filename)))
+    if (DirectoryExists(filename))
     {
         pb->SetState(STATE_ENABLE, false);
         return;
@@ -1000,7 +1000,7 @@ void CFileDialog::UpdateNewFolder()
     if ( !text.empty() )
     {
         if (text.find_first_of(".*?:<>\"|/\\") == std::string::npos)
-            bError = DirectoryExists(text);
+            bError = DirectoryExists(TempToPath(text));
     }
 
     if (bError) GetResource(RES_EVENT, EVENT_DIALOG_CANCEL, text);
@@ -1127,13 +1127,13 @@ std::filesystem::path CFileDialog::SearchDirectory(bool bCreate)
     return dir;
 }
 
-bool CFileDialog::DirectoryExists(const std::string &name)
+bool CFileDialog::DirectoryExists(const std::filesystem::path& name)
 {
     if ( name.empty() ) return false;
 
     if ( name == ".." ) return !m_subDirPath.empty();
 
-    return CResourceManager::DirectoryExists(SearchDirectory(false) / TempToPath(name));
+    return CResourceManager::DirectoryExists(SearchDirectory(false) / name);
 }
 
 // Make folder
@@ -1177,7 +1177,7 @@ void CFileDialog::OpenFolder()
     {
         m_subDirPath = m_subDirPath.parent_path();
     }
-    else if ( DirectoryExists(name) )
+    else if ( DirectoryExists(TempToPath(name)) )
     {
         m_subDirPath /= TempToPath(name);
     }

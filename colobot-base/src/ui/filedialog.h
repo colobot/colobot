@@ -297,7 +297,7 @@ private:
     void        UpdateSelectFolder();
 
     bool        ListItemIsFolder();
-    bool        DirectoryExists(const std::string &name);
+    bool        DirectoryExists(const std::filesystem::path& name);
 
     bool        CheckFilename(const std::filesystem::path& name);
     bool        ActionOpen();
