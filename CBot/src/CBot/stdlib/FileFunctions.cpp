@@ -43,7 +43,16 @@ bool FileClassOpenFile(CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exc
     // must be a character string
     if ( pVar->GetType() != CBotTypString ) { Exception = CBotErrBadString; return false; }
 
-    std::string  filename = pVar->GetValString();
+    std::filesystem::path  filename;
+    try
+    {
+        filename = StrUtils::ToPath(pVar->GetValString());
+    }
+    catch(...)
+    {
+        Exception = CBotErrFileOpen;
+        return false;
+    }
 
     // there may be a second parameter
     pVar = pVar->GetNext();
@@ -62,7 +71,7 @@ bool FileClassOpenFile(CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exc
 
     // saves the file name
     pVar = pThis->GetItem("filename");
-    pVar->SetValString(filename);
+    pVar->SetValString(StrUtils::ToString(filename));
 
     // retrieve the item "handle"
     pVar = pThis->GetItem("handle");

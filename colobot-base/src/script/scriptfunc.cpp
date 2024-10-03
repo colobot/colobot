@@ -3378,7 +3378,7 @@ class CBotFileColobot : public CBotFile
 public:
     static int m_numFilesOpen;
 
-    CBotFileColobot(const std::string& filename, CBotFileAccessHandler::OpenMode mode)
+    CBotFileColobot(const std::filesystem::path& filename, CBotFileAccessHandler::OpenMode mode)
     {
         if (mode == CBotFileAccessHandler::OpenMode::Read)
         {
@@ -3468,9 +3468,9 @@ int CBotFileColobot::m_numFilesOpen = 0;
 class CBotFileAccessHandlerColobot : public CBotFileAccessHandler
 {
 public:
-    virtual std::unique_ptr<CBotFile> OpenFile(const std::string& filename, OpenMode mode) override
+    virtual std::unique_ptr<CBotFile> OpenFile(const std::filesystem::path& filename, OpenMode mode) override
     {
-        return std::make_unique<CBotFileColobot>(TempToString(PrepareFilename(TempToPath(filename))), mode);
+        return std::make_unique<CBotFileColobot>(PrepareFilename(filename), mode);
     }
 
     virtual bool DeleteFile(const std::filesystem::path& filename) override
