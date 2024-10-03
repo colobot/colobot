@@ -97,7 +97,7 @@ struct HyperMarker
 struct HyperHistory
 {
     //! full file name text
-    std::string    filename;
+    std::filesystem::path filename;
     //! rank of the first displayed line
     int firstLine = 0;
 };

@@ -851,7 +851,7 @@ bool CEdit::HyperAdd(const std::filesystem::path& filename, int firstLine)
     if ( m_historyCurrent >= EDITHISTORYMAX-1 )  return false;
 
     m_historyCurrent ++;
-    m_history[m_historyCurrent].filename = TempToString(filename);
+    m_history[m_historyCurrent].filename = filename;
     m_history[m_historyCurrent].firstLine = firstLine;
 
     m_historyTotal = m_historyCurrent+1;
@@ -903,7 +903,7 @@ bool CEdit::HyperGo(EventType event)
         m_historyCurrent ++;
     }
 
-    ReadText(TempToPath(m_history[m_historyCurrent].filename));
+    ReadText(m_history[m_historyCurrent].filename);
     Justif();
     SetFirstLine(m_history[m_historyCurrent].firstLine);
     return true;
