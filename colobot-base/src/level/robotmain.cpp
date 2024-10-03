@@ -2875,7 +2875,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "ScriptFile" && !resetObject)
             {
-                m_scriptFile = line->GetParam("name")->AsPath("/");
+                m_scriptFile = line->GetParam("name")->AsPath(".");
                 continue;
             }
 
@@ -3769,7 +3769,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "NewScript" && !resetObject)
             {
-                m_newScriptName.push_back(NewScriptName(line->GetParam("type")->AsObjectType(OBJECT_NULL), line->GetParam("name")->AsPath("/", "")));
+                m_newScriptName.push_back(NewScriptName(line->GetParam("type")->AsObjectType(OBJECT_NULL), line->GetParam("name")->AsPath(".", "")));
                 continue;
             }
 
