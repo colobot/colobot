@@ -5577,7 +5577,7 @@ std::filesystem::path CRobotMain::GetCustomLevelName(int id)
     return m_ui->GetCustomLevelName(id);
 }
 
-const std::vector<std::string>& CRobotMain::GetCustomLevelList()
+const std::vector<std::filesystem::path>& CRobotMain::GetCustomLevelList()
 {
     return m_ui->GetCustomLevelList();
 }

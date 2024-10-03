@@ -359,7 +359,7 @@ public:
 
     void        UpdateCustomLevelList();
     std::filesystem::path GetCustomLevelName(int id);
-    const std::vector<std::string>& GetCustomLevelList();
+    const std::vector<std::filesystem::path>& GetCustomLevelList();
 
     //! Returns true if the game is on the loading screen
     bool        IsLoading();

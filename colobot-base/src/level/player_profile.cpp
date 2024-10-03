@@ -539,7 +539,8 @@ void CPlayerProfile::LoadScene(const std::filesystem::path& dir)
     if (cat == LevelCategory::CustomLevels)
     {
         chap = 0;
-        std::string dir = line->GetParam("dir")->AsString();
+        // Read "dir" as a string to avoid interpreting %lvl% etc.
+        std::filesystem::path dir = StrUtils::ToPath(line->GetParam("dir")->AsString());
         CRobotMain::GetInstancePointer()->UpdateCustomLevelList();
         auto customLevelList = CRobotMain::GetInstancePointer()->GetCustomLevelList();
         for (unsigned int i = 0; i < customLevelList.size(); i++)

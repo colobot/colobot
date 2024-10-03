@@ -95,7 +95,7 @@ public:
 
     void    UpdateCustomLevelList();
     std::filesystem::path GetCustomLevelName(int id);
-    const std::vector<std::string>& GetCustomLevelList();
+    const std::vector<std::filesystem::path>& GetCustomLevelList();
 
 protected:
     void    GlintMove();

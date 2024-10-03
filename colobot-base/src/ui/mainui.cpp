@@ -822,10 +822,10 @@ void CMainUserInterface::UpdateCustomLevelList()
 
 std::filesystem::path CMainUserInterface::GetCustomLevelName(int id)
 {
-    return TempToPath(m_screenLevelList->GetCustomLevelName(id));
+    return m_screenLevelList->GetCustomLevelName(id);
 }
 
-const std::vector<std::string>& CMainUserInterface::GetCustomLevelList()
+const std::vector<std::filesystem::path>& CMainUserInterface::GetCustomLevelList()
 {
     return m_screenLevelList->GetCustomLevelList();
 }
