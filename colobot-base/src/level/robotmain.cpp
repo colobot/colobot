@@ -3769,7 +3769,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "NewScript" && !resetObject)
             {
-                m_newScriptName.push_back(NewScriptName(line->GetParam("type")->AsObjectType(OBJECT_NULL), line->GetParam("name")->AsString("")));
+                m_newScriptName.push_back(NewScriptName(line->GetParam("type")->AsObjectType(OBJECT_NULL), line->GetParam("name")->AsPath("/", "")));
                 continue;
             }
 
@@ -4400,9 +4400,9 @@ bool CRobotMain::ReadFileStack(CObject *obj, std::istream &istr)
     return false; // error: status == ??
 }
 
-std::vector<std::string> CRobotMain::GetNewScriptNames(ObjectType type)
+std::vector<std::filesystem::path> CRobotMain::GetNewScriptNames(ObjectType type)
 {
-    std::vector<std::string> names;
+    std::vector<std::filesystem::path> names;
     for (const auto& newScript : m_newScriptName)
     {
         if (newScript.type == type        ||

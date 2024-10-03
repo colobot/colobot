@@ -127,9 +127,9 @@ class CDebugMenu;
 struct NewScriptName
 {
     ObjectType  type = OBJECT_NULL;
-    std::string name = "";
+    std::filesystem::path name = "";
 
-    NewScriptName(ObjectType type, const std::string& name) : type(type), name(name) {}
+    NewScriptName(ObjectType type, const std::filesystem::path& name) : type(type), name(name) {}
 };
 
 
@@ -320,7 +320,7 @@ public:
     bool        ReadFileStack(CObject *obj, std::istream &istr);
 
     //! Return list of scripts to load to robot created in BotFactory
-    std::vector<std::string> GetNewScriptNames(ObjectType type);
+    std::vector<std::filesystem::path> GetNewScriptNames(ObjectType type);
 
     //! Return the scoreboard manager
     //! Note: this may return nullptr if the scoreboard is not enabled!
