@@ -1246,7 +1246,7 @@ bool CFileDialog::ActionSave(bool checkFileExist)
 
     if ( !CheckFilename(filename) ) // add default extension ?
     {
-        if ( !m_extension.empty() ) filename.replace_extension(m_extension);
+        if ( !m_extension.empty() ) filename += m_extension;
         if ( !CheckFilename(filename) ) return false; // file name is ok ?
     }
 
