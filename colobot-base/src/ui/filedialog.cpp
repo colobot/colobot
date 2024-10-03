@@ -1000,12 +1000,13 @@ void CFileDialog::UpdateNewFolder()
     if ( !text.empty() )
     {
         if (text.find_first_of(".*?:<>\"|/\\") == std::string::npos)
-            bError = DirectoryExists(TempToPath(text));
+            bError = DirectoryExists(StrUtils::ToPath(text));
     }
 
-    if (bError) GetResource(RES_EVENT, EVENT_DIALOG_CANCEL, text);
-    else GetResource(RES_EVENT, EVENT_DIALOG_OK, text);
-    pb->SetName(text);
+    std::string res;
+    if (bError) GetResource(RES_EVENT, EVENT_DIALOG_CANCEL, res);
+    else GetResource(RES_EVENT, EVENT_DIALOG_OK, res);
+    pb->SetName(res);
 }
 
 // Updates the private/public buttons.
