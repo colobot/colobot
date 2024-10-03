@@ -80,7 +80,7 @@ public:
      * \param file - file to load
      * \return return true on success
      */
-    virtual bool Cache(SoundType sound, const std::string &file);
+    virtual bool Cache(SoundType sound, const std::filesystem::path &file);
 
     /** Function called to cache music file.
      *  This function is called by CRobotMain for each file used in the mission.

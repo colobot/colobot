@@ -20,6 +20,7 @@
 #include "sound/sound.h"
 
 #include "common/logger.h"
+#include "common/stringutils.h"
 
 #include "math/func.h"
 
@@ -47,7 +48,7 @@ void CSoundInterface::CacheAll()
     {
         std::stringstream filename;
         filename << "sounds/sound" << std::setfill('0') << std::setw(3) << i << ".wav";
-        if ( !Cache(static_cast<SoundType>(i), filename.str()) )
+        if ( !Cache(static_cast<SoundType>(i), StrUtils::ToPath(filename.str())) )
             GetLogger()->Warn("Unable to load audio: %%", filename.str());
     }
 }
@@ -56,7 +57,7 @@ void CSoundInterface::Reset()
 {
 }
 
-bool CSoundInterface::Cache(SoundType sound, const std::string &file)
+bool CSoundInterface::Cache(SoundType sound, const std::filesystem::path &file)
 {
     return true;
 }

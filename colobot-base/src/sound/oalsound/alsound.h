@@ -86,7 +86,7 @@ public:
 
     bool Create() override;
     void Reset() override;
-    bool Cache(SoundType, const std::string &) override;
+    bool Cache(SoundType, const std::filesystem::path &) override;
     void CacheMusic(const std::filesystem::path &) override;
     bool IsCached(SoundType) override;
     bool IsCachedMusic(const std::string &) override;

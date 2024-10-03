@@ -135,10 +135,10 @@ int CALSound::GetMusicVolume()
     return m_musicVolume * MAXVOLUME;
 }
 
-bool CALSound::Cache(SoundType sound, const std::string &filename)
+bool CALSound::Cache(SoundType sound, const std::filesystem::path &filename)
 {
     auto buffer = std::make_unique<CBuffer>();
-    if (buffer->LoadFromFile(TempToPath(filename), sound))
+    if (buffer->LoadFromFile(filename, sound))
     {
         m_sounds[sound] = std::move(buffer);
         return true;
