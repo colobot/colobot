@@ -49,9 +49,9 @@ CScreen::~CScreen()
 {
 }
 
-void CScreen::SetBackground(const std::string& filename, bool scaled)
+void CScreen::SetBackground(const std::filesystem::path& filename, bool scaled)
 {
-    m_engine->SetBackground(TempToPath(filename),
+    m_engine->SetBackground(filename,
             Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
             Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
             Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),

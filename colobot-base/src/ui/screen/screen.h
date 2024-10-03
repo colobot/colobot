@@ -20,6 +20,7 @@
 #pragma once
 
 #include <string>
+#include <filesystem>
 
 #include <glm/glm.hpp>
 
@@ -50,7 +51,7 @@ public:
 
 protected:
     void CreateVersionDisplay();
-    void SetBackground(const std::string& filename, bool scaled = false);
+    void SetBackground(const std::filesystem::path& filename, bool scaled = false);
 
 protected:
     CRobotMain* m_main;

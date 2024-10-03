@@ -65,7 +65,7 @@ void CScreenWelcome::CreateInterface()
         m_engine->SetOverColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f), Gfx::TransparencyMode::WHITE);
     m_engine->SetOverFront(true);
 
-    SetBackground("textures/interface/intro"+StrUtils::ToString<int>(m_imageIndex+1)+".png", true);
+    SetBackground(StrUtils::ToPath("textures/interface/intro"+StrUtils::ToString<int>(m_imageIndex+1)+".png"), true);
 }
 
 bool CScreenWelcome::EventProcess(const Event &event)
