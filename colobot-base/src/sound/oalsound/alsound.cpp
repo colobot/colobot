@@ -166,9 +166,9 @@ bool CALSound::IsCached(SoundType sound)
     return m_sounds.find(sound) != m_sounds.end();
 }
 
-bool CALSound::IsCachedMusic(const std::string &filename)
+bool CALSound::IsCachedMusic(const std::filesystem::path &filename)
 {
-    return m_music.find(TempToPath(filename)) != m_music.end();
+    return m_music.find(filename) != m_music.end();
 }
 
 int CALSound::GetPriority(SoundType sound)

@@ -71,7 +71,7 @@ bool CSoundInterface::IsCached(SoundType sound)
     return false;
 }
 
-bool CSoundInterface::IsCachedMusic(const std::string& file)
+bool CSoundInterface::IsCachedMusic(const std::filesystem::path& file)
 {
     return false;
 }

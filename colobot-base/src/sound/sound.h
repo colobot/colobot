@@ -99,7 +99,7 @@ public:
      * \param file - file to check
      * \return return true if the file was cached
      */
-    virtual bool IsCachedMusic(const std::string &file);
+    virtual bool IsCachedMusic(const std::filesystem::path &file);
 
     /** Return if plugin is enabled
      *  \return return true if plugin is enabled
