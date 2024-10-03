@@ -168,7 +168,7 @@ public:
     bool        Undo();
 
     void        HyperFlush();
-    void        HyperHome(std::string filename);
+    void        HyperHome(const std::filesystem::path& filename);
     bool        HyperTest(EventType event);
     bool        HyperGo(EventType event);
 

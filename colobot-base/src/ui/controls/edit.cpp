@@ -803,10 +803,10 @@ void CEdit::HyperFlush()
 
 // Indicates which is the home page.
 
-void CEdit::HyperHome(std::string filename)
+void CEdit::HyperHome(const std::filesystem::path& filename)
 {
     HyperFlush();
-    HyperAdd(TempToPath(filename), 0);
+    HyperAdd(filename, 0);
 }
 
 // Performs a hyper jump through a link.

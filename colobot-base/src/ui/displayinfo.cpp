@@ -386,7 +386,7 @@ void CDisplayInfo::StartDisplayInfo(const std::filesystem::path& filename, int i
     edit->SetFontType(Gfx::FONT_SATCOM);
     edit->SetSoluceMode(bSoluce);
     edit->ReadText(filename);
-    edit->HyperHome(StrUtils::ToString(filename));
+    edit->HyperHome(filename);
     edit->SetEditCap(false);  // just to see!
     edit->SetHighlightCap(false);
     m_interface->SetFocus(edit);
@@ -664,9 +664,9 @@ void CDisplayInfo::ChangeIndexButton(int index)
     edit = static_cast<Ui::CEdit*>(pw->SearchControl(EVENT_EDIT1));
     if ( edit != nullptr )
     {
-        const auto& filename = m_main->GetDisplayInfoName(m_index);
+        const std::filesystem::path& filename = m_main->GetDisplayInfoName(m_index);
         edit->ReadText(filename);
-        edit->HyperHome(StrUtils::ToString(filename));
+        edit->HyperHome(filename);
         SetPosition(0);
     }
 
