@@ -332,7 +332,7 @@ protected:
         //! Unique ID
         short       id = 0;
         //! Texture
-        std::string texName;
+        std::filesystem::path texName;
         //! UV texture coordinates
         glm::vec2   uv;
         //! Terrain hardness (defines e.g. sound of walking)

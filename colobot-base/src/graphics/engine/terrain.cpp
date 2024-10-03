@@ -168,7 +168,7 @@ void CTerrain::AddMaterial(int id, const std::filesystem::path& texName, const g
         id = m_materialAutoID++;
 
     TerrainMaterial tm;
-    tm.texName  = TempToString(texName);
+    tm.texName  = texName;
     tm.id       = id;
     tm.uv       = uv;
     tm.mat[0]   = up;
@@ -763,7 +763,7 @@ void CTerrain::GetTexture(int x, int y, std::filesystem::path& name, glm::vec2&u
     }
     else
     {
-        name = StrUtils::ToPath(tm->texName);
+        name = tm->texName;
         uv = tm->uv;
     }
 }
