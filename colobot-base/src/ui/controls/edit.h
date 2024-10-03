@@ -69,7 +69,7 @@ enum OperUndo
 struct ImageLine
 {
     //! name of the image (without icons/)
-    std::string    name;
+    std::filesystem::path name;
     //! vertical offset (v texture)
     float   offset = 0.0f;
     //! height of the part (dv texture)

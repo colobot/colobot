@@ -1042,7 +1042,7 @@ void CEdit::Draw()
             unsigned int iIndex = m_text[beg];  // character = index in m_image
             assert(iIndex < m_image.size());
             pos.y -= m_lineHeight*(line-1);
-            DrawImage(pos, m_image[iIndex].name,
+            DrawImage(pos, TempToString(m_image[iIndex].name),
                       m_image[iIndex].width*(m_fontSize/Gfx::FONT_SIZE_SMALL),
                       m_image[iIndex].offset, m_image[iIndex].height*line, line);
             pos.y -= m_lineHeight;
@@ -1450,7 +1450,7 @@ void CEdit::FreeImage()
 {
     for (auto& image : m_image)
     {
-        m_engine->DeleteTexture(PrepareImageFilename(TempToPath(image.name)));
+        m_engine->DeleteTexture(PrepareImageFilename(image.name));
     }
 }
 
@@ -1656,7 +1656,7 @@ bool CEdit::ReadText(const std::filesystem::path& filename)
                 for ( iCount=0 ; iCount<iLines ; iCount++ )
                 {
                     ImageLine image;
-                    image.name = iName;
+                    image.name = StrUtils::ToPath(iName);
                     image.offset = static_cast<float>(iCount) / static_cast<float>(iLines);
                     image.height = 1.0f/iLines;
                     image.width = iWidth*0.75f;
