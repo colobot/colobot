@@ -1616,7 +1616,7 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
 {
     CScript*    script = static_cast<CScript*>(user);
     CObject*    me = script->m_object;
-    std::string name = "";
+    std::filesystem::path name = "";
 
     ObjectCreateParams params;
     params.angle = 0.0f;
@@ -1651,7 +1651,13 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
 
         if ( var != nullptr )
         {
-            name = var->GetValString();
+            try
+            {
+                name = StrUtils::ToPath(var->GetValString());
+            } catch(...) {
+                exception = CBotErrFileOpen;
+                return false;
+            }
             var = var->GetNext();
             if ( var != nullptr )
             {
@@ -1714,14 +1720,14 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
 
     if (!name.empty())
     {
-        std::filesystem::path name2 = InjectLevelPathsForCurrentLevel(TempToPath(name), "ai");
+        std::filesystem::path name2 = InjectLevelPathsForCurrentLevel(name, "ai");
         if (object->Implements(ObjectInterfaceType::Programmable))
         {
             CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(object);
             Program* program = programStorage->AddProgram();
             programStorage->ReadProgram(program, name2);
             program->readOnly = true;
-            program->filename = name;
+            program->filename = StrUtils::ToString(name);
             dynamic_cast<CProgrammableObject&>(*object).RunProgram(program);
         }
     }
@@ -3464,21 +3470,21 @@ class CBotFileAccessHandlerColobot : public CBotFileAccessHandler
 public:
     virtual std::unique_ptr<CBotFile> OpenFile(const std::string& filename, OpenMode mode) override
     {
-        return std::make_unique<CBotFileColobot>(PrepareFilename(filename), mode);
+        return std::make_unique<CBotFileColobot>(TempToString(PrepareFilename(TempToPath(filename))), mode);
     }
 
-    virtual bool DeleteFile(const std::string& filename) override
+    virtual bool DeleteFile(const std::filesystem::path& filename) override
     {
-        std::string fname = PrepareFilename(filename);
+        std::filesystem::path fname = PrepareFilename(filename);
         GetLogger()->Info("CBot delete file '%%'", fname);
-        return CResourceManager::Remove(TempToPath(fname));
+        return CResourceManager::Remove(fname);
     }
 
 private:
-    static std::string PrepareFilename(const std::string& filename)
+    static std::filesystem::path PrepareFilename(const std::filesystem::path& filename)
     {
         CResourceManager::CreateNewDirectory("files");
-        return "files/" + filename;
+        return "files" / filename;
     }
 };
 

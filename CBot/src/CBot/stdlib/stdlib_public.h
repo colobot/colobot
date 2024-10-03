@@ -22,6 +22,7 @@
 #include "CBot/stdlib/Compilation.h"
 
 #include <memory>
+#include <filesystem>
 
 namespace CBot
 {
@@ -46,7 +47,7 @@ public:
 
     enum class OpenMode : char { Read = 'r', Write = 'w', Append = 'a' };
     virtual std::unique_ptr<CBotFile> OpenFile(const std::string& filename, OpenMode mode) = 0;
-    virtual bool DeleteFile(const std::string& filename) = 0;
+    virtual bool DeleteFile(const std::filesystem::path& filename) = 0;
 };
 
 void SetFileAccessHandler(std::unique_ptr<CBotFileAccessHandler> fileHandler);

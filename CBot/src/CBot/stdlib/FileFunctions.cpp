@@ -19,6 +19,8 @@
 
 #include "CBot/stdlib/stdlib.h"
 
+#include "common/stringutils.h"
+
 #include "CBot/CBot.h"
 
 #include <memory>
@@ -351,7 +353,16 @@ CBotTypResult cfeof (CBotVar* pThis, CBotVar* &pVar)
 
 bool rDeleteFile(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    std::string filename = var->GetValString();
+    std::filesystem::path filename;
+    try
+    {
+        filename = StrUtils::ToPath(var->GetValString());
+    }
+    catch(...)
+    {
+        exception = CBotErrFileOpen;
+        return false;
+    }
     assert(g_fileHandler != nullptr);
     return g_fileHandler->DeleteFile(filename);
 }
