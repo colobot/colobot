@@ -303,7 +303,7 @@ private:
     bool        ActionOpen();
     bool        ActionSave(bool checkFileExist = false);
 
-    bool        StartAskOverwrite(const std::string& name);
+    bool        StartAskOverwrite(const std::filesystem::path& name);
     bool        StopAskOverwrite();
     bool        EventAskOverwrite(const Event &event);
 

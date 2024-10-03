@@ -1238,35 +1238,35 @@ bool CFileDialog::ActionSave(bool checkFileExist)
 
     CEdit* pe = static_cast< CEdit* >(pw->SearchControl(EVENT_DIALOG_EDIT));
     if ( pe == nullptr ) return false;
-    std::string filename = pe->GetText(100);
+    std::filesystem::path filename = StrUtils::ToPath(pe->GetText(100));
     if ( filename.empty() ) return false;
 
-    if ( !CheckFilename(filename) ) // add default extension ?
+    if ( !CheckFilename(TempToString(filename)) ) // add default extension ?
     {
-        if ( !m_extension.empty() ) filename += m_extension;
-        if ( !CheckFilename(filename) ) return false; // file name is ok ?
+        if ( !m_extension.empty() ) filename.replace_extension(TempToPath(m_extension));
+        if ( !CheckFilename(TempToString(filename)) ) return false; // file name is ok ?
     }
 
     SearchDirectory(true);
 
     if ( checkFileExist )
     {
-        if (CResourceManager::Exists(SearchDirectory(false) / TempToPath(filename)))
+        if (CResourceManager::Exists(SearchDirectory(false) / filename))
         {
             if ( !StartAskOverwrite(filename) ) StopAskOverwrite();
             return false;
         }
     }
 
-    SetFilename(TempToPath(filename));
-    SetFilenameField(pe, TempToPath(filename));
+    SetFilename(filename);
+    SetFilenameField(pe, filename);
     pe->SetCursor(999, 0);  // select all
     pw->SetFocus(pe);
 
     return true;
 }
 
-bool CFileDialog::StartAskOverwrite(const std::string& name)
+bool CFileDialog::StartAskOverwrite(const std::filesystem::path& name)
 {
     CWindow* pw = static_cast< CWindow* >(m_interface->SearchControl(m_windowEvent)); // dialog window
     if ( pw == nullptr ) return false;
@@ -1311,7 +1311,7 @@ bool CFileDialog::StartAskOverwrite(const std::string& name)
     pla = static_cast< CLabel* >(pw->SearchControl(EVENT_LABEL1));       // filename label
     if ( pla == nullptr ) return false;
     pla->SetState(STATE_VISIBLE | STATE_ENABLE);
-    pla->SetName(name);
+    pla->SetName(StrUtils::ToString(name));
 
     pb = static_cast< CButton* >(pw->SearchControl(EVENT_BUTTON_CANCEL)); // Cancel button
     if ( pb == nullptr ) return false;
