@@ -938,18 +938,28 @@ void CFileDialog::UpdateAction()
     CButton* pb = static_cast< CButton* >(pw->SearchControl(EVENT_DIALOG_OK));
     if ( pb == nullptr )  return;
 
-    bool bError = true;
     std::string text = pe->GetText(999);
-    if ( !text.empty() )
+    if (
+        text.empty()
+        || text.find_first_of("*?:<>\"|/\\") != std::string::npos  // *?:<>"|/\ are banned on Windows
+    )
     {
-        if (text.find_first_of("*?:<>\"|/\\") == std::string::npos)
-            bError = DirectoryExists(text);
-
-        if (!bError && !CheckFilename(TempToPath(text)))
-            bError = !CheckFilename(TempToPath(text + TempToString(m_extension)));
+        pb->SetState(STATE_ENABLE, false);
+        return;
     }
-
-    pb->SetState(STATE_ENABLE, !bError);
+    std::filesystem::path filename = StrUtils::ToPath(text);
+    if (DirectoryExists(TempToString(filename)))
+    {
+        pb->SetState(STATE_ENABLE, false);
+        return;
+    }
+    if (CheckFilename(filename))
+    {
+        pb->SetState(STATE_ENABLE, true);
+        return;
+    }
+    filename += m_extension;
+    pb->SetState(STATE_ENABLE, CheckFilename(filename));
 }
 
 void CFileDialog::UpdateSelectFolder()
@@ -1206,18 +1216,18 @@ bool CFileDialog::ActionOpen()
 
     CEdit* pe = static_cast< CEdit* >(pw->SearchControl(EVENT_DIALOG_EDIT));
     if ( pe == nullptr ) return false;
-    std::string filename = pe->GetText(100);
+    std::filesystem::path filename = StrUtils::ToPath(pe->GetText(100));
     if ( filename.empty() ) return false;
 
-    if ( !CheckFilename(TempToPath(filename)) ) // add default extension ?
+    if ( !CheckFilename(filename) ) // add default extension ?
     {
-        if ( !m_extension.empty() ) filename += TempToString(m_extension);
-        if ( !CheckFilename(TempToPath(filename)) ) return false; // file name is ok ?
+        if ( !m_extension.empty() ) filename += m_extension;
+        if ( !CheckFilename(filename) ) return false; // file name is ok ?
     }
 
     SearchDirectory(true);
-    SetFilename(TempToPath(filename));
-    SetFilenameField(pe, TempToPath(filename));
+    SetFilename(filename);
+    SetFilenameField(pe, filename);
     pe->SetCursor(999, 0);  // select all
     pw->SetFocus(pe);
 
