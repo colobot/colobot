@@ -81,7 +81,7 @@ struct ImageLine
 struct HyperLink
 {
     //! text file name (without help/)
-    std::string    name;
+    std::filesystem::path name;
     //! name of the marker
     std::string    marker;
 };
@@ -187,8 +187,8 @@ protected:
     int         MouseDetect(const glm::vec2& mouse);
     void        MoveAdjust();
 
-    void        HyperJump(std::string name, std::string marker);
-    bool        HyperAdd(std::string filename, int firstLine);
+    void        HyperJump(const std::filesystem::path& name, std::string marker);
+    bool        HyperAdd(const std::filesystem::path& filename, int firstLine);
 
     void        DrawImage(const glm::vec2& pos, std::string name, float width, float offset, float height, int nbLine);
     void        DrawBack(const glm::vec2& pos, const glm::vec2& dim);

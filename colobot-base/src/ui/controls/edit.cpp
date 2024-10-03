@@ -806,23 +806,22 @@ void CEdit::HyperFlush()
 void CEdit::HyperHome(std::string filename)
 {
     HyperFlush();
-    HyperAdd(filename, 0);
+    HyperAdd(TempToPath(filename), 0);
 }
 
 // Performs a hyper jump through a link.
 
-void CEdit::HyperJump(std::string name, std::string marker)
+void CEdit::HyperJump(const std::filesystem::path& name, std::string marker)
 {
     if ( m_historyCurrent >= 0 )
     {
         m_history[m_historyCurrent].firstLine = m_lineFirst;
     }
 
-    std::string filename = name + std::string(".txt");
-    filename = StrUtils::ToString(InjectLevelPathsForCurrentLevel(TempToPath(filename), "help/%lng%"));
-    filename = StrUtils::Replace(filename, "\\", "/"); //TODO: Fix this in files
+    std::filesystem::path filename = InjectLevelPathsForCurrentLevel(name, "help/%lng%");
+    filename.replace_extension("txt");
 
-    if ( ReadText(TempToPath(filename)) )
+    if ( ReadText(filename) )
     {
         Justif();
 
@@ -847,12 +846,12 @@ void CEdit::HyperJump(std::string name, std::string marker)
 
 // Adds text to the history of visited.
 
-bool CEdit::HyperAdd(std::string filename, int firstLine)
+bool CEdit::HyperAdd(const std::filesystem::path& filename, int firstLine)
 {
     if ( m_historyCurrent >= EDITHISTORYMAX-1 )  return false;
 
     m_historyCurrent ++;
-    m_history[m_historyCurrent].filename = filename;
+    m_history[m_historyCurrent].filename = TempToString(filename);
     m_history[m_historyCurrent].firstLine = firstLine;
 
     m_historyTotal = m_historyCurrent+1;
@@ -1617,7 +1616,7 @@ bool CEdit::ReadText(const std::filesystem::path& filename)
             if ( m_bSoluce || !bInSoluce )
             {
                 HyperLink link;
-                link.name = GetNameParam(buffer.data()+i+3, 0);
+                link.name = StrUtils::ToPath(GetNameParam(buffer.data()+i+3, 0));
                 link.marker = GetNameParam(buffer.data()+i+3, 1);
                 m_link.push_back(link);
                 font &= ~Gfx::FONT_MASK_LINK;
