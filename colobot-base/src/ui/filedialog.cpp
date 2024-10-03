@@ -945,8 +945,8 @@ void CFileDialog::UpdateAction()
         if (text.find_first_of("*?:<>\"|/\\") == std::string::npos)
             bError = DirectoryExists(text);
 
-        if (!bError && !CheckFilename(text))
-            bError = !CheckFilename(text+m_extension);
+        if (!bError && !CheckFilename(TempToPath(text)))
+            bError = !CheckFilename(TempToPath(text+m_extension));
     }
 
     pb->SetState(STATE_ENABLE, !bError);
@@ -1078,7 +1078,7 @@ void CFileDialog::PopulateList()
 
     auto it = std::remove_if(files.begin(), files.end(), [this](const std::filesystem::path& name)
     {
-        return !CheckFilename(StrUtils::ToString(name));
+        return !CheckFilename(name);
     });
     files.erase(it, files.end()); // remove invalid file names
 
@@ -1181,27 +1181,20 @@ void CFileDialog::OpenFolder()
     if ( pe != nullptr ) SearchList(pe->GetText(999), m_newFolderMode);
 }
 
-bool CFileDialog::CheckFilename(const std::string& name)
+bool CFileDialog::CheckFilename(const std::filesystem::path& name)
 {
-    if ( name.empty() || name[0] == '.' ) return false;
+    if ( name.empty() || StrUtils::ToString(name)[0] == '.' ) return false;
 
-    size_t namelen = name.length();
     if ( m_extension.empty() && m_extlist.empty() ) return true;      // no required extension?
 
     for ( std::string ext : m_extlist ) // allowed extensions?
     {
-        size_t extlen = ext.length();
-        if ( namelen <= extlen ) continue;
-        if ( name == ext ) continue;
-        if ( ext == name.substr(namelen-extlen, extlen) ) return true;
+        if ( TempToPath(ext) == name.extension() ) return true;
     }
 
     if ( !m_extension.empty() ) // default extension?
     {
-        size_t extlen = m_extension.length();
-        if ( namelen <= extlen ) return false;
-        if ( name == m_extension ) return false;
-        if ( m_extension == name.substr(namelen-extlen, extlen)) return true;
+        if ( TempToPath(m_extension) == name.extension() ) return true;
     }
     return false;
 }
@@ -1216,10 +1209,10 @@ bool CFileDialog::ActionOpen()
     std::string filename = pe->GetText(100);
     if ( filename.empty() ) return false;
 
-    if ( !CheckFilename(filename) ) // add default extension ?
+    if ( !CheckFilename(TempToPath(filename)) ) // add default extension ?
     {
         if ( !m_extension.empty() ) filename += m_extension;
-        if ( !CheckFilename(filename) ) return false; // file name is ok ?
+        if ( !CheckFilename(TempToPath(filename)) ) return false; // file name is ok ?
     }
 
     SearchDirectory(true);
@@ -1241,10 +1234,10 @@ bool CFileDialog::ActionSave(bool checkFileExist)
     std::filesystem::path filename = StrUtils::ToPath(pe->GetText(100));
     if ( filename.empty() ) return false;
 
-    if ( !CheckFilename(TempToString(filename)) ) // add default extension ?
+    if ( !CheckFilename(filename) ) // add default extension ?
     {
         if ( !m_extension.empty() ) filename.replace_extension(TempToPath(m_extension));
-        if ( !CheckFilename(TempToString(filename)) ) return false; // file name is ok ?
+        if ( !CheckFilename(filename) ) return false; // file name is ok ?
     }
 
     SearchDirectory(true);

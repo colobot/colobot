@@ -299,7 +299,7 @@ private:
     bool        ListItemIsFolder();
     bool        DirectoryExists(const std::string &name);
 
-    bool        CheckFilename(const std::string& name);
+    bool        CheckFilename(const std::filesystem::path& name);
     bool        ActionOpen();
     bool        ActionSave(bool checkFileExist = false);
 
