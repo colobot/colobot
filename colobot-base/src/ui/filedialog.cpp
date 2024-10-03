@@ -1145,17 +1145,17 @@ void CFileDialog::CreateNewFolder()
 
     CEdit* pe = static_cast< CEdit* >(pw->SearchControl(EVENT_DIALOG_EDIT2));
     if ( pe == nullptr ) return;
-    std::string name = pe->GetText(999);
+    std::filesystem::path name = StrUtils::ToPath(pe->GetText(999));
     if ( name.empty() ) return;
 
-    m_subDirPath /= TempToPath(name);   // add to current path
+    m_subDirPath /= name;   // add to current path
 
     SearchDirectory(true);  // make the new folder
 
     m_subDirPath = m_subDirPath.parent_path();
 
     PopulateList();         // redraw the list
-    SearchList(name, true); // highlight the new folder in list box
+    SearchList(StrUtils::ToString(name), true); // highlight the new folder in list box
 }
 
 // Open folder
