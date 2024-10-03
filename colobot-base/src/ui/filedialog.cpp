@@ -1197,9 +1197,9 @@ bool CFileDialog::CheckFilename(const std::filesystem::path& name)
 
     if ( m_extension.empty() && m_extlist.empty() ) return true;      // no required extension?
 
-    for ( std::string ext : m_extlist ) // allowed extensions?
+    for ( const std::filesystem::path& ext : m_extlist ) // allowed extensions?
     {
-        if ( TempToPath(ext) == name.extension() ) return true;
+        if ( ext == name.extension() ) return true;
     }
 
     if ( !m_extension.empty() ) // default extension?
