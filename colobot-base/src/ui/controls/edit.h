@@ -190,7 +190,7 @@ protected:
     void        HyperJump(const std::filesystem::path& name, std::string marker);
     bool        HyperAdd(const std::filesystem::path& filename, int firstLine);
 
-    void        DrawImage(const glm::vec2& pos, std::string name, float width, float offset, float height, int nbLine);
+    void        DrawImage(const glm::vec2& pos, const std::filesystem::path& name, float width, float offset, float height, int nbLine);
     void        DrawBack(const glm::vec2& pos, const glm::vec2& dim);
 
     void        DrawHorizontalGradient(const glm::vec2& pos, const glm::vec2& dim, Gfx::Color color1, Gfx::Color color2);

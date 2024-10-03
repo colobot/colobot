@@ -1042,7 +1042,7 @@ void CEdit::Draw()
             unsigned int iIndex = m_text[beg];  // character = index in m_image
             assert(iIndex < m_image.size());
             pos.y -= m_lineHeight*(line-1);
-            DrawImage(pos, TempToString(m_image[iIndex].name),
+            DrawImage(pos, m_image[iIndex].name,
                       m_image[iIndex].width*(m_fontSize/Gfx::FONT_SIZE_SMALL),
                       m_image[iIndex].offset, m_image[iIndex].height*line, line);
             pos.y -= m_lineHeight;
@@ -1172,7 +1172,7 @@ static std::filesystem::path PrepareImageFilename(std::filesystem::path name)
     return InjectLevelPathsForCurrentLevel(name, "icons");
 }
 
-void CEdit::DrawImage(const glm::vec2& pos, std::string name, float width,
+void CEdit::DrawImage(const glm::vec2& pos, const std::filesystem::path& name, float width,
                       float offset, float height, int nbLine)
 {
     glm::vec2 uv1, uv2, dim;
@@ -1185,7 +1185,7 @@ void CEdit::DrawImage(const glm::vec2& pos, std::string name, float width,
     params.format = Gfx::TextureFormat::AUTO;
     params.filter = Gfx::TextureFilter::BILINEAR;
     params.padToNearestPowerOfTwo = true;
-    Gfx::Texture tex = m_engine->LoadTexture(PrepareImageFilename(TempToPath(name)), params);
+    Gfx::Texture tex = m_engine->LoadTexture(PrepareImageFilename(name), params);
 
     m_engine->GetUIRenderer()->SetTexture(tex);
 
