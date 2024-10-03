@@ -1080,7 +1080,7 @@ void CFileDialog::PopulateList()
         time_t now = CResourceManager::GetLastModificationTime(SearchDirectory(false) / dir);
         strftime(timestr, 99, "%x %X", localtime(&now));
         std::ostringstream temp;
-        temp << dir << '\t' << "** DIR **" << "  \t" << timestr;
+        temp << StrUtils::ToString(dir) << '\t' << "** DIR **" << "  \t" << timestr;
         pl->SetItemName(i++, temp.str().c_str());
     }
 
