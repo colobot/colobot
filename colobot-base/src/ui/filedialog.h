@@ -360,6 +360,10 @@ private:
     std::filesystem::path  m_extension = "";
     //! List of extensions accepted as part of a valid file name
     std::vector<std::filesystem::path> m_extlist = {};
+
+    //! Contents of the dirrectory
+    std::vector<std::filesystem::path> m_entries = {};
+    int m_dirCount = 0;
 };
 
 } // namespace Ui
