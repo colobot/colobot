@@ -346,7 +346,7 @@ ParseArgsStatus CApplication::ParseArguments(const std::vector<std::string>& arg
                 if (pos != std::string::npos && pos > 0 && pos+1 < playerAndPath.length()) // Split player name from path
                 {
                     m_loadSavePlayerName = playerAndPath.substr(0, pos);
-                    m_loadSaveDirName = playerAndPath.substr(pos+1, playerAndPath.length()-pos-1);
+                    m_loadSaveDirName = StrUtils::ToPath(playerAndPath.substr(pos+1, playerAndPath.length()-pos-1));
                 }
                 else
                 {
@@ -690,7 +690,7 @@ bool CApplication::Create()
     if (!m_loadSaveDirName.empty())
     {
         m_controller->GetRobotMain()->SelectPlayer(m_loadSavePlayerName);
-        m_controller->GetRobotMain()->LoadSaveFromDirName(TempToPath(m_loadSaveDirName));
+        m_controller->GetRobotMain()->LoadSaveFromDirName(m_loadSaveDirName);
     }
     else if (m_runSceneCategory == LevelCategory::Max)
     {
