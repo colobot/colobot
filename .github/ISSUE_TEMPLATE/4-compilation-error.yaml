@@ -1,0 +1,19 @@
+name: Compilation error
+description: Use this if you tried to compile the game and got an error
+labels: compilation,needs-triage
+
+body:
+- type: markdown
+  attributes:
+    value: Please **do not use** external websites (such as Dropbox or Google Drive) to upload screenshots, save files etc. External links have a tendency to become dead. Upload the files to GitHub instead using one of the fields below.
+
+- type: textarea
+  label: To reproduce
+  description: |
+    Please describe the exact steps you took to:
+      1. Obtain the source code (include commit id if you used git or download url if you did not)
+      2. Install dependencies
+      3. Configure the build by using cmake
+      4. Compile the game
+
+    The more detailed your description is the higher the chance that we may be able to reproduce the error
