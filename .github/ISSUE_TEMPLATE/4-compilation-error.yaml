@@ -12,8 +12,28 @@ body:
     label: To reproduce
     description: |
       Please describe the exact steps you took to:
-        1. Obtain the source code (include commit id if you used git or download url if you did not)
-        2. Install dependencies
-        3. Configure the build by using cmake
-        4. Compile the game
+      1. Obtain the source code (include commit id if you used git or download url if you did not)
+      2. Install dependencies
+      3. Configure the build by using cmake
+      4. Compile the game
       The more detailed your description is the higher the chance that we may be able to reproduce the error
+
+- type: textarea
+  attributes:
+    label: Console output (stdout and stderr)
+    description: |
+      Please post:
+      1. The complete console output of cmake (if possible)
+      2. The complete console output of the compilation step (if possible)
+      Including the full output rather than just the final error message increases the chances that we will have the context necessary to understand the error
+
+- type: textarea
+  attributes:
+    label: OS Info
+    description: |
+      Please post the following information if you can:
+      1. What is your operating system? For Linux: include distribution name
+      2. What is the version of your operating system
+      3. What version of cmake did you use?
+      4. What did you use to compile the game (include name of the tool and version)? `make`? `Ninja`? Visual Studio?
+      5. What versions of dependencies of colobot did you install?
