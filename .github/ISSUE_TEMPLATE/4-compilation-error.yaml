@@ -16,6 +16,7 @@ body:
       2. Install dependencies
       3. Configure the build by using cmake
       4. Compile the game
+      
       The more detailed your description is the higher the chance that we may be able to reproduce the error
 
 - type: textarea
@@ -25,6 +26,7 @@ body:
       Please post:
       1. The complete console output of cmake (if possible)
       2. The complete console output of the compilation step (if possible)
+      
       Including the full output rather than just the final error message increases the chances that we will have the context necessary to understand the error
 
 - type: textarea
