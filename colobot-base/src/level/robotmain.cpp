@@ -1534,6 +1534,20 @@ void CRobotMain::ExecuteCmd(const std::string& cmd)
         return;
     }
 
+    int fps;
+    if (sscanf(cmd.c_str(), "fps %d", &fps) > 0)
+    {
+        if (fps > 0)
+        {
+            m_app->SetMsPerFrame(1000 / fps);
+        }
+        else
+        {
+            m_app->SetMsPerFrame(0);  // No limit
+        }
+        return;
+    }
+
     if (m_phase == PHASE_SIMUL)
         m_displayText->DisplayError(ERR_CMD, glm::vec3(0.0f,0.0f,0.0f));
 }

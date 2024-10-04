@@ -1031,6 +1031,11 @@ void CApplication::UpdateMouse()
     m_input->MouseMove(pos);
 }
 
+void CApplication::SetMsPerFrame(Uint32 ms)
+{
+    m_msPerFrame = ms;
+}
+
 int CApplication::Run()
 {
     m_active = true;
@@ -1045,8 +1050,16 @@ int CApplication::Run()
     TimeStamp currentTimeStamp{};
     TimeStamp interpolatedTimeStamp{};
 
+    Uint32 nextFrameStart = SDL_GetTicks();
     while (true)
     {
+        Sint32 diff = static_cast<Sint32>(nextFrameStart - SDL_GetTicks());
+        if(diff > 0)
+        {
+            SDL_Delay(diff);
+        }
+        nextFrameStart = SDL_GetTicks() + m_msPerFrame;
+
         if (m_active)
         {
             CProfiler::StartPerformanceCounter(PCNT_ALL);

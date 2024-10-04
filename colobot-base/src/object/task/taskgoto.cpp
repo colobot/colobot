@@ -363,12 +363,6 @@ bool CTaskGoto::EventProcess(const Event &event)
         return true;
     }
 
-    if ( m_phase == TGP_LAND )  // landed?
-    {
-        m_physics->SetMotorSpeedY(-0.5f);  // tomb
-        return true;
-    }
-
     if ( m_goalMode == TGG_EXPRESS )
     {
         if ( m_crashMode == TGC_HALT )
@@ -382,6 +376,16 @@ bool CTaskGoto::EventProcess(const Event &event)
         }
 
         pos = m_object->GetPosition();
+
+        float margin = 10.0f;
+        if ( m_object->Implements(ObjectInterfaceType::Flying) ) margin = 20.0f;
+        float dist = Math::DistanceProjected(m_goal, pos);
+        if ( dist < margin && dist > m_lastDistance )
+        {
+            m_error = ERR_STOP;
+            return true;
+        }
+        m_lastDistance = dist;
 
         if ( m_altitude > 0.0f )
         {
@@ -406,8 +410,15 @@ bool CTaskGoto::EventProcess(const Event &event)
         if ( cirSpeed >  1.0f )  cirSpeed =  1.0f;
         if ( cirSpeed < -1.0f )  cirSpeed = -1.0f;
 
+        float linSpeed = 1.0f-(1.0f-0.3f)*fabs(cirSpeed);
         m_physics->SetMotorSpeedZ(cirSpeed);  // turns left / right
-        m_physics->SetMotorSpeedX(1.0f);  // advance
+        m_physics->SetMotorSpeedX(linSpeed);  // advance
+        return true;
+    }
+
+    if ( m_phase == TGP_LAND )  // landed?
+    {
+        m_physics->SetMotorSpeedY(-0.5f);  // tomb
         return true;
     }
 
@@ -805,7 +816,7 @@ Error CTaskGoto::IsEnded()
 {
     glm::vec3    pos;
     float       limit, angle = 0.0f, h, level;
-    volatile float dist; //fix for issue #844
+    float dist;
 
     if ( m_engine->GetPause() )  return ERR_CONTINUE;
     if ( m_error != ERR_OK )  return m_error;
@@ -913,18 +924,6 @@ Error CTaskGoto::IsEnded()
             m_physics->SetMotorSpeedZ(0.0f);  // stops the rotation
             return ERR_STOP;
         }
-    }
-
-    if ( m_goalMode == TGG_EXPRESS )
-    {
-        dist = Math::DistanceProjected(m_goal, pos);
-        float margin = 10.0f;
-        if ( m_object->Implements(ObjectInterfaceType::Flying) ) margin = 20.0f;
-        if ( dist < margin && dist > m_lastDistance )
-        {
-            return ERR_STOP;
-        }
-        m_lastDistance = dist;
     }
 
     if ( m_phase == TGP_ADVANCE )  // going towards the goal?
