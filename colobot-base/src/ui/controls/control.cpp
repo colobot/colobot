@@ -868,7 +868,7 @@ int CControl::SetButtonTextureForIcon(int icon)
     int iconIdx = icon%64;
     int buttonFile = (icon/64) + 1;
 
-    auto texture = m_engine->LoadTexture("textures/interface/button" + StrUtils::ToString<int>(buttonFile) + ".png");
+    auto texture = m_engine->LoadTexture(StrUtils::ToPath("textures/interface/button" + StrUtils::ToString<int>(buttonFile) + ".png"));
     m_engine->GetUIRenderer()->SetTexture(texture);
 
     return iconIdx;

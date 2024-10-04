@@ -72,6 +72,13 @@
 
 using namespace CBot;
 
+enum class CameraView
+{
+    DEFAULT,
+    ONBOARD,
+    BACK,
+};
+
 CBotTypResult CScriptFunctions::cClassNull(CBotVar* thisclass, CBotVar* &var)
 {
     return cNull(var, nullptr);
@@ -216,15 +223,16 @@ CBotTypResult CScriptFunctions::cPlayMusic(CBotVar* &var, void* user)
 
 bool CScriptFunctions::rPlayMusic(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    std::string filename;
-    std::string cbs;
-    bool repeat;
-
-    cbs = var->GetValString();
-    filename = std::string(cbs);
+    std::filesystem::path filename;
+    try {
+        filename = StrUtils::ToPath(var->GetValString());
+    } catch(...) {
+        exception = CBotErrFileOpen;
+        return false;
+    }
     var = var->GetNext();
 
-    repeat = var->GetValInt();
+    bool repeat = var->GetValInt();
 
     CApplication::GetInstancePointer()->GetSound()->StopMusic();
     CApplication::GetInstancePointer()->GetSound()->PlayMusic(filename, repeat);
@@ -1706,12 +1714,12 @@ bool CScriptFunctions::rProduce(CBotVar* var, CBotVar* result, int& exception, v
 
     if (!name.empty())
     {
-        std::string name2 = StrUtils::ToString(InjectLevelPathsForCurrentLevel(name, "ai"));
+        std::filesystem::path name2 = InjectLevelPathsForCurrentLevel(TempToPath(name), "ai");
         if (object->Implements(ObjectInterfaceType::Programmable))
         {
             CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(object);
             Program* program = programStorage->AddProgram();
-            programStorage->ReadProgram(program, name2.c_str());
+            programStorage->ReadProgram(program, name2);
             program->readOnly = true;
             program->filename = name;
             dynamic_cast<CProgrammableObject&>(*object).RunProgram(program);
@@ -3213,18 +3221,54 @@ CBotTypResult CScriptFunctions::cOneObject(CBotVar* &var, void* user)
 
 }
 
-// Instruction "camerafocus(object)".
+// Instruction "camerafocus([object, view])".
+
+CBotTypResult CScriptFunctions::cCameraFocus(CBotVar* &var, void* user)
+{
+    if ( var == nullptr )  return CBotTypResult(CBotTypFloat);
+    if ( var->GetType() != CBotTypPointer )  return CBotTypResult(CBotErrBadParam);
+    var = var->GetNext();
+    if ( var == nullptr )  return CBotTypResult(CBotTypFloat);
+    if ( var->GetType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
+    var = var->GetNext();
+    if ( var == nullptr )  return CBotTypResult(CBotTypFloat);
+    return CBotTypResult(CBotErrOverParam);
+}
 
 bool CScriptFunctions::rCameraFocus(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
     CScript*    script = static_cast<CScript*>(user);
 
     CObject* object;
+    CameraView view = CameraView::DEFAULT;
     if (var == nullptr)
+    {
         object = script->m_object;
+    }
     else
+    {
         object = static_cast<CObject*>(var->GetUserPtr());
+        var = var->GetNext();
+    }
+    if (var != nullptr)
+    {
+        view = static_cast<CameraView>(var->GetValInt());
+    }
 
+    if (object && object->Implements(ObjectInterfaceType::Controllable))
+    {
+        switch (view)
+        {
+            case CameraView::DEFAULT:
+                break;
+            case CameraView::ONBOARD:
+                dynamic_cast<CControllableObject&>(*object).SetCameraType(Gfx::CAM_TYPE_ONBOARD);
+                break;
+            case CameraView::BACK:
+                dynamic_cast<CControllableObject&>(*object).SetCameraType(Gfx::CAM_TYPE_BACK);
+                break;
+        }
+    }
     script->m_main->SelectObject(object, false);
 
     result->SetValInt(ERR_OK);
@@ -3427,7 +3471,7 @@ public:
     {
         std::string fname = PrepareFilename(filename);
         GetLogger()->Info("CBot delete file '%%'", fname);
-        return CResourceManager::Remove(fname);
+        return CResourceManager::Remove(TempToPath(fname));
     }
 
 private:
@@ -3530,6 +3574,10 @@ void CScriptFunctions::Init()
     CBotProgram::DefineNum("ResearchBuilder",       RESEARCH_BUILDER);
     CBotProgram::DefineNum("ResearchTarget",        RESEARCH_TARGET);
 
+    CBotProgram::DefineNum("CameraDefault",         static_cast<int>(CameraView::DEFAULT));
+    CBotProgram::DefineNum("CameraOnboard",         static_cast<int>(CameraView::ONBOARD));
+    CBotProgram::DefineNum("CameraBack",            static_cast<int>(CameraView::BACK));
+
     CBotProgram::DefineNum("PolskiPortalColobota", 1337);
 
     CBotClass* bc;
@@ -3625,7 +3673,7 @@ void CScriptFunctions::Init()
     CBotProgram::AddFunction("pencolor",  rPenColor,  cOneFloat, cancelForeground);
     CBotProgram::AddFunction("penwidth",  rPenWidth,  cOneFloat);
     CBotProgram::AddFunction("factory",   rFactory,   cFactory);
-    CBotProgram::AddFunction("camerafocus", rCameraFocus, cOneObject);
+    CBotProgram::AddFunction("camerafocus", rCameraFocus, cCameraFocus);
     CBotProgram::AddFunction("takeoff",   rTakeOff,   cOneObject);
     CBotProgram::AddFunction("isbusy",    rIsBusy,    cIsBusy);
     CBotProgram::AddFunction("research",  rResearch,  cResearch);
@@ -3765,7 +3813,7 @@ void CScriptFunctions::uObject(CBotVar* botThis, void* user)
 
     // Updates the velocity of the object.
     pVar = pVar->GetNext();  // "velocity"
-    if (IsObjectBeingTransported(object) || physics == nullptr)
+    if (IsObjectBeingTransported(object))
     {
         pSub = pVar->GetItemList();  // "x"
         pSub->SetValFloat(nanf(""));
@@ -3773,6 +3821,15 @@ void CScriptFunctions::uObject(CBotVar* botThis, void* user)
         pSub->SetValFloat(nanf(""));
         pSub = pSub->GetNext();  // "z"
         pSub->SetValFloat(nanf(""));
+    }
+    else if (physics == nullptr)
+    {
+        pSub = pVar->GetItemList();  // "x"
+        pSub->SetValFloat(0);
+        pSub = pSub->GetNext();  // "y"
+        pSub->SetValFloat(0);
+        pSub = pSub->GetNext();  // "z"
+        pSub->SetValFloat(0);
     }
     else
     {

@@ -274,7 +274,7 @@ bool CTaskFire::EventProcess(const Event &event)
 
 Error CTaskFire::Start(float delay)
 {
-    glm::vec3    pos, goal, speed;
+    glm::vec3   speed;
     float       energy, fire;
     ObjectType  type;
 

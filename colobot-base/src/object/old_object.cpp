@@ -200,7 +200,7 @@ void COldObject::DeleteObject(bool bAll)
     {
         m_camera->SetControllingObject(nullptr);
     }
-    m_main->RemoveFromSelectionHistory(this);
+    m_main->CutObjectLink(this);
 
     if ( !bAll )
     {
@@ -596,7 +596,7 @@ void COldObject::DestroyObject(DestructionType type, CObject* killer)
         m_camera->SetType(Gfx::CAM_TYPE_EXPLO);
         m_main->DeselectAll();
     }
-    m_main->RemoveFromSelectionHistory(this);
+    m_main->CutObjectLink(this);
 
     CScoreboard* scoreboard = m_main->GetScoreboard();
     if (scoreboard)
@@ -871,6 +871,7 @@ void COldObject::SetType(ObjectType type)
          m_type == OBJECT_LABO     ||
          m_type == OBJECT_NUCLEAR  ||
          m_type == OBJECT_PARA     ||
+         m_type == OBJECT_NEST     ||
          m_type == OBJECT_MOTHER    )
     {
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Damageable)] = true;
@@ -1068,8 +1069,6 @@ int COldObject::GetOption()
 
 void COldObject::Write(CLevelParserLine* line)
 {
-    glm::vec3    pos;
-
     line->AddParam("camera", std::make_unique<CLevelParserParam>(GetCameraType()));
 
     if ( GetCameraLock() )
@@ -1157,6 +1156,17 @@ void COldObject::Write(CLevelParserLine* line)
     if ( m_auto != nullptr )
     {
         m_auto->Write(line);
+    }
+
+    // AlienWorm time up/down
+    if (m_type == OBJECT_WORM)
+    {
+        assert(Implements(ObjectInterfaceType::Movable));
+        CMotion* motion = GetMotion();
+        CLevelParserParamVec param;
+        param.push_back(std::make_unique<CLevelParserParam>(motion->GetParam(0)));
+        param.push_back(std::make_unique<CLevelParserParam>(motion->GetParam(1)));
+        line->AddParam("param", std::make_unique<CLevelParserParam>(std::move(param)));
     }
 }
 
@@ -1937,7 +1947,7 @@ bool COldObject::CreateShadowCircle(float radius, float intensity,
 
 bool COldObject::UpdateTransformObject(int part, bool bForceUpdate)
 {
-    glm::vec3    position, angle, eye;
+    glm::vec3    position, angle;
     bool        bModif = false;
     int         parent;
 
@@ -2129,34 +2139,6 @@ void COldObject::UpdateEnergyMapping()
 
     m_lastEnergy = GetEnergyLevel();
 
-    float a = 0.0f, b = 0.0f;
-
-    if ( m_type == OBJECT_POWER  ||
-         m_type == OBJECT_ATOMIC )
-    {
-        a = 2.0f;
-        b = 0.0f;  // dimensions of the battery (according to y)
-    }
-    else if ( m_type == OBJECT_STATION )
-    {
-        a = 10.0f;
-        b =  4.0f;  // dimensions of the battery (according to y)
-    }
-    else if ( m_type == OBJECT_ENERGY )
-    {
-        a = 9.0f;
-        b = 3.0f;  // dimensions of the battery (according to y)
-    }
-
-    float i = 0.50f+0.25f*GetEnergyLevel();  // origin
-    float s = i+0.25f;  // width
-
-    float au = (s-i)/(b-a);
-    float bu = s-b*(s-i)/(b-a);
-
-    std::string teamStr = StrUtils::ToString<int>(GetTeam());
-    if(GetTeam() == 0) teamStr = "";
-
     m_engine->SetUVTransform(m_objectPart[0].object, "energy",
         { 0.0f, 0.25f * (GetEnergyLevel() - 1.0f) }, { 1.0f, 1.0f });
 }
@@ -2166,7 +2148,7 @@ void COldObject::UpdateEnergyMapping()
 
 bool COldObject::EventProcess(const Event &event)
 {
-    // NOTE: This should be called befoce CProgrammableObjectImpl::EventProcess, see the other note inside this function
+    // NOTE: This should be called before CProgrammableObjectImpl::EventProcess, see the other note inside CTaskExecutorObjectImpl::EventProcess
     if (!CTaskExecutorObjectImpl::EventProcess(event)) return false;
 
     if ( m_physics != nullptr )
@@ -2286,7 +2268,7 @@ bool COldObject::EventProcess(const Event &event)
                     axeY *= 0.5f;
                 }
 
-                if ( !m_main->IsResearchDone(RESEARCH_FLY, GetTeam()) )
+                if ( m_type == OBJECT_HUMAN && !m_main->IsResearchDone(RESEARCH_FLY, GetTeam()) )
                 {
                     axeZ = -1.0f;  // tomb
                 }

@@ -139,15 +139,14 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
     int typeMask;
 
     if ( pOperations == nullptr ) pOperations = ListOp;
+    if ( *pOperations == 0 ) return CBotParExpr::Compile(p, pStack, bConstExpr);
     int* pOp = pOperations;
     while ( *pOp++ != 0 );              // follows the table
 
     CBotCStack* pStk = pStack->TokenStack();                    // one end of stack please
 
     // search the intructions that may be suitable to the left of the operation
-    CBotInstr*  left = (*pOp == 0) ?
-                        CBotParExpr::Compile(p, pStk, bConstExpr) :       // expression (...) left
-                        CBotTwoOpExpr::Compile(p, pStk, pOp, bConstExpr); // expression A * B left
+    CBotInstr*  left = CBotTwoOpExpr::Compile(p, pStk, pOp, bConstExpr);
 
     if (left == nullptr) return pStack->Return(nullptr, pStk);        // if error,  transmit
 

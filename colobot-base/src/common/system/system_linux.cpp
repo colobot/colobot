@@ -27,10 +27,24 @@
 #include <unistd.h>
 #include <time.h>
 
+#ifdef COLOBOT_APPIMAGE_BASEPATH_OVERRIDE
+#include <SDL2/SDL.h>
+#endif
+
 
 std::unique_ptr<CSystemUtils> CSystemUtils::Create()
 {
     return std::make_unique<CSystemUtilsLinux>();
+}
+
+CSystemUtilsLinux::CSystemUtilsLinux()
+{
+#ifdef COLOBOT_APPIMAGE_BASEPATH_OVERRIDE
+    // Use executable's base dir to get proper paths to other directories
+    auto* path = SDL_GetBasePath();
+    m_basePath = StrUtils::ToPath(path);
+    SDL_free(path);
+#endif
 }
 
 void CSystemUtilsLinux::Init(const std::vector<std::string>& args)
@@ -92,7 +106,7 @@ SystemDialogResult CSystemUtilsLinux::SystemDialog(SystemDialogType type, const 
     return result;
 }
 
-std::filesystem::path CSystemUtilsLinux::GetSaveDir()
+std::filesystem::path CSystemUtilsLinux::GetSaveDir() const
 {
     if constexpr (Version::PORTABLE_SAVES || Version::DEVELOPMENT_BUILD)
     {
@@ -127,7 +141,7 @@ std::filesystem::path CSystemUtilsLinux::GetSaveDir()
     }
 }
 
-std::string CSystemUtilsLinux::GetEnvVar(const std::string& name)
+std::string CSystemUtilsLinux::GetEnvVar(const std::string& name) const
 {
     char* envVar = getenv(name.c_str());
     if (envVar != nullptr)

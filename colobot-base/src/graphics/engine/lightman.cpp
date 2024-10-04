@@ -480,20 +480,22 @@ void CLightManager::UpdateDeviceLights(EngineObjectType type)
             break;
     }
 
+    /*
     for (int i = 0; i < static_cast<int>( m_lightMap.size() ); ++i)
     {
         int rank = m_lightMap[i];
         if (rank != -1)
         {
             Light light = m_dynLights[rank].light;
-            //m_device->SetLight(i, light);
-            //m_device->SetLightEnabled(i, true);
+            m_device->SetLight(i, light);
+            m_device->SetLightEnabled(i, true);
         }
         else
         {
-            //m_device->SetLightEnabled(i, false);
+            m_device->SetLightEnabled(i, false);
         }
     }
+    */
 }
 
 // -----------
@@ -517,7 +519,7 @@ float CLightManager::CLightsComparator::GetLightWeight(const DynamicLight& dynLi
     else if (dynLight.excludeType != ENG_OBJTYPE_NULL)
         enabled = dynLight.excludeType != m_objectType;
 
-    return enabled ? ( glm::length(dynLight.light.position - m_eyePos) * dynLight.priority ) : 10000.0f;
+    return enabled ? ( glm::length(dynLight.light.position - m_eyePos) * static_cast<float>(dynLight.priority) ) : 10000.0f;
 }
 
 bool CLightManager::CLightsComparator::operator()(const DynamicLight& left, const DynamicLight& right)

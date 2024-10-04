@@ -111,8 +111,8 @@ void CAutoNuclearPlant::Init()
 bool CAutoNuclearPlant::EventProcess(const Event &event)
 {
     CObject*    cargo;
-    glm::vec3    pos, goal, speed;
-    glm::vec2     dim, rot;
+    glm::vec3    pos, speed;
+    glm::vec2     dim;
     float       angle;
     int         i, max;
 

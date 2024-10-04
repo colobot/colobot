@@ -76,7 +76,7 @@ private:
     // Vertex array object
     GLuint m_bufferVAO = 0;
     // VBO capacity
-    GLsizei m_bufferCapacity = 128 * 1024;
+    GLuint m_bufferCapacity = 128 * 1024;
     // Buffer offset
     GLsizei m_bufferOffset = 0;
 

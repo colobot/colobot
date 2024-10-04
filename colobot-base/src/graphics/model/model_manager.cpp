@@ -20,6 +20,7 @@
 #include "graphics/model/model_manager.h"
 
 #include "common/logger.h"
+#include "common/stringutils.h"
 
 #include "common/resources/inputstream.h"
 
@@ -35,7 +36,7 @@ CModel* CModelManager::GetModel(const std::string& modelName)
     if (it != m_models.end())
         return it->second.get();
 
-    std::filesystem::path modelFile = "models-new/" + modelName + ".txt";
+    std::filesystem::path modelFile = TempToPath("models-new/" + modelName + ".txt");
 
     GetLogger()->Debug("Loading new model: %%", modelFile.string());
 

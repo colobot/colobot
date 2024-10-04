@@ -471,7 +471,7 @@ void CGL33ObjectRenderer::DrawPrimitives(PrimitiveType type, int drawCount, int 
 
     GLint offset = 0;
 
-    for (size_t i = 0; i < drawCount; i++)
+    for (int i = 0; i < drawCount; i++)
     {
         m_first[i] = offset;
         offset += count[i];

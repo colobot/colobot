@@ -517,7 +517,6 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 Error CTaskManip::IsEnded()
 {
     CObject*    cargo;
-    glm::vec3    pos;
     float       angle, dist;
     int         i;
 

@@ -22,6 +22,7 @@
 #include "app/app.h"
 
 #include "common/version.h"
+#include "common/stringutils.h"
 
 #include "graphics/engine/engine.h"
 
@@ -50,7 +51,7 @@ CScreen::~CScreen()
 
 void CScreen::SetBackground(const std::string& filename, bool scaled)
 {
-    m_engine->SetBackground(filename,
+    m_engine->SetBackground(TempToPath(filename),
             Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
             Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
             Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),

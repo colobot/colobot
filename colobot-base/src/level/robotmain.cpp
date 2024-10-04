@@ -33,6 +33,8 @@
 #include "common/stringutils.h"
 #include "common/version.h"
 
+#include "common/system/system.h"
+
 #include "common/resources/inputstream.h"
 #include "common/resources/outputstream.h"
 #include "common/resources/resourcemanager.h"
@@ -127,7 +129,7 @@ float   g_unit;             // conversion factor
 const float MIN_SPEED = 1/8.0f;
 const float MAX_SPEED = 256.0f;
 
-// Reference colors used when recoloring textures, see ChangeColor()
+// Reference colors used when recoloring textures
 const Gfx::Color COLOR_REF_BOT   = Gfx::Color( 10.0f/256.0f, 166.0f/256.0f, 254.0f/256.0f);  // blue
 const Gfx::Color COLOR_REF_ALIEN = Gfx::Color(135.0f/256.0f, 170.0f/256.0f,  13.0f/256.0f);  // green
 const Gfx::Color COLOR_REF_GREEN = Gfx::Color(135.0f/256.0f, 170.0f/256.0f,  13.0f/256.0f);  // green
@@ -502,7 +504,7 @@ void CRobotMain::ChangePhase(Phase phase)
                 {
                     GetLogger()->Info("Trying to restore pre-crash state...");
                     assert(m_playerProfile != nullptr);
-                    m_playerProfile->LoadScene("../../crashsave");
+                    m_playerProfile->LoadScene("crashsave");
                     CResourceManager::RemoveExistingDirectory("crashsave");
                 },
                 [&]()
@@ -597,7 +599,7 @@ void CRobotMain::ChangePhase(Phase phase)
                     pe->SetFontType(Gfx::FONT_COMMON);
                     pe->SetEditCap(false);
                     pe->SetHighlightCap(false);
-                    pe->ReadText(std::string("help/") + m_app->GetLanguageChar() + std::string("/win.txt"));
+                    pe->ReadText(TempToPath(std::string("help/") + m_app->GetLanguageChar() + std::string("/win.txt")));
                 }
                 else
                 {
@@ -693,7 +695,6 @@ bool CRobotMain::ProcessEvent(Event &event)
     {
         if (IsPhaseWithWorld(m_phase))
         {
-            ChangeColor();
             UpdateMap();
         }
         m_engine->LoadAllTextures();
@@ -1520,6 +1521,11 @@ void CRobotMain::ExecuteCmd(const std::string& cmd)
         }
     }
 
+    if (cmd == "gamecrash")
+    {
+        CSystemUtils::GetInstance().CriticalError("Intentional game crash");
+    }
+
     float speed;
     if (sscanf(cmd.c_str(), "speed %f", &speed) > 0)
     {
@@ -2023,13 +2029,14 @@ CObject* CRobotMain::DetectObject(const glm::vec2& pos)
     for (CObject* obj : m_objMan->GetAllObjects())
     {
         if (!obj->GetDetectable()) continue;
+        if (obj->GetProxyActivate()) continue;
 
         CObject* transporter = nullptr;
         if (obj->Implements(ObjectInterfaceType::Transportable))
             transporter = dynamic_cast<CTransportableObject&>(*obj).GetTransporter();
 
         if (transporter != nullptr && !transporter->GetDetectable()) continue;
-        if (obj->GetProxyActivate()) continue;
+        if (transporter != nullptr && transporter->GetProxyActivate()) continue;
 
         CObject* target = obj;
         // TODO: should this also apply to slots other than power cell slots?
@@ -2065,7 +2072,7 @@ bool CRobotMain::DestroySelectedObject()
     dynamic_cast<CControllableObject&>(*obj).SetSelect(false);  // deselects the object
     m_camera->SetType(Gfx::CAM_TYPE_EXPLO);
     DeselectAll();
-    RemoveFromSelectionHistory(obj);
+    CutObjectLink(obj);
 
     return true;
 }
@@ -2243,7 +2250,7 @@ void CRobotMain::HelpObject()
     std::string filename = GetHelpFilename(obj->GetType());
     if (filename.empty()) return;
 
-    StartDisplayInfo(filename, -1);
+    StartDisplayInfo(TempToPath(filename), -1);
 }
 
 
@@ -2415,7 +2422,8 @@ bool CRobotMain::EventFrame(const Event &event)
             {
                 glm::vec3 eye = m_engine->GetLookatPt();
                 float dist = glm::distance(eye, obj->GetPosition());
-                if ( dist < obj->GetProxyDistance() )
+                bool isDying = obj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject&>(*obj).IsDying();
+                if ( dist < obj->GetProxyDistance() && !isDying )
                 {
                     obj->SetProxyActivate(false);
                     CreateShortcuts();
@@ -2819,7 +2827,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
     m_missionTimerStarted = false;
     m_missionTimer = 0.0f;
 
-    std::string backgroundPath = "";
+    std::filesystem::path backgroundPath = "";
     Gfx::Color backgroundUp = Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f);
     Gfx::Color backgroundDown = Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f);
     Gfx::Color backgroundCloudUp = Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f);
@@ -2867,13 +2875,13 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "ScriptFile" && !resetObject)
             {
-                m_scriptFile = line->GetParam("name")->AsString();
+                m_scriptFile = TempToPath(line->GetParam("name")->AsString());
                 continue;
             }
 
             if (line->GetCommand() == "Instructions" && !resetObject)
             {
-                m_infoFilename[SATCOM_HUSTON] = TempToPath(line->GetParam("name")->AsPath("help/%lng%"));
+                m_infoFilename[SATCOM_HUSTON] = line->GetParam("name")->AsPath("help/%lng%");
 
                 m_immediatSatCom = line->GetParam("immediat")->AsBool(false);
                 m_beginSatCom = m_lockedSatCom = line->GetParam("lock")->AsBool(false);
@@ -2883,24 +2891,24 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "Satellite" && !resetObject)
             {
-                m_infoFilename[SATCOM_SAT] = TempToPath(line->GetParam("name")->AsPath("help/%lng%"));
+                m_infoFilename[SATCOM_SAT] = line->GetParam("name")->AsPath("help/%lng%");
                 continue;
             }
 
             if (line->GetCommand() == "Loading" && !resetObject)
             {
-                m_infoFilename[SATCOM_LOADING] = TempToPath(line->GetParam("name")->AsPath("help/%lng%"));
+                m_infoFilename[SATCOM_LOADING] = line->GetParam("name")->AsPath("help/%lng%");
                 continue;
             }
 
             if (line->GetCommand() == "HelpFile" && !resetObject)
             {
-                m_infoFilename[SATCOM_PROG] = TempToPath(line->GetParam("name")->AsPath("help/%lng%"));
+                m_infoFilename[SATCOM_PROG] = line->GetParam("name")->AsPath("help/%lng%");
                 continue;
             }
             if (line->GetCommand() == "SoluceFile" && !resetObject)
             {
-                m_infoFilename[SATCOM_SOLUCE] = TempToPath(line->GetParam("name")->AsPath("help/%lng%"));
+                m_infoFilename[SATCOM_SOLUCE] = line->GetParam("name")->AsPath("help/%lng%");
                 continue;
             }
 
@@ -2916,10 +2924,17 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                             if (rank >= 0)
                             {
                                 // TODO: Fix default levels and add a future removal warning
-                                GetLogger()->Warn("This level is using deprecated way of defining %% scene. Please change the %%= parameter in EndingFile from %% to \"levels/other/%1$s%2$03d.txt\".\n", type, type, rank);
                                 std::stringstream ss;
-                                ss << "levels/other/" << type << std::setfill('0') << std::setw(3) << rank << ".txt";
-                                return TempToPath(ss.str());
+                                ss << std::setfill('0') << std::setw(3) << rank << ".txt";
+                                auto result = "levels/other" / StrUtils::ToPath(type) / StrUtils::ToPath(ss.str());
+                                GetLogger()->Warn(
+                                        "This level is using deprecated way of defining %% scene. Please change the %%= parameter in EndingFile from %% to \"%%\".\n",
+                                        type,
+                                        type,
+                                        rank,
+                                        StrUtils::ToString(result)
+                                        );
+                                return result;
                             }
                             else
                             {
@@ -2931,7 +2946,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                         }
                         catch (std::invalid_argument &e)
                         {
-                            return TempToPath(line->GetParam(type)->AsPath("levels"));
+                            return line->GetParam(type)->AsPath("levels");
                         }
                     }
                     return "";
@@ -2967,8 +2982,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "CacheAudio" && !resetObject)
             {
-                std::string filename = line->GetParam("filename")->AsPath("music");
-                m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, filename);
+                std::filesystem::path filename = line->GetParam("filename")->AsPath("music");
+                m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, StrUtils::ToString(filename));
                 m_sound->CacheMusic(filename);
                 continue;
             }
@@ -2977,7 +2992,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             {
                 auto audioChange = std::make_unique<CAudioChangeCondition>();
                 audioChange->Read(line.get());
-                m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, audioChange->music);
+                m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, StrUtils::ToString(audioChange->music));
                 m_sound->CacheMusic(audioChange->music);
                 m_audioChange.push_back(std::move(audioChange));
 
@@ -3001,7 +3016,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     {
                         std::stringstream filenameStr;
                         filenameStr << "music/music" << std::setfill('0') << std::setw(3) << trackid << ".ogg";
-                        m_audioTrack = filenameStr.str();
+                        m_audioTrack = StrUtils::ToPath(filenameStr.str());
                     }
                     else
                     {
@@ -3046,17 +3061,17 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
                 if (!m_audioTrack.empty())
                 {
-                    m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, m_audioTrack);
+                    m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, StrUtils::ToString(m_audioTrack));
                     m_sound->CacheMusic(m_audioTrack);
                 }
                 if (!m_satcomTrack.empty())
                 {
-                    m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, m_satcomTrack);
+                    m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, StrUtils::ToString(m_satcomTrack));
                     m_sound->CacheMusic(m_satcomTrack);
                 }
                 if (!m_editorTrack.empty())
                 {
-                    m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, m_editorTrack);
+                    m_ui->GetLoadingScreen()->SetProgress(0.15f, RT_LOADING_MUSIC, StrUtils::ToString(m_editorTrack));
                     m_sound->CacheMusic(m_editorTrack);
                 }
                 continue;
@@ -3112,13 +3127,13 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             {
                 if (line->GetParam("rank")->IsDefined())
                 {
-                    std::array<char, 20> tex = { 0 };
-                    snprintf(tex.data(), tex.size(), "dirty%.2d.png", line->GetParam("rank")->AsInt());
-                    m_engine->SetSecondTexture(tex.data());
+                    std::stringstream ss;
+                    ss << "dirty" << std::setw(2) << std::setfill('0') << line->GetParam("rank")->AsInt() << ".png";
+                    m_engine->SetSecondTexture("textures" / StrUtils::ToPath(ss.str()));
                 }
                 else
                 {
-                    m_engine->SetSecondTexture("../" + line->GetParam("texture")->AsPath("textures"));
+                    m_engine->SetSecondTexture(line->GetParam("texture")->AsPath("textures"));
                 }
                 continue;
             }
@@ -3150,7 +3165,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                                 line->GetParam("image")->AsPath("textures"),
                                 { uv1.x, uv1.z },
                                 { uv2.x, uv2.z },
-                                line->GetParam("image")->AsPath("textures").find("planet") != std::string::npos // TODO: add transparent op or modify textures
+                                StrUtils::ToString(line->GetParam("image")->AsPath("textures")).find("planet") != std::string::npos // TODO: add transparent op or modify textures
                 );
                 continue;
             }
@@ -3244,7 +3259,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "TerrainCloud" && !resetObject)
             {
-                std::string path = "";
+                std::filesystem::path path = "";
                 if (line->GetParam("image")->IsDefined())
                     path = line->GetParam("image")->AsPath("textures");
                 m_cloud->Create(path,
@@ -3265,7 +3280,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             if (line->GetCommand() == "TerrainInitTextures" && !resetObject)
             {
                 m_ui->GetLoadingScreen()->SetProgress(0.2f+(3.f/5.f)*0.05f, RT_LOADING_TERRAIN, RT_LOADING_TERRAIN_TEX);
-                std::string name = "../" + line->GetParam("image")->AsPath("textures");
+                std::string name = "../" + TempToString(line->GetParam("image")->AsPath("textures"));
                 if (name.find(".") == std::string::npos)
                     name += ".png";
                 unsigned int dx = line->GetParam("dx")->AsInt(1);
@@ -3313,7 +3328,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "TerrainMaterial" && !resetObject)
             {
-                std::string name = line->GetParam("image")->AsPath("textures");
+                std::string name = TempToString(line->GetParam("image")->AsPath("textures"));
                 if (name.find(".") == std::string::npos)
                     name += ".png";
                 name = "../" + name;
@@ -3372,9 +3387,6 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             {
                 InitEye();
                 SetMovieLock(false);
-
-                if (!resetObject)
-                    ChangeColor();  // changes the colors of texture
 
                 if (!m_sceneReadPath.empty())  // loading file ?
                 {
@@ -3460,7 +3472,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                         char categoryChar = GetLevelCategoryDir(m_levelCategory)[0];
                         programStorage->LoadAllProgramsForLevel(
                             line.get(),
-                            StrUtils::ToString(m_playerProfile->GetSaveFile(StrUtils::Format("%c%.3d%.3d", categoryChar, m_levelChap, m_levelRank))),
+                            StrUtils::ToString(m_playerProfile->GetSaveFile(StrUtils::ToPath(StrUtils::Format("%c%.3d%.3d", categoryChar, m_levelChap, m_levelRank)))),
                             soluce
                         );
                     }
@@ -3571,7 +3583,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                 if (m_mapImage)
                 {
                     glm::vec3 offset;
-                    m_mapFilename = StrUtils::ToPath(line->GetParam("filename")->AsPath("textures"));
+                    m_mapFilename = line->GetParam("filename")->AsPath("textures");
                     offset = line->GetParam("offset")->AsPoint(glm::vec3(0.0f, 0.0f, 0.0f));
                     m_map->SetFixParam(line->GetParam("zoom")->AsFloat(1.0f),
                                     offset.x, offset.z,
@@ -3941,158 +3953,6 @@ int CRobotMain::CreateSpot(glm::vec3 pos, Gfx::Color color)
 }
 
 
-//! Change the colors and textures
-void CRobotMain::ChangeColor()
-{
-    if (m_phase != PHASE_SIMUL    &&
-        m_phase != PHASE_SETUPds  &&
-        m_phase != PHASE_SETUPgs  &&
-        m_phase != PHASE_SETUPps  &&
-        m_phase != PHASE_SETUPcs  &&
-        m_phase != PHASE_SETUPss  &&
-        m_phase != PHASE_MOD_LIST &&
-        m_phase != PHASE_WIN      &&
-        m_phase != PHASE_LOST     &&
-        m_phase != PHASE_APPEARANCE ) return;
-
-    // Player texture
-
-    glm::vec2 ts = { 0.0f, 0.0f };
-    glm::vec2 ti = { 1.0f, 1.0f };  // the entire image
-
-    Gfx::Color colorRef1, colorNew1, colorRef2, colorNew2;
-
-    colorRef1.a = 0.0f;
-    colorRef2.a = 0.0f;
-
-    colorRef1.r = 206.0f/256.0f;
-    colorRef1.g = 206.0f/256.0f;
-    colorRef1.b = 204.0f/256.0f;  // ~white
-    colorNew1 = m_playerProfile->GetAppearance().colorCombi;
-    colorRef2.r = 255.0f/256.0f;
-    colorRef2.g = 132.0f/256.0f;
-    colorRef2.b =   1.0f/256.0f;  // orange
-    colorNew2 = m_playerProfile->GetAppearance().colorBand;
-
-    glm::vec2 exclu[6];
-    exclu[0] = { 192.0f / 256.0f,   0.0f / 256.0f };
-    exclu[1] = { 256.0f / 256.0f,  64.0f / 256.0f };  // crystals + cylinders
-    exclu[2] = { 208.0f / 256.0f, 224.0f / 256.0f };
-    exclu[3] = { 256.0f / 256.0f, 256.0f / 256.0f };  // SatCom screen
-    exclu[4] = { 0.0f, 0.0f };
-    exclu[5] = { 0.0f, 0.0f };  // terminator
-    //m_engine->ChangeTextureColor("textures/objects/human.png", colorRef1, colorNew1, colorRef2, colorNew2, 0.30f, 0.01f, ts, ti, exclu);
-
-    float tolerance;
-
-    int face = GetGamerFace();
-    if (face == 0)  // normal?
-    {
-        colorRef1.r =  90.0f/256.0f;
-        colorRef1.g =  95.0f/256.0f;
-        colorRef1.b =  85.0f/256.0f;  // black
-        tolerance = 0.15f;
-    }
-    if (face == 1)  // bald?
-    {
-        colorRef1.r =  74.0f/256.0f;
-        colorRef1.g =  58.0f/256.0f;
-        colorRef1.b =  46.0f/256.0f;  // brown
-        tolerance = 0.20f;
-    }
-    if (face == 2)  // carlos?
-    {
-        colorRef1.r =  70.0f/256.0f;
-        colorRef1.g =  40.0f/256.0f;
-        colorRef1.b =   8.0f/256.0f;  // brown
-        tolerance = 0.30f;
-    }
-    if (face == 3)  // blonde?
-    {
-        colorRef1.r =  74.0f/256.0f;
-        colorRef1.g =  16.0f/256.0f;
-        colorRef1.b =   0.0f/256.0f;  // yellow
-        tolerance = 0.20f;
-    }
-    colorNew1 = m_playerProfile->GetAppearance().colorHair;
-    colorRef2.r = 0.0f;
-    colorRef2.g = 0.0f;
-    colorRef2.b = 0.0f;
-    colorNew2.r = 0.0f;
-    colorNew2.g = 0.0f;
-    colorNew2.b = 0.0f;
-
-    std::array<char, 100> name;
-    snprintf(name.data(), name.size(), "textures/objects/face%.2d.png", face+1);
-    exclu[0] = { 105.0f / 256.0f, 47.0f / 166.0f };
-    exclu[1] = { 153.0f / 256.0f, 79.0f / 166.0f };  // blue canister
-    exclu[2] = { 0.0f, 0.0f };
-    exclu[3] = { 0.0f, 0.0f };  // terminator
-    //m_engine->ChangeTextureColor(name, colorRef1, colorNew1, colorRef2, colorNew2, tolerance, 0.00f, ts, ti, exclu);
-
-    colorRef2.r = 0.0f;
-    colorRef2.g = 0.0f;
-    colorRef2.b = 0.0f;
-    colorNew2.r = 0.0f;
-    colorNew2.g = 0.0f;
-    colorNew2.b = 0.0f;
-
-    // VehicleColor
-
-    for (const auto& it : m_colorNewBot)
-    {
-        int team = it.first;
-        Gfx::Color newColor = it.second;
-
-        //m_engine->ChangeTextureColor("textures/objects/base1.png"+teamStr,   "textures/objects/base1.png",   COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
-        //m_engine->ChangeTextureColor("textures/objects/convert.png"+teamStr, "textures/objects/convert.png", COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
-        //m_engine->ChangeTextureColor("textures/objects/derrick.png"+teamStr, "textures/objects/derrick.png", COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
-        //m_engine->ChangeTextureColor("textures/objects/factory.png"+teamStr, "textures/objects/factory.png", COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
-        //m_engine->ChangeTextureColor("textures/objects/lemt.png"+teamStr,    "textures/objects/lemt.png",    COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
-        //m_engine->ChangeTextureColor("textures/objects/roller.png"+teamStr,  "textures/objects/roller.png",  COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
-        //m_engine->ChangeTextureColor("textures/objects/search.png"+teamStr,  "textures/objects/search.png",  COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
-        //m_engine->ChangeTextureColor("textures/objects/rollert.png"+teamStr, "textures/objects/rollert.png", COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, nullptr, 0, true);
-
-        exclu[0] = { 0.0f / 256.0f, 160.0f / 256.0f };
-        exclu[1] = { 256.0f / 256.0f, 256.0f / 256.0f };  // pencils
-        exclu[2] = { 0.0f, 0.0f };
-        exclu[3] = { 0.0f, 0.0f };  // terminator
-        //m_engine->ChangeTextureColor("textures/objects/drawer.png"+teamStr, "textures/objects/drawer.png",  COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, exclu, 0, true);
-
-        exclu[0] = { 237.0f / 256.0f, 176.0f / 256.0f };
-        exclu[1] = { 256.0f / 256.0f, 220.0f / 256.0f };  // blue canister
-        exclu[2] = { 106.0f / 256.0f, 150.0f / 256.0f };
-        exclu[3] = { 130.0f / 256.0f, 214.0f / 256.0f };  // safe location
-        exclu[4] = { 0.0f, 0.0f };
-        exclu[5] = { 0.0f, 0.0f };  // terminator
-        //m_engine->ChangeTextureColor("textures/objects/subm.png"+teamStr,   "textures/objects/subm.png",    COLOR_REF_BOT, newColor, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, exclu, 0, true);
-    }
-
-    // AlienColor
-
-    exclu[0] = { 128.0f / 256.0f, 160.0f / 256.0f };
-    exclu[1] = { 256.0f / 256.0f, 256.0f / 256.0f };  // SatCom
-    exclu[2] = { 0.0f, 0.0f };
-    exclu[3] = { 0.0f, 0.0f };  // terminator
-    //m_engine->ChangeTextureColor("textures/objects/ant.png",     COLOR_REF_ALIEN, m_colorNewAlien, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti, exclu);
-    //m_engine->ChangeTextureColor("textures/objects/mother.png",  COLOR_REF_ALIEN, m_colorNewAlien, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti);
-
-    // GreeneryColor
-    //m_engine->ChangeTextureColor("textures/objects/plant.png",   COLOR_REF_GREEN, m_colorNewGreen, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti);
-
-    // water color
-
-    // PARTIPLOUF0 and PARTIDROP :
-    ts = { 0.500f, 0.500f };
-    ti = { 0.875f, 0.750f };
-    //m_engine->ChangeTextureColor("textures/effect00.png", COLOR_REF_WATER, m_colorNewWater, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, nullptr, m_colorShiftWater, true);
-
-    // PARTIFLIC :
-    ts = { 0.00f, 0.75f };
-    ti = { 0.25f, 1.00f };
-    //m_engine->ChangeTextureColor("textures/effect02.png", COLOR_REF_WATER, m_colorNewWater, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, nullptr, m_colorShiftWater, true);
-}
-
 //! Calculates the distance to the nearest object
 namespace
 {
@@ -4210,70 +4070,26 @@ bool CRobotMain::FreeSpace(glm::vec3 &center, float minRadius, float maxRadius,
 bool CRobotMain::FlatFreeSpace(glm::vec3 &center, float minFlat, float minRadius, float maxRadius,
                            float space, CObject *exclu)
 {
-    if (minRadius < maxRadius)  // from internal to external?
+    for (float radius = minRadius; radius <= maxRadius; radius += space)
     {
-        for (float radius = minRadius; radius <= maxRadius; radius += space)
+        float ia = space/radius;
+        for (float angle = 0.0f; angle < Math::PI*2.0f; angle += ia)
         {
-            float ia = space/radius;
-            for (float angle = 0.0f; angle < Math::PI*2.0f; angle += ia)
-            {
-                glm::vec2 p;
-                p.x = center.x+radius;
-                p.y = center.z;
-                p = Math::RotatePoint({ center.x, center.z }, angle, p);
-                glm::vec3 pos;
-                pos.x = p.x;
-                pos.z = p.y;
-                pos.y = 0.0f;
-                m_terrain->AdjustToFloor(pos, true);
-                float dist = SearchNearestObject(m_objMan.get(), pos, exclu);
-                if (dist >= space)
-                {
-                    float flat = m_terrain->GetFlatZoneRadius(pos, dist/2.0f);
-                    if (flat >= dist/2.0f)
-                    {
-                        flat = m_terrain->GetFlatZoneRadius(pos, minFlat);
-                        if(flat >= minFlat)
-                        {
-                            center = pos;
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-    }
-    else    // from external to internal?
-    {
-        for (float radius=maxRadius; radius >= minRadius; radius -= space)
-        {
-            float ia = space/radius;
-            for (float angle=0.0f ; angle<Math::PI*2.0f ; angle+=ia )
-            {
-                glm::vec2 p;
-                p.x = center.x+radius;
-                p.y = center.z;
-                p = Math::RotatePoint({ center.x, center.z }, angle, p);
-                glm::vec3 pos;
-                pos.x = p.x;
-                pos.z = p.y;
-                pos.y = 0.0f;
-                m_terrain->AdjustToFloor(pos, true);
-                float dist = SearchNearestObject(m_objMan.get(), pos, exclu);
-                if (dist >= space)
-                {
-                    float flat = m_terrain->GetFlatZoneRadius(pos, dist/2.0f);
-                    if (flat >= dist/2.0f)
-                    {
-                        flat = m_terrain->GetFlatZoneRadius(pos, minFlat);
-                        if(flat >= minFlat)
-                        {
-                            center = pos;
-                            return true;
-                        }
-                    }
-                }
-            }
+            glm::vec2 p;
+            p.x = center.x+radius;
+            p.y = center.z;
+            p = Math::RotatePoint({ center.x, center.z }, angle, p);
+            glm::vec3 pos;
+            pos.x = p.x;
+            pos.z = p.y;
+            pos.y = 0.0f;
+            m_terrain->AdjustToFloor(pos, true);
+	    
+            if (SearchNearestObject(m_objMan.get(), pos, exclu) < space) continue;
+            if (m_terrain->GetFlatZoneRadius(pos, minFlat) < minFlat) continue;
+            if (m_terrain->GetFloorLevel(pos) < m_water->GetLevel()) continue;
+            center = pos;
+            return true;
         }
     }
     return false;
@@ -4522,7 +4338,7 @@ void CRobotMain::SaveOneScript(CObject *obj)
     CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(obj);
 
     char categoryChar = GetLevelCategoryDir(m_levelCategory)[0];
-    programStorage->SaveAllUserPrograms(StrUtils::ToString(m_playerProfile->GetSaveFile(StrUtils::Format("%c%.3d%.3d", categoryChar, m_levelChap, m_levelRank))));
+    programStorage->SaveAllUserPrograms(StrUtils::ToString(m_playerProfile->GetSaveFile(StrUtils::ToPath(StrUtils::Format("%c%.3d%.3d", categoryChar, m_levelChap, m_levelRank)))));
 }
 
 //! Saves the stack of the program in execution of a robot
@@ -5481,7 +5297,7 @@ bool CRobotMain::GetRadar()
     for (CObject* obj : m_objMan->GetAllObjects())
     {
         ObjectType type = obj->GetType();
-        if (type == OBJECT_RADAR && !obj->GetLock())
+        if (type == OBJECT_RADAR && !obj->GetLock() && !obj->GetProxyActivate())
             return true;
     }
     return false;
@@ -5523,7 +5339,7 @@ void CRobotMain::SetLevel(LevelCategory cat, int chap, int rank)
     m_levelCategory = cat;
     m_levelChap = chap;
     m_levelRank = rank;
-    m_levelFile = StrUtils::ToString(CLevelParser::BuildScenePath(m_levelCategory, m_levelChap, m_levelRank));
+    m_levelFile = CLevelParser::BuildScenePath(m_levelCategory, m_levelChap, m_levelRank);
 }
 
 LevelCategory CRobotMain::GetLevelCategory()
@@ -5700,7 +5516,7 @@ bool CRobotMain::GetFriendAim()
 void CRobotMain::StartMusic()
 {
     GetLogger()->Debug("Starting music...");
-    if (m_audioTrack != "")
+    if (!m_audioTrack.empty())
     {
         m_sound->PlayMusic(m_audioTrack, m_audioRepeat, 0.0f);
     }
@@ -5724,12 +5540,12 @@ void CRobotMain::UpdatePauseMusic(PauseMusic music)
             break;
 
         case PAUSE_MUSIC_EDITOR:
-            if (m_editorTrack != "")
+            if (!m_editorTrack.empty())
                 m_sound->PlayPauseMusic(m_editorTrack, m_editorRepeat);
             break;
 
         case PAUSE_MUSIC_SATCOM:
-            if (m_satcomTrack != "")
+            if (!m_satcomTrack.empty())
                 m_sound->PlayPauseMusic(m_satcomTrack, m_satcomRepeat);
             break;
     }
@@ -5857,7 +5673,7 @@ void CRobotMain::Autosave()
     strftime(timestr, 99, "%y%m%d%H%M%S", localtime(&now));
     strftime(infostr, 99, "%y.%m.%d %H:%M", localtime(&now));
     std::string info = std::string("[AUTOSAVE] ") + infostr;
-    std::filesystem::path dir = m_playerProfile->GetSaveFile(std::string("autosave") + timestr);
+    std::filesystem::path dir = m_playerProfile->GetSaveFile(StrUtils::ToPath(std::string("autosave") + timestr));
 
     m_playerProfile->SaveScene(dir, info);
 }
@@ -5889,7 +5705,7 @@ void CRobotMain::QuickLoad()
 
 void CRobotMain::LoadSaveFromDirName(const std::string& gameDir)
 {
-    std::filesystem::path dir = m_playerProfile->GetSaveFile(gameDir);
+    std::filesystem::path dir = m_playerProfile->GetSaveFile(TempToPath(gameDir));
     if(!CResourceManager::Exists(dir))
     {
         GetLogger()->Error("Save slot not found");
@@ -6103,11 +5919,16 @@ CObject* CRobotMain::PopFromSelectionHistory()
     return obj;
 }
 
-void CRobotMain::RemoveFromSelectionHistory(CObject* object)
+void CRobotMain::CutObjectLink(CObject* object)
 {
     auto it = std::remove_if(m_selectionHistory.begin(), m_selectionHistory.end(),
                              [object](const CObject* obj) { return obj == object; });
     m_selectionHistory.erase(it, m_selectionHistory.end());
+
+    for (int i = 0; i < MAXSHOWLIMIT; i++)
+    {
+        if (m_showLimit[i].link == object) FlushShowLimit(i);
+    }
 }
 
 float CRobotMain::GetGlobalMagnifyDamage()

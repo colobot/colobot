@@ -89,7 +89,7 @@ bool CPyro::Create(PyroType type, CObject* obj, float force)
     m_engine->GetObjectBBox(objRank, min, max);
     glm::vec3 pos = obj->GetPosition();
 
-    DisplayError(type, obj);  // displays eventual messages
+    if (!obj->GetProxyActivate()) DisplayError(type, obj);  // displays eventual messages
 
     for (const auto& crashSphere : obj->GetAllCrashSpheres())
     {
@@ -1583,7 +1583,7 @@ void CPyro::ExploStart()
         m_camera->SetType(CAM_TYPE_EXPLO);
         m_main->DeselectAll();
     }
-    m_main->RemoveFromSelectionHistory(m_object);
+    m_main->CutObjectLink(m_object);
 
     for (int i = 0; i < OBJECTMAXPART; i++)
     {
@@ -1656,7 +1656,7 @@ void CPyro::BurnStart()
         m_camera->SetType(CAM_TYPE_EXPLO);
         m_main->DeselectAll();
     }
-    m_main->RemoveFromSelectionHistory(m_object);
+    m_main->CutObjectLink(m_object);
 
     for (int i = 0; i < OBJECTMAXPART; i++)
     {

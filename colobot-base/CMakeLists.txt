@@ -1,8 +1,3 @@
-# Compile flags as defined in global CMakeLists
-set(CMAKE_CXX_FLAGS ${COLOBOT_CXX_FLAGS})
-set(CMAKE_CXX_FLAGS_RELEASE ${COLOBOT_CXX_FLAGS_RELEASE})
-set(CMAKE_CXX_FLAGS_DEBUG ${COLOBOT_CXX_FLAGS_DEBUG})
-
 # Todo: split this monstrosity into smaller libraries (graphics, math, ui, etc.)
 add_library(Colobot-Base STATIC)
 
@@ -40,64 +35,12 @@ if(OPENAL_SOUND)
     target_link_libraries(Colobot-Base PUBLIC OpenAL::OpenAL)
 endif()
 
-if(WINGETOPT)
-    target_link_libraries(Colobot-Base PUBLIC wingetopt)
-endif()
-
-if(MSVC)
-    target_compile_options(Colobot-Base PRIVATE /utf-8)
-endif()
-
 # Additional libraries per platform
-if(PLATFORM_WINDOWS)
-    # because it isn't included in standard linking libraries
-    if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-        # TODO: this shouldn't be needed, the libraries targets should care of those transitive dependencies
-        # This should be treated as a temporary workaround
-        if(USE_STATIC_RUNTIME) # Since we're using static runtime, assume every external library is static too
-            find_library(BZ2_LIBRARY NAMES bz2)
-            find_library(FREETYPE_LIBRARY NAMES freetype)
-            find_library(ICONV_LIBRARY NAMES iconv)
-            find_library(CHARSET_LIBRARY NAMES charset)
-            find_library(BROTLICOMMON_LIBRARY NAMES brotlicommon-static)
-            find_library(BROTLIENC_LIBRARY NAMES brotlienc-static)
-            find_library(BROTLIDEC_LIBRARY NAMES brotlidec-static)
-
-            target_link_libraries(Colobot-Base PUBLIC
-                ${BZ2_LIBRARY}
-                ${FREETYPE_LIBRARY}
-                ${ICONV_LIBRARY}
-                ${CHARSET_LIBRARY}
-                ${BROTLICOMMON_LIBRARY}
-                ${BROTLIENC_LIBRARY}
-                ${BROTLIDEC_LIBRARY}
-
-                # why
-                winmm.lib
-                dxguid.lib
-                imm32.lib
-                ole32.lib
-                oleaut32.lib
-                version.lib
-                wsock32.lib
-                ws2_32.lib
-                setupapi.lib
-            )
-        endif()
-    endif()
-elseif(PLATFORM_GNU)
-    # nothing
-elseif(PLATFORM_LINUX)
-    # for clock_gettime
-    target_link_libraries(Colobot-Base PUBLIC -lrt)
-elseif(PLATFORM_MACOSX)
-    # nothing
-elseif(PLATFORM_FREEBSD)
-    # nothing
+if(PLATFORM_ADDITIONAL_LIBRARIES)
+    target_link_libraries(Colobot-Base PUBLIC
+        ${PLATFORM_ADDITIONAL_LIBRARIES}
+    )
 endif()
-
-
-set(COLOBOT_LIBS ${LIBS} PARENT_SCOPE)
 
 # Linter-specific
 if(COLOBOT_LINT_BUILD)

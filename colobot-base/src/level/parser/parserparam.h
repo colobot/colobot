@@ -43,6 +43,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <filesystem>
 
 class CLevelParserLine;
 
@@ -84,7 +85,7 @@ public:
     float AsFloat();
     std::string AsString();
     bool AsBool();
-    std::string AsPath(const std::string defaultDir);
+    std::filesystem::path AsPath(const std::string defaultDir);
     Gfx::Color AsColor();
     glm::vec3 AsPoint();
     ObjectType AsObjectType();
@@ -108,7 +109,7 @@ public:
     float AsFloat(float def);
     std::string AsString(std::string def);
     bool AsBool(bool def);
-    std::string AsPath(const std::string defaultDir, std::string def);
+    std::filesystem::path AsPath(const std::string defaultDir, std::string def);
     Gfx::Color AsColor(Gfx::Color def);
     glm::vec3 AsPoint(glm::vec3 def);
     ObjectType AsObjectType(ObjectType def);
@@ -142,7 +143,7 @@ private:
     template<typename T> T Cast(const std::string& value, const std::string& requestedType);
     template<typename T> T Cast(const std::string& requestedType);
 
-    std::string ToPath(std::string path, const std::string defaultDir);
+    std::filesystem::path ToPath(std::string path, const std::string defaultDir);
     ObjectType ToObjectType(std::string value);
     DriveType ToDriveType(std::string value);
     ToolType ToToolType(std::string value);

@@ -18,6 +18,7 @@
  */
 
 #include "graphics/model/model_mod.h"
+#include "graphics/model/model_txt.h"
 
 #include "common/ioutils.h"
 #include "common/stringutils.h"
@@ -132,7 +133,7 @@ void ReadTextModelV1AndV2(CModel& model, std::istream& stream)
         triangle.p2 = t.p2;
         triangle.p3 = t.p3;
         triangle.material.albedoTexture = t.tex1Name;
-        triangle.material.detailTexture = t.tex2Name;
+        triangle.material.detailTexture = "textures" / TempToPath(t.tex2Name);
         triangle.material.variableDetail = t.variableTex2;
         ConvertFromOldRenderState(triangle, t.state);
 
@@ -225,7 +226,7 @@ std::unique_ptr<CModelMesh> ReadTextMesh(std::istream& stream)
         t.p3.color = color;
 
         t.material.albedoTexture = ReadLineString(stream, "tex1");
-        t.material.detailTexture = ReadLineString(stream, "tex2");
+        t.material.detailTexture = StrUtils::ToPath(ReadLineString(stream, "tex2"));
         t.material.variableDetail = ReadLineString(stream, "var_tex2") == std::string("Y");
 
         t.material.alphaMode = ParseTransparentMode(ReadLineString(stream, "trans_mode"));

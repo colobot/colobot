@@ -23,6 +23,7 @@
 
 #include "common/image.h"
 #include "common/logger.h"
+#include "common/stringutils.h"
 
 #include "graphics/core/triangle.h"
 
@@ -212,7 +213,7 @@ Gfx::IntColor ResourceToColor(TerrainRes res)
 /**
  * The image must be 24 bits/pixel and grayscale and dx x dy in size
  * with dx = dy = (mosaic*brick)+1 */
-bool CTerrain::LoadResources(const std::string& fileName)
+bool CTerrain::LoadResources(const std::filesystem::path& fileName)
 {
     CImage img;
 
@@ -296,7 +297,7 @@ void CTerrain::FlushRelief()
 /**
  * The image must be 24 bits/pixel and dx x dy in size
  * with dx = dy = (mosaic*brick)+1 */
-bool CTerrain::LoadRelief(const std::string &fileName, float scaleRelief,
+bool CTerrain::LoadRelief(const std::filesystem::path &fileName, float scaleRelief,
                           bool adjustBorder)
 {
     m_scaleRelief = scaleRelief;
@@ -722,7 +723,7 @@ bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank)
 
                 Gfx::Material material;
                 material.albedoTexture = texName1;
-                material.detailTexture = texName2;
+                material.detailTexture = "textures" / StrUtils::ToPath(texName2);
                 material.tag = "brick_"
                     + std::to_string(mx + 1) + "_"
                     + std::to_string(my + 1) + "_"

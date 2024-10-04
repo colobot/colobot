@@ -121,7 +121,7 @@ void CScreenIO::IOReadList(bool isWrite)
 
     for (unsigned int i = 0; i < m_saveList.size(); i++)
     {
-        m_engine->DeleteTexture(TempToString(m_saveList.at(i) / "screen.png"));
+        m_engine->DeleteTexture(m_saveList.at(i) / "screen.png");
     }
 }
 
@@ -240,7 +240,7 @@ void CScreenIO::IOWriteScene()
     std::filesystem::path dir;
     if (static_cast<unsigned int>(sel) >= m_saveList.size())
     {
-        dir = m_main->GetPlayerProfile()->GetSaveFile("save" + clearName(info));
+        dir = m_main->GetPlayerProfile()->GetSaveFile(TempToPath("save" + clearName(info)));
     }
     else
     {

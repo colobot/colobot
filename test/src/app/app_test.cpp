@@ -55,13 +55,9 @@ public:
 class CApplicationUT : public testing::Test
 {
 protected:
-    CApplicationUT() :
-        m_systemUtils(nullptr),
-        m_currentTime(0)
-    {}
+    CApplicationUT() = default;
 
-    ~CApplicationUT() noexcept
-    {}
+    ~CApplicationUT() noexcept = default;
 
     void SetUp() override;
     void TearDown() override;
@@ -77,10 +73,8 @@ protected:
 protected:
     std::unique_ptr<CApplicationWrapper> m_app;
     MockRepository m_mocks;
-    CSystemUtils* m_systemUtils;
-
-private:
-    long long m_currentTime;
+    CSystemUtils* m_systemUtils = nullptr;
+    TimeStamp m_currentTime;
 };
 
 void CApplicationUT::SetUp()
@@ -91,9 +85,9 @@ void CApplicationUT::SetUp()
     m_mocks.OnCall(m_systemUtils, CSystemUtils::GetLangPath).Return("");
     m_mocks.OnCall(m_systemUtils, CSystemUtils::GetSaveDir).Return("");
 
-    m_mocks.OnCall(m_systemUtils, CSystemUtils::GetCurrentTimeStamp).Do(std::bind(&CApplicationUT::GetCurrentTimeStamp, this));
-
     m_app = std::make_unique<CApplicationWrapper>(m_systemUtils);
+
+    m_currentTime = m_app->GetBaseTimeStamp();
 }
 
 void CApplicationUT::TearDown()
@@ -101,15 +95,14 @@ void CApplicationUT::TearDown()
     m_app.reset();
 }
 
+void CApplicationUT::NextInstant(long long diff)
+{
+    m_currentTime += std::chrono::nanoseconds{diff};
+}
 
 TimeStamp CApplicationUT::GetCurrentTimeStamp()
 {
-    return TimeStamp{ TimeStamp::duration{m_currentTime}};
-}
-
-void CApplicationUT::NextInstant(long long diff)
-{
-    m_currentTime += diff;
+    return m_currentTime;
 }
 
 void CApplicationUT::TestCreateUpdateEvent(long long relTimeExact, long long absTimeExact,
@@ -275,6 +268,8 @@ TEST_F(CApplicationUT, UpdateEventTimeCalculation_SuspendingAndResumingSimulatio
     // 3rd update -- simulation resumed
 
     m_app->ResumeSimulation();
+
+    m_currentTime = m_app->GetBaseTimeStamp();
 
     relTimeReal = 200;
     absTimeReal += relTimeReal;

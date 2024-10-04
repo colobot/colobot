@@ -99,6 +99,7 @@ enum EventType
     EVENT_RELOAD_TEXTURES   = 23,
     EVENT_WIN               = 30,
     EVENT_LOST              = 31,
+    EVENT_TAKE_OFF          = 32,
 
     //! CEdit focus
     EVENT_FOCUS             = 35,

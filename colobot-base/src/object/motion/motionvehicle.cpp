@@ -1057,7 +1057,7 @@ void CMotionVehicle::Create(glm::vec3 pos, float angle, ObjectType type,
     CreatePhysics(type);
     m_object->SetFloorHeight(0.0f);
 
-    if (power > 0.0f            &&
+    if (power >= 0.0f           &&
         type != OBJECT_MOBILEdr &&
         type != OBJECT_APOLLO2)
     {
@@ -1384,7 +1384,7 @@ bool CMotionVehicle::EventProcess(const Event &event)
 bool CMotionVehicle::EventFrame(const Event &event)
 {
     Character*  character;
-    glm::vec3    pos, angle, floor;
+    glm::vec3    pos, angle;
     ObjectType  type;
     float       s, a, speedBL, speedBR, speedFL, speedFR, h, a1, a2;
     float       back, front, dist, radius, limit[2];
@@ -1932,8 +1932,6 @@ bool CMotionVehicle::EventFrameInsect(const Event &event)
 
 bool CMotionVehicle::EventFrameCanoni(const Event &event)
 {
-    glm::vec3    pos, speed;
-    glm::vec2     dim;
     float       zoom, angle, factor;
     bool        bOnBoard = false;
 

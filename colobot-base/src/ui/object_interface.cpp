@@ -234,6 +234,12 @@ bool CObjectInterface::EventProcess(const Event &event)
         EventFrame(event);
     }
 
+    if ( action == EVENT_TAKE_OFF && m_studio != nullptr )
+    {
+        StopEditScript(true);
+        m_main->SaveOneScript(m_object);
+    }
+
     if ( m_object->GetSelect() &&  // robot selected?
          m_studio != nullptr    )   // current issue?
     {
@@ -1546,7 +1552,6 @@ void CObjectInterface::UpdateInterface(float rTime)
     CButton*    pb;
     CGroup*     pgr;
     CTarget*    ptg;
-    glm::vec3    pos, hPos;
     glm::vec2     ppos;
     float       range;
     int         icon;
@@ -1909,15 +1914,21 @@ void CObjectInterface::UpdateInterface()
     }
     EnableInterface(pw, EVENT_OBJECT_GASUP,   bFly && m_main->CanPlayerInteract());
     EnableInterface(pw, EVENT_OBJECT_GASDOWN, bFly && m_main->CanPlayerInteract());
+
     if ( m_object->GetTrainer() )  // Training?
     {
         DeadInterface(pw, EVENT_OBJECT_GASUP,   false);
         DeadInterface(pw, EVENT_OBJECT_GASDOWN, false);
     }
-    else
+    else if ( type == OBJECT_HUMAN )
     {
         DeadInterface(pw, EVENT_OBJECT_GASUP,   m_main->IsResearchDone(RESEARCH_FLY, m_object->GetTeam()));
         DeadInterface(pw, EVENT_OBJECT_GASDOWN, m_main->IsResearchDone(RESEARCH_FLY, m_object->GetTeam()));
+    }
+    else
+    {
+        DeadInterface(pw, EVENT_OBJECT_GASUP,   true);
+        DeadInterface(pw, EVENT_OBJECT_GASDOWN, true);
     }
 
     if ( type == OBJECT_HUMAN    ||

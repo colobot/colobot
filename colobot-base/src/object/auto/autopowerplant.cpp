@@ -120,7 +120,7 @@ void CAutoPowerPlant::Init()
 bool CAutoPowerPlant::EventProcess(const Event &event)
 {
     CObject*    cargo;
-    glm::vec3    pos, ppos, speed;
+    glm::vec3    pos, speed;
     glm::vec2     dim, c, p;
     Gfx::TerrainRes  res;
     float       big;

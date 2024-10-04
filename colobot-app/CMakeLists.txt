@@ -7,11 +7,7 @@ target_sources(colobot PRIVATE
     src/main.cpp
 )
 
-if(MSVC)
-    target_compile_options(colobot PRIVATE /utf-8)
-endif()
-
-if(PLATFORM_WINDOWS)
+if(WIN32)
     target_sources(colobot PRIVATE ${PROJECT_BINARY_DIR}/desktop/colobot.rc)
 endif()
 
@@ -19,19 +15,6 @@ target_link_libraries(colobot Colobot-Base SDL2::Main)
 
 if(COLOBOT_HIDE_CONSOLE)
     set_target_properties(colobot PROPERTIES WIN32_EXECUTABLE TRUE)
-endif()
-
-# Copy to build directory for direct execution in MSVC
-if(COLOBOT_DEVELOPMENT_MODE AND MSVC)
-    add_custom_command(TARGET colobot POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:colobot> ${CMAKE_BINARY_DIR}
-    )
-
-    if(NOT CBOT_STATIC)
-        add_custom_command(TARGET colobot POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:CBot> ${CMAKE_BINARY_DIR}
-        )
-    endif()
 endif()
 
 # Install

@@ -1439,7 +1439,7 @@ void CPhysics::UpdateMotionStruct(float rTime, Motion &motion)
 bool CPhysics::EventFrame(const Event &event)
 {
     ObjectType  type;
-    glm::mat4    objRotate, matRotate;
+    glm::mat4   matRotate;
     glm::vec3    iPos{ 0, 0, 0 }, iAngle{ 0, 0, 0 }, tAngle{ 0, 0, 0 }, pos{ 0, 0, 0 }, newpos{ 0, 0, 0 }, angle{ 0, 0, 0 }, newangle{ 0, 0, 0 }, n{ 0, 0, 0 };
     float       h, w;
     int         i;
@@ -2580,7 +2580,7 @@ int CPhysics::ObjectAdapt(const glm::vec3 &pos, const glm::vec3 &angle)
 
                     if (crashSphere.sound != SOUND_NONE)
                     {
-                        force = fabs(m_linMotion.realSpeed.x);
+                        force = glm::length(m_linMotion.realSpeed);
                         force *= crashSphere.hardness*2.0f;
                         if ( ExploOther(iType, pObj, oType, force) )  continue;
                         colType = ExploHimself(iType, oType, force);
@@ -2725,10 +2725,8 @@ bool CPhysics::ExploOther(ObjectType iType,
             // TODO: implement "killer"?
             dynamic_cast<CDamageableObject&>(*pObj).DamageObject(damageType);
         }
-    }
 
-    if ( force > 25.0f )
-    {
+        float damage = -1.0f;
         // TODO: Some function in CShieldedObject. GetCollisionResistance()?
         if (oType == OBJECT_DERRICK  ||
             oType == OBJECT_FACTORY  ||
@@ -2747,11 +2745,8 @@ bool CPhysics::ExploOther(ObjectType iType,
             oType == OBJECT_SAFE     ||
             oType == OBJECT_HUSTON    )  // building?
         {
-            assert(pObj->Implements(ObjectInterfaceType::Damageable));
-            // TODO: implement "killer"?
-            dynamic_cast<CDamageableObject&>(*pObj).DamageObject(DamageType::Collision, force/400.0f);
+            damage = force/400.0f;
         }
-
         if (oType == OBJECT_MOBILEwa ||
             oType == OBJECT_MOBILEta ||
             oType == OBJECT_MOBILEfa ||
@@ -2784,9 +2779,12 @@ bool CPhysics::ExploOther(ObjectType iType,
             oType == OBJECT_MOBILErp ||
             oType == OBJECT_MOBILEst  )  // vehicle?
         {
-            assert(pObj->Implements(ObjectInterfaceType::Damageable));
+            damage = force/200.0f;
+        }
+        if ( force > 25.0f && damage > 0.0f )
+        {
             // TODO: implement "killer"?
-            dynamic_cast<CDamageableObject&>(*pObj).DamageObject(DamageType::Collision, force/200.0f);
+            dynamic_cast<CDamageableObject&>(*pObj).DamageObject(DamageType::Collision, damage);
         }
     }
 
@@ -3055,7 +3053,7 @@ void CPhysics::MotorParticle(float aTime, float rTime)
     glm::vec3    pos{ 0, 0, 0 }, speed{ 0, 0, 0 };
     glm::vec2       dim;
     ObjectType  type;
-    glm::vec2   c, p;
+    glm::vec2   p;
     float       h, a, delay, level;
     int         r, i, nb;
 

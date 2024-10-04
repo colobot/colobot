@@ -19,6 +19,7 @@
 
 
 #include "sound/oalsound/alsound.h"
+#include "common/stringutils.h"
 
 #include <algorithm>
 #include <iomanip>
@@ -137,7 +138,7 @@ int CALSound::GetMusicVolume()
 bool CALSound::Cache(SoundType sound, const std::string &filename)
 {
     auto buffer = std::make_unique<CBuffer>();
-    if (buffer->LoadFromFile(filename, sound))
+    if (buffer->LoadFromFile(TempToPath(filename), sound))
     {
         m_sounds[sound] = std::move(buffer);
         return true;
@@ -145,7 +146,7 @@ bool CALSound::Cache(SoundType sound, const std::string &filename)
     return false;
 }
 
-void CALSound::CacheMusic(const std::string &filename)
+void CALSound::CacheMusic(const std::filesystem::path &filename)
 {
     m_thread.Start([this, filename]()
     {
@@ -167,7 +168,7 @@ bool CALSound::IsCached(SoundType sound)
 
 bool CALSound::IsCachedMusic(const std::string &filename)
 {
-    return m_music.find(filename) != m_music.end();
+    return m_music.find(TempToPath(filename)) != m_music.end();
 }
 
 int CALSound::GetPriority(SoundType sound)
@@ -579,7 +580,7 @@ void CALSound::SetListener(const glm::vec3 &eye, const glm::vec3 &lookat)
     alListenerfv(AL_ORIENTATION, orientation);
 }
 
-void CALSound::PlayMusic(const std::string &filename, bool repeat, float fadeTime)
+void CALSound::PlayMusic(const std::filesystem::path& filename, bool repeat, float fadeTime)
 {
     if (!m_enabled)
     {
@@ -626,7 +627,7 @@ void CALSound::PlayMusic(const std::string &filename, bool repeat, float fadeTim
     });
 }
 
-void CALSound::PlayPauseMusic(const std::string &filename, bool repeat)
+void CALSound::PlayPauseMusic(const std::filesystem::path& filename, bool repeat)
 {
     if (m_previousMusic.fadeTime > 0.0f)
     {

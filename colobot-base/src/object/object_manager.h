@@ -165,7 +165,7 @@ public:
     void      DeleteAllObjects();
 
     //! Finds object by id (CObject::GetID())
-    CObject*  GetObjectById(unsigned int id);
+    CObject*  GetObjectById(int id);
 
     //! Gets object by id in range <0; number of objects - 1>
     CObject*  GetObjectByRank(unsigned int id);

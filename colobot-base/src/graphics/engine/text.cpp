@@ -26,6 +26,7 @@
 #include "common/image.h"
 #include "common/logger.h"
 #include "common/stringutils.h"
+#include "common/codepoint.h"
 
 #include "common/resources/resourcemanager.h"
 
@@ -44,6 +45,8 @@
 #include <array>
 #include <filesystem>
 #include <utility>
+
+using namespace std::literals;
 
 // Graphics module namespace
 namespace Gfx
@@ -73,6 +76,20 @@ struct FontTexture
     int freeSlots = 0;
 };
 
+struct CodePointComparator
+{
+    constexpr bool operator()(const StrUtils::CodePoint& left, const StrUtils::CodePoint& right) const
+    {
+        for (unsigned i = 0; i < 4; i++)
+        {
+            if (left[i] < right[i]) return true;
+            if (left[i] > right[i]) return false;
+        }
+
+        return false;
+    }
+};
+
 /**
  * \struct CachedFont
  * \brief Base TTF font with UTF-8 char cache
@@ -81,7 +98,7 @@ struct CachedFont
 {
     std::unique_ptr<CSDLMemoryWrapper> fontFile;
     TTF_Font* font = nullptr;
-    std::map<UTF8Char, CharTexture> cache;
+    std::map<StrUtils::CodePoint, CharTexture, CodePointComparator> cache;
 
     CachedFont(std::unique_ptr<CSDLMemoryWrapper> fontFile, int pointSize)
         : fontFile(std::move(fontFile))
@@ -477,7 +494,7 @@ void CText::SetTabSize(int tabSize)
 void CText::DrawText(const std::string &text, std::vector<FontMetaChar>::iterator format,
                      std::vector<FontMetaChar>::iterator end,
                      float size, glm::vec2 pos, float width, TextAlign align,
-                     int eol, Color color)
+                     char32_t eol, Color color)
 {
     float sw = 0.0f;
 
@@ -501,7 +518,7 @@ void CText::DrawText(const std::string &text, std::vector<FontMetaChar>::iterato
 
 void CText::DrawText(const std::string &text, FontType font,
                      float size, glm::vec2 pos, float width, TextAlign align,
-                     int eol, Color color)
+                     char32_t eol, Color color)
 {
     float sw = 0.0f;
 
@@ -625,15 +642,9 @@ float CText::GetStringWidth(const std::string &text,
         if (format + fmtIndex != end)
             font = static_cast<FontType>(*(format + fmtIndex) & FONT_MASK_FONT);
 
-        UTF8Char ch;
-
         int len = GetCharSizeAt(font, std::string_view(text.data() + index, text.size() - index));
-        if (len >= 1)
-            ch.c1 = text[index];
-        if (len >= 2)
-            ch.c2 = text[index+1];
-        if (len >= 3)
-            ch.c3 = text[index+2];
+
+        StrUtils::CodePoint ch = std::string_view(text.data() + index, len);
 
         width += GetCharWidth(ch, font, size, width);
 
@@ -663,7 +674,7 @@ float CText::GetStringWidth(std::string text, FontType font, float size)
     return ifSize.x;
 }
 
-float CText::GetCharWidth(UTF8Char ch, FontType font, float size, float offset)
+float CText::GetCharWidth(StrUtils::CodePoint ch, FontType font, float size, float offset)
 {
     if (font == FONT_BUTTON)
     {
@@ -674,14 +685,15 @@ float CText::GetCharWidth(UTF8Char ch, FontType font, float size, float offset)
     }
 
     int width = 1;
-    if (ch.c1 < 32 && ch.c1 >= 0)
+
+    if (ch[0] < 32 && ch[0] >= 0)
     {
-        if (ch.c1 == '\t')
+        if (ch[0] == '\t')
             width = m_tabSize;
 
         // TODO: tab sizing at intervals?
 
-        ch.c1 = ':';
+        ch = ":"sv;
     }
 
     CachedFont* cf = GetOrOpenFont(font, size);
@@ -696,21 +708,15 @@ float CText::GetCharWidth(UTF8Char ch, FontType font, float size, float offset)
     else
     {
         glm::ivec2 wndSize{};
-        std::array<char, 4> text = {
-            static_cast<char>(ch.c1),
-            static_cast<char>(ch.c2),
-            static_cast<char>(ch.c3),
-            '\0'
-        };
 
-        TTF_SizeUTF8(cf->font, text.data(), &wndSize.x, &wndSize.y);
+        TTF_SizeUTF8(cf->font, ch.Data(), &wndSize.x, &wndSize.y);
         charSize = m_engine->WindowToInterfaceSize(wndSize);
     }
 
     return charSize.x * width;
 }
 
-int CText::GetCharWidthInt(UTF8Char ch, FontType font, float size, float offset)
+int CText::GetCharWidthInt(StrUtils::CodePoint ch, FontType font, float size, float offset)
 {
     if (font == FONT_BUTTON)
     {
@@ -721,14 +727,14 @@ int CText::GetCharWidthInt(UTF8Char ch, FontType font, float size, float offset)
     }
 
     int width = 1;
-    if (ch.c1 < 32 && ch.c1 >= 0)
+    if (ch[0] < 32 && ch[0] >= 0)
     {
-        if (ch.c1 == '\t')
+        if (ch[0] == '\t')
             width = m_tabSize;
 
         // TODO: tab sizing at intervals?
 
-        ch.c1 = ':';
+        ch = ":"sv;
     }
 
     CachedFont* cf = GetOrOpenFont(font, size);
@@ -742,14 +748,7 @@ int CText::GetCharWidthInt(UTF8Char ch, FontType font, float size, float offset)
     }
     else
     {
-        std::array<char, 4> text = {
-            static_cast<char>(ch.c1),
-            static_cast<char>(ch.c2),
-            static_cast<char>(ch.c3),
-            '\0'
-        };
-
-        TTF_SizeUTF8(cf->font, text.data(), &charSize.x, &charSize.y);
+        TTF_SizeUTF8(cf->font, ch.Data(), &charSize.x, &charSize.y);
     }
 
     return charSize.x * width;
@@ -770,21 +769,15 @@ int CText::Justify(const std::string &text, std::vector<FontMetaChar>::iterator 
         if (format + fmtIndex != end)
             font = static_cast<FontType>(*(format + fmtIndex) & FONT_MASK_FONT);
 
-        UTF8Char ch;
-
         int len = GetCharSizeAt(font, std::string_view(text.data() + index, text.size() - index));
-        if (len >= 1)
-            ch.c1 = text[index];
-        if (len >= 2)
-            ch.c2 = text[index+1];
-        if (len >= 3)
-            ch.c3 = text[index+2];
+
+        StrUtils::CodePoint ch = std::string_view(text.data() + index, len);
 
         if (font != FONT_BUTTON)
         {
-            if (ch.c1 == '\n')
+            if (ch[0] == '\n')
                 return index+1;
-            if (ch.c1 == ' ')
+            if (ch[0] == ' ')
                 cut = index+1;
         }
 
@@ -811,23 +804,17 @@ int CText::Justify(const std::string &text, FontType font, float size, float wid
     unsigned int index = 0;
     while (index < text.length())
     {
-        UTF8Char ch;
-
         int len = GetCharSizeAt(font, std::string_view(text.data() + index, text.size() - index));
-        if (len >= 1)
-            ch.c1 = text[index];
-        if (len >= 2)
-            ch.c2 = text[index+1];
-        if (len >= 3)
-            ch.c3 = text[index+2];
 
-        if (ch.c1 == '\n')
+        StrUtils::CodePoint ch = std::string_view(text.data() + index, len);
+
+        if (ch[0] == '\n')
         {
-            return index+1;
+            return index + 1;
         }
 
-        if (ch.c1 == ' ' )
-            cut = index+1;
+        if (ch[0] == ' ')
+            cut = index + 1;
 
         pos += GetCharWidth(ch, font, size, pos);
         if (pos > width)
@@ -855,17 +842,11 @@ int CText::Detect(const std::string &text, std::vector<FontMetaChar>::iterator f
         if (format + fmtIndex != end)
             font = static_cast<FontType>(*(format + fmtIndex) & FONT_MASK_FONT);
 
-        UTF8Char ch;
-
         int len = GetCharSizeAt(font, std::string_view(text.data() + index, text.size() - index));
-        if (len >= 1)
-            ch.c1 = text[index];
-        if (len >= 2)
-            ch.c2 = text[index+1];
-        if (len >= 3)
-            ch.c3 = text[index+2];
 
-        if (ch.c1 == '\n')
+        StrUtils::CodePoint ch = std::string_view(text.data() + index, len);
+
+        if (ch[0] == '\n')
             return index;
 
         float width = GetCharWidth(ch, font, size, pos);
@@ -888,19 +869,13 @@ int CText::Detect(const std::string &text, FontType font, float size, float offs
     unsigned int index = 0;
     while (index < text.length())
     {
-        UTF8Char ch;
-
         int len = GetCharSizeAt(font, std::string_view(text.data() + index, text.size() - index));
-        if (len >= 1)
-            ch.c1 = text[index];
-        if (len >= 2)
-            ch.c2 = text[index+1];
-        if (len >= 3)
-            ch.c3 = text[index+2];
+
+        StrUtils::CodePoint ch = std::string_view(text.data() + index, len);
 
         index += len;
 
-        if (ch.c1 == '\n')
+        if (ch[0] == '\n')
             return index;
 
         float width = GetCharWidth(ch, font, size, pos);
@@ -913,57 +888,43 @@ int CText::Detect(const std::string &text, FontType font, float size, float offs
     return index;
 }
 
-UTF8Char CText::TranslateSpecialChar(int specialChar)
+StrUtils::CodePoint CText::TranslateSpecialChar(char32_t specialChar)
 {
-    UTF8Char ch;
+    StrUtils::CodePoint ch;
 
     switch (specialChar)
     {
         case CHAR_TAB:
-            ch.c1 = ':';
-            ch.c2 = 0;
-            ch.c3 = 0;
+            ch = ":"sv;
             break;
 
         case CHAR_NEWLINE:
-            // Unicode: U+21B2
-            ch.c1 = static_cast<char>(0xE2);
-            ch.c2 = static_cast<char>(0x86);
-            ch.c3 = static_cast<char>(0xB2);
+            // "↲"
+            ch = "\u21B2"sv;
             break;
 
         case CHAR_DOT:
-            // Unicode: U+23C5
-            ch.c1 = static_cast<char>(0xE2);
-            ch.c2 = static_cast<char>(0x8F);
-            ch.c3 = static_cast<char>(0x85);
+            // "•"
+            ch = "\u2022"sv;
             break;
 
         case CHAR_SQUARE:
-            // Unicode: U+25FD
-            ch.c1 = static_cast<char>(0xE2);
-            ch.c2 = static_cast<char>(0x97);
-            ch.c3 = static_cast<char>(0xBD);
+            // "□"
+            ch = "\u25A1"sv;
             break;
 
         case CHAR_SKIP_RIGHT:
-            // Unicode: U+25B6
-            ch.c1 = static_cast<char>(0xE2);
-            ch.c2 = static_cast<char>(0x96);
-            ch.c3 = static_cast<char>(0xB6);
+            // "▶"
+            ch = "\u25B6"sv;
             break;
 
         case CHAR_SKIP_LEFT:
-            // Unicode: U+25C0
-            ch.c1 = static_cast<char>(0xE2);
-            ch.c2 = static_cast<char>(0x97);
-            ch.c3 = static_cast<char>(0x80);
+            // "◀"
+            ch = "\u25C0"sv;
             break;
 
         default:
-            ch.c1 = '?';
-            ch.c2 = 0;
-            ch.c3 = 0;
+            ch = "?"sv;
             break;
     }
 
@@ -972,7 +933,7 @@ UTF8Char CText::TranslateSpecialChar(int specialChar)
 
 void CText::DrawString(const std::string &text, std::vector<FontMetaChar>::iterator format,
                        std::vector<FontMetaChar>::iterator end,
-                       float size, const glm::ivec2& position, int width, int eol, Color color)
+                       float size, const glm::ivec2& position, int width, char32_t eol, Color color)
 {
     m_engine->SetWindowCoordinates();
 
@@ -982,15 +943,16 @@ void CText::DrawString(const std::string &text, std::vector<FontMetaChar>::itera
 
     unsigned int fmtIndex = 0;
 
-    std::vector<UTF8Char> chars;
+    std::vector<StrUtils::CodePoint> chars;
     StringToUTFCharList(text, chars, format, end);
+
     for (auto it = chars.begin(); it != chars.end(); ++it)
     {
         FontType font = FONT_COMMON;
         if (format + fmtIndex != end)
             font = static_cast<FontType>(*(format + fmtIndex) & FONT_MASK_FONT);
 
-        UTF8Char ch = *it;
+        StrUtils::CodePoint ch = *it;
 
         int offset = pos.x - start;
         int cw = GetCharWidthInt(ch, font, size, offset);
@@ -1049,18 +1011,18 @@ void CText::DrawString(const std::string &text, std::vector<FontMetaChar>::itera
         DrawCharAndAdjustPos(ch, font, size, pos, c);
 
         // increment fmtIndex for each byte in multibyte character
-        if ( ch.c1 != 0 )
+        if ( ch[0] != 0 )
             fmtIndex++;
-        if ( ch.c2 != 0 )
+        if ( ch[1] != 0 )
             fmtIndex++;
-        if ( ch.c3 != 0 )
+        if ( ch[2] != 0 )
             fmtIndex++;
     }
 
     if (eol != 0)
     {
         FontType font = FONT_COMMON;
-        UTF8Char ch = TranslateSpecialChar(eol);
+        StrUtils::CodePoint ch = TranslateSpecialChar(eol);
         color = Color(1.0f, 0.0f, 0.0f);
         DrawCharAndAdjustPos(ch, font, size, pos, color);
     }
@@ -1068,22 +1030,15 @@ void CText::DrawString(const std::string &text, std::vector<FontMetaChar>::itera
     m_engine->SetInterfaceCoordinates();
 }
 
-void CText::StringToUTFCharList(std::string_view text, std::vector<UTF8Char> &chars)
+void CText::StringToUTFCharList(std::string_view text, std::vector<StrUtils::CodePoint> &chars)
 {
     while (!text.empty())
     {
-        UTF8Char ch;
-
         int len = StrUtils::UTF8CharLength(text);
 
         if (len == 0) break;
-
-        if (len >= 1)
-            ch.c1 = text[0];
-        if (len >= 2)
-            ch.c2 = text[1];
-        if (len >= 3)
-            ch.c3 = text[2];
+        
+        StrUtils::CodePoint ch = std::string_view(text.data(), len);
 
         chars.push_back(ch);
 
@@ -1091,26 +1046,19 @@ void CText::StringToUTFCharList(std::string_view text, std::vector<UTF8Char> &ch
     }
 }
 
-void CText::StringToUTFCharList(std::string_view text, std::vector<UTF8Char> &chars,
+void CText::StringToUTFCharList(std::string_view text, std::vector<StrUtils::CodePoint> &chars,
                                 std::vector<FontMetaChar>::iterator format,
                                 std::vector<FontMetaChar>::iterator end)
 {
     while (!text.empty())
     {
-        UTF8Char ch;
-
         FontType font = FONT_COMMON;
         if (format != end)
             font = static_cast<FontType>(*format & FONT_MASK_FONT);
 
         int len = GetCharSizeAt(font, text);
 
-        if (len >= 1)
-            ch.c1 = text[0];
-        if (len >= 2)
-            ch.c2 = text[1];
-        if (len >= 3)
-            ch.c3 = text[2];
+        StrUtils::CodePoint ch = std::string_view(text.data(), len);
 
         format += len;
 
@@ -1137,13 +1085,13 @@ int CText::GetCharSizeAt(Gfx::FontType font, std::string_view text) const
 }
 
 void CText::DrawString(const std::string &text, FontType font,
-                       float size, const glm::ivec2& position, int width, int eol, Color color)
+                       float size, const glm::ivec2& position, int width, char32_t eol, Color color)
 {
     assert(font != FONT_BUTTON);
 
     glm::ivec2 pos = position;
 
-    std::vector<UTF8Char> chars;
+    std::vector<StrUtils::CodePoint> chars;
     StringToUTFCharList(text, chars);
     m_engine->SetWindowCoordinates();
     for (auto it = chars.begin(); it != chars.end(); ++it)
@@ -1208,26 +1156,25 @@ void CText::DrawHighlight(FontMetaChar hl, const glm::ivec2& pos, const glm::ive
     m_engine->AddStatisticTriangle(2);
 }
 
-void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, glm::ivec2&pos, Color color)
+void CText::DrawCharAndAdjustPos(StrUtils::CodePoint ch, FontType font, float size, glm::ivec2&pos, Color color)
 {
     if (font == FONT_BUTTON)
     {
-        glm::ivec2 windowSize = m_engine->GetWindowSize();
         int height = GetHeightInt(FONT_COMMON, size);
-        int width = height;// * (static_cast<float>(windowSize.y)/windowSize.x);
+        int width = height;
 
         glm::ivec2 p1(pos.x, pos.y - height);
         glm::ivec2 p2(pos.x + width, pos.y);
 
         // For whatever reason ch.c1 is a SIGNED char, we need to fix that
-        const unsigned icon = static_cast<unsigned>(ch.c1) & 0xFF;
+        const unsigned icon = static_cast<unsigned>(ch[0]) & 0xFF;
 
         const unsigned texIndex = 1 + icon / 64;
         const unsigned iconIndex = icon % 64;
 
         // TODO: A bit of code duplication, see CControl::SetButtonTextureForIcon()
         const unsigned int texID = m_engine->LoadTexture(
-            "textures/interface/button" + StrUtils::ToString<int>(texIndex) + ".png").id;
+            StrUtils::ToPath("textures/interface/button" + StrUtils::ToString<int>(texIndex) + ".png")).id;
 
         glm::vec2 uv1, uv2;
         uv1.x = (32.0f / 256.0f) * (iconIndex % 8);
@@ -1240,8 +1187,6 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, glm::iv
         uv1.y += dp;
         uv2.x -= dp;
         uv2.y -= dp;
-
-        Gfx::IntColor col = Gfx::ColorToIntColor(color);
 
         Gfx::Vertex2D vertices[4];
 
@@ -1257,15 +1202,15 @@ void CText::DrawCharAndAdjustPos(UTF8Char ch, FontType font, float size, glm::iv
     else
     {
         int width = 1;
-        if (ch.c1 > 0 && ch.c1 < 32)
+        if (ch[0] > 0 && ch[0] < 32)
         {
-            if (ch.c1 == '\t')
+            if (ch[0] == '\t')
             {
                 color = Color(1.0f, 0.0f, 0.0f, 1.0f);
                 width = m_tabSize;
             }
 
-            ch = TranslateSpecialChar(ch.c1);
+            ch = TranslateSpecialChar(ch[0]);
         }
 
         CharTexture tex = GetCharTexture(ch, font, size);
@@ -1311,7 +1256,7 @@ CachedFont* CText::GetOrOpenFont(FontType type, float size)
     return cachedFont;
 }
 
-CharTexture CText::GetCharTexture(UTF8Char ch, FontType font, float size)
+CharTexture CText::GetCharTexture(StrUtils::CodePoint ch, FontType font, float size)
 {
     CachedFont* cf = GetOrOpenFont(font, size);
 
@@ -1341,20 +1286,14 @@ glm::ivec2 CText::GetFontTextureSize()
     return FONT_TEXTURE_SIZE;
 }
 
-CharTexture CText::CreateCharTexture(UTF8Char ch, CachedFont* font)
+CharTexture CText::CreateCharTexture(StrUtils::CodePoint ch, CachedFont* font)
 {
     CharTexture texture;
 
     SDL_Surface* textSurface = nullptr;
     SDL_Color white = {255, 255, 255, 0};
-    std::array<char, 4> str = {
-        static_cast<char>(ch.c1),
-        static_cast<char>(ch.c2),
-        static_cast<char>(ch.c3),
-        '\0'
-    };
 
-    textSurface = TTF_RenderUTF8_Blended(font->font, str.data(), white);
+    textSurface = TTF_RenderUTF8_Blended(font->font, ch.Data(), white);
 
     if (textSurface == nullptr)
     {

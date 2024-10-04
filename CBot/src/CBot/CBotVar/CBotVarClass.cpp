@@ -77,7 +77,7 @@ CBotVarClass::~CBotVarClass( )
         assert(0);
 
     // removes the class list
-    if (m_ItemIdent != 0) m_instances.erase(this);
+    m_instances.erase(this);
 
     delete    m_pVar;
 }

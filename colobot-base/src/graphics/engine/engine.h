@@ -25,7 +25,7 @@
 #pragma once
 
 #include "common/singleton.h"
-#include "common/system/system.h"
+#include "common/timeutils.h"
 
 #include "graphics/core/color.h"
 #include "graphics/core/texture.h"
@@ -683,16 +683,16 @@ public:
     void            UpdateGroundSpotTextures();
 
     //! Loads texture, creating it if not already present
-    Texture         LoadTexture(const std::string& name);
+    Texture         LoadTexture(const std::filesystem::path& name);
     //! Loads texture from existing image
-    Texture         LoadTexture(const std::string& name, CImage* image);
+    Texture         LoadTexture(const std::filesystem::path& name, CImage* image);
     //! Loads texture, creating it with given params if not already present
-    Texture         LoadTexture(const std::string& name, const TextureCreateParams& params);
+    Texture         LoadTexture(const std::filesystem::path& name, const TextureCreateParams& params);
     //! Loads all necessary textures
     bool            LoadAllTextures();
 
     //! Deletes the given texture, unloading it and removing from cache
-    void            DeleteTexture(const std::string& texName);
+    void            DeleteTexture(const std::filesystem::path& texName);
     //! Deletes the given texture, unloading it and removing from cache
     void            DeleteTexture(const Texture& tex);
 
@@ -740,8 +740,8 @@ public:
 
     //@{
     //! Management of the global mode of secondary texturing
-    void            SetSecondTexture(const std::string& texNum);
-    const std::string& GetSecondTexture();
+    void            SetSecondTexture(const std::filesystem::path& texNum);
+    const std::filesystem::path& GetSecondTexture();
     //@}
 
     //@{
@@ -793,16 +793,16 @@ public:
 
     //@{
     //! Management of the background image to use
-    void            SetBackground(const std::string& name, Color up = Color(), Color down = Color(),
+    void            SetBackground(const std::filesystem::path& name, Color up = Color(), Color down = Color(),
                                   Color cloudUp = Color(), Color cloudDown = Color(),
                                   bool full = false, bool scale = false);
-    void            GetBackground(std::string& name, Color& up, Color& down,
+    void            GetBackground(std::filesystem::path& name, Color& up, Color& down,
                                   Color& cloudUp, Color& cloudDown,
                                   bool& full, bool& scale);
     //@}
 
     //! Specifies the name of foreground texture
-    void            SetForegroundName(const std::string& name);
+    void            SetForegroundName(const std::filesystem::path& name);
     //! Specifies whether to draw the foreground
     void            SetOverFront(bool front);
     //! Sets the foreground overlay color
@@ -1035,7 +1035,7 @@ protected:
     EngineBaseObjDataTier& AddLevel(EngineBaseObject& p3, EngineTriangleType type, const Material& material);
 
     //! Create texture and add it to cache
-    Texture CreateTexture(const std::string &texName, const TextureCreateParams &params, CImage* image = nullptr);
+    Texture CreateTexture(const std::filesystem::path &texName, const TextureCreateParams &params, CImage* image = nullptr);
 
     //! Tests whether the given object is visible
     bool        IsVisible(const glm::mat4& matrix, int objRank);
@@ -1170,10 +1170,10 @@ protected:
     bool            m_updateGeometry;
     bool            m_updateStaticBuffers;
     bool            m_firstGroundSpot;
-    std::string     m_secondTex;
+    std::filesystem::path m_secondTex;
     bool            m_backgroundFull;
     bool            m_backgroundScale;
-    std::string     m_backgroundName;
+    std::filesystem::path m_backgroundName;
     Texture         m_backgroundTex;
     Color           m_backgroundColorUp;
     Color           m_backgroundColorDown;
@@ -1182,7 +1182,7 @@ protected:
     bool            m_overFront;
     Color           m_overColor;
     TransparencyMode m_overMode;
-    std::string     m_foregroundName;
+    std::filesystem::path m_foregroundName;
     Texture         m_foregroundTex;
     bool            m_drawWorld;
     bool            m_drawFront;
@@ -1258,13 +1258,13 @@ protected:
     int m_multisample;
 
     //! Map of loaded textures (by name)
-    std::map<std::string, Texture> m_texNameMap;
+    std::map<std::filesystem::path, Texture> m_texNameMap;
     //! Reverse map of loaded textures (by texture)
-    std::map<Texture, std::string> m_revTexNameMap;
+    std::map<Texture, std::filesystem::path> m_revTexNameMap;
     //! Blacklist map of textures
     /** Textures on this list were not successful in first loading,
      *  so are disabled for subsequent load calls. */
-    std::set<std::string> m_texBlacklist;
+    std::set<std::filesystem::path> m_texBlacklist;
 
     //! Texture with mouse cursors
     Texture         m_miceTexture;

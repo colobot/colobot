@@ -22,6 +22,7 @@
 #include "app/app.h"
 
 #include "common/logger.h"
+#include "common/stringutils.h"
 
 #include "graphics/core/device.h"
 #include "graphics/core/renderers.h"
@@ -476,7 +477,7 @@ void CWater::CreateLine(int x, int y, int len)
     m_lines.push_back(line);
 }
 
-void CWater::Create(WaterType type1, WaterType type2, const std::string& fileName,
+void CWater::Create(WaterType type1, WaterType type2, const std::filesystem::path& fileName,
                     Color diffuse, Color ambient,
                     float level, float glint, glm::vec3 eddy)
 {

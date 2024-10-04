@@ -424,8 +424,8 @@ bool CEngine::Create()
     params.mipmap = false;
     m_miceTexture = LoadTexture("textures/interface/mouse.png", params);
 
-    m_currentFrameTime = m_systemUtils->GetCurrentTimeStamp();
-    m_lastFrameTime = m_systemUtils->GetCurrentTimeStamp();
+    m_currentFrameTime = TimeUtils::GetCurrentTimeStamp();
+    m_lastFrameTime = m_currentFrameTime;
 
     return true;
 }
@@ -855,10 +855,10 @@ void CEngine::DebugObject(int objRank)
 
     for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
     {
+        /*
         EngineBaseObjDataTier& p2 = p1.next[l2];
         l->Debug("  l2:");
 
-        /*
         l->Debug("   tex1: %s (id: %u)\n", p2.tex1Name.c_str(), p2.tex1.id);
         l->Debug("   tex2: %s (id: %u)\n", p2.tex2Name.c_str(), p2.tex2.id);
 
@@ -1105,14 +1105,15 @@ void CEngine::ChangeSecondTexture(int objRank, const std::string& tex2Name)
 
     EngineBaseObject& p1 = m_baseObjects[baseObjRank];
 
+    std::filesystem::path tex2Path = "textures" / TempToPath(tex2Name);
     for (auto& data : p1.next)
     {
-        if (data.material.detailTexture == tex2Name)
+        if (data.material.detailTexture == tex2Path)
             continue;  // already new
 
-        data.material.detailTexture = tex2Name;
+        data.material.detailTexture = tex2Path;
 
-        data.detailTexture = LoadTexture("textures/" + tex2Name);
+        data.detailTexture = LoadTexture(tex2Path);
     }
 }
 
@@ -1348,7 +1349,7 @@ void CEngine::DeleteAllGroundSpots()
         shadowImg.Fill(Gfx::IntColor(255, 255, 255, 255));
 
         std::stringstream str;
-        str << "shadow" << std::setfill('0') << std::setw(2) << s << ".png";
+        str << "textures/shadow" << std::setfill('0') << std::setw(2) << s << ".png";
         std::string texName = str.str();
 
         CreateOrUpdateTexture(texName, &shadowImg);
@@ -1861,7 +1862,7 @@ void CEngine::SetViewParams(const glm::vec3 &eyePt, const glm::vec3 &lookatPt, c
         m_sound->SetListener(eyePt, lookatPt);
 }
 
-Texture CEngine::CreateTexture(const std::string& texName, const TextureCreateParams& params, CImage* image)
+Texture CEngine::CreateTexture(const std::filesystem::path& texName, const TextureCreateParams& params, CImage* image)
 {
     if (texName.empty())
         return Texture(); // invalid texture
@@ -1900,23 +1901,22 @@ Texture CEngine::CreateTexture(const std::string& texName, const TextureCreatePa
     return tex;
 }
 
-Texture CEngine::LoadTexture(const std::string& name)
+Texture CEngine::LoadTexture(const std::filesystem::path& name)
 {
     return LoadTexture(name, m_defaultTexParams);
 }
 
-Texture CEngine::LoadTexture(const std::string& name, CImage* image)
+Texture CEngine::LoadTexture(const std::filesystem::path& name, CImage* image)
 {
-    Texture tex = CreateTexture(name, m_defaultTexParams, image);
-    return tex;
+    return CreateTexture(name, m_defaultTexParams, image);
 }
 
-Texture CEngine::LoadTexture(const std::string& name, const TextureCreateParams& params)
+Texture CEngine::LoadTexture(const std::filesystem::path& name, const TextureCreateParams& params)
 {
     if (m_texBlacklist.find(name) != m_texBlacklist.end())
         return Texture();
 
-    std::map<std::string, Texture>::iterator it = m_texNameMap.find(name);
+    auto it = m_texNameMap.find(name);
     if (it != m_texNameMap.end())
         return (*it).second;
 
@@ -1983,9 +1983,9 @@ bool CEngine::LoadAllTextures()
             if (!data.material.albedoTexture.empty())
             {
                 if (terrain)
-                    data.albedoTexture = LoadTexture("textures/" + data.material.albedoTexture, m_terrainTexParams);
+                    data.albedoTexture = LoadTexture(TempToPath("textures/" + data.material.albedoTexture), m_terrainTexParams);
                 else
-                    data.albedoTexture = LoadTexture("textures/" + data.material.albedoTexture);
+                    data.albedoTexture = LoadTexture(TempToPath("textures/" + data.material.albedoTexture));
 
                 if (!data.albedoTexture.Valid())
                     ok = false;
@@ -1994,9 +1994,9 @@ bool CEngine::LoadAllTextures()
             if (!data.material.detailTexture.empty())
             {
                 if (terrain)
-                    data.detailTexture = LoadTexture("textures/" + data.material.detailTexture, m_terrainTexParams);
+                    data.detailTexture = LoadTexture(data.material.detailTexture, m_terrainTexParams);
                 else
-                    data.detailTexture = LoadTexture("textures/" + data.material.detailTexture);
+                    data.detailTexture = LoadTexture(data.material.detailTexture);
 
                 if (!data.detailTexture.Valid())
                     ok = false;
@@ -2005,9 +2005,9 @@ bool CEngine::LoadAllTextures()
             if (!data.material.materialTexture.empty())
             {
                 if (terrain)
-                    data.materialTexture = LoadTexture("textures/" + data.material.materialTexture, m_terrainTexParams);
+                    data.materialTexture = LoadTexture(TempToPath("textures/" + data.material.materialTexture), m_terrainTexParams);
                 else
-                    data.materialTexture = LoadTexture("textures/" + data.material.materialTexture);
+                    data.materialTexture = LoadTexture(TempToPath("textures/" + data.material.materialTexture));
 
                 if (!data.materialTexture.Valid())
                     ok = false;
@@ -2016,9 +2016,9 @@ bool CEngine::LoadAllTextures()
             if (!data.material.emissiveTexture.empty())
             {
                 if (terrain)
-                    data.emissiveTexture = LoadTexture("textures/" + data.material.emissiveTexture, m_terrainTexParams);
+                    data.emissiveTexture = LoadTexture(TempToPath("textures/" + data.material.emissiveTexture), m_terrainTexParams);
                 else
-                    data.emissiveTexture = LoadTexture("textures/" + data.material.emissiveTexture);
+                    data.emissiveTexture = LoadTexture(TempToPath("textures/" + data.material.emissiveTexture));
 
                 if (!data.emissiveTexture.Valid())
                     ok = false;
@@ -2029,25 +2029,7 @@ bool CEngine::LoadAllTextures()
     return ok;
 }
 
-static bool IsExcludeColor(glm::vec2* exclude, int x, int y)
-{
-    int i = 0;
-    while ( exclude[i+0].x != 0.0f || exclude[i+0].y != 0.0f ||
-            exclude[i+1].y != 0.0f || exclude[i+1].y != 0.0f )
-    {
-        if ( x >= static_cast<int>(exclude[i+0].x*256.0f) &&
-             x <  static_cast<int>(exclude[i+1].x*256.0f) &&
-             y >= static_cast<int>(exclude[i+0].y*256.0f) &&
-             y <  static_cast<int>(exclude[i+1].y*256.0f) )
-            return true;  // exclude
-
-        i += 2;
-    }
-
-    return false;  // point to include
-}
-
-void CEngine::DeleteTexture(const std::string& texName)
+void CEngine::DeleteTexture(const std::filesystem::path& texName)
 {
     auto it = m_texNameMap.find(texName);
     if (it == m_texNameMap.end())
@@ -2080,10 +2062,10 @@ void CEngine::DeleteTexture(const Texture& tex)
 
 void CEngine::CreateOrUpdateTexture(const std::string& texName, CImage* img)
 {
-    auto it = m_texNameMap.find(texName);
+    auto it = m_texNameMap.find(TempToPath(texName));
     if (it == m_texNameMap.end())
     {
-        LoadTexture(texName, img);
+        LoadTexture(TempToPath(texName), img);
     }
     else
     {
@@ -2212,12 +2194,12 @@ bool CEngine::GetFog()
     return m_fog;
 }
 
-void CEngine::SetSecondTexture(const std::string& texNum)
+void CEngine::SetSecondTexture(const std::filesystem::path& texNum)
 {
     m_secondTex = texNum;
 }
 
-const std::string& CEngine::GetSecondTexture()
+const std::filesystem::path& CEngine::GetSecondTexture()
 {
     return m_secondTex;
 }
@@ -2307,7 +2289,7 @@ float CEngine::GetFogStart(int rank)
     return m_fogStart[rank];
 }
 
-void CEngine::SetBackground(const std::string& name, Color up, Color down,
+void CEngine::SetBackground(const std::filesystem::path& name, Color up, Color down,
                             Color cloudUp, Color cloudDown, bool full, bool scale)
 {
     if (m_backgroundTex.Valid() && name != m_backgroundName)
@@ -2332,7 +2314,7 @@ void CEngine::SetBackground(const std::string& name, Color up, Color down,
     }
 }
 
-void CEngine::GetBackground(std::string& name, Color& up, Color& down,
+void CEngine::GetBackground(std::filesystem::path& name, Color& up, Color& down,
                             Color& cloudUp, Color& cloudDown, bool &full, bool &scale)
 {
     name      = m_backgroundName;
@@ -2344,7 +2326,7 @@ void CEngine::GetBackground(std::string& name, Color& up, Color& down,
     scale     = m_backgroundScale;
 }
 
-void CEngine::SetForegroundName(const std::string& name)
+void CEngine::SetForegroundName(const std::filesystem::path& name)
 {
     if (m_foregroundTex.Valid() && name != m_foregroundName)
     {
@@ -2722,8 +2704,9 @@ void CEngine::Render()
 {
     m_fpsCounter++;
 
-    m_currentFrameTime = m_systemUtils->GetCurrentTimeStamp();
-    float diff = TimeUtils::Diff(m_lastFrameTime, m_currentFrameTime, TimeUnit::SECONDS);
+    m_currentFrameTime = TimeUtils::GetCurrentTimeStamp();
+    float diff = TimeUtils::Diff<TimeUnit::SECONDS>(m_lastFrameTime, m_currentFrameTime);
+
     if (diff > 1.0f)
     {
         m_lastFrameTime = m_currentFrameTime;
@@ -3115,7 +3098,6 @@ void CEngine::Draw3DScene()
 
     if (m_debugGoto)
     {
-        glm::mat4 worldMatrix = glm::mat4(1.0f);
         objectRenderer->SetTransparency(TransparencyMode::NONE);
         objectRenderer->SetLighting(false);
         objectRenderer->SetModelMatrix(glm::mat4(1.0f));
@@ -3685,8 +3667,6 @@ void CEngine::DrawInterface()
         renderer->SetTriplanarMode(m_triplanarMode);
         renderer->SetTriplanarScale(m_triplanarScale);
 
-        auto projectionViewMatrix = m_matProj * m_matView;
-
         for (int objRank = 0; objRank < static_cast<int>(m_objects.size()); objRank++)
         {
             if (! m_objects[objRank].used)
@@ -3698,8 +3678,8 @@ void CEngine::DrawInterface()
             if (! m_objects[objRank].drawFront)
                 continue;
 
-            auto combinedMatrix = projectionViewMatrix * m_objects[objRank].transform;
-
+            //auto projectionViewMatrix = m_matProj * m_matView;
+            //auto combinedMatrix = projectionViewMatrix * m_objects[objRank].transform;
             //if (! IsVisible(combinedMatrix, objRank))
             //    continue;
 
@@ -4094,7 +4074,7 @@ void CEngine::DrawShadowSpots()
 {
     m_device->SetDepthMask(false);
 
-    glm::mat4 matrix = glm::mat4(1.0f);
+    //glm::mat4 matrix = glm::mat4(1.0f);
     //m_device->SetTransform(TRANSFORM_WORLD, matrix);
 
     // TODO: create a separate texture
@@ -4253,13 +4233,6 @@ void CEngine::DrawShadowSpots()
 
         IntColor white(255, 255, 255, 255);
 
-        Vertex3D vertex[4] =
-        {
-            { corner[1], white, { ts.x, ts.y } },
-            { corner[0], white, { ti.x, ts.y } },
-            { corner[3], white, { ts.x, ti.y } },
-            { corner[2], white, { ti.x, ti.y } }
-        };
 
         float intensity = (0.5f+m_shadowSpots[i].intensity*0.5f)*hFactor;
 
@@ -4277,6 +4250,13 @@ void CEngine::DrawShadowSpots()
             //SetState(ENG_RSTATE_TTEXTURE_WHITE, Color(intensity, intensity, intensity, intensity));
         }
 
+        //Vertex3D vertex[4] =
+        //{
+        //    { corner[1], white, { ts.x, ts.y } },
+        //    { corner[0], white, { ti.x, ts.y } },
+        //    { corner[3], white, { ts.x, ti.y } },
+        //    { corner[2], white, { ti.x, ti.y } }
+        //};
         //m_device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertex, 4);
         AddStatisticTriangle(2);
     }
@@ -4333,8 +4313,6 @@ void CEngine::DrawBackgroundImage()
     p1.y = 0.0f;
     p2.x = 1.0f;
     p2.y = 1.0f;
-
-    glm::vec3 n = glm::vec3(0.0f, 0.0f, -1.0f);  // normal
 
     float u1, u2, v1, v2;
     if (m_backgroundFull)
@@ -4432,8 +4410,6 @@ void CEngine::DrawForegroundImage()
 {
     if (m_foregroundName.empty())
         return;
-
-    glm::vec3 n = glm::vec3(0.0f, 0.0f, -1.0f);  // normal
 
     glm::vec2 p1(0.0f, 0.0f);
     glm::vec2 p2(1.0f, 1.0f);

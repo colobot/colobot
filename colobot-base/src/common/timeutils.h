@@ -22,6 +22,9 @@
  * \brief Some useful cross-platform operations on timestamps
  */
 
+#pragma once
+
+#include <cassert>
 #include <chrono>
 
 namespace TimeUtils
@@ -34,17 +37,46 @@ enum class TimeUnit
     MICROSECONDS
 };
 
-using TimeStamp = std::chrono::time_point<std::chrono::high_resolution_clock>;
+using TimeStamp = std::chrono::time_point<std::chrono::steady_clock>;
+
+//! Returns a time stamp associated with current time
+inline TimeUtils::TimeStamp GetCurrentTimeStamp()
+{
+    return std::chrono::steady_clock::now();
+}
 
 //! Linearly interpolates between two timestamps.
-TimeStamp Lerp(TimeStamp a, TimeStamp b, float t);
-
-//! Returns a difference between two timestamps in given time unit
-/** The difference is \a after - \a before. */
-float Diff(TimeStamp before, TimeStamp after, TimeUnit unit = TimeUnit::SECONDS);
+inline constexpr TimeStamp Lerp(TimeStamp a, TimeStamp b, float t)
+{
+    return a + std::chrono::duration_cast<TimeStamp::duration>((b - a) * t);
+}
 
 //! Returns the exact (in nanosecond units) difference between two timestamps
 /** The difference is \a after - \a before. */
-long long ExactDiff(TimeStamp before, TimeStamp after);
+inline constexpr long long ExactDiff(TimeStamp before, TimeStamp after)
+{
+    return std::chrono::duration_cast<std::chrono::nanoseconds>(after - before).count();
+}
+
+//! Returns a difference between two timestamps in given time unit
+/** The difference is \a after - \a before. */
+template<TimeUnit unit>
+constexpr float Diff(TimeStamp before, TimeStamp after)
+{
+    static_assert(unit <= TimeUnit::MICROSECONDS);
+
+    long long exact = ExactDiff(before, after);
+
+    float result = 0.0f;
+
+    if constexpr (unit == TimeUnit::SECONDS)
+        result = exact * 1e-9;
+    else if constexpr (unit == TimeUnit::MILLISECONDS)
+        result = exact * 1e-6;
+    else if constexpr (unit == TimeUnit::MICROSECONDS)
+        result = exact * 1e-3;
+
+    return result;
+}
 
 } // namespace TimeUtils

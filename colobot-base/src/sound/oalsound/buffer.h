@@ -29,6 +29,7 @@
 #include <string>
 #include <vector>
 #include <array>
+#include <filesystem>
 
 #include <al.h>
 
@@ -38,7 +39,7 @@ public:
     CBuffer();
     ~CBuffer();
 
-    bool LoadFromFile(std::string, SoundType);
+    bool LoadFromFile(const std::filesystem::path&, SoundType);
     bool IsLoaded();
 
     SoundType GetSoundType();

@@ -320,7 +320,7 @@ void CFileDialog::StartFileDialog()
 
     AdjustDialog();
 
-    SetFilenameField(pe, StrUtils::ToString(m_filename));
+    SetFilenameField(pe, m_filename);
     SetFilename("");
 
     UpdatePublic(m_public);
@@ -815,7 +815,11 @@ bool CFileDialog::EventSelectFolder(const Event &event)
         if ( pl == nullptr ) return false;
         std::string name = pl->GetItemName(pl->GetSelect());
         name = name.substr(0, name.find_first_of("\t"));
-        m_subDirPath += m_subDirPath.empty() ? name : "/" + name;
+        if (m_subDirPath.empty()) {
+            m_subDirPath = TempToPath(name);
+        } else {
+            m_subDirPath /= TempToPath(name);
+        }
         m_eventQueue->AddEvent(Event(EVENT_DIALOG_ACTION));
     }
 
@@ -836,7 +840,11 @@ bool CFileDialog::EventSelectFolder(const Event &event)
                 name = name.substr(0, name.find_first_of("\t"));
                 if ( name != ".." )
                 {
-                    m_subDirPath += m_subDirPath.empty() ? name : "/" + name;
+                    if (m_subDirPath.empty()) {
+                        m_subDirPath = TempToPath(name);
+                    } else {
+                        m_subDirPath /= TempToPath(name);
+                    }
                     m_eventQueue->AddEvent(Event(EVENT_DIALOG_ACTION));
                 }
             }
@@ -859,7 +867,7 @@ void CFileDialog::GetListChoice()
 
     std::string name = pl->GetItemName(pl->GetSelect());
     name = name.substr(0, name.find_first_of("\t"));
-    SetFilenameField(pe, name);
+    SetFilenameField(pe, TempToPath(name));
     pe->SetCursor(999, 0);  // select all
     m_interface->SetFocus(pe);
 
@@ -1055,7 +1063,7 @@ void CFileDialog::PopulateList()
 
     // list all folders
     std::vector<std::filesystem::path> folders = CResourceManager::ListDirectories(SearchDirectory(false));
-    if (!m_subDirPath.empty()) folders.insert(folders.begin(), std::string(".."));
+    if (!m_subDirPath.empty()) folders.insert(folders.begin(), "..");
     for (auto& dir : folders)
     {
         time_t now = CResourceManager::GetLastModificationTime(SearchDirectory(false) / dir);
@@ -1115,7 +1123,7 @@ bool CFileDialog::DirectoryExists(const std::string &name)
 
     if ( name == ".." ) return !m_subDirPath.empty();
 
-    return CResourceManager::DirectoryExists(SearchDirectory(false) / name);
+    return CResourceManager::DirectoryExists(SearchDirectory(false) / TempToPath(name));
 }
 
 // Make folder
@@ -1130,7 +1138,7 @@ void CFileDialog::CreateNewFolder()
     std::string name = pe->GetText(999);
     if ( name.empty() ) return;
 
-    m_subDirPath /= name;   // add to current path
+    m_subDirPath /= TempToPath(name);   // add to current path
 
     SearchDirectory(true);  // make the new folder
 
@@ -1161,7 +1169,7 @@ void CFileDialog::OpenFolder()
     }
     else if ( DirectoryExists(name) )
     {
-        m_subDirPath /= name;
+        m_subDirPath /= TempToPath(name);
     }
 
     PopulateList();
@@ -1215,8 +1223,8 @@ bool CFileDialog::ActionOpen()
     }
 
     SearchDirectory(true);
-    SetFilename(filename);
-    SetFilenameField(pe, filename);
+    SetFilename(TempToPath(filename));
+    SetFilenameField(pe, TempToPath(filename));
     pe->SetCursor(999, 0);  // select all
     pw->SetFocus(pe);
 
@@ -1243,15 +1251,15 @@ bool CFileDialog::ActionSave(bool checkFileExist)
 
     if ( checkFileExist )
     {
-        if (CResourceManager::Exists(SearchDirectory(false) / filename))
+        if (CResourceManager::Exists(SearchDirectory(false) / TempToPath(filename)))
         {
             if ( !StartAskOverwrite(filename) ) StopAskOverwrite();
             return false;
         }
     }
 
-    SetFilename(filename);
-    SetFilenameField(pe, filename);
+    SetFilename(TempToPath(filename));
+    SetFilenameField(pe, TempToPath(filename));
     pe->SetCursor(999, 0);  // select all
     pw->SetFocus(pe);
 

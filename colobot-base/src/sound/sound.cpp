@@ -61,7 +61,7 @@ bool CSoundInterface::Cache(SoundType sound, const std::string &file)
     return true;
 }
 
-void CSoundInterface::CacheMusic(const std::string &file)
+void CSoundInterface::CacheMusic(const std::filesystem::path& file)
 {
 }
 
@@ -151,7 +151,7 @@ bool CSoundInterface::MuteAll(bool mute)
     return true;
 }
 
-void CSoundInterface::PlayMusic(const std::string &filename, bool repeat, float fadeTime)
+void CSoundInterface::PlayMusic(const std::filesystem::path& filename, bool repeat, float fadeTime)
 {
 }
 
@@ -164,7 +164,7 @@ bool CSoundInterface::IsPlayingMusic()
     return false;
 }
 
-void CSoundInterface::PlayPauseMusic(const std::string &filename, bool repeat)
+void CSoundInterface::PlayPauseMusic(const std::filesystem::path& filename, bool repeat)
 {
 }
 

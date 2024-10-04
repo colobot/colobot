@@ -612,7 +612,7 @@ bool CMotionHuman::EventProcess(const Event &event)
 bool CMotionHuman::EventFrame(const Event &event)
 {
     glm::vec3    dir, actual, pos, speed, pf;
-    glm::vec2       center, dim, p2;
+    glm::vec2    dim, p2;
     float       s, a, prog, rTime[2], lTime[2], time, rot, hr, hl;
     float       al, ar, af;
     float       tSt[9], tNd[9];

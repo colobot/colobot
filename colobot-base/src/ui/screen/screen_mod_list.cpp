@@ -207,7 +207,7 @@ bool CScreenModList::EventProcess(const Event &event)
     const std::string workshopUrl = "https://www.moddb.com/games/colobot-gold-edition";
     const std::filesystem::path modDir = CResourceManager::GetSaveLocation() / "mods";
 
-    auto systemUtils = CSystemUtils::Create(); // platform-specific utils
+    auto& systemUtils = CSystemUtils::GetInstance(); // platform-specific utils
 
     auto pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if (pw == nullptr) return false;
@@ -296,7 +296,7 @@ bool CScreenModList::EventProcess(const Event &event)
         break;
 
     case EVENT_INTERFACE_MODS_DIR:
-        if (!systemUtils->OpenPath(StrUtils::ToString(modDir)))
+        if (!systemUtils.OpenPath(modDir))
         {
             std::string title, text;
             GetResource(RES_TEXT, RT_DIALOG_OPEN_PATH_FAILED_TITLE, title);
@@ -310,7 +310,7 @@ bool CScreenModList::EventProcess(const Event &event)
         break;
 
     case EVENT_INTERFACE_WORKSHOP:
-        if (!systemUtils->OpenWebsite(workshopUrl))
+        if (!systemUtils.OpenWebsite(workshopUrl))
         {
             std::string title, text;
             GetResource(RES_TEXT, RT_DIALOG_OPEN_WEBSITE_FAILED_TITLE, title);

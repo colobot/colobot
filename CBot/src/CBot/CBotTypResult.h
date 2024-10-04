@@ -22,6 +22,7 @@
 #include "CBot/CBotEnums.h"
 
 #include <string>
+#include <memory>
 
 namespace CBot
 {
@@ -78,7 +79,7 @@ public:
      * \param type type of created result, see ::CBotType
      * \param elem type of array elements
      */
-    CBotTypResult(int type, CBotTypResult elem);
+    CBotTypResult(int type, const CBotTypResult& elem);
 
     /**
      * \brief Copy constructor
@@ -88,12 +89,7 @@ public:
     /**
      * \brief Default constructor
      */
-    CBotTypResult();
-
-    /**
-     * \brief Destructor
-     */
-    ~CBotTypResult();
+    CBotTypResult() = default;
 
     /**
      * \brief Mode for GetType()
@@ -141,7 +137,7 @@ public:
     /**
      * \brief Get type of array elements (for ::CBotTypArrayBody or ::CBotTypArrayPointer)
      */
-    CBotTypResult& GetTypElem() const;
+    const CBotTypResult& GetTypElem() const;
 
 
     /**
@@ -167,15 +163,15 @@ public:
      * \brief Get this type name as string
      * \returns This type name as string
      */
-    std::string ToString();
+    std::string ToString() const;
 
 private:
-    int               m_type;   //!< type, see ::CBotType and ::CBotError
-    CBotTypResult*    m_next;   //!< type of array element
-    CBotClass*        m_class;  //!< class type
-    int               m_limite; //!< array limit
-    friend class    CBotVarClass;
-    friend class    CBotVarPointer;
+    int m_type = 0;   //!< type, see ::CBotType and ::CBotError
+    std::unique_ptr<CBotTypResult> m_elementType;   //!< type of array element
+    CBotClass* m_class = nullptr;  //!< class type
+    int m_limite = -1;  //!< array limit
+    friend class CBotVarClass;
+    friend class CBotVarPointer;
 };
 
 } // namespace CBot

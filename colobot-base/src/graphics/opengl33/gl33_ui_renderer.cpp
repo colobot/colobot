@@ -173,7 +173,7 @@ Vertex2D* CGL33UIRenderer::BeginPrimitives(PrimitiveType type, int drawCount, co
 
     m_currentCount = 0;
 
-    for (size_t i = 0; i < drawCount; i++)
+    for (int i = 0; i < drawCount; i++)
     {
         m_currentCount += counts[i];
     }
@@ -206,7 +206,7 @@ Vertex2D* CGL33UIRenderer::BeginPrimitives(PrimitiveType type, int drawCount, co
 
     GLsizei currentOffset = m_bufferOffset;
 
-    for (size_t i = 0; i < drawCount; i++)
+    for (int i = 0; i < drawCount; i++)
     {
         m_first[i] = currentOffset;
         m_count[i] = counts[i];

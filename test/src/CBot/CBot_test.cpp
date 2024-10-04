@@ -432,11 +432,11 @@ protected:
 
 TEST_F(CBotUT, EmptyTest)
 {
-    ExecuteTest(
-        "extern void EmptyTest()\n"
-        "{\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        extern void EmptyTest()
+        {
+        }
+    )");
 }
 
 TEST_F(CBotUT, FunctionCompileErrors)
@@ -476,9 +476,10 @@ TEST_F(CBotUT, FunctionCompileErrors)
         CBotErrClosePar
     );
 
-    ExecuteTest(
-        "extern void ParamTrailingComma(int i, ) {\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void ParamTrailingComma(int i, ) {
+        }
+        )",
         CBotErrNoType
     );
 
@@ -487,9 +488,10 @@ TEST_F(CBotUT, FunctionCompileErrors)
         CBotErrOpenBlock
     );
 
-    ExecuteTest(
-        "extern void MissingCloseBlock()\n"
-        "{\n",
+    ExecuteTest(R"(
+        extern void MissingCloseBlock()
+        {
+        )",
         CBotErrCloseBlock
     );
 
@@ -512,9 +514,10 @@ TEST_F(CBotUT, ClassCompileErrors)
         CBotErrOpenBlock
     );
 
-    ExecuteTest(
-        "public class TestClass\n"
-        "{\n",
+    ExecuteTest(R"(
+        public class TestClass
+        {
+        )",
         CBotErrCloseBlock
     );
 
@@ -531,142 +534,147 @@ TEST_F(CBotUT, ClassCompileErrors)
 
 TEST_F(CBotUT, DivideByZero)
 {
-    ExecuteTest(
-        "extern void DivideByZero()\n"
-        "{\n"
-        "    float a = 5/0;\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void DivideByZero()
+        {
+            float a = 5/0;
+        }
+        )",
         CBotErrZeroDiv
     );
 }
 
 TEST_F(CBotUT, MissingSemicolon)
 {
-    ExecuteTest(
-        "extern void MissingSemicolon()\n"
-        "{\n"
-        "    string a = \"hello\"\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void MissingSemicolon()
+        {
+            string a = "hello"
+        }
+        )",
         CBotErrNoTerminator
     );
 }
 
 TEST_F(CBotUT, UndefinedFunction)
 {
-    ExecuteTest(
-        "extern void UndefinedFunction()\n"
-        "{\n"
-        "    foo();\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void UndefinedFunction()
+        {
+            foo();
+        }
+        )",
         CBotErrUndefCall
     );
 }
 
 TEST_F(CBotUT, BasicOperations)
 {
-    ExecuteTest(
-        "extern void Comparations()\n"
-        "{\n"
-        "    ASSERT(1 != 0);\n"
-        "    ASSERT(1 == 1);\n"
-        "    ASSERT(1 > 0);\n"
-        "    ASSERT(1 >= 0);\n"
-        "    ASSERT(1 >= 1);\n"
-        "    ASSERT(0 < 1);\n"
-        "    ASSERT(0 <= 1);\n"
-        "    ASSERT(1 <= 1);\n"
-        "}\n"
-        "\n"
-        "extern void BasicMath()\n"
-        "{\n"
-        "    ASSERT(2+2 == 4);\n"
-        "    ASSERT(4-2 == 2);\n"
-        "    ASSERT(2*2 == 4);\n"
-        "    ASSERT(2/2 == 1);\n"
-        "    ASSERT(5%2 == 1);\n"
-        "    ASSERT(5**3 == 125);\n"
-        "}\n"
-        "\n"
-        "extern void BitwiseMath()\n"
-        "{\n"
-        "    ASSERT((1 << 5) == 32);\n"
-        "    ASSERT((32 >> 5) == 1);\n"
-        "    ASSERT((3 & 2) == 2);\n"
-        "    ASSERT((1 & 2) == 0);\n"
-        "    ASSERT((1 | 2) == 3);\n"
-        "    ASSERT((2 | 2) == 2);\n"
-        "    ASSERT((5 ^ 3) == 6);\n"
-        "    ASSERT((~1024) == -1025);\n"
-        "}\n"
-        "\n"
-        "extern void BooleanLogic()\n"
-        "{\n"
-        "    ASSERT(true);\n"
-        "    ASSERT(!false);\n"
-        "    ASSERT(true && true);\n"
-        "    ASSERT(!(true && false));\n"
-        "    ASSERT(!(false && true));\n"
-        "    ASSERT(!(false && false));\n"
-        "    ASSERT(true || true);\n"
-        "    ASSERT(true || false);\n"
-        "    ASSERT(false || true);\n"
-        "    ASSERT(!(false || false));\n"
-        "    ASSERT(!(true ^ true));\n"
-        "    ASSERT(true ^ false);\n"
-        "    ASSERT(false ^ true);\n"
-        "    ASSERT(!(false ^ false));\n"
-        "}\n"
-        "\n"
-        "extern void NumberFormats()\n"
-        "{\n"
-        "    ASSERT(2.0 == 2);\n"
-        "    ASSERT(2.00000 == 2);\n"
-        "    ASSERT(2.50000 == 2.5);\n"
-        "    ASSERT(-2.0 == -2);\n"
-        "    ASSERT(2e3 == 2000);\n"
-        "    ASSERT(-2e3 == -2000);\n"
-        "    ASSERT(2e-3 == 0.002);\n"
-        "    ASSERT(-2e-3 == -0.002);\n"
-        "    ASSERT(0xFF == 255);\n"
-        "    ASSERT(0xAB == 171);\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        extern void Comparations()
+        {
+            ASSERT(1 != 0);
+            ASSERT(1 == 1);
+            ASSERT(1 > 0);
+            ASSERT(1 >= 0);
+            ASSERT(1 >= 1);
+            ASSERT(0 < 1);
+            ASSERT(0 <= 1);
+            ASSERT(1 <= 1);
+        }
+        
+        extern void BasicMath()
+        {
+            ASSERT(2+2 == 4);
+            ASSERT(4-2 == 2);
+            ASSERT(2*2 == 4);
+            ASSERT(2/2 == 1);
+            ASSERT(5%2 == 1);
+            ASSERT(5**3 == 125);
+        }
+        
+        extern void BitwiseMath()
+        {
+            ASSERT((1 << 5) == 32);
+            ASSERT((32 >> 5) == 1);
+            ASSERT((3 & 2) == 2);
+            ASSERT((1 & 2) == 0);
+            ASSERT((1 | 2) == 3);
+            ASSERT((2 | 2) == 2);
+            ASSERT((5 ^ 3) == 6);
+            ASSERT((~1024) == -1025);
+        }
+        
+        extern void BooleanLogic()
+        {
+            ASSERT(true);
+            ASSERT(!false);
+            ASSERT(true && true);
+            ASSERT(!(true && false));
+            ASSERT(!(false && true));
+            ASSERT(!(false && false));
+            ASSERT(true || true);
+            ASSERT(true || false);
+            ASSERT(false || true);
+            ASSERT(!(false || false));
+            ASSERT(!(true ^ true));
+            ASSERT(true ^ false);
+            ASSERT(false ^ true);
+            ASSERT(!(false ^ false));
+        }
+        
+        extern void NumberFormats()
+        {
+            ASSERT(2.0 == 2);
+            ASSERT(2.00000 == 2);
+            ASSERT(2.50000 == 2.5);
+            ASSERT(-2.0 == -2);
+            ASSERT(2e3 == 2000);
+            ASSERT(-2e3 == -2000);
+            ASSERT(2e-3 == 0.002);
+            ASSERT(-2e-3 == -0.002);
+            ASSERT(0xFF == 255);
+            ASSERT(0xAB == 171);
+        }
+    )");
 }
 
 TEST_F(CBotUT, VarBasic)
 {
-    ExecuteTest(
-        "extern void VarBasic()\n"
-        "{\n"
-        "    int a = 5;\n"
-        "    ASSERT(a == 5);\n"
-        "    int b = 3;\n"
-        "    ASSERT(b == 3);\n"
-        "    b = a;\n"
-        "    ASSERT(b == 5);\n"
-        "    ASSERT(b == a);\n"
-        "    b = a + b;\n"
-        "    ASSERT(b == 10);\n"
-        "    ASSERT(b == 2*a);\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        extern void VarBasic()
+        {
+            int a = 5;
+            ASSERT(a == 5);
+            int b = 3;
+            ASSERT(b == 3);
+            b = a;
+            ASSERT(b == 5);
+            ASSERT(b == a);
+            b = a + b;
+            ASSERT(b == 10);
+            ASSERT(b == 2*a);
+        }
+    )");
 }
 
 TEST_F(CBotUT, VarDefinitions)
 {
-    ExecuteTest(
-        "extern void TestUndefined()\n"
-        "{\n"
-        "    ASSERT(a == 0);\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void TestUndefined()
+        {
+            ASSERT(a == 0);
+        }
+        )",
         CBotErrUndefVar
     );
-    ExecuteTest(
-        "extern void TestRedefined()\n"
-        "{\n"
-        "    int a = 5;\n"
-        "    int a = 3;\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void TestRedefined()
+        {
+            int a = 5;
+            int a = 3;
+        }
+        )",
         CBotErrRedefVar
     );
 }
@@ -674,244 +682,250 @@ TEST_F(CBotUT, VarDefinitions)
 // TODO: I don't actually know what the exact rules should be, but it looks a bit wrong
 TEST_F(CBotUT, VarImplicitCast)
 {
-    ExecuteTest(
-        "extern void ImplicitCast()\n"
-        "{\n"
-        "    int a = 5;\n"
-        //"    ASSERT(a == \"5\");\n"
-        "    string b = a;\n"
-        "    ASSERT(b == \"5\");\n"
-        //"    ASSERT(b == a);\n"
-        "    \n"
-        "    string c = \"2.5\";\n"
-        //"    ASSERT(c == 2.5);\n"
-        //"    float d = c;\n"
-        //"    ASSERT(d == c);\n"
-        //"    ASSERT(d == 2.5);\n"
-        "}\n"
-        "\n"
-        "extern void AssignImplicitCast()\n"
-        "{\n"
-        "    string a = 2;\n"
-        "    ASSERT(a == \"2\");\n"
-        "    a = 3;\n"
-        "    ASSERT(a == \"3\");\n"
-        "    string b = 2.5;\n"
-        "    ASSERT(b == \"2.5\");\n"
-        "    b = 3.5;\n"
-        "    ASSERT(b == \"3.5\");\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        extern void ImplicitCast()
+        {
+            int a = 5;
+        //"    ASSERT(a == "5");
+            string b = a;
+            ASSERT(b == "5");
+        //"    ASSERT(b == a);
+            
+            string c = "2.5";
+        //"    ASSERT(c == 2.5);
+        //"    float d = c;
+        //"    ASSERT(d == c);
+        //"    ASSERT(d == 2.5);
+        }
+        
+        extern void AssignImplicitCast()
+        {
+            string a = 2;
+            ASSERT(a == "2");
+            a = 3;
+            ASSERT(a == "3");
+            string b = 2.5;
+            ASSERT(b == "2.5");
+            b = 3.5;
+            ASSERT(b == "3.5");
+        }
+    )");
 
-    ExecuteTest(
-        "string func()\n"
-        "{\n"
-        "    return 5;\n"
-        "}\n"
-        "extern void ImplicitCastOnReturn()\n"
-        "{\n"
-        "    string a = func();\n"
-        "    ASSERT(a == \"5\");"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        string func()
+        {
+            return 5;
+        }
+        extern void ImplicitCastOnReturn()
+        {
+            string a = func();
+            ASSERT(a == "5");
+        }
+    )");
 }
 
 TEST_F(CBotUT, IntegerMathNearLimits_Issue993)
 {
-    ExecuteTest(
-        "extern void Test_Issue993() {\n"
-        "    ASSERT(-2147483600 *  1 == -2147483600);\n"
-        "    ASSERT( 2147483600 *  1 ==  2147483600);\n"
-        "    ASSERT( 2147483646 *  1 ==  2147483646);\n"
-        "    ASSERT( 2147483646 * -1 == -2147483646);\n"
-        "    ASSERT( 2147483000 * -1 == -2147483000);\n"
-        "    ASSERT( 2147483000 *  1 ==  2147483000);\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        extern void Test_Issue993() {
+            ASSERT(-2147483600 *  1 == -2147483600);
+            ASSERT( 2147483600 *  1 ==  2147483600);
+            ASSERT( 2147483646 *  1 ==  2147483646);
+            ASSERT( 2147483646 * -1 == -2147483646);
+            ASSERT( 2147483000 * -1 == -2147483000);
+            ASSERT( 2147483000 *  1 ==  2147483000);
+        }
+    )");
 }
 
 TEST_F(CBotUT, BinaryLiterals)
 {
-    ExecuteTest(
-        "extern void TestBinaryLiterals() {\n"
-        "    ASSERT(  8 ==   0b00001000);\n"
-        "    ASSERT( 12 ==   0b00001100);\n"
-        "    ASSERT( 16 ==   0b00010000);\n"
-        "    ASSERT( 24 ==   0b00011000);\n"
-        "    ASSERT( 32 ==   0b00100000);\n"
-        "    ASSERT( 48 ==   0b00110000);\n"
-        "    ASSERT( 64 ==   0b01000000);\n"
-        "    ASSERT( 96 ==   0b01100000);\n"
-        "    ASSERT(128 ==   0b10000000);\n"
-        "    ASSERT(192 ==   0b11000000);\n"
-        "    ASSERT(256 ==  0b100000000);\n"
-        "    ASSERT(384 ==  0b110000000);\n"
-        "    ASSERT(512 == 0b1000000000);\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        extern void TestBinaryLiterals() {
+            ASSERT(  8 ==   0b00001000);
+            ASSERT( 12 ==   0b00001100);
+            ASSERT( 16 ==   0b00010000);
+            ASSERT( 24 ==   0b00011000);
+            ASSERT( 32 ==   0b00100000);
+            ASSERT( 48 ==   0b00110000);
+            ASSERT( 64 ==   0b01000000);
+            ASSERT( 96 ==   0b01100000);
+            ASSERT(128 ==   0b10000000);
+            ASSERT(192 ==   0b11000000);
+            ASSERT(256 ==  0b100000000);
+            ASSERT(384 ==  0b110000000);
+            ASSERT(512 == 0b1000000000);
+        }
+    )");
 }
 
 TEST_F(CBotUT, TestSwitchCase)
 {
-    ExecuteTest(
-        "extern void Test_Switch_Case() {\n"
-        "    int n = 0, c = 0;\n"
-        "    for (int i = -9; i < 11; ++i) {\n"
-        "        switch (i) {\n"
-        "            case -9: n = -9; ++c; break;\n"
-        "            case -8: n = -8; ++c; break;\n"
-        "            case -7: n = -7; ++c; break;\n"
-        "            case -6: n = -6; ++c; break;\n"
-        "            case -5: n = -5; ++c; break;\n"
-        "            case -4: n = -4; ++c; break;\n"
-        "            case -3: n = -3; ++c; break;\n"
-        "            case -2: n = -2; ++c; break;\n"
-        "            case -1: n = -1; ++c; break;\n"
-        "            case 0: n = 0; ++c; break;\n"
-        "            case 1: n = 1; ++c; break;\n"
-        "            case 2: n = 2; ++c; break;\n"
-        "            case 3: n = 3; ++c; break;\n"
-        "            case 4: n = 4; ++c; break;\n"
-        "            case 5: n = 5; ++c; break;\n"
-        "            case 6: n = 6; ++c; break;\n"
-        "            case 7: n = 7; ++c; break;\n"
-        "            case 8: n = 8; ++c; break;\n"
-        "            case 9: n = 9; ++c; break;\n"
-        "            default: n = 10; ++c; break;\n"
-        "        }\n"
-        "        ASSERT(n == i);\n"
-        "    }\n"
-        "    ASSERT(n == 10);\n"
-        "    ASSERT(c == 20);\n"
-        "}\n"
-        "extern void Test_Case_With_Math() {\n"
-        "    int n = 0, c = 0;\n"
-        "    for (int i = -9; i < 11; ++i) {\n"
-        "        switch (i * 10) {\n"
-        "            case -9*10: n = -90; ++c; break;\n"
-        "            case -8*10: n = -80; ++c; break;\n"
-        "            case -7*10: n = -70; ++c; break;\n"
-        "            case -6*10: n = -60; ++c; break;\n"
-        "            case -5*10: n = -50; ++c; break;\n"
-        "            case -4*10: n = -40; ++c; break;\n"
-        "            case -3*10: n = -30; ++c; break;\n"
-        "            case -2*10: n = -20; ++c; break;\n"
-        "            case -1*10: n = -10; ++c; break;\n"
-        "            case 0*10: n = 0; ++c; break;\n"
-        "            case 1*10: n = 10; ++c; break;\n"
-        "            case 2*10: n = 20; ++c; break;\n"
-        "            case 3*10: n = 30; ++c; break;\n"
-        "            case 4*10: n = 40; ++c; break;\n"
-        "            case 5*10: n = 50; ++c; break;\n"
-        "            case 6*10: n = 60; ++c; break;\n"
-        "            case 7*10: n = 70; ++c; break;\n"
-        "            case 8*10: n = 80; ++c; break;\n"
-        "            case 9*10: n = 90; ++c; break;\n"
-        "            default: n = 100; ++c; break;\n"
-        "        }\n"
-        "        ASSERT(n == i * 10);\n"
-        "    }\n"
-        "    ASSERT(n == 100);\n"
-        "    ASSERT(c == 20);\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        extern void Test_Switch_Case() {
+            int n = 0, c = 0;
+            for (int i = -9; i < 11; ++i) {
+                switch (i) {
+                    case -9: n = -9; ++c; break;
+                    case -8: n = -8; ++c; break;
+                    case -7: n = -7; ++c; break;
+                    case -6: n = -6; ++c; break;
+                    case -5: n = -5; ++c; break;
+                    case -4: n = -4; ++c; break;
+                    case -3: n = -3; ++c; break;
+                    case -2: n = -2; ++c; break;
+                    case -1: n = -1; ++c; break;
+                    case 0: n = 0; ++c; break;
+                    case 1: n = 1; ++c; break;
+                    case 2: n = 2; ++c; break;
+                    case 3: n = 3; ++c; break;
+                    case 4: n = 4; ++c; break;
+                    case 5: n = 5; ++c; break;
+                    case 6: n = 6; ++c; break;
+                    case 7: n = 7; ++c; break;
+                    case 8: n = 8; ++c; break;
+                    case 9: n = 9; ++c; break;
+                    default: n = 10; ++c; break;
+                }
+                ASSERT(n == i);
+            }
+            ASSERT(n == 10);
+            ASSERT(c == 20);
+        }
+        extern void Test_Case_With_Math() {
+            int n = 0, c = 0;
+            for (int i = -9; i < 11; ++i) {
+                switch (i * 10) {
+                    case -9*10: n = -90; ++c; break;
+                    case -8*10: n = -80; ++c; break;
+                    case -7*10: n = -70; ++c; break;
+                    case -6*10: n = -60; ++c; break;
+                    case -5*10: n = -50; ++c; break;
+                    case -4*10: n = -40; ++c; break;
+                    case -3*10: n = -30; ++c; break;
+                    case -2*10: n = -20; ++c; break;
+                    case -1*10: n = -10; ++c; break;
+                    case 0*10: n = 0; ++c; break;
+                    case 1*10: n = 10; ++c; break;
+                    case 2*10: n = 20; ++c; break;
+                    case 3*10: n = 30; ++c; break;
+                    case 4*10: n = 40; ++c; break;
+                    case 5*10: n = 50; ++c; break;
+                    case 6*10: n = 60; ++c; break;
+                    case 7*10: n = 70; ++c; break;
+                    case 8*10: n = 80; ++c; break;
+                    case 9*10: n = 90; ++c; break;
+                    default: n = 100; ++c; break;
+                }
+                ASSERT(n == i * 10);
+            }
+            ASSERT(n == 100);
+            ASSERT(c == 20);
+        }
+    )");
 
-    ExecuteTest(
-        "extern void Duplicate_Case() {\n"
-        "    switch(0) {\n"
-        "        case 1000:\n"
-        "        case 10*100:\n"
-        "    }\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void Duplicate_Case() {
+            switch(0) {
+                case 1000:
+                case 10*100:
+            }
+        }
+        )",
         CBotErrRedefCase
     );
 
-    ExecuteTest(
-        "extern void Duplicate_Default() {\n"
-        "    switch(0) {\n"
-        "        default:\n"
-        "        default:\n"
-        "    }\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void Duplicate_Default() {
+            switch(0) {
+                default:
+                default:
+            }
+        }
+        )",
         CBotErrRedefCase
     );
 }
 
 TEST_F(CBotUT, TestRepeatInstruction)
 {
-    ExecuteTest(
-        "extern void TestRepeat() {\n"
-        "    int c = 0;\n"
-        "    for (int i = 1; i < 11; ++i)\n"
-        "    {\n"
-        "        repeat (i) ++c;\n"
-        "    }\n"
-        "    ASSERT(c == 55);\n"
-        "}\n"
-        "extern void TestRepeatBreakAndContinue() {\n"
-        "    int c = 0;\n"
-        "    repeat (10)\n"
-        "    {\n"
-        "        if (++c == 5) break;\n"
-        "        continue;\n"
-        "        FAIL();\n"
-        "    }\n"
-        "    ASSERT(c == 5);\n"
-        "    label:repeat (10)\n"
-        "    {\n"
-        "        if (++c == 10) break label;\n"
-        "        continue label;\n"
-        "        FAIL();\n"
-        "    }\n"
-        "    ASSERT(c == 10);\n"
-        "}\n"
-        "extern void NoRepeatNumberLessThanOne() {\n"
-        "    repeat (0) FAIL();\n"
-        "    repeat (-1) FAIL();\n"
-        "    repeat (-2) FAIL();\n"
-        "}\n"
-        "extern void EvaluateExpressionOnlyOnce() {\n"
-        "    int c = 0;\n"
-        "    repeat (c + 5) ASSERT(++c < 6);\n"
-        "    ASSERT(c == 5);\n"
-        "}\n"
-    );
-    ExecuteTest(
-        "extern void MissingOpenParen() {\n"
-        "    repeat ;\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void TestRepeat() {
+            int c = 0;
+            for (int i = 1; i < 11; ++i)
+            {
+                repeat (i) ++c;
+            }
+            ASSERT(c == 55);
+        }
+        extern void TestRepeatBreakAndContinue() {
+            int c = 0;
+            repeat (10)
+            {
+                if (++c == 5) break;
+                continue;
+                FAIL();
+            }
+            ASSERT(c == 5);
+            label:repeat (10)
+            {
+                if (++c == 10) break label;
+                continue label;
+                FAIL();
+            }
+            ASSERT(c == 10);
+        }
+        extern void NoRepeatNumberLessThanOne() {
+            repeat (0) FAIL();
+            repeat (-1) FAIL();
+            repeat (-2) FAIL();
+        }
+        extern void EvaluateExpressionOnlyOnce() {
+            int c = 0;
+            repeat (c + 5) ASSERT(++c < 6);
+            ASSERT(c == 5);
+        }
+    )");
+    ExecuteTest(R"(
+        extern void MissingOpenParen() {
+            repeat ;
+        }
+        )",
         CBotErrOpenPar
     );
-    ExecuteTest(
-        "extern void MissingNumber() {\n"
-        "    repeat (;\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void MissingNumber() {
+            repeat (;
+        }
+        )",
         CBotErrBadNum
     );
-    ExecuteTest(
-        "extern void WrongType() {\n"
-        "    repeat (\"not number\");\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void WrongType() {
+            repeat ("not number");
+        }
+        )",
         CBotErrBadType1
     );
-    ExecuteTest(
-        "extern void MissingCloseParen() {\n"
-        "    repeat (2;\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void MissingCloseParen() {
+            repeat (2;
+        }
+        )",
         CBotErrClosePar
     );
 }
 
 TEST_F(CBotUT, ToString)
 {
-    ExecuteTest(
-        "extern void ArrayToString()\n"
-        "{\n"
-        "    int[] array = {2, 4, 6};\n"
-        "    string arrayStr = \"\"+array;\n"
-        "    ASSERT(arrayStr == \"{ 2, 4, 6 }\");\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        extern void ArrayToString()
+        {
+            int[] array = {2, 4, 6};
+            string arrayStr = ""+array;
+            ASSERT(arrayStr == "{ 2, 4, 6 }");
+        }
+    )");
 
     ExecuteTest(
         "public class Test { int a = 1337; }\n"
@@ -995,25 +1009,27 @@ TEST_F(CBotUT, Arrays)
         "}\n"
     );
 
-    ExecuteTest(
-        "extern void LimitedArrayTest()\n"
-        "{\n"
-        "    int a[5];\n"
-        "    ASSERT(sizeof(a) == 0);\n"
-        "    a[0] = 1;\n"
-        "    ASSERT(sizeof(a) == 1);\n"
-        "    a[4] = 1;\n"
-        "    ASSERT(sizeof(a) == 5);\n"
-        "    a[5] = 1;\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void LimitedArrayTest()
+        {
+            int a[5];
+            ASSERT(sizeof(a) == 0);
+            a[0] = 1;
+            ASSERT(sizeof(a) == 1);
+            a[4] = 1;
+            ASSERT(sizeof(a) == 5);
+            a[5] = 1;
+        }
+        )",
         CBotErrOutArray
     );
 
-    ExecuteTest(
-        "extern void BadArrayDeclarationTest()\n"
-        "{\n"
-        "    int[5] a;\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void BadArrayDeclarationTest()
+        {
+            int[5] a;
+        }
+        )",
         CBotErrCloseIndex
     );
 }
@@ -1045,440 +1061,460 @@ TEST_F(CBotUT, ArraysInClasses)
 
 TEST_F(CBotUT, ArraysOfClasses)
 {
-    ExecuteTest(
-        "public class TestClass {\n"
-        "    public int i = 0;\n"
-        "}\n"
-        "extern void ArraysInClasses()\n"
-        "{\n"
-        "    TestClass test[];\n"
-        "    test[0] = new TestClass();\n"
-        "    test[0].i = 5;\n"
-        "    ASSERT(test[0].i == 5);\n"
-        "    \n"
-        "    TestClass[] test2;\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        public class TestClass {
+            public int i = 0;
+        }
+        extern void ArraysInClasses()
+        {
+            TestClass test[];
+            test[0] = new TestClass();
+            test[0].i = 5;
+            ASSERT(test[0].i == 5);
+            
+            TestClass[] test2;
+        }
+    )");
 }
 
 TEST_F(CBotUT, Functions)
 {
-    ExecuteTest(
-        "bool notThisOne()\n"
-        "{\n"
-        "    return false;\n"
-        "}\n"
-        "bool testFunction()\n"
-        "{\n"
-        "    return true;\n"
-        "}\n"
-        "\n"
-        "extern void Functions()\n"
-        "{\n"
-        "    ASSERT(testFunction());\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        bool notThisOne()
+        {
+            return false;
+        }
+        bool testFunction()
+        {
+            return true;
+        }
+        
+        extern void Functions()
+        {
+            ASSERT(testFunction());
+        }
+    )");
 }
 
 
 TEST_F(CBotUT, FunctionRecursion)
 {
-    ExecuteTest(
-        "int fact(int x)\n"
-        "{\n"
-        "    if(x == 0) return 1;\n"
-        "    return fact(x-1) * x;\n"
-        "}\n"
-        "\n"
-        "extern void FunctionRecursion()\n"
-        "{\n"
-        "    ASSERT(fact(10) == 3628800);\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        int fact(int x)
+        {
+            if(x == 0) return 1;
+            return fact(x-1) * x;
+        }
+        
+        extern void FunctionRecursion()
+        {
+            ASSERT(fact(10) == 3628800);
+        }
+    )");
 }
 
 TEST_F(CBotUT, FunctionRecursionStackOverflow)
 {
-    ExecuteTest(
-        "extern void StackOverflow()\n"
-        "{\n"
-        "    StackOverflow();\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void StackOverflow()
+        {
+            StackOverflow();
+        }
+        )",
         CBotErrStackOver
     );
 }
 
 TEST_F(CBotUT, FunctionOverloading)
 {
-    ExecuteTest(
-        "int func(string test)\n"
-        "{\n"
-        "    return 1;\n"
-        "}\n"
-        "int func(int test)\n"
-        "{\n"
-        "    return 2;\n"
-        "}\n"
-        "\n"
-        "extern void FunctionOverloading()\n"
-        "{\n"
-        "    ASSERT(func(\"5\") == 1);\n"
-        "    ASSERT(func(5) == 2);\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        int func(string test)
+        {
+            return 1;
+        }
+        int func(int test)
+        {
+            return 2;
+        }
+        
+        extern void FunctionOverloading()
+        {
+            ASSERT(func("5") == 1);
+            ASSERT(func(5) == 2);
+        }
+    )");
 }
 
 TEST_F(CBotUT, FunctionRedefined)
 {
-    ExecuteTest(
-        "int func(int test)\n"
-        "{\n"
-        "    return 1;\n"
-        "}\n"
-        "int func(int test)\n"
-        "{\n"
-        "    return 2;\n"
-        "}\n",
+    ExecuteTest(R"(
+        int func(int test)
+        {
+            return 1;
+        }
+        int func(int test)
+        {
+            return 2;
+        }
+        )",
         CBotErrRedefFunc
     );
 
-    ExecuteTest(
-        "int func(int[] test)\n"
-        "{\n"
-        "    return 1;\n"
-        "}\n"
-        "int func(int[] test)\n"
-        "{\n"
-        "    return 2;\n"
-        "}\n",
+    ExecuteTest(R"(
+        int func(int[] test)
+        {
+            return 1;
+        }
+        int func(int[] test)
+        {
+            return 2;
+        }
+        )",
         CBotErrRedefFunc
     );
 }
 
 TEST_F(CBotUT, FunctionBadReturn)
 {
-    ExecuteTest(
-        "int func()\n"
-        "{\n"
-        "    return \"test\";\n"
-        "}\n"
-        "extern void FunctionBadReturn()\n"
-        "{\n"
-        "    int a = func();\n"
-        "}\n",
+    ExecuteTest(R"(
+        int func()
+        {
+            return "test";
+        }
+        extern void FunctionBadReturn()
+        {
+            int a = func();
+        }
+        )",
         CBotErrBadType1
     );
 }
 
 TEST_F(CBotUT, FunctionNoReturn)
 {
-    ExecuteTest(
-        "int func()\n"
-        "{\n"
-        "}\n"
-        "extern void FunctionNoReturn()\n"
-        "{\n"
-        "    func();\n"
-        "}\n",
+    ExecuteTest(R"(
+        int func()
+        {
+        }
+        extern void FunctionNoReturn()
+        {
+            func();
+        }
+        )",
         CBotErrNoReturn
     );
 
-    ExecuteTest(
-        "int FuncDoesNotReturnAValue()\n"
-        "{\n"
-        "    if (false) return 1;\n"
-        "    while (false) return 1;\n"
-        "    if (true) ; else return 1;\n"
-        "    do { break; return 1; } while (false);\n"
-        "    do { continue; return 1; } while (false);\n"
-        "}\n",
+    ExecuteTest(R"(
+        int FuncDoesNotReturnAValue()
+        {
+            if (false) return 1;
+            while (false) return 1;
+            if (true) ; else return 1;
+            do { break; return 1; } while (false);
+            do { continue; return 1; } while (false);
+        }
+        )",
         CBotErrNoReturn
     );
 
-    ExecuteTest(
-        "int FuncHasReturn()\n"
-        "{\n"
-        "    return 1;\n"
-        "}\n"
-        "int BlockHasReturn()\n"
-        "{\n"
-        "    {\n"
-        "        {\n"
-        "        }\n"
-        "        return 2;\n"
-        "    }\n"
-        "}\n"
-        "int IfElseHasReturn()\n"
-        "{\n"
-        "    if (false) {\n"
-        "        return 3;\n"
-        "    } else {\n"
-        "        if (false) return 3;\n"
-        "        else return 3;\n"
-        "    }\n"
-        "}\n"
-        "extern void Test()\n"
-        "{\n"
-        "    ASSERT(1 == FuncHasReturn());\n"
-        "    ASSERT(2 == BlockHasReturn());\n"
-        "    ASSERT(3 == IfElseHasReturn());\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        int FuncHasReturn()
+        {
+            return 1;
+        }
+        int BlockHasReturn()
+        {
+            {
+                {
+                }
+                return 2;
+            }
+        }
+        int IfElseHasReturn()
+        {
+            if (false) {
+                return 3;
+            } else {
+                if (false) return 3;
+                else return 3;
+            }
+        }
+        extern void Test()
+        {
+            ASSERT(1 == FuncHasReturn());
+            ASSERT(2 == BlockHasReturn());
+            ASSERT(3 == IfElseHasReturn());
+        }
+    )");
 }
 
 TEST_F(CBotUT, PublicFunctions)
 {
     // Keep the program, so that the function continues to exist after ExecuteTest finishes
-    auto publicProgram = ExecuteTest(
-        "public int test()\n"
-        "{\n"
-        "    return 1337;\n"
-        "}\n"
-    );
+    auto publicProgram = ExecuteTest(R"(
+        public int test()
+        {
+            return 1337;
+        }
+    )");
 
-    ExecuteTest(
-        "extern void TestPublic()\n"
-        "{\n"
-        "    ASSERT(test() == 1337);\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        extern void TestPublic()
+        {
+            ASSERT(test() == 1337);
+        }
+    )");
 
     publicProgram.reset(); // Now remove
 
-    ExecuteTest(
-        "extern void TestPublicRemoved()\n"
-        "{\n"
-        "    ASSERT(test() == 1337);\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void TestPublicRemoved()
+        {
+            ASSERT(test() == 1337);
+        }
+        )",
         CBotErrUndefCall
     );
 }
 
 TEST_F(CBotUT, ClassConstructor)
 {
-    ExecuteTest(
-        "public class TestClass {\n"
-        "    public static int instanceCounter = 0;\n"
-        "    public void TestClass() {\n"
-        "        instanceCounter++;\n"
-        "    }\n"
-        "}\n"
-        "\n"
-        "extern void ClassConstructor()\n"
-        "{\n"
-        "    TestClass t1();\n"
-        "    ASSERT(t1.instanceCounter == 1);\n"
-        "    ASSERT(t1 != null);\n"
-        "    TestClass t2; // not calling the constructor!\n"
-        "    ASSERT(t1.instanceCounter == 1);\n"
+    ExecuteTest(R"(
+        public class TestClass {
+            public static int instanceCounter = 0;
+            public void TestClass() {
+                instanceCounter++;
+            }
+        }
+        
+        extern void ClassConstructor()
+        {
+            TestClass t1();
+            ASSERT(t1.instanceCounter == 1);
+            ASSERT(t1 != null);
+            TestClass t2; // not calling the constructor!
+            ASSERT(t1.instanceCounter == 1);
         //"    ASSERT(t2 == null);\n" // TODO: I was pretty sure that's how it worked, but apparently not...
-        "    TestClass t3 = new TestClass();\n"
-        "    ASSERT(t1.instanceCounter == 2);\n"
-        "    ASSERT(t3.instanceCounter == 2);\n"
-        "    ASSERT(t3 != null);\n"
-        "    ASSERT(t3 != t1);\n"
-        "}\n"
-    );
+            TestClass t3 = new TestClass();
+            ASSERT(t1.instanceCounter == 2);
+            ASSERT(t3.instanceCounter == 2);
+            ASSERT(t3 != null);
+            ASSERT(t3 != t1);
+        }
+    )");
 }
 
 TEST_F(CBotUT, ClassDestructor)
 {
-    ExecuteTest(
-        "public class TestClass {\n"
-        "    public static int instanceCounter = 0;\n"
-        "    public void TestClass() {\n"
-        "        instanceCounter++;\n"
-        "    }\n"
-        "    public void ~TestClass() {\n"
-        "        instanceCounter--;\n"
-        "    }\n"
-        "}\n"
-        "\n"
-        "extern void ClassDestructor()\n"
-        "{\n"
-        "    TestClass t1();\n"
-        "    ASSERT(t1.instanceCounter == 1);\n"
-        "    {\n"
-        "        TestClass t2();\n"
-        "        ASSERT(t2.instanceCounter == 2);\n"
-        "        ASSERT(t1.instanceCounter == 2);\n"
-        "    }\n"
-        "    ASSERT(t1.instanceCounter == 1);\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        public class TestClass {
+            public static int instanceCounter = 0;
+            public void TestClass() {
+                instanceCounter++;
+            }
+            public void ~TestClass() {
+                instanceCounter--;
+            }
+        }
+        
+        extern void ClassDestructor()
+        {
+            TestClass t1();
+            ASSERT(t1.instanceCounter == 1);
+            {
+                TestClass t2();
+                ASSERT(t2.instanceCounter == 2);
+                ASSERT(t1.instanceCounter == 2);
+            }
+            ASSERT(t1.instanceCounter == 1);
+        }
+    )");
 }
 
 TEST_F(CBotUT, ClassBadNew)
 {
-    ExecuteTest(
-        "public class AClass {};\n"
-        "extern void ClassBadNew()\n"
-        "{\n"
-        "    AClass a = new \"abc\";\n"
-        "}\n",
+    ExecuteTest(R"(
+        public class AClass {};
+        extern void ClassBadNew()
+        {
+            AClass a = new "abc";
+        }
+        )",
         CBotErrBadNew
     );
 }
 
 TEST_F(CBotUT, ClassCallOnNull)
 {
-    ExecuteTest(
-        "public class AClass {\n"
-        "    public void test() {}\n"
-        "};\n"
-        "extern void ClassCallOnNull()\n"
-        "{\n"
-        "    AClass a = null;\n"
-        "    a.test();\n"
-        "}\n",
+    ExecuteTest(R"(
+        public class AClass {
+            public void test() {}
+        };
+        extern void ClassCallOnNull()
+        {
+            AClass a = null;
+            a.test();
+        }
+        )",
         CBotErrNull
     );
 }
 
 TEST_F(CBotUT, ClassNullPointer)
 {
-    ExecuteTest(
-        "public class TestClass {\n"
-        "    public void TestClass() {\n"
-        "        FAIL();\n"
-        "    }\n"
-        "}\n"
-        "extern void TestClassNullPointer()\n"
-        "{\n"
-        "    TestClass t;\n"
+    ExecuteTest(R"(
+        public class TestClass {
+            public void TestClass() {
+                FAIL();
+            }
+        }
+        extern void TestClassNullPointer()
+        {
+            TestClass t;
         //"    ASSERT(t == null);\n" // TODO: OH REALLY?
-        "    TestClass t2 = null;\n"
-        "    ASSERT(t2 == null);\n"
-        "}\n"
-    );
-    ExecuteTest(
-        "public class TestClass {\n"
-        "    public int x = 0;"
-        "    public void TestClass() {\n"
-        "        FAIL();\n"
-        "    }\n"
-        "}\n"
-        "extern void TestClassNullPointerAccess()\n"
-        "{\n"
-        "    TestClass t;\n"
-        "    int y = t.x;\n"
-        "}\n",
+            TestClass t2 = null;
+            ASSERT(t2 == null);
+        }
+    )");
+    ExecuteTest(R"(
+        public class TestClass {
+            public int x = 0;
+            public void TestClass() {
+                FAIL();
+            }
+        }
+        extern void TestClassNullPointerAccess()
+        {
+            TestClass t;
+            int y = t.x;
+        }
+        )",
         CBotErrNull
     );
 }
 
 TEST_F(CBotUT, ClassDestructorNaming)
 {
-    ExecuteTest(
-        "public class TestClass {\n"
-        "    public void ~SomethingElse() {}\n"
-        "}\n",
+    ExecuteTest(R"(
+        public class TestClass {
+            public void ~SomethingElse() {}
+        }
+        )",
         CBotErrNoFunc
     );
-    ExecuteTest(
-        "public class SomethingElse {\n"
-        "}\n"
-        "public class TestClass2 {\n"
-        "    public void ~SomethingElse() {}\n"
-        "}\n",
+    ExecuteTest(R"(
+        public class SomethingElse {
+        }
+        public class TestClass2 {
+            public void ~SomethingElse() {}
+        }
+        )",
         CBotErrNoFunc
     );
 }
 
 TEST_F(CBotUT, ClassDestructorSyntax)
 {
-    ExecuteTest(
-        "public class TestClass {\n"
-        "    void ~TestClass(int i) {}\n"
-        "}\n"
-        "extern void DestructorNoParams() {}\n",
+    ExecuteTest(R"(
+        public class TestClass {
+            void ~TestClass(int i) {}
+        }
+        extern void DestructorNoParams() {}
+        )",
         CBotErrClosePar
     );
 
-    ExecuteTest(
-        "public class TestClass {\n"
-        "    int ~TestClass() {}\n"
-        "}\n"
-        "extern void DestructorReturnTypeVoid() {}\n",
+    ExecuteTest(R"(
+        public class TestClass {
+            int ~TestClass() {}
+        }
+        extern void DestructorReturnTypeVoid() {}
+        )",
         CBotErrFuncNotVoid
     );
 }
 
 TEST_F(CBotUT, ClassMethodOverloading)
 {
-    ExecuteTest(
-        "public class TestClass {\n"
-        "    public int test(string test) {\n"
-        "        return 1;\n"
-        "    }\n"
-        "    public int test(int test) {\n"
-        "        return 2;"
-        "    }\n"
-        "}\n"
-        "extern void ClassMethodOverloading() {\n"
-        "    TestClass t();\n"
-        "    ASSERT(t.test(\"5\") == 1);\n"
-        "    ASSERT(t.test(5) == 2);\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        public class TestClass {
+            public int test(string test) {
+                return 1;
+            }
+            public int test(int test) {
+                return 2;
+            }
+        }
+        extern void ClassMethodOverloading() {
+            TestClass t();
+            ASSERT(t.test("5") == 1);
+            ASSERT(t.test(5) == 2);
+        }
+    )");
 }
 
 TEST_F(CBotUT, ClassMethodRedefined)
 {
-    ExecuteTest(
-        "public class TestClass {\n"
-        "    public int test(string test) {\n"
-        "        return 1;\n"
-        "    }\n"
-        "    public int test(string test) {\n"
-        "        return 2;\n"
-        "    }\n"
-        "}\n",
+    ExecuteTest(R"(
+        public class TestClass {
+            public int test(string test) {
+                return 1;
+            }
+            public int test(string test) {
+                return 2;
+            }
+        }
+        )",
         CBotErrRedefFunc
     );
 
-    ExecuteTest(
-        "public class TestClass {\n"
-        "    public int test(int[] test) {\n"
-        "        return 1;\n"
-        "    }\n"
-        "    public int test(int[] test) {\n"
-        "        return 2;\n"
-        "    }\n"
-        "}\n",
+    ExecuteTest(R"(
+        public class TestClass {
+            public int test(int[] test) {
+                return 1;
+            }
+            public int test(int[] test) {
+                return 2;
+            }
+        }
+        )",
         CBotErrRedefFunc
     );
 
-    ExecuteTest(
-        "public class TestClass {\n"
-        "    void ~TestClass() {}\n"
-        "    void ~TestClass() {}\n"
-        "}\n",
+    ExecuteTest(R"(
+        public class TestClass {
+            void ~TestClass() {}
+            void ~TestClass() {}
+        }
+        )",
         CBotErrRedefFunc
     );
 }
 
 TEST_F(CBotUT, ClassFieldNaming)
 {
-    ExecuteTest(
-        "public class TestClass {\n"
-        "    int ~i = 1;\n"
-        "}\n",
+    ExecuteTest(R"(
+        public class TestClass {
+            int ~i = 1;
+        }
+        )",
         CBotErrNoVar
     );
 
-    ExecuteTest(
-        "public class TestClass {\n"
-        "    int TestClass = 1;\n"
-        "}\n",
+    ExecuteTest(R"(
+        public class TestClass {
+            int TestClass = 1;
+        }
+        )",
         CBotErrNoVar
     );
 
-    ExecuteTest(
-        "public class TestClass {\n"
-        "    int i = 1;\n"
-        "    int i = 2;\n"
-        "}\n",
+    ExecuteTest(R"(
+        public class TestClass {
+            int i = 1;
+            int i = 2;
+        }
+        )",
         CBotErrRedefVar
     );
 }
@@ -1497,18 +1533,20 @@ TEST_F(CBotUT, ClassRedefinedInDifferentPrograms)
 
 TEST_F(CBotUT, ClassRedefinedInOneProgram)
 {
-    ExecuteTest(
-        "public class TestClass {}\n"
-        "public class TestClass {}\n",
+    ExecuteTest(R"(
+        public class TestClass {}
+        public class TestClass {}
+        )",
         CBotErrRedefClass
     );
 }
 
 TEST_F(CBotUT, ClassMissingCloseBlock)
 {
-    ExecuteTest(
-        "public class Something\n"
-        "{\n",
+    ExecuteTest(R"(
+        public class Something
+        {
+        )",
         CBotErrCloseBlock
     );
 }
@@ -1517,503 +1555,510 @@ TEST_F(CBotUT, ClassMissingCloseBlock)
 TEST_F(CBotUT, DISABLED_PublicClasses)
 {
     // Keep the program, so that the class continues to exist after ExecuteTest finishes
-    auto publicProgram = ExecuteTest(
-        "public class TestClass\n"
-        "{\n"
-        "}\n"
-    );
+    auto publicProgram = ExecuteTest(R"(
+        public class TestClass
+        {
+        }
+    )");
 
-    ExecuteTest(
-        "extern void TestPublic()\n"
-        "{\n"
-        "    TestClass t();\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        extern void TestPublic()
+        {
+            TestClass t();
+        }
+    )");
 
     publicProgram.reset(); // Now remove
 
-    ExecuteTest(
-        "extern void TestPublicRemoved()\n"
-        "{\n"
-        "    TestClass t();\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void TestPublicRemoved()
+        {
+            TestClass t();
+        }
+        )",
         CBotErrUndefClass
     );
 }
 
 TEST_F(CBotUT, ThisEarlyContextSwitch_Issue436)
 {
-    ExecuteTest(
-        "public class Something {\n"
-        "    public int a = 7;"
-        "    void test2(int i, int expected) {\n"
-        "        ASSERT(i == expected);\n"
-        "    }\n"
-        "}"
-        "public class TestClass {\n"
-        "    public int i = 5;\n"
-        "    public void test(Something s) {\n"
-        "        s.test2(this.i, 5);\n"
-        "    }\n"
-        "}\n"
-        "extern void WeirdClassThisAsParamThing()\n"
-        "{\n"
-        "    Something s();\n"
-        "    TestClass t();"
-        "    t.test(s);\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        public class Something {
+            public int a = 7;
+            void test2(int i, int expected) {
+                ASSERT(i == expected);
+            }
+        }
+        public class TestClass {
+            public int i = 5;
+            public void test(Something s) {
+                s.test2(this.i, 5);
+            }
+        }
+        extern void WeirdClassThisAsParamThing()
+        {
+            Something s();
+            TestClass t();
+            t.test(s);
+        }
+    )");
 }
 
 TEST_F(CBotUT, ClassStringAdd_Issue535)
 {
-    ExecuteTest(
-        "public class TestClass {}\n"
-        "extern void ClassStringAdd()\n"
-        "{\n"
-        "    TestClass t();\n"
-        "    string s = t + \"!\";\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        public class TestClass {}
+        extern void ClassStringAdd()
+        {
+            TestClass t();
+            string s = t + "!";
+        }
+    )");
 }
 
 TEST_F(CBotUT, ClassInheritanceAssignment)
 {
-    ExecuteTest(
-        "public class BaseClass {}\n"
-        "public class MidClass extends BaseClass {}\n"
-        "public class SubClass extends MidClass {}\n"
-        "extern void ClassInheritanceAssignment()\n"
-        "{\n"
-        "    BaseClass bc = new MidClass();\n"
-        "    MidClass  mc = bc;\n"
-        "    mc = new SubClass();\n"
-        "    SubClass  sc = mc;\n"
-        "    bc = mc;\n"
-        "    bc = new MidClass();\n"
-        "    bc = new SubClass();\n"
-        "    sc = bc;\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        public class BaseClass {}
+        public class MidClass extends BaseClass {}
+        public class SubClass extends MidClass {}
+        extern void ClassInheritanceAssignment()
+        {
+            BaseClass bc = new MidClass();
+            MidClass  mc = bc;
+            mc = new SubClass();
+            SubClass  sc = mc;
+            bc = mc;
+            bc = new MidClass();
+            bc = new SubClass();
+            sc = bc;
+        }
+    )");
 }
 
 TEST_F(CBotUT, ClassInheritanceVars)
 {
-    ExecuteTest(
-        "public class BaseClass {\n"
-        "    int a = 123;\n"
-        "    int b = 456;\n"
-        "    int c = 789;\n"
-        "}\n"
-        "public class MidClass extends BaseClass {\n"
-        "    int b = 1011;\n"
-        "    int c = 1213;\n"
-        "    int d = 1415;\n"
-        "}\n"
-        "public class SubClass extends MidClass {\n"
-        "    int c = 1617;\n"
-        "    int d = 1819;\n"
-        "    int e = 2021;\n"
-        "}\n"
-        "extern void ClassInheritanceVars()\n"
-        "{\n"
-        "    BaseClass bc();\n"
-        "    ASSERT(bc.a == 123);\n"
-        "    ASSERT(bc.b == 456);\n"
-        "    ASSERT(bc.c == 789);\n"
-        "    MidClass  mc();\n"
-        "    ASSERT(mc.a == 123);\n"
-        "    ASSERT(mc.b == 1011);\n"
-        "    ASSERT(mc.c == 1213);\n"
-        "    ASSERT(mc.d == 1415);\n"
-        "    SubClass  sc();\n"
-        "    ASSERT(sc.a == 123);\n"
-        "    ASSERT(sc.b == 1011);\n"
-        "    ASSERT(sc.c == 1617);\n"
-        "    ASSERT(sc.d == 1819);\n"
-        "    ASSERT(sc.e == 2021);\n"
+    ExecuteTest(R"(
+        public class BaseClass {
+            int a = 123;
+            int b = 456;
+            int c = 789;
+        }
+        public class MidClass extends BaseClass {
+            int b = 1011;
+            int c = 1213;
+            int d = 1415;
+        }
+        public class SubClass extends MidClass {
+            int c = 1617;
+            int d = 1819;
+            int e = 2021;
+        }
+        extern void ClassInheritanceVars()
+        {
+            BaseClass bc();
+            ASSERT(bc.a == 123);
+            ASSERT(bc.b == 456);
+            ASSERT(bc.c == 789);
+            MidClass  mc();
+            ASSERT(mc.a == 123);
+            ASSERT(mc.b == 1011);
+            ASSERT(mc.c == 1213);
+            ASSERT(mc.d == 1415);
+            SubClass  sc();
+            ASSERT(sc.a == 123);
+            ASSERT(sc.b == 1011);
+            ASSERT(sc.c == 1617);
+            ASSERT(sc.d == 1819);
+            ASSERT(sc.e == 2021);
         // Test polymorphism
-        "    bc = mc;\n"
-        "    ASSERT(bc.a == 123);\n"
-        "    ASSERT(bc.b == 456);\n"
-        "    ASSERT(bc.c == 789);\n"
-        "    mc = sc;\n"
-        "    ASSERT(mc.a == 123);\n"
-        "    ASSERT(mc.b == 1011);\n"
-        "    ASSERT(mc.c == 1213);\n"
-        "    ASSERT(mc.d == 1415);\n"
-        "}\n"
-    );
+            bc = mc;
+            ASSERT(bc.a == 123);
+            ASSERT(bc.b == 456);
+            ASSERT(bc.c == 789);
+            mc = sc;
+            ASSERT(mc.a == 123);
+            ASSERT(mc.b == 1011);
+            ASSERT(mc.c == 1213);
+            ASSERT(mc.d == 1415);
+        }
+    )");
 }
 
 TEST_F(CBotUT, ClassInheritanceMethods)
 {
-    ExecuteTest(
-        "public class BaseClass {\n"
-        "    int a = 123;\n"
-        "    int b = 456;\n"
-        "    int c = 789;\n"
-        "    int testOverride() { return 123; }\n"
-        "    int testNoOverride() { return 456; }\n"
-        "    int testInsideBaseClass() {\n"
-        "        ASSERT(a == 123);\n"
-        "        ASSERT(b == 456);\n"
-        "        ASSERT(c == 789);\n"
-        "        ASSERT(456 == testNoOverride());\n"
-        "        return c;\n"
-        "    }\n"
-        "    int testInsideBaseOverride() { return testOverride(); }\n"
-        "}\n"
-        "public class MidClass extends BaseClass {\n"
-        "    int b = 1011;\n"
-        "    int c = 1213;\n"
-        "    int d = 1415;\n"
-        "    int testOverride() { return 1011; }\n"
-        "    int testInsideMidClass() {\n"
-        "        ASSERT(a == 123);\n"
-        "        ASSERT(b == 1011);\n"
-        "        ASSERT(c == 1213);\n"
-        "        ASSERT(d == 1415);\n"
-        "        ASSERT(456  == testNoOverride());\n"
-        "        ASSERT(789  == testInsideBaseClass());\n"
-        "        return c;\n"
-        "    }\n"
-        "    int testSuper() {\n"
-        "        ASSERT(super.a == 123);\n"
-        "        ASSERT(super.b == 456);\n"
-        "        ASSERT(super.c == 789);\n"
-        "        ASSERT(123 == super.testOverride());\n"
-        "        ASSERT(789 == super.testInsideBaseClass());\n"
-        "        return super.testInsideBaseOverride();\n"
-        "    }\n"
-        "    int testInsideMidOverride() { return testOverride(); }\n"
-        "}\n"
-        "public class SubClass extends MidClass {\n"
-        "    int c = 1617;\n"
-        "    int d = 1819;\n"
-        "    int e = 2021;\n"
-        "    int testOverride() { return 1617; }\n"
-        "    int testInsideSubClass() {\n"
-        "        ASSERT(a == 123);\n"
-        "        ASSERT(b == 1011);\n"
-        "        ASSERT(c == 1617);\n"
-        "        ASSERT(d == 1819);\n"
-        "        ASSERT(e == 2021);\n"
-        "        ASSERT(456  == testNoOverride());\n"
-        "        ASSERT(789  == testInsideBaseClass());\n"
-        "        ASSERT(1213 == testInsideMidClass());\n"
-        "        return c;\n"
-        "    }\n"
-        "    int testSuper() {\n"
-        "        ASSERT(super.a == 123);\n"
-        "        ASSERT(super.b == 1011);\n"
-        "        ASSERT(super.c == 1213);\n"
-        "        ASSERT(super.d == 1415);\n"
-        "        ASSERT(1011 == super.testOverride());\n"
-        "        ASSERT(789  == super.testInsideBaseClass());\n"
-        "        ASSERT(1213 == super.testInsideMidClass());\n"
-        "        return super.testSuper();\n"
-        "    }\n"
-        "    int testInsideSubOverride() { return testOverride(); }\n"
-        "}\n"
-        "extern void InheritanceMethods()\n"
-        "{\n"
-        "    BaseClass bc();\n"
-        "    ASSERT(123 == bc.testOverride());\n"
-        "    ASSERT(456 == bc.testNoOverride());\n"
-        "    ASSERT(789 == bc.testInsideBaseClass());\n"
-        "    ASSERT(123 == bc.testInsideBaseOverride());\n"
-        "    MidClass  mc();\n"
-        "    ASSERT(1011 == mc.testSuper());\n"
-        "    ASSERT(1011 == mc.testOverride());\n"
-        "    ASSERT(456  == mc.testNoOverride());\n"
-        "    ASSERT(789  == mc.testInsideBaseClass());\n"
-        "    ASSERT(1213 == mc.testInsideMidClass());\n"
-        "    ASSERT(1011 == mc.testInsideBaseOverride());\n"
-        "    ASSERT(1011 == mc.testInsideMidOverride());\n"
-        "    SubClass  sc();\n"
-        "    ASSERT(1617 == sc.testSuper());\n"
-        "    ASSERT(1617 == sc.testOverride());\n"
-        "    ASSERT(456  == sc.testNoOverride());\n"
-        "    ASSERT(789  == sc.testInsideBaseClass());\n"
-        "    ASSERT(1213 == sc.testInsideMidClass());\n"
-        "    ASSERT(1617 == sc.testInsideSubClass());\n"
-        "    ASSERT(1617 == sc.testInsideBaseOverride());\n"
-        "    ASSERT(1617 == sc.testInsideMidOverride());\n"
-        "    ASSERT(1617 == sc.testInsideSubOverride());\n"
+    ExecuteTest(R"(
+        public class BaseClass {
+            int a = 123;
+            int b = 456;
+            int c = 789;
+            int testOverride() { return 123; }
+            int testNoOverride() { return 456; }
+            int testInsideBaseClass() {
+                ASSERT(a == 123);
+                ASSERT(b == 456);
+                ASSERT(c == 789);
+                ASSERT(456 == testNoOverride());
+                return c;
+            }
+            int testInsideBaseOverride() { return testOverride(); }
+        }
+        public class MidClass extends BaseClass {
+            int b = 1011;
+            int c = 1213;
+            int d = 1415;
+            int testOverride() { return 1011; }
+            int testInsideMidClass() {
+                ASSERT(a == 123);
+                ASSERT(b == 1011);
+                ASSERT(c == 1213);
+                ASSERT(d == 1415);
+                ASSERT(456  == testNoOverride());
+                ASSERT(789  == testInsideBaseClass());
+                return c;
+            }
+            int testSuper() {
+                ASSERT(super.a == 123);
+                ASSERT(super.b == 456);
+                ASSERT(super.c == 789);
+                ASSERT(123 == super.testOverride());
+                ASSERT(789 == super.testInsideBaseClass());
+                return super.testInsideBaseOverride();
+            }
+            int testInsideMidOverride() { return testOverride(); }
+        }
+        public class SubClass extends MidClass {
+            int c = 1617;
+            int d = 1819;
+            int e = 2021;
+            int testOverride() { return 1617; }
+            int testInsideSubClass() {
+                ASSERT(a == 123);
+                ASSERT(b == 1011);
+                ASSERT(c == 1617);
+                ASSERT(d == 1819);
+                ASSERT(e == 2021);
+                ASSERT(456  == testNoOverride());
+                ASSERT(789  == testInsideBaseClass());
+                ASSERT(1213 == testInsideMidClass());
+                return c;
+            }
+            int testSuper() {
+                ASSERT(super.a == 123);
+                ASSERT(super.b == 1011);
+                ASSERT(super.c == 1213);
+                ASSERT(super.d == 1415);
+                ASSERT(1011 == super.testOverride());
+                ASSERT(789  == super.testInsideBaseClass());
+                ASSERT(1213 == super.testInsideMidClass());
+                return super.testSuper();
+            }
+            int testInsideSubOverride() { return testOverride(); }
+        }
+        extern void InheritanceMethods()
+        {
+            BaseClass bc();
+            ASSERT(123 == bc.testOverride());
+            ASSERT(456 == bc.testNoOverride());
+            ASSERT(789 == bc.testInsideBaseClass());
+            ASSERT(123 == bc.testInsideBaseOverride());
+            MidClass  mc();
+            ASSERT(1011 == mc.testSuper());
+            ASSERT(1011 == mc.testOverride());
+            ASSERT(456  == mc.testNoOverride());
+            ASSERT(789  == mc.testInsideBaseClass());
+            ASSERT(1213 == mc.testInsideMidClass());
+            ASSERT(1011 == mc.testInsideBaseOverride());
+            ASSERT(1011 == mc.testInsideMidOverride());
+            SubClass  sc();
+            ASSERT(1617 == sc.testSuper());
+            ASSERT(1617 == sc.testOverride());
+            ASSERT(456  == sc.testNoOverride());
+            ASSERT(789  == sc.testInsideBaseClass());
+            ASSERT(1213 == sc.testInsideMidClass());
+            ASSERT(1617 == sc.testInsideSubClass());
+            ASSERT(1617 == sc.testInsideBaseOverride());
+            ASSERT(1617 == sc.testInsideMidOverride());
+            ASSERT(1617 == sc.testInsideSubOverride());
         // Test polymorphism
-        "    bc = mc;\n"
-        "    ASSERT(1011 == bc.testOverride());\n"
-        "    ASSERT(789  == bc.testInsideBaseClass());\n"
-        "    ASSERT(1011 == bc.testInsideBaseOverride());\n"
-        "    bc = sc;\n"
-        "    ASSERT(1617 == bc.testOverride());\n"
-        "    ASSERT(789  == bc.testInsideBaseClass());\n"
-        "    ASSERT(1617 == bc.testInsideBaseOverride());\n"
-        "    mc = sc;\n"
-        "    ASSERT(1617 == mc.testSuper());\n"
-        "    ASSERT(1617 == mc.testOverride());\n"
-        "    ASSERT(789  == mc.testInsideBaseClass());\n"
-        "    ASSERT(1213 == mc.testInsideMidClass());\n"
-        "    ASSERT(1617 == mc.testInsideBaseOverride());\n"
-        "    ASSERT(1617 == mc.testInsideMidOverride());\n"
-        "}\n"
-    );
+            bc = mc;
+            ASSERT(1011 == bc.testOverride());
+            ASSERT(789  == bc.testInsideBaseClass());
+            ASSERT(1011 == bc.testInsideBaseOverride());
+            bc = sc;
+            ASSERT(1617 == bc.testOverride());
+            ASSERT(789  == bc.testInsideBaseClass());
+            ASSERT(1617 == bc.testInsideBaseOverride());
+            mc = sc;
+            ASSERT(1617 == mc.testSuper());
+            ASSERT(1617 == mc.testOverride());
+            ASSERT(789  == mc.testInsideBaseClass());
+            ASSERT(1213 == mc.testInsideMidClass());
+            ASSERT(1617 == mc.testInsideBaseOverride());
+            ASSERT(1617 == mc.testInsideMidOverride());
+        }
+    )");
 }
 
 TEST_F(CBotUT, ClassInheritanceTestThis)
 {
-    ExecuteTest(
-        "public class BaseClass {\n"
-        "    int a = 123;\n"
-        "    int b = 456;\n"
-        "    int c = 789;\n"
-        "    void testBaseMembersAndParams(int a, int b, int c) {\n"
-        "        ASSERT(a != 123);\n"
-        "        ASSERT(b != 456);\n"
-        "        ASSERT(c != 789);\n"
-        "        ASSERT(this.a == 123);\n"
-        "        ASSERT(this.b == 456);\n"
-        "        ASSERT(this.c == 789);\n"
-        "    }\n"
-        "    BaseClass testSuperReturnThis(){ return this; }\n"
-        "    BaseClass testReturnThisFromBaseClass() { return this; }\n"
-        "}\n"
-        "public class MidClass extends BaseClass {\n"
-        "    int b = 1011;\n"
-        "    int c = 1213;\n"
-        "    int d = 1415;\n"
-        "    void testMidMembersAndParams(int a, int b, int c, int d) {\n"
-        "        ASSERT(a != 123);\n"
-        "        ASSERT(b != 1011);\n"
-        "        ASSERT(c != 1213);\n"
-        "        ASSERT(d != 1415);\n"
-        "        ASSERT(this.a == 123);\n"
-        "        ASSERT(this.b == 1011);\n"
-        "        ASSERT(this.c == 1213);\n"
-        "        ASSERT(this.d == 1415);\n"
-        "    }\n"
-        "    MidClass testSuperReturnThis(){ return super.testSuperReturnThis(); }\n"
-        "    MidClass testReturnThisFromMidClass() { return this; }\n"
-        "}\n"
-        "public class SubClass extends MidClass {\n"
-        "    int c = 1617;\n"
-        "    int d = 1819;\n"
-        "    int e = 2021;\n"
-        "    void testSubMembersAndParams(int a, int b, int c, int d, int e) {\n"
-        "        ASSERT(a != 123);\n"
-        "        ASSERT(b != 1011);\n"
-        "        ASSERT(c != 1617);\n"
-        "        ASSERT(d != 1819);\n"
-        "        ASSERT(e != 2021);\n"
-        "        ASSERT(this.a == 123);\n"
-        "        ASSERT(this.b == 1011);\n"
-        "        ASSERT(this.c == 1617);\n"
-        "        ASSERT(this.d == 1819);\n"
-        "        ASSERT(this.e == 2021);\n"
-        "    }\n"
-        "    SubClass testSuperReturnThis(){ return super.testSuperReturnThis(); }\n"
-        "    SubClass testReturnThisFromSubClass() { return this; }\n"
-        "}\n"
-        "extern void ClassInheritanceTestThis()\n"
-        "{\n"
-        "    BaseClass bc();\n"
-        "    MidClass  mc();\n"
-        "    SubClass  sc();\n"
-        "    ASSERT(bc == bc.testSuperReturnThis());\n"
-        "    ASSERT(bc == bc.testReturnThisFromBaseClass());\n"
-        "                 bc.testBaseMembersAndParams(-1, -2, -3);\n"
-        "    ASSERT(mc == mc.testSuperReturnThis());\n"
-        "    ASSERT(mc == mc.testReturnThisFromBaseClass());\n"
-        "    ASSERT(mc == mc.testReturnThisFromMidClass());\n"
-        "                 mc.testBaseMembersAndParams(-1, -2, -3);\n"
-        "                 mc.testMidMembersAndParams(-1, -2, -3, -4);\n"
-        "    ASSERT(sc == sc.testSuperReturnThis());\n"
-        "    ASSERT(sc == sc.testReturnThisFromBaseClass());\n"
-        "    ASSERT(sc == sc.testReturnThisFromMidClass());\n"
-        "    ASSERT(sc == sc.testReturnThisFromSubClass());\n"
-        "                 sc.testBaseMembersAndParams(-1, -2, -3);\n"
-        "                 sc.testMidMembersAndParams(-1, -2, -3, -4);\n"
-        "                 sc.testSubMembersAndParams(-1, -2, -3, -4, -5);\n"
+    ExecuteTest(R"(
+        public class BaseClass {
+            int a = 123;
+            int b = 456;
+            int c = 789;
+            void testBaseMembersAndParams(int a, int b, int c) {
+                ASSERT(a != 123);
+                ASSERT(b != 456);
+                ASSERT(c != 789);
+                ASSERT(this.a == 123);
+                ASSERT(this.b == 456);
+                ASSERT(this.c == 789);
+            }
+            BaseClass testSuperReturnThis(){ return this; }
+            BaseClass testReturnThisFromBaseClass() { return this; }
+        }
+        public class MidClass extends BaseClass {
+            int b = 1011;
+            int c = 1213;
+            int d = 1415;
+            void testMidMembersAndParams(int a, int b, int c, int d) {
+                ASSERT(a != 123);
+                ASSERT(b != 1011);
+                ASSERT(c != 1213);
+                ASSERT(d != 1415);
+                ASSERT(this.a == 123);
+                ASSERT(this.b == 1011);
+                ASSERT(this.c == 1213);
+                ASSERT(this.d == 1415);
+            }
+            MidClass testSuperReturnThis(){ return super.testSuperReturnThis(); }
+            MidClass testReturnThisFromMidClass() { return this; }
+        }
+        public class SubClass extends MidClass {
+            int c = 1617;
+            int d = 1819;
+            int e = 2021;
+            void testSubMembersAndParams(int a, int b, int c, int d, int e) {
+                ASSERT(a != 123);
+                ASSERT(b != 1011);
+                ASSERT(c != 1617);
+                ASSERT(d != 1819);
+                ASSERT(e != 2021);
+                ASSERT(this.a == 123);
+                ASSERT(this.b == 1011);
+                ASSERT(this.c == 1617);
+                ASSERT(this.d == 1819);
+                ASSERT(this.e == 2021);
+            }
+            SubClass testSuperReturnThis(){ return super.testSuperReturnThis(); }
+            SubClass testReturnThisFromSubClass() { return this; }
+        }
+        extern void ClassInheritanceTestThis()
+        {
+            BaseClass bc();
+            MidClass  mc();
+            SubClass  sc();
+            ASSERT(bc == bc.testSuperReturnThis());
+            ASSERT(bc == bc.testReturnThisFromBaseClass());
+                         bc.testBaseMembersAndParams(-1, -2, -3);
+            ASSERT(mc == mc.testSuperReturnThis());
+            ASSERT(mc == mc.testReturnThisFromBaseClass());
+            ASSERT(mc == mc.testReturnThisFromMidClass());
+                         mc.testBaseMembersAndParams(-1, -2, -3);
+                         mc.testMidMembersAndParams(-1, -2, -3, -4);
+            ASSERT(sc == sc.testSuperReturnThis());
+            ASSERT(sc == sc.testReturnThisFromBaseClass());
+            ASSERT(sc == sc.testReturnThisFromMidClass());
+            ASSERT(sc == sc.testReturnThisFromSubClass());
+                         sc.testBaseMembersAndParams(-1, -2, -3);
+                         sc.testMidMembersAndParams(-1, -2, -3, -4);
+                         sc.testSubMembersAndParams(-1, -2, -3, -4, -5);
         // Test polymorphism
-        "    bc = mc;\n"
-        "    ASSERT(mc == bc.testSuperReturnThis());\n"
-        "    ASSERT(mc == bc.testReturnThisFromBaseClass());\n"
-        "                 bc.testBaseMembersAndParams(-1, -2, -3);\n"
-        "    bc = sc;\n"
-        "    ASSERT(sc == bc.testSuperReturnThis());\n"
-        "    ASSERT(sc == bc.testReturnThisFromBaseClass());\n"
-        "                 bc.testBaseMembersAndParams(-1, -2, -3);\n"
-        "    mc = sc;\n"
-        "    ASSERT(sc == mc.testSuperReturnThis());\n"
-        "    ASSERT(sc == mc.testReturnThisFromBaseClass());\n"
-        "    ASSERT(sc == mc.testReturnThisFromMidClass());\n"
-        "                 mc.testBaseMembersAndParams(-1, -2, -3);\n"
-        "                 mc.testMidMembersAndParams(-1, -2, -3, -4);\n"
-        "}\n"
-    );
+            bc = mc;
+            ASSERT(mc == bc.testSuperReturnThis());
+            ASSERT(mc == bc.testReturnThisFromBaseClass());
+                         bc.testBaseMembersAndParams(-1, -2, -3);
+            bc = sc;
+            ASSERT(sc == bc.testSuperReturnThis());
+            ASSERT(sc == bc.testReturnThisFromBaseClass());
+                         bc.testBaseMembersAndParams(-1, -2, -3);
+            mc = sc;
+            ASSERT(sc == mc.testSuperReturnThis());
+            ASSERT(sc == mc.testReturnThisFromBaseClass());
+            ASSERT(sc == mc.testReturnThisFromMidClass());
+                         mc.testBaseMembersAndParams(-1, -2, -3);
+                         mc.testMidMembersAndParams(-1, -2, -3, -4);
+        }
+    )");
 }
 
 TEST_F(CBotUT, ClassCompileCircularReference_Issue433)
 {
-    ExecuteTest(
-        "public class OtherClass {\n"
-        "    TestClass testclass;\n"
-        "}\n"
-        "public class TestClass {\n"
-        "    int test;\n"
-        "    OtherClass otherclass;\n"
-        "}\n"
-        "extern void TestCompileCircularReference()\n"
-        "{\n"
-        "    TestClass t();\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        public class OtherClass {
+            TestClass testclass;
+        }
+        public class TestClass {
+            int test;
+            OtherClass otherclass;
+        }
+        extern void TestCompileCircularReference()
+        {
+            TestClass t();
+        }
+    )");
 }
 
 TEST_F(CBotUT, ClassTestClassDefinedAfterReference)
 {
-    ExecuteTest(
-        "public class OtherClass {\n"
-        "    TestClass testclass = new TestClass();\n"
-        "}\n"
-        "public class TestClass {\n"
-        "    int test = 246;\n"
-        "}\n"
-        "extern void TestDefinedAfterReference()\n"
-        "{\n"
-        "    OtherClass o();\n"
-        "    TestClass t = o.testclass;\n"
-        "    ASSERT(t.test == 246);\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        public class OtherClass {
+            TestClass testclass = new TestClass();
+        }
+        public class TestClass {
+            int test = 246;
+        }
+        extern void TestDefinedAfterReference()
+        {
+            OtherClass o();
+            TestClass t = o.testclass;
+            ASSERT(t.test == 246);
+        }
+    )");
 }
 
 TEST_F(CBotUT, String)
 {
-    ExecuteTest(
-        "extern void StringTest()\n"
-        "{\n"
-        "    string a = \"Colo\";\n"
-        "    string b = \"bot\";\n"
-        "    string c = a + b + \"!\";\n"
-        "    ASSERT(a == \"Colo\");\n"
-        "    ASSERT(b == \"bot\");\n"
-        "    ASSERT(c == \"Colobot!\");\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        extern void StringTest()
+        {
+            string a = "Colo";
+            string b = "bot";
+            string c = a + b + "!";
+            ASSERT(a == "Colo");
+            ASSERT(b == "bot");
+            ASSERT(c == "Colobot!");
+        }
+    )");
 
-    ExecuteTest(
-        "extern void MissingEndQuote()\n"
-        "{\n"
-        "    \"Colobot...\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void MissingEndQuote()
+        {
+            "Colobot...
+        }
+        )",
         CBotErrEndQuote
     );
 }
 
 TEST_F(CBotUT, StringEscapeCodes)
 {
-    ExecuteTest(
-        "extern void HexEscapeCodes()\n"
-        "{\n"
-        "    ASSERT(\"  \\x07  \" == \"  \\a  \");\n"
-        "    ASSERT(\"  \\x08  \" == \"  \\b  \");\n"
-        "    ASSERT(\"  \\x09  \" == \"  \\t  \");\n"
-        "    ASSERT(\"  \\x0A  \" == \"  \\n  \");\n"
-        "    ASSERT(\"  \\x0B  \" == \"  \\v  \");\n"
-        "    ASSERT(\"  \\x0C  \" == \"  \\f  \");\n"
-        "    ASSERT(\"  \\x0D  \" == \"  \\r  \");\n"
-        "    ASSERT(\"  \\x22  \" == \"  \\\"  \");\n"
-        "    ASSERT(\"  \\x27  \" == \"  \\\'  \");\n"
-        "    ASSERT(\"  \\x5C  \" == \"  \\\\  \");\n"
-        "    string test = \"\\x31 \\x32 \\x33\";\n"
-        "    ASSERT(test == \"1 2 3\");\n"
-        "}\n"
-        "extern void OctalEscapeCodes()\n"
-        "{\n"
-        "    ASSERT(\"  \\000  \" == \"  \\x00  \");\n"
-        "    ASSERT(\"  \\007  \" == \"  \\x07  \");\n"
-        "    ASSERT(\"  \\010  \" == \"  \\x08  \");\n"
-        "    ASSERT(\"  \\011  \" == \"  \\x09  \");\n"
-        "    ASSERT(\"  \\012  \" == \"  \\x0A  \");\n"
-        "    ASSERT(\"  \\013  \" == \"  \\x0B  \");\n"
-        "    ASSERT(\"  \\014  \" == \"  \\x0C  \");\n"
-        "    ASSERT(\"  \\015  \" == \"  \\x0D  \");\n"
-        "    ASSERT(\"  \\042  \" == \"  \\x22  \");\n"
-        "    ASSERT(\"  \\047  \" == \"  \\x27  \");\n"
-        "    ASSERT(\"  \\134  \" == \"  \\x5C  \");\n"
-        "    string test = \"\\101 \\102 \\103\";\n"
-        "    ASSERT(test == \"A B C\");\n"
-        "}\n"
-        "extern void UnicodeEscapeCodesToUTF_8()\n"
-        "{\n"
-        "    ASSERT(\"  \\u0000  \" == \"  \\0  \");\n"
-        "    ASSERT(\"  \\u0007  \" == \"  \\a  \");\n"
-        "    ASSERT(\"  \\u0008  \" == \"  \\b  \");\n"
-        "    ASSERT(\"  \\u0009  \" == \"  \\t  \");\n"
-        "    ASSERT(\"  \\u000A  \" == \"  \\n  \");\n"
-        "    ASSERT(\"  \\u000B  \" == \"  \\v  \");\n"
-        "    ASSERT(\"  \\u000C  \" == \"  \\f  \");\n"
-        "    ASSERT(\"  \\u000D  \" == \"  \\r  \");\n"
-        "    ASSERT(\"  \\u0022  \" == \"  \\\"  \");\n"
-        "    ASSERT(\"  \\u0027  \" == \"  \\\'  \");\n"
-        "    ASSERT(\"  \\u005C  \" == \"  \\\\  \");\n"
-        "\n"
-        "    ASSERT(\"\\u00A9\" == \"\\xC2\\xA9\");\n"
-        "    ASSERT(\"\\u00AE\" == \"\\xC2\\xAE\");\n"
-        "    ASSERT(\"\\u262E\" == \"\\xE2\\x98\\xAE\");\n"
-        "    ASSERT(\"\\u262F\" == \"\\xE2\\x98\\xAF\");\n"
-        "    ASSERT(\"\\U0001F60E\" == \"\\xF0\\x9F\\x98\\x8E\");\n"
-        "    ASSERT(\"\\U0001F61C\" == \"\\xF0\\x9F\\x98\\x9C\");\n"
-        "    ASSERT(\"\\U0001F6E0\" == \"\\xF0\\x9F\\x9B\\xA0\");\n"
-        "}\n"
-        "extern void UnicodeMaxCharacterNameToUTF_8()\n"
-        "{\n"
-        "    ASSERT(\"\\U0010FFFF\" == \"\\xF4\\x8F\\xBF\\xBF\");\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        extern void HexEscapeCodes()
+        {
+            ASSERT("  \x07  " == "  \a  ");
+            ASSERT("  \x08  " == "  \b  ");
+            ASSERT("  \x09  " == "  \t  ");
+            ASSERT("  \x0A  " == "  \n  ");
+            ASSERT("  \x0B  " == "  \v  ");
+            ASSERT("  \x0C  " == "  \f  ");
+            ASSERT("  \x0D  " == "  \r  ");
+            ASSERT("  \x22  " == "  \"  ");
+            ASSERT("  \x27  " == "  \'  ");
+            ASSERT("  \x5C  " == "  \\  ");
+            string test = "\x31 \x32 \x33";
+            ASSERT(test == "1 2 3");
+        }
+        extern void OctalEscapeCodes()
+        {
+            ASSERT("  \000  " == "  \x00  ");
+            ASSERT("  \007  " == "  \x07  ");
+            ASSERT("  \010  " == "  \x08  ");
+            ASSERT("  \011  " == "  \x09  ");
+            ASSERT("  \012  " == "  \x0A  ");
+            ASSERT("  \013  " == "  \x0B  ");
+            ASSERT("  \014  " == "  \x0C  ");
+            ASSERT("  \015  " == "  \x0D  ");
+            ASSERT("  \042  " == "  \x22  ");
+            ASSERT("  \047  " == "  \x27  ");
+            ASSERT("  \134  " == "  \x5C  ");
+            string test = "\101 \102 \103";
+            ASSERT(test == "A B C");
+        }
+        extern void UnicodeEscapeCodesToUTF_8()
+        {
+            ASSERT("  \u0000  " == "  \0  ");
+            ASSERT("  \u0007  " == "  \a  ");
+            ASSERT("  \u0008  " == "  \b  ");
+            ASSERT("  \u0009  " == "  \t  ");
+            ASSERT("  \u000A  " == "  \n  ");
+            ASSERT("  \u000B  " == "  \v  ");
+            ASSERT("  \u000C  " == "  \f  ");
+            ASSERT("  \u000D  " == "  \r  ");
+            ASSERT("  \u0022  " == "  \"  ");
+            ASSERT("  \u0027  " == "  \'  ");
+            ASSERT("  \u005C  " == "  \\  ");
+        
+            ASSERT("\u00A9" == "\xC2\xA9");
+            ASSERT("\u00AE" == "\xC2\xAE");
+            ASSERT("\u262E" == "\xE2\x98\xAE");
+            ASSERT("\u262F" == "\xE2\x98\xAF");
+            ASSERT("\U0001F60E" == "\xF0\x9F\x98\x8E");
+            ASSERT("\U0001F61C" == "\xF0\x9F\x98\x9C");
+            ASSERT("\U0001F6E0" == "\xF0\x9F\x9B\xA0");
+        }
+        extern void UnicodeMaxCharacterNameToUTF_8()
+        {
+            ASSERT("\U0010FFFF" == "\xF4\x8F\xBF\xBF");
+        }
+    )");
 }
 
 TEST_F(CBotUT, StringEscapeCodeErrors)
 {
-    ExecuteTest(
-        "extern void UnknownEscapeSequence()\n"
-        "{\n"
-        "    \"Unknown: \\p \";\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void UnknownEscapeSequence()
+        {
+            "Unknown: \p ";
+        }
+        )",
         CBotErrBadEscape
     );
 
-    ExecuteTest(
-        "extern void MissingHexDigits()\n"
-        "{\n"
-        "    \"  \\x  \";\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void MissingHexDigits()
+        {
+            "  \x  ";
+        }
+        )",
         CBotErrHexDigits
     );
 
-    ExecuteTest(
-        "extern void HexValueOutOfRange()\n"
-        "{\n"
-        "    \"  \\x100  \";\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void HexValueOutOfRange()
+        {
+            "  \x100  ";
+        }
+        )",
         CBotErrHexRange
     );
 
-    ExecuteTest(
-        "extern void OctalValueOutOfRange()\n"
-        "{\n"
-        "    \"  \\400  \";\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void OctalValueOutOfRange()
+        {
+            "  \400  ";
+        }
+        )",
         CBotErrOctalRange
     );
 
-    ExecuteTest(
-        "extern void BadUnicodeCharacterName()\n"
-        "{\n"
-        "    \"  \\U00110000  \";\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void BadUnicodeCharacterName()
+        {
+            "  \U00110000  ";
+        }
+        )",
         CBotErrUnicodeName
     );
 }
@@ -2021,159 +2066,165 @@ TEST_F(CBotUT, StringEscapeCodeErrors)
 // TODO: not implemented, see issue #694
 TEST_F(CBotUT, DISABLED_StringAsArray)
 {
-    ExecuteTest(
-        "extern void StringAsArray()\n"
-        "{\n"
-        "    string s = \"Colobot\";\n"
-        "    ASSERT(s[0] == \"C\");\n"
-        "    ASSERT(s[3] == \"o\");\n"
-        "    s[2] = \"L\"; s[4] = \"B\"; s[6] = \"T\";\n"
-        "    ASSERT(s == \"CoLoBoT\");\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        extern void StringAsArray()
+        {
+            string s = "Colobot";
+            ASSERT(s[0] == "C");
+            ASSERT(s[3] == "o");
+            s[2] = "L"; s[4] = "B"; s[6] = "T";
+            ASSERT(s == "CoLoBoT");
+        }
+    )");
 }
 
 TEST_F(CBotUT, ArraysOfStrings)
 {
-    ExecuteTest(
-        "extern void ArraysOfStrings()\n"
-        "{\n"
-        "    string[] a;\n"
-        "    string b[];\n"
-        "    string c[5];\n"
-        "    string d[] = {\"test\"};\n"
-        "    d[1] = \"test2\";\n"
-        "    ASSERT(d[0] == \"test\");\n"
-        "    ASSERT(d[1] == \"test2\");\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        extern void ArraysOfStrings()
+        {
+            string[] a;
+            string b[];
+            string c[5];
+            string d[] = {"test"};
+            d[1] = "test2";
+            ASSERT(d[0] == "test");
+            ASSERT(d[1] == "test2");
+        }
+    )");
 }
 
 TEST_F(CBotUT, StringFunctions)
 {
-    ExecuteTest(
-        "extern void StringFunctions()\n"
-        "{\n"
-        "    string s = \"Colobot\";\n"
-        "    ASSERT(strlen(s) == 7);\n"
-        "    ASSERT(strlower(s) == \"colobot\");\n"
-        "    ASSERT(strupper(s) == \"COLOBOT\");\n"
-        "    ASSERT(strleft(s, 3) == \"Col\");\n"
-        "    ASSERT(strright(s, 3) == \"bot\");\n"
-        "    ASSERT(strmid(s, 1, 3) == \"olo\");\n"
-        "    ASSERT(strfind(s, \"o\") == 1);\n"
-        "    ASSERT(strval(\"2.5\") == 2.5);\n"
-        "}\n"
-        "extern void StringFunctionsOutOfRange()\n"
-        "{\n"
-        "    ASSERT(strmid(\"asdf\", 5, 1) == \"\");\n"
-        "    ASSERT(strmid(\"asdf\", 0, 100) == \"asdf\");\n"
-        "    ASSERT(strmid(\"asdf\", -500, 100) == \"asdf\");\n"
-        "    ASSERT(strleft(\"asdf\", 15) == \"asdf\");\n"
-        "    ASSERT(strleft(\"asdf\", -15) == \"\");\n"
-        "    ASSERT(strright(\"asdf\", 15) == \"asdf\");\n"
-        "    ASSERT(strright(\"asdf\", -15) == \"\");\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        extern void StringFunctions()
+        {
+            string s = "Colobot";
+            ASSERT(strlen(s) == 7);
+            ASSERT(strlower(s) == "colobot");
+            ASSERT(strupper(s) == "COLOBOT");
+            ASSERT(strleft(s, 3) == "Col");
+            ASSERT(strright(s, 3) == "bot");
+            ASSERT(strmid(s, 1, 3) == "olo");
+            ASSERT(strfind(s, "o") == 1);
+            ASSERT(strval("2.5") == 2.5);
+        }
+        extern void StringFunctionsOutOfRange()
+        {
+            ASSERT(strmid("asdf", 5, 1) == "");
+            ASSERT(strmid("asdf", 0, 100) == "asdf");
+            ASSERT(strmid("asdf", -500, 100) == "asdf");
+            ASSERT(strleft("asdf", 15) == "asdf");
+            ASSERT(strleft("asdf", -15) == "");
+            ASSERT(strright("asdf", 15) == "asdf");
+            ASSERT(strright("asdf", -15) == "");
+        }
+    )");
 }
 
 TEST_F(CBotUT, LiteralCharacters)
 {
-    ExecuteTest(
-        "extern void TestCharValue()\n"
-        "{\n"
-        "    ASSERT('A' == 65);\n"
-        "    ASSERT('B' == 66);\n"
-        "    ASSERT('C' == 67);\n"
-        "    ASSERT('\\a' == 0x07);\n"
-        "    ASSERT('\\b' == 0x08);\n"
-        "    ASSERT('\\t' == 0x09);\n"
-        "    ASSERT('\\n' == 0x0A);\n"
-        "    ASSERT('\\v' == 0x0B);\n"
-        "    ASSERT('\\f' == 0x0C);\n"
-        "    ASSERT('\\r' == 0x0D);\n"
-        "    ASSERT('\\\"' == 0x22);\n"
-        "    ASSERT('\\\'' == 0x27);\n"
-        "    ASSERT('\\\\' == 0x5C);\n"
-        "}\n"
-        "extern void TestCharUnicodeEscape()\n"
-        "{\n"
-        "    ASSERT('\\u0007' == '\\a');\n"
-        "    ASSERT('\\u0008' == '\\b');\n"
-        "    ASSERT('\\u0009' == '\\t');\n"
-        "    ASSERT('\\u000A' == '\\n');\n"
-        "    ASSERT('\\u000B' == '\\v');\n"
-        "    ASSERT('\\u000C' == '\\f');\n"
-        "    ASSERT('\\u000D' == '\\r');\n"
-        "    ASSERT('\\u0022' == '\\\"');\n"
-        "    ASSERT('\\u0027' == '\\\'');\n"
-        "    ASSERT('\\u005C' == '\\\\');\n"
-        "}\n"
-        "extern void AssignCharToString_ToUTF_8()\n"
-        "{\n"
-        "    string test = '\\u00A9';\n"
-        "    test += '\\u00AE';\n"
-        "    ASSERT(test == \"\\xC2\\xA9\\xC2\\xAE\");\n"
-        "}\n"
-        "extern void AddCharToString_ToUTF_8()\n"
-        "{\n"
-        "    ASSERT(\"\" + 'A' + 'B' + 'C' == \"ABC\");\n"
-        "    ASSERT(\"\" + '\\u00A9' == \"\\xC2\\xA9\");\n"
-        "    ASSERT(\"\" + '\\u00AE' == \"\\xC2\\xAE\");\n"
-        "    ASSERT(\"\" + '\\u262E' == \"\\xE2\\x98\\xAE\");\n"
-        "    ASSERT(\"\" + '\\u262F' == \"\\xE2\\x98\\xAF\");\n"
-        "    ASSERT(\"\" + '\\U0001F60E' == \"\\xF0\\x9F\\x98\\x8E\");\n"
-        "    ASSERT(\"\" + '\\U0001F61C' == \"\\xF0\\x9F\\x98\\x9C\");\n"
-        "    ASSERT(\"\" + '\\U0001F6E0' == \"\\xF0\\x9F\\x9B\\xA0\");\n"
-        "    ASSERT(\"\" + '\\U0010FFFF' == \"\\xF4\\x8F\\xBF\\xBF\");\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        extern void TestCharValue()
+        {
+            ASSERT('A' == 65);
+            ASSERT('B' == 66);
+            ASSERT('C' == 67);
+            ASSERT('\a' == 0x07);
+            ASSERT('\b' == 0x08);
+            ASSERT('\t' == 0x09);
+            ASSERT('\n' == 0x0A);
+            ASSERT('\v' == 0x0B);
+            ASSERT('\f' == 0x0C);
+            ASSERT('\r' == 0x0D);
+            ASSERT('\"' == 0x22);
+            ASSERT('\'' == 0x27);
+            ASSERT('\\' == 0x5C);
+        }
+        extern void TestCharUnicodeEscape()
+        {
+            ASSERT('\u0007' == '\a');
+            ASSERT('\u0008' == '\b');
+            ASSERT('\u0009' == '\t');
+            ASSERT('\u000A' == '\n');
+            ASSERT('\u000B' == '\v');
+            ASSERT('\u000C' == '\f');
+            ASSERT('\u000D' == '\r');
+            ASSERT('\u0022' == '\"');
+            ASSERT('\u0027' == '\'');
+            ASSERT('\u005C' == '\\');
+        }
+        extern void AssignCharToString_ToUTF_8()
+        {
+            string test = '\u00A9';
+            test += '\u00AE';
+            ASSERT(test == "\xC2\xA9\xC2\xAE");
+        }
+        extern void AddCharToString_ToUTF_8()
+        {
+            ASSERT("" + 'A' + 'B' + 'C' == "ABC");
+            ASSERT("" + '\u00A9' == "\xC2\xA9");
+            ASSERT("" + '\u00AE' == "\xC2\xAE");
+            ASSERT("" + '\u262E' == "\xE2\x98\xAE");
+            ASSERT("" + '\u262F' == "\xE2\x98\xAF");
+            ASSERT("" + '\U0001F60E' == "\xF0\x9F\x98\x8E");
+            ASSERT("" + '\U0001F61C' == "\xF0\x9F\x98\x9C");
+            ASSERT("" + '\U0001F6E0' == "\xF0\x9F\x9B\xA0");
+            ASSERT("" + '\U0010FFFF' == "\xF4\x8F\xBF\xBF");
+        }
+    )");
 
-    ExecuteTest(
-        "extern void MissingEndQuote()\n"
-        "{\n"
-        "    '\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void MissingEndQuote()
+        {
+            '
+        }
+        )",
         CBotErrEndQuote
     );
 
-    ExecuteTest(
-        "extern void MissingEndQuote()\n"
-        "{\n"
-        "    'a\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void MissingEndQuote()
+        {
+            'a
+        }
+        )",
         CBotErrEndQuote
     );
 
-    ExecuteTest(
-        "extern void EmptyQuotes()\n"
-        "{\n"
-        "    '';\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void EmptyQuotes()
+        {
+            '';
+        }
+        )",
         CBotErrCharEmpty
     );
 
-    ExecuteTest(
-        "extern void UnknownEscapeSequence()\n"
-        "{\n"
-        "    '\\p';\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void UnknownEscapeSequence()
+        {
+            '\p';
+        }
+        )",
         CBotErrBadEscape
     );
 
-    ExecuteTest(
-        "extern void MissingHexDigits()\n"
-        "{\n"
-        "    '\\u';\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void MissingHexDigits()
+        {
+            '\u';
+        }
+        )",
         CBotErrHexDigits
     );
 
-    ExecuteTest(
-        "extern void BadUnicodeCharacterName()\n"
-        "{\n"
-        "    '\\U00110000';\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void BadUnicodeCharacterName()
+        {
+            '\U00110000';
+        }
+        )",
         CBotErrUnicodeName
     );
 }
@@ -2194,1488 +2245,1553 @@ TEST_F(CBotUT, TestNANParam_Issue642)
 
 TEST_F(CBotUT, TestArrayInitialization)
 {
-    ExecuteTest(
-        "extern void TestArrayInitialization() {\n"
-        "    int[] a = {1, 2, 3};\n"
-        "    ASSERT(sizeof(a) == 3);\n"
-        "    ASSERT(a[0] == 1);\n"
-        "    ASSERT(a[1] == 2);\n"
-        "    ASSERT(a[2] == 3);\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        extern void TestArrayInitialization() {
+            int[] a = {1, 2, 3};
+            ASSERT(sizeof(a) == 3);
+            ASSERT(a[0] == 1);
+            ASSERT(a[1] == 2);
+            ASSERT(a[2] == 3);
+        }
+    )");
 
-    ExecuteTest(
-        "extern void TestArrayInitializationOutOfRange() {\n"
-        "    int a[2] = {1, 2, 3};\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void TestArrayInitializationOutOfRange() {
+            int a[2] = {1, 2, 3};
+        }
+        )",
         CBotErrOutArray
     );
 
-    ExecuteTest(
-        "extern void TestArrayInitializationSmallerThanRange() {\n"
-        "    int a[4] = {1, 2, 3};\n"
-        "    ASSERT(sizeof(a) == 3);\n"
-        "    ASSERT(a[0] == 1);\n"
-        "    ASSERT(a[1] == 2);\n"
-        "    ASSERT(a[2] == 3);\n"
-        "    a[3] = 4;\n"
-        "    ASSERT(sizeof(a) == 4);\n"
-        "    ASSERT(a[3] == 4);\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        extern void TestArrayInitializationSmallerThanRange() {
+            int a[4] = {1, 2, 3};
+            ASSERT(sizeof(a) == 3);
+            ASSERT(a[0] == 1);
+            ASSERT(a[1] == 2);
+            ASSERT(a[2] == 3);
+            a[3] = 4;
+            ASSERT(sizeof(a) == 4);
+            ASSERT(a[3] == 4);
+        }
+    )");
 
-    ExecuteTest(
-        "extern void TestArrayInitializationLimitUnchanged() {\n"
-        "    int a[4] = {1, 2, 3};\n"
-        "    a[4] = 5;\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void TestArrayInitializationLimitUnchanged() {
+            int a[4] = {1, 2, 3};
+            a[4] = 5;
+        }
+        )",
         CBotErrOutArray
     );
 
-    ExecuteTest(
-        "extern void TestArrayInitializationWithVars() {\n"
-        "    int x=1, y=2, z=3;\n"
-        "    int i[] = { x, y, z };\n"
-        "    ASSERT(i[0] == 1);\n"
-        "    ASSERT(i[1] == 2);\n"
-        "    ASSERT(i[2] == 3);\n"
-        "    i[0] += 1;\n"
-        "    ASSERT(i[0] == 2);\n"
-        "    ASSERT(x == 1);\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        extern void TestArrayInitializationWithVars() {
+            int x=1, y=2, z=3;
+            int i[] = { x, y, z };
+            ASSERT(i[0] == 1);
+            ASSERT(i[1] == 2);
+            ASSERT(i[2] == 3);
+            i[0] += 1;
+            ASSERT(i[0] == 2);
+            ASSERT(x == 1);
+        }
+    )");
 }
 
 TEST_F(CBotUT, TestArrayFunctionReturn)
 {
-    ExecuteTest(
-        "int[] test() {\n"
-        "    int[] a = {1, 2, 3};\n"
-        "    return a;"
-        "}\n"
-        "extern void TestArrayFunctionReturn() {\n"
-        "    int[] b = test();\n"
-        "    ASSERT(sizeof(b) == 3);\n"
-        "    ASSERT(b[0] == 1);\n"
-        "    ASSERT(b[1] == 2);\n"
-        "    ASSERT(b[2] == 3);\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        int[] test() {
+            int[] a = {1, 2, 3};
+            return a;
+        }
+        extern void TestArrayFunctionReturn() {
+            int[] b = test();
+            ASSERT(sizeof(b) == 3);
+            ASSERT(b[0] == 1);
+            ASSERT(b[1] == 2);
+            ASSERT(b[2] == 3);
+        }
+    )");
 }
 
 TEST_F(CBotUT, AccessMembersInParameters_Issue256)
 {
-    ExecuteTest(
-        "public class Test1 {\n"
-        "    int x = 1337;\n"
-        "}\n"
-        "public class Test2 {\n"
-        "    public bool test(int a) {\n"
-        "        return a == 1337;\n"
-        "    }\n"
-        "}\n"
-        "public class Test3 {\n"
-        "    public Test1 test1 = new Test1();\n"
-        "    public Test2 test2 = new Test2();\n"
-        "    public void test() {\n"
-        "        ASSERT(test2.test(test1.x));\n"
-        "    }\n"
-        "}\n"
-        "extern void AccessMembersInParameters() {\n"
-        "    Test3 t();\n"
-        "    t.test();\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        public class Test1 {
+            int x = 1337;
+        }
+        public class Test2 {
+            public bool test(int a) {
+                return a == 1337;
+            }
+        }
+        public class Test3 {
+            public Test1 test1 = new Test1();
+            public Test2 test2 = new Test2();
+            public void test() {
+                ASSERT(test2.test(test1.x));
+            }
+        }
+        extern void AccessMembersInParameters() {
+            Test3 t();
+            t.test();
+        }
+    )");
 }
 
 TEST_F(CBotUT, InstrCallAccessMemberVoid)
 {
-    ExecuteTest(
-        "void Test() {}\n"
-        "extern void TestAccessMemberVoid() {\n"
-        "    Test().x;\n"
-        "}\n",
+    ExecuteTest(R"(
+        void Test() {}
+        extern void TestAccessMemberVoid() {
+            Test().x;
+        }
+        )",
         CBotErrNoTerminator
     );
 }
 
 TEST_F(CBotUT, InstrCallAccessMemberNonObject)
 {
-    ExecuteTest(
-        "int GetInt() {\n"
-        "    return 1;\n"
-        "}\n"
-        "extern void TestAccessMemberNonObject() {\n"
-        "    GetInt().x;\n"
-        "}\n",
+    ExecuteTest(R"(
+        int GetInt() {
+            return 1;
+        }
+        extern void TestAccessMemberNonObject() {
+            GetInt().x;
+        }
+        )",
         CBotErrNoTerminator
     );
 }
 
 TEST_F(CBotUT, InstrCallAccessMemberObjectNull)
 {
-    ExecuteTest(
-        "public class TestClass { int x = 1; }\n"
-        "TestClass GetObjectNull() {\n"
-        "    TestClass t = null;"
-        "    return t;\n"
-        "}\n"
-        "extern void TestAccessMemberObjectNull() {\n"
-        "    GetObjectNull().x;\n"
-        "}\n",
+    ExecuteTest(R"(
+        public class TestClass { int x = 1; }
+        TestClass GetObjectNull() {
+            TestClass t = null;
+            return t;
+        }
+        extern void TestAccessMemberObjectNull() {
+            GetObjectNull().x;
+        }
+        )",
         CBotErrNull
     );
 }
 
 TEST_F(CBotUT, InstrCallAccessMemberReturnNull)
 {
-    ExecuteTest(
-        "public class TestClass { int x = 1; }\n"
-        "TestClass GetReturnNull() {\n"
-        "    return null;\n"
-        "}\n"
-        "extern void TestAccessMemberReturnNull() {\n"
-        "    GetReturnNull().x;\n"
-        "}\n",
+    ExecuteTest(R"(
+        public class TestClass { int x = 1; }
+        TestClass GetReturnNull() {
+            return null;
+        }
+        extern void TestAccessMemberReturnNull() {
+            GetReturnNull().x;
+        }
+        )",
         CBotErrNull
     );
 }
 
 TEST_F(CBotUT, InstrCallAccessMemberNotVar)
 {
-    ExecuteTest(
-        "public class TestClass {}\n"
-        "TestClass GetObject(TestClass t) {\n"
-        "    return t;\n"
-        "}\n"
-        "extern void TestAccessMemberNotVar() {\n"
-        "    TestClass tc();\n"
-        "    GetObject(tc).123;\n"
-        "}\n",
+    ExecuteTest(R"(
+        public class TestClass {}
+        TestClass GetObject(TestClass t) {
+            return t;
+        }
+        extern void TestAccessMemberNotVar() {
+            TestClass tc();
+            GetObject(tc).123;
+        }
+        )",
         CBotErrUndefClass
     );
 }
 
 TEST_F(CBotUT, InstrCallAccessMemberVarNonMember)
 {
-    ExecuteTest(
-        "public class TestClass { int x = 1; }\n"
-        "TestClass GetObject(TestClass t) {\n"
-        "    return t;\n"
-        "}\n"
-        "extern void TestAccessMemberVarNonMember() {\n"
-        "    TestClass tc();\n"
-        "    GetObject(tc).y;\n"
-        "}\n",
+    ExecuteTest(R"(
+        public class TestClass { int x = 1; }
+        TestClass GetObject(TestClass t) {
+            return t;
+        }
+        extern void TestAccessMemberVarNonMember() {
+            TestClass tc();
+            GetObject(tc).y;
+        }
+        )",
         CBotErrUndefItem
     );
 }
 
 TEST_F(CBotUT, InstrCallAccessMemberVarUndefined)
 {
-    ExecuteTest(
-        "public class TestClass { int x; }\n"
-        "TestClass GetObject(TestClass t) {\n"
-        "    return t;\n"
-        "}\n"
-        "extern void TestAccessMemberVarUndefined() {\n"
-        "    TestClass tc();\n"
-        "    GetObject(tc).x;\n"
-        "}\n",
+    ExecuteTest(R"(
+        public class TestClass { int x; }
+        TestClass GetObject(TestClass t) {
+            return t;
+        }
+        extern void TestAccessMemberVarUndefined() {
+            TestClass tc();
+            GetObject(tc).x;
+        }
+        )",
         CBotErrNotInit
     );
 }
 
 TEST_F(CBotUT, InstrCallAccessMemberVarPrivate)
 {
-    ExecuteTest(
-        "public class TestClass { private int x = 123; }\n"
-        "TestClass GetObject(TestClass t) {\n"
-        "    return t;\n"
-        "}\n"
-        "extern void TestAccessMemberVarPrivate() {\n"
-        "    TestClass tc();\n"
-        "    ASSERT(123 == GetObject(tc).x);\n"
-        "}\n",
+    ExecuteTest(R"(
+        public class TestClass { private int x = 123; }
+        TestClass GetObject(TestClass t) {
+            return t;
+        }
+        extern void TestAccessMemberVarPrivate() {
+            TestClass tc();
+            ASSERT(123 == GetObject(tc).x);
+        }
+        )",
         CBotErrPrivate
     );
 }
 
 TEST_F(CBotUT, InstrCallAccessMemberVar)
 {
-    ExecuteTest(
-        "public class TestClass { int x = 123; }\n"
-        "TestClass GetObject(TestClass t) {\n"
-        "    return t;\n"
-        "}\n"
-        "extern void TestAccessMemberVar() {\n"
-        "    TestClass tc();\n"
-        "    ASSERT(123 == GetObject(tc).x);\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        public class TestClass { int x = 123; }
+        TestClass GetObject(TestClass t) {
+            return t;
+        }
+        extern void TestAccessMemberVar() {
+            TestClass tc();
+            ASSERT(123 == GetObject(tc).x);
+        }
+    )");
 }
 
 TEST_F(CBotUT, InstrCallAccessMemberVarArrayBadIndex)
 {
-    ExecuteTest(
-        "public class TestClass { int[] a; }\n"
-        "TestClass GetObject(TestClass t) {\n"
-        "    return t;\n"
-        "}\n"
-        "extern void TestAccessMemberVarArrayEmpty() {\n"
-        "    TestClass tc();\n"
-        "    int i = GetObject(tc).a[4.7];\n"
-        "}\n",
+    ExecuteTest(R"(
+        public class TestClass { int[] a; }
+        TestClass GetObject(TestClass t) {
+            return t;
+        }
+        extern void TestAccessMemberVarArrayEmpty() {
+            TestClass tc();
+            int i = GetObject(tc).a[4.7];
+        }
+        )",
         CBotErrBadIndex
     );
 }
 TEST_F(CBotUT, InstrCallAccessMemberVarArrayCloseIndex)
 {
-    ExecuteTest(
-        "public class TestClass { int[] a = {123}; }\n"
-        "TestClass GetObject(TestClass t) {\n"
-        "    return t;\n"
-        "}\n"
-        "extern void TestAccessMemberVarArrayEmpty() {\n"
-        "    TestClass tc();\n"
-        "    int i = GetObject(tc).a[0;\n"
-        "}\n",
+    ExecuteTest(R"(
+        public class TestClass { int[] a = {123}; }
+        TestClass GetObject(TestClass t) {
+            return t;
+        }
+        extern void TestAccessMemberVarArrayEmpty() {
+            TestClass tc();
+            int i = GetObject(tc).a[0;
+        }
+        )",
         CBotErrCloseIndex
     );
 }
 TEST_F(CBotUT, InstrCallAccessMemberVarArrayEmpty)
 {
-    ExecuteTest(
-        "public class TestClass { int[] a; }\n"
-        "TestClass GetObject(TestClass t) {\n"
-        "    return t;\n"
-        "}\n"
-        "extern void TestAccessMemberVarArrayEmpty() {\n"
-        "    TestClass tc();\n"
-        "    int i = GetObject(tc).a[0];\n"
-        "}\n",
+    ExecuteTest(R"(
+        public class TestClass { int[] a; }
+        TestClass GetObject(TestClass t) {
+            return t;
+        }
+        extern void TestAccessMemberVarArrayEmpty() {
+            TestClass tc();
+            int i = GetObject(tc).a[0];
+        }
+        )",
         CBotErrOutArray
     );
 }
 
 TEST_F(CBotUT, InstrCallAccessMemberVarArrayOutOfRange)
 {
-    ExecuteTest(
-        "public class TestClass { int a[] = {123}; }\n"
-        "TestClass GetObject(TestClass t) {\n"
-        "    return t;\n"
-        "}\n"
-        "extern void TestAccessMemberVarArrayOut() {\n"
-        "    TestClass tc();\n"
-        "    int i = GetObject(tc).a[1];\n"
-        "}\n",
+    ExecuteTest(R"(
+        public class TestClass { int a[] = {123}; }
+        TestClass GetObject(TestClass t) {
+            return t;
+        }
+        extern void TestAccessMemberVarArrayOut() {
+            TestClass tc();
+            int i = GetObject(tc).a[1];
+        }
+        )",
         CBotErrOutArray
     );
 }
 
 TEST_F(CBotUT, InstrCallAccessMemberVarArray)
 {
-    ExecuteTest(
-        "public class TestClass { int a[] = {123}; }\n"
-        "TestClass GetObject(TestClass t) {\n"
-        "    return t;\n"
-        "}\n"
-        "extern void TestAccessMemberVarArray() {\n"
-        "    TestClass tc();\n"
-        "    ASSERT(123 == GetObject(tc).a[0]);\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        public class TestClass { int a[] = {123}; }
+        TestClass GetObject(TestClass t) {
+            return t;
+        }
+        extern void TestAccessMemberVarArray() {
+            TestClass tc();
+            ASSERT(123 == GetObject(tc).a[0]);
+        }
+    )");
 }
 
 TEST_F(CBotUT, InstrCallAccessMemberMethod)
 {
-    ExecuteTest(
-        "public class TestClass {\n"
-        "    int x = 123;\n"
-        "    int testGetX() { return x; }\n"
-        "}\n"
-        "TestClass GetObject(TestClass t) {\n"
-        "    return t;\n"
-        "}\n"
-        "extern void TestAccessMemberMethod() {\n"
-        "    TestClass tc();\n"
-        "    ASSERT(123 == GetObject(tc).testGetX());\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        public class TestClass {
+            int x = 123;
+            int testGetX() { return x; }
+        }
+        TestClass GetObject(TestClass t) {
+            return t;
+        }
+        extern void TestAccessMemberMethod() {
+            TestClass tc();
+            ASSERT(123 == GetObject(tc).testGetX());
+        }
+    )");
 }
 
 TEST_F(CBotUT, InstrCallAccessMemberMethodChain)
 {
-    ExecuteTest(
-        "public class TestClass {\n"
-        "    int x = 123;\n"
-        "    TestClass testGetThis() { return this; }\n"
-        "    int testGetX() { return x; }\n"
-        "}\n"
-        "TestClass GetObject(TestClass t) {\n"
-        "    return t;\n"
-        "}\n"
-        "extern void TestAccessMemberMethodChain() {\n"
-        "    TestClass tc();\n"
-        "    ASSERT(123 == GetObject(tc).testGetThis().testGetX());\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        public class TestClass {
+            int x = 123;
+            TestClass testGetThis() { return this; }
+            int testGetX() { return x; }
+        }
+        TestClass GetObject(TestClass t) {
+            return t;
+        }
+        extern void TestAccessMemberMethodChain() {
+            TestClass tc();
+            ASSERT(123 == GetObject(tc).testGetThis().testGetX());
+        }
+    )");
 }
 
 TEST_F(CBotUT, InstrCallAccessMemberNewObjectDestructor)
 {
-    ExecuteTest(
-        "public class TestClass {\n"
-        "    int x = 123;\n"
-        "    static bool b = false;\n"
-        "    void ~TestClass() { b = true; }\n"
-        "}\n"
-        "TestClass GetNewObject() { return new TestClass(); }\n"
-        "extern void TestAccessMemberNewObject() {\n"
-        "    TestClass tc();\n"
-        "    ASSERT(123 == GetNewObject().x);\n"
-        "    ASSERT(tc.b == true);\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        public class TestClass {
+            int x = 123;
+            static bool b = false;
+            void ~TestClass() { b = true; }
+        }
+        TestClass GetNewObject() { return new TestClass(); }
+        extern void TestAccessMemberNewObject() {
+            TestClass tc();
+            ASSERT(123 == GetNewObject().x);
+            ASSERT(tc.b == true);
+        }
+    )");
 }
 
 TEST_F(CBotUT, ClassConstructorMethodChain)
 {
-    ExecuteTest(
-        "public class TestClass {\n"
-        "    int a = 123;\n"
-        "    int b = 246;\n"
-        "    TestClass testSetA(int x) { a = x; return this; }\n"
-        "    TestClass testSetB(int y) { b = y; return this; }\n"
-        "}\n"
-        "extern void ConstructorMethodChain() {\n"
-        "    TestClass tc().testSetA(111).testSetB(222);\n"
-        "    ASSERT(tc.a == 111);\n"
-        "    ASSERT(tc.b == 222);\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        public class TestClass {
+            int a = 123;
+            int b = 246;
+            TestClass testSetA(int x) { a = x; return this; }
+            TestClass testSetB(int y) { b = y; return this; }
+        }
+        extern void ConstructorMethodChain() {
+            TestClass tc().testSetA(111).testSetB(222);
+            ASSERT(tc.a == 111);
+            ASSERT(tc.b == 222);
+        }
+    )");
 }
 
 TEST_F(CBotUT, ClassNewConstructorMethodChain)
 {
-    ExecuteTest(
-        "public class TestClass {\n"
-        "    int a = 123;\n"
-        "    int b = 246;\n"
-        "    TestClass testSetA(int x) { a = x; return this; }\n"
-        "    TestClass testSetB(int y) { b = y; return this; }\n"
-        "}\n"
-        "extern void NewConstructorMethodChain() {\n"
-        "    TestClass tc;\n"
-        "    tc = new TestClass().testSetA(111).testSetB(222);\n"
-        "    ASSERT(tc.a == 111);\n"
-        "    ASSERT(tc.b == 222);\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        public class TestClass {
+            int a = 123;
+            int b = 246;
+            TestClass testSetA(int x) { a = x; return this; }
+            TestClass testSetB(int y) { b = y; return this; }
+        }
+        extern void NewConstructorMethodChain() {
+            TestClass tc;
+            tc = new TestClass().testSetA(111).testSetB(222);
+            ASSERT(tc.a == 111);
+            ASSERT(tc.b == 222);
+        }
+    )");
 }
 
 TEST_F(CBotUT, PassNullAsArgument)
 {
-    auto publicProgram = ExecuteTest(
-        "public class BaseClass {}\n"
-        "public class SubClass extends BaseClass {}\n"
-    );
+    auto publicProgram = ExecuteTest(R"(
+        public class BaseClass {}
+        public class SubClass extends BaseClass {}
+    )");
 
-    ExecuteTest(
-        "bool Test(BaseClass b) {\n"
-        "    return (b == null);\n"
-        "}\n"
-        "extern void PassNullAsArgument() {\n"
-        "    ASSERT(true == Test(null));\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        bool Test(BaseClass b) {
+            return (b == null);
+        }
+        extern void PassNullAsArgument() {
+            ASSERT(true == Test(null));
+        }
+    )");
 
-    ExecuteTest(
-        "void Test(BaseClass b) {}\n"
-        "void Test(SubClass s) {}\n"
-        "\n"
-        "extern void AmbiguousCallArgumentNull() {\n"
-        "    Test(null);\n"
-        "}\n",
+    ExecuteTest(R"(
+        void Test(BaseClass b) {}
+        void Test(SubClass s) {}
+        
+        extern void AmbiguousCallArgumentNull() {
+            Test(null);
+        }
+        )",
         CBotErrAmbiguousCall
     );
 }
 
 TEST_F(CBotUT, ClassImplicitCastArguments)
 {
-    auto publicProgram = ExecuteTest(
-        "public class BaseClass { int a = 360; }\n"
-        "public class SubClass extends BaseClass {}\n"
-    );
+    auto publicProgram = ExecuteTest(R"(
+        public class BaseClass { int a = 360; }
+        public class SubClass extends BaseClass {}
+    )");
 
-    ExecuteTest(
-        "bool Test(BaseClass b) {\n"
-        "    SubClass s = b;\n"
-        "    return (360 == s.a);\n"
-        "}\n"
-        "extern void UpcastPassingArguments() {\n"
-        "    ASSERT(true == Test(new SubClass()));\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        bool Test(BaseClass b) {
+            SubClass s = b;
+            return (360 == s.a);
+        }
+        extern void UpcastPassingArguments() {
+            ASSERT(true == Test(new SubClass()));
+        }
+    )");
 
-    ExecuteTest(
-        "void Test(BaseClass b, SubClass s) {}\n"
-        "void Test(SubClass s, BaseClass b) {}\n"
-        "\n"
-        "extern void UpcastAmbiguousCall() {\n"
-        "    Test(new SubClass(), new SubClass());\n"
-        "}\n",
+    ExecuteTest(R"(
+        void Test(BaseClass b, SubClass s) {}
+        void Test(SubClass s, BaseClass b) {}
+        
+        extern void UpcastAmbiguousCall() {
+            Test(new SubClass(), new SubClass());
+        }
+        )",
         CBotErrAmbiguousCall
     );
 
-    ExecuteTest(
-        "bool Test(BaseClass b, SubClass s) { return false; }\n"
-        "bool Test(SubClass s, BaseClass b) { return false; }\n"
-        "bool Test(SubClass s, SubClass s2) { return true; }\n"
-        "\n"
-        "extern void NoErrorMoreSpecific() {\n"
-        "    ASSERT(true == Test(new SubClass(), new SubClass()));\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        bool Test(BaseClass b, SubClass s) { return false; }
+        bool Test(SubClass s, BaseClass b) { return false; }
+        bool Test(SubClass s, SubClass s2) { return true; }
+        
+        extern void NoErrorMoreSpecific() {
+            ASSERT(true == Test(new SubClass(), new SubClass()));
+        }
+    )");
 }
 
 TEST_F(CBotUT, AmbiguousCallWithNumbers)
 {
-    ExecuteTest(
-        "void Test(int i, float f) {}\n"
-        "void Test(float f, int i) {}\n"
-        "\n"
-        "extern void AmbiguousCallNumbers() {\n"
-        "    Test(1, 2);\n"
-        "}\n",
+    ExecuteTest(R"(
+        void Test(int i, float f) {}
+        void Test(float f, int i) {}
+        
+        extern void AmbiguousCallNumbers() {
+            Test(1, 2);
+        }
+        )",
         CBotErrAmbiguousCall
     );
 
-    ExecuteTest(
-        "bool Test(int i, float f) { return false; }\n"
-        "bool Test(float f, int i) { return false; }\n"
-        "bool Test(int i, int ii)  { return true; }\n"
-        "\n"
-        "extern void NoErrorMoreSpecific() {\n"
-        "    ASSERT(true == Test(1, 2));\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        bool Test(int i, float f) { return false; }
+        bool Test(float f, int i) { return false; }
+        bool Test(int i, int ii)  { return true; }
+        
+        extern void NoErrorMoreSpecific() {
+            ASSERT(true == Test(1, 2));
+        }
+    )");
 }
 
 TEST_F(CBotUT, ClassMethodWithPublicKeyword)
 {
-    auto publicProgram = ExecuteTest(
-        "public class TestClass {\n"
-        "    public int Test() { return 1; }\n"
-        "}\n"
-    );
+    auto publicProgram = ExecuteTest(R"(
+        public class TestClass {
+            public int Test() { return 1; }
+        }
+    )");
 
-    ExecuteTest(
-        "int Test() { return 2; }\n"
-        "\n"
-        "extern void DontCallMethodInTestClass()\n"
-        "{\n"
-        "    ASSERT(2 == Test());\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        int Test() { return 2; }
+        
+        extern void DontCallMethodInTestClass()
+        {
+            ASSERT(2 == Test());
+        }
+    )");
 
-    ExecuteTest(
-        "int Test() { return 2; }\n"
-        "\n"
-        "public class OtherClass {}\n"
-        "\n"
-        "extern void OtherClass::TestCallWithThis()\n"
-        "{\n"
-        "    this.Test();\n"
-        "}\n",
+    ExecuteTest(R"(
+        int Test() { return 2; }
+        
+        public class OtherClass {}
+        
+        extern void OtherClass::TestCallWithThis()
+        {
+            this.Test();
+        }
+        )",
         CBotErrUndefCall
     );
 }
 
 TEST_F(CBotUT, ClassTestProtectedMember)
 {
-    auto publicProgram = ExecuteTest(
-        "public class BaseClass {\n"
-        "    protected int a_protected = 1;\n"
-        "    bool test() {\n"
-        "        a_protected = 1;\n"
-        "        int a = a_protected;\n"
-        "        return true;\n"
-        "    }\n"
-        "}\n"
-        "extern void Test() {\n"
-        "    BaseClass b();\n"
-        "    ASSERT(true == b.test());\n"
-        "}\n"
-    );
+    auto publicProgram = ExecuteTest(R"(
+        public class BaseClass {
+            protected int a_protected = 1;
+            bool test() {
+                a_protected = 1;
+                int a = a_protected;
+                return true;
+            }
+        }
+        extern void Test() {
+            BaseClass b();
+            ASSERT(true == b.test());
+        }
+    )");
 
-    ExecuteTest(
-        "public class SubClass extends BaseClass {\n"
-        "    bool testProtected() {\n"
-        "        a_protected = 1;\n"
-        "        int a = a_protected;\n"
-        "        return true;\n"
-        "    }\n"
-        "}\n"
-        "extern void TestSubClassAccessProtected() {\n"
-        "    SubClass  s();\n"
-        "    ASSERT(true == s.test());\n"
-        "    ASSERT(true == s.testProtected());\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        public class SubClass extends BaseClass {
+            bool testProtected() {
+                a_protected = 1;
+                int a = a_protected;
+                return true;
+            }
+        }
+        extern void TestSubClassAccessProtected() {
+            SubClass  s();
+            ASSERT(true == s.test());
+            ASSERT(true == s.testProtected());
+        }
+    )");
 
-    ExecuteTest(
-        "extern void TestErrorProtected() {\n"
-        "    BaseClass b();\n"
-        "    int i = b.a_protected;\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void TestErrorProtected() {
+            BaseClass b();
+            int i = b.a_protected;
+        }
+        )",
         CBotErrPrivate
     );
 
-    ExecuteTest(
-        "extern void ErrorProtectedAssignment() {\n"
-        "    BaseClass b();\n"
-        "    b.a_protected = 1;\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void ErrorProtectedAssignment() {
+            BaseClass b();
+            b.a_protected = 1;
+        }
+        )",
         CBotErrPrivate
     );
 
-    ExecuteTest(
-        "public class SomeOtherClass {\n"
-        "    void testErrorProtected() {\n"
-        "        BaseClass b();\n"
-        "        int i = b.a_protected;\n"
-        "    }\n"
-        "}\n",
+    ExecuteTest(R"(
+        public class SomeOtherClass {
+            void testErrorProtected() {
+                BaseClass b();
+                int i = b.a_protected;
+            }
+        }
+        )",
         CBotErrPrivate
     );
 
-    ExecuteTest(
-        "public class SomeOtherClass {\n"
-        "    void testErrorProtectedAssignment() {\n"
-        "        BaseClass b();\n"
-        "        b.a_protected = 1;\n"
-        "    }\n"
-        "}\n",
+    ExecuteTest(R"(
+        public class SomeOtherClass {
+            void testErrorProtectedAssignment() {
+                BaseClass b();
+                b.a_protected = 1;
+            }
+        }
+        )",
         CBotErrPrivate
     );
 }
 
 TEST_F(CBotUT, ClassTestPrivateMember)
 {
-    auto publicProgram = ExecuteTest(
-        "public class BaseClass {\n"
-        "    private int a_private = 2;\n"
-        "\n"
-        "    bool test() {\n"
-        "        a_private = 2;\n"
-        "        int a = a_private;\n"
-        "        return true;\n"
-        "    }\n"
-        "    bool NoErrorPrivateSameClass() {\n"
-        "        BaseClass b = new BaseClass();\n"
-        "        int a = b.a_private;\n"
-        "        b.a_private = 2;\n"
-        "        return true;\n"
-        "    }\n"
-        "}\n"
-        "extern void Test() {\n"
-        "    BaseClass b();\n"
-        "    ASSERT(true == b.test());\n"
-        "    ASSERT(true == b.NoErrorPrivateSameClass());\n"
-        "}\n"
-    );
+    auto publicProgram = ExecuteTest(R"(
+        public class BaseClass {
+            private int a_private = 2;
+        
+            bool test() {
+                a_private = 2;
+                int a = a_private;
+                return true;
+            }
+            bool NoErrorPrivateSameClass() {
+                BaseClass b = new BaseClass();
+                int a = b.a_private;
+                b.a_private = 2;
+                return true;
+            }
+        }
+        extern void Test() {
+            BaseClass b();
+            ASSERT(true == b.test());
+            ASSERT(true == b.NoErrorPrivateSameClass());
+        }
+    )");
 
-    ExecuteTest(
-        "public class SubClass extends BaseClass {\n"
-        "    void testErrorPrivate() {\n"
-        "        int a = a_private;\n"
-        "    }\n"
-        "}\n",
+    ExecuteTest(R"(
+        public class SubClass extends BaseClass {
+            void testErrorPrivate() {
+                int a = a_private;
+            }
+        }
+        )",
         CBotErrPrivate
     );
 
-    ExecuteTest(
-        "public class SubClass extends BaseClass {\n"
-        "    void testErrorPrivateAssignment() {\n"
-        "        a_private = 2;\n"
-        "    }\n"
-        "}\n",
+    ExecuteTest(R"(
+        public class SubClass extends BaseClass {
+            void testErrorPrivateAssignment() {
+                a_private = 2;
+            }
+        }
+        )",
         CBotErrPrivate
     );
 
-    ExecuteTest(
-        "extern void TestErrorPrivate() {\n"
-        "    BaseClass b();\n"
-        "    int i = b.a_private;\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void TestErrorPrivate() {
+            BaseClass b();
+            int i = b.a_private;
+        }
+        )",
         CBotErrPrivate
     );
 
-    ExecuteTest(
-        "extern void ErrorPrivateAssignment() {\n"
-        "    BaseClass b();\n"
-        "    b.a_private = 2;\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void ErrorPrivateAssignment() {
+            BaseClass b();
+            b.a_private = 2;
+        }
+        )",
         CBotErrPrivate
     );
 
-    ExecuteTest(
-        "public class SomeOtherClass {\n"
-        "    void testErrorPrivate() {\n"
-        "        BaseClass b();\n"
-        "        int i = b.a_private;\n"
-        "    }\n"
-        "}\n",
+    ExecuteTest(R"(
+        public class SomeOtherClass {
+            void testErrorPrivate() {
+                BaseClass b();
+                int i = b.a_private;
+            }
+        }
+        )",
         CBotErrPrivate
     );
 
-    ExecuteTest(
-        "public class SomeOtherClass {\n"
-        "    void testErrorPrivateAssignment() {\n"
-        "        BaseClass b();\n"
-        "        b.a_private = 1;\n"
-        "    }\n"
-        "}\n",
+    ExecuteTest(R"(
+        public class SomeOtherClass {
+            void testErrorPrivateAssignment() {
+                BaseClass b();
+                b.a_private = 1;
+            }
+        }
+        )",
         CBotErrPrivate
     );
 }
 
 TEST_F(CBotUT, IncrementDecrementSyntax)
 {
-    auto publicProgram = ExecuteTest(
-        "public class TestClass {\n"
-        "    int GetInt() { return 1; }\n"
-        "}\n"
-        "extern void TestIncrementDecrement()\n"
-        "{\n"
-        "    int i = 1;\n"
-        "    ASSERT(2 == ++i);\n"
-        "    ASSERT(2 == i++);\n"
-        "    ASSERT(3 ==  i );\n"
-        "    ASSERT(2 == --i);\n"
-        "    ASSERT(2 == i--);\n"
-        "    ASSERT(1 ==  i );\n"
-        "}\n"
-    );
+    auto publicProgram = ExecuteTest(R"(
+        public class TestClass {
+            int GetInt() { return 1; }
+        }
+        extern void TestIncrementDecrement()
+        {
+            int i = 1;
+            ASSERT(2 == ++i);
+            ASSERT(2 == i++);
+            ASSERT(3 ==  i );
+            ASSERT(2 == --i);
+            ASSERT(2 == i--);
+            ASSERT(1 ==  i );
+        }
+    )");
 
-    ExecuteTest(
-        "extern void PreIncrementMethodCall()\n"
-        "{\n"
-        "    TestClass tc();\n"
-        "    ++tc.GetInt();\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void PreIncrementMethodCall()
+        {
+            TestClass tc();
+            ++tc.GetInt();
+        }
+        )",
         CBotErrBadType1
     );
 
-    ExecuteTest(
-        "extern void PostIncrementMethodCall()\n"
-        "{\n"
-        "    TestClass tc();\n"
-        "    tc.GetInt()++;\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void PostIncrementMethodCall()
+        {
+            TestClass tc();
+            tc.GetInt()++;
+        }
+        )",
         CBotErrBadType1
     );
 
-    ExecuteTest(
-        "extern void BadPreIncrementEmpty()\n"
-        "{\n"
-        "    ++;\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void BadPreIncrementEmpty()
+        {
+            ++;
+        }
+        )",
         CBotErrBadType1
     );
 
-    ExecuteTest(
-        "extern void BadPreIncrementNotAVar()\n"
-        "{\n"
-        "    ++123;\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void BadPreIncrementNotAVar()
+        {
+            ++123;
+        }
+        )",
         CBotErrBadType1
     );
 }
 
 TEST_F(CBotUT, ParametersWithDefaultValues)
 {
-    ExecuteTest(
-        "extern void ParametersWithDefaultValues() {\n"
-        "    ASSERT(true == Test());\n"
-        "    ASSERT(true == Test(1));\n"
-        "    ASSERT(true == Test(1, 2));\n"
-        "}\n"
-        "bool Test(int i = 1, float f = 2.0) {\n"
-        "    return (i == 1) && (f == 2.0);\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        extern void ParametersWithDefaultValues() {
+            ASSERT(true == Test());
+            ASSERT(true == Test(1));
+            ASSERT(true == Test(1, 2));
+        }
+        bool Test(int i = 1, float f = 2.0) {
+            return (i == 1) && (f == 2.0);
+        }
+    )");
 
-    ExecuteTest(
-        "extern void NotUsingDefaultValues() {\n"
-        "    ASSERT(true == Test(2, 4.0));\n"
-        "}\n"
-        "bool Test(int i = 1, float f = 2.0) {\n"
-        "    return (i == 2) && (f == 4.0);\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        extern void NotUsingDefaultValues() {
+            ASSERT(true == Test(2, 4.0));
+        }
+        bool Test(int i = 1, float f = 2.0) {
+            return (i == 2) && (f == 4.0);
+        }
+    )");
 
-    ExecuteTest(
-        "extern void NextParamNeedsDefaultValue() {\n"
-        "}\n"
-        "void Test(int i = 1, float f) {}\n"
-        "\n",
+    ExecuteTest(R"(
+        extern void NextParamNeedsDefaultValue() {
+        }
+        void Test(int i = 1, float f) {}
+        
+        )",
         CBotErrDefaultValue
     );
 
-    ExecuteTest(
-        "extern void ParamMissingExpression() {\n"
-        "}\n"
-        "void Test(int i = 1, float f = ) {}\n"
-        "\n",
+    ExecuteTest(R"(
+        extern void ParamMissingExpression() {
+        }
+        void Test(int i = 1, float f = ) {}
+        
+        )",
         CBotErrNoExpression
     );
 
-    ExecuteTest(
-        "extern void ParamDefaultBadType() {\n"
-        "}\n"
-        "void Test(int i = 1, float f = null) {}\n"
-        "\n",
+    ExecuteTest(R"(
+        extern void ParamDefaultBadType() {
+        }
+        void Test(int i = 1, float f = null) {}
+        
+        )",
         CBotErrBadType1
     );
 
-    ExecuteTest(
-        "extern void DefaultValuesAmbiguousCall() {\n"
-        "    Test();\n"
-        "}\n"
-        "void Test(int i = 1) {}\n"
-        "void Test(float f = 2.0) {}\n"
-        "\n",
+    ExecuteTest(R"(
+        extern void DefaultValuesAmbiguousCall() {
+            Test();
+        }
+        void Test(int i = 1) {}
+        void Test(float f = 2.0) {}
+        
+        )",
         CBotErrAmbiguousCall
     );
 
-    ExecuteTest(
-        "extern void AmbiguousCallOneDefault() {\n"
-        "    Test(1);\n"
-        "}\n"
-        "void Test(int i, float f = 2) {}\n"
-        "void Test(int i) {}\n"
-        "\n",
+    ExecuteTest(R"(
+        extern void AmbiguousCallOneDefault() {
+            Test(1);
+        }
+        void Test(int i, float f = 2) {}
+        void Test(int i) {}
+        
+        )",
         CBotErrAmbiguousCall
     );
 
-    ExecuteTest(
-        "extern void DifferentNumberOfDefaultValues() {\n"
-        "    Test(1, 2.0);\n"
-        "}\n"
-        "void Test(int i, float f = 2.0) {}\n"
-        "void Test(int i, float f = 2.0, int ii = 1) {}\n"
-        "\n",
+    ExecuteTest(R"(
+        extern void DifferentNumberOfDefaultValues() {
+            Test(1, 2.0);
+        }
+        void Test(int i, float f = 2.0) {}
+        void Test(int i, float f = 2.0, int ii = 1) {}
+        
+        )",
         CBotErrAmbiguousCall
     );
 
-    ExecuteTest(
-        "extern void DefaultValueUnaryExpression() {\n"
-        "    TestNumbers();\n"
-        "    TestBool();\n"
-        "}\n"
-        "void TestNumbers(int i = -1, float f = -1, int ii = ~1) {\n"
-        "    ASSERT(i == -1);\n"
-        "    ASSERT(f == -1.0);\n"
-        "    ASSERT(ii == ~1);\n"
-        "}\n"
-        "void TestBool(bool b = !false, bool b2 = not false) {\n"
-        "    ASSERT(true == b);\n"
-        "    ASSERT(true == b2);\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        extern void DefaultValueUnaryExpression() {
+            TestNumbers();
+            TestBool();
+        }
+        void TestNumbers(int i = -1, float f = -1, int ii = ~1) {
+            ASSERT(i == -1);
+            ASSERT(f == -1.0);
+            ASSERT(ii == ~1);
+        }
+        void TestBool(bool b = !false, bool b2 = not false) {
+            ASSERT(true == b);
+            ASSERT(true == b2);
+        }
+    )");
 }
 
 TEST_F(CBotUT, ClassMethodsOutOfClass_Issue207)
 {
-    auto publicProgram = ExecuteTest(
-        "public class OtherClass {}\n"
-        "public class TestClass {}\n"
-    );
+    auto publicProgram = ExecuteTest(R"(
+        public class OtherClass {}
+        public class TestClass {}
+    )");
 
-    ExecuteTest(
-        "extern void TestCallWithoutObject()\n"
-        "{\n"
-        "    TestMethod();\n"
-        "}\n"
-        "public void TestClass::TestMethod() {}\n",
+    ExecuteTest(R"(
+        extern void TestCallWithoutObject()
+        {
+            TestMethod();
+        }
+        public void TestClass::TestMethod() {}
+        )",
         CBotErrUndefCall
     );
 
-    ExecuteTest(
-        "extern void TestCallWithWrongObject()\n"
-        "{\n"
-        "    OtherClass oc();\n"
-        "    oc.TestMethod();\n"
-        "}\n"
-        "public void TestClass::TestMethod() {}\n",
+    ExecuteTest(R"(
+        extern void TestCallWithWrongObject()
+        {
+            OtherClass oc();
+            oc.TestMethod();
+        }
+        public void TestClass::TestMethod() {}
+        )",
         CBotErrUndefCall
     );
 
-    ExecuteTest(
-        "extern void OtherClass::TestCallWithWrongThis()\n"
-        "{\n"
-        "    this.TestMethod();\n"
-        "}\n"
-        "public void TestClass::TestMethod() {}\n",
+    ExecuteTest(R"(
+        extern void OtherClass::TestCallWithWrongThis()
+        {
+            this.TestMethod();
+        }
+        public void TestClass::TestMethod() {}
+        )",
         CBotErrUndefCall
     );
 }
 
 TEST_F(CBotUT, ClassMethodsOutOfClass)
 {
-    auto publicProgram = ExecuteTest(
-        "public class TestClass\n"
-        "{\n"
-        "    int i = 123, j = 456, k = 789;\n"
-        "    int InsideClass()\n"
-        "    {\n"
-        "        ASSERT(456 == PublicMethod());\n"
-        "        ASSERT(789 == NotPublicMethod());\n"
-        "        return this.i;\n"
-        "    }\n"
-        "}\n"
-        "extern void TestMethodsOutOfClass()\n"
-        "{\n"
-        "    TestClass tc();\n"
-        "    ASSERT(123 == tc.InsideClass());\n"
-        "    ASSERT(456 == tc.PublicMethod());\n"
-        "    ASSERT(789 == tc.NotPublicMethod());\n"
-        "}\n"
-        "public int TestClass::PublicMethod()\n"
-        "{\n"
-        "    return this.j;\n"
-        "}\n"
-        "int TestClass::NotPublicMethod()\n"
-        "{\n"
-        "    return k;\n"
-        "}\n"
-    );
+    auto publicProgram = ExecuteTest(R"(
+        public class TestClass
+        {
+            int i = 123, j = 456, k = 789;
+            int InsideClass()
+            {
+                ASSERT(456 == PublicMethod());
+                ASSERT(789 == NotPublicMethod());
+                return this.i;
+            }
+        }
+        extern void TestMethodsOutOfClass()
+        {
+            TestClass tc();
+            ASSERT(123 == tc.InsideClass());
+            ASSERT(456 == tc.PublicMethod());
+            ASSERT(789 == tc.NotPublicMethod());
+        }
+        public int TestClass::PublicMethod()
+        {
+            return this.j;
+        }
+        int TestClass::NotPublicMethod()
+        {
+            return k;
+        }
+    )");
 
-    ExecuteTest(
-        "extern void TestFromOtherProgram()\n"
-        "{\n"
-        "    TestClass tc();\n"
-        "    ASSERT(123 == tc.InsideClass());\n"
-        "    ASSERT(456 == tc.PublicMethod());\n"
-        "    ASSERT(789 == tc.MethodInThisProgram());\n"
-        "}\n"
-        "int TestClass::MethodInThisProgram()\n"
-        "{\n"
-        "    ASSERT(123 == InsideClass());\n"
-        "    ASSERT(456 == PublicMethod());\n"
-        "    ASSERT(123 == this.InsideClass());\n"
-        "    ASSERT(456 == this.PublicMethod());\n"
-        "    ASSERT(i == 123 && this.j == 456);\n"
-        "    return this.k;\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        extern void TestFromOtherProgram()
+        {
+            TestClass tc();
+            ASSERT(123 == tc.InsideClass());
+            ASSERT(456 == tc.PublicMethod());
+            ASSERT(789 == tc.MethodInThisProgram());
+        }
+        int TestClass::MethodInThisProgram()
+        {
+            ASSERT(123 == InsideClass());
+            ASSERT(456 == PublicMethod());
+            ASSERT(123 == this.InsideClass());
+            ASSERT(456 == this.PublicMethod());
+            ASSERT(i == 123 && this.j == 456);
+            return this.k;
+        }
+    )");
 }
 
 TEST_F(CBotUT, ClassInheritanceMethodsOutOfClass)
 {
-    ExecuteTest(
-        "public class BaseClass {\n"
-        "    int a = 123;\n"
-        "    int b = 456;\n"
-        "    int c = 789;\n"
-        "}\n"
-        "int BaseClass::testOverride() { return 123; }\n"
-        "int BaseClass::testNoOverride() { return 456; }\n"
-        "int BaseClass::testInsideBaseClass() {\n"
-        "    ASSERT(a == 123);\n"
-        "    ASSERT(b == 456);\n"
-        "    ASSERT(c == 789);\n"
-        "    ASSERT(456 == testNoOverride());\n"
-        "    return c;\n"
-        "}\n"
-        "int BaseClass::testInsideBaseOverride() { return testOverride(); }\n"
-        "\n"
-        "public class MidClass extends BaseClass {\n"
-        "    int b = 1011;\n"
-        "    int c = 1213;\n"
-        "    int d = 1415;\n"
-        "}\n"
-        "int MidClass::testOverride() { return 1011; }\n"
-        "int MidClass::testInsideMidClass() {\n"
-        "    ASSERT(a == 123);\n"
-        "    ASSERT(b == 1011);\n"
-        "    ASSERT(c == 1213);\n"
-        "    ASSERT(d == 1415);\n"
-        "    ASSERT(456 == testNoOverride());\n"
-        "    ASSERT(789 == testInsideBaseClass());\n"
-        "    return c;\n"
-        "}\n"
-        "int MidClass::testSuper() {\n"
-        "    ASSERT(super.a == 123);\n"
-        "    ASSERT(super.b == 456);\n"
-        "    ASSERT(super.c == 789);\n"
-        "    ASSERT(123 == super.testOverride());\n"
-        "    ASSERT(789 == super.testInsideBaseClass());\n"
-        "    return super.testInsideBaseOverride();\n"
-        "}\n"
-        "int MidClass::testInsideMidOverride() { return testOverride(); }\n"
-        "\n"
-        "public class SubClass extends MidClass {\n"
-        "    int c = 1617;\n"
-        "    int d = 1819;\n"
-        "    int e = 2021;\n"
-        "}\n"
-        "int SubClass::testOverride() { return 1617; }\n"
-        "int SubClass::testInsideSubClass() {\n"
-        "    ASSERT(a == 123);\n"
-        "    ASSERT(b == 1011);\n"
-        "    ASSERT(c == 1617);\n"
-        "    ASSERT(d == 1819);\n"
-        "    ASSERT(e == 2021);\n"
-        "    ASSERT(456  == testNoOverride());\n"
-        "    ASSERT(789  == testInsideBaseClass());\n"
-        "    ASSERT(1213 == testInsideMidClass());\n"
-        "    return c;\n"
-        "}\n"
-        "int SubClass::testSuper() {\n"
-        "    ASSERT(super.a == 123);\n"
-        "    ASSERT(super.b == 1011);\n"
-        "    ASSERT(super.c == 1213);\n"
-        "    ASSERT(super.d == 1415);\n"
-        "    ASSERT(1011 == super.testOverride());\n"
-        "    ASSERT(789  == super.testInsideBaseClass());\n"
-        "    ASSERT(1213 == super.testInsideMidClass());\n"
-        "    return super.testSuper();\n"
-        "}\n"
-        "int SubClass::testInsideSubOverride() { return testOverride(); }\n"
-        "\n"
-        "extern void InheritanceMethodsOutOfClass()\n"
-        "{\n"
-        "    BaseClass bc();\n"
-        "    ASSERT(123 == bc.testOverride());\n"
-        "    ASSERT(456 == bc.testNoOverride());\n"
-        "    ASSERT(789 == bc.testInsideBaseClass());\n"
-        "    ASSERT(123 == bc.testInsideBaseOverride());\n"
-        "    MidClass  mc();\n"
-        "    ASSERT(1011 == mc.testSuper());\n"
-        "    ASSERT(1011 == mc.testOverride());\n"
-        "    ASSERT(456  == mc.testNoOverride());\n"
-        "    ASSERT(789  == mc.testInsideBaseClass());\n"
-        "    ASSERT(1213 == mc.testInsideMidClass());\n"
-        "    ASSERT(1011 == mc.testInsideBaseOverride());\n"
-        "    ASSERT(1011 == mc.testInsideMidOverride());\n"
-        "    SubClass  sc();\n"
-        "    ASSERT(1617 == sc.testSuper());\n"
-        "    ASSERT(1617 == sc.testOverride());\n"
-        "    ASSERT(456  == sc.testNoOverride());\n"
-        "    ASSERT(789  == sc.testInsideBaseClass());\n"
-        "    ASSERT(1213 == sc.testInsideMidClass());\n"
-        "    ASSERT(1617 == sc.testInsideSubClass());\n"
-        "    ASSERT(1617 == sc.testInsideBaseOverride());\n"
-        "    ASSERT(1617 == sc.testInsideMidOverride());\n"
-        "    ASSERT(1617 == sc.testInsideSubOverride());\n"
+    ExecuteTest(R"(
+        public class BaseClass {
+            int a = 123;
+            int b = 456;
+            int c = 789;
+        }
+        int BaseClass::testOverride() { return 123; }
+        int BaseClass::testNoOverride() { return 456; }
+        int BaseClass::testInsideBaseClass() {
+            ASSERT(a == 123);
+            ASSERT(b == 456);
+            ASSERT(c == 789);
+            ASSERT(456 == testNoOverride());
+            return c;
+        }
+        int BaseClass::testInsideBaseOverride() { return testOverride(); }
+        
+        public class MidClass extends BaseClass {
+            int b = 1011;
+            int c = 1213;
+            int d = 1415;
+        }
+        int MidClass::testOverride() { return 1011; }
+        int MidClass::testInsideMidClass() {
+            ASSERT(a == 123);
+            ASSERT(b == 1011);
+            ASSERT(c == 1213);
+            ASSERT(d == 1415);
+            ASSERT(456 == testNoOverride());
+            ASSERT(789 == testInsideBaseClass());
+            return c;
+        }
+        int MidClass::testSuper() {
+            ASSERT(super.a == 123);
+            ASSERT(super.b == 456);
+            ASSERT(super.c == 789);
+            ASSERT(123 == super.testOverride());
+            ASSERT(789 == super.testInsideBaseClass());
+            return super.testInsideBaseOverride();
+        }
+        int MidClass::testInsideMidOverride() { return testOverride(); }
+        
+        public class SubClass extends MidClass {
+            int c = 1617;
+            int d = 1819;
+            int e = 2021;
+        }
+        int SubClass::testOverride() { return 1617; }
+        int SubClass::testInsideSubClass() {
+            ASSERT(a == 123);
+            ASSERT(b == 1011);
+            ASSERT(c == 1617);
+            ASSERT(d == 1819);
+            ASSERT(e == 2021);
+            ASSERT(456  == testNoOverride());
+            ASSERT(789  == testInsideBaseClass());
+            ASSERT(1213 == testInsideMidClass());
+            return c;
+        }
+        int SubClass::testSuper() {
+            ASSERT(super.a == 123);
+            ASSERT(super.b == 1011);
+            ASSERT(super.c == 1213);
+            ASSERT(super.d == 1415);
+            ASSERT(1011 == super.testOverride());
+            ASSERT(789  == super.testInsideBaseClass());
+            ASSERT(1213 == super.testInsideMidClass());
+            return super.testSuper();
+        }
+        int SubClass::testInsideSubOverride() { return testOverride(); }
+        
+        extern void InheritanceMethodsOutOfClass()
+        {
+            BaseClass bc();
+            ASSERT(123 == bc.testOverride());
+            ASSERT(456 == bc.testNoOverride());
+            ASSERT(789 == bc.testInsideBaseClass());
+            ASSERT(123 == bc.testInsideBaseOverride());
+            MidClass  mc();
+            ASSERT(1011 == mc.testSuper());
+            ASSERT(1011 == mc.testOverride());
+            ASSERT(456  == mc.testNoOverride());
+            ASSERT(789  == mc.testInsideBaseClass());
+            ASSERT(1213 == mc.testInsideMidClass());
+            ASSERT(1011 == mc.testInsideBaseOverride());
+            ASSERT(1011 == mc.testInsideMidOverride());
+            SubClass  sc();
+            ASSERT(1617 == sc.testSuper());
+            ASSERT(1617 == sc.testOverride());
+            ASSERT(456  == sc.testNoOverride());
+            ASSERT(789  == sc.testInsideBaseClass());
+            ASSERT(1213 == sc.testInsideMidClass());
+            ASSERT(1617 == sc.testInsideSubClass());
+            ASSERT(1617 == sc.testInsideBaseOverride());
+            ASSERT(1617 == sc.testInsideMidOverride());
+            ASSERT(1617 == sc.testInsideSubOverride());
         // Test polymorphism
-        "    bc = mc;\n"
-        "    ASSERT(1011 == bc.testOverride());\n"
-        "    ASSERT(789  == bc.testInsideBaseClass());\n"
-        "    ASSERT(1011 == bc.testInsideBaseOverride());\n"
-        "    bc = sc;\n"
-        "    ASSERT(1617 == bc.testOverride());\n"
-        "    ASSERT(789  == bc.testInsideBaseClass());\n"
-        "    ASSERT(1617 == bc.testInsideBaseOverride());\n"
-        "    mc = sc;\n"
-        "    ASSERT(1617 == mc.testSuper());\n"
-        "    ASSERT(1617 == mc.testOverride());\n"
-        "    ASSERT(789  == mc.testInsideBaseClass());\n"
-        "    ASSERT(1213 == mc.testInsideMidClass());\n"
-        "    ASSERT(1617 == mc.testInsideBaseOverride());\n"
-        "    ASSERT(1617 == mc.testInsideMidOverride());\n"
-        "}\n"
-    );
+            bc = mc;
+            ASSERT(1011 == bc.testOverride());
+            ASSERT(789  == bc.testInsideBaseClass());
+            ASSERT(1011 == bc.testInsideBaseOverride());
+            bc = sc;
+            ASSERT(1617 == bc.testOverride());
+            ASSERT(789  == bc.testInsideBaseClass());
+            ASSERT(1617 == bc.testInsideBaseOverride());
+            mc = sc;
+            ASSERT(1617 == mc.testSuper());
+            ASSERT(1617 == mc.testOverride());
+            ASSERT(789  == mc.testInsideBaseClass());
+            ASSERT(1213 == mc.testInsideMidClass());
+            ASSERT(1617 == mc.testInsideBaseOverride());
+            ASSERT(1617 == mc.testInsideMidOverride());
+        }
+    )");
 }
 
 TEST_F(CBotUT, ClassInheritanceTestThisOutOfClass)
 {
-    ExecuteTest(
-        "public class BaseClass {\n"
-        "    int a = 123;\n"
-        "    int b = 456;\n"
-        "    int c = 789;\n"
-        "}\n"
-        "void BaseClass::testBaseMembersAndParams(int a, int b, int c) {\n"
-        "    ASSERT(a != 123);\n"
-        "    ASSERT(b != 456);\n"
-        "    ASSERT(c != 789);\n"
-        "    ASSERT(this.a == 123);\n"
-        "    ASSERT(this.b == 456);\n"
-        "    ASSERT(this.c == 789);\n"
-        "}\n"
-        "BaseClass BaseClass::testSuperReturnThis(){ return this; }\n"
-        "BaseClass BaseClass::testReturnThisFromBaseClass() { return this; }\n"
-        "\n"
-        "public class MidClass extends BaseClass {\n"
-        "    int b = 1011;\n"
-        "    int c = 1213;\n"
-        "    int d = 1415;\n"
-        "}\n"
-        "void MidClass::testMidMembersAndParams(int a, int b, int c, int d) {\n"
-        "    ASSERT(a != 123);\n"
-        "    ASSERT(b != 1011);\n"
-        "    ASSERT(c != 1213);\n"
-        "    ASSERT(d != 1415);\n"
-        "    ASSERT(this.a == 123);\n"
-        "    ASSERT(this.b == 1011);\n"
-        "    ASSERT(this.c == 1213);\n"
-        "    ASSERT(this.d == 1415);\n"
-        "}\n"
-        "MidClass MidClass::testSuperReturnThis(){ return super.testSuperReturnThis(); }\n"
-        "MidClass MidClass::testReturnThisFromMidClass() { return this; }\n"
-        "\n"
-        "public class SubClass extends MidClass {\n"
-        "    int c = 1617;\n"
-        "    int d = 1819;\n"
-        "    int e = 2021;\n"
-        "}\n"
-        "void SubClass::testSubMembersAndParams(int a, int b, int c, int d, int e) {\n"
-        "    ASSERT(a != 123);\n"
-        "    ASSERT(b != 1011);\n"
-        "    ASSERT(c != 1617);\n"
-        "    ASSERT(d != 1819);\n"
-        "    ASSERT(e != 2021);\n"
-        "    ASSERT(this.a == 123);\n"
-        "    ASSERT(this.b == 1011);\n"
-        "    ASSERT(this.c == 1617);\n"
-        "    ASSERT(this.d == 1819);\n"
-        "    ASSERT(this.e == 2021);\n"
-        "}\n"
-        "SubClass SubClass::testSuperReturnThis(){ return super.testSuperReturnThis(); }\n"
-        "SubClass SubClass::testReturnThisFromSubClass() { return this; }\n"
-        "\n"
-        "extern void ClassInheritanceTestThisOutOfClass()\n"
-        "{\n"
-        "    BaseClass bc();\n"
-        "    MidClass  mc();\n"
-        "    SubClass  sc();\n"
-        "    ASSERT(bc == bc.testSuperReturnThis());\n"
-        "    ASSERT(bc == bc.testReturnThisFromBaseClass());\n"
-        "                 bc.testBaseMembersAndParams(-1, -2, -3);\n"
-        "    ASSERT(mc == mc.testSuperReturnThis());\n"
-        "    ASSERT(mc == mc.testReturnThisFromBaseClass());\n"
-        "    ASSERT(mc == mc.testReturnThisFromMidClass());\n"
-        "                 mc.testBaseMembersAndParams(-1, -2, -3);\n"
-        "                 mc.testMidMembersAndParams(-1, -2, -3, -4);\n"
-        "    ASSERT(sc == sc.testSuperReturnThis());\n"
-        "    ASSERT(sc == sc.testReturnThisFromBaseClass());\n"
-        "    ASSERT(sc == sc.testReturnThisFromMidClass());\n"
-        "    ASSERT(sc == sc.testReturnThisFromSubClass());\n"
-        "                 sc.testBaseMembersAndParams(-1, -2, -3);\n"
-        "                 sc.testMidMembersAndParams(-1, -2, -3, -4);\n"
-        "                 sc.testSubMembersAndParams(-1, -2, -3, -4, -5);\n"
+    ExecuteTest(R"(
+        public class BaseClass {
+            int a = 123;
+            int b = 456;
+            int c = 789;
+        }
+        void BaseClass::testBaseMembersAndParams(int a, int b, int c) {
+            ASSERT(a != 123);
+            ASSERT(b != 456);
+            ASSERT(c != 789);
+            ASSERT(this.a == 123);
+            ASSERT(this.b == 456);
+            ASSERT(this.c == 789);
+        }
+        BaseClass BaseClass::testSuperReturnThis(){ return this; }
+        BaseClass BaseClass::testReturnThisFromBaseClass() { return this; }
+        
+        public class MidClass extends BaseClass {
+            int b = 1011;
+            int c = 1213;
+            int d = 1415;
+        }
+        void MidClass::testMidMembersAndParams(int a, int b, int c, int d) {
+            ASSERT(a != 123);
+            ASSERT(b != 1011);
+            ASSERT(c != 1213);
+            ASSERT(d != 1415);
+            ASSERT(this.a == 123);
+            ASSERT(this.b == 1011);
+            ASSERT(this.c == 1213);
+            ASSERT(this.d == 1415);
+        }
+        MidClass MidClass::testSuperReturnThis(){ return super.testSuperReturnThis(); }
+        MidClass MidClass::testReturnThisFromMidClass() { return this; }
+        
+        public class SubClass extends MidClass {
+            int c = 1617;
+            int d = 1819;
+            int e = 2021;
+        }
+        void SubClass::testSubMembersAndParams(int a, int b, int c, int d, int e) {
+            ASSERT(a != 123);
+            ASSERT(b != 1011);
+            ASSERT(c != 1617);
+            ASSERT(d != 1819);
+            ASSERT(e != 2021);
+            ASSERT(this.a == 123);
+            ASSERT(this.b == 1011);
+            ASSERT(this.c == 1617);
+            ASSERT(this.d == 1819);
+            ASSERT(this.e == 2021);
+        }
+        SubClass SubClass::testSuperReturnThis(){ return super.testSuperReturnThis(); }
+        SubClass SubClass::testReturnThisFromSubClass() { return this; }
+        
+        extern void ClassInheritanceTestThisOutOfClass()
+        {
+            BaseClass bc();
+            MidClass  mc();
+            SubClass  sc();
+            ASSERT(bc == bc.testSuperReturnThis());
+            ASSERT(bc == bc.testReturnThisFromBaseClass());
+                         bc.testBaseMembersAndParams(-1, -2, -3);
+            ASSERT(mc == mc.testSuperReturnThis());
+            ASSERT(mc == mc.testReturnThisFromBaseClass());
+            ASSERT(mc == mc.testReturnThisFromMidClass());
+                         mc.testBaseMembersAndParams(-1, -2, -3);
+                         mc.testMidMembersAndParams(-1, -2, -3, -4);
+            ASSERT(sc == sc.testSuperReturnThis());
+            ASSERT(sc == sc.testReturnThisFromBaseClass());
+            ASSERT(sc == sc.testReturnThisFromMidClass());
+            ASSERT(sc == sc.testReturnThisFromSubClass());
+                         sc.testBaseMembersAndParams(-1, -2, -3);
+                         sc.testMidMembersAndParams(-1, -2, -3, -4);
+                         sc.testSubMembersAndParams(-1, -2, -3, -4, -5);
         // Test polymorphism
-        "    bc = mc;\n"
-        "    ASSERT(mc == bc.testSuperReturnThis());\n"
-        "    ASSERT(mc == bc.testReturnThisFromBaseClass());\n"
-        "                 bc.testBaseMembersAndParams(-1, -2, -3);\n"
-        "    bc = sc;\n"
-        "    ASSERT(sc == bc.testSuperReturnThis());\n"
-        "    ASSERT(sc == bc.testReturnThisFromBaseClass());\n"
-        "                 bc.testBaseMembersAndParams(-1, -2, -3);\n"
-        "    mc = sc;\n"
-        "    ASSERT(sc == mc.testSuperReturnThis());\n"
-        "    ASSERT(sc == mc.testReturnThisFromBaseClass());\n"
-        "    ASSERT(sc == mc.testReturnThisFromMidClass());\n"
-        "                 mc.testBaseMembersAndParams(-1, -2, -3);\n"
-        "                 mc.testMidMembersAndParams(-1, -2, -3, -4);\n"
-        "}\n"
-    );
+            bc = mc;
+            ASSERT(mc == bc.testSuperReturnThis());
+            ASSERT(mc == bc.testReturnThisFromBaseClass());
+                         bc.testBaseMembersAndParams(-1, -2, -3);
+            bc = sc;
+            ASSERT(sc == bc.testSuperReturnThis());
+            ASSERT(sc == bc.testReturnThisFromBaseClass());
+                         bc.testBaseMembersAndParams(-1, -2, -3);
+            mc = sc;
+            ASSERT(sc == mc.testSuperReturnThis());
+            ASSERT(sc == mc.testReturnThisFromBaseClass());
+            ASSERT(sc == mc.testReturnThisFromMidClass());
+                         mc.testBaseMembersAndParams(-1, -2, -3);
+                         mc.testMidMembersAndParams(-1, -2, -3, -4);
+        }
+    )");
 }
 
 TEST_F(CBotUT, ClassTestProtectedMethod)
 {
-    auto publicProgram = ExecuteTest(
-        "public class BaseClass {\n"
-        "    protected bool BaseClassProtected() {\n"
-        "        return true;\n"
-        "    }\n"
-        "    bool NoErrorProtectedSameClass() {\n"
-        "        BaseClass b();\n"
-        "        ASSERT(true == b.BaseClassProtected());\n"
-        "        return BaseClassProtected();\n"
-        "    }\n"
-        "}\n"
-        "extern void Test() {\n"
-        "    BaseClass b();\n"
-        "    ASSERT(true == b.NoErrorProtectedSameClass());\n"
-        "}\n"
-    );
+    auto publicProgram = ExecuteTest(R"(
+        public class BaseClass {
+            protected bool BaseClassProtected() {
+                return true;
+            }
+            bool NoErrorProtectedSameClass() {
+                BaseClass b();
+                ASSERT(true == b.BaseClassProtected());
+                return BaseClassProtected();
+            }
+        }
+        extern void Test() {
+            BaseClass b();
+            ASSERT(true == b.NoErrorProtectedSameClass());
+        }
+    )");
 
-    ExecuteTest(
-        "public class SubClass extends BaseClass {\n"
-        "    bool NoErrorProtectedSubClass() {\n"
-        "        ASSERT(true == BaseClassProtected());\n"
-        "        ASSERT(true == this.BaseClassProtected());\n"
-        "        ASSERT(true == super.BaseClassProtected());\n"
-        "        return true;\n"
-        "    }\n"
-        "}\n"
-        "extern void TestNoErrorProtected() {\n"
-        "    SubClass s();\n"
-        "    ASSERT(true == s.NoErrorProtectedSubClass());\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        public class SubClass extends BaseClass {
+            bool NoErrorProtectedSubClass() {
+                ASSERT(true == BaseClassProtected());
+                ASSERT(true == this.BaseClassProtected());
+                ASSERT(true == super.BaseClassProtected());
+                return true;
+            }
+        }
+        extern void TestNoErrorProtected() {
+            SubClass s();
+            ASSERT(true == s.NoErrorProtectedSubClass());
+        }
+    )");
 
-    ExecuteTest(
-        "extern void TestErrorProtected_1() {\n"
-        "    BaseClass b();\n"
-        "    b.BaseClassProtected();\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void TestErrorProtected_1() {
+            BaseClass b();
+            b.BaseClassProtected();
+        }
+        )",
         CBotErrPrivate
     );
 
-    ExecuteTest(
-        "public class SubClass extends BaseClass {}\n"
-        "\n"
-        "extern void TestErrorProtected_2() {\n"
-        "    SubClass s();\n"
-        "    s.BaseClassProtected();\n"
-        "}\n",
+    ExecuteTest(R"(
+        public class SubClass extends BaseClass {}
+        
+        extern void TestErrorProtected_2() {
+            SubClass s();
+            s.BaseClassProtected();
+        }
+        )",
         CBotErrPrivate
     );
 
-    ExecuteTest(
-        "public class SomeOtherClass {\n"
-        "    void testErrorProtected() {\n"
-        "        BaseClass b();\n"
-        "        b.BaseClassProtected();\n"
-        "    }\n"
-        "}\n",
+    ExecuteTest(R"(
+        public class SomeOtherClass {
+            void testErrorProtected() {
+                BaseClass b();
+                b.BaseClassProtected();
+            }
+        }
+        )",
         CBotErrPrivate
     );
 }
 
 TEST_F(CBotUT, ClassTestPrivateMethod)
 {
-    auto publicProgram = ExecuteTest(
-        "public class BaseClass {\n"
-        "    private bool BaseClassPrivate() {\n"
-        "        return true;\n"
-        "    }\n"
-        "    bool NoErrorPrivateSameClass() {\n"
-        "        BaseClass b();\n"
-        "        ASSERT(true == b.BaseClassPrivate());\n"
-        "        return BaseClassPrivate();\n"
-        "    }\n"
-        "}\n"
-        "extern void Test() {\n"
-        "    BaseClass b();\n"
-        "    ASSERT(true == b.NoErrorPrivateSameClass());\n"
-        "}\n"
-    );
+    auto publicProgram = ExecuteTest(R"(
+        public class BaseClass {
+            private bool BaseClassPrivate() {
+                return true;
+            }
+            bool NoErrorPrivateSameClass() {
+                BaseClass b();
+                ASSERT(true == b.BaseClassPrivate());
+                return BaseClassPrivate();
+            }
+        }
+        extern void Test() {
+            BaseClass b();
+            ASSERT(true == b.NoErrorPrivateSameClass());
+        }
+    )");
 
-    ExecuteTest(
-        "public class SubClass extends BaseClass {\n"
-        "    void ErrorPrivateThis() {\n"
-        "        this.BaseClassPrivate();\n"
-        "    }\n"
-        "}\n",
+    ExecuteTest(R"(
+        public class SubClass extends BaseClass {
+            void ErrorPrivateThis() {
+                this.BaseClassPrivate();
+            }
+        }
+        )",
         CBotErrPrivate
     );
 
-    ExecuteTest(
-        "public class SubClass extends BaseClass {\n"
-        "    void ErrorPrivateSuper() {\n"
-        "        super.BaseClassPrivate();\n"
-        "    }\n"
-        "}\n",
+    ExecuteTest(R"(
+        public class SubClass extends BaseClass {
+            void ErrorPrivateSuper() {
+                super.BaseClassPrivate();
+            }
+        }
+        )",
         CBotErrPrivate
     );
 
-    ExecuteTest(
-        "extern void TestErrorPrivate_1() {\n"
-        "    BaseClass b();\n"
-        "    b.BaseClassPrivate();\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void TestErrorPrivate_1() {
+            BaseClass b();
+            b.BaseClassPrivate();
+        }
+        )",
         CBotErrPrivate
     );
 
-    ExecuteTest(
-        "public class SubClass extends BaseClass {}\n"
-        "\n"
-        "extern void TestErrorPrivate_2() {\n"
-        "    SubClass s();\n"
-        "    s.BaseClassPrivate();\n"
-        "}\n",
+    ExecuteTest(R"(
+        public class SubClass extends BaseClass {}
+        
+        extern void TestErrorPrivate_2() {
+            SubClass s();
+            s.BaseClassPrivate();
+        }
+        )",
         CBotErrPrivate
     );
 
-    ExecuteTest(
-        "public class SomeOtherClass {\n"
-        "    void ErrorPrivate() {\n"
-        "        BaseClass b();\n"
-        "        b.BaseClassPrivate();\n"
-        "    }\n"
-        "}\n",
+    ExecuteTest(R"(
+        public class SomeOtherClass {
+            void ErrorPrivate() {
+                BaseClass b();
+                b.BaseClassPrivate();
+            }
+        }
+        )",
         CBotErrPrivate
     );
 }
 
 TEST_F(CBotUT, ClassTestSaveInheritedMembers)
 {
-    auto publicProgram = ExecuteTest(
-        "public class TestClass { int a = 123; }\n"
-        "public class TestClass2 extends TestClass { int b = 456; }\n"
-    );
+    auto publicProgram = ExecuteTest(R"(
+        public class TestClass { int a = 123; }
+        public class TestClass2 extends TestClass { int b = 456; }
+    )");
     // Note: Use --CBotUT_TestSaveState command line arg.
-    ExecuteTest(
-        "extern void TestSaveInheritedMembers()\n"
-        "{\n"
-        "    TestClass2 t();\n"
-        "    ASSERT(t.a == 123);\n"
-        "    ASSERT(t.b == 456);\n"
-        "    t.a = 789; t.b = 1011;\n"
-        "    ASSERT(t.a == 789);\n"
-        "    ASSERT(t.b == 1011);\n"
-        "    ASSERT(789 == t.a);\n"
-        "    ASSERT(1011 == t.b);\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        extern void TestSaveInheritedMembers()
+        {
+            TestClass2 t();
+            ASSERT(t.a == 123);
+            ASSERT(t.b == 456);
+            t.a = 789; t.b = 1011;
+            ASSERT(t.a == 789);
+            ASSERT(t.b == 1011);
+            ASSERT(789 == t.a);
+            ASSERT(1011 == t.b);
+        }
+    )");
 }
 
 TEST_F(CBotUT, TestTryCatch) {
-    ExecuteTest(
-        "extern void TestCatchNotExecutedNormally() {\n"
-        "    bool caught = false;\n"
-        "    bool tried = false;\n"
-        "    try {\n"
-        "        tried = true;\n"
-        "    } catch(CBotErrZeroDiv) {\n"
-        "        caught = true;\n"
-        "    }\n"
-        "    ASSERT(caught == false);\n"
-        "    ASSERT(tried == true);\n"
-        "}\n"
-    );
-    ExecuteTest(
-        "extern void TestCatchExecutedOnError() {\n"
-        "    bool caught = false;\n"
-        "    bool tried = false;\n"
-        "    try {\n"
-        "        tried = true;"
-        "        5/0;"
-        "        ASSERT(false);\n"
-        "    } catch(CBotErrZeroDiv) {\n"
-        "        caught = true;\n"
-        "    }\n"
-        "    ASSERT(caught == true);\n"
-        "    ASSERT(tried == true);\n"
-        "}\n"
-    );
-    ExecuteTest(
-        "extern void TestCatchOnlyOneErrorType() {\n"
-        "    try {\n"
-        "        5/0;"
-        "        ASSERT(false);\n"
-        "    } catch(CBotErrNull) {\n"
-        "        ASSERT(false);\n"
-        "    }\n"
-        "    ASSERT(false);\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void TestCatchNotExecutedNormally() {
+            bool caught = false;
+            bool tried = false;
+            try {
+                tried = true;
+            } catch(CBotErrZeroDiv) {
+                caught = true;
+            }
+            ASSERT(caught == false);
+            ASSERT(tried == true);
+        }
+    )");
+    ExecuteTest(R"(
+        extern void TestCatchExecutedOnError() {
+            bool caught = false;
+            bool tried = false;
+            try {
+                tried = true;
+                5/0;
+                ASSERT(false);
+            } catch(CBotErrZeroDiv) {
+                caught = true;
+            }
+            ASSERT(caught == true);
+            ASSERT(tried == true);
+        }
+    )");
+    ExecuteTest(R"(
+        extern void TestCatchOnlyOneErrorType() {
+            try {
+                5/0;
+                ASSERT(false);
+            } catch(CBotErrNull) {
+                ASSERT(false);
+            }
+            ASSERT(false);
+        }
+        )",
         CBotErrZeroDiv
     );
-    ExecuteTest(
-        "void divzero() {5/0;}\n"
-        "extern void TestCatchFromOtherFunction() {\n"
-        "    bool caught = false;\n"
-        "    bool tried = false;\n"
-        "    try {\n"
-        "        tried = true;"
-        "        divzero();"
-        "        ASSERT(false);\n"
-        "    } catch(CBotErrZeroDiv) {\n"
-        "        caught = true;\n"
-        "    }\n"
-        "    ASSERT(caught == true);\n"
-        "    ASSERT(tried == true);\n"
-        "}\n"
-    );
-    ExecuteTest(
-        "void divzero() {5/0;}\n"
-        "extern void TestCatchOnlyOneErrorTypeFromOtherFunction() {\n"
-        "    try {\n"
-        "        divzero();"
-        "        ASSERT(false);\n"
-        "    } catch(CBotErrNull) {\n"
-        "        ASSERT(false);\n"
-        "    }\n"
-        "    ASSERT(false);\n"
-        "}\n",
+    ExecuteTest(R"(
+        void divzero() {5/0;}
+        extern void TestCatchFromOtherFunction() {
+            bool caught = false;
+            bool tried = false;
+            try {
+                tried = true;
+                divzero();
+                ASSERT(false);
+            } catch(CBotErrZeroDiv) {
+                caught = true;
+            }
+            ASSERT(caught == true);
+            ASSERT(tried == true);
+        }
+    )");
+    ExecuteTest(R"(
+        void divzero() {5/0;}
+        extern void TestCatchOnlyOneErrorTypeFromOtherFunction() {
+            try {
+                divzero();
+                ASSERT(false);
+            } catch(CBotErrNull) {
+                ASSERT(false);
+            }
+            ASSERT(false);
+        }
+        )",
         CBotErrZeroDiv
     );
-    ExecuteTest(
-        "void thrownull() {throw CBotErrNull;}\n"
-        "extern void TestThrowCaught() {\n"
-        "    bool caught = false;\n"
-        "    bool tried = false;\n"
-        "    try {\n"
-        "        tried = true;"
-        "        thrownull();"
-        "        ASSERT(false);\n"
-        "    } catch(CBotErrNull) {\n"
-        "        caught = true;\n"
-        "    }\n"
-        "    ASSERT(caught == true);\n"
-        "    ASSERT(tried == true);\n"
-        "}\n"
-    );
-    ExecuteTest(
-        "void thrownull() {throw CBotErrNull;}\n"
-        "extern void TestThrowUncaught() {\n"
-        "    try {\n"
-        "        thrownull();"
-        "        ASSERT(false);\n"
-        "    } catch(CBotErrZeroDiv) {\n"
-        "        ASSERT(false);\n"
-        "    }\n"
-        "    ASSERT(false);\n"
-        "}\n",
+    ExecuteTest(R"(
+        void thrownull() {throw CBotErrNull;}
+        extern void TestThrowCaught() {
+            bool caught = false;
+            bool tried = false;
+            try {
+                tried = true;
+                thrownull();
+                ASSERT(false);
+            } catch(CBotErrNull) {
+                caught = true;
+            }
+            ASSERT(caught == true);
+            ASSERT(tried == true);
+        }
+    )");
+    ExecuteTest(R"(
+        void thrownull() {throw CBotErrNull;}
+        extern void TestThrowUncaught() {
+            try {
+                thrownull();
+                ASSERT(false);
+            } catch(CBotErrZeroDiv) {
+                ASSERT(false);
+            }
+            ASSERT(false);
+        }
+        )",
         CBotErrNull
     );
 
-    ExecuteTest(
-        "extern void TestThrowWrongType() {\n"
-        "    throw true;"
-        "}\n",
+    ExecuteTest(R"(
+        extern void TestThrowWrongType() {
+            throw true;
+        }
+        )",
         CBotErrBadType1
     );
 
-    ExecuteTest(
-        "extern void TestTryCatchCondition() {\n"
-        "    int foo = 0;\n"
-        "    try {\n"
-        "        foo = 1;\n"
-        "        for(int i = 0; i < 20; ++i);  // Should give try an opportunity to check condition\n"
-        "        foo = 2;  // Should not get here\n"
-        "    } catch(foo == 1);\n"
-        "    ASSERT(foo == 1);\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        extern void TestTryCatchCondition() {
+            int foo = 0;
+            try {
+                foo = 1;
+                for(int i = 0; i < 20; ++i);  // Should give try an opportunity to check condition
+                foo = 2;  // Should not get here
+            } catch(foo == 1);
+            ASSERT(foo == 1);
+        }
+    )");
 
-    ExecuteTest(
-        "extern void TestExcetionInCatchCondition() {\n"
-        "    try {\n"
-        "        for(int i = 0; i < 20; ++i); // Should give try an opportunity to check condition\n"
-        "    } catch(1/0 == 0);\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void TestExcetionInCatchCondition() {
+            try {
+                for(int i = 0; i < 20; ++i); // Should give try an opportunity to check condition
+            } catch(1/0 == 0);
+        }
+        )",
         CBotErrZeroDiv
     );
 
-    ExecuteTest(
-        "extern void ErrorCodeIsNotEvaluatedUnlessThereIsAnException() {\n"
-        "    try {\n"
-        "        for(int i = 0; i < 20; ++i); // Should give try an opportunity to check the condition\n"
-        "    } catch(1/0) { // This should not throw because it's never evaluated\n"
-        "    }\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        extern void ErrorCodeIsNotEvaluatedUnlessThereIsAnException() {
+            try {
+                for(int i = 0; i < 20; ++i); // Should give try an opportunity to check the condition
+            } catch(1/0) { // This should not throw because it's never evaluated
+            }
+        }
+    )");
 
-    ExecuteTest(
-        "extern void CatchZeroIsNotCatchTrue() {\n"
-        "    int result = 0;\n"
-        "    try {\n"
-        "        for(int i = 0; i < 20; ++i); // Should give try an opportunity to check the condition\n"
-        "        result = 1;\n"
-        "    } catch(0) { // Should not stop the body even though `0 == <the current error code>`\n"
-        "        result = 2;\n"
-        "    }\n"
-        "    ASSERT(result == 1);\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        extern void CatchZeroIsNotCatchTrue() {
+            int result = 0;
+            try {
+                for(int i = 0; i < 20; ++i); // Should give try an opportunity to check the condition
+                result = 1;
+            } catch(0) { // Should not stop the body even though `0 == <the current error code>`
+                result = 2;
+            }
+            ASSERT(result == 1);
+        }
+    )");
 }
 
 TEST_F(CBotUT, TestFinally) {
-    ExecuteTest(
-        "extern void TestFinallyExecutedNormally() {\n"
-        "    bool caught = false;\n"
-        "    bool tried = false;\n"
-        "    bool finally_ran = false;\n"
-        "    try {\n"
-        "        tried = true;\n"
-        "    } catch(CBotErrZeroDiv) {\n"
-        "        caught = true;\n"
-        "    } finally {\n"
-        "        finally_ran = true;\n"
-        "    }\n"
-        "    ASSERT(caught == false);\n"
-        "    ASSERT(tried == true);\n"
-        "    ASSERT(finally_ran == true);\n"
-        "}\n"
-    );
-    ExecuteTest(
-        "extern void TestFinallyExecutedOnError() {\n"
-        "    bool caught = false;\n"
-        "    bool tried = false;\n"
-        "    bool finally_ran = false;\n"
-        "    try {\n"
-        "        tried = true;"
-        "        5/0;"
-        "        ASSERT(false);\n"
-        "    } catch(CBotErrZeroDiv) {\n"
-        "        caught = true;\n"
-        "    } finally {\n"
-        "        finally_ran = true;\n"
-        "    }\n"
-        "    ASSERT(caught == true);\n"
-        "    ASSERT(tried == true);\n"
-        "    ASSERT(finally_ran == true);\n"
-        "}\n"
-    );
-    ExecuteTest(
-        "extern void TestFinallyOverrideError() {\n"
-        "    try {\n"
-        "        5/0;"
-        "        ASSERT(false);\n"
-        "    } catch(CBotErrZeroDiv) {\n"
-        "        throw CBotErrNull;\n"
-        "    }\n"
-        "    ASSERT(false);\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void TestFinallyExecutedNormally() {
+            bool caught = false;
+            bool tried = false;
+            bool finally_ran = false;
+            try {
+                tried = true;
+            } catch(CBotErrZeroDiv) {
+                caught = true;
+            } finally {
+                finally_ran = true;
+            }
+            ASSERT(caught == false);
+            ASSERT(tried == true);
+            ASSERT(finally_ran == true);
+        }
+    )");
+    ExecuteTest(R"(
+        extern void TestFinallyExecutedOnError() {
+            bool caught = false;
+            bool tried = false;
+            bool finally_ran = false;
+            try {
+                tried = true;
+                5/0;
+                ASSERT(false);
+            } catch(CBotErrZeroDiv) {
+                caught = true;
+            } finally {
+                finally_ran = true;
+            }
+            ASSERT(caught == true);
+            ASSERT(tried == true);
+            ASSERT(finally_ran == true);
+        }
+    )");
+    ExecuteTest(R"(
+        extern void TestFinallyOverrideError() {
+            try {
+                5/0;
+                ASSERT(false);
+            } catch(CBotErrZeroDiv) {
+                throw CBotErrNull;
+            }
+            ASSERT(false);
+        }
+        )",
         CBotErrNull
     );
 
     // code coverage
-    ExecuteTest(
-        "extern void TestCompileErrorInFinally() {\n"
-        "    try {\n"
-        "        5/0;"
-        "    } finally {\n"
-        "        1 - \"hello\";"
-        "    }\n"
-        "    ASSERT(false);\n"
-        "}\n",
+    ExecuteTest(R"(
+        extern void TestCompileErrorInFinally() {
+            try {
+                5/0;
+            } finally {
+                1 - "hello";
+            }
+            ASSERT(false);
+        }
+        )",
         CBotErrBadType2
     );
 }
 
+TEST_F(CBotUT, TestByteToString) {
+    ExecuteTest(R"(
+        extern void TestByteToString() {
+            byte c = 90;
+            ASSERT(c + "" == "90");
+        }
+    )");
+}
+
 TEST_F(CBotUT, CatchShouldCancelExternalCalls)
 {
-    ExecuteTest(
-        "extern void CatchShouldCancelExternalCalls()\n"
-        "{\n"
-        "    string result = \"catch not executed\";\n"
-        "    try {\n"
-        "        RUN_COUNT(0, 10);\n"
-        "    } catch(GET_COUNT() > 0) {\n"
-        "        result = GET_CANCEL_MESSAGE();\n"
-        "    }\n"
-        "    ASSERT(result == \"count cancelled\");\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        extern void CatchShouldCancelExternalCalls()
+        {
+            string result = "catch not executed";
+            try {
+                RUN_COUNT(0, 10);
+            } catch(GET_COUNT() > 0) {
+                result = GET_CANCEL_MESSAGE();
+            }
+            ASSERT(result == "count cancelled");
+        }
+    )");
 
-    ExecuteTest(
-        "extern void DoNotCancelCallsThatThrew()\n"
-        "{\n"
-        "    try {\n"
-        "        THROW(10);\n"
-        "    } catch(10) {\n"
-        "    }\n"
-        "    ASSERT(GET_CANCEL_MESSAGE() == \"not cancelled\");\n"
-        "}\n"
-    );
+    ExecuteTest(R"(
+        extern void DoNotCancelCallsThatThrew()
+        {
+            try {
+                THROW(10);
+            } catch(10) {
+            }
+            ASSERT(GET_CANCEL_MESSAGE() == "not cancelled");
+        }
+    )");
 }

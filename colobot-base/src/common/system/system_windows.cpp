@@ -23,14 +23,30 @@
 #include "common/stringutils.h"
 #include "common/version.h"
 
-#include <windows.h>
-
+#include <array>
 #include <filesystem>
+#include <iostream>
+#include <sstream>
 
+#include <Windows.h>
+#include <DbgHelp.h>
+#include <process.h>
+
+LONG WINAPI StackTraceExceptionFilter(LPEXCEPTION_POINTERS exception);
 
 std::unique_ptr<CSystemUtils> CSystemUtils::Create()
 {
     return std::make_unique<CSystemUtilsWindows>();
+}
+
+CSystemUtilsWindows::CSystemUtilsWindows()
+{
+    SymInitialize(GetCurrentProcess(), nullptr, true);
+}
+
+CSystemUtilsWindows::~CSystemUtilsWindows()
+{
+    SymCleanup(GetCurrentProcess());
 }
 
 void CSystemUtilsWindows::Init([[maybe_unused]] const std::vector<std::string>& args)
@@ -52,6 +68,11 @@ void CSystemUtilsWindows::Init([[maybe_unused]] const std::vector<std::string>& 
     }
 
     LocalFree(wargv);
+}
+
+void CSystemUtilsWindows::InitErrorHandling()
+{
+    SetUnhandledExceptionFilter(StackTraceExceptionFilter);
 }
 
 SystemDialogResult CSystemUtilsWindows::SystemDialog(SystemDialogType type, const std::string& title, const std::string& message)
@@ -116,7 +137,7 @@ std::wstring CSystemUtilsWindows::UTF8_Decode(const std::string& str)
 
 }
 
-std::filesystem::path CSystemUtilsWindows::GetSaveDir()
+std::filesystem::path CSystemUtilsWindows::GetSaveDir() const
 {
     if constexpr (Version::PORTABLE_SAVES || Version::DEVELOPMENT_BUILD)
     {
@@ -142,7 +163,7 @@ std::filesystem::path CSystemUtilsWindows::GetSaveDir()
     }
 }
 
-std::string CSystemUtilsWindows::GetEnvVar(const std::string& name)
+std::string CSystemUtilsWindows::GetEnvVar(const std::string& name) const
 {
     std::wstring wname(name.begin(), name.end());
     wchar_t* envVar = _wgetenv(wname.c_str());
@@ -180,3 +201,191 @@ bool CSystemUtilsWindows::OpenWebsite(const std::string& url)
     return true;
 }
 
+bool CSystemUtilsWindows::IsDebuggerPresent() const
+{
+    return ::IsDebuggerPresent();
+}
+
+namespace
+{
+
+#if defined(_M_AMD64)
+constexpr DWORD MACHINE = IMAGE_FILE_MACHINE_AMD64;
+#else
+constexpr DWORD MACHINE = IMAGE_FILE_MACHINE_I386;
+#endif
+
+}
+
+LONG WINAPI StackTraceExceptionFilter(LPEXCEPTION_POINTERS exception)
+{
+    auto ctx = exception->ContextRecord;
+
+    // On x64, StackWalk64 modifies the context record, that could
+    // cause crashes, so we create a copy to prevent it
+    CONTEXT ctxCopy = *ctx;
+
+    STACKFRAME64 stack;
+    memset(&stack, 0, sizeof(STACKFRAME64));
+
+#if !defined(_M_AMD64)
+    stack.AddrPC.Offset = (*ctx).Eip;
+    stack.AddrPC.Mode = AddrModeFlat;
+    stack.AddrStack.Offset = (*ctx).Esp;
+    stack.AddrStack.Mode = AddrModeFlat;
+    stack.AddrFrame.Offset = (*ctx).Ebp;
+    stack.AddrFrame.Mode = AddrModeFlat;
+#endif
+
+    std::stringstream stream;
+
+    switch (exception->ExceptionRecord->ExceptionCode)
+    {
+    case EXCEPTION_ACCESS_VIOLATION:
+    {
+        const auto code = exception->ExceptionRecord->ExceptionInformation[0];
+        const auto address = reinterpret_cast<void*>(exception->ExceptionRecord->ExceptionInformation[1]);
+
+        if (code == 0)
+            stream << "Access violation reading location 0x" << address;
+        else if (code == 1)
+            stream << "Access violation writing location 0x" << address;
+        else if (code == 8)
+            stream << "Data execution prevention violation at location 0x" << address;
+        else
+            stream << "Access violation accessing location 0x" << address;
+
+        break;
+    }
+    case EXCEPTION_FLT_DENORMAL_OPERAND:
+        stream << "Floating-point denormal operand";
+        break;
+    case EXCEPTION_FLT_DIVIDE_BY_ZERO:
+        stream << "Floating-point division by zero";
+        break;
+    case EXCEPTION_FLT_INEXACT_RESULT:
+        stream << "Inexact floating-point result";
+        break;
+    case EXCEPTION_FLT_INVALID_OPERATION:
+        stream << "Invalid floating-point operation";
+        break;
+    case EXCEPTION_FLT_OVERFLOW:
+        stream << "Floating-point overflow";
+        break;
+    case EXCEPTION_FLT_STACK_CHECK:
+        stream << "Floating-point stack check";
+        break;
+    case EXCEPTION_FLT_UNDERFLOW:
+        stream << "Floating-point underflow";
+        break;
+    case EXCEPTION_ILLEGAL_INSTRUCTION:
+        stream << "Illegal instruction";
+        break;
+    case EXCEPTION_IN_PAGE_ERROR:
+        stream << "Page error";
+        break;
+    case EXCEPTION_INT_DIVIDE_BY_ZERO:
+        stream << "Integer division by zero";
+        break;
+    case EXCEPTION_INT_OVERFLOW:
+        stream << "Integer overflow";
+        break;
+    case EXCEPTION_STACK_OVERFLOW:
+        stream << "Stack overflow";
+        break;
+    default:
+        stream << "Error 0x" << std::hex << exception->ExceptionRecord->ExceptionCode << std::dec;
+        break;
+    }
+
+    stream << '\n';
+
+    std::string lastModule = "";
+
+    const HANDLE process = GetCurrentProcess();
+    const HANDLE thread = GetCurrentThread();
+
+    while (true)
+    {
+        // Get next entry from stack
+        BOOL result = StackWalk64(MACHINE, process, thread, &stack, &ctxCopy,
+                nullptr, SymFunctionTableAccess64, SymGetModuleBase64, nullptr);
+
+        if (!result)
+            break;
+
+        // Get symbol name
+        std::array<char, sizeof(SYMBOL_INFO) + MAX_SYM_NAME * sizeof(char)> buffer;
+        PSYMBOL_INFO pSymbol = reinterpret_cast<PSYMBOL_INFO>(buffer.data());
+
+        pSymbol->SizeOfStruct = sizeof(SYMBOL_INFO);
+        pSymbol->MaxNameLen = MAX_SYM_NAME;
+
+        DWORD64 displacement = 0;
+
+        std::string name;
+
+        if (SymFromAddr(process, (ULONG64)stack.AddrPC.Offset, &displacement, pSymbol))
+        {
+            name = pSymbol->Name;
+        }
+
+        // Get information about line in the code
+        IMAGEHLP_LINE64 line;
+        line.SizeOfStruct = sizeof(IMAGEHLP_LINE64);
+
+        DWORD disp = {};
+
+        int lineNumber = {};
+        std::string file = {};
+        void* address = {};
+
+        if (SymGetLineFromAddr64(process, stack.AddrPC.Offset, &disp, &line))
+        {
+            lineNumber = line.LineNumber;
+            file = std::filesystem::path(line.FileName).filename().string();
+            address = reinterpret_cast<void*>(line.Address);
+        }
+        else
+        {
+            address = reinterpret_cast<void*>(stack.AddrPC.Offset);
+        }
+
+        // Get module name
+        HMODULE hModule = nullptr;
+
+        GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                          reinterpret_cast<LPCTSTR>(stack.AddrPC.Offset), &hModule);
+
+        std::string module = "<unknown>";
+
+        if (hModule != NULL)
+        {
+            std::array<char, 1024> name;
+
+            GetModuleFileNameA(hModule, name.data(), static_cast<DWORD>(name.size()));
+
+            module = std::filesystem::path(name.data()).filename().string();
+        }
+
+        stream << '\n';
+
+        if (lastModule != module)
+        {
+            stream << module << '\n';
+
+            lastModule = module;
+        }
+
+        stream << "    " << name << " at ";
+
+        if (file.empty())
+            stream << std::hex << address << std::dec;
+        else
+            stream << file << ":" << lineNumber;
+    }
+
+    CSystemUtils::GetInstance().CriticalError(stream.str());
+
+    return EXCEPTION_EXECUTE_HANDLER;
+}

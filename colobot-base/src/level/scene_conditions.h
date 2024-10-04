@@ -33,7 +33,7 @@
 
 #include <glm/glm.hpp>
 
-#include <string>
+#include <filesystem>
 
 class CLevelParserLine;
 class CObject;
@@ -113,7 +113,7 @@ public:
 class CAudioChangeCondition final : public CSceneCondition
 {
 public:
-    std::string music = "";
+    std::filesystem::path music = "";
     bool repeat = true;
 
     bool changed = false;

@@ -352,7 +352,7 @@ void CMainDialog::StartInformation(const std::string& title, const std::string& 
 void CMainDialog::StartDialog(const glm::vec2& dim, bool fireParticles)
 {
     CWindow*    pw;
-    glm::vec2   pos, ddim;
+    glm::vec2   pos;
 
     m_main->StartSuspend();
 
