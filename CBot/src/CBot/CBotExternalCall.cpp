@@ -131,10 +131,11 @@ CBotExternalCall::~CBotExternalCall()
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-CBotExternalCallDefault::CBotExternalCallDefault(RuntimeFunc rExec, CompileFunc rCompile)
+CBotExternalCallDefault::CBotExternalCallDefault(RuntimeFunc rExec, CompileFunc rCompile, CancelFunc rCancel)
 {
     m_rExec = rExec;
     m_rComp = rCompile;
+    m_rCancel = rCancel;
 }
 
 CBotExternalCallDefault::~CBotExternalCallDefault()
@@ -164,12 +165,19 @@ bool CBotExternalCallDefault::Run(CBotVar* thisVar, CBotStack* pStack)
         if (exception != CBotNoErr)
         {
             pStack->SetError(static_cast<CBotError>(exception));
+            // If the call threw a CBot exception, try/catch should not cancel it because it already ended
+            pile->Delete();
         }
         return false;
     }
 
     pStack->Return(pile2); // return 'result' and clear extra stack
     return true;
+}
+
+void CBotExternalCallDefault::Cancel(CBotStack* pStack)
+{
+    if (m_rCancel != nullptr) m_rCancel(pStack->GetUserPtr());
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -213,6 +221,10 @@ bool CBotExternalCallClass::Run(CBotVar* thisVar, CBotStack* pStack)
 
     pStack->Return(pile2); // return 'result' and clear extra stack
     return true;
+}
+
+void CBotExternalCallClass::Cancel(CBotStack* pStack)
+{
 }
 
 } // namespace CBot

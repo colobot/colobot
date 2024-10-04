@@ -262,11 +262,13 @@ public:
      * \param name Name of the function
      * \param rExec Execution function
      * \param rCompile Compilation function
+     * \param rCancel Function to cancel execution
      * \return true
      */
     static bool AddFunction(const std::string& name,
                             bool rExec(CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser),
-                            CBotTypResult rCompile(CBotVar*& pVar, void* pUser));
+                            CBotTypResult rCompile(CBotVar*& pVar, void* pUser),
+                            void rCancel(void* pUser) = nullptr);
 
     /**
      * \copydoc CBotToken::DefineNum()
