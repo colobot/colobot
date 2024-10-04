@@ -37,3 +37,7 @@ body:
       3. What version of cmake did you use?
       4. What did you use to compile the game (include name of the tool and version)? `make`? `Ninja`? Visual Studio?
       5. What versions of dependencies of colobot did you install?
+      
+- type: textarea
+  attributes:
+    label: Additional information
