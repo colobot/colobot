@@ -1246,7 +1246,7 @@ void CParticle::FrameParticle(float rTime)
 
                         if (object->Implements(ObjectInterfaceType::Damageable))
                         {
-                            dynamic_cast<CDamageableObject&>(*object).DamageObject(DamageType::Organic, 0.1f, m_particle[i].objFather);  // starts explosion
+                            dynamic_cast<CDamageableObject&>(*object).DamageObject(DamageType::AlienAnt, 0.1f, m_particle[i].objFather);  // starts explosion
                         }
                     }
                 }
@@ -1347,7 +1347,7 @@ void CParticle::FrameParticle(float rTime)
                 {
                     if (object->Implements(ObjectInterfaceType::Damageable))
                     {
-                        dynamic_cast<CDamageableObject&>(*object).DamageObject(DamageType::Organic, 0.001f, m_particle[i].objFather);
+                        dynamic_cast<CDamageableObject&>(*object).DamageObject(DamageType::OrgaShooter, 0.001f, m_particle[i].objFather);
                     }
 
                     m_exploGunCounter ++;
