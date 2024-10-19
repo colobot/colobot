@@ -11,11 +11,16 @@ jobs:
         target_os: [linux]
         host_os: [ubuntu-20.04, ubuntu-22.04]
         container: ['']
+        preset: [Linux-CI-gcc]
         include:
           - host_os: ubuntu-22.04
             container: 'debian:unstable-slim'
+            preset: Linux-CI-gcc
           - host_os: ubuntu-22.04
             container: 'debian:testing-slim'
+            preset: Linux-CI-gcc
+          - host_os: ubuntu-22.04
+            preset: Linux-CI-clang
       fail-fast: false
     env:
       # Actions run as root in-container, as normal user outside
@@ -36,6 +41,9 @@ jobs:
       if: matrix.host_os == 'ubuntu-20.04'
     - name: Install Colobot dependencies
       run: $SUDO apt-get update && $SUDO apt-get install -y --no-install-recommends build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libphysfs-dev gettext po4a vorbis-tools librsvg2-bin xmlstarlet libglm-dev libmpg123-dev
+    - name: Install clang
+      run: $SUDO apt-get update && $SUDO apt-get install -y --no-install-recommends clang
+      if: matrix.preset == 'Linux-CI-clang'
     - uses: actions/checkout@v3
       with:
         submodules: recursive
@@ -45,11 +53,11 @@ jobs:
     - name: Create build directory
       run: cmake -E make_directory build
     - name: Run CMake (for Linux)
-      run: cmake --preset Linux-CI
+      run: cmake --preset ${{ matrix.preset }}
     - name: Build
-      run: cmake --build --preset Linux-CI
+      run: cmake --build --preset ${{ matrix.preset }}
     - name: Install
-      run: cmake --build --preset Linux-CI --target install
+      run: cmake --build --preset ${{ matrix.preset }} --target install
     - name: Patch library path to prepare for appimage
       run: patchelf --set-rpath '.' install/colobot
       if: ${{ env.APPIMAGE == true }}

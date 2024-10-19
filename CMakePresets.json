@@ -34,7 +34,7 @@
             }
         },
         {
-            "name": "Linux-CI",
+            "name": "Linux-CI-base",
             "description": "Linux configuration for CI pipeline",
             "inherits": ["CI"],
             "cacheVariables": {
@@ -47,6 +47,22 @@
                 "TOOLS": true,
                 "TESTS": true,
                 "DESKTOP": true
+            }
+        },
+        {
+            "name": "Linux-CI-gcc",
+            "inherits": ["Linux-CI-base"],
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "gcc",
+                "CMAKE_CXX_COMPILER": "g++"
+            }
+        },
+        {
+            "name": "Linux-CI-clang",
+            "inherits": ["Linux-CI-base"],
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_CXX_COMPILER": "clang++"
             }
         },
         {
@@ -72,9 +88,15 @@
             "configuration": "RelWithDebInfo"
         },
         {
-            "name": "Linux-CI",
+            "name": "Linux-CI-gcc",
             "jobs": 4,
-            "configurePreset": "Linux-CI",
+            "configurePreset": "Linux-CI-gcc",
+            "configuration": "RelWithDebInfo"
+        },
+        {
+            "name": "Linux-CI-clang",
+            "jobs": 4,
+            "configurePreset": "Linux-CI-clang",
             "configuration": "RelWithDebInfo"
         },
         {
