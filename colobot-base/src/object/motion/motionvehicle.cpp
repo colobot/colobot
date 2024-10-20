@@ -1945,7 +1945,6 @@ bool CMotionVehicle::EventFrameCanoni(const Event &event)
 
     float energy = GetObjectEnergyLevel(m_object);
     if (energy == 0.0f)  return true;
-    if (energy > 1.0f) energy = 1.0f; //fix issue with cheated cells, see issue #1009
 
     factor = 0.5f+energy*0.5f;
     if ( bOnBoard )  factor *= 0.8f;
