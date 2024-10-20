@@ -58,11 +58,13 @@ Because of the above, include paths in source should always feature the full pat
 Note that the recommended way of building the project is to use separate build directory, where CMake will generate all targets. In this way, you can keep a clean source directory. The following shell commands illustrate this usage:
 
 ```sh
-  cd <colobot_repository>
+  git clone --recursive https://github.com/colobot/colobot.git
+  cd colobot
   mkdir build
-  cmake ../
+  cd build
+  cmake -D COLOBOT_DEVELOPMENT_MODE=ON ..
   make
-  bin/colobot -datadir ../data
+  ./colobot -datadir data/
 ```
 
 ## Tests organization
