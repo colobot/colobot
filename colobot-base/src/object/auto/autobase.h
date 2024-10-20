@@ -110,7 +110,7 @@ protected:
     int             m_soundChannel = 0;
     int             m_partiChannel[8] = {};
 
-    std::string     m_bgBack;
+    std::filesystem::path m_bgBack;
     std::filesystem::path m_bgName;
     Gfx::Color      m_bgUp;
     Gfx::Color      m_bgDown;

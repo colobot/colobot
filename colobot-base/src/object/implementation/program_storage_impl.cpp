@@ -209,16 +209,18 @@ int CProgramStorageObjectImpl::GetProgramStorageIndex()
     return m_programStorageIndex;
 }
 
-void CProgramStorageObjectImpl::SaveAllUserPrograms(const std::string& userSource)
+void CProgramStorageObjectImpl::SaveAllUserPrograms(const std::filesystem::path& userSource)
 {
     if (!m_allowProgramSave) return;
     if (m_programStorageIndex < 0) return;
-    GetLogger()->Debug("Saving user programs to '%%'",
-        StrUtils::Format("%s%.3d___.txt", userSource.c_str(), m_programStorageIndex));
+    std::filesystem::path filename = userSource;
+    filename += StrUtils::ToPath(StrUtils::Format("%.3d___.txt", m_programStorageIndex));
+    GetLogger()->Debug("Saving user programs to '%%'", filename);
 
     for (unsigned int i = 0; i < m_program.size(); i++)
     {
-        std::filesystem::path filename = TempToPath(userSource + StrUtils::Format("%.3d%.3d.txt", m_programStorageIndex, i));
+        std::filesystem::path filename = userSource;
+        filename += StrUtils::ToPath(StrUtils::Format("%.3d%.3d.txt", m_programStorageIndex, i));
 
         if (m_program[i]->filename.empty())
         {
@@ -227,9 +229,8 @@ void CProgramStorageObjectImpl::SaveAllUserPrograms(const std::string& userSourc
         }
     }
 
-    std::filesystem::path dir = StrUtils::ToPath(userSource.substr(0, userSource.find_last_of("/")));
-    std::string file = userSource.substr(userSource.find_last_of("/")+1) + StrUtils::Format("%.3d([0-9]{3})\\.txt", m_programStorageIndex);
-    std::regex regex(file);
+    std::filesystem::path dir = userSource.parent_path();
+    std::regex regex(StrUtils::ToString(userSource.filename()) + StrUtils::Format("%.3d([0-9]{3})\\.txt", m_programStorageIndex));
     for (const auto& path : CResourceManager::ListFiles(dir))
     {
         std::string filename = StrUtils::ToString(path);
@@ -312,7 +313,7 @@ void CProgramStorageObjectImpl::LoadAllProgramsForLevel(CLevelParserLine* levelS
     }
 }
 
-void CProgramStorageObjectImpl::SaveAllProgramsForSavedScene(CLevelParserLine* levelSourceLine, const std::string& levelSource)
+void CProgramStorageObjectImpl::SaveAllProgramsForSavedScene(CLevelParserLine* levelSourceLine, const std::filesystem::path& levelSource)
 {
     levelSourceLine->AddParam("programStorageIndex", std::make_unique<CLevelParserParam>(m_programStorageIndex));
 
@@ -329,12 +330,11 @@ void CProgramStorageObjectImpl::SaveAllProgramsForSavedScene(CLevelParserLine* l
     if (m_programStorageIndex < 0) return;
     if (!m_object->Implements(ObjectInterfaceType::Controllable) || !dynamic_cast<CControllableObject&>(*m_object).GetSelectable() || m_object->GetType() == OBJECT_HUMAN) return;
 
-    GetLogger()->Debug("Saving saved scene programs to '%%'",
-        StrUtils::Format("%s/prog%.3d___.txt", levelSource.c_str(), m_programStorageIndex));
+    GetLogger()->Debug("Saving saved scene programs to '%%'", levelSource / StrUtils::ToPath(StrUtils::Format("prog%.3d___.txt", m_programStorageIndex)));
 
     for (unsigned int i = 0; i < m_program.size(); i++)
     {
-        std::filesystem::path filename = TempToPath(levelSource + StrUtils::Format("/prog%.3d%.3d.txt", m_programStorageIndex, i));
+        std::filesystem::path filename = levelSource / StrUtils::ToPath(StrUtils::Format("prog%.3d%.3d.txt", m_programStorageIndex, i));
         if (!m_program[i]->filename.empty() && m_program[i]->readOnly) continue;
 
         GetLogger()->Trace("Saving program '%%' to saved scene\n", filename);
@@ -344,7 +344,7 @@ void CProgramStorageObjectImpl::SaveAllProgramsForSavedScene(CLevelParserLine* l
     }
 
     std::regex regex(StrUtils::Format("prog%.3d([0-9]{3})\\.txt", m_programStorageIndex));
-    for (const std::filesystem::path& path : CResourceManager::ListFiles(StrUtils::ToPath(levelSource)))
+    for (const std::filesystem::path& path : CResourceManager::ListFiles(levelSource))
     {
         std::string filename = StrUtils::ToString(path);
         std::smatch matches;
@@ -354,13 +354,13 @@ void CProgramStorageObjectImpl::SaveAllProgramsForSavedScene(CLevelParserLine* l
             if (id >= m_program.size() || !m_program[id]->filename.empty())
             {
                 GetLogger()->Trace("Removing old program '%%/%%' from saved scene", levelSource, path);
-                CResourceManager::Remove(StrUtils::ToPath(levelSource) / path);
+                CResourceManager::Remove(levelSource / path);
             }
         }
     }
 }
 
-void CProgramStorageObjectImpl::LoadAllProgramsForSavedScene(CLevelParserLine* levelSourceLine, const std::string& levelSource)
+void CProgramStorageObjectImpl::LoadAllProgramsForSavedScene(CLevelParserLine* levelSourceLine, const std::filesystem::path& levelSource)
 {
     int run = levelSourceLine->GetParam("run")->AsInt(0)-1;
     m_programStorageIndex = levelSourceLine->GetParam("programStorageIndex")->AsInt(-1);
@@ -389,15 +389,14 @@ void CProgramStorageObjectImpl::LoadAllProgramsForSavedScene(CLevelParserLine* l
 
     if(m_programStorageIndex < 0) return;
 
-    GetLogger()->Debug("Loading saved scene programs from '%%'",
-        StrUtils::Format("%s/prog%.3d___.txt", levelSource.c_str(), m_programStorageIndex));
+    GetLogger()->Debug("Loading saved scene programs from '%%'", levelSource / StrUtils::ToPath(StrUtils::Format("prog%.3d___.txt", m_programStorageIndex)));
 
     for (int i = 0; i <= 999; i++)
     {
         std::string opReadOnly = "scriptReadOnly" + StrUtils::ToString<int>(i+1); // scriptReadOnly1..scriptReadOnly10
         std::string opRunnable = "scriptRunnable" + StrUtils::ToString<int>(i+1); // scriptRunnable1..scriptRunnable10
 
-        std::filesystem::path filename = TempToPath(levelSource + StrUtils::Format("/prog%.3d%.3d.txt", m_programStorageIndex, i));
+        std::filesystem::path filename = levelSource / StrUtils::ToPath(StrUtils::Format("prog%.3d%.3d.txt", m_programStorageIndex, i));
         if (CResourceManager::Exists(filename))
         {
             GetLogger()->Trace("Loading program '%%' from saved scene", filename);

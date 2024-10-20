@@ -672,16 +672,16 @@ void CScreenLevelList::UpdateCustomLevelList()
     m_customLevelList.clear();
 
     for (const auto& path : userLevelDirs)
-        m_customLevelList.push_back(StrUtils::ToString(path));
+        m_customLevelList.push_back(path);
 }
 
-std::string CScreenLevelList::GetCustomLevelName(int id)
+std::filesystem::path CScreenLevelList::GetCustomLevelName(int id)
 {
     if(id < 1 || id > static_cast<int>(m_customLevelList.size())) return "";
     return m_customLevelList[id-1];
 }
 
-const std::vector<std::string>& CScreenLevelList::GetCustomLevelList()
+const std::vector<std::filesystem::path>& CScreenLevelList::GetCustomLevelList()
 {
     return m_customLevelList;
 }

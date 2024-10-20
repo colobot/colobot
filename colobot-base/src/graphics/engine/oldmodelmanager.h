@@ -58,7 +58,7 @@ public:
     ~COldModelManager();
 
     //! Loads a model from given file
-    bool LoadModel(const std::string& fileName, bool mirrored, int team = 0);
+    bool LoadModel(const std::filesystem::path& fileName, bool mirrored, int team = 0);
 
     //! Adds an instance of model to the given object rank as a reference to base object
     bool AddModelReference(const std::string& fileName, bool mirrored, int objRank, int team = 0);

@@ -72,7 +72,7 @@ std::filesystem::path CLevelParser::BuildCategoryPath(std::string_view category)
     }
     else
     {
-        path /= category;
+        path /= StrUtils::ToPath(category);
     }
 
     return path;
@@ -89,7 +89,7 @@ std::filesystem::path CLevelParser::BuildScenePath(std::string_view category, in
 
     if (category == "custom")
     {
-        path /= TempToPath(CRobotMain::GetInstancePointer()->GetCustomLevelName(chapter));
+        path /= CRobotMain::GetInstancePointer()->GetCustomLevelName(chapter);
 
         if (rank == 0)
         {

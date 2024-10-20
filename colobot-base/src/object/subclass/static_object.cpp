@@ -30,8 +30,11 @@
 
 #include "object/object_create_exception.h"
 
+#include "common/stringutils.h"
 
-const std::unordered_map<ObjectType, std::string, ObjectTypeHash> CStaticObject::m_staticModelNames{};
+#include <filesystem>
+
+const std::unordered_map<ObjectType, std::filesystem::path, ObjectTypeHash> CStaticObject::m_staticModelNames{};
 // TODO: commenting out temporarily
 //=
 //{
@@ -126,7 +129,7 @@ CStaticObjectUPtr CStaticObject::Create(int id,
     if (it == m_staticModelNames.end())
         throw CObjectCreateException("Object type is not static object", type);
 
-    std::string modelFile = it->second;
+    std::filesystem::path modelFile = it->second;
 
     glm::vec3 adjustedPosition = position;
     terrain->AdjustToFloor(adjustedPosition);
@@ -137,12 +140,12 @@ CStaticObjectUPtr CStaticObject::Create(int id,
         auto model = modelManager->GetModel(modelFile);
 
         if (model->GetMeshCount() != 1 || model->GetMesh("main") == nullptr)
-            throw CObjectCreateException("Unexpected mesh configuration", type, modelFile);
+            throw CObjectCreateException("Unexpected mesh configuration", type, StrUtils::ToString(modelFile));
 
-        return std::make_unique<CStaticObject>(id, type, modelFile, adjustedPosition, angleY, model, engine);
+        return std::make_unique<CStaticObject>(id, type, StrUtils::ToString(modelFile), adjustedPosition, angleY, model, engine);
     }
     catch (const Gfx::CModelIOException& e)
     {
-        throw CObjectCreateException(std::string("Error loading model file: ") + e.what(), type, modelFile);
+        throw CObjectCreateException(std::string("Error loading model file: ") + e.what(), type, StrUtils::ToString(modelFile));
     }
 }

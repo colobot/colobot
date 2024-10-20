@@ -21,7 +21,7 @@
 
 
 #include "object/auto/auto.h"
-
+#include <filesystem>
 
 class CObject;
 
@@ -54,7 +54,7 @@ public:
     bool        SetValue(int rank, float value) override;
     //! Sets program which will be run by created aliens
     // TODO: rename to be more meanigful
-    bool        SetString(char* string) override;
+    bool        SetString(const std::string& string) override;
 
     bool        Write(CLevelParserLine* line) override;
     bool        Read(CLevelParserLine* line) override;
@@ -65,7 +65,7 @@ protected:
 protected:
     ObjectType      m_type = OBJECT_NULL;
     float           m_value = 0.0f;
-    std::string     m_alienProgramName;
+    std::filesystem::path m_alienProgramName;
     int             m_param = 0;
     AutoEggPhase    m_phase = AEP_NULL;
     float           m_progress = 0.0f;

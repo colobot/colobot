@@ -57,5 +57,5 @@ public:
     std::optional<std::filesystem::path> GetFont(Gfx::FontType type) const;
 
 private:
-    std::unordered_map<std::string, std::string> m_fonts;
+    std::unordered_map<std::string, std::filesystem::path> m_fonts;
 };

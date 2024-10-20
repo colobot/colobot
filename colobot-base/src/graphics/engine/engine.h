@@ -617,7 +617,7 @@ public:
                                         std::vector<EngineTriangle>& triangles);
 
     //! Changes the 2nd texure for given object
-    void            ChangeSecondTexture(int objRank, const std::string& tex2Name);
+    void            ChangeSecondTexture(int objRank, const std::filesystem::path& tex2Name);
 
     void            SetUVTransform(int objRank, const std::string& tag, const glm::vec2& offset, const glm::vec2& scale);
 
@@ -697,7 +697,7 @@ public:
     void            DeleteTexture(const Texture& tex);
 
     //! Creates or updates the given texture with given image data
-    void            CreateOrUpdateTexture(const std::string& texName, CImage* img);
+    void            CreateOrUpdateTexture(const std::filesystem::path& texName, CImage* img);
 
     //! Empties the texture cache
     void            FlushTextureCache();

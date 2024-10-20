@@ -37,6 +37,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <filesystem>
 
 
 class CEventQueue;
@@ -272,6 +273,7 @@ public:
     //@{
     Language    GetLanguage() const;
     char        GetLanguageChar() const;
+    std::filesystem::path GetLanguageDir() const;
     void        SetLanguage(Language language);
     //@}
 
@@ -410,7 +412,7 @@ protected:
 
     //! Game to load on startup
     std::string     m_loadSavePlayerName;
-    std::string     m_loadSaveDirName;
+    std::filesystem::path m_loadSaveDirName;
 
     //! Scene test mode
     bool            m_sceneTest = false;

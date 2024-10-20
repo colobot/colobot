@@ -675,12 +675,12 @@ bool CAutoFactory::CreateVehicle()
     if (vehicle->Implements(ObjectInterfaceType::ProgramStorage))
     {
         CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(vehicle);
-        for (const std::string& name : m_main->GetNewScriptNames(m_type))
+        for (const std::filesystem::path& name : m_main->GetNewScriptNames(m_type))
         {
             Program* prog = programStorage->AddProgram();
-            programStorage->ReadProgram(prog, InjectLevelPathsForCurrentLevel(TempToPath(name), "ai"));
+            programStorage->ReadProgram(prog, InjectLevelPathsForCurrentLevel(name, "ai"));
             prog->readOnly = true;
-            prog->filename = name;
+            prog->filename = StrUtils::ToString(name);
         }
     }
 

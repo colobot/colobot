@@ -1093,7 +1093,7 @@ int CEngine::GetPartialTriangles(int objRank, float percent, int maxCount,
     return actualCount;
 }
 
-void CEngine::ChangeSecondTexture(int objRank, const std::string& tex2Name)
+void CEngine::ChangeSecondTexture(int objRank, const std::filesystem::path& tex2Name)
 {
     assert(objRank >= 0 && objRank < static_cast<int>( m_objects.size() ));
 
@@ -1105,7 +1105,7 @@ void CEngine::ChangeSecondTexture(int objRank, const std::string& tex2Name)
 
     EngineBaseObject& p1 = m_baseObjects[baseObjRank];
 
-    std::filesystem::path tex2Path = "textures" / TempToPath(tex2Name);
+    std::filesystem::path tex2Path = "textures" / tex2Name;
     for (auto& data : p1.next)
     {
         if (data.material.detailTexture == tex2Path)
@@ -1350,9 +1350,8 @@ void CEngine::DeleteAllGroundSpots()
 
         std::stringstream str;
         str << "textures/shadow" << std::setfill('0') << std::setw(2) << s << ".png";
-        std::string texName = str.str();
 
-        CreateOrUpdateTexture(texName, &shadowImg);
+        CreateOrUpdateTexture(StrUtils::ToPath(str.str()), &shadowImg);
     }
 }
 
@@ -1983,9 +1982,9 @@ bool CEngine::LoadAllTextures()
             if (!data.material.albedoTexture.empty())
             {
                 if (terrain)
-                    data.albedoTexture = LoadTexture(TempToPath("textures/" + data.material.albedoTexture), m_terrainTexParams);
+                    data.albedoTexture = LoadTexture("textures" / data.material.albedoTexture, m_terrainTexParams);
                 else
-                    data.albedoTexture = LoadTexture(TempToPath("textures/" + data.material.albedoTexture));
+                    data.albedoTexture = LoadTexture("textures" / data.material.albedoTexture);
 
                 if (!data.albedoTexture.Valid())
                     ok = false;
@@ -2005,9 +2004,9 @@ bool CEngine::LoadAllTextures()
             if (!data.material.materialTexture.empty())
             {
                 if (terrain)
-                    data.materialTexture = LoadTexture(TempToPath("textures/" + data.material.materialTexture), m_terrainTexParams);
+                    data.materialTexture = LoadTexture("textures" / data.material.materialTexture, m_terrainTexParams);
                 else
-                    data.materialTexture = LoadTexture(TempToPath("textures/" + data.material.materialTexture));
+                    data.materialTexture = LoadTexture("textures" / data.material.materialTexture);
 
                 if (!data.materialTexture.Valid())
                     ok = false;
@@ -2016,9 +2015,9 @@ bool CEngine::LoadAllTextures()
             if (!data.material.emissiveTexture.empty())
             {
                 if (terrain)
-                    data.emissiveTexture = LoadTexture(TempToPath("textures/" + data.material.emissiveTexture), m_terrainTexParams);
+                    data.emissiveTexture = LoadTexture("textures" / data.material.emissiveTexture, m_terrainTexParams);
                 else
-                    data.emissiveTexture = LoadTexture(TempToPath("textures/" + data.material.emissiveTexture));
+                    data.emissiveTexture = LoadTexture("textures" / data.material.emissiveTexture);
 
                 if (!data.emissiveTexture.Valid())
                     ok = false;
@@ -2060,12 +2059,12 @@ void CEngine::DeleteTexture(const Texture& tex)
     m_texNameMap.erase(it);
 }
 
-void CEngine::CreateOrUpdateTexture(const std::string& texName, CImage* img)
+void CEngine::CreateOrUpdateTexture(const std::filesystem::path& texName, CImage* img)
 {
-    auto it = m_texNameMap.find(TempToPath(texName));
+    auto it = m_texNameMap.find(texName);
     if (it == m_texNameMap.end())
     {
-        LoadTexture(TempToPath(texName), img);
+        LoadTexture(texName, img);
     }
     else
     {
@@ -4045,7 +4044,7 @@ void CEngine::UpdateGroundSpotTextures()
             str << "textures/shadow" << std::setfill('0') << std::setw(2) << s << ".png";
             std::string texName = str.str();
 
-            CreateOrUpdateTexture(texName, &shadowImg);
+            CreateOrUpdateTexture(StrUtils::ToPath(str.str()), &shadowImg);
         }
     }
 
@@ -4736,13 +4735,13 @@ void CEngine::AddBaseObjTriangles(int baseObjRank, const std::vector<Gfx::ModelT
         Material material = triangle.material;
 
         if (!material.albedoTexture.empty())
-            material.albedoTexture = "objects/" + material.albedoTexture;
+            material.albedoTexture = "objects" / material.albedoTexture;
 
         if (!material.materialTexture.empty())
-            material.materialTexture = "objects/" + material.materialTexture;
+            material.materialTexture = "objects" / material.materialTexture;
 
         if (!material.emissiveTexture.empty())
-            material.emissiveTexture = "objects/" + material.emissiveTexture;
+            material.emissiveTexture = "objects" / material.emissiveTexture;
 
         if (material.variableDetail)
             material.detailTexture = GetSecondTexture();

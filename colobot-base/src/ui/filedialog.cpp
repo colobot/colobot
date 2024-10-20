@@ -813,14 +813,15 @@ bool CFileDialog::EventSelectFolder(const Event &event)
     {
         CList* pl = static_cast< CList* >(pw->SearchControl(EVENT_DIALOG_LIST));
         if ( pl == nullptr ) return false;
-        std::string name = pl->GetItemName(pl->GetSelect());
-        name = name.substr(0, name.find_first_of("\t"));
-        if (m_subDirPath.empty()) {
-            m_subDirPath = TempToPath(name);
-        } else {
-            m_subDirPath /= TempToPath(name);
+        if (0 <= pl->GetSelect() && static_cast<size_t>(pl->GetSelect()) < m_entries.size())
+        {
+            m_subDirPath /= m_entries[pl->GetSelect()];
+            m_eventQueue->AddEvent(Event(EVENT_DIALOG_ACTION));
         }
-        m_eventQueue->AddEvent(Event(EVENT_DIALOG_ACTION));
+        else
+        {
+            return false;
+        }
     }
 
     if (event.type == EVENT_KEY_DOWN)
@@ -836,15 +837,12 @@ bool CFileDialog::EventSelectFolder(const Event &event)
             {
                 CList* pl = static_cast< CList* >(pw->SearchControl(EVENT_DIALOG_LIST));
                 if ( pl == nullptr ) return false;
-                std::string name = pl->GetItemName(pl->GetSelect());
-                name = name.substr(0, name.find_first_of("\t"));
+                bool inRange = 0 <= pl->GetSelect() && static_cast<size_t>(pl->GetSelect()) < m_entries.size();
+                if ( !inRange ) return false;
+                const std::filesystem::path& name = m_entries[pl->GetSelect()];
                 if ( name != ".." )
                 {
-                    if (m_subDirPath.empty()) {
-                        m_subDirPath = TempToPath(name);
-                    } else {
-                        m_subDirPath /= TempToPath(name);
-                    }
+                    m_subDirPath /= name;
                     m_eventQueue->AddEvent(Event(EVENT_DIALOG_ACTION));
                 }
             }
@@ -864,10 +862,10 @@ void CFileDialog::GetListChoice()
     if ( pl == nullptr )  return;
     CEdit* pe = static_cast< CEdit* >(pw->SearchControl(EVENT_DIALOG_EDIT));
     if ( pe == nullptr )  return;
+    bool inRange = 0 <= pl->GetSelect() && static_cast<size_t>(pl->GetSelect()) < m_entries.size();
+    if ( !inRange ) return;
 
-    std::string name = pl->GetItemName(pl->GetSelect());
-    name = name.substr(0, name.find_first_of("\t"));
-    SetFilenameField(pe, TempToPath(name));
+    SetFilenameField(pe, m_entries[pl->GetSelect()]);
     pe->SetCursor(999, 0);  // select all
     m_interface->SetFocus(pe);
 
@@ -884,16 +882,16 @@ bool CFileDialog::ListItemIsFolder()
     CList* pl = static_cast< CList* >(pw->SearchControl(EVENT_DIALOG_LIST));
     if ( pl == nullptr )  return false;
 
-    int n = pl->GetTotal();
     int i = pl->GetSelect();
-    if (i < 0 || i >= n) return false;
 
-    std::string name = pl->GetItemName(i);
-    name = name.substr(0, name.find_first_of("\t"));
+    bool inRange = 0 <= i && static_cast<size_t>(i) < m_entries.size();
+    if ( !inRange ) return false;
+
+    const std::filesystem::path& name = m_entries[i];
 
     if (name == "..") return !m_subDirPath.empty();
 
-    if (name.find_first_of(".*?:<>\"|/\\") != std::string::npos) return false;
+    if (StrUtils::ToString(name).find_first_of(".*?:<>\"|/\\") != std::string::npos) return false;
 
     return DirectoryExists(name);
 }
@@ -912,15 +910,16 @@ void CFileDialog::SearchList(const std::string &text, bool dirOnly)
     // highlight the list item matching what is typed in the edit box
     if (!text.empty())
     {
-        for (int i = 0; i < pl->GetTotal(); i++)
+        int total = pl->GetTotal();
+        if (dirOnly && total > m_dirCount) total = m_dirCount;
+        for (int i = 0; i < total; i++)
         {
-            std::string item = pl->GetItemName(i);
-            if (dirOnly && item.find("\t** DIR **  \t") == std::string::npos) break;
-            item = item.substr(0, item.find_first_of("\t"));
-            if (item.substr(0, text.length()) != text) continue;
-            pl->SetSelect(i); // select item
-            pl->ShowSelect(false);  // scroll list
-            break;
+            if (StrUtils::ToString(m_entries[i]).starts_with(text))
+            {
+                pl->SetSelect(i); // select item
+                pl->ShowSelect(false);  // scroll list
+                break;
+            }
         }
     }
 
@@ -938,18 +937,28 @@ void CFileDialog::UpdateAction()
     CButton* pb = static_cast< CButton* >(pw->SearchControl(EVENT_DIALOG_OK));
     if ( pb == nullptr )  return;
 
-    bool bError = true;
     std::string text = pe->GetText(999);
-    if ( !text.empty() )
+    if (
+        text.empty()
+        || text.find_first_of("*?:<>\"|/\\") != std::string::npos  // *?:<>"|/\ are banned on Windows
+    )
     {
-        if (text.find_first_of("*?:<>\"|/\\") == std::string::npos)
-            bError = DirectoryExists(text);
-
-        if (!bError && !CheckFilename(text))
-            bError = !CheckFilename(text+m_extension);
+        pb->SetState(STATE_ENABLE, false);
+        return;
     }
-
-    pb->SetState(STATE_ENABLE, !bError);
+    std::filesystem::path filename = StrUtils::ToPath(text);
+    if (DirectoryExists(filename))
+    {
+        pb->SetState(STATE_ENABLE, false);
+        return;
+    }
+    if (CheckFilename(filename))
+    {
+        pb->SetState(STATE_ENABLE, true);
+        return;
+    }
+    filename += m_extension;
+    pb->SetState(STATE_ENABLE, CheckFilename(filename));
 }
 
 void CFileDialog::UpdateSelectFolder()
@@ -963,11 +972,9 @@ void CFileDialog::UpdateSelectFolder()
     if (!m_newFolderMode && ListItemIsFolder())
     {
         CList* pl = static_cast< CList* >(pw->SearchControl(EVENT_DIALOG_LIST));
-        if ( pl != nullptr )
+        if ( pl != nullptr && 0 <= pl->GetSelect() && static_cast<size_t>(pl->GetSelect()) < m_entries.size())
         {
-            std::string name = pl->GetItemName(pl->GetSelect());
-            name = name.substr(0, name.find_first_of("\t"));
-            if (name != "..") bError = false;
+            bError = ".." == m_entries[pl->GetSelect()];
         }
     }
 
@@ -990,12 +997,13 @@ void CFileDialog::UpdateNewFolder()
     if ( !text.empty() )
     {
         if (text.find_first_of(".*?:<>\"|/\\") == std::string::npos)
-            bError = DirectoryExists(text);
+            bError = DirectoryExists(StrUtils::ToPath(text));
     }
 
-    if (bError) GetResource(RES_EVENT, EVENT_DIALOG_CANCEL, text);
-    else GetResource(RES_EVENT, EVENT_DIALOG_OK, text);
-    pb->SetName(text);
+    std::string res;
+    if (bError) GetResource(RES_EVENT, EVENT_DIALOG_CANCEL, res);
+    else GetResource(RES_EVENT, EVENT_DIALOG_OK, res);
+    pb->SetName(res);
 }
 
 // Updates the private/public buttons.
@@ -1054,6 +1062,8 @@ void CFileDialog::PopulateList()
     CList* pl = static_cast< CList* >(pw->SearchControl(EVENT_DIALOG_LIST));
     if ( pl == nullptr )  return;
     pl->Flush();
+    m_entries.clear();
+    m_dirCount = 0;
 
     if (!CResourceManager::DirectoryExists(SearchDirectory(false)))
         return;
@@ -1069,7 +1079,9 @@ void CFileDialog::PopulateList()
         time_t now = CResourceManager::GetLastModificationTime(SearchDirectory(false) / dir);
         strftime(timestr, 99, "%x %X", localtime(&now));
         std::ostringstream temp;
-        temp << dir << '\t' << "** DIR **" << "  \t" << timestr;
+        temp << StrUtils::ToString(dir) << '\t' << "** DIR **" << "  \t" << timestr;
+        m_entries.push_back(dir);
+        ++m_dirCount;
         pl->SetItemName(i++, temp.str().c_str());
     }
 
@@ -1078,7 +1090,7 @@ void CFileDialog::PopulateList()
 
     auto it = std::remove_if(files.begin(), files.end(), [this](const std::filesystem::path& name)
     {
-        return !CheckFilename(StrUtils::ToString(name));
+        return !CheckFilename(name);
     });
     files.erase(it, files.end()); // remove invalid file names
 
@@ -1089,6 +1101,7 @@ void CFileDialog::PopulateList()
         strftime(timestr, 99, "%x %X", localtime(&now));
         std::ostringstream temp;
         temp << StrUtils::ToString(filename) << '\t' << CResourceManager::GetFileSize(path) << "  \t" << timestr;
+        m_entries.push_back(filename);
         pl->SetItemName(i++, temp.str().c_str());
     }
 }
@@ -1117,13 +1130,13 @@ std::filesystem::path CFileDialog::SearchDirectory(bool bCreate)
     return dir;
 }
 
-bool CFileDialog::DirectoryExists(const std::string &name)
+bool CFileDialog::DirectoryExists(const std::filesystem::path& name)
 {
     if ( name.empty() ) return false;
 
     if ( name == ".." ) return !m_subDirPath.empty();
 
-    return CResourceManager::DirectoryExists(SearchDirectory(false) / TempToPath(name));
+    return CResourceManager::DirectoryExists(SearchDirectory(false) / name);
 }
 
 // Make folder
@@ -1135,17 +1148,17 @@ void CFileDialog::CreateNewFolder()
 
     CEdit* pe = static_cast< CEdit* >(pw->SearchControl(EVENT_DIALOG_EDIT2));
     if ( pe == nullptr ) return;
-    std::string name = pe->GetText(999);
+    std::filesystem::path name = StrUtils::ToPath(pe->GetText(999));
     if ( name.empty() ) return;
 
-    m_subDirPath /= TempToPath(name);   // add to current path
+    m_subDirPath /= name;   // add to current path
 
     SearchDirectory(true);  // make the new folder
 
     m_subDirPath = m_subDirPath.parent_path();
 
     PopulateList();         // redraw the list
-    SearchList(name, true); // highlight the new folder in list box
+    SearchList(StrUtils::ToString(name), true); // highlight the new folder in list box
 }
 
 // Open folder
@@ -1158,8 +1171,10 @@ void CFileDialog::OpenFolder()
     CList* pl = static_cast< CList* >(pw->SearchControl(EVENT_DIALOG_LIST));
     if ( pl == nullptr ) return;
 
-    std::string name = pl->GetItemName(pl->GetSelect());
-    name = name.substr(0, name.find_first_of("\t"));
+    bool inRange = 0 <= pl->GetSelect() && static_cast<size_t>(pl->GetSelect()) < m_entries.size();
+    if ( !inRange ) return;
+
+    const std::filesystem::path& name = m_entries[pl->GetSelect()];
 
     if ( name.empty() ) return;
 
@@ -1169,7 +1184,7 @@ void CFileDialog::OpenFolder()
     }
     else if ( DirectoryExists(name) )
     {
-        m_subDirPath /= TempToPath(name);
+        m_subDirPath /= name;
     }
 
     PopulateList();
@@ -1181,27 +1196,20 @@ void CFileDialog::OpenFolder()
     if ( pe != nullptr ) SearchList(pe->GetText(999), m_newFolderMode);
 }
 
-bool CFileDialog::CheckFilename(const std::string& name)
+bool CFileDialog::CheckFilename(const std::filesystem::path& name)
 {
-    if ( name.empty() || name[0] == '.' ) return false;
+    if ( name.empty() || StrUtils::ToString(name)[0] == '.' ) return false;
 
-    size_t namelen = name.length();
     if ( m_extension.empty() && m_extlist.empty() ) return true;      // no required extension?
 
-    for ( std::string ext : m_extlist ) // allowed extensions?
+    for ( const std::filesystem::path& ext : m_extlist ) // allowed extensions?
     {
-        size_t extlen = ext.length();
-        if ( namelen <= extlen ) continue;
-        if ( name == ext ) continue;
-        if ( ext == name.substr(namelen-extlen, extlen) ) return true;
+        if ( ext == name.extension() ) return true;
     }
 
     if ( !m_extension.empty() ) // default extension?
     {
-        size_t extlen = m_extension.length();
-        if ( namelen <= extlen ) return false;
-        if ( name == m_extension ) return false;
-        if ( m_extension == name.substr(namelen-extlen, extlen)) return true;
+        if ( m_extension == name.extension() ) return true;
     }
     return false;
 }
@@ -1213,7 +1221,7 @@ bool CFileDialog::ActionOpen()
 
     CEdit* pe = static_cast< CEdit* >(pw->SearchControl(EVENT_DIALOG_EDIT));
     if ( pe == nullptr ) return false;
-    std::string filename = pe->GetText(100);
+    std::filesystem::path filename = StrUtils::ToPath(pe->GetText(100));
     if ( filename.empty() ) return false;
 
     if ( !CheckFilename(filename) ) // add default extension ?
@@ -1223,8 +1231,8 @@ bool CFileDialog::ActionOpen()
     }
 
     SearchDirectory(true);
-    SetFilename(TempToPath(filename));
-    SetFilenameField(pe, TempToPath(filename));
+    SetFilename(filename);
+    SetFilenameField(pe, filename);
     pe->SetCursor(999, 0);  // select all
     pw->SetFocus(pe);
 
@@ -1238,7 +1246,7 @@ bool CFileDialog::ActionSave(bool checkFileExist)
 
     CEdit* pe = static_cast< CEdit* >(pw->SearchControl(EVENT_DIALOG_EDIT));
     if ( pe == nullptr ) return false;
-    std::string filename = pe->GetText(100);
+    std::filesystem::path filename = StrUtils::ToPath(pe->GetText(100));
     if ( filename.empty() ) return false;
 
     if ( !CheckFilename(filename) ) // add default extension ?
@@ -1251,22 +1259,22 @@ bool CFileDialog::ActionSave(bool checkFileExist)
 
     if ( checkFileExist )
     {
-        if (CResourceManager::Exists(SearchDirectory(false) / TempToPath(filename)))
+        if (CResourceManager::Exists(SearchDirectory(false) / filename))
         {
             if ( !StartAskOverwrite(filename) ) StopAskOverwrite();
             return false;
         }
     }
 
-    SetFilename(TempToPath(filename));
-    SetFilenameField(pe, TempToPath(filename));
+    SetFilename(filename);
+    SetFilenameField(pe, filename);
     pe->SetCursor(999, 0);  // select all
     pw->SetFocus(pe);
 
     return true;
 }
 
-bool CFileDialog::StartAskOverwrite(const std::string& name)
+bool CFileDialog::StartAskOverwrite(const std::filesystem::path& name)
 {
     CWindow* pw = static_cast< CWindow* >(m_interface->SearchControl(m_windowEvent)); // dialog window
     if ( pw == nullptr ) return false;
@@ -1311,7 +1319,7 @@ bool CFileDialog::StartAskOverwrite(const std::string& name)
     pla = static_cast< CLabel* >(pw->SearchControl(EVENT_LABEL1));       // filename label
     if ( pla == nullptr ) return false;
     pla->SetState(STATE_VISIBLE | STATE_ENABLE);
-    pla->SetName(name);
+    pla->SetName(StrUtils::ToString(name));
 
     pb = static_cast< CButton* >(pw->SearchControl(EVENT_BUTTON_CANCEL)); // Cancel button
     if ( pb == nullptr ) return false;

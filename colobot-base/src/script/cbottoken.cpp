@@ -23,8 +23,10 @@
 #include "app/app.h"
 
 #include "object/object_type.h"
+#include "common/stringutils.h"
 
 #include <string.h>
+#include <filesystem>
 
 
 // Seeking the name of an object.
@@ -149,9 +151,9 @@ const char* GetObjectAlias(ObjectType type)
 
 // Returns the help file to use for the object.
 
-std::string GetHelpFilename(ObjectType type)
+std::filesystem::path GetHelpFilename(ObjectType type)
 {
-    std::string helpfile = "";
+    std::filesystem::path helpfile = "";
 
     if ( type == OBJECT_BASE        )  helpfile = "object/base";
     if ( type == OBJECT_DERRICK     )  helpfile = "object/derrick";
@@ -249,15 +251,15 @@ std::string GetHelpFilename(ObjectType type)
     if (helpfile.empty())
         return "";
 
-    return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + "/" + helpfile + ".txt";
+    return ("help" / CApplication::GetInstancePointer()->GetLanguageDir() / helpfile).replace_extension("txt");
 }
 
 
 // Returns the help file to use for instruction.
 
-std::string GetHelpFilename(const char *token)
+std::filesystem::path GetHelpFilename(const char *token)
 {
-    std::string helpfile = "";
+    std::filesystem::path helpfile = "";
 
     if ( strcmp(token, "if"            ) == 0 )  helpfile = "cbot/if";
     if ( strcmp(token, "else"          ) == 0 )  helpfile = "cbot/if";
@@ -421,7 +423,7 @@ std::string GetHelpFilename(const char *token)
     if (helpfile.empty())
         return "";
 
-    return std::string("help/") + CApplication::GetInstancePointer()->GetLanguageChar() + "/" + helpfile + ".txt";
+    return ("help" / CApplication::GetInstancePointer()->GetLanguageDir() / helpfile).replace_extension("txt");
 }
 
 

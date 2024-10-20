@@ -143,7 +143,7 @@ bool CStudio::EventProcess(const Event &event)
 
     if ( event.type == EVENT_STUDIO_LIST )  // list clicked?
     {
-        m_main->StartDisplayInfo(TempToPath(m_helpFilename), -1);
+        m_main->StartDisplayInfo(m_helpFilename, -1);
     }
 
     if ( event.type == EVENT_STUDIO_NEW )  // new?
@@ -507,7 +507,7 @@ void CStudio::SearchToken(CEdit* edit)
     token[i] = 0;
 
     m_helpFilename = GetHelpFilename(token.c_str());
-    if ( m_helpFilename.length() == 0 )
+    if ( m_helpFilename.empty() )
     {
         for ( i=0 ; i<OBJECT_MAX ; i++ )
         {
@@ -536,7 +536,7 @@ void CStudio::SearchToken(CEdit* edit)
     }
 
     text = const_cast<char *>(GetHelpText(token.c_str()));
-    if ( text[0] == 0 && m_helpFilename.length() > 0 )
+    if ( text[0] == 0 && !m_helpFilename.empty() )
     {
         SetInfoText(token, true);
     }

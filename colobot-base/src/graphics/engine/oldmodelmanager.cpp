@@ -46,18 +46,18 @@ COldModelManager::~COldModelManager()
 {
 }
 
-bool COldModelManager::LoadModel(const std::string& name, bool mirrored, int team)
+bool COldModelManager::LoadModel(const std::filesystem::path& name, bool mirrored, int team)
 {
     std::unique_ptr<CModel> model;
     try
     {
-        auto extension = TempToPath(name).extension().string();
+        auto extension = name.extension();
 
         if (!extension.empty())
         {
             GetLogger()->Debug("Loading model '%%'", name);
 
-            model = ModelInput::Read(TempToPath("models/" + name));
+            model = ModelInput::Read("models" / name);
 
             if (model->GetMeshCount() == 0)
                 return false;
@@ -65,25 +65,27 @@ bool COldModelManager::LoadModel(const std::string& name, bool mirrored, int tea
             goto skip;
         }
 
-        auto gltf_path = "models/" + name + ".gltf";
+        auto gltf_path = "models" / name;
+        gltf_path.replace_extension("gltf");
 
-        if (CResourceManager::Exists(TempToPath(gltf_path)))
+        if (CResourceManager::Exists(gltf_path))
         {
-            GetLogger()->Debug("Loading model '%%'", (name + ".gltf"));
+            GetLogger()->Debug("Loading model '%%'", gltf_path);
 
-            model = ModelInput::Read(TempToPath(gltf_path));
+            model = ModelInput::Read(gltf_path);
 
             if (model->GetMeshCount() > 0)
                 goto skip;
         }
 
-        auto mod_path = "models/" + name + ".mod";
+        auto mod_path = "models" / name;
+        mod_path.replace_extension("mod");
 
-        if (CResourceManager::Exists(TempToPath(mod_path)))
+        if (CResourceManager::Exists(mod_path))
         {
-            GetLogger()->Debug("Loading model '%%'", (name + ".mod"));
+            GetLogger()->Debug("Loading model '%%'", mod_path);
 
-            model = ModelInput::Read(TempToPath(mod_path));
+            model = ModelInput::Read(mod_path);
 
             if (model->GetMeshCount() > 0)
                 goto skip;
@@ -108,7 +110,7 @@ skip:
     if (mirrored)
         Mirror(modelInfo.triangles);
 
-    FileInfo fileInfo(name, mirrored, team);
+    FileInfo fileInfo(StrUtils::ToString(name), mirrored, team);
     m_models[fileInfo] = modelInfo;
 
     m_engine->AddBaseObjTriangles(modelInfo.baseObjRank, modelInfo.triangles);
@@ -121,7 +123,7 @@ bool COldModelManager::AddModelReference(const std::string& fileName, bool mirro
     auto it = m_models.find(FileInfo(fileName, mirrored, team));
     if (it == m_models.end())
     {
-        if (!LoadModel(fileName, mirrored, team))
+        if (!LoadModel(StrUtils::ToPath(fileName), mirrored, team))
             return false;
 
         it = m_models.find(FileInfo(fileName, mirrored, team));
@@ -138,7 +140,7 @@ bool COldModelManager::AddModelCopy(const std::string& fileName, bool mirrored, 
     auto it = m_models.find(FileInfo(fileName, mirrored, team));
     if (it == m_models.end())
     {
-        if (!LoadModel(fileName, mirrored, team))
+        if (!LoadModel(StrUtils::ToPath(fileName), mirrored, team))
             return false;
 
         it = m_models.find(FileInfo(fileName, mirrored, team));

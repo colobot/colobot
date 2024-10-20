@@ -599,7 +599,7 @@ void CRobotMain::ChangePhase(Phase phase)
                     pe->SetFontType(Gfx::FONT_COMMON);
                     pe->SetEditCap(false);
                     pe->SetHighlightCap(false);
-                    pe->ReadText(TempToPath(std::string("help/") + m_app->GetLanguageChar() + std::string("/win.txt")));
+                    pe->ReadText("help" / m_app->GetLanguageDir() / "win.txt");
                 }
                 else
                 {
@@ -2247,10 +2247,10 @@ void CRobotMain::HelpObject()
     CObject* obj = GetSelect();
     if (obj == nullptr) return;
 
-    std::string filename = GetHelpFilename(obj->GetType());
+    std::filesystem::path filename = GetHelpFilename(obj->GetType());
     if (filename.empty()) return;
 
-    StartDisplayInfo(TempToPath(filename), -1);
+    StartDisplayInfo(filename, -1);
 }
 
 
@@ -2875,7 +2875,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "ScriptFile" && !resetObject)
             {
-                m_scriptFile = TempToPath(line->GetParam("name")->AsString());
+                m_scriptFile = line->GetParam("name")->AsPath(".");
                 continue;
             }
 
@@ -3280,8 +3280,8 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
             if (line->GetCommand() == "TerrainInitTextures" && !resetObject)
             {
                 m_ui->GetLoadingScreen()->SetProgress(0.2f+(3.f/5.f)*0.05f, RT_LOADING_TERRAIN, RT_LOADING_TERRAIN_TEX);
-                std::string name = "../" + TempToString(line->GetParam("image")->AsPath("textures"));
-                if (name.find(".") == std::string::npos)
+                std::filesystem::path name = ".." / line->GetParam("image")->AsPath("textures");
+                if (name.extension().empty())
                     name += ".png";
                 unsigned int dx = line->GetParam("dx")->AsInt(1);
                 unsigned int dy = line->GetParam("dy")->AsInt(1);
@@ -3316,7 +3316,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
                     }
                 }
 
-                m_terrain->InitTextures(name.c_str(), tt, dx, dy);
+                m_terrain->InitTextures(name, tt, dx, dy);
                 continue;
             }
 
@@ -3328,13 +3328,12 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "TerrainMaterial" && !resetObject)
             {
-                std::string name = TempToString(line->GetParam("image")->AsPath("textures"));
-                if (name.find(".") == std::string::npos)
+                std::filesystem::path name = ".." / line->GetParam("image")->AsPath("textures");
+                if (name.extension().empty())
                     name += ".png";
-                name = "../" + name;
 
                 m_terrain->AddMaterial(line->GetParam("id")->AsInt(0),
-                                    name.c_str(),
+                                    name,
                                     { line->GetParam("u")->AsFloat(),
                                       line->GetParam("v")->AsFloat() },
                                     line->GetParam("up")->AsInt(),
@@ -3770,7 +3769,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 
             if (line->GetCommand() == "NewScript" && !resetObject)
             {
-                m_newScriptName.push_back(NewScriptName(line->GetParam("type")->AsObjectType(OBJECT_NULL), line->GetParam("name")->AsString("")));
+                m_newScriptName.push_back(NewScriptName(line->GetParam("type")->AsObjectType(OBJECT_NULL), line->GetParam("name")->AsPath(".", "")));
                 continue;
             }
 
@@ -4338,7 +4337,7 @@ void CRobotMain::SaveOneScript(CObject *obj)
     CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(obj);
 
     char categoryChar = GetLevelCategoryDir(m_levelCategory)[0];
-    programStorage->SaveAllUserPrograms(StrUtils::ToString(m_playerProfile->GetSaveFile(StrUtils::ToPath(StrUtils::Format("%c%.3d%.3d", categoryChar, m_levelChap, m_levelRank)))));
+    programStorage->SaveAllUserPrograms(m_playerProfile->GetSaveFile(StrUtils::ToPath(StrUtils::Format("%c%.3d%.3d", categoryChar, m_levelChap, m_levelRank))));
 }
 
 //! Saves the stack of the program in execution of a robot
@@ -4401,9 +4400,9 @@ bool CRobotMain::ReadFileStack(CObject *obj, std::istream &istr)
     return false; // error: status == ??
 }
 
-std::vector<std::string> CRobotMain::GetNewScriptNames(ObjectType type)
+std::vector<std::filesystem::path> CRobotMain::GetNewScriptNames(ObjectType type)
 {
-    std::vector<std::string> names;
+    std::vector<std::filesystem::path> names;
     for (const auto& newScript : m_newScriptName)
     {
         if (newScript.type == type        ||
@@ -4466,14 +4465,14 @@ void CRobotMain::IOWriteObject(CLevelParserLine* line, CObject* obj,
         CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(obj);
         if (programStorage->GetProgramStorageIndex() >= 0)
         {
-            programStorage->SaveAllProgramsForSavedScene(line, TempToString(programDir));
+            programStorage->SaveAllProgramsForSavedScene(line, programDir);
         }
         else
         {
             // Probably an object created after the scene started, not loaded from level file
             // This means it doesn't normally store programs so it doesn't have program storage id assigned
             programStorage->SetProgramStorageIndex(999-objRank); // Set something that won't collide with normal programs
-            programStorage->SaveAllProgramsForSavedScene(line, TempToString(programDir));
+            programStorage->SaveAllProgramsForSavedScene(line, programDir);
             programStorage->SetProgramStorageIndex(-1); // Disable again
         }
 
@@ -4699,7 +4698,7 @@ CObject* CRobotMain::IOReadObject(CLevelParserLine *line,
         CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(obj);
         if (!line->GetParam("programStorageIndex")->IsDefined()) // Backwards compatibility
             programStorage->SetProgramStorageIndex(objRank);
-        programStorage->LoadAllProgramsForSavedScene(line, TempToString(programDir));
+        programStorage->LoadAllProgramsForSavedScene(line, programDir);
     }
 
     return obj;
@@ -5358,7 +5357,7 @@ int CRobotMain::GetLevelRank()
 }
 
 //! Returns folder name of the scene that user selected to play.
-std::string CRobotMain::GetCustomLevelDir()
+std::filesystem::path CRobotMain::GetCustomLevelDir()
 {
     assert(m_levelCategory == LevelCategory::CustomLevels);
     return m_ui->GetCustomLevelName(m_levelChap);
@@ -5573,12 +5572,12 @@ void CRobotMain::UpdateCustomLevelList()
     m_ui->UpdateCustomLevelList();
 }
 
-std::string CRobotMain::GetCustomLevelName(int id)
+std::filesystem::path CRobotMain::GetCustomLevelName(int id)
 {
     return m_ui->GetCustomLevelName(id);
 }
 
-const std::vector<std::string>& CRobotMain::GetCustomLevelList()
+const std::vector<std::filesystem::path>& CRobotMain::GetCustomLevelList()
 {
     return m_ui->GetCustomLevelList();
 }
@@ -5703,9 +5702,9 @@ void CRobotMain::QuickLoad()
     m_playerProfile->LoadScene(dir);
 }
 
-void CRobotMain::LoadSaveFromDirName(const std::string& gameDir)
+void CRobotMain::LoadSaveFromDirName(const std::filesystem::path& gameDir)
 {
-    std::filesystem::path dir = m_playerProfile->GetSaveFile(TempToPath(gameDir));
+    std::filesystem::path dir = m_playerProfile->GetSaveFile(gameDir);
     if(!CResourceManager::Exists(dir))
     {
         GetLogger()->Error("Save slot not found");

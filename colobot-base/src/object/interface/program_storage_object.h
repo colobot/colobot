@@ -97,12 +97,12 @@ public:
     virtual int GetProgramStorageIndex() = 0;
 
     //! Save all user programs
-    virtual void SaveAllUserPrograms(const std::string& userSource) = 0;
+    virtual void SaveAllUserPrograms(const std::filesystem::path& userSource) = 0;
     //! Load all programs when loading the level including previously saved user programs
     virtual void LoadAllProgramsForLevel(CLevelParserLine* levelSource, const std::string& userSource, bool loadSoluce) = 0;
 
     //! Save all programs when saving the saved scene
-    virtual void SaveAllProgramsForSavedScene(CLevelParserLine* levelSourceLine, const std::string& levelSource) = 0;
+    virtual void SaveAllProgramsForSavedScene(CLevelParserLine* levelSourceLine, const std::filesystem::path& levelSource) = 0;
     //! Load all programs when loading the saved scene
-    virtual void LoadAllProgramsForSavedScene(CLevelParserLine* levelSourceLine, const std::string& levelSource) = 0;
+    virtual void LoadAllProgramsForSavedScene(CLevelParserLine* levelSourceLine, const std::filesystem::path& levelSource) = 0;
 };

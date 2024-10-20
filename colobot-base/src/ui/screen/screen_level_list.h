@@ -25,6 +25,7 @@
 
 #include <map>
 #include <vector>
+#include <filesystem>
 
 namespace Ui
 {
@@ -54,8 +55,8 @@ public:
     void NextMission();
 
     void UpdateCustomLevelList();
-    std::string GetCustomLevelName(int id);
-    const std::vector<std::string>& GetCustomLevelList();
+    std::filesystem::path GetCustomLevelName(int id);
+    const std::vector<std::filesystem::path>& GetCustomLevelList();
 
 protected:
     void UpdateSceneChap(int &chap);
@@ -76,7 +77,7 @@ protected:
     std::map<LevelCategory, int> m_sel;      // chosen mission (0..98)
     int m_maxList;
 
-    std::vector<std::string> m_customLevelList;
+    std::vector<std::filesystem::path> m_customLevelList;
 
     int m_accessChap;
 };

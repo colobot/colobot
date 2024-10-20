@@ -346,7 +346,7 @@ ParseArgsStatus CApplication::ParseArguments(const std::vector<std::string>& arg
                 if (pos != std::string::npos && pos > 0 && pos+1 < playerAndPath.length()) // Split player name from path
                 {
                     m_loadSavePlayerName = playerAndPath.substr(0, pos);
-                    m_loadSaveDirName = playerAndPath.substr(pos+1, playerAndPath.length()-pos-1);
+                    m_loadSaveDirName = StrUtils::ToPath(playerAndPath.substr(pos+1, playerAndPath.length()-pos-1));
                 }
                 else
                 {
@@ -1815,6 +1815,11 @@ char CApplication::GetLanguageChar() const
 
     }
     return langChar;
+}
+
+std::filesystem::path CApplication::GetLanguageDir() const
+{
+    return StrUtils::ToPath(std::string(1, GetLanguageChar()));
 }
 
 void CApplication::SetLanguage(Language language)

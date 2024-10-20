@@ -25,6 +25,7 @@
 
 #include <memory>
 #include <unordered_map>
+#include <filesystem>
 
 namespace Gfx
 {
@@ -77,5 +78,5 @@ private:
 private:
     Gfx::CEngine* m_engine;
     int m_meshHandle;
-    static const std::unordered_map<ObjectType, std::string, ObjectTypeHash> m_staticModelNames;
+    static const std::unordered_map<ObjectType, std::filesystem::path, ObjectTypeHash> m_staticModelNames;
 };

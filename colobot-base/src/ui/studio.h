@@ -113,7 +113,7 @@ protected:
     bool         m_bRealTime;
     ActivePause* m_editorPause = nullptr;
     ActivePause* m_runningPause = nullptr;
-    std::string  m_helpFilename;
+    std::filesystem::path m_helpFilename;
 
     std::unique_ptr<CFileDialog>  m_fileDialog;
 };

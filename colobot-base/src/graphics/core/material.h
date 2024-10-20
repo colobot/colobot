@@ -52,7 +52,7 @@ struct Material
     //! Albedo color
     Color albedoColor = Color{ 1.0f, 1.0f, 1.0f, 1.0f };
     //! Albedo texture
-    std::string albedoTexture = "";
+    std::filesystem::path albedoTexture = "";
     //! Roughness
     float roughness = 1.0;
     //! Metalness
@@ -60,11 +60,11 @@ struct Material
     //! AO strength
     float aoStrength = 0.0;
     //! AO-roughness-metalness texture
-    std::string materialTexture = "";
+    std::filesystem::path materialTexture = "";
     //! Emissive color
     Color emissiveColor = Color{ 0.0f, 0.0f, 0.0f, 0.0f };
     //! Emissive texture
-    std::string emissiveTexture = "";
+    std::filesystem::path emissiveTexture = "";
     //! Normal map
     std::string normalTexture = "";
     //! Alpha mode

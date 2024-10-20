@@ -69,7 +69,7 @@ enum OperUndo
 struct ImageLine
 {
     //! name of the image (without icons/)
-    std::string    name;
+    std::filesystem::path name;
     //! vertical offset (v texture)
     float   offset = 0.0f;
     //! height of the part (dv texture)
@@ -81,7 +81,7 @@ struct ImageLine
 struct HyperLink
 {
     //! text file name (without help/)
-    std::string    name;
+    std::filesystem::path name;
     //! name of the marker
     std::string    marker;
 };
@@ -97,7 +97,7 @@ struct HyperMarker
 struct HyperHistory
 {
     //! full file name text
-    std::string    filename;
+    std::filesystem::path filename;
     //! rank of the first displayed line
     int firstLine = 0;
 };
@@ -168,7 +168,7 @@ public:
     bool        Undo();
 
     void        HyperFlush();
-    void        HyperHome(std::string filename);
+    void        HyperHome(const std::filesystem::path& filename);
     bool        HyperTest(EventType event);
     bool        HyperGo(EventType event);
 
@@ -187,10 +187,10 @@ protected:
     int         MouseDetect(const glm::vec2& mouse);
     void        MoveAdjust();
 
-    void        HyperJump(std::string name, std::string marker);
-    bool        HyperAdd(std::string filename, int firstLine);
+    void        HyperJump(const std::filesystem::path& name, std::string marker);
+    bool        HyperAdd(const std::filesystem::path& filename, int firstLine);
 
-    void        DrawImage(const glm::vec2& pos, std::string name, float width, float offset, float height, int nbLine);
+    void        DrawImage(const glm::vec2& pos, const std::filesystem::path& name, float width, float offset, float height, int nbLine);
     void        DrawBack(const glm::vec2& pos, const glm::vec2& dim);
 
     void        DrawHorizontalGradient(const glm::vec2& pos, const glm::vec2& dim, Gfx::Color color1, Gfx::Color color2);

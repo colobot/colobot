@@ -1341,7 +1341,7 @@ void CAutoBase::BeginTransit()
     bool full, scale;
     m_engine->GetBackground(m_bgName, m_bgUp, m_bgDown, m_bgCloudUp, m_bgCloudDown, full, scale);
 
-    m_engine->SetBackground(TempToPath(m_bgBack), Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+    m_engine->SetBackground(m_bgBack, Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
             Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
             Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
             Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f));

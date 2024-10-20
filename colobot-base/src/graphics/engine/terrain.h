@@ -154,12 +154,12 @@ public:
     bool        Generate(int mosaicCount, int brickCountPow2, float brickSize, float vision, int depth, float hardness);
 
     //! Initializes the names of textures to use for the land
-    bool        InitTextures(const std::string& baseName, int* table, int dx, int dy);
+    bool        InitTextures(const std::filesystem::path& baseName, int* table, int dx, int dy);
 
     //! Clears all terrain materials
     void        FlushMaterials();
     //! Adds a terrain material the names of textures to use for the land
-    void        AddMaterial(int id, const std::string& texName, const glm::vec2& uv,
+    void        AddMaterial(int id, const std::filesystem::path& texName, const glm::vec2& uv,
                             int up, int right, int down, int left, float hardness);
     //! Initializes all the ground with one material
     bool        InitMaterials(int id);
@@ -266,7 +266,7 @@ protected:
     //! Seeks a material based on neighbor values
     int         FindMaterialByNeighbors(char *mat);
     //! Returns the texture name and UV coords to use for a given square
-    void        GetTexture(int x, int y, std::string& name, glm::vec2& uv);
+    void        GetTexture(int x, int y, std::filesystem::path& name, glm::vec2& uv);
     //! Returns the height of the terrain
     float       GetHeight(int x, int y);
     //! Decide whether a point is using the materials
@@ -318,9 +318,9 @@ protected:
     float           m_vision;
 
     //! Base name for single texture
-    std::string     m_texBaseName;
+    std::filesystem::path m_texBaseName;
     //! Extension for single texture
-    std::string     m_texBaseExt;
+    std::filesystem::path m_texBaseExt;
     //! Default hardness for level material
     float           m_defaultHardness;
     /**
@@ -332,7 +332,7 @@ protected:
         //! Unique ID
         short       id = 0;
         //! Texture
-        std::string texName;
+        std::filesystem::path texName;
         //! UV texture coordinates
         glm::vec2   uv;
         //! Terrain hardness (defines e.g. sound of walking)

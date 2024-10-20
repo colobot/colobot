@@ -64,7 +64,7 @@ void CScreenQuit::CreateInterface()
     pe->SetHighlightCap(false);
     pe->SetFontType(Gfx::FONT_STUDIO);
     pe->SetFontSize(Gfx::FONT_SIZE_SMALL);
-    pe->ReadText(TempToPath(std::string("help/") + m_app->GetLanguageChar() + std::string("/authors.txt")));
+    pe->ReadText("help" / m_app->GetLanguageDir() / "authors.txt");
 
     pos.x  =  40.0f/640.0f;
     pos.y  =  83.0f/480.0f;

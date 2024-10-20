@@ -126,22 +126,17 @@ float CTerrain::GetReliefScale()
     return m_scaleRelief;
 }
 
-bool CTerrain::InitTextures(const std::string& baseName, int* table, int dx, int dy)
+bool CTerrain::InitTextures(const std::filesystem::path& baseName, int* table, int dx, int dy)
 {
     m_useMaterials = false;
 
     m_texBaseName = baseName;
-    auto pos = baseName.rfind('.');
-    if(pos < baseName.find_last_of('/')) pos = std::string::npos; // If last . is not a part of filename (some directory, possibly . or ..)
+    m_texBaseName.replace_extension();
 
-    if (pos == std::string::npos)
+    m_texBaseExt = baseName.extension();
+    if (m_texBaseExt.empty())
     {
-        m_texBaseExt = ".png";
-    }
-    else
-    {
-        m_texBaseExt = m_texBaseName.substr(pos);
-        m_texBaseName = m_texBaseName.substr(0, pos);
+        m_texBaseExt = "png";
     }
 
     for (int y = 0; y < m_mosaicCount*m_textureSubdivCount; y++)
@@ -163,7 +158,7 @@ void CTerrain::FlushMaterials()
     FlushMaterialPoints();
 }
 
-void CTerrain::AddMaterial(int id, const std::string& texName, const glm::vec2& uv,
+void CTerrain::AddMaterial(int id, const std::filesystem::path& texName, const glm::vec2& uv,
                            int up, int right, int down, int left,
                            float hardness)
 {
@@ -583,8 +578,8 @@ bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank)
         m_engine->SetObjectBaseRank(objRank, baseObjRank);
     }
 
-    std::string texName1;
-    std::string texName2;
+    std::filesystem::path texName1;
+    std::filesystem::path texName2;
 
     if ( step == 1 )
     {
@@ -595,7 +590,7 @@ bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank)
         s.fill('0');
         s << i;
         s << ".png";
-        texName2 = s.str();
+        texName2 = StrUtils::ToPath(s.str());
     }
 
     int brick = m_brickCount/m_textureSubdivCount;
@@ -621,13 +616,15 @@ bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank)
             else
             {
                 int i = (ox*m_textureSubdivCount+mx)+(oy*m_textureSubdivCount+my)*m_mosaicCount;
+
                 std::stringstream s;
-                s << m_texBaseName;
                 s.width(3);
                 s.fill('0');
                 s << m_textures[i];
-                s << m_texBaseExt;
-                texName1 = s.str();
+
+                texName1 = m_texBaseName;
+                texName1 += StrUtils::ToPath(s.str());
+                texName1.replace_extension(m_texBaseExt);
             }
 
             for (int y = 0; y < brick; y += step)
@@ -723,7 +720,7 @@ bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank)
 
                 Gfx::Material material;
                 material.albedoTexture = texName1;
-                material.detailTexture = "textures" / StrUtils::ToPath(texName2);
+                material.detailTexture = "textures" / texName2;
                 material.tag = "brick_"
                     + std::to_string(mx + 1) + "_"
                     + std::to_string(my + 1) + "_"
@@ -753,7 +750,7 @@ CTerrain::TerrainMaterial* CTerrain::FindMaterial(int id)
     return nullptr;
 }
 
-void CTerrain::GetTexture(int x, int y, std::string& name, glm::vec2&uv)
+void CTerrain::GetTexture(int x, int y, std::filesystem::path& name, glm::vec2&uv)
 {
     x /= m_brickCount/m_textureSubdivCount;
     y /= m_brickCount/m_textureSubdivCount;

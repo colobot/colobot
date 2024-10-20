@@ -19,6 +19,8 @@
 
 #include "CBot/stdlib/stdlib.h"
 
+#include "common/stringutils.h"
+
 #include "CBot/CBot.h"
 
 #include <memory>
@@ -41,7 +43,16 @@ bool FileClassOpenFile(CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exc
     // must be a character string
     if ( pVar->GetType() != CBotTypString ) { Exception = CBotErrBadString; return false; }
 
-    std::string  filename = pVar->GetValString();
+    std::filesystem::path  filename;
+    try
+    {
+        filename = StrUtils::ToPath(pVar->GetValString());
+    }
+    catch(...)
+    {
+        Exception = CBotErrFileOpen;
+        return false;
+    }
 
     // there may be a second parameter
     pVar = pVar->GetNext();
@@ -60,7 +71,7 @@ bool FileClassOpenFile(CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exc
 
     // saves the file name
     pVar = pThis->GetItem("filename");
-    pVar->SetValString(filename);
+    pVar->SetValString(StrUtils::ToString(filename));
 
     // retrieve the item "handle"
     pVar = pThis->GetItem("handle");
@@ -351,7 +362,16 @@ CBotTypResult cfeof (CBotVar* pThis, CBotVar* &pVar)
 
 bool rDeleteFile(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-    std::string filename = var->GetValString();
+    std::filesystem::path filename;
+    try
+    {
+        filename = StrUtils::ToPath(var->GetValString());
+    }
+    catch(...)
+    {
+        exception = CBotErrFileOpen;
+        return false;
+    }
     assert(g_fileHandler != nullptr);
     return g_fileHandler->DeleteFile(filename);
 }

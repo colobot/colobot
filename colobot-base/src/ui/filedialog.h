@@ -244,13 +244,13 @@ public:
      * with those extensions.
      * \param ext A string with an extension. Ex. ".txt"
      */
-    void        SetAutoExtension(const std::string& ext) { m_extension = ext; }
+    void        SetAutoExtension(const std::filesystem::path& ext) { m_extension = ext; }
 
     /**
      * \brief Define extensions that will be accepted as part of a valid file name.
      * \param ext A string with an extension. Ex. ".txt"
      */
-    void        AddOptionalExtension(const std::string& ext) { m_extlist.push_back(ext); }
+    void        AddOptionalExtension(const std::filesystem::path& ext) { m_extlist.push_back(ext); }
 
     /**
      * \brief Set the filename that appears in the edit box when the dialog opens.
@@ -297,13 +297,13 @@ private:
     void        UpdateSelectFolder();
 
     bool        ListItemIsFolder();
-    bool        DirectoryExists(const std::string &name);
+    bool        DirectoryExists(const std::filesystem::path& name);
 
-    bool        CheckFilename(const std::string& name);
+    bool        CheckFilename(const std::filesystem::path& name);
     bool        ActionOpen();
     bool        ActionSave(bool checkFileExist = false);
 
-    bool        StartAskOverwrite(const std::string& name);
+    bool        StartAskOverwrite(const std::filesystem::path& name);
     bool        StopAskOverwrite();
     bool        EventAskOverwrite(const Event &event);
 
@@ -357,9 +357,13 @@ private:
     std::filesystem::path  m_filename = "";
 
     //! The extension to add to a filename if needed
-    std::string  m_extension = "";
+    std::filesystem::path  m_extension = "";
     //! List of extensions accepted as part of a valid file name
-    std::vector<std::string> m_extlist = {};
+    std::vector<std::filesystem::path> m_extlist = {};
+
+    //! Contents of the dirrectory
+    std::vector<std::filesystem::path> m_entries = {};
+    int m_dirCount = 0;
 };
 
 } // namespace Ui

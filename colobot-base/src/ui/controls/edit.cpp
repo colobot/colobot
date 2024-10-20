@@ -803,7 +803,7 @@ void CEdit::HyperFlush()
 
 // Indicates which is the home page.
 
-void CEdit::HyperHome(std::string filename)
+void CEdit::HyperHome(const std::filesystem::path& filename)
 {
     HyperFlush();
     HyperAdd(filename, 0);
@@ -811,18 +811,17 @@ void CEdit::HyperHome(std::string filename)
 
 // Performs a hyper jump through a link.
 
-void CEdit::HyperJump(std::string name, std::string marker)
+void CEdit::HyperJump(const std::filesystem::path& name, std::string marker)
 {
     if ( m_historyCurrent >= 0 )
     {
         m_history[m_historyCurrent].firstLine = m_lineFirst;
     }
 
-    std::string filename = name + std::string(".txt");
-    filename = StrUtils::ToString(InjectLevelPathsForCurrentLevel(TempToPath(filename), "help/%lng%"));
-    filename = StrUtils::Replace(filename, "\\", "/"); //TODO: Fix this in files
+    std::filesystem::path filename = InjectLevelPathsForCurrentLevel(name, "help/%lng%");
+    filename.replace_extension("txt");
 
-    if ( ReadText(TempToPath(filename)) )
+    if ( ReadText(filename) )
     {
         Justif();
 
@@ -847,7 +846,7 @@ void CEdit::HyperJump(std::string name, std::string marker)
 
 // Adds text to the history of visited.
 
-bool CEdit::HyperAdd(std::string filename, int firstLine)
+bool CEdit::HyperAdd(const std::filesystem::path& filename, int firstLine)
 {
     if ( m_historyCurrent >= EDITHISTORYMAX-1 )  return false;
 
@@ -904,7 +903,7 @@ bool CEdit::HyperGo(EventType event)
         m_historyCurrent ++;
     }
 
-    ReadText(TempToPath(m_history[m_historyCurrent].filename));
+    ReadText(m_history[m_historyCurrent].filename);
     Justif();
     SetFirstLine(m_history[m_historyCurrent].firstLine);
     return true;
@@ -1167,16 +1166,13 @@ void CEdit::Draw()
 
 // Draw an image part.
 
-static std::string PrepareImageFilename(std::string name)
+static std::filesystem::path PrepareImageFilename(std::filesystem::path name)
 {
-    std::string filename;
-    filename = name + ".png";
-    filename = StrUtils::ToString(InjectLevelPathsForCurrentLevel(TempToPath(filename), "icons"));
-    filename = StrUtils::Replace(filename, "\\", "/"); // TODO: Fix this in files
-    return filename;
+    name.replace_extension("png");
+    return InjectLevelPathsForCurrentLevel(name, "icons");
 }
 
-void CEdit::DrawImage(const glm::vec2& pos, std::string name, float width,
+void CEdit::DrawImage(const glm::vec2& pos, const std::filesystem::path& name, float width,
                       float offset, float height, int nbLine)
 {
     glm::vec2 uv1, uv2, dim;
@@ -1189,7 +1185,7 @@ void CEdit::DrawImage(const glm::vec2& pos, std::string name, float width,
     params.format = Gfx::TextureFormat::AUTO;
     params.filter = Gfx::TextureFilter::BILINEAR;
     params.padToNearestPowerOfTwo = true;
-    Gfx::Texture tex = m_engine->LoadTexture(TempToPath(PrepareImageFilename(name)), params);
+    Gfx::Texture tex = m_engine->LoadTexture(PrepareImageFilename(name), params);
 
     m_engine->GetUIRenderer()->SetTexture(tex);
 
@@ -1454,7 +1450,7 @@ void CEdit::FreeImage()
 {
     for (auto& image : m_image)
     {
-        m_engine->DeleteTexture(TempToPath(PrepareImageFilename(image.name)));
+        m_engine->DeleteTexture(PrepareImageFilename(image.name));
     }
 }
 
@@ -1617,7 +1613,7 @@ bool CEdit::ReadText(const std::filesystem::path& filename)
             if ( m_bSoluce || !bInSoluce )
             {
                 HyperLink link;
-                link.name = GetNameParam(buffer.data()+i+3, 0);
+                link.name = StrUtils::ToPath(GetNameParam(buffer.data()+i+3, 0));
                 link.marker = GetNameParam(buffer.data()+i+3, 1);
                 m_link.push_back(link);
                 font &= ~Gfx::FONT_MASK_LINK;
@@ -1660,7 +1656,7 @@ bool CEdit::ReadText(const std::filesystem::path& filename)
                 for ( iCount=0 ; iCount<iLines ; iCount++ )
                 {
                     ImageLine image;
-                    image.name = iName;
+                    image.name = StrUtils::ToPath(iName);
                     image.offset = static_cast<float>(iCount) / static_cast<float>(iLines);
                     image.height = 1.0f/iLines;
                     image.width = iWidth*0.75f;

@@ -147,9 +147,9 @@ bool CAutoEgg::SetValue(int rank, float value)
     return true;
 }
 
-bool CAutoEgg::SetString(char *string)
+bool CAutoEgg::SetString(const std::string& string)
 {
-    m_alienProgramName = string;
+    m_alienProgramName = StrUtils::ToPath(string);
     return true;
 }
 
@@ -196,9 +196,9 @@ bool CAutoEgg::EventProcess(const Event &event)
 
             CProgramStorageObject* programStorage = dynamic_cast<CProgramStorageObject*>(alien);
             Program* program = programStorage->AddProgram();
-            programStorage->ReadProgram(program, InjectLevelPathsForCurrentLevel(TempToPath(m_alienProgramName), "ai"));
+            programStorage->ReadProgram(program, InjectLevelPathsForCurrentLevel(m_alienProgramName, "ai"));
             program->readOnly = true;
-            program->filename = m_alienProgramName;
+            program->filename = StrUtils::ToString(m_alienProgramName);
             programmable->RunProgram(program);
         }
         Init();
@@ -327,7 +327,7 @@ bool CAutoEgg::Write(CLevelParserLine* line)
     line->AddParam("aSpeed", std::make_unique<CLevelParserParam>(m_speed));
     line->AddParam("aParamType", std::make_unique<CLevelParserParam>(m_type));
     line->AddParam("aParamValue1", std::make_unique<CLevelParserParam>(m_value));
-    line->AddParam("aParamString", std::make_unique<CLevelParserParam>(m_alienProgramName));
+    line->AddParam("aParamString", std::make_unique<CLevelParserParam>(StrUtils::ToString(m_alienProgramName)));
 
     return true;
 }
@@ -344,7 +344,8 @@ bool CAutoEgg::Read(CLevelParserLine* line)
     m_speed = line->GetParam("aSpeed")->AsFloat(1.0f);
     m_type = line->GetParam("aParamType")->AsObjectType(OBJECT_NULL);
     m_value = line->GetParam("aParamValue1")->AsFloat(0.0f);
-    m_alienProgramName = line->GetParam("aParamString")->AsString("");
+    // Read aParamString as a string to avoid interpreting %lvl% etc.
+    m_alienProgramName = StrUtils::ToPath(line->GetParam("aParamString")->AsString(""));
 
     return true;
 }

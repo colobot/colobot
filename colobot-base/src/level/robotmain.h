@@ -127,9 +127,9 @@ class CDebugMenu;
 struct NewScriptName
 {
     ObjectType  type = OBJECT_NULL;
-    std::string name = "";
+    std::filesystem::path name = "";
 
-    NewScriptName(ObjectType type, const std::string& name) : type(type), name(name) {}
+    NewScriptName(ObjectType type, const std::filesystem::path& name) : type(type), name(name) {}
 };
 
 
@@ -291,7 +291,7 @@ public:
     LevelCategory GetLevelCategory();
     int         GetLevelChap();
     int         GetLevelRank();
-    std::string GetCustomLevelDir();
+    std::filesystem::path GetCustomLevelDir();
     void        SetReadScene(const std::filesystem::path& path);
     void        UpdateChapterPassed();
 
@@ -320,7 +320,7 @@ public:
     bool        ReadFileStack(CObject *obj, std::istream &istr);
 
     //! Return list of scripts to load to robot created in BotFactory
-    std::vector<std::string> GetNewScriptNames(ObjectType type);
+    std::vector<std::filesystem::path> GetNewScriptNames(ObjectType type);
 
     //! Return the scoreboard manager
     //! Note: this may return nullptr if the scoreboard is not enabled!
@@ -358,8 +358,8 @@ public:
     void        DisplayError(Error err, glm::vec3 goal, float height=15.0f, float dist=60.0f, float time=10.0f);
 
     void        UpdateCustomLevelList();
-    std::string GetCustomLevelName(int id);
-    const std::vector<std::string>& GetCustomLevelList();
+    std::filesystem::path GetCustomLevelName(int id);
+    const std::vector<std::filesystem::path>& GetCustomLevelList();
 
     //! Returns true if the game is on the loading screen
     bool        IsLoading();
@@ -382,7 +382,7 @@ public:
     void        SetExitAfterMission(bool exit);
 
     //! Load saved game (used by command line argument)
-    void        LoadSaveFromDirName(const std::string& gameDir);
+    void        LoadSaveFromDirName(const std::filesystem::path& gameDir);
 
     //! Returns true if player can interact with things manually
     bool        CanPlayerInteract();
