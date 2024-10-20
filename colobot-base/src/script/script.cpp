@@ -71,6 +71,7 @@ CScript::CScript(COldObject* object)
     m_bRun = false;
     m_bStepMode = false;
     m_bCompile = false;
+    m_error = CBot::CBotNoErr;
     m_cursor1 = 0;
     m_cursor2 = 0;
 }
@@ -612,11 +613,11 @@ static void HighlightString(Ui::CEdit* edit, const std::string& s, int start)
 
         int end = start + 2;
 
-        if (CBot::CharInList(*it, "01234567"))           // octal escape sequence
+        if (CBot::CharIsOctalNum(*it))                   // octal escape sequence
         {
             for (int i = 0; ++it != s.cend() && i < 2; i++, end++)
             {
-                if (!CBot::CharInList(*it, "01234567")) break;
+                if (!CBot::CharIsOctalNum(*it)) break;
             }
         }
         else if (*it == 'x' || *it == 'u' || *it == 'U') // hex or unicode escape
@@ -627,7 +628,7 @@ static void HighlightString(Ui::CEdit* edit, const std::string& s, int start)
             for (int i = 0; ++it != s.cend(); i++, end++)
             {
                 if (!isHexCode && i >= maxlen) break;
-                if (!CBot::CharInList(*it, "0123456789ABCDEFabcdef")) break;
+                if (!CBot::CharIsHexNum(*it)) break;
             }
         }
         else      // n, r, t, etc.

@@ -24,8 +24,6 @@
 
 #pragma once
 
-#include "CBot/CBot.h"
-
 #include "common/error.h"
 
 #include <string>
@@ -37,6 +35,7 @@ class CScript;
 class CExchangePost;
 namespace CBot
 {
+class CBotTypResult;
 class CBotVar;
 }
 

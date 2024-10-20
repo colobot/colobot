@@ -66,13 +66,13 @@ CBotInstr* CBotExprLitString::Compile(CBotToken* &p, CBotCStack* pStack)
             if (++it == s.cend()) break;
             pStk->SetStartError(pos);
 
-            if (CharInList(*it, "01234567"))          // octal
+            if (CharIsOctalNum(*it))                  // octal
             {
                 std::string octal = "";
 
                 for (int i = 0; i < 3; i++)
                 {
-                    if (!CharInList(*it, "01234567")) break;
+                    if (!CharIsOctalNum(*it)) break;
                     ++pos;
                     octal += *it;
                     if (++it == s.cend()) break;
@@ -108,7 +108,7 @@ CBotInstr* CBotExprLitString::Compile(CBotToken* &p, CBotCStack* pStack)
 
                         for (size_t i = 0; isHexCode || i < maxlen; i++)
                         {
-                            if (!CharInList(*it, "0123456789ABCDEFabcdef")) break;
+                            if (!CharIsHexNum(*it)) break;
                             ++pos;
                             hex += *it;
                             if (++it == s.cend()) break;

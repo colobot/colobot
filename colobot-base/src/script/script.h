@@ -24,8 +24,6 @@
 
 #pragma once
 
-#include "CBot/CBot.h"
-
 #include <filesystem>
 #include <limits>
 #include <memory>
@@ -36,6 +34,12 @@ class COldObject;
 class CTaskExecutorObject;
 class CRobotMain;
 class CScriptFunctions;
+
+namespace CBot
+{
+class CBotProgram;
+enum CBotError : int;
+} /* CBot */
 
 namespace Ui
 {
@@ -124,7 +128,7 @@ protected:
     std::filesystem::path m_filename = "";     // file name
     std::string m_token = "";        // missing instruction
     int m_tokenUsed = 0, m_tokenAllowed = 0;
-    CBot::CBotError m_error = CBot::CBotNoErr;        // error (0=ok)
+    CBot::CBotError m_error;        // error (0=ok)
     int     m_cursor1 = 0;
     int     m_cursor2 = 0;
     std::optional<float> m_returnValue = std::nullopt;

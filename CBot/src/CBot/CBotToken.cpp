@@ -21,7 +21,7 @@
 
 #include <cstdarg>
 #include <cassert>
-#include <map>
+#include <unordered_map>
 
 namespace CBot
 {
@@ -33,7 +33,7 @@ namespace
 
 //! \brief Keeps the string corresponding to keyword ID
 //! Map is filled with id-string pars that are needed for CBot language parsing
-static const std::map<std::string, TokenId> KEYWORDS{
+static const std::unordered_map<std::string, TokenId> KEYWORDS{
     {"if",           ID_IF},
     {"else",         ID_ELSE},
     {"while",        ID_WHILE},
@@ -241,219 +241,242 @@ void CBotToken::SetPos(int start, int end)
     m_end   = end;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-
-// TODO: CharInList could probably be optimized to conditions like (*c >= '0' && *c <= '9') to gain some performance
-static char    sep1[] = " \r\n\t,:()[]{}-+*/=;><!~^|&%.\"\'?";
-static char    sep2[] = " \r\n\t";                           // only separators
-static char    sep3[] = ",:()[]{}-+*/=;<>!~^|&%.?";          // operational separators
-static char    num[]  = "0123456789";                        // point (single) is tested separately
-static char    hexnum[]   = "0123456789ABCDEFabcdef";
-static char    nch[]  = "\r\n\t";                            // forbidden in chains
-
-////////////////////////////////////////////////////////////////////////////////
-CBotToken*  CBotToken::NextToken(const char*& program, bool first)
+namespace
 {
-    std::string token; // found token
-    std::string sep;   // separators after the token
-    bool stop = first;
+inline bool IsSpaceAfterToken(const char c)
+{
+    return c == ' ' || c == '\t' || c == '\n' || c == '\r';
+}
+
+inline bool IsTokenSeparator(const char c)
+{
+    return ('\040' < c && c < '\060') || ('\071' < c && c < '\100') ||
+           ('\132' < c && c < '\137') || ('\172' < c && c < '\177');
+}
+
+inline bool OmitFromStrings(const char c)
+{
+    return c == 0 || c == '\t' || c == '\n' || c == '\r';
+}
+
+inline int CharacterLength(const unsigned char c)
+{
+    return (c < 0x80) ? 1:
+           ((c >> 5) == 0x6) ? 2:
+           ((c >> 4) == 0xE) ? 3:
+           ((c >> 3) == 0x1E) ? 4 : 0;
+}
+} // namespace
+
+CBotToken* CBotToken::NextToken(const char*& program, CBotToken::Data& tokendata, bool first)
+{
 
     if (*program == 0) return nullptr;
 
     char c = *(program++);                 // next character
 
+    std::string token; // found token
+    //size_t tokenLine = tokendata.currentLineIndex;
+    //size_t tokenColumn = tokendata.currentColumnIndex;
+    //size_t tokenLength = 0; // length in Unicode code points
+
+    auto NextCharacter = [&program, &tokendata, &c, &token]()
+    {
+        for (int len = CharacterLength(c); len > 0 && c != 0; len--)
+        {
+            CBot::UpdateCRC32(c, tokendata.signature);
+            token.push_back(c);
+            c = *(program++);              // next byte
+        }
+        //tokenLength ++;
+        tokendata.currentColumnIndex ++;
+    };
+
     if (!first)
     {
-        token = c;                            // built the word
-        c   = *(program++);                 // next character
+        NextCharacter();
+        if (token.empty()) return nullptr;
 
         // special case for strings
         if (token[0] == '\"' )
         {
-            while (c != 0 && c != '\"' && !CharInList(c, nch))
+            while (c != '\"' && !OmitFromStrings(c))
             {
                 if ( c == '\\' )
                 {
-                    token += c;
-                    c = *(program++);
-                    if (c == 0 || CharInList(c, nch)) break;
+                    NextCharacter();
+                    if (OmitFromStrings(c)) break;
                 }
-                token += c;
-                c = *(program++);
+                NextCharacter();
             }
             if ( c == '\"' )
             {
-                token += c;                           // string is complete
-                c   = *(program++);                 // next character
+                NextCharacter();
             }
-            stop = true;
         }
 
         // special case for characters
-        if (token[0] == '\'')
+        else if (token[0] == '\'')
         {
             if (c == '\\')       // escape sequence
             {
-                token += c;
-                c = *(program++);
+                NextCharacter();
 
                 if (c == 'u' || c == 'U') // unicode escape
                 {
                     int maxlen = (c == 'u') ? 4 : 8;
-                    token += c;
-                    c = *(program++);
+                    NextCharacter();
                     for (int i = 0; i < maxlen; i++)
                     {
-                        if (c == 0 || !CharInList(c, hexnum)) break;
-                        token += c;
-                        c = *(program++);
+                        if (!CharIsHexNum(c)) break;
+                        NextCharacter();
                     }
                 }
-                else if (c != 0 && !CharInList(c, nch)) // other escape char
+                else if ( !OmitFromStrings(c) ) // other escape char
                 {
-                    token += c;
-                    c = *(program++);
+                    NextCharacter();
                 }
             }
-            else if (c != 0 && c != '\'' && !CharInList(c, nch)) // single character
+            else if (c != '\'' && !OmitFromStrings(c)) // single character
             {
-                token += c;
-                c = *(program++);
+                NextCharacter();
             }
 
             if (c == '\'') // close quote
             {
-                token += c;
-                c = *(program++);
+                NextCharacter();
             }
-            stop = true;
         }
 
         // special case for numbers
-        if ( CharInList(token[0], num ))
+        else if (CharIsNum(token[0]))
         {
             bool    bdot = false;   // found a point?
             bool    bexp = false;   // found an exponent?
 
-            char    bin[] = "01";
-            char*   liste = num;
             if (token[0] == '0' && c == 'x')          // hexadecimal value?
             {
-                token += c;
-                c   = *(program++);                 // next character
-                liste = hexnum;
+                do NextCharacter();
+                while (CharIsHexNum(c));
             }
             else if (token[0] == '0' && c == 'b')   // binary literal
             {
-                liste = bin;
-                token += c;
-                c = *(program++);
+                do NextCharacter();
+                while (c == '0' || c == '1');
             }
-cw:
-            while (c != 0 && CharInList(c, liste))
+            else while (true)
             {
-cc:             token += c;
-                c   = *(program++);                 // next character
-            }
-            if ( liste == num )                     // not for hexadecimal
-            {
-                if ( !bdot && c == '.' ) { bdot = true; goto cc; }
-                if ( !bexp && ( c == 'e' || c == 'E' ) )
+                while (CharIsNum(c)) NextCharacter();
+
+                if ( !bdot && c == '.' ) { bdot = true; NextCharacter(); }
+                else if ( !bexp && ( c == 'e' || c == 'E' ) )
                 {
                     bexp = true;
-                    token += c;
-                    c   = *(program++);                 // next character
-                    if ( c == '-' ||
-                         c == '+' ) goto cc;
-                    goto cw;
+                    NextCharacter();
+                    if ( c == '-' || c == '+' ) NextCharacter();
                 }
-
+                else
+                    break;
             }
-            stop = true;
         }
 
-        if (CharInList(token[0], sep3))               // an operational separator?
+        else if (IsTokenSeparator(token[0]))     // an operational separator?
         {
             std::string  motc = token;
             while (motc += c, c != 0 && GetKeyWord(motc) > 0)    // operand seeks the longest possible
             {
-                token += c;                           // build the word
-                c = *(program++);                   // next character
+                NextCharacter();
             }
-
-            stop = true;
         }
+
+        else while (c != 0 && !IsSpaceAfterToken(c) && !IsTokenSeparator(c))
+        {
+            NextCharacter();
+        }
+
+        CBot::UpdateCRC32(' ', tokendata.signature); // space to mark seperate tokens
     }
 
+    std::string sep; // whitespace and comments after the token
 
+    auto NextSeparator = [&program, &tokendata, &c, &sep]()
+    {
+        tokendata.currentColumnIndex ++;
+        if (c == '\n')
+        {
+            tokendata.currentLineIndex ++;
+            tokendata.currentColumnIndex = 0;
+        }
+        for (int len = CharacterLength(c); len > 0 && c != 0; len--)
+        {
+            sep.push_back(c);
+            c = *(program++);              // next byte
+        }
+    };
 
     while (true)
     {
-        if (stop || c == 0 || CharInList(c, sep1))
+        while (IsSpaceAfterToken(c)) NextSeparator();
+
+        if (c == '/' && *program == '/')   // comment on the heap?
         {
-            if (!first && token.empty()) return nullptr;   // end of the analysis
-bis:
-            while (CharInList(c, sep2))
-            {
-                sep += c;                           // after all the separators
-                c = *(program++);
-            }
-            if (c == '/' && *program == '/')        // comment on the heap?
-            {
-                while( c != '\n' && c != 0 )
-                {
-                    sep += c;
-                    c = *(program++);               // next character
-                }
-                goto bis;
-            }
-
-            if (c == '/' && *program == '*')        // comment on the heap?
-            {
-                while( c != 0 && (c != '*' || *program != '/'))
-                {
-                    sep += c;
-                    c = *(program++);               // next character
-                }
-                if ( c != 0 )
-                {
-                    sep += c;
-                    c = *(program++);               // next character
-                    sep += c;
-                    c = *(program++);               // next character
-                }
-                goto bis;
-            }
-
-            program--;
-
-            CBotToken* t = new CBotToken(token, sep);
-
-            if (CharInList(token[0], num )) t->m_type = TokenTypNum;
-            if (token[0] == '\"') t->m_type = TokenTypString;
-            if (token[0] == '\'') t->m_type = TokenTypChar;
-            if (first) t->m_type = TokenTypNone;
-
-            t->m_keywordId = GetKeyWord(token);
-            if (t->m_keywordId > 0) t->m_type = TokenTypKeyWord;
-            else GetDefineNum(token, t) ;         // treats DefineNum
-
-            return t;
+            do NextSeparator();
+            while (c != '\n' && c != 0);
+            continue;
         }
 
-        token += c;                       // built the word
-        c = *(program++);               // next character
+        if (c == '/' && *program == '*')   // comment on the heap?
+        {
+            NextSeparator();
+            do NextSeparator();
+            while (c != 0 && (c != '*' || *program != '/'));
+            if (c != 0)
+            {
+                NextSeparator();
+                NextSeparator();
+            }
+            continue;
+        }
+        break; // done
     }
+
+    program--;
+
+    CBotToken* t = new CBotToken;
+
+    if (first) t->m_type = TokenTypNone;
+    else if (CharIsNum(token[0])) t->m_type = TokenTypNum;
+    else if (token[0] == '\"') t->m_type = TokenTypString;
+    else if (token[0] == '\'') t->m_type = TokenTypChar;
+    else
+    {
+        t->m_keywordId = GetKeyWord(token);
+        if (t->m_keywordId > 0) t->m_type = TokenTypKeyWord;
+    }
+
+    token.swap(t->m_text);
+    sep.swap(t->m_sep);
+    return t;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-std::unique_ptr<CBotToken> CBotToken::CompileTokens(const std::string& program)
+CBotTokenUPtr CBotToken::CompileTokens(const std::string& program, CBotToken::Data* tokendata)
 {
     CBotToken       *nxt, *prv, *tokenbase;
     const char*     p = program.c_str();
     int             pos = 0;
 
-    prv = tokenbase = NextToken(p, true);
+    std::unique_ptr<CBotToken::Data> tempdata;
+    if (tokendata == nullptr)
+    {
+        tempdata = std::make_unique<CBotToken::Data>();
+        tokendata = tempdata.get();
+    }
+
+    tokendata->currentLineIndex = 0;
+    tokendata->currentColumnIndex = 0;
+    CBot::InitCRC32(tokendata->signature);
+
+    prv = tokenbase = NextToken(p, *tokendata, true);
 
     if (tokenbase == nullptr) return nullptr;
 
@@ -463,7 +486,7 @@ std::unique_ptr<CBotToken> CBotToken::CompileTokens(const std::string& program)
     pos += tokenbase->m_sep.length();
 
     const char* pp = p;
-    while (nullptr != (nxt = NextToken(p, false)))
+    while (nullptr != (nxt = NextToken(p, *tokendata, false)))
     {
         prv->m_next = nxt;              // added after
         nxt->m_prev = prv;
@@ -473,6 +496,11 @@ std::unique_ptr<CBotToken> CBotToken::CompileTokens(const std::string& program)
         pos += (p - pp);                // total size
         nxt->m_end  = pos - nxt->m_sep.length();
         pp = p;
+
+        if (nxt->m_type == TokenTypVar)
+        {
+           GetDefineNum(nxt->m_text, nxt);
+        }
     }
 
     // terminator token
@@ -558,6 +586,20 @@ bool IsOfTypeList(CBotToken* &p, int type1, ...)
            return false;
         }
     }
+}
+
+uint32_t CBotToken::GetTokenSignature(CBotToken* first, CBotToken* last)
+{
+    uint32_t result;
+    CBot::InitCRC32(result);
+    for (auto p = first; p != nullptr; p = p->m_next)
+    {
+        for (const auto& c : p->m_text)
+            CBot::UpdateCRC32(c, result);
+        CBot::UpdateCRC32(' ', result); // space to mark seperate tokens
+        if (p == last) break;
+    }
+    return result;
 }
 
 } // namespace CBot

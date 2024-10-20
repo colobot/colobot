@@ -31,6 +31,8 @@ class CBotExprLitString : public CBotInstr
 {
 public:
     CBotExprLitString();
+    CBotExprLitString(const std::string& valstring) : m_valstring(valstring) {}
+
     ~CBotExprLitString();
 
     /*!

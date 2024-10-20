@@ -92,7 +92,7 @@ TEST_F(CBotTokenUT, CodeExample)
 
 TEST_F(CBotTokenUT, IgnoreComments)
 {
-    ExecuteTest("int /* comment*/x = 5; //comment", {
+    ExecuteTest(" /*comment*/ int /* comment*/x = 5; //comment", {
         {"int", ID_INT},
         {"x",   TokenTypVar},
         {"=",   ID_ASS},
