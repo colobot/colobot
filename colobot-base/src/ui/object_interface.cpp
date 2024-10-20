@@ -891,6 +891,12 @@ bool CObjectInterface::CreateInterface(bool bSelect)
          type == OBJECT_WORM     ||
          type == OBJECT_CONTROLLER)  // vehicle?
     {
+        pos.x = ox+sx*6.2f;
+        pos.y = oy+sy*0;
+        ddim.x = dim.x*0.6f;
+        ddim.y = dim.y*0.6f;
+        pw->CreateButton(pos, ddim, 12, EVENT_OBJECT_DELETE);
+
         if (m_main->GetMissionType() != MISSION_RETRO)
         {
             ddim.x = dim.x*5.1f;
