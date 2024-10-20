@@ -22,13 +22,15 @@
 #include "CBot/CBotEnums.h"
 #include "CBot/CBotUtils.h"
 
-#include <vector>
 #include <string>
 #include <map>
 #include <memory>
 
 namespace CBot
 {
+class CBotToken;
+
+using CBotTokenUPtr = std::unique_ptr<CBotToken>;
 
 /**
  * \brief Class representing one token of a program.
@@ -156,12 +158,17 @@ public:
      */
     const CBotToken& operator=(const CBotToken& src);
 
+    //! Various data about the compiled list of tokens
+    struct Data;
+
     /**
      * \brief Transforms a CBot program from a string to a list of tokens
-     * \param prog The program string
+     * \param program The program string
+     * \param [out] tokendata Optional data about the list of tokens.
      * \return The first token in the linked list
      */
-    static std::unique_ptr<CBotToken> CompileTokens(const std::string& prog);
+    static CBotTokenUPtr CompileTokens(const std::string& program,
+                                       CBotToken::Data* tokendata = nullptr);
 
     /**
      * \brief Define a new constant
@@ -177,6 +184,14 @@ public:
      */
     static void ClearDefineNum();
 
+    /**
+     * \brief Generate a CRC32 signature for a sequence of tokens.
+     * \param first The first token in the sequence
+     * \param last The last (inclusive) token in the sequence
+     * \return CRC32 signature
+     */
+    static uint32_t GetTokenSignature(CBotToken* first, CBotToken* last);
+
 private:
     /**
      * \brief Find the next token in the string
@@ -184,10 +199,11 @@ private:
      * The string must not start with separators. The separator is part of the previous token.
      *
      * \param [in, out] program The program string, modified to point at the next token
+     * \param [in, out] tokendata data about the list of tokens.
      * \param first true if this is the first call (beginning of the program string)
      * \return A processed CBotToken
      */
-    static CBotToken* NextToken(const char*& program, bool first);
+    static CBotToken* NextToken(const char*& program, CBotToken::Data& tokendata, bool first);
 
 private:
     //! The token type
@@ -197,7 +213,7 @@ private:
 
     //! The token string
     std::string m_text = "";
-    //! The separator that appeared after this token
+    //! The whitespace and comments that appeared after this token
     std::string m_sep = "";
 
     //! The strat position of the token in the CBotProgram
@@ -242,6 +258,23 @@ extern bool IsOfType(CBotToken* &p, int type1, int type2 = -1);
 extern bool IsOfTypeList(CBotToken* &p, int type1, ...);
 
 /**
+ * \brief Check if a token is the first of a sequence of tokens
+ * whose types match the list of types given by template parameters.
+ * \param p The first token to compare
+ * \return true if the sequence of tokens matches the list of types.
+ */
+template<int... T>
+inline bool IsTokenSeries(CBotToken* p)
+{
+    for (auto type : {T...})
+    {
+        if (p == nullptr) return false;
+        if (!IsOfType(p, type)) return false;
+    }
+    return true;
+}
+
+/**
  * \brief Return the value associated with TX_UNDEF TokenId
  *
  * Mapping other TokenIds to its string values was not used and does not seem useful
@@ -250,5 +283,17 @@ extern bool IsOfTypeList(CBotToken* &p, int type1, ...);
  * \return String associated with TX_UNDEF TokenId
  */
 const std::string& UndefinedTokenString();
+
+/**
+ * \brief Class containing data about a compiled list of tokens.
+ *
+ */
+struct CBotToken::Data
+{
+    //! CRC32 signature for the list of tokens.
+    uint32_t        signature{0};
+    size_t          currentLineIndex{0};
+    size_t          currentColumnIndex{0};
+};
 
 } // namespace CBot
