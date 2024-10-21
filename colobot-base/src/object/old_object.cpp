@@ -314,6 +314,9 @@ void COldObject::Simplify()
     }
     m_main->SaveOneScript(this);
 
+    StopForegroundTask();
+    StopBackgroundTask();
+
     m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::ProgramStorage)] = false;
     m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Programmable)] = false;
 
@@ -1092,8 +1095,8 @@ void COldObject::Write(CLevelParserLine* line)
     if ( !GetCollisions() )
         line->AddParam("clip", std::make_unique<CLevelParserParam>(GetCollisions()));
 
-    if ( GetLock() )
-        line->AddParam("lock", std::make_unique<CLevelParserParam>(GetLock()));
+    if ( GetLockForSave() )
+        line->AddParam("lock", std::make_unique<CLevelParserParam>(true));
 
     if ( !GetActivity() )
         line->AddParam("activity", std::make_unique<CLevelParserParam>(GetActivity()));
@@ -1833,7 +1836,7 @@ void COldObject::SetTransporter(CObject* transporter)
     m_engine->SetObjectShadowSpotHide(m_objectPart[0].object, (m_transporter != nullptr));
 }
 
-CObject* COldObject::GetTransporter()
+CObject* COldObject::GetTransporter() const
 {
     return m_transporter;
 }
@@ -2888,7 +2891,7 @@ DeathType COldObject::GetDying()
     return m_dying;
 }
 
-bool COldObject::IsDying()
+bool COldObject::IsDying() const
 {
     return m_dying != DeathType::Alive;
 }

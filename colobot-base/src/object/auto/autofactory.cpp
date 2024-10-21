@@ -72,7 +72,7 @@ CAutoFactory::~CAutoFactory()
 
 void CAutoFactory::DeleteObject(bool all)
 {
-    if ( !all )
+    if ( !all && m_phase != AFP_WAIT )
     {
         CObject* cargo = SearchCargo();  // transform metal?
         if ( cargo != nullptr )

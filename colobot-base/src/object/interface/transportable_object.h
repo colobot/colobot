@@ -39,20 +39,20 @@ public:
     //! Set transporter object that transports this object
     virtual void SetTransporter(CObject* transporter) = 0;
     //! Return transported object
-    virtual CObject* GetTransporter() = 0;
+    virtual CObject* GetTransporter() const = 0;
 
     // TODO: This will have to be refactored while implementing new model format
     virtual void SetTransporterPart(int part) = 0;
 
     //! Return true if the object is currently transported
-    inline bool IsBeingTransported()
+    inline bool IsBeingTransported() const
     {
         return GetTransporter() != nullptr;
     }
 };
 
-inline bool IsObjectBeingTransported(CObject* obj)
+inline bool IsObjectBeingTransported(const CObject* obj)
 {
     return obj->Implements(ObjectInterfaceType::Transportable) &&
-           dynamic_cast<CTransportableObject&>(*obj).IsBeingTransported();
+           dynamic_cast<const CTransportableObject&>(*obj).IsBeingTransported();
 }
