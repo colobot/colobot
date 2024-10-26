@@ -169,13 +169,14 @@ CObject* CObjectManager::CreateObject(glm::vec3 pos, float angle, ObjectType typ
 
 float CObjectManager::ClampPower(ObjectType type, float power)
 {
-    float min = 0;
-    float max = 100;
     if (type == OBJECT_POWER || type == OBJECT_ATOMIC)
     {
-        max = 1;
+        return glm::clamp(power, 0.0f, 1.0f);
     }
-    return glm::clamp(power, min, max);
+    else
+    {
+        return glm::clamp(power, -1.0f, 100.0f);
+    }
 }
 
 std::vector<CObject*> CObjectManager::GetObjectsOfTeam(int team)
