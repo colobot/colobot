@@ -91,7 +91,7 @@ It's a good time to configure git or even ssh if you plan to push to the remote 
 
 When you are done, you can finally get the greatest benefit of using MSYS2. You are going to install required 3rd party libraries. This is how you do it:
 
-1. Find names of all required dependencies. They are listed in the [main INSTALL.md file](INSTALL.md#compiling-on-linux)
+1. Find names of all required dependencies. They are listed in the [main INSTALL.md file](/INSTALL.md#compiling-on-linux)
 
 2. Find each library using
 
