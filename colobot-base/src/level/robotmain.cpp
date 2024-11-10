@@ -4487,6 +4487,75 @@ void CRobotMain::IOWriteObject(CLevelParserLine* line, CObject* obj,
     }
 }
 
+void CRobotMain::WriteCBot(std::ostream& ostr)
+{
+    // version of COLOBOT
+    if(!CBot::WriteLong(ostr, 1)) return;
+    // version of CBOT
+    if(!CBot::WriteLong(ostr, CBot::CBotProgram::GetVersion())) return;
+    // ???
+    if(!CBot::WriteWord(ostr, 0)) return;
+
+    for (CObject* obj : m_objMan->GetAllObjects())
+    {
+        if (obj->GetType() == OBJECT_TOTO) continue;
+        if (IsObjectBeingTransported(obj)) continue;
+        if (obj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject&>(*obj).IsDying()) continue;
+
+        if (!SaveFileStack(obj, ostr))
+        {
+            GetLogger()->Error("SaveFileStack failed at object id = %%", obj->GetID());
+            return;
+        }
+    }
+
+    if (!CBot::CBotClass::SaveStaticState(ostr))
+    {
+        GetLogger()->Error("CBotClass save static state failed");
+        return;
+    }
+}
+
+bool CRobotMain::ReadCBot(std::istream& istr)
+{
+    long version;
+    if (!CBot::ReadLong(istr, version)) return false;
+    if (version != 1)
+    {
+        GetLogger()->Error("cbot.run file is wrong colobot version: %%", version);
+        return true;
+    }
+    if (!CBot::ReadLong(istr, version)) return false;
+    if (version != CBot::CBotProgram::GetVersion())
+    {
+        GetLogger()->Error("cbot.run file is wrong cbot version: %%", version);
+        return true;
+    }
+    unsigned short flag;
+    if (!CBot::ReadWord(istr, flag)) return false; // ???
+    if (flag != 0) return false;
+
+    for (CObject* obj : m_objMan->GetAllObjects())
+    {
+        if (obj->GetType() == OBJECT_TOTO) continue;
+        if (IsObjectBeingTransported(obj)) continue;
+        if (obj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject&>(*obj).IsDying()) continue;
+
+        if (!ReadFileStack(obj, istr))
+        {
+            GetLogger()->Error("ReadFileStack failed at object id = %%", obj->GetID());
+            return false;
+        }
+    }
+
+    if (!CBot::CBotClass::RestoreStaticState(istr))
+    {
+        GetLogger()->Error("CBotClass restore static state failed");
+        return false;
+    }
+    return true;
+}
+
 //! Saves the current game
 bool CRobotMain::IOWriteScene(const std::filesystem::path& filename,
         const std::filesystem::path& filecbot,
@@ -4595,33 +4664,8 @@ bool CRobotMain::IOWriteScene(const std::filesystem::path& filename,
     // Writes the file of stacks of execution.
     COutputStream ostr(filecbot);
     if (!ostr.is_open()) return false;
-
-    bool bError = false;
-    long version = 1;
-    CBot::WriteLong(ostr, version);                 // version of COLOBOT
-    version = CBot::CBotProgram::GetVersion();
-    CBot::WriteLong(ostr, version);                 // version of CBOT
-    CBot::WriteWord(ostr, 0); // TODO
-
-    for (CObject* obj : m_objMan->GetAllObjects())
-    {
-        if (obj->GetType() == OBJECT_TOTO) continue;
-        if (IsObjectBeingTransported(obj)) continue;
-        if (obj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject&>(*obj).IsDying()) continue;
-
-        if (!SaveFileStack(obj, ostr))
-        {
-            GetLogger()->Error("SaveFileStack failed at object id = %%", obj->GetID());
-            bError = true;
-            break;
-        }
-    }
-
-    if (!bError && !CBot::CBotClass::SaveStaticState(ostr))
-    {
-        GetLogger()->Error("CBotClass save static state failed");
-    }
-
+    WriteCBot(ostr);
+    // TODO: Errors in ostr.close() are not handled
     ostr.close();
 
     if (!emergencySave)
@@ -4830,44 +4874,11 @@ CObject* CRobotMain::IOReadScene(const std::filesystem::path& filename,
 
     if (istr.is_open())
     {
-        bool bError = false;
-        long version = 0;
-        CBot::ReadLong(istr, version);             // version of COLOBOT
-        if (version == 1)
+        if (!ReadCBot(istr))
         {
-            CBot::ReadLong(istr, version);         // version of CBOT
-            if (version == CBot::CBotProgram::GetVersion())
-            {
-                unsigned short flag;
-                CBot::ReadWord(istr, flag); // TODO
-                bError = (flag != 0);
-
-                if (!bError) for (CObject* obj : m_objMan->GetAllObjects())
-                {
-                    if (obj->GetType() == OBJECT_TOTO) continue;
-                    if (IsObjectBeingTransported(obj)) continue;
-                    if (obj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject&>(*obj).IsDying()) continue;
-
-                    if (!ReadFileStack(obj, istr))
-                    {
-                        GetLogger()->Error("ReadFileStack failed at object id = %%", obj->GetID());
-                        bError = true;
-                        break;
-                    }
-                }
-
-                if (!bError && !CBot::CBotClass::RestoreStaticState(istr))
-                {
-                    GetLogger()->Error("CBotClass restore static state failed");
-                    bError = true;
-                }
-            }
-            else
-                GetLogger()->Error("cbot.run file is wrong version: %%", version);
+            GetLogger()->Error("Restoring CBOT state failed at stream position: %%",
+                static_cast<long>(istr.tellg()));
         }
-
-        if (bError) GetLogger()->Error("Restoring CBOT state failed at stream position: %%",
-            static_cast<long>(istr.tellg()));
         istr.close();
     }
 
@@ -6209,4 +6220,14 @@ std::set<int> CRobotMain::GetAllActiveTeams()
         teams.insert(team);
     }
     return teams;
+}
+
+CBot::CBotNamespace& CRobotMain::GetRefereeNamespace()
+{
+    return m_refereeNamespace;
+}
+
+CBot::CBotNamespace& CRobotMain::GetTeamNamespace(int team)
+{
+    return m_namespaces[team];
 }

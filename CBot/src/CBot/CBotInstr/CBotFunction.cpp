@@ -42,20 +42,16 @@ namespace CBot
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotFunction::CBotFunction()
+CBotFunction::CBotFunction(CBotProgram& prog):
+    m_prog(prog)
 {
     m_param = nullptr;            // empty parameter list
     m_block = nullptr;            // the instruction block
     m_bPublic    = false;           // function not public
     m_bExtern    = false;           // function not extern
-    m_pProg      = nullptr;
-//  m_nThisIdent = 0;
     m_nFuncIdent = 0;
     m_bSynchro    = false;
 }
-
-////////////////////////////////////////////////////////////////////////////////
-std::set<CBotFunction*> CBotFunction::m_publicFunctions{};
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotFunction::~CBotFunction()
@@ -63,11 +59,7 @@ CBotFunction::~CBotFunction()
     delete m_param;                // empty parameter list
     delete m_block;                // the instruction block
 
-    // remove public list if there is
-    if (m_bPublic)
-    {
-        m_publicFunctions.erase(this);
-    }
+    m_prog.RemovePublic(this);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -254,7 +246,8 @@ bad:
 ////////////////////////////////////////////////////////////////////////////////
 CBotFunction* CBotFunction::Compile1(CBotToken* &p, CBotCStack* pStack, CBotClass*  pClass)
 {
-    CBotFunction* func = new CBotFunction();
+    assert(pStack->GetProgram());
+    CBotFunction* func = new CBotFunction(*pStack->GetProgram());
     func->m_nFuncIdent = CBotVar::NextUniqNum();
 
     CBotCStack* pStk = pStack->TokenStack(p, true);
@@ -398,7 +391,7 @@ bool CBotFunction::Execute(CBotVar** ppVars, CBotStack* &pj, CBotVar* pInstance)
     CBotStack*  pile = pj->AddStack(this, CBotStack::BlockVisibilityType::FUNCTION);               // one end of stack local to this function
 //  if ( pile == EOX ) return true;
 
-    pile->SetProgram(m_pProg);                              // bases for routines
+    pile->SetProgram(&m_prog);                              // bases for routines
 
     if ( pile->IfStep() ) return false;
 
@@ -438,7 +431,6 @@ bool CBotFunction::Execute(CBotVar** ppVars, CBotStack* &pj, CBotVar* pInstance)
         assert(pThis != nullptr);
         pThis->SetInit(CBotVar::InitType::IS_POINTER);
 
-//      pThis->SetUniqNum(m_nThisIdent);
         pThis->SetUniqNum(-2);
         pile->AddVar(pThis);
 
@@ -463,7 +455,7 @@ void CBotFunction::RestoreState(CBotVar** ppVars, CBotStack* &pj, CBotVar* pInst
     if ( pile == nullptr ) return;
     CBotStack*  pile2 = pile;
 
-    pile->SetProgram(m_pProg);                          // bases for routines
+    pile->SetProgram(&m_prog);                          // bases for routines
 
     if ( pile->GetBlock() != CBotStack::BlockVisibilityType::FUNCTION)
     {
@@ -502,10 +494,10 @@ void CBotFunction::RestoreState(CBotVar** ppVars, CBotStack* &pj, CBotVar* pInst
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBotTypResult CBotFunction::CompileCall(const std::string &name, CBotVar** ppVars, long &nIdent, CBotProgram* program)
+CBotTypResult CBotFunction::CompileCall(const std::string &name, CBotVar** ppVars, long &nIdent, CBotProgram& program)
 {
     CBotTypResult type;
-    if (!FindLocalOrPublic(program->GetFunctions(), nIdent, name, ppVars, type, program))
+    if (!FindLocalOrPublic(program.GetFunctions(), nIdent, name, ppVars, type, program))
     {
         // Reset the identifier to "not found" value
         nIdent = 0;
@@ -515,7 +507,7 @@ CBotTypResult CBotFunction::CompileCall(const std::string &name, CBotVar** ppVar
 
 ////////////////////////////////////////////////////////////////////////////////
 CBotFunction* CBotFunction::FindLocalOrPublic(const std::list<CBotFunction*>& localFunctionList, long &nIdent, const std::string &name,
-                                              CBotVar** ppVars, CBotTypResult &TypeOrError, CBotProgram* baseProg)
+                                              CBotVar** ppVars, CBotTypResult &TypeOrError, CBotProgram& baseProg)
 {
     TypeOrError.SetType(CBotErrUndefCall);      // no routine of the name
 
@@ -531,7 +523,7 @@ CBotFunction* CBotFunction::FindLocalOrPublic(const std::list<CBotFunction*>& lo
         }
 
         // search the list of public functions
-        for (CBotFunction* pt : m_publicFunctions)
+        for (CBotFunction* pt : baseProg.GetPublicFunctions())
         {
             if (pt->m_nFuncIdent == nIdent)
             {
@@ -547,14 +539,14 @@ CBotFunction* CBotFunction::FindLocalOrPublic(const std::list<CBotFunction*>& lo
 
     CBotFunction::SearchList(localFunctionList, name, ppVars, TypeOrError, funcMap);
 
-    CBotFunction::SearchPublic(name, ppVars, TypeOrError, funcMap);
+    CBotFunction::SearchPublic(name, ppVars, TypeOrError, funcMap, nullptr, baseProg);
 
-    if (baseProg != nullptr && baseProg->m_thisVar != nullptr)
+    if (baseProg.m_thisVar != nullptr)
     {
         // find object:: functions
-        CBotClass* pClass = baseProg->m_thisVar->GetClass();
+        CBotClass* pClass = baseProg.m_thisVar->GetClass();
         CBotFunction::SearchList(localFunctionList, name, ppVars, TypeOrError, funcMap, pClass);
-        CBotFunction::SearchPublic(name, ppVars, TypeOrError, funcMap, pClass);
+        CBotFunction::SearchPublic(name, ppVars, TypeOrError, funcMap, pClass, baseProg);
     }
 
     return CBotFunction::BestFunction(funcMap, nIdent, TypeOrError);
@@ -638,10 +630,10 @@ void CBotFunction::SearchList(const std::list<CBotFunction*>& functionList,
 
 ////////////////////////////////////////////////////////////////////////////////
 void CBotFunction::SearchPublic(const std::string& name, CBotVar** ppVars, CBotTypResult& TypeOrError,
-                                std::map<CBotFunction*, int>& funcMap, CBotClass* pClass)
+                                std::map<CBotFunction*, int>& funcMap, CBotClass* pClass, CBotProgram& program)
 {
     {
-        for (CBotFunction* pt : m_publicFunctions)
+        for (CBotFunction* pt : program.GetPublicFunctions())
         {
             if ( pt->m_token.GetString() == name )
             {
@@ -751,15 +743,16 @@ int CBotFunction::DoCall(CBotProgram* program, const std::list<CBotFunction*>& l
     CBotTypResult   type;
     CBotFunction*   pt = nullptr;
     CBotProgram*    baseProg = pStack->GetProgram(true);
+    assert(baseProg);
 
-    pt = FindLocalOrPublic(localFunctionList, nIdent, name, ppVars, type, baseProg);
+    pt = FindLocalOrPublic(localFunctionList, nIdent, name, ppVars, type, *baseProg);
 
     if ( pt != nullptr )
     {
         CBotStack*  pStk1 = pStack->AddStack(pt, CBotStack::BlockVisibilityType::FUNCTION);    // to put "this"
 //      if ( pStk1 == EOX ) return true;
 
-        pStk1->SetProgram(pt->m_pProg);                 // it may have changed module
+        pStk1->SetProgram(&pt->m_prog);                 // it may have changed module
 
         if ( pStk1->IfStep() ) return false;
 
@@ -805,7 +798,7 @@ int CBotFunction::DoCall(CBotProgram* program, const std::list<CBotFunction*>& l
             {
                 if (!pt->m_param->Execute(ppVars, pStk3)) // interupt here
                 {
-                    if (!pStk3->IsOk() && pt->m_pProg != program)
+                    if (!pStk3->IsOk() && &pt->m_prog != program)
                     {
                         pStk3->SetPosError(pToken);       // indicates the error on the procedure call
                     }
@@ -821,7 +814,7 @@ int CBotFunction::DoCall(CBotProgram* program, const std::list<CBotFunction*>& l
         if ( !pStk3->GetRetVar(                     // puts the result on the stack
             pt->m_block->Execute(pStk3) ))          // GetRetVar said if it is interrupted
         {
-            if ( !pStk3->IsOk() && pt->m_pProg != program )
+            if ( !pStk3->IsOk() && &pt->m_prog != program )
             {
                 pStk3->SetPosError(pToken);         // indicates the error on the procedure call
             }
@@ -842,15 +835,16 @@ void CBotFunction::RestoreCall(const std::list<CBotFunction*>& localFunctionList
     CBotStack*      pStk1;
     CBotStack*      pStk3;
     CBotProgram*    baseProg = pStack->GetProgram(true);
+    assert(baseProg);
 
-    pt = FindLocalOrPublic(localFunctionList, nIdent, name, ppVars, type, baseProg);
+    pt = FindLocalOrPublic(localFunctionList, nIdent, name, ppVars, type, *baseProg);
 
     if ( pt != nullptr )
     {
         pStk1 = pStack->RestoreStack(pt);
         if ( pStk1 == nullptr ) return;
 
-        pStk1->SetProgram(pt->m_pProg);                 // it may have changed module
+        pStk1->SetProgram(&pt->m_prog);                 // it may have changed module
 
         if ( pStk1->GetBlock() != CBotStack::BlockVisibilityType::FUNCTION)
         {
@@ -974,19 +968,19 @@ CBotFunction* CBotFunction::FindMethod(long& nIdent, const std::string& name,
                     return pt;
                 }
             }
-        }
 
-        // search the list of public functions
-        if (!skipPublic)
-        {
-            for (CBotFunction* pt : m_publicFunctions)
+            // search the list of public functions
+            if (!skipPublic)
             {
-                if (pt->m_nFuncIdent == nIdent)
+                for (CBotFunction* pt : program->GetPublicFunctions())
                 {
-                    // check if the method is inherited, break in case there is an override
-                    if ( pt->GetClassName() != pClass->GetName() ) break;
-                    TypeOrError = pt->m_retTyp;
-                    return pt;
+                    if (pt->m_nFuncIdent == nIdent)
+                    {
+                        // check if the method is inherited, break in case there is an override
+                        if ( pt->GetClassName() != pClass->GetName() ) break;
+                        TypeOrError = pt->m_retTyp;
+                        return pt;
+                    }
                 }
             }
         }
@@ -1001,9 +995,10 @@ CBotFunction* CBotFunction::FindMethod(long& nIdent, const std::string& name,
 
     // search the current program for methods
     if (program != nullptr)
+    {
         CBotFunction::SearchList(program->GetFunctions(), name, ppVars, TypeOrError, funcMap, pClass);
-
-    CBotFunction::SearchPublic(name, ppVars, TypeOrError, funcMap, pClass);
+        CBotFunction::SearchPublic(name, ppVars, TypeOrError, funcMap, pClass, *program);
+    }
 
     return CBotFunction::BestFunction(funcMap, nIdent, TypeOrError);
 }
@@ -1024,7 +1019,7 @@ int CBotFunction::DoCall(long &nIdent, const std::string &name, CBotVar* pThis,
         CBotStack*  pStk = pStack->AddStack(pt, CBotStack::BlockVisibilityType::FUNCTION);
 //      if ( pStk == EOX ) return true;
 
-        pStk->SetProgram(pt->m_pProg);                  // it may have changed module
+        pStk->SetProgram(&pt->m_prog);                  // it may have changed module
         CBotStack*  pStk3 = pStk->AddStack(nullptr, CBotStack::BlockVisibilityType::BLOCK); // to set parameters passed
 
         // preparing parameters on the stack
@@ -1059,7 +1054,7 @@ int CBotFunction::DoCall(long &nIdent, const std::string &name, CBotVar* pThis,
             {
                 if (!pt->m_param->Execute(ppVars, pStk3)) // interupt here
                 {
-                    if (!pStk3->IsOk() && pt->m_pProg != pProgCurrent)
+                    if (!pStk3->IsOk() && &pt->m_prog != pProgCurrent)
                     {
                         pStk3->SetPosError(pToken);       // indicates the error on the procedure call
                     }
@@ -1091,7 +1086,7 @@ int CBotFunction::DoCall(long &nIdent, const std::string &name, CBotVar* pThis,
                     pClass->Unlock();                   // release function
                 }
 
-                if ( pt->m_pProg != pProgCurrent )
+                if ( &pt->m_prog != pProgCurrent )
                 {
                     pStk3->SetPosError(pToken);         // indicates the error on the procedure call
                 }
@@ -1120,7 +1115,7 @@ bool CBotFunction::RestoreCall(long &nIdent, const std::string &name, CBotVar* p
     {
         CBotStack*  pStk = pStack->RestoreStack(pt);
         if ( pStk == nullptr ) return true;
-        pStk->SetProgram(pt->m_pProg);                  // it may have changed module
+        pStk->SetProgram(&pt->m_prog);                  // it may have changed module
 
         CBotVar*    pthis = pStk->FindVar("this");
         pthis->SetUniqNum(-2);
@@ -1212,11 +1207,6 @@ const std::string& CBotFunction::GetClassName() const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CBotFunction::AddPublic(CBotFunction* func)
-{
-    m_publicFunctions.insert(func);
-}
-
 bool CBotFunction::HasReturn()
 {
     if (m_block != nullptr) return m_block->HasReturn();

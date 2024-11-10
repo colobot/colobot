@@ -42,7 +42,7 @@ namespace CBot
 class CBotFunction : public CBotInstr
 {
 public:
-    CBotFunction();
+    CBotFunction(CBotProgram& prog);
     ~CBotFunction();
 
     /*!
@@ -113,7 +113,7 @@ public:
      * \see FindLocalOrPublic
      */
     static CBotTypResult CompileCall(const std::string &name, CBotVar** ppVars,
-                                     long &nIdent, CBotProgram* program);
+                                     long &nIdent, CBotProgram& program);
 
     /*!
      * \brief Finds a local or public function
@@ -130,7 +130,7 @@ public:
      * \return Pointer to found CBotFunction instance, or nullptr in case of no match or ambiguity (see TypeOrError for error code)
      */
     static CBotFunction* FindLocalOrPublic(const std::list<CBotFunction*>& localFunctionList, long &nIdent, const std::string &name,
-                                           CBotVar** ppVars, CBotTypResult &TypeOrError, CBotProgram* baseProg);
+                                           CBotVar** ppVars, CBotTypResult &TypeOrError, CBotProgram& baseProg);
 
     /*!
      * \brief Find all functions that match the name and arguments.
@@ -144,17 +144,6 @@ public:
     static void SearchList(const std::list<CBotFunction*>& functionList,
                            const std::string& name, CBotVar** ppVars, CBotTypResult& TypeOrError,
                            std::map<CBotFunction*, int>& funcMap, CBotClass* pClass = nullptr);
-
-    /*!
-     * \brief Find all public functions that match the name and arguments.
-     * \param name Name of the function to find.
-     * \param ppVars Arguments to compare with parameters.
-     * \param TypeOrError Contains a CBotError when no useable function has been found.
-     * \param funcMap Container for suitable functions and their signature values.
-     * \param pClass Pointer to class when searching for methods.
-     */
-    static void SearchPublic(const std::string& name, CBotVar** ppVars, CBotTypResult& TypeOrError,
-                             std::map<CBotFunction*, int>& funcMap, CBotClass* pClass = nullptr);
 
     /*!
      * \brief Find the function with the lowest signature value. If there is more
@@ -254,12 +243,6 @@ public:
     bool CheckParam(CBotDefParam* pParam);
 
     /*!
-     * \brief AddPublic
-     * \param pfunc
-     */
-    static void AddPublic(CBotFunction* pfunc);
-
-    /*!
      * \brief GetName
      * \return
      */
@@ -325,6 +308,17 @@ protected:
     virtual std::map<std::string, CBotInstr*> GetDebugLinks() override;
 
 private:
+    /*!
+     * \brief Find all public functions that match the name and arguments.
+     * \param name Name of the function to find.
+     * \param ppVars Arguments to compare with parameters.
+     * \param TypeOrError Contains a CBotError when no useable function has been found.
+     * \param funcMap Container for suitable functions and their signature values.
+     * \param pClass Pointer to class when searching for methods.
+     */
+    static void SearchPublic(const std::string& name, CBotVar** ppVars, CBotTypResult& TypeOrError,
+                             std::map<CBotFunction*, int>& funcMap, CBotClass* pClass, CBotProgram& program);
+
     friend class CBotDebug;
     long m_nFuncIdent;
     //! Synchronized method.
@@ -350,16 +344,13 @@ private:
     std::string m_MasterClass;
     //! Token of the class we are part of
     CBotToken m_classToken;
-    CBotProgram* m_pProg;
+    CBotProgram& m_prog;
     //! For the position of the word "extern".
     CBotToken m_extern;
     CBotToken m_openpar;
     CBotToken m_closepar;
     CBotToken m_openblk;
     CBotToken m_closeblk;
-
-    //! List of public functions
-    static std::set<CBotFunction*> m_publicFunctions;
 
     friend class CBotProgram;
     friend class CBotClass;

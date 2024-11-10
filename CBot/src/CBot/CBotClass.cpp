@@ -623,7 +623,6 @@ bool CBotClass::CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond)
 
                     if ( f != nullptr )
                     {
-                        f->m_pProg = pStack->GetProgram();
                         f->m_bSynchro = bSynchro;
                     }
                     pStack->DeleteNext();
