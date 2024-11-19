@@ -63,6 +63,7 @@
 #include "ui/controls/target.h"
 #include "ui/controls/window.h"
 
+#include <algorithm>
 
 namespace Ui
 {
