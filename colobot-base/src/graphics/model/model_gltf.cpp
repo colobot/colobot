@@ -222,7 +222,11 @@ void GLTFLoader::ReadMaterials()
                 float b = color[2];
 
                 mat.recolorReference = Color(r, g, b);
+            }
 
+            if (extras.contains("recolor_threshold"))
+            {
+                mat.recolorThreshold = extras["recolor_threshold"].get<float>();
             }
         }
 
