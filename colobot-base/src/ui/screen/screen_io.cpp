@@ -250,7 +250,7 @@ void CScreenIO::IOWriteScene()
     m_main->GetPlayerProfile()->SaveScene(dir, info);
 }
 
-std::optional<std::filesystem::path> CScreenIO::GetSceneName()
+std::optional<std::filesystem::path> CScreenIO::GetSceneName() const
 {
     CWindow* pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == nullptr ) return {};

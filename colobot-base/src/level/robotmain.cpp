@@ -4513,7 +4513,6 @@ bool CRobotMain::IOWriteScene(const std::filesystem::path& filename,
     line->AddParam("major", std::make_unique<CLevelParserParam>(Version::MAJOR));
     line->AddParam("minor", std::make_unique<CLevelParserParam>(Version::MINOR));
     line->AddParam("patch", std::make_unique<CLevelParserParam>(Version::PATCH));
-    line->AddParam("tweak", std::make_unique<CLevelParserParam>(Version::TWEAK));
     levelParser.AddLine(std::move(line));
 
 

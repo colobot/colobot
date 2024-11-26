@@ -592,6 +592,5 @@ bool IsVersionSaveSupported(const std::filesystem::path &dir)
         && ver_line->GetParam("major")->AsInt() == Version::MAJOR
         && ver_line->GetParam("minor")->AsInt() == Version::MINOR
         && ver_line->GetParam("patch")->AsInt() == Version::PATCH
-        && ver_line->GetParam("tweak")->AsInt() <= Version::TWEAK
     );
 }

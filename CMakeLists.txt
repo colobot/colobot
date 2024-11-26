@@ -7,9 +7,6 @@ cmake_minimum_required(VERSION 3.21)
 
 cmake_policy(SET CMP0025 NEW)
 
-# Loading save files created by a previous version of the game is
-# unsupported with one exception: the first three version components have to match
-# and the fourth version component has to be greater or equal.
 project(colobot
     VERSION 0.2.1.0
     LANGUAGES C CXX

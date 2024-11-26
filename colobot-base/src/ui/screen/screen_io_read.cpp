@@ -171,7 +171,8 @@ bool CScreenIORead::EventProcess(const Event &event)
 
     if ( event.type == EVENT_INTERFACE_IOREAD )
     {
-        auto doRead = [&]() {
+        auto doRead = [&]()
+        {
             if(IOReadScene() && m_inSimulation)
             {
                 m_main->StopSuspend();
@@ -186,7 +187,7 @@ bool CScreenIORead::EventProcess(const Event &event)
         }
         else
         {
-            m_dialog->StartQuestion("Version unsupported. Open anyway?", false, false, false, doRead);
+            m_dialog->StartQuestion(RT_DIALOG_OPEN_UNSUPPORTED, false, false, false, doRead);
         }
         return false;
     }

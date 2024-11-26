@@ -42,7 +42,7 @@ protected:
     void IODeleteScene();
     void IOWriteScene();
     bool IOReadScene();
-    std::optional<std::filesystem::path> GetSceneName();
+    std::optional<std::filesystem::path> GetSceneName() const;
 
 protected:
     CScreenLevelList* m_screenLevelList;
