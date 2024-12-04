@@ -106,7 +106,7 @@ jobs:
     strategy:
       matrix:
         target_os: [macos]
-        host_os: [macos-12, macos-13]
+        host_os: [macos-13, macos-14]
         container: ['']
       fail-fast: false
     steps:
