@@ -9,9 +9,9 @@ set(_potFile colobot.pot)
 find_program(XGETTEXT_CMD xgettext)
 
 add_custom_command(OUTPUT ${_potFile}
-    COMMAND ${XGETTEXT_CMD} ${colobot_SOURCE_DIR}/src/app/app.cpp --output=${_potFile} --no-wrap
-    COMMAND ${XGETTEXT_CMD} ${colobot_SOURCE_DIR}/src/common/restext.cpp --output=${_potFile} --no-wrap --join-existing --no-location --keyword=TR
-    COMMAND ${XGETTEXT_CMD} ${colobot_SOURCE_DIR}/src/script/script.cpp --output=${_potFile} --no-wrap --join-existing --no-location
+    COMMAND ${XGETTEXT_CMD} ${colobot_SOURCE_DIR}/colobot-base/src/app/app.cpp --output=${_potFile} --no-wrap
+    COMMAND ${XGETTEXT_CMD} ${colobot_SOURCE_DIR}/colobot-base/src/common/restext.cpp --output=${_potFile} --no-wrap --join-existing --no-location --keyword=TR
+    COMMAND ${XGETTEXT_CMD} ${colobot_SOURCE_DIR}/colobot-base/src/script/script.cpp --output=${_potFile} --no-wrap --join-existing --no-location
     COMMAND sed -bi -e "s/^\\(\"POT-Creation-Date:\\).*$/\\1 DATE\\\\n\"/" ${_potFile}
 
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
