@@ -41,7 +41,19 @@ target_link_libraries(Colobot-UnitTests PRIVATE
     GTest::GTest
     hippomocks
     Colobot-Base
+    cpptrace::cpptrace
 )
+
+# Needed for shared library builds on windows:  copy cpptrace.dll to the same directory as the
+# executable for your_target
+if(WIN32)
+  add_custom_command(
+    TARGET Colobot-UnitTests POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    $<TARGET_FILE:cpptrace::cpptrace>
+    $<TARGET_FILE_DIR:Colobot-UnitTests>
+  )
+endif()
 
 gtest_discover_tests(Colobot-UnitTests
     WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
