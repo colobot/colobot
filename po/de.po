@@ -1679,6 +1679,11 @@ msgstr "Dieser Parameter braucht einen Vorgabewert"
 msgid "This program is read-only, clone it to edit"
 msgstr "Dieses Programm ist schreibgeschützt. Dupliziere es zum Bearbeiten"
 
+msgid ""
+"This save file is from a different version of the game and might not work correctly.\n"
+"Do you want to open it anyway?"
+msgstr ""
+
 msgid "Thump (\\key action;)"
 msgstr "Stampfen (\\key action;)"
 

@@ -1692,6 +1692,11 @@ msgstr "Этому параметру требуется значение по �
 msgid "This program is read-only, clone it to edit"
 msgstr "Эта программа только для чтения, для редактирования клонируйте её"
 
+msgid ""
+"This save file is from a different version of the game and might not work correctly.\n"
+"Do you want to open it anyway?"
+msgstr ""
+
 msgid "Thump (\\key action;)"
 msgstr "Удар (\\key action;)"
 

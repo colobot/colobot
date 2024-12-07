@@ -1676,6 +1676,11 @@ msgstr "Este parâmetro necessita de um valor padrão"
 msgid "This program is read-only, clone it to edit"
 msgstr "Este programa é somente-leitura, clone-o para edita-lo"
 
+msgid ""
+"This save file is from a different version of the game and might not work correctly.\n"
+"Do you want to open it anyway?"
+msgstr ""
+
 msgid "Thump (\\key action;)"
 msgstr "Bater (\\key action;)"
 
