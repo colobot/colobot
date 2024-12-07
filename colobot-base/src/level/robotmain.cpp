@@ -495,7 +495,7 @@ void CRobotMain::ChangePhase(Phase phase)
 
     if (m_phase == PHASE_PLAYER_SELECT)
     {
-        if (CResourceManager::DirectoryExists("crashsave"))
+        if (CResourceManager::DirectoryExists("crashsave") && IsVersionSaveSupported("crashsave"))
         {
             GetLogger()->Info("Pre-crash save found!");
             m_ui->GetDialog()->StartQuestion(
@@ -4509,11 +4509,10 @@ bool CRobotMain::IOWriteScene(const std::filesystem::path& filename,
     line->AddParam("text", std::make_unique<CLevelParserParam>(std::string(info)));
     levelParser.AddLine(std::move(line));
 
-
-    //TODO: Do we need that? It's not used anyway
-    line = std::make_unique<CLevelParserLine>("Version");
-    line->AddParam("maj", std::make_unique<CLevelParserParam>(0));
-    line->AddParam("min", std::make_unique<CLevelParserParam>(1));
+    line = std::make_unique<CLevelParserLine>("GameVersion");
+    line->AddParam("major", std::make_unique<CLevelParserParam>(Version::MAJOR));
+    line->AddParam("minor", std::make_unique<CLevelParserParam>(Version::MINOR));
+    line->AddParam("patch", std::make_unique<CLevelParserParam>(Version::PATCH));
     levelParser.AddLine(std::move(line));
 
 
@@ -5693,7 +5692,7 @@ void CRobotMain::QuickSave()
 void CRobotMain::QuickLoad()
 {
     std::filesystem::path dir = m_playerProfile->GetSaveFile("quicksave");
-    if(!CResourceManager::Exists(dir))
+    if(!CResourceManager::Exists(dir) || !IsVersionSaveSupported(dir))
     {
         m_displayText->DisplayError(ERR_NO_QUICK_SLOT, glm::vec3(0.0f,0.0f,0.0f), 15.0f, 60.0f, 1000.0f);
         GetLogger()->Debug("Quicksave slot not found");
@@ -5705,7 +5704,7 @@ void CRobotMain::QuickLoad()
 void CRobotMain::LoadSaveFromDirName(const std::filesystem::path& gameDir)
 {
     std::filesystem::path dir = m_playerProfile->GetSaveFile(gameDir);
-    if(!CResourceManager::Exists(dir))
+    if(!CResourceManager::Exists(dir) || !IsVersionSaveSupported(dir))
     {
         GetLogger()->Error("Save slot not found");
         return;

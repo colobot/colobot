@@ -1662,6 +1662,11 @@ msgstr "Tento parametr musí mít přednastavenou hodnotu"
 msgid "This program is read-only, clone it to edit"
 msgstr "Tento program je pouze pro čtení, klikněte do něj pro editaci"
 
+msgid ""
+"This save file is from a different version of the game and might not work correctly.\n"
+"Do you want to open it anyway?"
+msgstr ""
+
 msgid "Thump (\\key action;)"
 msgstr "Úder (\\key action;)"
 

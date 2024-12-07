@@ -22,6 +22,7 @@
 #include "ui/screen/screen.h"
 
 #include <filesystem>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -41,6 +42,7 @@ protected:
     void IODeleteScene();
     void IOWriteScene();
     bool IOReadScene();
+    std::optional<std::filesystem::path> GetSceneName() const;
 
 protected:
     CScreenLevelList* m_screenLevelList;

@@ -157,3 +157,5 @@ protected:
     //! Player appearance
     PlayerAppearance m_appearance;
 };
+
+bool IsVersionSaveSupported(const std::filesystem::path &dir);

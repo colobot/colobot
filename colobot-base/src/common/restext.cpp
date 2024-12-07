@@ -121,6 +121,7 @@ void InitializeRestext()
     stringsText[RT_DIALOG_OPEN_WEBSITE_FAILED_TITLE] = TR("Could not open the web browser!");
     stringsText[RT_DIALOG_OPEN_WEBSITE_FAILED_TEXT] = TR("The address %s could not be opened in a web browser.");
     stringsText[RT_DIALOG_CHANGES_QUESTION] = TR("There are unsaved changes. Do you want to save them before leaving?");
+    stringsText[RT_DIALOG_OPEN_UNSUPPORTED] = TR("This save file is from a different version of the game and might not work correctly.\nDo you want to open it anyway?");
 
     stringsText[RT_STUDIO_LISTTT]    = TR("Keyword help(\\key cbot;)");
     stringsText[RT_STUDIO_COMPOK]    = TR("Compilation ok (0 errors)");

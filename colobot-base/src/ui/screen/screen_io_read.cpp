@@ -24,19 +24,22 @@
 #include "common/restext.h"
 
 #include "level/robotmain.h"
+#include "level/player_profile.h"
 
 #include "ui/controls/button.h"
 #include "ui/controls/image.h"
 #include "ui/controls/interface.h"
 #include "ui/controls/list.h"
 #include "ui/controls/window.h"
+#include "ui/maindialog.h"
 
 namespace Ui
 {
 
-CScreenIORead::CScreenIORead(CScreenLevelList* screenLevelList)
+CScreenIORead::CScreenIORead(CScreenLevelList* screenLevelList, CMainDialog* dialog)
     : CScreenIO(screenLevelList),
-      m_inSimulation(false)
+      m_inSimulation(false),
+      m_dialog(dialog)
 {
 }
 
@@ -168,10 +171,23 @@ bool CScreenIORead::EventProcess(const Event &event)
 
     if ( event.type == EVENT_INTERFACE_IOREAD )
     {
-        if(IOReadScene() && m_inSimulation)
+        auto doRead = [&]()
         {
-            m_main->StopSuspend();
-            m_main->ChangePhase(PHASE_SIMUL);
+            if(IOReadScene() && m_inSimulation)
+            {
+                m_main->StopSuspend();
+                m_main->ChangePhase(PHASE_SIMUL);
+            }
+        };
+        std::optional<std::filesystem::path> name = GetSceneName();
+        if (!name.has_value()) return false;
+        if (IsVersionSaveSupported(name.value()))
+        {
+            doRead();
+        }
+        else
+        {
+            m_dialog->StartQuestion(RT_DIALOG_OPEN_UNSUPPORTED, false, false, false, doRead);
         }
         return false;
     }

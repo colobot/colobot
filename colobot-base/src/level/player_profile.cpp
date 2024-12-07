@@ -27,6 +27,7 @@
 #include "common/resources/inputstream.h"
 #include "common/resources/outputstream.h"
 #include "common/resources/resourcemanager.h"
+#include "common/version.h"
 
 #include "level/robotmain.h"
 
@@ -579,4 +580,17 @@ bool CPlayerProfile::DeleteScene(const std::filesystem::path& dir)
         return CResourceManager::RemoveExistingDirectory(dir);
     }
     return false;
+}
+
+bool IsVersionSaveSupported(const std::filesystem::path &dir)
+{
+    CLevelParser levelParser(dir / "data.sav");
+    levelParser.Load();
+    CLevelParserLine* ver_line = levelParser.GetIfDefined("GameVersion");
+    return (
+        ver_line
+        && ver_line->GetParam("major")->AsInt() == Version::MAJOR
+        && ver_line->GetParam("minor")->AsInt() == Version::MINOR
+        && ver_line->GetParam("patch")->AsInt() == Version::PATCH
+    );
 }

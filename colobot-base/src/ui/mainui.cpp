@@ -83,7 +83,7 @@ CMainUserInterface::CMainUserInterface()
 
     m_screenAppearance = std::make_unique<CScreenAppearance>();
     m_screenLevelList = std::make_unique<CScreenLevelList>(m_dialog.get());
-    m_screenIORead = std::make_unique<CScreenIORead>(m_screenLevelList.get());
+    m_screenIORead = std::make_unique<CScreenIORead>(m_screenLevelList.get(), m_dialog.get());
     m_screenIOWrite = std::make_unique<CScreenIOWrite>(m_screenLevelList.get());
     m_screenLoading = std::make_unique<CScreenLoading>();
     m_screenModList = std::make_unique<CScreenModList>(m_dialog.get(), m_app->GetModManager());

@@ -189,6 +189,11 @@ msgstr ""
 msgid "There are unsaved changes. Do you want to save them before leaving?"
 msgstr ""
 
+msgid ""
+"This save file is from a different version of the game and might not work correctly.\n"
+"Do you want to open it anyway?"
+msgstr ""
+
 msgid "Keyword help(\\key cbot;)"
 msgstr ""
 

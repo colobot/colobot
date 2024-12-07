@@ -22,6 +22,8 @@
 
 #include "graphics/engine/engine.h"
 
+#include <sstream>
+
 namespace Ui
 {
 
@@ -78,7 +80,22 @@ void CLabel::Draw()
         case Gfx::TEXT_ALIGN_RIGHT: pos.x = m_pos.x + m_dim.x; break;
     }
 
-    m_engine->GetText()->DrawText(std::string(m_name), m_fontType, m_fontSize, pos, m_dim.x, m_textAlign, 0);
+    const float hLine = m_engine->GetText()->GetHeight(m_fontType, m_fontSize);
+
+    std::istringstream iss(m_name);
+    int nLines = 0;
+    for (std::string line; std::getline(iss, line); )
+    {
+        nLines++;
+    }
+    pos.y += hLine / 2 * (nLines - 1);
+    iss.clear();
+    iss.seekg(0);
+    for (std::string line; std::getline(iss, line); )
+    {
+        m_engine->GetText()->DrawText(line, m_fontType, m_fontSize, pos, m_dim.x, m_textAlign, 0);
+        pos.y -= hLine;
+    }
 }
 
 }

@@ -250,22 +250,24 @@ void CScreenIO::IOWriteScene()
     m_main->GetPlayerProfile()->SaveScene(dir, info);
 }
 
+std::optional<std::filesystem::path> CScreenIO::GetSceneName() const
+{
+    CWindow* pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
+    if ( pw == nullptr ) return {};
+    CList* pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_IOLIST));
+    if ( pl == nullptr ) return {};
+    int sel = pl->GetSelect();
+    if (sel < 0 || sel >= static_cast<int>(m_saveList.size())) return {};
+    return m_saveList.at(sel);
+}
+
 // Reads the scene.
 
 bool CScreenIO::IOReadScene()
 {
-    CWindow*    pw;
-    CList*      pl;
-
-    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
-    if ( pw == nullptr )  return false;
-    pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_IOLIST));
-    if ( pl == nullptr )  return false;
-
-    int sel = pl->GetSelect();
-    if (sel < 0 || sel >= static_cast<int>(m_saveList.size())) return false;
-
-    m_main->GetPlayerProfile()->LoadScene(m_saveList.at(sel));
+    std::optional<std::filesystem::path> name = GetSceneName();
+    if (!name.has_value()) return false;
+    m_main->GetPlayerProfile()->LoadScene(name.value());
 
     m_screenLevelList->SetSelection(m_main->GetLevelCategory(), m_main->GetLevelChap()-1, m_main->GetLevelRank()-1);
 

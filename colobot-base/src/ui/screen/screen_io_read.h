@@ -24,10 +24,12 @@
 namespace Ui
 {
 
+class CMainDialog;
+
 class CScreenIORead : public CScreenIO
 {
 public:
-    CScreenIORead(CScreenLevelList* screenLevelList);
+    CScreenIORead(CScreenLevelList* screenLevelList, CMainDialog* dialog);
 
     void SetInSimulation(bool inSimulation);
 
@@ -36,6 +38,7 @@ public:
 
 protected:
     bool m_inSimulation;
+    CMainDialog* m_dialog;
 };
 
 } // namespace Ui
