@@ -48,6 +48,7 @@
 #include <SDL.h>
 
 #include <cstring>
+#include <regex>
 
 namespace Ui
 {
@@ -1613,7 +1614,9 @@ bool CEdit::ReadText(const std::filesystem::path& filename)
             if ( m_bSoluce || !bInSoluce )
             {
                 HyperLink link;
-                link.name = StrUtils::ToPath(GetNameParam(buffer.data()+i+3, 0));
+                std::string name = GetNameParam(buffer.data()+i+3, 0);
+                name = std::regex_replace(name, std::regex("\\\\"), "/");  //TODO: Fix this in files
+                link.name = StrUtils::ToPath(name);
                 link.marker = GetNameParam(buffer.data()+i+3, 1);
                 m_link.push_back(link);
                 font &= ~Gfx::FONT_MASK_LINK;
