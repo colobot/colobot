@@ -143,7 +143,7 @@ void CParticle::FlushParticle(int sheet)
 
 
 //! Returns file name of the effect effectNN.png, with NN = number
-std::filesystem::path NameParticle(int num)
+static std::filesystem::path NameParticle(int num)
 {
     switch(num)
     {
