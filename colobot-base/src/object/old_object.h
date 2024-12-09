@@ -179,7 +179,7 @@ public:
     void        SetMasterParticle(int part, int parti) override;
 
     void        SetTransporter(CObject* transporter) override;
-    CObject*    GetTransporter() override;
+    CObject*    GetTransporter() const override;
     void        SetTransporterPart(int part) override;
 
     glm::mat4   GetRotateMatrix(int part);
@@ -240,7 +240,7 @@ public:
 
     void        SetDying(DeathType deathType) override;
     DeathType   GetDying() override;
-    bool        IsDying() override;
+    bool        IsDying() const override;
 
     bool        GetActive() override;
     bool        GetDetectable() override;

@@ -77,5 +77,5 @@ public:
     //! Return object death type
     virtual DeathType   GetDying() = 0;
     //! Is object currently dying?
-    virtual bool        IsDying() = 0;
+    virtual bool        IsDying() const = 0;
 };

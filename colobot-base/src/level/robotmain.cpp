@@ -4439,7 +4439,7 @@ void CRobotMain::IOWriteObject(CLevelParserLine* line, CObject* obj,
     line->AddParam("id", std::make_unique<CLevelParserParam>(obj->GetID()));
     line->AddParam("pos", std::make_unique<CLevelParserParam>(obj->GetPosition()/g_unit));
     line->AddParam("angle", std::make_unique<CLevelParserParam>(obj->GetRotation() * Math::RAD_TO_DEG));
-    line->AddParam("zoom", std::make_unique<CLevelParserParam>(obj->GetScale()));
+    line->AddParam("zoom", std::make_unique<CLevelParserParam>(obj->GetScaleForSave()));
 
     if (obj->Implements(ObjectInterfaceType::Old))
     {
@@ -4485,6 +4485,14 @@ void CRobotMain::IOWriteObject(CLevelParserLine* line, CObject* obj,
             }
         }
     }
+}
+
+static bool IsSkip( const CObject* obj )
+{
+    return obj->GetType() == OBJECT_TOTO
+        || !obj->GetPersistent()
+        || IsObjectBeingTransported(obj)
+        || (obj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<const CDestroyableObject&>(*obj).IsDying());
 }
 
 //! Saves the current game
@@ -4553,9 +4561,7 @@ bool CRobotMain::IOWriteScene(const std::filesystem::path& filename,
     int objRank = 0;
     for (CObject* obj : m_objMan->GetAllObjects())
     {
-        if (obj->GetType() == OBJECT_TOTO) continue;
-        if (IsObjectBeingTransported(obj)) continue;
-        if (obj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject&>(*obj).IsDying()) continue;
+        if (IsSkip(obj)) continue;
 
         if (obj->Implements(ObjectInterfaceType::Slotted))
         {
@@ -4604,9 +4610,7 @@ bool CRobotMain::IOWriteScene(const std::filesystem::path& filename,
 
     for (CObject* obj : m_objMan->GetAllObjects())
     {
-        if (obj->GetType() == OBJECT_TOTO) continue;
-        if (IsObjectBeingTransported(obj)) continue;
-        if (obj->Implements(ObjectInterfaceType::Destroyable) && dynamic_cast<CDestroyableObject&>(*obj).IsDying()) continue;
+        if (IsSkip(obj)) continue;
 
         if (!SaveFileStack(obj, ostr))
         {

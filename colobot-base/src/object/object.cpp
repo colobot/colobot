@@ -49,6 +49,7 @@ CObject::CObject(int id, ObjectType type)
     , m_proxyActivate(false)
     , m_proxyDistance(60.0f)
     , m_lock(false)
+    , m_persistent(true)
 {
     m_implementedInterfaces.fill(false);
     m_botVar = CScriptFunctions::CreateObjectVar(this);
@@ -217,6 +218,16 @@ void CObject::SetScale(float scale)
     SetScale(glm::vec3(scale, scale, scale));
 }
 
+void CObject::SetScaleOverride(std::optional<glm::vec3> scale)
+{
+    m_scaleOverride = scale;
+}
+
+glm::vec3 CObject::GetScaleForSave() const
+{
+    return m_scaleOverride.value_or(GetScale());
+}
+
 void CObject::SetScaleX(float angle)
 {
     glm::vec3 scale = GetScale();
@@ -350,7 +361,27 @@ void CObject::SetLock(bool lock)
     m_lock = lock;
 }
 
-bool CObject::GetLock()
+bool CObject::GetLock() const
 {
     return m_lock;
+}
+
+void CObject::SetLockOverride(std::optional<bool> lock)
+{
+    m_lockOverride = lock;
+}
+
+bool CObject::GetLockForSave() const
+{
+    return m_lockOverride.value_or(GetLock());
+}
+
+void CObject::SetPersistent(bool persistent)
+{
+    m_persistent = persistent;
+}
+
+bool CObject::GetPersistent() const
+{
+    return m_persistent;
 }
