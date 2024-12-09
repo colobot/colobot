@@ -86,8 +86,9 @@ private:
     static CBotTypResult cAssert(CBotVar* &var, void* user)
     {
         if (var == nullptr) return CBotTypResult(CBotErrLowParam);
-        if (var->GetType() != CBotTypBoolean) return CBotTypResult(CBotErrBadString);
+        if (var->GetType() != CBotTypBoolean) return CBotTypResult(CBotErrBadParam);
         var = var->GetNext();
+        if (var != nullptr) return CBotTypResult(CBotErrOverParam);
         return CBotTypResult(CBotTypVoid);
     }
 
@@ -2061,6 +2062,17 @@ TEST_F(CBotUT, LiteralCharacters)
             ASSERT("" + '\U0001F61C' == "\xF0\x9F\x98\x9C");
             ASSERT("" + '\U0001F6E0' == "\xF0\x9F\x9B\xA0");
             ASSERT("" + '\U0010FFFF' == "\xF4\x8F\xBF\xBF");
+        }
+        extern void Test_Char_Multiple_Bytes_Inside_Quotes()
+        {
+            ASSERT("" + '©' == "\xC2\xA9");
+            ASSERT("" + '®' == "\xC2\xAE");
+            ASSERT("" + '☮' == "\xE2\x98\xAE");
+            ASSERT("" + '☯' == "\xE2\x98\xAF");
+            ASSERT("" + '😎' == "\xF0\x9F\x98\x8E");
+            ASSERT("" + '😜' == "\xF0\x9F\x98\x9C");
+            ASSERT("" + '🛠' == "\xF0\x9F\x9B\xA0");
+            ASSERT("" + '􏿿' == "\xF4\x8F\xBF\xBF");
         }
     )");
 

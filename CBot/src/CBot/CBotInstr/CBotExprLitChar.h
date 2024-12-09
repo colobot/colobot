@@ -33,7 +33,8 @@ namespace CBot
 class CBotExprLitChar : public CBotInstr
 {
 public:
-    CBotExprLitChar();
+    CBotExprLitChar(char32_t valchar);
+
     ~CBotExprLitChar();
 
     /*!
@@ -56,7 +57,7 @@ protected:
     virtual std::string GetDebugData() override;
 
 private:
-    uint32_t m_valchar = 0;
+    char32_t m_valchar = 0;
 };
 
 } // namespace CBot

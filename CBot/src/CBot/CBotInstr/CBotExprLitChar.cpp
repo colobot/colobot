@@ -24,10 +24,14 @@
 
 #include "CBot/CBotVar/CBotVar.h"
 
+#include <common/codepoint.h>
+#include <common/stringutils.h>
+
 namespace CBot
 {
 
-CBotExprLitChar::CBotExprLitChar()
+CBotExprLitChar::CBotExprLitChar(char32_t valchar) :
+    m_valchar(valchar)
 {
 }
 
@@ -46,14 +50,19 @@ CBotInstr* CBotExprLitChar::Compile(CBotToken* &p, CBotCStack* pStack)
     {
         if (*it != '\'') // not empty quotes ?
         {
-            uint32_t valchar = 0;
+            char32_t valchar = 0;
             int pos = p->GetStart() + 1;
 
-            if (*it != '\\') valchar = *(it++); // not escape sequence ?
+            if (*it != '\\')       // not escape sequence ?
+            {
+                auto cp = StrUtils::ReadUTF8(s.data() + 1);
+                valchar = StrUtils::ToUTF32(cp);
+                std::advance(it, cp.Size());
+            }
             else if (++it != s.cend())
             {
                 pStk->SetStartError(pos++);
-                unsigned char c = *(it++);
+                const unsigned char c = *(it++);
                 if (c == '\"' || c == '\'' || c == '\\') valchar = c;
                 else if (c == 'a') valchar = '\a'; // alert bell
                 else if (c == 'b') valchar = '\b'; // backspace
@@ -71,7 +80,7 @@ CBotInstr* CBotExprLitChar::Compile(CBotToken* &p, CBotCStack* pStack)
 
                         for (size_t i = 0; i < maxlen; i++)
                         {
-                            if (!CharInList(*it, "0123456789ABCDEFabcdef")) break;
+                            if (!CharIsHexNum(*it)) break;
                             ++pos;
                             hex += *it;
                             if (++it == s.cend()) break;
@@ -105,8 +114,7 @@ CBotInstr* CBotExprLitChar::Compile(CBotToken* &p, CBotCStack* pStack)
 
             if (pStk->IsOk())
             {
-                CBotExprLitChar* inst = new CBotExprLitChar();
-                inst->m_valchar = valchar;
+                CBotExprLitChar* inst = new CBotExprLitChar(valchar);
                 inst->SetToken(p);
                 p = p->GetNext();
 

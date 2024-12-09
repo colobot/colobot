@@ -21,8 +21,9 @@
 
 #include "CBot/CBotFileUtils.h"
 
-#include <string>
 #include <cassert>
+#include <cstdint>
+#include <string>
 
 namespace CBot
 {
@@ -73,13 +74,20 @@ long GetNumInt(const std::string& str);
  */
 double GetNumFloat(const std::string& str);
 
-/*!
- * \brief Search a null-terminated string for a char value.
- * \param c The char to find.
- * \param list The string to search.
- * \return true if the char is found.
- */
-bool CharInList(const char c, const char* list);
+inline bool CharIsOctalNum(const char c)
+{
+    return '0' <= c && c <= '7';
+}
+
+inline bool CharIsHexNum(const char c)
+{
+    return ('0' <= c && c <= '9') || ('A' <= c && c <= 'F') || ('a' <= c && c <= 'f');
+}
+
+inline bool CharIsNum(const char c)
+{
+    return '0' <= c && c <= '9';
+}
 
 template<typename T> class CBotLinkedList
 {
@@ -172,5 +180,20 @@ protected:
     T* m_next = nullptr;
     T* m_prev = nullptr;
 };
+
+struct CRC32
+{
+    static const uint32_t Table[256];
+};
+
+inline void InitCRC32(uint32_t& check)
+{
+    check = 0xFFFFFFFF;
+}
+
+inline void UpdateCRC32(unsigned char c, uint32_t& check)
+{
+    check = (check >> 8) ^ CBot::CRC32::Table[c ^ (check & 0x000000FF)];
+}
 
 } // namespace CBot
