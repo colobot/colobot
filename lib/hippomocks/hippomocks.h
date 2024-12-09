@@ -182,7 +182,7 @@ ExceptionHolder *ExceptionHolder::Create(T ex)
 	abort(); exit(-1); }
 #else
 #define RAISEEXCEPTION(e)			{ DEBUGBREAK(e); throw e; }
-#define RAISELATENTEXCEPTION(e)		{ DEBUGBREAK(e); if (std::uncaught_exception()) \
+#define RAISELATENTEXCEPTION(e)		{ DEBUGBREAK(e); if (std::uncaught_exceptions() > 0) \
 	MockRepoInstanceHolder<0>::instance->SetLatentException(ExceptionHolder::Create(e)); \
 	else throw e; }
 #endif
@@ -4284,7 +4284,7 @@ noexcept(false)
 	{
 		MockRepoInstanceHolder<0>::instance = 0;
 #ifndef HM_NO_EXCEPTIONS
-		if (!std::uncaught_exception())
+		if (std::uncaught_exceptions() == 0)
 		{
 			try
 			{
