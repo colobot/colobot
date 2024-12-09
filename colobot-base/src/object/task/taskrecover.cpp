@@ -38,6 +38,7 @@
 
 #include "sound/sound.h"
 
+#include <stdexcept>
 
 const float ENERGY_RECOVER  = 0.25f;        // energy consumed by recovery
 const float RECOVER_DIST    = 11.8f;
@@ -176,7 +177,7 @@ bool CTaskRecover::EventProcess(const Event &event)
             return true;
         }
     }
-    assert(0);
+    throw std::logic_error("Should not get here");
 }
 
 
@@ -401,7 +402,7 @@ Error CTaskRecover::IsEnded()
         }
     }
 
-    assert(0);
+    throw std::logic_error("Should not get here");
 }
 
 // Suddenly ends the current action.
