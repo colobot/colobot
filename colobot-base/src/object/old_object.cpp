@@ -379,8 +379,9 @@ bool COldObject::DamageObject(DamageType type, float force, CObject* killer)
              m_type == OBJECT_RUINsupport  ||
              m_type == OBJECT_RUINradar    ||
              m_type == OBJECT_RUINconvert   ) && type != DamageType::Explosive ) return false; // Mines and ruins can't be destroyed by shooting
-        if ( m_type == OBJECT_URANIUM && (type == DamageType::Fire || type == DamageType::Organic) ) return false; // UraniumOre is not destroyable by shooting or aliens (see #777)
-        if ( m_type == OBJECT_STONE && (type == DamageType::Fire || type == DamageType::Organic) ) return false; // TitaniumOre is not destroyable either
+        bool isShot = type == DamageType::Fire || type == DamageType::AlienAnt || type == DamageType::OrgaShooter;
+        if ( m_type == OBJECT_URANIUM && isShot ) return false; // UraniumOre is not destroyable by shooting or aliens (see #777)
+        if ( m_type == OBJECT_STONE && isShot ) return false; // TitaniumOre is not destroyable either
         // PowerCell, NuclearCell and Titanium are destroyable by shooting, but not by collisions!
         if ( m_type == OBJECT_METAL && type == DamageType::Collision ) return false;
         if ( m_type == OBJECT_POWER && type == DamageType::Collision ) return false;
@@ -394,9 +395,10 @@ bool COldObject::DamageObject(DamageType type, float force, CObject* killer)
 
     if ( type != DamageType::Phazer && m_type == OBJECT_MOTHER ) return false; // AlienQueen can be destroyed only by PhazerShooter
 
-    if ( type == DamageType::Organic )
+    if ( type == DamageType::AlienAnt )
     {
-        // TODO: I don't understand, why does it apply damage only once every 0.5 second?
+        // Balancing: bots and buildings hit by alien ants get 0.5 second invulnerability from the ants.
+        // This is necessary because PARTIGUN2 do not despawn when they hit and do 0.1 damage per hit compared to e.g. 0.001 per hit that shooters deal.
         if ( m_shotTime < 0.5f )  return false;
         m_shotTime = 0.0f;
     }
