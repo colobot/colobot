@@ -4245,7 +4245,7 @@ void CRobotMain::SetShowLimit(int i, Gfx::ParticleType parti, CObject *obj,
 
     for (int j = 0; j < m_showLimit[i].total; j++)
     {
-        m_showLimit[i].parti[j] = m_particle->CreateParticle(pos, glm::vec3(0.0f, 0.0f, 0.0f), dim, parti, duration);
+        m_showLimit[i].parti[j] = m_particle->CreateParticle(pos, glm::vec3(0.0f, 0.0f, 0.0f), dim, parti, duration, /* mass */ 0.0f, /* windSensitivity */ 0.0f);
     }
 }
 
