@@ -43,6 +43,7 @@
 #include "object/object_manager.h"
 
 #include "object/interface/damageable_object.h"
+#include "object/interface/transportable_object.h"
 
 #include "object/subclass/shielder.h"
 
@@ -3538,6 +3539,7 @@ CObject* CParticle::SearchObjectGun(glm::vec3 old, glm::vec3 pos,
     {
         if (!obj->GetDetectable()) continue;  // inactive?
         if (obj == father) continue;
+        if (IsObjectBeingTransported(obj))  continue;
 
         ObjectType oType = obj->GetType();
 
