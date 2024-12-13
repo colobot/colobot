@@ -73,9 +73,9 @@ private:
         }
     }
 
-    std::thread m_thread;
     std::mutex m_mutex;
     std::condition_variable m_cond;
     bool m_running = true;
     std::queue<ThreadFunctionPtr> m_queue;
+    std::thread m_thread;
 };
