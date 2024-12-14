@@ -1118,7 +1118,7 @@ CObject* CTaskGoto::SearchTarget(glm::vec3 pos, float margin)
 }
 
 // Adjusts the target as a function of the object.
-// Returns true if it is cargo laying on the ground, which can be approached from any site.
+// Returns true if it can be approached from any side (e.g. cargo laying on the ground)
 
 bool CTaskGoto::AdjustTarget(CObject* pObj, glm::vec3 &pos, float &distance)
 {
