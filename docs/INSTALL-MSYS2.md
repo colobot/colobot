@@ -22,7 +22,7 @@ Steps in this section needs to be done only once. After this, you can basically 
 
 #### Installation of MSYS2
 
-Read this page really carefully: <http://sourceforge.net/p/msys2/wiki/MSYS2%20installation/> . By following it, you should install and configure MSYS2 without major problems.
+Read this page really carefully: <https://www.msys2.org> . By following it, you should install and configure MSYS2 without major problems.
 
 #### TIP
 When you face any problems during this guide or anywhere in the future, the first thing you should do is to close all MSYS2 processes and run `autorebase.bat` script (it's in the main MSYS2 folder), especially after installation and updating. If you don't do it, odd problems might appear, like CMake not detecting GCC.
