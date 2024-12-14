@@ -1934,7 +1934,14 @@ void CApplication::SetLanguage(Language language)
     GetLogger()->Trace("SetLanguage: Set LANGUAGE=%% in environment", locale);
 
     char* defaultLocale = setlocale(LC_ALL, ""); // Load system locale
-    GetLogger()->Debug("Default system locale: %%", defaultLocale);
+    if (defaultLocale != nullptr)
+    {
+        GetLogger()->Debug("Default system locale: %%", defaultLocale);
+    }
+    else
+    {
+        GetLogger()->Warn("Invalid default system locale");
+    }
     if (!locale.empty()) // Override system locale?
     {
         setlocale(LC_ALL, locale.c_str());
