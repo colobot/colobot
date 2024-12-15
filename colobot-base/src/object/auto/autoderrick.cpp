@@ -310,7 +310,13 @@ bool CAutoDerrick::EventProcess(const Event &event)
         if ( m_progress == 0.0f )
         {
             glm::vec3 cargoPos = GetCargoPos();
-            if ( SearchFree(cargoPos) )
+            if ( ExistKey() )
+            {
+                m_phase    = ADP_WAIT;
+                m_progress = 0.0f;
+                m_speed    = 1.0f/10.0f;
+            }
+            else if ( SearchFree(cargoPos) )
             {
                 angle = m_object->GetRotationY();
                 CreateCargo(cargoPos, angle, m_type, 16.0f);
@@ -523,7 +529,12 @@ bool CAutoDerrick::ExistKey()
          m_type != OBJECT_KEYc &&
          m_type != OBJECT_KEYd )  return false;
 
-    return CObjectManager::GetInstancePointer()->FindNearest(nullptr, m_type) != nullptr;
+    // Make sure to detect event carried objects
+    for ( CObject* obj : CObjectManager::GetInstancePointer()->GetAllObjects() )
+    {
+        if ( obj->GetType() == m_type ) return true;
+    }
+    return false;
 }
 
 
