@@ -809,6 +809,7 @@ bool CRobotMain::ProcessEvent(Event &event)
                 if (m_phase == PHASE_SIMUL) m_cmdEditPause = m_pause->ActivatePause(PAUSE_ENGINE);
                 m_cmdEdit = true;
                 m_commandHistoryIndex = -1; // no element selected in command history
+                m_engine->SetRenderInterface(true);
             }
             return false;
         }
