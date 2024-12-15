@@ -59,6 +59,9 @@
 
 #include <libintl.h>
 
+// <unistd.h> is technically the correct header for optarg, optind, opterr and optopt(), but we use <getopt.h> instead for the sake of wingetopt
+// IWYU pragma: no_include <unistd.h>
+
 using TimeUtils::TimeStamp;
 using TimeUtils::TimeUnit;
 

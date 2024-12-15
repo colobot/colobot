@@ -23,6 +23,7 @@
  * that should be included by any Colobot files outside of the CBot module.
  */
 
+// IWYU pragma: begin_exports
 #include "CBot/CBotFileUtils.h"
 #include "CBot/CBotClass.h"
 #include "CBot/CBotToken.h"
@@ -32,3 +33,4 @@
 #include "CBot/CBotVar/CBotVar.h"
 
 #include "CBot/stdlib/stdlib_public.h"
+// IWYU pragma: end_exports

@@ -1,0 +1,9 @@
+[
+    { "include": [ "@\"gtest/.*\"", "private", "<gtest/gtest.h>", "public" ] },
+    { "include": [ "@<gtest/.*>", "private", "<gtest/gtest.h>", "public" ] },
+    { "include": [ "\"nlohmann/json.hpp\"", "private", "<nlohmann/json.hpp>", "public" ] },
+    { "ref": "glm.imp" },
+    { "include": [ "<pngconf.h>", "private", "<png.h>", "public" ] },
+    { "symbol": [ "std::abs", "private", "<cstdlib>", "public" ] },  # Workaround for iwyu < 0.23
+    { "include": [ "<bits/chrono.h>", "private", "<chrono>", "public" ] }  # Workaround for iwyu < 0.23
+]
