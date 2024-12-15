@@ -189,7 +189,7 @@ public:
     const Gfx::DeviceConfig& GetVideoConfig() const;
 
     //! Change the video mode to given mode
-    bool        ChangeVideoConfig(const Gfx::DeviceConfig &newConfig);
+    bool        ChangeVideoConfig(const Gfx::DeviceConfig &newConfig, bool isSetSize);
 
     //! Suspends animation (time will not be updated)
     void        SuspendSimulation();

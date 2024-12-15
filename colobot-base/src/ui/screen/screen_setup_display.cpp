@@ -281,7 +281,7 @@ void CScreenSetupDisplay::ChangeDisplay()
 
     m_settings->SaveResolutionSettings(config);
 
-    m_app->ChangeVideoConfig(config);
+    m_app->ChangeVideoConfig(config, /* isSetSize */ true);
 }
 
 

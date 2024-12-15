@@ -563,7 +563,6 @@ bool CApplication::Create()
     if (!m_headless)
     {
         // load settings from profile
-        int iValue;
         std::string sValue;
 
         // GetVideoResolutionList() has to be called here because it is responsible
@@ -593,9 +592,9 @@ bool CApplication::Create()
             }
         }
 
-        if ( GetConfigFile().GetIntProperty("Setup", "Fullscreen", iValue) && !m_resolutionOverride )
+        if ( !m_resolutionOverride )
         {
-            m_deviceConfig->fullScreen = (iValue == 1);
+            GetConfigFile().GetBoolProperty("Setup", "Fullscreen", m_deviceConfig->fullScreen);
         }
 
         if (! CreateVideoSurface())
@@ -870,12 +869,15 @@ void CApplication::TryToSetVSync()
     }
 }
 
-bool CApplication::ChangeVideoConfig(const Gfx::DeviceConfig &newConfig)
+bool CApplication::ChangeVideoConfig(const Gfx::DeviceConfig &newConfig, bool isSetSize)
 {
     *m_deviceConfig = newConfig;
 
-    // TODO: Somehow this doesn't work for maximized windows (at least on Ubuntu)
-    SDL_SetWindowSize(m_private->window, m_deviceConfig->size.x, m_deviceConfig->size.y);
+    if ( isSetSize ) {
+        // TODO: Somehow this doesn't work for maximized windows (at least on Ubuntu)
+        // It appears that "doesn't work" means "is a no-op"
+        SDL_SetWindowSize(m_private->window, m_deviceConfig->size.x, m_deviceConfig->size.y);
+    }
     SDL_SetWindowFullscreen(m_private->window, m_deviceConfig->fullScreen ? SDL_WINDOW_FULLSCREEN : 0);
 
     TryToSetVSync();
@@ -1214,7 +1216,7 @@ Event CApplication::ProcessSystemEvent()
             newConfig.size.x = m_private->currentEvent.window.data1;
             newConfig.size.y = m_private->currentEvent.window.data2;
             if (newConfig.size != m_deviceConfig->size)
-                ChangeVideoConfig(newConfig);
+                ChangeVideoConfig(newConfig, /* isSetSize */ false);
         }
 
         if (m_private->currentEvent.window.event == SDL_WINDOWEVENT_ENTER)
