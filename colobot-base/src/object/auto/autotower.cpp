@@ -217,21 +217,23 @@ bool CAutoTower::EventProcess(const Event &event)
         }
         else
         {
-            m_object->SetPartRotationY(1, m_angleYfinal);
-            m_object->SetPartRotationZ(2, m_angleZfinal);
-
-            if ( power != nullptr )
+            if ( energy < ENERGY_FIRE )
             {
-                energy = power->GetEnergy();
+                m_phase    = ATP_ZERO;
+                m_progress = 0.0f;
+                m_speed    = 1.0f/1.0f;
+            }
+            else
+            {
+                m_object->SetPartRotationY(1, m_angleYfinal);
+                m_object->SetPartRotationZ(2, m_angleZfinal);
                 energy -= ENERGY_FIRE;
                 power->SetEnergy(energy);
+                m_sound->Play(SOUND_GGG, m_object->GetPosition());
+                m_phase    = ATP_FIRE;
+                m_progress = 0.0f;
+                m_speed    = 1.0f/1.5f;
             }
-
-            m_sound->Play(SOUND_GGG, m_object->GetPosition());
-
-            m_phase    = ATP_FIRE;
-            m_progress = 0.0f;
-            m_speed    = 1.0f/1.5f;
         }
     }
 
