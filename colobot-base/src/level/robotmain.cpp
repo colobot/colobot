@@ -415,10 +415,17 @@ void CRobotMain::ChangePhase(Phase phase)
 
     m_phase = phase;
 
-    if (m_phase != PHASE_SIMUL)
+    Ui::CWindow* pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW6));
+    if (pw != nullptr)
     {
-        Ui::CWindow* pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW6));
-        if ( pw != nullptr )  pw->ClearState(Ui::STATE_VISIBLE | Ui::STATE_ENABLE);
+        if (m_phase == PHASE_SIMUL)
+        {
+            pw->SetState(Ui::STATE_VISIBLE | Ui::STATE_ENABLE);
+        }
+        else
+        {
+            pw->ClearState(Ui::STATE_VISIBLE | Ui::STATE_ENABLE);
+        }
     }
 
     if (resetWorld)
