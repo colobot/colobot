@@ -1898,7 +1898,8 @@ void CPhysics::SoundMotorFull(float rTime, ObjectType type)
               type == OBJECT_MOBILEtc ||
               type == OBJECT_MOBILEti ||
               type == OBJECT_MOBILEts ||
-              type == OBJECT_MOBILEtt )
+              type == OBJECT_MOBILEtt ||
+              type == OBJECT_MOBILEtb )
     {
         sound = SOUND_MOTORt;
         amplitude = 1.0f;
