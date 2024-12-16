@@ -187,6 +187,12 @@ bool CMotionWorm::SetParam(int rank, float value)
         return true;
     }
 
+    if ( rank == 2 )
+    {
+        m_armTimeMarch = value;
+        return true;
+    }
+
     return false;
 }
 
@@ -194,6 +200,7 @@ float CMotionWorm::GetParam(int rank)
 {
     if ( rank == 0 )  return m_timeDown;
     if ( rank == 1 )  return m_timeUp;
+    if ( rank == 2 )  return m_armTimeMarch;
     return 0.0f;
 }
 
