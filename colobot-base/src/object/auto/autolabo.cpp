@@ -369,7 +369,6 @@ bool CAutoLabo::EventProcess(const Event &event)
             power = dynamic_cast<CSlottedObject&>(*m_object).GetSlotContainedObject(0);
             if ( power != nullptr )
             {
-                dynamic_cast<CSlottedObject&>(*m_object).SetSlotContainedObject(0, nullptr);
                 CObjectManager::GetInstancePointer()->DeleteObject(power);
             }
 

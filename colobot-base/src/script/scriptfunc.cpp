@@ -763,7 +763,6 @@ bool CScriptFunctions::rDelete(CBotVar* var, CBotVar* result, int& exception, vo
                     CObject* sub = slotted->GetSlotContainedObject(slotNum);
                     if (sub != nullptr)
                     {
-                        slotted->SetSlotContainedObject(slotNum, nullptr);
                         CObjectManager::GetInstancePointer()->DeleteObject(sub);
                     }
                 }
