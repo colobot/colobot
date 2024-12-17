@@ -4780,15 +4780,10 @@ CObject* CRobotMain::IOReadScene(const std::filesystem::path& filename,
                 CSlottedObject* asSlotted = dynamic_cast<CSlottedObject*>(obj);
                 if (cargo != nullptr)
                 {
-                    int slotNum = asSlotted->MapPseudoSlot(CSlottedObject::Pseudoslot::CARRYING);
+                    [[maybe_unused]] int slotNum = asSlotted->MapPseudoSlot(CSlottedObject::Pseudoslot::CARRYING);
                     assert(slotNum >= 0);
                     assert(slots.find(slotNum) == slots.end());
-                    asSlotted->SetSlotContainedObject(slotNum, cargo);
-
-                    // TODO: eww!
-                    assert(obj->Implements(ObjectInterfaceType::Old));
-                    auto task = std::make_unique<CTaskManip>(dynamic_cast<COldObject*>(obj));
-                    task->Start(TMO_AUTO, TMA_GRAB);  // holds the object!
+                    CTaskManip::InstantGrab(obj, cargo);
                 }
 
                 if (power != nullptr)

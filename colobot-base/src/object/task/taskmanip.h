@@ -45,7 +45,6 @@ enum TaskManipArm
     TMA_FBACK   = 4,    // arm behind the robot
     TMA_POWER   = 5,    // arm behind the robot
     TMA_OTHER   = 6,    // arm behind a friend robot
-    TMA_GRAB    = 7,    // takes immediately
 };
 
 enum TaskManipHand
@@ -67,6 +66,7 @@ public:
     Error       Start(TaskManipOrder order, TaskManipArm arm);
     Error       IsEnded() override;
     bool        Abort() override;
+    static void InstantGrab(CObject* obj, CObject* cargo);
 
 protected:
     void        InitAngle();
