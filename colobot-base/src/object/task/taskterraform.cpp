@@ -76,7 +76,7 @@ bool CTaskTerraform::EventProcess(const Event &event)
 
     if ( m_engine->GetPause() )  return true;
     if ( event.type != EVENT_FRAME )  return true;
-    if ( m_bError )  return false;
+    if ( m_error != ERR_OK )  return false;
 
     m_progress += event.rTime*m_speed;  // others advance
     m_time += event.rTime;
@@ -98,7 +98,13 @@ bool CTaskTerraform::EventProcess(const Event &event)
         m_object->SetScale(1.0f+m_progress*0.2f);
 
         power = m_object->GetSlotContainedObjectReq(CSlottedObject::Pseudoslot::POWER);
-        if (power != nullptr)
+        if (power == nullptr)
+        {
+            m_error = ERR_TERRA_ENERGY;
+            Abort();
+            return false;
+        }
+        else
         {
             power->SetScale(1.0f+m_progress*1.0f);
 
@@ -206,7 +212,7 @@ Error CTaskTerraform::Start()
 
     ObjectType  type;
 
-    m_bError = true;  // operation impossible
+    m_error = ERR_STOP;  // operation impossible
     if ( !m_physics->GetLand() )  return ERR_WRONG_BOT;
 
     type = m_object->GetType();
@@ -231,7 +237,7 @@ Error CTaskTerraform::Start()
     m_speed    = 1.0f/4.0f;
     m_time     = 0.0f;
 
-    m_bError = false;  // ok
+    m_error = ERR_OK;
 
     m_camera->StartCentering(m_object, Math::PI*0.35f, 99.9f, 20.0f, 2.0f);
     return ERR_OK;
@@ -248,7 +254,7 @@ Error CTaskTerraform::IsEnded()
     int         i, max;
 
     if ( m_engine->GetPause() )  return ERR_CONTINUE;
-    if ( m_bError )  return ERR_STOP;
+    if ( m_error != ERR_OK )  return m_error;
 
     if ( m_progress < 1.0f )  return ERR_CONTINUE;
     m_progress = 0.0f;

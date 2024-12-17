@@ -64,6 +64,24 @@ bool CObjectManager::DeleteObject(CObject* instance)
     if (oldObj != nullptr)
         oldObj->DeleteObject();
 
+    if (instance->Implements(ObjectInterfaceType::Transportable))
+    {
+        CObject *transporter =  dynamic_cast<const CTransportableObject&>(*instance).GetTransporter();
+        if (transporter != nullptr)
+        {
+            assert(transporter->Implements(ObjectInterfaceType::Slotted));
+            CSlottedObject &asSlotted = dynamic_cast<CSlottedObject&>(*transporter);
+            for (int slotNum = 0; slotNum < asSlotted.GetNumSlots(); ++slotNum)
+            {
+                if (asSlotted.GetSlotContainedObject(slotNum) == instance)
+                {
+                    asSlotted.SetSlotContainedObject(slotNum, nullptr);
+                }
+            }
+            dynamic_cast<CTransportableObject&>(*instance).SetTransporter(nullptr);
+        }
+    }
+
     auto it = m_objects.find(instance->GetID());
     if (it != m_objects.end())
     {

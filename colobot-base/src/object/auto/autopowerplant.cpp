@@ -82,14 +82,12 @@ void CAutoPowerPlant::DeleteObject(bool all)
         CObject* cargo = SearchMetal();
         if ( cargo != nullptr )
         {
-            m_object->SetSlotContainedObject(0, nullptr);
             CObjectManager::GetInstancePointer()->DeleteObject(cargo);
         }
 
         cargo = SearchPower();
         if ( cargo != nullptr )
         {
-            m_object->SetSlotContainedObject(0, nullptr);
             CObjectManager::GetInstancePointer()->DeleteObject(cargo);
         }
     }
@@ -320,7 +318,6 @@ bool CAutoPowerPlant::EventProcess(const Event &event)
             cargo = SearchMetal();
             if ( cargo != nullptr )
             {
-                m_object->SetSlotContainedObject(0, nullptr);
                 CObjectManager::GetInstancePointer()->DeleteObject(cargo);
             }
 
