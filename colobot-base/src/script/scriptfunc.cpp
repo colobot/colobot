@@ -751,6 +751,21 @@ bool CScriptFunctions::rDelete(CBotVar* var, CBotVar* result, int& exception, vo
 
         if ( exploType != DestructionType::NoEffect && obj->Implements(ObjectInterfaceType::Destroyable) )
         {
+            if ( obj->Implements(ObjectInterfaceType::Transportable) )
+            {
+                // Prevent power cells from remaining in the slot and providing power while the death animation is playing
+                CObject *transporter =  dynamic_cast<const CTransportableObject&>(*obj).GetTransporter();
+                assert(transporter->Implements(ObjectInterfaceType::Slotted));
+                CSlottedObject &asSlotted = dynamic_cast<CSlottedObject&>(*transporter);
+                for ( int slotNum = 0; slotNum < asSlotted.GetNumSlots(); ++slotNum )
+                {
+                    if ( asSlotted.GetSlotContainedObject(slotNum) == obj )
+                    {
+                        asSlotted.SetSlotContainedObject(slotNum, nullptr);
+                    }
+                }
+                dynamic_cast<CTransportableObject&>(*obj).SetTransporter(nullptr);
+            }
             dynamic_cast<CDestroyableObject&>(*obj).DestroyObject(static_cast<DestructionType>(exploType));
         }
         else
