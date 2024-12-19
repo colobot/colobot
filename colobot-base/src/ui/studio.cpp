@@ -1020,7 +1020,7 @@ void CStudio::StartDialog(const Event &event)
             {
                 m_fileDialog->SetSubFolderPath(filename.parent_path());
             }
-            m_fileDialog->SetFilename(filename);
+            m_fileDialog->SetFilename(filename.filename());
         }
 
         m_fileDialog->StartDialog();
