@@ -38,6 +38,7 @@
 #include "sound/sound.h"
 
 #include "ui/controls/button.h"
+#include "ui/controls/edit.h"
 #include "ui/controls/interface.h"
 #include "ui/controls/label.h"
 #include "ui/controls/window.h"
@@ -323,15 +324,32 @@ void CMainDialog::StartInformation(const std::string& title, const std::string& 
         pw->SetName(title);
 
     pos.x = 0.00f;
-    pos.y = 0.50f;
+    pos.y = (warning) ? 0.54f : 0.50f;
     ddim.x = 1.00f;
     ddim.y = 0.05f;
     pl = pw->CreateLabel(pos, ddim, -1, EVENT_DIALOG_LABEL, text);
     pl->SetFontType(Gfx::FONT_COMMON_BOLD);
-    //TODO: Add \n support in CLabel
-    pos.y -= ddim.y;
-    pl = pw->CreateLabel(pos, ddim, -1, EVENT_DIALOG_LABEL1, details);
-    pl->SetFontSize(10.0f);
+
+    if (warning)
+    {
+        ddim.x = 0.68f;
+        ddim.y = 0.105f;
+        pos.x = 0.5f-0.34f;
+        pos.y = 0.5f-0.045f;;
+        CEdit* pe = pw->CreateEdit(pos, ddim, 0, EVENT_DIALOG_EDIT2);
+        pe->SetState(STATE_SHADOW);
+        pe->SetEditCap(false);
+        pe->SetHighlightCap(true);
+        pe->SetFontSize(10.0f);
+        pe->SetText(details);
+    }
+    else
+    {
+        //TODO: Add \n support in CLabel
+        pos.y -= ddim.y;
+        pl = pw->CreateLabel(pos, ddim, -1, EVENT_DIALOG_LABEL1, details);
+        pl->SetFontSize(10.0f);
+    }
 
     pos.x  = 0.50f-0.075f;
     pos.y  = 0.50f-dim.y/2.0f+0.03f;
