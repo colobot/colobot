@@ -45,7 +45,7 @@ CObjectManager::CObjectManager(Gfx::CEngine* engine,
                                                oldModelManager,
                                                modelManager,
                                                particle)),
-    m_nextId(0),
+    m_nextId(1),
     m_activeObjectIterators(0),
     m_shouldCleanRemovedObjects(false)
 {
@@ -108,7 +108,7 @@ void CObjectManager::DeleteAllObjects()
 
     m_objects.clear();
 
-    m_nextId = 0;
+    m_nextId = 1;
 }
 
 CObject* CObjectManager::GetObjectById(int id)
