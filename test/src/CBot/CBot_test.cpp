@@ -22,11 +22,20 @@
 #include <gtest/gtest.h>
 #include <limits>
 #include <stdexcept>
+#include <string>
 
 extern bool g_cbotTestSaveState;
 bool g_cbotTestSaveState = false;
 
 using namespace CBot;
+
+struct UserData
+{
+    int count = 0;
+    bool isCountRunning = false;
+    std::string cancelMessage = "not cancelled";
+    bool isThrowRunning = false;
+};
 
 class CBotUT : public testing::Test
 {
@@ -36,6 +45,10 @@ public:
         CBotProgram::Init();
         CBotProgram::AddFunction("FAIL", rFail, cFail);
         CBotProgram::AddFunction("ASSERT", rAssert, cAssert);
+        CBotProgram::AddFunction("RUN_COUNT", rRunCount, cRunCount, cancelCount);
+        CBotProgram::AddFunction("GET_COUNT", rGetCount, cGetCount);
+        CBotProgram::AddFunction("THROW", rThrow, cThrow, cancelThrow);
+        CBotProgram::AddFunction("GET_CANCEL_MESSAGE", rGetCancelMessage, cGetCancelMessage);
     }
 
     ~CBotUT()
@@ -99,6 +112,109 @@ private:
         {
             throw CBotTestFail("CBot assertion failed");
         }
+        return true;
+    }
+
+
+    static CBotTypResult cGetCount(CBotVar* &var, void* user)
+    {
+        if (var != nullptr) return CBotTypResult(CBotErrOverParam);
+        return CBotTypResult(CBotTypInt);
+    }
+
+    static bool rGetCount(CBotVar* var, CBotVar* result, int& exception, void* user)
+    {
+        UserData* userData = static_cast<UserData*>(user);
+        result->SetValInt(userData->count);
+        return true;
+    }
+
+    static CBotTypResult cRunCount(CBotVar* &var, void* user)
+    {
+        if (var == nullptr) return CBotTypResult(CBotErrLowParam);
+        if ( var->GetType() != CBotTypInt )  return CBotTypResult(CBotErrBadNum);
+        var = var->GetNext();
+        if (var == nullptr) return CBotTypResult(CBotErrLowParam);
+        if ( var->GetType() != CBotTypInt )  return CBotTypResult(CBotErrBadNum);
+        var = var->GetNext();
+        if (var != nullptr) return CBotTypResult(CBotErrOverParam);
+        return CBotTypResult(CBotTypInt);
+    }
+
+    static bool rRunCount(CBotVar* var, CBotVar* result, int& exception, void* user)
+    {
+        UserData* userData = static_cast<UserData*>(user);
+        int min = var->GetValInt();
+        var = var->GetNext();
+        int max = var->GetValInt();
+        if ( !userData->isCountRunning )
+        {
+            userData->count = min;
+            userData->isCountRunning = true;
+        }
+        if (userData->count < max)
+        {
+            userData->count++;
+            return false;
+        }
+        else
+        {
+            userData->isCountRunning = false;
+            return true;
+        }
+    }
+
+    static void cancelCount(void* user)
+    {
+        UserData* userData = static_cast<UserData*>(user);
+        if ( userData->isCountRunning )
+        {
+            userData->isCountRunning = false;
+            userData->cancelMessage = "count cancelled";
+        }
+        else
+        {
+            userData->cancelMessage = "count unexpectedly cancelled";
+        }
+    }
+
+    static CBotTypResult cThrow(CBotVar* &var, void* user)
+    {
+        if (var == nullptr) return CBotTypResult(CBotErrLowParam);
+        if ( var->GetType() != CBotTypInt )  return CBotTypResult(CBotErrBadNum);
+        var = var->GetNext();
+        if (var != nullptr) return CBotTypResult(CBotErrOverParam);
+        return CBotTypResult(CBotTypVoid);
+    }
+
+    static bool rThrow(CBotVar* var, CBotVar* result, int& exception, void* user)
+    {
+        UserData* userData = static_cast<UserData*>(user);
+        if (!userData->isThrowRunning)
+        {
+            userData->isThrowRunning = true;
+            return false;
+        }
+        exception = var->GetValInt();
+        return false;
+    }
+
+    static void cancelThrow(void* user)
+    {
+        UserData* userData = static_cast<UserData*>(user);
+        userData->cancelMessage = "throw unexpectedly cancelled";
+    }
+
+    static CBotTypResult cGetCancelMessage(CBotVar* &var, void* user)
+    {
+        if (var != nullptr) return CBotTypResult(CBotErrOverParam);
+        return CBotTypResult(CBotTypString);
+    }
+
+    static bool rGetCancelMessage(CBotVar* var, CBotVar* result, int& exception, void* user)
+    {
+        UserData* userData = static_cast<UserData*>(user);
+        result->SetValString(userData->cancelMessage);
         return true;
     }
 
@@ -252,17 +368,18 @@ protected:
         {
             try
             {
+                UserData userData;
                 program->Start(test);
                 if (g_cbotTestSaveState)
                 {
-                    while (!program->Run(nullptr, 0)) // save/restore at each step
+                    while (!program->Run(&userData, 0)) // save/restore at each step
                     {
                         TestSaveAndRestore(program.get());
                     }
                 }
                 else
                 {
-                    while (!program->Run(nullptr, 0)); // execute in step mode
+                    while (!program->Run(&userData, 0)); // execute in step mode
                 }
                 program->GetError(error, cursor1, cursor2);
                 if (error != expectedRuntimeError)
@@ -3667,6 +3784,52 @@ TEST_F(CBotUT, TestByteToString) {
         extern void TestByteToString() {
             byte c = 90;
             ASSERT(c + "" == "90");
+        }
+    )");
+}
+
+TEST_F(CBotUT, CatchShouldCancelExternalCalls)
+{
+    ExecuteTest(R"(
+        extern void CatchShouldCancelExternalCalls()
+        {
+            string result = "catch not executed";
+            try {
+                RUN_COUNT(0, 10);
+            } catch(GET_COUNT() > 0) {
+                result = GET_CANCEL_MESSAGE();
+            }
+            ASSERT(result == "count cancelled");
+        }
+    )");
+
+    ExecuteTest(R"(
+        extern void DoNotCancelCallsThatThrew()
+        {
+            try {
+                THROW(10);
+            } catch(10) {
+            }
+            string result = GET_CANCEL_MESSAGE();
+            ASSERT(result == "not cancelled");
+        }
+    )");
+
+    ExecuteTest(R"(
+        extern void NoDoubleCancel()
+        {
+            bool flag = false;
+            try {
+                try {
+                    RUN_COUNT(0, 10);
+                } catch(GET_COUNT() > 0) {
+                    flag = true;
+                    "wait for one step";
+                }
+            } catch(flag) {
+            }
+            string result = GET_CANCEL_MESSAGE();
+            ASSERT(result == "count cancelled");
         }
     )");
 }

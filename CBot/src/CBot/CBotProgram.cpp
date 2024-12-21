@@ -312,9 +312,10 @@ static bool rSizeOf( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 ////////////////////////////////////////////////////////////////////////////////
 bool CBotProgram::AddFunction(const std::string& name,
                               bool rExec(CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser),
-                              CBotTypResult rCompile(CBotVar*& pVar, void* pUser))
+                              CBotTypResult rCompile(CBotVar*& pVar, void* pUser),
+                              void rCancel(void* pUser))
 {
-    return m_externalCalls->AddFunction(name, std::unique_ptr<CBotExternalCall>(new CBotExternalCallDefault(rExec, rCompile)));
+    return m_externalCalls->AddFunction(name, std::unique_ptr<CBotExternalCall>(new CBotExternalCallDefault(rExec, rCompile, rCancel)));
 }
 
 bool CBotProgram::DefineNum(const std::string& name, long val)
