@@ -159,14 +159,20 @@ bool CBotExternalCallDefault::Run(CBotVar* thisVar, CBotStack* pStack)
 
     int exception = CBotNoErr; // TODO: Change to CBotError
     bool res = m_rExec(args, result, exception, pStack->GetUserPtr());
+    if (res || exception != CBotNoErr)
+    {
+        pile->SetState(1); // Call done. Do not cancel
+    }
+    else
+    {
+        pile->SetState(2); // Cancel if interrupted by `catch`
+    }
 
     if (!res)
     {
         if (exception != CBotNoErr)
         {
             pStack->SetError(static_cast<CBotError>(exception));
-            // If the call threw a CBot exception, try/catch should not cancel it because it already ended
-            pile->Delete();
         }
         return false;
     }

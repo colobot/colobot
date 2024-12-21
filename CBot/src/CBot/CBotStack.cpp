@@ -1017,11 +1017,11 @@ void CBotStack::CancelExternal()
 {
     if (m_next != nullptr) m_next->CancelExternal();
     if (m_next2 != nullptr) m_next2->CancelExternal();
-    if (m_call != nullptr)
+    if (m_call != nullptr && GetState() == 2)
     {
         m_call->Cancel(this);
         // Prevent cancellation from being repeated
-        Delete();
+        SetState(1);
     }
 }
 
