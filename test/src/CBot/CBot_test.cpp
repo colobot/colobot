@@ -34,6 +34,7 @@ struct UserData
     int count = 0;
     bool isCountRunning = false;
     std::string cancelMessage = "not cancelled";
+    bool isThrowRunning = false;
 };
 
 class CBotUT : public testing::Test
@@ -187,6 +188,12 @@ private:
 
     static bool rThrow(CBotVar* var, CBotVar* result, int& exception, void* user)
     {
+        UserData* userData = static_cast<UserData*>(user);
+        if (!userData->isThrowRunning)
+        {
+            userData->isThrowRunning = true;
+            return false;
+        }
         exception = var->GetValInt();
         return false;
     }
@@ -3791,7 +3798,26 @@ TEST_F(CBotUT, CatchShouldCancelExternalCalls)
                 THROW(10);
             } catch(10) {
             }
-            ASSERT(GET_CANCEL_MESSAGE() == "not cancelled");
+            string result = GET_CANCEL_MESSAGE();
+            ASSERT(result == "not cancelled");
+        }
+    )");
+
+    ExecuteTest(R"(
+        extern void NoDoubleCancel()
+        {
+            bool flag = false;
+            try {
+                try {
+                    RUN_COUNT(0, 10);
+                } catch(GET_COUNT() > 0) {
+                    flag = true;
+                    "wait for one step";
+                }
+            } catch(flag) {
+            }
+            string result = GET_CANCEL_MESSAGE();
+            ASSERT(result == "count cancelled");
         }
     )");
 }
