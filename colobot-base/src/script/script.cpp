@@ -519,7 +519,17 @@ static void PutList(const std::string& baseName, bool bArray, CBot::CBotVar *var
         {
             int type = pStatic->GetType();
 
-            if (type <= CBot::CBotTypBoolean)
+            if (type == CBot::CBotTypFloat)
+            {
+                // https://stackoverflow.com/a/23437425/14516046
+                list->SetItemName(rankList++, StrUtils::Format("%s = %.9g;", varName.c_str(), pStatic->GetValFloat()));
+            }
+            else if (type == CBot::CBotTypDouble)
+            {
+                // https://stackoverflow.com/a/23437425/14516046
+                list->SetItemName(rankList++, StrUtils::Format("%s = %.17g;", varName.c_str(), pStatic->GetValDouble()));
+            }
+            else if (type <= CBot::CBotTypBoolean)
             {
                 list->SetItemName(rankList++, StrUtils::Format("%s = %s;", varName.c_str(), pStatic->GetValString().c_str()));
             }
