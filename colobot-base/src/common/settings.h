@@ -22,6 +22,7 @@
 #include "common/language.h"
 #include "common/singleton.h"
 
+#include <deque>
 #include <glm/glm.hpp>
 
 namespace Gfx
@@ -37,6 +38,7 @@ public:
     void LoadSettings();
 
     void SaveAudioSettings();
+    void SaveCommandHistory(const std::deque<std::string>& commands);
 
     void SetTooltips(bool tooltips);
     bool GetTooltips() const;

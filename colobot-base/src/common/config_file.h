@@ -30,6 +30,7 @@
 
 #include <nlohmann/json.hpp>
 
+#include <deque>
 #include <optional>
 #include <string>
 #include <sstream>
@@ -106,9 +107,8 @@ public:
      */
     bool GetBoolProperty(std::string section, std::string key, bool &value);
 
-    /** Gets an array of values of type T in section under specified key
+    /** Sets an array of values of type T in section under specified key
      * The value separator is ','.
-     * \a array will only be changed if key exists
      * \return return true on success
      */
     template<typename T>
@@ -127,9 +127,8 @@ public:
         return true;
     }
 
-    /** Sets an array of values of type T in section under specified key.
+    /** Gets an array of values of type T in section under specified key.
      * The value separator is ','.
-     * \a array will only be changed if key exists
      * \return return true on success
      */
     template<typename T>
@@ -142,6 +141,50 @@ public:
             for (auto& value : m_properties[section][key])
             {
                 array.push_back(value.get<T>());
+            }
+        }
+        catch (std::exception & e)
+        {
+            GetLogger()->Log(m_loaded ? LOG_INFO : LOG_TRACE, "Error on parsing config file: %%", e.what());
+            return false;
+        }
+        return true;
+    }
+
+    /** Sets a deque of values of type T in section under specified key
+     * The value separator is ','.
+     * \return return true on success
+     */
+    template<typename T>
+    bool SetDequeProperty(std::string section, std::string key, const std::deque<T>& que)
+    {
+        try
+        {
+            m_properties[section][key] = nlohmann::json(que);
+            m_needsSave = true;
+        }
+        catch (std::exception & e)
+        {
+            GetLogger()->Error("Error on editing config file: %%", e.what());
+            return false;
+        }
+        return true;
+    }
+
+    /** Gets a deque of values of type T in section under specified key.
+     * The value separator is ','.
+     * \return return true on success
+     */
+    template<typename T>
+    bool GetDequeProperty(std::string section, std::string key, std::deque<T>& que)
+    {
+        try
+        {
+            que.clear();
+
+            for (auto& value : m_properties[section][key])
+            {
+                que.push_back(value.get<T>());
             }
         }
         catch (std::exception & e)
