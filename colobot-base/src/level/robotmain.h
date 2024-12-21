@@ -514,6 +514,8 @@ public:
     //! Returns a set of all team IDs in the current level that are still active
     std::set<int> GetAllActiveTeams();
 
+    void        SetCommandHistory(std::deque<std::string>&& commands);
+
 protected:
     bool        EventFrame(const Event &event);
     bool        EventObject(const Event &event);
@@ -569,11 +571,11 @@ protected:
     void        UpdateDebugCrashSpheres();
 
     //! Adds element to the beginning of command history
-    void        PushToCommandHistory(std::string cmd);
+    void        PushToCommandHistory(const std::string& cmd);
     //! Returns next/previous element from command history and updates index
     //@{
-    std::string    GetNextFromCommandHistory();
-    std::string    GetPreviousFromCommandHistory();
+    const std::string&  GetNextFromCommandHistory();
+    const std::string&  GetPreviousFromCommandHistory();
     //@}
 
 protected:

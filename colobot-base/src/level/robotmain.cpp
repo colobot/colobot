@@ -829,7 +829,7 @@ bool CRobotMain::ProcessEvent(Event &event)
     {
         Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->SearchControl(EVENT_CMD));
         if (pe == nullptr) return false;
-        std::string cmd = GetNextFromCommandHistory();
+        const auto& cmd = GetNextFromCommandHistory();
         if (!cmd.empty()) pe->SetText(cmd);
         return false;
     }
@@ -840,7 +840,7 @@ bool CRobotMain::ProcessEvent(Event &event)
     {
         Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->SearchControl(EVENT_CMD));
         if (pe == nullptr) return false;
-        std::string cmd = GetPreviousFromCommandHistory();
+        const auto& cmd = GetPreviousFromCommandHistory();
         if (!cmd.empty()) pe->SetText(cmd);
         return false;
     }
@@ -860,8 +860,8 @@ bool CRobotMain::ProcessEvent(Event &event)
             m_pause->DeactivatePause(m_cmdEditPause);
             m_cmdEditPause = nullptr;
         }
-        ExecuteCmd(cmd);
         PushToCommandHistory(cmd);
+        ExecuteCmd(cmd);
         m_cmdEdit = false;
         return false;
     }
@@ -4083,7 +4083,7 @@ bool CRobotMain::FlatFreeSpace(glm::vec3 &center, float minFlat, float minRadius
             pos.z = p.y;
             pos.y = 0.0f;
             m_terrain->AdjustToFloor(pos, true);
-	    
+
             if (SearchNearestObject(m_objMan.get(), pos, exclu) < space) continue;
             if (m_terrain->GetFlatZoneRadius(pos, minFlat) < minFlat) continue;
             if (m_terrain->GetFloorLevel(pos) < m_water->GetLevel()) continue;
@@ -6162,8 +6162,11 @@ bool CRobotMain::GetDebugCrashSpheres()
     return m_debugCrashSpheres;
 }
 
-void CRobotMain::PushToCommandHistory(std::string cmd)
+void CRobotMain::PushToCommandHistory(const std::string& cmd)
 {
+    m_commandHistoryIndex = -1; // no element selected in command history
+    if (cmd.empty()) return;
+
     if (!m_commandHistory.empty() && m_commandHistory.front() == cmd) // already in history
         return;
 
@@ -6171,19 +6174,27 @@ void CRobotMain::PushToCommandHistory(std::string cmd)
 
     if (m_commandHistory.size() > 50) // to avoid infinite growth
         m_commandHistory.pop_back();
+    m_settings->SaveCommandHistory(m_commandHistory);
 }
 
-std::string CRobotMain::GetNextFromCommandHistory()
+void CRobotMain::SetCommandHistory(std::deque<std::string>&& commands)
 {
+    m_commandHistory.swap(commands);
+}
+
+const std::string& CRobotMain::GetNextFromCommandHistory()
+{
+    static const std::string emptyString{""};
     if (m_commandHistory.empty() || static_cast<int>(m_commandHistory.size()) <= m_commandHistoryIndex + 1) // no next element
-        return "";
+        return emptyString;
     return m_commandHistory[++m_commandHistoryIndex];
 }
 
-std::string CRobotMain::GetPreviousFromCommandHistory()
+const std::string& CRobotMain::GetPreviousFromCommandHistory()
 {
+    static const std::string emptyString{""};
     if (m_commandHistory.empty() || m_commandHistoryIndex < 1) // first or none element selected
-        return "";
+        return emptyString;
     return m_commandHistory[--m_commandHistoryIndex];
 }
 

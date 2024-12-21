@@ -124,6 +124,12 @@ void CSettings::SaveAudioSettings()
     GetConfigFile().SetBoolProperty("Setup", "FocusLostMute", m_focusLostMute);
 }
 
+void CSettings::SaveCommandHistory(const std::deque<std::string>& commands)
+{
+    GetConfigFile().SetDequeProperty("Setup", "CommandHistory", commands);
+    GetConfigFile().Save();
+}
+
 void CSettings::LoadSettings()
 {
     CApplication* app = CApplication::GetInstancePointer();
@@ -269,7 +275,9 @@ void CSettings::LoadSettings()
 
     CInput::GetInstancePointer()->LoadKeyBindings();
 
-
+    std::deque<std::string> commands;
+    GetConfigFile().GetDequeProperty("Setup", "CommandHistory", commands);
+    main->SetCommandHistory(std::move(commands));
 
     GetConfigFile().GetFloatProperty("Edit", "FontSize", m_fontSize);
     GetConfigFile().GetFloatProperty("Edit", "WindowPosX", m_windowPos.x);
