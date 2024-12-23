@@ -201,7 +201,7 @@ void COldObject::DeleteObject(bool bAll)
     {
         m_camera->SetControllingObject(nullptr);
     }
-    m_main->RemoveFromSelectionHistory(this);
+    m_main->CutObjectLink(this);
 
     if ( !bAll )
     {
@@ -597,7 +597,7 @@ void COldObject::DestroyObject(DestructionType type, CObject* killer)
         m_camera->SetType(Gfx::CAM_TYPE_EXPLO);
         m_main->DeselectAll();
     }
-    m_main->RemoveFromSelectionHistory(this);
+    m_main->CutObjectLink(this);
 
     CScoreboard* scoreboard = m_main->GetScoreboard();
     if (scoreboard)
@@ -1158,6 +1158,17 @@ void COldObject::Write(CLevelParserLine* line)
     if ( m_auto != nullptr )
     {
         m_auto->Write(line);
+    }
+
+    // AlienWorm time up/down
+    if (m_type == OBJECT_WORM)
+    {
+        assert(Implements(ObjectInterfaceType::Movable));
+        CMotion* motion = GetMotion();
+        CLevelParserParamVec param;
+        param.push_back(std::make_unique<CLevelParserParam>(motion->GetParam(0)));
+        param.push_back(std::make_unique<CLevelParserParam>(motion->GetParam(1)));
+        line->AddParam("param", std::make_unique<CLevelParserParam>(std::move(param)));
     }
 }
 
@@ -2298,7 +2309,7 @@ bool COldObject::EventProcess(const Event &event)
                     axeY *= 0.5f;
                 }
 
-                if ( !m_main->IsResearchDone(RESEARCH_FLY, GetTeam()) )
+                if ( m_type == OBJECT_HUMAN && !m_main->IsResearchDone(RESEARCH_FLY, GetTeam()) )
                 {
                     axeZ = -1.0f;  // tomb
                 }

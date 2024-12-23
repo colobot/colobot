@@ -1056,7 +1056,7 @@ void CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
     CreatePhysics(type);
     m_object->SetFloorHeight(0.0f);
 
-    if (power > 0.0f            &&
+    if (power >= 0.0f           &&
         type != OBJECT_MOBILEdr &&
         type != OBJECT_APOLLO2)
     {

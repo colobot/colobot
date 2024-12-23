@@ -1993,13 +1993,14 @@ CObject* CRobotMain::DetectObject(Math::Point pos)
     for (CObject* obj : m_objMan->GetAllObjects())
     {
         if (!obj->GetDetectable()) continue;
+        if (obj->GetProxyActivate()) continue;
 
         CObject* transporter = nullptr;
         if (obj->Implements(ObjectInterfaceType::Transportable))
             transporter = dynamic_cast<CTransportableObject&>(*obj).GetTransporter();
 
         if (transporter != nullptr && !transporter->GetDetectable()) continue;
-        if (obj->GetProxyActivate()) continue;
+        if (transporter != nullptr && transporter->GetProxyActivate()) continue;
 
         CObject* target = obj;
         // TODO: should this also apply to slots other than power cell slots?
@@ -2035,7 +2036,7 @@ bool CRobotMain::DestroySelectedObject()
     dynamic_cast<CControllableObject&>(*obj).SetSelect(false);  // deselects the object
     m_camera->SetType(Gfx::CAM_TYPE_EXPLO);
     DeselectAll();
-    RemoveFromSelectionHistory(obj);
+    CutObjectLink(obj);
 
     return true;
 }
@@ -5434,7 +5435,7 @@ bool CRobotMain::GetRadar()
     for (CObject* obj : m_objMan->GetAllObjects())
     {
         ObjectType type = obj->GetType();
-        if (type == OBJECT_RADAR && !obj->GetLock())
+        if (type == OBJECT_RADAR && !obj->GetLock() && !obj->GetProxyActivate())
             return true;
     }
     return false;
@@ -6023,11 +6024,16 @@ CObject* CRobotMain::PopFromSelectionHistory()
     return obj;
 }
 
-void CRobotMain::RemoveFromSelectionHistory(CObject* object)
+void CRobotMain::CutObjectLink(CObject* object)
 {
     auto it = std::remove_if(m_selectionHistory.begin(), m_selectionHistory.end(),
                              [object](const CObject* obj) { return obj == object; });
     m_selectionHistory.erase(it, m_selectionHistory.end());
+
+    for (int i = 0; i < MAXSHOWLIMIT; i++)
+    {
+        if (m_showLimit[i].link == object) FlushShowLimit(i);
+    }
 }
 
 float CRobotMain::GetGlobalMagnifyDamage()

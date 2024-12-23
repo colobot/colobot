@@ -2728,10 +2728,8 @@ bool CPhysics::ExploOther(ObjectType iType,
             // TODO: implement "killer"?
             dynamic_cast<CDamageableObject&>(*pObj).DamageObject(damageType);
         }
-    }
 
-    if ( force > 25.0f )
-    {
+        float damage = -1.0f;
         // TODO: Some function in CShieldedObject. GetCollisionResistance()?
         if (oType == OBJECT_DERRICK  ||
             oType == OBJECT_FACTORY  ||
@@ -2750,11 +2748,8 @@ bool CPhysics::ExploOther(ObjectType iType,
             oType == OBJECT_SAFE     ||
             oType == OBJECT_HUSTON    )  // building?
         {
-            assert(pObj->Implements(ObjectInterfaceType::Damageable));
-            // TODO: implement "killer"?
-            dynamic_cast<CDamageableObject&>(*pObj).DamageObject(DamageType::Collision, force/400.0f);
+            damage = force/400.0f;
         }
-
         if (oType == OBJECT_MOBILEwa ||
             oType == OBJECT_MOBILEta ||
             oType == OBJECT_MOBILEfa ||
@@ -2787,9 +2782,12 @@ bool CPhysics::ExploOther(ObjectType iType,
             oType == OBJECT_MOBILErp ||
             oType == OBJECT_MOBILEst  )  // vehicle?
         {
-            assert(pObj->Implements(ObjectInterfaceType::Damageable));
+            damage = force/200.0f;
+        }
+        if ( force > 25.0f && damage > 0.0f )
+        {
             // TODO: implement "killer"?
-            dynamic_cast<CDamageableObject&>(*pObj).DamageObject(DamageType::Collision, force/200.0f);
+            dynamic_cast<CDamageableObject&>(*pObj).DamageObject(DamageType::Collision, damage);
         }
     }
 
