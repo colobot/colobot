@@ -1,7 +1,7 @@
 {
     "name": "colobot",
     "version-string": "0.1.0",
-    "builtin-baseline": "f6a5d4e8eb7476b8d7fc12a56dff300c1c986131",
+    "builtin-baseline": "b322364f06308bdd24823f9d8f03fe0cc86fd46f",
     "dependencies": [
         {
             "name": "freetype",
@@ -42,6 +42,12 @@
         },
         {
             "name": "physfs", "version": "3.0.2"
+        },
+        {
+            "name": "brotli", "version": "1.0.9"
+        },
+        {
+            "name": "openal-soft", "version": "1.23.0"
         }
     ]
 }

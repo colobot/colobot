@@ -161,7 +161,7 @@ jobs:
       uses: lukka/run-vcpkg@v7
       with:
         setupOnly: true
-        vcpkgGitCommitId: 'f6a5d4e8eb7476b8d7fc12a56dff300c1c986131'
+        vcpkgGitCommitId: 'b322364f06308bdd24823f9d8f03fe0cc86fd46f'
         vcpkgTriplet: ${{ matrix.vcpkg_triplet }}
         # SHA-256 hash of the vcpkg.json file, recalculated automatically when it changes
         appendedCacheKey: ${{ hashFiles( '**/vcpkg.json' ) }}

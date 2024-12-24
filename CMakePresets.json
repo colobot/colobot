@@ -30,7 +30,8 @@
                 "PORTABLE": true,
                 "TOOLS": true,
                 "TESTS": true,
-                "DESKTOP": true
+                "DESKTOP": true,
+                "CMAKE_MAKE_PROGRAM": "ninja.exe"
             }
         },
         {
