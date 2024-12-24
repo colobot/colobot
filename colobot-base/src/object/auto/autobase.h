@@ -103,7 +103,6 @@ protected:
     float           m_fogStart = 0.0f;
     float           m_deepView = 0.0f;
     glm::vec3       m_pos = { 0, 0, 0 };
-    glm::vec3       m_posSound = { 0, 0, 0 };
     glm::vec3       m_finalPos = { 0, 0, 0 };
     glm::vec3       m_lastPos = { 0, 0, 0 };
     int             m_param = 0;
