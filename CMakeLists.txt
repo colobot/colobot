@@ -299,6 +299,14 @@ if(TESTS)
     # Hippomocks library
     add_subdirectory(${colobot_SOURCE_DIR}/lib/hippomocks)
 
+    include(FetchContent)
+    FetchContent_Declare(
+      cpptrace
+      GIT_REPOSITORY https://github.com/jeremy-rifkin/cpptrace.git
+      GIT_TAG        v0.7.3 # <HASH or TAG>
+    )
+    FetchContent_MakeAvailable(cpptrace)
+
     # Tests targets
     enable_testing()
     include(GoogleTest)
