@@ -214,7 +214,6 @@ begin:
             lookat.y += 300.0f+50.0f;
 
             m_camera->SetScriptCamera(eye, lookat);
-            m_posSound = eye;
 
             m_engine->SetFocus(2.0f);
 
@@ -222,7 +221,7 @@ begin:
 
             if ( m_soundChannel == -1 )
             {
-                m_soundChannel = m_sound->Play(SOUND_FLY, m_posSound, 0.3f, 2.0f, true);
+                m_soundChannel = m_sound->Play(SOUND_FLY, 0.3f, 2.0f, true);
                 m_sound->AddEnvelope(m_soundChannel, 1.0f, 0.5f, BASE_LAND_TIME, SOPER_CONTINUE);
                 m_sound->AddEnvelope(m_soundChannel, 0.0f, 0.5f, 2.0f, SOPER_STOP);
             }
@@ -267,7 +266,6 @@ begin:
             pos.x += 1000.0f;
             pos.z -= 60.0f;
             pos.y += 80.0f;
-            m_posSound = pos;
             m_camera->SetScriptCamera(pos, glm::vec3(0.0f, 0.0f, 0.0f));
             m_engine->SetFocus(1.0f);
 
@@ -304,7 +302,7 @@ begin:
 
             if ( m_soundChannel == -1 )
             {
-                m_soundChannel = m_sound->Play(SOUND_FLY, m_posSound, 0.0f, 1.2f, true);
+                m_soundChannel = m_sound->Play(SOUND_FLY, 0.0f, 1.2f, true);
                 m_sound->AddEnvelope(m_soundChannel, 1.0f, 1.0f, BASE_TRANSIT_TIME*0.55f, SOPER_CONTINUE);
                 m_sound->AddEnvelope(m_soundChannel, 0.3f, 0.8f, BASE_TRANSIT_TIME*0.45f, SOPER_STOP);
             }
@@ -432,7 +430,7 @@ begin:
 //?         m_camera->StartEffect(CE_CRASH, m_pos, 1.0f);
             m_camera->StartEffect(Gfx::CAM_EFFECT_EXPLO, m_pos, 2.0f);
             m_engine->SetFocus(1.0f);
-            m_sound->Play(SOUND_BOUM, m_posSound, 0.6f, 0.5f);
+            m_sound->Play(SOUND_BOUM, 0.6f, 0.5f);
 
             m_phase    = ABP_OPENWAIT;
             m_progress = 0.0f;
@@ -463,7 +461,7 @@ begin:
         }
         else
         {
-            m_soundChannel = m_sound->Play(SOUND_MANIP, m_posSound, 0.0f, 0.3f, true);
+            m_soundChannel = m_sound->Play(SOUND_MANIP, 0.0f, 0.3f, true);
             m_sound->AddEnvelope(m_soundChannel, 0.3f, 0.3f, 1.0f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 0.3f, 1.0f, BASE_DOOR_TIME-1.5f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 0.0f, 0.3f, 1.0f, SOPER_STOP);
@@ -523,7 +521,7 @@ begin:
                 m_particle->CreateParticle(pos, speed, dim, Gfx::PARTICRASH, time, 0.0f, 2.0f);
             }
 
-            m_soundChannel = m_sound->Play(SOUND_MANIP, m_posSound, 0.3f, 1.5f, true);
+            m_soundChannel = m_sound->Play(SOUND_MANIP, 0.3f, 1.5f, true);
             m_sound->AddEnvelope(m_soundChannel, 0.3f, 1.5f, BASE_DOOR_TIME2, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 0.0f, 1.5f, 0.5f, SOPER_STOP);
 
@@ -640,7 +638,7 @@ begin:
                 m_object->SetPartRotationX(18+i, 0.0f);
             }
 
-            m_soundChannel = m_sound->Play(SOUND_MANIP, m_posSound, 0.0f, 0.3f, true);
+            m_soundChannel = m_sound->Play(SOUND_MANIP, 0.0f, 0.3f, true);
             m_sound->AddEnvelope(m_soundChannel, 0.3f, 0.3f, 1.0f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 0.3f, 1.0f, BASE_DOOR_TIME-1.5f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 0.0f, 0.3f, 1.0f, SOPER_STOP);
@@ -701,7 +699,7 @@ begin:
         {
             if ( m_soundChannel == -1 )
             {
-                m_soundChannel = m_sound->Play(SOUND_FLY, m_posSound, 0.0f, 0.5f, true);
+                m_soundChannel = m_sound->Play(SOUND_FLY, 0.0f, 0.5f, true);
                 m_sound->AddEnvelope(m_soundChannel, 1.0f, 0.5f, 2.0f, SOPER_CONTINUE);
                 m_sound->AddEnvelope(m_soundChannel, 0.3f, 2.0f, BASE_TAKO_TIME, SOPER_STOP);
             }
@@ -1046,12 +1044,6 @@ begin:
                 m_particle->SetPosition(m_partiChannel[7], pos);
             }
         }
-    }
-
-    if ( m_soundChannel != -1 )
-    {
-        pos = m_engine->GetEyePt();
-        m_sound->Position(m_soundChannel, pos);
     }
 
     return true;
@@ -1402,11 +1394,10 @@ Error CAutoBase::TakeOff(bool printMsg)
     lookat.y += 50.0f;
 
     m_camera->SetScriptCameraAnimate(eye, lookat);
-    m_posSound = eye;
 
     m_engine->SetFocus(1.0f);
 
-    m_soundChannel = m_sound->Play(SOUND_MANIP, m_posSound, 0.3f, 1.5f, true);
+    m_soundChannel = m_sound->Play(SOUND_MANIP, 0.3f, 1.5f, true);
     m_sound->AddEnvelope(m_soundChannel, 0.3f, 1.5f, BASE_DOOR_TIME2, SOPER_CONTINUE);
     m_sound->AddEnvelope(m_soundChannel, 0.0f, 1.5f, 0.5f, SOPER_STOP);
 
