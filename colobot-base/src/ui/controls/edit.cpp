@@ -2450,7 +2450,7 @@ void CEdit::MoveLine(int move, bool bWord, bool bSelect)
     {
         c = m_engine->GetText()->Detect(std::string(m_text.data()+m_lineOffset[line]),
                                         m_fontType, m_fontSize,
-                                        m_lineOffset[line+1]-m_lineOffset[line]);
+                                        column);
     }
     else
     {
@@ -2458,7 +2458,7 @@ void CEdit::MoveLine(int move, bool bWord, bool bSelect)
                                         m_format.begin() + m_lineOffset[line],
                                         m_format.end(),
                                         m_fontSize,
-                                        m_lineOffset[line+1]-m_lineOffset[line]);
+                                        column);
     }
 
     m_cursor1 = m_lineOffset[line]+c;
@@ -2480,13 +2480,13 @@ void CEdit::ColumnFix()
     if ( m_format.empty() )
     {
         m_column = m_engine->GetText()->GetStringWidth(
-                                std::string(m_text.data()+m_lineOffset[line]),
+                                std::string(m_text.data()+m_lineOffset[line], m_cursor1-m_lineOffset[line]),
                                 m_fontType, m_fontSize);
     }
     else
     {
         m_column = m_engine->GetText()->GetStringWidth(
-                                std::string(m_text.data()+m_lineOffset[line]),
+                                std::string(m_text.data()+m_lineOffset[line], m_cursor1-m_lineOffset[line]),
                                 m_format.begin() + m_lineOffset[line],
                                 m_format.end(),
                                 m_fontSize
