@@ -9,7 +9,6 @@ on:
     # Run the spell checker on all pushes to the main branch
     branches:
       - main
-      - spellcheck
 
 jobs:
   spell-check:
@@ -19,15 +18,10 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Setup Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.x'
-
     - name: Check Spelling
-      uses: check-spelling/check-spelling@v0
+      uses: check-spelling/check-spelling@v0.0.24 # Use the latest stable version
       with:
-        # Scan all files by not restricting the file patterns
+        # Scan all files
         config: |
           files: "**/*"
 
