@@ -1,0 +1,35 @@
+name: Spell Check
+
+on:
+  pull_request:
+    # Run the spell checker on all pull requests
+    paths:
+      - '**/*'
+  push:
+    # Run the spell checker on all pushes to the main branch
+    branches:
+      - main
+
+jobs:
+  spell-check:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Check Spelling
+      uses: check-spelling/check-spelling@v0
+      with:
+        # Scan all files by not restricting the file patterns
+        config: |
+          files: "**/*"
+
+    - name: Report Result
+      if: failure()
+      run: echo "Spellchecking detected issues. Review the PR for inline comments."
