@@ -9,6 +9,7 @@ on:
     # Run the spell checker on all pushes to the main branch
     branches:
       - main
+      - spellcheck
 
 jobs:
   spell-check:
