@@ -135,8 +135,6 @@ jobs:
         include:
           - arch: amd64
             vcpkg_triplet: 'x64-windows-static'
-          - arch: x86
-            vcpkg_triplet: 'x86-windows-static'
     steps:
     - uses: actions/checkout@v3
     - name: Checkout the data submodule
