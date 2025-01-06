@@ -149,6 +149,7 @@
         },
         {
             "name": "Windows-CI-release",
+            "jobs": 4,
             "configurePreset": "Windows-CI-release",
             "configuration": "Release"
         },
@@ -166,6 +167,7 @@
         },
         {
             "name": "Linux-CI-release",
+            "jobs": 4,
             "configurePreset": "Linux-CI-release",
             "configuration": "Release"
         },
@@ -177,6 +179,7 @@
         },
         {
             "name": "MacOS-CI-release",
+            "jobs": 4,
             "configurePreset": "MacOS-CI-release",
             "configuration": "Release"
         }
