@@ -14,18 +14,9 @@ jobs:
     strategy:
       matrix:
         target_os: [linux]
-        host_os: [ubuntu-20.04, ubuntu-22.04]
+        host_os: [ubuntu-20.04]
         container: ['']
-        preset: [Linux-CI-gcc]
-        include:
-          - host_os: ubuntu-22.04
-            container: 'debian:unstable-slim'
-            preset: Linux-CI-gcc
-          - host_os: ubuntu-22.04
-            container: 'debian:testing-slim'
-            preset: Linux-CI-gcc
-          - host_os: ubuntu-22.04
-            preset: Linux-CI-clang
+        preset: [Linux-CI-release]
       fail-fast: false
     env:
       # Actions run as root in-container, as normal user outside
@@ -71,7 +62,7 @@ jobs:
     - name: Upload build
       uses: actions/upload-artifact@v3
       with:
-        name: ${{matrix.target_os}}-debug
+        name: ${{matrix.target_os}}-release
         path: install
       if: ${{ env.APPIMAGE == true }}
     - name: Create AppImage
