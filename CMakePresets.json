@@ -111,25 +111,6 @@
             }
         },
         {
-            "name": "Linux-CI-release",
-            "description": "Linux configuration for CI release pipeline",
-            "inherits": ["CI"],
-            "cacheVariables": {
-                "CMAKE_SKIP_INSTALL_RPATH": true,
-                "CMAKE_BUILD_TYPE": "Release",
-                "CBOT_STATIC": true,
-                "DESKTOP": true,
-                "DEV_BUILD": false,
-                "MUSIC": true,
-                "OFFICIAL_COLOBOT_BUILD": true,
-                "PORTABLE": true,
-                "TESTS": false,
-                "TOOLS": false,
-                "TRANSLATIONS": true,
-                "USE_RELATIVE_PATHS": true
-            }
-        },
-        {
             "name": "MacOS-CI",
             "description": "MacOS configuration for CI pipeline",
             "inherits": ["CI"],
