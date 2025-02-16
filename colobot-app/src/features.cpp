@@ -6,7 +6,7 @@ namespace
 {
 
 // Designated initializers
-void test_di()
+[[maybe_unused]] void test_di()
 {
     struct Foo
     {
@@ -18,7 +18,7 @@ void test_di()
 }
 
 // Template parameters for generic lambdas
-void test_tpfgl()
+[[maybe_unused]] void test_tpfgl()
 {
     auto foo = []<typename T>([[maybe_unused]] T&& value)
     {
@@ -37,7 +37,7 @@ concept HasTest = requires
     typename T::test;
 };
 
-void test_concepts()
+[[maybe_unused]] void test_concepts()
 {
     struct Foo
     {
