@@ -1,6 +1,9 @@
 #include <type_traits>
 #include <version>
 
+namespace
+{
+
 // Designated initializers
 void test_di()
 {
@@ -10,13 +13,13 @@ void test_di()
         float y;
     };
 
-    Foo foo = { .x = 23, .y = 34.5f };
+    [[maybe_unused]] Foo foo = { .x = 23, .y = 34.5f };
 }
 
 // Template parameters for generic lambdas
 void test_tpfgl()
 {
-    auto foo = []<typename T>(T&& value)
+    auto foo = []<typename T>([[maybe_unused]] T&& value)
     {
         static_assert(std::is_same_v<T, int> || std::is_same_v<T, float>);
     };
@@ -47,3 +50,5 @@ void test_concepts()
     static_assert(HasTest<Foo>);
     static_assert(!HasTest<Bar>);
 }
+
+} // namespace
