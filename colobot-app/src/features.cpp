@@ -25,3 +25,25 @@ void test_tpfgl()
     foo(45.6f);
     // foo('c');
 }
+
+// Concepts
+template<typename T>
+concept HasTest = requires
+{
+    typename T::test;
+};
+
+void test_concepts()
+{
+    struct Foo
+    {
+        using test = void;
+    };
+
+    struct Bar
+    {
+    };
+
+    static_assert(HasTest<Foo>);
+    static_assert(!HasTest<Bar>);
+}
