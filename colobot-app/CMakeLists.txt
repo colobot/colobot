@@ -5,6 +5,7 @@ add_executable(colobot)
 
 target_sources(colobot PRIVATE
     src/main.cpp
+    src/features.cpp
 )
 
 if(WIN32)
