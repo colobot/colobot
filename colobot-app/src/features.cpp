@@ -1,3 +1,4 @@
+#include <compare>
 #include <type_traits>
 #include <version>
 
@@ -50,5 +51,10 @@ void test_concepts()
     static_assert(HasTest<Foo>);
     static_assert(!HasTest<Bar>);
 }
+
+// Three-way comparison operator
+static_assert((0 <=> 0) == 0);
+static_assert((2 <=> 0) > 0);
+static_assert((0 <=> 2) < 0);
 
 } // namespace
