@@ -1808,6 +1808,10 @@ char CApplication::GetLanguageChar() const
             langChar = 'C';
             break;
 
+        case LANGUAGE_MAGYAR:
+            langChar = 'H';
+            break;
+
         case LANGUAGE_GERMAN:
             langChar = 'D';
             break;
@@ -1873,6 +1877,10 @@ void CApplication::SetLanguage(Language language)
             }
             else if (envLang == "cs")
             {
+                m_language = LANGUAGE_MAGYAR;
+            }
+            else if (envLang == "hu")
+            {
                 m_language = LANGUAGE_CZECH;
             }
             else if (envLang == "de")
@@ -1908,6 +1916,10 @@ void CApplication::SetLanguage(Language language)
     {
         default:
             locale = "";
+            break;
+
+        case LANGUAGE_MAGYAR:
+            locale = "hu_HU.utf8";
             break;
 
         case LANGUAGE_CZECH:
