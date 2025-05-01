@@ -1,24 +1,26 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# Chris <marius.romanus@gmx.net>, 2016.
+# This file is part of the Colobot: Gold Edition source code
+# Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+# This file is distributed under the same license as the Colobot package.
+# Magyar fordítást készítette: Sinkovics Zsolt (FB: Sini Zsolt)
+# Hungarian translate <pondera77@gmail.com>, 2025.
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
+"Project-Id-Version: latest\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: DATE\n"
-"PO-Revision-Date: 2025-04-30 08:16+0200\n"
-"Last-Translator: Chris <marius.romanus@gmx.net>\n"
-"Language-Team: Colobot: Gold Edition freelancer\n"
-"Language: de\n"
+"PO-Revision-Date: 2025-05-01 12:04+0200\n"
+"Last-Translator: Sinkovics Zsolt <pondera77@gmail.com>\n"
+"Language-Team: Sinkovics Zsolt\n"
+"Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.3\n"
-"X-Language: de_DE\n"
+"X-Language: hu_HU\n"
 "X-Source-Language: en_US\n"
 "X-POOTLE-MTIME: 1406536037.000000\n"
+"X-Poedit-SourceCharset: UTF-8\n"
 
 msgid " or "
 msgstr " vagy "
