@@ -46,6 +46,18 @@ enum class CullFace : unsigned char
     BOTH,
 };
 
+/**
+ * \enum Mark
+ * \brief Special material mark for identifying model parts
+ */
+enum class Mark : unsigned char
+{
+    NONE,
+    ENERGY,
+    LEFT_TRACKER,
+    RIGHT_TRACKER,
+};
+
 //! PBR material
 struct Material
 {
@@ -75,6 +87,8 @@ struct Material
     CullFace cullFace = CullFace::BACK;
     // Special tag
     std::string tag = "";
+    // Special mark
+    Mark mark = Mark::NONE;
 
     // Legacy functionality
     //! Variable detail texture

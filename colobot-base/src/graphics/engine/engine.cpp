@@ -1117,7 +1117,7 @@ void CEngine::ChangeSecondTexture(int objRank, const std::filesystem::path& tex2
     }
 }
 
-void CEngine::SetUVTransform(int objRank, const std::string& tag, const glm::vec2& offset, const glm::vec2& scale)
+void CEngine::SetUVTransform(int objRank, Mark mark, const glm::vec2& offset, const glm::vec2& scale)
 {
     assert(objRank >= 0 && objRank < static_cast<int>(m_objects.size()));
 
@@ -1131,7 +1131,7 @@ void CEngine::SetUVTransform(int objRank, const std::string& tag, const glm::vec
 
     for (auto& data : p1.next)
     {
-        if (data.material.tag == tag)
+        if (data.material.mark == mark)
         {
             data.uvOffset = offset;
             data.uvScale = scale;

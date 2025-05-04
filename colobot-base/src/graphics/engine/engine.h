@@ -78,6 +78,7 @@ struct Material;
 struct ModelShadowSpot;
 struct ModelTriangle;
 
+enum class Mark : unsigned char;
 enum class TransparencyMode : unsigned char;
 
 /**
@@ -619,7 +620,7 @@ public:
     //! Changes the 2nd texure for given object
     void            ChangeSecondTexture(int objRank, const std::filesystem::path& tex2Name);
 
-    void            SetUVTransform(int objRank, const std::string& tag, const glm::vec2& offset, const glm::vec2& scale);
+    void            SetUVTransform(int objRank, Mark mark, const glm::vec2& offset, const glm::vec2& scale);
 
     //! Detects the target object that is selected with the mouse
     /** Returns the rank of the object or -1. */

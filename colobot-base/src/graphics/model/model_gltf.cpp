@@ -207,6 +207,18 @@ void GLTFLoader::ReadMaterials()
             {
                 mat.tag = extras["tag"].get<std::string>();
             }
+
+            if (extras.contains("mark"))
+            {
+                std::string mark = extras["mark"].get<std::string>();
+
+                if (mark == "energy")
+                    mat.mark = Mark::ENERGY;
+                else if (mark == "left_tracker")
+                    mat.mark = Mark::LEFT_TRACKER;
+                else if (mark == "right_tracker")
+                    mat.mark = Mark::RIGHT_TRACKER;
+            }
         }
 
         if (material.contains("emissiveFactor"))

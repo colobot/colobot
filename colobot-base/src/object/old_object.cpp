@@ -26,6 +26,7 @@
 #include "common/settings.h"
 #include "common/stringutils.h"
 
+#include "graphics/core/material.h"
 #include "graphics/engine/engine.h"
 #include "graphics/engine/lightman.h"
 #include "graphics/engine/lightning.h"
@@ -2146,7 +2147,7 @@ void COldObject::UpdateEnergyMapping()
 
     m_lastEnergy = GetEnergyLevel();
 
-    m_engine->SetUVTransform(m_objectPart[0].object, "energy",
+    m_engine->SetUVTransform(m_objectPart[0].object, Gfx::Mark::ENERGY,
         { 0.0f, 0.25f * (GetEnergyLevel() - 1.0f) }, { 1.0f, 1.0f });
 }
 

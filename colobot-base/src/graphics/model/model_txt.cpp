@@ -46,7 +46,7 @@ ModelCrashSphere ParseCrashSphere(const std::string& text);
 ModelShadowSpot ParseShadowSpot(const std::string& text);
 Math::Sphere ParseCameraCollisionSphere(const std::string& text);
 AlphaMode ParseTransparentMode(const std::string& text);
-std::string ParseSpecialMark(const std::string& text);
+Mark ParseSpecialMark(const std::string& text);
 
 void ConvertFromOldRenderState(ModelTriangle& triangle, int state);
 
@@ -230,7 +230,7 @@ std::unique_ptr<CModelMesh> ReadTextMesh(std::istream& stream)
         t.material.variableDetail = ReadLineString(stream, "var_tex2") == std::string("Y");
 
         t.material.alphaMode = ParseTransparentMode(ReadLineString(stream, "trans_mode"));
-        t.material.tag = ParseSpecialMark(ReadLineString(stream, "mark"));
+        t.material.mark = ParseSpecialMark(ReadLineString(stream, "mark"));
         bool doubleSided = ReadLineString(stream, "dbl_side") == std::string("Y");
         t.material.cullFace = doubleSided ? CullFace::NONE : CullFace::BACK;
 
@@ -413,16 +413,16 @@ AlphaMode ParseTransparentMode(const std::string& text)
         return AlphaMode::NONE;
 }
 
-std::string ParseSpecialMark(const std::string& text)
+Mark ParseSpecialMark(const std::string& text)
 {
     if (text == "none")
-        return "";
+        return Mark::NONE;
     else if (text == "part1")
-        return "tracker_right";
+        return Mark::RIGHT_TRACKER;
     else if (text == "part2")
-        return "tracker_left";
+        return Mark::LEFT_TRACKER;
     else if (text == "part3")
-        return "energy";
+        return Mark::ENERGY;
     else
         throw CModelIOException(std::string("Unexpected special mark: '") + text + "'");
 }

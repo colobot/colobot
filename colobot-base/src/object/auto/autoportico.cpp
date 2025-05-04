@@ -20,6 +20,7 @@
 
 #include "object/auto/autoportico.h"
 
+#include "graphics/core/material.h"
 #include "graphics/engine/engine.h"
 
 #include "common/stringutils.h"
@@ -404,9 +405,9 @@ void CAutoPortico::UpdateTrackMapping(float left, float right)
     left = left - std::floor(left);
     right = right - std::floor(right);
 
-    m_engine->SetUVTransform(rank, "tracker_right",
+    m_engine->SetUVTransform(rank, Gfx::Mark::RIGHT_TRACKER,
         { (1.0f - right) * scale, 0.0f }, { 1.0f, 1.0f });
 
-    m_engine->SetUVTransform(rank, "tracker_left",
+    m_engine->SetUVTransform(rank, Gfx::Mark::LEFT_TRACKER,
         { (1.0f - left) * scale, 0.0f }, { 1.0f, 1.0f });
 }

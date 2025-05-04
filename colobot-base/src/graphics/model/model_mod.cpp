@@ -295,13 +295,11 @@ void ConvertFromOldRenderState(ModelTriangle& triangle, int state)
         triangle.material.alphaMode = AlphaMode::NONE;
 
     if ((state & static_cast<int>(ModelRenderState::Part1)) != 0)
-        triangle.material.tag = "tracker_right";
+        triangle.material.mark = Mark::RIGHT_TRACKER;
     else if ((state & static_cast<int>(ModelRenderState::Part2)) != 0)
-        triangle.material.tag = "tracker_left";
+        triangle.material.mark = Mark::LEFT_TRACKER;
     else if ((state & static_cast<int>(ModelRenderState::Part3)) != 0)
-        triangle.material.tag = "energy";
-    else
-        triangle.material.tag = "";
+        triangle.material.mark = Mark::ENERGY;
 
     bool doubleSided = (state & static_cast<int>(ModelRenderState::TwoFace)) != 0;
     triangle.material.cullFace = doubleSided ? CullFace::NONE : CullFace::BACK;
