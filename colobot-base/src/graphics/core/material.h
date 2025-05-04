@@ -82,28 +82,7 @@ struct Material
     //! Detail texture
     std::filesystem::path detailTexture = "";
 
-    bool operator==(const Material& other) const
-    {
-        return albedoColor == other.albedoColor
-            && albedoTexture == other.albedoTexture
-            && roughness == other.roughness
-            && metalness == other.metalness
-            && materialTexture == other.materialTexture
-            && emissiveColor == other.emissiveColor
-            && emissiveTexture == other.emissiveTexture
-            && normalTexture == other.normalTexture
-            && alphaMode == other.alphaMode
-            && alphaThreshold == other.alphaThreshold
-            && cullFace == other.cullFace
-            && tag == other.tag
-            && variableDetail == other.variableDetail
-            && detailTexture == other.detailTexture;
-    }
-
-    bool operator!=(const Material& other) const
-    {
-        return !operator==(other);
-    }
+    bool operator==(const Material& other) const = default;
 };
 
 } // namespace Gfx
