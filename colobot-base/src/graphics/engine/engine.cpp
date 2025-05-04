@@ -2985,19 +2985,6 @@ void CEngine::Draw3DScene()
                 }
             }
 
-            if (data.material.recolor.empty())
-            {
-                objectRenderer->SetRecolor(false);
-            }
-            else
-            {
-                Color recolorFrom = data.material.recolorReference;
-                Color recolorTo = GetObjectColor(objRank, data.material.recolor);
-                float recolorThreshold = data.material.recolorThreshold;
-
-                objectRenderer->SetRecolor(true, recolorFrom, recolorTo, recolorThreshold);
-            }
-
             objectRenderer->SetAlbedoColor(color);
             objectRenderer->SetAlbedoTexture(data.albedoTexture);
             objectRenderer->SetDetailTexture(data.detailTexture);
@@ -3062,19 +3049,6 @@ void CEngine::Draw3DScene()
 
             for (auto& data : p1.next)
             {
-                if (data.material.recolor.empty())
-                {
-                    objectRenderer->SetRecolor(false);
-                }
-                else
-                {
-                    Color recolorFrom = data.material.recolorReference;
-                    Color recolorTo = GetObjectColor(objRank, data.material.recolor);
-                    float recolorThreshold = data.material.recolorThreshold;
-
-                    objectRenderer->SetRecolor(true, recolorFrom, recolorTo, recolorThreshold);
-                }
-
                 objectRenderer->SetAlbedoColor(tColor);
                 objectRenderer->SetAlbedoTexture(data.albedoTexture);
                 objectRenderer->SetDetailTexture(data.detailTexture);
@@ -3730,19 +3704,6 @@ void CEngine::DrawInterface()
                     {
                         color = c;
                     }
-                }
-
-                if (data.material.recolor.empty())
-                {
-                    renderer->SetRecolor(false);
-                }
-                else
-                {
-                    Color recolorFrom = data.material.recolorReference;
-                    Color recolorTo = GetObjectColor(objRank, data.material.recolor);
-                    float recolorThreshold = 0.3;
-
-                    renderer->SetRecolor(true, recolorFrom, recolorTo, recolorThreshold);
                 }
 
                 renderer->SetAlbedoColor(color);

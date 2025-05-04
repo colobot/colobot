@@ -207,27 +207,6 @@ void GLTFLoader::ReadMaterials()
             {
                 mat.tag = extras["tag"].get<std::string>();
             }
-
-            if (extras.contains("recolor"))
-            {
-                mat.recolor = extras["recolor"].get<std::string>();
-            }
-
-            if (extras.contains("recolor_ref"))
-            {
-                const auto& color = extras["recolor_ref"];
-
-                float r = color[0];
-                float g = color[1];
-                float b = color[2];
-
-                mat.recolorReference = Color(r, g, b);
-            }
-
-            if (extras.contains("recolor_threshold"))
-            {
-                mat.recolorThreshold = extras["recolor_threshold"].get<float>();
-            }
         }
 
         if (material.contains("emissiveFactor"))

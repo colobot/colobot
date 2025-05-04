@@ -39,11 +39,6 @@ uniform float uni_TriplanarScale;
 
 uniform float uni_AlphaScissor;
 
-uniform bool uni_Recolor;
-uniform vec3 uni_RecolorFrom;
-uniform vec3 uni_RecolorTo;
-uniform float uni_RecolorThreshold;
-
 in VertexData
 {
     vec4 Color;
@@ -94,24 +89,6 @@ void main()
     vec4 albedo = data.Color * uni_AlbedoColor;
 
     vec4 texColor = texture(uni_AlbedoTexture, data.TexCoord0);
-
-    if (uni_Recolor)
-    {
-        vec3 hsv = rgb2hsv(texColor.rgb);
-
-        if (abs(hsv.x - uni_RecolorFrom.x) < uni_RecolorThreshold)
-        {
-            hsv.x += (uni_RecolorTo.x - uni_RecolorFrom.x);
-            hsv.y += (uni_RecolorTo.y - uni_RecolorFrom.y);
-
-            if (hsv.x < 0.0) hsv.x += 1.0;
-            if (hsv.x > 1.0) hsv.x -= 1.0;
-
-            hsv.y = clamp(hsv.y, 0.0, 1.0);
-        }
-
-        texColor.rgb = hsv2rgb(hsv);
-    }
 
     albedo *= texColor;
 

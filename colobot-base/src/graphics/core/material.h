@@ -75,12 +75,6 @@ struct Material
     CullFace cullFace = CullFace::BACK;
     // Special tag
     std::string tag = "";
-    // Recolor name
-    std::string recolor = "";
-    // Recolor reference color
-    Color recolorReference = { 0.0f, 0.0f, 0.0f, 0.0f };
-    // Recolor threshold
-    float recolorThreshold = 0.1f;
 
     // Legacy functionality
     //! Variable detail texture
@@ -102,8 +96,6 @@ struct Material
             && alphaThreshold == other.alphaThreshold
             && cullFace == other.cullFace
             && tag == other.tag
-            && recolor == other.recolor
-            && recolorReference == other.recolorReference
             && variableDetail == other.variableDetail
             && detailTexture == other.detailTexture;
     }
