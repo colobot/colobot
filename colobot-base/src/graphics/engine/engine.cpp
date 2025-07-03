@@ -2645,45 +2645,28 @@ bool CEngine::IsVisiblePoint(const glm::vec3 &pos)
     return glm::distance(m_eyePt, pos) <= (m_deepView[0] * m_clippingDistance);
 }
 
-Color CEngine::GetObjectColor(int object, const std::string& name)
+Color CEngine::GetObjectColor(int object, BaseColor baseColor)
 {
-    if (name == "team")
-    {
-        return CRobotMain::GetInstance().GetTeamColor(m_objects[object].team);
-    }
-    else if (name == "vehicle")
-    {
-        return CRobotMain::GetInstance().GetVehicleColor();
-    }
-    else if (name == "plant")
-    {
-        return CRobotMain::GetInstance().GetGreeneryColor();
-    }
-    else if (name == "alien")
-    {
-        return CRobotMain::GetInstance().GetAlienColor();
-    }
-    else if (name == "hair")
-    {
-        const auto& appearance = CRobotMain::GetInstance().GetPlayerProfile()->GetAppearance();
+    const auto& appearance = CRobotMain::GetInstance().GetPlayerProfile()->GetAppearance();
 
-        return appearance.colorHair;
-    }
-    else if (name == "suit")
+    switch (baseColor)
     {
-        const auto& appearance = CRobotMain::GetInstance().GetPlayerProfile()->GetAppearance();
-
-        return appearance.colorCombi;
-    }
-    else if (name == "band")
-    {
-        const auto& appearance = CRobotMain::GetInstance().GetPlayerProfile()->GetAppearance();
-
-        return appearance.colorBand;
-    }
-    else
-    {
-        return Color(1.0, 1.0, 1.0, 1.0);
+        case BaseColor::TEAM:
+            return CRobotMain::GetInstance().GetTeamColor(m_objects[object].team);
+        case BaseColor::VEHICLE:
+            return CRobotMain::GetInstance().GetVehicleColor();
+        case BaseColor::PLANT:
+            return CRobotMain::GetInstance().GetGreeneryColor();
+        case BaseColor::ALIEN:
+            return CRobotMain::GetInstance().GetAlienColor();
+        case BaseColor::HAIR:
+            return appearance.colorHair;
+        case BaseColor::SUIT:
+            return appearance.colorCombi;
+        case BaseColor::BAND:
+            return appearance.colorBand;
+        default:
+            return Color(1.0, 1.0, 1.0, 1.0);
     }
 }
 
@@ -2924,7 +2907,7 @@ void CEngine::Draw3DScene()
     objectRenderer->SetTriplanarMode(m_triplanarMode);
     objectRenderer->SetTriplanarScale(m_triplanarScale);
 
-    bool transparent = false;
+    bool has_ghosts = false;
 
     for (int objRank = 0; objRank < static_cast<int>(m_objects.size()); objRank++)
     {
@@ -2960,32 +2943,26 @@ void CEngine::Draw3DScene()
         {
             if (m_objects[objRank].ghost)  // transparent ?
             {
-                transparent = true;
+                has_ghosts = true;
                 continue;
             }
+
+            auto baseColor = GetObjectColor(objRank, data.material.baseColor);
 
             if (data.material.alphaMode != AlphaMode::NONE)
             {
                 objectRenderer->SetAlphaScissor(data.material.alphaThreshold);
+                
+                baseColor = { 0.0f, 0.0f, 0.0f, 0.0f };
             }
             else
             {
                 objectRenderer->SetAlphaScissor(0.0f);
             }
 
-            Color color = data.material.albedoColor;
+            objectRenderer->SetBaseColor(baseColor);
 
-            if (!data.material.tag.empty())
-            {
-                Color c = GetObjectColor(objRank, data.material.tag);
-
-                if (c != Color(1.0, 1.0, 1.0, 1.0))
-                {
-                    color = c;
-                }
-            }
-
-            objectRenderer->SetAlbedoColor(color);
+            objectRenderer->SetAlbedoColor(data.material.albedoColor);
             objectRenderer->SetAlbedoTexture(data.albedoTexture);
             objectRenderer->SetDetailTexture(data.detailTexture);
 
@@ -3010,11 +2987,11 @@ void CEngine::Draw3DScene()
     objectRenderer->SetAlphaScissor(0.0f);
     objectRenderer->SetCullFace(CullFace::NONE);
 
-    // Draw transparent objects
+    // Draw translucent objects (ghosts)
 
-    if (transparent)
+    if (has_ghosts)
     {
-        Color tColor = Color(68.0f / 255.0f, 68.0f / 255.0f, 68.0f / 255.0f, 255.0f);
+        Color tColor = Color(68.0f / 255.0f, 68.0f / 255.0f, 68.0f / 255.0f, 1.0f);
 
         for (int objRank = 0; objRank < static_cast<int>(m_objects.size()); objRank++)
         {
@@ -3049,7 +3026,9 @@ void CEngine::Draw3DScene()
 
             for (auto& data : p1.next)
             {
-                objectRenderer->SetAlbedoColor(tColor);
+                objectRenderer->SetBaseColor(GetObjectColor(objRank, data.material.baseColor));
+
+                objectRenderer->SetAlbedoColor(tColor * data.material.albedoColor);
                 objectRenderer->SetAlbedoTexture(data.albedoTexture);
                 objectRenderer->SetDetailTexture(data.detailTexture);
                 objectRenderer->SetUVTransform(data.uvOffset, data.uvScale);
@@ -3694,19 +3673,9 @@ void CEngine::DrawInterface()
 
             for (auto& data : p1.next)
             {
-                Color color = data.material.albedoColor;
+                renderer->SetBaseColor(GetObjectColor(objRank, data.material.baseColor));
 
-                if (!data.material.tag.empty())
-                {
-                    Color c = GetObjectColor(objRank, data.material.tag);
-
-                    if (c != Color(1.0, 1.0, 1.0, 1.0))
-                    {
-                        color = c;
-                    }
-                }
-
-                renderer->SetAlbedoColor(color);
+                renderer->SetAlbedoColor(data.material.albedoColor);
                 renderer->SetAlbedoTexture(data.albedoTexture);
                 renderer->SetDetailTexture(data.detailTexture);
 

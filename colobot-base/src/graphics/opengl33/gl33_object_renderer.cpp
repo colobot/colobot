@@ -88,6 +88,7 @@ CGL33ObjectRenderer::CGL33ObjectRenderer(CGL33Device* device)
     m_fogRange = glGetUniformLocation(m_program, "uni_FogRange");
     m_fogColor = glGetUniformLocation(m_program, "uni_FogColor");
 
+    m_baseColor = glGetUniformLocation(m_program, "uni_BaseColor");
     m_albedoColor = glGetUniformLocation(m_program, "uni_AlbedoColor");
     m_emissiveColor = glGetUniformLocation(m_program, "uni_EmissiveColor");
     m_roughness = glGetUniformLocation(m_program, "uni_Roughness");
@@ -262,6 +263,11 @@ void CGL33ObjectRenderer::SetModelMatrix(const glm::mat4& matrix)
 
     glUniformMatrix4fv(m_modelMatrix, 1, GL_FALSE, value_ptr(matrix));
     glUniformMatrix3fv(m_normalMatrix, 1, GL_FALSE, value_ptr(normalMatrix));
+}
+
+void CGL33ObjectRenderer::SetBaseColor(const Color& color)
+{
+    glUniform4f(m_baseColor, color.r, color.g, color.b, color.a);
 }
 
 void CGL33ObjectRenderer::SetAlbedoColor(const Color& color)

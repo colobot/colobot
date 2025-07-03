@@ -78,6 +78,7 @@ struct Material;
 struct ModelShadowSpot;
 struct ModelTriangle;
 
+enum class BaseColor : unsigned char;
 enum class Mark : unsigned char;
 enum class TransparencyMode : unsigned char;
 
@@ -955,7 +956,7 @@ public:
     bool            IsVisiblePoint(const glm::vec3& pos);
 
     //! Returns object material color
-    Color           GetObjectColor(int object, const std::string& name);
+    Color           GetObjectColor(int object, BaseColor baseColor);
 
     //! Updates the scene after a change of parameters
     void            ApplyChange();

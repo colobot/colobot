@@ -47,6 +47,21 @@ enum class CullFace : unsigned char
 };
 
 /**
+ * \enum BaseColor
+ * \brief Defines base color for the material
+ */
+enum class BaseColor : unsigned char
+{
+    TEAM,
+    VEHICLE,
+    PLANT,
+    ALIEN,
+    HAIR,
+    SUIT,
+    BAND,
+};
+
+/**
  * \enum Mark
  * \brief Special material mark for identifying model parts
  */
@@ -61,6 +76,8 @@ enum class Mark : unsigned char
 //! PBR material
 struct Material
 {
+    //! Surface type
+    BaseColor baseColor = BaseColor::TEAM;
     //! Albedo color
     Color albedoColor = Color{ 1.0f, 1.0f, 1.0f, 1.0f };
     //! Albedo texture

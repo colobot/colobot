@@ -203,9 +203,26 @@ void GLTFLoader::ReadMaterials()
                 mat.detailTexture = "textures" / StrUtils::ToPath(ss.str());
             }
 
-            if (extras.contains("tag"))
+            if (extras.contains("base"))
             {
-                mat.tag = extras["tag"].get<std::string>();
+                std::string base = extras["base"].get<std::string>();
+
+                if (base == "team")
+                    mat.baseColor = BaseColor::TEAM;
+                else if (base == "vehicle")
+                    mat.baseColor = BaseColor::VEHICLE;
+                else if (base == "plant")
+                    mat.baseColor = BaseColor::PLANT;
+                else if (base == "alien")
+                    mat.baseColor = BaseColor::ALIEN;
+                else if (base == "hair")
+                    mat.baseColor = BaseColor::HAIR;
+                else if (base == "suit")
+                    mat.baseColor = BaseColor::SUIT;
+                else if (base == "band")
+                    mat.baseColor = BaseColor::BAND;
+                else
+                    throw std::runtime_error("Unknown base color: '" + base + "'");
             }
 
             if (extras.contains("mark"))
@@ -218,6 +235,8 @@ void GLTFLoader::ReadMaterials()
                     mat.mark = Mark::LEFT_TRACKER;
                 else if (mark == "right_tracker")
                     mat.mark = Mark::RIGHT_TRACKER;
+                else
+                    throw std::runtime_error("Unknown mark: '" + mark + "'");
             }
         }
 

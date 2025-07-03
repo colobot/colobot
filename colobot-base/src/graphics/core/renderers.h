@@ -166,6 +166,8 @@ public:
     //! Sets model matrix
     virtual void SetModelMatrix(const glm::mat4& matrix) = 0;
 
+    //! Sets base color
+    virtual void SetBaseColor(const Color& color) = 0;
     //! Sets albedo color
     virtual void SetAlbedoColor(const Color& color) = 0;
     //! Sets albedo texture
