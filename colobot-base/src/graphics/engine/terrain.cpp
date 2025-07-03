@@ -721,10 +721,10 @@ bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank)
                 Gfx::Material material;
                 material.albedoTexture = texName1;
                 material.detailTexture = "textures" / texName2;
-                material.tag = "brick_"
-                    + std::to_string(mx + 1) + "_"
-                    + std::to_string(my + 1) + "_"
-                    + std::to_string(y + 1);
+
+                material.tile = (mx + 1)
+                              | (my + 1) << 8
+                              | (y + 1) << 16;
 
                 m_engine->AddBaseObjTriangles(baseObjRank, vertices, material, EngineTriangleType::SURFACE);
             }

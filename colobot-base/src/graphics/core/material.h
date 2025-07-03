@@ -89,6 +89,8 @@ struct Material
     std::string tag = "";
     // Special mark
     Mark mark = Mark::NONE;
+    // Terrain tile identifier
+    int tile = 0;
 
     // Legacy functionality
     //! Variable detail texture
