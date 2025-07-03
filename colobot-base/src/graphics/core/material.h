@@ -102,8 +102,6 @@ struct Material
     float alphaThreshold = 0.5;
     // Cull face
     CullFace cullFace = CullFace::BACK;
-    // Special tag
-    std::string tag = "";
     // Special mark
     Mark mark = Mark::NONE;
     // Terrain tile identifier
