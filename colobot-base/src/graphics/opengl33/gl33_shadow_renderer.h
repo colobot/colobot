@@ -81,6 +81,9 @@ private:
     GLuint m_framebuffer = 0;
     int m_width = 0;
     int m_height = 0;
+
+    // White texture flr opaque rendering
+    GLuint m_whiteTexture = 0;
 };
 
 } // namespace Gfx
