@@ -40,10 +40,10 @@ namespace Gfx
 struct Color : glm::vec4
 {
     //! Constructor; default values are (0,0,0,0) = black
-    Color(float aR = 0.0f, float aG = 0.0f, float aB = 0.0f, float aA = 0.0f)
+    constexpr Color(float aR = 0.0f, float aG = 0.0f, float aB = 0.0f, float aA = 0.0f)
      : glm::vec4(aR, aG, aB, aA) {}
 
-    inline Color Inverse() const
+    constexpr Color Inverse() const
     {
         return Color(1.0f - r, 1.0f - g, 1.0f - b, 1.0f - a);
     }
@@ -69,17 +69,17 @@ struct Color : glm::vec4
         return stream.str();
     }
 
-    inline bool operator==(const Color &other) const
+    constexpr bool operator==(const Color &other) const
     {
         return r == other.r && g == other.g && b == other.b && a == other.a;
     }
 
-    inline bool operator!=(const Color &other) const
+    constexpr bool operator!=(const Color &other) const
     {
         return ! this->operator==(other);
     }
 
-    inline Color operator*(float scale) const
+    constexpr Color operator*(float scale) const
     {
         Color c = *this;
         c.r *= scale;
@@ -89,7 +89,7 @@ struct Color : glm::vec4
         return c;
     }
 
-    Color operator*(const Color& other) const
+    constexpr Color operator*(const Color& other) const
     {
         return Color{ r * other.r, g * other.g, b * other.b, a * other.a };
     }
