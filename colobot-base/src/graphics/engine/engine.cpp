@@ -3505,7 +3505,10 @@ void CEngine::RenderShadowMap()
 
             for (auto& data : p1.next)
             {
-                renderer->SetTexture(data.albedoTexture);
+                if (data.material.alphaMode == Gfx::AlphaMode::NONE)
+                    renderer->SetTexture({});
+                else
+                    renderer->SetTexture(data.albedoTexture);
 
                 renderer->DrawObject(data.buffer, true);
             }
