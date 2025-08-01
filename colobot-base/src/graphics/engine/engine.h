@@ -41,6 +41,7 @@
 #include <vector>
 #include <map>
 #include <set>
+#include <span>
 #include <memory>
 #include <unordered_map>
 
@@ -1038,6 +1039,17 @@ protected:
 
     //! Create texture and add it to cache
     Texture CreateTexture(const std::filesystem::path &texName, const TextureCreateParams &params, CImage* image = nullptr);
+
+    //! Applies recolor mask to the image if it's on the list
+    void        ApplyRecolorMask(CImage& image, const std::filesystem::path& name);
+
+    //! Applies recolor mask to the image using regions, reference color and threshold
+    void        ApplyRecolorMask(CImage& image,
+                    std::span<const glm::ivec4> regions,
+                    const Color& reference,
+                    float threshold,
+                    bool transparent,
+                    bool hsv);
 
     //! Tests whether the given object is visible
     bool        IsVisible(const glm::mat4& matrix, int objRank);

@@ -1885,6 +1885,8 @@ Texture CEngine::CreateTexture(const std::filesystem::path& texName, const Textu
         image = &img;
     }
 
+    ApplyRecolorMask(*image, texName);
+
     tex = m_device->CreateTexture(image, params);
 
     if (! tex.Valid())
@@ -2078,6 +2080,98 @@ void CEngine::CreateOrUpdateTexture(const std::filesystem::path& texName, CImage
     else
     {
         m_device->UpdateTexture((*it).second, { 0, 0 }, img->GetData(), m_defaultTexParams.format);
+    }
+}
+
+void CEngine::ApplyRecolorMask(CImage& image, const std::filesystem::path& name)
+{
+    constexpr Gfx::Color COLOR_REF_BOT   = Gfx::Color( 10.0f/256.0f, 166.0f/256.0f, 254.0f/256.0f);  // blue
+    constexpr Gfx::Color COLOR_REF_ALIEN = Gfx::Color(135.0f/256.0f, 170.0f/256.0f,  13.0f/256.0f);  // green
+    constexpr Gfx::Color COLOR_REF_GREEN = Gfx::Color(135.0f/256.0f, 170.0f/256.0f,  13.0f/256.0f);  // green
+    constexpr Gfx::Color COLOR_REF_WATER = Gfx::Color( 25.0f/256.0f, 255.0f/256.0f, 240.0f/256.0f);  // cyan
+
+    auto filename = name.filename();
+
+    if (filename == "base1.png"
+        || filename == "convert.png"
+        || filename == "derrick.png"
+        || filename == "factory.png"
+        || filename == "lemt.png"
+        || filename == "roller.png"
+        || filename == "search.png"
+        || filename == "rollert.png"
+    )
+    {
+        ApplyRecolorMask(image, std::array{ glm::ivec4{ 0, 0, image.GetWidth(), image.GetHeight() }},
+            COLOR_REF_BOT, 0.1f, false, true);
+    }
+}
+
+void CEngine::ApplyRecolorMask(CImage& image,
+    std::span<const glm::ivec4> regions,
+    const Color& reference,
+    float threshold,
+    bool transparent,
+    bool hsv)
+{
+    const auto toGrayscale = [](const Color& color)
+    {
+        return glm::dot(glm::vec3(color), { 0.2989f, 0.5870f, 0.1140f });
+    };
+
+    const ColorHSV referenceHSV = RGB2HSV(reference);
+
+    const float referenceGrayscale = toGrayscale(reference);
+
+    image.ConvertToRGBA();
+
+    for (const auto& region : regions) {
+        const auto [x, y, width, height] = std::tie(region[0], region[1], region[2], region[3]);
+
+        for (int j = 0; j < height; j++)
+        {
+            for (int i = 0; i < width; i++)
+            {
+                auto color = image.GetPixel({ x + i, y + j });
+
+                if (hsv)
+                {
+                    ColorHSV colorHSV = RGB2HSV(color);
+
+                    if (colorHSV.s < 0.01f || std::abs(colorHSV.h - referenceHSV.h) > threshold) continue;
+                }
+                else
+                {
+                    float difference = std::abs(color.r - reference.r)
+                        + std::abs(color.g - reference.g)
+                        + std::abs(color.b - reference.b);
+
+                    if (difference > 3.0f * threshold) continue;
+                }
+
+                if (transparent)
+                {
+                    // todo
+                }
+                else
+                {
+                    const float grayscale = toGrayscale(color);
+
+                    const float target = grayscale < referenceGrayscale ? 0.0f : 1.0f;
+
+                    if (std::abs(target - referenceGrayscale) < 1e-3)
+                    {
+                        image.SetPixel({ x + i, y + j}, Color{ 0.0f, 0.0f, 0.0f, 0.0f });
+                    }
+                    else
+                    {
+                        const float alpha = (grayscale - referenceGrayscale) / (target - referenceGrayscale);
+
+                        image.SetPixel({ x + i, y + j}, Color{ target, target, target, alpha });
+                    }
+                }
+            }
+        }
     }
 }
 
