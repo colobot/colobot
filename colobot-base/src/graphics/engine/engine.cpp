@@ -3150,20 +3150,34 @@ void CEngine::Draw3DScene()
 
             auto baseColor = GetObjectColor(objRank, data.material.baseColor);
 
-            if (data.material.alphaMode != AlphaMode::NONE)
-            {
-                objectRenderer->SetAlphaScissor(data.material.alphaThreshold);
-                
-                baseColor = { 0.0f, 0.0f, 0.0f, 0.0f };
-            }
-            else
+            if (data.material.alphaMode == AlphaMode::NONE)
             {
                 objectRenderer->SetAlphaScissor(0.0f);
+
+                baseColor.a = 1.0f;
+
+                objectRenderer->SetBaseColor(baseColor);
+                objectRenderer->SetAlbedoColor(data.material.albedoColor);
+            }
+            else if (data.material.alphaMode == AlphaMode::MASK)
+            {
+                objectRenderer->SetAlphaScissor(data.material.alphaThreshold);
+
+                baseColor.a = 1.0f;
+
+                objectRenderer->SetBaseColor({ 0.0f, 0.0f, 0.0f, 0.0f });
+                objectRenderer->SetAlbedoColor(data.material.albedoColor * baseColor);
+            }
+            else if (data.material.alphaMode == AlphaMode::BLEND)
+            {
+                objectRenderer->SetAlphaScissor(0.0f);
+
+                baseColor.a = 1.0f;
+
+                objectRenderer->SetBaseColor({ 0.0f, 0.0f, 0.0f, 0.0f });
+                objectRenderer->SetAlbedoColor(data.material.albedoColor * baseColor);
             }
 
-            objectRenderer->SetBaseColor(baseColor);
-
-            objectRenderer->SetAlbedoColor(data.material.albedoColor);
             objectRenderer->SetAlbedoTexture(data.albedoTexture);
             objectRenderer->SetDetailTexture(data.detailTexture);
 
