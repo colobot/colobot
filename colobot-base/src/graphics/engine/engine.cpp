@@ -2105,6 +2105,15 @@ void CEngine::ApplyRecolorMask(CImage& image, const std::filesystem::path& name)
         ApplyRecolorMask(image, std::array{ glm::ivec4{ 0, 0, image.GetWidth(), image.GetHeight() }},
             COLOR_REF_BOT, 0.1f, false, true);
     }
+    else if (filename == "drawer.png")
+    {
+        constexpr auto regions = std::array
+        {
+            glm::ivec4{ 0, 0, 256, 160 }
+        };
+
+        ApplyRecolorMask(image, regions, COLOR_REF_BOT, 0.1f, false, true);
+    }
 }
 
 void CEngine::ApplyRecolorMask(CImage& image,
