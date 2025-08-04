@@ -2092,6 +2092,28 @@ void CEngine::ApplyRecolorMask(CImage& image, const std::filesystem::path& name)
 
     auto filename = name.filename();
 
+    auto rectangle = [&](const glm::ivec2& p1, const glm::ivec2& p2, const glm::ivec2& size = { 256, 256 })
+    {
+        int x1, x2, y1, y2;
+
+        std::tie(x1, x2) = std::minmax(p1.x, p2.x);
+        std::tie(y1, y2) = std::minmax(p1.y, p2.y);
+
+        if (image.GetWidth() != size.x)
+        {
+            x1 = x1 * image.GetWidth() / size.x;
+            x2 = x2 * image.GetWidth() / size.x;
+        }
+
+        if (image.GetHeight() != size.y)
+        {
+            y1 = y1 * image.GetHeight() / size.y;
+            y2 = y2 * image.GetHeight() / size.y;
+        }
+
+        return glm::ivec4{ x1, y1, x2 - x1, y2 - y1 };
+    };
+
     if (filename == "base1.png"
         || filename == "convert.png"
         || filename == "derrick.png"
@@ -2107,28 +2129,28 @@ void CEngine::ApplyRecolorMask(CImage& image, const std::filesystem::path& name)
     }
     else if (filename == "drawer.png")
     {
-        constexpr auto regions = std::array
+        const auto regions = std::array
         {
-            glm::ivec4{ 0, 0, 256, 160 }
+            rectangle({ 0, 0 }, { 256, 160 })
         };
 
         ApplyRecolorMask(image, regions, COLOR_REF_BOT, 0.1f, false, true);
     }
     else if (filename == "subm.png")
     {
-        constexpr auto regions = std::array
+        const auto regions = std::array
         {
-            glm::ivec4{ 0, 0, 128, 26 },
-            glm::ivec4{ 33, 26, 38, 90 },
-            glm::ivec4{ 82, 32, 128, 50 },
-            glm::ivec4{ 71, 116, 11, 60 },
-            glm::ivec4{ 82, 82, 50, 68 },
-            glm::ivec4{ 132, 82, 64, 106 },
-            glm::ivec4{ 224, 0, 32, 89 },
-            glm::ivec4{ 0, 224, 78, 20 },
-            glm::ivec4{ 199, 169, 57, 7 },
-            glm::ivec4{ 219, 176, 17, 39 },
-            glm::ivec4{ 171, 243, 11, 10 },
+            rectangle({ 0, 0 }, { 128, 26 }),
+            rectangle({ 33, 26 }, { 71, 116 }),
+            rectangle({ 82, 32 }, { 210, 82 }),
+            rectangle({ 71, 116 }, { 82, 176 }),
+            rectangle({ 82, 82 }, { 132, 150 }),
+            rectangle({ 132, 82 }, { 196, 188 }),
+            rectangle({ 224, 0 }, { 256, 89 }),
+            rectangle({ 0, 224 }, { 78, 244 }),
+            rectangle({ 199, 169 }, { 256, 176 }),
+            rectangle({ 219, 176 }, { 236, 215 }),
+            rectangle({ 171, 243 }, { 182, 253 }),
         };
 
         ApplyRecolorMask(image, std::array{ glm::ivec4{ 0, 0, image.GetWidth(), image.GetHeight() }},
@@ -2136,11 +2158,11 @@ void CEngine::ApplyRecolorMask(CImage& image, const std::filesystem::path& name)
     }
     else if (filename == "face01.png")
     {
-        constexpr auto regions = std::array
+        const auto regions = std::array
         {
-            glm::ivec4{ 0, 0, 96, 172 },
-            glm::ivec4{ 158, 0, 98, 172 },
-            glm::ivec4{ 96, 0, 62, 71 },
+            rectangle({ 0, 0 }, { 96, 172 }),
+            rectangle({ 158, 0 }, { 256, 172 }),
+            rectangle({ 96, 0 }, { 158, 71 }),
         };
 
         constexpr Color hair = { 90.0f / 256.0f, 95.0f / 256.0f, 85.0f / 256.0f };
