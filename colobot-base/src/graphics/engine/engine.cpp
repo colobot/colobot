@@ -2086,9 +2086,9 @@ void CEngine::CreateOrUpdateTexture(const std::filesystem::path& texName, CImage
 void CEngine::ApplyRecolorMask(CImage& image, const std::filesystem::path& name)
 {
     constexpr Gfx::Color COLOR_REF_BOT   = Gfx::Color( 10.0f/256.0f, 166.0f/256.0f, 254.0f/256.0f);  // blue
-    constexpr Gfx::Color COLOR_REF_ALIEN = Gfx::Color(135.0f/256.0f, 170.0f/256.0f,  13.0f/256.0f);  // green
-    constexpr Gfx::Color COLOR_REF_GREEN = Gfx::Color(135.0f/256.0f, 170.0f/256.0f,  13.0f/256.0f);  // green
-    constexpr Gfx::Color COLOR_REF_WATER = Gfx::Color( 25.0f/256.0f, 255.0f/256.0f, 240.0f/256.0f);  // cyan
+    [[maybe_unused]] constexpr Gfx::Color COLOR_REF_ALIEN = Gfx::Color(135.0f/256.0f, 170.0f/256.0f,  13.0f/256.0f);  // green
+    [[maybe_unused]] constexpr Gfx::Color COLOR_REF_GREEN = Gfx::Color(135.0f/256.0f, 170.0f/256.0f,  13.0f/256.0f);  // green
+    [[maybe_unused]] constexpr Gfx::Color COLOR_REF_WATER = Gfx::Color( 25.0f/256.0f, 255.0f/256.0f, 240.0f/256.0f);  // cyan
 
     auto filename = name.filename();
 
@@ -2153,8 +2153,7 @@ void CEngine::ApplyRecolorMask(CImage& image, const std::filesystem::path& name)
             rectangle({ 171, 243 }, { 182, 253 }),
         };
 
-        ApplyRecolorMask(image, std::array{ glm::ivec4{ 0, 0, image.GetWidth(), image.GetHeight() }},
-            COLOR_REF_BOT, 0.1f, false, true);
+        ApplyRecolorMask(image, regions, COLOR_REF_BOT, 0.1f, false, true);
     }
     else if (filename == "face01.png")
     {
