@@ -2256,7 +2256,9 @@ void CEngine::ApplyRecolorMask(CImage& image,
 
                 if (transparent)
                 {
-                    // todo
+                    const float grayscale = toGrayscale(color);
+
+                    image.SetPixel({ x + i, y + j}, Color{ grayscale, grayscale, grayscale, 1.0f });
                 }
                 else
                 {
