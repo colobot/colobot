@@ -2210,6 +2210,45 @@ void CEngine::ApplyRecolorMask(CImage& image, const std::filesystem::path& name)
 
         ApplyRecolorMask(image, regions, hair, 0.2f, false, false);
     }
+    else if (filename == "human.png")
+    {
+        /*
+        // Recolor suit
+        const auto regions = std::array
+        {
+            rectangle({ 64, 0 }, { 192, 64 }),
+            rectangle({ 0, 64 }, { 256, 224 }),
+            rectangle({ 0, 224 }, { 208, 256 }),
+        };
+
+        constexpr Color suit = { 206.0f / 256.0f, 206.0f / 256.0f, 204.0f / 256.0f };
+
+        ApplyRecolorMask(image, regions, suit, 0.3f, false, false);
+
+        // Recolor bands
+        const auto regions2 = std::array
+        {
+            rectangle({ 96, 6 }, { 128, 12 }),
+            rectangle({ 134, 32 }, { 140, 64 }),
+            rectangle({ 200, 227 }, { 208, 230 }),
+            rectangle({ 112, 245 }, { 144, 251 }),
+        };
+
+        constexpr Color bands = { 255.0f / 256.0f, 132.0f / 256.0f, 1.0f / 256.0f };
+
+        ApplyRecolorMask(image, regions2, bands, 0.3f, false, false);
+        // */
+
+        // Recolor visor
+        const auto regions3 = std::array
+        {
+            rectangle({ 0, 0 }, { 64, 64 }),
+        };
+
+        constexpr Color visor = { 65.0f / 256.0f, 65.0f / 256.0f, 65.0f / 256.0f };
+
+        ApplyRecolorMask(image, regions3, visor, 0.25f, false, false);
+    }
 }
 
 void CEngine::ApplyRecolorMask(CImage& image,
