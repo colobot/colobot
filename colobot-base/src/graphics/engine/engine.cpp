@@ -2114,6 +2114,26 @@ void CEngine::ApplyRecolorMask(CImage& image, const std::filesystem::path& name)
 
         ApplyRecolorMask(image, regions, COLOR_REF_BOT, 0.1f, false, true);
     }
+    else if (filename == "subm.png")
+    {
+        constexpr auto regions = std::array
+        {
+            glm::ivec4{ 0, 0, 128, 26 },
+            glm::ivec4{ 33, 26, 38, 90 },
+            glm::ivec4{ 82, 32, 128, 50 },
+            glm::ivec4{ 71, 116, 11, 60 },
+            glm::ivec4{ 82, 82, 50, 68 },
+            glm::ivec4{ 132, 82, 64, 106 },
+            glm::ivec4{ 224, 0, 32, 89 },
+            glm::ivec4{ 0, 224, 78, 20 },
+            glm::ivec4{ 199, 169, 57, 7 },
+            glm::ivec4{ 219, 176, 17, 39 },
+            glm::ivec4{ 171, 243, 11, 10 },
+        };
+
+        ApplyRecolorMask(image, std::array{ glm::ivec4{ 0, 0, image.GetWidth(), image.GetHeight() }},
+            COLOR_REF_BOT, 0.1f, false, true);
+    }
 }
 
 void CEngine::ApplyRecolorMask(CImage& image,
