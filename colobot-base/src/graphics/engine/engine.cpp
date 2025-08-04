@@ -2167,7 +2167,7 @@ void CEngine::ApplyRecolorMask(CImage& image, const std::filesystem::path& name)
 
         constexpr Color hair = { 90.0f / 256.0f, 95.0f / 256.0f, 85.0f / 256.0f };
 
-        ApplyRecolorMask(image, regions, hair, 0.15f, false, true);
+        ApplyRecolorMask(image, regions, hair, 0.15f, false, false);
     }
 }
 
