@@ -286,11 +286,8 @@ void ConvertOldTex1Name(ModelTriangle& triangle, const char* tex1Name)
 
 void ConvertFromOldRenderState(ModelTriangle& triangle, int state)
 {
-    if (triangle.material.albedoTexture == "plant.png" || (state & static_cast<int>(ModelRenderState::Alpha)) != 0)
-    {
-        triangle.material.alphaMode = AlphaMode::MASK;
-        triangle.material.alphaThreshold = 0.5f;
-    }
+    if ((state & static_cast<int>(ModelRenderState::Alpha)) != 0)
+        triangle.material.alphaMode = AlphaMode::BLEND;
     else
         triangle.material.alphaMode = AlphaMode::NONE;
 
@@ -303,6 +300,20 @@ void ConvertFromOldRenderState(ModelTriangle& triangle, int state)
 
     bool doubleSided = (state & static_cast<int>(ModelRenderState::TwoFace)) != 0;
     triangle.material.cullFace = doubleSided ? CullFace::NONE : CullFace::BACK;
+
+    if (triangle.material.albedoTexture == "plant.png")
+    {
+        triangle.material.baseColor = BaseColor::PLANT;
+        triangle.material.alphaMode = AlphaMode::MASK;
+        triangle.material.alphaThreshold = 0.5f;
+    }
+    else if (triangle.material.albedoTexture == "face01.png"
+        || triangle.material.albedoTexture == "face02.png"
+        || triangle.material.albedoTexture == "face03.png"
+        || triangle.material.albedoTexture == "face04.png")
+    {
+        triangle.material.baseColor = BaseColor::HAIR;
+    }
 }
 
 Vertex3D ReadBinaryVertex(std::istream& stream)
