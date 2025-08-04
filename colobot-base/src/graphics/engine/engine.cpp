@@ -2134,6 +2134,19 @@ void CEngine::ApplyRecolorMask(CImage& image, const std::filesystem::path& name)
         ApplyRecolorMask(image, std::array{ glm::ivec4{ 0, 0, image.GetWidth(), image.GetHeight() }},
             COLOR_REF_BOT, 0.1f, false, true);
     }
+    else if (filename == "face01.png")
+    {
+        constexpr auto regions = std::array
+        {
+            glm::ivec4{ 0, 0, 96, 172 },
+            glm::ivec4{ 158, 0, 98, 172 },
+            glm::ivec4{ 96, 0, 62, 71 },
+        };
+
+        constexpr Color hair = { 90.0f / 256.0f, 95.0f / 256.0f, 85.0f / 256.0f };
+
+        ApplyRecolorMask(image, regions, hair, 0.15f, false, true);
+    }
 }
 
 void CEngine::ApplyRecolorMask(CImage& image,
