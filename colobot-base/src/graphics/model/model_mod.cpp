@@ -314,6 +314,20 @@ void ConvertFromOldRenderState(ModelTriangle& triangle, int state)
     {
         triangle.material.baseColor = BaseColor::HAIR;
     }
+    else if (triangle.material.albedoTexture == "human.png")
+    {
+        triangle.material.baseColor = BaseColor::SUIT;
+
+        auto middle = (triangle.p1.uv + triangle.p2.uv + triangle.p3.uv) / 3.0f;
+
+        // Make visor transparent
+        if (0.0f < middle.x && middle.x < 0.25f
+            && 0.0f < middle.y && middle.y < 0.25f)
+        {
+            triangle.material.alphaMode = AlphaMode::MASK;
+            triangle.material.alphaThreshold = 0.5f;
+        }
+    }
 }
 
 Vertex3D ReadBinaryVertex(std::istream& stream)
