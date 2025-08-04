@@ -2169,6 +2169,20 @@ void CEngine::ApplyRecolorMask(CImage& image, const std::filesystem::path& name)
 
         ApplyRecolorMask(image, regions, hair, 0.15f, false, false);
     }
+    else if (filename == "face02.png")
+    {
+        const auto regions = std::array
+        {
+            rectangle({ 96, 52 }, { 158, 72 }),
+            rectangle({ 73, 72 }, { 97, 192 }),
+            rectangle({ 157, 72 }, { 183, 192 }),
+            rectangle({ 96, 118 }, { 157, 192 }),
+        };
+
+        constexpr Color hair = { 74.0f / 256.0f, 58.0f / 256.0f, 46.0f / 256.0f };
+
+        ApplyRecolorMask(image, regions, hair, 0.2f, false, false);
+    }
 }
 
 void CEngine::ApplyRecolorMask(CImage& image,
