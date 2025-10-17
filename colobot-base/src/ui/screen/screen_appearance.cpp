@@ -703,6 +703,14 @@ void CScreenAppearance::SetCamera(float x, float y, float cameraDistance)
     Gfx::CCamera* camera = m_main->GetCamera();
     Gfx::CEngine* engine = Gfx::CEngine::GetInstancePointer();
 
+    float sin = std::sin(0.125f * std::numbers::pi_v<float>);
+    float cos = std::cos(0.125f * std::numbers::pi_v<float>);
+
+    float dx = x * cos - y * sin;
+    float dy = x * sin + y * cos;
+
+    engine->SetAppearanceLightDirection(glm::normalize(glm::vec3{ dx, 0.0f, dy }));
+
     camera->SetType(Gfx::CAM_TYPE_SCRIPT);
 
     glm::vec3 p2D(x, y, cameraDistance);

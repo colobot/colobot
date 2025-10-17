@@ -3053,7 +3053,7 @@ void CEngine::Draw3DScene()
     terrainRenderer->SetProjectionMatrix(m_matProj);
     terrainRenderer->SetViewMatrix(m_matView);
     terrainRenderer->SetShadowMap(m_shadowMap);
-    terrainRenderer->SetLight(glm::vec4(1.0, 1.0, -1.0, 0.0), 1.0f, glm::vec3(1.0));
+    terrainRenderer->SetLight(glm::vec4(m_sunDirection, 0.0), m_sunIntensity, m_sunColor);
     terrainRenderer->SetSky(Color(1.0, 1.0, 1.0), 0.2f);
     
     if (m_shadowMapping)
@@ -3131,7 +3131,7 @@ void CEngine::Draw3DScene()
     objectRenderer->SetViewMatrix(m_matView);
     objectRenderer->SetShadowMap(m_shadowMap);
     objectRenderer->SetLighting(true);
-    objectRenderer->SetLight(glm::vec4(1.0, 1.0, -1.0, 0.0), 0.8f, glm::vec3(1.0));
+    objectRenderer->SetLight(glm::vec4(m_sunDirection, 0.0), m_sunIntensity, m_sunColor);
     objectRenderer->SetSky(Color(1.0, 1.0, 1.0), 0.2f);
     objectRenderer->SetTransparency(TransparencyMode::NONE);
 
@@ -3310,7 +3310,7 @@ void CEngine::Draw3DScene()
     objectRenderer->SetViewMatrix(m_matView);
     objectRenderer->SetShadowMap(m_shadowMap);
     objectRenderer->SetLighting(true);
-    objectRenderer->SetLight(glm::vec4(1.0, 1.0, -1.0, 0.0), 1.0f, glm::vec3(1.0));
+    objectRenderer->SetLight(glm::vec4(m_sunDirection, 0.0), m_sunIntensity, m_sunColor);
     objectRenderer->SetTransparency(TransparencyMode::NONE);
 
     objectRenderer->SetFog(fogStart, fogEnd, { fogColor.r, fogColor.g, fogColor.b });
@@ -3886,8 +3886,8 @@ void CEngine::DrawInterface()
         renderer->SetViewMatrix(m_matView);
         renderer->SetFog(fogStart, fogEnd, { fogColor.r, fogColor.g, fogColor.b });
         renderer->SetLighting(true);
-        renderer->SetLight(glm::vec4(1.0, 1.0, -1.0, 0.0), 0.8f, glm::vec3(1.0));
-        renderer->SetSky(Color(1.0, 1.0, 1.0), 0.2f);
+        renderer->SetLight(glm::vec4(m_appearanceLightDirection, 0.0f), 0.8f, glm::vec3(1.0));
+        renderer->SetSky(Color(1.0, 1.0, 1.0), 0.5f);
         renderer->SetTransparency(TransparencyMode::NONE);
         renderer->SetAlphaScissor(0.0f);
         renderer->SetShadowParams(0, nullptr);
@@ -5234,6 +5234,11 @@ void CEngine::DisablePauseBlur()
 {
     m_captureWorld = false;
     m_worldCaptured = false;
+}
+
+void CEngine::SetAppearanceLightDirection(const glm::vec3& direction)
+{
+    m_appearanceLightDirection = direction;
 }
 
 void CEngine::SetWindowCoordinates()

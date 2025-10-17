@@ -983,6 +983,8 @@ public:
     void            EnablePauseBlur();
     void            DisablePauseBlur();
 
+    void            SetAppearanceLightDirection(const glm::vec3& direction);
+
 
     //! Reloads all textures
     /** This additionally sends EVENT_RELOAD_TEXTURES to reload all textures not maintained by CEngine **/
@@ -1214,6 +1216,14 @@ protected:
     bool            m_lightMode;
     bool            m_editIndentMode;
     int             m_editIndentValue;
+
+    // Sun parameters for directional lighting
+    glm::vec3       m_sunDirection = { 1.0f, 1.0f, -1.0f };
+    float           m_sunIntensity = 1.0f;
+    glm::vec3       m_sunColor = { 1.0f, 1.0f, 1.0f };
+
+    // Light direction used for the appearance screen
+    glm::vec3       m_appearanceLightDirection = { 1.0f, 1.0f, -1.0f };
 
     struct ShadowParam
     {
