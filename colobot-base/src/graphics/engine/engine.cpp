@@ -3929,12 +3929,47 @@ void CEngine::DrawInterface()
 
             for (auto& data : p1.next)
             {
-                renderer->SetBaseColor(GetObjectColor(objRank, data.material.baseColor));
+                auto baseColor = GetObjectColor(objRank, data.material.baseColor);
 
-                renderer->SetAlbedoColor(data.material.albedoColor);
+                if (data.material.alphaMode == AlphaMode::NONE)
+                {
+                    renderer->SetAlphaScissor(0.0f);
+
+                    baseColor.a = 1.0f;
+
+                    renderer->SetBaseColor(baseColor);
+                    renderer->SetAlbedoColor(data.material.albedoColor);
+                }
+                else if (data.material.alphaMode == AlphaMode::MASK)
+                {
+                    renderer->SetAlphaScissor(data.material.alphaThreshold);
+
+                    baseColor.a = 1.0f;
+
+                    renderer->SetBaseColor({ 0.0f, 0.0f, 0.0f, 0.0f });
+                    renderer->SetAlbedoColor(data.material.albedoColor * baseColor);
+                }
+                else if (data.material.alphaMode == AlphaMode::BLEND)
+                {
+                    renderer->SetAlphaScissor(0.0f);
+
+                    baseColor.a = 1.0f;
+
+                    renderer->SetBaseColor({ 0.0f, 0.0f, 0.0f, 0.0f });
+                    renderer->SetAlbedoColor(data.material.albedoColor * baseColor);
+                }
+
                 renderer->SetAlbedoTexture(data.albedoTexture);
                 renderer->SetDetailTexture(data.detailTexture);
 
+                renderer->SetEmissiveColor(data.material.emissiveColor);
+                renderer->SetEmissiveTexture(data.emissiveTexture);
+
+                renderer->SetMaterialParams(data.material.roughness, data.material.metalness, data.material.aoStrength);
+                renderer->SetMaterialTexture(data.materialTexture);
+
+                renderer->SetCullFace(data.material.cullFace);
+                renderer->SetUVTransform(data.uvOffset, data.uvScale);
                 renderer->DrawObject(data.buffer);
             }
         }
