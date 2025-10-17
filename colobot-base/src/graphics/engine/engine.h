@@ -1051,7 +1051,8 @@ protected:
                     const Color& reference,
                     float threshold,
                     bool transparent,
-                    bool hsv);
+                    bool hsv,
+                    const std::optional<Color>& target = std::nullopt);
 
     //! Tests whether the given object is visible
     bool        IsVisible(const glm::mat4& matrix, int objRank);

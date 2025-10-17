@@ -2255,7 +2255,8 @@ void CEngine::ApplyRecolorMask(CImage& image,
     const Color& reference,
     float threshold,
     bool transparent,
-    bool hsv)
+    bool hsv,
+    const std::optional<Color>& target)
 {
     const auto toGrayscale = [](const Color& color)
     {
@@ -2264,7 +2265,7 @@ void CEngine::ApplyRecolorMask(CImage& image,
 
     const ColorHSV referenceHSV = RGB2HSV(reference);
 
-    const float referenceGrayscale = toGrayscale(reference);
+    const float targetGrayscale = toGrayscale(target.value_or(reference));
 
     image.ConvertToRGBA();
 
@@ -2302,15 +2303,15 @@ void CEngine::ApplyRecolorMask(CImage& image,
                 {
                     const float grayscale = toGrayscale(color);
 
-                    const float target = grayscale < referenceGrayscale ? 0.0f : 1.0f;
+                    const float target = grayscale < targetGrayscale ? 0.0f : 1.0f;
 
-                    if (std::abs(target - referenceGrayscale) < 1e-3)
+                    if (std::abs(target - targetGrayscale) < 1e-3)
                     {
                         image.SetPixel({ x + i, y + j}, Color{ 0.0f, 0.0f, 0.0f, 0.0f });
                     }
                     else
                     {
-                        const float alpha = (grayscale - referenceGrayscale) / (target - referenceGrayscale);
+                        const float alpha = (grayscale - targetGrayscale) / (target - targetGrayscale);
 
                         image.SetPixel({ x + i, y + j}, Color{ target, target, target, alpha });
                     }
