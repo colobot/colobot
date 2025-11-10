@@ -80,11 +80,7 @@ constexpr std::array PERSO_COLOR
       0,   0,   0,  //
 };
 
-CScreenAppearance::CScreenAppearance()
-    : m_appearanceTab(0),
-      m_appearanceAngle(0.0f)
-{
-}
+CScreenAppearance::CScreenAppearance() = default;
 
 void CScreenAppearance::CreateInterface()
 {
@@ -308,8 +304,8 @@ void CScreenAppearance::CreateInterface()
     pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_PDEF);
     pb->SetState(STATE_SHADOW);
 
-    m_appearanceTab = 0;
-    m_appearanceAngle = -0.6f;
+    m_tab = 0;
+    m_currentAngle = -0.6f;
     m_main->GetPlayerProfile()->LoadAppearance();
     UpdatePerso();
     m_main->ScenePerso();
@@ -341,13 +337,13 @@ bool CScreenAppearance::EventProcess(const Event &event)
             break;
 
         case EVENT_INTERFACE_PHEAD:
-            m_appearanceTab = 0;
+            m_tab = 0;
             UpdatePerso();
             m_main->ScenePerso();
             CameraPerso();
             break;
         case EVENT_INTERFACE_PBODY:
-            m_appearanceTab = 1;
+            m_tab = 1;
             UpdatePerso();
             m_main->ScenePerso();
             CameraPerso();
@@ -426,10 +422,10 @@ bool CScreenAppearance::EventProcess(const Event &event)
             break;
 
         case EVENT_INTERFACE_PLROT:
-            m_appearanceAngle += 0.2f;
+            m_currentAngle += 0.2f;
             break;
         case EVENT_INTERFACE_PRROT:
-            m_appearanceAngle -= 0.2f;
+            m_currentAngle -= 0.2f;
             break;
 
         case EVENT_INTERFACE_POK:
@@ -450,12 +446,12 @@ bool CScreenAppearance::EventProcess(const Event &event)
 
 bool CScreenAppearance::GetGamerOnlyHead()
 {
-    return m_appearanceTab == 0;
+    return m_tab == 0;
 }
 
 float CScreenAppearance::GetPersoAngle()
 {
-    return m_appearanceAngle;
+    return m_currentAngle;
 }
 
 // Tests whether two colors are equal or nearly are.
@@ -488,18 +484,18 @@ void CScreenAppearance::UpdatePerso()
     pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_PHEAD));
     if ( pb != nullptr )
     {
-        pb->SetState(STATE_CHECK, m_appearanceTab==0);
+        pb->SetState(STATE_CHECK, m_tab==0);
     }
     pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_PBODY));
     if ( pb != nullptr )
     {
-        pb->SetState(STATE_CHECK, m_appearanceTab==1);
+        pb->SetState(STATE_CHECK, m_tab==1);
     }
 
     pl = static_cast<CLabel*>(pw->SearchControl(EVENT_LABEL11));
     if ( pl != nullptr )
     {
-        if ( m_appearanceTab == 0 )
+        if ( m_tab == 0 )
         {
             pl->SetState(STATE_VISIBLE);
             GetResource(RES_TEXT, RT_PERSO_FACE, name);
@@ -514,7 +510,7 @@ void CScreenAppearance::UpdatePerso()
     pl = static_cast<CLabel*>(pw->SearchControl(EVENT_LABEL12));
     if ( pl != nullptr )
     {
-        if ( m_appearanceTab == 0 )
+        if ( m_tab == 0 )
         {
             pl->SetState(STATE_VISIBLE);
             GetResource(RES_TEXT, RT_PERSO_GLASSES, name);
@@ -529,7 +525,7 @@ void CScreenAppearance::UpdatePerso()
     pl = static_cast<CLabel*>(pw->SearchControl(EVENT_LABEL13));
     if ( pl != nullptr )
     {
-        if ( m_appearanceTab == 0 )  GetResource(RES_TEXT, RT_PERSO_HAIR, name);
+        if ( m_tab == 0 )  GetResource(RES_TEXT, RT_PERSO_HAIR, name);
         else                    GetResource(RES_TEXT, RT_PERSO_BAND, name);
         pl->SetName(name);
     }
@@ -537,7 +533,7 @@ void CScreenAppearance::UpdatePerso()
     pl = static_cast<CLabel*>(pw->SearchControl(EVENT_LABEL14));
     if ( pl != nullptr )
     {
-        if ( m_appearanceTab == 0 )
+        if ( m_tab == 0 )
         {
             pl->ClearState(STATE_VISIBLE);
         }
@@ -553,7 +549,7 @@ void CScreenAppearance::UpdatePerso()
     {
         pb = static_cast<CButton*>(pw->SearchControl(static_cast<EventType>(EVENT_INTERFACE_PFACE1+i)));
         if ( pb == nullptr )  break;
-        pb->SetState(STATE_VISIBLE, m_appearanceTab==0);
+        pb->SetState(STATE_VISIBLE, m_tab==0);
         pb->SetState(STATE_CHECK, i==appearance.face);
     }
 
@@ -561,7 +557,7 @@ void CScreenAppearance::UpdatePerso()
     {
         pb = static_cast<CButton*>(pw->SearchControl(static_cast<EventType>(EVENT_INTERFACE_PGLASS0+i)));
         if ( pb == nullptr )  break;
-        pb->SetState(STATE_VISIBLE, m_appearanceTab==0);
+        pb->SetState(STATE_VISIBLE, m_tab==0);
         pb->SetState(STATE_CHECK, i==appearance.glasses);
     }
 
@@ -569,7 +565,7 @@ void CScreenAppearance::UpdatePerso()
     {
         pc = static_cast<CColor*>(pw->SearchControl(static_cast<EventType>(EVENT_INTERFACE_PC0a+i)));
         if ( pc == nullptr )  break;
-        if ( m_appearanceTab == 0 )
+        if ( m_tab == 0 )
         {
             pc->ClearState(STATE_VISIBLE);
         }
@@ -586,22 +582,22 @@ void CScreenAppearance::UpdatePerso()
 
         pc = static_cast<CColor*>(pw->SearchControl(static_cast<EventType>(EVENT_INTERFACE_PC0b+i)));
         if ( pc == nullptr )  break;
-        color.r = PERSO_COLOR[3*10*2*m_appearanceTab+3*i+0]/255.0f;
-        color.g = PERSO_COLOR[3*10*2*m_appearanceTab+3*i+1]/255.0f;
-        color.b = PERSO_COLOR[3*10*2*m_appearanceTab+3*i+2]/255.0f;
+        color.r = PERSO_COLOR[3*10*2*m_tab+3*i+0]/255.0f;
+        color.g = PERSO_COLOR[3*10*2*m_tab+3*i+1]/255.0f;
+        color.b = PERSO_COLOR[3*10*2*m_tab+3*i+2]/255.0f;
         color.a = 0.0f;
         pc->SetColor(color);
-        pc->SetState(STATE_CHECK, EqColor(color, m_appearanceTab?appearance.colorBand:appearance.colorHair));
+        pc->SetState(STATE_CHECK, EqColor(color, m_tab?appearance.colorBand:appearance.colorHair));
     }
 
     for ( i=0 ; i<3 ; i++ )
     {
         ps = static_cast<CSlider*>(pw->SearchControl(static_cast<EventType>(EVENT_INTERFACE_PCRa+i)));
         if ( ps == nullptr )  break;
-        ps->SetState(STATE_VISIBLE, m_appearanceTab==1);
+        ps->SetState(STATE_VISIBLE, m_tab==1);
     }
 
-    if ( m_appearanceTab == 1 )
+    if ( m_tab == 1 )
     {
         color = appearance.colorCombi;
         ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCRa));
@@ -612,7 +608,7 @@ void CScreenAppearance::UpdatePerso()
         if ( ps != nullptr )  ps->SetVisibleValue(color.b*255.0f);
     }
 
-    if ( m_appearanceTab == 0 )  color = appearance.colorHair;
+    if ( m_tab == 0 )  color = appearance.colorHair;
     else                    color = appearance.colorBand;
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCRb));
     if ( ps != nullptr )  ps->SetVisibleValue(color.r*255.0f);
@@ -626,7 +622,7 @@ void CScreenAppearance::UpdatePerso()
 
 void CScreenAppearance::CameraPerso()
 {
-    if ( m_appearanceTab == 0 )
+    if ( m_tab == 0 )
     {
         SetCamera(0.325f, -0.15f, 5.0f);
     }
@@ -641,7 +637,7 @@ void CScreenAppearance::CameraPerso()
 void CScreenAppearance::FixPerso(int rank, int index)
 {
     PlayerAppearance& appearance = m_main->GetPlayerProfile()->GetAppearance();
-    if ( m_appearanceTab == 0 )
+    if ( m_tab == 0 )
     {
         if ( index == 1 )
         {
@@ -650,7 +646,7 @@ void CScreenAppearance::FixPerso(int rank, int index)
             appearance.colorHair.b = PERSO_COLOR[3*10*0+rank*3+2]/255.0f;
         }
     }
-    if ( m_appearanceTab == 1 )
+    if ( m_tab == 1 )
     {
         if ( index == 0 )
         {
@@ -688,7 +684,7 @@ void CScreenAppearance::ColorPerso()
     if ( ps != nullptr )  color.g = ps->GetVisibleValue()/255.0f;
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCBa));
     if ( ps != nullptr )  color.b = ps->GetVisibleValue()/255.0f;
-    if ( m_appearanceTab == 1 )  appearance.colorCombi = color;
+    if ( m_tab == 1 )  appearance.colorCombi = color;
 
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCRb));
     if ( ps != nullptr )  color.r = ps->GetVisibleValue()/255.0f;
@@ -696,7 +692,7 @@ void CScreenAppearance::ColorPerso()
     if ( ps != nullptr )  color.g = ps->GetVisibleValue()/255.0f;
     ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCBb));
     if ( ps != nullptr )  color.b = ps->GetVisibleValue()/255.0f;
-    if ( m_appearanceTab == 0 )  appearance.colorHair = color;
+    if ( m_tab == 0 )  appearance.colorHair = color;
     else                        appearance.colorBand = color;
 }
 

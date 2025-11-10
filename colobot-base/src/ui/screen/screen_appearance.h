@@ -44,8 +44,8 @@ protected:
     void SetCamera(float x, float y, float cameraDistance);
 
 protected:
-    int             m_appearanceTab;         // perso: tab selected
-    float           m_appearanceAngle;           // perso: angle of presentation
+    int             m_tab = 0;               // Selected tab
+    float           m_currentAngle = 0.0f;   // Current angle of presentation
 };
 
 } // namespace Ui
