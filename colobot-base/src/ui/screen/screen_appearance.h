@@ -46,6 +46,8 @@ protected:
 protected:
     int             m_tab = 0;               // Selected tab
     float           m_currentAngle = 0.0f;   // Current angle of presentation
+    float           m_targetAngle = 0.0f;    // Target angle of presentation
+    bool            m_autoRotation = true;   // Should camera rotate on its own
 };
 
 } // namespace Ui

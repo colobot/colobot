@@ -39,6 +39,7 @@
 #include "ui/controls/window.h"
 
 #include <array>
+#include <cmath>
 
 namespace Ui
 {
@@ -306,6 +307,8 @@ void CScreenAppearance::CreateInterface()
 
     m_tab = 0;
     m_currentAngle = -0.6f;
+    m_targetAngle = -0.6f;
+    m_autoRotation = true;
     m_main->GetPlayerProfile()->LoadAppearance();
     UpdatePerso();
     m_main->ScenePerso();
@@ -317,6 +320,13 @@ bool CScreenAppearance::EventProcess(const Event &event)
     PlayerAppearance& appearance = m_main->GetPlayerProfile()->GetAppearance();
     switch( event.type )
     {
+        case EVENT_FRAME:
+        {
+            if (m_autoRotation) m_targetAngle += event.rTime;
+
+            m_currentAngle = std::lerp(m_currentAngle, m_targetAngle, 5.0f * event.rTime);
+            return true;
+        }
         case EVENT_KEY_DOWN:
         {
             auto data = event.GetData<KeyEventData>();
@@ -422,10 +432,12 @@ bool CScreenAppearance::EventProcess(const Event &event)
             break;
 
         case EVENT_INTERFACE_PLROT:
-            m_currentAngle += 0.2f;
+            m_targetAngle += 0.2f;
+            m_autoRotation = false;
             break;
         case EVENT_INTERFACE_PRROT:
-            m_currentAngle -= 0.2f;
+            m_targetAngle -= 0.2f;
+            m_autoRotation = false;
             break;
 
         case EVENT_INTERFACE_POK:
