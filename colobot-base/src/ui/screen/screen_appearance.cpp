@@ -38,10 +38,12 @@
 #include "ui/controls/slider.h"
 #include "ui/controls/window.h"
 
+#include <array>
+
 namespace Ui
 {
 
-const int PERSO_COLOR[3*10*3] =
+constexpr std::array PERSO_COLOR
 {
     // hair:
     193, 221, 226,  // white
