@@ -47,44 +47,44 @@ namespace Ui
 
 constexpr std::array HAIR_COLORS
 {
-    193, 221, 226,  // white
-    255, 255, 181,  // yellow
-    204, 155,  84,  // blond
-    165,  48,  10,  // red
-    140,  75,  84,  // brown
-     83,  64,  51,  // brown
-     90,  95,  85,  // black
-     85,  48,   9,  // brown
-     60,   0,  23,  // black
-      0,   0,   0,  //
+    glm::vec3{ 193, 221, 226 } / 255.0f,  // white
+    glm::vec3{ 255, 255, 181 } / 255.0f,  // yellow
+    glm::vec3{ 204, 155,  84 } / 255.0f,  // blond
+    glm::vec3{ 165,  48,  10 } / 255.0f,  // red
+    glm::vec3{ 140,  75,  84 } / 255.0f,  // brown
+    glm::vec3{  83,  64,  51 } / 255.0f,  // brown
+    glm::vec3{  90,  95,  85 } / 255.0f,  // black
+    glm::vec3{  85,  48,   9 } / 255.0f,  // brown
+    glm::vec3{  60,   0,  23 } / 255.0f,  // black
+    glm::vec3{   0,   0,   0 } / 255.0f,  //
 };
 
 constexpr std::array SUIT_COLORS
 {
-    203, 206, 204,  // dirty white
-      0, 205, 203,  // bluish
-    108, 176,   0,  // greenish
-    207, 207,  32,  // yellow
-    170, 141,   0,  // orange
-    108,  84,   0,  // brown
-      0,  84, 136,  // bluish
-     56,  61, 146,  // bluish
-     56,  56,  56,  // black
-      0,   0,   0,  //
+    glm::vec3{ 203, 206, 204 } / 255.0f,  // dirty white
+    glm::vec3{   0, 205, 203 } / 255.0f,  // bluish
+    glm::vec3{ 108, 176,   0 } / 255.0f,  // greenish
+    glm::vec3{ 207, 207,  32 } / 255.0f,  // yellow
+    glm::vec3{ 170, 141,   0 } / 255.0f,  // orange
+    glm::vec3{ 108,  84,   0 } / 255.0f,  // brown
+    glm::vec3{   0,  84, 136 } / 255.0f,  // bluish
+    glm::vec3{  56,  61, 146 } / 255.0f,  // bluish
+    glm::vec3{  56,  56,  56 } / 255.0f,  // black
+    glm::vec3{   0,   0,   0 } / 255.0f,  //
 };
 
 constexpr std::array STRIP_COLORS
 {
-    255, 255, 255,  // white
-    255, 255,   0,  // yellow
-    255, 132,   1,  // orange
-    255,   0, 255,  // magenta
-    255,   0,   0,  // red
-      0, 255,   0,  // green
-      0, 255, 255,  // cyan
-      0,   0, 255,  // blue
-     70,  51,  84,  // dark
-      0,   0,   0,  //
+    glm::vec3{ 255, 255, 255 } / 255.0f,  // white
+    glm::vec3{ 255, 255,   0 } / 255.0f,  // yellow
+    glm::vec3{ 255, 132,   1 } / 255.0f,  // orange
+    glm::vec3{ 255,   0, 255 } / 255.0f,  // magenta
+    glm::vec3{ 255,   0,   0 } / 255.0f,  // red
+    glm::vec3{   0, 255,   0 } / 255.0f,  // green
+    glm::vec3{   0, 255, 255 } / 255.0f,  // cyan
+    glm::vec3{   0,   0, 255 } / 255.0f,  // blue
+    glm::vec3{  70,  51,  84 } / 255.0f,  // dark
+    glm::vec3{   0,   0,   0 } / 255.0f,  //
 };
 
 CScreenAppearance::CScreenAppearance() = default;
@@ -586,10 +586,7 @@ void CScreenAppearance::UpdatePerso()
         else
         {
             pc->SetState(STATE_VISIBLE);
-            color.r = SUIT_COLORS[3*i+0]/255.0f;
-            color.g = SUIT_COLORS[3*i+1]/255.0f;
-            color.b = SUIT_COLORS[3*i+2]/255.0f;
-            color.a = 0.0f;
+            color = Gfx::Color{ SUIT_COLORS[i] };
             pc->SetColor(color);
             pc->SetState(STATE_CHECK, EqColor(color, appearance.colorCombi));
         }
@@ -599,15 +596,11 @@ void CScreenAppearance::UpdatePerso()
 
         if (m_tab == 0)
         {
-            color.r = HAIR_COLORS[3*i+0]/255.0f;
-            color.g = HAIR_COLORS[3*i+1]/255.0f;
-            color.b = HAIR_COLORS[3*i+2]/255.0f;
+            color = Gfx::Color{ HAIR_COLORS[i] };
         }
         else
         {
-            color.r = STRIP_COLORS[3*i+0]/255.0f;
-            color.g = STRIP_COLORS[3*i+1]/255.0f;
-            color.b = STRIP_COLORS[3*i+2]/255.0f;
+            color = Gfx::Color{ STRIP_COLORS[i] };
         }
 
         color.a = 0.0f;
@@ -666,24 +659,18 @@ void CScreenAppearance::FixPerso(int rank, int index)
     {
         if ( index == 1 )
         {
-            appearance.colorHair.r = HAIR_COLORS[rank*3+0]/255.0f;
-            appearance.colorHair.g = HAIR_COLORS[rank*3+1]/255.0f;
-            appearance.colorHair.b = HAIR_COLORS[rank*3+2]/255.0f;
+            appearance.colorHair = Gfx::Color{ HAIR_COLORS[rank] };
         }
     }
     if ( m_tab == 1 )
     {
         if ( index == 0 )
         {
-            appearance.colorCombi.r = SUIT_COLORS[rank*3+0]/255.0f;
-            appearance.colorCombi.g = SUIT_COLORS[rank*3+1]/255.0f;
-            appearance.colorCombi.b = SUIT_COLORS[rank*3+2]/255.0f;
+            appearance.colorCombi = Gfx::Color{ SUIT_COLORS[rank] };
         }
         if ( index == 1 )
         {
-            appearance.colorBand.r = STRIP_COLORS[rank*3+0]/255.0f;
-            appearance.colorBand.g = STRIP_COLORS[rank*3+1]/255.0f;
-            appearance.colorBand.b = STRIP_COLORS[rank*3+2]/255.0f;
+            appearance.colorBand = Gfx::Color{ STRIP_COLORS[rank] };
         }
     }
 }
