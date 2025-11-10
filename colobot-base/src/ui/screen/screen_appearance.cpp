@@ -429,11 +429,11 @@ bool CScreenAppearance::EventProcess(const Event &event)
             break;
 
         case EVENT_INTERFACE_PLROT:
-            m_targetAngle += 0.2f;
+            m_targetAngle -= 0.2f;
             m_autoRotation = false;
             break;
         case EVENT_INTERFACE_PRROT:
-            m_targetAngle -= 0.2f;
+            m_targetAngle += 0.2f;
             m_autoRotation = false;
             break;
 
