@@ -397,7 +397,6 @@ bool CScreenAppearance::EventProcess(const Event &event)
         case EVENT_INTERFACE_PC9a:
             FixPerso(event.type-EVENT_INTERFACE_PC0a, 0);
             UpdatePerso();
-            m_main->ScenePerso();
             break;
 
         case EVENT_INTERFACE_PC0b:
@@ -412,7 +411,6 @@ bool CScreenAppearance::EventProcess(const Event &event)
         case EVENT_INTERFACE_PC9b:
             FixPerso(event.type-EVENT_INTERFACE_PC0b, 1);
             UpdatePerso();
-            m_main->ScenePerso();
             break;
 
         case EVENT_INTERFACE_PCRa:
@@ -423,13 +421,11 @@ bool CScreenAppearance::EventProcess(const Event &event)
         case EVENT_INTERFACE_PCBb:
             ColorPerso();
             UpdatePerso();
-            m_main->ScenePerso();
             break;
 
         case EVENT_INTERFACE_PDEF:
             appearance.DefPerso();
             UpdatePerso();
-            m_main->ScenePerso();
             break;
 
         case EVENT_INTERFACE_PLROT:
