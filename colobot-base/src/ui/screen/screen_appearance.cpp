@@ -45,9 +45,8 @@
 namespace Ui
 {
 
-constexpr std::array PERSO_COLOR
+constexpr std::array HAIR_COLORS
 {
-    // hair:
     193, 221, 226,  // white
     255, 255, 181,  // yellow
     204, 155,  84,  // blond
@@ -58,7 +57,10 @@ constexpr std::array PERSO_COLOR
      85,  48,   9,  // brown
      60,   0,  23,  // black
       0,   0,   0,  //
-    // spacesuit:
+};
+
+constexpr std::array SUIT_COLORS
+{
     203, 206, 204,  // dirty white
       0, 205, 203,  // bluish
     108, 176,   0,  // greenish
@@ -69,7 +71,10 @@ constexpr std::array PERSO_COLOR
      56,  61, 146,  // bluish
      56,  56,  56,  // black
       0,   0,   0,  //
-    // strips:
+};
+
+constexpr std::array STRIP_COLORS
+{
     255, 255, 255,  // white
     255, 255,   0,  // yellow
     255, 132,   1,  // orange
@@ -581,9 +586,9 @@ void CScreenAppearance::UpdatePerso()
         else
         {
             pc->SetState(STATE_VISIBLE);
-            color.r = PERSO_COLOR[3*10*1+3*i+0]/255.0f;
-            color.g = PERSO_COLOR[3*10*1+3*i+1]/255.0f;
-            color.b = PERSO_COLOR[3*10*1+3*i+2]/255.0f;
+            color.r = SUIT_COLORS[3*i+0]/255.0f;
+            color.g = SUIT_COLORS[3*i+1]/255.0f;
+            color.b = SUIT_COLORS[3*i+2]/255.0f;
             color.a = 0.0f;
             pc->SetColor(color);
             pc->SetState(STATE_CHECK, EqColor(color, appearance.colorCombi));
@@ -591,9 +596,20 @@ void CScreenAppearance::UpdatePerso()
 
         pc = static_cast<CColor*>(pw->SearchControl(static_cast<EventType>(EVENT_INTERFACE_PC0b+i)));
         if ( pc == nullptr )  break;
-        color.r = PERSO_COLOR[3*10*2*m_tab+3*i+0]/255.0f;
-        color.g = PERSO_COLOR[3*10*2*m_tab+3*i+1]/255.0f;
-        color.b = PERSO_COLOR[3*10*2*m_tab+3*i+2]/255.0f;
+
+        if (m_tab == 0)
+        {
+            color.r = HAIR_COLORS[3*i+0]/255.0f;
+            color.g = HAIR_COLORS[3*i+1]/255.0f;
+            color.b = HAIR_COLORS[3*i+2]/255.0f;
+        }
+        else
+        {
+            color.r = STRIP_COLORS[3*i+0]/255.0f;
+            color.g = STRIP_COLORS[3*i+1]/255.0f;
+            color.b = STRIP_COLORS[3*i+2]/255.0f;
+        }
+
         color.a = 0.0f;
         pc->SetColor(color);
         pc->SetState(STATE_CHECK, EqColor(color, m_tab?appearance.colorBand:appearance.colorHair));
@@ -650,24 +666,24 @@ void CScreenAppearance::FixPerso(int rank, int index)
     {
         if ( index == 1 )
         {
-            appearance.colorHair.r = PERSO_COLOR[3*10*0+rank*3+0]/255.0f;
-            appearance.colorHair.g = PERSO_COLOR[3*10*0+rank*3+1]/255.0f;
-            appearance.colorHair.b = PERSO_COLOR[3*10*0+rank*3+2]/255.0f;
+            appearance.colorHair.r = HAIR_COLORS[rank*3+0]/255.0f;
+            appearance.colorHair.g = HAIR_COLORS[rank*3+1]/255.0f;
+            appearance.colorHair.b = HAIR_COLORS[rank*3+2]/255.0f;
         }
     }
     if ( m_tab == 1 )
     {
         if ( index == 0 )
         {
-            appearance.colorCombi.r = PERSO_COLOR[3*10*1+rank*3+0]/255.0f;
-            appearance.colorCombi.g = PERSO_COLOR[3*10*1+rank*3+1]/255.0f;
-            appearance.colorCombi.b = PERSO_COLOR[3*10*1+rank*3+2]/255.0f;
+            appearance.colorCombi.r = SUIT_COLORS[rank*3+0]/255.0f;
+            appearance.colorCombi.g = SUIT_COLORS[rank*3+1]/255.0f;
+            appearance.colorCombi.b = SUIT_COLORS[rank*3+2]/255.0f;
         }
         if ( index == 1 )
         {
-            appearance.colorBand.r = PERSO_COLOR[3*10*2+rank*3+0]/255.0f;
-            appearance.colorBand.g = PERSO_COLOR[3*10*2+rank*3+1]/255.0f;
-            appearance.colorBand.b = PERSO_COLOR[3*10*2+rank*3+2]/255.0f;
+            appearance.colorBand.r = STRIP_COLORS[rank*3+0]/255.0f;
+            appearance.colorBand.g = STRIP_COLORS[rank*3+1]/255.0f;
+            appearance.colorBand.b = STRIP_COLORS[rank*3+2]/255.0f;
         }
     }
 }
