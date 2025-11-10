@@ -324,7 +324,7 @@ void ConvertFromOldRenderState(ModelTriangle& triangle, int state)
         if (0.0f < middle.x && middle.x < 0.25f
             && 0.0f < middle.y && middle.y < 0.25f)
         {
-            triangle.material.alphaMode = AlphaMode::MASK;
+            triangle.material.alphaMode = AlphaMode::BLEND;
             triangle.material.alphaThreshold = 0.5f;
         }
     }
