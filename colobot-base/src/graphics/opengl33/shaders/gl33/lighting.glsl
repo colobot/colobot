@@ -71,10 +71,10 @@ vec3 CalculateLighting(
     vec3 view = normalize(uni_CameraPosition - position);
     vec3 halfway = normalize(view + light);
 
-    float NdH = dot(normal, halfway);
-    float LdH = dot(light, halfway);
+    float NdH = max(dot(normal, halfway), 0.0);
+    float LdH = max(dot(light, halfway), 0.0);
     float NdL = max(dot(normal, light), 0.0);
-    float NdV = dot(normal, view);
+    float NdV = max(dot(normal, view), 0.0);
 
     vec3 specBrdf = 0.25
             * GGXDistribution(NdH, roughness)
