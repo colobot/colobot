@@ -3016,7 +3016,7 @@ void CEngine::Draw3DScene()
     terrainRenderer->SetViewMatrix(m_matView);
     terrainRenderer->SetShadowMap(m_shadowMap);
     terrainRenderer->SetLight(glm::vec4(m_sunDirection, 0.0), m_sunIntensity, m_sunColor);
-    terrainRenderer->SetSky(Color(1.0, 1.0, 1.0), 0.2f);
+    terrainRenderer->SetSky(m_ambientColor[m_rankView], 0.5f);
     
     if (m_shadowMapping)
         terrainRenderer->SetShadowParams(m_shadowRegions, shadowParams);
@@ -3154,7 +3154,7 @@ void CEngine::Draw3DScene()
     objectRenderer->SetShadowMap(m_shadowMap);
     objectRenderer->SetLighting(true);
     objectRenderer->SetLight(glm::vec4(m_sunDirection, 0.0), m_sunIntensity, m_sunColor);
-    objectRenderer->SetSky(Color(1.0, 1.0, 1.0), 0.2f);
+    objectRenderer->SetSky(m_ambientColor[m_rankView], 0.5f);
     objectRenderer->SetTransparency(TransparencyMode::NONE);
 
     objectRenderer->SetFog(fogStart, fogEnd, { fogColor.r, fogColor.g, fogColor.b });
@@ -3876,7 +3876,7 @@ void CEngine::DrawInterface()
         renderer->SetFog(fogStart, fogEnd, { fogColor.r, fogColor.g, fogColor.b });
         renderer->SetLighting(true);
         renderer->SetLight(glm::vec4(m_appearanceLightDirection, 0.0f), 0.8f, glm::vec3(1.0));
-        renderer->SetSky(Color(1.0, 1.0, 1.0), 0.5f);
+        renderer->SetSky(m_ambientColor[m_rankView], 0.5f);
         renderer->SetTransparency(TransparencyMode::NONE);
         renderer->SetAlphaScissor(0.0f);
         renderer->SetShadowParams(0, nullptr);
