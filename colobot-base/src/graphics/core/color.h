@@ -186,5 +186,12 @@ inline Color ToLinear(const Color& color)
     return result;
 }
 
+inline Color Desaturate(const Color& color)
+{
+    float gray = glm::dot(glm::vec3(color), { 0.2989f, 0.5870f, 0.1140f });
+
+    return Color{ gray, gray, gray, color.a };
+}
+
 } // namespace Gfx
 
