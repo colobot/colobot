@@ -2209,6 +2209,21 @@ void CEngine::ApplyRecolorMask(CImage& image, const std::filesystem::path& name)
 
         ApplyRecolorMask(image, regions, hair, 0.2f, false, false);
     }
+    else if (filename == "plant.png")
+    {
+        // Desaturate plant region
+        for (int y = 0; y < 256; y++)
+        {
+            for (int x = 0; x < 200; x++)
+            {
+                auto color = image.GetPixel({ x, y });
+
+                color = Desaturate(color);
+
+                image.SetPixel({ x, y }, color);
+            }
+        }
+    }
 }
 
 void CEngine::ApplyRecolorMask(CImage& image,
