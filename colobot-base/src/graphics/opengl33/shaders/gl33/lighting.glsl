@@ -42,8 +42,8 @@ vec3 SchlickFresnel(float LdH, float metalness, vec3 color)
 float GeometrySmith(float dotProd, float roughness)
 {
     float k = (roughness + 1.0) * (roughness + 1.0) / 8.0;
-    float denom = dotProd * (1 - k) + k;
-    return 1.0 / denom;
+
+    return dotProd / (dotProd * (1 - k) + k);
 }
 
 float GGXDistribution(float NdH, float roughness)
