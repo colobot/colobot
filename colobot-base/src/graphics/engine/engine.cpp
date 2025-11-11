@@ -3895,6 +3895,8 @@ void CEngine::DrawInterface()
 
                 if (data.material.alphaMode == AlphaMode::NONE)
                 {
+                    m_device->SetDepthMask(true);
+                    renderer->SetTransparency(TransparencyMode::NONE);
                     renderer->SetAlphaScissor(0.0f);
 
                     baseColor.a = 1.0f;
@@ -3904,6 +3906,8 @@ void CEngine::DrawInterface()
                 }
                 else if (data.material.alphaMode == AlphaMode::MASK)
                 {
+                    m_device->SetDepthMask(true);
+                    renderer->SetTransparency(TransparencyMode::NONE);
                     renderer->SetAlphaScissor(data.material.alphaThreshold);
 
                     baseColor.a = 1.0f;
@@ -3913,6 +3917,8 @@ void CEngine::DrawInterface()
                 }
                 else if (data.material.alphaMode == AlphaMode::BLEND)
                 {
+                    m_device->SetDepthMask(false);
+                    renderer->SetTransparency(TransparencyMode::ALPHA);
                     renderer->SetAlphaScissor(0.0f);
 
                     baseColor.a = 1.0f;
