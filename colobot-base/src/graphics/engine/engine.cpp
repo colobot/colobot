@@ -3086,29 +3086,18 @@ void CEngine::Draw3DScene()
 
     CProfiler::StartPerformanceCounter(PCNT_RENDER_OBJECTS);
 
-    auto objectRenderer = m_device->GetObjectRenderer();
-    objectRenderer->Begin();
+    // Sort objects into separate rendering categories
+    struct ObjectData
+    {
+        int rank;
+        Gfx::EngineObject& base;
+        Gfx::EngineBaseObjDataTier& data;
+    };
 
-    objectRenderer->SetProjectionMatrix(m_matProj);
-    objectRenderer->SetViewMatrix(m_matView);
-    objectRenderer->SetShadowMap(m_shadowMap);
-    objectRenderer->SetLighting(true);
-    objectRenderer->SetLight(glm::vec4(m_sunDirection, 0.0), m_sunIntensity, m_sunColor);
-    objectRenderer->SetSky(Color(1.0, 1.0, 1.0), 0.2f);
-    objectRenderer->SetTransparency(TransparencyMode::NONE);
-
-    objectRenderer->SetFog(fogStart, fogEnd, { fogColor.r, fogColor.g, fogColor.b });
-    objectRenderer->SetAlphaScissor(0.0f);
-
-    if (m_shadowMapping)
-        objectRenderer->SetShadowParams(m_shadowRegions, shadowParams);
-    else
-        objectRenderer->SetShadowParams(0, nullptr);
-
-    objectRenderer->SetTriplanarMode(m_triplanarMode);
-    objectRenderer->SetTriplanarScale(m_triplanarScale);
-
-    bool has_ghosts = false;
+    std::vector<ObjectData> opaqueObjects;
+    std::vector<ObjectData> maskedObjects;
+    std::vector<ObjectData> transparentObjects;
+    std::vector<ObjectData> ghostObjects;
 
     for (int objRank = 0; objRank < static_cast<int>(m_objects.size()); objRank++)
     {
@@ -3136,120 +3125,158 @@ void CEngine::Draw3DScene()
         if (! p1.used)
             continue;
 
-        objectRenderer->SetModelMatrix(m_objects[objRank].transform);
-
-        //m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
-
         for (auto& data : p1.next)
         {
-            if (m_objects[objRank].ghost)  // transparent ?
+            if (m_objects[objRank].ghost)
             {
-                has_ghosts = true;
-                continue;
+                ghostObjects.push_back(ObjectData{ objRank, m_objects[objRank], data });
             }
-
-            auto baseColor = GetObjectColor(objRank, data.material.baseColor);
-
-            if (data.material.alphaMode == AlphaMode::NONE)
+            else if (data.material.alphaMode == AlphaMode::NONE)
             {
-                objectRenderer->SetAlphaScissor(0.0f);
-
-                baseColor.a = 1.0f;
-
-                objectRenderer->SetBaseColor(baseColor);
-                objectRenderer->SetAlbedoColor(data.material.albedoColor);
+                opaqueObjects.push_back(ObjectData{ objRank, m_objects[objRank], data });
             }
             else if (data.material.alphaMode == AlphaMode::MASK)
             {
-                objectRenderer->SetAlphaScissor(data.material.alphaThreshold);
-
-                baseColor.a = 1.0f;
-
-                objectRenderer->SetBaseColor({ 0.0f, 0.0f, 0.0f, 0.0f });
-                objectRenderer->SetAlbedoColor(data.material.albedoColor * baseColor);
+                maskedObjects.push_back(ObjectData{ objRank, m_objects[objRank], data });
             }
             else if (data.material.alphaMode == AlphaMode::BLEND)
             {
-                objectRenderer->SetAlphaScissor(0.0f);
-
-                baseColor.a = 1.0f;
-
-                objectRenderer->SetBaseColor({ 0.0f, 0.0f, 0.0f, 0.0f });
-                objectRenderer->SetAlbedoColor(data.material.albedoColor * baseColor);
+                transparentObjects.push_back(ObjectData{ objRank, m_objects[objRank], data });
             }
-
-            objectRenderer->SetAlbedoTexture(data.albedoTexture);
-            objectRenderer->SetDetailTexture(data.detailTexture);
-
-            objectRenderer->SetEmissiveColor(data.material.emissiveColor);
-            objectRenderer->SetEmissiveTexture(data.emissiveTexture);
-
-            objectRenderer->SetMaterialParams(data.material.roughness, data.material.metalness, data.material.aoStrength);
-            objectRenderer->SetMaterialTexture(data.materialTexture);
-
-            objectRenderer->SetCullFace(data.material.cullFace);
-            objectRenderer->SetUVTransform(data.uvOffset, data.uvScale);
-            objectRenderer->DrawObject(data.buffer);
         }
     }
 
-    objectRenderer->End();
-
+    auto objectRenderer = m_device->GetObjectRenderer();
     objectRenderer->Begin();
+
+    objectRenderer->SetProjectionMatrix(m_matProj);
+    objectRenderer->SetViewMatrix(m_matView);
+    objectRenderer->SetShadowMap(m_shadowMap);
+    objectRenderer->SetLighting(true);
+    objectRenderer->SetLight(glm::vec4(m_sunDirection, 0.0), m_sunIntensity, m_sunColor);
+    objectRenderer->SetSky(Color(1.0, 1.0, 1.0), 0.2f);
+    objectRenderer->SetTransparency(TransparencyMode::NONE);
+
+    objectRenderer->SetFog(fogStart, fogEnd, { fogColor.r, fogColor.g, fogColor.b });
+    objectRenderer->SetAlphaScissor(0.0f);
+
+    if (m_shadowMapping)
+        objectRenderer->SetShadowParams(m_shadowRegions, shadowParams);
+    else
+        objectRenderer->SetShadowParams(0, nullptr);
+
+    objectRenderer->SetTriplanarMode(m_triplanarMode);
+    objectRenderer->SetTriplanarScale(m_triplanarScale);
+
+    objectRenderer->SetAlphaScissor(0.0f);
+
+    for (const auto& [rank, object, data] : opaqueObjects)
+    {
+        objectRenderer->SetModelMatrix(object.transform);
+
+        //m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
+
+        auto baseColor = GetObjectColor(rank, data.material.baseColor);
+
+        baseColor.a = 1.0f;
+
+        objectRenderer->SetBaseColor(baseColor);
+        objectRenderer->SetAlbedoColor(data.material.albedoColor);
+
+        objectRenderer->SetAlbedoTexture(data.albedoTexture);
+        objectRenderer->SetDetailTexture(data.detailTexture);
+
+        objectRenderer->SetEmissiveColor(data.material.emissiveColor);
+        objectRenderer->SetEmissiveTexture(data.emissiveTexture);
+
+        objectRenderer->SetMaterialParams(data.material.roughness, data.material.metalness, data.material.aoStrength);
+        objectRenderer->SetMaterialTexture(data.materialTexture);
+
+        objectRenderer->SetCullFace(data.material.cullFace);
+        objectRenderer->SetUVTransform(data.uvOffset, data.uvScale);
+        objectRenderer->DrawObject(data.buffer);
+    }
+
+    for (const auto& [rank, object, data] : maskedObjects)
+    {
+        objectRenderer->SetModelMatrix(object.transform);
+
+        //m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
+
+        auto baseColor = GetObjectColor(rank, data.material.baseColor);
+
+        objectRenderer->SetAlphaScissor(data.material.alphaThreshold);
+
+        baseColor.a = 1.0f;
+
+        objectRenderer->SetBaseColor({ 0.0f, 0.0f, 0.0f, 0.0f });
+        objectRenderer->SetAlbedoColor(data.material.albedoColor * baseColor);
+
+        objectRenderer->SetAlbedoTexture(data.albedoTexture);
+        objectRenderer->SetDetailTexture(data.detailTexture);
+
+        objectRenderer->SetEmissiveColor(data.material.emissiveColor);
+        objectRenderer->SetEmissiveTexture(data.emissiveTexture);
+
+        objectRenderer->SetMaterialParams(data.material.roughness, data.material.metalness, data.material.aoStrength);
+        objectRenderer->SetMaterialTexture(data.materialTexture);
+
+        objectRenderer->SetCullFace(data.material.cullFace);
+        objectRenderer->SetUVTransform(data.uvOffset, data.uvScale);
+        objectRenderer->DrawObject(data.buffer);
+    }
+    
+    objectRenderer->SetDepthMask(false);
+    objectRenderer->SetTransparency(TransparencyMode::ALPHA);
+    objectRenderer->SetAlphaScissor(0.0f);
+    objectRenderer->SetCullFace(CullFace::NONE);
+
+    for (const auto& [rank, object, data] : transparentObjects)
+    {
+        objectRenderer->SetModelMatrix(object.transform);
+
+        //m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
+
+        objectRenderer->SetBaseColor({ 0.0f, 0.0f, 0.0f, 0.0f });
+        objectRenderer->SetAlbedoColor(data.material.albedoColor);
+
+        objectRenderer->SetAlbedoTexture(data.albedoTexture);
+        objectRenderer->SetDetailTexture(data.detailTexture);
+
+        objectRenderer->SetEmissiveColor(data.material.emissiveColor);
+        objectRenderer->SetEmissiveTexture(data.emissiveTexture);
+
+        objectRenderer->SetMaterialParams(data.material.roughness, data.material.metalness, data.material.aoStrength);
+        objectRenderer->SetMaterialTexture(data.materialTexture);
+
+        objectRenderer->SetCullFace(data.material.cullFace);
+        objectRenderer->SetUVTransform(data.uvOffset, data.uvScale);
+        objectRenderer->DrawObject(data.buffer);
+    }
+    
     objectRenderer->SetLighting(false);
     objectRenderer->SetDepthMask(false);
     objectRenderer->SetTransparency(TransparencyMode::BLACK);
     objectRenderer->SetAlphaScissor(0.0f);
     objectRenderer->SetCullFace(CullFace::NONE);
 
-    // Draw translucent objects (ghosts)
-
-    if (has_ghosts)
+    for (const auto& [rank, object, data] : ghostObjects)
     {
-        Color tColor = Color(68.0f / 255.0f, 68.0f / 255.0f, 68.0f / 255.0f, 1.0f);
+        constexpr Color tColor = Color(68.0f / 255.0f, 68.0f / 255.0f, 68.0f / 255.0f, 1.0f);
 
-        for (int objRank = 0; objRank < static_cast<int>(m_objects.size()); objRank++)
-        {
-            if (! m_objects[objRank].used)
-                continue;
+        objectRenderer->SetModelMatrix(object.transform);
 
-            if (m_objects[objRank].type == ENG_OBJTYPE_TERRAIN)
-                continue;
+        //m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
 
-            if (! m_objects[objRank].drawWorld)
-                continue;
+        auto baseColor = GetObjectColor(rank, data.material.baseColor);
 
-            if (!m_objects[objRank].ghost)
-                continue;
+        objectRenderer->SetBaseColor(GetObjectColor(rank, data.material.baseColor));
 
-            auto combinedMatrix = projectionViewMatrix * m_objects[objRank].transform;
-
-            if (! IsVisible(combinedMatrix, objRank))
-                continue;
-
-            int baseObjRank = m_objects[objRank].baseObjRank;
-            if (baseObjRank == -1)
-                continue;
-
-            assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
-
-            EngineBaseObject& p1 = m_baseObjects[baseObjRank];
-            if (! p1.used)
-                continue;
-
-            objectRenderer->SetModelMatrix(m_objects[objRank].transform);
-
-            for (auto& data : p1.next)
-            {
-                objectRenderer->SetBaseColor(GetObjectColor(objRank, data.material.baseColor));
-
-                objectRenderer->SetAlbedoColor(tColor * data.material.albedoColor);
-                objectRenderer->SetAlbedoTexture(data.albedoTexture);
-                objectRenderer->SetDetailTexture(data.detailTexture);
-                objectRenderer->SetUVTransform(data.uvOffset, data.uvScale);
-                objectRenderer->DrawObject(data.buffer);
-            }
-        }
+        objectRenderer->SetAlbedoColor(tColor * data.material.albedoColor);
+        objectRenderer->SetAlbedoTexture(data.albedoTexture);
+        objectRenderer->SetDetailTexture(data.detailTexture);
+        objectRenderer->SetUVTransform(data.uvOffset, data.uvScale);
+        objectRenderer->DrawObject(data.buffer);
     }
 
     objectRenderer->End();
