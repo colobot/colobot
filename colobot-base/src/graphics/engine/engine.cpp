@@ -3284,10 +3284,27 @@ void CEngine::Draw3DScene()
         //m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
 
         auto baseColor = GetObjectColor(rank, data.material.baseColor);
+        baseColor.a = 1.0f;
 
-        objectRenderer->SetBaseColor(GetObjectColor(rank, data.material.baseColor));
+        if (data.material.alphaMode == AlphaMode::NONE)
+        {
+            objectRenderer->SetAlphaScissor(0.0f);
+            objectRenderer->SetBaseColor(baseColor);
+            objectRenderer->SetAlbedoColor(tColor * data.material.albedoColor);
+        }
+        else if (data.material.alphaMode == AlphaMode::BLEND)
+        {
+            objectRenderer->SetAlphaScissor(0.0f);
+            objectRenderer->SetBaseColor({ 0.0f, 0.0f, 0.0f, 0.0f });
+            objectRenderer->SetAlbedoColor(tColor * data.material.albedoColor * baseColor);
+        }
+        else if (data.material.alphaMode == AlphaMode::MASK)
+        {
+            objectRenderer->SetAlphaScissor(data.material.alphaThreshold);
+            objectRenderer->SetBaseColor({ 0.0f, 0.0f, 0.0f, 0.0f });
+            objectRenderer->SetAlbedoColor(tColor * data.material.albedoColor * baseColor);
+        }
 
-        objectRenderer->SetAlbedoColor(tColor * data.material.albedoColor);
         objectRenderer->SetAlbedoTexture(data.albedoTexture);
         objectRenderer->SetDetailTexture(data.detailTexture);
         objectRenderer->SetUVTransform(data.uvOffset, data.uvScale);
