@@ -109,6 +109,8 @@ void CPlanet::Draw()
     auto windowSize = m_engine->GetWindowSize();
     float inverseAspectRatio = static_cast<float>(windowSize.y) / static_cast<float>(windowSize.x);
 
+    renderer->SetBaseColor({ 0.0f, 0.0f, 0.0f, 0.0f });
+
     for (const auto& planet : m_planets)
     {
         if (planet.type != m_visibleType)
