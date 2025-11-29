@@ -3472,7 +3472,18 @@ void CParticle::DrawParticle(int sheet)
 
             m_renderer->SetTransparency(mode);
             m_renderer->SetColor(IntensityToColor(m_particle[i].intensity));
+            if (t == 4)
+            {
+                Color color1 = IntensityToColor(1.0f);
+                Color color2 = IntensityToColor(m_particle[i].intensity);
 
+                float r = std::min(color1.r + color2.r, 1.0f);
+                float g = std::min(color1.g + color2.g, 1.0f);
+                float b = std::min(color1.b + color2.b, 1.0f);
+                
+                Color blendedColor(r, g, b);
+                m_renderer->SetColor(blendedColor);
+            }
             if (m_particle[i].ray)  // ray?
             {
                 DrawParticleRay(i);
