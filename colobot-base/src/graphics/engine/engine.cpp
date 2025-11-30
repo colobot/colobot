@@ -2208,23 +2208,6 @@ void CEngine::ApplyRecolorMask(CImage& image, const std::filesystem::path& name)
 
         ApplyRecolorMask(image, regions, hair, 0.2f, false, false);
     }
-    else if (filename == "plant.png")
-    {
-        // Desaturate plant region
-        for (int y = 0; y < 256; y++)
-        {
-            for (int x = 0; x < 200; x++)
-            {
-                auto color = image.GetPixel({ x, y });
-
-                float max = std::max({ color.r, color.g, color.b });
-
-                color = Color{ max, max, max, color.a };
-
-                image.SetPixel({ x, y }, color);
-            }
-        }
-    }
 }
 
 void CEngine::ApplyRecolorMask(CImage& image,
@@ -2873,17 +2856,7 @@ Color CEngine::GetObjectColor(int object, BaseColor baseColor)
         case BaseColor::VEHICLE:
             return CRobotMain::GetInstance().GetVehicleColor();
         case BaseColor::PLANT:
-            {
-                auto color = CRobotMain::GetInstance().GetGreeneryColor();
-
-                float max = std::max({ color.r, color.g, color.b });
-
-                float scale = 1.0f / max;
-
-                color = Color{ color.r * scale, color.g * scale, color.b * scale, color.a };
-
-                return color;
-            }
+            return CRobotMain::GetInstance().GetGreeneryColor();
         case BaseColor::ALIEN:
             return CRobotMain::GetInstance().GetAlienColor();
         case BaseColor::HAIR:
