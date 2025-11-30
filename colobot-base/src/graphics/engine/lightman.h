@@ -35,7 +35,6 @@
 namespace Gfx
 {
 
-class CDevice;
 class CEngine;
 
 struct Color;
@@ -156,9 +155,6 @@ public:
     //! Destructor
     virtual ~CLightManager();
 
-    //! Sets the device to be used
-    void            SetDevice(CDevice* device);
-
     //! Prints debug info
     void DebugDumpLights();
 
@@ -233,7 +229,6 @@ protected:
 
 protected:
     CEngine*          m_engine;
-    CDevice*          m_device;
 
     //! Current time
     float             m_time;

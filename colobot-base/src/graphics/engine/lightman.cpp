@@ -76,22 +76,15 @@ void LightProgression::SetTarget(float value)
 
 CLightManager::CLightManager(CEngine* engine)
 {
-    m_device = nullptr;
     m_engine = engine;
 
     m_time = 0.0f;
+    m_lightMap = std::vector<int>(8, -1);
 }
 
 CLightManager::~CLightManager()
 {
-    m_device = nullptr;
     m_engine = nullptr;
-}
-
-void CLightManager::SetDevice(CDevice* device)
-{
-    m_device = device;
-    m_lightMap = std::vector<int>(8, -1);
 }
 
 void CLightManager::DebugDumpLights()
@@ -479,23 +472,6 @@ void CLightManager::UpdateDeviceLights(EngineObjectType type)
         if (lightMapIndex >= static_cast<int>( m_lightMap.size() ))
             break;
     }
-
-    /*
-    for (int i = 0; i < static_cast<int>( m_lightMap.size() ); ++i)
-    {
-        int rank = m_lightMap[i];
-        if (rank != -1)
-        {
-            Light light = m_dynLights[rank].light;
-            m_device->SetLight(i, light);
-            m_device->SetLightEnabled(i, true);
-        }
-        else
-        {
-            m_device->SetLightEnabled(i, false);
-        }
-    }
-    */
 }
 
 // -----------

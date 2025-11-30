@@ -395,7 +395,6 @@ bool CEngine::Create()
     m_lightning  = std::make_unique<CLightning>(this);
     m_planet     = std::make_unique<CPlanet>(this);
 
-    m_lightMan->SetDevice(m_device);
     m_particle->SetDevice(m_device);
 
     m_text->SetDevice(m_device);
