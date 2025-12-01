@@ -45,7 +45,6 @@ public:
 
     virtual void SetProjection(float left, float right, float bottom, float top) override;
     virtual void SetTexture(const Texture& texture) override;
-    virtual void SetColor(const glm::vec4& color) override;
     virtual void SetTransparency(TransparencyMode mode) override;
 
     virtual Vertex2D* BeginPrimitive(PrimitiveType type, int count) override;

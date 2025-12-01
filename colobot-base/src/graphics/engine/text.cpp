@@ -182,14 +182,13 @@ public:
 
     /// Add a quad to be rendered.
     /// This may trigger a call to Flush() if necessary.
-    void Add(Vertex2D vertices[4], unsigned int texID, TransparencyMode transparency, Color color)
+    void Add(Vertex2D vertices[4], unsigned int texID, TransparencyMode transparency)
     {
-        if (texID != m_texID || transparency != m_transparency || color != m_color)
+        if (texID != m_texID || transparency != m_transparency)
         {
             Flush();
             m_texID = texID;
             m_transparency = transparency;
-            m_color = color;
         }
         m_quads.emplace_back(Quad{{vertices[0], vertices[1], vertices[2], vertices[3]}});
     }
@@ -202,7 +201,6 @@ public:
         auto renderer = m_engine.GetUIRenderer();
         renderer->SetTexture(Texture{ m_texID });
         renderer->SetTransparency(m_transparency);
-        renderer->SetColor(m_color);
 
         if (m_counts.size() < m_quads.size())
         {
@@ -231,7 +229,6 @@ private:
     std::vector<Quad> m_quads;
     std::vector<int> m_counts;
 
-    Color m_color;
     unsigned int m_texID{};
     TransparencyMode m_transparency = TransparencyMode::NONE;
 };
@@ -1190,12 +1187,14 @@ void CText::DrawCharAndAdjustPos(StrUtils::CodePoint ch, FontType font, float si
 
         Gfx::Vertex2D vertices[4];
 
-        vertices[0] = { { p1.x, p2.y }, { uv1.x, uv2.y } };
-        vertices[1] = { { p1.x, p1.y }, { uv1.x, uv1.y } };
-        vertices[2] = { { p2.x, p2.y }, { uv2.x, uv2.y } };
-        vertices[3] = { { p2.x, p1.y }, { uv2.x, uv1.y } };
+        Gfx::IntColor col = Gfx::ColorToIntColor(color);
 
-        m_quadBatch->Add(vertices, texID, TransparencyMode::NONE, color);
+        vertices[0] = { { p1.x, p2.y }, { uv1.x, uv2.y }, col };
+        vertices[1] = { { p1.x, p1.y }, { uv1.x, uv1.y }, col };
+        vertices[2] = { { p2.x, p2.y }, { uv2.x, uv2.y }, col };
+        vertices[3] = { { p2.x, p1.y }, { uv2.x, uv1.y }, col };
+
+        m_quadBatch->Add(vertices, texID, TransparencyMode::NONE);
 
         pos.x += width;
     }
@@ -1233,7 +1232,7 @@ void CText::DrawCharAndAdjustPos(StrUtils::CodePoint ch, FontType font, float si
         vertices[2] = { { p2.x, p2.y }, { texCoord2.x, texCoord2.y }, col };
         vertices[3] = { { p2.x, p1.y }, { texCoord2.x, texCoord1.y }, col };
 
-        m_quadBatch->Add(vertices, tex.id, TransparencyMode::ALPHA, color);
+        m_quadBatch->Add(vertices, tex.id, TransparencyMode::ALPHA);
 
         pos.x += tex.charSize.x * width;
     }

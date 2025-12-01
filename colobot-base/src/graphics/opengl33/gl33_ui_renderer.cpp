@@ -150,12 +150,6 @@ void CGL33UIRenderer::SetTexture(const Texture& texture)
         glBindTexture(GL_TEXTURE_2D, m_currentTexture);
 }
 
-void CGL33UIRenderer::SetColor(const glm::vec4& color)
-{
-    m_uniforms.color = color;
-    m_uniformsDirty = true;
-}
-
 void CGL33UIRenderer::SetTransparency(TransparencyMode mode)
 {
     m_device->SetTransparency(mode);

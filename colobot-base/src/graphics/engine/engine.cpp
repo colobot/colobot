@@ -4546,7 +4546,6 @@ void CEngine::DrawBackgroundGradient(const Color& up, const Color& down)
 
     auto renderer = m_device->GetUIRenderer();
     renderer->SetTexture(Texture{});
-    renderer->SetColor({ 1, 1, 1, 1 });
     renderer->SetTransparency(TransparencyMode::NONE);
     auto vertices = renderer->BeginPrimitive(PrimitiveType::TRIANGLE_STRIP, 4);
 
@@ -4624,7 +4623,6 @@ void CEngine::DrawBackgroundImage()
     }
 
     auto renderer = m_device->GetUIRenderer();
-    renderer->SetColor({ 1, 1, 1, 1 });
     renderer->SetTexture(m_backgroundTex);
     renderer->SetTransparency(TransparencyMode::NONE);
     auto vertices = renderer->BeginPrimitive(PrimitiveType::TRIANGLE_STRIP, 4);

@@ -84,8 +84,6 @@ public:
     virtual void SetProjection(float left, float right, float bottom, float top) = 0;
     //! Sets texture, setting texture 0 means using white texture
     virtual void SetTexture(const Texture& texture) = 0;
-    //! Sets color
-    virtual void SetColor(const glm::vec4& color) = 0;
     //! Sets transparency mode
     virtual void SetTransparency(TransparencyMode mode) = 0;
 
