@@ -43,6 +43,9 @@ struct Color : glm::vec4
     constexpr Color(float aR = 0.0f, float aG = 0.0f, float aB = 0.0f, float aA = 0.0f)
         : glm::vec4(aR, aG, aB, aA) {}
 
+    constexpr explicit Color(const glm::vec4& rgba)
+        : glm::vec4{ rgba } {}
+
     constexpr explicit Color(const glm::vec3& rgb, float alpha = 0.0f)
         : glm::vec4{ rgb, alpha } {}
 
