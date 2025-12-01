@@ -3009,13 +3009,15 @@ void CEngine::Draw3DScene()
         shadowParams[i].uv_scale = m_shadowParams[i].scale;
     }
 
+    Color sunColor = Color{ Color{ m_sunColor, 0.0f } + m_waterAddColor * m_rankView };
+
     auto terrainRenderer = m_device->GetTerrainRenderer();
     terrainRenderer->Begin();
 
     terrainRenderer->SetProjectionMatrix(m_matProj);
     terrainRenderer->SetViewMatrix(m_matView);
     terrainRenderer->SetShadowMap(m_shadowMap);
-    terrainRenderer->SetLight(glm::vec4(m_sunDirection, 0.0), m_sunIntensity, m_sunColor);
+    terrainRenderer->SetLight(glm::vec4(m_sunDirection, 0.0), m_sunIntensity, sunColor);
     terrainRenderer->SetSky(m_ambientColor[m_rankView], 0.5f);
     
     if (m_shadowMapping)
@@ -3153,7 +3155,7 @@ void CEngine::Draw3DScene()
     objectRenderer->SetViewMatrix(m_matView);
     objectRenderer->SetShadowMap(m_shadowMap);
     objectRenderer->SetLighting(true);
-    objectRenderer->SetLight(glm::vec4(m_sunDirection, 0.0), m_sunIntensity, m_sunColor);
+    objectRenderer->SetLight(glm::vec4(m_sunDirection, 0.0), m_sunIntensity, sunColor);
     objectRenderer->SetSky(m_ambientColor[m_rankView], 0.5f);
     objectRenderer->SetTransparency(TransparencyMode::NONE);
 
@@ -3316,7 +3318,7 @@ void CEngine::Draw3DScene()
     objectRenderer->SetViewMatrix(m_matView);
     objectRenderer->SetShadowMap(m_shadowMap);
     objectRenderer->SetLighting(true);
-    objectRenderer->SetLight(glm::vec4(m_sunDirection, 0.0), m_sunIntensity, m_sunColor);
+    objectRenderer->SetLight(glm::vec4(m_sunDirection, 0.0), m_sunIntensity, sunColor);
     objectRenderer->SetTransparency(TransparencyMode::NONE);
 
     objectRenderer->SetFog(fogStart, fogEnd, { fogColor.r, fogColor.g, fogColor.b });
