@@ -374,19 +374,20 @@ bool CTerrain::RandomizeRelief()
             float value = 0;
             for(int i = 0; i < octaveCount; i++)
             {
-                int octaveSize = sqrt(static_cast<int>(pow(2, (i+1)*2)));
-                double xi, yi, a, b;
-                a = modf(x * (octaveSize-1), &xi);
-                b = modf(y * (octaveSize-1), &yi);
+                int octaveSize = static_cast<int>(sqrt(static_cast<int>(pow(2, (i+1)*2))));
+
+                double xi, yi;
+                double a = modf(x * (octaveSize-1), &xi);
+                double b = modf(y * (octaveSize-1), &yi);
 
                 float lg = octaves[i][static_cast<int>(yi * octaveSize + xi)];
                 float pg = octaves[i][static_cast<int>(yi * octaveSize + xi + 1)];
                 float ld = octaves[i][static_cast<int>((yi+1) * octaveSize + xi)];
                 float pd = octaves[i][static_cast<int>((yi+1) * octaveSize + xi + 1)];
 
-                float g = pg * a + lg * (1-a);
-                float d = pd * a + ld * (1-a);
-                float res = d * b + g * (1-b);
+                float g = static_cast<float>(pg * a + lg * (1 - a));
+                float d = static_cast<float>(pd * a + ld * (1 - a));
+                float res = static_cast<float>(d * b + g * (1 - b));
                 value += res;
             }
 
@@ -480,8 +481,8 @@ void CTerrain::AdjustRelief()
 glm::vec3 CTerrain::GetVector(int x, int y)
 {
     glm::vec3 p{};
-    p.x = x*m_brickSize - (m_mosaicCount*m_brickCount*m_brickSize) / 2.0;
-    p.z = y*m_brickSize - (m_mosaicCount*m_brickCount*m_brickSize) / 2.0;
+    p.x = x * m_brickSize - (m_mosaicCount * m_brickCount * m_brickSize) / 2.0f;
+    p.z = y * m_brickSize - (m_mosaicCount * m_brickCount * m_brickSize) / 2.0f;
 
     if ( !m_relief.empty()                         &&
          x >= 0 && x <= m_mosaicCount*m_brickCount &&
