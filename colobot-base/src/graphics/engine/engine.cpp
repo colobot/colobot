@@ -282,6 +282,7 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
 
     m_terrainTexParams.format = TextureFormat::AUTO;
     m_terrainTexParams.filter = TextureFilter::BILINEAR;
+    m_terrainTexParams.wrap = TextureWrapMode::CLAMP;
 
     // Compute bias matrix for shadow mapping
     glm::mat4 temp1, temp2;
