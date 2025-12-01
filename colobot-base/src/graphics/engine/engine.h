@@ -29,7 +29,6 @@
 
 #include "graphics/core/color.h"
 #include "graphics/core/texture.h"
-#include "graphics/core/renderers.h"
 #include "graphics/core/vertex.h"
 
 #include "math/sphere.h"
@@ -72,6 +71,7 @@ class CTerrain;
 class CPyroManager;
 class CModelMesh;
 class CVertexBuffer;
+
 struct EngineBaseObjDataTier;
 struct EngineBaseObject;
 struct EngineTriangle;
