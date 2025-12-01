@@ -54,6 +54,7 @@ const int VAPOR_SIZE = 10;
 
 CWater::CWater(CEngine* engine)
     : m_engine(engine),
+      m_device(engine->GetDevice()),
       m_vapors(VAPOR_SIZE, WaterVapor())
 {
     m_lines.reserve(WATERLINE_PREALLOCATE_COUNT);
