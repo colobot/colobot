@@ -253,7 +253,7 @@ void CWater::AdjustLevel(glm::vec3 &pos, glm::vec3 &norm,
 
     t1 = m_time*0.50f + pos.x*2.1f + pos.z*1.1f;
     float t2 = m_time*0.75f + pos.x*2.0f + pos.z*1.0f;
-    norm = glm::vec3(sinf(t1)*m_glint, 1.0f, sinf(t2)*m_glint);
+    norm = glm::normalize(glm::vec3{ sinf(t1) * m_glint, 3.0f, sinf(t2) * m_glint });
 }
 
 /** This surface prevents to see the sky (background) underwater! */
