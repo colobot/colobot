@@ -43,6 +43,7 @@
 #include <span>
 #include <memory>
 #include <unordered_map>
+#include <optional>
 
 
 class CApplication;
