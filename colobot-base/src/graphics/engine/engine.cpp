@@ -2991,9 +2991,7 @@ void CEngine::Draw3DScene()
     float fogStart = m_deepView[m_rankView] * m_fogStart[m_rankView] * m_clippingDistance;
     float fogEnd = m_deepView[m_rankView] * m_clippingDistance;
 
-    // TODO: This causes a rendering artifact and I can't see anything that breaks if you just comment it out
-    // So I'll just leave it like that for now ~krzys_h
-    //m_water->DrawBack();  // draws water background
+    m_water->DrawBack();  // draws water background
 
     CProfiler::StartPerformanceCounter(PCNT_RENDER_TERRAIN);
 
