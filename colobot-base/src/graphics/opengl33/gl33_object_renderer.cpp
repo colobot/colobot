@@ -43,17 +43,18 @@ CGL33ObjectRenderer::CGL33ObjectRenderer(CGL33Device* device)
     std::string preamble = LoadSource("shaders/gl33/preamble.glsl");
     std::string shadowSource = LoadSource("shaders/gl33/shadow.glsl");
     std::string lightingSource = LoadSource("shaders/gl33/lighting.glsl");
+    std::string fogSource = LoadSource("shaders/gl33/fog.glsl");
     std::string vsSource = LoadSource("shaders/gl33/object_vs.glsl");
     std::string fsSource = LoadSource("shaders/gl33/object_fs.glsl");
 
-    GLint vsShader = CreateShader(GL_VERTEX_SHADER, { preamble, lightingSource, shadowSource, vsSource });
+    GLint vsShader = CreateShader(GL_VERTEX_SHADER, { preamble, lightingSource, fogSource, shadowSource, vsSource });
     if (vsShader == 0)
     {
         GetLogger()->Error("Cound not create vertex shader from file 'object_vs.glsl'");
         return;
     }
 
-    GLint fsShader = CreateShader(GL_FRAGMENT_SHADER, { preamble, lightingSource, shadowSource, fsSource });
+    GLint fsShader = CreateShader(GL_FRAGMENT_SHADER, { preamble, lightingSource, fogSource, shadowSource, fsSource });
     if (fsShader == 0)
     {
         GetLogger()->Error("Cound not create fragment shader from file 'object_fs.glsl'");
@@ -85,8 +86,13 @@ CGL33ObjectRenderer::CGL33ObjectRenderer(CGL33Device* device)
     m_skyColor = glGetUniformLocation(m_program, "uni_SkyColor");
     m_skyIntensity = glGetUniformLocation(m_program, "uni_SkyIntensity");
 
-    m_fogRange = glGetUniformLocation(m_program, "uni_FogRange");
-    m_fogColor = glGetUniformLocation(m_program, "uni_FogColor");
+    m_fogUpperHeight = glGetUniformLocation(m_program, "uni_FogUpperHeight");
+    m_fogUpperRange = glGetUniformLocation(m_program, "uni_FogUpperRange");
+    m_fogUpperColor = glGetUniformLocation(m_program, "uni_FogUpperColor");
+
+    m_fogLowerHeight = glGetUniformLocation(m_program, "uni_FogLowerHeight");
+    m_fogLowerRange = glGetUniformLocation(m_program, "uni_FogLowerRange");
+    m_fogLowerColor = glGetUniformLocation(m_program, "uni_FogLowerColor");
 
     m_baseColor = glGetUniformLocation(m_program, "uni_BaseColor");
     m_albedoColor = glGetUniformLocation(m_program, "uni_AlbedoColor");
@@ -387,10 +393,18 @@ void CGL33ObjectRenderer::SetShadowParams(int count, const ShadowParam* params)
     }
 }
 
-void CGL33ObjectRenderer::SetFog(float min, float max, const glm::vec3& color)
+void CGL33ObjectRenderer::SetUpperFog(float height, float min, float max, const Color& color)
 {
-    glUniform2f(m_fogRange, min, max);
-    glUniform3f(m_fogColor, color.r, color.g, color.b);
+    glUniform1f(m_fogUpperHeight, height);
+    glUniform2f(m_fogUpperRange, min, max);
+    glUniform3f(m_fogUpperColor, color.r, color.g, color.b);
+}
+
+void CGL33ObjectRenderer::SetLowerFog(float height, float min, float max, const Color& color)
+{
+    glUniform1f(m_fogLowerHeight, height);
+    glUniform2f(m_fogLowerRange, min, max);
+    glUniform3f(m_fogLowerColor, color.r, color.g, color.b);
 }
 
 void CGL33ObjectRenderer::SetDepthTest(bool enabled)

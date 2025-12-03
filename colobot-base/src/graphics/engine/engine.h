@@ -1220,7 +1220,7 @@ protected:
 
     // Sun parameters for directional lighting
     glm::vec3       m_sunDirection = { 1.0f, 1.0f, -1.0f };
-    float           m_sunIntensity = 1.0f;
+    float           m_sunIntensity = 0.75f;
     glm::vec3       m_sunColor = { 1.0f, 1.0f, 1.0f };
 
     // Light direction used for the appearance screen

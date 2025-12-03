@@ -82,8 +82,10 @@ public:
     //! Sets shadow parameters
     virtual void SetShadowParams(int count, const ShadowParam* params) override;
 
-    //! Sets fog parameters
-    virtual void SetFog(float min, float max, const glm::vec3& color) override;
+    //! Sets upper fog parameters
+    virtual void SetUpperFog(float height, float min, float max, const Color& color) override;
+    //! Sets lower fog parameters
+    virtual void SetLowerFog(float height, float min, float max, const Color& color) override;
     //! Sets alpha scissor
     virtual void SetAlphaScissor(float alpha) override;
 
@@ -129,8 +131,14 @@ private:
     GLint m_skyColor = -1;
     GLint m_skyIntensity = -1;
 
-    GLint m_fogRange = -1;
-    GLint m_fogColor = -1;
+    // Fog parameters
+    GLint m_fogUpperHeight = -1;
+    GLint m_fogUpperRange = -1;
+    GLint m_fogUpperColor = -1;
+
+    GLint m_fogLowerHeight = -1;
+    GLint m_fogLowerRange = -1;
+    GLint m_fogLowerColor = -1;
 
     GLint m_baseColor = -1;
     GLint m_albedoColor = -1;

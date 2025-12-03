@@ -25,6 +25,7 @@
 #include "common/stringutils.h"
 
 #include "graphics/core/device.h"
+#include "graphics/core/material.h"
 #include "graphics/core/renderers.h"
 #include "graphics/core/transparency.h"
 
@@ -259,10 +260,6 @@ void CWater::AdjustLevel(glm::vec3 &pos, glm::vec3 &norm,
 /** This surface prevents to see the sky (background) underwater! */
 void CWater::DrawBack()
 {
-    // TODO: Not currently used, needs to be rewritten
-    return;
-
-    /*
     if (! m_draw) return;
     if (m_type[0] == WATER_NULL) return;
     if (m_lines.empty()) return;
@@ -270,42 +267,50 @@ void CWater::DrawBack()
     glm::vec3 eye = m_engine->GetEyePt();
     glm::vec3 lookat = m_engine->GetLookatPt();
 
-    Material material;
-    material.diffuse = m_diffuse;
-    material.ambient = m_ambient;
-    m_engine->SetMaterial(material);
+    auto renderer = m_device->GetObjectRenderer();
+    renderer->Begin();
+    renderer->SetProjectionMatrix(m_engine->GetMatProj());
+    renderer->SetViewMatrix(m_engine->GetMatView());
+    renderer->SetAlbedoColor(m_diffuse);
+    renderer->SetAlbedoTexture({});
 
-    CDevice* device = m_engine->GetDevice();
+    renderer->SetTransparency(TransparencyMode::NONE);
+    renderer->SetDepthMask(false);
 
-    m_engine->SetState(Gfx::ENG_RSTATE_OPAQUE_COLOR);
+    const float multiplier = 4.0f;
 
     float deep = m_engine->GetDeepView(0);
-    m_engine->SetDeepView(deep*2.0f, 0);
+
+    m_engine->SetDeepView(deep * multiplier, 0);
     m_engine->SetFocus(m_engine->GetFocus());
-    m_engine->UpdateMatProj();  // twice the depth of view
+
+    renderer->SetProjectionMatrix(m_engine->GetMatProj());
 
     glm::mat4 matrix = glm::mat4(1.0f);
-    device->SetTransform(TRANSFORM_WORLD, matrix);
+    renderer->SetModelMatrix(matrix);
 
-    glm::vec3 p = { 0, 0, 0 };
-    p.x = eye.x;
-    p.z = eye.z;
+    renderer->SetUpperFog(GetLevel(), 0.0f, 1.0f, m_engine->GetFogColor(m_engine->GetRankView()));
+    renderer->SetLowerFog(GetLevel() - 8.0f, 0.0f, 1.0f, m_engine->GetFogColor(1));
+
     float dist = Math::DistanceProjected(eye, lookat);
-    p.x = (lookat.x-eye.x)*deep*1.0f/dist + eye.x;
-    p.z = (lookat.z-eye.z)*deep*1.0f/dist + eye.z;
+
+    glm::vec3 p = {};
+    p.x = (lookat.x - eye.x) * deep * 1.0f / dist + eye.x;
+    p.z = (lookat.z - eye.z) * deep * 1.0f / dist + eye.z;
 
     glm::vec3 p1{}, p2{};
-    p1.x =  (lookat.z-eye.z)*deep*2.0f/dist + p.x;
-    p1.z = -(lookat.x-eye.x)*deep*2.0f/dist + p.z;
-    p2.x = -(lookat.z-eye.z)*deep*2.0f/dist + p.x;
-    p2.z =  (lookat.x-eye.x)*deep*2.0f/dist + p.z;
+    p1.x =  (lookat.z - eye.z) * deep * multiplier / dist + p.x;
+    p1.z = -(lookat.x - eye.x) * deep * multiplier / dist + p.z;
+    p2.x = -(lookat.z - eye.z) * deep * multiplier / dist + p.x;
+    p2.z =  (lookat.x - eye.x) * deep * multiplier / dist + p.z;
 
     p1.y = -50.0f;
     p2.y = m_level;
 
-    Gfx::Color white = Gfx::Color(1.0f, 1.0f, 1.0f, 0.0f);
+    glm::u8vec4 white = { 255, 255, 255, 255 };
 
-    VertexCol vertices[4] =
+    // position color uv uv2 normal
+    Vertex3D vertices[4] =
     {
         { glm::vec3(p1.x, p2.y, p1.z), white },
         { glm::vec3(p1.x, p1.y, p1.z), white },
@@ -313,13 +318,16 @@ void CWater::DrawBack()
         { glm::vec3(p2.x, p1.y, p2.z), white }
     };
 
-    device->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, vertices, 4);
+    renderer->DrawPrimitive(PrimitiveType::TRIANGLE_STRIP, 4, vertices);
     m_engine->AddStatisticTriangle(2);
 
     m_engine->SetDeepView(deep, 0);
     m_engine->SetFocus(m_engine->GetFocus());
-    m_engine->UpdateMatProj();  // gives the initial depth of view
-    // */
+
+    renderer->SetProjectionMatrix(m_engine->GetMatProj());
+    renderer->SetDepthMask(true);
+
+    renderer->End();
 }
 
 void CWater::DrawSurf()
@@ -335,21 +343,32 @@ void CWater::DrawSurf()
     int rankview = m_engine->GetRankView();
     bool under = ( rankview == 1);
 
-    CDevice* device = m_engine->GetDevice();
-    auto renderer = device->GetObjectRenderer();
+    auto renderer = m_device->GetObjectRenderer();
 
     glm::mat4 matrix = glm::mat4(1.0f);
     renderer->SetModelMatrix(matrix);
 
     auto texture = m_engine->LoadTexture(m_fileName);
-
+    
     renderer->SetAlbedoTexture(texture);
+    renderer->SetEmissiveTexture({});
+
+    float fogEnd = m_engine->GetClippingDistance() * m_engine->GetDeepView(0);
+    float fogStart = fogEnd * m_engine->GetFogStart(0);
+
+    renderer->SetLighting(true);
+    renderer->SetSky(m_ambient, 1.0f);
+    renderer->SetBaseColor({ 0.0f, 0.0f, 0.0f, 0.0f });
     renderer->SetDetailTexture(Texture{});
+    renderer->SetCullFace(CullFace::NONE);
+    renderer->SetDepthMask(false);
+    renderer->SetUpperFog(GetLevel(), fogStart, fogEnd, m_engine->GetFogColor(rankview));
+    renderer->SetLowerFog(GetLevel() - 8.0f, fogStart, fogEnd, m_engine->GetFogColor(rankview));
 
     if (m_type[rankview] == WATER_TT)
     {
         renderer->SetTransparency(TransparencyMode::BLACK);
-        renderer->SetAlbedoColor(m_color);
+        renderer->SetAlbedoColor(m_diffuse);
     }
     else if (m_type[rankview] == WATER_TO)
     {
@@ -367,6 +386,11 @@ void CWater::DrawSurf()
         renderer->SetAlbedoColor(Color{ 1.0f, 1.0f, 1.0f, 1.0f });
     }
 
+    if (rankview == 1)
+    {
+        renderer->SetTransparency(TransparencyMode::WHITE);
+    }
+
     float size = m_brickSize/2.0f;
     float sizez = 0.0f;
     if (under) sizez = -size;
@@ -377,15 +401,12 @@ void CWater::DrawSurf()
 
     for (int i = 0; i < static_cast<int>( m_lines.size() ); i++)
     {
-        glm::vec3 pos{};
-        pos.y = m_level;
-        pos.z = m_lines[i].pz;
-        pos.x = m_lines[i].px1;
+        glm::vec3 pos = { m_lines[i].px1, m_level, m_lines[i].pz };
 
         // Visible line?
         glm::vec3 p = pos;
         p.x += size*(m_lines[i].len-1);
-        float radius = sqrtf(powf(size, 2.0f)+powf(size*m_lines[i].len, 2.0f));
+        float radius = sqrtf(size * size + powf(size * m_lines[i].len, 2.0f));
         if (glm::distance(p, eye) > deep + radius)
             continue;
 

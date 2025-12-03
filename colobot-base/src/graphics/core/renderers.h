@@ -138,7 +138,16 @@ public:
     virtual void SetShadowParams(int count, const ShadowParam* params) = 0;
 
     //! Sets fog parameters
-    virtual void SetFog(float min, float max, const glm::vec3& color) = 0;
+    void SetFog(float min, float max, const Color& color)
+    {
+        SetUpperFog(1.0f, min, max, color);
+        SetLowerFog(0.0f, min, max, color);
+    }
+
+    //! Sets upper fog parameters
+    virtual void SetUpperFog(float height, float min, float max, const Color& color) = 0;
+    //! Sets lower fog parameters
+    virtual void SetLowerFog(float height, float min, float max, const Color& color) = 0;
 
     //! Draws terrain object
     virtual void DrawObject(const glm::mat4& matrix, const CVertexBuffer* buffer) = 0;
@@ -194,7 +203,16 @@ public:
     virtual void SetShadowParams(int count, const ShadowParam* params) = 0;
 
     //! Sets fog parameters
-    virtual void SetFog(float min, float max, const glm::vec3& color) = 0;
+    void SetFog(float min, float max, const Color& color)
+    {
+        SetUpperFog(0.0f, min, max, color);
+        SetLowerFog(0.0f, min, max, color);
+    }
+
+    //! Sets upper fog parameters
+    virtual void SetUpperFog(float height, float min, float max, const Color& color) = 0;
+    //! Sets lower fog parameters
+    virtual void SetLowerFog(float height, float min, float max, const Color& color) = 0;
     //! Sets alpha scissor
     virtual void SetAlphaScissor(float alpha) = 0;
 
