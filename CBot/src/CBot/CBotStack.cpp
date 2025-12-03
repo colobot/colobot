@@ -69,7 +69,7 @@ CBotStack* CBotStack::AllocateStack()
     p = static_cast<CBotStack*>(malloc(size));
 
     // completely empty
-    memset(p, 0, size);
+    memset(static_cast<void*>(p), 0, size);
 
     p->m_block = BlockVisibilityType::BLOCK;
 
@@ -110,7 +110,7 @@ void CBotStack::Delete()
     if ( m_prev == nullptr ) delete m_data;
 
     // clears the freed block
-    memset(this, 0, sizeof(CBotStack));
+    memset(static_cast<void*>(this), 0, sizeof(CBotStack));
     m_bOver    = bOver;
 
     if ( p == nullptr )
