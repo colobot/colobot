@@ -1,0 +1,2201 @@
+# This file is part of the Colobot: Gold Edition source code
+# Copyright (C) 2001-2016, Daniel Roux, EPSITEC SA & TerranovaTeam
+# This file is distributed under the same license as the Colobot package.
+# Magyar fordítást készítette: Sinkovics Zsolt (FB: Sini Zsolt)
+# Hungarian translate <pondera77@gmail.com>, 2025.
+msgid ""
+msgstr ""
+"Project-Id-Version: latest\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: DATE\n"
+"PO-Revision-Date: 2025-05-01 12:04+0200\n"
+"Last-Translator: Sinkovics Zsolt <pondera77@gmail.com>\n"
+"Language-Team: Sinkovics Zsolt\n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.3\n"
+"X-Language: hu_HU\n"
+"X-Source-Language: en_US\n"
+"X-POOTLE-MTIME: 1406536037.000000\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+msgid " or "
+msgstr " vagy "
+
+msgid "\" [ \" expected"
+msgstr "Hiányzó \" [ \" karakter"
+
+msgid "\" ] \" missing"
+msgstr "Hiányzó \" ] \" karakter"
+
+#, c-format
+msgid "%s: %d pts"
+msgstr "%s: %d pont"
+
+msgid "+\\Missions with bonus content and optional challenges"
+msgstr "+\\Küldetések bónusz tartalommal és opcionális kihívásokkal"
+
+msgid "..behind"
+msgstr "..mögött"
+
+msgid "..in front"
+msgstr "..elöl"
+
+msgid "..power cell"
+msgstr "..akkumulátor"
+
+msgid "1) First click on the key you want to redefine."
+msgstr "1) Először kattints arra a billentyűre, amit át szeretnél állítani."
+
+msgid "2) Then press the key you want to use instead."
+msgstr "2) Ezután nyomd meg az új kívánt billentyűt."
+
+msgid "<<  Back  \\Back to the previous screen"
+msgstr "<<  Vissza  \\Vissza az előző képernyőre"
+
+msgid "<<< Sorry; mission failed >>>"
+msgstr "<<< Sajnálom, a küldetés sikertelen >>>"
+
+#, c-format
+msgid "<<< Team %s finished! >>>"
+msgstr "<<< A(z) %s csapat befejezte! >>>"
+
+#, c-format
+msgid "<<< Team %s lost! >>>"
+msgstr "<<< A(z) %s csapat elveszítette! >>>"
+
+#, c-format
+msgid "<<< Team %s recieved %d points >>>"
+msgstr "<<< A(z) %s csapat %d pontot kapott >>>"
+
+msgid "<<< Well done; mission accomplished >>>"
+msgstr "<<< Szép munka, küldetés teljesítve >>>"
+
+msgid "A label must be followed by \"for\"; \"while\"; \"do\" or \"switch\""
+msgstr "A címke után \"for\", \"while\", \"do\" vagy \"switch\" utasításnak kell következnie."
+
+msgid "A variable can not be declared twice"
+msgstr "Egy változó nem deklarálható kétszer"
+
+msgid "Abort\\Abort the current mission"
+msgstr "Megszakítás\\A jelenlegi küldetés megszakítása"
+
+msgid "Access beyond array limit"
+msgstr "Tömbhatáron túli elérés"
+
+msgid "Access to solution\\Shows the solution (detailed instructions for missions)"
+msgstr "Megoldás megtekintése\\Részletes küldetés-útmutató megjelenítése"
+
+msgid "Access to solutions\\Show program \"4: Solution\" in the exercises"
+msgstr "Megoldások elérése\\A gyakorlatokban megjeleníti a \"4: Megoldás\" programot"
+
+msgid "Add new program"
+msgstr "Új program hozzáadása"
+
+msgid "Alien Queen"
+msgstr "Idegen királynő"
+
+msgid "Alien Queen killed"
+msgstr "Idegen királynő megsemmisítve"
+
+msgid "Already carrying something"
+msgstr "Már visz valamit"
+
+msgid "Alternative camera mode\\Move sideways instead of rotating (in free camera)"
+msgstr "Alternatív kameramód\\Oldalirányú mozgás forgás helyett (szabad kameránál)"
+
+msgid "Ambiguous call to overloaded function"
+msgstr "Többértelmű hívás egy túlterhelt függvényre"
+
+msgid "Analysis already performed"
+msgstr "Az elemzés már elvégezve"
+
+msgid "Analysis performed"
+msgstr "Elemzés befejezve"
+
+msgid "Anisotropy level\\Anisotropy level"
+msgstr "Anizotrópia szint\\Anizotrópia szint"
+
+msgid "Ant"
+msgstr "Hangya"
+
+msgid "Ant fatally wounded"
+msgstr "Halálosan megsebesült hangya"
+
+msgid "Appearance\\Choose your appearance"
+msgstr "Megjelenés\\Válaszd ki a megjelenésed"
+
+msgid "Apply changes\\Activates the changed settings"
+msgstr "Változtatások alkalmazása\\Az új beállítások aktiválása"
+
+msgid "Apply\\Apply the current mod configuration"
+msgstr "Alkalmaz\\A jelenlegi mod konfiguráció alkalmazása"
+
+msgid "Appropriate constructor missing"
+msgstr "Hiányzik a megfelelő konstruktor"
+
+msgid "Assignment impossible"
+msgstr "A hozzárendelés lehetetlen"
+
+msgid "Autolab"
+msgstr "Automata labor"
+
+msgid "Automatic indent\\When program editing"
+msgstr "Automatikus behúzás\\Program szerkesztés közben"
+
+msgid "Autosave interval\\How often your game will autosave"
+msgstr "Autom.mentés időköz\\Milyen gyakran ment automatikusan a játék"
+
+msgid "Autosave slots\\How many autosave slots you'll have"
+msgstr "Autom.mentés száma\\Az automatikus mentések száma"
+
+msgid "Autosave\\Enables autosave"
+msgstr "Automatikus mentés\\Automatikus mentés engedélyezése"
+
+msgid "Back"
+msgstr "Vissza"
+
+msgid "Background sound:\\Volume of audio tracks"
+msgstr "Háttérhang:\\A hangsávok hangereje"
+
+msgid "Backward (\\key down;)"
+msgstr "Hátrafelé (\\lefelé billentyű;)"
+
+msgid "Backward\\Moves backward"
+msgstr "Hátra\\Hátrafelé mozgás"
+
+msgid "Bad argument for \"new\""
+msgstr "Érvénytelen argumentum a \"new\"-hoz"
+
+msgid "Big indent\\Indent 2 or 4 spaces per level defined by braces"
+msgstr "Nagy behúzás\\2 vagy 4 szóköz behúzás szintenként, kapcsos zárójelekkel"
+
+msgid "Black box"
+msgstr "Fekete doboz"
+
+msgid "Blood\\Display blood when the astronaut is hit"
+msgstr "Vér\\Vér megjelenítése, ha az űrhajóst eltalálják"
+
+msgid "Blue"
+msgstr "Kék"
+
+msgid "Blue flag"
+msgstr "Kék zászló"
+
+msgid "Bot destroyed"
+msgstr "Robot megsemmisítve"
+
+msgid "Bot factory"
+msgstr "Robotgyár"
+
+msgid "Build (\\key action;)"
+msgstr "Építés (\\művelet billentyű;)"
+
+msgid "Build a bot factory"
+msgstr "Robotgyár építése"
+
+msgid "Build a converter"
+msgstr "Konverter építése"
+
+msgid "Build a defense tower"
+msgstr "Védelmi torony építése"
+
+msgid "Build a derrick"
+msgstr "Fúrótornyot épít"
+
+msgid "Build a exchange post"
+msgstr "Információs állomás építése"
+
+msgid "Build a legged builder"
+msgstr "Járó építőrobot építése"
+
+msgid "Build a legged grabber"
+msgstr "Járó szállítórobot építése"
+
+msgid "Build a legged orga shooter"
+msgstr "Járó szerves-lövő építése"
+
+msgid "Build a legged shooter"
+msgstr "Járó lövészrobot építése"
+
+msgid "Build a legged sniffer"
+msgstr "Járó szimatolórobot építése"
+
+msgid "Build a lightning conductor"
+msgstr "Villámhárító építése"
+
+msgid "Build a nuclear power plant"
+msgstr "Atomerőmű építése"
+
+msgid "Build a phazer shooter"
+msgstr "Phazer lövészrobot építése"
+
+msgid "Build a power cell factory"
+msgstr "Akkumulátorgyár építése"
+
+msgid "Build a power station"
+msgstr "Erőmű építése"
+
+msgid "Build a radar station"
+msgstr "Radarállomás építése"
+
+msgid "Build a recycler"
+msgstr "Újrahasznosító építése"
+
+msgid "Build a repair center"
+msgstr "Javítóközpont építése"
+
+msgid "Build a research center"
+msgstr "Kutatóközpont építése"
+
+msgid "Build a shielder"
+msgstr "Pajzsrobot építése"
+
+msgid "Build a subber"
+msgstr "Lánctalpas búvárrobot építése"
+
+msgid "Build a target bot"
+msgstr "Mozgó célrobot építése"
+
+msgid "Build a thumper"
+msgstr "Döngölőrobot építése"
+
+msgid "Build a tracked builder"
+msgstr "Lánctalpas építőrobot építése"
+
+msgid "Build a tracked grabber"
+msgstr "Lánctalpas szállítórobot építése"
+
+msgid "Build a tracked orga shooter"
+msgstr "Lánctalpas szerves-lövő építése"
+
+msgid "Build a tracked shooter"
+msgstr "Lánctalpas lövészrobot építése"
+
+msgid "Build a tracked sniffer"
+msgstr "Lánctalpas szimatolórobot építése"
+
+msgid "Build a vault"
+msgstr "Bunker építése"
+
+msgid "Build a wheeled builder"
+msgstr "Kerekes építőrobot építése"
+
+msgid "Build a wheeled grabber"
+msgstr "Kerekes szállítórobot építése"
+
+msgid "Build a wheeled orga shooter"
+msgstr "Kerekes szerves-lövő építése"
+
+msgid "Build a wheeled shooter"
+msgstr "Kerekes lövészrobot építése"
+
+msgid "Build a wheeled sniffer"
+msgstr "Kerekes szimatolórobot építése"
+
+msgid "Build a winged builder"
+msgstr "Repülő építőrobot építése"
+
+msgid "Build a winged grabber"
+msgstr "Repülő szállítórobot építése"
+
+msgid "Build a winged orga shooter"
+msgstr "Repülő szerves-lövő építése"
+
+msgid "Build a winged shooter"
+msgstr "Repülő lövészrobot építése"
+
+msgid "Build a winged sniffer"
+msgstr "Repülő szimatolórobot építése"
+
+msgid "Build an autolab"
+msgstr "Automatikus labor építése"
+
+msgid "Building completed"
+msgstr "Építkezés befejezve"
+
+msgid "Building destroyed"
+msgstr "Épület megsemmisült"
+
+msgid "Button %1"
+msgstr "Gomb %1"
+
+msgid "Calling an unknown function"
+msgstr "Ismeretlen függvény hívása"
+
+msgid "Camera (\\key camera;)"
+msgstr "Kamera (\\key camera;)"
+
+msgid "Camera back\\Moves the camera backward"
+msgstr "Kamera hátra\\Kamera hátrafelé mozgatása"
+
+msgid "Camera border scrolling\\Scrolling when the mouse touches right or left border"
+msgstr "Képernyőszéli kameramozgatás\\Kamera forgatása, ha az egér a képernyő széléhez ér"
+
+msgid "Camera closer\\Moves the camera forward"
+msgstr "Kamera közelebb\\Kamera előre mozgatása"
+
+msgid "Camera down\\Turns the camera down"
+msgstr "Kamera lefelé\\Kamera lefelé mozgatása"
+
+msgid "Camera left\\Turns the camera left"
+msgstr "Kamera balra\\Kamera balra forgatása"
+
+msgid "Camera right\\Turns the camera right"
+msgstr "Kamera jobbra\\Kamera jobbra forgatása"
+
+msgid "Camera up\\Turns the camera up"
+msgstr "Kamera felfelé\\Kamera felfelé mozgatása"
+
+msgid "Can not produce not researched object"
+msgstr "Nem kutatott objektumot nem lehet gyártani"
+
+msgid "Can not produce this object in this mission"
+msgstr "Ez az objektum ezen a küldetésen belül nem gyártható"
+
+msgid "Can't open file"
+msgstr "A fájlt nem lehet megnyitni"
+
+msgid "Cancel"
+msgstr "Mégse"
+
+msgid "Cancel\\Cancel all changes"
+msgstr "Mégse\\Minden változtatás visszavonása"
+
+msgid "Challenges"
+msgstr "Kihívások"
+
+msgid "Challenges in the chapter:"
+msgstr "Kihívások ebben a fejezetben:"
+
+msgid "Challenges\\Programming challenges"
+msgstr "Kihívások\\Programozási feladatok"
+
+msgid "Change camera\\Switches between onboard camera and following camera"
+msgstr "Kamera váltása\\Váltás belső és követő kamera között"
+
+msgid "Change player\\Change player"
+msgstr "Játékosváltás\\Játékos nevének módosítása"
+
+msgid "Changes"
+msgstr "Változtatások"
+
+msgid "Chapters:"
+msgstr "Fejezetek:"
+
+msgid "Cheat console\\Show cheat console"
+msgstr "Csalókód konzol\\Csalókód konzol megjelenítése"
+
+msgid "Checkpoint"
+msgstr "Ellenőrzőpont"
+
+msgid "Class name expected"
+msgstr "Osztálynév hiányzik"
+
+msgid "Climb\\Increases the power of the jet"
+msgstr "Emelkedés\\Növeli a hajtómű teljesítményét"
+
+msgid "Clone program"
+msgstr "Program másolása"
+
+msgid "Clone selected program"
+msgstr "Kiválasztott program másolása"
+
+msgid "Close"
+msgstr "Bezárás"
+
+msgid "Closing bracket missing"
+msgstr "Hiányzik a záró zárójel \")\""
+
+msgid "Code battle"
+msgstr "Kódbajnokság"
+
+msgid "Code battles"
+msgstr "Kódbajnokságok"
+
+msgid "Code battles\\Program your robot to be the best of them all!"
+msgstr "Kódbajnokság\\Írj programot, hogy a robotod legyen a legjobb!"
+
+msgid "Colobot rules!"
+msgstr "A Colobot a legjobb!"
+
+msgid "Colobot: Gold Edition"
+msgstr "Colobot: Gold Edition"
+
+msgid "Command line"
+msgstr "Parancssor"
+
+msgid "Compilation ok (0 errors)"
+msgstr "Fordítás sikeres (0 hiba)"
+
+msgid "Compile"
+msgstr "Fordítás"
+
+msgid "Continue"
+msgstr "Folytatás"
+
+msgid "Continue\\Continue the current mission"
+msgstr "Folytatás\\Jelenlegi küldetés folytatása"
+
+msgid "Controls\\Keyboard, joystick and mouse settings"
+msgstr "Vezérlés\\Billentyűzet, egér és joystick beállítások"
+
+msgid "Converts ore to titanium"
+msgstr "Ércet titánná alakít"
+
+msgid "Copy"
+msgstr "Másolás"
+
+msgid "Copy (Ctrl+C)"
+msgstr "Másolás (Ctrl+C)"
+
+msgid "Could not open the file explorer!"
+msgstr "Nem sikerült megnyitni a fájlkezelőt!"
+
+msgid "Could not open the web browser!"
+msgstr "Nem sikerült megnyitni a webböngészőt!"
+
+msgid "Current mission saved"
+msgstr "A küldetés elmentve"
+
+msgid "Custom levels:"
+msgstr "Egyedi pályák:"
+
+msgid "Custom levels\\Levels from mods created by the users"
+msgstr "Egyedi pályák\\Felhasználók által készített pályák"
+
+msgid "Customize your appearance"
+msgstr "Kinézet testreszabása"
+
+msgid "Cut (Ctrl+X)"
+msgstr "Kivágás (Ctrl+X)"
+
+msgid "Defense tower"
+msgstr "Védelmi torony"
+
+msgid "Delete mark"
+msgstr "Jelölés törlése"
+
+msgid "Delete player\\Deletes the player from the list"
+msgstr "Játékos törlése\\Törli a játékost a listáról"
+
+msgid "Delete\\Deletes the selected file"
+msgstr "Törlés\\Kiválasztott fájl törlése"
+
+msgid "Derrick"
+msgstr "Fúrótorony"
+
+msgid "Descend\\Reduces the power of the jet"
+msgstr "Süllyedés\\Csökkenti a hajtómű teljesítményét"
+
+msgid "Description:"
+msgstr "Leírás:"
+
+msgid "Destroy"
+msgstr "Megsemmisítés"
+
+msgid "Destroy the building"
+msgstr "Az épület lerombolása"
+
+msgid "Destroyer"
+msgstr "Romboló"
+
+msgid "Device\\Driver and resolution settings"
+msgstr "Eszköz\\Illesztőprogram és felbontás beállításai"
+
+msgid "Disable\\Disable the selected mod"
+msgstr "Letiltás\\A kiválasztott mod letiltása"
+
+msgid "Dividing by zero"
+msgstr "Nullával való osztás"
+
+msgid "Do you really want to destroy the selected building?"
+msgstr "Valóban el akarod pusztítani a kiválasztott épületet?"
+
+#, c-format
+msgid "Do you want to delete %s's saved games?"
+msgstr "Törölni szeretnéd %s mentett játékait?"
+
+msgid "Doors blocked by a robot or another object"
+msgstr "Az ajtókat egy robot vagy más tárgy blokkolja"
+
+msgid "Down (\\key gdown;)"
+msgstr "Le (\\key gdown;)"
+
+msgid "Down\\Move the selected mod down so it's loaded later (mods may overwrite files from the mods above them)"
+msgstr "Lejjebb\\A kiválasztott mod lejjebb mozgatása, hogy később töltődjön be (a felette lévő modok fájljait felülírhatja)"
+
+msgid "Drawer bot"
+msgstr "Rajzolórobot"
+
+msgid "Duplicate label in switch"
+msgstr "Duplikált címke a kapcsolóban"
+
+msgid "Dust\\Dust and dirt on bots and buildings"
+msgstr "Por\\Por és kosz a robotokon és épületeken"
+
+msgid "Dynamic lighting\\Mobile light sources"
+msgstr "Dinamikus világítás\\Mozgó fényforrások"
+
+msgid "Dynamic shadows ++\\Dynamic shadows + self shadowing"
+msgstr "Dinamikus árnyékok ++\\Dinamikus árnyékok + önárnyékolás"
+
+msgid "Dynamic shadows\\Beautiful shadows!"
+msgstr "Dinamikus árnyékok\\Gyönyörű árnyékok!"
+
+msgid "Edit the selected program"
+msgstr "A kiválasztott program szerkesztése"
+
+msgid "Egg"
+msgstr "Tojás"
+
+msgid "Empty character constant"
+msgstr "Üres karakterkonstans"
+
+msgid "Enable\\Enable the selected mod"
+msgstr "Enged\\A kiválasztott mod engedélyezése"
+
+msgid "End of block missing"
+msgstr "Hiányzik a blokk lezárása \"}\""
+
+msgid "Energy deposit (site for power station)"
+msgstr "Energiamező (erőmű helyszíne)"
+
+msgid "Energy level"
+msgstr "Energiaszint"
+
+msgid "Engineer"
+msgstr "Mérnök"
+
+msgid "Error in instruction move"
+msgstr "A cél nem érhető el"
+
+msgid "Execute the selected program"
+msgstr "A kiválasztott program futtatása"
+
+msgid "Execute/stop"
+msgstr "Indítás/leállítás"
+
+msgid "Exercises in the chapter:"
+msgstr "Gyakorlatok a fejezetben:"
+
+msgid "Exercises\\Programming exercises"
+msgstr "Gyakorlatok\\Programozási gyakorlatok"
+
+msgid "Explode (\\key action;)"
+msgstr "Robbanás (\\key action;)"
+
+msgid "Explosive"
+msgstr "Robbanóanyag"
+
+msgid "Expression expected after ="
+msgstr "= után kifejezés szükséges"
+
+msgid "Extend shield (\\key action;)"
+msgstr "Pajzs kiterjesztése (\\key action;)"
+
+msgid "Eyeglasses:"
+msgstr "Szemüveg:"
+
+msgid "Face type:"
+msgstr "Arc típusa:"
+
+msgid "File not open"
+msgstr "A fájl nincs megnyitva"
+
+msgid "Filename:"
+msgstr "Fájlnév:"
+
+msgid "Film sequences\\Films before and after the missions"
+msgstr "Filmek\\Küldetések előtti és utáni filmek"
+
+msgid "Finish"
+msgstr "Célterület"
+
+msgid "Fixed mine"
+msgstr "Akna"
+
+msgid "Flat ground not large enough"
+msgstr "A sík terület nem elég nagy"
+
+msgid "Fog\\Fog"
+msgstr "Köd\\Köd"
+
+msgid "Folder:"
+msgstr "Mappa:"
+
+#, c-format
+msgid "Folder: %s"
+msgstr "Mappa: %s"
+
+msgid "Font size"
+msgstr "Betűméret"
+
+msgid "Forward"
+msgstr "Tovább"
+
+msgid "Forward (\\key up;)"
+msgstr "Előre (\\key up;)"
+
+msgid "Forward\\Moves forward"
+msgstr "Előre\\Előre mozog"
+
+msgid "Found a site for a derrick"
+msgstr "Fúrótorony számára megfelelő helyet talált"
+
+msgid "Found a site for power station"
+msgstr "Erőmű számára megfelelő helyet talált"
+
+msgid "Found key A (site for derrick)"
+msgstr "A kulcs helye (fúrótoronyhoz)"
+
+msgid "Found key B (site for derrick)"
+msgstr "B kulcs helye (fúrótoronyhoz)"
+
+msgid "Found key C (site for derrick)"
+msgstr "C kulcs helye (fúrótoronyhoz)"
+
+msgid "Found key D (site for derrick)"
+msgstr "D kulcs helye (fúrótoronyhoz)"
+
+msgid "Free game"
+msgstr "Szabad játék"
+
+msgid "Free game on this planet:"
+msgstr "Szabad pályák ezen a bolygón:"
+
+msgid "Free game\\Free game without a specific goal"
+msgstr "Szabad játék\\Szabad játék konkrét cél nélkül"
+
+msgid "Full screen\\Full screen or window mode"
+msgstr "Teljes képernyő\\Teljes képernyős vagy ablakos mód"
+
+msgid "Function already exists"
+msgstr "A függvény már létezik"
+
+msgid "Function name missing"
+msgstr "Hiányzik a függvény neve"
+
+msgid "Function needs return type \"void\""
+msgstr "A függvény visszatérési típusa \"void\" kell legyen"
+
+msgid "Game speed"
+msgstr "Játéksebesség"
+
+msgid "Game\\Game settings"
+msgstr "Játék\\Játékbeállítások"
+
+msgid "Gantry crane"
+msgstr "Daruhíd"
+
+msgid "Generating"
+msgstr "Generálás"
+
+msgid "Gold Edition development by:"
+msgstr "Gold Edition fejlesztői:"
+
+msgid "Goto: destination occupied"
+msgstr "A célpont foglalt"
+
+msgid "Goto: inaccessible destination"
+msgstr "A célpont elérhetetlen"
+
+msgid "Grab or drop (\\key action;)"
+msgstr "Felvenni vagy letenni (\\key action;)"
+
+msgid "Graphics\\Graphics settings"
+msgstr "Grafika\\Grafikai beállítások"
+
+msgid "Green"
+msgstr "Zöld"
+
+msgid "Green flag"
+msgstr "Zöld zászló"
+
+msgid "Ground not flat enough"
+msgstr "A talaj nem elég sík"
+
+msgid "Hair color:"
+msgstr "Hajszín:"
+
+msgid "Head\\Face and hair"
+msgstr "Fej\\Arc és haj"
+
+msgid "Help about selected object"
+msgstr "Segítség a kiválasztott objektumhoz"
+
+msgid "Help balloons\\Explain the function of the buttons"
+msgstr "Súgó buborékok\\A gombok funkcióinak magyarázata"
+
+msgid "Hex value out of range"
+msgstr "A hexadecimális érték kívül esik a megengedett tartományon"
+
+msgid "Higher speed\\Doubles speed"
+msgstr "Gyorsítás\\A játéksebesség megduplázása"
+
+msgid "Highest\\Highest graphic quality (lowest frame rate)"
+msgstr "Maximum\\Legjobb grafikai minőség (legkisebb képkockasebesség)"
+
+msgid "Home"
+msgstr "Kezdőlap"
+
+msgid "Houston Mission Control"
+msgstr "Houston irányítóközpont"
+
+msgid "Illegal object"
+msgstr "Érvénytelen objektum"
+
+msgid "Impossible under water"
+msgstr "Víz alatt lehetetlen"
+
+msgid "Impossible when carrying an object"
+msgstr "Tárgy cipelése közben lehetetlen"
+
+msgid "Impossible when flying"
+msgstr "Repülés közben lehetetlen"
+
+msgid "Impossible when moving"
+msgstr "Mozgás közben lehetetlen"
+
+msgid "Impossible when swimming"
+msgstr "Úszás közben lehetetlen"
+
+msgid "Inappropriate bot"
+msgstr "Nem megfelelő robot"
+
+msgid "Inappropriate cell type"
+msgstr "Nem megfelelő cellatípus"
+
+msgid "Inappropriate object"
+msgstr "Nem megfelelő objektum"
+
+msgid "Inappropriate sample"
+msgstr "Nem megfelelő minta"
+
+msgid "Incorrect index type"
+msgstr "Hibás index típus"
+
+msgid "Infected by a virus; temporarily out of order"
+msgstr "Vírussal fertőzött; átmenetileg használhatatlan"
+
+msgid "Information exchange post"
+msgstr "Információs állomás"
+
+msgid "Information:"
+msgstr "Információ:"
+
+msgid "Instruction \"break\" outside a loop"
+msgstr "„break” utasítás cikluson kívül"
+
+msgid "Instruction \"case\" missing"
+msgstr "Hiányzik egy „case” utasítás"
+
+msgid "Instruction \"case\" outside a block \"switch\""
+msgstr "„case” utasítás „switch” nélkül"
+
+msgid "Instruction \"else\" without corresponding \"if\""
+msgstr "„else” utasítás megfelelő „if” nélkül"
+
+msgid "Instructions (\\key help;)"
+msgstr "Utasítások (\\key help;)"
+
+msgid "Instructions after the final closing brace"
+msgstr "Utasítás a program vége után"
+
+msgid "Instructions for the mission (\\key help;)"
+msgstr "Utasítások a küldetéshez (\\key help;)"
+
+msgid "Instructions from Houston"
+msgstr "Utasítások Houstonból"
+
+msgid "Instructions\\Shows the instructions for the current mission"
+msgstr "Utasítások\\A jelenlegi küldetés utasításai"
+
+msgid "Internal error - tell the developers"
+msgstr "Belső hiba – Értesítsd a fejlesztőket"
+
+msgid "Invalid universal character name"
+msgstr "Érvénytelen univerzális karakternév"
+
+msgid "Invert\\Invert values on this axis"
+msgstr "Invertál\\Értékek megfordítása ezen a tengelyen"
+
+msgid "Jet temperature"
+msgstr "Hajtómű hőmérséklet"
+
+msgid "Key A"
+msgstr "A kulcs"
+
+msgid "Key B"
+msgstr "B kulcs"
+
+msgid "Key C"
+msgstr "C kulcs"
+
+msgid "Key D"
+msgstr "D kulcs"
+
+msgid "Keyword \"while\" missing"
+msgstr "Hiányzik a \"while\" kulcsszó"
+
+msgid "Keyword help(\\key cbot;)"
+msgstr "Kulcsszó súgó (\\key cbot;)"
+
+msgid "LOADING"
+msgstr "BETÖLTÉS"
+
+msgid "Legged builder"
+msgstr "Járkáló építő"
+
+msgid "Legged grabber"
+msgstr "Járkáló szállító"
+
+msgid "Legged orga shooter"
+msgstr "Járkáló orgalövő"
+
+msgid "Legged shooter"
+msgstr "Járkáló lövész"
+
+msgid "Legged sniffer"
+msgstr "Járkáló szimatoló"
+
+msgid "Levels in this chapter:"
+msgstr "Pályák ebben a fejezetben:"
+
+msgid "Lightning conductor"
+msgstr "Viharhárító"
+
+msgid "List of objects"
+msgstr "Objektumok listája"
+
+msgid "List of saved missions"
+msgstr "Mentett küldetések listája"
+
+msgid "Load a saved mission"
+msgstr "Mentett küldetés betöltése"
+
+msgid "Load\\Load a saved mission"
+msgstr "Betöltés\\Mentett küldetés megnyitása"
+
+msgid "Load\\Loads the selected mission"
+msgstr "Betöltés\\A kiválasztott küldetés megnyitása"
+
+msgid "Loading basic level settings"
+msgstr "Alapszint beállítások betöltése"
+
+msgid "Loading finished!"
+msgstr "Betöltés kész!"
+
+msgid "Loading music"
+msgstr "Zene betöltése"
+
+msgid "Loading objects"
+msgstr "Objektumok betöltése"
+
+msgid "Loading terrain"
+msgstr "Terep betöltése"
+
+# msgid "Speed 0.5x\\Half speed"
+# msgstr ""
+# msgid "Speed 1.0x\\Normal speed"
+# msgstr ""
+# msgid "Speed 1.5x\\1.5 times faster"
+# msgstr ""
+# msgid "Speed 2.0x\\Double speed"
+# msgstr ""
+# msgid "Speed 3.0x\\Triple speed"
+# msgstr ""
+# msgid "Speed 4.0x\\Quadruple speed"
+# msgstr ""
+# msgid "Speed 6.0x\\Sextuple speed"
+# msgstr ""
+msgid "Lower speed\\Decrease speed by half"
+msgstr "Sebesség csökkentése\\Sebesség felezése"
+
+msgid "Lowest\\Minimum graphic quality (highest frame rate)"
+msgstr "Minimum\\Minimális grafikai minőség (legnagyobb képfrissítés)"
+
+msgid "Lunar Roving Vehicle"
+msgstr "Holdjáró jármű"
+
+msgid "MSAA\\Multisample anti-aliasing"
+msgstr "MSAA\\Többpontú élsimítás"
+
+msgid "Maximize"
+msgstr "Nagyítás"
+
+msgid "Minimize"
+msgstr "Kis méret"
+
+msgid "Mipmap level\\Mipmap level"
+msgstr "Mipmap-szint\\Mipmap-szint"
+
+msgid "Missing end quote"
+msgstr "Hiányzó záró idézőjel"
+
+msgid "Missing hex digits after escape sequence"
+msgstr "Hiányzó hexadecimális számjegyek az escape szekvencia után"
+
+msgid "Mission name"
+msgstr "Küldetés neve"
+
+msgid "Missions"
+msgstr "Küldetések"
+
+msgid "Missions on this planet:"
+msgstr "Küldetések ezen a bolygón:"
+
+msgid "Missions+"
+msgstr "Küldetések+"
+
+msgid "Missions\\Select mission"
+msgstr "Küldetések\\Küldetés kiválasztása"
+
+msgid "Mods"
+msgstr "Modok"
+
+msgid "Mods:"
+msgstr "Modok:"
+
+msgid "Mods\\Mod manager"
+msgstr "Modok\\Modkezelő"
+
+msgid "Mouse inversion X\\Inversion of the scrolling direction on the X axis"
+msgstr "Egér inverz X\\Görgetési irány megfordítása az X tengelyen"
+
+msgid "Mouse inversion Y\\Inversion of the scrolling direction on the Y axis"
+msgstr "Egér inverz Y\\Görgetési irány megfordítása az Y tengelyen"
+
+msgid "Move selected program down"
+msgstr "Kiválasztott program lejjebb mozgatása"
+
+msgid "Move selected program up"
+msgstr "Kiválasztott program feljebb mozgatása"
+
+msgid "Mute sounds in background\\Mute all game sounds when the window is unfocused"
+msgstr "Háttérben némítás\\Az összes játéhang némítása, ha az ablak nincs fókuszban"
+
+msgid "Mute\\No sound"
+msgstr "Némítás\\Nincs hang és háttérzaj"
+
+msgid "Name:"
+msgstr "Név:"
+
+msgid "Negative value rejected by \"throw\""
+msgstr "Negatív érték nem megengedett a \"throw\" utasításban"
+
+msgid "Nest"
+msgstr "Orgaforrás"
+
+msgid "New"
+msgstr "Új"
+
+msgid "New ..."
+msgstr "Új ..."
+
+msgid "New Folder"
+msgstr "Új mappa"
+
+msgid "New bot available"
+msgstr "Új robot érhető el"
+
+msgid "Next"
+msgstr "Következő"
+
+msgid "Next object\\Selects the next object"
+msgstr "Következő objektum\\A következő objektum kiválasztása"
+
+msgid "No"
+msgstr "Nem"
+
+msgid "No changes."
+msgstr "Nincs változás."
+
+msgid "No description."
+msgstr "Nincs leírás."
+
+msgid "No energy in the subsoil"
+msgstr "Nincs energia a talajban"
+
+msgid "No flag nearby"
+msgstr "Nincs zászló a közelben"
+
+msgid "No function running"
+msgstr "Nem fut funkció"
+
+msgid "No function with this name accepts this kind of parameter"
+msgstr "Nincs olyan nevű függvény, amely ilyen típusú paramétert elfogadna"
+
+msgid "No function with this name accepts this number of parameters"
+msgstr "Nincs olyan nevű függvény, amely ennyi paramétert elfogadna"
+
+msgid "No information exchange post within range"
+msgstr "Nincs információs állomás a közelben"
+
+msgid "No more energy"
+msgstr "Nincs több energia"
+
+msgid "No ore in the subsoil"
+msgstr "Nincs érctelep a talajban"
+
+msgid "No power cell"
+msgstr "Nincs akkumulátor"
+
+msgid "No titanium"
+msgstr "Nincs titán"
+
+msgid "No titanium around"
+msgstr "Nincs titán a közelben"
+
+msgid "No titanium ore to convert"
+msgstr "Nincs átalakítható titánérc"
+
+msgid "No titanium to transform"
+msgstr "Nincs átalakítható titán"
+
+msgid "No uranium to transform"
+msgstr "Nincs átalakítható urán"
+
+msgid "No userlevels installed!"
+msgstr "Nincsenek telepítve felhasználói pályák!"
+
+msgid "Non-void function needs \"return;\""
+msgstr "Nem-void típusú függvényben kötelező a \"return;\" utasítás"
+
+msgid "Normal size"
+msgstr "Normál méret"
+
+msgid "Normal\\Normal graphic quality"
+msgstr "Normál\\Normál grafikai minőség"
+
+msgid "Normal\\Normal sound volume"
+msgstr "Normál\\Normál hangerő"
+
+msgid "Not enough energy"
+msgstr "Nincs elég energia"
+
+msgid "Not enough energy yet"
+msgstr "Még nincs elég energia"
+
+msgid "Not found anything to destroy"
+msgstr "Nem található semmi lerombolható"
+
+msgid "Nothing to analyze"
+msgstr "Nincs mit elemezni"
+
+msgid "Nothing to drop"
+msgstr "Nincs mit letenni"
+
+msgid "Nothing to grab"
+msgstr "Nincs mit megfogni"
+
+msgid "Nothing to recycle"
+msgstr "Nincs mit újrahasznosítani"
+
+msgid "Nuclear power cell"
+msgstr "Nukleáris energiaforrás"
+
+msgid "Nuclear power cell available"
+msgstr "Nukleáris energiaforrás elérhető"
+
+msgid "Nuclear power station"
+msgstr "Nukleáris erőmű"
+
+msgid "Number missing"
+msgstr "Hiányzó szám"
+
+msgid "Number of insects detected"
+msgstr "Észlelt rovarok száma"
+
+msgid "Number of particles\\Explosions, dust, reflections, etc."
+msgstr "Részecskék száma\\Robbanások, por, tükröződések stb."
+
+msgid "OK"
+msgstr "OK"
+
+msgid "OK\\Choose the selected player"
+msgstr "OK\\Kiválasztott játékos kiválasztása"
+
+msgid "OK\\Close program editor and return to game"
+msgstr "OK\\Program szerkesztő bezárása és visszatérés a játékhoz"
+
+msgid "Object too close"
+msgstr "Tárgy túl közel van"
+
+msgid "Octal value out of range"
+msgstr "Oktális érték tartományon kívül"
+
+msgid "One step"
+msgstr "Egy lépés"
+
+msgid "Open"
+msgstr "Megnyitás"
+
+msgid "Open (Ctrl+O)"
+msgstr "Megnyitás (Ctrl+O)"
+
+msgid "Open Directory\\Open the mods directory"
+msgstr "Könyvtár megnyitása\\A modok könyvtárának megnyitása"
+
+msgid "Opening brace missing"
+msgstr "Hiányzó nyitó kapcsos zárójel \"{\""
+
+msgid "Opening bracket missing"
+msgstr "Hiányzó nyitó zárójel \"(\""
+
+msgid "Operation impossible with value \"nan\""
+msgstr "Művelet nem lehetséges \"nan\" értékkel"
+
+msgid "Options"
+msgstr "Beállítások"
+
+msgid "Options\\Preferences"
+msgstr "Beállítások\\Preferenciák"
+
+msgid "Organic matter"
+msgstr "Szerves anyag"
+
+msgid "Origin of last message\\Shows where the last message was sent from"
+msgstr "Utolsó üzenet helye\\Megmutatja, honnan érkezett az utolsó üzenet"
+
+msgid "Original game developed by:"
+msgstr "Az eredeti játék fejlesztője:"
+
+msgid "Overwrite existing file?"
+msgstr "Felülírja a meglévő fájlt?"
+
+msgid "Parameters missing"
+msgstr "Hiányzó paraméterek"
+
+msgid "Particles in the interface\\Steam clouds and sparks in the interface"
+msgstr "Részecskék a kezelőfelületen\\Gőzfelhők és szikrák a menükben"
+
+msgid "Paste (Ctrl+V)"
+msgstr "Beillesztés (Ctrl+V)"
+
+msgid "Pause blur\\Blur the background on the pause screen"
+msgstr "Szüneti elmosás\\A háttér elhomályosítása szünet közben"
+
+msgid "Pause in background\\Pause the game when the window is unfocused"
+msgstr "Pausálás háttérben\\A játék megállítása, ha a játékablak nincs fókuszban"
+
+msgid "Pause/continue"
+msgstr "Szünet/folytatás"
+
+msgid "Pause\\Pause the game without opening menu"
+msgstr "Szünet\\Játék megállítása a menü megnyitása nélkül"
+
+msgid "Phazer shooter"
+msgstr "Phazer-lövöldöző"
+
+msgid "Photography"
+msgstr "Fényképezés"
+
+msgid "Place occupied"
+msgstr "Hely már foglalt"
+
+msgid "Planets:"
+msgstr "Bolygók:"
+
+msgid "Plans for builder available"
+msgstr "Építőrobot terv elérhető"
+
+msgid "Plans for defense tower available"
+msgstr "Védelmi torony terv elérhető"
+
+msgid "Plans for nuclear power plant available"
+msgstr "Nukleáris erőmű terv elérhető"
+
+msgid "Plans for phazer shooter available"
+msgstr "Phazer-lövő terv elérhető"
+
+msgid "Plans for shielder available"
+msgstr "Védőpajzs-robot terv elérhető"
+
+msgid "Plans for shooter available"
+msgstr "Lövőrobot terv elérhető"
+
+msgid "Plans for thumper available"
+msgstr "Döngölőrobot terv elérhető"
+
+msgid "Plans for tracked robots available"
+msgstr "Lánctalpas robot terv elérhető"
+
+msgid "Plant a flag"
+msgstr "Zászló kihelyezése"
+
+msgid "Play\\Start mission!"
+msgstr "Játék\\Küldetés indítása!"
+
+msgid "Player"
+msgstr "Játékos"
+
+msgid "Player name"
+msgstr "Játékosnév"
+
+msgid "Player's name"
+msgstr "A játékos neve"
+
+msgid "Power cell"
+msgstr "Energiacella"
+
+msgid "Power cell available"
+msgstr "Energiacella elérhető"
+
+msgid "Power cell factory"
+msgstr "Energiacella-gyár"
+
+msgid "Power station"
+msgstr "Erőmű"
+
+msgid "Practice bot"
+msgstr "Gyakorlórobot"
+
+msgid "Press \\key help; to read instructions on your SatCom"
+msgstr "Nyomja meg a \\key help; billentyűt, hogy a SatCom-on megtekintse az utasításokat"
+
+msgid "Previous"
+msgstr "Előző"
+
+msgid "Previous object\\Selects the previous object"
+msgstr "Előző objektum\\Az előző objektum kiválasztása"
+
+msgid "Previous selection (\\key desel;)"
+msgstr "Előző kiválasztás (\\key desel;)"
+
+msgid "Private element"
+msgstr "Privát elem"
+
+msgid "Private\\Private folder"
+msgstr "Privát\\Privát mappa"
+
+msgid "Processing level file"
+msgstr "Pályafájl feldolgozása"
+
+msgid "Program cloned"
+msgstr "Program lemásolva"
+
+msgid "Program editor"
+msgstr "Program szerkesztő"
+
+msgid "Program finished"
+msgstr "Program befejeződött"
+
+msgid "Program infected by a virus"
+msgstr "Programot vírus fertőzött meg"
+
+msgid "Programming exercises"
+msgstr "Programozási gyakorlatok"
+
+msgid "Programming help"
+msgstr "Programozási segítség"
+
+msgid "Programming help (\\key prog;)"
+msgstr "Programozási segítség (\\key prog;)"
+
+msgid "Programming help\\Gives more detailed help with programming"
+msgstr "Programozási segítség\\Részletesebb információk a programozáshoz"
+
+msgid "Programs dispatched by Houston"
+msgstr "Houston által küldött programok"
+
+msgid "Public required"
+msgstr "A \"public\" szó szükséges"
+
+msgid "Public\\Common folder"
+msgstr "Nyilvános\\Közös mappa minden játékos számára"
+
+msgid "Quake at explosions\\The screen shakes at explosions"
+msgstr "Rázkódás robbanásoknál\\A képernyő robbanáskor megremeg"
+
+msgid "Quick load\\Immediately load game"
+msgstr "Gyorsbetöltés\\Azonnali játékbetöltés"
+
+msgid "Quick save\\Immediately save game"
+msgstr "Gyorsmentés\\Azonnali játékmentés"
+
+msgid "Quicksave slot not found"
+msgstr "Nincs gyorsmentés található"
+
+msgid "Quit\\Quit Colobot: Gold Edition"
+msgstr "Kilépés\\Kilépés a Colobot: Gold Edition-ből"
+
+msgid "Quit\\Quit the current mission or exercise"
+msgstr "Kilépés\\Kilépés az aktuális küldetésből vagy gyakorlásból"
+
+msgid "Radar station"
+msgstr "Radarállomás"
+
+msgid "Read error"
+msgstr "Olvasási hiba"
+
+msgid "Recorder"
+msgstr "Rögzítő"
+
+msgid "Recycle (\\key action;)"
+msgstr "Újrahasznosítás (\\key action;)"
+
+msgid "Recycler"
+msgstr "Újrahasznosító"
+
+msgid "Red"
+msgstr "Piros"
+
+msgid "Red flag"
+msgstr "Piros zászló"
+
+msgid "Reflections on the buttons \\Shiny buttons"
+msgstr "Gombok tükröződése\\Csillogó gombok a menükben"
+
+msgid "Refresh\\Refresh the list of currently installed mods"
+msgstr "Frissítés\\A jelenleg telepített modok listájának frissítése"
+
+msgid "Remains of Apollo mission"
+msgstr "Az Apollo-küldetés maradványai"
+
+msgid "Remove a flag"
+msgstr "Zászló eltávolítása"
+
+msgid "Remove selected program"
+msgstr "Kijelölt program eltávolítása"
+
+msgid "Render distance\\Maximum visibility"
+msgstr "Láthatósági távolság\\Maximális látótávolság"
+
+msgid "Repair center"
+msgstr "Javítóközpont"
+
+msgid "Research center"
+msgstr "Kutatóközpont"
+
+msgid "Research program already performed"
+msgstr "A kutatási program már végrehajtva"
+
+msgid "Research program completed"
+msgstr "Kutatási program befejeződött"
+
+msgid "Reserved keyword of CBOT language"
+msgstr "Fenntartott kulcsszó a CBOT nyelvben"
+
+msgid "Resolution"
+msgstr "Felbontás"
+
+msgid "Resolution:"
+msgstr "Felbontás:"
+
+msgid "Resources"
+msgstr "Erőforrások"
+
+msgid "Restart\\Restart the mission from the beginning"
+msgstr "Újraindítás\\A küldetés újrakezdése"
+
+msgid "Restoring CBot execution state"
+msgstr "CBOT végrehajtási állapot helyreállítása"
+
+msgid "Restoring saved objects"
+msgstr "Mentett objektumok visszaállítása"
+
+msgid "Results"
+msgstr "Eredmények"
+
+msgid "Return to start"
+msgstr "Vissza a kezdéshez"
+
+msgid "Robbie"
+msgstr "Robbie"
+
+msgid "Ruin"
+msgstr "Épületroncs"
+
+msgid "Run research program for builder"
+msgstr "Kutatási program a építész számára"
+
+msgid "Run research program for defense tower"
+msgstr "Kutatási program a védőtornyhoz"
+
+msgid "Run research program for legged bots"
+msgstr "Kutatási program a lábas botokhoz"
+
+msgid "Run research program for nuclear power"
+msgstr "Kutatási program a nukleáris energiához"
+
+msgid "Run research program for orga shooter"
+msgstr "Kutatási program az orga löveghez"
+
+msgid "Run research program for phazer shooter"
+msgstr "Kutatási program a phazer löveghez"
+
+msgid "Run research program for shielder"
+msgstr "Kutatási program a pajzsos bothoz"
+
+msgid "Run research program for shooter"
+msgstr "Kutatási program a lövegekhez"
+
+msgid "Run research program for target bot"
+msgstr "Kutatási program a célpont bothoz"
+
+msgid "Run research program for thumper"
+msgstr "Kutatási program a döngölőhöz"
+
+msgid "Run research program for tracked bots"
+msgstr "Kutatási program a lánctalpas botokhoz"
+
+msgid "Run research program for winged bots"
+msgstr "Kutatási program a szárnyas botokhoz"
+
+msgid "SatCom"
+msgstr "SatCom"
+
+msgid "Satellite report"
+msgstr "Műholdas jelentés"
+
+msgid "Save"
+msgstr "Mentés"
+
+msgid "Save (Ctrl+S)"
+msgstr "Mentés (Ctrl+S)"
+
+msgid "Save the current mission"
+msgstr "Aktuális küldetés mentése"
+
+msgid "Save\\Save the current mission"
+msgstr "Mentés\\Aktuális küldetés mentése"
+
+msgid "Save\\Saves the current mission"
+msgstr "Mentés\\Mentett küldetés"
+
+msgid "Select Folder"
+msgstr "Mappa kiválasztása"
+
+msgid "Select the astronaut\\Selects the astronaut"
+msgstr "Asztronauta kiválasztása\\Asztronauta kiválasztása"
+
+msgid "Semicolon terminator missing"
+msgstr "Hiányzik egy pontosvessző \";\" a parancs végén"
+
+msgid "Shadow resolution\\Higher means better range and quality, but slower"
+msgstr "Árnyékfelbontás\\Minél magasabb, annál jobb a távolság és a minőség, de lassabb"
+
+msgid "Shield level"
+msgstr "Pajzsszint"
+
+msgid "Shield radius"
+msgstr "Pajzs hatósugara"
+
+msgid "Shielder"
+msgstr "Pajzsos"
+
+msgid "Shoot (\\key action;)"
+msgstr "Lő (\\key action;)"
+
+msgid "Show if the ground is flat"
+msgstr "Mutatja, ha a talaj sík"
+
+msgid "Show the place"
+msgstr "Mutatja a helyet"
+
+msgid "Show the range"
+msgstr "Mutatja a hatótávolságot"
+
+msgid "Show the solution"
+msgstr "Mutassa a megoldást"
+
+msgid "Sign \" : \" missing"
+msgstr "Hiányzik a kettőspont \" : \""
+
+msgid "Simple shadows\\Shadows spots on the ground"
+msgstr "Egyszerű árnyékok\\Árnyék foltok a földön"
+
+msgid "Size 1"
+msgstr "Méret 1"
+
+msgid "Size 2"
+msgstr "Méret 2"
+
+msgid "Size 3"
+msgstr "Méret 3"
+
+msgid "Size 4"
+msgstr "Méret 4"
+
+msgid "Size 5"
+msgstr "Méret 5"
+
+msgid "Sniff (\\key action;)"
+msgstr "Szaglás (\\key action;)"
+
+msgid "Solution"
+msgstr "Megoldás"
+
+msgid "Sound effects:\\Volume of engines, voice, shooting, etc."
+msgstr "Hangeffektusok:\\Motorok, hangok, lövések stb. hangerő."
+
+msgid "Sound\\Music and game sound volume"
+msgstr "Hang\\Zene és játék hangereje"
+
+msgid "Space Explorer\\Disables astronaut abilities"
+msgstr "Űrkutató\\Letiltja az asztronauta képességeit"
+
+msgid "Space Programmer\\Disables radio-control"
+msgstr "Űrprogramozó\\Letiltja a rádióvezérlést"
+
+msgid "Space Researcher\\Disables using all previously researched technologies"
+msgstr "Űrkutató\\Letiltja az összes korábban kutatott technológia használatát"
+
+msgid "Spaceship"
+msgstr "Űrhajó"
+
+msgid "Spaceship ruin"
+msgstr "Űrhajó roncs"
+
+msgid "Spider"
+msgstr "Pók"
+
+msgid "Spider fatally wounded"
+msgstr "Pók halálosan megsebesült"
+
+msgid "Stack overflow"
+msgstr "Verem túlcsordulás"
+
+msgid "Standard action\\Standard action of the bot (take/grab, shoot, sniff, etc)"
+msgstr "Alapértelmezett művelet\\A robot alapértelmezett művelete (felvétel/megfogás, lövés, szaglás stb.)"
+
+msgid "Standard controls\\Standard key functions"
+msgstr "Alapértelmezett vezérlés\\Alapértelmezett billentyűfunkciók"
+
+msgid "Standard speed\\Reset speed to normal"
+msgstr "Alapértelmezett sebesség\\Visszaállítja a sebességet normálra"
+
+msgid "Standard\\Standard appearance settings"
+msgstr "Alapértelmezett\\Alapértelmezett megjelenítési beállítások"
+
+msgid "Start"
+msgstr "Kezdés"
+
+msgid "Starting..."
+msgstr "Indul..."
+
+msgid "Still working ..."
+msgstr "Még dolgozom ..."
+
+msgid "String missing"
+msgstr "Hiányzó karakterlánc"
+
+msgid "Strip color:"
+msgstr "Csík szín:"
+
+msgid "Subber"
+msgstr "Kettős búvár"
+
+msgid "Suit color:"
+msgstr "Öltözet színe:"
+
+msgid "Suit\\Astronaut suit"
+msgstr "Öltözet\\Űrhajós ruha"
+
+msgid "Summary:"
+msgstr "Összegzés:"
+
+msgid "Survival kit"
+msgstr "Túlélő készlet"
+
+msgid "Switch bots <-> buildings"
+msgstr "Váltás robotok <-> épületek"
+
+msgid "Take off to finish the mission"
+msgstr "Indulj, hogy befejezd a küldetést"
+
+msgid "Target"
+msgstr "Célpont"
+
+msgid "Target bot"
+msgstr "Célzott robot"
+
+msgid "Terrain relief"
+msgstr "Terepi domborzat"
+
+msgid "Texture filtering\\Texture filtering"
+msgstr "Textúra szűrés\\Textúra szűrés"
+
+msgid "Textures"
+msgstr "Textúrák"
+
+#, c-format
+msgid "The address %s could not be opened in a web browser."
+msgstr "A %s cím nem nyitható meg a webböngészőben."
+
+msgid "The battle has ended"
+msgstr "A csata véget ért"
+
+msgid "The expression must return a boolean value"
+msgstr "A kifejezésnek logikai értéket kell visszaadnia"
+
+msgid "The function returned no value"
+msgstr "A függvény nem adott vissza értéket"
+
+msgid "The mission is not accomplished yet (press \\key help; for more details)"
+msgstr "A küldetés még nem teljesült (nyomja meg a \\key help; gombot további részletekért)"
+
+#, c-format
+msgid "The path %s could not be opened in a file explorer."
+msgstr "A %s elérési út nem nyitható meg a fájlkezelőben."
+
+msgid "The types of the two operands are incompatible"
+msgstr "A két operandus típusa inkompatibilis"
+
+msgid "There are unsaved changes. Do you want to save them before leaving?"
+msgstr "Vannak mentetlen változtatások. Szeretné menteni őket a kilépés előtt?"
+
+msgid "This class already exists"
+msgstr "Ez az osztály nem létezik"
+
+msgid "This class does not exist"
+msgstr "Ez az osztály nem létezik"
+
+msgid "This is example code that cannot be run directly"
+msgstr "Ez példa kód, amelyet nem lehet közvetlenül futtatni"
+
+msgid "This is not a member of this class"
+msgstr "Ez nem ennek az osztálynak a tagja"
+
+msgid "This label does not exist"
+msgstr "Ez a címke nem létezik"
+
+msgid "This menu is for userlevels from mods, but you didn't install any"
+msgstr "Ez a menü a modokból származó felhasználói szintekhez van, de nem telepítettél egyet sem"
+
+msgid "This object is currently busy"
+msgstr "Ez az objektum jelenleg foglalt"
+
+msgid "This object is not a member of a class"
+msgstr "Ez az objektum nem tartozik egy osztályhoz sem"
+
+msgid "This parameter needs a default value"
+msgstr "Ehhez a paraméterhez alapértelmezett érték szükséges"
+
+msgid "This program is read-only, clone it to edit"
+msgstr "Ez a program csak olvasható, szerkesztéshez klónozd"
+
+msgid ""
+"This save file is from a different version of the game and might not work correctly.\n"
+"Do you want to open it anyway?"
+msgstr "Ez a fájl más verzió, nem biztos, hogy működik. Megnyissuk?"
+
+msgid "Thump (\\key action;)"
+msgstr "Döngölés (\\key action;)"
+
+msgid "Thumper"
+msgstr "Döngölő"
+
+#, c-format
+msgid "Time: %s"
+msgstr "Idő: %s"
+
+msgid "Titanium"
+msgstr "Titán"
+
+msgid "Titanium available"
+msgstr "Titán elérhető"
+
+msgid "Titanium deposit (site for derrick)"
+msgstr "Titánlelőhely (fúrótorony helye)"
+
+msgid "Titanium ore"
+msgstr "Titánérc"
+
+msgid "Titanium too close"
+msgstr "A titán túl közel van"
+
+msgid "Titanium too far away"
+msgstr "A titán túl messze van"
+
+msgid "Too close to a building"
+msgstr "Túl közel van egy épülethez"
+
+msgid "Too close to an existing flag"
+msgstr "Túl közel van egy meglévő zászlóhoz"
+
+msgid "Too close to space ship"
+msgstr "Túl közel van az űrhajóhoz"
+
+msgid "Too many flags of this color (maximum 5)"
+msgstr "Túl sok zászló ebből a színből (maximum 5)"
+
+msgid "Too many parameters"
+msgstr "Túl sok paraméter"
+
+msgid "Tracked builder"
+msgstr "Lánctalpas építő"
+
+msgid "Tracked grabber"
+msgstr "Lánctalpas szállító"
+
+msgid "Tracked orga shooter"
+msgstr "Lánctalpas Orga-lövő"
+
+msgid "Tracked shooter"
+msgstr "Lánctalpas lövő"
+
+msgid "Tracked sniffer"
+msgstr "Lánctalpas szimatoló"
+
+msgid "Transforms only titanium"
+msgstr "Csak titánércet alakít át"
+
+msgid "Transforms only uranium"
+msgstr "Csak uránt alakít át"
+
+msgid "Transmitted information"
+msgstr "Továbbított információ"
+
+msgid "Turn left (\\key left;)"
+msgstr "Balra fordul (\\key left;)"
+
+msgid "Turn left\\turns the bot to the left"
+msgstr "Balra fordul\\a robotot balra forgatja"
+
+msgid "Turn right (\\key right;)"
+msgstr "Jobbra fordul (\\key right;)"
+
+msgid "Turn right\\turns the bot to the right"
+msgstr "Jobbra fordul\\a robotot jobbra forgatja"
+
+msgid "Type declaration missing"
+msgstr "Hiányzik a típusdeklaráció"
+
+msgid "Unable to control enemy objects"
+msgstr "Ellenséges objektum nem irányítható"
+
+msgid "Undo (Ctrl+Z)"
+msgstr "Visszavonás (Ctrl+Z)"
+
+msgid "Unit"
+msgstr "Egység"
+
+msgid "Unknown Object"
+msgstr "Ismeretlen objektum"
+
+msgid "Unknown author"
+msgstr "Ismeretlen szerző"
+
+msgid "Unknown command"
+msgstr "Ismeretlen parancs"
+
+msgid "Unknown escape sequence"
+msgstr "Ismeretlen escape szekvencia"
+
+msgid "Unknown function"
+msgstr "Ismeretlen függvény"
+
+msgid "Up (\\key gup;)"
+msgstr "Felfelé (\\key gup;)"
+
+msgid "Up\\Move the selected mod up so it's loaded sooner (mods may overwrite files from the mods above them)"
+msgstr "Felfelé\\A kiválasztott modot feljebb mozgatja, hogy hamarabb betöltődjön (a modok felülírhatják a felettük lévőket)"
+
+msgid "Uranium deposit (site for derrick)"
+msgstr "Uránlelőhely (fúrótorony helye)"
+
+msgid "Uranium ore"
+msgstr "Uránérc"
+
+msgid "User levels"
+msgstr "Felhasználói szintek"
+
+msgid "Variable name missing"
+msgstr "Hiányzik a változó neve"
+
+msgid "Variable not declared"
+msgstr "A változó nincs deklarálva"
+
+msgid "Variable not initialized"
+msgstr "A változó értéke nincs inicializálva"
+
+msgid "Vault"
+msgstr "Páncélterem"
+
+msgid "Version"
+msgstr "Verzió"
+
+msgid "Vertical Synchronization\\Limits the number of frames per second to display frequency"
+msgstr "Függőleges szinkronizáció\\A képkockák számát a kijelző frissítési gyakoriságához igazítja"
+
+msgid "Violet flag"
+msgstr "Ibolyaszínű zászló"
+
+msgid "Void parameter"
+msgstr "Érvénytelen paraméter"
+
+msgid "Wasp"
+msgstr "Darázs"
+
+msgid "Wasp fatally wounded"
+msgstr "Halálosan megsebesült darázs"
+
+msgid "Waste"
+msgstr "Hulladék"
+
+msgid "Website"
+msgstr "Weboldal"
+
+msgid "Wheeled builder"
+msgstr "Kerekes építő"
+
+msgid "Wheeled grabber"
+msgstr "Kerekes szállító"
+
+msgid "Wheeled orga shooter"
+msgstr "Kerekes orgalövő"
+
+msgid "Wheeled shooter"
+msgstr "Kerekes lövész"
+
+msgid "Wheeled sniffer"
+msgstr "Kerekes szimatoló"
+
+msgid "Winged builder"
+msgstr "Szárnyas építő"
+
+msgid "Winged grabber"
+msgstr "Szárnyas szállító"
+
+msgid "Winged orga shooter"
+msgstr "Szárnyas orgalövő"
+
+msgid "Winged shooter"
+msgstr "Szárnyas lövész"
+
+msgid "Winged sniffer"
+msgstr "Szárnyas szimatoló"
+
+msgid "Withdraw shield (\\key action;)"
+msgstr "Pajzs visszavonása (\\key action;)"
+
+msgid "Workshop\\Open the workshop to search for mods"
+msgstr "Műhely\\Műhely megnyitása modok kereséséhez"
+
+msgid "Worm"
+msgstr "Féreg"
+
+msgid "Worm fatally wounded"
+msgstr "Halálosan megsebesült féreg"
+
+msgid "Wreckage"
+msgstr "Roncs"
+
+msgid "Write error"
+msgstr "Írási hiba"
+
+msgid "Wrong type for the assignment"
+msgstr "Hibás típus az értékadásban"
+
+msgid "Yellow flag"
+msgstr "Sárga zászló"
+
+msgid "Yes"
+msgstr "Igen"
+
+msgid "You can fly with the keys (\\key gup;) and (\\key gdown;)"
+msgstr "Most már repülhetsz a \\key gup; és \\key gdown; billentyűkkel"
+
+msgid "You can not carry a radioactive object"
+msgstr "Nem vihetsz radioaktív tárgyat"
+
+msgid "You can not carry an object under water"
+msgstr "Nem vihetsz tárgyat a víz alatt"
+
+#, c-format
+msgid "You cannot use \"%s\" in this exercise (used: %d)"
+msgstr "A(z) \"%s\" nem használható ebben a feladatban (használva: %d)"
+
+msgid "You found a usable object"
+msgstr "Találtál egy használható tárgyat"
+
+#, c-format
+msgid "You have to use \"%1$s\" at least once in this exercise (used: %2$d)"
+msgid_plural "You have to use \"%1$s\" at least %3$d times in this exercise (used: %2$d)"
+msgstr[0] "A(z) \"%1$s\" legalább egyszer használandó ebben a feladatban (használva: %2$d)"
+msgstr[1] "A(z) \"%1$s\" legalább %3$d alkalommal használandó ebben a feladatban (használva: %2$d)"
+
+#, c-format
+msgid "You have to use \"%1$s\" at most once in this exercise (used: %2$d)"
+msgid_plural "You have to use \"%1$s\" at most %3$d times in this exercise (used: %2$d)"
+msgstr[0] "A(z) \"%1$s\" legfeljebb egyszer használható ebben a feladatban (használva: %2$d)"
+msgstr[1] "A(z) \"%1$s\" legfeljebb %3$d alkalommal használható ebben a feladatban (használva: %2$d)"
+
+msgid "You must get on the spaceship to take off"
+msgstr "Szállj be az űrhajóba, hogy felszállhass"
+
+msgid "Zoom mini-map"
+msgstr "Minitérkép nagyítása"
+
+msgid "\\Blue flags"
+msgstr "\\Kék zászlók"
+
+msgid "\\Eyeglasses 1"
+msgstr "\\Szemüveg 1"
+
+msgid "\\Eyeglasses 2"
+msgstr "\\Szemüveg 2"
+
+msgid "\\Eyeglasses 3"
+msgstr "\\Szemüveg 3"
+
+msgid "\\Eyeglasses 4"
+msgstr "\\Szemüveg 4"
+
+msgid "\\Eyeglasses 5"
+msgstr "\\Szemüveg 5"
+
+msgid "\\Face 1"
+msgstr "\\Arc 1"
+
+msgid "\\Face 2"
+msgstr "\\Arc 2"
+
+msgid "\\Face 3"
+msgstr "\\Arc 3"
+
+msgid "\\Face 4"
+msgstr "\\Arc 4"
+
+msgid "\\Green flags"
+msgstr "\\Zöld zászlók"
+
+msgid "\\New player name"
+msgstr "\\Új játékosnév"
+
+msgid "\\No eyeglasses"
+msgstr "\\Nincs szemüveg"
+
+msgid "\\Raise the pencil"
+msgstr "\\Ceruza felemelése"
+
+msgid "\\Red flags"
+msgstr "\\Piros zászlók"
+
+msgid "\\Return to Colobot: Gold Edition"
+msgstr "\\Vissza a Colobot: Gold Edition főmenübe"
+
+msgid "\\SatCom on standby"
+msgstr "\\SatCom készenlétben"
+
+msgid "\\Start recording"
+msgstr "\\Felvétel indítása"
+
+msgid "\\Stop recording"
+msgstr "\\Felvétel leállítása"
+
+msgid "\\Turn left"
+msgstr "\\Balra fordulás"
+
+msgid "\\Turn right"
+msgstr "\\Jobbra fordulás"
+
+msgid "\\Use the black pencil"
+msgstr "\\Fekete ceruza használata"
+
+msgid "\\Use the blue pencil"
+msgstr "\\Használd a kék ceruzát"
+
+msgid "\\Use the brown pencil"
+msgstr "\\Használd a barna ceruzát"
+
+msgid "\\Use the green pencil"
+msgstr "\\Használd a zöld ceruzát"
+
+msgid "\\Use the orange pencil"
+msgstr "\\Használd a narancssárga ceruzát"
+
+msgid "\\Use the purple pencil"
+msgstr "\\Használd a lila ceruzát"
+
+msgid "\\Use the red pencil"
+msgstr "\\Használd a piros ceruzát"
+
+msgid "\\Use the yellow pencil"
+msgstr "\\Használd a sárga ceruzát"
+
+msgid "\\Violet flags"
+msgstr "\\Lila zászlók"
+
+msgid "\\Yellow flags"
+msgstr "\\Sárga zászlók"
+
+msgid "by"
+msgstr "by"
+
+msgid "colobot.info"
+msgstr "colobot.info"
+
+msgid "epsitec.com"
+msgstr "epsitec.com"
+
+#~ msgid " "
+#~ msgstr " "
+
+#~ msgid " Drivers:"
+#~ msgstr " Driver:"
+
+#~ msgid " Missions on this level:"
+#~ msgstr " Missionen des Userlevels:"
+
+#~ msgid "\"%s\" missing in this exercise"
+#~ msgstr "Es fehlt \"%s\" in Ihrem Programm"
+
+#~ msgid "3D sound\\3D positioning of the sound"
+#~ msgstr "3D-Geräusche\\Orten der Geräusche im Raum"
+
+#~ msgid "Build a destroyer"
+#~ msgstr "Baue einen Zerstörer"
+
+#~ msgid "Building too close"
+#~ msgstr "Gebäude zu nahe"
+
+#~ msgid "COLOBOT"
+#~ msgstr "COLOBOT"
+
+#~ msgid "Camera awayest"
+#~ msgstr "Kamera weiter weg"
+
+#~ msgid "Camera nearest"
+#~ msgstr "Kamera näher"
+
+#~ msgid "Camera to left"
+#~ msgstr "Kamera links"
+
+#~ msgid "Camera to right"
+#~ msgstr "Kamera rechts"
+
+#~ msgid "Can not create this; there are too many objects"
+#~ msgstr "Kein neues Objekt kann erstellt werden (zu viele vorhanden)"
+
+#~ msgid "Cancel\\Keep current player name"
+#~ msgstr "Abbrechen\\Behält den bisherigen Spieler bei"
+
+#~ msgid "Checkpoint crossed"
+#~ msgstr "Checkpoint erreicht"
+
+#~ msgid "Compass"
+#~ msgstr "Kompass"
+
+#~ msgid "Continue\\Continue the game"
+#~ msgstr "Weitermachen\\Weitermachen"
+
+#~ msgid "Delete"
+#~ msgstr "Zerstören"
+
+#~ msgid "Details\\Visual quality of 3D objects"
+#~ msgstr "Details\\Detailliertheit der Objekte in 3D"
+
+#~ msgid "Developed by :"
+#~ msgstr "Entwickelt von:"
+
+#, fuzzy
+#~ msgid "Do you want to quit Colobot: Gold Edition?"
+#~ msgstr "Wollen Sie COLOBOT schließen ?"
+
+#~ msgid "Exit film\\Film at the exit of exercises"
+#~ msgstr "Zurücksetzen \\Kleine Show beim Zurücksetzen in den Übungen"
+
+#~ msgid "Friendly fire\\Your shooting can damage your own objects "
+#~ msgstr "Eigenbeschuss\\Ihre Einheiten werden von Ihren Waffen beschädigt"
+
+#~ msgid "Ground inappropriate"
+#~ msgstr "Boden ungeeignet"
+
+#~ msgid "Key word help\\More detailed help about key words"
+#~ msgstr "Hilfe über Begriff\\Hilfe über einen Begriff"
+
+#~ msgid "Marks on the ground\\Marks on the ground"
+#~ msgstr "Markierungen\\Markierungen auf dem Boden"
+
+#~ msgid "Mouse shadow\\Gives the mouse a shadow"
+#~ msgstr "Schatten unter der Maus\\Ein Schatten erscheint unter der Maus"
+
+#~ msgid "No other robot"
+#~ msgstr "Kein anderer Roboter"
+
+#~ msgid "Not yet enough energy"
+#~ msgstr "Noch nicht genug Energie"
+
+#~ msgid "Num of decorative objects\\Number of purely ornamental objects"
+#~ msgstr "Anzahl Ziergegenstände\\Anzahl Gegenstände ohne Funktion"
+
+#~ msgid "Planets and stars\\Astronomical objects in the sky"
+#~ msgstr "Planeten und Sterne\\Kreisende Planeten und Sterne"
+
+#~ msgid "Quit the mission?"
+#~ msgstr "Mission abbrechen ?"
+
+#~ msgid "Quit\\Quit COLOBOT"
+#~ msgstr "Schließen\\COLOBOT schließen"
+
+#~ msgid "Robbie\\Your assistant"
+#~ msgstr "Robby\\Ihr Assistent"
+
+#~ msgid "Sky\\Clouds and nebulae"
+#~ msgstr "Himmel\\Himmel und Wolken"
+
+#~ msgid "Speed 0.5x\\Half speed"
+#~ msgstr "Geschwindigkeit 0.5x\\Halbe Spielgeschwindigkeit"
+
+#~ msgid "Speed 1.0x\\Normal speed"
+#~ msgstr "Geschwindigkeit 1.0x\\Normale Spielgeschwindigkeit"
+
+#~ msgid "Speed 1.5x\\1.5 times faster"
+#~ msgstr "Geschwindigkeit 1.5x\\Spielgeschwindigkeit anderthalb Mal schneller"
+
+#~ msgid "Speed 3.0x\\Three times faster"
+#~ msgstr "Geschwindigkeit 3.0x\\Spielgeschwindigkeit drei Mal schneller"
+
+#~ msgid "Speed 3.0x\\Triple speed"
+#~ msgstr "Geschwindigkeit 3.0x\\Dreifache Spielgeschwindigkeit"
+
+#~ msgid "Speed 4.0x\\Quadruple speed"
+#~ msgstr "Geschwindigkeit 4.0x\\Vierfache Spielgeschwindigkeit"
+
+#~ msgid "Speed 6.0x\\Sextuple speed"
+#~ msgstr "Geschwindigkeit 6.0x\\Sechsfache Spielgeschwindigkeit"
+
+#~ msgid "Sunbeams\\Sunbeams in the sky"
+#~ msgstr "Sonnenstrahlen\\Sonnenstrahlen"
+
+#~ msgid "Textures\\Quality of textures "
+#~ msgstr "Qualität der Texturen\\Qualität der Anzeige"
+
+#~ msgid "The list is only available if a \\l;radar station\\u object\\radar; is working.\n"
+#~ msgstr "Die Liste ist ohne \\l;Radar\\u object\\radar; nicht verfügbar.\n"
+
+#~ msgid "Use a joystick\\Joystick or keyboard"
+#~ msgstr "Joystick\\Joystick oder Tastatur"
+
+#~ msgid "User\\User levels"
+#~ msgstr "User\\Userlevels"
+
+#~ msgid "\\Return to COLOBOT"
+#~ msgstr "\\Zurück zu COLOBOT"
+
+#~ msgid "\\b;Aliens\n"
+#~ msgstr "\\b;Listes der Feinde\n"
+
+#~ msgid "\\b;Buildings\n"
+#~ msgstr "\\b;Listes der Gebäude\n"
+
+#~ msgid "\\b;Error\n"
+#~ msgstr "\\b;Fehler\n"
+
+#~ msgid "\\b;List of objects\n"
+#~ msgstr "\\b;Liste der Objekte\n"
+
+#~ msgid "\\b;Moveable objects\n"
+#~ msgstr "\\b;Listes der tragbaren Gegenstände\n"
+
+#~ msgid "\\b;Robots\n"
+#~ msgstr "\\b;Liste der Roboter\n"
+
+#~ msgid "\\c; (none)\\n;\n"
+#~ msgstr "\\c; (keine)\\n;\n"
