@@ -186,8 +186,7 @@ void CTaskManip::InitAngle()
 {
     if ( m_bSubm || m_bBee )  return;
 
-    if ( m_arm == TMA_NEUTRAL ||
-         m_arm == TMA_GRAB    )
+    if ( m_arm == TMA_NEUTRAL )
     {
         m_finalAngle[0] = ARM_NEUTRAL_ANGLE1;  // arm
         m_finalAngle[1] = ARM_NEUTRAL_ANGLE2;  // forearm
@@ -288,8 +287,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 
     if ( m_arm != TMA_FFRONT &&
          m_arm != TMA_FBACK  &&
-         m_arm != TMA_POWER  &&
-         m_arm != TMA_GRAB   )  return ERR_WRONG_BOT;
+         m_arm != TMA_POWER )  return ERR_WRONG_BOT;
 
     m_physics->SetMotorSpeed(glm::vec3(0.0f, 0.0f, 0.0f));
 
@@ -333,14 +331,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
     }
     m_bBee = false;
 
-    m_bSubm = ( type == OBJECT_MOBILEsa );  // submarine?
-
-    if ( m_arm == TMA_GRAB )  // takes immediately?
-    {
-        TransporterTakeObject();
-        Abort();
-        return ERR_OK;
-    }
+    m_bSubm = type == OBJECT_MOBILEsa;  // Subber
 
     m_energy = GetObjectEnergy(m_object);
 
@@ -956,51 +947,6 @@ CObject* CTaskManip::SearchOtherObject(bool bAdvance, glm::vec3 &pos,
 
 bool CTaskManip::TransporterTakeObject()
 {
-    if (m_arm == TMA_GRAB)  // takes immediately?
-    {
-        CObject* cargo = m_object->GetSlotContainedObjectReq(CSlottedObject::Pseudoslot::CARRYING);
-        if (cargo == nullptr)  return false;  // nothing to take?
-        assert(cargo->Implements(ObjectInterfaceType::Transportable));
-
-        m_cargoType = cargo->GetType();
-
-        if ( m_object->GetType() == OBJECT_HUMAN ||
-             m_object->GetType() == OBJECT_TECH  )
-        {
-            dynamic_cast<CTransportableObject&>(*cargo).SetTransporter(m_object);
-            dynamic_cast<CTransportableObject&>(*cargo).SetTransporterPart(4);  // takes with the hand
-
-            cargo->SetPosition(glm::vec3(1.7f, -0.5f, 1.1f));
-            cargo->SetRotationY(0.1f);
-            cargo->SetRotationX(0.0f);
-            cargo->SetRotationZ(0.8f);
-        }
-        else if ( m_bSubm )
-        {
-            dynamic_cast<CTransportableObject&>(*cargo).SetTransporter(m_object);
-            dynamic_cast<CTransportableObject&>(*cargo).SetTransporterPart(2);  // takes with the right claw
-
-            glm::vec3 pos = glm::vec3(1.1f, -1.0f, 1.0f);  // relative
-            cargo->SetPosition(pos);
-            cargo->SetRotationX(0.0f);
-            cargo->SetRotationY(0.0f);
-            cargo->SetRotationZ(0.0f);
-        }
-        else
-        {
-            dynamic_cast<CTransportableObject&>(*cargo).SetTransporter(m_object);
-            dynamic_cast<CTransportableObject&>(*cargo).SetTransporterPart(3);  // takes with the hand
-
-            glm::vec3 pos = glm::vec3(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
-            cargo->SetPosition(pos);
-            cargo->SetRotationX(0.0f);
-            cargo->SetRotationZ(Math::PI/2.0f);
-            cargo->SetRotationY(0.0f);
-        }
-
-        m_object->SetSlotContainedObjectReq(CSlottedObject::Pseudoslot::CARRYING, cargo);  // takes
-    }
-
     if (m_arm == TMA_FFRONT)  // takes on the ground in front?
     {
         glm::vec3 pos;
@@ -1245,4 +1191,64 @@ void CTaskManip::SoundManip(float time, float amplitude, float frequency)
     m_sound->AddEnvelope(i, 0.5f*amplitude, 1.0f*frequency, 0.1f, SOPER_CONTINUE);
     m_sound->AddEnvelope(i, 0.5f*amplitude, 1.0f*frequency, time-0.1f, SOPER_CONTINUE);
     m_sound->AddEnvelope(i, 0.0f, 0.3f*frequency, 0.1f, SOPER_STOP);
+}
+
+void CTaskManip::InstantGrab(CObject* obj, CObject* cargo)
+{
+    assert(obj->Implements(ObjectInterfaceType::Slotted));
+    assert(obj->Implements(ObjectInterfaceType::Old));
+    assert(cargo->Implements(ObjectInterfaceType::Transportable));
+
+    COldObject &asOld = dynamic_cast<COldObject&>(*obj);
+    CSlottedObject &asSlotted = dynamic_cast<CSlottedObject&>(*obj);
+    asSlotted.SetSlotContainedObjectReq(CSlottedObject::Pseudoslot::CARRYING, cargo);
+    if ( obj->GetType() == OBJECT_HUMAN ||
+         obj->GetType() == OBJECT_TECH  )
+    {
+        dynamic_cast<CTransportableObject&>(*cargo).SetTransporter(obj);
+        dynamic_cast<CTransportableObject&>(*cargo).SetTransporterPart(4);  // takes with the hand
+
+        cargo->SetPosition(glm::vec3(1.7f, -0.5f, 1.1f));
+        cargo->SetRotation(glm::vec3(0.1f, 0.0f, 0.8f));
+
+        // The animation for OBJECT_HUMAN and OBJECT_TECH is set somewhere else
+    }
+    else if ( obj->GetType() == OBJECT_MOBILEsa )
+    {
+        dynamic_cast<CTransportableObject&>(*cargo).SetTransporter(obj);
+        dynamic_cast<CTransportableObject&>(*cargo).SetTransporterPart(2);  // takes with the right claw
+
+        cargo->SetPosition(glm::vec3(1.1f, -1.0f, 1.0f));
+        cargo->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
+
+        glm::vec3 pos = asOld.GetPartPosition(2);
+        pos.z = -1.0f;
+        asOld.SetPartPosition(2, pos);
+        pos = asOld.GetPartPosition(3);
+        pos.z = 1.0f;
+        asOld.SetPartPosition(3, pos);
+    }
+    else if ( obj->GetType() == OBJECT_BEE )
+    {
+        dynamic_cast<CTransportableObject&>(*cargo).SetTransporter(obj);
+        dynamic_cast<CTransportableObject&>(*cargo).SetTransporterPart(0);  // taken with the base
+
+        cargo->SetPosition(glm::vec3(0.0f, -3.0f, 0.0f));
+
+        // The animation for OBJECT_BEE is set somewhere else
+    }
+    else
+    {
+        dynamic_cast<CTransportableObject&>(*cargo).SetTransporter(obj);
+        dynamic_cast<CTransportableObject&>(*cargo).SetTransporterPart(3);  // takes with the hand
+
+        cargo->SetPosition(glm::vec3(4.7f, 0.0f, 0.0f));  // relative to the hand (lem4)
+        cargo->SetRotation(glm::vec3(0.0f, 0.0f, Math::PI/2.0f));
+
+        asOld.SetPartRotationZ(1, ARM_STOCK_ANGLE1);
+        asOld.SetPartRotationZ(2, ARM_STOCK_ANGLE2);
+        asOld.SetPartRotationZ(3, ARM_STOCK_ANGLE3);
+        asOld.SetPartRotationZ(4, Math::PI*0.05f);
+        asOld.SetPartRotationZ(5, -Math::PI*0.05f);
+    }
 }
