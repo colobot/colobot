@@ -40,7 +40,7 @@ public:
 protected:
     float       m_delay = 0.0f;
     float       m_progress = 0.0f;
-    bool        m_bError = false;
+    Error       m_error = ERR_OK;
     bool        m_bRay = false;
     bool        m_bOrganic = false;
     float       m_time = 0.0f;
