@@ -33,7 +33,7 @@ msgid "%s: %d pts"
 msgstr "%s: %d bodů"
 
 msgid "+\\Missions with bonus content and optional challenges"
-msgstr ""
+msgstr "+\\Mise s bonusovým obsahem a volitelnými výzvami"
 
 msgid "..behind"
 msgstr "...za sebou"
@@ -129,7 +129,7 @@ msgid "Apply changes\\Activates the changed settings"
 msgstr "Uložit změny\\Aktivovat změny nastavení"
 
 msgid "Apply\\Apply the current mod configuration"
-msgstr ""
+msgstr "Použít\\Použije aktuální konfiguraci modu"
 
 msgid "Appropriate constructor missing"
 msgstr "Chybí vhodný konstruktor"
@@ -189,7 +189,7 @@ msgid "Bot factory"
 msgstr "Továrna na roboty"
 
 msgid "Build (\\key action;)"
-msgstr ""
+msgstr "Postavit (\\key action;)"
 
 msgid "Build a bot factory"
 msgstr "Postavit továrnu na roboty"
@@ -207,7 +207,7 @@ msgid "Build a exchange post"
 msgstr "Postavit komunikační stanici"
 
 msgid "Build a legged builder"
-msgstr ""
+msgstr "Vyrobit chodícího stavěče"
 
 msgid "Build a legged grabber"
 msgstr "Vyrobit chodící rameno"
@@ -255,13 +255,13 @@ msgid "Build a subber"
 msgstr "Vyrobit ponorku"
 
 msgid "Build a target bot"
-msgstr ""
+msgstr "Postavit cvičný cíl"
 
 msgid "Build a thumper"
 msgstr "Vyrobit buchar"
 
 msgid "Build a tracked builder"
-msgstr ""
+msgstr "Postavit pásového stavěče"
 
 msgid "Build a tracked grabber"
 msgstr "Vyrobit pásové rameno"
@@ -276,10 +276,10 @@ msgid "Build a tracked sniffer"
 msgstr "Vyrobit pásový detektor"
 
 msgid "Build a vault"
-msgstr ""
+msgstr "Postavit trezor"
 
 msgid "Build a wheeled builder"
-msgstr ""
+msgstr "Postavit pojízdného stavěče"
 
 msgid "Build a wheeled grabber"
 msgstr "Vyrobit pojízdné rameno"
@@ -294,7 +294,7 @@ msgid "Build a wheeled sniffer"
 msgstr "Vyrobit pojízdný detektor"
 
 msgid "Build a winged builder"
-msgstr ""
+msgstr "Postavit letajícího stavěče"
 
 msgid "Build a winged grabber"
 msgstr "Vyrobit létající rameno"
@@ -378,7 +378,7 @@ msgid "Change player\\Change player"
 msgstr "Změnit hráče\\Změnit hráče"
 
 msgid "Changes"
-msgstr ""
+msgstr "Změny"
 
 msgid "Chapters:"
 msgstr "Kapitoly:"
@@ -450,10 +450,10 @@ msgid "Copy (Ctrl+C)"
 msgstr "Kopírovat (Ctrl+C)"
 
 msgid "Could not open the file explorer!"
-msgstr ""
+msgstr "Nelze otevřít správce souborů!"
 
 msgid "Could not open the web browser!"
-msgstr ""
+msgstr "Nelze otevřít webový prohlížeč!"
 
 msgid "Current mission saved"
 msgstr "Současná mise uložena"
@@ -489,7 +489,7 @@ msgid "Descend\\Reduces the power of the jet"
 msgstr "Klesat\\Snížit tah tryskového motoru"
 
 msgid "Description:"
-msgstr ""
+msgstr "Popis:"
 
 msgid "Destroy"
 msgstr "Zbourat"
@@ -504,7 +504,7 @@ msgid "Device\\Driver and resolution settings"
 msgstr "Obrazovka\\Nastavení grafické karty a rozlišení"
 
 msgid "Disable\\Disable the selected mod"
-msgstr ""
+msgstr "Zakázat\\Zakáže vybraný mod"
 
 msgid "Dividing by zero"
 msgstr "Dělení nulou"
@@ -523,13 +523,13 @@ msgid "Down (\\key gdown;)"
 msgstr "Dolů (\\key gdown;)"
 
 msgid "Down\\Move the selected mod down so it's loaded later (mods may overwrite files from the mods above them)"
-msgstr ""
+msgstr "Dolů\Posuň vybraný mod dolů, aby se načítal později (mody mohou přepsat soubory z modů nad nimi)."
 
 msgid "Drawer bot"
 msgstr "Tužkobot"
 
 msgid "Duplicate label in switch"
-msgstr ""
+msgstr "Duplicitní popisek v příkazu \"switch\""
 
 msgid "Dust\\Dust and dirt on bots and buildings"
 msgstr "Prach\\Prach a špína na robotech a budovách"
@@ -550,10 +550,10 @@ msgid "Egg"
 msgstr "Vejce"
 
 msgid "Empty character constant"
-msgstr ""
+msgstr "Prázdná textová konstanta"
 
 msgid "Enable\\Enable the selected mod"
-msgstr ""
+msgstr "Povolit\\Povol vybraný mod"
 
 msgid "End of block missing"
 msgstr "Chybí konec bloku"
@@ -770,7 +770,7 @@ msgid "Inappropriate object"
 msgstr "Nevhodný objekt"
 
 msgid "Inappropriate sample"
-msgstr ""
+msgstr "Nevhodný vzorek"
 
 msgid "Incorrect index type"
 msgstr "Špatný datový typ indexu"
@@ -782,7 +782,7 @@ msgid "Information exchange post"
 msgstr "Komunikační stanice"
 
 msgid "Information:"
-msgstr ""
+msgstr "Informace:"
 
 msgid "Instruction \"break\" outside a loop"
 msgstr "Příkaz \"break\" mimo cyklus"
@@ -845,7 +845,7 @@ msgid "LOADING"
 msgstr "NAČÍTÁNÍ"
 
 msgid "Legged builder"
-msgstr ""
+msgstr "Chodící stavěč"
 
 msgid "Legged grabber"
 msgstr "Chodící rameno"
@@ -938,13 +938,13 @@ msgid "Missions\\Select mission"
 msgstr "Mise\\Vyberte misi"
 
 msgid "Mods"
-msgstr ""
+msgstr "Mody"
 
 msgid "Mods:"
-msgstr ""
+msgstr "Mody:"
 
 msgid "Mods\\Mod manager"
-msgstr ""
+msgstr "Mody\\Manažer modů"
 
 msgid "Mouse inversion X\\Inversion of the scrolling direction on the X axis"
 msgstr "Vodorovné převrácení posunu\\Při vodorovném posunu kamery myší pousouvat opačným směrem"
@@ -959,7 +959,7 @@ msgid "Move selected program up"
 msgstr "Posunout vybraný program výše"
 
 msgid "Mute sounds in background\\Mute all game sounds when the window is unfocused"
-msgstr ""
+msgstr "Ztlumit zvuky v pozdadí\\Ztlumí všechny herní zvuky když je okno neaktivní"
 
 msgid "Mute\\No sound"
 msgstr "Ticho\\Bez zvuku"
@@ -980,7 +980,7 @@ msgid "New ..."
 msgstr "Nový..."
 
 msgid "New Folder"
-msgstr ""
+msgstr "Nová složka"
 
 msgid "New bot available"
 msgstr "Robot vyroben"
@@ -995,10 +995,10 @@ msgid "No"
 msgstr "Ne"
 
 msgid "No changes."
-msgstr ""
+msgstr "Žádné změny."
 
 msgid "No description."
-msgstr ""
+msgstr "Žádný popis."
 
 msgid "No energy in the subsoil"
 msgstr "Pod povrchem není zdroj energie"
@@ -1121,7 +1121,7 @@ msgid "Open (Ctrl+O)"
 msgstr "Otevřít (Ctrl+O)"
 
 msgid "Open Directory\\Open the mods directory"
-msgstr ""
+msgstr "Otevřít adresár\\Otevřít adresář s mody"
 
 msgid "Opening brace missing"
 msgstr "Chybí levá složená závorka"
@@ -1148,7 +1148,7 @@ msgid "Original game developed by:"
 msgstr "Vývojáři původní hry:"
 
 msgid "Overwrite existing file?"
-msgstr ""
+msgstr "Přepsat existující soubor?"
 
 msgid "Parameters missing"
 msgstr "Některé parametry nejsou vyplněné"
@@ -1184,7 +1184,7 @@ msgid "Planets:"
 msgstr "Planety:"
 
 msgid "Plans for builder available"
-msgstr ""
+msgstr "Plány pro stavěče jsou k dispozici"
 
 msgid "Plans for defense tower available"
 msgstr "Plány pro obrannou věž jsou k dispozici"
@@ -1334,7 +1334,7 @@ msgid "Reflections on the buttons \\Shiny buttons"
 msgstr "Odlesky na tlačítkách\\Blyštivá tlačítka"
 
 msgid "Refresh\\Refresh the list of currently installed mods"
-msgstr ""
+msgstr "Obnovit\\Obnovit seznam aktuálně načtených modů"
 
 msgid "Remains of Apollo mission"
 msgstr "Pozůstatky mise Apollo"
@@ -1394,7 +1394,7 @@ msgid "Ruin"
 msgstr "Trosky"
 
 msgid "Run research program for builder"
-msgstr ""
+msgstr "Spusit výzkum pro stavěče"
 
 msgid "Run research program for defense tower"
 msgstr "Spustit výzkum obranných věží"
@@ -1418,7 +1418,7 @@ msgid "Run research program for shooter"
 msgstr "Spustit výzkum kanónů"
 
 msgid "Run research program for target bot"
-msgstr ""
+msgstr "Spustit výzkum pro cvičný cíl"
 
 msgid "Run research program for thumper"
 msgstr "Spustit výzkum bucharu"
@@ -1451,7 +1451,7 @@ msgid "Save\\Saves the current mission"
 msgstr "Uložit\\Uloží současnou misi"
 
 msgid "Select Folder"
-msgstr ""
+msgstr "Vybrat složku"
 
 msgid "Select the astronaut\\Selects the astronaut"
 msgstr "Vybrat kosmonauta\\Vybere kosmonauta"
@@ -1520,13 +1520,13 @@ msgid "Sound\\Music and game sound volume"
 msgstr "Zvuk\\Hlasitost hudby a zvukových efektů"
 
 msgid "Space Explorer\\Disables astronaut abilities"
-msgstr ""
+msgstr "Vesmírný průzkumník\\Zakázat schopnosti astronauta"
 
 msgid "Space Programmer\\Disables radio-control"
-msgstr ""
+msgstr "Vesmírný programátor\\Zakázat radiové ovládání"
 
 msgid "Space Researcher\\Disables using all previously researched technologies"
-msgstr ""
+msgstr "Vesmírný výzkumník\\Zakáže využití všech dříve vyzkoumaných technologií"
 
 msgid "Spaceship"
 msgstr "Raketa"
@@ -1608,7 +1608,7 @@ msgstr "Textury"
 
 #, c-format
 msgid "The address %s could not be opened in a web browser."
-msgstr ""
+msgstr "Adresa %s nemůže být otevřena ve webovém prohlížeči."
 
 msgid "The battle has ended"
 msgstr "Souboj skončil"
@@ -1624,13 +1624,13 @@ msgstr "Mise ještě nebyla splněna (pro podrobnosti stiskněte \\key help;)"
 
 #, c-format
 msgid "The path %s could not be opened in a file explorer."
-msgstr ""
+msgstr "Cesta %s nemohla být oteřená v průzkumníku souborů."
 
 msgid "The types of the two operands are incompatible"
 msgstr "Operaci nelze provést s operandy těchto dvou typů"
 
 msgid "There are unsaved changes. Do you want to save them before leaving?"
-msgstr ""
+msgstr "Změny nejsou uloženy. Chcete uložit změny před opuštěním?"
 
 msgid "This class already exists"
 msgstr "Tato třída již existuje"
@@ -1666,6 +1666,8 @@ msgid ""
 "This save file is from a different version of the game and might not work correctly.\n"
 "Do you want to open it anyway?"
 msgstr ""
+"Tento soubor s uloženou hrou je z jiné verze hry a nemusí správně fungovat.\n"
+"Přejete si ho i přesto otevřít?"
 
 msgid "Thump (\\key action;)"
 msgstr "Úder (\\key action;)"
@@ -1711,7 +1713,7 @@ msgid "Too many parameters"
 msgstr "Příliš mnoho parametrů"
 
 msgid "Tracked builder"
-msgstr ""
+msgstr "Pásový stavěč"
 
 msgid "Tracked grabber"
 msgstr "Pásové rameno"
@@ -1762,7 +1764,7 @@ msgid "Unknown Object"
 msgstr "Neznámý objekt"
 
 msgid "Unknown author"
-msgstr ""
+msgstr "Neznámý autor"
 
 msgid "Unknown command"
 msgstr "Neznámý příkaz"
@@ -1777,7 +1779,7 @@ msgid "Up (\\key gup;)"
 msgstr "Vzhůru (\\key gup;)"
 
 msgid "Up\\Move the selected mod up so it's loaded sooner (mods may overwrite files from the mods above them)"
-msgstr ""
+msgstr "Nahoru\\Posunout vybraný mod výše aby se načetl dříve (mody mohou přepsat soubory z modů nad nimi)"
 
 msgid "Uranium deposit (site for derrick)"
 msgstr "Uranové ložisko (místo pro vrtnou věž)"
@@ -1801,10 +1803,10 @@ msgid "Vault"
 msgstr "Trezor"
 
 msgid "Version"
-msgstr ""
+msgstr "Verze"
 
 msgid "Vertical Synchronization\\Limits the number of frames per second to display frequency"
-msgstr ""
+msgstr "Vertikální synchronizace\\Omezí počet zobrazených snímků za sekundu"
 
 msgid "Violet flag"
 msgstr "Fialová vlajka"
@@ -1822,10 +1824,10 @@ msgid "Waste"
 msgstr "Odpad"
 
 msgid "Website"
-msgstr ""
+msgstr "Webová stránka"
 
 msgid "Wheeled builder"
-msgstr ""
+msgstr "Pojízdný stavěč"
 
 msgid "Wheeled grabber"
 msgstr "Pojízdné rameno"
@@ -1840,7 +1842,7 @@ msgid "Wheeled sniffer"
 msgstr "Pojízdný detektor"
 
 msgid "Winged builder"
-msgstr ""
+msgstr "Létající stavěč"
 
 msgid "Winged grabber"
 msgstr "Létající rameno"
@@ -1858,7 +1860,7 @@ msgid "Withdraw shield (\\key action;)"
 msgstr "Vypnout štít (\\key action;)"
 
 msgid "Workshop\\Open the workshop to search for mods"
-msgstr ""
+msgstr "Workshop\\Otevřít workshop pro vyhledání modů"
 
 msgid "Worm"
 msgstr "Červ"
