@@ -1173,6 +1173,7 @@ void COldObject::Write(CLevelParserLine* line)
         CLevelParserParamVec param;
         param.push_back(std::make_unique<CLevelParserParam>(motion->GetParam(0)));
         param.push_back(std::make_unique<CLevelParserParam>(motion->GetParam(1)));
+        param.push_back(std::make_unique<CLevelParserParam>(motion->GetParam(2)));
         line->AddParam("param", std::make_unique<CLevelParserParam>(std::move(param)));
     }
 }
