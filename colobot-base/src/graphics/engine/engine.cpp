@@ -3366,7 +3366,7 @@ void CEngine::Draw3DScene()
 
     particleRenderer->End();
 
-    DrawForegroundImage();   // draws the foreground
+    if (m_rankView == 0) DrawForegroundImage();   // draws the foreground
 
     if (! m_overFront) DrawOverColor();      // draws the foreground color
 }
