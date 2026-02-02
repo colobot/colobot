@@ -176,6 +176,9 @@ private:
 
     // 1x1 white texture
     GLuint m_whiteTexture = 0;
+    // 1x1 black texture
+    GLuint m_blackTexture = 0;
+
     // Currently bound albedo texture
     GLuint m_albedoTexture = 0;
     // Currently bound detail texture

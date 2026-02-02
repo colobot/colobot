@@ -79,7 +79,7 @@ void main()
         dirty = texture(uni_DetailTexture, data.TexCoord1).rgb;
     }
 
-    albedo.rgb *= dirty;
+    albedo.rgb *= mix(albedo.rgb, dirty, dirty);
 
     vec3 color = albedo.rgb;
     float alpha = albedo.a;

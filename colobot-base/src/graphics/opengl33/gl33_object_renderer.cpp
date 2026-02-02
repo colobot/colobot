@@ -142,6 +142,7 @@ CGL33ObjectRenderer::CGL33ObjectRenderer(CGL33Device* device)
 
     // White texture
     glActiveTexture(GL_TEXTURE0);
+
     glGenTextures(1, &m_whiteTexture);
     glBindTexture(GL_TEXTURE_2D, m_whiteTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
@@ -153,6 +154,19 @@ CGL33ObjectRenderer::CGL33ObjectRenderer(CGL33Device* device)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_G, GL_ONE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_B, GL_ONE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_A, GL_ONE);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glGenTextures(1, &m_blackTexture);
+    glBindTexture(GL_TEXTURE_2D, m_blackTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_R, GL_ZERO);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_G, GL_ZERO);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_B, GL_ZERO);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_A, GL_ZERO);
     glBindTexture(GL_TEXTURE_2D, 0);
 
     glUseProgram(0);
@@ -178,6 +192,7 @@ CGL33ObjectRenderer::~CGL33ObjectRenderer()
 {
     glDeleteProgram(m_program);
     glDeleteTextures(1, &m_whiteTexture);
+    glDeleteTextures(1, &m_blackTexture);
     glDeleteBuffers(1, &m_bufferVBO);
     glDeleteVertexArrays(1, &m_bufferVAO);
 }
@@ -191,7 +206,7 @@ void CGL33ObjectRenderer::CGL33ObjectRenderer::Begin()
     glBindTexture(GL_TEXTURE_2D, m_whiteTexture);
 
     glActiveTexture(GL_TEXTURE0 + m_detailIndex);
-    glBindTexture(GL_TEXTURE_2D, m_whiteTexture);
+    glBindTexture(GL_TEXTURE_2D, m_blackTexture);
 
     glActiveTexture(GL_TEXTURE0 + m_emissiveIndex);
     glBindTexture(GL_TEXTURE_2D, m_whiteTexture);
@@ -344,7 +359,7 @@ void CGL33ObjectRenderer::SetDetailTexture(const Texture& texture)
     glActiveTexture(GL_TEXTURE0 + m_detailIndex);
 
     if (texture.id == 0)
-        glBindTexture(GL_TEXTURE_2D, m_whiteTexture);
+        glBindTexture(GL_TEXTURE_2D, m_blackTexture);
     else
         glBindTexture(GL_TEXTURE_2D, texture.id);
 }
