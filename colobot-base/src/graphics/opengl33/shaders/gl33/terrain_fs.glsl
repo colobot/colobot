@@ -79,10 +79,6 @@ void main()
             roughness,
             metalness);
 
-    float depth = clamp((data.Position.y - uni_FogUpperHeight + 64.0) / 64.0, 0.0, 1.0);
-
-    color.rgb = color.rgb * mix(0.2, 1.0, depth);
-
     color.rgb = ApplyFog(color.rgb, data.Position);
 
     out_FragColor = vec4(color, 1.0);

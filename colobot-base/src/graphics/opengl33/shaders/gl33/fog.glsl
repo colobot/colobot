@@ -37,5 +37,10 @@ vec3 ApplyFog(vec3 color, vec3 position)
 
     vec3 fog_color = mix(uni_FogLowerColor, uni_FogUpperColor, fog_transition);
 
-    return mix(color, fog_color, fog_amount);
+    color = mix(color, fog_color, fog_amount);
+
+    // Apply depth darkening below water surface
+    float depth = clamp((position.y - uni_FogUpperHeight + 64.0) / 64.0, 0.0, 1.0);
+
+    return color * mix(0.2, 1.0, depth);
 }
