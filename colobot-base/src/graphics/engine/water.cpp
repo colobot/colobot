@@ -289,7 +289,8 @@ void CWater::DrawBack()
     glm::mat4 matrix = glm::mat4(1.0f);
     renderer->SetModelMatrix(matrix);
 
-    renderer->SetFog(0.0f, 1.0f, m_engine->GetFogColor(1));
+    renderer->SetUpperFog(m_level, 0.0f, 1.0f, m_engine->GetFogColor(1));
+    renderer->SetLowerFog(m_level - 0.5f, 0.0f, 1.0f, m_engine->GetFogColor(1));
 
     float dist = Math::DistanceProjected(eye, lookat);
 
