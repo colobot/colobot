@@ -205,7 +205,7 @@ public:
     //! Sets fog parameters
     void SetFog(float min, float max, const Color& color)
     {
-        SetUpperFog(0.0f, min, max, color);
+        SetUpperFog(1.0f, min, max, color);
         SetLowerFog(0.0f, min, max, color);
     }
 
