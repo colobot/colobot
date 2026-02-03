@@ -31,7 +31,7 @@ vec3 ApplyFog(vec3 color, vec3 position)
 {
     float distance = length(uni_CameraPosition - position);
 
-    float fog_amount = clamp((distance - uni_FogLowerRange.x) / (uni_FogUpperRange.y - uni_FogLowerRange.x), 0.0, 1.0);
+    float fog_amount = clamp((distance - uni_FogUpperRange.x) / (uni_FogUpperRange.y - uni_FogUpperRange.x), 0.0, 1.0);
 
     float fog_transition = clamp((position.y - uni_FogLowerHeight) / (uni_FogUpperHeight - uni_FogLowerHeight), 0.0, 1.0);
 
