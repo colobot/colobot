@@ -3011,7 +3011,7 @@ void CEngine::Draw3DScene()
     float fogUpperEnd = m_deepView[m_rankView] * m_clippingDistance;
     Color fogUpperColor = m_fogColor[m_rankView];
 
-    float fogLowerHeight = m_water->GetLevel() - 8.0f;
+    float fogLowerHeight = m_water->GetLevel() - 0.5f;
     float fogLowerStart = m_deepView[m_rankView] * m_fogStart[m_rankView] * m_clippingDistance;
     float fogLowerEnd = m_deepView[m_rankView] * m_clippingDistance;
     Color fogLowerColor = m_fogColor[1];

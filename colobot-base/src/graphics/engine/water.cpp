@@ -289,8 +289,7 @@ void CWater::DrawBack()
     glm::mat4 matrix = glm::mat4(1.0f);
     renderer->SetModelMatrix(matrix);
 
-    renderer->SetUpperFog(GetLevel(), 0.0f, 1.0f, m_engine->GetFogColor(m_engine->GetRankView()));
-    renderer->SetLowerFog(GetLevel() - 8.0f, 0.0f, 1.0f, m_engine->GetFogColor(1));
+    renderer->SetFog(0.0f, 1.0f, m_engine->GetFogColor(1));
 
     float dist = Math::DistanceProjected(eye, lookat);
 
@@ -356,19 +355,25 @@ void CWater::DrawSurf()
     float fogEnd = m_engine->GetClippingDistance() * m_engine->GetDeepView(0);
     float fogStart = fogEnd * m_engine->GetFogStart(0);
 
+    if (m_engine->GetRankView() == 1)
+    {
+        fogStart = 1000.0f;
+        fogEnd = 1001.0f;
+    }
+
     renderer->SetLighting(true);
     renderer->SetSky(m_ambient, 1.0f);
     renderer->SetBaseColor({ 0.0f, 0.0f, 0.0f, 0.0f });
     renderer->SetDetailTexture(Texture{});
     renderer->SetCullFace(CullFace::NONE);
     renderer->SetDepthMask(false);
-    renderer->SetUpperFog(GetLevel(), fogStart, fogEnd, m_engine->GetFogColor(rankview));
-    renderer->SetLowerFog(GetLevel() - 8.0f, fogStart, fogEnd, m_engine->GetFogColor(rankview));
+
+    renderer->SetFog(fogStart, fogEnd, m_engine->GetFogColor(rankview));
 
     if (m_type[rankview] == WATER_TT)
     {
         renderer->SetTransparency(TransparencyMode::BLACK);
-        renderer->SetAlbedoColor(m_diffuse);
+        renderer->SetAlbedoColor(Color{ 1.0f, 1.0f, 1.0f, 1.0f });
     }
     else if (m_type[rankview] == WATER_TO)
     {
@@ -384,11 +389,6 @@ void CWater::DrawSurf()
     {
         renderer->SetTransparency(TransparencyMode::NONE);
         renderer->SetAlbedoColor(Color{ 1.0f, 1.0f, 1.0f, 1.0f });
-    }
-
-    if (rankview == 1)
-    {
-        renderer->SetTransparency(TransparencyMode::WHITE);
     }
 
     float size = m_brickSize/2.0f;
