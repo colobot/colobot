@@ -353,15 +353,6 @@ void CWater::DrawSurf()
     renderer->SetAlbedoTexture(texture);
     renderer->SetEmissiveTexture({});
 
-    float fogEnd = m_engine->GetClippingDistance() * m_engine->GetDeepView(0);
-    float fogStart = fogEnd * m_engine->GetFogStart(0);
-
-    if (m_engine->GetRankView() == 1)
-    {
-        fogStart = 1000.0f;
-        fogEnd = 1001.0f;
-    }
-
     renderer->SetLighting(true);
     renderer->SetSky(m_ambient, 1.0f);
     renderer->SetBaseColor({ 0.0f, 0.0f, 0.0f, 0.0f });
@@ -369,7 +360,8 @@ void CWater::DrawSurf()
     renderer->SetCullFace(CullFace::NONE);
     renderer->SetDepthMask(false);
 
-    renderer->SetFog(fogStart, fogEnd, m_engine->GetFogColor(rankview));
+    // No fog for water surface
+    renderer->SetFog(1000.0f, 1001.0f, {});
 
     if (m_type[rankview] == WATER_TT)
     {
