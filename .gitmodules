@@ -1,6 +1,6 @@
 [submodule "data"]
 	path = data
-	url = https://github.com/colobot/colobot-data.git
+	url = https://github.com/RicardoRdzG/colobot-data.git
 	branch = .
 	update = rebase
 [submodule "lib/googletest"]
