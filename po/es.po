@@ -3,8 +3,23 @@
 # This file is distributed under the same license as the Colobot package.
 # Translators: Spanish speakers
 #
-msgid ""
-msgstr ""
+msgid "Leaving Earth"
+msgstr "Saliendo de la Tierra"
+
+msgid "No energy in the subsoil"
+msgstr "Sin energía en el subsuelo"
+
+msgid "No flag nearby"
+msgstr "Sin bandera cercana"
+
+msgid "No function running"
+msgstr "No hay función ejecutándose"
+
+msgid "No function with this name accepts this kind of parameter"
+msgstr "No hay una función con este nombre que acepta este tipo de parámetro"
+
+msgid "No function with this name accepts this number of parameters"
+msgstr "No hay una función con este nombre que acepta este número de parámetros"
 "Project-Id-Version: Colobot\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: DATE\n"
@@ -998,11 +1013,26 @@ msgstr "Sin cambios."
 msgid "No description."
 msgstr "Sin descripción."
 
+msgid "Leaving Earth"
+msgstr "Saliendo de la Tierra"
+
 msgid "No energy in the subsoil"
 msgstr "Sin energía en el subsuelo"
 
+msgid "Leaving Earth"
+msgstr "Saliendo de la Tierra"
+
 msgid "No flag nearby"
 msgstr "Sin bandera cercana"
+
+msgid "No function running"
+msgstr "No hay función ejecutándose"
+
+msgid "No function with this name accepts this kind of parameter"
+msgstr "No hay una función con este nombre que acepta este tipo de parámetro"
+
+msgid "No function with this name accepts this number of parameters"
+msgstr "No hay una función con este nombre que acepta este número de parámetros"
 
 msgid "No function running"
 msgstr "No hay función ejecutándose"
@@ -1034,8 +1064,23 @@ msgstr "Sin titanio alrededor"
 msgid "No titanium ore to convert"
 msgstr "Sin mineral de titanio para convertir"
 
-msgid "No titanium to transform"
-msgstr "Sin titanio para transformar"
+msgid "Leaving Earth"
+msgstr "Saliendo de la Tierra"
+
+msgid "No energy in the subsoil"
+msgstr "Sin energía en el subsuelo"
+
+msgid "No flag nearby"
+msgstr "Sin bandera cercana"
+
+msgid "No function running"
+msgstr "No hay función ejecutándose"
+
+msgid "No function with this name accepts this kind of parameter"
+msgstr "No hay una función con este nombre que acepta este tipo de parámetro"
+
+msgid "No function with this name accepts this number of parameters"
+msgstr "No hay una función con este nombre que acepta este número de parámetros"
 
 msgid "No uranium to transform"
 msgstr "Sin uranio para transformar"
