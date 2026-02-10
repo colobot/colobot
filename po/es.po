@@ -49,14 +49,14 @@ msgid "2) Then press the key you want to use instead."
 msgstr "2) Luego presiona la tecla que quieres usar en su lugar."
 
 msgid "<<  Back  \\Back to the previous screen"
-msgstr "<<  Atrás  \\Volver a la pantalla anterior"
+msgstr "← Atrás | Volver a la pantalla anterior"
 
 msgid "<<< Sorry; mission failed >>>"
-msgstr "<<< Lo siento; misión fallida >>>"
+msgstr "<<< Misión fallida - Lo siento, intenta de nuevo >>>"
 
 #, c-format
 msgid "<<< Team %s finished! >>>"
-msgstr "<<< ¡Equipo %s terminó! >>>"
+msgstr "← Equipo completado - ¡Misión cumplida!"
 
 #, c-format
 msgid "<<< Team %s lost! >>>"
@@ -67,7 +67,7 @@ msgid "<<< Team %s recieved %d points >>>"
 msgstr "<<< ¡Equipo %s recibió %d puntos! >>>"
 
 msgid "<<< Well done; mission accomplished >>>"
-msgstr "<<< Bien hecho; misión completada >>>"
+msgstr "← Misión cumplida - ¡Bien hecho!"
 
 msgid "A label must be followed by \"for\"; \"while\"; \"do\" or \"switch\""
 msgstr "Una etiqueta debe ser seguida por \"for\"; \"while\"; \"do\" o \"switch\""
@@ -148,7 +148,7 @@ msgid "Autosave slots\\How many autosave slots you'll have"
 msgstr "Espacios de guardado automático\\Cuántos espacios de guardado automático tendrás"
 
 msgid "Autosave\\Enables autosave"
-msgstr "Guardado automático\\Habilita el guardado automático"
+msgstr "Guardado automático\\Guardado automático activado"
 
 msgid "Back"
 msgstr "Atrás"
@@ -181,31 +181,31 @@ msgid "Blue flag"
 msgstr "Bandera azul"
 
 msgid "Bot destroyed"
-msgstr "Bot destruido"
+msgstr "Robot destruido"
 
 msgid "Bot factory"
-msgstr "Fábrica de bots"
+msgstr "Fábrica de robots"
 
 msgid "Build (\\key action;)"
-msgstr "Construir (\\key action;)"
+msgstr "Construir (tecla B)"
 
 msgid "Build a bot factory"
-msgstr "Construir una fábrica de bots"
+msgstr "Construir fábrica de robots"
 
 msgid "Build a converter"
 msgstr "Construir un convertidor"
 
 msgid "Build a defense tower"
-msgstr "Construir una torre de defensa"
+msgstr "Construir torre de defensa"
 
 msgid "Build a derrick"
-msgstr "Construir una grúa"
+msgstr "Construir un brazo robótico"
 
 msgid "Build a exchange post"
-msgstr "Construir un puesto de intercambio"
+msgstr "Construir una estación de intercambio"
 
 msgid "Build a legged builder"
-msgstr "Construir un constructor de patas"
+msgstr "Construir una plataforma de construcción"
 
 msgid "Build a legged grabber"
 msgstr "Construir un agarrador de patas"
