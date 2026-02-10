@@ -998,8 +998,8 @@ msgstr "Nueva Carpeta"
 msgid "New bot available"
 msgstr "Nuevo bot disponible"
 
-msgid "Next"
-msgstr "Siguiente"
+msgid "Leaving Earth"
+msgstr "Saliendo de la Tierra"
 
 msgid "Next object\\Selects the next object"
 msgstr "Siguiente objeto\\Selecciona el siguiente objeto"
@@ -1009,12 +1009,6 @@ msgstr "No"
 
 msgid "No changes."
 msgstr "Sin cambios."
-
-msgid "No description."
-msgstr "Sin descripción."
-
-msgid "Leaving Earth"
-msgstr "Saliendo de la Tierra"
 
 msgid "No energy in the subsoil"
 msgstr "Sin energía en el subsuelo"
