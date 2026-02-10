@@ -1,0 +1,61 @@
+{
+  "name": "Colobot (Codespaces: libuv enabled)",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "features": {
+    "ghcr.io/devcontainers-contrib/features/uv:1": {},
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "lts"
+    }
+  },
+  "remoteUser": "vscode",
+  "containerEnv": {
+    "VCPKG_ROOT": "/usr/local/vcpkg"
+  },
+  "postStartCommand": "git submodule update --init --recursive",
+  "postCreateCommand": "/bin/bash -lc \"export NVM_DIR=/usr/local/share/nvm && [ -s \\\"$NVM_DIR/nvm.sh\\\" ] && . \\\"$NVM_DIR/nvm.sh\\\" && nvm use default >/dev/null 2>&1 || true && uv sync || echo 'uv sync failed; check uv installation'\"",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash",
+        "cmake.generator": "Ninja"
+      },
+      "extensions": [
+        "ms-vscode.cpptools",
+        "ms-vscode.cmake-tools",
+        "llvm-vs-code-extensions.vscode-clangd"
+      ],
+      "mcp": {
+        "servers": {
+          "oraios/serena": {
+            "type": "stdio",
+            "command": "uvx",
+            "args": [
+              "--from",
+              "git+https://github.com/oraios/serena",
+              "serena",
+              "start-mcp-server",
+              "serena==latest",
+              "--context",
+              "ide-assistant"
+            ],
+            "gallery": "https://api.mcp.github.com",
+            "version": "1.0.0"
+          },
+          "memory": {
+            "command": "npx",
+            "args": [
+              "-y",
+              "@modelcontextprotocol/server-memory"
+            ]
+          }
+        },
+        "inputs": []
+      }
+    }
+  },
+  "forwardPorts": [],
+  "workspaceFolder": "/workspaces/colobot",
+  "shutdownAction": "none"
+}
