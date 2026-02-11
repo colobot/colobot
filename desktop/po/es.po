@@ -20,50 +20,50 @@ msgstr ""
 #: colobot.ini:1
 #, no-wrap
 msgid "Colobot"
-msgstr ""
+msgstr "Colobot"
 
 #. type: GenericName=
 #: colobot.ini:2
 #, no-wrap
 msgid "Game to learn programming"
-msgstr ""
+msgstr "Juego para aprender a programar"
 
 #. type: Comment=
 #: colobot.ini:3
 #, no-wrap
 msgid "Colonize with bots"
-msgstr ""
+msgstr "Coloniza con bots"
 
 #. type: Keywords=
 #: colobot.ini:4
 #, no-wrap
 msgid "robots;3d;space;astronaut;java;c++;"
-msgstr ""
+msgstr "robots;3d;espacio;astronauta;java;c++;"
 
 #. type: =head1
 #: colobot.pod:3
 msgid "NAME"
-msgstr ""
+msgstr "NOMBRE"
 
 #. type: textblock
 #: colobot.pod:5
 msgid "colobot - educational programming strategy game"
-msgstr ""
+msgstr "colobot - juego educativo de estrategia y programación"
 
 #. type: =head1
 #: colobot.pod:7
 msgid "SYNOPSIS"
-msgstr ""
+msgstr "SINOPSIS"
 
 #. type: textblock
 #: colobot.pod:9
 msgid "B<colobot>"
-msgstr ""
+msgstr "B<colobot>"
 
 #. type: =head1
 #: colobot.pod:11
 msgid "DESCRIPTION"
-msgstr ""
+msgstr "DESCRIPCIÓN"
 
 #. type: textblock
 #: colobot.pod:13
@@ -74,126 +74,132 @@ msgid ""
 "real-time graphics and a C++ and Java-like, object-oriented language, CBOT, "
 "which can be used to program the robots available in the game."
 msgstr ""
+"Colobot (Coloniza con Bots) es un juego educativo que busca enseñar "
+"programación mediante el entretenimiento. Juegas como un astronauta en un "
+"viaje con ayudantes robots para encontrar un planeta para colonizar. "
+"Cuenta con gráficos 3D en tiempo real y un lenguaje orientado a objetos "
+"similar a C++ y Java, llamado CBOT, que puedes usar para programar los "
+"robots disponibles en el juego."
 
 #. type: =head1
 #: colobot.pod:19
 msgid "OPTIONS"
-msgstr ""
+msgstr "OPCIONES"
 
 #. type: =item
 #: colobot.pod:23
 msgid "B<-help>"
-msgstr ""
+msgstr "B<-ayuda>"
 
 #. type: textblock
 #: colobot.pod:25
 msgid "Display a short help text"
-msgstr ""
+msgstr "Muestra un texto de ayuda breve"
 
 #. type: =item
 #: colobot.pod:27
 msgid "B<-resolution> I<WxH>"
-msgstr ""
+msgstr "B<-resolución> I<AnxAl>"
 
 #. type: textblock
 #: colobot.pod:29
 msgid "Set runtime screen resolution"
-msgstr ""
+msgstr "Establece la resolución de pantalla en tiempo de ejecución"
 
 #. type: =item
 #: colobot.pod:31
 msgid "B<-graphics> I<default>|I<auto>|I<opengl>|I<gl14>|I<gl21>|I<gl33>"
-msgstr ""
+msgstr "B<-gráficos> I<por_defecto>|I<auto>|I<opengl>|I<gl14>|I<gl21>|I<gl33>"
 
 #. type: textblock
 #: colobot.pod:33
 msgid "Changes graphics device"
-msgstr ""
+msgstr "Cambia el dispositivo de gráficos"
 
 #. type: =item
 #: colobot.pod:35
 msgid "B<-glversion> I<default>|I<#.#>"
-msgstr ""
+msgstr "B<-versión_gl> I<por_defecto>|I<#.#>"
 
 #. type: textblock
 #: colobot.pod:37
 msgid "Sets OpenGL context version to use."
-msgstr ""
+msgstr "Establece la versión del contexto OpenGL a usar."
 
 #. type: =item
 #: colobot.pod:39
 msgid "B<-glprofile> I<default>|I<core>|I<compatibility>|I<opengles>"
-msgstr ""
+msgstr "B<-perfil_gl> I<por_defecto>|I<núcleo>|I<compatibilidad>|I<opengles>"
 
 #. type: textblock
 #: colobot.pod:41
 msgid "Sets OpenGL context profile to use."
-msgstr ""
+msgstr "Establece el perfil del contexto OpenGL a usar."
 
 #. type: =head1
 #: colobot.pod:45
 msgid "RUNTIME PATH OVERRIDES"
-msgstr ""
+msgstr "SOBRESCRITURA DE RUTAS EN TIEMPO DE EJECUCIÓN"
 
 #. type: =item
 #: colobot.pod:49
 msgid "B<-langdir> F</path/to/lang/>"
-msgstr ""
+msgstr "B<-directorio_idioma> F</ruta/a/idioma/>"
 
 #. type: textblock
 #: colobot.pod:51
 msgid "Set custom language directory path"
-msgstr ""
+msgstr "Establece la ruta del directorio de idioma personalizado"
 
 #. type: =item
 #: colobot.pod:53
 msgid "B<-datadir> F</path/to/data/>"
-msgstr ""
+msgstr "B<-directorio_datos> F</ruta/a/datos/>"
 
 #. type: textblock
 #: colobot.pod:55
 msgid "Set custom data directory path"
-msgstr ""
+msgstr "Establece la ruta del directorio de datos personalizado"
 
 #. type: =item
 #: colobot.pod:57
 msgid "B<-savedir> F</path/to/save/>"
-msgstr ""
+msgstr "B<-directorio_guardado> F</ruta/a/guardado/>"
 
 #. type: textblock
 #: colobot.pod:59
 msgid "Set custom save directory path (must be writable)"
-msgstr ""
+msgstr "Establece la ruta del directorio de guardado personalizado (debe ser escribible)"
 
 #. type: =item
 #: colobot.pod:61
 msgid "B<-mod> F</path/to/mods/>"
-msgstr ""
+msgstr "B<-mod> F</ruta/a/mods/>"
 
 #. type: textblock
 #: colobot.pod:63
 msgid "Set datadir mod path"
-msgstr ""
+msgstr "Establece la ruta del mod del directorio de datos"
 
 #. type: =head1
 #: colobot.pod:67
 msgid "DEBUG OPTIONS"
-msgstr ""
+msgstr "OPCIONES DE DEPURACIÓN"
 
 #. type: =item
 #: colobot.pod:71
 msgid "B<-loglevel> I<trace>|I<debug>|I<info>|I<warn>|I<error>|I<none>."
-msgstr ""
+msgstr "B<-nivel_log> I<trace>|I<debug>|I<info>|I<advertencia>|I<error>|I<ninguno>."
 
 #. type: textblock
 #: colobot.pod:73
 msgid "Set log level."
-msgstr ""
+msgstr "Establece el nivel de log."
 
 #. type: =item
 #: colobot.pod:75
 msgid "B<-debug> I<all>|I<event>|I<models>|..."
-msgstr ""
+msgstr "B<-depuración> I<todo>|I<evento>|I<modelos>|..."
 
 #. type: textblock
 #: colobot.pod:77
@@ -201,118 +207,120 @@ msgid ""
 "Enable debug mode (more info printed in logs). Possible values are as "
 "follows, as well as any comma-separated combination"
 msgstr ""
+"Activa el modo de depuración (más información en los logs). Los valores "
+"posibles son los siguientes, así como cualquier combinación separada por comas"
 
 #. type: =item
 #: colobot.pod:81
 msgid "sys_events"
-msgstr ""
+msgstr "eventos_sistema"
 
 #. type: textblock
 #: colobot.pod:83
 msgid "System events"
-msgstr ""
+msgstr "Eventos del sistema"
 
 #. type: =item
 #: colobot.pod:85
 msgid "update_events"
-msgstr ""
+msgstr "eventos_actualización"
 
 #. type: textblock
 #: colobot.pod:87
 msgid "Update events"
-msgstr ""
+msgstr "Eventos de actualización"
 
 #. type: =item
 #: colobot.pod:89
 msgid "app_events"
-msgstr ""
+msgstr "eventos_aplicación"
 
 #. type: textblock
 #: colobot.pod:91
 msgid "Application events"
-msgstr ""
+msgstr "Eventos de aplicación"
 
 #. type: =item
 #: colobot.pod:93
 msgid "events"
-msgstr ""
+msgstr "eventos"
 
 #. type: textblock
 #: colobot.pod:95
 msgid "All above events"
-msgstr ""
+msgstr "Todos los eventos anteriores"
 
 #. type: =item
 #: colobot.pod:97
 msgid "models"
-msgstr ""
+msgstr "modelos"
 
 #. type: textblock
 #: colobot.pod:99
 msgid "Models-related debugging"
-msgstr ""
+msgstr "Depuración relacionada con modelos"
 
 #. type: =item
 #: colobot.pod:101
 msgid "all"
-msgstr ""
+msgstr "todo"
 
 #. type: textblock
 #: colobot.pod:103
 msgid "All above debugging statements"
-msgstr ""
+msgstr "Todas las declaraciones de depuración anteriores"
 
 #. type: =item
 #: colobot.pod:107
 msgid "B<-headless>"
-msgstr ""
+msgstr "B<-sin_interfaz>"
 
 #. type: textblock
 #: colobot.pod:109
 msgid "Run in headless mode - disables graphics, sound and user interaction"
-msgstr ""
+msgstr "Ejecuta en modo sin interfaz - desactiva gráficos, sonido e interacción de usuario"
 
 #. type: =item
 #: colobot.pod:111
 msgid "B<-runscene> I<scenecodename>"
-msgstr ""
+msgstr "B<-ejecutar_escena> I<código_escena>"
 
 #. type: textblock
 #: colobot.pod:113
 msgid "Run given scene on start (skip menus)"
-msgstr ""
+msgstr "Ejecuta la escena dada al inicio (omite menús)"
 
 #. type: =item
 #: colobot.pod:115
 msgid "B<-scenetest>"
-msgstr ""
+msgstr "B<-prueba_escena>"
 
 #. type: textblock
 #: colobot.pod:117
 msgid "Win every mission right after it's loaded"
-msgstr ""
+msgstr "Gana cada misión inmediatamente después de cargarla"
 
 #. type: =head1
 #: colobot.pod:121
 msgid "ENVIRONMENT"
-msgstr ""
+msgstr "ENTORNO"
 
 #. type: =item
 #: colobot.pod:125
 msgid "LC_MESSAGES"
-msgstr ""
+msgstr "LC_MESSAGES"
 
 #. type: textblock
 #: colobot.pod:127
 msgid "Used to determine the runtime language."
-msgstr ""
+msgstr "Usado para determinar el idioma en tiempo de ejecución."
 
 #. type: =head1
 #: colobot.pod:131
 msgid "AUTHOR"
-msgstr ""
+msgstr "AUTOR"
 
 #. type: textblock
 #: colobot.pod:133
 msgid "This manpage was written by Didier Raboud <S<odyx@debian.org>>."
-msgstr ""
+msgstr "Esta página de manual fue escrita por Didier Raboud <S<odyx@debian.org>>."
