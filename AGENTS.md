@@ -182,12 +182,36 @@ msgstr "Objetivo"
 - Help files: `data/help/*/po/es.po`
 - Levels: `data/levels/*/chapter00X/level00Y/po/es.po`
 
-### Build and Test
+### Build and Test Translations
+
+**Complete build and install process:**
 ```bash
-cd build && make -j4
-cmake --install . --prefix /tmp/colobot-install
-LANGUAGE=es /tmp/colobot-install/games/colobot
+# 1. Clean configure with install prefix
+rm -rf build
+cmake --preset Linux-CI-gcc -DCMAKE_INSTALL_PREFIX=/tmp/colobot-install
+
+# 2. Build (use all CPU cores)
+cd build
+cmake --build . -j$(nproc)
+
+# 3. Install to tmp directory
+cd ..
+cmake --install build
+
+# 4. Run game in Spanish
+cd /tmp/colobot-install
+LANGUAGE=es ./colobot -datadir /tmp/colobot-install/data
+
+# Alternative: Run from build directory (development)
+cd /home/rrodriguez/Documentos/GitHub/colobot/build
+LANGUAGE=es ./colobot -datadir ../data
 ```
+
+**Installed structure:**
+- Binary: `/tmp/colobot-install/colobot`
+- Data: `/tmp/colobot-install/data/` (music, levels, help files)
+- Translations: `/tmp/colobot-install/lang/es/LC_MESSAGES/colobot.mo`
+- Spanish CBOT help: `/tmp/colobot-install/data/help/S/cbot/*.txt` (123 files)
 
 ### Validation
 ```bash
