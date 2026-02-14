@@ -412,7 +412,7 @@ msgid "Code battles"
 msgstr "Batallas de código"
 
 msgid "Code battles\\Program your robot to be the best of them all!"
-msgstr "Batallas de código\\¡Programa tu robot para ser el mejor de todos!"
+msgstr "Batallas de código\\¡Programa tu bot para ser el mejor de todos!"
 
 msgid "Colobot rules!"
 msgstr "¡Las reglas de Colobot!"
@@ -515,7 +515,7 @@ msgid "Do you want to delete %s's saved games?"
 msgstr "¿Quieres eliminar los juegos guardados de %s?"
 
 msgid "Doors blocked by a robot or another object"
-msgstr "Puertas bloqueadas por un robot u otro objeto"
+msgstr "Puertas bloqueadas por un bot u otro objeto"
 
 msgid "Down (\\key gdown;)"
 msgstr "Abajo (\\key gdown;)"
@@ -1203,7 +1203,7 @@ msgid "Plans for thumper available"
 msgstr "Planos para golpeador disponibles"
 
 msgid "Plans for tracked robots available"
-msgstr "Planos para robots con oruga disponibles"
+msgstr "Planos para bots con oruga disponibles"
 
 msgid "Plant a flag"
 msgstr "Plantar una bandera"
@@ -2016,3 +2016,6 @@ msgstr "colobot.info"
 
 msgid "epsitec.com"
 msgstr "epsitec.com"
+
+#~ msgid "Build a fábrica de bots"
+#~ msgstr "Construir una fábrica de bots"

@@ -57,6 +57,48 @@ Purpose: give a focused, actionable summary so an AI coding agent can be product
 
 > Note: be conservative with changes touching `data/` (submodule), packaging or CI presets — coordinate on issues/Discord if unsure.
 
+## Translation System Quick Reference 📝
+
+### Language Codes
+- Spanish uses `Title.S` not `Title.E` (collision with English)
+- English: `help.E.txt`, Spanish: `help.S.txt`
+
+### Terminology Rules
+- **Use "bot"** (never "robot") - game lore (COLO-BOT)
+- **Energy cells**: "celdas de energía" (NOT "células de energía")
+- **Code keywords**: Keep English (`turn()`, `fire()`, `motor()`, `while`, `if`, `radar`)
+- **Preserved tags**: `<c/>`, `<n/>`, `<button 22/>`, `<code>...</code>`
+
+### Key Translation Files
+- Main UI: `po/es.po` (659 strings)
+- Help: `data/help/*/po/es.po`
+- Levels: `data/levels/*/chapter00X/level00Y/po/es.po`
+
+### Build Translations
+```bash
+cd build && make -j4
+cmake --install . --prefix /tmp/colobot-install
+LANGUAGE=es /tmp/colobot-install/games/colobot
+```
+
+### Validate
+```bash
+msgfmt -c po/es.po  # Check syntax
+grep -c '^msgstr ""$' po/es.po  # Check empty translations
+```
+
+### Common Fixes
+```bash
+# Energy cells terminology
+find . -name "es.po" -exec sed -i 's/células de energía/celdas de energía/g' {}
+
+# Robots → bots in factory context
+sed -i 's/<a object|factory>robots/<a object|factory>bots/g' data/help/object/po/es.po
+```
+
+### Full Guide
+See `docs/TRANSLATIONS.md` for comprehensive documentation.
+
 Follow these steps for each interaction:
 
 1. User Identification:
