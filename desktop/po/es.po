@@ -99,7 +99,7 @@ msgstr "Muestra un texto de ayuda breve"
 #. type: =item
 #: colobot.pod:27
 msgid "B<-resolution> I<WxH>"
-msgstr ""
+msgstr "B<-resolution> I<AnchoxAlto>"
 
 #. type: textblock
 #: colobot.pod:29
@@ -144,7 +144,7 @@ msgstr "SOBRESCRITURA DE RUTAS EN TIEMPO DE EJECUCIÓN"
 #. type: =item
 #: colobot.pod:49
 msgid "B<-langdir> F</path/to/lang/>"
-msgstr ""
+msgstr "B<-langdir> F</ruta/a/lang/>"
 
 #. type: textblock
 #: colobot.pod:51
@@ -154,7 +154,7 @@ msgstr "Establece la ruta del directorio de idioma personalizado"
 #. type: =item
 #: colobot.pod:53
 msgid "B<-datadir> F</path/to/data/>"
-msgstr ""
+msgstr "B<-datadir> F</ruta/a/data/>"
 
 #. type: textblock
 #: colobot.pod:55
@@ -164,7 +164,7 @@ msgstr "Establece la ruta del directorio de datos personalizado"
 #. type: =item
 #: colobot.pod:57
 msgid "B<-savedir> F</path/to/save/>"
-msgstr ""
+msgstr "B<-savedir> F</ruta/a/save/>"
 
 #. type: textblock
 #: colobot.pod:59
@@ -174,7 +174,7 @@ msgstr "Establece la ruta del directorio de guardado personalizado (debe ser esc
 #. type: =item
 #: colobot.pod:61
 msgid "B<-mod> F</path/to/mods/>"
-msgstr ""
+msgstr "B<-mod> F</ruta/a/mods/>"
 
 #. type: textblock
 #: colobot.pod:63
@@ -213,7 +213,7 @@ msgstr ""
 #. type: =item
 #: colobot.pod:81
 msgid "sys_events"
-msgstr "eventos_sistema"
+msgstr "sys_events"
 
 #. type: textblock
 #: colobot.pod:83
@@ -223,7 +223,7 @@ msgstr "Eventos del sistema"
 #. type: =item
 #: colobot.pod:85
 msgid "update_events"
-msgstr "eventos_actualización"
+msgstr "update_events"
 
 #. type: textblock
 #: colobot.pod:87
@@ -233,7 +233,7 @@ msgstr "Eventos de actualización"
 #. type: =item
 #: colobot.pod:89
 msgid "app_events"
-msgstr "eventos_aplicación"
+msgstr "app_events"
 
 #. type: textblock
 #: colobot.pod:91
@@ -243,7 +243,7 @@ msgstr "Eventos de aplicación"
 #. type: =item
 #: colobot.pod:93
 msgid "events"
-msgstr "eventos"
+msgstr "events"
 
 #. type: textblock
 #: colobot.pod:95
@@ -253,7 +253,7 @@ msgstr "Todos los eventos anteriores"
 #. type: =item
 #: colobot.pod:97
 msgid "models"
-msgstr "modelos"
+msgstr "models"
 
 #. type: textblock
 #: colobot.pod:99
@@ -263,7 +263,7 @@ msgstr "Depuración relacionada con modelos"
 #. type: =item
 #: colobot.pod:101
 msgid "all"
-msgstr "todo"
+msgstr "all"
 
 #. type: textblock
 #: colobot.pod:103
@@ -273,7 +273,7 @@ msgstr "Todas las declaraciones de depuración anteriores"
 #. type: =item
 #: colobot.pod:107
 msgid "B<-headless>"
-msgstr ""
+msgstr "B<-headless>"
 
 #. type: textblock
 #: colobot.pod:109
@@ -283,7 +283,7 @@ msgstr "Ejecuta en modo sin interfaz - desactiva gráficos, sonido e interacció
 #. type: =item
 #: colobot.pod:111
 msgid "B<-runscene> I<scenecodename>"
-msgstr ""
+msgstr "B<-runscene> I<scenecodename>"
 
 #. type: textblock
 #: colobot.pod:113
@@ -293,7 +293,7 @@ msgstr "Ejecuta la escena dada al inicio (omite menús)"
 #. type: =item
 #: colobot.pod:115
 msgid "B<-scenetest>"
-msgstr ""
+msgstr "B<-scenetest>"
 
 #. type: textblock
 #: colobot.pod:117
@@ -323,4 +323,4 @@ msgstr "AUTOR"
 #. type: textblock
 #: colobot.pod:133
 msgid "This manpage was written by Didier Raboud <S<odyx@debian.org>>."
-msgstr "Esta página de manual fue escrita por Didier Raboud <S<odyx@debian.org>>."
+msgstr "Esta página de manual fue escrita por Didier Raboud <S<odyx@debian.org>> y traducida por Ricardo Roodriguez Garcia."
