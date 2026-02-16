@@ -38,6 +38,7 @@
 
 #include "graphics/core/device.h"
 #include "graphics/engine/engine.h"
+#include "graphics/engine/text.h"
 #include "graphics/opengl33/glutil.h"
 
 #include "level/robotmain.h"
@@ -1230,6 +1231,19 @@ Event CApplication::ProcessSystemEvent()
             newConfig.size.y = m_private->currentEvent.window.data2;
             if (newConfig.size != m_deviceConfig->size)
                 ChangeVideoConfig(newConfig, /* isSetSize */ false);
+        }
+
+        if (m_private->currentEvent.window.event == SDL_WINDOWEVENT_MOVED)
+        {
+            // Window moved to different display - check if display changed
+            if (m_engine != nullptr)
+            {
+                Gfx::CText* text = m_engine->GetText();
+                if (text != nullptr)
+                {
+                    text->CheckDisplayChange();
+                }
+            }
         }
 
         if (m_private->currentEvent.window.event == SDL_WINDOWEVENT_ENTER)

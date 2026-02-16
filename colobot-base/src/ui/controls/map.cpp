@@ -236,9 +236,7 @@ glm::vec2 CMap::AdjustOffset(const glm::vec2& offset)
 {
     glm::vec2 off = offset;
 
-    // Guard against division by zero
-    float zoom = (m_zoom != 0.0f) ? m_zoom : 1.0f;
-    float limit = m_half - m_half / zoom;
+    float limit = m_half - m_half / m_zoom;
 
     if (off.x < -limit)  off.x = -limit;
     if (off.x >  limit)  off.x =  limit;
@@ -289,17 +287,10 @@ CObject* CMap::DetectObject(const glm::vec2& position, bool &bInMap)
 
     bInMap = true;
 
-    // Guard against division by zero
-    if (m_dim.x <= 0.0f || m_dim.y <= 0.0f)
-        return nullptr;
-
     pos.x = (pos.x - m_pos.x) / m_dim.x * 256.0f;
     pos.y = (pos.y - m_pos.y) / m_dim.y * 256.0f;  // 0..256
     
-    // Guard against division by zero in zoom calculation
     float zoomFactor = m_zoom * 128.0f;
-    if (zoomFactor == 0.0f)
-        zoomFactor = 1.0f;  // Prevent division by zero
     
     pos.x = (pos.x - 128.0f) * m_half / zoomFactor + m_offset.x;
     pos.y = (pos.y - 128.0f) * m_half / zoomFactor + m_offset.y;

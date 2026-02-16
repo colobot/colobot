@@ -152,9 +152,6 @@ std::string ToString(FontType type)
 namespace
 {
 constexpr glm::ivec2 REFERENCE_SIZE(800, 600);
-// Increased from 256x256 to 512x512 for HiDPI support
-// Both texture size AND slider clamping needed for proper rendering
-constexpr glm::ivec2 FONT_TEXTURE_SIZE(512, 512);
 
 Gfx::FontType ToBoldFontType(Gfx::FontType type)
 {
@@ -410,6 +407,11 @@ CText::CText(CEngine* engine)
     m_fontsCache = std::make_unique<FontsCache>();
 
     m_quadBatch = std::make_unique<CQuadBatch>(*engine);
+
+    // Initialize font texture size based on display scale
+    m_currentDisplayScale = GetDisplayScaleFactor();
+    m_fontTextureSize = glm::ivec2(512 * m_currentDisplayScale, 512 * m_currentDisplayScale);
+    m_currentDisplayIndex = -1;
 }
 
 CText::~CText()
@@ -1231,10 +1233,10 @@ void CText::DrawCharAndAdjustPos(StrUtils::CodePoint ch, FontType font, float si
         glm::vec2 p2(pos.x + tex.charSize.x, pos.y);
 
         const float halfPixelMargin = 0.5f;
-        glm::vec2 texCoord1(static_cast<float>(tex.charPos.x + halfPixelMargin) / FONT_TEXTURE_SIZE.x,
-                            static_cast<float>(tex.charPos.y + halfPixelMargin) / FONT_TEXTURE_SIZE.y);
-        glm::vec2 texCoord2(static_cast<float>(tex.charPos.x + tex.charSize.x - halfPixelMargin) / FONT_TEXTURE_SIZE.x,
-                            static_cast<float>(tex.charPos.y + tex.charSize.y - halfPixelMargin) / FONT_TEXTURE_SIZE.y);
+        glm::vec2 texCoord1(static_cast<float>(tex.charPos.x + halfPixelMargin) / m_fontTextureSize.x,
+                            static_cast<float>(tex.charPos.y + halfPixelMargin) / m_fontTextureSize.y);
+        glm::vec2 texCoord2(static_cast<float>(tex.charPos.x + tex.charSize.x - halfPixelMargin) / m_fontTextureSize.x,
+                            static_cast<float>(tex.charPos.y + tex.charSize.y - halfPixelMargin) / m_fontTextureSize.y);
 
         Gfx::IntColor col = Gfx::ColorToIntColor(color);
 
@@ -1300,7 +1302,7 @@ CharTexture CText::GetCharTexture(StrUtils::CodePoint ch, FontType font, float s
 
 glm::ivec2 CText::GetFontTextureSize()
 {
-    return FONT_TEXTURE_SIZE;
+    return m_fontTextureSize;
 }
 
 CharTexture CText::CreateCharTexture(StrUtils::CodePoint ch, CachedFont* font)
@@ -1371,7 +1373,7 @@ FontTexture* CText::GetOrCreateFontTexture(const glm::ivec2& tileSize)
 
 FontTexture CText::CreateFontTexture(const glm::ivec2& tileSize)
 {
-    SDL_Surface* textureSurface = SDL_CreateRGBSurface(0, FONT_TEXTURE_SIZE.x, FONT_TEXTURE_SIZE.y, 32,
+    SDL_Surface* textureSurface = SDL_CreateRGBSurface(0, m_fontTextureSize.x, m_fontTextureSize.y, 32,
                                                        0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
     ImageData data;
     data.surface = textureSurface;
@@ -1389,16 +1391,16 @@ FontTexture CText::CreateFontTexture(const glm::ivec2& tileSize)
     FontTexture fontTexture;
     fontTexture.id = tex.id;
     fontTexture.tileSize = tileSize;
-    int horizontalTiles = FONT_TEXTURE_SIZE.x / tileSize.x;
-    int verticalTiles = FONT_TEXTURE_SIZE.y / tileSize.y;
+    int horizontalTiles = m_fontTextureSize.x / tileSize.x;
+    int verticalTiles = m_fontTextureSize.y / tileSize.y;
     fontTexture.freeSlots = horizontalTiles * verticalTiles;
     return fontTexture;
 }
 
 glm::ivec2 CText::GetNextTilePos(const FontTexture& fontTexture)
 {
-    int horizontalTiles = FONT_TEXTURE_SIZE.x / std::max(1, fontTexture.tileSize.x); //this should prevent crashes in some combinations of resolution and font size, see issue #1128
-    int verticalTiles = FONT_TEXTURE_SIZE.y / std::max(1, fontTexture.tileSize.y);
+    int horizontalTiles = m_fontTextureSize.x / std::max(1, fontTexture.tileSize.x); //this should prevent crashes in some combinations of resolution and font size, see issue #1128
+    int verticalTiles = m_fontTextureSize.y / std::max(1, fontTexture.tileSize.y);
 
     // Guard against tileSize larger than texture (would result in 0 tiles)
     horizontalTiles = std::max(1, horizontalTiles);
@@ -1412,6 +1414,103 @@ glm::ivec2 CText::GetNextTilePos(const FontTexture& fontTexture)
 
     return { horizontalTileIndex * fontTexture.tileSize.x,
              verticalTileIndex * fontTexture.tileSize.y };
+}
+
+float CText::GetDisplayScaleFactor()
+{
+    // Get the window associated with this engine
+    SDL_Window* window = SDL_GL_GetCurrentWindow();
+    if (window == nullptr)
+    {
+        return 1.0f;
+    }
+
+    // Get the display index for the window
+    int displayIndex = SDL_GetWindowDisplayIndex(window);
+    if (displayIndex < 0)
+    {
+        return 1.0f;
+    }
+
+    // Get the display DPI
+    float ddpi = 0.0f, hdpi = 0.0f, vdpi = 0.0f;
+    if (SDL_GetDisplayDPI(displayIndex, &ddpi, &hdpi, &vdpi) != 0)
+    {
+        // Fallback: use display bounds to estimate scale
+        SDL_Rect displayBounds;
+        if (SDL_GetDisplayBounds(displayIndex, &displayBounds) == 0)
+        {
+            // Assume standard DPI is 96, calculate scale based on resolution
+            float horizontalScale = displayBounds.w / 1920.0f;  // 1920 is reference width
+            float verticalScale = displayBounds.h / 1080.0f;    // 1080 is reference height
+            return std::max(1.0f, std::max(horizontalScale, verticalScale));
+        }
+        return 1.0f;
+    }
+
+    // Standard DPI is 96, calculate scale factor
+    float scale = ddpi / 96.0f;
+    return std::max(1.0f, scale);
+}
+
+void CText::CheckDisplayChange()
+{
+    SDL_Window* window = SDL_GL_GetCurrentWindow();
+    if (window == nullptr)
+    {
+        return;
+    }
+
+    int displayIndex = SDL_GetWindowDisplayIndex(window);
+    if (displayIndex < 0)
+    {
+        return;
+    }
+
+    // Check if display changed
+    if (displayIndex != m_currentDisplayIndex)
+    {
+        GetLogger()->Info("Display changed from %% to %%, recalculating font textures...", m_currentDisplayIndex, displayIndex);
+        m_currentDisplayIndex = displayIndex;
+
+        // Get new scale factor and resize textures
+        float newScale = GetDisplayScaleFactor();
+        if (newScale != m_currentDisplayScale)
+        {
+            m_currentDisplayScale = newScale;
+            ResizeFontTextures(newScale);
+        }
+    }
+}
+
+void CText::ResizeFontTextures(float scaleFactor)
+{
+    // Calculate new texture size based on scale factor
+    // Base size is 512x512, scale up for HiDPI displays
+    int newSize = static_cast<int>(512 * scaleFactor);
+    // Round up to nearest power of 2 for better GPU compatibility
+    newSize = Math::NextPowerOfTwo(newSize);
+    // Cap at 2048x2048 to prevent excessive memory usage
+    newSize = std::min(newSize, 2048);
+    // Ensure minimum size of 512
+    newSize = std::max(newSize, 512);
+
+    glm::ivec2 newTextureSize(newSize, newSize);
+
+    // Only resize if size actually changed
+    if (newTextureSize == m_fontTextureSize)
+    {
+        return;
+    }
+
+    GetLogger()->Info("Resizing font textures from %%x%% to %%x%% (scale factor: %%)",
+                      m_fontTextureSize.x, m_fontTextureSize.y, newTextureSize.x, newTextureSize.y, scaleFactor);
+
+    // Clear existing font textures - they will be recreated on demand
+    FlushCache();
+
+    // Update texture size
+    m_fontTextureSize = newTextureSize;
 }
 
 } // namespace Gfx

@@ -558,11 +558,7 @@ void CSlider::SetLimit(float min, float max)
 
 void CSlider::SetVisibleValue(float value)
 {
-    if (m_max != m_min) {
-        value = (value-m_min)/(m_max-m_min);
-    } else {
-        value = 0.0f;  // Default when range is zero
-    }
+    value = (value-m_min)/(m_max-m_min);
     if ( value < 0.0 )  value = 0.0f;
     if ( value > 1.0 )  value = 1.0f;
     m_visibleValue = value;
@@ -571,26 +567,18 @@ void CSlider::SetVisibleValue(float value)
 
 float CSlider::GetVisibleValue()
 {
-    if (m_max != m_min) {
-        return m_min+m_visibleValue*(m_max-m_min);
-    } else {
-        return m_min;  // Return min when range is zero
-    }
+    return m_min+m_visibleValue*(m_max-m_min);
 }
 
 
 void CSlider::SetArrowStep(float step)
 {
-    if (m_max != m_min) {
-        m_step = step/(m_max-m_min);
-    } else {
-        m_step = 0.0f;
-    }
+    m_step = step/(m_max-m_min);
 }
 
 float CSlider::GetArrowStep()
 {
-    return m_step*((m_max != m_min) ? (m_max - m_min) : 0.0f);
+    return m_step*(m_max-m_min);
 }
 
 

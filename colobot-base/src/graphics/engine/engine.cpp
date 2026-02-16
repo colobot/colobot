@@ -635,10 +635,6 @@ glm::ivec2 CEngine::GetWindowSize()
 
 glm::vec2 CEngine::WindowToInterfaceCoords(const glm::ivec2& pos)
 {
-    // Guard against division by zero
-    if (m_size.x <= 0 || m_size.y <= 0)
-        return { 0.0f, 0.0f };
-    
     return { static_cast<float>(pos.x) / static_cast<float>(m_size.x),
              1.0f - static_cast<float>(pos.y) / static_cast<float>(m_size.y) };
 }
@@ -651,10 +647,6 @@ glm::ivec2 CEngine::InterfaceToWindowCoords(const glm::vec2& pos)
 
 glm::vec2 CEngine::WindowToInterfaceSize(const glm::ivec2& size)
 {
-    // Guard against division by zero
-    if (m_size.x <= 0 || m_size.y <= 0)
-        return { 0.0f, 0.0f };
-    
     return { static_cast<float>(size.x) / static_cast<float>(m_size.x),
              static_cast<float>(size.y) / static_cast<float>(m_size.y) };
 }
@@ -2118,12 +2110,7 @@ void CEngine::SetFocus(float focus)
 
     float farPlane = m_deepView[0] * m_clippingDistance;
 
-    // Guard against division by zero
-    float aspect = 1.0f;
-    if (m_size.y > 0)
-    {
-        aspect = static_cast<float>(m_size.x) / static_cast<float>(m_size.y);
-    }
+    float aspect = static_cast<float>(m_size.x) / static_cast<float>(m_size.y);
 
     // Compute H-FoV from V-FoV and aspect ratio.
     m_hfov = 2.0f * atan(aspect * tan(focus / 2.0f));
@@ -4687,10 +4674,6 @@ void CEngine::DrawMouseSprite(const glm::ivec2& pos, const glm::ivec2& size, int
 void CEngine::DrawStats()
 {
     if (!m_showStats)
-        return;
-
-    // Guard against division by zero
-    if (m_size.x <= 0 || m_size.y <= 0)
         return;
 
     float height = m_text->GetAscent(FONT_COMMON, 13.0f);

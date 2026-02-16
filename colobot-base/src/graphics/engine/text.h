@@ -291,6 +291,13 @@ public:
     CharTexture GetCharTexture(StrUtils::CodePoint ch, FontType font, float size);
     glm::ivec2 GetFontTextureSize();
 
+    //! Detects current display and returns its DPI scale factor
+    float GetDisplayScaleFactor();
+    //! Checks if window moved to a different display and updates font textures if needed
+    void CheckDisplayChange();
+    //! Resizes font textures for the current display DPI
+    void ResizeFontTextures(float scaleFactor);
+
 protected:
     int GetFontPointSize(float size) const;
     CachedFont* GetOrOpenFont(FontType type, float size);
@@ -324,6 +331,11 @@ protected:
 
     class CQuadBatch;
     std::unique_ptr<CQuadBatch> m_quadBatch;
+
+    // Runtime display detection
+    int          m_currentDisplayIndex = -1;    // Current SDL display index
+    float        m_currentDisplayScale = 1.0f;  // Current display DPI scale factor
+    glm::ivec2   m_fontTextureSize;           // Dynamic font texture size (was constexpr)
 };
 
 
