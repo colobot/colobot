@@ -123,12 +123,6 @@ int cursorSize = static_cast<int>(32.0f * scale);
 3. **app.cpp** - SDL_WINDOWEVENT_MOVED handler
 4. **engine.cpp** - Mouse cursor scaling
 
-### Simplification (Removed Unused Guards)
-- **slider.cpp** - Removed 6 division guards (not needed)
-- **engine.cpp** - Removed 4 window size guards (not needed)
-- **edit.cpp** - Removed 2 division guards (not needed)
-- **map.cpp** - Removed 3 division guards (not needed)
-
 ## Testing Results
 
 **Configuration:**
