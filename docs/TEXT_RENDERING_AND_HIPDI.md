@@ -8,7 +8,7 @@ This document provides technical details about the text rendering system and HiD
 
 Fonts were too small to read on HiDPI (4K+) displays, causing:
 - Text cutoff when scaling up
-- SIGFPE crashes when maximizing windows or opening SatCom
+- SIGFPE crashes when maximizing windows and opening SatCom in HiDPI displays
 - Poor user experience on high-resolution monitors
 
 ## Solution Architecture
