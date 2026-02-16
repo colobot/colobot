@@ -479,7 +479,8 @@ void CSlider::Draw()
 
 std::string CSlider::GetLabel()
 {
-    return StrUtils::ToString<int>(static_cast<int>(round(m_min+(m_visibleValue*(m_max-m_min)))));
+    float range = (m_max != m_min) ? (m_max - m_min) : 1.0f;
+    return StrUtils::ToString<int>(static_cast<int>(round(m_min+(m_visibleValue*range))));
 }
 
 // Draws a rectangle.
@@ -548,13 +549,20 @@ void CSlider::DrawVertex(const glm::vec2& pos, const glm::vec2& dim, int icon)
 
 void CSlider::SetLimit(float min, float max)
 {
+    if (min >= max) {  // Prevent equal or inverted range
+        max = min + 1.0f;  // Ensure at least 1.0f difference
+    }
     m_min = min;
     m_max = max;
 }
 
 void CSlider::SetVisibleValue(float value)
 {
-    value = (value-m_min)/(m_max-m_min);
+    if (m_max != m_min) {
+        value = (value-m_min)/(m_max-m_min);
+    } else {
+        value = 0.0f;  // Default when range is zero
+    }
     if ( value < 0.0 )  value = 0.0f;
     if ( value > 1.0 )  value = 1.0f;
     m_visibleValue = value;
@@ -563,18 +571,26 @@ void CSlider::SetVisibleValue(float value)
 
 float CSlider::GetVisibleValue()
 {
-    return m_min+m_visibleValue*(m_max-m_min);
+    if (m_max != m_min) {
+        return m_min+m_visibleValue*(m_max-m_min);
+    } else {
+        return m_min;  // Return min when range is zero
+    }
 }
 
 
 void CSlider::SetArrowStep(float step)
 {
-    m_step = step/(m_max-m_min);
+    if (m_max != m_min) {
+        m_step = step/(m_max-m_min);
+    } else {
+        m_step = 0.0f;
+    }
 }
 
 float CSlider::GetArrowStep()
 {
-    return m_step*(m_max-m_min);
+    return m_step*((m_max != m_min) ? (m_max - m_min) : 0.0f);
 }
 
 

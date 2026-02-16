@@ -152,7 +152,9 @@ std::string ToString(FontType type)
 namespace
 {
 constexpr glm::ivec2 REFERENCE_SIZE(800, 600);
-constexpr glm::ivec2 FONT_TEXTURE_SIZE(256, 256);
+// Increased from 256x256 to 512x512 for HiDPI support
+// Both texture size AND slider clamping needed for proper rendering
+constexpr glm::ivec2 FONT_TEXTURE_SIZE(512, 512);
 
 Gfx::FontType ToBoldFontType(Gfx::FontType type)
 {
@@ -680,7 +682,12 @@ float CText::GetCharWidth(StrUtils::CodePoint ch, FontType font, float size, flo
     {
         glm::ivec2 windowSize = m_engine->GetWindowSize();
         float height = GetHeight(FONT_COMMON, size);
-        float width = height*(static_cast<float>(windowSize.y)/windowSize.x);
+        // Guard against division by zero
+        float width = height;
+        if (windowSize.x > 0)
+        {
+            width = height*(static_cast<float>(windowSize.y)/windowSize.x);
+        }
         return width;
     }
 
@@ -722,7 +729,12 @@ int CText::GetCharWidthInt(StrUtils::CodePoint ch, FontType font, float size, fl
     {
         glm::ivec2 windowSize = m_engine->GetWindowSize();
         int height = GetHeightInt(FONT_COMMON, size);
-        int width = height*(static_cast<float>(windowSize.y)/windowSize.x);
+        // Guard against division by zero
+        int width = height;
+        if (windowSize.x > 0)
+        {
+            width = height*(static_cast<float>(windowSize.y)/windowSize.x);
+        }
         return width;
     }
 
@@ -1242,7 +1254,12 @@ void CText::DrawCharAndAdjustPos(StrUtils::CodePoint ch, FontType font, float si
 int CText::GetFontPointSize(float size) const
 {
     glm::ivec2 windowSize = m_engine->GetWindowSize();
-    return static_cast<int>(size * (glm::length(glm::vec2(windowSize)) / glm::length(glm::vec2(REFERENCE_SIZE))));
+    float scale = glm::length(glm::vec2(windowSize)) / glm::length(glm::vec2(REFERENCE_SIZE));
+    // Prevent fonts from becoming smaller than the base size
+    scale = std::max(scale, 1.0f);
+    // No upper limit - let fonts scale naturally with display
+    // 512x512 texture handles up to ~220px characters
+    return static_cast<int>(size * scale);
 }
 
 CachedFont* CText::GetOrOpenFont(FontType type, float size)
@@ -1383,10 +1400,14 @@ glm::ivec2 CText::GetNextTilePos(const FontTexture& fontTexture)
     int horizontalTiles = FONT_TEXTURE_SIZE.x / std::max(1, fontTexture.tileSize.x); //this should prevent crashes in some combinations of resolution and font size, see issue #1128
     int verticalTiles = FONT_TEXTURE_SIZE.y / std::max(1, fontTexture.tileSize.y);
 
+    // Guard against tileSize larger than texture (would result in 0 tiles)
+    horizontalTiles = std::max(1, horizontalTiles);
+    verticalTiles = std::max(1, verticalTiles);
+
     int totalTiles = horizontalTiles * verticalTiles;
     int tileNumber = totalTiles - fontTexture.freeSlots;
 
-    int verticalTileIndex = tileNumber / std::max(1, horizontalTiles);
+    int verticalTileIndex = tileNumber / horizontalTiles;
     int horizontalTileIndex = tileNumber % horizontalTiles;
 
     return { horizontalTileIndex * fontTexture.tileSize.x,

@@ -162,21 +162,21 @@ bool CDisplayInfo::EventProcess(const Event &event)
 
         if ( event.type == EVENT_HYPER_SIZE1 )  // size 1?
         {
-            CSettings::GetInstancePointer()->SetFontSize(9.0f);
+            CSettings::GetInstancePointer()->SetFontSize(12.0f);
             slider = static_cast<Ui::CSlider*>(pw->SearchControl(EVENT_STUDIO_SIZE));
             if ( slider != nullptr )  slider->SetVisibleValue((CSettings::GetInstancePointer()->GetFontSize()-9.0f)/15.0f);
             ViewDisplayInfo();
         }
         if ( event.type == EVENT_HYPER_SIZE2 )  // size 2?
         {
-            CSettings::GetInstancePointer()->SetFontSize(14.0f);
+            CSettings::GetInstancePointer()->SetFontSize(15.0f);
             slider = static_cast<Ui::CSlider*>(pw->SearchControl(EVENT_STUDIO_SIZE));
             if ( slider != nullptr )  slider->SetVisibleValue((CSettings::GetInstancePointer()->GetFontSize()-9.0f)/15.0f);
             ViewDisplayInfo();
         }
         if ( event.type == EVENT_HYPER_SIZE3 )  // size 3?
         {
-            CSettings::GetInstancePointer()->SetFontSize(19.0f);
+            CSettings::GetInstancePointer()->SetFontSize(18.0f);
             slider = static_cast<Ui::CSlider*>(pw->SearchControl(EVENT_STUDIO_SIZE));
             if ( slider != nullptr )  slider->SetVisibleValue((CSettings::GetInstancePointer()->GetFontSize()-9.0f)/15.0f);
             ViewDisplayInfo();
@@ -425,7 +425,11 @@ void CDisplayInfo::StartDisplayInfo(const std::filesystem::path& filename, int i
     button->SetState(STATE_SHADOW);
     slider = pw->CreateSlider(pos, dim, 0, EVENT_STUDIO_SIZE);
     slider->SetState(STATE_SHADOW);
-    slider->SetVisibleValue((CSettings::GetInstancePointer()->GetFontSize()-9.0f)/15.0f);
+    // Clamp slider to valid 0.0-1.0 range to prevent overflow on HiDPI displays
+    float sliderValue = (CSettings::GetInstancePointer()->GetFontSize()-9.0f)/15.0f;
+    if (sliderValue < 0.0f) sliderValue = 0.0f;
+    if (sliderValue > 1.0f) sliderValue = 1.0f;
+    slider->SetVisibleValue(sliderValue);
     button = pw->CreateButton(pos, dim, 61, EVENT_HYPER_COPY);
     button->SetState(STATE_SHADOW);
     HyperUpdate();
@@ -895,8 +899,9 @@ void CDisplayInfo::ViewDisplayInfo()
     edit = static_cast<Ui::CEdit*>(pw->SearchControl(EVENT_EDIT1));
     if ( edit == nullptr )  return;
 
-    auto dim = m_engine->GetWindowSize();
-    edit->SetFontSize(CSettings::GetInstancePointer()->GetFontSize()/(dim.x / 640.0f));
+    // Font cache handles scaling automatically based on window size
+    // No need to divide by screen dimensions here
+    edit->SetFontSize(CSettings::GetInstancePointer()->GetFontSize());
 }
 
 // Returns the object human.

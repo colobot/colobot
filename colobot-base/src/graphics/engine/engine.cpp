@@ -157,6 +157,9 @@ struct EngineMouse
 };
 
 constexpr glm::ivec2 MOUSE_SIZE(32, 32);
+// Reference size for HiDPI scaling (same as font reference)
+constexpr glm::ivec2 REFERENCE_SIZE(800, 600);
+
 const std::map<EngineMouseType, EngineMouse> MOUSE_TYPES = {
     {{ENG_MOUSE_NORM},    {EngineMouse( 0,  1, 32, TransparencyMode::WHITE, TransparencyMode::BLACK, glm::ivec2( 1,  1))}},
     {{ENG_MOUSE_WAIT},    {EngineMouse( 2,  3, 33, TransparencyMode::WHITE, TransparencyMode::BLACK, glm::ivec2( 8, 12))}},
@@ -632,6 +635,10 @@ glm::ivec2 CEngine::GetWindowSize()
 
 glm::vec2 CEngine::WindowToInterfaceCoords(const glm::ivec2& pos)
 {
+    // Guard against division by zero
+    if (m_size.x <= 0 || m_size.y <= 0)
+        return { 0.0f, 0.0f };
+    
     return { static_cast<float>(pos.x) / static_cast<float>(m_size.x),
              1.0f - static_cast<float>(pos.y) / static_cast<float>(m_size.y) };
 }
@@ -644,6 +651,10 @@ glm::ivec2 CEngine::InterfaceToWindowCoords(const glm::vec2& pos)
 
 glm::vec2 CEngine::WindowToInterfaceSize(const glm::ivec2& size)
 {
+    // Guard against division by zero
+    if (m_size.x <= 0 || m_size.y <= 0)
+        return { 0.0f, 0.0f };
+    
     return { static_cast<float>(size.x) / static_cast<float>(m_size.x),
              static_cast<float>(size.y) / static_cast<float>(m_size.y) };
 }
@@ -2107,7 +2118,12 @@ void CEngine::SetFocus(float focus)
 
     float farPlane = m_deepView[0] * m_clippingDistance;
 
-    float aspect = static_cast<float>(m_size.x) / static_cast<float>(m_size.y);
+    // Guard against division by zero
+    float aspect = 1.0f;
+    if (m_size.y > 0)
+    {
+        aspect = static_cast<float>(m_size.x) / static_cast<float>(m_size.y);
+    }
 
     // Compute H-FoV from V-FoV and aspect ratio.
     m_hfov = 2.0f * atan(aspect * tan(focus / 2.0f));
@@ -4583,21 +4599,55 @@ void CEngine::DrawMouse()
     if (mode != MOUSE_ENGINE && mode != MOUSE_BOTH)
         return;
 
+    // Safety check: ensure mouse texture is loaded
+    if (!m_miceTexture.Valid())
+        return;
+
+    // Safety check: ensure device is available
+    if (m_device == nullptr)
+        return;
+
     SetWindowCoordinates();
+
+    // Safety check: ensure window size is valid
+    if (m_size.x <= 0 || m_size.y <= 0)
+    {
+        SetInterfaceCoordinates();
+        return;
+    }
+
+    // Calculate scale factor based on window size (same pattern as font scaling)
+    float scale = glm::length(glm::vec2(m_size)) / glm::length(glm::vec2(REFERENCE_SIZE));
+    // Prevent cursor from becoming smaller than base size
+    scale = std::max(scale, 1.0f);
+
+    // Scale mouse size for HiDPI displays
+    glm::ivec2 scaledMouseSize = glm::ivec2(MOUSE_SIZE.x * scale, MOUSE_SIZE.y * scale);
 
     glm::vec2 mousePos = CInput::GetInstancePointer()->GetMousePos();
     glm::ivec2 pos(mousePos.x * m_size.x, m_size.y - mousePos.y * m_size.y);
-    pos.x -= MOUSE_TYPES.at(m_mouseType).hotPoint.x;
-    pos.y -= MOUSE_TYPES.at(m_mouseType).hotPoint.y;
 
-    glm::ivec2 shadowPos = { pos.x + 4, pos.y - 3 };
+    // Scale hotPoint to maintain correct cursor positioning
+    glm::ivec2 scaledHotPoint = glm::ivec2(
+        static_cast<int>(MOUSE_TYPES.at(m_mouseType).hotPoint.x * scale),
+        static_cast<int>(MOUSE_TYPES.at(m_mouseType).hotPoint.y * scale)
+    );
+    pos.x -= scaledHotPoint.x;
+    pos.y -= scaledHotPoint.y;
+
+    // Scale shadow offset
+    glm::ivec2 shadowPos = {
+        pos.x + static_cast<int>(4 * scale),
+        pos.y - static_cast<int>(3 * scale)
+    };
 
     auto renderer = m_device->GetUIRenderer();
     renderer->SetTexture(m_miceTexture);
 
-    DrawMouseSprite(shadowPos, MOUSE_SIZE, MOUSE_TYPES.at(m_mouseType).iconShadow, TransparencyMode::WHITE);
-    DrawMouseSprite(pos, MOUSE_SIZE, MOUSE_TYPES.at(m_mouseType).icon1, MOUSE_TYPES.at(m_mouseType).mode1);
-    DrawMouseSprite(pos, MOUSE_SIZE, MOUSE_TYPES.at(m_mouseType).icon2, MOUSE_TYPES.at(m_mouseType).mode2);
+    // Draw with scaled size for HiDPI displays
+    DrawMouseSprite(shadowPos, scaledMouseSize, MOUSE_TYPES.at(m_mouseType).iconShadow, TransparencyMode::WHITE);
+    DrawMouseSprite(pos, scaledMouseSize, MOUSE_TYPES.at(m_mouseType).icon1, MOUSE_TYPES.at(m_mouseType).mode1);
+    DrawMouseSprite(pos, scaledMouseSize, MOUSE_TYPES.at(m_mouseType).icon2, MOUSE_TYPES.at(m_mouseType).mode2);
 
     SetInterfaceCoordinates();
 }
@@ -4637,6 +4687,10 @@ void CEngine::DrawMouseSprite(const glm::ivec2& pos, const glm::ivec2& size, int
 void CEngine::DrawStats()
 {
     if (!m_showStats)
+        return;
+
+    // Guard against division by zero
+    if (m_size.x <= 0 || m_size.y <= 0)
         return;
 
     float height = m_text->GetAscent(FONT_COMMON, 13.0f);

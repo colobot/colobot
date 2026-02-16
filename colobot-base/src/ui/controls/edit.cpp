@@ -217,7 +217,15 @@ void CEdit::MoveAdjust()
     m_lineHeight  = m_engine->GetText()->GetHeight(m_fontType, m_fontSize);
 
     height = m_dim.y-(m_bMulti?MARGY*2.0f:MARGY1);
-    m_lineVisible = static_cast<int>((height/m_lineHeight));
+    // Guard against division by zero if font height is 0
+    if (m_lineHeight > 0.0f)
+    {
+        m_lineVisible = static_cast<int>((height/m_lineHeight));
+    }
+    else
+    {
+        m_lineVisible = 1;  // Default to at least 1 line visible
+    }
 
     if (m_scroll != nullptr)
     {
@@ -3320,11 +3328,21 @@ void CEdit::UpdateScroll()
             float value = static_cast<float>(m_lineVisible) / m_lineTotal;
             m_scroll->SetVisibleRatio(value);
 
-            value = static_cast<float>(m_lineFirst) / (m_lineTotal - m_lineVisible);
-            m_scroll->SetVisibleValue(value);
+            // Guard against division by zero
+            float lineDiff = m_lineTotal - m_lineVisible;
+            if (lineDiff > 0.0f)
+            {
+                value = static_cast<float>(m_lineFirst) / lineDiff;
+                m_scroll->SetVisibleValue(value);
 
-            value = 1.0f / (m_lineTotal - m_lineVisible);
-            m_scroll->SetArrowStep(value);
+                value = 1.0f / lineDiff;
+                m_scroll->SetArrowStep(value);
+            }
+            else
+            {
+                m_scroll->SetVisibleValue(0.0f);
+                m_scroll->SetArrowStep(0.0f);
+            }
         }
     }
 }
