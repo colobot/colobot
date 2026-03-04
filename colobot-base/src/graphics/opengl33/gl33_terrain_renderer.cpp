@@ -92,13 +92,10 @@ CGL33TerrainRenderer::CGL33TerrainRenderer(CGL33Device* device)
     m_skyColor = glGetUniformLocation(m_program, "uni_SkyColor");
     m_skyIntensity = glGetUniformLocation(m_program, "uni_SkyIntensity");
 
-    m_fogUpperHeight = glGetUniformLocation(m_program, "uni_FogUpperHeight");
-    m_fogUpperRange = glGetUniformLocation(m_program, "uni_FogUpperRange");
-    m_fogUpperColor = glGetUniformLocation(m_program, "uni_FogUpperColor");
-
-    m_fogLowerHeight = glGetUniformLocation(m_program, "uni_FogLowerHeight");
-    m_fogLowerRange = glGetUniformLocation(m_program, "uni_FogLowerRange");
-    m_fogLowerColor = glGetUniformLocation(m_program, "uni_FogLowerColor");
+    m_waterLevel = glGetUniformLocation(m_program, "uni_WaterLevel");
+    m_fogRange = glGetUniformLocation(m_program, "uni_FogRange");
+    m_groundFogColor = glGetUniformLocation(m_program, "uni_GroundFogColor");
+    m_waterFogColor = glGetUniformLocation(m_program, "uni_WaterFogColor");
 
     m_albedoColor = glGetUniformLocation(m_program, "uni_AlbedoColor");
     m_emissiveColor = glGetUniformLocation(m_program, "uni_EmissiveColor");
@@ -199,7 +196,10 @@ void CGL33TerrainRenderer::Begin()
     m_device->SetTransparency(TransparencyMode::NONE);
     m_device->SetCullFace(CullFace::BACK);
 
-    SetFog(1e+6f, 1e+6, {});
+    SetWaterLevel(0.0f);
+    SetFogRange(0.0f, 0.0f);
+    SetGroundFogColor({ 1.0f, 1.0f, 1.0f });
+    SetWaterFogColor({ 1.0f, 1.0f, 1.0f });
 }
 
 void CGL33TerrainRenderer::End()
@@ -364,18 +364,24 @@ void CGL33TerrainRenderer::SetShadowParams(int count, const ShadowParam* params)
     }
 }
 
-void CGL33TerrainRenderer::SetUpperFog(float height, float min, float max, const Color& color)
+void CGL33TerrainRenderer::SetWaterLevel(float height)
 {
-    glUniform1f(m_fogUpperHeight, height);
-    glUniform2f(m_fogUpperRange, min, max);
-    glUniform3f(m_fogUpperColor, color.r, color.g, color.b);
+    glUniform1f(m_waterLevel, height);
 }
 
-void CGL33TerrainRenderer::SetLowerFog(float height, float min, float max, const Color& color)
+void CGL33TerrainRenderer::SetGroundFogColor(const Color& color)
 {
-    glUniform1f(m_fogLowerHeight, height);
-    glUniform2f(m_fogLowerRange, min, max);
-    glUniform3f(m_fogLowerColor, color.r, color.g, color.b);
+    glUniform3f(m_groundFogColor, color.r, color.g, color.b);
+}
+
+void CGL33TerrainRenderer::SetWaterFogColor(const Color& color)
+{
+    glUniform3f(m_waterFogColor, color.r, color.g, color.b);
+}
+
+void CGL33TerrainRenderer::SetFogRange(float min, float max)
+{
+    glUniform2f(m_fogRange, min, max);
 }
 
 void CGL33TerrainRenderer::DrawObject(const glm::mat4& matrix, const CVertexBuffer* buffer)

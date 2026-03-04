@@ -137,17 +137,14 @@ public:
     //! Sets shadow parameters
     virtual void SetShadowParams(int count, const ShadowParam* params) = 0;
 
-    //! Sets fog parameters
-    void SetFog(float min, float max, const Color& color)
-    {
-        SetUpperFog(1.0f, min, max, color);
-        SetLowerFog(0.0f, min, max, color);
-    }
-
-    //! Sets upper fog parameters
-    virtual void SetUpperFog(float height, float min, float max, const Color& color) = 0;
-    //! Sets lower fog parameters
-    virtual void SetLowerFog(float height, float min, float max, const Color& color) = 0;
+    //! Sets water level
+    virtual void SetWaterLevel(float height) = 0;
+    //! Sets ground fog color
+    virtual void SetGroundFogColor(const Color& color) = 0;
+    //! Sets water fog color
+    virtual void SetWaterFogColor(const Color& color) = 0;
+    //! Sets fog range
+    virtual void SetFogRange(float min, float max) = 0;
 
     //! Draws terrain object
     virtual void DrawObject(const glm::mat4& matrix, const CVertexBuffer* buffer) = 0;
@@ -202,17 +199,15 @@ public:
     //! Sets shadow parameters
     virtual void SetShadowParams(int count, const ShadowParam* params) = 0;
 
-    //! Sets fog parameters
-    void SetFog(float min, float max, const Color& color)
-    {
-        SetUpperFog(1.0f, min, max, color);
-        SetLowerFog(0.0f, min, max, color);
-    }
+    //! Sets water level
+    virtual void SetWaterLevel(float height) = 0;
+    //! Sets ground fog color
+    virtual void SetGroundFogColor(const Color& color) = 0;
+    //! Sets water fog color
+    virtual void SetWaterFogColor(const Color& color) = 0;
+    //! Sets fog range
+    virtual void SetFogRange(float min, float max) = 0;
 
-    //! Sets upper fog parameters
-    virtual void SetUpperFog(float height, float min, float max, const Color& color) = 0;
-    //! Sets lower fog parameters
-    virtual void SetLowerFog(float height, float min, float max, const Color& color) = 0;
     //! Sets alpha scissor
     virtual void SetAlphaScissor(float alpha) = 0;
 

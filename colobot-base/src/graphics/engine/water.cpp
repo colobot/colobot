@@ -289,8 +289,10 @@ void CWater::DrawBack()
     glm::mat4 matrix = glm::mat4(1.0f);
     renderer->SetModelMatrix(matrix);
 
-    renderer->SetUpperFog(m_level, 0.0f, 1.0f, m_engine->GetFogColor(1));
-    renderer->SetLowerFog(m_level - 0.5f, 0.0f, 1.0f, m_engine->GetFogColor(1));
+    renderer->SetWaterLevel(m_level);
+    renderer->SetFogRange(0.0f, 1.0f);
+    renderer->SetGroundFogColor(m_engine->GetFogColor(0));
+    renderer->SetWaterFogColor(m_engine->GetFogColor(1));
 
     float dist = Math::DistanceProjected(eye, lookat);
 
@@ -361,7 +363,21 @@ void CWater::DrawSurf()
     renderer->SetDepthMask(false);
 
     // No fog for water surface
-    renderer->SetFog(1000.0f, 1001.0f, {});
+    if (m_engine->GetRankView() == 0)
+    {
+        float fogRangeMin = m_engine->GetDeepView(0) * m_engine->GetFogStart(0) * m_engine->GetClippingDistance();
+        float fogRangeMax = m_engine->GetDeepView(0) * m_engine->GetClippingDistance();
+
+        renderer->SetWaterLevel(m_level);
+        renderer->SetFogRange(fogRangeMin, fogRangeMax);
+        renderer->SetGroundFogColor(m_engine->GetFogColor(0));
+        renderer->SetWaterFogColor(m_engine->GetFogColor(1));
+    }
+    else
+    {
+        renderer->SetFogRange(0.0f, 0.0f);
+    }
+
 
     if (m_type[rankview] == WATER_TT)
     {

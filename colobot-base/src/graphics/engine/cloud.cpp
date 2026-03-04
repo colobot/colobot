@@ -26,6 +26,7 @@
 
 #include "graphics/engine/engine.h"
 #include "graphics/engine/terrain.h"
+#include "graphics/engine/water.h"
 
 #include "level/robotmain.h"
 
@@ -115,7 +116,12 @@ void CCloud::Draw()
 
     auto fogColor = m_engine->GetFogColor(m_engine->GetRankView());
 
-    renderer->SetFog(fogStart, fogEnd, { fogColor.r, fogColor.g, fogColor.b });
+    renderer->SetWaterLevel(m_engine->GetWater()->GetLevel());
+    renderer->SetFogRange(fogStart, fogEnd);
+    renderer->SetGroundFogColor(fogColor);
+    renderer->SetWaterFogColor(fogColor);
+
+    renderer->SetFogRange(0.0f, 0.0f);
 
     renderer->SetProjectionMatrix(m_engine->GetMatProj());
     renderer->SetViewMatrix(m_engine->GetMatView());

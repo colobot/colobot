@@ -81,10 +81,14 @@ public:
     //! Sets shadow parameters
     virtual void SetShadowParams(int count, const ShadowParam* params) override;
 
-    //! Sets upper fog parameters
-    virtual void SetUpperFog(float height, float min, float max, const Color& color) override;
-    //! Sets lower fog parameters
-    virtual void SetLowerFog(float height, float min, float max, const Color& color) override;
+    //! Sets water level
+    virtual void SetWaterLevel(float height) override;
+    //! Sets ground fog color
+    virtual void SetGroundFogColor(const Color& color) override;
+    //! Sets water fog color
+    virtual void SetWaterFogColor(const Color& color) override;
+    //! Sets fog range
+    virtual void SetFogRange(float min, float max) override;
 
     //! Draws terrain object
     virtual void DrawObject(const glm::mat4& matrix, const CVertexBuffer* buffer) override;
@@ -108,13 +112,10 @@ private:
     GLint m_skyIntensity = -1;
 
     // Fog parameters
-    GLint m_fogUpperHeight = -1;
-    GLint m_fogUpperRange = -1;
-    GLint m_fogUpperColor = -1;
-
-    GLint m_fogLowerHeight = -1;
-    GLint m_fogLowerRange = -1;
-    GLint m_fogLowerColor = -1;
+    GLint m_waterLevel = -1;
+    GLint m_groundFogColor = -1;
+    GLint m_waterFogColor = -1;
+    GLint m_fogRange = -1;
 
     GLint m_albedoColor = -1;
     GLint m_emissiveColor = -1;

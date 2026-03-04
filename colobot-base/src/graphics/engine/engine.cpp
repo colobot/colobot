@@ -3006,15 +3006,8 @@ void CEngine::Draw3DScene()
 
     Color sunColor = Color{ Color{ m_sunColor, 0.0f } + m_waterAddColor * m_rankView };
 
-    float fogUpperHeight = m_water->GetLevel();
-    float fogUpperStart = m_deepView[m_rankView] * m_fogStart[m_rankView] * m_clippingDistance;
-    float fogUpperEnd = m_deepView[m_rankView] * m_clippingDistance;
-    Color fogUpperColor = m_fogColor[m_rankView];
-
-    float fogLowerHeight = m_water->GetLevel() - 0.5f;
-    float fogLowerStart = m_deepView[m_rankView] * m_fogStart[m_rankView] * m_clippingDistance;
-    float fogLowerEnd = m_deepView[m_rankView] * m_clippingDistance;
-    Color fogLowerColor = m_fogColor[1];
+    float fogRangeMin = m_deepView[m_rankView] * m_fogStart[m_rankView] * m_clippingDistance;
+    float fogRangeMax = m_deepView[0] * m_clippingDistance;
 
     auto terrainRenderer = m_device->GetTerrainRenderer();
     terrainRenderer->Begin();
@@ -3030,8 +3023,10 @@ void CEngine::Draw3DScene()
     else
         terrainRenderer->SetShadowParams(0, nullptr);
 
-    terrainRenderer->SetUpperFog(fogUpperHeight, fogUpperStart, fogUpperEnd, fogUpperColor);
-    terrainRenderer->SetLowerFog(fogLowerHeight, fogLowerStart, fogLowerEnd, fogLowerColor);
+    terrainRenderer->SetWaterLevel(m_water->GetLevel());
+    terrainRenderer->SetFogRange(fogRangeMin, fogRangeMax);
+    terrainRenderer->SetGroundFogColor(m_fogColor[m_rankView]);
+    terrainRenderer->SetWaterFogColor(m_fogColor[1]);
 
     glm::mat4 scale = glm::mat4(1.0f);
     scale[2][2] = -1.0f;
@@ -3163,9 +3158,10 @@ void CEngine::Draw3DScene()
     objectRenderer->SetSky(m_ambientColor[m_rankView], 1.0f);
     objectRenderer->SetTransparency(TransparencyMode::NONE);
 
-    objectRenderer->SetUpperFog(fogUpperHeight, fogUpperStart, fogUpperEnd, fogUpperColor);
-    objectRenderer->SetLowerFog(fogLowerHeight, fogLowerStart, fogLowerEnd, fogLowerColor);
-    objectRenderer->SetAlphaScissor(0.0f);
+    objectRenderer->SetWaterLevel(m_water->GetLevel());
+    objectRenderer->SetFogRange(fogRangeMin, fogRangeMax);
+    objectRenderer->SetGroundFogColor(m_fogColor[m_rankView]);
+    objectRenderer->SetWaterFogColor(m_fogColor[1]);
 
     if (m_shadowMapping)
         objectRenderer->SetShadowParams(m_shadowRegions, shadowParams);
@@ -3326,8 +3322,11 @@ void CEngine::Draw3DScene()
     objectRenderer->SetLight(glm::vec4(glm::normalize(m_sunDirection), 0.0), m_sunIntensity, sunColor);
     objectRenderer->SetTransparency(TransparencyMode::NONE);
 
-    objectRenderer->SetUpperFog(fogUpperHeight, fogUpperStart, fogUpperEnd, fogUpperColor);
-    objectRenderer->SetLowerFog(fogLowerHeight, fogLowerStart, fogLowerEnd, fogLowerColor);
+    objectRenderer->SetWaterLevel(m_water->GetLevel());
+    objectRenderer->SetFogRange(fogRangeMin, fogRangeMax);
+    objectRenderer->SetGroundFogColor(m_fogColor[m_rankView]);
+    objectRenderer->SetWaterFogColor(m_fogColor[1]);
+
     objectRenderer->SetAlphaScissor(0.0f);
     objectRenderer->SetShadowParams(m_shadowRegions, shadowParams);
     objectRenderer->SetBaseColor({ 0.0f, 0.0f, 0.0f, 0.0f });
@@ -3895,7 +3894,7 @@ void CEngine::DrawInterface()
         renderer->Begin();
         renderer->SetProjectionMatrix(m_matProj);
         renderer->SetViewMatrix(m_matView);
-        renderer->SetFog(1e+6, 1e+6, {});
+        renderer->SetFogRange(0.0f, 0.0f);
         renderer->SetLighting(true);
         renderer->SetLight(glm::vec4(m_appearanceLightDirection, 0.0f), 1.0f, glm::vec3(1.0));
         renderer->SetSky(m_ambientColor[m_rankView], 1.0f);
@@ -4652,7 +4651,7 @@ void CEngine::DrawPlanet()
     renderer->SetProjectionMatrix(m_matProjInterface);
     renderer->SetViewMatrix(m_matViewInterface);
     renderer->SetModelMatrix(m_matWorldInterface);
-    renderer->SetFog(1e+6, 1e+6, {});
+    renderer->SetFogRange(0.0f, 0.0f);
     renderer->SetLighting(false);
     renderer->SetDepthTest(false);
     renderer->SetDepthMask(false);
