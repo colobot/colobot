@@ -3016,7 +3016,7 @@ void CEngine::Draw3DScene()
     terrainRenderer->SetViewMatrix(m_matView);
     terrainRenderer->SetShadowMap(m_shadowMap);
     terrainRenderer->SetLight(glm::vec4(glm::normalize(m_sunDirection), 0.0), m_sunIntensity, sunColor);
-    terrainRenderer->SetSky(m_ambientColor[0], 1.0f);
+    terrainRenderer->SetSky(m_ambientColor[0], 0.75f);
     
     if (m_shadowMapping)
         terrainRenderer->SetShadowParams(m_shadowRegions, shadowParams);
