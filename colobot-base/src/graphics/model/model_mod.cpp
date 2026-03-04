@@ -354,7 +354,8 @@ void ConvertFromOldRenderState(ModelTriangle& triangle, int state)
 Clipped ClipByValue(std::span<const glm::vec3> polygon, std::span<const float> distances)
 {
     // Number of polygon vertices outside
-    auto count = std::count_if(distances.begin(), distances.end(), [](float distance) { return distance >= 0.0f; });
+    std::size_t count = std::count_if(distances.begin(), distances.end(),
+        [](float distance) { return distance >= 0.0f; });
 
     if (count == 0) // Entire polygon inside
         return Clipped{ Polygon{ polygon.begin(), polygon.end() }, Polygon{} };
@@ -432,7 +433,7 @@ std::vector<Triangle> ClipByUVRectangle(const Triangle& triangle, const glm::vec
     {
         std::vector<float> polygonValues;
 
-        for (int j = 0; j < inside.size(); j++)
+        for (std::size_t j = 0; j < inside.size(); j++)
             polygonValues.push_back(evaluate(inside[j], values[0][i], values[1][i], values[2][i]));
 
         auto clipped = ClipByValue(inside, polygonValues);
