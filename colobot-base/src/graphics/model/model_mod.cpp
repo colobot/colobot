@@ -28,6 +28,7 @@
 
 #include <array>
 #include <iostream>
+#include <span>
 
 using namespace IOUtils;
 
@@ -45,6 +46,8 @@ LegacyMaterial ReadBinaryMaterial(std::istream& stream);
 void ConvertOldTex1Name(ModelTriangle& triangle, const char* tex1Name);
 void ConvertFromOldRenderState(ModelTriangle& triangle, int state);
 ModelLODLevel MinMaxToLodLevel(float min, float max);
+
+void AddTriangle(std::vector<ModelTriangle>& triangles, ModelTriangle&& triangle);
 
 std::unique_ptr<CModel> ReadOldModel(const std::filesystem::path& path)
 {
@@ -139,7 +142,7 @@ std::vector<ModelTriangle> ReadOldModelV1(std::istream& stream, int totalTriangl
 
         ConvertOldTex1Name(triangle, t.texName);
 
-        triangles.push_back(triangle);
+        AddTriangle(triangles, std::move(triangle));
     }
 
     return triangles;
@@ -193,7 +196,7 @@ std::vector<ModelTriangle> ReadOldModelV2(std::istream& stream, int totalTriangl
 
         ConvertFromOldRenderState(triangle, t.state);
 
-        triangles.push_back(triangle);
+        AddTriangle(triangles, std::move(triangle));
     }
 
     return triangles;
@@ -255,7 +258,7 @@ std::vector<ModelTriangle> ReadOldModelV3(std::istream& stream, int totalTriangl
             triangle.material.detailTexture = "textures" / StrUtils::ToPath(ss.str());
         }
 
-        triangles.push_back(triangle);
+        AddTriangle(triangles, std::move(triangle));
     }
 
     return triangles;
@@ -327,6 +330,206 @@ void ConvertFromOldRenderState(ModelTriangle& triangle, int state)
             triangle.material.alphaMode = AlphaMode::BLEND;
             triangle.material.alphaThreshold = 0.5f;
         }
+    }
+}
+
+using Polygon = std::vector<glm::vec3>;
+
+struct Clipped
+{
+    Polygon inside;
+    Polygon outside;
+};
+
+Clipped ClipByValue(std::span<const glm::vec3> polygon, std::span<const float> distances)
+{
+    // Number of polygon vertices outside
+    auto count = std::count_if(distances.begin(), distances.end(), [](float distance) { return distance >= 0.0f; });
+
+    if (count == 0) // Entire polygon inside
+        return Clipped{ Polygon{ polygon.begin(), polygon.end() }, Polygon{} };
+    if (count == polygon.size()) // Entire polygon outside
+        return Clipped{ Polygon{}, Polygon{ polygon.begin(), polygon.end() } };
+
+    Clipped clipped;
+
+    for (std::size_t i = 0; i < polygon.size(); i++)
+    {
+        std::size_t j = (i + 1) % polygon.size();
+
+        const auto& d1 = distances[i];
+        const auto& d2 = distances[j];
+
+        if (d1 <= 0.0f) clipped.inside.push_back(polygon[i]);
+        if (d1 >= 0.0f) clipped.outside.push_back(polygon[i]);
+
+        if (d1 * d2 < 0.0f)
+        {
+            float t = d1 / (d1 - d2);
+
+            glm::vec3 inserted = glm::mix(polygon[i], polygon[j], t);
+
+            clipped.inside.push_back(inserted);
+            clipped.outside.push_back(inserted);
+        }
+    }
+
+    return clipped;
+}
+
+std::vector<Triangle> ClipByUVRectangle(const Triangle& triangle, const glm::vec4& region)
+{
+    const auto [triangleMinU, triangleMaxU] = std::minmax({ triangle.p1.uv[0], triangle.p2.uv[0], triangle.p3.uv[0] });
+    const auto [triangleMinV, triangleMaxV] = std::minmax({ triangle.p1.uv[1], triangle.p2.uv[1], triangle.p3.uv[1] });
+
+    const auto [minU, maxU] = std::minmax({ region[0], region[2] });
+    const auto [minV, maxV] = std::minmax({ region[1], region[3] });
+
+    // Discard trivial case of a triangle UVs being outside the region
+    if (triangleMinU > maxU) return {};
+    if (triangleMaxU < minU) return {};
+
+    if (triangleMinV > maxV) return {};
+    if (triangleMaxV < minV) return {};
+
+    // Clipping values calculated using triangle UVs and region UVs
+    std::array<glm::vec4, 3> values;
+
+    for (int i = 0; const auto& uv : { triangle.p1.uv, triangle.p2.uv, triangle.p3.uv })
+    {
+        values[i++] =
+        {
+            minU - uv[0],
+            uv[0] - maxU,
+            minV - uv[1],
+            uv[1] - maxV
+        };
+    }
+
+    // Evaluates a value using barycentric coordinates
+    const auto evaluate = [](const glm::vec3& coords, auto&& v1, auto&& v2, auto&& v3)
+    {
+        return coords[0] * v1 + coords[1] * v2 + coords[2] * v3;
+    };
+
+    // Inside polygon
+    Polygon inside = { glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0), glm::vec3(0.0, 0.0, 1.0) };
+
+    // Outside polygons
+    std::vector<Polygon> outside;
+
+    for (int i = 0; i < 4; i++)
+    {
+        std::vector<float> polygonValues;
+
+        for (int j = 0; j < inside.size(); j++)
+            polygonValues.push_back(evaluate(inside[j], values[0][i], values[1][i], values[2][i]));
+
+        auto clipped = ClipByValue(inside, polygonValues);
+
+        if (clipped.outside.size() > 0) outside.push_back(std::move(clipped.outside));
+
+        inside = std::move(clipped.inside);
+
+        if (inside.size() == 0) break;
+    }
+
+    std::vector<Triangle> triangles;
+
+    // Emits a polygon as triangles
+    const auto emit = [&](const Polygon& polygon)
+    {
+        // Interpolate polygon vertices
+        std::vector<Vertex3D> vertices;
+
+        for (const auto& point : polygon)
+        {
+            Vertex3D vertex;
+
+            vertex.position = evaluate(point, triangle.p1.position, triangle.p2.position, triangle.p3.position);
+            vertex.color = evaluate(point, glm::vec4{triangle.p1.color}, glm::vec4{triangle.p2.color}, glm::vec4{triangle.p3.color});
+            vertex.uv = evaluate(point, triangle.p1.uv, triangle.p2.uv, triangle.p3.uv);
+            vertex.uv2 = evaluate(point, triangle.p1.uv2, triangle.p2.uv2, triangle.p3.uv2);
+            vertex.normal = evaluate(point, triangle.p1.normal, triangle.p2.normal, triangle.p3.normal);
+
+            vertices.push_back(std::move(vertex));
+        }
+
+        // Emit polygon as an expanded triangle fan
+        for (std::size_t i = 1; i + 1 < vertices.size(); i++)
+        {
+            triangles.push_back(Triangle{ vertices[0], vertices[i], vertices[i + 1] });
+        }
+    };
+
+    // Emit clipped polygons
+    if (inside.size() > 0) emit(inside);
+
+    for (const auto& polygon : outside)
+        emit(polygon);
+
+    return triangles;
+}
+
+std::vector<Triangle> ClipByUVRectangles(const Triangle& triangle, std::span<const glm::vec4> regions)
+{
+    for (const auto& region : regions)
+    {
+        auto clipped = ClipByUVRectangle(triangle, region);
+
+        if (clipped.size() > 0) return clipped;
+    }
+
+    return {};
+}
+
+// Adds a triangle, potentially as a subdivided set of smaller triangles
+void AddTriangle(std::vector<ModelTriangle>& triangles, ModelTriangle&& triangle)
+{
+    if (triangle.material.albedoTexture == "human.png")
+    {
+        // UV regions for orange bands on the texture
+        constexpr auto regions = std::array{
+            glm::vec4{ 96.0f / 256.0f, 6.0f / 256.0f, 128.0f / 256.0f, 12.0f / 256.0f },
+            glm::vec4{ 134.0f / 256.0f, 32.0f / 256.0f, 140.0f / 256.0f, 64.0f / 256.0f },
+            glm::vec4{ 112.0f / 256.0f, 245.0f / 256.0f, 144.0f / 256.0f, 251.0f / 256.0f }
+        };
+
+        auto clipped = ClipByUVRectangles(Triangle{ triangle.p1, triangle.p2, triangle.p3 }, regions);
+
+        if (clipped.empty())
+        {
+            triangles.push_back(std::move(triangle));
+            return;
+        }
+            
+        for (const auto& tr : clipped)
+        {
+            auto middle = (tr.p1.uv + tr.p2.uv + tr.p3.uv) / 3.0f;
+
+            auto inside = std::any_of(regions.begin(), regions.end(), [&](const glm::vec4& region)
+            {
+                if (middle[0] < region[0]) return false;
+                if (middle[1] < region[1]) return false;
+                if (middle[0] > region[2]) return false;
+                if (middle[1] > region[3]) return false;
+                return true;
+            });
+
+            auto material = triangle.material;
+
+            // Apply base material color for bands and suit
+            if (inside)
+                material.baseColor = BaseColor::BAND;
+            else
+                material.baseColor = BaseColor::SUIT;
+
+            triangles.push_back(ModelTriangle{ tr.p1, tr.p2, tr.p3, material });
+        }
+    }
+    else
+    {
+        triangles.push_back(std::move(triangle));
     }
 }
 
