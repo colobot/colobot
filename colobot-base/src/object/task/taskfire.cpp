@@ -74,7 +74,7 @@ bool CTaskFire::EventProcess(const Event &event)
 
     if ( m_engine->GetPause() )  return true;
     if ( event.type != EVENT_FRAME )  return true;
-    if ( m_bError )  return false;
+    if ( m_error != ERR_OK )  return false;
 
     m_time += event.rTime;
     m_lastSound -= event.rTime;
@@ -88,6 +88,12 @@ bool CTaskFire::EventProcess(const Event &event)
         else                    fire = ENERGY_FIRE;
         energy -= event.rTime*fire;
         power->SetEnergy(energy);
+    }
+    else
+    {
+        m_error = ERR_FIRE_ENERGY;
+        Abort();
+        return false;
     }
 
     if ( m_lastParticle+0.05f <= m_time )
@@ -278,7 +284,7 @@ Error CTaskFire::Start(float delay)
     float       energy, fire;
     ObjectType  type;
 
-    m_bError = true;  // operation impossible
+    m_error = ERR_STOP;  // operation impossible
 
     type = m_object->GetType();
     if ( type != OBJECT_MOBILEfc &&
@@ -330,7 +336,7 @@ Error CTaskFire::Start(float delay)
     m_time = 0.0f;
     m_lastParticle = 0.0f;
     m_lastSound = 0.0f;
-    m_bError = false;  // ok
+    m_error = ERR_OK;
 
 //? m_camera->StartCentering(m_object, Math::PI*0.15f, 99.9f, 0.0f, 1.0f);
 
@@ -364,7 +370,7 @@ Error CTaskFire::Start(float delay)
 Error CTaskFire::IsEnded()
 {
     if ( m_engine->GetPause() )  return ERR_CONTINUE;
-    if ( m_bError )  return ERR_STOP;
+    if ( m_error != ERR_OK )  return m_error;
     if ( m_progress < 1.0f )  return ERR_CONTINUE;
 
     Abort();

@@ -1397,7 +1397,6 @@ void CPyro::DeleteObject(bool primary, bool secondary)
                 if (CObject* sub = asSlotted->GetSlotContainedObject(slot))
                 {
                     CObjectManager::GetInstancePointer()->DeleteObject(sub);
-                    asSlotted->SetSlotContainedObject(slot, nullptr);
                 }
             }
         }
@@ -1405,25 +1404,6 @@ void CPyro::DeleteObject(bool primary, bool secondary)
 
     if (primary)
     {
-        if (m_object->Implements(ObjectInterfaceType::Transportable))
-        {
-            // TODO: this should be handled in the object's destructor
-            CObject* transporter = dynamic_cast<CTransportableObject&>(*m_object).GetTransporter();
-            if (transporter != nullptr)
-            {
-                assert(transporter->Implements(ObjectInterfaceType::Slotted));
-                CSlottedObject* asSlotted = dynamic_cast<CSlottedObject*>(transporter);
-                for (int slotNum = asSlotted->GetNumSlots() - 1; slotNum >= 0; slotNum--)
-                {
-                    if (asSlotted->GetSlotContainedObject(slotNum) == m_object)
-                    {
-                        asSlotted->SetSlotContainedObject(slotNum, nullptr);
-                        break;
-                    }
-                }
-            }
-        }
-
         CObjectManager::GetInstancePointer()->DeleteObject(m_object);
         m_object = nullptr;
     }

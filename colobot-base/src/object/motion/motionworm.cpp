@@ -49,25 +49,15 @@ const int WORM_PART = 7;        // number of parts of a worm
 // Object's constructor.
 
 CMotionWorm::CMotionWorm(COldObject* object)
-    : CMotion(object),
-      m_armAngles()
+    : CMotion(object)
 {
     m_timeUp         = 18.0f;
     m_timeDown       = 18.0f;
-    m_armMember      = START_TIME;
     m_armTimeAbs     = START_TIME;
     m_armTimeMarch   = START_TIME;
-    m_armTimeAction  = START_TIME;
-    m_armTimeIndex   = 0;
-    m_armPartIndex   = 0;
-    m_armMemberIndex = 0;
     m_armLinSpeed    = 0.0f;
     m_armCirSpeed    = 0.0f;
-    m_armLastAction  = -1;
-    m_specAction     = -1;
-    m_specTime       = 0.0f;
     m_lastParticle  = 0.0f;
-    m_bArmStop = false;
 }
 
 // Object's destructor.
@@ -197,6 +187,12 @@ bool CMotionWorm::SetParam(int rank, float value)
         return true;
     }
 
+    if ( rank == 2 )
+    {
+        m_armTimeMarch = value;
+        return true;
+    }
+
     return false;
 }
 
@@ -204,6 +200,7 @@ float CMotionWorm::GetParam(int rank)
 {
     if ( rank == 0 )  return m_timeDown;
     if ( rank == 1 )  return m_timeUp;
+    if ( rank == 2 )  return m_armTimeMarch;
     return 0.0f;
 }
 

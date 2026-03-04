@@ -57,6 +57,6 @@ protected:
     float           m_time = 0.0f;
     float           m_lastParticle = 0.0f;
     int             m_soundChannel = 0;
-    bool            m_bError = false;
+    Error           m_error = ERR_OK;
     glm::vec3       m_terraPos = { 0, 0, 0 };
 };

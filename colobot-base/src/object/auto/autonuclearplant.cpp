@@ -237,7 +237,6 @@ bool CAutoNuclearPlant::EventProcess(const Event &event)
             if ( cargo != nullptr )
             {
                 CObjectManager::GetInstancePointer()->DeleteObject(cargo);
-                m_object->SetSlotContainedObject(0, nullptr);
             }
 
             CreatePower();  // creates the atomic cell
