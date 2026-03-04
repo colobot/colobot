@@ -31,9 +31,18 @@
 #include <span>
 
 using namespace IOUtils;
+using namespace Gfx;
 
-namespace Gfx::ModelIO
+namespace
 {
+
+using Polygon = std::vector<glm::vec3>;
+
+struct Clipped
+{
+    Polygon inside;
+    Polygon outside;
+};
 
 std::vector<ModelTriangle> ReadOldModelV1(std::istream& stream, int totalTriangles);
 std::vector<ModelTriangle> ReadOldModelV2(std::istream& stream, int totalTriangles);
@@ -47,9 +56,14 @@ void ConvertOldTex1Name(ModelTriangle& triangle, const char* tex1Name);
 void ConvertFromOldRenderState(ModelTriangle& triangle, int state);
 ModelLODLevel MinMaxToLodLevel(float min, float max);
 
+Clipped ClipByValue(std::span<const glm::vec3> polygon, std::span<const float> distances);
+std::vector<Triangle> ClipByUVRectangle(const Triangle& triangle, const glm::vec4& region);
+std::vector<Triangle> ClipByUVRectangles(const Triangle& triangle, std::span<const glm::vec4> regions);
 void AddTriangle(std::vector<ModelTriangle>& triangles, ModelTriangle&& triangle);
 
-std::unique_ptr<CModel> ReadOldModel(const std::filesystem::path& path)
+}
+
+std::unique_ptr<CModel> Gfx::ModelIO::ReadOldModel(const std::filesystem::path& path)
 {
     CInputStream stream(path);
 
@@ -101,6 +115,9 @@ std::unique_ptr<CModel> ReadOldModel(const std::filesystem::path& path)
 
     return model;
 }
+
+namespace
+{
 
 std::vector<ModelTriangle> ReadOldModelV1(std::istream& stream, int totalTriangles)
 {
@@ -333,13 +350,6 @@ void ConvertFromOldRenderState(ModelTriangle& triangle, int state)
     }
 }
 
-using Polygon = std::vector<glm::vec3>;
-
-struct Clipped
-{
-    Polygon inside;
-    Polygon outside;
-};
 
 Clipped ClipByValue(std::span<const glm::vec3> polygon, std::span<const float> distances)
 {
