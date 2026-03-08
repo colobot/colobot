@@ -1113,8 +1113,7 @@ void CStudio::ViewEditScript()
     edit = static_cast< CEdit* >(pw->SearchControl(EVENT_STUDIO_EDIT));
     if ( edit == nullptr )  return;
 
-    glm::ivec2 dim = m_engine->GetWindowSize();
-    edit->SetFontSize(m_settings->GetFontSize()/(dim.x/640.0f));
+    edit->SetFontSize(m_settings->GetFontSize());
 }
 
 

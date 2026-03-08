@@ -1387,7 +1387,7 @@ glm::ivec2 CText::GetNextTilePos(const FontTexture& fontTexture)
     int tileNumber = totalTiles - fontTexture.freeSlots;
 
     int verticalTileIndex = tileNumber / std::max(1, horizontalTiles);
-    int horizontalTileIndex = tileNumber % horizontalTiles;
+    int horizontalTileIndex = tileNumber % std::max(1, horizontalTiles);
 
     return { horizontalTileIndex * fontTexture.tileSize.x,
              verticalTileIndex * fontTexture.tileSize.y };
