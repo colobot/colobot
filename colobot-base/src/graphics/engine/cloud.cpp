@@ -121,8 +121,6 @@ void CCloud::Draw()
     renderer->SetGroundFogColor(fogColor);
     renderer->SetWaterFogColor(fogColor);
 
-    renderer->SetFogRange(0.0f, 0.0f);
-
     renderer->SetProjectionMatrix(m_engine->GetMatProj());
     renderer->SetViewMatrix(m_engine->GetMatView());
 
