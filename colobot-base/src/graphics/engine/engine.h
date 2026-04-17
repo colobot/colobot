@@ -1055,6 +1055,15 @@ protected:
                     bool hsv,
                     const std::optional<Color>& target = std::nullopt);
 
+    //! Applies recolor mask in alternative way
+    void        ApplyRecolorMask2(CImage& image,
+                    std::span<const glm::ivec4> regions,
+                    const Color& reference,
+                    float threshold);
+
+    //! Turns the screen blending mask into alpha mask
+    void        ScreenToAlphaMask(CImage& image, std::span<const glm::ivec4> regions);
+
     //! Tests whether the given object is visible
     bool        IsVisible(const glm::mat4& matrix, int objRank);
 

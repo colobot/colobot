@@ -2209,6 +2209,29 @@ void CEngine::ApplyRecolorMask(CImage& image, const std::filesystem::path& name)
 
         ApplyRecolorMask(image, regions, hair, 0.2f, false, false);
     }
+    else if (filename == "human.png")
+    {
+        constexpr Color suit = { 206.0f / 256.0f, 206.0f / 256.0f, 204.0f / 256.0f };
+        constexpr Color band = { 255.0f / 256.0f, 132.0f / 256.0f, 1.0f / 256.0f };
+
+        const auto suitRegions = std::array
+        {
+            rectangle({ 64, 0 }, { 192, 64 }),
+            rectangle({ 0, 64 }, { 256, 224 }),
+            rectangle({ 0, 224 }, { 208, 256 })
+        };
+
+        const auto bandRegions = std::array
+        {
+            rectangle({ 96, 6 }, {128, 12 }),
+            rectangle({ 134, 32 }, { 140, 64 }),
+            rectangle({ 112, 245 }, { 144, 251 })
+        };
+
+        ApplyRecolorMask2(image, suitRegions, suit, 0.3f);
+        ApplyRecolorMask(image, bandRegions, band, 0.05f, false, false);
+        ScreenToAlphaMask(image, std::array{ rectangle({ 0, 0 }, { 64, 64 }) });
+    }
 }
 
 void CEngine::ApplyRecolorMask(CImage& image,
@@ -2277,6 +2300,64 @@ void CEngine::ApplyRecolorMask(CImage& image,
                         image.SetPixel({ x + i, y + j}, Color{ target, target, target, alpha });
                     }
                 }
+            }
+        }
+    }
+}
+
+void CEngine::ApplyRecolorMask2(CImage& image,
+    std::span<const glm::ivec4> regions,
+    const Color& reference,
+    float threshold)
+{
+    const Color maxColor = Color{reference + Color{threshold, threshold, threshold}};
+
+    float maxBrightness = ToGrayscale(maxColor);
+
+    image.ConvertToRGBA();
+
+    for (const auto& region : regions) {
+        const auto& [x, y, width, height] = std::tie(region[0], region[1], region[2], region[3]);
+
+        for (int j = 0; j < height; j++)
+        {
+            for (int i = 0; i < width; i++)
+            {
+                auto color = image.GetPixel({ x + i, y + j });
+
+                float difference = std::abs(color.r - reference.r)
+                    + std::abs(color.g - reference.g)
+                    + std::abs(color.b - reference.b);
+
+                if (difference > 3.0f * threshold) continue;
+
+                const float grayscale = ToGrayscale(color);
+
+                const float brightness = grayscale / maxBrightness;
+
+                const float alpha = 1.0f - brightness;
+
+                image.SetPixel({ x + i, y + j}, Color{ 0.0, 0.0, 0.0, alpha });
+            }
+        }
+    }
+}
+
+void CEngine::ScreenToAlphaMask(CImage& image, std::span<const glm::ivec4> regions)
+{
+    for (const auto& region : regions)
+    {
+        const auto& [x, y, width, height] = std::tie(region[0], region[1], region[2], region[3]);
+
+        for (int j = 0; j < height; j++)
+        {
+            for (int i = 0; i < width; i++)
+            {
+                auto color = image.GetPixel({ x + i, y + j });
+
+                float alpha = ToGrayscale(color);
+
+                image.SetPixel({ x + i, y + j}, Color{ 1.0, 1.0, 1.0, alpha });
             }
         }
     }
@@ -3179,7 +3260,7 @@ void CEngine::Draw3DScene()
 
         //m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
 
-        auto baseColor = GetObjectColor(rank, data.material.baseColor);
+        Color baseColor = Color{GetObjectColor(rank, data.material.baseColor) + Color{ data.material.recolorShift, data.material.recolorShift, data.material.recolorShift, 0.0f }};
 
         baseColor.a = 1.0f;
 
@@ -3206,14 +3287,14 @@ void CEngine::Draw3DScene()
 
         //m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
 
-        auto baseColor = GetObjectColor(rank, data.material.baseColor);
+        Color baseColor = Color{GetObjectColor(rank, data.material.baseColor) + Color{ data.material.recolorShift, data.material.recolorShift, data.material.recolorShift, 0.0f }};
 
         objectRenderer->SetAlphaScissor(data.material.alphaThreshold);
 
-        baseColor.a = 1.0f;
+        baseColor.a = 0.0f;
 
         objectRenderer->SetBaseColor({ 0.0f, 0.0f, 0.0f, 0.0f });
-        objectRenderer->SetAlbedoColor(data.material.albedoColor * baseColor);
+        objectRenderer->SetAlbedoColor(data.material.albedoColor);// * baseColor);
 
         objectRenderer->SetAlbedoTexture(data.albedoTexture);
         objectRenderer->SetDetailTexture(data.detailTexture);
@@ -3271,7 +3352,7 @@ void CEngine::Draw3DScene()
 
         //m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
 
-        auto baseColor = GetObjectColor(rank, data.material.baseColor);
+        Color baseColor = Color{GetObjectColor(rank, data.material.baseColor) + Color{ data.material.recolorShift, data.material.recolorShift, data.material.recolorShift, 0.0f }};
         baseColor.a = 1.0f;
 
         if (data.material.alphaMode == AlphaMode::NONE)
@@ -3939,7 +4020,7 @@ void CEngine::DrawInterface()
 
             for (auto& data : p1.next)
             {
-                auto baseColor = GetObjectColor(objRank, data.material.baseColor);
+                Color baseColor = Color{GetObjectColor(objRank, data.material.baseColor) + Color{ data.material.recolorShift, data.material.recolorShift, data.material.recolorShift, 0.0f }};
 
                 if (data.material.alphaMode == AlphaMode::NONE)
                 {
