@@ -308,9 +308,15 @@ void ConvertOldTex1Name(ModelTriangle& triangle, const char* tex1Name)
 void ConvertFromOldRenderState(ModelTriangle& triangle, int state)
 {
     if ((state & static_cast<int>(ModelRenderState::Alpha)) != 0)
+    {
         triangle.material.alphaMode = AlphaMode::BLEND;
+        triangle.material.baseColor = BaseColor::WHITE;
+    }
     else
+    {
         triangle.material.alphaMode = AlphaMode::NONE;
+        triangle.material.baseColor = BaseColor::TEAM;
+    }
 
     if ((state & static_cast<int>(ModelRenderState::Part1)) != 0)
         triangle.material.mark = Mark::RIGHT_TRACKER;
@@ -501,25 +507,22 @@ void AddTriangle(std::vector<ModelTriangle>& triangles, ModelTriangle&& triangle
     if (triangle.material.albedoTexture == "human.png")
     {
         // UV regions for orange bands on the texture
-        constexpr auto regions = std::array{
+        constexpr auto bands = std::array
+        {
             glm::vec4{ 96.0f / 256.0f, 6.0f / 256.0f, 128.0f / 256.0f, 12.0f / 256.0f },
             glm::vec4{ 134.0f / 256.0f, 32.0f / 256.0f, 140.0f / 256.0f, 64.0f / 256.0f },
             glm::vec4{ 112.0f / 256.0f, 245.0f / 256.0f, 144.0f / 256.0f, 251.0f / 256.0f }
         };
 
-        auto clipped = ClipByUVRectangles(Triangle{ triangle.p1, triangle.p2, triangle.p3 }, regions);
-
-        if (clipped.empty())
+        constexpr auto other = std::array
         {
-            triangles.push_back(std::move(triangle));
-            return;
-        }
-            
-        for (const auto& tr : clipped)
-        {
-            auto middle = (tr.p1.uv + tr.p2.uv + tr.p3.uv) / 3.0f;
+            glm::vec4{ 0.0f / 256.0f, 0.0f / 256.0f, 64.0f / 256.0f, 64.0f / 256.0f },
+            glm::vec4{ 192.0f / 256.0f, 0.0f, 256.0f / 256.0f, 64.0f / 256.0f }
+        };
 
-            auto inside = std::any_of(regions.begin(), regions.end(), [&](const glm::vec4& region)
+        const auto isInside = [](std::span<const glm::vec4> regions, const glm::vec2& middle)
+        {
+            return std::any_of(regions.begin(), regions.end(), [&](const glm::vec4& region)
             {
                 if (middle[0] < region[0]) return false;
                 if (middle[1] < region[1]) return false;
@@ -527,16 +530,44 @@ void AddTriangle(std::vector<ModelTriangle>& triangles, ModelTriangle&& triangle
                 if (middle[1] > region[3]) return false;
                 return true;
             });
+        };
 
-            auto material = triangle.material;
+        const auto addTriangle = [&](ModelTriangle&& triangle)
+        {
+            auto middle = (triangle.p1.uv + triangle.p2.uv + triangle.p3.uv) / 3.0f;
 
-            // Apply base material color for bands and suit
-            if (inside)
-                material.baseColor = BaseColor::BAND;
+            // Bands
+            if (isInside(bands, middle))
+            {
+                triangle.material.baseColor = BaseColor::BAND;
+            }
+            // Other parts
+            else if (isInside(other, middle))
+            {
+                triangle.material.baseColor = BaseColor::TEAM;
+            }
+            // Suit
             else
-                material.baseColor = BaseColor::SUIT;
+            {
+                triangle.material.baseColor = BaseColor::SUIT;
+                triangle.material.recolorShift = 0.3f;
+            }
 
-            triangles.push_back(ModelTriangle{ tr.p1, tr.p2, tr.p3, material });
+            triangles.push_back(std::move(triangle));
+        };
+
+        auto clipped = ClipByUVRectangles(Triangle{ triangle.p1, triangle.p2, triangle.p3 }, bands);
+
+        if (clipped.empty())
+        {
+            addTriangle(std::move(triangle));
+        }
+        else
+        {
+            for (const auto& tr : clipped)
+            {
+                addTriangle(ModelTriangle{ tr.p1, tr.p2, tr.p3, triangle.material });
+            }
         }
     }
     else
