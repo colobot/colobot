@@ -572,7 +572,9 @@ bool CApplication::Create()
         return false;
     }
 
-    if (!m_headless)
+    // Agent server needs a GL context for rendering even in headless mode.
+    bool needsWindow = !m_headless || m_agentServer != nullptr;
+    if (needsWindow)
     {
         // load settings from profile
         std::string sValue;
@@ -733,6 +735,9 @@ bool CApplication::CreateVideoSurface()
 {
     Uint32 videoFlags = SDL_WINDOW_OPENGL;
 
+    if (m_headless)
+        videoFlags |= SDL_WINDOW_HIDDEN;  // agent server in headless: GL context without visible window
+
     if (m_deviceConfig->fullScreen)
         videoFlags |= SDL_WINDOW_FULLSCREEN;
 
@@ -833,8 +838,9 @@ bool CApplication::CreateVideoSurface()
     }
 
     /* If hardware acceleration specifically requested, this will force the hw accel
-       and fail with error if not available */
-    if (m_deviceConfig->hardwareAccel)
+       and fail with error if not available. Skip in headless mode to allow
+       software renderers (llvmpipe) for CI/CD pipelines. */
+    if (m_deviceConfig->hardwareAccel && !m_headless)
         SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
     m_private->window = SDL_CreateWindow(m_windowTitle.c_str(),
