@@ -34,6 +34,7 @@
 #include <glm/glm.hpp>
 
 #include <array>
+#include <memory>
 #include <string>
 #include <vector>
 #include <map>
@@ -48,6 +49,7 @@ class CModManager;
 class CPathManager;
 class CConfigFile;
 class CSystemUtils;
+class CAgentServer;
 
 namespace Gfx
 {
@@ -427,6 +429,9 @@ protected:
 
     //! Headles mode
     bool            m_headless = false;
+
+    //! Agent command server (optional, activated via -agentserver)
+    std::unique_ptr<CAgentServer> m_agentServer;
 
     //! Static buffer for putenv locale
     inline static std::array<char, 64> m_languageLocale = { '\0' };

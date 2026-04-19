@@ -88,6 +88,8 @@ public:
     bool        DeleteControl(EventType eventMsg);
     CControl*   SearchControl(EventType eventMsg);
 
+    const std::array<std::unique_ptr<CControl>, MAXCONTROL>& GetControls() const { return m_controls; }
+
     void        Draw();
 
     void        SetFocus(CControl* focusControl);

@@ -1,4 +1,6 @@
 target_sources(Colobot-Base PRIVATE
+    agent_server.cpp
+    agent_server.h
     app.cpp
     app.h
     controller.cpp

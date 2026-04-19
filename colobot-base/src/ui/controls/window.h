@@ -79,6 +79,7 @@ public:
     CTarget*    CreateTarget(const glm::vec2& pos, const glm::vec2& dim, int icon, EventType eventMsg);
     bool        DeleteControl(EventType eventMsg);
     CControl*   SearchControl(EventType eventMsg);
+    const std::vector<std::unique_ptr<CControl>>& GetControls() const { return m_controls; }
 
     EventType    GetEventTypeReduce();
     EventType    GetEventTypeFull();

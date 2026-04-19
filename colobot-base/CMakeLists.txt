@@ -10,6 +10,7 @@ add_subdirectory(src)
 target_include_directories(Colobot-Base PUBLIC
     ${CMAKE_CURRENT_LIST_DIR}/src
     ${CMAKE_CURRENT_BINARY_DIR}/src
+    ${CMAKE_SOURCE_DIR}/lib
 )
 
 # Main libraries

@@ -19,6 +19,7 @@
 
 #include "app/app.h"
 
+#include "app/agent_server.h"
 #include "app/controller.h"
 #include "app/input.h"
 #include "app/modman.h"
@@ -219,7 +220,8 @@ ParseArgsStatus CApplication::ParseArguments(const std::vector<std::string>& arg
         OPT_HEADLESS,
         OPT_DEVICE,
         OPT_OPENGL_VERSION,
-        OPT_OPENGL_PROFILE
+        OPT_OPENGL_PROFILE,
+        OPT_AGENTSERVER
     };
 
     option options[] =
@@ -238,7 +240,8 @@ ParseArgsStatus CApplication::ParseArguments(const std::vector<std::string>& arg
         { "headless", no_argument, nullptr, OPT_HEADLESS },
         { "graphics", required_argument, nullptr, OPT_DEVICE },
         { "glversion", required_argument, nullptr, OPT_OPENGL_VERSION },
-        { "glprofile", required_argument, nullptr, OPT_OPENGL_PROFILE },
+        { "glprofile",    required_argument, nullptr, OPT_OPENGL_PROFILE },
+        { "agentserver",  optional_argument, nullptr, OPT_AGENTSERVER   },
         { nullptr, 0, nullptr, 0}
     };
 
@@ -467,6 +470,14 @@ ParseArgsStatus CApplication::ParseArguments(const std::vector<std::string>& arg
                     GetLogger()->Error("Invalid OpenGL profile: %%", optarg);
                     return PARSE_ARGS_FAIL;
                 }
+                break;
+            }
+            case OPT_AGENTSERVER:
+            {
+                int port = 7777;
+                if (optarg != nullptr && *optarg != '\0')
+                    port = atoi(optarg);
+                m_agentServer = std::make_unique<CAgentServer>(port);
                 break;
             }
             default:
@@ -701,6 +712,9 @@ bool CApplication::Create()
         m_controller->GetRobotMain()->SetExitAfterMission(true);
         m_controller->StartGame(m_runSceneCategory, m_runSceneRank/100, m_runSceneRank%100);
     }
+
+    if (m_agentServer)
+        m_agentServer->Start(m_engine.get(), m_eventQueue.get());
 
     return true;
 }
@@ -1191,6 +1205,9 @@ int CApplication::Run()
             UpdateMouse();
 
             Render();
+
+            if (m_agentServer)
+                m_agentServer->DrainQueue();
 
             CProfiler::StopPerformanceCounter(PCNT_ALL);
         }
