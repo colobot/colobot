@@ -1,6 +1,6 @@
 # Agent Command Server — Spec
 
-**Status:** DRAFT v0.2 — OQ-1..4 closed by code exploration  
+**Status:** DRAFT v0.3 — all OQs closed; milestones 0–3 verified on macOS + Linux (Podman/Xvfb)  
 **Approach:** spec-first; analyst updates this doc as prototype clarifies unknowns  
 **Agents:**
 - `analyst` — owns this spec; refines it as prototype runs
@@ -248,12 +248,15 @@ Prototype must confirm that all relevant screens' widgets are reachable via
 | Server binds to 127.0.0.1 | ✓ | ✓ | ✓ |
 | No OS accessibility APIs used | ✓ | ✓ | ✓ |
 | No X11 / AppKit / WinAPI in server code | ✓ | ✓ | ✓ |
-| HTTP library compiles without extra deps | TBD | TBD | TBD |
-| Screenshot works without GPU readback | TBD | TBD | TBD |
+| HTTP library compiles without extra deps | ✓ | ✓ | TBD |
+| Screenshot works without GPU readback | ✓ | ✓ | TBD |
 
-**Open question OQ-5:** Screenshot on Linux headless (CI) — does
-`glReadPixels` work without a display? Prototype must test with a virtual
-framebuffer (Xvfb or offscreen context).
+**OQ-5 CLOSED:** Screenshot on Linux works via Xvfb + Mesa llvmpipe
+(`LIBGL_ALWAYS_SOFTWARE=1 GALLIUM_DRIVER=llvmpipe`). The game must be launched
+**without** `-headless` so SDL2 creates a real window and GL context; Xvfb
+provides the virtual display. `import -window root` (ImageMagick) captures the
+Xvfb framebuffer. Verified 2026-04-19 on Ubuntu 24.04 arm64 (Podman/libkrun).
+See `.devcontainer/test-headless.sh` for the repeatable test.
 
 ---
 
@@ -344,6 +347,7 @@ Sign-off: human
 |---------|------|--------|-------|
 | 0.1 | 2026-04-17 | Initial draft from exploratory session | analyst |
 | 0.2 | 2026-04-18 | Closed OQ-1..4; added integration points table | analyst |
+| 0.3 | 2026-04-19 | Closed OQ-5 (Linux/Xvfb verified); updated cross-platform table | analyst |
 
 ---
 
@@ -355,4 +359,4 @@ Sign-off: human
 | OQ-2 | HTTP library choice? | **CLOSED** — cpp-httplib header-only |
 | OQ-3 | Widget IDs: stable strings vs numeric fallback? | **CLOSED** — registry + `evt:N` fallback |
 | OQ-4 | Screenshot: next frame vs last frame? | **CLOSED** — next frame |
-| OQ-5 | Headless screenshot on Linux (Xvfb / offscreen GL)? | **OPEN** — needs Milestone 0 on Linux |
+| OQ-5 | Headless screenshot on Linux (Xvfb / offscreen GL)? | **CLOSED** — Xvfb + llvmpipe + imagemagick; no `-headless` flag |
