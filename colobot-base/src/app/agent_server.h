@@ -1,5 +1,6 @@
 #pragma once
 
+#include <atomic>
 #include <functional>
 #include <future>
 #include <memory>
@@ -7,9 +8,16 @@
 #include <queue>
 #include <string>
 #include <thread>
+#include <vector>
+
+#include <glm/glm.hpp>
 
 namespace httplib { class Server; }
-namespace Gfx { class CEngine; }
+namespace Gfx
+{
+class CEngine;
+class CDevice;
+}
 class CEventQueue;
 
 class CAgentServer
@@ -23,7 +31,11 @@ public:
     void Start(Gfx::CEngine* engine, CEventQueue* eventQueue);
     void Stop();
 
-    // Call once per frame from the main thread, after rendering.
+    // Call once per frame from the main thread, AFTER rendering but BEFORE SwapBuffers.
+    // Fulfills any pending screenshot request by reading from the current GL framebuffer.
+    void CaptureFrameIfPending(Gfx::CDevice* device, const glm::ivec2& size);
+
+    // Call once per frame from the main thread, after SwapBuffers.
     void DrainQueue();
 
     bool IsRunning() const { return m_running; }
@@ -47,7 +59,10 @@ private:
     std::string DoType      (const std::string& id, const std::string& text);
     std::string DoSelect    (const std::string& id, const std::string& item, const std::string& index);
     std::string DoKey       (const std::string& key);
-    std::string DoScreenshot();
+
+    // Encodes raw RGBA pixels (bottom-up, from glReadPixels) as a PNG in memory.
+    static std::vector<unsigned char> EncodeRGBAToPNG(
+        const unsigned char* rgba, int width, int height);
 
     int             m_port;
     bool            m_running = false;
@@ -58,6 +73,11 @@ private:
 
     std::mutex      m_mutex;
     std::queue<Command> m_queue;
+
+    // Screenshot capture: set by HTTP thread, fulfilled by main thread pre-swap.
+    std::atomic<bool>              m_screenshotPending{false};
+    std::mutex                     m_screenshotMutex;
+    std::promise<std::string>      m_screenshotPromise;
 
     Gfx::CEngine*   m_engine     = nullptr;
     CEventQueue*    m_eventQueue = nullptr;

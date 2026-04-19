@@ -1506,6 +1506,11 @@ void CApplication::Render()
     m_engine->Render();
     CProfiler::StopPerformanceCounter(PCNT_RENDER_ALL);
 
+    // Capture the framebuffer for any pending screenshot request BEFORE the swap.
+    // After SDL_GL_SwapWindow the backbuffer contents are undefined.
+    if (m_agentServer)
+        m_agentServer->CaptureFrameIfPending(m_device.get(), m_deviceConfig->size);
+
     CProfiler::StartPerformanceCounter(PCNT_SWAP_BUFFERS);
     if (m_deviceConfig->doubleBuf)
         SDL_GL_SwapWindow(m_private->window);

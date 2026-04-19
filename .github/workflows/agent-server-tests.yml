@@ -25,7 +25,7 @@ jobs:
             libsndfile1-dev libvorbis-dev libogg-dev libpng-dev \
             libglew-dev libopenal-dev libphysfs-dev \
             gettext po4a libglm-dev \
-            xvfb mesa-utils libgl1-mesa-dri imagemagick \
+            xvfb mesa-utils libgl1-mesa-dri \
             curl python3
 
       - name: Configure

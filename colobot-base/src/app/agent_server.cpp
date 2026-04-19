@@ -26,7 +26,9 @@
 #include "common/image.h"
 #include "common/logger.h"
 #include "graphics/core/device.h"
+#include "graphics/core/framebuffer.h"
 #include "graphics/engine/engine.h"
+#include "graphics/opengl33/glutil.h"
 #include "level/robotmain.h"
 #include "ui/controls/button.h"
 #include "ui/controls/control.h"
@@ -36,9 +38,11 @@
 #include "ui/controls/window.h"
 
 #include <SDL.h>
+#include <png.h>
 
 #include <algorithm>
 #include <chrono>
+#include <csetjmp>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -487,10 +491,20 @@ void CAgentServer::ServerThread()
     m_svr->Get("/screenshot", [this](const httplib::Request& req, httplib::Response& res) {
         try
         {
-            std::string body = PostAndWait([this]() -> std::string {
-                return DoScreenshot();
-            });
-            res.set_content(OkResponse(body), "application/json");
+            // Set up the promise before raising the flag so the main thread
+            // never sees the flag without a valid promise to fulfill.
+            std::future<std::string> fut;
+            {
+                std::lock_guard<std::mutex> lk(m_screenshotMutex);
+                m_screenshotPromise = std::promise<std::string>();
+                fut = m_screenshotPromise.get_future();
+            }
+            m_screenshotPending.store(true, std::memory_order_release);
+
+            if (fut.wait_for(std::chrono::seconds(5)) != std::future_status::ready)
+                throw std::runtime_error("screenshot timeout — main thread did not respond");
+
+            res.set_content(OkResponse(fut.get()), "application/json");
         }
         catch (const std::exception& e)
         {
@@ -680,37 +694,97 @@ std::string CAgentServer::DoKey(const std::string& key)
     return "{\"key\":\"" + JsonEscape(key) + "\"}";
 }
 
-std::string CAgentServer::DoScreenshot()
+// ---------------------------------------------------------------------------
+// GL framebuffer capture — called from main thread between Render and SwapBuffers
+// ---------------------------------------------------------------------------
+
+std::vector<unsigned char> CAgentServer::EncodeRGBAToPNG(
+    const unsigned char* rgba, int width, int height)
 {
-    // The engine renders to FBOs so glReadPixels on the default framebuffer is empty.
-    // Use the OS screen-capture tool instead (same approach as scripts/verify-visual.sh).
-    std::string tmpPath = "/tmp/colobot_agent_screenshot.png";
+    std::vector<unsigned char> out;
 
-#if defined(__APPLE__)
-    // Bring the game window to front so screencapture gets the right Space.
-    system("osascript -e 'tell application \"System Events\" to set frontmost of first process whose name contains \"colobot\" to true' 2>/dev/null");
-    // On macOS: use screencapture. -x suppresses the shutter sound.
-    std::string cmd = "screencapture -x " + tmpPath;
-    if (system(cmd.c_str()) != 0)
-        throw std::runtime_error("screencapture failed");
-#else
-    // On Linux/other: fall back to import (ImageMagick) if available.
-    std::string cmd = "import -window root " + tmpPath + " 2>/dev/null"
-                      " || scrot " + tmpPath + " 2>/dev/null";
-    if (system(cmd.c_str()) != 0)
-        throw std::runtime_error("screen capture failed (install imagemagick or scrot)");
-#endif
+    png_structp pngPtr = png_create_write_struct(
+        PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
+    if (!pngPtr)
+        throw std::runtime_error("png_create_write_struct failed");
 
-    FILE* f = fopen(tmpPath.c_str(), "rb");
-    if (!f)
-        throw std::runtime_error("cannot open screenshot file");
-    fseek(f, 0, SEEK_END);
-    long sz = ftell(f);
-    rewind(f);
-    std::vector<unsigned char> buf(sz);
-    fread(buf.data(), 1, sz, f);
-    fclose(f);
+    png_infop infoPtr = png_create_info_struct(pngPtr);
+    if (!infoPtr)
+    {
+        png_destroy_write_struct(&pngPtr, nullptr);
+        throw std::runtime_error("png_create_info_struct failed");
+    }
 
-    std::string b64 = Base64Encode(buf.data(), buf.size());
-    return "{\"png\":\"" + b64 + "\"}";
+    if (setjmp(png_jmpbuf(pngPtr)))
+    {
+        png_destroy_write_struct(&pngPtr, &infoPtr);
+        throw std::runtime_error("PNG encoding error");
+    }
+
+    // Write into a memory buffer via custom write callback.
+    png_set_write_fn(pngPtr, &out,
+        [](png_structp p, png_bytep data, png_size_t len) {
+            auto* v = static_cast<std::vector<unsigned char>*>(png_get_io_ptr(p));
+            v->insert(v->end(), data, data + len);
+        },
+        [](png_structp) {});
+
+    png_set_IHDR(pngPtr, infoPtr, width, height, 8,
+        PNG_COLOR_TYPE_RGB, PNG_INTERLACE_NONE,
+        PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
+    png_write_info(pngPtr, infoPtr);
+
+    // glReadPixels produces rows bottom-up; PNG expects top-down.
+    // Build row pointers in reverse row order and convert RGBA→RGB on the fly.
+    int stride = width * 4; // RGBA source stride
+    std::vector<unsigned char> rgb(width * height * 3);
+    for (int y = 0; y < height; ++y)
+    {
+        const unsigned char* src = rgba + (height - 1 - y) * stride;
+        unsigned char* dst = rgb.data() + y * width * 3;
+        for (int x = 0; x < width; ++x)
+        {
+            dst[x * 3 + 0] = src[x * 4 + 0];
+            dst[x * 3 + 1] = src[x * 4 + 1];
+            dst[x * 3 + 2] = src[x * 4 + 2];
+        }
+    }
+
+    std::vector<png_bytep> rows(height);
+    for (int y = 0; y < height; ++y)
+        rows[y] = rgb.data() + y * width * 3;
+
+    png_write_image(pngPtr, rows.data());
+    png_write_end(pngPtr, infoPtr);
+    png_destroy_write_struct(&pngPtr, &infoPtr);
+
+    return out;
+}
+
+void CAgentServer::CaptureFrameIfPending(Gfx::CDevice* device, const glm::ivec2& size)
+{
+    if (!m_screenshotPending.load(std::memory_order_acquire))
+        return;
+
+    m_screenshotPending.store(false, std::memory_order_relaxed);
+
+    std::string result;
+    try
+    {
+        auto pixels = device->GetFrameBufferPixels();
+        const auto* rgba = static_cast<const unsigned char*>(pixels->GetPixelsData());
+        auto png = EncodeRGBAToPNG(rgba, size.x, size.y);
+        std::string b64 = Base64Encode(png.data(), png.size());
+        result = "{\"png\":\"" + b64 + "\"}";
+    }
+    catch (const std::exception& e)
+    {
+        // Fulfill with an error so the HTTP thread doesn't hang.
+        std::lock_guard<std::mutex> lk(m_screenshotMutex);
+        m_screenshotPromise.set_exception(std::current_exception());
+        return;
+    }
+
+    std::lock_guard<std::mutex> lk(m_screenshotMutex);
+    m_screenshotPromise.set_value(std::move(result));
 }
