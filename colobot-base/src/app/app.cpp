@@ -298,6 +298,7 @@ ParseArgsStatus CApplication::ParseArguments(const std::vector<std::string>& arg
                 GetLogger()->Message("  -graphics           changes graphics device (one of: default, auto, opengl, gl14, gl21, gl33");
                 GetLogger()->Message("  -glversion          sets OpenGL context version to use (either default or version in format #.#)");
                 GetLogger()->Message("  -glprofile          sets OpenGL context profile to use (one of: default, core, compatibility, opengles)");
+                GetLogger()->Message("  -agentserver[=PORT] starts HTTP/JSON agent server on given port (default 7777)");
                 return PARSE_ARGS_HELP;
             }
             case OPT_DEBUG:

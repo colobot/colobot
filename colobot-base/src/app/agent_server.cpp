@@ -37,11 +37,13 @@
 
 #include <SDL.h>
 
+#include <algorithm>
 #include <chrono>
 #include <sstream>
 #include <stdexcept>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 // ---------------------------------------------------------------------------
 // Widget ID registry
@@ -506,6 +508,24 @@ void CAgentServer::ServerThread()
 // Main-thread command implementations
 // ---------------------------------------------------------------------------
 
+// Detect which game screen is currently shown from the set of present widget IDs.
+static std::string DetectScreen(const std::vector<std::string>& ids)
+{
+    auto has = [&](const char* id) {
+        return std::find(ids.begin(), ids.end(), id) != ids.end();
+    };
+
+    if (has("EditPlayerName") && has("ListPlayers"))  return "PlayerSelect";
+    if (has("ButtonExercises") && has("ButtonQuit"))  return "MainMenu";
+    if (has("ListChapter") && has("ListLevel"))        return "LevelSelect";
+    if (has("ButtonAbort") || has("ButtonAgain"))      return "InGameMenu";
+    // In-game (HUD or SatCom): no menu-specific widgets present.
+    // Loading state has ≤6 widgets; real in-game states have ≥7 (SatCom) or more.
+    if (ids.size() >= 7 && !has("EditPlayerName") && !has("ButtonExercises") && !has("ListChapter"))
+        return "InGame";
+    return "unknown";
+}
+
 std::string CAgentServer::BuildStateJson()
 {
     Ui::CInterface* iface = GetCurrentInterface();
@@ -514,6 +534,7 @@ std::string CAgentServer::BuildStateJson()
 
     std::string widgets = "[";
     bool first = true;
+    std::vector<std::string> ids;
 
     for (const auto& ctrl : iface->GetControls())
     {
@@ -524,17 +545,20 @@ std::string CAgentServer::BuildStateJson()
             for (const auto& child : win->GetControls())
             {
                 if (!child) continue;
+                ids.push_back(EventTypeToWidgetId(child->GetEventType()));
                 AppendWidgetJson(widgets, first, child.get());
             }
         }
         else
         {
+            ids.push_back(EventTypeToWidgetId(ctrl->GetEventType()));
             AppendWidgetJson(widgets, first, ctrl.get());
         }
     }
     widgets += "]";
 
-    return "{\"screen\":\"unknown\",\"widgets\":" + widgets + "}";
+    std::string screen = DetectScreen(ids);
+    return "{\"screen\":\"" + screen + "\",\"widgets\":" + widgets + "}";
 }
 
 std::string CAgentServer::DoClick(const std::string& id)
