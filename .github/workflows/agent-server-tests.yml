@@ -8,7 +8,7 @@ on:
 
 jobs:
   agent-server-linux:
-    name: Agent server tests (Linux/Xvfb)
+    name: Agent server tests (Linux/Xvfb/llvmpipe)
     runs-on: ubuntu-24.04
 
     steps:
@@ -16,7 +16,7 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Install dependencies
+      - name: Install build dependencies
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends \
@@ -26,7 +26,10 @@ jobs:
             libglew-dev libopenal-dev libphysfs-dev \
             gettext po4a libglm-dev \
             xvfb mesa-utils libgl1-mesa-dri \
-            curl python3
+            curl python3 python3-pip
+
+      - name: Install Python test dependencies
+        run: pip install pytest requests pillow
 
       - name: Configure
         run: |
@@ -48,109 +51,23 @@ jobs:
           echo "DISPLAY=:99" >> "$GITHUB_ENV"
           sleep 1
 
-      - name: Start agent server
+      - name: Run agent server tests
         env:
           LIBGL_ALWAYS_SOFTWARE: "1"
           GALLIUM_DRIVER: llvmpipe
         run: |
-          build/colobot \
-            -agentserver 7777 \
-            -datadir build/data/ \
-            -glversion 3.3 -glprofile core \
-            -resolution 640x480 \
-            </dev/null >agent-server.log 2>&1 &
-          echo $! > agent-server.pid
+          pytest tests/agent/ -v \
+            --colobot-bin=build/colobot \
+            --colobot-datadir=build/data \
+            --tb=short \
+            -m "not os_screenshot"
 
-      - name: Wait for /health
-        run: |
-          for i in $(seq 1 20); do
-            if curl -sf http://127.0.0.1:7777/health >/dev/null 2>&1; then
-              echo "Agent server ready after ${i}s"
-              break
-            fi
-            if ! kill -0 $(cat agent-server.pid) 2>/dev/null; then
-              echo "ERROR: agent server exited early"
-              cat agent-server.log
-              exit 1
-            fi
-            sleep 1
-          done
-
-      - name: Milestone 0 — /health
-        run: |
-          curl -sf http://127.0.0.1:7777/health | python3 -m json.tool
-          curl -sf http://127.0.0.1:7777/health | python3 -c "
-          import sys, json
-          d = json.load(sys.stdin)
-          assert d['ok'], f'health not ok: {d}'
-          assert d['data']['status'] == 'ok'
-          print('PASS: /health')
-          "
-
-      - name: Milestone 1 — /state shows PlayerSelect
-        run: |
-          STATE=$(curl -sf http://127.0.0.1:7777/state)
-          echo "$STATE" | python3 -m json.tool
-          echo "$STATE" | python3 -c "
-          import sys, json
-          d = json.load(sys.stdin)
-          assert d['ok'], f'state not ok: {d}'
-          assert d['data']['screen'] == 'PlayerSelect', f'expected PlayerSelect, got: {d[\"data\"][\"screen\"]}'
-          ids = [w['id'] for w in d['data']['widgets']]
-          assert 'EditPlayerName' in ids, f'EditPlayerName not found in {ids}'
-          assert 'ButtonOK' in ids, f'ButtonOK not found in {ids}'
-          print('PASS: /state screen=PlayerSelect with EditPlayerName and ButtonOK')
-          "
-
-      - name: Milestone 2 — type player name and click OK
-        run: |
-          curl -sf -X POST http://127.0.0.1:7777/type \
-            -H 'Content-Type: application/json' \
-            -d '{"id":"EditPlayerName","text":"Claude"}' | python3 -m json.tool
-
-          curl -sf -X POST http://127.0.0.1:7777/click \
-            -H 'Content-Type: application/json' \
-            -d '{"id":"ButtonOK"}' | python3 -m json.tool
-
-          sleep 2
-
-          STATE=$(curl -sf http://127.0.0.1:7777/state)
-          echo "$STATE" | python3 -c "
-          import sys, json
-          d = json.load(sys.stdin)
-          screen = d['data']['screen']
-          assert screen != 'PlayerSelect', f'still on PlayerSelect after clicking OK'
-          print(f'PASS: advanced to screen={screen}')
-          "
-
-      - name: Milestone 3 — /screenshot returns a PNG
-        run: |
-          curl -sf http://127.0.0.1:7777/screenshot | python3 -c "
-          import sys, json, base64
-          d = json.load(sys.stdin)
-          assert d['ok'], f'screenshot not ok: {d}'
-          png = base64.b64decode(d['data']['png'])
-          assert len(png) > 1000, f'PNG too small: {len(png)} bytes'
-          assert png[:4] == b'\x89PNG', 'not a valid PNG'
-          open('screenshot.png', 'wb').write(png)
-          print(f'PASS: /screenshot returned {len(png)}-byte PNG')
-          "
-
-      - name: Upload screenshot artifact
+      - name: Upload screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: agent-server-screenshot
-          path: screenshot.png
+          name: agent-screenshots
+          path: |
+            tests/agent/snapshots/*.png
+            tests/agent/snapshots/*.actual.png
           if-no-files-found: ignore
-
-      - name: Upload agent server log
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: agent-server-log
-          path: agent-server.log
-
-      - name: Stop agent server
-        if: always()
-        run: kill $(cat agent-server.pid) 2>/dev/null || true
