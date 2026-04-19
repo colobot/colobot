@@ -658,28 +658,28 @@ std::string CAgentServer::DoKey(const std::string& key)
 
 std::string CAgentServer::DoScreenshot()
 {
-    if (!m_engine)
-        throw std::runtime_error("engine not available");
-
-    // Capture the current framebuffer.
-    auto pixels = m_engine->GetDevice()->GetFrameBufferPixels();
-    if (!pixels)
-        throw std::runtime_error("GetFrameBufferPixels returned null");
-
-    glm::ivec2 size = m_engine->GetWindowSize();
-    CImage img(size);
-    img.SetDataPixels(pixels->GetPixelsData());
-    img.FlipVertically();
-
-    // Save to a temp file and read back for base64 encoding.
+    // The engine renders to FBOs so glReadPixels on the default framebuffer is empty.
+    // Use the OS screen-capture tool instead (same approach as scripts/verify-visual.sh).
     std::string tmpPath = "/tmp/colobot_agent_screenshot.png";
-    if (!img.SavePNG(tmpPath))
-        throw std::runtime_error("PNG save failed: " + img.GetError());
 
-    // Read the PNG bytes
+#if defined(__APPLE__)
+    // Bring the game window to front so screencapture gets the right Space.
+    system("osascript -e 'tell application \"System Events\" to set frontmost of first process whose name contains \"colobot\" to true' 2>/dev/null");
+    // On macOS: use screencapture. -x suppresses the shutter sound.
+    std::string cmd = "screencapture -x " + tmpPath;
+    if (system(cmd.c_str()) != 0)
+        throw std::runtime_error("screencapture failed");
+#else
+    // On Linux/other: fall back to import (ImageMagick) if available.
+    std::string cmd = "import -window root " + tmpPath + " 2>/dev/null"
+                      " || scrot " + tmpPath + " 2>/dev/null";
+    if (system(cmd.c_str()) != 0)
+        throw std::runtime_error("screen capture failed (install imagemagick or scrot)");
+#endif
+
     FILE* f = fopen(tmpPath.c_str(), "rb");
     if (!f)
-        throw std::runtime_error("cannot open tmp PNG");
+        throw std::runtime_error("cannot open screenshot file");
     fseek(f, 0, SEEK_END);
     long sz = ftell(f);
     rewind(f);

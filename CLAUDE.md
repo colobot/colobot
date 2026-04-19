@@ -37,6 +37,7 @@ mkdir build-dev && cd build-dev
 cmake -DCMAKE_BUILD_TYPE=Debug -DCOLOBOT_DEVELOPMENT_MODE=ON -DTESTS=ON \
   -DCMAKE_PREFIX_PATH="$HOME/homebrew" ..
 make -j$(sysctl -n hw.logicalcpu)
+make UpdateShaders   # copies GLSL shaders into build-dev/data/shaders/ (required for rendering)
 ```
 
 Run (development mode copies `data/` into the build dir, so `-datadir` must point there):
