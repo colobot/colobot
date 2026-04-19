@@ -64,6 +64,9 @@ private:
     static std::vector<unsigned char> EncodeRGBAToPNG(
         const unsigned char* rgba, int width, int height);
 
+    // OS-level screenshot via platform screencapture tools (?source=os).
+    std::string DoScreenshotOS();
+
     int             m_port;
     bool            m_running = false;
 

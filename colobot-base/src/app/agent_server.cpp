@@ -491,20 +491,35 @@ void CAgentServer::ServerThread()
     m_svr->Get("/screenshot", [this](const httplib::Request& req, httplib::Response& res) {
         try
         {
-            // Set up the promise before raising the flag so the main thread
-            // never sees the flag without a valid promise to fulfill.
-            std::future<std::string> fut;
+            bool useOS = req.has_param("source") && req.get_param_value("source") == "os";
+            std::string body;
+
+            if (useOS)
             {
-                std::lock_guard<std::mutex> lk(m_screenshotMutex);
-                m_screenshotPromise = std::promise<std::string>();
-                fut = m_screenshotPromise.get_future();
+                // OS screenshot: captures what actually appeared on screen including window
+                // chrome, compositor effects, and HiDPI scaling. Useful for validating
+                // platform-specific rendering behaviour. Runs on the HTTP thread directly.
+                body = PostAndWait([this]() -> std::string { return DoScreenshotOS(); });
             }
-            m_screenshotPending.store(true, std::memory_order_release);
+            else
+            {
+                // GL framebuffer readback: captures the rendered frame directly from FBO 0.
+                // No external tools required; works headless. Default for CI use.
+                std::future<std::string> fut;
+                {
+                    std::lock_guard<std::mutex> lk(m_screenshotMutex);
+                    m_screenshotPromise = std::promise<std::string>();
+                    fut = m_screenshotPromise.get_future();
+                }
+                m_screenshotPending.store(true, std::memory_order_release);
 
-            if (fut.wait_for(std::chrono::seconds(5)) != std::future_status::ready)
-                throw std::runtime_error("screenshot timeout — main thread did not respond");
+                if (fut.wait_for(std::chrono::seconds(5)) != std::future_status::ready)
+                    throw std::runtime_error("screenshot timeout — main thread did not respond");
 
-            res.set_content(OkResponse(fut.get()), "application/json");
+                body = fut.get();
+            }
+
+            res.set_content(OkResponse(body), "application/json");
         }
         catch (const std::exception& e)
         {
@@ -787,4 +802,42 @@ void CAgentServer::CaptureFrameIfPending(Gfx::CDevice* device, const glm::ivec2&
 
     std::lock_guard<std::mutex> lk(m_screenshotMutex);
     m_screenshotPromise.set_value(std::move(result));
+}
+
+// ---------------------------------------------------------------------------
+// OS screenshot — captures the actual screen via platform screencapture tools.
+// Use ?source=os to validate platform-specific rendering and compositor behaviour.
+// ---------------------------------------------------------------------------
+
+std::string CAgentServer::DoScreenshotOS()
+{
+    std::string tmpPath = "/tmp/colobot_agent_screenshot_os.png";
+
+#if defined(__APPLE__)
+    system("osascript -e 'tell application \"System Events\" to set frontmost of "
+           "first process whose name contains \"colobot\" to true' 2>/dev/null");
+    std::string cmd = "screencapture -x " + tmpPath;
+    if (system(cmd.c_str()) != 0)
+        throw std::runtime_error("screencapture failed");
+#else
+    std::string cmd = "import -window root " + tmpPath + " 2>/dev/null"
+                      " || scrot " + tmpPath + " 2>/dev/null";
+    if (system(cmd.c_str()) != 0)
+        throw std::runtime_error(
+            "OS screenshot failed — install imagemagick or scrot, "
+            "and ensure a display server (Xvfb) is running");
+#endif
+
+    FILE* f = fopen(tmpPath.c_str(), "rb");
+    if (!f)
+        throw std::runtime_error("cannot open OS screenshot file");
+    fseek(f, 0, SEEK_END);
+    long sz = ftell(f);
+    rewind(f);
+    std::vector<unsigned char> buf(sz);
+    fread(buf.data(), 1, sz, f);
+    fclose(f);
+
+    std::string b64 = Base64Encode(buf.data(), buf.size());
+    return "{\"png\":\"" + b64 + "\"}";
 }
