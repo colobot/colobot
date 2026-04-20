@@ -12,7 +12,14 @@
 #endif
 
 #undef CPPHTTPLIB_OPENSSL_SUPPORT
+#if defined(__GNUC__) || defined(__clang__)
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wold-style-cast"
+#endif
 #include "../../../lib/cpp-httplib/httplib.h"
+#if defined(__GNUC__) || defined(__clang__)
+#  pragma GCC diagnostic pop
+#endif
 
 #if defined(__clang__)
 #  pragma clang diagnostic pop
@@ -835,7 +842,11 @@ std::string CAgentServer::DoScreenshotOS()
     long sz = ftell(f);
     rewind(f);
     std::vector<unsigned char> buf(sz);
-    fread(buf.data(), 1, sz, f);
+    if (fread(buf.data(), 1, sz, f) != static_cast<size_t>(sz))
+    {
+        fclose(f);
+        throw std::runtime_error("failed to read OS screenshot file");
+    }
     fclose(f);
 
     std::string b64 = Base64Encode(buf.data(), buf.size());
