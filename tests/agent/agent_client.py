@@ -42,6 +42,17 @@ class AgentClient:
     def key(self, key: str) -> dict:
         return self._post("/key", {"key": key})
 
+    def click_pos(self, x: float, y: float) -> dict:
+        """Click at interface coordinates (x, y) in [0,1], origin bottom-left."""
+        return self._post("/click_pos", {"x": x, "y": y})
+
+    def console(self, command: str) -> None:
+        """Open the in-game console, execute a command, and close it."""
+        self.key("Backquote")
+        import time; time.sleep(0.1)
+        self.type("EditConsole", command)
+        self.key("Return")
+
     def screenshot(self, source: str = "gl") -> bytes:
         """Returns raw PNG bytes. source='gl' (default) or 'os'."""
         params = {} if source == "gl" else {"source": source}

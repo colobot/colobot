@@ -56,6 +56,7 @@ private:
     // Main-thread command implementations (called via PostAndWait)
     std::string BuildStateJson();
     std::string DoClick     (const std::string& id);
+    std::string DoClickPos  (float x, float y);
     std::string DoType      (const std::string& id, const std::string& text);
     std::string DoSelect    (const std::string& id, const std::string& item, const std::string& index);
     std::string DoKey       (const std::string& key);

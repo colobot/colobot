@@ -88,6 +88,19 @@ static const std::unordered_map<int, std::string>& GetRegistry()
         { static_cast<int>(EVENT_INTERFACE_WRITE),  "ButtonSave"     },
         { static_cast<int>(EVENT_INTERFACE_READ),   "ButtonLoad"     },
         { static_cast<int>(EVENT_INTERFACE_SATCOM), "ButtonSatCom"   },
+        // Console command line (in-game, toggled with backtick)
+        { static_cast<int>(EVENT_CMD),              "EditConsole"    },
+        // Setup screen tabs and controls
+        { static_cast<int>(EVENT_INTERFACE_SETUPd), "ButtonTabDisplay" },
+        { static_cast<int>(EVENT_INTERFACE_SETUPg), "ButtonTabGame"  },
+        { static_cast<int>(EVENT_INTERFACE_APPLY),  "ButtonApply"    },
+        { static_cast<int>(EVENT_INTERFACE_LANGUAGE),"ListLanguage"  },
+        // Script studio (in-game code editor)
+        { static_cast<int>(EVENT_STUDIO_EDIT),      "StudioEdit"     },
+        { static_cast<int>(EVENT_STUDIO_COMPILE),   "StudioCompile"  },
+        { static_cast<int>(EVENT_STUDIO_RUN),       "StudioRun"      },
+        { static_cast<int>(EVENT_STUDIO_OK),        "StudioOK"       },
+        { static_cast<int>(EVENT_STUDIO_CANCEL),    "StudioCancel"   },
     };
     return kRegistry;
 }
@@ -495,6 +508,31 @@ void CAgentServer::ServerThread()
         }
     });
 
+    m_svr->Post("/click_pos", [this](const httplib::Request& req, httplib::Response& res) {
+        std::string sx = JsonGet(req.body, "x");
+        std::string sy = JsonGet(req.body, "y");
+        if (sx.empty() || sy.empty())
+        {
+            res.status = 400;
+            res.set_content(ErrResponse("missing 'x' or 'y'"), "application/json");
+            return;
+        }
+        try
+        {
+            float x = std::stof(sx);
+            float y = std::stof(sy);
+            std::string body = PostAndWait([this, x, y]() -> std::string {
+                return DoClickPos(x, y);
+            });
+            res.set_content(OkResponse(body), "application/json");
+        }
+        catch (const std::exception& e)
+        {
+            res.status = 400;
+            res.set_content(ErrResponse(e.what()), "application/json");
+        }
+    });
+
     m_svr->Get("/screenshot", [this](const httplib::Request& req, httplib::Response& res) {
         try
         {
@@ -551,10 +589,13 @@ static std::string DetectScreen(const std::vector<std::string>& ids)
         return std::find(ids.begin(), ids.end(), id) != ids.end();
     };
 
-    if (has("EditPlayerName") && has("ListPlayers"))  return "PlayerSelect";
-    if (has("ButtonExercises") && has("ButtonQuit"))  return "MainMenu";
-    if (has("ListChapter") && has("ListLevel"))        return "LevelSelect";
-    if (has("ButtonAbort") || has("ButtonAgain"))      return "InGameMenu";
+    if (has("EditPlayerName") && has("ListPlayers"))     return "PlayerSelect";
+    if (has("ButtonExercises") && has("ButtonQuit"))     return "MainMenu";
+    if (has("ListChapter") && has("ListLevel"))           return "LevelSelect";
+    if (has("ListLanguage"))                              return "SetupGame";
+    if (has("ButtonTabDisplay") && has("ButtonApply"))    return "SetupDisplay";
+    if (has("StudioEdit") && has("StudioRun"))            return "Studio";
+    if (has("ButtonAbort") || has("ButtonAgain"))         return "InGameMenu";
     // In-game (HUD or SatCom): no menu-specific widgets present.
     // Loading state has ≤6 widgets; real in-game states have ≥7 (SatCom) or more.
     if (ids.size() >= 7 && !has("EditPlayerName") && !has("ButtonExercises") && !has("ListChapter"))
@@ -696,6 +737,13 @@ std::string CAgentServer::DoKey(const std::string& key)
         { "F7",  SDL_SCANCODE_F7  }, { "F8",  SDL_SCANCODE_F8  },
         { "F9",  SDL_SCANCODE_F9  }, { "F10", SDL_SCANCODE_F10 },
         { "F11", SDL_SCANCODE_F11 }, { "F12", SDL_SCANCODE_F12 },
+        { "Backquote", SDL_SCANCODE_GRAVE },
+        { "Up",    SDL_SCANCODE_UP    },
+        { "Down",  SDL_SCANCODE_DOWN  },
+        { "Left",  SDL_SCANCODE_LEFT  },
+        { "Right", SDL_SCANCODE_RIGHT },
+        { "Delete",    SDL_SCANCODE_DELETE    },
+        { "Backspace", SDL_SCANCODE_BACKSPACE },
     };
 
     auto it = kKeys.find(key);
@@ -714,6 +762,34 @@ std::string CAgentServer::DoKey(const std::string& key)
     SDL_PushEvent(&up);
 
     return "{\"key\":\"" + JsonEscape(key) + "\"}";
+}
+
+std::string CAgentServer::DoClickPos(float x, float y)
+{
+    // x, y are interface coords in [0,1] (origin bottom-left, matching Colobot conventions).
+    // Convert to SDL window pixels: SDL origin is top-left, so flip y.
+    glm::ivec2 winSize = m_engine->GetWindowSize();
+    int px = static_cast<int>(x * static_cast<float>(winSize.x));
+    int py = static_cast<int>((1.0f - y) * static_cast<float>(winSize.y));
+
+    SDL_Event motion{};
+    motion.type         = SDL_MOUSEMOTION;
+    motion.motion.x     = px;
+    motion.motion.y     = py;
+    SDL_PushEvent(&motion);
+
+    SDL_Event down{};
+    down.type           = SDL_MOUSEBUTTONDOWN;
+    down.button.button  = SDL_BUTTON_LEFT;
+    down.button.x       = px;
+    down.button.y       = py;
+    SDL_PushEvent(&down);
+
+    SDL_Event up = down;
+    up.type = SDL_MOUSEBUTTONUP;
+    SDL_PushEvent(&up);
+
+    return "{\"x\":" + std::to_string(x) + ",\"y\":" + std::to_string(y) + "}";
 }
 
 // ---------------------------------------------------------------------------
