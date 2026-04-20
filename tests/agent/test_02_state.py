@@ -1,10 +1,12 @@
 """Milestone 1 — /state screen detection and widget listing."""
 
 import pytest
+from conftest import navigate_to_player_select
 
 
 @pytest.fixture()
 def on_player_select(client):
+    navigate_to_player_select(client)
     client.wait_for_screen("PlayerSelect")
 
 

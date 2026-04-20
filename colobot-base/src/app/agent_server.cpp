@@ -82,19 +82,25 @@ static const std::unordered_map<int, std::string>& GetRegistry()
         { static_cast<int>(EVENT_INTERFACE_PLAY),   "ButtonPlay"     },
         { static_cast<int>(EVENT_INTERFACE_BACK),   "ButtonBack"     },
         { static_cast<int>(EVENT_INTERFACE_RESUME), "ButtonResume"   },
-        // In-game
-        { static_cast<int>(EVENT_INTERFACE_ABORT),  "ButtonAbort"    },
+        // In-game pause / end-of-level dialog (maindialog.cpp)
+        { static_cast<int>(EVENT_DIALOG_OK),        "ButtonAbort"    },
+        { static_cast<int>(EVENT_DIALOG_CANCEL),    "ButtonContinue" },
         { static_cast<int>(EVENT_INTERFACE_AGAIN),  "ButtonAgain"    },
         { static_cast<int>(EVENT_INTERFACE_WRITE),  "ButtonSave"     },
         { static_cast<int>(EVENT_INTERFACE_READ),   "ButtonLoad"     },
         { static_cast<int>(EVENT_INTERFACE_SATCOM), "ButtonSatCom"   },
+        // End-of-level cinematic screen (PHASE_WIN / PHASE_LOST with EndingFile)
+        { static_cast<int>(EVENT_BUTTON_OK),        "ButtonEndLevel"  },
         // Console command line (in-game, toggled with backtick)
         { static_cast<int>(EVENT_CMD),              "EditConsole"    },
         // Setup screen tabs and controls
-        { static_cast<int>(EVENT_INTERFACE_SETUPd), "ButtonTabDisplay" },
-        { static_cast<int>(EVENT_INTERFACE_SETUPg), "ButtonTabGame"  },
-        { static_cast<int>(EVENT_INTERFACE_APPLY),  "ButtonApply"    },
-        { static_cast<int>(EVENT_INTERFACE_LANGUAGE),"ListLanguage"  },
+        { static_cast<int>(EVENT_INTERFACE_SETUPd), "ButtonTabDisplay"  },
+        { static_cast<int>(EVENT_INTERFACE_SETUPg), "ButtonTabGraphics" },
+        { static_cast<int>(EVENT_INTERFACE_SETUPp), "ButtonTabGameplay" },
+        { static_cast<int>(EVENT_INTERFACE_SETUPc), "ButtonTabControls" },
+        { static_cast<int>(EVENT_INTERFACE_SETUPs), "ButtonTabSound"    },
+        { static_cast<int>(EVENT_INTERFACE_APPLY),  "ButtonApply"       },
+        { static_cast<int>(EVENT_INTERFACE_LANGUAGE),"ListLanguage"     },
         // Script studio (in-game code editor)
         { static_cast<int>(EVENT_STUDIO_EDIT),      "StudioEdit"     },
         { static_cast<int>(EVENT_STUDIO_COMPILE),   "StudioCompile"  },
@@ -592,8 +598,9 @@ static std::string DetectScreen(const std::vector<std::string>& ids)
     if (has("EditPlayerName") && has("ListPlayers"))     return "PlayerSelect";
     if (has("ButtonExercises") && has("ButtonQuit"))     return "MainMenu";
     if (has("ListChapter") && has("ListLevel"))           return "LevelSelect";
+    if (has("ButtonEndLevel"))                            return "LevelComplete";
     if (has("ListLanguage"))                              return "SetupGame";
-    if (has("ButtonTabDisplay") && has("ButtonApply"))    return "SetupDisplay";
+    if (has("ButtonTabDisplay") && has("ButtonTabGraphics")) return "SetupDisplay";
     if (has("StudioEdit") && has("StudioRun"))            return "Studio";
     if (has("ButtonAbort") || has("ButtonAgain"))         return "InGameMenu";
     // In-game (HUD or SatCom): no menu-specific widgets present.

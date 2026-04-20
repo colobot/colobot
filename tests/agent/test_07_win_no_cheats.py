@@ -13,6 +13,7 @@ Strategy:
 
 import time
 import pytest
+from conftest import navigate_to_main_menu
 
 # Interface position of the robot in CAMERA_BACK view (640x480 window).
 # The WheeledShooter starts at pos(0,0) in the level; with BACK camera it
@@ -45,32 +46,7 @@ SPIDER_KILL_PROGRAM = (
 @pytest.fixture(scope="module")
 def fresh_level(client):
     """Start exercise chapter 1 level 1 from MainMenu. Shared across the module."""
-    # Recover to MainMenu regardless of where the previous test left things.
-    for _ in range(3):
-        screen = client.state()["screen"]
-        if screen == "MainMenu":
-            break
-        if screen == "Studio":
-            try:
-                client.click("StudioCancel")
-                client.wait_for_screen("InGame", timeout=5)
-            except Exception:
-                pass
-            screen = "InGame"
-        if screen in ("InGame",):
-            try:
-                client.key("Escape")
-                client.wait_for_screen("InGameMenu", timeout=5)
-            except Exception:
-                pass
-            screen = "InGameMenu"
-        if screen == "InGameMenu":
-            try:
-                client.click("ButtonAbort")
-                client.wait_for_screen("MainMenu", timeout=10)
-            except Exception:
-                pass
-        time.sleep(0.5)
+    navigate_to_main_menu(client)
 
     client.click("ButtonExercises")
     client.wait_for_screen("LevelSelect")

@@ -97,6 +97,46 @@ def client(game_server, update_snapshots) -> AgentClient:
     return c
 
 
+def navigate_to_player_select(client: AgentClient, timeout: float = 10.0) -> None:
+    """Drive the game to PlayerSelect from any reachable screen."""
+    navigate_to_main_menu(client, timeout)
+    if client.state()["screen"] == "MainMenu":
+        client.click("ButtonPlayerName")
+        import time as _t; _t.sleep(0.3)
+
+
+def navigate_to_main_menu(client: AgentClient, timeout: float = 10.0) -> None:
+    """Drive the game back to MainMenu from any reachable screen."""
+    import time as _time
+    for _ in range(6):
+        screen = client.state()["screen"]
+        if screen == "MainMenu":
+            return
+        try:
+            if screen == "PlayerSelect":
+                client.click("ButtonOK")
+                client.wait_for_screen("MainMenu", timeout=timeout)
+            elif screen == "LevelComplete":
+                client.click("ButtonEndLevel")
+                client.wait_for_screen("LevelSelect", timeout=timeout)
+            elif screen == "Studio":
+                client.click("StudioCancel")
+                client.wait_for_screen("InGame", timeout=5)
+            elif screen == "InGame":
+                client.key("Escape")
+                client.wait_for_screen("InGameMenu", timeout=5)
+            elif screen == "InGameMenu":
+                client.click("ButtonAbort")
+                client.wait_for_screen("MainMenu", timeout=timeout)
+            elif screen in ("LevelSelect", "SetupGame", "SetupDisplay",
+                            "SetupGraphics", "SetupControls", "SetupSound"):
+                client.click("ButtonBack")
+                client.wait_for_screen("MainMenu", timeout=timeout)
+        except Exception:
+            pass
+        _time.sleep(0.3)
+
+
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------

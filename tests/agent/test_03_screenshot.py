@@ -1,6 +1,7 @@
 """Milestone 3 — Screenshot: GL readback and OS capture modes."""
 
 import pytest
+from conftest import navigate_to_main_menu
 
 PNG_HEADER = b"\x89PNG\r\n\x1a\n"
 
@@ -32,16 +33,18 @@ def test_gl_screenshot_default_is_gl(client):
 
 
 @pytest.fixture()
-def on_player_select(client):
-    client.wait_for_screen("PlayerSelect")
+def on_main_menu(client):
+    """Navigate to MainMenu — reachable from any screen without a game restart."""
+    navigate_to_main_menu(client)
+    client.wait_for_screen("MainMenu", timeout=10)
 
 
-def test_gl_screenshot_visual_regression(client, on_player_select, update_snapshots):
-    """Compare against a saved baseline (first run saves it)."""
+def test_gl_screenshot_visual_regression(client, on_main_menu, update_snapshots):
+    """Compare MainMenu against a saved baseline (first run saves it)."""
     if update_snapshots:
-        client.save_snapshot("player_select")
+        client.save_snapshot("main_menu")
         return
-    client.assert_snapshot("player_select", tolerance=0.03)
+    client.assert_snapshot("main_menu", tolerance=0.03)
 
 
 # ---------------------------------------------------------------------------

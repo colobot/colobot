@@ -1,28 +1,31 @@
 """Language options verification — navigates to Setup > Game and checks all language entries."""
 
+import time
 import pytest
+from conftest import navigate_to_main_menu
 
 EXPECTED_LANGUAGES = [
     "[System default]",
-    "Magyar",
-    "Czech",
     "English",
     "French",
     "German",
     "Polish",
     "Russian",
+    "Czech",
     "Brazilian Portuguese",
+    "Magyar",
 ]
 
 
 @pytest.fixture()
 def on_setup_game(client):
-    """Navigate PlayerSelect → OK → MainMenu → Setup (Game tab is the default)."""
-    client.wait_for_screen("PlayerSelect")
-    client.click("ButtonOK")
-    client.wait_for_screen("MainMenu")
+    """Navigate to Setup > Gameplay tab from any screen."""
+    navigate_to_main_menu(client)
     client.click("ButtonSetup")
-    client.wait_for_screen("SetupGame")
+    time.sleep(0.5)
+    # The setup screen may open on any tab — navigate to gameplay tab explicitly.
+    client.click("ButtonTabGameplay")
+    client.wait_for_screen("SetupGame", timeout=10)
 
 
 def test_setup_game_screen_reachable(client, on_setup_game):
