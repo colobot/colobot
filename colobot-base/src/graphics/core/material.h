@@ -59,6 +59,8 @@ enum class BaseColor : unsigned char
     HAIR,
     SUIT,
     BAND,
+    BLACK,
+    WHITE,
 };
 
 /**
