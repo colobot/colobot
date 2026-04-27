@@ -106,6 +106,8 @@ struct Material
     Mark mark = Mark::NONE;
     // Terrain tile identifier
     int tile = 0;
+    // Recolor shift
+    float recolorShift = 0.0f;
 
     // Legacy functionality
     //! Variable detail texture
