@@ -189,6 +189,11 @@ inline Color ToLinear(const Color& color)
     return result;
 }
 
+inline float ToGrayscale(const Color& color)
+{
+    return glm::dot(glm::vec3(color), { 0.2989f, 0.5870f, 0.1140f });
+}
+
 inline Color Desaturate(const Color& color)
 {
     float gray = glm::dot(glm::vec3(color), { 0.2989f, 0.5870f, 0.1140f });
