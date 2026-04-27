@@ -2952,6 +2952,10 @@ Color CEngine::GetObjectColor(int object, BaseColor baseColor)
             return appearance.colorCombi;
         case BaseColor::BAND:
             return appearance.colorBand;
+        case BaseColor::BLACK:
+            return Color(0.0, 0.0, 0.0, 1.0);
+        case BaseColor::WHITE:
+            return Color(1.0, 1.0, 1.0, 1.0);
         default:
             return Color(1.0, 1.0, 1.0, 1.0);
     }
