@@ -509,6 +509,10 @@ public:
     glm::ivec2      InterfaceToWindowSize(const glm::vec2& size);
     //@}
 
+    //! Projects a world-space point to 2D interface coordinates ([0..1], y=0 bottom).
+    //! Returns false if the point is behind the camera.
+    bool        WorldToInterface(glm::vec2& p2D, const glm::vec3& worldPos);
+
     //! Increments the triangle counter for the current frame
     void            AddStatisticTriangle(int count);
     //! Returns the number of triangles in current frame

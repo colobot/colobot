@@ -1841,6 +1841,20 @@ bool CEngine::TransformPoint(glm::vec3& p2D, int objRank, glm::vec3 p3D)
     return true;
 }
 
+bool CEngine::WorldToInterface(glm::vec2& p2D, const glm::vec3& worldPos)
+{
+    glm::vec3 p3D = Math::Transform(m_matView, worldPos);
+
+    if (p3D.z < 2.0f)
+        return false;  // behind camera
+
+    float px = (p3D.x / p3D.z) * m_matProj[0][0];
+    float py = (p3D.y / p3D.z) * m_matProj[1][1];
+
+    p2D.x = (px + 1.0f) / 2.0f;
+    p2D.y = (py + 1.0f) / 2.0f;
+    return true;
+}
 
 
 /*******************************************************

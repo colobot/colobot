@@ -89,6 +89,12 @@ public:
     int         GetError();
     void        GetError(std::string& error);
 
+    const std::string& GetSource() const { return m_script; }
+    void        SetSource(const std::string& src) { m_script = src; m_bCompile = false; }
+    int         GetCursor1() const { return m_cursor1; }
+    int         GetCursor2() const { return m_cursor2; }
+    bool        CompileScript() { return Compile(); }
+
     void        New(Ui::CEdit* edit, const std::string& name);
     bool        SendScript(const std::string& text);
     bool        ReadScript(const std::filesystem::path& filename);

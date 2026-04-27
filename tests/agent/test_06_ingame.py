@@ -17,8 +17,6 @@ import pytest
 from conftest import navigate_to_main_menu
 
 
-ROBOT_X = 0.5   # interface x — horizontal center
-ROBOT_Y = 0.25  # interface y — lower portion of the screen (BACK camera, robot in foreground)
 
 SIMPLE_PROGRAM = (
     "extern void object::SpiderKill()\n"
@@ -103,16 +101,9 @@ def test_ingame_hud_has_widgets(client, in_exercise_level):
 
 @pytest.fixture(scope="module")
 def studio_open(client, in_exercise_level):
-    """Click the robot to open the Studio. Skips if the robot is not clickable."""
-    client.click_pos(ROBOT_X, ROBOT_Y)
-    time.sleep(0.5)
-    try:
-        client.wait_for_screen("Studio", timeout=4.0)
-    except TimeoutError:
-        pytest.skip(
-            f"Studio did not open after clicking ({ROBOT_X}, {ROBOT_Y}). "
-            "The robot may not be at that position — adjust ROBOT_X/ROBOT_Y."
-        )
+    """Select a programmable robot and open its Studio with a program selected."""
+    if not client.open_studio():
+        pytest.skip("Could not open Studio for any programmable robot.")
     yield
     # Close studio if still open.
     try:

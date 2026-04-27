@@ -119,6 +119,9 @@ def navigate_to_main_menu(client: AgentClient, timeout: float = 10.0) -> None:
             elif screen == "LevelComplete":
                 client.click("ButtonEndLevel")
                 client.wait_for_screen("LevelSelect", timeout=timeout)
+            elif screen == "SatCom":
+                client.click("SatComClose")
+                client.wait_for_screen("InGame", timeout=5)
             elif screen == "Studio":
                 client.click("StudioCancel")
                 client.wait_for_screen("InGame", timeout=5)

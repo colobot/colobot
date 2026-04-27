@@ -36,7 +36,18 @@
 #include "graphics/core/framebuffer.h"
 #include "graphics/engine/engine.h"
 #include "graphics/opengl33/glutil.h"
+#include "level/level_category.h"
 #include "level/robotmain.h"
+#include "object/interface/programmable_object.h"
+#include "object/interface/program_storage_object.h"
+#include "object/interface/shielded_object.h"
+#include "object/interface/slotted_object.h"
+#include "object/interface/task_executor_object.h"
+#include "object/object.h"
+#include "object/object_manager.h"
+#include "object/task/task.h"
+#include "script/cbottoken.h"
+#include "script/script.h"
 #include "ui/controls/button.h"
 #include "ui/controls/control.h"
 #include "ui/controls/edit.h"
@@ -63,50 +74,215 @@
 static const std::unordered_map<int, std::string>& GetRegistry()
 {
     static const std::unordered_map<int, std::string> kRegistry = {
-        // Player select screen
-        { static_cast<int>(EVENT_INTERFACE_NEDIT),  "EditPlayerName" },
-        { static_cast<int>(EVENT_INTERFACE_NLIST),  "ListPlayers"    },
-        { static_cast<int>(EVENT_INTERFACE_NOK),    "ButtonOK"       },
-        { static_cast<int>(EVENT_INTERFACE_NDELETE),"ButtonDelete"   },
-        // Main menu
-        { static_cast<int>(EVENT_INTERFACE_TRAINER),"ButtonExercises"},
-        { static_cast<int>(EVENT_INTERFACE_DEFI),   "ButtonChallenges"},
-        { static_cast<int>(EVENT_INTERFACE_MISSION),"ButtonMissions" },
-        { static_cast<int>(EVENT_INTERFACE_FREE),   "ButtonFreeGame" },
-        { static_cast<int>(EVENT_INTERFACE_NAME),   "ButtonPlayerName"},
-        { static_cast<int>(EVENT_INTERFACE_SETUP),  "ButtonSetup"    },
-        { static_cast<int>(EVENT_INTERFACE_QUIT),   "ButtonQuit"     },
-        // Level / mission select
-        { static_cast<int>(EVENT_INTERFACE_CHAP),   "ListChapter"    },
-        { static_cast<int>(EVENT_INTERFACE_LIST),   "ListLevel"      },
-        { static_cast<int>(EVENT_INTERFACE_PLAY),   "ButtonPlay"     },
-        { static_cast<int>(EVENT_INTERFACE_BACK),   "ButtonBack"     },
-        { static_cast<int>(EVENT_INTERFACE_RESUME), "ButtonResume"   },
-        // In-game pause / end-of-level dialog (maindialog.cpp)
-        { static_cast<int>(EVENT_DIALOG_OK),        "ButtonAbort"    },
-        { static_cast<int>(EVENT_DIALOG_CANCEL),    "ButtonContinue" },
-        { static_cast<int>(EVENT_INTERFACE_AGAIN),  "ButtonAgain"    },
-        { static_cast<int>(EVENT_INTERFACE_WRITE),  "ButtonSave"     },
-        { static_cast<int>(EVENT_INTERFACE_READ),   "ButtonLoad"     },
-        { static_cast<int>(EVENT_INTERFACE_SATCOM), "ButtonSatCom"   },
-        // End-of-level cinematic screen (PHASE_WIN / PHASE_LOST with EndingFile)
-        { static_cast<int>(EVENT_BUTTON_OK),        "ButtonEndLevel"  },
-        // Console command line (in-game, toggled with backtick)
-        { static_cast<int>(EVENT_CMD),              "EditConsole"    },
-        // Setup screen tabs and controls
-        { static_cast<int>(EVENT_INTERFACE_SETUPd), "ButtonTabDisplay"  },
-        { static_cast<int>(EVENT_INTERFACE_SETUPg), "ButtonTabGraphics" },
-        { static_cast<int>(EVENT_INTERFACE_SETUPp), "ButtonTabGameplay" },
-        { static_cast<int>(EVENT_INTERFACE_SETUPc), "ButtonTabControls" },
-        { static_cast<int>(EVENT_INTERFACE_SETUPs), "ButtonTabSound"    },
-        { static_cast<int>(EVENT_INTERFACE_APPLY),  "ButtonApply"       },
-        { static_cast<int>(EVENT_INTERFACE_LANGUAGE),"ListLanguage"     },
-        // Script studio (in-game code editor)
-        { static_cast<int>(EVENT_STUDIO_EDIT),      "StudioEdit"     },
-        { static_cast<int>(EVENT_STUDIO_COMPILE),   "StudioCompile"  },
-        { static_cast<int>(EVENT_STUDIO_RUN),       "StudioRun"      },
-        { static_cast<int>(EVENT_STUDIO_OK),        "StudioOK"       },
-        { static_cast<int>(EVENT_STUDIO_CANCEL),    "StudioCancel"   },
+        // ── Decorative / background glints (all screens) ─────────────────────
+        { static_cast<int>(EVENT_INTERFACE_GLINTl), "GlintLeft"          },
+        { static_cast<int>(EVENT_INTERFACE_GLINTr), "GlintRight"         },
+        { static_cast<int>(EVENT_INTERFACE_GLINTu), "GlintTop"           },
+        { static_cast<int>(EVENT_INTERFACE_GLINTb), "GlintBottom"        },
+
+        // ── Player-select screen ──────────────────────────────────────────────
+        { static_cast<int>(EVENT_INTERFACE_NEDIT),  "EditPlayerName"     },
+        { static_cast<int>(EVENT_INTERFACE_NLIST),  "ListPlayers"        },
+        { static_cast<int>(EVENT_INTERFACE_NOK),    "ButtonOK"           },
+        { static_cast<int>(EVENT_INTERFACE_NDELETE),"ButtonDelete"       },
+        { static_cast<int>(EVENT_INTERFACE_NLABEL), "LabelPlayerName"    },
+        { static_cast<int>(EVENT_INTERFACE_PERSO),  "ButtonCustomize"    },
+
+        // ── Main menu ─────────────────────────────────────────────────────────
+        { static_cast<int>(EVENT_INTERFACE_TRAINER),      "ButtonExercises"   },
+        { static_cast<int>(EVENT_INTERFACE_DEFI),         "ButtonChallenges"  },
+        { static_cast<int>(EVENT_INTERFACE_MISSION),      "ButtonMissions"    },
+        { static_cast<int>(EVENT_INTERFACE_FREE),         "ButtonFreeGame"    },
+        { static_cast<int>(EVENT_INTERFACE_CODE_BATTLES), "ButtonCodeBattles" },
+        { static_cast<int>(EVENT_INTERFACE_PLUS),         "ButtonPlus"        },
+        { static_cast<int>(EVENT_INTERFACE_MODS),         "ButtonMods"        },
+        { static_cast<int>(EVENT_INTERFACE_USER),         "ButtonUserLevels"  },
+        { static_cast<int>(EVENT_INTERFACE_NAME),         "ButtonPlayerName"  },
+        { static_cast<int>(EVENT_INTERFACE_SETUP),        "ButtonSetup"       },
+        { static_cast<int>(EVENT_INTERFACE_QUIT),         "ButtonQuit"        },
+        { static_cast<int>(EVENT_INTERFACE_SATCOM),       "ButtonSatCom"      },
+
+        // ── Level / mission select ────────────────────────────────────────────
+        { static_cast<int>(EVENT_INTERFACE_CHAP),   "ListChapter"        },
+        { static_cast<int>(EVENT_INTERFACE_LIST),   "ListLevel"          },
+        { static_cast<int>(EVENT_INTERFACE_PLAY),   "ButtonPlay"         },
+        { static_cast<int>(EVENT_INTERFACE_BACK),   "ButtonBack"         },
+        { static_cast<int>(EVENT_INTERFACE_RESUME), "ButtonResume"       },
+
+        // ── In-game pause / end dialog (maindialog.cpp) ───────────────────────
+        { static_cast<int>(EVENT_DIALOG_OK),        "ButtonAbort"        },
+        { static_cast<int>(EVENT_DIALOG_CANCEL),    "ButtonContinue"     },
+        { static_cast<int>(EVENT_INTERFACE_AGAIN),  "ButtonAgain"        },
+        { static_cast<int>(EVENT_INTERFACE_WRITE),  "ButtonSave"         },
+        { static_cast<int>(EVENT_INTERFACE_READ),   "ButtonLoad"         },
+        { static_cast<int>(EVENT_INTERFACE_ABORT),  "ButtonAbortConfirm" },
+
+        // ── End-of-level cinematic (PHASE_WIN/PHASE_LOST with EndingFile) ─────
+        { static_cast<int>(EVENT_BUTTON_OK),        "ButtonEndLevel"     },
+
+        // ── In-game console (backtick toggle) ─────────────────────────────────
+        { static_cast<int>(EVENT_CMD),              "EditConsole"        },
+        { static_cast<int>(EVENT_SPEED),            "SpeedControl"       },
+
+        // ── Setup — tab buttons ────────────────────────────────────────────────
+        { static_cast<int>(EVENT_INTERFACE_SETUPd), "ButtonTabDisplay"   },
+        { static_cast<int>(EVENT_INTERFACE_SETUPg), "ButtonTabGraphics"  },
+        { static_cast<int>(EVENT_INTERFACE_SETUPp), "ButtonTabGameplay"  },
+        { static_cast<int>(EVENT_INTERFACE_SETUPc), "ButtonTabControls"  },
+        { static_cast<int>(EVENT_INTERFACE_SETUPs), "ButtonTabSound"     },
+        { static_cast<int>(EVENT_INTERFACE_APPLY),  "ButtonApply"        },
+
+        // ── Setup — Display tab ───────────────────────────────────────────────
+        { static_cast<int>(EVENT_INTERFACE_DEVICE), "ListDevice"         },
+        { static_cast<int>(EVENT_INTERFACE_RESOL),  "ListResolution"     },
+        { static_cast<int>(EVENT_INTERFACE_FULL),   "CheckFullscreen"    },
+
+        // ── Setup — Graphics tab ──────────────────────────────────────────────
+        { static_cast<int>(EVENT_INTERFACE_SHADOW_SPOTS),            "CheckShadowSpots"          },
+        { static_cast<int>(EVENT_INTERFACE_DIRTY),                   "CheckDirtyTextures"        },
+        { static_cast<int>(EVENT_INTERFACE_PARTI),                   "CheckParticles"            },
+        { static_cast<int>(EVENT_INTERFACE_CLIP),                    "SliderViewDistance"        },
+        { static_cast<int>(EVENT_INTERFACE_PAUSE_BLUR),              "CheckPauseBlur"            },
+        { static_cast<int>(EVENT_INTERFACE_RAIN),                    "CheckRain"                 },
+        { static_cast<int>(EVENT_INTERFACE_GLINT),                   "CheckGlints"               },
+        { static_cast<int>(EVENT_INTERFACE_FOG),                     "CheckFog"                  },
+        { static_cast<int>(EVENT_INTERFACE_SHADOW_MAPPING),          "CheckShadowMapping"        },
+        { static_cast<int>(EVENT_INTERFACE_SHADOW_MAPPING_QUALITY),  "CheckShadowQuality"        },
+        { static_cast<int>(EVENT_INTERFACE_SHADOW_MAPPING_BUFFER),   "SliderShadowBuffer"        },
+        { static_cast<int>(EVENT_INTERFACE_TEXTURE_FILTER),          "ListTextureFilter"         },
+        { static_cast<int>(EVENT_INTERFACE_TEXTURE_MIPMAP),          "CheckTextureMipmap"        },
+        { static_cast<int>(EVENT_INTERFACE_TEXTURE_ANISOTROPY),      "SliderAnisotropy"          },
+        { static_cast<int>(EVENT_INTERFACE_MSAA),                    "SliderMSAA"                },
+        { static_cast<int>(EVENT_INTERFACE_VSYNC),                   "CheckVSync"                },
+        { static_cast<int>(EVENT_INTERFACE_MIN),                     "ButtonQualityMin"          },
+        { static_cast<int>(EVENT_INTERFACE_NORM),                    "ButtonQualityNorm"         },
+        { static_cast<int>(EVENT_INTERFACE_MAX),                     "ButtonQualityMax"          },
+
+        // ── Setup — Gameplay tab ──────────────────────────────────────────────
+        { static_cast<int>(EVENT_INTERFACE_LANGUAGE),  "ListLanguage"       },
+        { static_cast<int>(EVENT_INTERFACE_TOOLTIP),   "CheckTooltips"      },
+        { static_cast<int>(EVENT_INTERFACE_MOVIES),    "CheckCinematics"    },
+        { static_cast<int>(EVENT_INTERFACE_SCROLL),    "CheckEdgeScroll"    },
+        { static_cast<int>(EVENT_INTERFACE_INVERTX),   "CheckInvertMouseX"  },
+        { static_cast<int>(EVENT_INTERFACE_INVERTY),   "CheckInvertMouseY"  },
+        { static_cast<int>(EVENT_INTERFACE_EFFECT),    "CheckCameraShake"   },
+        { static_cast<int>(EVENT_INTERFACE_BGPAUSE),   "CheckPauseMusic"    },
+        { static_cast<int>(EVENT_INTERFACE_BLOOD),     "CheckBloodEffects"  },
+        { static_cast<int>(EVENT_INTERFACE_SOLUCE),    "CheckShowSolution"  },
+        { static_cast<int>(EVENT_INTERFACE_EDITMODE),  "CheckEditMode"      },
+        { static_cast<int>(EVENT_INTERFACE_EDITVALUE), "SliderEditValue"    },
+        { static_cast<int>(EVENT_INTERFACE_AUTOSAVE_ENABLE),   "CheckAutosave"        },
+        { static_cast<int>(EVENT_INTERFACE_AUTOSAVE_INTERVAL), "SliderAutosaveInterval"},
+        { static_cast<int>(EVENT_INTERFACE_AUTOSAVE_SLOTS),    "SliderAutosaveSlots"   },
+
+        // ── Setup — Sound tab ─────────────────────────────────────────────────
+        { static_cast<int>(EVENT_INTERFACE_VOLSOUND), "SliderSoundVolume"  },
+        { static_cast<int>(EVENT_INTERFACE_VOLMUSIC), "SliderMusicVolume"  },
+
+        // ── In-game HUD — gauges ─────────────────────────────────────────────
+        { static_cast<int>(EVENT_OBJECT_GENERGY),   "GaugeEnergy"        },
+        { static_cast<int>(EVENT_OBJECT_GSHIELD),   "GaugeShield"        },
+        { static_cast<int>(EVENT_OBJECT_GRANGE),    "GaugeRange"         },
+        { static_cast<int>(EVENT_OBJECT_GPROGRESS), "GaugeProgress"      },
+        { static_cast<int>(EVENT_OBJECT_GRADAR),    "GaugeRadar"         },
+
+        // ── In-game HUD — map ─────────────────────────────────────────────────
+        { static_cast<int>(EVENT_OBJECT_MAP),       "HudMap"             },
+        { static_cast<int>(EVENT_OBJECT_MAPZOOM),   "HudMapZoom"         },
+
+        // ── In-game HUD — movement / action buttons ───────────────────────────
+        { static_cast<int>(EVENT_OBJECT_LEFT),      "ButtonMoveLeft"     },
+        { static_cast<int>(EVENT_OBJECT_RIGHT),     "ButtonMoveRight"    },
+        { static_cast<int>(EVENT_OBJECT_UP),        "ButtonMoveForward"  },
+        { static_cast<int>(EVENT_OBJECT_DOWN),      "ButtonMoveBack"     },
+        { static_cast<int>(EVENT_OBJECT_GASUP),     "ButtonJetUp"        },
+        { static_cast<int>(EVENT_OBJECT_GASDOWN),   "ButtonJetDown"      },
+        { static_cast<int>(EVENT_OBJECT_HTAKE),     "ButtonTake"         },
+        { static_cast<int>(EVENT_OBJECT_CAMERA),    "ButtonCamera"       },
+        { static_cast<int>(EVENT_OBJECT_DELETE),    "ButtonDelete"       },
+
+        // ── In-game HUD — robot selection ────────────────────────────────────
+        { static_cast<int>(EVENT_OBJECT_DESELECT),        "ButtonDeselect"     },
+        { static_cast<int>(EVENT_OBJECT_BHELP),           "ButtonSatComOpen"   },
+        { static_cast<int>(EVENT_OBJECT_HELP),            "ButtonHelp"         },
+        { static_cast<int>(EVENT_OBJECT_SHORTCUT_MODE),   "ButtonShortcutMode" },
+        { static_cast<int>(EVENT_OBJECT_MOVIELOCK),       "IndicatorMovieLock" },
+        { static_cast<int>(EVENT_OBJECT_EDITLOCK),        "IndicatorEditLock"  },
+        { static_cast<int>(EVENT_OBJECT_SAVING),          "IndicatorSaving"    },
+
+        // ── In-game HUD — build buttons ───────────────────────────────────────
+        { static_cast<int>(EVENT_OBJECT_BDERRICK),  "ButtonBuildDerrick"      },
+        { static_cast<int>(EVENT_OBJECT_BSTATION),  "ButtonBuildPowerStation" },
+        { static_cast<int>(EVENT_OBJECT_BFACTORY),  "ButtonBuildBotFactory"   },
+        { static_cast<int>(EVENT_OBJECT_BCONVERT),  "ButtonBuildConverter"    },
+        { static_cast<int>(EVENT_OBJECT_BTOWER),    "ButtonBuildTower"        },
+        { static_cast<int>(EVENT_OBJECT_BREPAIR),   "ButtonBuildRepairCenter" },
+        { static_cast<int>(EVENT_OBJECT_BRESEARCH), "ButtonBuildResearchCenter"},
+        { static_cast<int>(EVENT_OBJECT_BRADAR),    "ButtonBuildRadarStation" },
+        { static_cast<int>(EVENT_OBJECT_BENERGY),   "ButtonBuildPowerCaptor"  },
+        { static_cast<int>(EVENT_OBJECT_BLABO),     "ButtonBuildBioLab"       },
+        { static_cast<int>(EVENT_OBJECT_BNUCLEAR),  "ButtonBuildNuclearPlant" },
+        { static_cast<int>(EVENT_OBJECT_BPARA),     "ButtonBuildLightningRod" },
+        { static_cast<int>(EVENT_OBJECT_BINFO),     "ButtonBuildInfoExchange" },
+        { static_cast<int>(EVENT_OBJECT_BSAFE),     "ButtonBuildVault"        },
+
+        // ── In-game HUD — research buttons ───────────────────────────────────
+        { static_cast<int>(EVENT_OBJECT_RTANK),     "ButtonResearchTank"      },
+        { static_cast<int>(EVENT_OBJECT_RFLY),      "ButtonResearchFly"       },
+        { static_cast<int>(EVENT_OBJECT_RTHUMP),    "ButtonResearchThump"     },
+        { static_cast<int>(EVENT_OBJECT_RCANON),    "ButtonResearchCannon"    },
+        { static_cast<int>(EVENT_OBJECT_RTOWER),    "ButtonResearchTower"     },
+        { static_cast<int>(EVENT_OBJECT_RPHAZER),   "ButtonResearchPhazer"    },
+        { static_cast<int>(EVENT_OBJECT_RSHIELD),   "ButtonResearchShield"    },
+        { static_cast<int>(EVENT_OBJECT_RATOMIC),   "ButtonResearchNuclear"   },
+
+        // ── In-game HUD — program management ─────────────────────────────────
+        { static_cast<int>(EVENT_OBJECT_PROGEDIT),    "ButtonOpenStudio"   },
+        { static_cast<int>(EVENT_OBJECT_PROGLIST),    "ListPrograms"       },
+        { static_cast<int>(EVENT_OBJECT_PROGRUN),     "ButtonRunProgram"   },
+        { static_cast<int>(EVENT_OBJECT_PROGADD),     "ButtonAddProgram"   },
+        { static_cast<int>(EVENT_OBJECT_PROGREMOVE),  "ButtonRemoveProgram"},
+        { static_cast<int>(EVENT_OBJECT_PROGCLONE),   "ButtonCloneProgram" },
+        { static_cast<int>(EVENT_OBJECT_PROGMOVEUP),  "ButtonProgMoveUp"   },
+        { static_cast<int>(EVENT_OBJECT_PROGMOVEDOWN),"ButtonProgMoveDown" },
+        { static_cast<int>(EVENT_OBJECT_PROGSTOP),    "ButtonStopProgram"  },
+
+        // ── SatCom / in-game documentation viewer ────────────────────────────
+        { static_cast<int>(EVENT_EDIT1),            "SatComContent"      },
+        { static_cast<int>(EVENT_SATCOM_HUSTON),    "SatComHouston"      },
+        { static_cast<int>(EVENT_SATCOM_SAT),       "SatComSat"          },
+        { static_cast<int>(EVENT_SATCOM_LOADING),   "SatComLoading"      },
+        { static_cast<int>(EVENT_SATCOM_PROG),      "SatComProg"         },
+        { static_cast<int>(EVENT_SATCOM_SOLUCE),    "SatComSoluce"       },
+        { static_cast<int>(EVENT_HYPER_PREV),       "SatComPrev"         },
+        { static_cast<int>(EVENT_HYPER_NEXT),       "SatComNext"         },
+        { static_cast<int>(EVENT_HYPER_HOME),       "SatComHome"         },
+        { static_cast<int>(EVENT_HYPER_SIZE1),      "SatComSize1"        },
+        { static_cast<int>(EVENT_HYPER_SIZE2),      "SatComSize2"        },
+        { static_cast<int>(EVENT_HYPER_SIZE3),      "SatComSize3"        },
+        { static_cast<int>(EVENT_HYPER_SIZE4),      "SatComSize4"        },
+        { static_cast<int>(EVENT_HYPER_SIZE5),      "SatComSize5"        },
+        { static_cast<int>(EVENT_OBJECT_INFOOK),    "SatComClose"        },
+
+        // ── Script studio (in-game code editor) ──────────────────────────────
+        { static_cast<int>(EVENT_STUDIO_LIST),      "ListStudioPrograms" },
+        { static_cast<int>(EVENT_STUDIO_EDIT),      "StudioEdit"         },
+        { static_cast<int>(EVENT_STUDIO_COMPILE),   "StudioCompile"      },
+        { static_cast<int>(EVENT_STUDIO_RUN),       "StudioRun"          },
+        { static_cast<int>(EVENT_STUDIO_OK),        "StudioOK"           },
+        { static_cast<int>(EVENT_STUDIO_CANCEL),    "StudioCancel"       },
+        { static_cast<int>(EVENT_STUDIO_CLONE),     "StudioClone"        },
+        { static_cast<int>(EVENT_STUDIO_NEW),       "StudioNew"          },
+        { static_cast<int>(EVENT_STUDIO_OPEN),      "StudioOpen"         },
+        { static_cast<int>(EVENT_STUDIO_SAVE),      "StudioSave"         },
+        { static_cast<int>(EVENT_STUDIO_UNDO),      "StudioUndo"         },
+        { static_cast<int>(EVENT_STUDIO_CUT),       "StudioCut"          },
+        { static_cast<int>(EVENT_STUDIO_COPY),      "StudioCopy"         },
+        { static_cast<int>(EVENT_STUDIO_PASTE),     "StudioPaste"        },
+        { static_cast<int>(EVENT_STUDIO_SIZE),      "StudioFontSize"     },
+        { static_cast<int>(EVENT_STUDIO_HELP),      "StudioHelp"         },
+        { static_cast<int>(EVENT_STUDIO_REALTIME),  "StudioRealtime"     },
+        { static_cast<int>(EVENT_STUDIO_STEP),      "StudioStep"         },
     };
     return kRegistry;
 }
@@ -500,10 +676,20 @@ void CAgentServer::ServerThread()
             res.set_content(ErrResponse("missing 'key'"), "application/json");
             return;
         }
+        // Optional "action": "tap" (default), "down", or "up". Down/up enable
+        // holding keys for continuous movement (e.g. walking the astronaut).
+        std::string action = JsonGet(req.body, "action");
+        if (action.empty()) action = "tap";
+        if (action != "tap" && action != "down" && action != "up")
+        {
+            res.status = 400;
+            res.set_content(ErrResponse("action must be 'tap', 'down' or 'up'"), "application/json");
+            return;
+        }
         try
         {
-            std::string body = PostAndWait([this, key]() -> std::string {
-                return DoKey(key);
+            std::string body = PostAndWait([this, key, action]() -> std::string {
+                return DoKey(key, action);
             });
             res.set_content(OkResponse(body), "application/json");
         }
@@ -535,6 +721,234 @@ void CAgentServer::ServerThread()
         catch (const std::exception& e)
         {
             res.status = 400;
+            res.set_content(ErrResponse(e.what()), "application/json");
+        }
+    });
+
+    m_svr->Post("/mouse_move", [this](const httplib::Request& req, httplib::Response& res) {
+        std::string sx = JsonGet(req.body, "x");
+        std::string sy = JsonGet(req.body, "y");
+        if (sx.empty() || sy.empty())
+        {
+            res.status = 400;
+            res.set_content(ErrResponse("missing 'x' or 'y'"), "application/json");
+            return;
+        }
+        float x = std::stof(sx), y = std::stof(sy);
+        std::string body = PostAndWait([this, x, y]() -> std::string {
+            return DoMouseMove(x, y);
+        });
+        res.set_content(OkResponse(body), "application/json");
+    });
+
+    m_svr->Post("/drag", [this](const httplib::Request& req, httplib::Response& res) {
+        std::string sfx = JsonGet(req.body, "from_x");
+        std::string sfy = JsonGet(req.body, "from_y");
+        std::string stx = JsonGet(req.body, "to_x");
+        std::string sty = JsonGet(req.body, "to_y");
+        if (sfx.empty() || sfy.empty() || stx.empty() || sty.empty())
+        {
+            res.status = 400;
+            res.set_content(ErrResponse("missing from_x/from_y/to_x/to_y"), "application/json");
+            return;
+        }
+        float fx = std::stof(sfx), fy = std::stof(sfy);
+        float tx = std::stof(stx), ty = std::stof(sty);
+        std::string ssteps  = JsonGet(req.body, "steps");
+        std::string sbtn    = JsonGet(req.body, "button");
+        int steps           = ssteps.empty()  ? 20          : std::stoi(ssteps);
+        std::string button  = sbtn.empty()    ? "left"      : sbtn;
+        if (steps < 1) steps = 1;
+        std::string body = PostAndWait([this, fx, fy, tx, ty, steps, button]() -> std::string {
+            return DoDrag(fx, fy, tx, ty, steps, button);
+        });
+        res.set_content(OkResponse(body), "application/json");
+    });
+
+    m_svr->Post("/mouse_button", [this](const httplib::Request& req, httplib::Response& res) {
+        std::string action = JsonGet(req.body, "action");
+        std::string sx     = JsonGet(req.body, "x");
+        std::string sy     = JsonGet(req.body, "y");
+        if (action.empty() || sx.empty() || sy.empty())
+        {
+            res.status = 400;
+            res.set_content(ErrResponse("missing 'action', 'x', or 'y'"), "application/json");
+            return;
+        }
+        if (action != "down" && action != "up")
+        {
+            res.status = 400;
+            res.set_content(ErrResponse("action must be 'down' or 'up'"), "application/json");
+            return;
+        }
+        float x = std::stof(sx), y = std::stof(sy);
+        std::string sbtn   = JsonGet(req.body, "button");
+        std::string button = sbtn.empty() ? "left" : sbtn;
+        std::string body = PostAndWait([this, action, x, y, button]() -> std::string {
+            return DoMouseButton(action, x, y, button);
+        });
+        res.set_content(OkResponse(body), "application/json");
+    });
+
+    m_svr->Get("/window", [this](const httplib::Request& req, httplib::Response& res) {
+        std::string body = PostAndWait([this]() -> std::string {
+            return DoWindow();
+        });
+        res.set_content(OkResponse(body), "application/json");
+    });
+
+    m_svr->Get("/objects", [this](const httplib::Request& req, httplib::Response& res) {
+        try
+        {
+            std::string body = PostAndWait([this]() -> std::string {
+                return DoObjects();
+            });
+            res.set_content(OkResponse(body), "application/json");
+        }
+        catch (const std::exception& e)
+        {
+            res.status = 500;
+            res.set_content(ErrResponse(e.what()), "application/json");
+        }
+    });
+
+    m_svr->Post("/launch", [this](const httplib::Request& req, httplib::Response& res) {
+        std::string cat  = JsonGet(req.body, "category");
+        std::string chap = JsonGet(req.body, "chap");
+        std::string rank = JsonGet(req.body, "rank");
+        if (cat.empty() || chap.empty() || rank.empty())
+        {
+            res.status = 400;
+            res.set_content(ErrResponse("missing 'category', 'chap', or 'rank'"), "application/json");
+            return;
+        }
+        try
+        {
+            std::string body = PostAndWait([this, cat, chap, rank]() -> std::string {
+                return DoLaunch(cat, std::stoi(chap), std::stoi(rank));
+            });
+            res.set_content(OkResponse(body), "application/json");
+        }
+        catch (const std::exception& e)
+        {
+            int code = std::string(e.what()).find("unknown category") != std::string::npos ? 400 : 500;
+            res.status = code;
+            res.set_content(ErrResponse(e.what()), "application/json");
+        }
+    });
+
+    m_svr->Get("/program", [this](const httplib::Request& req, httplib::Response& res) {
+        int slot = -1;
+        if (req.has_param("slot"))
+        {
+            try { slot = std::stoi(req.get_param_value("slot")); }
+            catch (...) { res.status = 400; res.set_content(ErrResponse("invalid slot"), "application/json"); return; }
+        }
+        try
+        {
+            std::string body = PostAndWait([this, slot]() -> std::string {
+                return DoGetProgram(slot);
+            });
+            res.set_content(OkResponse(body), "application/json");
+        }
+        catch (const std::exception& e)
+        {
+            int code = std::string(e.what()).find("not found") != std::string::npos ? 404 : 500;
+            res.status = code;
+            res.set_content(ErrResponse(e.what()), "application/json");
+        }
+    });
+
+    m_svr->Post("/program", [this](const httplib::Request& req, httplib::Response& res) {
+        std::string source  = JsonGet(req.body, "source");
+        std::string slotStr = JsonGet(req.body, "slot");
+        std::string compStr = JsonGet(req.body, "compile");
+        int slot = slotStr.empty() ? -1 : std::stoi(slotStr);
+        bool doCompile = (compStr == "true" || compStr == "1");
+        try
+        {
+            std::string body = PostAndWait([this, source, slot, doCompile]() -> std::string {
+                return DoSetProgram(slot, source, doCompile);
+            });
+            res.set_content(OkResponse(body), "application/json");
+        }
+        catch (const std::exception& e)
+        {
+            int code = std::string(e.what()).find("not found") != std::string::npos ? 404 : 500;
+            res.status = code;
+            res.set_content(ErrResponse(e.what()), "application/json");
+        }
+    });
+
+    m_svr->Get("/diagnostics", [this](const httplib::Request& req, httplib::Response& res) {
+        int slot = -1;
+        if (req.has_param("slot"))
+        {
+            try { slot = std::stoi(req.get_param_value("slot")); }
+            catch (...) { res.status = 400; res.set_content(ErrResponse("invalid slot"), "application/json"); return; }
+        }
+        try
+        {
+            std::string body = PostAndWait([this, slot]() -> std::string {
+                return DoDiagnostics(slot);
+            });
+            res.set_content(OkResponse(body), "application/json");
+        }
+        catch (const std::exception& e)
+        {
+            int code = std::string(e.what()).find("not found") != std::string::npos ? 404 : 500;
+            res.status = code;
+            res.set_content(ErrResponse(e.what()), "application/json");
+        }
+    });
+
+    m_svr->Get("/speed", [this](const httplib::Request& req, httplib::Response& res) {
+        try
+        {
+            std::string body = PostAndWait([]() -> std::string {
+                auto* main = CRobotMain::GetInstancePointer();
+                if (!main) throw std::runtime_error("game not running");
+                return "{\"speed\":" + std::to_string(main->GetSpeed()) + "}";
+            });
+            res.set_content(OkResponse(body), "application/json");
+        }
+        catch (const std::exception& e)
+        {
+            res.status = 500;
+            res.set_content(ErrResponse(e.what()), "application/json");
+        }
+    });
+
+    m_svr->Post("/speed", [this](const httplib::Request& req, httplib::Response& res) {
+        std::string speedStr = JsonGet(req.body, "speed");
+        if (speedStr.empty())
+        {
+            res.status = 400;
+            res.set_content(ErrResponse("missing 'speed'"), "application/json");
+            return;
+        }
+        float speed;
+        try { speed = std::stof(speedStr); }
+        catch (...) { res.status = 400; res.set_content(ErrResponse("invalid speed value"), "application/json"); return; }
+        if (speed <= 0.0f || speed > 100.0f)
+        {
+            res.status = 400;
+            res.set_content(ErrResponse("speed must be in (0, 100]"), "application/json");
+            return;
+        }
+        try
+        {
+            std::string body = PostAndWait([speed]() -> std::string {
+                auto* main = CRobotMain::GetInstancePointer();
+                if (!main) throw std::runtime_error("game not running");
+                main->SetSpeed(speed);
+                return "{\"speed\":" + std::to_string(main->GetSpeed()) + "}";
+            });
+            res.set_content(OkResponse(body), "application/json");
+        }
+        catch (const std::exception& e)
+        {
+            res.status = 500;
             res.set_content(ErrResponse(e.what()), "application/json");
         }
     });
@@ -603,8 +1017,9 @@ static std::string DetectScreen(const std::vector<std::string>& ids)
     if (has("ButtonTabDisplay") && has("ButtonTabGraphics")) return "SetupDisplay";
     if (has("StudioEdit") && has("StudioRun"))            return "Studio";
     if (has("ButtonAbort") || has("ButtonAgain"))         return "InGameMenu";
-    // In-game (HUD or SatCom): no menu-specific widgets present.
-    // Loading state has ≤6 widgets; real in-game states have ≥7 (SatCom) or more.
+    if (has("SatComContent") && has("SatComClose"))       return "SatCom";
+    // In-game HUD: no menu-specific widgets present.
+    // Loading state has ≤6 widgets; real in-game states have ≥7 or more.
     if (ids.size() >= 7 && !has("EditPlayerName") && !has("ButtonExercises") && !has("ListChapter"))
         return "InGame";
     return "unknown";
@@ -731,7 +1146,7 @@ std::string CAgentServer::DoSelect(const std::string& id,
     return "{\"selected\":" + std::to_string(idx) + "}";
 }
 
-std::string CAgentServer::DoKey(const std::string& key)
+std::string CAgentServer::DoKey(const std::string& key, const std::string& action)
 {
     static const std::unordered_map<std::string, SDL_Scancode> kKeys = {
         { "Escape", SDL_SCANCODE_ESCAPE },
@@ -751,24 +1166,39 @@ std::string CAgentServer::DoKey(const std::string& key)
         { "Right", SDL_SCANCODE_RIGHT },
         { "Delete",    SDL_SCANCODE_DELETE    },
         { "Backspace", SDL_SCANCODE_BACKSPACE },
+        // Letter keys for WASD-style movement and shortcuts.
+        { "A", SDL_SCANCODE_A }, { "B", SDL_SCANCODE_B }, { "C", SDL_SCANCODE_C },
+        { "D", SDL_SCANCODE_D }, { "E", SDL_SCANCODE_E }, { "F", SDL_SCANCODE_F },
+        { "G", SDL_SCANCODE_G }, { "H", SDL_SCANCODE_H }, { "I", SDL_SCANCODE_I },
+        { "J", SDL_SCANCODE_J }, { "K", SDL_SCANCODE_K }, { "L", SDL_SCANCODE_L },
+        { "M", SDL_SCANCODE_M }, { "N", SDL_SCANCODE_N }, { "O", SDL_SCANCODE_O },
+        { "P", SDL_SCANCODE_P }, { "Q", SDL_SCANCODE_Q }, { "R", SDL_SCANCODE_R },
+        { "S", SDL_SCANCODE_S }, { "T", SDL_SCANCODE_T }, { "U", SDL_SCANCODE_U },
+        { "V", SDL_SCANCODE_V }, { "W", SDL_SCANCODE_W }, { "X", SDL_SCANCODE_X },
+        { "Y", SDL_SCANCODE_Y }, { "Z", SDL_SCANCODE_Z },
     };
 
     auto it = kKeys.find(key);
     if (it == kKeys.end())
         throw std::runtime_error("unsupported key: " + key);
 
-    // Inject SDL key-down + key-up into SDL's event queue so the game sees them.
-    SDL_Event down{};
-    down.type         = SDL_KEYDOWN;
-    down.key.keysym.scancode = it->second;
-    down.key.keysym.sym      = SDL_GetKeyFromScancode(it->second);
-    SDL_PushEvent(&down);
+    // Inject SDL key events. "down"/"up" enable holding keys for continuous
+    // movement (e.g. walking the astronaut to a power cell). "tap" sends both
+    // down and up immediately, which is the existing behaviour.
+    auto pushEvent = [&](Uint32 type) {
+        SDL_Event ev{};
+        ev.type                  = type;
+        ev.key.keysym.scancode   = it->second;
+        ev.key.keysym.sym        = SDL_GetKeyFromScancode(it->second);
+        SDL_PushEvent(&ev);
+    };
 
-    SDL_Event up = down;
-    up.type = SDL_KEYUP;
-    SDL_PushEvent(&up);
+    if (action == "down" || action == "tap")
+        pushEvent(SDL_KEYDOWN);
+    if (action == "up"   || action == "tap")
+        pushEvent(SDL_KEYUP);
 
-    return "{\"key\":\"" + JsonEscape(key) + "\"}";
+    return "{\"key\":\"" + JsonEscape(key) + "\",\"action\":\"" + JsonEscape(action) + "\"}";
 }
 
 std::string CAgentServer::DoClickPos(float x, float y)
@@ -934,4 +1364,426 @@ std::string CAgentServer::DoScreenshotOS()
 
     std::string b64 = Base64Encode(buf.data(), buf.size());
     return "{\"png\":\"" + b64 + "\"}";
+}
+
+// ---------------------------------------------------------------------------
+// Mouse helper: resolve button name to SDL constant
+// ---------------------------------------------------------------------------
+static Uint8 SdlButton(const std::string& name)
+{
+    if (name == "right")  return SDL_BUTTON_RIGHT;
+    if (name == "middle") return SDL_BUTTON_MIDDLE;
+    return SDL_BUTTON_LEFT;
+}
+
+// Convert interface coords [0..1] (bottom-left origin) to SDL window pixels (top-left origin).
+static glm::ivec2 InterfaceToPixel(float x, float y, glm::ivec2 winSize)
+{
+    return {
+        static_cast<int>(x * static_cast<float>(winSize.x)),
+        static_cast<int>((1.0f - y) * static_cast<float>(winSize.y))
+    };
+}
+
+static std::string PxJson(const std::string& prefix, float ix, float iy, glm::ivec2 winSize)
+{
+    auto px = InterfaceToPixel(ix, iy, winSize);
+    return "\"" + prefix + "\":{\"x\":" + std::to_string(ix)
+         + ",\"y\":" + std::to_string(iy)
+         + ",\"px\":" + std::to_string(px.x)
+         + ",\"py\":" + std::to_string(px.y) + "}";
+}
+
+// ---------------------------------------------------------------------------
+// POST /mouse_move — move cursor without clicking
+// ---------------------------------------------------------------------------
+std::string CAgentServer::DoMouseMove(float x, float y)
+{
+    glm::ivec2 winSize = m_engine->GetWindowSize();
+    auto p = InterfaceToPixel(x, y, winSize);
+
+    SDL_Event motion{};
+    motion.type       = SDL_MOUSEMOTION;
+    motion.motion.x   = p.x;
+    motion.motion.y   = p.y;
+    SDL_PushEvent(&motion);
+
+    return "{\"x\":" + std::to_string(x) + ",\"y\":" + std::to_string(y)
+         + ",\"px\":" + std::to_string(p.x) + ",\"py\":" + std::to_string(p.y) + "}";
+}
+
+// ---------------------------------------------------------------------------
+// POST /drag — button-down → N motion events → button-up
+// ---------------------------------------------------------------------------
+std::string CAgentServer::DoDrag(float fx, float fy, float tx, float ty,
+                                  int steps, const std::string& button)
+{
+    glm::ivec2 winSize = m_engine->GetWindowSize();
+    auto pf = InterfaceToPixel(fx, fy, winSize);
+    auto pt = InterfaceToPixel(tx, ty, winSize);
+    Uint8 btn = SdlButton(button);
+
+    // Press at start
+    SDL_Event down{};
+    down.type           = SDL_MOUSEBUTTONDOWN;
+    down.button.button  = btn;
+    down.button.x       = pf.x;
+    down.button.y       = pf.y;
+    SDL_PushEvent(&down);
+
+    // Intermediate motion events along straight-line path
+    for (int i = 0; i <= steps; ++i)
+    {
+        float t = static_cast<float>(i) / static_cast<float>(steps);
+        SDL_Event motion{};
+        motion.type     = SDL_MOUSEMOTION;
+        motion.motion.x = pf.x + static_cast<int>(static_cast<float>(pt.x - pf.x) * t);
+        motion.motion.y = pf.y + static_cast<int>(static_cast<float>(pt.y - pf.y) * t);
+        SDL_PushEvent(&motion);
+    }
+
+    // Release at end
+    SDL_Event up{};
+    up.type           = SDL_MOUSEBUTTONUP;
+    up.button.button  = btn;
+    up.button.x       = pt.x;
+    up.button.y       = pt.y;
+    SDL_PushEvent(&up);
+
+    return "{" + PxJson("from", fx, fy, winSize)
+         + "," + PxJson("to", tx, ty, winSize)
+         + ",\"steps\":" + std::to_string(steps)
+         + ",\"button\":\"" + button + "\"}";
+}
+
+// ---------------------------------------------------------------------------
+// POST /mouse_button — independent press or release
+// ---------------------------------------------------------------------------
+std::string CAgentServer::DoMouseButton(const std::string& action,
+                                         float x, float y,
+                                         const std::string& button)
+{
+    glm::ivec2 winSize = m_engine->GetWindowSize();
+    auto p = InterfaceToPixel(x, y, winSize);
+    Uint8 btn = SdlButton(button);
+
+    SDL_Event ev{};
+    ev.type           = (action == "down") ? SDL_MOUSEBUTTONDOWN : SDL_MOUSEBUTTONUP;
+    ev.button.button  = btn;
+    ev.button.x       = p.x;
+    ev.button.y       = p.y;
+    SDL_PushEvent(&ev);
+
+    return "{\"action\":\"" + action + "\","
+         + PxJson("pos", x, y, winSize)
+         + ",\"button\":\"" + button + "\"}";
+}
+
+// ---------------------------------------------------------------------------
+// GET /window — actual window + display geometry
+// ---------------------------------------------------------------------------
+std::string CAgentServer::DoWindow()
+{
+    // SDL_Window is in CApplication's private pimpl; retrieve via the current GL context
+    // (safe because DoWindow() always runs on the main thread via PostAndWait).
+    SDL_Window* win = SDL_GL_GetCurrentWindow();
+    if (!win)
+        return "{}";
+
+    int wx = 0, wy = 0;
+    SDL_GetWindowPosition(win, &wx, &wy);
+
+    int lw = 0, lh = 0;
+    SDL_GetWindowSize(win, &lw, &lh);
+
+    int dw = 0, dh = 0;
+    SDL_GL_GetDrawableSize(win, &dw, &dh);
+
+    float sx = (lw > 0) ? static_cast<float>(dw) / static_cast<float>(lw) : 1.0f;
+    float sy = (lh > 0) ? static_cast<float>(dh) / static_cast<float>(lh) : 1.0f;
+
+    int dispIdx = SDL_GetWindowDisplayIndex(win);
+    if (dispIdx < 0) dispIdx = 0;
+
+    SDL_Rect bounds{}, usable{};
+    SDL_GetDisplayBounds(dispIdx, &bounds);
+    SDL_GetDisplayUsableBounds(dispIdx, &usable);
+
+    // Collect flag strings
+    Uint32 flags = SDL_GetWindowFlags(win);
+    std::string flagArr = "[";
+    bool ff = true;
+    auto addFlag = [&](Uint32 mask, const char* name) {
+        if (!(flags & mask)) return;
+        if (!ff) flagArr += ",";
+        flagArr += "\""; flagArr += name; flagArr += "\"";
+        ff = false;
+    };
+    addFlag(SDL_WINDOW_SHOWN,        "shown");
+    addFlag(SDL_WINDOW_HIDDEN,       "hidden");
+    addFlag(SDL_WINDOW_FULLSCREEN,   "fullscreen");
+    addFlag(SDL_WINDOW_FULLSCREEN_DESKTOP, "fullscreen_desktop");
+    addFlag(SDL_WINDOW_RESIZABLE,    "resizable");
+    addFlag(SDL_WINDOW_MAXIMIZED,    "maximized");
+    addFlag(SDL_WINDOW_MINIMIZED,    "minimized");
+    addFlag(SDL_WINDOW_INPUT_FOCUS,  "input_focus");
+    addFlag(SDL_WINDOW_MOUSE_FOCUS,   "mouse_focus");
+    addFlag(SDL_WINDOW_ALLOW_HIGHDPI, "high_dpi");
+    flagArr += "]";
+
+    std::string out;
+    out += "{";
+    out += "\"x\":"           + std::to_string(wx);
+    out += ",\"y\":"          + std::to_string(wy);
+    out += ",\"logical_w\":"  + std::to_string(lw);
+    out += ",\"logical_h\":"  + std::to_string(lh);
+    out += ",\"drawable_w\":" + std::to_string(dw);
+    out += ",\"drawable_h\":" + std::to_string(dh);
+    out += ",\"scale_x\":"    + std::to_string(sx);
+    out += ",\"scale_y\":"    + std::to_string(sy);
+    out += ",\"display_index\":" + std::to_string(dispIdx);
+    out += ",\"display_bounds\":{\"x\":"; out += std::to_string(bounds.x);
+    out += ",\"y\":"; out += std::to_string(bounds.y);
+    out += ",\"w\":"; out += std::to_string(bounds.w);
+    out += ",\"h\":"; out += std::to_string(bounds.h); out += "}";
+    out += ",\"display_usable\":{\"x\":"; out += std::to_string(usable.x);
+    out += ",\"y\":"; out += std::to_string(usable.y);
+    out += ",\"w\":"; out += std::to_string(usable.w);
+    out += ",\"h\":"; out += std::to_string(usable.h); out += "}";
+    out += ",\"flags\":" + flagArr;
+    out += "}";
+    return out;
+}
+
+// ---------------------------------------------------------------------------
+// /objects — list game objects with projected screen positions and rich state.
+// ---------------------------------------------------------------------------
+
+// Returns the class name of a foreground task, e.g. "TaskGoto".
+// Uses Itanium ABI demangling heuristic (digits prefix + leading 'C' stripped).
+static std::string TaskClassName(CForegroundTask* task)
+{
+    if (!task) return "";
+    const char* raw = typeid(*task).name();
+    // Itanium ABI: "10CTaskGoto" → skip digits → "CTaskGoto" → skip 'C' → "TaskGoto"
+    while (*raw && (*raw >= '0' && *raw <= '9')) ++raw;
+    if (*raw == 'C') ++raw;
+    return raw;
+}
+
+std::string CAgentServer::DoObjects()
+{
+    if (!CObjectManager::IsCreated())
+        return "[]";
+
+    std::string out = "[";
+    bool first = true;
+
+    for (CObject* obj : CObjectManager::GetInstance().GetAllObjects())
+    {
+        if (!obj) continue;
+
+        ObjectType type = obj->GetType();
+        const char* typeName = GetObjectName(type);
+        if (!typeName || typeName[0] == '\0') continue;
+
+        glm::vec3 worldPos  = obj->GetPosition();
+        glm::vec3 worldRot  = obj->GetRotation();
+
+        float sx = -1.0f, sy = -1.0f;
+        glm::vec2 p2D;
+        bool inFrustum = m_engine->WorldToInterface(p2D, worldPos);
+        bool visible   = inFrustum && p2D.x >= 0.0f && p2D.x <= 1.0f
+                                   && p2D.y >= 0.0f && p2D.y <= 1.0f;
+        if (inFrustum) { sx = p2D.x; sy = p2D.y; }
+
+        // Optional rich state — only populated for objects that implement the interface.
+        float energy = -1.0f;
+        if (GetObjectPowerCell(obj))
+            energy = GetObjectEnergyLevel(obj);
+
+        float shield = -1.0f;
+        if (auto* shielded = dynamic_cast<CShieldedObject*>(obj))
+            shield = shielded->GetShield();
+
+        bool progRunning = false;
+        if (auto* progObj = dynamic_cast<CProgrammableObject*>(obj))
+            progRunning = progObj->IsProgram();
+
+        std::string taskName;
+        if (auto* te = dynamic_cast<CTaskExecutorObject*>(obj))
+            if (te->IsForegroundTask())
+                taskName = TaskClassName(te->GetForegroundTask());
+
+        if (!first) out += ",";
+        first = false;
+
+        out += "{";
+        out += "\"id\":"           + std::to_string(obj->GetID());
+        out += ",\"type\":\""      + JsonEscape(typeName) + "\"";
+        out += ",\"screen_x\":"    + std::to_string(sx);
+        out += ",\"screen_y\":"    + std::to_string(sy);
+        out += ",\"visible\":"     + std::string(visible ? "true" : "false");
+        out += ",\"pos\":{\"x\":"  + std::to_string(worldPos.x)
+             + ",\"y\":"           + std::to_string(worldPos.y)
+             + ",\"z\":"           + std::to_string(worldPos.z) + "}";
+        out += ",\"rotation\":{\"x\":" + std::to_string(worldRot.x)
+             + ",\"y\":"               + std::to_string(worldRot.y)
+             + ",\"z\":"               + std::to_string(worldRot.z) + "}";
+        if (energy >= 0.0f)
+            out += ",\"energy\":"  + std::to_string(energy);
+        if (shield >= 0.0f)
+            out += ",\"shield\":"  + std::to_string(shield);
+        if (dynamic_cast<CProgrammableObject*>(obj))
+            out += ",\"program_running\":" + std::string(progRunning ? "true" : "false");
+        if (!taskName.empty())
+            out += ",\"task\":\"" + JsonEscape(taskName) + "\"";
+        out += "}";
+    }
+
+    out += "]";
+    return out;
+}
+
+// ---------------------------------------------------------------------------
+// /launch — directly start a named level without navigating menus.
+// ---------------------------------------------------------------------------
+
+std::string CAgentServer::DoLaunch(const std::string& category, int chap, int rank)
+{
+    static const std::unordered_map<std::string, LevelCategory> kCatMap = {
+        { "Exercises",    LevelCategory::Exercises    },
+        { "Challenges",   LevelCategory::Challenges   },
+        { "Missions",     LevelCategory::Missions     },
+        { "FreeGame",     LevelCategory::FreeGame     },
+        { "CodeBattles",  LevelCategory::CodeBattles  },
+    };
+    auto it = kCatMap.find(category);
+    if (it == kCatMap.end())
+        throw std::runtime_error("unknown category: " + category);
+
+    auto* main = CRobotMain::GetInstancePointer();
+    if (!main) throw std::runtime_error("game not running");
+
+    main->SetLevel(it->second, chap, rank);
+    main->ChangePhase(PHASE_SIMUL);
+
+    return "{\"category\":\"" + JsonEscape(category) + "\""
+           ",\"chap\":"       + std::to_string(chap) +
+           ",\"rank\":"       + std::to_string(rank) + "}";
+}
+
+// ---------------------------------------------------------------------------
+// /program and /diagnostics — direct access to robot program source and state.
+// ---------------------------------------------------------------------------
+
+// Returns {storage, slot_count, program} for the selected robot.
+// slot=-1 means "last slot". Throws if no robot selected or slot out of range.
+static std::tuple<CProgramStorageObject*, int, Program*>
+GetSelectedProgram(int slot)
+{
+    auto* main = CRobotMain::GetInstancePointer();
+    if (!main) throw std::runtime_error("no game running");
+
+    CObject* obj = main->GetSelect();
+    if (!obj) throw std::runtime_error("no robot selected: not found");
+
+    auto* storage = dynamic_cast<CProgramStorageObject*>(obj);
+    if (!storage) throw std::runtime_error("selected object has no programs: not found");
+
+    int count = storage->GetProgramCount();
+    if (count == 0) throw std::runtime_error("robot has no program slots: not found");
+
+    if (slot < 0) slot = count - 1;
+    if (slot >= count) throw std::runtime_error("slot out of range: not found");
+
+    Program* prog = storage->GetProgram(slot);
+    if (!prog) throw std::runtime_error("null program at slot: not found");
+
+    return { storage, count, prog };
+}
+
+// Build a JSON error object from a CScript's current error state, or "null".
+static std::string ScriptErrorJson(CScript* script)
+{
+    if (script->GetError() == 0) return "null";
+    std::string msg;
+    script->GetError(msg);
+    int c1 = script->GetCursor1();
+    int c2 = script->GetCursor2();
+    return "{\"message\":\"" + JsonEscape(msg) + "\""
+           ",\"cursor_start\":" + std::to_string(c1) +
+           ",\"cursor_end\":"   + std::to_string(c2) + "}";
+}
+
+std::string CAgentServer::DoGetProgram(int slot)
+{
+    auto [storage, count, prog] = GetSelectedProgram(slot);
+    if (slot < 0) slot = count - 1;
+
+    CScript* script = prog->script.get();
+    std::string source = script ? script->GetSource() : "";
+    bool compiled      = script ? script->GetCompile() : false;
+
+    return "{\"slot\":"      + std::to_string(slot) +
+           ",\"slot_count\":" + std::to_string(count) +
+           ",\"source\":\""  + JsonEscape(source) + "\"" +
+           ",\"compiled\":"  + (compiled ? "true" : "false") +
+           ",\"runnable\":"  + (prog->runnable ? "true" : "false") +
+           ",\"filename\":\"" + JsonEscape(prog->filename) + "\"}";
+}
+
+std::string CAgentServer::DoSetProgram(int slot, const std::string& source, bool doCompile)
+{
+    auto [storage, count, prog] = GetSelectedProgram(slot);
+    if (slot < 0) slot = count - 1;
+
+    CScript* script = prog->script.get();
+    if (!script) throw std::runtime_error("program has no script object: not found");
+
+    script->SetSource(source);
+
+    if (!doCompile)
+        return "{\"compiled\":false,\"error\":null}";
+
+    bool ok = script->CompileScript();
+    std::string errJson = ok ? "null" : ScriptErrorJson(script);
+    return "{\"compiled\":" + std::string(ok ? "true" : "false") +
+           ",\"error\":"    + errJson + "}";
+}
+
+std::string CAgentServer::DoDiagnostics(int slot)
+{
+    auto* main = CRobotMain::GetInstancePointer();
+    if (!main)
+        return "{\"selected_robot\":false,\"slot\":0,\"compiled\":false,\"running\":false,\"error\":null}";
+
+    CObject* obj = main->GetSelect();
+    if (!obj)
+        return "{\"selected_robot\":false,\"slot\":0,\"compiled\":false,\"running\":false,\"error\":null}";
+
+    auto* storage = dynamic_cast<CProgramStorageObject*>(obj);
+    auto* prog_obj = dynamic_cast<CProgrammableObject*>(obj);
+    if (!storage)
+        return "{\"selected_robot\":true,\"slot\":0,\"compiled\":false,\"running\":false,\"error\":null}";
+
+    int count = storage->GetProgramCount();
+    if (count == 0)
+        return "{\"selected_robot\":true,\"slot\":0,\"compiled\":false,\"running\":false,\"error\":null}";
+
+    if (slot < 0) slot = count - 1;
+    if (slot >= count) throw std::runtime_error("slot out of range: not found");
+
+    Program* prog = storage->GetProgram(slot);
+    CScript* script = prog ? prog->script.get() : nullptr;
+
+    bool compiled = script ? script->GetCompile() : false;
+    bool running  = prog_obj ? prog_obj->IsProgram() : false;
+    std::string errJson = (script && script->GetError() != 0) ? ScriptErrorJson(script) : "null";
+
+    return "{\"selected_robot\":true"
+           ",\"slot\":"      + std::to_string(slot) +
+           ",\"compiled\":"  + (compiled ? "true" : "false") +
+           ",\"running\":"   + (running  ? "true" : "false") +
+           ",\"error\":"     + errJson + "}";
 }

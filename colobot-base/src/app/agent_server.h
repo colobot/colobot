@@ -59,7 +59,16 @@ private:
     std::string DoClickPos  (float x, float y);
     std::string DoType      (const std::string& id, const std::string& text);
     std::string DoSelect    (const std::string& id, const std::string& item, const std::string& index);
-    std::string DoKey       (const std::string& key);
+    std::string DoKey       (const std::string& key, const std::string& action = "tap");
+    std::string DoMouseMove    (float x, float y);
+    std::string DoDrag         (float fx, float fy, float tx, float ty, int steps, const std::string& button);
+    std::string DoMouseButton  (const std::string& action, float x, float y, const std::string& button);
+    std::string DoWindow       ();
+    std::string DoObjects      ();
+    std::string DoLaunch       (const std::string& category, int chap, int rank);
+    std::string DoGetProgram   (int slot);
+    std::string DoSetProgram   (int slot, const std::string& source, bool doCompile);
+    std::string DoDiagnostics  (int slot);
 
     // Encodes raw RGBA pixels (bottom-up, from glReadPixels) as a PNG in memory.
     static std::vector<unsigned char> EncodeRGBAToPNG(

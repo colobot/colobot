@@ -15,11 +15,6 @@ import time
 import pytest
 from conftest import navigate_to_main_menu
 
-# Interface position of the robot in CAMERA_BACK view (640x480 window).
-# The WheeledShooter starts at pos(0,0) in the level; with BACK camera it
-# appears at the lower-center of the viewport.
-ROBOT_X = 0.5
-ROBOT_Y = 0.25
 
 # CBot program: repeatedly radar the nearest AlienSpider, turn to face it, fire.
 SPIDER_KILL_PROGRAM = (
@@ -65,6 +60,14 @@ def fresh_level(client):
             client.click("StudioCancel")
             client.wait_for_screen("InGame", timeout=5)
             screen = "InGame"
+        if screen == "LevelComplete":
+            client.click("ButtonEndLevel")
+            client.wait_for_screen("LevelSelect", timeout=10)
+            screen = "LevelSelect"
+        if screen == "LevelSelect":
+            client.click("ButtonBack")
+            client.wait_for_screen("MainMenu", timeout=10)
+            return
         if screen == "InGame":
             client.key("Escape")
             client.wait_for_screen("InGameMenu", timeout=5)
@@ -78,16 +81,9 @@ def fresh_level(client):
 
 @pytest.fixture(scope="module")
 def studio_ready(client, fresh_level):
-    """Open the Studio for the WheeledShooter. Skip if robot is not clickable."""
-    client.click_pos(ROBOT_X, ROBOT_Y)
-    time.sleep(0.5)
-    try:
-        client.wait_for_screen("Studio", timeout=5.0)
-    except TimeoutError:
-        pytest.skip(
-            f"Studio did not open after clicking ({ROBOT_X}, {ROBOT_Y}). "
-            "Adjust ROBOT_X / ROBOT_Y constants to match the robot's viewport position."
-        )
+    """Select a programmable robot and open its Studio with a program selected."""
+    if not client.open_studio():
+        pytest.skip("Could not open Studio for any programmable robot.")
     yield
 
 
@@ -123,10 +119,20 @@ def test_program_runs_and_wins(client, studio_ready):
     # Close the studio so the robot keeps running without the UI in the way.
     client.click("StudioOK")
 
-    # Wait for the win screen — the robot should kill all 3 spiders within 30 s.
-    client.wait_for_screen("InGameMenu", timeout=30)
+    # Wait for the win screen. Exercise levels with an EndingFile show a
+    # LevelComplete cinematic; levels without show InGameMenu with ButtonAgain.
+    deadline = time.monotonic() + 30
+    win_screen = None
+    while time.monotonic() < deadline:
+        screen = client.state()["screen"]
+        if screen in ("LevelComplete", "InGameMenu"):
+            win_screen = screen
+            break
+        time.sleep(0.5)
 
-    widget_ids = [w["id"] for w in client.state()["widgets"]]
-    assert "ButtonAgain" in widget_ids, (
-        f"Expected win screen (ButtonAgain), got widgets: {widget_ids}"
-    )
+    assert win_screen is not None, "Win screen not reached within 30s"
+    if win_screen == "LevelComplete":
+        assert client.find_widget("ButtonEndLevel") is not None
+    else:
+        widget_ids = [w["id"] for w in client.state()["widgets"]]
+        assert "ButtonAgain" in widget_ids, f"Expected ButtonAgain, got: {widget_ids}"

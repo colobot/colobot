@@ -44,7 +44,8 @@ def test_gl_screenshot_visual_regression(client, on_main_menu, update_snapshots)
     if update_snapshots:
         client.save_snapshot("main_menu")
         return
-    client.assert_snapshot("main_menu", tolerance=0.03)
+    # 10% tolerance: the main menu has an animated background that varies per frame.
+    client.assert_snapshot("main_menu", tolerance=0.10)
 
 
 # ---------------------------------------------------------------------------
