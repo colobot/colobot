@@ -2126,6 +2126,11 @@ void CEngine::ApplyRecolorMask(CImage& image, const std::filesystem::path& name)
     {
         ApplyRecolorMask(image, std::array{ glm::ivec4{ 0, 0, image.GetWidth(), image.GetHeight() }},
             COLOR_REF_BOT, 0.1f, false, true);
+
+        if (filename == "roller.png")
+        {
+            ScreenToAlphaMask(image, std::array{ rectangle( { 192, 42 }, { 256, 85 }) });
+        }
     }
     else if (filename == "drawer.png")
     {

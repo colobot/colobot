@@ -355,6 +355,18 @@ void ConvertFromOldRenderState(ModelTriangle& triangle, int state)
             triangle.material.alphaThreshold = 0.5f;
         }
     }
+    else if (triangle.material.albedoTexture == "roller.png")
+    {
+        auto middle = (triangle.p1.uv + triangle.p2.uv + triangle.p3.uv) / 3.0f;
+
+        // Make window transparent
+        if (192.0 / 256.0f < middle.x && middle.x < 1.0f
+            && 42.0f / 256.0f < middle.y && middle.y <= 85.0f / 256.0f)
+        {
+            triangle.material.alphaMode = AlphaMode::BLEND;
+            triangle.material.alphaThreshold = 0.5f;
+        }
+    }
 }
 
 
