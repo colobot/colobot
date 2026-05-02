@@ -92,6 +92,8 @@ CGL33ObjectRenderer::CGL33ObjectRenderer(CGL33Device* device)
     m_waterFogColor = glGetUniformLocation(m_program, "uni_WaterFogColor");
 
     m_baseColor = glGetUniformLocation(m_program, "uni_BaseColor");
+    m_colorShift = glGetUniformLocation(m_program, "uni_ColorShift");
+
     m_albedoColor = glGetUniformLocation(m_program, "uni_AlbedoColor");
     m_emissiveColor = glGetUniformLocation(m_program, "uni_EmissiveColor");
     m_roughness = glGetUniformLocation(m_program, "uni_Roughness");
@@ -234,6 +236,9 @@ void CGL33ObjectRenderer::CGL33ObjectRenderer::Begin()
     SetEmissiveColor({ 0, 0, 0, 0 });
     SetAlbedoColor({ 1, 1, 1, 1 });
     SetMaterialParams(1.0, 0.0, 0.0);
+
+    SetBaseColor({ 0.0f, 0.0f, 0.0f, 0.0f });
+    SetColorShift({ 0.0f, 0.0f, 0.0f, 0.0f });
 }
 
 void CGL33ObjectRenderer::CGL33ObjectRenderer::End()
@@ -289,6 +294,11 @@ void CGL33ObjectRenderer::SetModelMatrix(const glm::mat4& matrix)
 void CGL33ObjectRenderer::SetBaseColor(const Color& color)
 {
     glUniform4f(m_baseColor, color.r, color.g, color.b, color.a);
+}
+
+void CGL33ObjectRenderer::SetColorShift(const Color& color)
+{
+    glUniform4f(m_colorShift, color.r, color.g, color.b, color.a);
 }
 
 void CGL33ObjectRenderer::SetAlbedoColor(const Color& color)

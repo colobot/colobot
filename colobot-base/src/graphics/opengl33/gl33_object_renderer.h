@@ -55,6 +55,8 @@ public:
     virtual void SetModelMatrix(const glm::mat4& matrix) override;
 
     void SetBaseColor(const Color& color) override;
+    void SetColorShift(const Color& color) override;
+
     //! Sets albedo color
     virtual void SetAlbedoColor(const Color& color) override;
     //! Sets albedo texture
@@ -143,6 +145,8 @@ private:
     GLint m_fogRange = -1;
 
     GLint m_baseColor = -1;
+    GLint m_colorShift = -1;
+
     GLint m_albedoColor = -1;
     GLint m_emissiveColor = -1;
     GLint m_roughness = -1;

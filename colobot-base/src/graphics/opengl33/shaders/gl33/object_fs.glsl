@@ -20,6 +20,8 @@
 // FRAGMENT SHADER - OBJECT RENDERER
 
 uniform vec4 uni_BaseColor;
+uniform vec4 uni_ColorShift;
+
 uniform vec4 uni_AlbedoColor;
 uniform sampler2D uni_AlbedoTexture;
 uniform sampler2D uni_DetailTexture;
@@ -66,7 +68,7 @@ void main()
 {
     vec4 albedo = data.Color * uni_AlbedoColor * texture(uni_AlbedoTexture, data.TexCoord0);
 
-    albedo = mix(uni_BaseColor, albedo, albedo.a);
+    albedo = mix(uni_BaseColor, albedo + uni_ColorShift, albedo.a);
 
     vec3 dirty = vec3(0.0);
 

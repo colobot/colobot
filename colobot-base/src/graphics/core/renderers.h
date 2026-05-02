@@ -172,6 +172,9 @@ public:
 
     //! Sets base color
     virtual void SetBaseColor(const Color& color) = 0;
+    //! Sets color shift
+    virtual void SetColorShift(const Color& color) = 0;
+
     //! Sets albedo color
     virtual void SetAlbedoColor(const Color& color) = 0;
     //! Sets albedo texture
