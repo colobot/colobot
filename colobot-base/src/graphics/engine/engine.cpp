@@ -68,6 +68,14 @@
 
 using TimeUtils::TimeUnit;
 
+namespace
+{
+constexpr Gfx::Color COLOR_REF_BOT   = Gfx::Color( 10.0f/256.0f, 166.0f/256.0f, 254.0f/256.0f);  // blue
+constexpr Gfx::Color COLOR_REF_ALIEN = Gfx::Color(135.0f/256.0f, 170.0f/256.0f,  13.0f/256.0f);  // green
+constexpr Gfx::Color COLOR_REF_GREEN = Gfx::Color(135.0f/256.0f, 170.0f/256.0f,  13.0f/256.0f);  // green
+constexpr Gfx::Color COLOR_REF_WATER = Gfx::Color( 25.0f/256.0f, 255.0f/256.0f, 240.0f/256.0f);  // cyan
+}
+
 // Graphics module namespace
 namespace Gfx
 {
@@ -2085,11 +2093,6 @@ void CEngine::CreateOrUpdateTexture(const std::filesystem::path& texName, CImage
 
 void CEngine::ApplyRecolorMask(CImage& image, const std::filesystem::path& name)
 {
-    constexpr Gfx::Color COLOR_REF_BOT   = Gfx::Color( 10.0f/256.0f, 166.0f/256.0f, 254.0f/256.0f);  // blue
-    [[maybe_unused]] constexpr Gfx::Color COLOR_REF_ALIEN = Gfx::Color(135.0f/256.0f, 170.0f/256.0f,  13.0f/256.0f);  // green
-    [[maybe_unused]] constexpr Gfx::Color COLOR_REF_GREEN = Gfx::Color(135.0f/256.0f, 170.0f/256.0f,  13.0f/256.0f);  // green
-    [[maybe_unused]] constexpr Gfx::Color COLOR_REF_WATER = Gfx::Color( 25.0f/256.0f, 255.0f/256.0f, 240.0f/256.0f);  // cyan
-
     auto filename = name.filename();
 
     auto rectangle = [&](const glm::ivec2& p1, const glm::ivec2& p2, const glm::ivec2& size = { 256, 256 })
