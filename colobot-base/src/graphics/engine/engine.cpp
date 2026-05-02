@@ -2932,32 +2932,55 @@ bool CEngine::IsVisiblePoint(const glm::vec3 &pos)
     return glm::distance(m_eyePt, pos) <= (m_deepView[0] * m_clippingDistance);
 }
 
-Color CEngine::GetObjectColor(int object, BaseColor baseColor)
+Color CEngine::GetObjectBaseColor(int object, MaterialType type)
 {
     const auto& appearance = CRobotMain::GetInstance().GetPlayerProfile()->GetAppearance();
 
-    switch (baseColor)
+    switch (type)
     {
-        case BaseColor::TEAM:
+        case MaterialType::TEAM:
             return CRobotMain::GetInstance().GetTeamColor(m_objects[object].team);
-        case BaseColor::VEHICLE:
+        case MaterialType::VEHICLE:
             return CRobotMain::GetInstance().GetVehicleColor();
-        case BaseColor::PLANT:
-            return CRobotMain::GetInstance().GetGreeneryColor();
-        case BaseColor::ALIEN:
-            return CRobotMain::GetInstance().GetAlienColor();
-        case BaseColor::HAIR:
+        case MaterialType::PLANT:
+            return Color{};
+        case MaterialType::ALIEN:
+            return Color{};
+        case MaterialType::HAIR:
             return appearance.colorHair;
-        case BaseColor::SUIT:
-            return appearance.colorCombi;
-        case BaseColor::BAND:
+        case MaterialType::SUIT:
+            return appearance.colorCombi + Color{ 0.3f, 0.3f, 0.3f };
+        case MaterialType::BAND:
             return appearance.colorBand;
-        case BaseColor::BLACK:
+        case MaterialType::BLACK:
             return Color(0.0, 0.0, 0.0, 1.0);
-        case BaseColor::WHITE:
+        case MaterialType::WHITE:
             return Color(1.0, 1.0, 1.0, 1.0);
         default:
             return Color(1.0, 1.0, 1.0, 1.0);
+    }
+}
+
+Color CEngine::GetObjectColorShift(int object, MaterialType type)
+{
+    const auto& appearance = CRobotMain::GetInstance().GetPlayerProfile()->GetAppearance();
+
+    switch (type)
+    {
+        case MaterialType::TEAM:
+        case MaterialType::VEHICLE:
+            return Color{};
+        case MaterialType::PLANT:
+            return CRobotMain::GetInstance().GetGreeneryColor() - COLOR_REF_GREEN;
+        case MaterialType::ALIEN:
+            return CRobotMain::GetInstance().GetAlienColor() - COLOR_REF_ALIEN;
+        case MaterialType::HAIR:
+        case MaterialType::SUIT:
+        case MaterialType::BAND:
+        case MaterialType::BLACK:
+        case MaterialType::WHITE:
+        default:
+            return Color{};
     }
 }
 

@@ -203,26 +203,26 @@ void GLTFLoader::ReadMaterials()
                 mat.detailTexture = "textures" / StrUtils::ToPath(ss.str());
             }
 
-            if (extras.contains("base"))
+            if (extras.contains("type"))
             {
-                std::string base = extras["base"].get<std::string>();
+                std::string type = extras["type"].get<std::string>();
 
-                if (base == "team")
-                    mat.baseColor = BaseColor::TEAM;
-                else if (base == "vehicle")
-                    mat.baseColor = BaseColor::VEHICLE;
-                else if (base == "plant")
-                    mat.baseColor = BaseColor::PLANT;
-                else if (base == "alien")
-                    mat.baseColor = BaseColor::ALIEN;
-                else if (base == "hair")
-                    mat.baseColor = BaseColor::HAIR;
-                else if (base == "suit")
-                    mat.baseColor = BaseColor::SUIT;
-                else if (base == "band")
-                    mat.baseColor = BaseColor::BAND;
+                if (type == "team")
+                    mat.type = MaterialType::TEAM;
+                else if (type == "vehicle")
+                    mat.type = MaterialType::VEHICLE;
+                else if (type == "plant")
+                    mat.type = MaterialType::PLANT;
+                else if (type == "alien")
+                    mat.type = MaterialType::ALIEN;
+                else if (type == "hair")
+                    mat.type = MaterialType::HAIR;
+                else if (type == "suit")
+                    mat.type = MaterialType::SUIT;
+                else if (type == "band")
+                    mat.type = MaterialType::BAND;
                 else
-                    throw std::runtime_error("Unknown base color: '" + base + "'");
+                    throw std::runtime_error("Unknown base color: '" + type + "'");
             }
 
             if (extras.contains("mark"))

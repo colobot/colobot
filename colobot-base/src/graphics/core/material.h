@@ -47,10 +47,10 @@ enum class CullFace : unsigned char
 };
 
 /**
- * \enum BaseColor
- * \brief Defines base color for the material
+ * \enum MaterialType
+ * \brief Defines material type
  */
-enum class BaseColor : unsigned char
+enum class MaterialType : unsigned char
 {
     TEAM,
     VEHICLE,
@@ -79,7 +79,7 @@ enum class Mark : unsigned char
 struct Material
 {
     //! Surface type
-    BaseColor baseColor = BaseColor::TEAM;
+    MaterialType type = MaterialType::TEAM;
     //! Albedo color
     Color albedoColor = Color{ 1.0f, 1.0f, 1.0f, 1.0f };
     //! Albedo texture

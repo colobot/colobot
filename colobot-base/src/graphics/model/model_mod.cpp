@@ -310,12 +310,12 @@ void ConvertFromOldRenderState(ModelTriangle& triangle, int state)
     if ((state & static_cast<int>(ModelRenderState::Alpha)) != 0)
     {
         triangle.material.alphaMode = AlphaMode::BLEND;
-        triangle.material.baseColor = BaseColor::WHITE;
+        triangle.material.type = MaterialType::WHITE;
     }
     else
     {
         triangle.material.alphaMode = AlphaMode::NONE;
-        triangle.material.baseColor = BaseColor::TEAM;
+        triangle.material.type = MaterialType::TEAM;
     }
 
     if ((state & static_cast<int>(ModelRenderState::Part1)) != 0)
@@ -330,7 +330,7 @@ void ConvertFromOldRenderState(ModelTriangle& triangle, int state)
 
     if (triangle.material.albedoTexture == "plant.png")
     {
-        triangle.material.baseColor = BaseColor::PLANT;
+        triangle.material.type = MaterialType::PLANT;
         triangle.material.alphaMode = AlphaMode::MASK;
         triangle.material.alphaThreshold = 0.5f;
     }
@@ -339,11 +339,11 @@ void ConvertFromOldRenderState(ModelTriangle& triangle, int state)
         || triangle.material.albedoTexture == "face03.png"
         || triangle.material.albedoTexture == "face04.png")
     {
-        triangle.material.baseColor = BaseColor::HAIR;
+        triangle.material.type = MaterialType::HAIR;
     }
     else if (triangle.material.albedoTexture == "human.png")
     {
-        triangle.material.baseColor = BaseColor::SUIT;
+        triangle.material.type = MaterialType::SUIT;
 
         auto middle = (triangle.p1.uv + triangle.p2.uv + triangle.p3.uv) / 3.0f;
 
@@ -551,18 +551,17 @@ void AddTriangle(std::vector<ModelTriangle>& triangles, ModelTriangle&& triangle
             // Bands
             if (isInside(bands, middle))
             {
-                triangle.material.baseColor = BaseColor::BAND;
+                triangle.material.type = MaterialType::BAND;
             }
             // Other parts
             else if (isInside(other, middle))
             {
-                triangle.material.baseColor = BaseColor::TEAM;
+                triangle.material.type = MaterialType::TEAM;
             }
             // Suit
             else
             {
-                triangle.material.baseColor = BaseColor::SUIT;
-                triangle.material.recolorShift = 0.3f;
+                triangle.material.type = MaterialType::SUIT;
             }
 
             triangles.push_back(std::move(triangle));
