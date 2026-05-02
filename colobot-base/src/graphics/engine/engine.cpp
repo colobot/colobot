@@ -3295,11 +3295,9 @@ void CEngine::Draw3DScene()
 
         //m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
 
-        Color baseColor = Color{GetObjectColor(rank, data.material.baseColor) + Color{ data.material.recolorShift, data.material.recolorShift, data.material.recolorShift, 0.0f }};
+        objectRenderer->SetBaseColor(GetObjectBaseColor(rank, data.material.type));
+        objectRenderer->SetColorShift(GetObjectColorShift(rank, data.material.type));
 
-        baseColor.a = 1.0f;
-
-        objectRenderer->SetBaseColor(baseColor);
         objectRenderer->SetAlbedoColor(data.material.albedoColor);
 
         objectRenderer->SetAlbedoTexture(data.albedoTexture);
@@ -3322,14 +3320,12 @@ void CEngine::Draw3DScene()
 
         //m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
 
-        Color baseColor = Color{GetObjectColor(rank, data.material.baseColor) + Color{ data.material.recolorShift, data.material.recolorShift, data.material.recolorShift, 0.0f }};
-
         objectRenderer->SetAlphaScissor(data.material.alphaThreshold);
 
-        baseColor.a = 0.0f;
+        objectRenderer->SetBaseColor(GetObjectBaseColor(rank, data.material.type));
+        objectRenderer->SetColorShift(GetObjectColorShift(rank, data.material.type));
 
-        objectRenderer->SetBaseColor({ 0.0f, 0.0f, 0.0f, 0.0f });
-        objectRenderer->SetAlbedoColor(data.material.albedoColor);// * baseColor);
+        objectRenderer->SetAlbedoColor(data.material.albedoColor);
 
         objectRenderer->SetAlbedoTexture(data.albedoTexture);
         objectRenderer->SetDetailTexture(data.detailTexture);
@@ -3356,7 +3352,9 @@ void CEngine::Draw3DScene()
 
         //m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
 
-        objectRenderer->SetBaseColor({ 0.0f, 0.0f, 0.0f, 0.0f });
+        objectRenderer->SetBaseColor(GetObjectBaseColor(rank, data.material.type));
+        objectRenderer->SetColorShift(GetObjectColorShift(rank, data.material.type));
+
         objectRenderer->SetAlbedoColor(data.material.albedoColor);
 
         objectRenderer->SetAlbedoTexture(data.albedoTexture);
@@ -3387,28 +3385,10 @@ void CEngine::Draw3DScene()
 
         //m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
 
-        Color baseColor = Color{GetObjectColor(rank, data.material.baseColor) + Color{ data.material.recolorShift, data.material.recolorShift, data.material.recolorShift, 0.0f }};
-        baseColor.a = 1.0f;
+        objectRenderer->SetBaseColor(GetObjectBaseColor(rank, data.material.type));
+        objectRenderer->SetColorShift(GetObjectColorShift(rank, data.material.type));
 
-        if (data.material.alphaMode == AlphaMode::NONE)
-        {
-            objectRenderer->SetAlphaScissor(0.0f);
-            objectRenderer->SetBaseColor(baseColor);
-            objectRenderer->SetAlbedoColor(tColor * data.material.albedoColor);
-        }
-        else if (data.material.alphaMode == AlphaMode::BLEND)
-        {
-            objectRenderer->SetAlphaScissor(0.0f);
-            objectRenderer->SetBaseColor({ 0.0f, 0.0f, 0.0f, 0.0f });
-            objectRenderer->SetAlbedoColor(tColor * data.material.albedoColor * baseColor);
-        }
-        else if (data.material.alphaMode == AlphaMode::MASK)
-        {
-            objectRenderer->SetAlphaScissor(data.material.alphaThreshold);
-            objectRenderer->SetBaseColor({ 0.0f, 0.0f, 0.0f, 0.0f });
-            objectRenderer->SetAlbedoColor(tColor * data.material.albedoColor * baseColor);
-        }
-
+        objectRenderer->SetAlbedoColor(data.material.albedoColor);
         objectRenderer->SetAlbedoTexture(data.albedoTexture);
         objectRenderer->SetDetailTexture(data.detailTexture);
         objectRenderer->SetUVTransform(data.uvOffset, data.uvScale);
@@ -4055,42 +4035,29 @@ void CEngine::DrawInterface()
 
             for (auto& data : p1.next)
             {
-                Color baseColor = Color{GetObjectColor(objRank, data.material.baseColor) + Color{ data.material.recolorShift, data.material.recolorShift, data.material.recolorShift, 0.0f }};
+                renderer->SetBaseColor(GetObjectBaseColor(objRank, data.material.type));
+                renderer->SetColorShift(GetObjectColorShift(objRank, data.material.type));
 
                 if (data.material.alphaMode == AlphaMode::NONE)
                 {
                     m_device->SetDepthMask(true);
                     renderer->SetTransparency(TransparencyMode::NONE);
                     renderer->SetAlphaScissor(0.0f);
-
-                    baseColor.a = 1.0f;
-
-                    renderer->SetBaseColor(baseColor);
-                    renderer->SetAlbedoColor(data.material.albedoColor);
                 }
                 else if (data.material.alphaMode == AlphaMode::MASK)
                 {
                     m_device->SetDepthMask(true);
                     renderer->SetTransparency(TransparencyMode::NONE);
                     renderer->SetAlphaScissor(data.material.alphaThreshold);
-
-                    baseColor.a = 1.0f;
-
-                    renderer->SetBaseColor({ 0.0f, 0.0f, 0.0f, 0.0f });
-                    renderer->SetAlbedoColor(data.material.albedoColor * baseColor);
                 }
                 else if (data.material.alphaMode == AlphaMode::BLEND)
                 {
                     m_device->SetDepthMask(false);
                     renderer->SetTransparency(TransparencyMode::ALPHA);
                     renderer->SetAlphaScissor(0.0f);
-
-                    baseColor.a = 1.0f;
-
-                    renderer->SetBaseColor({ 0.0f, 0.0f, 0.0f, 0.0f });
-                    renderer->SetAlbedoColor(data.material.albedoColor * baseColor);
                 }
 
+                renderer->SetAlbedoColor(data.material.albedoColor);
                 renderer->SetAlbedoTexture(data.albedoTexture);
                 renderer->SetDetailTexture(data.detailTexture);
 
