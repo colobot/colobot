@@ -85,6 +85,16 @@ struct Color : glm::vec4
         return ! this->operator==(other);
     }
 
+    constexpr Color operator+(const Color& other) const
+    {
+        return Color{ r + other.r, g + other.g, b + other.b, a + other.a };
+    }
+
+    constexpr Color operator-(const Color& other) const
+    {
+        return Color{ r - other.r, g - other.g, b - other.b, a - other.a };
+    }
+
     constexpr Color operator*(float scale) const
     {
         Color c = *this;
