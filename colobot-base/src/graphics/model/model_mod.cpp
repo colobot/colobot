@@ -367,6 +367,11 @@ void ConvertFromOldRenderState(ModelTriangle& triangle, int state)
             triangle.material.alphaThreshold = 0.5f;
         }
     }
+    else if (triangle.material.albedoTexture == "ant.png"
+        || triangle.material.albedoTexture == "mother.png")
+    {
+        triangle.material.type = MaterialType::ALIEN;
+    }
 }
 
 
