@@ -31,7 +31,7 @@
 #include "math/func.h"
 
 #include <sstream>
-#include <SDL_system.h>
+#include <SDL3/SDL_system.h>
 
 CInput::CInput()
     : m_keyPresses()
@@ -250,16 +250,16 @@ void CInput::SetDefaultInputBindings()
     m_inputBindings[INPUT_SLOT_RIGHT  ].primary   = KEY(RIGHT);
     m_inputBindings[INPUT_SLOT_UP     ].primary   = KEY(UP);
     m_inputBindings[INPUT_SLOT_DOWN   ].primary   = KEY(DOWN);
-    m_inputBindings[INPUT_SLOT_LEFT   ].secondary = KEY(a);
-    m_inputBindings[INPUT_SLOT_RIGHT  ].secondary = KEY(d);
-    m_inputBindings[INPUT_SLOT_UP     ].secondary = KEY(w);
-    m_inputBindings[INPUT_SLOT_DOWN   ].secondary = KEY(s);
+    m_inputBindings[INPUT_SLOT_LEFT   ].secondary = KEY(A);
+    m_inputBindings[INPUT_SLOT_RIGHT  ].secondary = KEY(D);
+    m_inputBindings[INPUT_SLOT_UP     ].secondary = KEY(W);
+    m_inputBindings[INPUT_SLOT_DOWN   ].secondary = KEY(S);
     m_inputBindings[INPUT_SLOT_GUP    ].primary   = VIRTUAL_KMOD(SHIFT);
     m_inputBindings[INPUT_SLOT_GDOWN  ].primary   = VIRTUAL_KMOD(CTRL);
     m_inputBindings[INPUT_SLOT_CAMERA ].primary   = KEY(SPACE);
     m_inputBindings[INPUT_SLOT_DESEL  ].primary   = KEY(KP_0);
     m_inputBindings[INPUT_SLOT_ACTION ].primary   = KEY(RETURN);
-    m_inputBindings[INPUT_SLOT_ACTION ].secondary = KEY(e);
+    m_inputBindings[INPUT_SLOT_ACTION ].secondary = KEY(E);
     m_inputBindings[INPUT_SLOT_CAM_LEFT ].primary = KEY(KP_4);
     m_inputBindings[INPUT_SLOT_CAM_RIGHT].primary = KEY(KP_6);
     m_inputBindings[INPUT_SLOT_CAM_UP   ].primary = KEY(KP_8);
@@ -279,8 +279,8 @@ void CInput::SetDefaultInputBindings()
     m_inputBindings[INPUT_SLOT_SPEED_INC].primary   = KEY(F8);
     m_inputBindings[INPUT_SLOT_QUICKLOAD].primary   = KEY(F9);
     m_inputBindings[INPUT_SLOT_PAUSE].primary       = KEY(PAUSE);
-    m_inputBindings[INPUT_SLOT_PAUSE].secondary     = KEY(p);
-    m_inputBindings[INPUT_SLOT_CMDLINE].primary     = KEY(BACKQUOTE);
+    m_inputBindings[INPUT_SLOT_PAUSE].secondary     = KEY(P);
+    m_inputBindings[INPUT_SLOT_CMDLINE].primary     = KEY(GRAVE);
 
     m_joyAxisBindings[JOY_AXIS_SLOT_X].axis = 0;
     m_joyAxisBindings[JOY_AXIS_SLOT_Y].axis = 1;

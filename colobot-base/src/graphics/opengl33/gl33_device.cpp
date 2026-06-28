@@ -41,7 +41,7 @@
 
 #include "math/geometry.h"
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <physfs.h>
 
 #include <cassert>
@@ -413,7 +413,7 @@ Texture CGL33Device::CreateTexture(ImageData *data, const TextureCreateParams &p
     PreparedTextureData texData = PrepareTextureData(data, params.format);
     result.alpha = texData.alpha;
 
-    glPixelStorei(GL_UNPACK_ROW_LENGTH, texData.actualSurface->pitch / texData.actualSurface->format->BytesPerPixel);
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, texData.actualSurface->pitch / SDL_GetPixelFormatDetails(texData.actualSurface->format)->bytes_per_pixel);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, texData.actualSurface->w, texData.actualSurface->h,
@@ -422,7 +422,7 @@ Texture CGL33Device::CreateTexture(ImageData *data, const TextureCreateParams &p
     if (params.mipmap)
         glGenerateMipmap(GL_TEXTURE_2D);
 
-    SDL_FreeSurface(texData.convertedSurface);
+    SDL_DestroySurface(texData.convertedSurface);
 
     m_allTextures.insert(result);
 
@@ -481,7 +481,7 @@ void CGL33Device::UpdateTexture(const Texture& texture, const glm::ivec2& offset
 
     PreparedTextureData texData = PrepareTextureData(data, format);
 
-    glPixelStorei(GL_UNPACK_ROW_LENGTH, texData.actualSurface->pitch / texData.actualSurface->format->BytesPerPixel);
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, texData.actualSurface->pitch / SDL_GetPixelFormatDetails(texData.actualSurface->format)->bytes_per_pixel);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
     glTexSubImage2D(GL_TEXTURE_2D, 0, offset.x, offset.y, texData.actualSurface->w, texData.actualSurface->h,
@@ -489,7 +489,7 @@ void CGL33Device::UpdateTexture(const Texture& texture, const glm::ivec2& offset
 
     glGenerateMipmap(GL_TEXTURE_2D);
 
-    SDL_FreeSurface(texData.convertedSurface);
+    SDL_DestroySurface(texData.convertedSurface);
 }
 
 void CGL33Device::DestroyTexture(const Texture &texture)

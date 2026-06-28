@@ -28,7 +28,7 @@
 #include <time.h>
 
 #ifdef COLOBOT_APPIMAGE_BASEPATH_OVERRIDE
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
 #endif
 
 

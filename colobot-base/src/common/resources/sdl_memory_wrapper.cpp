@@ -54,22 +54,22 @@ CSDLMemoryWrapper::CSDLMemoryWrapper(const std::filesystem::path& filename)
         return;
     }
     PHYSFS_close(file);
-    m_rwops = SDL_RWFromMem(m_buffer.get(), length);
+    m_rwops = SDL_IOFromMem(m_buffer.get(), length);
 
     if (m_rwops == nullptr)
     {
-        GetLogger()->Error("Unable to allocate SDL_RWops for \"%%\"\n", filename);
+        GetLogger()->Error("Unable to allocate SDL_IOStream for \"%%\"\n", filename);
         return;
     }
 }
 
 CSDLMemoryWrapper::~CSDLMemoryWrapper()
 {
-    SDL_FreeRW(m_rwops);
+    SDL_CloseIO(m_rwops);
     m_buffer.reset();
 }
 
-SDL_RWops* CSDLMemoryWrapper::GetHandler()
+SDL_IOStream* CSDLMemoryWrapper::GetHandler()
 {
     return m_rwops;
 }

@@ -150,10 +150,10 @@ include("${colobot_SOURCE_DIR}/cmake/colobot-lint.cmake")
 ##
 
 find_package(OpenGL 1.4 REQUIRED)
-find_package(SDL2 REQUIRED)
-find_package(SDL2_image REQUIRED)
-find_package(SDL2_ttf REQUIRED)
 find_package(PNG 1.2 REQUIRED)
+find_package(SDL3 REQUIRED CONFIG REQUIRED COMPONENTS SDL3)
+find_package(SDL3_image REQUIRED CONFIG)
+find_package(SDL3_ttf REQUIRED CONFIG)
 find_package(Gettext REQUIRED)
 find_package(Intl REQUIRED)
 find_package(PhysFS REQUIRED)

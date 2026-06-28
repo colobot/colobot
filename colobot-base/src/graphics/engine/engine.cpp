@@ -62,8 +62,8 @@
 #include "ui/controls/interface.h"
 
 #include <iomanip>
-#include <SDL_surface.h>
-#include <SDL_thread.h>
+#include <SDL3/SDL_surface.h>
+#include <SDL3/SDL_thread.h>
 #include <thread>
 
 using TimeUtils::TimeUnit;
@@ -3245,8 +3245,7 @@ void CEngine::Capture3DScene()
 
     // create SDL surface and final texture
     ImageData image;
-    image.surface = SDL_CreateRGBSurfaceFrom(blured.get(), newWidth, newHeight,
-        32, 4 * newWidth, 0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000);
+    image.surface = SDL_CreateSurfaceFrom(newWidth, newHeight, SDL_GetPixelFormatForMasks(32, 0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000), blured.get(), 4 * newWidth);
 
     TextureCreateParams params;
     params.filter = TextureFilter::BILINEAR;
@@ -3255,7 +3254,7 @@ void CEngine::Capture3DScene()
 
     m_capturedWorldTexture = m_device->CreateTexture(&image, params);
 
-    SDL_FreeSurface(image.surface);
+    SDL_DestroySurface(image.surface);
 
     m_captureWorld = false;
     m_worldCaptured = true;

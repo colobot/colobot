@@ -17,9 +17,9 @@ target_link_libraries(Colobot-Base PUBLIC
     CBot
     Colobot-Common
     localename
-    SDL2::Core
-    SDL2::Image
-    SDL2::TTF
+    SDL3::SDL3
+    SDL3_image::SDL3_image
+    SDL3_ttf::SDL3_ttf
     OpenGL::GL
     PNG::PNG
     GLEW::GLEW

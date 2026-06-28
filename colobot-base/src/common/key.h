@@ -25,7 +25,7 @@
 #pragma once
 
 
-#include <SDL_keycode.h>
+#include <SDL3/SDL.h>
 
 // TODO: This is a bit ugly hack
 #define SDLK_LAST (SDLK_SCANCODE_MASK << 1)
@@ -41,7 +41,7 @@
 
 // Key modifier defined as concatenation to KMOD_...
 // If need arises, it can be changed to custom function or anything else
-#define KEY_MOD(x) KMOD_ ## x
+#define KEY_MOD(x) SDL_KMOD_ ## x
 
 /**
  * \enum VirtualKmod

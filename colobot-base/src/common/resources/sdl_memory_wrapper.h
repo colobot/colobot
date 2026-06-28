@@ -23,7 +23,7 @@
 #include <filesystem>
 #include <memory>
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 class CSDLMemoryWrapper final
 {
@@ -38,9 +38,9 @@ public:
     CSDLMemoryWrapper& operator=(CSDLMemoryWrapper&&) = delete;
 
     bool IsOpen() const;
-    SDL_RWops* GetHandler();
+    SDL_IOStream* GetHandler();
 
 private:
-    SDL_RWops* m_rwops;
+    SDL_IOStream* m_rwops;
     std::unique_ptr<char[]> m_buffer;
 };

@@ -38,8 +38,8 @@
 
 #include "math/func.h"
 
-#include <SDL.h>
-#include <SDL_ttf.h>
+#include <SDL3/SDL.h>
+#include <SDL3_ttf/SDL_ttf.h>
 
 #include <algorithm>
 #include <array>
@@ -103,7 +103,7 @@ struct CachedFont
     CachedFont(std::unique_ptr<CSDLMemoryWrapper> fontFile, int pointSize)
         : fontFile(std::move(fontFile))
     {
-        font = TTF_OpenFontRW(this->fontFile->GetHandler(), 0, pointSize);
+        font = TTF_OpenFontIO(this->fontFile->GetHandler(), 0, pointSize);
     }
 
     CachedFont(CachedFont&& other) noexcept
@@ -346,7 +346,7 @@ private:
         auto newFont = std::make_unique<CachedFont>(std::move(file), pointSize);
         if (newFont->font == nullptr)
         {
-            m_error = std::string("TTF_OpenFont error ") + std::string(TTF_GetError());
+            m_error = std::string("TTF_OpenFont error ") + std::string(SDL_GetError());
             return nullptr;
         }
         return newFont;
@@ -420,7 +420,7 @@ bool CText::Create()
 {
     if (TTF_Init() != 0)
     {
-        m_error = std::string("TTF_Init error: ") + std::string(TTF_GetError());
+        m_error = std::string("TTF_Init error: ") + std::string(SDL_GetError());
         return false;
     }
 
@@ -593,7 +593,7 @@ float CText::GetAscent(FontType font, float size)
 
     CachedFont* cf = GetOrOpenFont(font, size);
     assert(cf != nullptr);
-    glm::ivec2 wndSize = { 0, TTF_FontAscent(cf->font) };
+    glm::ivec2 wndSize = { 0, TTF_GetFontAscent(cf->font) };
     glm::vec2 ifSize = m_engine->WindowToInterfaceSize(wndSize);
     return ifSize.y;
 }
@@ -604,7 +604,7 @@ float CText::GetDescent(FontType font, float size)
 
     CachedFont* cf = GetOrOpenFont(font, size);
     assert(cf != nullptr);
-    glm::ivec2 wndSize = { 0, TTF_FontDescent(cf->font) };
+    glm::ivec2 wndSize = { 0, TTF_GetFontDescent(cf->font) };
     glm::vec2 ifSize = m_engine->WindowToInterfaceSize(wndSize);
     return ifSize.y;
 }
@@ -615,7 +615,7 @@ float CText::GetHeight(FontType font, float size)
 
     CachedFont* cf = GetOrOpenFont(font, size);
     assert(cf != nullptr);
-    glm::ivec2 wndSize = { 0, TTF_FontHeight(cf->font) };
+    glm::ivec2 wndSize = { 0, TTF_GetFontHeight(cf->font) };
     glm::vec2 ifSize = m_engine->WindowToInterfaceSize(wndSize);
     return ifSize.y;
 }
@@ -626,7 +626,7 @@ int CText::GetHeightInt(FontType font, float size)
 
     CachedFont* cf = GetOrOpenFont(font, size);
     assert(cf != nullptr);
-    return TTF_FontHeight(cf->font);
+    return TTF_GetFontHeight(cf->font);
 }
 
 float CText::GetStringWidth(const std::string &text,
@@ -669,7 +669,7 @@ float CText::GetStringWidth(std::string text, FontType font, float size)
     CachedFont* cf = GetOrOpenFont(font, size);
     assert(cf != nullptr);
     glm::ivec2 wndSize{};
-    TTF_SizeUTF8(cf->font, text.c_str(), &wndSize.x, &wndSize.y);
+    TTF_GetStringSize(cf->font, text.c_str(), strlen(text.c_str()), &wndSize.x, &wndSize.y);
     glm::vec2 ifSize = m_engine->WindowToInterfaceSize(wndSize);
     return ifSize.x;
 }
@@ -709,7 +709,7 @@ float CText::GetCharWidth(StrUtils::CodePoint ch, FontType font, float size, flo
     {
         glm::ivec2 wndSize{};
 
-        TTF_SizeUTF8(cf->font, ch.Data(), &wndSize.x, &wndSize.y);
+        TTF_GetStringSize(cf->font, ch.Data(), strlen(ch.Data()), &wndSize.x, &wndSize.y);
         charSize = m_engine->WindowToInterfaceSize(wndSize);
     }
 
@@ -748,7 +748,8 @@ int CText::GetCharWidthInt(StrUtils::CodePoint ch, FontType font, float size, fl
     }
     else
     {
-        TTF_SizeUTF8(cf->font, ch.Data(), &charSize.x, &charSize.y);
+		// @sdl3 todo fix: utf8 string lengths
+        TTF_GetStringSize(cf->font, ch.Data(), strlen(ch.Data()), &charSize.x, &charSize.y);
     }
 
     return charSize.x * width;
@@ -1293,7 +1294,7 @@ CharTexture CText::CreateCharTexture(StrUtils::CodePoint ch, CachedFont* font)
     SDL_Surface* textSurface = nullptr;
     SDL_Color white = {255, 255, 255, 0};
 
-    textSurface = TTF_RenderUTF8_Blended(font->font, ch.Data(), white);
+    textSurface = TTF_RenderText_Blended(font->font, ch.Data(), strlen(ch.Data()), white);
 
     if (textSurface == nullptr)
     {
@@ -1329,7 +1330,7 @@ CharTexture CText::CreateCharTexture(StrUtils::CodePoint ch, CachedFont* font)
         --fontTexture->freeSlots;
     }
 
-    SDL_FreeSurface(textSurface);
+    SDL_DestroySurface(textSurface);
 
     return texture;
 }
@@ -1354,8 +1355,7 @@ FontTexture* CText::GetOrCreateFontTexture(const glm::ivec2& tileSize)
 
 FontTexture CText::CreateFontTexture(const glm::ivec2& tileSize)
 {
-    SDL_Surface* textureSurface = SDL_CreateRGBSurface(0, FONT_TEXTURE_SIZE.x, FONT_TEXTURE_SIZE.y, 32,
-                                                       0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+    SDL_Surface* textureSurface = SDL_CreateSurface(FONT_TEXTURE_SIZE.x, FONT_TEXTURE_SIZE.y, SDL_GetPixelFormatForMasks(32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000));
     ImageData data;
     data.surface = textureSurface;
 
@@ -1367,7 +1367,7 @@ FontTexture CText::CreateFontTexture(const glm::ivec2& tileSize)
     Texture tex = m_device->CreateTexture(&data, createParams);
 
     data.surface = nullptr;
-    SDL_FreeSurface(textureSurface);
+    SDL_DestroySurface(textureSurface);
 
     FontTexture fontTexture;
     fontTexture.id = tex.id;

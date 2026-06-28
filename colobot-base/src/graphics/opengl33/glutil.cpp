@@ -27,7 +27,7 @@
 #include "common/logger.h"
 #include "common/resources/physfs_utils.h"
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <physfs.h>
 #include <cstring>
 #include <vector>
@@ -553,20 +553,21 @@ PreparedTextureData PrepareTextureData(ImageData* imageData, TextureFormat forma
     }
     else if (format == TextureFormat::AUTO)
     {
-        if (imageData->surface->format->BytesPerPixel == 4)
+		const SDL_PixelFormatDetails* details = SDL_GetPixelFormatDetails(imageData->surface->format);
+        if (details->bytes_per_pixel == 4)
         {
-            if ((imageData->surface->format->Amask == 0xFF000000) &&
-                (imageData->surface->format->Rmask == 0x00FF0000) &&
-                (imageData->surface->format->Gmask == 0x0000FF00) &&
-                (imageData->surface->format->Bmask == 0x000000FF))
+            if ((details->Amask == 0xFF000000) &&
+                (details->Rmask == 0x00FF0000) &&
+                (details->Gmask == 0x0000FF00) &&
+                (details->Bmask == 0x000000FF))
             {
                 texData.sourceFormat = GL_BGRA;
                 texData.alpha = true;
             }
-            else if ((imageData->surface->format->Amask == 0xFF000000) &&
-                     (imageData->surface->format->Bmask == 0x00FF0000) &&
-                     (imageData->surface->format->Gmask == 0x0000FF00) &&
-                     (imageData->surface->format->Rmask == 0x000000FF))
+            else if ((details->Amask == 0xFF000000) &&
+                     (details->Bmask == 0x00FF0000) &&
+                     (details->Gmask == 0x0000FF00) &&
+                     (details->Rmask == 0x000000FF))
             {
                 texData.sourceFormat = GL_RGBA;
                 texData.alpha = true;
@@ -577,18 +578,18 @@ PreparedTextureData PrepareTextureData(ImageData* imageData, TextureFormat forma
                 convert = true;
             }
         }
-        else if (imageData->surface->format->BytesPerPixel == 3)
+        else if (details->bytes_per_pixel == 3)
         {
-            if ((imageData->surface->format->Rmask == 0xFF0000) &&
-                (imageData->surface->format->Gmask == 0x00FF00) &&
-                (imageData->surface->format->Bmask == 0x0000FF))
+            if ((details->Rmask == 0xFF0000) &&
+                (details->Gmask == 0x00FF00) &&
+                (details->Bmask == 0x0000FF))
             {
                 texData.sourceFormat = GL_BGR;
                 texData.alpha = false;
             }
-            else if ((imageData->surface->format->Bmask == 0xFF0000) &&
-                     (imageData->surface->format->Gmask == 0x00FF00) &&
-                     (imageData->surface->format->Rmask == 0x0000FF))
+            else if ((details->Bmask == 0xFF0000) &&
+                     (details->Gmask == 0x00FF00) &&
+                     (details->Rmask == 0x0000FF))
             {
                 texData.sourceFormat = GL_RGB;
                 texData.alpha = false;
@@ -613,20 +614,8 @@ PreparedTextureData PrepareTextureData(ImageData* imageData, TextureFormat forma
 
     if (convert)
     {
-        SDL_PixelFormat format = {};
-        format.BytesPerPixel = 4;
-        format.BitsPerPixel = 32;
-        format.Aloss = format.Bloss = format.Gloss = format.Rloss = 0;
-        format.Amask = 0xFF000000;
-        format.Ashift = 24;
-        format.Bmask = 0x00FF0000;
-        format.Bshift = 16;
-        format.Gmask = 0x0000FF00;
-        format.Gshift = 8;
-        format.Rmask = 0x000000FF;
-        format.Rshift = 0;
-        format.palette = nullptr;
-        texData.convertedSurface = SDL_ConvertSurface(imageData->surface, &format, SDL_SWSURFACE);
+        SDL_PixelFormat format = SDL_GetPixelFormatForMasks(32, 0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000);
+        texData.convertedSurface = SDL_ConvertSurface(imageData->surface, format);
         if (texData.convertedSurface != nullptr)
             texData.actualSurface = texData.convertedSurface;
     }
