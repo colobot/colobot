@@ -748,8 +748,7 @@ int CText::GetCharWidthInt(StrUtils::CodePoint ch, FontType font, float size, fl
     }
     else
     {
-		// @sdl3 todo fix: utf8 string lengths
-        TTF_GetStringSize(cf->font, ch.Data(), strlen(ch.Data()), &charSize.x, &charSize.y);
+        TTF_GetStringSize(cf->font, ch.Data(), ch.Size(), &charSize.x, &charSize.y);
     }
 
     return charSize.x * width;
