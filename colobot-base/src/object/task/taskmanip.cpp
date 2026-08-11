@@ -58,8 +58,6 @@ CTaskManip::CTaskManip(COldObject* object) : CForegroundTask(object)
 {
     m_arm  = TMA_NEUTRAL;
     m_hand = TMH_OPEN;
-
-    assert(m_object->MapPseudoSlot(CSlottedObject::Pseudoslot::CARRYING) >= 0);
 }
 
 // Object's destructor.
