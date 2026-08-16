@@ -157,6 +157,9 @@ struct EngineMouse
 };
 
 constexpr glm::ivec2 MOUSE_SIZE(32, 32);
+// Reference size for Hires scaling (same as font reference)
+constexpr glm::ivec2 REFERENCE_SIZE(800, 600);
+
 const std::map<EngineMouseType, EngineMouse> MOUSE_TYPES = {
     {{ENG_MOUSE_NORM},    {EngineMouse( 0,  1, 32, TransparencyMode::WHITE, TransparencyMode::BLACK, glm::ivec2( 1,  1))}},
     {{ENG_MOUSE_WAIT},    {EngineMouse( 2,  3, 33, TransparencyMode::WHITE, TransparencyMode::BLACK, glm::ivec2( 8, 12))}},
@@ -4585,19 +4588,37 @@ void CEngine::DrawMouse()
 
     SetWindowCoordinates();
 
+    // Calculate scale factor based on window size (same pattern as font scaling)
+    float scale = glm::length(glm::vec2(m_size)) / glm::length(glm::vec2(REFERENCE_SIZE));
+    // Prevent cursor from becoming smaller than base size
+    scale = std::max(scale, 1.0f);
+    // Scale mouse size for Hi Res displays
+    glm::ivec2 scaledMouseSize = glm::ivec2(MOUSE_SIZE.x * scale, MOUSE_SIZE.y * scale);
+
     glm::vec2 mousePos = CInput::GetInstancePointer()->GetMousePos();
     glm::ivec2 pos(mousePos.x * m_size.x, m_size.y - mousePos.y * m_size.y);
-    pos.x -= MOUSE_TYPES.at(m_mouseType).hotPoint.x;
-    pos.y -= MOUSE_TYPES.at(m_mouseType).hotPoint.y;
 
-    glm::ivec2 shadowPos = { pos.x + 4, pos.y - 3 };
+    // Scale hotPoint to maintain correct cursor positioning
+    glm::ivec2 scaledHotPoint = glm::ivec2(
+        static_cast<int>(MOUSE_TYPES.at(m_mouseType).hotPoint.x * scale),
+        static_cast<int>(MOUSE_TYPES.at(m_mouseType).hotPoint.y * scale)
+    );
+    pos.x -= scaledHotPoint.x;
+    pos.y -= scaledHotPoint.y;
+
+    // Scale shadow offset
+    glm::ivec2 shadowPos = {
+        pos.x + static_cast<int>(4 * scale),
+        pos.y - static_cast<int>(3 * scale)
+    };
 
     auto renderer = m_device->GetUIRenderer();
     renderer->SetTexture(m_miceTexture);
 
-    DrawMouseSprite(shadowPos, MOUSE_SIZE, MOUSE_TYPES.at(m_mouseType).iconShadow, TransparencyMode::WHITE);
-    DrawMouseSprite(pos, MOUSE_SIZE, MOUSE_TYPES.at(m_mouseType).icon1, MOUSE_TYPES.at(m_mouseType).mode1);
-    DrawMouseSprite(pos, MOUSE_SIZE, MOUSE_TYPES.at(m_mouseType).icon2, MOUSE_TYPES.at(m_mouseType).mode2);
+    // Draw with scaled size for HiRes displays
+    DrawMouseSprite(shadowPos, scaledMouseSize, MOUSE_TYPES.at(m_mouseType).iconShadow, TransparencyMode::WHITE);
+    DrawMouseSprite(pos, scaledMouseSize, MOUSE_TYPES.at(m_mouseType).icon1, MOUSE_TYPES.at(m_mouseType).mode1);
+    DrawMouseSprite(pos, scaledMouseSize, MOUSE_TYPES.at(m_mouseType).icon2, MOUSE_TYPES.at(m_mouseType).mode2);
 
     SetInterfaceCoordinates();
 }

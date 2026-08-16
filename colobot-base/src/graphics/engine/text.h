@@ -292,12 +292,14 @@ public:
     glm::ivec2 GetFontTextureSize();
 
 protected:
-    int GetFontPointSize(float size) const;
+    int         GetFontPointSize(float size) const;
     CachedFont* GetOrOpenFont(FontType type, float size);
+    void        ResizeFontTexture();
+    void        ResizeFontTexture(FontType font, float size, CachedFont *&cf);
     CharTexture CreateCharTexture(StrUtils::CodePoint ch, CachedFont* font);
     FontTexture* GetOrCreateFontTexture(const glm::ivec2& tileSize);
     FontTexture CreateFontTexture(const glm::ivec2& tileSize);
-    glm::ivec2 GetNextTilePos(const FontTexture& fontTexture);
+    glm::ivec2  GetNextTilePos(const FontTexture& fontTexture);
 
     void        DrawString(const std::string &text, std::vector<FontMetaChar>::iterator format,
                            std::vector<FontMetaChar>::iterator end,
@@ -324,6 +326,10 @@ protected:
 
     class CQuadBatch;
     std::unique_ptr<CQuadBatch> m_quadBatch;
+
+    glm::ivec2   m_fontTextureSize;
+    // Signal that texture resize is needed (set by CreateCharTexture, handled by GetCharTexture)
+    glm::ivec2   m_requiredFontTextureSize;
 };
 
 

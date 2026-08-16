@@ -162,21 +162,21 @@ bool CDisplayInfo::EventProcess(const Event &event)
 
         if ( event.type == EVENT_HYPER_SIZE1 )  // size 1?
         {
-            CSettings::GetInstancePointer()->SetFontSize(9.0f);
+            CSettings::GetInstancePointer()->SetFontSize(12.0f);
             slider = static_cast<Ui::CSlider*>(pw->SearchControl(EVENT_STUDIO_SIZE));
             if ( slider != nullptr )  slider->SetVisibleValue((CSettings::GetInstancePointer()->GetFontSize()-9.0f)/15.0f);
             ViewDisplayInfo();
         }
         if ( event.type == EVENT_HYPER_SIZE2 )  // size 2?
         {
-            CSettings::GetInstancePointer()->SetFontSize(14.0f);
+            CSettings::GetInstancePointer()->SetFontSize(15.0f);
             slider = static_cast<Ui::CSlider*>(pw->SearchControl(EVENT_STUDIO_SIZE));
             if ( slider != nullptr )  slider->SetVisibleValue((CSettings::GetInstancePointer()->GetFontSize()-9.0f)/15.0f);
             ViewDisplayInfo();
         }
         if ( event.type == EVENT_HYPER_SIZE3 )  // size 3?
         {
-            CSettings::GetInstancePointer()->SetFontSize(19.0f);
+            CSettings::GetInstancePointer()->SetFontSize(18.0f);
             slider = static_cast<Ui::CSlider*>(pw->SearchControl(EVENT_STUDIO_SIZE));
             if ( slider != nullptr )  slider->SetVisibleValue((CSettings::GetInstancePointer()->GetFontSize()-9.0f)/15.0f);
             ViewDisplayInfo();
@@ -895,8 +895,7 @@ void CDisplayInfo::ViewDisplayInfo()
     edit = static_cast<Ui::CEdit*>(pw->SearchControl(EVENT_EDIT1));
     if ( edit == nullptr )  return;
 
-    auto dim = m_engine->GetWindowSize();
-    edit->SetFontSize(CSettings::GetInstancePointer()->GetFontSize()/(dim.x / 640.0f));
+    edit->SetFontSize(CSettings::GetInstancePointer()->GetFontSize());
 }
 
 // Returns the object human.

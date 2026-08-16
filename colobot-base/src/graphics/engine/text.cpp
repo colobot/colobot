@@ -152,7 +152,8 @@ std::string ToString(FontType type)
 namespace
 {
 constexpr glm::ivec2 REFERENCE_SIZE(800, 600);
-constexpr glm::ivec2 FONT_TEXTURE_SIZE(256, 256);
+constexpr int FONT_TEXTURE_BASE_SIZE = 256;
+constexpr int FONT_TEXTURE_MAX_SIZE = 2048;
 
 Gfx::FontType ToBoldFontType(Gfx::FontType type)
 {
@@ -408,6 +409,10 @@ CText::CText(CEngine* engine)
     m_fontsCache = std::make_unique<FontsCache>();
 
     m_quadBatch = std::make_unique<CQuadBatch>(*engine);
+
+    m_fontTextureSize = glm::ivec2(FONT_TEXTURE_BASE_SIZE, FONT_TEXTURE_BASE_SIZE);
+    GetLogger()->Info("Font texture initialized at base size %%x%%", m_fontTextureSize.x, m_fontTextureSize.y);
+    m_requiredFontTextureSize = glm::ivec2(FONT_TEXTURE_BASE_SIZE, FONT_TEXTURE_BASE_SIZE);
 }
 
 CText::~CText()
@@ -1219,10 +1224,10 @@ void CText::DrawCharAndAdjustPos(StrUtils::CodePoint ch, FontType font, float si
         glm::vec2 p2(pos.x + tex.charSize.x, pos.y);
 
         const float halfPixelMargin = 0.5f;
-        glm::vec2 texCoord1(static_cast<float>(tex.charPos.x + halfPixelMargin) / FONT_TEXTURE_SIZE.x,
-                            static_cast<float>(tex.charPos.y + halfPixelMargin) / FONT_TEXTURE_SIZE.y);
-        glm::vec2 texCoord2(static_cast<float>(tex.charPos.x + tex.charSize.x - halfPixelMargin) / FONT_TEXTURE_SIZE.x,
-                            static_cast<float>(tex.charPos.y + tex.charSize.y - halfPixelMargin) / FONT_TEXTURE_SIZE.y);
+        glm::vec2 texCoord1(static_cast<float>(tex.charPos.x + halfPixelMargin) / m_fontTextureSize.x,
+                            static_cast<float>(tex.charPos.y + halfPixelMargin) / m_fontTextureSize.y);
+        glm::vec2 texCoord2(static_cast<float>(tex.charPos.x + tex.charSize.x - halfPixelMargin) / m_fontTextureSize.x,
+                            static_cast<float>(tex.charPos.y + tex.charSize.y - halfPixelMargin) / m_fontTextureSize.y);
 
         Gfx::IntColor col = Gfx::ColorToIntColor(color);
 
@@ -1256,6 +1261,46 @@ CachedFont* CText::GetOrOpenFont(FontType type, float size)
     return cachedFont;
 }
 
+void CText::ResizeFontTexture() {
+    // Calculate new texture size - grow to next power of 2 that fits
+    int newSize = std::max(m_requiredFontTextureSize.x, m_requiredFontTextureSize.y);
+    newSize = Math::NextPowerOfTwo(newSize);
+    // Cap at max
+    newSize = std::min(newSize, FONT_TEXTURE_MAX_SIZE);
+
+    glm::ivec2 newTextureSize(newSize, newSize);
+
+    // Only resize if size actually changed
+    if (newTextureSize == m_fontTextureSize)
+    {
+        return;
+    }
+    // Perform resize
+    float scaleFactor = static_cast<float>(newSize) / FONT_TEXTURE_BASE_SIZE;
+
+    GetLogger()->Info("Resizing font textures from %%x%% to %%x%% (scale factor: %%)",
+                      m_fontTextureSize.x, m_fontTextureSize.y, newTextureSize.x, newTextureSize.y, scaleFactor);
+
+    // Clear existing font textures - they will be recreated on demand
+    FlushCache();
+
+    // Update texture size
+    m_fontTextureSize = newTextureSize;
+    m_requiredFontTextureSize = newTextureSize;
+
+    // FlushCache() clears the font cache, so we must reload fonts before any font operations, any cached font obtained before will be invalid
+    if (!ReloadFonts())
+    {
+        GetLogger()->Error("Failed to reload fonts after resize: %%", GetError());
+    }
+}
+
+
+void CText::ResizeFontTexture(FontType font, float size, CachedFont *&cf) {
+    ResizeFontTexture();
+    cf = GetOrOpenFont(font, size);
+}
+
 CharTexture CText::GetCharTexture(StrUtils::CodePoint ch, FontType font, float size)
 {
     CachedFont* cf = GetOrOpenFont(font, size);
@@ -1273,8 +1318,23 @@ CharTexture CText::GetCharTexture(StrUtils::CodePoint ch, FontType font, float s
     {
         tex = CreateCharTexture(ch, cf);
 
-        if (tex.id == 0) // invalid
-            return CharTexture();
+        if (tex.id == 0) // invalid - may need texture resize
+        {
+            if (m_fontTextureSize.x < m_requiredFontTextureSize.x || m_fontTextureSize.y < m_requiredFontTextureSize.y)
+            {
+                ResizeFontTexture(font, size, cf);
+                if (cf == nullptr)
+                    return CharTexture();
+
+                tex = CreateCharTexture(ch, cf);
+                if (tex.id == 0)
+                    return CharTexture();
+            }
+            else
+            {
+                return CharTexture();
+            }
+        }
 
         cf->cache[ch] = tex;
     }
@@ -1283,7 +1343,7 @@ CharTexture CText::GetCharTexture(StrUtils::CodePoint ch, FontType font, float s
 
 glm::ivec2 CText::GetFontTextureSize()
 {
-    return FONT_TEXTURE_SIZE;
+    return m_fontTextureSize;
 }
 
 CharTexture CText::CreateCharTexture(StrUtils::CodePoint ch, CachedFont* font)
@@ -1302,8 +1362,25 @@ CharTexture CText::CreateCharTexture(StrUtils::CodePoint ch, CachedFont* font)
     }
 
     const int pixelMargin = 1;
-    glm::ivec2 tileSize(Math::Max(16, Math::NextPowerOfTwo(textSurface->w)) + pixelMargin,
-                        Math::Max(16, Math::NextPowerOfTwo(textSurface->h)) + pixelMargin);
+    //add pixel margin before finding the next power reduces font texture resizing frequency
+    glm::ivec2 tileSize(Math::Max(16, Math::NextPowerOfTwo(textSurface->w + pixelMargin)),
+                        Math::Max(16, Math::NextPowerOfTwo(textSurface->h + pixelMargin)));
+
+    // Check if tile size fits in current texture
+    if (tileSize.x > m_fontTextureSize.x || tileSize.y > m_fontTextureSize.y)
+    {
+        // Tile is too big - signal that resize is needed and return empty
+        GetLogger()->Info("Character '%%' tile size %%x%% exceeds texture size %%x%% - signaling resize",
+                          ch.Data(), tileSize.x, tileSize.y, m_fontTextureSize.x, m_fontTextureSize.y);
+
+        // Signal resize needed (caller will handle it)
+        m_requiredFontTextureSize.x = tileSize.x;
+        m_requiredFontTextureSize.y = tileSize.y;
+
+        // Return empty texture - caller will retry after resize
+        SDL_FreeSurface(textSurface);
+        return texture;
+    }
 
     FontTexture* fontTexture = GetOrCreateFontTexture(tileSize);
 
@@ -1354,7 +1431,7 @@ FontTexture* CText::GetOrCreateFontTexture(const glm::ivec2& tileSize)
 
 FontTexture CText::CreateFontTexture(const glm::ivec2& tileSize)
 {
-    SDL_Surface* textureSurface = SDL_CreateRGBSurface(0, FONT_TEXTURE_SIZE.x, FONT_TEXTURE_SIZE.y, 32,
+    SDL_Surface* textureSurface = SDL_CreateRGBSurface(0, m_fontTextureSize.x, m_fontTextureSize.y, 32,
                                                        0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
     ImageData data;
     data.surface = textureSurface;
@@ -1372,22 +1449,23 @@ FontTexture CText::CreateFontTexture(const glm::ivec2& tileSize)
     FontTexture fontTexture;
     fontTexture.id = tex.id;
     fontTexture.tileSize = tileSize;
-    int horizontalTiles = FONT_TEXTURE_SIZE.x / tileSize.x;
-    int verticalTiles = FONT_TEXTURE_SIZE.y / tileSize.y;
+    int horizontalTiles = m_fontTextureSize.x / tileSize.x;
+    int verticalTiles = m_fontTextureSize.y / tileSize.y;
     fontTexture.freeSlots = horizontalTiles * verticalTiles;
     return fontTexture;
 }
 
 glm::ivec2 CText::GetNextTilePos(const FontTexture& fontTexture)
 {
-    int horizontalTiles = FONT_TEXTURE_SIZE.x / std::max(1, fontTexture.tileSize.x); //this should prevent crashes in some combinations of resolution and font size, see issue #1128
-    int verticalTiles = FONT_TEXTURE_SIZE.y / std::max(1, fontTexture.tileSize.y);
-
+    // Tile size is validated in CreateCharTexture before this is called, it should not be 0 anymore
+    int horizontalTiles = m_fontTextureSize.x / std::max(1, fontTexture.tileSize.x);
+    int verticalTiles = m_fontTextureSize.y / std::max(1, fontTexture.tileSize.y);
+    
     int totalTiles = horizontalTiles * verticalTiles;
     int tileNumber = totalTiles - fontTexture.freeSlots;
 
     int verticalTileIndex = tileNumber / std::max(1, horizontalTiles);
-    int horizontalTileIndex = tileNumber % horizontalTiles;
+    int horizontalTileIndex = tileNumber % std::max(1, horizontalTiles);
 
     return { horizontalTileIndex * fontTexture.tileSize.x,
              verticalTileIndex * fontTexture.tileSize.y };
