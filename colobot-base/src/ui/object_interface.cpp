@@ -437,7 +437,7 @@ bool CObjectInterface::EventProcess(const Event &event)
 
     if ( action == EVENT_OBJECT_PROGEDIT )
     {
-        if(m_selScript < m_programStorage->GetProgramCount())
+        if(m_selScript >= 0 && m_selScript < m_programStorage->GetProgramCount())
         {
             StartEditScript(m_programStorage->GetProgram(m_selScript), m_main->GetScriptName());
         }
