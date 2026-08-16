@@ -1,0 +1,58 @@
+on: [push, pull_request]
+jobs:
+  include-what-you-use:
+    if: false
+    runs-on: ubuntu-24.04
+    steps:
+    - name: Install dependencies
+      run: sudo apt-get install iwyu build-essential cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsndfile1-dev libvorbis-dev libogg-dev libpng-dev libglew-dev libopenal-dev libphysfs-dev gettext git po4a vorbis-tools libglm-dev
+    - name: Download the code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    - name: Genarate a compilation database
+      run: cmake -S . -B build -D=CMAKE_EXPORT_COMPILE_COMMANDS=ON -D=TESTS=ON
+    - name: Collect include-what-you-use recommendations
+      run: |
+        set -o pipefail;
+        iwyu_tool \
+        -j 4 \
+        -p build \
+        -- \
+        -Xiwyu --mapping_file=$PWD/.github/workflows/include-what-you-use/dependencies.imp \
+        | tee build/iwyu-log.txt
+    - name: Apply include-what-you-use recommendations
+      run: fix_include --safe_headers --noreorder --ignore_re '/lib/' < build/iwyu-log.txt
+    - name: Replace C headers with C++
+      run: |
+        find \( -path ./.git -o -path ./build -o -path ./lib -o -path ./data \) -prune \
+          -o \( -name '*.cpp' -o -name '*.h' \) -execdir sed -i '
+            s/^#include <assert.h>/#include <cassert>/;
+            s/^#include <complex.h>/#include <ccomplex>/;
+            s/^#include <ctype.h>/#include <cctype>/;
+            s/^#include <errno.h>/#include <cerrno>/;
+            s/^#include <fenv.h>/#include <cfenv>/;
+            s/^#include <float.h>/#include <cfloat>/;
+            s/^#include <inttypes.h>/#include <cinttypes>/;
+            s/^#include <iso646.h>/#include <ciso646>/;
+            s/^#include <limits.h>/#include <climits>/;
+            s/^#include <locale.h>/#include <clocale>/;
+            s/^#include <math.h>/#include <cmath>/;
+            s/^#include <setjmp.h>/#include <csetjmp>/;
+            s/^#include <signal.h>/#include <csignal>/;
+            s/^#include <stdalign.h>/#include <cstdalign>/;
+            s/^#include <stdarg.h>/#include <cstdarg>/;
+            s/^#include <stdbool.h>/#include <cstdbool>/;
+            s/^#include <stddef.h>/#include <cstddef>/;
+            s/^#include <stdint.h>/#include <cstdint>/;
+            s/^#include <stdio.h>/#include <cstdio>/;
+            s/^#include <stdlib.h>/#include <cstdlib>/;
+            s/^#include <string.h>/#include <cstring>/;
+            s/^#include <tgmath.h>/#include <ctgmath>/;
+            s/^#include <time.h>/#include <ctime>/;
+            s/^#include <uchar.h>/#include <cuchar>/;
+            s/^#include <wchar.h>/#include <cwchar>/;
+            s/^#include <wctype.h>/#include <cwctype>/;
+          ' '{}' ';'
+    - name: Check whether there are any changes
+      run: git diff --exit-code

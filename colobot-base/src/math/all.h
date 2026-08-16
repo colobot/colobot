@@ -24,9 +24,10 @@
 
 #pragma once
 
-
+// IWYU pragma: begin_exports
 #include "math/const.h"
 #include "math/func.h"
 #include "math/geometry.h"
 #include "math/half.h"
+// IWYU pragma: end_exports
 

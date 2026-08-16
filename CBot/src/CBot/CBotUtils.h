@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "CBot/CBotFileUtils.h"
+#include "CBot/CBotFileUtils.h"  // IWYU pragma: export
 
 #include <cassert>
 #include <cstdint>

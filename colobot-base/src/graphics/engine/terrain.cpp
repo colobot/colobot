@@ -34,8 +34,7 @@
 
 #include <sstream>
 
-#include <SDL.h>
-
+#include <SDL_surface.h>  // IWYU pragma: keep https://github.com/include-what-you-use/include-what-you-use/issues/1665
 
 // Graphics module namespace
 namespace Gfx
