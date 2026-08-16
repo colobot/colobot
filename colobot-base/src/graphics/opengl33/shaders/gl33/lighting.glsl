@@ -42,8 +42,8 @@ vec3 SchlickFresnel(float LdH, float metalness, vec3 color)
 float GeometrySmith(float dotProd, float roughness)
 {
     float k = (roughness + 1.0) * (roughness + 1.0) / 8.0;
-    float denom = dotProd * (1 - k) + k;
-    return 1.0 / denom;
+
+    return dotProd / (dotProd * (1 - k) + k);
 }
 
 float GGXDistribution(float NdH, float roughness)
@@ -71,10 +71,10 @@ vec3 CalculateLighting(
     vec3 view = normalize(uni_CameraPosition - position);
     vec3 halfway = normalize(view + light);
 
-    float NdH = dot(normal, halfway);
-    float LdH = dot(light, halfway);
+    float NdH = max(dot(normal, halfway), 0.0);
+    float LdH = max(dot(light, halfway), 0.0);
     float NdL = max(dot(normal, light), 0.0);
-    float NdV = dot(normal, view);
+    float NdV = max(dot(normal, view), 0.0);
 
     vec3 specBrdf = 0.25
             * GGXDistribution(NdH, roughness)

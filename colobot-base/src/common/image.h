@@ -77,6 +77,12 @@ public:
     //! Returns the image size
     glm::ivec2 GetSize() const;
 
+    //! Returns the width
+    int GetWidth() const;
+
+    //! Returns the height
+    int GetHeight() const;
+
     //! Fills the whole image with given color
     void Fill(Gfx::IntColor color);
 

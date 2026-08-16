@@ -43,17 +43,18 @@ CGL33ObjectRenderer::CGL33ObjectRenderer(CGL33Device* device)
     std::string preamble = LoadSource("shaders/gl33/preamble.glsl");
     std::string shadowSource = LoadSource("shaders/gl33/shadow.glsl");
     std::string lightingSource = LoadSource("shaders/gl33/lighting.glsl");
+    std::string fogSource = LoadSource("shaders/gl33/fog.glsl");
     std::string vsSource = LoadSource("shaders/gl33/object_vs.glsl");
     std::string fsSource = LoadSource("shaders/gl33/object_fs.glsl");
 
-    GLint vsShader = CreateShader(GL_VERTEX_SHADER, { preamble, lightingSource, shadowSource, vsSource });
+    GLint vsShader = CreateShader(GL_VERTEX_SHADER, { preamble, lightingSource, fogSource, shadowSource, vsSource });
     if (vsShader == 0)
     {
         GetLogger()->Error("Cound not create vertex shader from file 'object_vs.glsl'");
         return;
     }
 
-    GLint fsShader = CreateShader(GL_FRAGMENT_SHADER, { preamble, lightingSource, shadowSource, fsSource });
+    GLint fsShader = CreateShader(GL_FRAGMENT_SHADER, { preamble, lightingSource, fogSource, shadowSource, fsSource });
     if (fsShader == 0)
     {
         GetLogger()->Error("Cound not create fragment shader from file 'object_fs.glsl'");
@@ -85,9 +86,12 @@ CGL33ObjectRenderer::CGL33ObjectRenderer(CGL33Device* device)
     m_skyColor = glGetUniformLocation(m_program, "uni_SkyColor");
     m_skyIntensity = glGetUniformLocation(m_program, "uni_SkyIntensity");
 
+    m_waterLevel = glGetUniformLocation(m_program, "uni_WaterLevel");
     m_fogRange = glGetUniformLocation(m_program, "uni_FogRange");
-    m_fogColor = glGetUniformLocation(m_program, "uni_FogColor");
+    m_groundFogColor = glGetUniformLocation(m_program, "uni_GroundFogColor");
+    m_waterFogColor = glGetUniformLocation(m_program, "uni_WaterFogColor");
 
+    m_baseColor = glGetUniformLocation(m_program, "uni_BaseColor");
     m_albedoColor = glGetUniformLocation(m_program, "uni_AlbedoColor");
     m_emissiveColor = glGetUniformLocation(m_program, "uni_EmissiveColor");
     m_roughness = glGetUniformLocation(m_program, "uni_Roughness");
@@ -97,11 +101,6 @@ CGL33ObjectRenderer::CGL33ObjectRenderer(CGL33Device* device)
     m_triplanarMode = glGetUniformLocation(m_program, "uni_TriplanarMode");
     m_triplanarScale = glGetUniformLocation(m_program, "uni_TriplanarScale");
     m_alphaScissor = glGetUniformLocation(m_program, "uni_AlphaScissor");
-
-    m_recolor = glGetUniformLocation(m_program, "uni_Recolor");
-    m_recolorFrom = glGetUniformLocation(m_program, "uni_RecolorFrom");
-    m_recolorTo = glGetUniformLocation(m_program, "uni_RecolorTo");
-    m_recolorThreshold = glGetUniformLocation(m_program, "uni_RecolorThreshold");
 
     m_uvOffset = glGetUniformLocation(m_program, "uni_UVOffset");
     m_uvScale = glGetUniformLocation(m_program, "uni_UVScale");
@@ -140,6 +139,7 @@ CGL33ObjectRenderer::CGL33ObjectRenderer(CGL33Device* device)
 
     // White texture
     glActiveTexture(GL_TEXTURE0);
+
     glGenTextures(1, &m_whiteTexture);
     glBindTexture(GL_TEXTURE_2D, m_whiteTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
@@ -151,6 +151,19 @@ CGL33ObjectRenderer::CGL33ObjectRenderer(CGL33Device* device)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_G, GL_ONE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_B, GL_ONE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_A, GL_ONE);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glGenTextures(1, &m_blackTexture);
+    glBindTexture(GL_TEXTURE_2D, m_blackTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_R, GL_ZERO);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_G, GL_ZERO);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_B, GL_ZERO);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_A, GL_ZERO);
     glBindTexture(GL_TEXTURE_2D, 0);
 
     glUseProgram(0);
@@ -176,6 +189,7 @@ CGL33ObjectRenderer::~CGL33ObjectRenderer()
 {
     glDeleteProgram(m_program);
     glDeleteTextures(1, &m_whiteTexture);
+    glDeleteTextures(1, &m_blackTexture);
     glDeleteBuffers(1, &m_bufferVBO);
     glDeleteVertexArrays(1, &m_bufferVAO);
 }
@@ -189,7 +203,7 @@ void CGL33ObjectRenderer::CGL33ObjectRenderer::Begin()
     glBindTexture(GL_TEXTURE_2D, m_whiteTexture);
 
     glActiveTexture(GL_TEXTURE0 + m_detailIndex);
-    glBindTexture(GL_TEXTURE_2D, m_whiteTexture);
+    glBindTexture(GL_TEXTURE_2D, m_blackTexture);
 
     glActiveTexture(GL_TEXTURE0 + m_emissiveIndex);
     glBindTexture(GL_TEXTURE_2D, m_whiteTexture);
@@ -213,11 +227,13 @@ void CGL33ObjectRenderer::CGL33ObjectRenderer::Begin()
 
     SetUVTransform({ 0.0f, 0.0f }, { 1.0f, 1.0f });
     SetAlphaScissor(0.0f);
-    SetFog(1e+6f, 1e+6, {});
+    SetWaterLevel(0.0f);
+    SetFogRange(0.0f, 0.0f);
+    SetGroundFogColor({ 1.0f, 1.0f, 1.0f });
+    SetWaterFogColor({ 1.0f, 1.0f, 1.0f });
     SetEmissiveColor({ 0, 0, 0, 0 });
     SetAlbedoColor({ 1, 1, 1, 1 });
     SetMaterialParams(1.0, 0.0, 0.0);
-    SetRecolor(false);
 }
 
 void CGL33ObjectRenderer::CGL33ObjectRenderer::End()
@@ -268,6 +284,11 @@ void CGL33ObjectRenderer::SetModelMatrix(const glm::mat4& matrix)
 
     glUniformMatrix4fv(m_modelMatrix, 1, GL_FALSE, value_ptr(matrix));
     glUniformMatrix3fv(m_normalMatrix, 1, GL_FALSE, value_ptr(normalMatrix));
+}
+
+void CGL33ObjectRenderer::SetBaseColor(const Color& color)
+{
+    glUniform4f(m_baseColor, color.r, color.g, color.b, color.a);
 }
 
 void CGL33ObjectRenderer::SetAlbedoColor(const Color& color)
@@ -338,7 +359,7 @@ void CGL33ObjectRenderer::SetDetailTexture(const Texture& texture)
     glActiveTexture(GL_TEXTURE0 + m_detailIndex);
 
     if (texture.id == 0)
-        glBindTexture(GL_TEXTURE_2D, m_whiteTexture);
+        glBindTexture(GL_TEXTURE_2D, m_blackTexture);
     else
         glBindTexture(GL_TEXTURE_2D, texture.id);
 }
@@ -387,10 +408,24 @@ void CGL33ObjectRenderer::SetShadowParams(int count, const ShadowParam* params)
     }
 }
 
-void CGL33ObjectRenderer::SetFog(float min, float max, const glm::vec3& color)
+void CGL33ObjectRenderer::SetWaterLevel(float height)
+{
+    glUniform1f(m_waterLevel, height);
+}
+
+void CGL33ObjectRenderer::SetGroundFogColor(const Color& color)
+{
+    glUniform3f(m_groundFogColor, color.r, color.g, color.b);
+}
+
+void CGL33ObjectRenderer::SetWaterFogColor(const Color& color)
+{
+    glUniform3f(m_waterFogColor, color.r, color.g, color.b);
+}
+
+void CGL33ObjectRenderer::SetFogRange(float min, float max)
 {
     glUniform2f(m_fogRange, min, max);
-    glUniform3f(m_fogColor, color.r, color.g, color.b);
 }
 
 void CGL33ObjectRenderer::SetDepthTest(bool enabled)
@@ -432,21 +467,6 @@ void CGL33ObjectRenderer::SetTriplanarScale(float scale)
 void CGL33ObjectRenderer::SetAlphaScissor(float alpha)
 {
     glUniform1f(m_alphaScissor, alpha);
-}
-
-void CGL33ObjectRenderer::SetRecolor(bool enabled, const glm::vec3& from, const glm::vec3& to, float threshold)
-{
-    glUniform1i(m_recolor, enabled ? 1 : 0);
-
-    if (enabled)
-    {
-        auto fromHSV = RGB2HSV(Color(from.r, from.g, from.b, 1.0));
-        auto toHSV = RGB2HSV(Color(to.r, to.g, to.b, 1.0));
-
-        glUniform3f(m_recolorFrom, fromHSV.h, fromHSV.s, fromHSV.v);
-        glUniform3f(m_recolorTo, toHSV.h, toHSV.s, toHSV.v);
-        glUniform1f(m_recolorThreshold, threshold);
-    }
 }
 
 void CGL33ObjectRenderer::DrawObject(const CVertexBuffer* buffer)

@@ -282,6 +282,7 @@ CEngine::CEngine(CApplication *app, CSystemUtils* systemUtils)
 
     m_terrainTexParams.format = TextureFormat::AUTO;
     m_terrainTexParams.filter = TextureFilter::BILINEAR;
+    m_terrainTexParams.wrap = TextureWrapMode::CLAMP;
 
     // Compute bias matrix for shadow mapping
     glm::mat4 temp1, temp2;
@@ -395,7 +396,6 @@ bool CEngine::Create()
     m_lightning  = std::make_unique<CLightning>(this);
     m_planet     = std::make_unique<CPlanet>(this);
 
-    m_lightMan->SetDevice(m_device);
     m_particle->SetDevice(m_device);
 
     m_text->SetDevice(m_device);
@@ -1117,7 +1117,7 @@ void CEngine::ChangeSecondTexture(int objRank, const std::filesystem::path& tex2
     }
 }
 
-void CEngine::SetUVTransform(int objRank, const std::string& tag, const glm::vec2& offset, const glm::vec2& scale)
+void CEngine::SetUVTransform(int objRank, Mark mark, const glm::vec2& offset, const glm::vec2& scale)
 {
     assert(objRank >= 0 && objRank < static_cast<int>(m_objects.size()));
 
@@ -1131,7 +1131,7 @@ void CEngine::SetUVTransform(int objRank, const std::string& tag, const glm::vec
 
     for (auto& data : p1.next)
     {
-        if (data.material.tag == tag)
+        if (data.material.mark == mark)
         {
             data.uvOffset = offset;
             data.uvScale = scale;
@@ -1885,6 +1885,8 @@ Texture CEngine::CreateTexture(const std::filesystem::path& texName, const Textu
         image = &img;
     }
 
+    ApplyRecolorMask(*image, texName);
+
     tex = m_device->CreateTexture(image, params);
 
     if (! tex.Valid())
@@ -2078,6 +2080,205 @@ void CEngine::CreateOrUpdateTexture(const std::filesystem::path& texName, CImage
     else
     {
         m_device->UpdateTexture((*it).second, { 0, 0 }, img->GetData(), m_defaultTexParams.format);
+    }
+}
+
+void CEngine::ApplyRecolorMask(CImage& image, const std::filesystem::path& name)
+{
+    constexpr Gfx::Color COLOR_REF_BOT   = Gfx::Color( 10.0f/256.0f, 166.0f/256.0f, 254.0f/256.0f);  // blue
+    [[maybe_unused]] constexpr Gfx::Color COLOR_REF_ALIEN = Gfx::Color(135.0f/256.0f, 170.0f/256.0f,  13.0f/256.0f);  // green
+    [[maybe_unused]] constexpr Gfx::Color COLOR_REF_GREEN = Gfx::Color(135.0f/256.0f, 170.0f/256.0f,  13.0f/256.0f);  // green
+    [[maybe_unused]] constexpr Gfx::Color COLOR_REF_WATER = Gfx::Color( 25.0f/256.0f, 255.0f/256.0f, 240.0f/256.0f);  // cyan
+
+    auto filename = name.filename();
+
+    auto rectangle = [&](const glm::ivec2& p1, const glm::ivec2& p2, const glm::ivec2& size = { 256, 256 })
+    {
+        int x1, x2, y1, y2;
+
+        std::tie(x1, x2) = std::minmax(p1.x, p2.x);
+        std::tie(y1, y2) = std::minmax(p1.y, p2.y);
+
+        if (image.GetWidth() != size.x)
+        {
+            x1 = x1 * image.GetWidth() / size.x;
+            x2 = x2 * image.GetWidth() / size.x;
+        }
+
+        if (image.GetHeight() != size.y)
+        {
+            y1 = y1 * image.GetHeight() / size.y;
+            y2 = y2 * image.GetHeight() / size.y;
+        }
+
+        return glm::ivec4{ x1, y1, x2 - x1, y2 - y1 };
+    };
+
+    if (filename == "base1.png"
+        || filename == "convert.png"
+        || filename == "derrick.png"
+        || filename == "factory.png"
+        || filename == "lemt.png"
+        || filename == "roller.png"
+        || filename == "search.png"
+        || filename == "rollert.png"
+    )
+    {
+        ApplyRecolorMask(image, std::array{ glm::ivec4{ 0, 0, image.GetWidth(), image.GetHeight() }},
+            COLOR_REF_BOT, 0.1f, false, true);
+    }
+    else if (filename == "drawer.png")
+    {
+        const auto regions = std::array
+        {
+            rectangle({ 0, 0 }, { 256, 160 })
+        };
+
+        ApplyRecolorMask(image, regions, COLOR_REF_BOT, 0.1f, false, true);
+    }
+    else if (filename == "subm.png")
+    {
+        const auto regions = std::array
+        {
+            rectangle({ 0, 0 }, { 128, 26 }),
+            rectangle({ 33, 26 }, { 71, 116 }),
+            rectangle({ 82, 32 }, { 210, 82 }),
+            rectangle({ 71, 116 }, { 82, 176 }),
+            rectangle({ 82, 82 }, { 132, 150 }),
+            rectangle({ 132, 82 }, { 196, 188 }),
+            rectangle({ 224, 0 }, { 256, 89 }),
+            rectangle({ 0, 224 }, { 78, 244 }),
+            rectangle({ 199, 169 }, { 256, 176 }),
+            rectangle({ 219, 176 }, { 236, 215 }),
+            rectangle({ 171, 243 }, { 182, 253 }),
+        };
+
+        ApplyRecolorMask(image, regions, COLOR_REF_BOT, 0.1f, false, true);
+    }
+    else if (filename == "face01.png")
+    {
+        const auto regions = std::array
+        {
+            rectangle({ 0, 0 }, { 96, 172 }),
+            rectangle({ 158, 0 }, { 256, 172 }),
+            rectangle({ 96, 0 }, { 158, 71 }),
+        };
+
+        constexpr Color hair = { 90.0f / 256.0f, 95.0f / 256.0f, 85.0f / 256.0f };
+
+        ApplyRecolorMask(image, regions, hair, 0.15f, false, false);
+    }
+    else if (filename == "face02.png")
+    {
+        const auto regions = std::array
+        {
+            rectangle({ 96, 52 }, { 158, 72 }),
+            rectangle({ 73, 72 }, { 97, 192 }),
+            rectangle({ 157, 72 }, { 183, 192 }),
+            rectangle({ 96, 118 }, { 157, 192 }),
+        };
+
+        constexpr Color hair = { 74.0f / 256.0f, 58.0f / 256.0f, 46.0f / 256.0f };
+
+        ApplyRecolorMask(image, regions, hair, 0.2f, false, false);
+    }
+    else if (filename == "face03.png")
+    {
+        const auto regions = std::array
+        {
+            rectangle({ 0, 0 }, { 102, 256 }),
+            rectangle({ 102, 0 }, { 156, 56 }),
+            rectangle({ 156, 0 }, { 256, 256 }),
+        };
+
+        constexpr Color hair = { 70.0f / 256.0f, 40.0f / 256.0f,  8.0f / 256.0f };
+
+        ApplyRecolorMask(image, regions, hair, 0.3f, false, false);
+    }
+    else if (filename == "face04.png")
+    {
+        const auto regions = std::array
+        {
+            rectangle({ 0, 0 }, { 102, 162 }),
+            rectangle({ 102, 0 }, { 156, 56 }),
+            rectangle({ 102, 121 }, { 156, 162 }),
+            rectangle({ 156, 0 }, { 256, 162 }),
+        };
+
+        constexpr Color hair = { 74.0f / 256.0f, 16.0f / 256.0f, 0.0f / 256.0f };
+
+        ApplyRecolorMask(image, regions, hair, 0.2f, false, false);
+    }
+}
+
+void CEngine::ApplyRecolorMask(CImage& image,
+    std::span<const glm::ivec4> regions,
+    const Color& reference,
+    float threshold,
+    bool transparent,
+    bool hsv,
+    const std::optional<Color>& target)
+{
+    const auto toGrayscale = [](const Color& color)
+    {
+        return glm::dot(glm::vec3(color), { 0.2989f, 0.5870f, 0.1140f });
+    };
+
+    const ColorHSV referenceHSV = RGB2HSV(reference);
+
+    const float targetGrayscale = toGrayscale(target.value_or(reference));
+
+    image.ConvertToRGBA();
+
+    for (const auto& region : regions) {
+        const auto [x, y, width, height] = std::tie(region[0], region[1], region[2], region[3]);
+
+        for (int j = 0; j < height; j++)
+        {
+            for (int i = 0; i < width; i++)
+            {
+                auto color = image.GetPixel({ x + i, y + j });
+
+                if (hsv)
+                {
+                    ColorHSV colorHSV = RGB2HSV(color);
+
+                    if (colorHSV.s < 0.01f || std::abs(colorHSV.h - referenceHSV.h) > threshold) continue;
+                }
+                else
+                {
+                    float difference = std::abs(color.r - reference.r)
+                        + std::abs(color.g - reference.g)
+                        + std::abs(color.b - reference.b);
+
+                    if (difference > 3.0f * threshold) continue;
+                }
+
+                if (transparent)
+                {
+                    const float grayscale = toGrayscale(color);
+
+                    image.SetPixel({ x + i, y + j}, Color{ grayscale, grayscale, grayscale, 1.0f });
+                }
+                else
+                {
+                    const float grayscale = toGrayscale(color);
+
+                    const float target = grayscale < targetGrayscale ? 0.0f : 1.0f;
+
+                    if (std::abs(target - targetGrayscale) < 1e-3)
+                    {
+                        image.SetPixel({ x + i, y + j}, Color{ 0.0f, 0.0f, 0.0f, 0.0f });
+                    }
+                    else
+                    {
+                        const float alpha = (grayscale - targetGrayscale) / (target - targetGrayscale);
+
+                        image.SetPixel({ x + i, y + j}, Color{ target, target, target, alpha });
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -2645,45 +2846,28 @@ bool CEngine::IsVisiblePoint(const glm::vec3 &pos)
     return glm::distance(m_eyePt, pos) <= (m_deepView[0] * m_clippingDistance);
 }
 
-Color CEngine::GetObjectColor(int object, const std::string& name)
+Color CEngine::GetObjectColor(int object, BaseColor baseColor)
 {
-    if (name == "team")
-    {
-        return CRobotMain::GetInstance().GetTeamColor(m_objects[object].team);
-    }
-    else if (name == "vehicle")
-    {
-        return CRobotMain::GetInstance().GetVehicleColor();
-    }
-    else if (name == "plant")
-    {
-        return CRobotMain::GetInstance().GetGreeneryColor();
-    }
-    else if (name == "alien")
-    {
-        return CRobotMain::GetInstance().GetAlienColor();
-    }
-    else if (name == "hair")
-    {
-        const auto& appearance = CRobotMain::GetInstance().GetPlayerProfile()->GetAppearance();
+    const auto& appearance = CRobotMain::GetInstance().GetPlayerProfile()->GetAppearance();
 
-        return appearance.colorHair;
-    }
-    else if (name == "suit")
+    switch (baseColor)
     {
-        const auto& appearance = CRobotMain::GetInstance().GetPlayerProfile()->GetAppearance();
-
-        return appearance.colorCombi;
-    }
-    else if (name == "band")
-    {
-        const auto& appearance = CRobotMain::GetInstance().GetPlayerProfile()->GetAppearance();
-
-        return appearance.colorBand;
-    }
-    else
-    {
-        return Color(1.0, 1.0, 1.0, 1.0);
+        case BaseColor::TEAM:
+            return CRobotMain::GetInstance().GetTeamColor(m_objects[object].team);
+        case BaseColor::VEHICLE:
+            return CRobotMain::GetInstance().GetVehicleColor();
+        case BaseColor::PLANT:
+            return CRobotMain::GetInstance().GetGreeneryColor();
+        case BaseColor::ALIEN:
+            return CRobotMain::GetInstance().GetAlienColor();
+        case BaseColor::HAIR:
+            return appearance.colorHair;
+        case BaseColor::SUIT:
+            return appearance.colorCombi;
+        case BaseColor::BAND:
+            return appearance.colorBand;
+        default:
+            return Color(1.0, 1.0, 1.0, 1.0);
     }
 }
 
@@ -2804,12 +2988,7 @@ void CEngine::Draw3DScene()
     //m_device->SetRenderState(RENDER_STATE_LIGHTING, true);
     //m_device->SetRenderState(RENDER_STATE_FOG, true);
 
-    float fogStart = m_deepView[m_rankView] * m_fogStart[m_rankView] * m_clippingDistance;
-    float fogEnd = m_deepView[m_rankView] * m_clippingDistance;
-
-    // TODO: This causes a rendering artifact and I can't see anything that breaks if you just comment it out
-    // So I'll just leave it like that for now ~krzys_h
-    //m_water->DrawBack();  // draws water background
+    m_water->DrawBack();  // draws water background
 
     CProfiler::StartPerformanceCounter(PCNT_RENDER_TERRAIN);
 
@@ -2825,23 +3004,29 @@ void CEngine::Draw3DScene()
         shadowParams[i].uv_scale = m_shadowParams[i].scale;
     }
 
+    Color sunColor = Color{ Color{ m_sunColor, 0.0f } + m_waterAddColor * m_rankView };
+
+    float fogRangeMin = m_deepView[m_rankView] * m_fogStart[m_rankView] * m_clippingDistance;
+    float fogRangeMax = m_deepView[0] * m_clippingDistance;
+
     auto terrainRenderer = m_device->GetTerrainRenderer();
     terrainRenderer->Begin();
 
     terrainRenderer->SetProjectionMatrix(m_matProj);
     terrainRenderer->SetViewMatrix(m_matView);
     terrainRenderer->SetShadowMap(m_shadowMap);
-    terrainRenderer->SetLight(glm::vec4(1.0, 1.0, -1.0, 0.0), 1.0f, glm::vec3(1.0));
-    terrainRenderer->SetSky(Color(1.0, 1.0, 1.0), 0.2f);
+    terrainRenderer->SetLight(glm::vec4(glm::normalize(m_sunDirection), 0.0), m_sunIntensity, sunColor);
+    terrainRenderer->SetSky(m_ambientColor[0], 0.75f);
     
     if (m_shadowMapping)
         terrainRenderer->SetShadowParams(m_shadowRegions, shadowParams);
     else
         terrainRenderer->SetShadowParams(0, nullptr);
 
-    Color fogColor = m_fogColor[m_rankView];
-
-    terrainRenderer->SetFog(fogStart, fogEnd, { fogColor.r, fogColor.g, fogColor.b });
+    terrainRenderer->SetWaterLevel(m_water->GetLevel());
+    terrainRenderer->SetFogRange(fogRangeMin, fogRangeMax);
+    terrainRenderer->SetGroundFogColor(m_fogColor[m_rankView]);
+    terrainRenderer->SetWaterFogColor(m_fogColor[1]);
 
     glm::mat4 scale = glm::mat4(1.0f);
     scale[2][2] = -1.0f;
@@ -2902,29 +3087,18 @@ void CEngine::Draw3DScene()
 
     CProfiler::StartPerformanceCounter(PCNT_RENDER_OBJECTS);
 
-    auto objectRenderer = m_device->GetObjectRenderer();
-    objectRenderer->Begin();
+    // Sort objects into separate rendering categories
+    struct ObjectData
+    {
+        int rank;
+        Gfx::EngineObject& base;
+        Gfx::EngineBaseObjDataTier& data;
+    };
 
-    objectRenderer->SetProjectionMatrix(m_matProj);
-    objectRenderer->SetViewMatrix(m_matView);
-    objectRenderer->SetShadowMap(m_shadowMap);
-    objectRenderer->SetLighting(true);
-    objectRenderer->SetLight(glm::vec4(1.0, 1.0, -1.0, 0.0), 0.8f, glm::vec3(1.0));
-    objectRenderer->SetSky(Color(1.0, 1.0, 1.0), 0.2f);
-    objectRenderer->SetTransparency(TransparencyMode::NONE);
-
-    objectRenderer->SetFog(fogStart, fogEnd, { fogColor.r, fogColor.g, fogColor.b });
-    objectRenderer->SetAlphaScissor(0.0f);
-
-    if (m_shadowMapping)
-        objectRenderer->SetShadowParams(m_shadowRegions, shadowParams);
-    else
-        objectRenderer->SetShadowParams(0, nullptr);
-
-    objectRenderer->SetTriplanarMode(m_triplanarMode);
-    objectRenderer->SetTriplanarScale(m_triplanarScale);
-
-    bool transparent = false;
+    std::vector<ObjectData> opaqueObjects;
+    std::vector<ObjectData> maskedObjects;
+    std::vector<ObjectData> transparentObjects;
+    std::vector<ObjectData> ghostObjects;
 
     for (int objRank = 0; objRank < static_cast<int>(m_objects.size()); objRank++)
     {
@@ -2952,136 +3126,177 @@ void CEngine::Draw3DScene()
         if (! p1.used)
             continue;
 
-        objectRenderer->SetModelMatrix(m_objects[objRank].transform);
-
-        //m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
-
         for (auto& data : p1.next)
         {
-            if (m_objects[objRank].ghost)  // transparent ?
+            if (m_objects[objRank].ghost)
             {
-                transparent = true;
-                continue;
+                ghostObjects.push_back(ObjectData{ objRank, m_objects[objRank], data });
             }
-
-            if (data.material.alphaMode != AlphaMode::NONE)
+            else if (data.material.alphaMode == AlphaMode::NONE)
             {
-                objectRenderer->SetAlphaScissor(data.material.alphaThreshold);
+                opaqueObjects.push_back(ObjectData{ objRank, m_objects[objRank], data });
             }
-            else
+            else if (data.material.alphaMode == AlphaMode::MASK)
             {
-                objectRenderer->SetAlphaScissor(0.0f);
+                maskedObjects.push_back(ObjectData{ objRank, m_objects[objRank], data });
             }
-
-            Color color = data.material.albedoColor;
-
-            if (!data.material.tag.empty())
+            else if (data.material.alphaMode == AlphaMode::BLEND)
             {
-                Color c = GetObjectColor(objRank, data.material.tag);
-
-                if (c != Color(1.0, 1.0, 1.0, 1.0))
-                {
-                    color = c;
-                }
+                transparentObjects.push_back(ObjectData{ objRank, m_objects[objRank], data });
             }
-
-            if (data.material.recolor.empty())
-            {
-                objectRenderer->SetRecolor(false);
-            }
-            else
-            {
-                Color recolorFrom = data.material.recolorReference;
-                Color recolorTo = GetObjectColor(objRank, data.material.recolor);
-                float recolorThreshold = data.material.recolorThreshold;
-
-                objectRenderer->SetRecolor(true, recolorFrom, recolorTo, recolorThreshold);
-            }
-
-            objectRenderer->SetAlbedoColor(color);
-            objectRenderer->SetAlbedoTexture(data.albedoTexture);
-            objectRenderer->SetDetailTexture(data.detailTexture);
-
-            objectRenderer->SetEmissiveColor(data.material.emissiveColor);
-            objectRenderer->SetEmissiveTexture(data.emissiveTexture);
-
-            objectRenderer->SetMaterialParams(data.material.roughness, data.material.metalness, data.material.aoStrength);
-            objectRenderer->SetMaterialTexture(data.materialTexture);
-
-            objectRenderer->SetCullFace(data.material.cullFace);
-            objectRenderer->SetUVTransform(data.uvOffset, data.uvScale);
-            objectRenderer->DrawObject(data.buffer);
         }
     }
 
-    objectRenderer->End();
-
+    auto objectRenderer = m_device->GetObjectRenderer();
     objectRenderer->Begin();
+
+    objectRenderer->SetProjectionMatrix(m_matProj);
+    objectRenderer->SetViewMatrix(m_matView);
+    objectRenderer->SetShadowMap(m_shadowMap);
+    objectRenderer->SetLighting(true);
+    objectRenderer->SetLight(glm::vec4(glm::normalize(m_sunDirection), 0.0), m_sunIntensity, sunColor);
+    objectRenderer->SetSky(m_ambientColor[m_rankView], 1.0f);
+    objectRenderer->SetTransparency(TransparencyMode::NONE);
+
+    objectRenderer->SetWaterLevel(m_water->GetLevel());
+    objectRenderer->SetFogRange(fogRangeMin, fogRangeMax);
+    objectRenderer->SetGroundFogColor(m_fogColor[m_rankView]);
+    objectRenderer->SetWaterFogColor(m_fogColor[1]);
+
+    if (m_shadowMapping)
+        objectRenderer->SetShadowParams(m_shadowRegions, shadowParams);
+    else
+        objectRenderer->SetShadowParams(0, nullptr);
+
+    objectRenderer->SetTriplanarMode(m_triplanarMode);
+    objectRenderer->SetTriplanarScale(m_triplanarScale);
+
+    objectRenderer->SetAlphaScissor(0.0f);
+
+    for (const auto& [rank, object, data] : opaqueObjects)
+    {
+        objectRenderer->SetModelMatrix(object.transform);
+
+        //m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
+
+        auto baseColor = GetObjectColor(rank, data.material.baseColor);
+
+        baseColor.a = 1.0f;
+
+        objectRenderer->SetBaseColor(baseColor);
+        objectRenderer->SetAlbedoColor(data.material.albedoColor);
+
+        objectRenderer->SetAlbedoTexture(data.albedoTexture);
+        objectRenderer->SetDetailTexture(data.detailTexture);
+
+        objectRenderer->SetEmissiveColor(data.material.emissiveColor);
+        objectRenderer->SetEmissiveTexture(data.emissiveTexture);
+
+        objectRenderer->SetMaterialParams(data.material.roughness, data.material.metalness, data.material.aoStrength);
+        objectRenderer->SetMaterialTexture(data.materialTexture);
+
+        objectRenderer->SetCullFace(data.material.cullFace);
+        objectRenderer->SetUVTransform(data.uvOffset, data.uvScale);
+        objectRenderer->DrawObject(data.buffer);
+    }
+
+    for (const auto& [rank, object, data] : maskedObjects)
+    {
+        objectRenderer->SetModelMatrix(object.transform);
+
+        //m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
+
+        auto baseColor = GetObjectColor(rank, data.material.baseColor);
+
+        objectRenderer->SetAlphaScissor(data.material.alphaThreshold);
+
+        baseColor.a = 1.0f;
+
+        objectRenderer->SetBaseColor({ 0.0f, 0.0f, 0.0f, 0.0f });
+        objectRenderer->SetAlbedoColor(data.material.albedoColor * baseColor);
+
+        objectRenderer->SetAlbedoTexture(data.albedoTexture);
+        objectRenderer->SetDetailTexture(data.detailTexture);
+
+        objectRenderer->SetEmissiveColor(data.material.emissiveColor);
+        objectRenderer->SetEmissiveTexture(data.emissiveTexture);
+
+        objectRenderer->SetMaterialParams(data.material.roughness, data.material.metalness, data.material.aoStrength);
+        objectRenderer->SetMaterialTexture(data.materialTexture);
+
+        objectRenderer->SetCullFace(data.material.cullFace);
+        objectRenderer->SetUVTransform(data.uvOffset, data.uvScale);
+        objectRenderer->DrawObject(data.buffer);
+    }
+    
+    objectRenderer->SetDepthMask(false);
+    objectRenderer->SetTransparency(TransparencyMode::ALPHA);
+    objectRenderer->SetAlphaScissor(0.0f);
+    objectRenderer->SetCullFace(CullFace::NONE);
+
+    for (const auto& [rank, object, data] : transparentObjects)
+    {
+        objectRenderer->SetModelMatrix(object.transform);
+
+        //m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
+
+        objectRenderer->SetBaseColor({ 0.0f, 0.0f, 0.0f, 0.0f });
+        objectRenderer->SetAlbedoColor(data.material.albedoColor);
+
+        objectRenderer->SetAlbedoTexture(data.albedoTexture);
+        objectRenderer->SetDetailTexture(data.detailTexture);
+
+        objectRenderer->SetEmissiveColor(data.material.emissiveColor);
+        objectRenderer->SetEmissiveTexture(data.emissiveTexture);
+
+        objectRenderer->SetMaterialParams(data.material.roughness, data.material.metalness, data.material.aoStrength);
+        objectRenderer->SetMaterialTexture(data.materialTexture);
+
+        objectRenderer->SetCullFace(data.material.cullFace);
+        objectRenderer->SetUVTransform(data.uvOffset, data.uvScale);
+        objectRenderer->DrawObject(data.buffer);
+    }
+    
     objectRenderer->SetLighting(false);
     objectRenderer->SetDepthMask(false);
     objectRenderer->SetTransparency(TransparencyMode::BLACK);
     objectRenderer->SetAlphaScissor(0.0f);
     objectRenderer->SetCullFace(CullFace::NONE);
 
-    // Draw transparent objects
-
-    if (transparent)
+    for (const auto& [rank, object, data] : ghostObjects)
     {
-        Color tColor = Color(68.0f / 255.0f, 68.0f / 255.0f, 68.0f / 255.0f, 255.0f);
+        constexpr Color tColor = Color(68.0f / 255.0f, 68.0f / 255.0f, 68.0f / 255.0f, 1.0f);
 
-        for (int objRank = 0; objRank < static_cast<int>(m_objects.size()); objRank++)
+        objectRenderer->SetModelMatrix(object.transform);
+
+        //m_lightMan->UpdateDeviceLights(m_objects[objRank].type);
+
+        auto baseColor = GetObjectColor(rank, data.material.baseColor);
+        baseColor.a = 1.0f;
+
+        if (data.material.alphaMode == AlphaMode::NONE)
         {
-            if (! m_objects[objRank].used)
-                continue;
-
-            if (m_objects[objRank].type == ENG_OBJTYPE_TERRAIN)
-                continue;
-
-            if (! m_objects[objRank].drawWorld)
-                continue;
-
-            if (!m_objects[objRank].ghost)
-                continue;
-
-            auto combinedMatrix = projectionViewMatrix * m_objects[objRank].transform;
-
-            if (! IsVisible(combinedMatrix, objRank))
-                continue;
-
-            int baseObjRank = m_objects[objRank].baseObjRank;
-            if (baseObjRank == -1)
-                continue;
-
-            assert(baseObjRank >= 0 && baseObjRank < static_cast<int>( m_baseObjects.size() ));
-
-            EngineBaseObject& p1 = m_baseObjects[baseObjRank];
-            if (! p1.used)
-                continue;
-
-            objectRenderer->SetModelMatrix(m_objects[objRank].transform);
-
-            for (auto& data : p1.next)
-            {
-                if (data.material.recolor.empty())
-                {
-                    objectRenderer->SetRecolor(false);
-                }
-                else
-                {
-                    Color recolorFrom = data.material.recolorReference;
-                    Color recolorTo = GetObjectColor(objRank, data.material.recolor);
-                    float recolorThreshold = data.material.recolorThreshold;
-
-                    objectRenderer->SetRecolor(true, recolorFrom, recolorTo, recolorThreshold);
-                }
-
-                objectRenderer->SetAlbedoColor(tColor);
-                objectRenderer->SetAlbedoTexture(data.albedoTexture);
-                objectRenderer->SetDetailTexture(data.detailTexture);
-                objectRenderer->SetUVTransform(data.uvOffset, data.uvScale);
-                objectRenderer->DrawObject(data.buffer);
-            }
+            objectRenderer->SetAlphaScissor(0.0f);
+            objectRenderer->SetBaseColor(baseColor);
+            objectRenderer->SetAlbedoColor(tColor * data.material.albedoColor);
         }
+        else if (data.material.alphaMode == AlphaMode::BLEND)
+        {
+            objectRenderer->SetAlphaScissor(0.0f);
+            objectRenderer->SetBaseColor({ 0.0f, 0.0f, 0.0f, 0.0f });
+            objectRenderer->SetAlbedoColor(tColor * data.material.albedoColor * baseColor);
+        }
+        else if (data.material.alphaMode == AlphaMode::MASK)
+        {
+            objectRenderer->SetAlphaScissor(data.material.alphaThreshold);
+            objectRenderer->SetBaseColor({ 0.0f, 0.0f, 0.0f, 0.0f });
+            objectRenderer->SetAlbedoColor(tColor * data.material.albedoColor * baseColor);
+        }
+
+        objectRenderer->SetAlbedoTexture(data.albedoTexture);
+        objectRenderer->SetDetailTexture(data.detailTexture);
+        objectRenderer->SetUVTransform(data.uvOffset, data.uvScale);
+        objectRenderer->DrawObject(data.buffer);
     }
 
     objectRenderer->End();
@@ -3104,12 +3319,17 @@ void CEngine::Draw3DScene()
     objectRenderer->SetViewMatrix(m_matView);
     objectRenderer->SetShadowMap(m_shadowMap);
     objectRenderer->SetLighting(true);
-    objectRenderer->SetLight(glm::vec4(1.0, 1.0, -1.0, 0.0), 1.0f, glm::vec3(1.0));
+    objectRenderer->SetLight(glm::vec4(glm::normalize(m_sunDirection), 0.0), m_sunIntensity, sunColor);
     objectRenderer->SetTransparency(TransparencyMode::NONE);
 
-    objectRenderer->SetFog(fogStart, fogEnd, { fogColor.r, fogColor.g, fogColor.b });
+    objectRenderer->SetWaterLevel(m_water->GetLevel());
+    objectRenderer->SetFogRange(fogRangeMin, fogRangeMax);
+    objectRenderer->SetGroundFogColor(m_fogColor[m_rankView]);
+    objectRenderer->SetWaterFogColor(m_fogColor[1]);
+
     objectRenderer->SetAlphaScissor(0.0f);
     objectRenderer->SetShadowParams(m_shadowRegions, shadowParams);
+    objectRenderer->SetBaseColor({ 0.0f, 0.0f, 0.0f, 0.0f });
 
     m_water->DrawSurf(); // draws water surface
 
@@ -3145,7 +3365,7 @@ void CEngine::Draw3DScene()
 
     particleRenderer->End();
 
-    DrawForegroundImage();   // draws the foreground
+    if (m_rankView == 0) DrawForegroundImage();   // draws the foreground
 
     if (! m_overFront) DrawOverColor();      // draws the foreground color
 }
@@ -3552,7 +3772,10 @@ void CEngine::RenderShadowMap()
 
             for (auto& data : p1.next)
             {
-                renderer->SetTexture(data.albedoTexture);
+                if (data.material.alphaMode == Gfx::AlphaMode::NONE)
+                    renderer->SetTexture({});
+                else
+                    renderer->SetTexture(data.albedoTexture);
 
                 renderer->DrawObject(data.buffer, true);
             }
@@ -3667,18 +3890,14 @@ void CEngine::DrawInterface()
     // 3D objects drawn in front of interface
     if (m_drawFront)
     {
-        float fogStart = m_deepView[m_rankView] * m_fogStart[m_rankView] * m_clippingDistance;
-        float fogEnd = m_deepView[m_rankView] * m_clippingDistance;
-        Color fogColor = m_fogColor[m_rankView];
-
         auto renderer = m_device->GetObjectRenderer();
         renderer->Begin();
         renderer->SetProjectionMatrix(m_matProj);
         renderer->SetViewMatrix(m_matView);
-        renderer->SetFog(fogStart, fogEnd, { fogColor.r, fogColor.g, fogColor.b });
+        renderer->SetFogRange(0.0f, 0.0f);
         renderer->SetLighting(true);
-        renderer->SetLight(glm::vec4(1.0, 1.0, -1.0, 0.0), 0.8f, glm::vec3(1.0));
-        renderer->SetSky(Color(1.0, 1.0, 1.0), 0.2f);
+        renderer->SetLight(glm::vec4(m_appearanceLightDirection, 0.0f), 1.0f, glm::vec3(1.0));
+        renderer->SetSky(m_ambientColor[m_rankView], 1.0f);
         renderer->SetTransparency(TransparencyMode::NONE);
         renderer->SetAlphaScissor(0.0f);
         renderer->SetShadowParams(0, nullptr);
@@ -3720,35 +3939,53 @@ void CEngine::DrawInterface()
 
             for (auto& data : p1.next)
             {
-                Color color = data.material.albedoColor;
+                auto baseColor = GetObjectColor(objRank, data.material.baseColor);
 
-                if (!data.material.tag.empty())
+                if (data.material.alphaMode == AlphaMode::NONE)
                 {
-                    Color c = GetObjectColor(objRank, data.material.tag);
+                    m_device->SetDepthMask(true);
+                    renderer->SetTransparency(TransparencyMode::NONE);
+                    renderer->SetAlphaScissor(0.0f);
 
-                    if (c != Color(1.0, 1.0, 1.0, 1.0))
-                    {
-                        color = c;
-                    }
+                    baseColor.a = 1.0f;
+
+                    renderer->SetBaseColor(baseColor);
+                    renderer->SetAlbedoColor(data.material.albedoColor);
+                }
+                else if (data.material.alphaMode == AlphaMode::MASK)
+                {
+                    m_device->SetDepthMask(true);
+                    renderer->SetTransparency(TransparencyMode::NONE);
+                    renderer->SetAlphaScissor(data.material.alphaThreshold);
+
+                    baseColor.a = 1.0f;
+
+                    renderer->SetBaseColor({ 0.0f, 0.0f, 0.0f, 0.0f });
+                    renderer->SetAlbedoColor(data.material.albedoColor * baseColor);
+                }
+                else if (data.material.alphaMode == AlphaMode::BLEND)
+                {
+                    m_device->SetDepthMask(false);
+                    renderer->SetTransparency(TransparencyMode::ALPHA);
+                    renderer->SetAlphaScissor(0.0f);
+
+                    baseColor.a = 1.0f;
+
+                    renderer->SetBaseColor({ 0.0f, 0.0f, 0.0f, 0.0f });
+                    renderer->SetAlbedoColor(data.material.albedoColor * baseColor);
                 }
 
-                if (data.material.recolor.empty())
-                {
-                    renderer->SetRecolor(false);
-                }
-                else
-                {
-                    Color recolorFrom = data.material.recolorReference;
-                    Color recolorTo = GetObjectColor(objRank, data.material.recolor);
-                    float recolorThreshold = 0.3;
-
-                    renderer->SetRecolor(true, recolorFrom, recolorTo, recolorThreshold);
-                }
-
-                renderer->SetAlbedoColor(color);
                 renderer->SetAlbedoTexture(data.albedoTexture);
                 renderer->SetDetailTexture(data.detailTexture);
 
+                renderer->SetEmissiveColor(data.material.emissiveColor);
+                renderer->SetEmissiveTexture(data.emissiveTexture);
+
+                renderer->SetMaterialParams(data.material.roughness, data.material.metalness, data.material.aoStrength);
+                renderer->SetMaterialTexture(data.materialTexture);
+
+                renderer->SetCullFace(data.material.cullFace);
+                renderer->SetUVTransform(data.uvOffset, data.uvScale);
                 renderer->DrawObject(data.buffer);
             }
         }
@@ -4314,7 +4551,6 @@ void CEngine::DrawBackgroundGradient(const Color& up, const Color& down)
 
     auto renderer = m_device->GetUIRenderer();
     renderer->SetTexture(Texture{});
-    renderer->SetColor({ 1, 1, 1, 1 });
     renderer->SetTransparency(TransparencyMode::NONE);
     auto vertices = renderer->BeginPrimitive(PrimitiveType::TRIANGLE_STRIP, 4);
 
@@ -4392,7 +4628,6 @@ void CEngine::DrawBackgroundImage()
     }
 
     auto renderer = m_device->GetUIRenderer();
-    renderer->SetColor({ 1, 1, 1, 1 });
     renderer->SetTexture(m_backgroundTex);
     renderer->SetTransparency(TransparencyMode::NONE);
     auto vertices = renderer->BeginPrimitive(PrimitiveType::TRIANGLE_STRIP, 4);
@@ -4416,7 +4651,7 @@ void CEngine::DrawPlanet()
     renderer->SetProjectionMatrix(m_matProjInterface);
     renderer->SetViewMatrix(m_matViewInterface);
     renderer->SetModelMatrix(m_matWorldInterface);
-    renderer->SetFog(1e+6, 1e+6, {});
+    renderer->SetFogRange(0.0f, 0.0f);
     renderer->SetLighting(false);
     renderer->SetDepthTest(false);
     renderer->SetDepthMask(false);
@@ -5013,6 +5248,11 @@ void CEngine::DisablePauseBlur()
 {
     m_captureWorld = false;
     m_worldCaptured = false;
+}
+
+void CEngine::SetAppearanceLightDirection(const glm::vec3& direction)
+{
+    m_appearanceLightDirection = direction;
 }
 
 void CEngine::SetWindowCoordinates()

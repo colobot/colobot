@@ -45,7 +45,6 @@ public:
 
     virtual void SetProjection(float left, float right, float bottom, float top) override;
     virtual void SetTexture(const Texture& texture) override;
-    virtual void SetColor(const glm::vec4& color) override;
     virtual void SetTransparency(TransparencyMode mode) override;
 
     virtual Vertex2D* BeginPrimitive(PrimitiveType type, int count) override;
@@ -58,18 +57,13 @@ private:
     CGL33Device* const m_device;
 
     // Uniform data
-    struct Uniforms
-    {
-        glm::mat4 projectionMatrix;
-        glm::vec4 color;
-    };
-    Uniforms m_uniforms = {};
+    glm::mat4 m_matrix = {};
 
     // true means uniforms need to be updated
     bool m_uniformsDirty = false;
 
-    // Uniform buffer object
-    GLuint m_uniformBuffer = 0;
+    // Matrix location
+    GLuint m_matrixLocation = 0;
 
     // Vertex buffer object
     GLuint m_bufferVBO = 0;

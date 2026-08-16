@@ -19,6 +19,7 @@ target_sources(Colobot-Base PRIVATE
 
 if(COLOBOT_DEVELOPMENT_MODE)
     set(SHADERS
+        fog.glsl
         lighting.glsl
         object_fs.glsl
         object_vs.glsl

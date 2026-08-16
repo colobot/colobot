@@ -29,7 +29,6 @@
 
 #include "graphics/core/color.h"
 #include "graphics/core/texture.h"
-#include "graphics/core/renderers.h"
 #include "graphics/core/vertex.h"
 
 #include "math/sphere.h"
@@ -41,8 +40,10 @@
 #include <vector>
 #include <map>
 #include <set>
+#include <span>
 #include <memory>
 #include <unordered_map>
+#include <optional>
 
 
 class CApplication;
@@ -71,6 +72,7 @@ class CTerrain;
 class CPyroManager;
 class CModelMesh;
 class CVertexBuffer;
+
 struct EngineBaseObjDataTier;
 struct EngineBaseObject;
 struct EngineTriangle;
@@ -78,6 +80,8 @@ struct Material;
 struct ModelShadowSpot;
 struct ModelTriangle;
 
+enum class BaseColor : unsigned char;
+enum class Mark : unsigned char;
 enum class TransparencyMode : unsigned char;
 
 /**
@@ -619,7 +623,7 @@ public:
     //! Changes the 2nd texure for given object
     void            ChangeSecondTexture(int objRank, const std::filesystem::path& tex2Name);
 
-    void            SetUVTransform(int objRank, const std::string& tag, const glm::vec2& offset, const glm::vec2& scale);
+    void            SetUVTransform(int objRank, Mark mark, const glm::vec2& offset, const glm::vec2& scale);
 
     //! Detects the target object that is selected with the mouse
     /** Returns the rank of the object or -1. */
@@ -954,7 +958,7 @@ public:
     bool            IsVisiblePoint(const glm::vec3& pos);
 
     //! Returns object material color
-    Color           GetObjectColor(int object, const std::string& name);
+    Color           GetObjectColor(int object, BaseColor baseColor);
 
     //! Updates the scene after a change of parameters
     void            ApplyChange();
@@ -979,6 +983,8 @@ public:
 
     void            EnablePauseBlur();
     void            DisablePauseBlur();
+
+    void            SetAppearanceLightDirection(const glm::vec3& direction);
 
 
     //! Reloads all textures
@@ -1036,6 +1042,18 @@ protected:
 
     //! Create texture and add it to cache
     Texture CreateTexture(const std::filesystem::path &texName, const TextureCreateParams &params, CImage* image = nullptr);
+
+    //! Applies recolor mask to the image if it's on the list
+    void        ApplyRecolorMask(CImage& image, const std::filesystem::path& name);
+
+    //! Applies recolor mask to the image using regions, reference color and threshold
+    void        ApplyRecolorMask(CImage& image,
+                    std::span<const glm::ivec4> regions,
+                    const Color& reference,
+                    float threshold,
+                    bool transparent,
+                    bool hsv,
+                    const std::optional<Color>& target = std::nullopt);
 
     //! Tests whether the given object is visible
     bool        IsVisible(const glm::mat4& matrix, int objRank);
@@ -1200,6 +1218,14 @@ protected:
     bool            m_lightMode;
     bool            m_editIndentMode;
     int             m_editIndentValue;
+
+    // Sun parameters for directional lighting
+    glm::vec3       m_sunDirection = { 1.0f, 1.0f, -1.0f };
+    float           m_sunIntensity = 0.75f;
+    glm::vec3       m_sunColor = { 1.0f, 1.0f, 1.0f };
+
+    // Light direction used for the appearance screen
+    glm::vec3       m_appearanceLightDirection = { 1.0f, 1.0f, -1.0f };
 
     struct ShadowParam
     {

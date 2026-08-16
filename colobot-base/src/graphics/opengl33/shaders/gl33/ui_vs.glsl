@@ -24,11 +24,7 @@ layout(location = 0) in vec4 in_VertexCoord;
 layout(location = 1) in vec2 in_TexCoord;
 layout(location = 2) in vec4 in_Color;
 
-uniform Uniforms
-{
-    mat4 uni_Matrix;
-    vec4 uni_Color;
-};
+uniform mat4 uni_Matrix;
 
 out VertexData
 {

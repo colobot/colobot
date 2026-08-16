@@ -21,7 +21,6 @@
 
 #include "graphics/model/model_gltf.h"
 #include "graphics/model/model_mod.h"
-#include "graphics/model/model_txt.h"
 
 #include "graphics/model/model_io_exception.h"
 
@@ -37,10 +36,6 @@ std::unique_ptr<CModel> ModelInput::Read(const std::filesystem::path& path)
     if (extension == ".mod")
     {
         return ModelIO::ReadOldModel(path);
-    }
-    else if (extension == ".txt")
-    {
-        return ModelIO::ReadTextModel(path);
     }
     else if (extension == ".gltf")
     {

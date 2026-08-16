@@ -54,6 +54,7 @@ public:
     //! Sets model matrix
     virtual void SetModelMatrix(const glm::mat4& matrix) override;
 
+    void SetBaseColor(const Color& color) override;
     //! Sets albedo color
     virtual void SetAlbedoColor(const Color& color) override;
     //! Sets albedo texture
@@ -81,13 +82,17 @@ public:
     //! Sets shadow parameters
     virtual void SetShadowParams(int count, const ShadowParam* params) override;
 
-    //! Sets fog parameters
-    virtual void SetFog(float min, float max, const glm::vec3& color) override;
+    //! Sets water level
+    virtual void SetWaterLevel(float height) override;
+    //! Sets ground fog color
+    virtual void SetGroundFogColor(const Color& color) override;
+    //! Sets water fog color
+    virtual void SetWaterFogColor(const Color& color) override;
+    //! Sets fog range
+    virtual void SetFogRange(float min, float max) override;
+
     //! Sets alpha scissor
     virtual void SetAlphaScissor(float alpha) override;
-
-    //! Sets recolor parameters
-    virtual void SetRecolor(bool enabled, const glm::vec3& from = {}, const glm::vec3& to = {}, float threshold = {}) override;
 
     virtual void SetDepthTest(bool enabled) override;
     virtual void SetDepthMask(bool enabled) override;
@@ -131,9 +136,13 @@ private:
     GLint m_skyColor = -1;
     GLint m_skyIntensity = -1;
 
+    // Fog parameters
+    GLint m_waterLevel = -1;
+    GLint m_groundFogColor = -1;
+    GLint m_waterFogColor = -1;
     GLint m_fogRange = -1;
-    GLint m_fogColor = -1;
 
+    GLint m_baseColor = -1;
     GLint m_albedoColor = -1;
     GLint m_emissiveColor = -1;
     GLint m_roughness = -1;
@@ -143,11 +152,6 @@ private:
     GLint m_triplanarMode = -1;
     GLint m_triplanarScale = -1;
     GLint m_alphaScissor = -1;
-
-    GLint m_recolor = -1;
-    GLint m_recolorFrom = -1;
-    GLint m_recolorTo = -1;
-    GLint m_recolorThreshold = -1;
 
     GLint m_uvOffset = -1;
     GLint m_uvScale = -1;
@@ -174,6 +178,9 @@ private:
 
     // 1x1 white texture
     GLuint m_whiteTexture = 0;
+    // 1x1 black texture
+    GLuint m_blackTexture = 0;
+
     // Currently bound albedo texture
     GLuint m_albedoTexture = 0;
     // Currently bound detail texture

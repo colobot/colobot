@@ -24,6 +24,7 @@
 
 #include "common/stringutils.h"
 
+#include "graphics/core/material.h"
 #include "graphics/engine/engine.h"
 #include "graphics/engine/oldmodelmanager.h"
 #include "graphics/engine/particle.h"
@@ -1991,18 +1992,18 @@ void CMotionVehicle::UpdateTrackMapping(float left, float right, ObjectType type
 
     if (type == OBJECT_MOBILEdr)
     {
-        m_engine->SetUVTransform(rRank, "tracker_right",
+        m_engine->SetUVTransform(rRank, Gfx::Mark::RIGHT_TRACKER,
             { (1.0f - right) * scale, 0.0f }, { 1.0f, 1.0f });
 
-        m_engine->SetUVTransform(lRank, "tracker_left",
+        m_engine->SetUVTransform(lRank, Gfx::Mark::LEFT_TRACKER,
             { (1.0f - left) * scale, 0.0f }, { 1.0f, 1.0f });
     }
     else
     {
-        m_engine->SetUVTransform(rRank, "tracker_right",
+        m_engine->SetUVTransform(rRank, Gfx::Mark::RIGHT_TRACKER,
             { (1.0f - right) * scale, 0.0f }, { 1.0f, 1.0f });
 
-        m_engine->SetUVTransform(lRank, "tracker_left",
+        m_engine->SetUVTransform(lRank, Gfx::Mark::LEFT_TRACKER,
             { (1.0f - left) * scale, 0.0f }, { 1.0f, 1.0f });
     }
 }

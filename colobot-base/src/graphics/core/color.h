@@ -40,10 +40,16 @@ namespace Gfx
 struct Color : glm::vec4
 {
     //! Constructor; default values are (0,0,0,0) = black
-    Color(float aR = 0.0f, float aG = 0.0f, float aB = 0.0f, float aA = 0.0f)
-     : glm::vec4(aR, aG, aB, aA) {}
+    constexpr Color(float aR = 0.0f, float aG = 0.0f, float aB = 0.0f, float aA = 0.0f)
+        : glm::vec4(aR, aG, aB, aA) {}
 
-    inline Color Inverse() const
+    constexpr explicit Color(const glm::vec4& rgba)
+        : glm::vec4{ rgba } {}
+
+    constexpr explicit Color(const glm::vec3& rgb, float alpha = 0.0f)
+        : glm::vec4{ rgb, alpha } {}
+
+    constexpr Color Inverse() const
     {
         return Color(1.0f - r, 1.0f - g, 1.0f - b, 1.0f - a);
     }
@@ -69,17 +75,17 @@ struct Color : glm::vec4
         return stream.str();
     }
 
-    inline bool operator==(const Color &other) const
+    constexpr bool operator==(const Color &other) const
     {
         return r == other.r && g == other.g && b == other.b && a == other.a;
     }
 
-    inline bool operator!=(const Color &other) const
+    constexpr bool operator!=(const Color &other) const
     {
         return ! this->operator==(other);
     }
 
-    inline Color operator*(float scale) const
+    constexpr Color operator*(float scale) const
     {
         Color c = *this;
         c.r *= scale;
@@ -89,7 +95,7 @@ struct Color : glm::vec4
         return c;
     }
 
-    Color operator*(const Color& other) const
+    constexpr Color operator*(const Color& other) const
     {
         return Color{ r * other.r, g * other.g, b * other.b, a * other.a };
     }
@@ -181,6 +187,13 @@ inline Color ToLinear(const Color& color)
     result.a = color.a;
 
     return result;
+}
+
+inline Color Desaturate(const Color& color)
+{
+    float gray = glm::dot(glm::vec3(color), { 0.2989f, 0.5870f, 0.1140f });
+
+    return Color{ gray, gray, gray, color.a };
 }
 
 } // namespace Gfx

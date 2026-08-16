@@ -382,7 +382,7 @@ Texture CGL33Device::CreateTexture(ImageData *data, const TextureCreateParams &p
         wrap = GL_REPEAT;
         break;
     case TextureWrapMode::CLAMP:
-        wrap = GL_CLAMP;
+        wrap = GL_CLAMP_TO_EDGE;
         break;
     }
 

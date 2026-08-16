@@ -19,9 +19,6 @@
 
 // FRAGMENT SHADER - TERRAIN RENDERER
 
-uniform vec2 uni_FogRange;
-uniform vec3 uni_FogColor;
-
 uniform vec4 uni_AlbedoColor;
 uniform sampler2D uni_AlbedoTexture;
 uniform sampler2D uni_DetailTexture;
@@ -82,10 +79,7 @@ void main()
             roughness,
             metalness);
 
-    float dist = length(uni_CameraPosition - data.Position);
-    float fogAmount = clamp((dist - uni_FogRange.x) / (uni_FogRange.y - uni_FogRange.x), 0.0, 1.0);
-
-    color = mix(color, uni_FogColor, fogAmount);
+    color.rgb = ApplyFog(color.rgb, data.Position);
 
     out_FragColor = vec4(color, 1.0);
 }

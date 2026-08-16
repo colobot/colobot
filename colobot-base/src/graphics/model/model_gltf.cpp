@@ -203,30 +203,40 @@ void GLTFLoader::ReadMaterials()
                 mat.detailTexture = "textures" / StrUtils::ToPath(ss.str());
             }
 
-            if (extras.contains("tag"))
+            if (extras.contains("base"))
             {
-                mat.tag = extras["tag"].get<std::string>();
+                std::string base = extras["base"].get<std::string>();
+
+                if (base == "team")
+                    mat.baseColor = BaseColor::TEAM;
+                else if (base == "vehicle")
+                    mat.baseColor = BaseColor::VEHICLE;
+                else if (base == "plant")
+                    mat.baseColor = BaseColor::PLANT;
+                else if (base == "alien")
+                    mat.baseColor = BaseColor::ALIEN;
+                else if (base == "hair")
+                    mat.baseColor = BaseColor::HAIR;
+                else if (base == "suit")
+                    mat.baseColor = BaseColor::SUIT;
+                else if (base == "band")
+                    mat.baseColor = BaseColor::BAND;
+                else
+                    throw std::runtime_error("Unknown base color: '" + base + "'");
             }
 
-            if (extras.contains("recolor"))
+            if (extras.contains("mark"))
             {
-                mat.recolor = extras["recolor"].get<std::string>();
-            }
+                std::string mark = extras["mark"].get<std::string>();
 
-            if (extras.contains("recolor_ref"))
-            {
-                const auto& color = extras["recolor_ref"];
-
-                float r = color[0];
-                float g = color[1];
-                float b = color[2];
-
-                mat.recolorReference = Color(r, g, b);
-            }
-
-            if (extras.contains("recolor_threshold"))
-            {
-                mat.recolorThreshold = extras["recolor_threshold"].get<float>();
+                if (mark == "energy")
+                    mat.mark = Mark::ENERGY;
+                else if (mark == "left_tracker")
+                    mat.mark = Mark::LEFT_TRACKER;
+                else if (mark == "right_tracker")
+                    mat.mark = Mark::RIGHT_TRACKER;
+                else
+                    throw std::runtime_error("Unknown mark: '" + mark + "'");
             }
         }
 
