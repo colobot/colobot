@@ -32,7 +32,7 @@ class CObject;
 enum class DamageType
 {
     Fire          = 1, //!< fire damage (AlienSpider or Shooter), burns on destruction
-    Organic       = 2, //!< organical damage (AlienAnt or OrgaShooter), explodes on destruction
+    AlienAnt      = 2, //!< organical damage (AlienAnt), explodes on destruction
     Phazer        = 3, //!< damage from PhazerShooter, explodes on destruction
     Tower         = 4, //!< damage from DefenseTower, explodes on destruction
     FallingObject = 5, //!< damaged by an falling object (OrgaMatter dropped by an AlienWasp), explodes on destruction
@@ -40,6 +40,7 @@ enum class DamageType
     Collision     = 7, //!< damage after one object hits another, explodes on destruction
     Lightning     = 8, //!< struck by lightning, explodes on destruction
     Fall          = 9, //!< fall damage, explodes on destruction
+    OrgaShooter   = 10, //!< damage from OrgaShooter, explodes on destruction
 };
 
 /**
