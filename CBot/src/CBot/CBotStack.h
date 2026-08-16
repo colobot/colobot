@@ -463,6 +463,8 @@ public:
 
     bool            IsCallFinished();
 
+    void            CancelExternal();
+
 private:
     CBotStack*        m_next;
     CBotStack*        m_next2;

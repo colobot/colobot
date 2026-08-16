@@ -73,6 +73,8 @@ public:
      * \return false to request program interruption, true otherwise
      */
     virtual bool Run(CBotVar* thisVar, CBotStack* pStack) = 0;
+
+    virtual void Cancel(CBotStack* pStack) = 0;
 };
 
 /**
@@ -83,14 +85,16 @@ class CBotExternalCallDefault : public CBotExternalCall
 public:
     typedef bool (*RuntimeFunc)(CBotVar* args, CBotVar* result, int& exception, void* user);
     typedef CBotTypResult (*CompileFunc)(CBotVar*& args, void* user);
+    typedef void (*CancelFunc)(void* user);
 
     /**
      * \brief Constructor
      * \param rExec Runtime function
      * \param rCompile Compilation function
+     * \param rCancel Function to cancel execution
      * \see CBotProgram::AddFunction()
      */
-    CBotExternalCallDefault(RuntimeFunc rExec, CompileFunc rCompile);
+    CBotExternalCallDefault(RuntimeFunc rExec, CompileFunc rCompile, CancelFunc rCancel);
 
     /**
      * \brief Destructor
@@ -99,10 +103,12 @@ public:
 
     virtual CBotTypResult Compile(CBotVar* thisVar, CBotVar* args, void* user) override;
     virtual bool Run(CBotVar* thisVar, CBotStack* pStack) override;
+    virtual void Cancel(CBotStack* pStack) override;
 
 private:
     RuntimeFunc m_rExec;
     CompileFunc m_rComp;
+    CancelFunc m_rCancel;
 };
 
 /**
@@ -129,6 +135,7 @@ public:
 
     virtual CBotTypResult Compile(CBotVar* thisVar, CBotVar* args, void* user) override;
     virtual bool Run(CBotVar* thisVar, CBotStack* pStack) override;
+    virtual void Cancel(CBotStack* pStack) override;
 
 private:
     RuntimeFunc m_rExec;
