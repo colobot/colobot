@@ -30,7 +30,7 @@
 #include "level/level_category.h"
 #include "level/robotmain.h"
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 #include <algorithm>
 #include <cassert>

@@ -42,7 +42,7 @@
 #include "ui/controls/label.h"
 #include "ui/controls/window.h"
 
-#include <SDL_clipboard.h>
+#include <SDL3/SDL_clipboard.h>
 
 namespace Ui
 {
@@ -379,7 +379,7 @@ bool CDebugMenu::EventProcess(const Event &event)
             break;
 
         case EVENT_KEY_DOWN:
-            if (event.GetData<KeyEventData>()->key == KEY(c) && (event.kmodState & KMOD_CTRL) != 0)
+            if (event.GetData<KeyEventData>()->key == KEY(C) && (event.kmodState & SDL_KMOD_CTRL) != 0)
             {
                 if (IsActive())
                 {

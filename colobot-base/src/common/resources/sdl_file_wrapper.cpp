@@ -29,101 +29,62 @@
 namespace
 {
 
-bool CheckSDLContext(SDL_RWops *context)
+bool SDLClose(void *userdata)
 {
-    if (context->type != SDL_RWOPS_UNKNOWN)
-    {
-        SDL_SetError("Wrong kind of RWops");
-        return false;
-    }
+    if (userdata == nullptr)
+		return false;
 
+	PHYSFS_close(static_cast<PHYSFS_file *>(userdata));
+	
     return true;
 }
 
-int SDLClose(SDL_RWops *context, bool freeRW)
+Sint64 SDLSeek(void *userData, Sint64 offset, SDL_IOWhence whence)
 {
-    if (context == nullptr)
-        return 0;
+	PHYSFS_File *file = static_cast<PHYSFS_File *>(userData);
 
-    if (!CheckSDLContext(context))
-        return 1;
+	switch (whence)
+	{
+	default:
+	case SDL_IO_SEEK_SET:
+		{
+			auto result = PHYSFS_seek(file, offset);
+			return (result != 0) ? offset : -1;
+		}
 
-    if (context->hidden.unknown.data1 != nullptr)
-    {
-        PHYSFS_close(static_cast<PHYSFS_File *>(context->hidden.unknown.data1));
-        context->hidden.unknown.data1 = nullptr;
-    }
+	case SDL_IO_SEEK_CUR:
+		{
+			int position = offset + PHYSFS_tell(file);
+			auto result = PHYSFS_seek(file, position);
+			return (result != 0) ? position : -1;
+		}
 
-    if (freeRW)
-        SDL_FreeRW(context);
-
-    return 0;
-}
-
-int SDLCloseWithoutFreeRW(SDL_RWops *context)
-{
-    return SDLClose(context, false);
-}
-
-int SDLCloseWithFreeRW(SDL_RWops *context)
-{
-    return SDLClose(context, true);
-}
-
-Sint64 SDLSeek(SDL_RWops *context, Sint64 offset, int whence)
-{
-    if (CheckSDLContext(context))
-    {
-        PHYSFS_File *file = static_cast<PHYSFS_File *>(context->hidden.unknown.data1);
-
-        switch (whence)
-        {
-            default:
-            case RW_SEEK_SET:
-            {
-                auto result = PHYSFS_seek(file, offset);
-                return (result != 0) ? offset : -1;
-            }
-
-            case RW_SEEK_CUR:
-            {
-                int position = offset + PHYSFS_tell(file);
-                auto result = PHYSFS_seek(file, position);
-                return (result != 0) ? position : -1;
-            }
-
-            case RW_SEEK_END:
-            {
-                int position = PHYSFS_fileLength(file) - offset;
-                auto result = PHYSFS_seek(file, position);
-                return (result != 0) ? position : -1;
-            }
-        }
-    }
+	case SDL_IO_SEEK_END:
+		{
+			int position = PHYSFS_fileLength(file) - offset;
+			auto result = PHYSFS_seek(file, position);
+			return (result != 0) ? position : -1;
+		}
+	}
 
     return -1;
 }
 
-Sint64 SDLSize(SDL_RWops *context)
+Sint64 SDLSize(void *userdata)
 {
     return -1; // Not needed for now
 }
 
-size_t SDLRead(SDL_RWops *context, void *ptr, size_t size, size_t maxnum)
+size_t SDLRead(void *userdata, void *ptr, size_t size, SDL_IOStatus* status)
 {
-    if (CheckSDLContext(context))
-    {
-        PHYSFS_File *file = static_cast<PHYSFS_File *>(context->hidden.unknown.data1);
-        SDL_memset(ptr, 0, size * maxnum);
+	PHYSFS_File *file = static_cast<PHYSFS_File *>(userdata);
+	SDL_memset(ptr, 0, size);
 
-        auto result = PHYSFS_readBytes(file, ptr, size * maxnum);
-        return (result >= 0) ? result : 0;
-    }
-
-    return 0;
+	auto result = PHYSFS_readBytes(file, ptr, size);
+	return (result >= 0) ? result : 0;
 }
 
-size_t SDLWrite(SDL_RWops *context, const void *ptr, size_t size, size_t num)
+size_t SDLWrite(void *userdata, const void *ptr, size_t size, SDL_IOStatus* status)
 {
     assert(!!"Writing to CSDLFileWrapper is currently not supported");
     return 0;
@@ -148,29 +109,28 @@ CSDLFileWrapper::CSDLFileWrapper(const std::filesystem::path& filename)
         return;
     }
 
-    m_rwops = SDL_AllocRW();
+	SDL_IOStreamInterface interface;
+	
+    interface.seek = SDLSeek;
+    interface.read = SDLRead;
+    interface.write = SDLWrite;
+    interface.size = SDLSize;
+    interface.close = SDLClose;
+
+    m_rwops = SDL_OpenIO(&interface, file);
     if (m_rwops == nullptr)
     {
-        GetLogger()->Error("Unable to allocate SDL_RWops for \"%%\"\n", filename);
+        GetLogger()->Error("Unable to allocate SDL_IOStream for \"%%\"\n", filename);
         return;
     }
-
-    m_rwops->type = SDL_RWOPS_UNKNOWN;
-    m_rwops->hidden.unknown.data1 = file;
-    m_rwops->seek = SDLSeek;
-    m_rwops->read = SDLRead;
-    m_rwops->write = SDLWrite;
-    m_rwops->size = SDLSize;
-    // This is safe because SDL_FreeRW will be called in destructor
-    m_rwops->close = SDLCloseWithoutFreeRW;
 }
 
 CSDLFileWrapper::~CSDLFileWrapper()
 {
-    SDLCloseWithFreeRW(m_rwops);
+    SDL_CloseIO(m_rwops);
 }
 
-SDL_RWops* CSDLFileWrapper::GetHandler()
+SDL_IOStream* CSDLFileWrapper::GetHandler()
 {
     return m_rwops;
 }

@@ -1044,7 +1044,7 @@ bool CRobotMain::ProcessEvent(Event &event)
                 {
                     QuickLoad();
                 }
-                if (data->key == KEY(c) && ((event.kmodState & KEY_MOD(CTRL)) != 0) && m_engine->GetShowStats())
+                if (data->key == KEY(C) && ((event.kmodState & KEY_MOD(CTRL)) != 0) && m_engine->GetShowStats())
                 {
                     CObject* obj = GetSelect();
                     if (obj != nullptr)

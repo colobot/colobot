@@ -34,7 +34,7 @@
 
 #include <sstream>
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 
 // Graphics module namespace

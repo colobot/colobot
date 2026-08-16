@@ -22,7 +22,7 @@
 
 #include <filesystem>
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 class CSDLFileWrapper final
 {
@@ -37,8 +37,8 @@ public:
     CSDLFileWrapper& operator=(CSDLFileWrapper&&) = delete;
 
     bool IsOpen() const;
-    SDL_RWops* GetHandler();
+    SDL_IOStream* GetHandler();
 
 private:
-    SDL_RWops* m_rwops = nullptr;
+    SDL_IOStream* m_rwops = nullptr;
 };

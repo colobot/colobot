@@ -31,7 +31,7 @@
 
 #include "object/object_type.h"
 
-#include <SDL_keyboard.h>
+#include <SDL3/SDL_keyboard.h>
 
 #include <libintl.h>
 

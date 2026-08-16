@@ -49,8 +49,8 @@
     #include "sound/oalsound/alsound.h"
 #endif
 
-#include <SDL.h>
-#include <SDL_image.h>
+#include <SDL3/SDL.h>
+#include <SDL3_image/SDL_image.h>
 
 #include <stdlib.h>
 #include <getopt.h>
@@ -67,7 +67,7 @@ using TimeUtils::TimeUnit;
 const int JOYSTICK_TIMER_INTERVAL = 1000/30;
 
 //! Function called by the timer
-Uint32 JoystickTimerCallback(Uint32 interval, void *);
+Uint32 JoystickTimerCallback(void* userdata, SDL_TimerID timerID, Uint32 interval);
 
 /**
  * \struct ApplicationPrivate
@@ -140,13 +140,13 @@ CApplication::~CApplication()
 
     if (m_private->joystick != nullptr)
     {
-        SDL_JoystickClose(m_private->joystick);
+        SDL_CloseJoystick(m_private->joystick);
         m_private->joystick = nullptr;
     }
 
     if (m_private->glcontext != nullptr)
     {
-        SDL_GL_DeleteContext(m_private->glcontext);
+        SDL_GL_DestroyContext(m_private->glcontext);
         m_private->glcontext = nullptr;
     }
 
@@ -155,8 +155,6 @@ CApplication::~CApplication()
         SDL_DestroyWindow(m_private->window);
         m_private->window = nullptr;
     }
-
-    IMG_Quit();
 
     if (SDL_WasInit(0))
         SDL_Quit();
@@ -530,9 +528,9 @@ bool CApplication::Create()
     // Creating the m_engine now because it holds the vsync flag
     m_engine = std::make_unique<Gfx::CEngine>(this, m_systemUtils);
 
-    Uint32 initFlags = SDL_INIT_VIDEO | SDL_INIT_TIMER;
+    Uint32 initFlags = SDL_INIT_VIDEO | SDL_INIT_AUDIO;
 
-    if (SDL_Init(initFlags) < 0)
+    if (!SDL_Init(initFlags))
     {
         m_errorMessage = std::string("SDL initialization error:") +
                          std::string(SDL_GetError());
@@ -542,22 +540,13 @@ bool CApplication::Create()
     }
 
     // This is non-fatal and besides seems to fix some memory leaks
-    if (SDL_InitSubSystem(SDL_INIT_JOYSTICK) < 0)
+    if (!SDL_InitSubSystem(SDL_INIT_JOYSTICK))
     {
         GetLogger()->Warn("Joystick subsystem init failed\nJoystick(s) will not be available");
     }
-    if (SDL_InitSubSystem(SDL_INIT_HAPTIC) < 0)
+    if (!SDL_InitSubSystem(SDL_INIT_HAPTIC))
     {
         GetLogger()->Warn("Joystick haptic subsystem init failed\nForce feedback will not be available");
-    }
-
-    if ((IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG) == 0)
-    {
-        m_errorMessage = std::string("SDL_Image initialization error:") +
-                         std::string(IMG_GetError());
-        GetLogger()->Error(m_errorMessage);
-        m_exitCode = 3;
-        return false;
     }
 
     if (!m_headless)
@@ -611,7 +600,7 @@ bool CApplication::Create()
     }
 
     // Don't generate joystick events
-    SDL_JoystickEventState(SDL_IGNORE);
+	SDL_SetJoystickEventsEnabled(false);
 
     // Report joystick list to log, since we still don't have a GUI for them so you have to set the ID manually in the config
     auto joysticks = GetJoystickList();
@@ -823,7 +812,6 @@ bool CApplication::CreateVideoSurface()
         SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
     m_private->window = SDL_CreateWindow(m_windowTitle.c_str(),
-                                         SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
                                          m_deviceConfig->size.x, m_deviceConfig->size.y,
                                          videoFlags);
 
@@ -863,7 +851,9 @@ void CApplication::TryToSetVSync()
             break;
         case 0:
             GetLogger()->Warn("Couldn't disable VSync: %%", SDL_GetError());
-            m_engine->SetVSync(SDL_GL_GetSwapInterval());
+			int swapInterval = 0;
+			SDL_GL_GetSwapInterval(&swapInterval);
+            m_engine->SetVSync(swapInterval);
             break;
         }
     }
@@ -891,18 +881,20 @@ bool CApplication::ChangeVideoConfig(const Gfx::DeviceConfig &newConfig, bool is
 
 bool CApplication::OpenJoystick()
 {
-    if ( (m_joystick.index < 0) || (m_joystick.index >= SDL_NumJoysticks()) )
+	int numJoysticks = 0;
+	SDL_JoystickID* sticks = SDL_GetJoysticks(&numJoysticks);
+    if ( (m_joystick.index < 0) || (m_joystick.index >= numJoysticks) )
         return false;
 
     assert(m_private->joystick == nullptr);
-    GetLogger()->Info("Opening joystick %%", m_joystick.index);
+    GetLogger()->Info("Opening joystick %%", sticks[m_joystick.index]);
 
-    m_private->joystick = SDL_JoystickOpen(m_joystick.index);
+    m_private->joystick = SDL_OpenJoystick(sticks[m_joystick.index]);
     if (m_private->joystick == nullptr)
         return false;
 
-    m_joystick.axisCount   = SDL_JoystickNumAxes(m_private->joystick);
-    m_joystick.buttonCount = SDL_JoystickNumButtons(m_private->joystick);
+    m_joystick.axisCount   = SDL_GetNumJoystickAxes(m_private->joystick);
+    m_joystick.buttonCount = SDL_GetNumJoystickButtons(m_private->joystick);
 
     // Create the vectors with joystick axis & button states to exactly the required size
     m_joyAxeState = std::vector<int>(m_joystick.axisCount, 0);
@@ -912,14 +904,14 @@ bool CApplication::OpenJoystick()
     m_private->joystickTimer = SDL_AddTimer(JOYSTICK_TIMER_INTERVAL, JoystickTimerCallback, nullptr);
 
     // Initialize haptic subsystem
-    m_private->haptic = SDL_HapticOpenFromJoystick(m_private->joystick);
+    m_private->haptic = SDL_OpenHapticFromJoystick(m_private->joystick);
     if (m_private->haptic == nullptr)
     {
         GetLogger()->Warn("Haptic subsystem open failed: %%", SDL_GetError());
         return true;
     }
 
-    if (SDL_HapticRumbleInit(m_private->haptic) != 0)
+    if (SDL_InitHapticRumble(m_private->haptic) != 0)
     {
         GetLogger()->Warn("Haptic rumble effect init failed: %%", SDL_GetError());
         return true;
@@ -936,16 +928,18 @@ void CApplication::CloseJoystick()
 
     StopForceFeedbackEffect();
 
-    SDL_HapticClose(m_private->haptic);
+    SDL_CloseHaptic(m_private->haptic);
     m_private->haptic = nullptr;
 
-    SDL_JoystickClose(m_private->joystick);
+    SDL_CloseJoystick(m_private->joystick);
     m_private->joystick = nullptr;
 }
 
 bool CApplication::ChangeJoystick(const JoystickDevice &newJoystick)
 {
-    if ( (newJoystick.index < 0) || (newJoystick.index >= SDL_NumJoysticks()) )
+	int numJoysticks = 0;
+	SDL_GetJoysticks(&numJoysticks);
+    if ( (newJoystick.index < 0) || (newJoystick.index >= numJoysticks) )
         return false;
 
     m_joystick = newJoystick;
@@ -959,7 +953,7 @@ bool CApplication::ChangeJoystick(const JoystickDevice &newJoystick)
         return true;
 }
 
-Uint32 JoystickTimerCallback(Uint32 interval, void *)
+Uint32 JoystickTimerCallback(void* userdata, SDL_TimerID timerID, Uint32 interval)
 {
     CApplication *app = CApplication::GetInstancePointer();
     if ((app == nullptr) || (! app->GetJoystickEnabled()))
@@ -977,11 +971,11 @@ void CApplication::UpdateJoystick()
     if (! m_joystickEnabled)
         return;
 
-    SDL_JoystickUpdate();
+    SDL_UpdateJoysticks();
 
     for (int axis = 0; axis < static_cast<int>( m_joyAxeState.size() ); ++axis)
     {
-        int newValue = SDL_JoystickGetAxis(m_private->joystick, axis);
+        int newValue = SDL_GetJoystickAxis(m_private->joystick, axis);
 
         if (m_joyAxeState[axis] != newValue)
         {
@@ -989,7 +983,7 @@ void CApplication::UpdateJoystick()
 
             SDL_Event joyAxisEvent;
 
-            joyAxisEvent.jaxis.type = SDL_JOYAXISMOTION;
+            joyAxisEvent.jaxis.type = SDL_EVENT_JOYSTICK_AXIS_MOTION;
             joyAxisEvent.jaxis.which = 0;
             joyAxisEvent.jaxis.axis = axis;
             joyAxisEvent.jaxis.value = newValue;
@@ -1000,7 +994,7 @@ void CApplication::UpdateJoystick()
 
     for (int button = 0; button < static_cast<int>( m_joyButtonState.size() ); ++button)
     {
-        bool newValue = SDL_JoystickGetButton(m_private->joystick, button) == 1;
+        bool newValue = SDL_GetJoystickButton(m_private->joystick, button) == 1;
 
         if (m_joyButtonState[button] != newValue)
         {
@@ -1010,13 +1004,13 @@ void CApplication::UpdateJoystick()
 
             if (newValue)
             {
-                joyButtonEvent.jbutton.type = SDL_JOYBUTTONDOWN;
-                joyButtonEvent.jbutton.state = SDL_PRESSED;
+                joyButtonEvent.jbutton.type = SDL_EVENT_JOYSTICK_BUTTON_DOWN;
+                joyButtonEvent.jbutton.down = true;
             }
             else
             {
-                joyButtonEvent.jbutton.type = SDL_JOYBUTTONUP;
-                joyButtonEvent.jbutton.state = SDL_RELEASED;
+                joyButtonEvent.jbutton.type = SDL_EVENT_JOYSTICK_BUTTON_UP;
+                joyButtonEvent.jbutton.down = false;
             }
             joyButtonEvent.jbutton.which = 0;
             joyButtonEvent.jbutton.button = button;
@@ -1028,7 +1022,7 @@ void CApplication::UpdateJoystick()
 
 void CApplication::UpdateMouse()
 {
-    glm::ivec2 pos{};
+    glm::vec2 pos{};
     SDL_GetMouseState(&pos.x, &pos.y);
     m_input->MouseMove(pos);
 }
@@ -1069,14 +1063,14 @@ int CApplication::Run()
         }
 
         // To be sure no old event remains
-        m_private->currentEvent.type = SDL_LASTEVENT;
+        m_private->currentEvent.type = SDL_EVENT_LAST;
 
         // Call SDL_PumpEvents() only once here
         // (SDL_PeepEvents() doesn't call it)
         if (m_active)
             SDL_PumpEvents();
 
-        m_private->lastMouseMotionEvent.type = SDL_LASTEVENT;
+        m_private->lastMouseMotionEvent.type = SDL_EVENT_LAST;
 
         bool haveEvent = true;
         while (haveEvent)
@@ -1087,7 +1081,7 @@ int CApplication::Run()
             // Use SDL_PeepEvents() if the app is active, so we can use idle time to
             // render the scene. Else, use SDL_WaitEvent() to avoid eating CPU time.
             if (m_active)
-                count = SDL_PeepEvents(&m_private->currentEvent, 1, SDL_GETEVENT, SDL_FIRSTEVENT, SDL_LASTEVENT);
+                count = SDL_PeepEvents(&m_private->currentEvent, 1, SDL_GETEVENT, SDL_EVENT_FIRST, SDL_EVENT_LAST);
             else
                 count = SDL_WaitEvent(&m_private->currentEvent);
 
@@ -1097,7 +1091,7 @@ int CApplication::Run()
                 haveEvent = true;
 
                 // Skip mouse motion events, for now
-                if (m_private->currentEvent.type == SDL_MOUSEMOTION)
+                if (m_private->currentEvent.type == SDL_EVENT_MOUSE_MOTION)
                 {
                     m_private->lastMouseMotionEvent = m_private->currentEvent;
                     continue;
@@ -1119,7 +1113,7 @@ int CApplication::Run()
         }
 
         // Now, process the last received mouse motion
-        if (m_private->lastMouseMotionEvent.type != SDL_LASTEVENT)
+        if (m_private->lastMouseMotionEvent.type != SDL_EVENT_LAST)
         {
             m_private->currentEvent = m_private->lastMouseMotionEvent;
 
@@ -1217,45 +1211,38 @@ Event CApplication::ProcessSystemEvent()
 {
     Event event;
 
-    if (m_private->currentEvent.type == SDL_QUIT)
+    if (m_private->currentEvent.type == SDL_EVENT_QUIT)
     {
         event.type = EVENT_SYS_QUIT;
     }
-    else if (m_private->currentEvent.type == SDL_WINDOWEVENT)
+	else if (m_private->currentEvent.type == SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED)
+	{
+		Gfx::DeviceConfig newConfig = *m_deviceConfig;
+		newConfig.size.x = m_private->currentEvent.window.data1;
+		newConfig.size.y = m_private->currentEvent.window.data2;
+		if (newConfig.size != m_deviceConfig->size)
+			ChangeVideoConfig(newConfig, /* isSetSize */ false);
+	}
+	else if (m_private->currentEvent.type == SDL_EVENT_WINDOW_MOUSE_ENTER)
+	{
+		event.type = EVENT_MOUSE_ENTER;
+	}
+	else if (m_private->currentEvent.type == SDL_EVENT_WINDOW_MOUSE_LEAVE)
+	{
+		event.type = EVENT_MOUSE_LEAVE;
+	}
+	else if (m_private->currentEvent.type == SDL_EVENT_WINDOW_FOCUS_GAINED)
+	{
+		event.type = EVENT_FOCUS_GAINED;
+	}
+	else if (m_private->currentEvent.type == SDL_EVENT_WINDOW_FOCUS_LOST)
+	{
+		event.type = EVENT_FOCUS_LOST;
+	}
+    else if ( (m_private->currentEvent.type == SDL_EVENT_KEY_DOWN) ||
+              (m_private->currentEvent.type == SDL_EVENT_KEY_UP) )
     {
-        if (m_private->currentEvent.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
-        {
-            Gfx::DeviceConfig newConfig = *m_deviceConfig;
-            newConfig.size.x = m_private->currentEvent.window.data1;
-            newConfig.size.y = m_private->currentEvent.window.data2;
-            if (newConfig.size != m_deviceConfig->size)
-                ChangeVideoConfig(newConfig, /* isSetSize */ false);
-        }
-
-        if (m_private->currentEvent.window.event == SDL_WINDOWEVENT_ENTER)
-        {
-            event.type = EVENT_MOUSE_ENTER;
-        }
-
-        if (m_private->currentEvent.window.event == SDL_WINDOWEVENT_LEAVE)
-        {
-            event.type = EVENT_MOUSE_LEAVE;
-        }
-
-        if (m_private->currentEvent.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
-        {
-            event.type = EVENT_FOCUS_GAINED;
-        }
-
-        if (m_private->currentEvent.window.event == SDL_WINDOWEVENT_FOCUS_LOST)
-        {
-            event.type = EVENT_FOCUS_LOST;
-        }
-    }
-    else if ( (m_private->currentEvent.type == SDL_KEYDOWN) ||
-              (m_private->currentEvent.type == SDL_KEYUP) )
-    {
-        if (m_private->currentEvent.type == SDL_KEYDOWN)
+        if (m_private->currentEvent.type == SDL_EVENT_KEY_DOWN)
             event.type = EVENT_KEY_DOWN;
         else
             event.type = EVENT_KEY_UP;
@@ -1263,8 +1250,8 @@ Event CApplication::ProcessSystemEvent()
         auto data = std::make_unique<KeyEventData>();
 
         data->virt = false;
-        data->key = m_private->currentEvent.key.keysym.sym;
-        event.kmodState = m_private->currentEvent.key.keysym.mod;
+        data->key = m_private->currentEvent.key.key;
+        event.kmodState = m_private->currentEvent.key.mod;
 
         // Some keyboards return numerical enter keycode instead of normal enter
         // See issue #427 for details
@@ -1280,14 +1267,14 @@ Event CApplication::ProcessSystemEvent()
 
         event.data = std::move(data);
     }
-    else if (m_private->currentEvent.type == SDL_TEXTINPUT)
+    else if (m_private->currentEvent.type == SDL_EVENT_TEXT_INPUT)
     {
         event.type = EVENT_TEXT_INPUT;
         auto data = std::make_unique<TextInputData>();
         data->text = m_private->currentEvent.text.text;
         event.data = std::move(data);
     }
-    else if (m_private->currentEvent.type == SDL_MOUSEWHEEL)
+    else if (m_private->currentEvent.type == SDL_EVENT_MOUSE_WHEEL)
     {
         event.type = EVENT_MOUSE_WHEEL;
 
@@ -1297,12 +1284,12 @@ Event CApplication::ProcessSystemEvent()
 
         event.data = std::move(data);
     }
-    else if ( (m_private->currentEvent.type == SDL_MOUSEBUTTONDOWN) ||
-         (m_private->currentEvent.type == SDL_MOUSEBUTTONUP) )
+    else if ( (m_private->currentEvent.type == SDL_EVENT_MOUSE_BUTTON_DOWN) ||
+         (m_private->currentEvent.type == SDL_EVENT_MOUSE_BUTTON_UP) )
     {
         auto data = std::make_unique<MouseButtonEventData>();
 
-        if (m_private->currentEvent.type == SDL_MOUSEBUTTONDOWN)
+        if (m_private->currentEvent.type == SDL_EVENT_MOUSE_BUTTON_DOWN)
             event.type = EVENT_MOUSE_BUTTON_DOWN;
         else
             event.type = EVENT_MOUSE_BUTTON_UP;
@@ -1311,13 +1298,13 @@ Event CApplication::ProcessSystemEvent()
 
         event.data = std::move(data);
     }
-    else if (m_private->currentEvent.type == SDL_MOUSEMOTION)
+    else if (m_private->currentEvent.type == SDL_EVENT_MOUSE_MOTION)
     {
         event.type = EVENT_MOUSE_MOVE;
 
         m_input->MouseMove({ m_private->currentEvent.button.x, m_private->currentEvent.button.y });
     }
-    else if (m_private->currentEvent.type == SDL_JOYAXISMOTION)
+    else if (m_private->currentEvent.type == SDL_EVENT_JOYSTICK_AXIS_MOTION)
     {
         event.type = EVENT_JOY_AXIS;
 
@@ -1326,10 +1313,10 @@ Event CApplication::ProcessSystemEvent()
         data->value = m_private->currentEvent.jaxis.value;
         event.data = std::move(data);
     }
-    else if ( (m_private->currentEvent.type == SDL_JOYBUTTONDOWN) ||
-              (m_private->currentEvent.type == SDL_JOYBUTTONUP) )
+    else if ( (m_private->currentEvent.type == SDL_EVENT_JOYSTICK_BUTTON_DOWN) ||
+              (m_private->currentEvent.type == SDL_EVENT_JOYSTICK_BUTTON_UP) )
     {
-        if (m_private->currentEvent.type == SDL_JOYBUTTONDOWN)
+        if (m_private->currentEvent.type == SDL_EVENT_JOYSTICK_BUTTON_DOWN)
             event.type = EVENT_JOY_BUTTON_DOWN;
         else
             event.type = EVENT_JOY_BUTTON_UP;
@@ -1654,10 +1641,11 @@ std::vector<glm::ivec2> CApplication::GetVideoResolutionList(int display) const
 {
     std::vector<glm::ivec2> resolutions;
 
-    for(int i = 0; i < SDL_GetNumDisplayModes(display); i++)
+	int numDisplayModes = 0;
+	SDL_DisplayMode** displayModes = SDL_GetFullscreenDisplayModes(display, &numDisplayModes);
+    for(int i = 0; i < numDisplayModes; i++)
     {
-        SDL_DisplayMode mode;
-        SDL_GetDisplayMode(display, i, &mode);
+        SDL_DisplayMode mode = *displayModes[i];
         glm::ivec2 resolution = { mode.w, mode.h };
 
         if (std::find(resolutions.begin(), resolutions.end(), resolution) == resolutions.end())
@@ -1727,9 +1715,9 @@ void CApplication::SetMouseMode(MouseMode mode)
 {
     m_mouseMode = mode;
     if ((m_mouseMode == MOUSE_SYSTEM) || (m_mouseMode == MOUSE_BOTH))
-        SDL_ShowCursor(SDL_ENABLE);
+        SDL_ShowCursor();
     else
-        SDL_ShowCursor(SDL_DISABLE);
+        SDL_HideCursor();
 }
 
 MouseMode CApplication::GetMouseMode() const
@@ -1748,13 +1736,14 @@ std::vector<JoystickDevice> CApplication::GetJoystickList() const
 {
     std::vector<JoystickDevice> result;
 
-    int count = SDL_NumJoysticks();
+	int count = 0;
+	SDL_JoystickID* sticks = SDL_GetJoysticks(&count);
 
     for (int index = 0; index < count; ++index)
     {
         JoystickDevice device;
         device.index = index;
-        device.name = SDL_JoystickNameForIndex(index);
+        device.name = SDL_GetJoystickNameForID(sticks[index]);
         result.push_back(device);
     }
 
@@ -2020,11 +2009,11 @@ void CApplication::SetTextInput(bool textInputEnabled, int id)
     m_textInputEnabled[id] = textInputEnabled;
     if (std::any_of(m_textInputEnabled.begin(), m_textInputEnabled.end(), [](std::pair<int, bool> v) { return v.second; }))
     {
-        SDL_StartTextInput();
+        SDL_StartTextInput(m_private->window);
     }
     else
     {
-        SDL_StopTextInput();
+        SDL_StopTextInput(m_private->window);
     }
 }
 
@@ -2033,7 +2022,7 @@ void CApplication::PlayForceFeedbackEffect(float strength, int length)
     if (m_private->haptic == nullptr) return;
 
     GetLogger()->Trace("Force feedback! length = %% ms, strength = %%", length, strength);
-    if (SDL_HapticRumblePlay(m_private->haptic, strength, length) != 0)
+    if (SDL_PlayHapticRumble(m_private->haptic, strength, length) != 0)
     {
         GetLogger()->Debug("Failed to play haptic effect: %%", SDL_GetError());
     }
@@ -2042,5 +2031,5 @@ void CApplication::PlayForceFeedbackEffect(float strength, int length)
 void CApplication::StopForceFeedbackEffect()
 {
     if (m_private->haptic == nullptr) return;
-    SDL_HapticRumbleStop(m_private->haptic);
+    SDL_StopHapticRumble(m_private->haptic);
 }

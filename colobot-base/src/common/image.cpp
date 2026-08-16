@@ -32,8 +32,8 @@
 #include <cstring>
 #include <cassert>
 
-#include <SDL.h>
-#include <SDL_image.h>
+#include <SDL3/SDL.h>
+#include <SDL3_image/SDL_image.h>
 #include <png.h>
 
 
@@ -81,9 +81,11 @@ int PNGColortypeFromSurface(SDL_Surface *surface)
 {
     int colortype = PNG_COLOR_MASK_COLOR; /* grayscale not supported */
 
-    if (surface->format->palette)
+	SDL_Palette* palette = SDL_GetSurfacePalette(surface);
+	const SDL_PixelFormatDetails* details = SDL_GetPixelFormatDetails(surface->format);
+    if (palette)
         colortype |= PNG_COLOR_MASK_PALETTE;
-    else if (surface->format->Amask)
+    else if (details->Amask)
         colortype |= PNG_COLOR_MASK_ALPHA;
 
     return colortype;
@@ -172,8 +174,7 @@ CImage::CImage()
 CImage::CImage(const glm::ivec2& size)
 {
     m_data = std::make_unique<ImageData>();
-    m_data->surface = SDL_CreateRGBSurface(0, size.x, size.y, 32,
-                                           0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
+    m_data->surface = SDL_CreateSurface(size.x, size.y, SDL_GetPixelFormatForMasks(32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000));
 }
 
 CImage::~CImage()
@@ -192,7 +193,7 @@ void CImage::Free()
     {
         if (m_data->surface != nullptr)
         {
-            SDL_FreeSurface(m_data->surface);
+            SDL_DestroySurface(m_data->surface);
             m_data->surface = nullptr;
         }
         m_data.reset();
@@ -217,8 +218,8 @@ void CImage::Fill(Gfx::IntColor color)
 {
     assert(m_data != nullptr);
 
-    Uint32 c = SDL_MapRGBA(m_data->surface->format, color.r, color.g, color.b, color.a);
-    SDL_FillRect(m_data->surface, nullptr, c);
+    Uint32 c = SDL_MapRGBA(SDL_GetPixelFormatDetails(m_data->surface->format), SDL_GetSurfacePalette(m_data->surface), color.r, color.g, color.b, color.a);
+    SDL_FillSurfaceRect(m_data->surface, nullptr, c);
 }
 
 /**
@@ -252,12 +253,11 @@ void CImage::ConvertToRGBA()
 
 void CImage::BlitToNewRGBASurface(int width, int height)
 {
-    SDL_Surface* convertedSurface = SDL_CreateRGBSurface(0, width, height, 32, 0x00FF0000, 0x0000FF00,
-                                                         0x000000FF, 0xFF000000);
+    SDL_Surface* convertedSurface = SDL_CreateSurface(width, height, SDL_GetPixelFormatForMasks(32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000));
     assert(convertedSurface != nullptr);
     SDL_BlitSurface(m_data->surface, nullptr, convertedSurface, nullptr);
 
-    SDL_FreeSurface(m_data->surface);
+    SDL_DestroySurface(m_data->surface);
 
     m_data->surface = convertedSurface;
 }
@@ -274,7 +274,7 @@ Gfx::IntColor CImage::GetPixelInt(const glm::ivec2& pixel)
     assert(pixel.x >= 0 && pixel.x < m_data->surface->w);
     assert(pixel.y >= 0 && pixel.y < m_data->surface->h);
 
-    int bpp = m_data->surface->format->BytesPerPixel;
+    int bpp = SDL_GetPixelFormatDetails(m_data->surface->format)->bytes_per_pixel;
     int index = pixel.y * m_data->surface->pitch + pixel.x * bpp;
     Uint8* p = &static_cast<Uint8*>(m_data->surface->pixels)[index];
 
@@ -305,7 +305,7 @@ Gfx::IntColor CImage::GetPixelInt(const glm::ivec2& pixel)
     }
 
     Uint8 r = 0, g = 0, b = 0, a = 0;
-    SDL_GetRGBA(u, m_data->surface->format, &r, &g, &b, &a);
+    SDL_GetRGBA(u, SDL_GetPixelFormatDetails(m_data->surface->format), SDL_GetSurfacePalette(m_data->surface), &r, &g, &b, &a);
 
     return Gfx::IntColor(r, g, b, a);
 }
@@ -334,11 +334,11 @@ void CImage::SetPixelInt(const glm::ivec2& pixel, Gfx::IntColor color)
     assert(pixel.x >= 0 && pixel.x < m_data->surface->w);
     assert(pixel.y >= 0 && pixel.y < m_data->surface->h);
 
-    int bpp = m_data->surface->format->BytesPerPixel;
+    int bpp = SDL_GetPixelFormatDetails(m_data->surface->format)->bytes_per_pixel;
     int index = pixel.y * m_data->surface->pitch + pixel.x * bpp;
     Uint8* p = &static_cast<Uint8*>(m_data->surface->pixels)[index];
 
-    Uint32 u = SDL_MapRGBA(m_data->surface->format, color.r, color.g, color.b, color.a);
+    Uint32 u = SDL_MapRGBA(SDL_GetPixelFormatDetails(m_data->surface->format), SDL_GetSurfacePalette(m_data->surface), color.r, color.g, color.b, color.a);
 
     switch (bpp)
     {
@@ -407,16 +407,16 @@ bool CImage::Load(const std::filesystem::path& fileName)
         m_error = "Unable to open file";
         return false;
     }
-    m_data->surface = IMG_Load_RW(file->GetHandler(), 1);
+    m_data->surface = IMG_Load_IO(file->GetHandler(), 1);
     if (m_data->surface == nullptr)
     {
         m_data.reset();
 
-        m_error = std::string(IMG_GetError());
+        m_error = std::string(SDL_GetError());
         return false;
     }
 
-    if (m_data->surface->format->palette != nullptr)
+    if (SDL_GetSurfacePalette(m_data->surface) != nullptr)
     {
         ConvertToRGBA();
     }
@@ -459,14 +459,15 @@ void CImage::SetDataPixels(void *pixels)
 
 void CImage::FlipVertically()
 {
-    SDL_Surface* result = SDL_CreateRGBSurface( m_data->surface->flags,
-                                                m_data->surface->w,
-                                                m_data->surface->h,
-                                                m_data->surface->format->BytesPerPixel * 8,
-                                                m_data->surface->format->Rmask,
-                                                m_data->surface->format->Gmask,
-                                                m_data->surface->format->Bmask,
-                                                m_data->surface->format->Amask);
+	const SDL_PixelFormatDetails* details = SDL_GetPixelFormatDetails(m_data->surface->format);
+    SDL_Surface* result = SDL_CreateSurface(m_data->surface->w,
+											m_data->surface->h,
+											SDL_GetPixelFormatForMasks(
+											    details->bytes_per_pixel * 8,
+                                                details->Rmask,
+                                                details->Gmask,
+                                                details->Bmask,
+                                                details->Amask));
 
     assert(result != nullptr);
 
@@ -482,7 +483,7 @@ void CImage::FlipVertically()
         memcpy(&resultPixels[pos], &srcPixels[(pxLength-pos)-pitch], pitch);
     }
 
-    SDL_FreeSurface(m_data->surface);
+    SDL_DestroySurface(m_data->surface);
 
     m_data->surface = result;
 }

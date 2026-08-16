@@ -45,7 +45,7 @@
 
 #include "ui/controls/scroll.h"
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 #include <cstring>
 #include <regex>
@@ -325,51 +325,51 @@ bool CEdit::EventProcess(const Event &event)
     {
         auto data = event.GetData<KeyEventData>();
 
-        if ( (data->key == KEY(x)      && !bShift &&  bControl) ||
+        if ( (data->key == KEY(X)      && !bShift &&  bControl) ||
              (data->key == KEY(DELETE) &&  bShift && !bControl) )
         {
             Cut();
             return true;
         }
-        if ( (data->key == KEY(c)      && !bShift &&  bControl) ||
+        if ( (data->key == KEY(C)      && !bShift &&  bControl) ||
              (data->key == KEY(INSERT) && !bShift &&  bControl) )
         {
             Copy();
             return true;
         }
-        if ( (data->key == KEY(v)      && !bShift &&  bControl) ||
+        if ( (data->key == KEY(V)      && !bShift &&  bControl) ||
              (data->key == KEY(INSERT) &&  bShift && !bControl) )
         {
             Paste();
             return true;
         }
 
-        if ( data->key == KEY(a) && !bShift && bControl )
+        if ( data->key == KEY(A) && !bShift && bControl )
         {
             SetCursor(999999, 0);
             return true;
         }
 
-        if ( data->key == KEY(o) && !bShift && bControl )
+        if ( data->key == KEY(O) && !bShift && bControl )
         {
             m_event->AddEvent(Event(EVENT_STUDIO_OPEN));
         }
-        if ( data->key == KEY(s) && !bShift && bControl )
+        if ( data->key == KEY(S) && !bShift && bControl )
         {
             m_event->AddEvent(Event(EVENT_STUDIO_SAVE));
         }
 
-        if ( data->key == KEY(z) && !bShift && bControl )
+        if ( data->key == KEY(Z) && !bShift && bControl )
         {
             Undo();
             return true;
         }
 
-        if ( data->key == KEY(u) && !bShift && bControl )
+        if ( data->key == KEY(U) && !bShift && bControl )
         {
             if ( MinMaj(false) )  return true;
         }
-        if ( data->key == KEY(u) && bShift && bControl )
+        if ( data->key == KEY(U) && bShift && bControl )
         {
             if ( MinMaj(true) )  return true;
         }
