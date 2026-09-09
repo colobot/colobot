@@ -1576,9 +1576,15 @@ Event CApplication::CreateUpdateEvent(TimeStamp newTimeStamp)
 
     if (newRealAbsTime < m_realAbsTime || newRealRelTime < 0)
     {
-        GetLogger()->Error("Fatal error: got negative system counter difference!");
-        GetLogger()->Error("This should never happen. Please report this error.");
-        m_eventQueue->AddEvent(Event(EVENT_SYS_QUIT));
+        // std::chrono::steady_clock is only guaranteed monotonic in theory; in practice
+        // it can occasionally report a tiny step backwards (thread rescheduled to another
+        // core, CPU frequency/thermal throttling, scheduler jitter, etc.), especially right
+        // after a blocking syscall like the file I/O done during autosave. This used to be
+        // treated as an unrecoverable error (see colobot/colobot#1518, colobot/colobot#1679),
+        // but it's a harmless clock hiccup, not a real logic bug: just skip this one frame
+        // instead of crashing. m_realAbsTime/m_baseTimeStamp are left untouched, so the next
+        // frame recomputes cleanly from them once the clock behaves again.
+        GetLogger()->Warn("Ignoring negative system counter difference (clock jitter), skipping this frame");
         return Event(EVENT_NULL);
     }
     else
