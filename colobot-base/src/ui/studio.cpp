@@ -146,6 +146,15 @@ bool CStudio::EventProcess(const Event &event)
         m_main->StartDisplayInfo(m_helpFilename, -1);
     }
 
+    if ( event.type == EVENT_STUDIO_TOKENHELP )  // Ctrl+Q, Ctrl+Click: help of the word at the cursor
+    {
+        SearchToken(edit);
+        if ( !m_helpFilename.empty() )
+        {
+            m_main->StartDisplayInfo(m_helpFilename, -1);
+        }
+    }
+
     if ( event.type == EVENT_STUDIO_NEW )  // new?
     {
         m_script->New(edit, "");

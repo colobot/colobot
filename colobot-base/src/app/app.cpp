@@ -1264,6 +1264,7 @@ Event CApplication::ProcessSystemEvent()
 
         data->virt = false;
         data->key = m_private->currentEvent.key.keysym.sym;
+        data->scancode = m_private->currentEvent.key.keysym.scancode;
         event.kmodState = m_private->currentEvent.key.keysym.mod;
 
         // Some keyboards return numerical enter keycode instead of normal enter

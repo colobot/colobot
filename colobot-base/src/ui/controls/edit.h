@@ -172,6 +172,8 @@ public:
     bool        Copy(bool memorize_cursor = false);
     bool        Paste();
     bool        Undo();
+    bool        Redo();
+    bool        GotoDeclaration();
 
     void        HyperFlush();
     void        HyperHome(const std::filesystem::path& filename);
@@ -243,6 +245,23 @@ protected:
     bool        GetCursorPos(int cursor, glm::vec2& pos);
     void        DrawAutoComplete();
 
+    // Editing actions with the shortcuts of JetBrains IDEs
+    bool        IdeShortcut(unsigned int key, unsigned int scancode, bool bShift, bool bControl, bool bAlt);
+    void        GetSelectedLines(int& start, int& end);
+    void        ReplaceText(int start, int end, const std::string& text);
+    bool        DuplicateLines();
+    bool        DeleteLines();
+    bool        ToggleLineComment();
+    bool        ToggleBlockComment();
+    bool        MoveLines(int dir);
+    bool        ExtendSelection();
+    bool        ShrinkSelection();
+    bool        JoinLines();
+    bool        StartNewLine(bool above);
+    bool        GotoMatchingBrace(bool bSelect);
+    bool        ToggleCase();
+    bool        RedoRecall();
+
 protected:
     std::unique_ptr<CScroll> m_scroll;           // vertical scrollbar on the right
 
@@ -300,6 +319,9 @@ protected:
     int         m_acFirst = 0;              // first visible item in m_acItems
     glm::vec2   m_acPos = {0.0f, 0.0f};     // position of the list (from the last Draw)
     glm::vec2   m_acDim = {0.0f, 0.0f};     // size of the list (from the last Draw)
+
+    std::vector<EditUndo> m_redo;           // states cancelled by Undo(), for Redo()
+    std::vector<std::pair<int, int>> m_selectionStack;  // selections before ExtendSelection()
 };
 
 
