@@ -634,6 +634,8 @@ void CStudio::StartEditScript(CScript *script, std::string name, Program* progra
     edit->SetFontStretch(1.0f);
     edit->SetDisplaySpec(true);
     edit->SetAutoIndent(m_engine->GetEditIndentMode());
+    edit->SetAutoComplete(true);
+    edit->SetAutoCompleteWords(CScript::GetAutoCompleteWords(), CScript::GetAutoCompleteMembers());
 
     m_script->PutScript(edit, name.c_str());
     ColorizeScript(edit);

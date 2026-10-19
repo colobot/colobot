@@ -28,6 +28,8 @@
 #include "object/object_type.h"
 
 #include <filesystem>
+#include <string>
+#include <vector>
 
 
 
@@ -39,5 +41,6 @@ extern std::filesystem::path GetHelpFilename(ObjectType type);
 extern std::filesystem::path GetHelpFilename(const char *token);
 extern bool IsType(const char *token);
 extern bool IsFunction(const char *token);
+extern std::vector<std::string> GetFunctionNames();
 extern const char* GetHelpText(const char *token);
 

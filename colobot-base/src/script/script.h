@@ -29,6 +29,7 @@
 #include <memory>
 #include <optional>
 #include <string>
+#include <vector>
 
 class COldObject;
 class CTaskExecutorObject;
@@ -84,6 +85,8 @@ public:
     bool        GetCursor(int &cursor1, int &cursor2);
     void        UpdateList(Ui::CList* list);
     static void ColorizeScript(Ui::CEdit* edit, int rangeStart = 0, int rangeEnd = std::numeric_limits<int>::max());
+    static std::vector<std::string> GetAutoCompleteWords();
+    static std::vector<std::string> GetAutoCompleteMembers();
     bool        IntroduceVirus();
 
     int         GetError();

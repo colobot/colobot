@@ -176,6 +176,12 @@ void CBotToken::ClearDefineNum()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+const std::map<std::string, long>& CBotToken::GetDefineNums()
+{
+    return m_defineNum;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 const CBotToken& CBotToken::operator=(const CBotToken& src)
 {
     assert(m_prev == nullptr);

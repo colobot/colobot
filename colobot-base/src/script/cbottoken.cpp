@@ -449,96 +449,111 @@ bool IsType(const char *token)
 
 // Test if a keyword is a function.
 
+static const char* const FUNCTION_NAMES[] =
+{
+    "sin",
+    "cos",
+    "tan",
+    "asin",
+    "acos",
+    "atan",
+    "atan2",
+    "sqrt",
+    "pow",
+    "rand",
+    "abs",
+    "floor",
+    "ceil",
+    "round",
+    "trunc",
+    "isnan",
+    "retobjectbyid",
+    "retobject",
+    "isbusy",
+    "factory",
+    "research",
+    "takeoff",
+    "destroy",
+    "search",
+    "searchall",
+    "radar",
+    "radarall",
+    "detect",
+    "direction",
+    "distance",
+    "distance2d",
+    "space",
+    "flatspace",
+    "flatground",
+    "canbuild",
+    "canresearch",
+    "researched",
+    "buildingenabled",
+    "build",
+    "flag",
+    "deflag",
+    "wait",
+    "move",
+    "turn",
+    "goto",
+    "grab",
+    "drop",
+    "sniff",
+    "receive",
+    "send",
+    "deleteinfo",
+    "testinfo",
+    "thump",
+    "recycle",
+    "shield",
+    "fire",
+    "antfire",
+    "aim",
+    "motor",
+    "jet",
+    "topo",
+    "message",
+    "abstime",
+    "ismovie",
+    "errmode",
+    "ipf",
+    "strlen",
+    "strleft",
+    "strright",
+    "strmid",
+    "strval",
+    "strfind",
+    "strlower",
+    "strupper",
+    "open",
+    "close",
+    "writeln",
+    "readln",
+    "eof",
+    "deletefile",
+    "openfile",
+    "pendown",
+    "penup",
+    "pencolor",
+    "penwidth",
+    "camerafocus",
+    "sizeof",
+};
+
 bool IsFunction(const char *token)
 {
-    if ( strcmp(token, "sin"          ) == 0 )  return true;
-    if ( strcmp(token, "cos"          ) == 0 )  return true;
-    if ( strcmp(token, "tan"          ) == 0 )  return true;
-    if ( strcmp(token, "asin"         ) == 0 )  return true;
-    if ( strcmp(token, "acos"         ) == 0 )  return true;
-    if ( strcmp(token, "atan"         ) == 0 )  return true;
-    if ( strcmp(token, "atan2"        ) == 0 )  return true;
-    if ( strcmp(token, "sqrt"         ) == 0 )  return true;
-    if ( strcmp(token, "pow"          ) == 0 )  return true;
-    if ( strcmp(token, "rand"         ) == 0 )  return true;
-    if ( strcmp(token, "abs"          ) == 0 )  return true;
-    if ( strcmp(token, "floor"        ) == 0 )  return true;
-    if ( strcmp(token, "ceil"         ) == 0 )  return true;
-    if ( strcmp(token, "round"        ) == 0 )  return true;
-    if ( strcmp(token, "trunc"        ) == 0 )  return true;
-    if ( strcmp(token, "isnan"        ) == 0 )  return true;
-    if ( strcmp(token, "retobjectbyid") == 0 )  return true;
-    if ( strcmp(token, "retobject"    ) == 0 )  return true;
-    if ( strcmp(token, "isbusy"       ) == 0 )  return true;
-    if ( strcmp(token, "factory"      ) == 0 )  return true;
-    if ( strcmp(token, "research"     ) == 0 )  return true;
-    if ( strcmp(token, "takeoff"      ) == 0 )  return true;
-    if ( strcmp(token, "destroy"      ) == 0 )  return true;
-    if ( strcmp(token, "search"       ) == 0 )  return true;
-    if ( strcmp(token, "searchall"    ) == 0 )  return true;
-    if ( strcmp(token, "radar"        ) == 0 )  return true;
-    if ( strcmp(token, "radarall"     ) == 0 )  return true;
-    if ( strcmp(token, "detect"       ) == 0 )  return true;
-    if ( strcmp(token, "direction"    ) == 0 )  return true;
-    if ( strcmp(token, "distance"     ) == 0 )  return true;
-    if ( strcmp(token, "distance2d"   ) == 0 )  return true;
-    if ( strcmp(token, "space"        ) == 0 )  return true;
-    if ( strcmp(token, "flatspace"    ) == 0 )  return true;
-    if ( strcmp(token, "flatground"   ) == 0 )  return true;
-    if ( strcmp(token, "canbuild"       ) == 0 )  return true;
-    if ( strcmp(token, "canresearch"    ) == 0 )  return true;
-    if ( strcmp(token, "researched"     ) == 0 )  return true;
-    if ( strcmp(token, "buildingenabled") == 0 )  return true;
-    if ( strcmp(token, "build"        ) == 0 )  return true;
-    if ( strcmp(token, "flag"         ) == 0 )  return true;
-    if ( strcmp(token, "deflag"       ) == 0 )  return true;
-    if ( strcmp(token, "wait"         ) == 0 )  return true;
-    if ( strcmp(token, "move"         ) == 0 )  return true;
-    if ( strcmp(token, "turn"         ) == 0 )  return true;
-    if ( strcmp(token, "goto"         ) == 0 )  return true;
-    if ( strcmp(token, "grab"         ) == 0 )  return true;
-    if ( strcmp(token, "drop"         ) == 0 )  return true;
-    if ( strcmp(token, "sniff"        ) == 0 )  return true;
-    if ( strcmp(token, "receive"      ) == 0 )  return true;
-    if ( strcmp(token, "send"         ) == 0 )  return true;
-    if ( strcmp(token, "deleteinfo"   ) == 0 )  return true;
-    if ( strcmp(token, "testinfo"     ) == 0 )  return true;
-    if ( strcmp(token, "thump"        ) == 0 )  return true;
-    if ( strcmp(token, "recycle"      ) == 0 )  return true;
-    if ( strcmp(token, "shield"       ) == 0 )  return true;
-    if ( strcmp(token, "fire"         ) == 0 )  return true;
-    if ( strcmp(token, "antfire"      ) == 0 )  return true;
-    if ( strcmp(token, "aim"          ) == 0 )  return true;
-    if ( strcmp(token, "motor"        ) == 0 )  return true;
-    if ( strcmp(token, "jet"          ) == 0 )  return true;
-    if ( strcmp(token, "topo"         ) == 0 )  return true;
-    if ( strcmp(token, "message"      ) == 0 )  return true;
-    if ( strcmp(token, "abstime"      ) == 0 )  return true;
-    if ( strcmp(token, "ismovie"      ) == 0 )  return true;
-    if ( strcmp(token, "errmode"      ) == 0 )  return true;
-    if ( strcmp(token, "ipf"          ) == 0 )  return true;
-    if ( strcmp(token, "strlen"       ) == 0 )  return true;
-    if ( strcmp(token, "strleft"      ) == 0 )  return true;
-    if ( strcmp(token, "strright"     ) == 0 )  return true;
-    if ( strcmp(token, "strmid"       ) == 0 )  return true;
-    if ( strcmp(token, "strval"       ) == 0 )  return true;
-    if ( strcmp(token, "strfind"      ) == 0 )  return true;
-    if ( strcmp(token, "strlower"     ) == 0 )  return true;
-    if ( strcmp(token, "strupper"     ) == 0 )  return true;
-    if ( strcmp(token, "open"         ) == 0 )  return true;
-    if ( strcmp(token, "close"        ) == 0 )  return true;
-    if ( strcmp(token, "writeln"      ) == 0 )  return true;
-    if ( strcmp(token, "readln"       ) == 0 )  return true;
-    if ( strcmp(token, "eof"          ) == 0 )  return true;
-    if ( strcmp(token, "deletefile"   ) == 0 )  return true;
-    if ( strcmp(token, "openfile"     ) == 0 )  return true;
-    if ( strcmp(token, "pendown"      ) == 0 )  return true;
-    if ( strcmp(token, "penup"        ) == 0 )  return true;
-    if ( strcmp(token, "pencolor"     ) == 0 )  return true;
-    if ( strcmp(token, "penwidth"     ) == 0 )  return true;
-    if ( strcmp(token, "camerafocus"  ) == 0 )  return true;
-    if ( strcmp(token, "sizeof"       ) == 0 )  return true;
+    for (const char* name : FUNCTION_NAMES)
+    {
+        if ( strcmp(token, name) == 0 )  return true;
+    }
     return false;
+}
+
+// Returns the names of all built-in functions.
+
+std::vector<std::string> GetFunctionNames()
+{
+    return std::vector<std::string>(std::begin(FUNCTION_NAMES), std::end(FUNCTION_NAMES));
 }
 
 
