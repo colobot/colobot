@@ -612,6 +612,7 @@ enum EventType
     EVENT_STUDIO_SIZE       = 2017,
     EVENT_STUDIO_TOOL       = 2018,
     EVENT_STUDIO_HELP       = 2019,
+    EVENT_STUDIO_TOKENHELP  = 2020,
     EVENT_STUDIO_COMPILE    = 2050,
     EVENT_STUDIO_RUN        = 2051,
     EVENT_STUDIO_REALTIME   = 2052,
@@ -671,6 +672,8 @@ struct KeyEventData : public EventData
     bool virt = false;
     //! Key symbol: KEY(...) macro value or virtual key VIRTUAL_... (from common/key.h)
     unsigned int key = 0;
+    //! Physical key (SDL scancode), independent of the keyboard layout; 0 for virtual keys
+    unsigned int scancode = 0;
     //! Input binding slot for this key
     InputSlot slot = INPUT_SLOT_MAX;
 };

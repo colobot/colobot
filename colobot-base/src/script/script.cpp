@@ -723,6 +723,50 @@ void CScript::ColorizeScript(Ui::CEdit* edit, int rangeStart, int rangeEnd)
     }
 }
 
+// Returns the words proposed by the code editor's autocompletion:
+// keywords, types, built-in functions and constants.
+
+std::vector<std::string> CScript::GetAutoCompleteWords()
+{
+    std::vector<std::string> words = {
+        "if", "else", "while", "do", "for", "break", "continue", "switch", "case", "default",
+        "try", "throw", "catch", "finally", "and", "or", "not", "return", "class", "extends",
+        "synchronized", "new", "public", "extern", "static", "protected", "private", "repeat",
+        "true", "false", "null", "nan", "this", "super",
+        "void", "byte", "short", "char", "int", "long", "float", "double", "bool", "string",
+        "point", "object", "file",
+    };
+
+    for (const std::string& name : GetFunctionNames())
+    {
+        words.push_back(name);
+    }
+
+    for (const auto& [name, value] : CBot::CBotToken::GetDefineNums())
+    {
+        words.push_back(name);
+    }
+
+    return words;
+}
+
+// Returns the words proposed by the code editor's autocompletion after a dot:
+// fields and methods of the built-in classes.
+
+std::vector<std::string> CScript::GetAutoCompleteMembers()
+{
+    return {
+        // object
+        "category", "position", "orientation", "pitch", "roll", "energyLevel", "shieldLevel",
+        "temperature", "altitude", "lifeTime", "energyCell", "load", "id", "team", "dead", "velocity",
+        "factory", "research", "takeoff", "isbusy", "destroy",
+        // point
+        "x", "y", "z",
+        // file
+        "open", "close", "writeln", "readln", "eof",
+    };
+}
+
 
 // Seeks a token at random in a script.
 // Returns the index of the start of the token found, or -1.

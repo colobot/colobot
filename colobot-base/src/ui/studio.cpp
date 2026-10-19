@@ -146,6 +146,15 @@ bool CStudio::EventProcess(const Event &event)
         m_main->StartDisplayInfo(m_helpFilename, -1);
     }
 
+    if ( event.type == EVENT_STUDIO_TOKENHELP )  // Ctrl+Q, Ctrl+Click: help of the word at the cursor
+    {
+        SearchToken(edit);
+        if ( !m_helpFilename.empty() )
+        {
+            m_main->StartDisplayInfo(m_helpFilename, -1);
+        }
+    }
+
     if ( event.type == EVENT_STUDIO_NEW )  // new?
     {
         m_script->New(edit, "");
@@ -634,6 +643,8 @@ void CStudio::StartEditScript(CScript *script, std::string name, Program* progra
     edit->SetFontStretch(1.0f);
     edit->SetDisplaySpec(true);
     edit->SetAutoIndent(m_engine->GetEditIndentMode());
+    edit->SetAutoComplete(true);
+    edit->SetAutoCompleteWords(CScript::GetAutoCompleteWords(), CScript::GetAutoCompleteMembers());
 
     m_script->PutScript(edit, name.c_str());
     ColorizeScript(edit);

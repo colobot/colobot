@@ -185,6 +185,12 @@ public:
     static void ClearDefineNum();
 
     /**
+     * \brief Get all constants defined with DefineNum()
+     * \return Map from constant name to its value
+     */
+    static const std::map<std::string, long>& GetDefineNums();
+
+    /**
      * \brief Generate a CRC32 signature for a sequence of tokens.
      * \param first The first token in the sequence
      * \param last The last (inclusive) token in the sequence

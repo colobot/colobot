@@ -47,8 +47,11 @@
 
 #include <SDL.h>
 
+#include <algorithm>
+#include <cmath>
 #include <cstring>
 #include <regex>
+#include <set>
 
 namespace Ui
 {
@@ -58,6 +61,8 @@ const float MARGX           = (3.75f/640.0f);
 const float MARGY           = (3.75f/480.0f);
 const float MARGYS          = (2.75f/480.0f);
 const float MARGY1          = (1.0f/480.0f);
+//! max number of items visible at once in the autocompletion list
+const int   AUTOCOMPLETE_VISIBLE = 8;
 //! time limit for double-click
 const float DELAY_DBCLICK   = 0.75f;
 //! time limit for scroll
@@ -89,6 +94,20 @@ bool IsSep(int character)
 {
     if ( IsSpace(character) )  return false;
     return !IsWord(character);
+}
+
+//! Indicates whether a character is a decimal digit.
+
+bool IsDigit(char c)
+{
+    return ( c >= '0' && c <= '9' );
+}
+
+//! Indicates whether a character can be part of a CBot identifier.
+
+bool IsIdentifierChar(char c)
+{
+    return ( (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || IsDigit(c) || c == '_' );
 }
 
 bool IsBreaker(char c)
@@ -265,6 +284,13 @@ bool CEdit::EventProcess(const Event &event)
         Detect(event.mousePos))
     {
         auto data = event.GetData<MouseWheelEventData>();
+        int item;
+        if ( AutoCompleteDetect(event.mousePos, item) )
+        {
+            AutoCompleteMove(-data->y);
+            return false;
+        }
+        AutoCompleteHide();
         Scroll(m_lineFirst - data->y, true);
         return false;
     }
@@ -282,7 +308,11 @@ bool CEdit::EventProcess(const Event &event)
         if ( Detect(event.mousePos) &&
              event.mousePos.x < m_pos.x+m_dim.x-(m_bMulti?MARGX+SCROLL_WIDTH:0.0f) )
         {
-            if ( m_bEdit )
+            if ( m_bAutoComplete && (event.kmodState & KEY_MOD(CTRL)) != 0 )
+            {
+                m_engine->SetMouseType(Gfx::ENG_MOUSE_HAND);  // Ctrl+Click goes to the declaration
+            }
+            else if ( m_bEdit )
             {
                 m_engine->SetMouseType(Gfx::ENG_MOUSE_EDIT);
             }
@@ -321,9 +351,70 @@ bool CEdit::EventProcess(const Event &event)
         #endif
     }
 
+    bool acWasShown = m_acShown;
+
     if ( event.type == EVENT_KEY_DOWN && m_bFocus )
     {
         auto data = event.GetData<KeyEventData>();
+
+        if ( m_bAutoComplete && m_bEdit )
+        {
+            if ( m_acShown && !bControl )
+            {
+                if ( data->key == KEY(UP) )
+                {
+                    AutoCompleteMove(-1);
+                    return false;
+                }
+                if ( data->key == KEY(DOWN) )
+                {
+                    AutoCompleteMove(1);
+                    return false;
+                }
+                if ( data->key == KEY(PAGEUP) )
+                {
+                    AutoCompleteMove(-(AUTOCOMPLETE_VISIBLE-1));
+                    return false;
+                }
+                if ( data->key == KEY(PAGEDOWN) )
+                {
+                    AutoCompleteMove(AUTOCOMPLETE_VISIBLE-1);
+                    return false;
+                }
+                if ( (data->key == KEY(RETURN) || data->key == KEY(KP_ENTER) || data->key == KEY(TAB)) && !bShift )
+                {
+                    AutoCompleteAccept();
+                    return false;
+                }
+                if ( data->key == KEY(ESCAPE) )
+                {
+                    AutoCompleteHide();
+                    return false;
+                }
+            }
+
+            if ( data->key == KEY(SPACE) && bControl && !bShift )  // Ctrl+Space: show suggestions
+            {
+                AutoCompleteUpdate(true);
+                return false;
+            }
+
+            // any other key closes the list; typed characters reopen it (EVENT_TEXT_INPUT)
+            if ( data->key != KEY(LSHIFT) && data->key != KEY(RSHIFT) &&
+                 data->key != KEY(LCTRL)  && data->key != KEY(RCTRL)  &&
+                 data->key != KEY(LALT)   && data->key != KEY(RALT)   &&
+                 data->key != KEY(LGUI)   && data->key != KEY(RGUI)   &&
+                 data->key != KEY(CAPSLOCK) )
+            {
+                AutoCompleteHide();
+            }
+        }
+
+        bool bAlt = ( (event.kmodState & KEY_MOD(ALT) ) != 0 );
+        if ( IdeShortcut(data->key, data->scancode, bShift, bControl, bAlt) )
+        {
+            return false;
+        }
 
         if ( (data->key == KEY(x)      && !bShift &&  bControl) ||
              (data->key == KEY(DELETE) &&  bShift && !bControl) )
@@ -458,6 +549,7 @@ bool CEdit::EventProcess(const Event &event)
         if ( data->key == KEY(BACKSPACE) && !bControl )  // backspace ( <- ) ?
         {
             Delete(-1);
+            if ( acWasShown )  AutoCompleteUpdate(false);
             SendModifEvent();
             return true;
         }
@@ -498,10 +590,35 @@ bool CEdit::EventProcess(const Event &event)
     if ( event.type == EVENT_TEXT_INPUT && !bControl && m_bFocus )
     {
         auto data = event.GetData<TextInputData>();
+
+        #if PLATFORM_MACOSX
+        bool bShortcut = ( (event.kmodState & KEY_MOD(GUI) ) != 0 );
+        #else
+        bool bShortcut = ( (event.kmodState & KEY_MOD(CTRL) ) != 0 && (event.kmodState & KEY_MOD(ALT) ) == 0 );
+        #endif
+        if ( m_bAutoComplete && bShortcut && data->text == " " )  // space of Ctrl+Space
+        {
+            return false;
+        }
+
         for ( char c : data->text )
         {
             Insert(c);
         }
+
+        if ( m_bAutoComplete && !data->text.empty() )
+        {
+            char last = data->text.back();
+            if ( IsIdentifierChar(last) || last == '.' )
+            {
+                AutoCompleteUpdate(false);
+            }
+            else
+            {
+                AutoCompleteHide();
+            }
+        }
+
         SendModifEvent();
         return true;
     }
@@ -523,6 +640,34 @@ bool CEdit::EventProcess(const Event &event)
     if (event.type == EVENT_MOUSE_BUTTON_DOWN &&
         event.GetData<MouseButtonEventData>()->button == MOUSE_BUTTON_LEFT)
     {
+        int item;
+        if ( AutoCompleteDetect(event.mousePos, item) )
+        {
+            m_acSelect = item;
+            AutoCompleteAccept();
+            return false;
+        }
+        AutoCompleteHide();
+
+        // Ctrl+Click: declaration, or documentation of the word
+        #if PLATFORM_MACOSX
+        bool bCtrlClick = ( (event.kmodState & KEY_MOD(GUI) ) != 0 );
+        #else
+        bool bCtrlClick = ( (event.kmodState & KEY_MOD(CTRL) ) != 0 );
+        #endif
+        if ( bCtrlClick && m_bAutoComplete && m_bMulti && Detect(event.mousePos) &&
+             event.mousePos.x < m_pos.x+m_dim.x-MARGX-SCROLL_WIDTH )
+        {
+            MouseClick(event.mousePos);
+            if ( !m_bFocus )
+            {
+                m_bFocus = true;
+                UpdateFocus();
+            }
+            if ( !GotoDeclaration() )  m_event->AddEvent(Event(EVENT_STUDIO_TOKENHELP));
+            return false;
+        }
+
         m_mouseFirstPos = event.mousePos;
         m_mouseLastPos  = event.mousePos;
         if ( Detect(event.mousePos) )
@@ -1153,15 +1298,147 @@ void CEdit::Draw()
             }
             pos.y -= m_lineHeight;
         }
-        pos.x -= 1.0f / 640.0f;
-        dim.x = 2.0f / 640.0f;
+        // thin caret, 1 or 2 real pixels wide depending on the resolution
+        float windowWidth = static_cast<float>(std::max(m_engine->GetWindowSize().x, 1));
+        float pixels = std::max(1.0f, std::round(windowWidth / 1440.0f));
+        dim.x = pixels / windowWidth;
+        pos.x -= dim.x / 2.0f;
         dim.y = m_lineHeight;
-        DrawColor(pos, dim, Gfx::Color(1.0f, 0.0f, 0.0f, 1.0f));  // red
+        DrawColor(pos, dim, Gfx::Color(0.0f, 0.0f, 0.0f, 1.0f));  // black
     }
 
     if (m_scroll != nullptr && !m_bGeneric)
     {
         m_scroll->Draw();
+    }
+
+    if ( !m_bFocus )  AutoCompleteHide();
+    DrawAutoComplete();
+}
+
+// Gives the position of the bottom-left corner of a character.
+// Returns false if the character is not visible.
+
+bool CEdit::GetCursorPos(int cursor, glm::vec2& pos)
+{
+    glm::vec2   start, end;
+    float       indentLength = 0.0f;
+    int         i, len;
+
+    if ( m_lineTotal <= 0 || m_lineFirst >= m_lineTotal )  return false;
+    if ( cursor < m_lineOffset[m_lineFirst] )  return false;
+
+    if ( m_bAutoIndent )
+    {
+        indentLength = m_engine->GetText()->GetCharWidth(std::string_view(" "), m_fontType, m_fontSize, 0.0f)
+                        * m_engine->GetEditIndentValue();
+    }
+
+    pos.y = m_pos.y+m_dim.y-m_lineHeight-(m_bMulti?MARGY:MARGY1*2.0f);
+    for ( i=m_lineFirst ; i<m_lineTotal && i<m_lineFirst+m_lineVisible ; i++ )
+    {
+        if ( i == m_lineTotal-1 || cursor < m_lineOffset[i+1] )
+        {
+            pos.x = m_pos.x+(7.5f/640.0f);
+            if ( m_bAutoIndent )
+            {
+                pos.x += indentLength*m_lineIndent[i];
+            }
+
+            len = cursor - m_lineOffset[i];
+
+            if ( m_format.empty() )
+            {
+                m_engine->GetText()->SizeText(std::string(m_text.data()+m_lineOffset[i]).substr(0, len), m_fontType,
+                                              m_fontSize, pos, Gfx::TEXT_ALIGN_LEFT,
+                                              start, end);
+            }
+            else
+            {
+                m_engine->GetText()->SizeText(std::string(m_text.data()+m_lineOffset[i]).substr(0, len),
+                                              m_format.begin() + m_lineOffset[i],
+                                              m_format.end(),
+                                              m_fontSize, pos, Gfx::TEXT_ALIGN_LEFT,
+                                              start, end);
+            }
+
+            pos.x = end.x;
+            return true;
+        }
+        pos.y -= m_lineHeight;
+    }
+    return false;
+}
+
+// Draws the autocompletion list under the word being typed.
+
+void CEdit::DrawAutoComplete()
+{
+    glm::vec2   cursor, pos, dim, p, d;
+    float       width, padX, padY;
+    int         i, count;
+
+    m_acDim = glm::vec2(0.0f, 0.0f);
+    if ( !m_acShown || m_acItems.empty() )  return;
+    if ( !GetCursorPos(m_acStart, cursor) )  return;
+
+    count = std::min(static_cast<int>(m_acItems.size()), AUTOCOMPLETE_VISIBLE);
+    padX = 4.0f/640.0f;
+    padY = 2.0f/480.0f;
+
+    width = 60.0f/640.0f;
+    for ( const std::string& item : m_acItems )
+    {
+        width = std::max(width, m_engine->GetText()->GetStringWidth(item, m_fontType, m_fontSize));
+    }
+
+    dim.x = width+padX*2.0f+(m_acItems.size() > static_cast<std::size_t>(count) ? 4.0f/640.0f : 0.0f);
+    dim.y = m_lineHeight*count+padY*2.0f;
+
+    // horizontally: under the beginning of the word, but inside the edit
+    pos.x = cursor.x-padX;
+    float right = m_pos.x+m_dim.x-(m_bMulti?SCROLL_WIDTH:0.0f)-MARGX;
+    if ( pos.x+dim.x > right )  pos.x = right-dim.x;
+    if ( pos.x < m_pos.x )  pos.x = m_pos.x;
+
+    // vertically: under the line if there is room, otherwise above it
+    pos.y = cursor.y-dim.y;
+    if ( pos.y < m_pos.y )  pos.y = cursor.y+m_lineHeight;
+
+    m_acPos = pos;
+    m_acDim = dim;
+
+    p = pos - glm::vec2(1.0f/640.0f, 1.0f/480.0f);
+    d = dim + glm::vec2(2.0f/640.0f, 2.0f/480.0f);
+    DrawColor(p, d, Gfx::Color(0.25f, 0.25f, 0.25f, 1.0f));  // dark border
+    DrawColor(pos, dim, Gfx::Color(0.98f, 0.97f, 0.92f, 1.0f));  // light background
+
+    for ( i=0 ; i<count ; i++ )
+    {
+        int index = m_acFirst+i;
+        if ( index >= static_cast<int>(m_acItems.size()) )  break;
+
+        p.x = pos.x;
+        p.y = pos.y+dim.y-padY-m_lineHeight*(i+1);
+
+        if ( index == m_acSelect )
+        {
+            DrawColor(p, glm::vec2(dim.x, m_lineHeight), Gfx::Color(1.000f, 0.620f, 0.075f, 1.0f));  // like the selection
+        }
+
+        p.x += padX;
+        m_engine->GetText()->DrawText(m_acItems[index], m_fontType, m_fontSize, p, width, Gfx::TEXT_ALIGN_LEFT, 0);
+    }
+
+    if ( m_acItems.size() > static_cast<std::size_t>(count) )  // scroll indicator
+    {
+        float total = static_cast<float>(m_acItems.size());
+        float h = dim.y-padY*2.0f;
+        d.x = 2.0f/640.0f;
+        d.y = h*count/total;
+        p.x = pos.x+dim.x-d.x-1.0f/640.0f;
+        p.y = pos.y+padY+h-h*(m_acFirst+count)/total;
+        DrawColor(p, d, Gfx::Color(0.5f, 0.5f, 0.5f, 1.0f));
     }
 }
 
@@ -1305,6 +1582,7 @@ void CEdit::SetText(const std::string& text, bool bNew)
     int     i, j, font;
     bool    bBOL;
 
+    AutoCompleteHide();
     if ( !bNew )  UndoMemorize(OPERUNDO_SPEC);
 
     m_len = text.size();
@@ -2037,6 +2315,933 @@ bool CEdit::GetAutoIndent()
 }
 
 
+// Shortcuts of JetBrains IDEs (IntelliJ IDEA, PyCharm...) for multi-line edits.
+// Returns true if the key was handled.
+
+bool CEdit::IdeShortcut(unsigned int key, unsigned int scancode, bool bShift, bool bControl, bool bAlt)
+{
+    if ( !m_bMulti )  return false;
+
+    // the key with "/" on an English keyboard, whatever the layout
+    bool slash = (scancode == SDL_SCANCODE_SLASH || scancode == SDL_SCANCODE_KP_DIVIDE ||
+                  (scancode == 0 && key == KEY(SLASH)));
+
+    // navigation, also in a read-only text
+    if ( bControl && !bShift && !bAlt && (key == KEY(UP) || key == KEY(DOWN)) )  // scroll
+    {
+        Scroll(m_lineFirst + (key == KEY(UP) ? -1 : 1), true);
+        return true;
+    }
+    if ( bControl && !bAlt && key == KEY(w) )  // extend/shrink selection
+    {
+        if ( bShift )  ShrinkSelection();
+        else           ExtendSelection();
+        return true;
+    }
+    if ( bControl && bShift && !bAlt && key == KEY(m) )  // matching brace
+    {
+        GotoMatchingBrace(false);
+        return true;
+    }
+    if ( m_bAutoComplete && bControl && !bShift && !bAlt && key == KEY(q) )  // quick documentation
+    {
+        m_event->AddEvent(Event(EVENT_STUDIO_TOKENHELP));
+        return true;
+    }
+    if ( m_bAutoComplete && bControl && !bShift && !bAlt && key == KEY(b) )  // go to declaration
+    {
+        if ( !GotoDeclaration() )  m_event->AddEvent(Event(EVENT_STUDIO_TOKENHELP));
+        return true;
+    }
+
+    if ( !m_bEdit )  return false;
+
+    if ( bControl && bShift && !bAlt && key == KEY(z) )
+    {
+        Redo();
+        return true;
+    }
+    if ( bControl && !bShift && !bAlt && key == KEY(d) )
+    {
+        DuplicateLines();
+        return true;
+    }
+    if ( bControl && !bShift && !bAlt && key == KEY(y) )
+    {
+        DeleteLines();
+        return true;
+    }
+    if ( bControl && !bAlt && slash )
+    {
+        if ( bShift )  ToggleBlockComment();
+        else           ToggleLineComment();
+        return true;
+    }
+    if ( ((bAlt && bShift && !bControl) || (bControl && bShift && !bAlt)) &&
+         (key == KEY(UP) || key == KEY(DOWN)) )  // move lines
+    {
+        MoveLines(key == KEY(UP) ? -1 : 1);
+        return true;
+    }
+    if ( bControl && bShift && !bAlt && key == KEY(j) )
+    {
+        JoinLines();
+        return true;
+    }
+    if ( bShift && !bControl && !bAlt && key == KEY(RETURN) )  // new line below
+    {
+        StartNewLine(false);
+        return true;
+    }
+    if ( bControl && bAlt && !bShift && key == KEY(RETURN) )  // new line above
+    {
+        StartNewLine(true);
+        return true;
+    }
+    if ( bControl && bShift && !bAlt && key == KEY(u) )
+    {
+        ToggleCase();
+        return true;
+    }
+    return false;
+}
+
+// Gives the lines covered by the selection (or the line of the cursor):
+// from the beginning of the first one to after the '\n' of the last one.
+
+void CEdit::GetSelectedLines(int& start, int& end)
+{
+    int c1 = std::min(m_cursor1, m_cursor2);
+    int c2 = std::max(m_cursor1, m_cursor2);
+    if ( c2 > c1 && m_text[c2-1] == '\n' )  c2 --;  // selection ending at the beginning of a line
+
+    start = c1;
+    while ( start > 0 && m_text[start-1] != '\n' )  start --;
+    end = c2;
+    while ( end < m_len && m_text[end] != '\n' )  end ++;
+    if ( end < m_len )  end ++;
+}
+
+// Replaces a part of the text (the caller memorizes the undo state).
+
+void CEdit::ReplaceText(int start, int end, const std::string& text)
+{
+    m_cursor1 = start;
+    m_cursor2 = end;
+    if ( start != end )  DeleteOne(0);
+    for ( char c : text )
+    {
+        InsertOne(c);
+    }
+}
+
+// Duplicates the selection, or the line of the cursor (Ctrl+D).
+
+bool CEdit::DuplicateLines()
+{
+    int c1 = std::min(m_cursor1, m_cursor2);
+    int c2 = std::max(m_cursor1, m_cursor2);
+
+    UndoMemorize(OPERUNDO_SPEC);
+    if ( c1 != c2 )
+    {
+        std::string selection = m_text.substr(c1, c2-c1);
+        ReplaceText(c2, c2, selection);
+        m_cursor2 = c2;  // selects the copy
+        m_cursor1 = c2 + static_cast<int>(selection.size());
+    }
+    else
+    {
+        int start, end;
+        GetSelectedLines(start, end);
+        std::string line = m_text.substr(start, end-start);
+        int column = c1 - start;
+        if ( line.empty() || line.back() != '\n' )  // last line of the text
+        {
+            ReplaceText(end, end, "\n" + line);
+            m_cursor1 = m_cursor2 = end + 1 + column;
+        }
+        else
+        {
+            ReplaceText(end, end, line);
+            m_cursor1 = m_cursor2 = end + column;
+        }
+    }
+
+    Justif();
+    ColumnFix();
+    SendModifEvent();
+    return true;
+}
+
+// Deletes the lines of the selection, or the line of the cursor (Ctrl+Y).
+
+bool CEdit::DeleteLines()
+{
+    int start, end;
+    GetSelectedLines(start, end);
+    if ( start == end )  return false;
+
+    bool lastLine = (end == m_len && m_text[end-1] != '\n');
+    if ( lastLine && start > 0 )  start --;  // also removes the '\n' of the previous line
+
+    UndoMemorize(OPERUNDO_SPEC);
+    ReplaceText(start, end, "");
+
+    int cursor = start;
+    if ( lastLine )
+    {
+        while ( cursor > 0 && m_text[cursor-1] != '\n' )  cursor --;
+    }
+    m_cursor1 = m_cursor2 = cursor;
+
+    Justif();
+    ColumnFix();
+    SendModifEvent();
+    return true;
+}
+
+// Comments or uncomments the lines with "//" (Ctrl+/).
+
+bool CEdit::ToggleLineComment()
+{
+    int start, end;
+    GetSelectedLines(start, end);
+    bool selection = (m_cursor1 != m_cursor2);
+    int column = m_cursor1 - start;
+
+    std::vector<std::string> lines;
+    std::string block = m_text.substr(start, end-start);
+    std::size_t pos = 0;
+    while ( pos < block.size() )
+    {
+        std::size_t next = block.find('\n', pos);
+        next = (next == std::string::npos) ? block.size() : next+1;
+        lines.push_back(block.substr(pos, next-pos));
+        pos = next;
+    }
+    if ( lines.empty() )  lines.push_back("");
+
+    auto firstChar = [](const std::string& line)
+    {
+        std::size_t i = line.find_first_not_of(" \t");
+        return (i == std::string::npos || line[i] == '\n') ? std::string::npos : i;
+    };
+
+    // uncomments if all the lines which are not empty are comments
+    bool uncomment = false;
+    for ( const std::string& line : lines )
+    {
+        std::size_t i = firstChar(line);
+        if ( i == std::string::npos )  continue;
+        uncomment = (line.compare(i, 2, "//") == 0);
+        if ( !uncomment )  break;
+    }
+
+    std::string result;
+    for ( const std::string& line : lines )
+    {
+        std::size_t i = firstChar(line);
+        if ( uncomment )
+        {
+            result += (i == std::string::npos) ? line : line.substr(0, i) + line.substr(i+2);
+        }
+        else if ( i == std::string::npos && lines.size() > 1 )  // empty line in a block
+        {
+            result += line;
+        }
+        else
+        {
+            result += "//" + line;
+        }
+    }
+
+    UndoMemorize(OPERUNDO_SPEC);
+    ReplaceText(start, end, result);
+
+    int newEnd = start + static_cast<int>(result.size());
+    if ( selection )  // keeps the lines selected
+    {
+        m_cursor2 = start;
+        m_cursor1 = newEnd;
+    }
+    else if ( newEnd < m_len || (newEnd > 0 && m_text[newEnd-1] == '\n') )  // goes to the next line, like IntelliJ
+    {
+        int lineEnd = newEnd;
+        while ( lineEnd < m_len && m_text[lineEnd] != '\n' )  lineEnd ++;
+        m_cursor1 = m_cursor2 = std::min(newEnd + column, lineEnd);
+    }
+    else
+    {
+        m_cursor1 = m_cursor2 = newEnd;
+    }
+
+    Justif();
+    ColumnFix();
+    SendModifEvent();
+    return true;
+}
+
+// Comments or uncomments the selection with "/* */" (Ctrl+Shift+/).
+
+bool CEdit::ToggleBlockComment()
+{
+    int c1 = std::min(m_cursor1, m_cursor2);
+    int c2 = std::max(m_cursor1, m_cursor2);
+
+    UndoMemorize(OPERUNDO_SPEC);
+    if ( c1 == c2 )
+    {
+        ReplaceText(c1, c1, "/**/");
+        m_cursor1 = m_cursor2 = c1 + 2;
+    }
+    else
+    {
+        std::string selection = m_text.substr(c1, c2-c1);
+        if ( selection.size() >= 4 && selection.compare(0, 2, "/*") == 0 &&
+             selection.compare(selection.size()-2, 2, "*/") == 0 )  // selection is a comment
+        {
+            std::string inner = selection.substr(2, selection.size()-4);
+            ReplaceText(c1, c2, inner);
+            m_cursor2 = c1;
+            m_cursor1 = c1 + static_cast<int>(inner.size());
+        }
+        else if ( c1 >= 2 && c2+2 <= m_len && m_text.compare(c1-2, 2, "/*") == 0 &&
+                  m_text.compare(c2, 2, "*/") == 0 )  // selection is inside a comment
+        {
+            ReplaceText(c1-2, c2+2, selection);
+            m_cursor2 = c1-2;
+            m_cursor1 = c1-2 + static_cast<int>(selection.size());
+        }
+        else
+        {
+            ReplaceText(c1, c2, "/*" + selection + "*/");
+            m_cursor2 = c1;
+            m_cursor1 = c1 + static_cast<int>(selection.size()) + 4;
+        }
+    }
+
+    Justif();
+    ColumnFix();
+    SendModifEvent();
+    return true;
+}
+
+// Moves the lines of the selection (or of the cursor) up or down (Alt+Shift+Up/Down).
+
+bool CEdit::MoveLines(int dir)
+{
+    int start, end;
+    GetSelectedLines(start, end);
+    int c1 = m_cursor1, c2 = m_cursor2;
+
+    int from, to, shift;
+    std::string moved;
+    if ( dir < 0 )
+    {
+        if ( start == 0 )  return false;
+        int prev = start-1;
+        while ( prev > 0 && m_text[prev-1] != '\n' )  prev --;
+
+        std::string above = m_text.substr(prev, start-prev);  // ends with '\n'
+        std::string lines = m_text.substr(start, end-start);
+        if ( lines.empty() || lines.back() != '\n' )  // last line of the text
+        {
+            lines += '\n';
+            above.pop_back();
+        }
+        from = prev;
+        to = end;
+        moved = lines + above;
+        shift = prev - start;
+    }
+    else
+    {
+        if ( end >= m_len || m_text[end-1] != '\n' )  return false;
+        int next = end;
+        while ( next < m_len && m_text[next] != '\n' )  next ++;
+        if ( next < m_len )  next ++;
+
+        std::string lines = m_text.substr(start, end-start);  // ends with '\n'
+        std::string below = m_text.substr(end, next-end);
+        if ( below.empty() || below.back() != '\n' )  // last line of the text
+        {
+            below += '\n';
+            lines.pop_back();
+        }
+        from = start;
+        to = next;
+        moved = below + lines;
+        shift = static_cast<int>(below.size());
+    }
+
+    UndoMemorize(OPERUNDO_SPEC);
+    ReplaceText(from, to, moved);
+    m_cursor1 = std::clamp(c1 + shift, 0, m_len);
+    m_cursor2 = std::clamp(c2 + shift, 0, m_len);
+
+    Justif();
+    ColumnFix();
+    SendModifEvent();
+    return true;
+}
+
+// Selects a larger part of the text: word, content of brackets, brackets, line, all (Ctrl+W).
+
+bool CEdit::ExtendSelection()
+{
+    int a = std::min(m_cursor1, m_cursor2);
+    int b = std::max(m_cursor1, m_cursor2);
+
+    // the selection changed since the last extension: the previous ones are forgotten
+    if ( !m_selectionStack.empty() )
+    {
+        auto [pa, pb] = m_selectionStack.back();
+        if ( pa < a || pb > b || (pa == a && pb == b) )  m_selectionStack.clear();
+    }
+
+    std::vector<std::pair<int, int>> candidates;
+
+    // word
+    int ws = a, we = b;
+    while ( ws > 0 && IsIdentifierChar(m_text[ws-1]) )  ws --;
+    while ( we < m_len && IsIdentifierChar(m_text[we]) )  we ++;
+    candidates.push_back({ws, we});
+
+    // content of the enclosing brackets, then with the brackets
+    int depth = 0;
+    for ( int i = a-1 ; i >= 0 ; i-- )
+    {
+        char c = m_text[i];
+        if ( c == ')' || c == ']' || c == '}' )  depth ++;
+        if ( c == '(' || c == '[' || c == '{' )
+        {
+            if ( depth > 0 )  { depth --;  continue; }
+
+            int level = 0;
+            for ( int j = i+1 ; j < m_len ; j++ )
+            {
+                char d = m_text[j];
+                if ( d == '(' || d == '[' || d == '{' )  level ++;
+                if ( d == ')' || d == ']' || d == '}' )
+                {
+                    if ( level > 0 )  { level --;  continue; }
+                    if ( j >= b )
+                    {
+                        candidates.push_back({i+1, j});
+                        candidates.push_back({i, j+1});
+                    }
+                    break;
+                }
+            }
+            break;
+        }
+    }
+
+    // line without its indentation
+    int ls = a;
+    while ( ls > 0 && m_text[ls-1] != '\n' )  ls --;
+    int le = b;
+    while ( le < m_len && m_text[le] != '\n' )  le ++;
+    while ( ls < le && (m_text[ls] == ' ' || m_text[ls] == '\t') )  ls ++;
+    candidates.push_back({ls, le});
+
+    // all the text
+    candidates.push_back({0, m_len});
+
+    // the smallest one containing the selection
+    int bestA = -1, bestB = -1;
+    for ( auto [ca, cb] : candidates )
+    {
+        if ( ca > a || cb < b || (ca == a && cb == b) )  continue;
+        if ( bestA < 0 || cb-ca < bestB-bestA )
+        {
+            bestA = ca;
+            bestB = cb;
+        }
+    }
+    if ( bestA < 0 )  return false;
+
+    m_selectionStack.push_back({a, b});
+    m_cursor2 = bestA;
+    m_cursor1 = bestB;
+    m_bUndoForce = true;
+    ColumnFix();
+    ShowSelect();
+    return true;
+}
+
+// Goes back to the selection before the last ExtendSelection() (Ctrl+Shift+W).
+
+bool CEdit::ShrinkSelection()
+{
+    if ( m_selectionStack.empty() )  return false;
+
+    auto [a, b] = m_selectionStack.back();
+    m_selectionStack.pop_back();
+    m_cursor2 = a;
+    m_cursor1 = b;
+    m_bUndoForce = true;
+    ColumnFix();
+    ShowSelect();
+    return true;
+}
+
+// Joins the lines of the selection, or the line of the cursor with the next one (Ctrl+Shift+J).
+
+bool CEdit::JoinLines()
+{
+    int start, end;
+    GetSelectedLines(start, end);
+    if ( end > start && m_text[end-1] == '\n' )  end --;  // the last '\n' stays
+
+    int count = static_cast<int>(std::count(m_text.begin()+start, m_text.begin()+end, '\n'));
+    if ( count == 0 )  // joins with the next line
+    {
+        if ( end >= m_len )  return false;
+        count = 1;
+    }
+
+    UndoMemorize(OPERUNDO_SPEC);
+    int cursor = start;
+    for ( int n = 0 ; n < count ; n++ )
+    {
+        int e = cursor;
+        while ( e < m_len && m_text[e] != '\n' )  e ++;
+        if ( e >= m_len )  break;
+
+        int lineStart = e;
+        while ( lineStart > 0 && m_text[lineStart-1] != '\n' )  lineStart --;
+        int s = e;
+        while ( s > lineStart && (m_text[s-1] == ' ' || m_text[s-1] == '\t') )  s --;
+        int t = e+1;
+        while ( t < m_len && (m_text[t] == ' ' || m_text[t] == '\t') )  t ++;
+
+        bool space = (s > lineStart && t < m_len && m_text[t] != '\n');
+        ReplaceText(s, t, space ? " " : "");
+        cursor = s;
+    }
+    m_cursor1 = m_cursor2 = cursor;
+
+    Justif();
+    ColumnFix();
+    SendModifEvent();
+    return true;
+}
+
+// Starts a new line below or above the line of the cursor (Shift+Enter, Ctrl+Alt+Enter).
+
+bool CEdit::StartNewLine(bool above)
+{
+    int ls = std::min(m_cursor1, m_cursor2);
+    while ( ls > 0 && m_text[ls-1] != '\n' )  ls --;
+
+    if ( above )
+    {
+        std::string indent;
+        for ( int i = ls ; i < m_len && (m_text[i] == ' ' || m_text[i] == '\t') ; i++ )  indent += m_text[i];
+
+        UndoMemorize(OPERUNDO_SPEC);
+        ReplaceText(ls, ls, indent + "\n");
+        m_cursor1 = m_cursor2 = ls + static_cast<int>(indent.size());
+        Justif();
+        ColumnFix();
+    }
+    else
+    {
+        int le = std::max(m_cursor1, m_cursor2);
+        while ( le < m_len && m_text[le] != '\n' )  le ++;
+        m_cursor1 = m_cursor2 = le;
+        Insert('\n');  // with the automatic indentation
+    }
+
+    SendModifEvent();
+    return true;
+}
+
+// Moves the cursor to the brace matching the one at the cursor, or to the
+// beginning of the enclosing block (Ctrl+Shift+M).
+
+bool CEdit::GotoMatchingBrace(bool bSelect)
+{
+    auto isOpen  = [](char c) { return c == '(' || c == '[' || c == '{'; };
+    auto isClose = [](char c) { return c == ')' || c == ']' || c == '}'; };
+
+    int p = m_cursor1;
+    int brace = -1;
+    if ( p < m_len && (isOpen(m_text[p]) || isClose(m_text[p])) )  brace = p;
+    else if ( p > 0 && (isOpen(m_text[p-1]) || isClose(m_text[p-1])) )  brace = p-1;
+    else  // enclosing block
+    {
+        int depth = 0;
+        for ( int i = p-1 ; i >= 0 ; i-- )
+        {
+            if ( isClose(m_text[i]) )  depth ++;
+            else if ( isOpen(m_text[i]) )
+            {
+                if ( depth == 0 )  { brace = i;  break; }
+                depth --;
+            }
+        }
+    }
+    if ( brace < 0 )  return false;
+
+    int target = -1;
+    int depth = 0;
+    if ( isOpen(m_text[brace]) )
+    {
+        for ( int i = brace+1 ; i < m_len ; i++ )
+        {
+            if ( isOpen(m_text[i]) )  depth ++;
+            else if ( isClose(m_text[i]) )
+            {
+                if ( depth == 0 )  { target = i+1;  break; }
+                depth --;
+            }
+        }
+    }
+    else
+    {
+        for ( int i = brace-1 ; i >= 0 ; i-- )
+        {
+            if ( isClose(m_text[i]) )  depth ++;
+            else if ( isOpen(m_text[i]) )
+            {
+                if ( depth == 0 )  { target = i;  break; }
+                depth --;
+            }
+        }
+    }
+    if ( target < 0 )  return false;
+
+    m_cursor1 = target;
+    if ( !bSelect )  m_cursor2 = target;
+    m_bUndoForce = true;
+    ColumnFix();
+    ShowSelect();
+    return true;
+}
+
+// Toggles the case of the selection, or of the word at the cursor (Ctrl+Shift+U).
+
+bool CEdit::ToggleCase()
+{
+    int c1 = m_cursor1, c2 = m_cursor2;
+    bool word = (c1 == c2);
+    if ( word )
+    {
+        int ws = c1, we = c1;
+        while ( ws > 0 && IsIdentifierChar(m_text[ws-1]) )  ws --;
+        while ( we < m_len && IsIdentifierChar(m_text[we]) )  we ++;
+        if ( ws == we )  return false;
+        m_cursor2 = ws;
+        m_cursor1 = we;
+    }
+
+    int a = std::min(m_cursor1, m_cursor2);
+    int b = std::max(m_cursor1, m_cursor2);
+    bool hasLower = std::any_of(m_text.begin()+a, m_text.begin()+b, [](char c) { return c >= 'a' && c <= 'z'; });
+    bool done = MinMaj(hasLower);
+
+    if ( word )
+    {
+        m_cursor1 = c1;
+        m_cursor2 = c2;
+    }
+    return done;
+}
+
+// Selects the declaration of the variable, function or class at the cursor
+// (Ctrl+B, Ctrl+Click). Returns false if there is none, or if the cursor is on it.
+
+bool CEdit::GotoDeclaration()
+{
+    static const std::set<std::string> notTypes = {
+        "return", "new", "else", "do", "not", "and", "or", "case", "throw", "if", "while", "for",
+        "switch", "repeat", "break", "continue", "catch", "try", "finally", "sizeof", "extern",
+        "public", "private", "protected", "static", "synchronized", "extends", "class",
+    };
+
+    int ws = m_cursor1, we = m_cursor1;
+    while ( ws > 0 && IsIdentifierChar(m_text[ws-1]) )  ws --;
+    while ( we < m_len && IsIdentifierChar(m_text[we]) )  we ++;
+    if ( ws == we || IsDigit(m_text[ws]) )  return false;
+    std::string word = m_text.substr(ws, we-ws);
+    int length = we-ws;
+
+    auto isSpace = [](char c) { return c == ' ' || c == '\t' || c == '\n'; };
+
+    int definition = -1;   // function or class: the first one
+    int before = -1;       // variable: the last one before the cursor
+    int after = -1;        // variable: else the first one after
+    for ( std::size_t found = m_text.find(word) ; found != std::string::npos && static_cast<int>(found) < m_len ;
+          found = m_text.find(word, found+1) )
+    {
+        int s = static_cast<int>(found);
+        int e = s + length;
+        if ( s > 0 && IsIdentifierChar(m_text[s-1]) )  continue;
+        if ( e < m_len && IsIdentifierChar(m_text[e]) )  continue;
+
+        // token before the name
+        int k = s;
+        while ( k > 0 && isSpace(m_text[k-1]) )  k --;
+        char prev = (k > 0) ? m_text[k-1] : 0;
+        std::string prevWord;
+        if ( IsIdentifierChar(prev) )
+        {
+            int ks = k;
+            while ( ks > 0 && IsIdentifierChar(m_text[ks-1]) )  ks --;
+            prevWord = m_text.substr(ks, k-ks);
+        }
+
+        // character after the name
+        int n = e;
+        while ( n < m_len && (m_text[n] == ' ' || m_text[n] == '\t') )  n ++;
+        char next = (n < m_len) ? m_text[n] : 0;
+
+        bool isClass = (prevWord == "class");
+        bool typed = (!prevWord.empty() && !IsDigit(prevWord[0]) && notTypes.count(prevWord) == 0) ||
+                     prev == ']' || (prev == ':' && k >= 2 && m_text[k-2] == ':');
+        bool isFunction = typed && next == '(';
+        bool isVariable = typed && (next == '=' || next == ';' || next == ',' || next == ')' || next == '[');
+
+        if ( !(isClass || isFunction || isVariable) || !IsCodePos(s) )  continue;
+
+        if ( isClass || isFunction )
+        {
+            if ( definition < 0 )  definition = s;
+        }
+        else if ( s <= ws )
+        {
+            before = s;
+        }
+        else if ( after < 0 )
+        {
+            after = s;
+        }
+    }
+
+    int target = (definition >= 0) ? definition : (before >= 0) ? before : after;
+    if ( target < 0 || target == ws )  return false;
+
+    m_cursor2 = target;
+    m_cursor1 = target + length;
+    m_bUndoForce = true;
+    ColumnFix();
+    ShowSelect();
+    return true;
+}
+
+
+// Management of the autocompletion of words while typing.
+
+void CEdit::SetAutoComplete(bool bEnable)
+{
+    m_bAutoComplete = bEnable;
+    if ( !bEnable )  AutoCompleteHide();
+}
+
+bool CEdit::GetAutoComplete()
+{
+    return m_bAutoComplete;
+}
+
+void CEdit::SetAutoCompleteWords(std::vector<std::string> words, std::vector<std::string> members)
+{
+    m_acWords = std::move(words);
+    m_acMembers = std::move(members);
+}
+
+// Updates the list of words proposed for the word before the cursor.
+// If bForce is false, the list is shown only after at least 2 characters or a dot.
+
+void CEdit::AutoCompleteUpdate(bool bForce)
+{
+    if ( !m_bAutoComplete || !m_bEdit || !m_bMulti || m_cursor1 != m_cursor2 )
+    {
+        AutoCompleteHide();
+        return;
+    }
+
+    int start = m_cursor1;
+    while ( start > 0 && IsIdentifierChar(m_text[start-1]) )  start --;
+
+    if ( start < m_cursor1 && IsDigit(m_text[start]) )  // number?
+    {
+        AutoCompleteHide();
+        return;
+    }
+
+    bool member = false;
+    if ( start > 0 && m_text[start-1] == '.' )
+    {
+        int i = start-1;
+        while ( i > 0 && IsIdentifierChar(m_text[i-1]) )  i --;
+        if ( i < start-1 && IsDigit(m_text[i]) )  // decimal point of a number?
+        {
+            AutoCompleteHide();
+            return;
+        }
+        member = true;
+    }
+
+    std::string prefix = m_text.substr(start, m_cursor1-start);
+    if ( (!bForce && !member && prefix.size() < 2) || !IsCodePos(start) )
+    {
+        AutoCompleteHide();
+        return;
+    }
+
+    std::vector<std::string> candidates = member ? m_acMembers : m_acWords;
+
+    // adds the identifiers already used in the program (variables, functions, classes...)
+    for ( int i=0 ; i<m_len ; )
+    {
+        if ( !IsIdentifierChar(m_text[i]) )
+        {
+            i ++;
+            continue;
+        }
+        int j = i;
+        while ( j < m_len && IsIdentifierChar(m_text[j]) )  j ++;
+        if ( i != start && !IsDigit(m_text[i]) )
+        {
+            candidates.push_back(m_text.substr(i, j-i));
+        }
+        i = j;
+    }
+
+    std::string lowerPrefix = StrUtils::ToLower(prefix);
+    std::vector<std::string> items;
+    for ( const std::string& word : candidates )
+    {
+        if ( word == prefix )  continue;  // already complete
+        if ( StrUtils::ToLower(word.substr(0, prefix.size())) != lowerPrefix )  continue;
+        items.push_back(word);
+    }
+
+    std::sort(items.begin(), items.end(), [](const std::string& a, const std::string& b)
+    {
+        std::string la = StrUtils::ToLower(a), lb = StrUtils::ToLower(b);
+        return la != lb ? la < lb : a < b;
+    });
+    items.erase(std::unique(items.begin(), items.end()), items.end());
+
+    if ( items.empty() )
+    {
+        AutoCompleteHide();
+        return;
+    }
+
+    m_acItems = std::move(items);
+    m_acStart = start;
+    m_acSelect = 0;
+    m_acFirst = 0;
+    m_acShown = true;
+}
+
+void CEdit::AutoCompleteHide()
+{
+    m_acShown = false;
+}
+
+// Moves the selection in the autocompletion list.
+
+void CEdit::AutoCompleteMove(int move)
+{
+    if ( !m_acShown || m_acItems.empty() )  return;
+
+    int total = static_cast<int>(m_acItems.size());
+    m_acSelect = std::clamp(m_acSelect+move, 0, total-1);
+
+    if ( m_acSelect < m_acFirst )  m_acFirst = m_acSelect;
+    if ( m_acSelect >= m_acFirst+AUTOCOMPLETE_VISIBLE )  m_acFirst = m_acSelect-AUTOCOMPLETE_VISIBLE+1;
+}
+
+// Replaces the word before the cursor by the selected word.
+
+bool CEdit::AutoCompleteAccept()
+{
+    if ( !m_acShown || m_acItems.empty() )  return false;
+    AutoCompleteHide();
+
+    if ( m_cursor1 != m_cursor2 || m_acStart > m_cursor1 )  return false;
+    for ( int i=m_acStart ; i<m_cursor1 ; i++ )
+    {
+        if ( !IsIdentifierChar(m_text[i]) )  return false;  // text changed meanwhile
+    }
+
+    std::string word = m_acItems[m_acSelect];
+
+    UndoMemorize(OPERUNDO_SPEC);
+    m_cursor2 = m_acStart;  // selects the beginning of the word, replaced by InsertOne
+    for ( char c : word )
+    {
+        InsertOne(c);
+    }
+    Justif();
+    ColumnFix();
+    ShowSelect();
+    SendModifEvent();
+    return true;
+}
+
+// Detects whether the mouse is over the autocompletion list, and which item.
+
+bool CEdit::AutoCompleteDetect(const glm::vec2& mouse, int& item)
+{
+    if ( !m_acShown || !m_bFocus || m_acDim.x <= 0.0f )  return false;
+
+    if ( mouse.x < m_acPos.x || mouse.x > m_acPos.x+m_acDim.x ||
+         mouse.y < m_acPos.y || mouse.y > m_acPos.y+m_acDim.y )  return false;
+
+    float padY = 2.0f/480.0f;
+    int last = std::min(static_cast<int>(m_acItems.size()), m_acFirst+AUTOCOMPLETE_VISIBLE)-1;
+    item = m_acFirst+static_cast<int>((m_acPos.y+m_acDim.y-padY-mouse.y)/m_lineHeight);
+    item = std::clamp(item, m_acFirst, last);
+    return true;
+}
+
+// Tests whether a position is in code, i.e. not in a comment or a string.
+
+bool CEdit::IsCodePos(int cursor)
+{
+    int i = 0;
+    while ( i < cursor )
+    {
+        if ( m_text[i] == '/' && i+1 < m_len && m_text[i+1] == '/' )  // comment until end of line
+        {
+            while ( i < m_len && m_text[i] != '\n' )  i ++;
+            if ( i >= cursor )  return false;
+        }
+        else if ( m_text[i] == '/' && i+1 < m_len && m_text[i+1] == '*' )  // comment /* */
+        {
+            i += 2;
+            while ( i+1 < m_len && !(m_text[i] == '*' && m_text[i+1] == '/') )  i ++;
+            if ( i+1 >= m_len )  return false;  // not terminated
+            i += 2;
+            if ( i > cursor )  return false;
+        }
+        else if ( m_text[i] == '"' || m_text[i] == '\'' )  // string or character
+        {
+            char quote = m_text[i++];
+            while ( i < m_len && m_text[i] != quote && m_text[i] != '\n' )
+            {
+                if ( m_text[i] == '\\' )  i ++;
+                i ++;
+            }
+            if ( i >= cursor )  return false;
+            i ++;
+        }
+        else
+        {
+            i ++;
+        }
+    }
+    return true;
+}
+
+
 
 // Moves the cursors.
 
@@ -2639,6 +3844,18 @@ bool CEdit::Undo()
     return UndoRecall();
 }
 
+// Restores the last action cancelled by Undo().
+
+bool CEdit::Redo()
+{
+    if ( !m_bEdit )
+    {
+        return false;
+    }
+
+    return RedoRecall();
+}
+
 
 // Inserts a character.
 
@@ -3210,6 +4427,7 @@ void CEdit::UndoFlush()
     {
         m_undo[i].text.clear();
     }
+    m_redo.clear();
 
     m_bUndoForce = true;
     m_undoOper = OPERUNDO_SPEC;
@@ -3228,6 +4446,7 @@ void CEdit::UndoMemorize(OperUndo oper)
 
     m_bUndoForce = false;
     m_undoOper = oper;
+    m_redo.clear();  // a new modification: the cancelled states are lost
 
     m_undo[EDITUNDOMAX-1].text.clear();
 
@@ -3254,6 +4473,16 @@ bool CEdit::UndoRecall()
 
     if ( m_undo[0].text.empty() )  return false;
 
+    // keeps the current state for Redo()
+    EditUndo current;
+    current.text = m_text;
+    current.len = m_len;
+    current.cursor1 = m_cursor1;
+    current.cursor2 = m_cursor2;
+    current.lineFirst = m_lineFirst;
+    m_redo.push_back(current);
+    if ( m_redo.size() > EDITUNDOMAX )  m_redo.erase(m_redo.begin());
+
     m_len = m_undo[0].len;
     m_text = m_undo[0].text;
 
@@ -3266,6 +4495,38 @@ bool CEdit::UndoRecall()
         m_undo[i] = m_undo[i+1];
     }
     m_undo[EDITUNDOMAX-1].text.clear();
+
+    m_bUndoForce = true;
+    Justif();
+    ColumnFix();
+    SendModifEvent();
+    return true;
+}
+
+// Goes back to the state cancelled by the last Undo().
+
+bool CEdit::RedoRecall()
+{
+    if ( m_redo.empty() )  return false;
+
+    // the current state can be recalled by Undo(), as for a modification
+    for ( int i=EDITUNDOMAX-1 ; i>=1 ; i-- )
+    {
+        m_undo[i] = m_undo[i-1];
+    }
+    m_undo[0].text = m_text;
+    m_undo[0].len = m_len;
+    m_undo[0].cursor1 = m_cursor1;
+    m_undo[0].cursor2 = m_cursor2;
+    m_undo[0].lineFirst = m_lineFirst;
+
+    const EditUndo& state = m_redo.back();
+    m_len = state.len;
+    m_text = state.text;
+    m_cursor1 = state.cursor1;
+    m_cursor2 = state.cursor2;
+    m_lineFirst = state.lineFirst;
+    m_redo.pop_back();
 
     m_bUndoForce = true;
     Justif();

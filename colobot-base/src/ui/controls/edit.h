@@ -30,6 +30,8 @@
 #include <array>
 #include <filesystem>
 #include <memory>
+#include <string>
+#include <vector>
 
 namespace Ui
 {
@@ -149,6 +151,10 @@ public:
     void        SetAutoIndent(bool bMode);
     bool        GetAutoIndent();
 
+    void        SetAutoComplete(bool bEnable);
+    bool        GetAutoComplete();
+    void        SetAutoCompleteWords(std::vector<std::string> words, std::vector<std::string> members);
+
     void        SetCursor(int cursor1, int cursor2);
     void        GetCursor(int &cursor1, int &cursor2);
 
@@ -166,6 +172,8 @@ public:
     bool        Copy(bool memorize_cursor = false);
     bool        Paste();
     bool        Undo();
+    bool        Redo();
+    bool        GotoDeclaration();
 
     void        HyperFlush();
     void        HyperHome(const std::filesystem::path& filename);
@@ -228,6 +236,32 @@ protected:
 
     void        GetIndentedText(std::ostream& stream, int start, int end);
 
+    void        AutoCompleteUpdate(bool bForce);
+    void        AutoCompleteHide();
+    void        AutoCompleteMove(int move);
+    bool        AutoCompleteAccept();
+    bool        AutoCompleteDetect(const glm::vec2& mouse, int& item);
+    bool        IsCodePos(int cursor);
+    bool        GetCursorPos(int cursor, glm::vec2& pos);
+    void        DrawAutoComplete();
+
+    // Editing actions with the shortcuts of JetBrains IDEs
+    bool        IdeShortcut(unsigned int key, unsigned int scancode, bool bShift, bool bControl, bool bAlt);
+    void        GetSelectedLines(int& start, int& end);
+    void        ReplaceText(int start, int end, const std::string& text);
+    bool        DuplicateLines();
+    bool        DeleteLines();
+    bool        ToggleLineComment();
+    bool        ToggleBlockComment();
+    bool        MoveLines(int dir);
+    bool        ExtendSelection();
+    bool        ShrinkSelection();
+    bool        JoinLines();
+    bool        StartNewLine(bool above);
+    bool        GotoMatchingBrace(bool bSelect);
+    bool        ToggleCase();
+    bool        RedoRecall();
+
 protected:
     std::unique_ptr<CScroll> m_scroll;           // vertical scrollbar on the right
 
@@ -274,6 +308,20 @@ protected:
     bool        m_bUndoForce;
     OperUndo    m_undoOper;
     std::array<EditUndo, EDITUNDOMAX> m_undo;
+
+    bool        m_bAutoComplete = false;    // true -> suggests words while typing
+    bool        m_acShown = false;          // true -> suggestion list is displayed
+    std::vector<std::string> m_acWords;     // known words (keywords, functions, constants)
+    std::vector<std::string> m_acMembers;   // known words after a dot (fields, methods)
+    std::vector<std::string> m_acItems;     // words currently proposed
+    int         m_acStart = 0;              // offset of the beginning of the completed word
+    int         m_acSelect = 0;             // selected item in m_acItems
+    int         m_acFirst = 0;              // first visible item in m_acItems
+    glm::vec2   m_acPos = {0.0f, 0.0f};     // position of the list (from the last Draw)
+    glm::vec2   m_acDim = {0.0f, 0.0f};     // size of the list (from the last Draw)
+
+    std::vector<EditUndo> m_redo;           // states cancelled by Undo(), for Redo()
+    std::vector<std::pair<int, int>> m_selectionStack;  // selections before ExtendSelection()
 };
 
 
