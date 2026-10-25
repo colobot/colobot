@@ -2974,8 +2974,6 @@ Color CEngine::GetObjectBaseColor(int object, MaterialType type)
 
 Color CEngine::GetObjectColorShift(int object, MaterialType type)
 {
-    const auto& appearance = CRobotMain::GetInstance().GetPlayerProfile()->GetAppearance();
-
     switch (type)
     {
         case MaterialType::TEAM:
@@ -3387,7 +3385,7 @@ void CEngine::Draw3DScene()
 
     for (const auto& [rank, object, data] : ghostObjects)
     {
-        constexpr Color tColor = Color(68.0f / 255.0f, 68.0f / 255.0f, 68.0f / 255.0f, 1.0f);
+        //constexpr Color tColor = Color(68.0f / 255.0f, 68.0f / 255.0f, 68.0f / 255.0f, 1.0f);
 
         objectRenderer->SetModelMatrix(object.transform);
 
