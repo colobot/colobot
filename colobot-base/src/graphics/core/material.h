@@ -61,6 +61,11 @@ enum class MaterialType : unsigned char
     BAND,
     BLACK,
     WHITE,
+
+    LEGACY_HAIR_1,
+    LEGACY_HAIR_2,
+    LEGACY_HAIR_3,
+    LEGACY_HAIR_4,
 };
 
 /**

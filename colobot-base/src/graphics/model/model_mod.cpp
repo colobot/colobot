@@ -334,12 +334,21 @@ void ConvertFromOldRenderState(ModelTriangle& triangle, int state)
         triangle.material.alphaMode = AlphaMode::MASK;
         triangle.material.alphaThreshold = 0.5f;
     }
-    else if (triangle.material.albedoTexture == "face01.png"
-        || triangle.material.albedoTexture == "face02.png"
-        || triangle.material.albedoTexture == "face03.png"
-        || triangle.material.albedoTexture == "face04.png")
+    else if (triangle.material.albedoTexture == "face01.png")
     {
-        triangle.material.type = MaterialType::HAIR;
+        triangle.material.type = MaterialType::LEGACY_HAIR_1;
+    }
+    else if (triangle.material.albedoTexture == "face02.png")
+    {
+        triangle.material.type = MaterialType::LEGACY_HAIR_2;
+    }
+    else if (triangle.material.albedoTexture == "face03.png")
+    {
+        triangle.material.type = MaterialType::LEGACY_HAIR_3;
+    }
+    else if (triangle.material.albedoTexture == "face04.png")
+    {
+        triangle.material.type = MaterialType::LEGACY_HAIR_4;
     }
     else if (triangle.material.albedoTexture == "human.png")
     {

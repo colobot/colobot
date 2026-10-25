@@ -2174,7 +2174,7 @@ void CEngine::ApplyRecolorMask(CImage& image, const std::filesystem::path& name)
 
         constexpr Color hair = { 90.0f / 256.0f, 95.0f / 256.0f, 85.0f / 256.0f };
 
-        ApplyRecolorMask(image, regions, hair, 0.15f, false, false);
+        ApplyRecolorMask2(image, regions, hair, 0.15f);
     }
     else if (filename == "face02.png")
     {
@@ -2188,7 +2188,7 @@ void CEngine::ApplyRecolorMask(CImage& image, const std::filesystem::path& name)
 
         constexpr Color hair = { 74.0f / 256.0f, 58.0f / 256.0f, 46.0f / 256.0f };
 
-        ApplyRecolorMask(image, regions, hair, 0.2f, false, false);
+        ApplyRecolorMask2(image, regions, hair, 0.2f);
     }
     else if (filename == "face03.png")
     {
@@ -2201,7 +2201,7 @@ void CEngine::ApplyRecolorMask(CImage& image, const std::filesystem::path& name)
 
         constexpr Color hair = { 70.0f / 256.0f, 40.0f / 256.0f,  8.0f / 256.0f };
 
-        ApplyRecolorMask(image, regions, hair, 0.3f, false, false);
+        ApplyRecolorMask2(image, regions, hair, 0.3f);
     }
     else if (filename == "face04.png")
     {
@@ -2215,7 +2215,7 @@ void CEngine::ApplyRecolorMask(CImage& image, const std::filesystem::path& name)
 
         constexpr Color hair = { 74.0f / 256.0f, 16.0f / 256.0f, 0.0f / 256.0f };
 
-        ApplyRecolorMask(image, regions, hair, 0.2f, false, false);
+        ApplyRecolorMask2(image, regions, hair, 0.2f);
     }
     else if (filename == "human.png")
     {
@@ -2959,6 +2959,14 @@ Color CEngine::GetObjectBaseColor(int object, MaterialType type)
             return Color(0.0, 0.0, 0.0, 1.0);
         case MaterialType::WHITE:
             return Color(1.0, 1.0, 1.0, 1.0);
+        case MaterialType::LEGACY_HAIR_1:
+            return appearance.colorHair + Color{ 0.15f, 0.15f, 0.15f };
+        case MaterialType::LEGACY_HAIR_2:
+            return appearance.colorHair + Color{ 0.2f, 0.2f, 0.2f };
+        case MaterialType::LEGACY_HAIR_3:
+            return appearance.colorHair + Color{ 0.3f, 0.3f, 0.3f };
+        case MaterialType::LEGACY_HAIR_4:
+            return appearance.colorHair + Color{ 0.2f, 0.2f, 0.2f };
         default:
             return Color(1.0, 1.0, 1.0, 1.0);
     }
