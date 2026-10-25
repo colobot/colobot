@@ -25,6 +25,7 @@
 
 #include "graphics/core/device.h"
 #include "graphics/core/transparency.h"
+#include "graphics/core/renderers.h"
 
 #include "graphics/engine/camera.h"
 #include "graphics/engine/engine.h"

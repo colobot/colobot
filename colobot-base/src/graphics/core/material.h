@@ -46,9 +46,45 @@ enum class CullFace : unsigned char
     BOTH,
 };
 
+/**
+ * \enum MaterialType
+ * \brief Defines material type
+ */
+enum class MaterialType : unsigned char
+{
+    TEAM,
+    VEHICLE,
+    PLANT,
+    ALIEN,
+    HAIR,
+    SUIT,
+    BAND,
+    BLACK,
+    WHITE,
+
+    LEGACY_HAIR_1,
+    LEGACY_HAIR_2,
+    LEGACY_HAIR_3,
+    LEGACY_HAIR_4,
+};
+
+/**
+ * \enum Mark
+ * \brief Special material mark for identifying model parts
+ */
+enum class Mark : unsigned char
+{
+    NONE,
+    ENERGY,
+    LEFT_TRACKER,
+    RIGHT_TRACKER,
+};
+
 //! PBR material
 struct Material
 {
+    //! Surface type
+    MaterialType type = MaterialType::TEAM;
     //! Albedo color
     Color albedoColor = Color{ 1.0f, 1.0f, 1.0f, 1.0f };
     //! Albedo texture
@@ -73,14 +109,10 @@ struct Material
     float alphaThreshold = 0.5;
     // Cull face
     CullFace cullFace = CullFace::BACK;
-    // Special tag
-    std::string tag = "";
-    // Recolor name
-    std::string recolor = "";
-    // Recolor reference color
-    Color recolorReference = { 0.0f, 0.0f, 0.0f, 0.0f };
-    // Recolor threshold
-    float recolorThreshold = 0.1f;
+    // Special mark
+    Mark mark = Mark::NONE;
+    // Terrain tile identifier
+    int tile = 0;
 
     // Legacy functionality
     //! Variable detail texture
@@ -88,30 +120,7 @@ struct Material
     //! Detail texture
     std::filesystem::path detailTexture = "";
 
-    bool operator==(const Material& other) const
-    {
-        return albedoColor == other.albedoColor
-            && albedoTexture == other.albedoTexture
-            && roughness == other.roughness
-            && metalness == other.metalness
-            && materialTexture == other.materialTexture
-            && emissiveColor == other.emissiveColor
-            && emissiveTexture == other.emissiveTexture
-            && normalTexture == other.normalTexture
-            && alphaMode == other.alphaMode
-            && alphaThreshold == other.alphaThreshold
-            && cullFace == other.cullFace
-            && tag == other.tag
-            && recolor == other.recolor
-            && recolorReference == other.recolorReference
-            && variableDetail == other.variableDetail
-            && detailTexture == other.detailTexture;
-    }
-
-    bool operator!=(const Material& other) const
-    {
-        return !operator==(other);
-    }
+    bool operator==(const Material& other) const = default;
 };
 
 } // namespace Gfx

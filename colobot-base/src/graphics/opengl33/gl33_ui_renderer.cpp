@@ -73,21 +73,14 @@ CGL33UIRenderer::CGL33UIRenderer(CGL33Device* device)
 
     glUseProgram(m_program);
 
-    // Create uniform buffer
-    glGenBuffers(1, &m_uniformBuffer);
+    // Setup matrix
+    m_matrixLocation = glGetUniformLocation(m_program, "uni_Matrix");
 
-    m_uniforms.projectionMatrix = glm::ortho(0.0f, +1.0f, 0.0f, +1.0f);
-    m_uniforms.color = { 1.0f, 1.0f, 1.0f, 1.0f };
+    m_matrix = glm::ortho(0.0f, +1.0f, 0.0f, +1.0f);
 
     m_uniformsDirty = true;
 
     UpdateUniforms();
-
-    // Bind uniform block to uniform buffer binding
-    GLuint blockIndex = glGetUniformBlockIndex(m_program, "Uniforms");
-
-    glBindBufferBase(GL_UNIFORM_BUFFER, 0, m_uniformBuffer);
-    glUniformBlockBinding(m_program, blockIndex, 0);
 
     // Set texture unit to 8th
     auto texture = glGetUniformLocation(m_program, "uni_Texture");
@@ -132,7 +125,7 @@ CGL33UIRenderer::~CGL33UIRenderer()
 
 void CGL33UIRenderer::SetProjection(float left, float right, float bottom, float top)
 {
-    m_uniforms.projectionMatrix = glm::ortho(left, right, bottom, top);
+    m_matrix = glm::ortho(left, right, bottom, top);
     m_uniformsDirty = true;
 }
 
@@ -148,12 +141,6 @@ void CGL33UIRenderer::SetTexture(const Texture& texture)
         glBindTexture(GL_TEXTURE_2D, m_whiteTexture);
     else
         glBindTexture(GL_TEXTURE_2D, m_currentTexture);
-}
-
-void CGL33UIRenderer::SetColor(const glm::vec4& color)
-{
-    m_uniforms.color = color;
-    m_uniformsDirty = true;
 }
 
 void CGL33UIRenderer::SetTransparency(TransparencyMode mode)
@@ -255,8 +242,6 @@ bool CGL33UIRenderer::EndPrimitive()
 
     glUseProgram(m_program);
 
-    glBindBufferBase(GL_UNIFORM_BUFFER, 0, m_uniformBuffer);
-
     UpdateUniforms();
 
     m_device->SetDepthTest(false);
@@ -279,8 +264,5 @@ void CGL33UIRenderer::UpdateUniforms()
 {
     if (!m_uniformsDirty) return;
 
-    glBindBuffer(GL_COPY_WRITE_BUFFER, m_uniformBuffer);
-    glBufferData(GL_COPY_WRITE_BUFFER, sizeof(Uniforms), nullptr, GL_STREAM_DRAW);
-    glBufferSubData(GL_COPY_WRITE_BUFFER, 0, sizeof(Uniforms), &m_uniforms);
-    glBindBuffer(GL_COPY_WRITE_BUFFER, 0);
+    glUniformMatrix4fv(m_matrixLocation, 1, GL_FALSE, value_ptr(m_matrix));
 }

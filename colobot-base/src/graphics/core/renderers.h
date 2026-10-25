@@ -84,8 +84,6 @@ public:
     virtual void SetProjection(float left, float right, float bottom, float top) = 0;
     //! Sets texture, setting texture 0 means using white texture
     virtual void SetTexture(const Texture& texture) = 0;
-    //! Sets color
-    virtual void SetColor(const glm::vec4& color) = 0;
     //! Sets transparency mode
     virtual void SetTransparency(TransparencyMode mode) = 0;
 
@@ -139,8 +137,14 @@ public:
     //! Sets shadow parameters
     virtual void SetShadowParams(int count, const ShadowParam* params) = 0;
 
-    //! Sets fog parameters
-    virtual void SetFog(float min, float max, const glm::vec3& color) = 0;
+    //! Sets water level
+    virtual void SetWaterLevel(float height) = 0;
+    //! Sets ground fog color
+    virtual void SetGroundFogColor(const Color& color) = 0;
+    //! Sets water fog color
+    virtual void SetWaterFogColor(const Color& color) = 0;
+    //! Sets fog range
+    virtual void SetFogRange(float min, float max) = 0;
 
     //! Draws terrain object
     virtual void DrawObject(const glm::mat4& matrix, const CVertexBuffer* buffer) = 0;
@@ -165,6 +169,11 @@ public:
     virtual void SetViewMatrix(const glm::mat4& matrix) = 0;
     //! Sets model matrix
     virtual void SetModelMatrix(const glm::mat4& matrix) = 0;
+
+    //! Sets base color
+    virtual void SetBaseColor(const Color& color) = 0;
+    //! Sets color shift
+    virtual void SetColorShift(const Color& color) = 0;
 
     //! Sets albedo color
     virtual void SetAlbedoColor(const Color& color) = 0;
@@ -193,13 +202,17 @@ public:
     //! Sets shadow parameters
     virtual void SetShadowParams(int count, const ShadowParam* params) = 0;
 
-    //! Sets fog parameters
-    virtual void SetFog(float min, float max, const glm::vec3& color) = 0;
+    //! Sets water level
+    virtual void SetWaterLevel(float height) = 0;
+    //! Sets ground fog color
+    virtual void SetGroundFogColor(const Color& color) = 0;
+    //! Sets water fog color
+    virtual void SetWaterFogColor(const Color& color) = 0;
+    //! Sets fog range
+    virtual void SetFogRange(float min, float max) = 0;
+
     //! Sets alpha scissor
     virtual void SetAlphaScissor(float alpha) = 0;
-
-    //! Sets recolor parameters
-    virtual void SetRecolor(bool enabled, const glm::vec3& from = {}, const glm::vec3& to = {}, float threshold = {}) = 0;
 
     //! Sets depth test
     virtual void SetDepthTest(bool enabled) = 0;

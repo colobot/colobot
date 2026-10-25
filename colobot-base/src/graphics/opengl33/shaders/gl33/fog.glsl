@@ -17,20 +17,34 @@
  * along with this program. If not, see http://gnu.org/licenses
  */
 
-#pragma once
+// Fog calculations
 
-#include "graphics/model/model.h"
+uniform float uni_WaterLevel;
 
-#include <filesystem>
-#include <istream>
+uniform vec2 uni_FogRange;
 
-/**
- * \namespace ModelInput
- * \brief Namespace with functions to read model files
- */
-namespace Gfx::ModelIO
+uniform vec3 uni_GroundFogColor;
+uniform vec3 uni_WaterFogColor;
+
+vec3 ApplyFog(vec3 color, vec3 position)
 {
+    if (uni_FogRange.x < uni_FogRange.y)
+    {
+        float distance = length(uni_CameraPosition - position);
 
-std::unique_ptr<CModel> ReadTextModel(const std::filesystem::path& path);
+        float fog_amount = clamp((distance - uni_FogRange.x) / (uni_FogRange.y - uni_FogRange.x), 0.0, 1.0);
 
+        float fog_transition = clamp((position.y - uni_WaterLevel + 1.0), 0.0, 1.0);
+
+        vec3 fog_color = mix(uni_WaterFogColor, uni_GroundFogColor, fog_transition);
+
+        color = mix(color, fog_color, fog_amount);
+
+        // Apply depth darkening below water surface
+        float depth = clamp((position.y - uni_WaterLevel + 64.0) / 64.0, 0.0, 1.0);
+
+        color = color * mix(0.2, 1.0, depth);
+    }
+
+    return color;
 }

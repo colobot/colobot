@@ -212,6 +212,22 @@ glm::ivec2 CImage::GetSize() const
     return { m_data->surface->w, m_data->surface->h };
 }
 
+int CImage::GetWidth() const
+{
+    if (m_data == nullptr)
+        return 0;
+
+    return m_data->surface->w;
+}
+
+int CImage::GetHeight() const
+{
+    if (m_data == nullptr)
+        return 0;
+
+    return m_data->surface->h;
+}
+
 /** Image must be valid. */
 void CImage::Fill(Gfx::IntColor color)
 {

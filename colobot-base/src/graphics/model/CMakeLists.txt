@@ -18,6 +18,4 @@ target_sources(Colobot-Base PRIVATE
     model_output.h
     model_shadow_spot.h
     model_triangle.h
-    model_txt.cpp
-    model_txt.h
 )

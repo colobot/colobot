@@ -151,12 +151,10 @@ bool CBotDefArray::Execute(CBotStack* &pj)
     {
         // seek the maximum dimension of the table
         CBotInstr*    p  = GetNext3b();                             // the different formulas
-        int            nb = 0;
 
         while (p != nullptr)
         {
             pile = pile->AddStack();                                // little room to work
-            nb++;
             if (pile->GetState() == 0)
             {
                 if (!p->Execute(pile)) return false;                // size calculation //interrupted?

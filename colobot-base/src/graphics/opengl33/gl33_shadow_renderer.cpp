@@ -85,13 +85,28 @@ CGL33ShadowRenderer::CGL33ShadowRenderer(CGL33Device* device)
 
     glGenFramebuffers(1, &m_framebuffer);
 
+    // White texture
+    glActiveTexture(GL_TEXTURE0);
+    glGenTextures(1, &m_whiteTexture);
+    glBindTexture(GL_TEXTURE_2D, m_whiteTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_R, GL_ONE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_G, GL_ONE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_B, GL_ONE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_A, GL_ONE);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
     GetLogger()->Info("CGL33ShadowRenderer created successfully");
 }
 
 CGL33ShadowRenderer::~CGL33ShadowRenderer()
 {
     glDeleteProgram(m_program);
-
+    glDeleteTextures(1, &m_whiteTexture);
     glDeleteFramebuffers(1, &m_framebuffer);
 }
 
@@ -150,7 +165,11 @@ void CGL33ShadowRenderer::SetModelMatrix(const glm::mat4& matrix)
 void CGL33ShadowRenderer::SetTexture(const Texture& texture)
 {
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture.id);
+
+    if (texture.id == 0)
+        glBindTexture(GL_TEXTURE_2D, m_whiteTexture);
+    else
+        glBindTexture(GL_TEXTURE_2D, texture.id);
 }
 
 void CGL33ShadowRenderer::SetShadowMap(const Texture& texture)
