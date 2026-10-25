@@ -144,7 +144,7 @@ void CKey::Draw()
     renderer->SetTransparency(Gfx::TransparencyMode::NONE);
 
     float zoomExt = 1.00f;
-    float zoomInt = 0.95f;
+    [[maybe_unused]] float zoomInt = 0.95f;
 
     int icon = 2;
     if (m_binding.primary == KEY_INVALID && m_binding.secondary == KEY_INVALID)  // no shortcut?
