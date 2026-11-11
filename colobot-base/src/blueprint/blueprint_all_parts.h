@@ -20,4 +20,5 @@
 #pragma once
 
 #include "blueprint/part/jet_flying_blueprint.h"
+#include "blueprint/part/modeled_blueprint.h"
 #include "blueprint/part/transportable_blueprint.h"

@@ -55,7 +55,8 @@ public:
     CObjectUPtr CreateObject(const ObjectCreateParams& params);
 
 private:
-    CObjectUPtr CreateResource(const ObjectCreateParams& params);
+    CObjectUPtr CreateFromBlueprint(const ObjectCreateParams& params);
+
     CObjectUPtr CreateFlag(const ObjectCreateParams& params);
     CObjectUPtr CreateBarrier(const ObjectCreateParams& params);
     CObjectUPtr CreatePlant(const ObjectCreateParams& params);

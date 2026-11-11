@@ -12,9 +12,12 @@ target_sources(Colobot-Base PRIVATE
     blueprint_storage.cpp
     blueprint_storage.h
     hardcode/jet_flying_hardcode.cpp
+    hardcode/modeled_hardcode.cpp
     hardcode/transportable_hardcode.cpp
     parser/jet_flying_parser.cpp
+    parser/modeled_parser.cpp
     parser/transportable_parser.cpp
     part/jet_flying_blueprint.h
+    part/modeled_blueprint.h
     part/transportable_blueprint.h
 )

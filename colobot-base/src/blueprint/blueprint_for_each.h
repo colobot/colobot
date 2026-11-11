@@ -21,4 +21,5 @@
 
 #define FOR_EACH_PART_OF_BLUEPRINT(X) \
     X(jet_flying,    JetFlyingBlueprint) \
+    X(modeled,       ModeledBlueprint) \
     X(transportable, TransportableBlueprint)

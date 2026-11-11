@@ -19,6 +19,9 @@
 
 #include "object/object_factory.h"
 
+#include "blueprint/blueprint.h"
+#include "blueprint/part/modeled_blueprint.h"
+
 #include "graphics/engine/engine.h"
 #include "graphics/engine/lightning.h"
 #include "graphics/engine/oldmodelmanager.h"
@@ -135,7 +138,7 @@ CObjectUPtr CObjectFactory::CreateObject(const ObjectCreateParams& params)
         case OBJECT_MARKKEYc:
         case OBJECT_MARKKEYd:
         case OBJECT_EGG:
-            return CreateResource(params);
+            return CreateFromBlueprint(params);
 
         case OBJECT_FLAGb:
         case OBJECT_FLAGr:
@@ -325,118 +328,71 @@ CObjectUPtr CObjectFactory::CreateObject(const ObjectCreateParams& params)
     return nullptr;
 }
 
-// Creates a small resource set on the ground.
-
-CObjectUPtr CObjectFactory::CreateResource(const ObjectCreateParams& params)
+inline Gfx::EngineObjectType ToEngineObjectType(std::string value, bool descendant)
 {
-    glm::vec3 pos = params.pos;
-    float angle = params.angle;
-    ObjectType type = params.type;
-    float power = params.power;
+    if (descendant)         return Gfx::ENG_OBJTYPE_DESCENDANT;
+    if (value == "Terrain") return Gfx::ENG_OBJTYPE_TERRAIN;
+    if (value == "Object" ) return Gfx::ENG_OBJTYPE_FIX;
+    if (value == "Vehicle") return Gfx::ENG_OBJTYPE_VEHICLE;
+    if (value == "Quartz" ) return Gfx::ENG_OBJTYPE_QUARTZ;
+    if (value == "Metal"  ) return Gfx::ENG_OBJTYPE_METAL;
+    return Gfx::ENG_OBJTYPE_FIX;
+}
 
+// Creates object from it's type blueprint and creation params
+
+CObjectUPtr CObjectFactory::CreateFromBlueprint(const ObjectCreateParams& params)
+{
     auto obj = std::make_unique<COldObject>(params.id);
 
-    obj->SetType(type);
+    obj->SetType(params.type);
     obj->SetTeam(params.team);
+    obj->SetEnergyLevel(params.power);
 
-    int rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);  // it is a stationary object
-    obj->SetObjectRank(0, rank);
-    obj->SetEnergyLevel(power);
-
-    std::string name;
-    if ( type == OBJECT_STONE       )  name = "stone";
-    if ( type == OBJECT_URANIUM     )  name = "uranium";
-    if ( type == OBJECT_METAL       )  name = "metal";
-    if ( type == OBJECT_POWER       )  name = "power";
-    if ( type == OBJECT_ATOMIC      )  name = "atomic";
-    if ( type == OBJECT_BULLET      )  name = "bullet";
-    if ( type == OBJECT_BBOX        )  name = "bbox";
-    if ( type == OBJECT_KEYa        )  name = "keya";
-    if ( type == OBJECT_KEYb        )  name = "keyb";
-    if ( type == OBJECT_KEYc        )  name = "keyc";
-    if ( type == OBJECT_KEYd        )  name = "keyd";
-    if ( type == OBJECT_TNT         )  name = "tnt";
-    if ( type == OBJECT_BOMB        )  name = "bomb";
-    if ( type == OBJECT_WAYPOINT    )  name = "waypoint";
-    if ( type == OBJECT_SHOW        )  name = "show";
-    if ( type == OBJECT_WINFIRE     )  name = "winfire";
-    if ( type == OBJECT_BAG         )  name = "bag";
-    if ( type == OBJECT_MARKSTONE   )  name = "cross1";
-    if ( type == OBJECT_MARKURANIUM )  name = "cross3";
-    if ( type == OBJECT_MARKPOWER   )  name = "cross2";
-    if ( type == OBJECT_MARKKEYa    )  name = "crossa";
-    if ( type == OBJECT_MARKKEYb    )  name = "crossb";
-    if ( type == OBJECT_MARKKEYc    )  name = "crossc";
-    if ( type == OBJECT_MARKKEYd    )  name = "crossd";
-    if ( type == OBJECT_EGG         )  name = "egg";
-
-    if (type == OBJECT_POWER || type == OBJECT_ATOMIC)
+    const auto& modeled = obj->GetBlueprint()->modeled;
+    for (const auto& it : modeled->modelNodes)
     {
-        m_oldModelManager->AddModelCopy(name, false, rank, obj->GetTeam());
-    }
-    else
-    {
-        m_oldModelManager->AddModelReference(name, false, rank, obj->GetTeam());
-    }
+        int rank = m_engine->CreateObject();
+        auto gfxType = ToEngineObjectType(modeled->gfxType, it.partId > 0);
+        m_engine->SetObjectType(rank, gfxType);
+        obj->SetObjectRank(it.partId, rank);
 
-    obj->SetPosition(pos);
-    obj->SetRotationY(angle);
-
-    if ( type == OBJECT_SHOW )  // remains in the air?
-    {
-        return std::move(obj);
+        if ( it.file.size() )
+        {
+            bool success = it.isCopy?
+                m_oldModelManager->AddModelCopy(it.file, it.isMirrored, rank, params.team) :
+                m_oldModelManager->AddModelReference(it.file, it.isMirrored, rank, params.team);
+            assert(success);
+        }
     }
-
-    float radius = 1.5f;
-    float height = 0.0f;
-
-    if ( type == OBJECT_MARKSTONE   ||
-         type == OBJECT_MARKURANIUM ||
-         type == OBJECT_MARKKEYa    ||
-         type == OBJECT_MARKKEYb    ||
-         type == OBJECT_MARKKEYc    ||
-         type == OBJECT_MARKKEYd    ||
-         type == OBJECT_MARKPOWER   ||
-         type == OBJECT_WAYPOINT    )
-    {
-    }
-    else if ( type == OBJECT_EGG )
-    {
-        obj->AddCrashSphere(CrashSphere(glm::vec3(-1.0f, 2.8f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f));
-        obj->SetCameraCollisionSphere(Math::Sphere(glm::vec3(0.0f, 5.0f, 0.0f), 10.0f));
-        radius = 3.0f;
-    }
-    else if ( type == OBJECT_BOMB )
-    {
-        obj->AddCrashSphere(CrashSphere(glm::vec3(0.0f, 0.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f));
-        obj->SetCameraCollisionSphere(Math::Sphere(glm::vec3(0.0f, 0.0f, 0.0f), 3.0f));
-        radius = 3.0f;
-    }
-    else if ( type == OBJECT_BAG )
-    {
-        obj->AddCrashSphere(CrashSphere(glm::vec3(0.0f, 0.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f));
-        obj->SetCameraCollisionSphere(Math::Sphere(glm::vec3(0.0f, 0.0f, 0.0f), 4.0f));
-        obj->SetScale(1.5f);
-        radius =  5.0f;
-        height = -1.4f;
-    }
-    else
-    {
-        obj->AddCrashSphere(CrashSphere(glm::vec3(0.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f));
-        obj->SetCameraCollisionSphere(Math::Sphere(glm::vec3(0.0f, 1.0f, 0.0f), 1.5f));
-    }
-
-    obj->CreateShadowCircle(radius, 1.0f);
-
-    obj->SetFloorHeight(0.0f);
-    AddObjectAuto(obj.get());
     m_engine->LoadAllTextures();
-    obj->FloorAdjust();
 
-    pos = obj->GetPosition();
-    pos.y += height;
-    obj->SetPosition(pos);  // to display the shadows immediately
+    obj->SetPosition(params.pos);
+    obj->SetRotationY(params.angle);
+    obj->SetScale(modeled->createAt.extraScale);
+
+    if ( !modeled->createAt.isFixedPosition )
+    {
+        // do not remain in the air
+        obj->SetFloorHeight(0.0f);
+
+        // adjust rotation
+        obj->FloorAdjust();
+
+        // adjust position + display the shadows immediately
+        glm::vec3 pos = obj->GetPosition();
+        pos.y += modeled->createAt.extraHeight;
+        obj->SetPosition(pos);
+    }
+
+    for (const auto& it : modeled->crashSpheres)
+    {
+        obj->AddCrashSphere(CrashSphere(it.pos, it.radius, SOUND_BOUMm, it.hardness));
+    }
+    obj->SetCameraCollisionSphere(modeled->cameraCollision);
+    obj->CreateShadowCircle(modeled->shadowCircle.radius, modeled->shadowCircle.intensity);
+
+    AddObjectAuto(obj.get());
 
     return std::move(obj);
 }
