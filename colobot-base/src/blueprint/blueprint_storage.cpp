@@ -22,8 +22,15 @@
 #include "blueprint/blueprint.h"
 #include "blueprint/blueprint_all_parts.h"
 #include "blueprint/blueprint_hardcode.h"
+#include "blueprint/blueprint_parser.h"
+
+#include "common/stringutils.h"
+
+#include "level/parser/parser.h"
 
 #define BLUEPRINT_LOAD_HARDCODE(FIELD, TYPE) MakeUniqueBlueprintHardcode<TYPE>(type, m_objects[type].FIELD);
+#define BLUEPRINT_PARSE_LINE(FIELD, TYPE) if (ParseBlueprintFromLine(line.get(), m_objects[type].FIELD.get())) { continue; }
+#define BLUEPRINT_WRITE_LINES(FIELD, TYPE) WriteBlueprintToLines(&parser, type, m_objects[type].FIELD.get());
 
 void CBlueprintStorage::Clear()
 {
@@ -51,3 +58,33 @@ void CBlueprintStorage::LoadFromHardcode()
     }
 }
 
+void CBlueprintStorage::LoadFromFile(const char* path)
+{
+    CLevelParser parser(path);
+    if (!parser.Exists())
+    {
+        throw CLevelParserException("Failed to open file: " + StrUtils::ToString(path));
+    }
+
+    parser.Load();
+    for (auto& line : parser.GetLines())
+    {
+        if ( line->GetParam("type")->IsDefined() )
+        {
+            ObjectType type = line->GetParam("type")->AsObjectType();
+            FOR_EACH_PART_OF_BLUEPRINT(BLUEPRINT_PARSE_LINE)
+        }
+        throw UnusedCmdException(line.get());
+    }
+}
+
+void CBlueprintStorage::SaveToFile(const char* path)
+{
+    CLevelParser parser(path);
+    for ( int i = 0 ; i < OBJECT_MAX ; i++ )
+    {
+        ObjectType type = static_cast<ObjectType>(i);
+        FOR_EACH_PART_OF_BLUEPRINT(BLUEPRINT_WRITE_LINES)
+    }
+    parser.Save();
+}

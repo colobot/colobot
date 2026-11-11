@@ -45,10 +45,12 @@ bool Enabled(ObjectType type)
 
 } // namespace
 
+using B = JetFlyingBlueprint;
+
 template<>
-JetFlyingBlueprint GetBlueprintHardcode<JetFlyingBlueprint>(ObjectType type)
+B GetBlueprintHardcode<B>(ObjectType type)
 {
-    JetFlyingBlueprint hardcode;
+    B hardcode;
     hardcode.enabled = Enabled(type);
     return hardcode;
 }

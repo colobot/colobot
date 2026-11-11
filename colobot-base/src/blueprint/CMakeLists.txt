@@ -6,10 +6,15 @@ target_sources(Colobot-Base PRIVATE
     blueprint_hardcode.h
     blueprint_manager.cpp
     blueprint_manager.h
+    blueprint_parser.h
+    blueprint_parser_exceptions.h
+    blueprint_parser_utils.h
     blueprint_storage.cpp
     blueprint_storage.h
     hardcode/jet_flying_hardcode.cpp
     hardcode/transportable_hardcode.cpp
+    parser/jet_flying_parser.cpp
+    parser/transportable_parser.cpp
     part/jet_flying_blueprint.h
     part/transportable_blueprint.h
 )

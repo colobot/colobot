@@ -57,6 +57,7 @@ public:
     CLevelParserParam* GetParam(const std::string& name);
     void AddParam(const std::string& name, CLevelParserParamUPtr value);
 
+    std::vector<std::string> GetKeys() const;
     friend std::ostream& operator<<(std::ostream& str, const CLevelParserLine& line);
 
 private:

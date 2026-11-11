@@ -70,10 +70,12 @@ bool IsDropZoneVisible(ObjectType type)
 
 } // namespace
 
+using B = TransportableBlueprint;
+
 template<>
-TransportableBlueprint GetBlueprintHardcode<TransportableBlueprint>(ObjectType type)
+B GetBlueprintHardcode<B>(ObjectType type)
 {
-    TransportableBlueprint hardcode;
+    B hardcode;
     hardcode.enabled = Enabled(type);
     hardcode.isRadioactive = IsRadioactive(type);
     hardcode.isDropZoneVisible = IsDropZoneVisible(type);

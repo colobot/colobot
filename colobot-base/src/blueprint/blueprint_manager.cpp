@@ -23,10 +23,24 @@
 #include "blueprint/blueprint_all_parts.h"
 #include "blueprint/blueprint_storage.h"
 
+#include "common/logger.h"
+#include "common/resources/resourcemanager.h"
+#include "common/stringutils.h"
+
+#include <exception>
+
 CBlueprintManager::CBlueprintManager()
     : m_storage(std::make_unique<CBlueprintStorage>())
 {
     LoadStorageFromHardcode();
+    SaveStorageToFile("blueprints_std.txt");
+
+    LoadStorageFromFiles();
+    SaveStorageToFile("blueprints_patched.txt");
+
+    ClearStorage();
+    m_storage->LoadFromFile("blueprints_patched.txt");
+    SaveStorageToFile("blueprints_selftest.txt");
 }
 
 CBlueprintManager::~CBlueprintManager() = default;
@@ -44,4 +58,28 @@ void CBlueprintManager::ClearStorage()
 void CBlueprintManager::LoadStorageFromHardcode()
 {
     m_storage->LoadFromHardcode();
+}
+
+void CBlueprintManager::LoadStorageFromFiles()
+{
+    GetLogger()->Info("Loading blueprints\n");
+
+    for (const auto& filename : CResourceManager::ListFiles("blueprints"))
+    {
+        std::string path = "blueprints/" + StrUtils::ToString(filename);
+        try
+        {
+            m_storage->LoadFromFile(path.c_str());
+            GetLogger()->Info("  * %%\n", path);
+        }
+        catch (const std::exception& e)
+        {
+            GetLogger()->Error("%%\n", e.what());
+        }
+    }
+}
+
+void CBlueprintManager::SaveStorageToFile(const char* path)
+{
+    m_storage->SaveToFile(path);
 }

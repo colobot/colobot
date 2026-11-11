@@ -32,6 +32,8 @@ public:
 
     void Clear();
     void LoadFromHardcode();
+    void LoadFromFile(const char* path);
+    void SaveToFile(const char* path);
 
 private:
     std::map<ObjectType, Blueprint> m_objects;

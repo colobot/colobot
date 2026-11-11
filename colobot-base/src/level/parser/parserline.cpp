@@ -24,6 +24,8 @@
 
 #include "level/parser/parser.h"
 
+#include <vector>
+
 CLevelParserLine::CLevelParserLine(const std::string& command)
     : m_command(command)
 {}
@@ -88,6 +90,14 @@ void CLevelParserLine::AddParam(const std::string& name, CLevelParserParamUPtr v
 {
     value->SetLine(this);
     m_params.insert(std::make_pair(name, std::move(value)));
+}
+
+std::vector<std::string> CLevelParserLine::GetKeys() const
+{
+    std::vector<std::string> result;
+    for (const auto& param : m_params)
+        result.push_back(param.first);
+    return result;
 }
 
 std::ostream& operator<<(std::ostream& str, const CLevelParserLine& line)

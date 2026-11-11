@@ -1,5 +1,8 @@
 # Unit test data
 set(TEST_FILES
+    data/blueprints.txt
+    data/blueprints_bad_cmd.txt
+    data/blueprints_bad_key.txt
     data/colobot.json
 )
 
@@ -12,6 +15,8 @@ add_executable(Colobot-UnitTests
     src/main.cpp
 
     src/app/app_test.cpp
+
+    src/blueprint/blueprint_test.cpp
 
     src/CBot/CBot_test.cpp
     src/CBot/CBotFileUtils_test.cpp

@@ -39,6 +39,8 @@ public:
 private:
     void ClearStorage();
     void LoadStorageFromHardcode();
+    void LoadStorageFromFiles();
+    void SaveStorageToFile(const char* path);
 
     std::unique_ptr<CBlueprintStorage> m_storage;
 };
