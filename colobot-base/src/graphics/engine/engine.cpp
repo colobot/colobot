@@ -23,6 +23,8 @@
 #include "app/app.h"
 #include "app/input.h"
 
+#include "blueprint/blueprint_manager.h"
+
 #include "common/image.h"
 #include "common/key.h"
 #include "common/logger.h"
@@ -327,6 +329,11 @@ CObjectRenderer* CEngine::GetObjectRenderer()
     return m_device->GetObjectRenderer();
 }
 
+CBlueprintManager* CEngine::GetBlueprintManager()
+{
+    return m_blueprintManager.get();
+}
+
 COldModelManager* CEngine::GetModelManager()
 {
     return m_modelManager.get();
@@ -394,6 +401,7 @@ bool CEngine::Create()
     SetMultiSample(m_multisample);
     SetVSync(m_vsync);
 
+    m_blueprintManager = std::make_unique<CBlueprintManager>();
     m_modelManager = std::make_unique<COldModelManager>(this);
     m_pyroManager = std::make_unique<CPyroManager>();
     m_lightMan   = std::make_unique<CLightManager>(this);

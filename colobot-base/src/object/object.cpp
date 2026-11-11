@@ -19,6 +19,10 @@
 
 #include "object/object.h"
 
+#include "blueprint/blueprint.h"
+#include "blueprint/blueprint_all_parts.h"
+#include "blueprint/blueprint_manager.h"
+
 #include "common/global.h"
 #include "common/restext.h"
 #include "common/stringutils.h"
@@ -53,6 +57,7 @@ CObject::CObject(int id, ObjectType type)
 {
     m_implementedInterfaces.fill(false);
     m_botVar = CScriptFunctions::CreateObjectVar(this);
+    m_blueprint = CBlueprintManager::GetInstancePointer()->GetBlueprint(m_type);
 }
 
 CObject::~CObject()

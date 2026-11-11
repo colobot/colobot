@@ -22,6 +22,11 @@
 
 #include "app/app.h"
 
+#include "blueprint/blueprint.h"
+#include "blueprint/blueprint_manager.h"
+#include "blueprint/part/jet_flying_blueprint.h"
+#include "blueprint/part/transportable_blueprint.h"
+
 #include "common/global.h"
 #include "common/settings.h"
 #include "common/stringutils.h"
@@ -113,6 +118,7 @@ COldObject::COldObject(int id)
     m_camera      = m_main->GetCamera();
 
     m_type = OBJECT_NULL;
+    m_blueprint = m_engine->GetBlueprintManager()->GetBlueprint(m_type);
     m_option = 0;
     m_name = "";
     m_shadowLight   = -1;
@@ -242,6 +248,7 @@ void COldObject::DeleteObject(bool bAll)
     }
 
     m_type = OBJECT_NULL;  // invalid object until complete destruction
+    m_blueprint = m_engine->GetBlueprintManager()->GetBlueprint(m_type);
 
     if ( m_shadowLight != -1 )
     {
@@ -718,7 +725,11 @@ void COldObject::SetObjectParent(int part, int parent)
 void COldObject::SetType(ObjectType type)
 {
     m_type = type;
+    m_blueprint = m_engine->GetBlueprintManager()->GetBlueprint(m_type);
     m_name = GetObjectName(m_type);
+
+    m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::JetFlying)] = m_blueprint->jet_flying->enabled;
+    m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Transportable)] = m_blueprint->transportable->enabled;
 
     SetSelectable(IsSelectableByDefault(m_type));
 
@@ -734,17 +745,14 @@ void COldObject::SetType(ObjectType type)
          m_type == OBJECT_CONTROLLER)
     {
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Flying)] = true;
-        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::JetFlying)] = true;
     }
     else if ( m_type == OBJECT_BEE )
     {
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Flying)] = true;
-        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::JetFlying)] = false;
     }
     else
     {
         m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Flying)] = false;
-        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::JetFlying)] = false;
     }
 
     // TODO: Another temporary hack
@@ -937,27 +945,6 @@ void COldObject::SetType(ObjectType type)
 
     // TODO: #TooMuchHacking
     m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::ShieldedAutoRegen)] = (m_type == OBJECT_HUMAN);
-
-    // TODO: Hacking in progress...
-    if ( m_type == OBJECT_STONE   ||
-         m_type == OBJECT_URANIUM ||
-         m_type == OBJECT_BULLET  ||
-         m_type == OBJECT_METAL   ||
-         m_type == OBJECT_POWER   ||
-         m_type == OBJECT_ATOMIC  ||
-         m_type == OBJECT_BBOX    ||
-         m_type == OBJECT_KEYa    ||
-         m_type == OBJECT_KEYb    ||
-         m_type == OBJECT_KEYc    ||
-         m_type == OBJECT_KEYd    ||
-         m_type == OBJECT_TNT     )
-    {
-        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Transportable)] = true;
-    }
-    else
-    {
-        m_implementedInterfaces[static_cast<int>(ObjectInterfaceType::Transportable)] = false;
-    }
 
     // TODO: You have been hacked!
     if (m_type == OBJECT_HUMAN    ||

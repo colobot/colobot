@@ -21,8 +21,6 @@
 
 #include "object/task/task.h"
 
-#include "object/object_type.h"
-
 #include <glm/glm.hpp>
 
 
@@ -72,5 +70,4 @@ protected:
     bool            m_bError = false;
     bool            m_bTurn = false;
     float           m_angle = 0.0f;
-    ObjectType      m_cargoType = OBJECT_NULL;
 };

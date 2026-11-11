@@ -1,5 +1,6 @@
 # Add source files
 add_subdirectory(app)
+add_subdirectory(blueprint)
 add_subdirectory(common)
 add_subdirectory(graphics)
 add_subdirectory(level)

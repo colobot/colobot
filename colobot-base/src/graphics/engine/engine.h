@@ -47,6 +47,7 @@
 
 
 class CApplication;
+class CBlueprintManager;
 class CSoundInterface;
 class CImage;
 class CSystemUtils;
@@ -429,6 +430,7 @@ public:
 
     //! Returns the text rendering engine
     CText*          GetText();
+    CBlueprintManager* GetBlueprintManager();
     COldModelManager* GetModelManager();
     CPyroManager*   GetPyroManager();
     //! Returns the light manager
@@ -1110,6 +1112,7 @@ protected:
     CSoundInterface*  m_sound;
     CDevice*          m_device;
     CTerrain*         m_terrain;
+    std::unique_ptr<CBlueprintManager> m_blueprintManager;
     std::unique_ptr<COldModelManager> m_modelManager;
     std::unique_ptr<CText>            m_text;
     std::unique_ptr<CLightManager>    m_lightMan;

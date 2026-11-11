@@ -52,6 +52,8 @@ target_sources(Colobot-Base PRIVATE
     crash_sphere.h
     drive_type.cpp
     drive_type.h
+    helpers/transportable_helpers.cpp
+    helpers/transportable_helpers.h
     implementation/power_container_impl.cpp
     implementation/power_container_impl.h
     implementation/program_storage_impl.cpp
