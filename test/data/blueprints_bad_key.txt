@@ -1,0 +1,2 @@
+// Wrong property name should produce exception
+Set<Transportable> type=NuclearCell isRadeoActiv=1

@@ -1,0 +1,2 @@
+// Unregistered command should produce an exception
+Set<Unknown> type=NuclearCell enabled=true

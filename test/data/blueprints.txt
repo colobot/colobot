@@ -1,0 +1,8 @@
+// Unlimited flying
+Set<JetFlying> type=Me enabled=0
+
+// Mines are transportable (it's tricky but possible, you need exact distance to pick it up by human)
+Set<Transportable> type=Mine enabled=true
+
+// Nuclear powercells are radioactive
+Set<Transportable> type=NuclearCell isRadioactive=1

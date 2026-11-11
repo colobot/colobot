@@ -37,6 +37,7 @@ namespace Gfx
 struct ModelCrashSphere;
 } // namespace Gfx
 
+class Blueprint;
 class CLevelParserLine;
 
 namespace CBot
@@ -77,6 +78,11 @@ public:
     inline ObjectType  GetType() const
     {
         return m_type;
+    }
+    //! Returns object blueprint
+    inline Blueprint*  GetBlueprint() const
+    {
+        return m_blueprint;
     }
     //! Returns object's unique id
     inline int GetID() const
@@ -234,6 +240,7 @@ protected:
 protected:
     const int m_id; //!< unique identifier
     ObjectType m_type; //!< object type
+    Blueprint* m_blueprint; //!< object blueprint
     ObjectInterfaceTypes m_implementedInterfaces; //!< interfaces that the object implements
     glm::vec3 m_position;
     glm::vec3 m_rotation;

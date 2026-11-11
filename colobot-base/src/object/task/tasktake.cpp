@@ -31,6 +31,8 @@
 #include "object/object_manager.h"
 #include "object/old_object.h"
 
+#include "object/helpers/transportable_helpers.h"
+
 #include "object/interface/slotted_object.h"
 #include "object/interface/transportable_object.h"
 
@@ -136,8 +138,7 @@ Error CTaskTake::Start()
         if (other != nullptr && otherAsSlotted->GetSlotContainedObject(otherSlotNum) != nullptr)
         {
             CObject* power = otherAsSlotted->GetSlotContainedObject(otherSlotNum);
-            type = power->GetType();
-            if ( type == OBJECT_URANIUM )  return ERR_MANIP_RADIO;
+            if ( IsRadioactive(power) )  return ERR_MANIP_RADIO;
             assert(power->Implements(ObjectInterfaceType::Transportable));
 //?         m_camera->StartCentering(m_object, Math::PI*0.3f, -Math::PI*0.1f, 0.0f, 0.8f);
             m_arm = TTA_FRIEND;
@@ -146,8 +147,7 @@ Error CTaskTake::Start()
         {
             other = SearchTakeObject(oAngle, 1.5f, Math::PI*0.45f);
             if ( other == nullptr )  return ERR_MANIP_NIL;
-            type = other->GetType();
-            if ( type == OBJECT_URANIUM )  return ERR_MANIP_RADIO;
+            if ( IsRadioactive(other) )  return ERR_MANIP_RADIO;
 //?         m_camera->StartCentering(m_object, Math::PI*0.3f, 99.9f, 0.0f, 0.8f);
             m_arm = TTA_FFRONT;
             m_main->HideDropZone(other);  // hides buildable area
@@ -261,7 +261,7 @@ Error CTaskTake::IsEnded()
             {
                 m_sound->Play(SOUND_POWERON, m_object->GetPosition());
             }
-            if ( cargo != nullptr && m_cargoType == OBJECT_METAL && m_arm == TTA_FFRONT )
+            if ( m_arm == TTA_FFRONT && IsDropZoneVisible(cargo) )
             {
                 m_main->ShowDropZone(cargo, m_object);  // shows buildable area
             }
@@ -410,8 +410,6 @@ bool CTaskTake::TransporterTakeObject()
         if (cargo == nullptr)  return false;  // nothing to take ?
         assert(cargo->Implements(ObjectInterfaceType::Transportable));
 
-        m_cargoType = cargo->GetType();
-
         dynamic_cast<CTransportableObject&>(*cargo).SetTransporter(m_object);
         dynamic_cast<CTransportableObject&>(*cargo).SetTransporterPart(4);  // takes with the hand
 
@@ -436,8 +434,6 @@ bool CTaskTake::TransporterTakeObject()
         CObject* cargo = otherAsSlotted->GetSlotContainedObject(otherSlotNum);
         if (cargo == nullptr)  return false;  // the other does not have a battery?
         assert(cargo->Implements(ObjectInterfaceType::Transportable));
-
-        m_cargoType = cargo->GetType();
 
         otherAsSlotted->SetSlotContainedObject(otherSlotNum, nullptr);
         dynamic_cast<CTransportableObject&>(*cargo).SetTransporter(m_object);
@@ -464,8 +460,6 @@ bool CTaskTake::TransporterDeposeObject()
         CObject* cargo = m_object->GetSlotContainedObjectReq(CSlottedObject::Pseudoslot::CARRYING);
         if (cargo == nullptr)  return false;  // does nothing?
         assert(cargo->Implements(ObjectInterfaceType::Transportable));
-
-        m_cargoType = cargo->GetType();
 
         glm::mat4 mat = cargo->GetWorldMatrix(0);
         glm::vec3 pos = Math::Transform(mat, glm::vec3(-0.5f, 1.0f, 0.0f));
@@ -495,7 +489,6 @@ bool CTaskTake::TransporterDeposeObject()
         cargo = m_object->GetSlotContainedObjectReq(CSlottedObject::Pseudoslot::CARRYING);
         if (cargo == nullptr)  return false;
         assert(cargo->Implements(ObjectInterfaceType::Transportable));
-        m_cargoType = cargo->GetType();
 
         otherAsSlotted->SetSlotContainedObject(otherSlotNum, cargo);
         dynamic_cast<CTransportableObject&>(*cargo).SetTransporter(other);
